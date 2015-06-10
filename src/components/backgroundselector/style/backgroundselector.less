@@ -1,9 +1,9 @@
-.ga-bg-layer-bt, .ga-bg-layer {
+.ga-bg-layer-bt, .ga-bg-layer, .ga-bg-layer-bt-close {
   overflow: hidden;
   cursor: pointer;
   position: absolute; 
   background: transparent no-repeat center;
-  transition: right 0.5s ease;
+  transition: right 0.5s ease, bottom 0.5s ease, width 0.5s ease;
 }
 
 .ga-bg-layer-bt {
@@ -25,27 +25,41 @@
   z-index: 1001;
 }
 
-.ga-bg-layer-text {
-  background-color: rgba(255, 255, 255, 0.95);
+.ga-bg-layer-text, .ga-bg-layer-bt-text {
   margin: 3px;
   padding: 1px;
   font-size: 75%;
+  text-align: center;
+
+  @media (max-width: @screen-tablet) {
+    display: none;
+  }
+}
+ 
+.ga-bg-layer-text {
+  background-color: rgba(255, 255, 255, 0.95);
+ }
+
+.ga-bg-layer-bt-text {
+  color: white;
+  background-color: rgba(0, 0, 0, 0.7);
 }
 
 .ga-bg-mobile {
-  position: relative;
-  width: 44px;
-  height: 44px;
 
   .ga-bg-layer-bt {
     width: 44px;
     height: 44px;
-    right: 0px;
+    left: 10px;
+    bottom: 51px;
     background-image: data-uri('background-selector-black.png');
     &:active {
       transform: scale(1.2);
       -ms-transform: scale(1.2);
       -webkit-transform: scale(1.2);
+    }
+    @media (max-width: @screen-tablet) {
+      bottom: 26px;
     }
   }
 
@@ -53,13 +67,16 @@
     width: 42px;
     height: 42px;
     border-radius:21px;
-    right: 1px;
-    top: 1px;
+    left: 11px;
+    bottom: 52px;
     background-color: rgba(51, 51, 51, 1);
     &:active {
       transform: scale(1.2);
       -ms-transform: scale(1.2);
       -webkit-transform: scale(1.2);
+    }
+    @media (max-width: @screen-tablet) {
+      bottom: 27px;
     }
   }
 
@@ -89,44 +106,85 @@
   }
 
   .ga-bg-layer-0 {
-    right: 49px;
+    bottom: 101px;
+    @media (max-width: @screen-tablet) {
+      bottom: 76px;
+    }
   }
 
   .ga-bg-layer-1 {
-    right: 99px;
+    bottom: 150px;
+    @media (max-width: @screen-tablet) {
+      bottom: 125px;
+    }
   }  
 
   .ga-bg-layer-2 {
-    right: 149px;
+    bottom: 199px;
+    @media (max-width: @screen-tablet) {
+      bottom: 174px;
+    }
   }
 
   .ga-bg-layer-3 {
-    right: 199px;
+    bottom: 248px;
+    @media (max-width: @screen-tablet) {
+      bottom: 223px;
+    }
   }
 }
 
 .ga-bg-desktop {
+  
+  .icon-chevron-sign-right {
+    line-height: 64px;
+    text-align: center;
+    display: none;
+
+    @media (max-width: @screen-tablet) {
+      line-height: 32px;
+    }
+  }
 
   .ga-bg-layer-bt {
     width: 96px;
     height: 64px;
     bottom: 52px;
     right: 10px;
-    background-image: data-uri('swissimage-rect.png');
-    background-color: rgba(51, 51, 51, 1);
+    background: #ffffff data-uri('swissimage-rect.png') no-repeat center;
+   
     @media (max-width: @screen-tablet) {
-      bottom: 24px;  
+      width: 48px;
+      height: 32px;
+      bottom: 24px;
+      background-size: 44px 28px;
     }
   }
 
-  .ga-bg-layer {   
+  .ga-bg-layer-bt-close {
+    width: 20px;
+    background-image: none;
+
+    .ga-bg-layer-bt-text {
+      display: none;
+    }
+
+    .icon-chevron-sign-right {
+      display: block;
+    }
+  }
+
+  .ga-bg-layer {
     width: 96px;
     height: 64px;
     bottom: 52px;
     right: 10px;
-    background-color: rgba(51, 51, 51, 1);
+    background-color: rgba(255, 255, 255, 1);
     @media (max-width: @screen-tablet) {
-      bottom: 24px;  
+      width: 48px;
+      height: 32px;
+      bottom: 24px;
+      background-size: 44px 28px;
     }
   }
 
@@ -151,18 +209,27 @@
   }
 
   .ga-bg-layer-0 {
-    right: 111px;
+    right: 35px;
   }
 
   .ga-bg-layer-1 {
-    right: 212px;
+    right: 136px;
+    @media (max-width: @screen-tablet) {
+      right: 88px;
+    }
   }
 
   .ga-bg-layer-2 {
-    right: 313px;
+    right: 237px;
+    @media (max-width: @screen-tablet) {
+      right: 141px;
+    }
   }
 
   .ga-bg-layer-3 {
-    right: 414px;
+    right: 338px;
+    @media (max-width: @screen-tablet) {
+      right: 194px;
+    }
   }
 }

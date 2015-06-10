@@ -22,8 +22,15 @@
         },
         link: function(scope, elt, attrs) {
           scope.isBackgroundSelectorClosed = true;
-          scope.embed = gaBrowserSniffer.embed;
-          scope.mobile = gaBrowserSniffer.mobile;
+          var mobile = gaBrowserSniffer.mobile;
+          scope.desktop = !gaBrowserSniffer.embed && !mobile;
+
+          if (mobile) {
+            elt.addClass('ga-bg-mobile');
+          } else if (scope.desktop) {
+            elt.addClass('ga-bg-desktop');
+          }
+
           var map = scope.map;
           var isOfflineToOnline = false;
           var currentTopic;
@@ -124,6 +131,19 @@
           scope.$on('gaNetworkStatusChange', function(evt, offline) {
             isOfflineToOnline = !offline;
           });
+
+          // If another omponent add a background layer, update the
+          // selectbox.
+          scope.layers = scope.map.getLayers().getArray();
+          scope.layerFilter = gaLayerFilters.background;
+          scope.$watchCollection('layers | filter:layerFilter',
+            function(arr) {
+              if (arr.length == 2 ||
+                  (scope.currentLayer == 'voidLayer' && arr.length == 1)) {
+                scope.currentLayer = arr[arr.length - 1].id;
+                scope.map.removeLayer(arr[arr.length - 1]);
+              }
+            });
 
           scope.getClass = function(layer, index) {
             if (layer) {
