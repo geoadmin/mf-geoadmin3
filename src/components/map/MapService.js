@@ -915,7 +915,7 @@
           } else if (layer.type == 'geojson') {
             // cannot request resources over https in S3
             var fullUrl = gaGlobalOptions.ogcproxyUrl + layer.geojsonUrl;
-            var olSource = new ol.source.GeoJSON();
+            var olSource = new ol.source.Vector();
             olLayer = new ol.layer.Vector({
               source: olSource
             });
