@@ -4,6 +4,9 @@ import shputils
 from os.path import dirname
 from struct import unpack
 
+import logging
+log = logging.getLogger('chsdi')
+
 # cache of GeoRaster instances in function of the layer name
 _rasters = {}
 _rasterfiles = {}
@@ -23,8 +26,12 @@ def init_rasterfiles(datapath, preloadtypes):
         'DTM2': datapath + 'swissalti3d/2m/index.shp',
         'COMB': datapath + 'swissalti3d/kombo_2m_dhm25/index.shp'
     }
-    for pt in preloadtypes:
-        get_raster(pt)
+    try:
+        for pt in preloadtypes:
+            get_raster(pt)
+    except Exception as e:
+        log.error('Could not initialize raster files. Make sure they exist in the following directory: %s (Exception: %s)' % (datapath, e))
+
 
 class Tile(object):
     def __init__(self, minX, minY, maxX, maxY, filename):
