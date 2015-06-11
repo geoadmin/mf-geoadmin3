@@ -534,7 +534,8 @@ goog.provide('ga_draw_controller');
             type: 'Polygon',
             style: generateDrawStyleFunc(measureDrawStyleFunc)
           },
-          style: measureDrawStyleFunc
+          style: measureDrawStyleFunc,
+          showMeasure: true
         }];
         
         for (var i = 0, ii = $scope.options.tools.length; i < ii; i++) {

@@ -84,6 +84,7 @@ goog.require('ga_map_service');
             var coords = geom.getCoordinates();
             scope.distance = geom.getLength();
             scope.azimuth = calculateAzimuth(coords[0], coords[1]);
+            scope.surface = 0;
 
             if (scope.options.showLineStringArea) {
               var geom = new ol.geom.Polygon([coords]);

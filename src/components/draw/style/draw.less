@@ -102,13 +102,34 @@
   }
 }
 
-.ga-draw-help {
+.ga-draw-help, .ga-draw-measure, .ga-draw-measure-static {
   background-color: rgba(140, 140, 140, 0.9);
   border-radius: 4px;
   color: white;
   padding: 2px 8px;
   font-size: 12px; 
 }
+
+.ga-draw-measure, .ga-draw-measure-static {
+  &:after {
+    position: absolute;
+    left: 50%;
+    bottom: -6px;
+    margin-left: -7px;
+    content: "";
+    border-top: 6px solid rgba(140, 140, 140, 0.9);
+    border-right: 6px solid transparent;
+    border-left: 6px solid transparent;
+  }
+}
+
+.ga-draw-measure-static {
+  background-color: rgba(255, 0, 0, 0.9);
+  &:after {
+    border-top: 6px solid #f00;
+  }
+}
+
 
 .ga-draw-popup {
   
@@ -125,9 +146,6 @@
   .popover-title, .popover-content {
     width: auto;
   }
-}
-
-.ga-draw-popup {
 
   .nav-tabs a {
     text-decoration: none;

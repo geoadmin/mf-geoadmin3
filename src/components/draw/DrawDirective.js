@@ -76,20 +76,60 @@ goog.require('ga_map_service');
         return colors[0];
       };
 
+      var formatLength = function(line) {
+        if (!line instanceof ol.geom.LineString) {
+          return '- km';
+        }
+        var output, length = Math.round(line.getLength() * 100) / 100;
+        if (length > 100) {
+          output = (Math.round(length / 1000 * 100) / 100) + ' ' + 'km';
+        } else {
+          output = (Math.round(length * 100) / 100) + ' ' + 'm';
+        }
+        return output;
+      };
+
+      var formatArea = function(polygon) {
+        if (!polygon instanceof ol.geom.Polygon) {
+          return '- km<sup>2</sup>';
+        }
+        var output, area = polygon.getArea();
+        if (area > 10000) {
+          output = (Math.round(area / 1000000 * 100) / 100) + ' ' +
+              'km<sup>2</sup>';
+        } else {
+          output = (Math.round(area * 100) / 100) + ' ' + 'm<sup>2</sup>';
+        }
+        return output;
+      };
+
       // Creates a new help tooltip
-      var helpTooltip;
-      var helpTooltipElement;
       var createHelpTooltip = function() {
-        helpTooltipElement = document.createElement('div');
-        helpTooltipElement.className = 'ga-draw-help';
-        helpTooltip = new ol.Overlay({
-          element: helpTooltipElement,
-          offset: [15, 25],
-          positioning: 'center-left',
+        var tooltipElement = document.createElement('div');
+        tooltipElement.className = 'ga-draw-help';
+        var tooltip = new ol.Overlay({
+          element: tooltipElement,
+          offset: [15, 15],
+          positioning: 'top-left',
           stopEvent: false
         });
+        return tooltip;
       };
-      var updateHelpLabel = function(type, drawStarted, onFirstPoint,
+
+      // Creates a new measure tooltip with a nice arrow
+      var createMeasureTooltip = function() {
+        var tooltipElement = document.createElement('div');
+        tooltipElement.className = 'ga-draw-measure';
+        var tooltip = new ol.Overlay({
+          element: tooltipElement,
+          offset: [0, -15],
+          positioning: 'bottom-center',
+          stopEvent: true // for copy/paste
+        });
+        return tooltip;
+      };
+
+      var updateHelpTooltip = function(overlay, type, drawStarted, onFirstPoint,
           onLastPoint) {
         var helpMsg = $translate.instant('Click to add a point');
         //draw-help-start');
@@ -107,8 +147,30 @@ goog.require('ga_map_service');
             //draw-help-last-point');
           }
         }
-        helpTooltipElement.innerHTML = helpMsg;
+        overlay.getElement().innerHTML = helpMsg;
       };
+
+      // Display measure overlays if the geometry alloow it otherwise hide them.
+      var updateMeasureTooltips = function(distTooltip, areaTooltip, geom) {
+        if (geom instanceof ol.geom.Polygon) {
+          if (areaTooltip) {
+            areaTooltip.getElement().innerHTML = formatArea(geom);
+            areaTooltip.setPosition(geom.getInteriorPoint().getCoordinates());
+          }
+          geom = new ol.geom.LineString(geom.getCoordinates()[0]);
+        } else if (areaTooltip) {
+          areaTooltip.setPosition(undefined);
+        }
+        if (geom instanceof ol.geom.LineString) {
+          if (distTooltip) {
+            distTooltip.getElement().innerHTML = formatLength(geom);
+            distTooltip.setPosition(geom.getLastCoordinate());
+          }
+        } else if (distTooltip) {
+          distTooltip.setPosition(undefined);
+        }
+      };
+
       return {
         restrict: 'A',
         templateUrl: 'components/draw/partials/draw.html',
@@ -119,7 +181,8 @@ goog.require('ga_map_service');
         },
         link: function(scope, element, attrs, controller) {
           var layer, draw, lastActiveTool;
-          var unDblClick, unLayerRemove, unChangeFeature, deregPointerMove;
+          var unDblClick, unLayerRemove, unFeatureChange, unFeatureRemove,
+              deregPointerMove, deregFeatureChange;
           var useTemporaryLayer = scope.options.useTemporaryLayer || false;
           var map = scope.map;
           var viewport = $(map.getViewport());
@@ -127,9 +190,20 @@ goog.require('ga_map_service');
           scope.isMeasureActive = false;
           scope.options.isProfileActive = false;
 
+
+          // Create temporary overlays
           // Help overlay
-          createHelpTooltip();
+          var helpTooltip = createHelpTooltip();
           map.addOverlay(helpTooltip);
+
+          // Distance overlay
+          var distTooltip = createMeasureTooltip();
+          map.addOverlay(distTooltip);
+
+          // Area overlay
+          var areaTooltip = createMeasureTooltip();
+          map.addOverlay(areaTooltip);
+
 
           scope.layers = scope.map.getLayers().getArray();
           scope.layerFilter = gaLayerFilters.selected;
@@ -159,6 +233,7 @@ goog.require('ga_map_service');
                     updateCursorStyleDebounced);
               }
               $document.off('keyup', scope.deleteSelectedFeature);
+              select.getFeatures().clear();
             }
           });
           select.getFeatures().on('add', function(evt) {
@@ -167,6 +242,14 @@ goog.require('ga_map_service');
             evt.element.setStyle(styles);
             updatePropsTabContent();
             togglePopup(evt.element);
+            deregFeatureChange = evt.element.on('change', function(evt) {
+              var overlays = evt.target.get('overlays');
+              if (overlays) {
+                updateMeasureTooltips(overlays[0], overlays[1],
+                    evt.target.getGeometry());
+              }
+            });
+
           });
           select.getFeatures().on('remove', function(evt) {
             // Remove the select style
@@ -175,6 +258,7 @@ goog.require('ga_map_service');
             evt.element.setStyle(styles);
             updatePropsTabContent();
             togglePopup();
+            ol.Observable.unByKey(deregFeatureChange);
             //console.debug('remove');
           });
           select.setActive(false);
@@ -200,6 +284,14 @@ goog.require('ga_map_service');
               });
               unChangeFeature = layer.getSource().on(['addfeature',
                   'changefeature', 'removefeature'], saveDebounced);
+              unFeatureRemove = layer.getSource().on(['removefeature', 'clear'],
+                  function(evt) {
+                // Remove the overlays attached to the feature
+                var overlays = evt.feature.get('overlays');
+                while (overlays && overlays.length) {
+                  map.removeOverlay(overlays.pop());
+                }
+              });
             }
 
             if (scope.options.broadcastLayer) {
@@ -249,9 +341,14 @@ goog.require('ga_map_service');
           var deactivate = function(evt) {
             ol.Observable.unByKey(unDblClick);
 
-            if (unChangeFeature) {
-              ol.Observable.unByKey(unChangeFeature);
-              unChangeFeature = undefined;
+            if (unFeatureChange) {
+              ol.Observable.unByKey(unFeatureChange);
+              unFeatureChange = undefined;
+            }
+
+            if (unFeatureRemove) {
+              ol.Observable.unByKey(unFeatureRemove);
+              unFeatureRemove = undefined;
             }
 
             ol.Observable.unByKey(unLayerRemove);
@@ -272,26 +369,28 @@ goog.require('ga_map_service');
           var activateDrawInteraction = function(tool) {
             select.setActive(false);
             deactivateDrawInteraction();
-            updateHelpLabel(tool.drawOptions.type, false);
+            updateHelpTooltip(helpTooltip, tool.drawOptions.type, false);
 
             if (!gaBrowserSniffer.mobile) {
               deregPointerMove2 = map.on('pointermove', function(evt) {
                 helpTooltip.setPosition(evt.coordinate);
+
               });
             }
 
             draw = new ol.interaction.Draw(tool.drawOptions);
-            var isFinishOnFirstPoint, deregFeatureChange;
+            var isFinishOnFirstPoint;
             deregDrawStart = draw.on('drawstart', function(evt) {
               var nbPoint = 1;
               var isSnapOnLastPoint = false;
-              updateHelpLabel(tool.drawOptions.type, true, isFinishOnFirstPoint,
-                  isSnapOnLastPoint);
+              updateHelpTooltip(helpTooltip, tool.drawOptions.type, true,
+                  isFinishOnFirstPoint, isSnapOnLastPoint);
 
               deregFeatureChange = evt.feature.on('change', function(evt) {
                 var geom = evt.target.getGeometry();
                 if (geom instanceof ol.geom.Polygon) {
                   var lineCoords = geom.getCoordinates()[0];
+
                   if (nbPoint != lineCoords.length) {
                     // A point is added
                     nbPoint++;
@@ -321,8 +420,14 @@ goog.require('ga_map_service');
                       lineCoords.pop();
                     }
                   }
-                  updateHelpLabel(tool.drawOptions.type, true,
+                  updateHelpTooltip(helpTooltip, tool.drawOptions.type, true,
                       isFinishOnFirstPoint, isSnapOnLastPoint);
+                  if (tool.showMeasure) {
+                    if (!isFinishOnFirstPoint) {
+                      geom = new ol.geom.LineString(lineCoords);
+                    }
+                    updateMeasureTooltips(distTooltip, areaTooltip, geom);
+                  }
                 }
               });
             });
@@ -360,7 +465,25 @@ goog.require('ga_map_service');
               scope.$apply();
               deactivateTool(lastActiveTool);
               select.getFeatures().push(featureToAdd);
-              updateHelpLabel();
+              // Add final measure tooltips
+              if (tool.showMeasure) {
+                updateMeasureTooltips(distTooltip, areaTooltip,
+                    featureToAdd.getGeometry());
+                distTooltip.getElement().className = 'ga-draw-measure-static';
+                areaTooltip.getElement().className = 'ga-draw-measure-static';
+                distTooltip.setOffset([0, -7]);
+                areaTooltip.setOffset([0, -7]);
+                featureToAdd.set('overlays', [distTooltip, areaTooltip]);
+                distTooltip = createMeasureTooltip();
+                areaTooltip = createMeasureTooltip();
+                map.addOverlay(distTooltip);
+                map.addOverlay(areaTooltip);
+              }
+
+              // Remove temporary tooltips
+              helpTooltip.setPosition(undefined);
+              distTooltip.setPosition(undefined);
+              areaTooltip.setPosition(undefined);
             });
             draw.setActive(true);
             map.addInteraction(draw);
@@ -658,7 +781,8 @@ goog.require('ga_map_service');
           element.find('.dropdown-toggle').click(function() {
             var bt = $(this);
             var dropdown = bt.next('.dropdown-menu');
-            var dropDownTop = bt.offset().top + bt.outerHeight() - 50; // 50 seems to be the size of the #header
+            var dropDownTop = bt.offset().top + bt.outerHeight() -
+                50; // 50 seems to be the size of the #header
             dropdown.css('top', dropDownTop + 'px');
             dropdown.css('left', bt.offset().left + 'px');
           });
