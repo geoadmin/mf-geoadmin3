@@ -122,14 +122,14 @@
       <span>{{'modify_icon_label' | translate}}:</span> 
       <div class="ga-select-box ga-select-icons ga-item-size-{{options.iconSize.value[0]}}"
            ng-class="{'ga-select-box-open': gaSelectBoxOpen}">
-        <button class="ga-icon icon-caret-down"
-                ng-click="gaSelectBoxOpen=!gaSelectBoxOpen"></button>
-        <img ng-class="{'ga-selected': (options.icon == i)}" 
-             draggable="false" 
-             ng-click="options.icon = i" 
+        <img tabindex=1 draggable="false" 
              ng-repeat="i in options.icons" 
-             ng-src="{{i.url}}" />
-      </div>
+             ng-class="{'ga-selected': (options.icon == i)}" 
+             ng-src="{{i.url}}"
+             ng-click="options.icon = i;$event.preventDefault();"/> 
+      <button class="ga-icon icon-caret-down"
+                ng-click="gaSelectBoxOpen=!gaSelectBoxOpen"></button>
+        </div>
     </label>
 
   </div>
