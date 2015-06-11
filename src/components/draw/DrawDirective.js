@@ -622,12 +622,14 @@ goog.require('ga_map_service');
           // create/update the file on s3
           ////////////////////////////////////
           var save = function() {
+            scope.isSaved = false;
             var kmlString = gaExportKml.create(layer,
                 map.getView().getProjection());
             var id = layer.adminId ||
                 gaFileStorage.getFileIdFromFileUrl(layer.url);
             gaFileStorage.save(id, kmlString,
                 'application/vnd.google-earth.kml+xml').then(function(data) {
+              scope.isSaved = true;
               // If a file has been created we set the correct id to the layer
               if (data.adminId && data.adminId != layer.adminId) {
                 layer.adminId = data.adminId;

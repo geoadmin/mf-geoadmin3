@@ -88,7 +88,7 @@
       <input type="text" class="form-control" ng-model="options.name"/>
     </label>
     
-    <label ng-if="useColorStyle || useIconStyle">
+    <label ng-if="!useTextStyle">
       <span>{{'modify_description' | translate}}:</span> 
       <textarea class="form-control" ng-model="options.description"/>
     </label>
@@ -140,6 +140,12 @@
        ga-profile="feature" 
        ga-profile-map="map"
        ga-profile-options="options.profileOptions"></div>
+
+  <div ng-if="isPropsActive" class="ga-draw-info-save">
+    <span ng-show="isSaved" class="ga-success" translate>Changes saved!!!</span>
+    <span ng-show="!isSaved" translate>Changes are saving ...</span>
+  </div>
+
 </div>
 <div class="ga-draw-disclaimer" ng-if="!options.useTemporaryLayer" translate>share_file_disclaimer</div>
   <div class="ga-draw-interaction-share" ng-if="adminShortenUrl">
