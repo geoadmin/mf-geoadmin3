@@ -672,10 +672,11 @@ goog.require('ga_map_service');
           element.find('.dropdown-toggle').click(function() {
             var bt = $(this);
             var dropdown = bt.next('.dropdown-menu');
-            var dropDownTop = bt.offset().top + bt.outerHeight();
+            var dropDownTop = bt.offset().top + bt.outerHeight() - 50; // 50 seems to be the size of the #header
             dropdown.css('top', dropDownTop + 'px');
             dropdown.css('left', bt.offset().left + 'px');
           });
+
         }
       };
   });
