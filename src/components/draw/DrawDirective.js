@@ -119,7 +119,7 @@ goog.require('ga_map_service');
         },
         link: function(scope, element, attrs, controller) {
           var layer, draw, lastActiveTool;
-          var unDblClick, unLayerRemove, unChangeFeature;
+          var unDblClick, unLayerRemove, unChangeFeature, deregPointerMove;
           var useTemporaryLayer = scope.options.useTemporaryLayer || false;
           var map = scope.map;
           var viewport = $(map.getViewport());
@@ -143,13 +143,30 @@ goog.require('ga_map_service');
             },
             style: scope.options.selectStyleFunction
           });
+          // Activate/Deactivate select interaction
+          select.on('change:active', function(evt) {
+            var active = evt.target.get(evt.key);
+            if (active) {
+              if (!gaBrowserSniffer.mobile) {
+                deregPointerMove = map.on('pointermove',
+                    updateCursorStyleDebounced);
+              }
+              // Delete keyboard button
+              $document.keyup(scope.deleteSelectedFeature);
+            } else {
+              if (deregPointerMove) {
+                ol.Observable.unByKey(deregPointerMove,
+                    updateCursorStyleDebounced);
+              }
+              $document.off('keyup', scope.deleteSelectedFeature);
+            }
+          });
           select.getFeatures().on('add', function(evt) {
             // Apply the select style
             var styles = scope.options.selectStyleFunction(evt.element);
             evt.element.setStyle(styles);
             updatePropsTabContent();
             togglePopup(evt.element);
-            //console.debug('add');
           });
           select.getFeatures().on('remove', function(evt) {
             // Remove the select style
@@ -219,12 +236,12 @@ goog.require('ga_map_service');
                 defineLayerToModify();
               }
             });
+            // Block dblclick ievent in draw mode to avoid map zooming
             unDblClick = map.on('dblclick', function(evt) {
-              //console.debug(draw.getActive());
               return false;
             });
-            //map.addOverlay(overlay);
-            activateSelectInteraction();
+            modify.setActive(true);
+            select.setActive(true);
           };
 
 
@@ -246,14 +263,14 @@ goog.require('ga_map_service');
 
             // Remove interactions
             deactivateDrawInteraction();
-            deactivateSelectInteraction();
-            //map.removeOverlay(overlay);
+            modify.setActive(false);
+            select.setActive(false);
           };
 
           // Set the draw interaction with the good geometry
           var deregDrawStart, deregDrawEnd, deregPointerMove2;
           var activateDrawInteraction = function(tool) {
-            deactivateSelectInteraction();
+            select.setActive(false);
             deactivateDrawInteraction();
             updateHelpLabel(tool.drawOptions.type, false);
 
@@ -359,39 +376,6 @@ goog.require('ga_map_service');
             }
           };
 
-
-          // Activate/Deactivate select interaction
-          var deregPointerMove;
-          var activateSelectInteraction = function() {
-            select.setActive(true);
-            if (!gaBrowserSniffer.mobile) {
-              deregPointerMove = map.on('pointermove',
-                  updateCursorStyleDebounced);
-            }
-            // Delete keyboard button
-            $document.keyup(scope.deleteSelectedFeature);
-            activateModifyInteraction();
-          };
-          var deactivateSelectInteraction = function() {
-            deactivateModifyInteraction();
-            if (deregPointerMove) {
-              ol.Observable.unByKey(deregPointerMove,
-                  updateCursorStyleDebounced);
-            }
-            $document.off('keyup', scope.deleteSelectedFeature);
-            select.getFeatures().clear();
-            select.setActive(false);
-          };
-
-          // Activate/Deactivate modifiy interaction
-          var activateModifyInteraction = function() {
-            modify.setActive(true);
-          };
-
-          var deactivateModifyInteraction = function() {
-            modify.setActive(false);
-          };
-
           // Watchers
           scope.$watch('isActive', function(active) {
             if (active) {
@@ -442,7 +426,7 @@ goog.require('ga_map_service');
           var deactivateTool = function(tool) {
             scope.options[tool.activeKey] = false;
             deactivateDrawInteraction();
-            activateSelectInteraction();
+            select.setActive(true);
           };
 
           scope.toggleTool = function(evt, tool) {
