@@ -1,0 +1,21 @@
+{
+  "type": "unique",
+  "property": "type_coord",
+  "values": [
+    {
+      "geomType": "point",
+      "value": "link",
+      "vectorOptions": {
+        "type": "icon",
+        "src": "https://data.geo.admin.ch/ch.swisstopo.treasurehunt/2015_castor.png"
+      }
+    }, {
+      "geomType": "point",
+      "value": "info",
+      "vectorOptions": {
+        "type": "icon",
+        "src": "https://data.geo.admin.ch/ch.swisstopo.treasurehunt/2015_info.png"
+      }
+    }
+  ]
+}
