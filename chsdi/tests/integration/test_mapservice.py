@@ -127,6 +127,11 @@ class TestMapServiceView(TestsBase):
         self.failUnless(('geometry' not in resp.json['results'][0]))
         self.failUnless(('geometryType' not in resp.json['results'][0]))
 
+    def test_identify_faulty_params(self):
+        params = {'geometryType': 'esriGeometryEnvelope', 'geometry': '-Infinity,-Infinity,Infinity,Infinity', 'imageDisplay': '0,0,0', 'mapExtent': '0,0,0,0', 'tolerance': 0, 'layers': 'all:ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill,ch.swisstopo.swissboundaries3d-land-flaeche.fill', 'returnGeometry': 'false', 'lang': 'fr'}
+
+        self.testapp.get('/rest/services/ech/MapServer/identify', params=params, status=400)
+
     def test_identify_timeinstant(self):
         params = {'geometryType': 'esriGeometryPoint', 'geometry': '630853.809670509,170647.93120352627', 'geometryFormat': 'geojson', 'imageDisplay': '1920,734,96', 'mapExtent': '134253,-21102,1382253,455997',
                   'tolerance': '5', 'layers': 'all:ch.swisstopo.zeitreihen', 'timeInstant': '1936'}

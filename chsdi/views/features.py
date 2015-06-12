@@ -8,6 +8,7 @@ from pyramid.response import Response
 import pyramid.httpexceptions as exc
 
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
+from sqlalchemy.exc import InternalError
 from sqlalchemy.sql.expression import cast, func
 from sqlalchemy import Text, Integer, Boolean, Numeric, Date
 from sqlalchemy import text
@@ -260,11 +261,20 @@ def _identify(request):
 
     maxFeatures = 201
     features = []
-    for feature in _get_features_for_filters(params, models, maxFeatures=maxFeatures, where=params.where):
-        f = _process_feature(feature, params)
-        features.append(f)
-        if len(features) > maxFeatures:
+    feature_gen = _get_features_for_filters(params, models, maxFeatures=maxFeatures, where=params.where)
+    while True:
+        try:
+            feature = next(feature_gen)
+        except InternalError as e:
+            raise exc.HTTPBadRequest('Your request generated the following database error: %s' % e)
+        except StopIteration:
             break
+        else:
+            f = _process_feature(feature, params)
+            features.append(f)
+
+            if len(features) > maxFeatures:
+                break
 
     return {'results': features}
 
