@@ -879,13 +879,13 @@ goog.require('ga_permalink');
             if (scope.webdav.url) {
               var req = getWebdavRequest('PUT');
               $http(req).success(function() {
-                scope.userMessage = 'Drawing successfully saved';
+                scope.userMessage = $translate.instant('draw_save_success');
               }).error(function(data, status) {
                 scope.userMessage = getWebdavErrorMessage(
-                        'Failed to save the drawing', status);
+                  $translate.instant('draw_save_error'), status);
               });
             } else {
-              scope.userMessage = 'You must at least provide an URL';
+              scope.userMessage = $translate.instant('draw_give_url');
             }
           };
 
@@ -936,11 +936,11 @@ goog.require('ga_permalink');
                     useImageVector: gaKml.useImageVector(fileSize),
                     zoomToExtent: true
                   });
-                  scope.userMessage = 'Drawing successfully loaded.';
+                scope.userMessage = $translate.instant('draw_load_succes');
                 }
               }).error(function(data, status) {
                 scope.userMessage = getWebdavErrorMessage(
-                        'Fail to load the drawing', status);
+                  $translate.instant('draw_load_error'), status);
               });
             }
           };
@@ -950,10 +950,10 @@ goog.require('ga_permalink');
               var req = getWebdavRequest('DELETE');
 
               $http(req).success(function() {
-                scope.userMessage = 'Drawing successfully deleted';
+                scope.userMessage = $translate.instant('draw_delete_success');
               }).error(function(data, status) {
                 scope.userMessage = getWebdavErrorMessage(
-                        'Fail to delete the drawing', status);
+                  $translate.instant('draw_delete_error'), status);
               });
             }
           };
