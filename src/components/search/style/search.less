@@ -24,15 +24,15 @@
     display: inline-block;
     width: 100%;
     position: relative;
+    margin-top: 2px;
   }
 
-  .ga-search-title {
-
-    @media (max-height: 600px) {
-      display: none!important;
+  @media (max-width: 992px), (max-height: @screen-sm-max-height) {
+    .ga-search-title {
+      display: none;
     }
-    @media (max-width: 992px) {
-      display: none!important;
+    .ga-search-input-container {
+      margin-top: 0;
     }
   }
 

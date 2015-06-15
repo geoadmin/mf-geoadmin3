@@ -323,16 +323,16 @@ input[type=text][readonly] {
 }
 
 #search-container {
-  width: 25%;
+  width: 33%;
   min-width: 250px;
   float: left;
   left: 1.6em;
   position: relative;
-  margin-top: 27px;
+  margin-top: 12px;
   z-index: 10; /* Put search on top of the form */
 
-  @media (min-width: 992px) {
-    margin-top: 12px;
+  @media (max-width: 992px) {
+    margin-top: 27px;
   }
 
   [ga-help] {
