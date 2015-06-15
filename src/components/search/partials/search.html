@@ -8,6 +8,10 @@
     ng-blur="lostFocus($event)"
     ng-focus="onFocus()"
     ng-disabled="!childoptions.currentTopic">
+    <i class="icon-search"></i>
+    <button class="icon-remove-sign ga-icon ga-btn" ng-click="clearInput()"
+       ng-mousedown="preClear($event)" ng-hide="query==''"></button>
+
     <span class="ga-search-dropdown" ng-show="restat.sets()">
       <!-- locations -->
       <div ng-class="'ga-search-' + restat.sets()">
@@ -23,5 +27,4 @@
       </div>
     </span> <!-- dropdown -->
   </span> <!-- input container -->
-  <i class="icon-remove-sign ng-hide" ng-click="clearInput()" ng-mousedown="preClear($event)" ng-hide="query==''"></i>
-</form>
+  </form>
