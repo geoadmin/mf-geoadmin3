@@ -27,6 +27,14 @@ var runTest = function(cap, driver, target) {
   driver.findElement(webdriver.By.xpath("//*[@id='import-wms-popup']//div[contains(text(),'AGNES')]")).click();
   // Click on "Layer hinzufügen"
   driver.findElement(webdriver.By.xpath("//*[@id='import-wms-popup']//button[contains(text(),'Layer hinzufügen')]")).click();
+  driver.wait(function() {
+    try {
+      driver.switchTo().alert();
+      return true;
+    }
+    catch (e) {
+    }
+  }, 2000);
   // Accept the alert
   driver.switchTo().alert().accept();
   // Check if the WMS was correctly parsed
