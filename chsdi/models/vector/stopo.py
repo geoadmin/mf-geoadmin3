@@ -2041,3 +2041,269 @@ class ga25_polygon_main(Base, Vector):
                                dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geologischer_atlas', ga25_polygon_main)
+
+
+class swissnames3d_raster_00(Base, Vector):
+    __tablename__ = 'swissnames3d_raster_00'
+    __table_args__ = ({'schema': 'tlm', 'autoload': False})
+    __template__ = 'templates/htmlpopup/swissnames3d.mako'
+    __bodId__ = 'ch.swisstopo.swissnames3d'
+    __label__ = 'name'
+    __maxscale__ = 25000000
+    __minscale__ = 2100000
+    id = Column('bgdi_id', Integer, primary_key=True)
+    objektart = Column('objektart', Text)
+    objektklasse = Column('objektklasse', Text)
+    name = Column('name', Text)
+    sprachcode = Column('sprachcode', Text)
+    namen_typ = Column('namen_typ', Text)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+
+
+class swissnames3d_raster_01(Base, Vector):
+    __tablename__ = 'swissnames3d_raster_01'
+    __table_args__ = ({'schema': 'tlm', 'autoload': False})
+    __template__ = 'templates/htmlpopup/swissnames3d.mako'
+    __bodId__ = 'ch.swisstopo.swissnames3d'
+    __label__ = 'name'
+    __maxscale__ = 2100000
+    __minscale__ = 1700000
+    id = Column('bgdi_id', Integer, primary_key=True)
+    objektart = Column('objektart', Text)
+    objektklasse = Column('objektklasse', Text)
+    name = Column('name', Text)
+    sprachcode = Column('sprachcode', Text)
+    namen_typ = Column('namen_typ', Text)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+
+
+class swissnames3d_raster_02(Base, Vector):
+    __tablename__ = 'swissnames3d_raster_02'
+    __table_args__ = ({'schema': 'tlm', 'autoload': False})
+    __template__ = 'templates/htmlpopup/swissnames3d.mako'
+    __bodId__ = 'ch.swisstopo.swissnames3d'
+    __label__ = 'name'
+    __maxscale__ = 1700000
+    __minscale__ = 940000
+    id = Column('bgdi_id', Integer, primary_key=True)
+    objektart = Column('objektart', Text)
+    objektklasse = Column('objektklasse', Text)
+    name = Column('name', Text)
+    sprachcode = Column('sprachcode', Text)
+    namen_typ = Column('namen_typ', Text)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+
+
+class swissnames3d_raster_03(Base, Vector):
+    __tablename__ = 'swissnames3d_raster_03'
+    __table_args__ = ({'schema': 'tlm', 'autoload': False})
+    __template__ = 'templates/htmlpopup/swissnames3d.mako'
+    __bodId__ = 'ch.swisstopo.swissnames3d'
+    __label__ = 'name'
+    __maxscale__ = 940000
+    __minscale__ = 370000
+    id = Column('bgdi_id', Integer, primary_key=True)
+    objektart = Column('objektart', Text)
+    objektklasse = Column('objektklasse', Text)
+    name = Column('name', Text)
+    sprachcode = Column('sprachcode', Text)
+    namen_typ = Column('namen_typ', Text)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+
+
+class swissnames3d_raster_04(Base, Vector):
+    __tablename__ = 'swissnames3d_raster_04'
+    __table_args__ = ({'schema': 'tlm', 'autoload': False})
+    __template__ = 'templates/htmlpopup/swissnames3d.mako'
+    __bodId__ = 'ch.swisstopo.swissnames3d'
+    __label__ = 'name'
+    __maxscale__ = 370000
+    __minscale__ = 180000
+    id = Column('bgdi_id', Integer, primary_key=True)
+    objektart = Column('objektart', Text)
+    objektklasse = Column('objektklasse', Text)
+    name = Column('name', Text)
+    sprachcode = Column('sprachcode', Text)
+    namen_typ = Column('namen_typ', Text)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+
+
+class swissnames3d_raster_05(Base, Vector):
+    __tablename__ = 'swissnames3d_raster_05'
+    __table_args__ = ({'schema': 'tlm', 'autoload': False})
+    __template__ = 'templates/htmlpopup/swissnames3d.mako'
+    __bodId__ = 'ch.swisstopo.swissnames3d'
+    __label__ = 'name'
+    __maxscale__ = 180000
+    __minscale__ = 75000
+    id = Column('bgdi_id', Integer, primary_key=True)
+    objektart = Column('objektart', Text)
+    objektklasse = Column('objektklasse', Text)
+    name = Column('name', Text)
+    sprachcode = Column('sprachcode', Text)
+    namen_typ = Column('namen_typ', Text)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+
+
+class swissnames3d_raster_06(Base, Vector):
+    __tablename__ = 'swissnames3d_raster_06'
+    __table_args__ = ({'schema': 'tlm', 'autoload': False})
+    __template__ = 'templates/htmlpopup/swissnames3d.mako'
+    __bodId__ = 'ch.swisstopo.swissnames3d'
+    __label__ = 'name'
+    __maxscale__ = 75000
+    __minscale__ = 35000
+    id = Column('bgdi_id', Integer, primary_key=True)
+    objektart = Column('objektart', Text)
+    objektklasse = Column('objektklasse', Text)
+    name = Column('name', Text)
+    sprachcode = Column('sprachcode', Text)
+    namen_typ = Column('namen_typ', Text)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+
+
+class swissnames3d_raster_07(Base, Vector):
+    __tablename__ = 'swissnames3d_raster_07'
+    __table_args__ = ({'schema': 'tlm', 'autoload': False})
+    __template__ = 'templates/htmlpopup/swissnames3d.mako'
+    __bodId__ = 'ch.swisstopo.swissnames3d'
+    __label__ = 'name'
+    __maxscale__ = 35000
+    __minscale__ = 18000
+    id = Column('bgdi_id', Integer, primary_key=True)
+    objektart = Column('objektart', Text)
+    objektklasse = Column('objektklasse', Text)
+    name = Column('name', Text)
+    sprachcode = Column('sprachcode', Text)
+    namen_typ = Column('namen_typ', Text)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+
+
+class swissnames3d_raster_08(Base, Vector):
+    __tablename__ = 'swissnames3d_raster_08'
+    __table_args__ = ({'schema': 'tlm', 'autoload': False})
+    __template__ = 'templates/htmlpopup/swissnames3d.mako'
+    __bodId__ = 'ch.swisstopo.swissnames3d'
+    __label__ = 'name'
+    __maxscale__ = 18000
+    __minscale__ = 9000
+    id = Column('bgdi_id', Integer, primary_key=True)
+    objektart = Column('objektart', Text)
+    objektklasse = Column('objektklasse', Text)
+    name = Column('name', Text)
+    sprachcode = Column('sprachcode', Text)
+    namen_typ = Column('namen_typ', Text)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+
+
+class swissnames3d_raster_09(Base, Vector):
+    __tablename__ = 'swissnames3d_raster_09'
+    __table_args__ = ({'schema': 'tlm', 'autoload': False})
+    __template__ = 'templates/htmlpopup/swissnames3d.mako'
+    __bodId__ = 'ch.swisstopo.swissnames3d'
+    __label__ = 'name'
+    __maxscale__ = 9000
+    __minscale__ = 7000
+    id = Column('bgdi_id', Integer, primary_key=True)
+    objektart = Column('objektart', Text)
+    objektklasse = Column('objektklasse', Text)
+    name = Column('name', Text)
+    sprachcode = Column('sprachcode', Text)
+    namen_typ = Column('namen_typ', Text)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+
+
+class swissnames3d_raster_10(Base, Vector):
+    __tablename__ = 'swissnames3d_raster_10'
+    __table_args__ = ({'schema': 'tlm', 'autoload': False})
+    __template__ = 'templates/htmlpopup/swissnames3d.mako'
+    __bodId__ = 'ch.swisstopo.swissnames3d'
+    __label__ = 'name'
+    __maxscale__ = 7000
+    __minscale__ = 3500
+    id = Column('bgdi_id', Integer, primary_key=True)
+    objektart = Column('objektart', Text)
+    objektklasse = Column('objektklasse', Text)
+    name = Column('name', Text)
+    sprachcode = Column('sprachcode', Text)
+    namen_typ = Column('namen_typ', Text)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+
+
+class swissnames3d_raster_11(Base, Vector):
+    __tablename__ = 'swissnames3d_raster_11'
+    __table_args__ = ({'schema': 'tlm', 'autoload': False})
+    __template__ = 'templates/htmlpopup/swissnames3d.mako'
+    __bodId__ = 'ch.swisstopo.swissnames3d'
+    __label__ = 'name'
+    __maxscale__ = 3500
+    __minscale__ = 1800
+    id = Column('bgdi_id', Integer, primary_key=True)
+    objektart = Column('objektart', Text)
+    objektklasse = Column('objektklasse', Text)
+    name = Column('name', Text)
+    sprachcode = Column('sprachcode', Text)
+    namen_typ = Column('namen_typ', Text)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+
+
+class swissnames3d_raster_12(Base, Vector):
+    __tablename__ = 'swissnames3d_raster_12'
+    __table_args__ = ({'schema': 'tlm', 'autoload': False})
+    __template__ = 'templates/htmlpopup/swissnames3d.mako'
+    __bodId__ = 'ch.swisstopo.swissnames3d'
+    __label__ = 'name'
+    __maxscale__ = 1800
+    __minscale__ = 900
+    id = Column('bgdi_id', Integer, primary_key=True)
+    objektart = Column('objektart', Text)
+    objektklasse = Column('objektklasse', Text)
+    name = Column('name', Text)
+    sprachcode = Column('sprachcode', Text)
+    namen_typ = Column('namen_typ', Text)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+
+
+class swissnames3d_raster_13(Base, Vector):
+    __tablename__ = 'swissnames3d_raster_13'
+    __table_args__ = ({'schema': 'tlm', 'autoload': False})
+    __template__ = 'templates/htmlpopup/swissnames3d.mako'
+    __bodId__ = 'ch.swisstopo.swissnames3d'
+    __label__ = 'name'
+    __maxscale__ = 900
+    __minscale__ = 1
+    id = Column('bgdi_id', Integer, primary_key=True)
+    objektart = Column('objektart', Text)
+    objektklasse = Column('objektklasse', Text)
+    name = Column('name', Text)
+    sprachcode = Column('sprachcode', Text)
+    namen_typ = Column('namen_typ', Text)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+
+register('ch.swisstopo.swissnames3d', swissnames3d_raster_00)
+register('ch.swisstopo.swissnames3d', swissnames3d_raster_02)
+register('ch.swisstopo.swissnames3d', swissnames3d_raster_03)
+register('ch.swisstopo.swissnames3d', swissnames3d_raster_04)
+register('ch.swisstopo.swissnames3d', swissnames3d_raster_05)
+register('ch.swisstopo.swissnames3d', swissnames3d_raster_06)
+register('ch.swisstopo.swissnames3d', swissnames3d_raster_07)
+register('ch.swisstopo.swissnames3d', swissnames3d_raster_08)
+register('ch.swisstopo.swissnames3d', swissnames3d_raster_09)
+register('ch.swisstopo.swissnames3d', swissnames3d_raster_10)
+register('ch.swisstopo.swissnames3d', swissnames3d_raster_11)
+register('ch.swisstopo.swissnames3d', swissnames3d_raster_12)
+register('ch.swisstopo.swissnames3d', swissnames3d_raster_13)

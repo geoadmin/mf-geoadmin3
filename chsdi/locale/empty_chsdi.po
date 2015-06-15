@@ -6869,3 +6869,15 @@ msgstr ""
 
 msgid "ch.swisstopo.cnes.url"
 msgstr ""
+
+msgid "ch.swisstopo.swissnames3d"
+msgstr ""
+
+msgid "objektart"
+msgstr ""
+
+msgid "sprachcode"
+msgstr ""
+
+msgid "namen_typ"
+msgstr ""
