@@ -131,20 +131,16 @@ goog.require('ga_map_service');
 
       var updateHelpTooltip = function(overlay, type, drawStarted, onFirstPoint,
           onLastPoint) {
-        var helpMsg = $translate.instant('Click to add a point');
-        //draw-help-start');
+        var helpMsg = $translate.instant('draw_start_' + type);
         if (drawStarted) {
           if (type != 'Point') {
-            helpMsg = $translate.instant('Click to add another point');
-            //draw-help-next');
+            helpMsg = $translate.instant('draw_next_' + type);
           }
           if (onLastPoint) {
-            helpMsg = $translate.instant('Click to finish the line');
-            //draw-help-first-point');
+            helpMsg = $translate.instant('draw_snap_last_point_' + type);
           }
           if (onFirstPoint) {
-            helpMsg = $translate.instant('Click to close the polygon');
-            //draw-help-last-point');
+            helpMsg = $translate.instant('draw_snap_first_point_' + type);
           }
         }
         overlay.getElement().innerHTML = helpMsg;
@@ -369,7 +365,7 @@ goog.require('ga_map_service');
           var activateDrawInteraction = function(tool) {
             select.setActive(false);
             deactivateDrawInteraction();
-            updateHelpTooltip(helpTooltip, tool.drawOptions.type, false);
+            updateHelpTooltip(helpTooltip, tool.id, false);
 
             if (!gaBrowserSniffer.mobile) {
               deregPointerMove2 = map.on('pointermove', function(evt) {
@@ -383,7 +379,7 @@ goog.require('ga_map_service');
             deregDrawStart = draw.on('drawstart', function(evt) {
               var nbPoint = 1;
               var isSnapOnLastPoint = false;
-              updateHelpTooltip(helpTooltip, tool.drawOptions.type, true,
+              updateHelpTooltip(helpTooltip, tool.id, true,
                   isFinishOnFirstPoint, isSnapOnLastPoint);
 
               deregFeatureChange = evt.feature.on('change', function(evt) {
@@ -420,7 +416,7 @@ goog.require('ga_map_service');
                       lineCoords.pop();
                     }
                   }
-                  updateHelpTooltip(helpTooltip, tool.drawOptions.type, true,
+                  updateHelpTooltip(helpTooltip, tool.id, true,
                       isFinishOnFirstPoint, isSnapOnLastPoint);
                   if (tool.showMeasure) {
                     if (!isFinishOnFirstPoint) {
@@ -605,17 +601,19 @@ goog.require('ga_map_service');
           ////////////////////////////////////
           // Popup content management
           ////////////////////////////////////
+          var popupTitlePrefix = 'draw_popup_title_';
           var togglePopup = function(feature) {
             if (feature) {
               scope.feature = feature;
               // Open the popup
               scope.popupToggle = true;
               // Set the correct title
-              scope.options.popupOptions.title = feature.get('type');
+              scope.options.popupOptions.title = popupTitlePrefix +
+                  feature.get('type');
             } else {
               scope.feature = undefined;
               scope.popupToggle = false;
-              scope.options.popupOptions.title = 'feature';
+              scope.options.popupOptions.title = popupTitlePrefix + 'feature';
             }
           };
 

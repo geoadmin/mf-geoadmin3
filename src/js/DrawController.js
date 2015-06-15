@@ -318,7 +318,7 @@ goog.provide('ga_draw_controller');
         var annotationDrawStyleFunc = function(feature, resolution) {
           var color = $scope.options.color;
           if (!$scope.options.name) {
-            $scope.options.name = "New text";
+            $scope.options.name = $translate.instant('draw_new_text');
           }
           var text = new ol.style.Text({
               font: gaStyleFactory.FONT,
@@ -546,10 +546,6 @@ goog.provide('ga_draw_controller');
           if (!tool.drawOptions.featureStyleFunction) {
             tool.drawOptions.featureStyleFunction = $scope.options.styleFunction;
           }
-          //tool.description = 'draw_' + tool.id + '_description';
-          //tool.instructions = 'draw_' + tool.id + '_instructions';
         }
-
-
       });
 })();

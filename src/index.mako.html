@@ -189,11 +189,9 @@ itemscope itemtype="http://schema.org/WebApplication"
          class="btn btn-default"
          ng-click="globals.isDrawActive = false">
       <button class="btn btn-primary">
-        <i class="icon-arrow-left"></i>&nbsp;&nbsp;Back / Finish draw
+        <i class="icon-arrow-left"></i>&nbsp;&nbsp;<span translate>draw_back</span>
       </button>
-      <div class="ga-centered ga-title">Mode draw & measure</div>
-      <!--div>You can now draw and measure on the map using the tools in the menu on the left.
-      </div-->
+      <div class="ga-centered ga-title" translate>draw_mode_title</div>
       <button class="ga-icon ga-btn icon-remove"></button>
     </div>
 % endif
@@ -332,11 +330,10 @@ itemscope itemtype="http://schema.org/WebApplication"
  
         <!-- Draw -->
         <div class="panel">
-          <a id="drawHeading" class="panel-heading accordion-toggle collapsed
-          ga-"
+          <a id="drawHeading" class="panel-heading accordion-toggle collapsed"
              data-toggle="collapse" data-parent="#pulldown-content" href="#draw"
              ga-collapsible-show="globals.isDrawActive">
-            <span translate>draw2</span>
+            <span translate>draw_panel_title</span>
           </a>
           <div id="draw" class="panel-collapse collapse">
             <div class="panel-body" ng-controller="GaDrawController">
