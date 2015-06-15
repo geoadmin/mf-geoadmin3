@@ -25,7 +25,7 @@ var lyr1 = ga.layer.create('ch.swisstopo.pixelkarte-farbe');
 map.addLayer(lyr1);
 
 // Vector layer variable declaration and initialization
-var olSource = new ol.source.GeoJSON();
+var olSource = new ol.source.Vector();
 var vectorLayer = new ol.layer.Vector({
   source: olSource
 });
