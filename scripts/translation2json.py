@@ -45,19 +45,22 @@ def main(args, delimiter=',', quotechar='"'):
 
 def _get_csv_reader_from_gspread(key, key_file, delimiter=',', quotechar='"', **kwargs):
     if 'DRIVE_USER' in os.environ.keys() and 'DRIVE_PWD' in os.environ.keys():
-        gc = gspread.login(os.environ['DRIVE_USER'], os.environ['DRIVE_PWD'])
+        drive_user, drive_password = os.environ['DRIVE_USER'], os.environ['DRIVE_PWD']
+        gc = gspread.login()
     elif key_file is not None:
         json_key = json.load(open(key_file))
-        scope = ['https://spreadsheets.google.com/feeds']
-        credentials = SignedJwtAssertionCredentials(
-            json_key['client_email'],
-            json_key['private_key'].encode('utf-8'),
-            scope
-        )
-        gc = gspread.authorize(credentials)
+        drive_user = json_key['client_email']
+        drive_password = json_key['private_key'].encode('utf-8')
     else:
-        print "DRIVE_USER and DRIVE_PWD are not set."
+        print("DRIVE_USER and DRIVE_PWD are not set.")
         sys.exit(1)
+    scope = ['https://spreadsheets.google.com/feeds']
+    credentials = SignedJwtAssertionCredentials(
+        drive_user,
+        drive_password,
+        scope
+    )
+    gc = gspread.authorize(credentials)
     wks = gc.open_by_key(key).sheet1
     resp = wks.export()
     if resp.status == 200:
