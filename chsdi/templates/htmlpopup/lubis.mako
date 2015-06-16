@@ -168,10 +168,10 @@ viewer_url = get_viewer_url(request, params)
 </tr>
 % endif
 
-% if 'contact_web' not in c['attributes'] and c['attributes']['ort'] is not None:
+% if 'contact_web' not in c['attributes']:
 <tr>
   <th class="cell-left">${_('link')} Toposhop</th>
-  <td><a href="http://www.toposhop.admin.ch/${lang}/shop/satair/lubis_1?ext=1&pics=${c['featureId']},${imgtype},${c['attributes']['ort'].strip()},${c['attributes']['x']},${c['attributes']['y']},${toposhopscan}" target="toposhop">Toposhop</a></td>
+  <td><a href="http://www.toposhop.admin.ch/${lang}/shop/satair/lubis_1?ext=1&pics=${c['featureId']},${imgtype},${str(c['attributes']['ort']).strip()},${c['attributes']['x']},${c['attributes']['y']},${toposhopscan}" target="toposhop">Toposhop</a></td>
 </tr>
 % endif
 % if 'contact_web' in c['attributes']:
@@ -263,10 +263,10 @@ viewer_url = get_viewer_url(request, params)
     <tr><th class="cell-left">${_('tt_lubis_filesize_mb')}</th>      <td>${filesize_mb or '-'}</td></tr>
     <tr><th class="cell-left">${_('tt_lubis_bildpfad')}</th>         <td>${filename or '-'}</td></tr>
     <tr><th class="cell-left">${_('tt_lubis_orientierung')}</th>     <td>${orientierung or '-'}</td></tr>
-% if 'contact_web' not in c['attributes'] and c['attributes']['ort'] is not None:
+% if 'contact_web' not in c['attributes']:
   <tr class="chsdi-no-print">
     <th class="cell-left">${_('link')} Toposhop</th>
-    <td><a href="http://www.toposhop.admin.ch/${lang}/shop/satair/lubis_1?ext=1&pics=${c['featureId']},${imgtype},${c['attributes']['ort'].strip()},${c['attributes']['x']},${c['attributes']['y']},${toposhopscan}" target="toposhop">Toposhop</a></td>
+    <td><a href="http://www.toposhop.admin.ch/${lang}/shop/satair/lubis_1?ext=1&pics=${c['featureId']},${imgtype},${str(c['attributes']['ort']).strip()},${c['attributes']['x']},${c['attributes']['y']},${toposhopscan}" target="toposhop">Toposhop</a></td>
   </tr>
 % endif
 % if 'contact_web' in c['attributes']:
