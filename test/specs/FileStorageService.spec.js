@@ -8,6 +8,11 @@ describe('ga_file_storage_service', function() {
         fileId: fileId,
         fileUrl: 'http://public.geo.admin.ch/' + fileId,
       },
+      fileInfoHttps = {
+        adminId: adminId,
+        fileId: fileId,
+        fileUrl: 'https://public.geo.admin.ch/' + fileId,
+      },
       serviceUrl, publicUrl;
 
   beforeEach(function() {
@@ -23,6 +28,13 @@ describe('ga_file_storage_service', function() {
     $httpBackend.verifyNoOutstandingExpectation();
     $httpBackend.verifyNoOutstandingRequest();
   });
+
+  it('gets file\'s id from file\'s url', inject(function() {
+    var res = gaFileStorage.getFileIdFromFileUrl(fileInfo.fileUrl);
+    expect(res).to.equal(fileId);
+    res = gaFileStorage.getFileIdFromFileUrl(fileInfoHttps.fileUrl);
+    expect(res).to.equal(fileId);
+  }));
 
   it('gets a file', inject(function() {
     var expectedUrl = publicUrl + '/' + fileId;
