@@ -25,7 +25,7 @@ var runTest = function(cap, driver, target){
   driver.findElement(webdriver.By.xpath("//a[contains(text(), 'Grundlagen und Planung')]"));
   driver.findElement(webdriver.By.xpath("//*[contains(text(), 'Gehe nach')]"));
   driver.findElement(webdriver.By.xpath("//*[contains(text(), 'Karte hinzufügen')]"));
-  driver.findElement(webdriver.By.xpath("//i[@ng-click='clearInput()']")).click();
+  driver.findElement(webdriver.By.xpath("//button[@ng-click='clearInput()']")).click();
   //parameter should disappear when selection is done
   driver.findElement(webdriver.By.xpath("//*[@id='toptools']//a[contains(@ng-href,'http')]")).getAttribute("ng-href").then(function(val) {
     assert.ok(val.indexOf('swisssearch') == -1);
