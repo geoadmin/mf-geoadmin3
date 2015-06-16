@@ -11,6 +11,112 @@ from chsdi.models.vector import Vector
 Base = bases['bafu']
 
 
+class Vec25_gewaessernetz_2000(Base, Vector):
+    __tablename__ = 'gewaessernetz_2000'
+    __table_args__ = ({'schema': 'vec25', 'autoload': False})
+    __bodId__ = 'ch.bafu.vec25-gewaessernetz_2000'
+    __template__ = 'templates/htmlpopup/vec25-gewaessernetz_2000.mako'
+    __label__ = 'name'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    name = Column('name', Text)
+    objectval = Column('objectval', Text)
+    gewissnr = Column('gewissnr', Integer)
+    gwlnr = Column('gwlnr', Text)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+
+register('ch.bafu.vec25-gewaessernetz_2000', Vec25_gewaessernetz_2000)
+
+
+class Vec25_seen(Base, Vector):
+    __tablename__ = 'seen'
+    __table_args__ = ({'schema': 'vec25', 'autoload': False})
+    __bodId__ = 'ch.bafu.vec25-seen'
+    __template__ = 'templates/htmlpopup/vec25_seen.mako'
+    __extended_info__ = True
+    __label__ = 'name'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    name = Column('name', Text)
+    gewaesserkennzahl = Column('gewaesserkennzahl', Integer)
+    seetyp = Column('seetyp', Integer)
+    natur_mit = Column('natur_mit', Integer)
+    ausgleichsbecken = Column('ausgleichsbecken', Numeric)
+    reguliert = Column('reguliert', Integer)
+    seeflaeche_km2 = Column('seeflaeche_km2', Numeric)
+    inhalt_see_mio_m3 = Column('inhalt_see_mio_m3', Numeric)
+    nutzinhalt_mio_m3 = Column('nutzinhalt_mio_m3', Numeric)
+    tiefe_see_m = Column('tiefe_see_m', Integer)
+    hoehenlage_muem = Column('hoehenlage_muem', Integer)
+    uferlaenge_m = Column('uferlaenge_m', Integer)
+    gwlnr = Column('gwlnr', Text)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+
+register('ch.bafu.vec25-seen', Vec25_seen)
+
+
+class Hydro_Atlas_Flussgebiete(Base, Vector):
+    __tablename__ = 'atlas_flussgebiete'
+    __table_args__ = ({'schema': 'hydrologie', 'autoload': False})
+    __bodId__ = 'ch.bafu.hydrologischer-atlas_flussgebiete'
+    __template__ = 'templates/htmlpopup/atlas_flussgebiete.mako'
+    __label__ = 'name'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    name = Column('name', Text)
+    nummer = Column('nummer', Integer)
+    flussgebiet = Column('flussgebiet', Integer)
+    shape_area = Column('shape_area', Numeric)
+    umfang = Column('umfang', Numeric)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+
+register('ch.bafu.hydrologischer-atlas_flussgebiete', Hydro_Atlas_Flussgebiete)
+
+
+class Hydro_Atlas_Bilanzgebiete(Base, Vector):
+    __tablename__ = 'atlas_bilanzgebiete'
+    __table_args__ = ({'schema': 'hydrologie', 'autoload': False})
+    __bodId__ = 'ch.bafu.hydrologischer-atlas_bilanzgebiete'
+    __template__ = 'templates/htmlpopup/atlas_bilanzgebiete.mako'
+    __label__ = 'name'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    name = Column('name', Text)
+    nummer = Column('nummer', Integer)
+    flussgebiet = Column('flussgebiet', Integer)
+    shape_area = Column('shape_area', Numeric)
+    umfang = Column('umfang', Numeric)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+
+register('ch.bafu.hydrologischer-atlas_bilanzgebiete', Hydro_Atlas_Bilanzgebiete)
+
+
+class Hydro_Atlas_Basisgebiete(Base, Vector):
+    __tablename__ = 'atlas_basisgebiete'
+    __table_args__ = ({'schema': 'hydrologie', 'autoload': False})
+    __bodId__ = 'ch.bafu.hydrologischer-atlas_basisgebiete'
+    __template__ = 'templates/htmlpopup/atlas_basisgebiete.mako'
+    __extended_info__ = True
+    __label__ = 'nummer'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    nummer = Column('nummer', Integer)
+    gebietskennzahl = Column('gebietskennzahl', Integer)
+    bemerkung = Column('bemerkung', Text)
+    flussgebiet = Column('flussgebiet', Integer)
+    max_hoe = Column('max_hoe', Integer)
+    min_hoe = Column('min_hoe', Integer)
+    mit_hoe = Column('mit_hoe', Numeric)
+    mit_ns = Column('mit_ns', Numeric)
+    s_w_ns = Column('s_w_ns', Numeric)
+    jahrtemp_g = Column('jahrtemp_g', Numeric)
+    winttemp_g = Column('winttemp_g', Numeric)
+    shape_area = Column('shape_area', Numeric)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+
+register('ch.bafu.hydrologischer-atlas_basisgebiete', Hydro_Atlas_Basisgebiete)
+
+
 class Niedrigwasserstatistik(Base, Vector):
     __tablename__ = 'niedrigwasserstatistik'
     __table_args__ = ({'schema': 'hydrologie', 'autoload': False})
