@@ -47,20 +47,6 @@ goog.require('goog.color');
 goog.require('goog.math');
 goog.require('goog.object');
 goog.require('ngeo');
-goog.require('ol.format.GeoJSON');
-goog.require('ol.layer.Image');
-goog.require('ol.layer.Tile');
-goog.require('ol.layer.Vector');
-goog.require('ol.size');
-goog.require('ol.source.ImageWMS');
-goog.require('ol.source.Vector');
-goog.require('ol.source.WMTS');
-goog.require('ol.style.Circle');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Image');
-goog.require('ol.style.Stroke');
-goog.require('ol.style.Style');
-goog.require('ol.tilegrid.WMTS');
 
 
 /**
