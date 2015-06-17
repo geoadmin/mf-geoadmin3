@@ -885,7 +885,8 @@
                   crossOrigin: crossOrigin,
                   tileGrid: gaTileGrid.get(layer.resolutions,
                       layer.minResolution, 'wms'),
-                  tileLoadFunction: tileLoadFunction
+                  tileLoadFunction: tileLoadFunction,
+                  wrapX: false
                 });
               }
               olLayer = new ol.layer.Tile({
