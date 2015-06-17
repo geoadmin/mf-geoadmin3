@@ -1,5 +1,5 @@
+goog.provide('ga_print_controller');
 (function() {
-  goog.provide('ga_print_controller');
 
   var module = angular.module('ga_print_controller', []);
 

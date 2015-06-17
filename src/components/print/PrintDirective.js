@@ -1,9 +1,9 @@
-(function() {
-  goog.provide('ga_print_directive');
+goog.provide('ga_print_directive');
 
-  goog.require('ga_map_service');
-  goog.require('ngeo.Print');
-  goog.require('ngeo.PrintUtils');
+goog.require('ga_map_service');
+goog.require('ngeo.Print');
+goog.require('ngeo.PrintUtils');
+(function() {
 
   var module = angular.module('ga_print_directive', [
     'ngeo',
