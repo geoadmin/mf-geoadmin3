@@ -737,7 +737,7 @@ itemscope itemtype="http://schema.org/WebApplication"
               gaGlobalOptions.cachedApiUrl + '/rest/services/all/MapServer/layersConfig?lang={Lang}';
 
           gaLayersProvider.legendUrlTemplate =
-              gaGlobalOptions.cachedApiUrl + '/rest/services/{Topic}/MapServer/{Layer}/legend?lang={Lang}';
+              gaGlobalOptions.apiUrl + '/rest/services/{Topic}/MapServer/{Layer}/legend?lang={Lang}';
         });
 
         module.config(function(gaExportKmlProvider, gaGlobalOptions) {
