@@ -1,7 +1,7 @@
-(function() {
-  goog.provide('ga_draw');
+goog.provide('ga_draw');
 
-  goog.require('ga_draw_directive');
+goog.require('ga_draw_directive');
+(function() {
 
   angular.module('ga_draw', [
     'ga_draw_directive'

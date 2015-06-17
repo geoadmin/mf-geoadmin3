@@ -1,5 +1,5 @@
+goog.provide('ga_tooltip_controller');
 (function() {
-  goog.provide('ga_tooltip_controller');
 
   var module = angular.module('ga_tooltip_controller', []);
 

@@ -1,5 +1,5 @@
+goog.provide('ga_styles_service');
 (function() {
-  goog.provide('ga_styles_service');
 
   var module = angular.module('ga_styles_service', []);
 

@@ -1,6 +1,6 @@
+goog.provide('ga_export_kml_service');
+goog.require('ga_browsersniffer_service');
 (function() {
-  goog.provide('ga_export_kml_service');
-  goog.require('ga_browsersniffer_service');
 
   var module = angular.module('ga_export_kml_service', [
     'ga_browsersniffer_service',

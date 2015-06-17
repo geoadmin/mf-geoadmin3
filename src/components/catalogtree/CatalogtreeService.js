@@ -1,7 +1,7 @@
-(function() {
-  goog.provide('ga_catalogtree_service');
+goog.provide('ga_catalogtree_service');
 
-  goog.require('ga_map_service');
+goog.require('ga_map_service');
+(function() {
 
   var module = angular.module('ga_catalogtree_service', [
     'ga_map_service'

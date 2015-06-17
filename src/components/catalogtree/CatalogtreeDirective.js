@@ -1,9 +1,9 @@
-(function() {
-  goog.provide('ga_catalogtree_directive');
+goog.provide('ga_catalogtree_directive');
 
-  goog.require('ga_catalogtree_service');
-  goog.require('ga_map_service');
-  goog.require('ga_permalink');
+goog.require('ga_catalogtree_service');
+goog.require('ga_map_service');
+goog.require('ga_permalink');
+(function() {
 
   var module = angular.module('ga_catalogtree_directive', [
     'ga_catalogtree_service',

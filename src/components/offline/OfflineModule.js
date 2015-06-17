@@ -1,8 +1,8 @@
-(function() {
-  goog.provide('ga_offline');
+goog.provide('ga_offline');
 
-  goog.require('ga_offline_directive');
-  goog.require('ga_offline_service');
+goog.require('ga_offline_directive');
+goog.require('ga_offline_service');
+(function() {
 
 
   angular.module('ga_offline', [

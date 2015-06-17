@@ -1,5 +1,5 @@
+goog.provide('ga_topic_controller');
 (function() {
-  goog.provide('ga_topic_controller');
 
   var module = angular.module('ga_topic_controller', []);
 

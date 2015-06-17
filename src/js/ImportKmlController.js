@@ -1,5 +1,5 @@
+goog.provide('ga_importkml_controller');
 (function() {
-  goog.provide('ga_importkml_controller');
 
   var module = angular.module('ga_importkml_controller', []);
 

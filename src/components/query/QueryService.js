@@ -1,5 +1,5 @@
+goog.provide('ga_query_service');
 (function() {
-  goog.provide('ga_query_service');
 
   var module = angular.module('ga_query_service', []);
 

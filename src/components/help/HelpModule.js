@@ -1,8 +1,8 @@
-(function() {
-  goog.provide('ga_help');
+goog.provide('ga_help');
 
-  goog.require('ga_help_directive');
-  goog.require('ga_help_service');
+goog.require('ga_help_directive');
+goog.require('ga_help_service');
+(function() {
 
   angular.module('ga_help', [
     'ga_help_directive',

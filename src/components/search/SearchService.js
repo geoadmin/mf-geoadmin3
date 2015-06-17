@@ -1,5 +1,5 @@
+goog.provide('ga_search_service');
 (function() {
-  goog.provide('ga_search_service');
 
   var module = angular.module('ga_search_service', [
   ]);

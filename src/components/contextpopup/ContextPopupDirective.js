@@ -1,8 +1,8 @@
-(function() {
-  goog.provide('ga_contextpopup_directive');
+goog.provide('ga_contextpopup_directive');
 
-  goog.require('ga_networkstatus_service');
-  goog.require('ga_permalink');
+goog.require('ga_networkstatus_service');
+goog.require('ga_permalink');
+(function() {
 
   var module = angular.module('ga_contextpopup_directive', [
     'ga_networkstatus_service',

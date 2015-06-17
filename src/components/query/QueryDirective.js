@@ -1,9 +1,9 @@
-(function() {
-  goog.provide('ga_query_directive');
+goog.provide('ga_query_directive');
 
-  goog.require('ga_map_service');
-  goog.require('ga_query_service');
-  goog.require('ga_storage_service');
+goog.require('ga_map_service');
+goog.require('ga_query_service');
+goog.require('ga_storage_service');
+(function() {
 
   var module = angular.module('ga_query_directive', [
     'ga_map_service',

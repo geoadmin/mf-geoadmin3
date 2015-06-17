@@ -1,5 +1,5 @@
+goog.provide('ga_feedback_controller');
 (function() {
-  goog.provide('ga_feedback_controller');
 
   var module = angular.module('ga_feedback_controller', []);
 

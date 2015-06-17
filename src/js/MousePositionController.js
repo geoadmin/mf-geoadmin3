@@ -1,5 +1,5 @@
+goog.provide('ga_mouseposition_controller');
 (function() {
-  goog.provide('ga_mouseposition_controller');
 
   var module = angular.module('ga_mouseposition_controller', [
     'pascalprecht.translate'

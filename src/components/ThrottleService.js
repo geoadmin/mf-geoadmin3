@@ -1,5 +1,5 @@
+goog.provide('ga_throttle_service');
 (function() {
-  goog.provide('ga_throttle_service');
 
   var module = angular.module('ga_throttle_service', []);
 

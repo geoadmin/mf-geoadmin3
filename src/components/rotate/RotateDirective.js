@@ -1,5 +1,5 @@
+goog.provide('ga_rotate_directive');
 (function() {
-  goog.provide('ga_rotate_directive');
 
   var module = angular.module('ga_rotate_directive', []);
 

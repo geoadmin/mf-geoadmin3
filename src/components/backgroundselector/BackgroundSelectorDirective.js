@@ -1,8 +1,8 @@
-(function() {
-  goog.provide('ga_backgroundselector_directive');
+goog.provide('ga_backgroundselector_directive');
 
-  goog.require('ga_map');
-  goog.require('ga_permalink');
+goog.require('ga_map');
+goog.require('ga_permalink');
+(function() {
 
   var module = angular.module('ga_backgroundselector_directive', [
     'ga_map',

@@ -1,5 +1,5 @@
+goog.provide('ga_scaleline_directive');
 (function() {
-  goog.provide('ga_scaleline_directive');
 
   var module = angular.module('ga_scaleline_directive', []);
 

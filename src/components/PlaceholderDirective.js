@@ -1,5 +1,5 @@
+goog.provide('ga_placeholder_directive');
 (function() {
-  goog.provide('ga_placeholder_directive');
 
   var module = angular.module('ga_placeholder_directive', []);
 

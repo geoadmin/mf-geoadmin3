@@ -1,5 +1,5 @@
+goog.provide('ga_timestamp_control_directive');
 (function() {
-  goog.provide('ga_timestamp_control_directive');
 
   var module = angular.module('ga_timestamp_control_directive', []);
 

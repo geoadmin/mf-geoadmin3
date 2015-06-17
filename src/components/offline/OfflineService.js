@@ -1,8 +1,8 @@
-(function() {
-  goog.provide('ga_offline_service');
+goog.provide('ga_offline_service');
 
-  goog.require('ga_storage_service');
-  goog.require('ga_styles_service');
+goog.require('ga_storage_service');
+goog.require('ga_styles_service');
+(function() {
 
   var module = angular.module('ga_offline_service', [
     'ga_debounce_service',

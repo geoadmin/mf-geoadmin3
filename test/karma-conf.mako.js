@@ -26,7 +26,7 @@ files = [
   'lib/EPSG32631.js',
   'lib/EPSG32632.js',
   '../test/closure-loader-globals.js',
-  'lib/ol-debug.js',
+  'lib/ol.js',
   '../.build-artefacts/app-whitespace.js',
 % endif
   '../test/angular/angular-mocks.js',

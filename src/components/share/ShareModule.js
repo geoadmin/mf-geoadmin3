@@ -1,7 +1,7 @@
-(function() {
-  goog.provide('ga_share');
+goog.provide('ga_share');
 
-  goog.require('ga_share_directive');
+goog.require('ga_share_directive');
+(function() {
 
   angular.module('ga_share', [
     'ga_share_directive'

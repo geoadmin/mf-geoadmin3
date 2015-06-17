@@ -1,10 +1,10 @@
-(function() {
-  goog.provide('ga_importkml_directive');
+goog.provide('ga_importkml_directive');
 
-  goog.require('ga_browsersniffer_service');
-  goog.require('ga_filereader_service');
-  goog.require('ga_map_service');
-  goog.require('ga_urlutils_service');
+goog.require('ga_browsersniffer_service');
+goog.require('ga_filereader_service');
+goog.require('ga_map_service');
+goog.require('ga_urlutils_service');
+(function() {
 
   var module = angular.module('ga_importkml_directive', [
     'ga_browsersniffer_service',

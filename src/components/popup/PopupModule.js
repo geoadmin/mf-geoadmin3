@@ -1,8 +1,8 @@
-(function() {
-  goog.provide('ga_popup');
+goog.provide('ga_popup');
 
-  goog.require('ga_popup_directive');
-  goog.require('ga_popup_service');
+goog.require('ga_popup_directive');
+goog.require('ga_popup_service');
+(function() {
 
 
   angular.module('ga_popup', [

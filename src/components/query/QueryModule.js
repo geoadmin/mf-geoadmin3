@@ -1,8 +1,8 @@
-(function() {
-  goog.provide('ga_query');
+goog.provide('ga_query');
 
-  goog.require('ga_query_directive');
-  goog.require('ga_query_service');
+goog.require('ga_query_directive');
+goog.require('ga_query_service');
+(function() {
 
   angular.module('ga_query', [
     'ga_query_directive',

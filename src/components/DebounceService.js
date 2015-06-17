@@ -1,5 +1,5 @@
+goog.provide('ga_debounce_service');
 (function() {
-  goog.provide('ga_debounce_service');
 
   var module = angular.module('ga_debounce_service', []);
 

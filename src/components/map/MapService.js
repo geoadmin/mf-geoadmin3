@@ -1,12 +1,12 @@
-(function() {
-  goog.provide('ga_map_service');
+goog.provide('ga_map_service');
 
-  goog.require('ga_networkstatus_service');
-  goog.require('ga_offline_service');
-  goog.require('ga_storage_service');
-  goog.require('ga_styles_from_literals_service');
-  goog.require('ga_styles_service');
-  goog.require('ga_urlutils_service');
+goog.require('ga_networkstatus_service');
+goog.require('ga_offline_service');
+goog.require('ga_storage_service');
+goog.require('ga_styles_from_literals_service');
+goog.require('ga_styles_service');
+goog.require('ga_urlutils_service');
+(function() {
 
   var module = angular.module('ga_map_service', [
     'pascalprecht.translate',

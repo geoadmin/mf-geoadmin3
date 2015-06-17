@@ -1,7 +1,7 @@
-(function() {
-  goog.provide('ga_storage_service');
+goog.provide('ga_storage_service');
 
-  goog.require('ga_browsersniffer_service');
+goog.require('ga_browsersniffer_service');
+(function() {
 
   var module = angular.module('ga_storage_service', [
     'ga_browsersniffer_service'

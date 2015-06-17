@@ -1,5 +1,5 @@
+goog.provide('ga_translation_directive');
 (function() {
-  goog.provide('ga_translation_directive');
 
   var module = angular.module('ga_translation_directive', [
     'ga_permalink',

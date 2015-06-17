@@ -1,10 +1,10 @@
-(function() {
-  goog.provide('ga_geolocation_directive');
+goog.provide('ga_geolocation_directive');
 
-  goog.require('ga_browsersniffer_service');
-  goog.require('ga_permalink');
-  goog.require('ga_styles_service');
-  goog.require('ga_throttle_service');
+goog.require('ga_browsersniffer_service');
+goog.require('ga_permalink');
+goog.require('ga_styles_service');
+goog.require('ga_throttle_service');
+(function() {
 
   var module = angular.module('ga_geolocation_directive', [
     'ga_browsersniffer_service',

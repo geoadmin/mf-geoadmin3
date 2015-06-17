@@ -1,8 +1,8 @@
-(function() {
-  goog.provide('ga_print_directive');
+goog.provide('ga_print_directive');
 
-  goog.require('ga_browsersniffer_service');
-  goog.require('ga_print_style_service');
+goog.require('ga_browsersniffer_service');
+goog.require('ga_print_style_service');
+(function() {
 
   var module = angular.module('ga_print_directive',
     ['ga_browsersniffer_service',
