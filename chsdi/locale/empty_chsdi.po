@@ -577,7 +577,13 @@ msgstr ""
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-10x10km.sgd_nr"
 msgstr ""
 
-msgid "ch.swisstopo.geologie-gisgeol-flaechen-10to21000km2.sgd_nr"
+msgid "ch.swisstopo.geologie-gisgeol-flaechen-10to100km2.sgd_nr"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-gisgeol-flaechen-100to1000km2.sgd_nr"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-gisgeol-flaechen-1000to21000km2.sgd_nr"
 msgstr ""
 
 msgid "ch.swisstopo.geologie-geotechnik-ziegeleien_1995.ziegeleien"
@@ -5466,7 +5472,13 @@ msgstr ""
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-10x10km"
 msgstr ""
 
-msgid "ch.swisstopo.geologie-gisgeol-flaechen-10to21000km2"
+msgid "ch.swisstopo.geologie-gisgeol-flaechen-10to100km2"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-gisgeol-flaechen-100to1000km2"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-gisgeol-flaechen-1000to21000km2"
 msgstr ""
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-gt21000km2"
