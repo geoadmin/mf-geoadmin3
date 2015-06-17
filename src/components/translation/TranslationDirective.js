@@ -14,12 +14,8 @@
               options: '=gaTranslationSelectorOptions'
             },
             templateUrl: function() {
-              if (gaBrowserSniffer.mobile) {
-                return 'components/translation/partials/translationmobile.html';
-              } else {
-                return 'components/translation/partials/' +
-                    'translationdesktop.html';
-              }
+              return 'components/translation/partials/translation' +
+                  ((gaBrowserSniffer.mobile) ? 'mobile' : 'desktop') + '.html';
             },
             link: function(scope, element, attrs) {
               scope.$watch('lang', function(value) {
