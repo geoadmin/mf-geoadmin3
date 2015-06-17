@@ -18,25 +18,37 @@ goog.provide('ga_collapsible_directive');
         scope.$watch('show', function(show) {
           toggleElt(element, show);
         });
-
-        $(attrs.href).on('shown.bs.collapse', function() {
-          element.removeClass('collapsed');
-          if (!scope.show) {
-            scope.$applyAsync(function() {
-              scope.show = true;
-            });
+        var target = $((attrs.href || attrs.target));
+        target.on('shown.bs.collapse', function(e) {
+          if (this === e.target) {
+            element.removeClass('collapsed');
+            if (!scope.show) {
+              scope.$applyAsync(function() {
+                scope.show = true;
+              });
+            }
+            e.stopPropagation();
+          }
+        }).on('hidden.bs.collapse', function(e) {
+          if (this === e.target) {
+            element.addClass('collapsed');
+            if (scope.show) {
+              scope.$applyAsync(function() {
+                scope.show = false;
+              });
+            }
+            e.stopPropagation();
           }
         });
 
-        $(attrs.href).on('hidden.bs.collapse', function() {
+        // Initialize the good css class
+        if (!scope.show) {
+          target.addClass('collapse'); // bootstrap css class
           element.addClass('collapsed');
-          if (scope.show) {
-            scope.$applyAsync(function() {
-              scope.show = false;
-            });
-          }
-        });
-
+        } else {
+          target.addClass('collapse in'); // bootstrap css class
+          element.removeClass('collapsed');
+        }
         toggleElt(element, scope.show);
       }
     };
