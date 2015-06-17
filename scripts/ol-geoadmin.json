@@ -118,8 +118,6 @@
     "ol.style.Style#*",
     "ol.style.Text",
     "ol.style.Text#*",
-    "ol.source.GeoJSON",
-    "ol.source.GeoJSON#*",
     "ol.source.ImageVector",
     "ol.source.ImageVector#*",
     "ol.source.ImageWMS",
@@ -147,8 +145,7 @@
       "externs/olx.js",
       "externs/proj4js.js",
       "externs/tilejson.js",
-      "externs/topojson.js",
-      "externs/vbarray.js"
+      "externs/topojson.js"
     ],
     "define": [
       "goog.array.ASSUME_NATIVE_FUNCTIONS=true",
