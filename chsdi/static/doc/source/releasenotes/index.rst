@@ -19,6 +19,7 @@ API & applications
 
 `API <//api3.geo.admin.ch>`__
 '''''''''''''''''''''''''''''
+- Add preview version of GeoAdmin API with Openlayers 3.6.0
 - Bug fixes
 - `Full changelog <https://github.com/geoadmin/mf-chsdi3/compare/r_150603...r_150617>`__
 
