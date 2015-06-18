@@ -278,8 +278,8 @@ goog.require('ga_map_service');
                   layer = item;
                 }
               });
-              unChangeFeature = layer.getSource().on(['addfeature',
-                  'changefeature', 'removefeature'], saveDebounced);
+              unFeatureChange = layer.getSource().on(['addfeature',
+                  'changefeature', 'removefeature', 'clear'], saveDebounced);
               unFeatureRemove = layer.getSource().on(['removefeature', 'clear'],
                   function(evt) {
                 // Remove the overlays attached to the feature
