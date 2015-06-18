@@ -2,7 +2,6 @@
 
 <%def name="table_body(c, lang)">
 <% 
-    c['kenn_nr'] = True
     if lang == ('de') : 
         url = 'url_de'
     elif lang == ('fr') : 
@@ -14,6 +13,7 @@
     else :
         url = 'url_de' 
 %>
+<% c['stable_id'] = True %>
     <tr>
       <td class="cell-left">${_('ch.bafu.hydrologie-hochwasserstatistik.name')}</td>
       <td>${c['attributes']['name'] or '-'}</td>
@@ -47,7 +47,6 @@
 
 <%def name="extended_info(c, lang)">
 <%
-    c['kenn_nr'] = True
     if lang == ('de') :
         url = 'url_de'
     elif lang == ('fr') :

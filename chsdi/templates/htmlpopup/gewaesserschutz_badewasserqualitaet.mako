@@ -1,6 +1,7 @@
 <%inherit file="base.mako"/>
 
 <%def name="table_body(c, lang)">
+<% c['stable_id'] = True %>
     <tr>
       <td class="cell-left">${_('ch.bafu.gewaesserschutz-badewasserqualitaet.bwid')}</td>
       <td>${c['attributes']['bwid'] or '-'}</td>
@@ -76,7 +77,11 @@
   </tr>
     <tr>
     <td class="cell-meta">${_('ch.bafu.gewaesserschutz-badewasserqualitaet.url')}</td>
+% if c['attributes']['url']:
     <td class="cell-meta"><a href="${c['attributes']['url'] or '-'}" target="_blank">${_('ch.bafu.gewaesserschutz-badewasserqualitaet.url')}</a></td>
+% else:
+    <td class="cell-meta">-</td>
+% endif
   </tr>
   <tr>
     <td class="cell-meta">${_('ch.bafu.gewaesserschutz-badewasserqualitaet.kanton')}</td>

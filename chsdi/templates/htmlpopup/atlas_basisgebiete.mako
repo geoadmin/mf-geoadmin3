@@ -1,6 +1,7 @@
 <%inherit file="base.mako"/>
 
 <%def name="table_body(c, lang)">
+<% c['stable_id'] = True %>
     <tr><td class="cell-left">${_('ch.bafu.hydrologischer-atlas_basisgebiete.gebietskennzahl')}</td>    <td>${c['attributes']['gebietskennzahl']}</td></tr>
     <tr><td class="cell-left">${_('ch.bafu.hydrologischer-atlas_basisgebiete.bemerkung')}</td>          <td>${c['attributes']['bemerkung']}</td></tr>
     <tr><td class="cell-left">${_('ch.bafu.hydrologischer-atlas_basisgebiete.flussgebiet')}</td>        <td>${c['attributes']['flussgebiet']}</td></tr>
