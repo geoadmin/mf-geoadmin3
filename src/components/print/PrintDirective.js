@@ -121,11 +121,16 @@ goog.require('ngeo.PrintUtils');
       var legend = {};
       if ($scope.options.legend) {
         legend.classes = map.getLayers().getArray().map(function(layer) {
-          var legendUrl = gaLayers.getLayerProperty(layer.id, 'legendUrl');
-          var label = gaLayers.getLayerProperty(layer.id, 'label');
+          var legendUrl;
+          var label;
+          if (layer.bodId) {
+            legendUrl = gaLayers.getLayerProperty(layer.id, 'legendUrl');
+            label = gaLayers.getLayerProperty(layer.id, 'label');
+          }
           return {icons: [legendUrl], name: label};
         }).filter(function(legend) {
-          return legend.icons[0] !== '';
+          var legendUrl = legend.icons[0];
+          return legendUrl !== '' && legendUrl !== undefined;
         });
       }
 
