@@ -166,7 +166,13 @@ goog.require('ga_map_service');
           distTooltip.setPosition(undefined);
         }
       };
-
+      // Remove the overlays attached to the feature
+      var removeOverlays = function(feature, map) {
+        var overlays = feature.get('overlays');
+        while (overlays && overlays.length) {
+          map.removeOverlay(overlays.pop());
+        }
+      };
       return {
         restrict: 'A',
         templateUrl: 'components/draw/partials/draw.html',
@@ -176,9 +182,9 @@ goog.require('ga_map_service');
           isActive: '=gaDrawActive'
         },
         link: function(scope, element, attrs, controller) {
-          var layer, draw, lastActiveTool;
-          var unDblClick, unLayerRemove, unFeatureChange, unFeatureRemove,
-              deregPointerMove, deregFeatureChange;
+          var layer, draw, lastActiveTool, snap;
+          var unDblClick, unLayerRemove, unSourceEvents = [], deregPointerMove,
+              deregFeatureChange;
           var useTemporaryLayer = scope.options.useTemporaryLayer || false;
           var map = scope.map;
           var viewport = $(map.getViewport());
@@ -223,13 +229,8 @@ goog.require('ga_map_service');
               }
               // Delete keyboard button
               $document.keyup(scope.deleteSelectedFeature);
-              map.addInteraction(snap); 
             } else {
-              map.removeInteraction(snap); 
-              if (deregPointerMove) {
-                ol.Observable.unByKey(deregPointerMove,
-                    updateCursorStyleDebounced);
-              }
+              ol.Observable.unByKey(deregPointerMove);
               $document.off('keyup', scope.deleteSelectedFeature);
               select.getFeatures().clear();
             }
@@ -257,78 +258,73 @@ goog.require('ga_map_service');
             updatePropsTabContent();
             togglePopup();
             ol.Observable.unByKey(deregFeatureChange);
-            //console.debug('remove');
           });
           select.setActive(false);
           map.addInteraction(select);
 
           // Add modify interaction
+          // The modify interaction works with features selected by the select
+          // interaction so no need to activate/deactivate it.
+          // Activate/deactivate the select interaction is enough.
           var modify = new ol.interaction.Modify({
             features: select.getFeatures(),
             style: scope.options.selectStyleFunction
           });
           map.addInteraction(modify);
-         
+
           var defineLayerToModify = function() {
-            
-            if (unFeatureChange) {
-              ol.Observable.unByKey(unFeatureChange);
-              unFeatureChange = undefined;
-            }
 
-            if (unFeatureRemove) {
-              ol.Observable.unByKey(unFeatureRemove);
-              unFeatureRemove = undefined;
+            // Unregister the events attached to the previous source
+            for (var i in unSourceEvents) {
+              ol.Observable.unByKey(unSourceEvents[i]);
             }
+            unSourceEvents = [];
 
-            // Set the layer to modify if exist otherwise use an empty layer
+            // Set the layer to modify if exist, otherwise we use an empty
+            // layer
             layer = createDefaultLayer(useTemporaryLayer);
             if (!useTemporaryLayer) {
               scope.adminShortenUrl = undefined;
+
+              // If there is a layer loaded from public.admin.ch, we use it for
+              // modification.
               map.getLayers().forEach(function(item) {
                 if (gaMapUtils.isStoredKmlLayer(item)) {
                   layer = item;
                 }
               });
-              unFeatureChange = layer.getSource().on(['addfeature',
-                  'changefeature', 'removefeature', 'clear'], saveDebounced);
-              unFeatureRemove = layer.getSource().on(['removefeature', 'clear'],
-                  function(evt) {
-                // Remove the overlays attached to the feature
-                var overlays = evt.feature.get('overlays');
-                while (overlays && overlays.length) {
-                  map.removeOverlay(overlays.pop());
-                }
-              });
+
+              // Attach events to the source to update the KML file stored
+              // and to remove overlays when necessary
+              var source = layer.getSource();
+              unSourceEvents = [
+                source.on('addfeature', saveDebounced),
+                source.on('changefeature', saveDebounced),
+                source.on('removefeature', function(evt) {
+                  saveDebounced();
+                  // Remove the overlays attached to the feature
+                  removeOverlays(evt.feature, map);
+                })
+              ];
             }
-            
+
             // Attach the snap interaction to the new layer's source
             if (snap) {
               map.removeInteraction(snap);
             }
             snap = new ol.interaction.Snap({
-              source: layer.getSource(),
+              source: layer.getSource()
             });
+            map.addInteraction(snap);
 
+            // Send the choosen layer to other components
             if (scope.options.broadcastLayer) {
               $rootScope.$broadcast('gaDrawingLayer', layer);
             }
           };
-          var updateShortenUrl = function(adminId) {
-            $http.get(scope.options.shortenUrl, {
-              params: {
-                url: gaPermalink.getHref().replace(
-                    gaUrlUtils.encodeUriQuery(layer.id, true), '') +
-                    '&adminId=' + adminId
-              }
-            }).success(function(data) {
-              scope.adminShortenUrl = data.shorturl;
-            });
-          };
 
           // Activate the component: active a tool if one was active when draw
           // has been deactivated.
-          var snap;
           var activate = function() {
             defineLayerToModify();
 
@@ -336,16 +332,17 @@ goog.require('ga_map_service');
               updateShortenUrl(layer.adminId);
             }
 
-            if (lastActiveTool) {
-              activateTool(lastActiveTool);
-            }
+            ol.Observable.unByKey(unLayerRemove);
 
             unLayerRemove = map.getLayers().on('remove', function(evt) {
               if (evt.element === layer) {
-                defineLayerToModify();
+                var features = layer.getSource().getFeatures();
+                for (var i in features) {
+                  removeOverlays(features[i], map);
+                }
               }
             });
-            // Block dblclick ievent in draw mode to avoid map zooming
+            // Block dblclick event in draw mode to avoid map zooming
             unDblClick = map.on('dblclick', function(evt) {
               return false;
             });
@@ -356,10 +353,6 @@ goog.require('ga_map_service');
           // Deactivate the component: remove layer and interactions.
           var deactivate = function(evt) {
             ol.Observable.unByKey(unDblClick);
-
-            
-            ol.Observable.unByKey(unLayerRemove);
-
             // Deactivate the tool
             if (lastActiveTool) {
               scope.options[lastActiveTool.activeKey] = false;
@@ -492,7 +485,6 @@ goog.require('ga_map_service');
               areaTooltip.setPosition(undefined);
             });
             map.addInteraction(draw);
-            map.addInteraction(snap);
           };
           var deactivateDrawInteraction = function() {
             ol.Observable.unByKey(deregPointerMove2);
@@ -500,7 +492,6 @@ goog.require('ga_map_service');
             ol.Observable.unByKey(deregDrawEnd);
             helpTooltip.setPosition(undefined);
             if (draw) {
-              map.removeInteraction(snap);
               map.removeInteraction(draw);
             }
           };
@@ -511,6 +502,11 @@ goog.require('ga_map_service');
               activate();
             } else {
               deactivate();
+            }
+          });
+          scope.$watch('popupToggle', function(active) {
+            if (!active) {
+              select.getFeatures().clear();
             }
           });
 
@@ -550,6 +546,14 @@ goog.require('ga_map_service');
             }
             scope.options.setDefaultValues();
             activateDrawInteraction(lastActiveTool);
+
+            // The snap interaction must be added after modify and draw
+            // interactions
+            if (snap) {
+              map.removeInteraction(snap);
+            }
+            map.addInteraction(snap);
+
           };
 
           var deactivateTool = function(tool) {
@@ -603,6 +607,23 @@ goog.require('ga_map_service');
 
           scope.canExport = function() {
             return (layer) ? layer.getSource().getFeatures().length > 0 : false;
+          };
+
+
+
+          ////////////////////////////////////
+          // Shorten url stuff
+          ////////////////////////////////////
+          var updateShortenUrl = function(adminId) {
+            $http.get(scope.options.shortenUrl, {
+              params: {
+                url: gaPermalink.getHref().replace(
+                    gaUrlUtils.encodeUriQuery(layer.id, true), '') +
+                    '&adminId=' + adminId
+              }
+            }).success(function(data) {
+              scope.adminShortenUrl = data.shorturl;
+            });
           };
 
 
@@ -692,7 +713,6 @@ goog.require('ga_map_service');
             scope.options.isProfileActive = false;
           };
           scope.showTabs = function(feature) {
-            //console.debug(feature);
             var bools = [
               scope.showPropsTab(feature),
               scope.showMeasureTab(feature),
@@ -712,7 +732,6 @@ goog.require('ga_map_service');
             return !isPoint;
           };
           scope.showProfileTab = function(feature) {
-            //console.debug(feature.get('type'));
             if (feature.get('type') == 'measure' &&
                 !scope.isMeasureActive &&
                 !scope.options.isProfileActive) {
@@ -771,7 +790,7 @@ goog.require('ga_map_service');
           ////////////////////////////////////
           // Utils functions
           ////////////////////////////////////
-          // Change cursor style on mouse move, only on desktop
+                   // Change cursor style on mouse move, only on desktop
           var updateCursorStyle = function(evt) {
             var featureFound;
             map.forEachFeatureAtPixel(evt.pixel, function(feature, olLayer) {
