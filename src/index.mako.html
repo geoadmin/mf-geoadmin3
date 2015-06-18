@@ -299,7 +299,7 @@ itemscope itemtype="http://schema.org/WebApplication"
              ng-hide="globals.isDrawActive" ga-collapsible-show="globals.isShareActive">
             <i class="visible-collapsed icon-caret-right spacer"></i>
             <i class="hidden-collapsed icon-caret-down"></i>
-            <i class="icon-share"></i>
+            <!--i class="icon-share"></i-->
             <span translate>share</span>
           </a>
           <div id="share" class="panel-collapse collapse">
@@ -317,7 +317,7 @@ itemscope itemtype="http://schema.org/WebApplication"
              ng-hide="globals.isDrawActive" ga-collapsible-show="globals.printShown">
             <i class="visible-collapsed icon-caret-right spacer"></i>
             <i class="hidden-collapsed icon-caret-down"></i>
-            <i class="icon-print"></i>
+            <!--i class="icon-print"></i-->
             <span translate>print</span>
           </a>
           <div id="print" class="panel-collapse collapse">
@@ -333,6 +333,8 @@ itemscope itemtype="http://schema.org/WebApplication"
           <a id="drawHeading" class="panel-heading accordion-toggle collapsed"
              data-toggle="collapse" data-parent="#pulldown-content" href="#draw"
              ga-collapsible-show="globals.isDrawActive">
+            <i class="visible-collapsed icon-caret-right spacer"></i>
+            <i class="hidden-collapsed icon-caret-down"></i>
             <span translate>draw_panel_title</span>
           </a>
           <div id="draw" class="panel-collapse collapse">
@@ -353,7 +355,7 @@ itemscope itemtype="http://schema.org/WebApplication"
              ng-hide="globals.isDrawActive">
             <i class="visible-collapsed icon-caret-right spacer"></i>
             <i class="hidden-collapsed icon-caret-down"></i>
-            <i class="icon-ga-mapfunction"></i>
+            <!--i class="icon-ga-mapfunction"></i-->
             <span translate>map_tools</span>
           </a>
           <div id="tools" class="collapse">
@@ -383,7 +385,7 @@ itemscope itemtype="http://schema.org/WebApplication"
                     <span ng-class="{'selected': globals.isSwipeActive}" translate>swipe</span>
                   </a>
                 </li>
-                <li><!-- Measure -->
+                <!--li>Measure
                   <a href=""  ng-click="globals.isMeasureActive = !globals.isMeasureActive;globals.isDrawActive = false;"
                      data-original-title="{{'measure_tooltip' | translate}}"
                      class="ga-custom-tooltip" data-placement="bottom"
@@ -391,7 +393,7 @@ itemscope itemtype="http://schema.org/WebApplication"
                     <span  ng-class="{'selected': globals.isMeasureActive}"
                            translate>measure</span>
                   </a>
-                </li>
+                </li-->
                 <li><!-- Feature Tree -->
                   <a href=""  ng-click="globals.isFeatureTreeActive = !globals.isFeatureTreeActive"
                      data-original-title="{{'featuretree_tooltip' | translate}}"
@@ -466,7 +468,7 @@ itemscope itemtype="http://schema.org/WebApplication"
           <a class="panel-heading accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#settings">
             <i class="visible-collapsed icon-caret-right spacer"></i>
             <i class="hidden-collapsed icon-caret-down"></i>
-            <i class="icon-gear"></i>
+            <!--i class="icon-gear"></i-->
             <span translate>settings</span>
           </a>
           <div id="settings" class="collapse">
