@@ -918,6 +918,8 @@
             var fullUrl = gaGlobalOptions.ogcproxyUrl + layer.geojsonUrl;
             var olSource = new ol.source.Vector();
             olLayer = new ol.layer.Vector({
+              minResolution: layer.minResolution,
+              maxResolution: layer.maxResolution,
               source: olSource
             });
             var setLayerSource = function() {
@@ -958,6 +960,7 @@
             olLayer.geojsonUrl = layer.geojsonUrl;
             olLayer.updateDelay = layer.updateDelay;
           }
+
           return olLayer;
         };
 
