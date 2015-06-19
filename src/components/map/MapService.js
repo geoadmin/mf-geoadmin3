@@ -757,6 +757,7 @@
 
           var promise = $http.get(url).then(function(response) {
             layers = response.data;
+            $rootScope.$broadcast('gaLayersLoaded');
           }, function(response) {
             layers = undefined;
           });
