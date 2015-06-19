@@ -16,12 +16,12 @@ describe('ga_backgroundselector_directive', function() {
         getOlLayerById: function(id) {
           return id == 'foo' ? layer1 : layer2;
         },
-        getBackgroundLayers: function() {
-          return [{
-            id: 'foo', label: 'Foo'
-          }, {
-            id: 'bar', label: 'Bar'
-          }];
+        getBackgroundLayers: function () {
+          return [
+            {id: 'ch.swisstopo.swissimage', label: 'bg_luftbild'},
+            {id: 'ch.swisstopo.pixelkarte-farbe', label: 'bg_pixel_color'},
+            {id: 'ch.swisstopo.pixelkarte-grau', label: 'bg_pixel_grey'}
+          ];
         }
       });
       $provide.value('gaTopic', {
@@ -51,6 +51,9 @@ describe('ga_backgroundselector_directive', function() {
       '</div>');
     $compile(element)($rootScope);
     $rootScope.$digest();
+
+    $rootScope.$broadcast('gaTopicChange');
+    $rootScope.$digest();
   });
 
   describe('initialization', function() {
@@ -59,6 +62,7 @@ describe('ga_backgroundselector_directive', function() {
       var div = divToggle[0];
       expect(div).not.to.be(undefined);
     });
+
     it('creates 4 layer bgselectors div', function() {
       var divsBg = element.find('.ga-bg-layer');
       expect(divsBg.length).to.equal(4);
