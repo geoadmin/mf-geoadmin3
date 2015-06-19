@@ -330,6 +330,13 @@ ngeo.Print.prototype.encodeVectorLayer_ = function(arr, layer, resolution) {
     var feature = features[i];
     var geojsonFeature = geojsonFormat.writeFeatureObject(feature);
 
+    // Remove style property to avoid problem when converting to JSON
+    if (geojsonFeature.hasOwnProperty('properties') &&
+            geojsonFeature.properties &&
+            geojsonFeature.properties.hasOwnProperty('Style')) {
+      delete geojsonFeature.properties.Style;
+    }
+
     var styles = null;
     var styleFunction = feature.getStyleFunction();
     if (goog.isDef(styleFunction)) {
