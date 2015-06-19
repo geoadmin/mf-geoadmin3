@@ -19,12 +19,13 @@ goog.require('ga_storage_service');
   module.controller('GaMainController', function($rootScope, $scope, $timeout,
       $translate, $window, $document, gaBrowserSniffer, gaHistory,
       gaFeaturesPermalinkManager, gaLayersPermalinkManager, gaMapUtils,
-      gaRealtimeLayersManager, gaNetworkStatus, gaPermalink, gaStorage) {
+      gaRealtimeLayersManager, gaNetworkStatus, gaPermalink, gaStorage,
+      gaGlobalOptions) {
 
     var createMap = function() {
       var toolbar = $('#zoomButtons')[0];
-      var swissProjection = ol.proj.get('EPSG:21781');
-      swissProjection.setExtent(gaMapUtils.defaultExtent);
+      var defaultProjection = ol.proj.get(gaGlobalOptions.defaultEpsg);
+      defaultProjection.setExtent(gaGlobalOptions.defaultEpsgExtent);
 
       var map = new ol.Map({
         controls: ol.control.defaults({
@@ -47,7 +48,7 @@ goog.require('ga_storage_service');
         ]),
         renderer: 'canvas',
         view: new ol.View({
-          projection: swissProjection,
+          projection: defaultProjection,
           center: ol.extent.getCenter(gaMapUtils.defaultExtent),
           extent: gaMapUtils.defaultExtent,
           resolution: gaMapUtils.defaultResolution,

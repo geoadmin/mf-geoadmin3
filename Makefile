@@ -24,6 +24,8 @@ TRANSLATION_FALLBACK_CODE ?= de
 DEFAULT_EXTENT ?= '[420000, 30000, 900000, 350000]'
 DEFAULT_RESOLUTION ?= 500.0
 RESOLUTIONS ?= '[650.0, 500.0, 250.0, 100.0, 50.0, 20.0, 10.0, 5.0, 2.5, 2.0, 1.0, 0.5, 0.25, 0.1]'
+DEFAULT_EPSG ?= EPSG:21781
+DEFAULT_EPSG_EXTEND ?= '[420000, 30000, 900000, 350000]'
 
 ## Python interpreter can't have space in path name
 ## So prepend all python scripts with python cmd
@@ -281,7 +283,9 @@ prd/index.html: src/index.mako.html \
 	    --var "default_extent"="$(DEFAULT_EXTENT)" \
 	    --var "default_resolution"="$(DEFAULT_RESOLUTION)" \
 	    --var "resolutions"="$(RESOLUTIONS)" \
-	    --var "public_url=$(PUBLIC_URL)" $< > $@
+	    --var "public_url=$(PUBLIC_URL)" \
+	    --var "default_epsg"="$(DEFAULT_EPSG)" \
+	    --var "default_epsg_extend"="$(DEFAULT_EPSG_EXTEND)" $< > $@
 	${PYTHON_CMD} .build-artefacts/python-venv/bin/htmlmin --remove-comments --keep-optional-attribute-quotes $@ $@
 
 prd/mobile.html: src/index.mako.html \
@@ -303,7 +307,9 @@ prd/mobile.html: src/index.mako.html \
 	    --var "default_extent"="$(DEFAULT_EXTENT)" \
 	    --var "default_resolution"="$(DEFAULT_RESOLUTION)" \
 	    --var "resolutions"="$(RESOLUTIONS)" \
-	    --var "public_url=$(PUBLIC_URL)" $< > $@
+	    --var "public_url=$(PUBLIC_URL)" \
+	    --var "default_epsg"="$(DEFAULT_EPSG)" \
+	    --var "default_epsg_extend"="$(DEFAULT_EPSG_EXTEND)" $< > $@
 	${PYTHON_CMD} .build-artefacts/python-venv/bin/htmlmin --remove-comments --keep-optional-attribute-quotes $@ $@
 
 prd/embed.html: src/index.mako.html \
@@ -325,8 +331,9 @@ prd/embed.html: src/index.mako.html \
 	    --var "default_extent"="$(DEFAULT_EXTENT)" \
 	    --var "default_resolution"="$(DEFAULT_RESOLUTION)" \
 	    --var "resolutions"="$(RESOLUTIONS)" \
-	    --var "public_url=$(PUBLIC_URL)" $< > $@
-	${PYTHON_CMD} .build-artefacts/python-venv/bin/mako-render --var "device=embed" --var "mode=prod" --var "version=$(VERSION)" --var "versionslashed=$(VERSION)/" --var "apache_base_path=$(APACHE_BASE_PATH)" --var "api_url=$(API_URL)" --var "default_topic_id=$(DEFAULT_TOPIC_ID)" --var "translation_fallback_code=$(TRANSLATION_FALLBACK_CODE)" --var "default_extent"="$(DEFAULT_EXTENT)" --var "default_resolution"="$(DEFAULT_RESOLUTION)" --var "resolutions"="$(RESOLUTIONS)" --var "public_url=$(PUBLIC_URL)" $< > $@
+	    --var "public_url=$(PUBLIC_URL)" \
+	    --var "default_epsg"="$(DEFAULT_EPSG)" \
+	    --var "default_epsg_extend"="$(DEFAULT_EPSG_EXTEND)" $< > $@
 	${PYTHON_CMD} .build-artefacts/python-venv/bin/htmlmin --remove-comments --keep-optional-attribute-quotes $@ $@
 
 prd/img/: src/img/*
@@ -375,7 +382,9 @@ src/index.html: src/index.mako.html \
 	    --var "default_extent"="$(DEFAULT_EXTENT)" \
 	    --var "default_resolution"="$(DEFAULT_RESOLUTION)" \
 	    --var "resolutions"="$(RESOLUTIONS)" \
-	    --var "public_url=$(PUBLIC_URL)" $< > $@
+	    --var "public_url=$(PUBLIC_URL)" \
+	    --var "default_epsg"="$(DEFAULT_EPSG)" \
+	    --var "default_epsg_extend"="$(DEFAULT_EPSG_EXTEND)" $< > $@
 
 src/mobile.html: src/index.mako.html \
 	    .build-artefacts/python-venv/bin/mako-render \
@@ -392,7 +401,9 @@ src/mobile.html: src/index.mako.html \
 	    --var "default_extent"="$(DEFAULT_EXTENT)" \
 	    --var "default_resolution"="$(DEFAULT_RESOLUTION)" \
 	    --var "resolutions"="$(RESOLUTIONS)" \
-	    --var "public_url=$(PUBLIC_URL)" $< > $@
+	    --var "public_url=$(PUBLIC_URL)" \
+	    --var "default_epsg"="$(DEFAULT_EPSG)" \
+	    --var "default_epsg_extend"="$(DEFAULT_EPSG_EXTEND)" $< > $@
 
 src/embed.html: src/index.mako.html \
 	    .build-artefacts/python-venv/bin/mako-render \
@@ -409,7 +420,9 @@ src/embed.html: src/index.mako.html \
 	    --var "default_extent"="$(DEFAULT_EXTENT)" \
 	    --var "default_resolution"="$(DEFAULT_RESOLUTION)" \
 	    --var "resolutions"="$(RESOLUTIONS)" \
-	    --var "public_url=$(PUBLIC_URL)" $< > $@
+	    --var "public_url=$(PUBLIC_URL)" \
+	    --var "default_epsg"="$(DEFAULT_EPSG)" \
+	    --var "default_epsg_extend"="$(DEFAULT_EPSG_EXTEND)" $< > $@
 
 src/TemplateCacheModule.js: src/TemplateCacheModule.mako.js \
 	    $(SRC_COMPONENTS_PARTIALS_FILES) \
