@@ -186,7 +186,8 @@
       //Init swisssearch parameter handling
       var searchParam = gaPermalink.getParams().swisssearch;
       if (angular.isDefined(searchParam) &&
-          searchParam.length > 0) {
+          searchParam.length > 0 &&
+          !$scope.options.blockSwisssearch) {
         var unregister = $scope.$on('gaLayersChange', function() {
           // At this point layers are not added to the map yet
           $scope.map.getLayers().once('add', function() {
