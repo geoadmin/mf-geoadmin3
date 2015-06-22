@@ -201,13 +201,17 @@ ngeo.Print.prototype.encodeImageWmsLayer_ = function(arr, layer) {
   var url = this.getUrlImageWms_(layer);
   var source = layer.getSource();
   var params = source.getParams();
+  var customParams = {'TRANSPARENT': true};
+  goog.object.extend(customParams, params);
+
+  goog.object.remove(customParams, 'LAYERS');
+  goog.object.remove(customParams, 'FORMAT');
+
   var object = /** @type {MapFishPrintWmsLayer} */ ({
     baseURL: url,
-    imageFormat: 'image/png',
-    customParams: {
-      transparent: true
-    },
+    imageFormat: 'FORMAT' in params ? params['FORMAT'] : 'image/png',
     layers: params['LAYERS'].split(','),
+    customParams: customParams,
     type: 'wms'
   });
   arr.push(object);
