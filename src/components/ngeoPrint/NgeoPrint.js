@@ -539,12 +539,18 @@ ngeo.Print.prototype.encodeTextStyle_ = function(symbolizers, textStyle) {
     type: 'text'
   };
   var font = textStyle.getFont().split(' ');
+  var labelAlign = textStyle.getTextAlign();
+  if (labelAlign) {
+    symbolizer.labelAlign = labelAlign;
+  }
+  var labelRotation = textStyle.getRotation();
+  if (labelRotation) {
+    symbolizer.labelRotation = labelRotation * 180 / Math.PI;
+  }
   symbolizer.fontWeight = font[0];
   symbolizer.fontSize = font[1];
   symbolizer.fontFamily = font.splice(2).join(' ');
   symbolizer.label = textStyle.getText();
-  symbolizer.labelAlign = textStyle.getTextAlign();
-  symbolizer.labelRotation = textStyle.getRotation();
   symbolizer.XOffset = textStyle.getOffsetX();
   symbolizer.YOffset = textStyle.getOffsetY();
 
