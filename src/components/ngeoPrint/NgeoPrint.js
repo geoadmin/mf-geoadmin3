@@ -199,6 +199,7 @@ ngeo.Print.prototype.encodeImageLayer_ = function(arr, layer) {
 ngeo.Print.prototype.encodeImageWmsLayer_ = function(arr, layer) {
   var url = this.getUrlImageWms_(layer);
   var source = layer.getSource();
+  var opacity = layer.getOpacity();
   var params = source.getParams();
   var customParams = {'TRANSPARENT': true};
   goog.object.extend(customParams, params);
@@ -211,7 +212,8 @@ ngeo.Print.prototype.encodeImageWmsLayer_ = function(arr, layer) {
     imageFormat: 'FORMAT' in params ? params['FORMAT'] : 'image/png',
     layers: params['LAYERS'].split(','),
     customParams: customParams,
-    type: 'wms'
+    type: 'wms',
+    opacity: opacity
   });
   arr.push(object);
 };
