@@ -37,7 +37,6 @@
  * - ol.style.Icon may use a sprite image, and offsets to define to rectangle
  *   to use within the sprite. This type of icons won't be printed correctly
  *   as MapFish Print does not support sprite icons.
- * - Text styles (ol.style.Text) are currently not supported/printed.
  */
 
 goog.provide('ngeo.CreatePrint');
@@ -402,6 +401,7 @@ ngeo.Print.prototype.encodeVectorStyle_ =
   object[key] = styleObject;
   var fillStyle = style.getFill();
   var imageStyle = style.getImage();
+  var textStyle = style.getText();
   var strokeStyle = style.getStroke();
   if (!goog.isNull(fillStyle)) {
     this.encodeVectorStylePolygon_(
@@ -410,6 +410,10 @@ ngeo.Print.prototype.encodeVectorStyle_ =
     this.encodeVectorStyleLine_(styleObject.symbolizers, strokeStyle);
   } else if (!goog.isNull(imageStyle)) {
     this.encodeVectorStylePoint_(styleObject.symbolizers, imageStyle);
+  }
+
+  if (!goog.isNull(textStyle) && textStyle.getText()) {
+    this.encodeTextStyle_(styleObject.symbolizers, textStyle);
   }
 };
 
@@ -521,6 +525,43 @@ ngeo.Print.prototype.encodeVectorStyleStroke_ =
   if (goog.isDef(strokeWidth)) {
     symbolizer.strokeWidth = strokeWidth;
   }
+};
+
+
+/**
+ * @param {Array.<MapFishPrintSymbolizer>} symbolizers Array of MapFish Print
+ *     symbolizers.
+ * @param {!ol.style.Text} textStyle Text style.
+ * @private
+ */
+ngeo.Print.prototype.encodeTextStyle_ = function(symbolizers, textStyle) {
+  var symbolizer = {
+    type: 'text'
+  };
+  var font = textStyle.getFont().split(' ');
+  symbolizer.fontWeight = font[0];
+  symbolizer.fontSize = font[1];
+  symbolizer.fontFamily = font.splice(2).join(' ');
+  symbolizer.label = textStyle.getText();
+  symbolizer.labelAlign = textStyle.getTextAlign();
+  symbolizer.labelRotation = textStyle.getRotation();
+  symbolizer.XOffset = textStyle.getOffsetX();
+  symbolizer.YOffset = textStyle.getOffsetY();
+
+  var strokeStyle = textStyle.getStroke();
+  var fillStyle = textStyle.getFill();
+  if (!goog.isNull(strokeStyle)) {
+    var strokeColorRgba = ol.color.asArray(strokeStyle.getColor());
+    symbolizer.haloColor = goog.color.rgbArrayToHex(strokeColorRgba);
+    symbolizer.haloOpacity = strokeColorRgba[3];
+    symbolizer.haloRadius = strokeStyle.getWidth();
+  }
+  if (!goog.isNull(fillStyle)) {
+    var fillColorRgba = ol.color.asArray(fillStyle.getColor());
+    symbolizer.fontColor = goog.color.rgbArrayToHex(fillColorRgba);
+  }
+
+  symbolizers.push(symbolizer);
 };
 
 
