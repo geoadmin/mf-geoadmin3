@@ -9,6 +9,108 @@
 Release Notes
 =============
 
+.. _releasenotes_20150701:
+
+Release 20150617 - Wednesday, July 1st 2015
+------------------------------------------------
+
+API & applications
+******************
+
+`API <//api3.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+- Extending TileMatrixSet (zoom level 18 and 19)  for WMTS EPSG:3857
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-chsdi3/compare/r_150624...r_150701>`__
+
+`MAP <//map.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-geoadmin3/compare/r_150624...r_150701>`__
+
+
+Geodata
+*******
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Gewässer der Übersichtskarte 1:2 Mio <//map.geo.admin.ch/?layers=ch.bafu.vec25-gewaessernetz_2000>`__ (ch.bafu.vec25-gewaessernetz_2000)                                                                                 |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Seen <//map.geo.admin.ch/?layers=ch.bafu.vec25-seen>`__ (ch.bafu.vec25-seen)                                                                                                                                             |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Basisgebiete (Einzugsgebiete) HADES <//map.geo.admin.ch/?layers=ch.bafu.hydrologischer-atlas_basisgebiete>`__ (ch.bafu.hydrologischer-atlas_basisgebiete)                                                                |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Bilanzgebiete (Einzugsgebiete) HADES <//map.geo.admin.ch/?layers=ch.bafu.hydrologischer-atlas_bilanzgebiete>`__ (ch.bafu.hydrologischer-atlas_bilanzgebiete)                                                             |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Flussgebiete (Einzugsgebiete) HADES <//map.geo.admin.ch/?layers=ch.bafu.hydrologischer-atlas_flussgebiete>`__ (ch.bafu.hydrologischer-atlas_flussgebiete)                                                                |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `River Typology for Switzerland <//map.geo.admin.ch/?layers=ch.bafu.typisierung-fliessgewaesser>`__ (ch.bafu.typisierung-fliessgewaesser)                                                                                 |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Mean runoff and flow regime types for the river network of Switzerland <//map.geo.admin.ch/?layers=ch.bafu.mittlere-abfluesse>`__ (ch.bafu.mittlere-abfluesse)                                                           |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Grundlagen zur Bestimmung der Abflussmenge Q347 <//map.geo.admin.ch/?layers=ch.bafu.hydrologie-q347>`__ (ch.bafu.hydrologie-q347)                                                                                        |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Niedrigwasserstatistik NQStat <//map.geo.admin.ch/?layers=ch.bafu.hydrologie-niedrigwasserstatistik>`__ (ch.bafu.hydrologie-niedrigwasserstatistik)                                                                      |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `HQStat Hochwasserstatistik <//map.geo.admin.ch/?layers=ch.bafu.hydrologie-hochwasserstatistik>`__ (ch.bafu.hydrologie-hochwasserstatistik)                                                                               |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `HWGWP Hochwassergrenzwertpegel <//map.geo.admin.ch/?layers=ch.bafu.hydrologie-hochwassergrenzwertpegel>`__ (ch.bafu.hydrologie-hochwassergrenzwertpegel)                                                                 |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `HADES 5.1.2 (kantonale Messstationen) <//map.geo.admin.ch/?layers=ch.bafu.hydrologischer-atlas_kantonale-messstationen>`__ (ch.bafu.hydrologischer-atlas_kantonale-messstationen)                                        |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Messstationen der hydrologischen Untersuchungsgebiete <//map.geo.admin.ch/?layers=ch.bafu.hydrologie-untersuchungsgebiete_stationen>`__ (ch.bafu.hydrologie-untersuchungsgebiete_stationen)                              |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Hydrologische Untersuchungsgebiete <//map.geo.admin.ch/?layers=ch.bafu.hydrologie-untersuchungsgebiete>`__ (ch.bafu.hydrologie-untersuchungsgebiete)                                                                     |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Datenbank Geschiebefrachten (Bund) <//map.geo.admin.ch/?layers=ch.bafu.feststoffe-geschiebemessnetz>`__ (ch.bafu.feststoffe-geschiebemessnetz)                                                                           |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Datenbank Querprofile (QP) - Vermessungsstrecken <//map.geo.admin.ch/?layers=ch.bafu.wasserbau-vermessungsstrecken>`__ (ch.bafu.wasserbau-vermessungsstrecken)                                                           |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Vermessungsstrecken - Querprofilmarke <//map.geo.admin.ch/?layers=ch.bafu.wasserbau-querprofilmarken>`__ (ch.bafu.wasserbau-querprofilmarken)                                                                            |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Badegewässerqualität <//map.geo.admin.ch/?layers=ch.bafu.gewaesserschutz-badewasserqualitaet>`__ (ch.bafu.gewaesserschutz-badewasserqualitaet)                                                                           |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Kläranlagendatenbank (ARA-DB) - Prozentanteil Abwasser im Vorfluter bei Niedrigwasser <//map.geo.admin.ch/?layers=ch.bafu.gewaesserschutz-klaeranlagen_anteilq347>`__ (ch.bafu.gewaesserschutz-klaeranlagen_anteilq347)  |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Kläranlagendatenbank (ARA-DB) - Ausbaugrösse (EGW) <//map.geo.admin.ch/?layers=ch.bafu.gewaesserschutz-klaeranlagen_ausbaugroesse>`__ (ch.bafu.gewaesserschutz-klaeranlagen_ausbaugroesse)                               |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Kläranlagendatenbank (ARA-DB) - Reinigungstyp <//map.geo.admin.ch/?layers=ch.bafu.gewaesserschutz-klaeranlagen_reinigungstyp>`__ (ch.bafu.gewaesserschutz-klaeranlagen_reinigungstyp)                                    |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Nationale Daueruntersuchung der schweizerischen Fliessgewässer <//map.geo.admin.ch/?layers=ch.bafu.hydrologie-daueruntersuchung_fliessgewaesser>`__ (ch.bafu.hydrologie-daueruntersuchung_fliessgewaesser)               |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Strukturgüte Hochrhein (2020) <//map.geo.admin.ch/?layers=ch.bafu.strukturguete-hochrhein_linkesufer>`__ (ch.bafu.strukturguete-hochrhein_linkesufer)                                                                    |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Strukturgüte Hochrhein (2020) <//map.geo.admin.ch/?layers=ch.bafu.strukturguete-hochrhein_linkesumfeld>`__ (ch.bafu.strukturguete-hochrhein_linkesumfeld)                                                                |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Strukturgüte Hochrhein (2020) <//map.geo.admin.ch/?layers=ch.bafu.strukturguete-hochrhein_rechtesufer>`__ (ch.bafu.strukturguete-hochrhein_rechtesufer)                                                                  |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Strukturgüte Hochrhein (2020) <//map.geo.admin.ch/?layers=ch.bafu.strukturguete-hochrhein_rechtesumfeld>`__ (ch.bafu.strukturguete-hochrhein_rechtesumfeld)                                                              |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Strukturgüte Hochrhein (2020) <//map.geo.admin.ch/?layers=ch.bafu.strukturguete-hochrhein_sohle>`__ (ch.bafu.strukturguete-hochrhein_sohle)                                                                              |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Building generalized VECTOR200 <//map.geo.admin.ch/?layers=ch.swisstopo.vec200-building>`__ (ch.swisstopo.vec200-building)                                                                                               |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Elevations VECTOR200 <//map.geo.admin.ch/?layers=ch.swisstopo.vec200-miscellaneous-geodpoint>`__ (ch.swisstopo.vec200-miscellaneous-geodpoint)                                                                           |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Hydrology VECTOR200 <//map.geo.admin.ch/?layers=ch.swisstopo.vec200-hydrography>`__ (ch.swisstopo.vec200-hydrography)                                                                                                    |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Land cover VECTOR200 <//map.geo.admin.ch/?layers=ch.swisstopo.vec200-landcover>`__ (ch.swisstopo.vec200-landcover)                                                                                                       |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Names VECTOR200 <//map.geo.admin.ch/?layers=ch.swisstopo.vec200-names-namedlocation>`__ (ch.swisstopo.vec200-names-namedlocation)                                                                                        |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Public Transportation VECTOR200 <//map.geo.admin.ch/?layers=ch.swisstopo.vec200-transportation-oeffentliche-verkehr>`__ (ch.swisstopo.vec200-transportation-oeffentliche-verkehr)                                        |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Road system VECTOR200 <//map.geo.admin.ch/?layers=ch.swisstopo.vec200-transportation-strassennetz>`__ (ch.swisstopo.vec200-transportation-strassennetz)                                                                  |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Single objects VECTOR200 <//map.geo.admin.ch/?layers=ch.swisstopo.vec200-miscellaneous>`__ (ch.swisstopo.vec200-miscellaneous)                                                                                           |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Forested areas <//map.geo.admin.ch/?layers=ch.swisstopo.vec200-landcover-wald>`__ (ch.swisstopo.vec200-landcover-wald)                                                                                                   |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Geologische Gutachten (10-100km2) <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-gisgeol-flaechen-10to100km2>`__ (ch.swisstopo.geologie-gisgeol-flaechen-10to100km2)                                                  |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Geologische Gutachten (100-1000km2) <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-gisgeol-flaechen-100to1000km2>`__ (ch.swisstopo.geologie-gisgeol-flaechen-100to1000km2)                                            |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Geologische Gutachten (1000-21000km2) <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-gisgeol-flaechen-1000to21000km2>`__ (ch.swisstopo.geologie-gisgeol-flaechen-1000to21000km2)                                      |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
 .. _releasenotes_20150617:
 
 Release 20150617 - Wednesday, June 17th 2015
