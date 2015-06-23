@@ -3503,7 +3503,11 @@ class OWSCheck(object):
         results = []
         
         #check Formats in GC:
-        formats = self.gc_xmlroot.Capability.Request.GetFeatureInfo.Format
+        try:
+           formats = self.gc_xmlroot.Capability.Request.GetFeatureInfo.Format
+        except KeyError:
+             return ResponseDict("wms_GetFeatureInfoMIME", ['Not checked, depends on WMS-09'], True)
+
         if isinstance(formats, dict):
             formats = [formats,]
         if isinstance(formats, str):
