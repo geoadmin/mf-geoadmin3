@@ -589,6 +589,10 @@ goog.require('ga_map_service');
           scope.deleteSelectedFeature = function(evt) {
             if ((!evt || evt.which == 46) &&
                 select.getFeatures().getLength() > 0) {
+              if (select.getFeatures().getLength() == 1) {
+                scope.deleteAllFeatures();
+                return;
+              }
               layer.getSource().removeFeature(select.getFeatures().item(0));
               select.getFeatures().clear();
             }
@@ -599,7 +603,9 @@ goog.require('ga_map_service');
               select.getFeatures().clear();
               layer.getSource().clear();
               if (layer.adminId) {
-                gaFileStorage.del(layer.adminId);
+                gaFileStorage.del(layer.adminId).then(function() {
+                  scope.adminShortenUrl = undefined;
+                });
               }
               map.removeLayer(layer);
             }
@@ -790,7 +796,7 @@ goog.require('ga_map_service');
           ////////////////////////////////////
           // Utils functions
           ////////////////////////////////////
-                   // Change cursor style on mouse move, only on desktop
+          // Change cursor style on mouse move, only on desktop
           var updateCursorStyle = function(evt) {
             var featureFound;
             map.forEachFeatureAtPixel(evt.pixel, function(feature, olLayer) {
