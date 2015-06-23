@@ -168,32 +168,31 @@ itemscope itemtype="http://schema.org/WebApplication"
   % endif      
       </div>
   % if device == 'desktop':
-      <div class="navbar-form pull-right hidden-xs">
-        <div id="toptools">
-          <div ga-fullscreen ga-fullscreen-map="map"></div>&nbsp;&nbsp;
-          <a href="" ng-click="globals.feedbackPopupShown = !globals.feedbackPopupShown">
-            <span ng-class="{'selected': globals.feedbackPopupShown}" translate>problem_announcement</span>
-          </a>&nbsp;&nbsp;
-          <a target="_blank" href="//help.geo.admin.ch/?lang={{langId}}" translate>help_label</a>&nbsp;&nbsp;
-          <a ng-href="{{deviceSwitcherHref}}" translate>mobile_redirect</a>&nbsp;&nbsp;
-          <div ng-controller="GaTranslationController">
-            <div ga-translation-selector ga-translation-selector-options="options"></div>
-          </div>
+      <div id="toptools">
+        <div ga-fullscreen ga-fullscreen-map="map"></div>&nbsp;&nbsp;
+        <a href="" ng-click="globals.feedbackPopupShown = !globals.feedbackPopupShown">
+          <span ng-class="{'selected': globals.feedbackPopupShown}" translate>problem_announcement</span>
+        </a>&nbsp;&nbsp;
+        <a target="_blank" href="//help.geo.admin.ch/?lang={{langId}}" translate>help_label</a>&nbsp;&nbsp;
+        <a ng-href="{{deviceSwitcherHref}}" translate>mobile_redirect</a>&nbsp;&nbsp;
+        <div ng-controller="GaTranslationController">
+          <div ga-translation-selector ga-translation-selector-options="options"></div>
         </div>
       </div>
   % endif
       ## css animation doesnt work on pseudo element, let use this instead
       <div class="alert alert-danger" translate>offline_sorry</div>
     </div> <!-- #header -->
-    <div id="drawActiveWarning"
-         class="btn btn-default"
-         ng-click="globals.isDrawActive = false">
-      <button class="btn btn-primary">
-        <i class="icon-arrow-left"></i>&nbsp;&nbsp;<span translate>draw_back</span>
+
+    <div id="drawModeHeader" class="navbar navbar-fixed-top btn btn-default" ng-click="globals.isDrawActive = false">
+      <button class="btn btn-primary pull-left">
+        <i class="icon-arrow-left"></i>
+        <span translate>draw_back</span>
       </button>
       <div class="ga-centered ga-title" translate>draw_mode_title</div>
-      <button class="ga-icon ga-btn icon-remove"></button>
-    </div>
+      <button class="ga-icon ga-btn icon-remove pull-right"></button>
+    </div><!-- #drawModeHeader -->
+
 % endif
     <div id="loader"></div>
     <div tabindex="1" ga-map ga-map-map="map">

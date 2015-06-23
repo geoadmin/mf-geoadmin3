@@ -210,24 +210,19 @@ button.ga-btn, .ol-control button {
     top: unit(-@header-height, px);
   }
 
+  #drawModeHeader {
+    top: 0px;
+  }
+
   #buttonGroup, #pulldown {
     top: unit(@small-header-height, px);
   }
 
   #drawHeading {
-    display: none !important;
-  }
-
-  
-  #drawActiveWarning {
-    top: 0px;
-    /*animation: blink ease 1s 5;*/
-  }
-  
-  #drawActiveBack {
-    display: block;
+    height: 0px;
   }
 }
+
 @keyframes blink {
   0% {opacity: 1}
   50% {opacity: 0.2}
@@ -248,32 +243,6 @@ button.ga-btn, .ol-control button {
   right: 0px;
   bottom: 0px;
   margin: auto;
-}
-#drawActiveWarning {
-  position: absolute;
-  z-index: 2000;
-  top: -100px;
-  right: 0px;
-  left: 0px;
-  height: unit(@small-header-height, px);
-  margin: auto;
-  transition: top 1s ease;
-  .box-shadow(6px 6px 12px rgba(0, 0, 0, 0.175));
-
-  .btn {
-    float: left;
-  }
-  .ga-title {
-    font-size: 2em;
-    line-height: 1.7em;
-  }
-  .icon-remove {
-    position: absolute;
-    top: 0px;
-    right: 15px;
-    bottom: 0px;
-    margin: auto;
-  }
 }
 
 #copyrightsdata {
@@ -350,39 +319,23 @@ input[type=text][readonly] {
 
 
 // ***** HEADER
-#header {
-  overflow: visible; // ios bug fix (need to show the dropdown)
-  height: unit(@header-height, px);
-  padding: 0 .4em 0 0;
-  margin-right: 0px; // Fix a long story bug of bootstrap  https://github.com/twbs/bootstrap/issues/10225
-  margin-bottom: 0px;
-  background-color: rgba(255, 255, 255, 0.9);
-  top: 0px;
+.navbar-fixed-top {
+  margin: 0;
   transition: 1s ease;
   transition-property: top, height;
   .box-shadow(6px 6px 12px rgba(0, 0, 0, 0.175));
+}
 
-  .pull-right {
-    margin: 34px 1.6em 0 0;
-    padding: 0;
-    & > div {
-      display: inline-block;
-    }
-  }
+// ***** HEADER
+#header {
+  top: 0px;
+  height: unit(@header-height, px);
+  background-color: rgba(255, 255, 255, 0.9);
+
   @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
-    h4 {
-      display: none;
-    }
     height: unit(@small-header-height, px);
-    .pull-right {
-      margin: .4em 0 0;
-    }
   }
-  select {
-    width: auto;
-    padding-left: .3em;
-    padding-right: .3em;
-  }
+
   @media (max-width: @screen-phone) {
     background: #fff;
   }
@@ -396,6 +349,7 @@ input[type=text][readonly] {
     transition: top ease 1s;
   }
 }
+
 .offline #header .alert {
   top: 0px;
   z-index: 100;
@@ -507,6 +461,30 @@ input[type=text][readonly] {
   }
   a {
     font-size: 80%;
+  }
+}
+
+// ***** DRAW MODE HEADER
+#drawModeHeader {
+  top: -100px;
+  height: unit(@small-header-height, px);
+
+  .btn-primary {
+    margin-top: 1px;
+  }
+
+  .ga-title {
+    font-size: 2em;
+    line-height: 1.7em;
+  }
+
+  .icon-arrow-left + span {
+    padding-left: 5px;
+  }
+
+  .icon-remove {
+    width: 36px;
+    height: 100%;
   }
 }
 
