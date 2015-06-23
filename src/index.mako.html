@@ -746,6 +746,10 @@ itemscope itemtype="http://schema.org/WebApplication"
             suffix: '.json'
           });
           $translateProvider.cloakClassName('ng-cloak');
+          // TODO: Use $snaitize instead in the future
+          // see http://angular-translate.github.io/docs/#/guide/19_security
+          $translateProvider.useSanitizeValueStrategy(null);
+
         });
 
         module.config(function(gaLayersProvider, gaGlobalOptions) {
