@@ -113,7 +113,7 @@ grids:
   #lowres_mercator:
   epsg_3857:
     base: GLOBAL_MERCATOR
-    num_levels: 18
+    num_levels: 20
     origin: nw
   #lowres_etrs89:
   epsg_4258:
