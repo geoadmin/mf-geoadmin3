@@ -9,7 +9,7 @@ function qualifyURL(url) {
 
 // Reprojected WMTS layer from map.geo.admin.ch
 
-var createLayer = function(timestamp) {
+var createLayer = function(layername, timestamp) {
     return new ol.layer.Tile({
        source: new ol.source.OSM({
          attributions: [
@@ -18,7 +18,7 @@ var createLayer = function(timestamp) {
                  'internet/swisstopo/en/home.html">swisstopo</a>'
            })
          ],
-         url: qualifyURL('..') + '1.0.0/ch.swisstopo.pixelkarte-farbe/default/' + timestamp + '/3857/{z}/{x}/{y}.jpeg'
+         url: qualifyURL('..') + '1.0.0/' + layername + '/default/' + timestamp + '/3857/{z}/{x}/{y}.jpeg'
        })
    });
 }
@@ -31,11 +31,11 @@ var map_left = new ol.Map({
     }
   }),
   layers: [
-    createLayer(20111206)
+    createLayer('ch.swisstopo.swissimage', 20151231)
   ],
   target: 'map-left',
   view: new ol.View({
-    maxZoom: 17,
+    maxZoom: 19,
     center: [902568.5270415349, 5969980.338127118],
     zoom: 15,
     minZoom: 2
@@ -50,9 +50,12 @@ var map_right = new ol.Map({
     }
   }),
   layers: [
-    createLayer(20140520)
+    createLayer('ch.swisstopo.pixelkarte-farbe', 20151231)
   ],
-  target: 'map-right'
+  target: 'map-right',
+  view: new ol.View({
+    maxZoom: 17
+  })
 });
 
 map_right.bindTo('view', map_left);
