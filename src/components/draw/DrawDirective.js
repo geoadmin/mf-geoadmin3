@@ -166,6 +166,21 @@ goog.require('ga_map_service');
           distTooltip.setPosition(undefined);
         }
       };
+      // Add the overlays attached to the feature
+      var showOverlays = function(feature, map) {
+        var overlays = feature.get('overlays');
+        for (var i in overlays) {
+          map.addOverlay(overlays[i]);
+        }
+      };
+
+      // Hide the overlays attached to the feature
+      var hideOverlays = function(feature, map) {
+        var overlays = feature.get('overlays');
+        for (var i in overlays) {
+          map.removeOverlay(overlays[i]);
+        }
+      };
       // Remove the overlays attached to the feature
       var removeOverlays = function(feature, map) {
         var overlays = feature.get('overlays');
@@ -184,7 +199,7 @@ goog.require('ga_map_service');
         link: function(scope, element, attrs, controller) {
           var layer, draw, lastActiveTool, snap;
           var unDblClick, unLayerRemove, unSourceEvents = [], deregPointerMove,
-              deregFeatureChange;
+              deregFeatureChange, unLayerVisible;
           var useTemporaryLayer = scope.options.useTemporaryLayer || false;
           var map = scope.map;
           var viewport = $(map.getViewport());
@@ -279,6 +294,7 @@ goog.require('ga_map_service');
               ol.Observable.unByKey(unSourceEvents[i]);
             }
             unSourceEvents = [];
+            ol.Observable.unByKey(unLayerVisible);
 
             // Set the layer to modify if exist, otherwise we use an empty
             // layer
@@ -304,11 +320,20 @@ goog.require('ga_map_service');
                   saveDebounced(evt);
                   // Remove the overlays attached to the feature
                   removeOverlays(evt.feature, map);
-                }),
-                layer.on('change:visible', function(evt) {
-                  removeOverlays(evt.feature, map);
                 })
               ];
+              unLayerVisible = layer.on('change:visible', function(evt) {
+                var visible = evt.target.getVisible();
+                var features = evt.target.getSource().getFeatures();
+                for (var i in features) {
+                  if (visible) {
+                    showOverlays(features[i], map);
+                  } else {
+                    hideOverlays(features[i], map);
+                  }
+                }
+              });
+
             }
 
             // Attach the snap interaction to the new layer's source
@@ -344,6 +369,7 @@ goog.require('ga_map_service');
                   removeOverlays(features[i], map);
                 }
               }
+              ol.Observable.unByKey(unLayerVisible);
             });
             // Block dblclick event in draw mode to avoid map zooming
             unDblClick = map.on('dblclick', function(evt) {
@@ -364,7 +390,7 @@ goog.require('ga_map_service');
             // Remove interactions
             deactivateDrawInteraction();
             select.setActive(false);
-            
+
             // Unregister the events attached to the source
             for (var i in unSourceEvents) {
               ol.Observable.unByKey(unSourceEvents[i]);
