@@ -114,15 +114,16 @@
 </div>
 <div class="ga-draw-disclaimer" ng-if="!options.useTemporaryLayer" translate>share_file_disclaimer</div>
 <div class="ga-draw-interaction-share" ng-if="adminShortenUrl">
-  <div class="ga-share-permalink">
-    <label>
-      <span translate>draw_share_admin_link</span>:
-    </label>
-    <div class="input-group input-group-sm">
-      <input type="text" ng-model="adminShortenUrl" class="form-control" ga-share-copy-input>
-      <span class="input-group-btn">
-        <button class="btn btn-default" ga-share-copy-bt=".ga-share-permalink input"></button>
-      </span>
+  <div class="ga-share-permalink form-inline">
+    <div class="form-group">
+      <label translate>{{'draw_share_admin_link'}}:</label>
+      <div class="input-group input-group-sm">
+        <input type="text" ng-model="adminShortenUrl" class="form-control"
+               ga-share-copy-input data-placement="top">
+        <span class="input-group-btn">
+          <button class="btn btn-default" ga-share-copy-bt=".ga-share-permalink input"></button>
+        </span>
+      </div>
     </div>
   </div>
 </div>
