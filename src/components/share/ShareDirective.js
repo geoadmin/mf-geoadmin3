@@ -16,6 +16,7 @@ goog.require('ga_permalink');
         if (!gaBrowserSniffer.mobile) {
           element.attr('readonly', 'readonly').tooltip({
             placement: 'bottom',
+            trigger: 'focus',
             title: function() {
               return $translate.instant('share_link_tooltip');
             }
