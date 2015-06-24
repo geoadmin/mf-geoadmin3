@@ -407,7 +407,7 @@ itemscope itemtype="http://schema.org/WebApplication"
   % endif
 
         <!-- Catalog -->
-        <div class="panel">
+        <div class="panel" ng-hide="globals.isDrawActive">
   % if device == 'desktop':
           <div class="theme-toggle">
             <a class="dropdown-toggle" data-toggle="dropdown" href="#">
@@ -445,7 +445,7 @@ itemscope itemtype="http://schema.org/WebApplication"
         </div> <!-- .panel -->
 
         <!-- Selection -->
-        <div class="panel">
+        <div class="panel" ng-hide="globals.isDrawActive">
           <a id="selectionHeading" class="panel-heading accordion-toggle light ${"collapsed" if device!= "desktop" else ""}" data-toggle="collapse" href="#selection">
             <i class="visible-collapsed icon-caret-right"></i>
             <i class="hidden-collapsed icon-caret-down"></i>

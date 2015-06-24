@@ -198,8 +198,8 @@ goog.require('ga_map_service');
         },
         link: function(scope, element, attrs, controller) {
           var layer, draw, lastActiveTool, snap;
-          var unDblClick, unLayerRemove, unSourceEvents = [], deregPointerMove,
-              deregFeatureChange, unLayerVisible;
+          var unDblClick, unLayerAdd, unLayerRemove, unSourceEvents = [],
+              deregPointerMove, deregFeatureChange, unLayerVisible;
           var useTemporaryLayer = scope.options.useTemporaryLayer || false;
           var map = scope.map;
           var viewport = $(map.getViewport());
@@ -293,7 +293,6 @@ goog.require('ga_map_service');
             for (var i in unSourceEvents) {
               ol.Observable.unByKey(unSourceEvents[i]);
             }
-            unSourceEvents = [];
             ol.Observable.unByKey(unLayerVisible);
 
             // Set the layer to modify if exist, otherwise we use an empty
@@ -359,8 +358,19 @@ goog.require('ga_map_service');
             if (layer.adminId) {
               updateShortenUrl(layer.adminId);
             }
-
+            ol.Observable.unByKey(unLayerAdd);
             ol.Observable.unByKey(unLayerRemove);
+
+            // if a layer is added from other component (Import KML, Permalink,
+            // DnD ...) and the currentlayer has no features, we define a
+            // new layer.
+            unLayerAdd = map.getLayers().on('add', function(evt) {
+              if (gaMapUtils.isStoredKmlLayer(evt.element) &&
+                  layer.getSource().getFeatures().length == 0 &&
+                  !useTemporaryLayer) {
+                defineLayerToModify();
+              }
+            });
 
             unLayerRemove = map.getLayers().on('remove', function(evt) {
               if (evt.element === layer) {
@@ -368,6 +378,7 @@ goog.require('ga_map_service');
                 for (var i in features) {
                   removeOverlays(features[i], map);
                 }
+                ol.Observable.unByKey(unLayerRemove);
               }
               ol.Observable.unByKey(unLayerVisible);
             });
@@ -381,6 +392,7 @@ goog.require('ga_map_service');
 
           // Deactivate the component: remove layer and interactions.
           var deactivate = function(evt) {
+            ol.Observable.unByKey(unLayerAdd);
             ol.Observable.unByKey(unDblClick);
             // Deactivate the tool
             if (lastActiveTool) {

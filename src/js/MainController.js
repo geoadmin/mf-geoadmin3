@@ -98,7 +98,8 @@ goog.require('ga_storage_service');
 
       var initWithPrint = /print/g.test(gaPermalink.getParams().widgets);
       var initWithFeedback = /feedback/g.test(gaPermalink.getParams().widgets);
-
+      var initWithDraw = /draw/g.test(gaPermalink.getParams().widgets) || !!(gaPermalink.getParams().adminId);
+      
       gaPermalink.deleteParam('widgets');
 
       $rootScope.$on('gaTopicChange', function(event, topic) {
@@ -121,7 +122,10 @@ goog.require('ga_storage_service');
           $scope.globals.feedbackPopupShown = initWithFeedback;
         }
         initWithFeedback = false;
-
+        if (initWithDraw) {
+          $scope.globals.isDrawActive = initWithDraw;
+        }
+        initWithDraw = false;
       });
       $rootScope.$on('$translateChangeEnd', function() {
         $scope.langId = $translate.use();
@@ -154,9 +158,9 @@ goog.require('ga_storage_service');
         webkit: gaBrowserSniffer.webkit,
         ios: gaBrowserSniffer.ios,
         offline: gaNetworkStatus.offline,
-        feedbackPopupShown: false,
-        printShown: initWithPrint,
         embed: gaBrowserSniffer.embed,
+        feedbackPopupShown: false,
+        printShown: false,
         isShareActive: false,
         isDrawActive: false
       };
