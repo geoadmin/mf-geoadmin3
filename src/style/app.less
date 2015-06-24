@@ -469,10 +469,25 @@ input[type=text][readonly] {
   .ga-title {
     font-size: 2em;
     line-height: 1.7em;
+
+    @media (max-width: @screen-tablet) {
+      left: 250px;
+      right: 50px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+
+      @media (max-width: @screen-phone) {
+        left: 50px;
+      }
+    }
   }
 
   .icon-arrow-left + span {
     padding-left: 5px;
+
+    @media (max-width: @screen-phone) {
+      display: none;
+    }
   }
 
   .icon-remove {

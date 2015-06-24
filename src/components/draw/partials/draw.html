@@ -1,7 +1,7 @@
 <div class="ga-draw-buttons">
   <button ng-repeat="tool in options.tools"
           ng-click="toggleTool($event, tool)"
-          ng-class="{'active': options[tool.activeKey]}"
+          ng-class="{'btn-danger': options[tool.activeKey]}"
           class="btn btn-default btn-sm">
     <!--i class="{{tool.cssClass}}"></i-->
     <span translate>{{tool.title}}</span>
