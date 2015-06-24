@@ -295,7 +295,7 @@ itemscope itemtype="http://schema.org/WebApplication"
         <div class="panel">
           <a id="shareHeading" class="panel-heading accordion-toggle collapsed"
              data-toggle="collapse" data-parent="#pulldown-content" href="#share"
-             ng-hide="globals.isDrawActive" ga-collapsible-show="globals.isShareActive">
+             ga-collapsible-show="globals.isShareActive">
             <i class="visible-collapsed icon-caret-right spacer"></i>
             <i class="hidden-collapsed icon-caret-down"></i>
             <!--i class="icon-share"></i-->
@@ -313,7 +313,7 @@ itemscope itemtype="http://schema.org/WebApplication"
         <div class="panel">
           <a id="printHeading" class="panel-heading accordion-toggle collapsed"
              data-toggle="collapse" data-parent="#pulldown-content" href="#print"
-             ng-hide="globals.isDrawActive" ga-collapsible-show="globals.printShown">
+             ga-collapsible-show="globals.printShown">
             <i class="visible-collapsed icon-caret-right spacer"></i>
             <i class="hidden-collapsed icon-caret-down"></i>
             <!--i class="icon-print"></i-->
@@ -350,8 +350,7 @@ itemscope itemtype="http://schema.org/WebApplication"
         <!-- Tools -->
         <div class="panel"> 
           <a id="toolsHeading" class="panel-heading accordion-toggle collapsed"
-             data-toggle="collapse" data-parent="#pulldown-content" href="#tools"
-             ng-hide="globals.isDrawActive">
+             data-toggle="collapse" data-parent="#pulldown-content" href="#tools">
             <i class="visible-collapsed icon-caret-right spacer"></i>
             <i class="hidden-collapsed icon-caret-down"></i>
             <!--i class="icon-ga-mapfunction"></i-->
@@ -408,7 +407,7 @@ itemscope itemtype="http://schema.org/WebApplication"
   % endif
 
         <!-- Catalog -->
-        <div class="panel" ng-hide="globals.isDrawActive">
+        <div class="panel">
   % if device == 'desktop':
           <div class="theme-toggle">
             <a class="dropdown-toggle" data-toggle="dropdown" href="#">
@@ -446,7 +445,7 @@ itemscope itemtype="http://schema.org/WebApplication"
         </div> <!-- .panel -->
 
         <!-- Selection -->
-        <div class="panel" ng-hide="globals.isDrawActive">
+        <div class="panel">
           <a id="selectionHeading" class="panel-heading accordion-toggle light ${"collapsed" if device!= "desktop" else ""}" data-toggle="collapse" href="#selection">
             <i class="visible-collapsed icon-caret-right"></i>
             <i class="hidden-collapsed icon-caret-down"></i>
