@@ -300,6 +300,7 @@ goog.require('ga_map_service');
             layer = createDefaultLayer(useTemporaryLayer);
             if (!useTemporaryLayer) {
               scope.adminShortenUrl = undefined;
+              scope.userShortenUrl = undefined;
 
               // If there is a layer loaded from public.admin.ch, we use it for
               // modification.
@@ -653,6 +654,7 @@ goog.require('ga_map_service');
               if (layer.adminId) {
                 gaFileStorage.del(layer.adminId).then(function() {
                   scope.adminShortenUrl = undefined;
+                  scope.userShortenUrl = undefined;
                 });
               }
               map.removeLayer(layer);
@@ -678,6 +680,14 @@ goog.require('ga_map_service');
             }).success(function(data) {
               scope.adminShortenUrl = data.shorturl;
             });
+            $http.get(scope.options.shortenUrl, {
+              params: {
+                url: gaPermalink.getHref()
+              }
+            }).success(function(data) {
+              scope.userShortenUrl = data.shorturl;
+            });
+
           };
 
 
