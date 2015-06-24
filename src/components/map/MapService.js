@@ -445,14 +445,21 @@
       // Read a kml string then return a list of features.
       var readFeatures = function(kml) {
         // Replace all hrefs to prevent errors if image doesn't have
-        // CORS headers. Exception for google markers icons (lightblue.png,
-        // ltblue-dot.png, ltblu-pushpin.png, ...) to keep the OL3 magic for
-        // anchor origin.
-        // Test regex here: http://regex101.com/r/tF3vM0
+        // CORS headers. Exception for *admin.ch, *.bgdi.ch and google markers
+        // icons (lightblue.png, ltblue-dot.png, ltblu-pushpin.png, ...) to
+        // keep the OL3 magic for anchor origin.
+        // Test regex here: http://regex101.com/r/tF3vM0/3
         // List of google icons: http://www.lass.it/Web/viewer.aspx?id=4
         kml = kml.replace(
           /<href>http(?!(s?):\/\/(maps\.(?:google|gstatic)\.com.*(blue|green|orange|pink|purple|red|yellow|pushpin).*\.png|.*(bgdi|admin)\.ch))/g,
           '<href>' + gaGlobalOptions.ogcproxyUrl + 'http'
+        );
+
+        // Replace all http hrefs from *.admin.ch or *.bgdi.ch by https
+        // Test regex here: http://regex101.com/r/fY7wB3/3
+        kml = kml.replace(
+          /<href>http(?!(s))(?=:\/\/(.*(bgdi|admin)\.ch))/g,
+          '<href>https'
         );
 
         var all = [];

@@ -13,10 +13,10 @@ describe('ga_throttle_service', function() {
   it('throttles', inject(function($timeout) {
     var funcThrottled = gaThrottle.throttle(function() {
       cpt++;
-    }, 100);
+    }, 99);
     var funcThrottledNoTrail = gaThrottle.throttle(function() {
       cptNoTrail++;
-    }, 100, true);
+    }, 99, true);
     while (now < last) {
       funcThrottled();
       funcThrottledNoTrail();
