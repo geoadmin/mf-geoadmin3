@@ -21,6 +21,11 @@ AddOutputFilterByType DEFLATE application/json
   Header set X-UA-Compatible "IE=Edge"
 </IfModule>
 
+# Enabling CORS
+Header set Access-Control-Allow-Origin "*"
+Header always set Access-Control-Allow-Methods "POST, GET, OPTIONS"
+Header always set Access-Control-Allow-Headers "x-requested-with, Content-Type, origin, authorization, accept, client-security-token"
+
 # Redirect no-slash target to slashed version
 RedirectMatch ^${apache_base_path}$ ${apache_base_path}/
 
