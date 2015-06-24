@@ -304,6 +304,9 @@ goog.require('ga_map_service');
                   saveDebounced(evt);
                   // Remove the overlays attached to the feature
                   removeOverlays(evt.feature, map);
+                }),
+                layer.on('change:visible', function(evt) {
+                  removeOverlays(evt.feature, map);
                 })
               ];
             }
