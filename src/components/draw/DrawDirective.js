@@ -301,7 +301,7 @@ goog.require('ga_map_service');
                 source.on('addfeature', saveDebounced),
                 source.on('changefeature', saveDebounced),
                 source.on('removefeature', function(evt) {
-                  saveDebounced();
+                  saveDebounced(evt);
                   // Remove the overlays attached to the feature
                   removeOverlays(evt.feature, map);
                 })
@@ -361,6 +361,13 @@ goog.require('ga_map_service');
             // Remove interactions
             deactivateDrawInteraction();
             select.setActive(false);
+            
+            // Unregister the events attached to the source
+            for (var i in unSourceEvents) {
+              ol.Observable.unByKey(unSourceEvents[i]);
+            }
+            unSourceEvents = [];
+
           };
 
           // Set the draw interaction with the good geometry
@@ -760,7 +767,7 @@ goog.require('ga_map_service');
           ////////////////////////////////////
           // create/update the file on s3
           ////////////////////////////////////
-          var save = function() {
+          var save = function(evt) {
             scope.isSaved = false;
             var kmlString = gaExportKml.create(layer,
                 map.getView().getProjection());
