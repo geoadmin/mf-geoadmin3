@@ -67,8 +67,7 @@
 	"draw_polygon": "Poligono",
 	"draw_polygon_description": "Crea poligono",
 	"draw_polygon_instructions": "Crea poligono",
-	"draw_text": "Nota
-",
+	"draw_text": "Nota",
 	"draw_text_description": "Crea etichetta",
 	"draw_text_instructions": "Crea etichetta",
 	"draw_text_placeholder": "Nessun titolo",
@@ -164,8 +163,7 @@
 	"modify_color_label": "Colore",
 	"modify_icon_label": "Icona",
 	"modify_icon_size_label": "Grandezza",
-	"modify_text_label": "Nota
-",
+	"modify_text_label": "Nota",
 	"movie": "Serie storica (Multi-PDF)",
 	"nga": "Atlante banda larga",
 	"nga_service_link_href": "http://www.bakom.admin.ch/index.html?lang=it",
