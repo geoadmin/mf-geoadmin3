@@ -127,7 +127,17 @@ goog.provide('ga_importwms_controller');
            'https://wms.geo.gr.ch/wildschutzgebiete',
            'https://wms.geo.gr.ch/zonenplan',
            'https://wms.geo.gr.ch/richtplan',
-           'https://wms.geo.gr.ch/uebersichtsplan'
+           'https://wms.geo.gr.ch/uebersichtsplan',
+           'http://webdienste.zugmap.ch/basisplan_sw/service.svc/get?REQUEST=getcapabilities&Service=WMS&VERSION=1.3.0',
+           'http://webdienste.zugmap.ch/basisplan_farbig/service.svc/get?REQUEST=getcapabilities&Service=WMS&VERSION=1.3.0',
+           'http://webdienste.zugmap.ch/kkgeo_gws_zg/service.svc/get?REQUEST=GetCapabilities&SERVICE=WMS&VERSION=1.3.0',
+           'http://webdienste.zugmap.ch/Landwirtschaft_Naturschutz/service.svc/get?REQUEST=getcapabilities&Service=WMS&VERSION=1.3.0',
+           'http://webdienste.zugmap.ch/luftbild2011/service.svc/get?REQUEST=getcapabilities&Service=WMS&VERSION=1.3.0',
+           'http://webdienste.zugmap.ch/luftbildplus/service.svc/get?REQUEST=GetCapabilities&Service=WMS&VERSION=1.3.0',
+           'http://webdienste.zugmap.ch/ortsplan/service.svc/get?REQUEST=GetCapabilities&Service=WMS&VERSION=1.3.0',
+           'http://webdienste.zugmap.ch/Zonenplan_WMS/service.svc/get?REQUEST=getcapabilities&Service=WMS&VERSION=1.3.0',
+           'http://service.lisag.ch/wms?request=getCapabilities',
+           'http://wms.geoportal.ch:8080/geoserver/AVAI/wms'
          ]
        };
      });
