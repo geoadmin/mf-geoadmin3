@@ -38,6 +38,7 @@ goog.require('ga_map_service');
 
         if (useTemporaryLayer) {
           dfltLayer.displayInLayerManager = false;
+          dfltLayer.preview = true;
         }
 
         dfltLayer.label = 'Drawing';

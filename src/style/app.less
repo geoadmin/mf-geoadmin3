@@ -1413,7 +1413,12 @@ body:not(.embed) {
 #feedback-popup {
   max-height: 800px;
   min-width: 240px;
+  max-width: 350px;
 
+  @media (max-width: @screen-tablet){
+    max-width: none;
+  }
+   
   .ga-popup-content {
     max-height: 740px;
   }
