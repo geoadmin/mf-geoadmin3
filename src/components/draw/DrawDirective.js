@@ -639,7 +639,7 @@ goog.require('ga_map_service');
           scope.deleteSelectedFeature = function(evt) {
             if ((!evt || evt.which == 46) &&
                 select.getFeatures().getLength() > 0) {
-              if (layer.getSource().getFeatures().getLength() == 1) {
+              if (layer.getSource().getFeatures().length == 1) {
                 scope.deleteAllFeatures();
                 return;
               }
