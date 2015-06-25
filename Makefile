@@ -158,9 +158,9 @@ ol: scripts/ol-geoadmin.json .build-artefacts/ol3 .build-artefacts/ol-requiremen
 	cp $(addprefix .build-artefacts/ol3/build/,$(OL_JS)) src/lib/;
 
 .PHONY: fastclick
-fastclick: .build-artefacts/fastclick node_modules/google-closure-compiler/compiler.jar
+fastclick: .build-artefacts/fastclick .build-artefacts/closure-compiler/compiler.jar
 	cp .build-artefacts/fastclick/lib/fastclick.js src/lib/fastclick.js
-	java -jar node_modules/google-closure-compiler/compiler.jar src/lib/fastclick.js --compilation_level SIMPLE_OPTIMIZATIONS --js_output_file  src/lib/fastclick.min.js
+	java -jar .build-artefacts/closure-compiler/compiler.jar src/lib/fastclick.js --compilation_level SIMPLE_OPTIMIZATIONS --js_output_file  src/lib/fastclick.min.js
 
 .PHONY: filesaver
 filesaver: .build-artefacts/filesaver
@@ -278,16 +278,16 @@ node_modules: package.json
 	cp $(addprefix node_modules/localforage/dist/,$(LOCALFORAGE)) src/lib;
 
 
-.build-artefacts/app.js: .build-artefacts/js-files node_modules/google-closure-compiler/compiler.jar .build-artefacts/externs/angular.js .build-artefacts/externs/jquery.js
+.build-artefacts/app.js: .build-artefacts/js-files .build-artefacts/closure-compiler/compiler.jar .build-artefacts/externs/angular.js .build-artefacts/externs/jquery.js
 	mkdir -p $(dir $@)
-	java -jar node_modules/google-closure-compiler/compiler.jar $(SRC_JS_FILES_FOR_COMPILER) --compilation_level SIMPLE_OPTIMIZATIONS --jscomp_error checkVars --externs externs/ol.js --externs .build-artefacts/externs/angular.js --externs .build-artefacts/externs/jquery.js --js_output_file $@
+	java -jar .build-artefacts/closure-compiler/compiler.jar $(SRC_JS_FILES_FOR_COMPILER) --compilation_level SIMPLE_OPTIMIZATIONS --jscomp_error checkVars --externs externs/ol.js --externs .build-artefacts/externs/angular.js --externs .build-artefacts/externs/jquery.js --js_output_file $@
 
 $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule.js): .build-artefacts/annotated/%.js: %.js node_modules
 	mkdir -p $(dir $@)
 	./node_modules/.bin/ng-annotate -a $< > $@
 
-.build-artefacts/app-whitespace.js: .build-artefacts/js-files node_modules/google-closure-compiler/compiler.jar
-	java -jar node_modules/google-closure-compiler/compiler.jar  $(SRC_JS_FILES_FOR_COMPILER) --compilation_level WHITESPACE_ONLY --formatting PRETTY_PRINT --js_output_file $@
+.build-artefacts/app-whitespace.js: .build-artefacts/js-files .build-artefacts/closure-compiler/compiler.jar
+	java -jar .build-artefacts/closure-compiler/compiler.jar  $(SRC_JS_FILES_FOR_COMPILER) --compilation_level WHITESPACE_ONLY --formatting PRETTY_PRINT --js_output_file $@
 
 # closurebuilder.py complains if it cannot find a Closure base.js script, so we
 # add lib/closure as a root. When compiling we remove base.js from the js files
@@ -335,7 +335,10 @@ $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule
 
 .build-artefacts/closure-compiler/compiler-latest.zip:
 	mkdir -p $(dir $@)
-	wget -O $@ http://dl.google.com/closure-compiler/compiler-20131014.zip
+	wget -O $@ http://dl.google.com/closure-compiler/compiler-latest.zip
+
+.build-artefacts/closure-compiler/compiler.jar: .build-artefacts/closure-compiler/compiler-latest.zip
+	unzip $< -d .build-artefacts/closure-compiler
 	touch $@
 
 $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH)/.git/config:

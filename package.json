@@ -21,7 +21,6 @@
     "angular-translate": "2.4.2",
     "localforage": "1.0.1",
     "phantomjs": "1.9.16",
-    "google-closure-compiler": "~20150609.0.0",
     "google-closure-library": "~20150609.0.0"
   }
 }
