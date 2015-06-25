@@ -37,7 +37,7 @@
      ga-popup="popupToggle"
      ga-popup-options="options.popupOptions"
      ng-class="{'ga-profile-active': options.isProfileActive}">
-  <ul class="nav nav-tabs" role="tablist" ng-if="feature && showTabs(feature)">
+  <ul class="nav nav-tabs" role="tablist" ng-if="!options.useTemporaryLayer && feature && showTabs(feature)">
     <li ng-show="showPropsTab(feature)">
       <a href=""
          ng-click="activeTabProps()"
@@ -106,7 +106,7 @@
        ga-profile-map="map"
        ga-profile-options="options.profileOptions"></div>
 
-  <div ng-if="isPropsActive" class="ga-draw-info-save">
+  <div ng-if="isPropsActive && !options.useTemporaryLayer" class="ga-draw-info-save">
     <span ng-show="isSaved" class="ga-success" translate>draw_file_saved</span>
     <span ng-show="!isSaved" translate>draw_file_saving</span>
   </div>
