@@ -448,10 +448,13 @@ goog.require('ga_print_style_service');
             var encJSON = format.writeFeatureObject(feature);
             if (!encJSON.properties) {
               encJSON.properties = {};
-            // Fix https://github.com/geoadmin/mf-geoadmin3/issues/1213
-            } else if (encJSON.properties.Style) {
+            // Fix circular structure to JSON
+            // see: https://github.com/geoadmin/mf-geoadmin3/issues/1213
+            } else {
               delete encJSON.properties.Style;
+              delete encJSON.properties.overlays;
             }
+
 
             encJSON.properties._gx_style = styleId;
             encFeatures.push(encJSON);
