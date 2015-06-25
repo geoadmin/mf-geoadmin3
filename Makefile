@@ -293,7 +293,7 @@ $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule
 # add lib/closure as a root. When compiling we remove base.js from the js files
 # passed to the Closure compiler.
 .build-artefacts/js-files: $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule.js) .build-artefacts/python-venv .build-artefacts/closure-library
-	${PYTHON_CMD} .build-artefacts/closure-library/closure/bin/build/closurebuilder.py --root=.build-artefacts/annotated --root=node_modules/google-closure-library --namespace="ga" --namespace="__ga_template_cache__" --output_mode=list > $@
+	${PYTHON_CMD} .build-artefacts/closure-library/closure/bin/build/closurebuilder.py --root=.build-artefacts/annotated --root=.build-artefacts/closure-library --namespace="ga" --namespace="__ga_template_cache__" --output_mode=list > $@
 
 .build-artefacts/lint.timestamp: .build-artefacts/python-venv/bin/gjslint $(SRC_JS_FILES)
 	.build-artefacts/python-venv/bin/gjslint -r src/components src/js --jslint_error=all
