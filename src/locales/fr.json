@@ -209,6 +209,7 @@
 	"position": "Position",
 	"print": "Imprimer",
 	"print_action": "Créer PDF pour impression",
+        "print_dpi": "DPI",
 	"print_layout": "Orientation",
 	"print_scale": "Echelle",
 	"print_underway_message": "Translation is missing",

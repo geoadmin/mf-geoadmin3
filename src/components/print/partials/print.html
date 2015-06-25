@@ -1,14 +1,26 @@
 <form class="form-horizontal" >
   <div class="form-group">
+    <label class="col-xs-4 control-label" translate>title</label>
+    <div class="col-xs-8">
+      <input class="form-control" ng-model="options.title">
+    </div>
+  </div>
+  <div class="form-group">
     <label class="col-xs-4 control-label" translate>print_layout</label>
     <div class="col-xs-8">
-      <select class="form-control" ng-model="layout" ng-options="l as l.stripped for l in capabilities.layouts"></select>
+      <select class="form-control" ng-model="layout" ng-options="l as l.name for l in layouts"></select>
     </div>
   </div>
   <div class="form-group">
     <label class="col-xs-4 control-label" translate>print_scale</label>
     <div class="col-xs-8">
-      <select class="form-control" ng-model="scale" ng-options="l.name for l in capabilities.scales"></select>
+      <select class="form-control" ng-model="scale" ng-options="l for l in layout.scales"></select>
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="col-xs-4 control-label" translate>print_dpi</label>
+    <div class="col-xs-8">
+      <select class="form-control" ng-model="dpi" ng-options="l for l in layout.dpis"></select>
     </div>
   </div>
   <div class="form-group">
@@ -23,7 +35,7 @@
     <div class="col-xs-8">
       <div class="checkbox">
         <label class="ga-checkbox" >
-          <input ng-model="options.graticule" type="checkbox"/>
+          <input ng-model="options.grid" type="checkbox"/>
           <span translate>graticule</span>
         </label>
       </div>
@@ -40,14 +52,17 @@
     </div>
   </div>
   <div class="ga-print-progress" ng-if="options.printing && options.progress != ''">{{options.progress}}</div>
-  <button ng-show="options.printing" class="btn btn-danger col-xs-12" 
+  <button ng-show="options.printing && !printError" class="btn btn-danger col-xs-12"
           ng-click="abort()" 
           translate>abort</button>
   <button type="submit"
           class="btn btn-default col-xs-12"
           accesskey="p"
-          ng-hide="options.printing"
+          ng-hide="options.printing || printError"
           ng-click="submit()" translate>print_action</button>
+  <button ng-show="printError" class="btn btn-danger col-xs-12"
+          ng-click="retry()"
+          translate>print_error</button>
   <!-- this span is purely for e2e testing purposes, to detect print success/failure in DOM -->
   <span ng-if="options.printsuccess"></span>
 </form>

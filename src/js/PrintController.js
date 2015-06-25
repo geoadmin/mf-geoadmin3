@@ -1,17 +1,17 @@
+goog.provide('ga_print_controller');
 (function() {
-  goog.provide('ga_print_controller');
 
   var module = angular.module('ga_print_controller', []);
 
   module.controller('GaPrintController',
     function($scope, gaGlobalOptions) {
-      var printPath = gaGlobalOptions.apiUrl + '/print';
-      var printCachedPath = gaGlobalOptions.cachedApiUrl + '/print';
+      var printPath = '/print/geoadmin';
+      var printPath = gaGlobalOptions.apiUrl + printPath;
+      var printCachedPath = gaGlobalOptions.cachedApiUrl + printPath;
       
       $scope.options = {
         printPath: printPath,
-        printConfigUrl: printCachedPath + '/info.json?url=' +
-            encodeURIComponent(printPath),
+        printConfigUrl: printCachedPath + '/capabilities.json',
         legendUrl: gaGlobalOptions.apiUrl + '/static/images/legends/',
         qrcodeUrl: gaGlobalOptions.apiUrl + '/qrcodegenerator?url=',
         shortenUrl: gaGlobalOptions.apiUrl + '/shorten.json',
@@ -40,7 +40,8 @@
           'ch.swisstopo.pixelkarte-farbe-pk100.noscale',
           'ch.swisstopo.pixelkarte-farbe-pk50.noscale',
           'ch.swisstopo.pixelkarte-farbe-pk25.noscale'
-        ]
+        ],
+        title: 'Ma carte'
       };
       
       $('#print').on('show.bs.collapse', function() {
