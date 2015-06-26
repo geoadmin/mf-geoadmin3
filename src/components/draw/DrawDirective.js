@@ -27,7 +27,7 @@ goog.require('ga_map_service');
     function($timeout, $translate, $window, $rootScope, gaBrowserSniffer,
         gaDefinePropertiesForLayer, gaDebounce, gaFileStorage, gaLayerFilters,
         gaExportKml, gaMapUtils, gaPermalink, $http, $q, gaUrlUtils,
-        $document) {
+        $document, gaMeasure) {
 
       var createDefaultLayer = function(useTemporaryLayer) {
         var dfltLayer = new ol.layer.Vector({
@@ -77,33 +77,6 @@ goog.require('ga_map_service');
         return colors[0];
       };
 
-      var formatLength = function(line) {
-        if (!line instanceof ol.geom.LineString) {
-          return '- km';
-        }
-        var output, length = Math.round(line.getLength() * 100) / 100;
-        if (length > 100) {
-          output = (Math.round(length / 1000 * 100) / 100) + ' ' + 'km';
-        } else {
-          output = (Math.round(length * 100) / 100) + ' ' + 'm';
-        }
-        return output;
-      };
-
-      var formatArea = function(polygon) {
-        if (!polygon instanceof ol.geom.Polygon) {
-          return '- km<sup>2</sup>';
-        }
-        var output, area = polygon.getArea();
-        if (area > 10000) {
-          output = (Math.round(area / 1000000 * 100) / 100) + ' ' +
-              'km<sup>2</sup>';
-        } else {
-          output = (Math.round(area * 100) / 100) + ' ' + 'm<sup>2</sup>';
-        }
-        return output;
-      };
-
       // Creates a new help tooltip
       var createHelpTooltip = function() {
         var tooltipElement = document.createElement('div');
@@ -151,7 +124,7 @@ goog.require('ga_map_service');
       var updateMeasureTooltips = function(distTooltip, areaTooltip, geom) {
         if (geom instanceof ol.geom.Polygon) {
           if (areaTooltip) {
-            areaTooltip.getElement().innerHTML = formatArea(geom);
+            areaTooltip.getElement().innerHTML = gaMeasure.getAreaLabel(geom);
             areaTooltip.setPosition(geom.getInteriorPoint().getCoordinates());
           }
           geom = new ol.geom.LineString(geom.getCoordinates()[0]);
@@ -160,7 +133,7 @@ goog.require('ga_map_service');
         }
         if (geom instanceof ol.geom.LineString) {
           if (distTooltip) {
-            distTooltip.getElement().innerHTML = formatLength(geom);
+            distTooltip.getElement().innerHTML = gaMeasure.getLengthLabel(geom);
             distTooltip.setPosition(geom.getLastCoordinate());
           }
         } else if (distTooltip) {

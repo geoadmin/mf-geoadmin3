@@ -4,6 +4,7 @@ goog.require('ga_measure_directive');
 (function() {
 
   angular.module('ga_measure', [
+    'ga_measure_service',
     'ga_measure_directive'
   ]);
 })();

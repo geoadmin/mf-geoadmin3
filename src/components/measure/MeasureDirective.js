@@ -3,65 +3,17 @@ goog.provide('ga_measure_directive');
 goog.require('ga_debounce_service');
 goog.require('ga_export_kml_service');
 goog.require('ga_map_service');
+goog.require('ga_measure_service');
 (function() {
 
   var module = angular.module('ga_measure_directive', [
     'ga_debounce_service',
     'ga_export_kml_service',
-    'ga_map_service'
+    'ga_map_service',
+    'ga_measure_service'
   ]);
 
-  module.filter('measure', function() {
-    return function(floatInMeter, type, units) {
-      // Type could be: volume, area or distance
-      var factor = 1000;
-      switch (type) {
-        case 'volume': factor = Math.pow(factor, 3);
-                       break;
-        case 'area': factor = Math.pow(factor, 2);
-                     break;
-        default: break;
-      }
-      units = units || [' km', ' m'];
-      floatInMeter = floatInMeter || 0;
-      var measure = floatInMeter.toFixed(2);
-      var km = Math.floor(measure / factor);
-
-      if (km <= 0) {
-        if (parseInt(measure) == 0) {
-          measure = 0;
-        }
-        return measure + units[1];
-      }
-
-      var str = '' + km;
-      var m = Math.floor(Math.floor(measure) % factor * 100 / factor);
-
-      if (m > 0) {
-        str += '.';
-        if (m < 10) {
-          str += '0';
-        }
-        str += m;
-      }
-      str += ' ' + units[0];
-      return str;
-    };
-  });
-
-  module.directive('gaMeasureInfos', function(gaDebounce) {
-    // Calulate the azimuth from 2 points
-    var calculateAzimuth = function(pt1, pt2) {
-      if (!pt1 || !pt2) {
-        return undefined;
-      }
-      var x = pt2[0] - pt1[0];
-      var y = pt2[1] - pt1[1];
-      var rad = Math.acos(y / Math.sqrt(x * x + y * y));
-      var factor = x > 0 ? 1 : -1;
-      return (360 + (factor * rad * 180 / Math.PI)) % 360;
-    };
-
+  module.directive('gaMeasureInfos', function(gaDebounce, gaMeasure) {
     return {
       restrict: 'A',
       templateUrl: function(element, attrs) {
@@ -76,27 +28,14 @@ goog.require('ga_map_service');
         var deregisterKey;
         var update = function(feature) {
           var geom = feature.getGeometry();
-          if (!geom instanceof ol.geom.LineString &&
-              !geom instanceof ol.geom.Polygon) {
+          if (!(geom instanceof ol.geom.LineString) &&
+              !(geom instanceof ol.geom.Polygon)) {
             return;
           }
-          if (geom instanceof ol.geom.LineString) {
-            var coords = geom.getCoordinates();
-            scope.distance = geom.getLength();
-            scope.azimuth = calculateAzimuth(coords[0], coords[1]);
-            scope.surface = 0;
-
-            if (scope.options.showLineStringArea) {
-              var geom = new ol.geom.Polygon([coords]);
-              scope.surface = geom.getArea();
-            }
-          } else if (geom instanceof ol.geom.Polygon) {
-            var coords = geom.getLinearRing(0).getCoordinates();
-            scope.distance = new ol.geom.LineString(coords).getLength();
-            scope.azimuth = calculateAzimuth(coords[0], coords[1]);
-            scope.surface = geom.getArea();
-          }
-          //scope.$digest();
+          scope.distance = gaMeasure.getLength(geom);
+          scope.surface = gaMeasure.getArea(geom,
+              scope.options.showLineStringArea);
+          scope.azimuth = gaMeasure.getAzimuth(geom);
         };
         var useFeature = function(newFeature) {
           if (deregisterKey) {
@@ -117,7 +56,7 @@ goog.require('ga_map_service');
     };
   });
 
-  module.directive('gaMeasure',
+  /*module.directive('gaMeasure',
     function($document, $rootScope, gaDebounce, gaDefinePropertiesForLayer,
         gaLayerFilters, gaExportKml, gaMapUtils) {
       return {
@@ -342,5 +281,5 @@ goog.require('ga_map_service');
         }
       };
     }
-  );
+  );*/
 })();

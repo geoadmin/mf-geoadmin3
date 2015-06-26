@@ -1,8 +1,10 @@
 <div data-role='content'>
   <div class="ga-profile-tooltip">
     <div class="ga-profile-tooltip-inner">
-      <strong translate>{{options.xLabel}}</strong>: {{coordinates[0].toFixed(2)}} [{{unitX}}]</br>
-      <strong translate>{{options.yLabel}}</strong>: {{coordinates[1].toFixed(2)}} [m]
+      <strong translate>{{options.xLabel}}:</strong>
+      {{coordinates[0] | measure:'distance':unitX}}</br>
+      <strong translate>{{options.yLabel}}:</strong>
+      {{coordinates[1] | measure:'distance':[' m']}}
     </div>
     <div class="ga-profile-tooltip-arrow"></div>
   </div>
