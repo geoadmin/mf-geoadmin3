@@ -1,5 +1,5 @@
+goog.provide('ga_mouseposition_directive');
 (function() {
-  goog.provide('ga_mouseposition_directive');
 
   var module = angular.module('ga_mouseposition_directive', []);
 

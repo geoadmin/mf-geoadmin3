@@ -1,5 +1,5 @@
+goog.provide('ga_contextpopup_controller');
 (function() {
-  goog.provide('ga_contextpopup_controller');
 
   var module = angular.module('ga_contextpopup_controller', []);
 

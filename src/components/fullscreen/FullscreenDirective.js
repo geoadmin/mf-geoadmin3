@@ -1,8 +1,8 @@
-(function() {
-  goog.provide('ga_fullscreen_directive');
+goog.provide('ga_fullscreen_directive');
 
-  goog.require('ga_browsersniffer_service');
-  goog.require('ga_permalink');
+goog.require('ga_browsersniffer_service');
+goog.require('ga_permalink');
+(function() {
 
 
   var module = angular.module('ga_fullscreen_directive', [

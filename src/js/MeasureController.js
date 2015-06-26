@@ -1,7 +1,7 @@
-(function() {
-  goog.provide('ga_measure_controller');
+goog.provide('ga_measure_controller');
 
-  goog.require('ga_urlutils_service');
+goog.require('ga_urlutils_service');
+(function() {
 
   var module = angular.module('ga_measure_controller', [
     'ga_urlutils_service',

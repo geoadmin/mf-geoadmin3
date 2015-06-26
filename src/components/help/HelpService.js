@@ -1,5 +1,5 @@
+goog.provide('ga_help_service');
 (function() {
-  goog.provide('ga_help_service');
 
   var module = angular.module('ga_help_service', [
     'pascalprecht.translate'

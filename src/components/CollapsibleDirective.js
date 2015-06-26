@@ -1,5 +1,5 @@
+goog.provide('ga_collapsible_directive');
 (function() {
-  goog.provide('ga_collapsible_directive');
 
   var module = angular.module('ga_collapsible_directive', []);
 

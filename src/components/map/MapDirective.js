@@ -1,10 +1,10 @@
-(function() {
-  goog.provide('ga_map_directive');
+goog.provide('ga_map_directive');
 
-  goog.require('ga_browsersniffer_service');
-  goog.require('ga_debounce_service');
-  goog.require('ga_offline_service');
-  goog.require('ga_permalink');
+goog.require('ga_browsersniffer_service');
+goog.require('ga_debounce_service');
+goog.require('ga_offline_service');
+goog.require('ga_permalink');
+(function() {
 
   var module = angular.module('ga_map_directive', [
     'ga_browsersniffer_service',

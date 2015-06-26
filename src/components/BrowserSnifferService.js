@@ -1,7 +1,7 @@
-(function() {
-  goog.provide('ga_browsersniffer_service');
+goog.provide('ga_browsersniffer_service');
 
-  goog.require('ga_permalink');
+goog.require('ga_permalink');
+(function() {
 
   var module = angular.module('ga_browsersniffer_service', [
     'ga_permalink'

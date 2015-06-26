@@ -22,10 +22,10 @@
  * THE SOFTWARE.
  */
 
-(function() {
-  goog.provide('ga_slider_directive');
+goog.provide('ga_slider_directive');
 
-  goog.require('ga_debounce_service');
+goog.require('ga_debounce_service');
+(function() {
 
   var module = angular.module('ga_slider_directive', [
     'ga_debounce_service'

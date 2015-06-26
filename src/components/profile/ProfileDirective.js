@@ -1,7 +1,7 @@
-(function() {
-  goog.provide('ga_profile_directive');
+goog.provide('ga_profile_directive');
 
-  goog.require('ga_profile_service');
+goog.require('ga_profile_service');
+(function() {
 
   var module = angular.module('ga_profile_directive', [
     'ga_profile_service'

@@ -1,11 +1,11 @@
-(function() {
-  goog.provide('ga_search_directive');
+goog.provide('ga_search_directive');
 
-  goog.require('ga_map_service');
-  goog.require('ga_marker_overlay_service');
-  goog.require('ga_permalink');
-  goog.require('ga_search_service');
-  goog.require('ga_search_type_directives');
+goog.require('ga_map_service');
+goog.require('ga_marker_overlay_service');
+goog.require('ga_permalink');
+goog.require('ga_search_service');
+goog.require('ga_search_type_directives');
+(function() {
 
   var module = angular.module('ga_search_directive', [
     'ga_map_service',

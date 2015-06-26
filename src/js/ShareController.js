@@ -1,5 +1,5 @@
+goog.provide('ga_share_controller');
 (function() {
-  goog.provide('ga_share_controller');
 
   var module = angular.module('ga_share_controller', []);
 

@@ -1,9 +1,9 @@
-(function() {
-  goog.provide('ga_main_controller');
+goog.provide('ga_main_controller');
 
-  goog.require('ga_map');
-  goog.require('ga_networkstatus_service');
-  goog.require('ga_storage_service');
+goog.require('ga_map');
+goog.require('ga_networkstatus_service');
+goog.require('ga_storage_service');
+(function() {
 
 
   var module = angular.module('ga_main_controller', [

@@ -1,5 +1,5 @@
+goog.provide('ga_urlutils_service');
 (function() {
-  goog.provide('ga_urlutils_service');
 
   var module = angular.module('ga_urlutils_service', []);
 

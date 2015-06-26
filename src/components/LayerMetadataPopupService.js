@@ -1,8 +1,8 @@
-(function() {
-  goog.provide('ga_layer_metadata_popup_service');
+goog.provide('ga_layer_metadata_popup_service');
 
-  goog.require('ga_map_service');
-  goog.require('ga_popup');
+goog.require('ga_map_service');
+goog.require('ga_popup');
+(function() {
 
   var module = angular.module('ga_layer_metadata_popup_service', [
     'ga_map_service',

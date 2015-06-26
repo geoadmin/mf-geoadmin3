@@ -1,5 +1,5 @@
+goog.provide('ga_modal_directive');
 (function() {
-  goog.provide('ga_modal_directive');
 
   var module = angular.module('ga_modal_directive', []);
 

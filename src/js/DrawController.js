@@ -1,5 +1,5 @@
+goog.provide('ga_draw_controller');
 (function() {
-  goog.provide('ga_draw_controller');
 
   var module = angular.module('ga_draw_controller', [
     'pascalprecht.translate',

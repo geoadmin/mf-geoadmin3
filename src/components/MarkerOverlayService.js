@@ -1,5 +1,5 @@
+goog.provide('ga_marker_overlay_service');
 (function() {
-  goog.provide('ga_marker_overlay_service');
 
   var module = angular.module('ga_marker_overlay_service', []);
 

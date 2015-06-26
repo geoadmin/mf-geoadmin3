@@ -1,5 +1,5 @@
+goog.provide('ga_attribution_directive');
 (function() {
-  goog.provide('ga_attribution_directive');
 
   var module = angular.module('ga_attribution_directive', []);
 

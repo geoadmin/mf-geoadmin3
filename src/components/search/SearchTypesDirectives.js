@@ -1,13 +1,13 @@
-(function() {
-  goog.provide('ga_search_type_directives');
+goog.provide('ga_search_type_directives');
 
-  goog.require('ga_browsersniffer_service');
-  goog.require('ga_debounce_service');
-  goog.require('ga_layer_metadata_popup_service');
-  goog.require('ga_map_service');
-  goog.require('ga_marker_overlay_service');
-  goog.require('ga_search_service');
-  goog.require('ga_urlutils_service');
+goog.require('ga_browsersniffer_service');
+goog.require('ga_debounce_service');
+goog.require('ga_layer_metadata_popup_service');
+goog.require('ga_map_service');
+goog.require('ga_marker_overlay_service');
+goog.require('ga_search_service');
+goog.require('ga_urlutils_service');
+(function() {
 
   var originToZoomLevel = {
     address: 10,

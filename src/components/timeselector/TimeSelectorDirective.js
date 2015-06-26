@@ -1,10 +1,10 @@
-(function() {
-  goog.provide('ga_timeselector_directive');
+goog.provide('ga_timeselector_directive');
 
-  goog.require('ga_debounce_service');
-  goog.require('ga_map_service');
-  goog.require('ga_permalink_service');
-  goog.require('ga_slider_directive');
+goog.require('ga_debounce_service');
+goog.require('ga_map_service');
+goog.require('ga_permalink_service');
+goog.require('ga_slider_directive');
+(function() {
 
   var module = angular.module('ga_timeselector_directive', [
     'ga_debounce_service',

@@ -1,7 +1,7 @@
-(function() {
-  goog.provide('ga_draggable_directive');
+goog.provide('ga_draggable_directive');
 
-  goog.require('ga_browsersniffer_service');
+goog.require('ga_browsersniffer_service');
+(function() {
 
   var module = angular.module('ga_draggable_directive', [
     'ga_browsersniffer_service'

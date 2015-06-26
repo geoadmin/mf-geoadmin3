@@ -1,5 +1,5 @@
+goog.provide('ga_waitcursor_service');
 (function() {
-  goog.provide('ga_waitcursor_service');
 
   var module = angular.module('ga_waitcursor_service', []);
 

@@ -1,7 +1,7 @@
-(function() {
-  goog.provide('ga_seo_service');
+goog.provide('ga_seo_service');
 
-  goog.require('ga_permalink_service');
+goog.require('ga_permalink_service');
+(function() {
 
   var module = angular.module('ga_seo_service', [
     'ga_permalink_service'

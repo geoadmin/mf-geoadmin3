@@ -1,8 +1,8 @@
-(function() {
-  goog.provide('ga_topic_directive');
+goog.provide('ga_topic_directive');
 
-  goog.require('ga_map_service');
-  goog.require('ga_permalink');
+goog.require('ga_map_service');
+goog.require('ga_permalink');
+(function() {
 
   var module = angular.module('ga_topic_directive', [
     'pascalprecht.translate',

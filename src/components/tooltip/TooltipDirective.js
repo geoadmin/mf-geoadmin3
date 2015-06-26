@@ -1,11 +1,11 @@
-(function() {
-  goog.provide('ga_tooltip_directive');
+goog.provide('ga_tooltip_directive');
 
-  goog.require('ga_browsersniffer_service');
-  goog.require('ga_debounce_service');
-  goog.require('ga_map_service');
-  goog.require('ga_popup_service');
-  goog.require('ga_styles_service');
+goog.require('ga_browsersniffer_service');
+goog.require('ga_debounce_service');
+goog.require('ga_map_service');
+goog.require('ga_popup_service');
+goog.require('ga_styles_service');
+(function() {
 
   var module = angular.module('ga_tooltip_directive', [
     'ga_debounce_service',

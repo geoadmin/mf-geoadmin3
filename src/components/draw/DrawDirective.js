@@ -1,9 +1,9 @@
-(function() {
-  goog.provide('ga_draw_directive');
+goog.provide('ga_draw_directive');
 
-  goog.require('ga_export_kml_service');
-  goog.require('ga_file_storage_service');
-  goog.require('ga_map_service');
+goog.require('ga_export_kml_service');
+goog.require('ga_file_storage_service');
+goog.require('ga_map_service');
+(function() {
 
   var module = angular.module('ga_draw_directive', [
     'ga_export_kml_service',

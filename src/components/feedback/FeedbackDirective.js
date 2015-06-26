@@ -1,9 +1,9 @@
-(function() {
-  goog.provide('ga_feedback_directive');
+goog.provide('ga_feedback_directive');
 
-  goog.require('ga_browsersniffer_service');
-  goog.require('ga_export_kml_service');
-  goog.require('ga_permalink');
+goog.require('ga_browsersniffer_service');
+goog.require('ga_export_kml_service');
+goog.require('ga_permalink');
+(function() {
 
   var module = angular.module('ga_feedback_directive', [
     'ga_browsersniffer_service',

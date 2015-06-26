@@ -1,5 +1,5 @@
+goog.provide('ga_importwms_controller');
 (function() {
-  goog.provide('ga_importwms_controller');
 
   var module = angular.module('ga_importwms_controller', []);
 

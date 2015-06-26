@@ -1,5 +1,5 @@
+goog.provide('ga_file_storage_service');
 (function() {
-  goog.provide('ga_file_storage_service');
 
   var module = angular.module('ga_file_storage_service', []);
 

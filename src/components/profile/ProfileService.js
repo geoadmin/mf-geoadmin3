@@ -1,7 +1,7 @@
-(function() {
-  goog.provide('ga_profile_service');
+goog.provide('ga_profile_service');
 
-  goog.require('ga_urlutils_service');
+goog.require('ga_urlutils_service');
+(function() {
 
   var module = angular.module('ga_profile_service', [
     'ga_urlutils_service',

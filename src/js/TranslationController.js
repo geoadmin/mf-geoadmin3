@@ -1,5 +1,5 @@
+goog.provide('ga_translation_controller');
 (function() {
-  goog.provide('ga_translation_controller');
 
   var module = angular.module('ga_translation_controller', []);
 

@@ -293,7 +293,7 @@ $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule
 # add lib/closure as a root. When compiling we remove base.js from the js files
 # passed to the Closure compiler.
 .build-artefacts/js-files: $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule.js) .build-artefacts/python-venv .build-artefacts/closure-library
-	${PYTHON_CMD} .build-artefacts/closure-library/closure/bin/build/closurebuilder.py --root=.build-artefacts/annotated --root=src/lib/closure --namespace="ga" --namespace="__ga_template_cache__" --output_mode=list > $@
+	${PYTHON_CMD} .build-artefacts/closure-library/closure/bin/build/closurebuilder.py --root=.build-artefacts/annotated --root=.build-artefacts/closure-library --namespace="ga" --namespace="__ga_template_cache__" --output_mode=list > $@
 
 .build-artefacts/lint.timestamp: .build-artefacts/python-venv/bin/gjslint $(SRC_JS_FILES)
 	.build-artefacts/python-venv/bin/gjslint -r src/components src/js --jslint_error=all
@@ -333,13 +333,12 @@ $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule
 	git clone http://github.com/google/closure-library/ $@
 	cd $@ && git reset --hard 0011afd534469ba111786fe68300a634e08a4d80 && cd ../../
 
-.build-artefacts/closure-compiler/compiler.jar: .build-artefacts/closure-compiler/compiler-latest.zip
-	unzip $< -d .build-artefacts/closure-compiler
-	touch $@
-
 .build-artefacts/closure-compiler/compiler-latest.zip:
 	mkdir -p $(dir $@)
-	wget -O $@ http://dl.google.com/closure-compiler/compiler-20131014.zip
+	wget -O $@ http://dl.google.com/closure-compiler/compiler-latest.zip
+
+.build-artefacts/closure-compiler/compiler.jar: .build-artefacts/closure-compiler/compiler-latest.zip
+	unzip $< -d .build-artefacts/closure-compiler
 	touch $@
 
 $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH)/.git/config:
