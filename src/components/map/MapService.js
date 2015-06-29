@@ -541,18 +541,11 @@ goog.require('ga_urlutils_service');
           })];
           feature.setStyle(styles);
 
-        // Improve these 2 'if', really not nice actuailly
+        // TODO: Improve these 2 'if', really not nice actually
         // Specific use case of feature created with measure tool
         } else if (style && /^measure/.test(feature.getId())) {
           style.getStroke().setLineDash([8]);
-          styles = [new ol.style.Style({
-            fill: style.getFill(),
-            stroke: style.getStroke(),
-            image: null,
-            text: null,
-            zIndex: style.getZIndex()
-          })];
-          feature.setStyle(styles);
+          // TODO: display also tooltip
         }
         if (feature.getId()) {
           var split = feature.getId().split('_');

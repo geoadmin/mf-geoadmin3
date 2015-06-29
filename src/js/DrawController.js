@@ -7,7 +7,7 @@ goog.provide('ga_draw_controller');
   ]);
 
   module.controller('GaDrawController',
-      function($rootScope, $scope, $translate, gaGlobalOptions, gaStyleFactory) {
+      function($rootScope, $scope, $translate, gaGlobalOptions, gaStyleFactory, gaMeasure) {
         
         $scope.$on('gaPopupFocusChange', function(evt, isFocus) {
           $scope.options.hasPopupFocus = isFocus;
@@ -357,40 +357,37 @@ goog.provide('ga_draw_controller');
           return styles;
         };
 
-        // Draw freehand 
-        /*var freehandDrawStyleFunc = function(feature) {
-          var zIndex = gaStyleFactory.ZLINE;
-          var stroke = new ol.style.Stroke({
-            color: [255, 255, 0, 0.7],
-            width: 6
-          });
-          
-          $scope.options.name = null;
-          //feature.set('name', $scope.options.name);
-          feature.set('description', $scope.options.description);
-          var styles = [
-            new ol.style.Style({
-              stroke: stroke,
-              zIndex: zIndex
-            })
-          ];
-
-          return styles;
-        };*/
-
         // Draw a dashed line or polygon 
         var measureDrawStyleFunc = function(feature) {
           var color = $scope.options.colors[5]; // red
+          var stroke = new ol.style.Stroke({
+            color: color.fill.concat([1]),
+            width: 3
+          });
+          var dashedStroke = new ol.style.Stroke({
+            color: color.fill.concat([1]),
+            width: 3,
+            lineDash: [8]
+          });
           var styles = [
             new ol.style.Style({
               fill: new ol.style.Fill({
                 color: color.fill.concat([0.4])
               }),
-              stroke: new ol.style.Stroke({
-                color: color.fill.concat([1]),
-                width: 3,
-                lineDash: [8]
-              }),
+              stroke: dashedStroke,
+              zIndex: gaStyleFactory.ZPOLYGON
+            }), new ol.style.Style({
+              stroke: stroke,
+              geometry: function(feature) {
+                var coords = feature.getGeometry().getCoordinates();
+                if (coords.length == 2 ||
+                    (coords.length == 3 && coords[1][0] == coords[2][0] &&
+                    coords[1][1] == coords[2][1])) {
+                 var circle = new ol.geom.Circle(coords[0],
+                     gaMeasure.getLength(feature.getGeometry()));
+                 return circle;
+                }
+              },
               zIndex: gaStyleFactory.ZPOLYGON
             })
           ];
@@ -398,6 +395,8 @@ goog.provide('ga_draw_controller');
         };
 
         var generateDrawStyleFunc = function(styleFunction) {
+          // ol.interaction.Draw generates automatically a sketchLine when
+          // drawing  polygon
           var sketchPolygon = new ol.style.Style({
             fill: new ol.style.Fill({
               color: [255, 255, 255, 0.4]
@@ -435,22 +434,12 @@ goog.provide('ga_draw_controller');
             return styles;
           };
         };
-         
+        
+        // Select style function display vertices of the geometry 
         $scope.options.selectStyleFunction = (function() {
-          var select = gaStyleFactory.getStyle('select');
-
-          var fill = new ol.style.Fill({
-            color: white.concat([0.4])
-          });
-          var stroke = new ol.style.Stroke({
-            color: white.concat([0.6]),
-            width: 3 
-          });
-          var defaultCircle = new ol.style.Circle({
-            radius: 4,
-            fill: fill,
-            stroke: stroke
-          }); 
+          
+          // The vertex style display a black and white circle on the existing
+          // vertices, and also when the user can add a new vertices.
           var vertexStyle = new ol.style.Style({
             image: new ol.style.Circle({
               radius: 7,
@@ -460,7 +449,19 @@ goog.provide('ga_draw_controller');
               stroke: new ol.style.Stroke({
                 color: black.concat([1])
               })
-            }), 
+            }),
+            geometry: function(feature) {
+              var geom = feature.getGeometry();
+              if (geom instanceof ol.geom.LineString) {
+                var coordinates = feature.getGeometry().getCoordinates();
+                return new ol.geom.MultiPoint(coordinates);
+              } else if (geom instanceof ol.geom.Polygon) {
+                var coordinates = feature.getGeometry().getCoordinates()[0];
+                return new ol.geom.MultiPoint(coordinates);
+              } else {
+                return feature.getGeometry();
+              }
+            }, 
             zIndex: gaStyleFactory.ZSKETCH 
           });
            
@@ -470,29 +471,11 @@ goog.provide('ga_draw_controller');
               return [vertexStyle];
             }
             var styles = feature.getStyleFunction().call(feature, resolution);
-            var style = styles[0];
-            var text = style.getText();
-            if (text) {
-              text = new ol.style.Text({
-                font: text.getFont(),
-                text: text.getText(),
-                fill: fill,
-                stroke: stroke
-              });
-            }
-            
-            // When a feature is selected we apply its current style and a white
-            // transparent style on top.
-            return [
-              style,
-              new ol.style.Style({
-                fill: fill,
-                stroke: stroke,
-                text: text,
-                image: (text) ? style.getImage() : defaultCircle,
-                zIndex: gaStyleFactory.ZSELECT                
-              })
-            ];
+            // When a feature is selected we apply its current style and the
+            // vertex style.
+            return styles.concat([
+              vertexStyle
+            ]);
           }
         })();
 
@@ -532,7 +515,13 @@ goog.provide('ga_draw_controller');
           id: 'measure',
           drawOptions: {
             type: 'Polygon',
+            minPoints: 2,
             style: generateDrawStyleFunc(measureDrawStyleFunc)
+            /*,
+            geometryFunction: function(coords, geometry) {
+              console.log('geomFunction');
+              return new ol.geom.LineString(coords[0]);
+            }*/
           },
           style: measureDrawStyleFunc,
           showMeasure: true
@@ -543,9 +532,6 @@ goog.provide('ga_draw_controller');
           tool.activeKey = 'is' + tool.id.charAt(0).toUpperCase() + tool.id.slice(1) + 'Active';
           tool.cssClass = 'icon-ga-mapfunction';//'ga-draw-' + tool.id + '-bt';
           tool.title = 'draw_' + tool.id;
-          if (!tool.drawOptions.featureStyleFunction) {
-            tool.drawOptions.featureStyleFunction = $scope.options.styleFunction;
-          }
         }
       });
 })();
