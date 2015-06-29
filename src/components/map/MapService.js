@@ -433,7 +433,7 @@ goog.require('ga_urlutils_service');
 
     this.$get = function($http, $q, $rootScope, $timeout, $translate,
         gaDefinePropertiesForLayer, gaGlobalOptions, gaMapClick, gaMapUtils,
-        gaNetworkStatus, gaStorage, gaStyleFactory, gaUrlUtils) {
+        gaNetworkStatus, gaStorage, gaStyleFactory, gaUrlUtils, gaMeasure) {
 
       // Create the parser
       var kmlFormat = new ol.format.KML({
@@ -545,7 +545,6 @@ goog.require('ga_urlutils_service');
         // Specific use case of feature created with measure tool
         } else if (style && /^measure/.test(feature.getId())) {
           style.getStroke().setLineDash([8]);
-          // TODO: display also tooltip
         }
         if (feature.getId()) {
           var split = feature.getId().split('_');
@@ -649,6 +648,42 @@ goog.require('ga_urlutils_service');
               } else {
                 olMap.addLayer(olLayer);
               }
+
+              // If the layer can contain measure features, we register some
+              // events to add/remove correctly the overlays
+              if (gaMapUtils.isStoredKmlLayer(olLayer)) {
+                if (olLayer.getVisible()) {
+                  angular.forEach(olLayer.getSource().getFeatures(),
+                      function(feature) {
+                    if (/^measure/.test(feature.getId())) {
+                      gaMeasure.addOverlays(olMap, feature);
+                    }
+                  });
+                }
+                olMap.getLayers().on('remove', function(evt) {
+                  if (evt.element === olLayer) {
+                    var features = evt.element.getSource().getFeatures();
+                    for (var i in features) {
+                      gaMeasure.removeOverlays(features[i]);
+                    }
+                  }
+                });
+                olLayer.on('change:visible', function(evt) {
+                  var visible = evt.target.getVisible();
+                  var features = evt.target.getSource().getFeatures();
+                  for (var i in features) {
+                    if (visible) {
+                      gaMeasure.addOverlays(olMap, features[i]);
+                    } else {
+                      gaMeasure.removeOverlays(features[i]);
+                    }
+                  }
+                });
+                olLayer.getSource().on('removefeature', function(evt) {
+                  gaMeasure.removeOverlays(evt.feature);
+                });
+              }
+
               if (options.zoomToExtent) {
                 olMap.getView().fitExtent(olLayer.getExtent(), olMap.getSize());
               }

@@ -29,7 +29,7 @@ goog.require('ga_map_service');
         gaExportKml, gaMapUtils, gaPermalink, $http, $q, gaUrlUtils,
         $document, gaMeasure) {
 
-      var createDefaultLayer = function(useTemporaryLayer) {
+      var createDefaultLayer = function(map, useTemporaryLayer) {
         var dfltLayer = new ol.layer.Vector({
           source: new ol.source.Vector(),
           visible: true
@@ -39,7 +39,33 @@ goog.require('ga_map_service');
         if (useTemporaryLayer) {
           dfltLayer.displayInLayerManager = false;
           dfltLayer.preview = true;
+        } else {
+          dfltLayer.on('change:visible', function(evt) {
+            var visible = evt.target.getVisible();
+            var features = evt.target.getSource().getFeatures();
+            for (var i in features) {
+              if (visible) {
+                gaMeasure.addOverlays(map, features[i]);
+              } else {
+                gaMeasure.removeOverlays(features[i]);
+              }
+            }
+          });
         }
+        dfltLayer.getSource().on('removefeature', function(evt) {
+          gaMeasure.removeOverlays(evt.feature);
+        });
+        map.getLayers().on('remove', function(evt) {
+          if (evt.element === dfltLayer) {
+            var features = evt.element.getSource().getFeatures();
+            for (var i in features) {
+              gaMeasure.removeOverlays(features[i]);
+            }
+          }
+        });
+
+
+
 
         dfltLayer.label = 'Drawing';
         dfltLayer.type = 'KML';
@@ -155,13 +181,6 @@ goog.require('ga_map_service');
           map.removeOverlay(overlays[i]);
         }
       };
-      // Remove the overlays attached to the feature
-      var removeOverlays = function(feature, map) {
-        var overlays = feature.get('overlays');
-        while (overlays && overlays.length) {
-          map.removeOverlay(overlays.pop());
-        }
-      };
       return {
         restrict: 'A',
         templateUrl: 'components/draw/partials/draw.html',
@@ -175,25 +194,13 @@ goog.require('ga_map_service');
           var unDblClick, unLayerAdd, unLayerRemove, unSourceEvents = [],
               deregPointerMove, deregFeatureChange, unLayerVisible;
           var useTemporaryLayer = scope.options.useTemporaryLayer || false;
+          var helpTooltip, distTooltip, areaTooltip;
           var map = scope.map;
           var viewport = $(map.getViewport());
           scope.isPropsActive = true;
           scope.isMeasureActive = false;
           scope.options.isProfileActive = false;
 
-
-          // Create temporary overlays
-          // Help overlay
-          var helpTooltip = createHelpTooltip();
-          map.addOverlay(helpTooltip);
-
-          // Distance overlay
-          var distTooltip = createMeasureTooltip();
-          map.addOverlay(distTooltip);
-
-          // Area overlay
-          var areaTooltip = createMeasureTooltip();
-          map.addOverlay(areaTooltip);
 
 
           scope.layers = scope.map.getLayers().getArray();
@@ -230,14 +237,6 @@ goog.require('ga_map_service');
             evt.element.setStyle(styles);
             updatePropsTabContent();
             togglePopup(evt.element);
-            deregFeatureChange = evt.element.on('change', function(evt) {
-              var overlays = evt.target.get('overlays');
-              if (overlays) {
-                updateMeasureTooltips(overlays[0], overlays[1],
-                    evt.target.getGeometry());
-              }
-            });
-
           });
           select.getFeatures().on('remove', function(evt) {
             // Remove the select style
@@ -246,7 +245,6 @@ goog.require('ga_map_service');
             evt.element.setStyle(styles);
             updatePropsTabContent();
             togglePopup();
-            ol.Observable.unByKey(deregFeatureChange);
           });
           select.setActive(false);
           map.addInteraction(select);
@@ -271,7 +269,7 @@ goog.require('ga_map_service');
 
             // Set the layer to modify if exist, otherwise we use an empty
             // layer
-            layer = createDefaultLayer(useTemporaryLayer);
+            layer = createDefaultLayer(map, useTemporaryLayer);
             if (!useTemporaryLayer) {
               scope.adminShortenUrl = undefined;
               scope.userShortenUrl = undefined;
@@ -290,23 +288,8 @@ goog.require('ga_map_service');
               unSourceEvents = [
                 source.on('addfeature', saveDebounced),
                 source.on('changefeature', saveDebounced),
-                source.on('removefeature', function(evt) {
-                  saveDebounced(evt);
-                  // Remove the overlays attached to the feature
-                  removeOverlays(evt.feature, map);
-                })
+                source.on('removefeature', saveDebounced)
               ];
-              unLayerVisible = layer.on('change:visible', function(evt) {
-                var visible = evt.target.getVisible();
-                var features = evt.target.getSource().getFeatures();
-                for (var i in features) {
-                  if (visible) {
-                    showOverlays(features[i], map);
-                  } else {
-                    hideOverlays(features[i], map);
-                  }
-                }
-              });
 
             }
 
@@ -347,16 +330,6 @@ goog.require('ga_map_service');
               }
             });
 
-            unLayerRemove = map.getLayers().on('remove', function(evt) {
-              if (evt.element === layer) {
-                var features = layer.getSource().getFeatures();
-                for (var i in features) {
-                  removeOverlays(features[i], map);
-                }
-                ol.Observable.unByKey(unLayerRemove);
-              }
-              ol.Observable.unByKey(unLayerVisible);
-            });
             // Block dblclick event in draw mode to avoid map zooming
             unDblClick = map.on('dblclick', function(evt) {
               return false;
@@ -391,12 +364,16 @@ goog.require('ga_map_service');
           var activateDrawInteraction = function(tool) {
             select.setActive(false);
             deactivateDrawInteraction();
+
+            // Create temporary help overlays
+            helpTooltip = createHelpTooltip();
+            map.addOverlay(helpTooltip);
+
             updateHelpTooltip(helpTooltip, tool.id, false);
 
             if (!gaBrowserSniffer.mobile) {
               deregPointerMove2 = map.on('pointermove', function(evt) {
                 helpTooltip.setPosition(evt.coordinate);
-
               });
             }
 
@@ -407,6 +384,17 @@ goog.require('ga_map_service');
               var isSnapOnLastPoint = false;
               updateHelpTooltip(helpTooltip, tool.id, true,
                   isFinishOnFirstPoint, isSnapOnLastPoint);
+
+              // Add temporary measure tooltips
+              if (tool.showMeasure) {
+                // Distance overlay
+                distTooltip = createMeasureTooltip();
+                map.addOverlay(distTooltip);
+
+                // Area overlay
+                areaTooltip = createMeasureTooltip();
+                map.addOverlay(areaTooltip);
+              }
 
               deregFeatureChange = evt.feature.on('change', function(evt) {
                 var geom = evt.target.getGeometry();
@@ -489,23 +477,10 @@ goog.require('ga_map_service');
               select.getFeatures().push(featureToAdd);
               // Add final measure tooltips
               if (tool.showMeasure) {
-                updateMeasureTooltips(distTooltip, areaTooltip,
-                    featureToAdd.getGeometry());
-                distTooltip.getElement().className = 'ga-draw-measure-static';
-                areaTooltip.getElement().className = 'ga-draw-measure-static';
-                distTooltip.setOffset([0, -7]);
-                areaTooltip.setOffset([0, -7]);
-                featureToAdd.set('overlays', [distTooltip, areaTooltip]);
-                distTooltip = createMeasureTooltip();
-                areaTooltip = createMeasureTooltip();
-                map.addOverlay(distTooltip);
-                map.addOverlay(areaTooltip);
-              }
-
-              // Remove temporary tooltips
-              helpTooltip.setPosition(undefined);
-              distTooltip.setPosition(undefined);
-              areaTooltip.setPosition(undefined);
+                gaMeasure.addOverlays(map, featureToAdd);
+                map.removeOverlay(distTooltip);
+                map.removeOverlay(areaTooltip);
+             }
             });
             map.addInteraction(draw);
           };
@@ -513,7 +488,9 @@ goog.require('ga_map_service');
             ol.Observable.unByKey(deregPointerMove2);
             ol.Observable.unByKey(deregDrawStart);
             ol.Observable.unByKey(deregDrawEnd);
-            helpTooltip.setPosition(undefined);
+            map.removeOverlay(helpTooltip);
+            map.removeOverlay(distTooltip);
+            map.removeOverlay(areaTooltip);
             if (draw) {
               map.removeInteraction(draw);
             }

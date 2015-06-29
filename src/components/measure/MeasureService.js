@@ -140,6 +140,66 @@ goog.provide('ga_measure_service');
           return measureFilter(this.getAzimuth(geom), 'angle');
         };
 
+        // Creates a new measure tooltip with a nice arrow
+        this.createOverlay = function() {
+          var tooltipElement = document.createElement('div');
+          tooltipElement.className = 'ga-draw-measure-static';
+          var tooltip = new ol.Overlay({
+            element: tooltipElement,
+            offset: [0, -7],
+            positioning: 'bottom-center',
+            stopEvent: true // for copy/paste
+          });
+          return tooltip;
+        };
+        this.updateOverlays = function(feature) {
+          var overlays = feature.get('overlays');
+          if (overlays) {
+            var geom = feature.getGeometry();
+            if (geom instanceof ol.geom.Polygon) {
+              var areaOverlay = overlays[0];
+              areaOverlay.getElement().innerHTML = this.getAreaLabel(geom);
+              areaOverlay.setPosition(geom.getInteriorPoint().getCoordinates());
+              geom = new ol.geom.LineString(geom.getCoordinates()[0]);
+            }
+            if (geom instanceof ol.geom.LineString) {
+              var distOverlay = overlays[1] || overlays[0];
+              distOverlay.getElement().innerHTML = this.getLengthLabel(geom);
+              distOverlay.setPosition(geom.getLastCoordinate());
+            }
+          }
+        };
+        // Add overlays with distance, azimuth and area, depending on the
+        // feature's geometry
+        this.addOverlays = function(map, feature) {
+          var overlays = [], geom = feature.getGeometry();
+          if (geom instanceof ol.geom.Polygon) {
+            var areaOverlay = this.createOverlay();
+            map.addOverlay(areaOverlay);
+            overlays.push(areaOverlay);
+            geom = new ol.geom.LineString(geom.getCoordinates()[0]);
+          }
+          if (geom instanceof ol.geom.LineString) {
+            var distOverlay = this.createOverlay();
+            map.addOverlay(distOverlay);
+            overlays.push(distOverlay);
+          }
+          if (overlays.length) {
+            feature.set('overlays', overlays);
+            this.updateOverlays(feature);
+            feature.on('change', function(evt) {
+              this.updateOverlays(evt.target);
+            }, this);
+          }
+        };
+        // Remove the overlays attached to the feature
+        this.removeOverlays = function(feature) {
+          var overlays = feature.get('overlays');
+          while (overlays && overlays.length) {
+            var overlay = overlays.pop();
+            overlay.getMap().removeOverlay(overlay);
+          }
+        };
       };
       return new Measure();
     };
