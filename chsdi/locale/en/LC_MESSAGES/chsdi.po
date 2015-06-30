@@ -1902,7 +1902,7 @@ msgid "ch.bafu.wasser-teileinzugsgebiete_40"
 msgstr "40km2 sub catchment areas"
 
 msgid "ch.bafu.wasser-vorfluter"
-msgstr "Receiving watercourses"
+msgstr "Ablussregimetyp"
 
 msgid "ch.bafu.wasserbau-vermessungsstrecken"
 msgstr "Vermessungsstrecken"
@@ -2543,6 +2543,9 @@ msgstr "PGI meat products"
 
 msgid "ch.blw.ursprungsbezeichnungen-kaese"
 msgstr "PDO cheese"
+
+msgid "ch.blw.ursprungsbezeichnungen-konditoreiwaren"
+msgstr "PDO plant products"
 
 msgid "ch.blw.ursprungsbezeichnungen-pflanzen"
 msgstr "PDO plant products"
@@ -3351,221 +3354,293 @@ msgstr "Vorflutertyp"
 msgid "ch_bafu_gee-kla.vsa_kategorie"
 msgstr "Reinigungstyp (VSA-Kategorie)"
 
+#. TODO
 msgid "ch_bafu_hydrologie_niedrigwasserstatistik.Anz_Jahre"
-msgstr "Anzahl Jahre"
+msgstr "ch_bafu_hydrologie_niedrigwasserstatistik.Anz_Jahre"
 
+#. TODO
 msgid "ch_bafu_hydrologie_niedrigwasserstatistik.Beeinflussung"
-msgstr "Beeinflussung NQ"
+msgstr "ch_bafu_hydrologie_niedrigwasserstatistik.Beeinflussung"
 
+#. TODO
 msgid "ch_bafu_hydrologie_niedrigwasserstatistik.Beginn"
-msgstr "Periodenbeginn"
+msgstr "ch_bafu_hydrologie_niedrigwasserstatistik.Beginn"
 
+#. TODO
 msgid "ch_bafu_hydrologie_niedrigwasserstatistik.Ende"
-msgstr "Periodenende"
+msgstr "ch_bafu_hydrologie_niedrigwasserstatistik.Ende"
 
+#. TODO
 msgid "ch_bafu_hydrologie_niedrigwasserstatistik.GEBFLAECHE"
-msgstr "Einzugsgebietsfläche [km2]"
+msgstr "ch_bafu_hydrologie_niedrigwasserstatistik.GEBFLAECHE"
 
+#. TODO
 msgid "ch_bafu_hydrologie_niedrigwasserstatistik.Genauigkeit"
-msgstr "Genauigkeit NQ"
+msgstr "ch_bafu_hydrologie_niedrigwasserstatistik.Genauigkeit"
 
+#. TODO
 msgid "ch_bafu_hydrologie_niedrigwasserstatistik.KOORDX"
-msgstr "x-Koordinate"
+msgstr "ch_bafu_hydrologie_niedrigwasserstatistik.KOORDX"
 
+#. TODO
 msgid "ch_bafu_hydrologie_niedrigwasserstatistik.KOORDY"
-msgstr "y-Koordinate"
+msgstr "ch_bafu_hydrologie_niedrigwasserstatistik.KOORDY"
 
+#. TODO
 msgid "ch_bafu_hydrologie_niedrigwasserstatistik.KennNr"
-msgstr "Nummer"
+msgstr "ch_bafu_hydrologie_niedrigwasserstatistik.KennNr"
 
+#. TODO
 msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NAME"
-msgstr "Name der Station"
+msgstr "ch_bafu_hydrologie_niedrigwasserstatistik.NAME"
 
+#. TODO
 msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM14Q10"
-msgstr "NM14Q10"
+msgstr "ch_bafu_hydrologie_niedrigwasserstatistik.NM14Q10"
 
+#. TODO
 msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM14Q100"
-msgstr "NM14Q100"
+msgstr "ch_bafu_hydrologie_niedrigwasserstatistik.NM14Q100"
 
+#. TODO
 msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM14Q2"
-msgstr "NM14Q2"
+msgstr "ch_bafu_hydrologie_niedrigwasserstatistik.NM14Q2"
 
+#. TODO
 msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM14Q20"
-msgstr "NM14Q20"
+msgstr "ch_bafu_hydrologie_niedrigwasserstatistik.NM14Q20"
 
+#. TODO
 msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM14Q5"
-msgstr "NM14Q5"
+msgstr "ch_bafu_hydrologie_niedrigwasserstatistik.NM14Q5"
 
+#. TODO
 msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM14Q50"
-msgstr "NM14Q50"
+msgstr "ch_bafu_hydrologie_niedrigwasserstatistik.NM14Q50"
 
+#. TODO
 msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM1Q10"
-msgstr "NM1Q10"
+msgstr "ch_bafu_hydrologie_niedrigwasserstatistik.NM1Q10"
 
+#. TODO
 msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM1Q100"
-msgstr "NM1Q100"
+msgstr "ch_bafu_hydrologie_niedrigwasserstatistik.NM1Q100"
 
+#. TODO
 msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM1Q2"
-msgstr "NM1Q2"
+msgstr "ch_bafu_hydrologie_niedrigwasserstatistik.NM1Q2"
 
+#. TODO
 msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM1Q20"
-msgstr "NM1Q20"
+msgstr "ch_bafu_hydrologie_niedrigwasserstatistik.NM1Q20"
 
+#. TODO
 msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM1Q5"
-msgstr "NM1Q5"
+msgstr "ch_bafu_hydrologie_niedrigwasserstatistik.NM1Q5"
 
+#. TODO
 msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM1Q50"
-msgstr "NM1Q50"
+msgstr "ch_bafu_hydrologie_niedrigwasserstatistik.NM1Q50"
 
+#. TODO
 msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM30Q10"
-msgstr "NM30Q10"
+msgstr "ch_bafu_hydrologie_niedrigwasserstatistik.NM30Q10"
 
+#. TODO
 msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM30Q100"
-msgstr "NM30Q100"
+msgstr "ch_bafu_hydrologie_niedrigwasserstatistik.NM30Q100"
 
+#. TODO
 msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM30Q2"
-msgstr "NM30Q2"
+msgstr "ch_bafu_hydrologie_niedrigwasserstatistik.NM30Q2"
 
+#. TODO
 msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM30Q20"
-msgstr "NM30Q20"
+msgstr "ch_bafu_hydrologie_niedrigwasserstatistik.NM30Q20"
 
+#. TODO
 msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM30Q5"
-msgstr "NM30Q5"
+msgstr "ch_bafu_hydrologie_niedrigwasserstatistik.NM30Q5"
 
+#. TODO
 msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM30Q50"
-msgstr "NM30Q50"
+msgstr "ch_bafu_hydrologie_niedrigwasserstatistik.NM30Q50"
 
+#. TODO
 msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM7Q10"
-msgstr "NM7Q10"
+msgstr "ch_bafu_hydrologie_niedrigwasserstatistik.NM7Q10"
 
+#. TODO
 msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM7Q100"
-msgstr "NM7Q100"
+msgstr "ch_bafu_hydrologie_niedrigwasserstatistik.NM7Q100"
 
+#. TODO
 msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM7Q2"
-msgstr "NM7Q2"
+msgstr "ch_bafu_hydrologie_niedrigwasserstatistik.NM7Q2"
 
+#. TODO
 msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM7Q20"
-msgstr "NM7Q20"
+msgstr "ch_bafu_hydrologie_niedrigwasserstatistik.NM7Q20"
 
+#. TODO
 msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM7Q5"
-msgstr "NM7Q5"
+msgstr "ch_bafu_hydrologie_niedrigwasserstatistik.NM7Q5"
 
+#. TODO
 msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM7Q50"
-msgstr "NM7Q50"
+msgstr "ch_bafu_hydrologie_niedrigwasserstatistik.NM7Q50"
 
+#. TODO
 msgid "ch_bafu_hydrologie_niedrigwasserstatistik.hyperlink"
-msgstr "Link deutsch"
+msgstr "ch_bafu_hydrologie_niedrigwasserstatistik.hyperlink"
 
+#. TODO
 msgid "ch_bafu_hydrologie_q347.BasisID"
-msgstr "Nr. Basisgebiet"
+msgstr "ch_bafu_hydrologie_q347.BasisID"
 
+#. TODO
 msgid "ch_bafu_hydrologie_q347.BilanzID"
-msgstr "Nr. Bilanzgebiet"
+msgstr "ch_bafu_hydrologie_q347.BilanzID"
 
+#. TODO
 msgid "ch_bafu_hydrologie_q347.ID"
-msgstr "ID"
+msgstr "ch_bafu_hydrologie_q347.ID"
 
+#. TODO
 msgid "ch_bafu_hydrologie_q347.P"
-msgstr "Messperiode P"
+msgstr "ch_bafu_hydrologie_q347.P"
 
+#. TODO
 msgid "ch_bafu_hydrologie_q347.QP"
-msgstr "Q347 (P) [l/s]"
+msgstr "ch_bafu_hydrologie_q347.QP"
 
+#. TODO
 msgid "ch_bafu_hydrologie_q347.Q_84_93"
-msgstr "Q347 (1984-93) [l/s]"
+msgstr "ch_bafu_hydrologie_q347.Q_84_93"
 
+#. TODO
 msgid "ch_bafu_hydrologie_q347.Qmod"
-msgstr "Q347 (Modell) [l/s]"
+msgstr "ch_bafu_hydrologie_q347.Qmod"
 
+#. TODO
 msgid "ch_bafu_hydrologie_q347.bemerkung"
-msgstr "Bemerkungen"
+msgstr "ch_bafu_hydrologie_q347.bemerkung"
 
+#. TODO
 msgid "ch_bafu_hydrologie_q347.flaeche"
-msgstr "Fläche [km2]"
+msgstr "ch_bafu_hydrologie_q347.flaeche"
 
+#. TODO
 msgid "ch_bafu_hydrologie_q347.gewaesser"
-msgstr "Name"
+msgstr "ch_bafu_hydrologie_q347.gewaesser"
 
+#. TODO
 msgid "ch_bafu_hydrologie_q347.lhg"
-msgstr "Nr. HADES 5.1"
+msgstr "ch_bafu_hydrologie_q347.lhg"
 
+#. TODO
 msgid "ch_bafu_typisierung_fliessgewaesser.abfluss"
-msgstr "Abfluss"
+msgstr "ch_bafu_typisierung_fliessgewaesser.abfluss"
 
+#. TODO
 msgid "ch_bafu_typisierung_fliessgewaesser.aehnlichkeit"
-msgstr "zugewiesen zu"
+msgstr "ch_bafu_typisierung_fliessgewaesser.aehnlichkeit"
 
+#. TODO
 msgid "ch_bafu_typisierung_fliessgewaesser.biogeo"
-msgstr "Biogeographische Region"
+msgstr "ch_bafu_typisierung_fliessgewaesser.biogeo"
 
+#. TODO
 msgid "ch_bafu_typisierung_fliessgewaesser.code"
-msgstr "Merkmalskombination"
+msgstr "ch_bafu_typisierung_fliessgewaesser.code"
 
+#. TODO
 msgid "ch_bafu_typisierung_fliessgewaesser.gefaelle"
-msgstr "Gefälle"
+msgstr "ch_bafu_typisierung_fliessgewaesser.gefaelle"
 
+#. TODO
 msgid "ch_bafu_typisierung_fliessgewaesser.geo"
-msgstr "Geologie"
+msgstr "ch_bafu_typisierung_fliessgewaesser.geo"
 
+#. TODO
 msgid "ch_bafu_typisierung_fliessgewaesser.gewaessertyp"
-msgstr "Fliessgewässertyp"
+msgstr "ch_bafu_typisierung_fliessgewaesser.gewaessertyp"
 
+#. TODO
 msgid "ch_bafu_typisierung_fliessgewaesser.grosserfluss"
-msgstr "Grosser Fluss"
+msgstr "ch_bafu_typisierung_fliessgewaesser.grosserfluss"
 
+#. TODO
 msgid "ch_bafu_typisierung_fliessgewaesser.hoehe"
-msgstr "Höhe"
+msgstr "ch_bafu_typisierung_fliessgewaesser.hoehe"
 
+#. TODO
 msgid "ch_bafu_typisierung_fliessgewaesser.name"
-msgstr "Name des Fliessgewässertyps"
+msgstr "ch_bafu_typisierung_fliessgewaesser.name"
 
+#. TODO
 msgid "ch_bafu_typisierung_fliessgewaesser.objectid_gwn25"
-msgstr "Gewässernetz-ID"
+msgstr "ch_bafu_typisierung_fliessgewaesser.objectid_gwn25"
 
+#. TODO
 msgid "ch_bafu_typisierung_fliessgewaesser.shape_length"
-msgstr "Länge des Abschnittes"
+msgstr "ch_bafu_typisierung_fliessgewaesser.shape_length"
 
+#. TODO
 msgid "ch_bafu_typisierung_fliessgewaesser.url_portraits"
-msgstr "URL zu Typenporträt"
+msgstr "ch_bafu_typisierung_fliessgewaesser.url_portraits"
 
+#. TODO
 msgid "ch_bafu_typisierung_fliessgewaesser.url_uebersicht"
-msgstr "URL zu Übersicht"
+msgstr "ch_bafu_typisierung_fliessgewaesser.url_uebersicht"
 
+#. TODO
 msgid "ch_bafu_wasserbau_vermessungsstrecken.anfangsmass"
-msgstr "Anfangsmass"
+msgstr "ch_bafu_wasserbau_vermessungsstrecken.anfangsmass"
 
+#. TODO
 msgid "ch_bafu_wasserbau_vermessungsstrecken.anzahl_profile"
-msgstr "Anzahl_Profile"
+msgstr "ch_bafu_wasserbau_vermessungsstrecken.anzahl_profile"
 
+#. TODO
 msgid "ch_bafu_wasserbau_vermessungsstrecken.aufnahme_intervall"
-msgstr "Aufnahme_Intervall"
+msgstr "ch_bafu_wasserbau_vermessungsstrecken.aufnahme_intervall"
 
+#. TODO
 msgid "ch_bafu_wasserbau_vermessungsstrecken.aufnahme_letzte"
-msgstr "Aufnahme_Letzte"
+msgstr "ch_bafu_wasserbau_vermessungsstrecken.aufnahme_letzte"
 
+#. TODO
 msgid "ch_bafu_wasserbau_vermessungsstrecken.bemerkung"
-msgstr "Bemerkung"
+msgstr "ch_bafu_wasserbau_vermessungsstrecken.bemerkung"
 
+#. TODO
 msgid "ch_bafu_wasserbau_vermessungsstrecken.bezeichnung"
-msgstr "Bezeichnung"
+msgstr "ch_bafu_wasserbau_vermessungsstrecken.bezeichnung"
 
+#. TODO
 msgid "ch_bafu_wasserbau_vermessungsstrecken.endmass"
-msgstr "Endmass"
+msgstr "ch_bafu_wasserbau_vermessungsstrecken.endmass"
 
+#. TODO
 msgid "ch_bafu_wasserbau_vermessungsstrecken.gewaessernummer"
-msgstr "Gewaessernummer"
+msgstr "ch_bafu_wasserbau_vermessungsstrecken.gewaessernummer"
 
+#. TODO
 msgid "ch_bafu_wasserbau_vermessungsstrecken.gwlnr"
-msgstr "Gewässerlaufnummer"
+msgstr "ch_bafu_wasserbau_vermessungsstrecken.gwlnr"
 
+#. TODO
 msgid "ch_bafu_wasserbau_vermessungsstrecken.laenge_km"
-msgstr "Laenge_KM"
+msgstr "ch_bafu_wasserbau_vermessungsstrecken.laenge_km"
 
+#. TODO
 msgid "ch_bafu_wasserbau_vermessungsstrecken.routeid"
-msgstr "Route_ID"
+msgstr "ch_bafu_wasserbau_vermessungsstrecken.routeid"
 
+#. TODO
 msgid "ch_bafu_wasserbau_vermessungsstrecken.streckenid"
-msgstr "StreckenID"
+msgstr "ch_bafu_wasserbau_vermessungsstrecken.streckenid"
 
 msgid "city_name"
 msgstr "Name der Ortschaft"

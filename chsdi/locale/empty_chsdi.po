@@ -1,3 +1,6 @@
+msgid "ch.blw.ursprungsbezeichnungen-konditoreiwaren"
+msgstr ""
+
 msgid "ch.bafu.hydrologie-untersuchungsgebiete_stationen"
 msgstr ""
 
