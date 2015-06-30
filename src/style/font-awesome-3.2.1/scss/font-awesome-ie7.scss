@@ -318,13 +318,8 @@ a [class*=" icon-"] {
 }
 
 
-.icon-ga-time-machine {
-  @include ie7icon('&#xf18c;');
-}
-
-
-.icon-ga-time-machine-bckgd {
-  @include ie7icon('&#xf18d;');
+.icon-user {
+  @include ie7icon('&#xf007;');
 }
 
 

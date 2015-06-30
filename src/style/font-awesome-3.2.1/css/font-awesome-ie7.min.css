@@ -46,8 +46,7 @@ a [class^="icon-"],a [class*=" icon-"]{cursor:pointer;}
 .icon-sort-by-alphabet{*zoom:expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf15d;');}
 .icon-sort-by-alphabet-alt{*zoom:expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf15e;');}
 .icon-thumbs-up{*zoom:expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf164;');}
-.icon-ga-time-machine{*zoom:expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf18c;');}
-.icon-ga-time-machine-bckgd{*zoom:expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf18d;');}
+.icon-user{*zoom:expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf007;');}
 .icon-ga-slider{*zoom:expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf18e;');}
 .icon-ga-slider-bckgd{*zoom:expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf18f;');}
 .icon-ga-mapfunction{*zoom:expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf190;');}

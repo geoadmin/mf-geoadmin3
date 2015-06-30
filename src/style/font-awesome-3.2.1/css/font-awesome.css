@@ -392,9 +392,6 @@ a .icon-flip-vertical:before {
 .icon-ga-mapfunction:before {
   content: "\f190";
 }
-.icon-ga-time-machine:before {
-  content: "\f18c";
-}
 .icon-thumbs-up:before {
   content: "\f164";
 }
@@ -512,14 +509,14 @@ a .icon-flip-vertical:before {
 .icon-ga-add-text:before {
   content: "\f197";
 }
-.icon-edit:before {
+.icon-ga-edit:before {
   content: "\f195";
 }
 .icon-zoom-in:before {
   content: "\f00e";
 }
-.icon-ga-time-machine-bckgd:before {
-  content: "\f18d";
+.icon-user:before {
+  content: "\f007";
 }
 .icon-search:before {
   content: "\f002";
