@@ -159,7 +159,15 @@ goog.require('ga_map_service');
         }
         if (geom instanceof ol.geom.LineString) {
           if (distTooltip) {
-            distTooltip.getElement().innerHTML = gaMeasure.getLengthLabel(geom);
+            var label = '';
+            var coords = geom.getCoordinates();
+            if (coords.length == 2 ||
+                (coords.length == 3 && coords[1][0] == coords[2][0] &&
+                coords[1][1] == coords[2][1])) {
+              label += gaMeasure.getAzimuthLabel(geom) + ' / ';
+            }
+            label += gaMeasure.getLengthLabel(geom);
+            distTooltip.getElement().innerHTML = label;
             distTooltip.setPosition(geom.getLastCoordinate());
           }
         } else if (distTooltip) {
