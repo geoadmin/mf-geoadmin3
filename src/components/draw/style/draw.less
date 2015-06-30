@@ -47,10 +47,10 @@
   }
   
   .ga-draw-buttons {
-    margin-bottom: 45px;
+    margin-bottom: 10px;
     
     > .btn {
-      margin: 5px 30px;
+      margin: 5px 11px;
       width: 75px;
       height: 75px;
       padding: 2px;
@@ -61,6 +61,16 @@
         display: block;
         font-size: 2em;
         font-weight: bold;
+      }
+
+      @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
+        width: 50px;
+        height: 50px;
+        margin: 5px 9px;
+
+        span {
+          display: none;
+        }
       }
     }
     
@@ -81,6 +91,10 @@
         width: auto;
         float: right;
         margin-top: -35px;
+
+        @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
+          margin-top: 0px;
+        }
       }
     }
   }
