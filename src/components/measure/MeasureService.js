@@ -172,7 +172,6 @@ goog.provide('ga_measure_service');
         // Add overlays with distance, azimuth and area, depending on the
         // feature's geometry
         this.addOverlays = function(map, feature) {
-          console.log('addOverlays');
           var overlays = [], geom = feature.getGeometry();
           if (geom instanceof ol.geom.Polygon) {
             var areaOverlay = this.createOverlay();
@@ -195,7 +194,6 @@ goog.provide('ga_measure_service');
         };
         // Remove the overlays attached to the feature
         this.removeOverlays = function(feature) {
-          console.debug('removeOverlays');
           var overlays = feature.get('overlays');
           while (overlays && overlays.length) {
             var overlay = overlays.pop();

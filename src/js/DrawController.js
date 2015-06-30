@@ -521,11 +521,6 @@ goog.provide('ga_draw_controller');
             type: 'Polygon',
             minPoints: 2,
             style: generateDrawStyleFunc(measureDrawStyleFunc)
-            /*,
-            geometryFunction: function(coords, geometry) {
-              console.log('geomFunction');
-              return new ol.geom.LineString(coords[0]);
-            }*/
           },
           style: measureDrawStyleFunc,
           showMeasure: true

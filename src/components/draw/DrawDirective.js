@@ -644,6 +644,13 @@ goog.require('ga_map_service');
               // Set the correct title
               scope.options.popupOptions.title = popupTitlePrefix +
                   feature.get('type');
+              if (feature.get('type') == 'measure') {
+                scope.activeTabProfile();
+              } else if (feature.get('type') == 'linepolygon') {
+                scope.activeTabMeasure();
+              } else {
+                scope.activeTabProps();
+              }
             } else {
               scope.feature = undefined;
               scope.popupToggle = false;
@@ -733,14 +740,9 @@ goog.require('ga_map_service');
           scope.showMeasureTab = function(feature) {
             var geom = feature.getGeometry();
             var isPoint = (geom instanceof ol.geom.Point);
-            return !isPoint;
+            return (feature.get('type') != 'measure' && !isPoint);
           };
           scope.showProfileTab = function(feature) {
-            if (feature.get('type') == 'measure' &&
-                !scope.isMeasureActive &&
-                !scope.options.isProfileActive) {
-              scope.activeTabProfile();
-            }
             return scope.showMeasureTab(feature);
           };
           scope.showPropsTab = function(feature) {
