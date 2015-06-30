@@ -156,6 +156,6 @@ Das Label Energiestadt ist ein Leistungsausweis für Gemeinden, die eine nachhal
     </td>
 %endif
   </tr>
-<tr><img class="image" src="//dav0.bgdi.admin.ch/bfe_pub/images_energiestadt/${c['attributes']['bfsnr']}.png" alt=""/></tr>
+<tr><img class="image" src="http://www.bfe-gis.admin.ch/bilder/ch.bfe.energiestaedte/${c['attributes']['bfsnr']}.png" alt=""/></tr>
 </table>
 </%def>

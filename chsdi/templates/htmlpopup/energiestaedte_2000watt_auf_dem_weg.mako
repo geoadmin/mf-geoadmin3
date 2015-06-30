@@ -159,11 +159,11 @@ Die 2000-Watt-Gesellschaft ist eine Vision für eine gemeinschaftliche, gerechte
 %endif
   </tr>
   % if lang=='fr' :
-<tr><img class="image" src="//dav0.bgdi.admin.ch/bfe_pub/images_energiestaedte-2000watt-aufdemweg/Sub-Logo_2000Watt_f.png" alt=""/></tr>
+<tr><img class="image" src="http://www.bfe-gis.admin.ch/bilder/ch.bfe.energiestaedte-2000watt-aufdemweg/Sub-Logo_2000Watt_f.png" alt=""/></tr>
   % elif lang=='it' :
-<tr><img class="image" src="//dav0.bgdi.admin.ch/bfe_pub/images_energiestaedte-2000watt-aufdemweg/Sub-Logo_2000Watt_i.png" alt=""/></tr>
+<tr><img class="image" src="http://www.bfe-gis.admin.ch/bilder/ch.bfe.energiestaedte-2000watt-aufdemweg/Sub-Logo_2000Watt_i.png" alt=""/></tr>
   % else :
-<tr><img class="image" src="//dav0.bgdi.admin.ch/bfe_pub/images_energiestaedte-2000watt-aufdemweg/Sub-Logo_2000Watt_d.png" alt=""/></tr>
+<tr><img class="image" src="http://www.bfe-gis.admin.ch/bilder/ch.bfe.energiestaedte-2000watt-aufdemweg/Sub-Logo_2000Watt_d.png" alt=""/></tr>
   % endif
 </table>
 </%def>

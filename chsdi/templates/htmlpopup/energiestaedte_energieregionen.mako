@@ -147,11 +147,11 @@ In einer zweiten Phase werden basierend auf der Grundlage der bestehenden lokale
 %endif
   </tr>
   % if lang=='fr' :
-<tr><img class="image" src="//dav0.bgdi.admin.ch/bfe_pub/images_energiestaedte-energieregionen/Sub-Logo_Energieregion_f.png" alt=""/></tr>
+<tr><img class="image" src="http://www.bfe-gis.admin.ch/bilder/ch.bfe.energiestaedte-energieregionen/Sub-Logo_Energieregion_f.png" alt=""/></tr>
   % elif lang=='it' :
-<tr><img class="image" src="//dav0.bgdi.admin.ch/bfe_pub/images_energiestaedte-energieregionen/Sub-Logo_Energieregion_i.png" alt=""/></tr>
+<tr><img class="image" src="http://www.bfe-gis.admin.ch/bilder/ch.bfe.energiestaedte-energieregionen/Sub-Logo_Energieregion_i.png" alt=""/></tr>
   % else :
-<tr><img class="image" src="//dav0.bgdi.admin.ch/bfe_pub/images_energiestaedte-energieregionen/Sub-Logo_Energieregion_d.png" alt=""/></tr>
+<tr><img class="image" src="http://www.bfe-gis.admin.ch/bilder/ch.bfe.energiestaedte-energieregionen/Sub-Logo_Energieregion_d.png" alt=""/></tr>
   % endif
 </table>
 </%def>
