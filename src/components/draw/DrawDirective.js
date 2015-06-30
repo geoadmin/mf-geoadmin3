@@ -589,7 +589,10 @@ goog.require('ga_map_service');
               select.getFeatures().clear();
               layer.getSource().clear();
               if (layer.adminId) {
+                scope.statusMsgId = '';
                 gaFileStorage.del(layer.adminId).then(function() {
+                  layer.adminId = undefined;
+                  layer.url = undefined;
                   scope.adminShortenUrl = undefined;
                   scope.userShortenUrl = undefined;
                 });
@@ -756,14 +759,19 @@ goog.require('ga_map_service');
           // create/update the file on s3
           ////////////////////////////////////
           var save = function(evt) {
-            scope.isSaved = false;
+            if (layer.getSource().getFeatures().length == 0) {
+              //if no features to save do nothing
+              return;
+            }
+            scope.statusMsgId = 'draw_file_saving';
             var kmlString = gaExportKml.create(layer,
                 map.getView().getProjection());
             var id = layer.adminId ||
                 gaFileStorage.getFileIdFromFileUrl(layer.url);
             gaFileStorage.save(id, kmlString,
                 'application/vnd.google-earth.kml+xml').then(function(data) {
-              scope.isSaved = true;
+              scope.statusMsgId = 'draw_file_saved';
+
               // If a file has been created we set the correct id to the layer
               if (data.adminId && data.adminId != layer.adminId) {
                 layer.adminId = data.adminId;
@@ -813,7 +821,6 @@ goog.require('ga_map_service');
             dropdown.css('top', dropDownTop + 'px');
             dropdown.css('left', bt.offset().left + 'px');
           });
-
         }
       };
   });

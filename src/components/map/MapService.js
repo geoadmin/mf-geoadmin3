@@ -87,7 +87,12 @@ goog.require('ga_urlutils_service');
               return this.getVisible();
             },
             set: function(val) {
-              this.setVisible(val);
+              // apply the value only if it has changed
+              // otherwise the change:visible event is triggered when it's
+              // unseless
+              if (val != this.getVisible()) {
+                this.setVisible(val);
+              }
             }
           },
           invertedOpacity: {
@@ -582,7 +587,9 @@ goog.require('ga_urlutils_service');
               kml = offlineData;
             }
           } else if (!kml) {
-            return;
+            var deferred = $q.defer();
+            deferred.reject('No KML data found');
+            return deferred.promise;
           }
 
           // Read features available in a kml string, then create an ol layer.

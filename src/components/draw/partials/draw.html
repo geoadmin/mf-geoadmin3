@@ -1,8 +1,14 @@
+<div ng-if"!options.useTemporaryLayer" class="ga-draw-info-save">
+  <span class="ga-success" translate>{{statusMsgId}}</span>
+</div>
 <div class="ga-draw-buttons">
   <button ng-repeat="tool in options.tools"
           ng-click="toggleTool($event, tool)"
-          ng-class="{'active': options[tool.activeKey]}"
-          class="btn btn-default">
+          ng-class="{
+              'btn-default': !options[tool.activeKey], 
+              'btn-danger': options[tool.activeKey]
+          }"
+          class="btn">
     <i class="{{tool.cssClass}}"></i>
     <span translate>{{tool.title}}</span>
   </button>
@@ -105,11 +111,6 @@
        ga-profile="feature" 
        ga-profile-map="map"
        ga-profile-options="options.profileOptions"></div>
-
-  <div ng-if="isPropsActive && !options.useTemporaryLayer" class="ga-draw-info-save">
-    <span ng-show="isSaved" class="ga-success" translate>draw_file_saved</span>
-    <span ng-show="!isSaved" translate>draw_file_saving</span>
-  </div>
 
 </div>
 <div class="ga-draw-interaction-share" ng-if="adminShortenUrl">

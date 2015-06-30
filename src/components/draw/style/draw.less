@@ -44,56 +44,45 @@
     .form-group, .input-group {
       width: 100%;
     }
-
-    /*label {
-      width: 100px;
-      text-align: left;
-      line-height: 15px;
-    }
-    .input-group {
-      width: ~'calc(100% - 105px)';
-      vertical-align: top;
-    }*/
   }
   
   .ga-draw-buttons {
-    margin-bottom: 35px;
+    margin-bottom: 45px;
+    
     > .btn {
       margin: 5px 30px;
       width: 75px;
       height: 75px;
       padding: 2px;
-      
-      background-color: white;
       border: 2px solid #eeeeee;
       border-radius: 15px;
-      &:hover, &:focus, &:active {
-        background-color: #eeeeee;
-      }
-
+      
       i {
         display: block;
         font-size: 2em;
         font-weight: bold;
       }
     }
-   
-    .ga-more button {
-      width: auto;
-      float: right;
+    
+    button.btn-default {
+      background-color: white;
+      border-radius: 15px;
+
+      &:hover, &:focus, &:active {
+        background-color: #eeeeee;
+      }
     }
-  }
-}
 
-.ga-draw-info-save {
-  position: absolute;
-  bottom: 12px;
-  right: 20px; 
-  color: red;
-  width: 75px;
-
-  .ga-success {
-    color:green
+    .ga-more {
+      .btn {
+        text-align: left;
+      }
+      button {
+        width: auto;
+        float: right;
+        margin-top: -35px;
+      }
+    }
   }
 }
 
