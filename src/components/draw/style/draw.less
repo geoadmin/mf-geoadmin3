@@ -21,8 +21,10 @@
 
 [ga-draw] {
   .ga-draw-disclaimer {
+    margin-top: 5px;
     padding-top: 5px; 
     border-top: 1px solid rgb(238, 238, 238);
+    font-size: 10px;
 
     a {
       color: red;
@@ -39,11 +41,11 @@
   }
 
   .ga-share-permalink {
-    .form-group {
+    .form-group, .input-group {
       width: 100%;
     }
 
-    label {
+    /*label {
       width: 100px;
       text-align: left;
       line-height: 15px;
@@ -51,15 +53,29 @@
     .input-group {
       width: ~'calc(100% - 105px)';
       vertical-align: top;
-    }
+    }*/
   }
   
   .ga-draw-buttons {
-    margin-bottom: 45px;
-    .btn {
-      margin-bottom: 5px;
-      width: 100%;
-      text-align: left;
+    margin-bottom: 35px;
+    > .btn {
+      margin: 5px 30px;
+      width: 75px;
+      height: 75px;
+      padding: 2px;
+      
+      background-color: white;
+      border: 2px solid #eeeeee;
+      border-radius: 15px;
+      &:hover, &:focus, &:active {
+        background-color: #eeeeee;
+      }
+
+      i {
+        display: block;
+        font-size: 2em;
+        font-weight: bold;
+      }
     }
    
     .ga-more button {

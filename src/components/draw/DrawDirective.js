@@ -166,21 +166,7 @@ goog.require('ga_map_service');
           distTooltip.setPosition(undefined);
         }
       };
-      // Add the overlays attached to the feature
-      var showOverlays = function(feature, map) {
-        var overlays = feature.get('overlays');
-        for (var i in overlays) {
-          map.addOverlay(overlays[i]);
-        }
-      };
 
-      // Hide the overlays attached to the feature
-      var hideOverlays = function(feature, map) {
-        var overlays = feature.get('overlays');
-        for (var i in overlays) {
-          map.removeOverlay(overlays[i]);
-        }
-      };
       return {
         restrict: 'A',
         templateUrl: 'components/draw/partials/draw.html',

@@ -482,6 +482,7 @@ goog.provide('ga_draw_controller');
         // Define tools
         $scope.options.tools = [{
           id: 'marker',
+          cssClass: 'icon-ga-marker',
           drawOptions: {
             type: 'Point',
             style: markerDrawStyleFunc
@@ -490,6 +491,7 @@ goog.provide('ga_draw_controller');
           useIconStyle: true
         }, {
           id: 'annotation',
+          cssClass: 'icon-ga-add-text',
           drawOptions: {
             type: 'Point',
             style: annotationDrawStyleFunc
@@ -497,6 +499,7 @@ goog.provide('ga_draw_controller');
           style: annotationDrawStyleFunc
         }, {
           id: 'linepolygon',
+          cssClass: 'icon-ga-add-line',
           drawOptions: {
             type: 'Polygon',
             style: generateDrawStyleFunc(linepolygonDrawStyleFunc)
@@ -513,6 +516,7 @@ goog.provide('ga_draw_controller');
           style: freehandDrawStyleFunc
         },*/ {
           id: 'measure',
+          cssClass: 'icon-ga-measure',
           drawOptions: {
             type: 'Polygon',
             minPoints: 2,
@@ -530,7 +534,6 @@ goog.provide('ga_draw_controller');
         for (var i = 0, ii = $scope.options.tools.length; i < ii; i++) {
           var tool = $scope.options.tools[i];
           tool.activeKey = 'is' + tool.id.charAt(0).toUpperCase() + tool.id.slice(1) + 'Active';
-          tool.cssClass = 'icon-ga-mapfunction';//'ga-draw-' + tool.id + '-bt';
           tool.title = 'draw_' + tool.id;
         }
       });
