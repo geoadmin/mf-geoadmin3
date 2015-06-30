@@ -49,7 +49,7 @@
     has_picture = True
     xml_file = None
     try:
-        xml_file == urllib2.urlopen("http://dav0.bgdi.admin.ch/bfe_pub/images_wasserkraftanlagen/%d.jpg" % c['featureId'])
+        xml_file == urllib2.urlopen("http://www.bfe-gis.admin.ch/bilder/ch.bfe.statistik-wasserkraftanlagen/%d.jpg" % c['featureId'])
     except:
         has_picture = False
     finally:
@@ -130,8 +130,8 @@
 </div>
 <div class="thumbnail-container">
   <div class="thumbnail">
-    <a href="http://dav0.bgdi.admin.ch/bfe_pub/images_wasserkraftanlagen/${c['featureId']}.jpg">
-      <img class="image" src="http://dav0.bgdi.admin.ch/bfe_pub/images_wasserkraftanlagen/${c['featureId']}.jpg" alt=""/>
+    <a href="http://www.bfe-gis.admin.ch/bilder/ch.bfe.statistik-wasserkraftanlagen/${c['featureId']}.jpg">
+      <img class="image" src="http://www.bfe-gis.admin.ch/bilder/ch.bfe.statistik-wasserkraftanlagen/${c['featureId']}.jpg" alt=""/>
     </a>
   </div>
 </div>
