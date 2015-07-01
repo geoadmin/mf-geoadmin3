@@ -522,6 +522,7 @@ goog.require('ga_urlutils_service');
             image = gaStyleFactory.getStyle('kml').getImage();
           }
 
+          // If the feature has name we display it on the map as Google does
           if (feature.get('name') && style.getText()) {
             if (image && image.getScale() == 0) {
               // transparentCircle is used to allow selection
@@ -545,11 +546,6 @@ goog.require('ga_urlutils_service');
             zIndex: style.getZIndex()
           })];
           feature.setStyle(styles);
-
-        // TODO: Improve these 2 'if', really not nice actually
-        // Specific use case of feature created with measure tool
-        } else if (style && /^measure/.test(feature.getId())) {
-          style.getStroke().setLineDash([8]);
         }
         if (feature.getId()) {
           var split = feature.getId().split('_');
@@ -557,7 +553,12 @@ goog.require('ga_urlutils_service');
             feature.set('type', split[0]);
           }
         }
-        if (!(geom instanceof ol.geom.Point ||
+
+        // Apply the good style (with azimuth drawn) for measure feature
+        if (style && /^measure/.test(feature.getId())) {
+          feature.setStyle(gaStyleFactory.getFeatureStyleFunction('measure'));
+        // Remove image and text styles for polygons and lines
+        } else if (!(geom instanceof ol.geom.Point ||
             geom instanceof ol.geom.MultiPoint ||
             geom instanceof ol.geom.GeometryCollection)) {
           styles = [new ol.style.Style({

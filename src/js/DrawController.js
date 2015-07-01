@@ -356,43 +356,8 @@ goog.provide('ga_draw_controller');
           ];
           return styles;
         };
-
-        // Draw a dashed line or polygon 
-        var measureDrawStyleFunc = function(feature) {
-          var color = $scope.options.colors[5]; // red
-          var stroke = new ol.style.Stroke({
-            color: color.fill.concat([1]),
-            width: 3
-          });
-          var dashedStroke = new ol.style.Stroke({
-            color: color.fill.concat([1]),
-            width: 3,
-            lineDash: [8]
-          });
-          var styles = [
-            new ol.style.Style({
-              fill: new ol.style.Fill({
-                color: color.fill.concat([0.4])
-              }),
-              stroke: dashedStroke,
-              zIndex: gaStyleFactory.ZPOLYGON
-            }), new ol.style.Style({
-              stroke: stroke,
-              geometry: function(feature) {
-                var coords = feature.getGeometry().getCoordinates();
-                if (coords.length == 2 ||
-                    (coords.length == 3 && coords[1][0] == coords[2][0] &&
-                    coords[1][1] == coords[2][1])) {
-                 var circle = new ol.geom.Circle(coords[0],
-                     gaMeasure.getLength(feature.getGeometry()));
-                 return circle;
-                }
-              },
-              zIndex: gaStyleFactory.ZPOLYGON
-            })
-          ];
-          return styles;
-        };
+        
+        var measureDrawStyleFunc = gaStyleFactory.getStyleFunction('measure');
 
         var generateDrawStyleFunc = function(styleFunction) {
           // ol.interaction.Draw generates automatically a sketchLine when
@@ -505,16 +470,7 @@ goog.provide('ga_draw_controller');
             style: generateDrawStyleFunc(linepolygonDrawStyleFunc)
           },
           style: linepolygonDrawStyleFunc
-        }, /*{
-          id: 'freehand',
-          drawOptions: {
-            type: 'LineString',
-            condition: ol.events.condition.shiftKeyOnly,
-            freehandCondition: ol.events.condition.noModifierKeys,
-            style: generateDrawStyleFunc(freehandDrawStyleFunc)
-          },
-          style: freehandDrawStyleFunc
-        },*/ {
+        }, {
           id: 'measure',
           cssClass: 'icon-ga-measure',
           drawOptions: {

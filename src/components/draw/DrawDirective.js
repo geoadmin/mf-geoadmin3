@@ -811,13 +811,14 @@ goog.require('ga_map_service');
           ////////////////////////////////////
           // Change cursor style on mouse move, only on desktop
           var updateCursorStyle = function(evt) {
-            var featureFound;
-            map.forEachFeatureAtPixel(evt.pixel, function(feature, olLayer) {
-              featureFound = feature;
+            var featureFound = map.forEachFeatureAtPixel(evt.pixel, function(feature, olLayer) {
+              return feature;
             }, this, function(olLayer) {
               return (layer == olLayer);
             });
-            map.getTarget().style.cursor = (featureFound) ? 'pointer' : '';
+            var isSketchFeature = !!featureFound && !featureFound.getStyle();
+            map.getTarget().style.cursor = (featureFound) ?
+                ((isSketchFeature) ? 'move' : 'pointer') : '';
           };
           var updateCursorStyleDebounced = gaDebounce.debounce(
               updateCursorStyle, 10, false, false);
