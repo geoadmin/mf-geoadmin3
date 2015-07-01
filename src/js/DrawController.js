@@ -78,9 +78,9 @@ goog.provide('ga_draw_controller');
         ];
 
         $scope.options.iconSizes = [
-          {label:'24 px', value: [24, 24], scale: 0.5},
-          {label:'36 px', value: [36, 36], scale: 0.75},
-          {label:'48 px', value: [48, 48], scale: 1}
+          {label:'small_size', value: [24, 24], scale: 0.5},
+          {label:'medium_size', value: [36, 36], scale: 0.75},
+          {label:'big_size', value: [48, 48], scale: 1}
         ];
 
         $scope.options.icons = [

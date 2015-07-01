@@ -505,8 +505,13 @@ goog.require('ga_map_service');
           });
 
           // Update selected feature's style when the user change a value
-          scope.$watchGroup(['options.icon', 'options.color', 'options.name',
-              'options.description'], function() {
+          scope.$watchGroup([
+            'options.icon',
+            'options.iconSize',
+            'options.color',
+            'options.name',
+            'options.description'
+          ], function() {
             if (select.getActive()) {
               var feature = select.getFeatures().item(0);
               if (feature) {
@@ -681,8 +686,8 @@ goog.require('ga_map_service');
                 useIconStyle = true;
                 scope.options.icon = findIcon(featStyle.getImage(),
                     scope.options.icons);
-                //scope.options.iconSize = findIconSize(featStyle.getImage(),
-                //    scope.options.iconSizes);
+                scope.options.iconSize = findIconSize(featStyle.getImage(),
+                    scope.options.iconSizes);
               }
               if (!useIconStyle && featStyle.getStroke()) {
                 useColorStyle = true;
@@ -811,7 +816,8 @@ goog.require('ga_map_service');
           ////////////////////////////////////
           // Change cursor style on mouse move, only on desktop
           var updateCursorStyle = function(evt) {
-            var featureFound = map.forEachFeatureAtPixel(evt.pixel, function(feature, olLayer) {
+            var featureFound = map.forEachFeatureAtPixel(evt.pixel,
+                function(feature, olLayer) {
               return feature;
             }, this, function(olLayer) {
               return (layer == olLayer);

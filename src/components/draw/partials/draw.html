@@ -89,20 +89,26 @@
         </div>
       </div>
     </label>
-    <label class="ga-icons" ng-if="useIconStyle">
-      <span translate>{{'modify_icon_label'}}:</span> 
-      <div class="ga-select-box ga-select-icons ga-item-size-{{options.iconSize.value[0]}}"
-           ng-class="{'ga-select-box-open': gaSelectBoxOpen}">
-        <img tabindex=1 draggable="false" 
-             ng-repeat="i in options.icons" 
-             ng-class="{'ga-selected': (options.icon == i)}" 
-             ng-src="{{i.url}}"
-             ng-click="options.icon = i;$event.preventDefault();"/> 
-      <button class="ga-icon icon-caret-down"
-              ng-click="gaSelectBoxOpen=!gaSelectBoxOpen"></button>
-        </div>
-    </label>
-
+    <div ng-if="useIconStyle">
+      <label>
+        <span translate>{{'modify_icon_size_label'}}:</span> 
+        <select ng-model="options.iconSize" ng-options="s.label | translate for s in options.iconSizes">
+        </select>
+      </label>
+      <label class="ga-icons">
+        <span translate>{{'modify_icon_label'}}:</span> 
+        <div class="ga-select-box ga-select-icons ga-item-size-{{options.iconSize.value[0]}}"
+             ng-class="{'ga-select-box-open': gaSelectBoxOpen}">
+          <img tabindex=1 draggable="false" 
+               ng-repeat="i in options.icons" 
+               ng-class="{'ga-selected': (options.icon == i)}" 
+               ng-src="{{i.url}}"
+               ng-click="options.icon = i;$event.preventDefault();"/> 
+        <button class="ga-icon icon-caret-down"
+                ng-click="gaSelectBoxOpen=!gaSelectBoxOpen"></button>
+          </div>
+      </label>
+    </div>
   </div>
   <div ng-if="isMeasureActive"
        ga-measure-infos="feature"

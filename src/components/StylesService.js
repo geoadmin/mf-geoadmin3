@@ -179,8 +179,8 @@ goog.provide('ga_styles_service');
                return circle;
               }
             },
-            zIndex: 0 // TO FIX: We set 0 for now, because the hit detection takes
-                      // account of the transparent fill of the circle
+            zIndex: 0 // TO FIX: We set 0 for now, because the hit detection
+                      // takes account of the transparent fill of the circle
           })
         ];
         return styles;
@@ -218,7 +218,8 @@ goog.provide('ga_styles_service');
         getFeatureStyleFunction: function(type) {
           return function(resolution) {
             // In a featureStyleFunction this is the current feature
-            return stylesFunction[type](this, resolution) || function(feature, resolution) {
+            return stylesFunction[type](this, resolution) ||
+                function(feature, resolution) {
               return styles[type];
             }(this, resolution);
           };
