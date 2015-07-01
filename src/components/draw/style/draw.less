@@ -22,6 +22,12 @@
 [ga-draw] {
   .ga-draw-info-save {
     color: lightgray;
+    margin-left: 30px;
+
+    @media (max-width: @screen-phone) {
+      height: 20px;
+      margin: 0;
+    }
   }
   .ga-draw-disclaimer {
     margin-top: 5px;
@@ -50,16 +56,22 @@
   }
    
   .ga-draw-buttons {
-    margin-bottom: 10px;
-    
+    margin-bottom: 35px;
+
+    @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
+      margin-bottom: 10px;
+    }
+  
     > .btn {
-      margin: 5px 11px;
+      margin: 5px 30px;
       width: 75px;
       height: 75px;
       padding: 2px;
       border: 2px solid #eeeeee;
       border-radius: 15px;
-      
+      transition: all 0.5s ease;
+      transition-property: width, height, margin;
+ 
       i {
         display: block;
         font-size: 2em;
@@ -67,9 +79,17 @@
       }
 
       @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
-        width: 50px;
-        height: 50px;
-        margin: 5px 9px;
+        &:first-child {
+          margin-left: 0px;
+        }
+
+        width: 44px;
+        height: 44px;
+        margin: 5px 3px;
+
+        i {
+          font-size: 1.5em;
+        }
 
         span {
           display: none;
@@ -93,10 +113,12 @@
       button {
         width: auto;
         float: right;
-        margin-top: -35px;
+        margin-top: 5px;
+        margin-right: 48px;
 
         @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
-          margin-top: 0px;
+          margin-top: -35px;
+          margin-right: 0;
         }
       }
     }

@@ -842,7 +842,7 @@ goog.require('ga_map_service');
             var dropDownTop = bt.offset().top + bt.outerHeight() -
                 50; // 50 seems to be the size of the #header
             dropdown.css('top', dropDownTop + 'px');
-            dropdown.css('left', bt.offset().left + 'px');
+            dropdown.css('left', bt.offset().left - (dropdown.outerWidth() - bt.outerWidth()) + 'px');
           });
         }
       };
