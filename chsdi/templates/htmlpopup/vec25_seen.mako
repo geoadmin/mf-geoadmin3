@@ -1,6 +1,7 @@
 <%inherit file="base.mako"/>
 
 <%def name="table_body(c, lang)">
+<% c['stable_id'] = True %>
     <tr><td class="cell-left">${_('ch.bafu.vec25-seen.name')}</td>                  <td>${c['attributes']['name']}</td></tr>
     <tr><td class="cell-left">${_('ch.bafu.vec25-seen.seetyp')}</td>                <td>${c['attributes']['seetyp'] or '-'}</td></tr>
     <tr><td class="cell-left">${_('ch.bafu.vec25-seen.seeflaeche_km2')}</td>        <td>${c['attributes']['seeflaeche_km2'] or '-'}</td></tr>
