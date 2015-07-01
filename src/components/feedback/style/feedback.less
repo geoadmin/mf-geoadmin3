@@ -20,13 +20,12 @@
       margin: 0;
 
       button {
-        margin: 2px;
-        width: ~'calc(50% - 4px)';
-
-        &:nth-child(3) {
-          width: ~'calc(100% - 4px)';
+        margin: 5px 15px;
+        
+        @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
+          margin: 5px 3px;
         }
-
+        
         &:nth-child(4) {
           display: none;
         }

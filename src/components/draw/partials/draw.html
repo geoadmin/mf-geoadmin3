@@ -43,7 +43,7 @@
      ga-popup="popupToggle"
      ga-popup-options="options.popupOptions"
      ng-class="{'ga-profile-active': options.isProfileActive}">
-  <ul class="nav nav-tabs" role="tablist" ng-if="!options.useTemporaryLayer && feature && showTabs(feature)">
+  <ul class="nav nav-tabs" role="tablist" ng-if="feature && showTabs(feature)">
     <li ng-show="showPropsTab(feature)">
       <a href=""
          ng-click="activeTabProps()"
