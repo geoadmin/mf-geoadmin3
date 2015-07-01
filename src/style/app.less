@@ -218,14 +218,27 @@ button.ga-btn, .ol-control button {
     top: unit(@small-header-height, px);
   }
 
+  #pulldown-content .panel-heading, .theme-toggle {
+    display: none;
+  }
+
   #pulldown {
     @media (max-width: @screen-phone) {
       top: 0px;
     }
-  }
+    .panel-body {
+      max-height: none;
 
-  #pulldown-content .panel-heading, .theme-toggle {
-    display: none;
+      @media (max-height: 800px) {
+        max-height: 400px;
+      }
+      @media (max-height: 680px) {
+        max-height: 300px;
+      }
+      @media (max-width: @screen-phone) {
+        max-height: 110px;
+      }
+    }
   }
 }
 
