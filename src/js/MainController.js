@@ -162,9 +162,19 @@ goog.require('ga_storage_service');
         feedbackPopupShown: false,
         printShown: false,
         isShareActive: false,
-        isDrawActive: false
+        isDrawActive: false,
+        isFeatureTree: false,
+        isSwipeActive: false
       };
 
+      // Deatcivate all tools when draw is opening
+      $scope.$watch('globals.isDrawActive', function(active) {
+        if (active) {
+          $scope.globals.feedbackPopupShown = false;
+          $scope.globals.isFeatureTreeActive = false;
+          $scope.globals.isSwipeActive = false;
+        }
+      });
       $rootScope.$on('gaNetworkStatusChange', function(evt, offline) {
         $scope.globals.offline = offline;
       });
@@ -214,7 +224,8 @@ goog.require('ga_storage_service');
           }
         });
         $window.onpopstate = function(evt) {
-          if (evt.state.isDrawActive === false) {
+          // When we go to full screen evt.state is null
+          if (evt.state && evt.state.isDrawActive === false) {
             $scope.globals.isDrawActive = false;
             gaPermalink.refresh();
             $scope.$digest();

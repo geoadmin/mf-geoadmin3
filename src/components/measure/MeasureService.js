@@ -222,7 +222,7 @@ goog.provide('ga_measure_service');
                 this.removeOverlays(features[i]);
               }
             }
-          });
+          }, this);
           layer.getSource().on('removefeature', function(evt) {
             this.removeOverlays(evt.feature);
           });

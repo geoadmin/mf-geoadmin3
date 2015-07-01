@@ -166,6 +166,13 @@ goog.require('ga_styles_service');
               });
             });
 
+            $scope.$watch('isActive', function(active) {
+              if (!active) {
+                // Remove the highlighted feature when we deactivate the tooltip
+                initTooltip();
+              }
+            });
+
             // Test if the layer is a vector layer
             function isVectorLayer(olLayer) {
               return (olLayer instanceof ol.layer.Vector ||
