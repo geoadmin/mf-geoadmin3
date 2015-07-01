@@ -1044,12 +1044,14 @@ goog.require('ga_print_style_service');
   });
 
   module.directive('gaPrint',
-    function() {
+    function(gaBrowserSniffer) {
       return {
         restrict: 'A',
         templateUrl: 'components/print/partials/print.html',
         controller: 'GaPrintDirectiveController',
-        link: function(scope, elt, attrs, controller) {}
+        link: function(scope, elt, attrs, controller) {
+          scope.isIE = gaBrowserSniffer.msie;
+        }
       };
     }
   );
