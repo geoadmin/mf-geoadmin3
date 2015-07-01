@@ -62,13 +62,13 @@ RewriteRule ^${apache_base_path}/sitemap_(.*)\.xml http:${api_url}/${version}/si
 
 # Assure main pages are not cached with headers set according to
 # http://stackoverflow.com/questions/49547/making-sure-a-web-page-is-not-cached-across-all-browser
+# and http://tools.ietf.org/html/rfc2616
 <LocationMatch ^${apache_base_path}/(index.html|mobile.html|embed.html)$>
-    Header unset Cache-Control
-    Header unset Pragma
-    Header unset Expires
+    Header unset Age
     Header unset Last-Modified
     Header unset Vary
+    Header unset Cache-Control
+    Header unset Pragma
     Header set Cache-Control "no-cache, no-store, must-revalidate"
     Header set Pragma "no-cache"
-    Header set Expires 0
 </LocationMatch>
