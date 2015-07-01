@@ -2826,11 +2826,26 @@ msgstr "Name der Ziegelei"
 msgid "ch.swisstopo.geologie-geotope"
 msgstr "Geotops svizzers"
 
-msgid "ch.swisstopo.geologie-gisgeol-flaechen-10to21000km2"
-msgstr "Geologische Gutachten (10-21000km2)"
+msgid "ch.swisstopo.geologie-gisgeol-flaechen-1000to21000km2"
+msgstr "Geol. Dokumente (1000-21000km2)"
 
-msgid "ch.swisstopo.geologie-gisgeol-flaechen-10to21000km2.sgd_nr"
-msgstr "InfoGeol-Nr."
+#. TODO
+msgid "ch.swisstopo.geologie-gisgeol-flaechen-1000to21000km2.sgd_nr"
+msgstr "ch.swisstopo.geologie-gisgeol-flaechen-1000to21000km2.sgd_nr"
+
+msgid "ch.swisstopo.geologie-gisgeol-flaechen-100to1000km2"
+msgstr "Geol. Dokumente (100-1000km2)"
+
+#. TODO
+msgid "ch.swisstopo.geologie-gisgeol-flaechen-100to1000km2.sgd_nr"
+msgstr "ch.swisstopo.geologie-gisgeol-flaechen-100to1000km2.sgd_nr"
+
+msgid "ch.swisstopo.geologie-gisgeol-flaechen-10to100km2"
+msgstr "Geol. Dokumente (10-100km2)"
+
+#. TODO
+msgid "ch.swisstopo.geologie-gisgeol-flaechen-10to100km2.sgd_nr"
+msgstr "ch.swisstopo.geologie-gisgeol-flaechen-10to100km2.sgd_nr"
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-10x10km"
 msgstr "Geol. Dokumente (10x10km)"
