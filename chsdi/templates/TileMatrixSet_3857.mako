@@ -163,4 +163,22 @@
 <MatrixWidth>131072</MatrixWidth>
 <MatrixHeight>131072</MatrixHeight>
 </TileMatrix>
+<TileMatrix>
+<ows:Identifier>18</ows:Identifier>
+<ScaleDenominator>2132.72958385</ScaleDenominator>
+<TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>262144</MatrixWidth>
+<MatrixHeight>262144</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>19</ows:Identifier>
+<ScaleDenominator>1066.36479193</ScaleDenominator>
+<TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>524288</MatrixWidth>
+<MatrixHeight>524288</MatrixHeight>
+</TileMatrix>
 </TileMatrixSet>
