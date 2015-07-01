@@ -624,7 +624,10 @@ goog.require('ga_map_service');
           // Shorten url stuff
           ////////////////////////////////////
           var updateShortenUrl = function(adminId) {
-            $http.get(scope.options.shortenUrl, {
+
+            // For now we pass the long permalink otherwoise we need to
+            // regenerate the permalink on each map interaction
+            /*$http.get(scope.options.shortenUrl, {
               params: {
                 url: gaPermalink.getHref().replace(
                     gaUrlUtils.encodeUriQuery(layer.id, true), '') +
@@ -639,8 +642,11 @@ goog.require('ga_map_service');
               }
             }).success(function(data) {
               scope.userShortenUrl = data.shorturl;
-            });
-
+            });*/
+            scope.adminShortenUrl = gaPermalink.getHref().replace(
+                gaUrlUtils.encodeUriQuery(layer.id, true), '') +
+                '&adminId=' + adminId;
+            scope.userShortenUrl = gaPermalink.getHref();
           };
 
 

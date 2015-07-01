@@ -218,6 +218,12 @@ button.ga-btn, .ol-control button {
     top: unit(@small-header-height, px);
   }
 
+  #pulldown {
+    @media (max-width: @screen-phone) {
+      top: 0px;
+    }
+  }
+
   #pulldown-content .panel-heading, .theme-toggle {
     display: none;
   }
@@ -478,6 +484,7 @@ input[type=text][readonly] {
 
       @media (max-width: @screen-phone) {
         left: 50px;
+        right: 50px;
       }
     }
   }
