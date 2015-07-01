@@ -664,32 +664,11 @@ goog.require('ga_urlutils_service');
                   angular.forEach(olLayer.getSource().getFeatures(),
                       function(feature) {
                     if (/^measure/.test(feature.getId())) {
-                      gaMeasure.addOverlays(olMap, feature);
+                      gaMeasure.addOverlays(olMap, olLayer, feature);
                     }
                   });
                 }
-                olMap.getLayers().on('remove', function(evt) {
-                  if (evt.element === olLayer) {
-                    var features = evt.element.getSource().getFeatures();
-                    for (var i in features) {
-                      gaMeasure.removeOverlays(features[i]);
-                    }
-                  }
-                });
-                olLayer.on('change:visible', function(evt) {
-                  var visible = evt.target.getVisible();
-                  var features = evt.target.getSource().getFeatures();
-                  for (var i in features) {
-                    if (visible) {
-                      gaMeasure.addOverlays(olMap, features[i]);
-                    } else {
-                      gaMeasure.removeOverlays(features[i]);
-                    }
-                  }
-                });
-                olLayer.getSource().on('removefeature', function(evt) {
-                  gaMeasure.removeOverlays(evt.feature);
-                });
+                gaMeasure.registerOverlaysEvents(olMap, olLayer);
               }
 
               if (options.zoomToExtent) {

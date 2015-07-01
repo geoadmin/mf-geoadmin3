@@ -39,34 +39,8 @@ goog.require('ga_map_service');
         if (useTemporaryLayer) {
           dfltLayer.displayInLayerManager = false;
           dfltLayer.preview = true;
-        } else {
-          dfltLayer.on('change:visible', function(evt) {
-            var visible = evt.target.getVisible();
-            var features = evt.target.getSource().getFeatures();
-            for (var i in features) {
-              if (visible) {
-                gaMeasure.addOverlays(map, features[i]);
-              } else {
-                gaMeasure.removeOverlays(features[i]);
-              }
-            }
-          });
         }
-        dfltLayer.getSource().on('removefeature', function(evt) {
-          gaMeasure.removeOverlays(evt.feature);
-        });
-        map.getLayers().on('remove', function(evt) {
-          if (evt.element === dfltLayer) {
-            var features = evt.element.getSource().getFeatures();
-            for (var i in features) {
-              gaMeasure.removeOverlays(features[i]);
-            }
-          }
-        });
-
-
-
-
+        gaMeasure.registerOverlaysEvents(map, dfltLayer);
         dfltLayer.label = 'Drawing';
         dfltLayer.type = 'KML';
         return dfltLayer;
@@ -471,7 +445,7 @@ goog.require('ga_map_service');
               select.getFeatures().push(featureToAdd);
               // Add final measure tooltips
               if (tool.showMeasure) {
-                gaMeasure.addOverlays(map, featureToAdd);
+                gaMeasure.addOverlays(map, layer, featureToAdd);
                 map.removeOverlay(distTooltip);
                 map.removeOverlay(areaTooltip);
              }

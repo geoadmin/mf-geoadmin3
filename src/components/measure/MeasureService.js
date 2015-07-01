@@ -179,16 +179,18 @@ goog.provide('ga_measure_service');
         };
         // Add overlays with distance, azimuth and area, depending on the
         // feature's geometry
-        this.addOverlays = function(map, feature) {
+        this.addOverlays = function(map, layer, feature) {
           var overlays = [], geom = feature.getGeometry();
           if (geom instanceof ol.geom.Polygon) {
             var areaOverlay = this.createOverlay();
+            areaOverlay.getElement().style.opacity = layer.getOpacity();
             map.addOverlay(areaOverlay);
             overlays.push(areaOverlay);
             geom = new ol.geom.LineString(geom.getCoordinates()[0]);
           }
           if (geom instanceof ol.geom.LineString) {
             var distOverlay = this.createOverlay();
+            distOverlay.getElement().style.opacity = layer.getOpacity();
             map.addOverlay(distOverlay);
             overlays.push(distOverlay);
           }
@@ -208,6 +210,45 @@ goog.provide('ga_measure_service');
             overlay.getMap().removeOverlay(overlay);
           }
           feature.set('overlays', undefined);
+        };
+
+        // Register events on map, layer and source to manage correctly the
+        // display of overlays
+        this.registerOverlaysEvents = function(map, layer) {
+          map.getLayers().on('remove', function(evt) {
+            if (evt.element === layer) {
+              var features = evt.element.getSource().getFeatures();
+              for (var i in features) {
+                this.removeOverlays(features[i]);
+              }
+            }
+          });
+          layer.getSource().on('removefeature', function(evt) {
+            this.removeOverlays(evt.feature);
+          });
+          if (layer.displayInLayerManager) {
+            layer.on('change:visible', function(evt) {
+              var visible = evt.target.getVisible();
+              var features = evt.target.getSource().getFeatures();
+              for (var i in features) {
+                if (visible) {
+                  this.addOverlays(map, evt.target, features[i]);
+                } else {
+                  this.removeOverlays(features[i]);
+                }
+              }
+            }, this);
+            layer.on('change:opacity', function(evt) {
+              var visible = evt.target.getVisible();
+              var features = evt.target.getSource().getFeatures();
+              for (var i in features) {
+                var overlays = features[i].get('overlays') || [];
+                for (var i in overlays) {
+                  overlays[i].getElement().style.opacity = layer.getOpacity();
+                }
+              }
+            });
+          }
         };
       };
       return new Measure();
