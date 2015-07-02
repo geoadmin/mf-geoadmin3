@@ -293,10 +293,6 @@ msgstr "Yes"
 msgid "abfluss"
 msgstr "Discharge m3/s"
 
-#. TODO
-msgid "abflussvar"
-msgstr "abflussvar"
-
 msgid "abfrage"
 msgstr "Datenbfrage"
 
@@ -320,10 +316,6 @@ msgstr "Current and previous data"
 
 msgid "alexandria"
 msgstr "Bibliographical informations"
-
-#. TODO
-msgid "amt"
-msgstr "amt"
 
 msgid "anzahlaudits"
 msgstr "Number of successful audits"
@@ -1932,6 +1924,39 @@ msgstr "NM7Q50"
 
 msgid "ch.bafu.hydrologie-q347"
 msgstr "Q347"
+
+msgid "ch.bafu.hydrologie-q347.basisid"
+msgstr "Nr. Basisgebiet"
+
+msgid "ch.bafu.hydrologie-q347.bemerkung"
+msgstr "Bemerkungen"
+
+msgid "ch.bafu.hydrologie-q347.bilanzid"
+msgstr "Nr. Bilanzgebiet"
+
+msgid "ch.bafu.hydrologie-q347.flaeche"
+msgstr "Fläche [km2]"
+
+msgid "ch.bafu.hydrologie-q347.gewaesser"
+msgstr "Name"
+
+msgid "ch.bafu.hydrologie-q347.id"
+msgstr "ID"
+
+msgid "ch.bafu.hydrologie-q347.lhg"
+msgstr "Nr. HADES 5.1"
+
+msgid "ch.bafu.hydrologie-q347.p"
+msgstr "Messperiode P"
+
+msgid "ch.bafu.hydrologie-q347.q_84_93"
+msgstr "Q347 (1984-93) [l/s]"
+
+msgid "ch.bafu.hydrologie-q347.qmod"
+msgstr "Q347 (Modell) [l/s]"
+
+msgid "ch.bafu.hydrologie-q347.qp"
+msgstr "Q347 (P) [l/s]"
 
 msgid "ch.bafu.hydrologie-untersuchungsgebiete"
 msgstr "HUG Hydro. Untersuchungsgebiete"
@@ -4320,10 +4345,6 @@ msgstr "Bouguer anomaly [mGal]"
 msgid "et_fromatt_ch"
 msgstr "Aeromagnetic anomalies Switzerland [nT]"
 
-#. TODO
-msgid "exp"
-msgstr "exp"
-
 msgid "faktenblatt"
 msgstr "Fact sheet"
 
@@ -4362,18 +4383,6 @@ msgstr "Area [m2]"
 
 msgid "fliessgewaesser"
 msgstr "Fliessgewässer"
-
-#. TODO
-msgid "fluss"
-msgstr "fluss"
-
-#. TODO
-msgid "fn"
-msgstr "fn"
-
-#. TODO
-msgid "form"
-msgstr "form"
 
 msgid "format_de"
 msgstr "Available formats"
@@ -4450,10 +4459,6 @@ msgstr "Unité tectonique"
 msgid "geol_f"
 msgstr "Unit"
 
-#. TODO
-msgid "geologie_fr_de"
-msgstr "geologie_fr_de"
-
 msgid "geometalink"
 msgstr "Nachführungsgeometer"
 
@@ -4514,19 +4519,11 @@ msgstr "Phone"
 msgid "grundurl"
 msgstr "E-Mail / Web"
 
-#. TODO
-msgid "gsch_n"
-msgstr "gsch_n"
-
 msgid "help title"
 msgstr "Help"
 
 msgid "help url"
 msgstr "http://www.geo.admin.ch/internet/geoportal/en/commons/help/viewer_help.html"
-
-#. TODO
-msgid "herkunft"
-msgstr "herkunft"
 
 msgid "hersteller"
 msgstr "Hersteller"
@@ -4536,18 +4533,6 @@ msgstr "Close Topics"
 
 msgid "hier"
 msgstr "Here"
-
-#. TODO
-msgid "hmax"
-msgstr "hmax"
-
-#. TODO
-msgid "hmed"
-msgstr "hmed"
-
-#. TODO
-msgid "hmin"
-msgstr "hmin"
 
 msgid "hoehe_see"
 msgstr "Höhe über Meer des Seespiegels [m]"
@@ -4617,10 +4602,6 @@ msgstr "Infomation"
 
 msgid "installierteleistung"
 msgstr "Installierte Leistung"
-
-#. TODO
-msgid "institut"
-msgstr "institut"
 
 msgid "intern"
 msgstr "Intern"
@@ -5252,10 +5233,6 @@ msgstr "Length [m]"
 msgid "laenge_strecke_m"
 msgstr "Length of stretch [m]"
 
-#. TODO
-msgid "lage"
-msgstr "lage"
-
 msgid "lage_objekt"
 msgstr "Lage des Objekts in Bezug zum Gelände"
 
@@ -5313,10 +5290,6 @@ msgstr "Detaillierte Beschreibung"
 msgid "linkzurlegende"
 msgstr "Link zur Legende"
 
-#. TODO
-msgid "lk"
-msgstr "lk"
-
 msgid "lokal"
 msgstr "lokal"
 
@@ -5355,58 +5328,6 @@ msgstr "Modell"
 
 msgid "modif_validfrom"
 msgstr "Date of enactment"
-
-#. TODO
-msgid "mqn_apr"
-msgstr "mqn_apr"
-
-#. TODO
-msgid "mqn_aug"
-msgstr "mqn_aug"
-
-#. TODO
-msgid "mqn_dez"
-msgstr "mqn_dez"
-
-#. TODO
-msgid "mqn_feb"
-msgstr "mqn_feb"
-
-#. TODO
-msgid "mqn_jahr"
-msgstr "mqn_jahr"
-
-#. TODO
-msgid "mqn_jan"
-msgstr "mqn_jan"
-
-#. TODO
-msgid "mqn_jul"
-msgstr "mqn_jul"
-
-#. TODO
-msgid "mqn_jun"
-msgstr "mqn_jun"
-
-#. TODO
-msgid "mqn_mai"
-msgstr "mqn_mai"
-
-#. TODO
-msgid "mqn_mar"
-msgstr "mqn_mar"
-
-#. TODO
-msgid "mqn_nov"
-msgstr "mqn_nov"
-
-#. TODO
-msgid "mqn_okt"
-msgstr "mqn_okt"
-
-#. TODO
-msgid "mqn_sep"
-msgstr "mqn_sep"
 
 msgid "municipality"
 msgstr "Betroffene Gemeinden"
@@ -5558,10 +5479,6 @@ msgstr "Perimeter [m]"
 msgid "physischvirtuell"
 msgstr "Physisch-virtuell"
 
-#. TODO
-msgid "platz"
-msgstr "platz"
-
 msgid "plz"
 msgstr "Zip"
 
@@ -5600,14 +5517,6 @@ msgstr "Qualitätsstandard"
 
 msgid "raeumliche_qualitaeten"
 msgstr "Spatial qualities"
-
-#. TODO
-msgid "regimenummer"
-msgstr "regimenummer"
-
-#. TODO
-msgid "regimetyp"
-msgstr "regimetyp"
 
 msgid "regional"
 msgstr "regional"
@@ -5698,10 +5607,6 @@ msgstr "http://www.seismo.ethz.ch/index_EN"
 
 msgid "stand"
 msgstr "Stand"
-
-#. TODO
-msgid "station"
-msgstr "station"
 
 msgid "stationsname"
 msgstr "Station name"
@@ -6850,10 +6755,6 @@ msgstr "http://www.twitter.com/swiss_geoportal"
 
 msgid "typ"
 msgstr "Type"
-
-#. TODO
-msgid "typ_fr_de"
-msgstr "typ_fr_de"
 
 msgid "typ_kraftwerk"
 msgstr "Typ von Kraftwerk"
