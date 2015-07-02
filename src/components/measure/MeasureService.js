@@ -225,7 +225,7 @@ goog.provide('ga_measure_service');
           }, this);
           layer.getSource().on('removefeature', function(evt) {
             this.removeOverlays(evt.feature);
-          });
+          }, this);
           if (layer.displayInLayerManager) {
             layer.on('change:visible', function(evt) {
               var visible = evt.target.getVisible();
