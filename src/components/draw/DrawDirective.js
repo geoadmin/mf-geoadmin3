@@ -173,7 +173,7 @@ goog.require('ga_permalink');
           scope.isPropsActive = true;
           scope.isMeasureActive = false;
           scope.options.isProfileActive = false;
-          scope.statusMsgId = 'failId';
+          scope.statusMsgId = '';
 
           // Add select interaction
           var select = new ol.interaction.Select({
