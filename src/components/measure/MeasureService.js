@@ -1,9 +1,7 @@
 goog.provide('ga_measure_service');
 (function() {
 
-  var module = angular.module('ga_measure_service', [
-    'pascalprecht.translate'
-  ]);
+  var module = angular.module('ga_measure_service', []);
 
   module.filter('measure', function() {
 
@@ -68,8 +66,7 @@ goog.provide('ga_measure_service');
   });
 
   module.provider('gaMeasure', function() {
-
-    this.$get = function(measureFilter) {
+    this.$get = function($document, measureFilter) {
       var Measure = function() {
 
         this.getLength = function(geom) {
@@ -142,7 +139,7 @@ goog.provide('ga_measure_service');
 
         // Creates a new measure tooltip with a nice arrow
         this.createOverlay = function() {
-          var tooltipElement = document.createElement('div');
+          var tooltipElement = $document[0].createElement('div');
           tooltipElement.className = 'ga-draw-measure-static';
           var tooltip = new ol.Overlay({
             element: tooltipElement,
@@ -163,11 +160,8 @@ goog.provide('ga_measure_service');
               geom = new ol.geom.LineString(geom.getCoordinates()[0]);
             }
             if (geom instanceof ol.geom.LineString) {
-              var coords = feature.getGeometry().getCoordinates();
               var label = '';
-              if (coords.length == 2 ||
-                  (coords.length == 3 && coords[1][0] == coords[2][0] &&
-                  coords[1][1] == coords[2][1])) {
+              if (this.canShowAzimuthCircle(feature.getGeometry())) {
                 label += this.getAzimuthLabel(feature.getGeometry()) + ' / ';
               }
               var distOverlay = overlays[1] || overlays[0];
@@ -210,6 +204,19 @@ goog.provide('ga_measure_service');
             overlay.getMap().removeOverlay(overlay);
           }
           feature.set('overlays', undefined);
+        };
+
+        // Determine if the geometry can display azimuth circle or not
+        this.canShowAzimuthCircle = function(geom) {
+          if (geom instanceof ol.geom.LineString) {
+            var coords = geom.getCoordinates();
+            if (coords.length == 2 ||
+                (coords.length == 3 && coords[1][0] == coords[2][0] &&
+                coords[1][1] == coords[2][1])) {
+              return true;
+            }
+          }
+          return false;
         };
 
         // Register events on map, layer and source to manage correctly the

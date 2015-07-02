@@ -1,7 +1,12 @@
 goog.provide('ga_styles_service');
+
+goog.require('ga_measure_service');
+
 (function() {
 
-  var module = angular.module('ga_styles_service', []);
+  var module = angular.module('ga_styles_service', [
+    'ga_measure_service'
+  ]);
 
   module.provider('gaStyleFactory', function() {
     var DEFAULT_FONT = 'normal 16px Helvetica',
@@ -170,13 +175,11 @@ goog.provide('ga_styles_service');
           }), new ol.style.Style({
             stroke: stroke,
             geometry: function(feature) {
-              var coords = feature.getGeometry().getCoordinates();
-              if (coords.length == 2 ||
-                  (coords.length == 3 && coords[1][0] == coords[2][0] &&
-                  coords[1][1] == coords[2][1])) {
-               var circle = new ol.geom.Circle(coords[0],
-                   gaMeasure.getLength(feature.getGeometry()));
-               return circle;
+              if (gaMeasure.canShowAzimuthCircle(feature.getGeometry())) {
+                var coords = feature.getGeometry().getCoordinates();
+                var circle = new ol.geom.Circle(coords[0],
+                    gaMeasure.getLength(feature.getGeometry()));
+                return circle;
               }
             },
             zIndex: 0 // TO FIX: We set 0 for now, because the hit detection

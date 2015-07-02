@@ -3,12 +3,16 @@ goog.provide('ga_draw_directive');
 goog.require('ga_export_kml_service');
 goog.require('ga_file_storage_service');
 goog.require('ga_map_service');
+goog.require('ga_measure_service');
+goog.require('ga_permalink');
 (function() {
 
   var module = angular.module('ga_draw_directive', [
     'ga_export_kml_service',
     'ga_file_storage_service',
     'ga_map_service',
+    'ga_measure_service',
+    'ga_permalink',
     'pascalprecht.translate'
   ]);
 
@@ -26,7 +30,7 @@ goog.require('ga_map_service');
   module.directive('gaDraw',
     function($timeout, $translate, $window, $rootScope, gaBrowserSniffer,
         gaDefinePropertiesForLayer, gaDebounce, gaFileStorage, gaLayerFilters,
-        gaExportKml, gaMapUtils, gaPermalink, $http, $q, gaUrlUtils,
+        gaExportKml, gaMapUtils, gaPermalink, gaUrlUtils,
         $document, gaMeasure) {
 
       var createDefaultLayer = function(map, useTemporaryLayer) {
@@ -79,7 +83,7 @@ goog.require('ga_map_service');
 
       // Creates a new help tooltip
       var createHelpTooltip = function() {
-        var tooltipElement = document.createElement('div');
+        var tooltipElement = $document[0].createElement('div');
         tooltipElement.className = 'ga-draw-help';
         var tooltip = new ol.Overlay({
           element: tooltipElement,
@@ -92,7 +96,7 @@ goog.require('ga_map_service');
 
       // Creates a new measure tooltip with a nice arrow
       var createMeasureTooltip = function() {
-        var tooltipElement = document.createElement('div');
+        var tooltipElement = $document[0].createElement('div');
         tooltipElement.className = 'ga-draw-measure';
         var tooltip = new ol.Overlay({
           element: tooltipElement,
@@ -161,7 +165,7 @@ goog.require('ga_map_service');
           var layer, draw, lastActiveTool, snap;
           var unDblClick, unLayerAdd, unLayerRemove, unSourceEvents = [],
               deregPointerMove, deregFeatureChange, unLayerVisible,
-              unPermalinkChange;
+              unWatch = [], unDrawEvts = [];
           var useTemporaryLayer = scope.options.useTemporaryLayer || false;
           var helpTooltip, distTooltip, areaTooltip;
           var map = scope.map;
@@ -169,11 +173,7 @@ goog.require('ga_map_service');
           scope.isPropsActive = true;
           scope.isMeasureActive = false;
           scope.options.isProfileActive = false;
-
-
-
-          scope.layers = scope.map.getLayers().getArray();
-          scope.layerFilter = gaLayerFilters.selected;
+          scope.statusMsgId = 'failId';
 
           // Add select interaction
           var select = new ol.interaction.Select({
@@ -287,8 +287,8 @@ goog.require('ga_map_service');
             }
             ol.Observable.unByKey(unLayerAdd);
             ol.Observable.unByKey(unLayerRemove);
-            if (unPermalinkChange) {
-              unPermalinkChange();
+            while (unWatch.length) {
+              unWatch.pop()();
             }
             // if a layer is added from other component (Import KML, Permalink,
             // DnD ...) and the currentlayer has no features, we define a
@@ -305,13 +305,41 @@ goog.require('ga_map_service');
             unDblClick = map.on('dblclick', function(evt) {
               return false;
             });
+            select.setActive(true);
 
-            unPermalinkChange = scope.$on('gaPermalinkChange', function() {
+            // Active watchers
+            // Update selected feature's style when the user change a value
+            unWatch.push(scope.$watchGroup([
+              'options.icon',
+              'options.iconSize',
+              'options.color',
+              'options.name',
+              'options.description'
+            ], function() {
+              if (select.getActive()) {
+                var feature = select.getFeatures().item(0);
+                if (feature) {
+                  // Update the style of the feature with the current style
+                  var styles = scope.options.updateStyle(feature);
+                  feature.setStyle(styles);
+                  // then apply the select style
+                  styles = scope.options.selectStyleFunction(feature);
+                  feature.setStyle(styles);
+                }
+              }
+            }));
+
+            unWatch.push(scope.$watch('popupToggle', function(active) {
+              if (!active) {
+                select.getFeatures().clear();
+              }
+            }));
+
+            unWatch.push(scope.$on('gaPermalinkChange', function() {
               if (layer.adminId) {
                 updateShortenUrl(layer.adminId);
               }
-            });
-            select.setActive(true);
+            }));
           };
 
 
@@ -319,8 +347,8 @@ goog.require('ga_map_service');
           var deactivate = function(evt) {
             ol.Observable.unByKey(unLayerAdd);
             ol.Observable.unByKey(unDblClick);
-            if (unPermalinkChange) {
-              unPermalinkChange();
+            while (unWatch.length) {
+              unWatch.pop()();
             }
 
             // Deactivate the tool
@@ -341,7 +369,6 @@ goog.require('ga_map_service');
           };
 
           // Set the draw interaction with the good geometry
-          var deregDrawStart, deregDrawEnd, deregPointerMove2;
           var activateDrawInteraction = function(tool) {
             select.setActive(false);
             deactivateDrawInteraction();
@@ -353,14 +380,14 @@ goog.require('ga_map_service');
             updateHelpTooltip(helpTooltip, tool.id, false);
 
             if (!gaBrowserSniffer.mobile) {
-              deregPointerMove2 = map.on('pointermove', function(evt) {
+              unDrawEvts.push(map.on('pointermove', function(evt) {
                 helpTooltip.setPosition(evt.coordinate);
-              });
+              }));
             }
 
             draw = new ol.interaction.Draw(tool.drawOptions);
             var isFinishOnFirstPoint;
-            deregDrawStart = draw.on('drawstart', function(evt) {
+            unDrawEvts.push(draw.on('drawstart', function(evt) {
               var nbPoint = 1;
               var isSnapOnLastPoint = false;
               updateHelpTooltip(helpTooltip, tool.id, true,
@@ -421,9 +448,9 @@ goog.require('ga_map_service');
                   }
                 }
               });
-            });
+            }));
 
-            deregDrawEnd = draw.on('drawend', function(evt) {
+            unDrawEvts.push(draw.on('drawend', function(evt) {
               var featureToAdd = evt.feature;
               var geom = featureToAdd.getGeometry();
               if (geom instanceof ol.geom.Polygon && !isFinishOnFirstPoint) {
@@ -462,13 +489,13 @@ goog.require('ga_map_service');
                 map.removeOverlay(distTooltip);
                 map.removeOverlay(areaTooltip);
              }
-            });
+            }));
             map.addInteraction(draw);
           };
           var deactivateDrawInteraction = function() {
-            ol.Observable.unByKey(deregPointerMove2);
-            ol.Observable.unByKey(deregDrawStart);
-            ol.Observable.unByKey(deregDrawEnd);
+            while (unDrawEvts.length) {
+              ol.Observable.unByKey(unDrawEvts.pop());
+            }
             map.removeOverlay(helpTooltip);
             map.removeOverlay(distTooltip);
             map.removeOverlay(areaTooltip);
@@ -485,33 +512,6 @@ goog.require('ga_map_service');
               deactivate();
             }
           });
-          scope.$watch('popupToggle', function(active) {
-            if (!active) {
-              select.getFeatures().clear();
-            }
-          });
-
-          // Update selected feature's style when the user change a value
-          scope.$watchGroup([
-            'options.icon',
-            'options.iconSize',
-            'options.color',
-            'options.name',
-            'options.description'
-          ], function() {
-            if (select.getActive()) {
-              var feature = select.getFeatures().item(0);
-              if (feature) {
-                // Update the style of the feature with the current style
-                var styles = scope.options.updateStyle(feature);
-                feature.setStyle(styles);
-                // then apply the select style
-                styles = scope.options.selectStyleFunction(feature);
-                feature.setStyle(styles);
-              }
-            }
-          });
-
 
 
           ///////////////////////////////////

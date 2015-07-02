@@ -7,7 +7,7 @@ goog.provide('ga_draw_controller');
   ]);
 
   module.controller('GaDrawController',
-      function($rootScope, $scope, $translate, gaGlobalOptions, gaStyleFactory, gaMeasure) {
+      function($rootScope, $scope, $translate, gaGlobalOptions, gaStyleFactory) {
         
         $scope.$on('gaPopupFocusChange', function(evt, isFocus) {
           $scope.options.hasPopupFocus = isFocus;

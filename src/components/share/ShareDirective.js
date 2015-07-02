@@ -6,7 +6,8 @@ goog.require('ga_permalink');
 
   var module = angular.module('ga_share_directive', [
     'ga_browsersniffer_service',
-    'ga_permalink'
+    'ga_permalink',
+    'pascalprecht.translate'
   ]);
 
   module.directive('gaShareCopyInput', function(gaBrowserSniffer, $translate) {

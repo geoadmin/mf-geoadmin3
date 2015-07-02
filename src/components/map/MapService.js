@@ -1,5 +1,6 @@
 goog.provide('ga_map_service');
 
+goog.require('ga_measure_service');
 goog.require('ga_networkstatus_service');
 goog.require('ga_offline_service');
 goog.require('ga_storage_service');
@@ -15,7 +16,8 @@ goog.require('ga_urlutils_service');
     'ga_storage_service',
     'ga_styles_from_literals_service',
     'ga_styles_service',
-    'ga_urlutils_service'
+    'ga_urlutils_service',
+    'ga_measure_service'
   ]);
 
   module.provider('gaTileGrid', function() {
