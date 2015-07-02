@@ -43,4 +43,6 @@ WSGIScriptAliasMatch ^${apache_entry_path}/mapproxy ${buildout:directory}/buildo
 # Cache for tiles, same as S3
 <LocationMatch "default/(\d+)/(.*)(jpg|jpeg|png)$">
     Header set Cache-Control "max-age=315360000, public"
+    Header unset ETag
+    Header unset Age
 </LocationMatch>
