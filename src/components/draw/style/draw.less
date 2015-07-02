@@ -20,13 +20,22 @@
 }
 
 [ga-draw] {
+  /* 100% doesn't work so we specify a fix width for the position
+  of the more  button */
+  width: 285px;
+  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
+    width: auto;
+  }
+
   .ga-draw-info-save {
     color: lightgray;
     margin-left: 30px;
 
+    @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
+      margin: 0;
+    }
     @media (max-width: @screen-phone) {
       height: 20px;
-      margin: 0;
     }
   }
   .ga-draw-disclaimer {
@@ -56,19 +65,17 @@
   }
    
   .ga-draw-buttons {
-    margin-bottom: 40px;
+    margin-bottom: 45px;
 
     @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
       margin-bottom: 10px;
     }
-  
+    
     > .btn {
       margin: 5px 30px;
       width: 75px;
       height: 75px;
       padding: 2px;
-      border: 2px solid #eeeeee;
-      border-radius: 15px;
       transition: all 0.5s ease;
       transition-property: width, height, margin;
  
@@ -98,6 +105,7 @@
     }
     
     button.btn-default {
+      border: 2px solid #eeeeee;
       background-color: white;
       border-radius: 15px;
 
@@ -111,13 +119,14 @@
         text-align: left;
       }
       button {
-        width: auto;
+        width: 75px;
         float: right;
         margin-top: 5px;
-        margin-right: 48px;
+        margin-right: 44px;
 
         @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
-          margin-top: -35px;
+          width: auto;
+          margin-top: -37px;
           margin-right: 0;
         }
       }
