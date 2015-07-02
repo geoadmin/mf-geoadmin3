@@ -16,9 +16,7 @@ goog.require('ga_measure_service');
   module.directive('gaMeasureInfos', function(gaDebounce, gaMeasure) {
     return {
       restrict: 'A',
-      templateUrl: function(element, attrs) {
-        return 'components/measure/partials/measure-infos.html';
-      },
+      templateUrl: 'components/measure/partials/measure-infos.html',
       scope: {
         feature: '=gaMeasureInfos',
         options: '=gaMeasureInfosOptions'

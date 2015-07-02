@@ -23,7 +23,7 @@ goog.provide('ga_draw_controller');
          
         // Add popup options
         $scope.options.popupOptions = {
-          title: 'no type',
+          title: '',
           help:'66',
           x: 0,
           y: 'auto',

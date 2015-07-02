@@ -1,7 +1,6 @@
 goog.provide('ga_styles_service');
 
 goog.require('ga_measure_service');
-
 (function() {
 
   var module = angular.module('ga_styles_service', [

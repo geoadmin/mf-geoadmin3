@@ -167,7 +167,7 @@ goog.require('ga_storage_service');
         isSwipeActive: false
       };
 
-      // Deatcivate all tools when draw is opening
+      // Deactivate all tools when draw is opening
       $scope.$watch('globals.isDrawActive', function(active) {
         if (active) {
           $scope.globals.feedbackPopupShown = false;
