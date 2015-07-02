@@ -112,6 +112,8 @@
 	"geol_service_link_href": "http://www.geologieportal.ch/internet/geologieportal/it/home.html",
 	"geol_service_link_label": "www.geologieportal.ch",
 	"gewiss": "Acque",
+	"gewiss_service_link_href": "http://www.bafu.admin.ch/hydrologie/01835/02114/02116/index.html?lang=it",
+	"gewiss_service_link_label": "gewiss.ch",
 	"google_plus_tooltip": "Condivida questa carta su Google Plus",
 	"graticule": "Griglia di coordinate",
 	"gray": "grigio",
