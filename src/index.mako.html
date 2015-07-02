@@ -544,20 +544,6 @@ itemscope itemtype="http://schema.org/WebApplication"
         </div>
       </div>
     </div><!-- end Import KML -->
-   
-    <!-- Popup: Measure -->
-    <div ng-controller="GaMeasureController">
-      <div ga-popup="globals.isMeasureActive"
-           ga-popup-options="{title:'measure',showPrint:true, print: print,
-           help:'66', x: 0, y:'auto', position: 'bottom-left'}"
-           id="measure-popup"
-           ng-class="{'ga-profile-active': options.isProfileActive}">
-        <div ga-measure="options.feature" 
-             ga-measure-map="map" 
-             ga-measure-options="options" 
-             ga-measure-active="globals.isMeasureActive"></div>
-      </div>
-    </div><!-- end Measure -->
   % endif
     <!-- Popup: Feature Tree -->
     <div ng-controller="GaFeaturetreeController">
