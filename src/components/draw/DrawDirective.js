@@ -160,7 +160,8 @@ goog.require('ga_map_service');
         link: function(scope, element, attrs, controller) {
           var layer, draw, lastActiveTool, snap;
           var unDblClick, unLayerAdd, unLayerRemove, unSourceEvents = [],
-              deregPointerMove, deregFeatureChange, unLayerVisible;
+              deregPointerMove, deregFeatureChange, unLayerVisible,
+              unPermalinkChange;
           var useTemporaryLayer = scope.options.useTemporaryLayer || false;
           var helpTooltip, distTooltip, areaTooltip;
           var map = scope.map;
@@ -286,7 +287,9 @@ goog.require('ga_map_service');
             }
             ol.Observable.unByKey(unLayerAdd);
             ol.Observable.unByKey(unLayerRemove);
-
+            if (unPermalinkChange) {
+              unPermalinkChange();
+            }
             // if a layer is added from other component (Import KML, Permalink,
             // DnD ...) and the currentlayer has no features, we define a
             // new layer.
@@ -302,6 +305,12 @@ goog.require('ga_map_service');
             unDblClick = map.on('dblclick', function(evt) {
               return false;
             });
+
+            unPermalinkChange = scope.$on('gaPermalinkChange', function() {
+              if (layer.adminId) {
+                updateShortenUrl(layer.adminId);
+              }
+            });
             select.setActive(true);
           };
 
@@ -310,6 +319,10 @@ goog.require('ga_map_service');
           var deactivate = function(evt) {
             ol.Observable.unByKey(unLayerAdd);
             ol.Observable.unByKey(unDblClick);
+            if (unPermalinkChange) {
+              unPermalinkChange();
+            }
+
             // Deactivate the tool
             if (lastActiveTool) {
               scope.options[lastActiveTool.activeKey] = false;
@@ -775,10 +788,8 @@ goog.require('ga_map_service');
               }
 
               if (!scope.adminShortenUrl) {
-                $timeout(function() {
-                  updateShortenUrl(layer.adminId);
-                }, 0, false);
-               }
+                updateShortenUrl(layer.adminId);
+              }
             });
           };
           var saveDebounced = gaDebounce.debounce(save, 133, false, false);
