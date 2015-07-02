@@ -162,8 +162,13 @@ goog.require('ga_urlutils_service');
                 'application/x-www-form-urlencoded'};
           }
 
-          $http(params).success(callback)
-            .error(function(data, status) {
+          $http(params).success(function(data, status) {
+            // When all the geometry is outside switzerland
+            if (data.length == 0) {
+              data = [{alts: {COMB: 0}, dist: 0}];
+            }
+            callback(data, status);
+          }).error(function(data, status) {
               // If request is canceled, statuscode is 0 and we don't announce
               // it
               if (status !== 0) {
