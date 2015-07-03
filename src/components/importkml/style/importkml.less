@@ -6,9 +6,10 @@
 
   input[type=file] {
     display: none;
-    width: 100%;
   }
-  
+  input[type=text][readonly] {
+    cursor: pointer;
+  }
   .upload-result, .tabbable-footer, .progress {
     margin: 5px 0px 0px 0px;
   }
@@ -40,16 +41,7 @@
 
   .ga-import-kml-abort {
     cursor: pointer;
-  }
- 
-  .ga-import-kml-abort {
     margin-right: 5px;
-  }
-
-  .ga-import-kml-fake-file {
-      float: left;
-      width: 80%;
-      cursor: pointer;
   }
 }
 

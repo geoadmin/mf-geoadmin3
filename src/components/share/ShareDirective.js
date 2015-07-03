@@ -6,7 +6,8 @@ goog.require('ga_permalink');
 
   var module = angular.module('ga_share_directive', [
     'ga_browsersniffer_service',
-    'ga_permalink'
+    'ga_permalink',
+    'pascalprecht.translate'
   ]);
 
   module.directive('gaShareCopyInput', function(gaBrowserSniffer, $translate) {
@@ -15,7 +16,8 @@ goog.require('ga_permalink');
       link: function(scope, element, attrs) {
         if (!gaBrowserSniffer.mobile) {
           element.attr('readonly', 'readonly').tooltip({
-            placement: 'bottom',
+            placement: attrs.placement || 'bottom',
+            trigger: 'focus',
             title: function() {
               return $translate.instant('share_link_tooltip');
             }

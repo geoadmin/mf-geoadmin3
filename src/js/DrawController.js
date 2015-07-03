@@ -20,6 +20,33 @@ goog.provide('ga_draw_controller');
         $scope.options = $scope.options || {};
         $scope.options.shortenUrl = gaGlobalOptions.apiUrl
               + '/shorten.json',
+         
+        // Add popup options
+        $scope.options.popupOptions = {
+          title: '',
+          x: 0,
+          y: 'auto',
+          container: 'body',
+          position: 'bottom-left'
+        };
+
+        // Add measure options
+        $scope.options.measureOptions = {
+        };
+ 
+        // Add profile options
+        $scope.options.profileOptions = {
+          xLabel: 'profile_x_label',
+          yLabel: 'profile_y_label',
+          margin: {
+             top: 0,
+             right: 20,
+             bottom: 40,
+             left: 60
+          },
+          height: 145,
+          elevationModel: 'COMB'
+        };
 
         // Defines directive options
         $scope.options.showExport =
@@ -34,47 +61,40 @@ goog.provide('ga_draw_controller');
 
         $scope.options.translate = $translate; // For translation of ng-options
 
-        $scope.options.text = '';
+        $scope.options.name = '';
 
-        $scope.options.tools = [
-          {id: 'point',   iconClass: 'icon-ga-point'},
-          {id: 'line',    iconClass: 'icon-ga-line'},
-          {id: 'polygon', iconClass: 'icon-ga-polygon'},
-          {id: 'text',    iconClass: 'icon-ga-text'},
-          {id: 'modify',  iconClass: 'icon-ga-edit'},
-          {id: 'delete',  iconClass: 'icon-ga-delete'}
-        ];
+        $scope.options.description = '';
 
         $scope.options.colors = [
-          {name: 'black',  fill: [0, 0, 0]},
-          {name: 'blue',   fill: [0, 0, 255]},
-          {name: 'gray',   fill: [128, 128, 128]},
-          {name: 'green',  fill: [0, 128, 0]},
-          {name: 'orange', fill: [255, 165, 0]},
-          {name: 'red',    fill: [255, 0, 0]},
-          {name: 'white',  fill: [255, 255, 255]},
-          {name: 'yellow', fill: [255, 255, 0]}
+          {name: 'black',  fill: [0, 0, 0], border: 'white'},
+          {name: 'blue',   fill: [0, 0, 255], border: 'white'},
+          {name: 'gray',   fill: [128, 128, 128], border: 'white'},
+          {name: 'green',  fill: [0, 128, 0], border: 'white'},
+          {name: 'orange', fill: [255, 165, 0], border: 'black'},
+          {name: 'red',    fill: [255, 0, 0], border: 'white'},
+          {name: 'white',  fill: [255, 255, 255], border: 'black'},
+          {name: 'yellow', fill: [255, 255, 0], border: 'black'}
         ];
 
         $scope.options.iconSizes = [
-          {label:'24 px', value: [24, 24], scale: 0.5},
-          {label:'36 px', value: [36, 36], scale: 0.75},
-          {label:'48 px', value: [48, 48], scale: 1}
+          {label:'small_size', value: [24, 24], scale: 0.5},
+          {label:'medium_size', value: [36, 36], scale: 0.75},
+          {label:'big_size', value: [48, 48], scale: 1}
         ];
 
         $scope.options.icons = [
             
             // Basics
+            {id: 'marker'},
             {id: 'circle'},
-            {id: 'circle-stroked'},
             {id: 'square'},
-            {id: 'square-stroked'},
             {id: 'triangle'},
-            {id: 'triangle-stroked'},
             {id: 'star'},
             {id: 'star-stroked'},
-            {id: 'marker'},
             {id: 'marker-stroked'},
+            {id: 'circle-stroked'},
+            {id: 'square-stroked'},
+            {id: 'triangle-stroked'},
             {id: 'cross'},
             {id: 'disability'},
             {id: 'danger'},
@@ -190,26 +210,20 @@ goog.provide('ga_draw_controller');
             {id: 'waste-basket'},
             {id: 'water'}
         ];
-        
-        // Set default color
-        $scope.options.color = $scope.options.colors[5];
-        
-        // Set default icon
-        $scope.options.icon = $scope.options.icons[0];
-        
-        // Set default icon
-        $scope.options.iconSize = $scope.options.iconSizes[0];
+       
+        $scope.options.setDefaultValues = function() { 
+          // Set default color
+          $scope.options.color = $scope.options.colors[5];
+          
+          // Set default icon
+          $scope.options.icon = $scope.options.icons[0];
+          
+          // Set default icon size
+          $scope.options.iconSize = $scope.options.iconSizes[2];
 
-        // Define tools identifiers
-        for (var i = 0, ii = $scope.options.tools.length; i < ii; i++) {
-          var tool = $scope.options.tools[i];
-          tool.activeKey = 'is' + tool.id.charAt(0).toUpperCase() + tool.id.slice(1) + 'Active';
-          tool.cssClass = 'ga-draw-' + tool.id + '-bt';
-          tool.title = 'draw_' + tool.id;
-          tool.description = 'draw_' + tool.id + '_description';
-          tool.instructions = 'draw_' + tool.id + '_instructions';
         }
- 
+        $scope.options.setDefaultValues();
+
         // Define icons properties
         for (var i = 0, ii = $scope.options.icons.length; i < ii; i++) {
           var icon = $scope.options.icons[i];
@@ -218,86 +232,136 @@ goog.provide('ga_draw_controller');
         $scope.getIconUrl = function(i) {
           return i.url;
         };
-       
-        // Get the current style defined by inputs 
-        $scope.options.styleFunction = function(feature) {
-          var zIndex = gaStyleFactory.ZPOLYGON;
 
-          // Only update features with new colors if its style is null
-          var text, icon;
+        // Get the current style defined by inputs 
+        $scope.options.updateStyle = function(feature) {
+          var style;
+          var oldStyles = feature.getStyle();
+          if (oldStyles.length) {
+            style = oldStyles[0];
+          } else {
+            // No style to update
+            return;         
+          }
+
+          // Update Fill if it exists
           var color = $scope.options.color;
-          var fill = new ol.style.Fill({
-            color: color.fill.concat([0.4])
-          })
-          var stroke = new ol.style.Stroke({
-            color: color.fill.concat([1]),
-            width: 3
-          });
-          var sketchCircle = new ol.style.Circle({
-            radius: 4,
-            fill: fill,
-            stroke: stroke
-          });
-          
-          // Drawing line
-          if ($scope.options.isLineActive) {
-            zIndex = gaStyleFactory.ZLINE;
+          var fill = style.getFill();
+          if (fill) {
+            fill.setColor(color.fill.concat([0.4]));
           }
           
-          // Drawing text
-          if (($scope.options.isTextActive ||
-              ($scope.options.isModifyActive &&
-                  feature.getGeometry() instanceof ol.geom.Point &&
-                  feature.get('useText'))) &&
-              angular.isDefined($scope.options.text)) {
-
+          // Update Stroke if it exists
+          var stroke = style.getStroke();
+          if (stroke) {
+            stroke.setColor(color.fill.concat([1]));
+          }
+          
+          // Update text style
+          var text = style.getText();
+          if (text && $scope.options.name) {
             text = new ol.style.Text({
               font: gaStyleFactory.FONT,
-              text: $scope.options.text,
+              text: $scope.options.name,
               fill: new ol.style.Fill({
-                color: stroke.getColor()
+                color: color.fill.concat([1])
               }),
-              stroke: gaStyleFactory.getTextStroke(stroke.getColor())
+              stroke: gaStyleFactory.getTextStroke(color.fill.concat([1]))
             });
-            fill = undefined;
-            stroke = undefined;
-            zIndex = gaStyleFactory.ZTEXT;
           } 
-          feature.set('useText', (!!text));
 
-          // Drawing icon
-          if (($scope.options.isPointActive ||
-              ($scope.options.isModifyActive &&
-                  feature.getGeometry() instanceof ol.geom.Point &&
-                  feature.get('useIcon'))) &&
+          // Update Icon style if it exists
+          var icon = style.getImage();
+          if (icon instanceof ol.style.Icon &&
               angular.isDefined($scope.options.icon)) {
-
             icon = new ol.style.Icon({
               src: $scope.getIconUrl($scope.options.icon),
               scale: $scope.options.iconSize.scale
             });
-            fill = undefined;
-            stroke = undefined;
-            zIndex = gaStyleFactory.ZICON;
-          } 
-          feature.set('useIcon', (!!icon));
+          }
           
+          // Set feature's properties
+          if ($scope.options.name) {
+            feature.set('name', $scope.options.name);
+          }
+          feature.set('description', $scope.options.description);
+
           var styles = [
             new ol.style.Style({
               fill: fill,
               stroke: stroke,
               text: text,
-              image: icon || ((!text) ? sketchCircle :
-                  gaStyleFactory.getStyle('transparentCircle')),
-              zIndex: zIndex
+              image: icon,
+              zIndex: style.getZIndex()
             })
           ];
-
           return styles;
         };
-       
-        $scope.options.drawStyleFunction = (function() {
-          var selectPolygonStyle = new ol.style.Style({
+
+        // Draw a marker
+        var markerDrawStyleFunc = function(feature, resolution) {
+          var styles = [
+            new ol.style.Style({
+              image: new ol.style.Icon({
+                src: $scope.getIconUrl($scope.options.icon),
+                scale: $scope.options.iconSize.scale
+              }),
+              zIndex: gaStyleFactory.ZICON
+            })
+          ];
+          return styles;
+        }
+        
+
+        // Draw a text
+        var annotationDrawStyleFunc = function(feature, resolution) {
+          var color = $scope.options.color;
+          if (!$scope.options.name) {
+            $scope.options.name = $translate.instant('draw_new_text');
+          }
+          var text = new ol.style.Text({
+              font: gaStyleFactory.FONT,
+              text: $scope.options.name,
+              fill: new ol.style.Fill({
+                color: color.fill.concat([1])
+              }),
+              stroke: gaStyleFactory.getTextStroke(color.fill)
+          });
+          feature.set('name', $scope.options.name);
+ 
+          var styles = [
+            new ol.style.Style({
+              text: text,
+              zIndex: gaStyleFactory.ZICON
+            })
+          ];
+          return styles;
+        };
+
+        // Draw a line or polygon 
+        var linepolygonDrawStyleFunc = function(feature) {
+          var color = $scope.options.color;
+          var styles = [
+            new ol.style.Style({
+              fill: new ol.style.Fill({
+                color: color.fill.concat([0.4])
+              }),
+              stroke: new ol.style.Stroke({
+                color: color.fill.concat([1]),
+                width: 3
+              }),
+              zIndex: gaStyleFactory.ZPOLYGON
+            })
+          ];
+          return styles;
+        };
+        
+        var measureDrawStyleFunc = gaStyleFactory.getStyleFunction('measure');
+
+        var generateDrawStyleFunc = function(styleFunction) {
+          // ol.interaction.Draw generates automatically a sketchLine when
+          // drawing  polygon
+          var sketchPolygon = new ol.style.Style({
             fill: new ol.style.Fill({
               color: [255, 255, 255, 0.4]
             }),
@@ -306,30 +370,40 @@ goog.provide('ga_draw_controller');
               width: 0
             })
           });
+          
           return function(feature, resolution) {
             var styles;
             if (feature.getGeometry().getType() === 'Polygon') {
-              styles =  [selectPolygonStyle];
+              styles =  [sketchPolygon];
+            } else if (feature.getGeometry().getType() === 'Point') {
+              var color = $scope.options.color;
+              var fill = new ol.style.Fill({
+                color: color.fill.concat([0.4])
+              });
+              var stroke = new ol.style.Stroke({
+                color: color.fill.concat([1]),
+                width: 3
+              });
+              var sketchCircle = new ol.style.Style({
+                image: new ol.style.Circle({
+                  radius: 4,
+                  fill: fill,
+                  stroke: stroke
+                })
+              });
+              styles =  [sketchCircle];
             } else {
-              styles = $scope.options.styleFunction(feature, resolution);
+              styles = styleFunction(feature, resolution);
             }
             return styles;
           };
-        })();
-         
+        };
+        
+        // Select style function display vertices of the geometry 
         $scope.options.selectStyleFunction = (function() {
-          var fill = new ol.style.Fill({
-            color: white.concat([0.4])
-          });
-          var stroke = new ol.style.Stroke({
-            color: white.concat([0.6]),
-            width: 3 
-          });
-          var defaultCircle = new ol.style.Circle({
-            radius: 4,
-            fill: fill,
-            stroke: stroke
-          }); 
+          
+          // The vertex style display a black and white circle on the existing
+          // vertices, and also when the user can add a new vertices.
           var vertexStyle = new ol.style.Style({
             image: new ol.style.Circle({
               radius: 7,
@@ -339,7 +413,19 @@ goog.provide('ga_draw_controller');
               stroke: new ol.style.Stroke({
                 color: black.concat([1])
               })
-            }), 
+            }),
+            geometry: function(feature) {
+              var geom = feature.getGeometry();
+              if (geom instanceof ol.geom.LineString) {
+                var coordinates = feature.getGeometry().getCoordinates();
+                return new ol.geom.MultiPoint(coordinates);
+              } else if (geom instanceof ol.geom.Polygon) {
+                var coordinates = feature.getGeometry().getCoordinates()[0];
+                return new ol.geom.MultiPoint(coordinates);
+              } else {
+                return feature.getGeometry();
+              }
+            }, 
             zIndex: gaStyleFactory.ZSKETCH 
           });
            
@@ -349,30 +435,56 @@ goog.provide('ga_draw_controller');
               return [vertexStyle];
             }
             var styles = feature.getStyleFunction().call(feature, resolution);
-            var style = styles[0];
-            var text = style.getText();
-            if (text) {
-              text = new ol.style.Text({
-                font: text.getFont(),
-                text: text.getText(),
-                fill: fill,
-                stroke: stroke
-              });
-            }
-            
-            // When a feature is selected we apply its current style and a white
-            // transparent style on top.
-            return [
-              style, 
-              new ol.style.Style({
-                fill: fill,
-                stroke: stroke,
-                text: text,
-                image: (text) ? style.getImage() : defaultCircle,
-                zIndex: gaStyleFactory.ZSELECT                
-              })
-            ];
+            // When a feature is selected we apply its current style and the
+            // vertex style.
+            return styles.concat([
+              vertexStyle
+            ]);
           }
         })();
+
+        // Define tools
+        $scope.options.tools = [{
+          id: 'marker',
+          cssClass: 'icon-ga-marker',
+          drawOptions: {
+            type: 'Point',
+            style: markerDrawStyleFunc
+          },
+          style: markerDrawStyleFunc,
+          useIconStyle: true
+        }, {
+          id: 'annotation',
+          cssClass: 'icon-ga-add-text',
+          drawOptions: {
+            type: 'Point',
+            style: annotationDrawStyleFunc
+          },
+          style: annotationDrawStyleFunc
+        }, {
+          id: 'linepolygon',
+          cssClass: 'icon-ga-add-line',
+          drawOptions: {
+            type: 'Polygon',
+            style: generateDrawStyleFunc(linepolygonDrawStyleFunc)
+          },
+          style: linepolygonDrawStyleFunc
+        }, {
+          id: 'measure',
+          cssClass: 'icon-ga-measure',
+          drawOptions: {
+            type: 'Polygon',
+            minPoints: 2,
+            style: generateDrawStyleFunc(measureDrawStyleFunc)
+          },
+          style: measureDrawStyleFunc,
+          showMeasure: true
+        }];
+        
+        for (var i = 0, ii = $scope.options.tools.length; i < ii; i++) {
+          var tool = $scope.options.tools[i];
+          tool.activeKey = 'is' + tool.id.charAt(0).toUpperCase() + tool.id.slice(1) + 'Active';
+          tool.title = 'draw_' + tool.id;
+        }
       });
 })();
