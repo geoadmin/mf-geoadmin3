@@ -28,9 +28,9 @@
               <td>MGRS</td>
               <td>{{coordmgrs}}</td>
           </tr>
-          <tr ng-hide="!altitude">
+          <tr ng-if="altitude">
               <td translate>elevation</td>
-              <td>{{altitude}} [m]</td>
+              <td>{{altitude | measure:'distance':[' m']:1}}</td>
           </tr>
           <tr>
               <td></td>

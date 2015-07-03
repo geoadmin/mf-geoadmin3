@@ -1,0 +1,12 @@
+<div class="ga-measure-info">
+  <p class="pull-left" translate>{{'distance_label'}}:</p>
+  <p class="pull-right">{{distance | measure}}</p>
+</div>
+<div class="ga-measure-info">
+  <p class="pull-left" translate>{{'surface_label'}}:</p>
+  <p class="pull-right">{{surface | measure:'area':[' km&sup2', ' m&sup2']}}</p>
+</div>
+<div class="ga-measure-info">
+  <p class="pull-left" translate>{{'azimuth_label'}}:</p>
+  <p class="pull-right">{{azimuth | measure:'angle':['&deg']}}</p>
+</div>

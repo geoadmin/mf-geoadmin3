@@ -16,6 +16,7 @@ goog.provide('ga_print_controller');
         qrcodeUrl: gaGlobalOptions.apiUrl + '/qrcodegenerator?url=',
         shortenUrl: gaGlobalOptions.apiUrl + '/shorten.json',
         markerUrl: gaGlobalOptions.resourceUrl + 'img/marker.png',
+        bubbleUrl: gaGlobalOptions.resourceUrl + 'img/bubble.png',
         heightMargin: $('#header').height(),
         widthMargin: $('#pulldown').width(),
         // Hardcode listd of legends that should be downloaded in

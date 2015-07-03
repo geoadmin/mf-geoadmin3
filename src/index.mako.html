@@ -102,7 +102,6 @@ itemscope itemtype="http://schema.org/WebApplication"
         }
       })();
     </script>
-    
     <link href="${versionslashed}style/app.css" rel="stylesheet"/>
     <link rel="shortcut icon" type="image/x-icon" href="${versionslashed}img/favicon.ico"/>
   </head>
@@ -115,7 +114,8 @@ itemscope itemtype="http://schema.org/WebApplication"
           'no-webkit': !globals.webkit, 
           'offline': globals.offline,
           'online': !globals.offline,
-          'embed': globals.embed
+          'embed': globals.embed,
+          'ga-draw-active': globals.isDrawActive
         }">
     <!-- The below conditional is ignored by >= IE10 and all other browsers -->
     <!--![if IE]>
@@ -167,23 +167,32 @@ itemscope itemtype="http://schema.org/WebApplication"
   % endif      
       </div>
   % if device == 'desktop':
-      <div class="navbar-form pull-right hidden-xs">
-        <div id="toptools">
-          <div ga-fullscreen ga-fullscreen-map="map"></div>&nbsp;&nbsp;
-          <a href="" ng-click="globals.feedbackPopupShown = !globals.feedbackPopupShown">
-            <span ng-class="{'selected': globals.feedbackPopupShown}" translate>problem_announcement</span>
-          </a>&nbsp;&nbsp;
-          <a target="_blank" href="//help.geo.admin.ch/?lang={{langId}}" translate>help_label</a>&nbsp;&nbsp;
-          <a ng-href="{{deviceSwitcherHref}}" translate>mobile_redirect</a>&nbsp;&nbsp;
-          <div ng-controller="GaTranslationController">
-            <div ga-translation-selector ga-translation-selector-options="options"></div>
-          </div>
+      <div id="toptools" class="hidden-xs">
+        <div ga-fullscreen ga-fullscreen-map="map"></div>&nbsp;&nbsp;
+        <a href="" ng-click="globals.feedbackPopupShown = !globals.feedbackPopupShown">
+          <span ng-class="{'selected': globals.feedbackPopupShown}" translate>problem_announcement</span>
+        </a>&nbsp;&nbsp;
+        <a target="_blank" href="//help.geo.admin.ch/?lang={{langId}}" translate>help_label</a>&nbsp;&nbsp;
+        <a ng-href="{{deviceSwitcherHref}}" translate>mobile_redirect</a>&nbsp;&nbsp;
+        <div ng-controller="GaTranslationController">
+          <div ga-translation-selector ga-translation-selector-options="options"></div>
         </div>
       </div>
   % endif
       ## css animation doesnt work on pseudo element, let use this instead
       <div class="alert alert-danger" translate>offline_sorry</div>
     </div> <!-- #header -->
+
+    <div id="drawModeHeader" class="navbar navbar-fixed-top">
+      <div class="ga-centered ga-title" translate>draw_mode_title</div>
+      <button class="btn btn-primary pull-left" ng-click="globals.isDrawActive = false">
+        <i class="icon-arrow-left"></i>
+        <span translate>draw_back</span>
+      </button>
+      <span ga-help="66"></span>
+
+    </div><!-- #drawModeHeader -->
+
 % endif
     <div id="loader"></div>
     <div tabindex="1" ga-map ga-map-map="map">
@@ -275,17 +284,20 @@ itemscope itemtype="http://schema.org/WebApplication"
       <div ga-tooltip 
            ga-tooltip-map="map" 
            ga-tooltip-options="options"
-           ga-tooltip-active="!globals.isMeasureActive && !globals.isDrawActive"></div>
+           ga-tooltip-active="!globals.isDrawActive"></div>
     </div>
 
 % if device != 'embed':
     <div ng-cloak translate-cloak id="pulldown" ng-show="!globals.offline" ng-class="{'selection-and-catalog-shown': (globals.catalogShown && globals.selectionShown)}">
       <div id="pulldown-content" class="content ${"in" if device == "desktop" else "collapse"}">
+       
+        <!-- Share -->
         <div class="panel">
-          <a id="shareHeading" class="panel-heading accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#share" ga-collapsible-show="globals.isShareActive">
+          <a id="shareHeading" class="panel-heading accordion-toggle collapsed"
+             data-toggle="collapse" data-parent="#pulldown-content" href="#share"
+             ga-collapsible-show="globals.isShareActive">
             <i class="visible-collapsed icon-caret-right spacer"></i>
             <i class="hidden-collapsed icon-caret-down"></i>
-            <i class="icon-share"></i>
             <span translate>share</span>
           </a>
           <div id="share" class="panel-collapse collapse">
@@ -296,36 +308,53 @@ itemscope itemtype="http://schema.org/WebApplication"
         </div> <!-- .panel -->
 
   % if device == 'desktop':
+        <!-- Print -->
         <div class="panel">
-          <a id="printHeading" class="panel-heading accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#print"
+          <a id="printHeading" class="panel-heading accordion-toggle collapsed"
+             data-toggle="collapse" data-parent="#pulldown-content" href="#print"
              ga-collapsible-show="globals.printShown">
             <i class="visible-collapsed icon-caret-right spacer"></i>
             <i class="hidden-collapsed icon-caret-down"></i>
-            <i class="icon-print"></i>
             <span translate>print</span>
           </a>
           <div id="print" class="panel-collapse collapse">
             <div class="panel-body" ng-controller="GaPrintController">
               <div ga-print></div>
             </div>
-
           </div>
         </div>  <!-- .panel -->
-
-        <div class="panel"> 
-
-          <a id="toolsHeading" class="panel-heading accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#tools">
+ 
+        <!-- Draw -->
+        <div class="panel">
+          <a id="drawHeading" class="panel-heading accordion-toggle collapsed"
+             data-toggle="collapse" data-parent="#pulldown-content" href="#draw"
+             ga-collapsible-show="globals.isDrawActive" accesskey="r">
             <i class="visible-collapsed icon-caret-right spacer"></i>
             <i class="hidden-collapsed icon-caret-down"></i>
-            <i class="icon-ga-mapfunction"></i>
+            <span translate>draw_panel_title</span>
+          </a>
+          <div id="draw" class="panel-collapse collapse">
+            <div class="panel-body" ng-controller="GaDrawController">
+              <div ga-draw 
+                   ga-draw-map="map" 
+                   ga-draw-options="options"
+                   ga-draw-active="globals.isDrawActive">
+              </div>
+            </div>
+          </div>
+        </div> <!-- .panel -->
+        
+        <!-- Tools -->
+        <div class="panel"> 
+          <a id="toolsHeading" class="panel-heading accordion-toggle collapsed"
+             data-toggle="collapse" data-parent="#pulldown-content" href="#tools">
+            <i class="visible-collapsed icon-caret-right spacer"></i>
+            <i class="hidden-collapsed icon-caret-down"></i>
             <span translate>map_tools</span>
           </a>
-
           <div id="tools" class="collapse">
             <div class="panel-body panel-body-wide panel-cursor">
-
               <ul>
-
                 <li><!-- Import WMS -->
                   <a href="" ng-click="globals.importWmsPopupShown = !globals.importWmsPopupShown"
                      data-original-title="{{'wmsimport_tooltip' | translate}}"
@@ -350,22 +379,6 @@ itemscope itemtype="http://schema.org/WebApplication"
                     <span ng-class="{'selected': globals.isSwipeActive}" translate>swipe</span>
                   </a>
                 </li>
-                <li><!-- Measure -->
-                  <a href=""  ng-click="globals.isMeasureActive = !globals.isMeasureActive;globals.isDrawActive = false;"
-                     data-original-title="{{'measure_tooltip' | translate}}"
-                     class="ga-custom-tooltip" data-placement="bottom"
-                     accesskey="m">
-                    <span  ng-class="{'selected': globals.isMeasureActive}" translate>measure</span>
-                  </a>
-                </li>
-                <li><!-- Draw -->
-                  <a href=""  ng-click="globals.isDrawActive = !globals.isDrawActive;globals.isMeasureActive = false;"
-                     data-original-title="{{'draw_tooltip' | translate}}"
-                     class="ga-custom-tooltip" data-placement="bottom"
-                     accesskey="r">
-                    <span  ng-class="{'selected': globals.isDrawActive}" translate>draw</span>
-                  </a>
-                </li>
                 <li><!-- Feature Tree -->
                   <a href=""  ng-click="globals.isFeatureTreeActive = !globals.isFeatureTreeActive"
                      data-original-title="{{'featuretree_tooltip' | translate}}"
@@ -379,8 +392,9 @@ itemscope itemtype="http://schema.org/WebApplication"
           </div>
         </div> <!-- .panel -->
   % endif
-        <div class="panel">
-  
+
+        <!-- Catalog -->
+        <div class="panel" ng-hide="globals.isDrawActive">
   % if device == 'desktop':
           <div class="theme-toggle">
             <a class="dropdown-toggle" data-toggle="dropdown" href="#">
@@ -417,7 +431,8 @@ itemscope itemtype="http://schema.org/WebApplication"
           </div>
         </div> <!-- .panel -->
 
-        <div class="panel">
+        <!-- Selection -->
+        <div class="panel" ng-hide="globals.isDrawActive">
           <a id="selectionHeading" class="panel-heading accordion-toggle light ${"collapsed" if device!= "desktop" else ""}" data-toggle="collapse" href="#selection">
             <i class="visible-collapsed icon-caret-right"></i>
             <i class="hidden-collapsed icon-caret-down"></i>
@@ -438,7 +453,7 @@ itemscope itemtype="http://schema.org/WebApplication"
           <a class="panel-heading accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#settings">
             <i class="visible-collapsed icon-caret-right spacer"></i>
             <i class="hidden-collapsed icon-caret-down"></i>
-            <i class="icon-gear"></i>
+            <!--i class="icon-gear"></i-->
             <span translate>settings</span>
           </a>
           <div id="settings" class="collapse">
@@ -474,8 +489,9 @@ itemscope itemtype="http://schema.org/WebApplication"
       <button type="button" data-toggle="collapse" data-target="#pulldown-content" class="toggle btn btn-default collapsed">
   % endif
         <span class="hidden-collapsed">
-          <i class="icon-caret-up"></i> <span translate>close_menu</span>
-          <span class="phone-toggle">&times;</span>
+          <i class="icon-caret-up"></i>
+          <span translate>close_menu</span>
+          <span class="phone-toggle">x</span>
         </span>
         <span class="visible-collapsed">
           <i class="icon-reorder"></i>
@@ -529,32 +545,6 @@ itemscope itemtype="http://schema.org/WebApplication"
         </div>
       </div>
     </div><!-- end Import KML -->
-   
-    <!-- Popup: Measure -->
-    <div ng-controller="GaMeasureController">
-      <div ga-popup="globals.isMeasureActive"
-           ga-popup-options="{title:'measure',showPrint:true, print: print, help:'66', x: 0, y:'auto'}"
-           id="measure-popup"
-           ng-class="{'ga-profile-active': options.isProfileActive}">
-        <div ga-measure="options.feature" 
-             ga-measure-map="map" 
-             ga-measure-options="options" 
-             ga-measure-active="globals.isMeasureActive"></div>
-      </div>
-    </div><!-- end Measure -->
- 
-    <!-- Popup: Draw -->
-    <div ga-popup="globals.isDrawActive"
-         ga-popup-options="{title:'draw', help:'67'}"
-         ga-draggable=".popover-title"
-         id="draw-popup" >
-      <div ng-controller="GaDrawController">
-        <div ga-draw 
-             ga-draw-map="map" 
-             ga-draw-options="options"
-             ga-draw-active="globals.isDrawActive && options.hasPopupFocus"></div>
-      </div>
-    </div><!-- end Draw -->
   % endif
     <!-- Popup: Feature Tree -->
     <div ng-controller="GaFeaturetreeController">
@@ -727,6 +717,10 @@ itemscope itemtype="http://schema.org/WebApplication"
             suffix: '.json'
           });
           $translateProvider.cloakClassName('ng-cloak');
+          // TODO: Use $snaitize instead in the future
+          // see http://angular-translate.github.io/docs/#/guide/19_security
+          $translateProvider.useSanitizeValueStrategy(null);
+
         });
 
         module.config(function(gaLayersProvider, gaGlobalOptions) {
