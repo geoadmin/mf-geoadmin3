@@ -12,7 +12,7 @@ goog.require('ga_urlutils_service');
   var originToZoomLevel = {
     address: 10,
     parcel: 10,
-    sn25: 8
+    gazetteer: 10
   };
 
   var parseExtent = function(stringBox2D) {
@@ -283,6 +283,10 @@ goog.require('ga_urlutils_service');
         return $sce.trustAsHtml(h);
       };
 
+      $scope.cleanLabel = function(attrs) {
+        return gaSearchLabels.cleanLabel(attrs.label);
+      };
+
       $scope.$watch('options.query', function(newval) {
         //cancel old requests
         cancel();
@@ -312,15 +316,28 @@ goog.require('ga_urlutils_service');
             $scope.type = 'locations';
             $scope.tabstart = tabStarts[0];
 
+            // Can be removed onnce real type contains gazetter
+            $scope.typeSpecificUrl = function(url) {
+              return url.replace('type=locations', 'type=locations_preview');
+            };
+
             $scope.select = function(res) {
+              var isGazetteerPoly = false;
+              var e = parseExtent(res.attrs.geom_st_box2d);
               unregisterMove();
-              if (originToZoomLevel.hasOwnProperty(res.attrs.origin)) {
+              //Gazetteer results that are not points zoom to full bbox extent
+              if (res.attrs.origin == 'gazetteer') {
+                isGazetteerPoly = (Math.abs(e[0] - e[2]) > 0.1 &&
+                                   Math.abs(e[1] - e[3]) > 0.1);
+
+              }
+              if (originToZoomLevel.hasOwnProperty(res.attrs.origin) &&
+                  !isGazetteerPoly) {
                 gaMapUtils.moveTo($scope.map,
                                   originToZoomLevel[res.attrs.origin],
                                   [res.attrs.y, res.attrs.x]);
               } else {
-                gaMapUtils.zoomToExtent($scope.map,
-                                        parseExtent(res.attrs.geom_st_box2d));
+                gaMapUtils.zoomToExtent($scope.map, e);
               }
               addOverlay(gaMarkerOverlay, $scope.map, res);
               $scope.options.valueSelected(

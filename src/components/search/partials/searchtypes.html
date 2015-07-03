@@ -19,7 +19,8 @@
          ng-mouseenter="preview(res)"
          ng-mouseleave="out()">
       <div class="ga-search-item"
-           ng-bind-html="prepareLabel(res.attrs)">
+           ng-bind-html="prepareLabel(res.attrs)"
+           title="{{cleanLabel(res.attrs)}}">
       </div>
       <i class="icon-info-sign"
          ng-if="type === 'layers'"
