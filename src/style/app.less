@@ -480,17 +480,29 @@ input[type=text][readonly] {
 #drawModeHeader {
   top: -100px;
   height: unit(@small-header-height, px);
-
+  font-weight: bold;
+  text-align: center;
+  vertical-align: middle;
+  padding: 6px 12px;
+  background-color: #e6e6e6;
+ 
   .btn-primary {
     margin-top: 1px;
   }
-
+  [ga-help] {
+    visibility: visible;
+    height: 100%;
+    float: left;
+    width: 30px;
+  }
   .ga-title {
     font-size: 2em;
     line-height: 1.7em;
+    left: 260px;
+    right: 260px;
 
     @media (max-width: @screen-tablet) {
-      left: 250px;
+      left: 260px;
       right: 5px;
       overflow: hidden;
       text-overflow: ellipsis;
