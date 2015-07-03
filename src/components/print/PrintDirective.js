@@ -27,6 +27,8 @@ goog.require('ga_print_style_service');
     var layersYears = [];
     var canceller;
     var currentMultiPrintId;
+    var format = new ol.format.GeoJSON();
+    var styleId = 0;
     $scope.options.multiprint = false;
     $scope.options.movie = false;
     $scope.options.printing = false;
@@ -388,11 +390,9 @@ goog.require('ga_print_style_service');
         'Vector': function(layer, features) {
           var enc = $scope.encoders.
               layers['Layer'].call(this, layer);
-          var format = new ol.format.GeoJSON();
           var encStyles = {};
           var encFeatures = [];
           var stylesDict = {};
-          var styleId = 0;
 
           // Sort features by geometry type
           var newFeatures = [];
@@ -414,59 +414,9 @@ goog.require('ga_print_style_service');
           features = newFeatures.concat(polygons, lines, points);
 
           angular.forEach(features, function(feature) {
-            // clone the feature
-            // feature = $.extend(true, {}, feature);
-            var encStyle = {
-              id: styleId
-            };
-
-            var styles;
-            if (feature.getStyleFunction()) {
-              styles = feature.getStyleFunction().call(feature);
-            } else if (layer.getStyleFunction()) {
-              styles = layer.getStyleFunction()(feature);
-            } else {
-              styles = ol.style.defaultStyleFunction(feature);
-            }
-            // clone the styles
-
-            var geometry = feature.getGeometry();
-
-            // Transform an ol.geom.Circle to a ol.geom.Polygon
-            if (/Circle/.test(geometry.getType())) {
-              var polygon = gaPrintStyleService.olCircleToPolygon(geometry);
-              feature = new ol.Feature(polygon);
-            }
-
-            var image = styles[0].getImage();
-            // Handle ol.style.RegularShape by converting points to poylgons
-            if (image instanceof ol.style.RegularShape) {
-              var scale = parseFloat($scope.scale.value);
-              var resolution = scale / UNITS_RATIO / POINTS_PER_INCH;
-              feature = gaPrintStyleService.olPointToPolygon(
-                  styles[0], feature, resolution);
-            }
-
-            var encJSON = format.writeFeatureObject(feature);
-            if (!encJSON.properties) {
-              encJSON.properties = {};
-            // Fix circular structure to JSON
-            // see: https://github.com/geoadmin/mf-geoadmin3/issues/1213
-            } else {
-              delete encJSON.properties.Style;
-              delete encJSON.properties.overlays;
-            }
-
-
-            encJSON.properties._gx_style = styleId;
-            encFeatures.push(encJSON);
-
-            if (styles && styles.length > 0) {
-              $.extend(encStyle, transformToPrintLiteral(feature, styles[0]));
-            }
-
-            encStyles[styleId] = encStyle;
-            styleId++;
+            var encoded = $scope.encoders.features.feature(layer, feature);
+            encFeatures = encFeatures.concat(encoded.encFeatures);
+            angular.extend(encStyles, encoded.encStyles);
           });
           angular.extend(enc, {
             type: 'Vector',
@@ -544,6 +494,83 @@ goog.require('ga_print_style_service');
           }
 
           return enc;
+        }
+      },
+      'features': {
+        'feature': function(layer, feature, styles) {
+          var encStyles = {};
+          var encFeatures = [];
+          var encStyle = {
+            id: styleId++
+          };
+
+          // Get the styles of the feature
+          if (!styles) {
+            if (feature.getStyleFunction()) {
+              styles = feature.getStyleFunction().call(feature);
+            } else if (layer.getStyleFunction()) {
+              styles = layer.getStyleFunction()(feature);
+            } else {
+              styles = ol.style.defaultStyleFunction(feature);
+            }
+          }
+
+          // Transform an ol.geom.Circle to a ol.geom.Polygon
+          var geometry = feature.getGeometry();
+          if (geometry instanceof ol.geom.Circle) {
+            var polygon = gaPrintStyleService.olCircleToPolygon(geometry);
+            feature = new ol.Feature(polygon);
+          }
+
+          // Handle ol.style.RegularShape by converting points to poylgons
+          var image = styles[0].getImage();
+          if (image instanceof ol.style.RegularShape) {
+            var scale = parseFloat($scope.scale.value);
+            var resolution = scale / UNITS_RATIO / POINTS_PER_INCH;
+            feature = gaPrintStyleService.olPointToPolygon(
+                styles[0], feature, resolution);
+          }
+
+          // Encode a feature
+          var encFeature = format.writeFeatureObject(feature);
+          if (!encFeature.properties) {
+            encFeature.properties = {};
+         } else {
+           // Fix circular structure to JSON
+           // see: https://github.com/geoadmin/mf-geoadmin3/issues/1213
+            delete encFeature.properties.Style;
+            delete encFeature.properties.overlays;
+          }
+          encFeature.properties._gx_style = encStyle.id;
+          encFeatures.push(encFeature);
+
+          // Encode a style of a feature
+                   if (styles && styles.length > 0) {
+            angular.extend(encStyle, transformToPrintLiteral(feature,
+                styles[0]));
+            encStyles[encStyle.id] = encStyle;
+            var styleToEncode = styles[0];
+            // If a feature has a style with a geometryFunction defined, we
+            // must also display this geometry with the good style (used for
+            // azimuth).
+            for (var i in styles) {
+              var style = styles[i];
+              if (angular.isFunction(style.getGeometry())) {
+                var geom = style.getGeometry()(feature);
+                if (geom) {
+                  var encoded = $scope.encoders.features.feature(layer,
+                      new ol.Feature(geom), [style]);
+                  encFeatures = encFeatures.concat(encoded.encFeatures);
+                  angular.extend(encStyles, encoded.encStyles);
+                }
+              }
+            }
+          }
+
+          return {
+            encFeatures: encFeatures,
+            encStyles: encStyles
+          };
         }
       },
       'legends' : {
