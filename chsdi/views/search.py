@@ -65,7 +65,7 @@ class Search(SearchValidation):
                 self.request.params.get('searchText')
             )
             self._feature_search()
-        elif self.typeInfo == 'locations':
+        elif self.typeInfo == 'locations' or self.typeInfo == 'locations_preview':
             self.searchText = format_search_text(
                 self.request.params.get('searchText', '')
             )
@@ -110,7 +110,11 @@ class Search(SearchValidation):
 
         if len(searchList) != 0:
             try:
-                temp = self.sphinx.Query(searchTextFinal, index='swisssearch')
+                if self.typeInfo == 'locations_preview':
+                    temp = self.sphinx.Query(searchTextFinal, index='swisssearch_preview')
+                else:
+                    temp = self.sphinx.Query(searchTextFinal, index='swisssearch')
+
             except IOError:
                 raise exc.HTTPGatewayTimeout()
             temp = temp['matches'] if temp is not None else temp
@@ -119,7 +123,10 @@ class Search(SearchValidation):
             # which should be more fuzzy in its results
             if temp is None or len(temp) <= 0:
                 try:
-                    temp = self.sphinx.Query(searchTextFinal, index='swisssearch_fuzzy')
+                    if self.typeInfo == 'locations_preview':
+                        temp = self.sphinx.Query(searchTextFinal, index='swisssearch_preview_fuzzy')
+                    else:
+                        temp = self.sphinx.Query(searchTextFinal, index='swisssearch_fuzzy')
                 except IOError:
                     raise exc.HTTPGatewayTimeout()
                 temp = temp['matches'] if temp is not None else temp
@@ -297,6 +304,7 @@ class Search(SearchValidation):
             'district': 3,
             'kantone': 4,
             'sn25': 5,
+            'gazetteer': 5,
             'address': 6,
             'parcel': 10
         }
