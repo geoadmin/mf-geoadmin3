@@ -7483,6 +7483,18 @@ caches:
     meta_buffer: 0
     meta_size: [1, 1]
     sources: [ch.swisstopo.pixelkarte-farbe-pk25.noscale_20140520_cache]
+  ch.swisstopo.pixelkarte-farbe-pk25.noscale_20151231_cache:
+    disable_storage: true
+    format: image/jpeg
+    grids: [swisstopo-pixelkarte]
+    sources: [ch.swisstopo.pixelkarte-farbe-pk25.noscale_20151231_source]
+  ch.swisstopo.pixelkarte-farbe-pk25.noscale_20151231_cache_out:
+    disable_storage: true
+    format: image/jpeg
+    grids: *id082
+    meta_buffer: 0
+    meta_size: [1, 1]
+    sources: [ch.swisstopo.pixelkarte-farbe-pk25.noscale_20151231_cache]
   ch.swisstopo.pixelkarte-farbe-pk50.noscale_20111027_cache:
     disable_storage: true
     format: image/jpeg
@@ -16551,1521 +16563,1532 @@ layers:
   title: Landeskarte 1:200'000 | LK200 (20111027, source)
 - dimensions: &id721
     Time:
+      default: '20151231'
+      values: ['20151231']
+  name: ch.swisstopo.pixelkarte-farbe-pk25.noscale_20151231
+  sources: [ch.swisstopo.pixelkarte-farbe-pk25.noscale_20151231_cache_out]
+  title: Landeskarte 1:25'000 | LK25 (20151231)
+- dimensions: *id721
+  name: ch.swisstopo.pixelkarte-farbe-pk25.noscale
+  sources: [ch.swisstopo.pixelkarte-farbe-pk25.noscale_20151231_cache]
+  title: Landeskarte 1:25'000 | LK25 ('current')
+- dimensions: *id721
+  name: ch.swisstopo.pixelkarte-farbe-pk25.noscale_20151231_source
+  sources: [ch.swisstopo.pixelkarte-farbe-pk25.noscale_20151231_cache]
+  title: Landeskarte 1:25'000 | LK25 (20151231, source)
+- dimensions: &id722
+    Time:
       default: '20140520'
       values: ['20140520']
   name: ch.swisstopo.pixelkarte-farbe-pk25.noscale_20140520
   sources: [ch.swisstopo.pixelkarte-farbe-pk25.noscale_20140520_cache_out]
   title: Landeskarte 1:25'000 | LK25 (20140520)
-- dimensions: *id721
-  name: ch.swisstopo.pixelkarte-farbe-pk25.noscale
-  sources: [ch.swisstopo.pixelkarte-farbe-pk25.noscale_20140520_cache]
-  title: Landeskarte 1:25'000 | LK25 ('current')
-- dimensions: *id721
+- dimensions: *id722
   name: ch.swisstopo.pixelkarte-farbe-pk25.noscale_20140520_source
   sources: [ch.swisstopo.pixelkarte-farbe-pk25.noscale_20140520_cache]
   title: Landeskarte 1:25'000 | LK25 (20140520, source)
-- dimensions: &id722
+- dimensions: &id723
     Time:
       default: '20140106'
       values: ['20140106']
   name: ch.swisstopo.pixelkarte-farbe-pk25.noscale_20140106
   sources: [ch.swisstopo.pixelkarte-farbe-pk25.noscale_20140106_cache_out]
   title: Landeskarte 1:25'000 | LK25 (20140106)
-- dimensions: *id722
+- dimensions: *id723
   name: ch.swisstopo.pixelkarte-farbe-pk25.noscale_20140106_source
   sources: [ch.swisstopo.pixelkarte-farbe-pk25.noscale_20140106_cache]
   title: Landeskarte 1:25'000 | LK25 (20140106, source)
-- dimensions: &id723
+- dimensions: &id724
     Time:
       default: '20130903'
       values: ['20130903']
   name: ch.swisstopo.pixelkarte-farbe-pk25.noscale_20130903
   sources: [ch.swisstopo.pixelkarte-farbe-pk25.noscale_20130903_cache_out]
   title: Landeskarte 1:25'000 | LK25 (20130903)
-- dimensions: *id723
+- dimensions: *id724
   name: ch.swisstopo.pixelkarte-farbe-pk25.noscale_20130903_source
   sources: [ch.swisstopo.pixelkarte-farbe-pk25.noscale_20130903_cache]
   title: Landeskarte 1:25'000 | LK25 (20130903, source)
-- dimensions: &id724
+- dimensions: &id725
     Time:
       default: '20130213'
       values: ['20130213']
   name: ch.swisstopo.pixelkarte-farbe-pk25.noscale_20130213
   sources: [ch.swisstopo.pixelkarte-farbe-pk25.noscale_20130213_cache_out]
   title: Landeskarte 1:25'000 | LK25 (20130213)
-- dimensions: *id724
+- dimensions: *id725
   name: ch.swisstopo.pixelkarte-farbe-pk25.noscale_20130213_source
   sources: [ch.swisstopo.pixelkarte-farbe-pk25.noscale_20130213_cache]
   title: Landeskarte 1:25'000 | LK25 (20130213, source)
-- dimensions: &id725
+- dimensions: &id726
     Time:
       default: '20120809'
       values: ['20120809']
   name: ch.swisstopo.pixelkarte-farbe-pk25.noscale_20120809
   sources: [ch.swisstopo.pixelkarte-farbe-pk25.noscale_20120809_cache_out]
   title: Landeskarte 1:25'000 | LK25 (20120809)
-- dimensions: *id725
+- dimensions: *id726
   name: ch.swisstopo.pixelkarte-farbe-pk25.noscale_20120809_source
   sources: [ch.swisstopo.pixelkarte-farbe-pk25.noscale_20120809_cache]
   title: Landeskarte 1:25'000 | LK25 (20120809, source)
-- dimensions: &id726
+- dimensions: &id727
     Time:
       default: '20111027'
       values: ['20111027']
   name: ch.swisstopo.pixelkarte-farbe-pk25.noscale_20111027
   sources: [ch.swisstopo.pixelkarte-farbe-pk25.noscale_20111027_cache_out]
   title: Landeskarte 1:25'000 | LK25 (20111027)
-- dimensions: *id726
+- dimensions: *id727
   name: ch.swisstopo.pixelkarte-farbe-pk25.noscale_20111027_source
   sources: [ch.swisstopo.pixelkarte-farbe-pk25.noscale_20111027_cache]
   title: Landeskarte 1:25'000 | LK25 (20111027, source)
-- dimensions: &id727
+- dimensions: &id728
     Time:
       default: '20151231'
       values: ['20151231']
   name: ch.swisstopo.pixelkarte-farbe-pk500.noscale_20151231
   sources: [ch.swisstopo.pixelkarte-farbe-pk500.noscale_20151231_cache_out]
   title: Landeskarte 1:500'000 | LK500 (20151231)
-- dimensions: *id727
+- dimensions: *id728
   name: ch.swisstopo.pixelkarte-farbe-pk500.noscale
   sources: [ch.swisstopo.pixelkarte-farbe-pk500.noscale_20151231_cache]
   title: Landeskarte 1:500'000 | LK500 ('current')
-- dimensions: *id727
+- dimensions: *id728
   name: ch.swisstopo.pixelkarte-farbe-pk500.noscale_20151231_source
   sources: [ch.swisstopo.pixelkarte-farbe-pk500.noscale_20151231_cache]
   title: Landeskarte 1:500'000 | LK500 (20151231, source)
-- dimensions: &id728
+- dimensions: &id729
     Time:
       default: '20111027'
       values: ['20111027']
   name: ch.swisstopo.pixelkarte-farbe-pk500.noscale_20111027
   sources: [ch.swisstopo.pixelkarte-farbe-pk500.noscale_20111027_cache_out]
   title: Landeskarte 1:500'000 | LK500 (20111027)
-- dimensions: *id728
+- dimensions: *id729
   name: ch.swisstopo.pixelkarte-farbe-pk500.noscale_20111027_source
   sources: [ch.swisstopo.pixelkarte-farbe-pk500.noscale_20111027_cache]
   title: Landeskarte 1:500'000 | LK500 (20111027, source)
-- dimensions: &id729
+- dimensions: &id730
     Time:
       default: '20151231'
       values: ['20151231']
   name: ch.swisstopo.pixelkarte-farbe-pk50.noscale_20151231
   sources: [ch.swisstopo.pixelkarte-farbe-pk50.noscale_20151231_cache_out]
   title: Landeskarte 1:50'000 | LK50 (20151231)
-- dimensions: *id729
+- dimensions: *id730
   name: ch.swisstopo.pixelkarte-farbe-pk50.noscale
   sources: [ch.swisstopo.pixelkarte-farbe-pk50.noscale_20151231_cache]
   title: Landeskarte 1:50'000 | LK50 ('current')
-- dimensions: *id729
+- dimensions: *id730
   name: ch.swisstopo.pixelkarte-farbe-pk50.noscale_20151231_source
   sources: [ch.swisstopo.pixelkarte-farbe-pk50.noscale_20151231_cache]
   title: Landeskarte 1:50'000 | LK50 (20151231, source)
-- dimensions: &id730
+- dimensions: &id731
     Time:
       default: '20140520'
       values: ['20140520']
   name: ch.swisstopo.pixelkarte-farbe-pk50.noscale_20140520
   sources: [ch.swisstopo.pixelkarte-farbe-pk50.noscale_20140520_cache_out]
   title: Landeskarte 1:50'000 | LK50 (20140520)
-- dimensions: *id730
+- dimensions: *id731
   name: ch.swisstopo.pixelkarte-farbe-pk50.noscale_20140520_source
   sources: [ch.swisstopo.pixelkarte-farbe-pk50.noscale_20140520_cache]
   title: Landeskarte 1:50'000 | LK50 (20140520, source)
-- dimensions: &id731
+- dimensions: &id732
     Time:
       default: '20140106'
       values: ['20140106']
   name: ch.swisstopo.pixelkarte-farbe-pk50.noscale_20140106
   sources: [ch.swisstopo.pixelkarte-farbe-pk50.noscale_20140106_cache_out]
   title: Landeskarte 1:50'000 | LK50 (20140106)
-- dimensions: *id731
+- dimensions: *id732
   name: ch.swisstopo.pixelkarte-farbe-pk50.noscale_20140106_source
   sources: [ch.swisstopo.pixelkarte-farbe-pk50.noscale_20140106_cache]
   title: Landeskarte 1:50'000 | LK50 (20140106, source)
-- dimensions: &id732
+- dimensions: &id733
     Time:
       default: '20130903'
       values: ['20130903']
   name: ch.swisstopo.pixelkarte-farbe-pk50.noscale_20130903
   sources: [ch.swisstopo.pixelkarte-farbe-pk50.noscale_20130903_cache_out]
   title: Landeskarte 1:50'000 | LK50 (20130903)
-- dimensions: *id732
+- dimensions: *id733
   name: ch.swisstopo.pixelkarte-farbe-pk50.noscale_20130903_source
   sources: [ch.swisstopo.pixelkarte-farbe-pk50.noscale_20130903_cache]
   title: Landeskarte 1:50'000 | LK50 (20130903, source)
-- dimensions: &id733
+- dimensions: &id734
     Time:
       default: '20130213'
       values: ['20130213']
   name: ch.swisstopo.pixelkarte-farbe-pk50.noscale_20130213
   sources: [ch.swisstopo.pixelkarte-farbe-pk50.noscale_20130213_cache_out]
   title: Landeskarte 1:50'000 | LK50 (20130213)
-- dimensions: *id733
+- dimensions: *id734
   name: ch.swisstopo.pixelkarte-farbe-pk50.noscale_20130213_source
   sources: [ch.swisstopo.pixelkarte-farbe-pk50.noscale_20130213_cache]
   title: Landeskarte 1:50'000 | LK50 (20130213, source)
-- dimensions: &id734
+- dimensions: &id735
     Time:
       default: '20120809'
       values: ['20120809']
   name: ch.swisstopo.pixelkarte-farbe-pk50.noscale_20120809
   sources: [ch.swisstopo.pixelkarte-farbe-pk50.noscale_20120809_cache_out]
   title: Landeskarte 1:50'000 | LK50 (20120809)
-- dimensions: *id734
+- dimensions: *id735
   name: ch.swisstopo.pixelkarte-farbe-pk50.noscale_20120809_source
   sources: [ch.swisstopo.pixelkarte-farbe-pk50.noscale_20120809_cache]
   title: Landeskarte 1:50'000 | LK50 (20120809, source)
-- dimensions: &id735
+- dimensions: &id736
     Time:
       default: '20111027'
       values: ['20111027']
   name: ch.swisstopo.pixelkarte-farbe-pk50.noscale_20111027
   sources: [ch.swisstopo.pixelkarte-farbe-pk50.noscale_20111027_cache_out]
   title: Landeskarte 1:50'000 | LK50 (20111027)
-- dimensions: *id735
+- dimensions: *id736
   name: ch.swisstopo.pixelkarte-farbe-pk50.noscale_20111027_source
   sources: [ch.swisstopo.pixelkarte-farbe-pk50.noscale_20111027_cache]
   title: Landeskarte 1:50'000 | LK50 (20111027, source)
-- dimensions: &id736
+- dimensions: &id737
     Time:
       default: '20151231'
       values: ['20151231']
   name: ch.swisstopo.pixelkarte-grau_20151231
   sources: [ch.swisstopo.pixelkarte-grau_20151231_cache_out]
   title: Landeskarte 1:25'000 | LK25 (20151231)
-- dimensions: *id736
+- dimensions: *id737
   name: ch.swisstopo.pixelkarte-grau
   sources: [ch.swisstopo.pixelkarte-grau_20151231_cache]
   title: Landeskarte 1:25'000 | LK25 ('current')
-- dimensions: *id736
+- dimensions: *id737
   name: ch.swisstopo.pixelkarte-grau_20151231_source
   sources: [ch.swisstopo.pixelkarte-grau_20151231_cache]
   title: Landeskarte 1:25'000 | LK25 (20151231, source)
-- dimensions: &id737
+- dimensions: &id738
     Time:
       default: '20140520'
       values: ['20140520']
   name: ch.swisstopo.pixelkarte-grau_20140520
   sources: [ch.swisstopo.pixelkarte-grau_20140520_cache_out]
   title: Landeskarte 1:25'000 | LK25 (20140520)
-- dimensions: *id737
+- dimensions: *id738
   name: ch.swisstopo.pixelkarte-grau_20140520_source
   sources: [ch.swisstopo.pixelkarte-grau_20140520_cache]
   title: Landeskarte 1:25'000 | LK25 (20140520, source)
-- dimensions: &id738
+- dimensions: &id739
     Time:
       default: '20140106'
       values: ['20140106']
   name: ch.swisstopo.pixelkarte-grau_20140106
   sources: [ch.swisstopo.pixelkarte-grau_20140106_cache_out]
   title: Landeskarte 1:25'000 | LK25 (20140106)
-- dimensions: *id738
+- dimensions: *id739
   name: ch.swisstopo.pixelkarte-grau_20140106_source
   sources: [ch.swisstopo.pixelkarte-grau_20140106_cache]
   title: Landeskarte 1:25'000 | LK25 (20140106, source)
-- dimensions: &id739
+- dimensions: &id740
     Time:
       default: '20130903'
       values: ['20130903']
   name: ch.swisstopo.pixelkarte-grau_20130903
   sources: [ch.swisstopo.pixelkarte-grau_20130903_cache_out]
   title: Landeskarte 1:25'000 | LK25 (20130903)
-- dimensions: *id739
+- dimensions: *id740
   name: ch.swisstopo.pixelkarte-grau_20130903_source
   sources: [ch.swisstopo.pixelkarte-grau_20130903_cache]
   title: Landeskarte 1:25'000 | LK25 (20130903, source)
-- dimensions: &id740
+- dimensions: &id741
     Time:
       default: '20130213'
       values: ['20130213']
   name: ch.swisstopo.pixelkarte-grau_20130213
   sources: [ch.swisstopo.pixelkarte-grau_20130213_cache_out]
   title: Landeskarte 1:25'000 | LK25 (20130213)
-- dimensions: *id740
+- dimensions: *id741
   name: ch.swisstopo.pixelkarte-grau_20130213_source
   sources: [ch.swisstopo.pixelkarte-grau_20130213_cache]
   title: Landeskarte 1:25'000 | LK25 (20130213, source)
-- dimensions: &id741
+- dimensions: &id742
     Time:
       default: '20120809'
       values: ['20120809']
   name: ch.swisstopo.pixelkarte-grau_20120809
   sources: [ch.swisstopo.pixelkarte-grau_20120809_cache_out]
   title: Landeskarte 1:25'000 | LK25 (20120809)
-- dimensions: *id741
+- dimensions: *id742
   name: ch.swisstopo.pixelkarte-grau_20120809_source
   sources: [ch.swisstopo.pixelkarte-grau_20120809_cache]
   title: Landeskarte 1:25'000 | LK25 (20120809, source)
-- dimensions: &id742
+- dimensions: &id743
     Time:
       default: '20111206'
       values: ['20111206']
   name: ch.swisstopo.pixelkarte-grau_20111206
   sources: [ch.swisstopo.pixelkarte-grau_20111206_cache_out]
   title: Landeskarte 1:25'000 | LK25 (20111206)
-- dimensions: *id742
+- dimensions: *id743
   name: ch.swisstopo.pixelkarte-grau_20111206_source
   sources: [ch.swisstopo.pixelkarte-grau_20111206_cache]
   title: Landeskarte 1:25'000 | LK25 (20111206, source)
-- dimensions: &id743
+- dimensions: &id744
     Time:
       default: '20111027'
       values: ['20111027']
   name: ch.swisstopo.pixelkarte-grau_20111027
   sources: [ch.swisstopo.pixelkarte-grau_20111027_cache_out]
   title: Landeskarte 1:25'000 | LK25 (20111027)
-- dimensions: *id743
+- dimensions: *id744
   name: ch.swisstopo.pixelkarte-grau_20111027_source
   sources: [ch.swisstopo.pixelkarte-grau_20111027_cache]
   title: Landeskarte 1:25'000 | LK25 (20111027, source)
-- dimensions: &id744
+- dimensions: &id745
     Time:
       default: '20110401'
       values: ['20110401']
   name: ch.swisstopo.pixelkarte-grau_20110401
   sources: [ch.swisstopo.pixelkarte-grau_20110401_cache_out]
   title: Landeskarte 1:25'000 | LK25 (20110401)
-- dimensions: *id744
+- dimensions: *id745
   name: ch.swisstopo.pixelkarte-grau_20110401_source
   sources: [ch.swisstopo.pixelkarte-grau_20110401_cache]
   title: Landeskarte 1:25'000 | LK25 (20110401, source)
-- dimensions: &id745
+- dimensions: &id746
     Time:
       default: '20150101'
       values: ['20150101']
   name: ch.swisstopo.swissalti3d-reliefschattierung_20150101
   sources: [ch.swisstopo.swissalti3d-reliefschattierung_20150101_cache_out]
   title: swissALTI3D Reliefschattierung (20150101)
-- dimensions: *id745
+- dimensions: *id746
   name: ch.swisstopo.swissalti3d-reliefschattierung
   sources: [ch.swisstopo.swissalti3d-reliefschattierung_20150101_cache]
   title: swissALTI3D Reliefschattierung ('current')
-- dimensions: *id745
+- dimensions: *id746
   name: ch.swisstopo.swissalti3d-reliefschattierung_20150101_source
   sources: [ch.swisstopo.swissalti3d-reliefschattierung_20150101_cache]
   title: swissALTI3D Reliefschattierung (20150101, source)
-- dimensions: &id746
+- dimensions: &id747
     Time:
       default: '20140101'
       values: ['20140101']
   name: ch.swisstopo.swissalti3d-reliefschattierung_20140101
   sources: [ch.swisstopo.swissalti3d-reliefschattierung_20140101_cache_out]
   title: swissALTI3D Reliefschattierung (20140101)
-- dimensions: *id746
+- dimensions: *id747
   name: ch.swisstopo.swissalti3d-reliefschattierung_20140101_source
   sources: [ch.swisstopo.swissalti3d-reliefschattierung_20140101_cache]
   title: swissALTI3D Reliefschattierung (20140101, source)
-- dimensions: &id747
+- dimensions: &id748
     Time:
       default: '20130101'
       values: ['20130101']
   name: ch.swisstopo.swissalti3d-reliefschattierung_20130101
   sources: [ch.swisstopo.swissalti3d-reliefschattierung_20130101_cache_out]
   title: swissALTI3D Reliefschattierung (20130101)
-- dimensions: *id747
+- dimensions: *id748
   name: ch.swisstopo.swissalti3d-reliefschattierung_20130101_source
   sources: [ch.swisstopo.swissalti3d-reliefschattierung_20130101_cache]
   title: swissALTI3D Reliefschattierung (20130101, source)
-- dimensions: &id748
+- dimensions: &id749
     Time:
       default: '20110101'
       values: ['20110101']
   name: ch.swisstopo.swissalti3d-reliefschattierung_20110101
   sources: [ch.swisstopo.swissalti3d-reliefschattierung_20110101_cache_out]
   title: swissALTI3D Reliefschattierung (20110101)
-- dimensions: *id748
+- dimensions: *id749
   name: ch.swisstopo.swissalti3d-reliefschattierung_20110101_source
   sources: [ch.swisstopo.swissalti3d-reliefschattierung_20110101_cache]
   title: swissALTI3D Reliefschattierung (20110101, source)
-- dimensions: &id749
+- dimensions: &id750
     Time:
       default: '20000101'
       values: ['20000101']
   name: ch.swisstopo.swissalti3d-reliefschattierung_20000101
   sources: [ch.swisstopo.swissalti3d-reliefschattierung_20000101_cache_out]
   title: swissALTI3D Reliefschattierung (20000101)
-- dimensions: *id749
+- dimensions: *id750
   name: ch.swisstopo.swissalti3d-reliefschattierung_20000101_source
   sources: [ch.swisstopo.swissalti3d-reliefschattierung_20000101_cache]
   title: swissALTI3D Reliefschattierung (20000101, source)
-- dimensions: &id750
+- dimensions: &id751
     Time:
       default: '20150101'
       values: ['20150101']
   name: ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill_20150101
   sources: [ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill_20150101_cache_out]
   title: Bezirksgrenzen (20150101)
-- dimensions: *id750
+- dimensions: *id751
   name: ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill
   sources: [ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill_20150101_cache]
   title: Bezirksgrenzen ('current')
-- dimensions: *id750
+- dimensions: *id751
   name: ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill_20150101_source
   sources: [ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill_20150101_cache]
   title: Bezirksgrenzen (20150101, source)
-- dimensions: &id751
+- dimensions: &id752
     Time:
       default: '20140101'
       values: ['20140101']
   name: ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill_20140101
   sources: [ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill_20140101_cache_out]
   title: Bezirksgrenzen (20140101)
-- dimensions: *id751
+- dimensions: *id752
   name: ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill_20140101_source
   sources: [ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill_20140101_cache]
   title: Bezirksgrenzen (20140101, source)
-- dimensions: &id752
+- dimensions: &id753
     Time:
       default: '20130101'
       values: ['20130101']
   name: ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill_20130101
   sources: [ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill_20130101_cache_out]
   title: Bezirksgrenzen (20130101)
-- dimensions: *id752
+- dimensions: *id753
   name: ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill_20130101_source
   sources: [ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill_20130101_cache]
   title: Bezirksgrenzen (20130101, source)
-- dimensions: &id753
+- dimensions: &id754
     Time:
       default: '20120101'
       values: ['20120101']
   name: ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill_20120101
   sources: [ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill_20120101_cache_out]
   title: Bezirksgrenzen (20120101)
-- dimensions: *id753
+- dimensions: *id754
   name: ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill_20120101_source
   sources: [ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill_20120101_cache]
   title: Bezirksgrenzen (20120101, source)
-- dimensions: &id754
+- dimensions: &id755
     Time:
       default: '20150101'
       values: ['20150101']
   name: ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill_20150101
   sources: [ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill_20150101_cache_out]
   title: Gemeindegrenzen (20150101)
-- dimensions: *id754
+- dimensions: *id755
   name: ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill
   sources: [ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill_20150101_cache]
   title: Gemeindegrenzen ('current')
-- dimensions: *id754
+- dimensions: *id755
   name: ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill_20150101_source
   sources: [ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill_20150101_cache]
   title: Gemeindegrenzen (20150101, source)
-- dimensions: &id755
+- dimensions: &id756
     Time:
       default: '20140101'
       values: ['20140101']
   name: ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill_20140101
   sources: [ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill_20140101_cache_out]
   title: Gemeindegrenzen (20140101)
-- dimensions: *id755
+- dimensions: *id756
   name: ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill_20140101_source
   sources: [ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill_20140101_cache]
   title: Gemeindegrenzen (20140101, source)
-- dimensions: &id756
+- dimensions: &id757
     Time:
       default: '20130101'
       values: ['20130101']
   name: ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill_20130101
   sources: [ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill_20130101_cache_out]
   title: Gemeindegrenzen (20130101)
-- dimensions: *id756
+- dimensions: *id757
   name: ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill_20130101_source
   sources: [ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill_20130101_cache]
   title: Gemeindegrenzen (20130101, source)
-- dimensions: &id757
+- dimensions: &id758
     Time:
       default: '20120101'
       values: ['20120101']
   name: ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill_20120101
   sources: [ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill_20120101_cache_out]
   title: Gemeindegrenzen (20120101)
-- dimensions: *id757
+- dimensions: *id758
   name: ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill_20120101_source
   sources: [ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill_20120101_cache]
   title: Gemeindegrenzen (20120101, source)
-- dimensions: &id758
+- dimensions: &id759
     Time:
       default: '20150101'
       values: ['20150101']
   name: ch.swisstopo.swissboundaries3d-kanton-flaeche.fill_20150101
   sources: [ch.swisstopo.swissboundaries3d-kanton-flaeche.fill_20150101_cache_out]
   title: Kantonsgrenzen (20150101)
-- dimensions: *id758
+- dimensions: *id759
   name: ch.swisstopo.swissboundaries3d-kanton-flaeche.fill
   sources: [ch.swisstopo.swissboundaries3d-kanton-flaeche.fill_20150101_cache]
   title: Kantonsgrenzen ('current')
-- dimensions: *id758
+- dimensions: *id759
   name: ch.swisstopo.swissboundaries3d-kanton-flaeche.fill_20150101_source
   sources: [ch.swisstopo.swissboundaries3d-kanton-flaeche.fill_20150101_cache]
   title: Kantonsgrenzen (20150101, source)
-- dimensions: &id759
+- dimensions: &id760
     Time:
       default: '20140101'
       values: ['20140101']
   name: ch.swisstopo.swissboundaries3d-kanton-flaeche.fill_20140101
   sources: [ch.swisstopo.swissboundaries3d-kanton-flaeche.fill_20140101_cache_out]
   title: Kantonsgrenzen (20140101)
-- dimensions: *id759
+- dimensions: *id760
   name: ch.swisstopo.swissboundaries3d-kanton-flaeche.fill_20140101_source
   sources: [ch.swisstopo.swissboundaries3d-kanton-flaeche.fill_20140101_cache]
   title: Kantonsgrenzen (20140101, source)
-- dimensions: &id760
+- dimensions: &id761
     Time:
       default: '20130101'
       values: ['20130101']
   name: ch.swisstopo.swissboundaries3d-kanton-flaeche.fill_20130101
   sources: [ch.swisstopo.swissboundaries3d-kanton-flaeche.fill_20130101_cache_out]
   title: Kantonsgrenzen (20130101)
-- dimensions: *id760
+- dimensions: *id761
   name: ch.swisstopo.swissboundaries3d-kanton-flaeche.fill_20130101_source
   sources: [ch.swisstopo.swissboundaries3d-kanton-flaeche.fill_20130101_cache]
   title: Kantonsgrenzen (20130101, source)
-- dimensions: &id761
+- dimensions: &id762
     Time:
       default: '20120101'
       values: ['20120101']
   name: ch.swisstopo.swissboundaries3d-kanton-flaeche.fill_20120101
   sources: [ch.swisstopo.swissboundaries3d-kanton-flaeche.fill_20120101_cache_out]
   title: Kantonsgrenzen (20120101)
-- dimensions: *id761
+- dimensions: *id762
   name: ch.swisstopo.swissboundaries3d-kanton-flaeche.fill_20120101_source
   sources: [ch.swisstopo.swissboundaries3d-kanton-flaeche.fill_20120101_cache]
   title: Kantonsgrenzen (20120101, source)
-- dimensions: &id762
+- dimensions: &id763
     Time:
       default: '20150101'
       values: ['20150101']
   name: ch.swisstopo.swissboundaries3d-land-flaeche.fill_20150101
   sources: [ch.swisstopo.swissboundaries3d-land-flaeche.fill_20150101_cache_out]
   title: Landesgrenzen (20150101)
-- dimensions: *id762
+- dimensions: *id763
   name: ch.swisstopo.swissboundaries3d-land-flaeche.fill
   sources: [ch.swisstopo.swissboundaries3d-land-flaeche.fill_20150101_cache]
   title: Landesgrenzen ('current')
-- dimensions: *id762
+- dimensions: *id763
   name: ch.swisstopo.swissboundaries3d-land-flaeche.fill_20150101_source
   sources: [ch.swisstopo.swissboundaries3d-land-flaeche.fill_20150101_cache]
   title: Landesgrenzen (20150101, source)
-- dimensions: &id763
+- dimensions: &id764
     Time:
       default: '20140101'
       values: ['20140101']
   name: ch.swisstopo.swissboundaries3d-land-flaeche.fill_20140101
   sources: [ch.swisstopo.swissboundaries3d-land-flaeche.fill_20140101_cache_out]
   title: Landesgrenzen (20140101)
-- dimensions: *id763
+- dimensions: *id764
   name: ch.swisstopo.swissboundaries3d-land-flaeche.fill_20140101_source
   sources: [ch.swisstopo.swissboundaries3d-land-flaeche.fill_20140101_cache]
   title: Landesgrenzen (20140101, source)
-- dimensions: &id764
+- dimensions: &id765
     Time:
       default: '20130101'
       values: ['20130101']
   name: ch.swisstopo.swissboundaries3d-land-flaeche.fill_20130101
   sources: [ch.swisstopo.swissboundaries3d-land-flaeche.fill_20130101_cache_out]
   title: Landesgrenzen (20130101)
-- dimensions: *id764
+- dimensions: *id765
   name: ch.swisstopo.swissboundaries3d-land-flaeche.fill_20130101_source
   sources: [ch.swisstopo.swissboundaries3d-land-flaeche.fill_20130101_cache]
   title: Landesgrenzen (20130101, source)
-- dimensions: &id765
+- dimensions: &id766
     Time:
       default: '20120101'
       values: ['20120101']
   name: ch.swisstopo.swissboundaries3d-land-flaeche.fill_20120101
   sources: [ch.swisstopo.swissboundaries3d-land-flaeche.fill_20120101_cache_out]
   title: Landesgrenzen (20120101)
-- dimensions: *id765
+- dimensions: *id766
   name: ch.swisstopo.swissboundaries3d-land-flaeche.fill_20120101_source
   sources: [ch.swisstopo.swissboundaries3d-land-flaeche.fill_20120101_cache]
   title: Landesgrenzen (20120101, source)
-- dimensions: &id766
+- dimensions: &id767
     Time:
       default: '19980101'
       values: ['19980101']
   name: ch.swisstopo.swissbuildings3d_19980101
   sources: [ch.swisstopo.swissbuildings3d_19980101_cache_out]
   title: "Vereinfachte 3D-Geb\xE4ude (19980101)"
-- dimensions: *id766
+- dimensions: *id767
   name: ch.swisstopo.swissbuildings3d
   sources: [ch.swisstopo.swissbuildings3d_19980101_cache]
   title: "Vereinfachte 3D-Geb\xE4ude ('current')"
-- dimensions: *id766
+- dimensions: *id767
   name: ch.swisstopo.swissbuildings3d_19980101_source
   sources: [ch.swisstopo.swissbuildings3d_19980101_cache]
   title: "Vereinfachte 3D-Geb\xE4ude (19980101, source)"
-- dimensions: &id767
+- dimensions: &id768
     Time:
       default: '20151231'
       values: ['20151231']
   name: ch.swisstopo.swissimage_20151231
   sources: [ch.swisstopo.swissimage_20151231_cache_out]
   title: SWISSIMAGE (20151231)
-- dimensions: *id767
+- dimensions: *id768
   name: ch.swisstopo.swissimage
   sources: [ch.swisstopo.swissimage_20151231_cache]
   title: SWISSIMAGE ('current')
-- dimensions: *id767
+- dimensions: *id768
   name: ch.swisstopo.swissimage_20151231_source
   sources: [ch.swisstopo.swissimage_20151231_cache]
   title: SWISSIMAGE (20151231, source)
-- dimensions: &id768
+- dimensions: &id769
     Time:
       default: '20140620'
       values: ['20140620']
   name: ch.swisstopo.swissimage_20140620
   sources: [ch.swisstopo.swissimage_20140620_cache_out]
   title: SWISSIMAGE (20140620)
-- dimensions: *id768
+- dimensions: *id769
   name: ch.swisstopo.swissimage_20140620_source
   sources: [ch.swisstopo.swissimage_20140620_cache]
   title: SWISSIMAGE (20140620, source)
-- dimensions: &id769
+- dimensions: &id770
     Time:
       default: '20131107'
       values: ['20131107']
   name: ch.swisstopo.swissimage_20131107
   sources: [ch.swisstopo.swissimage_20131107_cache_out]
   title: SWISSIMAGE (20131107)
-- dimensions: *id769
+- dimensions: *id770
   name: ch.swisstopo.swissimage_20131107_source
   sources: [ch.swisstopo.swissimage_20131107_cache]
   title: SWISSIMAGE (20131107, source)
-- dimensions: &id770
+- dimensions: &id771
     Time:
       default: '20130916'
       values: ['20130916']
   name: ch.swisstopo.swissimage_20130916
   sources: [ch.swisstopo.swissimage_20130916_cache_out]
   title: SWISSIMAGE (20130916)
-- dimensions: *id770
+- dimensions: *id771
   name: ch.swisstopo.swissimage_20130916_source
   sources: [ch.swisstopo.swissimage_20130916_cache]
   title: SWISSIMAGE (20130916, source)
-- dimensions: &id771
+- dimensions: &id772
     Time:
       default: '20130422'
       values: ['20130422']
   name: ch.swisstopo.swissimage_20130422
   sources: [ch.swisstopo.swissimage_20130422_cache_out]
   title: SWISSIMAGE (20130422)
-- dimensions: *id771
+- dimensions: *id772
   name: ch.swisstopo.swissimage_20130422_source
   sources: [ch.swisstopo.swissimage_20130422_cache]
   title: SWISSIMAGE (20130422, source)
-- dimensions: &id772
+- dimensions: &id773
     Time:
       default: '20120809'
       values: ['20120809']
   name: ch.swisstopo.swissimage_20120809
   sources: [ch.swisstopo.swissimage_20120809_cache_out]
   title: SWISSIMAGE (20120809)
-- dimensions: *id772
+- dimensions: *id773
   name: ch.swisstopo.swissimage_20120809_source
   sources: [ch.swisstopo.swissimage_20120809_cache]
   title: SWISSIMAGE (20120809, source)
-- dimensions: &id773
+- dimensions: &id774
     Time:
       default: '20120225'
       values: ['20120225']
   name: ch.swisstopo.swissimage_20120225
   sources: [ch.swisstopo.swissimage_20120225_cache_out]
   title: SWISSIMAGE (20120225)
-- dimensions: *id773
+- dimensions: *id774
   name: ch.swisstopo.swissimage_20120225_source
   sources: [ch.swisstopo.swissimage_20120225_cache]
   title: SWISSIMAGE (20120225, source)
-- dimensions: &id774
+- dimensions: &id775
     Time:
       default: '20110914'
       values: ['20110914']
   name: ch.swisstopo.swissimage_20110914
   sources: [ch.swisstopo.swissimage_20110914_cache_out]
   title: SWISSIMAGE (20110914)
-- dimensions: *id774
+- dimensions: *id775
   name: ch.swisstopo.swissimage_20110914_source
   sources: [ch.swisstopo.swissimage_20110914_cache]
   title: SWISSIMAGE (20110914, source)
-- dimensions: &id775
+- dimensions: &id776
     Time:
       default: '20110228'
       values: ['20110228']
   name: ch.swisstopo.swissimage_20110228
   sources: [ch.swisstopo.swissimage_20110228_cache_out]
   title: SWISSIMAGE (20110228)
-- dimensions: *id775
+- dimensions: *id776
   name: ch.swisstopo.swissimage_20110228_source
   sources: [ch.swisstopo.swissimage_20110228_cache]
   title: SWISSIMAGE (20110228, source)
-- dimensions: &id776
+- dimensions: &id777
     Time:
       default: '20150401'
       values: ['20150401']
   name: ch.swisstopo.swisstlm3d-karte-farbe_20150401
   sources: [ch.swisstopo.swisstlm3d-karte-farbe_20150401_cache_out]
   title: Karte swissTLM (farbig) (20150401)
-- dimensions: *id776
+- dimensions: *id777
   name: ch.swisstopo.swisstlm3d-karte-farbe
   sources: [ch.swisstopo.swisstlm3d-karte-farbe_20150401_cache]
   title: Karte swissTLM (farbig) ('current')
-- dimensions: *id776
+- dimensions: *id777
   name: ch.swisstopo.swisstlm3d-karte-farbe_20150401_source
   sources: [ch.swisstopo.swisstlm3d-karte-farbe_20150401_cache]
   title: Karte swissTLM (farbig) (20150401, source)
-- dimensions: &id777
+- dimensions: &id778
     Time:
       default: '20150401'
       values: ['20150401']
   name: ch.swisstopo.swisstlm3d-karte-grau_20150401
   sources: [ch.swisstopo.swisstlm3d-karte-grau_20150401_cache_out]
   title: Karte swissTLM (grau) (20150401)
-- dimensions: *id777
+- dimensions: *id778
   name: ch.swisstopo.swisstlm3d-karte-grau
   sources: [ch.swisstopo.swisstlm3d-karte-grau_20150401_cache]
   title: Karte swissTLM (grau) ('current')
-- dimensions: *id777
+- dimensions: *id778
   name: ch.swisstopo.swisstlm3d-karte-grau_20150401_source
   sources: [ch.swisstopo.swisstlm3d-karte-grau_20150401_cache]
   title: Karte swissTLM (grau) (20150401, source)
-- dimensions: &id778
+- dimensions: &id779
     Time:
       default: '20150101'
       values: ['20150101']
   name: ch.swisstopo.swisstlm3d-wanderwege_20150101
   sources: [ch.swisstopo.swisstlm3d-wanderwege_20150101_cache_out]
   title: Wanderwege (20150101)
-- dimensions: *id778
+- dimensions: *id779
   name: ch.swisstopo.swisstlm3d-wanderwege
   sources: [ch.swisstopo.swisstlm3d-wanderwege_20150101_cache]
   title: Wanderwege ('current')
-- dimensions: *id778
+- dimensions: *id779
   name: ch.swisstopo.swisstlm3d-wanderwege_20150101_source
   sources: [ch.swisstopo.swisstlm3d-wanderwege_20150101_cache]
   title: Wanderwege (20150101, source)
-- dimensions: &id779
+- dimensions: &id780
     Time:
       default: '20140101'
       values: ['20140101']
   name: ch.swisstopo.swisstlm3d-wanderwege_20140101
   sources: [ch.swisstopo.swisstlm3d-wanderwege_20140101_cache_out]
   title: Wanderwege (20140101)
-- dimensions: *id779
+- dimensions: *id780
   name: ch.swisstopo.swisstlm3d-wanderwege_20140101_source
   sources: [ch.swisstopo.swisstlm3d-wanderwege_20140101_cache]
   title: Wanderwege (20140101, source)
-- dimensions: &id780
+- dimensions: &id781
     Time:
       default: '20130101'
       values: ['20130101']
   name: ch.swisstopo.swisstlm3d-wanderwege_20130101
   sources: [ch.swisstopo.swisstlm3d-wanderwege_20130101_cache_out]
   title: Wanderwege (20130101)
-- dimensions: *id780
+- dimensions: *id781
   name: ch.swisstopo.swisstlm3d-wanderwege_20130101_source
   sources: [ch.swisstopo.swisstlm3d-wanderwege_20130101_cache]
   title: Wanderwege (20130101, source)
-- dimensions: &id781
+- dimensions: &id782
     Time:
       default: '20141101'
       values: ['20141101']
   name: ch.swisstopo.transformationsgenauigkeit_20141101
   sources: [ch.swisstopo.transformationsgenauigkeit_20141101_cache_out]
   title: LV95 Transformationsgenauigkeit (20141101)
-- dimensions: *id781
+- dimensions: *id782
   name: ch.swisstopo.transformationsgenauigkeit
   sources: [ch.swisstopo.transformationsgenauigkeit_20141101_cache]
   title: LV95 Transformationsgenauigkeit ('current')
-- dimensions: *id781
+- dimensions: *id782
   name: ch.swisstopo.transformationsgenauigkeit_20141101_source
   sources: [ch.swisstopo.transformationsgenauigkeit_20141101_cache]
   title: LV95 Transformationsgenauigkeit (20141101, source)
-- dimensions: &id782
+- dimensions: &id783
     Time:
       default: '20131028'
       values: ['20131028']
   name: ch.swisstopo.transformationsgenauigkeit_20131028
   sources: [ch.swisstopo.transformationsgenauigkeit_20131028_cache_out]
   title: LV95 Transformationsgenauigkeit (20131028)
-- dimensions: *id782
+- dimensions: *id783
   name: ch.swisstopo.transformationsgenauigkeit_20131028_source
   sources: [ch.swisstopo.transformationsgenauigkeit_20131028_cache]
   title: LV95 Transformationsgenauigkeit (20131028, source)
-- dimensions: &id783
+- dimensions: &id784
     Time:
       default: '20100531'
       values: ['20100531']
   name: ch.swisstopo.transformationsgenauigkeit_20100531
   sources: [ch.swisstopo.transformationsgenauigkeit_20100531_cache_out]
   title: LV95 Transformationsgenauigkeit (20100531)
-- dimensions: *id783
+- dimensions: *id784
   name: ch.swisstopo.transformationsgenauigkeit_20100531_source
   sources: [ch.swisstopo.transformationsgenauigkeit_20100531_cache]
   title: LV95 Transformationsgenauigkeit (20100531, source)
-- dimensions: &id784
+- dimensions: &id785
     Time:
       default: '20131101'
       values: ['20131101']
   name: ch.swisstopo-vd.ortschaftenverzeichnis_plz_20131101
   sources: [ch.swisstopo-vd.ortschaftenverzeichnis_plz_20131101_cache_out]
   title: PLZ und Ortschaften (20131101)
-- dimensions: *id784
+- dimensions: *id785
   name: ch.swisstopo-vd.ortschaftenverzeichnis_plz
   sources: [ch.swisstopo-vd.ortschaftenverzeichnis_plz_20131101_cache]
   title: PLZ und Ortschaften ('current')
-- dimensions: *id784
+- dimensions: *id785
   name: ch.swisstopo-vd.ortschaftenverzeichnis_plz_20131101_source
   sources: [ch.swisstopo-vd.ortschaftenverzeichnis_plz_20131101_cache]
   title: PLZ und Ortschaften (20131101, source)
-- dimensions: &id785
+- dimensions: &id786
     Time:
       default: '20130501'
       values: ['20130501']
   name: ch.swisstopo-vd.ortschaftenverzeichnis_plz_20130501
   sources: [ch.swisstopo-vd.ortschaftenverzeichnis_plz_20130501_cache_out]
   title: PLZ und Ortschaften (20130501)
-- dimensions: *id785
+- dimensions: *id786
   name: ch.swisstopo-vd.ortschaftenverzeichnis_plz_20130501_source
   sources: [ch.swisstopo-vd.ortschaftenverzeichnis_plz_20130501_cache]
   title: PLZ und Ortschaften (20130501, source)
-- dimensions: &id786
+- dimensions: &id787
     Time:
       default: '20121102'
       values: ['20121102']
   name: ch.swisstopo-vd.ortschaftenverzeichnis_plz_20121102
   sources: [ch.swisstopo-vd.ortschaftenverzeichnis_plz_20121102_cache_out]
   title: PLZ und Ortschaften (20121102)
-- dimensions: *id786
+- dimensions: *id787
   name: ch.swisstopo-vd.ortschaftenverzeichnis_plz_20121102_source
   sources: [ch.swisstopo-vd.ortschaftenverzeichnis_plz_20121102_cache]
   title: PLZ und Ortschaften (20121102, source)
-- dimensions: &id787
+- dimensions: &id788
     Time:
       default: '20120501'
       values: ['20120501']
   name: ch.swisstopo-vd.ortschaftenverzeichnis_plz_20120501
   sources: [ch.swisstopo-vd.ortschaftenverzeichnis_plz_20120501_cache_out]
   title: PLZ und Ortschaften (20120501)
-- dimensions: *id787
+- dimensions: *id788
   name: ch.swisstopo-vd.ortschaftenverzeichnis_plz_20120501_source
   sources: [ch.swisstopo-vd.ortschaftenverzeichnis_plz_20120501_cache]
   title: PLZ und Ortschaften (20120501, source)
-- dimensions: &id788
+- dimensions: &id789
     Time:
       default: '20111101'
       values: ['20111101']
   name: ch.swisstopo-vd.ortschaftenverzeichnis_plz_20111101
   sources: [ch.swisstopo-vd.ortschaftenverzeichnis_plz_20111101_cache_out]
   title: PLZ und Ortschaften (20111101)
-- dimensions: *id788
+- dimensions: *id789
   name: ch.swisstopo-vd.ortschaftenverzeichnis_plz_20111101_source
   sources: [ch.swisstopo-vd.ortschaftenverzeichnis_plz_20111101_cache]
   title: PLZ und Ortschaften (20111101, source)
-- dimensions: &id789
+- dimensions: &id790
     Time:
       default: '20110502'
       values: ['20110502']
   name: ch.swisstopo-vd.ortschaftenverzeichnis_plz_20110502
   sources: [ch.swisstopo-vd.ortschaftenverzeichnis_plz_20110502_cache_out]
   title: PLZ und Ortschaften (20110502)
-- dimensions: *id789
+- dimensions: *id790
   name: ch.swisstopo-vd.ortschaftenverzeichnis_plz_20110502_source
   sources: [ch.swisstopo-vd.ortschaftenverzeichnis_plz_20110502_cache]
   title: PLZ und Ortschaften (20110502, source)
-- dimensions: &id790
+- dimensions: &id791
     Time:
       default: '20141101'
       values: ['20141101']
   name: ch.swisstopo-vd.spannungsarme-gebiete_20141101
   sources: [ch.swisstopo-vd.spannungsarme-gebiete_20141101_cache_out]
   title: Spannungsarme Gebiete (20141101)
-- dimensions: *id790
+- dimensions: *id791
   name: ch.swisstopo-vd.spannungsarme-gebiete
   sources: [ch.swisstopo-vd.spannungsarme-gebiete_20141101_cache]
   title: Spannungsarme Gebiete ('current')
-- dimensions: *id790
+- dimensions: *id791
   name: ch.swisstopo-vd.spannungsarme-gebiete_20141101_source
   sources: [ch.swisstopo-vd.spannungsarme-gebiete_20141101_cache]
   title: Spannungsarme Gebiete (20141101, source)
-- dimensions: &id791
+- dimensions: &id792
     Time:
       default: '20131028'
       values: ['20131028']
   name: ch.swisstopo-vd.spannungsarme-gebiete_20131028
   sources: [ch.swisstopo-vd.spannungsarme-gebiete_20131028_cache_out]
   title: Spannungsarme Gebiete (20131028)
-- dimensions: *id791
+- dimensions: *id792
   name: ch.swisstopo-vd.spannungsarme-gebiete_20131028_source
   sources: [ch.swisstopo-vd.spannungsarme-gebiete_20131028_cache]
   title: Spannungsarme Gebiete (20131028, source)
-- dimensions: &id792
+- dimensions: &id793
     Time:
       default: '20121102'
       values: ['20121102']
   name: ch.swisstopo-vd.spannungsarme-gebiete_20121102
   sources: [ch.swisstopo-vd.spannungsarme-gebiete_20121102_cache_out]
   title: Spannungsarme Gebiete (20121102)
-- dimensions: *id792
+- dimensions: *id793
   name: ch.swisstopo-vd.spannungsarme-gebiete_20121102_source
   sources: [ch.swisstopo-vd.spannungsarme-gebiete_20121102_cache]
   title: Spannungsarme Gebiete (20121102, source)
-- dimensions: &id793
+- dimensions: &id794
     Time:
       default: '20111216'
       values: ['20111216']
   name: ch.swisstopo-vd.spannungsarme-gebiete_20111216
   sources: [ch.swisstopo-vd.spannungsarme-gebiete_20111216_cache_out]
   title: Spannungsarme Gebiete (20111216)
-- dimensions: *id793
+- dimensions: *id794
   name: ch.swisstopo-vd.spannungsarme-gebiete_20111216_source
   sources: [ch.swisstopo-vd.spannungsarme-gebiete_20111216_cache]
   title: Spannungsarme Gebiete (20111216, source)
-- dimensions: &id794
+- dimensions: &id795
     Time:
       default: '20150101'
       values: ['20150101']
   name: ch.swisstopo.vec200-adminboundaries-protectedarea_20150101
   sources: [ch.swisstopo.vec200-adminboundaries-protectedarea_20150101_cache_out]
   title: Schutzgebiete VECTOR200 (20150101)
-- dimensions: *id794
+- dimensions: *id795
   name: ch.swisstopo.vec200-adminboundaries-protectedarea
   sources: [ch.swisstopo.vec200-adminboundaries-protectedarea_20150101_cache]
   title: Schutzgebiete VECTOR200 ('current')
-- dimensions: *id794
+- dimensions: *id795
   name: ch.swisstopo.vec200-adminboundaries-protectedarea_20150101_source
   sources: [ch.swisstopo.vec200-adminboundaries-protectedarea_20150101_cache]
   title: Schutzgebiete VECTOR200 (20150101, source)
-- dimensions: &id795
+- dimensions: &id796
     Time:
       default: '20140101'
       values: ['20140101']
   name: ch.swisstopo.vec200-adminboundaries-protectedarea_20140101
   sources: [ch.swisstopo.vec200-adminboundaries-protectedarea_20140101_cache_out]
   title: Schutzgebiete VECTOR200 (20140101)
-- dimensions: *id795
+- dimensions: *id796
   name: ch.swisstopo.vec200-adminboundaries-protectedarea_20140101_source
   sources: [ch.swisstopo.vec200-adminboundaries-protectedarea_20140101_cache]
   title: Schutzgebiete VECTOR200 (20140101, source)
-- dimensions: &id796
+- dimensions: &id797
     Time:
       default: '20130101'
       values: ['20130101']
   name: ch.swisstopo.vec200-adminboundaries-protectedarea_20130101
   sources: [ch.swisstopo.vec200-adminboundaries-protectedarea_20130101_cache_out]
   title: Schutzgebiete VECTOR200 (20130101)
-- dimensions: *id796
+- dimensions: *id797
   name: ch.swisstopo.vec200-adminboundaries-protectedarea_20130101_source
   sources: [ch.swisstopo.vec200-adminboundaries-protectedarea_20130101_cache]
   title: Schutzgebiete VECTOR200 (20130101, source)
-- dimensions: &id797
+- dimensions: &id798
     Time:
       default: '20100101'
       values: ['20100101']
   name: ch.swisstopo.vec200-adminboundaries-protectedarea_20100101
   sources: [ch.swisstopo.vec200-adminboundaries-protectedarea_20100101_cache_out]
   title: Schutzgebiete VECTOR200 (20100101)
-- dimensions: *id797
+- dimensions: *id798
   name: ch.swisstopo.vec200-adminboundaries-protectedarea_20100101_source
   sources: [ch.swisstopo.vec200-adminboundaries-protectedarea_20100101_cache]
   title: Schutzgebiete VECTOR200 (20100101, source)
-- dimensions: &id798
+- dimensions: &id799
     Time:
       default: '20150101'
       values: ['20150101']
   name: ch.swisstopo.vec200-building_20150101
   sources: [ch.swisstopo.vec200-building_20150101_cache_out]
   title: "Einzelgeb\xE4ude gen. VECTOR200 (20150101)"
-- dimensions: *id798
+- dimensions: *id799
   name: ch.swisstopo.vec200-building
   sources: [ch.swisstopo.vec200-building_20150101_cache]
   title: "Einzelgeb\xE4ude gen. VECTOR200 ('current')"
-- dimensions: *id798
+- dimensions: *id799
   name: ch.swisstopo.vec200-building_20150101_source
   sources: [ch.swisstopo.vec200-building_20150101_cache]
   title: "Einzelgeb\xE4ude gen. VECTOR200 (20150101, source)"
-- dimensions: &id799
+- dimensions: &id800
     Time:
       default: '20140101'
       values: ['20140101']
   name: ch.swisstopo.vec200-building_20140101
   sources: [ch.swisstopo.vec200-building_20140101_cache_out]
   title: "Einzelgeb\xE4ude gen. VECTOR200 (20140101)"
-- dimensions: *id799
+- dimensions: *id800
   name: ch.swisstopo.vec200-building_20140101_source
   sources: [ch.swisstopo.vec200-building_20140101_cache]
   title: "Einzelgeb\xE4ude gen. VECTOR200 (20140101, source)"
-- dimensions: &id800
+- dimensions: &id801
     Time:
       default: '20130101'
       values: ['20130101']
   name: ch.swisstopo.vec200-building_20130101
   sources: [ch.swisstopo.vec200-building_20130101_cache_out]
   title: "Einzelgeb\xE4ude gen. VECTOR200 (20130101)"
-- dimensions: *id800
+- dimensions: *id801
   name: ch.swisstopo.vec200-building_20130101_source
   sources: [ch.swisstopo.vec200-building_20130101_cache]
   title: "Einzelgeb\xE4ude gen. VECTOR200 (20130101, source)"
-- dimensions: &id801
+- dimensions: &id802
     Time:
       default: '20100101'
       values: ['20100101']
   name: ch.swisstopo.vec200-building_20100101
   sources: [ch.swisstopo.vec200-building_20100101_cache_out]
   title: "Einzelgeb\xE4ude gen. VECTOR200 (20100101)"
-- dimensions: *id801
+- dimensions: *id802
   name: ch.swisstopo.vec200-building_20100101_source
   sources: [ch.swisstopo.vec200-building_20100101_cache]
   title: "Einzelgeb\xE4ude gen. VECTOR200 (20100101, source)"
-- dimensions: &id802
+- dimensions: &id803
     Time:
       default: '20150101'
       values: ['20150101']
   name: ch.swisstopo.vec200-hydrography_20150101
   sources: [ch.swisstopo.vec200-hydrography_20150101_cache_out]
   title: "Gew\xE4ssernetz VECTOR200 (20150101)"
-- dimensions: *id802
+- dimensions: *id803
   name: ch.swisstopo.vec200-hydrography
   sources: [ch.swisstopo.vec200-hydrography_20150101_cache]
   title: "Gew\xE4ssernetz VECTOR200 ('current')"
-- dimensions: *id802
+- dimensions: *id803
   name: ch.swisstopo.vec200-hydrography_20150101_source
   sources: [ch.swisstopo.vec200-hydrography_20150101_cache]
   title: "Gew\xE4ssernetz VECTOR200 (20150101, source)"
-- dimensions: &id803
+- dimensions: &id804
     Time:
       default: '20140101'
       values: ['20140101']
   name: ch.swisstopo.vec200-hydrography_20140101
   sources: [ch.swisstopo.vec200-hydrography_20140101_cache_out]
   title: "Gew\xE4ssernetz VECTOR200 (20140101)"
-- dimensions: *id803
+- dimensions: *id804
   name: ch.swisstopo.vec200-hydrography_20140101_source
   sources: [ch.swisstopo.vec200-hydrography_20140101_cache]
   title: "Gew\xE4ssernetz VECTOR200 (20140101, source)"
-- dimensions: &id804
+- dimensions: &id805
     Time:
       default: '20130101'
       values: ['20130101']
   name: ch.swisstopo.vec200-hydrography_20130101
   sources: [ch.swisstopo.vec200-hydrography_20130101_cache_out]
   title: "Gew\xE4ssernetz VECTOR200 (20130101)"
-- dimensions: *id804
+- dimensions: *id805
   name: ch.swisstopo.vec200-hydrography_20130101_source
   sources: [ch.swisstopo.vec200-hydrography_20130101_cache]
   title: "Gew\xE4ssernetz VECTOR200 (20130101, source)"
-- dimensions: &id805
+- dimensions: &id806
     Time:
       default: '20100101'
       values: ['20100101']
   name: ch.swisstopo.vec200-hydrography_20100101
   sources: [ch.swisstopo.vec200-hydrography_20100101_cache_out]
   title: "Gew\xE4ssernetz VECTOR200 (20100101)"
-- dimensions: *id805
+- dimensions: *id806
   name: ch.swisstopo.vec200-hydrography_20100101_source
   sources: [ch.swisstopo.vec200-hydrography_20100101_cache]
   title: "Gew\xE4ssernetz VECTOR200 (20100101, source)"
-- dimensions: &id806
+- dimensions: &id807
     Time:
       default: '20150101'
       values: ['20150101']
   name: ch.swisstopo.vec200-landcover_20150101
   sources: [ch.swisstopo.vec200-landcover_20150101_cache_out]
   title: Prim. Bodenbedeckung VECTOR200 (20150101)
-- dimensions: *id806
+- dimensions: *id807
   name: ch.swisstopo.vec200-landcover
   sources: [ch.swisstopo.vec200-landcover_20150101_cache]
   title: Prim. Bodenbedeckung VECTOR200 ('current')
-- dimensions: *id806
+- dimensions: *id807
   name: ch.swisstopo.vec200-landcover_20150101_source
   sources: [ch.swisstopo.vec200-landcover_20150101_cache]
   title: Prim. Bodenbedeckung VECTOR200 (20150101, source)
-- dimensions: &id807
+- dimensions: &id808
     Time:
       default: '20140101'
       values: ['20140101']
   name: ch.swisstopo.vec200-landcover_20140101
   sources: [ch.swisstopo.vec200-landcover_20140101_cache_out]
   title: Prim. Bodenbedeckung VECTOR200 (20140101)
-- dimensions: *id807
+- dimensions: *id808
   name: ch.swisstopo.vec200-landcover_20140101_source
   sources: [ch.swisstopo.vec200-landcover_20140101_cache]
   title: Prim. Bodenbedeckung VECTOR200 (20140101, source)
-- dimensions: &id808
+- dimensions: &id809
     Time:
       default: '20130101'
       values: ['20130101']
   name: ch.swisstopo.vec200-landcover_20130101
   sources: [ch.swisstopo.vec200-landcover_20130101_cache_out]
   title: Prim. Bodenbedeckung VECTOR200 (20130101)
-- dimensions: *id808
+- dimensions: *id809
   name: ch.swisstopo.vec200-landcover_20130101_source
   sources: [ch.swisstopo.vec200-landcover_20130101_cache]
   title: Prim. Bodenbedeckung VECTOR200 (20130101, source)
-- dimensions: &id809
+- dimensions: &id810
     Time:
       default: '20100101'
       values: ['20100101']
   name: ch.swisstopo.vec200-landcover_20100101
   sources: [ch.swisstopo.vec200-landcover_20100101_cache_out]
   title: Prim. Bodenbedeckung VECTOR200 (20100101)
-- dimensions: *id809
+- dimensions: *id810
   name: ch.swisstopo.vec200-landcover_20100101_source
   sources: [ch.swisstopo.vec200-landcover_20100101_cache]
   title: Prim. Bodenbedeckung VECTOR200 (20100101, source)
-- dimensions: &id810
+- dimensions: &id811
     Time:
       default: '20150101'
       values: ['20150101']
   name: ch.swisstopo.vec200-landcover-wald_20150101
   sources: [ch.swisstopo.vec200-landcover-wald_20150101_cache_out]
   title: "Waldfl\xE4chen (20150101)"
-- dimensions: *id810
+- dimensions: *id811
   name: ch.swisstopo.vec200-landcover-wald
   sources: [ch.swisstopo.vec200-landcover-wald_20150101_cache]
   title: "Waldfl\xE4chen ('current')"
-- dimensions: *id810
+- dimensions: *id811
   name: ch.swisstopo.vec200-landcover-wald_20150101_source
   sources: [ch.swisstopo.vec200-landcover-wald_20150101_cache]
   title: "Waldfl\xE4chen (20150101, source)"
-- dimensions: &id811
+- dimensions: &id812
     Time:
       default: '20140101'
       values: ['20140101']
   name: ch.swisstopo.vec200-landcover-wald_20140101
   sources: [ch.swisstopo.vec200-landcover-wald_20140101_cache_out]
   title: "Waldfl\xE4chen (20140101)"
-- dimensions: *id811
+- dimensions: *id812
   name: ch.swisstopo.vec200-landcover-wald_20140101_source
   sources: [ch.swisstopo.vec200-landcover-wald_20140101_cache]
   title: "Waldfl\xE4chen (20140101, source)"
-- dimensions: &id812
+- dimensions: &id813
     Time:
       default: '20130101'
       values: ['20130101']
   name: ch.swisstopo.vec200-landcover-wald_20130101
   sources: [ch.swisstopo.vec200-landcover-wald_20130101_cache_out]
   title: "Waldfl\xE4chen (20130101)"
-- dimensions: *id812
+- dimensions: *id813
   name: ch.swisstopo.vec200-landcover-wald_20130101_source
   sources: [ch.swisstopo.vec200-landcover-wald_20130101_cache]
   title: "Waldfl\xE4chen (20130101, source)"
-- dimensions: &id813
+- dimensions: &id814
     Time:
       default: '20150101'
       values: ['20150101']
   name: ch.swisstopo.vec200-miscellaneous_20150101
   sources: [ch.swisstopo.vec200-miscellaneous_20150101_cache_out]
   title: Einzelobjekte VECTOR200 (20150101)
-- dimensions: *id813
+- dimensions: *id814
   name: ch.swisstopo.vec200-miscellaneous
   sources: [ch.swisstopo.vec200-miscellaneous_20150101_cache]
   title: Einzelobjekte VECTOR200 ('current')
-- dimensions: *id813
+- dimensions: *id814
   name: ch.swisstopo.vec200-miscellaneous_20150101_source
   sources: [ch.swisstopo.vec200-miscellaneous_20150101_cache]
   title: Einzelobjekte VECTOR200 (20150101, source)
-- dimensions: &id814
+- dimensions: &id815
     Time:
       default: '20140101'
       values: ['20140101']
   name: ch.swisstopo.vec200-miscellaneous_20140101
   sources: [ch.swisstopo.vec200-miscellaneous_20140101_cache_out]
   title: Einzelobjekte VECTOR200 (20140101)
-- dimensions: *id814
+- dimensions: *id815
   name: ch.swisstopo.vec200-miscellaneous_20140101_source
   sources: [ch.swisstopo.vec200-miscellaneous_20140101_cache]
   title: Einzelobjekte VECTOR200 (20140101, source)
-- dimensions: &id815
+- dimensions: &id816
     Time:
       default: '20130101'
       values: ['20130101']
   name: ch.swisstopo.vec200-miscellaneous_20130101
   sources: [ch.swisstopo.vec200-miscellaneous_20130101_cache_out]
   title: Einzelobjekte VECTOR200 (20130101)
-- dimensions: *id815
+- dimensions: *id816
   name: ch.swisstopo.vec200-miscellaneous_20130101_source
   sources: [ch.swisstopo.vec200-miscellaneous_20130101_cache]
   title: Einzelobjekte VECTOR200 (20130101, source)
-- dimensions: &id816
+- dimensions: &id817
     Time:
       default: '20100101'
       values: ['20100101']
   name: ch.swisstopo.vec200-miscellaneous_20100101
   sources: [ch.swisstopo.vec200-miscellaneous_20100101_cache_out]
   title: Einzelobjekte VECTOR200 (20100101)
-- dimensions: *id816
+- dimensions: *id817
   name: ch.swisstopo.vec200-miscellaneous_20100101_source
   sources: [ch.swisstopo.vec200-miscellaneous_20100101_cache]
   title: Einzelobjekte VECTOR200 (20100101, source)
-- dimensions: &id817
+- dimensions: &id818
     Time:
       default: '20150101'
       values: ['20150101']
   name: ch.swisstopo.vec200-miscellaneous-geodpoint_20150101
   sources: [ch.swisstopo.vec200-miscellaneous-geodpoint_20150101_cache_out]
   title: "H\xF6henkoten VECTOR200 (20150101)"
-- dimensions: *id817
+- dimensions: *id818
   name: ch.swisstopo.vec200-miscellaneous-geodpoint
   sources: [ch.swisstopo.vec200-miscellaneous-geodpoint_20150101_cache]
   title: "H\xF6henkoten VECTOR200 ('current')"
-- dimensions: *id817
+- dimensions: *id818
   name: ch.swisstopo.vec200-miscellaneous-geodpoint_20150101_source
   sources: [ch.swisstopo.vec200-miscellaneous-geodpoint_20150101_cache]
   title: "H\xF6henkoten VECTOR200 (20150101, source)"
-- dimensions: &id818
+- dimensions: &id819
     Time:
       default: '20140101'
       values: ['20140101']
   name: ch.swisstopo.vec200-miscellaneous-geodpoint_20140101
   sources: [ch.swisstopo.vec200-miscellaneous-geodpoint_20140101_cache_out]
   title: "H\xF6henkoten VECTOR200 (20140101)"
-- dimensions: *id818
+- dimensions: *id819
   name: ch.swisstopo.vec200-miscellaneous-geodpoint_20140101_source
   sources: [ch.swisstopo.vec200-miscellaneous-geodpoint_20140101_cache]
   title: "H\xF6henkoten VECTOR200 (20140101, source)"
-- dimensions: &id819
+- dimensions: &id820
     Time:
       default: '20130101'
       values: ['20130101']
   name: ch.swisstopo.vec200-miscellaneous-geodpoint_20130101
   sources: [ch.swisstopo.vec200-miscellaneous-geodpoint_20130101_cache_out]
   title: "H\xF6henkoten VECTOR200 (20130101)"
-- dimensions: *id819
+- dimensions: *id820
   name: ch.swisstopo.vec200-miscellaneous-geodpoint_20130101_source
   sources: [ch.swisstopo.vec200-miscellaneous-geodpoint_20130101_cache]
   title: "H\xF6henkoten VECTOR200 (20130101, source)"
-- dimensions: &id820
+- dimensions: &id821
     Time:
       default: '20100101'
       values: ['20100101']
   name: ch.swisstopo.vec200-miscellaneous-geodpoint_20100101
   sources: [ch.swisstopo.vec200-miscellaneous-geodpoint_20100101_cache_out]
   title: "H\xF6henkoten VECTOR200 (20100101)"
-- dimensions: *id820
+- dimensions: *id821
   name: ch.swisstopo.vec200-miscellaneous-geodpoint_20100101_source
   sources: [ch.swisstopo.vec200-miscellaneous-geodpoint_20100101_cache]
   title: "H\xF6henkoten VECTOR200 (20100101, source)"
-- dimensions: &id821
+- dimensions: &id822
     Time:
       default: '20150101'
       values: ['20150101']
   name: ch.swisstopo.vec200-names-namedlocation_20150101
   sources: [ch.swisstopo.vec200-names-namedlocation_20150101_cache_out]
   title: Namen VECTOR200 (20150101)
-- dimensions: *id821
+- dimensions: *id822
   name: ch.swisstopo.vec200-names-namedlocation
   sources: [ch.swisstopo.vec200-names-namedlocation_20150101_cache]
   title: Namen VECTOR200 ('current')
-- dimensions: *id821
+- dimensions: *id822
   name: ch.swisstopo.vec200-names-namedlocation_20150101_source
   sources: [ch.swisstopo.vec200-names-namedlocation_20150101_cache]
   title: Namen VECTOR200 (20150101, source)
-- dimensions: &id822
+- dimensions: &id823
     Time:
       default: '20140101'
       values: ['20140101']
   name: ch.swisstopo.vec200-names-namedlocation_20140101
   sources: [ch.swisstopo.vec200-names-namedlocation_20140101_cache_out]
   title: Namen VECTOR200 (20140101)
-- dimensions: *id822
+- dimensions: *id823
   name: ch.swisstopo.vec200-names-namedlocation_20140101_source
   sources: [ch.swisstopo.vec200-names-namedlocation_20140101_cache]
   title: Namen VECTOR200 (20140101, source)
-- dimensions: &id823
+- dimensions: &id824
     Time:
       default: '20130101'
       values: ['20130101']
   name: ch.swisstopo.vec200-names-namedlocation_20130101
   sources: [ch.swisstopo.vec200-names-namedlocation_20130101_cache_out]
   title: Namen VECTOR200 (20130101)
-- dimensions: *id823
+- dimensions: *id824
   name: ch.swisstopo.vec200-names-namedlocation_20130101_source
   sources: [ch.swisstopo.vec200-names-namedlocation_20130101_cache]
   title: Namen VECTOR200 (20130101, source)
-- dimensions: &id824
+- dimensions: &id825
     Time:
       default: '20100101'
       values: ['20100101']
   name: ch.swisstopo.vec200-names-namedlocation_20100101
   sources: [ch.swisstopo.vec200-names-namedlocation_20100101_cache_out]
   title: Namen VECTOR200 (20100101)
-- dimensions: *id824
+- dimensions: *id825
   name: ch.swisstopo.vec200-names-namedlocation_20100101_source
   sources: [ch.swisstopo.vec200-names-namedlocation_20100101_cache]
   title: Namen VECTOR200 (20100101, source)
-- dimensions: &id825
+- dimensions: &id826
     Time:
       default: '20150101'
       values: ['20150101']
   name: ch.swisstopo.vec200-transportation-oeffentliche-verkehr_20150101
   sources: [ch.swisstopo.vec200-transportation-oeffentliche-verkehr_20150101_cache_out]
   title: "\xD6ffentlicher Verkehr VECTOR200 (20150101)"
-- dimensions: *id825
+- dimensions: *id826
   name: ch.swisstopo.vec200-transportation-oeffentliche-verkehr
   sources: [ch.swisstopo.vec200-transportation-oeffentliche-verkehr_20150101_cache]
   title: "\xD6ffentlicher Verkehr VECTOR200 ('current')"
-- dimensions: *id825
+- dimensions: *id826
   name: ch.swisstopo.vec200-transportation-oeffentliche-verkehr_20150101_source
   sources: [ch.swisstopo.vec200-transportation-oeffentliche-verkehr_20150101_cache]
   title: "\xD6ffentlicher Verkehr VECTOR200 (20150101, source)"
-- dimensions: &id826
+- dimensions: &id827
     Time:
       default: '20140101'
       values: ['20140101']
   name: ch.swisstopo.vec200-transportation-oeffentliche-verkehr_20140101
   sources: [ch.swisstopo.vec200-transportation-oeffentliche-verkehr_20140101_cache_out]
   title: "\xD6ffentlicher Verkehr VECTOR200 (20140101)"
-- dimensions: *id826
+- dimensions: *id827
   name: ch.swisstopo.vec200-transportation-oeffentliche-verkehr_20140101_source
   sources: [ch.swisstopo.vec200-transportation-oeffentliche-verkehr_20140101_cache]
   title: "\xD6ffentlicher Verkehr VECTOR200 (20140101, source)"
-- dimensions: &id827
+- dimensions: &id828
     Time:
       default: '20130101'
       values: ['20130101']
   name: ch.swisstopo.vec200-transportation-oeffentliche-verkehr_20130101
   sources: [ch.swisstopo.vec200-transportation-oeffentliche-verkehr_20130101_cache_out]
   title: "\xD6ffentlicher Verkehr VECTOR200 (20130101)"
-- dimensions: *id827
+- dimensions: *id828
   name: ch.swisstopo.vec200-transportation-oeffentliche-verkehr_20130101_source
   sources: [ch.swisstopo.vec200-transportation-oeffentliche-verkehr_20130101_cache]
   title: "\xD6ffentlicher Verkehr VECTOR200 (20130101, source)"
-- dimensions: &id828
+- dimensions: &id829
     Time:
       default: '20100101'
       values: ['20100101']
   name: ch.swisstopo.vec200-transportation-oeffentliche-verkehr_20100101
   sources: [ch.swisstopo.vec200-transportation-oeffentliche-verkehr_20100101_cache_out]
   title: "\xD6ffentlicher Verkehr VECTOR200 (20100101)"
-- dimensions: *id828
+- dimensions: *id829
   name: ch.swisstopo.vec200-transportation-oeffentliche-verkehr_20100101_source
   sources: [ch.swisstopo.vec200-transportation-oeffentliche-verkehr_20100101_cache]
   title: "\xD6ffentlicher Verkehr VECTOR200 (20100101, source)"
-- dimensions: &id829
+- dimensions: &id830
     Time:
       default: '20150101'
       values: ['20150101']
   name: ch.swisstopo.vec200-transportation-strassennetz_20150101
   sources: [ch.swisstopo.vec200-transportation-strassennetz_20150101_cache_out]
   title: Strassennetz VECTOR200 (20150101)
-- dimensions: *id829
+- dimensions: *id830
   name: ch.swisstopo.vec200-transportation-strassennetz
   sources: [ch.swisstopo.vec200-transportation-strassennetz_20150101_cache]
   title: Strassennetz VECTOR200 ('current')
-- dimensions: *id829
+- dimensions: *id830
   name: ch.swisstopo.vec200-transportation-strassennetz_20150101_source
   sources: [ch.swisstopo.vec200-transportation-strassennetz_20150101_cache]
   title: Strassennetz VECTOR200 (20150101, source)
-- dimensions: &id830
+- dimensions: &id831
     Time:
       default: '20140101'
       values: ['20140101']
   name: ch.swisstopo.vec200-transportation-strassennetz_20140101
   sources: [ch.swisstopo.vec200-transportation-strassennetz_20140101_cache_out]
   title: Strassennetz VECTOR200 (20140101)
-- dimensions: *id830
+- dimensions: *id831
   name: ch.swisstopo.vec200-transportation-strassennetz_20140101_source
   sources: [ch.swisstopo.vec200-transportation-strassennetz_20140101_cache]
   title: Strassennetz VECTOR200 (20140101, source)
-- dimensions: &id831
+- dimensions: &id832
     Time:
       default: '20130101'
       values: ['20130101']
   name: ch.swisstopo.vec200-transportation-strassennetz_20130101
   sources: [ch.swisstopo.vec200-transportation-strassennetz_20130101_cache_out]
   title: Strassennetz VECTOR200 (20130101)
-- dimensions: *id831
+- dimensions: *id832
   name: ch.swisstopo.vec200-transportation-strassennetz_20130101_source
   sources: [ch.swisstopo.vec200-transportation-strassennetz_20130101_cache]
   title: Strassennetz VECTOR200 (20130101, source)
-- dimensions: &id832
+- dimensions: &id833
     Time:
       default: '20100101'
       values: ['20100101']
   name: ch.swisstopo.vec200-transportation-strassennetz_20100101
   sources: [ch.swisstopo.vec200-transportation-strassennetz_20100101_cache_out]
   title: Strassennetz VECTOR200 (20100101)
-- dimensions: *id832
+- dimensions: *id833
   name: ch.swisstopo.vec200-transportation-strassennetz_20100101_source
   sources: [ch.swisstopo.vec200-transportation-strassennetz_20100101_cache]
   title: Strassennetz VECTOR200 (20100101, source)
-- dimensions: &id833
+- dimensions: &id834
     Time:
       default: '20090401'
       values: ['20090401']
   name: ch.swisstopo.vec25-anlagen_20090401
   sources: [ch.swisstopo.vec25-anlagen_20090401_cache_out]
   title: Anlagen VECTOR25 (20090401)
-- dimensions: *id833
+- dimensions: *id834
   name: ch.swisstopo.vec25-anlagen
   sources: [ch.swisstopo.vec25-anlagen_20090401_cache]
   title: Anlagen VECTOR25 ('current')
-- dimensions: *id833
+- dimensions: *id834
   name: ch.swisstopo.vec25-anlagen_20090401_source
   sources: [ch.swisstopo.vec25-anlagen_20090401_cache]
   title: Anlagen VECTOR25 (20090401, source)
-- dimensions: &id834
+- dimensions: &id835
     Time:
       default: '19980101'
       values: ['19980101']
   name: ch.swisstopo.vec25-einzelobjekte_19980101
   sources: [ch.swisstopo.vec25-einzelobjekte_19980101_cache_out]
   title: Einzelobjekte VECTOR25 (19980101)
-- dimensions: *id834
+- dimensions: *id835
   name: ch.swisstopo.vec25-einzelobjekte
   sources: [ch.swisstopo.vec25-einzelobjekte_19980101_cache]
   title: Einzelobjekte VECTOR25 ('current')
-- dimensions: *id834
+- dimensions: *id835
   name: ch.swisstopo.vec25-einzelobjekte_19980101_source
   sources: [ch.swisstopo.vec25-einzelobjekte_19980101_cache]
   title: Einzelobjekte VECTOR25 (19980101, source)
-- dimensions: &id835
+- dimensions: &id836
     Time:
       default: '20090401'
       values: ['20090401']
   name: ch.swisstopo.vec25-eisenbahnnetz_20090401
   sources: [ch.swisstopo.vec25-eisenbahnnetz_20090401_cache_out]
   title: Eisenbahnnetz VECTOR25 (20090401)
-- dimensions: *id835
+- dimensions: *id836
   name: ch.swisstopo.vec25-eisenbahnnetz
   sources: [ch.swisstopo.vec25-eisenbahnnetz_20090401_cache]
   title: Eisenbahnnetz VECTOR25 ('current')
-- dimensions: *id835
+- dimensions: *id836
   name: ch.swisstopo.vec25-eisenbahnnetz_20090401_source
   sources: [ch.swisstopo.vec25-eisenbahnnetz_20090401_cache]
   title: Eisenbahnnetz VECTOR25 (20090401, source)
-- dimensions: &id836
+- dimensions: &id837
     Time:
       default: '20090401'
       values: ['20090401']
   name: ch.swisstopo.vec25-gebaeude_20090401
   sources: [ch.swisstopo.vec25-gebaeude_20090401_cache_out]
   title: "Geb\xE4ude VECTOR25 (20090401)"
-- dimensions: *id836
+- dimensions: *id837
   name: ch.swisstopo.vec25-gebaeude
   sources: [ch.swisstopo.vec25-gebaeude_20090401_cache]
   title: "Geb\xE4ude VECTOR25 ('current')"
-- dimensions: *id836
+- dimensions: *id837
   name: ch.swisstopo.vec25-gebaeude_20090401_source
   sources: [ch.swisstopo.vec25-gebaeude_20090401_cache]
   title: "Geb\xE4ude VECTOR25 (20090401, source)"
-- dimensions: &id837
+- dimensions: &id838
     Time:
       default: '20090401'
       values: ['20090401']
   name: ch.swisstopo.vec25-gewaessernetz_20090401
   sources: [ch.swisstopo.vec25-gewaessernetz_20090401_cache_out]
   title: "Gew\xE4ssernetz VECTOR25 (20090401)"
-- dimensions: *id837
+- dimensions: *id838
   name: ch.swisstopo.vec25-gewaessernetz
   sources: [ch.swisstopo.vec25-gewaessernetz_20090401_cache]
   title: "Gew\xE4ssernetz VECTOR25 ('current')"
-- dimensions: *id837
+- dimensions: *id838
   name: ch.swisstopo.vec25-gewaessernetz_20090401_source
   sources: [ch.swisstopo.vec25-gewaessernetz_20090401_cache]
   title: "Gew\xE4ssernetz VECTOR25 (20090401, source)"
-- dimensions: &id838
+- dimensions: &id839
     Time:
       default: '19980101'
       values: ['19980101']
   name: ch.swisstopo.vec25-heckenbaeume_19980101
   sources: [ch.swisstopo.vec25-heckenbaeume_19980101_cache_out]
   title: "Hecken und B\xE4ume VECTOR25 (19980101)"
-- dimensions: *id838
+- dimensions: *id839
   name: ch.swisstopo.vec25-heckenbaeume
   sources: [ch.swisstopo.vec25-heckenbaeume_19980101_cache]
   title: "Hecken und B\xE4ume VECTOR25 ('current')"
-- dimensions: *id838
+- dimensions: *id839
   name: ch.swisstopo.vec25-heckenbaeume_19980101_source
   sources: [ch.swisstopo.vec25-heckenbaeume_19980101_cache]
   title: "Hecken und B\xE4ume VECTOR25 (19980101, source)"
-- dimensions: &id839
+- dimensions: &id840
     Time:
       default: '20090401'
       values: ['20090401']
   name: ch.swisstopo.vec25-primaerflaechen_20090401
   sources: [ch.swisstopo.vec25-primaerflaechen_20090401_cache_out]
   title: "Prim\xE4rfl\xE4chen VECTOR25 (20090401)"
-- dimensions: *id839
+- dimensions: *id840
   name: ch.swisstopo.vec25-primaerflaechen
   sources: [ch.swisstopo.vec25-primaerflaechen_20090401_cache]
   title: "Prim\xE4rfl\xE4chen VECTOR25 ('current')"
-- dimensions: *id839
+- dimensions: *id840
   name: ch.swisstopo.vec25-primaerflaechen_20090401_source
   sources: [ch.swisstopo.vec25-primaerflaechen_20090401_cache]
   title: "Prim\xE4rfl\xE4chen VECTOR25 (20090401, source)"
-- dimensions: &id840
+- dimensions: &id841
     Time:
       default: '20090401'
       values: ['20090401']
   name: ch.swisstopo.vec25-strassennetz_20090401
   sources: [ch.swisstopo.vec25-strassennetz_20090401_cache_out]
   title: Strassennetz VECTOR25 (20090401)
-- dimensions: *id840
+- dimensions: *id841
   name: ch.swisstopo.vec25-strassennetz
   sources: [ch.swisstopo.vec25-strassennetz_20090401_cache]
   title: Strassennetz VECTOR25 ('current')
-- dimensions: *id840
+- dimensions: *id841
   name: ch.swisstopo.vec25-strassennetz_20090401_source
   sources: [ch.swisstopo.vec25-strassennetz_20090401_cache]
   title: Strassennetz VECTOR25 (20090401, source)
-- dimensions: &id841
+- dimensions: &id842
     Time:
       default: '20090401'
       values: ['20090401']
   name: ch.swisstopo.vec25-uebrigerverkehr_20090401
   sources: [ch.swisstopo.vec25-uebrigerverkehr_20090401_cache_out]
   title: "\xDCbriger Verkehr VECTOR25 (20090401)"
-- dimensions: *id841
+- dimensions: *id842
   name: ch.swisstopo.vec25-uebrigerverkehr
   sources: [ch.swisstopo.vec25-uebrigerverkehr_20090401_cache]
   title: "\xDCbriger Verkehr VECTOR25 ('current')"
-- dimensions: *id841
+- dimensions: *id842
   name: ch.swisstopo.vec25-uebrigerverkehr_20090401_source
   sources: [ch.swisstopo.vec25-uebrigerverkehr_20090401_cache]
   title: "\xDCbriger Verkehr VECTOR25 (20090401, source)"
-- dimensions: &id842
+- dimensions: &id843
     Time:
       default: '20061231'
       values: ['20061231']
   name: ch.swisstopo.verschiebungsvektoren-tsp1_20061231
   sources: [ch.swisstopo.verschiebungsvektoren-tsp1_20061231_cache_out]
   title: LV95 Verschiebungsvektoren TSP1 (20061231)
-- dimensions: *id842
+- dimensions: *id843
   name: ch.swisstopo.verschiebungsvektoren-tsp1
   sources: [ch.swisstopo.verschiebungsvektoren-tsp1_20061231_cache]
   title: LV95 Verschiebungsvektoren TSP1 ('current')
-- dimensions: *id842
+- dimensions: *id843
   name: ch.swisstopo.verschiebungsvektoren-tsp1_20061231_source
   sources: [ch.swisstopo.verschiebungsvektoren-tsp1_20061231_cache]
   title: LV95 Verschiebungsvektoren TSP1 (20061231, source)
-- dimensions: &id843
+- dimensions: &id844
     Time:
       default: '20070101'
       values: ['20070101']
   name: ch.swisstopo.verschiebungsvektoren-tsp2_20070101
   sources: [ch.swisstopo.verschiebungsvektoren-tsp2_20070101_cache_out]
   title: LV95 Verschiebungsvektoren TSP2 (20070101)
-- dimensions: *id843
+- dimensions: *id844
   name: ch.swisstopo.verschiebungsvektoren-tsp2
   sources: [ch.swisstopo.verschiebungsvektoren-tsp2_20070101_cache]
   title: LV95 Verschiebungsvektoren TSP2 ('current')
-- dimensions: *id843
+- dimensions: *id844
   name: ch.swisstopo.verschiebungsvektoren-tsp2_20070101_source
   sources: [ch.swisstopo.verschiebungsvektoren-tsp2_20070101_cache]
   title: LV95 Verschiebungsvektoren TSP2 (20070101, source)
-- dimensions: &id844
+- dimensions: &id845
     Time:
       default: '20110501'
       values: ['20110501']
   name: ch.vbs.territorialregionen_20110501
   sources: [ch.vbs.territorialregionen_20110501_cache_out]
   title: Territorialregionen (20110501)
-- dimensions: *id844
+- dimensions: *id845
   name: ch.vbs.territorialregionen
   sources: [ch.vbs.territorialregionen_20110501_cache]
   title: Territorialregionen ('current')
-- dimensions: *id844
+- dimensions: *id845
   name: ch.vbs.territorialregionen_20110501_source
   sources: [ch.vbs.territorialregionen_20110501_cache]
   title: Territorialregionen (20110501, source)
@@ -25571,6 +25594,18 @@ sources:
     transparent: true
     type: tile
     url: http://wmts6.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe-pk25.noscale/default/20140520/21781/%(z)d/%(y)d/%(x)d.%(format)s
+  ch.swisstopo.pixelkarte-farbe-pk25.noscale_20151231_source:
+    coverage:
+      bbox: [420000, 30000, 900000, 350000]
+      bbox_srs: EPSG:21781
+    grid: swisstopo-pixelkarte
+    http:
+      headers: {Referer: 'http://mapproxy.geo.admin.ch'}
+    on_error:
+      204: {cache: true, response: transparent}
+    transparent: true
+    type: tile
+    url: http://wmts6.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe-pk25.noscale/default/20151231/21781/%(z)d/%(y)d/%(x)d.%(format)s
   ch.swisstopo.pixelkarte-farbe-pk50.noscale_20111027_source:
     coverage:
       bbox: [420000, 30000, 900000, 350000]
