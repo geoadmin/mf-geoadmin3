@@ -15,7 +15,6 @@ goog.require('ga_profile_service');
           templateUrl: 'components/profile/partials/profile.html',
           scope: {
             feature: '=gaProfile',
-            map: '=gaProfileMap',
             options: '=gaProfileOptions'
           },
           link: function(scope, element, attrs) {
@@ -140,7 +139,8 @@ goog.require('ga_profile_service');
                     scope.coordinates = [xCoord, yCoord];
                   });
                   var coordsMap = profile.findMapCoordinates(xCoord);
-                  updateMapPosition(coordsMap);
+                  $rootScope.$broadcast('gaProfileMapPositionUpdated',
+                      coordsMap);
                 }
               });
 
@@ -154,7 +154,8 @@ goog.require('ga_profile_service');
                   var x = mousePos[0];
                   var xCoord = profile.domain.X.invert(x);
                   var coordsMap = profile.findMapCoordinates(xCoord);
-                  activateMapPosition(coordsMap);
+                  $rootScope.$broadcast('gaProfileMapPositionActivate',
+                      coordsMap);
                 }
               });
 
@@ -163,39 +164,10 @@ goog.require('ga_profile_service');
                 var path = d3.select(areaChartPath[0][0]);
                 var pathEl = path.node();
                 if (angular.isDefined(pathEl.getTotalLength)) {
-                  tooltipEl.hide();
-                  deactivateMapPosition();
+                  tooltipEl.css({ display: 'none' });
+                   $rootScope.$broadcast('gaProfileMapPositionDeactivate');
                 }
               });
-
-              // Update map stuff
-              // Creates the additional overlay to display azimuth circle
-              var pos = new ol.geom.Point([0, 0]);
-              var overlay = new ol.FeatureOverlay({
-                features: [new ol.Feature(pos)],
-                style: new ol.style.Style({
-                  image: new ol.style.Circle({
-                    radius: 4,
-                    fill: new ol.style.Fill({
-                      color: [255, 0, 0, 0.4]
-                    }),
-                    stroke: new ol.style.Stroke({
-                      color: [255, 0, 0, 1],
-                      width: 3
-                    })
-                  }),
-                  zIndex: 10000
-                })
-              });
-              var activateMapPosition = function(coords) {
-                overlay.setMap(scope.map);
-              };
-              var updateMapPosition = function(coords) {
-                pos.setCoordinates(coords);
-              };
-              var deactivateMapPosition = function(coords) {
-                overlay.setMap(null);
-              };
             }
           }
         };

@@ -33,10 +33,8 @@ var runTest = function(cap, driver, target) {
   if(!(cap.browser == "IE" && cap.browser_version == "9.0")) {
     // Check if url is adapted to KML presence and KML position
     driver.getCurrentUrl().then(function(url) {
-      driver.wait(function() {
-        assert.ok(url.indexOf(QUERYSTRING_KML) > -1);
-        assert.ok(url.indexOf(POSITION_TO_KML) > -1);
-      }, 1000);
+      assert.ok(url.indexOf(QUERYSTRING_KML) > -1);
+      assert.ok(url.indexOf(POSITION_TO_KML) > -1);
     });
   }
 

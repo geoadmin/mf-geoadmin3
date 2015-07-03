@@ -260,8 +260,6 @@ goog.require('ga_print_style_service');
        * fontWeight
        * fontColor
        * labelAlign
-       * labelXOffset
-       * labelYOffset
        * labelOutlineColor
        * labelOutlineWidth
        * graphicHeight
@@ -450,13 +448,10 @@ goog.require('ga_print_style_service');
             var encJSON = format.writeFeatureObject(feature);
             if (!encJSON.properties) {
               encJSON.properties = {};
-            // Fix circular structure to JSON
-            // see: https://github.com/geoadmin/mf-geoadmin3/issues/1213
-            } else {
+            // Fix https://github.com/geoadmin/mf-geoadmin3/issues/1213
+            } else if (encJSON.properties.Style) {
               delete encJSON.properties.Style;
-              delete encJSON.properties.overlays;
             }
-
 
             encJSON.properties._gx_style = styleId;
             encFeatures.push(encJSON);
@@ -732,12 +727,11 @@ goog.require('ga_print_style_service');
         }
         var center = overlay.getPosition();
         var offset = 5 * resolution;
-
         if (center) {
-          var encOverlayLayer = {
+          var marker = {
             'type': 'Vector',
             'styles': {
-              '1': { // Style for marker position
+              '1': {
                 'externalGraphic': $scope.options.markerUrl,
                 'graphicWidth': 20,
                 'graphicHeight': 30,
@@ -745,18 +739,6 @@ goog.require('ga_print_style_service');
                 // these values must be the same in map.less
                 'graphicXOffset': -12,
                 'graphicYOffset': -30
-              }, '2': { // Style for measure tooltip
-                'externalGraphic': $scope.options.bubbleUrl,
-                'graphicWidth': 97,
-                'graphicHeight': 27,
-                'graphicXOffset': -46,
-                'graphicYOffset': -27,
-                'label': $(elt).text(),
-                'labelXOffset': 0,
-                'labelYOffset': 18,
-                'fontColor': '#ffffff',
-                'fontSize': 12,
-                'fontWeight': 'bold'
               }
             },
             'styleProperty': '_gx_style',
@@ -765,7 +747,7 @@ goog.require('ga_print_style_service');
               'features': [{
                 'type': 'Feature',
                 'properties': {
-                  '_gx_style': ($(elt).text() ? 2 : 1)
+                  '_gx_style': 1
                 },
                 'geometry': {
                   'type': 'Point',
@@ -776,7 +758,7 @@ goog.require('ga_print_style_service');
             'name': 'drawing',
             'opacity': 1
           };
-          encLayers.push(encOverlayLayer);
+          encLayers.push(marker);
         }
       });
 
@@ -1044,14 +1026,12 @@ goog.require('ga_print_style_service');
   });
 
   module.directive('gaPrint',
-    function(gaBrowserSniffer) {
+    function() {
       return {
         restrict: 'A',
         templateUrl: 'components/print/partials/print.html',
         controller: 'GaPrintDirectiveController',
-        link: function(scope, elt, attrs, controller) {
-          scope.isIE = gaBrowserSniffer.msie;
-        }
+        link: function(scope, elt, attrs, controller) {}
       };
     }
   );

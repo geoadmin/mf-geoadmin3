@@ -180,7 +180,6 @@ button.ga-btn, .ol-control button {
     background-color: transparent;
     box-shadow: none;
     width: 550px;
-    margin-bottom: 0px;
 
     .pull-right > div {
       display: none;
@@ -202,59 +201,6 @@ button.ga-btn, .ol-control button {
   #toptools, #pulldown, #footer {
     display: none;
   }
-}
-
-.ga-draw-active {
-  
-  #header {
-    top: unit(-@header-height, px);
-  }
-
-  #drawModeHeader {
-    top: 0px;
-  }
-
-  #buttonGroup, #pulldown {
-    top: unit(@small-header-height, px);
-  }
-
-  #pulldown-content .panel-heading, .theme-toggle {
-    display: none;
-  }
-
-  #pulldown {
-    @media (max-width: @screen-phone) {
-      top: 0px;
-    }
-    .panel-body {
-      max-height: none;
-
-      @media (max-height: 800px) {
-        max-height: none;
-      }
-      @media (max-height: 680px) {
-        max-height: 300px;
-      }
-      @media (max-width: @screen-phone) {
-        max-height: 110px;
-      }
-    }
-  }
-}
-
-@keyframes blink {
-  0% {opacity: 1}
-  50% {opacity: 0.2}
-  100% {opacity: 1}
-}
-
-.ga-centered {
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  right: 0px;
-  bottom: 0px;
-  margin: auto;
 }
 
 #copyrightsdata {
@@ -331,23 +277,34 @@ input[type=text][readonly] {
 
 
 // ***** HEADER
-.navbar-fixed-top {
-  margin: 0;
-  transition: 1s ease;
-  transition-property: top, height;
-  .box-shadow(6px 6px 12px rgba(0, 0, 0, 0.175));
-}
-
-// ***** HEADER
 #header {
-  top: 0px;
+  overflow: visible; // ios bug fix (need to show the dropdown)
   height: unit(@header-height, px);
+  padding: 0 .4em 0 0;
+  margin-right: 0px; // Fix a long story bug of bootstrap  https://github.com/twbs/bootstrap/issues/10225
   background-color: rgba(255, 255, 255, 0.9);
-
-  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
-    height: unit(@small-header-height, px);
+  .box-shadow(6px 6px 12px rgba(0, 0, 0, 0.175));
+  .pull-right {
+    margin: 34px 1.6em 0 0;
+    padding: 0;
+    & > div {
+      display: inline-block;
+    }
   }
-
+  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
+    h4 {
+      display: none;
+    }
+    height: unit(@small-header-height, px);
+    .pull-right {
+      margin: .4em 0 0;
+    }
+  }
+  select {
+    width: auto;
+    padding-left: .3em;
+    padding-right: .3em;
+  }
   @media (max-width: @screen-phone) {
     background: #fff;
   }
@@ -361,7 +318,6 @@ input[type=text][readonly] {
     transition: top ease 1s;
   }
 }
-
 .offline #header .alert {
   top: 0px;
   z-index: 100;
@@ -476,53 +432,6 @@ input[type=text][readonly] {
   }
 }
 
-// ***** DRAW MODE HEADER
-#drawModeHeader {
-  top: -100px;
-  height: unit(@small-header-height, px);
-  font-weight: bold;
-  text-align: center;
-  vertical-align: middle;
-  padding: 6px 12px;
-  background-color: #e6e6e6;
- 
-  .btn-primary {
-    margin-top: 1px;
-  }
-  [ga-help] {
-    visibility: visible;
-    height: 100%;
-    float: left;
-    width: 30px;
-  }
-  .ga-title {
-    font-size: 2em;
-    line-height: 1.7em;
-    left: 260px;
-    right: 260px;
-
-    @media (max-width: @screen-tablet) {
-      left: 260px;
-      right: 5px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-
-      @media (max-width: @screen-phone) {
-        left: 50px;
-        right: 50px;
-      }
-    }
-  }
-
-  .icon-arrow-left + span {
-    padding-left: 5px;
-
-    @media (max-width: @screen-phone) {
-      display: none;
-    }
-  }
-}
-
 // ***** FOOTER
 #footer {
   min-height: 0;
@@ -603,28 +512,21 @@ a .ga-icon-separator {
   width: unit(@pulldown-width, px);
   z-index: 1000;
   top: unit(@header-height, px);
-  transition:1s ease;
-  transition-property: top, height;
-   
   @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
     top: unit(@small-header-height, px);
   }
-  
   @media (max-width: @screen-phone) {
     width: 100%;
     height: 0;
     top: 0;
     z-index: 1100;
   }
-  
   .hidden-collapsed {
     display: inline;
   }
-  
   .visible-collapsed {
     display: none;
   }
-  
   .collapsed {
     .hidden-collapsed {
       display: none;
@@ -723,14 +625,14 @@ a .ga-icon-separator {
       color: #000;
       border-bottom: 1px solid #fff;
     }
-    /*.spacer {
+    .spacer {
       visibility: hidden;
-    }*/
+    }
     &.panel-heading .icon-caret-right {
       padding: 0 1px 0 2px;
     }
     &.panel-heading:not(.light) i:not(.icon-collapse-alt):last-of-type:after {
-      /*.separator-mixin;*/
+      .separator-mixin;
     }
     .icon-caret-right, .icon-caret-down {
       margin-right: .5em;
@@ -811,7 +713,7 @@ a .ga-icon-separator {
     }
   }
 }
-.dropdown-menu[ng-controller] {
+.dropdown-menu {
   top: 0;
   left: 100%;
   margin: 0;
@@ -925,18 +827,51 @@ a .ga-icon-separator {
 }
 
 #measure-popup {
+  max-width: none;
+  max-height: none;
+  overflow: hidden;
+  bottom: 26px;
+  border-radius: 0;
+  background-clip: initial;
+  height: 240px;
+  
   &.ga-profile-active {
     right: 0px;
   }
   
   .ga-popup-content {
+    max-height: inherit;
     overflow: visible;
+  }
+  
+  @media (max-width: @screen-tablet) {
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
   }
 
   @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
     .ga-profile-inner {
       overflow: visible;
     }
+  }
+}
+
+#draw-popup {
+  max-width: 385px;
+
+  @media (max-width: @screen-tablet) {
+    max-width: none;
+  } 
+
+  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
+    .ga-icons, .ga-choose-icon {
+      width: 100%;
+      height: auto;
+    }
+  }
+  .popover-title, .popover-content {
+    width: auto;
   }
 }
 
@@ -966,7 +901,7 @@ a .ga-icon-separator {
   }
 }
 
-[ga-context-popup], [ga-offline-menu], .homescreen, [ga-share], .ga-draw-modify {
+[ga-context-popup], [ga-offline-menu], .homescreen, [ga-share] {
   .popover-title, .modal-header {
     position: relative;
     padding-right: 0px;
@@ -1060,7 +995,7 @@ ul.panel-body-wide {
 
 // ***** ICONS
 .icon-plus, .icon-minus {
-  padding: 1px 1px 0;
+  padding: 1px 2px 0;
   border: 1px solid #afafaf;
   border-radius: 2em;
   box-shadow: 0 0 2px #c7c7c7;
@@ -1296,7 +1231,7 @@ input[type=range] {
     -ms-appearance: none;
     border: 0;
     background: white;
-    vertical-align: -3px;
+    vertical-align: -1px;
     
     &:after {
       font-size: 14px;
@@ -1355,9 +1290,7 @@ input[type=range] {
   top: unit(@header-height, px);
   right: unit(@control-btns-right, px);
   z-index: 1000;
-  transition: 1s ease;
-  transition-property: top;
-  
+
   > div {
     display: block;
   }
@@ -1440,12 +1373,7 @@ body:not(.embed) {
 #feedback-popup {
   max-height: 800px;
   min-width: 240px;
-  max-width: 350px;
 
-  @media (max-width: @screen-tablet){
-    max-width: none;
-  }
-   
   .ga-popup-content {
     max-height: 740px;
   }

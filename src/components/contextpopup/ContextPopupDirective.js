@@ -114,6 +114,7 @@ goog.require('ga_permalink');
               coord4326['lat'] = coord4326[1];
               scope.coordmgrs = $window.proj4.mgrs.forward(coord4326).
                   replace(/(.{5})/g, '$1 ');
+              scope.altitude = '-';
 
               // A digest cycle is necessary for $http requests to be
               // actually sent out. Angular-1.2.0rc2 changed the $evalSync
@@ -131,7 +132,7 @@ goog.require('ga_permalink');
                     elevation_model: 'COMB'
                   }
                 }).success(function(response) {
-                  scope.altitude = parseFloat(response.height);
+                  scope.altitude = parseInt(response.height);
                 });
 
                 $http.get(lv03tolv95Url, {

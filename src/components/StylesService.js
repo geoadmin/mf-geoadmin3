@@ -1,20 +1,10 @@
 goog.provide('ga_styles_service');
-
-goog.require('ga_measure_service');
 (function() {
 
-  var module = angular.module('ga_styles_service', [
-    'ga_measure_service'
-  ]);
+  var module = angular.module('ga_styles_service', []);
 
   module.provider('gaStyleFactory', function() {
-    var DEFAULT_FONT = 'normal 16px Helvetica',
-        ZPOLYGON = 10,
-        ZLINE = 20,
-        ZICON = 30,
-        ZTEXT = 40,
-        ZSELECT = 50,
-        ZSKETCH = 60;
+    var DEFAULT_FONT = 'normal 16px Helvetica';
 
     var selectStroke = new ol.style.Stroke({
       color: [255, 128, 0, 1],
@@ -131,7 +121,7 @@ goog.require('ga_measure_service');
       'transparentCircle': transparentCircle
     };
 
-    this.$get = function(gaGlobalOptions, gaMeasure) {
+    this.$get = function(gaGlobalOptions) {
 
       var imgPath = gaGlobalOptions.resourceUrl + 'img/';
       var headingStyle = new ol.style.Style({
@@ -150,47 +140,8 @@ goog.require('ga_measure_service');
         return [geolocationStyle];
       };
 
-      // Draw a dashed line or polygon, and a plain color for azimuth circle
-      var measureStyleFunction = function(feature, res) {
-        var color = [255, 0, 0];
-        var stroke = new ol.style.Stroke({
-          color: color.concat([1]),
-          width: 3
-        });
-        var dashedStroke = new ol.style.Stroke({
-          color: color.concat([1]),
-          width: 3,
-          lineDash: [8]
-        });
-        var zIndex = (feature.getGeometry() instanceof ol.geom.LineString) ?
-            ZLINE : ZPOLYGON;
-        var styles = [
-          new ol.style.Style({
-            fill: new ol.style.Fill({
-              color: color.concat([0.4])
-            }),
-            stroke: dashedStroke,
-            zIndex: zIndex
-          }), new ol.style.Style({
-            stroke: stroke,
-            geometry: function(feature) {
-              if (gaMeasure.canShowAzimuthCircle(feature.getGeometry())) {
-                var coords = feature.getGeometry().getCoordinates();
-                var circle = new ol.geom.Circle(coords[0],
-                    gaMeasure.getLength(feature.getGeometry()));
-                return circle;
-              }
-            },
-            zIndex: 0 // TO FIX: We set 0 for now, because the hit detection
-                      // takes account of the transparent fill of the circle
-          })
-        ];
-        return styles;
-      };
-
       var stylesFunction = {
-        'geolocation': geolocationStyleFunction,
-        'measure': measureStyleFunction
+        'geolocation': geolocationStyleFunction
       };
 
       return {
@@ -201,12 +152,12 @@ goog.require('ga_measure_service');
         // Point with Icon: 30
         // Line: 20
         // Polygon: 10
-        ZPOLYGON: ZPOLYGON,
-        ZLINE: ZLINE,
-        ZICON: ZICON,
-        ZTEXT: ZTEXT,
-        ZSELECT: ZSELECT,
-        ZSKETCH: ZSKETCH,
+        ZPOLYGON: 10,
+        ZLINE: 20,
+        ZICON: 30,
+        ZTEXT: 40,
+        ZSELECT: 50,
+        ZSKETCH: 60,
         FONT: DEFAULT_FONT,
 
         getStyle: function(type) {
@@ -217,16 +168,6 @@ goog.require('ga_measure_service');
             return styles[type];
           };
         },
-        getFeatureStyleFunction: function(type) {
-          return function(resolution) {
-            // In a featureStyleFunction this is the current feature
-            return stylesFunction[type](this, resolution) ||
-                function(feature, resolution) {
-              return styles[type];
-            }(this, resolution);
-          };
-        },
-
         // Defines a text stroke (white or black) depending on a text color
         getTextStroke: function(olColor) {
           var stroke = new ol.style.Stroke({

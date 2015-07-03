@@ -100,10 +100,6 @@ goog.require('ga_browsersniffer_service');
             kmlString = kmlString.
                 replace(/<Icon>\s*<href>noimage<\/href>\s*<\/Icon>/g, '');
 
-            // Remove empty placemark added to have <Document> tag
-            kmlString = kmlString.
-                replace(/<Placemark\/>/g, '');
-
             // Add KML document name
             if (layer.label) {
               kmlString = kmlString.replace(/<Document>/, '<Document><name>' +

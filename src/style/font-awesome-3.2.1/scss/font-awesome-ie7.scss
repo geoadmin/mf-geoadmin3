@@ -83,6 +83,11 @@ a [class*=" icon-"] {
 }
 
 
+.icon-user {
+  @include ie7icon('&#xf007;');
+}
+
+
 .icon-remove {
   @include ie7icon('&#xf00d;');
 }
@@ -318,8 +323,13 @@ a [class*=" icon-"] {
 }
 
 
-.icon-user {
-  @include ie7icon('&#xf007;');
+.icon-ga-time-machine {
+  @include ie7icon('&#xf18c;');
+}
+
+
+.icon-ga-time-machine-bckgd {
+  @include ie7icon('&#xf18d;');
 }
 
 
@@ -343,18 +353,18 @@ a [class*=" icon-"] {
 }
 
 
-.icon-ga-measure {
-  @include ie7icon('&#xf198;');
+.icon-ga-line {
+  @include ie7icon('&#xf192;');
 }
 
 
-.icon-ga-add-line {
-  @include ie7icon('&#xf199;');
+.icon-ga-polygon {
+  @include ie7icon('&#xf193;');
 }
 
 
-.icon-ga-add-text {
-  @include ie7icon('&#xf197;');
+.icon-ga-text {
+  @include ie7icon('&#xf194;');
 }
 
 
@@ -363,6 +373,6 @@ a [class*=" icon-"] {
 }
 
 
-.icon-ga-marker {
-  @include ie7icon('&#xf19a;');
+.icon-ga-delete {
+  @include ie7icon('&#xf196;');
 }

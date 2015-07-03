@@ -93,7 +93,7 @@ goog.require('ga_urlutils_service');
           if (data.length != 0) {
             var maxX = data[data.length - 1].dist;
             var denom = maxX >= 10000 ? 1000 : 1;
-            this.unitX = maxX >= 10000 ? ' km' : ' m';
+            this.unitX = maxX >= 10000 ? 'km' : 'm';
             $.map(data, function(val) {
               val.dist = val.dist / denom;
               val.alts[elevationModel] = val.alts[elevationModel] || 0;
@@ -120,12 +120,6 @@ goog.require('ga_urlutils_service');
 
         this.get = function(feature, callback) {
           var coordinates = feature.getGeometry().getCoordinates();
-
-          // TODO: manage all kind of geometry
-          if (feature.getGeometry() instanceof ol.geom.Polygon ||
-              feature.getGeometry() instanceof ol.geom.LinearRing) {
-            coordinates = coordinates[0];
-          }
           var wkt = '{"type":"LineString","coordinates":' +
                     coordinatesToString(coordinates) + '}';
 
@@ -162,13 +156,8 @@ goog.require('ga_urlutils_service');
                 'application/x-www-form-urlencoded'};
           }
 
-          $http(params).success(function(data, status) {
-            // When all the geometry is outside switzerland
-            if (data.length == 0) {
-              data = [{alts: {COMB: 0}, dist: 0}];
-            }
-            callback(data, status);
-          }).error(function(data, status) {
+          $http(params).success(callback)
+            .error(function(data, status) {
               // If request is canceled, statuscode is 0 and we don't announce
               // it
               if (status !== 0) {

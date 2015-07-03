@@ -15,10 +15,10 @@
     js events are not added -->
     <div ng-hide="isIE9" class="tab-pane"  ng-class="getTabClass(1)">
       <!-- Upload from a basic upload (the input file is hidden by default)-->
-      <div class="input-group input-group-sm">
+      <div class="input-group-sm">
         <input type="file" name="file"/>
         <!-- Button use to open the file chooser of the input file -->
-        <input class="form-control" type="text" readonly
+        <input class="ga-import-kml-fake-file form-control" type="text" readonly
                value="{{(file.name) ? file.name + ', ' + file.size/1000 + ' ko' : ''}}"
                placeholder="{{'no_file' | translate}}"/>
         <span class="input-group-btn">
@@ -26,6 +26,7 @@
         </span>
       </div>
     </div>
+
     <div class="tab-pane" ng-class="getTabClass(2)">
       <!-- Upload from an URL -->
       <div>
