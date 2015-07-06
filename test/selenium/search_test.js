@@ -24,8 +24,8 @@ var runTest = function(cap, driver, target){
   }
   // And have a look at the permanent Link
   // driver.findElement(webdriver.By.xpath("//*[@ng-model='permalinkValue']")).getAttribute("value").then(function(val){
-  // driver.findElement(webdriver.By.xpath("//*[@id='toptools']//a[contains(@ng-href,'http')]")).getAttribute("ng-href");
-  driver.findElement(webdriver.By.xpath("//*[@id='toptools']//a[contains(@ng-href,'http')]")).getAttribute("ng-href").then(function(val){
+  // driver.findElement(webdriver.By.xpath("//*[@id='toptools']//a[contains(@href,'http')]")).getAttribute("href");
+  driver.findElement(webdriver.By.xpath("//*[@id='toptools']//a[contains(@href,'http')]")).getAttribute("href").then(function(val){
       //The perma Link should point to Bern
       assert.ok(val.indexOf(QUERYSTRING_OF_BERN) > -1);
   });
