@@ -9,6 +9,75 @@
 Release Notes
 =============
 
+.. _releasenotes_20150708:
+
+Release 20150708 - Wednesday, July 8th 2015
+------------------------------------------------
+
+API & applications
+******************
+
+`API <//api3.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-chsdi3/compare/r_150701...r_150708>`__
+
+`MAP <//map.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+- Official release of new drawing and measuring function
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-geoadmin3/compare/r_150701...r_150708>`__
+
+
+Geodata
+*******
+
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Geographical Names swissNAMES3D <//map.geo.admin.ch/?bgLayer=ch.swisstopo.swissnames3d>`__ (ch.swisstopo.swissnames3d)                           |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Hydrogeological sketch <//map.geo.admin.ch/?layers=ch.bafu.hydrogeologie-uebersichtskarte>`__ (ch.bafu.hydrogeologie-uebersichtskarte)           |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Agricultural zones boundaries <//map.geo.admin.ch/?layers=ch.blw.landwirtschaftliche-zonengrenzen>`__ (ch.blw.landwirtschaftliche-zonengrenzen)  |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Water & migrant bird reserves <//map.geo.admin.ch/?layers=ch.bafu.bundesinventare-vogelreservate>`__ (ch.bafu.bundesinventare-vogelreservate)    |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Number of connection providers <//map.geo.admin.ch/?layers=ch.bakom.anbieter-eigenes_festnetz>`__ (ch.bakom.anbieter-eigenes_festnetz)           |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Download ≥ 1 Mbit/s <//map.geo.admin.ch/?layers=ch.bakom.downlink1>`__ (ch.bakom.downlink1)                                                      |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Download ≥ 2 Mbit/s <//map.geo.admin.ch/?layers=ch.bakom.downlink2>`__ (ch.bakom.downlink2)                                                      |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Download ≥ 10 Mbit/s <//map.geo.admin.ch/?layers=ch.bakom.downlink10>`__ (ch.bakom.downlink10)                                                   |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Download ≥ 20 Mbit/s <//map.geo.admin.ch/?layers=ch.bakom.downlink20>`__ (ch.bakom.downlink20)                                                   |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Download ≥ 50 Mbit/s <//map.geo.admin.ch/?layers=ch.bakom.downlink50>`__ (ch.bakom.downlink50)                                                   |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Download ≥ 100 Mbit/s <//map.geo.admin.ch/?layers=ch.bakom.downlink100>`__ (ch.bakom.downlink100)                                                |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Availability HDTV fixed netw. <//map.geo.admin.ch/?layers=ch.bakom.verfuegbarkeit-hdtv>`__ (ch.bakom.verfuegbarkeit-hdtv)                        |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Availability TV fixed network <//map.geo.admin.ch/?layers=ch.bakom.verfuegbarkeit-tv>`__ (ch.bakom.verfuegbarkeit-tv)                            |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Upload ≥ 1 Mbit/s <//map.geo.admin.ch/?layers=ch.bakom.uplink1>`__ (ch.bakom.uplink1)                                                            |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Upload ≥ 2 Mbit/s <//map.geo.admin.ch/?layers=ch.bakom.uplink2>`__ (ch.bakom.uplink2)                                                            |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Upload ≥ 10 Mbit/s <//map.geo.admin.ch/?layers=ch.bakom.uplink10>`__ (ch.bakom.uplink10)                                                         |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Upload ≥ 20 Mbit/s <//map.geo.admin.ch/?layers=ch.bakom.uplink20>`__ (ch.bakom.uplink20)                                                         |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Upload ≥ 50 Mbit/s <//map.geo.admin.ch/?layers=ch.bakom.uplink50>`__ (ch.bakom.uplink50)                                                         |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Upload ≥ 100 Mbit/s <//map.geo.admin.ch/?layers=ch.bakom.uplink100>`__ (ch.bakom.uplink100)                                                      |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Optical fibre <//map.geo.admin.ch/?layers=ch.bakom.anschlussart-glasfaser>`__ (ch.bakom.anschlussart-glasfaser)                                  |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Coaxial cable <//map.geo.admin.ch/?layers=ch.bakom.anschlussart-koaxialkabel>`__ (ch.bakom.anschlussart-koaxialkabel)                            |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Copper wire <//map.geo.admin.ch/?layers=ch.bakom.anschlussart-kupferdraht>`__ (ch.bakom.anschlussart-kupferdraht)                                |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+
 .. _releasenotes_20150701:
 
 Release 20150617 - Wednesday, July 1st 2015
