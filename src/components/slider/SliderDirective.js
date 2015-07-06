@@ -654,12 +654,12 @@ goog.require('ga_debounce_service');
             // RE3: Handle arrows left and right key
             var onKeyboardEvent = function(event) {
               var value = scope.ngModel;
-              if (event.which == 37) {
+              if (event.which == 39) {
                 scope.ngModel = Math.max(previousValue(value,
                     scope.dataList), scope.floor);
                 event.preventDefault();
                 event.stopPropagation();
-              } else if (event.which == 39) {
+              } else if (event.which == 37) {
                 scope.ngModel = Math.min(nextValue(value, scope.dataList),
                     scope.ceiling);
                 event.preventDefault();

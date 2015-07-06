@@ -14,7 +14,7 @@ goog.provide('ga_timeselector_controller');
 
     // Fill the years array. This array will be used to configure the
     // display of the slider (minor and major divisions ...)
-    for (var i = $scope.options.maxYear; i >= $scope.options.minYear; i--) {
+    for (var i = $scope.options.minYear, ii = $scope.options.maxYear; i <= ii; i++) {
       var year = {
         value: i,
         available: false,
