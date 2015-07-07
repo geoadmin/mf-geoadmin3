@@ -15,9 +15,12 @@ var runTest = function(cap, driver, target){
   // Was the URL in the address bar adapted?
   if(!(cap.browser == "IE" && cap.browser_version == "9.0")) {
     // Check if url is adapted to reflect Bern location
-    driver.getCurrentUrl().then(function(url) {
-        assert.ok(url.indexOf(QUERYSTRING_OF_BERN) > -1);
-    });
+    driver.wait(function() {
+        return driver.getCurrentUrl().then(function(url) {
+            assert.ok(url.indexOf(QUERYSTRING_OF_BERN) > -1);
+            return true;
+        });
+    }, 1000);
   }
   // And have a look at the permanent Link
   // driver.findElement(webdriver.By.xpath("//*[@ng-model='permalinkValue']")).getAttribute("value").then(function(val){
