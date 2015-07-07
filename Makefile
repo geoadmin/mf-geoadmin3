@@ -162,6 +162,10 @@ fastclick: .build-artefacts/fastclick .build-artefacts/closure-compiler/compiler
 	cp .build-artefacts/fastclick/lib/fastclick.js src/lib/fastclick.js
 	java -jar .build-artefacts/closure-compiler/compiler.jar src/lib/fastclick.js --compilation_level SIMPLE_OPTIMIZATIONS --js_output_file  src/lib/fastclick.min.js
 
+.PHONY: typeahead
+typeahead: .build-artefacts/closure-compiler/compiler.jar
+	java -jar .build-artefacts/closure-compiler/compiler.jar src/lib/typeahead-0.9.3.js --compilation_level SIMPLE_OPTIMIZATIONS --js_output_file  src/lib/typeahead-0.9.3.min.js
+
 .PHONY: filesaver
 filesaver: .build-artefacts/filesaver
 	cp .build-artefacts/filesaver/FileSaver.js src/lib/filesaver.js
