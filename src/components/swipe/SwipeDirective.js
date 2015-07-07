@@ -10,8 +10,33 @@ goog.require('ga_map_service');
   ]);
 
   module.directive('gaSwipe',
-    function($document, $translate, gaBrowserSniffer, gaPermalink,
+    function($window, $document, $translate, gaBrowserSniffer, gaPermalink,
         gaDebounce, gaLayerFilters) {
+
+      // Move swipe element on resize.
+      // We use a debounce function because map.render() is
+      // already called by the map itself on each resize so we want to
+      // trigger only a map.render() when the user has
+      // finished to resize.
+      var requestRenderFrame = function(map, layer) {
+        if (layer) {
+          map.render();
+        }
+      };
+      var requestRenderFrameDebounced = gaDebounce.debounce(
+          requestRenderFrame, 200, false, false);
+
+      // Manage permalink parameter
+      var updatePermalink = function(ratio) {
+        if (ratio) {
+          gaPermalink.updateParams({swipe_ratio: ratio.toFixed(2)});
+        } else {
+          gaPermalink.deleteParam('swipe_ratio');
+        }
+      };
+      var updatePermalinkDebounced = gaDebounce.debounce(
+          updatePermalink, 1000, false);
+
       return {
         restrict: 'A',
         templateUrl: function(element, attrs) {
@@ -29,7 +54,7 @@ goog.require('ga_map_service');
           var draggableElt = elt.find('[ga-draggable]');
           var arrowsElt = elt.find('.ga-swipe-arrows');
           var layerLabelElt = elt.find('.ga-swipe-layer-label');
-          var layerListenerKeys = [];
+          var layerListenerKeys = [], unMapChangeSize;
           var layersDeregisterFn = null;
           var isDragging = false;
           var eventKey = gaBrowserSniffer.events;
@@ -150,8 +175,14 @@ goog.require('ga_map_service');
             scope.ratio = scope.ratio || 0.5;
             updatePermalink(scope.ratio);
             draggableElt.css({left: calculateOffsetLeft()});
+
+            // Register events
             layersDeregisterFn = scope.$watchCollection(
                 'layers | filter:layerFilter', refreshComp);
+            unMapChangeSize = scope.map.on('change:size', function(evt) {
+              draggableElt.css({left: calculateOffsetLeft()});
+              requestRenderFrameDebounced(scope.map, scope.layer);
+            });
             elt.on(eventKey.start, dragStart);
           };
 
@@ -159,24 +190,14 @@ goog.require('ga_map_service');
           // Deactive the swipe removing the events
           var deactivate = function() {
             refreshComp();
-            elt.unbind(eventKey.start, dragStart);
+
+            // Unregister events
+            elt.off(eventKey.start, dragStart);
             if (layersDeregisterFn) {
               layersDeregisterFn();
             }
+            ol.Observable.unByKey(unMapChangeSize);
           };
-
-          // Boolean determining if the swipe is activated from the permalink
-          // parameter
-          var fromPermalink = false;
-
-          // Initalize component with permalink parameter
-          if (!angular.isDefined(scope.isActive) &&
-             angular.isDefined(gaPermalink.getParams().swipe_ratio)) {
-            scope.ratio = parseFloat(gaPermalink.getParams().swipe_ratio);
-            draggableElt.css({left: calculateOffsetLeft()});
-            fromPermalink = true;
-            scope.isActive = true;
-          }
 
           // Watchers
           scope.$watch('isActive', function(active) {
@@ -191,35 +212,15 @@ goog.require('ga_map_service');
             }
           });
 
-          // Move swipe element on resize.
-          // We use a debounce function because map.render() is
-          // already called by the map itself on each resize so we want to
-          // trigger only a map.render() when the user has
-          // finished to resize.
-          var requestRenderFrame = function() {
-            if (scope.layer) {
-              scope.map.render();
-            }
-          };
-          var requestRenderFrameDebounced = gaDebounce.debounce(
-              requestRenderFrame, 200, false, false);
-          scope.map.on('change:size', function(evt) {
-            draggableElt.css({left: calculateOffsetLeft()});
-            requestRenderFrameDebounced();
-          });
-
-
-          // Manage permalink parameter
-          var updatePermalink = function(ratio) {
-            if (ratio) {
-              gaPermalink.updateParams({swipe_ratio: ratio.toFixed(2)});
-            } else {
-              gaPermalink.deleteParam('swipe_ratio');
-            }
-          };
-          var updatePermalinkDebounced = gaDebounce.debounce(
-              updatePermalink, 1000, false);
-
+          // Initalize component with permalink parameter
+          var fromPermalink = false,
+              swipeRatioParam = parseFloat(gaPermalink.getParams().swipe_ratio);
+          if ($window.isFinite(swipeRatioParam) && swipeRatioParam <= 1 &&
+              swipeRatioParam >= 0) {
+            scope.ratio = swipeRatioParam;
+            fromPermalink = true;
+            scope.isActive = true;
+          }
         }
       };
     }
