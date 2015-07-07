@@ -210,7 +210,7 @@ class FileView(object):
                 return {'fileId': self.file_id}
             else:
                 data = self.key.get_contents_as_string()
-                return Response(data, content_type=self.key.content_type)
+                return Response(data, content_type=self.key.content_type, content_encoding=self.key.content_encoding)
         except Exception as e:
             raise exc.HTTPNotFound('File %s not found %s' % (self.file_id, e))
 
