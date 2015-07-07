@@ -6,16 +6,15 @@ from chsdi.lib.helpers import versioned
 lang = pageargs['lang']
 mode = pageargs['mode']
 data = pageargs['data']
-
+api_url = pageargs['api_url']
 layersconfig = """window.GeoAdmin.getConfig  = function(){ return %s } """ % data
 %>
 (function() {
 if (typeof window['GeoAdmin'] == 'undefined') window.GeoAdmin = {};
 window.GeoAdmin.lang = "${lang}";
-
+window.GeoAdmin.serviceUrl = "${api_url}";
 ${layersconfig|n}
 // Load js
-document.write('<scr' + 'ipt type="text/javascript" src="' + "${h.versioned(request.static_url('chsdi:static/js/serverconfig.js'))}" +  '"></scr' + 'ipt>');
 % if mode == 'preview' or mode == 'previewdebug':
 document.write('<link rel="stylesheet" type="text/css" href="' + "${h.versioned(request.static_url('chsdi:static/css/ga.css'))}" + '" />');
 % else:

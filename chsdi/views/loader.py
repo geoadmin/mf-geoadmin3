@@ -19,6 +19,7 @@ def loadjs(request):
     response = render_to_response(
         'chsdi:templates/loader.js',
         {
+            'api_url': request.path_url.replace('/loader.js', ''),
             'lang': lang,
             'mode': mode,
             'data': simplejson.dumps(data, separators=(',', ':'))
