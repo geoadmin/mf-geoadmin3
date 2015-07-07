@@ -430,7 +430,8 @@ class TestMapServiceView(TestsBase):
         from sqlalchemy.orm import scoped_session, sessionmaker
         val = True
         DBSession = scoped_session(sessionmaker())
-        query = DBSession.query(distinct(LayersConfig.layerBodId)).filter(LayersConfig.queryable == val).filter(LayersConfig.staging == 'prod')
+        valnone = None
+        query = DBSession.query(distinct(LayersConfig.layerBodId)).filter(LayersConfig.staging == 'prod').filter(LayersConfig.queryable == val).filter(LayersConfig.parentLayerId == valnone)
         features = []
         try:
             for layer in getLayers(query):
