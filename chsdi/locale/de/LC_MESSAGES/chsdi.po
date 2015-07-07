@@ -1664,6 +1664,9 @@ msgstr "Holzvorrat (LFI)"
 msgid "ch.bafu.holzzuwachs"
 msgstr "Holzzuwachs (LFI)"
 
+msgid "ch.bafu.hydrogeologie-uebersichtskarte"
+msgstr "Übersichtskarte Hydrogeologie"
+
 msgid "ch.bafu.hydrologie-daueruntersuchung_fliessgewaesser"
 msgstr "NADUF"
 

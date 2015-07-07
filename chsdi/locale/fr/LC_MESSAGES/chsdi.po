@@ -1664,6 +1664,9 @@ msgstr "Volume de bois (IFN)"
 msgid "ch.bafu.holzzuwachs"
 msgstr "Accroissement annuel de bois (IFN)"
 
+msgid "ch.bafu.hydrogeologie-uebersichtskarte"
+msgstr "Esquisse hydrogéologique"
+
 msgid "ch.bafu.hydrologie-daueruntersuchung_fliessgewaesser"
 msgstr "NADUF"
 

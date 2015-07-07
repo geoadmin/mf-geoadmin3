@@ -1664,6 +1664,9 @@ msgstr "Provvigione di legname (IFN)"
 msgid "ch.bafu.holzzuwachs"
 msgstr "Incremento del legno (IFN)"
 
+msgid "ch.bafu.hydrogeologie-uebersichtskarte"
+msgstr "Schizzo idrogeologico"
+
 msgid "ch.bafu.hydrologie-daueruntersuchung_fliessgewaesser"
 msgstr "NADUF"
 
