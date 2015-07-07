@@ -32,12 +32,13 @@ var runTest = function(cap, driver, target) {
   // Was the URL in the address bar adapted?
   if(!(cap.browser == "IE" && cap.browser_version == "9.0")) {
     // Check if url is adapted to KML presence and KML position
-    driver.getCurrentUrl().then(function(url) {
-      driver.wait(function() {
+    driver.wait(function() {
+      return driver.getCurrentUrl().then(function(url) {
         assert.ok(url.indexOf(QUERYSTRING_KML) > -1);
         assert.ok(url.indexOf(POSITION_TO_KML) > -1);
-      }, 1000);
-    });
+        return true;
+      });
+    }, 1000);
   }
 
   // Go to the KML linkedURL
