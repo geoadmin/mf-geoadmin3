@@ -1,3 +1,6 @@
+msgid "ch.bafu.hydrogeologie-uebersichtskarte"
+msgstr ""
+
 msgid "ch.blw.ursprungsbezeichnungen-konditoreiwaren"
 msgstr ""
 

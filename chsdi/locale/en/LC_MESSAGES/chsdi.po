@@ -1664,6 +1664,9 @@ msgstr "Standing volume (NFI)"
 msgid "ch.bafu.holzzuwachs"
 msgstr "Wood increment (NFI)"
 
+msgid "ch.bafu.hydrogeologie-uebersichtskarte"
+msgstr "Hydrogeological sketch"
+
 msgid "ch.bafu.hydrologie-daueruntersuchung_fliessgewaesser"
 msgstr "NADUF"
 

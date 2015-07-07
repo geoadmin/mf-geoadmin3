@@ -1664,6 +1664,9 @@ msgstr "Reserva da laina (IFN)"
 msgid "ch.bafu.holzzuwachs"
 msgstr "Creschientscha annuala da laina (IFN)"
 
+msgid "ch.bafu.hydrogeologie-uebersichtskarte"
+msgstr "Übersichtskarte Hydrogeologie"
+
 msgid "ch.bafu.hydrologie-daueruntersuchung_fliessgewaesser"
 msgstr "NADUF"
 
