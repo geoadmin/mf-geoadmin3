@@ -1,6 +1,7 @@
 div[ga-topic] {
   width: 640px;
   padding: 0px 4px;
+  transition: width 1s ease, height 1s ease;
 
   & > div {
     float: left;
@@ -15,22 +16,23 @@ div[ga-topic] {
       border: 1px solid #c6c6c6;
       background-color: #efefef;
     }
+  }
+ 
+  // Transform to a simple list when screen is really too small
+  @media (max-width: 910px), (max-height: @screen-sm-max-height) {
+    width: 160px;
+    height: 250px;
+    padding: 0px;
+    overflow-y: auto;
+    overflow-x: hidden;
 
-    @media (max-width: @screen-tablet) {
+    & > div {
       width: 140px; 
       
       img {
         display: none;
       }
     }
-  }
-
-  @media (max-width: @screen-tablet) {
-    width: 160px;
-    height: 250px;
-    padding: 0px;
-    overflow-y: auto;
-    overflow-x: hidden;
   }
 }
 

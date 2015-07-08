@@ -815,11 +815,17 @@ a .ga-icon-separator {
   top: 0;
   left: 100%;
   margin: 0;
+  transition: top 1s ease;
 
   @media (max-width: @screen-phone) {
     right: 0px;
     left: auto;
     top: 40px;
+  }
+
+  // We move the dropdown menu on top
+  @media (min-height: @screen-sm-max-height) and (max-height: 700px) and (min-width: 910px) {
+    top: -155px;
   }
 }
 
