@@ -3971,6 +3971,9 @@ msgstr "Gli edifici semplificati in 3D"
 msgid "ch.swisstopo.swissimage"
 msgstr "SWISSIMAGE"
 
+msgid "ch.swisstopo.swissnames3d"
+msgstr "Nomi geografici swissNAMES3D"
+
 msgid "ch.swisstopo.swisstlm3d-karte-farbe"
 msgstr "Carta swissTLM (colori)"
 
@@ -5369,6 +5372,9 @@ msgstr "Nom dans la 2ème langue"
 msgid "name_terreg"
 msgstr "Nom de la région territoriale"
 
+msgid "namen_typ"
+msgstr "Tipo di nome"
+
 msgid "national"
 msgstr "Importanza nazionale"
 
@@ -5410,6 +5416,9 @@ msgstr "Nom de l’objet"
 
 msgid "obj_nr"
 msgstr "Numéro de l‘objet"
+
+msgid "objektart"
+msgstr "Tipo d'oggetto"
 
 msgid "objektname"
 msgstr "Nome dell'oggetto"
@@ -5599,6 +5608,9 @@ msgstr "Lien vers les informations disponibles"
 
 msgid "spectralzone"
 msgstr "Zone de microzonage sismique spectral"
+
+msgid "sprachcode"
+msgstr "Lingua"
 
 msgid "sss"
 msgstr "SED"

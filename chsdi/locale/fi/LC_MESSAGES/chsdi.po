@@ -2276,6 +2276,57 @@ msgstr "Regimenummer"
 msgid "ch.bafu.mittlere-abfluesse.regimetyp"
 msgstr "Regimetyp"
 
+msgid "ch.bafu.mittlere-abfluesse"
+msgstr "Mittlere Abflüsse (m³/s)"
+
+msgid "ch.bafu.mittlere-abfluesse.abflussvar"
+msgstr "Abflussvariabilität (%)"
+
+msgid "ch.bafu.mittlere-abfluesse.mqn_apr"
+msgstr "Q Apr"
+
+msgid "ch.bafu.mittlere-abfluesse.mqn_aug"
+msgstr "Q Aug"
+
+msgid "ch.bafu.mittlere-abfluesse.mqn_dez"
+msgstr "Q Dez"
+
+msgid "ch.bafu.mittlere-abfluesse.mqn_feb"
+msgstr "Q Feb"
+
+msgid "ch.bafu.mittlere-abfluesse.mqn_jahr"
+msgstr "Q Jahr"
+
+msgid "ch.bafu.mittlere-abfluesse.mqn_jan"
+msgstr "Q Jan"
+
+msgid "ch.bafu.mittlere-abfluesse.mqn_jul"
+msgstr "Q Jul"
+
+msgid "ch.bafu.mittlere-abfluesse.mqn_jun"
+msgstr "Q Jun"
+
+msgid "ch.bafu.mittlere-abfluesse.mqn_mai"
+msgstr "Q Mai"
+
+msgid "ch.bafu.mittlere-abfluesse.mqn_mar"
+msgstr "Q Mar"
+
+msgid "ch.bafu.mittlere-abfluesse.mqn_nov"
+msgstr "Q Nov"
+
+msgid "ch.bafu.mittlere-abfluesse.mqn_okt"
+msgstr "Q Okt"
+
+msgid "ch.bafu.mittlere-abfluesse.mqn_sep"
+msgstr "Q Sep"
+
+msgid "ch.bafu.mittlere-abfluesse.regimenummer"
+msgstr "Regimenummer"
+
+msgid "ch.bafu.mittlere-abfluesse.regimetyp"
+msgstr "Regimetyp"
+
 msgid "ch.bafu.moose"
 msgstr "Glista cotschna dals mistgels"
 
@@ -3971,6 +4022,9 @@ msgstr "Edifizis simplifitgads en 3D"
 msgid "ch.swisstopo.swissimage"
 msgstr "SWISSIMAGE"
 
+msgid "ch.swisstopo.swissnames3d"
+msgstr "Geografische Namen swissNAMES3D"
+
 msgid "ch.swisstopo.swisstlm3d-karte-farbe"
 msgstr "Charta swissTLM (colur)"
 
@@ -5369,6 +5423,9 @@ msgstr "Name in der 2. Sprache"
 msgid "name_terreg"
 msgstr "Name der Territorialregion"
 
+msgid "namen_typ"
+msgstr "Namentyp"
+
 msgid "national"
 msgstr "national"
 
@@ -5410,6 +5467,9 @@ msgstr "Objektname"
 
 msgid "obj_nr"
 msgstr "Objektnummer"
+
+msgid "objektart"
+msgstr "Objektart"
 
 msgid "objektname"
 msgstr "Objektname"
@@ -5599,6 +5659,9 @@ msgstr "Link zu den vorhandenen Informationen"
 
 msgid "spectralzone"
 msgstr "Zone der seismischen spektralen Mikrozonierung"
+
+msgid "sprachcode"
+msgstr "Sprache"
 
 msgid "sss"
 msgstr "SED"
