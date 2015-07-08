@@ -437,7 +437,9 @@ class TestMapServiceView(TestsBase):
             for layer in getLayers(query):
                 try:
                     FeatDBSession = scoped_session(sessionmaker())
-                    model = models_from_name(layer)[0]
+                    models = models_from_name(layer)
+                    self.failUnless(models is not None and len(models) > 0, layer)
+                    model = models[0]
                     query = FeatDBSession.query(model.primary_key_column()).limit(1)
                     ID = [q[0] for q in query]
                     if ID:
