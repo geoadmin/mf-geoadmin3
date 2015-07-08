@@ -22,7 +22,7 @@
         damtype = 'damtype_%s' % lang
 
         from urllib2 import urlopen
-        img_url = "http://dav0.bgdi.admin.ch/bfe_pub/images_stauanlagen/"+str(c['attributes']['facility_stabil_id'])+".jpg"
+        img_url = "http://www.bfe-gis.admin.ch/bilder/ch.bfe.stauanlagen-bundesaufsicht/"+str(c['attributes']['facility_stabil_id'])+".jpg"
         response = None
         try:
             response = urlopen(img_url)
