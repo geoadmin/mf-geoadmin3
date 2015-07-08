@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import os
-import StringIO
-import gzip
 from chsdi.tests.integration import TestsBase
 
 
@@ -103,8 +101,7 @@ class TestFileView(TestsBase):
 
         # get file
         resp = self.testapp.get('/files/%s' % file_id, headers=self.headers, status=200)
-        new_content = resp.body
-        orig_data = gzip.GzipFile(fileobj=StringIO.StringIO(new_content)).read()
+        orig_data = resp.body
         self.assertEqual(orig_data, VALID_KML)
 
         # update with file_id, should copy
@@ -120,10 +117,9 @@ class TestFileView(TestsBase):
         # re-get first file
         resp = self.testapp.get('/files/%s' % file_id, headers=self.headers, status=200)
         new_content = resp.body
-        orig_data = gzip.GzipFile(fileobj=StringIO.StringIO(new_content)).read()
 
-        self.assertEqual(orig_data, VALID_KML)
-        self.assertNotEqual(orig_data, modified_content)
+        self.assertEqual(new_content, VALID_KML)
+        self.assertNotEqual(new_content, modified_content)
 
     def test_file_ie9_fix(self):
         # No cotent-type should normally result in error
