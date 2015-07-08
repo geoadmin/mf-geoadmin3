@@ -37,8 +37,8 @@ def validate_kml_input():
 
             MAX_FILE_SIZE = 1024 * 1024 * 2
 
-            # IE9 simply doesn't send content_type header. So we set it ourself
-            if request.user_agent is not None and 'MSIE 9.0' in request.user_agent:
+            # IE 9/10 doesn't send custom headers
+            if request.content_type is None:
                 request.content_type = EXPECTED_CONTENT_TYPE
 
             if request.content_type != EXPECTED_CONTENT_TYPE:
