@@ -151,7 +151,7 @@ class SearchValidation(MapNameValidation):
 
     @typeInfo.setter
     def typeInfo(self, value):
-        acceptedTypes = ['locations', 'layers', 'featuresearch']
+        acceptedTypes = ['locations', 'layers', 'featuresearch', 'locations_preview']
         if value is None:
             raise HTTPBadRequest('Please provide a type parameter. Possible values are %s' % (', '.join(acceptedTypes)))
         elif value not in acceptedTypes:
