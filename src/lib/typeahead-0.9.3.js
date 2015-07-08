@@ -8,8 +8,7 @@
     var VERSION = "0.9.3";
     var utils = {
         isMsie: function() {
-            var match = /(msie) ([\w.]+)/i.exec(navigator.userAgent);
-            return match ? parseInt(match[2], 10) : false;
+            return /(msie|trident)/i.test(navigator.userAgent) ? navigator.userAgent.match(/(msie |rv:)(\d+(.\d+)?)/i)[2] : false;
         },
         isBlankString: function(str) {
             return !str || /^\s*$/.test(str);
