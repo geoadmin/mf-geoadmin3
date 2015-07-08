@@ -10,14 +10,28 @@ goog.require('ga_urlutils_service');
   /**
    * The gaHistory service.
    *
-   * A reference to the browser's window.history object.
+   * A wrapper to the browser's window.history object.
    */
   module.provider('gaHistory', function() {
-
-    this.$get = function($window) {
-      return $window.history;
+    this.$get = function($window, $sniffer, $document) {
+      var doc = $document[0];
+      var isFullScreen = function() {
+        return (doc.fullscreenElement || doc.msFullscreenElement ||
+            doc.mozFullScreen || doc.webkitIsFullScreen);
+      };
+      return {
+        pushState: function(data, title, url) {
+          if ($sniffer.history) {
+            $window.history.pushState(data, title, url);
+          }
+        },
+        replaceState: function(data, title, url) {
+          if ($sniffer.history && !isFullScreen()) {
+            $window.history.replaceState(data, title, url);
+          }
+        }
+      };
     };
-
   });
 
   /**
@@ -35,7 +49,7 @@ goog.require('ga_urlutils_service');
    * is updated.
    */
   module.provider('gaPermalink', function() {
-    this.$get = function($window, $rootScope, $sniffer, gaHistory, gaUrlUtils) {
+    this.$get = function($window, $rootScope, gaHistory, gaUrlUtils) {
 
         var Permalink = function(b, p) {
           var base = b;
@@ -108,12 +122,7 @@ goog.require('ga_urlutils_service');
           if (lastHref !== newHref) {
             $rootScope.$evalAsync(function() {
               lastHref = newHref;
-              if ($sniffer.history && !(document.fullscreenElement ||
-                  document.msFullscreenElement ||
-                  document.mozFullScreen ||
-                  document.webkitIsFullScreen)) {
-                gaHistory.replaceState(null, '', newHref);
-              }
+              gaHistory.replaceState(null, '', newHref);
               $rootScope.$broadcast('gaPermalinkChange');
             });
           }
