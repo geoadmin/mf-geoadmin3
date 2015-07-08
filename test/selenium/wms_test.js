@@ -45,9 +45,12 @@ var runTest = function(cap, driver, target) {
   // Was the URL in the address bar adapted?
   if(!(cap.browser == "IE" && cap.browser_version == "9.0")) {
     // Check if url is adapted to WMS layer
-    driver.getCurrentUrl().then(function(url) {
-      assert.ok(url.indexOf(QUERYSTRING_WMS) > -1);
-    });
+    driver.wait(function() {
+      return driver.getCurrentUrl().then(function(url) {
+        assert.ok(url.indexOf(QUERYSTRING_WMS) > -1);
+        return true;
+      });
+    }, 1000);
   }
 
   // Go to the WMS layer page
