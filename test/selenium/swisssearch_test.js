@@ -3,8 +3,8 @@
 var webdriver = require('browserstack-webdriver');
 var assert = require('assert');
 
-var QUERYSTRING_OF_RARON = "X=128180.88&Y=630227.13";
-var QUERYSTRING_MOOS = "X=128630.00&Y=627650.00";
+var QUERYSTRING_OF_RARON = "X=128114.80&Y=629758.13&zoom=10";
+var QUERYSTRING_MOOS = "X=128630.00&Y=627650.00&zoom=10";
 
 var runTest = function(cap, driver, target){
   //swissearch parameter with multiple results
@@ -12,7 +12,7 @@ var runTest = function(cap, driver, target){
   //wait until topics related stuff is loaded. We know this when catalog is there
   driver.findElement(webdriver.By.xpath("//a[contains(text(), 'Grundlagen und Planung')]"));
   driver.findElement(webdriver.By.xpath("//*[contains(text(), 'Raron')]"));
-  driver.findElement(webdriver.By.xpath("//*[contains(text(), 'Flugfeld')]")).click();
+  driver.findElement(webdriver.By.xpath("//*[contains(text(), ', Flugplatz')]")).click();
   driver.findElement(webdriver.By.xpath("//a[contains(@href, '" + QUERYSTRING_OF_RARON + "')]"));
   //parameter should disappear when selection is done
   driver.findElement(webdriver.By.xpath("//*[@id='toptools']//a[contains(@ng-href,'http')]")).getAttribute("ng-href").then(function(val) {
