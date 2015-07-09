@@ -288,9 +288,12 @@ itemscope itemtype="http://schema.org/WebApplication"
     </div>
 
 % if device != 'embed':
-    <div ng-cloak translate-cloak id="pulldown" ng-show="!globals.offline" ng-class="{'selection-and-catalog-shown': (globals.catalogShown && globals.selectionShown)}">
-      <div id="pulldown-content" class="content ${"in" if device == "desktop" else "collapse"}">
-       
+    <div  id="pulldown" ng-cloak translate-cloak ng-show="!globals.offline"
+          ng-class="{
+            'selection-and-catalog-shown': (globals.catalogShown && globals.selectionShown),
+            'ga-pulldown-shown': globals.pulldownShown
+          }">
+      <div id="pulldown-content" class="content">
         <!-- Share -->
         <div class="panel">
           <a id="shareHeading" class="panel-heading accordion-toggle collapsed"
@@ -433,7 +436,8 @@ itemscope itemtype="http://schema.org/WebApplication"
 
         <!-- Selection -->
         <div class="panel" ng-hide="globals.isDrawActive">
-          <a id="selectionHeading" class="panel-heading accordion-toggle light ${"collapsed" if device!= "desktop" else ""}" data-toggle="collapse" href="#selection">
+          <a id="selectionHeading" class="panel-heading accordion-toggle light"
+             data-toggle="collapse" href="#selection">
             <i class="visible-collapsed icon-caret-right"></i>
             <i class="hidden-collapsed icon-caret-down"></i>
             <span translate>layer_selection</span>
@@ -442,7 +446,8 @@ itemscope itemtype="http://schema.org/WebApplication"
             <span ga-help="34,35,36" ga-help-options="{showOnHover:true}"></span>
 % endif
           </a>
-          <div id="selection"  ga-collapsible-observe="globals.selectionShown" class="${"in" if device == "desktop" else ""}">
+          <div id="selection" class="collapse in"
+               ga-collapsible-observe="globals.selectionShown">
             <div class="panel-body panel-body-wide" ga-layermanager ga-layermanager-map="map">
             </div>
           </div>
@@ -483,15 +488,13 @@ itemscope itemtype="http://schema.org/WebApplication"
         </div> <!-- .panel -->
   % endif
       </div> <!-- #pulldown-content -->
-  % if device == 'desktop':
-      <button id="menu-button" type="button" data-toggle="collapse" data-target="#pulldown-content" class="toggle btn btn-default">
-  % elif device == 'mobile':
-      <button type="button" data-toggle="collapse" data-target="#pulldown-content" class="toggle btn btn-default collapsed">
-  % endif
+      <button id="menu-button" class="btn btn-default"
+              data-toggle="collapse" data-target="#pulldown-content"
+              ga-collapsible-show="globals.pulldownShown">
         <span class="hidden-collapsed">
+          <i class="icon-remove"></i>
           <i class="icon-caret-up"></i>
           <span translate>close_menu</span>
-          <span class="phone-toggle">x</span>
         </span>
         <span class="visible-collapsed">
           <i class="icon-reorder"></i>
@@ -677,15 +680,6 @@ itemscope itemtype="http://schema.org/WebApplication"
           document.body.innerHTML = "The map.geo.admin.ch embed page must be used in an iframe."
         }
       }, false);
-    </script>
-% else:
-    <script>
-      $(window).on('load', function() {
-        //If screen is smaller than 1024, we start with menu closed.
-        if ($(window).width() <= 1024) {
-          $('#menu-button').trigger('click');
-        }
-      });
     </script>
 % endif
 

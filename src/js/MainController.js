@@ -95,11 +95,10 @@ goog.require('ga_storage_service');
       gaFeaturesPermalinkManager($scope.map);
 
       gaRealtimeLayersManager($scope.map);
-
+      
       var initWithPrint = /print/g.test(gaPermalink.getParams().widgets);
       var initWithFeedback = /feedback/g.test(gaPermalink.getParams().widgets);
       var initWithDraw = /draw/g.test(gaPermalink.getParams().widgets) || !!(gaPermalink.getParams().adminId);
-      
       gaPermalink.deleteParam('widgets');
 
       $rootScope.$on('gaTopicChange', function(event, topic) {
@@ -110,8 +109,7 @@ goog.require('ga_storage_service');
 
         $scope.topicId = topic.id;
         var showCatalog = topic.showCatalog;
-        if (gaBrowserSniffer.mobile ||
-            isWindowTooSmall()) {
+        if (gaBrowserSniffer.mobile || isWindowTooSmall()) {
           showCatalog = false;
         }
         if (!initWithPrint) {
@@ -159,11 +157,12 @@ goog.require('ga_storage_service');
         ios: gaBrowserSniffer.ios,
         offline: gaNetworkStatus.offline,
         embed: gaBrowserSniffer.embed,
-        feedbackPopupShown: false,
+        pulldownShown: !(gaBrowserSniffer.mobile || $($window).width() <= 1024),
         printShown: false,
+        feedbackPopupShown: false,
         isShareActive: false,
         isDrawActive: false,
-        isFeatureTree: false,
+        isFeatureTreeActive: false,
         isSwipeActive: false
       };
 
@@ -275,7 +274,7 @@ goog.require('ga_storage_service');
           }
         });
       }
-      
+
       // An appcache update is available.
       if ($window.applicationCache) { // IE9
         $window.applicationCache.addEventListener('updateready', function(e) {
