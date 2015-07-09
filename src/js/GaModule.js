@@ -48,7 +48,6 @@ goog.require('ga_share_controller');
 goog.require('ga_print_controller');
 goog.require('ga_print_directive');
 goog.require('ga_translation_controller');
-goog.require('ga_topic_controller');
 goog.require('ga_feedback_controller');
 goog.require('ga_contextpopup_controller');
 goog.require('ga_search_controller');
@@ -110,7 +109,6 @@ goog.require('ga_query_controller');
     'ga_print_controller',
     'ga_print_directive',
     'ga_translation_controller',
-    'ga_topic_controller',
     'ga_feedback_controller',
     'ga_contextpopup_controller',
     'ga_search_controller',

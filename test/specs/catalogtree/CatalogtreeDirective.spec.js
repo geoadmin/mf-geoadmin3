@@ -63,8 +63,7 @@ describe('ga_catalogtree_directive', function() {
       $rootScope.$digest();
 
       $translate.use('en');
-      $rootScope.$broadcast('gaLayersChange',
-          {labelsOnly: false, topicId: 'sometopic'});
+      $rootScope.$broadcast('gaTopicChange',{id: 'sometopic'});
     });
   });
 

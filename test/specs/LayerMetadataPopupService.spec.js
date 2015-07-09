@@ -2,19 +2,18 @@ describe('ga_layer_metadata_popup_service', function() {
   var gaLayerMetadataPopup,
       $httpBackend,
       $rootScope,
-      $translate;
+      $translate,
+      gaTopic;
 
   beforeEach(inject(function($injector) {
     gaLayerMetadataPopup = $injector.get('gaLayerMetadataPopup');
     $httpBackend = $injector.get('$httpBackend');
     $rootScope = $injector.get('$rootScope');
     $translate = $injector.get('$translate');
+    gaTopic = $injector.get('gaTopic');
 
-    var expectedUrlLayersConfig = 'http://example.com/sometopic?lang=somelang';
-    $httpBackend.whenGET(expectedUrlLayersConfig).respond({});
 
     $translate.use('somelang');
-    $rootScope.$broadcast('gaTopicChange', { id: 'sometopic' });
     $rootScope.$digest();
   }));
 

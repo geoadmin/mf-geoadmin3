@@ -144,9 +144,6 @@ itemscope itemtype="http://schema.org/WebApplication"
     </div>
 % if device == 'embed':
     <div style="display: none;">
-      <div class="topic-container" ng-controller="GaTopicController">
-        <div ga-topic ga-topic-ui="select" ga-topic-options="options" ga-topic-map="map"></div>
-      </div>
       <div ng-controller="GaTranslationController">
         <div ga-translation-selector ga-translation-selector-options="options"></div>
       </div>
@@ -407,8 +404,8 @@ itemscope itemtype="http://schema.org/WebApplication"
               <span translate>choose_theme</span>
               <i class="icon-chevron-sign-right"></i>
             </a>
-            <div class="dropdown-menu" ng-controller="GaTopicController">
-              <div ga-topic ga-topic-ui="list" ga-topic-options="options" ga-topic-map="map"></div>
+            <div class="dropdown-menu">
+              <div ga-topic ga-topic-ui="list"></div>
             </div>
           </div>
   % endif
@@ -427,9 +424,9 @@ itemscope itemtype="http://schema.org/WebApplication"
           <div id="catalog" class="collapse" ng-controller="GaCatalogtreeController">
   
   % if device == 'mobile':
-            <label class="topic-container" ng-controller="GaTopicController">
+            <label class="topic-container">
               <span translate>change_topic</span>
-              <div ga-topic ga-topic-ui="select" ga-topic-options="options" ga-topic-map="map"></div>
+              <div ga-topic ga-topic-ui="select"></div>
             </label>
   % endif
             <div class="panel-body panel-body-wide accordion-inner-catalog" ng-if="!globals.offline" ga-catalogtree ga-catalogtree-map="map" ga-catalogtree-options="options">
@@ -729,6 +726,10 @@ itemscope itemtype="http://schema.org/WebApplication"
 
           gaLayersProvider.legendUrlTemplate =
               gaGlobalOptions.apiUrl + '/rest/services/{Topic}/MapServer/{Layer}/legend?lang={Lang}';
+        });
+        module.config(function(gaTopicProvider, gaGlobalOptions) {
+          gaTopicProvider.topicsUrl = gaGlobalOptions.cachedApiUrl + '/rest/services';
+          gaTopicProvider.thumbnailUrlTemplate = gaGlobalOptions.resourceUrl + 'img/{Topic}.jpg';
         });
 
         module.config(function(gaExportKmlProvider, gaGlobalOptions) {

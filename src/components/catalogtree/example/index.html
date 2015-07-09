@@ -152,7 +152,7 @@
             $scope.map = map;
             var loadedBackground = false;
 
-            $scope.$on('gaLayersChange', function(event, data) {
+            $scope.$on('gaLayersChange', function(event, labelsOnly) {
               if (!loadedBackground) {
                 var layer = gaLayers.getOlLayerById('ch.swisstopo.pixelkarte-farbe');
                 layer.background = true;

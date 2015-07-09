@@ -808,25 +808,24 @@ a .ga-icon-separator {
       .rotate(180deg);
     }
   }
-}
-.dropdown-menu[ng-controller] {
-  top: 0;
-  left: 100%;
-  margin: 0;
-  transition: top 1s ease;
+  .dropdown-menu {
+    top: 0;
+    left: 100%;
+    margin: 0;
+    transition: top 1s ease;
 
-  @media (max-width: @screen-phone) {
-    right: 0px;
-    left: auto;
-    top: 40px;
+    @media (max-width: @screen-phone) {
+      right: 0px;
+      left: auto;
+      top: 40px;
+    }
+
+    // We move the dropdown menu on top
+    @media (min-height: @screen-sm-max-height) and (max-height: 700px) and (min-width: 910px) {
+      top: -155px;
+    }
   }
-
-  // We move the dropdown menu on top
-  @media (min-height: @screen-sm-max-height) and (max-height: 700px) and (min-width: 910px) {
-    top: -155px;
-  }
 }
-
 #pulldown-content {
   .box-shadow(6px 6px 12px rgba(0, 0, 0, 0.175));
   border-right: 1px solid #bdbdbd;

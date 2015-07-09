@@ -1,7 +1,8 @@
-<div>
-  <div class="ga-topic-item" ng-class="{'ga-topic-active': topic.id == activeTopic}" ng-repeat="topic in
-  topics" ng-click="setActiveTopic(topic.id)" data-original-title="{{topic.tooltip | translate}}">
-    <div translate>{{topic.id}}</div>
-    <div class="ga-topics-sprite ga-topics-sprite-{{topic.id}}"></div>
-  </div>
+<div class="ga-topic-item"
+     ng-repeat="topic in ::topics"
+     ng-click="setActiveTopic(topic)"
+     ng-class="{'ga-topic-active': topic == activeTopic}"
+     data-original-title="{{topic.tooltip | translate}}">
+  <div translate>{{::topic.id}}</div>
+  <div class="ga-topics-sprite ga-topics-sprite-{{::topic.id}}"></div>
 </div>

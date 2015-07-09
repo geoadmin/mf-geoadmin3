@@ -3,13 +3,15 @@ goog.provide('ga_catalogtree_directive');
 goog.require('ga_catalogtree_service');
 goog.require('ga_map_service');
 goog.require('ga_permalink');
+goog.require('ga_topic_service');
 (function() {
 
   var module = angular.module('ga_catalogtree_directive', [
     'ga_catalogtree_service',
     'ga_map_service',
     'ga_permalink',
-    'pascalprecht.translate'
+    'pascalprecht.translate',
+    'ga_topic_service'
   ]);
 
   /**
@@ -17,7 +19,7 @@ goog.require('ga_permalink');
    */
   module.directive('gaCatalogtree',
       function($http, $q, $translate, $rootScope, gaPermalink, gaMapUtils,
-          gaCatalogtreeMapUtils, gaLayers, gaLayerFilters) {
+          gaCatalogtreeMapUtils, gaLayers, gaLayerFilters, gaTopic) {
 
         return {
           restrict: 'A',
@@ -48,7 +50,6 @@ goog.require('ga_permalink');
             };
           },
           link: function(scope, element, attrs) {
-            var currentTopicId;
             scope.openIds = [];
             scope.layers = scope.map.getLayers().getArray();
 
@@ -79,47 +80,7 @@ goog.require('ga_permalink');
               }
             };
 
-            // This function determines if the layers pre-selected in the
-            // catalog tree should be added to the map.
-            //
-            // If the map already includes non-background layers then we do
-            // not add the pre-selected layers to the map. In that case we
-            // just visit the tree leaves and set "selectedOpen" as
-            // appropriate.
-            var assurePreselectedLayersLoaded = function(oldTree) {
-              var i, olLayer, mapLayer, selectedLayers,
-                  addDefaultLayersToMap = true,
-                  map = scope.map,
-                  layers = scope.layers;
-              if (!angular.isDefined(oldTree)) {
-                for (i = 0; i < layers.length; i++) {
-                  if (!layers[i].background) {
-                    addDefaultLayersToMap = false;
-                  }
-                }
-              }
-              if (addDefaultLayersToMap) {
-                selectedLayers = gaLayers.getSelectedLayers();
-                //Add in reverse order
-                for (i = selectedLayers.length - 1; i >= 0; i--) {
-                  olLayer = gaLayers.getOlLayerById(selectedLayers[i]);
-                  if (angular.isDefined(olLayer)) {
-                    //If it's already in the map, remove it and
-                    //add it to assure it's on top.
-                    mapLayer = gaMapUtils.getMapOverlayForBodId(map,
-                        selectedLayers[i]);
-                    if (angular.isDefined(mapLayer)) {
-                      map.removeLayer(mapLayer);
-                    }
-                    map.addLayer(olLayer);
-                  }
-                }
-              }
-              return addDefaultLayersToMap;
-            };
-
             // This function
-            // - assures the preselected layers are loaded
             // - checks the currently active layers of the map
             //   and marks them selected in the catalog
             var handleTree = function(newTree, oldTree) {
@@ -127,25 +88,28 @@ goog.require('ga_permalink');
                   layers = scope.layers,
                   leaves = {};
 
-              if (!assurePreselectedLayersLoaded(oldTree)) {
-                visitTree(newTree, function(leaf) {
-                  leaf.selectedOpen = false;
-                  leaves[leaf.layerBodId] = leaf;
-                }, angular.noop);
-                for (i = 0; i < layers.length; ++i) {
-                  layer = layers[i];
-                  bodId = layer.bodId;
-                  if (!layer.background && leaves.hasOwnProperty(bodId)) {
-                    leaves[bodId].selectedOpen = true;
-                  }
+              visitTree(newTree, function(leaf) {
+                leaf.selectedOpen = false;
+                leaves[leaf.layerBodId] = leaf;
+              }, angular.noop);
+              for (i = 0; i < layers.length; ++i) {
+                layer = layers[i];
+                bodId = layer.bodId;
+                if (!layer.background && leaves.hasOwnProperty(bodId)) {
+                  leaves[bodId].selectedOpen = true;
                 }
               }
             };
 
-            var updateCatalogTree = function() {
+            var updateCatalogTree = function(labelsOnly) {
+              // If topics are not yet loaded, we do nothing
+              if (!gaTopic.get()) {
+                return;
+              }
               var url = scope.options.catalogUrlTemplate
-                  .replace('{Topic}', currentTopicId);
-              return $http.get(url, {
+                  .replace('{Topic}', gaTopic.get().id);
+              $http.get(url, {
+                cache: true,
                 params: {
                   'lang': $translate.use()
                 }
@@ -153,18 +117,6 @@ goog.require('ga_permalink');
                 var newTree = response.data.results.root;
                 var oldTree = scope.root;
                 scope.root = newTree;
-                return {oldTree: oldTree, newTree: newTree};
-              }, function(reason) {
-                scope.root = undefined;
-                return $q.reject(reason);
-              });
-            };
-
-            scope.$on('gaLayersChange', function(event, data) {
-              currentTopicId = data.topicId;
-              updateCatalogTree().then(function(trees) {
-                var oldTree = trees.oldTree;
-                var newTree = trees.newTree;
                 // Strategy to handle permalink on layers change:
                 // - When first called (initial page load), we make
                 //   sure that all categegories specified in the
@@ -174,12 +126,12 @@ goog.require('ga_permalink');
                 //   remove/reset the permalink parameter
                 if (!angular.isDefined(oldTree)) {
                   openCategoriesInPermalink(newTree);
-                } else if (!data.labelsOnly) {
+                } else if (!labelsOnly) {
                   scope.openIds.length = 0;
                   gaPermalink.deleteParam('catalogNodes');
                 }
                 //update Tree
-                if (data.labelsOnly) {
+                if (labelsOnly) {
                   if (angular.isDefined(oldTree)) {
                     retainTreeState(newTree, oldTree);
                   }
@@ -187,7 +139,18 @@ goog.require('ga_permalink');
                   handleTree(newTree, oldTree);
                 }
                 $rootScope.$broadcast('gaCatalogChange');
+
+              }, function(reason) {
+                scope.root = undefined;
+                return $q.reject(reason);
               });
+            };
+
+            scope.$on('gaTopicChange', function(event, data) {
+              updateCatalogTree(false);
+            });
+            $rootScope.$on('$translateChangeEnd', function(event, data) {
+              updateCatalogTree(true);
             });
 
             scope.layerFilter = gaLayerFilters.selected;

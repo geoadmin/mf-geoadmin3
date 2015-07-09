@@ -41,7 +41,7 @@ describe('ga_backgroundselector_directive', function() {
       $compile(element)($rootScope);
       $rootScope.$digest();
 
-      $rootScope.$broadcast('gaLayersChange', {labelsOnly: false});
+      $rootScope.$broadcast('gaTopicChange', {id: 'sometopic'});
       $rootScope.$digest();
       rootScope = $rootScope;
     });

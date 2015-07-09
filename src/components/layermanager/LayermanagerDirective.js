@@ -323,8 +323,8 @@ goog.require('ga_map_service');
           });
         };
         // Change layers label when topic changes
-        scope.$on('gaLayersChange', function(evt, data) {
-          removeNonTopicLayers(data.topicId);
+        scope.$on('gaTopicChange', function(evt, newTopic) {
+          removeNonTopicLayers(newTopic.id);
 
           map.getLayers().forEach(function(olLayer) {
             if (scope.isBodLayer(olLayer)) {
