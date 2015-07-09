@@ -5,7 +5,7 @@
 #            section in config file)
 #
 if [ -x /etc/init.d/apache2 ]; then
-    sudo /etc/init.d/apache2 start
+    sudo /etc/init.d/apache2 restart
 fi
 
 exit 0
