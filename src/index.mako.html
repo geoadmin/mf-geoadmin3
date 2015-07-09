@@ -322,7 +322,10 @@ itemscope itemtype="http://schema.org/WebApplication"
           </a>
           <div id="print" class="panel-collapse collapse">
             <div class="panel-body" ng-controller="GaPrintController">
-              <div ga-print></div>
+              <div ga-print
+                   ga-print-map="map"
+                   ga-print-options="options"
+                   ga-print-active="globals.printShown"></div>
             </div>
           </div>
         </div>  <!-- .panel -->

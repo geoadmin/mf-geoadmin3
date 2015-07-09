@@ -114,6 +114,8 @@ goog.require('ga_storage_service');
         }
         if (!initWithPrint) {
           $scope.globals.catalogShown = showCatalog;
+        } else {
+          $scope.globals.printShown = true;
         }
         initWithPrint = false;
         if (initWithFeedback) {
