@@ -122,8 +122,7 @@ class TestFileView(TestsBase):
         self.assertNotEqual(new_content, modified_content)
 
     def test_file_ie9_fix(self):
-        # No cotent-type should normally result in error
-        self.testapp.post('/files', URLENCODED_KML, headers={'X-SearchServer-Authorized': 'true'}, status=415)
+        # No content-type default to 'application/vnd.google-earth.kml+xml'
+        self.testapp.post('/files', VALID_KML, headers={'X-SearchServer-Authorized': 'true'}, status=200)
         # Having IE9 user-agent makes it working again
-        self.testapp.post('/files', URLENCODED_KML, headers={'X-SearchServer-Authorized': 'true',
-                                                             'User-Agent': 'MSIE 9.0'}, status=200)
+        self.testapp.post('/files', URLENCODED_KML, headers={'X-SearchServer-Authorized': 'true', 'User-Agent': 'MSIE 9.0'}, status=200)
