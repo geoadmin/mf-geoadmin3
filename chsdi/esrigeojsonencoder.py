@@ -5,7 +5,6 @@ import datetime
 import functools
 from operator import add
 
-from simplejson import dumps as _dumps
 import geojson
 import json
 from geojson.codec import GeoJSONEncoder
@@ -207,7 +206,7 @@ class EsriGeoJSON(dict):
 
         return d
 
-dumps = functools.partial(_dumps, cls=EsriGeoJSONEncoder, use_decimal=True)
+dumps = functools.partial(json.dumps, cls=EsriGeoJSONEncoder, use_decimal=True)
 
 
 def loads(obj):
