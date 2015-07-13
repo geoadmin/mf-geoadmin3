@@ -566,7 +566,6 @@ ngeo.Print.prototype.encodeVectorStylePoint_ =
     if (!goog.isNull(strokeStyle)) {
       this.encodeVectorStyleStroke_(symbolizer, strokeStyle);
     }
-    symbolizers.push(symbolizer);
   } else if (imageStyle instanceof ol.style.Icon) {
     var src = imageStyle.getSrc();
     if (goog.isDef(src)) {
@@ -579,6 +578,10 @@ ngeo.Print.prototype.encodeVectorStylePoint_ =
         symbolizer.rotation = goog.math.toDegrees(rotation);
       }
     }
+  }
+
+  if (goog.isDef(symbolizer)) {
+    symbolizers.push(symbolizer);
   }
 };
 
