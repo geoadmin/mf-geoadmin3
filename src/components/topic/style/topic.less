@@ -3,6 +3,94 @@ div[ga-topic] {
   padding: 0px 4px;
   transition: width 1s ease, height 1s ease;
 
+  .ga-topics-sprite {
+    margin-left: auto;
+    margin-right: auto;
+    width : 110px;
+    height: 60px;
+    background: url('../../../img/topics.png');
+  }
+
+  .ga-topics-sprite-blw {
+    background-position: 0 0;
+  }
+
+  .ga-topics-sprite-are {
+    background-position: -110px 0;
+  }
+
+  .ga-topics-sprite-bafu {
+    background-position: -220px 0;
+  }
+
+  .ga-topics-sprite-swisstopo {
+    background-position: -330px 0;
+  }
+
+  .ga-topics-sprite-kgs {
+    background-position: 0 -60px;
+  }
+
+  .ga-topics-sprite-funksender {
+    background-position: -110px -60px;
+  }
+
+  .ga-topics-sprite-nga {
+    background-position: -220px -60px;
+  }
+
+  .ga-topics-sprite-ivs {
+    background-position: -330px -60px;
+  }
+
+  .ga-topics-sprite-sachplan {
+    background-position: 0 -120px;
+  }
+
+  .ga-topics-sprite-geol {
+    background-position: -110px -120px;
+  }
+
+  .ga-topics-sprite-luftbilder {
+    background-position: -220px -120px;
+  }
+
+  .ga-topics-sprite-wildruhezonen {
+    background-position: -330px -120px;
+  }
+
+  .ga-topics-sprite-vu {
+    background-position: 0 -180px;
+  }
+
+  .ga-topics-sprite-aviation {
+    background-position: -110px -180px;
+  }
+
+  .ga-topics-sprite-gewiss {
+    background-position: -220px -180px;
+  }
+
+  .ga-topics-sprite-inspire {
+    background-position: -330px -180px;
+  }
+
+  .ga-topics-sprite-ech {
+    background-position: 0 -240px;
+  }
+
+  .ga-topics-sprite-mgdi {
+    background-position: -110px -240px;
+  }
+
+  .ga-topics-sprite-dev {
+    background-position: -220px -240px;
+  }
+
+  .ga-topics-sprite-emapis {
+    background-position: -220px -240px;
+  }
+
   & > div {
     float: left;
     margin: 2px;
@@ -29,7 +117,7 @@ div[ga-topic] {
     & > div {
       width: 140px; 
       
-      img {
+      .ga-topics-sprite {
         display: none;
       }
     }
@@ -39,4 +127,3 @@ div[ga-topic] {
 select[ga-topic] {
   width: 100%;
 }
-

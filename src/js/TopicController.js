@@ -7,7 +7,6 @@ goog.provide('ga_topic_controller');
       function($scope, gaGlobalOptions) {
           $scope.options = {
             defaultTopicId: gaGlobalOptions.defaultTopicId,
-            thumbnailUrlTemplate: gaGlobalOptions.resourceUrl + 'img/{Topic}.jpg',
             url: gaGlobalOptions.cachedApiUrl + '/rest/services'
           };
       });
