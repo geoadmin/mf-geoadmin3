@@ -188,7 +188,13 @@ describe('ga_map_service', function() {
   });
 
   describe('gaLayersPermalinkManager', function() {
-    var manager, permalink;
+    var manager, permalink, gaTopic, params, layersOpacityPermalink,
+        layersVisPermalink, layersTimePermalink, layersPermalink,
+        topic, topicLoaded = {
+          id: 'sometopic',
+          backgroundLayers: ['bar'],
+          selectedLayers: ['foo', 'bar']
+        };
 
     beforeEach(function() {
       map = new ol.Map({});
@@ -202,6 +208,58 @@ describe('ga_map_service', function() {
             if (key == 'background') {
               return false;
             }
+          },
+          getOlLayerById: function(bodId) {
+            var layer = new ol.layer.Tile();
+            layer.bodId = bodId;
+            layer.displayInLayerManager = true;
+            return layer;
+          },
+          getSelectedLayers: function() {
+            if (gaTopic.get()) {
+              return gaTopic.get().selectedLayers;
+            }
+          }
+        });
+        $provide.value('gaTopic', {
+          get: function() {
+            return topic;
+          }
+        });
+
+        $provide.value('gaPermalink', {
+          getParams: function() {
+            params = {
+              layers: layersPermalink,
+              layers_opacity: layersOpacityPermalink,
+              layers_visibility: layersVisPermalink,
+              layers_timestamp: layersTimePermalink,
+              mobile: false
+            };
+            return params;
+          },
+          updateParams: function(params) {
+            layersPermalink = params.layers || layersPermalink;
+            layersOpacityPermalink = params.layers_opacity || layersOpacityPermalink;
+            layersVisPermalink = params.layers_visibility || layersVisPermalink;
+            layersTimePermalink = params.layers_timestamp || layersTimePermalink;
+          },
+          deleteParam: function(param) {
+            if (param == 'layers') {
+              layersPermalink = undefined;
+            } else if (param == 'layers_opacity') {
+              layersOpacityPermalink = undefined;
+            } else if (param == 'layers_visibility') {
+              layersVisPermalink = undefined;
+            } else if (param == 'layers_timestamp') {
+              layersTimePermalink = undefined;
+            }
+            delete params[param];
+          }
+        });
+        $provide.value('gaLang', {
+          get: function() {
+            return 'somelang';
           }
         });
       });
@@ -359,8 +417,69 @@ describe('ga_map_service', function() {
         $rootScope.$digest();
         expect(permalink.getParams().layers_visibility).to.be(undefined);
       }));
+
+      // For next test
+      topic = topicLoaded;
     });
 
+    describe('add preselected layers of a topic', function() {
+
+      describe('if topic is loaded beforelayers', function() {
+
+        it('adds layers if no layers parameter', inject(function($rootScope) {
+          expect(permalink.getParams().layers).to.be(undefined);
+          $rootScope.$broadcast('gaTopicChange', gaTopic.get());
+          $rootScope.$broadcast('gaLayersChange', {});
+          expect(map.getLayers().getLength()).to.be(2);
+          $rootScope.$digest();
+          expect(permalink.getParams().layers).to.be('bar,foo');
+          permalink.deleteParam('layers');
+         
+          // For next test 
+          layersPermalink = 'ged';
+        }));
+
+        it('doesn t add layers if the layers parameter is defined', inject(function($rootScope) {
+          expect(permalink.getParams().layers).to.be('ged');
+          $rootScope.$broadcast('gaTopicChange', gaTopic.get());
+          $rootScope.$broadcast('gaLayersChange', {});
+          expect(map.getLayers().getLength()).to.be(1);
+          $rootScope.$digest();
+          expect(permalink.getParams().layers).to.be('ged');
+
+          // For next test
+          topic = undefined;
+          layersPermalink = undefined;
+        }));
+      });
+
+      describe('if topic is loaded after layers', function() {
+
+        it('adds layers if no layers parameter', inject(function($rootScope) {
+          expect(permalink.getParams().layers).to.be(undefined);
+          $rootScope.$broadcast('gaLayersChange', {});
+          topic = topicLoaded;
+          $rootScope.$broadcast('gaTopicChange', gaTopic.get());
+          expect(map.getLayers().getLength()).to.be(2);
+          $rootScope.$digest();
+          expect(permalink.getParams().layers).to.be('bar,foo');
+
+          // For next test
+          topic = undefined;
+          layersPermalink = 'ged';
+        }));
+
+        it('doesn t add layers if the layers parameter is defined', inject(function($rootScope) {
+          expect(permalink.getParams().layers).to.be('ged');
+          $rootScope.$broadcast('gaLayersChange', {});
+          topic = topicLoaded;
+          $rootScope.$broadcast('gaTopicChange', gaTopic.get());
+          expect(map.getLayers().getLength()).to.be(1);
+          $rootScope.$digest();
+          expect(permalink.getParams().layers).to.be('ged');
+        }));
+      });
+    });
   });
   
   describe('gaKml', function() {

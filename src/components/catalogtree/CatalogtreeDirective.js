@@ -4,6 +4,7 @@ goog.require('ga_catalogtree_service');
 goog.require('ga_map_service');
 goog.require('ga_permalink');
 goog.require('ga_topic_service');
+goog.require('ga_translation_service');
 (function() {
 
   var module = angular.module('ga_catalogtree_directive', [
@@ -11,7 +12,8 @@ goog.require('ga_topic_service');
     'ga_map_service',
     'ga_permalink',
     'pascalprecht.translate',
-    'ga_topic_service'
+    'ga_topic_service',
+    'ga_translation_service'
   ]);
 
   /**
@@ -19,7 +21,7 @@ goog.require('ga_topic_service');
    */
   module.directive('gaCatalogtree',
       function($http, $q, $translate, $rootScope, gaPermalink, gaMapUtils,
-          gaCatalogtreeMapUtils, gaLayers, gaLayerFilters, gaTopic) {
+          gaCatalogtreeMapUtils, gaLayers, gaLayerFilters, gaTopic, gaLang) {
 
         return {
           restrict: 'A',
@@ -100,18 +102,26 @@ goog.require('ga_topic_service');
                 }
               }
             };
-
-            var updateCatalogTree = function(labelsOnly) {
+            var lastUrlUsed;
+            var updateCatalogTree = function() {
               // If topics are not yet loaded, we do nothing
               if (!gaTopic.get()) {
                 return;
               }
+              var labelsOnly = false;
               var url = scope.options.catalogUrlTemplate
                   .replace('{Topic}', gaTopic.get().id);
+
+              // If the topic has not changed that means we need to update only
+              // labels
+              if (lastUrlUsed == url) {
+                labelsOnly = true;
+              }
+              lastUrlUsed = url;
               $http.get(url, {
                 cache: true,
                 params: {
-                  'lang': $translate.use()
+                  'lang': gaLang.get()
                 }
               }).then(function(response) {
                 var newTree = response.data.results.root;
@@ -146,15 +156,10 @@ goog.require('ga_topic_service');
               });
             };
 
-            scope.$on('gaTopicChange', function(event, data) {
-              updateCatalogTree(false);
-            });
-            $rootScope.$on('$translateChangeEnd', function(event, data) {
-              updateCatalogTree(true);
-            });
+            scope.$on('gaTopicChange', updateCatalogTree);
+            $rootScope.$on('$translateChangeEnd', updateCatalogTree);
 
             scope.layerFilter = gaLayerFilters.selected;
-
             scope.$watchCollection('layers | filter:layerFilter',
                 function(layers) {
               var layerBodIds;

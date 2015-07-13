@@ -5,18 +5,8 @@ goog.provide('ga_translation_controller');
 
   module.controller('GaTranslationController',
       function($scope, gaGlobalOptions) {
-
         $scope.options = {
-          langs: [
-            {label: 'DE', value: 'de'},
-            {label: 'FR', value: 'fr'},
-            {label: 'IT', value: 'it'},
-            {label: 'RM', value: 'rm'},
-            {label: 'EN', value: 'en'}
-          ],
-          fallbackCode: gaGlobalOptions.translationFallbackCode
+          langs: ['de', 'fr', 'it', 'rm', 'en']
         };
-
       });
-
 })();

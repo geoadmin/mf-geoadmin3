@@ -142,13 +142,6 @@ itemscope itemtype="http://schema.org/WebApplication"
     <div ng-controller="GaSeoController">
       <div ga-seo ga-seo-options="options" ga-seo-map="map"></div>
     </div>
-% if device == 'embed':
-    <div style="display: none;">
-      <div ng-controller="GaTranslationController">
-        <div ga-translation-selector ga-translation-selector-options="options"></div>
-      </div>
-    </div>
-% endif
 % if device != 'embed':
     <div ng-cloak translate-cloak id="header" class="navbar navbar-fixed-top">
       <div id="logo" class="pull-left">
@@ -211,7 +204,7 @@ itemscope itemtype="http://schema.org/WebApplication"
       <div ga-scale-line ga-scale-line-map="map"></div>
   % endif
 
-      <div id='buttonGroup'>
+      <div id='buttonGroup' ng-cloak translate-cloak>
   % if device != 'embed':
         <div ga-geolocation ga-geolocation-map="map"></div>
   % endif
@@ -236,10 +229,10 @@ itemscope itemtype="http://schema.org/WebApplication"
     </div>
 % endif
 
-    <div ng-cloak translate-cloak
-         ga-background-selector
+    <div ng-cloak ga-background-selector
          ga-background-selector-map="map"
-         ng-hide="globals.embed || globals.offline"></div>
+         ng-hide="globals.embed || globals.offline">
+    </div>
 
 % if device != 'embed':
     <div ng-cloak translate-cloak id="footer" class="navbar navbar-fixed-bottom">

@@ -68,14 +68,10 @@ goog.require('ga_topic_service');
           var updateBgLayer = function(topic) {
             // Determine the current background layer. Strategy:
             //
-            // If this is the first gaLayersChange event we receive then
+            // On gaLayersChange event we receive then
             // we look at the permalink. If there's a bgLayer parameter
             // in the permalink we use that as the initial background
             // layer.
-            //
-            // If it's not the first gaLayersChange event, or if there's
-            // no bgLayer parameter in the permalink, then we use the
-            // first background layer of the background layers array.
             //
             // Specific use case when we go offline to online, in this use
             // case we want to keep the current bg layer.
@@ -94,12 +90,9 @@ goog.require('ga_topic_service');
 
           };
 
-          scope.$on('gaLayersChange', function(event, isLabelsOnly) {
-            // If it's not a language change event
-            if (isLabelsOnly) {
-              return;
-            }
+          var dereg = scope.$on('gaLayersChange', function(event, newLayers) {
             updateBgLayer();
+            dereg();
           });
 
           scope.$on('gaTopicChange', function(event, newTopic) {
