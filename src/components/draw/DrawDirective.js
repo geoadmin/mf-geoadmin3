@@ -792,7 +792,7 @@ goog.require('ga_permalink');
               }
             });
           };
-          var saveDebounced = gaDebounce.debounce(save, 133, false, false);
+          var saveDebounced = gaDebounce.debounce(save, 2000, false, false);
 
           $rootScope.$on('$translateChangeEnd', function() {
             if (layer) {
