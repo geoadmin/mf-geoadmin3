@@ -1,4 +1,4 @@
-<div ng-if"!options.useTemporaryLayer" class="ga-draw-info-save">
+<div ng-if="!options.useTemporaryLayer" class="ga-draw-info-save">
   <span class="ga-success" translate="{{statusMsgId}}"></span>
 </div>
 <div class="ga-draw-buttons">
@@ -71,7 +71,7 @@
     
     <label ng-if="!useTextStyle">
       <span translate>{{'modify_description'}}:</span> 
-      <textarea class="form-control" ng-model="options.description"/>
+      <textarea class="form-control" ng-model="options.description"></textarea>
     </label>
 
     <label ng-if="useColorStyle">
