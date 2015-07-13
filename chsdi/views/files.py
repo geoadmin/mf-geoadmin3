@@ -21,14 +21,15 @@ from chsdi.models.clientdata_dynamodb import get_dynamodb_table, get_bucket
 from chsdi.lib.decorators import requires_authorization, validate_kml_input
 
 
-def _add_item(id, file_id=False):
+def _add_item(id, file_id=False, bucketname='public.geo.admin.ch'):
     table = get_dynamodb_table(table_name='geoadmin-file-storage')
     try:
         table.put_item(
             data={
                 'adminId': id,
                 'fileId': file_id,
-                'timestamp': time.strftime('%Y-%m-%d %X', time.localtime())
+                'timestamp': time.strftime('%Y-%m-%d %X', time.localtime()),
+                'bucket': bucketname
             }
         )
     except Exception as e:
@@ -36,7 +37,7 @@ def _add_item(id, file_id=False):
     return True
 
 
-def _save_item(admin_id, file_id=None, last_updated=None):
+def _save_item(admin_id, file_id=None, last_updated=None, bucketname='public.geo.admin.ch'):
     table = get_dynamodb_table(table_name='geoadmin-file-storage')
     item = None
     if last_updated is not None:
@@ -49,7 +50,8 @@ def _save_item(admin_id, file_id=None, last_updated=None):
                 data={
                     'adminId': admin_id,
                     'fileId': file_id,
-                    'timestamp': timestamp
+                    'timestamp': timestamp,
+                    'bucket': bucketname
                 }
             )
         except Exception as e:
@@ -170,7 +172,7 @@ class FileView(object):
             except Exception as e:
                 raise exc.HTTPInternalServerError('Error while configuring S3 key (%s) %s' % (self.file_id, e))
             try:
-                _save_item(self.admin_id, file_id=self.file_id, last_updated=last_updated)
+                _save_item(self.admin_id, file_id=self.file_id, last_updated=last_updated, bucketname=self.bucket.name)
             except Exception as e:
                 raise exc.HTTPInternalServerError('Cannot create file on Dynamodb (%s)' % e)
 
@@ -187,7 +189,7 @@ class FileView(object):
             except Exception as e:
                 raise exc.HTTPInternalServerError('Error while updating S3 key (%s) %s' % (self.key.key, e))
             try:
-                _save_item(self.admin_id, last_updated=last_updated)
+                _save_item(self.admin_id, last_updated=last_updated, bucketname=self.bucket.name)
             except Exception as e:
                 raise exc.HTTPInternalServerError('Cannot update file on Dynamodb (%s) %s' % (self.file_id, e))
 
