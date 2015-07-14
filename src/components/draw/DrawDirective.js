@@ -781,7 +781,7 @@ goog.require('ga_permalink');
             scope.statusMsgId = 'draw_file_saving';
             switch (scope.drawingSave) {
               case 'server':
-                saveS3();
+                saveServer();
                 break;
               case 'custom':
                 webdavSave();
@@ -794,7 +794,7 @@ goog.require('ga_permalink');
           };
           var saveDebounced = gaDebounce.debounce(save, 133, false, false);
 
-          var saveS3 = function() {
+          var saveServer = function() {
             var kmlString = getKmlString();
             var id = layer.adminId ||
                 gaFileStorage.getFileIdFromFileUrl(layer.url);
