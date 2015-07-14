@@ -936,7 +936,7 @@ goog.require('ga_permalink');
                     useImageVector: gaKml.useImageVector(fileSize),
                     zoomToExtent: true
                   });
-                scope.userMessage = $translate.instant('draw_load_succes');
+                scope.userMessage = $translate.instant('draw_load_success');
                 }
               }).error(function(data, status) {
                 scope.userMessage = getWebdavErrorMessage(
