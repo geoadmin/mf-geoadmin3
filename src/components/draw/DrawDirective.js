@@ -354,11 +354,6 @@ goog.require('ga_permalink');
             ol.Observable.unByKey(unDblClick);
             while (unWatch.length) {
               unWatch.pop()();
-            if (unChangeFeatures.length > 0) {
-              unChangeFeatures.forEach(function(unChangeFeature) {
-                ol.Observable.unByKey(unChangeFeature);
-              });
-              unChangeFeatures = [];
             }
 
             // Deactivate the tool
@@ -918,6 +913,11 @@ goog.require('ga_permalink');
               case 409:
                 message += 'Cannot save KML here.';
                 break;
+              case 0: // Browser OPTIONS requests failed
+                message += 'Browser handshake failed. Check with the ' +
+                        'administrator of the server if CORS requests are ' +
+                        'activated and if the server answer with the 200 ' +
+                        'status code for unauthenticated OPTIONS request.';
             }
 
             return message;

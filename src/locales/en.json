@@ -110,12 +110,9 @@
 	"draw_text_instructions": "Create label",
 	"draw_text_placeholder": "no title",
 	"draw_tooltip": "Draw on the map",
-<<<<<<< HEAD
 	"draw_type_marker": "Line / surface",
-=======
 	"draw_save_error": "Fail to save the drawing",
 	"draw_save_success": "Drawing successfully saved",
->>>>>>> Add translations
 	"drop_invalid_url": "URL is not valid.",
 	"drop_me_here": "Drop KML file here",
 	"ech": "Geocatalog",
