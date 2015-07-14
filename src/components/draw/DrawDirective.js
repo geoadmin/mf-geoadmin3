@@ -250,7 +250,9 @@ goog.require('ga_permalink');
               // If there is a layer loaded from public.admin.ch, we use it for
               // modification.
               map.getLayers().forEach(function(item) {
-                if (gaMapUtils.isStoredKmlLayer(item)) {
+                var webdavUrl = scope.webdav.url;
+                if (gaMapUtils.isStoredKmlLayer(item) ||
+                        gaMapUtils.isWebdavStoredKmlLayer(item, webdavUrl)) {
                   layer = item;
                 }
               });
@@ -297,7 +299,10 @@ goog.require('ga_permalink');
             // DnD ...) and the currentlayer has no features, we define a
             // new layer.
             unLayerAdd = map.getLayers().on('add', function(evt) {
-              if (gaMapUtils.isStoredKmlLayer(evt.element) &&
+              var webdavUrl = scope.webdav.url;
+              var added = evt.element;
+              if ((gaMapUtils.isStoredKmlLayer(added) ||
+                      gaMapUtils.isWebdavStoredKmlLayer(added, webdavUrl)) &&
                   layer.getSource().getFeatures().length == 0 &&
                   !useTemporaryLayer) {
                 defineLayerToModify();

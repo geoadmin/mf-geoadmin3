@@ -1271,6 +1271,18 @@ goog.require('ga_urlutils_service');
           return this.isKmlLayer(olLayerOrId) && regex.test(id);
         },
 
+        // Test if a KML comes from a webdav service
+        // @param olLayer An ol layer or an id of a layer
+        // @param webdavUrl The url of the webdav server the layer should belong
+        isWebdavStoredKmlLayer : function(olLayerOrId, webdavUrl) {
+          var id = olLayerOrId;
+          if (id instanceof ol.layer.Layer) {
+            id = olLayerOrId.id;
+          }
+          var regex = new RegExp(webdavUrl + '$');
+          return this.isKmlLayer(olLayerOrId) && regex.test(id);
+        },
+
         // Test if a layer is an external WMS layer added by th ImportWMS tool
         // or permalink
         // @param olLayerOrId  An ol layer or an id of a layer
