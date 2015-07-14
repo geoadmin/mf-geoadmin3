@@ -171,7 +171,7 @@ viewer_url = get_viewer_url(request, params)
 % if 'contact_web' not in c['attributes']:
 <tr>
   <th class="cell-left">${_('link')} Toposhop</th>
-  <td><a href="http://www.toposhop.admin.ch/${lang}/shop/satair/lubis_1?ext=1&pics=${c['featureId']},${imgtype},${unicode(c['attributes']['ort']).strip()},${c['attributes']['x']},${c['attributes']['y']},${toposhopscan}" target="toposhop">Toposhop</a></td>
+  <td><a href="http://www.toposhop.admin.ch/${lang}/shop/satair/lubis_1?ext=1&pics=${c['featureId']},${imgtype},${c['attributes']['ort'] | trim},${c['attributes']['x']},${c['attributes']['y']},${toposhopscan}" target="toposhop">Toposhop</a></td>
 </tr>
 % endif
 % if 'contact_web' in c['attributes']:
@@ -266,7 +266,7 @@ viewer_url = get_viewer_url(request, params)
 % if 'contact_web' not in c['attributes']:
   <tr class="chsdi-no-print">
     <th class="cell-left">${_('link')} Toposhop</th>
-    <td><a href="http://www.toposhop.admin.ch/${lang}/shop/satair/lubis_1?ext=1&pics=${c['featureId']},${imgtype},${str(c['attributes']['ort']).strip()},${c['attributes']['x']},${c['attributes']['y']},${toposhopscan}" target="toposhop">Toposhop</a></td>
+    <td><a href="http://www.toposhop.admin.ch/${lang}/shop/satair/lubis_1?ext=1&pics=${c['featureId']},${imgtype},${c['attributes']['ort'] | trim},${c['attributes']['x']},${c['attributes']['y']},${toposhopscan}" target="toposhop">Toposhop</a></td>
   </tr>
 % endif
 % if 'contact_web' in c['attributes']:
