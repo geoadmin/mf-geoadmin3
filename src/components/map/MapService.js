@@ -1267,7 +1267,7 @@ goog.require('ga_urlutils_service');
           if (id instanceof ol.layer.Layer) {
             id = olLayerOrId.id;
           }
-          var regex = /https?:\/\/public\..*(\.admin\.ch|\.bgdi\.ch)\/.*/;
+          var regex = new RegExp(gaGlobalOptions.publicUrl + '/.*');
           return this.isKmlLayer(olLayerOrId) && regex.test(id);
         },
 
