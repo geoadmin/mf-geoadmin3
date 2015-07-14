@@ -30,8 +30,8 @@ goog.require('ga_permalink');
   module.directive('gaDraw',
     function($timeout, $translate, $window, $rootScope, gaBrowserSniffer,
         gaDefinePropertiesForLayer, gaDebounce, gaFileStorage, gaLayerFilters,
-        gaExportKml, gaMapUtils, gaPermalink, gaUrlUtils,
-        $document, gaMeasure) {
+        gaExportKml, gaKml, gaMapUtils, gaPermalink, gaUrlUtils,
+        $document, gaMeasure, $http) {
 
       var createDefaultLayer = function(map, useTemporaryLayer) {
         var dfltLayer = new ol.layer.Vector({
@@ -174,6 +174,10 @@ goog.require('ga_permalink');
           scope.isMeasureActive = false;
           scope.options.isProfileActive = false;
           scope.statusMsgId = '';
+          scope.layers = scope.map.getLayers().getArray();
+          scope.layerFilter = gaLayerFilters.selected;
+          scope.webdav = {open: true};
+          scope.drawingSave = "server";
 
           // Add select interaction
           var select = new ol.interaction.Select({
@@ -246,7 +250,9 @@ goog.require('ga_permalink');
               // If there is a layer loaded from public.admin.ch, we use it for
               // modification.
               map.getLayers().forEach(function(item) {
-                if (gaMapUtils.isStoredKmlLayer(item)) {
+                var webdavUrl = scope.webdav.url;
+                if (gaMapUtils.isStoredKmlLayer(item) ||
+                        gaMapUtils.isWebdavStoredKmlLayer(item, webdavUrl)) {
                   layer = item;
                 }
               });
@@ -259,7 +265,6 @@ goog.require('ga_permalink');
                 source.on('changefeature', saveDebounced),
                 source.on('removefeature', saveDebounced)
               ];
-
             }
 
             // Attach the snap interaction to the new layer's source
@@ -294,7 +299,10 @@ goog.require('ga_permalink');
             // DnD ...) and the currentlayer has no features, we define a
             // new layer.
             unLayerAdd = map.getLayers().on('add', function(evt) {
-              if (gaMapUtils.isStoredKmlLayer(evt.element) &&
+              var webdavUrl = scope.webdav.url;
+              var added = evt.element;
+              if ((gaMapUtils.isStoredKmlLayer(added) ||
+                      gaMapUtils.isWebdavStoredKmlLayer(added, webdavUrl)) &&
                   layer.getSource().getFeatures().length == 0 &&
                   !useTemporaryLayer) {
                 defineLayerToModify();
@@ -598,6 +606,8 @@ goog.require('ga_permalink');
                 });
               }
               map.removeLayer(layer);
+
+              webdavDelete();
             }
           };
 
@@ -764,16 +774,31 @@ goog.require('ga_permalink');
 
 
           ////////////////////////////////////
-          // create/update the file on s3
+          // create/update the file
           ////////////////////////////////////
-          var save = function(evt) {
-            if (layer.getSource().getFeatures().length == 0) {
+          var save = function() {
+            if (layer.getSource().getFeatures().length === 0) {
               //if no features to save do nothing
               return;
             }
             scope.statusMsgId = 'draw_file_saving';
-            var kmlString = gaExportKml.create(layer,
-                map.getView().getProjection());
+            switch (scope.drawingSave) {
+              case 'server':
+                saveServer();
+                break;
+              case 'custom':
+                webdavSave();
+                break;
+              case 'no':
+              default:
+                scope.statusMsgId = '';
+                break;
+            }
+          };
+          var saveDebounced = gaDebounce.debounce(save, 133, false, false);
+
+          var saveServer = function() {
+            var kmlString = getKmlString();
             var id = layer.adminId ||
                 gaFileStorage.getFileIdFromFileUrl(layer.url);
             gaFileStorage.save(id, kmlString,
@@ -792,13 +817,31 @@ goog.require('ga_permalink');
               }
             });
           };
-          var saveDebounced = gaDebounce.debounce(save, 133, false, false);
+
+          var webdavSave = function() {
+            // user and password are optional, webdav can be anonymous
+            if (scope.webdav.url) {
+              var req = getWebdavRequest('PUT');
+              $http(req).success(function() {
+                scope.statusMsgId = 'draw_file_saved';
+              }).error(function(data, status) {
+                scope.userMessage = getWebdavErrorMessage(
+                  $translate.instant('draw_save_error'), status);
+              });
+            } else {
+              scope.userMessage = $translate.instant('draw_give_url');
+            }
+          };
 
           $rootScope.$on('$translateChangeEnd', function() {
             if (layer) {
               layer.label = $translate.instant('draw');
             }
           });
+
+          var getKmlString = function() {
+            return gaExportKml.create(layer, map.getView().getProjection());
+          };
 
 
 
@@ -830,6 +873,90 @@ goog.require('ga_permalink');
             dropdown.css('left', bt.offset().left -
                 (dropdown.outerWidth() - bt.outerWidth()) + 'px');
           });
+
+          // Focus on the first input.
+          var setFocus = function() {
+            $timeout(function() {
+              var inputs = element.find('input, select');
+              if (inputs.length > 0) {
+                inputs[0].focus();
+              }
+            });
+          };
+
+          var getWebdavRequest = function(method) {
+            method = method || 'GET';
+
+            return {
+                method: method,
+                url: scope.webdav.url,
+                withCredentials: true,
+                headers: {
+                  Authorization: 'Basic ' + btoa(scope.webdav.user + ':' + scope.webdav.password),
+                  'Content-Type': 'application/vnd.google-earth.kml+xml; charset=utf-8'
+                },
+                data: getKmlString()
+              };
+          };
+
+          var getWebdavErrorMessage = function(message, status) {
+            message = message || '';
+            message += '. ';
+            switch (status) {
+              case 404:
+                message += 'Not found';
+                break;
+              case 405:
+              case 401:
+                message += 'Not Allowed';
+                break;
+              case 409:
+                message += 'Cannot save KML here.';
+                break;
+              case 0: // Browser OPTIONS requests failed
+                message += 'Browser handshake failed. Check with the ' +
+                        'administrator of the server if CORS requests are ' +
+                        'activated and if the server answer with the 200 ' +
+                        'status code for unauthenticated OPTIONS request.';
+            }
+
+            return message;
+          };
+
+          scope.webdavLoad = function() {
+            if (scope.webdav.url) {
+              var req = getWebdavRequest('GET');
+
+              $http(req).success(function(data, status, headers) {
+                var fileSize = headers('content-length');
+                if (gaKml.isValidFileContent(data) &&
+                  gaKml.isValidFileSize(fileSize)) {
+                  gaKml.addKmlToMap(map, data, {
+                    url: scope.webdav.url,
+                    useImageVector: gaKml.useImageVector(fileSize),
+                    zoomToExtent: true
+                  });
+                scope.userMessage = $translate.instant('draw_load_success');
+                }
+              }).error(function(data, status) {
+                scope.userMessage = getWebdavErrorMessage(
+                  $translate.instant('draw_load_error'), status);
+              });
+            }
+          };
+
+          var webdavDelete = function() {
+            if (scope.webdav.url) {
+              var req = getWebdavRequest('DELETE');
+
+              $http(req).success(function() {
+                scope.userMessage = $translate.instant('draw_delete_success');
+              }).error(function(data, status) {
+                scope.userMessage = getWebdavErrorMessage(
+                  $translate.instant('draw_delete_error'), status);
+              });
+            }
+          };
         }
       };
   });

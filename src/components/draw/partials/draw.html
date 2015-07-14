@@ -2,6 +2,36 @@
   <span class="ga-success" translate="{{statusMsgId}}"></span>
 </div>
 <div class="ga-draw-buttons">
+  <label>
+    <input type="radio" name="drawingSave" value="no" ng-model="drawingSave">
+    Disable auto-save on server
+  </label>
+  <label>
+    <input type="radio" name="drawingSave" value="server" ng-model="drawingSave" checked>
+    Save automatically on our server (default)
+  </label>
+  <label>
+    <input type="radio" name="drawingSave" value="custom" ng-model="drawingSave">
+    Save automatically on a custom sever
+  </label>
+  <div class="panel-collapse collapse in panel panel-default"
+       aria-expanded="true"
+       ng-if="drawingSave == 'custom'"
+       >
+    <div ng-if="webdav.open">
+      <label translate>Url</label>
+      <input type="url" ng-model="webdav.url" />
+      <label translate>Username</label>
+      <input type="text" ng-model="webdav.user" />
+      <label translate>Password</label>
+      <input type="password" ng-model="webdav.password" />
+      <p>Your drawing will automatically be saved at the given url</p>
+      <button class="btn btn-default"
+              ng-click="webdavLoad()"
+              translate>Load</button>
+      <div>{{userMessage}}</div>
+    </div>
+  </div>
   <button ng-repeat="tool in options.tools"
           ng-click="toggleTool($event, tool)"
           ng-class="{
@@ -119,7 +149,7 @@
        ga-profile-options="options.profileOptions"></div>
 
 </div>
-<div class="ga-draw-interaction-share" ng-if="adminShortenUrl">
+<div class="ga-draw-interaction-share" ng-if="adminShortenUrl && drawingSave == 'server'">
   <div class="ga-share-permalink">
     <div class="form-group">
       <label translate>{{'draw_share_user_link'}}:</label>
@@ -144,5 +174,4 @@
 
   </div>
 </div>
-<div class="ga-draw-disclaimer" ng-if="!options.useTemporaryLayer" translate>share_file_disclaimer</div>
-
+<div class="ga-draw-disclaimer" ng-if="!options.useTemporaryLayer && drawingSave == 'server'" translate>share_file_disclaimer</div>
