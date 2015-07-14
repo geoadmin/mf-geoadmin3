@@ -166,8 +166,6 @@ goog.require('ga_permalink');
           var unDblClick, unLayerAdd, unLayerRemove, unSourceEvents = [],
               deregPointerMove, deregFeatureChange, unLayerVisible,
               unWatch = [], unDrawEvts = [];
-          var layer, draw, lastActiveTool, snap;
-          var unLayerRemove, unDrawEnd, unChangeFeature;
           var useTemporaryLayer = scope.options.useTemporaryLayer || false;
           var helpTooltip, distTooltip, areaTooltip;
           var map = scope.map;
@@ -776,9 +774,8 @@ goog.require('ga_permalink');
           // create/update the file on s3
           ////////////////////////////////////
           var save = function() {
-            if (layer.getSource().getFeatures().length === 0 ||
-                    !scope.autosave) {
-              //if no features to save or user ask not to save do nothing
+            if (layer.getSource().getFeatures().length === 0) {
+              //if no features to save do nothing
               return;
             }
             scope.statusMsgId = 'draw_file_saving';
