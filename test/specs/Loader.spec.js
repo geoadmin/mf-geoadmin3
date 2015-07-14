@@ -5,7 +5,7 @@ beforeEach(function() {
   module(function($provide) {
     var location = {
       host: 'map.admin.ch',
-      hostname: 'map.geo.admin.ch', 
+      hostname: 'map.geo.admin.ch',
       href: 'http://map.geo.admin.ch/?lang=en&topic=ech&bgLayer=ch.swisstopo.pixelkarte-farbe&X=207277.79&Y=690852.63&zoom=1',
       origin: 'http://map.geo.admin.ch',
       pathname: '/',
@@ -36,8 +36,9 @@ beforeEach(function() {
       ],
       defaultTopicId: 'sometopic',
       translationFallbackCode: 'somelang',
-      defaultExtent: [420000, 30000,900000, 350000],
-      defaultResolution: 500.0
+      defaultResolution: 500.0,
+      publicUrlRegexp: /^https?:\/\/public\..*(bgdi|admin)\.ch.*/,
+      adminUrlRegexp: /^(ftp|http|https):\/\/(.*(\.bgdi|\.geo\.admin)\.ch)/
     });
   });
 
@@ -84,7 +85,7 @@ beforeEach(function() {
     gaProfileProvider.profileUrl =
         gaGlobalOptions.apiUrl + '/rest/services/profile.json';
   });
-  
+
   module(function(gaQueryProvider, gaGlobalOptions) {
     gaQueryProvider.dpUrl = gaGlobalOptions.resourceUrl +
         'lib/bootstrap-datetimepicker.min.js';

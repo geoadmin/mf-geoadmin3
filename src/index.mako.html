@@ -686,6 +686,8 @@ itemscope itemtype="http://schema.org/WebApplication"
           mapUrl : location.origin + '${apache_base_path}',
           apiUrl : location.protocol + '${api_url}',
           publicUrl : location.protocol + '${public_url}',
+          publicUrlRegexp: new RegExp('${public_url_regexp}'),
+          adminUrlRegexp: new RegExp('${admin_url_regexp}'),
           cachedApiUrl: location.protocol + '${api_url}' + cacheAdd,
           resourceUrl: location.origin + pathname + '${versionslashed}',
           ogcproxyUrl : location.protocol + '${api_url}' + '/ogcproxy?url=',

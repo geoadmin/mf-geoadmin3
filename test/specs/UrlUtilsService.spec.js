@@ -48,6 +48,16 @@ describe('ga_urlutils_service', function() {
     expect(gaUrlUtils.isThirdPartyValid('https://wms.geo.admin.ch')).to.be(false);
   });
 
+  it('verifies public valid', function() {
+    expect(gaUrlUtils.isPublicValid('http://public.geo.admin.ch')).to.be(true);
+    expect(gaUrlUtils.isPublicValid('http://public.geo.bgdi.ch')).to.be(true);
+    expect(gaUrlUtils.isPublicValid('http://public.geo.admin.ch/auie')).to.be(true);
+    expect(gaUrlUtils.isPublicValid('http://public.geo.bgdi.ch/auie')).to.be(true);
+    expect(gaUrlUtils.isPublicValid('http://heig.ch')).to.be(false);
+    expect(gaUrlUtils.isPublicValid('http://bgdi.ch')).to.be(false);
+    expect(gaUrlUtils.isPublicValid('ftp://wms.geo.admin.ch')).to.be(false);
+  });
+
   it('appends parameter string', function() {
     var url = 'http://wms.admin.ch';
     url = gaUrlUtils.append(url, 'SERVICE=WMS');

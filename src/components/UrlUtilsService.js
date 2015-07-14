@@ -5,7 +5,7 @@ goog.provide('ga_urlutils_service');
 
   module.provider('gaUrlUtils', function() {
 
-    this.$get = function() {
+    this.$get = function(gaGlobalOptions) {
 
       var UrlUtils = function() {
 
@@ -14,12 +14,6 @@ goog.provide('ga_urlutils_service');
         var URL_REGEXP =
             /^(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?$/;
 
-        var URL_ADMIN_REGEXP =
-            /^(ftp|http|https):\/\/(.*(\.bgdi|\.geo\.admin)\.ch)/;
-
-        var URL_PUBLIC_REGEXP =
-            /^https?:\/\/public\..*(bgdi|geo\.admin)\.ch.*/;
-
         // Test validity of a URL
         this.isValid = function(url) {
           return (!!url && url.length > 0 && URL_REGEXP.test(url));
@@ -27,12 +21,18 @@ goog.provide('ga_urlutils_service');
 
         // Test if the URL comes from a friendly site
         this.isAdminValid = function(url) {
-          return (this.isValid(url) && URL_ADMIN_REGEXP.test(url));
+          return (this.isValid(url) &&
+                  gaGlobalOptions.adminUrlRegexp.test(url));
         };
 
         // Test if the URL comes from a third party site
         this.isThirdPartyValid = function(url) {
-          return !this.isAdminValid(url) || URL_PUBLIC_REGEXP.test(url);
+          return !this.isAdminValid(url) ||
+                  this.isPublicValid(url);
+        };
+
+        this.isPublicValid = function(url) {
+          return gaGlobalOptions.publicUrlRegexp.test(url);
         };
 
         this.transformIfAgnostic = function(url) {
