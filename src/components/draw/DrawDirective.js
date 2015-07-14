@@ -470,10 +470,6 @@ goog.require('ga_permalink');
                 featureToAdd = new ol.Feature(
                     new ol.geom.LineString(lineCoords));
               }
-            if (tool.id === 'delete') {
-              webdavDelete();
-              return;
-            }
 
               // Update feature properties
               if (!featureToAdd.getId() && lastActiveTool) {
@@ -610,6 +606,8 @@ goog.require('ga_permalink');
                 });
               }
               map.removeLayer(layer);
+
+              webdavDelete();
             }
           };
 
