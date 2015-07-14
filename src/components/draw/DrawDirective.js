@@ -871,7 +871,7 @@ goog.require('ga_permalink');
             if (scope.webdav.url) {
               var req = getWebdavRequest('PUT');
               $http(req).success(function() {
-                scope.userMessage = $translate.instant('draw_save_success');
+                scope.statusMsgId = 'draw_file_saved';
               }).error(function(data, status) {
                 scope.userMessage = getWebdavErrorMessage(
                   $translate.instant('draw_save_error'), status);
