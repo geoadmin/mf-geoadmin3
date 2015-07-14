@@ -771,7 +771,7 @@ goog.require('ga_permalink');
 
 
           ////////////////////////////////////
-          // create/update the file on s3
+          // create/update the file
           ////////////////////////////////////
           var save = function() {
             if (layer.getSource().getFeatures().length === 0) {
@@ -813,6 +813,21 @@ goog.require('ga_permalink');
                 updateShortenUrl(layer.adminId);
               }
             });
+          };
+
+          var webdavSave = function() {
+            // user and password are optional, webdav can be anonymous
+            if (scope.webdav.url) {
+              var req = getWebdavRequest('PUT');
+              $http(req).success(function() {
+                scope.statusMsgId = 'draw_file_saved';
+              }).error(function(data, status) {
+                scope.userMessage = getWebdavErrorMessage(
+                  $translate.instant('draw_save_error'), status);
+              });
+            } else {
+              scope.userMessage = $translate.instant('draw_give_url');
+            }
           };
 
           $rootScope.$on('$translateChangeEnd', function() {
@@ -864,21 +879,6 @@ goog.require('ga_permalink');
                 inputs[0].focus();
               }
             });
-          };
-
-          var webdavSave = function() {
-            // user and password are optional, webdav can be anonymous
-            if (scope.webdav.url) {
-              var req = getWebdavRequest('PUT');
-              $http(req).success(function() {
-                scope.statusMsgId = 'draw_file_saved';
-              }).error(function(data, status) {
-                scope.userMessage = getWebdavErrorMessage(
-                  $translate.instant('draw_save_error'), status);
-              });
-            } else {
-              scope.userMessage = $translate.instant('draw_give_url');
-            }
           };
 
           var getWebdavRequest = function(method) {
