@@ -15,7 +15,7 @@ from chsdi.lib import mortonspacekey as msk
 
 class Search(SearchValidation):
 
-    LIMIT = 50
+    LOCATION_LIMIT = 50
     LAYER_LIMIT = 30
     FEATURE_LIMIT = 20
 
@@ -76,7 +76,7 @@ class Search(SearchValidation):
     def _swiss_search(self):
         if len(self.searchText) < 1 and self.bbox is None:
             raise exc.HTTPBadRequest('You must at least provide a bbox or a searchText parameter')
-        limit = self.limit if self.limit and self.limit <= self.LIMIT else self.LIMIT
+        limit = self.limit if self.limit and self.limit <= self.LOCATION_LIMIT else self.LOCATION_LIMIT
         self.sphinx.SetLimits(0, limit)
 
         # Define ranking mode
@@ -366,7 +366,7 @@ class Search(SearchValidation):
                 res['attrs'].pop('layerBodId', None)
             res['attrs'].pop('feature_id', None)
             if origin == 'address':
-                if nb_address < 20:
+                if nb_address < self.LOCATION_LIMIT:
                     if not self.bbox or self._bbox_intersection(self.bbox, res['attrs']['geom_st_box2d']):
                         res['attrs'] = self._parse_address(res['attrs'])
                         self.results['results'].append(res)
