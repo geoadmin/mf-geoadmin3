@@ -110,7 +110,10 @@ for idx, layersConfig in enumerate(getLayersConfigs()):
             timestamps = layersConfig.timestamp.split(',')
             total_timestamps += len(timestamps)
             current_timestamp = timestamps[0]
-            image_format = layersConfig.arr_all_formats.split(',')[0]
+            if bod_layer_id == 'ch.swisstopo.zeitreihen':
+                image_format = 'png'
+            else:
+                image_format = layersConfig.arr_all_formats.split(',')[0]
             server_layer_name = bod_layer_id
 
             current_timestamps[bod_layer_id] = current_timestamp
