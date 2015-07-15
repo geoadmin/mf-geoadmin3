@@ -33,9 +33,16 @@ var printTest = require('./print_test.js');
 //okay we will start the script!
 console.log("Starting Browserstack script!");
 
-//for every browser config we want to run all the tests
-browsers.capabilities.forEach(function(cap){
+// Start full test only for one browser (use Chrome for the print)
+var RunFullTests = function(cap) {
+  if(cap.browser == "Chrome" && cap.browser_version == "43.0" && cap.os_version == "7") {
+    return true;
+  }
+  return false;
+}
 
+//run tests for all browser (3 last version of IE, Chrome, Firefox) 
+browsers.capabilities.forEach(function(cap){
   //we build the driver only once for all tests per browser.
   var driver = new webdriver.Builder().
     usingServer('http://hub.browserstack.com/wd/hub').
@@ -44,21 +51,19 @@ browsers.capabilities.forEach(function(cap){
     
   //show a link for each browser + version for visual results.
   driver.getSession().then(function(sess){
-    console.log("running test for: " + cap.browser + "(" + cap.browser_version + ") on " + cap.os + " " + cap.os_version);
+    console.log("running all tests for: " + cap.browser + "(" + cap.browser_version + ") on " + cap.os + " " + cap.os_version);
     console.log("  See more results or https://www.browserstack.com/automate/builds/dddb1242fb9f3ffe297b057e6da2ea964b4caf1a/sessions/"+sess.id_);
   });
 
   //run all the tests
   try{
     startTest.runTest(cap, driver, cmd.target);
-    //we don't run all these tests for IE9. Very unstable on BS
-    if(!(cap.browser == "IE" && cap.browser_version == "9.0")) {
+    if (RunFullTests(cap)) {
       searchTest.runTest(cap, driver, cmd.target);
       swisssearchTest.runTest(cap, driver, cmd.target);
       mobileTest.runTest(cap, driver, cmd.target);
       kmlTest.runTest(cap, driver, cmd.target);
       wmsTest.runTest(cap, driver, cmd.target);
-      
       //Keep the print test last, as this results in a downloadpdf command,
       //which leaves the page in a browser dependant state
       printTest.runTest(cap, driver, cmd.target);
