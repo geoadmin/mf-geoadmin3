@@ -170,7 +170,8 @@ goog.require('ga_storage_service');
       isShareActive: false,
       isDrawActive: false,
       isFeatureTreeActive: false,
-      isSwipeActive: false
+      isSwipeActive: false,
+      isModeAdvanced: false
     };
 
     // Deactivate all tools when draw is opening

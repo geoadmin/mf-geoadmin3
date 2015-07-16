@@ -1,18 +1,9 @@
-<div>
-  <div>{{currentTopic | translate}}
-  </div>
-
-  <div ng-show="advancedMode">
-    <div ng-if="!globals.offline" ga-catalogtree ga-catalogtree-map="map" ga-catalogtree-options="options">
-    </div>
-  </div>
-
-  <div ng-show="!advancedMode">
-    <div ga-layermanager ga-layermanager-map="map">
-    </div>
-    <div ga-search ga-search-map="map" ga-search-options="options"
-        ga-search-focused="focused">
-    </div>
-  </div>
+<div ga-search ga-search-map="map" ga-search-options="options"
+     ga-search-focused="focused">
 </div>
+<ul>
+  <li ng-repeat="l in layers">
+    {{l}}
+  </li>
+</ul>
 

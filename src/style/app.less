@@ -34,6 +34,7 @@
 @import "../components/translation/style/translation.less";
 
 
+
 @header-height: 89;
 @footer-height: 26;
 @small-header-height: 50;
@@ -802,12 +803,12 @@ a .ga-icon-separator {
 }
 
 .theme-toggle {
-  position: relative;
+  position: absolute;
+  right: 0px;
+
   .dropdown-toggle {
-    float: right;
     padding-right: 1em;
-    height: 40px;
-    line-height: 40px;
+    line-height: 28px;
   }
   a i {
     .transition(all .20s ease);
@@ -1040,6 +1041,41 @@ ul.panel-body-wide {
   margin-bottom: 0;
 }
 
+// ****** CHOOSE MAP
+#chooseMap {
+  width: 100%;
+
+  .ga-topic-label {
+    width: auto;
+    padding: 5px 0 5px 10px;
+    background-color: #eeeeee;
+    font-weight: bold;
+  }
+}
+
+.ga-choose-map-mode {
+  label {
+    float: right;
+    margin: 6px 0;
+    cursor: pointer
+  }
+  label:last-child {
+    /*border-top-right-radius: 0;
+    border-bottom-right-radius: 0;*/
+  }
+  label:first-child {
+    margin-right: 5px;
+    /*border-top-left-radius: 0;
+    border-bottom-left-radius: 0;*/
+  }
+  .ga-mode-selected {
+    background-color: white;
+    font-weight: normal;
+  }
+  input {
+    display: none;
+  }
+}
 // ****** CATALOG TREE
 #catalog {
   .panel-body-wide > ul, .panel-body-wide {
