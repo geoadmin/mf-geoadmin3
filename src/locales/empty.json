@@ -345,5 +345,8 @@
   "draw_snap_first_point_measure": "",
   "draw_back": "",
   "draw_share_admin_link": "",
-  "draw_share_user_link": ""
+  "draw_share_user_link": "",
+  "choose_map": "",
+  "mode_simple": "",
+  "mode_advanced": ""
 }
