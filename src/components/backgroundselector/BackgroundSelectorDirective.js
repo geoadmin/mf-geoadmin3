@@ -24,6 +24,7 @@ goog.require('ga_permalink');
           scope.isBackgroundSelectorClosed = true;
           var mobile = gaBrowserSniffer.mobile;
           scope.desktop = !gaBrowserSniffer.embed && !mobile;
+          scope.backgroundLayers = [];
 
           if (mobile) {
             elt.addClass('ga-bg-mobile');
@@ -35,11 +36,7 @@ goog.require('ga_permalink');
           var isOfflineToOnline = false;
           var currentTopic;
 
-          var defaultBgOrder = [
-              {id: 'ch.swisstopo.swissimage', label: 'bg_luftbild'},
-              {id: 'ch.swisstopo.pixelkarte-farbe', label: 'bg_pixel_color'},
-              {id: 'ch.swisstopo.pixelkarte-grau', label: 'bg_pixel_grey'},
-              {id: 'voidLayer', label: 'void_layer'}];
+          var defaultBgOrder = [];
 
           scope.backgroundLayers = defaultBgOrder.slice(0);
 
@@ -65,6 +62,21 @@ goog.require('ga_permalink');
             }
           }
 
+         scope.$on('gaLayersLoaded', function() {
+           defaultBgOrder = [];
+            gaLayers.getBackgroundLayers().forEach(function(bgLayer) {
+              defaultBgOrder.push({
+                id: bgLayer.id,
+                label: bgLayer.label
+              });
+            });
+            defaultBgOrder.push({
+              id: 'voidLayer',
+              label: 'void_layer'
+            });
+            scope.backgroundLayers = defaultBgOrder.slice(0);
+          });
+
           scope.$on('gaLayersChange', function(event, data) {
 
             // Determine the current background layer. Strategy:
@@ -87,7 +99,12 @@ goog.require('ga_permalink');
             }
             if ((!bgLayer && !scope.currentLayer) ||
               (currentTopic && (currentTopic != data.topicId))) {
-              bgLayer = gaLayers.getBackgroundLayers()[0].id;
+              var bgLayers = gaLayers.getBackgroundLayers();
+              if (bgLayers.length > 0) {
+                bgLayer = bgLayers[0].id;
+              } else {
+                bgLayer = 'voidLayer';
+              }
               scope.backgroundLayers = defaultBgOrder.slice(0);
             }
             if (bgLayer && !isOfflineToOnline) {
