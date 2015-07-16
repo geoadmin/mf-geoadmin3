@@ -63,9 +63,6 @@ goog.require('ga_permalink');
                   var topics = data.topics;
                   angular.forEach(topics, function(value) {
                     value.tooltip = 'topic_' + value.id + '_tooltip';
-                    value.thumbnail =
-                        options.thumbnailUrlTemplate.
-                            replace('{Topic}', value.id);
                     value.langs = extendLangs(value.langs);
                   });
                   deferred.resolve(topics);
