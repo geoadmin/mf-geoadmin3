@@ -1,6 +1,6 @@
-(function() {
-  goog.provide('ga_context_proposal_service');
+goog.provide('ga_context_proposal_service');
 
+(function() {
   var module = angular.module('ga_context_proposal_service', []);
 
   module.provider('gaContextProposalService', function() {

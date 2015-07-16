@@ -1,5 +1,6 @@
+goog.provide('ga_layerselector_directive');
+
 (function() {
-  goog.provide('ga_layerselector_directive');
 
   var module = angular.module('ga_layerselector_directive', [
     'pascalprecht.translate'
