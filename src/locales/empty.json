@@ -348,5 +348,6 @@
   "draw_share_user_link": "",
   "choose_map": "",
   "mode_simple": "",
-  "mode_advanced": ""
+  "mode_advanced": "",
+  "layers_displayed": ""
 }

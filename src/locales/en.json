@@ -179,6 +179,7 @@
 	"layer_invalid_no_crs": "WMS does not support current map projection",
 	"layer_invalid_no_name": "The layer can't be displayed because it has no name. ",
 	"layer_selection": "Selection",
+	"layers_displayed": "Maps displayed",
 	"layers_results_header": "Add map ...",
 	"legend": "Legend",
 	"link_bowl_crosshair": "Link with bowl crosshair",

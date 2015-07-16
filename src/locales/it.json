@@ -179,6 +179,7 @@
 	"layer_invalid_no_crs": "WMS: L'attuale proiezione della carta non è supportata",
 	"layer_invalid_no_name": "Il layer non può essere visualizzato perchè non ha nome",
 	"layer_selection": "Selezione",
+	"layers_displayed": "",
 	"layers_results_header": "Aggiungi set di dati ...",
 	"legend": "Legenda",
 	"link_bowl_crosshair": "Link con mirino",

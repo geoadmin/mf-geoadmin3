@@ -179,6 +179,7 @@
 	"layer_invalid_no_crs": "WMS unterstützt die Kartenprojektion nicht.",
 	"layer_invalid_no_name": "Der Datensatz kann nicht angezeigt werden, da er keine Bezeichnung hat",
 	"layer_selection": "Auswahl",
+	"layers_displayed": "",
 	"layers_results_header": "Karte hinzufügen ...",
 	"legend": "Legende",
 	"link_bowl_crosshair": "Link mit Fadenkreuz",

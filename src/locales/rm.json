@@ -179,6 +179,7 @@
 	"layer_invalid_no_crs": "WMS na sustegna betg la projecziun cartografica",
 	"layer_invalid_no_name": "L'unitad da datas na po betg vegnir mussada, perquai ch'ella n'ha nagin num.",
 	"layer_selection": "Selecziun",
+	"layers_displayed": "",
 	"layers_results_header": "Agiuntar charta ...",
 	"legend": "Legenda",
 	"link_bowl_crosshair": "Link cun cruschera",
