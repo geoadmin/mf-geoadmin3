@@ -4281,6 +4281,54 @@ msgstr ""
 msgid "tt_ch.bfe.energieforschung_beauftragter"
 msgstr ""
 
+msgid "ch.bfe.energieforschung.titel"
+msgstr ""
+
+msgid "ch.bfe.energieforschung.beschreibung"
+msgstr ""
+
+msgid "leuchtturm_0"
+msgstr ""
+
+msgid "leuchtturm_1"
+msgstr ""
+
+msgid "ch.bfe.energieforschung.leuchtturm"
+msgstr ""
+
+msgid "ch.bfe.energieforschung.projektstatus"
+msgstr ""
+
+msgid "ch.bfe.energieforschung.projektnummer"
+msgstr ""
+
+msgid "ch.bfe.energieforschung.projektdauer"
+msgstr ""
+
+msgid "ch.bfe.energieforschung.thema"
+msgstr ""
+
+msgid "ch.bfe.energieforschung.bericht"
+msgstr ""
+
+msgid "ch.bfe.energieforschung.fachartikel"
+msgstr ""
+
+msgid "ch.bfe.energieforschung.infoclip"
+msgstr ""
+
+msgid "ch.bfe.energieforschung.projektpartner"
+msgstr ""
+
+msgid "ch.bfe.energieforschung.kontakt"
+msgstr ""
+
+msgid "ch.bfe.energieforschung.projektstandort"
+msgstr ""
+
+msgid "ch.bfe.energieforschung.bild"
+msgstr ""
+
 msgid "tt_ch.bfe.statistik-wasserkraftanlagen_beginningofoperation"
 msgstr ""
 

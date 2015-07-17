@@ -909,25 +909,25 @@ msgid "ch.are.bauzonen"
 msgstr "Zone edificabili Svizzera (armon.)"
 
 msgid "ch.are.belastung-gueterverkehr-bahn"
-msgstr "Trafic marchandises (ferroviaire)"
+msgstr "Traffico merci su rotaia"
 
 msgid "ch.are.belastung-gueterverkehr-bahn-2008"
 msgstr "Traffico merci 2008"
 
 msgid "ch.are.belastung-gueterverkehr-strasse"
-msgstr "Trafic poids lourds (routier)"
+msgstr "Traffico merci su strada"
 
 msgid "ch.are.belastung-gueterverkehr-strasse-2008"
 msgstr "Traffico merci dai veicoli pesanti 2008"
 
 msgid "ch.are.belastung-personenverkehr-bahn"
-msgstr "Trafic voyageurs (transport public)"
+msgstr "Traffico viaggiatori (trasporti pubblici)"
 
 msgid "ch.are.belastung-personenverkehr-bahn-2008"
 msgstr "Traffico viaggiatori 2008"
 
 msgid "ch.are.belastung-personenverkehr-strasse"
-msgstr "Trafic voyageurs (routier)"
+msgstr "Traffico viaggiatori (strada)"
 
 msgid "ch.are.belastung-personenverkehr-strasse-2008"
 msgstr "Traffico viaggiatori 2008"
@@ -951,7 +951,7 @@ msgid "ch.are.kt"
 msgstr "ARE + cantone"
 
 msgid "ch.are.landschaftstypen"
-msgstr "Tipologia de paesaggi svizzeri"
+msgstr "Tipologia dei paesaggi svizzeri"
 
 msgid "ch.are.reisezeit-miv"
 msgstr "Tempo di viaggio TIM 2005"
@@ -1092,19 +1092,19 @@ msgid "ch.bafu.bundesinventare-amphibien_anhang4"
 msgstr "Anfibi allegato 4"
 
 msgid "ch.bafu.bundesinventare-amphibien_anhoerung"
-msgstr "Batraciens consultation 2015"
+msgstr "Anfibi - Consultazione 2015"
 
 msgid "ch.bafu.bundesinventare-amphibien_wanderobjekte"
 msgstr "Anfibi oggetti mobili"
 
 msgid "ch.bafu.bundesinventare-amphibien_wanderobjekte_anhoerung"
-msgstr "Batraciens objets itinérants 2015"
+msgstr "Anfibi oggetti mobili 2015"
 
 msgid "ch.bafu.bundesinventare-auen"
 msgstr "Zone golenali"
 
 msgid "ch.bafu.bundesinventare-auen_anhoerung"
-msgstr "Zones alluviales consultation 2015"
+msgstr "Zone golenali - Consultazione 2015"
 
 msgid "ch.bafu.bundesinventare-bln"
 msgstr "IFP"
@@ -1113,7 +1113,7 @@ msgid "ch.bafu.bundesinventare-flachmoore"
 msgstr "Paludi"
 
 msgid "ch.bafu.bundesinventare-flachmoore_anhoerung"
-msgstr "Bas-marais consultation 2015"
+msgstr "Paludi - Consultazione 2015"
 
 msgid "ch.bafu.bundesinventare-flachmoore_regional"
 msgstr "Paludi regionali"
@@ -1122,7 +1122,7 @@ msgid "ch.bafu.bundesinventare-hochmoore"
 msgstr "Torbiere alte"
 
 msgid "ch.bafu.bundesinventare-hochmoore_anhoerung"
-msgstr "Hauts-marais consultation 2015"
+msgstr "Torbiere alte - Consultazione 2015"
 
 msgid "ch.bafu.bundesinventare-jagdbanngebiete"
 msgstr "Bandite federali di caccia"
@@ -1131,7 +1131,7 @@ msgid "ch.bafu.bundesinventare-moorlandschaften"
 msgstr "Zone palustri"
 
 msgid "ch.bafu.bundesinventare-moorlandschaften_anhoerung"
-msgstr "Sites marécageux consultation 2015"
+msgstr "Zone palustri - Consultazione 2015"
 
 msgid "ch.bafu.bundesinventare-trockenwiesen_trockenweiden"
 msgstr "Prati e pascoli secchi (PPS)"
@@ -1140,7 +1140,7 @@ msgid "ch.bafu.bundesinventare-trockenwiesen_trockenweiden_anhang2"
 msgstr "PPS allegato 2"
 
 msgid "ch.bafu.bundesinventare-trockenwiesen_trockenweiden_anhoerung"
-msgstr "PPS consultation 2015"
+msgstr "PPS - Consultazione 2015"
 
 msgid "ch.bafu.bundesinventare-vogelreservate"
 msgstr "Riserve di uccelli acquatici"
@@ -1752,7 +1752,7 @@ msgid "ch.bafu.hydrologie-hochwassergrenzwertpegel.rechtswert"
 msgstr "Coordonnée X"
 
 msgid "ch.bafu.hydrologie-hochwasserstatistik"
-msgstr "HQSTAT Hautes eaux"
+msgstr "HQStat Piene"
 
 msgid "ch.bafu.hydrologie-hochwasserstatistik.coordX"
 msgstr "Coordonnée X"
@@ -1818,7 +1818,7 @@ msgid "ch.bafu.hydrologie-hydromessstationen"
 msgstr "Stazioni idrologiche"
 
 msgid "ch.bafu.hydrologie-niedrigwasserstatistik"
-msgstr "NQSTAT Basses eaux"
+msgstr "NQStat Magre"
 
 msgid "ch.bafu.hydrologie-niedrigwasserstatistik.anz_jahre"
 msgstr "Nombre d´années"
@@ -2181,7 +2181,7 @@ msgid "ch.bafu.hydrologischer-atlas_kantonale-messstationen.vergletscherung"
 msgstr "Extension glacier"
 
 msgid "ch.bafu.hydroweb-messstationen_gefahren"
-msgstr "Niveaux de danger de crues"
+msgstr "Soglie d'allarme delle piene"
 
 msgid "ch.bafu.hydroweb-messstationen_grundwasser"
 msgstr "Rete di misurazione NAQUA"
@@ -2193,13 +2193,13 @@ msgid "ch.bafu.hydroweb-messstationen_vorhersage"
 msgstr "Stationi previsione hydrologico"
 
 msgid "ch.bafu.hydroweb-messstationen_zustand"
-msgstr "Situation des niveaux d’eau"
+msgstr "Situazione di fiumi e ruscelli"
 
 msgid "ch.bafu.hydroweb-warnkarte_national"
 msgstr "Carta di vigilanza piene"
 
 msgid "ch.bafu.hydroweb-warnkarte_regional"
-msgstr "Carte vigilance régionales"
+msgstr "Carta di vigilanza regionale"
 
 msgid "ch.bafu.kt"
 msgstr "UFAM + cantone"
@@ -2280,7 +2280,7 @@ msgid "ch.bafu.moose"
 msgstr "Liste rosse muschi"
 
 msgid "ch.bafu.nabelstationen"
-msgstr "Qualità dell'aria: stazioni NABEL"
+msgstr "Stazioni di misura qualità dell'aria"
 
 msgid "ch.bafu.naqua-grundwasser_nitrat"
 msgstr "Nitrati"
@@ -2700,7 +2700,7 @@ msgid "ch.bafu.wasserbau-querprofilmarken.typ"
 msgstr "Type"
 
 msgid "ch.bafu.wasserbau-vermessungsstrecken"
-msgstr "Tronçon mesuré"
+msgstr "Tratti misurati"
 
 msgid "ch.bafu.wasserbau-vermessungsstrecken.anfangsmass"
 msgstr "Mesure_début"
@@ -3069,7 +3069,49 @@ msgid "ch.bfe.abgeltung-wasserkraftnutzung"
 msgstr "Abbandono dell'idroelettricitá"
 
 msgid "ch.bfe.energieforschung"
-msgstr "Ricerca energetica"
+msgstr "Progetti Cleantech"
+
+msgid "ch.bfe.energieforschung.bericht"
+msgstr "Rapporto"
+
+msgid "ch.bfe.energieforschung.beschreibung"
+msgstr "Descrizione"
+
+msgid "ch.bfe.energieforschung.bild"
+msgstr "Foto"
+
+msgid "ch.bfe.energieforschung.fachartikel"
+msgstr "Articoli specialistici"
+
+msgid "ch.bfe.energieforschung.infoclip"
+msgstr "Info-Clip"
+
+msgid "ch.bfe.energieforschung.kontakt"
+msgstr "Contatto"
+
+msgid "ch.bfe.energieforschung.leuchtturm"
+msgstr "Tipo di progetto"
+
+msgid "ch.bfe.energieforschung.projektdauer"
+msgstr "Durata del progetto"
+
+msgid "ch.bfe.energieforschung.projektnummer"
+msgstr "Progetto n°"
+
+msgid "ch.bfe.energieforschung.projektpartner"
+msgstr "Partner di progetto"
+
+msgid "ch.bfe.energieforschung.projektstandort"
+msgstr "Ubicazione del progetto"
+
+msgid "ch.bfe.energieforschung.projektstatus"
+msgstr "Stato del progetto"
+
+msgid "ch.bfe.energieforschung.thema"
+msgstr "Tema"
+
+msgid "ch.bfe.energieforschung.titel"
+msgstr "Titolo del progetto"
 
 msgid "ch.bfe.energiestaedte"
 msgstr "Città dell’energia"
@@ -3562,64 +3604,64 @@ msgid "ch.swisstopo.geoidmodell-etrs89"
 msgstr "Geoide in ETRS89"
 
 msgid "ch.swisstopo.geologie-eiszeit-lgm-raster"
-msgstr "Ultimo mass. glaciale (carta) 500"
+msgstr "Ultimo massimo glaciale 500"
 
 msgid "ch.swisstopo.geologie-generalkarte-ggk200"
-msgstr "Carta geol. generale 200"
+msgstr "Carta geologica generale"
 
 msgid "ch.swisstopo.geologie-geocover"
-msgstr "GeoCover - dati vettoriali"
+msgstr "GeoCover - Dati geol. vettoriali"
 
 msgid "ch.swisstopo.geologie-geocover.metadata"
-msgstr "Divisione GeoCover / AG25"
+msgstr "Divisione GeoCover"
 
 msgid "ch.swisstopo.geologie-geodaesie-bouguer_anomalien"
 msgstr "Anomalia di Bouguer 500"
 
 msgid "ch.swisstopo.geologie-geodaesie-isostatische_anomalien"
-msgstr "Anomalie isostatiche 500"
+msgstr "Anomalie isostatiche"
 
 msgid "ch.swisstopo.geologie-geolkarten500.metadata"
 msgstr "Suddivisione GeoCarte 500"
 
 msgid "ch.swisstopo.geologie-geologische_karte"
-msgstr "Geologia 500"
+msgstr "Carta geologica 500"
 
 msgid "ch.swisstopo.geologie-geologischer_atlas"
-msgstr "Atlante geologico AG25"
+msgstr "Atlante geol. della Svizz. 1:25 000"
 
 msgid "ch.swisstopo.geologie-geophysik-aeromagnetische_karte_jura"
-msgstr "Aeromagnetismo Altipiano/Giura 500"
+msgstr "Aeromagnetismo Altipiano/Giura"
 
 msgid "ch.swisstopo.geologie-geophysik-aeromagnetische_karte_schweiz"
-msgstr "Aeromagnetismo 500"
+msgstr "Aeromagnetismo"
 
 msgid "ch.swisstopo.geologie-geophysik-deklination"
-msgstr "Declinazione 500"
+msgstr "Declinazione"
 
 msgid "ch.swisstopo.geologie-geophysik-geothermie"
-msgstr "Densità di flusso termico 500"
+msgstr "Geotermia"
 
 msgid "ch.swisstopo.geologie-geophysik-inklination"
-msgstr "Inclinazione 500"
+msgstr "Inclinazione"
 
 msgid "ch.swisstopo.geologie-geophysik-totalintensitaet"
-msgstr "Intensità campo magnetico 500"
+msgstr "Intensità campo magnetico"
 
 msgid "ch.swisstopo.geologie-geotechnik-gk200"
-msgstr "Carta geotecnica 200"
+msgstr "Geotecnica e rocce"
 
 msgid "ch.swisstopo.geologie-geotechnik-gk500-genese"
-msgstr "Origine delle rocce 500"
+msgstr "Origine delle rocce"
 
 msgid "ch.swisstopo.geologie-geotechnik-gk500-gesteinsklassierung"
-msgstr "Classificazione delle rocce 500"
+msgstr "Classificazione delle rocce"
 
 msgid "ch.swisstopo.geologie-geotechnik-gk500-lithologie_hauptgruppen"
-msgstr "Lithologia (gruppi principali) 500"
+msgstr "Gruppi litologici principali"
 
 msgid "ch.swisstopo.geologie-geotechnik-mineralische_rohstoffe200"
-msgstr "Materie prime minerali 200"
+msgstr "Risorse minerali"
 
 msgid "ch.swisstopo.geologie-geotechnik-steinbrueche_1915"
 msgstr "Cave 1915"
@@ -3637,10 +3679,10 @@ msgid "ch.swisstopo.geologie-geotechnik-steine_historische_bauwerke"
 msgstr "Pietre dei monumenti storici"
 
 msgid "ch.swisstopo.geologie-geotechnik-zementindustrie_1965"
-msgstr "Industria dei cementi 1965"
+msgstr "Industria dei leganti 1965"
 
 msgid "ch.swisstopo.geologie-geotechnik-zementindustrie_1995"
-msgstr "Industria dei cementi 1995"
+msgstr "Industria dei leganti 1995"
 
 msgid "ch.swisstopo.geologie-geotechnik-ziegeleien_1907"
 msgstr "Mattonifici 1907"
@@ -3685,46 +3727,46 @@ msgid "ch.swisstopo.geologie-gisgeol-flaechen-10to100km2.sgd_nr"
 msgstr "ch.swisstopo.geologie-gisgeol-flaechen-10to100km2.sgd_nr"
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-10x10km"
-msgstr "Documents géol. (10x10km)"
+msgstr "Documenti geologici (10x10km)"
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-10x10km.sgd_nr"
 msgstr "N° InfoGeol"
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-1x1km"
-msgstr "Documents géol. (1x1km)"
+msgstr "Documenti geologici (1x1km)"
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-1x1km.sgd_nr"
 msgstr "N° InfoGeol"
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-gt21000km2"
-msgstr "Documents géol. (>21000km2)"
+msgstr "Documenti geologici (>21000km2)"
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-gt21000km2.sgd_nr"
 msgstr "N° InfoGeol"
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-lt10km2"
-msgstr "Documents géol. (0-10km2)"
+msgstr "Documenti geologici (0-10km2)"
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-lt10km2.sgd_nr"
 msgstr "N° InfoGeol"
 
 msgid "ch.swisstopo.geologie-gisgeol-linien"
-msgstr "Documents géol. (lignes)"
+msgstr "Documenti geologici (linee)"
 
 msgid "ch.swisstopo.geologie-gisgeol-linien.sgd_nr"
 msgstr "N° InfoGeol"
 
 msgid "ch.swisstopo.geologie-gisgeol-punkte"
-msgstr "Documents géol. (points)"
+msgstr "Documenti geologici (punti)"
 
 msgid "ch.swisstopo.geologie-gisgeol-punkte.sgd_nr"
 msgstr "N° InfoGeol"
 
 msgid "ch.swisstopo.geologie-gravimetrischer_atlas"
-msgstr "Atlante gravimetrico 100"
+msgstr "Atlante gravimetrico 1:100000"
 
 msgid "ch.swisstopo.geologie-gravimetrischer_atlas.metadata"
-msgstr "Divisione Atlante gravim. 100"
+msgstr "Divisione Atlante gravimetrico"
 
 msgid "ch.swisstopo.geologie-gravimetrischer_atlas.metadata.id"
 msgstr "N°"
@@ -3760,7 +3802,7 @@ msgid "ch.swisstopo.geologie-spezialkarten_schweiz.metadata"
 msgstr "Divisione carte geologiche speciali"
 
 msgid "ch.swisstopo.geologie-tektonische_karte"
-msgstr "Tettonica 500"
+msgstr "Carta tettonica 500"
 
 msgid "ch.swisstopo.gg25-bezirk-flaeche.fill"
 msgstr "Limiti di distretto GG25"
@@ -3882,7 +3924,7 @@ msgid "ch.swisstopo.pixelkarte-farbe-pk100.noscale"
 msgstr "Carta nazionale 1:100'000 | CN100"
 
 msgid "ch.swisstopo.pixelkarte-farbe-pk1000.noscale"
-msgstr "Carta nazionale 1:1 milione"
+msgstr "Carta nazionale 1:1 milione | CN1000"
 
 msgid "ch.swisstopo.pixelkarte-farbe-pk200.noscale"
 msgstr "Carta nazionale 1:200'000 | CN200"
@@ -5275,6 +5317,12 @@ msgstr "Fabbisogno energetico delle pompe"
 
 msgid "length_km"
 msgstr "Longueur [km]"
+
+msgid "leuchtturm_0"
+msgstr "Progetto pilota / di dimostrazione"
+
+msgid "leuchtturm_1"
+msgstr "Progetto faro"
 
 msgid "link"
 msgstr "Link"

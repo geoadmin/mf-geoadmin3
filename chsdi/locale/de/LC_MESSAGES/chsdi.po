@@ -2280,7 +2280,7 @@ msgid "ch.bafu.moose"
 msgstr "Rote Liste Moose"
 
 msgid "ch.bafu.nabelstationen"
-msgstr "Luftbelastung: Stationen NABEL"
+msgstr "Messstationen Luftqualität"
 
 msgid "ch.bafu.naqua-grundwasser_nitrat"
 msgstr "Nitrat"
@@ -3069,7 +3069,49 @@ msgid "ch.bfe.abgeltung-wasserkraftnutzung"
 msgstr "Verzicht Wasserkraftnutzung"
 
 msgid "ch.bfe.energieforschung"
-msgstr "Energieforschung"
+msgstr "Cleantech-Projekte"
+
+msgid "ch.bfe.energieforschung.bericht"
+msgstr "Bericht"
+
+msgid "ch.bfe.energieforschung.beschreibung"
+msgstr "Beschreibung"
+
+msgid "ch.bfe.energieforschung.bild"
+msgstr "Bild"
+
+msgid "ch.bfe.energieforschung.fachartikel"
+msgstr "Fachartikel"
+
+msgid "ch.bfe.energieforschung.infoclip"
+msgstr "Info-Clip"
+
+msgid "ch.bfe.energieforschung.kontakt"
+msgstr "Kontakt"
+
+msgid "ch.bfe.energieforschung.leuchtturm"
+msgstr "Projekttyp"
+
+msgid "ch.bfe.energieforschung.projektdauer"
+msgstr "Projektdauer"
+
+msgid "ch.bfe.energieforschung.projektnummer"
+msgstr "Projekt-Nr."
+
+msgid "ch.bfe.energieforschung.projektpartner"
+msgstr "Projektpartner"
+
+msgid "ch.bfe.energieforschung.projektstandort"
+msgstr "Projektstandort"
+
+msgid "ch.bfe.energieforschung.projektstatus"
+msgstr "Projektstatus"
+
+msgid "ch.bfe.energieforschung.thema"
+msgstr "Thema"
+
+msgid "ch.bfe.energieforschung.titel"
+msgstr "Projekttitel"
 
 msgid "ch.bfe.energiestaedte"
 msgstr "Energiestädte"
@@ -3562,64 +3604,64 @@ msgid "ch.swisstopo.geoidmodell-etrs89"
 msgstr "Geoidmodell in ETRS89"
 
 msgid "ch.swisstopo.geologie-eiszeit-lgm-raster"
-msgstr "Letzteiszeitl. Max. (Karte) 500"
+msgstr "Eiszeitliches Maximum 500"
 
 msgid "ch.swisstopo.geologie-generalkarte-ggk200"
-msgstr "Geol. Generalkarte 200"
+msgstr "Geologische Generalkarte"
 
 msgid "ch.swisstopo.geologie-geocover"
-msgstr "GeoCover - Vektordaten"
+msgstr "GeoCover - Geol. Vektordatensätze"
 
 msgid "ch.swisstopo.geologie-geocover.metadata"
-msgstr "Einteilung GeoCover / GA25"
+msgstr "Einteilung GeoCover"
 
 msgid "ch.swisstopo.geologie-geodaesie-bouguer_anomalien"
 msgstr "Bouguer-Anomalien 500"
 
 msgid "ch.swisstopo.geologie-geodaesie-isostatische_anomalien"
-msgstr "Isostatische Anomalien 500"
+msgstr "Isostatische Anomalien"
 
 msgid "ch.swisstopo.geologie-geolkarten500.metadata"
 msgstr "Blatteinteilung GeoKarten 500"
 
 msgid "ch.swisstopo.geologie-geologische_karte"
-msgstr "Geologie 500"
+msgstr "Geologische Karte 500"
 
 msgid "ch.swisstopo.geologie-geologischer_atlas"
-msgstr "Geologischer Atlas GA25"
+msgstr "Geol. Atlas der Schweiz 1:25000"
 
 msgid "ch.swisstopo.geologie-geophysik-aeromagnetische_karte_jura"
-msgstr "Aeromagnetik Mittelland/Jura 500"
+msgstr "Aeromagnetik Voralpen/Jura"
 
 msgid "ch.swisstopo.geologie-geophysik-aeromagnetische_karte_schweiz"
-msgstr "Aeromagnetik 500"
+msgstr "Aeromagnetik"
 
 msgid "ch.swisstopo.geologie-geophysik-deklination"
-msgstr "Deklination 500"
+msgstr "Deklination"
 
 msgid "ch.swisstopo.geologie-geophysik-geothermie"
-msgstr "Wärmestromdichte 500"
+msgstr "Geothermie"
 
 msgid "ch.swisstopo.geologie-geophysik-inklination"
-msgstr "Inklination 500"
+msgstr "Inklination"
 
 msgid "ch.swisstopo.geologie-geophysik-totalintensitaet"
-msgstr "Magnetfeldstärke 500"
+msgstr "Magnetfeldstärke"
 
 msgid "ch.swisstopo.geologie-geotechnik-gk200"
-msgstr "Geotechnische Karte 200"
+msgstr "Geotechnik und Gesteine"
 
 msgid "ch.swisstopo.geologie-geotechnik-gk500-genese"
-msgstr "Entstehung der Gesteine 500"
+msgstr "Entstehung der Gesteine"
 
 msgid "ch.swisstopo.geologie-geotechnik-gk500-gesteinsklassierung"
-msgstr "Gesteinsklassen 500"
+msgstr "Gesteinklassierung"
 
 msgid "ch.swisstopo.geologie-geotechnik-gk500-lithologie_hauptgruppen"
-msgstr "Lithologie (Hauptgruppen) 500"
+msgstr "Lithologie-Hauptgruppen"
 
 msgid "ch.swisstopo.geologie-geotechnik-mineralische_rohstoffe200"
-msgstr "Mineralische Rohstoffe 200"
+msgstr "Mineralische Rohstoffe"
 
 msgid "ch.swisstopo.geologie-geotechnik-steinbrueche_1915"
 msgstr "Steinbrüche 1915"
@@ -3634,13 +3676,13 @@ msgid "ch.swisstopo.geologie-geotechnik-steinbrueche_1995"
 msgstr "Steinbrüche 1995"
 
 msgid "ch.swisstopo.geologie-geotechnik-steine_historische_bauwerke"
-msgstr "Steine an hist. Bauwerken"
+msgstr "Steine an historischen Bauwerken"
 
 msgid "ch.swisstopo.geologie-geotechnik-zementindustrie_1965"
-msgstr "Zementindustrie 1965"
+msgstr "Bindemittelindustrie 1965"
 
 msgid "ch.swisstopo.geologie-geotechnik-zementindustrie_1995"
-msgstr "Zementindustrie 1995"
+msgstr "Bindemittelindustrie 1995"
 
 msgid "ch.swisstopo.geologie-geotechnik-ziegeleien_1907"
 msgstr "Ziegeleien 1907"
@@ -3661,7 +3703,7 @@ msgid "ch.swisstopo.geologie-geotechnik-ziegeleien_1995.ziegeleien"
 msgstr "Name der Ziegelei"
 
 msgid "ch.swisstopo.geologie-geotope"
-msgstr "Schweizerische Geotope"
+msgstr "Geotope der Schweiz"
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-1000to21000km2"
 msgstr "Geol. Dokumente (1000-21000km2)"
@@ -3721,10 +3763,10 @@ msgid "ch.swisstopo.geologie-gisgeol-punkte.sgd_nr"
 msgstr "InfoGeol-Nr."
 
 msgid "ch.swisstopo.geologie-gravimetrischer_atlas"
-msgstr "Gravimetrischer Atlas 100"
+msgstr "Gravimetrischer Atlas 1:100000"
 
 msgid "ch.swisstopo.geologie-gravimetrischer_atlas.metadata"
-msgstr "Einteilung gravim. Atlas 100"
+msgstr "Einteilung gravimetrischer Atlas"
 
 msgid "ch.swisstopo.geologie-gravimetrischer_atlas.metadata.id"
 msgstr "Nr."
@@ -3760,7 +3802,7 @@ msgid "ch.swisstopo.geologie-spezialkarten_schweiz.metadata"
 msgstr "Einteilung geol. Spezialkarten"
 
 msgid "ch.swisstopo.geologie-tektonische_karte"
-msgstr "Tektonik 500"
+msgstr "Tektonische Karte 500"
 
 msgid "ch.swisstopo.gg25-bezirk-flaeche.fill"
 msgstr "Bezirksgrenzen GG25"
@@ -3882,7 +3924,7 @@ msgid "ch.swisstopo.pixelkarte-farbe-pk100.noscale"
 msgstr "Landeskarte 1:100'000 | LK100"
 
 msgid "ch.swisstopo.pixelkarte-farbe-pk1000.noscale"
-msgstr "Landeskarte 1:1 Mio. | LK1000"
+msgstr "Landeskarte 1:1 Million | LK1000"
 
 msgid "ch.swisstopo.pixelkarte-farbe-pk200.noscale"
 msgstr "Landeskarte 1:200'000 | LK200"
@@ -5275,6 +5317,12 @@ msgstr "Leistungsaufnahme Pumpen"
 
 msgid "length_km"
 msgstr "Länge [km]"
+
+msgid "leuchtturm_0"
+msgstr "Pilot- / Demonstrationsprojekt"
+
+msgid "leuchtturm_1"
+msgstr "Leuchtturmprojekt"
 
 msgid "link"
 msgstr "Link"

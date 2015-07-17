@@ -909,25 +909,25 @@ msgid "ch.are.bauzonen"
 msgstr "Building zones Switzerland (harm.)"
 
 msgid "ch.are.belastung-gueterverkehr-bahn"
-msgstr "Güterverkehr Schiene"
+msgstr "Freight traffic by rail"
 
 msgid "ch.are.belastung-gueterverkehr-bahn-2008"
 msgstr "Freight traffic 2008"
 
 msgid "ch.are.belastung-gueterverkehr-strasse"
-msgstr "Güterverkehr Strasse"
+msgstr "Goods traffic by road"
 
 msgid "ch.are.belastung-gueterverkehr-strasse-2008"
 msgstr "Heavy goods traffic 2008"
 
 msgid "ch.are.belastung-personenverkehr-bahn"
-msgstr "Personenverkehr ÖV"
+msgstr "Passenger traffic (pub. transport)"
 
 msgid "ch.are.belastung-personenverkehr-bahn-2008"
 msgstr "Passenger traffic 2008"
 
 msgid "ch.are.belastung-personenverkehr-strasse"
-msgstr "Personenverkehr Strasse"
+msgstr "Passenger traffic (road)"
 
 msgid "ch.are.belastung-personenverkehr-strasse-2008"
 msgstr "Passenger traffic 2008"
@@ -1038,19 +1038,19 @@ msgid "ch.astra.strassenverkehrszaehlung_messstellen-uebergeordnet.zaehlstellen_
 msgstr "Zählstelle"
 
 msgid "ch.astra.unfaelle-personenschaeden_alle"
-msgstr "Unfälle mit Personenschaden"
+msgstr "Accidents with personal injury"
 
 msgid "ch.astra.unfaelle-personenschaeden_fahrraeder"
-msgstr "Unfälle mit Fahrradbeteiligung"
+msgstr "Accidents involving a bicycle"
 
 msgid "ch.astra.unfaelle-personenschaeden_fussgaenger"
-msgstr "Unfälle mit Fussgängerbeteiligung"
+msgstr "Accidents involving a pedestrian"
 
 msgid "ch.astra.unfaelle-personenschaeden_getoetete"
-msgstr "Unfälle mit Getöteten"
+msgstr "Accidents with fatalities"
 
 msgid "ch.astra.unfaelle-personenschaeden_motorraeder"
-msgstr "Unfälle mit Motorradbeteiligung"
+msgstr "Accidents involving a motorcycle"
 
 msgid "ch.astra.url"
 msgstr "http://www.astra.admin.ch/index.html?lang=en"
@@ -1092,19 +1092,19 @@ msgid "ch.bafu.bundesinventare-amphibien_anhang4"
 msgstr "Amphibians appendix 4"
 
 msgid "ch.bafu.bundesinventare-amphibien_anhoerung"
-msgstr "Amphibien - Anhörung 2015"
+msgstr "Amphibians - consultation 2015"
 
 msgid "ch.bafu.bundesinventare-amphibien_wanderobjekte"
 msgstr "Amphibians shifting sites"
 
 msgid "ch.bafu.bundesinventare-amphibien_wanderobjekte_anhoerung"
-msgstr "Amphibien Wanderobjekte 2015"
+msgstr "Amphibians shifting sites 2015"
 
 msgid "ch.bafu.bundesinventare-auen"
 msgstr "Floodplains"
 
 msgid "ch.bafu.bundesinventare-auen_anhoerung"
-msgstr "Auen - Anhörung 2015"
+msgstr "Floodplains - consultation 2015"
 
 msgid "ch.bafu.bundesinventare-bln"
 msgstr "ILNM"
@@ -1113,7 +1113,7 @@ msgid "ch.bafu.bundesinventare-flachmoore"
 msgstr "Fens"
 
 msgid "ch.bafu.bundesinventare-flachmoore_anhoerung"
-msgstr "Flachmoore Anhörung 2015"
+msgstr "Fens - consultation 2015"
 
 msgid "ch.bafu.bundesinventare-flachmoore_regional"
 msgstr "Regional fens"
@@ -1122,7 +1122,7 @@ msgid "ch.bafu.bundesinventare-hochmoore"
 msgstr "Raised bogs"
 
 msgid "ch.bafu.bundesinventare-hochmoore_anhoerung"
-msgstr "Hochmoore - Anhörung 2015"
+msgstr "Raised bogs - consultation 2015"
 
 msgid "ch.bafu.bundesinventare-jagdbanngebiete"
 msgstr "Swiss game reserves"
@@ -1131,7 +1131,7 @@ msgid "ch.bafu.bundesinventare-moorlandschaften"
 msgstr "Mire landscapes"
 
 msgid "ch.bafu.bundesinventare-moorlandschaften_anhoerung"
-msgstr "Moorlandschaften - Anhörung 2015"
+msgstr "Mire landscapes - consultation 2015"
 
 msgid "ch.bafu.bundesinventare-trockenwiesen_trockenweiden"
 msgstr "Dry grasslands (DGS)"
@@ -1140,7 +1140,7 @@ msgid "ch.bafu.bundesinventare-trockenwiesen_trockenweiden_anhang2"
 msgstr "Dry grasslands appendix 2"
 
 msgid "ch.bafu.bundesinventare-trockenwiesen_trockenweiden_anhoerung"
-msgstr "TWW - Anhörung 2015"
+msgstr "Dry grasslands - consultation 2015"
 
 msgid "ch.bafu.bundesinventare-vogelreservate"
 msgstr "Water & migrant bird reserves"
@@ -1818,7 +1818,7 @@ msgid "ch.bafu.hydrologie-hydromessstationen"
 msgstr "Hydrological gauging stations"
 
 msgid "ch.bafu.hydrologie-niedrigwasserstatistik"
-msgstr "NQSTAT"
+msgstr "NQStat"
 
 msgid "ch.bafu.hydrologie-niedrigwasserstatistik.anz_jahre"
 msgstr "Anzahl Jahre"
@@ -2181,7 +2181,7 @@ msgid "ch.bafu.hydrologischer-atlas_kantonale-messstationen.vergletscherung"
 msgstr "Vergletscherung"
 
 msgid "ch.bafu.hydroweb-messstationen_gefahren"
-msgstr "Hochwasser Gefahrenstufen"
+msgstr "Flood hazard levels"
 
 msgid "ch.bafu.hydroweb-messstationen_grundwasser"
 msgstr "NAQUA monitoring network"
@@ -2193,7 +2193,7 @@ msgid "ch.bafu.hydroweb-messstationen_vorhersage"
 msgstr "Stations hydrological forecasts"
 
 msgid "ch.bafu.hydroweb-messstationen_zustand"
-msgstr "Lage Fliessgewässer und Seen"
+msgstr "Situation of rivers and lakes"
 
 msgid "ch.bafu.hydroweb-warnkarte_national"
 msgstr "Flood alert map"
@@ -2280,7 +2280,7 @@ msgid "ch.bafu.moose"
 msgstr "Red list bryophytes"
 
 msgid "ch.bafu.nabelstationen"
-msgstr "Air pollution: NABEL Stations"
+msgstr "Monitoring stations air quality"
 
 msgid "ch.bafu.naqua-grundwasser_nitrat"
 msgstr "Nitrates"
@@ -2700,7 +2700,7 @@ msgid "ch.bafu.wasserbau-querprofilmarken.typ"
 msgstr "Typ"
 
 msgid "ch.bafu.wasserbau-vermessungsstrecken"
-msgstr "Vermessungsstrecken"
+msgstr "Surveyed sections"
 
 msgid "ch.bafu.wasserbau-vermessungsstrecken.anfangsmass"
 msgstr "Anfangsmass"
@@ -2886,10 +2886,10 @@ msgid "ch.bav.kataster-belasteter-standorte-oev.katasternummer"
 msgstr "BAV Standortnummer"
 
 msgid "ch.bav.laerm-emissionsplan_eisenbahn_nacht"
-msgstr "Emissionsplan Eisenbahnlärm 2015 N"
+msgstr "2015 rail noise emiss. plan, night"
 
 msgid "ch.bav.laerm-emissionsplan_eisenbahn_tag"
-msgstr "Emissionsplan Eisenbahnlärm 2015 T"
+msgstr "2015 rail noise emissions plan, day"
 
 msgid "ch.bav.sachplan-infrastruktur-schiene_anhorung"
 msgstr "SIS consultation"
@@ -3070,7 +3070,49 @@ msgid "ch.bfe.abgeltung-wasserkraftnutzung"
 msgstr "Abandonment of hydropower"
 
 msgid "ch.bfe.energieforschung"
-msgstr "Energy research"
+msgstr "Cleantech projects"
+
+msgid "ch.bfe.energieforschung.bericht"
+msgstr "Report"
+
+msgid "ch.bfe.energieforschung.beschreibung"
+msgstr "Description"
+
+msgid "ch.bfe.energieforschung.bild"
+msgstr "Picture"
+
+msgid "ch.bfe.energieforschung.fachartikel"
+msgstr "Specialist article"
+
+msgid "ch.bfe.energieforschung.infoclip"
+msgstr "Info-Clip"
+
+msgid "ch.bfe.energieforschung.kontakt"
+msgstr "Contact"
+
+msgid "ch.bfe.energieforschung.leuchtturm"
+msgstr "Type of project"
+
+msgid "ch.bfe.energieforschung.projektdauer"
+msgstr "Duration of project"
+
+msgid "ch.bfe.energieforschung.projektnummer"
+msgstr "Project no."
+
+msgid "ch.bfe.energieforschung.projektpartner"
+msgstr "Project partner(s)"
+
+msgid "ch.bfe.energieforschung.projektstandort"
+msgstr "Location"
+
+msgid "ch.bfe.energieforschung.projektstatus"
+msgstr "Project state"
+
+msgid "ch.bfe.energieforschung.thema"
+msgstr "Topic"
+
+msgid "ch.bfe.energieforschung.titel"
+msgstr "Project state"
 
 msgid "ch.bfe.energiestaedte"
 msgstr "Energy cities"
@@ -3404,7 +3446,7 @@ msgid "ch.kantone.cadastralwebmap-farbe"
 msgstr "CadastralWebMap"
 
 msgid "ch.kantone.ivs-reg_loc"
-msgstr " "
+msgstr "IHR Canton of Bern"
 
 msgid "ch.kt"
 msgstr "chantun"
@@ -3563,64 +3605,64 @@ msgid "ch.swisstopo.geoidmodell-etrs89"
 msgstr "Geoid in ETRS89"
 
 msgid "ch.swisstopo.geologie-eiszeit-lgm-raster"
-msgstr "Last glacial maximum (map) 500"
+msgstr "Last glacial maximum 500"
 
 msgid "ch.swisstopo.geologie-generalkarte-ggk200"
-msgstr "General Geol. Map 200"
+msgstr "General Geological Map"
 
 msgid "ch.swisstopo.geologie-geocover"
-msgstr "GeoCover - Vector Datasets"
+msgstr "GeoCover - Geological Vector Datasets"
 
 msgid "ch.swisstopo.geologie-geocover.metadata"
-msgstr "Division GeoCover / GA25"
+msgstr "Division GeoCover"
 
 msgid "ch.swisstopo.geologie-geodaesie-bouguer_anomalien"
 msgstr "Bouguer anomalies 500"
 
 msgid "ch.swisstopo.geologie-geodaesie-isostatische_anomalien"
-msgstr "Isostatic anomalies 500"
+msgstr "Isostatic anomalies"
 
 msgid "ch.swisstopo.geologie-geolkarten500.metadata"
 msgstr "Division GeoMaps 500"
 
 msgid "ch.swisstopo.geologie-geologische_karte"
-msgstr "Geology 500"
+msgstr "Geological Map 500"
 
 msgid "ch.swisstopo.geologie-geologischer_atlas"
-msgstr "Geological Atlas GA25"
+msgstr "Geol. Atlas of Switzerland 1:25 000"
 
 msgid "ch.swisstopo.geologie-geophysik-aeromagnetische_karte_jura"
-msgstr "Aeromagnetics Plateau/Jura 500"
+msgstr "Aeromagnetics Plateau/Jura"
 
 msgid "ch.swisstopo.geologie-geophysik-aeromagnetische_karte_schweiz"
-msgstr "Aeromagnetics 500"
+msgstr "Aeromagnetics"
 
 msgid "ch.swisstopo.geologie-geophysik-deklination"
-msgstr "Declination 500"
+msgstr "Declination"
 
 msgid "ch.swisstopo.geologie-geophysik-geothermie"
-msgstr "The Heat Flux 500"
+msgstr "Geothermal energy"
 
 msgid "ch.swisstopo.geologie-geophysik-inklination"
-msgstr "Inclination 500"
+msgstr "Inclination"
 
 msgid "ch.swisstopo.geologie-geophysik-totalintensitaet"
-msgstr "Magnetic field strength 500"
+msgstr "Magnetic field strength"
 
 msgid "ch.swisstopo.geologie-geotechnik-gk200"
-msgstr "Geotechnical Map 200"
+msgstr "Geotechnics and rocks"
 
 msgid "ch.swisstopo.geologie-geotechnik-gk500-genese"
-msgstr "Origin of rocks 500"
+msgstr "Origin of rocks"
 
 msgid "ch.swisstopo.geologie-geotechnik-gk500-gesteinsklassierung"
-msgstr "Classification of rocks 500"
+msgstr "Classification of rocks"
 
 msgid "ch.swisstopo.geologie-geotechnik-gk500-lithologie_hauptgruppen"
-msgstr "Lithology (Main Groups) 500"
+msgstr "Main lithological groups"
 
 msgid "ch.swisstopo.geologie-geotechnik-mineralische_rohstoffe200"
-msgstr "Mineral resources 200"
+msgstr "Mineral resources"
 
 msgid "ch.swisstopo.geologie-geotechnik-steinbrueche_1915"
 msgstr "Quarries 1915"
@@ -3638,10 +3680,10 @@ msgid "ch.swisstopo.geologie-geotechnik-steine_historische_bauwerke"
 msgstr "Historical building stones"
 
 msgid "ch.swisstopo.geologie-geotechnik-zementindustrie_1965"
-msgstr "Cement industry 1965"
+msgstr "Binder industry 1965"
 
 msgid "ch.swisstopo.geologie-geotechnik-zementindustrie_1995"
-msgstr "Cement industry 1995"
+msgstr "Binder industry 1995"
 
 msgid "ch.swisstopo.geologie-geotechnik-ziegeleien_1907"
 msgstr "Brick manufactures 1907"
@@ -3662,7 +3704,7 @@ msgid "ch.swisstopo.geologie-geotechnik-ziegeleien_1995.ziegeleien"
 msgstr "Name of brick manufacture"
 
 msgid "ch.swisstopo.geologie-geotope"
-msgstr "Swiss geotopes"
+msgstr "Geotopes in Switzerland"
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-1000to21000km2"
 msgstr "Geol. Dokumente (1000-21000km2)"
@@ -3686,46 +3728,46 @@ msgid "ch.swisstopo.geologie-gisgeol-flaechen-10to100km2.sgd_nr"
 msgstr "ch.swisstopo.geologie-gisgeol-flaechen-10to100km2.sgd_nr"
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-10x10km"
-msgstr "Geol. Dokumente (10x10km)"
+msgstr "Geol. documents (10x10km)"
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-10x10km.sgd_nr"
 msgstr "InfoGeol-Nr."
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-1x1km"
-msgstr "Geol. Dokumente (1x1km)"
+msgstr "Geol. documents (1x1km)"
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-1x1km.sgd_nr"
 msgstr "InfoGeol-Nr."
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-gt21000km2"
-msgstr "Geol. Dokumente (>21000km2)"
+msgstr "Geol. documents (>21,000km2)"
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-gt21000km2.sgd_nr"
 msgstr "InfoGeol-Nr."
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-lt10km2"
-msgstr "Geol. Dokumente (0-10km2)"
+msgstr "Geol. documents (0-10km2)"
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-lt10km2.sgd_nr"
 msgstr "InfoGeol-Nr."
 
 msgid "ch.swisstopo.geologie-gisgeol-linien"
-msgstr "Geol. Dokumente (Linien)"
+msgstr "Geol. documents (lines)"
 
 msgid "ch.swisstopo.geologie-gisgeol-linien.sgd_nr"
 msgstr "InfoGeol-Nr."
 
 msgid "ch.swisstopo.geologie-gisgeol-punkte"
-msgstr "Geol. Dokumente (Punkte)"
+msgstr "Geol. documents (points)"
 
 msgid "ch.swisstopo.geologie-gisgeol-punkte.sgd_nr"
 msgstr "InfoGeol-Nr."
 
 msgid "ch.swisstopo.geologie-gravimetrischer_atlas"
-msgstr "Gravimetric Atlas 100"
+msgstr "Gravimetric Atlas 1:100000"
 
 msgid "ch.swisstopo.geologie-gravimetrischer_atlas.metadata"
-msgstr "Division Gravimetric Atlas 100"
+msgstr "Division Gravimetric Atlas"
 
 msgid "ch.swisstopo.geologie-gravimetrischer_atlas.metadata.id"
 msgstr "Nr."
@@ -3746,7 +3788,7 @@ msgid "ch.swisstopo.geologie-rohstoffe-industrieminerale.name_ads"
 msgstr "Site"
 
 msgid "ch.swisstopo.geologie-rohstoffe-kohlen_bitumen_erdgas"
-msgstr "Energetic raw materials"
+msgstr "Fossil fuels"
 
 msgid "ch.swisstopo.geologie-rohstoffe-kohlen_bitumen_erdgas.name_ads"
 msgstr "Site"
@@ -3761,7 +3803,7 @@ msgid "ch.swisstopo.geologie-spezialkarten_schweiz.metadata"
 msgstr "Division Special Geological Maps"
 
 msgid "ch.swisstopo.geologie-tektonische_karte"
-msgstr "Tectonics 500"
+msgstr "Tectonic Map 500"
 
 msgid "ch.swisstopo.gg25-bezirk-flaeche.fill"
 msgstr "District boundaries GG25"
@@ -5277,6 +5319,12 @@ msgstr "Energy need of pumps"
 
 msgid "length_km"
 msgstr "Länge [km]"
+
+msgid "leuchtturm_0"
+msgstr "Pilot / demonstration project"
+
+msgid "leuchtturm_1"
+msgstr "Flagship project"
 
 msgid "link"
 msgstr "Link"
