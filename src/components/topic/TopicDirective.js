@@ -17,7 +17,6 @@ goog.require('ga_topic_service');
           },
           scope: {},
           link: function(scope, element, attrs) {
-            scope.topics;
 
             // Because ng-repeat creates a new scope for each item in the
             // collection we can't use ng-click="activeTopic = topic" in

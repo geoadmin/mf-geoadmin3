@@ -103,15 +103,14 @@ goog.require('ga_translation_service');
               }
             };
             var lastUrlUsed;
-            var updateCatalogTree = function() {
+            var updateCatalogTree = function(topic, lang) {
               // If topics are not yet loaded, we do nothing
-              if (!gaTopic.get()) {
+              if (!topic) {
                 return;
               }
               var labelsOnly = false;
               var url = scope.options.catalogUrlTemplate
-                  .replace('{Topic}', gaTopic.get().id);
-
+                  .replace('{Topic}', topic.id);
               // If the topic has not changed that means we need to update only
               // labels
               if (lastUrlUsed == url) {
@@ -121,7 +120,7 @@ goog.require('ga_translation_service');
               $http.get(url, {
                 cache: true,
                 params: {
-                  'lang': gaLang.get()
+                  'lang': lang
                 }
               }).then(function(response) {
                 var newTree = response.data.results.root;
@@ -156,8 +155,12 @@ goog.require('ga_translation_service');
               });
             };
 
-            scope.$on('gaTopicChange', updateCatalogTree);
-            $rootScope.$on('$translateChangeEnd', updateCatalogTree);
+            scope.$on('gaTopicChange', function(evt, newTopic) {
+              updateCatalogTree(newTopic, gaLang.get());
+            });
+            $rootScope.$on('$translateChangeEnd', function(evt, newLang) {
+              updateCatalogTree(gaTopic.get(), newLang.language);
+            });
 
             scope.layerFilter = gaLayerFilters.selected;
             scope.$watchCollection('layers | filter:layerFilter',
@@ -178,6 +181,9 @@ goog.require('ga_translation_service');
             scope.$on('gaTimeSelectorChange', function(event, newYear) {
               scope.options.currentYear = newYear;
             });
+
+            // Initializer the component if possible
+            updateCatalogTree(gaTopic.get(), gaLang.get());
           }
         };
 

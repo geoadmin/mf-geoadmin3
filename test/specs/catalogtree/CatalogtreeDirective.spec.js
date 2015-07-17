@@ -1,8 +1,24 @@
 describe('ga_catalogtree_directive', function() {
 
-  var element, map, $httpBackend;
+  var element, map, $httpBackend, $rootScope;
 
-  var expectedUrl = 'http://catalogservice.com/catalog/sometopic?lang=en';
+  var expectedUrl = 'http://catalogservice.com/catalog/sometopic?lang=somelang';
+  var expectedUrl1 = 'http://catalogservice.com/catalog/sometopic2?lang=somelang';
+  var expectedUrl2 = 'http://catalogservice.com/catalog/sometopic?lang=somelang2';
+  var response = {
+    results: {
+      root: {
+        children: [{
+          children: [{
+            layerBodId: 'foo'
+          }, {
+            layerBodId: 'bar',
+            selectedOpen: true
+          }]
+        }]
+      }
+    }
+  };
 
   beforeEach(function() {
     map = new ol.Map({});
@@ -29,20 +45,9 @@ describe('ga_catalogtree_directive', function() {
 
     inject(function($injector) {
       $httpBackend = $injector.get('$httpBackend');
-      $httpBackend.whenGET(expectedUrl).respond({
-        results: {
-          root: {
-            children: [{
-              children: [{
-                layerBodId: 'foo'
-              }, {
-                layerBodId: 'bar',
-                selectedOpen: true
-              }]
-            }]
-          }
-        }
-      });
+      $httpBackend.whenGET(expectedUrl).respond(response);
+      $httpBackend.whenGET(expectedUrl1).respond(response);
+      $httpBackend.whenGET(expectedUrl2).respond(response);
     });
 
     element = angular.element(
@@ -52,18 +57,16 @@ describe('ga_catalogtree_directive', function() {
         '</div>' +
       '</div>');
 
-    inject(function($rootScope, $compile, $translate) {
-
+    inject(function(_$rootScope_, $compile, $translate) {
+      $rootScope = _$rootScope_;
       $rootScope.map = map;
       $rootScope.options = {
         catalogUrlTemplate: 'http://catalogservice.com/catalog/{Topic}'
       };
 
       $compile(element)($rootScope);
-      $rootScope.$digest();
-
-      $translate.use('en');
-      $rootScope.$broadcast('gaTopicChange',{id: 'sometopic'});
+      $httpBackend.expectGET(expectedUrl);
+      $httpBackend.flush();
     });
   });
 
@@ -72,35 +75,20 @@ describe('ga_catalogtree_directive', function() {
     $httpBackend.verifyNoOutstandingRequest();
   });
 
-  it('sends the catalog request', function() {
-    $httpBackend.expectGET(expectedUrl);
+  /*it('do nothing if it a same topic', function() {
+    $rootScope.$broadcast('gaTopicChange', {id: 'sometopic'});
+    $httpBackend.flush();
+  });*/
+
+  it('update the catalog when the topic change', function() {
+    $rootScope.$broadcast('gaTopicChange', {id: 'sometopic2'});
+    $httpBackend.expectGET(expectedUrl1);
     $httpBackend.flush();
   });
 
-  it('adds preselected layers', function() {
-    $httpBackend.expectGET(expectedUrl);
+  it('update the catalog when the language change', function() {
+    $rootScope.$broadcast('$translateChangeEnd', {language: 'somelang2'});
+    $httpBackend.expectGET(expectedUrl2);
     $httpBackend.flush();
-    var layers = map.getLayers();
-    var numLayers = layers.getLength();
-    expect(numLayers).to.equal(1);
-    expect(layers.item(0).get('bodId')).to.equal('bar');
   });
-
-  describe('layers already in the map', function() {
-
-    beforeEach(inject(function(gaLayers) {
-      var layer = gaLayers.getOlLayerById('foo');
-      map.addLayer(layer);
-    }));
-
-    it('adds layers specified in permalink', function() {
-      $httpBackend.expectGET(expectedUrl);
-      $httpBackend.flush();
-      var layers = map.getLayers();
-      var numLayers = layers.getLength();
-      expect(numLayers).to.equal(1);
-      expect(layers.item(0).get('bodId')).to.equal('foo');
-    });
-  });
-
 });
