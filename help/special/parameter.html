@@ -1,0 +1,125 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Untitled Document</title>
+
+<STYLE type="text/css">
+td {
+   border: solid 1px #eee;
+   padding: 3px;
+ } 
+table {
+   border-collapse: collapse;
+   font-family: Arial, Helvetica, sans-serif;
+   font-size: 10px;
+ } 
+a:link    {text-decoration:none;color:#006699;}
+a:visited {text-decoration:none;color:#006699;}
+a:hover   {text-decoration:underline;color:#006699}
+a:active  {text-decoration:none;color:#006699;} 
+
+</STYLE>
+
+</head>
+
+<body>
+	<table width="570">
+			<tr>
+        <td width="100" valign="top" bgcolor="#eeeeee"><span style="font-weight:bold; font-size:11px;">Parameter</span></td>
+        <td width="150" valign="top" bgcolor="#eeeeee"><span style="font-weight:bold; font-size:11px;">Beschreibung</span></td>
+        <td width="310" valign="top" bgcolor="#eeeeee"><span style="font-weight:bold; font-size:11px;">Beispiel</span></td>
+      </tr>
+      <tr>
+        <td width="100" valign="top">lang</td>
+        <td width="150" valign="top">Sprache der Anwendung de, fr, it, rm oder en</td>
+        <td width="310" valign="top"><a href="http://map.geo.admin.ch/?lang=rm" target="_blank">http://map.geo.admin.ch/?lang=rm</a></td>
+      </tr>
+      <tr>
+        <td width="100" valign="top">zoom</td>
+        <td width="150" valign="top">Zoom level, von 0 bis 13</td>
+        <td width="310" valign="top"><a href="http://map.geo.admin.ch/?zoom=12" target="_blank">http://map.geo.admin.ch?zoom=12</a></td>
+      </tr>
+      <tr>
+        <td width="100" valign="top">Y, X</td>
+        <td width="150" valign="top">Easting (von 450&lsquo;000 bis    900&lsquo;000) Northing, Bereich von 50&lsquo;000 bis    350&lsquo;000 (Immer kleiner als  Y)</td>
+        <td width="310" valign="top"><a href="http://map.geo.admin.ch/?Y=600000&X=190000" target="_blank">http://map.geo.admin.ch?Y=600000&X=190000</a></td>
+      </tr>
+      <tr>
+        <td width="100" valign="top">topic</td>
+        <td width="150" valign="top">Thema mit entsprechenden Datensätze: blw, are, bafu, swisstopo, kgs, funksender, nga, ivs, sachplan, geol, luftbilder, wildruhezonen, vu, inspire, ech</td>
+        <td width="310" valign="top"><a href="http://map.geo.admin.ch/?topic=vu" target="_blank">http://map.geo.admin.ch?topic=vu</a></td>
+      </tr>
+      <tr>
+        <td width="100" valign="top">bgLayer</td>
+        <td width="150" valign="top">Hintergrundkarte: einer von    ch.swisstopo.pixelkarte-farbe, ch.swisstopo.pixelkarte-grau oder voidLayer</td>
+        <td width="310" valign="top"><a href="http://map.geo.admin.ch/?bgLayer=ch.swisstopo.pixelkarte-grau" target="_blank">http://map.geo.admin.ch?bgLayer=ch.swisstopo.pixelkarte-grau</a></td>
+      </tr>
+      <tr>
+        <td width="100" height="143" valign="top">layers</td>
+        <td width="150" valign="top">Darstellung Layer, um eine    komplette Liste von KML Inhalten zu erhalten: layers sind unterstützt mit ||    separate Liste mit: KML||kml URL WMS Layers sind unterstützt mit || separate    Liste mit: WMS||layer title||wms url||layer name</td>
+        <td width="310" valign="top"><a href="http://map.geo.admin.ch/?layers=WMS%7C%7CGeothermie%7C%7Chttp%3A%2F%2Fwms.geo.admin.ch%2F%3F%7C%7Cch.swisstopo.geologie-geophysik-geothermie,ch.ensi.zonenplan-notfallschutz-kernanlagen,KML%7C%7Chttp%3A%2F%2Fwww.meteoschweiz.admin.ch%2Fweb%2Fde%2Fklima%2Fmesssysteme%2Fboden%2Fgoogle_earth.Par.0007.DownloadFile.ext.tmp%2Fobs.kml" target="_blank">
+http://map.geo.admin.ch/?layers=WMS<br />
+%7C%7CGeothermie%7C%7Chttp%3A%2F%2F<br />
+wms.geo.admin.ch%2F%3F%7C%7Cch.<br />
+swisstopo.geologie-geophysik-geothermie,
+<br />ch.ensi.zonenplan-notfallschutz-<br />
+kernanlagen,KML%7C%7Chttp%3A%2F%2F<br />
+www.meteoschweiz.admin.ch%2Fweb%2Fde%2Fklima<br />
+%2Fmesssysteme%2Fboden%2Fgoogle_earth.<br />
+Par.0007.DownloadFile.ext.tmp%2Fobs.kml</a></td>
+      </tr>
+      <tr>
+        <td width="100" valign="top">layers_opacity</td>
+        <td width="150" valign="top">Opazität Layer - sollte mit    Anzahl der Layer überinestimmen (0-1.0)</td>
+        <td width="310" valign="top"><a href="http://map.geo.admin.ch/?layers=ch.swisstopo.hiks-dufour&amp;layers_opacity=0.5" target="_blank">http://map.geo.admin.ch?layers=ch.swisstopo.hiks-<br />dufour&amp;layers_opacity=0.5</a></td>
+      </tr>
+      <tr>
+        <td width="100" valign="top">layers_visibility</td>
+        <td width="150" valign="top">Ein/Ausschalten der Sichtbarkeit    der Layer die in der Auswahl aktiviert sind</td>
+        <td width="310" valign="top"><a href="http://map.geo.admin.ch/?layers=ch.swisstopo.hiks-dufour&amp;layers_visibility=False" target="_blank">http://map.geo.admin.ch?layers=ch.swisstopo.hiks-<br />dufour&amp;layers_visibility=False</a></td>
+      </tr>
+      <tr>
+        <td width="100" valign="top">layers_timestamp</td>
+        <td width="150" valign="top">Liste von timestamp (Format  YYYYMMDD). Ein timestamp pro Layer, leer wann kein "timeEnabled" Layer.<br>
+Sonderfall YYYYMMDD "99991231": alle Daten aus allen Jahren sind dargestellt (defaultmässig).</td>
+        <td width="310" valign="top"><a href="http://map.geo.admin.ch/?layers_timestamp=19971231,19991231,19981231,20001231,99991231,2014,&X=190000.00&Y=660000.00&zoom=1&lang=fr&topic=luftbilder&bgLayer=ch.swisstopo.pixelkarte-grau&layers=ch.swisstopo.lubis-luftbilder_schwarzweiss,ch.swisstopo.lubis-luftbilder_farbe,ch.swisstopo.lubis-luftbilder_infrarot,ch.swisstopo.lubis-luftbilder-dritte-firmen,ch.swisstopo.lubis-luftbilder-dritte-kantone,ch.swisstopo.lubis-bildstreifen,ch.swisstopo.images-swissimage.metadata&catalogNodes=1179,1180,1186,1184" target="_blank">http://map.geo.admin.ch/?layers_timestamp=19971231,19991231,19981231,20001231,99991231,2014,&X=190000.00&Y=660000.00&zoom=1&lang=fr&topic=luftbilder&bgLayer=ch.swisstopo.pixelkarte-grau&layers=ch.swisstopo.lubis-luftbilder_schwarzweiss,ch.swisstopo.lubis-luftbilder_farbe,ch.swisstopo.lubis-luftbilder_infrarot,ch.swisstopo.lubis-luftbilder-dritte-firmen,ch.swisstopo.lubis-luftbilder-dritte-kantone,ch.swisstopo.lubis-bildstreifen,ch.swisstopo.images-swissimage.metadata&catalogNodes=1179,1180,1186,1184</a></td>
+      </tr>
+	  
+      <tr>
+        <td width="100" valign="top">time</td>
+        <td width="150" valign="top">Jahr (Format : YYYY). Nutzbar für alle "timeEnabled" Layers.<br>
+Sonderfall WMS:  YYYY leer bedeutet, dass die Daten von allen Jahren werden angezeigt (defaultmässig)</td>
+        <td width="310" valign="top"><a href="http://map.geo.admin.ch/?layers=ch.swisstopo.lubis-luftbilder_farbe&time=1981" target="_blank">http://map.geo.admin.ch/ 
+		<br>?layers=ch.swisstopo.lubis-luftbilder_farbe&time=1981</a></td>
+      </tr>
+      <tr>
+        <td width="100" valign="top">catalogNodes</td>
+        <td width="150" valign="top">Ausgewählte Bäume der    entsprechenden Katalog Gruppe</td>
+        <td width="310" valign="top"><a href="http://map.geo.admin.ch/?catalogNodes=457" target="_blank">http://map.geo.admin.ch/?catalogNodes=457</a></td>
+      </tr>
+      <tr>
+        <td width="100" valign="top">(layer    bod id)</td>
+        <td width="150" valign="top">Layer bod id der features die    hervorgehoben werden sollten</td>
+        <td width="310" valign="top"><a href="http://map.geo.admin.ch/?ch.bafu.bundesinventare-moorlandschaften=212,213" target="_blank">http://map.geo.admin.ch/?ch.bafu.bundesinventare-moorlandschaften=212,213</a></td>
+      </tr>
+      <tr>
+        <td width="100" valign="top">crosshair</td>
+        <td width="150" valign="top">crosshair=, Mögliche Typen:    cross, circle, bowl, point und marker</td>
+        <td width="310" valign="top"><a href="http://map.geo.admin.ch/?Y=538700&amp;X=165890&amp;zoom=6&amp;crosshair=circle" target="_blank">http://map.geo.admin.ch/?Y=538700&amp;<br />X=165890&amp;zoom=6&amp;crosshair=circle</a></td>
+      </tr>
+      <tr>
+        <td width="100" valign="top">swisssearch</td>
+        <td width="150" valign="top">swisssearch=<br>Adresse oder WGS84-Koordinaten</td>
+        <td width="310" valign="top"><a href="http://map.geo.admin.ch/?swisssearch=berges%2037%20payerne" target="_blank">http://map.geo.admin.ch/?swisssearch=<br />berges%2037%20payerne</a><br><br>
+		<a href="http://map.geo.admin.ch/?swisssearch=7.04983,46.42928" target="_blank">http://map.geo.admin.ch/?swisssearch=7.04983,46.42928</a></td>
+      </tr>
+      <tr>
+        <td width="100" valign="top">swipe_ratio</td>
+        <td width="150" valign="top">Wert zwischen 0 und 1 definiert    die relative Position des Swipe Elements in Modus  der Vergleichsfunktion (mindestens 2 layers)</td>
+        <td width="310" valign="top"><a href="http://map.geo.admin.ch/?swipe_ratio=0.5&bgLayer=ch.swisstopo.pixelkarte-farbe&layers=ch.swisstopo.geologie-geotechnik-gk200" target="_blank">http://map.geo.admin.ch/?swipe_ratio=0.5&bgLayer=ch.swisstopo.pixelkarte-farbe&layers=ch.swisstopo.geologie-geotechnik-gk200</a></td>
+      </tr>
+</table>
+
+</body>
+</html>
