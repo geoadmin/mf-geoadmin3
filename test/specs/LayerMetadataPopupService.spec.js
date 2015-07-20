@@ -2,20 +2,44 @@ describe('ga_layer_metadata_popup_service', function() {
   var gaLayerMetadataPopup,
       $httpBackend,
       $rootScope,
-      $translate,
-      gaTopic;
+      $translate;
 
-  beforeEach(inject(function($injector) {
-    gaLayerMetadataPopup = $injector.get('gaLayerMetadataPopup');
-    $httpBackend = $injector.get('$httpBackend');
-    $rootScope = $injector.get('$rootScope');
-    $translate = $injector.get('$translate');
-    gaTopic = $injector.get('gaTopic');
+  beforeEach(function() {
+    module(function($provide) {
+      $provide.value('gaTopic', {
+        get: function() {
+          return {
+            id: "sometopic",
+            langs: {
+              label: "somelang",
+              value: "somelang"
+            }
+          };
+        }
+      });
+      $provide.value('gaLang', new (function() {
+        var lang = 'somelang';
+        this.get = function() {
+          return lang;
+        };
+        this.set = function(newLang) {
+          lang = newLang;
+          $translate.use(newLang);
+        };
+      })());
+    });
 
+    inject(function($injector) {
+      gaLayerMetadataPopup = $injector.get('gaLayerMetadataPopup');
+      $httpBackend = $injector.get('$httpBackend');
+      $rootScope = $injector.get('$rootScope');
+      $translate = $injector.get('$translate');
+    });
 
     $translate.use('somelang');
-    $rootScope.$digest();
-  }));
+    $httpBackend.whenGET('http://example.com/all?lang=somelang').respond({});
+    $httpBackend.flush();
+  });
 
   afterEach(function () {
     $httpBackend.verifyNoOutstandingExpectation();
@@ -23,8 +47,6 @@ describe('ga_layer_metadata_popup_service', function() {
   });
 
   it('creates a legend popup with the right content', function() {
-    $httpBackend.flush();
-
     var expectedUrlLegend = 'http://legendservice.com/sometopic/somelayer?lang=somelang';
     $httpBackend.whenGET(expectedUrlLegend).respond('<div>Some raw html</div>');
     gaLayerMetadataPopup.toggle('somelayer');

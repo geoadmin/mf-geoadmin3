@@ -35,11 +35,11 @@ describe('ga_topic_directive', function() {
     });
  
     it('displays nothing if topics are not loaded', function() {
-        var items = element.find('.ga-topic-item');
-        expect(items.length).to.be(0);
+      var items = element.find('.ga-topic-item');
+      expect(items.length).to.be(0);
     });
 
-    describe('uses desktop template by default', function() {
+    describe('loads a topic', function() {
 
       beforeEach(function() {
         $rootScope.$broadcast('gaTopicChange', topics[0]);
@@ -78,6 +78,7 @@ describe('ga_topic_directive', function() {
       });
     });
   });
+
   describe('uses select box template (mobile)', function() {
 
     beforeEach(function() {
@@ -87,11 +88,11 @@ describe('ga_topic_directive', function() {
     });
  
     it('displays nothing if topics are not loaded', function() {
-        var items = element.find('select option');
-        expect(items.length).to.be(1);
+      var items = element.find('select option');
+      expect(items.length).to.be(1); //empty option
     });
 
-    describe('uses desktop template by default', function() {
+    describe('loads a topic', function() {
 
       beforeEach(function() {
         $rootScope.$broadcast('gaTopicChange', topics[0]);

@@ -41,6 +41,17 @@ describe('ga_catalogtree_directive', function() {
           });
         }
       });
+      $provide.value('gaTopic', {
+        get: function() {
+          return {
+            id: 'sometopic',
+            langs: [{
+              value: 'somelang',
+              label: 'somelang'
+            }]
+          };
+        }
+      });
     });
 
     inject(function($injector) {

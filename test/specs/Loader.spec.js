@@ -1,7 +1,7 @@
 beforeEach(function() {
 
   // The ga module requires the gaGlobalOptions.version property to be
-  // defined.
+  // defined
   module(function($provide) {
     var location = {
       host: 'map.admin.ch',
@@ -29,9 +29,12 @@ beforeEach(function() {
       resourceUrl: location.origin + pathname + versionSlashed,
       ogcproxyUrl : location.protocol + apiUrl + '/ogcproxy?url=',
       whitelist: [
-        'http://www.kmlvalidator.org/validate.htm',
         'https://' + location.host + '/**'
-      ]
+      ],
+      defaultTopicId: 'sometopic',
+      translationFallbackCode: 'somelang',
+      defaultExtent: [420000, 30000,900000, 350000],
+      defaultResolution: 500.0
     });
   });
 
@@ -49,14 +52,18 @@ beforeEach(function() {
         'http://wmts.com/foo/{Layer}/default/{Time}/21781/' +
         '{TileMatrix}/{TileRow}/{TileCol}.{Format}';
     gaLayersProvider.layersConfigUrlTemplate =
-        'http://example.com/{Topic}?lang={Lang}';
+        'http://example.com/all?lang={Lang}';
     gaLayersProvider.legendUrlTemplate =
         'http://legendservice.com/{Topic}/{Layer}?lang={Lang}';
   });
 
+  module(function(gaTopicProvider, gaGlobalOptions) {
+    gaTopicProvider.topicsUrl = gaGlobalOptions.cachedApiUrl + '/rest/services';
+    gaTopicProvider.thumbnailUrlTemplate = gaGlobalOptions.resourceUrl + 'img/{Topic}.jpg';
+  });
+
   module(function(gaExportKmlProvider, gaGlobalOptions) {
-    gaExportKmlProvider.downloadKmlUrl =
-        gaGlobalOptions.apiUrl + '/downloadkml';
+    gaExportKmlProvider.downloadKmlUrl = gaGlobalOptions.apiUrl + '/downloadkml';
   });
 
   module(function(gaFileStorageProvider, gaGlobalOptions) {

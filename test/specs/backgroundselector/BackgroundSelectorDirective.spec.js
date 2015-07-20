@@ -1,13 +1,11 @@
 describe('ga_backgroundselector_directive', function() {
 
-  var element, map, layer1, layer2, rootScope;
+  var element, map, layer1, layer2, $rootScope, $compile;
 
   beforeEach(function() {
 
     map = new ol.Map({});
-
     layer1 = new ol.layer.Tile();
-
     layer2 = new ol.layer.Tile();
 
     module(function($provide) {
@@ -26,6 +24,23 @@ describe('ga_backgroundselector_directive', function() {
           }];
         }
       });
+      $provide.value('gaTopic', {
+        get: function() {
+          return {
+            id: 'sometopic',
+            langs: [{
+              value: 'somelang',
+              label: 'somelang'
+            }]
+          };
+        }
+      });
+    });
+
+    inject(function($injector) {
+      $compile = $injector.get('$compile');
+      $rootScope = $injector.get('$rootScope');
+      $rootScope.map = map;
     });
 
     element = angular.element(
@@ -34,18 +49,8 @@ describe('ga_backgroundselector_directive', function() {
               'ga-background-selector-map="map">' +
           '</div>' +
       '</div>');
-
-    inject(function($rootScope, $compile) {
-      $rootScope.map = map;
-
-      $compile(element)($rootScope);
-      $rootScope.$digest();
-
-      $rootScope.$broadcast('gaTopicChange', {id: 'sometopic'});
-      $rootScope.$digest();
-      rootScope = $rootScope;
-    });
-
+    $compile(element)($rootScope);
+    $rootScope.$digest();
   });
 
   describe('initialization', function() {
@@ -66,19 +71,19 @@ describe('ga_backgroundselector_directive', function() {
       expect(element.find('.ga-swissimage').hasClass('ga-bg-layer-0')).to.be(false);
       
       element.find('.ga-bg-layer-bt').click();
-      rootScope.$digest();
+      $rootScope.$digest();
       expect(element.find('.ga-swissimage').hasClass('ga-bg-layer-0')).to.be(true);
 
       element.find('.ga-bg-layer-bt').click();
-      rootScope.$digest();
+      $rootScope.$digest();
       expect(element.find('.ga-swissimage').hasClass('ga-bg-layer')).to.be(true);
 
       element.find('.ga-bg-layer-bt').click();
-      rootScope.$digest();
+      $rootScope.$digest();
       expect(element.find('.ga-swissimage').hasClass('ga-bg-layer-0')).to.be(true);
 
       element.find('.ga-swissimage').click();
-      rootScope.$digest();
+      $rootScope.$digest();
       expect(element.find('.ga-swissimage').hasClass('ga-bg-layer')).to.be(true);
     });
   });

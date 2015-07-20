@@ -92,38 +92,49 @@ describe('ga_map_service', function() {
   };
 
   describe('gaLayers', function() {
-    var layers, $httpBackend;
+    var layers, $httpBackend, $rootScope;
 
-    var expectedUrl = 'http://example.com/sometopic?lang=somelang';
 
     beforeEach(function() {
 
-      inject(function($injector) {
-        $httpBackend = $injector.get('$httpBackend');
-        $httpBackend.whenGET(expectedUrl).respond({
-          foo: {
-            type: 'wmts',
-            matrixSet: 'set1',
-            timestamps: ['t1', 't2']
-          },
-          bar: {
-            type: 'wmts',
-            matrixSet: 'set2',
-            timestamps: ['t3', 't4']
+      module(function($provide) {
+        $provide.value('gaTopic', {
+          get: function() {
+            return {
+              id: 'sometopic',
+              backgroundLayers: ['bar']
+            }
+          }
+        });
+        $provide.value('gaLang',{
+          get: function() {
+            return 'somelang';
           }
         });
       });
 
-      inject(function($injector, $translate, $rootScope) {
+      inject(function($injector) {
+        $rootScope = $injector.get('$rootScope');
+        $httpBackend = $injector.get('$httpBackend');
         layers = $injector.get('gaLayers');
-
-        $httpBackend.expectGET(expectedUrl);
-        $translate.use('somelang');
-        $rootScope.$broadcast('gaTopicChange',
-          {id: 'sometopic', backgroundLayers: ['bar']});
-        $rootScope.$digest();
       });
 
+      var expectedUrl = 'http://example.com/all?lang=somelang';
+      $httpBackend.whenGET(expectedUrl).respond({
+        foo: {
+          type: 'wmts',
+          matrixSet: 'set1',
+          timestamps: ['t1', 't2']
+        },
+        bar: {
+          type: 'wmts',
+          matrixSet: 'set2',
+          timestamps: ['t3', 't4']
+        }
+      });
+      $httpBackend.expectGET(expectedUrl);
+      $rootScope.$digest();
+      $httpBackend.flush();
     });
 
     afterEach(function () {
@@ -134,7 +145,6 @@ describe('ga_map_service', function() {
 
     describe('getOlLayerById', function() {
       it('returns layers with correct settings', function() {
-        $httpBackend.flush();
         var layer = layers.getOlLayerById('foo');
         expect(layer instanceof ol.layer.Tile).to.be.ok();
         var source = layer.getSource();
@@ -148,7 +158,6 @@ describe('ga_map_service', function() {
 
     describe('set layer visibility through accessor', function() {
       it('sets the visibility as expected', function() {
-        $httpBackend.flush();
         var layer = layers.getOlLayerById('foo');
         expect(layer.getVisible()).to.be.ok();
         expect(layer.visible).to.be.ok();
@@ -163,7 +172,6 @@ describe('ga_map_service', function() {
 
     describe('set layer opacity through accessor', function() {
       it('sets the visibility as expected', function() {
-        $httpBackend.flush();
         var layer = layers.getOlLayerById('foo');
         expect(layer.getOpacity()).to.be(1);
         expect(layer.invertedOpacity).to.be("0");
@@ -178,7 +186,6 @@ describe('ga_map_service', function() {
 
     describe('getBackgroundLayers', function() {
       it('returns correct background layers information', function() {
-        $httpBackend.flush();
         var backgroundLayers = layers.getBackgroundLayers();
         expect(backgroundLayers.length).to.be(1);
         expect(backgroundLayers[0].id).to.be('bar');
@@ -267,6 +274,7 @@ describe('ga_map_service', function() {
       inject(function($injector) {
         manager = $injector.get('gaLayersPermalinkManager');
         permalink = $injector.get('gaPermalink');
+        gaTopic = $injector.get('gaTopic');
       });
 
       manager(map);
