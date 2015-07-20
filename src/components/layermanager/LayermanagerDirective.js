@@ -356,9 +356,12 @@ goog.require('ga_map_service');
           }
         });
 
+        // Badge nb layers
+        var badge = $('.ga-layers-badge');
         scope.$watchCollection('layers | filter:layerFilter',
             function(olLayers) {
           updateTimeSelectorStatus(olLayers, element);
+          badge.text(olLayers.length);
         });
       }
     };
