@@ -324,74 +324,6 @@ itemscope itemtype="http://schema.org/WebApplication"
           </div>
         </div>  <!-- .panel -->
 
-        <!-- Choose a map -->
-        <div class="panel" ng-hide="globals.isDrawActive" ng-if="!globals.offline">
-            <div ng-show="globals.chooseMapShown" class="ga-choose-map-mode">
-            <label class="btn btn-default btn-sm"
-                   ng-class="{'ga-mode-selected': globals.isModeAdvanced}">
-              <input type="radio" name="choosemap" ng-model="globals.isModeAdvanced"
-                     ng-value="true"/><span translate>mode_advanced</span>
-            </label>
-            <label class="btn btn-default btn-sm"
-                   ng-class="{'ga-mode-selected': !globals.isModeAdvanced}">
-              <input type="radio" name="choosemap" ng-model="globals.isModeAdvanced"
-                     ng-value="false"/><span translate>mode_simple</span>
-            </label>
-          </div>
-
-
-          <a id="chooseMapHeading" class="panel-heading accordion-toggle collapsed"
-             data-toggle="collapse" data-parent="#pulldown-content" href="#chooseMap"
-             ga-collapsible-show="globals.chooseMapShown">
-            <i class="visible-collapsed icon-caret-right"></i>
-            <i class="hidden-collapsed icon-caret-down"></i>
-            <span translate>choose_map</span>
-  
-  % if device == 'desktop':
-            <span ga-help="32,37,39" ga-help-options="{showOnHover:true}"></span>
-  % endif
-          </a>
-          
-          <div id="chooseMap" class="collapse">
-  % if device == 'desktop':
-            <div class="theme-toggle">
-              <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                <span translate>choose_theme</span>
-                <i class="icon-chevron-sign-right"></i>
-              </a>
-              <div class="dropdown-menu">
-                <div ga-topic ga-topic-ui="list"></div>
-              </div>
-            </div>
-  % endif
-
-            <div class="ga-topic-label" translate>{{topicId}}</div>
- 
-  % if device == 'mobile':
-            <label class="topic-container">
-              <span translate>change_topic</span>
-              <div ga-topic ga-topic-ui="select"></div>
-            </label>
-  % endif
-            <div class="panel-body panel-body-wide accordion-inner-catalog"
-                 ng-show="globals.isModeAdvanced"
-                 ng-controller="GaCatalogtreeController">
-              <div ga-catalogtree
-                   ga-catalogtree-map="map"
-                   ga-catalogtree-options="options">
-              </div>
-            </div>
-            <div class="panel-body panel-body-wide"
-                 ng-if="!globals.isModeAdvanced"
-                 ng-controller="GaSearchController">
-              <div ga-layerselector
-                   ga-layerselector-map="map"
-                   ga-layerselector-options="options">
-              </div>
-            </div>
-          </div>
-        </div> <!-- .panel -->
-
         <!-- Draw -->
         <div class="panel">
           <a id="drawHeading" class="panel-heading accordion-toggle collapsed"
@@ -460,9 +392,77 @@ itemscope itemtype="http://schema.org/WebApplication"
           </div>
         </div> <!-- .panel -->
   % endif
+        <!-- Choose a map -->
+        <div class="panel" ng-hide="globals.isDrawActive" ng-if="!globals.offline">
+            <div ng-show="globals.chooseMapShown" class="ga-choose-map-mode">
+            <label class="btn btn-default btn-sm"
+                   ng-class="{'ga-mode-selected': globals.isModeAdvanced}">
+              <input type="radio" name="choosemap" ng-model="globals.isModeAdvanced"
+                     ng-value="true"/><span translate>mode_advanced</span>
+            </label>
+            <label class="btn btn-default btn-sm"
+                   ng-class="{'ga-mode-selected': !globals.isModeAdvanced}">
+              <input type="radio" name="choosemap" ng-model="globals.isModeAdvanced"
+                     ng-value="false"/><span translate>mode_simple</span>
+            </label>
+          </div>
+
+
+          <a id="chooseMapHeading" class="panel-heading accordion-toggle light collapsed"
+             data-toggle="collapse" data-parent="#pulldown-content" href="#chooseMap"
+             ga-collapsible-show="globals.chooseMapShown">
+            <i class="visible-collapsed icon-caret-right"></i>
+            <i class="hidden-collapsed icon-caret-down"></i>
+            <span translate>choose_map</span>
+  
+  % if device == 'desktop':
+            <span ga-help="32,37,39" ga-help-options="{showOnHover:true}"></span>
+  % endif
+          </a>
+          
+          <div id="chooseMap" class="collapse">
+  % if device == 'desktop':
+            <div class="theme-toggle" ng-show="globals.isModeAdvanced">
+              <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                <span translate>choose_theme</span>
+                <i class="icon-chevron-sign-right"></i>
+              </a>
+              <div class="dropdown-menu">
+                <div ga-topic ga-topic-ui="list"></div>
+              </div>
+            </div>
+  % endif
+
+            <div class="ga-topic-label" ng-show="globals.isModeAdvanced" translate>{{topicId}}</div>
+ 
+  % if device == 'mobile':
+            <label class="topic-container">
+              <span translate>change_topic</span>
+              <div ga-topic ga-topic-ui="select"></div>
+            </label>
+  % endif
+            <div class="panel-body panel-body-wide"
+                 ng-if="globals.isModeAdvanced"
+                 ng-controller="GaCatalogtreeController">
+              <div ga-catalogtree
+                   ga-catalogtree-map="map"
+                   ga-catalogtree-options="options">
+              </div>
+            </div>
+            <div class="panel-body panel-body-wide"
+                 ng-if="!globals.isModeAdvanced"
+                 ng-controller="GaSearchController">
+              <div ga-layerselector
+                   ga-layerselector-map="map"
+                   ga-layerselector-options="options">
+              </div>
+            </div>
+          </div>
+        </div> <!-- .panel -->
+
         <!-- Selection -->
-        <div class="panel" ng-hide="!globals.isModeAdvanced || globals.isDrawActive">
-          <a id="selectionHeading" class="panel-heading accordion-toggle light"
+        <div class="panel" ng-hide="globals.isDrawActive">
+          <a id="selectionHeading" class="panel-heading accordion-toggle light collapsed"
              data-toggle="collapse" href="#selection">
             <i class="visible-collapsed icon-caret-right"></i>
             <i class="hidden-collapsed icon-caret-down"></i>
@@ -472,7 +472,7 @@ itemscope itemtype="http://schema.org/WebApplication"
             <span ga-help="34,35,36" ga-help-options="{showOnHover:true}"></span>
 % endif
           </a>
-          <div id="selection" class="collapse in"
+          <div id="selection" class="collapse"
                ga-collapsible-observe="globals.selectionShown">
             <div class="panel-body panel-body-wide"
                  ga-layermanager
