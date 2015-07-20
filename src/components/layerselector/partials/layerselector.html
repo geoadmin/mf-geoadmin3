@@ -1,9 +1,21 @@
-<div ga-search ga-search-map="map" ga-search-options="options"
-     ga-search-focused="focused">
+<!--div ga-search ga-search-map="map" ga-search-options="options"
+     ga-search-focused="focused"-->
 </div>
 <ul>
-  <li ng-repeat="l in layers">
-    {{l}}
+  <li ng-repeat="item in items"
+      ng-class="{'ga-layer-selected': item.selected}"
+      ng-mouseenter="addPreview(map, item)"
+      ng-mouseleave="removePreview(map, item)">
+    <label title="{{item.label}}"
+           class="ga-truncate-text ga-checkbox">
+      <input type="checkbox"
+             ng-model="item.selected"
+             ng-change="toggleLayer(map, item)"/>
+      <span></span>
+      {{item.label}}
+    </label>
+    <button class="ga-icon ga-btn icon-info-sign"
+            ng-click="getLegend($event, item)"></button>
   </li>
 </ul>
 

@@ -8,4 +8,31 @@
   .ga-search-title {
     display: none;
   }
+  ul {
+    padding: 0;
+  }
+  li {
+    height: 41px; 
+    font-weight: normal;
+    border-bottom: 1px dashed #c7c7c7;
+    &:hover {
+      color: #666;
+    }
+    &.ga-layer-selected, &.ga-layer-selected:hover {
+      color: red;
+    }
+  }
+  label {
+    width: ~"calc(100% - 40px)";
+    margin: 0;
+    padding: 0;
+    font-weight: inherit;
+  }
+  button {
+    float: right;
+  }
+  label, button {
+    height: 40px;
+    line-height: 40px;
+  }
 }
