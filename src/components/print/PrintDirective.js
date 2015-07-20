@@ -16,7 +16,7 @@ goog.require('ga_print_style_service');
     var pdfLegendsToDownload = [];
     var pdfLegendString = '_big.pdf';
     var printRectangle;
-    var deregister;
+    var deregister = [];
     var POINTS_PER_INCH = 72; //PostScript points 1/72"
     var MM_PER_INCHES = 25.4;
     var UNITS_RATIO = 39.37; // inches per meter
@@ -36,32 +36,25 @@ goog.require('ga_print_style_service');
     $scope.options.progress = '';
 
     // Get print config
-    var updatePrintConfig = function() {
+    var loadPrintConfig = function() {
       canceller = $q.defer();
       var http = $http.get($scope.options.printConfigUrl, {
         timeout: canceller.promise
-      }).success(function(data) {
-        $scope.capabilities = data;
-
-        angular.forEach($scope.capabilities.layouts, function(lay) {
-          lay.stripped = lay.name.substr(2);
-        });
-
-        // default values:
-        $scope.layout = data.layouts[0];
-        $scope.dpi = data.dpis;
-        $scope.scales = data.scales;
-        $scope.scale = data.scales[5];
-        $scope.options.legend = false;
-        $scope.options.graticule = false;
       });
+      return http;
     };
 
     var activate = function() {
       deregister = [
         $scope.map.on('precompose', handlePreCompose),
         $scope.map.on('postcompose', handlePostCompose),
+        $scope.map.on('change:size', function(event) {
+          updatePrintRectanglePixels($scope.scale);
+        }),
         $scope.map.getView().on('propertychange', function(event) {
+          updatePrintRectanglePixels($scope.scale);
+        }),
+        $scope.$watchGroup(['scale', 'layout'], function() {
           updatePrintRectanglePixels($scope.scale);
         })
       ];
@@ -70,9 +63,12 @@ goog.require('ga_print_style_service');
     };
 
     var deactivate = function() {
-      if (deregister) {
-        for (var i = 0; i < deregister.length; i++) {
-          ol.Observable.unByKey(deregister[i]);
+      var item;
+      while (item = deregister.pop()) {
+        if (angular.isFunction(item)) {
+          item();
+        } else {
+          ol.Observable.unByKey(item);
         }
       }
       refreshComp();
@@ -123,24 +119,6 @@ goog.require('ga_print_style_service');
     };
 
     // Listeners
-    $scope.$on('gaTopicChange', function(event, topic) {
-      if (!printConfigLoaded) {
-        updatePrintConfig();
-        printConfigLoaded = true;
-      }
-    });
-    $scope.$on('gaLayersChange', function(event, data) {
-      updatePrintRectanglePixels($scope.scale);
-    });
-    $scope.map.on('change:size', function(event) {
-      updatePrintRectanglePixels($scope.scale);
-    });
-    $scope.$watch('scale', function() {
-      updatePrintRectanglePixels($scope.scale);
-    });
-    $scope.$watch('layout', function() {
-      updatePrintRectanglePixels($scope.scale);
-    });
     $rootScope.$on('gaTimeSelectorChange', function(event, time) {
       currentTime = time;
     });
@@ -658,7 +636,7 @@ goog.require('ga_print_style_service');
 
     // Start the print process
     $scope.submit = function() {
-      if (!$scope.options.active) {
+      if (!$scope.active) {
         return;
       }
       $scope.options.printsuccess = false;
@@ -986,7 +964,7 @@ goog.require('ga_print_style_service');
     };
 
     var updatePrintRectanglePixels = function(scale) {
-      if ($scope.options.active) {
+      if ($scope.active) {
         printRectangle = calculatePageBoundsPixels(scale);
         $scope.map.render();
       }
@@ -1048,9 +1026,28 @@ goog.require('ga_print_style_service');
       $scope.options.multiprint = (lrs.length == 1);
     });
 
-    $scope.$watch('options.active', function(newVal, oldVal) {
+    $scope.$watch('active', function(newVal, oldVal) {
       if (newVal === true) {
-        activate();
+        if (!printConfigLoaded) {
+          loadPrintConfig().success(function(data) {
+            $scope.capabilities = data;
+            angular.forEach($scope.capabilities.layouts, function(lay) {
+              lay.stripped = lay.name.substr(2);
+            });
+
+            // default values:
+            $scope.layout = data.layouts[0];
+            $scope.dpi = data.dpis;
+            $scope.scales = data.scales;
+            $scope.scale = data.scales[5];
+            $scope.options.legend = false;
+            $scope.options.graticule = false;
+            activate();
+            printConfigLoaded = true;
+          });
+        } else {
+          activate();
+        }
       } else {
         deactivate();
       }
@@ -1074,6 +1071,11 @@ goog.require('ga_print_style_service');
     function(gaBrowserSniffer) {
       return {
         restrict: 'A',
+        scope: {
+          map: '=gaPrintMap',
+          options: '=gaPrintOptions',
+          active: '=gaPrintActive'
+        },
         templateUrl: 'components/print/partials/print.html',
         controller: 'GaPrintDirectiveController',
         link: function(scope, elt, attrs, controller) {

@@ -1,3 +1,4 @@
-<a href="" ng-class="{'ga-selected-link' : lang == l.value}"
-   ng-click="selectLang(l.value)"
-   ng-repeat="l in options.langs">{{l.label}}</a>
+<a href=""
+   ng-class="{'ga-lang-selected' : lang == l}"
+   ng-click="selectLang(l)"
+   ng-repeat="l in langs">{{l | uppercase}}</a>

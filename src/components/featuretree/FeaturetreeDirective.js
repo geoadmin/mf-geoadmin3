@@ -256,10 +256,8 @@ goog.require('ga_map_service');
             });
 
             // When language change
-            scope.$on('gaLayersChange', function(evt, labelsOnly) {
-              if (labelsOnly) {
-                updateTree(scope.tree);
-              }
+            scope.$on('gaLayersTranslationChange', function(evt, newLayers) {
+              updateTree(scope.tree);
             });
 
             // When another directive calls for an update

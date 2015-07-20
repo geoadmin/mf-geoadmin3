@@ -322,10 +322,14 @@ goog.require('ga_map_service');
             scope.removeLayer(olLayer);
           });
         };
-        // Change layers label when topic changes
-        scope.$on('gaLayersChange', function(evt, data) {
-          removeNonTopicLayers(data.topicId);
 
+        // Remove non topic layer
+        scope.$on('gaTopicChange', function(evt, newTopic) {
+          removeNonTopicLayers(newTopic.id);
+        });
+
+        // Change layers label when topic changes
+        scope.$on('gaLayersTranslationChange', function(evt) {
           map.getLayers().forEach(function(olLayer) {
             if (scope.isBodLayer(olLayer)) {
               olLayer.label = gaLayers.getLayerProperty(olLayer.bodId, 'label');

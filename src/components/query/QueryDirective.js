@@ -395,14 +395,12 @@ goog.require('ga_storage_service');
     $scope.$on('gaQueryMore', function(evt, layerId, offset) {
       $scope.search(layerId, offset);
     });
-    $scope.$on('gaLayersChange', function(evt, labelsOnly) {
-      if (labelsOnly) {
-        // We refresh the labels here because the layer's label is not updated
-        // correctly when we use the filter in ng-options
-        angular.forEach($scope.queriesPredef, function(query) {
-          query.label = $translate.instant(query.id);
-        });
-      }
+    $scope.$on('gaLayersTranslationChange', function(evt, newLayers) {
+      // We refresh the labels here because the layer's label is not updated
+      // correctly when we use the filter in ng-options
+      angular.forEach($scope.queriesPredef, function(query) {
+        query.label = $translate.instant(query.id);
+      });
     });
   });
 

@@ -125,8 +125,10 @@
             width: 3px;
             border-left: 1px solid black;
 
-            .ga-slider-available {
-              left: -2px;
+            &.ga-slider-available {
+              :last-child {
+                left: -2px;
+              }
             }
           }
 
@@ -146,14 +148,18 @@
           }
 
           &.ga-slider-available {
-            background-color: rgba(255,0,0,.3);
-            bottom: 2px;
-            height: 6px;
-            left: -1px;
+            :last-child {
+              background-color: rgba(255,0,0,.3);
+              bottom: 2px;
+              height: 6px;
+              left: -1px;
+            }
           }
 
-          &.ga-slider-last .ga-slider-available {
-            background-color: transparent;
+          &.ga-slider-last.ga-slider-available {
+            :last-child {
+              background-color: transparent;
+            }
           }
         }
       }

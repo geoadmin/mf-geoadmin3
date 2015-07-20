@@ -1,8 +1,22 @@
 describe('ga_importkml__directive', function() {
-  var scope, element, map, urlTab, localFileTab, loadKmlBt, tabsContainer,
-      tabContents, formLocalFile, formUrl, inputFile, inputFileUrl, tabsLi;
+  var element, map, urlTab, localFileTab, loadKmlBt, tabsContainer,
+      tabContents, formLocalFile, formUrl, inputFile, inputFileUrl, tabsLi,
+      $httpBackend, $rootScope, $compile;
   
-  beforeEach(inject(function($injector, $rootScope, $compile) {
+  beforeEach(function() {
+
+    module(function($provide) {
+      $provide.value('gaTopic', {});
+      $provide.value('gaLang', {});
+      $provide.value('gaLayers', {});
+    });
+
+    inject(function($injector) {
+      $httpBackend = $injector.get('$httpBackend');
+      $rootScope = $injector.get('$rootScope');
+      $compile = $injector.get('$compile');
+    });
+
     map = new ol.Map({});
     map.setSize([600,300]);
     map.getView().fitExtent([-20000000, -20000000, 20000000, 20000000],
@@ -19,10 +33,8 @@ describe('ga_importkml__directive', function() {
       validationServiceUrl: 'http://www.kmlvalidator.org/validate.htm'
     };
     $compile(element)($rootScope);
-
-    scope = element.scope();
     $rootScope.$digest();
-  
+
     // Get HTML elements  
     tabsContainer = element.find('.tabbable');
     tabContents = tabsContainer.find('.tab-content > div'); 
@@ -32,7 +44,7 @@ describe('ga_importkml__directive', function() {
     urlTab = $(tabContents[1]);
     inputFile = localFileTab.find('input[type=file][name=file]');
     inputFileUrl = urlTab.find('input[type=url][name=url][ng-model=fileUrl]');
-  }));
+  });
 
   it('verifies html elements', function() {
     expect(loadKmlBt.length).to.be(1);
@@ -48,7 +60,6 @@ describe('ga_importkml__directive', function() {
   });
 
   describe('load KML from an URL', function() {
-    var $httpBackend;
     var expectedKmlUrl = 'http://admin.ch/ogcproxy?url=http%3A%2F%2Fgeo.admin.ch%2Ftest.kml';
     var fileUrlTest = 'http://geo.admin.ch/test.kml';
     var fileContent = '<?xml version=\'1.0\' encoding="UTF-8" standalone="no" ?>' +
@@ -77,7 +88,6 @@ describe('ga_importkml__directive', function() {
         '</kml>';
 
     beforeEach(inject(function($injector) {
-      $httpBackend = $injector.get('$httpBackend');
       $httpBackend.whenGET(expectedKmlUrl).respond(fileContent);
       $httpBackend.expectGET(expectedKmlUrl);
     }));

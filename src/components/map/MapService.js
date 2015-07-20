@@ -6,6 +6,7 @@ goog.require('ga_offline_service');
 goog.require('ga_storage_service');
 goog.require('ga_styles_from_literals_service');
 goog.require('ga_styles_service');
+goog.require('ga_topic_service');
 goog.require('ga_urlutils_service');
 (function() {
 
@@ -17,7 +18,8 @@ goog.require('ga_urlutils_service');
     'ga_styles_from_literals_service',
     'ga_styles_service',
     'ga_urlutils_service',
-    'ga_measure_service'
+    'ga_measure_service',
+    'ga_topic_service'
   ]);
 
   module.provider('gaTileGrid', function() {
@@ -744,13 +746,13 @@ goog.require('ga_urlutils_service');
     this.$get = function($http, $q, $rootScope, $translate, $window,
         gaBrowserSniffer, gaDefinePropertiesForLayer, gaMapUtils,
         gaNetworkStatus, gaStorage, gaTileGrid, gaUrlUtils,
-        gaStylesFromLiterals, gaGlobalOptions) {
+        gaStylesFromLiterals, gaGlobalOptions, gaPermalink, gaTopic,
+        gaLang) {
 
       var Layers = function(wmtsGetTileUrlTemplate,
           layersConfigUrlTemplate, legendUrlTemplate) {
-        var currentTopic;
-        var currentTime;
         var layers;
+        var currentTime;
 
         var getWmtsGetTileUrl = function(layer, format) {
           return wmtsGetTileUrlTemplate
@@ -758,9 +760,8 @@ goog.require('ga_urlutils_service');
               .replace('{Format}', format);
         };
 
-        var getLayersConfigUrl = function(topic, lang) {
+        var getLayersConfigUrl = function(lang) {
           return layersConfigUrlTemplate
-              .replace('{Topic}', topic)
               .replace('{Lang}', lang);
         };
 
@@ -770,6 +771,29 @@ goog.require('ga_urlutils_service');
               .replace('{Layer}', layer)
               .replace('{Lang}', lang);
         };
+
+        // Load layers for a given topic and language. Return a promise.
+        var lastUrlUsed;
+        var loadLayersConfig = function() {
+          var url = getLayersConfigUrl(gaLang.get());
+          // Avoid loading twice the same layers config (happens on page load)
+          if (lastUrlUsed == url) {
+            return;
+          }
+          lastUrlUsed = url;
+          return $http.get(url).then(function(response) {
+            var isLabelsOnly = angular.isDefined(layers);
+            layers = response.data;
+            if (isLabelsOnly) {
+              $rootScope.$broadcast('gaLayersTranslationChange', layers);
+            } else {
+              $rootScope.$broadcast('gaLayersChange', layers);
+            }
+          }, function(response) {
+            layers = undefined;
+          });
+        };
+        loadLayersConfig();
 
         // Function to remove the blob url from memory.
         var revokeBlob = function() {
@@ -803,27 +827,14 @@ goog.require('ga_urlutils_service');
           }
         };
 
-
-        /**
-         * Load layers for a given topic and language. Return a promise.
-         */
-        var loadForTopic = this.loadForTopic = function(topicId, lang) {
-          var url = getLayersConfigUrl(topicId, lang);
-
-          var promise = $http.get(url).then(function(response) {
-            layers = response.data;
-          }, function(response) {
-            layers = undefined;
-          });
-
-          return promise;
-        };
-
         /**
          * Reurn an array of pre-selected bodId from current topic
          */
         this.getSelectedLayers = function() {
-          return currentTopic.selectedLayers;
+          if (!layers || !gaTopic.get()) {
+            return;
+          }
+          return gaTopic.get().selectedLayers;
         };
 
         /**
@@ -832,7 +843,10 @@ goog.require('ga_urlutils_service');
          */
         this.getBackgroundLayers = function() {
           var self = this;
-          return $.map(currentTopic.backgroundLayers, function(bodId) {
+          if (!layers) {
+            return;
+          }
+          return $.map(gaTopic.get().backgroundLayers, function(bodId) {
             var retVal = {id: bodId,
                           label: self.getLayerProperty(bodId, 'label')};
             // In the background selector, we don't want the standard labels
@@ -1043,7 +1057,7 @@ goog.require('ga_urlutils_service');
          * Returns a promise. Use accordingly
          */
         this.getMetaDataOfLayer = function(bodId) {
-          var url = getMetaDataUrl(currentTopic.id, bodId, $translate.use());
+          var url = getMetaDataUrl(gaTopic.get().id, bodId, $translate.use());
           return $http.get(url);
         };
 
@@ -1091,30 +1105,8 @@ goog.require('ga_urlutils_service');
           return undefined;
         };
 
-        $rootScope.$on('gaTopicChange', function(event, topic) {
-          currentTopic = topic;
-          // do nothing if there's no lang set
-          var currentLang = $translate.use();
-          if (angular.isDefined(currentLang)) {
-            var currentTopicId = topic.id;
-            loadForTopic(currentTopicId, currentLang).then(function() {
-              $rootScope.$broadcast('gaLayersChange',
-                  {labelsOnly: false, topicId: currentTopicId});
-            });
-          }
-        });
-
-        $rootScope.$on('$translateChangeEnd', function() {
-          // do nothing if there's no topic set
-          if (angular.isDefined(currentTopic)) {
-            var currentTopicId = currentTopic.id;
-            // Do not set labelsOnly to true if initial load
-            var labelsOnly = angular.isDefined(layers);
-            loadForTopic(currentTopicId, $translate.use()).then(function() {
-              $rootScope.$broadcast('gaLayersChange',
-                  {labelsOnly: labelsOnly, topicId: currentTopicId});
-            });
-          }
+        $rootScope.$on('$translateChangeEnd', function(event, newLang) {
+          loadLayersConfig();
         });
 
         $rootScope.$on('gaTimeSelectorChange', function(event, time) {
@@ -1482,7 +1474,8 @@ goog.require('ga_urlutils_service');
   module.provider('gaLayersPermalinkManager', function() {
 
     this.$get = function($rootScope, gaLayers, gaPermalink, $translate, $http,
-        gaKml, gaMapUtils, gaWms, gaLayerFilters, gaUrlUtils, gaFileStorage) {
+        gaKml, gaMapUtils, gaWms, gaLayerFilters, gaUrlUtils, gaFileStorage,
+        gaTopic) {
 
       var layersParamValue = gaPermalink.getParams().layers;
       var layersOpacityParamValue = gaPermalink.getParams().layers_opacity;
@@ -1610,18 +1603,49 @@ goog.require('ga_urlutils_service');
           });
         });
 
-        var deregister = $rootScope.$on('gaLayersChange', function() {
-          var nbLayersToAdd = layerSpecs.length;
+        var deregister = scope.$on('gaLayersChange', function() {
+          deregister();
 
+          if (!layerSpecs.length) {
+            addTopicSelectedLayers();
+          } else {
+            // We add layers from 'layers' parameter
+            addLayers(layerSpecs, layerOpacities, layerVisibilities);
+          }
+
+          if ((!layerSpecs.length && !gaTopic.get()) ||
+              (layerSpecs.length && gaTopic.get())) {
+            // we add topic selected layer on each topic change
+            scope.$on('gaTopicChange', addTopicSelectedLayers);
+          } else if (layerSpecs.length && !gaTopic.get()) {
+            // if the topic is not yet loaded we do nothing on the first topic
+            // change event
+            var deregister2 = scope.$on('gaTopicChange', function() {
+              deregister2();
+              scope.$on('gaTopicChange', addTopicSelectedLayers);
+            });
+          }
+        });
+
+        var addTopicSelectedLayers = function() {
+
+          if (gaLayers.getSelectedLayers()) {
+            addLayers(gaLayers.getSelectedLayers().slice(0).reverse());
+          }
+        };
+
+        var addLayers = function(layerSpecs, opacities, visibilities,
+            timestamps) {
+          var nbLayersToAdd = layerSpecs.length;
           angular.forEach(layerSpecs, function(layerSpec, index) {
             var layer;
-            var opacity = (index < layerOpacities.length) ?
-                layerOpacities[index] : 1;
-            var visible = (index < layerVisibilities.length &&
-                layerVisibilities[index] == 'false') ?
+            var opacity = (opacities && index < opacities.length) ?
+                opacities[index] : 1;
+            var visible = (visibilities && index < visibilities.length &&
+                visibilities[index] == 'false') ?
                 false : true;
-            var timestamp = (index < layerTimestamps.length &&
-                layerTimestamps != '') ? layerTimestamps[index] : '';
+            var timestamp = (timestamps && index < timestamps.length &&
+                timestamps != '') ? timestamps[index] : '';
 
             var bodLayer = gaLayers.getLayer(layerSpec);
             if (bodLayer) {
@@ -1640,9 +1664,7 @@ goog.require('ga_urlutils_service');
               }
               if (angular.isDefined(layer)) {
                 layer.setVisible(visible);
-                if (index < layerOpacities.length) {
-                  layer.setOpacity(opacity);
-                }
+                layer.setOpacity(opacity);
                 if (layer.timeEnabled && timestamp) {
                   layer.time = timestamp;
                 }
@@ -1688,7 +1710,6 @@ goog.require('ga_urlutils_service');
               }
             }
           });
-          deregister();
 
           // When an async layer is added we must reorder correctly the layers.
           if (mustReorder) {
@@ -1731,7 +1752,7 @@ goog.require('ga_urlutils_service');
               }
             });
           }
-        });
+        };
       };
     };
   });

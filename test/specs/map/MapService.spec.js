@@ -92,38 +92,49 @@ describe('ga_map_service', function() {
   };
 
   describe('gaLayers', function() {
-    var layers, $httpBackend;
+    var layers, $httpBackend, $rootScope;
 
-    var expectedUrl = 'http://example.com/sometopic?lang=somelang';
 
     beforeEach(function() {
 
-      inject(function($injector) {
-        $httpBackend = $injector.get('$httpBackend');
-        $httpBackend.whenGET(expectedUrl).respond({
-          foo: {
-            type: 'wmts',
-            matrixSet: 'set1',
-            timestamps: ['t1', 't2']
-          },
-          bar: {
-            type: 'wmts',
-            matrixSet: 'set2',
-            timestamps: ['t3', 't4']
+      module(function($provide) {
+        $provide.value('gaTopic', {
+          get: function() {
+            return {
+              id: 'sometopic',
+              backgroundLayers: ['bar']
+            }
+          }
+        });
+        $provide.value('gaLang',{
+          get: function() {
+            return 'somelang';
           }
         });
       });
 
-      inject(function($injector, $translate, $rootScope) {
+      inject(function($injector) {
+        $rootScope = $injector.get('$rootScope');
+        $httpBackend = $injector.get('$httpBackend');
         layers = $injector.get('gaLayers');
-
-        $httpBackend.expectGET(expectedUrl);
-        $translate.use('somelang');
-        $rootScope.$broadcast('gaTopicChange',
-          {id: 'sometopic', backgroundLayers: ['bar']});
-        $rootScope.$digest();
       });
 
+      var expectedUrl = 'http://example.com/all?lang=somelang';
+      $httpBackend.whenGET(expectedUrl).respond({
+        foo: {
+          type: 'wmts',
+          matrixSet: 'set1',
+          timestamps: ['t1', 't2']
+        },
+        bar: {
+          type: 'wmts',
+          matrixSet: 'set2',
+          timestamps: ['t3', 't4']
+        }
+      });
+      $httpBackend.expectGET(expectedUrl);
+      $rootScope.$digest();
+      $httpBackend.flush();
     });
 
     afterEach(function () {
@@ -134,7 +145,6 @@ describe('ga_map_service', function() {
 
     describe('getOlLayerById', function() {
       it('returns layers with correct settings', function() {
-        $httpBackend.flush();
         var layer = layers.getOlLayerById('foo');
         expect(layer instanceof ol.layer.Tile).to.be.ok();
         var source = layer.getSource();
@@ -148,7 +158,6 @@ describe('ga_map_service', function() {
 
     describe('set layer visibility through accessor', function() {
       it('sets the visibility as expected', function() {
-        $httpBackend.flush();
         var layer = layers.getOlLayerById('foo');
         expect(layer.getVisible()).to.be.ok();
         expect(layer.visible).to.be.ok();
@@ -163,7 +172,6 @@ describe('ga_map_service', function() {
 
     describe('set layer opacity through accessor', function() {
       it('sets the visibility as expected', function() {
-        $httpBackend.flush();
         var layer = layers.getOlLayerById('foo');
         expect(layer.getOpacity()).to.be(1);
         expect(layer.invertedOpacity).to.be("0");
@@ -178,7 +186,6 @@ describe('ga_map_service', function() {
 
     describe('getBackgroundLayers', function() {
       it('returns correct background layers information', function() {
-        $httpBackend.flush();
         var backgroundLayers = layers.getBackgroundLayers();
         expect(backgroundLayers.length).to.be(1);
         expect(backgroundLayers[0].id).to.be('bar');
@@ -188,7 +195,13 @@ describe('ga_map_service', function() {
   });
 
   describe('gaLayersPermalinkManager', function() {
-    var manager, permalink;
+    var manager, permalink, gaTopic, params, layersOpacityPermalink,
+        layersVisPermalink, layersTimePermalink, layersPermalink,
+        topic, topicLoaded = {
+          id: 'sometopic',
+          backgroundLayers: ['bar'],
+          selectedLayers: ['foo', 'bar']
+        };
 
     beforeEach(function() {
       map = new ol.Map({});
@@ -202,6 +215,58 @@ describe('ga_map_service', function() {
             if (key == 'background') {
               return false;
             }
+          },
+          getOlLayerById: function(bodId) {
+            var layer = new ol.layer.Tile();
+            layer.bodId = bodId;
+            layer.displayInLayerManager = true;
+            return layer;
+          },
+          getSelectedLayers: function() {
+            if (gaTopic.get()) {
+              return gaTopic.get().selectedLayers;
+            }
+          }
+        });
+        $provide.value('gaTopic', {
+          get: function() {
+            return topic;
+          }
+        });
+
+        $provide.value('gaPermalink', {
+          getParams: function() {
+            params = {
+              layers: layersPermalink,
+              layers_opacity: layersOpacityPermalink,
+              layers_visibility: layersVisPermalink,
+              layers_timestamp: layersTimePermalink,
+              mobile: false
+            };
+            return params;
+          },
+          updateParams: function(params) {
+            layersPermalink = params.layers || layersPermalink;
+            layersOpacityPermalink = params.layers_opacity || layersOpacityPermalink;
+            layersVisPermalink = params.layers_visibility || layersVisPermalink;
+            layersTimePermalink = params.layers_timestamp || layersTimePermalink;
+          },
+          deleteParam: function(param) {
+            if (param == 'layers') {
+              layersPermalink = undefined;
+            } else if (param == 'layers_opacity') {
+              layersOpacityPermalink = undefined;
+            } else if (param == 'layers_visibility') {
+              layersVisPermalink = undefined;
+            } else if (param == 'layers_timestamp') {
+              layersTimePermalink = undefined;
+            }
+            delete params[param];
+          }
+        });
+        $provide.value('gaLang', {
+          get: function() {
+            return 'somelang';
           }
         });
       });
@@ -209,6 +274,7 @@ describe('ga_map_service', function() {
       inject(function($injector) {
         manager = $injector.get('gaLayersPermalinkManager');
         permalink = $injector.get('gaPermalink');
+        gaTopic = $injector.get('gaTopic');
       });
 
       manager(map);
@@ -359,8 +425,69 @@ describe('ga_map_service', function() {
         $rootScope.$digest();
         expect(permalink.getParams().layers_visibility).to.be(undefined);
       }));
+
+      // For next test
+      topic = topicLoaded;
     });
 
+    describe('add preselected layers of a topic', function() {
+
+      describe('if topic is loaded beforelayers', function() {
+
+        it('adds layers if no layers parameter', inject(function($rootScope) {
+          expect(permalink.getParams().layers).to.be(undefined);
+          $rootScope.$broadcast('gaTopicChange', gaTopic.get());
+          $rootScope.$broadcast('gaLayersChange', {});
+          expect(map.getLayers().getLength()).to.be(2);
+          $rootScope.$digest();
+          expect(permalink.getParams().layers).to.be('bar,foo');
+          permalink.deleteParam('layers');
+         
+          // For next test 
+          layersPermalink = 'ged';
+        }));
+
+        it('doesn t add layers if the layers parameter is defined', inject(function($rootScope) {
+          expect(permalink.getParams().layers).to.be('ged');
+          $rootScope.$broadcast('gaTopicChange', gaTopic.get());
+          $rootScope.$broadcast('gaLayersChange', {});
+          expect(map.getLayers().getLength()).to.be(1);
+          $rootScope.$digest();
+          expect(permalink.getParams().layers).to.be('ged');
+
+          // For next test
+          topic = undefined;
+          layersPermalink = undefined;
+        }));
+      });
+
+      describe('if topic is loaded after layers', function() {
+
+        it('adds layers if no layers parameter', inject(function($rootScope) {
+          expect(permalink.getParams().layers).to.be(undefined);
+          $rootScope.$broadcast('gaLayersChange', {});
+          topic = topicLoaded;
+          $rootScope.$broadcast('gaTopicChange', gaTopic.get());
+          expect(map.getLayers().getLength()).to.be(2);
+          $rootScope.$digest();
+          expect(permalink.getParams().layers).to.be('bar,foo');
+
+          // For next test
+          topic = undefined;
+          layersPermalink = 'ged';
+        }));
+
+        it('doesn t add layers if the layers parameter is defined', inject(function($rootScope) {
+          expect(permalink.getParams().layers).to.be('ged');
+          $rootScope.$broadcast('gaLayersChange', {});
+          topic = topicLoaded;
+          $rootScope.$broadcast('gaTopicChange', gaTopic.get());
+          expect(map.getLayers().getLength()).to.be(1);
+          $rootScope.$digest();
+          expect(permalink.getParams().layers).to.be('ged');
+        }));
+      });
+    });
   });
   
   describe('gaKml', function() {

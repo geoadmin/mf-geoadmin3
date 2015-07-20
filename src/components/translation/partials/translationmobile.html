@@ -1,1 +1,2 @@
-<select ng-model="lang" ng-options="l.value as l.label for l in options.langs"></select>
+<select ng-model="lang" ng-options="l as (l | uppercase) for l in langs">
+</select>

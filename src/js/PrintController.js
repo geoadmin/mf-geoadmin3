@@ -43,17 +43,5 @@ goog.provide('ga_print_controller');
           'ch.swisstopo.pixelkarte-farbe-pk25.noscale'
         ]
       };
-      
-      $('#print').on('show.bs.collapse', function() {
-        $scope.$apply(function() {
-          $scope.options.active = true;
-        });
-      });
-
-      $('#print').on('hide.bs.collapse', function() {
-        $scope.$apply(function() {
-          $scope.options.active = false;
-        });
-      });
   });
 })();

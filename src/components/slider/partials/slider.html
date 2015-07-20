@@ -1,26 +1,26 @@
 <div class="ga-slider">
   <span class="ga-slider-bar">
-    <span ng-repeat="data in dataList | orderBy:'value':false" 
-        ng-style="assignDivisionStyle($index)"
-        id="{{data.value}}"
-        class="ga-slider-bar-division"
-        ng-class="{
-          'ga-slider-first': ($first),
-          'ga-slider-last': ($last),
-          'ga-slider-minor': data.minor, 
-          'ga-slider-major': data.major
-        }"
-        title="{{($last) ? translate2({value:'slider_last_title'}) : data.value}}"> 
-      <span class="ga-slider-bubble" >{{data.value}}</span>
-      <span class="ga-slider-available" ng-show="data.available"></span>
+    <span ng-repeat="data in dataList"
+          class="ga-slider-bar-division"
+          title="{{::data.value}}"
+          ng-style="{{::assignDivisionStyle($index)}}"
+          ng-class="{
+            'ga-slider-first': ($first),
+            'ga-slider-last': ($last),
+            'ga-slider-minor': data.minor,
+            'ga-slider-major': data.major,
+            'ga-slider-available': data.available
+          }">
+      <span class="ga-slider-bubble" >{{::data.value}}</span>
+      <span></span>
     </span>    
   </span>
   <span class="ga-slider-bar ga-slider-selection"></span>
   <span class="ga-slider-pointer"></span>
   <span class="ga-slider-pointer"></span>
   <span class="ga-slider-bubble ga-slider-selection"></span>
-  <span ng-bind-template="{{translate2({value:floor})}}" class="ga-slider-bubble ga-slider-limit"></span>
-  <span ng-bind-template="{{translate2({value:ceiling})}}" class="ga-slider-bubble ga-slider-limit"></span>
+  <span ng-bind-template="{{::translate2({value:floor})}}" class="ga-slider-bubble ga-slider-limit"></span>
+  <span ng-bind-template="{{::translate2({value:ceiling})}}" class="ga-slider-bubble ga-slider-limit"></span>
   <span class="ga-slider-bubble ga-slider-value1">
     <input type="text" ng-model="ngModel" ng-change="onInputChange()" ga-format-input-value />
   </span>

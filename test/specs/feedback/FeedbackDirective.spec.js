@@ -27,8 +27,10 @@ describe('ga_feedback_directive', function() {
 
       };
       $provide.value('gaPermalink', mockGetHref);
-      var mockBrowserSniffer = {};
-      $provide.value('gaBrowserSniffer', mockBrowserSniffer);
+      $provide.value('gaBrowserSniffer', {});
+      $provide.value('gaLayers', {});
+      $provide.value('gaTopic', {});
+      $provide.value('gaLang', {});
     });
 
     element = angular.element(
@@ -53,9 +55,7 @@ describe('ga_feedback_directive', function() {
         broadcastLayer: false
       };
       encodeUriQuery = gaUrlUtils.encodeUriQuery;
-
     });
-
   });
 
   afterEach(function () {

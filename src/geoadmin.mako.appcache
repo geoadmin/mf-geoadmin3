@@ -1,7 +1,6 @@
 <%
   defaultLanguage = 'en'
   languages = ('de', 'en', 'fr', 'it', 'rm')
-  topics = ('are', 'bafu', 'blw', 'dev', 'ech', 'funksender', 'geol', 'inspire', 'ivs', 'kgs', 'luftbilder', 'nga', 'sachplan', 'swisstopo', 'vu', 'wildruhezonen')
 %>CACHE MANIFEST
 # Version ${version}
 
@@ -14,6 +13,7 @@ ${version}/img/topics.png
 ${api_url}/${version}/rest/services
 % for lang in languages:
 ${api_url}/${version}/rest/services/all/MapServer/layersConfig?lang=${lang}
+${version}/img/logo.ch.${lang}.png 
 % endfor
 
 # Use case: opens in offline then online.
@@ -29,11 +29,6 @@ NETWORK:
 checker #we need to specify the checker here to avoid the appcache callback to be apply
 
 FALLBACK:
-
-# Logos images
-% for lang in languages:
-${version}/img/logo.ch.${lang}.png ${version}/img/logo.ch.${defaultLanguage}.png
-% endfor
 
 # With Permalink
 ${apache_base_path}/? index.html

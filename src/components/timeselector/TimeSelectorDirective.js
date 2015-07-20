@@ -152,6 +152,7 @@ goog.require('ga_slider_directive');
         },
         controller: 'GaTimeSelectorDirectiveController',
         link: function(scope, elt, attrs, controller) {
+          scope.years = [];
 
           // Activate/deactivate manually the time selector
           scope.$on('gaTimeSelectorToggle', function(evt, active, year) {
@@ -180,6 +181,7 @@ goog.require('ga_slider_directive');
 
           scope.$watch('isActive', function(active, old) {
             if (angular.isDefined(active)) {
+              scope.years = active ? scope.options.years : [];
               applyNewYear((active ? scope.currentYear : undefined));
               elt.toggle(active);
               if (scope.fromPermalink) {
@@ -192,7 +194,6 @@ goog.require('ga_slider_directive');
                 }, 0, false);
                 scope.fromPermalink = false;
               }
-
             } else {
               elt.hide();
             }

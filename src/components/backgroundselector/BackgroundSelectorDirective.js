@@ -2,17 +2,18 @@ goog.provide('ga_backgroundselector_directive');
 
 goog.require('ga_map');
 goog.require('ga_permalink');
+goog.require('ga_topic_service');
 (function() {
 
   var module = angular.module('ga_backgroundselector_directive', [
     'ga_map',
     'ga_permalink',
-    'pascalprecht.translate'
+    'ga_topic_service'
   ]);
 
   module.directive('gaBackgroundSelector',
     function($document, gaPermalink, gaLayers, gaLayerFilters,
-      gaBrowserSniffer) {
+        gaBrowserSniffer) {
       return {
         restrict: 'A',
         templateUrl:
@@ -33,7 +34,6 @@ goog.require('ga_permalink');
 
           var map = scope.map;
           var isOfflineToOnline = false;
-          var currentTopic;
 
           var defaultBgOrder = [
               {id: 'ch.swisstopo.swissimage', label: 'bg_luftbild'},
@@ -65,28 +65,21 @@ goog.require('ga_permalink');
             }
           }
 
-          scope.$on('gaLayersChange', function(event, data) {
-
+          var updateBgLayer = function(topic) {
             // Determine the current background layer. Strategy:
             //
-            // If this is the first gaLayersChange event we receive then
+            // On gaLayersChange event we receive then
             // we look at the permalink. If there's a bgLayer parameter
             // in the permalink we use that as the initial background
             // layer.
             //
-            // If it's not the first gaLayersChange event, or if there's
-            // no bgLayer parameter in the permalink, then we use the
-            // first background layer of the background layers array.
-            //
             // Specific use case when we go offline to online, in this use
             // case we want to keep the current bg layer.
-
             var bgLayer;
-            if (!currentTopic) {
+            if (!topic) {
               bgLayer = gaPermalink.getParams().bgLayer;
             }
-            if ((!bgLayer && !scope.currentLayer) ||
-              (currentTopic && (currentTopic != data.topicId))) {
+            if ((!bgLayer && !scope.currentLayer) || topic) {
               bgLayer = gaLayers.getBackgroundLayers()[0].id;
               scope.backgroundLayers = defaultBgOrder.slice(0);
             }
@@ -94,7 +87,19 @@ goog.require('ga_permalink');
               scope.currentLayer = bgLayer;
             }
             isOfflineToOnline = false;
-            currentTopic = data.topicId;
+
+          };
+
+          var dereg = scope.$on('gaLayersChange', function(event, newLayers) {
+            updateBgLayer();
+            dereg();
+          });
+
+          scope.$on('gaTopicChange', function(event, newTopic) {
+            // If the layers config is loaded
+            if (gaLayers.getBackgroundLayers()) {
+              updateBgLayer(newTopic);
+            }
           });
 
           scope.$on('gaPermalinkChange', function(event) {
