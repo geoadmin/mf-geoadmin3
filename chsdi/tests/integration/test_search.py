@@ -83,7 +83,7 @@ class TestSearchServiceView(TestsBase):
         resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': 'seftigenstrasse', 'type': 'locations'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
         results_addresses = filter(lambda x: x if x['attrs']['origin'] == 'address' else False, resp.json['results'])
-        self.failUnless(len(results_addresses) <= 20)
+        self.failUnless(len(results_addresses) <= 50)
 
     def test_search_locations_no_geometry(self):
         resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': 'seftigenstrasse 264', 'type': 'locations', 'returnGeometry': 'false'}, status=200)
