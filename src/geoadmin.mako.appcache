@@ -10,6 +10,7 @@ ${version}/lib/build.js
 ${version}/style/app.css
 ${version}/style/font-awesome-3.2.1/font/fontawesome-webfont.woff?v=3.2.1
 ${version}/img/logo.ch.small.png
+${version}/img/topics.png
 ${api_url}/${version}/rest/services
 % for lang in languages:
 ${api_url}/${version}/rest/services/all/MapServer/layersConfig?lang=${lang}
@@ -32,11 +33,6 @@ FALLBACK:
 # Logos images
 % for lang in languages:
 ${version}/img/logo.ch.${lang}.png ${version}/img/logo.ch.${defaultLanguage}.png
-% endfor
-
-# Topic images
-% for topic in topics:
-${version}/img/${topic}.jpg ${version}/img/dev.jpg
 % endfor
 
 # With Permalink
