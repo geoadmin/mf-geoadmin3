@@ -2295,6 +2295,7 @@ class swissnames3d_raster_13(Base, Vector):
                                dimension=2, srid=21781))
 
 register('ch.swisstopo.swissnames3d', swissnames3d_raster_00)
+register('ch.swisstopo.swissnames3d', swissnames3d_raster_01)
 register('ch.swisstopo.swissnames3d', swissnames3d_raster_02)
 register('ch.swisstopo.swissnames3d', swissnames3d_raster_03)
 register('ch.swisstopo.swissnames3d', swissnames3d_raster_04)
