@@ -47,6 +47,7 @@
           class="btn btn-default col-xs-12"
           accesskey="p"
           ng-hide="options.printing"
+          ng-disabled="!printConfigLoaded"
           ng-click="submit()" translate>print_action</button>
   <!-- this span is purely for e2e testing purposes, to detect print success/failure in DOM -->
   <span ng-if="options.printsuccess"></span>

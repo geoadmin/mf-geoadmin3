@@ -13,6 +13,8 @@ var runTest = function(cap, driver, target) {
   driver.findElement(webdriver.By.xpath("//a[@id='printHeading']")).click();
   // Wait until print is opened and animation is finished
   driver.findElement(webdriver.By.xpath("//div[@id='print' and contains(@class, 'collapse in')]"));
+  // Wait until configuration is loaded
+  driver.findElement(webdriver.By.xpath("//*[@id='print']//option[@label='A4 portrait']"));
 
   // Selenium IE and FF are not able to handle menu selection
   if(!(cap.browser != "IE" || cap.browser != "Firefox")){
@@ -32,7 +34,7 @@ var runTest = function(cap, driver, target) {
 
   // Try Print
   driver.findElement(webdriver.By.xpath("//button[contains(text(), 'Erstelle PDF')]")).click();
-  // Does it success?
+  // Did it succeed?
   driver.findElement(webdriver.By.xpath("//span[@ng-if='options.printsuccess']"));
 }
 
