@@ -21,7 +21,33 @@ describe('ga_urlutils_service', function() {
     expect(gaUrlUtils.isValid('https://admin.ch')).to.be(true);
     expect(gaUrlUtils.isValid('ftp://admin.ch')).to.be(true);
   });
-  
+
+  it('verifies admin validity', function() {
+    expect(gaUrlUtils.isAdminValid('http://')).to.be(false);
+    expect(gaUrlUtils.isAdminValid('https://')).to.be(false);
+    expect(gaUrlUtils.isAdminValid('http://heig.ch')).to.be(false);
+    expect(gaUrlUtils.isAdminValid('https://heig.ch')).to.be(false);
+    expect(gaUrlUtils.isAdminValid('http://bgdi.ch')).to.be(false);
+    expect(gaUrlUtils.isAdminValid('https://bgdi.ch')).to.be(false);
+    expect(gaUrlUtils.isAdminValid('ftp://bgdi.ch')).to.be(false);
+    expect(gaUrlUtils.isAdminValid('http://test.bgdi.ch')).to.be(true);
+    expect(gaUrlUtils.isAdminValid('https://test.bgdi.ch')).to.be(true);
+    expect(gaUrlUtils.isAdminValid('ftp://test.bgdi.ch')).to.be(true);
+    expect(gaUrlUtils.isAdminValid('http://wms.geo.admin.ch')).to.be(true);
+    expect(gaUrlUtils.isAdminValid('https://wms.geo.admin.ch')).to.be(true);
+    expect(gaUrlUtils.isAdminValid('ftp://wms.geo.admin.ch')).to.be(true);
+    expect(gaUrlUtils.isAdminValid('https://public.geo.admin.ch')).to.be(true);
+    expect(gaUrlUtils.isAdminValid('https://public.dev.bgdi.ch')).to.be(true);
+  });
+
+  it('verifies third party validity', function() {
+    expect(gaUrlUtils.isThirdPartyValid('http://public.geo.admin.ch')).to.be(true);
+    expect(gaUrlUtils.isThirdPartyValid('http://public.geo.admin.ch/dfilghjdfigfdj')).to.be(true);
+    expect(gaUrlUtils.isThirdPartyValid('http://public.bgdi.ch')).to.be(true);
+    expect(gaUrlUtils.isThirdPartyValid('http://public.fre.bgdi.ch/dfilghjdfigfdj')).to.be(true);
+    expect(gaUrlUtils.isThirdPartyValid('https://wms.geo.admin.ch')).to.be(false);
+  });
+
   it('appends parameter string', function() {
     var url = 'http://wms.admin.ch';
     url = gaUrlUtils.append(url, 'SERVICE=WMS');
