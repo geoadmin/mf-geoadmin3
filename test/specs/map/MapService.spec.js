@@ -201,6 +201,10 @@ describe('ga_map_service', function() {
           id: 'sometopic',
           backgroundLayers: ['bar'],
           selectedLayers: ['foo', 'bar']
+        }, topicLoaded2 = {
+          id: 'sometopic2',
+          backgroundLayers: ['bar2'],
+          selectedLayers: ['foo2', 'bar2']
         };
 
     beforeEach(function() {
@@ -441,9 +445,17 @@ describe('ga_map_service', function() {
           expect(map.getLayers().getLength()).to.be(2);
           $rootScope.$digest();
           expect(permalink.getParams().layers).to.be('bar,foo');
-          permalink.deleteParam('layers');
-         
+
+          // On next topic change the selected layers are added
+          topic = topicLoaded2;
+          $rootScope.$broadcast('gaTopicChange', {});
+          expect(map.getLayers().getLength()).to.be(4);
+          $rootScope.$digest();
+          expect(permalink.getParams().layers).to.be('bar,foo,bar2,foo2');
+
           // For next test 
+          permalink.deleteParam('layers');
+          topic = topicLoaded;
           layersPermalink = 'ged';
         }));
 
@@ -454,6 +466,13 @@ describe('ga_map_service', function() {
           expect(map.getLayers().getLength()).to.be(1);
           $rootScope.$digest();
           expect(permalink.getParams().layers).to.be('ged');
+
+          // On next topic change the selected layers are added
+          topic = topicLoaded2;
+          $rootScope.$broadcast('gaTopicChange', {});
+          expect(map.getLayers().getLength()).to.be(3);
+          $rootScope.$digest();
+          expect(permalink.getParams().layers).to.be('ged,bar2,foo2');
 
           // For next test
           topic = undefined;
@@ -472,6 +491,13 @@ describe('ga_map_service', function() {
           $rootScope.$digest();
           expect(permalink.getParams().layers).to.be('bar,foo');
 
+          // On next topic change the selected layers are added
+          topic = topicLoaded2;
+          $rootScope.$broadcast('gaTopicChange', {});
+          expect(map.getLayers().getLength()).to.be(4);
+          $rootScope.$digest();
+          expect(permalink.getParams().layers).to.be('bar,foo,bar2,foo2');
+
           // For next test
           topic = undefined;
           layersPermalink = 'ged';
@@ -485,6 +511,13 @@ describe('ga_map_service', function() {
           expect(map.getLayers().getLength()).to.be(1);
           $rootScope.$digest();
           expect(permalink.getParams().layers).to.be('ged');
+
+          // On next topic change the selected layers are added
+          topic = topicLoaded2;
+          $rootScope.$broadcast('gaTopicChange', {});
+          expect(map.getLayers().getLength()).to.be(3);
+          $rootScope.$digest();
+          expect(permalink.getParams().layers).to.be('ged,bar2,foo2');
         }));
       });
     });
