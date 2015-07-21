@@ -167,6 +167,7 @@ goog.require('ga_storage_service');
       pulldownShown: !(gaBrowserSniffer.mobile || $($window).width() <= 1024),
       printShown: false,
       feedbackPopupShown: false,
+      catalogShown: false,
       isShareActive: false,
       isDrawActive: false,
       isFeatureTreeActive: false,
