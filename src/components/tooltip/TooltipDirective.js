@@ -286,14 +286,14 @@ goog.require('ga_styles_service');
                     timeout: canceler.promise,
                     params: params
                   }).success(function(features) {
-                    showFeatures(mapExtent, size, features.results);
+                    showFeatures(mapExtent, size, features.results, coordinate);
                   });
                 }
               }
             }
 
             // Highlight the features found
-            function showFeatures(mapExtent, size, foundFeatures) {
+            function showFeatures(mapExtent, size, foundFeatures, coordinate) {
               if (foundFeatures && foundFeatures.length > 0) {
 
                 // Remove the tooltip, if a layer is removed, we don't care
@@ -335,6 +335,7 @@ goog.require('ga_styles_service');
                       params: {
                         lang: $translate.use(),
                         mapExtent: mapExtent.join(','),
+                        coord: (coordinate) ? coordinate.join(',') : undefined,
                         imageDisplay: size[0] + ',' + size[1] + ',96'
                       }
                     }).success(function(html) {
