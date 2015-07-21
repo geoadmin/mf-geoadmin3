@@ -573,14 +573,19 @@ goog.require('ga_permalink');
             evt.preventDefault();
           };
           scope.deleteSelectedFeature = function(evt) {
-            if ((!evt || evt.which == 46) &&
+            if ((!evt || (evt.which == 46 &&
+                  !/^(input|textarea)$/i.test(evt.target.nodeName))) &&
                 select.getFeatures().getLength() > 0) {
               if (layer.getSource().getFeatures().length == 1) {
                 scope.deleteAllFeatures();
                 return;
+              } else if (confirm($translate.instant(
+                  'confirm_remove_selected_features'))) {
+                select.getFeatures().forEach(function(feature) {
+                  layer.getSource().removeFeature(feature);
+                });
+                select.getFeatures().clear();
               }
-              layer.getSource().removeFeature(select.getFeatures().item(0));
-              select.getFeatures().clear();
             }
           };
           // Delete all features of the layer
