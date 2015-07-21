@@ -1613,17 +1613,15 @@ goog.require('ga_urlutils_service');
             addLayers(layerSpecs, layerOpacities, layerVisibilities);
           }
 
-          if ((!layerSpecs.length && !gaTopic.get()) ||
-              (layerSpecs.length && gaTopic.get())) {
-            // we add topic selected layer on each topic change
-            scope.$on('gaTopicChange', addTopicSelectedLayers);
-          } else if (layerSpecs.length && !gaTopic.get()) {
+          if (layerSpecs.length && !gaTopic.get()) {
             // if the topic is not yet loaded we do nothing on the first topic
             // change event
             var deregister2 = scope.$on('gaTopicChange', function() {
               deregister2();
               scope.$on('gaTopicChange', addTopicSelectedLayers);
             });
+          } else {
+            scope.$on('gaTopicChange', addTopicSelectedLayers);
           }
         });
 
