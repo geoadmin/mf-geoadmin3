@@ -22,13 +22,13 @@ goog.require('ga_print_style_service');
     var UNITS_RATIO = 39.37; // inches per meter
     var POLL_INTERVAL = 2000; //interval for multi-page prints (ms)
     var POLL_MAX_TIME = 600000; //ms (10 minutes)
-    var printConfigLoaded = false;
     var currentTime = undefined;
     var layersYears = [];
     var canceller;
     var currentMultiPrintId;
     var format = new ol.format.GeoJSON();
     var styleId = 0;
+    $scope.printConfigLoaded = false;
     $scope.options.multiprint = false;
     $scope.options.movie = false;
     $scope.options.printing = false;
@@ -1028,7 +1028,7 @@ goog.require('ga_print_style_service');
 
     $scope.$watch('active', function(newVal, oldVal) {
       if (newVal === true) {
-        if (!printConfigLoaded) {
+        if (!$scope.printConfigLoaded) {
           loadPrintConfig().success(function(data) {
             $scope.capabilities = data;
             angular.forEach($scope.capabilities.layouts, function(lay) {
@@ -1043,7 +1043,7 @@ goog.require('ga_print_style_service');
             $scope.options.legend = false;
             $scope.options.graticule = false;
             activate();
-            printConfigLoaded = true;
+            $scope.printConfigLoaded = true;
           });
         } else {
           activate();
