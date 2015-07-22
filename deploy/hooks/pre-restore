@@ -4,12 +4,13 @@
 #   $TARGET: name of the symbolic remote host key (see remote_hosts
 #            section in config file)
 #
-if [ -x /etc/init.d/apache2 ]; then
-    sudo /etc/init.d/apache2 restart
-fi
 
 if [ -x /usr/bin/puppet ]; then
-    sudo /usr/bin/puppet agent --enable
+    sudo /usr/bin/puppet agent --disable
+fi
+
+if [ -x /etc/init.d/apache2 ]; then
+    sudo /etc/init.d/apache2 stop
 fi
 
 exit 0
