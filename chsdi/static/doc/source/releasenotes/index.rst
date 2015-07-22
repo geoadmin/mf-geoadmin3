@@ -8,6 +8,33 @@
 
 Release Notes
 =============
+.. _releasenotes_20150722:
+
+Release 20150722 - Wednesday, July 22th 2015
+------------------------------------------------
+
+API & applications
+******************
+
+`API <//api3.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+- Switch API to `OpenLayers v3.6 <https://github.com/openlayers/ol3/releases/tag/v3.6.0>`__
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-chsdi3/compare/r_150708...r_150722>`__
+
+`MAP <//map.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+- Update to angular 1.4.2
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-geoadmin3/compare/r_150708...r_150722>`__
+
+Geodata
+*******
+
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Cleantech projects <//map.geo.admin.ch/?layers=ch.bfe.energieforschung>`__ (ch.bfe.energieforschung)                                             |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------+
+
 
 .. _releasenotes_20150708:
 
