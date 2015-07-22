@@ -1610,7 +1610,8 @@ goog.require('ga_urlutils_service');
             addTopicSelectedLayers();
           } else {
             // We add layers from 'layers' parameter
-            addLayers(layerSpecs, layerOpacities, layerVisibilities);
+            addLayers(layerSpecs, layerOpacities, layerVisibilities,
+                layerTimestamps);
           }
 
           if (layerSpecs.length && !gaTopic.get()) {
