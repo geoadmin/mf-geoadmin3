@@ -37,13 +37,13 @@ def validate_kml_input():
 
             MAX_FILE_SIZE = 1024 * 1024 * 2
 
-            # IE9 simply doesn't send content_type header. So we set it ourself
-            if request.user_agent is not None and 'MSIE 9.0' in request.user_agent:
+            # IE 9/10 doesn't send custom headers
+            # webO default Content-Type to 'application/x-www-form-urlencoded' when not explictly set
+            if request.content_type in (None, '', 'application/x-www-form-urlencoded'):
                 request.content_type = EXPECTED_CONTENT_TYPE
 
             if request.content_type != EXPECTED_CONTENT_TYPE:
                 raise exc.HTTPUnsupportedMediaType('Only KML file are accepted')
-
             # IE9 sends data urlencoded
             data = urllib.unquote_plus(request.body)
             if len(data) > MAX_FILE_SIZE:
