@@ -488,6 +488,9 @@ input[type=text][readonly] {
  
   .btn-primary {
     margin-top: 1px;
+  } 
+  .btn-primary .icon-arrow-left{
+    vertical-align: middle;
   }
   [ga-help] {
     visibility: visible;
@@ -727,8 +730,12 @@ a .ga-icon-separator {
     &.panel-heading .icon-caret-right {
       padding: 0 1px 0 2px;
     }
+    &.panel-heading .icon-question-circle {
+      vertical-align: middle;
+    }
     .icon-caret-right, .icon-caret-down {
       margin-right: .5em;
+      vertical-align: middle;
     }
     .pulldown-hover;
   }
@@ -751,6 +758,9 @@ a .ga-icon-separator {
     display: none;
   }
 
+  .icon-caret-up, .icon-caret-down, .icon-reorder {
+    vertical-align: middle;
+  }
   &:hover, &:focus {
     background-color: #3A3C3C;
     border-color: #2E2F2F;
@@ -807,6 +817,10 @@ a .ga-icon-separator {
     .icon-chevron-sign-right {
       .rotate(180deg);
     }
+  }
+  i.icon-chevron-sign-right {
+    vertical-align: middle;
+    height: 14px;
   }
   .dropdown-menu {
     top: 0;
