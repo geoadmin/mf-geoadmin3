@@ -59,6 +59,7 @@ $.ajax({
     var timestamps_nb = 0;
     var config = data[layer];
     data['ch.kantone.cadastralwebmap-farbe'] = cadastralCfg;
+    data['ch.swisstopo.zeitreihen'].format = 'png';
     $.each(data, function(index, layerConfig) {
         if (layerConfig.type == 'wmts') {
             var layerId = index;
@@ -126,6 +127,7 @@ var base_layer = new ol.layer.Tile({
 var layerConfig = GeoAdmin.getConfig()[layer];
 
 if (timestamp) layerConfig.timestamp = timestamp;
+if (format) layerConfig.format = format;
 
 var wmts_src = wmtsSource(layerConfig.serverLayerName, layerConfig);
 

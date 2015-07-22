@@ -57,7 +57,8 @@ elif epsg != '21781':
      onlineressource = onlineressources['mapproxy']
 else:
      onlineressource = onlineressources['s3']
-
+if layer.id == 'ch.swisstopo.zeitreihen' and epsg != '21781':
+    layer.arr_all_formats = 'png'
 %>
         <Layer>
             <ows:Title>${layer.kurzbezeichnung|n,x,trim}</ows:Title>
@@ -79,6 +80,9 @@ else:
                 <LegendURL format="image/png" xlink:href="${scheme}://api3.geo.admin.ch/static/images/legends/${layer.id|n,x,trim}_${request.lang|n,x,trim}.png" />
                 % endif
             </Style>
+            % if layer.id == 'ch.swisstopo.zeitreihen' and epsg == '21781':
+            <Format>image/png</Format>
+            % endif
             <Format>image/${str(layer.arr_all_formats).split(',')[0]}</Format>
             ## All dimensions
             <Dimension>
@@ -100,6 +104,10 @@ else:
                     <TileMatrixSet>${epsg}</TileMatrixSet>
                 % endif
             </TileMatrixSetLink>
+            ## Zeitreihen has two formats available 'png' (desktop GIS) and (pngjpeg) web gis
+            % if layer.id == 'ch.swisstopo.zeitreihen' and epsg == '21781':
+                <ResourceURL format="image/png" resourceType="tile" template="${onlineressource}1.0.0/${layer.id|n,x,trim}/default/{Time}/${epsg}/{TileMatrix}/{TileRow}/{TileCol}.png"/>
+            % endif
             ## ACHTUNG: s3 tiles have a row/col order, mapproxy ones the standard col/row
             % if epsg in ['21781'] and layer.id != 'ch.kantone.cadastralwebmap-farbe':
                 <ResourceURL format="image/${str(layer.arr_all_formats).split(',')[0]}" resourceType="tile" template="${onlineressource}1.0.0/${layer.id|n,x,trim}/default/{Time}/${epsg}/{TileMatrix}/{TileRow}/{TileCol}.${str(layer.arr_all_formats).split(',')[0]}"/>
