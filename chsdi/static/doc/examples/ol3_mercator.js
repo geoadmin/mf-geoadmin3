@@ -1,6 +1,3 @@
-
-
-
 function qualifyURL(url) {
   var a = document.createElement('a');
   a.href = url;
@@ -53,11 +50,6 @@ var map_right = new ol.Map({
     createLayer('ch.swisstopo.pixelkarte-farbe', 20151231)
   ],
   target: 'map-right',
-  view: new ol.View({
-    maxZoom: 17
-  })
+  view: map_left.getView()
 });
-
-map_right.bindTo('view', map_left);
-
 

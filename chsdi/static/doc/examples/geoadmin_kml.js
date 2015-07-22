@@ -25,9 +25,11 @@ map.addLayer(lyr1);
 
 // Create the KML Layer
 var vector = new ol.layer.Vector({
-  source: new ol.source.KML({
-    projection: 'EPSG:21781',
-    url: 'bln-style.kml'
+  source: new ol.source.Vector({
+    url: 'bln-style.kml',
+    format : new ol.format.KML({
+      projection: 'EPSG:21781'
+    })
   })
 });
 
