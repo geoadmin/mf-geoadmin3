@@ -1,18 +1,32 @@
 # -*- coding: utf-8 -*-
 
+
+import subprocess
+import tempfile
+import os
+import time
 from chsdi.tests.integration import TestsBase
 
 
 def _validate_scheme(scheme, body):
-    import subprocess
-    import tempfile
-    import os
+    def validate(schema_url, f, attempts):
+        try:
+            retcode = subprocess.call(["xmllint", "--noout", "--nocatalogs", "--schema", schema_url, f.name])
+        except OSError:
+            if attempts > 3:
+                retcode = 1
+            else:
+                attempts += 1
+                time.sleep(2)
+                return validate(schema_url, f, attempts)
+        return retcode
+
     schema_url = os.path.join(os.path.dirname(__file__), "sitemaps/" + scheme)
     os.environ['XML_CATALOG_FILES'] = os.path.join(os.path.dirname(__file__), "xml/catalog")
     f = tempfile.NamedTemporaryFile(mode='w+t', prefix='sitemap-index')
     f.write(body)
     f.seek(0)
-    retcode = subprocess.call(["xmllint", "--noout", "--nocatalogs", "--schema", schema_url, f.name])
+    retcode = validate(schema_url, f, 1)
     f.close()
     return retcode
 
