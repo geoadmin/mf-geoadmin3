@@ -59,7 +59,6 @@ beforeEach(function() {
 
   module(function(gaTopicProvider, gaGlobalOptions) {
     gaTopicProvider.topicsUrl = gaGlobalOptions.cachedApiUrl + '/rest/services';
-    gaTopicProvider.thumbnailUrlTemplate = gaGlobalOptions.resourceUrl + 'img/{Topic}.jpg';
   });
 
   module(function(gaExportKmlProvider, gaGlobalOptions) {

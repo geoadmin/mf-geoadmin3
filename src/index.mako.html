@@ -722,7 +722,6 @@ itemscope itemtype="http://schema.org/WebApplication"
         });
         module.config(function(gaTopicProvider, gaGlobalOptions) {
           gaTopicProvider.topicsUrl = gaGlobalOptions.cachedApiUrl + '/rest/services';
-          gaTopicProvider.thumbnailUrlTemplate = gaGlobalOptions.resourceUrl + 'img/{Topic}.jpg';
         });
 
         module.config(function(gaExportKmlProvider, gaGlobalOptions) {
