@@ -16,14 +16,12 @@ goog.require('ga_permalink');
       var topics = []; // The list of topics available
 
       // Load the topics config
-      var loadTopics = function(topicsUrl, thumbnailUrlTemplate) {
+      var loadTopics = function(topicsUrl) {
         var deferred = $q.defer();
         $http.get(topicsUrl).success(function(data) {
           topics = data.topics;
           angular.forEach(topics, function(value) {
             value.tooltip = 'topic_' + value.id + '_tooltip';
-            value.thumbnail = thumbnailUrlTemplate.
-                replace('{Topic}', value.id);
             value.langs = angular.isString(value.langs) ?
                 value.langs.split(',') : value.langs;
           });
@@ -59,10 +57,10 @@ goog.require('ga_permalink');
         $rootScope.$broadcast('gaTopicChange', topic);
       };
 
-      var Topic = function(topicsUrl, thumbnailUrlTemplate) {
+      var Topic = function(topicsUrl) {
 
         // We load the topics configuration
-        loadTopics(topicsUrl, thumbnailUrlTemplate).then(function(fetchedTopics) {
+        loadTopics(topicsUrl).then(function(fetchedTopics) {
           topics = fetchedTopics;
           topic = getTopicById(gaPermalink.getParams().topic, true);
           if (topic) {
@@ -94,7 +92,7 @@ goog.require('ga_permalink');
           return topic;
         };
       };
-      return new Topic(this.topicsUrl, this.thumbnailUrlTemplate);
+      return new Topic(this.topicsUrl);
     };
   });
 })();
