@@ -361,7 +361,7 @@ goog.require('ga_urlutils_service');
           gaDefinePropertiesForLayer(layer);
           layer.preview = options.preview;
           layer.displayInLayerManager = !layer.preview;
-          layer.useThirdPartyData = true;
+          layer.useThirdPartyData = gaUrlUtils.isThirdPartyValid(options.url);
           layer.label = options.label;
           return layer;
         };
@@ -1214,7 +1214,11 @@ goog.require('ga_urlutils_service');
           // with a warning.
           if (gaUrlUtils.isValid(text)) {
             key = gaUrlUtils.getHostname(text);
-            text = '<span class="ga-warning-tooltip">' + key + '</span>';
+            if (gaUrlUtils.isThirdPartyValid(text)) {
+              text = '<span class="ga-warning-tooltip">' + key + '</span>';
+            } else {
+              text = key;
+            }
           }
           if (key in attributions) {
             return attributions[key];
