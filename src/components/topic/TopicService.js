@@ -11,7 +11,8 @@ goog.require('ga_permalink');
    * Topics manager
    */
   module.provider('gaTopic', function() {
-    this.$get = function($rootScope, $http, $q, gaPermalink, gaGlobalOptions) {
+    this.$get = function($rootScope, $http, $q, $timeout, gaPermalink,
+        gaGlobalOptions) {
       var topic; // The current topic
       var topics = []; // The list of topics available
 
@@ -66,7 +67,10 @@ goog.require('ga_permalink');
           topics = topics;
           topic = getTopicById(gaPermalink.getParams().topic, true);
           if (topic) {
-            broadcast();
+            // We must wait for all the directive to be completely initialized
+            // before broadcasting. Otherwise, we may broadcast while nothing
+            // is initialized to recieve the message.
+            $timeout(broadcast);
           }
         });
 
