@@ -62,8 +62,8 @@ goog.require('ga_permalink');
       var Topic = function(topicsUrl, thumbnailUrlTemplate) {
 
         // We load the topics configuration
-        loadTopics(topicsUrl, thumbnailUrlTemplate).then(function(topics) {
-          topics = topics;
+        loadTopics(topicsUrl, thumbnailUrlTemplate).then(function(fetchedTopics) {
+          topics = fetchedTopics;
           topic = getTopicById(gaPermalink.getParams().topic, true);
           if (topic) {
             broadcast();
