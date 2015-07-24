@@ -43,15 +43,17 @@ goog.require('ga_topic_service');
               }
             });
 
-            scope.$on('gaTopicChange', function(evt, newTopic) {
-              if (!scope.activeTopic) {
-                scope.topics = gaTopic.getTopics();
-                scope.$applyAsync(function() {
-                  element.find('.ga-topic-item').tooltip({
-                    placement: 'bottom'
-                  });
+            gaTopic.getTopics().then(function(topics) {
+              scope.topics = topics;
+              scope.activeTopic = gaTopic.get();
+              scope.$applyAsync(function() {
+                element.find('.ga-topic-item').tooltip({
+                  placement: 'bottom'
                 });
-              }
+              });
+            });
+
+            scope.$on('gaTopicChange', function(evt, newTopic) {
               if (scope.activeTopic != newTopic) {
                 scope.activeTopic = newTopic;
               }

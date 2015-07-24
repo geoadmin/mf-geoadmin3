@@ -1,5 +1,5 @@
 describe('ga_topic_directive', function() {
-  var element, $rootScope, $compile, topics;
+  var element, $rootScope, $compile, $q, topics, def;
 
   beforeEach(function() {
     topics = [{
@@ -12,18 +12,24 @@ describe('ga_topic_directive', function() {
       $provide.value('gaTopic', new (function() {
         var topic = topics[0];
         this.getTopics = function() {
-          return topics;
+          return def.promise;
+        };
+        this.get = function() {
+          return topic;
         };
         this.set = function(newTopic) {
           topic = newTopic;
-        }
+        };
       })());
     });
 
-    inject(function(_$rootScope_, _$compile_) {
+    inject(function(_$rootScope_, _$compile_, $q) {
       $rootScope = _$rootScope_;
       $compile = _$compile_;
+      def = $q.defer();
     });
+
+
   });
    
   describe('uses template by default (desktop)', function() {
@@ -42,6 +48,7 @@ describe('ga_topic_directive', function() {
     describe('loads a topic', function() {
 
       beforeEach(function() {
+        def.resolve(topics);
         $rootScope.$broadcast('gaTopicChange', topics[0]);
         $rootScope.$digest();
       });
@@ -95,6 +102,7 @@ describe('ga_topic_directive', function() {
     describe('loads a topic', function() {
 
       beforeEach(function() {
+        def.resolve(topics);
         $rootScope.$broadcast('gaTopicChange', topics[0]);
         $rootScope.$digest();
       });

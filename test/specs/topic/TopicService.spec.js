@@ -66,7 +66,9 @@ describe('ga_topic_service', function() {
     });
 
     it('has loaded topics', function() {
-      expect(gaTopic.getTopics().length).to.be(2);
+      gaTopic.getTopics().then(function(tps) {
+        expect(tps.length).to.be(2);
+      });
     });
 
     it('has loaded the default topic', function() {
