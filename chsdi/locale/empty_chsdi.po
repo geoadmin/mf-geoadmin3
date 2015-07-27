@@ -2254,6 +2254,9 @@ msgstr ""
 msgid "ch.swisstopo.images-swissimage.metadata"
 msgstr ""
 
+msgid "ch.swisstopo.swissimage-product"
+msgstr ""
+
 msgid "ch.swisstopo.pixelkarte-farbe"
 msgstr ""
 

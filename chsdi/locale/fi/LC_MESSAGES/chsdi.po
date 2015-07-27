@@ -4013,6 +4013,9 @@ msgstr "Edifizis simplifitgads en 3D"
 msgid "ch.swisstopo.swissimage"
 msgstr "SWISSIMAGE"
 
+msgid "ch.swisstopo.swissimage-product"
+msgstr "SWISSIMAGE"
+
 msgid "ch.swisstopo.swissnames3d"
 msgstr "Geografische Namen swissNAMES3D"
 
@@ -4719,7 +4722,7 @@ msgid "kartenblattnummer"
 msgstr "Kartenblattnummer"
 
 msgid "kartenwerk"
-msgstr "Kartenwerk"
+msgstr "Atlas"
 
 msgid "kartenwerk_lk100"
 msgstr "Landeskarte der Schweiz 1:100’000 (LK100)"
@@ -4746,10 +4749,10 @@ msgid "kategorie"
 msgstr "Categoria"
 
 msgid "kbbez"
-msgstr "Blattbezeichnung"
+msgstr "Indicaziun da fegl"
 
 msgid "kbnum"
-msgstr "Blattnummer"
+msgstr "Numer da fegl"
 
 msgid "kindofzone"
 msgstr "Tip da zona da projectaziun"

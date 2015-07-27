@@ -2184,7 +2184,7 @@ msgid "ch.bafu.hydroweb-messstationen_gefahren"
 msgstr "Niveaux de danger de crues"
 
 msgid "ch.bafu.hydroweb-messstationen_grundwasser"
-msgstr "Réseau de neszre NAQUA"
+msgstr "Eaux souterraines : niveaux/débits"
 
 msgid "ch.bafu.hydroweb-messstationen_temperatur"
 msgstr "Température des cours d'eau"
@@ -2283,13 +2283,13 @@ msgid "ch.bafu.nabelstationen"
 msgstr "Stations de mesure qualité de l'air"
 
 msgid "ch.bafu.naqua-grundwasser_nitrat"
-msgstr "Nitrates"
+msgstr "Eaux souterraines : Nitrates"
 
 msgid "ch.bafu.naqua-grundwasser_psm"
-msgstr "Produits phytosanitaires"
+msgstr "Eaux souterraines : Pesticides"
 
 msgid "ch.bafu.naqua-grundwasser_voc"
-msgstr "Composés organiques volatils"
+msgstr "Eaux souterraines : COV"
 
 msgid "ch.bafu.oekomorphologie-f_abschnitte"
 msgstr "Ecomorphologie R - Tronçons"
@@ -4011,6 +4011,9 @@ msgid "ch.swisstopo.swissbuildings3d"
 msgstr "Les bâtiments en 3D simplifiés"
 
 msgid "ch.swisstopo.swissimage"
+msgstr "SWISSIMAGE"
+
+msgid "ch.swisstopo.swissimage-product"
 msgstr "SWISSIMAGE"
 
 msgid "ch.swisstopo.swissnames3d"
