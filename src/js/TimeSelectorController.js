@@ -3,7 +3,7 @@ goog.provide('ga_timeselector_controller');
 
   var module = angular.module('ga_timeselector_controller', []);
 
-  module.controller('GaTimeSelectorController', function($scope, $sce) {
+  module.controller('GaTimeSelectorController', function($scope) {
     // Initialize variables
     $scope.options = {
       minYear: 1844,
@@ -14,7 +14,8 @@ goog.provide('ga_timeselector_controller');
 
     // Fill the years array. This array will be used to configure the
     // display of the slider (minor and major divisions ...)
-    for (var i = $scope.options.minYear, ii = $scope.options.maxYear; i <= ii; i++) {
+    for (var i = $scope.options.minYear, ii = $scope.options.maxYear; i <= ii;
+        i++) {
       var year = {
         value: i,
         available: false,

@@ -9,7 +9,7 @@ goog.provide('ga_modal_directive');
     if (value && value.length !== 0) {
       var v = (value + '').toLowerCase();
       value = !(v == 'f' || v == '0' || v == 'false' || v == 'no' ||
-        v == 'n' || v == '[]');
+          v == 'n' || v == '[]');
     } else {
       value = false;
     }

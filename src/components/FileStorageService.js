@@ -12,11 +12,11 @@ goog.provide('ga_file_storage_service');
       var publicUrl = this.publicUrl;
 
       var getServiceUrl = function(id) {
-          return fileStorageUrl + ((id) ? '/' + id : '');
+        return fileStorageUrl + ((id) ? '/' + id : '');
       };
 
       var getPublicUrl = function(fileId) {
-          return publicUrl + ((fileId) ? '/' + fileId : '');
+        return publicUrl + ((fileId) ? '/' + fileId : '');
       };
 
       var FileStorage = function() {
@@ -38,12 +38,12 @@ goog.provide('ga_file_storage_service');
         this.getFileUrlFromAdminId = function(adminId) {
           var deferred = $q.defer();
           $http.get(getServiceUrl(adminId)).success(function(data) {
-             if (data && data.fileId) {
-               var url = getPublicUrl(data.fileId);
-               deferred.resolve(url);
-             } else {
-               deferred.reject();
-             }
+            if (data && data.fileId) {
+              var url = getPublicUrl(data.fileId);
+              deferred.resolve(url);
+            } else {
+              deferred.reject();
+            }
           }).error(function() {
             deferred.reject();
           });
@@ -61,7 +61,7 @@ goog.provide('ga_file_storage_service');
           var deferred = $q.defer();
           $http.post(getServiceUrl(id), content, {
             headers: {
-             'Content-Type': contentType
+              'Content-Type': contentType
             }
           }).success(function(data) {
             deferred.resolve({

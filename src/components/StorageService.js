@@ -37,7 +37,7 @@ goog.require('ga_browsersniffer_service');
       }
       for (i = 0, l = s.length; i < l; i += 2) {
         out += String.fromCharCode((s.charCodeAt(i) * 256) +
-        s.charCodeAt(i + 1));
+            s.charCodeAt(i + 1));
       }
       return String.fromCharCode(9731) + out;
     };

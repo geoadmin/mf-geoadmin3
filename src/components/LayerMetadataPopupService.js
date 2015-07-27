@@ -30,17 +30,15 @@ goog.require('ga_popup');
               }
             };
 
-            gaLayers.getMetaDataOfLayer(bodid)
-              .success(function(data) {
-                result.html = $sce.trustAsHtml(data);
-                handleResult();
-              })
-              .error(function() {
-                handleResult();
-                //FIXME: better error handling
-                var msg = 'Could not retrieve information for ' + bodid;
-                alert(msg);
-              });
+            gaLayers.getMetaDataOfLayer(bodid).success(function(data) {
+              result.html = $sce.trustAsHtml(data);
+              handleResult();
+            }).error(function() {
+              handleResult();
+              //FIXME: better error handling
+              var msg = 'Could not retrieve information for ' + bodid;
+              alert(msg);
+            });
           };
 
           //We assume popup does not exist yet

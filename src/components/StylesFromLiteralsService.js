@@ -59,9 +59,9 @@ goog.provide('ga_styles_from_literals_service');
         var style = value.vectorOptions;
         var geomType = value.geomType;
         if (geomType === 'point') {
-            style = {
-              image: style
-            };
+          style = {
+            image: style
+          };
         }
         angular.forEach(style, function(value, key) {
           var olStyle = {};
@@ -93,7 +93,7 @@ goog.provide('ga_styles_from_literals_service');
         this.type = properties.type;
 
         if (this.type === 'unique' || this.type === 'range') {
-            this.key = properties.property;
+          this.key = properties.property;
         }
 
         if (this.type === 'single') {
@@ -149,16 +149,12 @@ goog.provide('ga_styles_from_literals_service');
           } else if (this.type === 'unique') {
             var properties = feature.getProperties();
             var value = properties[this.key];
-            var geomType = getGeomTypeFromGeometry(
-              feature.getGeometry()
-            );
+            var geomType = getGeomTypeFromGeometry(feature.getGeometry());
             return this.styles[geomType][value];
           } else if (this.type === 'range') {
             var properties = feature.getProperties();
             var value = properties[this.key];
-            var geomType = getGeomTypeFromGeometry(
-              feature.getGeometry()
-            );
+            var geomType = getGeomTypeFromGeometry(feature.getGeometry());
             return this.findOlStyleInRange(value, geomType);
           }
         };

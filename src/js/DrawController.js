@@ -1,8 +1,8 @@
 goog.provide('ga_draw_controller');
 
 goog.require('ga_browsersniffer_service');
-goog.require('ga_styles_service');
 goog.require('ga_print_service');
+goog.require('ga_styles_service');
 (function() {
 
   var module = angular.module('ga_draw_controller', [
@@ -13,8 +13,9 @@ goog.require('ga_print_service');
   ]);
 
   module.controller('GaDrawController', function($rootScope, $scope, $translate,
-      $timeout, gaBrowserSniffer, gaGlobalOptions, gaStyleFactory, gaPrintService) {
-    
+      $timeout, gaBrowserSniffer, gaGlobalOptions, gaStyleFactory,
+      gaPrintService) {
+
     $scope.$on('gaPopupFocusChange', function(evt, isFocus) {
       $scope.options.hasPopupFocus = isFocus;
     });
@@ -25,7 +26,7 @@ goog.require('ga_print_service');
 
     $scope.options = $scope.options || {};
     $scope.options.shortenUrl = gaGlobalOptions.apiUrl + '/shorten.json';
-     
+
     // Add popup options
     $scope.options.popupOptions = {
       title: '',
@@ -57,7 +58,7 @@ goog.require('ga_print_service');
         $scope.options.showExport : true;
 
     $scope.options.broadcastLayer = $scope.options.broadcastLayer || false;
-     
+
     $scope.options.useTemporaryLayer = $scope.options.useTemporaryLayer ||
         false;
 
@@ -68,24 +69,24 @@ goog.require('ga_print_service');
     $scope.options.description = '';
 
     $scope.options.colors = [
-      {name: 'black',  fill: [0, 0, 0], border: 'white'},
-      {name: 'blue',   fill: [0, 0, 255], border: 'white'},
-      {name: 'gray',   fill: [128, 128, 128], border: 'white'},
-      {name: 'green',  fill: [0, 128, 0], border: 'white'},
+      {name: 'black', fill: [0, 0, 0], border: 'white'},
+      {name: 'blue', fill: [0, 0, 255], border: 'white'},
+      {name: 'gray', fill: [128, 128, 128], border: 'white'},
+      {name: 'green', fill: [0, 128, 0], border: 'white'},
       {name: 'orange', fill: [255, 165, 0], border: 'black'},
-      {name: 'red',    fill: [255, 0, 0], border: 'white'},
-      {name: 'white',  fill: [255, 255, 255], border: 'black'},
+      {name: 'red', fill: [255, 0, 0], border: 'white'},
+      {name: 'white', fill: [255, 255, 255], border: 'black'},
       {name: 'yellow', fill: [255, 255, 0], border: 'black'}
     ];
 
     $scope.options.iconSizes = [
-      {label:'small_size', value: [24, 24], scale: 0.5},
-      {label:'medium_size', value: [36, 36], scale: 0.75},
-      {label:'big_size', value: [48, 48], scale: 1}
+      {label: 'small_size', value: [24, 24], scale: 0.5},
+      {label: 'medium_size', value: [36, 36], scale: 0.75},
+      {label: 'big_size', value: [48, 48], scale: 1}
     ];
 
     $scope.options.icons = [
-        
+
         // Basics
         {id: 'marker'},
         {id: 'circle'},
@@ -100,8 +101,8 @@ goog.require('ga_print_service');
         {id: 'cross'},
         {id: 'disability'},
         {id: 'danger'},
-        
-        // Shops 
+
+        // Shops
         {id: 'art-gallery'},
         {id: 'alcohol-shop'},
         {id: 'bakery'},
@@ -122,7 +123,7 @@ goog.require('ga_print_service');
         {id: 'pharmacy'},
         {id: 'restaurant'},
         {id: 'shop'},
-        
+
         // Transport
         {id: 'airport'},
         {id: 'bicycle'},
@@ -137,7 +138,7 @@ goog.require('ga_print_service');
         {id: 'rail-underground'},
         {id: 'scooter'},
 
-        // Sport 
+        // Sport
         {id: 'america-football'},
         {id: 'baseball'},
         {id: 'basketball'},
@@ -147,8 +148,8 @@ goog.require('ga_print_service');
         {id: 'soccer'},
         {id: 'swimming'},
         {id: 'tennis'},
-        
-        // Places 
+
+        // Places
         {id: 'airfield'},
         {id: 'building'},
         {id: 'campsite'},
@@ -195,7 +196,7 @@ goog.require('ga_print_service');
         {id: 'wetland'},
         {id: 'zoo'},
 
-        
+
         {id: 'camera'},
         {id: 'chemist'},
         {id: 'dam'},
@@ -212,30 +213,31 @@ goog.require('ga_print_service');
         {id: 'waste-basket'},
         {id: 'water'}
     ];
-   
-    $scope.options.setDefaultValues = function() { 
+
+    $scope.options.setDefaultValues = function() {
       // Set default color
       $scope.options.color = $scope.options.colors[5];
-      
+
       // Set default icon
       $scope.options.icon = $scope.options.icons[0];
-      
+
       // Set default icon size
       $scope.options.iconSize = $scope.options.iconSizes[2];
 
-    }
+    };
     $scope.options.setDefaultValues();
 
     // Define icons properties
     for (var i = 0, ii = $scope.options.icons.length; i < ii; i++) {
       var icon = $scope.options.icons[i];
-      icon.url = gaGlobalOptions.resourceUrl + 'img/maki/' + icon.id + '-24@2x.png';
+      icon.url = gaGlobalOptions.resourceUrl + 'img/maki/' + icon.id +
+          '-24@2x.png';
     }
     $scope.getIconUrl = function(i) {
       return i.url;
     };
 
-    // Get the current style defined by inputs 
+    // Get the current style defined by inputs
     $scope.options.updateStyle = function(feature) {
       var style;
       var oldStyles = feature.getStyle();
@@ -243,7 +245,7 @@ goog.require('ga_print_service');
         style = oldStyles[0];
       } else {
         // No style to update
-        return;         
+        return;
       }
 
       // Update Fill if it exists
@@ -252,13 +254,13 @@ goog.require('ga_print_service');
       if (fill) {
         fill.setColor(color.fill.concat([0.4]));
       }
-      
+
       // Update Stroke if it exists
       var stroke = style.getStroke();
       if (stroke) {
         stroke.setColor(color.fill.concat([1]));
       }
-      
+
       // Update text style
       var text = style.getText();
       if (text && $scope.options.name) {
@@ -270,7 +272,7 @@ goog.require('ga_print_service');
           }),
           stroke: gaStyleFactory.getTextStroke(color.fill.concat([1]))
         });
-      } 
+      }
 
       // Update Icon style if it exists
       var icon = style.getImage();
@@ -281,7 +283,7 @@ goog.require('ga_print_service');
           scale: $scope.options.iconSize.scale
         });
       }
-      
+
       // Set feature's properties
       if ($scope.options.name) {
         feature.set('name', $scope.options.name);
@@ -312,8 +314,8 @@ goog.require('ga_print_service');
         })
       ];
       return styles;
-    }
-    
+    };
+
 
     // Draw a text
     var annotationDrawStyleFunc = function(feature, resolution) {
@@ -340,7 +342,7 @@ goog.require('ga_print_service');
       return styles;
     };
 
-    // Draw a line or polygon 
+    // Draw a line or polygon
     var linepolygonDrawStyleFunc = function(feature) {
       var color = $scope.options.color;
       var styles = [
@@ -357,7 +359,7 @@ goog.require('ga_print_service');
       ];
       return styles;
     };
-    
+
     var measureDrawStyleFunc = gaStyleFactory.getStyleFunction('measure');
 
     var generateDrawStyleFunc = function(styleFunction) {
@@ -372,11 +374,11 @@ goog.require('ga_print_service');
           width: 0
         })
       });
-      
+
       return function(feature, resolution) {
         var styles;
         if (feature.getGeometry().getType() === 'Polygon') {
-          styles =  [sketchPolygon];
+          styles = [sketchPolygon];
         } else if (feature.getGeometry().getType() === 'Point') {
           var color = $scope.options.color;
           var fill = new ol.style.Fill({
@@ -393,17 +395,17 @@ goog.require('ga_print_service');
               stroke: stroke
             })
           });
-          styles =  [sketchCircle];
+          styles = [sketchCircle];
         } else {
           styles = styleFunction(feature, resolution);
         }
         return styles;
       };
     };
-    
-    // Select style function display vertices of the geometry 
+
+    // Select style function display vertices of the geometry
     $scope.options.selectStyleFunction = (function() {
-      
+
       // The vertex style display a black and white circle on the existing
       // vertices, and also when the user can add a new vertices.
       var vertexStyle = new ol.style.Style({
@@ -427,10 +429,10 @@ goog.require('ga_print_service');
           } else {
             return feature.getGeometry();
           }
-        }, 
-        zIndex: gaStyleFactory.ZSKETCH 
+        },
+        zIndex: gaStyleFactory.ZSKETCH
       });
-       
+
       return function(feature, resolution) {
         if (!feature.getStyleFunction() ||
             !feature.getStyleFunction().call(feature, resolution)) {
@@ -482,10 +484,11 @@ goog.require('ga_print_service');
       style: measureDrawStyleFunc,
       showMeasure: true
     }];
-    
+
     for (var i = 0, ii = $scope.options.tools.length; i < ii; i++) {
       var tool = $scope.options.tools[i];
-      tool.activeKey = 'is' + tool.id.charAt(0).toUpperCase() + tool.id.slice(1) + 'Active';
+      tool.activeKey = 'is' + tool.id.charAt(0).toUpperCase() +
+          tool.id.slice(1) + 'Active';
       tool.title = 'draw_' + tool.id;
     }
 
@@ -498,7 +501,8 @@ goog.require('ga_print_service');
         // HACK IE, for some obscure reason an A4 page in IE is not
         // 600 pixels width so calculation of the scale is not optimal.
         var b = (gaBrowserSniffer.msie) ? 1000 : 600;
-        // Same IE mistery here, a js error occurs using jQuery width() function.
+        // Same IE mistery here, a js error occurs using jQuery width()
+        // function.
         var a = parseInt(profile.find('svg').attr('width'), 10);
         var scale = b / a;
         profile.css({
@@ -508,9 +512,10 @@ goog.require('ga_print_service');
           transform: 'scale(' + scale + ')'
         });
         printWindow.print();
-      }
+      };
       $timeout(function() {
-        gaPrintService.htmlPrintout(contentEl.clone().html(), undefined, onLoad);
+        gaPrintService.htmlPrintout(contentEl.clone().html(), undefined,
+            onLoad);
       }, 0, false);
     };
   });

@@ -19,8 +19,8 @@ goog.provide('ga_attribution_directive');
         scope.map.addControl(control);
 
         element.on('click', '.ga-warning-tooltip', function(evt) {
-          $window.alert($translate.instant('external_data_warning')
-                        .replace('--URL--', $(evt.target).text()));
+          $window.alert($translate.instant('external_data_warning').
+              replace('--URL--', $(evt.target).text()));
         });
 
         if (!gaBrowserSniffer.mobile) {
