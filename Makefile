@@ -300,7 +300,7 @@ $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule
 	${PYTHON_CMD} .build-artefacts/closure-library/closure/bin/build/closurebuilder.py --root=.build-artefacts/annotated --root=.build-artefacts/closure-library --namespace="ga" --namespace="__ga_template_cache__" --output_mode=list > $@
 
 .build-artefacts/lint.timestamp: .build-artefacts/python-venv/bin/gjslint $(SRC_JS_FILES)
-	.build-artefacts/python-venv/bin/gjslint -r src/components src/js --jslint_error=all
+	.build-artefacts/python-venv/bin/gjslint -r src/components -r src/js
 	touch $@
 
 .build-artefacts/python-venv/bin/mako-render: .build-artefacts/python-venv
