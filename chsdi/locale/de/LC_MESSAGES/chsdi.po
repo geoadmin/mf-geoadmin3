@@ -2184,7 +2184,7 @@ msgid "ch.bafu.hydroweb-messstationen_gefahren"
 msgstr "Hochwasser Gefahrenstufen"
 
 msgid "ch.bafu.hydroweb-messstationen_grundwasser"
-msgstr "Messnetz NAQUA"
+msgstr "Grundwasserstände/Quellschüttungen"
 
 msgid "ch.bafu.hydroweb-messstationen_temperatur"
 msgstr "Wassertemperatur der Flüsse"
@@ -2283,13 +2283,13 @@ msgid "ch.bafu.nabelstationen"
 msgstr "Messstationen Luftqualität"
 
 msgid "ch.bafu.naqua-grundwasser_nitrat"
-msgstr "Nitrat"
+msgstr "Grundwasser: Nitrat"
 
 msgid "ch.bafu.naqua-grundwasser_psm"
-msgstr "Pflanzenschutzmittel"
+msgstr "Grundwasser: Pestizide"
 
 msgid "ch.bafu.naqua-grundwasser_voc"
-msgstr "Flüchtige org. Verbindungen"
+msgstr "Grundwasser: VOC"
 
 msgid "ch.bafu.oekomorphologie-f_abschnitte"
 msgstr "Ökomorphologie F - Abschnitte"
@@ -3608,6 +3608,21 @@ msgstr "Eiszeitliches Maximum 500"
 
 msgid "ch.swisstopo.geologie-generalkarte-ggk200"
 msgstr "Geologische Generalkarte"
+
+msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata"
+msgstr "Einteilung geol. Generalkarte 200"
+
+msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata.autor"
+msgstr "Autor(en)"
+
+msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata.ggk_nr"
+msgstr "Kartenblatt"
+
+msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata.jahr"
+msgstr "Publikationsjahr"
+
+msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata.titel"
+msgstr "Titel"
 
 msgid "ch.swisstopo.geologie-geocover"
 msgstr "GeoCover - Geol. Vektordatensätze"

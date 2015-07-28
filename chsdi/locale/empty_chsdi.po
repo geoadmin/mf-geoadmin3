@@ -6932,3 +6932,18 @@ msgstr ""
 
 msgid "namen_typ"
 msgstr ""
+
+msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata.autor"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata.ggk_nr"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata.jahr"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata.titel"
+msgstr ""

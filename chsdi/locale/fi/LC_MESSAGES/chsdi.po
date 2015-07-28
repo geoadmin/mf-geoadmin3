@@ -3609,6 +3609,21 @@ msgstr "Maximum dal temp da glatsch"
 msgid "ch.swisstopo.geologie-generalkarte-ggk200"
 msgstr "Charta geologica generala"
 
+msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata"
+msgstr "Einteilung geol. Generalkarte 200"
+
+msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata.autor"
+msgstr "Autor(en)"
+
+msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata.ggk_nr"
+msgstr "Kartenblatt"
+
+msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata.jahr"
+msgstr "Publikationsjahr"
+
+msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata.titel"
+msgstr "Titel"
+
 msgid "ch.swisstopo.geologie-geocover"
 msgstr "GeoCover - Datas geol. vectorialas"
 
@@ -4719,7 +4734,7 @@ msgid "kartenblattnummer"
 msgstr "Kartenblattnummer"
 
 msgid "kartenwerk"
-msgstr "Kartenwerk"
+msgstr "Atlas"
 
 msgid "kartenwerk_lk100"
 msgstr "Landeskarte der Schweiz 1:100’000 (LK100)"
@@ -4746,10 +4761,10 @@ msgid "kategorie"
 msgstr "Categoria"
 
 msgid "kbbez"
-msgstr "Blattbezeichnung"
+msgstr "Indicaziun da fegl"
 
 msgid "kbnum"
-msgstr "Blattnummer"
+msgstr "Numer da fegl"
 
 msgid "kindofzone"
 msgstr "Tip da zona da projectaziun"
