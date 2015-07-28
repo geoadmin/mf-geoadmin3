@@ -300,6 +300,10 @@ goog.require('ga_urlutils_service');
         }
       });
 
+      $scope.$on('gaSearchReset', function() {
+        $scope.results = [];
+      });
+
     }
   );
 
