@@ -60,7 +60,9 @@ goog.require('ga_permalink');
       var Topic = function(topicsUrl) {
 
         // We load the topics configuration
-        loadTopics(topicsUrl).then(function(fetchedTopics) {
+        var topicsP = loadTopics(topicsUrl);
+
+        topicsP.then(function(fetchedTopics) {
           topics = fetchedTopics;
           topic = getTopicById(gaPermalink.getParams().topic, true);
           if (topic) {
@@ -68,8 +70,9 @@ goog.require('ga_permalink');
           }
         });
 
+        // Returns a promise that is resolved when topics are loaded
         this.getTopics = function() {
-          return topics;
+          return topicsP;
         };
 
         this.set = function(newTopic, force) {
