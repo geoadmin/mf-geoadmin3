@@ -67,6 +67,7 @@ goog.require('ga_search_type_directives');
     function($scope, $rootScope, $translate, $sce, $timeout, gaPermalink,
              gaUrlUtils, gaSearchGetCoordinate, gaMapUtils, gaMarkerOverlay,
              gaKml, gaPreviewLayers) {
+      var keyboardNav = false;
       var blockQuery = false;
       var restat = new ResultStats();
       $scope.restat = restat;
@@ -117,14 +118,6 @@ goog.require('ga_search_type_directives');
         evt.preventDefault();
       };
 
-      $scope.lostFocus = function(evt) {
-        $scope.searchFocused = false;
-      };
-
-      $scope.onFocus = function(evt) {
-        $scope.searchFocused = true;
-      };
-
       var startQuery = function(q) {
         restat.reset();
 
@@ -165,7 +158,7 @@ goog.require('ga_search_type_directives');
         startQuery($scope.query);
       };
 
-      $scope.$watch('query', function(newval, oldval) {
+      $scope.$watch('query', function() {
         $scope.trigger();
       });
 
@@ -183,10 +176,42 @@ goog.require('ga_search_type_directives');
 
       $scope.layers = $scope.map.getLayers().getArray();
 
+      $scope.setKeyboardNav = function(isNav) {
+        keyboardNav = isNav;
+      };
+
+      var losingFocus = false;
+      $scope.lostFocus = function() {
+        if (!keyboardNav) {
+          // We apply a timeout of 200 ms to make
+          // sure the click event on the result item is fired
+          // before the blur event on the input
+          losingFocus = true;
+          $timeout(function() {
+            if (losingFocus) {
+              $scope.searchFocused = false;
+              losingFocus = false;
+            }
+          }, 200);
+        }
+      };
+
+      $scope.onFocus = function() {
+        losingFocus = false;
+        $scope.setKeyboardNav(false);
+        $scope.searchFocused = true;
+      };
+
+      $scope.showDropDown = function() {
+        var hasResults = restat.sets() > 0 ? true : false;
+        return $scope.searchFocused && hasResults;
+      };
+
       //Init swisssearch parameter handling
       var searchParam = gaPermalink.getParams().swisssearch;
       if (angular.isDefined(searchParam) &&
           searchParam.length > 0) {
+        $scope.searchFocused = true;
         var unregister = $scope.$on('gaLayersChange', function() {
           // At this point layers are not added to the map yet
           $scope.map.getLayers().once('add', function() {
@@ -231,6 +256,7 @@ goog.require('ga_search_type_directives');
               //Enter key
               if (evt.keyCode == 13) {
                 if (evt.target && evt.target.blur) {
+                  $scope.setKeyboardNav(false);
                   evt.target.blur();
                 }
               }
@@ -241,6 +267,7 @@ goog.require('ga_search_type_directives');
                 if (firstRes.length === 1 &&
                     firstRes[0].className.indexOf('ga-search-result') > -1) {
                   evt.preventDefault();
+                  $scope.setKeyboardNav(true);
                   firstRes.focus();
                 }
               }
