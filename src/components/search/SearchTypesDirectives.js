@@ -299,11 +299,6 @@ goog.require('ga_urlutils_service');
           unregisterMove();
         }
       });
-
-      $scope.$on('gaSearchReset', function() {
-        $scope.results = [];
-      });
-
     }
   );
 

@@ -113,7 +113,6 @@ goog.require('ga_translation_service');
         $scope.query = '';
         $scope.childoptions.query = '';
         $scope.input.blur();
-        $scope.$broadcast('gaSearchReset');
       };
 
       $scope.preClear = function(evt) {
@@ -161,7 +160,7 @@ goog.require('ga_translation_service');
           }
         } else {
           blockQuery = false;
-          $scope.$broadcast('gaSearchReset');
+          $scope.childoptions.query = '';
         }
       };
 
