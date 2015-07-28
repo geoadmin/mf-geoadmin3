@@ -103,6 +103,7 @@ goog.require('ga_translation_service');
               }
             };
             var lastUrlUsed;
+            var canceller;
             var updateCatalogTree = function(topic, lang) {
               // If topics are not yet loaded, we do nothing
               if (!topic) {
@@ -117,7 +118,12 @@ goog.require('ga_translation_service');
                 labelsOnly = true;
               }
               lastUrlUsed = url;
+              if (canceller) {
+                canceller.resolve();
+              }
+              canceller = $q.defer();
               $http.get(url, {
+                timeout: canceller.promise,
                 cache: true,
                 params: {
                   'lang': lang
