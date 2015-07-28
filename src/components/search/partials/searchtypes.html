@@ -1,14 +1,5 @@
 <div class="ga-search-results-container ng-hide" ng-hide="!results.length">
-  <span ng-if="type === 'locations'">
-    <div class="ga-search-results-header" translate>locations</div>
-  </span>
-  <span ng-if="type === 'featuresearch'">
-    <div class="ga-search-results-header" translate>item</div>
-  </span>
-  <span ng-if="type === 'layers'">
-    <div class="ga-search-results-header" translate>map_info</div>
-  </span>
-
+  <div class="ga-search-results-header" translate>{{type + '_results_header'}}</div>
   <span class="ga-search-results">
     <div class="ga-search-result" tabindex="{{tabstart + i}}"
          ng-repeat="(i, res) in results"
