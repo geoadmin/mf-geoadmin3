@@ -11,6 +11,7 @@
   }
 
   #header {
+    background-color: transparent;
     box-shadow: none !important;
     height: 110px;
   }
@@ -19,7 +20,8 @@
   #pulldown, #search-container, #mouseposition,
   #feedback, #feedback-success, #feedback-error,
   #import-wms-popup, #import-kml-popup, #draw-popup, #featuretree-popup,
-  #header form, #footer a, .alert {
+  #header form, #footer a, .alert, #toptools, [ga-background-selector],
+  [ga-time-selector] {
     display: none !important;
   }
 
@@ -51,11 +53,12 @@
   // ****** PRINT MAP SETTINGS
   [ga-map] {
     border: 1px solid lightgray;
-    top: 120px !important;
-    width: 650px !important;/* A4 portrait width */ 
-    height: 650px; /* only useful for chrome and safari, never set !important for
-    the height because Firefox could use it and so the map printed will not be resized
-    keeping the ratio */
+  }
+
+  .embed [ga-map] {
+    width: initial !important;
+    top: initial !important;
+    height: initial !important;
   }
 
   // ****** PRINT PROFILE SETTINGS
