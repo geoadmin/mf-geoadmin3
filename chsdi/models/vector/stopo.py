@@ -663,6 +663,21 @@ class GridstandSwissimage(Base, Vector):
 register('ch.swisstopo.images-swissimage.metadata', GridstandSwissimage)
 
 
+class SwissimageProduct(Base, Vector):
+    __tablename__ = 'view_gridstand_datenhaltung_swissimage_tilecache'
+    __table_args__ = ({'schema': 'datenstand', 'autoload': False, 'extend_existing': True})
+    __template__ = 'templates/htmlpopup/images_metadata.mako'
+    __bodId__ = 'ch.swisstopo.swissimage-product'
+    __label__ = 'id'
+    id = Column('tilenumber', Text, primary_key=True)
+    lk25_name = Column('lk25_name', Text)
+    datenstand = Column('datenstand', Text)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+
+register('ch.swisstopo.swissimage-product', SwissimageProduct)
+
+
 class GeolGeocoverMetadata(Base, Vector):
     __tablename__ = 'kv_geocover'
     __table_args__ = ({'schema': 'geol', 'autoload': False})
