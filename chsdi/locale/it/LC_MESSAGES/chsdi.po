@@ -2184,7 +2184,7 @@ msgid "ch.bafu.hydroweb-messstationen_gefahren"
 msgstr "Soglie d'allarme delle piene"
 
 msgid "ch.bafu.hydroweb-messstationen_grundwasser"
-msgstr "Rete di misurazione NAQUA"
+msgstr "Acque sotterranee: livelli/portate"
 
 msgid "ch.bafu.hydroweb-messstationen_temperatur"
 msgstr "Temperature dei fiumi"
@@ -2283,13 +2283,13 @@ msgid "ch.bafu.nabelstationen"
 msgstr "Stazioni di misura qualità dell'aria"
 
 msgid "ch.bafu.naqua-grundwasser_nitrat"
-msgstr "Nitrati"
+msgstr "Acque sotterranee : Nitrati"
 
 msgid "ch.bafu.naqua-grundwasser_psm"
-msgstr "Prodotti fitosanitari"
+msgstr "Acque sotterranee : Pesticidi"
 
 msgid "ch.bafu.naqua-grundwasser_voc"
-msgstr "Composti organici volatili"
+msgstr "Acque sotterranee : COV"
 
 msgid "ch.bafu.oekomorphologie-f_abschnitte"
 msgstr "Ecomorfologia R - Tratti"
@@ -4011,6 +4011,9 @@ msgid "ch.swisstopo.swissbuildings3d"
 msgstr "Gli edifici semplificati in 3D"
 
 msgid "ch.swisstopo.swissimage"
+msgstr "SWISSIMAGE"
+
+msgid "ch.swisstopo.swissimage-product"
 msgstr "SWISSIMAGE"
 
 msgid "ch.swisstopo.swissnames3d"

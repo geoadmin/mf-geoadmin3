@@ -2184,7 +2184,7 @@ msgid "ch.bafu.hydroweb-messstationen_gefahren"
 msgstr "Hochwasser Gefahrenstufen"
 
 msgid "ch.bafu.hydroweb-messstationen_grundwasser"
-msgstr "Messnetz NAQUA"
+msgstr "Grundwasserstände/Quellschüttungen"
 
 msgid "ch.bafu.hydroweb-messstationen_temperatur"
 msgstr "Wassertemperatur der Flüsse"
@@ -2283,13 +2283,13 @@ msgid "ch.bafu.nabelstationen"
 msgstr "Messstationen Luftqualität"
 
 msgid "ch.bafu.naqua-grundwasser_nitrat"
-msgstr "Nitrat"
+msgstr "Grundwasser: Nitrat"
 
 msgid "ch.bafu.naqua-grundwasser_psm"
-msgstr "Pflanzenschutzmittel"
+msgstr "Grundwasser: Pestizide"
 
 msgid "ch.bafu.naqua-grundwasser_voc"
-msgstr "Flüchtige org. Verbindungen"
+msgstr "Grundwasser: VOC"
 
 msgid "ch.bafu.oekomorphologie-f_abschnitte"
 msgstr "Ökomorphologie F - Abschnitte"
@@ -4011,6 +4011,9 @@ msgid "ch.swisstopo.swissbuildings3d"
 msgstr "Vereinfachte 3D-Gebäude"
 
 msgid "ch.swisstopo.swissimage"
+msgstr "SWISSIMAGE"
+
+msgid "ch.swisstopo.swissimage-product"
 msgstr "SWISSIMAGE"
 
 msgid "ch.swisstopo.swissnames3d"
