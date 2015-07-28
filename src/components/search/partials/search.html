@@ -5,14 +5,14 @@
     placeholder="{{'search_placeholder' | translate}}" ng-model="query"
     autocapitalize="none" autocomplete="off" autocorrect="off"
     ng-keydown="keydown($event)"
-    ng-blur="lostFocus($event)"
+    ng-blur="lostFocus()"
     ng-focus="onFocus()"
     ng-disabled="!childoptions.currentTopic">
     <i class="icon-search"></i>
     <button class="icon-remove-sign ga-icon ga-btn" ng-click="clearInput()"
        ng-mousedown="preClear($event)" ng-hide="query==''"></button>
 
-    <span class="ga-search-dropdown" ng-show="restat.sets()">
+    <span class="ga-search-dropdown" ng-show="showDropDown()">
       <!-- locations -->
       <div ng-class="'ga-search-' + restat.sets()">
         <div ga-search-locations ga-search-locations-options="childoptions" ga-search-locations-map="map"></div>
@@ -27,4 +27,4 @@
       </div>
     </span> <!-- dropdown -->
   </span> <!-- input container -->
-  </form>
+</form>
