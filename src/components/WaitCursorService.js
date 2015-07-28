@@ -34,9 +34,9 @@ goog.provide('ga_waitcursor_service');
 
       // Catch every jquery $.ajax requests
       $document.ajaxSend(function() {
-         wait.increment();
+        wait.increment();
       }).ajaxComplete(function() {
-         wait.decrement();
+        wait.decrement();
       });
 
       return wait;

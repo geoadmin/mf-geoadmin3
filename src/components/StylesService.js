@@ -182,7 +182,7 @@ goog.require('ga_measure_service');
               }
             },
             zIndex: 0 // TO FIX: We set 0 for now, because the hit detection
-                      // takes account of the transparent fill of the circle
+            // takes account of the transparent fill of the circle
           })
         ];
         return styles;

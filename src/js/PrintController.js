@@ -7,7 +7,7 @@ goog.provide('ga_print_controller');
     function($scope, gaGlobalOptions) {
       var printPath = gaGlobalOptions.apiUrl + '/print';
       var printCachedPath = gaGlobalOptions.cachedApiUrl + '/print';
-      
+
       $scope.options = {
         printPath: printPath,
         printConfigUrl: printCachedPath + '/info.json?url=' +

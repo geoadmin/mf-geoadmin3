@@ -50,14 +50,14 @@ goog.require('ga_permalink');
             var formatCoordinates = function(coord, prec, ignoreThousand) {
               var fCoord = ol.coordinate.toStringXY(coord, prec);
               if (!ignoreThousand) {
-                 fCoord = fCoord.replace(/\B(?=(\d{3})+(?!\d))/g, "'");
+                fCoord = fCoord.replace(/\B(?=(\d{3})+(?!\d))/g, "'");
               }
               return fCoord;
             };
 
             var coordinatesFormatUTM = function(coordinates, zone) {
               var coord = ol.coordinate.toStringXY(coordinates, 0).
-                replace(/\B(?=(\d{3})+(?!\d))/g, "'");
+                  replace(/\B(?=(\d{3})+(?!\d))/g, "'");
               return coord + ' ' + zone;
             };
 
@@ -100,11 +100,11 @@ goog.require('ga_permalink');
               scope.coord2056 = formatCoordinates(coord2056, 2) + ' *';
               if (coord4326[0] < 6 && coord4326[0] >= 0) {
                 var utm_31t = ol.proj.transform(coord4326,
-                  'EPSG:4326', 'EPSG:32631');
+                    'EPSG:4326', 'EPSG:32631');
                 scope.coordutm = coordinatesFormatUTM(utm_31t, '(zone 31T)');
               } else if (coord4326[0] < 12 && coord4326[0] >= 6) {
                 var utm_32t = ol.proj.transform(coord4326,
-                  'EPSG:4326', 'EPSG:32632');
+                    'EPSG:4326', 'EPSG:32632');
                 scope.coordutm = coordinatesFormatUTM(utm_32t, '(zone 32T)');
               } else {
                 return '-';
@@ -232,12 +232,11 @@ goog.require('ga_permalink');
                   angular.extend({crosshair: 'marker'}, p));
 
               if (!gaBrowserSniffer.mobile) {
-                scope.qrcodeUrl = qrcodeUrl +
-                  '?url=' +
-                  escape(contextPermalink);
+                scope.qrcodeUrl = qrcodeUrl + '?url=' +
+                    escape(contextPermalink);
               }
             }
           }
         };
-        });
+      });
 })();
