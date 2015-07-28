@@ -1,15 +1,6 @@
 <div class="ga-search-results-container ng-hide" ng-hide="!results.length">
-  <span ng-if="type === 'locations'">
-    <div class="ga-search-results-header" translate>locations</div>
-  </span>
-  <span ng-if="type === 'featuresearch'">
-    <div class="ga-search-results-header" translate>item</div>
-  </span>
-  <span ng-if="type === 'layers'">
-    <div class="ga-search-results-header" translate>map_info</div>
-  </span>
-
-  <span class="ga-search-results">
+  <div class="ga-search-results-header" translate>{{type + '_results_header'}}</div>
+  <div class="ga-search-results">
     <div class="ga-search-result" tabindex="{{tabstart + i}}"
          ng-repeat="(i, res) in results"
          ng-keydown="keydown($event, res)"
@@ -22,10 +13,10 @@
            ng-bind-html="prepareLabel(res.attrs)"
            title="{{cleanLabel(res.attrs)}}">
       </div>
-      <i class="icon-info-sign"
+      <button class="ga-btn ga-icon icon-info-sign"
          ng-if="type === 'layers'"
-         ng-click="getLegend($event, res.attrs.layer)"></i>
+         ng-click="getLegend($event, res.attrs.layer)">
+      </button>
     </div>
-  </span>
-
+  </div>
 </div>
