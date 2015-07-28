@@ -1643,7 +1643,7 @@ goog.require('ga_urlutils_service');
           angular.forEach(layerSpecs, function(layerSpec, index) {
             var layer;
             var opacity = (opacities && index < opacities.length) ?
-                opacities[index] : 1;
+                opacities[index] : undefined;
             var visible = (visibilities && index < visibilities.length &&
                 visibilities[index] == 'false') ?
                 false : true;
@@ -1667,7 +1667,11 @@ goog.require('ga_urlutils_service');
               }
               if (angular.isDefined(layer)) {
                 layer.setVisible(visible);
-                layer.setOpacity(opacity);
+                // if there is no opacity defined in the permalink, we keep
+                // the default opacity of the layers
+                if (opacity) {
+                  layer.setOpacity(opacity);
+                }
                 if (layer.timeEnabled && timestamp) {
                   layer.time = timestamp;
                 }
@@ -1681,7 +1685,7 @@ goog.require('ga_urlutils_service');
               try {
                 gaKml.addKmlToMapForUrl(map, url,
                   {
-                    opacity: opacity,
+                    opacity: opacity || 1,
                     visible: visible,
                     attribution: url
                   },
@@ -1703,7 +1707,7 @@ goog.require('ga_urlutils_service');
                   {
                     url: infos[2],
                     label: infos[1],
-                    opacity: opacity,
+                    opacity: opacity || 1,
                     visible: visible,
                     attribution: infos[2]
                   },
