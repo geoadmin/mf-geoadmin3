@@ -7,6 +7,12 @@
 </div>
 
 <div ng-show="queryableLayers.length != 0">
+  <div class="form-group" ng-show="filters.length > 1">
+    <label translate>query_operator</label>
+    <select ng-model="selectedQueryOperator"
+            ng-options="q.label for q in queryOperators">
+    </select>
+  </div>
   <div class="form-group ga-queries-predefined" ng-show="queriesPredef.length > 0">
     <label translate>query_choose</label> 
     <select ng-model="queryPredef" 

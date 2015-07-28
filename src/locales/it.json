@@ -267,6 +267,7 @@
 	"query_layer": "--- Selezionare un layer ---",
 	"query_more_values": "Recuperare più valori",
 	"query_num": "Condizioni nr. {{num}}",
+	"query_operator": "Operatori per la ricerca avanzata",
 	"query_remove": "Eliminare il condizioni",
 	"query_reset": "Reinizializzare il condizioni",
 	"query_search": "Ricerca",
