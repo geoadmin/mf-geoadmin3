@@ -7,7 +7,7 @@
     ng-keydown="keydown($event)"
     ng-blur="lostFocus($event)"
     ng-focus="onFocus()"
-    ng-disabled="!childoptions.currentTopic">
+    ng-disabled="!topicLoaded">
     <i class="icon-search"></i>
     <button class="icon-remove-sign ga-icon ga-btn" ng-click="clearInput()"
        ng-mousedown="preClear($event)" ng-hide="query==''"></button>

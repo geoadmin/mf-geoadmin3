@@ -6,6 +6,7 @@ goog.require('ga_layer_metadata_popup_service');
 goog.require('ga_map_service');
 goog.require('ga_marker_overlay_service');
 goog.require('ga_search_service');
+goog.require('ga_topic_service');
 goog.require('ga_urlutils_service');
 (function() {
 
@@ -166,7 +167,8 @@ goog.require('ga_urlutils_service');
     'ga_marker_overlay_service',
     'ga_search_service',
     'ga_urlutils_service',
-    'pascalprecht.translate'
+    'pascalprecht.translate',
+    'ga_topic_service'
   ]);
 
   /*
@@ -372,7 +374,7 @@ goog.require('ga_urlutils_service');
   module.directive('gaSearchFeatures',
       function($rootScope, $http, $q, $sce, $timeout, gaUrlUtils,
                gaLayerFilters, gaSearchLabels, gaLayers, gaBrowserSniffer,
-               gaMarkerOverlay, gaPreviewFeatures) {
+               gaMarkerOverlay, gaPreviewFeatures, gaTopic) {
 
         var selectedFeatures = {};
         var loadGeometry = function(layerId, featureId, topic, urlbase, cb) {
@@ -436,7 +438,7 @@ goog.require('ga_urlutils_service');
             $scope.select = function(res) {
               unregisterMove();
               loadGeometry(res.attrs.layer, res.attrs.featureId,
-                           $scope.options.currentTopic,
+                           gaTopic.get().id,
                            $scope.options.featureUrl, function(f) {
                 $rootScope.$broadcast('gaTriggerTooltipRequest', {
                   features: [f],
