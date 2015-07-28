@@ -1,5 +1,6 @@
 describe('ga_topic_service', function() {
-  var gaTopic, $httpBackend, $rootScope, gaGlobalOptions, topicPermalink, gaPermalink,
+  var gaTopic, $httpBackend, $rootScope, $timeout, gaGlobalOptions, topicPermalink,
+  gaPermalink,
       expectedUrl = 'http://api3.geo.admin.ch/123456/rest/services',
       topics = [{
         "langs": "de,fr,it",
@@ -39,6 +40,7 @@ describe('ga_topic_service', function() {
     inject(function($injector) {
       $httpBackend = $injector.get('$httpBackend');
       $rootScope = $injector.get('$rootScope');
+      $timeout = $injector.get('$timeout');
       gaGlobalOptions = $injector.get('gaGlobalOptions');
       gaTopic = $injector.get('gaTopic');
       gaPermalink = $injector.get('gaPermalink');
@@ -63,6 +65,7 @@ describe('ga_topic_service', function() {
         cpt++;
       });
       $httpBackend.flush();
+      $timeout.flush();
     });
 
     it('has loaded topics', function() {
@@ -118,6 +121,7 @@ describe('ga_topic_service', function() {
     beforeEach(function() {
       topicPermalink = 'anothertopic';
       $httpBackend.flush();
+      $timeout.flush();
     });
 
     it('loads the topic from permalink if exist', function() {
@@ -130,6 +134,7 @@ describe('ga_topic_service', function() {
     beforeEach(function() {
       topicPermalink = 'topicnotexisting';
       $httpBackend.flush();
+      $timeout.flush();
     });
 
     it('loads the default topic if the topic in permalink doesn t exist', function() {
