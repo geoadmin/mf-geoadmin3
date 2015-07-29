@@ -41,13 +41,15 @@ var hasVectorOnMap = function() {
   }
 };
 
+var geojsonFormat = new ol.format.GeoJSON();
+
 // Load and apply GeoJSON file function
 var setLayerSource = function() {
-  var geojsonFormat = new ol.format.GeoJSON();
   $.ajax({
     type: 'GET',
     url: getUrl('geojson-url'),
     success: function(data) {
+      olSource.clear();
       olSource.addFeatures(
         geojsonFormat.readFeatures(data)
       );
