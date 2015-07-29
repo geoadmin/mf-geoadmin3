@@ -13,7 +13,7 @@ goog.require('ga_topic_service');
 
   module.directive('gaBackgroundSelector',
     function($document, gaPermalink, gaLayers, gaLayerFilters,
-        gaBrowserSniffer) {
+        gaBrowserSniffer, gaTopic) {
       return {
         restrict: 'A',
         templateUrl:
@@ -97,22 +97,24 @@ goog.require('ga_topic_service');
             dereg();
           });
 
-          scope.$on('gaTopicChange', function(event, newTopic) {
-            // If the layers config is loaded
-            if (gaLayers.getBackgroundLayers()) {
-              defaultBgOrder = [];
-              gaLayers.getBackgroundLayers().forEach(function(bgLayer) {
-                defaultBgOrder.push({
-                  id: bgLayer.id,
-                  label: bgLayer.label
+          gaTopic.getTopics().then(function() {
+            scope.$on('gaLayersChange', function() {
+              // If the layers config is loaded
+              if (gaLayers.getBackgroundLayers()) {
+                defaultBgOrder = [];
+                gaLayers.getBackgroundLayers().forEach(function(bgLayer) {
+                  defaultBgOrder.push({
+                    id: bgLayer.id,
+                    label: bgLayer.label
+                  });
                 });
-              });
-              defaultBgOrder.push({
-                id: 'voidLayer',
-                label: 'void_layer'
-              });
-              updateBgLayer(true);
-            }
+                defaultBgOrder.push({
+                  id: 'voidLayer',
+                  label: 'void_layer'
+                });
+                updateBgLayer(true);
+              }
+            });
           });
 
           scope.$on('gaPermalinkChange', function(event) {
