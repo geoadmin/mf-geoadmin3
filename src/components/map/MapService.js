@@ -1239,6 +1239,13 @@ goog.require('ga_urlutils_service');
           if (id instanceof ol.layer.Layer) {
             id = olLayerOrId.id;
           }
+
+          // id for KML layers is like KML||<url> We must remove KML|| before
+          // testing the validity of the url.
+          if (id && id.indexOf('KML||') == 0) {
+            id = id.substring(5);
+          }
+
           return this.isKmlLayer(olLayerOrId) &&
                   gaUrlUtils.isPublicValid(id);
         },
