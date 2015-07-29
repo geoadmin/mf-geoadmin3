@@ -794,7 +794,6 @@ goog.require('ga_urlutils_service');
             layers = undefined;
           });
         };
-        loadLayersConfig();
 
         // Function to remove the blob url from memory.
         var revokeBlob = function() {

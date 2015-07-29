@@ -12,8 +12,8 @@ goog.require('ga_topic_service');
   ]);
 
   module.directive('gaBackgroundSelector',
-    function($document, gaPermalink, gaLayers, gaLayerFilters,
-        gaBrowserSniffer) {
+    function($document, $q, gaPermalink, gaLayers, gaLayerFilters,
+        gaBrowserSniffer, gaTopic) {
       return {
         restrict: 'A',
         templateUrl:
@@ -25,6 +25,7 @@ goog.require('ga_topic_service');
           scope.isBackgroundSelectorClosed = true;
           var mobile = gaBrowserSniffer.mobile;
           scope.desktop = !gaBrowserSniffer.embed && !mobile;
+          scope.backgroundLayers = [];
 
           if (mobile) {
             elt.addClass('ga-bg-mobile');
@@ -32,14 +33,11 @@ goog.require('ga_topic_service');
             elt.addClass('ga-bg-desktop');
           }
 
+          var getLayersDeffered = $q.defer();
           var map = scope.map;
           var isOfflineToOnline = false;
 
-          var defaultBgOrder = [
-              {id: 'ch.swisstopo.swissimage', label: 'bg_luftbild'},
-              {id: 'ch.swisstopo.pixelkarte-farbe', label: 'bg_pixel_color'},
-              {id: 'ch.swisstopo.pixelkarte-grau', label: 'bg_pixel_grey'},
-              {id: 'voidLayer', label: 'void_layer'}];
+          var defaultBgOrder = [];
 
           scope.backgroundLayers = defaultBgOrder.slice(0);
 
@@ -65,7 +63,7 @@ goog.require('ga_topic_service');
             }
           }
 
-          var updateBgLayer = function(topic) {
+          var updateBgLayer = function(onGaTopicChange) {
             // Determine the current background layer. Strategy:
             //
             // On gaLayersChange event we receive then
@@ -76,11 +74,16 @@ goog.require('ga_topic_service');
             // Specific use case when we go offline to online, in this use
             // case we want to keep the current bg layer.
             var bgLayer;
-            if (!topic) {
+            if (!onGaTopicChange) {
               bgLayer = gaPermalink.getParams().bgLayer;
             }
-            if ((!bgLayer && !scope.currentLayer) || topic) {
-              bgLayer = gaLayers.getBackgroundLayers()[0].id;
+            if ((!bgLayer && !scope.currentLayer) || onGaTopicChange) {
+              var bgLayers = gaLayers.getBackgroundLayers();
+              if (bgLayers.length > 0) {
+                bgLayer = bgLayers[0].id;
+              } else {
+                bgLayer = 'voidLayer';
+              }
               scope.backgroundLayers = defaultBgOrder.slice(0);
             }
             if (bgLayer && !isOfflineToOnline) {
@@ -91,14 +94,26 @@ goog.require('ga_topic_service');
           };
 
           var dereg = scope.$on('gaLayersChange', function(event, newLayers) {
+            getLayersDeffered.resolve();
             updateBgLayer();
             dereg();
           });
 
-          scope.$on('gaTopicChange', function(event, newTopic) {
+          $q.all([gaTopic.getTopics(), getLayersDeffered.promise]).then(function() {
             // If the layers config is loaded
             if (gaLayers.getBackgroundLayers()) {
-              updateBgLayer(newTopic);
+              defaultBgOrder = [];
+              gaLayers.getBackgroundLayers().forEach(function(bgLayer) {
+                defaultBgOrder.push({
+                  id: bgLayer.id,
+                  label: bgLayer.label
+                });
+              });
+              defaultBgOrder.push({
+                id: 'voidLayer',
+                label: 'void_layer'
+              });
+              updateBgLayer(true);
             }
           });
 
