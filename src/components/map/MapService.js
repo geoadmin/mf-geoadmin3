@@ -356,6 +356,7 @@ goog.require('ga_urlutils_service');
             opacity: options.opacity,
             visible: options.visible,
             attribution: options.attribution,
+            extent: options.extent,
             source: source
           });
           gaDefinePropertiesForLayer(layer);
@@ -375,7 +376,7 @@ goog.require('ga_urlutils_service');
           var wmsOptions = {
             url: getCapLayer.wmsUrl,
             label: getCapLayer.Title,
-            extent: getCapLayer.extent,
+            extent: gaMapUtils.mergeWithDefaultExtent(getCapLayer.extent),
             attribution: getCapLayer.wmsUrl
           };
           return createWmsLayer(wmsParams, wmsOptions);
@@ -905,7 +906,8 @@ goog.require('ga_urlutils_service');
               });
             }
             olLayer = new ol.layer.Tile({
-              extent: olSource.getProjection().getExtent(),
+              extent: gaMapUtils.mergeWithDefaultExtent(
+                      olSource.getProjection().getExtent()),
               minResolution: gaNetworkStatus.offline ? null :
                   layer.minResolution,
               preload: gaNetworkStatus.offline ? gaMapUtils.preload : 0,
@@ -942,7 +944,8 @@ goog.require('ga_urlutils_service');
                 maxResolution: layer.maxResolution,
                 opacity: layer.opacity || 1,
                 attribution: layer.attribution,
-                source: olSource
+                source: olSource,
+                extent: gaGlobalOptions.defaultExtent
               });
             } else {
               if (!olSource) {
@@ -965,7 +968,8 @@ goog.require('ga_urlutils_service');
                 attribution: layer.attribution,
                 source: olSource,
                 preload: gaNetworkStatus.offline ? gaMapUtils.preload : 0,
-                useInterimTilesOnError: gaNetworkStatus.offline
+                useInterimTilesOnError: gaNetworkStatus.offline,
+                extent: gaGlobalOptions.defaultExtent
               });
             }
           } else if (layer.type == 'aggregate') {
@@ -989,7 +993,8 @@ goog.require('ga_urlutils_service');
             olLayer = new ol.layer.Vector({
               minResolution: layer.minResolution,
               maxResolution: layer.maxResolution,
-              source: olSource
+              source: olSource,
+              extent: gaGlobalOptions.defaultExtent
             });
             var setLayerSource = function() {
               var geojsonFormat = new ol.format.GeoJSON();
@@ -1304,6 +1309,18 @@ goog.require('ga_urlutils_service');
             easing: ol.easing.easeOut
           }));
           map.getView().setRotation(0);
+        },
+
+        mergeWithDefaultExtent: function(extent) {
+          if (!extent || extent.lenght !== 4) {
+            return gaGlobalOptions.defaultExtent;
+          }
+          return [
+            Math.max(extent[0], gaGlobalOptions.defaultExtent[0]),
+            Math.max(extent[1], gaGlobalOptions.defaultExtent[1]),
+            Math.min(extent[2], gaGlobalOptions.defaultExtent[2]),
+            Math.min(extent[3], gaGlobalOptions.defaultExtent[3])
+          ];
         }
       };
     };
@@ -1479,7 +1496,7 @@ goog.require('ga_urlutils_service');
 
     this.$get = function($rootScope, gaLayers, gaPermalink, $translate, $http,
         gaKml, gaMapUtils, gaWms, gaLayerFilters, gaUrlUtils, gaFileStorage,
-        gaTopic) {
+        gaTopic, gaGlobalOptions) {
 
       var layersParamValue = gaPermalink.getParams().layers;
       var layersOpacityParamValue = gaPermalink.getParams().layers_opacity;
@@ -1709,7 +1726,8 @@ goog.require('ga_urlutils_service');
                     label: infos[1],
                     opacity: opacity || 1,
                     visible: visible,
-                    attribution: infos[2]
+                    attribution: infos[2],
+                    extent: gaGlobalOptions.defaultExtent
                   },
                   index + 1);
               } catch (e) {
