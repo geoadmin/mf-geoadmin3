@@ -3609,6 +3609,21 @@ msgstr "Ultimo massimo glaciale 500"
 msgid "ch.swisstopo.geologie-generalkarte-ggk200"
 msgstr "Carta geologica generale"
 
+msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata"
+msgstr "Divisione carta geol. generale 200"
+
+msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata.autor"
+msgstr "Autori"
+
+msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata.ggk_nr"
+msgstr "numero di carta"
+
+msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata.jahr"
+msgstr "L'anno di edizione"
+
+msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata.titel"
+msgstr "Titolo"
+
 msgid "ch.swisstopo.geologie-geocover"
 msgstr "GeoCover - Dati geol. vettoriali"
 
