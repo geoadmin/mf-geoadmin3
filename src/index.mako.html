@@ -148,12 +148,9 @@ itemscope itemtype="http://schema.org/WebApplication"
     </div>
 % if device != 'embed':
     <div ng-cloak translate-cloak id="header" class="navbar navbar-fixed-top">
-      <div id="logo" class="pull-left">
-        <a href="?topic={{topicId}}&lang={{langId}}">
-          <img ng-if="langId" ng-src="${versionslashed}img/logo.ch.{{langId}}.png" alt="big_logo" draggable="false"/>
-          <img src="${versionslashed}img/logo.ch.small.png" alt="small_logo" draggable="false"/>
-        </a>
-      </div>
+      <a href="?topic={{topicId}}&lang={{langId}}">
+        <div id="logo" class="pull-left ga-logo ga-logo-{{langId}}"></div>
+      </a>
       <div id="search-container" ng-controller="GaSearchController">
         <div ga-search ga-search-map="map" ga-search-options="options" ga-search-focused="globals.searchFocused"></div>
   % if device == 'desktop':
@@ -199,8 +196,7 @@ itemscope itemtype="http://schema.org/WebApplication"
       </div>
   % if device == 'embed':
       <a ng-cloak translate-cloak id="bigMapLink" target="_blank" href="{{toMainHref}}">
-        <div>
-          <img src="${versionslashed}img/logo.ch.small.png" alt="small_logo" draggable="false"/>
+        <div class="ga-logo">
           <span translate-values="{{host}}" translate>view_on_mapgeoadminch</span>
         </div>
         <div ng-show="time">{{time}}</div>

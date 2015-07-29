@@ -8,12 +8,10 @@ CACHE:
 ${version}/lib/build.js	
 ${version}/style/app.css
 ${version}/style/font-awesome-3.2.1/font/fontawesome-webfont.woff?v=3.2.1
-${version}/img/logo.ch.small.png
 ${version}/img/topics.png
 ${api_url}/${version}/rest/services
 % for lang in languages:
 ${api_url}/${version}/rest/services/all/MapServer/layersConfig?lang=${lang}
-${version}/img/logo.ch.${lang}.png 
 % endfor
 
 # Use case: opens in offline then online.

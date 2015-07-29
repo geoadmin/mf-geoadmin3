@@ -10,7 +10,6 @@ var runTest = function(cap, driver, target) {
   //wait until topics related stuff is loaded. We know this when catalog is there
   driver.findElement(webdriver.By.xpath("//div[@id='zoomButtons']"));
   driver.findElement(webdriver.By.xpath("//div[@id='pulldown']"));
-  driver.findElement(webdriver.By.xpath("//img[@alt='small_logo']"));
   //Send "Bern" to the searchbar
   driver.findElement(webdriver.By.xpath("//*[@type='search']")).sendKeys('Bern');
   //Click on the field "Bern"

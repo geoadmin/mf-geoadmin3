@@ -434,32 +434,41 @@ input[type=text][readonly] {
   }
 }
 
+.logo-small(){
+  background-image: data-uri('../img/logo.ch-19x21.png');
+}
+
+.ga-logo {
+  background: white no-repeat left center;
+}
+
 #logo {
-  width: 320px;
   display: inline-block;
-  background: white;
-  
-  img:last-of-type {
-    display: none;
-    width: 19px;
-    height: 19.5px;
+  width: 320px;
+  height: 100%;
+
+  &.ga-logo-de {
+    background-image: data-uri('../img/logo.ch.de.png');
   }
-  
-  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
-    padding: 13px 0 0 13px;
-    height: 50px;
-    
-    img:last-of-type {
-      display: inline;
-    }
-    
-    img:first-of-type {
-      display: none;
-    }
+  &.ga-logo-fr {
+    background-image: data-uri('../img/logo.ch.fr.png');
   }
-  
-  @media (max-width: @screen-phone) {
-    width: 44px;
+  &.ga-logo-it {
+    background-image: data-uri('../img/logo.ch.it.png');
+  }
+  &.ga-logo-rm {
+    background-image: data-uri('../img/logo.ch.rm.png');
+  }
+  &.ga-logo-en {
+    background-image: data-uri('../img/logo.ch.en.png');
+  }
+
+  &[class^="ga-logo-"], &[class*=" ga-logo-"] {
+    @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
+      width: 44px;
+      .logo-small();
+      background-position: center;
+    }
   }
 }
 
@@ -1467,22 +1476,29 @@ body:not(.embed) {
     z-index: 1000;
     top: 5px;
     left: 5px;
-     
+
+    .ga-logo {
+      .logo-small();
+      background-size: 14px;
+      background-position-x: 5px; 
+
+      span {
+        padding-left: 19px;
+      }
+    }
+
     > div {
       position: relative;
       padding: 2px 5px;
       .box-shadow(rgba(0, 0, 0, .29) 0px 1px 4px -1px);
-      border-radius: 4px; 
+      border-radius: 4px;
       background-color: white;
       font-weight: bold;
-      
+      margin-bottom: 5px;
+
       &:last-child {
         position: absolute;
         text-decoration: inherit;
-      }
-      
-      img {
-        height: 15px;
       }
     }
   }
