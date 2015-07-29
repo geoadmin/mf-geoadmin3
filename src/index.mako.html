@@ -290,8 +290,7 @@ itemscope itemtype="http://schema.org/WebApplication"
           <a id="shareHeading" class="panel-heading accordion-toggle collapsed"
              data-toggle="collapse" data-parent="#pulldown-content" href="#share"
              ga-collapsible-show="globals.isShareActive">
-            <i class="visible-collapsed icon-caret-right spacer"></i>
-            <i class="hidden-collapsed icon-caret-down"></i>
+            <i class="icon-caret-down"></i>
             <span translate>share</span>
           </a>
           <div id="share" class="panel-collapse collapse">
@@ -307,8 +306,7 @@ itemscope itemtype="http://schema.org/WebApplication"
           <a id="printHeading" class="panel-heading accordion-toggle collapsed"
              data-toggle="collapse" data-parent="#pulldown-content" href="#print"
              ga-collapsible-show="globals.printShown">
-            <i class="visible-collapsed icon-caret-right spacer"></i>
-            <i class="hidden-collapsed icon-caret-down"></i>
+            <i class="icon-caret-down"></i>
             <span translate>print</span>
           </a>
           <div id="print" class="panel-collapse collapse">
@@ -326,8 +324,7 @@ itemscope itemtype="http://schema.org/WebApplication"
           <a id="drawHeading" class="panel-heading accordion-toggle collapsed"
              data-toggle="collapse" data-parent="#pulldown-content" href="#draw"
              ga-collapsible-show="globals.isDrawActive" accesskey="r">
-            <i class="visible-collapsed icon-caret-right spacer"></i>
-            <i class="hidden-collapsed icon-caret-down"></i>
+            <i class="icon-caret-down"></i>
             <span translate>draw_panel_title</span>
           </a>
           <div id="draw" class="panel-collapse collapse">
@@ -345,8 +342,7 @@ itemscope itemtype="http://schema.org/WebApplication"
         <div class="panel"> 
           <a id="toolsHeading" class="panel-heading accordion-toggle collapsed"
              data-toggle="collapse" data-parent="#pulldown-content" href="#tools">
-            <i class="visible-collapsed icon-caret-right spacer"></i>
-            <i class="hidden-collapsed icon-caret-down"></i>
+            <i class="icon-caret-down"></i>
             <span translate>map_tools</span>
           </a>
           <div id="tools" class="collapse">
@@ -406,8 +402,7 @@ itemscope itemtype="http://schema.org/WebApplication"
           <a id="catalogHeading" class="panel-heading accordion-toggle light collapsed"
              data-toggle="collapse" href="#catalog"
              ga-collapsible-show="globals.catalogShown">
-            <i class="visible-collapsed icon-caret-right"></i>
-            <i class="hidden-collapsed icon-caret-down"></i>
+            <i class="icon-caret-down"></i>
             <span>{{topicId | translate}}</span>
   
   % if device == 'desktop':
@@ -432,8 +427,7 @@ itemscope itemtype="http://schema.org/WebApplication"
         <div class="panel" ng-hide="globals.isDrawActive">
           <a id="selectionHeading" class="panel-heading accordion-toggle light"
              data-toggle="collapse" href="#selection">
-            <i class="visible-collapsed icon-caret-right"></i>
-            <i class="hidden-collapsed icon-caret-down"></i>
+            <i class="icon-caret-down"></i>
             <span translate>layer_selection</span>
 
 % if device == 'desktop':
@@ -450,9 +444,7 @@ itemscope itemtype="http://schema.org/WebApplication"
   % if device == 'mobile':
         <div class="panel">
           <a class="panel-heading accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#settings">
-            <i class="visible-collapsed icon-caret-right spacer"></i>
-            <i class="hidden-collapsed icon-caret-down"></i>
-            <!--i class="icon-gear"></i-->
+            <i class="icon-caret-down"></i>
             <span translate>settings</span>
           </a>
           <div id="settings" class="collapse">
@@ -485,14 +477,13 @@ itemscope itemtype="http://schema.org/WebApplication"
       <button id="menu-button" class="btn btn-default"
               data-toggle="collapse" data-target="#pulldown-content"
               ga-collapsible-show="globals.pulldownShown">
+        <i class="icon-caret-up"></i>
         <span class="hidden-collapsed">
           <i class="icon-remove"></i>
-          <i class="icon-caret-up"></i>
           <span translate>close_menu</span>
         </span>
         <span class="visible-collapsed">
           <i class="icon-reorder"></i>
-          <i class="icon-caret-down"></i>
           <span translate>open_menu</span>
         </span>
       </button>
