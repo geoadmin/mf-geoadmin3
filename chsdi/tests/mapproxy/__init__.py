@@ -1,14 +1,15 @@
 #-*- coding: utf-8 -*-
 
 import os
-from chsdi.tests.integration import TestsBase
+
+from pyramid.paster import get_app
 
 
-class MapProxyTestsBase(TestsBase):
+class MapProxyTestsBase(object):
 
     def setUp(self):
-        super(MapProxyTestsBase, self).setUp()
-        registry = self.testapp.app.registry
+        app = get_app('development.ini')
+        registry = app.registry
         try:
             os.environ["http_proxy"] = registry.settings['http_proxy']
             apache_entry_path = registry.settings['apache_entry_path']
@@ -22,7 +23,6 @@ class MapProxyTestsBase(TestsBase):
     def tearDown(self):
         if "http_proxy" in os.environ:
             del os.environ["http_proxy"]
-        super(MapProxyTestsBase, self).tearDown()
 
     def hash(self, bits=96):
         assert bits % 8 == 0

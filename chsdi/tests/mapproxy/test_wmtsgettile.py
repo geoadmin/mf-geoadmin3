@@ -28,6 +28,7 @@ def rotateUrl(url):
     return url.replace(WMTS_URLS[0], WMTS_URLS[random.randint(0, len(WMTS_URLS) - 1)]).replace(MAPPROXY_URLS[0], MAPPROXY_URLS[random.randint(0, len(MAPPROXY_URLS) - 1)])
 
 HEADER_RESULTS = [{
+    # NOTE Varnish transforms all non 200 status code into 204 (even 404)!
     'Results': [200, 204, 304],
     'Header': {'User-Agent': 'WMTS Unit Tester v0.0.1', 'Referer': 'http://unittest.geo.admin.ch'}
 }, {
@@ -46,6 +47,11 @@ def get_header():
 
 class TestWmtsGetTile(MapProxyTestsBase):
 
+    def __init__(self):
+        super(TestWmtsGetTile, self).setUp()
+        self.session = requests.Session()
+        self.session.mount("http://", requests.adapters.HTTPAdapter(max_retries=5))
+
     def check_status_code(self, path):
         if not path.startswith('http'):
             url = self.mapproxy_url + path
@@ -53,28 +59,46 @@ class TestWmtsGetTile(MapProxyTestsBase):
             url = path.replace('http://wmts10.geo.admin.ch', self.mapproxy_url)
         url = rotateUrl(url)
         h = get_header()
-        resp = requests.get(url, headers=h['Header'])
+        self.session.headers.update(h['Header'])
+        resp = self.session.get(url)
         checkcode = resp.status_code in h['Results']
-        self.failUnless(checkcode, 'Called Url: ' + url + ' [returned with ' + str(resp.status_code) + ']')
 
-    def test_generator(self):
-        param_list = self.get_tile()
-        for params in param_list:
-            self.check_status_code(params[0])
+        assert(checkcode)
 
-    def get_tile(self):
+    def test_epsg21781(self):
+        for params in self.get_tiles():
+            yield self.check_status_code, params[0]
+
+    def test_epsg3857(self):
+        for params in self.get_tiles(epsg=3857):
+            yield self.check_status_code, params[0]
+
+    def test_epsg2056(self):
+        for params in self.get_tiles(epsg=2056):
+            yield self.check_status_code, params[0]
+
+    def test_epsg4326(self):
+        for params in self.get_tiles(epsg=4326):
+            yield self.check_status_code, params[0]
+
+    def test_epsg4258(self):
+        for params in self.get_tiles(epsg=4258):
+            yield self.check_status_code, params[0]
+
+    def get_tiles(self, epsg=21781):
         from urlparse import urlparse, urlunparse
         import xml.etree.ElementTree as etree
 
-        tiles = {3857: [(7, 67, 45), (10, 533, 360)],
-                 21781: [(17, 5, 6), (18, 11, 13)],
-                 2056: [(17, 5, 6), (18, 11, 13)],
-                 4326: [(18, 55, 30), (15, 2, 2)],
-                 4258: [(18, 55, 30), (15, 2, 2)]
+        # TODO: ideally we should only check tiles which have content for sure.
+        tiles = {3857: [(7, 67, 45)],
+                 21781: [(17, 5, 6)],
+                 2056: [(17, 5, 6)],
+                 4326: [(15, 2, 2)],
+                 4258: [(15, 2, 2)]
                  }
         param_list = []
 
-        for epsg in self.EPSGS:
+        if epsg in tiles.keys():
             capabilities_name = "WMTSCapabilities.EPSG.%d.xml" % epsg if epsg != 21781 else "WMTSCapabilities.xml"
             resp = requests.get(self.mapproxy_url + '/1.0.0/%s' % capabilities_name, params={'_id': self.hash()},
                                 headers=HEADER_RESULTS[0]['Header'])
