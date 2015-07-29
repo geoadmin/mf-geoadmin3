@@ -33,6 +33,7 @@ goog.require('ga_topic_service');
             elt.addClass('ga-bg-desktop');
           }
 
+          var getLayersDeffered = $q.defer();
           var map = scope.map;
           var isOfflineToOnline = false;
 
@@ -93,11 +94,12 @@ goog.require('ga_topic_service');
           };
 
           var dereg = scope.$on('gaLayersChange', function(event, newLayers) {
+            getLayersDeffered.resolve();
             updateBgLayer();
             dereg();
           });
 
-          $q.all([gaTopic.getTopics(), gaLayers.getLayers()]).then(function() {
+          $q.all([gaTopic.getTopics(), getLayersDeffered.promise]).then(function() {
             // If the layers config is loaded
             if (gaLayers.getBackgroundLayers()) {
               defaultBgOrder = [];
