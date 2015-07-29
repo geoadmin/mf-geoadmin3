@@ -102,7 +102,7 @@ goog.require('ga_translation_service');
                 }
               }
             };
-            var lastUrlUsed;
+            var lastUrlUsed, lastLangUsed;
             var canceller;
             var updateCatalogTree = function(topic, lang) {
               // If topics are not yet loaded, we do nothing
@@ -116,12 +116,18 @@ goog.require('ga_translation_service');
               // labels
               if (lastUrlUsed == url) {
                 labelsOnly = true;
+                // We forbid the send of 2 identical requests (needed for IE9);
+                // See http://github.com/geoadmin/mf-geoadmin3/issues/2531/
+                if (lastLangUsed == lang) {
+                  return;
+                }
               }
-              lastUrlUsed = url;
               if (canceller) {
                 canceller.resolve();
               }
               canceller = $q.defer();
+              lastUrlUsed = url;
+              lastLangUsed = lang;
               $http.get(url, {
                 timeout: canceller.promise,
                 cache: true,
@@ -157,7 +163,6 @@ goog.require('ga_translation_service');
 
               }, function(reason) {
                 scope.root = undefined;
-                return $q.reject(reason);
               });
             };
 
