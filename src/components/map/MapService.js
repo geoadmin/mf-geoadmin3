@@ -376,7 +376,7 @@ goog.require('ga_urlutils_service');
           var wmsOptions = {
             url: getCapLayer.wmsUrl,
             label: getCapLayer.Title,
-            extent: gaMapUtils.mergeWithDefaultExtent(getCapLayer.extent),
+            extent: gaMapUtils.intersectWithDefaultExtent(getCapLayer.extent),
             attribution: getCapLayer.wmsUrl
           };
           return createWmsLayer(wmsParams, wmsOptions);
@@ -906,7 +906,7 @@ goog.require('ga_urlutils_service');
               });
             }
             olLayer = new ol.layer.Tile({
-              extent: gaMapUtils.mergeWithDefaultExtent(
+              extent: gaMapUtils.intersectWithDefaultExtent(
                       olSource.getProjection().getExtent()),
               minResolution: gaNetworkStatus.offline ? null :
                   layer.minResolution,
@@ -1310,7 +1310,7 @@ goog.require('ga_urlutils_service');
           map.getView().setRotation(0);
         },
 
-        mergeWithDefaultExtent: function(extent) {
+        intersectWithDefaultExtent: function(extent) {
           if (!extent || extent.lenght !== 4) {
             return gaGlobalOptions.defaultExtent;
           }
