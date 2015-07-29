@@ -753,6 +753,7 @@ goog.require('ga_urlutils_service');
           layersConfigUrlTemplate, legendUrlTemplate) {
         var layers;
         var currentTime;
+        var layersPromise;
 
         var getWmtsGetTileUrl = function(layer, format) {
           return wmtsGetTileUrlTemplate
@@ -793,7 +794,7 @@ goog.require('ga_urlutils_service');
             layers = undefined;
           });
         };
-        loadLayersConfig();
+        layersPromise = loadLayersConfig();
 
         // Function to remove the blob url from memory.
         var revokeBlob = function() {
@@ -825,6 +826,10 @@ goog.require('ga_urlutils_service');
           } else {
             imageTile.getImage().src = src;
           }
+        };
+
+        this.getLayers = function() {
+          return layersPromise;
         };
 
         /**

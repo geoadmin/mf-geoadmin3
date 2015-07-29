@@ -12,7 +12,7 @@ goog.require('ga_topic_service');
   ]);
 
   module.directive('gaBackgroundSelector',
-    function($document, gaPermalink, gaLayers, gaLayerFilters,
+    function($document, $q, gaPermalink, gaLayers, gaLayerFilters,
         gaBrowserSniffer, gaTopic) {
       return {
         restrict: 'A',
@@ -97,24 +97,22 @@ goog.require('ga_topic_service');
             dereg();
           });
 
-          gaTopic.getTopics().then(function() {
-            scope.$on('gaLayersChange', function() {
-              // If the layers config is loaded
-              if (gaLayers.getBackgroundLayers()) {
-                defaultBgOrder = [];
-                gaLayers.getBackgroundLayers().forEach(function(bgLayer) {
-                  defaultBgOrder.push({
-                    id: bgLayer.id,
-                    label: bgLayer.label
-                  });
-                });
+          $q.all([gaTopic.getTopics(), gaLayers.getLayers()]).then(function() {
+            // If the layers config is loaded
+            if (gaLayers.getBackgroundLayers()) {
+              defaultBgOrder = [];
+              gaLayers.getBackgroundLayers().forEach(function(bgLayer) {
                 defaultBgOrder.push({
-                  id: 'voidLayer',
-                  label: 'void_layer'
+                  id: bgLayer.id,
+                  label: bgLayer.label
                 });
-                updateBgLayer(true);
-              }
-            });
+              });
+              defaultBgOrder.push({
+                id: 'voidLayer',
+                label: 'void_layer'
+              });
+              updateBgLayer(true);
+            }
           });
 
           scope.$on('gaPermalinkChange', function(event) {
