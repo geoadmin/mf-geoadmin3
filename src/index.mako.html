@@ -695,7 +695,10 @@ itemscope itemtype="http://schema.org/WebApplication"
           defaultTopicId: '${default_topic_id}',
           translationFallbackCode: '${translation_fallback_code}',
           defaultExtent: JSON.parse(${default_extent}),
-          defaultResolution: ${default_resolution}
+          defaultResolution: ${default_resolution},
+          resolutions: JSON.parse(${resolutions}),
+          defaultEpsg: '${default_epsg}',
+          defaultEpsgExtent: JSON.parse(${default_epsg_extend}),
         });
 
         module.config(function($translateProvider, gaGlobalOptions) {

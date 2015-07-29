@@ -1131,8 +1131,7 @@ goog.require('ga_urlutils_service');
   module.provider('gaMapUtils', function() {
     this.$get = function($window, gaGlobalOptions, gaUrlUtils) {
       var attributions = {};
-      var resolutions = [650.0, 500.0, 250.0, 100.0, 50.0, 20.0, 10.0, 5.0,
-          2.5, 2.0, 1.0, 0.5, 0.25, 0.1];
+      var resolutions = gaGlobalOptions.resolutions;
       return {
         preload: 6, //Number of upper zoom to preload when offline
         defaultExtent: gaGlobalOptions.defaultExtent,
