@@ -174,6 +174,7 @@ goog.require('ga_permalink');
           scope.isMeasureActive = false;
           scope.options.isProfileActive = false;
           scope.statusMsgId = '';
+          scope.dropDownOpen = false;
 
           // Add select interaction
           var select = new ol.interaction.Select({
@@ -825,15 +826,41 @@ goog.require('ga_permalink');
           var updateCursorStyleDebounced = gaDebounce.debounce(
               updateCursorStyle, 10, false, false);
 
+          // Hook on Bootstrap show/hide dropdown
+          var moreBtn = element.find('.ga-more');
+          moreBtn.on('hide.bs.dropdown', function() {
+            scope.$apply(function() {
+              scope.dropDownOpen = false;
+            });
+          });
+          moreBtn.on('show.bs.dropdown', function() {
+            scope.$apply(function() {
+              scope.dropDownOpen = true;
+            });
+          });
+
           // Fix position of dropdown
           element.find('.dropdown-toggle').click(function() {
             var bt = $(this);
-            var dropdown = bt.next('.dropdown-menu');
-            var dropDownTop = bt.offset().top + bt.outerHeight() -
+            var dropDownMenu = element.find('.dropdown-menu');
+            var uu = element.find('.ga-uu');
+            var vu = element.find('.ga-vu');
+            // + 2 pixel offset for ga-vu
+            var marginTop = 2;
+            var marginRightVu = 20;
+            var dropDownTop = marginTop + bt.offset().top + bt.outerHeight() -
                 50; // 50 seems to be the size of the #header
-            dropdown.css('top', dropDownTop + 'px');
-            dropdown.css('left', bt.offset().left -
-                (dropdown.outerWidth() - bt.outerWidth()) + 'px');
+            var uuTop = dropDownTop - marginTop - 3;
+            var vuTop = dropDownTop - marginTop - 2;
+            uu.css('top', uuTop + 'px');
+            vu.css('top', vuTop + 'px');
+            uu.css('left', bt.offset().left + bt.innerWidth() -
+                marginRightVu + 'px');
+            vu.css('left', bt.offset().left + bt.innerWidth() -
+                marginRightVu + 'px');
+            dropDownMenu.css('top', dropDownTop + 'px');
+            dropDownMenu.css('left', bt.offset().left -
+                (dropDownMenu.outerWidth() - bt.outerWidth()) + 'px');
           });
         }
       };
