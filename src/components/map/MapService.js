@@ -766,35 +766,11 @@ goog.require('ga_urlutils_service');
               .replace('{Lang}', lang);
         };
 
-        var getMetaDataUrl = function(topic, layer, lang) {
+        var getMetaDataUrl = function(layer, lang) {
           return legendUrlTemplate
-              .replace('{Topic}', topic)
               .replace('{Layer}', layer)
               .replace('{Lang}', lang);
         };
-
-        // Load layers for a given topic and language. Return a promise.
-        var lastUrlUsed;
-        var loadLayersConfig = function() {
-          var url = getLayersConfigUrl(gaLang.get());
-          // Avoid loading twice the same layers config (happens on page load)
-          if (lastUrlUsed == url) {
-            return;
-          }
-          lastUrlUsed = url;
-          return $http.get(url).then(function(response) {
-            var isLabelsOnly = angular.isDefined(layers);
-            layers = response.data;
-            if (isLabelsOnly) {
-              $rootScope.$broadcast('gaLayersTranslationChange', layers);
-            } else {
-              $rootScope.$broadcast('gaLayersChange', layers);
-            }
-          }, function(response) {
-            layers = undefined;
-          });
-        };
-        loadLayersConfig();
 
         // Function to remove the blob url from memory.
         var revokeBlob = function() {
@@ -828,38 +804,42 @@ goog.require('ga_urlutils_service');
           }
         };
 
-        /**
-         * Reurn an array of pre-selected bodId from current topic
-         */
-        this.getSelectedLayers = function() {
-          if (!layers || !gaTopic.get()) {
+        // Load layers config
+        var lastLangUsed;
+        var loadLayersConfig = function(lang) {
+          if (lastLangUsed == lang) {
             return;
           }
-          return gaTopic.get().selectedLayers;
+          lastLangUsed = lang;
+          var url = getLayersConfigUrl(lang);
+          return $http.get(url).then(function(response) {
+            if (!layers) { // First load
+              layers = response.data;
+              // We register events only when layers are loaded
+              $rootScope.$on('$translateChangeEnd', function(event, newLang) {
+                loadLayersConfig(newLang.language);
+              });
+
+              $rootScope.$on('gaTimeSelectorChange', function(event, time) {
+                currentTime = time;
+              });
+
+            } else { // Only translations has changed
+              layers = response.data;
+              $rootScope.$broadcast('gaLayersTranslationChange', layers);
+            }
+          });
         };
 
+        // Load layers configuration with value from permalink
+        // gaLang.get() never returns an undefined value on page load.
+        var configP = loadLayersConfig(gaLang.get());
+
         /**
-         * Return an array of ol.layer.Layer objects for the background
-         * layers.
+         * Get the promise of the layers config requets
          */
-        this.getBackgroundLayers = function() {
-          var self = this;
-          if (!layers) {
-            return;
-          }
-          return $.map(gaTopic.get().backgroundLayers, function(bodId) {
-            var retVal = {id: bodId,
-                          label: self.getLayerProperty(bodId, 'label')};
-            // In the background selector, we don't want the standard labels
-            if (bodId == 'ch.swisstopo.swissimage') {
-              retVal.label = $translate.instant('bg_luftbild');
-            } else if (bodId == 'ch.swisstopo.pixelkarte-farbe') {
-              retVal.label = $translate.instant('bg_pixel_color');
-            } else if (bodId == 'ch.swisstopo.pixelkarte-grau') {
-              retVal.label = $translate.instant('bg_pixel_grey');
-            }
-            return retVal;
-          });
+        this.loadConfig = function() {
+          return configP;
         };
 
         /**
@@ -1062,7 +1042,7 @@ goog.require('ga_urlutils_service');
          * Returns a promise. Use accordingly
          */
         this.getMetaDataOfLayer = function(bodId) {
-          var url = getMetaDataUrl(gaTopic.get().id, bodId, $translate.use());
+          var url = getMetaDataUrl(bodId, gaLang.get());
           return $http.get(url);
         };
 
@@ -1109,14 +1089,6 @@ goog.require('ga_urlutils_service');
 
           return undefined;
         };
-
-        $rootScope.$on('$translateChangeEnd', function(event, newLang) {
-          loadLayersConfig();
-        });
-
-        $rootScope.$on('gaTimeSelectorChange', function(event, time) {
-          currentTime = time;
-        });
       };
 
       return new Layers(this.wmtsGetTileUrlTemplate,
@@ -1495,7 +1467,7 @@ goog.require('ga_urlutils_service');
 
     this.$get = function($rootScope, gaLayers, gaPermalink, $translate, $http,
         gaKml, gaMapUtils, gaWms, gaLayerFilters, gaUrlUtils, gaFileStorage,
-        gaTopic, gaGlobalOptions) {
+        gaTopic, gaGlobalOptions, $q) {
 
       var layersParamValue = gaPermalink.getParams().layers;
       var layersOpacityParamValue = gaPermalink.getParams().layers_opacity;
@@ -1623,34 +1595,8 @@ goog.require('ga_urlutils_service');
           });
         });
 
-        var deregister = scope.$on('gaLayersChange', function() {
-          deregister();
-
-          if (!layerSpecs.length) {
-            addTopicSelectedLayers();
-          } else {
-            // We add layers from 'layers' parameter
-            addLayers(layerSpecs, layerOpacities, layerVisibilities,
-                layerTimestamps);
-          }
-
-          if (layerSpecs.length && !gaTopic.get()) {
-            // if the topic is not yet loaded we do nothing on the first topic
-            // change event
-            var deregister2 = scope.$on('gaTopicChange', function() {
-              deregister2();
-              scope.$on('gaTopicChange', addTopicSelectedLayers);
-            });
-          } else {
-            scope.$on('gaTopicChange', addTopicSelectedLayers);
-          }
-        });
-
         var addTopicSelectedLayers = function() {
-
-          if (gaLayers.getSelectedLayers()) {
-            addLayers(gaLayers.getSelectedLayers().slice(0).reverse());
-          }
+          addLayers(gaTopic.get().selectedLayers.slice(0).reverse());
         };
 
         var addLayers = function(layerSpecs, opacities, visibilities,
@@ -1777,6 +1723,21 @@ goog.require('ga_urlutils_service');
             });
           }
         };
+
+        // Add permalink layers when topics and layers config are loaded
+        $q.all([gaTopic.loadConfig(), gaLayers.loadConfig()]).then(function() {
+          if (!layerSpecs.length) {
+            // We add topic selected layers if no layers parameters provided
+            addTopicSelectedLayers();
+          } else {
+            // We add layers from 'layers' parameter
+            addLayers(layerSpecs, layerOpacities, layerVisibilities,
+                layerTimestamps);
+          }
+
+          // Listen for next topic change events
+          $rootScope.$on('gaTopicChange', addTopicSelectedLayers);
+        });
       };
     };
   });
@@ -1947,7 +1908,7 @@ goog.require('ga_urlutils_service');
         gaPreviewFeatures, gaMapUtils) {
       var queryParams = gaPermalink.getParams();
       return function(map) {
-        var deregister = $rootScope.$on('gaLayersChange', function() {
+        gaLayers.loadConfig().then(function() {
           var featureIdsCount = 0;
           var featureIdsByBodId = {};
           var paramKey;
@@ -2001,7 +1962,6 @@ goog.require('ga_urlutils_service');
               }
             });
           }
-          deregister();
         });
       };
     };

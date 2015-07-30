@@ -41,10 +41,9 @@ goog.require('ga_seo_service');
 
             var permalinkLayers = function() {
               var layers = gaSeoService.getLayers(),
-                  def = $q.defer(),
-                  unregister;
+                  def = $q.defer();
 
-              unregister = scope.$on('gaLayersChange', function() {
+              gaLayers.loadConfig().then(function() {
 
                 var insertLayerMetadata = function(layers) {
                   var promises = [], i;
@@ -81,7 +80,6 @@ goog.require('ga_seo_service');
                 $q.all(promises).then(function() {
                   def.resolve();
                 });
-                unregister();
               });
 
               return def.promise;
@@ -104,7 +102,7 @@ goog.require('ga_seo_service');
             var swissSearchParameter = function() {
               var def = $q.defer(),
                   active = false,
-                  uregLay, uregAct, uregDone;
+                  uregAct, uregDone;
 
               uregAct = scope.$on('gaSwisssearchActivated', function() {
                  active = true;
@@ -119,7 +117,7 @@ goog.require('ga_seo_service');
                 uregDone();
               });
 
-              uregLay = scope.$on('gaLayersChange', function() {
+              gaLayers.loadConfig().then(function() {
                 // When there is no swisssearch parameter, the gaSwissearch*
                 // messages are never send and the defer never gets resolved.
                 // Therefore, we check after a certain time if the
@@ -130,7 +128,6 @@ goog.require('ga_seo_service');
                     def.resolve();
                   }
                 });
-                uregLay();
               });
 
               return def.promise;

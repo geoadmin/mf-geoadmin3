@@ -43,8 +43,8 @@ goog.require('ga_topic_service');
               }
             });
 
-            gaTopic.getTopics().then(function(topics) {
-              scope.topics = topics;
+            gaTopic.loadConfig().then(function() {
+              scope.topics = gaTopic.getTopics();
               scope.activeTopic = gaTopic.get();
               scope.$applyAsync(function() {
                 element.find('.ga-topic-item').tooltip({

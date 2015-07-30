@@ -22,22 +22,12 @@ goog.require('ga_popup');
               popup;
 
           // Called to update the content
-          var updateContent = function(init) {
-
-            var handleResult = function() {
-              if (init) {
-                popup.open();
-              }
-            };
-
-            gaLayers.getMetaDataOfLayer(bodid).success(function(data) {
+          var updateContent = function() {
+            return gaLayers.getMetaDataOfLayer(bodid).success(function(data) {
               result.html = $sce.trustAsHtml(data);
-              handleResult();
             }).error(function() {
-              handleResult();
               //FIXME: better error handling
-              var msg = 'Could not retrieve information for ' + bodid;
-              alert(msg);
+              alert('Could not retrieve information for ' + bodid);
             });
           };
 
@@ -54,12 +44,12 @@ goog.require('ga_popup');
           });
           popups[bodid] = popup;
 
-          updateContent(true);
-
-          $rootScope.$on('$translateChangeEnd', function() {
-            updateContent(false);
+          // Open popup only on success
+          updateContent().then(function() {
+            popup.open();
           });
 
+          $rootScope.$on('$translateChangeEnd', updateContent);
         };
 
         this.toggle = function(bodid) {

@@ -111,7 +111,7 @@
                'https://mf-chsdi3.dev.bgdi.ch/rest/services/all/MapServer/layersConfig' +
                '?lang={Lang}';
            gaLayersProvider.legendUrlTemplate =
-               'https://mf-chsdi3.dev.bgdi.ch/rest/services/{Topic}/MapServer/{Layer}/legend' +
+               'https://mf-chsdi3.dev.bgdi.ch/rest/services/all/MapServer/{Layer}/legend' +
                '?lang={Lang}';
         }]);
 
@@ -152,7 +152,7 @@
             $scope.map = map;
             var loadedBackground = false;
 
-            $scope.$on('gaLayersChange', function(evt, newLayers) {
+            gaLayers.loadConfig().then(function() {
               if (!loadedBackground) {
                 var layer = gaLayers.getOlLayerById('ch.swisstopo.pixelkarte-farbe');
                 layer.background = true;

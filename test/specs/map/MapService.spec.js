@@ -183,27 +183,22 @@ describe('ga_map_service', function() {
         expect(layer.invertedOpacity).to.be("1");
       });
     });
-
-    describe('getBackgroundLayers', function() {
-      it('returns correct background layers information', function() {
-        var backgroundLayers = layers.getBackgroundLayers();
-        expect(backgroundLayers.length).to.be(1);
-        expect(backgroundLayers[0].id).to.be('bar');
-      });
-    });
-
   });
 
   describe('gaLayersPermalinkManager', function() {
     var manager, permalink, gaTopic, params, layersOpacityPermalink,
-        layersVisPermalink, layersTimePermalink, layersPermalink,
+        layersVisPermalink, layersTimePermalink, layersPermalink, def,
         topic, topicLoaded = {
           id: 'sometopic',
           backgroundLayers: ['bar'],
-          selectedLayers: ['foo', 'bar']
+          selectedLayers: []
         }, topicLoaded2 = {
           id: 'sometopic2',
           backgroundLayers: ['bar2'],
+          selectedLayers: ['foo', 'bar']
+        }, topicLoaded3 = {
+          id: 'sometopic3',
+          backgroundLayers: ['bar3'],
           selectedLayers: ['foo2', 'bar2']
         };
 
@@ -212,6 +207,9 @@ describe('ga_map_service', function() {
 
       module(function($provide) {
         $provide.value('gaLayers', {
+          loadConfig: function() {
+            return def.promise; 
+          },
           getLayer: function(id) {
             return {};
           },
@@ -225,14 +223,12 @@ describe('ga_map_service', function() {
             layer.bodId = bodId;
             layer.displayInLayerManager = true;
             return layer;
-          },
-          getSelectedLayers: function() {
-            if (gaTopic.get()) {
-              return gaTopic.get().selectedLayers;
-            }
           }
         });
         $provide.value('gaTopic', {
+          loadConfig: function() {
+            return def.promise; 
+          },
           get: function() {
             return topic;
           }
@@ -275,10 +271,11 @@ describe('ga_map_service', function() {
         });
       });
 
-      inject(function($injector) {
-        manager = $injector.get('gaLayersPermalinkManager');
-        permalink = $injector.get('gaPermalink');
-        gaTopic = $injector.get('gaTopic');
+      inject(function(_gaLayersPermalinkManager_, _gaPermalink_, _gaTopic_, $q) {
+        def = $q.defer();
+        manager = _gaLayersPermalinkManager_;
+        permalink = _gaPermalink_;
+        gaTopic = _gaTopic_;
       });
 
       manager(map);
@@ -290,7 +287,8 @@ describe('ga_map_service', function() {
         var fooLayer, barLayer, kmlLayer, wmsLayer;
 
         expect(permalink.getParams().layers).to.be(undefined);
-
+        topic = topicLoaded;
+        def.resolve();
         fooLayer = addLayerToMap('foo');
         $rootScope.$digest();
         expect(permalink.getParams().layers).to.eql('foo');
@@ -326,6 +324,7 @@ describe('ga_map_service', function() {
       it('changes permalink', inject(function($rootScope, gaDefinePropertiesForLayer) {
         var kmlLayer;
         expect(permalink.getParams().layers).to.be(undefined);
+        def.resolve(); 
         // Local KML layer (add by dnd) is not added to permalink
         kmlLayer = addLocalKmlLayerToMap();
         gaDefinePropertiesForLayer(kmlLayer);
@@ -341,6 +340,7 @@ describe('ga_map_service', function() {
       it('changes permalink', inject(function($rootScope, gaDefinePropertiesForLayer) {
         var kmlLayer;
         expect(permalink.getParams().layers).to.be(undefined);
+        def.resolve(); 
         kmlLayer = addKmlLayerToMap();
         gaDefinePropertiesForLayer(kmlLayer);
         $rootScope.$digest();
@@ -355,6 +355,7 @@ describe('ga_map_service', function() {
       it('changes permalink', inject(function($rootScope, gaDefinePropertiesForLayer) {
         var wmsLayer;
         expect(permalink.getParams().layers).to.be(undefined);
+        def.resolve(); 
         wmsLayer = addExternalWmsLayerToMap();
         gaDefinePropertiesForLayer(wmsLayer);
         $rootScope.$digest();
@@ -368,6 +369,7 @@ describe('ga_map_service', function() {
     describe('change layer opacity', function() {
       it('changes permalink',
           inject(function($rootScope, gaDefinePropertiesForLayer) {
+        def.resolve(); 
         var fooLayer, barLayer;
 
         fooLayer = addLayerToMap('foo');
@@ -401,6 +403,7 @@ describe('ga_map_service', function() {
     describe('change layer visibility', function() {
       it('changes permalink',
           inject(function($rootScope, gaDefinePropertiesForLayer) {
+        def.resolve();
         var fooLayer, barLayer;
 
         fooLayer = addLayerToMap('foo');
@@ -429,97 +432,51 @@ describe('ga_map_service', function() {
         $rootScope.$digest();
         expect(permalink.getParams().layers_visibility).to.be(undefined);
       }));
-
-      // For next test
-      topic = topicLoaded;
     });
 
     describe('add preselected layers of a topic', function() {
 
-      describe('if topic is loaded beforelayers', function() {
+      it('adds layers if no layers parameter', inject(function($rootScope) {
+        // For next test
+        topic = topicLoaded2;
 
-        it('adds layers if no layers parameter', inject(function($rootScope) {
-          expect(permalink.getParams().layers).to.be(undefined);
-          $rootScope.$broadcast('gaTopicChange', gaTopic.get());
-          $rootScope.$broadcast('gaLayersChange', {});
-          expect(map.getLayers().getLength()).to.be(2);
-          $rootScope.$digest();
-          expect(permalink.getParams().layers).to.be('bar,foo');
+        expect(permalink.getParams().layers).to.be(undefined);
+        def.resolve();
+        $rootScope.$digest();
+        expect(map.getLayers().getLength()).to.be(2);
+        expect(permalink.getParams().layers).to.be('bar,foo');
 
-          // On next topic change the selected layers are added
-          topic = topicLoaded2;
-          $rootScope.$broadcast('gaTopicChange', {});
-          expect(map.getLayers().getLength()).to.be(4);
-          $rootScope.$digest();
-          expect(permalink.getParams().layers).to.be('bar,foo,bar2,foo2');
+        // On next topic change the selected layers are added
+        topic = topicLoaded3;
+        $rootScope.$broadcast('gaTopicChange', {});
+        expect(map.getLayers().getLength()).to.be(4);
+        $rootScope.$digest();
+        expect(permalink.getParams().layers).to.be('bar,foo,bar2,foo2');
 
-          // For next test 
-          permalink.deleteParam('layers');
-          topic = topicLoaded;
-          layersPermalink = 'ged';
-        }));
+        // For next test 
+        permalink.deleteParam('layers');
+        topic = topicLoaded;
+        layersPermalink = 'ged';
+      }));
 
-        it('doesn t add layers if the layers parameter is defined', inject(function($rootScope) {
-          expect(permalink.getParams().layers).to.be('ged');
-          $rootScope.$broadcast('gaTopicChange', gaTopic.get());
-          $rootScope.$broadcast('gaLayersChange', {});
-          expect(map.getLayers().getLength()).to.be(1);
-          $rootScope.$digest();
-          expect(permalink.getParams().layers).to.be('ged');
+      it('doesn t add layers if the layers parameter is defined', inject(function($rootScope) {
+        expect(permalink.getParams().layers).to.be('ged');
+        def.resolve();
+        $rootScope.$digest();
+        expect(map.getLayers().getLength()).to.be(1);
+        expect(permalink.getParams().layers).to.be('ged');
 
-          // On next topic change the selected layers are added
-          topic = topicLoaded2;
-          $rootScope.$broadcast('gaTopicChange', {});
-          expect(map.getLayers().getLength()).to.be(3);
-          $rootScope.$digest();
-          expect(permalink.getParams().layers).to.be('ged,bar2,foo2');
+        // On next topic change the selected layers are added
+        topic = topicLoaded2;
+        $rootScope.$broadcast('gaTopicChange', {});
+        expect(map.getLayers().getLength()).to.be(3);
+        $rootScope.$digest();
+        expect(permalink.getParams().layers).to.be('ged,bar,foo');
 
-          // For next test
-          topic = undefined;
-          layersPermalink = undefined;
-        }));
-      });
-
-      describe('if topic is loaded after layers', function() {
-
-        it('adds layers if no layers parameter', inject(function($rootScope) {
-          expect(permalink.getParams().layers).to.be(undefined);
-          $rootScope.$broadcast('gaLayersChange', {});
-          topic = topicLoaded;
-          $rootScope.$broadcast('gaTopicChange', gaTopic.get());
-          expect(map.getLayers().getLength()).to.be(2);
-          $rootScope.$digest();
-          expect(permalink.getParams().layers).to.be('bar,foo');
-
-          // On next topic change the selected layers are added
-          topic = topicLoaded2;
-          $rootScope.$broadcast('gaTopicChange', {});
-          expect(map.getLayers().getLength()).to.be(4);
-          $rootScope.$digest();
-          expect(permalink.getParams().layers).to.be('bar,foo,bar2,foo2');
-
-          // For next test
-          topic = undefined;
-          layersPermalink = 'ged';
-        }));
-
-        it('doesn t add layers if the layers parameter is defined', inject(function($rootScope) {
-          expect(permalink.getParams().layers).to.be('ged');
-          $rootScope.$broadcast('gaLayersChange', {});
-          topic = topicLoaded;
-          $rootScope.$broadcast('gaTopicChange', gaTopic.get());
-          expect(map.getLayers().getLength()).to.be(1);
-          $rootScope.$digest();
-          expect(permalink.getParams().layers).to.be('ged');
-
-          // On next topic change the selected layers are added
-          topic = topicLoaded2;
-          $rootScope.$broadcast('gaTopicChange', {});
-          expect(map.getLayers().getLength()).to.be(3);
-          $rootScope.$digest();
-          expect(permalink.getParams().layers).to.be('ged,bar2,foo2');
-        }));
-      });
+        // For next test
+        topic = undefined;
+        layersPermalink = undefined;
+      }));
     });
   });
   

@@ -11,25 +11,24 @@ goog.require('ga_permalink');
    * Topics manager
    */
   module.provider('gaTopic', function() {
-    this.$get = function($rootScope, $http, $q, gaPermalink, gaGlobalOptions) {
+    this.$get = function($rootScope, $http, gaPermalink, gaGlobalOptions) {
       var topic; // The current topic
       var topics = []; // The list of topics available
 
       // Load the topics config
-      var loadTopics = function(topicsUrl) {
-        var deferred = $q.defer();
-        $http.get(topicsUrl).success(function(data) {
-          topics = data.topics;
+      var loadTopicsConfig = function(url) {
+        return $http.get(url).then(function(response) {
+          topics = response.data.topics;
           angular.forEach(topics, function(value) {
             value.tooltip = 'topic_' + value.id + '_tooltip';
             value.langs = angular.isString(value.langs) ?
                 value.langs.split(',') : value.langs;
           });
-          deferred.resolve(topics);
-        }).error(function() {
-          deferred.reject();
+          topic = getTopicById(gaPermalink.getParams().topic, true);
+          if (topic) {
+            broadcast();
+          }
         });
-        return deferred.promise;
       };
 
       var getTopicById = function(id, useFallbackTopic) {
@@ -60,19 +59,17 @@ goog.require('ga_permalink');
       var Topic = function(topicsUrl) {
 
         // We load the topics configuration
-        var topicsP = loadTopics(topicsUrl);
-
-        topicsP.then(function(fetchedTopics) {
-          topics = fetchedTopics;
-          topic = getTopicById(gaPermalink.getParams().topic, true);
-          if (topic) {
-            broadcast();
-          }
-        });
+        var topicsP = loadTopicsConfig(topicsUrl);
 
         // Returns a promise that is resolved when topics are loaded
-        this.getTopics = function() {
+        this.loadConfig = function() {
           return topicsP;
+        };
+
+        // Returns the topics loaded. Should be used only after the
+        // load config promise is resolved.
+        this.getTopics = function() {
+          return topics;
         };
 
         this.set = function(newTopic, force) {
