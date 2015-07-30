@@ -38,7 +38,7 @@ var runTest = function(cap, driver, target) {
         assert.ok(url.indexOf(POSITION_TO_KML) > -1);
         return true;
       });
-    }, 1000);
+    }, 2000);
   }
 
   // Go to the KML linkedURL
