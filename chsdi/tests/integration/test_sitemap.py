@@ -14,7 +14,7 @@ def _validate_scheme(scheme, body):
             retcode = subprocess.call(["xmllint", "--noout", "--nocatalogs", "--schema", schema_url, f.name])
         except OSError:
             if attempts > 3:
-                retcode = 1
+                retcode = 5342
             else:
                 attempts += 1
                 time.sleep(2)
@@ -63,7 +63,7 @@ class TestSitemapView(TestsBase):
         # contains correct domain
         self.failUnless(self.testapp.app.registry.settings.get('geoadminhost') in resp.body)
         # validate scheme
-        self.failUnless(0 == _validate_scheme('siteindex.xsd', resp.body))
+        self.assertEqual(0, _validate_scheme('siteindex.xsd', resp.body))
 
     def test_base_file(self):
         resp = self.testapp.get('/sitemap?content=base', status=200)
@@ -74,7 +74,7 @@ class TestSitemapView(TestsBase):
         # contains correct domain
         self.failUnless(self.testapp.app.registry.settings.get('geoadminhost') in resp.body)
         # validate scheme
-        self.failUnless(0 == _validate_scheme('sitemap.xsd', resp.body))
+        self.assertEqual(0, _validate_scheme('sitemap.xsd', resp.body))
 
     def test_topics_file(self):
         resp = self.testapp.get('/sitemap?content=topics', status=200)
@@ -88,7 +88,7 @@ class TestSitemapView(TestsBase):
         # contains correct domain
         self.failUnless(self.testapp.app.registry.settings.get('geoadminhost') in resp.body)
         # validate scheme
-        self.failUnless(0 == _validate_scheme('sitemap.xsd', resp.body))
+        self.assertEqual(0, _validate_scheme('sitemap.xsd', resp.body))
 
     def test_layers_file(self):
         resp = self.testapp.get('/sitemap?content=layers', status=200)
@@ -105,7 +105,7 @@ class TestSitemapView(TestsBase):
         # contains correct domain
         self.failUnless(self.testapp.app.registry.settings.get('geoadminhost') in resp.body)
         # validate scheme
-        self.failUnless(0 == _validate_scheme('sitemap.xsd', resp.body))
+        self.assertEqual(0, _validate_scheme('sitemap.xsd', resp.body))
 
     def test_bad_multi_files(self):
         # multipart (after _) must be integer
@@ -130,7 +130,7 @@ class TestSitemapView(TestsBase):
         # contains correct domain
         self.failUnless(self.testapp.app.registry.settings.get('geoadminhost') in resp.body)
         # validate scheme
-        self.failUnless(0 == _validate_scheme('siteindex.xsd', resp.body))
+        self.assertEqual(0, _validate_scheme('siteindex.xsd', resp.body))
 
     def test_addresses_file(self):
         resp = self.testapp.get('/sitemap?content=addresses_387', status=200)
@@ -144,4 +144,4 @@ class TestSitemapView(TestsBase):
         # contains correct domain
         self.failUnless(self.testapp.app.registry.settings.get('geoadminhost') in resp.body)
         # validate scheme
-        self.failUnless(0 == _validate_scheme('sitemap.xsd', resp.body))
+        self.assertEqual(0, _validate_scheme('sitemap.xsd', resp.body))
