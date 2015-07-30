@@ -717,9 +717,10 @@ class GeolGenKarteGGK200Meta(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False, 'extend_existing': True})
     __template__ = 'templates/htmlpopup/generalkarte_ggk200.metadata.mako'
     __bodId__ = 'ch.swisstopo.geologie-generalkarte-ggk200.metadata'
-    __label__ = 'id'
-    id = Column('prod_id', Text, primary_key=True)
+    __label__ = 'prod_id'
+    id = Column('gid', Text, primary_key=True)
     nr = Column('nr', Integer)
+    prod_id = Column('prod_id', Text)
     titel = Column('titel', Text)
     autor = Column('autor', Text)
     jahr = Column('jahr', Text)
