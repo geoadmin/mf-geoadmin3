@@ -12,7 +12,11 @@ module.exports = function(config) {
   // list of files / patterns to load in the browser
   files: [
     % if mode == 'prod':
-      'lib/build.js',
+       'lib/build.js',
+      % if dev3d == 'true':
+       'lib/Cesium/Cesium.js',
+       'lib/ol3cesium.js',
+      % endif
     % else:
        'lib/jquery-2.0.3.js',
        'lib/angular.js',
@@ -26,7 +30,12 @@ module.exports = function(config) {
        'lib/EPSG32631.js',
        'lib/EPSG32632.js',
        '../test/closure-loader-globals.js',
+      % if dev3d == 'true':
+       'lib/Cesium/Cesium.js',
+       'lib/ol3cesium-debug.js',
+      % else:
        'lib/ol-debug.js',
+      % endif
        '../.build-artefacts/app-whitespace.js',
     % endif
        '../test/angular/angular-mocks.js',

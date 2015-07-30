@@ -12,7 +12,7 @@ goog.require('ga_topic_service');
   ]);
 
   module.directive('gaBackgroundSelector',
-    function($document, gaPermalink, gaLayers, gaLayerFilters,
+    function($document, $rootScope, gaPermalink, gaLayers, gaLayerFilters,
         gaBrowserSniffer, $q, gaTopic, gaGlobalOptions) {
       return {
         restrict: 'A',
@@ -66,6 +66,7 @@ goog.require('ga_topic_service');
                   layers.insertAt(0, layer);
                 }
               }
+              $rootScope.$broadcast('gaBgChange', layerid);
               gaPermalink.updateParams({bgLayer: layerid});
             }
           };

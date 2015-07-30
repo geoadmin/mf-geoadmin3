@@ -477,6 +477,7 @@ goog.require('ga_permalink');
               ol.Observable.unByKey(deregFeatureChange);
 
               // Set the definitve style of the feature
+              featureToAdd.getGeometry().set('altitudeMode', 'clampToGround');
               layer.getSource().addFeature(featureToAdd);
               var styles = tool.style(featureToAdd);
               featureToAdd.setStyle(styles);

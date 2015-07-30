@@ -15,11 +15,12 @@ goog.require('ga_permalink');
 
   module.directive('gaMap',
       function($window, $parse, $rootScope, $timeout, gaPermalink,
-          gaBrowserSniffer, gaLayers, gaDebounce, gaOffline) {
+          gaBrowserSniffer, gaLayers, gaDebounce, gaOffline, gaGlobalOptions) {
         return {
           restrict: 'A',
           scope: {
-            map: '=gaMapMap'
+            map: '=gaMapMap',
+            show3d: '=gaMap3d'
           },
           link: function(scope, element, attrs) {
             var map = scope.map;
@@ -79,6 +80,38 @@ goog.require('ga_permalink');
             updatePermalink();
 
             map.setTarget(element[0]);
+            if (gaGlobalOptions.dev3d) {
+              var ol3d;
+              scope.$watch('show3d', function(isActive) {
+                if (!ol3d) {
+                  ol3d = new olcs.OLCesium({map: map});
+                  var scene = ol3d.getCesiumScene();
+                  scene.globe.depthTestAgainstTerrain = true;
+                  var terrainProvider = new Cesium.CesiumTerrainProvider({
+                     //url:
+                     //'//ec2-54-220-242-89.eu-west-1.compute.amazonaws.com/stk-terrain/tilesets/swisseudem/tiles',
+                     url: 'https://3d.geo.admin.ch',
+                     //'https://cesiumjs.org/stk-terrain/tilesets/world/tiles',
+                     credit: 'Swisstopo terrain'
+                  });
+                  scene.terrainProvider = terrainProvider;
+                  ol3d.setEnabled(false);
+                  var baseUrl = '//api3.geo.admin.ch/mapproxy/service';
+                  var ip = new Cesium.WebMapServiceImageryProvider({
+                    url: baseUrl,
+                    layers: 'ch.swisstopo.swissimage'
+                  });
+                  var layer = scene.imageryLayers.addImageryProvider(ip);
+                  layer.show = true;
+                }
+                if (ol3d) {
+                  ol3d.setEnabled(isActive);
+                }
+              });
+              $rootScope.$on('gaBgChange', function(evt, newBgLayerId) {
+                scope.show3d = (newBgLayerId == 'ch.swisstopo.terrain.3d');
+              });
+            }
 
             // Often when we use embed map the size of the map is fixed, so we
             // don't need to resize the map for printing (use case: print an

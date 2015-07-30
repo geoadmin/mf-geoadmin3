@@ -21,6 +21,7 @@ DEPLOY_ROOT_DIR := /var/www/vhosts/mf-geoadmin3/private/branch
 DEPLOY_TARGET ?= 'dev'
 LAST_DEPLOY_TARGET := $(shell if [ -f .build-artefacts/last-deploy-target ]; then cat .build-artefacts/last-deploy-target 2> /dev/null; else echo '-none-'; fi)
 OL3_VERSION ?= v3.6.0
+OL3_CESIUM_VERSION ?= master
 DEFAULT_TOPIC_ID ?= ech
 TRANSLATION_FALLBACK_CODE ?= de
 DEFAULT_EXTENT ?= '[420000, 30000, 900000, 350000]'
@@ -29,6 +30,8 @@ RESOLUTIONS ?= '[650.0, 500.0, 250.0, 100.0, 50.0, 20.0, 10.0, 5.0, 2.5, 2.0, 1.
 DEFAULT_EPSG ?= EPSG:21781
 DEFAULT_EPSG_EXTEND ?= '[420000, 30000, 900000, 350000]'
 DEFAULT_ELEVATION_MODEL ?= COMB
+DEV3D ?= 'false'
+
 
 ## Python interpreter can't have space in path name
 ## So prepend all python scripts with python cmd
@@ -174,6 +177,19 @@ ol: scripts/ol-geoadmin.json .build-artefacts/ol3
 	cd ../../; \
 	cp $(addprefix .build-artefacts/ol3/build/,$(OL_JS)) src/lib/;
 
+.PHONY: ol3cesium
+ol3cesium: OL_CESIUM_JS = ol3cesium.js ol3cesium-debug.js
+ol3cesium: .build-artefacts/ol3-cesium
+	cd .build-artefacts/ol3-cesium; \
+	git reset HEAD --hard; \
+	git checkout $(OL3_CESIUM_VERSION); \
+	git show; \
+	make dist-examples; \
+	node build/build.js ../../scripts/ol3cesium-debug-geoadmin.json dist/ol3cesium-debug.js;  \
+	cd ../../; \
+	cp $(addprefix .build-artefacts/ol3-cesium/dist/,$(OL_CESIUM_JS)) src/lib/; \
+	cp -r .build-artefacts/ol3-cesium/dist/Cesium src/lib/;
+
 .PHONY: fastclick
 fastclick: .build-artefacts/fastclick .build-artefacts/closure-compiler/compiler.jar
 	cp .build-artefacts/fastclick/lib/fastclick.js src/lib/fastclick.js
@@ -223,9 +239,11 @@ prd/robots.txt: scripts/robots.mako-dot-txt .build-artefacts/last-deploy-target
 prd/lib/: src/lib/d3-3.3.1.min.js \
 	    src/lib/bootstrap-datetimepicker.min.js  \
 	    src/lib/IE9Fixes.js \
-	    src/lib/jQuery.XDomainRequest.js
+	    src/lib/jQuery.XDomainRequest.js \
+			src/lib/ol3cesium.js \
+			src/lib/Cesium
 	mkdir -p $@
-	cp $^ $@
+	cp -rf  $^ $@
 
 prd/lib/build.js: src/lib/jquery-2.0.3.min.js \
 		    src/lib/bootstrap-3.3.1.min.js \
@@ -273,6 +291,7 @@ define buildpage
 		--var "mode=$2" \
 		--var "version=$3" \
 		--var "versionslashed=$4" \
+		--var "dev3d=$(DEV3D)" \
 		--var "apache_base_path=$(APACHE_BASE_PATH)" \
 		--var "api_url=$(API_URL)" \
 		--var "default_topic_id=$(DEFAULT_TOPIC_ID)" \
@@ -388,10 +407,10 @@ apache/app.conf: apache/app.mako-dot-conf \
 	    --var "version=$(VERSION)" $< > $@
 
 test/karma-conf-dev.js: test/karma-conf.mako.js .build-artefacts/python-venv/bin/mako-render
-	${PYTHON_CMD} .build-artefacts/python-venv/bin/mako-render $< > $@
+	${PYTHON_CMD} .build-artefacts/python-venv/bin/mako-render --var "dev3d=${DEV3D}" $< > $@
 
 test/karma-conf-prod.js: test/karma-conf.mako.js .build-artefacts/python-venv/bin/mako-render
-	${PYTHON_CMD} .build-artefacts/python-venv/bin/mako-render --var "mode=prod" $< > $@
+	${PYTHON_CMD} .build-artefacts/python-venv/bin/mako-render  --var "dev3d=${DEV3D}" --var "mode=prod" $< > $@
 
 node_modules: ANGULAR_JS = angular.js angular.min.js
 node_modules: ANGULAR_TRANSLATE_JS = angular-translate.js angular-translate.min.js
@@ -414,6 +433,8 @@ node_modules: package.json
 	    --compilation_level SIMPLE_OPTIMIZATIONS \
 	    --jscomp_error checkVars \
 	    --externs externs/ol.js \
+	    --externs externs/ol3-cesium.js \
+	    --externs externs/Cesium.externs.js \
 	    --externs .build-artefacts/externs/angular.js \
 	    --externs .build-artefacts/externs/jquery.js \
 	    --js_output_file $@
@@ -543,6 +564,9 @@ scripts/00-$(GIT_BRANCH).conf: scripts/00-branch.mako-dot-conf \
 .build-artefacts/ol3:
 	git clone https://github.com/openlayers/ol3.git $@
 
+.build-artefacts/ol3-cesium:
+	git clone --recursive https://github.com/openlayers/ol3-cesium.git $@
+
 .build-artefacts/bootstrap:
 	git clone https://github.com/twbs/bootstrap.git $@ && cd $@ && git checkout v3.3.1
 
@@ -590,4 +614,7 @@ clean:
 	rm -f src/deps.js
 	rm -f src/style/app.css
 	rm -f src/TemplateCacheModule.js
+	rm -f src/index.html
+	rm -f src/mobile.html
+	rm -f src/embed.html
 	rm -rf prd
