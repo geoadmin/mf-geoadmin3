@@ -11,8 +11,11 @@ describe('ga_topic_directive', function() {
     module(function($provide) {
       $provide.value('gaTopic', new (function() {
         var topic = topics[0];
-        this.getTopics = function() {
+        this.loadConfig = function() {
           return def.promise;
+        };
+        this.getTopics = function() {
+          return topics;
         };
         this.get = function() {
           return topic;

@@ -1,7 +1,6 @@
 describe('ga_backgroundselector_directive', function() {
 
-  var element, map, layer1, layer2, $rootScope, $compile;
-
+  var element, map, layer1, layer2, $rootScope, $compile, def;
   beforeEach(function() {
 
     map = new ol.Map({});
@@ -10,39 +9,44 @@ describe('ga_backgroundselector_directive', function() {
 
     module(function($provide) {
       $provide.value('gaLayers', {
+        loadConfig: function() {
+          return def.promise; 
+        },
         getLayer: function(id) {
           return {}; 
         },
         getOlLayerById: function(id) {
           return id == 'foo' ? layer1 : layer2;
-        },
-        getBackgroundLayers: function() {
-          return [{
-            id: 'foo', label: 'Foo'
-          }, {
-            id: 'bar', label: 'Bar'
-          }];
         }
       });
       $provide.value('gaTopic', {
+        loadConfig: function() {
+          return def.promise;
+        },
         get: function() {
           return {
             id: 'sometopic',
             langs: [{
               value: 'somelang',
               label: 'somelang'
+            }],
+            backgroundLayers: [{
+              id: 'foo', label: 'Foo'
+            }, {
+              id: 'bar', label: 'Bar'
             }]
           };
         }
       });
     });
 
-    inject(function($injector) {
-      $compile = $injector.get('$compile');
-      $rootScope = $injector.get('$rootScope');
-      $rootScope.map = map;
+    inject(function(_$rootScope_, _$compile_, $q) {
+      $compile = _$compile_;
+      $rootScope = _$rootScope_;
+      def = $q.defer();
     });
 
+    $rootScope.map = map;
     element = angular.element(
       '<div>' +
           '<div ga-background-selector ' +
@@ -50,6 +54,7 @@ describe('ga_backgroundselector_directive', function() {
           '</div>' +
       '</div>');
     $compile(element)($rootScope);
+    def.resolve();
     $rootScope.$digest();
   });
 

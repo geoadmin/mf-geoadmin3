@@ -25,9 +25,6 @@ describe('ga_catalogtree_directive', function() {
 
     module(function($provide) {
       $provide.value('gaLayers', {
-        getSelectedLayers: function() {
-          return ['bar'];
-        },
         loadForTopic: function() {
         },
         getLayer: function() {
@@ -45,6 +42,7 @@ describe('ga_catalogtree_directive', function() {
         get: function() {
           return {
             id: 'sometopic',
+            selectedLayers: ['bar'],
             langs: [{
               value: 'somelang',
               label: 'somelang'

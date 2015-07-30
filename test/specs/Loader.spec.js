@@ -56,7 +56,7 @@ beforeEach(function() {
     gaLayersProvider.layersConfigUrlTemplate =
         'http://example.com/all?lang={Lang}';
     gaLayersProvider.legendUrlTemplate =
-        'http://legendservice.com/{Topic}/{Layer}?lang={Lang}';
+        'http://legendservice.com/all/{Layer}?lang={Lang}';
   });
 
   module(function(gaTopicProvider, gaGlobalOptions) {

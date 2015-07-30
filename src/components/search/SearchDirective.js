@@ -69,7 +69,7 @@ goog.require('ga_translation_service');
   module.controller('GaSearchDirectiveController',
     function($scope, $rootScope, $sce, $timeout, gaPermalink,
              gaUrlUtils, gaSearchGetCoordinate, gaMapUtils, gaMarkerOverlay,
-             gaKml, gaPreviewLayers, gaLang, gaTopic) {
+             gaKml, gaPreviewLayers, gaLang, gaTopic, gaLayers) {
       var blockQuery = false;
       var restat = new ResultStats();
       $scope.restat = restat;
@@ -165,7 +165,7 @@ goog.require('ga_translation_service');
       };
 
       // We begin to watch the query only when topics are loaded
-      gaTopic.getTopics().then(function() {
+      gaTopic.loadConfig().then(function() {
         $scope.topicLoaded = true;
         if ($scope.query) {
           startQuery($scope.query);
@@ -181,7 +181,7 @@ goog.require('ga_translation_service');
       var searchParam = gaPermalink.getParams().swisssearch;
       if (angular.isDefined(searchParam) &&
           searchParam.length > 0) {
-        var unregister = $scope.$on('gaLayersChange', function() {
+        gaLayers.loadConfig().then(function() {
           // At this point layers are not added to the map yet
           $scope.map.getLayers().once('add', function() {
             $timeout(function() {
@@ -200,7 +200,6 @@ goog.require('ga_translation_service');
               });
             });
           });
-          unregister();
         });
       }
 
