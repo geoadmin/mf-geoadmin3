@@ -2291,6 +2291,12 @@ msgstr "Meds per proteger las plantas"
 msgid "ch.bafu.naqua-grundwasser_voc"
 msgstr "Cumposiziuns organicas svapurantas"
 
+msgid "ch.bafu.neophyten-japanisches_geissblatt"
+msgstr "Chagliamorta giapunaisa"
+
+msgid "ch.bafu.neophyten-riesenbaerenklau"
+msgstr "Darsvenna giganta"
+
 msgid "ch.bafu.oekomorphologie-f_abschnitte"
 msgstr "Ecomorfologia F – trajects"
 

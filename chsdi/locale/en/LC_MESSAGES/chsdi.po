@@ -2291,6 +2291,12 @@ msgstr "Groundwater: Pesticides"
 msgid "ch.bafu.naqua-grundwasser_voc"
 msgstr "Groundwater: VOC"
 
+msgid "ch.bafu.neophyten-japanisches_geissblatt"
+msgstr "Lonicera japonica"
+
+msgid "ch.bafu.neophyten-riesenbaerenklau"
+msgstr "Heracleum mantegazzianum"
+
 msgid "ch.bafu.oekomorphologie-f_abschnitte"
 msgstr "Ecomorphology F – River reaches"
 
