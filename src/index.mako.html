@@ -699,6 +699,7 @@ itemscope itemtype="http://schema.org/WebApplication"
           resolutions: JSON.parse(${resolutions}),
           defaultEpsg: '${default_epsg}',
           defaultEpsgExtent: JSON.parse(${default_epsg_extend}),
+          defaultElevationModel: '${default_elevation_model}'
         });
 
         module.config(function($translateProvider, gaGlobalOptions) {

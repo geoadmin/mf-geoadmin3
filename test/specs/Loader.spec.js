@@ -24,6 +24,7 @@ beforeEach(function() {
       defaultExtent: [420000, 30000, 900000, 350000],
       resolutions: [650.0, 500.0, 250.0, 100.0, 50.0, 20.0, 10.0, 5.0,
           2.5, 2.0, 1.0, 0.5, 0.25, 0.1],
+      defaultElevationModel: 'COMB',
       mapUrl : location.origin + apacheBasePath,
       apiUrl : location.protocol + apiUrl,
       publicUrl: location.protocol + publicUrl,

@@ -47,7 +47,7 @@ goog.require('ga_urlutils_service');
     };
 
     this.$get = function($q, $http, $timeout, $translate, $window, gaUrlUtils,
-                         gaBrowserSniffer) {
+                         gaBrowserSniffer, gaGlobalOptions) {
 
       var d3LibUrl = this.d3libUrl;
       var profileUrl = this.profileUrl;
@@ -56,7 +56,8 @@ goog.require('ga_urlutils_service');
       function ProfileChart(options) {
         var marginHoriz = options.margin.left + options.margin.right;
         var marginVert = options.margin.top + options.margin.bottom;
-        var elevationModel = options.elevationModel || 'DTM25';
+        var elevationModel = options.elevationModel ||
+            gaGlobalOptions.defaultElevationModel;
         var width = options.width - marginHoriz;
         var height = options.height - marginVert;
 
@@ -165,7 +166,8 @@ goog.require('ga_urlutils_service');
           $http(params).success(function(data, status) {
             // When all the geometry is outside switzerland
             if (data.length == 0) {
-              data = [{alts: {COMB: 0}, dist: 0}];
+              data = [{alts: {}, dist: 0}];
+              data[0].alts[elevationModel] = 0;
             }
             callback(data, status);
           }).error(function(data, status) {
@@ -173,7 +175,9 @@ goog.require('ga_urlutils_service');
               // it
               if (status !== 0) {
                 // Display an empty profile
-                callback([{alts: {COMB: 0}, dist: 0}], status);
+                data = [{alts: {}, dist: 0}];
+                data[0].alts[elevationModel] = 0;
+                callback(data, status);
               }
             });
         };

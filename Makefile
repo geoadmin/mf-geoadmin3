@@ -26,6 +26,7 @@ DEFAULT_RESOLUTION ?= 500.0
 RESOLUTIONS ?= '[650.0, 500.0, 250.0, 100.0, 50.0, 20.0, 10.0, 5.0, 2.5, 2.0, 1.0, 0.5, 0.25, 0.1]'
 DEFAULT_EPSG ?= EPSG:21781
 DEFAULT_EPSG_EXTEND ?= '[420000, 30000, 900000, 350000]'
+DEFAULT_ELEVATION_MODEL ?= COMB
 
 ## Python interpreter can't have space in path name
 ## So prepend all python scripts with python cmd
@@ -284,6 +285,7 @@ prd/index.html: src/index.mako.html \
 	    --var "default_resolution"="$(DEFAULT_RESOLUTION)" \
 	    --var "resolutions"="$(RESOLUTIONS)" \
 	    --var "public_url=$(PUBLIC_URL)" \
+	    --var "default_elevation_model=${DEFAULT_ELEVATION_MODEL}" \
 	    --var "default_epsg"="$(DEFAULT_EPSG)" \
 	    --var "default_epsg_extend"="$(DEFAULT_EPSG_EXTEND)" $< > $@
 	${PYTHON_CMD} .build-artefacts/python-venv/bin/htmlmin --remove-comments --keep-optional-attribute-quotes $@ $@
@@ -308,6 +310,7 @@ prd/mobile.html: src/index.mako.html \
 	    --var "default_resolution"="$(DEFAULT_RESOLUTION)" \
 	    --var "resolutions"="$(RESOLUTIONS)" \
 	    --var "public_url=$(PUBLIC_URL)" \
+            --var "default_elevation_model=${DEFAULT_ELEVATION_MODEL}" \
 	    --var "default_epsg"="$(DEFAULT_EPSG)" \
 	    --var "default_epsg_extend"="$(DEFAULT_EPSG_EXTEND)" $< > $@
 	${PYTHON_CMD} .build-artefacts/python-venv/bin/htmlmin --remove-comments --keep-optional-attribute-quotes $@ $@
@@ -332,6 +335,7 @@ prd/embed.html: src/index.mako.html \
 	    --var "default_resolution"="$(DEFAULT_RESOLUTION)" \
 	    --var "resolutions"="$(RESOLUTIONS)" \
 	    --var "public_url=$(PUBLIC_URL)" \
+            --var "default_elevation_model=${DEFAULT_ELEVATION_MODEL}" \
 	    --var "default_epsg"="$(DEFAULT_EPSG)" \
 	    --var "default_epsg_extend"="$(DEFAULT_EPSG_EXTEND)" $< > $@
 	${PYTHON_CMD} .build-artefacts/python-venv/bin/htmlmin --remove-comments --keep-optional-attribute-quotes $@ $@
@@ -383,6 +387,7 @@ src/index.html: src/index.mako.html \
 	    --var "default_resolution"="$(DEFAULT_RESOLUTION)" \
 	    --var "resolutions"="$(RESOLUTIONS)" \
 	    --var "public_url=$(PUBLIC_URL)" \
+            --var "default_elevation_model=${DEFAULT_ELEVATION_MODEL}" \
 	    --var "default_epsg"="$(DEFAULT_EPSG)" \
 	    --var "default_epsg_extend"="$(DEFAULT_EPSG_EXTEND)" $< > $@
 
@@ -402,6 +407,7 @@ src/mobile.html: src/index.mako.html \
 	    --var "default_resolution"="$(DEFAULT_RESOLUTION)" \
 	    --var "resolutions"="$(RESOLUTIONS)" \
 	    --var "public_url=$(PUBLIC_URL)" \
+            --var "default_elevation_model=${DEFAULT_ELEVATION_MODEL}" \
 	    --var "default_epsg"="$(DEFAULT_EPSG)" \
 	    --var "default_epsg_extend"="$(DEFAULT_EPSG_EXTEND)" $< > $@
 
@@ -421,6 +427,7 @@ src/embed.html: src/index.mako.html \
 	    --var "default_resolution"="$(DEFAULT_RESOLUTION)" \
 	    --var "resolutions"="$(RESOLUTIONS)" \
 	    --var "public_url=$(PUBLIC_URL)" \
+            --var "default_elevation_model=${DEFAULT_ELEVATION_MODEL}" \
 	    --var "default_epsg"="$(DEFAULT_EPSG)" \
 	    --var "default_epsg_extend"="$(DEFAULT_EPSG_EXTEND)" $< > $@
 

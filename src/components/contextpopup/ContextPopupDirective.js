@@ -12,7 +12,7 @@ goog.require('ga_permalink');
 
   module.directive('gaContextPopup',
       function($rootScope, $http, $translate, $q, $timeout, $window,
-          gaBrowserSniffer, gaNetworkStatus, gaPermalink) {
+          gaBrowserSniffer, gaNetworkStatus, gaPermalink, gaGlobalOptions) {
         return {
           restrict: 'A',
           replace: true,
@@ -128,7 +128,7 @@ goog.require('ga_permalink');
                   params: {
                     easting: coord21781[0],
                     northing: coord21781[1],
-                    elevation_model: 'COMB'
+                    elevation_model: gaGlobalOptions.defaultElevationModel
                   }
                 }).success(function(response) {
                   scope.altitude = parseFloat(response.height);
