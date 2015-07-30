@@ -4,6 +4,7 @@ var webdriver = require('browserstack-webdriver');
 var assert = require('assert');
 
 var QUERYSTRING_OF_RARON = "X=128114.80&Y=629758.13&zoom=10";
+var QUERYSTRING_OF_RTE_BERNE_LAUSANNE = "X=154208.00&Y=539257.00&zoom=10"
 var QUERYSTRING_MOOS = "X=128630.00&Y=627650.00&zoom=10";
 
 var runTest = function(cap, driver, target){
@@ -30,6 +31,12 @@ var runTest = function(cap, driver, target){
   driver.findElement(webdriver.By.xpath("//*[@id='toptools']//a[contains(@href,'http')]")).getAttribute("href").then(function(val) {
     assert.ok(val.indexOf('swisssearch') == -1);
   });
+
+  //swisssearch Route de Berne 91 1010 Lausanne with wordforms rte
+  driver.get(target + '/?swisssearch=rte berne 91 1010&lang=de');
+  //wait until topics related stuff is loaded. We know this when catalog is there
+  driver.findElement(webdriver.By.xpath("//a[contains(text(), 'Grundlagen und Planung')]"));
+  driver.findElement(webdriver.By.xpath("//a[contains(@href, '" + QUERYSTRING_OF_RTE_BERNE_LAUSANNE + "')]"));
 
   //swissearch parameter with 1 result (direct selection doesn't work in safari 5.1)
   driver.get(target + '/?swisssearch=brückenmoostrasse 11 raron&lang=de');
