@@ -185,7 +185,7 @@ goog.provide('ga_search_service');
           return res;
         },
         cleanLabel: function(str) {
-          return str.replace(/(<b>|<\/b>)/gi, '');
+          return str.replace(/(<b>|<\/b>|<i>|<\/i>)/gi, '');
         }
       };
     };
