@@ -6624,6 +6624,12 @@ msgstr "Dimensions of original image"
 msgid "tt_lubis_ort"
 msgstr "Place"
 
+msgid "tt_lubis_orthophoto"
+msgstr "Ortho image path"
+
+msgid "tt_lubis_rotation"
+msgstr "Rotation"
+
 msgid "tt_lubis_x"
 msgstr "Centre coordinate X"
 

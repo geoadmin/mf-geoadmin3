@@ -6623,6 +6623,12 @@ msgstr "Dimensione originale dell'immagine"
 msgid "tt_lubis_ort"
 msgstr "Località"
 
+msgid "tt_lubis_orthophoto"
+msgstr "Percorso/Link sull'ortofoto"
+
+msgid "tt_lubis_rotation"
+msgstr "Rotazione"
+
 msgid "tt_lubis_x"
 msgstr "Coordinata centrale X"
 

@@ -6622,6 +6622,12 @@ msgstr "Resoluziun dal maletg original"
 msgid "tt_lubis_ort"
 msgstr "Lieu"
 
+msgid "tt_lubis_orthophoto"
+msgstr "Link al ortofoto"
+
+msgid "tt_lubis_rotation"
+msgstr "Rotaziun"
+
 msgid "tt_lubis_x"
 msgstr "Coordinata X"
 

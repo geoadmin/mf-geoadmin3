@@ -6622,6 +6622,12 @@ msgstr "Original Bildgrösse"
 msgid "tt_lubis_ort"
 msgstr "Ort"
 
+msgid "tt_lubis_orthophoto"
+msgstr "Orthofotopfad"
+
+msgid "tt_lubis_rotation"
+msgstr "Rotation"
+
 msgid "tt_lubis_x"
 msgstr "Zentrumskoordinate X"
 
