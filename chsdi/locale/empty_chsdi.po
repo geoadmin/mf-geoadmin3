@@ -1,3 +1,9 @@
+msgid "ch.pronatura.waldreservate.gisteilobjekt"
+msgstr ""
+
+msgid "ch.bafu.waldreservate.gisteilobjekt"
+msgstr ""
+
 msgid "ch.bafu.hydrogeologie-uebersichtskarte"
 msgstr ""
 

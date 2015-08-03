@@ -2649,6 +2649,9 @@ msgid "ch.bafu.waldreservate"
 msgstr "Waldreservate"
 
 msgid "ch.bafu.waldreservate.gisflaeche"
+msgstr "Gesamtfläche [ha]"
+
+msgid "ch.bafu.waldreservate.gisteilobjekt"
 msgstr "Fläche [ha]"
 
 msgid "ch.bafu.waldreservate.mcpfe"
@@ -3487,6 +3490,9 @@ msgid "ch.pronatura.waldreservate"
 msgstr "Waldreservate Pro Natura"
 
 msgid "ch.pronatura.waldreservate.gisflaeche"
+msgstr "Gesamtfläche [ha]"
+
+msgid "ch.pronatura.waldreservate.gisteilobjekt"
 msgstr "Fläche [ha]"
 
 msgid "ch.pronatura.waldreservate.mcpfe"
