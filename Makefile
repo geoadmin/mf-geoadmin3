@@ -265,6 +265,25 @@ prd/geoadmin.appcache: src/geoadmin.mako.appcache \
 	    --var "api_url=$(API_URL)" \
 	    --var "public_url=$(PUBLIC_URL)" $< > $@
 
+define buildpage
+	${PYTHON_CMD} .build-artefacts/python-venv/bin/mako-render \
+		--var "device=$1" \
+		--var "mode=$2" \
+		--var "version=$3" \
+		--var "versionslashed=$4" \
+		--var "apache_base_path=$(APACHE_BASE_PATH)" \
+		--var "api_url=$(API_URL)" \
+		--var "default_topic_id=$(DEFAULT_TOPIC_ID)" \
+		--var "translation_fallback_code=$(TRANSLATION_FALLBACK_CODE)" \
+		--var "default_extent"="$(DEFAULT_EXTENT)" \
+		--var "default_resolution"="$(DEFAULT_RESOLUTION)" \
+		--var "resolutions"="$(RESOLUTIONS)" \
+		--var "public_url=$(PUBLIC_URL)" \
+		--var "default_elevation_model=${DEFAULT_ELEVATION_MODEL}" \
+		--var "default_epsg"="$(DEFAULT_EPSG)" \
+		--var "default_epsg_extend"="$(DEFAULT_EPSG_EXTEND)" $< > $@
+endef
+
 prd/index.html: src/index.mako.html \
 	    .build-artefacts/python-venv/bin/mako-render \
 	    .build-artefacts/python-venv/bin/htmlmin \
@@ -272,22 +291,7 @@ prd/index.html: src/index.mako.html \
 	    .build-artefacts/last-apache-base-path \
 	    .build-artefacts/last-version
 	mkdir -p $(dir $@)
-	${PYTHON_CMD} .build-artefacts/python-venv/bin/mako-render \
-	    --var "device=desktop" \
-	    --var "mode=prod" \
-	    --var "version=$(VERSION)" \
-	    --var "versionslashed=$(VERSION)/" \
-	    --var "apache_base_path=$(APACHE_BASE_PATH)" \
-	    --var "api_url=$(API_URL)" \
-	    --var "default_topic_id=$(DEFAULT_TOPIC_ID)" \
-	    --var "translation_fallback_code=$(TRANSLATION_FALLBACK_CODE)" \
-	    --var "default_extent"="$(DEFAULT_EXTENT)" \
-	    --var "default_resolution"="$(DEFAULT_RESOLUTION)" \
-	    --var "resolutions"="$(RESOLUTIONS)" \
-	    --var "public_url=$(PUBLIC_URL)" \
-	    --var "default_elevation_model=${DEFAULT_ELEVATION_MODEL}" \
-	    --var "default_epsg"="$(DEFAULT_EPSG)" \
-	    --var "default_epsg_extend"="$(DEFAULT_EPSG_EXTEND)" $< > $@
+	$(call buildpage,desktop,prod,$(VERSION),$(VERSION)/)
 	${PYTHON_CMD} .build-artefacts/python-venv/bin/htmlmin --remove-comments --keep-optional-attribute-quotes $@ $@
 
 prd/mobile.html: src/index.mako.html \
@@ -297,22 +301,7 @@ prd/mobile.html: src/index.mako.html \
 	    .build-artefacts/last-apache-base-path \
 	    .build-artefacts/last-version
 	mkdir -p $(dir $@)
-	${PYTHON_CMD} .build-artefacts/python-venv/bin/mako-render \
-	    --var "device=mobile" \
-	    --var "mode=prod" \
-	    --var "version=$(VERSION)" \
-	    --var "versionslashed=$(VERSION)/" \
-	    --var "apache_base_path=$(APACHE_BASE_PATH)" \
-	    --var "api_url=$(API_URL)" \
-	    --var "default_topic_id=$(DEFAULT_TOPIC_ID)" \
-	    --var "translation_fallback_code=$(TRANSLATION_FALLBACK_CODE)" \
-	    --var "default_extent"="$(DEFAULT_EXTENT)" \
-	    --var "default_resolution"="$(DEFAULT_RESOLUTION)" \
-	    --var "resolutions"="$(RESOLUTIONS)" \
-	    --var "public_url=$(PUBLIC_URL)" \
-            --var "default_elevation_model=${DEFAULT_ELEVATION_MODEL}" \
-	    --var "default_epsg"="$(DEFAULT_EPSG)" \
-	    --var "default_epsg_extend"="$(DEFAULT_EPSG_EXTEND)" $< > $@
+	$(call buildpage,mobile,prod,$(VERSION),$(VERSION)/)
 	${PYTHON_CMD} .build-artefacts/python-venv/bin/htmlmin --remove-comments --keep-optional-attribute-quotes $@ $@
 
 prd/embed.html: src/index.mako.html \
@@ -322,22 +311,7 @@ prd/embed.html: src/index.mako.html \
 	    .build-artefacts/last-apache-base-path \
 	    .build-artefacts/last-version
 	mkdir -p $(dir $@)
-	${PYTHON_CMD} .build-artefacts/python-venv/bin/mako-render \
-	    --var "device=embed" \
-	    --var "mode=prod" \
-	    --var "version=$(VERSION)" \
-	    --var "versionslashed=$(VERSION)/" \
-	    --var "apache_base_path=$(APACHE_BASE_PATH)" \
-	    --var "api_url=$(API_URL)" \
-	    --var "default_topic_id=$(DEFAULT_TOPIC_ID)" \
-	    --var "translation_fallback_code=$(TRANSLATION_FALLBACK_CODE)" \
-	    --var "default_extent"="$(DEFAULT_EXTENT)" \
-	    --var "default_resolution"="$(DEFAULT_RESOLUTION)" \
-	    --var "resolutions"="$(RESOLUTIONS)" \
-	    --var "public_url=$(PUBLIC_URL)" \
-            --var "default_elevation_model=${DEFAULT_ELEVATION_MODEL}" \
-	    --var "default_epsg"="$(DEFAULT_EPSG)" \
-	    --var "default_epsg_extend"="$(DEFAULT_EPSG_EXTEND)" $< > $@
+	$(call buildpage,embed,prod,$(VERSION),$(VERSION)/)
 	${PYTHON_CMD} .build-artefacts/python-venv/bin/htmlmin --remove-comments --keep-optional-attribute-quotes $@ $@
 
 prd/img/: src/img/*
@@ -375,61 +349,19 @@ src/index.html: src/index.mako.html \
 	    .build-artefacts/python-venv/bin/mako-render \
 	    .build-artefacts/last-api-url \
 	    .build-artefacts/last-apache-base-path
-	${PYTHON_CMD} .build-artefacts/python-venv/bin/mako-render \
-	    --var "device=desktop" \
-	    --var "version=" \
-	    --var "versionslashed=" \
-	    --var "apache_base_path=$(APACHE_BASE_PATH)" \
-	    --var "api_url=$(API_URL)" \
-	    --var "default_topic_id=$(DEFAULT_TOPIC_ID)" \
-	    --var "translation_fallback_code=$(TRANSLATION_FALLBACK_CODE)" \
-	    --var "default_extent"="$(DEFAULT_EXTENT)" \
-	    --var "default_resolution"="$(DEFAULT_RESOLUTION)" \
-	    --var "resolutions"="$(RESOLUTIONS)" \
-	    --var "public_url=$(PUBLIC_URL)" \
-            --var "default_elevation_model=${DEFAULT_ELEVATION_MODEL}" \
-	    --var "default_epsg"="$(DEFAULT_EPSG)" \
-	    --var "default_epsg_extend"="$(DEFAULT_EPSG_EXTEND)" $< > $@
+	$(call buildpage,desktop,,,)
 
 src/mobile.html: src/index.mako.html \
 	    .build-artefacts/python-venv/bin/mako-render \
 	    .build-artefacts/last-api-url \
 	    .build-artefacts/last-apache-base-path
-	${PYTHON_CMD} .build-artefacts/python-venv/bin/mako-render \
-	    --var "device=mobile" \
-	    --var "version=" \
-	    --var "versionslashed=" \
-	    --var "apache_base_path=$(APACHE_BASE_PATH)" \
-	    --var "api_url=$(API_URL)" \
-	    --var "default_topic_id=$(DEFAULT_TOPIC_ID)" \
-	    --var "translation_fallback_code=$(TRANSLATION_FALLBACK_CODE)" \
-	    --var "default_extent"="$(DEFAULT_EXTENT)" \
-	    --var "default_resolution"="$(DEFAULT_RESOLUTION)" \
-	    --var "resolutions"="$(RESOLUTIONS)" \
-	    --var "public_url=$(PUBLIC_URL)" \
-            --var "default_elevation_model=${DEFAULT_ELEVATION_MODEL}" \
-	    --var "default_epsg"="$(DEFAULT_EPSG)" \
-	    --var "default_epsg_extend"="$(DEFAULT_EPSG_EXTEND)" $< > $@
+	$(call buildpage,mobile,,,)
 
 src/embed.html: src/index.mako.html \
 	    .build-artefacts/python-venv/bin/mako-render \
 	    .build-artefacts/last-api-url \
 	    .build-artefacts/last-apache-base-path
-	${PYTHON_CMD} .build-artefacts/python-venv/bin/mako-render \
-	    --var "device=embed" \
-	    --var "version=" \
-	    --var "versionslashed=" \
-	    --var "apache_base_path=$(APACHE_BASE_PATH)" \
-	    --var "api_url=$(API_URL)" \
-	    --var "default_topic_id=$(DEFAULT_TOPIC_ID)" \
-	    --var "translation_fallback_code=$(TRANSLATION_FALLBACK_CODE)" \
-	    --var "default_extent"="$(DEFAULT_EXTENT)" \
-	    --var "default_resolution"="$(DEFAULT_RESOLUTION)" \
-	    --var "resolutions"="$(RESOLUTIONS)" \
-	    --var "public_url=$(PUBLIC_URL)" \
-            --var "default_elevation_model=${DEFAULT_ELEVATION_MODEL}" \
-	    --var "default_epsg"="$(DEFAULT_EPSG)" \
-	    --var "default_epsg_extend"="$(DEFAULT_EPSG_EXTEND)" $< > $@
+	$(call buildpage,embed,,,)
 
 src/TemplateCacheModule.js: src/TemplateCacheModule.mako.js \
 	    $(SRC_COMPONENTS_PARTIALS_FILES) \
