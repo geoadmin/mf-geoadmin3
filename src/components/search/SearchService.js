@@ -80,7 +80,7 @@ goog.provide('ga_search_service');
                                match[5].replace('\'', ''));
           }
 
-          var position =
+          position =
             [left > right ? left : right,
               right < left ? right : left];
           if (ol.extent.containsCoordinate(
@@ -156,7 +156,6 @@ goog.provide('ga_search_service');
       var i = 0;
       var olen = 0;
       var wlen = word.length;
-      var skip = false;
       for (; i < splits.length - 1; i++) {
         res += splits[i];
         olen += splits[i].length;

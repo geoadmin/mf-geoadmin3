@@ -32,7 +32,7 @@ goog.require('ga_debounce_service');
   ]);
 
   var MODULE_NAME, SLIDER_TAG, angularize, bindHtml, gap,
-  halfWidth, hide, inputEvents, module, offset, offsetLeft,
+  halfWidth, hide, inputEvents, offset, offsetLeft,
   pixelize, qualifiedDirectiveDefinition, roundStep, show,
   sliderDirective, width;
 

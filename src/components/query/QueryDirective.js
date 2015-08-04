@@ -407,7 +407,7 @@ goog.require('ga_storage_service');
   module.directive('gaQuery', function($translate, gaBrowserSniffer,
       gaLayers, gaQuery, gaStyleFactory) {
     var parser = new ol.format.GeoJSON();
-    var dragBox, boxOverlay;
+    var dragBox;
     var dragBoxStyle = gaStyleFactory.getStyle('selectrectangle');
     var boxFeature = new ol.Feature();
     var boxOverlay = new ol.FeatureOverlay({

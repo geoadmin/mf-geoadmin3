@@ -425,7 +425,7 @@ goog.require('ga_urlutils_service');
                 var bounds = view.calculateExtent(size);
                 return bounds.join(',');
               };
-              var url = gaUrlUtils.append(url, 'bbox=' + bbox($scope.map));
+              url = gaUrlUtils.append(url, 'bbox=' + bbox($scope.map));
               url = gaUrlUtils.append(url,
                                       'features=' + searchableLayers.join(','));
               url = gaUrlUtils.append(url,
