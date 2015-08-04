@@ -1239,8 +1239,15 @@ goog.require('ga_urlutils_service');
           if (id instanceof ol.layer.Layer) {
             id = olLayerOrId.id;
           }
-          var regex = /https?:\/\/public\..*(\.admin\.ch|\.bgdi\.ch)\/.*/;
-          return this.isKmlLayer(olLayerOrId) && regex.test(id);
+
+          // id for KML layers is like KML||<url> We must remove KML|| before
+          // testing the validity of the url.
+          if (id && id.indexOf('KML||') == 0) {
+            id = id.substring(5);
+          }
+
+          return this.isKmlLayer(olLayerOrId) &&
+                  gaUrlUtils.isPublicValid(id);
         },
 
         // Test if a layer is an external WMS layer added by th ImportWMS tool

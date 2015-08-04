@@ -9,6 +9,8 @@ LAST_APACHE_BASE_PATH := $(shell if [ -f .build-artefacts/last-apache-base-path 
 API_URL ?= //mf-chsdi3.dev.bgdi.ch
 LAST_API_URL := $(shell if [ -f .build-artefacts/last-api-url ]; then cat .build-artefacts/last-api-url 2> /dev/null; else echo '-none-'; fi)
 PUBLIC_URL ?= //public.dev.bgdi.ch
+PUBLIC_URL_REGEXP ?= https?:\/\/public\..*(bgdi|admin)\.ch.*
+ADMIN_URL_REGEXP ?= ^(ftp|http|https):\/\/(.*(\.bgdi|\.geo\.admin)\.ch)
 LESS_PARAMETERS ?= '-ru'
 KEEP_VERSION ?= 'false'
 LAST_VERSION := $(shell if [ -f .build-artefacts/last-version ]; then cat .build-artefacts/last-version 2> /dev/null; else echo '-none-'; fi)
@@ -280,6 +282,8 @@ define buildpage
 		--var "resolutions"="$(RESOLUTIONS)" \
 		--var "public_url=$(PUBLIC_URL)" \
 		--var "default_elevation_model=${DEFAULT_ELEVATION_MODEL}" \
+		--var "admin_url_regexp=$(ADMIN_URL_REGEXP)" \
+		--var "public_url_regexp=$(PUBLIC_URL_REGEXP)" \
 		--var "default_epsg"="$(DEFAULT_EPSG)" \
 		--var "default_epsg_extend"="$(DEFAULT_EPSG_EXTEND)" $< > $@
 endef
