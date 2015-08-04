@@ -1220,7 +1220,10 @@ goog.require('ga_urlutils_service');
         // permalink
         // @param olLayerOrId  An ol layer or an id of a layer
         isKmlLayer: function(olLayerOrId) {
-          if (typeof olLayerOrId === 'string') {
+          if (!olLayerOrId) {
+            return false;
+          }
+          if (angular.isString(olLayerOrId)) {
             return /^KML\|\|/.test(olLayerOrId);
           }
           return olLayerOrId.type == 'KML';
@@ -1235,26 +1238,24 @@ goog.require('ga_urlutils_service');
         // Test if a KML comes from our s3 storage
         // @param olLayer  An ol layer or an id of a layer
         isStoredKmlLayer: function(olLayerOrId) {
-          var id = olLayerOrId;
-          if (id instanceof ol.layer.Layer) {
-            id = olLayerOrId.id;
+          if (!olLayerOrId) {
+            return false;
           }
-
-          // id for KML layers is like KML||<url> We must remove KML|| before
-          // testing the validity of the url.
-          if (id && id.indexOf('KML||') == 0) {
-            id = id.substring(5);
-          }
-
+          // If the parameter is not a string we try to get the url property.
+          var url = (!angular.isString(olLayerOrId)) ? olLayerOrId.url :
+              olLayerOrId.replace('KML||', '');
           return this.isKmlLayer(olLayerOrId) &&
-                  gaUrlUtils.isPublicValid(id);
+                  gaUrlUtils.isPublicValid(url);
         },
 
         // Test if a layer is an external WMS layer added by th ImportWMS tool
         // or permalink
         // @param olLayerOrId  An ol layer or an id of a layer
         isExternalWmsLayer: function(olLayerOrId) {
-          if (typeof olLayerOrId === 'string') {
+          if (!olLayerOrId) {
+            return false;
+          }
+          if (angular.isString(olLayerOrId)) {
             return /^WMS\|\|/.test(olLayerOrId) &&
                 olLayerOrId.split('||').length == 4;
           }

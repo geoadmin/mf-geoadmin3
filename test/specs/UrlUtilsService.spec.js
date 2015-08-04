@@ -41,16 +41,16 @@ describe('ga_urlutils_service', function() {
   });
 
   it('verifies third party validity', function() {
-    expect(gaUrlUtils.isThirdPartyValid('http://public.geo.admin.ch')).to.be(true);
+    expect(gaUrlUtils.isThirdPartyValid('http://public.geo.admin.ch')).to.be(false);
     expect(gaUrlUtils.isThirdPartyValid('http://public.geo.admin.ch/dfilghjdfigfdj')).to.be(true);
-    expect(gaUrlUtils.isThirdPartyValid('http://public.bgdi.ch')).to.be(true);
+    expect(gaUrlUtils.isThirdPartyValid('http://public.bgdi.ch')).to.be(false);
     expect(gaUrlUtils.isThirdPartyValid('http://public.fre.bgdi.ch/dfilghjdfigfdj')).to.be(true);
     expect(gaUrlUtils.isThirdPartyValid('https://wms.geo.admin.ch')).to.be(false);
   });
 
   it('verifies public valid', function() {
-    expect(gaUrlUtils.isPublicValid('http://public.geo.admin.ch')).to.be(true);
-    expect(gaUrlUtils.isPublicValid('http://public.geo.bgdi.ch')).to.be(true);
+    expect(gaUrlUtils.isPublicValid('http://public.geo.admin.ch')).to.be(false);
+    expect(gaUrlUtils.isPublicValid('http://public.geo.bgdi.ch')).to.be(false);
     expect(gaUrlUtils.isPublicValid('http://public.geo.admin.ch/auie')).to.be(true);
     expect(gaUrlUtils.isPublicValid('http://public.geo.bgdi.ch/auie')).to.be(true);
     expect(gaUrlUtils.isPublicValid('http://heig.ch')).to.be(false);
