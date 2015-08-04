@@ -158,8 +158,8 @@ goog.require('ga_throttle_service');
             // The map rotate
             } else if (btnStatus == 2 && !userTakesControl.rotation) {
               mapHeadingRendering = true;
+              heading = -heading;
               var currRotation = view.getRotation();
-              var heading = -heading;
               var diff = heading - currRotation;
 
               if (diff > Math.PI) {

@@ -700,7 +700,7 @@ goog.require('ga_print_style_service');
           }
           return a;
         }, []);
-        var years = years.map(function(ts) {
+        years = years.map(function(ts) {
           return ts.length > 4 ? ts.slice(0, 4) : ts;
         });
         defaultPage['timestamp'] = years.join(',');

@@ -969,7 +969,7 @@ goog.require('ga_urlutils_service');
           } else if (layer.type == 'geojson') {
             // cannot request resources over https in S3
             var fullUrl = gaGlobalOptions.ogcproxyUrl + layer.geojsonUrl;
-            var olSource = new ol.source.Vector();
+            olSource = new ol.source.Vector();
             olLayer = new ol.layer.Vector({
               minResolution: layer.minResolution,
               maxResolution: layer.maxResolution,

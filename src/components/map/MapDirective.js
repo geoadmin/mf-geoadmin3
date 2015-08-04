@@ -34,9 +34,9 @@ goog.require('ga_permalink');
               if (isFinite(easting) && isFinite(northing)) {
                 var position = [easting, northing];
                 if (ol.extent.containsCoordinate(
-                  [2420000, 1030000, 2900000, 1350000],
-                  position)) {
-                  var position = ol.proj.transform([easting, northing],
+                    [2420000, 1030000, 2900000, 1350000],
+                    position)) {
+                  position = ol.proj.transform([easting, northing],
                     'EPSG:2056', 'EPSG:21781');
                 }
                 view.setCenter(position);
