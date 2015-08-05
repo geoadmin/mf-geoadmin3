@@ -1,6 +1,6 @@
 describe('ga_backgroundselector_directive', function() {
 
-  var element, map, layer1, layer2, $rootScope, $compile, def;
+  var element, map, layer1, layer2, $rootScope, $compile, def, globalOptions;
   beforeEach(function() {
 
     map = new ol.Map({});
@@ -40,10 +40,11 @@ describe('ga_backgroundselector_directive', function() {
       });
     });
 
-    inject(function(_$rootScope_, _$compile_, $q) {
+    inject(function(_$rootScope_, _$compile_, $q, gaGlobalOptions) {
       $compile = _$compile_;
       $rootScope = _$rootScope_;
       def = $q.defer();
+      globalOptions = gaGlobalOptions;
     });
 
     $rootScope.map = map;
@@ -64,9 +65,14 @@ describe('ga_backgroundselector_directive', function() {
       var div = divToggle[0];
       expect(div).not.to.be(undefined);
     });
-    it('creates 4 layer bgselectors div', function() {
+    it('creates the correct number of layer bgselectors div', function() {
       var divsBg = element.find('.ga-bg-layer');
-      expect(divsBg.length).to.equal(4);
+      if (globalOptions.dev3d) {
+        expect(divsBg.length).to.equal(5);
+      } else {
+        // to be removed once 3d goes live
+        expect(divsBg.length).to.equal(4);
+      }
     });
   });
 

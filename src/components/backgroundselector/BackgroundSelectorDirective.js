@@ -13,7 +13,7 @@ goog.require('ga_topic_service');
 
   module.directive('gaBackgroundSelector',
     function($document, gaPermalink, gaLayers, gaLayerFilters,
-        gaBrowserSniffer, $q, gaTopic) {
+        gaBrowserSniffer, $q, gaTopic, gaGlobalOptions) {
       return {
         restrict: 'A',
         templateUrl:
@@ -41,6 +41,11 @@ goog.require('ga_topic_service');
               {id: 'ch.swisstopo.pixelkarte-grau', label: 'bg_pixel_grey'},
               {id: 'voidLayer', label: 'void_layer'}];
 
+          // to be moved in defaultBgOrder once 3d is live
+          if (gaGlobalOptions.dev3d) {
+            defaultBgOrder.splice(3, 0,
+                {id: 'ch.swisstopo.terrain.3d', label: 'terrain_layer'});
+          }
           scope.backgroundLayers = defaultBgOrder.slice(0);
 
           function setCurrentLayer(layerid) {
