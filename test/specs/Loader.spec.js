@@ -37,7 +37,7 @@ beforeEach(function() {
       defaultTopicId: 'sometopic',
       translationFallbackCode: 'somelang',
       defaultResolution: 500.0,
-      publicUrlRegexp: /^https?:\/\/public\..*(bgdi|admin)\.ch.*/,
+      publicUrlRegexp: /^https?:\/\/public\..*\.(bgdi|admin)\.ch\/.*/,
       adminUrlRegexp: /^(ftp|http|https):\/\/(.*(\.bgdi|\.geo\.admin)\.ch)/
     });
   });
