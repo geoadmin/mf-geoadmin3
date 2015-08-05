@@ -8,6 +8,51 @@
 
 Release Notes
 =============
+
+.. _releasenotes_20150805:
+
+Release 20150805 - Wednesday, August 5th 2015
+------------------------------------------------
+
+API & applications
+******************
+
+`API <//api3.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+
+- Assure that API Javascript code is not polluting global namespace.
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-chsdi3/compare/r_150722...r_150805>`__
+
+`MAP <//map.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-geoadmin3/compare/r_150722...r_150805>`__
+
+Geodata
+*******
+
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Lonicera japonica <//map.geo.admin.ch/?layers=ch.bafu.neophyten-japanisches_geissblatt>`__ (ch.bafu.neophyten-japanisches_geissblatt)                                                             |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Heracleum mantegazzianum <//map.geo.admin.ch/?layers=ch.bafu.neophyten-riesenbaerenklau>`__ (ch.bafu.neophyten-riesenbaerenklau)                                                                  |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Division General Geol. Map 200 <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-generalkarte-ggk200.metadata>`__ (ch.swisstopo.geologie-generalkarte-ggk200.metadata)                            |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `SWISSIMAGE <//map.geo.admin.ch/?layers=ch.swisstopo.swissimage-product>`__ (ch.swisstopo.swissimage-product)                                                                                      |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Amphibians - consultation 2015 <//map.geo.admin.ch/?layers=ch.bafu.bundesinventare-amphibien_anhoerung>`__ (ch.bafu.bundesinventare-amphibien_anhoerung)                                          |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Fens - consultation 2015 <//map.geo.admin.ch/?layers=ch.bafu.bundesinventare-flachmoore_anhoerung>`__ (ch.bafu.bundesinventare-flachmoore_anhoerung)                                              |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Dry grasslands - consultation 2015 <//map.geo.admin.ch/?layers=ch.bafu.bundesinventare-trockenwiesen_trockenweiden_anhoerung>`__ (ch.bafu.bundesinventare-trockenwiesen_trockenweiden_anhoerung)  |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Forest Reserves <//map.geo.admin.ch/?layers=ch.bafu.waldreservate>`__ (ch.bafu.waldreservate)                                                                                                     |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Pro Natura forest reserves <//map.geo.admin.ch/?layers=ch.pronatura.waldreservate>`__ (ch.pronatura.waldreservate)                                                                                |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
 .. _releasenotes_20150722:
 
 Release 20150722 - Wednesday, July 22th 2015
