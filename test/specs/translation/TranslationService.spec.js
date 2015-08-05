@@ -27,6 +27,7 @@ describe('ga_translation_service', function() {
   beforeEach(function() {
     // We redefine the $translateProvider
     module(function($translateProvider, gaGlobalOptions) {
+      $translateProvider.forceAsyncReload(true);
       $translateProvider.useStaticFilesLoader({
         prefix: 'locales/',
         suffix: '.json'
