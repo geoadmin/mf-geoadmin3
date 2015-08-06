@@ -105,6 +105,11 @@
     background-size: 38px 38px;
   }
 
+  .ga-3d {
+    background-image: data-uri('terrain.png');
+    background-size: 38px 38px;
+  }
+
   .ga-bg-layer-0 {
     bottom: 101px;
     @media (max-width: @screen-tablet) {
@@ -208,6 +213,10 @@
     background-image: data-uri('voidLayer-rect.png');
   }
 
+  .ga-3d {
+    background-image: data-uri('terrain-rect.png');
+  }
+
   .ga-bg-layer-0 {
     right: 35px;
   }
@@ -232,4 +241,12 @@
       right: 194px;
     }
   }
+
+  .ga-bg-layer-4 {
+    right: 439px;
+    @media (max-width: @screen-tablet) {
+      right: 247px;
+    }
+  }
+
 }
