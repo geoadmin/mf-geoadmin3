@@ -155,6 +155,7 @@ goog.require('ga_storage_service');
     });
 
     $scope.globals = {
+      dev3d: gaGlobalOptions.dev3d,
       searchFocused: false,
       homescreen: false,
       tablet: gaBrowserSniffer.mobile && !gaBrowserSniffer.phone,

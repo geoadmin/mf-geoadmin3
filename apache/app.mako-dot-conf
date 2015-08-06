@@ -26,6 +26,12 @@ Header set Access-Control-Allow-Origin "*"
 Header always set Access-Control-Allow-Methods "POST, GET, OPTIONS"
 Header always set Access-Control-Allow-Headers "x-requested-with, Content-Type, origin, authorization, accept, client-security-token"
 
+# To be removed once 3d goes live
+RedirectMatch ^${apache_base_path}/3d$ ${apache_base_path}/3d/
+RedirectMatch ^${apache_base_path}/3d/src$ ${apache_base_path}/src/?dev3d=true
+RedirectMatch ^${apache_base_path}/3d/$ ${apache_base_path}/?dev3d=true
+# end of 3d dev specific stuff
+
 # Redirect no-slash target to slashed version
 RedirectMatch ^${apache_base_path}$ ${apache_base_path}/
 
