@@ -16,7 +16,19 @@ describe('ga_backgroundselector_directive', function() {
           return {}; 
         },
         getOlLayerById: function(id) {
-          return id == 'foo' ? layer1 : layer2;
+          return id === 'ch.swisstopo.swissimage' ? layer1 : layer2;
+        },
+        getLayerProperty: function(id, propertyName) {
+          if (propertyName === 'label') {
+            switch(id) {
+              case 'ch.swisstopo.swissimage':
+                return 'bg_luftbild';
+              case 'ch.swisstopo.pixelkarte-farbe':
+                return 'bg_pixel_color';
+              case 'ch.swisstopo.pixelkarte-grau':
+                return 'bg_pixel_grey';
+            }
+          }
         }
       });
       $provide.value('gaTopic', {
@@ -30,11 +42,11 @@ describe('ga_backgroundselector_directive', function() {
               value: 'somelang',
               label: 'somelang'
             }],
-            backgroundLayers: [{
-              id: 'foo', label: 'Foo'
-            }, {
-              id: 'bar', label: 'Bar'
-            }]
+            backgroundLayers: [
+              'ch.swisstopo.swissimage',
+              'ch.swisstopo.pixelkarte-farbe',
+              'ch.swisstopo.pixelkarte-grau'
+            ]
           };
         }
       });

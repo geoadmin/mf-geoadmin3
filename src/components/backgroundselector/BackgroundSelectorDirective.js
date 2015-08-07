@@ -25,6 +25,7 @@ goog.require('ga_topic_service');
           scope.isBackgroundSelectorClosed = true;
           var mobile = gaBrowserSniffer.mobile;
           scope.desktop = !gaBrowserSniffer.embed && !mobile;
+          scope.backgroundLayers = [];
 
           if (mobile) {
             elt.addClass('ga-bg-mobile');
@@ -35,23 +36,13 @@ goog.require('ga_topic_service');
           var map = scope.map;
           var isOfflineToOnline = false;
 
-          var defaultBgOrder = [
-              {id: 'ch.swisstopo.swissimage', label: 'bg_luftbild'},
-              {id: 'ch.swisstopo.pixelkarte-farbe', label: 'bg_pixel_color'},
-              {id: 'ch.swisstopo.pixelkarte-grau', label: 'bg_pixel_grey'},
-              {id: 'voidLayer', label: 'void_layer'}];
-
-          // to be moved in defaultBgOrder once 3d is live
-          if (gaGlobalOptions.dev3d) {
-            defaultBgOrder.splice(3, 0,
-                {id: 'ch.swisstopo.terrain.3d', label: 'terrain_layer'});
-          }
-          scope.backgroundLayers = defaultBgOrder.slice(0);
+          var defaultBgOrder = [];
+          var voidLayer = {id: 'voidLayer', label: 'void_layer'};
 
           function setCurrentLayer(layerid) {
             if (layerid) {
               var layers = map.getLayers();
-              if (layerid == 'voidLayer') {
+              if (layerid == voidLayer.id) {
                 if (layers.getLength() > 0 &&
                     layers.item(0).background === true) {
                   layers.removeAt(0);
@@ -78,6 +69,23 @@ goog.require('ga_topic_service');
             });
             return isValid;
           };
+          var updateDefaultBgOrder = function(bgLayers) {
+            bgLayers = bgLayers ? bgLayers : [];
+            defaultBgOrder = [];
+            bgLayers.forEach(function(bgLayerId) {
+              defaultBgOrder.push({
+                id: bgLayerId,
+                label: gaLayers.getLayerProperty(bgLayerId, 'label')
+              });
+            });
+            defaultBgOrder.push(voidLayer);
+            // to be moved in defaultBgOrder once 3d is live
+            if (gaGlobalOptions.dev3d) {
+              defaultBgOrder.splice(3, 0,
+                {id: 'ch.swisstopo.terrain.3d', label: 'terrain_layer'});
+            }
+            scope.backgroundLayers = defaultBgOrder.splice(0);
+          };
           var updateBgLayer = function(topic) {
             // Determine the current background layer. Strategy:
             //
@@ -98,8 +106,8 @@ goog.require('ga_topic_service');
             if ((!bgLayer && !scope.currentLayer) || topic) {
               var bgLayers = gaTopic.get().backgroundLayers;
               bgLayer = (bgLayers.length) ?
-                  bgLayers[0] : defaultBgOrder[0].id;
-              scope.backgroundLayers = defaultBgOrder.slice(0);
+                  bgLayers[0] : voidLayer.id;
+              updateDefaultBgOrder(bgLayers);
             }
             if (bgLayer && !isOfflineToOnline) {
               scope.currentLayer = bgLayer;
@@ -116,7 +124,6 @@ goog.require('ga_topic_service');
           scope.activateBackgroundLayer = function(layerid) {
             if (scope.isBackgroundSelectorClosed) {
               scope.isBackgroundSelectorClosed = false;
-              scope.backgroundLayers = defaultBgOrder.slice(0);
             } else {
               scope.isBackgroundSelectorClosed = true;
               if (scope.currentLayer != layerid) {
@@ -145,7 +152,7 @@ goog.require('ga_topic_service');
           scope.$watchCollection('layers | filter:layerFilter',
             function(arr) {
               if (arr.length == 2 ||
-                  (scope.currentLayer == 'voidLayer' && arr.length == 1)) {
+                  (scope.currentLayer == voidLayer.id && arr.length == 1)) {
                 scope.currentLayer = arr[arr.length - 1].id;
                 scope.map.removeLayer(arr[arr.length - 1]);
               }
@@ -153,9 +160,14 @@ goog.require('ga_topic_service');
 
           scope.getClass = function(layer, index) {
             if (layer) {
-              var splitLayer = layer.id.split('.');
-              return 'ga-' + splitLayer[splitLayer.length - 1] +
-                ' ' + ((!scope.isBackgroundSelectorClosed) ?
+              var layerClass;
+              if (layer.id.indexOf('.') > -1) {
+                var splitLayer = layer.id.split('.');
+                layerClass = 'ga-' + splitLayer[splitLayer.length - 1];
+              } else {
+                layerClass = 'ga-' + layer.id + ' ';
+              }
+              return layerClass + ' ' + ((!scope.isBackgroundSelectorClosed) ?
                 'ga-bg-layer-' + index : '');
             }
           };
@@ -164,6 +176,7 @@ goog.require('ga_topic_service');
           // loaded
           $q.all([gaTopic.loadConfig(), gaLayers.loadConfig()]).
               then(function() {
+            updateDefaultBgOrder(gaTopic.get().backgroundLayers);
             updateBgLayer();
 
             scope.$on('gaTopicChange', function(event, newTopic) {
