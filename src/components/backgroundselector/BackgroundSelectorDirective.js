@@ -73,12 +73,18 @@ goog.require('ga_topic_service');
             bgLayers = bgLayers ? bgLayers : [];
             defaultBgOrder = [];
             bgLayers.forEach(function(bgLayerId) {
-              defaultBgOrder.push({
-                id: bgLayerId,
-                label: gaLayers.getLayerProperty(bgLayerId, 'label')
-              });
+              if (bgLayerId === voidLayer.id) {
+                defaultBgOrder.push(voidLayer);
+              } else {
+                defaultBgOrder.push({
+                  id: bgLayerId,
+                  label: gaLayers.getLayerProperty(bgLayerId, 'label')
+                });
+              }
             });
-            defaultBgOrder.push(voidLayer);
+            if (defaultBgOrder.indexOf(voidLayer) === -1) {
+              defaultBgOrder.push(voidLayer);
+            }
             // to be moved in defaultBgOrder once 3d is live
             if (gaGlobalOptions.dev3d) {
               defaultBgOrder.splice(3, 0,
