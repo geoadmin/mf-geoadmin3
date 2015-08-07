@@ -47,16 +47,17 @@ goog.require('ga_permalink');
         bgLayers = bgLayers ? bgLayers : [];
         bgs.length = 0;
         bgLayers.forEach(function(bgLayerId) {
-          bgs.push({
-            id: bgLayerId,
-            label: gaLayers.getLayerProperty(bgLayerId, 'label')
-          });
+          if (bgLayerId === voidLayer.id) {
+            bgs.push(voidLayer);
+          } else {
+            bgs.push({
+              id: bgLayerId,
+              label: gaLayers.getLayerProperty(bgLayerId, 'label')
+            });
+          }
         });
-        bgs.push(voidLayer);
-        // to be moved in defaultBgOrder once 3d is live
-        if (gaGlobalOptions.dev3d) {
-          bgs.splice(3, 0,
-            {id: 'ch.swisstopo.terrain.3d', label: 'terrain_layer'});
+        if (bgs.indexOf(voidLayer) === -1) {
+          bgs.push(voidLayer);
         }
       };
 
