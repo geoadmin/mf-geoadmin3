@@ -17,13 +17,24 @@ goog.require('ga_permalink');
     this.$get = function($rootScope, $q, gaTopic, gaLayers, gaPermalink) {
       var isOfflineToOnline = false;
       var bg; // The current background
-      var bgs = [ // The list of backgrounds available
-        {id: 'ch.swisstopo.swissimage', label: 'bg_luftbild', disable3d: true},
-        {id: 'ch.swisstopo.pixelkarte-farbe', label: 'bg_pixel_color'},
-        {id: 'ch.swisstopo.pixelkarte-grau', label: 'bg_pixel_grey'},
-        {id: 'voidLayer', label: 'void_layer'}
-      ];
-
+      var bgs = []; // The list of backgrounds available
+      var voidLayer = {id: 'voidLayer', label: 'void_layer'};
+      var predefinedBgs = {
+        'voidLayer': voidLayer,
+        'ch.swisstopo.swissimage': {
+          id: 'ch.swisstopo.swissimage',
+          label: 'bg_luftbild',
+          disable3d: true
+        },
+        'ch.swisstopo.pixelkarte-farbe': {
+          id: 'ch.swisstopo.pixelkarte-farbe',
+          label: 'bg_pixel_color'
+        },
+        'ch.swisstopo.pixelkarte-grau': {
+          id: 'ch.swisstopo.pixelkarte-grau',
+          label: 'bg_pixel_grey'
+        }
+      };
       var getBgById = function(id) {
         for (var i = 0, ii = bgs.length; i < ii; i++) {
           if (bgs[i].id == id) {
@@ -33,8 +44,7 @@ goog.require('ga_permalink');
       };
 
       var getBgByTopic = function(topic) {
-        var topicBgs = topic.backgroundLayers;
-        var topicBg = (topicBgs.length) ? getBgById(topicBgs[0]) : bgs[0];
+        var topicBg = getBgById(topic.defaultBackground) || bgs[0];
         if (topicBg && !isOfflineToOnline) {
            return topicBg;
         }
@@ -47,6 +57,24 @@ goog.require('ga_permalink');
         $rootScope.$broadcast('gaBgChange', bg);
       };
 
+      var updateDefaultBgOrder = function(bgLayers) {
+        bgLayers = bgLayers || [];
+        bgs.length = 0;
+        bgLayers.forEach(function(bgLayerId) {
+          var bgLayer = predefinedBgs[bgLayerId];
+          if (!bgLayer) {
+            bgLayer = {
+              id: bgLayerId,
+              label: gaLayers.getLayerProperty(bgLayerId, 'label')
+            };
+          }
+          bgs.push(bgLayer);
+        });
+        if (bgs.indexOf(voidLayer) === -1) {
+          bgs.push(voidLayer);
+        }
+      };
+
       var Background = function() {
 
         this.init = function(map) {
@@ -55,12 +83,14 @@ goog.require('ga_permalink');
           // loaded
           $q.all([gaTopic.loadConfig(), gaLayers.loadConfig()]).
               then(function() {
+            updateDefaultBgOrder(gaTopic.get().backgroundLayers);
             var initBg = getBgById(gaPermalink.getParams().bgLayer);
             if (!initBg) {
               initBg = getBgByTopic(gaTopic.get());
             }
             that.set(map, initBg);
             $rootScope.$on('gaTopicChange', function(evt, newTopic) {
+              updateDefaultBgOrder(newTopic.backgroundLayers);
               that.set(map, getBgByTopic(newTopic));
               isOfflineToOnline = false;
             });
