@@ -1,6 +1,6 @@
 describe('ga_backgroundselector_directive', function() {
 
-  var element, map, layer1, layer2, $rootScope, $compile, def;
+  var element, map, layer1, layer2, $rootScope, $compile, def, gaBackground;
   beforeEach(function() {
 
     map = new ol.Map({});
@@ -16,7 +16,19 @@ describe('ga_backgroundselector_directive', function() {
           return {}; 
         },
         getOlLayerById: function(id) {
-          return id == 'foo' ? layer1 : layer2;
+          return id === 'ch.swisstopo.swissimage' ? layer1 : layer2;
+        },
+        getLayerProperty: function(id, propertyName) {
+          if (propertyName === 'label') {
+            switch(id) {
+              case 'ch.swisstopo.swissimage':
+                return 'bg_luftbild';
+              case 'ch.swisstopo.pixelkarte-farbe':
+                return 'bg_pixel_color';
+              case 'ch.swisstopo.pixelkarte-grau':
+                return 'bg_pixel_grey';
+            }
+          }
         }
       });
       $provide.value('gaTopic', {
@@ -30,20 +42,21 @@ describe('ga_backgroundselector_directive', function() {
               value: 'somelang',
               label: 'somelang'
             }],
-            backgroundLayers: [{
-              id: 'foo', label: 'Foo'
-            }, {
-              id: 'bar', label: 'Bar'
-            }]
+            backgroundLayers: [
+              'ch.swisstopo.swissimage',
+              'ch.swisstopo.pixelkarte-farbe',
+              'ch.swisstopo.pixelkarte-grau'
+            ]
           };
         }
       });
     });
 
-    inject(function(_$rootScope_, _$compile_, $q) {
+    inject(function(_$rootScope_, _$compile_, $q, _gaBackground_) {
       $compile = _$compile_;
       $rootScope = _$rootScope_;
       def = $q.defer();
+      gaBackground = _gaBackground_;
     });
 
     $rootScope.map = map;
@@ -53,8 +66,9 @@ describe('ga_backgroundselector_directive', function() {
               'ga-background-selector-map="map">' +
           '</div>' +
       '</div>');
-    $compile(element)($rootScope);
+    gaBackground.init(map);
     def.resolve();
+    $compile(element)($rootScope);
     $rootScope.$digest();
   });
 
