@@ -58,6 +58,24 @@ msgstr ""
 msgid "ch.pronatura.waldreservate.gisteilobjekt"
 msgstr ""
 
+msgid "ch.bfe.abgeltung-wasserkraftnutzung.name"
+msgstr ""
+
+msgid "ch.bfe.stauanlagen-bundesaufsicht.damname"
+msgstr ""
+
+msgid "ch.bfe.stauanlagen-bundesaufsicht.damtype_de"
+msgstr ""
+
+msgid "ch.bfe.sachplan-geologie-tiefenlager.facname_de"
+msgstr ""
+
+msgid "ch.bfe.sachplan-geologie-tiefenlager.facname_fr"
+msgstr ""
+
+msgid "ch.bfe.sachplan-geologie-tiefenlager.facname_it"
+msgstr ""
+
 msgid "ch.bafu.waldreservate.gisteilobjekt"
 msgstr ""
 
@@ -3894,9 +3912,6 @@ msgstr ""
 msgid "bet_traegerverein"
 msgstr ""
 
-msgid "tt_ch.bfe.abgeltung-wasserkraftnutzung_name"
-msgstr ""
-
 msgid "tt_ch.bfe.abgeltung-wasserkraftnutzung_endprotectioncommitment"
 msgstr ""
 
@@ -3937,9 +3952,6 @@ msgid "tt_ch.bfe.stauanlagen-bundesaufsicht_crestlevel"
 msgstr ""
 
 msgid "tt_ch.bfe.stauanlagen-bundesaufsicht_damheight"
-msgstr ""
-
-msgid "tt_ch.bfe.stauanlagen-bundesaufsicht_damname"
 msgstr ""
 
 msgid "tt_ch.bfe.stauanlagen-bundesaufsicht_damtype"
@@ -4287,9 +4299,6 @@ msgstr ""
 msgid "tt_ch.bfe.abgeltung-wasserkraftnutzung_endprotectioncommitment"
 msgstr ""
 
-msgid "tt_ch.bfe.abgeltung-wasserkraftnutzung_name"
-msgstr ""
-
 msgid "tt_ch.bfe.abgeltung-wasserkraftnutzung_objectnumber"
 msgstr ""
 
@@ -4429,9 +4438,6 @@ msgid "tt_ch.bfe.stauanlagen-bundesaufsicht_crestlevel"
 msgstr ""
 
 msgid "tt_ch.bfe.stauanlagen-bundesaufsicht_damheight"
-msgstr ""
-
-msgid "tt_ch.bfe.stauanlagen-bundesaufsicht_damname"
 msgstr ""
 
 msgid "tt_ch.bfe.stauanlagen-bundesaufsicht_damtype_de"
@@ -7014,7 +7020,7 @@ msgstr ""
 msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata.autor"
 msgstr ""
 
-msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata.ggk_nr"
+msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata.nr"
 msgstr ""
 
 msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata.jahr"

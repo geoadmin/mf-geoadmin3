@@ -3077,6 +3077,9 @@ msgstr "BFE"
 msgid "ch.bfe.abgeltung-wasserkraftnutzung"
 msgstr "Verzicht Wasserkraftnutzung"
 
+msgid "ch.bfe.abgeltung-wasserkraftnutzung.name"
+msgstr "Name"
+
 msgid "ch.bfe.energieforschung"
 msgstr "Cleantech-Projekte"
 
@@ -3161,6 +3164,15 @@ msgstr "SP Geologische Tiefenlager"
 msgid "ch.bfe.sachplan-geologie-tiefenlager-thematische-darstellung"
 msgstr "SP Geologische Tiefenlager: t.D."
 
+msgid "ch.bfe.sachplan-geologie-tiefenlager.facname_de"
+msgstr "Anlage"
+
+msgid "ch.bfe.sachplan-geologie-tiefenlager.facname_fr"
+msgstr "Anlage"
+
+msgid "ch.bfe.sachplan-geologie-tiefenlager.facname_it"
+msgstr "Anlage"
+
 msgid "ch.bfe.sachplan-uebertragungsleitungen_anhoerung"
 msgstr "SÜL Anhörung"
 
@@ -3214,6 +3226,12 @@ msgstr "Statistik Wasserkraft"
 
 msgid "ch.bfe.stauanlagen-bundesaufsicht"
 msgstr "Stauanlagen"
+
+msgid "ch.bfe.stauanlagen-bundesaufsicht.damname"
+msgstr "Name"
+
+msgid "ch.bfe.stauanlagen-bundesaufsicht.damtype_de"
+msgstr "Sperrentyp"
 
 msgid "ch.bfe.url"
 msgstr "http://www.bfe.admin.ch/index.html?lang=de"
@@ -3633,12 +3651,11 @@ msgstr "Einteilung geol. Generalkarte 200"
 msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata.autor"
 msgstr "Autor(en)"
 
-#. TODO
-msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata.ggk_nr"
-msgstr "ch.swisstopo.geologie-generalkarte-ggk200.metadata.ggk_nr"
-
 msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata.jahr"
 msgstr "Publikationsjahr"
+
+msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata.nr"
+msgstr "Kartenblatt"
 
 msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata.titel"
 msgstr "Titel"
@@ -6143,12 +6160,6 @@ msgstr "Ende Schutzverpflichtung"
 msgid "tt_ch.bfe.abgeltung-wasserkraftnutzung_endprotectioncommitment"
 msgstr "Ende Schutzverpflichtung"
 
-msgid "tt_ch.bfe.abgeltung-wasserkraftnutzung_name"
-msgstr "Name"
-
-msgid "tt_ch.bfe.abgeltung-wasserkraftnutzung_name"
-msgstr "Name"
-
 msgid "tt_ch.bfe.abgeltung-wasserkraftnutzung_objectnumber"
 msgstr "Objektnummer"
 
@@ -6304,12 +6315,6 @@ msgstr "Sperrenhöhe"
 
 msgid "tt_ch.bfe.stauanlagen-bundesaufsicht_damheight"
 msgstr "Sperrenhöhe"
-
-msgid "tt_ch.bfe.stauanlagen-bundesaufsicht_damname"
-msgstr "Name"
-
-msgid "tt_ch.bfe.stauanlagen-bundesaufsicht_damname"
-msgstr "Name"
 
 msgid "tt_ch.bfe.stauanlagen-bundesaufsicht_damtype"
 msgstr "Sperrentyp"
