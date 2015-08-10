@@ -615,7 +615,6 @@ itemscope itemtype="http://schema.org/WebApplication"
     <script src="${versionslashed}lib/build.js"></script>
   % if dev3d == 'true' :
     <script src="${versionslashed}lib/Cesium/Cesium.js"></script>
-    <script src="${versionslashed}lib/ol3cesium.js"></script>
   % endif
 
     <!-- For <= IE9, we load it explicitely as XDomain does not support
@@ -624,6 +623,7 @@ itemscope itemtype="http://schema.org/WebApplication"
     <script src="${versionslashed}lib/bootstrap-datetimepicker.min.js"></script>
     <script src="${versionslashed}lib/d3-3.3.1.min.js"></script>
     <script src="${versionslashed}lib/jQuery.XDomainRequest.js"></script>
+    <script src="${versionslashed}lib/Cesium/Cesium.js"></script>
     <![endif]-->
 % else:
     <!-- in source, we need to load it here because IE9 ignores it in
@@ -651,6 +651,7 @@ itemscope itemtype="http://schema.org/WebApplication"
     <script src="lib/localforage.js"></script>
     <script src="lib/filesaver.js"></script>
     <script src="lib/moment-with-customlocales.js"></script>
+    <script src="lib/Cesium/Cesium.js"></script>
    
 
     <!-- Use Closure to load the application scripts -->
@@ -662,13 +663,8 @@ itemscope itemtype="http://schema.org/WebApplication"
          need to load base.js ourselves. We keep Closure's base.js file
          around in case we need to test with ol.js or ol-simple.js. -->
     <!--<script src="lib/closure/base.js"></script>-->
-  % if dev3d == 'true' :
-    <script src="lib/Cesium/Cesium.js"></script>
     <!-- ol3 and ol3-cesium are built together in debug mode --> 
     <script src="lib/ol3cesium-debug.js"></script>
-  % else:
-    <script src="lib/ol-debug.js"></script>
-  % endif
     <script src="deps.js"></script>
     <script>
       goog.require('ga');

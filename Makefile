@@ -178,17 +178,16 @@ ol: scripts/ol-geoadmin.json .build-artefacts/ol3
 	cp $(addprefix .build-artefacts/ol3/build/,$(OL_JS)) src/lib/;
 
 .PHONY: ol3cesium
-ol3cesium: OL_CESIUM_JS = ol3cesium.js ol3cesium-debug.js
 ol3cesium: .build-artefacts/ol3-cesium
 	cd .build-artefacts/ol3-cesium; \
 	git reset HEAD --hard; \
 	git checkout $(OL3_CESIUM_VERSION); \
 	git show; \
-	make dist-examples; \
+	make dist; \
 	node build/build.js ../../scripts/ol3cesium-debug-geoadmin.json dist/ol3cesium-debug.js;  \
-	cd ../../; \
-	cp $(addprefix .build-artefacts/ol3-cesium/dist/,$(OL_CESIUM_JS)) src/lib/; \
-	cp -r .build-artefacts/ol3-cesium/dist/Cesium src/lib/;
+	cp dist/ol3cesium-debug.js ../../src/lib/; \
+	cp -r dist/Cesium ../../src/lib/; \
+	cat dist/Cesium/Cesium.js dist/ol3cesium.js > ../../src/lib/Cesium/Cesium.js;
 
 .PHONY: fastclick
 fastclick: .build-artefacts/fastclick .build-artefacts/closure-compiler/compiler.jar
@@ -240,8 +239,7 @@ prd/lib/: src/lib/d3-3.3.1.min.js \
 	    src/lib/bootstrap-datetimepicker.min.js  \
 	    src/lib/IE9Fixes.js \
 	    src/lib/jQuery.XDomainRequest.js \
-			src/lib/ol3cesium.js \
-			src/lib/Cesium
+	    src/lib/Cesium
 	mkdir -p $@
 	cp -rf  $^ $@
 
