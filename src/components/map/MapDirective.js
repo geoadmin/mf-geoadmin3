@@ -88,10 +88,8 @@ goog.require('ga_permalink');
                   var scene = ol3d.getCesiumScene();
                   scene.globe.depthTestAgainstTerrain = true;
                   var terrainProvider = new Cesium.CesiumTerrainProvider({
-                     //url:
-                     //'//ec2-54-220-242-89.eu-west-1.compute.amazonaws.com/stk-terrain/tilesets/swisseudem/tiles',
-                     url: 'https://3d.geo.admin.ch',
-                     //'https://cesiumjs.org/stk-terrain/tilesets/world/tiles',
+                     url: 'https://3d.geo.admin.ch' +
+                          '/1.0.0/ch.swisstopo.terrain.3d/default/20151231/4326',
                      credit: 'Swisstopo terrain'
                   });
                   scene.terrainProvider = terrainProvider;
@@ -99,7 +97,7 @@ goog.require('ga_permalink');
                   var baseUrl = '//api3.geo.admin.ch/mapproxy/service';
                   var ip = new Cesium.WebMapServiceImageryProvider({
                     url: baseUrl,
-                    layers: 'ch.swisstopo.swissimage'
+                    layers: 'ch.swisstopo.swisstlm3d-karte-farbe'
                   });
                   var layer = scene.imageryLayers.addImageryProvider(ip);
                   layer.show = true;
