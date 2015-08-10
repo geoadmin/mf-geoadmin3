@@ -27,10 +27,8 @@ goog.require('ga_permalink');
           });
           cesiumViewer.setEnabled(enabled);
           var terrainProvider = new Cesium.CesiumTerrainProvider({
-             //url:
-             //'//ec2-54-220-242-89.eu-west-1.compute.amazonaws.com/stk-terrain/tilesets/swisseudem/tiles',
-             url: 'https://3d.geo.admin.ch',
-             //'https://cesiumjs.org/stk-terrain/tilesets/world/tiles',
+             url: 'https://3d.geo.admin.ch' +
+                 '/1.0.0/ch.swisstopo.terrain.3d/default/20151231/4326',
              credit: 'Swisstopo terrain'
           });
           var scene = cesiumViewer.getCesiumScene();
@@ -38,7 +36,7 @@ goog.require('ga_permalink');
           scene.terrainProvider = terrainProvider;
           var ip = new Cesium.WebMapServiceImageryProvider({
             url: '//api3.geo.admin.ch/mapproxy/service',
-            layers: 'ch.swisstopo.swissimage'
+            layers: 'ch.swisstopo.swisstlm3d-karte-farbe'
           });
           var layer = scene.imageryLayers.addImageryProvider(ip);
           layer.show = true;
@@ -113,7 +111,6 @@ goog.require('ga_permalink');
               scope.$watch('show3d', function(isActive) {
                 if (isActive && !ol3d) {
                   if (!$window.olcs) {
-
                     $.getScript(ol3CesiumLibUrl, function() {
                       ol3d = loadCesiumViewer(map, isActive);
                     });
