@@ -240,7 +240,7 @@ prd/lib/: src/lib/d3-3.3.1.min.js \
 	    src/lib/IE9Fixes.js \
 	    src/lib/jQuery.XDomainRequest.js \
 	    src/lib/Cesium \
-			src/lib/ol3cesium.js
+	    src/lib/ol3cesium.js
 	mkdir -p $@
 	cp -rf  $^ $@
 
