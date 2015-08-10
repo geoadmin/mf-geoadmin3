@@ -1,4 +1,3 @@
 export API_URL=//mf-chsdi3.dev.bgdi.ch/
 export APACHE_BASE_PATH=/ltteo
 export BROWSERSTACK_TARGETURL=https://mf-geoadmin3.dev.bgdi.ch/ltteo
-export DEV3D=true

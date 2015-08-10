@@ -290,7 +290,6 @@ define buildpage
 		--var "mode=$2" \
 		--var "version=$3" \
 		--var "versionslashed=$4" \
-		--var "dev3d=$(DEV3D)" \
 		--var "apache_base_path=$(APACHE_BASE_PATH)" \
 		--var "api_url=$(API_URL)" \
 		--var "default_topic_id=$(DEFAULT_TOPIC_ID)" \
@@ -406,10 +405,10 @@ apache/app.conf: apache/app.mako-dot-conf \
 	    --var "version=$(VERSION)" $< > $@
 
 test/karma-conf-dev.js: test/karma-conf.mako.js .build-artefacts/python-venv/bin/mako-render
-	${PYTHON_CMD} .build-artefacts/python-venv/bin/mako-render --var "dev3d=${DEV3D}" $< > $@
+	${PYTHON_CMD} .build-artefacts/python-venv/bin/mako-render $< > $@
 
 test/karma-conf-prod.js: test/karma-conf.mako.js .build-artefacts/python-venv/bin/mako-render
-	${PYTHON_CMD} .build-artefacts/python-venv/bin/mako-render  --var "dev3d=${DEV3D}" --var "mode=prod" $< > $@
+	${PYTHON_CMD} .build-artefacts/python-venv/bin/mako-render --var "mode=prod" $< > $@
 
 node_modules: ANGULAR_JS = angular.js angular.min.js
 node_modules: ANGULAR_TRANSLATE_JS = angular-translate.js angular-translate.min.js
