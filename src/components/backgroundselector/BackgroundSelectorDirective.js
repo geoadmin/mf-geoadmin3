@@ -40,7 +40,12 @@ goog.require('ga_topic_service');
           var voidLayer = {id: 'voidLayer', label: 'void_layer'};
 
           function setCurrentLayer(layerid) {
+            if (scope.currentLayer === layerid) {
+              return;
+            }
+
             if (layerid) {
+              scope.currentLayer = layerid;
               var layers = map.getLayers();
               if (layerid == voidLayer.id) {
                 if (layers.getLength() > 0 &&
@@ -116,16 +121,11 @@ goog.require('ga_topic_service');
               updateDefaultBgOrder(bgLayers);
             }
             if (bgLayer && !isOfflineToOnline) {
-              scope.currentLayer = bgLayer;
+              setCurrentLayer(bgLayer);
             }
             isOfflineToOnline = false;
 
           };
-          scope.$watch('currentLayer', function(newVal, oldVal) {
-            if (oldVal !== newVal) {
-              setCurrentLayer(newVal);
-            }
-          });
 
           scope.activateBackgroundLayer = function(layerid) {
             if (scope.isBackgroundSelectorClosed) {
@@ -133,7 +133,7 @@ goog.require('ga_topic_service');
             } else {
               scope.isBackgroundSelectorClosed = true;
               if (scope.currentLayer != layerid) {
-                scope.currentLayer = layerid;
+                setCurrentLayer(layerid);
               }
             }
           };
@@ -159,7 +159,7 @@ goog.require('ga_topic_service');
             function(arr) {
               if (arr.length == 2 ||
                   (scope.currentLayer == voidLayer.id && arr.length == 1)) {
-                scope.currentLayer = arr[arr.length - 1].id;
+                setCurrentLayer(arr[arr.length - 1].id);
                 scope.map.removeLayer(arr[arr.length - 1]);
               }
             });
