@@ -187,7 +187,7 @@ ol3cesium: .build-artefacts/ol3-cesium
 	node build/build.js ../../scripts/ol3cesium-debug-geoadmin.json dist/ol3cesium-debug.js;  \
 	cp dist/ol3cesium-debug.js ../../src/lib/; \
 	cp -r dist/Cesium ../../src/lib/; \
-	cat dist/Cesium/Cesium.js dist/ol3cesium.js > ../../src/lib/Cesium/Cesium.js;
+	cat dist/Cesium/Cesium.js dist/ol3cesium.js > ../../src/lib/ol3cesium.js;
 
 .PHONY: fastclick
 fastclick: .build-artefacts/fastclick .build-artefacts/closure-compiler/compiler.jar
@@ -239,7 +239,8 @@ prd/lib/: src/lib/d3-3.3.1.min.js \
 	    src/lib/bootstrap-datetimepicker.min.js  \
 	    src/lib/IE9Fixes.js \
 	    src/lib/jQuery.XDomainRequest.js \
-	    src/lib/Cesium
+	    src/lib/Cesium \
+			src/lib/ol3cesium.js
 	mkdir -p $@
 	cp -rf  $^ $@
 

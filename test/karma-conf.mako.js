@@ -13,10 +13,6 @@ module.exports = function(config) {
   files: [
     % if mode == 'prod':
        'lib/build.js',
-      % if dev3d == 'true':
-       'lib/Cesium/Cesium.js',
-       'lib/ol3cesium.js',
-      % endif
     % else:
        'lib/jquery-2.0.3.js',
        'lib/angular.js',
@@ -29,13 +25,9 @@ module.exports = function(config) {
        'lib/EPSG2056.js',
        'lib/EPSG32631.js',
        'lib/EPSG32632.js',
-       '../test/closure-loader-globals.js',
-      % if dev3d == 'true':
        'lib/Cesium/Cesium.js',
+       '../test/closure-loader-globals.js',
        'lib/ol3cesium-debug.js',
-      % else:
-       'lib/ol-debug.js',
-      % endif
        '../.build-artefacts/app-whitespace.js',
     % endif
        '../test/angular/angular-mocks.js',

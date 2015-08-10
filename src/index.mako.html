@@ -140,9 +140,10 @@ itemscope itemtype="http://schema.org/WebApplication"
         IE9Fix.call(this);
       </script>
     <![endif]-->
-  % if dev3d == 'true' :
-    <div class="corner-ribbon top-left sticky red shadow">3D - ALPHA</div>
-  % endif
+    <div ng-cloak ng-if="globals.dev3d"
+         class="corner-ribbon top-left sticky red shadow">
+      3D - ALPHA
+    </div>
     <div ng-controller="GaSeoController">
       <div ga-seo ga-seo-options="options" ga-seo-map="map"></div>
     </div>
@@ -612,11 +613,10 @@ itemscope itemtype="http://schema.org/WebApplication"
 
 % if mode == 'prod':
   
+    <script>
+      window.CESIUM_BASE_URL="${versionslashed}lib/Cesium/";
+    </script>
     <script src="${versionslashed}lib/build.js"></script>
-  % if dev3d == 'true' :
-    <script src="${versionslashed}lib/Cesium/Cesium.js"></script>
-  % endif
-
     <!-- For <= IE9, we load it explicitely as XDomain does not support
          dynamic/lazy loading of javascript -->
     <!--![if IE]>
@@ -695,7 +695,7 @@ itemscope itemtype="http://schema.org/WebApplication"
 
         module.constant('gaGlobalOptions', {
           //dev3d to be removed once 3d goes live
-          dev3d: ${dev3d},
+          dev3d: !!window.location.search.match(/(dev3d=true)/),
           mapUrl : location.origin + '${apache_base_path}',
           apiUrl : location.protocol + '${api_url}',
           publicUrl : location.protocol + '${public_url}',
