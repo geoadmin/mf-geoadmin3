@@ -6,6 +6,7 @@ goog.require('ga_backgroundselector');
 goog.require('ga_catalogtree');
 goog.require('ga_catalogtree_controller');
 goog.require('ga_collapsible_directive');
+goog.require('ga_context_proposal_service');
 goog.require('ga_contextpopup');
 goog.require('ga_contextpopup_controller');
 goog.require('ga_draggable_directive');
@@ -63,6 +64,7 @@ goog.require('ga_waitcursor_service');
     'ga_attribution',
     'ga_catalogtree',
     'ga_contextpopup',
+    'ga_context_proposal_service',
     'ga_importkml',
     'ga_importwms',
     'ga_help',
@@ -80,6 +82,7 @@ goog.require('ga_waitcursor_service');
     'ga_translation',
     'ga_feedback',
     'ga_layermanager',
+    'ga_layerselector',
     'ga_tooltip',
     'ga_swipe',
     'ga_featuretree',
