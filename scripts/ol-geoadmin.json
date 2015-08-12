@@ -8,8 +8,6 @@
     "ol.DeviceOrientation#*",
     "ol.Feature",
     "ol.Feature#*",
-    "ol.FeatureOverlay",
-    "ol.FeatureOverlay#*",
     "ol.Geolocation",
     "ol.Geolocation#*",
     "ol.ImageTile#getImage",
