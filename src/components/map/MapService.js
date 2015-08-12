@@ -77,6 +77,7 @@ goog.require('ga_urlutils_service');
 
     this.$get = function() {
       return function defineProperties(olLayer) {
+        olLayer.set('altitudeMode', 'clampToGround');
         Object.defineProperties(olLayer, {
           attribution: {
             get: function() {
@@ -647,6 +648,7 @@ goog.require('ga_urlutils_service');
             }
             gaDefinePropertiesForLayer(olLayer);
             olLayer.useThirdPartyData = true;
+
             return olLayer;
           });
         };

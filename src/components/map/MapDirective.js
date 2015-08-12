@@ -15,15 +15,42 @@ goog.require('ga_permalink');
 
   module.directive('gaMap',
       function($window, $parse, $rootScope, $timeout, gaPermalink,
-          gaBrowserSniffer, gaLayers, gaDebounce, gaOffline) {
+          gaBrowserSniffer, gaLayers, gaDebounce, gaOffline, gaGlobalOptions) {
+
+        // Url of ol3cesium library
+        var ol3CesiumLibUrl = gaGlobalOptions.resourceUrl + 'lib/ol3cesium.js';
+
+        // Create the cesium viewer with basic layers
+        var loadCesiumViewer = function(map, enabled) {
+          var cesiumViewer = new olcs.OLCesium({
+            map: map
+          });
+          cesiumViewer.setEnabled(enabled);
+          var terrainProvider = new Cesium.CesiumTerrainProvider({
+             url: 'https://3d.geo.admin.ch' +
+                 '/1.0.0/ch.swisstopo.terrain.3d/default/20151231/4326',
+             credit: 'Swisstopo terrain'
+          });
+          var scene = cesiumViewer.getCesiumScene();
+          scene.globe.depthTestAgainstTerrain = true;
+          scene.terrainProvider = terrainProvider;
+          var ip = new Cesium.WebMapServiceImageryProvider({
+            url: '//api3.geo.admin.ch/mapproxy/service',
+            layers: 'ch.swisstopo.swisstlm3d-karte-farbe'
+          });
+          var layer = scene.imageryLayers.addImageryProvider(ip);
+          layer.show = true;
+          return cesiumViewer;
+        };
+
         return {
           restrict: 'A',
           scope: {
-            map: '=gaMapMap'
+            map: '=gaMapMap',
+            show3d: '=gaMap3d'
           },
           link: function(scope, element, attrs) {
             var map = scope.map;
-
             var view = map.getView();
 
             // set view states based on URL query string
@@ -79,6 +106,25 @@ goog.require('ga_permalink');
             updatePermalink();
 
             map.setTarget(element[0]);
+            if (gaGlobalOptions.dev3d) {
+              var ol3d;
+              scope.$watch('show3d', function(isActive) {
+                if (isActive && !ol3d) {
+                  if (!$window.olcs) {
+                    $.getScript(ol3CesiumLibUrl, function() {
+                      ol3d = loadCesiumViewer(map, isActive);
+                    });
+                  } else {
+                    ol3d = loadCesiumViewer(map, isActive);
+                  }
+                } else if (ol3d) {
+                  ol3d.setEnabled(isActive);
+                }
+              });
+              $rootScope.$on('gaBgChange', function(evt, newBgLayerId) {
+                scope.show3d = (newBgLayerId == 'ch.swisstopo.terrain.3d');
+              });
+            }
 
             // Often when we use embed map the size of the map is fixed, so we
             // don't need to resize the map for printing (use case: print an

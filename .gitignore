@@ -15,6 +15,12 @@
 /src/locales/*.csv
 /scripts/00-*.conf
 /src/lib/angular*.js
+/src/lib/Cesium/Assets/Textures/NaturalEarthII
+/src/lib/Cesium/Assets/Textures/SkyBox
+/src/lib/Cesium/Assets/Textures/maki
+/src/lib/Cesium/Assets/Textures/moonSmall.jpg
+/src/lib/Cesium/Assets/Textures/pin.svg
+/src/lib/Cesium/Widgets
 rc_branch
 # FIXME
 # The following are developer-specific and should probably be in the

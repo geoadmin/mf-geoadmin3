@@ -20,6 +20,7 @@ beforeEach(function() {
     var cacheAdd = '/' + version;
     var pathname = location.pathname.replace(/(index|mobile|embed)\.html$/g, '');
     $provide.constant('gaGlobalOptions', {
+      dev3d: false,
       version: '123456',
       defaultExtent: [420000, 30000, 900000, 350000],
       resolutions: [650.0, 500.0, 250.0, 100.0, 50.0, 20.0, 10.0, 5.0,
