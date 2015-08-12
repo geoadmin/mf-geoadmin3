@@ -171,8 +171,10 @@ goog.require('ga_profile_service');
               // Update map stuff
               // Creates the additional overlay to display azimuth circle
               var pos = new ol.geom.Point([0, 0]);
-              var overlay = new ol.FeatureOverlay({
-                features: [new ol.Feature(pos)],
+              var overlay = new ol.layer.Vector({
+                source: new ol.source.Vector({
+                  features: [new ol.Feature(pos)]
+                }),
                 style: new ol.style.Style({
                   image: new ol.style.Circle({
                     radius: 4,

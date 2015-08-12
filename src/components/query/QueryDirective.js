@@ -410,10 +410,12 @@ goog.require('ga_storage_service');
     var dragBox;
     var dragBoxStyle = gaStyleFactory.getStyle('selectrectangle');
     var boxFeature = new ol.Feature();
-    var boxOverlay = new ol.FeatureOverlay({
+    var boxOverlay = new ol.layer.Vector({
+      source: new ol.source.Vector({
+        features: [boxFeature]
+      }),
       style: dragBoxStyle
     });
-    boxOverlay.addFeature(boxFeature);
 
     return {
       restrict: 'A',
@@ -440,7 +442,7 @@ goog.require('ga_storage_service');
           });
           scope.map.addInteraction(dragBox);
           dragBox.on('boxstart', function(evt) {
-            scope.resetGeometry();
+            boxFeature.setGeometry(null);
           });
           dragBox.on('boxend', function(evt) {
             boxFeature.setGeometry(evt.target.getGeometry());
@@ -461,12 +463,6 @@ goog.require('ga_storage_service');
             }
           });
         }
-
-        // Activate/Deactivate
-        scope.resetGeometry = function() {
-          boxFeature.setGeometry(null);
-        };
-
         scope.showBox = function() {
           boxOverlay.setMap(scope.map);
         };

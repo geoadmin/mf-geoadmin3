@@ -43,8 +43,10 @@ goog.require('ga_throttle_service');
         var view = map.getView();
         var accuracyFeature = new ol.Feature();
         var positionFeature = new ol.Feature(new ol.geom.Point([0, 0]));
-        var featuresOverlay = new ol.FeatureOverlay({
-          features: [accuracyFeature, positionFeature],
+        var featuresOverlay = new ol.layer.Vector({
+          source: new ol.source.Vector({
+            features: [accuracyFeature, positionFeature]
+          }),
           style: gaStyleFactory.getStyleFunction('geolocation')
         });
         var deviceOrientation = new ol.DeviceOrientation();
