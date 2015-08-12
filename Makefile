@@ -23,6 +23,7 @@ LAST_DEPLOY_TARGET := $(shell if [ -f .build-artefacts/last-deploy-target ]; the
 OL3_VERSION ?= v3.6.0
 DEFAULT_TOPIC_ID ?= ech
 TRANSLATION_FALLBACK_CODE ?= de
+LANGUAGES ?= '[\"de\", \"en\", \"fr\", \"it\", \"rm\"]'
 DEFAULT_EXTENT ?= '[420000, 30000, 900000, 350000]'
 DEFAULT_RESOLUTION ?= 500.0
 RESOLUTIONS ?= '[650.0, 500.0, 250.0, 100.0, 50.0, 20.0, 10.0, 5.0, 2.5, 2.0, 1.0, 0.5, 0.25, 0.1]'
@@ -264,6 +265,7 @@ prd/geoadmin.appcache: src/geoadmin.mako.appcache \
 	    --var "version=$(VERSION)" \
 	    --var "deploy_target=$(DEPLOY_TARGET)" \
 	    --var "apache_base_path=$(APACHE_BASE_PATH)" \
+	    --var "languages=$(LANGUAGES)" \
 	    --var "api_url=$(API_URL)" \
 	    --var "public_url=$(PUBLIC_URL)" $< > $@
 
@@ -277,6 +279,7 @@ define buildpage
 		--var "api_url=$(API_URL)" \
 		--var "default_topic_id=$(DEFAULT_TOPIC_ID)" \
 		--var "translation_fallback_code=$(TRANSLATION_FALLBACK_CODE)" \
+		--var "languages=$(LANGUAGES)" \
 		--var "default_extent"="$(DEFAULT_EXTENT)" \
 		--var "default_resolution"="$(DEFAULT_RESOLUTION)" \
 		--var "resolutions"="$(RESOLUTIONS)" \

@@ -36,6 +36,7 @@ beforeEach(function() {
       ],
       defaultTopicId: 'sometopic',
       translationFallbackCode: 'somelang',
+      languages: ['de', 'fr', 'it', 'en', 'rm', 'somelang'],
       defaultResolution: 500.0,
       publicUrlRegexp: /^https?:\/\/public\..*\.(bgdi|admin)\.ch\/.*/,
       adminUrlRegexp: /^(ftp|http|https):\/\/(.*(\.bgdi|\.geo\.admin)\.ch)/
