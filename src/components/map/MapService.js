@@ -679,7 +679,7 @@ goog.require('ga_urlutils_service');
               }
 
               if (options.zoomToExtent) {
-                olMap.getView().fitExtent(olLayer.getExtent(), olMap.getSize());
+                olMap.getView().fit(olLayer.getExtent(), olMap.getSize());
               }
             }
           });
@@ -1215,7 +1215,7 @@ goog.require('ga_urlutils_service');
         zoomToExtent: function(map, extent) {
           var size = map.getSize();
           var view = map.getView();
-          view.fitExtent(extent, size);
+          view.fit(extent, size);
         },
 
         // Test if a layer is a KML layer added by the ImportKML tool or
@@ -1906,7 +1906,7 @@ goog.require('ga_urlutils_service');
         this.zoom = function(map, feature) {
           var extent = getMinimalExtent((feature) ?
               feature.getGeometry().getExtent() : source.getExtent());
-          map.getView().fitExtent(extent, map.getSize());
+          map.getView().fit(extent, map.getSize());
         };
       };
       return new PreviewFeatures();
