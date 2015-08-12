@@ -326,7 +326,7 @@ goog.require('ga_styles_service');
           var extent = gaStorage.getItem(extentKey);
           if (extent) {
             extent = extent.split(',');
-            map.getView().fitExtent([
+            map.getView().fit([
               parseInt(extent[0], 10),
               parseInt(extent[1], 10),
               parseInt(extent[2], 10),
