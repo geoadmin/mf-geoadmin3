@@ -19,6 +19,10 @@ goog.require('ga_topic_service');
           ($window.navigator.userLanguage ||
           $window.navigator.language).split('-')[0];
 
+      if (gaGlobalOptions.languages.indexOf(lang) === -1) {
+        lang = gaGlobalOptions.translationFallbackCode;
+      }
+
       // Verify if a language is supported by the current topic
       var isLangSupportedByTopic = function(lang, topic) {
         if (!topic) {

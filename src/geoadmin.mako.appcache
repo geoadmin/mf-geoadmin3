@@ -1,6 +1,11 @@
+<%page args="languages" />
 <%
+  import json
   defaultLanguage = 'en'
-  languages = ('de', 'en', 'fr', 'it', 'rm')
+  # The languages variable must contain simple quote to be correctly parsed in
+  # index.html but here it prevents python to parse the JSON. So we manually
+  # remove them.
+  languages = json.loads(languages[1:-1])
 %>CACHE MANIFEST
 # Version ${version}
 
