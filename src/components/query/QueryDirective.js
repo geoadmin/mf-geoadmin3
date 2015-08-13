@@ -442,10 +442,11 @@ goog.require('ga_storage_service');
           });
           scope.map.addInteraction(dragBox);
           dragBox.on('boxstart', function(evt) {
-            boxFeature.setGeometry(null);
+            scope.hideBox();
           });
           dragBox.on('boxend', function(evt) {
             boxFeature.setGeometry(evt.target.getGeometry());
+            scope.showBox();
             scope.geometry = boxFeature.getGeometry();
             scope.useBbox = true;
 
@@ -483,6 +484,7 @@ goog.require('ga_storage_service');
 
           if (scope.queryType == 0) {
             scope.showBox();
+            scope.useBbox = true;
           }
 
           // Re-launch the search in case the list of layers has changed
