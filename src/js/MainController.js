@@ -22,7 +22,7 @@ goog.require('ga_storage_service');
       $translate, $window, $document, gaBrowserSniffer, gaHistory,
       gaFeaturesPermalinkManager, gaLayersPermalinkManager, gaMapUtils,
       gaRealtimeLayersManager, gaNetworkStatus, gaPermalink, gaStorage,
-      gaGlobalOptions, gaBackground, gaTime) {
+      gaGlobalOptions, gaBackground, gaTime, gaLayers) {
 
     var createMap = function() {
       var toolbar = $('#zoomButtons')[0];
@@ -86,19 +86,10 @@ goog.require('ga_storage_service');
         }
       });
       cesiumViewer.setEnabled(enabled);
-      var terrainProvider = new Cesium.CesiumTerrainProvider({
-        url: 'https://3d.geo.admin.ch' +
-          '/1.0.0/ch.swisstopo.terrain.3d/default/20151231/4326',
-        credit: 'Swisstopo terrain'
-      });
       var scene = cesiumViewer.getCesiumScene();
       scene.globe.depthTestAgainstTerrain = true;
-      scene.terrainProvider = terrainProvider;
-      var ip = new Cesium.WebMapServiceImageryProvider({
-        url: '//api3.geo.admin.ch/mapproxy/service',
-        layers: 'ch.swisstopo.swisstlm3d-karte-farbe'
-      });
-      scene.imageryLayers.addImageryProvider(ip, 0);
+      scene.terrainProvider =
+          gaLayers.getCesiumTerrainProviderById(gaGlobalOptions.defaultTerrain);
       return cesiumViewer;
     };
 

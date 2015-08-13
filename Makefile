@@ -31,7 +31,7 @@ RESOLUTIONS ?= '[650.0, 500.0, 250.0, 100.0, 50.0, 20.0, 10.0, 5.0, 2.5, 2.0, 1.
 DEFAULT_EPSG ?= EPSG:21781
 DEFAULT_EPSG_EXTEND ?= '[420000, 30000, 900000, 350000]'
 DEFAULT_ELEVATION_MODEL ?= COMB
-
+DEFAULT_TERRAIN ?= ch.swisstopo.terrain.3d
 
 ## Python interpreter can't have space in path name
 ## So prepend all python scripts with python cmd
@@ -306,6 +306,7 @@ define buildpage
 		--var "resolutions"="$(RESOLUTIONS)" \
 		--var "public_url=$(PUBLIC_URL)" \
 		--var "default_elevation_model=${DEFAULT_ELEVATION_MODEL}" \
+		--var "default_terrain=$(DEFAULT_TERRAIN)" \
 		--var "admin_url_regexp=$(ADMIN_URL_REGEXP)" \
 		--var "public_url_regexp=$(PUBLIC_URL_REGEXP)" \
 		--var "default_epsg"="$(DEFAULT_EPSG)" \

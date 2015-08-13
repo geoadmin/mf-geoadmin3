@@ -204,6 +204,14 @@ goog.require('ga_urlutils_service');
               }
             }
           },
+          getCesiumImageryProvider: {
+            get: function() {
+              return this.get('getCesiumImageryProvider');
+            },
+            set: function(val) {
+              this.set('getCesiumImageryProvider', val);
+            }
+          },
           background: {
             writable: true,
             value: false
@@ -332,6 +340,16 @@ goog.require('ga_urlutils_service');
    */
   module.provider('gaWms', function() {
     this.$get = function(gaDefinePropertiesForLayer, gaMapUtils, gaUrlUtils) {
+      var getCesiumImageryProvider = function(layer) {
+        var params = layer.getSource().getParams();
+        return new Cesium.WebMapServiceImageryProvider({
+          url: layer.url,
+          layers: params.LAYERS,
+          parameters: {
+            format: 'image/png'
+          }
+        });
+      };
       var Wms = function() {
 
         var createWmsLayer = function(params, options, index) {
@@ -371,6 +389,9 @@ goog.require('ga_urlutils_service');
           layer.displayInLayerManager = !layer.preview;
           layer.useThirdPartyData = gaUrlUtils.isThirdPartyValid(options.url);
           layer.label = options.label;
+          layer.getCesiumImageryProvider = function() {
+            return getCesiumImageryProvider(layer);
+          };
           return layer;
         };
 
@@ -759,7 +780,8 @@ goog.require('ga_urlutils_service');
         gaLang, gaTime) {
 
       var Layers = function(wmtsGetTileUrlTemplate,
-          layersConfigUrlTemplate, legendUrlTemplate) {
+          wmtsMapProxyGetTileUrlTemplate, terrainTileUrlTemplate,
+          layersConfigUrlTemplate, legendUrlTemplate, wmsMapProxyUrl) {
         var layers;
 
         var getWmtsGetTileUrl = function(layer, format) {
@@ -767,7 +789,17 @@ goog.require('ga_urlutils_service');
               .replace('{Layer}', layer)
               .replace('{Format}', format);
         };
-
+        var getWmtsMapProxyGetTileUrl = function(layer, timestamp, format) {
+          return wmtsMapProxyGetTileUrlTemplate
+              .replace('{Layer}', layer)
+              .replace('{Time}', timestamp)
+              .replace('{Format}', format);
+        };
+        var getTerrainTileUrl = function(layer, timestamp) {
+          return terrainTileUrlTemplate
+              .replace('{Layer}', layer)
+              .replace('{Time}', timestamp);
+        };
         var getLayersConfigUrl = function(lang) {
           return layersConfigUrlTemplate
               .replace('{Lang}', lang);
@@ -820,6 +852,37 @@ goog.require('ga_urlutils_service');
           lastLangUsed = lang;
           var url = getLayersConfigUrl(lang);
           return $http.get(url).then(function(response) {
+            // Live modifications for 3d test
+            if (response.data) {
+              var ids = [
+                'ch.swisstopo.swisstlm3d-karte-farbe',
+                'ch.swisstopo.swissimage-product'
+              ];
+              angular.forEach(ids, function(id) {
+                if (response.data[id]) {
+                  response.data[id].config3d = id + '_3d';
+                }
+              });
+              // Tiled WMS (MapProxy)
+              response.data['ch.swisstopo.swisstlm3d-karte-farbe_3d'] = {
+                type: 'wms',
+                singleTile: false,
+                wmsUrl: '//api3.geo.admin.ch/mapproxy/service'
+              };
+              // WMTS (not MapProxy)
+              response.data['ch.swisstopo.swissimage-product_3d'] = {
+                type: 'wmts',
+                url: '//wmts.geo.admin.ch/1.0.0/' +
+                    '00_todelete_ch.swisstopo.swissimage-product/default/' +
+                    '20151231_v03/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg'
+              };
+              // Terain
+              response.data['ch.swisstopo.terrain.3d'] = {
+                type: 'terrain',
+                serverLayerName: 'ch.swisstopo.terrain.3d',
+                timestamps: ['20151231']
+              };
+            }
             if (!layers) { // First load
               layers = response.data;
               // We register events only when layers are loaded
@@ -844,6 +907,65 @@ goog.require('ga_urlutils_service');
         this.loadConfig = function() {
           return configP;
         };
+
+        /**
+         * Returns an Cesium terrain provider.
+         */
+        this.getCesiumTerrainProviderById = function(bodId) {
+          var provider, config = layers[bodId];
+          var timestamp = this.getLayerTimestampFromYear(bodId, gaTime.get());
+          if (config.config3d) {
+            angular.extend(config, layers[config.config3d]);
+          }
+          var requestedLayer = config.serverLayerName || bodId;
+          if (config.type == 'terrain') {
+            provider = new Cesium.CesiumTerrainProvider({
+              url: getTerrainTileUrl(requestedLayer, timestamp)
+            });
+          }
+          return provider;
+        };
+
+        /**
+         * Returns an Cesium imagery provider.
+         */
+        this.getCesiumImageryProviderById = function(bodId) {
+          var provider, config = layers[bodId];
+          var timestamp = this.getLayerTimestampFromYear(bodId, gaTime.get());
+          if (config.config3d) {
+            angular.extend(config, layers[config.config3d]);
+          }
+          var requestedLayer = config.wmsLayers || config.serverLayerName ||
+              bodId;
+          var format = config.format || 'png';
+          var mimeType = 'image/' + format;
+          if (config.type == 'wmts') {
+            var url = config.url ||
+                getWmtsMapProxyGetTileUrl(requestedLayer, timestamp, format);
+            provider = new Cesium.WebMapTileServiceImageryProvider({
+              url: url,
+              layer: requestedLayer,
+              format: mimeType,
+              style: 'default',
+              tileMatrixSetID: '4326',
+              tilingScheme: new Cesium.GeographicTilingScheme(),
+              maximumLevel: 19
+            });
+          } else if (config.type == 'wms') {
+            var url = config.wmsUrl ? gaUrlUtils.remove(config.wmsUrl,
+                ['request', 'service', 'version'], true) : wmsMapProxyUrl;
+            provider = new Cesium.WebMapServiceImageryProvider({
+              url: url,
+              layers: requestedLayer,
+              parameters: {
+                format: mimeType,
+                time: timestamp
+              }
+            });
+          }
+          return provider;
+        };
+
 
         /**
          * Return an ol.layer.Layer object for a layer id.
@@ -1016,6 +1138,10 @@ goog.require('ga_urlutils_service');
             olLayer.timestamps = layer.timestamps;
             olLayer.geojsonUrl = layer.geojsonUrl;
             olLayer.updateDelay = layer.updateDelay;
+            var that = this;
+            olLayer.getCesiumImageryProvider = function() {
+              return that.getCesiumImageryProviderById(bodId);
+            };
           }
 
           return olLayer;
@@ -1063,7 +1189,8 @@ goog.require('ga_urlutils_service');
 
           if (!layer.timeEnabled) {
             // a WMTS layer has at least one timestamp
-            return (layer.type == 'wmts') ? timestamps[0] : undefined;
+            return (layer.type == 'wmts' || layer.type == 'terrain') ?
+                timestamps[0] : undefined;
           } else if (layer.type == 'wms') {
             // A time enabled WMS layer has no timestamps so we return the
             // yearsStr unchanged
@@ -1095,7 +1222,9 @@ goog.require('ga_urlutils_service');
       };
 
       return new Layers(this.wmtsGetTileUrlTemplate,
-          this.layersConfigUrlTemplate, this.legendUrlTemplate);
+          this.wmtsMapProxyGetTileUrlTemplate, this.terrainTileUrlTemplate,
+          this.layersConfigUrlTemplate, this.legendUrlTemplate,
+          this.wmsMapProxyUrl);
     };
 
   });
