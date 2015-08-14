@@ -721,13 +721,13 @@ itemscope itemtype="http://schema.org/WebApplication"
               '//wmts{5-9}.geo.admin.ch/1.0.0/{Layer}/default/{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.{Format}';
 
           gaLayersProvider.layersConfigUrlTemplate =
-              gaGlobalOptions.cachedApiUrl + '/rest/services/all/MapServer/layersConfig?lang={Lang}';
+              gaGlobalOptions.resourceUrl + 'layersConfig?lang={Lang}';
 
           gaLayersProvider.legendUrlTemplate =
               gaGlobalOptions.apiUrl + '/rest/services/all/MapServer/{Layer}/legend?lang={Lang}';
         });
         module.config(function(gaTopicProvider, gaGlobalOptions) {
-          gaTopicProvider.topicsUrl = gaGlobalOptions.cachedApiUrl + '/rest/services';
+          gaTopicProvider.topicsUrl = gaGlobalOptions.resourceUrl + 'services';
         });
 
         module.config(function(gaExportKmlProvider, gaGlobalOptions) {
