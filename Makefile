@@ -186,11 +186,13 @@ ol3cesium: .build-artefacts/ol3-cesium
 	git checkout $(OL3_CESIUM_VERSION); \
 	git submodule update --recursive --init --force; \
 	git show; \
+	ln -T -f -s ../../../../ol3-cesium-plugin/ src/plugins/geoadmin; \
 	make dist; \
 	node build/build.js ../../scripts/ol3cesium-debug-geoadmin.json dist/ol3cesium-debug.js;  \
 	cp dist/ol3cesium-debug.js ../../src/lib/; \
-	cp -r dist/Cesium ../../src/lib/; \
-	cat dist/Cesium/Cesium.js dist/ol3cesium.js > ../../src/lib/ol3cesium.js;
+	make cesium/Build/Cesium/Cesium.js; \
+	cp -r cesium/Build/Cesium ../../src/lib/; \
+	cat ../../src/lib/Cesium/Cesium.js dist/ol3cesium.js > ../../src/lib/ol3cesium.js;
 
 .PHONY: fastclick
 fastclick: .build-artefacts/fastclick .build-artefacts/closure-compiler/compiler.jar
