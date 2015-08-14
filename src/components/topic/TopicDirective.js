@@ -32,17 +32,6 @@ goog.require('ga_topic_service');
               }
             });
 
-            // TODO: Verify if it's the good place for this
-            $rootScope.$on('gaNetworkStatusChange', function(evt, offline) {
-              // When page is loaded directly in  offline mode we use the
-              // default (ech) topic, so when we go back to online mode
-              // we must reload the correct topic. The event reload the catalog
-              // too.
-              if (!offline) {
-                gaTopic.set(scope.activeTopic, true);
-              }
-            });
-
             gaTopic.loadConfig().then(function() {
               scope.topics = gaTopic.getTopics();
               scope.activeTopic = gaTopic.get();
