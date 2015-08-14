@@ -82,6 +82,6 @@ RewriteRule ^${apache_base_path}/sitemap_(.*)\.xml http:${api_url}/${version}/si
     Header unset Vary
     Header unset Cache-Control
     Header unset Pragma
-    Header set Cache-Control "no-cache, no-store, must-revalidate"
+    Header set Cache-Control "no-cache, must-revalidate"
     Header set Pragma "no-cache"
 </LocationMatch>
