@@ -336,7 +336,7 @@ goog.require('ga_styles_service');
           for (var i = 0, ii = layersIds.length; i < ii; i++) {
             var bodLayer = gaLayers.getLayer(layersIds[i]);
             if (bodLayer) {
-              var bodId = bodLayer.parentLayerId || bodLayer.bodId;
+              var bodId = bodLayer.parentLayerId || layersIds[i];
               var olLayer = gaMapUtils.getMapLayerForBodId(map, bodId);
               if (!olLayer) {
                 olLayer = gaLayers.getOlLayerById(bodId);
