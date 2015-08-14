@@ -46,3 +46,8 @@ WSGIScriptAliasMatch ^${apache_entry_path}/mapproxy ${buildout:directory}/buildo
     Header unset ETag
     Header unset Age
 </LocationMatch>
+
+# No GetFeatureInfo request is allowed for WMS service
+RewriteCond %{QUERY_STRING} SERVICE=WMS [NC]
+RewriteCond %{QUERY_STRING} REQUEST=GetFeatureInfo [NC]
+RewriteRule ^${apache_entry_path}/mapproxy/service - [F]
