@@ -110,12 +110,8 @@ goog.require('ga_styles_service');
       };
 
       minRes = gaMapUtils.getViewResolutionForZoom(maxZoom);
-      var featureOverlay = new ol.layer.Vector({
-        source: new ol.source.Vector({
-          features: [extentFeature]
-        }),
-        style: gaStyleFactory.getStyle('offline')
-      });
+      var featureOverlay = gaMapUtils.getFeatureOverlay([extentFeature],
+          gaStyleFactory.getStyle('offline'));
 
       // Update download status
       var progress;

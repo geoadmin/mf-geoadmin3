@@ -1301,6 +1301,20 @@ goog.require('ga_urlutils_service');
             Math.min(extent[2], gaGlobalOptions.defaultExtent[2]),
             Math.min(extent[3], gaGlobalOptions.defaultExtent[3])
           ];
+        },
+
+        getFeatureOverlay: function(features, style) {
+          var layer = new ol.layer.Vector({
+            source: new ol.source.Vector({
+              useSpatialIndex: false,
+              features: features
+            }),
+            style: style,
+            updateWhileAnimating: true,
+            updateWhileInteracting: true
+          });
+          layer.set('altitudeMode', 'clampToGround');
+          return layer;
         }
       };
     };
