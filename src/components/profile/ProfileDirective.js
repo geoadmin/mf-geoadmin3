@@ -4,11 +4,14 @@ goog.require('ga_profile_service');
 (function() {
 
   var module = angular.module('ga_profile_directive', [
-    'ga_profile_service'
+    'ga_profile_service',
+    'ga_map_service',
+    'ga_styles_service'
   ]);
 
   module.directive('gaProfile',
-      function($rootScope, $compile, $window, gaDebounce, gaProfile) {
+      function($rootScope, $compile, $window, gaDebounce, gaProfile, gaMapUtils,
+          gaStyleFactory) {
         return {
           restrict: 'A',
           replace: true,
@@ -171,24 +174,9 @@ goog.require('ga_profile_service');
               // Update map stuff
               // Creates the additional overlay to display azimuth circle
               var pos = new ol.geom.Point([0, 0]);
-              var overlay = new ol.layer.Vector({
-                source: new ol.source.Vector({
-                  features: [new ol.Feature(pos)]
-                }),
-                style: new ol.style.Style({
-                  image: new ol.style.Circle({
-                    radius: 4,
-                    fill: new ol.style.Fill({
-                      color: [255, 0, 0, 0.4]
-                    }),
-                    stroke: new ol.style.Stroke({
-                      color: [255, 0, 0, 1],
-                      width: 3
-                    })
-                  }),
-                  zIndex: 10000
-                })
-              });
+              var overlay = gaMapUtils.getFeatureOverlay([new ol.Feature(pos)],
+                   gaStyleFactory.getStyle('redCircle'));
+
               var activateMapPosition = function(coords) {
                 overlay.setMap(scope.map);
               };
