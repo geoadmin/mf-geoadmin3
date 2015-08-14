@@ -51,14 +51,13 @@ goog.require('ga_topic_service');
                   placement: 'bottom'
                 });
               });
+              scope.$on('gaTopicChange', function(evt, newTopic) {
+                if (scope.activeTopic != newTopic) {
+                  scope.activeTopic = newTopic;
+                }
+              });
             });
-
-            scope.$on('gaTopicChange', function(evt, newTopic) {
-              if (scope.activeTopic != newTopic) {
-                scope.activeTopic = newTopic;
-              }
-            });
-         }
-       };
+          }
+        };
       });
 })();
