@@ -28,7 +28,7 @@ goog.require('ga_permalink');
       // to be moved in defaultBgOrder once 3d is live
       if (gaGlobalOptions.dev3d && gaBrowserSniffer.webgl) {
         bgs.splice(3, 0, {id: 'ch.swisstopo.terrain.3d',
-            label: 'terrain_layer'});
+            label: 'terrain_layer', is3d: true});
       }
 
       var getBgById = function(id) {
@@ -94,7 +94,7 @@ goog.require('ga_permalink');
             if (newBg) {
               bg = newBg;
               var layers = map.getLayers();
-              if (bg.id == 'voidLayer') {
+              if (bg.id == 'voidLayer' || bg.is3d) {
                 if (layers.getLength() > 0 &&
                     layers.item(0).background === true) {
                   layers.removeAt(0);

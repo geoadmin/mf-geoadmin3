@@ -110,8 +110,8 @@ goog.require('ga_storage_service');
     $scope.map = createMap();
 
     if (gaGlobalOptions.dev3d && gaBrowserSniffer.webgl) {
-      $rootScope.$on('gaBgChange', function(evt, newBgLayerId) {
-        $scope.globals.is3dActive = newBgLayerId == 'ch.swisstopo.terrain.3d';
+      $rootScope.$on('gaBgChange', function(evt, newBg) {
+        $scope.globals.is3dActive = !!newBg.is3d;
       });
       $scope.map.on('change:target', function(event) {
         if (!!$scope.map.getTargetElement()) {
