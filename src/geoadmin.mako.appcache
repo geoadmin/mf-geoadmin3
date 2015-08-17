@@ -1,6 +1,9 @@
-<%
-  defaultLanguage = 'en'
-  languages = ('de', 'en', 'fr', 'it', 'rm')
+<%page args="languages" /><%
+  import json
+  # The languages variable must contain simple quote to be correctly parsed in
+  # index.html but here it prevents python to parse the JSON. So we manually
+  # remove them.
+  languages = json.loads(languages[1:-1])
 %>CACHE MANIFEST
 # Version ${version}
 
@@ -12,12 +15,6 @@ ${version}/img/topics.png
 ${api_url}/${version}/rest/services
 % for lang in languages:
 ${api_url}/${version}/rest/services/all/MapServer/layersConfig?lang=${lang}
-% endfor
-
-# Use case: opens in offline then online.
-# In that case we need to have all languages, because we can't reload manually
-# files used by $translate.
-% for lang in languages:
 ${version}/locales/${lang}.json
 % endfor
 
