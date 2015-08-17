@@ -75,7 +75,6 @@ describe('ga_translation_service', function() {
     $httpBackend.whenGET('locales/en.json').respond({});
     $httpBackend.whenGET('locales/it.json').respond({});
     $httpBackend.whenGET('locales/rm.json').respond({});
-    $httpBackend.whenGET('locales/langnotexisting.json').respond(404, '');
   });
 
   afterEach(function () {
@@ -114,14 +113,11 @@ describe('ga_translation_service', function() {
     });
 
     it('defines a wrong language in the permlink then load the default language (topic not yet loaded)', function() {
-      expect(gaLang.get()).to.be(langPermalink);
-      $httpBackend.expectGET('locales/' + langPermalink + '.json');
+      expect(gaLang.get()).to.be(gaGlobalOptions.translationFallbackCode);
       $httpBackend.expectGET('locales/' + gaGlobalOptions.translationFallbackCode + '.json');
       $httpBackend.flush();
       expect(gaLang.get()).to.be(gaGlobalOptions.translationFallbackCode);
-      // TODO: The $translateChangeEnd event shouldn't be triggered for the non
-      // existing language
-      expect(cpt).to.be(2);
+      expect(cpt).to.be(1);
       expect(gaPermalink.getParams().lang).to.be(gaGlobalOptions.translationFallbackCode);
 
       // We set a lang not available in the topic
