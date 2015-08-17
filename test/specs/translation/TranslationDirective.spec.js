@@ -1,8 +1,11 @@
 describe('ga_translation_directive', function() {
-  var element, $rootScope, $compile, $gaBrowserSniffer;
+  var element, $rootScope, $compile, $gaBrowserSniffer, def, gaTopic;
       lang = 'rm',
       langs = ['de', 'fr', 'it', 'rm', 'en'],
       topics = [{
+          id: '5lang',
+          langs: ['de', 'fr', 'it', 'rm', 'en']
+      }, {
         id: '4lang',
         langs: ['de', 'fr', 'en', 'it']
       }, {
@@ -11,6 +14,9 @@ describe('ga_translation_directive', function() {
       }, {
         id: '2lang',
         langs: ['de', 'fr']
+      }, {
+        id: 'noLang',
+        langs: []
       }];
 
   beforeEach(function() {
@@ -28,13 +34,29 @@ describe('ga_translation_directive', function() {
       $provide.value('gaBrowserSniffer', {
         mobile: false
       });
+      var activeTopic = topics[topics.length - 1];
+      $provide.value('gaTopic', {
+        loadConfig: function() {
+          return def.promise;
+        },
+        get: function() {
+          return activeTopic;
+        },
+        set: function(topic) {
+          activeTopic = topic;
+          $rootScope.$broadcast('gaTopicChange', topic);
+        }
+      });
     });
 
-    inject(function(_$rootScope_, _$compile_, _gaGlobalOptions_, _gaBrowserSniffer_) {
+    inject(function(_$rootScope_, _$compile_, $q, _gaGlobalOptions_, _gaBrowserSniffer_, _gaTopic_) {
       $rootScope = _$rootScope_;
       $compile = _$compile_;
+      def = $q.defer();
+      def.resolve();
       gaGlobalOptions = _gaGlobalOptions_;
       gaBrowserSniffer = _gaBrowserSniffer_;
+      gaTopic = _gaTopic_;
     });
     gaGlobalOptions.translationFallbackCode = 'de';
   });
@@ -61,6 +83,7 @@ describe('ga_translation_directive', function() {
       };
       element = angular.element('<div ga-translation-selector ga-translation-selector-options="options"></div>');
       $compile(element)($rootScope);
+      gaTopic.set(topics[0]);
       $rootScope.$digest();
     });
 
@@ -73,12 +96,12 @@ describe('ga_translation_directive', function() {
     });
 
     it('updates correctly the html on multiple topic change event', function() {
-      $rootScope.$broadcast('gaTopicChange', topics[0]);
+      gaTopic.set(topics[1]);
       $rootScope.$digest();
       var items = element.find('a');
       expect(items.length).to.be(4);
 
-      $rootScope.$broadcast('gaTopicChange', topics[1]);
+      gaTopic.set(topics[2]);
       $rootScope.$digest();
       items = element.find('a');
       expect(items.length).to.be(3);
@@ -138,6 +161,7 @@ describe('ga_translation_directive', function() {
       };
       element = angular.element('<div ga-translation-selector ga-translation-selector-options="options"></div>');
       $compile(element)($rootScope);
+      gaTopic.set(topics[0]);
       $rootScope.$digest();
     });
 
@@ -150,13 +174,13 @@ describe('ga_translation_directive', function() {
     });
 
     it('updates correctly the html on multiple topic change event', function() {
-      $rootScope.$broadcast('gaTopicChange', topics[0]);
+      gaTopic.set(topics[1]);
       $rootScope.$digest();
       // In phantomjs an empty option is added but not in a real browser
       var items = element.find('select option[value]');
       expect(items.length).to.be(4); 
 
-      $rootScope.$broadcast('gaTopicChange', topics[1]);
+      gaTopic.set(topics[2]);
       $rootScope.$digest();
       items = element.find('select option[value]');
       expect(items.length).to.be(3);
