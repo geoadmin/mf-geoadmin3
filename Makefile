@@ -182,6 +182,7 @@ ol3cesium: .build-artefacts/ol3-cesium
 	cd .build-artefacts/ol3-cesium; \
 	git reset HEAD --hard; \
 	git checkout $(OL3_CESIUM_VERSION); \
+	git submodule update --recursive --init --force; \
 	git show; \
 	make dist; \
 	node build/build.js ../../scripts/ol3cesium-debug-geoadmin.json dist/ol3cesium-debug.js;  \
