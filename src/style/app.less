@@ -501,12 +501,14 @@ input[type=text][readonly] {
   .btn-primary .icon-arrow-left{
     vertical-align: middle;
   }
+
   [ga-help] {
     visibility: visible;
     height: 100%;
     float: left;
     width: 30px;
   }
+
   .ga-title {
     font-size: 2em;
     line-height: 1.7em;
@@ -629,21 +631,18 @@ a .ga-icon-separator {
     z-index: 1100;
   }
   
-  .hidden-collapsed {
-    display: inline;
+  .icon-caret-down {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    margin: 0 7px 0 12px;
+    text-align: center;
+    transition: transform 0.2s ease;
+    vertical-align: -2px;
   }
-  
-  .visible-collapsed {
-    display: none;
-  }
-  
-  .collapsed {
-    .hidden-collapsed {
-      display: none;
-    }
-    .visible-collapsed {
-      display: inline;
-    }
+
+  .collapsed .icon-caret-down {
+    transform: rotate(-90deg);
   }
 
   .panel {
@@ -690,7 +689,7 @@ a .ga-icon-separator {
       max-height: 250px;
       @media (max-height: 800px) {
         max-height: 150px;
-      }
+    }
       @media (max-width: @screen-phone) {
         max-height: 250px;
       }
@@ -717,11 +716,21 @@ a .ga-icon-separator {
     text-decoration: none;
     .pulldown-hover;
   }
-  .panel > .accordion-toggle {
-    @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
-      padding-top: 12px;
-      padding-bottom: 12px;
+
+  > .panel > .panel-heading {
+    padding: 10px 10px 10px 0;
+
+    [ga-help] {
+      padding: 0;
+      vertical-align: middle;
     }
+
+    @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
+      padding: 12px 10px 12px 0;
+    }
+  }
+
+  .panel > .accordion-toggle {
     border-bottom: 1px solid #c7c7c7;
     font-weight: bold;
     .transition(background-color .35s ease);
@@ -735,16 +744,6 @@ a .ga-icon-separator {
       background-color: #e9e9e9;
       color: #000;
       border-bottom: 1px solid #fff;
-    }
-    &.panel-heading .icon-caret-right {
-      padding: 0 1px 0 2px;
-    }
-    &.panel-heading .icon-question-circle {
-      vertical-align: middle;
-    }
-    .icon-caret-right, .icon-caret-down {
-      margin-right: .5em;
-      vertical-align: middle;
     }
     .pulldown-hover;
   }
@@ -761,8 +760,25 @@ a .ga-icon-separator {
   color: #fff;
   font-weight: bold;
   .box-shadow(6px 6px 12px rgba(0, 0, 0, 0.175));
-  .transition(all .35s ease);
 
+  .icon-caret-up {
+    display: inline-block;
+    transition: transform 0.2s ease;
+  }
+  .visible-collapsed {
+    display: none;
+  }
+  &.collapsed {
+    .icon-caret-up {
+      transform: rotate(180deg);
+    }
+    .visible-collapsed {
+      display: inline;
+    }
+    .hidden-collapsed {
+      display: none;
+    }
+  }
   .icon-reorder, .icon-remove {
     display: none;
   }
@@ -775,7 +791,7 @@ a .ga-icon-separator {
     border-color: #2E2F2F;
     color: #fff;
   }
-
+  
   @media (max-width: @screen-phone) {
     position: fixed;
     top: 0;
@@ -785,7 +801,11 @@ a .ga-icon-separator {
     margin: 0;
     padding: 0;
     border-bottom-right-radius: 0;
-
+    transition: background-color 0.2s ease;
+  
+    .icon-caret-up {
+      display: none;
+    }
     &.collapsed {
       box-shadow: none;
       background: transparent;
@@ -794,7 +814,7 @@ a .ga-icon-separator {
       color: #333 !important;
     }
 
-    .icon-caret-down, .icon-caret-up, span[translate] {
+    span[translate], .icon-caret-up {
       display: none;
     }
 
@@ -813,9 +833,14 @@ a .ga-icon-separator {
   position: relative;
   .dropdown-toggle {
     float: right;
-    padding-right: 1em;
+    margin-right: 5px;
     height: 40px;
     line-height: 40px;
+
+    @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
+      height: 44px;
+      line-height: 44px;
+    }
   }
   a i {
     .transition(all .20s ease);
