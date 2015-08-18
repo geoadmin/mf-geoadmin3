@@ -37,6 +37,13 @@ RedirectMatch ^${apache_base_path}$ ${apache_base_path}/
 
 Alias ${apache_base_path}/src ${apache_base_directory}/src
 Alias ${apache_base_path}/ ${apache_base_directory}/prd/
+RewriteRule ${apache_base_path}/(src|[0-9]+)/layersConfig http:${api_url}/rest/services/all/MapServer/layersConfig [P]
+RewriteRule ${apache_base_path}/(src|[0-9]+)/services http:${api_url}/rest/services [P]
+
+<LocationMatch ${apache_base_path}/(src|[0-9]+)/(layersConfig|services)>
+   Order allow,deny
+   Allow from all
+</LocationMatch>
 
 # Cached resources
 RewriteRule ^${apache_base_path}/[0-9]+/(img|lib|style|locales)(.*) ${apache_base_directory}/prd/$1$2
@@ -75,6 +82,6 @@ RewriteRule ^${apache_base_path}/sitemap_(.*)\.xml http:${api_url}/${version}/si
     Header unset Vary
     Header unset Cache-Control
     Header unset Pragma
-    Header set Cache-Control "no-cache, no-store, must-revalidate"
+    Header set Cache-Control "no-cache, must-revalidate"
     Header set Pragma "no-cache"
 </LocationMatch>

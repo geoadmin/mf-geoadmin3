@@ -11,10 +11,9 @@ CACHE:
 ${version}/lib/build.js	
 ${version}/style/app.css
 ${version}/style/font-awesome-3.2.1/font/fontawesome-webfont.woff?v=3.2.1
-${version}/img/topics.png
-${api_url}/${version}/rest/services
+${version}/services
 % for lang in languages:
-${api_url}/${version}/rest/services/all/MapServer/layersConfig?lang=${lang}
+${version}/layersConfig?lang=${lang}
 ${version}/locales/${lang}.json
 % endfor
 
