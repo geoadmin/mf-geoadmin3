@@ -250,6 +250,7 @@ goog.require('ga_topic_service');
       searchFocused: !gaBrowserSniffer.mobile,
       homescreen: false,
       tablet: gaBrowserSniffer.mobile && !gaBrowserSniffer.phone,
+      phone: gaBrowserSniffer.phone,
       touch: gaBrowserSniffer.touchDevice,
       webkit: gaBrowserSniffer.webkit,
       ios: gaBrowserSniffer.ios,

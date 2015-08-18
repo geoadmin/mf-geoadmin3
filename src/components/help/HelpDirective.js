@@ -145,5 +145,87 @@ goog.require('ga_help_service');
       }
     };
   });
+
+  /**
+   * This directive highlights the element designed by a jquery selector
+   * displaying a big shadow around him then display a toolitp with an help
+   * inside.
+   */
+  module.directive('gaHelpHighlight', function($document, $window, $translate,
+      $timeout) {
+    var transitionClass = 'ga-help-hl-transition';
+    return {
+      restrict: 'A',
+      link: function(scope, element, attrs) {
+        var target,
+            win = $($window),
+            container = $document.find('.ga-help-hl-container');
+
+        if (!container.length) {
+          container = $(
+            '<div class="ga-help-hl-container">' +
+              '<div class="ga-help-hl"></div>' +
+            '</div>');
+          $(document.body).append(container);
+          container.on('click', function(evt) {
+            evt.stopPropagation();
+          });
+        }
+
+        // Highlighter
+        var hl = container.find('.ga-help-hl');
+
+        // Remove popover,  style and listeners
+        var clean = function(evt) {
+          container.hide();
+          hl.removeAttr('style').removeClass(transitionClass);
+          target.off('hidden.bs.popover keydown', clean).popover('destroy');
+          win.off('resize', clean);
+
+          // The destroy of popover is effective after the end of animation
+          // (150ms) so we re-focus the target after this period
+          $timeout(function() {
+            target.focus();
+          }, 160, false);
+        };
+        var hidePopover = function(evt) {
+          target.popover('hide');
+        };
+
+        element.click(function(evt) {
+          if (!target) {
+            target = $(attrs['gaHelpHighlight']);
+          }
+          // Init the highlight position where the user has clicked
+          container.show();
+          hl.css({
+            top: evt.pageY + 'px',
+            left: evt.pageX + 'px'
+          });
+
+          // Show the popover at the end of transition
+          target.popover({
+            placement: 'bottom',
+            container: 'body',
+            delay: {'show': 310, 'hide': 0},
+            title: $translate.instant('help_search_data_title'),
+            content: $translate.instant('help_search_data'),
+            trigger: 'focus'
+          }).focus().one('hidden.bs.popover keydown', clean);
+
+          // Start transition
+          var offset = target.offset();
+          hl.addClass(transitionClass).css({
+            top: offset.top - 5 + 'px',
+            left: offset.left - 5 + 'px',
+            width: target.outerWidth() + 10 + 'px',
+            height: target.outerHeight() + 10 + 'px'
+          });
+
+          win.on('resize', clean);
+        });
+      }
+    };
+  });
 })();
 

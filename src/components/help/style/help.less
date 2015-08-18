@@ -14,3 +14,25 @@
   }
 }
 
+.ga-help-hl-container {
+  display: none;
+  position: absolute;
+  top: 0;
+  right:0;
+  bottom: 0;
+  left: 0;
+  z-index: 3000;
+  margin: auto;
+}
+.ga-help-hl {
+  position: absolute;
+  width: 0;
+  height: 0;
+  box-shadow: 0 0 0 99999px rgba(0, 0, 0, .4);
+}
+
+.ga-help-hl-transition {
+  transition: .3s ease;
+  transition-property: top,left,width,height;
+  transition-delay: .01s; /* Start animation when start position is set */
+}

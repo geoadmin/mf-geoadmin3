@@ -67,6 +67,10 @@ html, body {
   margin: 0;
   padding: 0;
   overflow: hidden;
+
+  > .popover {
+    z-index: 3000;
+  }
 }
 
 input::-ms-clear {
@@ -201,8 +205,7 @@ button.ga-btn, .ol-control button {
   }
   
   &.ga-full-screen-no-inputs #search-container, 
-  #logo, #background-selection, 
-  #toptools, #pulldown, #footer {
+  #logo, #toptools, #pulldown, #footer {
     display: none;
   }
 }
@@ -885,6 +888,14 @@ a .ga-icon-separator {
     overflow-x: hidden;
     overflow-y: auto;
     max-height: 200px;
+  }
+
+  .ga-more-layers {
+    width: 100%;
+    padding: 5px;
+    text-align: right;
+    font-size: 12px;
+    font-weight: bold;
   }
 }
 
