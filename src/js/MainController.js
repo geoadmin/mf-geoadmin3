@@ -1,5 +1,6 @@
 goog.provide('ga_main_controller');
 
+goog.require('ga_background_service');
 goog.require('ga_map');
 goog.require('ga_networkstatus_service');
 goog.require('ga_storage_service');
@@ -10,7 +11,8 @@ goog.require('ga_storage_service');
     'pascalprecht.translate',
     'ga_map',
     'ga_networkstatus_service',
-    'ga_storage_service'
+    'ga_storage_service',
+    'ga_background_service'
   ]);
 
   /**
@@ -20,7 +22,7 @@ goog.require('ga_storage_service');
       $translate, $window, $document, gaBrowserSniffer, gaHistory,
       gaFeaturesPermalinkManager, gaLayersPermalinkManager, gaMapUtils,
       gaRealtimeLayersManager, gaNetworkStatus, gaPermalink, gaStorage,
-      gaGlobalOptions) {
+      gaGlobalOptions, gaBackground) {
 
     var createMap = function() {
       var toolbar = $('#zoomButtons')[0];
@@ -108,8 +110,8 @@ goog.require('ga_storage_service');
     $scope.map = createMap();
 
     if (gaGlobalOptions.dev3d && gaBrowserSniffer.webgl) {
-      $rootScope.$on('gaBgChange', function(evt, newBgLayerId) {
-        $scope.globals.is3dActive = newBgLayerId == 'ch.swisstopo.terrain.3d';
+      $rootScope.$on('gaBgChange', function(evt, newBg) {
+        $scope.globals.is3dActive = !!newBg.is3d;
       });
       $scope.map.on('change:target', function(event) {
         if (!!$scope.map.getTargetElement()) {
@@ -141,6 +143,9 @@ goog.require('ga_storage_service');
     });
     $scope.map.addInteraction(keyboardPan);
     $scope.map.addInteraction(new ol.interaction.KeyboardZoom());
+
+    // Load the background if the "bgLayer" parameter exist.
+    gaBackground.init($scope.map);
 
     // Activate the "layers" parameter permalink manager for the map.
     gaLayersPermalinkManager($scope.map);

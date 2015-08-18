@@ -1,5 +1,6 @@
 goog.provide('ga_offline_service');
 
+goog.require('ga_background_service');
 goog.require('ga_storage_service');
 goog.require('ga_styles_service');
 (function() {
@@ -7,7 +8,8 @@ goog.require('ga_styles_service');
   var module = angular.module('ga_offline_service', [
     'ga_debounce_service',
     'ga_storage_service',
-    'ga_styles_service'
+    'ga_styles_service',
+    'ga_background_service'
   ]);
 
   /**
@@ -65,7 +67,7 @@ goog.require('ga_styles_service');
 
     this.$get = function($http, $rootScope, $timeout, $translate, $window,
         gaBrowserSniffer, gaGlobalOptions, gaLayers, gaMapUtils,
-        gaStorage, gaStyleFactory, gaUrlUtils) {
+        gaStorage, gaStyleFactory, gaUrlUtils, gaBackground) {
 
       // Defines if a layer is cacheable at a specific data zoom level.
       var isCacheableLayer = function(layer, z) {
@@ -342,7 +344,11 @@ goog.require('ga_styles_service');
                 olLayer = gaLayers.getOlLayerById(bodId);
                 if (olLayer) {
                   olLayer.background = (bg[i] === 'true');
-                  map.addLayer(olLayer);
+                  if (olLayer.background) {
+                    gaBackground.setById(map, bodId);
+                  } else {
+                    map.addLayer(olLayer);
+                  }
                 } else {
                   // TODO: The layer doesn't exist
                   continue;
