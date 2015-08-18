@@ -5586,6 +5586,12 @@ msgstr ""
 msgid "tt_lubis_bildorder"
 msgstr ""
 
+msgid "tt_lubis_rotation"
+msgstr ""
+
+msgid "tt_lubis_orthophoto"
+msgstr ""
+
 msgid "ch.bav.sachplan-infrastruktur-schiene_anhorung"
 msgstr ""
 

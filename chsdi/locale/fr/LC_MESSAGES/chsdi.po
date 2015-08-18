@@ -6623,6 +6623,12 @@ msgstr "Dimension de l'original"
 msgid "tt_lubis_ort"
 msgstr "Lieu"
 
+msgid "tt_lubis_orthophoto"
+msgstr "Lien vers l’orthophoto"
+
+msgid "tt_lubis_rotation"
+msgstr "Rotation"
+
 msgid "tt_lubis_x"
 msgstr "Coordonnée centre X"
 
