@@ -117,10 +117,9 @@ goog.require('ga_permalink');
         phone: mobile && testSize(480),
         events: eventsKeys,
         embed: embed,
-        isInFrame: ($window.location != $window.parent.location)
+        isInFrame: ($window.location != $window.parent.location),
+        webgl: !(typeof WebGLRenderingContext === 'undefined')
       };
     };
-
   });
-
 })();

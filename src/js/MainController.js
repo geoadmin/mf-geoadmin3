@@ -107,31 +107,30 @@ goog.require('ga_storage_service');
     // is central, as most directives/components need a reference to it.
     $scope.map = createMap();
 
-    if (gaGlobalOptions.dev3d) {
+    if (gaGlobalOptions.dev3d && gaBrowserSniffer.webgl) {
       $rootScope.$on('gaBgChange', function(evt, newBgLayerId) {
         $scope.globals.is3dActive = newBgLayerId == 'ch.swisstopo.terrain.3d';
       });
-    }
-
-    $scope.map.on('change:target', function(event) {
-      if (gaGlobalOptions.dev3d && !!$scope.map.getTargetElement()) {
-        $scope.$watch('globals.is3dActive', function(active) {
-          if (active && !$scope.ol3d) {
-            if (!$window.olcs) {
-              // lazy load cesium library
-              $.getScript(ol3CesiumLibUrl, function() {
+      $scope.map.on('change:target', function(event) {
+        if (!!$scope.map.getTargetElement()) {
+          $scope.$watch('globals.is3dActive', function(active) {
+            if (active && !$scope.ol3d) {
+              if (!$window.olcs) {
+                // lazy load cesium library
+                $.getScript(ol3CesiumLibUrl, function() {
+                  $scope.ol3d = loadCesiumViewer($scope.map, active);
+                });
+              } else {
+                // cesium library is already loaded
                 $scope.ol3d = loadCesiumViewer($scope.map, active);
-              });
-            } else {
-              // cesium library is already loaded
-              $scope.ol3d = loadCesiumViewer($scope.map, active);
+              }
+            } else if ($scope.ol3d) {
+              $scope.ol3d.setEnabled(active);
             }
-          } else if ($scope.ol3d) {
-            $scope.ol3d.setEnabled(active);
-          }
-        });
-      }
-    });
+          });
+        }
+      });
+    }
 
     // We add manually the keyboard interactions to have the possibility to
     // specify a condition

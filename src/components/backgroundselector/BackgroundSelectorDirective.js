@@ -42,7 +42,7 @@ goog.require('ga_topic_service');
               {id: 'voidLayer', label: 'void_layer'}];
 
           // to be moved in defaultBgOrder once 3d is live
-          if (gaGlobalOptions.dev3d) {
+          if (gaGlobalOptions.dev3d && gaBrowserSniffer.webgl) {
             defaultBgOrder.splice(3, 0,
                 {id: 'ch.swisstopo.terrain.3d', label: 'terrain_layer'});
           }
