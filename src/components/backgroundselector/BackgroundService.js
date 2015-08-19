@@ -19,6 +19,11 @@ goog.require('ga_permalink');
       var bg; // The current background
       var bgs = []; // The list of backgrounds available
       var voidLayer = {id: 'voidLayer', label: 'void_layer'};
+      var bodIdToFrontLabel = {
+        'ch.swisstopo.swissimage': 'bg_luftbild',
+        'ch.swisstopo.pixelkarte-farbe': 'bg_pixel_color',
+        'ch.swisstopo.pixelkarte-grau': 'bg_pixel_grey'
+      };
 
       var getBgById = function(id) {
         for (var i = 0, ii = bgs.length; i < ii; i++) {
@@ -50,9 +55,10 @@ goog.require('ga_permalink');
           if (bgLayerId === voidLayer.id) {
             bgs.push(voidLayer);
           } else {
+            var bodLabel = gaLayers.getLayerProperty(bgLayerId, 'label');
             bgs.push({
               id: bgLayerId,
-              label: gaLayers.getLayerProperty(bgLayerId, 'label')
+              label: bodIdToFrontLabel[bgLayerId] || bodLabel
             });
           }
         });
