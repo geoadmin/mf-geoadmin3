@@ -19,7 +19,8 @@ goog.require('ga_permalink');
         return {
           restrict: 'A',
           scope: {
-            map: '=gaMapMap'
+            map: '=gaMapMap',
+            ol3d: '=gaMapOl3d'
           },
           link: function(scope, element, attrs) {
             var map = scope.map;
@@ -78,6 +79,46 @@ goog.require('ga_permalink');
             updatePermalink();
 
             map.setTarget(element[0]);
+
+            scope.$watch('::ol3d', function(ol3d) {
+              if (ol3d) {
+                var camera = ol3d.getCesiumScene().camera;
+                var params = gaPermalink.getParams();
+
+                // initial location based on query params
+                var position, heading, pitch;
+                if (params.lon && params.lat && params.elevation) {
+                  var lon = parseFloat(params.lon);
+                  var lat = parseFloat(params.lat);
+                  var elevation = parseFloat(params.elevation);
+                  position = new Cesium.Cartographic(lon, lat, elevation);
+                }
+                if (params.heading) {
+                  heading = Cesium.Math.toRadians(parseFloat(params.heading));
+                }
+                if (params.pitch) {
+                  pitch = Cesium.Math.toRadians(parseFloat(params.pitch));
+                }
+                camera.setView({
+                  positionCartographic: position,
+                  heading: heading,
+                  pitch: pitch,
+                  roll: 0.0
+                });
+
+                // update permalink
+                camera.moveEnd.addEventListener(function() {
+                  var position = camera.positionCartographic;
+                  gaPermalink.updateParams({
+                    lon: position.longitude.toFixed(5),
+                    lat: position.latitude.toFixed(5),
+                    elevation: position.height.toFixed(0),
+                    heading: Cesium.Math.toDegrees(camera.heading).toFixed(3),
+                    pitch: Cesium.Math.toDegrees(camera.pitch).toFixed(3)
+                  });
+                });
+              }
+            });
 
             // Often when we use embed map the size of the map is fixed, so we
             // don't need to resize the map for printing (use case: print an
