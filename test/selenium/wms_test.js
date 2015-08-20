@@ -42,15 +42,13 @@ var runTest = function(cap, driver, target) {
   // Close popup
   driver.findElement(webdriver.By.xpath("//*[@id='import-wms-popup']//button[@ng-click='close($event)']")).click();
 
+  driver.findElement(webdriver.By.xpath("//*[@id='toptools']//a[contains(@href,'" + QUERYSTRING_WMS + "')]"))
   // Was the URL in the address bar adapted?
   if(!(cap.browser == "IE" && cap.browser_version == "9.0")) {
     // Check if url is adapted to WMS layer
-    driver.wait(function() {
-      return driver.getCurrentUrl().then(function(url) {
-        assert.ok(url.indexOf(QUERYSTRING_WMS) > -1);
-        return true;
-      });
-    }, 1000);
+    driver.getCurrentUrl().then(function(url) {
+      assert.ok(url.indexOf(QUERYSTRING_WMS) > -1);
+    });
   }
 
   // Go to the WMS layer page
