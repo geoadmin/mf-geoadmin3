@@ -97,6 +97,33 @@ goog.require('ga_storage_service');
       return cesiumViewer;
     };
 
+    var enableOl3d = function(ol3d, enable) {
+      var scene = ol3d.getCesiumScene();
+      var camera = scene.camera;
+      var bottom = olcs.core.pickBottomPoint(scene);
+      var transform = Cesium.Matrix4.fromTranslation(bottom);
+      if (enable) {
+        // 2d -> 3d transition
+        ol3d.setEnabled(true);
+        var angle = Cesium.Math.toRadians(50);
+        olcs.core.rotateAroundAxis(camera, -angle, camera.right, transform);
+      } else {
+        // 3d -> 2d transition
+        var angle = olcs.core.computeAngleToZenith(scene, bottom);
+        olcs.core.rotateAroundAxis(camera, -angle, camera.right, transform, {
+          callback: function() {
+            ol3d.setEnabled(false);
+            var view = ol3d.getOlMap().getView();
+            var resolution = view.getResolution();
+            var rotation = view.getRotation();
+
+            view.setResolution(view.constrainResolution(resolution));
+            view.setRotation(view.constrainRotation(rotation));
+          }
+        });
+      }
+    };
+
     // Determines if the window has a height <= 550
     var isWindowTooSmall = function() {
       return ($($window).height() <= 550);
@@ -127,7 +154,7 @@ goog.require('ga_storage_service');
                 $scope.ol3d = loadCesiumViewer($scope.map, active);
               }
             } else if ($scope.ol3d) {
-              $scope.ol3d.setEnabled(active);
+              enableOl3d($scope.ol3d, active);
             }
           });
         }
