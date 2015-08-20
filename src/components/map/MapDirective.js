@@ -64,14 +64,17 @@ goog.require('ga_permalink');
 
             // Update permalink based on view states.
             var updatePermalink = function() {
-              var center = view.getCenter();
-              var zoom = view.getZoom();
-              // when the directive is instantiated the view may not
-              // be defined yet.
-              if (center && zoom !== undefined) {
-                var x = center[1].toFixed(2);
-                var y = center[0].toFixed(2);
-                gaPermalink.updateParams({X: x, Y: y, zoom: zoom});
+              // only update the permalink in 2d mode
+              if (!scope.ol3d || !scope.ol3d.getEnabled()) {
+                var center = view.getCenter();
+                var zoom = view.getZoom();
+                // when the directive is instantiated the view may not
+                // be defined yet.
+                if (center && zoom !== undefined) {
+                  var x = center[1].toFixed(2);
+                  var y = center[0].toFixed(2);
+                  gaPermalink.updateParams({X: x, Y: y, zoom: zoom});
+                }
               }
             };
             view.on('propertychange', gaDebounce.debounce(updatePermalink,
