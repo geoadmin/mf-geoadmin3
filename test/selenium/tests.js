@@ -42,7 +42,7 @@ var RunFullTests = function(cap) {
 }
 
 //run tests for all browser (3 last version of IE, Chrome, Firefox) 
-browsers.capabilities.forEach(function(cap){
+browsers.capabilities.forEach(function(cap) {
   //we build the driver only once for all tests per browser.
   var driver = new webdriver.Builder().
     usingServer('http://hub.browserstack.com/wd/hub').
@@ -50,13 +50,13 @@ browsers.capabilities.forEach(function(cap){
     build();
     
   //show a link for each browser + version for visual results.
-  driver.getSession().then(function(sess){
+  driver.getSession().then(function(sess) {
     console.log("running all tests for: " + cap.browser + "(" + cap.browser_version + ") on " + cap.os + " " + cap.os_version);
-    console.log("  See more results or https://www.browserstack.com/automate/builds/dddb1242fb9f3ffe297b057e6da2ea964b4caf1a/sessions/"+sess.id_);
+    console.log("  See more results or https://www.browserstack.com/automate/builds/dddb1242fb9f3ffe297b057e6da2ea964b4caf1a/sessions/" + sess.id_);
   });
 
   //run all the tests
-  try{
+  try {
     startTest.runTest(cap, driver, cmd.target);
     if (RunFullTests(cap)) {
       searchTest.runTest(cap, driver, cmd.target);
@@ -68,12 +68,12 @@ browsers.capabilities.forEach(function(cap){
       //which leaves the page in a browser dependant state
       printTest.runTest(cap, driver, cmd.target);
     }
-  }catch(err){
+  } catch(err) {
     //we need this block for the finally, as we definitly want to quit the driver, otherwise it stays idle for ~2 min blocking the next testrun.
     throw err;
     driver.quit();
   }
-  finally{
+  finally {
     driver.quit();
   }
 });
