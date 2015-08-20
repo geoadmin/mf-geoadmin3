@@ -8,7 +8,7 @@ from pyramid.response import Response
 import pyramid.httpexceptions as exc
 
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
-from sqlalchemy.exc import InternalError
+from sqlalchemy.exc import InternalError, DataError
 from sqlalchemy.sql.expression import cast, func
 from sqlalchemy import Text, Integer, Boolean, Numeric, Date
 from sqlalchemy import text
@@ -304,7 +304,7 @@ def _get_features(params, extended=False):
             query = query.filter(model.id == featureId)
             try:
                 feature = query.one()
-            except NoResultFound:
+            except (NoResultFound, DataError):
                 feature = None
             except MultipleResultsFound:
                 raise exc.HTTPInternalServerError('Multiple features found for the same id %s' % featureId)

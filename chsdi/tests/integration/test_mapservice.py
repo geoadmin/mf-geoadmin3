@@ -286,6 +286,9 @@ class TestMapServiceView(TestsBase):
         resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/0', status=404)
         resp.mustcontain('No feature with id')
 
+        resp = self.testapp.get('/rest/services/api/MapServer/ch.bafu.bundesinventare-bln/htmlPopup', status=404)
+        resp.mustcontain('No feature with id')
+
     def test_feature_valid(self):
         resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/362', status=200)
         self.failUnless(resp.content_type == 'application/json')
