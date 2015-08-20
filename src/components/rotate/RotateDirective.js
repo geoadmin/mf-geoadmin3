@@ -31,7 +31,7 @@ goog.provide('ga_rotate_directive');
         // Button event - map rotation is animated
         element.bind('click', function(e) {
           e.preventDefault();
-          gaMapUtils.resetMapToNorth(map, view);
+          gaMapUtils.resetMapToNorth(map);
         });
       }
     };
