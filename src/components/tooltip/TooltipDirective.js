@@ -12,13 +12,14 @@ goog.require('ga_styles_service');
     'ga_popup_service',
     'ga_map_service',
     'ga_styles_service',
+    'ga_time_service',
     'pascalprecht.translate'
   ]);
 
   module.directive('gaTooltip',
       function($timeout, $http, $q, $translate, $sce, gaPopup, gaLayers,
           gaBrowserSniffer, gaDefinePropertiesForLayer, gaMapClick, gaDebounce,
-          gaPreviewFeatures, gaStyleFactory, gaMapUtils) {
+          gaPreviewFeatures, gaStyleFactory, gaMapUtils, gaTime) {
         var popupContent = '<div ng-repeat="htmlsnippet in options.htmls">' +
                             '<div ng-bind-html="htmlsnippet"></div>' +
                             '<div class="ga-tooltip-separator" ' +
@@ -41,7 +42,6 @@ goog.require('ga_styles_service');
                 vector,
                 vectorSource,
                 parser,
-                year,
                 listenerKey;
 
             parser = new ol.format.GeoJSON();
@@ -49,10 +49,6 @@ goog.require('ga_styles_service');
             $scope.$on('gaTopicChange', function(event, topic) {
               currentTopic = topic.id;
               initTooltip();
-            });
-
-            $scope.$on('gaTimeSelectorChange', function(event, currentyear) {
-              year = currentyear;
             });
 
             $scope.$on('gaTriggerTooltipRequest', function(event, data) {
@@ -278,7 +274,7 @@ goog.require('ga_styles_service');
 
                   // Only timeEnabled layers use the timeInstant parameter
                   if (layerToQuery.timeEnabled) {
-                    params.timeInstant = year ||
+                    params.timeInstant = gaTime.get() ||
                         yearFromString(layerToQuery.time);
                   }
 

@@ -1,31 +1,32 @@
 goog.provide('ga_timeselector_directive');
 
+goog.require('ga_browsersniffer_service');
 goog.require('ga_debounce_service');
 goog.require('ga_map_service');
-goog.require('ga_permalink_service');
 goog.require('ga_slider_directive');
+goog.require('ga_time_service');
+
 (function() {
 
   var module = angular.module('ga_timeselector_directive', [
+    'ga_browsersniffer_service',
     'ga_debounce_service',
     'ga_map_service',
-    'ga_permalink_service',
     'ga_slider_directive',
+    'ga_time_service',
     'pascalprecht.translate'
   ]);
 
   module.controller('GaTimeSelectorDirectiveController',
-    function($scope, gaLayers, gaLayerFilters, gaPermalink, gaBrowserSniffer) {
+    function($scope, gaLayerFilters) {
       $scope.layers = $scope.map.getLayers().getArray();
       $scope.layerFilter = gaLayerFilters.timeEnabledLayersFilter;
-      $scope.permalinkValue = parseFloat(gaPermalink.getParams().time);
-      $scope.fromPermalink = !isNaN($scope.permalinkValue);
-      $scope.isActive = $scope.fromPermalink;
+      $scope.isActive = false;
     }
   );
 
-  module.directive('gaTimeSelectorBt', function($rootScope, gaPermalink,
-      $translate, gaBrowserSniffer) {
+  module.directive('gaTimeSelectorBt', function($rootScope, $translate,
+      gaBrowserSniffer, gaTime) {
     return {
       restrict: 'A',
       replace: true,
@@ -44,14 +45,15 @@ goog.require('ga_slider_directive');
           }
         });
 
-        // Enable the button if it is disable
+        // Enable the directive
         var enable = function() {
           if (scope.isDisable) {
             scope.isDisable = false;
           }
+          scope.isActive = !!(gaTime.get());
         };
 
-        // Disable the button in any case
+        // Disable the directive
         var disable = function() {
           scope.isDisable = true;
           scope.isActive = false;
@@ -59,7 +61,8 @@ goog.require('ga_slider_directive');
 
         // Toggle the state of the component between active and enable
         scope.toggle = function(evt) {
-          $rootScope.$broadcast('gaTimeSelectorToggle', !scope.isActive);
+          scope.isActive = !scope.isActive;
+          $rootScope.$broadcast('gaTimeSelectorToggle', scope.isActive);
 
           // Avoid the add of # at the end of the url
           if (evt) {
@@ -85,20 +88,17 @@ goog.require('ga_slider_directive');
           elt.tooltip('hide');
         };
 
-        // Events to force the state of the component from another directive
-        scope.$on('gaTimeSelectorEnabled', enable);
-        scope.$on('gaTimeSelectorDisabled', disable);
-        scope.$on('gaTimeSelectorToggle', function(evt, active) {
-          scope.isActive = active;
+        // Activate/deactivate automatically the time selector
+        scope.$on('gaTimeChange', function(evt, time) {
+          enable();
         });
 
         // If there is one or more timeEnabled layer we display the button
         scope.$watchCollection('layers | filter:layerFilter',
             function(olLayers) {
-          if (olLayers.length == 0 && !scope.fromPermalink) {
+          if (olLayers.length == 0) {
             disable();
           } else {
-            scope.fromPermalink = false;
             enable();
           }
         });
@@ -107,8 +107,7 @@ goog.require('ga_slider_directive');
   });
 
   module.directive('gaTimeSelector',
-    function($rootScope, $timeout, gaBrowserSniffer, gaDebounce,
-        gaLayerFilters, gaLayers, gaPermalink) {
+    function(gaDebounce, gaLayers, gaTime) {
 
       // Magnetize a year to the closest available year
       var magnetize = function(currentYear, availableYears) {
@@ -126,23 +125,6 @@ goog.require('ga_slider_directive');
         return currentYear;
       };
 
-      // Update the layers with the new time parameter
-      // @param {String} timeStr A year in string format.
-      var updateLayers = function(olLayers, timeStr) {
-        // If time is:
-        // undefined : Remove the use a parameter time
-        // a string  : Apply the year selected
-        for (var i = 0, ii = olLayers.length; i < ii; i++) {
-          var olLayer = olLayers[i];
-          // We update only time enabled bod layers
-          if (olLayer.bodId && olLayer.timeEnabled) {
-            var layerTimeStr = gaLayers.getLayerTimestampFromYear(olLayer.bodId,
-                timeStr);
-            olLayer.time = layerTimeStr;
-          }
-        }
-      };
-
       return {
         restrict: 'A',
         templateUrl: 'components/timeselector/partials/timeselector.html',
@@ -154,15 +136,20 @@ goog.require('ga_slider_directive');
         link: function(scope, elt, attrs, controller) {
           scope.years = [];
 
-          // Activate/deactivate manually the time selector
-          scope.$on('gaTimeSelectorToggle', function(evt, active, year) {
+          // Events to force the state of the component from another directive
+          scope.$on('gaTimeSelectorToggle', function(evt, active) {
             scope.isActive = active;
-            if (year) {
-              scope.currentYear = year;
+          });
+
+          // Activate/deactivate automatically the time selector
+          scope.$on('gaTimeChange', function(evt, time) {
+            scope.isActive = !!(time);
+            if (angular.isDefined(time) && scope.currentYear != time) {
+              scope.currentYear = time;
             }
           });
 
-          // Watchers
+          // Update then magnetize the current year
           scope.$watchCollection('layers | filter:layerFilter',
               function(olLayers) {
             // We update the list of dates available then
@@ -172,31 +159,16 @@ goog.require('ga_slider_directive');
               scope.currentYear = magnetize(scope.currentYear,
                   scope.availableYears);
             }
-            if (olLayers.length == 0 && !scope.fromPermalink) {
-              scope.isActive = false;
-            } else {
-              scope.fromPermalink = false;
+            if (olLayers.length > 0 && scope.isActive) {
+              elt.show();
             }
           });
 
-          scope.$watch('isActive', function(active, old) {
-            if (angular.isDefined(active)) {
-              scope.years = active ? scope.options.years : [];
-              applyNewYear((active ? scope.currentYear : undefined));
-              elt.toggle(active);
-              if (scope.fromPermalink) {
-                // HACK to fix:
-                // https://github.com/geoadmin/mf-geoadmin3/issues/2054
-                // The html is correct but value is not displayed
-                $timeout(function() {
-                  elt.find('select option[selected]').
-                      attr('selected', 'selected');
-                }, 0, false);
-                scope.fromPermalink = false;
-              }
-            } else {
-              elt.hide();
-            }
+          // Activate/deactivate the component
+          scope.$watch('isActive', function(active) {
+            scope.years = active ? scope.options.years : [];
+            applyNewYear((active ? scope.currentYear : undefined));
+            elt.toggle(active);
           });
 
           // currentYear is always an integer
@@ -216,13 +188,7 @@ goog.require('ga_slider_directive');
             // minYear <= newYear <= maxYear
             if ((!newYear || (scope.options.minYear <= newYear &&
                 newYear <= scope.options.maxYear))) {
-              updateLayers(scope.layers, newYear);
-              if (newYear === undefined) {
-                gaPermalink.deleteParam('time');
-              } else {
-                gaPermalink.updateParams({time: newYear});
-              }
-              $rootScope.$broadcast('gaTimeSelectorChange', newYear);
+              gaTime.set(newYear);
             }
           };
           var applyNewYearDebounced = gaDebounce.debounce(applyNewYear, 200,
@@ -259,10 +225,10 @@ goog.require('ga_slider_directive');
           };
 
           // Initialize the state of the component
-          scope.currentYear = (scope.fromPermalink) ? scope.permalinkValue :
-              scope.options.maxYear;
-          elt.hide();
-
+          scope.currentYear = gaTime.get() || scope.options.maxYear;
+          if (gaTime.get()) {
+            scope.isActive = true;
+          }
         }
       };
     }

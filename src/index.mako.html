@@ -264,11 +264,13 @@ itemscope itemtype="http://schema.org/WebApplication"
 
     <div ga-timestamp-control ga-timestamp-control-map="map"></div>
 
+% if device != 'embed':
     <div ng-controller="GaTimeSelectorController">
       <div ga-time-selector ga-time-selector-map="map"
            ga-time-selector-options="options">
       </div>
     </div>
+% endif
 
     <div ng-controller="GaTooltipController">
       <div ga-tooltip 

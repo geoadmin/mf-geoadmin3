@@ -22,7 +22,7 @@ goog.require('ga_storage_service');
       $translate, $window, $document, gaBrowserSniffer, gaHistory,
       gaFeaturesPermalinkManager, gaLayersPermalinkManager, gaMapUtils,
       gaRealtimeLayersManager, gaNetworkStatus, gaPermalink, gaStorage,
-      gaGlobalOptions, gaBackground) {
+      gaGlobalOptions, gaBackground, gaTime) {
 
     var createMap = function() {
       var toolbar = $('#zoomButtons')[0];
@@ -138,11 +138,15 @@ goog.require('ga_storage_service');
     // specify a condition
     var keyboardPan = new ol.interaction.KeyboardPan({
       condition: function() {
-        return (!$scope.time);
+        return (!gaTime.get());
       }
     });
     $scope.map.addInteraction(keyboardPan);
     $scope.map.addInteraction(new ol.interaction.KeyboardZoom());
+
+    // Start managing global time parameter, when all permalink layers are
+    // added.
+    gaTime.init($scope.map);
 
     // Load the background if the "bgLayer" parameter exist.
     gaBackground.init($scope.map);
@@ -198,8 +202,9 @@ goog.require('ga_storage_service');
       $('meta[name="application-name"]').attr('content', title);
     });
 
-    $rootScope.$on('gaTimeSelectorChange', function(event, year) {
-      $scope.time = year;
+    $scope.time = gaTime.get();
+    $rootScope.$on('gaTimeChange', function(event, time) {
+      $scope.time = time; // Used in embed page
     });
 
     // Create switch device url

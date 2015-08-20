@@ -2,16 +2,21 @@ goog.provide('ga_print_directive');
 
 goog.require('ga_browsersniffer_service');
 goog.require('ga_print_style_service');
+goog.require('ga_time_service');
+
 (function() {
 
-  var module = angular.module('ga_print_directive',
-    ['ga_browsersniffer_service',
-     'pascalprecht.translate',
-     'ga_print_style_service']);
+  var module = angular.module('ga_print_directive', [
+    'ga_browsersniffer_service',
+    'pascalprecht.translate',
+    'ga_print_style_service',
+    'ga_time_service'
+  ]);
 
   module.controller('GaPrintDirectiveController', function($rootScope, $scope,
       $http, $q, $window, $translate, $timeout, gaLayers, gaMapUtils, 
-      gaPermalink, gaBrowserSniffer, gaWaitCursor, gaPrintStyleService) {
+      gaPermalink, gaBrowserSniffer, gaWaitCursor, gaPrintStyleService,
+      gaTime) {
 
     var pdfLegendsToDownload = [];
     var pdfLegendString = '_big.pdf';
@@ -22,7 +27,6 @@ goog.require('ga_print_style_service');
     var UNITS_RATIO = 39.37; // inches per meter
     var POLL_INTERVAL = 2000; //interval for multi-page prints (ms)
     var POLL_MAX_TIME = 600000; //ms (10 minutes)
-    var currentTime = undefined;
     var layersYears = [];
     var canceller;
     var currentMultiPrintId;
@@ -117,11 +121,6 @@ goog.require('ga_print_style_service');
 
       ctx.restore();
     };
-
-    // Listeners
-    $rootScope.$on('gaTimeSelectorChange', function(event, time) {
-      currentTime = time;
-    });
 
     // Encode ol.Layer to a basic js object
     var encodeLayer = function(layer, proj) {
@@ -466,7 +465,7 @@ goog.require('ga_print_style_service');
             });
           }
           // printing time series
-          if (config.timeEnabled && currentTime == undefined &&
+          if (config.timeEnabled && gaTime.get() == undefined &&
               multiPagesPrint) {
             enc['timestamps'] = config.timestamps;
           }

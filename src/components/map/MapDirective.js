@@ -16,7 +16,6 @@ goog.require('ga_permalink');
   module.directive('gaMap',
       function($window, $parse, $rootScope, $timeout, gaPermalink,
           gaBrowserSniffer, gaLayers, gaDebounce, gaOffline, gaGlobalOptions) {
-
         return {
           restrict: 'A',
           scope: {
@@ -123,6 +122,60 @@ goog.require('ga_permalink');
                 gaOffline.showExtent(map);
               } else {
                 gaOffline.hideExtent();
+              }
+            });
+
+            var savedTimeStr = {};
+            scope.$on('gaTimeChange', function(evt, time, oldTime) {
+              var switchTimeActive = (!oldTime && time);
+              var switchTimeDeactive = (oldTime && !time);
+              var olLayers = scope.map.getLayers().getArray();
+              var singleModif = false;
+
+              // Detection the time change has been triggered by a layer's
+              // 'propertychange' event.
+              // (ex: using layermanager)
+              if (switchTimeDeactive) {
+                for (var i = 0, ii = olLayers.length; i < ii; i++) {
+                  var olLayer = olLayers[i];
+                  // We update only time enabled bod layers
+                  if (olLayer.bodId && olLayer.timeEnabled &&
+                      angular.isDefined(olLayer.time) &&
+                      olLayer.time.substr(0, 4) != oldTime) {
+                    singleModif = true;
+                    break;
+                  }
+                }
+              }
+
+              // In case the time change event has been triggered by a layer's
+              // 'propertychange' event, we do nothing more.
+              // (ex: using the layer manager)
+              if (singleModif) {
+                savedTimeStr = {};
+                return;
+              }
+
+              // In case the user has done a global modification.
+              // (ex: using the time selector toggle)
+              for (var i = 0, ii = olLayers.length; i < ii; i++) {
+                var olLayer = olLayers[i];
+                // We update only time enabled bod layers
+                if (olLayer.bodId && olLayer.timeEnabled && olLayer.visible) {
+                  var layerTimeStr =
+                      gaLayers.getLayerTimestampFromYear(olLayer.bodId, time);
+                  if (switchTimeActive) {
+                    // We save the current value after a global deactivation.
+                    // (ex: using the time selector toggle)
+                    savedTimeStr[olLayer.id] = olLayer.time;
+                  } else if (switchTimeDeactive && savedTimeStr[olLayer.id]) {
+                    // We apply the saved values after a global deactivation.
+                    // (ex: using the time selector toggle)
+                    layerTimeStr = savedTimeStr[olLayer.id];
+                    savedTimeStr[olLayer.id] = undefined;
+                  }
+                  olLayer.time = layerTimeStr;
+                }
               }
             });
           }

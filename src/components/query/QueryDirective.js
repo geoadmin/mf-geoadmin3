@@ -542,7 +542,7 @@ goog.require('ga_storage_service');
         });
 
         var currentYear;
-        scope.$on('gaTimeSelectorChange', function(event, newYear) {
+        scope.$on('gaTimeChange', function(event, newYear) {
           if (newYear !== currentYear) {
             currentYear = newYear;
             if (scope.queryType == 0) {
