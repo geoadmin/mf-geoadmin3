@@ -29,18 +29,14 @@ var runTest = function(cap, driver, target) {
   // Close popup
   driver.findElement(webdriver.By.xpath("//*[@id='import-kml-popup']//button[@ng-click='close($event)']")).click();
 
+  driver.findElement(webdriver.By.xpath("//*[@id='toptools']//a[contains(@href,'" + POSITION_TO_KML + "')]"))
+
   // Was the URL in the address bar adapted?
   if(!(cap.browser == "IE" && cap.browser_version == "9.0")) {
-    // Check if url is adapted to KML presence and KML position
-    driver.wait(function() {
-      return driver.getCurrentUrl().then(function(url) {
-        assert.ok(url.indexOf(QUERYSTRING_KML) > -1);
-        assert.ok(url.indexOf(POSITION_TO_KML) > -1);
-        return true;
-      });
-    }, 2000);
+    driver.getCurrentUrl().then(function(url) {
+      assert.ok(url.indexOf(POSITION_TO_KML) > -1);
+    });
   }
-
   // Go to the KML linkedURL
   driver.get(target + '/?lang=de&layers='+QUERYSTRING_KML);
   //wait until topics related stuff is loaded.
