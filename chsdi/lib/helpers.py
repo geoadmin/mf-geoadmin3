@@ -71,7 +71,11 @@ def sanitize_url(url):
 
 
 def locale_negotiator(request):
-    lang = request.params.get('lang')
+    try:
+        lang = request.params.get('lang')
+    except UnicodeDecodeError:
+        raise HTTPBadRequest('Could not parse URL and parameters. Request send must be encoded in utf-8.')
+
     settings = get_current_registry().settings
     languages = settings['available_languages'].split()
     if lang == 'rm':
