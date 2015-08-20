@@ -11,51 +11,40 @@
 <tr><td class="cell-left">${_('ch.bafu.typisierung-fliessgewaesser.gefaelle')}</td>         <td>${c['attributes']['gefaelle'] or '-'}</td></tr>
 <tr><td class="cell-left">${_('ch.bafu.typisierung-fliessgewaesser.geo')}</td>              <td>${c['attributes']['geo'] or '-'}</td></tr>
 <%
-    from urllib2 import urlopen
-    url_pdf = "https://dav0.bgdi.admin.ch/bafu/"+c['attributes']['url_portraits']
-    response = None
-    try:
-        response = urlopen(url_pdf)
-        pdf = True
-    except:
-        pdf = False
-    finally:
-        if response:
-            response.close()
+    from chsdi.lib.helpers import resource_exists
+    pdf = None
+    if c['attributes']['url_portraits'] is not None:
+        webDavHost = request.registry.settings['webdav_host']
+        url_pdf = webDavHost + '/bafu/' + c['attributes']['url_portraits']
+        pdf = resource_exists(url_pdf)
 %>
+<tr>
+  <td class="cell-left">${_('ch.bafu.typisierung-fliessgewaesser.url_portraits')}</td>
+  <td>
 % if pdf:
-<tr><td class="cell-left">${_('ch.bafu.typisierung-fliessgewaesser.url_portraits')}</td>    <td><a href="${url_pdf}" target="_blank">${c['attributes']['url_portraits'] or '-'}</a></td></tr>
+    <a href="${url_pdf}" target="_blank">${c['attributes']['url_portraits']}</a></td>
 % else:
-<tr><td class="cell-left">${_('ch.bafu.typisierung-fliessgewaesser.url_portraits')}</td>    <td>-</td></tr>
+    -
 % endif
+</td>
+</tr>
 </%def>
 
 <%def name="extended_info(c, lang)">
 <%
+    from chsdi.lib.helpers import resource_exists
     lang = 'fr' if lang in ('fr', 'it') else 'de'
     url_uebersicht = 'url_uebersicht_%s' % lang
+    webDavHost = request.registry.settings['webdav_host']
+    pdf = None
+    pdf_legend = None
 
-    from urllib2 import urlopen
-    url_pdf = "https://dav0.bgdi.admin.ch/bafu/"+c['attributes']['url_portraits']
-    url_legend_pdf = "https://dav0.bgdi.admin.ch/bafu/"+c['attributes'][url_uebersicht]
-    response = None
-    try:
-        response = urlopen(url_pdf)
-        pdf = True
-    except:
-        pdf = False
-    finally:
-        if response:
-            response.close()
-    response = None
-    try:
-        response = urlopen(url_legend_pdf)
-        legend_pdf = True
-    except:
-        legend_pdf = False
-    finally:
-        if response:
-            response.close()
+    if c['attributes']['url_portraits'] is not None:
+        url_pdf = webDavHost + '/bafu/' + c['attributes']['url_portraits']
+        pdf = resource_exists(url_pdf)
+    if c['attributes'][url_uebersicht] is not None:
+        url_legend_pdf = webDavHost + '/bafu/' +c['attributes'][url_uebersicht]
+        pdf_legend = resource_exists(url_legend_pdf)
 %>
 
 <table class="table-with-border kernkraftwerke-extended">
@@ -112,7 +101,7 @@
 <tr>
 <th class="cell-left">${_('ch.bafu.typisierung-fliessgewaesser.url_uebersicht')}</th>
 % if legend_pdf:
-<td><a href="https://dav0.bgdi.admin.ch/bafu/${c['attributes'][url_uebersicht] or '-'}" target="_blank">${c['attributes'][url_uebersicht] or '-'}</a></td>
+<td><a href="${url_pdf_legend}" target="_blank">${c['attributes'][url_uebersicht] or '-'}</a></td>
 % else:
 <td>-</td>
 % endif
