@@ -17,8 +17,8 @@ goog.require('ga_storage_service');
     var geojson = new ol.format.GeoJSON();
     var stored;
     $scope.queryType = 1; // Filter attributes
-    $scope.searchableLayers = [];
-    $scope.selectByRectangleLayers = [];
+    $scope.queryableLayers = [];
+    $scope.tooltipLayers = [];
     $scope.queriesPredef = [];
     $scope.filters = [];
     $scope.featuresByLayer = {};
@@ -224,7 +224,7 @@ goog.require('ga_storage_service');
     $scope.searchByGeometry = function(layerBodId, offset) {
       $scope.queryType = 0;
 
-      if ($scope.selectByRectangleLayers.length == 0) {
+      if ($scope.tooltipLayers.length == 0) {
         resetResults();
         return;
       }
@@ -237,7 +237,7 @@ goog.require('ga_storage_service');
           offset: offset
         }, getGeometryParams());
 
-        var layersRequested = $scope.selectByRectangleLayers;
+        var layersRequested = $scope.tooltipLayers;
         if (layerBodId) {
           layersRequested = [
             gaMapUtils.getMapOverlayForBodId($scope.map, layerBodId)
@@ -317,23 +317,23 @@ goog.require('ga_storage_service');
 
     // Watcher/listener
     $scope.layers = $scope.map.getLayers().getArray();
-    $scope.selectByRectangleFilter = gaLayerFilters.selectByRectangle;
-    $scope.$watchCollection('layers | filter:selectByRectangleFilter',
+    $scope.tooltipFilter = gaLayerFilters.potentialTooltip;
+    $scope.$watchCollection('layers | filter:tooltipFilter',
         function(layers) {
-      $scope.selectByRectangleLayers = layers;
+      $scope.tooltipLayers = layers;
       if ($scope.isActive) {
         $scope.search();
       }
     });
 
-    $scope.searchableFilter = gaLayerFilters.searchable;
-    $scope.$watchCollection('layers | filter:searchableFilter',
+    $scope.queryableFilter = gaLayerFilters.queryable;
+    $scope.$watchCollection('layers | filter:queryableFilter',
         function(layers) {
-      $scope.searchableLayers = layers;
+      $scope.queryableLayers = layers;
 
       // Load new list of predefines queries and queryable attributes
       var predef = [];
-      angular.forEach($scope.searchableLayers, function(layer) {
+      angular.forEach($scope.queryableLayers, function(layer) {
         var queries = gaQuery.getPredefQueries(layer.bodId);
         if (queries) {
           angular.forEach(queries, function(query, idx) {
@@ -447,7 +447,7 @@ goog.require('ga_storage_service');
             scope.geometry = boxFeature.getGeometry();
             scope.useBbox = true;
 
-            if (scope.selectByRectangleLayers.length == 0) {
+            if (scope.tooltipLayers.length == 0) {
               scope.isActive = true;
               scope.$apply();
             } else {

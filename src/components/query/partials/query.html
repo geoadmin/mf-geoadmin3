@@ -1,12 +1,12 @@
-<div ng-if="selectByRectangleLayers.length == 0 && searchableLayers.length == 0">
+<div ng-if="tooltipLayers.length == 0 && queryableLayers.length == 0">
   <div class="ga-no-result" translate>no_searchable_layer</div>
 </div>
 
-<div ng-if="selectByRectangleLayers.length != 0 && searchableLayers.length == 0">
+<div ng-if="tooltipLayers.length != 0 && queryableLayers.length == 0">
   <div class="ga-bbox-info" translate>inform_draw_rectangl_ctrl</div>
 </div>
 
-<div ng-show="searchableLayers.length != 0">
+<div ng-show="queryableLayers.length != 0">
   <div class="form-group ga-queries-predefined" ng-show="queriesPredef.length > 0">
     <label translate>query_choose</label> 
     <select ng-model="queryPredef" 
@@ -41,7 +41,7 @@
         </div>
         <div class="ga-inputs">
           <select ng-model="f.layer"
-                  ng-options="l.label for l in searchableLayers" 
+                  ng-options="l.label for l in queryableLayers" 
                   ng-change="onChange();onChangeLayer($index, f)">
             <option value="" selected disabled translate>query_layer</option>
           </select>

@@ -1342,13 +1342,13 @@ goog.require('ga_urlutils_service');
                  layer.visible;
         },
         /**
-         * Keep selectByRectangle enabled layer
+         * Keep layers with potential tooltip
          */
-        selectByRectangle: function(layer) {
+        potentialTooltip: function(layer) {
           return layer.displayInLayerManager &&
                  layer.visible &&
                  layer.bodId &&
-                 gaLayers.getLayerProperty(layer.bodId, 'selectbyrectangle');
+                 gaLayers.getLayerProperty(layer.bodId, 'tooltip');
         },
         /**
          * Searchable layers
@@ -1358,6 +1358,18 @@ goog.require('ga_urlutils_service');
                  layer.visible &&
                  layer.bodId &&
                  gaLayers.getLayerProperty(layer.bodId, 'searchable');
+        },
+        /**
+         * Queryable layers (layers with queryable attributes)
+         */
+        queryable: function(layer) {
+          return layer.displayInLayerManager &&
+                 layer.visible &&
+                 layer.bodId &&
+                 gaLayers.getLayerProperty(layer.bodId,
+                                           'queryableAttributes') &&
+                 gaLayers.getLayerProperty(layer.bodId,
+                                           'queryableAttributes').length > 0;
         },
         /**
          * Keep only background layers
