@@ -421,6 +421,15 @@ class TestMapServiceView(TestsBase):
     def test_layersconfig_wrong_map(self):
         self.testapp.get('/rest/services/foo/MapServer/layersConfig', status=400)
 
+    def test_layersconfig_queryable_attributes(self):
+        resp = self.testapp.get('/rest/services/all/MapServer/layersConfig', status=200)
+        self.failUnless(resp.content_type == 'application/json')
+        jsonData = resp.json
+        self.failUnless('ch.bafu.gewaesserschutz-klaeranlagen_reinigungstyp' in jsonData)
+        layer = jsonData['ch.bafu.gewaesserschutz-klaeranlagen_reinigungstyp']
+        self.failUnless('queryableAttributes' in layer)
+        self.failUnless(len(layer['queryableAttributes']) > 0)
+
     def test_layer_attributes(self):
         resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln', status=200)
         self.assertTrue(resp.content_type == 'application/json')
