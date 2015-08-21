@@ -19,7 +19,7 @@
       <h1 id="title">Python translations</h1>
           <a href="testi18n?lang=de">Default to de</a> <br>
           <a href="testi18n?lang=en">En to en</a> <br>
-          <a href="testi18n?lang=toto">If not in available languages to de</a> <br>
+          <a href="testi18n?lang=toto">If not in available languages to browser default (or de)</a> <br>
       <h1 id="title">Services</h1>
       <h2 id="loaderjs">Loader js</h2>
           <a href="loader.js">Link to api</a> <br>
@@ -100,7 +100,7 @@
       <h2>MapProxy</h2>
           <h3>Mapproxy sevices</h3>
           <a href="mapproxy/demo">MapProxy demo</a><br>
-          <a href="mapproxy/wmts/1.0.0/WMTSCapabilities.xml">MapProxy WMS</a><br>
+          <a href="mapproxy/service?REQUEST=GetCapabilities">MapProxy WMS</a><br>
           <a href="mapproxy/wmts/1.0.0/WMTSCapabilities.xml">MapProxy WMTS</a><br>
           
           <h3>Raw GetCapabilities (Pyramid pur)</h3>
