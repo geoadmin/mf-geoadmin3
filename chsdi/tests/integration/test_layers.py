@@ -39,15 +39,20 @@ class LayersChecker(object):
             assert (models is not None and len(models) > 0), layer
             model = models[0]
             query = self.session.query(model.primary_key_column()).limit(1)
+            hasExtended = model.__extended_info__ if hasattr(model, '__extended_info__') else False
             ID = [q[0] for q in query]
             if ID:
-                yield (layer, str(ID[0]))
+                yield (layer, str(ID[0]), hasExtended)
 
-    def checkHtmlPopup(self, layer, feature):
+    def checkHtmlPopup(self, layer, feature, extended):
         for lang in ('de', 'fr', 'it', 'rm', 'en'):
             link = '/rest/services/all/MapServer/' + layer + '/' + feature + '/htmlPopup?callback=cb&lang=' + lang
             resp = self.testapp.get(link)
             assert resp.status_int == 200, link
+            if extended:
+                link = link.replace('htmlPopup', 'extendedHtmlPopup')
+                resp = self.testapp.get(link)
+                assert resp.status_int == 200, link
 
     def checkLegend(self, layer):
         for lang in ('de', 'fr', 'it', 'rm', 'en'):
@@ -62,8 +67,8 @@ class LayersChecker(object):
 
 def test_all_htmlpopups():
     with LayersChecker() as lc:
-        for layer, feature in lc.ilayersWithFeatures():
-            yield lc.checkHtmlPopup, layer, feature
+        for layer, feature, extended in lc.ilayersWithFeatures():
+            yield lc.checkHtmlPopup, layer, feature, extended
 
 
 def test_all_legends():
