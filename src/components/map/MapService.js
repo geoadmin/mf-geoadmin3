@@ -5,6 +5,7 @@ goog.require('ga_networkstatus_service');
 goog.require('ga_storage_service');
 goog.require('ga_styles_from_literals_service');
 goog.require('ga_styles_service');
+goog.require('ga_time_service');
 goog.require('ga_topic_service');
 goog.require('ga_urlutils_service');
 (function() {
@@ -18,7 +19,8 @@ goog.require('ga_urlutils_service');
     'ga_styles_service',
     'ga_urlutils_service',
     'ga_measure_service',
-    'ga_topic_service'
+    'ga_topic_service',
+    'ga_time_service'
   ]);
 
   module.provider('gaTileGrid', function() {
@@ -185,6 +187,11 @@ goog.require('ga_urlutils_service');
               return undefined;
             },
             set: function(val) {
+              if (this.time == val) {
+                // This 'if' avoid triggering a useless layer's 'propertychange'
+                // event.
+                return;
+              }
               if (this instanceof ol.layer.Layer) {
                 var src = this.getSource();
                 if (src instanceof ol.source.WMTS) {
@@ -749,12 +756,11 @@ goog.require('ga_urlutils_service');
         gaBrowserSniffer, gaDefinePropertiesForLayer, gaMapUtils,
         gaNetworkStatus, gaStorage, gaTileGrid, gaUrlUtils,
         gaStylesFromLiterals, gaGlobalOptions, gaPermalink, gaTopic,
-        gaLang) {
+        gaLang, gaTime) {
 
       var Layers = function(wmtsGetTileUrlTemplate,
           layersConfigUrlTemplate, legendUrlTemplate) {
         var layers;
-        var currentTime;
 
         var getWmtsGetTileUrl = function(layer, format) {
           return wmtsGetTileUrlTemplate
@@ -821,10 +827,6 @@ goog.require('ga_urlutils_service');
                 loadLayersConfig(newLang.language);
               });
 
-              $rootScope.$on('gaTimeSelectorChange', function(event, time) {
-                currentTime = time;
-              });
-
             } else { // Only translations has changed
               layers = response.data;
               $rootScope.$broadcast('gaLayersTranslationChange', layers);
@@ -849,7 +851,7 @@ goog.require('ga_urlutils_service');
         this.getOlLayerById = function(bodId) {
           var layer = layers[bodId];
           var olLayer;
-          var timestamp = this.getLayerTimestampFromYear(bodId, currentTime);
+          var timestamp = this.getLayerTimestampFromYear(bodId, gaTime.get());
           var attributions = [
             gaMapUtils.getAttribution('<a href="' +
               layer.attributionUrl +
@@ -1476,7 +1478,7 @@ goog.require('ga_urlutils_service');
 
     this.$get = function($rootScope, gaLayers, gaPermalink, $translate, $http,
         gaKml, gaMapUtils, gaWms, gaLayerFilters, gaUrlUtils, gaFileStorage,
-        gaTopic, gaGlobalOptions, $q) {
+        gaTopic, gaGlobalOptions, $q, gaTime) {
 
       var layersParamValue = gaPermalink.getParams().layers;
       var layersOpacityParamValue = gaPermalink.getParams().layers_opacity;
@@ -1644,6 +1646,12 @@ goog.require('ga_urlutils_service');
                   layer.setOpacity(opacity);
                 }
                 if (layer.timeEnabled && timestamp) {
+                  // If a time permalink exist we use it instead of the
+                  // timestamp, only if the layer is visible.
+                  if (gaTime.get() && layer.visible) {
+                    timestamp = gaLayers.getLayerTimestampFromYear(layer.bodId,
+                        gaTime.get());
+                  }
                   layer.time = timestamp;
                 }
                 map.addLayer(layer);
@@ -1743,6 +1751,8 @@ goog.require('ga_urlutils_service');
             addLayers(layerSpecs, layerOpacities, layerVisibilities,
                 layerTimestamps);
           }
+
+          gaTime.allowStatusUpdate = true;
 
           // Listen for next topic change events
           $rootScope.$on('gaTopicChange', addTopicSelectedLayers);
@@ -1984,13 +1994,8 @@ goog.require('ga_urlutils_service');
     // We store all review layers we add
     var olPreviewLayers = {};
 
-    this.$get = function($rootScope, gaLayers, gaWms) {
+    this.$get = function($rootScope, gaLayers, gaWms, gaTime) {
       var olPreviewLayer;
-      var time;
-
-      $rootScope.$on('gaTimeSelectorChange', function(event, year) {
-        time = year;
-      });
 
       var PreviewLayers = function() {
 
@@ -2014,7 +2019,7 @@ goog.require('ga_urlutils_service');
           // Apply the current time
           if (olPreviewLayer.bodId && olPreviewLayer.timeEnabled) {
             olPreviewLayer.time = gaLayers.getLayerTimestampFromYear(
-                olPreviewLayer.bodId, time);
+                olPreviewLayer.bodId, gaTime.get());
           }
 
           olPreviewLayer.preview = true;
