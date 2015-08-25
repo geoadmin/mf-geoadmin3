@@ -50,7 +50,7 @@ class TestHeight(TestVarnish):
         payload = {'easting': 600000.0, 'northing': 200000.0, '_id': self.hash()}
         resp = requests.get(self.api_url + '/rest/services/height', params=payload)
 
-        self.failUnless(resp.status_code == 403)
+        self.assertTrue(resp.status_code == 403)
 
     def test_height_good_referer(self):
 
@@ -58,7 +58,7 @@ class TestHeight(TestVarnish):
         headers = {'referer': 'http://unittest.geo.admin.ch'}
         resp = requests.get(self.api_url + '/rest/services/height', params=payload, headers=headers)
 
-        self.failUnless(resp.status_code == 200)
+        self.assertTrue(resp.status_code == 200)
 
 
 class TestProfile(TestVarnish):
@@ -68,7 +68,7 @@ class TestProfile(TestVarnish):
         payload = {'geom': '{"type":"LineString","coordinates":[[550050,206550],[556950,204150],[561050,207950]]}', '_id': self.hash()}
         resp = requests.get(self.api_url + '/rest/services/profile.json', params=payload)
 
-        self.failUnless(resp.status_code == 403)
+        self.assertTrue(resp.status_code == 403)
 
     def test_profile_json_good_referer(self):
 
@@ -76,14 +76,14 @@ class TestProfile(TestVarnish):
         headers = {'referer': 'http://unittest.geo.admin.ch'}
         resp = requests.get(self.api_url + '/rest/services/profile.json', params=payload, headers=headers)
 
-        self.failUnless(resp.status_code == 200)
+        self.assertTrue(resp.status_code == 200)
 
     def test_profile_csv_no_referer(self):
 
         payload = {'geom': '{"type":"LineString","coordinates":[[550050,206550],[556950,204150],[561050,207950]]}', '_id': self.hash()}
         resp = requests.get(self.api_url + '/rest/services/profile.csv', params=payload)
 
-        self.failUnless(resp.status_code == 403)
+        self.assertTrue(resp.status_code == 403)
 
     def test_profile_csv_good_referer(self):
 
@@ -91,7 +91,7 @@ class TestProfile(TestVarnish):
         headers = {'referer': 'http://unittest.geo.admin.ch'}
         resp = requests.get(self.api_url + '/rest/services/profile.csv', params=payload, headers=headers)
 
-        self.failUnless(resp.status_code == 200)
+        self.assertTrue(resp.status_code == 200)
 
 
 class TestLocation(TestVarnish):
@@ -103,8 +103,8 @@ class TestLocation(TestVarnish):
 
         returned_attrs = r.json()['results'][0]['attrs'].keys()
 
-        self.failUnless('geom_st_box2d' not in r.json()['results'][0]['attrs'])
-        self.failUnless(self.has_geometric_attributes(returned_attrs) is False)
+        self.assertTrue('geom_st_box2d' not in r.json()['results'][0]['attrs'])
+        self.assertTrue(self.has_geometric_attributes(returned_attrs) is False)
 
     def test_locations_good_referer(self):
 
@@ -115,8 +115,8 @@ class TestLocation(TestVarnish):
 
         returned_attrs = r.json()['results'][0]['attrs'].keys()
 
-        self.failUnless('geom_st_box2d' in r.json()['results'][0]['attrs'])
-        self.failUnless(self.has_geometric_attributes(returned_attrs) is True)
+        self.assertTrue('geom_st_box2d' in r.json()['results'][0]['attrs'])
+        self.assertTrue(self.has_geometric_attributes(returned_attrs) is True)
 
     def test_location_cached_no_referer(self):
 
@@ -125,8 +125,8 @@ class TestLocation(TestVarnish):
 
         returned_attrs = r.json()['results'][0]['attrs'].keys()
 
-        self.failUnless('geom_st_box2d' not in r.json()['results'][0]['attrs'])
-        self.failUnless(self.has_geometric_attributes(returned_attrs) is False)
+        self.assertTrue('geom_st_box2d' not in r.json()['results'][0]['attrs'])
+        self.assertTrue(self.has_geometric_attributes(returned_attrs) is False)
 
     def test_location_cached_good_referer(self):
 
@@ -137,8 +137,8 @@ class TestLocation(TestVarnish):
 
         returned_attrs = r.json()['results'][0]['attrs'].keys()
 
-        self.failUnless('geom_st_box2d' in r.json()['results'][0]['attrs'])
-        self.failUnless(self.has_geometric_attributes(returned_attrs) is True)
+        self.assertTrue('geom_st_box2d' in r.json()['results'][0]['attrs'])
+        self.assertTrue(self.has_geometric_attributes(returned_attrs) is True)
 
 
 class TestGebaeude(TestVarnish):
@@ -154,7 +154,7 @@ class TestGebaeude(TestVarnish):
         payload = {'_id': self.hash()}
         r = requests.get(self.api_url + '/rest/services/ech/MapServer/ch.bfs.gebaeude_wohnungs_register/490830_0', params=payload)
 
-        self.failUnless('geometry' not in r.json()['feature'].keys())
+        self.assertTrue('geometry' not in r.json()['feature'].keys())
 
     def test_find_gebaude_no_referer(self):
 
@@ -170,7 +170,7 @@ class TestGebaeude(TestVarnish):
 
         r = requests.get(self.api_url + '/rest/services/ech/MapServer/ch.bfs.gebaeude_wohnungs_register/490830_0', params=payload, headers=headers)
 
-        self.failUnless('geometry' in r.json()['feature'].keys())
+        self.assertTrue('geometry' in r.json()['feature'].keys())
 
     def test_find_gebaude_good_referer(self):
 

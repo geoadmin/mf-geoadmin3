@@ -85,4 +85,4 @@ class Test_SphinxApi(unittest.TestCase):
         if limit:
             api.SetLimits(0, limit, max(limit, 1000))
         res = api.Query(q, index)
-        self.failUnless(isinstance(res, dict))
+        self.assertTrue(isinstance(res, dict))

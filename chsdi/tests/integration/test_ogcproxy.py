@@ -16,7 +16,7 @@ class TestOGCproxyView(TestsBase):
     def test_proxy_authorized(self):
         params = {'url': 'http://www.geo.admin.ch/'}
         resp = self.testapp.get('/ogcproxy', params=params, headers=self.headers, status=200)
-        self.failUnless(resp.content_type == 'text/html')
+        self.assertTrue(resp.content_type == 'text/html')
         resp.mustcontain('Bundesgeoportal')
 
     def test_proxy_no_url(self):

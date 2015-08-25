@@ -7,15 +7,15 @@ class TestCatalogService(TestsBase):
 
     def test_catalog_no_params(self):
         resp = self.testapp.get('/rest/services/blw/CatalogServer', status=200)
-        self.failUnless(resp.content_type == 'application/json')
-        self.failUnless('root' in resp.json['results'])
-        self.failUnless('children' in resp.json['results']['root'])
-        self.failUnless('selectedOpen' in resp.json['results']['root']['children'][0])
-        self.failUnless('category' in resp.json['results']['root'])
+        self.assertTrue(resp.content_type == 'application/json')
+        self.assertTrue('root' in resp.json['results'])
+        self.assertTrue('children' in resp.json['results']['root'])
+        self.assertTrue('selectedOpen' in resp.json['results']['root']['children'][0])
+        self.assertTrue('category' in resp.json['results']['root'])
 
     def test_catalog_with_callback(self):
         resp = self.testapp.get('/rest/services/blw/CatalogServer', params={'callback': 'cb'}, status=200)
-        self.failUnless(resp.content_type == 'application/javascript')
+        self.assertTrue(resp.content_type == 'application/javascript')
 
     def test_catalog_existing_map_no_catalog(self):
         self.testapp.get('/rest/services/all/CatalogServer', status=404)
@@ -25,15 +25,15 @@ class TestCatalogService(TestsBase):
 
     def test_catalog_ordering(self):
         resp = self.testapp.get('/rest/services/inspire/CatalogServer', params={'lang': 'en'}, status=200)
-        self.failUnless(resp.content_type == 'application/json')
-        self.failUnless('AGNES' in resp.json['results']['root']['children'][0]['children'][0]['children'][0]['label'])
-        self.failUnless('Geoid in CH1903' in resp.json['results']['root']['children'][0]['children'][0]['children'][1]['label'])
+        self.assertTrue(resp.content_type == 'application/json')
+        self.assertTrue('AGNES' in resp.json['results']['root']['children'][0]['children'][0]['children'][0]['label'])
+        self.assertTrue('Geoid in CH1903' in resp.json['results']['root']['children'][0]['children'][0]['children'][1]['label'])
 
     def test_catalog_languages(self):
         for lang in ('de', 'fr', 'it', 'rm', 'en'):
             link = '/rest/services/ech/CatalogServer?lang=' + lang
             resp = self.testapp.get(link)
-            self.failUnless(resp.status_int == 200, link)
+            self.assertTrue(resp.status_int == 200, link)
 
     def test_all_catalogs(self):
 
@@ -70,7 +70,7 @@ class TestCatalogService(TestsBase):
                 query = DBSession.query(Catalog).filter(Catalog.topic == topic).filter(Catalog.staging == 'prod')
                 entries = query.all()
                 # Check if every node in the catalog is in view_catalog of db
-                self.failUnless(existInList(catalog.json['results']['root'], entries))
+                self.assertTrue(existInList(catalog.json['results']['root'], entries))
 
         finally:
             # reset staging to previous setting
@@ -113,7 +113,7 @@ class TestCatalogService(TestsBase):
                 # Get LayersConfig for this topic
                 layersconf = self.testapp.get('/rest/services/' + topic + '/MapServer/layersConfig', status=200)
                 # Check if all layers of catalog are in LayersConfig
-                self.failUnless(existInList(catalog.json['results']['root'], layersconf.json), 'For Topic: ' + topic)
+                self.assertTrue(existInList(catalog.json['results']['root'], layersconf.json), 'For Topic: ' + topic)
 
         finally:
             # reset staging to previous setting
