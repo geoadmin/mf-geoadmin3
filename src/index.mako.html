@@ -217,6 +217,7 @@ itemscope itemtype="http://schema.org/WebApplication"
   % if device == 'mobile':
         <div ga-offline-bt></div>
   % endif
+        <div ga-tilt3d ng-if="globals.dev3d"></div>
       </div>
       <div ga-swipe 
            ga-swipe-map="map" 
@@ -235,7 +236,8 @@ itemscope itemtype="http://schema.org/WebApplication"
 
 % if device != 'embed':
     <div ng-cloak ga-background-selector
-         ga-background-selector-map="map"
+         ga-background-selector-map="map",
+         ga-background-selector-ol3d="::ol3d"
          ng-hide="globals.offline">
     </div>
     <div ng-cloak translate-cloak id="footer" class="navbar navbar-fixed-bottom">

@@ -18,7 +18,7 @@ goog.require('ga_permalink');
       var isOfflineToOnline = false;
       var bg; // The current background
       var bgs = [ // The list of backgrounds available
-        {id: 'ch.swisstopo.swissimage', label: 'bg_luftbild'},
+        {id: 'ch.swisstopo.swissimage', label: 'bg_luftbild', disable3d: true},
         {id: 'ch.swisstopo.pixelkarte-farbe', label: 'bg_pixel_color'},
         {id: 'ch.swisstopo.pixelkarte-grau', label: 'bg_pixel_grey'},
         {id: 'voidLayer', label: 'void_layer'}

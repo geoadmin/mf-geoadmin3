@@ -19,7 +19,8 @@ goog.require('ga_topic_service');
         templateUrl:
             'components/backgroundselector/partials/backgroundselector.html',
         scope: {
-          map: '=gaBackgroundSelectorMap'
+          map: '=gaBackgroundSelectorMap',
+          ol3d: '=gaBackgroundSelectorOl3d'
         },
         link: function(scope, elt, attrs) {
           scope.isBackgroundSelectorClosed = true;
@@ -45,7 +46,10 @@ goog.require('ga_topic_service');
             } else {
               scope.isBackgroundSelectorClosed = true;
               if (scope.currentLayer != bgLayer) {
-                scope.currentLayer = bgLayer;
+                var ol3dEnabled = scope.ol3d && scope.ol3d.getEnabled();
+                if (!(bgLayer.disable3d && ol3dEnabled)) {
+                  scope.currentLayer = bgLayer;
+                }
               }
             }
           };
@@ -63,7 +67,8 @@ goog.require('ga_topic_service');
               return (selected ? 'ga-bg-highlight ' : '') +
                 'ga-' + splitLayer[splitLayer.length - 1] +
                 ' ' + ((!scope.isBackgroundSelectorClosed) ?
-                'ga-bg-layer-' + index : '');
+                'ga-bg-layer-' + index : '') +
+                ' ' + (layer.disable3d ? 'ga-disable3d' : '');
             }
           };
 
