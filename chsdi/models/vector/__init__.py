@@ -4,6 +4,7 @@ from sys import maxsize
 import re
 import datetime
 import decimal
+import pyramid.httpexceptions as exc
 from pyramid.threadlocal import get_current_registry
 from shapely.geometry import asShape
 from shapely.geometry import box
@@ -58,7 +59,6 @@ class Vector(GeoInterface):
         id = None
         geom = None
         properties = {}
-
         for p in class_mapper(self.__class__).iterate_properties:
             if isinstance(p, ColumnProperty):
                 if len(p.columns) != 1:  # pragma: no cover
@@ -71,6 +71,8 @@ class Vector(GeoInterface):
                     if hasattr(self, '_shape'):
                         geom = self._shape
                     elif val is not None:
+                        if len(val.data) > 1000000:
+                            raise exc.HTTPRequestEntityTooLarge('Feature ID %s: is too large' % self.id)
                         geom = to_shape(val)
                 elif not col.foreign_keys and not isinstance(col.type, Geometry):
                     properties[p.key] = val
