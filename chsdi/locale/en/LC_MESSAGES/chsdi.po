@@ -2697,7 +2697,7 @@ msgid "ch.bafu.wasser-teileinzugsgebiete_40"
 msgstr "40km2 sub catchment areas"
 
 msgid "ch.bafu.wasser-vorfluter"
-msgstr "Ablussregimetyp"
+msgstr ""
 
 msgid "ch.bafu.wasserbau-querprofilmarken"
 msgstr "Querprofilmarke"
@@ -3328,7 +3328,7 @@ msgid "ch.blw.emapis-elektrizitaetsversorgung"
 msgstr "Elektrizitätsversorgung"
 
 msgid "ch.blw.emapis-entwaesserung"
-msgstr "Entwässerung, Bodenstruktur"
+msgstr "Water balance, soil structure"
 
 msgid "ch.blw.emapis-hochbau"
 msgstr "Hochbau"
@@ -3343,13 +3343,13 @@ msgid "ch.blw.emapis-projektschwerpunkt"
 msgstr "Projektschwerpunkt"
 
 msgid "ch.blw.emapis-seilbahnen"
-msgstr "Seilbahn"
+msgstr "Agricultural and alpine cableways"
 
 msgid "ch.blw.emapis-wasserversorgung"
 msgstr "Wasserversorgung"
 
 msgid "ch.blw.emapis-wegebau"
-msgstr "Wegebau"
+msgstr "Road construction"
 
 msgid "ch.blw.emapis.geschaeftsnummer"
 msgstr "Geschäftsnummer"
@@ -3563,7 +3563,7 @@ msgid "ch.swisstopo.cnes"
 msgstr "CNES, Spot Image, swisstopo, NPOC"
 
 msgid "ch.swisstopo.cnes.url"
-msgstr "http://www.swisstopo.admin.ch/internet/swisstopo/rm/home.html"
+msgstr "http://www.swisstopo.admin.ch/internet/swisstopo/en/home.html"
 
 msgid "ch.swisstopo.dreiecksvermaschung"
 msgstr "LV95 Triangular network"
@@ -3628,8 +3628,9 @@ msgstr "Division General Geol. Map 200"
 msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata.autor"
 msgstr "Author(s)"
 
+#. TODO
 msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata.ggk_nr"
-msgstr "Sheet number"
+msgstr "ch.swisstopo.geologie-generalkarte-ggk200.metadata.ggk_nr"
 
 msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata.jahr"
 msgstr "Year of publication"
@@ -3743,9 +3744,8 @@ msgstr "ch.swisstopo.geologie-gisgeol-flaechen-1000to21000km2.sgd_nr"
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-100to1000km2"
 msgstr "Geol. Dokumente (100-1000km2)"
 
-#. TODO
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-100to1000km2.sgd_nr"
-msgstr "ch.swisstopo.geologie-gisgeol-flaechen-100to1000km2.sgd_nr"
+msgstr "InfoGeol-Nr."
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-10to100km2"
 msgstr "Geol. Dokumente (10-100km2)"
@@ -4148,6 +4148,63 @@ msgstr "tamedia"
 
 msgid "ch.vbs"
 msgstr "DDPS"
+
+msgid "ch.vbs.armeelogistikcenter"
+msgstr "Army logistics centres (ALC)"
+
+msgid "ch.vbs.armeelogistikcenter.abkuerzung"
+msgstr "Abbreviation"
+
+msgid "ch.vbs.armeelogistikcenter.mail"
+msgstr "Email"
+
+msgid "ch.vbs.armeelogistikcenter.name"
+msgstr "Name"
+
+msgid "ch.vbs.armeelogistikcenter.url"
+msgstr "Link"
+
+msgid "ch.vbs.bundestankstellen-bebeco"
+msgstr "Filling stations BEBECO"
+
+msgid "ch.vbs.bundestankstellen-bebeco.ort"
+msgstr "Location"
+
+msgid "ch.vbs.grunddispositiv-zeus"
+msgstr "Zeus map"
+
+msgid "ch.vbs.logistikraeume-armeelogistikcenter"
+msgstr "ALC logistics areas"
+
+msgid "ch.vbs.logistikraeume-armeelogistikcenter.kanton"
+msgstr "Cantons"
+
+msgid "ch.vbs.logistikraeume-armeelogistikcenter.region"
+msgstr "Region"
+
+msgid "ch.vbs.milairspacechart"
+msgstr "Mil Airspace Chart"
+
+msgid "ch.vbs.patrouilledesglaciers-a_rennen"
+msgstr "Patrouille des Glaciers (A race)"
+
+msgid "ch.vbs.patrouilledesglaciers-a_rennen.name"
+msgstr "Num"
+
+msgid "ch.vbs.patrouilledesglaciers-z_rennen"
+msgstr "Patrouille des Glaciers (Z race)"
+
+msgid "ch.vbs.patrouilledesglaciers-z_rennen.name"
+msgstr "Num"
+
+msgid "ch.vbs.retablierungsstellen"
+msgstr "Arsenals"
+
+msgid "ch.vbs.retablierungsstellen.name"
+msgstr "Name"
+
+msgid "ch.vbs.retablierungsstellen.url"
+msgstr "Link"
 
 msgid "ch.vbs.territorialregionen"
 msgstr "Territorial regions"
@@ -5674,8 +5731,9 @@ msgstr "Sektion"
 msgid "sektor"
 msgstr "Sector"
 
+#. TODO
 msgid "sgd_nr"
-msgstr "InfoGeol-Nr."
+msgstr "sgd_nr"
 
 msgid "sheetname"
 msgstr "Sheet name"

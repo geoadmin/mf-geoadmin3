@@ -3327,7 +3327,7 @@ msgid "ch.blw.emapis-elektrizitaetsversorgung"
 msgstr "Elektrizitätsversorgung"
 
 msgid "ch.blw.emapis-entwaesserung"
-msgstr "Entwässerung, Bodenstruktur"
+msgstr "Bilantscha d'aua, structura terren"
 
 msgid "ch.blw.emapis-hochbau"
 msgstr "Hochbau"
@@ -3342,13 +3342,13 @@ msgid "ch.blw.emapis-projektschwerpunkt"
 msgstr "Projektschwerpunkt"
 
 msgid "ch.blw.emapis-seilbahnen"
-msgstr "Seilbahn"
+msgstr "Pendicularas agricultura ed alps"
 
 msgid "ch.blw.emapis-wasserversorgung"
 msgstr "Wasserversorgung"
 
 msgid "ch.blw.emapis-wegebau"
-msgstr "Wegebau"
+msgstr "Construcziun da vias champestras"
 
 msgid "ch.blw.emapis.geschaeftsnummer"
 msgstr "Geschäftsnummer"
@@ -3627,8 +3627,9 @@ msgstr "Einteilung geol. Generalkarte 200"
 msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata.autor"
 msgstr "Autor(en)"
 
+#. TODO
 msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata.ggk_nr"
-msgstr "Kartenblatt"
+msgstr "ch.swisstopo.geologie-generalkarte-ggk200.metadata.ggk_nr"
 
 msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata.jahr"
 msgstr "Publikationsjahr"
@@ -3742,9 +3743,8 @@ msgstr "ch.swisstopo.geologie-gisgeol-flaechen-1000to21000km2.sgd_nr"
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-100to1000km2"
 msgstr "Geol. Dokumente (100-1000km2)"
 
-#. TODO
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-100to1000km2.sgd_nr"
-msgstr "ch.swisstopo.geologie-gisgeol-flaechen-100to1000km2.sgd_nr"
+msgstr "InfoGeol-Nr."
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-10to100km2"
 msgstr "Geol. Dokumente (10-100km2)"
@@ -4147,6 +4147,63 @@ msgstr "tamedia"
 
 msgid "ch.vbs"
 msgstr "VBS"
+
+msgid "ch.vbs.armeelogistikcenter"
+msgstr "Armeelogistikcenter ALC"
+
+msgid "ch.vbs.armeelogistikcenter.abkuerzung"
+msgstr "Abkürzung"
+
+msgid "ch.vbs.armeelogistikcenter.mail"
+msgstr "Email"
+
+msgid "ch.vbs.armeelogistikcenter.name"
+msgstr "Num"
+
+msgid "ch.vbs.armeelogistikcenter.url"
+msgstr "Link"
+
+msgid "ch.vbs.bundestankstellen-bebeco"
+msgstr "Tankstellen BEBECO"
+
+msgid "ch.vbs.bundestankstellen-bebeco.ort"
+msgstr "Ort"
+
+msgid "ch.vbs.grunddispositiv-zeus"
+msgstr "Zeus Karte"
+
+msgid "ch.vbs.logistikraeume-armeelogistikcenter"
+msgstr "Logistikräume ALC"
+
+msgid "ch.vbs.logistikraeume-armeelogistikcenter.kanton"
+msgstr "Chantuns"
+
+msgid "ch.vbs.logistikraeume-armeelogistikcenter.region"
+msgstr "Regiun"
+
+msgid "ch.vbs.milairspacechart"
+msgstr "Mil Airspace Chart"
+
+msgid "ch.vbs.patrouilledesglaciers-a_rennen"
+msgstr "Patrouille des Glaciers (A Rennen)"
+
+msgid "ch.vbs.patrouilledesglaciers-a_rennen.name"
+msgstr "Name"
+
+msgid "ch.vbs.patrouilledesglaciers-z_rennen"
+msgstr "Patrouille des Glaciers (Z Rennen)"
+
+msgid "ch.vbs.patrouilledesglaciers-z_rennen.name"
+msgstr "Name"
+
+msgid "ch.vbs.retablierungsstellen"
+msgstr "Retablierungsstellen"
+
+msgid "ch.vbs.retablierungsstellen.name"
+msgstr "Num"
+
+msgid "ch.vbs.retablierungsstellen.url"
+msgstr "Link"
 
 msgid "ch.vbs.territorialregionen"
 msgstr "Regiuns territorialas"
@@ -5672,8 +5729,9 @@ msgstr "Sektion"
 msgid "sektor"
 msgstr "Sektor"
 
+#. TODO
 msgid "sgd_nr"
-msgstr "InfoGeol-Nr."
+msgstr "sgd_nr"
 
 msgid "sheetname"
 msgstr "Blattbezeichnung"
