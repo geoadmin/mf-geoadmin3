@@ -66,6 +66,12 @@ goog.require('ga_permalink');
             var updatePermalink = function() {
               // only update the permalink in 2d mode
               if (!scope.ol3d || !scope.ol3d.getEnabled()) {
+                // remove 3d params
+                gaPermalink.deleteParam('lon');
+                gaPermalink.deleteParam('lat');
+                gaPermalink.deleteParam('elevation');
+                gaPermalink.deleteParam('heading');
+                gaPermalink.deleteParam('pitch');
                 var center = view.getCenter();
                 var zoom = view.getZoom();
                 // when the directive is instantiated the view may not
@@ -79,7 +85,6 @@ goog.require('ga_permalink');
             };
             view.on('propertychange', gaDebounce.debounce(updatePermalink,
                 1000, false));
-            updatePermalink();
 
             map.setTarget(element[0]);
 
@@ -111,6 +116,11 @@ goog.require('ga_permalink');
 
                 // update permalink
                 camera.moveEnd.addEventListener(function() {
+                  // remove 2d params
+                  gaPermalink.deleteParam('X');
+                  gaPermalink.deleteParam('Y');
+                  gaPermalink.deleteParam('zoom');
+
                   var position = camera.positionCartographic;
                   gaPermalink.updateParams({
                     lon: position.longitude.toFixed(5),
