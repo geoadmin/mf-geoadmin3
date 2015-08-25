@@ -11,26 +11,26 @@ class TestHeightView(TestsBase):
 
     def test_height_valid(self):
         resp = self.testapp.get('/rest/services/height', params={'easting': '600000.1', 'northing': '200000.1'}, headers=self.headers, status=200)
-        self.failUnless(resp.content_type == 'application/json')
-        self.failUnless(resp.json['height'] == '560.2')
+        self.assertTrue(resp.content_type == 'application/json')
+        self.assertTrue(resp.json['height'] == '560.2')
 
     def test_height_no_header(self):
         self.testapp.get('/rest/services/height', params={'easting': '600000', 'northing': '200000'}, status=403)
 
     def test_height_valid_with_lonlat(self):
         resp = self.testapp.get('/rest/services/height', params={'lon': '600000.1', 'lat': '200000.1'}, headers=self.headers, status=200)
-        self.failUnless(resp.content_type == 'application/json')
-        self.failUnless(resp.json['height'] == '560.2')
+        self.assertTrue(resp.content_type == 'application/json')
+        self.assertTrue(resp.json['height'] == '560.2')
 
     def test_height_with_dtm2(self):
         resp = self.testapp.get('/rest/services/height', params={'easting': '600000.1', 'northing': '200000.1', 'layers': 'DTM2'}, headers=self.headers, status=200)
-        self.failUnless(resp.content_type == 'application/json')
-        self.failUnless(resp.json['height'] == '556.5')
+        self.assertTrue(resp.content_type == 'application/json')
+        self.assertTrue(resp.json['height'] == '556.5')
 
     def test_height_with_comb(self):
         resp = self.testapp.get('/rest/services/height', params={'easting': '600000.1', 'northing': '200000.1', 'layers': 'COMB'}, headers=self.headers, status=200)
-        self.failUnless(resp.content_type == 'application/json')
-        self.failUnless(resp.json['height'] == '556.5')
+        self.assertTrue(resp.content_type == 'application/json')
+        self.assertTrue(resp.json['height'] == '556.5')
 
     def test_height_wrong_layer(self):
         resp = self.testapp.get('/rest/services/height', params={'easting': '600000', 'northing': '200000', 'layers': 'TOTO'}, headers=self.headers, status=400)
@@ -46,7 +46,7 @@ class TestHeightView(TestsBase):
 
     def test_height_with_callback_valid(self):
         resp = self.testapp.get('/rest/services/height', params={'easting': '600000', 'northing': '200000', 'callback': 'cb'}, headers=self.headers, status=200)
-        self.failUnless(resp.content_type == 'application/javascript')
+        self.assertTrue(resp.content_type == 'application/javascript')
         resp.mustcontain('cb({')
 
     def test_height_miss_northing(self):

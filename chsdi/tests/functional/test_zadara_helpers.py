@@ -20,11 +20,11 @@ class Test_ZadaraHelpers(unittest.TestCase):
         layerBodId = 'ch.swisstopo.geologie-gisgeol'
         fileName = os.listdir(request.registry.settings['zadara_dir'] + layerBodId)[0]
         for f in find_files(request, layerBodId, fileName):
-            self.failUnless('name' in f)
-            self.failUnless('size' in f)
-            self.failUnless('url' in f)
+            self.assertTrue('name' in f)
+            self.assertTrue('size' in f)
+            self.assertTrue('url' in f)
             self.assertEqual(f['url'], ''.join(
                 ('//', request.host, '/downloads/', layerBodId, '/', fileName)
             ))
-            self.failUnless(isinstance(f['size'], int))
+            self.assertTrue(isinstance(f['size'], int))
             self.assertEqual(f['name'], fileName)

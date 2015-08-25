@@ -9,7 +9,7 @@ class TestWmtsCapabilitiesView(TestsBase):
 
     def test_valid_wmtscapabilities(self):
         resp = self.testapp.get('/rest/services/inspire/1.0.0/WMTSCapabilities.xml', status=200)
-        self.failUnless(resp.content_type == 'text/xml')
+        self.assertTrue(resp.content_type == 'text/xml')
         resp.mustcontain('TileMatrixSet')
 
     def test_wrong_map_wmtscapabilities(self):
@@ -41,7 +41,7 @@ class TestWmtsCapabilitiesView(TestsBase):
 
         def isValidSchema(resp, f_wmts):
             f_wmts = etree.parse(StringIO(resp.body))
-            self.failUnless(xml_schema.validate(f_wmts) is True)
+            self.assertTrue(xml_schema.validate(f_wmts) is True)
 
         with open(schema_dir + file_name) as file_xml_schema:
             os.chdir(schema_dir)
@@ -58,7 +58,7 @@ class TestWmtsCapabilitiesView(TestsBase):
 
     def test_gettile_wmtscapabilities(self):
         resp = self.testapp.get('/rest/services/inspire/1.0.0/WMTSCapabilities.xml', status=200)
-        self.failUnless(resp.content_type == 'text/xml')
+        self.assertTrue(resp.content_type == 'text/xml')
 
     def test_tilematrixsets_are_defined(self):
         import xml.etree.ElementTree as etree
