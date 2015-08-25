@@ -166,6 +166,7 @@ ol: OL_JS = ol.js ol-debug.js
 ol: scripts/ol-geoadmin.json .build-artefacts/ol3
 	cd .build-artefacts/ol3; \
 	git reset HEAD --hard; \
+	git fetch -a; \
 	git checkout $(OL3_VERSION); \
 	git show; \
 	cat ../../scripts/ga-ol3-style.exports >> src/ol/style/style.js; \
@@ -181,6 +182,7 @@ ol: scripts/ol-geoadmin.json .build-artefacts/ol3
 ol3cesium: .build-artefacts/ol3-cesium
 	cd .build-artefacts/ol3-cesium; \
 	git reset HEAD --hard; \
+	git fetch -a; \
 	git checkout $(OL3_CESIUM_VERSION); \
 	git submodule update --recursive --init --force; \
 	git show; \
