@@ -6,10 +6,30 @@ goog.provide('ga_marker_overlay_service');
   module.provider('gaMarkerOverlay', function() {
 
     this.$get = function(gaStyleFactory) {
-      var overlay, bbox, isAlwaysVisible;
-      var marker = $('<div></div>')
-          .addClass('ga-crosshair')
-          .addClass('marker');
+      var bbox, isAlwaysVisible;
+      var source, layer;
+      var feature = null;
+
+      /** @const */
+      var style = new ol.style.Style({
+        image: new ol.style.Icon({
+          anchor: [0.5, 46],
+          anchorXUnits: 'fraction',
+          anchorYUnits: 'pixels',
+          src: 'img/marker.png'
+        })
+      });
+
+      function initialize(map) {
+        if (!layer) {
+          source = new ol.source.Vector();
+          layer = new ol.layer.Vector({
+            source: source
+          });
+          layer.set('altitudeMode', 'clampToGround');
+          map.addLayer(layer);
+        }
+      }
 
       function isPointData() {
         return bbox && (bbox[2] - bbox[0]) <= 1 &&
@@ -17,38 +37,38 @@ goog.provide('ga_marker_overlay_service');
       }
 
       function addMarker(map, center, extent, visible) {
+        initialize(map);
         bbox = extent;
         removeMarker(map);
-        overlay = new ol.Overlay({
-          element: marker.get(0),
-          position: center,
-          stopEvent: false
+        feature = new ol.Feature({
+          geometry: new ol.geom.Point(center),
+          style: style
         });
         isAlwaysVisible = visible;
         setVisibility(map.getView().getZoom());
-        map.addOverlay(overlay);
+        source.addFeature(feature);
       }
 
       function setVisibility(zoom) {
         if (isAlwaysVisible) {
-          marker.removeClass('hide');
+          feature.setStyle(style);
           return;
         }
-        if (overlay) {
+        if (feature) {
           if (!isPointData()) {
             if (zoom > 6) {
-              marker.addClass('hide');
+              feature.setStyle(null);
             } else {
-              marker.removeClass('hide');
+              feature.setStyle(style);
             }
           }
         }
       }
 
       function removeMarker(map) {
-        if (overlay) {
-          map.removeOverlay(overlay);
-          overlay = null;
+        if (feature) {
+          source.clear();
+          feature = null;
         }
       }
 
