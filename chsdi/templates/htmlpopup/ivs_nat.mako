@@ -32,52 +32,48 @@
     <tr><td class="cell-left">${_('ivs_documentation')}</td>
 <%
     from urllib2 import urlopen
-    PDF_Full = c['attributes']['ivs_sortsla']
-    PDF_Level_1 =  PDF_Full[0:6] + '0000'
-    PDF_Level_1_Name = PDF_Full[0:2]+ ' ' + str(int(PDF_Full[2:6]))
-    PDF_Level_2_exist = PDF_Full[6:8]
-    PDF_Level_2 = PDF_Full[0:8] + '00'
-    PDF_Level_2_Name = PDF_Level_1_Name + '.' +  str(int(PDF_Full[6:8]))
-    PDF_Level_3_exist = PDF_Full[8:10] 
-    PDF_Level_3 = PDF_Full 
-    PDF_Level_3_Name = PDF_Level_2_Name + '.' + str(int(PDF_Full[8:10]))
-    url = "http://dav0.bgdi.admin.ch/kogis_web/downloads/ivs/beschr/de/"+c['attributes']['ivs_sortsla']+".pdf"
-    response = None
-    try:
-        response = urlopen(url)
-        pdf = True
-    except:
-        pdf = False
-    finally:
-        if response:
-            response.close()
+    from chsdi.lib.helpers import resource_exists
+    webDavHost = request.registry.settings['webdav_host']
+    pdf = None
+    if c['attributes']['ivs_sortsla'] is not None:
+        PDF_Full = c['attributes']['ivs_sortsla']
+        PDF_Level_1 =  PDF_Full[0:6] + '0000'
+        PDF_Level_1_Name = PDF_Full[0:2]+ ' ' + str(int(PDF_Full[2:6]))
+        PDF_Level_2_exist = PDF_Full[6:8]
+        PDF_Level_2 = PDF_Full[0:8] + '00'
+        PDF_Level_2_Name = PDF_Level_1_Name + '.' +  str(int(PDF_Full[6:8]))
+        PDF_Level_3_exist = PDF_Full[8:10] 
+        PDF_Level_3 = PDF_Full 
+        PDF_Level_3_Name = PDF_Level_2_Name + '.' + str(int(PDF_Full[8:10]))
+        url = webDavHost + "/kogis_web/downloads/ivs/beschr/de/" + c['attributes']['ivs_sortsla'] + ".pdf"
+        pdf = resource_exists(url)
 %>
 
 % if pdf: 
     <td>
-    % if lang =='fr':
-        ${_('ivs_nat_strecke')}: <a href="https://dav0.bgdi.admin.ch/kogis_web/downloads/ivs/beschr/fr/${PDF_Level_1}.pdf" target="_blank">${PDF_Level_1_Name}</a><br />
+    % if lang =='fr': 
+        ${_('ivs_nat_strecke')}: <a href="${webDavHost}/kogis_web/downloads/ivs/beschr/fr/${PDF_Level_1}.pdf" target="_blank">${PDF_Level_1_Name}</a><br />
       % if PDF_Level_2_exist <> '00':
-        ${_('ivs_nat_linienfuehrung')}: <a href="https://dav0.bgdi.admin.ch/kogis_web/downloads/ivs/beschr/fr/${PDF_Level_2}.pdf" target="_blank">${PDF_Level_2_Name}</a><br />
+        ${_('ivs_nat_linienfuehrung')}: <a href="${webDavHost}/kogis_web/downloads/ivs/beschr/fr/${PDF_Level_2}.pdf" target="_blank">${PDF_Level_2_Name}</a><br />
       % endif
       % if PDF_Level_3_exist <> '00':
-        ${_('ivs_nat_abschnitt')}: <a href="https://dav0.bgdi.admin.ch/kogis_web/downloads/ivs/beschr/fr/${PDF_Level_3}.pdf" target="_blank">${PDF_Level_3_Name}</a><br />
+        ${_('ivs_nat_abschnitt')}: <a href="${webDavHost}/kogis_web/downloads/ivs/beschr/fr/${PDF_Level_3}.pdf" target="_blank">${PDF_Level_3_Name}</a><br />
       % endif
     % elif lang == 'it':
-      ${_('ivs_nat_strecke')}: <a href="https://dav0.bgdi.admin.ch/kogis_web/downloads/ivs/beschr/it/${PDF_Level_1}.pdf" target="_blank">${PDF_Level_1_Name}</a><br />
+      ${_('ivs_nat_strecke')}: <a href="${webDavHost}/kogis_web/downloads/ivs/beschr/it/${PDF_Level_1}.pdf" target="_blank">${PDF_Level_1_Name}</a><br />
       % if PDF_Level_2_exist <> '00':
-        ${_('ivs_nat_linienfuehrung')}: <a href="https://dav0.bgdi.admin.ch/kogis_web/downloads/ivs/beschr/it/${PDF_Level_2}.pdf" target="_blank">${PDF_Level_2_Name}</a><br />
+        ${_('ivs_nat_linienfuehrung')}: <a href="${webDavHost}/kogis_web/downloads/ivs/beschr/it/${PDF_Level_2}.pdf" target="_blank">${PDF_Level_2_Name}</a><br />
       % endif
       % if PDF_Level_3_exist <> '00':
-        ${_('ivs_nat_abschnitt')}: <a href="https://dav0.bgdi.admin.ch/kogis_web/downloads/ivs/beschr/it/${PDF_Level_3}.pdf" target="_blank">${PDF_Level_3_Name}</a><br />
+        ${_('ivs_nat_abschnitt')}: <a href="${webDavHost}/kogis_web/downloads/ivs/beschr/it/${PDF_Level_3}.pdf" target="_blank">${PDF_Level_3_Name}</a><br />
       % endif
     % else:
-      ${_('ivs_nat_strecke')}: <a href="https://dav0.bgdi.admin.ch/kogis_web/downloads/ivs/beschr/de/${PDF_Level_1}.pdf" target="_blank">${PDF_Level_1_Name}</a><br />
+      ${_('ivs_nat_strecke')}: <a href="${webDavHost}/kogis_web/downloads/ivs/beschr/de/${PDF_Level_1}.pdf" target="_blank">${PDF_Level_1_Name}</a><br />
       % if PDF_Level_2_exist <> '00':
-        ${_('ivs_nat_linienfuehrung')}: <a href="https://dav0.bgdi.admin.ch/kogis_web/downloads/ivs/beschr/de/${PDF_Level_2}.pdf" target="_blank">${PDF_Level_2_Name}</a><br />
+        ${_('ivs_nat_linienfuehrung')}: <a href="${webDavHost}/kogis_web/downloads/ivs/beschr/de/${PDF_Level_2}.pdf" target="_blank">${PDF_Level_2_Name}</a><br />
       % endif
       % if PDF_Level_3_exist <> '00':
-        ${_('ivs_nat_abschnitt')}: <a href="https://dav0.bgdi.admin.ch/kogis_web/downloads/ivs/beschr/de/${PDF_Level_3}.pdf" target="_blank">${PDF_Level_3_Name}</a><br />
+        ${_('ivs_nat_abschnitt')}: <a href="${webDavHost}/kogis_web/downloads/ivs/beschr/de/${PDF_Level_3}.pdf" target="_blank">${PDF_Level_3_Name}</a><br />
       % endif
     % endif
     </td></tr>

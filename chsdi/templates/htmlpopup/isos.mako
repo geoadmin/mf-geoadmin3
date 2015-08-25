@@ -16,16 +16,24 @@
     <tr><td class="cell-left">${_('fassung')}</td>                    <td>${c['attributes']['fassungsjahr'] or '-'}</td></tr>
     <tr><td class="cell-left">${_('band_1_2')}</td>                   <td>${c['attributes']['band_1'] or '-'} | ${c['attributes']['band_2'] or '-'}</td></tr>
     <tr><td class="cell-left">${_('publikationsjahr_1_2')}</td>       <td>${c['attributes']['publikationsjahr_1'] or '-'} | ${c['attributes']['publikationsjahr_2'] or '-'}</td></tr>
+<%
+    webDavHost = request.registry.settings['webdav_host']
+    if c['attributes']['pdf_dokument_1'] is not None:
+        url_pdf = webDavHost + '/isos/' + c['attributes']['pdf_dokument_1'] + '.pdf'
+    if c['attributes']['pdf_dokument_2'] is not None:
+        url_pdf2 = webDavHost + '/isos/' + c['attributes']['pdf_dokument_2'] + '.pdf'
+%>
+
     <tr>
       <td class="cell-left">${_('pdf_dokument_1_2')}</td>
       <td>
         % if c['attributes']['pdf_dokument_1']:
-            <a href="https://dav0.bgdi.admin.ch/isos/${c['attributes']['pdf_dokument_1']|trim,quoting}.pdf" target="_blank">${c['attributes']['pdf_dokument_1']}.pdf</a> |
+            <a href="${url_pdf}" target="_blank">${c['attributes']['pdf_dokument_1']}.pdf</a> |
         % else:
             - | 
         % endif
         % if c['attributes']['pdf_dokument_2']:
-            &nbsp;<a href="https://dav0.bgdi.admin.ch/isos/${c['attributes']['pdf_dokument_2']|trim,quoting}.pdf" target="_blank">${c['attributes']['pdf_dokument_2']}.pdf</a>
+            &nbsp;<a href="${url_pdf2}" target="_blank">${c['attributes']['pdf_dokument_2']}.pdf</a>
         % else:
             &nbsp;-
         % endif
