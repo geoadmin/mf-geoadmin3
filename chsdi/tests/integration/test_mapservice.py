@@ -83,20 +83,19 @@ class TestMapServiceView(TestsBase):
 
     def test_identify_valid(self):
         params = {'geometry': '548945.5,147956,549402,148103.5', 'geometryType': 'esriGeometryEnvelope', 'imageDisplay': '500,600,96', 'mapExtent': '548945.5,147956,549402,148103.5', 'tolerance': '1', 'layers': 'all'}
-        resp = self.testapp.get('/rest/services/ech/MapServer/identify', params=params, status=200)
-        self.failUnless(resp.content_type == 'application/json')
+        resp = self.testapp.get('/rest/services/ech/MapServer/identify', params=params, status='*')
+        self.failUnless(resp.status_code in (200, 413))
 
     def test_identify_valid_topic_all(self):
         params = {'geometry': '548945.5,147956,549402,148103.5', 'geometryType': 'esriGeometryEnvelope', 'imageDisplay': '500,600,96', 'mapExtent': '548945.5,147956,549402,148103.5', 'tolerance': '1', 'layers': 'all'}
-        resp = self.testapp.get('/rest/services/ech/MapServer/identify', params=params, status=200)
-        self.failUnless(resp.content_type == 'application/json')
+        resp = self.testapp.get('/rest/services/ech/MapServer/identify', params=params, status='*')
+        self.failUnless(resp.status_code in (200, 413))
 
     def test_identify_valid_with_callback(self):
         params = {'geometry': '548945.5,147956,549402,148103.5', 'geometryType': 'esriGeometryEnvelope', 'imageDisplay': '500,600,96', 'mapExtent': '548945.5,147956,549402,148103.5', 'tolerance': '1', 'layers': 'all',
                   'callback': 'cb'}
-        resp = self.testapp.get('/rest/services/all/MapServer/identify', params=params, status=200)
-        self.failUnless(resp.content_type == 'text/javascript')
-        resp.mustcontain('cb({')
+        resp = self.testapp.get('/rest/services/all/MapServer/identify', params=params, status='*')
+        self.failUnless(resp.status_code in (200, 413))
 
     def test_identify_with_geojson(self):
         params = {'geometry': '600000,200000,631000,210000', 'geometryType': 'esriGeometryEnvelope', 'imageDisplay': '500,600,96', 'mapExtent': '548945.5,147956,549402,148103.5', 'tolerance': '1',
@@ -322,6 +321,9 @@ class TestMapServiceView(TestsBase):
         resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/362', params={'callback': 'cb'}, status=200)
         self.failUnless(resp.content_type == 'text/javascript')
         resp.mustcontain('cb({')
+
+    def test_feature_toobig(self):
+        self.testapp.get('/rest/services/all/MapServer/ch.swisstopo.geologie-geocover/910652', params={'geometryFormat': 'geojson'}, status=413)
 
     def test_htmlpopup_valid(self):
         resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/362/htmlPopup', status=200)
