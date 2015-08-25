@@ -2,7 +2,6 @@
 
 import requests
 import random
-from nose.tools import with_setup
 
 from chsdi.tests.mapproxy import MapProxyTestsBase
 
@@ -50,8 +49,15 @@ class TileChecker(MapProxyTestsBase):
 
     def __init__(self):
         super(TileChecker, self).setUp()
+
+    def __enter__(self):
         self.session = requests.Session()
         self.session.mount("http://", requests.adapters.HTTPAdapter(max_retries=5))
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.tearDown()
+        return False
 
     def check_status_code(self, path):
         if not path.startswith('http'):
@@ -107,43 +113,31 @@ class TileChecker(MapProxyTestsBase):
                             yield urlunparse((tpl_parsed.scheme, tpl_parsed.netloc, pth2, '', '', ''))
 
 
-tc = None
-
-
-def setup():
-    global tc
-    tc = TileChecker()
-
-
-def teardown():
-    tc.tearDown()
-
-
-@with_setup(setup, teardown)
 def test_epsg21781():
-    for tile in tc.itiles():
-        yield tc.check_status_code, tile
+    with TileChecker() as tc:
+        for tile in tc.itiles():
+            yield tc.check_status_code, tile
 
 
-@with_setup(setup, teardown)
 def test_epsg3857():
-    for tile in tc.itiles(epsg=3857):
-        yield tc.check_status_code, tile
+    with TileChecker() as tc:
+        for tile in tc.itiles(epsg=3857):
+            yield tc.check_status_code, tile
 
 
-@with_setup(setup, teardown)
 def test_epsg2056():
-    for tile in tc.itiles(epsg=2056):
-        yield tc.check_status_code, tile
+    with TileChecker() as tc:
+        for tile in tc.itiles(epsg=2056):
+            yield tc.check_status_code, tile
 
 
-@with_setup(setup, teardown)
 def test_epsg4326():
-    for tile in tc.itiles(epsg=4326):
-        yield tc.check_status_code, tile
+    with TileChecker() as tc:
+        for tile in tc.itiles(epsg=4326):
+            yield tc.check_status_code, tile
 
 
-@with_setup(setup, teardown)
 def test_epsg4258():
-    for tile in tc.itiles(epsg=4258):
-        yield tc.check_status_code, tile
+    with TileChecker() as tc:
+        for tile in tc.itiles(epsg=4258):
+            yield tc.check_status_code, tile
