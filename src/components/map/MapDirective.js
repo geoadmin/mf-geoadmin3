@@ -115,7 +115,7 @@ goog.require('ga_permalink');
                 });
 
                 // update permalink
-                camera.moveEnd.addEventListener(function() {
+                camera.moveEnd.addEventListener(gaDebounce.debounce(function() {
                   // remove 2d params
                   gaPermalink.deleteParam('X');
                   gaPermalink.deleteParam('Y');
@@ -129,7 +129,7 @@ goog.require('ga_permalink');
                     heading: Cesium.Math.toDegrees(camera.heading).toFixed(3),
                     pitch: Cesium.Math.toDegrees(camera.pitch).toFixed(3)
                   });
-                });
+                }, 1000, false));
               }
             });
 
