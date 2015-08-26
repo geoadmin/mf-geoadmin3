@@ -47,6 +47,11 @@ def getToleranceMeters(imageDisplay, mapExtent, tolerance):
     return 0.0
 
 
+class HTTPBandwidtLimited(exc.HTTPServerError):
+    code = 509
+    title = 'Bandwidth Limit Exceeded'
+
+
 class Vector(GeoInterface):
     __minscale__ = 0
     __maxscale__ = maxsize
@@ -72,7 +77,7 @@ class Vector(GeoInterface):
                         geom = self._shape
                     elif val is not None:
                         if len(val.data) > 1000000:
-                            raise exc.HTTPRequestEntityTooLarge('Feature ID %s: is too large' % self.id)
+                            raise HTTPBandwidtLimited('Feature ID %s: is too large' % self.id)
                         geom = to_shape(val)
                 elif not col.foreign_keys and not isinstance(col.type, Geometry):
                     properties[p.key] = val
