@@ -4,7 +4,7 @@ from sqlalchemy import Column, Text, Integer, Boolean
 from sqlalchemy.dialects import postgresql
 
 from chsdi.lib.helpers import make_agnostic
-from chsdi.models import bases
+from chsdi.models import bases, models_from_name, get_models_attributes_keys
 
 Base = bases['bod']
 
@@ -64,9 +64,10 @@ class LayersConfig(Base):
     minResolution = Column('minresolution', postgresql.DOUBLE_PRECISION)
     maxResolution = Column('maxresolution', postgresql.DOUBLE_PRECISION)
     parentLayerId = Column('parentlayerid', Text)
-    queryable = Column('queryable', Boolean)
     searchable = Column('searchable', Boolean)
+    queryable = Column('queryable', Boolean)
     selectbyrectangle = Column('selectbyrectangle', Boolean)
+    tooltip = Column('tooltip', Boolean)
     serverLayerName = Column('server_layername', Text)
     singleTile = Column('singletile', Boolean)
     subLayersIds = Column('sublayersids', postgresql.ARRAY(Text))
@@ -124,6 +125,13 @@ class LayersConfig(Base):
         # sublayers don't have attributions
         if 'attribution' in config:
             config['attributionUrl'] = translate(self.__dict__['attribution'] + '.url')
+
+        # adding __queryable_attributes__ if they have them
+        models = models_from_name(self.layerBodId)
+        if models is not None:
+            queryable_attributes = get_models_attributes_keys(models, params.lang, True)
+            if len(queryable_attributes) > 0:
+                config['queryableAttributes'] = queryable_attributes
 
         return {self.layerBodId: config}
 

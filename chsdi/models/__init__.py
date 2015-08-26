@@ -58,3 +58,15 @@ def models_from_name(name):
         return models
     else:
         return None
+
+
+def get_models_attributes_keys(models, lang, attributeOnly):
+    allAttributes = []
+    for model in models:
+        attributes = []
+        if hasattr(model, '__queryable_attributes__'):
+            attributes = model.get_queryable_attributes_keys(lang)
+        elif not attributeOnly:
+            attributes = model().getAttributesKeys()
+        allAttributes = allAttributes + attributes
+    return list(set(allAttributes))

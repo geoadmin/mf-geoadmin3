@@ -12,7 +12,7 @@ import pyramid.httpexceptions as exc
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 
 from chsdi.lib.validation.mapservice import MapServiceValidation
-from chsdi.models import models_from_name
+from chsdi.models import models_from_name, get_models_attributes_keys
 from chsdi.models.bod import LayersConfig, get_bod_model, computeHeader
 from chsdi.lib.filters import full_text_search, filter_by_geodata_staging, filter_by_map_name
 
@@ -109,19 +109,6 @@ def _find_type(model, colProp):
         return model.get_column_by_property_name(colProp).type
 
 
-def _get_models_attributes_keys(models, lang):
-    allAttributes = []
-    for model in models:
-        if hasattr(model, '__queryable_attributes__'):
-            attributes = model.get_queryable_attributes_keys(lang)
-        else:
-            # Maybe this should be removed since only searchable layers
-            # have attributes that can be queried
-            attributes = model().getAttributesKeys()
-        allAttributes = allAttributes + attributes
-    return list(set(allAttributes))
-
-
 # Could be moved in features.py as it accesses vector models
 @view_config(route_name='featureAttributes', renderer='jsonp')
 def feature_attributes(request):
@@ -135,7 +122,7 @@ def feature_attributes(request):
         raise exc.HTTPBadRequest('No Vector Table was found for %s' % layerId)
 
     # Take into account all models and remove duplicated keys
-    attributes = _get_models_attributes_keys(models, params.lang)
+    attributes = get_models_attributes_keys(models, params.lang, False)
     trackAttributesNames = []
     fields = []
 
