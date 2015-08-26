@@ -42,6 +42,7 @@ sphinxhost = ${sphinxhost}
 wmshost = ${wmshost}
 mapproxyhost = ${mapproxyhost}
 geoadminhost = ${geoadminhost}
+webdav_host = ${webdav_host}
 api_url = ${api_url}
 install_directory = ${buildout:directory}
 host = ${host}

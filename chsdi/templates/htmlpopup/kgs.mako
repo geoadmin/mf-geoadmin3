@@ -17,7 +17,8 @@
         objarts = c['attributes']['objektart'].split(',')
         import csv
         from urllib2 import urlopen
-        csv_url = 'http://dav0.bgdi.admin.ch/kogis_web/downloads/kgs/bilder/meta.txt'
+        webDavHost = request.registry.settings['webdav_host']
+        csv_url = webDavHost + '/kogis_web/downloads/kgs/bilder/meta.txt'
         csv_file = None
         try:
             csv_file = urlopen(csv_url)
@@ -87,7 +88,7 @@
             <th class="cell-left">${_('Feature tooltip')}:</th>
             <td>
 	        % for pdf in c['attributes']['pdf_list'].split('##'):
-                <a href="http://dav0.bgdi.admin.ch/kogis_web/downloads/kgs/matrizen/${pdf}" target="_blank">${pdf}</a><br />
+                <a href="${webDavHost}/kogis_web/downloads/kgs/matrizen/${pdf}" target="_blank">${pdf}</a><br />
 	        % endfor
             </td>
 	    </tr>
@@ -124,8 +125,8 @@
             <div class="thumbnail-container">
             %for pic in pic_list:
                 <div class="thumbnail">
-                    <a href="http://dav0.bgdi.admin.ch/kogis_web/downloads/kgs/bilder/kgs_${pic[0]}_${pic[1]}.jpg">
-                        <img class="image" src="http://dav0.bgdi.admin.ch/kogis_web/downloads/kgs/bilder/kgs_${pic[0]}_${pic[1]}.jpg" />
+                    <a href="${webDavHost}/kogis_web/downloads/kgs/bilder/kgs_${pic[0]}_${pic[1]}.jpg">
+                        <img class="image" src="${webDavHost}/kogis_web/downloads/kgs/bilder/kgs_${pic[0]}_${pic[1]}.jpg" />
                     </a>
                     <div>${pic[3] or ''} - ${pic[2] or ''}</div>
                 </div>

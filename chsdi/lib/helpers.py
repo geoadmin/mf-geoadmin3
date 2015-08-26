@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
+import requests
 from osgeo import osr, ogr
 from pyramid.threadlocal import get_current_registry
 from pyramid.i18n import get_locale_name
@@ -44,6 +45,11 @@ def make_api_url(request, agnostic=False):
         return ''.join(('//', host))
     else:
         return ''.join((request.scheme, '://', host))
+
+
+def resource_exists(path):
+    r = requests.head(path)
+    return r.status_code == requests.codes.ok
 
 
 def check_url(url, config):
