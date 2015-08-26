@@ -29,3 +29,5 @@ buildout_branch.cfg
 deploy/deploy-branch.cfg
 deploy/conf/00-branch.conf
 print/WEB-INF/web.xml
+chsdi/tests/mapproxy*
+chsdi/tests/varnish*

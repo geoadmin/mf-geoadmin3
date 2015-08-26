@@ -13,17 +13,17 @@ except KeyError as e:
     api_url = 'http://api3.geo.admin.ch'
 
 
-def get_getcap_de():
+def test_getcap_de():
     resp = requests.get(api_url + '/1.0.0/WMTSCapabilities.EPSG.4326.xml?lang=de')
 
     words = ['Alpenkonvention', 'Schweiz', 'Verkehrswege ', 'Flachmoor']
     for w in words:
-        assert w in resp.body
+        assert w in resp.text, w
 
 
-def get_getcap_fr():
+def test_getcap_fr():
     resp = requests.get(api_url + '/1.0.0/WMTSCapabilities.EPSG.4326.xml?lang=fr')
 
-    words = ['Convention', 'Suisse', 'Voies', 'marécage']
+    words = ['Convention', 'Suisse', 'voies', u'marécage']
     for w in words:
-        assert w in resp.body
+        assert w in resp.text, w

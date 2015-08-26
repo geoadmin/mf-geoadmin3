@@ -3,7 +3,7 @@
 import requests
 import random
 
-from chsdi.tests.mapproxy import MapProxyTestsBase
+from chsdi.tests.e2e import MapProxyTestsBase
 
 # Official URLS we support
 WMTS_URLS = [
