@@ -121,6 +121,20 @@ goog.require('ga_measure_service');
       stroke: new ol.style.Stroke({color: transparent})
     });
 
+    var redCircle = new ol.style.Style({
+      image: new ol.style.Circle({
+        radius: 4,
+        fill: new ol.style.Fill({
+          color: [255, 0, 0, 0.4]
+        }),
+        stroke: new ol.style.Stroke({
+          color: [255, 0, 0, 1],
+          width: 3
+        })
+      }),
+      zIndex: 10000
+    });
+
     var styles = {
       'select': selectStyle,
       'highlight': hlStyle,
@@ -128,7 +142,8 @@ goog.require('ga_measure_service');
       'geolocation': geolocationStyle,
       'offline': offlineStyle,
       'kml': kmlStyle,
-      'transparentCircle': transparentCircle
+      'transparentCircle': transparentCircle,
+      'redCircle': redCircle
     };
 
     this.$get = function(gaGlobalOptions, gaMeasure) {

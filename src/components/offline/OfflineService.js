@@ -26,9 +26,6 @@ goog.require('ga_styles_service');
     var minRes; // res for zoom 8
     var extentFeature = new ol.Feature(
         new ol.geom.Polygon([[[0, 0], [0, 0], [0, 0]]]));
-    var featureOverlay = new ol.FeatureOverlay({
-      features: [extentFeature]
-    });
 
     // Get the magnitude of 3D vector from an origin.
     // Used to order tiles by the distance from the map center.
@@ -113,7 +110,8 @@ goog.require('ga_styles_service');
       };
 
       minRes = gaMapUtils.getViewResolutionForZoom(maxZoom);
-      featureOverlay.setStyle(gaStyleFactory.getStyle('offline'));
+      var featureOverlay = gaMapUtils.getFeatureOverlay([extentFeature],
+          gaStyleFactory.getStyle('offline'));
 
       // Update download status
       var progress;
@@ -324,7 +322,7 @@ goog.require('ga_styles_service');
           var extent = gaStorage.getItem(extentKey);
           if (extent) {
             extent = extent.split(',');
-            map.getView().fitExtent([
+            map.getView().fit([
               parseInt(extent[0], 10),
               parseInt(extent[1], 10),
               parseInt(extent[2], 10),

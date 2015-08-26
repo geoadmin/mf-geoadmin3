@@ -19,7 +19,7 @@ describe('ga_importkml__directive', function() {
 
     map = new ol.Map({});
     map.setSize([600,300]);
-    map.getView().fitExtent([-20000000, -20000000, 20000000, 20000000],
+    map.getView().fit([-20000000, -20000000, 20000000, 20000000],
         map.getSize()); 
     
     element = angular.element(

@@ -16,7 +16,7 @@ describe('ga_importwms_directive', function() {
     inject(function($injector, $rootScope, $compile, $translate, gaGlobalOptions) {
       map = new ol.Map({});
       map.setSize([600,300]);
-      map.getView().fitExtent([-20000000, -20000000, 20000000, 20000000], map.getSize());
+      map.getView().fit([-20000000, -20000000, 20000000, 20000000], map.getSize());
 
       element = angular.element(
           '<div ga-import-wms ga-import-wms-map="map" ' +

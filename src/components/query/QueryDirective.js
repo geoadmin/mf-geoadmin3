@@ -405,15 +405,12 @@ goog.require('ga_storage_service');
   });
 
   module.directive('gaQuery', function($translate, gaBrowserSniffer,
-      gaLayers, gaQuery, gaStyleFactory) {
+      gaLayers, gaQuery, gaStyleFactory, gaMapUtils) {
     var parser = new ol.format.GeoJSON();
     var dragBox;
     var dragBoxStyle = gaStyleFactory.getStyle('selectrectangle');
     var boxFeature = new ol.Feature();
-    var boxOverlay = new ol.FeatureOverlay({
-      style: dragBoxStyle
-    });
-    boxOverlay.addFeature(boxFeature);
+    var boxOverlay = gaMapUtils.getFeatureOverlay([boxFeature], dragBoxStyle);
 
     return {
       restrict: 'A',
@@ -440,10 +437,11 @@ goog.require('ga_storage_service');
           });
           scope.map.addInteraction(dragBox);
           dragBox.on('boxstart', function(evt) {
-            scope.resetGeometry();
+            scope.hideBox();
           });
           dragBox.on('boxend', function(evt) {
             boxFeature.setGeometry(evt.target.getGeometry());
+            scope.showBox();
             scope.geometry = boxFeature.getGeometry();
             scope.useBbox = true;
 
@@ -461,12 +459,6 @@ goog.require('ga_storage_service');
             }
           });
         }
-
-        // Activate/Deactivate
-        scope.resetGeometry = function() {
-          boxFeature.setGeometry(null);
-        };
-
         scope.showBox = function() {
           boxOverlay.setMap(scope.map);
         };
@@ -487,6 +479,7 @@ goog.require('ga_storage_service');
 
           if (scope.queryType == 0) {
             scope.showBox();
+            scope.useBbox = true;
           }
 
           // Re-launch the search in case the list of layers has changed
