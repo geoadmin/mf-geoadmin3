@@ -96,8 +96,8 @@ goog.require('ga_permalink');
                 // initial location based on query params
                 var position, heading, pitch;
                 if (params.lon && params.lat && params.elevation) {
-                  var lon = parseFloat(params.lon);
-                  var lat = parseFloat(params.lat);
+                  var lon = Cesium.Math.toRadians(parseFloat(params.lon));
+                  var lat = Cesium.Math.toRadians(parseFloat(params.lat));
                   var elevation = parseFloat(params.elevation);
                   position = new Cesium.Cartographic(lon, lat, elevation);
                 }
@@ -123,8 +123,8 @@ goog.require('ga_permalink');
 
                   var position = camera.positionCartographic;
                   gaPermalink.updateParams({
-                    lon: position.longitude.toFixed(5),
-                    lat: position.latitude.toFixed(5),
+                    lon: Cesium.Math.toDegrees(position.longitude).toFixed(5),
+                    lat: Cesium.Math.toDegrees(position.latitude).toFixed(5),
                     elevation: position.height.toFixed(0),
                     heading: Cesium.Math.toDegrees(camera.heading).toFixed(3),
                     pitch: Cesium.Math.toDegrees(camera.pitch).toFixed(3)
