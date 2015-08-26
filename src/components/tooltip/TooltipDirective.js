@@ -176,7 +176,7 @@ goog.require('ga_styles_service');
                   olLayer.getSource() instanceof ol.source.ImageVector));
             }
 
-            // Test if the layer is a queryable bod layer
+            // Test if the layer has a tooltip
             function isQueryableBodLayer(olLayer) {
               var bodId = olLayer.bodId;
               if (bodId) {
@@ -184,7 +184,7 @@ goog.require('ga_styles_service');
                     bodId;
               }
               return (bodId &&
-                  gaLayers.getLayerProperty(bodId, 'queryable'));
+                  gaLayers.getLayerProperty(bodId, 'tooltip'));
             };
 
             // Get all the queryable layers
