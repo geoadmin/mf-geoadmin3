@@ -14,8 +14,8 @@ goog.require('ga_permalink');
   ]);
 
   module.directive('gaMap',
-      function($window, $parse, $rootScope, $timeout, gaPermalink,
-          gaBrowserSniffer, gaLayers, gaDebounce, gaOffline, gaGlobalOptions) {
+      function($window, $rootScope, $timeout, gaPermalink,
+          gaBrowserSniffer, gaLayers, gaDebounce, gaOffline) {
         return {
           restrict: 'A',
           scope: {
