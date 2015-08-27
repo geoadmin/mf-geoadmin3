@@ -10,7 +10,7 @@ from chsdi.models.clientdata_dynamodb import get_dynamodb_table
 def admin_kml(self):
     bucket_name = self.registry.settings.get('geoadmin_file_storage_bucket')
     files = kml_load(bucket_name=bucket_name)
-    kmls = {'files': files, 'count': len(files), 'bucket': self.registry.settings.get('api_url')}
+    kmls = {'files': files, 'count': len(files), 'bucket': self.registry.settings.get('api_url'), 'host': self.registry.settings.get('geoadminhost')}
     response = render_to_response(
         'chsdi:templates/adminkml.mako',
         kmls)

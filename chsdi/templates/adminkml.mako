@@ -75,6 +75,7 @@
 <%
 files = pageargs['files']
 bucket = pageargs['bucket']
+host = pageargs['host']
 %>
     <div id="header">
       <h1>Administration for kml storage</h1>
@@ -85,7 +86,7 @@ bucket = pageargs['bucket']
 % for idx, file in enumerate(files):
       <div id="api">
         <div id="map-${idx}" class="map"></div><br>
-        <div id="link"><p><a target="_blank" href='https://mf-geoadmin3.dev.bgdi.ch/?X=182898.59&Y=662367.14&zoom=0&lang=fr&topic=ech&bgLayer=ch.swisstopo.pixelkarte-farbe&layers=&adminId=${file[1]}'>Edit link on map.geo.admin.ch</a></p><p>Created on : ${file[2]}</p></div>
+        <div id="link"><p><a target="_blank" href='https://${host}/?X=182898.59&Y=662367.14&zoom=0&lang=fr&topic=ech&bgLayer=ch.swisstopo.pixelkarte-farbe&layers=&adminId=${file[1]}'>Edit link on map.geo.admin.ch</a></p><p>Created on : ${file[2]}</p></div>
       </div>
 
   <script type="text/javascript">
