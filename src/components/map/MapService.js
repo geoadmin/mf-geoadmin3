@@ -1587,12 +1587,9 @@ goog.require('ga_urlutils_service');
         }
       }
 
-      return function(map) {
-        var scope = $rootScope.$new();
+      // Update permalink on layer's modification
+      var registerLayersPermalink = function(scope, map) {
         var deregFns = [];
-        var dupId = 0; // Use for duplicate layer
-        // We must reorder layer when async layer are added
-        var mustReorder = false;
         scope.layers = map.getLayers().getArray();
         scope.layerFilter = gaLayerFilters.permalinked;
         scope.$watchCollection('layers | filter:layerFilter',
@@ -1631,6 +1628,12 @@ goog.require('ga_urlutils_service');
 
           });
         });
+      };
+      return function(map) {
+        var scope = $rootScope.$new();
+        var dupId = 0; // Use for duplicate layer
+        // We must reorder layer when async layer are added
+        var mustReorder = false;
 
         var addTopicSelectedLayers = function() {
           addLayers(gaTopic.get().selectedLayers.slice(0).reverse());
@@ -1779,7 +1782,7 @@ goog.require('ga_urlutils_service');
           }
 
           gaTime.allowStatusUpdate = true;
-
+          registerLayersPermalink(scope, map);
           // Listen for next topic change events
           $rootScope.$on('gaTopicChange', addTopicSelectedLayers);
         });
@@ -1952,6 +1955,9 @@ goog.require('ga_urlutils_service');
     this.$get = function($rootScope, gaPermalink, gaLayers,
         gaPreviewFeatures, gaMapUtils) {
       var queryParams = gaPermalink.getParams();
+      var layersParamValue = queryParams.layers;
+      var layerSpecs = layersParamValue ? layersParamValue.split(',') : [];
+
       return function(map) {
         gaLayers.loadConfig().then(function() {
           var featureIdsCount = 0;
@@ -1969,7 +1975,8 @@ goog.require('ga_urlutils_service');
                 featureIdsCount += featureIds.length;
                 Array.prototype.push.apply(featureIdsByBodId[bodId],
                     featureIds);
-                if (!gaMapUtils.getMapOverlayForBodId(map, bodId)) {
+                if (!gaMapUtils.getMapOverlayForBodId(map, bodId) &&
+                    layerSpecs.indexOf(bodId) == -1) {
                   map.addLayer(gaLayers.getOlLayerById(bodId));
                 }
               }
