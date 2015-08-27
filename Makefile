@@ -166,6 +166,7 @@ ol: OL_JS = ol.js ol-debug.js
 ol: scripts/ol-geoadmin.json .build-artefacts/ol3
 	cd .build-artefacts/ol3; \
 	git reset HEAD --hard; \
+	git fetch -a; \
 	git checkout $(OL3_VERSION); \
 	git show; \
 	cat ../../scripts/ga-ol3-style.exports >> src/ol/style/style.js; \
@@ -181,13 +182,17 @@ ol: scripts/ol-geoadmin.json .build-artefacts/ol3
 ol3cesium: .build-artefacts/ol3-cesium
 	cd .build-artefacts/ol3-cesium; \
 	git reset HEAD --hard; \
+	git fetch -a; \
 	git checkout $(OL3_CESIUM_VERSION); \
+	git submodule update --recursive --init --force; \
 	git show; \
+	ln -T -f -s ../../../../ol3-cesium-plugin/ src/plugins/geoadmin; \
 	make dist; \
 	node build/build.js ../../scripts/ol3cesium-debug-geoadmin.json dist/ol3cesium-debug.js;  \
 	cp dist/ol3cesium-debug.js ../../src/lib/; \
-	cp -r dist/Cesium ../../src/lib/; \
-	cat dist/Cesium/Cesium.js dist/ol3cesium.js > ../../src/lib/ol3cesium.js;
+	make cesium/Build/Cesium/Cesium.js; \
+	cp -r cesium/Build/Cesium ../../src/lib/; \
+	cat ../../src/lib/Cesium/Cesium.js dist/ol3cesium.js > ../../src/lib/ol3cesium.js;
 
 .PHONY: fastclick
 fastclick: .build-artefacts/fastclick .build-artefacts/closure-compiler/compiler.jar

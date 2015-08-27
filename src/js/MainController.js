@@ -77,7 +77,13 @@ goog.require('ga_storage_service');
     // Create the cesium viewer with basic layers
     var loadCesiumViewer = function(map, enabled) {
       var cesiumViewer = new olcs.OLCesium({
-        map: map
+        map: map,
+        createSynchronizers: function(map, scene) {
+           return [
+             new ga.GaRasterSynchronizer(map, scene),
+             new olcs.VectorSynchronizer(map, scene)
+           ];
+        }
       });
       cesiumViewer.setEnabled(enabled);
       var terrainProvider = new Cesium.CesiumTerrainProvider({
@@ -92,8 +98,7 @@ goog.require('ga_storage_service');
         url: '//api3.geo.admin.ch/mapproxy/service',
         layers: 'ch.swisstopo.swisstlm3d-karte-farbe'
       });
-      var layer = scene.imageryLayers.addImageryProvider(ip);
-      layer.show = true;
+      scene.imageryLayers.addImageryProvider(ip, 0);
       return cesiumViewer;
     };
 

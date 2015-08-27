@@ -1,6 +1,6 @@
 // OpenLayers 3. See http://openlayers.org/
 // License: https://raw.githubusercontent.com/openlayers/ol3/master/LICENSE.md
-// Version: v3.8.2-77-g5865d5b
+// Version: v3.8.2-118-g4045e06
 
 (function (root, factory) {
   if (typeof exports === "object") {
@@ -13055,7 +13055,6 @@ goog.require('goog.events.EventType');
  * @constructor
  * @extends {goog.events.EventTarget}
  * @fires change
- * @suppress {checkStructDictInheritance}
  * @struct
  * @api stable
  */
@@ -18286,9 +18285,6 @@ goog.functions.once = function(f) {
  * Licensed under CC-BY-3.0.
  */
 
-// FIXME add intersection of two paths given start points and bearings
-// FIXME add rhumb lines
-
 goog.provide('ol.Sphere');
 
 goog.require('goog.math');
@@ -18318,23 +18314,6 @@ ol.Sphere = function(radius) {
    */
   this.radius = radius;
 
-};
-
-
-/**
- * Returns the distance from c1 to c2 using the spherical law of cosines.
- *
- * @param {ol.Coordinate} c1 Coordinate 1.
- * @param {ol.Coordinate} c2 Coordinate 2.
- * @return {number} Spherical law of cosines distance.
- */
-ol.Sphere.prototype.cosineDistance = function(c1, c2) {
-  var lat1 = goog.math.toRadians(c1[1]);
-  var lat2 = goog.math.toRadians(c2[1]);
-  var deltaLon = goog.math.toRadians(c2[0] - c1[0]);
-  return this.radius * Math.acos(
-      Math.sin(lat1) * Math.sin(lat2) +
-      Math.cos(lat1) * Math.cos(lat2) * Math.cos(deltaLon));
 };
 
 
@@ -18369,53 +18348,6 @@ ol.Sphere.prototype.geodesicArea = function(coordinates) {
 
 
 /**
- * Returns the distance of c3 from the great circle path defined by c1 and c2.
- *
- * @param {ol.Coordinate} c1 Coordinate 1.
- * @param {ol.Coordinate} c2 Coordinate 2.
- * @param {ol.Coordinate} c3 Coordinate 3.
- * @return {number} Cross-track distance.
- */
-ol.Sphere.prototype.crossTrackDistance = function(c1, c2, c3) {
-  var d13 = this.cosineDistance(c1, c2);
-  var theta12 = goog.math.toRadians(this.initialBearing(c1, c2));
-  var theta13 = goog.math.toRadians(this.initialBearing(c1, c3));
-  return this.radius *
-      Math.asin(Math.sin(d13 / this.radius) * Math.sin(theta13 - theta12));
-};
-
-
-/**
- * Returns the distance from c1 to c2 using Pythagoras's theorem on an
- * equirectangular projection.
- *
- * @param {ol.Coordinate} c1 Coordinate 1.
- * @param {ol.Coordinate} c2 Coordinate 2.
- * @return {number} Equirectangular distance.
- */
-ol.Sphere.prototype.equirectangularDistance = function(c1, c2) {
-  var lat1 = goog.math.toRadians(c1[1]);
-  var lat2 = goog.math.toRadians(c2[1]);
-  var deltaLon = goog.math.toRadians(c2[0] - c1[0]);
-  var x = deltaLon * Math.cos((lat1 + lat2) / 2);
-  var y = lat2 - lat1;
-  return this.radius * Math.sqrt(x * x + y * y);
-};
-
-
-/**
- * Returns the final bearing from c1 to c2.
- *
- * @param {ol.Coordinate} c1 Coordinate 1.
- * @param {ol.Coordinate} c2 Coordinate 2.
- * @return {number} Initial bearing.
- */
-ol.Sphere.prototype.finalBearing = function(c1, c2) {
-  return (this.initialBearing(c2, c1) + 180) % 360;
-};
-
-
-/**
  * Returns the distance from c1 to c2 using the haversine formula.
  *
  * @param {ol.Coordinate} c1 Coordinate 1.
@@ -18432,96 +18364,6 @@ ol.Sphere.prototype.haversineDistance = function(c1, c2) {
       Math.sin(deltaLonBy2) * Math.sin(deltaLonBy2) *
       Math.cos(lat1) * Math.cos(lat2);
   return 2 * this.radius * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-};
-
-
-/**
- * Returns the point at `fraction` along the segment of the great circle passing
- * through c1 and c2.
- *
- * @param {ol.Coordinate} c1 Coordinate 1.
- * @param {ol.Coordinate} c2 Coordinate 2.
- * @param {number} fraction Fraction.
- * @return {ol.Coordinate} Coordinate between c1 and c2.
- */
-ol.Sphere.prototype.interpolate = function(c1, c2, fraction) {
-  var lat1 = goog.math.toRadians(c1[1]);
-  var lon1 = goog.math.toRadians(c1[0]);
-  var lat2 = goog.math.toRadians(c2[1]);
-  var lon2 = goog.math.toRadians(c2[0]);
-  var cosLat1 = Math.cos(lat1);
-  var sinLat1 = Math.sin(lat1);
-  var cosLat2 = Math.cos(lat2);
-  var sinLat2 = Math.sin(lat2);
-  var cosDeltaLon = Math.cos(lon2 - lon1);
-  var d = sinLat1 * sinLat2 + cosLat1 * cosLat2 * cosDeltaLon;
-  if (1 <= d) {
-    return c2.slice();
-  }
-  d = fraction * Math.acos(d);
-  var cosD = Math.cos(d);
-  var sinD = Math.sin(d);
-  var y = Math.sin(lon2 - lon1) * cosLat2;
-  var x = cosLat1 * sinLat2 - sinLat1 * cosLat2 * cosDeltaLon;
-  var theta = Math.atan2(y, x);
-  var lat = Math.asin(sinLat1 * cosD + cosLat1 * sinD * Math.cos(theta));
-  var lon = lon1 + Math.atan2(Math.sin(theta) * sinD * cosLat1,
-                              cosD - sinLat1 * Math.sin(lat));
-  return [goog.math.toDegrees(lon), goog.math.toDegrees(lat)];
-};
-
-
-/**
- * Returns the initial bearing from c1 to c2.
- *
- * @param {ol.Coordinate} c1 Coordinate 1.
- * @param {ol.Coordinate} c2 Coordinate 2.
- * @return {number} Initial bearing.
- */
-ol.Sphere.prototype.initialBearing = function(c1, c2) {
-  var lat1 = goog.math.toRadians(c1[1]);
-  var lat2 = goog.math.toRadians(c2[1]);
-  var deltaLon = goog.math.toRadians(c2[0] - c1[0]);
-  var y = Math.sin(deltaLon) * Math.cos(lat2);
-  var x = Math.cos(lat1) * Math.sin(lat2) -
-      Math.sin(lat1) * Math.cos(lat2) * Math.cos(deltaLon);
-  return goog.math.toDegrees(Math.atan2(y, x));
-};
-
-
-/**
- * Returns the maximum latitude of the great circle defined by bearing and
- * latitude.
- *
- * @param {number} bearing Bearing.
- * @param {number} latitude Latitude.
- * @return {number} Maximum latitude.
- */
-ol.Sphere.prototype.maximumLatitude = function(bearing, latitude) {
-  return Math.cos(Math.abs(Math.sin(goog.math.toRadians(bearing)) *
-                           Math.cos(goog.math.toRadians(latitude))));
-};
-
-
-/**
- * Returns the midpoint between c1 and c2.
- *
- * @param {ol.Coordinate} c1 Coordinate 1.
- * @param {ol.Coordinate} c2 Coordinate 2.
- * @return {ol.Coordinate} Midpoint.
- */
-ol.Sphere.prototype.midpoint = function(c1, c2) {
-  var lat1 = goog.math.toRadians(c1[1]);
-  var lat2 = goog.math.toRadians(c2[1]);
-  var lon1 = goog.math.toRadians(c1[0]);
-  var deltaLon = goog.math.toRadians(c2[0] - c1[0]);
-  var Bx = Math.cos(lat2) * Math.cos(deltaLon);
-  var By = Math.cos(lat2) * Math.sin(deltaLon);
-  var cosLat1PlusBx = Math.cos(lat1) + Bx;
-  var lat = Math.atan2(Math.sin(lat1) + Math.sin(lat2),
-                       Math.sqrt(cosLat1PlusBx * cosLat1PlusBx + By * By));
-  var lon = lon1 + Math.atan2(By, cosLat1PlusBx);
-  return [goog.math.toDegrees(lon), goog.math.toDegrees(lat)];
 };
 
 
@@ -21038,8 +20880,7 @@ ol.geom.LinearRing = function(coordinates, opt_layout) {
    */
   this.maxDeltaRevision_ = -1;
 
-  this.setCoordinates(coordinates,
-      /** @type {ol.geom.GeometryLayout|undefined} */ (opt_layout));
+  this.setCoordinates(coordinates, opt_layout);
 
 };
 goog.inherits(ol.geom.LinearRing, ol.geom.SimpleGeometry);
@@ -21179,8 +21020,7 @@ goog.require('ol.math');
  */
 ol.geom.Point = function(coordinates, opt_layout) {
   goog.base(this);
-  this.setCoordinates(coordinates,
-      /** @type {ol.geom.GeometryLayout|undefined} */ (opt_layout));
+  this.setCoordinates(coordinates, opt_layout);
 };
 goog.inherits(ol.geom.Point, ol.geom.SimpleGeometry);
 
@@ -21936,8 +21776,7 @@ ol.geom.Polygon = function(coordinates, opt_layout) {
    */
   this.orientedFlatCoordinates_ = null;
 
-  this.setCoordinates(coordinates,
-      /** @type {ol.geom.GeometryLayout|undefined} */ (opt_layout));
+  this.setCoordinates(coordinates, opt_layout);
 
 };
 goog.inherits(ol.geom.Polygon, ol.geom.SimpleGeometry);
@@ -47936,7 +47775,8 @@ ol.has.CANVAS_LINE_DASH = false;
 
 
 /**
- * True if browser supports Canvas.
+ * True if both the library and browser support Canvas.  Always `false`
+ * if `ol.ENABLE_CANVAS` is set to `false` at compile time.
  * @const
  * @type {boolean}
  * @api stable
@@ -47975,7 +47815,7 @@ ol.has.DEVICE_ORIENTATION = 'DeviceOrientationEvent' in goog.global;
 
 
 /**
- * True if browser supports DOM.
+ * True if `ol.ENABLE_DOM` is set to `true` at compile time.
  * @const
  * @type {boolean}
  */
@@ -48017,7 +47857,8 @@ ol.has.MSPOINTER = !!(goog.global.navigator.msPointerEnabled);
 
 
 /**
- * True if browser supports WebGL.
+ * True if both OpenLayers and browser support WebGL.  Always `false`
+ * if `ol.ENABLE_WEBGL` is set to `false` at compile time.
  * @const
  * @type {boolean}
  * @api stable
@@ -51188,7 +51029,6 @@ goog.require('ol.vec.Mat4');
  * @constructor
  * @extends {ol.Observable}
  * @param {ol.layer.Layer} layer Layer.
- * @suppress {checkStructDictInheritance}
  * @struct
  */
 ol.renderer.Layer = function(layer) {
@@ -52459,7 +52299,6 @@ ol.RendererType = {
  * @extends {goog.Disposable}
  * @param {Element} container Container.
  * @param {ol.Map} map Map.
- * @suppress {checkStructDictInheritance}
  * @struct
  */
 ol.renderer.Map = function(container, map) {
@@ -56856,8 +56695,7 @@ ol.interaction.KeyboardPan.handleEvent = function(mapBrowserEvent) {
       var map = mapBrowserEvent.map;
       var view = map.getView();
       goog.asserts.assert(!goog.isNull(view), 'view should not be null');
-      var viewState = view.getState();
-      var mapUnitsDelta = viewState.resolution * this.pixelDelta_;
+      var mapUnitsDelta = view.getResolution() * this.pixelDelta_;
       var deltaX = 0, deltaY = 0;
       if (keyCode == goog.events.KeyCodes.DOWN) {
         deltaY = -mapUnitsDelta;
@@ -56869,7 +56707,7 @@ ol.interaction.KeyboardPan.handleEvent = function(mapBrowserEvent) {
         deltaY = mapUnitsDelta;
       }
       var delta = [deltaX, deltaY];
-      ol.coordinate.rotate(delta, viewState.rotation);
+      ol.coordinate.rotate(delta, view.getRotation());
       ol.interaction.Interaction.pan(map, view, delta, this.duration_);
       mapBrowserEvent.preventDefault();
       stopEvent = true;
@@ -59722,8 +59560,12 @@ ol.render.IReplayGroup.prototype.isEmpty = function() {
 // FIXME add option to apply snapToPixel to all coordinates?
 // FIXME can eliminate empty set styles and strokes (when all geoms skipped)
 
+goog.provide('ol.render.canvas.ImageReplay');
+goog.provide('ol.render.canvas.LineStringReplay');
+goog.provide('ol.render.canvas.PolygonReplay');
 goog.provide('ol.render.canvas.Replay');
 goog.provide('ol.render.canvas.ReplayGroup');
+goog.provide('ol.render.canvas.TextReplay');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
@@ -61784,8 +61626,7 @@ goog.require('ol.proj');
 ol.geom.Circle = function(center, opt_radius, opt_layout) {
   goog.base(this);
   var radius = goog.isDef(opt_radius) ? opt_radius : 0;
-  this.setCenterAndRadius(center, radius,
-      /** @type {ol.geom.GeometryLayout|undefined} */ (opt_layout));
+  this.setCenterAndRadius(center, radius, opt_layout);
 };
 goog.inherits(ol.geom.Circle, ol.geom.SimpleGeometry);
 
@@ -62612,8 +62453,7 @@ ol.geom.LineString = function(coordinates, opt_layout) {
    */
   this.maxDeltaRevision_ = -1;
 
-  this.setCoordinates(coordinates,
-      /** @type {ol.geom.GeometryLayout|undefined} */ (opt_layout));
+  this.setCoordinates(coordinates, opt_layout);
 
 };
 goog.inherits(ol.geom.LineString, ol.geom.SimpleGeometry);
@@ -62866,8 +62706,7 @@ ol.geom.MultiLineString = function(coordinates, opt_layout) {
    */
   this.maxDeltaRevision_ = -1;
 
-  this.setCoordinates(coordinates,
-      /** @type {ol.geom.GeometryLayout|undefined} */ (opt_layout));
+  this.setCoordinates(coordinates, opt_layout);
 
 };
 goog.inherits(ol.geom.MultiLineString, ol.geom.SimpleGeometry);
@@ -63176,8 +63015,7 @@ goog.require('ol.math');
  */
 ol.geom.MultiPoint = function(coordinates, opt_layout) {
   goog.base(this);
-  this.setCoordinates(coordinates,
-      /** @type {ol.geom.GeometryLayout|undefined} */ (opt_layout));
+  this.setCoordinates(coordinates, opt_layout);
 };
 goog.inherits(ol.geom.MultiPoint, ol.geom.SimpleGeometry);
 
@@ -63458,8 +63296,7 @@ ol.geom.MultiPolygon = function(coordinates, opt_layout) {
    */
   this.orientedFlatCoordinates_ = null;
 
-  this.setCoordinates(coordinates,
-      /** @type {ol.geom.GeometryLayout|undefined} */ (opt_layout));
+  this.setCoordinates(coordinates, opt_layout);
 
 };
 goog.inherits(ol.geom.MultiPolygon, ol.geom.SimpleGeometry);
@@ -64281,6 +64118,7 @@ ol.ImageCanvas.prototype.getImage = function(opt_context) {
 ol.ImageCanvasLoader;
 
 goog.provide('ol.source.Image');
+goog.provide('ol.source.ImageEvent');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
@@ -78600,6 +78438,9 @@ goog.webgl.TEXTURE_MAX_ANISOTROPY_EXT = 0x84FE;
  */
 goog.webgl.MAX_TEXTURE_MAX_ANISOTROPY_EXT = 0x84FF;
 
+goog.provide('ol.webgl.Fragment');
+goog.provide('ol.webgl.Shader');
+goog.provide('ol.webgl.Vertex');
 goog.provide('ol.webgl.shader');
 
 goog.require('goog.functions');
@@ -78687,6 +78528,9 @@ ol.webgl.shader.Vertex.prototype.getType = function() {
 
 // This file is automatically generated, do not edit
 goog.provide('ol.render.webgl.imagereplay.shader.Color');
+goog.provide('ol.render.webgl.imagereplay.shader.Color.Locations');
+goog.provide('ol.render.webgl.imagereplay.shader.ColorFragment');
+goog.provide('ol.render.webgl.imagereplay.shader.ColorVertex');
 
 goog.require('ol.webgl.shader');
 
@@ -78841,6 +78685,9 @@ ol.render.webgl.imagereplay.shader.Color.Locations = function(gl, program) {
 
 // This file is automatically generated, do not edit
 goog.provide('ol.render.webgl.imagereplay.shader.Default');
+goog.provide('ol.render.webgl.imagereplay.shader.Default.Locations');
+goog.provide('ol.render.webgl.imagereplay.shader.DefaultFragment');
+goog.provide('ol.render.webgl.imagereplay.shader.DefaultVertex');
 
 goog.require('ol.webgl.shader');
 
@@ -79471,7 +79318,13 @@ goog.require('ol.extent');
 goog.require('ol.render.IReplayGroup');
 goog.require('ol.render.VectorContext');
 goog.require('ol.render.webgl.imagereplay.shader.Color');
+goog.require('ol.render.webgl.imagereplay.shader.Color.Locations');
+goog.require('ol.render.webgl.imagereplay.shader.ColorFragment');
+goog.require('ol.render.webgl.imagereplay.shader.ColorVertex');
 goog.require('ol.render.webgl.imagereplay.shader.Default');
+goog.require('ol.render.webgl.imagereplay.shader.Default.Locations');
+goog.require('ol.render.webgl.imagereplay.shader.DefaultFragment');
+goog.require('ol.render.webgl.imagereplay.shader.DefaultVertex');
 goog.require('ol.vec.Mat4');
 goog.require('ol.webgl.Buffer');
 goog.require('ol.webgl.Context');
@@ -81014,6 +80867,9 @@ ol.render.webgl.Immediate.GEOMETRY_RENDERERS_ = {
 
 // This file is automatically generated, do not edit
 goog.provide('ol.renderer.webgl.map.shader.Color');
+goog.provide('ol.renderer.webgl.map.shader.Color.Locations');
+goog.provide('ol.renderer.webgl.map.shader.ColorFragment');
+goog.provide('ol.renderer.webgl.map.shader.ColorVertex');
 
 goog.require('ol.webgl.shader');
 
@@ -81144,6 +81000,9 @@ ol.renderer.webgl.map.shader.Color.Locations = function(gl, program) {
 
 // This file is automatically generated, do not edit
 goog.provide('ol.renderer.webgl.map.shader.Default');
+goog.provide('ol.renderer.webgl.map.shader.Default.Locations');
+goog.provide('ol.renderer.webgl.map.shader.DefaultFragment');
+goog.provide('ol.renderer.webgl.map.shader.DefaultVertex');
 
 goog.require('ol.webgl.shader');
 
@@ -81277,7 +81136,13 @@ goog.require('ol.render.EventType');
 goog.require('ol.render.webgl.Immediate');
 goog.require('ol.renderer.Layer');
 goog.require('ol.renderer.webgl.map.shader.Color');
+goog.require('ol.renderer.webgl.map.shader.Color.Locations');
+goog.require('ol.renderer.webgl.map.shader.ColorFragment');
+goog.require('ol.renderer.webgl.map.shader.ColorVertex');
 goog.require('ol.renderer.webgl.map.shader.Default');
+goog.require('ol.renderer.webgl.map.shader.Default.Locations');
+goog.require('ol.renderer.webgl.map.shader.DefaultFragment');
+goog.require('ol.renderer.webgl.map.shader.DefaultVertex');
 goog.require('ol.webgl.Buffer');
 goog.require('ol.webgl.Context');
 
@@ -81897,6 +81762,9 @@ ol.renderer.webgl.ImageLayer.prototype.getHitTransformationMatrix_ =
 
 // This file is automatically generated, do not edit
 goog.provide('ol.renderer.webgl.tilelayer.shader');
+goog.provide('ol.renderer.webgl.tilelayer.shader.Locations');
+goog.provide('ol.renderer.webgl.tilelayer.shader.Fragment');
+goog.provide('ol.renderer.webgl.tilelayer.shader.Vertex');
 
 goog.require('ol.webgl.shader');
 
@@ -82024,7 +81892,9 @@ goog.require('ol.extent');
 goog.require('ol.layer.Tile');
 goog.require('ol.math');
 goog.require('ol.renderer.webgl.Layer');
-goog.require('ol.renderer.webgl.tilelayer.shader');
+goog.require('ol.renderer.webgl.tilelayer.shader.Fragment');
+goog.require('ol.renderer.webgl.tilelayer.shader.Locations');
+goog.require('ol.renderer.webgl.tilelayer.shader.Vertex');
 goog.require('ol.size');
 goog.require('ol.tilecoord');
 goog.require('ol.vec.Mat4');
@@ -85076,10 +84946,10 @@ ol.Overlay = function(options) {
   this.element_.style.position = 'absolute';
 
   /**
-   * @private
+   * @protected
    * @type {boolean}
    */
-  this.autoPan_ = goog.isDef(options.autoPan) ? options.autoPan : false;
+  this.autoPan = goog.isDef(options.autoPan) ? options.autoPan : false;
 
   /**
    * @private
@@ -85242,7 +85112,7 @@ ol.Overlay.prototype.handleMapChanged = function() {
   if (goog.isDefAndNotNull(map)) {
     this.mapPostrenderListenerKey_ = goog.events.listen(map,
         ol.MapEventType.POSTRENDER, this.render, false, this);
-    this.updatePixelPosition_();
+    this.updatePixelPosition();
     var container = this.stopEvent_ ?
         map.getOverlayContainerStopEvent() : map.getOverlayContainer();
     if (this.insertFirst_) {
@@ -85259,7 +85129,7 @@ ol.Overlay.prototype.handleMapChanged = function() {
  * @protected
  */
 ol.Overlay.prototype.render = function() {
-  this.updatePixelPosition_();
+  this.updatePixelPosition();
 };
 
 
@@ -85267,7 +85137,7 @@ ol.Overlay.prototype.render = function() {
  * @protected
  */
 ol.Overlay.prototype.handleOffsetChanged = function() {
-  this.updatePixelPosition_();
+  this.updatePixelPosition();
 };
 
 
@@ -85275,8 +85145,8 @@ ol.Overlay.prototype.handleOffsetChanged = function() {
  * @protected
  */
 ol.Overlay.prototype.handlePositionChanged = function() {
-  this.updatePixelPosition_();
-  if (goog.isDef(this.get(ol.OverlayProperty.POSITION)) && this.autoPan_) {
+  this.updatePixelPosition();
+  if (goog.isDef(this.get(ol.OverlayProperty.POSITION)) && this.autoPan) {
     this.panIntoView_();
   }
 };
@@ -85286,7 +85156,7 @@ ol.Overlay.prototype.handlePositionChanged = function() {
  * @protected
  */
 ol.Overlay.prototype.handlePositioningChanged = function() {
-  this.updatePixelPosition_();
+  this.updatePixelPosition();
 };
 
 
@@ -85342,7 +85212,7 @@ ol.Overlay.prototype.setPosition = function(position) {
  * @private
  */
 ol.Overlay.prototype.panIntoView_ = function() {
-  goog.asserts.assert(this.autoPan_, 'this.autoPan_ should be true');
+  goog.asserts.assert(this.autoPan, 'this.autoPan should be true');
   var map = this.getMap();
 
   if (!goog.isDef(map) || goog.isNull(map.getTargetElement())) {
@@ -85434,27 +85304,48 @@ ol.Overlay.prototype.setPositioning = function(positioning) {
 
 
 /**
- * @private
+ * Modify the visibility of the element.
+ * @param {boolean} visible
+ * @protected
  */
-ol.Overlay.prototype.updatePixelPosition_ = function() {
+ol.Overlay.prototype.setVisible = function(visible) {
+  if (this.rendered_.visible !== visible) {
+    goog.style.setElementShown(this.element_, visible);
+    this.rendered_.visible = visible;
+  }
+};
 
+
+/**
+ * Update pixel position.
+ * @protected
+ */
+ol.Overlay.prototype.updatePixelPosition = function() {
   var map = this.getMap();
   var position = this.getPosition();
   if (!goog.isDef(map) || !map.isRendered() || !goog.isDef(position)) {
-    if (this.rendered_.visible) {
-      goog.style.setElementShown(this.element_, false);
-      this.rendered_.visible = false;
-    }
+    this.setVisible(false);
     return;
   }
 
   var pixel = map.getPixelFromCoordinate(position);
-  goog.asserts.assert(!goog.isNull(pixel), 'pixel should not be null');
   var mapSize = map.getSize();
+  this.updateRenderedPosition(pixel, mapSize);
+};
+
+
+/**
+ * @param {ol.Pixel} pixel
+ * @param {ol.Size|undefined} mapSize
+ * @protected
+ */
+ol.Overlay.prototype.updateRenderedPosition = function(pixel, mapSize) {
+  goog.asserts.assert(!goog.isNull(pixel), 'pixel should not be null');
   goog.asserts.assert(goog.isDef(mapSize), 'mapSize should be defined');
   var style = this.element_.style;
   var offset = this.getOffset();
   goog.asserts.assert(goog.isArray(offset), 'offset should be an array');
+
   var positioning = this.getPositioning();
   goog.asserts.assert(goog.isDef(positioning),
       'positioning should be defined');
@@ -85510,11 +85401,7 @@ ol.Overlay.prototype.updatePixelPosition_ = function() {
     }
   }
 
-  if (!this.rendered_.visible) {
-    goog.style.setElementShown(this.element_, true);
-    this.rendered_.visible = true;
-  }
-
+  this.setVisible(true);
 };
 
 goog.provide('ol.control.OverviewMap');
@@ -88490,203 +88377,6 @@ ol.DeviceOrientation.prototype.handleTrackingChanged_ = function() {
 ol.DeviceOrientation.prototype.setTracking = function(tracking) {
   this.set(ol.DeviceOrientationProperty.TRACKING, tracking);
 };
-
-goog.provide('ol.Ellipsoid');
-
-goog.require('goog.math');
-goog.require('ol.Coordinate');
-
-
-
-/**
- * @constructor
- * @param {number} a Major radius.
- * @param {number} flattening Flattening.
- */
-ol.Ellipsoid = function(a, flattening) {
-
-  /**
-   * @const
-   * @type {number}
-   */
-  this.a = a;
-
-  /**
-   * @const
-   * @type {number}
-   */
-  this.flattening = flattening;
-
-  /**
-   * @const
-   * @type {number}
-   */
-  this.b = this.a * (1 - this.flattening);
-
-  /**
-   * @const
-   * @type {number}
-   */
-  this.eSquared = 2 * flattening - flattening * flattening;
-
-  /**
-   * @const
-   * @type {number}
-   */
-  this.e = Math.sqrt(this.eSquared);
-
-};
-
-
-/**
- * @param {ol.Coordinate} c1 Coordinate 1.
- * @param {ol.Coordinate} c2 Coordinate 1.
- * @param {number=} opt_minDeltaLambda Minimum delta lambda for convergence.
- * @param {number=} opt_maxIterations Maximum iterations.
- * @return {{distance: number, initialBearing: number, finalBearing: number}}
- *     Vincenty.
- */
-ol.Ellipsoid.prototype.vincenty =
-    function(c1, c2, opt_minDeltaLambda, opt_maxIterations) {
-  var minDeltaLambda = goog.isDef(opt_minDeltaLambda) ?
-      opt_minDeltaLambda : 1e-12;
-  var maxIterations = goog.isDef(opt_maxIterations) ?
-      opt_maxIterations : 100;
-  var f = this.flattening;
-  var lat1 = goog.math.toRadians(c1[1]);
-  var lat2 = goog.math.toRadians(c2[1]);
-  var deltaLon = goog.math.toRadians(c2[0] - c1[0]);
-  var U1 = Math.atan((1 - f) * Math.tan(lat1));
-  var cosU1 = Math.cos(U1);
-  var sinU1 = Math.sin(U1);
-  var U2 = Math.atan((1 - f) * Math.tan(lat2));
-  var cosU2 = Math.cos(U2);
-  var sinU2 = Math.sin(U2);
-  var lambda = deltaLon;
-  var cosSquaredAlpha, sinAlpha;
-  var cosLambda, deltaLambda = Infinity, sinLambda;
-  var cos2SigmaM, cosSigma, sigma, sinSigma;
-  var i;
-  for (i = maxIterations; i > 0; --i) {
-    cosLambda = Math.cos(lambda);
-    sinLambda = Math.sin(lambda);
-    var x = cosU2 * sinLambda;
-    var y = cosU1 * sinU2 - sinU1 * cosU2 * cosLambda;
-    sinSigma = Math.sqrt(x * x + y * y);
-    if (sinSigma === 0) {
-      return {
-        distance: 0,
-        initialBearing: 0,
-        finalBearing: 0
-      };
-    }
-    cosSigma = sinU1 * sinU2 + cosU1 * cosU2 * cosLambda;
-    sigma = Math.atan2(sinSigma, cosSigma);
-    sinAlpha = cosU1 * cosU2 * sinLambda / sinSigma;
-    cosSquaredAlpha = 1 - sinAlpha * sinAlpha;
-    cos2SigmaM = cosSigma - 2 * sinU1 * sinU2 / cosSquaredAlpha;
-    if (isNaN(cos2SigmaM)) {
-      cos2SigmaM = 0;
-    }
-    var C = f / 16 * cosSquaredAlpha * (4 + f * (4 - 3 * cosSquaredAlpha));
-    var lambdaPrime = deltaLon + (1 - C) * f * sinAlpha * (sigma +
-        C * sinSigma * (cos2SigmaM +
-        C * cosSigma * (2 * cos2SigmaM * cos2SigmaM - 1)));
-    deltaLambda = Math.abs(lambdaPrime - lambda);
-    lambda = lambdaPrime;
-    if (deltaLambda < minDeltaLambda) {
-      break;
-    }
-  }
-  if (i === 0) {
-    return {
-      distance: NaN,
-      finalBearing: NaN,
-      initialBearing: NaN
-    };
-  }
-  var aSquared = this.a * this.a;
-  var bSquared = this.b * this.b;
-  var uSquared = cosSquaredAlpha * (aSquared - bSquared) / bSquared;
-  var A = 1 + uSquared / 16384 *
-      (4096 + uSquared * (uSquared * (320 - 175 * uSquared) - 768));
-  var B = uSquared / 1024 *
-      (256 + uSquared * (uSquared * (74 - 47 * uSquared) - 128));
-  var deltaSigma = B * sinSigma * (cos2SigmaM + B / 4 *
-      (cosSigma * (2 * cos2SigmaM * cos2SigmaM - 1) -
-       B / 6 * cos2SigmaM * (4 * sinSigma * sinSigma - 3) *
-       (4 * cos2SigmaM * cos2SigmaM - 3)));
-  cosLambda = Math.cos(lambda);
-  sinLambda = Math.sin(lambda);
-  var alpha1 = Math.atan2(cosU2 * sinLambda,
-                          cosU1 * sinU2 - sinU1 * cosU2 * cosLambda);
-  var alpha2 = Math.atan2(cosU1 * sinLambda,
-                          cosU1 * sinU2 * cosLambda - sinU1 * cosU2);
-  return {
-    distance: this.b * A * (sigma - deltaSigma),
-    initialBearing: goog.math.toDegrees(alpha1),
-    finalBearing: goog.math.toDegrees(alpha2)
-  };
-};
-
-
-/**
- * Returns the distance from c1 to c2 using Vincenty.
- *
- * @param {ol.Coordinate} c1 Coordinate 1.
- * @param {ol.Coordinate} c2 Coordinate 1.
- * @param {number=} opt_minDeltaLambda Minimum delta lambda for convergence.
- * @param {number=} opt_maxIterations Maximum iterations.
- * @return {number} Vincenty distance.
- */
-ol.Ellipsoid.prototype.vincentyDistance =
-    function(c1, c2, opt_minDeltaLambda, opt_maxIterations) {
-  var vincenty = this.vincenty(c1, c2, opt_minDeltaLambda, opt_maxIterations);
-  return vincenty.distance;
-};
-
-
-/**
- * Returns the final bearing from c1 to c2 using Vincenty.
- *
- * @param {ol.Coordinate} c1 Coordinate 1.
- * @param {ol.Coordinate} c2 Coordinate 1.
- * @param {number=} opt_minDeltaLambda Minimum delta lambda for convergence.
- * @param {number=} opt_maxIterations Maximum iterations.
- * @return {number} Initial bearing.
- */
-ol.Ellipsoid.prototype.vincentyFinalBearing =
-    function(c1, c2, opt_minDeltaLambda, opt_maxIterations) {
-  var vincenty = this.vincenty(c1, c2, opt_minDeltaLambda, opt_maxIterations);
-  return vincenty.finalBearing;
-};
-
-
-/**
- * Returns the initial bearing from c1 to c2 using Vincenty.
- *
- * @param {ol.Coordinate} c1 Coordinate 1.
- * @param {ol.Coordinate} c2 Coordinate 1.
- * @param {number=} opt_minDeltaLambda Minimum delta lambda for convergence.
- * @param {number=} opt_maxIterations Maximum iterations.
- * @return {number} Initial bearing.
- */
-ol.Ellipsoid.prototype.vincentyInitialBearing =
-    function(c1, c2, opt_minDeltaLambda, opt_maxIterations) {
-  var vincenty = this.vincenty(c1, c2, opt_minDeltaLambda, opt_maxIterations);
-  return vincenty.initialBearing;
-};
-
-goog.provide('ol.ellipsoid.WGS84');
-
-goog.require('ol.Ellipsoid');
-
-
-/**
- * @const
- * @type {ol.Ellipsoid}
- */
-ol.ellipsoid.WGS84 = new ol.Ellipsoid(6378137, 1 / 298.257223563);
 
 goog.provide('ol.format.Feature');
 
@@ -107709,16 +107399,15 @@ ol.interaction.DragRotateAndZoom.handleDragEvent_ = function(mapBrowserEvent) {
   var theta = Math.atan2(delta.y, delta.x);
   var magnitude = delta.magnitude();
   var view = map.getView();
-  var viewState = view.getState();
   map.render();
   if (goog.isDef(this.lastAngle_)) {
     var angleDelta = theta - this.lastAngle_;
     ol.interaction.Interaction.rotateWithoutConstraints(
-        map, view, viewState.rotation - angleDelta);
+        map, view, view.getRotation() - angleDelta);
   }
   this.lastAngle_ = theta;
   if (goog.isDef(this.lastMagnitude_)) {
-    var resolution = this.lastMagnitude_ * (viewState.resolution / magnitude);
+    var resolution = this.lastMagnitude_ * (view.getResolution() / magnitude);
     ol.interaction.Interaction.zoomWithoutConstraints(map, view, resolution);
   }
   if (goog.isDef(this.lastMagnitude_)) {
@@ -107742,10 +107431,9 @@ ol.interaction.DragRotateAndZoom.handleUpEvent_ = function(mapBrowserEvent) {
   var map = mapBrowserEvent.map;
   var view = map.getView();
   view.setHint(ol.ViewHint.INTERACTING, -1);
-  var viewState = view.getState();
   var direction = this.lastScaleDelta_ - 1;
-  ol.interaction.Interaction.rotate(map, view, viewState.rotation);
-  ol.interaction.Interaction.zoom(map, view, viewState.resolution,
+  ol.interaction.Interaction.rotate(map, view, view.getRotation());
+  ol.interaction.Interaction.zoom(map, view, view.getResolution(),
       undefined, this.duration_, direction);
   this.lastScaleDelta_ = 0;
   return false;
@@ -108619,6 +108307,7 @@ ol.interaction.DrawMode = {
 };
 
 goog.provide('ol.interaction.Modify');
+goog.provide('ol.interaction.ModifyEvent');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
@@ -108653,13 +108342,13 @@ goog.require('ol.structs.RBush');
 ol.ModifyEventType = {
   /**
    * Triggered upon feature modification start
-   * @event ol.ModifyEvent#modifystart
+   * @event ol.interaction.ModifyEvent#modifystart
    * @api
    */
   MODIFYSTART: 'modifystart',
   /**
    * Triggered upon feature modification end
-   * @event ol.ModifyEvent#modifyend
+   * @event ol.interaction.ModifyEvent#modifyend
    * @api
    */
   MODIFYEND: 'modifyend'
@@ -108680,7 +108369,7 @@ ol.ModifyEventType = {
  * @param {ol.MapBrowserPointerEvent} mapBrowserPointerEvent Associated
  *     {@link ol.MapBrowserPointerEvent}.
  */
-ol.ModifyEvent = function(type, features, mapBrowserPointerEvent) {
+ol.interaction.ModifyEvent = function(type, features, mapBrowserPointerEvent) {
 
   goog.base(this, type);
 
@@ -108698,7 +108387,7 @@ ol.ModifyEvent = function(type, features, mapBrowserPointerEvent) {
    */
   this.mapBrowserPointerEvent = mapBrowserPointerEvent;
 };
-goog.inherits(ol.ModifyEvent, goog.events.Event);
+goog.inherits(ol.interaction.ModifyEvent, goog.events.Event);
 
 
 /**
@@ -108719,7 +108408,7 @@ ol.interaction.SegmentDataType;
  * @constructor
  * @extends {ol.interaction.Pointer}
  * @param {olx.interaction.ModifyOptions} options Options.
- * @fires ol.ModifyEvent
+ * @fires ol.interaction.ModifyEvent
  * @api
  */
 ol.interaction.Modify = function(options) {
@@ -108771,7 +108460,7 @@ ol.interaction.Modify = function(options) {
 
   /**
    * Segment RTree for each layer
-   * @type {Object.<*, ol.structs.RBush>}
+   * @type {ol.structs.RBush.<ol.interaction.SegmentDataType>}
    * @private
    */
   this.rBush_ = new ol.structs.RBush();
@@ -109198,7 +108887,8 @@ ol.interaction.Modify.handleDownEvent_ = function(evt) {
     for (i = insertVertices.length - 1; i >= 0; --i) {
       this.insertVertex_.apply(this, insertVertices[i]);
     }
-    this.dispatchEvent(new ol.ModifyEvent(ol.ModifyEventType.MODIFYSTART,
+    this.dispatchEvent(
+        new ol.interaction.ModifyEvent(ol.ModifyEventType.MODIFYSTART,
         this.features_, evt));
   }
   return !goog.isNull(this.vertexFeature_);
@@ -109273,7 +108963,8 @@ ol.interaction.Modify.handleUpEvent_ = function(evt) {
     this.rBush_.update(ol.extent.boundingExtent(segmentData.segment),
         segmentData);
   }
-  this.dispatchEvent(new ol.ModifyEvent(ol.ModifyEventType.MODIFYEND,
+  this.dispatchEvent(
+      new ol.interaction.ModifyEvent(ol.ModifyEventType.MODIFYEND,
       this.features_, evt));
   return false;
 };
@@ -109590,6 +109281,7 @@ ol.interaction.Modify.prototype.setGeometryCoordinates_ =
 ol.interaction.Modify.prototype.updateSegmentIndices_ = function(
     geometry, index, depth, delta) {
   this.rBush_.forEachInExtent(geometry.getExtent(), function(segmentDataMatch) {
+    goog.asserts.assert(goog.isDef(segmentDataMatch.depth));
     if (segmentDataMatch.geometry === geometry &&
         (!goog.isDef(depth) ||
         goog.array.equals(segmentDataMatch.depth, depth)) &&
@@ -109611,6 +109303,7 @@ ol.interaction.Modify.getDefaultStyleFunction = function() {
 };
 
 goog.provide('ol.interaction.Select');
+goog.provide('ol.interaction.SelectEvent');
 goog.provide('ol.interaction.SelectFilterFunction');
 
 goog.require('goog.array');
@@ -109633,7 +109326,7 @@ goog.require('ol.source.Vector');
 ol.SelectEventType = {
   /**
    * Triggered when feature(s) has been (de)selected.
-   * @event ol.SelectEvent#select
+   * @event ol.interaction.SelectEvent#select
    * @api
    */
   SELECT: 'select'
@@ -109664,7 +109357,8 @@ ol.interaction.SelectFilterFunction;
  * @extends {goog.events.Event}
  * @constructor
  */
-ol.SelectEvent = function(type, selected, deselected, mapBrowserEvent) {
+ol.interaction.SelectEvent =
+    function(type, selected, deselected, mapBrowserEvent) {
   goog.base(this, type);
 
   /**
@@ -109688,7 +109382,7 @@ ol.SelectEvent = function(type, selected, deselected, mapBrowserEvent) {
    */
   this.mapBrowserEvent = mapBrowserEvent;
 };
-goog.inherits(ol.SelectEvent, goog.events.Event);
+goog.inherits(ol.interaction.SelectEvent, goog.events.Event);
 
 
 
@@ -109705,7 +109399,7 @@ goog.inherits(ol.SelectEvent, goog.events.Event);
  * @constructor
  * @extends {ol.interaction.Interaction}
  * @param {olx.interaction.SelectOptions=} opt_options Options.
- * @fires ol.SelectEvent
+ * @fires ol.interaction.SelectEvent
  * @api stable
  */
 ol.interaction.Select = function(opt_options) {
@@ -109896,8 +109590,8 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
   }
   if (change) {
     this.dispatchEvent(
-        new ol.SelectEvent(ol.SelectEventType.SELECT, selected, deselected,
-            mapBrowserEvent));
+        new ol.interaction.SelectEvent(ol.SelectEventType.SELECT,
+            selected, deselected, mapBrowserEvent));
   }
   return ol.events.condition.pointerMove(mapBrowserEvent);
 };
@@ -118091,11 +117785,13 @@ goog.require('ol.interaction.InteractionProperty');
 goog.require('ol.interaction.KeyboardPan');
 goog.require('ol.interaction.KeyboardZoom');
 goog.require('ol.interaction.Modify');
+goog.require('ol.interaction.ModifyEvent');
 goog.require('ol.interaction.MouseWheelZoom');
 goog.require('ol.interaction.PinchRotate');
 goog.require('ol.interaction.PinchZoom');
 goog.require('ol.interaction.Pointer');
 goog.require('ol.interaction.Select');
+goog.require('ol.interaction.SelectEvent');
 goog.require('ol.interaction.SelectFilterFunction');
 goog.require('ol.interaction.Snap');
 goog.require('ol.interaction.SnapProperty');
@@ -118126,6 +117822,7 @@ goog.require('ol.source.BingMaps');
 goog.require('ol.source.Cluster');
 goog.require('ol.source.Image');
 goog.require('ol.source.ImageCanvas');
+goog.require('ol.source.ImageEvent');
 goog.require('ol.source.ImageMapGuide');
 goog.require('ol.source.ImageStatic');
 goog.require('ol.source.ImageVector');
@@ -120785,14 +120482,14 @@ goog.exportSymbol(
     OPENLAYERS);
 
 goog.exportProperty(
-    ol.ModifyEvent.prototype,
+    ol.interaction.ModifyEvent.prototype,
     'features',
-    ol.ModifyEvent.prototype.features);
+    ol.interaction.ModifyEvent.prototype.features);
 
 goog.exportProperty(
-    ol.ModifyEvent.prototype,
+    ol.interaction.ModifyEvent.prototype,
     'mapBrowserPointerEvent',
-    ol.ModifyEvent.prototype.mapBrowserPointerEvent);
+    ol.interaction.ModifyEvent.prototype.mapBrowserPointerEvent);
 
 goog.exportSymbol(
     'ol.interaction.Modify',
@@ -120835,19 +120532,19 @@ goog.exportSymbol(
     OPENLAYERS);
 
 goog.exportProperty(
-    ol.SelectEvent.prototype,
+    ol.interaction.SelectEvent.prototype,
     'selected',
-    ol.SelectEvent.prototype.selected);
+    ol.interaction.SelectEvent.prototype.selected);
 
 goog.exportProperty(
-    ol.SelectEvent.prototype,
+    ol.interaction.SelectEvent.prototype,
     'deselected',
-    ol.SelectEvent.prototype.deselected);
+    ol.interaction.SelectEvent.prototype.deselected);
 
 goog.exportProperty(
-    ol.SelectEvent.prototype,
+    ol.interaction.SelectEvent.prototype,
     'mapBrowserEvent',
-    ol.SelectEvent.prototype.mapBrowserEvent);
+    ol.interaction.SelectEvent.prototype.mapBrowserEvent);
 
 goog.exportSymbol(
     'ol.interaction.Select',
