@@ -19,7 +19,8 @@ goog.require('ga_permalink');
         return {
           restrict: 'A',
           scope: {
-            map: '=gaMapMap'
+            map: '=gaMapMap',
+            ol3d: '=gaMapOl3d'
           },
           link: function(scope, element, attrs) {
             var map = scope.map;
@@ -63,21 +64,74 @@ goog.require('ga_permalink');
 
             // Update permalink based on view states.
             var updatePermalink = function() {
-              var center = view.getCenter();
-              var zoom = view.getZoom();
-              // when the directive is instantiated the view may not
-              // be defined yet.
-              if (center && zoom !== undefined) {
-                var x = center[1].toFixed(2);
-                var y = center[0].toFixed(2);
-                gaPermalink.updateParams({X: x, Y: y, zoom: zoom});
+              // only update the permalink in 2d mode
+              if (!scope.ol3d || !scope.ol3d.getEnabled()) {
+                // remove 3d params
+                gaPermalink.deleteParam('lon');
+                gaPermalink.deleteParam('lat');
+                gaPermalink.deleteParam('elevation');
+                gaPermalink.deleteParam('heading');
+                gaPermalink.deleteParam('pitch');
+                var center = view.getCenter();
+                var zoom = view.getZoom();
+                // when the directive is instantiated the view may not
+                // be defined yet.
+                if (center && zoom !== undefined) {
+                  var x = center[1].toFixed(2);
+                  var y = center[0].toFixed(2);
+                  gaPermalink.updateParams({X: x, Y: y, zoom: zoom});
+                }
               }
             };
             view.on('propertychange', gaDebounce.debounce(updatePermalink,
                 1000, false));
-            updatePermalink();
 
             map.setTarget(element[0]);
+
+            scope.$watch('::ol3d', function(ol3d) {
+              if (ol3d) {
+                var camera = ol3d.getCesiumScene().camera;
+                var params = gaPermalink.getParams();
+
+                // initial location based on query params
+                var position, heading, pitch;
+                if (params.lon && params.lat && params.elevation) {
+                  var lon = Cesium.Math.toRadians(parseFloat(params.lon));
+                  var lat = Cesium.Math.toRadians(parseFloat(params.lat));
+                  var elevation = parseFloat(params.elevation);
+                  position = new Cesium.Cartographic(lon, lat, elevation);
+                }
+                if (params.heading) {
+                  heading = Cesium.Math.toRadians(parseFloat(params.heading));
+                }
+                if (params.pitch) {
+                  pitch = Cesium.Math.toRadians(parseFloat(params.pitch));
+                }
+                camera.setView({
+                  positionCartographic: position,
+                  heading: heading,
+                  pitch: pitch,
+                  roll: 0.0
+                });
+
+                // update permalink
+                camera.moveEnd.addEventListener(gaDebounce.debounce(function() {
+                  // remove 2d params
+                  gaPermalink.deleteParam('X');
+                  gaPermalink.deleteParam('Y');
+                  gaPermalink.deleteParam('zoom');
+
+                  var position = camera.positionCartographic;
+                  gaPermalink.updateParams({
+                    lon: Cesium.Math.toDegrees(position.longitude).toFixed(5),
+                    lat: Cesium.Math.toDegrees(position.latitude).toFixed(5),
+                    elevation: position.height.toFixed(0),
+                    heading: Cesium.Math.toDegrees(camera.heading).toFixed(3),
+                    pitch: Cesium.Math.toDegrees(camera.pitch).toFixed(3)
+                  });
+                }, 1000, false));
+              }
+            });
 
             // Often when we use embed map the size of the map is fixed, so we
             // don't need to resize the map for printing (use case: print an
