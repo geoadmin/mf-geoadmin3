@@ -121,12 +121,11 @@ RewriteCond %{HTTP:X-Forwarded-Proto} !https
 RewriteRule ^${apache_entry_path}/admin         https://%{HTTP_HOST}%{REQUEST_URI} [R,L]
 
 <LocationMatch ^${apache_entry_path}/admin/kml>
-AuthType Basic
-AuthName "Your IWI credential"
-# Optional line:
-AuthBasicProvider file
-AuthUserFile "/var/www/vhosts/mf-chsdi3/private/htpasswd"
-AuthGroupFile "/var/www/vhosts/mf-chsdi3/private/htgroup"
-Require group iwi-team bgdi-team
-
+    AuthType Basic
+    AuthName "Your IWI credential"
+    # Optional line:
+    AuthBasicProvider file
+    AuthUserFile "/var/www/vhosts/mf-chsdi3/private/htpasswd"
+    AuthGroupFile "/var/www/vhosts/mf-chsdi3/private/htgroup"
+    Require group iwi-team bgdi-team
 </LocationMatch>
