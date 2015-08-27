@@ -5,7 +5,7 @@ import requests
 from osgeo import osr, ogr
 from pyramid.threadlocal import get_current_registry
 from pyramid.i18n import get_locale_name
-from pyramid.httpexceptions import HTTPBadRequest
+from pyramid.httpexceptions import HTTPBadRequest, HTTPRequestTimeout
 import unicodedata
 from urllib import quote
 from urlparse import urlparse, urlunparse, urljoin
@@ -81,6 +81,9 @@ def locale_negotiator(request):
         lang = request.params.get('lang')
     except UnicodeDecodeError:
         raise HTTPBadRequest('Could not parse URL and parameters. Request send must be encoded in utf-8.')
+    # This might happen if a POST request is aborted before all the data could be transmitted
+    except IOError:
+        raise HTTPRequestTimeout('Request was aborted. Didn\'t receive full request')
 
     settings = get_current_registry().settings
     languages = settings['available_languages'].split()
