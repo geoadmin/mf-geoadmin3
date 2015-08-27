@@ -4,6 +4,7 @@
 from shapely.geometry import asShape
 from pyramid.httpexceptions import HTTPBadRequest
 
+from chsdi.lib.helpers import float_raise_nan
 from chsdi.lib.validation import MapNameValidation
 from chsdi.esrigeojsonencoder import loads
 
@@ -143,7 +144,7 @@ class MapServiceValidation(MapNameValidation):
         if len(value) != 3:
             raise HTTPBadRequest('Please provide the parameter imageDisplay in a comma separated list of 3 arguments (width,height,dpi)')
         try:
-            self._imageDisplay = map(float, value)
+            self._imageDisplay = map(float_raise_nan, value)
         except ValueError:
             raise HTTPBadRequest('Please provide numerical values for the parameter imageDisplay')
 
@@ -167,7 +168,7 @@ class MapServiceValidation(MapNameValidation):
         elif value is None and self._where is None:
             raise HTTPBadRequest('Please provide the parameter tolerance (Required)')
         try:
-            self._tolerance = float(value)
+            self._tolerance = float_raise_nan(value)
         except ValueError:
             raise HTTPBadRequest('Please provide an integer value for the pixel tolerance')
 

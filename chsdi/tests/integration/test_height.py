@@ -14,6 +14,12 @@ class TestHeightView(TestsBase):
         self.assertTrue(resp.content_type == 'application/json')
         self.assertTrue(resp.json['height'] == '560.2')
 
+    def test_height_nan(self):
+        resp = self.testapp.get('/rest/services/height', params={'easting': 'NaN', 'northing': '200000.1'}, headers=self.headers, status=400)
+        resp.mustcontain('Please provide numerical values for the parameter \'easting\'/\'lon\'')
+        resp = self.testapp.get('/rest/services/height', params={'easting': '600000', 'northing': 'NaN'}, headers=self.headers, status=400)
+        resp.mustcontain('Please provide numerical values for the parameter \'northing\'/\'lat\'')
+
     def test_height_no_header(self):
         self.testapp.get('/rest/services/height', params={'easting': '600000', 'northing': '200000'}, status=403)
 

@@ -13,6 +13,8 @@ from papyrus.geo_interface import GeoInterface
 from geojson.crs import Named
 from functools import reduce
 
+from chsdi.lib.helpers import float_raise_nan
+
 
 class EsriGeoJSONEncoder(GeoJSONEncoder):
 
@@ -145,7 +147,8 @@ class EsriSimple():
         if isinstance(ob, list):
             coords = ob
         else:
-            coords = [float(x.strip()) for x in ob.split(',')]
+            coords = [float_raise_nan(x.strip()) for x in ob.split(',')]
+
         wkid = 21781
         if len(coords) == 2:
             x, y = coords
@@ -216,7 +219,9 @@ def loads(obj):
 
     except:
         return json.loads(obj,
-                          object_hook=EsriGeoJSON.to_instance)
+                          object_hook=EsriGeoJSON.to_instance,
+                          parse_constant=float_raise_nan
+                          )
     else:
         raise ValueError("%r is not a recognized esri geometry type", obj)
 

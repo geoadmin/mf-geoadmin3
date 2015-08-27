@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
+import math
 import requests
 from osgeo import osr, ogr
 from pyramid.threadlocal import get_current_registry
@@ -238,3 +239,11 @@ def transformCoordinate(wkt, srid_from, srid_to):
     geom.AssignSpatialReference(srid_in)
     geom.TransformTo(srid_out)
     return geom
+
+
+# float('NaN') does not raise an Exception. This function does.
+def float_raise_nan(val):
+    ret = float(val)
+    if math.isnan(ret):
+        raise ValueError('nan is not considered valid float')
+    return ret

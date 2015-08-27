@@ -249,3 +249,7 @@ class TestSearchServiceView(TestsBase):
         self.testapp.get('/rest/services/all/SearchServer', params={'searchText': 'this is a text with exactly 11 words, should NOT work', 'type': 'locations', 'bbox': '551306.5625,167918.328125,551754.125,168514.625'}, status=400)
         self.testapp.get('/rest/services/all/SearchServer', params={'searchText': 'this is a text with exactly 11 words, should NOT work', 'type': 'layers', 'bbox': '551306.5625,167918.328125,551754.125,168514.625'}, status=400)
         self.testapp.get('/rest/services/all/SearchServer', params={'searchText': 'this is a text with exactly 11 words, should NOT work', 'type': 'featuresearch', 'bbox': '551306.5625,167918.328125,551754.125,168514.625'}, status=400)
+
+    def test_bbox_nan(self):
+        resp = self.testapp.get('/rest/services/inspire/SearchServer', params={'searchText': 'rue des berges', 'type': 'locations', 'bbox': '551306.5625,NaN,551754.125,168514.625'}, status=400)
+        resp.mustcontain('Please provide numerical values for the parameter bbox')
