@@ -2,6 +2,8 @@
 
 from pyramid.httpexceptions import HTTPBadRequest
 
+from chsdi.lib.helpers import float_raise_nan
+
 
 class HeightValidation(object):
 
@@ -27,7 +29,7 @@ class HeightValidation(object):
         if value is None:
             raise HTTPBadRequest("Missing parameter 'easting'/'lon'")
         try:
-            self._lon = float(value)
+            self._lon = float_raise_nan(value)
         except ValueError:
             raise HTTPBadRequest("Please provide numerical values for the parameter 'easting'/'lon'")
 
@@ -36,7 +38,7 @@ class HeightValidation(object):
         if value is None:
             raise HTTPBadRequest("Missing parameter 'norhting'/'lat'")
         try:
-            self._lat = float(value)
+            self._lat = float_raise_nan(value)
         except ValueError:
             raise HTTPBadRequest("Please provide numerical values for the parameter 'northing'/'lat'")
 

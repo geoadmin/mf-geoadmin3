@@ -2,6 +2,7 @@
 
 from pyramid.httpexceptions import HTTPBadRequest
 
+from chsdi.lib.helpers import float_raise_nan
 from chsdi.lib.validation import MapNameValidation
 
 MAX_SPHINX_INDEX_LENGTH = 63
@@ -95,7 +96,7 @@ class SearchValidation(MapNameValidation):
             if len(values) != 4:
                 raise HTTPBadRequest("Please provide 4 coordinates in a comma separated list")
             try:
-                values = map(float, values)
+                values = map(float_raise_nan, values)
             except ValueError:
                 raise HTTPBadRequest("Please provide numerical values for the parameter bbox")
             # Swiss extent

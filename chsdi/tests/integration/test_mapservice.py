@@ -74,6 +74,27 @@ class TestMapServiceView(TestsBase):
         resp = self.testapp.get('/rest/services/all/MapServer/identify', params=params, status=200)
         self.assertTrue(resp.content_type == 'application/json')
 
+    def test_identify_nan_error(self):
+        params = {'geometry': '{"rings":[[[675000,245000],[670000,255000],[680000,260000],[690000,255000],[685000,240000],[675000,245000]]]}', 'geometryType': 'esriGeometryPolygon', 'imageDisplay': '500,600,96',
+                  'mapExtent': 'NaN,147956,549402,148103.5', 'tolerance': '0', 'layers': 'all:ch.bafu.bundesinventare-bln'}
+        resp = self.testapp.get('/rest/services/all/MapServer/identify', params=params, status=400)
+        resp.mustcontain('Please provide numerical values for the parameter mapExtent')
+        params = {'geometryType': 'esriGeometryPoint', 'geometry': '600000,NaN,549402,148103.5', 'imageDisplay': '500,600,96', 'mapExtent': '548945.5,147956,549402,148103.5', 'tolerance': '1', 'layers': 'all'}
+        resp = self.testapp.get('/rest/services/ech/MapServer/identify', params=params, status=400)
+        resp.mustcontain('Please provide a valid geometry')
+        params = {'geometry': '{"rings":[[[NaN,NaN],[NaN,NaN],[680000,260000],[690000,255000],[685000,240000],[675000,245000]]]}', 'geometryType': 'esriGeometryPolygon', 'imageDisplay': '500,600,96',
+                  'mapExtent': '600000,147956,549402,148103.5', 'tolerance': '0', 'layers': 'all:ch.bafu.bundesinventare-bln'}
+        resp = self.testapp.get('/rest/services/all/MapServer/identify', params=params, status=400)
+        resp.mustcontain('Please provide a valid geometry')
+        params = {'geometry': '{"rings":[[[675000,245000],[670000,255000],[680000,260000],[690000,255000],[685000,240000],[675000,245000]]]}', 'geometryType': 'esriGeometryPolygon', 'imageDisplay': '500,NaN,96',
+                  'mapExtent': '548945.5,147956,549402,148103.5', 'tolerance': '0', 'layers': 'all:ch.bafu.bundesinventare-bln'}
+        resp = self.testapp.get('/rest/services/all/MapServer/identify', params=params, status=400)
+        resp.mustcontain('Please provide numerical values for the parameter imageDisplay')
+        params = {'geometry': '{"paths":[[[595000,245000],[670000,255000],[680000,260000],[690000,255000],[685000,240000],[675000,245000]]]}', 'geometryType': 'esriGeometryPolyline', 'imageDisplay': '500,600,96',
+                  'mapExtent': '548945.5,147956,549402,148103.5', 'tolerance': 'NaN', 'layers': 'all:ch.bazl.sachplan-infrastruktur-luftfahrt_kraft'}
+        resp = self.testapp.get('/rest/services/all/MapServer/identify', params=params, status=400)
+        resp.mustcontain('Please provide an integer value for the pixel tolerance')
+
     def test_identify_zero_tolerance_and_scale(self):
         params = {'geometry': '681999,251083,682146,251190', 'geometryFormat': 'geojson', 'geometryType': 'esriGeometryEnvelope',
                   'imageDisplay': '1920,452,96', 'layers': 'all:ch.bazl.sachplan-infrastruktur-luftfahrt_kraft',
