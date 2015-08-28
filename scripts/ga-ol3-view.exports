@@ -1,0 +1,3 @@
+goog.exportProperty(ol.View.prototype, 'getResolutionForExtent',
+    ol.View.prototype.getResolutionForExtent);
+

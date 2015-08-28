@@ -172,6 +172,7 @@ ol: scripts/ol-geoadmin.json .build-artefacts/ol3
 	cat ../../scripts/ga-ol3-style.exports >> src/ol/style/style.js; \
 	cat ../../scripts/ga-ol3-tilegrid.exports >> src/ol/tilegrid/tilegrid.js; \
 	cat ../../scripts/ga-ol3-tilerange.exports >> src/ol/tilerange.js; \
+	cat ../../scripts/ga-ol3-view.exports >> src/ol/view.js; \
 	npm install; \
 	node tasks/build.js config/ol-debug.json build/ol-debug.js; \
 	node tasks/build.js ../../scripts/ol-geoadmin.json build/ol.js; \
