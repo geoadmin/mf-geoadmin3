@@ -590,7 +590,7 @@ scripts/00-$(GIT_BRANCH).conf: scripts/00-branch.mako-dot-conf \
 
 .build-artefacts/externs/angular.js:
 	mkdir -p $(dir $@)
-	wget -O $@ https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/angular-1.3.js
+	wget -O $@ https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/angular-1.4.js
 	touch $@
 
 # Closure's contrib dir doesn't include externs for jQuery 2, but the jQuery
