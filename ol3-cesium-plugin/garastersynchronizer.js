@@ -58,11 +58,13 @@ ga.GaRasterSynchronizer.prototype.convertLayerToCesiumImagery =
       }),
       maximumLevel: 19
     });
-  } else if (source instanceof ol.source.TileWMS) {
+  } else if (source instanceof ol.source.TileWMS ||
+             source instanceof ol.source.ImageWMS) {
     provider = new Cesium.WebMapServiceImageryProvider({
-      url: source.getUrls()[0],
+      url: source.getUrls ? source.getUrls()[0] :
+                            /** @type {string} */ (source.getUrl()),
       layers: layerId,
-        parameters: {format:'image/png'}
+      parameters: {format:'image/png'}
     });
   } else {
     throw new Error('We do not handle this case');
