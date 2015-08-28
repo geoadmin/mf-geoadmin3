@@ -702,6 +702,7 @@ itemscope itemtype="http://schema.org/WebApplication"
           defaultEpsg: '${default_epsg}',
           defaultEpsgExtent: JSON.parse(${default_epsg_extend}),
           defaultElevationModel: '${default_elevation_model}',
+          defaultTerrain: '${default_terrain}',
           languages: JSON.parse(${languages})
         });
 
@@ -718,9 +719,14 @@ itemscope itemtype="http://schema.org/WebApplication"
         });
 
         module.config(function(gaLayersProvider, gaGlobalOptions) {
-          gaLayersProvider.wmtsGetTileUrlTemplate =
-              '//wmts{5-9}.geo.admin.ch/1.0.0/{Layer}/default/{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.{Format}';
+          gaLayersProvider.wmtsGetTileUrlTemplate = '//wmts{5-9}.geo.admin.ch/1.0.0/{Layer}/default/{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.{Format}';
+          
+          gaLayersProvider.wmtsMapProxyGetTileUrlTemplate = '//mf-chsdi3.dev.bgdi.ch/mom_fix_1594/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.{Format}';
+          
+          gaLayersProvider.terrainTileUrlTemplate = '//3d.geo.admin.ch/1.0.0/{Layer}/default/{Time}/4326';
 
+          gaLayersProvider.wmsMapProxyUrl = '//api3.geo.admin.ch/mapproxy/service?';
+          
           gaLayersProvider.layersConfigUrlTemplate =
               gaGlobalOptions.resourceUrl + 'layersConfig?lang={Lang}';
 
