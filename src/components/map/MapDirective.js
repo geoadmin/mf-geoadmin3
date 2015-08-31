@@ -13,6 +13,27 @@ goog.require('ga_permalink');
     'ga_permalink'
   ]);
 
+  module.directive('gaCesiumInspector', function($rootScope) {
+    return {
+      restrict: 'A',
+      scope: {
+        ol3d: '=gaCesiumInspectorOl3d'
+      },
+      link: function(scope, element, attrs) {
+        var inspector;
+        scope.$watch('::ol3d', function(ol3d) {
+          if (ol3d && !inspector) {
+            var scene = ol3d.getCesiumScene();
+            inspector = new Cesium.CesiumInspector(element[0], scene);
+            scene.postRender.addEventListener(function() {
+              inspector.viewModel.update();
+            });
+          }
+        });
+      }
+    };
+  });
+
   module.directive('gaMap',
       function($window, $rootScope, $timeout, gaPermalink,
           gaBrowserSniffer, gaLayers, gaDebounce, gaOffline) {

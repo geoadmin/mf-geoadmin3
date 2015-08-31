@@ -224,6 +224,9 @@ itemscope itemtype="http://schema.org/WebApplication"
            style="display:none;">
       </div>
     </div> <!-- #map -->
+    <div ng-cloak ng-show="globals.is3dActive"
+         ga-cesium-inspector
+         ga-cesium-inspector-ol3d="::ol3d"></div>
 % if device == 'mobile':
     <div ga-offline-selector
          ga-offline-selector-map="map">
