@@ -373,6 +373,11 @@ goog.require('ga_permalink');
             }
             unSourceEvents = [];
 
+            // Remove the layer if no features added
+            if (layer && layer.getSource().getFeatures().length == 0) {
+              map.removeLayer(layer);
+              layer = null;
+            }
           };
 
           // Set the draw interaction with the good geometry
