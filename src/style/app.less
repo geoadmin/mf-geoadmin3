@@ -1489,18 +1489,21 @@ body:not(.embed) {
 }
 
 #feedback-popup {
-  max-height: 800px;
-  min-width: 240px;
-  max-width: 350px;
+  max-height: 480px !important;
+  width: 350px;
 
-  @media (max-width: @screen-tablet){
-    max-width: none;
+  @media (max-width: @screen-tablet) and (min-width: @screen-phone) {
+    bottom: auto;
   }
-   
+
+  @media (max-width: @screen-phone){
+    width: auto;
+    top: auto !important;
+  }
+
   .ga-popup-content {
-    max-height: 740px;
+    max-height: none;
   }
-
 }
 
 .embed, .ga-full-screen {
