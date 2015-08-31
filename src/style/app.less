@@ -483,6 +483,12 @@ input[type=text][readonly] {
   a {
     font-size: 80%;
   }
+  @media (max-width: @screen-tablet) and (min-width: 560px) {
+    width: ~"calc(100% - 350px)";
+  }
+  @media (max-width: 559px) {
+    display: none;
+  }
 }
 
 // ***** DRAW MODE HEADER
