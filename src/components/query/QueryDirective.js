@@ -307,6 +307,7 @@ goog.require('ga_storage_service');
 
     // Launch a search according to the active tab
     $scope.search = function(layerBodId, offset) {
+      resetResults('', layerBodId);
       if ($scope.queryType == 0) {
         $scope.searchByGeometry(layerBodId, offset);
       } else {
