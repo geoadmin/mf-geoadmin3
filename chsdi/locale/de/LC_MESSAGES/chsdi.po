@@ -6625,6 +6625,9 @@ msgstr "Ort"
 msgid "tt_lubis_orthophoto"
 msgstr "Orthofotopfad"
 
+msgid "tt_lubis_project"
+msgstr "Projekt"
+
 msgid "tt_lubis_rotation"
 msgstr "Rotation"
 

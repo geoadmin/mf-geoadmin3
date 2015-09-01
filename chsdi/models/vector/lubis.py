@@ -241,5 +241,6 @@ class bildstreifen(Base, Vector):
     toposhop_end_x = Column('toposhop_end_x', Integer)
     toposhop_end_y = Column('toposhop_end_y', Integer)
     toposhop_date = Column('toposhop_date', Text)
+    goal = Column('goal', Text)
 
 register('ch.swisstopo.lubis-bildstreifen', bildstreifen)
