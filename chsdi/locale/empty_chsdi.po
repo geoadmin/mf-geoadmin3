@@ -5592,6 +5592,9 @@ msgstr ""
 msgid "tt_lubis_orthophoto"
 msgstr ""
 
+msgid "tt_lubis_project"
+msgstr ""
+
 msgid "ch.bav.sachplan-infrastruktur-schiene_anhorung"
 msgstr ""
 
