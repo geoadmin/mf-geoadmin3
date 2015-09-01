@@ -22403,6 +22403,9 @@ ol.View.createRotationConstraint_ = function(options) {
     return ol.RotationConstraint.disable;
   }
 };
+goog.exportProperty(ol.View.prototype, 'getResolutionForExtent',
+    ol.View.prototype.getResolutionForExtent);
+
 
 // Copyright 2006 The Closure Library Authors. All Rights Reserved.
 //
