@@ -50,6 +50,7 @@ help:
 	@echo "- testdev          Run the JavaScript tests in dev mode"
 	@echo "- testprod         Run the JavaScript tests in prod mode"
 	@echo "- teste2e          Run browserstack tests"
+	@echo "- testsaucelabs    Run saucelabs tests"
 	@echo "- apache           Configure Apache (restart required)"
 	@echo "- appcache         Update appcache file"
 	@echo "- fixrights        Fix rights in common folder"
@@ -110,6 +111,10 @@ testprod: prd/lib/build.js test/karma-conf-prod.js node_modules
 .PHONY: teste2e
 teste2e: guard-BROWSERSTACK_TARGETURL guard-BROWSERSTACK_USER guard-BROWSERSTACK_KEY
 	node test/selenium/tests.js -t ${BROWSERSTACK_TARGETURL}
+
+.PHONY: testsaucelabs
+testsaucelabs: .build-artefacts/sauceclab-requirements-installation.timestamp
+	${PYTHON_CMD} test/saucelabs/tests.py
 
 .PHONY: apache
 apache: apache/app.conf
@@ -485,6 +490,13 @@ $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule
 
 .build-artefacts/python-venv/bin/htmlmin: .build-artefacts/python-venv
 	${PYTHON_CMD} .build-artefacts/python-venv/bin/pip install "htmlmin==0.1.6"
+	touch $@
+
+.build-artefacts/sauceclab-requirements-installation.timestamp: .build-artefacts/python-venv
+	${PYTHON_CMD} .build-artefacts/python-venv/bin/pip install "selenium"
+	${PYTHON_CMD} .build-artefacts/python-venv/bin/pip install "sauceclient"
+	${PYTHON_CMD} .build-artefacts/python-venv/bin/pip install "pytest"
+	${PYTHON_CMD} .build-artefacts/python-venv/bin/pip install "pytest-xdist"
 	touch $@
 
 .build-artefacts/translate-requirements-installation.timestamp: .build-artefacts/python-venv
