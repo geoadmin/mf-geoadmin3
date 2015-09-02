@@ -339,16 +339,29 @@ goog.require('ga_urlutils_service');
    * Manage external WMS layers
    */
   module.provider('gaWms', function() {
-    this.$get = function(gaDefinePropertiesForLayer, gaMapUtils, gaUrlUtils) {
+    this.$get = function(gaDefinePropertiesForLayer, gaMapUtils, gaUrlUtils,
+        gaGlobalOptions) {
       var getCesiumImageryProvider = function(layer) {
         var params = layer.getSource().getParams();
+        var proxy;
+        if (!gaUrlUtils.isAdminValid(layer.url)) {
+          proxy = {
+            getURL: function(resource) {
+               return gaGlobalOptions.ogcproxyUrl +
+                   encodeURIComponent(resource);
+            }
+          };
+        }
         return new Cesium.WebMapServiceImageryProvider({
           url: layer.url,
           layers: params.LAYERS,
           parameters: {
-            format: 'image/png'
-          }
+            format: 'image/png',
+            transparent: 'true'
+          },
+          proxy: proxy
         });
+
       };
       var Wms = function() {
 
