@@ -113,8 +113,8 @@ teste2e: guard-BROWSERSTACK_TARGETURL guard-BROWSERSTACK_USER guard-BROWSERSTACK
 	node test/selenium/tests.js -t ${BROWSERSTACK_TARGETURL}
 
 .PHONY: testsaucelabs
-testsaucelabs: .build-artefacts/sauceclab-requirements-installation.timestamp
-	${PYTHON_CMD} test/saucelabs/tests.py
+testsaucelabs: .build-artefacts/saucelab-requirements-installation.timestamp
+	${PYTHON_CMD} test/saucelabs/tests.py ${SAUCELABS_TARGETURL}
 
 .PHONY: apache
 apache: apache/app.conf
@@ -492,7 +492,7 @@ $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule
 	${PYTHON_CMD} .build-artefacts/python-venv/bin/pip install "htmlmin==0.1.6"
 	touch $@
 
-.build-artefacts/sauceclab-requirements-installation.timestamp: .build-artefacts/python-venv
+.build-artefacts/saucelab-requirements-installation.timestamp: .build-artefacts/python-venv
 	${PYTHON_CMD} .build-artefacts/python-venv/bin/pip install "selenium"
 	${PYTHON_CMD} .build-artefacts/python-venv/bin/pip install "sauceclient"
 	${PYTHON_CMD} .build-artefacts/python-venv/bin/pip install "pytest"
