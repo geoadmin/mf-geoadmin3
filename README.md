@@ -26,6 +26,7 @@ Open .pgpass and Add
     pgcluster.dev.bgdi.ch:5432:*:${username}:${pass}
     pgcluster.int.bgdi.ch:5432:*:${username}:${pass}
     pgcluster.prod.bgdi.ch:5432:*:${username}:${pass}
+    pg-sandbox.bgdi.ch:5432:*:www-data:www-data
 
 Make sure PGUSER and PGPASS is set in your .bashrc (for nosetests, potranslate and sphinx)
 
