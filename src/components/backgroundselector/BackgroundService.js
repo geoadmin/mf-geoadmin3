@@ -14,25 +14,15 @@ goog.require('ga_permalink');
    * Backgrounds manager
    */
   module.provider('gaBackground', function() {
-    this.$get = function($rootScope, $q, gaTopic, gaLayers, gaPermalink,
-        gaGlobalOptions, gaBrowserSniffer) {
+    this.$get = function($rootScope, $q, gaTopic, gaLayers, gaPermalink) {
       var isOfflineToOnline = false;
       var bg; // The current background
       var bgs = [ // The list of backgrounds available
-        {id: 'ch.swisstopo.swissimage', label: 'bg_luftbild'},
+        {id: 'ch.swisstopo.swissimage', label: 'bg_luftbild', disable3d: true},
         {id: 'ch.swisstopo.pixelkarte-farbe', label: 'bg_pixel_color'},
         {id: 'ch.swisstopo.pixelkarte-grau', label: 'bg_pixel_grey'},
         {id: 'voidLayer', label: 'void_layer'}
       ];
-
-      // to be moved in defaultBgOrder once 3d is live
-      if (gaGlobalOptions.dev3d && gaBrowserSniffer.webgl) {
-        bgs.splice(3, 0, {
-          id: 'ch.swisstopo.swisstlm3d-karte-farbe',
-          label: 'terrain_layer',
-          is3d: true
-        });
-      }
 
       var getBgById = function(id) {
         for (var i = 0, ii = bgs.length; i < ii; i++) {

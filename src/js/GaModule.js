@@ -47,6 +47,7 @@ goog.require('ga_share');
 goog.require('ga_share_controller');
 goog.require('ga_styles_from_literals_service');
 goog.require('ga_swipe');
+goog.require('ga_tilt3d');
 goog.require('ga_timeselector');
 goog.require('ga_timeselector_controller');
 goog.require('ga_timestamp_control');
@@ -115,7 +116,8 @@ goog.require('ga_waitcursor_service');
     'ga_tooltip_controller',
     'ga_featuretree_controller',
     'ga_draw_controller',
-    'ga_query_controller'
+    'ga_query_controller',
+    'ga_tilt3d'
   ]);
 
 })();
