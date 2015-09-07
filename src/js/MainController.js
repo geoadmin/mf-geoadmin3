@@ -239,7 +239,7 @@ goog.require('ga_storage_service');
 
     $scope.globals = {
       dev3d: gaGlobalOptions.dev3d,
-      searchFocused: false,
+      searchFocused: !gaBrowserSniffer.mobile,
       homescreen: false,
       tablet: gaBrowserSniffer.mobile && !gaBrowserSniffer.phone,
       touch: gaBrowserSniffer.touchDevice,
