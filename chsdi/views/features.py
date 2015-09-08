@@ -496,9 +496,15 @@ def _format_search_text(columnType, searchText):
         raise exc.HTTPBadRequest('Find operations cannot be performed on geometry columns')
 
 
+def has_long_geometry(feature):
+    if len(getattr(feature, feature.geometry_column_to_return().name).data) > 1000000:
+        return True
+    return False
+
+
 def _process_feature(feature, params):
     # TODO find a way to use translate directly in the model
-    if params.returnGeometry:
+    if params.returnGeometry and not has_long_geometry(feature):
         f = feature.__geo_interface__
         # Filter out this layer individually, disregarding of the global returnGeometry
         # setting
