@@ -23,7 +23,7 @@ Use `make help` to know about the possible `make` targets and the currently set 
 
     $ make help
 
-Use `make translate` to import directly translations from the googlespreadshhet. Don't forget to set up first these 2 following environment parameter:
+Use `make translate` to import directly translations from the Google spreadsheet. Don't forget to set up first these 2 following environment parameter:
     
     export DRIVE_USER=your_login
     export DRIVE_PWD=your_password
@@ -54,7 +54,7 @@ On mf0t, create an Apache configuration file for your environment. Ex:
 ## Dependencies
 
 The GeoAdmin team development servers all contain the necessary dependencies
-to develop mf-geoadmin3. Even if developement of the project outside of the
+to develop mf-geoadmin3. Even if development of the project outside of the
 GeoAdmin infrastructure is not fully supported (e.g. you would need to
 setup your own web server with correct configurations), you should still
 be able to build the project on a different, Linux based infrastructure. For
@@ -96,11 +96,11 @@ are defined in `test/specs`. They are run as part of the standard build.
 
 Ideally, each component is fully tested with unit tests.
 
-## Crosser browser end-to-end tests with browserstack.com
+## Cross-browser end-to-end tests with browserstack.com
 
-To run the e2e browserstack tests, a view things need to be set up in your 
+To run the e2e browserstack tests, a few things need to be set up in your 
 environment. You need to have the BROWSERSTACK_USER and BROWSERSTACK_KEY 
-variables set. As they are sesitive, they should not be accessible in public 
+variables set. As they are sensitive, they should not be accessible in public 
 (don't add them to github). Recommended way is via a protected file on your 
 system (readable only by you):
     
@@ -190,5 +190,3 @@ You can flush varnish instances manually.
     ./scripts/flushvarnish.sh varnihs_host_ip api_host
 
 Where `varnish_host_ip` is the ip of the varnish server and api_host is the hostname of the url you want to flush. e.g. mf-chsdi3.dev.bgdi.ch for dev and api3.geo.admin.ch for prod.
-
-
