@@ -4724,7 +4724,7 @@ class OWSCheck(object):
         try:
             from owslib.csw import CatalogueServiceWeb
             csw = CatalogueServiceWeb(self.base_url)
-            csw.getrecords()
+            csw.getrecords2()
             records = csw.records.copy()
             for rid in records.keys():
                 csw.getrecordbyid(id=[rid])
