@@ -220,6 +220,7 @@ goog.require('ga_translation_service');
           scope: {
             options: '=gaSearchOptions',
             map: '=gaSearchMap',
+            ol3d: '=gaSearchOl3d',
             searchFocused: '=gaSearchFocused'
           },
           link: function($scope, element, attrs) {

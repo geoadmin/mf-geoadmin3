@@ -22,6 +22,17 @@ goog.require('ga_urlutils_service');
     return $.map(extent, parseFloat);
   };
 
+  var extentToRectangle = function(e) {
+    var sw = ol.proj.transform([e[0], e[1]], 'EPSG:21781', 'EPSG:4326');
+    var ne = ol.proj.transform([e[2], e[3]], 'EPSG:21781', 'EPSG:4326');
+
+    var west = sw[0];
+    var south = sw[1];
+    var east = ne[0];
+    var north = ne[1];
+    return Cesium.Rectangle.fromDegrees(west, south, east, north);
+  };
+
   var addOverlay = function(gaOverlay, map, res) {
     var visible = originToZoomLevel.hasOwnProperty(res.attrs.origin);
     var center = [res.attrs.y, res.attrs.x];
@@ -310,7 +321,8 @@ goog.require('ga_urlutils_service');
           templateUrl: 'components/search/partials/searchtypes.html',
           scope: {
             options: '=gaSearchLocationsOptions',
-            map: '=gaSearchLocationsMap'
+            map: '=gaSearchLocationsMap',
+            ol3d: '=gaSearchLocationsOl3d'
           },
           controller: 'GaSearchTypesController',
           link: function($scope, element, attrs) {
@@ -332,13 +344,29 @@ goog.require('ga_urlutils_service');
                                    Math.abs(e[1] - e[3]) > 0.1);
 
               }
+              var ol3d = $scope.ol3d;
               if (originToZoomLevel.hasOwnProperty(res.attrs.origin) &&
                   !isGazetteerPoly) {
-                gaMapUtils.moveTo($scope.map,
-                                  originToZoomLevel[res.attrs.origin],
-                                  [res.attrs.y, res.attrs.x]);
+                if (ol3d && ol3d.getEnabled()) {
+                  ol3d.getCesiumScene().camera.flyTo({
+                    destination: Cesium.Cartesian3.fromDegrees(
+                                   res.attrs.lon,
+                                   res.attrs.lat,
+                                   3000)
+                  });
+                } else {
+                  gaMapUtils.moveTo($scope.map,
+                                    originToZoomLevel[res.attrs.origin],
+                                    [res.attrs.y, res.attrs.x]);
+                }
               } else {
-                gaMapUtils.zoomToExtent($scope.map, e);
+                if (ol3d && ol3d.getEnabled()) {
+                  ol3d.getCesiumScene().camera.flyTo({
+                    destination: extentToRectangle(e)
+                  });
+                } else {
+                  gaMapUtils.zoomToExtent($scope.map, e);
+                }
               }
               addOverlay(gaMarkerOverlay, $scope.map, res);
               $scope.options.valueSelected(
