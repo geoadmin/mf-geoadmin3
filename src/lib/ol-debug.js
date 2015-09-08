@@ -1,6 +1,6 @@
 // OpenLayers 3. See http://openlayers.org/
 // License: https://raw.githubusercontent.com/openlayers/ol3/master/LICENSE.md
-// Version: v3.8.2-118-g4045e06
+// Version: v3.8.2-164-g1e78c45
 
 (function (root, factory) {
   if (typeof exports === "object") {
@@ -18546,6 +18546,8 @@ ol.proj.Projection = function(options) {
 
   var projections = ol.proj.projections_;
   var code = options.code;
+  goog.asserts.assert(goog.isDef(code),
+      'Option "code" is required for constructing instance');
   if (ol.ENABLE_PROJ4JS && typeof proj4 == 'function' &&
       !goog.isDef(projections[code])) {
     var def = proj4.defs(code);
@@ -36821,7 +36823,7 @@ ol.TileCache.prototype.canExpireCache = function() {
 ol.TileCache.prototype.expireCache = function(usedTiles) {
   var tile, zKey;
   while (this.canExpireCache()) {
-    tile = /** @type {ol.Tile} */ (this.peekLast());
+    tile = this.peekLast();
     zKey = tile.tileCoord[0].toString();
     if (zKey in usedTiles && usedTiles[zKey].contains(tile.tileCoord)) {
       break;
@@ -50051,6 +50053,7 @@ ol.layer.LayerProperty = {
   SATURATION: 'saturation',
   VISIBLE: 'visible',
   EXTENT: 'extent',
+  Z_INDEX: 'zIndex',
   MAX_RESOLUTION: 'maxResolution',
   MIN_RESOLUTION: 'minResolution',
   SOURCE: 'source'
@@ -50068,6 +50071,7 @@ ol.layer.LayerProperty = {
  *            visible: boolean,
  *            managed: boolean,
  *            extent: (ol.Extent|undefined),
+ *            zIndex: number,
  *            maxResolution: number,
  *            minResolution: number}}
  */
@@ -50108,6 +50112,8 @@ ol.layer.Base = function(options) {
       goog.isDef(options.saturation) ? options.saturation : 1;
   properties[ol.layer.LayerProperty.VISIBLE] =
       goog.isDef(options.visible) ? options.visible : true;
+  properties[ol.layer.LayerProperty.Z_INDEX] =
+      goog.isDef(options.zIndex) ? options.zIndex : 0;
   properties[ol.layer.LayerProperty.MAX_RESOLUTION] =
       goog.isDef(options.maxResolution) ? options.maxResolution : Infinity;
   properties[ol.layer.LayerProperty.MIN_RESOLUTION] =
@@ -50163,6 +50169,7 @@ ol.layer.Base.prototype.getLayerState = function() {
   var sourceState = this.getSourceState();
   var visible = this.getVisible();
   var extent = this.getExtent();
+  var zIndex = this.getZIndex();
   var maxResolution = this.getMaxResolution();
   var minResolution = this.getMinResolution();
   return {
@@ -50176,6 +50183,7 @@ ol.layer.Base.prototype.getLayerState = function() {
     visible: visible,
     managed: true,
     extent: extent,
+    zIndex: zIndex,
     maxResolution: maxResolution,
     minResolution: Math.max(minResolution, 0)
   };
@@ -50271,6 +50279,18 @@ ol.layer.Base.prototype.getSourceState = goog.abstractMethod;
  */
 ol.layer.Base.prototype.getVisible = function() {
   return /** @type {boolean} */ (this.get(ol.layer.LayerProperty.VISIBLE));
+};
+
+
+/**
+ * Return the Z-index of the layer, which is used to order layers before
+ * rendering. The default Z-index is 0.
+ * @return {number} The Z-index of the layer.
+ * @observable
+ * @api
+ */
+ol.layer.Base.prototype.getZIndex = function() {
+  return /** @type {number} */ (this.get(ol.layer.LayerProperty.Z_INDEX));
 };
 
 
@@ -50395,6 +50415,18 @@ ol.layer.Base.prototype.setSaturation = function(saturation) {
  */
 ol.layer.Base.prototype.setVisible = function(visible) {
   this.set(ol.layer.LayerProperty.VISIBLE, visible);
+};
+
+
+/**
+ * Set Z-index of the layer, which is used to order layers before rendering.
+ * The default Z-index is 0.
+ * @param {number} zindex The z-index of the layer.
+ * @observable
+ * @api
+ */
+ol.layer.Base.prototype.setZIndex = function(zindex) {
+  this.set(ol.layer.LayerProperty.Z_INDEX, zindex);
 };
 
 goog.provide('ol.render.VectorContext');
@@ -50768,6 +50800,7 @@ ol.layer.Layer.prototype.setMap = function(map) {
         map, ol.render.EventType.PRECOMPOSE, function(evt) {
           var layerState = this.getLayerState();
           layerState.managed = false;
+          layerState.zIndex = Infinity;
           evt.frameState.layerStatesArray.push(layerState);
           evt.frameState.layerStates[goog.getUid(this)] = layerState;
         }, false, this);
@@ -51519,6 +51552,7 @@ ol.style.Image.prototype.getSize = goog.abstractMethod;
  * Set the opacity.
  *
  * @param {number} opacity Opacity.
+ * @api
  */
 ol.style.Image.prototype.setOpacity = function(opacity) {
   this.opacity_ = opacity;
@@ -52642,6 +52676,16 @@ ol.renderer.Map.prototype.scheduleRemoveUnusedLayerRenderers =
       return;
     }
   }
+};
+
+
+/**
+ * @param {ol.layer.LayerState} state1
+ * @param {ol.layer.LayerState} state2
+ * @return {number}
+ */
+ol.renderer.Map.sortByZIndex = function(state1, state2) {
+  return state1.zIndex - state2.zIndex;
 };
 
 goog.provide('ol.structs.PriorityQueue');
@@ -56379,13 +56423,10 @@ ol.style.StyleFunction;
  * @return {ol.style.StyleFunction} A style function.
  */
 ol.style.createStyleFunction = function(obj) {
-  /**
-   * @type {ol.style.StyleFunction}
-   */
   var styleFunction;
 
   if (goog.isFunction(obj)) {
-    styleFunction = /** @type {ol.style.StyleFunction} */ (obj);
+    styleFunction = obj;
   } else {
     /**
      * @type {Array.<ol.style.Style>}
@@ -56405,47 +56446,44 @@ ol.style.createStyleFunction = function(obj) {
 
 
 /**
+ * @type {Array.<ol.style.Style>}
+ * @private
+ */
+ol.style.defaultStyle_ = null;
+
+
+/**
  * @param {ol.Feature} feature Feature.
  * @param {number} resolution Resolution.
  * @return {Array.<ol.style.Style>} Style.
  */
 ol.style.defaultStyleFunction = function(feature, resolution) {
-  var fill = new ol.style.Fill({
-    color: 'rgba(255,255,255,0.4)'
-  });
-  var stroke = new ol.style.Stroke({
-    color: '#3399CC',
-    width: 1.25
-  });
-  var styles = [
-    new ol.style.Style({
-      image: new ol.style.Circle({
-        fill: fill,
-        stroke: stroke,
-        radius: 5
-      }),
-      fill: fill,
-      stroke: stroke
-    })
-  ];
-
-  // Now that we've run it the first time, replace the function with
-  // a constant version. We don't use an immediately-invoked function
+  // We don't use an immediately-invoked function
   // and a closure so we don't get an error at script evaluation time in
   // browsers that do not support Canvas. (ol.style.Circle does
   // canvas.getContext('2d') at construction time, which will cause an.error
   // in such browsers.)
-
-  /**
-   * @param {ol.Feature} feature Feature.
-   * @param {number} resolution Resolution.
-   * @return {Array.<ol.style.Style>} Style.
-   */
-  ol.style.defaultStyleFunction = function(feature, resolution) {
-    return styles;
-  };
-
-  return styles;
+  if (goog.isNull(ol.style.defaultStyle_)) {
+    var fill = new ol.style.Fill({
+      color: 'rgba(255,255,255,0.4)'
+    });
+    var stroke = new ol.style.Stroke({
+      color: '#3399CC',
+      width: 1.25
+    });
+    ol.style.defaultStyle_ = [
+      new ol.style.Style({
+        image: new ol.style.Circle({
+          fill: fill,
+          stroke: stroke,
+          radius: 5
+        }),
+        fill: fill,
+        stroke: stroke
+      })
+    ];
+  }
+  return ol.style.defaultStyle_;
 };
 
 
@@ -59782,7 +59820,8 @@ ol.render.canvas.Replay.prototype.beginGeometry = function(geometry, feature) {
  * @param {number} pixelRatio Pixel ratio.
  * @param {goog.vec.Mat4.Number} transform Transform.
  * @param {number} viewRotation View rotation.
- * @param {Object} skippedFeaturesHash Ids of features to skip.
+ * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
+ *     to skip.
  * @param {Array.<*>} instructions Instructions array.
  * @param {function(ol.Feature): T|undefined} featureCallback Feature callback.
  * @param {ol.Extent=} opt_hitExtent Only check features that intersect this
@@ -60058,7 +60097,8 @@ ol.render.canvas.Replay.prototype.replay_ = function(
  * @param {number} pixelRatio Pixel ratio.
  * @param {goog.vec.Mat4.Number} transform Transform.
  * @param {number} viewRotation View rotation.
- * @param {Object} skippedFeaturesHash Ids of features to skip
+ * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
+ *     to skip.
  */
 ol.render.canvas.Replay.prototype.replay = function(
     context, pixelRatio, transform, viewRotation, skippedFeaturesHash) {
@@ -60072,7 +60112,8 @@ ol.render.canvas.Replay.prototype.replay = function(
  * @param {CanvasRenderingContext2D} context Context.
  * @param {goog.vec.Mat4.Number} transform Transform.
  * @param {number} viewRotation View rotation.
- * @param {Object} skippedFeaturesHash Ids of features to skip
+ * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
+ *     to skip.
  * @param {function(ol.Feature): T=} opt_featureCallback Feature callback.
  * @param {ol.Extent=} opt_hitExtent Only check features that intersect this
  *     extent.
@@ -61425,7 +61466,8 @@ ol.render.canvas.ReplayGroup.prototype.finish = function() {
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {number} resolution Resolution.
  * @param {number} rotation Rotation.
- * @param {Object} skippedFeaturesHash Ids of features to skip
+ * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
+ *     to skip.
  * @param {function(ol.Feature): T} callback Feature callback.
  * @return {T|undefined} Callback result.
  * @template T
@@ -61508,7 +61550,8 @@ ol.render.canvas.ReplayGroup.prototype.isEmpty = function() {
  * @param {number} pixelRatio Pixel ratio.
  * @param {goog.vec.Mat4.Number} transform Transform.
  * @param {number} viewRotation View rotation.
- * @param {Object} skippedFeaturesHash Ids of features to skip
+ * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
+ *     to skip.
  */
 ol.render.canvas.ReplayGroup.prototype.replay = function(
     context, pixelRatio, transform, viewRotation, skippedFeaturesHash) {
@@ -61557,7 +61600,8 @@ ol.render.canvas.ReplayGroup.prototype.replay = function(
  * @param {CanvasRenderingContext2D} context Context.
  * @param {goog.vec.Mat4.Number} transform Transform.
  * @param {number} viewRotation View rotation.
- * @param {Object} skippedFeaturesHash Ids of features to skip
+ * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
+ *     to skip.
  * @param {function(ol.Feature): T} featureCallback Feature callback.
  * @param {ol.Extent=} opt_hitExtent Only check features that intersect this
  *     extent.
@@ -64704,13 +64748,10 @@ ol.FeatureStyleFunction;
  * @return {ol.FeatureStyleFunction} A style function.
  */
 ol.Feature.createStyleFunction = function(obj) {
-  /**
-   * @type {ol.FeatureStyleFunction}
-   */
   var styleFunction;
 
   if (goog.isFunction(obj)) {
-    styleFunction = /** @type {ol.FeatureStyleFunction} */ (obj);
+    styleFunction = obj;
   } else {
     /**
      * @type {Array.<ol.style.Style>}
@@ -70712,8 +70753,6 @@ goog.dom.xml.createMsXmlDocument_ = function() {
   return doc;
 };
 
-// FIXME Remove ol.xml.makeParsersNS, and use ol.xml.makeStructureNS instead.
-
 goog.provide('ol.xml');
 
 goog.require('goog.array');
@@ -71212,20 +71251,6 @@ ol.xml.makeObjectPropertySetter =
 
 
 /**
- * Make a parserNS hash.
- * @param {Array.<string>} namespaceURIs Namespace URIs.
- * @param {Object.<string, ol.xml.Parser>} parsers Parsers.
- * @param {Object.<string, Object.<string, ol.xml.Parser>>=} opt_parsersNS
- *     ParsersNS.
- * @return {Object.<string, Object.<string, ol.xml.Parser>>} Parsers NS.
- */
-ol.xml.makeParsersNS = function(namespaceURIs, parsers, opt_parsersNS) {
-  return /** @type {Object.<string, Object.<string, ol.xml.Parser>>} */ (
-      ol.xml.makeStructureNS(namespaceURIs, parsers, opt_parsersNS));
-};
-
-
-/**
  * Create a serializer that appends nodes written by its `nodeWriter` to its
  * designated parent. The parent is the `node` of the
  * {@link ol.xml.NodeStackItem} at the top of the `objectStack`.
@@ -71489,6 +71514,7 @@ ol.xml.pushSerializeAndPop = function(object,
 };
 
 goog.provide('ol.FeatureLoader');
+goog.provide('ol.FeatureUrlFunction');
 goog.provide('ol.featureloader');
 
 goog.require('goog.asserts');
@@ -71501,6 +71527,16 @@ goog.require('ol.xml');
 
 
 /**
+ * {@link ol.source.Vector} sources use a function of this type to load
+ * features.
+ *
+ * This function takes an {@link ol.Extent} representing the area to be loaded,
+ * a `{number}` representing the resolution (map units per pixel) and an
+ * {@link ol.proj.Projection} for the projection  as arguments. `this` within
+ * the function is bound to the {@link ol.source.Vector} it's called from.
+ *
+ * The function is responsible for loading the features and adding them to the
+ * source.
  * @api
  * @typedef {function(this:ol.source.Vector, ol.Extent, number,
  *                    ol.proj.Projection)}
@@ -71509,7 +71545,21 @@ ol.FeatureLoader;
 
 
 /**
- * @param {string} url Feature URL service.
+ * {@link ol.source.Vector} sources use a function of this type to get the url
+ * to load features from.
+ *
+ * This function takes an {@link ol.Extent} representing the area to be loaded,
+ * a `{number}` representing the resolution (map units per pixel) and an
+ * {@link ol.proj.Projection} for the projection  as arguments and returns a
+ * `{string}` representing the URL.
+ * @api
+ * @typedef {function(ol.Extent, number, ol.proj.Projection) : string}
+ */
+ol.FeatureUrlFunction;
+
+
+/**
+ * @param {string|ol.FeatureUrlFunction} url Feature URL service.
  * @param {ol.format.Feature} format Feature format.
  * @param {function(this:ol.source.Vector, Array.<ol.Feature>)} success
  *     Function called with the loaded features. Called with the vector
@@ -71567,7 +71617,12 @@ ol.featureloader.loadFeaturesXhr = function(url, format, success) {
               }
               goog.dispose(xhrIo);
             }, false, this);
-        xhrIo.send(url);
+        if (goog.isFunction(url)) {
+          xhrIo.send(url(extent, resolution, projection));
+        } else {
+          xhrIo.send(url);
+        }
+
       });
 };
 
@@ -71576,7 +71631,7 @@ ol.featureloader.loadFeaturesXhr = function(url, format, success) {
  * Create an XHR feature loader for a `url` and `format`. The feature loader
  * loads features (with XHR), parses the features, and adds them to the
  * vector source.
- * @param {string} url Feature URL service.
+ * @param {string|ol.FeatureUrlFunction} url Feature URL service.
  * @param {ol.format.Feature} format Feature format.
  * @return {ol.FeatureLoader} The feature loader.
  * @api
@@ -74738,6 +74793,7 @@ ol.renderer.canvas.VectorLayer.prototype.renderFeature =
 
 goog.provide('ol.renderer.canvas.Map');
 
+goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.style');
@@ -74904,6 +74960,8 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
   this.dispatchComposeEvent_(ol.render.EventType.PRECOMPOSE, frameState);
 
   var layerStatesArray = frameState.layerStatesArray;
+  goog.array.stableSort(layerStatesArray, ol.renderer.Map.sortByZIndex);
+
   var viewResolution = frameState.viewState.resolution;
   var i, ii, layer, layerRenderer, layerState;
   for (i = 0, ii = layerStatesArray.length; i < ii; ++i) {
@@ -75981,6 +76039,7 @@ ol.renderer.dom.VectorLayer.prototype.renderFeature =
 
 goog.provide('ol.renderer.dom.Map');
 
+goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
@@ -76203,6 +76262,8 @@ ol.renderer.dom.Map.prototype.renderFrame = function(frameState) {
   this.dispatchComposeEvent_(ol.render.EventType.PRECOMPOSE, frameState);
 
   var layerStatesArray = frameState.layerStatesArray;
+  goog.array.stableSort(layerStatesArray, ol.renderer.Map.sortByZIndex);
+
   var viewResolution = frameState.viewState.resolution;
   var i, ii, layer, layerRenderer, layerState;
   for (i = 0, ii = layerStatesArray.length; i < ii; ++i) {
@@ -79829,7 +79890,8 @@ ol.render.webgl.ImageReplay.prototype.createTextures_ =
  * @param {number} contrast Global contrast.
  * @param {number} hue Global hue.
  * @param {number} saturation Global saturation.
- * @param {Object} skippedFeaturesHash Ids of features to skip.
+ * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
+ *  to skip.
  * @param {function(ol.Feature): T|undefined} featureCallback Feature callback.
  * @param {boolean} oneByOne Draw features one-by-one for the hit-detecion.
  * @param {ol.Extent=} opt_hitExtent Hit extent: Only features intersecting
@@ -79968,7 +80030,8 @@ ol.render.webgl.ImageReplay.prototype.replay = function(context,
  * @private
  * @param {WebGLRenderingContext} gl gl.
  * @param {ol.webgl.Context} context Context.
- * @param {Object} skippedFeaturesHash Ids of features to skip.
+ * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
+ *  to skip.
  * @param {Array.<WebGLTexture>} textures Textures.
  * @param {Array.<number>} groupIndices Texture group indices.
  */
@@ -80016,7 +80079,8 @@ ol.render.webgl.ImageReplay.prototype.drawReplay_ =
  *
  * @private
  * @param {WebGLRenderingContext} gl gl.
- * @param {Object} skippedFeaturesHash Ids of features to skip.
+ * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
+ *  to skip.
  * @param {Array.<WebGLTexture>} textures Textures.
  * @param {Array.<number>} groupIndices Texture group indices.
  * @param {number} elementType Element type.
@@ -80087,7 +80151,8 @@ ol.render.webgl.ImageReplay.prototype.drawElements_ = function(
  * @private
  * @param {WebGLRenderingContext} gl gl.
  * @param {ol.webgl.Context} context Context.
- * @param {Object} skippedFeaturesHash Ids of features to skip.
+ * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
+ *  to skip.
  * @param {function(ol.Feature): T|undefined} featureCallback Feature callback.
  * @param {boolean} oneByOne Draw features one-by-one for the hit-detecion.
  * @param {ol.Extent=} opt_hitExtent Hit extent: Only features intersecting
@@ -80114,7 +80179,8 @@ ol.render.webgl.ImageReplay.prototype.drawHitDetectionReplay_ =
  * @private
  * @param {WebGLRenderingContext} gl gl.
  * @param {ol.webgl.Context} context Context.
- * @param {Object} skippedFeaturesHash Ids of features to skip.
+ * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
+ *  to skip.
  * @param {function(ol.Feature): T|undefined} featureCallback Feature callback.
  * @return {T|undefined} Callback result.
  * @template T
@@ -80138,7 +80204,8 @@ ol.render.webgl.ImageReplay.prototype.drawHitDetectionReplayAll_ =
  * @private
  * @param {WebGLRenderingContext} gl gl.
  * @param {ol.webgl.Context} context Context.
- * @param {Object} skippedFeaturesHash Ids of features to skip.
+ * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
+ *  to skip.
  * @param {function(ol.Feature): T|undefined} featureCallback Feature callback.
  * @param {ol.Extent=} opt_hitExtent Hit extent: Only features intersecting
  *  this extent are checked.
@@ -80374,7 +80441,8 @@ ol.render.webgl.ReplayGroup.prototype.isEmpty = function() {
  * @param {number} contrast Global contrast.
  * @param {number} hue Global hue.
  * @param {number} saturation Global saturation.
- * @param {Object} skippedFeaturesHash Ids of features to skip.
+ * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
+ *  to skip.
  */
 ol.render.webgl.ReplayGroup.prototype.replay = function(context,
     center, resolution, rotation, size, pixelRatio,
@@ -80405,7 +80473,8 @@ ol.render.webgl.ReplayGroup.prototype.replay = function(context,
  * @param {number} contrast Global contrast.
  * @param {number} hue Global hue.
  * @param {number} saturation Global saturation.
- * @param {Object} skippedFeaturesHash Ids of features to skip.
+ * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
+ *  to skip.
  * @param {function(ol.Feature): T|undefined} featureCallback Feature callback.
  * @param {boolean} oneByOne Draw features one-by-one for the hit-detecion.
  * @param {ol.Extent=} opt_hitExtent Hit extent: Only features intersecting
@@ -80447,7 +80516,8 @@ ol.render.webgl.ReplayGroup.prototype.replayHitDetection_ = function(context,
  * @param {number} contrast Global contrast.
  * @param {number} hue Global hue.
  * @param {number} saturation Global saturation.
- * @param {Object} skippedFeaturesHash Ids of features to skip.
+ * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
+ *  to skip.
  * @param {function(ol.Feature): T|undefined} callback Feature callback.
  * @return {T|undefined} Callback result.
  * @template T
@@ -80508,7 +80578,8 @@ ol.render.webgl.ReplayGroup.prototype.forEachFeatureAtCoordinate = function(
  * @param {number} contrast Global contrast.
  * @param {number} hue Global hue.
  * @param {number} saturation Global saturation.
- * @param {Object} skippedFeaturesHash Ids of features to skip.
+ * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
+ *  to skip.
  * @return {boolean} Is there a feature at the given coordinate?
  */
 ol.render.webgl.ReplayGroup.prototype.hasFeatureAtCoordinate = function(
@@ -82610,6 +82681,7 @@ ol.renderer.webgl.VectorLayer.prototype.renderFeature =
 
 goog.provide('ol.renderer.webgl.Map');
 
+goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
@@ -83000,9 +83072,7 @@ ol.renderer.webgl.Map.prototype.handleWebGLContextLost = function(event) {
       function(layerRenderer, key, object) {
         goog.asserts.assertInstanceof(layerRenderer, ol.renderer.webgl.Layer,
             'renderer is an instance of ol.renderer.webgl.Layer');
-        var webGLLayerRenderer = /** @type {ol.renderer.webgl.Layer} */
-            (layerRenderer);
-        webGLLayerRenderer.handleWebGLContextLost();
+        layerRenderer.handleWebGLContextLost();
       });
 };
 
@@ -83079,6 +83149,8 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
   /** @type {Array.<ol.layer.LayerState>} */
   var layerStatesToDraw = [];
   var layerStatesArray = frameState.layerStatesArray;
+  goog.array.stableSort(layerStatesArray, ol.renderer.Map.sortByZIndex);
+
   var viewResolution = frameState.viewState.resolution;
   var i, ii, layerRenderer, layerState;
   for (i = 0, ii = layerStatesArray.length; i < ii; ++i) {
@@ -83356,6 +83428,7 @@ ol.OL3_LOGO_URL = 'data:image/png;base64,' +
 
 /**
  * @type {Array.<ol.RendererType>}
+ * @const
  */
 ol.DEFAULT_RENDERER_TYPES = [
   ol.RendererType.CANVAS,
@@ -83455,7 +83528,7 @@ ol.Map = function(options) {
 
   /**
    * @private
-   * @type {Object}
+   * @type {Object.<string, string>}
    */
   this.logos_ = optionsInternal.logos;
 
@@ -84688,7 +84761,7 @@ ol.Map.prototype.unskipFeature = function(feature) {
  * @typedef {{controls: ol.Collection.<ol.control.Control>,
  *            interactions: ol.Collection.<ol.interaction.Interaction>,
  *            keyboardEventTarget: (Element|Document),
- *            logos: Object,
+ *            logos: Object.<string, string>,
  *            overlays: ol.Collection.<ol.Overlay>,
  *            rendererConstructor:
  *                function(new: ol.renderer.Map, Element, ol.Map),
@@ -93038,7 +93111,7 @@ ol.format.GPX.FEATURE_READER_ = {
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GPX.GPX_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.GPX.GPX_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.GPX.NAMESPACE_URIS_, {
       'rte': ol.xml.makeArrayPusher(ol.format.GPX.readRte_),
       'trk': ol.xml.makeArrayPusher(ol.format.GPX.readTrk_),
@@ -93051,7 +93124,7 @@ ol.format.GPX.GPX_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GPX.LINK_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.GPX.LINK_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.GPX.NAMESPACE_URIS_, {
       'text':
           ol.xml.makeObjectPropertySetter(ol.format.XSD.readString, 'linkText'),
@@ -93065,7 +93138,7 @@ ol.format.GPX.LINK_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GPX.RTE_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.GPX.RTE_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.GPX.NAMESPACE_URIS_, {
       'name': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
       'cmt': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
@@ -93085,7 +93158,7 @@ ol.format.GPX.RTE_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GPX.RTEPT_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.GPX.RTEPT_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.GPX.NAMESPACE_URIS_, {
       'ele': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
       'time': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDateTime)
@@ -93097,7 +93170,7 @@ ol.format.GPX.RTEPT_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GPX.TRK_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.GPX.TRK_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.GPX.NAMESPACE_URIS_, {
       'name': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
       'cmt': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
@@ -93117,7 +93190,7 @@ ol.format.GPX.TRK_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GPX.TRKSEG_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.GPX.TRKSEG_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.GPX.NAMESPACE_URIS_, {
       'trkpt': ol.format.GPX.parseTrkPt_
     });
@@ -93128,7 +93201,7 @@ ol.format.GPX.TRKSEG_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GPX.TRKPT_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.GPX.TRKPT_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.GPX.NAMESPACE_URIS_, {
       'ele': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
       'time': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDateTime)
@@ -93140,7 +93213,7 @@ ol.format.GPX.TRKPT_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.GPX.WPT_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.GPX.WPT_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.GPX.NAMESPACE_URIS_, {
       'ele': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
       'time': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDateTime),
@@ -97316,7 +97389,7 @@ ol.format.KML.whenParser_ = function(node, objectStack) {
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.KML.DATA_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.KML.DATA_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.KML.NAMESPACE_URIS_, {
       'value': ol.xml.makeReplacer(ol.format.XSD.readString)
     });
@@ -97327,7 +97400,7 @@ ol.format.KML.DATA_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.KML.EXTENDED_DATA_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.KML.EXTENDED_DATA_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.KML.NAMESPACE_URIS_, {
       'Data': ol.format.KML.DataParser_,
       'SchemaData': ol.format.KML.SchemaDataParser_
@@ -97339,7 +97412,7 @@ ol.format.KML.EXTENDED_DATA_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.KML.EXTRUDE_AND_ALTITUDE_MODE_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.KML.EXTRUDE_AND_ALTITUDE_MODE_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.KML.NAMESPACE_URIS_, {
       'extrude': ol.xml.makeObjectPropertySetter(ol.format.XSD.readBoolean),
       'altitudeMode': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString)
@@ -97351,7 +97424,7 @@ ol.format.KML.EXTRUDE_AND_ALTITUDE_MODE_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.KML.FLAT_LINEAR_RING_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.KML.FLAT_LINEAR_RING_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.KML.NAMESPACE_URIS_, {
       'coordinates': ol.xml.makeReplacer(ol.format.KML.readFlatCoordinates_)
     });
@@ -97362,7 +97435,7 @@ ol.format.KML.FLAT_LINEAR_RING_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.KML.FLAT_LINEAR_RINGS_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.KML.FLAT_LINEAR_RINGS_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.KML.NAMESPACE_URIS_, {
       'innerBoundaryIs': ol.format.KML.innerBoundaryIsParser_,
       'outerBoundaryIs': ol.format.KML.outerBoundaryIsParser_
@@ -97374,10 +97447,10 @@ ol.format.KML.FLAT_LINEAR_RINGS_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.KML.GX_TRACK_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.KML.GX_TRACK_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.KML.NAMESPACE_URIS_, {
       'when': ol.format.KML.whenParser_
-    }, ol.xml.makeParsersNS(
+    }, ol.xml.makeStructureNS(
         ol.format.KML.GX_NAMESPACE_URIS_, {
           'coord': ol.format.KML.gxCoordParser_
         }));
@@ -97388,7 +97461,7 @@ ol.format.KML.GX_TRACK_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.KML.GEOMETRY_FLAT_COORDINATES_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.KML.GEOMETRY_FLAT_COORDINATES_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.KML.NAMESPACE_URIS_, {
       'coordinates': ol.xml.makeReplacer(ol.format.KML.readFlatCoordinates_)
     });
@@ -97399,10 +97472,10 @@ ol.format.KML.GEOMETRY_FLAT_COORDINATES_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.KML.ICON_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.KML.ICON_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.KML.NAMESPACE_URIS_, {
       'href': ol.xml.makeObjectPropertySetter(ol.format.KML.readURI_)
-    }, ol.xml.makeParsersNS(
+    }, ol.xml.makeStructureNS(
         ol.format.KML.GX_NAMESPACE_URIS_, {
           'x': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
           'y': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
@@ -97416,7 +97489,7 @@ ol.format.KML.ICON_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.KML.ICON_STYLE_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.KML.ICON_STYLE_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.KML.NAMESPACE_URIS_, {
       'Icon': ol.xml.makeObjectPropertySetter(ol.format.KML.readIcon_),
       'heading': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal),
@@ -97430,7 +97503,7 @@ ol.format.KML.ICON_STYLE_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.KML.INNER_BOUNDARY_IS_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.KML.INNER_BOUNDARY_IS_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.KML.NAMESPACE_URIS_, {
       'LinearRing': ol.xml.makeReplacer(ol.format.KML.readFlatLinearRing_)
     });
@@ -97441,7 +97514,7 @@ ol.format.KML.INNER_BOUNDARY_IS_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.KML.LABEL_STYLE_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.KML.LABEL_STYLE_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.KML.NAMESPACE_URIS_, {
       'color': ol.xml.makeObjectPropertySetter(ol.format.KML.readColor_),
       'scale': ol.xml.makeObjectPropertySetter(ol.format.KML.readScale_)
@@ -97453,7 +97526,7 @@ ol.format.KML.LABEL_STYLE_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.KML.LINE_STYLE_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.KML.LINE_STYLE_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.KML.NAMESPACE_URIS_, {
       'color': ol.xml.makeObjectPropertySetter(ol.format.KML.readColor_),
       'width': ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal)
@@ -97465,7 +97538,7 @@ ol.format.KML.LINE_STYLE_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.KML.MULTI_GEOMETRY_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.KML.MULTI_GEOMETRY_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.KML.NAMESPACE_URIS_, {
       'LineString': ol.xml.makeArrayPusher(ol.format.KML.readLineString_),
       'LinearRing': ol.xml.makeArrayPusher(ol.format.KML.readLinearRing_),
@@ -97480,7 +97553,7 @@ ol.format.KML.MULTI_GEOMETRY_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.KML.GX_MULTITRACK_GEOMETRY_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.KML.GX_MULTITRACK_GEOMETRY_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.KML.GX_NAMESPACE_URIS_, {
       'Track': ol.xml.makeArrayPusher(ol.format.KML.readGxTrack_)
     });
@@ -97491,7 +97564,7 @@ ol.format.KML.GX_MULTITRACK_GEOMETRY_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.KML.NETWORK_LINK_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.KML.NETWORK_LINK_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.KML.NAMESPACE_URIS_, {
       'ExtendedData': ol.format.KML.ExtendedDataParser_,
       'Link': ol.format.KML.LinkParser_,
@@ -97509,7 +97582,7 @@ ol.format.KML.NETWORK_LINK_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.KML.LINK_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.KML.LINK_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.KML.NAMESPACE_URIS_, {
       'href': ol.xml.makeObjectPropertySetter(ol.format.KML.readURI_)
     });
@@ -97520,7 +97593,7 @@ ol.format.KML.LINK_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.KML.OUTER_BOUNDARY_IS_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.KML.OUTER_BOUNDARY_IS_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.KML.NAMESPACE_URIS_, {
       'LinearRing': ol.xml.makeReplacer(ol.format.KML.readFlatLinearRing_)
     });
@@ -97531,7 +97604,7 @@ ol.format.KML.OUTER_BOUNDARY_IS_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.KML.PAIR_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.KML.PAIR_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.KML.NAMESPACE_URIS_, {
       'Style': ol.xml.makeObjectPropertySetter(ol.format.KML.readStyle_),
       'key': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
@@ -97544,7 +97617,7 @@ ol.format.KML.PAIR_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.KML.PLACEMARK_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.KML.PLACEMARK_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.KML.NAMESPACE_URIS_, {
       'ExtendedData': ol.format.KML.ExtendedDataParser_,
       'MultiGeometry': ol.xml.makeObjectPropertySetter(
@@ -97566,7 +97639,7 @@ ol.format.KML.PLACEMARK_PARSERS_ = ol.xml.makeParsersNS(
       'phoneNumber': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
       'styleUrl': ol.xml.makeObjectPropertySetter(ol.format.KML.readURI_),
       'visibility': ol.xml.makeObjectPropertySetter(ol.format.XSD.readBoolean)
-    }, ol.xml.makeParsersNS(
+    }, ol.xml.makeStructureNS(
         ol.format.KML.GX_NAMESPACE_URIS_, {
           'MultiTrack': ol.xml.makeObjectPropertySetter(
               ol.format.KML.readGxMultiTrack_, 'geometry'),
@@ -97581,7 +97654,7 @@ ol.format.KML.PLACEMARK_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.KML.POLY_STYLE_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.KML.POLY_STYLE_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.KML.NAMESPACE_URIS_, {
       'color': ol.xml.makeObjectPropertySetter(ol.format.KML.readColor_),
       'fill': ol.xml.makeObjectPropertySetter(ol.format.XSD.readBoolean),
@@ -97594,7 +97667,7 @@ ol.format.KML.POLY_STYLE_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.KML.SCHEMA_DATA_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.KML.SCHEMA_DATA_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.KML.NAMESPACE_URIS_, {
       'SimpleData': ol.format.KML.SimpleDataParser_
     });
@@ -97605,7 +97678,7 @@ ol.format.KML.SCHEMA_DATA_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.KML.STYLE_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.KML.STYLE_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.KML.NAMESPACE_URIS_, {
       'IconStyle': ol.format.KML.IconStyleParser_,
       'LabelStyle': ol.format.KML.LabelStyleParser_,
@@ -97619,7 +97692,7 @@ ol.format.KML.STYLE_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.KML.STYLE_MAP_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.KML.STYLE_MAP_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.KML.NAMESPACE_URIS_, {
       'Pair': ol.format.KML.PairDataParser_
     });
@@ -97646,8 +97719,9 @@ ol.format.KML.prototype.readDocumentOrFolder_ = function(node, objectStack) {
   goog.asserts.assert(localName == 'Document' || localName == 'Folder',
       'localName should be Document or Folder');
   // FIXME use scope somehow
-  var parsersNS = ol.xml.makeParsersNS(
+  var parsersNS = ol.xml.makeStructureNS(
       ol.format.KML.NAMESPACE_URIS_, {
+        'Document': ol.xml.makeArrayExtender(this.readDocumentOrFolder_, this),
         'Folder': ol.xml.makeArrayExtender(this.readDocumentOrFolder_, this),
         'Placemark': ol.xml.makeArrayPusher(this.readPlacemark_, this),
         'Style': goog.bind(this.readSharedStyle_, this),
@@ -99061,7 +99135,7 @@ ol.format.OSMXML.NAMESPACE_URIS_ = [
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.OSMXML.WAY_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.OSMXML.WAY_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.OSMXML.NAMESPACE_URIS_, {
       'nd': ol.format.OSMXML.readNd_,
       'tag': ol.format.OSMXML.readTag_
@@ -99073,7 +99147,7 @@ ol.format.OSMXML.WAY_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.OSMXML.PARSERS_ = ol.xml.makeParsersNS(
+ol.format.OSMXML.PARSERS_ = ol.xml.makeStructureNS(
     ol.format.OSMXML.NAMESPACE_URIS_, {
       'node': ol.format.OSMXML.readNode_,
       'way': ol.format.OSMXML.readWay_
@@ -99085,7 +99159,7 @@ ol.format.OSMXML.PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.OSMXML.NODE_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.OSMXML.NODE_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.OSMXML.NAMESPACE_URIS_, {
       'tag': ol.format.OSMXML.readTag_
     });
@@ -99508,7 +99582,7 @@ ol.format.OWS.NAMESPACE_URIS_ = [
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.OWS.PARSERS_ = ol.xml.makeParsersNS(
+ol.format.OWS.PARSERS_ = ol.xml.makeStructureNS(
     ol.format.OWS.NAMESPACE_URIS_, {
       'ServiceIdentification': ol.xml.makeObjectPropertySetter(
           ol.format.OWS.readServiceIdentification_),
@@ -99524,7 +99598,7 @@ ol.format.OWS.PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.OWS.ADDRESS_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.OWS.ADDRESS_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.OWS.NAMESPACE_URIS_, {
       'DeliveryPoint': ol.xml.makeObjectPropertySetter(
           ol.format.XSD.readString),
@@ -99543,7 +99617,7 @@ ol.format.OWS.ADDRESS_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.OWS.ALLOWED_VALUES_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.OWS.ALLOWED_VALUES_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.OWS.NAMESPACE_URIS_, {
       'Value': ol.xml.makeObjectPropertyPusher(ol.format.OWS.readValue_)
     });
@@ -99554,7 +99628,7 @@ ol.format.OWS.ALLOWED_VALUES_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.OWS.CONSTRAINT_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.OWS.CONSTRAINT_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.OWS.NAMESPACE_URIS_, {
       'AllowedValues': ol.xml.makeObjectPropertySetter(
           ol.format.OWS.readAllowedValues_)
@@ -99566,7 +99640,7 @@ ol.format.OWS.CONSTRAINT_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.OWS.CONTACT_INFO_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.OWS.CONTACT_INFO_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.OWS.NAMESPACE_URIS_, {
       'Phone': ol.xml.makeObjectPropertySetter(ol.format.OWS.readPhone_),
       'Address': ol.xml.makeObjectPropertySetter(ol.format.OWS.readAddress_)
@@ -99578,7 +99652,7 @@ ol.format.OWS.CONTACT_INFO_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.OWS.DCP_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.OWS.DCP_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.OWS.NAMESPACE_URIS_, {
       'HTTP': ol.xml.makeObjectPropertySetter(ol.format.OWS.readHttp_)
     });
@@ -99589,7 +99663,7 @@ ol.format.OWS.DCP_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.OWS.HTTP_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.OWS.HTTP_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.OWS.NAMESPACE_URIS_, {
       'Get': ol.xml.makeObjectPropertyPusher(ol.format.OWS.readGet_),
       'Post': undefined // TODO
@@ -99601,7 +99675,7 @@ ol.format.OWS.HTTP_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.OWS.OPERATION_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.OWS.OPERATION_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.OWS.NAMESPACE_URIS_, {
       'DCP': ol.xml.makeObjectPropertySetter(ol.format.OWS.readDcp_)
     });
@@ -99612,7 +99686,7 @@ ol.format.OWS.OPERATION_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.OWS.OPERATIONS_METADATA_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.OWS.OPERATIONS_METADATA_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.OWS.NAMESPACE_URIS_, {
       'Operation': ol.format.OWS.readOperation_
     });
@@ -99623,7 +99697,7 @@ ol.format.OWS.OPERATIONS_METADATA_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.OWS.PHONE_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.OWS.PHONE_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.OWS.NAMESPACE_URIS_, {
       'Voice': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
       'Facsimile': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString)
@@ -99635,7 +99709,7 @@ ol.format.OWS.PHONE_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.OWS.REQUEST_METHOD_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.OWS.REQUEST_METHOD_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.OWS.NAMESPACE_URIS_, {
       'Constraint': ol.xml.makeObjectPropertyPusher(
           ol.format.OWS.readConstraint_)
@@ -99648,7 +99722,7 @@ ol.format.OWS.REQUEST_METHOD_PARSERS_ = ol.xml.makeParsersNS(
  * @private
  */
 ol.format.OWS.SERVICE_CONTACT_PARSERS_ =
-    ol.xml.makeParsersNS(
+    ol.xml.makeStructureNS(
     ol.format.OWS.NAMESPACE_URIS_, {
       'IndividualName': ol.xml.makeObjectPropertySetter(
           ol.format.XSD.readString),
@@ -99664,7 +99738,7 @@ ol.format.OWS.SERVICE_CONTACT_PARSERS_ =
  * @private
  */
 ol.format.OWS.SERVICE_IDENTIFICATION_PARSERS_ =
-    ol.xml.makeParsersNS(
+    ol.xml.makeStructureNS(
     ol.format.OWS.NAMESPACE_URIS_, {
       'Title': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
       'ServiceTypeVersion': ol.xml.makeObjectPropertySetter(
@@ -99679,7 +99753,7 @@ ol.format.OWS.SERVICE_IDENTIFICATION_PARSERS_ =
  * @private
  */
 ol.format.OWS.SERVICE_PROVIDER_PARSERS_ =
-    ol.xml.makeParsersNS(
+    ol.xml.makeStructureNS(
     ol.format.OWS.NAMESPACE_URIS_, {
       'ProviderName': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
       'ProviderSite': ol.xml.makeObjectPropertySetter(ol.format.XLink.readHref),
@@ -100426,8 +100500,7 @@ ol.format.TopoJSON.prototype.readFeaturesFromObject = function(
     var topoJSONTopology = /** @type {TopoJSONTopology} */ (object);
     var transform, scale = null, translate = null;
     if (goog.isDef(topoJSONTopology.transform)) {
-      transform = /** @type {TopoJSONTransform} */
-          (topoJSONTopology.transform);
+      transform = topoJSONTopology.transform;
       scale = transform.scale;
       translate = transform.translate;
     }
@@ -102362,10 +102435,10 @@ ol.format.WMSCapabilities.readEXGeographicBoundingBox_ =
       !goog.isDef(eastBoundLongitude) || !goog.isDef(northBoundLatitude)) {
     return undefined;
   }
-  return [
+  return /** @type {ol.Extent} */ ([
     westBoundLongitude, southBoundLatitude,
     eastBoundLongitude, northBoundLatitude
-  ];
+  ]);
 };
 
 
@@ -102788,7 +102861,7 @@ ol.format.WMSCapabilities.NAMESPACE_URIS_ = [
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.WMSCapabilities.PARSERS_ = ol.xml.makeParsersNS(
+ol.format.WMSCapabilities.PARSERS_ = ol.xml.makeStructureNS(
     ol.format.WMSCapabilities.NAMESPACE_URIS_, {
       'Service': ol.xml.makeObjectPropertySetter(
           ol.format.WMSCapabilities.readService_),
@@ -102802,7 +102875,7 @@ ol.format.WMSCapabilities.PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.WMSCapabilities.CAPABILITY_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.WMSCapabilities.CAPABILITY_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.WMSCapabilities.NAMESPACE_URIS_, {
       'Request': ol.xml.makeObjectPropertySetter(
           ol.format.WMSCapabilities.readRequest_),
@@ -102818,7 +102891,7 @@ ol.format.WMSCapabilities.CAPABILITY_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.WMSCapabilities.SERVICE_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.WMSCapabilities.SERVICE_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.WMSCapabilities.NAMESPACE_URIS_, {
       'Name': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
       'Title': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
@@ -102846,7 +102919,7 @@ ol.format.WMSCapabilities.SERVICE_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.WMSCapabilities.CONTACT_INFORMATION_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.WMSCapabilities.CONTACT_INFORMATION_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.WMSCapabilities.NAMESPACE_URIS_, {
       'ContactPersonPrimary': ol.xml.makeObjectPropertySetter(
           ol.format.WMSCapabilities.readContactPersonPrimary_),
@@ -102868,7 +102941,7 @@ ol.format.WMSCapabilities.CONTACT_INFORMATION_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.WMSCapabilities.CONTACT_PERSON_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.WMSCapabilities.CONTACT_PERSON_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.WMSCapabilities.NAMESPACE_URIS_, {
       'ContactPerson': ol.xml.makeObjectPropertySetter(
           ol.format.XSD.readString),
@@ -102882,7 +102955,7 @@ ol.format.WMSCapabilities.CONTACT_PERSON_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.WMSCapabilities.CONTACT_ADDRESS_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.WMSCapabilities.CONTACT_ADDRESS_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.WMSCapabilities.NAMESPACE_URIS_, {
       'AddressType': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
       'Address': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
@@ -102899,7 +102972,7 @@ ol.format.WMSCapabilities.CONTACT_ADDRESS_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.WMSCapabilities.EXCEPTION_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.WMSCapabilities.EXCEPTION_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.WMSCapabilities.NAMESPACE_URIS_, {
       'Format': ol.xml.makeArrayPusher(ol.format.XSD.readString)
     });
@@ -102910,7 +102983,7 @@ ol.format.WMSCapabilities.EXCEPTION_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.WMSCapabilities.LAYER_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.WMSCapabilities.LAYER_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.WMSCapabilities.NAMESPACE_URIS_, {
       'Name': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
       'Title': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
@@ -102951,7 +103024,7 @@ ol.format.WMSCapabilities.LAYER_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.WMSCapabilities.ATTRIBUTION_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.WMSCapabilities.ATTRIBUTION_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.WMSCapabilities.NAMESPACE_URIS_, {
       'Title': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
       'OnlineResource': ol.xml.makeObjectPropertySetter(
@@ -102967,7 +103040,7 @@ ol.format.WMSCapabilities.ATTRIBUTION_PARSERS_ = ol.xml.makeParsersNS(
  * @private
  */
 ol.format.WMSCapabilities.EX_GEOGRAPHIC_BOUNDING_BOX_PARSERS_ =
-    ol.xml.makeParsersNS(ol.format.WMSCapabilities.NAMESPACE_URIS_, {
+    ol.xml.makeStructureNS(ol.format.WMSCapabilities.NAMESPACE_URIS_, {
       'westBoundLongitude': ol.xml.makeObjectPropertySetter(
           ol.format.XSD.readDecimal),
       'eastBoundLongitude': ol.xml.makeObjectPropertySetter(
@@ -102984,7 +103057,7 @@ ol.format.WMSCapabilities.EX_GEOGRAPHIC_BOUNDING_BOX_PARSERS_ =
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.WMSCapabilities.REQUEST_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.WMSCapabilities.REQUEST_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.WMSCapabilities.NAMESPACE_URIS_, {
       'GetCapabilities': ol.xml.makeObjectPropertySetter(
           ol.format.WMSCapabilities.readOperationType_),
@@ -103000,7 +103073,7 @@ ol.format.WMSCapabilities.REQUEST_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.WMSCapabilities.OPERATIONTYPE_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.WMSCapabilities.OPERATIONTYPE_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.WMSCapabilities.NAMESPACE_URIS_, {
       'Format': ol.xml.makeObjectPropertyPusher(ol.format.XSD.readString),
       'DCPType': ol.xml.makeObjectPropertyPusher(
@@ -103013,7 +103086,7 @@ ol.format.WMSCapabilities.OPERATIONTYPE_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.WMSCapabilities.DCPTYPE_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.WMSCapabilities.DCPTYPE_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.WMSCapabilities.NAMESPACE_URIS_, {
       'HTTP': ol.xml.makeObjectPropertySetter(
           ol.format.WMSCapabilities.readHTTP_)
@@ -103025,7 +103098,7 @@ ol.format.WMSCapabilities.DCPTYPE_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.WMSCapabilities.HTTP_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.WMSCapabilities.HTTP_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.WMSCapabilities.NAMESPACE_URIS_, {
       'Get': ol.xml.makeObjectPropertySetter(
           ol.format.WMSCapabilities.readFormatOnlineresource_),
@@ -103039,7 +103112,7 @@ ol.format.WMSCapabilities.HTTP_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.WMSCapabilities.STYLE_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.WMSCapabilities.STYLE_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.WMSCapabilities.NAMESPACE_URIS_, {
       'Name': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
       'Title': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
@@ -103058,8 +103131,8 @@ ol.format.WMSCapabilities.STYLE_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.WMSCapabilities.FORMAT_ONLINERESOURCE_PARSERS_ = ol.xml.makeParsersNS(
-    ol.format.WMSCapabilities.NAMESPACE_URIS_, {
+ol.format.WMSCapabilities.FORMAT_ONLINERESOURCE_PARSERS_ =
+    ol.xml.makeStructureNS(ol.format.WMSCapabilities.NAMESPACE_URIS_, {
       'Format': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
       'OnlineResource': ol.xml.makeObjectPropertySetter(
           ol.format.XLink.readHref)
@@ -103071,7 +103144,7 @@ ol.format.WMSCapabilities.FORMAT_ONLINERESOURCE_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.WMSCapabilities.KEYWORDLIST_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.WMSCapabilities.KEYWORDLIST_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.WMSCapabilities.NAMESPACE_URIS_, {
       'Keyword': ol.xml.makeArrayPusher(ol.format.XSD.readString)
     });
@@ -103175,7 +103248,7 @@ ol.format.WMSGetFeatureInfo.prototype.readFeatures_ =
       var parsers = {};
       parsers[featureType] = ol.xml.makeArrayPusher(
           this.gmlFormat_.readFeatureElement, this.gmlFormat_);
-      var parsersNS = ol.xml.makeParsersNS(
+      var parsersNS = ol.xml.makeStructureNS(
           [context['featureNS'], null], parsers);
       layer.namespaceURI = this.featureNS_;
       var layerFeatures = ol.xml.pushParseAndPop(
@@ -103497,7 +103570,7 @@ ol.format.WMTSCapabilities.OWS_NAMESPACE_URIS_ = [
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.WMTSCapabilities.PARSERS_ = ol.xml.makeParsersNS(
+ol.format.WMTSCapabilities.PARSERS_ = ol.xml.makeStructureNS(
     ol.format.WMTSCapabilities.NAMESPACE_URIS_, {
       'Contents': ol.xml.makeObjectPropertySetter(
           ol.format.WMTSCapabilities.readContents_)
@@ -103509,7 +103582,7 @@ ol.format.WMTSCapabilities.PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.WMTSCapabilities.CONTENTS_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.WMTSCapabilities.CONTENTS_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.WMTSCapabilities.NAMESPACE_URIS_, {
       'Layer': ol.xml.makeObjectPropertyPusher(
           ol.format.WMTSCapabilities.readLayer_),
@@ -103523,7 +103596,7 @@ ol.format.WMTSCapabilities.CONTENTS_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.WMTSCapabilities.LAYER_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.WMTSCapabilities.LAYER_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.WMTSCapabilities.NAMESPACE_URIS_, {
       'Style': ol.xml.makeObjectPropertyPusher(
           ol.format.WMTSCapabilities.readStyle_),
@@ -103533,7 +103606,7 @@ ol.format.WMTSCapabilities.LAYER_PARSERS_ = ol.xml.makeParsersNS(
           ol.format.WMTSCapabilities.readTileMatrixSetLink_),
       'ResourceURL': ol.xml.makeObjectPropertyPusher(
           ol.format.WMTSCapabilities.readResourceUrl_)
-    }, ol.xml.makeParsersNS(ol.format.WMTSCapabilities.OWS_NAMESPACE_URIS_, {
+    }, ol.xml.makeStructureNS(ol.format.WMTSCapabilities.OWS_NAMESPACE_URIS_, {
       'Title': ol.xml.makeObjectPropertySetter(
           ol.format.XSD.readString),
       'Abstract': ol.xml.makeObjectPropertySetter(
@@ -103550,11 +103623,11 @@ ol.format.WMTSCapabilities.LAYER_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.WMTSCapabilities.STYLE_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.WMTSCapabilities.STYLE_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.WMTSCapabilities.NAMESPACE_URIS_, {
       'LegendURL': ol.xml.makeObjectPropertyPusher(
           ol.format.WMTSCapabilities.readLegendUrl_)
-    }, ol.xml.makeParsersNS(ol.format.WMTSCapabilities.OWS_NAMESPACE_URIS_, {
+    }, ol.xml.makeStructureNS(ol.format.WMTSCapabilities.OWS_NAMESPACE_URIS_, {
       'Title': ol.xml.makeObjectPropertySetter(
           ol.format.XSD.readString),
       'Identifier': ol.xml.makeObjectPropertySetter(
@@ -103567,7 +103640,7 @@ ol.format.WMTSCapabilities.STYLE_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.WMTSCapabilities.TMS_LINKS_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.WMTSCapabilities.TMS_LINKS_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.WMTSCapabilities.NAMESPACE_URIS_, {
       'TileMatrixSet': ol.xml.makeObjectPropertySetter(
           ol.format.XSD.readString)
@@ -103579,7 +103652,7 @@ ol.format.WMTSCapabilities.TMS_LINKS_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.WMTSCapabilities.WGS84_BBOX_READERS_ = ol.xml.makeParsersNS(
+ol.format.WMTSCapabilities.WGS84_BBOX_READERS_ = ol.xml.makeStructureNS(
     ol.format.WMTSCapabilities.OWS_NAMESPACE_URIS_, {
       'LowerCorner': ol.xml.makeArrayPusher(
           ol.format.WMTSCapabilities.readCoordinates_),
@@ -103593,13 +103666,13 @@ ol.format.WMTSCapabilities.WGS84_BBOX_READERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.WMTSCapabilities.TMS_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.WMTSCapabilities.TMS_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.WMTSCapabilities.NAMESPACE_URIS_, {
       'WellKnownScaleSet': ol.xml.makeObjectPropertySetter(
           ol.format.XSD.readString),
       'TileMatrix': ol.xml.makeObjectPropertyPusher(
           ol.format.WMTSCapabilities.readTileMatrix_)
-    }, ol.xml.makeParsersNS(ol.format.WMTSCapabilities.OWS_NAMESPACE_URIS_, {
+    }, ol.xml.makeStructureNS(ol.format.WMTSCapabilities.OWS_NAMESPACE_URIS_, {
       'SupportedCRS': ol.xml.makeObjectPropertySetter(
           ol.format.XSD.readString),
       'Identifier': ol.xml.makeObjectPropertySetter(
@@ -103612,7 +103685,7 @@ ol.format.WMTSCapabilities.TMS_PARSERS_ = ol.xml.makeParsersNS(
  * @type {Object.<string, Object.<string, ol.xml.Parser>>}
  * @private
  */
-ol.format.WMTSCapabilities.TM_PARSERS_ = ol.xml.makeParsersNS(
+ol.format.WMTSCapabilities.TM_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.WMTSCapabilities.NAMESPACE_URIS_, {
       'TopLeftCorner': ol.xml.makeObjectPropertySetter(
           ol.format.WMTSCapabilities.readCoordinates_),
@@ -103626,7 +103699,7 @@ ol.format.WMTSCapabilities.TM_PARSERS_ = ol.xml.makeParsersNS(
           ol.format.XSD.readNonNegativeInteger),
       'MatrixHeight': ol.xml.makeObjectPropertySetter(
           ol.format.XSD.readNonNegativeInteger)
-    }, ol.xml.makeParsersNS(ol.format.WMTSCapabilities.OWS_NAMESPACE_URIS_, {
+    }, ol.xml.makeStructureNS(ol.format.WMTSCapabilities.OWS_NAMESPACE_URIS_, {
       'Identifier': ol.xml.makeObjectPropertySetter(
           ol.format.XSD.readString)
     }));
@@ -108181,6 +108254,33 @@ ol.interaction.Draw.prototype.abortDrawing_ = function() {
 
 
 /**
+ * Extend an existing geometry by adding additional points. This only works
+ * on features with `LineString` geometries, where the interaction will
+ * extend lines by adding points to the end of the coordinates array.
+ * @param {!ol.Feature} feature Feature to be extended.
+ * @api
+ */
+ol.interaction.Draw.prototype.extend = function(feature) {
+  var geometry = feature.getGeometry();
+  goog.asserts.assert(this.mode_ == ol.interaction.DrawMode.LINE_STRING,
+      'interaction mode must be "line"');
+  goog.asserts.assert(goog.isDefAndNotNull(geometry),
+      'feature must have a geometry');
+  goog.asserts.assert(geometry.getType() == ol.geom.GeometryType.LINE_STRING,
+      'feature geometry must be a line string');
+  var lineString = /** @type {ol.geom.LineString} */ (geometry);
+  this.sketchFeature_ = feature;
+  this.sketchCoords_ = lineString.getCoordinates();
+  var last = this.sketchCoords_[this.sketchCoords_.length - 1];
+  this.finishCoordinate_ = last.slice();
+  this.sketchCoords_.push(last.slice());
+  this.updateSketchFeatures_();
+  this.dispatchEvent(new ol.interaction.DrawEvent(
+      ol.interaction.DrawEventType.DRAWSTART, this.sketchFeature_));
+};
+
+
+/**
  * @inheritDoc
  */
 ol.interaction.Draw.prototype.shouldStopEvent = goog.functions.FALSE;
@@ -112477,6 +112577,7 @@ goog.provide('ol.source.ImageStatic');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('ol.Image');
+goog.require('ol.ImageLoadFunctionType');
 goog.require('ol.extent');
 goog.require('ol.proj');
 goog.require('ol.source.Image');
@@ -112508,7 +112609,8 @@ ol.source.ImageStatic = function(options) {
   var crossOrigin = goog.isDef(options.crossOrigin) ?
       options.crossOrigin : null;
 
-  var imageLoadFunction = goog.isDef(options.imageLoadFunction) ?
+  var /** @type {ol.ImageLoadFunctionType} */ imageLoadFunction =
+      goog.isDef(options.imageLoadFunction) ?
       options.imageLoadFunction : ol.source.Image.defaultImageLoadFunction;
 
   goog.base(this, {
@@ -113928,11 +114030,9 @@ ol.source.Raster.createRenderers_ = function(sources) {
 ol.source.Raster.createRenderer_ = function(source) {
   var renderer = null;
   if (source instanceof ol.source.Tile) {
-    renderer = ol.source.Raster.createTileRenderer_(
-        /** @type {ol.source.Tile} */ (source));
+    renderer = ol.source.Raster.createTileRenderer_(source);
   } else if (source instanceof ol.source.Image) {
-    renderer = ol.source.Raster.createImageRenderer_(
-        /** @type {ol.source.Image} */ (source));
+    renderer = ol.source.Raster.createImageRenderer_(source);
   } else {
     goog.asserts.fail('Unsupported source type: ' + source);
   }
@@ -117666,7 +117766,7 @@ goog.addDependency('demos/editor/helloworlddialogplugin.js', ['goog.demos.editor
 
 /**
  * @fileoverview Custom exports file.
- * @suppress {checkVars}
+ * @suppress {checkVars,extraRequire}
  */
 
 goog.require('ol');
@@ -117684,6 +117784,7 @@ goog.require('ol.Extent');
 goog.require('ol.Feature');
 goog.require('ol.FeatureLoader');
 goog.require('ol.FeatureStyleFunction');
+goog.require('ol.FeatureUrlFunction');
 goog.require('ol.Geolocation');
 goog.require('ol.GeolocationProperty');
 goog.require('ol.Graticule');
@@ -119056,6 +119157,11 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.style.Image.prototype,
+    'setOpacity',
+    ol.style.Image.prototype.setOpacity);
+
+goog.exportProperty(
+    ol.style.Image.prototype,
     'setRotation',
     ol.style.Image.prototype.setRotation);
 
@@ -120231,6 +120337,11 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.layer.Base.prototype,
+    'getZIndex',
+    ol.layer.Base.prototype.getZIndex);
+
+goog.exportProperty(
+    ol.layer.Base.prototype,
     'setBrightness',
     ol.layer.Base.prototype.setBrightness);
 
@@ -120273,6 +120384,11 @@ goog.exportProperty(
     ol.layer.Base.prototype,
     'setVisible',
     ol.layer.Base.prototype.setVisible);
+
+goog.exportProperty(
+    ol.layer.Base.prototype,
+    'setZIndex',
+    ol.layer.Base.prototype.setZIndex);
 
 goog.exportSymbol(
     'ol.layer.Group',
@@ -120438,6 +120554,11 @@ goog.exportProperty(
     ol.interaction.Draw.prototype,
     'finishDrawing',
     ol.interaction.Draw.prototype.finishDrawing);
+
+goog.exportProperty(
+    ol.interaction.Draw.prototype,
+    'extend',
+    ol.interaction.Draw.prototype.extend);
 
 goog.exportSymbol(
     'ol.interaction.Draw.createRegularPolygon',
@@ -122311,6 +122432,11 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.style.Circle.prototype,
+    'setOpacity',
+    ol.style.Circle.prototype.setOpacity);
+
+goog.exportProperty(
+    ol.style.Circle.prototype,
     'setRotation',
     ol.style.Circle.prototype.setRotation);
 
@@ -122346,6 +122472,11 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.style.Icon.prototype,
+    'setOpacity',
+    ol.style.Icon.prototype.setOpacity);
+
+goog.exportProperty(
+    ol.style.Icon.prototype,
     'setRotation',
     ol.style.Icon.prototype.setRotation);
 
@@ -122378,6 +122509,11 @@ goog.exportProperty(
     ol.style.RegularShape.prototype,
     'getSnapToPixel',
     ol.style.RegularShape.prototype.getSnapToPixel);
+
+goog.exportProperty(
+    ol.style.RegularShape.prototype,
+    'setOpacity',
+    ol.style.RegularShape.prototype.setOpacity);
 
 goog.exportProperty(
     ol.style.RegularShape.prototype,
@@ -125301,6 +125437,11 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.layer.Layer.prototype,
+    'getZIndex',
+    ol.layer.Layer.prototype.getZIndex);
+
+goog.exportProperty(
+    ol.layer.Layer.prototype,
     'setBrightness',
     ol.layer.Layer.prototype.setBrightness);
 
@@ -125343,6 +125484,11 @@ goog.exportProperty(
     ol.layer.Layer.prototype,
     'setVisible',
     ol.layer.Layer.prototype.setVisible);
+
+goog.exportProperty(
+    ol.layer.Layer.prototype,
+    'setZIndex',
+    ol.layer.Layer.prototype.setZIndex);
 
 goog.exportProperty(
     ol.layer.Layer.prototype,
@@ -125461,6 +125607,11 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.layer.Vector.prototype,
+    'getZIndex',
+    ol.layer.Vector.prototype.getZIndex);
+
+goog.exportProperty(
+    ol.layer.Vector.prototype,
     'setBrightness',
     ol.layer.Vector.prototype.setBrightness);
 
@@ -125503,6 +125654,11 @@ goog.exportProperty(
     ol.layer.Vector.prototype,
     'setVisible',
     ol.layer.Vector.prototype.setVisible);
+
+goog.exportProperty(
+    ol.layer.Vector.prototype,
+    'setZIndex',
+    ol.layer.Vector.prototype.setZIndex);
 
 goog.exportProperty(
     ol.layer.Vector.prototype,
@@ -125641,6 +125797,11 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.layer.Heatmap.prototype,
+    'getZIndex',
+    ol.layer.Heatmap.prototype.getZIndex);
+
+goog.exportProperty(
+    ol.layer.Heatmap.prototype,
     'setBrightness',
     ol.layer.Heatmap.prototype.setBrightness);
 
@@ -125683,6 +125844,11 @@ goog.exportProperty(
     ol.layer.Heatmap.prototype,
     'setVisible',
     ol.layer.Heatmap.prototype.setVisible);
+
+goog.exportProperty(
+    ol.layer.Heatmap.prototype,
+    'setZIndex',
+    ol.layer.Heatmap.prototype.setZIndex);
 
 goog.exportProperty(
     ol.layer.Heatmap.prototype,
@@ -125801,6 +125967,11 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.layer.Image.prototype,
+    'getZIndex',
+    ol.layer.Image.prototype.getZIndex);
+
+goog.exportProperty(
+    ol.layer.Image.prototype,
     'setBrightness',
     ol.layer.Image.prototype.setBrightness);
 
@@ -125843,6 +126014,11 @@ goog.exportProperty(
     ol.layer.Image.prototype,
     'setVisible',
     ol.layer.Image.prototype.setVisible);
+
+goog.exportProperty(
+    ol.layer.Image.prototype,
+    'setZIndex',
+    ol.layer.Image.prototype.setZIndex);
 
 goog.exportProperty(
     ol.layer.Image.prototype,
@@ -125951,6 +126127,11 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.layer.Group.prototype,
+    'getZIndex',
+    ol.layer.Group.prototype.getZIndex);
+
+goog.exportProperty(
+    ol.layer.Group.prototype,
     'setBrightness',
     ol.layer.Group.prototype.setBrightness);
 
@@ -125993,6 +126174,11 @@ goog.exportProperty(
     ol.layer.Group.prototype,
     'setVisible',
     ol.layer.Group.prototype.setVisible);
+
+goog.exportProperty(
+    ol.layer.Group.prototype,
+    'setZIndex',
+    ol.layer.Group.prototype.setZIndex);
 
 goog.exportProperty(
     ol.layer.Group.prototype,
@@ -126111,6 +126297,11 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.layer.Tile.prototype,
+    'getZIndex',
+    ol.layer.Tile.prototype.getZIndex);
+
+goog.exportProperty(
+    ol.layer.Tile.prototype,
     'setBrightness',
     ol.layer.Tile.prototype.setBrightness);
 
@@ -126153,6 +126344,11 @@ goog.exportProperty(
     ol.layer.Tile.prototype,
     'setVisible',
     ol.layer.Tile.prototype.setVisible);
+
+goog.exportProperty(
+    ol.layer.Tile.prototype,
+    'setZIndex',
+    ol.layer.Tile.prototype.setZIndex);
 
 goog.exportProperty(
     ol.layer.Tile.prototype,
