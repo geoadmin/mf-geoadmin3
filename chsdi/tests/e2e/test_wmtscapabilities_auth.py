@@ -2,7 +2,7 @@
 
 import requests
 from chsdi.tests.integration import TestsBase
-from chsdi.tests.mapproxy import MapProxyTestsBase
+from chsdi.tests.e2e import MapProxyTestsBase
 
 
 class TestWmtsGetTileAuth(TestsBase):
