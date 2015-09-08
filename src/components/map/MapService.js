@@ -2002,18 +2002,6 @@ goog.require('ga_urlutils_service');
         return $q.all(promises);
       };
 
-      // Get a buffered extent if necessary
-      var getMinimalExtent = function(extent) {
-        if (ol.extent.getHeight(extent) < MINIMAL_EXTENT_SIZE &&
-            ol.extent.getWidth(extent) < MINIMAL_EXTENT_SIZE) {
-          var center = ol.extent.getCenter(extent);
-          return ol.extent.buffer(center.concat(center),
-              MINIMAL_EXTENT_SIZE / 2);
-        } else {
-          return extent;
-        }
-      };
-
       // Remove features associated with a layer.
       var removeFromLayer = function(layer) {
         var features = source.getFeatures();
@@ -2043,6 +2031,17 @@ goog.require('ga_urlutils_service');
       };
 
       var PreviewFeatures = function() {
+        // Get a buffered extent if necessary
+        this.getMinimalExtent = function(extent) {
+          if (ol.extent.getHeight(extent) < MINIMAL_EXTENT_SIZE &&
+              ol.extent.getWidth(extent) < MINIMAL_EXTENT_SIZE) {
+            var center = ol.extent.getCenter(extent);
+            return ol.extent.buffer(center.concat(center),
+                MINIMAL_EXTENT_SIZE / 2);
+          } else {
+            return extent;
+          }
+        };
 
         // Add a feature.
         this.add = function(map, feature) {
@@ -2104,7 +2103,7 @@ goog.require('ga_urlutils_service');
         // Zoom on a feature (if defined) or zoom on the entire source
         // extent.
         this.zoom = function(map, feature) {
-          var extent = getMinimalExtent((feature) ?
+          var extent = this.getMinimalExtent((feature) ?
               feature.getGeometry().getExtent() : source.getExtent());
           map.getView().fit(extent, map.getSize());
         };

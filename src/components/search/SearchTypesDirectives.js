@@ -430,7 +430,8 @@ goog.require('ga_urlutils_service');
           templateUrl: 'components/search/partials/searchtypes.html',
           scope: {
             options: '=gaSearchFeaturesOptions',
-            map: '=gaSearchFeaturesMap'
+            map: '=gaSearchFeaturesMap',
+            ol3d: '=gaSearchFeaturesOl3d'
           },
           controller: 'GaSearchTypesController',
           link: function($scope, element, attrs) {
@@ -471,8 +472,17 @@ goog.require('ga_urlutils_service');
                   features: [f],
                   onCloseCB: angular.noop
                 });
-                gaPreviewFeatures.zoom($scope.map,
-                    geojsonParser.readFeature(f));
+                var feature = geojsonParser.readFeature(f);
+                var ol3d = $scope.ol3d;
+                if (ol3d && ol3d.getEnabled()) {
+                  var extent = feature.getGeometry().getExtent();
+                  extent = gaPreviewFeatures.getMinimalExtent(extent);
+                  ol3d.getCesiumScene().camera.flyTo({
+                    destination: extentToRectangle(extent)
+                  });
+                } else {
+                  gaPreviewFeatures.zoom($scope.map, feature);
+                }
               });
               $scope.options.valueSelected(
                   gaSearchLabels.cleanLabel(res.attrs.label));
