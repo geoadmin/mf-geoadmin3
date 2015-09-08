@@ -167,6 +167,11 @@ goog.require('ga_translation_service');
       // We begin to watch the query only when topics are loaded
       gaTopic.loadConfig().then(function() {
         $scope.topicLoaded = true;
+        if ($scope.searchFocused) {
+          $timeout(function() {
+            $scope.input.focus();
+          }, 0, false);
+        }
         if ($scope.query) {
           startQuery($scope.query);
         }
