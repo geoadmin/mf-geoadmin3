@@ -188,12 +188,10 @@ itemscope itemtype="http://schema.org/WebApplication"
 % endif
     <div id="loader"></div>
     <div tabindex="1" ga-map ga-map-map="map" ga-map-ol3d="::ol3d">
-      <div ng-cloak translate-cloak id="copyrightsdata">
-        <div>
-          <span >&copy;&nbsp;</span>
-          <span translate>data</span>
-        </div>
-        <div ga-attribution ga-attribution-map="map"></div>
+      <div ng-cloak translate-cloak
+           ga-attribution
+           ga-attribution-map="::map"
+           ga-attribution-ol3d="::ol3d">
       </div>
   % if device == 'embed':
       <a ng-cloak translate-cloak id="bigMapLink" target="_blank" href="{{toMainHref}}">

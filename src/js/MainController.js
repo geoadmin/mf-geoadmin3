@@ -140,7 +140,9 @@ goog.require('ga_storage_service');
               if (!$window.olcs) {
                 // lazy load cesium library
                 $.getScript(ol3CesiumLibUrl, function() {
-                  $scope.ol3d = loadCesiumViewer($scope.map, active);
+                  $scope.$applyAsync(function() {
+                    $scope.ol3d = loadCesiumViewer($scope.map, active);
+                  });
                 });
               } else {
                 // cesium library is already loaded

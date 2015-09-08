@@ -146,9 +146,6 @@ goog.require('ga_urlutils_service');
               gaKml.addKmlToMap($scope.map, $scope.fileContent, {
                 url: ($scope.currentTab === 2) ? $scope.fileUrl :
                     $scope.file.name,
-                attribution: ($scope.currentTab === 2) ?
-                    $scope.fileUrl :
-                    undefined,
                 useImageVector: gaKml.useImageVector($scope.fileSize),
                 zoomToExtent: true
               });
