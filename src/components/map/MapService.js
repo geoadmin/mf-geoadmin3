@@ -869,18 +869,42 @@ goog.require('ga_urlutils_service');
             if (response.data) {
               var ids = [
                 'ch.swisstopo.swisstlm3d-karte-farbe',
-                'ch.swisstopo.swissimage-product'
-              ];
+                'ch.swisstopo.swisstlm3d-karte-farbe_wmts',
+                'ch.swisstopo.swisstlm3d-karte-grau',
+                'ch.swisstopo.swisstlm3d-karte-grau_wmts',
+                'ch.swisstopo.swissimage-product',
+                'ch.swisstopo.pixelkarte-farbe_wmts',
+                'ch.swisstopo.pixelkarte-grau_wmts'
+             ];
               angular.forEach(ids, function(id) {
                 if (response.data[id]) {
                   response.data[id].config3d = id + '_3d';
+
+                  if (id.indexOf('_wmts') != -1) {
+                    if (id.indexOf('farbe') != -1) {
+                    response.data[id].config3d =
+                        'ch.swisstopo.swisstlm3d-karte-farbe';
+                    } else {
+                      response.data[id].config3d =
+                        'ch.swisstopo.swisstlm3d-karte-grau';
+                    }
+                  }
                 }
               });
+
               // Tiled WMS (MapProxy)
               response.data['ch.swisstopo.swisstlm3d-karte-farbe_3d'] = {
                 type: 'wms',
                 singleTile: false,
                 wmsUrl: '//api3.geo.admin.ch/mapproxy/service'
+              };
+              response.data['ch.swisstopo.swisstlm3d-karte-grau_3d'] = {
+                type: 'wms',
+                singleTile: false,
+                wmsUrl: '//api3.geo.admin.ch/mapproxy/service',
+                attribution: 'tlm 3D',
+                attributionUrl: 'http://www.swisstopo.admin.ch/internet/' +
+                    'swisstopo/en/home/products/height/swissALTI3D.html'
               };
               // WMTS (not MapProxy)
               response.data['ch.swisstopo.swissimage-product_3d'] = {
@@ -893,7 +917,10 @@ goog.require('ga_urlutils_service');
               response.data['ch.swisstopo.terrain.3d'] = {
                 type: 'terrain',
                 serverLayerName: 'ch.swisstopo.terrain.3d',
-                timestamps: ['20151231']
+                timestamps: ['20151231'],
+                attribution: 'swisstopo 3D',
+                attributionUrl: 'http://www.swisstopo.admin.ch/internet/' +
+                    'swisstopo/en/home/products/height/swissALTI3D.html'
               };
             }
             if (!layers) { // First load
@@ -928,7 +955,11 @@ goog.require('ga_urlutils_service');
           var provider, config = layers[bodId];
           var timestamp = this.getLayerTimestampFromYear(bodId, gaTime.get());
           if (config.config3d) {
-            angular.extend(config, layers[config.config3d]);
+            while (config.config3d) {
+              var tmp = config.config3d;
+              config.config3d = undefined;
+              angular.extend(config, layers[tmp]);
+            }
           }
           var requestedLayer = config.serverLayerName || bodId;
           if (config.type == 'terrain') {
@@ -946,7 +977,11 @@ goog.require('ga_urlutils_service');
           var provider, config = layers[bodId];
           var timestamp = this.getLayerTimestampFromYear(bodId, gaTime.get());
           if (config.config3d) {
-            angular.extend(config, layers[config.config3d]);
+            while (config.config3d) {
+              var tmp = config.config3d;
+              config.config3d = undefined;
+              angular.extend(config, layers[tmp]);
+            }
           }
           var requestedLayer = config.wmsLayers || config.serverLayerName ||
               bodId;
