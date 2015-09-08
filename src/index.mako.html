@@ -234,6 +234,8 @@ itemscope itemtype="http://schema.org/WebApplication"
     </div>
 % endif
 
+    <div ga-controls3d ga-controls3d-ol3d="::ol3d" ng-if="ol3d" ng-show="globals.is3dActive"></div>
+
 % if device != 'embed':
     <div ng-cloak ga-background-selector
          ga-background-selector-map="map",
