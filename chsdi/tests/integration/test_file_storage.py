@@ -14,7 +14,7 @@ VALID_KML = '''<?xml version="1.0" encoding="UTF-8"?>
     <description>Attached to the ground. Intelligently places itself
        at the height of the underlying terrain.</description>
     <Point>
-      <coordinates>-122.0822035425683,37.42228990140251,0</coordinates>
+      <coordinates>7.0,46.0,0</coordinates>
     </Point>
   </Placemark>
 </kml>'''

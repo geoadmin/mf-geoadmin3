@@ -115,3 +115,17 @@ AliasMatch ^${apache_entry_path}/kml/(map\.geo\.admin\.ch_KML_\d+\.kml)$ ${print
 
 # Zadara downloads
 AliasMatch ^${apache_entry_path}/downloads/ch.(.*)$ ${vars:zadara_dir}ch.$1
+
+# KML admin
+RewriteCond %{HTTP:X-Forwarded-Proto} !https
+RewriteRule ^${apache_entry_path}/admin         https://%{HTTP_HOST}%{REQUEST_URI} [R,L]
+
+<LocationMatch ^${apache_entry_path}/admin/kml>
+    AuthType Basic
+    AuthName "Your IWI credential"
+    # Optional line:
+    AuthBasicProvider file
+    AuthUserFile "/var/www/vhosts/mf-chsdi3/private/htpasswd"
+    AuthGroupFile "/var/www/vhosts/mf-chsdi3/private/htgroup"
+    Require group iwi-team bgdi-team
+</LocationMatch>
