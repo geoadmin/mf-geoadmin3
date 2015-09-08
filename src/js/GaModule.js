@@ -8,6 +8,7 @@ goog.require('ga_catalogtree_controller');
 goog.require('ga_collapsible_directive');
 goog.require('ga_contextpopup');
 goog.require('ga_contextpopup_controller');
+goog.require('ga_controls3d');
 goog.require('ga_draggable_directive');
 goog.require('ga_draw');
 goog.require('ga_draw_controller');
@@ -61,6 +62,7 @@ goog.require('ga_waitcursor_service');
 
 
   var module = angular.module('ga', [
+    'ga_controls3d',
     'ga_attribution',
     'ga_catalogtree',
     'ga_contextpopup',

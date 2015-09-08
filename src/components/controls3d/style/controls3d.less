@@ -1,0 +1,36 @@
+.ga-controls3d {
+  position: absolute;
+  text-align: center;
+  right: 0;
+  left: 0;
+  bottom: 52px;
+  @media (max-width: @screen-tablet) {
+    bottom: 24px;
+  }
+  .ga-tilt, .ga-rotate {
+    display: inline-block;
+    text-align: center;
+    background-color: #fff;
+    border: 1px solid #bdbdbd;
+    height: 100px;
+    width: 70px;
+    .ga-indicator {
+      background-position: center center;
+      background-repeat: no-repeat;
+      height: 68px;
+    }
+    .ga-inc {
+
+    }
+    .ga-dec {
+
+    }
+  }
+  .ga-tilt .ga-indicator {
+    background-image: data-uri('tilt.png');
+  }
+  .ga-rotate .ga-indicator {
+    background-image: data-uri('rotate.png');
+  }
+
+}
