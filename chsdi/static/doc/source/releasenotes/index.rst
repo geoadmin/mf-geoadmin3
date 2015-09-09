@@ -9,6 +9,53 @@
 Release Notes
 =============
 
+.. _releasenotes_20150923:
+
+Release 20150923 - Wednesday, September 23rd 2015
+------------------------------------------------
+
+API & applications
+******************
+
+`API <//api3.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-chsdi3/compare/r_150825...r_150923>`__
+
+`MAP <//map.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+
+- Improved layer selector
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-geoadmin3/compare/r_150825...r_150923>`__
+
+Geodata
+*******
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Geological Hiking Trails <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-geowege>`__ (ch.swisstopo.geologie-geowege)                                                                            |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Last glacial maximum (vector) 500 <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-eiszeit-lgm>`__ (ch.swisstopo.geologie-eiszeit-lgm)                                                           |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Army logistics centres <//map.geo.admin.ch/?layers=ch.vbs.armeelogistikcenter>`__ (ch.vbs.armeelogistikcenter)                                                                                    |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Federal filling stations BEBECO <//map.geo.admin.ch/?layers=ch.vbs.bundestankstellen-bebeco>`__ (ch.vbs.bundestankstellen-bebeco)                                                                 |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Basic disposition "Zeus" <//map.geo.admin.ch/?layers=ch.vbs.grunddispositiv-zeus>`__ (ch.vbs.grunddispositiv-zeus)                                                                                |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Army logistics centre logistics areas <//map.geo.admin.ch/?layers=ch.vbs.logistikraeume-armeelogistikcenter>`__ (ch.vbs.logistikraeume-armeelogistikcenter)                                       |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Mil Airspace Chart 1:500'000 <//map.geo.admin.ch/?layers=ch.vbs.milairspacechart>`__ (ch.vbs.milairspacechart)                                                                                    |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Patrouille des Glaciers course (A race) <//map.geo.admin.ch/?layers=ch.vbs.patrouilledesglaciers-a_rennen>`__ (ch.vbs.patrouilledesglaciers-a_rennen)                                             |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Patrouille des Glaciers course (Z race) <//map.geo.admin.ch/?layers=ch.vbs.patrouilledesglaciers-z_rennen>`__ (ch.vbs.patrouilledesglaciers-a_rennen)                                             |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Army arsenals <//map.geo.admin.ch/?layers=ch.vbs.retablierungsstellen>`__ (ch.vbs.retablierungsstellen)                                                                                           |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Terrestrial Radiation <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-dosisleistung-terrestrisch>`__ (ch.swisstopo.geologie-dosisleistung-terrestrisch)                                         |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
 .. _releasenotes_20150825:
 
 Release 20150825 - Wednesday, August 25th 2015
