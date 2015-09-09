@@ -4,10 +4,11 @@ var webdriver = require('browserstack-webdriver');
 var assert = require('assert');
 
 var QUERYSTRING_OF_RARON = "X=128114.80&Y=629758.13&zoom=10";
-var QUERYSTRING_OF_RTE_BERNE_LAUSANNE = "X=154208.00&Y=539257.00&zoom=10"
-var QUERYSTRING_OF_PL_CHATEAU_AVENCHES = "X=192310.00&Y=569734.00&zoom=10"
-var QUERYSTRING_OF_PIAZZA_MESOLCINA_BELLINZONA = "X=117501.36&Y=722496.94&zoom=10"
+var QUERYSTRING_OF_RTE_BERNE_LAUSANNE = "X=154208.00&Y=539257.00&zoom=10";
+var QUERYSTRING_OF_PL_CHATEAU_AVENCHES = "X=192310.00&Y=569734.00&zoom=10";
+var QUERYSTRING_OF_PIAZZA_MESOLCINA_BELLINZONA = "X=117501.36&Y=722496.94&zoom=10";
 var QUERYSTRING_MOOS = "X=128630.00&Y=627650.00&zoom=10";
+var QUERYSTRING_OF_REALTA = "X=181085.00&Y=751355.00";
 
 var runTest = function(cap, driver, target){
   //swissearch parameter with multiple results
@@ -33,6 +34,12 @@ var runTest = function(cap, driver, target){
   driver.findElement(webdriver.By.xpath("//*[@id='toptools']//a[contains(@href,'http')]")).getAttribute("href").then(function(val) {
     assert.ok(val.indexOf('swisssearch') == -1);
   });
+
+  //swisssearch Realta industriegebiet 701 with wordforms GI -> industriegebiet (DE)
+  driver.get(target + '/?swisssearch=realta gi 701&lang=de');
+  //wait until topics related stuff is loaded. We know this when catalog is there
+  driver.findElement(webdriver.By.xpath("//a[contains(text(), 'Grundlagen und Planung')]"));
+  driver.findElement(webdriver.By.xpath("//a[contains(@href, '" + QUERYSTRING_OF_REALTA + "')]"));
 
   //swisssearch Route de Berne 91 1010 Lausanne with wordforms rte
   driver.get(target + '/?swisssearch=rte berne 91 1010&lang=de');
