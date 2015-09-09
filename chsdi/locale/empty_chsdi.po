@@ -865,6 +865,9 @@ msgstr ""
 msgid "ch.swisstopo.geologie-geowege"
 msgstr ""
 
+msgid "ch.swisstopo.geologie-eiszeit-lgm.ads_name"
+msgstr ""
+
 msgid "ch.swisstopo.fixpunkte-lfp2.id"
 msgstr ""
 
@@ -2201,6 +2204,9 @@ msgid "ch.swisstopo.fixpunkte-agnes"
 msgstr ""
 
 msgid "ch.swisstopo.fixpunkte-lage"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-eiszeit-lgm"
 msgstr ""
 
 msgid "ch.swisstopo.geologie-eiszeit-lgm-raster"
