@@ -20,8 +20,9 @@ GIT_LAST_BRANCH := $(shell if [ -f .build-artefacts/last-git-branch ]; then cat 
 DEPLOY_ROOT_DIR := /var/www/vhosts/mf-geoadmin3/private/branch
 DEPLOY_TARGET ?= 'dev'
 LAST_DEPLOY_TARGET := $(shell if [ -f .build-artefacts/last-deploy-target ]; then cat .build-artefacts/last-deploy-target 2> /dev/null; else echo '-none-'; fi)
-OL3_VERSION ?= master
+OL3_VERSION ?= 4f45bbc05d3defd05fb691f7956d702cc4143c34
 OL3_CESIUM_VERSION ?= d8124ead6b83832bacc86c537d9d46245b127a7f
+CESIUM_VERSION ?= fef3fac343140d7b83a323b6edf1cffd7ceb9cb5
 DEFAULT_TOPIC_ID ?= ech
 TRANSLATION_FALLBACK_CODE ?= de
 LANGUAGES ?= '[\"de\", \"en\", \"fr\", \"it\", \"rm\"]'
@@ -186,6 +187,11 @@ ol3cesium: .build-artefacts/ol3-cesium
 	git fetch -a; \
 	git checkout $(OL3_CESIUM_VERSION); \
 	git submodule update --recursive --init --force; \
+	cd cesium; \
+	git remote | grep c2c || git remote add c2c git://github.com/camptocamp/cesium; \
+	git fetch c2c; \
+	git checkout $(CESIUM_VERSION); \
+	cd ..; \
 	git show; \
 	ln -T -f -s ../../../../ol3-cesium-plugin/ src/plugins/geoadmin; \
 	make dist; \

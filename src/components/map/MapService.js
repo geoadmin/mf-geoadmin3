@@ -362,6 +362,7 @@ goog.require('ga_urlutils_service');
           transparent: 'true'
         };
         return new Cesium.UrlTemplateImageryProvider({
+          minimumRetrievingLevel: window.minimumRetrievingLevel,
           url: gaUrlUtils.append(layer.url, gaUrlUtils.toKeyValue(wmsParams)),
           proxy: proxy,
           tilingScheme: new Cesium.GeographicTilingScheme(),
@@ -997,6 +998,7 @@ goog.require('ga_urlutils_service');
                 format);
             params = {
               url: url,
+              minimumRetrievingLevel: window.minimumRetrievingLevel,
               maximumLevel: 20,
               tileSize: 256
             };
@@ -1028,6 +1030,7 @@ goog.require('ga_urlutils_service');
           if (params) {
             provider = new Cesium.UrlTemplateImageryProvider({
               url: params.url,
+              minimumRetrievingLevel: window.minimumRetrievingLevel,
               subdomains: config3d.subdomains || ['10', '11', '12', '13', '14'],
               tilingScheme: new Cesium.GeographicTilingScheme(),
               tileWidth: params.tileSize,
