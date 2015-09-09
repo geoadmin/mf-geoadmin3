@@ -152,6 +152,12 @@ goog.require('ga_storage_service');
           });
         }
       });
+      gaLayers.loadConfig().then(function() {
+        var params = gaPermalink.getParams();
+        if (params.lon !== undefined && params.lat !== undefined) {
+          $scope.globals.is3dActive = true;
+        }
+      });
     }
 
     // We add manually the keyboard interactions to have the possibility to
