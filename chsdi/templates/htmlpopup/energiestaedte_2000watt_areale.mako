@@ -184,11 +184,11 @@ Das Label für 2000-Watt-Areale zeichnet Siedlungsgebiete aus, die einen nachhal
 %endif
   </tr>
   % if lang=='fr' :
-<tr><img class="image" src="${request.registry.settings['webdav_host']}/bfe_pub/images_energiestaedte-2000watt-aufdemweg/Sub-Logo_2000Watt_f.png" alt=""/></tr>
+<tr><img class="image" src="http://www.bfe-gis.admin.ch/bilder/ch.bfe.energiestaedte-2000watt-aufdemweg/Sub-Logo_2000Watt_f.png" alt=""/></tr>
   % elif lang=='it' :
-<tr><img class="image" src="${request.registry.settings['webdav_host']}/bfe_pub/images_energiestaedte-2000watt-aufdemweg/Sub-Logo_2000Watt_i.png" alt=""/></tr>
+<tr><img class="image" src="http://www.bfe-gis.admin.ch/bilder/ch.bfe.energiestaedte-2000watt-aufdemweg/Sub-Logo_2000Watt_i.png" alt=""/></tr>
   % else :
-<tr><img class="image" src="${request.registry.settings['webdav_host']}/bfe_pub/images_energiestaedte-2000watt-aufdemweg/Sub-Logo_2000Watt_d.png" alt=""/></tr>
+<tr><img class="image" src="http://www.bfe-gis.admin.ch/bilder/ch.bfe.energiestaedte-2000watt-aufdemweg/Sub-Logo_2000Watt_d.png" alt=""/></tr>
   % endif
 </table>
 </%def>
