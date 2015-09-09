@@ -29,10 +29,21 @@ goog.provide('ga_controls3d_directive');
         var tiltIndicator = element.find('.ga-tilt .ga-indicator');
         var rotateIndicator = element.find('.ga-rotate .ga-indicator');
 
+        var moving = false;
+
+        camera.moveStart.addEventListener(function() {
+          moving = true;
+        });
         camera.moveEnd.addEventListener(function() {
-          var tiltOnGlobe = olcs.core.computeSignedTiltAngleOnGlobe(scene);
-          cssRotate(tiltIndicator, -tiltOnGlobe);
-          cssRotate(rotateIndicator, -camera.heading);
+          moving = false;
+        });
+
+        scene.postRender.addEventListener(function() {
+          if (moving) {
+            var tiltOnGlobe = olcs.core.computeSignedTiltAngleOnGlobe(scene);
+            cssRotate(tiltIndicator, -tiltOnGlobe);
+            cssRotate(rotateIndicator, -camera.heading);
+          }
         });
 
         scope.tilt = function(angle) {
