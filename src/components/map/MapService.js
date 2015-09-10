@@ -352,17 +352,28 @@ goog.require('ga_urlutils_service');
             }
           };
         }
-        return new Cesium.WebMapServiceImageryProvider({
-          url: layer.url,
+        var wmsParams = {
           layers: params.LAYERS,
-          parameters: {
-            format: 'image/png',
-            transparent: 'true'
-          },
-          proxy: proxy
+          format: 'image/png',
+          service: 'WMS',
+          version: '1.3.0',
+          request: 'GetMap',
+          crs: 'CRS:84',
+          bbox: '{westProjected},{southProjected},' +
+                '{eastProjected},{northProjected}',
+          width: '256',
+          height: '256',
+          styles: 'default',
+          transparent: 'true'
+        };
+        return new Cesium.UrlTemplateImageryProvider({
+          url: layer.url + '?' + gaUrlUtils.toKeyValue(wmsParams),
+          proxy: proxy,
+          tilingScheme: new Cesium.GeographicTilingScheme(),
+          hasAlphaChannel: true
         });
-
       };
+
       var Wms = function() {
 
         var createWmsLayer = function(params, options, index) {
@@ -797,21 +808,31 @@ goog.require('ga_urlutils_service');
           layersConfigUrlTemplate, legendUrlTemplate, wmsMapProxyUrl) {
         var layers;
 
-        var getWmtsGetTileUrl = function(layer, format) {
-          return wmtsGetTileUrlTemplate
-              .replace('{Layer}', layer)
-              .replace('{Format}', format);
+        var getWmtsUrlFromTemplate = function(tpl, layer, time,
+            tileMatrixSet, format) {
+          var url = tpl.replace('{Layer}', layer).replace('{Format}', format);
+          if (time) {
+            url = url.replace('{Time}', time);
+          }
+          if (tileMatrixSet) {
+             url = url.replace('{TileMatrixSet}', tileMatrixSet);
+          }
+          return url;
         };
-        var getWmtsMapProxyGetTileUrl = function(layer, timestamp, format) {
-          return wmtsMapProxyGetTileUrlTemplate
-              .replace('{Layer}', layer)
-              .replace('{Time}', timestamp)
-              .replace('{Format}', format);
+
+        var getWmtsGetTileUrl = function(layer, time, tileMatrixSet, format) {
+          return getWmtsUrlFromTemplate(wmtsGetTileUrlTemplate, layer, time,
+              tileMatrixSet, format);
         };
-        var getTerrainTileUrl = function(layer, timestamp) {
+        var getWmtsMapProxyGetTileUrl = function(layer, time, tileMatrixSet,
+            format) {
+          return getWmtsUrlFromTemplate(wmtsMapProxyGetTileUrlTemplate, layer,
+              time, tileMatrixSet, format);
+        };
+        var getTerrainTileUrl = function(layer, time) {
           return terrainTileUrlTemplate
               .replace('{Layer}', layer)
-              .replace('{Time}', timestamp);
+              .replace('{Time}', time);
         };
         var getLayersConfigUrl = function(lang) {
           return layersConfigUrlTemplate
@@ -895,13 +916,11 @@ goog.require('ga_urlutils_service');
               // Tiled WMS (MapProxy)
               response.data['ch.swisstopo.swisstlm3d-karte-farbe_3d'] = {
                 type: 'wms',
-                singleTile: false,
-                wmsUrl: '//api3.geo.admin.ch/mapproxy/service'
+                singleTile: false
               };
               response.data['ch.swisstopo.swisstlm3d-karte-grau_3d'] = {
                 type: 'wms',
                 singleTile: false,
-                wmsUrl: '//api3.geo.admin.ch/mapproxy/service',
                 attribution: 'tlm 3D',
                 attributionUrl: 'http://www.swisstopo.admin.ch/internet/' +
                     'swisstopo/en/home/products/height/swissALTI3D.html'
@@ -909,9 +928,11 @@ goog.require('ga_urlutils_service');
               // WMTS (not MapProxy)
               response.data['ch.swisstopo.swissimage-product_3d'] = {
                 type: 'wmts',
-                url: '//wmts.geo.admin.ch/1.0.0/' +
-                    '00_todelete_ch.swisstopo.swissimage-product/default/' +
-                    '20151231_v03/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg'
+                serverLayerName: '00_todelete_ch.swisstopo.swissimage-product',
+                url: '//wmts{s}.geo.admin.ch/1.0.0/' +
+                    '{Layer}/default/' +
+                    '{Time}_v03/{TileMatrixSet}/{z}/{y}/{x}.{Format}',
+                subdomains: '56789'
               };
               // Terain
               response.data['ch.swisstopo.terrain.3d'] = {
@@ -974,7 +995,7 @@ goog.require('ga_urlutils_service');
          * Returns an Cesium imagery provider.
          */
         this.getCesiumImageryProviderById = function(bodId) {
-          var provider, config = layers[bodId];
+          var provider, params, config = layers[bodId];
           var timestamp = this.getLayerTimestampFromYear(bodId, gaTime.get());
           if (config.config3d) {
             while (config.config3d) {
@@ -986,29 +1007,50 @@ goog.require('ga_urlutils_service');
           var requestedLayer = config.wmsLayers || config.serverLayerName ||
               bodId;
           var format = config.format || 'png';
-          var mimeType = 'image/' + format;
           if (config.type == 'wmts') {
-            var url = config.url ||
-                getWmtsMapProxyGetTileUrl(requestedLayer, timestamp, format);
-            provider = new Cesium.WebMapTileServiceImageryProvider({
+            var url = config.url ?
+                getWmtsUrlFromTemplate(config.url, requestedLayer, timestamp,
+                    '4326', format) :
+                getWmtsMapProxyGetTileUrl(requestedLayer, timestamp, '4326',
+                format);
+            params = {
               url: url,
-              layer: requestedLayer,
-              format: mimeType,
-              style: 'default',
-              tileMatrixSetID: '4326',
-              tilingScheme: new Cesium.GeographicTilingScheme(),
-              maximumLevel: 19
-            });
+              maximumLevel: 20,
+              tileSize: 256
+            };
           } else if (config.type == 'wms') {
+            var tileSize = 512;
+            var wmsParams = {
+              layers: requestedLayer,
+              format: 'image/' + format,
+              service: 'WMS',
+              version: '1.3.0',
+              request: 'GetMap',
+              crs: 'CRS:84',
+              bbox: '{westProjected},{southProjected},' +
+                    '{eastProjected},{northProjected}',
+              width: tileSize,
+              height: tileSize,
+              styles: 'default'
+            };
+            if (timestamp) {
+              wmsParams.time = timestamp;
+            }
             var url = config.wmsUrl ? gaUrlUtils.remove(config.wmsUrl,
                 ['request', 'service', 'version'], true) : wmsMapProxyUrl;
-            provider = new Cesium.WebMapServiceImageryProvider({
-              url: url,
-              layers: requestedLayer,
-              parameters: {
-                format: mimeType,
-                time: timestamp
-              }
+            params = {
+              url: url + '?' + gaUrlUtils.toKeyValue(wmsParams),
+              tileSize: tileSize
+            };
+          }
+          if (params) {
+            provider = new Cesium.UrlTemplateImageryProvider({
+              url: params.url,
+              subdomains: config.subdomains || ['10', '11', '12', '13', '14'],
+              tilingScheme: new Cesium.GeographicTilingScheme(),
+              tileWidth: params.tileSize,
+              tileHeight: params.tileSize,
+              hasAlphaChannel: (format == 'png')
             });
           }
           return provider;
@@ -1053,7 +1095,7 @@ goog.require('ga_urlutils_service');
                 tileGrid: gaTileGrid.get(layer.resolutions,
                     layer.minResolution),
                 tileLoadFunction: tileLoadFunction,
-                url: getWmtsGetTileUrl(layer.serverLayerName,
+                url: getWmtsGetTileUrl(layer.serverLayerName, null, '21781',
                   layer.format),
                 crossOrigin: crossOrigin
               });

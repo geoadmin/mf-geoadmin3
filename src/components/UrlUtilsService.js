@@ -75,6 +75,8 @@ goog.provide('ga_urlutils_service');
               replace(/%3A/gi, ':').
               replace(/%24/g, '$').
               replace(/%2C/gi, ',').
+              replace(/%7B/gi, '{').
+              replace(/%7D/gi, '}').
               replace(/%20/g, (pctEncodeSpaces ? '%20' : '+'));
         };
 
@@ -104,6 +106,7 @@ goog.provide('ga_urlutils_service');
                 (value === true ? '' : '=' +
                     this_.encodeUriQuery(value, true)));
           });
+
           return parts.length ? parts.join('&') : '';
         };
 
