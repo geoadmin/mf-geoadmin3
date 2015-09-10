@@ -45,6 +45,20 @@ class GravimetrischerAtlasMetadata (Base, Vector):
 register('ch.swisstopo.geologie-gravimetrischer_atlas.metadata', GravimetrischerAtlasMetadata)
 
 
+class GeologieGeowege (Base, Vector):
+    __tablename__ = 'geowege'
+    __table_args__ = ({'schema': 'geol', 'autoload': False})
+    __template__ = 'templates/htmlpopup/geologie_geowege.mako'
+    __bodId__ = 'ch.swisstopo.geologie-geowege'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    titel_1 = Column('titel_1', Text)
+    titel_2 = Column('titel_2', Text)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+
+register('ch.swisstopo.geologie-geowege', GeologieGeowege)
+
+
 class GeolSpezialKartenMetadata (Base, Vector):
     __tablename__ = 'kv_gsk_all'
     __table_args__ = ({'schema': 'geol', 'autoload': False})

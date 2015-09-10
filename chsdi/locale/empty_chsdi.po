@@ -841,6 +841,9 @@ msgstr ""
 msgid "ch.swisstopo.geologie-geotechnik-ziegeleien_1907.ziegelei_2"
 msgstr ""
 
+msgid "ch.swisstopo.geologie-geowege"
+msgstr ""
+
 msgid "ch.swisstopo.fixpunkte-lfp2.id"
 msgstr ""
 
