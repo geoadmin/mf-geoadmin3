@@ -39,6 +39,8 @@ from babel import support
 
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy import engine_from_config
+from sqlalchemy import or_
+
 
 from pyramid.paster import get_appsettings
 
@@ -49,6 +51,7 @@ from chsdi.lib.filters import filter_by_geodata_staging
 DEBUG = False
 LANG = 'de'
 STAGING = 'prod'
+TOPICS = "api,are,aviation,bafu,blw,ech,funksender,geol,gewiss,inspire,ivs,kgs,mgdi,sachplan,swisstopo".split(',')
 
 total_timestamps = 0
 
@@ -72,8 +75,12 @@ def getLayersConfigs():
     DBSession.configure(bind=engine)
 
     models = get_wmts_models(LANG)
+    conditions = []
+    for topic in TOPICS:
+        conditions.append(models['GetCap'].maps.ilike('%{}%'.format(topic)))
+
     layers_query = DBSession.query(models['GetCap'])
-    layers_query = layers_query.filter(models['GetCap'].maps.ilike('%%%s%%' % 'api'))
+    layers_query = layers_query.filter(or_(*conditions))
     layers_query = filter_by_geodata_staging(
         layers_query,
         models['GetCap'].staging,
@@ -103,7 +110,7 @@ if mapproxy_config['layers'] is None:
 
 for idx, layersConfig in enumerate(getLayersConfigs()):
     if layersConfig and layersConfig.maps is not None:
-        if layersConfig.timestamp is not None and 'api' in layersConfig.maps:
+        if layersConfig.timestamp is not None and len(set(TOPICS) & set(layersConfig.maps.split(','))) > 0:
             print idx, layersConfig.bod_layer_id
             bod_layer_id = layersConfig.bod_layer_id
 
@@ -166,7 +173,7 @@ for idx, layersConfig in enumerate(getLayersConfigs()):
                                        "Referer": "http://mapproxy.geo.admin.ch"
                                    }
                                },
-                               "coverage": {"bbox": [420000, 30000, 900000, 350000], "bbox_srs": "EPSG:21781"}}
+                               "coverage": {"bbox": [0, 40, 20, 50], "bbox_srs": "EPSG:4326"}}
 
                 wmts_cache = {"sources": [wmts_source_name], "format": "image/%s" % image_format, "grids": ["swisstopo-pixelkarte"], "disable_storage": True}
 
