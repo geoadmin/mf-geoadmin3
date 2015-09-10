@@ -208,6 +208,21 @@ class GetCapDe(Base, GetCap):
     __table_args__ = ({'schema': 're3', 'autoload': False})
 
 
+class GetCapEn(Base, GetCap):
+    __tablename__ = 'view_bod_wmts_getcapabilities_en'
+    __table_args__ = ({'schema': 're3', 'autoload': False})
+
+
+class GetCapIt(Base, GetCap):
+    __tablename__ = 'view_bod_wmts_getcapabilities_it'
+    __table_args__ = ({'schema': 're3', 'autoload': False})
+
+
+class GetCapRm(Base, GetCap):
+    __tablename__ = 'view_bod_wmts_getcapabilities_rm'
+    __table_args__ = ({'schema': 're3', 'autoload': False})
+
+
 class GetCapThemes(object):
     __dbname__ = 'bod'
     id = Column('inspire_id', Text, primary_key=True)
@@ -227,6 +242,21 @@ class GetCapThemesFr(Base, GetCapThemes):
 
 class GetCapThemesDe(Base, GetCapThemes):
     __tablename__ = 'view_bod_wmts_getcapabilities_themes_de'
+    __table_args__ = ({'schema': 're3', 'autoload': False})
+
+
+class GetCapThemesEn(Base, GetCapThemes):
+    __tablename__ = 'view_bod_wmts_getcapabilities_themes_en'
+    __table_args__ = ({'schema': 're3', 'autoload': False})
+
+
+class GetCapThemesIt(Base, GetCapThemes):
+    __tablename__ = 'view_bod_wmts_getcapabilities_themes_it'
+    __table_args__ = ({'schema': 're3', 'autoload': False})
+
+
+class GetCapThemesRm(Base, GetCapThemes):
+    __tablename__ = 'view_bod_wmts_getcapabilities_themes_rm'
     __table_args__ = ({'schema': 're3', 'autoload': False})
 
 
@@ -267,7 +297,23 @@ class ServiceMetadataFr(Base, ServiceMetadata):
     __table_args__ = ({'schema': 're3', 'autoload': False})
 
 
+class ServiceMetadataIt(Base, ServiceMetadata):
+    __tablename__ = 'view_wms_service_metadata_it'
+    __table_args__ = ({'schema': 're3', 'autoload': False})
+
+
+class ServiceMetadataRm(Base, ServiceMetadata):
+    __tablename__ = 'view_wms_service_metadata_rm'
+    __table_args__ = ({'schema': 're3', 'autoload': False})
+
+
+class ServiceMetadataEn(Base, ServiceMetadata):
+    __tablename__ = 'view_wms_service_metadata_en'
+    __table_args__ = ({'schema': 're3', 'autoload': False})
+
 # TODO use GetCap model to fill that up instead
+
+
 def computeHeader(mapName):
     return {
         'mapName': mapName,
@@ -417,11 +463,29 @@ def get_bod_model(lang):
 
 
 def get_wmts_models(lang):
-    if lang in ('fr', 'it'):
+    if lang == 'fr':
         return {
             'GetCap': GetCapFr,
             'GetCapThemes': GetCapThemesFr,
             'ServiceMetadata': ServiceMetadataFr
+        }
+    elif lang == 'it':
+        return {
+            'GetCap': GetCapIt,
+            'GetCapThemes': GetCapThemesFr,
+            'ServiceMetadata': ServiceMetadataIt
+        }
+    elif lang == 'en':
+        return {
+            'GetCap': GetCapEn,
+            'GetCapThemes': GetCapThemesEn,
+            'ServiceMetadata': ServiceMetadataEn
+        }
+    elif lang == 'rm':
+        return {
+            'GetCap': GetCapRm,
+            'GetCapThemes': GetCapThemesDe,
+            'ServiceMetadata': ServiceMetadataRm
         }
     else:
         return {

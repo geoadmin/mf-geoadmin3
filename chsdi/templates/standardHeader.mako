@@ -1,19 +1,21 @@
 <!-- Revision: $Rev$ -->
 <ows:ServiceIdentification>
-        <ows:Title>Federal Geodata Infrastructure of Switzerland</ows:Title>
-        <ows:Abstract>Some Geodata are subject to license and fees</ows:Abstract>
+        <ows:Title>${metadata.title}</ows:Title>
+        <ows:Abstract>${metadata.abstract}</ows:Abstract>
+        % if metadata.keywords:
         <ows:Keywords>
-            <ows:Keyword>FGDI</ows:Keyword>
-            <ows:Keyword>Pixelkarte</ows:Keyword>
-            <ows:Keyword>Switzerland</ows:Keyword>
+        %   for keyword in metadata.keywords.split(','):
+            <ows:Keyword>${keyword|trim}</ows:Keyword>
+        %   endfor
         </ows:Keywords>
+        % endif
         <ows:ServiceType>OGC WMTS</ows:ServiceType>
         <ows:ServiceTypeVersion>1.0.0</ows:ServiceTypeVersion>
-        <ows:Fees>yes</ows:Fees>
-        <ows:AccessConstraints>license</ows:AccessConstraints>
+        <ows:Fees>${metadata.fee}</ows:Fees>
+        <ows:AccessConstraints>${metadata.accessconstraint}</ows:AccessConstraints>
 </ows:ServiceIdentification>
 <ows:ServiceProvider>
-        <ows:ProviderName>swisstopo</ows:ProviderName>
+        <ows:ProviderName>${metadata.name}</ows:ProviderName>
         <ows:ProviderSite xlink:href="http://www.swisstopo.admin.ch"/>
         <ows:ServiceContact>
             <ows:IndividualName>David Oesch</ows:IndividualName>
