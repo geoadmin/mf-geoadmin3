@@ -13,7 +13,7 @@ goog.require('ga_topic_service');
   ]);
 
   module.directive('gaBackgroundSelector',
-    function($document, $rootScope, gaBrowserSniffer, gaBackground) {
+    function(gaBrowserSniffer, gaBackground) {
       return {
         restrict: 'A',
         templateUrl:
