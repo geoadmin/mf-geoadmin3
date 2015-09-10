@@ -45,13 +45,14 @@ from sqlalchemy import or_
 from pyramid.paster import get_appsettings
 
 from chsdi.models.bod import get_wmts_models
+from chsdi.models.bod import Topics
 from chsdi.lib.filters import filter_by_geodata_staging
 
 
 DEBUG = False
 LANG = 'de'
 STAGING = 'prod'
-TOPICS = "api,are,aviation,bafu,blw,ech,funksender,geol,gewiss,inspire,ivs,kgs,mgdi,sachplan,swisstopo".split(',')
+topics = ['api']
 
 total_timestamps = 0
 
@@ -68,25 +69,42 @@ config_uri = os.path.join(basedir, 'development.ini')
 settings = get_appsettings(config_uri)
 
 
-def getLayersConfigs():
-
+def getSession():
     engine = engine_from_config(settings, 'sqlalchemy.bod.')
     DBSession = scoped_session(sessionmaker())
     DBSession.configure(bind=engine)
 
+    return DBSession
+
+
+def getTopics():
+    session = getSession()
+    model = Topics
+    showCatalog = True
+    query = session.query(model).filter(model.showCatalog == showCatalog).order_by(model.id)
+    query = filter_by_geodata_staging(query, model.staging, STAGING)
+    results = [q.id for q in query]
+
+    session.close()
+
+    return results
+
+
+def getLayersConfigs(topics=topics):
+    session = getSession()
     models = get_wmts_models(LANG)
     conditions = []
-    for topic in TOPICS:
+    for topic in topics:
         conditions.append(models['GetCap'].maps.ilike('%{}%'.format(topic)))
 
-    layers_query = DBSession.query(models['GetCap'])
+    layers_query = session.query(models['GetCap'])
     layers_query = layers_query.filter(or_(*conditions))
     layers_query = filter_by_geodata_staging(
         layers_query,
         models['GetCap'].staging,
         STAGING
     )
-    DBSession.close()
+    session.close()
 
     return [q for q in layers_query.all()]
 
@@ -108,9 +126,12 @@ for part in ['caches', 'sources']:
 if mapproxy_config['layers'] is None:
     mapproxy_config['layers'] = []
 
-for idx, layersConfig in enumerate(getLayersConfigs()):
+topics.extend(getTopics())
+
+
+for idx, layersConfig in enumerate(getLayersConfigs(topics=topics)):
     if layersConfig and layersConfig.maps is not None:
-        if layersConfig.timestamp is not None and len(set(TOPICS) & set(layersConfig.maps.split(','))) > 0:
+        if layersConfig.timestamp is not None and len(set(topics) & set(layersConfig.maps.split(','))) > 0:
             print idx, layersConfig.bod_layer_id
             bod_layer_id = layersConfig.bod_layer_id
 
@@ -206,3 +227,5 @@ if DEBUG:
 with open('mapproxy/mapproxy.yaml', 'w') as o:
     o.write("# This is a generated file. Do not edit.\n\n")
     o.write(yaml.safe_dump(mapproxy_config, encoding=None))
+
+print "Topics: %s" % ",".join(topics)
