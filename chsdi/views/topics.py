@@ -17,6 +17,7 @@ def topics(request):
         'id': q.id,
         'langs': q.availableLangs,
         'showCatalog': q.showCatalog,
+        'defaultBackground': q.defaultBackground,
         'backgroundLayers': q.backgroundLayers,
         'selectedLayers': q.selectedLayers
     } for q in query]
