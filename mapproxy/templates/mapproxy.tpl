@@ -12,7 +12,7 @@ services:
      restful_template: /1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.{Format}
 
   wms:
-    srs: ['EPSG:4326', 'EPSG:21781', 'EPSG:4258', 'EPSG:3857', 'EPSG:2056']
+    srs: ['EPSG:4326', 'CRS:84', 'EPSG:21781', 'EPSG:4258', 'EPSG:3857', 'EPSG:2056']
     image_formats: ['image/jpeg', 'image/png']
     md:
       # metadata used in capabilities documents
