@@ -4,6 +4,7 @@ SRC_COMPONENTS_LESS_FILES := $(shell find src/components -type f -name '*.less')
 SRC_COMPONENTS_PARTIALS_FILES = $(shell find src/components -type f -path '*/partials/*' -name '*.html')
 APACHE_BASE_DIRECTORY ?= $(CURDIR)
 LAST_APACHE_BASE_DIRECTORY := $(shell if [ -f .build-artefacts/last-apache-base-directory ]; then cat .build-artefacts/last-apache-base-directory 2> /dev/null; else echo '-none-'; fi)
+##LAST_SAUCELABS_TARGETURL := $(shell if [ -f .build-artefacts/last-saucelabs-targeturl ]; then cat .build-artefacts/last-saucelabs-targeturl 2> /dev/null; else echo '-none-'; fi)
 APACHE_BASE_PATH ?= /$(shell id -un)
 LAST_APACHE_BASE_PATH := $(shell if [ -f .build-artefacts/last-apache-base-path ]; then cat .build-artefacts/last-apache-base-path 2> /dev/null; else echo '-none-'; fi)
 API_URL ?= //mf-chsdi3.dev.bgdi.ch
@@ -74,6 +75,7 @@ help:
 	@echo "- API_URL Service URL         (build with: $(LAST_API_URL), current value: $(API_URL))"
 	@echo "- APACHE_BASE_PATH Base path  (build with: $(LAST_APACHE_BASE_PATH), current value: $(APACHE_BASE_PATH))"
 	@echo "- APACHE_BASE_DIRECTORY       (build with: $(LAST_APACHE_BASE_DIRECTORY), current value: $(APACHE_BASE_DIRECTORY))"
+##	@echo "- SAUCELABS_TARGETURL         (build with: $(LAST_SAUCELABS_TARGETURL), current value: $(SAUCELABS_TARGETURL))"
 
 	@echo
 
@@ -114,7 +116,8 @@ teste2e: guard-BROWSERSTACK_TARGETURL guard-BROWSERSTACK_USER guard-BROWSERSTACK
 
 .PHONY: testsaucelabs
 testsaucelabs: .build-artefacts/saucelab-requirements-installation.timestamp
-	${PYTHON_CMD} test/saucelabs/tests.py ${SAUCELABS_TARGETURL}
+	##${PYTHON_CMD} test/saucelabs/tests.py ${SAUCELABS_TARGETURL}
+	${PYTHON_CMD} test/saucelabs/tests_ltalp.py ${SAUCELABS_TARGETURL}
 
 .PHONY: apache
 apache: apache/app.conf
@@ -579,6 +582,12 @@ scripts/00-$(GIT_BRANCH).conf: scripts/00-branch.mako-dot-conf \
 	mkdir -p $(dir $@)
 	test $(DEPLOY_TARGET) != $(LAST_DEPLOY_TARGET) && \
 	    echo $(DEPLOY_TARGET) > .build-artefacts/last-deploy-target || :
+
+## LTALP it is correct ?
+##.build-artefacts/last-saucelabs-targeturl::
+##	mkdir -p $(dir $@)
+##	test $(SAUCELABS_TARGETURL) != $(LAST_SAUCELABS_TARGETURL) && \
+##	    echo $(SAUCELABS_TARGETURL) > .build-artefacts/last-saucelabs-targeturl || :
 
 .build-artefacts/ol3:
 	git clone https://github.com/openlayers/ol3.git $@
