@@ -1,5 +1,6 @@
 goog.provide('ga_print_directive');
 
+goog.require('ga_attribution_service');
 goog.require('ga_browsersniffer_service');
 goog.require('ga_print_style_service');
 goog.require('ga_time_service');
@@ -10,13 +11,14 @@ goog.require('ga_time_service');
     'ga_browsersniffer_service',
     'pascalprecht.translate',
     'ga_print_style_service',
-    'ga_time_service'
+    'ga_time_service',
+    'ga_attribution_service'
   ]);
 
   module.controller('GaPrintDirectiveController', function($rootScope, $scope,
       $http, $q, $window, $translate, $timeout, gaLayers, gaMapUtils, 
       gaPermalink, gaBrowserSniffer, gaWaitCursor, gaPrintStyleService,
-      gaTime) {
+      gaTime, gaAttribution) {
 
     var pdfLegendsToDownload = [];
     var pdfLegendString = '_big.pdf';
@@ -665,7 +667,7 @@ goog.require('ga_time_service');
             angular.isDefined(layer.time))) {
 
           // Get all attributions to diaplay
-          var attribution = layer.attribution;
+          var attribution = gaAttribution.getTextFromLayer(layer);
           if (attribution !== undefined) {
             if (layer.useThirdPartyData &&
                 thirdPartyAttributions.indexOf(attribution) == -1) {

@@ -1,7 +1,5 @@
 {
   "exports": [
-    "ol.Attribution",
-    "ol.Attribution#*",
     "ol.Collection",
     "ol.Collection#*",
     "ol.DeviceOrientation",
@@ -25,8 +23,6 @@
     "ol.animation.zoom",
     "ol.color.asArray",
     "ol.color.asString",
-    "ol.control.Attribution",
-    "ol.control.Attribution#*",
     "ol.control.MousePosition",
     "ol.control.MousePosition#*",
     "ol.control.ScaleLine",

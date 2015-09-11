@@ -1,13 +1,18 @@
 goog.provide('ga_layermanager_directive');
 
+goog.require('ga_attribution_service');
 goog.require('ga_layer_metadata_popup_service');
 goog.require('ga_map_service');
+goog.require('ga_urlutils_service');
+
 (function() {
 
   var module = angular.module('ga_layermanager_directive', [
     'pascalprecht.translate',
     'ga_layer_metadata_popup_service',
-    'ga_map_service'
+    'ga_map_service',
+    'ga_attribution_service',
+    'ga_urlutils_service'
   ]);
 
   /**
@@ -53,7 +58,7 @@ goog.require('ga_map_service');
 
   module.directive('gaLayermanager', function($compile, $document, $timeout,
       $rootScope, $translate, $window, gaBrowserSniffer, gaLayerFilters,
-      gaLayerMetadataPopup, gaLayers) {
+      gaLayerMetadataPopup, gaLayers, gaAttribution, gaUrlUtils) {
 
     // Timestamps list template
     var tpl =
@@ -197,8 +202,10 @@ goog.require('ga_map_service');
         };
 
         scope.showWarning = function(layer) {
+          var url = gaUrlUtils.isValid(layer.url) ?
+              gaUrlUtils.getHostname(layer.url) : layer.url;
           $window.alert($translate.instant('external_data_warning')
-                        .replace('--URL--', layer.attribution));
+              .replace('--URL--', url));
         };
 
         scope.displayLayerMetadata = function(evt, layer) {

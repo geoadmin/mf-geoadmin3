@@ -77,7 +77,6 @@
   "description": "",
   "description_instructions": "",
   "title": "",
-  "data": "",
   "copyright_label": "",
   "metadata_window_title": "",
   "contact_us": "",
@@ -349,5 +348,6 @@
   "draw_snap_first_point_measure": "",
   "draw_back": "",
   "draw_share_admin_link": "",
-  "draw_share_user_link": ""
+  "draw_share_user_link": "",
+  "copyright_data": ""
 }

@@ -80,14 +80,6 @@ goog.require('ga_urlutils_service');
       return function defineProperties(olLayer) {
         olLayer.set('altitudeMode', 'clampToGround');
         Object.defineProperties(olLayer, {
-          attribution: {
-            get: function() {
-              return this.get('attribution');
-            },
-            set: function(val) {
-              this.set('attribution', val);
-            }
-          },
           visible: {
             get: function() {
               return this.getVisible();
@@ -378,22 +370,11 @@ goog.require('ga_urlutils_service');
 
         var createWmsLayer = function(params, options, index) {
           options = options || {};
-          var attributions;
-
-          if (options.attribution) {
-            attributions = [
-              gaMapUtils.getAttribution(options.attribution)
-            ];
-            if (gaUrlUtils.isValid(options.attribution)) {
-              options.attribution = gaUrlUtils.getHostname(options.attribution);
-            }
-          }
 
           var source = new ol.source.ImageWMS({
             params: params,
             url: options.url,
             extent: options.extent,
-            attributions: attributions,
             ratio: options.ratio || 1
           });
 
@@ -428,8 +409,7 @@ goog.require('ga_urlutils_service');
           var wmsOptions = {
             url: getCapLayer.wmsUrl,
             label: getCapLayer.Title,
-            extent: gaMapUtils.intersectWithDefaultExtent(getCapLayer.extent),
-            attribution: getCapLayer.wmsUrl
+            extent: gaMapUtils.intersectWithDefaultExtent(getCapLayer.extent)
           };
           return createWmsLayer(wmsParams, wmsOptions);
         };
@@ -655,19 +635,8 @@ goog.require('ga_urlutils_service');
             for (var i = 0, ii = features.length; i < ii; i++) {
               sanitizeFeature(features[i], options.projection);
             }
-            var attributions;
-            if (options.attribution) {
-              attributions = [
-                gaMapUtils.getAttribution(options.attribution)
-              ];
-              if (gaUrlUtils.isValid(options.attribution)) {
-                options.attribution =
-                    gaUrlUtils.getHostname(options.attribution);
-              }
-            }
             var source = new ol.source.Vector({
-              features: features,
-              attributions: attributions
+              features: features
             });
             var layerOptions = {
               id: options.id,
@@ -679,7 +648,6 @@ goog.require('ga_urlutils_service');
               visible: options.visible,
               source: source,
               extent: source.getExtent(),
-              //Only needed for print
               attribution: options.attribution
             };
 
@@ -689,8 +657,7 @@ goog.require('ga_urlutils_service');
             var olLayer;
             if (options.useImageVector === true) {
               layerOptions.source = new ol.source.ImageVector({
-                source: layerOptions.source,
-                attributions: attributions
+                source: layerOptions.source
               });
 
               olLayer = new ol.layer.Image(layerOptions);
@@ -894,9 +861,11 @@ goog.require('ga_urlutils_service');
                 'ch.swisstopo.swisstlm3d-karte-grau',
                 'ch.swisstopo.swisstlm3d-karte-grau_wmts',
                 'ch.swisstopo.swissimage-product',
+                'ch.swisstopo.pixelkarte-farbe',
                 'ch.swisstopo.pixelkarte-farbe_wmts',
+                'ch.swisstopo.pixelkarte-grau',
                 'ch.swisstopo.pixelkarte-grau_wmts'
-             ];
+              ];
               angular.forEach(ids, function(id) {
                 if (response.data[id]) {
                   response.data[id].config3d = id + '_3d';
@@ -912,7 +881,6 @@ goog.require('ga_urlutils_service');
                   }
                 }
               });
-
               // Tiled WMS (MapProxy)
               response.data['ch.swisstopo.swisstlm3d-karte-farbe_3d'] = {
                 type: 'wms',
@@ -920,8 +888,15 @@ goog.require('ga_urlutils_service');
               };
               response.data['ch.swisstopo.swisstlm3d-karte-grau_3d'] = {
                 type: 'wms',
-                singleTile: false,
-                attribution: 'tlm 3D',
+                singleTile: false
+              };
+              response.data['ch.swisstopo.pixelkarte-grau_3d'] = {
+                attribution: 'tlm grau 3D',
+                attributionUrl: 'http://www.swisstopo.admin.ch/internet/' +
+                    'swisstopo/en/home/products/height/swissALTI3D.html'
+              };
+              response.data['ch.swisstopo.pixelkarte-farbe_3d'] = {
+                attribution: 'tlm farbe 3D',
                 attributionUrl: 'http://www.swisstopo.admin.ch/internet/' +
                     'swisstopo/en/home/products/height/swissALTI3D.html'
               };
@@ -932,7 +907,10 @@ goog.require('ga_urlutils_service');
                 url: '//wmts{s}.geo.admin.ch/1.0.0/' +
                     '{Layer}/default/' +
                     '{Time}_v03/{TileMatrixSet}/{z}/{y}/{x}.{Format}',
-                subdomains: '56789'
+                subdomains: '56789',
+                attribution: 'swissimage 3D',
+                attributionUrl: 'http://www.swisstopo.admin.ch/internet/' +
+                    'swisstopo/en/home/products/height/swissALTI3D.html'
               };
               // Terain
               response.data['ch.swisstopo.terrain.3d'] = {
@@ -969,24 +947,32 @@ goog.require('ga_urlutils_service');
           return configP;
         };
 
+        this.getConfig3d = function(config) {
+          while (config.config3d) {
+            var config3d = layers[config.config3d];
+
+            config = angular.extend({}, config, config3d);
+            if (!config3d.config3d) {
+              // avoid infinite loop
+              config.config3d = undefined;
+            }
+          }
+          return config;
+        };
+
         /**
          * Returns an Cesium terrain provider.
          */
         this.getCesiumTerrainProviderById = function(bodId) {
           var provider, config = layers[bodId];
           var timestamp = this.getLayerTimestampFromYear(bodId, gaTime.get());
-          if (config.config3d) {
-            while (config.config3d) {
-              var tmp = config.config3d;
-              config.config3d = undefined;
-              angular.extend(config, layers[tmp]);
-            }
-          }
-          var requestedLayer = config.serverLayerName || bodId;
-          if (config.type == 'terrain') {
+          var config3d = this.getConfig3d(config);
+          var requestedLayer = config3d.serverLayerName || bodId;
+          if (config3d.type == 'terrain') {
             provider = new Cesium.CesiumTerrainProvider({
               url: getTerrainTileUrl(requestedLayer, timestamp)
             });
+            provider.bodId = bodId;
           }
           return provider;
         };
@@ -997,19 +983,13 @@ goog.require('ga_urlutils_service');
         this.getCesiumImageryProviderById = function(bodId) {
           var provider, params, config = layers[bodId];
           var timestamp = this.getLayerTimestampFromYear(bodId, gaTime.get());
-          if (config.config3d) {
-            while (config.config3d) {
-              var tmp = config.config3d;
-              config.config3d = undefined;
-              angular.extend(config, layers[tmp]);
-            }
-          }
-          var requestedLayer = config.wmsLayers || config.serverLayerName ||
+          var config3d = this.getConfig3d(config);
+          var requestedLayer = config3d.wmsLayers || config3d.serverLayerName ||
               bodId;
-          var format = config.format || 'png';
-          if (config.type == 'wmts') {
-            var url = config.url ?
-                getWmtsUrlFromTemplate(config.url, requestedLayer, timestamp,
+          var format = config3d.format || 'png';
+          if (config3d.type == 'wmts') {
+            var url = config3d.url ?
+                getWmtsUrlFromTemplate(config3d.url, requestedLayer, timestamp,
                     '4326', format) :
                 getWmtsMapProxyGetTileUrl(requestedLayer, timestamp, '4326',
                 format);
@@ -1018,7 +998,7 @@ goog.require('ga_urlutils_service');
               maximumLevel: 20,
               tileSize: 256
             };
-          } else if (config.type == 'wms') {
+          } else if (config3d.type == 'wms') {
             var tileSize = 512;
             var wmsParams = {
               layers: requestedLayer,
@@ -1036,7 +1016,7 @@ goog.require('ga_urlutils_service');
             if (timestamp) {
               wmsParams.time = timestamp;
             }
-            var url = config.wmsUrl ? gaUrlUtils.remove(config.wmsUrl,
+            var url = config3d.wmsUrl ? gaUrlUtils.remove(config3d.wmsUrl,
                 ['request', 'service', 'version'], true) : wmsMapProxyUrl;
             params = {
               url: url + '?' + gaUrlUtils.toKeyValue(wmsParams),
@@ -1046,12 +1026,15 @@ goog.require('ga_urlutils_service');
           if (params) {
             provider = new Cesium.UrlTemplateImageryProvider({
               url: params.url,
-              subdomains: config.subdomains || ['10', '11', '12', '13', '14'],
+              subdomains: config3d.subdomains || ['10', '11', '12', '13', '14'],
               tilingScheme: new Cesium.GeographicTilingScheme(),
               tileWidth: params.tileSize,
               tileHeight: params.tileSize,
               hasAlphaChannel: (format == 'png')
             });
+          }
+          if (provider) {
+            provider.bodId = bodId;
           }
           return provider;
         };
@@ -1064,14 +1047,8 @@ goog.require('ga_urlutils_service');
           var layer = layers[bodId];
           var olLayer;
           var timestamp = this.getLayerTimestampFromYear(bodId, gaTime.get());
-          var attributions = [
-            gaMapUtils.getAttribution('<a href="' +
-              layer.attributionUrl +
-              '" target="new">' +
-              layer.attribution + '</a>')
-          ];
-
           var crossOrigin = 'anonymous';
+
           // For some obscure reasons, on iOS, displaying a base 64 image
           // in a tile with an existing crossOrigin attribute generates
           // CORS errors.
@@ -1086,7 +1063,6 @@ goog.require('ga_urlutils_service');
           if (layer.type == 'wmts') {
             if (!olSource) {
               olSource = layer.olSource = new ol.source.WMTS({
-                attributions: attributions,
                 dimensions: {
                   'Time': timestamp
                 },
@@ -1108,7 +1084,6 @@ goog.require('ga_urlutils_service');
               preload: gaNetworkStatus.offline ? gaMapUtils.preload : 0,
               maxResolution: layer.maxResolution,
               opacity: layer.opacity || 1,
-              attribution: layer.attribution,
               source: olSource,
               useInterimTilesOnError: gaNetworkStatus.offline
             });
@@ -1129,7 +1104,6 @@ goog.require('ga_urlutils_service');
                 olSource = layer.olSource = new ol.source.ImageWMS({
                   url: wmsUrl,
                   params: wmsParams,
-                  attributions: attributions,
                   crossOrigin: crossOrigin,
                   ratio: 1
                 });
@@ -1138,7 +1112,6 @@ goog.require('ga_urlutils_service');
                 minResolution: layer.minResolution,
                 maxResolution: layer.maxResolution,
                 opacity: layer.opacity || 1,
-                attribution: layer.attribution,
                 source: olSource,
                 extent: gaGlobalOptions.defaultExtent
               });
@@ -1147,7 +1120,6 @@ goog.require('ga_urlutils_service');
                 olSource = layer.olSource = new ol.source.TileWMS({
                   url: wmsUrl,
                   params: wmsParams,
-                  attributions: attributions,
                   gutter: layer.gutter || 0,
                   crossOrigin: crossOrigin,
                   tileGrid: gaTileGrid.get(layer.resolutions,
@@ -1160,7 +1132,6 @@ goog.require('ga_urlutils_service');
                 minResolution: layer.minResolution,
                 maxResolution: layer.maxResolution,
                 opacity: layer.opacity || 1,
-                attribution: layer.attribution,
                 source: olSource,
                 preload: gaNetworkStatus.offline ? gaMapUtils.preload : 0,
                 useInterimTilesOnError: gaNetworkStatus.offline,
@@ -1178,21 +1149,17 @@ goog.require('ga_urlutils_service');
               minResolution: layer.minResolution,
               maxResolution: layer.maxResolution,
               opacity: layer.opacity || 1,
-              attribution: layer.attribution,
               layers: subLayers
             });
           } else if (layer.type == 'geojson') {
             // cannot request resources over https in S3
             var fullUrl = gaGlobalOptions.ogcproxyUrl + layer.geojsonUrl;
-            olSource = new ol.source.Vector({
-              attributions: attributions
-            });
+            olSource = new ol.source.Vector();
             olLayer = new ol.layer.Vector({
               minResolution: layer.minResolution,
               maxResolution: layer.maxResolution,
               source: olSource,
-              extent: gaGlobalOptions.defaultExtent,
-              attribution: layer.attribution
+              extent: gaGlobalOptions.defaultExtent
             });
             var setLayerSource = function() {
               var geojsonFormat = new ol.format.GeoJSON();
@@ -1327,7 +1294,6 @@ goog.require('ga_urlutils_service');
    */
   module.provider('gaMapUtils', function() {
     this.$get = function($window, gaGlobalOptions, gaUrlUtils) {
-      var attributions = {};
       var resolutions = gaGlobalOptions.resolutions;
       return {
         preload: 6, //Number of upper zoom to preload when offline
@@ -1403,31 +1369,6 @@ goog.require('ga_urlutils_service');
             }
           });
           return layer;
-        },
-
-        /**
-         * Manage map attributions.
-         */
-        getAttribution: function(text) {
-          var key = text;
-          // If the attribution text is simply an url, we display the hostname
-          // and if the url point to a 3 party data we display the text in red
-          // with a warning.
-          if (gaUrlUtils.isValid(text)) {
-            key = gaUrlUtils.getHostname(text);
-            if (gaUrlUtils.isThirdPartyValid(text)) {
-              text = '<span class="ga-warning-tooltip">' + key + '</span>';
-            } else {
-              text = key;
-            }
-          }
-          if (key in attributions) {
-            return attributions[key];
-          } else {
-            var a = new ol.Attribution({html: text});
-            attributions[key] = a;
-            return a;
-          }
         },
 
         moveTo: function(map, zoom, center) {
@@ -1561,16 +1502,13 @@ goog.require('ga_urlutils_service');
         selected: function(layer) {
           return layer.displayInLayerManager;
         },
-
         selectedAndVisible: function(layer) {
           return layer.displayInLayerManager && layer.visible;
         },
-
         permalinked: function(layer) {
           return layer.displayInLayerManager &&
               !gaMapUtils.isLocalKmlLayer(layer);
         },
-
         /**
          * Keep only time enabled layer
          */
@@ -1916,8 +1854,7 @@ goog.require('ga_urlutils_service');
                 gaKml.addKmlToMapForUrl(map, url,
                   {
                     opacity: opacity || 1,
-                    visible: visible,
-                    attribution: url
+                    visible: visible
                   },
                   index + 1);
                 mustReorder = true;
@@ -1939,7 +1876,6 @@ goog.require('ga_urlutils_service');
                     label: infos[1],
                     opacity: opacity || 1,
                     visible: visible,
-                    attribution: infos[2],
                     extent: gaGlobalOptions.defaultExtent
                   },
                   index + 1);
@@ -1981,8 +1917,7 @@ goog.require('ga_urlutils_service');
             gaFileStorage.getFileUrlFromAdminId(adminId).then(function(url) {
               try {
                 gaKml.addKmlToMapForUrl(map, url, {
-                  adminId: adminId,
-                  attribution: gaUrlUtils.getHostname(url)
+                  adminId: adminId
                 });
                 gaPermalink.deleteParam('adminId');
               } catch (e) {

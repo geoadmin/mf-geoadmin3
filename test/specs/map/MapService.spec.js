@@ -616,16 +616,6 @@ describe('ga_map_service', function() {
        expect(foundLayer).to.eql(bodLayer);
     }));
 
-    it('tests getAttribution', function() {
-      var text = '<img src="text.png"></img>@company 2015';
-      var olAttr = gaMapUtils.getAttribution(text);
-      expect(olAttr).to.be.an(ol.Attribution);
-      expect(olAttr.getHTML()).to.eql(text);
-      var olAttr2 = gaMapUtils.getAttribution(text);
-      expect(olAttr2).to.be.an(ol.Attribution);
-      expect(olAttr2).to.eql(olAttr);
-    });
-
     it('tests isKmlLayer', inject(function(gaDefinePropertiesForLayer) {
       expect(gaMapUtils.isKmlLayer(undefined)).to.eql(false);
       expect(gaMapUtils.isKmlLayer(null)).to.eql(false);
