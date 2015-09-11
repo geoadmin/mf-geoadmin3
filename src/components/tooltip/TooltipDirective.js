@@ -3,8 +3,11 @@ goog.provide('ga_tooltip_directive');
 goog.require('ga_browsersniffer_service');
 goog.require('ga_debounce_service');
 goog.require('ga_map_service');
+
 goog.require('ga_popup_service');
 goog.require('ga_styles_service');
+goog.require('ga_topic_service');
+
 (function() {
 
   var module = angular.module('ga_tooltip_directive', [
@@ -13,103 +16,189 @@ goog.require('ga_styles_service');
     'ga_map_service',
     'ga_styles_service',
     'ga_time_service',
-    'pascalprecht.translate'
+    'pascalprecht.translate',
+    'ga_topic_service'
   ]);
 
   module.directive('gaTooltip',
       function($timeout, $http, $q, $translate, $sce, gaPopup, gaLayers,
           gaBrowserSniffer, gaDefinePropertiesForLayer, gaMapClick, gaDebounce,
-          gaPreviewFeatures, gaStyleFactory, gaMapUtils, gaTime) {
+          gaPreviewFeatures, gaStyleFactory, gaMapUtils, gaTime, gaTopic) {
         var popupContent = '<div ng-repeat="htmlsnippet in options.htmls">' +
                             '<div ng-bind-html="htmlsnippet"></div>' +
                             '<div class="ga-tooltip-separator" ' +
                               'ng-show="!$last"></div>' +
                            '</div>';
+        // Test if the layer is a vector layer
+        var isVectorLayer = function(olLayer) {
+          return (olLayer instanceof ol.layer.Vector ||
+              (olLayer instanceof ol.layer.Image &&
+              olLayer.getSource() instanceof ol.source.ImageVector));
+        };
+
+        // Test if the layer has a tooltip
+        var isQueryableBodLayer = function(olLayer) {
+          var bodId = olLayer.bodId;
+          if (bodId) {
+            bodId = gaLayers.getLayerProperty(bodId, 'parentLayerId') || bodId;
+          }
+          return (bodId &&
+              gaLayers.getLayerProperty(bodId, 'tooltip'));
+        };
+
+        // Get all the queryable layers
+        var getLayersToQuery = function(map) {
+          var layersToQuery = [];
+          map.getLayers().forEach(function(l) {
+            if (l.visible && !l.preview &&
+                (isQueryableBodLayer(l) || isVectorLayer(l))) {
+              layersToQuery.push(l);
+            }
+          });
+          return layersToQuery;
+        };
+
+        // Return a year as number from a timestamp string
+        var yearFromString = function(timestamp) {
+          if (timestamp && timestamp.length) {
+            timestamp = parseInt(timestamp.substr(0, 4));
+            if (timestamp <= new Date().getFullYear()) {
+              return timestamp;
+            }
+          }
+        };
+
+        // Test if a feature is queryable.
+        var isFeatureQueryable = function(feature) {
+          return feature && feature.get('name') || feature.get('description');
+        };
+
+        // Find the first feature from a vector layer
+        var findVectorFeature = function(map, pixel, vectorLayer) {
+          var featureFound;
+          map.forEachFeatureAtPixel(pixel, function(feature, layer) {
+            // vectorLayer is defined when a feature is clicked.
+            // onclick
+            if (layer) {
+              if (!vectorLayer || vectorLayer == layer) {
+                if (!featureFound && isFeatureQueryable(feature)) {
+                  featureFound = feature;
+                }
+              }
+            }
+          });
+          return featureFound;
+        };
+
+        // Change cursor style on mouse move, only on desktop
+        var updateCursorStyle = function(map, pixel) {
+          var feature;
+          var hasQueryableLayer = false;
+          if (!gaBrowserSniffer.msie || gaBrowserSniffer.msie > 10) {
+            hasQueryableLayer = map.forEachLayerAtPixel(pixel,
+              function() {
+                return true;
+              },
+              undefined,
+              function(layer) {
+                return isQueryableBodLayer(layer);
+              });
+          }
+          if (!hasQueryableLayer) {
+            feature = findVectorFeature(map, pixel);
+          }
+          map.getTarget().style.cursor = (hasQueryableLayer || feature) ?
+              'pointer' : '';
+        };
+        var updateCursorStyleDebounced = gaDebounce.debounce(
+                updateCursorStyle, 10, false, false);
+
+        // Register click/touch/mousemove events on map
+        var registerMapEvents = function(scope, onClick) {
+          var map = scope.map;
+          var onMapClick = function(evt) {
+            var coordinate = (evt.originalEvent) ?
+                map.getEventCoordinate(evt.originalEvent) :
+                evt.coordinate;
+
+            // A digest cycle is necessary for $http requests to be
+            // actually sent out. Angular-1.2.0rc2 changed the $evalSync
+            // function of the $rootScope service for exactly this. See
+            // Angular commit 6b91aa0a18098100e5f50ea911ee135b50680d67.
+            // We use a conservative approach and call $apply ourselves
+            // here, but we instead could also let $evalSync trigger a
+            // digest cycle for us.
+
+            scope.$applyAsync(function() {
+              onClick(coordinate);
+            });
+          };
+          var deregMapClick = gaMapClick.listen(map, onMapClick);
+          var deregPointerMove;
+          if (!gaBrowserSniffer.mobile) {
+            deregPointerMove = map.on('pointermove', function(evt) {
+              updateCursorStyleDebounced(map, evt.pixel);
+            });
+          }
+          return function() {
+            deregMapClick();
+            ol.Observable.unByKey(deregPointerMove);
+          };
+        };
+
+        // Register leftclick event on globe
+        var registerGlobeEvents = function(scope, onClick) {
+          var scene = scope.ol3d.getCesiumScene();
+          var handler = new Cesium.ScreenSpaceEventHandler(scene.canvas);
+          handler.setInputAction(function(evt) {
+            var coordinate, cartesian = scene.pickPosition(evt.position);
+            if (cartesian) {
+              var cartographic = scene.globe.ellipsoid.
+                  cartesianToCartographic(cartesian);
+              var lon = Cesium.Math.toDegrees(cartographic.longitude);
+              var lat = Cesium.Math.toDegrees(cartographic.latitude);
+              coordinate = ol.proj.transform([lon, lat], 'EPSG:4326',
+                    scope.map.getView().getProjection());
+            }
+            scope.$applyAsync(function() {
+              onClick(coordinate, evt.position);
+            });
+          }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+          return function() {
+            if (!handler.isDestroyed()) {
+              handler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
+              handler.destroy();
+            }
+          };
+        };
+
         return {
           restrict: 'A',
           scope: {
             map: '=gaTooltipMap',
+            ol3d: '=gaTooltipOl3d',
             options: '=gaTooltipOptions',
             isActive: '=gaTooltipActive'
           },
-          link: function($scope, element, attrs) {
+          link: function(scope, element, attrs) {
             var htmls = [],
                 onCloseCB = angular.noop,
-                map = $scope.map,
+                map = scope.map,
                 popup,
                 canceler,
-                currentTopic,
                 vector,
                 vectorSource,
-                parser,
-                listenerKey;
+                deregMapEvents = angular.noop,
+                deregGlobeEvents = angular.noop,
+                listenerKey,
+                parser = new ol.format.GeoJSON();
 
-            parser = new ol.format.GeoJSON();
-
-            $scope.$on('gaTopicChange', function(event, topic) {
-              currentTopic = topic.id;
-              initTooltip();
-            });
-
-            $scope.$on('gaTriggerTooltipRequest', function(event, data) {
-              var size = map.getSize();
-              var mapExtent = map.getView().calculateExtent(size);
-              initTooltip();
-
-              // We use $timeout to execute the showFeature when the
-              // popup is correctly closed.
-              $timeout(function() {
-                showFeatures(mapExtent, size, data.features);
-                onCloseCB = data.onCloseCB;
-              }, 0);
-
-            });
-
-            $scope.$on('gaTriggerTooltipInit', function(event) {
-              initTooltip();
-            });
-
-            $scope.$on('gaTriggerTooltipInitOrUnreduce', function(event) {
-              if (popup && popup.scope.options.isReduced) {
-                popup.close();
-              } else {
-                initTooltip();
-              }
-            });
-
-            // Change cursor style on mouse move, only on desktop
-            var updateCursorStyle = function(evt) {
-              var feature;
-              var hasQueryableLayer = false;
-              if (!gaBrowserSniffer.msie || gaBrowserSniffer.msie > 10) {
-                hasQueryableLayer = map.forEachLayerAtPixel(evt.pixel,
-                  function() {
-                    return true;
-                  },
-                  undefined,
-                  function(layer) {
-                    return isQueryableBodLayer(layer);
-                  });
-              }
-              if (!hasQueryableLayer) {
-                feature = findVectorFeature(evt.pixel);
-              }
-              map.getTarget().style.cursor = (hasQueryableLayer || feature) ?
-                  'pointer' : '';
+            var is3dActive = function() {
+              return scope.ol3d && scope.ol3d.getEnabled();
             };
-            var updateCursorStyleDebounced = gaDebounce.debounce(
-                updateCursorStyle, 10, false, false);
 
-            if (!gaBrowserSniffer.mobile) {
-              map.on('pointermove', function(evt) {
-                if (!$scope.isActive) {
-                  return;
-                }
-                updateCursorStyleDebounced(evt);
-              });
-            }
-
-            function initTooltip() {
+            // Destro popup and highlight
+            var initTooltip = function() {
                // Cancel all pending requests
               if (canceler) {
                 canceler.resolve();
@@ -137,130 +226,103 @@ goog.require('ga_styles_service');
               if (listenerKey) {
                 ol.Observable.unByKey(listenerKey);
               }
-            }
+            };
+            scope.$on('gaTopicChange', initTooltip);
+            scope.$on('gaTriggerTooltipInit', initTooltip);
+            scope.$on('gaTriggerTooltipRequest', function(event, data) {
+              initTooltip();
 
-            gaMapClick.listen(map, function(evt) {
-              if (!$scope.isActive) {
-                return;
-              }
-              var size = map.getSize();
-              var mapExtent = map.getView().calculateExtent(size);
-              var coordinate = (evt.originalEvent) ?
-                  map.getEventCoordinate(evt.originalEvent) :
-                  evt.coordinate;
-
-              // A digest cycle is necessary for $http requests to be
-              // actually sent out. Angular-1.2.0rc2 changed the $evalSync
-              // function of the $rootScope service for exactly this. See
-              // Angular commit 6b91aa0a18098100e5f50ea911ee135b50680d67.
-              // We use a conservative approach and call $apply ourselves
-              // here, but we instead could also let $evalSync trigger a
-              // digest cycle for us.
-
-              $scope.$apply(function() {
-                findFeatures(coordinate, size, mapExtent);
-              });
+              // We use $timeout to execute the showFeature when the
+              // popup is correctly closed.
+              $timeout(function() {
+                showFeatures(data.features);
+                onCloseCB = data.onCloseCB;
+              }, 0);
             });
 
-            $scope.$watch('isActive', function(active) {
-              if (!active) {
-                // Remove the highlighted feature when we deactivate the tooltip
+            scope.$on('gaTriggerTooltipInitOrUnreduce', function(event) {
+              if (popup && popup.scope.options.isReduced) {
+                popup.close();
+              } else {
                 initTooltip();
               }
             });
 
-            // Test if the layer is a vector layer
-            function isVectorLayer(olLayer) {
-              return (olLayer instanceof ol.layer.Vector ||
-                  (olLayer instanceof ol.layer.Image &&
-                  olLayer.getSource() instanceof ol.source.ImageVector));
-            }
-
-            // Test if the layer has a tooltip
-            function isQueryableBodLayer(olLayer) {
-              var bodId = olLayer.bodId;
-              if (bodId) {
-                bodId = gaLayers.getLayerProperty(bodId, 'parentLayerId') ||
-                    bodId;
-              }
-              return (bodId &&
-                  gaLayers.getLayerProperty(bodId, 'tooltip'));
-            };
-
-            // Get all the queryable layers
-            function getLayersToQuery() {
-              var layersToQuery = [];
-              map.getLayers().forEach(function(l) {
-                if (l.visible && !l.preview &&
-                    (isQueryableBodLayer(l) || isVectorLayer(l))) {
-                  layersToQuery.push(l);
-                }
-              });
-              return layersToQuery;
-            }
-
-            // Find the first feature from a vector layer
-            function findVectorFeature(pixel, vectorLayer) {
-              var featureFound;
-
-              map.forEachFeatureAtPixel(pixel, function(feature, layer) {
-                // vectorLayer is defined when a feature is clicked.
-                // onclick
-                if (layer) {
-                  if (!vectorLayer || vectorLayer == layer) {
-                    if (!featureFound &&
-                        (feature.get('name') ||
-                        feature.get('description'))) {
-                      feature.set('layerId', layer.id);
-                      featureFound = feature;
+            // Register the click on globe when ol3d is ready
+            scope.$watch('::ol3d', function(ol3d) {
+              if (ol3d) {
+                // Listen when the app switch between 2d/3d
+                scope.$watch(function() {
+                  return scope.ol3d.getEnabled();
+                }, function(enabled) {
+                  if (scope.isActive) {
+                    if (enabled) {
+                      deregMapEvents();
+                      deregGlobeEvents = registerGlobeEvents(scope,
+                          findFeatures);
+                    } else {
+                      deregGlobeEvents();
+                      deregMapEvents = registerMapEvents(scope, findFeatures,
+                          gaBrowserSniffer.mobile);
                     }
                   }
+                });
+              }
+            });
+
+            scope.$watch('isActive', function(active) {
+              if (active) {
+                if (is3dActive()) {
+                  deregGlobeEvents = registerGlobeEvents(scope, findFeatures);
+                } else {
+                  deregMapEvents = registerMapEvents(scope, findFeatures,
+                      gaBrowserSniffer.mobile);
                 }
-              });
-              return featureFound;
-            }
+              } else {
+                // Remove the highlighted feature when we deactivate the tooltip
+                initTooltip();
+                deregMapEvents();
+                deregGlobeEvents();
+              }
+            });
+
 
             // Find features for all type of layers
-            function findFeatures(coordinate, size, mapExtent) {
-              var identifyUrl = $scope.options.identifyUrlTemplate
-                  .replace('{Topic}', currentTopic),
-                  layersToQuery = getLayersToQuery(),
-                  pixel = map.getPixelFromCoordinate(coordinate);
+            var findFeatures = function(coordinate, position3d) {
               initTooltip();
+              if (!coordinate ||
+                 !ol.extent.containsCoordinate(gaMapUtils.defaultExtent,
+                 coordinate)) {
+                return;
+              }
+              var size = map.getSize();
+              var mapExtent = map.getView().calculateExtent(size);
+              var identifyUrl = scope.options.identifyUrlTemplate
+                  .replace('{Topic}', gaTopic.get().id),
+                  layersToQuery = getLayersToQuery(map),
+                  pixel = map.getPixelFromCoordinate(coordinate);
+
+              // When 3d is Active we use the cesium native function to get the
+              // first queryable feature.
+              if (is3dActive()) {
+                var pickedObjects = scope.ol3d.getCesiumScene().
+                    drillPick(position3d);
+                for (var i = 0, ii = pickedObjects.length; i < ii; i++) {
+                   var prim = pickedObjects[i].primitive;
+                   if (isFeatureQueryable(prim.olFeature)) {
+                     showVectorFeature(prim.olFeature, prim.olLayer);
+                     break;
+                   }
+                }
+              }
               for (var i = 0, ii = layersToQuery.length; i < ii; i++) {
                 var layerToQuery = layersToQuery[i];
-                if (isVectorLayer(layerToQuery)) {
-                  var feature = findVectorFeature(pixel, layerToQuery);
+                if (!is3dActive() && isVectorLayer(layerToQuery)) {
+                  var feature = findVectorFeature(map, pixel, layerToQuery);
                   if (feature) {
-                    var htmlpopup =
-                      '<div class="htmlpopup-container">' +
-                        '<div class="htmlpopup-header">' +
-                          '<span>' + layerToQuery.label + ' &nbsp;</span>' +
-                          '{{name}}' +
-                        '</div>' +
-                        '<div class="htmlpopup-content">' +
-                          '{{descr}}' +
-                        '</div>' +
-                      '</div>';
-                    var name = feature.get('name');
-                    htmlpopup = htmlpopup.
-                        replace('{{descr}}', feature.get('description') || '').
-                        replace('{{name}}', (name) ? '(' + name + ')' : '');
-                    feature.set('htmlpopup', htmlpopup);
-                    showFeatures(layerToQuery.getExtent(), size,
-                        [feature]);
-                    // Iframe communication from inside out
-                    if (top != window) {
-                      var featureId = feature.getId();
-                      var layerBodId = layerToQuery.get('bodId');
-                      if (featureId && layerBodId) {
-                        window.parent.postMessage(
-                            layerBodId + '#' + featureId, '*'
-                        );
-                      }
-                    }
+                    showVectorFeature(feature, layerToQuery);
                   }
-                } else { // queryable bod layers
+                } else if (layerToQuery.bodId) { // queryable bod layers
                   var params = {
                     geometryType: 'esriGeometryPoint',
                     geometryFormat: 'geojson',
@@ -268,7 +330,7 @@ goog.require('ga_styles_service');
                     // FIXME: make sure we are passing the right dpi here.
                     imageDisplay: size[0] + ',' + size[1] + ',96',
                     mapExtent: mapExtent.join(','),
-                    tolerance: $scope.options.tolerance,
+                    tolerance: scope.options.tolerance,
                     layers: 'all:' + layerToQuery.bodId
                   };
 
@@ -282,28 +344,28 @@ goog.require('ga_styles_service');
                     timeout: canceler.promise,
                     params: params
                   }).success(function(features) {
-                    showFeatures(mapExtent, size, features.results, coordinate);
+                    showFeatures(features.results, coordinate);
                   });
                 }
               }
-            }
+            };
 
             // Highlight the features found
-            function showFeatures(mapExtent, size, foundFeatures, coordinate) {
+            var showFeatures = function(foundFeatures, coordinate) {
               if (foundFeatures && foundFeatures.length > 0) {
 
                 // Remove the tooltip, if a layer is removed, we don't care
                 // which layer. It worked like that in RE2.
-                listenerKey = $scope.map.getLayers().on('remove',
-                  function(event) {
-                    if (!event.element.preview) {
+                listenerKey = map.getLayers().on('remove',
+                  function(evt) {
+                    if (!evt.element.preview) {
                       initTooltip();
                     }
                   }
                 );
-
+                var size = map.getSize();
+                var mapExtent = map.getView().calculateExtent(size);
                 angular.forEach(foundFeatures, function(value) {
-
                   if (value instanceof ol.Feature) {
                     var feature = new ol.Feature(value.getGeometry());
                     var layerId = value.get('layerId');
@@ -322,8 +384,8 @@ goog.require('ga_styles_service');
                       }
                     }
 
-                    var htmlUrl = $scope.options.htmlUrlTemplate
-                                  .replace('{Topic}', currentTopic)
+                    var htmlUrl = scope.options.htmlUrlTemplate
+                                  .replace('{Topic}', gaTopic.get().id)
                                   .replace('{Layer}', value.layerBodId)
                                   .replace('{Feature}', value.featureId);
                     $http.get(htmlUrl, {
@@ -340,10 +402,41 @@ goog.require('ga_styles_service');
                   }
                 });
               }
-            }
+            };
+
+            // Create the html popup for a feature then display it.
+            var showVectorFeature = function(feature, layer) {
+              var htmlpopup =
+                '<div class="htmlpopup-container">' +
+                  '<div class="htmlpopup-header">' +
+                    '<span>' + layer.label + ' &nbsp;</span>' +
+                    '{{name}}' +
+                  '</div>' +
+                  '<div class="htmlpopup-content">' +
+                    '{{descr}}' +
+                  '</div>' +
+                '</div>';
+              var name = feature.get('name');
+              htmlpopup = htmlpopup.
+                  replace('{{descr}}', feature.get('description') || '').
+                  replace('{{name}}', (name) ? '(' + name + ')' : '');
+              feature.set('htmlpopup', htmlpopup);
+              feature.set('layerId', layer.id);
+              showFeatures([feature]);
+              // Iframe communication from inside out
+              if (top != window) {
+                var featureId = feature.getId();
+                var layerBodId = layer.get('bodId');
+                if (featureId && layerBodId) {
+                  window.parent.postMessage(
+                      layerBodId + '#' + featureId, '*'
+                  );
+                }
+              }
+            };
 
             // Show the popup with all features informations
-            function showPopup(html) {
+            var showPopup = function(html) {
               // Show popup on first result
               if (htmls.length === 0) {
                 if (!popup) {
@@ -374,16 +467,7 @@ goog.require('ga_styles_service');
               // Add result to array. ng-repeat will take
               // care of the rest
               htmls.push($sce.trustAsHtml(html));
-            }
-
-            function yearFromString(timestamp) {
-              if (timestamp && timestamp.length) {
-                timestamp = parseInt(timestamp.substr(0, 4));
-                if (timestamp <= new Date().getFullYear()) {
-                  return timestamp;
-                }
-              }
-            }
+            };
           }
         };
       });
