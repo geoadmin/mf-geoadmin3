@@ -7025,3 +7025,9 @@ msgstr ""
 
 msgid "ch.bafu.neophyten-riesenbaerenklau"
 msgstr ""
+
+msgid "ch.swisstopo.geologie-dosisleistung-terrestrisch"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-dosisleistung-terrestrisch.contour"
+msgstr ""
