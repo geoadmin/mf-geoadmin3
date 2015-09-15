@@ -35,6 +35,7 @@ def build_wms_request(cfg):
     base_url = urlunsplit([scheme, netloc, path, None, None])
 
     payload = {'LAYERS': cfg['wmsLayers'],
+               'lang': 'de',
                'FORMAT': 'image/' + cfg['format'],
                'SRS': 'EPSG:21781',
                'BBOX': '600000,200000,610000,210000',
