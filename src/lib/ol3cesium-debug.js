@@ -1,6 +1,6 @@
 // Ol3-Cesium. See https://github.com/openlayers/ol3-cesium/
 // License: https://github.com/openlayers/ol3-cesium/blob/master/LICENSE
-// Version: v1.7-38-ga127bf9
+// Version: v1.8
 
 var CLOSURE_NO_DEPS = true;
 // Copyright 2006 The Closure Library Authors. All Rights Reserved.
@@ -13957,6 +13957,8 @@ ol.Observable.prototype.changed = function() {
 
 
 /**
+ * Get the version number for this object.  Each time the object is modified,
+ * its version number will be incremented.
  * @return {number} Revision.
  * @api
  */
@@ -38049,9 +38051,11 @@ ol.source.Source.prototype.getWrapX = function() {
 /**
  * Set the attributions of the source.
  * @param {Array.<ol.Attribution>} attributions Attributions.
+ * @api
  */
 ol.source.Source.prototype.setAttributions = function(attributions) {
   this.attributions_ = attributions;
+  this.changed();
 };
 
 
@@ -51380,6 +51384,8 @@ goog.provide('ol.render.VectorContext');
 
 
 /**
+ * Context for drawing geometries.  A vector context is available on render
+ * events and does not need to be constructed directly.
  * @constructor
  * @struct
  * @api
@@ -51548,6 +51554,7 @@ ol.render.Event = function(
   this.vectorContext = opt_vectorContext;
 
   /**
+   * An object representing the current render frame state.
    * @type {olx.FrameState|undefined}
    * @api
    */
@@ -52441,6 +52448,8 @@ ol.style.Image.prototype.getSnapToPixel = function() {
 
 
 /**
+ * Get the anchor point.  The anchor determines the center point for the
+ * symbolizer.  Its units are determined by `anchorXUnits` and `anchorYUnits`.
  * @function
  * @return {Array.<number>} Anchor.
  */
@@ -52448,6 +52457,7 @@ ol.style.Image.prototype.getAnchor = goog.abstractMethod;
 
 
 /**
+ * Get the image element for the symbolizer.
  * @function
  * @param {number} pixelRatio Pixel ratio.
  * @return {HTMLCanvasElement|HTMLVideoElement|Image} Image element.
@@ -52481,6 +52491,7 @@ ol.style.Image.prototype.getHitDetectionImageSize = goog.abstractMethod;
 
 
 /**
+ * Get the origin of the symbolizer.
  * @function
  * @return {Array.<number>} Origin.
  */
@@ -52488,6 +52499,7 @@ ol.style.Image.prototype.getOrigin = goog.abstractMethod;
 
 
 /**
+ * Get the size of the symbolizer (in pixels).
  * @function
  * @return {ol.Size} Size.
  */
@@ -56824,7 +56836,6 @@ goog.inherits(ol.style.Circle, ol.style.Image);
 
 /**
  * @inheritDoc
- * @api
  */
 ol.style.Circle.prototype.getAnchor = function() {
   return this.anchor_;
@@ -56886,7 +56897,6 @@ ol.style.Circle.prototype.getHitDetectionImageSize = function() {
 
 /**
  * @inheritDoc
- * @api
  */
 ol.style.Circle.prototype.getOrigin = function() {
   return this.origin_;
@@ -56905,7 +56915,6 @@ ol.style.Circle.prototype.getRadius = function() {
 
 /**
  * @inheritDoc
- * @api
  */
 ol.style.Circle.prototype.getSize = function() {
   return this.size_;
@@ -57529,10 +57538,11 @@ goog.exportSymbol('ol.style.defaultStyleFunction', ol.style.defaultStyleFunction
 goog.provide('ol.interaction.DragZoom');
 
 goog.require('goog.asserts');
+goog.require('ol.animation');
+goog.require('ol.easing');
 goog.require('ol.events.condition');
 goog.require('ol.extent');
 goog.require('ol.interaction.DragBox');
-goog.require('ol.interaction.Interaction');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 
@@ -57586,15 +57596,37 @@ goog.inherits(ol.interaction.DragZoom, ol.interaction.DragBox);
  */
 ol.interaction.DragZoom.prototype.onBoxEnd = function() {
   var map = this.getMap();
+
   var view = map.getView();
   goog.asserts.assert(!goog.isNull(view), 'view should not be null');
-  var extent = this.getGeometry().getExtent();
-  var center = ol.extent.getCenter(extent);
+
   var size = map.getSize();
   goog.asserts.assert(goog.isDef(size), 'size should be defined');
-  ol.interaction.Interaction.zoom(map, view,
-      view.getResolutionForExtent(extent, size),
-      center, this.duration_);
+
+  var extent = this.getGeometry().getExtent();
+
+  var resolution = view.constrainResolution(
+      view.getResolutionForExtent(extent, size));
+
+  var currentResolution = view.getResolution();
+  goog.asserts.assert(goog.isDef(currentResolution), 'res should be defined');
+
+  var currentCenter = view.getCenter();
+  goog.asserts.assert(goog.isDef(currentCenter), 'center should be defined');
+
+  map.beforeRender(ol.animation.zoom({
+    resolution: currentResolution,
+    duration: this.duration_,
+    easing: ol.easing.easeOut
+  }));
+  map.beforeRender(ol.animation.pan({
+    source: currentCenter,
+    duration: this.duration_,
+    easing: ol.easing.easeOut
+  }));
+
+  view.setCenter(ol.extent.getCenter(extent));
+  view.setResolution(resolution);
 };
 
 goog.provide('ol.interaction.KeyboardPan');
@@ -65541,6 +65573,9 @@ ol.Feature.prototype.getGeometry = function() {
 
 
 /**
+ * Get the feature identifier.  This is a stable identifier for the feature and
+ * is either set when reading data from a remote source or set explicitly by
+ * calling {@link ol.Feature#setId}.
  * @return {number|string|undefined} Id.
  * @api stable
  * @observable
@@ -81150,6 +81185,9 @@ ol.render.webgl.Immediate.prototype.flush = function() {
 
 
 /**
+ * Register a function to be called for rendering at a given zIndex.  The
+ * function will be called asynchronously.  The callback will receive a
+ * reference to {@link ol.render.canvas.Immediate} context for drawing.
  * @param {number} zIndex Z index.
  * @param {function(ol.render.webgl.Immediate)} callback Callback.
  * @api
@@ -83739,19 +83777,6 @@ ol.renderer.webgl.Map.prototype.forEachLayerAtPixel =
     }
   }
   return undefined;
-};
-
-
-/**
- * @private
- * @const
- */
-ol.renderer.webgl.Map.DEFAULT_COLOR_VALUES_ = {
-  opacity: 1,
-  brightness: 0,
-  contrast: 1,
-  hue: 0,
-  saturation: 1
 };
 
 // FIXME recheck layer/map projection compatibility when projection changes
@@ -86426,7 +86451,8 @@ ol.control.OverviewMap.prototype.setCollapsed = function(collapsed) {
 
 
 /**
- * @return {boolean} True if the widget is collapsed.
+ * Determine if the overview map is collapsed.
+ * @return {boolean} The overview map is collapsed.
  * @api stable
  */
 ol.control.OverviewMap.prototype.getCollapsed = function() {
@@ -98189,7 +98215,7 @@ ol.format.KML.prototype.readPlacemark_ = function(node, objectStack) {
   }
   var options = /** @type {olx.format.ReadOptions} */ (objectStack[0]);
 
-  var geometry = goog.object.get(object, 'geometry');
+  var geometry = object['geometry'];
   if (goog.isDefAndNotNull(geometry)) {
     ol.format.Feature.transformWithOptions(geometry, false, options);
   }
@@ -98197,8 +98223,8 @@ ol.format.KML.prototype.readPlacemark_ = function(node, objectStack) {
   goog.object.remove(object, 'geometry');
 
   if (this.extractStyles_) {
-    var style = goog.object.get(object, 'Style');
-    var styleUrl = goog.object.get(object, 'styleUrl');
+    var style = object['Style'];
+    var styleUrl = object['styleUrl'];
     var styleFunction = ol.format.KML.createFeatureStyleFunction_(
         style, styleUrl, this.defaultStyle_, this.sharedStyles_);
     feature.setStyle(styleFunction);
@@ -103730,7 +103756,6 @@ goog.provide('ol.format.WMTSCapabilities');
 
 goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
-goog.require('goog.object');
 goog.require('goog.string');
 goog.require('ol.extent');
 goog.require('ol.format.OWS');
@@ -103803,7 +103828,7 @@ ol.format.WMTSCapabilities.prototype.readFromNode = function(node) {
   if (!goog.isDef(WMTSCapabilityObject)) {
     return null;
   }
-  goog.object.set(WMTSCapabilityObject, 'version', this.version);
+  WMTSCapabilityObject['version'] = this.version;
   WMTSCapabilityObject = ol.xml.pushParseAndPop(WMTSCapabilityObject,
       ol.format.WMTSCapabilities.PARSERS_, node, []);
   return goog.isDef(WMTSCapabilityObject) ? WMTSCapabilityObject : null;
@@ -104749,6 +104774,30 @@ ol.Graticule = function(opt_options) {
    * @type {number}
    * @private
    */
+  this.maxLatP_ = Infinity;
+
+  /**
+   * @type {number}
+   * @private
+   */
+  this.maxLonP_ = Infinity;
+
+  /**
+   * @type {number}
+   * @private
+   */
+  this.minLatP_ = -Infinity;
+
+  /**
+   * @type {number}
+   * @private
+   */
+  this.minLonP_ = -Infinity;
+
+  /**
+   * @type {number}
+   * @private
+   */
   this.targetSize_ = goog.isDef(options.targetSize) ?
       options.targetSize : 100;
 
@@ -104822,6 +104871,8 @@ ol.Graticule.intervals_ = [90, 45, 30, 20, 10, 5, 2, 1, 0.5, 0.2, 0.1, 0.05,
 
 /**
  * @param {number} lon Longitude.
+ * @param {number} minLat Minimal latitude.
+ * @param {number} maxLat Maximal latitude.
  * @param {number} squaredTolerance Squared tolerance.
  * @param {ol.Extent} extent Extent.
  * @param {number} index Index.
@@ -104829,8 +104880,9 @@ ol.Graticule.intervals_ = [90, 45, 30, 20, 10, 5, 2, 1, 0.5, 0.2, 0.1, 0.05,
  * @private
  */
 ol.Graticule.prototype.addMeridian_ =
-    function(lon, squaredTolerance, extent, index) {
-  var lineString = this.getMeridian_(lon, squaredTolerance, index);
+    function(lon, minLat, maxLat, squaredTolerance, extent, index) {
+  var lineString = this.getMeridian_(lon, minLat, maxLat,
+      squaredTolerance, index);
   if (ol.extent.intersects(lineString.getExtent(), extent)) {
     this.meridians_[index++] = lineString;
   }
@@ -104840,6 +104892,8 @@ ol.Graticule.prototype.addMeridian_ =
 
 /**
  * @param {number} lat Latitude.
+ * @param {number} minLon Minimal longitude.
+ * @param {number} maxLon Maximal longitude.
  * @param {number} squaredTolerance Squared tolerance.
  * @param {ol.Extent} extent Extent.
  * @param {number} index Index.
@@ -104847,8 +104901,9 @@ ol.Graticule.prototype.addMeridian_ =
  * @private
  */
 ol.Graticule.prototype.addParallel_ =
-    function(lat, squaredTolerance, extent, index) {
-  var lineString = this.getParallel_(lat, squaredTolerance, index);
+    function(lat, minLon, maxLon, squaredTolerance, extent, index) {
+  var lineString = this.getParallel_(lat, minLon, maxLon, squaredTolerance,
+      index);
   if (ol.extent.intersects(lineString.getExtent(), extent)) {
     this.parallels_[index++] = lineString;
   }
@@ -104878,17 +104933,31 @@ ol.Graticule.prototype.createGraticule_ =
   var maxLines = this.maxLines_;
   var cnt, idx, lat, lon;
 
+  var validExtent = [
+    Math.max(extent[0], this.minLonP_),
+    Math.max(extent[1], this.minLatP_),
+    Math.min(extent[2], this.maxLonP_),
+    Math.min(extent[3], this.maxLatP_)
+  ];
+
+  validExtent = ol.proj.transformExtent(validExtent, this.projection_,
+      'EPSG:4326');
+  var maxLat = validExtent[3];
+  var maxLon = validExtent[2];
+  var minLat = validExtent[1];
+  var minLon = validExtent[0];
+
   // Create meridians
 
   centerLon = Math.floor(centerLon / interval) * interval;
   lon = goog.math.clamp(centerLon, this.minLon_, this.maxLon_);
 
-  idx = this.addMeridian_(lon, squaredTolerance, extent, 0);
+  idx = this.addMeridian_(lon, minLat, maxLat, squaredTolerance, extent, 0);
 
   cnt = 0;
   while (lon != this.minLon_ && cnt++ < maxLines) {
     lon = Math.max(lon - interval, this.minLon_);
-    idx = this.addMeridian_(lon, squaredTolerance, extent, idx);
+    idx = this.addMeridian_(lon, minLat, maxLat, squaredTolerance, extent, idx);
   }
 
   lon = goog.math.clamp(centerLon, this.minLon_, this.maxLon_);
@@ -104896,7 +104965,7 @@ ol.Graticule.prototype.createGraticule_ =
   cnt = 0;
   while (lon != this.maxLon_ && cnt++ < maxLines) {
     lon = Math.min(lon + interval, this.maxLon_);
-    idx = this.addMeridian_(lon, squaredTolerance, extent, idx);
+    idx = this.addMeridian_(lon, minLat, maxLat, squaredTolerance, extent, idx);
   }
 
   this.meridians_.length = idx;
@@ -104906,12 +104975,12 @@ ol.Graticule.prototype.createGraticule_ =
   centerLat = Math.floor(centerLat / interval) * interval;
   lat = goog.math.clamp(centerLat, this.minLat_, this.maxLat_);
 
-  idx = this.addParallel_(lat, squaredTolerance, extent, 0);
+  idx = this.addParallel_(lat, minLon, maxLon, squaredTolerance, extent, 0);
 
   cnt = 0;
   while (lat != this.minLat_ && cnt++ < maxLines) {
     lat = Math.max(lat - interval, this.minLat_);
-    idx = this.addParallel_(lat, squaredTolerance, extent, idx);
+    idx = this.addParallel_(lat, minLon, maxLon, squaredTolerance, extent, idx);
   }
 
   lat = goog.math.clamp(centerLat, this.minLat_, this.maxLat_);
@@ -104919,7 +104988,7 @@ ol.Graticule.prototype.createGraticule_ =
   cnt = 0;
   while (lat != this.maxLat_ && cnt++ < maxLines) {
     lat = Math.min(lat + interval, this.maxLat_);
-    idx = this.addParallel_(lat, squaredTolerance, extent, idx);
+    idx = this.addParallel_(lat, minLon, maxLon, squaredTolerance, extent, idx);
   }
 
   this.parallels_.length = idx;
@@ -104972,18 +105041,21 @@ ol.Graticule.prototype.getMap = function() {
 
 /**
  * @param {number} lon Longitude.
+ * @param {number} minLat Minimal latitude.
+ * @param {number} maxLat Maximal latitude.
  * @param {number} squaredTolerance Squared tolerance.
  * @return {ol.geom.LineString} The meridian line string.
  * @param {number} index Index.
  * @private
  */
-ol.Graticule.prototype.getMeridian_ = function(lon, squaredTolerance, index) {
+ol.Graticule.prototype.getMeridian_ = function(lon, minLat, maxLat,
+                                               squaredTolerance, index) {
   goog.asserts.assert(lon >= this.minLon_,
       'lon should be larger than or equal to this.minLon_');
   goog.asserts.assert(lon <= this.maxLon_,
       'lon should be smaller than or equal to this.maxLon_');
   var flatCoordinates = ol.geom.flat.geodesic.meridian(lon,
-      this.minLat_, this.maxLat_, this.projection_, squaredTolerance);
+      minLat, maxLat, this.projection_, squaredTolerance);
   goog.asserts.assert(flatCoordinates.length > 0,
       'flatCoordinates cannot be empty');
   var lineString = goog.isDef(this.meridians_[index]) ?
@@ -105005,12 +105077,15 @@ ol.Graticule.prototype.getMeridians = function() {
 
 /**
  * @param {number} lat Latitude.
+ * @param {number} minLon Minimal longitude.
+ * @param {number} maxLon Maximal longitude.
  * @param {number} squaredTolerance Squared tolerance.
  * @return {ol.geom.LineString} The parallel line string.
  * @param {number} index Index.
  * @private
  */
-ol.Graticule.prototype.getParallel_ = function(lat, squaredTolerance, index) {
+ol.Graticule.prototype.getParallel_ = function(lat, minLon, maxLon,
+                                               squaredTolerance, index) {
   goog.asserts.assert(lat >= this.minLat_,
       'lat should be larger than or equal to this.minLat_');
   goog.asserts.assert(lat <= this.maxLat_,
@@ -105082,12 +105157,22 @@ ol.Graticule.prototype.handlePostCompose_ = function(e) {
 ol.Graticule.prototype.updateProjectionInfo_ = function(projection) {
   goog.asserts.assert(!goog.isNull(projection), 'projection cannot be null');
 
+  var epsg4326Projection = ol.proj.get('EPSG:4326');
+
   var extent = projection.getExtent();
   var worldExtent = projection.getWorldExtent();
+  var worldExtentP = ol.proj.transformExtent(worldExtent,
+      epsg4326Projection, projection);
+
   var maxLat = worldExtent[3];
   var maxLon = worldExtent[2];
   var minLat = worldExtent[1];
   var minLon = worldExtent[0];
+
+  var maxLatP = worldExtentP[3];
+  var maxLonP = worldExtentP[2];
+  var minLatP = worldExtentP[1];
+  var minLonP = worldExtentP[0];
 
   goog.asserts.assert(!goog.isNull(extent), 'extent cannot be null');
   goog.asserts.assert(goog.isDef(maxLat), 'maxLat should be defined');
@@ -105095,12 +105180,25 @@ ol.Graticule.prototype.updateProjectionInfo_ = function(projection) {
   goog.asserts.assert(goog.isDef(minLat), 'minLat should be defined');
   goog.asserts.assert(goog.isDef(minLon), 'minLon should be defined');
 
+  goog.asserts.assert(goog.isDef(maxLatP),
+      'projected maxLat should be defined');
+  goog.asserts.assert(goog.isDef(maxLonP),
+      'projected maxLon should be defined');
+  goog.asserts.assert(goog.isDef(minLatP),
+      'projected minLat should be defined');
+  goog.asserts.assert(goog.isDef(minLonP),
+      'projected minLon should be defined');
+
   this.maxLat_ = maxLat;
   this.maxLon_ = maxLon;
   this.minLat_ = minLat;
   this.minLon_ = minLon;
 
-  var epsg4326Projection = ol.proj.get('EPSG:4326');
+  this.maxLatP_ = maxLatP;
+  this.maxLonP_ = maxLonP;
+  this.minLatP_ = minLatP;
+  this.minLonP_ = minLonP;
+
 
   this.fromLonLatTransform_ = ol.proj.getTransform(
       epsg4326Projection, projection);
@@ -105415,6 +105513,7 @@ ol.ImageTile.prototype.disposeInternal = function() {
 
 
 /**
+ * Get the image element for this tile.
  * @inheritDoc
  * @api
  */
@@ -107498,18 +107597,21 @@ ol.interaction.DragAndDropEvent =
   goog.base(this, type, target);
 
   /**
+   * The features parsed from dropped data.
    * @type {Array.<ol.Feature>|undefined}
    * @api stable
    */
   this.features = opt_features;
 
   /**
+   * The dropped file.
    * @type {File}
    * @api stable
    */
   this.file = file;
 
   /**
+   * The feature projection.
    * @type {ol.proj.Projection|undefined}
    * @api
    */
@@ -109836,6 +109938,7 @@ ol.interaction.Modify.getDefaultStyleFunction = function() {
 
 goog.provide('ol.interaction.Select');
 goog.provide('ol.interaction.SelectEvent');
+goog.provide('ol.interaction.SelectEventType');
 goog.provide('ol.interaction.SelectFilterFunction');
 
 goog.require('goog.array');
@@ -109855,7 +109958,7 @@ goog.require('ol.source.Vector');
 /**
  * @enum {string}
  */
-ol.SelectEventType = {
+ol.interaction.SelectEventType = {
   /**
    * Triggered when feature(s) has been (de)selected.
    * @event ol.interaction.SelectEvent#select
@@ -110122,7 +110225,7 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
   }
   if (change) {
     this.dispatchEvent(
-        new ol.interaction.SelectEvent(ol.SelectEventType.SELECT,
+        new ol.interaction.SelectEvent(ol.interaction.SelectEventType.SELECT,
             selected, deselected, mapBrowserEvent));
   }
   return ol.events.condition.pointerMove(mapBrowserEvent);
@@ -116522,6 +116625,7 @@ ol.source.WMTS.prototype.updateDimensions = function(dimensions) {
 
 
 /**
+ * Generate source options from a capabilities object.
  * @param {Object} wmtsCap An object representing the capabilities document.
  * @param {Object} config Configuration properties for the layer.  Defaults for
  *                  the layer will apply if not provided.
@@ -117903,9 +118007,11 @@ ol.style.RegularShape.prototype.getChecksum = function() {
 
 goog.provide('olcs.AbstractSynchronizer');
 
+goog.require('goog.array');
+goog.require('goog.object');
+
 goog.require('ol.Observable');
 goog.require('ol.layer.Group');
-goog.require('ol.layer.Layer');
 
 
 
@@ -117927,7 +118033,7 @@ olcs.AbstractSynchronizer = function(map, scene) {
    * @type {ol.View}
    * @protected
    */
-  this.view = null;
+  this.view = map.getView();
 
   /**
    * @type {!Cesium.Scene}
@@ -117939,13 +118045,12 @@ olcs.AbstractSynchronizer = function(map, scene) {
    * @type {ol.Collection.<ol.layer.Base>}
    * @protected
    */
-  this.olLayers = null;
+  this.olLayers = map.getLayerGroup().getLayers();
 
   /**
-   * @type {!Array.<goog.events.Key>}
-   * @private
+   * @type {ol.layer.Group}
    */
-  this.olLayersListenKeys_ = [];
+  this.mapLayerGroup = map.getLayerGroup();
 
   /**
    * Map of ol3 layer ids (from goog.getUid) to the Cesium ImageryLayers.
@@ -117956,186 +118061,210 @@ olcs.AbstractSynchronizer = function(map, scene) {
   this.layerMap = {};
 
   /**
+   * Map of listen keys for ol3 layer layers ids (from goog.getUid).
+   * @type {!Object.<number, !goog.events.Key>}
+   * @private
+   */
+  this.olLayerListenKeys_ = {};
+
+  /**
    * Map of listen keys for ol3 layer groups ids (from goog.getUid).
    * @type {!Object.<number, !Array.<goog.events.Key>>}
    * @private
    */
   this.olGroupListenKeys_ = {};
-
-  /**
-   * @type {Object.<number, !Array.<goog.events.Key>>}
-   * @private
-   */
-  this.unusedGroups_ = null;
-
-  /**
-   * @type {Object.<?T, number>}
-   * @private
-   */
-  this.unusedCesiumObjects_ = null;
-
-  this.map.on('change:view', function(e) {
-    this.setView_(this.map.getView());
-  }, this);
-  this.setView_(this.map.getView());
-
-  this.map.on('change:layergroup', function(e) {
-    this.setLayers_(this.map.getLayers());
-  }, this);
-  this.setLayers_(this.map.getLayers());
 };
 
 
 /**
- * @param {ol.View} view New view to use.
- * @private
- */
-olcs.AbstractSynchronizer.prototype.setView_ = function(view) {
-  this.view = view;
-
-  // destroy all, the change of view can affect which layers are synced
-  this.destroyAll();
-  this.synchronize();
-};
-
-
-/**
- * @param {ol.Collection.<ol.layer.Base>} layers New layers to use.
- * @private
- */
-olcs.AbstractSynchronizer.prototype.setLayers_ = function(layers) {
-  if (!goog.isNull(this.olLayers)) {
-    goog.array.forEach(this.olLayersListenKeys_, ol.Observable.unByKey);
-  }
-
-  this.olLayers = layers;
-  if (!goog.isNull(layers)) {
-    var handleCollectionEvent_ = goog.bind(function(e) {
-      this.synchronize();
-    }, this);
-
-    this.olLayersListenKeys_ = [
-      layers.on('add', handleCollectionEvent_),
-      layers.on('remove', handleCollectionEvent_)
-    ];
-  } else {
-    this.olLayersListenKeys_ = [];
-  }
-
-  this.destroyAll();
-  this.synchronize();
-};
-
-
-/**
- * Performs complete synchronization of the layers.
+ * Destroy all and perform complete synchronization of the layers.
  * @api
  */
 olcs.AbstractSynchronizer.prototype.synchronize = function() {
-  if (goog.isNull(this.view) || goog.isNull(this.olLayers)) {
-    return;
-  }
-  this.unusedGroups_ = goog.object.clone(this.olGroupListenKeys_);
-  this.unusedCesiumObjects_ = goog.object.transpose(this.layerMap);
-  this.removeAllCesiumObjects(false); // only remove, don't destroy
-
-  this.olLayers.forEach(function(el, i, arr) {
-    this.synchronizeSingle(el);
-  }, this);
-
-  // destroy unused Cesium Objects
-  goog.array.forEach(goog.object.getValues(this.unusedCesiumObjects_),
-      function(el, i, arr) {
-        var layerId = el;
-        var object = this.layerMap[layerId];
-        if (goog.isDef(object)) {
-          delete this.layerMap[layerId];
-          if (!goog.isNull(object)) {
-            this.destroyCesiumObject(object);
-          }
-        }
-      }, this);
-  this.unusedCesiumObjects_ = null;
-
-  // unlisten unused ol layer groups
-  goog.object.forEach(this.unusedGroups_, function(keys, groupId, obj) {
-    goog.array.forEach(keys, ol.Observable.unByKey);
-    delete this.olGroupListenKeys_[groupId];
-  }, this);
-  this.unusedGroups_ = null;
+  this.destroyAll();
+  this.addLayers_(this.mapLayerGroup);
 };
 
 
 /**
- * Synchronizes single layer.
- * @param {ol.layer.Base} olLayer
+ * Populate the foundLayers and foundGroups using a breadth-first algorithm.
+ * A map of layer uid to z-index is also populated.
+ * @param {ol.layer.Base} layer
+ * @param {Array.<ol.layer.Layer>} foundLayers Found leaves.
+ * @param {Array.<ol.layer.Group>} foundGroups Found nodes.
+ * @param {Object.<number, number>=} opt_zIndices Map of layer uid to z-index.
  * @protected
  */
-olcs.AbstractSynchronizer.prototype.synchronizeSingle = function(olLayer) {
-  if (goog.isNull(olLayer)) {
-    return;
-  }
-  var olLayerId = goog.getUid(olLayer);
-
-  // handle layer groups
-  if (olLayer instanceof ol.layer.Group) {
-    var sublayers = olLayer.getLayers();
+olcs.AbstractSynchronizer.flattenLayers =
+    function(layer, foundLayers, foundGroups, opt_zIndices) {
+  if (layer instanceof ol.layer.Group) {
+    foundGroups.push(layer);
+    var sublayers = layer.getLayers();
     if (goog.isDef(sublayers)) {
-      sublayers.forEach(function(el, i, arr) {
-        this.synchronizeSingle(el);
-      }, this);
+      sublayers.forEach(function(el) {
+        olcs.AbstractSynchronizer.flattenLayers(el, foundLayers, foundGroups,
+            opt_zIndices);
+      });
     }
-
-    if (!goog.isDef(this.olGroupListenKeys_[olLayerId])) {
-      var listenKeyArray = [];
-      this.olGroupListenKeys_[olLayerId] = listenKeyArray;
-
-      // only the keys that need to be relistened when collection changes
-      var collection, contentKeys = [];
-      var listenAddRemove = goog.bind(function() {
-        collection = /** @type {ol.layer.Group} */ (olLayer).getLayers();
-        if (goog.isDef(collection)) {
-          var handleContentChange_ = goog.bind(function(e) {
-            this.synchronize();
-          }, this);
-          contentKeys = [
-            collection.on('add', handleContentChange_),
-            collection.on('remove', handleContentChange_)
-          ];
-          listenKeyArray.push.apply(listenKeyArray, contentKeys);
-        }
-      }, this);
-      listenAddRemove();
-
-      listenKeyArray.push(olLayer.on('change:layers', function(e) {
-        goog.array.forEach(contentKeys, function(el, i, arr) {
-          goog.array.remove(listenKeyArray, el);
-          ol.Observable.unByKey(el);
-        });
-        listenAddRemove();
-      }));
+  } else {
+    foundLayers.push(layer);
+    if (opt_zIndices) {
+      opt_zIndices[goog.getUid(layer)] = layer.getZIndex();
     }
-
-    delete this.unusedGroups_[olLayerId];
-
-    return;
-  } else if (!(olLayer instanceof ol.layer.Layer)) {
-    return;
   }
+};
 
-  var cesiumObject = this.layerMap[olLayerId];
 
-  // no mapping -> create new layer and set up synchronization
-  if (!goog.isDef(cesiumObject)) {
+/**
+ * Order counterparts using the same algorithm as the Openlayers renderer:
+ * z-index then original sequence order.
+ * @protected
+ */
+olcs.AbstractSynchronizer.prototype.orderLayers = function() {
+  // Ordering logics is handled in subclasses.
+};
+
+
+/**
+ * Add a layer hierarchy.
+ * @param {ol.layer.Base} root
+ * @private
+ */
+olcs.AbstractSynchronizer.prototype.addLayers_ = function(root) {
+  var layers = [];
+  var groups = [];
+  olcs.AbstractSynchronizer.flattenLayers(root, layers, groups);
+
+  layers.forEach(function(olLayer) {
+    if (goog.isNull(olLayer)) {
+      return;
+    }
+    var olLayerId = goog.getUid(olLayer);
+
+    var cesiumObject = this.layerMap[olLayerId];
+    goog.asserts.assert(!goog.isDef(cesiumObject));
+
+    // no mapping -> create new layer and set up synchronization
     cesiumObject = this.createSingleCounterpart(olLayer);
-    this.layerMap[olLayerId] = cesiumObject;
-  }
 
-  // add Cesium layers
-  if (goog.isDefAndNotNull(cesiumObject)) {
-    this.addCesiumObject(cesiumObject);
-    delete this.unusedCesiumObjects_[cesiumObject];
+    // add Cesium layers
+    if (!goog.isNull(cesiumObject)) {
+      cesiumObject.zIndex = olLayer.getZIndex();
+      this.addCesiumObject(cesiumObject);
+      this.layerMap[olLayerId] = cesiumObject;
+      this.olLayerListenKeys_[olLayerId] = olLayer.on('change:zIndex',
+          this.orderLayers, this);
+    }
+  }, this);
+
+  groups.forEach(function(el) {
+    this.listenForGroupChanges_(el);
+  }, this);
+
+  this.orderLayers();
+};
+
+
+/**
+ * Remove and destroy a single layer.
+ * @param {ol.layer.Layer} layer
+ * @private
+ */
+olcs.AbstractSynchronizer.prototype.removeAndDestroySingleLayer_ =
+    function(layer) {
+  var uid = goog.getUid(layer);
+  var counterpart = this.layerMap[uid];
+  if (!!counterpart) {
+    this.removeSingleCesiumObject(counterpart, false);
+    this.destroyCesiumObject(counterpart);
+    ol.Observable.unByKey(this.olLayerListenKeys_[uid]);
+    delete this.olLayerListenKeys_[uid];
   }
+  delete this.layerMap[uid];
+};
+
+
+/**
+ * Unlisten a single layer group.
+ * @param {ol.layer.Group} group
+ * @private
+ */
+olcs.AbstractSynchronizer.prototype.unlistenSingleGroup_ =
+    function(group) {
+  if (group === this.mapLayerGroup) {
+    return;
+  }
+  var uid = goog.getUid(group);
+  var keys = this.olGroupListenKeys_[uid];
+  keys.forEach(function(key) {
+    ol.Observable.unByKey(key);
+  });
+  delete this.olGroupListenKeys_[uid];
+};
+
+
+/**
+ * Remove layer hierarchy.
+ * @param {ol.layer.Base} root
+ * @private
+ */
+olcs.AbstractSynchronizer.prototype.removeLayer_ = function(root) {
+  if (!root) {
+    return;
+  }
+  var layers = [];
+  var groups = [];
+  olcs.AbstractSynchronizer.flattenLayers(root, layers, groups);
+
+  layers.forEach(function(el) {
+    this.removeAndDestroySingleLayer_(el);
+  }, this);
+
+  groups.forEach(function(el) {
+    this.unlistenSingleGroup_(el);
+  }, this);
+};
+
+
+/**
+ * Register listeners for single layer group change.
+ * @param {ol.layer.Group} group
+ * @private
+ */
+olcs.AbstractSynchronizer.prototype.listenForGroupChanges_ = function(group) {
+  var uuid = goog.getUid(group);
+
+  goog.asserts.assert(!goog.isDef(this.olGroupListenKeys_[uuid]));
+
+  var listenKeyArray = [];
+  this.olGroupListenKeys_[uuid] = listenKeyArray;
+
+  // only the keys that need to be relistened when collection changes
+  var contentKeys = [];
+  var listenAddRemove = goog.bind(function() {
+    var collection = group.getLayers();
+    if (goog.isDef(collection)) {
+      contentKeys = [
+        collection.on('add', function(event) {
+          this.addLayers_(event.element);
+        }, this),
+        collection.on('remove', function(event) {
+          this.removeLayer_(event.element);
+        }, this)
+      ];
+      listenKeyArray.push.apply(listenKeyArray, contentKeys);
+    }
+  }, this);
+
+  listenAddRemove();
+
+  listenKeyArray.push(group.on('change:layers', function(e) {
+    goog.array.forEach(contentKeys, function(el) {
+      goog.array.remove(listenKeyArray, el);
+      ol.Observable.unByKey(el);
+    });
+    listenAddRemove();
+  }));
 };
 
 
@@ -118145,6 +118274,12 @@ olcs.AbstractSynchronizer.prototype.synchronizeSingle = function(olLayer) {
  */
 olcs.AbstractSynchronizer.prototype.destroyAll = function() {
   this.removeAllCesiumObjects(true); // destroy
+  goog.object.forEach(this.olGroupListenKeys, function(keys) {
+    keys.forEach(ol.Observable.unByKey);
+  });
+  goog.object.forEach(this.olLayerListenKeys, ol.Observable.unByKey);
+  this.olGroupListenKeys = {};
+  this.olLayerListenKeys = {};
   this.layerMap = {};
 };
 
@@ -118162,6 +118297,16 @@ olcs.AbstractSynchronizer.prototype.addCesiumObject = goog.abstractMethod;
  * @protected
  */
 olcs.AbstractSynchronizer.prototype.destroyCesiumObject = goog.abstractMethod;
+
+
+/**
+ * Remove single Cesium object from the collection.
+ * @param {!T} object
+ * @param {boolean} destroy
+ * @protected
+ */
+olcs.AbstractSynchronizer.prototype.removeSingleCesiumObject =
+    goog.abstractMethod;
 
 
 /**
@@ -119483,6 +119628,8 @@ olcs.Camera.prototype.calcResolutionForDistance_ = function(distance,
 
 goog.provide('olcs.core.VectorLayerCounterpart');
 
+goog.require('ol.Observable');
+
 
 
 /**
@@ -119494,6 +119641,11 @@ goog.provide('olcs.core.VectorLayerCounterpart');
 olcs.core.VectorLayerCounterpart = function(layerProjection, scene) {
   var billboards = new Cesium.BillboardCollection({scene: scene});
   var primitives = new Cesium.PrimitiveCollection();
+
+  /**
+   * @type {!Array.<goog.events.Key>}
+   */
+  this.olListenKeys = [];
 
   this.rootCollection_ = new Cesium.PrimitiveCollection();
   /**
@@ -119508,6 +119660,15 @@ olcs.core.VectorLayerCounterpart = function(layerProjection, scene) {
 
   this.rootCollection_.add(billboards);
   this.rootCollection_.add(primitives);
+};
+
+
+/**
+ * Unlisten.
+ */
+olcs.core.VectorLayerCounterpart.prototype.destroy = function() {
+  this.olListenKeys.forEach(ol.Observable.unByKey);
+  this.olListenKeys.length = 0;
 };
 
 
@@ -120218,7 +120379,9 @@ olcs.FeatureConverter.prototype.olPointGeometryToCesium =
   if (image instanceof Image && !isImageLoaded(image)) {
     // Cesium requires the image to be loaded
     var listener = function() {
-      reallyCreateBillboard();
+      if (!billboards.isDestroyed()) {
+        reallyCreateBillboard();
+      }
     };
 
     goog.events.listenOnce(image, 'load', listener);
@@ -120690,6 +120853,16 @@ olcs.RasterSynchronizer.prototype.destroyCesiumObject = function(object) {
 /**
  * @inheritDoc
  */
+olcs.RasterSynchronizer.prototype.removeSingleCesiumObject =
+    function(object, destroy) {
+  this.cesiumLayers_.remove(object, destroy);
+  this.ourLayers_.remove(object, false);
+};
+
+
+/**
+ * @inheritDoc
+ */
 olcs.RasterSynchronizer.prototype.removeAllCesiumObjects = function(destroy) {
   for (var i = 0; i < this.ourLayers_.length; ++i) {
     this.cesiumLayers_.remove(this.ourLayers_.get(i), destroy);
@@ -120752,6 +120925,40 @@ olcs.RasterSynchronizer.prototype.createSingleCounterpart = function(olLayer) {
   return cesiumObject;
 };
 
+
+/**
+ * Order counterparts using the same algorithm as the Openlayers renderer:
+ * z-index then original sequence order.
+ * @protected
+ */
+olcs.RasterSynchronizer.prototype.orderLayers = function() {
+  var layers = [];
+  var groups = [];
+  var zIndices = {};
+  olcs.AbstractSynchronizer.flattenLayers(this.mapLayerGroup, layers, groups,
+      zIndices);
+
+  goog.array.stableSort(layers, function(layer1, layer2) {
+    return zIndices[goog.getUid(layer1)] - zIndices[goog.getUid(layer2)];
+  });
+
+  layers.forEach(function(olLayer) {
+    var olLayerId = goog.getUid(olLayer);
+    var cesiumObject = this.layerMap[olLayerId];
+    if (cesiumObject) {
+      this.raiseToTop(cesiumObject);
+    }
+  }, this);
+};
+
+
+/**
+ * @param {Cesium.ImageryLayer} counterpart
+ */
+olcs.RasterSynchronizer.prototype.raiseToTop = function(counterpart) {
+  this.cesiumLayers_.raiseToTop(counterpart);
+};
+
 goog.provide('olcs.VectorSynchronizer');
 
 goog.require('ol.layer.Vector');
@@ -120795,6 +121002,7 @@ goog.inherits(olcs.VectorSynchronizer, olcs.AbstractSynchronizer);
  */
 olcs.VectorSynchronizer.prototype.addCesiumObject = function(counterpart) {
   goog.asserts.assert(!goog.isNull(counterpart));
+  counterpart.getRootPrimitive()['counterpart'] = counterpart;
   this.csAllPrimitives_.add(counterpart.getRootPrimitive());
 };
 
@@ -120810,8 +121018,25 @@ olcs.VectorSynchronizer.prototype.destroyCesiumObject = function(object) {
 /**
  * @inheritDoc
  */
+olcs.VectorSynchronizer.prototype.removeSingleCesiumObject =
+    function(object, destroy) {
+  object.destroy();
+  this.csAllPrimitives_.destroyPrimitives = destroy;
+  this.csAllPrimitives_.remove(object.getRootPrimitive());
+  this.csAllPrimitives_.destroyPrimitives = false;
+};
+
+
+/**
+ * @inheritDoc
+ */
 olcs.VectorSynchronizer.prototype.removeAllCesiumObjects = function(destroy) {
   this.csAllPrimitives_.destroyPrimitives = destroy;
+  if (destroy) {
+    for (var i = 0; i < this.csAllPrimitives_.length; ++i) {
+      this.csAllPrimitives_.get(i)['counterpart'].destroy();
+    }
+  }
   this.csAllPrimitives_.removeAll();
   this.csAllPrimitives_.destroyPrimitives = false;
 };
@@ -120833,10 +121058,11 @@ olcs.VectorSynchronizer.prototype.createSingleCounterpart = function(olLayer) {
   var counterpart = this.converter.olVectorLayerToCesium(olLayer, view,
       featurePrimitiveMap);
   var csPrimitives = counterpart.getRootPrimitive();
+  var olListenKeys = counterpart.olListenKeys;
 
-  olLayer.on('change:visible', function(e) {
+  olListenKeys.push(olLayer.on('change:visible', function(e) {
     csPrimitives.show = olLayer.getVisible();
-  });
+  }));
 
   var onAddFeature = goog.bind(function(feature) {
     goog.asserts.assertInstanceof(olLayer, ol.layer.Vector);
@@ -120866,22 +121092,22 @@ olcs.VectorSynchronizer.prototype.createSingleCounterpart = function(olLayer) {
     }
   }, this);
 
-  source.on('addfeature', function(e) {
+  olListenKeys.push(source.on('addfeature', function(e) {
     goog.asserts.assert(goog.isDefAndNotNull(e.feature));
     onAddFeature(e.feature);
-  }, this);
+  }, this));
 
-  source.on('removefeature', function(e) {
+  olListenKeys.push(source.on('removefeature', function(e) {
     goog.asserts.assert(goog.isDefAndNotNull(e.feature));
     onRemoveFeature(e.feature);
-  }, this);
+  }, this));
 
-  source.on('changefeature', function(e) {
+  olListenKeys.push(source.on('changefeature', function(e) {
     var feature = e.feature;
     goog.asserts.assert(goog.isDefAndNotNull(feature));
     onRemoveFeature(feature);
     onAddFeature(feature);
-  }, this);
+  }, this));
 
   return counterpart;
 };
