@@ -48,11 +48,17 @@ goog.provide('ga_controls3d_directive');
 
         scope.tilt = function(angle) {
           angle = Cesium.Math.toRadians(angle);
-          var pivot = olcs.core.pickBottomPoint(scene);
-          if (pivot) {
-            var transform = Cesium.Matrix4.fromTranslation(pivot);
+          var bottom = olcs.core.pickBottomPoint(scene);
+          if (bottom) {
+            var transform = Cesium.Matrix4.fromTranslation(bottom);
             olcs.core.rotateAroundAxis(camera, -angle, camera.right, transform);
           }
+        };
+
+        scope.resetTilt = function() {
+          // reset the tilt to 50 degrees
+          var angle = -camera.pitch - Cesium.Math.toRadians(50);
+          scope.tilt(Cesium.Math.toDegrees(angle));
         };
 
         scope.rotate = function(angle) {
@@ -61,6 +67,17 @@ goog.provide('ga_controls3d_directive');
           if (bottom) {
             olcs.core.setHeadingUsingBottomCenter(scene, angle, bottom);
           }
+        };
+
+        scope.resetRotation = function() {
+          var angle = -camera.heading;
+          while (angle < -Math.PI) {
+            angle += Cesium.Math.TWO_PI;
+          }
+          while (angle > Math.PI) {
+            angle -= Cesium.Math.TWO_PI;
+          }
+          scope.rotate(Cesium.Math.toDegrees(angle));
         };
 
       }
