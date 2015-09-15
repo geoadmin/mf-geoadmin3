@@ -116,16 +116,17 @@ goog.require('ga_permalink');
 
                 // initial location based on query params
                 var position, heading, pitch;
-                if (params.lon && params.lat && params.elevation) {
+                if (isFinite(params.lon) && isFinite(params.lat) &&
+                    isFinite(params.elevation)) {
                   var lon = Cesium.Math.toRadians(parseFloat(params.lon));
                   var lat = Cesium.Math.toRadians(parseFloat(params.lat));
                   var elevation = parseFloat(params.elevation);
                   position = new Cesium.Cartographic(lon, lat, elevation);
                 }
-                if (params.heading) {
+                if (isFinite(params.heading)) {
                   heading = Cesium.Math.toRadians(parseFloat(params.heading));
                 }
-                if (params.pitch) {
+                if (isFinite(params.pitch)) {
                   pitch = Cesium.Math.toRadians(parseFloat(params.pitch));
                 }
                 camera.setView({
