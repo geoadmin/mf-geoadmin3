@@ -382,6 +382,7 @@ class Topics(Base):
     availableLangs = Column('lang', Text)
     selectedLayers = Column('selected_layers', postgresql.ARRAY(Text))
     defaultBackground = Column('default_background', Text)
+    activatedLayers = Column('activated_layers', postgresql.ARRAY(Text))
     backgroundLayers = Column('background_layers', postgresql.ARRAY(Text))
     showCatalog = Column('show_catalog', Boolean)
     staging = Column('staging', Text)
