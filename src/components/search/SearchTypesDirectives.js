@@ -195,6 +195,7 @@ goog.require('ga_urlutils_service');
 
       var cancel = function() {
         $scope.results = [];
+        $scope.fuzzy = '';
         if (canceler !== undefined) {
           canceler.resolve();
           canceler = undefined;
@@ -218,6 +219,9 @@ goog.require('ga_urlutils_service');
           timeout: canceler.promise
         }).success(function(data) {
           $scope.results = data.results;
+          if (data.fuzzy) {
+            $scope.fuzzy = '_fuzzy';
+          }
           $scope.options.announceResults($scope.type, data.results.length);
         }).error(function(data, statuscode) {
           // If request is canceled, statuscode is 0 and we don't announce it
@@ -288,6 +292,8 @@ goog.require('ga_urlutils_service');
       $scope.cleanLabel = function(attrs) {
         return gaSearchLabels.cleanLabel(attrs.label);
       };
+
+      $scope.fuzzy = '';
 
       $scope.$watch('options.query', function(newval) {
         //cancel old requests
