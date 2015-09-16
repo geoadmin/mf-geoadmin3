@@ -6,35 +6,42 @@
   bottom: 52px;
   margin-left: auto;
   margin-right: auto;
-  width: 150px;
+  width: 160px;
   @media (max-width: @screen-tablet) {
     bottom: 24px;
   }
   .ga-tilt, .ga-rotate {
     display: inline-block;
     text-align: center;
-    background-color: #fff;
-    border: 1px solid #bdbdbd;
-    height: 100px;
-    width: 70px;
+    background-image: data-uri('white_rounded_bckgd.png');
+    height: 105px;
+    width: 74px;
     .ga-indicator {
       cursor: pointer;
       background-position: center center;
       background-repeat: no-repeat;
       height: 68px;
+      margin-top: 3px;
+    }
+    .ga-inc, .ga-dec {
+      cursor: pointer;
+      display: inline-block;
+      width: 32px;
+      height: 30px;
     }
     .ga-inc {
-
+      background-image: data-uri('left_arrow_red.png');
     }
     .ga-dec {
+      background-image: data-uri('right_arrow_red.png');
 
     }
   }
   .ga-tilt .ga-indicator {
-    background-image: data-uri('tilt.png');
+    background-image: data-uri('icon_left_tilt.png');
   }
   .ga-rotate .ga-indicator {
-    background-image: data-uri('rotate.png');
+    background-image: data-uri('icon_right_roll.png');
   }
 
 }

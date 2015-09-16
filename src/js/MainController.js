@@ -89,6 +89,9 @@ goog.require('ga_topic_service');
       });
       cesiumViewer.setEnabled(enabled);
       var scene = cesiumViewer.getCesiumScene();
+      scene.camera.setView({
+        pitch: -Cesium.Math.toRadians(50)
+      });
       scene.globe.depthTestAgainstTerrain = true;
       scene.terrainProvider =
           gaLayers.getCesiumTerrainProviderById(gaGlobalOptions.defaultTerrain);

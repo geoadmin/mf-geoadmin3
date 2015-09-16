@@ -41,13 +41,17 @@ goog.provide('ga_controls3d_directive');
         scene.postRender.addEventListener(function() {
           if (moving) {
             var tiltOnGlobe = olcs.core.computeSignedTiltAngleOnGlobe(scene);
-            cssRotate(tiltIndicator, -tiltOnGlobe);
+            cssRotate(tiltIndicator, -tiltOnGlobe - Cesium.Math.PI_OVER_TWO);
             cssRotate(rotateIndicator, -camera.heading);
           }
         });
 
         scope.tilt = function(angle) {
           angle = Cesium.Math.toRadians(angle);
+          var finalAngle = camera.pitch + angle;
+          if (finalAngle > 0 || finalAngle < -Cesium.Math.PI_OVER_TWO) {
+            return;
+          }
           var bottom = olcs.core.pickBottomPoint(scene);
           if (bottom) {
             var transform = Cesium.Matrix4.fromTranslation(bottom);
