@@ -129,7 +129,6 @@ goog.require('ga_urlutils_service');
 
     return {
       restrict: 'A',
-      replace: true,
       templateUrl: 'components/layermanager/partials/layermanager.html',
       scope: {
         map: '=gaLayermanagerMap'

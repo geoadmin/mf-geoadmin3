@@ -198,15 +198,23 @@ describe('ga_map_service', function() {
         topic, topicLoaded = {
           id: 'sometopic',
           backgroundLayers: ['bar'],
-          selectedLayers: []
+          selectedLayers: [],
+          activatedLayers: []
         }, topicLoaded2 = {
           id: 'sometopic2',
           backgroundLayers: ['bar2'],
-          selectedLayers: ['foo', 'bar']
+          selectedLayers: ['foo', 'bar'],
+          activatedLayers: []
         }, topicLoaded3 = {
           id: 'sometopic3',
           backgroundLayers: ['bar3'],
-          selectedLayers: ['foo2', 'bar2']
+          selectedLayers: ['foo2', 'bar2'],
+          activatedLayers: []
+        }, topicLoaded4 = {
+          id: 'sometopic4',
+          backgroundLayers: ['bar4'],
+          selectedLayers: [],
+          activatedLayers: ['foo3', 'bar3']
         };
 
     beforeEach(function() {

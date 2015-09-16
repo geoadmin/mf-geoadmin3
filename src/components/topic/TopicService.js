@@ -23,6 +23,9 @@ goog.require('ga_permalink');
             value.tooltip = 'topic_' + value.id + '_tooltip';
             value.langs = angular.isString(value.langs) ?
                 value.langs.split(',') : value.langs;
+            if (!value.activatedLayers) {
+              value.activatedLayers = [];
+            }
           });
           topic = getTopicById(gaPermalink.getParams().topic, true);
           if (topic) {

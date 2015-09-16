@@ -1806,6 +1806,10 @@ goog.require('ga_urlutils_service');
 
         var addTopicSelectedLayers = function() {
           addLayers(gaTopic.get().selectedLayers.slice(0).reverse());
+          var activatedLayers = gaTopic.get().activatedLayers;
+          if (activatedLayers.length) {
+            addLayers(activatedLayers.slice(0).reverse(), null, false);
+          }
         };
 
         var addLayers = function(layerSpecs, opacities, visibilities,
@@ -1815,8 +1819,9 @@ goog.require('ga_urlutils_service');
             var layer;
             var opacity = (opacities && index < opacities.length) ?
                 opacities[index] : undefined;
-            var visible = (visibilities && index < visibilities.length &&
-                visibilities[index] == 'false') ?
+            var visible = (visibilities === false ||
+                (angular.isArray(visibilities) &&
+                visibilities[index] == 'false')) ?
                 false : true;
             var timestamp = (timestamps && index < timestamps.length &&
                 timestamps != '') ? timestamps[index] : '';

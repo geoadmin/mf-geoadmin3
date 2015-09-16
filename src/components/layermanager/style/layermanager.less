@@ -1,12 +1,11 @@
 [ga-layermanager] {
+  padding: 0 !important;
+
   li {
     border-bottom: #e9e9e9 1px solid;
- 
-    @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
-      height: 3em;
-      padding: 0;
-      overflow: hidden;
-    }
+    height: 3em;
+    padding: 0;
+    overflow: hidden;
   }
 
   li, li > div {
@@ -31,25 +30,17 @@
     padding: 4px 0px 4px 2.2em;
     margin: 0;
     font-weight: normal;
-
-    @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
-      height: inherit;
-      line-height: 2.4em;
-    }
+    height: inherit;
+    line-height: 2.4em;
   }
 
   button {
     top: 0;
     height: 100%;
- 
-    @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
-      top: 0;
-      height: 100%;
-    }
   }
 
   input[type=range] {
-    width: 10em;
+    width: 6em;
     padding: 0px;
     height: 14px;
     vertical-align: middle;
@@ -70,10 +61,6 @@
       height: 12px;
       background: linear-gradient(to bottom, #eeeeee 0%,#cccccc 100%);
     } 
- 
-    @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
-      width: 6em;
-    }
   }
  
   .ga-layer-infos {
@@ -85,23 +72,24 @@
 
     label {
       width: 100%;
-      padding-right: 1.3em;
- 
+      padding-left: 2.1em;
+      padding-right: 2.1em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+
       @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
         padding-left: 2.8em;
-        padding-right: 2.1em;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
       }
     }
 
     .ga-layer-time {
       position: absolute;
-      top: 6px;
-      right: 1.7em;
       width: 4em;
-      height: 17px;
+      height: 1.7em;
+      top: 0px;
+      right: 2.7em;
+      margin: 0.6em 0;
 
       select, button {
         position: absolute;
@@ -118,87 +106,52 @@
         width: 110%; /* 10% more for the Android tablet */
         opacity: 0;
       }
- 
-      @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
-        top: 0px;
-        right: 2.7em;
-        height: 1.7em;
-        margin: 0.6em 0;
-      }
     }
     
     .icon-user {
       display: none;
       color: red;
     }
-     
-    .icon-info-sign {
-      right: 0;
- 
-      @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
-        display: none;
-      }
-    }
   }
 
   .ga-layer-warning {
     .icon-user {
       display: block;
-      right: 0;
-      
-      @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
-        right: 34px;
-      }
+      right: 34px;
     }
     
     .ga-layer-infos label {
-      @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
-        padding-right: 5.1em;
-      }
+      padding-right: 5.1em;
     }
   }
 
   .ga-layer-time-enabled .ga-layer-infos label {
-    padding-right: 6em;
- 
-    @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
-      padding-right: 7.7em;
-    }
+    padding-right: 7.7em;
   }
  
   .ga-layer-tools {
- 
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    background: #fff;
+    border-left: 3px solid #666;
+    .transition(margin-left .35s ease);
+
     label {
       font-size: 0.9em;
+      padding-left: 0.3em;
 
       > * {
         display: inline-block;
       }
-
-      @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
-        padding-left: 0.3em;
-      }
-    }
- 
-    @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
-      position: absolute;
-      height: 100%;
-      width: 100%;
-      top: 0;
-      left: 0;
-      background: #fff;
-      border-left: 3px solid #666;
-      .transition(margin-left .35s ease);
     }
   }
  
   .ga-layer-tools, .ga-layer-infos {
-    margin-bottom: 4px;
-
-    @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
-      height: 100%;
-      margin-bottom: 0;
-    }
+    height: 100%;
+    margin-bottom: 0;
   }
 
   .ga-layer-time-enabled .ga-layer-tools {
@@ -213,15 +166,12 @@
   }
 
   .icon-gear {
-    display: none;
+    display: block;
     position: absolute;
     right: 0;
-    .transition(all .35s ease);
+    .transition(transform .35s ease);
     .rotate(0deg);
-
-    @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
-      display: block;
-    }
+    color: red;
   }
 
   .ga-layer-ordering {
@@ -229,62 +179,46 @@
     top: 0;
     right: 0;
     height: 100%;
+    padding-right: 2.7em;
 
     button {
       height: 100%;
     }
- 
-    @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
-      padding-right: 2.7em;
-    }
-
     .icon-info-sign {
-      display: none;
-
-      @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
-        display: inline;
-      }
+      display: inline;
     }
   }
 
   .ga-no-layer {
     list-style: none;
     text-align: center;
-    padding: 10px 0px;
+    padding: 14px 0px;
+    color: lightgray;
+    font-weight: bold;
+    font-size: 1.5em;
   }
 
-  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
-    padding: 0 !important;
- 
-    .ga-layer-folded {
- 
-      .ga-layer-tools {
-        margin-left: 100%;
-      }
- 
-      .icon-gear {
-        .rotate(360deg);
-      }
+  .ga-layer-folded {
+
+    .ga-layer-tools {
+      margin-left: 100%;
+    }
+
+    .icon-gear {
+      .rotate(360deg);
+      color: black;
     }
   }
 }
 
 /* HACK for alignment in FF and IE */
 .no-webkit [ga-layermanager] .ga-layer-infos label {
-  margin-top: 1px;
-
-  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
-    margin-top: -1px;
-  }
+  margin-top: -1px;
 }
 
 /* The popover is outside the layermanager */
 .ga-layer-timestamps {
-  width: 250px;
- 
-  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
-    width: 200px;
-  }
+  width: 200px;
  
   & div {
     width: 50px;

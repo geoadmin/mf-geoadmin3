@@ -257,7 +257,7 @@ itemscope itemtype="http://schema.org/WebApplication"
       </div>
   % if device == 'desktop':
       <div class="pull-right">
-        <a target="_blank" href="{{topicId + '_service_link_href' | translate}}">{{topicId + '_service_link_label' | translate}}</a>
+        <a target="_blank" translate translate-attr-href="{{topicId + '_service_link_href'}}">{{topicId + '_service_link_label'}}</a>
       </div>
   % endif
     </div><!-- #footer -->
@@ -431,18 +431,27 @@ itemscope itemtype="http://schema.org/WebApplication"
 
         <!-- Selection -->
         <div class="panel" ng-hide="globals.isDrawActive">
-          <a id="selectionHeading" class="panel-heading accordion-toggle light"
-             data-toggle="collapse" href="#selection">
+          <a id="selectionHeading" class="panel-heading accordion-toggle light collapsed"
+             data-toggle="collapse" href="#selection"
+             ga-collapsible-show="globals.selectionShown">
             <i class="icon-caret-down"></i>
-            <span translate>layer_selection</span>
+            <span translate>layers_displayed</span>
 
 % if device == 'desktop':
             <span ga-help="34,35,36" ga-help-options="{showOnHover:true}"></span>
 % endif
           </a>
-          <div id="selection" class="collapse in"
-               ga-collapsible-observe="globals.selectionShown">
+          <div id="selection" class="collapse">
             <div class="panel-body panel-body-wide" ga-layermanager ga-layermanager-map="map">
+            </div>
+            <div class="ga-more-layers"
+  % if device == 'mobile':
+                 ng-click="globals.pulldownShown = !globals.phone"
+  % endif
+            >
+              <a href="" ga-help-highlight=".ga-search-input-container input" translate>
+                help_search_data_link
+              </a>
             </div>
           </div>
         </div> <!-- .panel -->
@@ -471,7 +480,7 @@ itemscope itemtype="http://schema.org/WebApplication"
               </div>
               <hr>
               <p>
-                <a target="_blank" href="{{topicId + '_service_link_href' | translate}}">{{topicId + '_service_link_label' | translate}}</a>
+                <a target="_blank" translate translate-attr-href="{{topicId + '_service_link_href'}}" >{{topicId + '_service_link_label'}}</a>
                 <br>
                 <a target="_blank" href="http://www.geo.admin.ch/internet/geoportal/{{langId}}/home/geoadmin/contact.html#copyright" translate>copyright_label</a>
               </p>

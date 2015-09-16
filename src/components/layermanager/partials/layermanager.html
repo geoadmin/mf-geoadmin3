@@ -6,7 +6,8 @@
         'ga-layer-warning': layer.useThirdPartyData
       }">
     <div class="ga-layer-infos">
-      <button class="ga-icon ga-btn icon-remove-sign" ng-click="removeLayer(layer)"></button>
+      <button class="ga-icon ga-btn icon-remove-sign"
+              ng-click="removeLayer(layer)"></button>
       <label class="ga-checkbox">
         <input type="checkbox" ng-model="layer.visible" />
         <span></span>
@@ -24,8 +25,8 @@
       </div>
       <button class="ga-icon ga-btn icon-user"
               ng-click="showWarning(layer)"></button>
-      <button ng-if="isBodLayer(layer)" class="ga-icon ga-btn icon-info-sign"
-              ng-click="displayLayerMetadata($event, layer)"></button>
+      <!--button ng-if="isBodLayer(layer)" class="ga-icon ga-btn icon-info-sign"
+              ng-click="displayLayerMetadata($event, layer)"></button-->
     </div>
     <div class="ga-layer-tools">
       <label>

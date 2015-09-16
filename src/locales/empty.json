@@ -7,7 +7,7 @@
   "map_tools": "",
   "choose_theme": "",
   "catalog": "",
-  "layer_selection": "",
+  "layers_displayed": "",
   "close_menu": "",
   "open_menu": "",
   "position": "",
@@ -349,5 +349,8 @@
   "draw_back": "",
   "draw_share_admin_link": "",
   "draw_share_user_link": "",
-  "copyright_data": ""
+  "copyright_data": "",
+  "help_search_data_link": "",
+  "help_search_data_title": "",
+  "help_search_data": ""
 }

@@ -4,6 +4,7 @@ goog.require('ga_background_service');
 goog.require('ga_map');
 goog.require('ga_networkstatus_service');
 goog.require('ga_storage_service');
+goog.require('ga_topic_service');
 (function() {
 
 
@@ -12,7 +13,8 @@ goog.require('ga_storage_service');
     'ga_map',
     'ga_networkstatus_service',
     'ga_storage_service',
-    'ga_background_service'
+    'ga_background_service',
+    'ga_topic_service'
   ]);
 
   /**
@@ -22,7 +24,7 @@ goog.require('ga_storage_service');
       $translate, $window, $document, gaBrowserSniffer, gaHistory,
       gaFeaturesPermalinkManager, gaLayersPermalinkManager, gaMapUtils,
       gaRealtimeLayersManager, gaNetworkStatus, gaPermalink, gaStorage,
-      gaGlobalOptions, gaBackground, gaTime, gaLayers) {
+      gaGlobalOptions, gaBackground, gaTime, gaLayers, gaTopic) {
 
     var createMap = function() {
       var toolbar = $('#zoomButtons')[0];
@@ -193,32 +195,36 @@ goog.require('ga_storage_service');
         !!(gaPermalink.getParams().adminId);
     gaPermalink.deleteParam('widgets');
 
-    $rootScope.$on('gaTopicChange', function(event, topic) {
+    var onTopicChange = function(event, topic) {
+      $scope.topicId = topic.id;
+
       // iOS 7 minimal-ui meta tag bug
       if (gaBrowserSniffer.ios) {
         $window.scrollTo(0, 0);
       }
+      if (topic.activatedLayers.length) {
+        $scope.globals.selectionShown = true;
+        $scope.globals.catalogShown = false;
+      } else if (topic.selectedLayers.length) {
+        $scope.globals.catalogShown = true;
+        $scope.globals.selectionShown = false;
+      }
+    };
+    gaTopic.loadConfig().then(function() {
+      $scope.topicId = gaTopic.get().id;
 
-      $scope.topicId = topic.id;
-      var showCatalog = topic.showCatalog;
-      if (gaBrowserSniffer.mobile || isWindowTooSmall()) {
-        showCatalog = false;
-      }
-      if (!initWithPrint) {
-        $scope.globals.catalogShown = showCatalog;
-      } else {
+      if (initWithPrint) {
         $scope.globals.printShown = true;
-      }
-      initWithPrint = false;
-      if (initWithFeedback) {
+      } else if (initWithFeedback) {
         $scope.globals.feedbackPopupShown = initWithFeedback;
-      }
-      initWithFeedback = false;
-      if (initWithDraw) {
+      } else if (initWithDraw) {
         $scope.globals.isDrawActive = initWithDraw;
+      } else {
+        onTopicChange(null, gaTopic.get());
       }
-      initWithDraw = false;
+      $rootScope.$on('gaTopicChange', onTopicChange);
     });
+
     $rootScope.$on('$translateChangeEnd', function() {
       $scope.langId = $translate.use();
       var descr = $translate.instant('page_description');
@@ -250,6 +256,7 @@ goog.require('ga_storage_service');
       searchFocused: !gaBrowserSniffer.mobile,
       homescreen: false,
       tablet: gaBrowserSniffer.mobile && !gaBrowserSniffer.phone,
+      phone: gaBrowserSniffer.phone,
       touch: gaBrowserSniffer.touchDevice,
       webkit: gaBrowserSniffer.webkit,
       ios: gaBrowserSniffer.ios,
@@ -257,6 +264,8 @@ goog.require('ga_storage_service');
       embed: gaBrowserSniffer.embed,
       pulldownShown: !(gaBrowserSniffer.mobile || $($window).width() <= 1024),
       printShown: false,
+      catalogShown: false,
+      selectionShown: false,
       feedbackPopupShown: false,
       isShareActive: false,
       isDrawActive: false,
