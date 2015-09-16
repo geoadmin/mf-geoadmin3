@@ -1,32 +1,24 @@
 goog.provide('ga_marker_overlay_service');
+
+goog.require('ga_map_service');
+goog.require('ga_styles_service');
+
 (function() {
 
-  var module = angular.module('ga_marker_overlay_service', []);
+  var module = angular.module('ga_marker_overlay_service', [
+    'ga_map_service',
+    'ga_styles_service'
+  ]);
 
   module.provider('gaMarkerOverlay', function() {
 
-    this.$get = function(gaStyleFactory) {
-      var bbox, isAlwaysVisible;
-      var source, layer;
-      var feature = null;
-
-      /** @const */
-      var style = new ol.style.Style({
-        image: new ol.style.Icon({
-          anchor: [0.5, 46],
-          anchorXUnits: 'fraction',
-          anchorYUnits: 'pixels',
-          src: 'img/marker.png'
-        })
-      });
+    this.$get = function(gaStyleFactory, gaMapUtils) {
+      var bbox, isAlwaysVisible, layer;
 
       function initialize(map) {
         if (!layer) {
-          source = new ol.source.Vector();
-          layer = new ol.layer.Vector({
-            source: source
-          });
-          layer.set('altitudeMode', 'clampToGround');
+          layer = gaMapUtils.getFeatureOverlay([],
+              gaStyleFactory.getStyle('marker'));
           map.addLayer(layer);
         }
       }
@@ -40,35 +32,30 @@ goog.provide('ga_marker_overlay_service');
         initialize(map);
         bbox = extent;
         removeMarker(map);
-        feature = new ol.Feature({
-          geometry: new ol.geom.Point(center),
-          style: style
-        });
         isAlwaysVisible = visible;
         setVisibility(map.getView().getZoom());
-        source.addFeature(feature);
+        layer.getSource().addFeature(new ol.Feature({
+          geometry: new ol.geom.Point(center)
+        }));
       }
 
       function setVisibility(zoom) {
         if (isAlwaysVisible) {
-          feature.setStyle(style);
+          layer.setVisible(true);
           return;
         }
-        if (feature) {
-          if (!isPointData()) {
-            if (zoom > 6) {
-              feature.setStyle(null);
-            } else {
-              feature.setStyle(style);
-            }
+        if (!isPointData()) {
+          if (zoom > 6) {
+            layer.setVisible(false);
+          } else {
+            layer.setVisible(true);
           }
         }
       }
 
       function removeMarker(map) {
-        if (feature) {
-          source.clear();
-          feature = null;
+        if (layer) {
+          layer.getSource().clear();
         }
       }
 

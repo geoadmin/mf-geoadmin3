@@ -1304,7 +1304,7 @@ goog.require('ga_urlutils_service');
       return {
         Z_PREVIEW_LAYER: 1000,
         Z_PREVIEW_FEATURE: 1100,
-        Z_LOCATION_MARKER: 2000,
+        Z_FEATURE_OVERLAY: 2000,
         preload: 6, //Number of upper zoom to preload when offline
         defaultExtent: gaGlobalOptions.defaultExtent,
         viewResolutions: resolutions,
@@ -1485,7 +1485,8 @@ goog.require('ga_urlutils_service');
             }),
             style: style,
             updateWhileAnimating: true,
-            updateWhileInteracting: true
+            updateWhileInteracting: true,
+            zIndex: this.Z_FEATURE_OVERLAY
           });
           layer.set('altitudeMode', 'clampToGround');
           return layer;
