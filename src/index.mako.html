@@ -213,7 +213,7 @@ itemscope itemtype="http://schema.org/WebApplication"
   % endif
         <div ga-rotate ga-rotate-map="map" ng-show="!globals.is3dActive"></div>
   % if device == 'mobile':
-        <div ga-offline-bt></div>
+        <div ga-offline-bt ng-show="!globals.is3dActive"></div>
   % endif
         <div ga-tilt3d ng-if="globals.dev3d"></div>
       </div>
