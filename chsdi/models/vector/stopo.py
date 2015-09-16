@@ -11,6 +11,21 @@ from chsdi.models.vector import Vector
 Base = bases['stopo']
 
 
+class DosisleistungTerrestrisch (Base, Vector):
+    __tablename__ = 'dosisleistung_terrestrisch'
+    __table_args__ = ({'schema': 'geol', 'autoload': False})
+    __template__ = 'templates/htmlpopup/dosisleistung_terrestrisch.mako'
+    __bodId__ = 'ch.swisstopo.geologie-dosisleistung-terrestrisch'
+    __queryable_attributes__ = ['contour']
+    __label__ = 'contour'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    contour = Column('contour', Numeric)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+
+register('ch.swisstopo.geologie-dosisleistung-terrestrisch', DosisleistungTerrestrisch)
+
+
 class GravimetrischerAtlasMetadata (Base, Vector):
     __tablename__ = 'gravimetrie_atlas_metadata'
     __table_args__ = ({'schema': 'geol', 'autoload': False})

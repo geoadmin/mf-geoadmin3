@@ -3615,6 +3615,12 @@ msgstr "Geoide in CH1903"
 msgid "ch.swisstopo.geoidmodell-etrs89"
 msgstr "Geoide in ETRS89"
 
+msgid "ch.swisstopo.geologie-dosisleistung-terrestrisch"
+msgstr "Radiazione terrestre"
+
+msgid "ch.swisstopo.geologie-dosisleistung-terrestrisch.contour"
+msgstr "Débit de dose d´origine terrestre [nSv/h]"
+
 msgid "ch.swisstopo.geologie-eiszeit-lgm-raster"
 msgstr "Ultimo massimo glaciale 500"
 
@@ -3627,8 +3633,9 @@ msgstr "Divisione carta geol. generale 200"
 msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata.autor"
 msgstr "Autori"
 
+#. TODO
 msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata.ggk_nr"
-msgstr "numero di carta"
+msgstr "ch.swisstopo.geologie-generalkarte-ggk200.metadata.ggk_nr"
 
 msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata.jahr"
 msgstr "L'anno di edizione"
