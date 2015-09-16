@@ -56,19 +56,6 @@ def _zeitreihen(d, api_url):
     return timestamps
 
 
-def _get_extent_around_center(display, bbox, center, pixels):
-    xPerPixel = abs(bbox[0] - bbox[2]) / display[0]
-    yPerPixel = abs(bbox[1] - bbox[3]) / display[1]
-    xCorr = xPerPixel * pixels
-    yCorr = yPerPixel * pixels
-    return [
-        center[0] - xCorr,
-        center[1] - yCorr,
-        center[0] + xCorr,
-        center[1] + yCorr
-    ]
-
-
 def _increment_info(l, filename):
     l.acquire()
     try:
@@ -86,6 +73,16 @@ def _increment_info(l, filename):
         l.release()
 
 
+def _normalize_imageDisplay(mapExtent, display):
+    # We assume x/y to correspond
+    targetDPI = 96
+    inches = abs(mapExtent[0] - mapExtent[2]) * 39.37
+    dpi = inches / display[0]
+    return str(int(display[0] * dpi / targetDPI)) + ',' + \
+        str(int(display[1] * dpi / targetDPI)) + ',' + \
+        str(targetDPI)
+
+
 def _get_timestamps(spec, api_url):
     '''Returns the layers indices to be printed for each timestamp
     For instance (u'19971231', [1, 2]), (u'19981231', [0, 1, 2])  '''
@@ -100,9 +97,9 @@ def _get_timestamps(spec, api_url):
                 page = spec['pages'][0]
                 display = page['display']
                 bbox = page['bbox']
-                center = page['center']
-                mapExtent = _get_extent_around_center(display, bbox, center, 0.5)
-                imageDisplay = '1,1,96'
+                mapExtent = bbox
+                mapExtent[3], mapExtent[1] = mapExtent[1], mapExtent[3]
+                imageDisplay = _normalize_imageDisplay(mapExtent, display)
                 timestamps = _zeitreihen({'mapExtent': ','.join(map(str, mapExtent)), 'imageDisplay': imageDisplay}, api_url)
                 log.debug('[_get_timestamps] Zeitreichen %s', timestamps)
             except:
