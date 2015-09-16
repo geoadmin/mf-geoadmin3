@@ -3627,9 +3627,8 @@ msgstr "Einteilung geol. Generalkarte 200"
 msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata.autor"
 msgstr "Autor(en)"
 
-#. TODO
 msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata.ggk_nr"
-msgstr "ch.swisstopo.geologie-generalkarte-ggk200.metadata.ggk_nr"
+msgstr "Kartenblatt"
 
 msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata.jahr"
 msgstr "Publikationsjahr"
@@ -5728,10 +5727,6 @@ msgstr "Sektion"
 
 msgid "sektor"
 msgstr "Sektor"
-
-#. TODO
-msgid "sgd_nr"
-msgstr "sgd_nr"
 
 msgid "sheetname"
 msgstr "Blattbezeichnung"

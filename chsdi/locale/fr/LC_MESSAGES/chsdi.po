@@ -3627,9 +3627,8 @@ msgstr "Découpage carte géol. générale 200"
 msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata.autor"
 msgstr "Auteur(s)"
 
-#. TODO
 msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata.ggk_nr"
-msgstr "ch.swisstopo.geologie-generalkarte-ggk200.metadata.ggk_nr"
+msgstr "Nombre de la feuille"
 
 msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata.jahr"
 msgstr "Année de publication"
@@ -5728,10 +5727,6 @@ msgstr "Section"
 
 msgid "sektor"
 msgstr "Secteur"
-
-#. TODO
-msgid "sgd_nr"
-msgstr "sgd_nr"
 
 msgid "sheetname"
 msgstr "Nom de feuille"

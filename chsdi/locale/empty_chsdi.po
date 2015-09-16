@@ -5880,9 +5880,6 @@ msgstr ""
 msgid "tt_ch.bafu.oekomorphologie-f_bauwerke_datum"
 msgstr ""
 
-msgid "sgd_nr"
-msgstr ""
-
 msgid "author"
 msgstr ""
 
