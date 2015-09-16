@@ -884,11 +884,13 @@ goog.require('ga_urlutils_service');
               // Tiled WMS (MapProxy)
               response.data['ch.swisstopo.swisstlm3d-karte-farbe_3d'] = {
                 type: 'wms',
-                singleTile: false
+                singleTile: false,
+                format: 'jpeg'
               };
               response.data['ch.swisstopo.swisstlm3d-karte-grau_3d'] = {
                 type: 'wms',
-                singleTile: false
+                singleTile: false,
+                format: 'jpeg'
               };
               response.data['ch.swisstopo.pixelkarte-grau_3d'] = {
                 attribution: 'tlm grau 3D',
