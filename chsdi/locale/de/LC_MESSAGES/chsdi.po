@@ -3342,7 +3342,7 @@ msgid "ch.blw.emapis-projektschwerpunkt"
 msgstr "Projektschwerpunkt"
 
 msgid "ch.blw.emapis-seilbahnen"
-msgstr "Seilbahn"
+msgstr "Seilbahnen"
 
 msgid "ch.blw.emapis-wasserversorgung"
 msgstr "Wasserversorgung"
@@ -3742,9 +3742,8 @@ msgstr "ch.swisstopo.geologie-gisgeol-flaechen-1000to21000km2.sgd_nr"
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-100to1000km2"
 msgstr "Geol. Dokumente (100-1000km2)"
 
-#. TODO
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-100to1000km2.sgd_nr"
-msgstr "ch.swisstopo.geologie-gisgeol-flaechen-100to1000km2.sgd_nr"
+msgstr "InfoGeol-Nr."
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-10to100km2"
 msgstr "Geol. Dokumente (10-100km2)"
@@ -4147,6 +4146,63 @@ msgstr "tamedia"
 
 msgid "ch.vbs"
 msgstr "VBS"
+
+msgid "ch.vbs.armeelogistikcenter"
+msgstr "Armeelogistikcenter ALC"
+
+msgid "ch.vbs.armeelogistikcenter.abkuerzung"
+msgstr "Abkürzung"
+
+msgid "ch.vbs.armeelogistikcenter.mail"
+msgstr "Email"
+
+msgid "ch.vbs.armeelogistikcenter.name"
+msgstr "Name"
+
+msgid "ch.vbs.armeelogistikcenter.url"
+msgstr "Link"
+
+msgid "ch.vbs.bundestankstellen-bebeco"
+msgstr "Tankstellen BEBECO"
+
+msgid "ch.vbs.bundestankstellen-bebeco.ort"
+msgstr "Ort"
+
+msgid "ch.vbs.grunddispositiv-zeus"
+msgstr "Zeus Karte"
+
+msgid "ch.vbs.logistikraeume-armeelogistikcenter"
+msgstr "Logistikräume ALC"
+
+msgid "ch.vbs.logistikraeume-armeelogistikcenter.kanton"
+msgstr "Kantone"
+
+msgid "ch.vbs.logistikraeume-armeelogistikcenter.region"
+msgstr "Region"
+
+msgid "ch.vbs.milairspacechart"
+msgstr "Mil Airspace Chart"
+
+msgid "ch.vbs.patrouilledesglaciers-a_rennen"
+msgstr "Patrouille des Glaciers (A Rennen)"
+
+msgid "ch.vbs.patrouilledesglaciers-a_rennen.name"
+msgstr "Name"
+
+msgid "ch.vbs.patrouilledesglaciers-z_rennen"
+msgstr "Patrouille des Glaciers (Z Rennen)"
+
+msgid "ch.vbs.patrouilledesglaciers-z_rennen.name"
+msgstr "Name"
+
+msgid "ch.vbs.retablierungsstellen"
+msgstr "Retablierungsstellen"
+
+msgid "ch.vbs.retablierungsstellen.name"
+msgstr "Name"
+
+msgid "ch.vbs.retablierungsstellen.url"
+msgstr "Link"
 
 msgid "ch.vbs.territorialregionen"
 msgstr "Territorialregionen"
@@ -5671,9 +5727,6 @@ msgstr "Sektion"
 
 msgid "sektor"
 msgstr "Sektor"
-
-msgid "sgd_nr"
-msgstr "InfoGeol-Nr."
 
 msgid "sheetname"
 msgstr "Blattbezeichnung"

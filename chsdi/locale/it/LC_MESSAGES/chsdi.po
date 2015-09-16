@@ -2697,7 +2697,7 @@ msgid "ch.bafu.wasser-teileinzugsgebiete_40"
 msgstr "Bacini imbriferi 40 km2"
 
 msgid "ch.bafu.wasser-vorfluter"
-msgstr "Type de régime d'écoulement"
+msgstr ""
 
 msgid "ch.bafu.wasserbau-querprofilmarken"
 msgstr "Point fixe du profil en travers"
@@ -3742,9 +3742,8 @@ msgstr "ch.swisstopo.geologie-gisgeol-flaechen-1000to21000km2.sgd_nr"
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-100to1000km2"
 msgstr "Documents géol. (100-1000km2)"
 
-#. TODO
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-100to1000km2.sgd_nr"
-msgstr "ch.swisstopo.geologie-gisgeol-flaechen-100to1000km2.sgd_nr"
+msgstr "N° InfoGeol"
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-10to100km2"
 msgstr "Documents géol. (10-100km2)"
@@ -4147,6 +4146,63 @@ msgstr "tamedia"
 
 msgid "ch.vbs"
 msgstr "DDPS"
+
+msgid "ch.vbs.armeelogistikcenter"
+msgstr "Centri logistici dell'esercito CLEs"
+
+msgid "ch.vbs.armeelogistikcenter.abkuerzung"
+msgstr "Abbreviazione"
+
+msgid "ch.vbs.armeelogistikcenter.mail"
+msgstr "Email"
+
+msgid "ch.vbs.armeelogistikcenter.name"
+msgstr "Nome"
+
+msgid "ch.vbs.armeelogistikcenter.url"
+msgstr "Link"
+
+msgid "ch.vbs.bundestankstellen-bebeco"
+msgstr "Stazioni di servizio BEBECO"
+
+msgid "ch.vbs.bundestankstellen-bebeco.ort"
+msgstr "Luogo"
+
+msgid "ch.vbs.grunddispositiv-zeus"
+msgstr "Carta "Zeus""
+
+msgid "ch.vbs.logistikraeume-armeelogistikcenter"
+msgstr "Settori logistici dei CLEs"
+
+msgid "ch.vbs.logistikraeume-armeelogistikcenter.kanton"
+msgstr "Cantoni"
+
+msgid "ch.vbs.logistikraeume-armeelogistikcenter.region"
+msgstr "Regione"
+
+msgid "ch.vbs.milairspacechart"
+msgstr "Mil Airspace Chart"
+
+msgid "ch.vbs.patrouilledesglaciers-a_rennen"
+msgstr "Patrouille des Glaciers (Percorso A)"
+
+msgid "ch.vbs.patrouilledesglaciers-a_rennen.name"
+msgstr "Nome"
+
+msgid "ch.vbs.patrouilledesglaciers-z_rennen"
+msgstr "Patrouille des Glaciers (Percorso Z)"
+
+msgid "ch.vbs.patrouilledesglaciers-z_rennen.name"
+msgstr "Nome"
+
+msgid "ch.vbs.retablierungsstellen"
+msgstr "Punti di ristabilimento"
+
+msgid "ch.vbs.retablierungsstellen.name"
+msgstr "Nome"
+
+msgid "ch.vbs.retablierungsstellen.url"
+msgstr "Link"
 
 msgid "ch.vbs.territorialregionen"
 msgstr "Regioni territoriali"
@@ -5671,9 +5727,6 @@ msgstr "Section"
 
 msgid "sektor"
 msgstr "Settore"
-
-msgid "sgd_nr"
-msgstr "N° InfoGeol"
 
 msgid "sheetname"
 msgstr "Denominazione di foglio"

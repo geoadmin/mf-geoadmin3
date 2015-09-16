@@ -1,3 +1,60 @@
+msgid "ch.vbs.retablierungsstellen"
+msgstr ""
+
+msgid "ch.vbs.retablierungsstellen.name"
+msgstr ""
+
+msgid "ch.vbs.retablierungsstellen.url"
+msgstr ""
+
+msgid "ch.vbs.logistikraeume-armeelogistikcenter"
+msgstr ""
+
+msgid "ch.vbs.logistikraeume-armeelogistikcenter.kanton"
+msgstr ""
+
+msgid "ch.vbs.logistikraeume-armeelogistikcenter.region"
+msgstr ""
+
+msgid "ch.vbs.bundestankstellen-bebeco"
+msgstr ""
+
+msgid "ch.vbs.bundestankstellen-bebeco.ort"
+msgstr ""
+
+msgid "ch.vbs.armeelogistikcenter"
+msgstr ""
+
+msgid "ch.vbs.armeelogistikcenter.abkuerzung"
+msgstr ""
+
+msgid "ch.vbs.armeelogistikcenter.mail"
+msgstr ""
+
+msgid "ch.vbs.armeelogistikcenter.name"
+msgstr ""
+
+msgid "ch.vbs.armeelogistikcenter.url"
+msgstr ""
+
+msgid "ch.vbs.milairspacechart"
+msgstr ""
+
+msgid "ch.vbs.patrouilledesglaciers-z_rennen"
+msgstr ""
+
+msgid "ch.vbs.patrouilledesglaciers-a_rennen"
+msgstr ""
+
+msgid "ch.vbs.patrouilledesglaciers-z_rennen.name"
+msgstr ""
+
+msgid "ch.vbs.patrouilledesglaciers-a_rennen.name"
+msgstr ""
+
+msgid "ch.vbs.grunddispositiv-zeus"
+msgstr ""
+
 msgid "ch.pronatura.waldreservate.gisteilobjekt"
 msgstr ""
 
@@ -5821,9 +5878,6 @@ msgid "tt_ch.bafu.oekomorphologie-f_bauwerke_notizen"
 msgstr ""
 
 msgid "tt_ch.bafu.oekomorphologie-f_bauwerke_datum"
-msgstr ""
-
-msgid "sgd_nr"
 msgstr ""
 
 msgid "author"

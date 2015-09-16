@@ -55,3 +55,92 @@ class TERRITORIALREGIONEN(Base, Vector):
     name = Column('name', Text)
 
 register('ch.vbs.territorialregionen', TERRITORIALREGIONEN)
+
+
+class Patrouilledesglaciers_z(Base, Vector):
+    __tablename__ = 'patrouille_z'
+    __table_args__ = ({'schema': 'militaer', 'autoload': False})
+    __template__ = 'templates/htmlpopup/patrouilledesglaciers_z.mako'
+    __bodId__ = 'ch.vbs.patrouilledesglaciers-z_rennen'
+    __label__ = 'name'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=3, srid=21781))
+    name = Column('name', Text)
+
+register('ch.vbs.patrouilledesglaciers-z_rennen', Patrouilledesglaciers_z)
+
+
+class Patrouilledesglaciers_a(Base, Vector):
+    __tablename__ = 'patrouille_a'
+    __table_args__ = ({'schema': 'militaer', 'autoload': False})
+    __template__ = 'templates/htmlpopup/patrouilledesglaciers_a.mako'
+    __bodId__ = 'ch.vbs.patrouilledesglaciers-a_rennen'
+    __label__ = 'name'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=3, srid=21781))
+    name = Column('name', Text)
+
+register('ch.vbs.patrouilledesglaciers-a_rennen', Patrouilledesglaciers_a)
+
+
+class Retablierungsstellen(Base, Vector):
+    __tablename__ = 'retablierungsstellen'
+    __table_args__ = ({'schema': 'militaer', 'autoload': False})
+    __template__ = 'templates/htmlpopup/retablierungsstellen.mako'
+    __bodId__ = 'ch.vbs.retablierungsstellen'
+    __queryable_attributes__ = ['name']
+    __label__ = 'name'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=3, srid=21781))
+    name = Column('name', Text)
+    url = Column('url', Text)
+register('ch.vbs.retablierungsstellen', Retablierungsstellen)
+
+
+class Armeelogistikcenter(Base, Vector):
+    __tablename__ = 'armeelogistikcenter'
+    __table_args__ = ({'schema': 'militaer', 'autoload': False})
+    __template__ = 'templates/htmlpopup/armeelogistikcenter.mako'
+    __bodId__ = 'ch.vbs.armeelogistikcenter'
+    __queryable_attributes__ = ['name', 'abkuerzung']
+    __label__ = 'name'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=3, srid=21781))
+    name = Column('name', Text)
+    abkuerzung = Column('abkuerzung', Text)
+    mail = Column('email', Text)
+    url = Column('url', Text)
+register('ch.vbs.armeelogistikcenter', Armeelogistikcenter)
+
+
+class Bundestankstellen_bebeco(Base, Vector):
+    __tablename__ = 'bundestankstellen_bebeco'
+    __table_args__ = ({'schema': 'militaer', 'autoload': False})
+    __template__ = 'templates/htmlpopup/bundestankstellen.mako'
+    __bodId__ = 'ch.vbs.bundestankstellen-bebeco'
+    __queryable_attributes__ = ['ort']
+    __label__ = 'ort'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=3, srid=21781))
+    ort = Column('ort', Text)
+register('ch.vbs.bundestankstellen-bebeco', Bundestankstellen_bebeco)
+
+
+class Logistikraeume_armeelogistikcenter(Base, Vector):
+    __tablename__ = 'abschnittsregionen_armeelogistikzentren'
+    __table_args__ = ({'schema': 'militaer', 'autoload': False})
+    __template__ = 'templates/htmlpopup/logistikraeume.mako'
+    __bodId__ = 'ch.vbs.logistikraeume-armeelogistikcenter'
+    __queryable_attributes__ = ['kanton', 'region']
+    __label__ = 'kanton'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=3, srid=21781))
+    kanton = Column('kantone', Text)
+    region = Column('region', Text)
+register('ch.vbs.logistikraeume-armeelogistikcenter', Logistikraeume_armeelogistikcenter)
