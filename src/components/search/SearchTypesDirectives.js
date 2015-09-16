@@ -22,17 +22,6 @@ goog.require('ga_urlutils_service');
     return $.map(extent, parseFloat);
   };
 
-  var extentToRectangle = function(e) {
-    var sw = ol.proj.transform([e[0], e[1]], 'EPSG:21781', 'EPSG:4326');
-    var ne = ol.proj.transform([e[2], e[3]], 'EPSG:21781', 'EPSG:4326');
-
-    var west = sw[0];
-    var south = sw[1];
-    var east = ne[0];
-    var north = ne[1];
-    return Cesium.Rectangle.fromDegrees(west, south, east, north);
-  };
-
   var addOverlay = function(gaOverlay, map, res) {
     var visible = originToZoomLevel.hasOwnProperty(res.attrs.origin);
     var center = [res.attrs.y, res.attrs.x];
@@ -347,26 +336,11 @@ goog.require('ga_urlutils_service');
               var ol3d = $scope.ol3d;
               if (originToZoomLevel.hasOwnProperty(res.attrs.origin) &&
                   !isGazetteerPoly) {
-                if (ol3d && ol3d.getEnabled()) {
-                  ol3d.getCesiumScene().camera.flyTo({
-                    destination: Cesium.Cartesian3.fromDegrees(
-                                   res.attrs.lon,
-                                   res.attrs.lat,
-                                   3000)
-                  });
-                } else {
-                  gaMapUtils.moveTo($scope.map,
-                                    originToZoomLevel[res.attrs.origin],
-                                    [res.attrs.y, res.attrs.x]);
-                }
+                gaMapUtils.moveTo($scope.map, $scope.ol3d,
+                    originToZoomLevel[res.attrs.origin],
+                    [res.attrs.y, res.attrs.x]);
               } else {
-                if (ol3d && ol3d.getEnabled()) {
-                  ol3d.getCesiumScene().camera.flyTo({
-                    destination: extentToRectangle(e)
-                  });
-                } else {
-                  gaMapUtils.zoomToExtent($scope.map, e);
-                }
+                gaMapUtils.zoomToExtent($scope.map, $scope.ol3d, e);
               }
               addOverlay(gaMarkerOverlay, $scope.map, res);
               $scope.options.valueSelected(
@@ -473,16 +447,7 @@ goog.require('ga_urlutils_service');
                   onCloseCB: angular.noop
                 });
                 var feature = geojsonParser.readFeature(f);
-                var ol3d = $scope.ol3d;
-                if (ol3d && ol3d.getEnabled()) {
-                  var extent = feature.getGeometry().getExtent();
-                  extent = gaPreviewFeatures.getMinimalExtent(extent);
-                  ol3d.getCesiumScene().camera.flyTo({
-                    destination: extentToRectangle(extent)
-                  });
-                } else {
-                  gaPreviewFeatures.zoom($scope.map, feature);
-                }
+                gaPreviewFeatures.zoom($scope.map, $scope.ol3d, feature);
               });
               $scope.options.valueSelected(
                   gaSearchLabels.cleanLabel(res.attrs.label));

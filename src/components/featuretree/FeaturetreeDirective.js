@@ -236,7 +236,8 @@ goog.require('ga_map_service');
 
             scope.zoom = function(evt, feature) {
               evt.stopPropagation();
-              gaPreviewFeatures.zoom(map, parser.readFeature(feature.geojson));
+              gaPreviewFeatures.zoom(map, undefined,
+                  parser.readFeature(feature.geojson));
             };
 
             scope.more = function(evt, layer) {

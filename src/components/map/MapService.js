@@ -1299,6 +1299,11 @@ goog.require('ga_urlutils_service');
    * Service provides map util functions.
    */
   module.provider('gaMapUtils', function() {
+    var extentToRectangle = function(e, sourceProj) {
+      e = ol.proj.transformExtent(e, sourceProj, 'EPSG:4326');
+      return Cesium.Rectangle.fromDegrees(e[0], e[1], e[2], e[3]);
+    };
+
     this.$get = function($window, gaGlobalOptions, gaUrlUtils) {
       var resolutions = gaGlobalOptions.resolutions;
       return {
@@ -1380,15 +1385,28 @@ goog.require('ga_urlutils_service');
           return layer;
         },
 
-        moveTo: function(map, zoom, center) {
-          var view = map.getView();
-          view.setZoom(zoom);
-          view.setCenter(center);
+        moveTo: function(map, ol3d, zoom, center) {
+          if (ol3d && ol3d.getEnabled()) {
+            var deg = ol.proj.transform(center,
+                ol3d.getOlMap().getView().getProjection(), 'EPSG:4326');
+            ol3d.getCesiumScene().camera.flyTo({
+              destination: Cesium.Cartesian3.fromDegrees(deg[0], deg[1], 3000)
+            });
+          } else {
+            var view = map.getView();
+            view.setZoom(zoom);
+            view.setCenter(center);
+          }
         },
-        zoomToExtent: function(map, extent) {
-          var size = map.getSize();
-          var view = map.getView();
-          view.fit(extent, size);
+        zoomToExtent: function(map, ol3d, extent) {
+          if (ol3d && ol3d.getEnabled()) {
+            ol3d.getCesiumScene().camera.flyTo({
+              destination: extentToRectangle(extent,
+                  ol3d.getOlMap().getView().getProjection())
+            });
+          } else {
+            map.getView().fit(extent, map.getSize());
+          }
         },
 
         // Test if a layer is a KML layer added by the ImportKML tool or
@@ -1449,20 +1467,35 @@ goog.require('ga_urlutils_service');
         /**
          * Reset map rotation to North
          */
-        resetMapToNorth: function(map) {
-          var currentRotation = map.getView().getRotation();
+        resetMapToNorth: function(map, ol3d) {
+          var currentRotation, scene;
+          if (ol3d && ol3d.getEnabled()) {
+            scene = ol3d.getCesiumScene();
+            currentRotation = -scene.camera.heading;
+          } else {
+            currentRotation = map.getView().getRotation();
+          }
           while (currentRotation < -Math.PI) {
             currentRotation += 2 * Math.PI;
           }
           while (currentRotation > Math.PI) {
             currentRotation -= 2 * Math.PI;
           }
-          map.beforeRender(ol.animation.rotate({
-            rotation: currentRotation,
-            duration: 1000,
-            easing: ol.easing.easeOut
-          }));
-          map.getView().setRotation(0);
+
+          if (scene) {
+            var bottom = olcs.core.pickBottomPoint(scene);
+            if (bottom) {
+              olcs.core.setHeadingUsingBottomCenter(scene, currentRotation,
+                  bottom);
+            }
+          } else {
+            map.beforeRender(ol.animation.rotate({
+              rotation: currentRotation,
+              duration: 1000,
+              easing: ol.easing.easeOut
+            }));
+            map.getView().setRotation(0);
+          }
         },
 
         intersectWithDefaultExtent: function(extent) {
@@ -2003,6 +2036,18 @@ goog.require('ga_urlutils_service');
         return $q.all(promises);
       };
 
+      // Get a buffered extent if necessary
+      var getMinimalExtent = function(extent) {
+        if (ol.extent.getHeight(extent) < MINIMAL_EXTENT_SIZE &&
+            ol.extent.getWidth(extent) < MINIMAL_EXTENT_SIZE) {
+          var center = ol.extent.getCenter(extent);
+          return ol.extent.buffer(center.concat(center),
+              MINIMAL_EXTENT_SIZE / 2);
+        } else {
+          return extent;
+        }
+      };
+
       // Remove features associated with a layer.
       var removeFromLayer = function(layer) {
         var features = source.getFeatures();
@@ -2032,17 +2077,6 @@ goog.require('ga_urlutils_service');
       };
 
       var PreviewFeatures = function() {
-        // Get a buffered extent if necessary
-        this.getMinimalExtent = function(extent) {
-          if (ol.extent.getHeight(extent) < MINIMAL_EXTENT_SIZE &&
-              ol.extent.getWidth(extent) < MINIMAL_EXTENT_SIZE) {
-            var center = ol.extent.getCenter(extent);
-            return ol.extent.buffer(center.concat(center),
-                MINIMAL_EXTENT_SIZE / 2);
-          } else {
-            return extent;
-          }
-        };
 
         // Add a feature.
         this.add = function(map, feature) {
@@ -2103,10 +2137,10 @@ goog.require('ga_urlutils_service');
 
         // Zoom on a feature (if defined) or zoom on the entire source
         // extent.
-        this.zoom = function(map, feature) {
-          var extent = this.getMinimalExtent((feature) ?
+        this.zoom = function(map, ol3d, feature) {
+          var extent = getMinimalExtent((feature) ?
               feature.getGeometry().getExtent() : source.getExtent());
-          map.getView().fit(extent, map.getSize());
+          gaMapUtils.zoomToExtent(map, ol3d, extent);
         };
       };
       return new PreviewFeatures();
