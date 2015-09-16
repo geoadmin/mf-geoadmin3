@@ -34,7 +34,6 @@ goog.require('ga_browsersniffer_service');
           element.find(attr['gaDraggable']) :
           element;
 
-
       if (!dragZone || dragZone.length == 0) {
         dragZone = element;
       }
@@ -65,6 +64,14 @@ goog.require('ga_browsersniffer_service');
       });
 
       function drag(evt) {
+        if (!element[0].style.width) {
+          // When we start dragging we fix the width to avoid the popup to be
+          // resized on borders
+          element.css({
+            width: element.width() + 'px'
+          });
+        }
+
         x = getMouseEventX(evt) - startX;
         y = getMouseEventY(evt) - startY;
 
@@ -92,7 +99,6 @@ goog.require('ga_browsersniffer_service');
           evt.preventDefault();
         }
       }
-
 
 
       /* Utils */

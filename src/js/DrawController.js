@@ -30,8 +30,6 @@ goog.require('ga_styles_service');
     // Add popup options
     $scope.options.popupOptions = {
       title: '',
-      x: 0,
-      y: 'auto',
       container: 'body',
       position: 'bottom-left'
     };

@@ -11,7 +11,8 @@ goog.require('ga_print_service');
   ]);
 
   module.directive('gaPopup',
-    function($rootScope, $translate, gaBrowserSniffer, gaPrintService) {
+    function($rootScope, $translate, $window, gaBrowserSniffer,
+        gaPrintService) {
       var zIndex = 2000;
       var bringUpFront = function(el) {
         zIndex += 1;
@@ -61,14 +62,14 @@ goog.require('ga_print_service');
           });
 
           // Set default x and y values on non mobile device if not defined
-          if (!gaBrowserSniffer.mobile && !scope.options.x &&
-              !scope.options.y) {
+          if (!gaBrowserSniffer.mobile && !scope.options.position &&
+              !scope.options.x && !scope.options.y) {
             scope.options.x =
                 $(document.body).width() / 2 - element.width() / 2;
             scope.options.y = 89; //89 is the default size of the header
           }
 
-          if (!gaBrowserSniffer.mobile) {
+          if (!gaBrowserSniffer.mobile && scope.options.x && scope.options.y) {
             element.css({
               left: scope.options.x,
               top: scope.options.y
@@ -183,8 +184,42 @@ goog.require('ga_print_service');
           // Currently only bottom-left is managed in css
           if (scope.options.position) {
             element.addClass('ga-popup-' + scope.options.position);
+          } else {
+            // If the position is not defined we try to keep the entire popup
+            // inside the window.
+            // Adjust element's position and keep fixed width
+            // when window is resized (except for small screens)
+            var screenSmLimit = 768;
+            var win = $($window);
+            win.on('resize', function() {
+              if (scope.isReduced) {
+                return;
+              }
+              var winWidth = win.width();
+              if (winWidth > screenSmLimit) {
+                var winHeight = win.height();
+                var popupWidth = element.outerWidth();
+                var popupHeight = element.outerHeight();
+                var offset = element.offset();
+                var x = offset.left;
+                var y = offset.top;
+                if (x + popupWidth > winWidth) {
+                  x = winWidth - popupWidth;
+                }
+                if (y + popupHeight > winHeight) {
+                  y = winHeight - popupHeight;
+                  if (y < 0) {
+                    y = 0;
+                  }
+                }
+                element.css({
+                  width: popupWidth + 'px',
+                  top: y + 'px',
+                  left: x + 'px'
+                });
+              }
+            });
           }
-
           if (scope.options.container) {
             $(scope.options.container).append(element);
           }
