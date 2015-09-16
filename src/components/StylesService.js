@@ -151,9 +151,9 @@ goog.require('ga_measure_service');
       var imgPath = gaGlobalOptions.resourceUrl + 'img/';
       styles['marker'] = new ol.style.Style({
         image: new ol.style.Icon({
-          anchor: [0.5, 46],
+          anchor: [0.5, 1],
           anchorXUnits: 'fraction',
-          anchorYUnits: 'pixels',
+          anchorYUnits: 'fraction',
           src: imgPath + 'marker.png'
         })
       });
