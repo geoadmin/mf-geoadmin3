@@ -200,7 +200,7 @@ itemscope itemtype="http://schema.org/WebApplication"
         </div>
         <div ng-show="time">{{time}}</div>
       </a>
-      <div ga-scale-line ga-scale-line-map="map"></div>
+      <div ga-scale-line ga-scale-line-map="map" ng-show="!globals.is3dActive"></div>
   % endif
 
       <div id='buttonGroup' ng-cloak translate-cloak>
@@ -308,7 +308,7 @@ itemscope itemtype="http://schema.org/WebApplication"
 
   % if device == 'desktop':
         <!-- Print -->
-        <div class="panel">
+        <div class="panel" ng-show="!globals.is3dActive">
           <a id="printHeading" class="panel-heading accordion-toggle collapsed"
              data-toggle="collapse" data-parent="#pulldown-content" href="#print"
              ga-collapsible-show="globals.printShown">
@@ -326,7 +326,7 @@ itemscope itemtype="http://schema.org/WebApplication"
         </div>  <!-- .panel -->
  
         <!-- Draw -->
-        <div class="panel">
+        <div class="panel" ng-show="!globals.is3dActive">
           <a id="drawHeading" class="panel-heading accordion-toggle collapsed"
              data-toggle="collapse" data-parent="#pulldown-content" href="#draw"
              ga-collapsible-show="globals.isDrawActive" accesskey="r">
@@ -370,7 +370,7 @@ itemscope itemtype="http://schema.org/WebApplication"
                     <span ng-class="{'selected': globals.importKmlPopupShown}" translate>import_kml</span>
                   </a>
                 </li>
-                <li><!-- Compare -->
+                <li ng-show="!globals.is3dActive"><!-- Compare -->
                   <a href=""  ng-click="globals.isSwipeActive = !globals.isSwipeActive"
                      data-original-title="{{'swipe_tooltip' | translate}}"
                      class="ga-custom-tooltip" data-placement="bottom"
@@ -378,7 +378,7 @@ itemscope itemtype="http://schema.org/WebApplication"
                     <span ng-class="{'selected': globals.isSwipeActive}" translate>swipe</span>
                   </a>
                 </li>
-                <li><!-- Feature Tree -->
+                <li ng-show="!globals.is3dActive"><!-- Feature Tree -->
                   <a href=""  ng-click="globals.isFeatureTreeActive = !globals.isFeatureTreeActive"
                      data-original-title="{{'featuretree_tooltip' | translate}}"
                      class="ga-custom-tooltip" data-placement="top"
