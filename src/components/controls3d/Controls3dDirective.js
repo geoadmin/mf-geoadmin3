@@ -1,5 +1,6 @@
 goog.provide('ga_controls3d_directive');
 
+goog.require('fps');
 goog.require('ga_map_service');
 (function() {
 
@@ -28,11 +29,16 @@ goog.require('ga_map_service');
         var ol3d = scope.ol3d;
         var scene = ol3d.getCesiumScene();
         var camera = scene.camera;
+        var fps = new FPS(scene);
 
         var tiltIndicator = element.find('.ga-tilt .ga-indicator');
         var rotateIndicator = element.find('.ga-rotate .ga-indicator');
 
         var moving = false;
+
+        scope.isPegmanActive = false;
+
+        scope.isFlyModeActive = false;
 
         camera.moveStart.addEventListener(function() {
           moving = true;
@@ -48,6 +54,27 @@ goog.require('ga_map_service');
             cssRotate(rotateIndicator, -camera.heading);
           }
         });
+
+        scope.togglePegmanMode = function() {
+          var active = fps.getActive();
+          var flyMode = fps.getFlyMode();
+          if (active) {
+            if (flyMode) {
+              // flyMode -> off
+              scope.isPegmanActive = false;
+              scope.isFlyModeActive = false;
+              fps.setActive(false);
+            } else {
+              // fpsMode -> flyMode
+              scope.isFlyModeActive = true;
+              fps.setFlyMode(true);
+            }
+          } else {
+            // off -> fpsMode
+            scope.isPegmanActive = true;
+            fps.setActive(true);
+          }
+        };
 
         scope.tilt = function(angle) {
           angle = Cesium.Math.toRadians(angle);
