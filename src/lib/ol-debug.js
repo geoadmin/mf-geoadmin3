@@ -1,6 +1,6 @@
 // OpenLayers 3. See http://openlayers.org/
 // License: https://raw.githubusercontent.com/openlayers/ol3/master/LICENSE.md
-// Version: v3.8.2-164-g1e78c45
+// Version: v3.9.0-1-gb2566cb
 
 (function (root, factory) {
   if (typeof exports === "object") {
@@ -13100,6 +13100,8 @@ ol.Observable.prototype.changed = function() {
 
 
 /**
+ * Get the version number for this object.  Each time the object is modified,
+ * its version number will be incremented.
  * @return {number} Revision.
  * @api
  */
@@ -37104,9 +37106,11 @@ ol.source.Source.prototype.getWrapX = function() {
 /**
  * Set the attributions of the source.
  * @param {Array.<ol.Attribution>} attributions Attributions.
+ * @api
  */
 ol.source.Source.prototype.setAttributions = function(attributions) {
   this.attributions_ = attributions;
+  this.changed();
 };
 
 
@@ -50434,6 +50438,8 @@ goog.provide('ol.render.VectorContext');
 
 
 /**
+ * Context for drawing geometries.  A vector context is available on render
+ * events and does not need to be constructed directly.
  * @constructor
  * @struct
  * @api
@@ -50602,6 +50608,7 @@ ol.render.Event = function(
   this.vectorContext = opt_vectorContext;
 
   /**
+   * An object representing the current render frame state.
    * @type {olx.FrameState|undefined}
    * @api
    */
@@ -51495,6 +51502,8 @@ ol.style.Image.prototype.getSnapToPixel = function() {
 
 
 /**
+ * Get the anchor point.  The anchor determines the center point for the
+ * symbolizer.  Its units are determined by `anchorXUnits` and `anchorYUnits`.
  * @function
  * @return {Array.<number>} Anchor.
  */
@@ -51502,6 +51511,7 @@ ol.style.Image.prototype.getAnchor = goog.abstractMethod;
 
 
 /**
+ * Get the image element for the symbolizer.
  * @function
  * @param {number} pixelRatio Pixel ratio.
  * @return {HTMLCanvasElement|HTMLVideoElement|Image} Image element.
@@ -51535,6 +51545,7 @@ ol.style.Image.prototype.getHitDetectionImageSize = goog.abstractMethod;
 
 
 /**
+ * Get the origin of the symbolizer.
  * @function
  * @return {Array.<number>} Origin.
  */
@@ -51542,6 +51553,7 @@ ol.style.Image.prototype.getOrigin = goog.abstractMethod;
 
 
 /**
+ * Get the size of the symbolizer (in pixels).
  * @function
  * @return {ol.Size} Size.
  */
@@ -55878,7 +55890,6 @@ goog.inherits(ol.style.Circle, ol.style.Image);
 
 /**
  * @inheritDoc
- * @api
  */
 ol.style.Circle.prototype.getAnchor = function() {
   return this.anchor_;
@@ -55940,7 +55951,6 @@ ol.style.Circle.prototype.getHitDetectionImageSize = function() {
 
 /**
  * @inheritDoc
- * @api
  */
 ol.style.Circle.prototype.getOrigin = function() {
   return this.origin_;
@@ -55959,7 +55969,6 @@ ol.style.Circle.prototype.getRadius = function() {
 
 /**
  * @inheritDoc
- * @api
  */
 ol.style.Circle.prototype.getSize = function() {
   return this.size_;
@@ -56583,10 +56592,11 @@ goog.exportSymbol('ol.style.defaultStyleFunction', ol.style.defaultStyleFunction
 goog.provide('ol.interaction.DragZoom');
 
 goog.require('goog.asserts');
+goog.require('ol.animation');
+goog.require('ol.easing');
 goog.require('ol.events.condition');
 goog.require('ol.extent');
 goog.require('ol.interaction.DragBox');
-goog.require('ol.interaction.Interaction');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 
@@ -56640,15 +56650,37 @@ goog.inherits(ol.interaction.DragZoom, ol.interaction.DragBox);
  */
 ol.interaction.DragZoom.prototype.onBoxEnd = function() {
   var map = this.getMap();
+
   var view = map.getView();
   goog.asserts.assert(!goog.isNull(view), 'view should not be null');
-  var extent = this.getGeometry().getExtent();
-  var center = ol.extent.getCenter(extent);
+
   var size = map.getSize();
   goog.asserts.assert(goog.isDef(size), 'size should be defined');
-  ol.interaction.Interaction.zoom(map, view,
-      view.getResolutionForExtent(extent, size),
-      center, this.duration_);
+
+  var extent = this.getGeometry().getExtent();
+
+  var resolution = view.constrainResolution(
+      view.getResolutionForExtent(extent, size));
+
+  var currentResolution = view.getResolution();
+  goog.asserts.assert(goog.isDef(currentResolution), 'res should be defined');
+
+  var currentCenter = view.getCenter();
+  goog.asserts.assert(goog.isDef(currentCenter), 'center should be defined');
+
+  map.beforeRender(ol.animation.zoom({
+    resolution: currentResolution,
+    duration: this.duration_,
+    easing: ol.easing.easeOut
+  }));
+  map.beforeRender(ol.animation.pan({
+    source: currentCenter,
+    duration: this.duration_,
+    easing: ol.easing.easeOut
+  }));
+
+  view.setCenter(ol.extent.getCenter(extent));
+  view.setResolution(resolution);
 };
 
 goog.provide('ol.interaction.KeyboardPan');
@@ -64595,6 +64627,9 @@ ol.Feature.prototype.getGeometry = function() {
 
 
 /**
+ * Get the feature identifier.  This is a stable identifier for the feature and
+ * is either set when reading data from a remote source or set explicitly by
+ * calling {@link ol.Feature#setId}.
  * @return {number|string|undefined} Id.
  * @api stable
  * @observable
@@ -80721,6 +80756,9 @@ ol.render.webgl.Immediate.prototype.flush = function() {
 
 
 /**
+ * Register a function to be called for rendering at a given zIndex.  The
+ * function will be called asynchronously.  The callback will receive a
+ * reference to {@link ol.render.canvas.Immediate} context for drawing.
  * @param {number} zIndex Z index.
  * @param {function(ol.render.webgl.Immediate)} callback Callback.
  * @api
@@ -83310,19 +83348,6 @@ ol.renderer.webgl.Map.prototype.forEachLayerAtPixel =
     }
   }
   return undefined;
-};
-
-
-/**
- * @private
- * @const
- */
-ol.renderer.webgl.Map.DEFAULT_COLOR_VALUES_ = {
-  opacity: 1,
-  brightness: 0,
-  contrast: 1,
-  hue: 0,
-  saturation: 1
 };
 
 // FIXME recheck layer/map projection compatibility when projection changes
@@ -85997,7 +86022,8 @@ ol.control.OverviewMap.prototype.setCollapsed = function(collapsed) {
 
 
 /**
- * @return {boolean} True if the widget is collapsed.
+ * Determine if the overview map is collapsed.
+ * @return {boolean} The overview map is collapsed.
  * @api stable
  */
 ol.control.OverviewMap.prototype.getCollapsed = function() {
@@ -97760,7 +97786,7 @@ ol.format.KML.prototype.readPlacemark_ = function(node, objectStack) {
   }
   var options = /** @type {olx.format.ReadOptions} */ (objectStack[0]);
 
-  var geometry = goog.object.get(object, 'geometry');
+  var geometry = object['geometry'];
   if (goog.isDefAndNotNull(geometry)) {
     ol.format.Feature.transformWithOptions(geometry, false, options);
   }
@@ -97768,8 +97794,8 @@ ol.format.KML.prototype.readPlacemark_ = function(node, objectStack) {
   goog.object.remove(object, 'geometry');
 
   if (this.extractStyles_) {
-    var style = goog.object.get(object, 'Style');
-    var styleUrl = goog.object.get(object, 'styleUrl');
+    var style = object['Style'];
+    var styleUrl = object['styleUrl'];
     var styleFunction = ol.format.KML.createFeatureStyleFunction_(
         style, styleUrl, this.defaultStyle_, this.sharedStyles_);
     feature.setStyle(styleFunction);
@@ -103301,7 +103327,6 @@ goog.provide('ol.format.WMTSCapabilities');
 
 goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
-goog.require('goog.object');
 goog.require('goog.string');
 goog.require('ol.extent');
 goog.require('ol.format.OWS');
@@ -103374,7 +103399,7 @@ ol.format.WMTSCapabilities.prototype.readFromNode = function(node) {
   if (!goog.isDef(WMTSCapabilityObject)) {
     return null;
   }
-  goog.object.set(WMTSCapabilityObject, 'version', this.version);
+  WMTSCapabilityObject['version'] = this.version;
   WMTSCapabilityObject = ol.xml.pushParseAndPop(WMTSCapabilityObject,
       ol.format.WMTSCapabilities.PARSERS_, node, []);
   return goog.isDef(WMTSCapabilityObject) ? WMTSCapabilityObject : null;
@@ -104320,6 +104345,30 @@ ol.Graticule = function(opt_options) {
    * @type {number}
    * @private
    */
+  this.maxLatP_ = Infinity;
+
+  /**
+   * @type {number}
+   * @private
+   */
+  this.maxLonP_ = Infinity;
+
+  /**
+   * @type {number}
+   * @private
+   */
+  this.minLatP_ = -Infinity;
+
+  /**
+   * @type {number}
+   * @private
+   */
+  this.minLonP_ = -Infinity;
+
+  /**
+   * @type {number}
+   * @private
+   */
   this.targetSize_ = goog.isDef(options.targetSize) ?
       options.targetSize : 100;
 
@@ -104393,6 +104442,8 @@ ol.Graticule.intervals_ = [90, 45, 30, 20, 10, 5, 2, 1, 0.5, 0.2, 0.1, 0.05,
 
 /**
  * @param {number} lon Longitude.
+ * @param {number} minLat Minimal latitude.
+ * @param {number} maxLat Maximal latitude.
  * @param {number} squaredTolerance Squared tolerance.
  * @param {ol.Extent} extent Extent.
  * @param {number} index Index.
@@ -104400,8 +104451,9 @@ ol.Graticule.intervals_ = [90, 45, 30, 20, 10, 5, 2, 1, 0.5, 0.2, 0.1, 0.05,
  * @private
  */
 ol.Graticule.prototype.addMeridian_ =
-    function(lon, squaredTolerance, extent, index) {
-  var lineString = this.getMeridian_(lon, squaredTolerance, index);
+    function(lon, minLat, maxLat, squaredTolerance, extent, index) {
+  var lineString = this.getMeridian_(lon, minLat, maxLat,
+      squaredTolerance, index);
   if (ol.extent.intersects(lineString.getExtent(), extent)) {
     this.meridians_[index++] = lineString;
   }
@@ -104411,6 +104463,8 @@ ol.Graticule.prototype.addMeridian_ =
 
 /**
  * @param {number} lat Latitude.
+ * @param {number} minLon Minimal longitude.
+ * @param {number} maxLon Maximal longitude.
  * @param {number} squaredTolerance Squared tolerance.
  * @param {ol.Extent} extent Extent.
  * @param {number} index Index.
@@ -104418,8 +104472,9 @@ ol.Graticule.prototype.addMeridian_ =
  * @private
  */
 ol.Graticule.prototype.addParallel_ =
-    function(lat, squaredTolerance, extent, index) {
-  var lineString = this.getParallel_(lat, squaredTolerance, index);
+    function(lat, minLon, maxLon, squaredTolerance, extent, index) {
+  var lineString = this.getParallel_(lat, minLon, maxLon, squaredTolerance,
+      index);
   if (ol.extent.intersects(lineString.getExtent(), extent)) {
     this.parallels_[index++] = lineString;
   }
@@ -104449,17 +104504,31 @@ ol.Graticule.prototype.createGraticule_ =
   var maxLines = this.maxLines_;
   var cnt, idx, lat, lon;
 
+  var validExtent = [
+    Math.max(extent[0], this.minLonP_),
+    Math.max(extent[1], this.minLatP_),
+    Math.min(extent[2], this.maxLonP_),
+    Math.min(extent[3], this.maxLatP_)
+  ];
+
+  validExtent = ol.proj.transformExtent(validExtent, this.projection_,
+      'EPSG:4326');
+  var maxLat = validExtent[3];
+  var maxLon = validExtent[2];
+  var minLat = validExtent[1];
+  var minLon = validExtent[0];
+
   // Create meridians
 
   centerLon = Math.floor(centerLon / interval) * interval;
   lon = goog.math.clamp(centerLon, this.minLon_, this.maxLon_);
 
-  idx = this.addMeridian_(lon, squaredTolerance, extent, 0);
+  idx = this.addMeridian_(lon, minLat, maxLat, squaredTolerance, extent, 0);
 
   cnt = 0;
   while (lon != this.minLon_ && cnt++ < maxLines) {
     lon = Math.max(lon - interval, this.minLon_);
-    idx = this.addMeridian_(lon, squaredTolerance, extent, idx);
+    idx = this.addMeridian_(lon, minLat, maxLat, squaredTolerance, extent, idx);
   }
 
   lon = goog.math.clamp(centerLon, this.minLon_, this.maxLon_);
@@ -104467,7 +104536,7 @@ ol.Graticule.prototype.createGraticule_ =
   cnt = 0;
   while (lon != this.maxLon_ && cnt++ < maxLines) {
     lon = Math.min(lon + interval, this.maxLon_);
-    idx = this.addMeridian_(lon, squaredTolerance, extent, idx);
+    idx = this.addMeridian_(lon, minLat, maxLat, squaredTolerance, extent, idx);
   }
 
   this.meridians_.length = idx;
@@ -104477,12 +104546,12 @@ ol.Graticule.prototype.createGraticule_ =
   centerLat = Math.floor(centerLat / interval) * interval;
   lat = goog.math.clamp(centerLat, this.minLat_, this.maxLat_);
 
-  idx = this.addParallel_(lat, squaredTolerance, extent, 0);
+  idx = this.addParallel_(lat, minLon, maxLon, squaredTolerance, extent, 0);
 
   cnt = 0;
   while (lat != this.minLat_ && cnt++ < maxLines) {
     lat = Math.max(lat - interval, this.minLat_);
-    idx = this.addParallel_(lat, squaredTolerance, extent, idx);
+    idx = this.addParallel_(lat, minLon, maxLon, squaredTolerance, extent, idx);
   }
 
   lat = goog.math.clamp(centerLat, this.minLat_, this.maxLat_);
@@ -104490,7 +104559,7 @@ ol.Graticule.prototype.createGraticule_ =
   cnt = 0;
   while (lat != this.maxLat_ && cnt++ < maxLines) {
     lat = Math.min(lat + interval, this.maxLat_);
-    idx = this.addParallel_(lat, squaredTolerance, extent, idx);
+    idx = this.addParallel_(lat, minLon, maxLon, squaredTolerance, extent, idx);
   }
 
   this.parallels_.length = idx;
@@ -104543,18 +104612,21 @@ ol.Graticule.prototype.getMap = function() {
 
 /**
  * @param {number} lon Longitude.
+ * @param {number} minLat Minimal latitude.
+ * @param {number} maxLat Maximal latitude.
  * @param {number} squaredTolerance Squared tolerance.
  * @return {ol.geom.LineString} The meridian line string.
  * @param {number} index Index.
  * @private
  */
-ol.Graticule.prototype.getMeridian_ = function(lon, squaredTolerance, index) {
+ol.Graticule.prototype.getMeridian_ = function(lon, minLat, maxLat,
+                                               squaredTolerance, index) {
   goog.asserts.assert(lon >= this.minLon_,
       'lon should be larger than or equal to this.minLon_');
   goog.asserts.assert(lon <= this.maxLon_,
       'lon should be smaller than or equal to this.maxLon_');
   var flatCoordinates = ol.geom.flat.geodesic.meridian(lon,
-      this.minLat_, this.maxLat_, this.projection_, squaredTolerance);
+      minLat, maxLat, this.projection_, squaredTolerance);
   goog.asserts.assert(flatCoordinates.length > 0,
       'flatCoordinates cannot be empty');
   var lineString = goog.isDef(this.meridians_[index]) ?
@@ -104576,12 +104648,15 @@ ol.Graticule.prototype.getMeridians = function() {
 
 /**
  * @param {number} lat Latitude.
+ * @param {number} minLon Minimal longitude.
+ * @param {number} maxLon Maximal longitude.
  * @param {number} squaredTolerance Squared tolerance.
  * @return {ol.geom.LineString} The parallel line string.
  * @param {number} index Index.
  * @private
  */
-ol.Graticule.prototype.getParallel_ = function(lat, squaredTolerance, index) {
+ol.Graticule.prototype.getParallel_ = function(lat, minLon, maxLon,
+                                               squaredTolerance, index) {
   goog.asserts.assert(lat >= this.minLat_,
       'lat should be larger than or equal to this.minLat_');
   goog.asserts.assert(lat <= this.maxLat_,
@@ -104653,12 +104728,22 @@ ol.Graticule.prototype.handlePostCompose_ = function(e) {
 ol.Graticule.prototype.updateProjectionInfo_ = function(projection) {
   goog.asserts.assert(!goog.isNull(projection), 'projection cannot be null');
 
+  var epsg4326Projection = ol.proj.get('EPSG:4326');
+
   var extent = projection.getExtent();
   var worldExtent = projection.getWorldExtent();
+  var worldExtentP = ol.proj.transformExtent(worldExtent,
+      epsg4326Projection, projection);
+
   var maxLat = worldExtent[3];
   var maxLon = worldExtent[2];
   var minLat = worldExtent[1];
   var minLon = worldExtent[0];
+
+  var maxLatP = worldExtentP[3];
+  var maxLonP = worldExtentP[2];
+  var minLatP = worldExtentP[1];
+  var minLonP = worldExtentP[0];
 
   goog.asserts.assert(!goog.isNull(extent), 'extent cannot be null');
   goog.asserts.assert(goog.isDef(maxLat), 'maxLat should be defined');
@@ -104666,12 +104751,25 @@ ol.Graticule.prototype.updateProjectionInfo_ = function(projection) {
   goog.asserts.assert(goog.isDef(minLat), 'minLat should be defined');
   goog.asserts.assert(goog.isDef(minLon), 'minLon should be defined');
 
+  goog.asserts.assert(goog.isDef(maxLatP),
+      'projected maxLat should be defined');
+  goog.asserts.assert(goog.isDef(maxLonP),
+      'projected maxLon should be defined');
+  goog.asserts.assert(goog.isDef(minLatP),
+      'projected minLat should be defined');
+  goog.asserts.assert(goog.isDef(minLonP),
+      'projected minLon should be defined');
+
   this.maxLat_ = maxLat;
   this.maxLon_ = maxLon;
   this.minLat_ = minLat;
   this.minLon_ = minLon;
 
-  var epsg4326Projection = ol.proj.get('EPSG:4326');
+  this.maxLatP_ = maxLatP;
+  this.maxLonP_ = maxLonP;
+  this.minLatP_ = minLatP;
+  this.minLonP_ = minLonP;
+
 
   this.fromLonLatTransform_ = ol.proj.getTransform(
       epsg4326Projection, projection);
@@ -104986,6 +105084,7 @@ ol.ImageTile.prototype.disposeInternal = function() {
 
 
 /**
+ * Get the image element for this tile.
  * @inheritDoc
  * @api
  */
@@ -107069,18 +107168,21 @@ ol.interaction.DragAndDropEvent =
   goog.base(this, type, target);
 
   /**
+   * The features parsed from dropped data.
    * @type {Array.<ol.Feature>|undefined}
    * @api stable
    */
   this.features = opt_features;
 
   /**
+   * The dropped file.
    * @type {File}
    * @api stable
    */
   this.file = file;
 
   /**
+   * The feature projection.
    * @type {ol.proj.Projection|undefined}
    * @api
    */
@@ -109407,6 +109509,7 @@ ol.interaction.Modify.getDefaultStyleFunction = function() {
 
 goog.provide('ol.interaction.Select');
 goog.provide('ol.interaction.SelectEvent');
+goog.provide('ol.interaction.SelectEventType');
 goog.provide('ol.interaction.SelectFilterFunction');
 
 goog.require('goog.array');
@@ -109426,7 +109529,7 @@ goog.require('ol.source.Vector');
 /**
  * @enum {string}
  */
-ol.SelectEventType = {
+ol.interaction.SelectEventType = {
   /**
    * Triggered when feature(s) has been (de)selected.
    * @event ol.interaction.SelectEvent#select
@@ -109693,7 +109796,7 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
   }
   if (change) {
     this.dispatchEvent(
-        new ol.interaction.SelectEvent(ol.SelectEventType.SELECT,
+        new ol.interaction.SelectEvent(ol.interaction.SelectEventType.SELECT,
             selected, deselected, mapBrowserEvent));
   }
   return ol.events.condition.pointerMove(mapBrowserEvent);
@@ -116363,6 +116466,7 @@ ol.source.WMTS.prototype.updateDimensions = function(dimensions) {
 
 
 /**
+ * Generate source options from a capabilities object.
  * @param {Object} wmtsCap An object representing the capabilities document.
  * @param {Object} config Configuration properties for the layer.  Defaults for
  *                  the layer will apply if not provided.
@@ -117896,6 +118000,7 @@ goog.require('ol.interaction.PinchZoom');
 goog.require('ol.interaction.Pointer');
 goog.require('ol.interaction.Select');
 goog.require('ol.interaction.SelectEvent');
+goog.require('ol.interaction.SelectEventType');
 goog.require('ol.interaction.SelectFilterFunction');
 goog.require('ol.interaction.Snap');
 goog.require('ol.interaction.SnapProperty');
@@ -119042,11 +119147,6 @@ goog.exportSymbol(
 
 goog.exportProperty(
     ol.style.Circle.prototype,
-    'getAnchor',
-    ol.style.Circle.prototype.getAnchor);
-
-goog.exportProperty(
-    ol.style.Circle.prototype,
     'getFill',
     ol.style.Circle.prototype.getFill);
 
@@ -119057,18 +119157,8 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.style.Circle.prototype,
-    'getOrigin',
-    ol.style.Circle.prototype.getOrigin);
-
-goog.exportProperty(
-    ol.style.Circle.prototype,
     'getRadius',
     ol.style.Circle.prototype.getRadius);
-
-goog.exportProperty(
-    ol.style.Circle.prototype,
-    'getSize',
-    ol.style.Circle.prototype.getSize);
 
 goog.exportProperty(
     ol.style.Circle.prototype,
@@ -119649,6 +119739,11 @@ goog.exportProperty(
     ol.source.Source.prototype,
     'getState',
     ol.source.Source.prototype.getState);
+
+goog.exportProperty(
+    ol.source.Source.prototype,
+    'setAttributions',
+    ol.source.Source.prototype.setAttributions);
 
 goog.exportSymbol(
     'ol.source.Stamen',
@@ -122607,6 +122702,11 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.source.Tile.prototype,
+    'setAttributions',
+    ol.source.Tile.prototype.setAttributions);
+
+goog.exportProperty(
+    ol.source.Tile.prototype,
     'get',
     ol.source.Tile.prototype.get);
 
@@ -122689,6 +122789,11 @@ goog.exportProperty(
     ol.source.TileImage.prototype,
     'getState',
     ol.source.TileImage.prototype.getState);
+
+goog.exportProperty(
+    ol.source.TileImage.prototype,
+    'setAttributions',
+    ol.source.TileImage.prototype.setAttributions);
 
 goog.exportProperty(
     ol.source.TileImage.prototype,
@@ -122797,6 +122902,11 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.source.BingMaps.prototype,
+    'setAttributions',
+    ol.source.BingMaps.prototype.setAttributions);
+
+goog.exportProperty(
+    ol.source.BingMaps.prototype,
     'get',
     ol.source.BingMaps.prototype.get);
 
@@ -122874,6 +122984,11 @@ goog.exportProperty(
     ol.source.Vector.prototype,
     'getState',
     ol.source.Vector.prototype.getState);
+
+goog.exportProperty(
+    ol.source.Vector.prototype,
+    'setAttributions',
+    ol.source.Vector.prototype.setAttributions);
 
 goog.exportProperty(
     ol.source.Vector.prototype,
@@ -123027,6 +123142,11 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.source.Cluster.prototype,
+    'setAttributions',
+    ol.source.Cluster.prototype.setAttributions);
+
+goog.exportProperty(
+    ol.source.Cluster.prototype,
     'get',
     ol.source.Cluster.prototype.get);
 
@@ -123104,6 +123224,11 @@ goog.exportProperty(
     ol.source.Image.prototype,
     'getState',
     ol.source.Image.prototype.getState);
+
+goog.exportProperty(
+    ol.source.Image.prototype,
+    'setAttributions',
+    ol.source.Image.prototype.setAttributions);
 
 goog.exportProperty(
     ol.source.Image.prototype,
@@ -123187,6 +123312,11 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.source.ImageCanvas.prototype,
+    'setAttributions',
+    ol.source.ImageCanvas.prototype.setAttributions);
+
+goog.exportProperty(
+    ol.source.ImageCanvas.prototype,
     'get',
     ol.source.ImageCanvas.prototype.get);
 
@@ -123264,6 +123394,11 @@ goog.exportProperty(
     ol.source.ImageMapGuide.prototype,
     'getState',
     ol.source.ImageMapGuide.prototype.getState);
+
+goog.exportProperty(
+    ol.source.ImageMapGuide.prototype,
+    'setAttributions',
+    ol.source.ImageMapGuide.prototype.setAttributions);
 
 goog.exportProperty(
     ol.source.ImageMapGuide.prototype,
@@ -123347,6 +123482,11 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.source.ImageStatic.prototype,
+    'setAttributions',
+    ol.source.ImageStatic.prototype.setAttributions);
+
+goog.exportProperty(
+    ol.source.ImageStatic.prototype,
     'get',
     ol.source.ImageStatic.prototype.get);
 
@@ -123427,6 +123567,11 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.source.ImageVector.prototype,
+    'setAttributions',
+    ol.source.ImageVector.prototype.setAttributions);
+
+goog.exportProperty(
+    ol.source.ImageVector.prototype,
     'get',
     ol.source.ImageVector.prototype.get);
 
@@ -123504,6 +123649,11 @@ goog.exportProperty(
     ol.source.ImageWMS.prototype,
     'getState',
     ol.source.ImageWMS.prototype.getState);
+
+goog.exportProperty(
+    ol.source.ImageWMS.prototype,
+    'setAttributions',
+    ol.source.ImageWMS.prototype.setAttributions);
 
 goog.exportProperty(
     ol.source.ImageWMS.prototype,
@@ -123609,6 +123759,11 @@ goog.exportProperty(
     ol.source.XYZ.prototype,
     'getState',
     ol.source.XYZ.prototype.getState);
+
+goog.exportProperty(
+    ol.source.XYZ.prototype,
+    'setAttributions',
+    ol.source.XYZ.prototype.setAttributions);
 
 goog.exportProperty(
     ol.source.XYZ.prototype,
@@ -123727,6 +123882,11 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.source.MapQuest.prototype,
+    'setAttributions',
+    ol.source.MapQuest.prototype.setAttributions);
+
+goog.exportProperty(
+    ol.source.MapQuest.prototype,
     'get',
     ol.source.MapQuest.prototype.get);
 
@@ -123842,6 +124002,11 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.source.OSM.prototype,
+    'setAttributions',
+    ol.source.OSM.prototype.setAttributions);
+
+goog.exportProperty(
+    ol.source.OSM.prototype,
     'get',
     ol.source.OSM.prototype.get);
 
@@ -123919,6 +124084,11 @@ goog.exportProperty(
     ol.source.Raster.prototype,
     'getState',
     ol.source.Raster.prototype.getState);
+
+goog.exportProperty(
+    ol.source.Raster.prototype,
+    'setAttributions',
+    ol.source.Raster.prototype.setAttributions);
 
 goog.exportProperty(
     ol.source.Raster.prototype,
@@ -124037,6 +124207,11 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.source.Stamen.prototype,
+    'setAttributions',
+    ol.source.Stamen.prototype.setAttributions);
+
+goog.exportProperty(
+    ol.source.Stamen.prototype,
     'get',
     ol.source.Stamen.prototype.get);
 
@@ -124142,6 +124317,11 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.source.TileArcGISRest.prototype,
+    'setAttributions',
+    ol.source.TileArcGISRest.prototype.setAttributions);
+
+goog.exportProperty(
+    ol.source.TileArcGISRest.prototype,
     'get',
     ol.source.TileArcGISRest.prototype.get);
 
@@ -124224,6 +124404,11 @@ goog.exportProperty(
     ol.source.TileDebug.prototype,
     'getState',
     ol.source.TileDebug.prototype.getState);
+
+goog.exportProperty(
+    ol.source.TileDebug.prototype,
+    'setAttributions',
+    ol.source.TileDebug.prototype.setAttributions);
 
 goog.exportProperty(
     ol.source.TileDebug.prototype,
@@ -124332,6 +124517,11 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.source.TileJSON.prototype,
+    'setAttributions',
+    ol.source.TileJSON.prototype.setAttributions);
+
+goog.exportProperty(
+    ol.source.TileJSON.prototype,
     'get',
     ol.source.TileJSON.prototype.get);
 
@@ -124414,6 +124604,11 @@ goog.exportProperty(
     ol.source.TileUTFGrid.prototype,
     'getState',
     ol.source.TileUTFGrid.prototype.getState);
+
+goog.exportProperty(
+    ol.source.TileUTFGrid.prototype,
+    'setAttributions',
+    ol.source.TileUTFGrid.prototype.setAttributions);
 
 goog.exportProperty(
     ol.source.TileUTFGrid.prototype,
@@ -124567,6 +124762,11 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.source.TileVector.prototype,
+    'setAttributions',
+    ol.source.TileVector.prototype.setAttributions);
+
+goog.exportProperty(
+    ol.source.TileVector.prototype,
     'get',
     ol.source.TileVector.prototype.get);
 
@@ -124669,6 +124869,11 @@ goog.exportProperty(
     ol.source.TileWMS.prototype,
     'getState',
     ol.source.TileWMS.prototype.getState);
+
+goog.exportProperty(
+    ol.source.TileWMS.prototype,
+    'setAttributions',
+    ol.source.TileWMS.prototype.setAttributions);
 
 goog.exportProperty(
     ol.source.TileWMS.prototype,
@@ -124777,6 +124982,11 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.source.WMTS.prototype,
+    'setAttributions',
+    ol.source.WMTS.prototype.setAttributions);
+
+goog.exportProperty(
+    ol.source.WMTS.prototype,
     'get',
     ol.source.WMTS.prototype.get);
 
@@ -124879,6 +125089,11 @@ goog.exportProperty(
     ol.source.Zoomify.prototype,
     'getState',
     ol.source.Zoomify.prototype.getState);
+
+goog.exportProperty(
+    ol.source.Zoomify.prototype,
+    'setAttributions',
+    ol.source.Zoomify.prototype.setAttributions);
 
 goog.exportProperty(
     ol.source.Zoomify.prototype,

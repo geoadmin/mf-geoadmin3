@@ -864,7 +864,8 @@ goog.require('ga_urlutils_service');
                 'ch.swisstopo.pixelkarte-farbe',
                 'ch.swisstopo.pixelkarte-farbe_wmts',
                 'ch.swisstopo.pixelkarte-grau',
-                'ch.swisstopo.pixelkarte-grau_wmts'
+                'ch.swisstopo.pixelkarte-grau_wmts',
+                'ch.swisstopo.zeitreihen'
               ];
               angular.forEach(ids, function(id) {
                 if (response.data[id]) {
@@ -884,11 +885,16 @@ goog.require('ga_urlutils_service');
               // Tiled WMS (MapProxy)
               response.data['ch.swisstopo.swisstlm3d-karte-farbe_3d'] = {
                 type: 'wms',
-                singleTile: false
+                singleTile: false,
+                format: 'jpeg'
               };
               response.data['ch.swisstopo.swisstlm3d-karte-grau_3d'] = {
                 type: 'wms',
-                singleTile: false
+                singleTile: false,
+                format: 'jpeg'
+              };
+              response.data['ch.swisstopo.zeitreihen_3d'] = {
+                format: 'jpeg'
               };
               response.data['ch.swisstopo.pixelkarte-grau_3d'] = {
                 attribution: 'tlm grau 3D',
@@ -1296,6 +1302,9 @@ goog.require('ga_urlutils_service');
     this.$get = function($window, gaGlobalOptions, gaUrlUtils) {
       var resolutions = gaGlobalOptions.resolutions;
       return {
+        Z_PREVIEW_LAYER: 1000,
+        Z_PREVIEW_FEATURE: 1100,
+        Z_LOCATION_MARKER: 2000,
         preload: 6, //Number of upper zoom to preload when offline
         defaultExtent: gaGlobalOptions.defaultExtent,
         viewResolutions: resolutions,
@@ -1972,6 +1981,7 @@ goog.require('ga_urlutils_service');
       gaDefinePropertiesForLayer(vector);
       vector.preview = true;
       vector.displayInLayerManager = false;
+      vector.setZIndex(gaMapUtils.Z_PREVIEW_FEATURE);
 
       // TO DO: May be this method should be elsewher?
       var getFeatures = function(featureIdsByBodId) {
@@ -2019,21 +2029,11 @@ goog.require('ga_urlutils_service');
         } else if (map.getLayers().getArray().indexOf(vector) == -1) {
           map.addLayer(vector);
 
-          // Add event for automatically put the vector layer on top.
-          listenerKeyAdd = map.getLayers().on('add', function(event) {
-            if (event.element != vector) {
-              gaMapUtils.moveLayerOnTop(map, vector);
-            }
-          });
-
           // Add event for automatically removing the features when the
           // corresponding layer is removed.
           listenerKeyRemove = map.getLayers().on('remove', function(event) {
             removeFromLayer(event.element);
           });
-
-        } else {
-          gaMapUtils.moveLayerOnTop(map, vector);
         }
       };
 
@@ -2184,7 +2184,7 @@ goog.require('ga_urlutils_service');
     // We store all review layers we add
     var olPreviewLayers = {};
 
-    this.$get = function($rootScope, gaLayers, gaWms, gaTime) {
+    this.$get = function($rootScope, gaLayers, gaWms, gaTime, gaMapUtils) {
       var olPreviewLayer;
 
       var PreviewLayers = function() {
@@ -2214,6 +2214,7 @@ goog.require('ga_urlutils_service');
 
           olPreviewLayer.preview = true;
           olPreviewLayer.displayInLayerManager = false;
+          olPreviewLayer.setZIndex(gaMapUtils.Z_PREVIEW_LAYER);
           olPreviewLayers[bodId] = olPreviewLayer;
           map.addLayer(olPreviewLayer);
 
@@ -2239,6 +2240,7 @@ goog.require('ga_urlutils_service');
           olPreviewLayer.preview = true;
           olPreviewLayer.displayInLayerManager = false;
           olPreviewLayers[getCapLayer.id] = olPreviewLayer;
+          olPreviewLayer.setZIndex(gaMapUtils.Z_PREVIEW_LAYER);
           map.addLayer(olPreviewLayer);
 
           return olPreviewLayer;

@@ -263,28 +263,37 @@ goog.require('ga_time_service');
       var imageStyle = style.getImage();
 
       if (imageStyle) {
-        var size = imageStyle.getSize();
-        var anchor = imageStyle.getAnchor();
-        var scale = imageStyle.getScale();
+        var size, anchor, scale = imageStyle.getScale();
         literal.rotation = imageStyle.getRotation();
+
+        if (imageStyle instanceof ol.style.Icon) {
+          size = imageStyle.getSize();
+          anchor = imageStyle.getAnchor();
+          literal.externalGraphic = imageStyle.getSrc();
+          literal.fillOpacity = 1;
+        } else if (imageStyle instanceof ol.style.Circle) {
+          fill = imageStyle.getFill();
+          stroke = imageStyle.getStroke();
+          var radius = imageStyle.getRadius();
+          var width = 2 * radius;
+          if (stroke) {
+            width += stroke.getWidth() + 1;
+          }
+          size = [width, width];
+          anchor = [width / 2, width / 2];
+          literal.pointRadius = radius;
+        }
+
         if (size) {
           // Print server doesn't handle correctly 0 values for the size
           literal.graphicWidth = (size[0] * scale || 0.1);
           literal.graphicHeight = (size[1] * scale || 0.1);
-
         }
         if (anchor) {
           literal.graphicXOffset = -anchor[0] * scale;
           literal.graphicYOffset = -anchor[1] * scale;
         }
-        if (imageStyle instanceof ol.style.Icon) {
-          literal.externalGraphic = imageStyle.getSrc();
-          literal.fillOpacity = 1;
-        } else { // ol.style.Circle
-          fill = imageStyle.getFill();
-          stroke = imageStyle.getStroke();
-          literal.pointRadius = imageStyle.getRadius();
-        }
+
       }
 
       if (fill) {
