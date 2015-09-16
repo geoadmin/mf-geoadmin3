@@ -344,11 +344,6 @@ class TestMapServiceView(TestsBase):
         self.assertTrue(resp.content_type == 'text/javascript')
         resp.mustcontain('cb({')
 
-    def test_feature_toobig(self):
-        resp = self.testapp.get('/rest/services/all/MapServer/ch.swisstopo.geologie-geocover/910652', params={'geometryFormat': 'geojson'}, status=200)
-        self.assertTrue(resp.content_type == 'application/json')
-        self.assertTrue('geometry' not in resp.json['feature'])
-
     def test_feature_big_but_good(self):
         resp = self.testapp.get('/rest/services/all/MapServer/ch.swisstopo.geologie-geocover/1080284', params={'geometryFormat': 'geojson'}, status=200)
         self.assertTrue(resp.content_type == 'application/json')
