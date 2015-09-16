@@ -864,7 +864,8 @@ goog.require('ga_urlutils_service');
                 'ch.swisstopo.pixelkarte-farbe',
                 'ch.swisstopo.pixelkarte-farbe_wmts',
                 'ch.swisstopo.pixelkarte-grau',
-                'ch.swisstopo.pixelkarte-grau_wmts'
+                'ch.swisstopo.pixelkarte-grau_wmts',
+                'ch.swisstopo.zeitreihen'
               ];
               angular.forEach(ids, function(id) {
                 if (response.data[id]) {
@@ -890,6 +891,9 @@ goog.require('ga_urlutils_service');
               response.data['ch.swisstopo.swisstlm3d-karte-grau_3d'] = {
                 type: 'wms',
                 singleTile: false,
+                format: 'jpeg'
+              };
+              response.data['ch.swisstopo.zeitreihen_3d'] = {
                 format: 'jpeg'
               };
               response.data['ch.swisstopo.pixelkarte-grau_3d'] = {
