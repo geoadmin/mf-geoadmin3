@@ -208,6 +208,7 @@ itemscope itemtype="http://schema.org/WebApplication"
         <div ga-geolocation ga-geolocation-map="map"></div>
   % endif
         <div id="zoomButtons"></div>
+        <div ga-tilt3d ng-if="globals.dev3d"></div>
   % if device != 'embed':
         <div ga-time-selector-bt ga-time-selector-bt-map="map"></div> 
   % endif
@@ -215,7 +216,6 @@ itemscope itemtype="http://schema.org/WebApplication"
   % if device == 'mobile':
         <div ga-offline-bt ng-show="!globals.is3dActive"></div>
   % endif
-        <div ga-tilt3d ng-if="globals.dev3d"></div>
       </div>
       <div ga-swipe 
            ga-swipe-map="map" 
@@ -275,7 +275,8 @@ itemscope itemtype="http://schema.org/WebApplication"
 % if device != 'embed':
     <div ng-controller="GaTimeSelectorController">
       <div ga-time-selector ga-time-selector-map="map"
-           ga-time-selector-options="options">
+           ga-time-selector-options="options"
+           ng-show="!globals.is3dActive">
       </div>
     </div>
 % endif
