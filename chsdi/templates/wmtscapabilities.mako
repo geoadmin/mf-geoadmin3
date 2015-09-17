@@ -57,8 +57,9 @@ elif epsg != '21781':
      onlineressource = onlineressources['mapproxy']
 else:
      onlineressource = onlineressources['s3']
+## FIXME: Do we really have to use 3 different formats for 'zeitreihen' ?
 if layer.id == 'ch.swisstopo.zeitreihen' and epsg != '21781':
-    layer.arr_all_formats = 'png'
+    layer.arr_all_formats = 'jpeg'
 %>
         <Layer>
             <ows:Title>${layer.kurzbezeichnung|n,x,trim}</ows:Title>

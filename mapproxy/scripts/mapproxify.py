@@ -139,7 +139,7 @@ for idx, layersConfig in enumerate(getLayersConfigs(topics=topics)):
             total_timestamps += len(timestamps)
             current_timestamp = timestamps[0]
             if bod_layer_id == 'ch.swisstopo.zeitreihen':
-                image_format = 'png'
+                image_format = 'jpeg'
             else:
                 image_format = layersConfig.arr_all_formats.split(',')[0]
             server_layer_name = bod_layer_id
@@ -166,7 +166,11 @@ for idx, layersConfig in enumerate(getLayersConfigs(topics=topics)):
                 # layer config: cache_out
                 layer = {'name': layer_name, 'title': "%s (%s)" % (title, timestamp), 'dimensions': dimensions, 'sources': [cache_name]}
 
-                cache = {"sources": [wmts_cache_name], "format": "image/%s" % image_format, "grids": grid_names, "disable_storage": True, "meta_size": [1, 1], "meta_buffer": 0}
+                if image_format == 'png':
+                    cache_format = 'image/png'
+                else:
+                    cache_format = 'image/%s' % image_format
+                cache = {"sources": [wmts_cache_name], "format": "%s" % cache_format, "grids": grid_names, "disable_storage": True, "meta_size": [1, 1], "meta_buffer": 0}
 
                 if '.swissimage' in wmts_cache_name:
                     cache["image"] = {"resampling_method": "bilinear"}
