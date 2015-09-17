@@ -1,15 +1,27 @@
 goog.provide('ga_marker_overlay_service');
+
+goog.require('ga_map_service');
+goog.require('ga_styles_service');
+
 (function() {
 
-  var module = angular.module('ga_marker_overlay_service', []);
+  var module = angular.module('ga_marker_overlay_service', [
+    'ga_map_service',
+    'ga_styles_service'
+  ]);
 
   module.provider('gaMarkerOverlay', function() {
 
-    this.$get = function(gaStyleFactory) {
-      var overlay, bbox, isAlwaysVisible;
-      var marker = $('<div></div>')
-          .addClass('ga-crosshair')
-          .addClass('marker');
+    this.$get = function(gaStyleFactory, gaMapUtils) {
+      var bbox, isAlwaysVisible, layer;
+
+      function initialize(map) {
+        if (!layer) {
+          layer = gaMapUtils.getFeatureOverlay([],
+              gaStyleFactory.getStyle('marker'));
+          map.addLayer(layer);
+        }
+      }
 
       function isPointData() {
         return bbox && (bbox[2] - bbox[0]) <= 1 &&
@@ -17,38 +29,33 @@ goog.provide('ga_marker_overlay_service');
       }
 
       function addMarker(map, center, extent, visible) {
+        initialize(map);
         bbox = extent;
         removeMarker(map);
-        overlay = new ol.Overlay({
-          element: marker.get(0),
-          position: center,
-          stopEvent: false
-        });
         isAlwaysVisible = visible;
         setVisibility(map.getView().getZoom());
-        map.addOverlay(overlay);
+        layer.getSource().addFeature(new ol.Feature({
+          geometry: new ol.geom.Point(center)
+        }));
       }
 
       function setVisibility(zoom) {
         if (isAlwaysVisible) {
-          marker.removeClass('hide');
+          layer.setVisible(true);
           return;
         }
-        if (overlay) {
-          if (!isPointData()) {
-            if (zoom > 6) {
-              marker.addClass('hide');
-            } else {
-              marker.removeClass('hide');
-            }
+        if (!isPointData()) {
+          if (zoom > 6) {
+            layer.setVisible(false);
+          } else {
+            layer.setVisible(true);
           }
         }
       }
 
       function removeMarker(map) {
-        if (overlay) {
-          map.removeOverlay(overlay);
-          overlay = null;
+        if (layer) {
+          layer.getSource().clear();
         }
       }
 

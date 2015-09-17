@@ -145,7 +145,7 @@ goog.require('ga_translation_service');
               $scope.map.getView().getProjection().getExtent(), q);
 
           if (position) {
-            gaMapUtils.moveTo($scope.map, 8, position);
+            gaMapUtils.moveTo($scope.map, $scope.ol3d, 8, position);
             gaMarkerOverlay.add($scope.map, position,
                                 [position, position], true);
           } else {
@@ -220,6 +220,7 @@ goog.require('ga_translation_service');
           scope: {
             options: '=gaSearchOptions',
             map: '=gaSearchMap',
+            ol3d: '=gaSearchOl3d',
             searchFocused: '=gaSearchFocused'
           },
           link: function($scope, element, attrs) {

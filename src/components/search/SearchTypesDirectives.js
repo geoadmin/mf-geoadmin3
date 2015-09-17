@@ -310,7 +310,8 @@ goog.require('ga_urlutils_service');
           templateUrl: 'components/search/partials/searchtypes.html',
           scope: {
             options: '=gaSearchLocationsOptions',
-            map: '=gaSearchLocationsMap'
+            map: '=gaSearchLocationsMap',
+            ol3d: '=gaSearchLocationsOl3d'
           },
           controller: 'GaSearchTypesController',
           link: function($scope, element, attrs) {
@@ -332,13 +333,14 @@ goog.require('ga_urlutils_service');
                                    Math.abs(e[1] - e[3]) > 0.1);
 
               }
+              var ol3d = $scope.ol3d;
               if (originToZoomLevel.hasOwnProperty(res.attrs.origin) &&
                   !isGazetteerPoly) {
-                gaMapUtils.moveTo($scope.map,
-                                  originToZoomLevel[res.attrs.origin],
-                                  [res.attrs.y, res.attrs.x]);
+                gaMapUtils.moveTo($scope.map, $scope.ol3d,
+                    originToZoomLevel[res.attrs.origin],
+                    [res.attrs.y, res.attrs.x]);
               } else {
-                gaMapUtils.zoomToExtent($scope.map, e);
+                gaMapUtils.zoomToExtent($scope.map, $scope.ol3d, e);
               }
               addOverlay(gaMarkerOverlay, $scope.map, res);
               $scope.options.valueSelected(
@@ -402,7 +404,8 @@ goog.require('ga_urlutils_service');
           templateUrl: 'components/search/partials/searchtypes.html',
           scope: {
             options: '=gaSearchFeaturesOptions',
-            map: '=gaSearchFeaturesMap'
+            map: '=gaSearchFeaturesMap',
+            ol3d: '=gaSearchFeaturesOl3d'
           },
           controller: 'GaSearchTypesController',
           link: function($scope, element, attrs) {
@@ -443,8 +446,8 @@ goog.require('ga_urlutils_service');
                   features: [f],
                   onCloseCB: angular.noop
                 });
-                gaPreviewFeatures.zoom($scope.map,
-                    geojsonParser.readFeature(f));
+                var feature = geojsonParser.readFeature(f);
+                gaPreviewFeatures.zoom($scope.map, $scope.ol3d, feature);
               });
               $scope.options.valueSelected(
                   gaSearchLabels.cleanLabel(res.attrs.label));

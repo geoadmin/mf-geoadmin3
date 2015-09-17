@@ -1299,12 +1299,17 @@ goog.require('ga_urlutils_service');
    * Service provides map util functions.
    */
   module.provider('gaMapUtils', function() {
+    var extentToRectangle = function(e, sourceProj) {
+      e = ol.proj.transformExtent(e, sourceProj, 'EPSG:4326');
+      return Cesium.Rectangle.fromDegrees(e[0], e[1], e[2], e[3]);
+    };
+
     this.$get = function($window, gaGlobalOptions, gaUrlUtils) {
       var resolutions = gaGlobalOptions.resolutions;
       return {
         Z_PREVIEW_LAYER: 1000,
         Z_PREVIEW_FEATURE: 1100,
-        Z_LOCATION_MARKER: 2000,
+        Z_FEATURE_OVERLAY: 2000,
         preload: 6, //Number of upper zoom to preload when offline
         defaultExtent: gaGlobalOptions.defaultExtent,
         viewResolutions: resolutions,
@@ -1380,15 +1385,28 @@ goog.require('ga_urlutils_service');
           return layer;
         },
 
-        moveTo: function(map, zoom, center) {
-          var view = map.getView();
-          view.setZoom(zoom);
-          view.setCenter(center);
+        moveTo: function(map, ol3d, zoom, center) {
+          if (ol3d && ol3d.getEnabled()) {
+            var deg = ol.proj.transform(center,
+                ol3d.getOlMap().getView().getProjection(), 'EPSG:4326');
+            ol3d.getCesiumScene().camera.flyTo({
+              destination: Cesium.Cartesian3.fromDegrees(deg[0], deg[1], 3000)
+            });
+          } else {
+            var view = map.getView();
+            view.setZoom(zoom);
+            view.setCenter(center);
+          }
         },
-        zoomToExtent: function(map, extent) {
-          var size = map.getSize();
-          var view = map.getView();
-          view.fit(extent, size);
+        zoomToExtent: function(map, ol3d, extent) {
+          if (ol3d && ol3d.getEnabled()) {
+            ol3d.getCesiumScene().camera.flyTo({
+              destination: extentToRectangle(extent,
+                  ol3d.getOlMap().getView().getProjection())
+            });
+          } else {
+            map.getView().fit(extent, map.getSize());
+          }
         },
 
         // Test if a layer is a KML layer added by the ImportKML tool or
@@ -1449,20 +1467,35 @@ goog.require('ga_urlutils_service');
         /**
          * Reset map rotation to North
          */
-        resetMapToNorth: function(map) {
-          var currentRotation = map.getView().getRotation();
+        resetMapToNorth: function(map, ol3d) {
+          var currentRotation, scene;
+          if (ol3d && ol3d.getEnabled()) {
+            scene = ol3d.getCesiumScene();
+            currentRotation = -scene.camera.heading;
+          } else {
+            currentRotation = map.getView().getRotation();
+          }
           while (currentRotation < -Math.PI) {
             currentRotation += 2 * Math.PI;
           }
           while (currentRotation > Math.PI) {
             currentRotation -= 2 * Math.PI;
           }
-          map.beforeRender(ol.animation.rotate({
-            rotation: currentRotation,
-            duration: 1000,
-            easing: ol.easing.easeOut
-          }));
-          map.getView().setRotation(0);
+
+          if (scene) {
+            var bottom = olcs.core.pickBottomPoint(scene);
+            if (bottom) {
+              olcs.core.setHeadingUsingBottomCenter(scene, currentRotation,
+                  bottom);
+            }
+          } else {
+            map.beforeRender(ol.animation.rotate({
+              rotation: currentRotation,
+              duration: 1000,
+              easing: ol.easing.easeOut
+            }));
+            map.getView().setRotation(0);
+          }
         },
 
         intersectWithDefaultExtent: function(extent) {
@@ -1485,7 +1518,8 @@ goog.require('ga_urlutils_service');
             }),
             style: style,
             updateWhileAnimating: true,
-            updateWhileInteracting: true
+            updateWhileInteracting: true,
+            zIndex: this.Z_FEATURE_OVERLAY
           });
           layer.set('altitudeMode', 'clampToGround');
           return layer;
@@ -2103,10 +2137,10 @@ goog.require('ga_urlutils_service');
 
         // Zoom on a feature (if defined) or zoom on the entire source
         // extent.
-        this.zoom = function(map, feature) {
+        this.zoom = function(map, ol3d, feature) {
           var extent = getMinimalExtent((feature) ?
               feature.getGeometry().getExtent() : source.getExtent());
-          map.getView().fit(extent, map.getSize());
+          gaMapUtils.zoomToExtent(map, ol3d, extent);
         };
       };
       return new PreviewFeatures();

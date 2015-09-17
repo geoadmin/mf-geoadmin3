@@ -149,6 +149,14 @@ goog.require('ga_measure_service');
     this.$get = function(gaGlobalOptions, gaMeasure) {
 
       var imgPath = gaGlobalOptions.resourceUrl + 'img/';
+      styles['marker'] = new ol.style.Style({
+        image: new ol.style.Icon({
+          anchor: [0.5, 1],
+          anchorXUnits: 'fraction',
+          anchorYUnits: 'fraction',
+          src: imgPath + 'marker.png'
+        })
+      });
       var headingStyle = new ol.style.Style({
         image: new ol.style.Icon({
           rotateWithView: true,

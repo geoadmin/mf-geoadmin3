@@ -1,5 +1,6 @@
 goog.provide('ga_controls3d_directive');
 
+goog.require('ga_map_service');
 (function() {
 
   var cssRotate = function(element, angle) {
@@ -11,9 +12,11 @@ goog.provide('ga_controls3d_directive');
     });
   };
 
-  var module = angular.module('ga_controls3d_directive', []);
+  var module = angular.module('ga_controls3d_directive', [
+    'ga_map_service'
+  ]);
 
-  module.directive('gaControls3d', function() {
+  module.directive('gaControls3d', function(gaMapUtils) {
     return {
       restrict: 'A',
       templateUrl: 'components/controls3d/partials/controls3d.html',
@@ -74,14 +77,7 @@ goog.provide('ga_controls3d_directive');
         };
 
         scope.resetRotation = function() {
-          var angle = -camera.heading;
-          while (angle < -Math.PI) {
-            angle += Cesium.Math.TWO_PI;
-          }
-          while (angle > Math.PI) {
-            angle -= Cesium.Math.TWO_PI;
-          }
-          scope.rotate(Cesium.Math.toDegrees(angle));
+          gaMapUtils.resetMapToNorth(undefined, scope.ol3d);
         };
 
       }
