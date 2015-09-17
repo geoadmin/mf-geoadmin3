@@ -253,3 +253,20 @@ class TestSearchServiceView(TestsBase):
     def test_bbox_nan(self):
         resp = self.testapp.get('/rest/services/inspire/SearchServer', params={'searchText': 'rue des berges', 'type': 'locations', 'bbox': '551306.5625,NaN,551754.125,168514.625'}, status=400)
         resp.mustcontain('Please provide numerical values for the parameter bbox')
+
+    def test_fuzzy_locations_results(self):
+        # Standard results
+        params = {'searchText': 'brigmat', 'type': 'locations', 'lang': 'de'}
+        resp = self.testapp.get('/rest/services/ech/SearchServer', params=params, status=200)
+        self.assertTrue(len(resp.json['results']) > 0)
+        self.assertTrue(not hasattr(resp.json, 'fuzzy'))
+        # Fuzzy results
+        params = {'searchText': 'birgma', 'type': 'locations', 'lang': 'de'}
+        resp = self.testapp.get('/rest/services/ech/SearchServer', params=params, status=200)
+        self.assertTrue(len(resp.json['results']) > 0)
+        self.assertTrue(resp.json['fuzzy'] == 'true')
+        # No results
+        params = {'searchText': 'birgmasdfasdfa', 'type': 'locations', 'lang': 'de'}
+        resp = self.testapp.get('/rest/services/ech/SearchServer', params=params, status=200)
+        self.assertTrue(len(resp.json['results']) == 0)
+        self.assertTrue(resp.json['fuzzy'] == 'true')

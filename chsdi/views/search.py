@@ -73,6 +73,23 @@ class Search(SearchValidation):
             self._swiss_search()
         return self.results
 
+    def _fuzzy_search(self, searchTextFinal):
+        # We use different ranking for fuzzy search
+        # For ranking modes, see http://sphinxsearch.com/docs/current.html#weighting
+        self.sphinx.SetRankingMode(sphinxapi.SPH_RANK_SPH04)
+        # Only include results with a certain weight. This might need tweaking
+        self.sphinx.SetFilterRange('@weight', 5000, 2 ** 32 - 1)
+        try:
+            if self.typeInfo == 'locations_preview':
+                temp = self.sphinx.Query(searchTextFinal, index='swisssearch_preview_fuzzy')
+            else:
+                temp = self.sphinx.Query(searchTextFinal, index='swisssearch_fuzzy')
+        except IOError:
+            raise exc.HTTPGatewayTimeout()
+        temp = temp['matches'] if temp is not None else temp
+        self.results['fuzzy'] = 'true'
+        return temp
+
     def _swiss_search(self):
         if len(self.searchText) < 1 and self.bbox is None:
             raise exc.HTTPBadRequest('You must at least provide a bbox or a searchText parameter')
@@ -122,14 +139,7 @@ class Search(SearchValidation):
             # if standard index did not find anything, use soundex/metaphon indices
             # which should be more fuzzy in its results
             if temp is None or len(temp) <= 0:
-                try:
-                    if self.typeInfo == 'locations_preview':
-                        temp = self.sphinx.Query(searchTextFinal, index='swisssearch_preview_fuzzy')
-                    else:
-                        temp = self.sphinx.Query(searchTextFinal, index='swisssearch_fuzzy')
-                except IOError:
-                    raise exc.HTTPGatewayTimeout()
-                temp = temp['matches'] if temp is not None else temp
+                temp = self._fuzzy_search(searchTextFinal)
         else:
             temp = []
         if temp is not None and len(temp) != 0:
