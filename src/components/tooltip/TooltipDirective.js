@@ -24,11 +24,14 @@ goog.require('ga_topic_service');
       function($timeout, $http, $q, $translate, $sce, gaPopup, gaLayers,
           gaBrowserSniffer, gaDefinePropertiesForLayer, gaMapClick, gaDebounce,
           gaPreviewFeatures, gaStyleFactory, gaMapUtils, gaTime, gaTopic) {
-        var popupContent = '<div ng-repeat="htmlsnippet in options.htmls">' +
-                            '<div ng-bind-html="htmlsnippet"></div>' +
-                            '<div class="ga-tooltip-separator" ' +
-                              'ng-show="!$last"></div>' +
-                           '</div>';
+        var popupContent =
+          '<div ng-repeat="htmlsnippet in options.htmls">' +
+            '<div ng-mouseenter="options.onMouseEnter($event)" ' +
+                 'ng-mouseleave="options.onMouseLeave($event)" ' +
+                 'ng-bind-html="htmlsnippet"></div>' +
+            '<div class="ga-tooltip-separator" ' +
+                 'ng-show="!$last"></div>' +
+          '</div>';
         // Test if the layer is a vector layer
         var isVectorLayer = function(olLayer) {
           return (olLayer instanceof ol.layer.Vector ||
@@ -182,6 +185,7 @@ goog.require('ga_topic_service');
           },
           link: function(scope, element, attrs) {
             var htmls = [],
+                featuresByLayerId = {},
                 onCloseCB = angular.noop,
                 map = scope.map,
                 popup,
@@ -367,12 +371,22 @@ goog.require('ga_topic_service');
                 var mapExtent = map.getView().calculateExtent(size);
                 angular.forEach(foundFeatures, function(value) {
                   if (value instanceof ol.Feature) {
-                    var feature = new ol.Feature(value.getGeometry());
                     var layerId = value.get('layerId');
+                    if (!featuresByLayerId[layerId]) {
+                      featuresByLayerId[layerId] = {};
+                    }
+                    var feature = new ol.Feature(value.getGeometry());
+                    feature.setId(value.getId());
                     feature.set('layerId', layerId);
                     gaPreviewFeatures.add(map, feature);
                     showPopup(value.get('htmlpopup'));
+
+                    // Store the ol feature for highlighting
+                    featuresByLayerId[layerId][feature.getId()] = feature;
                   } else {
+                    if (!featuresByLayerId[value.layerBodId]) {
+                      featuresByLayerId[value.layerBodId] = {};
+                    }
                     //draw feature, but only if it should be drawn
                     if (gaLayers.getLayer(value.layerBodId) &&
                         gaLayers.getLayerProperty(value.layerBodId,
@@ -381,6 +395,10 @@ goog.require('ga_topic_service');
                       for (var i = 0, ii = features.length; i < ii; ++i) {
                         features[i].set('layerId', value.layerBodId);
                         gaPreviewFeatures.add(map, features[i]);
+
+                        // Store the ol feature for highlighting
+                        featuresByLayerId[value.layerBodId][value.id] =
+                            features[i];
                       }
                     }
 
@@ -407,7 +425,7 @@ goog.require('ga_topic_service');
             // Create the html popup for a feature then display it.
             var showVectorFeature = function(feature, layer) {
               var htmlpopup =
-                '<div class="htmlpopup-container">' +
+                '<div id="{{id}}" class="htmlpopup-container">' +
                   '<div class="htmlpopup-header">' +
                     '<span>' + layer.label + ' &nbsp;</span>' +
                     '{{name}}' +
@@ -417,20 +435,20 @@ goog.require('ga_topic_service');
                   '</div>' +
                 '</div>';
               var name = feature.get('name');
+              var featureId = feature.getId();
+              var layerId = feature.get('layerId') || layer.get('bodId');
+              var id = layerId + '#' + featureId;
               htmlpopup = htmlpopup.
+                  replace('{{id}}', id).
                   replace('{{descr}}', feature.get('description') || '').
                   replace('{{name}}', (name) ? '(' + name + ')' : '');
               feature.set('htmlpopup', htmlpopup);
-              feature.set('layerId', layer.id);
+              feature.set('layerId', layerId);
               showFeatures([feature]);
               // Iframe communication from inside out
               if (top != window) {
-                var featureId = feature.getId();
-                var layerBodId = layer.get('bodId');
-                if (featureId && layerBodId) {
-                  window.parent.postMessage(
-                      layerBodId + '#' + featureId, '*'
-                  );
+               if (featureId && layerId) {
+                  window.parent.postMessage(id, '*');
                 }
               }
             };
@@ -448,6 +466,20 @@ goog.require('ga_topic_service');
                       }
                       onCloseCB = angular.noop;
                       gaPreviewFeatures.clear(map);
+                    },
+                    onMouseEnter: function(evt) {
+                      var target = $(evt.currentTarget).addClass('ga-active');
+                      var containerId = target.find('.htmlpopup-container').
+                          attr('id');
+                      if (/#/.test(containerId)) {
+                        var split = containerId.split('#');
+                        gaPreviewFeatures.highlight(map,
+                            featuresByLayerId[split[0]][split[1]]);
+                      }
+                    },
+                    onMouseLeave: function(evt) {
+                      $(evt.currentTarget).removeClass('ga-active');
+                      gaPreviewFeatures.clearHighlight();
                     },
                     title: 'object_information',
                     content: popupContent,
