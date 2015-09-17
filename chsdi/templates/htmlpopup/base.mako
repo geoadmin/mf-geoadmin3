@@ -53,7 +53,7 @@
 <body>
   <div class="chsdi-htmlpopup-container">
 % else:
-  <div class="htmlpopup-container">
+  <div id="${c['layerBodId']}#${c['featureId']}" class="htmlpopup-container">
 % endif
   <div class="htmlpopup-header">
     <span>${c['fullName']}</span> (${c['attribution']})
