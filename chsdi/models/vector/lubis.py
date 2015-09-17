@@ -54,8 +54,8 @@ class luftbilder_swisstopo_ir(Base, Vector):
     __table_args__ = ({'schema': 'public', 'autoload': False, 'extend_existing': True})
     __template__ = 'templates/htmlpopup/lubis.mako'
     __bodId__ = 'ch.swisstopo.lubis-luftbilder_infrarot'
-    __returnedGeometry__ = 'the_geom_footprint'
     __queryable_attributes__ = ['id', 'ort']
+    __returnedGeometry__ = 'the_geom_footprint'
     __timeInstant__ = 'bgdi_flugjahr'
     __extended_info__ = True
     # Composite labels
@@ -94,12 +94,12 @@ class luftbilder_swisstopo_sw(Base, Vector):
     __table_args__ = ({'schema': 'public', 'autoload': False, 'extend_existing': True})
     __template__ = 'templates/htmlpopup/lubis.mako'
     __bodId__ = 'ch.swisstopo.lubis-luftbilder_schwarzweiss'
+    __queryable_attributes__ = ['id', 'ort', 'filmart', 'bgdi_flugjahr']
     __returnedGeometry__ = 'the_geom_footprint'
     __timeInstant__ = 'bgdi_flugjahr'
     __extended_info__ = True
     # Composite labels
     __label__ = 'flugdatum'
-    __queryable_attributes__ = ['id', 'ort', 'filmart', 'bgdi_flugjahr']
     id = Column('ebkey', Text, primary_key=True)
     the_geom = Column(Geometry(geometry_type='GEOMETRY',
                                dimension=3, srid=21781))
@@ -134,12 +134,12 @@ class luftbilder_dritte_firmen(Base, Vector):
     __table_args__ = ({'schema': 'public', 'autoload': False})
     __template__ = 'templates/htmlpopup/lubis.mako'
     __bodId__ = 'ch.swisstopo.lubis-luftbilder-dritte-firmen'
+    __queryable_attributes__ = ['id', 'ort', 'filmart', 'bgdi_flugjahr']
     __returnedGeometry__ = 'the_geom_footprint'
     __timeInstant__ = 'bgdi_flugjahr'
     __extended_info__ = True
     # Composite labels
     __label__ = 'flugdatum'
-    __queryable_attributes__ = ['id', 'ort', 'filmart', 'bgdi_flugjahr']
     id = Column('ebkey', Text, primary_key=True)
     the_geom = Column(Geometry(geometry_type='GEOMETRY',
                                dimension=2, srid=21781))
@@ -175,12 +175,12 @@ class luftbilder_dritte_kantone(Base, Vector):
     __table_args__ = ({'schema': 'public', 'autoload': False})
     __template__ = 'templates/htmlpopup/lubis.mako'
     __bodId__ = 'ch.swisstopo.lubis-luftbilder-dritte-kantone'
+    __queryable_attributes__ = ['id', 'ort', 'filmart', 'bgdi_flugjahr']
     __returnedGeometry__ = 'the_geom_footprint'
     __timeInstant__ = 'bgdi_flugjahr'
     __extended_info__ = True
     # Composite labels
     __label__ = 'flugdatum'
-    __queryable_attributes__ = ['id', 'ort', 'filmart', 'bgdi_flugjahr']
     id = Column('ebkey', Text, primary_key=True)
     the_geom = Column(Geometry(geometry_type='GEOMETRY',
                                dimension=2, srid=21781))
