@@ -3740,6 +3740,9 @@ msgstr "Name of brick manufacture"
 msgid "ch.swisstopo.geologie-geotope"
 msgstr "Geotopes in Switzerland"
 
+msgid "ch.swisstopo.geologie-geowege"
+msgstr "Geological Hiking Trails"
+
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-1000to21000km2"
 msgstr "Geol. Dokumente (1000-21000km2)"
 
