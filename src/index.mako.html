@@ -205,7 +205,7 @@ itemscope itemtype="http://schema.org/WebApplication"
 
       <div id='buttonGroup' ng-cloak translate-cloak>
   % if device != 'embed':
-        <div ga-geolocation ga-geolocation-map="map"></div>
+        <div ga-geolocation ga-geolocation-map="::map" ga-geolocation-ol3d="::ol3d"></div>
   % endif
         <div id="zoomButtons"></div>
         <div ga-tilt3d ng-if="globals.dev3d"></div>

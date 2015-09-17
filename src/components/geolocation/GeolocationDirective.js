@@ -19,7 +19,8 @@ goog.require('ga_throttle_service');
       restrict: 'A',
       replace: true,
       scope: {
-        map: '=gaGeolocationMap'
+        map: '=gaGeolocationMap',
+        ol3d: '=gaGeolocationOl3d'
       },
       templateUrl: 'components/geolocation/partials/geolocation.html',
       link: function(scope, element, attrs) {
@@ -30,15 +31,8 @@ goog.require('ga_throttle_service');
         }
 
         var unRegKey;
-        // This object with boolean properties defines either:
-        // geolocation: if the user has moved the map itself after the
-        // first change of position.
-        // rotation: if the user has touched-rotated the map on btn state 2
-        var userTakesControl = {geolocation: false, rotation: false};
-        // Defines if the heading of the map is being rendered
-        var mapHeadingRendering = false;
-        // Defines if the geolocation control is zooming
-        var geolocationZooming = false;
+        // This object defines if the user has dragged the map.
+        var userTakesControl = false;
         var map = scope.map;
         var view = map.getView();
         var accuracyFeature = new ol.Feature();
@@ -57,17 +51,32 @@ goog.require('ga_throttle_service');
           }
         });
 
+        // Listen 2d/3d switch mode.
+        var unreg3dSwitch;
+        var register3dSwitch = function() {
+          return scope.$watch(function() {
+              return scope.ol3d && scope.ol3d.getEnabled();
+          }, function(active) {
+            userTakesControl = false;
+            locate();
+          });
+        };
+
         // Scope watchers
         scope.$watch('tracking', function(tracking) {
-         if (tracking) {
-            userTakesControl.geolocation = false;
-            userTakesControl.rotation = false;
-            featuresOverlay.setMap(map);
+          if (unreg3dSwitch) {
+            unreg3dSwitch();
+            unreg3dSwitch = undefined;
+          }
+          if (tracking) {
+            userTakesControl = false;
+            map.addLayer(featuresOverlay);
             gaPermalink.updateParams({
               geolocation: tracking.toString()
             });
+            unreg3dSwitch = register3dSwitch();
           } else {
-            featuresOverlay.setMap(null);
+            map.removeLayer(featuresOverlay);
             gaPermalink.deleteParam('geolocation');
           }
           geolocation.setTracking(tracking);
@@ -80,66 +89,26 @@ goog.require('ga_throttle_service');
         var first = true;
         var currentAccuracy = 0;
         var locate = function() {
-          geolocationZooming = true;
           var dest = geolocation.getPosition();
           if (dest) {
-            var source = view.getCenter();
-            var dist = Math.sqrt(Math.pow(source[0] - dest[0], 2),
-                Math.pow(source[1] - dest[1], 2));
-            var duration = Math.min(
-                Math.sqrt(300 + dist / view.getResolution() * 1000), 3000
-            );
-            var start = +new Date();
-            var pan = ol.animation.pan({
-              duration: duration,
-              source: source,
-              start: start
-            });
-            var bounce;
             if (first) {
               first = false;
-              var currentAccuracy = geolocation.getAccuracy();
-              var extent = [
-                dest[0] - currentAccuracy,
-                dest[1] - currentAccuracy,
-                dest[0] + currentAccuracy,
-                dest[1] + currentAccuracy
-              ];
-              var size = map.getSize();
-              var resolution = Math.max(
-                (extent[2] - extent[0]) / size[0],
-                (extent[3] - extent[1]) / size[1]);
-              resolution = Math.max(view.constrainResolution(resolution, 0, 0),
-                2.5);
-              bounce = ol.animation.bounce({
-                duration: duration,
-                resolution: Math.max(view.getResolution(), dist / 1000,
-                    // needed to don't have up an down and up again in zoom
-                    resolution * 1.2),
-                start: start
-              });
-              var zoom = ol.animation.zoom({
-                resolution: view.getResolution(),
-                duration: duration,
-                start: start
-              });
-              map.beforeRender(pan, zoom, bounce);
-              view.setCenter(dest);
-              view.setResolution(resolution);
-            } else if (!userTakesControl.geolocation) {
-              map.beforeRender(pan);
-              view.setCenter(dest);
+              gaMapUtils.flyTo(map, scope.ol3d, dest,
+                  ol.extent.buffer(dest.concat(dest),
+                  geolocation.getAccuracy()));
+            } else if (!userTakesControl) {
+              gaMapUtils.panTo(map, scope.ol3d, dest);
             }
           }
-          geolocationZooming = false;
         };
 
         // Get heading depending on devices
         var headingFromDevices = function() {
+          var hdg;
           if (gaBrowserSniffer.mobile && gaBrowserSniffer.ios) {
-            var hdg = deviceOrientation.getHeading();
+            hdg = deviceOrientation.getHeading();
           } else if (gaBrowserSniffer.mobile && !gaBrowserSniffer.ios) {
-            var hdg = -deviceOrientation.getHeading();
+            hdg = -deviceOrientation.getHeading();
           }
           return hdg;
         };
@@ -151,13 +120,12 @@ goog.require('ga_throttle_service');
 
             // The icon rotate
             if (btnStatus == 1 ||
-                (btnStatus == 2 && userTakesControl.rotation)) {
+                (btnStatus == 2 && userTakesControl)) {
               updateHeadingFeature();
               map.render();
 
             // The map rotate
-            } else if (btnStatus == 2 && !userTakesControl.rotation) {
-              mapHeadingRendering = true;
+            } else if (btnStatus == 2 && !userTakesControl) {
               heading = -heading;
               var currRotation = view.getRotation();
               var diff = heading - currRotation;
@@ -175,22 +143,31 @@ goog.require('ga_throttle_service');
               }));
               map.getView().setRotation(heading);
               updateHeadingFeature(0);
-              mapHeadingRendering = false;
             }
           }
         };
 
+        var getCoords3d = function() {
+          var coords = geolocation.getPosition();
+          if (geolocation.getAltitude()) {
+            coords = coords.concat(geolocation.getAltitude());
+            featuresOverlay.set('altitudeMode', undefined);
+          } else {
+            featuresOverlay.set('altitudeMode', 'clampToGround');
+          }
+          return coords;
+        };
+
         var updatePositionFeature = function() {
           if (geolocation.getPosition()) {
-            positionFeature.getGeometry().setCoordinates(
-               geolocation.getPosition());
+            positionFeature.getGeometry().setCoordinates(getCoords3d());
           }
         };
 
         var updateAccuracyFeature = function() {
           if (geolocation.getPosition() && geolocation.getAccuracy()) {
             accuracyFeature.setGeometry(new ol.geom.Circle(
-                geolocation.getPosition(), geolocation.getAccuracy()));
+                getCoords3d(), geolocation.getAccuracy()));
           }
         };
 
@@ -212,7 +189,7 @@ goog.require('ga_throttle_service');
 
           // The icon rotate
           if (btnStatus == 1 ||
-              (btnStatus == 2 && userTakesControl.rotation)) {
+              (btnStatus == 2 && userTakesControl)) {
             headngUpdateWhenIconRotate();
 
           // The map rotate
@@ -246,14 +223,9 @@ goog.require('ga_throttle_service');
 
         // View events
         var updateUserTakesControl = function(evt) {
-          if (evt.key == 'rotation') {
-            userTakesControl.rotation = !mapHeadingRendering;
-          } else {
-            userTakesControl.geolocation = !geolocationZooming;
-          }
+          userTakesControl = true;
         };
-        view.on(['change:center', 'change:resolution', 'change:rotation'],
-            updateUserTakesControl);
+        map.on('pointerdrag', updateUserTakesControl);
 
 
         // Button events
@@ -277,7 +249,7 @@ goog.require('ga_throttle_service');
           // Apply the new state
           if (btnStatus == 0) {
             tracking = false;
-            gaMapUtils.resetMapToNorth(map);
+            gaMapUtils.resetMapToNorth(map, scope.ol3d);
             element.removeClass('ga-geolocation-northarrow');
           } else if (btnStatus == 1) {
             tracking = true;

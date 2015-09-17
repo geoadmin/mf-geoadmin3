@@ -1351,7 +1351,7 @@ goog.require('ga_urlutils_service');
       return Cesium.Rectangle.fromDegrees(e[0], e[1], e[2], e[3]);
     };
 
-    this.$get = function($window, gaGlobalOptions, gaUrlUtils) {
+    this.$get = function($window, gaGlobalOptions, gaUrlUtils, $q) {
       var resolutions = gaGlobalOptions.resolutions;
       return {
         Z_PREVIEW_LAYER: 1000,
@@ -1433,27 +1433,115 @@ goog.require('ga_urlutils_service');
         },
 
         moveTo: function(map, ol3d, zoom, center) {
+          var defer = $q.defer();
           if (ol3d && ol3d.getEnabled()) {
             var deg = ol.proj.transform(center,
                 ol3d.getOlMap().getView().getProjection(), 'EPSG:4326');
             ol3d.getCesiumScene().camera.flyTo({
-              destination: Cesium.Cartesian3.fromDegrees(deg[0], deg[1], 3000)
+              destination: Cesium.Cartesian3.fromDegrees(deg[0], deg[1], 3000),
+              complete: function() {
+                defer.resolve();
+              },
+              cancel: function() {
+                defer.resolve();
+              }
             });
           } else {
             var view = map.getView();
             view.setZoom(zoom);
             view.setCenter(center);
+            defer.resolve();
           }
+          return defer.promise;
         },
         zoomToExtent: function(map, ol3d, extent) {
+          var defer = $q.defer();
           if (ol3d && ol3d.getEnabled()) {
             ol3d.getCesiumScene().camera.flyTo({
               destination: extentToRectangle(extent,
-                  ol3d.getOlMap().getView().getProjection())
+                  ol3d.getOlMap().getView().getProjection()),
+              complete: function() {
+                defer.resolve();
+              },
+              cancel: function() {
+                defer.resolve();
+              }
             });
           } else {
             map.getView().fit(extent, map.getSize());
+            defer.resolve();
           }
+          return defer.promise;
+        },
+
+        // This function differs from moveTo because it adds panning effect in
+        // 2d
+        panTo: function(map, ol3d, dest) {
+          var defer = $q.defer();
+          if (ol3d && ol3d.getEnabled()) {
+            return this.moveTo(null, ol3d, null, dest);
+          } else {
+            var source = map.getView().getCenter();
+            var dist = Math.sqrt(Math.pow(source[0] - dest[0], 2),
+                Math.pow(source[1] - dest[1], 2));
+            var duration = Math.min(Math.sqrt(300 + dist /
+                map.getView().getResolution() * 1000), 3000);
+            var start = +new Date();
+            var pan = ol.animation.pan({
+              duration: duration,
+              source: map.getView().getCenter(),
+              start: start
+            });
+            map.beforeRender(pan);
+            map.getView().setCenter(dest);
+            defer.resolve();
+          }
+          return defer.promise;
+        },
+
+        // This function differs from zoomToExtent because it adds flying effect
+        // in 2d
+        flyTo: function(map, ol3d, dest, extent) {
+          var defer = $q.defer();
+          if (ol3d && ol3d.getEnabled()) {
+            return this.zoomToExtent(null, ol3d, extent);
+          } else {
+            var size = map.getSize();
+            var source = map.getView().getCenter();
+            var sourceRes = map.getView().getResolution();
+            var dist = Math.sqrt(Math.pow(source[0] - dest[0], 2),
+                Math.pow(source[1] - dest[1], 2));
+            var duration = Math.min(Math.sqrt(300 + dist / sourceRes * 1000),
+                3000);
+            var destRes = Math.max(
+              (extent[2] - extent[0]) / size[0],
+              (extent[3] - extent[1]) / size[1]);
+            destRes = Math.max(map.getView().constrainResolution(destRes, 0, 0),
+                2.5);
+            var start = +new Date();
+            var pan = ol.animation.pan({
+              duration: duration,
+              source: source,
+              start: start
+            });
+            var bounce = ol.animation.bounce({
+              duration: duration,
+              resolution: Math.max(sourceRes, dist / 1000,
+                  // needed to don't have up an down and up again in zoom
+                  destRes * 1.2),
+              start: start
+            });
+            var zoom = ol.animation.zoom({
+              resolution: sourceRes,
+              duration: duration,
+              start: start
+            });
+            map.beforeRender(pan, zoom, bounce);
+            map.getView().setCenter(dest);
+            map.getView().setResolution(destRes);
+            defer.resolve();
+          }
+          return defer.promise;
         },
 
         // Test if a layer is a KML layer added by the ImportKML tool or
