@@ -1,5 +1,4 @@
 <ul>
-  <li ng-if="!(filteredLayers = (layers | gaReverse | filter:layerFilter)).length" class="ga-no-layer" translate>no_layers_info</li>
   <li ng-repeat="layer in filteredLayers" class="ga-layer-folded"
       ng-class="{
         'ga-layer-time-enabled': layer.timeEnabled,

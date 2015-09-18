@@ -16,17 +16,6 @@ goog.require('ga_urlutils_service');
   ]);
 
   /**
-   * Filter for the gaLayermanager directive's ngRepeat. The filter
-   * reverses the array of layers so layers in the layer manager UI
-   * have the same order as in the map.
-   */
-  module.filter('gaReverse', function() {
-    return function(items) {
-      return items.slice().reverse();
-    };
-  });
-
-  /**
    * Filter to display a correct time label in all possible situations
    */
   module.filter('gaTimeLabel', function($translate) {
@@ -135,6 +124,9 @@ goog.require('ga_urlutils_service');
       },
       link: function(scope, element, attrs) {
         var map = scope.map;
+        scope.mobile = gaBrowserSniffer.mobile;
+
+        // Compile the time popover template
         content = $compile(tpl)(scope);
 
         // The ngRepeat collection is the map's array of layers. ngRepeat
@@ -144,7 +136,9 @@ goog.require('ga_urlutils_service');
         // watch them.
         scope.layers = map.getLayers().getArray();
         scope.layerFilter = gaLayerFilters.selected;
-        scope.mobile = gaBrowserSniffer.mobile;
+        scope.$watchCollection('layers | filter:layerFilter', function(items) {
+          scope.filteredLayers = (items) ? items.slice().reverse() : [];
+        });
 
         // On mobile we use a classic select box, on desktop a popover
         if (!scope.mobile) {
