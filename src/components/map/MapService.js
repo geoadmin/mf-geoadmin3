@@ -856,9 +856,7 @@ goog.require('ga_urlutils_service');
             // Live modifications for 3d test
             if (response.data) {
               var ids = [
-                'ch.swisstopo.swisstlm3d-karte-farbe',
                 'ch.swisstopo.swisstlm3d-karte-farbe_wmts',
-                'ch.swisstopo.swisstlm3d-karte-grau',
                 'ch.swisstopo.swisstlm3d-karte-grau_wmts',
                 'ch.swisstopo.swissimage-product',
                 'ch.swisstopo.pixelkarte-farbe',
@@ -882,17 +880,6 @@ goog.require('ga_urlutils_service');
                   }
                 }
               });
-              // Tiled WMS (MapProxy)
-              response.data['ch.swisstopo.swisstlm3d-karte-farbe_3d'] = {
-                type: 'wms',
-                singleTile: false,
-                format: 'jpeg'
-              };
-              response.data['ch.swisstopo.swisstlm3d-karte-grau_3d'] = {
-                type: 'wms',
-                singleTile: false,
-                format: 'jpeg'
-              };
               response.data['ch.swisstopo.zeitreihen_3d'] = {
                 format: 'jpeg'
               };
