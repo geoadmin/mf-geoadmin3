@@ -156,7 +156,7 @@ def format_query(model, value):
     '''
     def escapeSQL(value):
         if u'ilike' in value:
-            match = re.search(r'([a-z]+\s)(ilike|not ilike)(\s\'%)(.*)(%\')', value)
+            match = re.search(r'([\w]+\s)(ilike|not ilike)(\s\'%)(.*)(%\')', value)
             where = u''.join((
                 match.group(1).replace(u'\'', u'E\''),
                 match.group(2),

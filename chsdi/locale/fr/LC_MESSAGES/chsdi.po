@@ -3077,6 +3077,9 @@ msgstr "OFEN"
 msgid "ch.bfe.abgeltung-wasserkraftnutzung"
 msgstr "Renonciation force hydraulique"
 
+msgid "ch.bfe.abgeltung-wasserkraftnutzung.name"
+msgstr "Nom"
+
 msgid "ch.bfe.energieforschung"
 msgstr "Projets cleantech"
 
@@ -3161,6 +3164,15 @@ msgstr "PS Dépôts couches géol. profondes"
 msgid "ch.bfe.sachplan-geologie-tiefenlager-thematische-darstellung"
 msgstr "PS dépôts couches géol.prof.: p.t."
 
+msgid "ch.bfe.sachplan-geologie-tiefenlager.facname_de"
+msgstr "Installation"
+
+msgid "ch.bfe.sachplan-geologie-tiefenlager.facname_fr"
+msgstr "Installation"
+
+msgid "ch.bfe.sachplan-geologie-tiefenlager.facname_it"
+msgstr "Installation"
+
 msgid "ch.bfe.sachplan-uebertragungsleitungen_anhoerung"
 msgstr "PSE consultation"
 
@@ -3214,6 +3226,12 @@ msgstr "Statistique hydroélectricité"
 
 msgid "ch.bfe.stauanlagen-bundesaufsicht"
 msgstr "Ouvrages d’accumulation"
+
+msgid "ch.bfe.stauanlagen-bundesaufsicht.damname"
+msgstr "Nom"
+
+msgid "ch.bfe.stauanlagen-bundesaufsicht.damtype_de"
+msgstr "Type de barrage"
 
 msgid "ch.bfe.url"
 msgstr "http://www.bfe.admin.ch/index.html?lang=fr"
@@ -3633,12 +3651,11 @@ msgstr "Découpage carte géol. générale 200"
 msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata.autor"
 msgstr "Auteur(s)"
 
-#. TODO
-msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata.ggk_nr"
-msgstr "ch.swisstopo.geologie-generalkarte-ggk200.metadata.ggk_nr"
-
 msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata.jahr"
 msgstr "Année de publication"
+
+msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata.nr"
+msgstr "Nombre de la feuille"
 
 msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata.titel"
 msgstr "Nom de feuille"
@@ -6143,12 +6160,6 @@ msgstr "Fin de l'obligation de protection"
 msgid "tt_ch.bfe.abgeltung-wasserkraftnutzung_endprotectioncommitment"
 msgstr "Fin de l'obligation de protection"
 
-msgid "tt_ch.bfe.abgeltung-wasserkraftnutzung_name"
-msgstr "Nom"
-
-msgid "tt_ch.bfe.abgeltung-wasserkraftnutzung_name"
-msgstr "Nom"
-
 msgid "tt_ch.bfe.abgeltung-wasserkraftnutzung_objectnumber"
 msgstr "Numéro d'objet"
 
@@ -6304,12 +6315,6 @@ msgstr "Hauteur du barrage"
 
 msgid "tt_ch.bfe.stauanlagen-bundesaufsicht_damheight"
 msgstr "Hauteur du barrage"
-
-msgid "tt_ch.bfe.stauanlagen-bundesaufsicht_damname"
-msgstr "Nom"
-
-msgid "tt_ch.bfe.stauanlagen-bundesaufsicht_damname"
-msgstr "Nom"
 
 msgid "tt_ch.bfe.stauanlagen-bundesaufsicht_damtype"
 msgstr "Type de barrage"

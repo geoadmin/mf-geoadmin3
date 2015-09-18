@@ -12,7 +12,7 @@
     def br(text):
         return text.replace('\n', markupsafe.Markup('<br />'))
 %>
-    <tr><td class="cell-left">${_('sgd_nr')}</td><td>${c['attributes']['sgd_nr']}</td></tr>
+    <tr><td class="cell-left">${_('ch.swisstopo.geologie-gisgeol-flaechen-100to1000km2.sgd_nr')}</td><td>${c['attributes']['sgd_nr']}</td></tr>
     <tr><td class="cell-left">${_('original_document_id')}</td><td>${c['attributes']['orig_id']}</td></tr>
     <tr><td class="cell-left">${_('title')}</td><td>${c['attributes']['title'] | br}</td></tr>
     <tr><td class="cell-left">${_('author')}</td><td>${c['attributes']['author'] | br}</td></tr>

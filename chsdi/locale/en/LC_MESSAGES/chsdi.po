@@ -2948,9 +2948,8 @@ msgstr "More information"
 msgid "ch.bav.sachplan-infrastruktur-schiene_kraft.facname_de"
 msgstr "Facility"
 
-#. TODO
 msgid "ch.bav.sachplan-infrastruktur-schiene_kraft.facname_fr"
-msgstr "ch.bav.sachplan-infrastruktur-schiene_kraft.facname_fr"
+msgstr "Facility"
 
 msgid "ch.bav.sachplan-infrastruktur-schiene_kraft.facname_it"
 msgstr "Facility"
@@ -3078,6 +3077,9 @@ msgstr "SFOE"
 msgid "ch.bfe.abgeltung-wasserkraftnutzung"
 msgstr "Abandonment of hydropower"
 
+msgid "ch.bfe.abgeltung-wasserkraftnutzung.name"
+msgstr "Name"
+
 msgid "ch.bfe.energieforschung"
 msgstr "Cleantech projects"
 
@@ -3162,6 +3164,15 @@ msgstr "SP Deep Geol. Repositories"
 msgid "ch.bfe.sachplan-geologie-tiefenlager-thematische-darstellung"
 msgstr "SP Deep Geol.Repositories: T.p."
 
+msgid "ch.bfe.sachplan-geologie-tiefenlager.facname_de"
+msgstr "Facility"
+
+msgid "ch.bfe.sachplan-geologie-tiefenlager.facname_fr"
+msgstr "Facility"
+
+msgid "ch.bfe.sachplan-geologie-tiefenlager.facname_it"
+msgstr "Facility"
+
 msgid "ch.bfe.sachplan-uebertragungsleitungen_anhoerung"
 msgstr "SÜL Anhörung"
 
@@ -3215,6 +3226,12 @@ msgstr "Hydropower statistics"
 
 msgid "ch.bfe.stauanlagen-bundesaufsicht"
 msgstr "Dam"
+
+msgid "ch.bfe.stauanlagen-bundesaufsicht.damname"
+msgstr "Name"
+
+msgid "ch.bfe.stauanlagen-bundesaufsicht.damtype_de"
+msgstr "Dam Type"
 
 msgid "ch.bfe.url"
 msgstr "http://www.bfe.admin.ch/index.html?lang=en"
@@ -3634,12 +3651,11 @@ msgstr "Division General Geol. Map 200"
 msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata.autor"
 msgstr "Author(s)"
 
-#. TODO
-msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata.ggk_nr"
-msgstr "ch.swisstopo.geologie-generalkarte-ggk200.metadata.ggk_nr"
-
 msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata.jahr"
 msgstr "Year of publication"
+
+msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata.nr"
+msgstr "Sheet number"
 
 msgid "ch.swisstopo.geologie-generalkarte-ggk200.metadata.titel"
 msgstr "Map title"
@@ -4395,9 +4411,8 @@ msgstr "Copyright & data protection"
 msgid "disclaimer url"
 msgstr "http://www.geo.admin.ch/internet/geoportal/en/home/geoadmin/contact.html#copyright"
 
-#. TODO
 msgid "district"
-msgstr "district"
+msgstr "Bezirk"
 
 msgid "doccreation_date"
 msgstr "Dokumentsdatum"
@@ -6145,12 +6160,6 @@ msgstr "Ende Schutzverpflichtung"
 msgid "tt_ch.bfe.abgeltung-wasserkraftnutzung_endprotectioncommitment"
 msgstr "Ende Schutzverpflichtung"
 
-msgid "tt_ch.bfe.abgeltung-wasserkraftnutzung_name"
-msgstr "Name"
-
-msgid "tt_ch.bfe.abgeltung-wasserkraftnutzung_name"
-msgstr "Name"
-
 msgid "tt_ch.bfe.abgeltung-wasserkraftnutzung_objectnumber"
 msgstr "Objektnummer"
 
@@ -6306,12 +6315,6 @@ msgstr "Dam Height"
 
 msgid "tt_ch.bfe.stauanlagen-bundesaufsicht_damheight"
 msgstr "Dam Height"
-
-msgid "tt_ch.bfe.stauanlagen-bundesaufsicht_damname"
-msgstr "Name"
-
-msgid "tt_ch.bfe.stauanlagen-bundesaufsicht_damname"
-msgstr "Name"
 
 msgid "tt_ch.bfe.stauanlagen-bundesaufsicht_damtype"
 msgstr "Dam Type"

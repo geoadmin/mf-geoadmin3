@@ -383,6 +383,7 @@ class ABGELTUNGWASSERKRAFTNUTZUNG(Base, Vector):
     __table_args__ = ({'schema': 'bfe', 'autoload': False})
     __template__ = 'templates/htmlpopup/abgeltungwasserkraftnutzung.mako'
     __bodId__ = 'ch.bfe.abgeltung-wasserkraftnutzung'
+    __queryable_attributes__ = ['name']
     __label__ = 'name'
     id = Column('objectnumber', Integer, primary_key=True)
     the_geom = Column(Geometry(geometry_type='GEOMETRY',
@@ -493,6 +494,7 @@ class ENERGIEFORSCHUNG(Base, Vector):
     __template__ = 'templates/htmlpopup/energieforschung.mako'
     __bodId__ = 'ch.bfe.energieforschung'
     __extended_info__ = True
+    __queryable_attributes__ = ['projektnummer', 'titel']
     __label__ = 'titel'
     id = Column('bgdi_id', Integer, primary_key=True)
     titel = Column('titel', Text)
@@ -565,6 +567,7 @@ class STAUANLAGENBUNDESAUFSICHT(Base, Vector):
     __template__ = 'templates/htmlpopup/stauanlagenbundesaufsicht.mako'
     __bodId__ = 'ch.bfe.stauanlagen-bundesaufsicht'
     __extended_info__ = True
+    __queryable_attributes__ = ['damname', 'damtype_de']
     __label__ = 'damname'
     id = Column('dam_stabil_id', Integer, primary_key=True)
     the_geom = Column(Geometry(geometry_type='GEOMETRY',
@@ -830,6 +833,7 @@ class sgt_facilities(Base, Vector):
     __table_args__ = ({'schema': 'bfe', 'autoload': False})
     __template__ = 'templates/htmlpopup/sgt_facilities.mako'
     __bodId__ = 'ch.bfe.sachplan-geologie-tiefenlager'
+    __queryable_attributes__ = ['facname_de', 'facname_fr', 'facname_it']
     # Translatable labels in fr, it
     __label__ = 'facname_de'
     id = Column('stabil_id', Integer, primary_key=True)
@@ -862,6 +866,7 @@ class sgt_planning(Base, Vector):
     __table_args__ = ({'schema': 'bfe', 'autoload': False})
     __template__ = 'templates/htmlpopup/sgt_planning.mako'
     __bodId__ = 'ch.bfe.sachplan-geologie-tiefenlager'
+    __queryable_attributes__ = ['facname_de', 'facname_fr', 'facname_it']
     # Translatable labels in fr, it
     __label__ = 'facname_de'
     id = Column('stabil_id', Text, primary_key=True)
@@ -898,6 +903,7 @@ class sgt_planning_raster(Base, Vector):
     __table_args__ = ({'schema': 'bfe', 'autoload': False})
     __template__ = 'templates/htmlpopup/sgt_planning.mako'
     __bodId__ = 'ch.bfe.sachplan-geologie-tiefenlager'
+    __queryable_attributes__ = ['facname_de', 'facname_fr', 'facname_it']
     # Translatable labels in fr, it
     __label__ = 'facname_de'
     id = Column('stabil_id', Integer, primary_key=True)
