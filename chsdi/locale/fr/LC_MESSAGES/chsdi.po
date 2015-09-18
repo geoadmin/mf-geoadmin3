@@ -3739,6 +3739,9 @@ msgstr "Nom de la Briqueterie"
 msgid "ch.swisstopo.geologie-geotope"
 msgstr "Géotopes suisses"
 
+msgid "ch.swisstopo.geologie-geowege"
+msgstr "Sentiers géologiques"
+
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-1000to21000km2"
 msgstr "Documents géol. (1000-21000km2)"
 

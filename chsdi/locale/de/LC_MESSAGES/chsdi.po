@@ -3739,6 +3739,9 @@ msgstr "Name der Ziegelei"
 msgid "ch.swisstopo.geologie-geotope"
 msgstr "Geotope der Schweiz"
 
+msgid "ch.swisstopo.geologie-geowege"
+msgstr "Geologische Wanderwege"
+
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-1000to21000km2"
 msgstr "Geol. Dokumente (1000-21000km2)"
 

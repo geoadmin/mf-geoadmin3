@@ -3739,6 +3739,9 @@ msgstr "Nome della fabbrica da quadrels"
 msgid "ch.swisstopo.geologie-geotope"
 msgstr "Geotopi svizzeri"
 
+msgid "ch.swisstopo.geologie-geowege"
+msgstr "Sentieri geologici"
+
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-1000to21000km2"
 msgstr "Documents géol. (1000-21000km2)"
 
