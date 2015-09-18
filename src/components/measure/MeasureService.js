@@ -1,4 +1,5 @@
 goog.provide('ga_measure_service');
+
 (function() {
 
   var module = angular.module('ga_measure_service', []);
@@ -66,7 +67,7 @@ goog.provide('ga_measure_service');
   });
 
   module.provider('gaMeasure', function() {
-    this.$get = function($document, measureFilter) {
+    this.$get = function($document, measureFilter, gaMapUtils) {
       var Measure = function() {
 
         this.getLength = function(geom) {
@@ -238,10 +239,12 @@ goog.provide('ga_measure_service');
               var visible = evt.target.getVisible();
               var features = evt.target.getSource().getFeatures();
               for (var i in features) {
-                if (visible) {
-                  this.addOverlays(map, evt.target, features[i]);
-                } else {
-                  this.removeOverlays(features[i]);
+                if (gaMapUtils.isMeasureFeature(features[i])) {
+                  if (visible) {
+                    this.addOverlays(map, evt.target, features[i]);
+                  } else {
+                    this.removeOverlays(features[i]);
+                  }
                 }
               }
             }, this);
@@ -249,9 +252,11 @@ goog.provide('ga_measure_service');
               var visible = evt.target.getVisible();
               var features = evt.target.getSource().getFeatures();
               for (var i in features) {
-                var overlays = features[i].get('overlays') || [];
-                for (var i in overlays) {
-                  overlays[i].getElement().style.opacity = layer.getOpacity();
+                if (gaMapUtils.isMeasureFeature(features[1])) {
+                  var overlays = features[i].get('overlays') || [];
+                  for (var i in overlays) {
+                    overlays[i].getElement().style.opacity = layer.getOpacity();
+                  }
                 }
               }
             });
