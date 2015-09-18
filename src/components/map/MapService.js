@@ -909,10 +909,10 @@ goog.require('ga_urlutils_service');
               // WMTS (not MapProxy)
               response.data['ch.swisstopo.swissimage-product_3d'] = {
                 type: 'wmts',
-                serverLayerName: '00_todelete_ch.swisstopo.swissimage-product',
+                serverLayerName: 'ch.swisstopo.swissimage-product',
                 url: '//wmts{s}.geo.admin.ch/1.0.0/' +
                     '{Layer}/default/' +
-                    '{Time}_v03/{TileMatrixSet}/{z}/{y}/{x}.{Format}',
+                    '{Time}/{TileMatrixSet}/{z}/{y}/{x}.{Format}',
                 subdomains: '56789',
                 attribution: 'swissimage 3D',
                 attributionUrl: 'http://www.swisstopo.admin.ch/internet/' +
