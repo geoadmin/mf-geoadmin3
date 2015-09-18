@@ -190,6 +190,7 @@
 	"link_validate_kml": "Link alla validazione KML",
 	"load_kml": "Caricare KML",
 	"locations_results_header": "Vai a ...",
+	"locations_results_header_fuzzy": "Intendevi forse...",
 	"luftbilder": "Immagini aeree ",
 	"luftbilder_service_link_href": "http://www.swisstopo.admin.ch/internet/swisstopo/it/home/products/images.html",
 	"luftbilder_service_link_label": "Ufficio federale di topografia swisstopo",
