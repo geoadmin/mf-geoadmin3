@@ -16,11 +16,19 @@
     background-image: data-uri('white_rounded_bckgd.png');
     height: 105px;
     width: 74px;
+    @media (max-width: @screen-tablet) {
+      background-image: none;
+      height: 42px;
+      width: 52px;
+    }
     .ga-indicator {
       cursor: pointer;
       background-position: center center;
       background-repeat: no-repeat;
       height: 68px;
+      @media (max-width: @screen-tablet) {
+        height: 46px;
+      }
       margin-top: 3px;
     }
     .ga-inc, .ga-dec {
@@ -28,20 +36,28 @@
       display: inline-block;
       width: 32px;
       height: 30px;
+      @media (max-width: @screen-tablet) {
+        display: none;
+      }
     }
     .ga-inc {
       background-image: data-uri('left_arrow_red.png');
     }
     .ga-dec {
       background-image: data-uri('right_arrow_red.png');
-
     }
   }
   .ga-tilt .ga-indicator {
     background-image: data-uri('icon_left_tilt.png');
+    @media (max-width: @screen-tablet) {
+      background-image: data-uri('icon_left_tilt_mobile.png');
+    }
   }
   .ga-rotate .ga-indicator {
     background-image: data-uri('icon_right_roll.png');
+    @media (max-width: @screen-tablet) {
+      background-image: data-uri('icon_right_roll_mobile.png');
+    }
   }
 
 }
