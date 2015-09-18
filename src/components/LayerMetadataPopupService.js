@@ -11,23 +11,30 @@ goog.require('ga_popup');
   ]);
 
   module.provider('gaLayerMetadataPopup', function() {
-    this.$get = function($translate, $rootScope, $sce, gaPopup, gaLayers) {
+    this.$get = function($translate, $rootScope, $sce, gaPopup, gaLayers,
+        gaMapUtils, gaWms) {
       var popupContent = '<div ng-bind-html="options.result.html"></div>';
 
       var LayerMetadataPopup = function() {
         var popups = {};
 
-        var create = function(bodid) {
+        var create = function(layer) {
           var result = {html: ''},
               popup;
 
           // Called to update the content
           var updateContent = function() {
-            return gaLayers.getMetaDataOfLayer(bodid).success(function(data) {
-              result.html = $sce.trustAsHtml(data);
-            }).error(function() {
+            var promise;
+            if (layer.bodId) {
+              promise = gaLayers.getMetaDataOfLayer(layer.bodId);
+            } else if (gaMapUtils.isExternalWmsLayer(layer)) {
+              promise = gaWms.getLegend(layer);
+            }
+            return promise.then(function(resp) {
+              result.html = $sce.trustAsHtml(resp.data);
+            }, function() {
               //FIXME: better error handling
-              alert('Could not retrieve information for ' + bodid);
+              alert('Could not retrieve information for ' + layer.id);
             });
           };
 
@@ -42,7 +49,7 @@ goog.require('ga_popup');
             y: 200,
             showPrint: true
           });
-          popups[bodid] = popup;
+          popups[layer.id] = popup;
 
           // Open popup only on success
           updateContent().then(function() {
@@ -52,8 +59,12 @@ goog.require('ga_popup');
           $rootScope.$on('$translateChangeEnd', updateContent);
         };
 
-        this.toggle = function(bodid) {
-          var popup = popups[bodid];
+        this.toggle = function(olLayerOrBodId) {
+          var layer = olLayerOrBodId;
+          if (angular.isString(layer)) {
+            layer = gaLayers.getOlLayerById(layer);
+          }
+          var popup = popups[layer.id];
           if (popup) { // if the popup already exist we toggle it
             if (popup.scope.toggle) {
               popup.close();
@@ -61,7 +72,7 @@ goog.require('ga_popup');
               popup.open();
             }
           } else {
-            create(bodid);
+            create(layer);
           }
         };
       };
