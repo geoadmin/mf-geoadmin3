@@ -1103,11 +1103,20 @@ msgstr "Amphibians shifting sites 2015"
 msgid "ch.bafu.bundesinventare-auen"
 msgstr "Floodplains"
 
+msgid "ch.bafu.bundesinventare-auen.au_name"
+msgstr "Name"
+
+msgid "ch.bafu.bundesinventare-auen.au_obj"
+msgstr "Objektnummer"
+
 msgid "ch.bafu.bundesinventare-auen_anhoerung"
 msgstr "Floodplains - consultation 2015"
 
 msgid "ch.bafu.bundesinventare-bln"
 msgstr "ILNM"
+
+msgid "ch.bafu.bundesinventare-bln.bln_name"
+msgstr "Objektnummer"
 
 msgid "ch.bafu.bundesinventare-flachmoore"
 msgstr "Fens"
@@ -1126,6 +1135,9 @@ msgstr "Raised bogs - consultation 2015"
 
 msgid "ch.bafu.bundesinventare-jagdbanngebiete"
 msgstr "Swiss game reserves"
+
+msgid "ch.bafu.bundesinventare-jagdbanngebiete.jb_name"
+msgstr "Objektnummer"
 
 msgid "ch.bafu.bundesinventare-moorlandschaften"
 msgstr "Mire landscapes"
@@ -1297,9 +1309,6 @@ msgstr "Link"
 
 msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.yearbw"
 msgstr "Jahr"
-
-msgid "ch.bafu.gewaesserschutz-klaeranlagen_anteilq347"
-msgstr "ARA-DB - Abwasserant. an Q347"
 
 msgid "ch.bafu.gewaesserschutz-klaeranlagen_anteilq347"
 msgstr "ARA-DB - Abwasserant. an Q347"
@@ -2345,9 +2354,6 @@ msgstr "Other protected areas AuLaV"
 msgid "ch.bafu.schutzgebiete-biosphaerenreservate"
 msgstr "Biosphere reserves"
 
-msgid "ch.bafu.schutzgebiete-biosphaerenreservate"
-msgstr "Biosphere reserves"
-
 msgid "ch.bafu.schutzgebiete-luftfahrt"
 msgstr "Protected areas MIL"
 
@@ -2697,7 +2703,7 @@ msgid "ch.bafu.wasser-teileinzugsgebiete_40"
 msgstr "40km2 sub catchment areas"
 
 msgid "ch.bafu.wasser-vorfluter"
-msgstr ""
+msgstr "Ablussregimetyp"
 
 msgid "ch.bafu.wasserbau-querprofilmarken"
 msgstr "Querprofilmarke"
@@ -2786,9 +2792,6 @@ msgstr "Federal Inventory ISOS"
 msgid "ch.bak.isos.warning"
 msgstr "This Website is updated twice a year. If you want to use a site record in a legal procedure, please contact the Federal office of culture (isos@bak.admin.ch). © Data:  FOC, Bern"
 
-msgid "ch.bak.isos.warning"
-msgstr "This Website is updated twice a year. If you want to use a site record in a legal procedure, please contact the Federal office of culture (isos@bak.admin.ch). © Data:  FOC, Bern"
-
 msgid "ch.bak.schutzgebiete-unesco_weltkulturerbe"
 msgstr "UNESCO World cultural heritage"
 
@@ -2818,9 +2821,6 @@ msgstr "Download ≥ 10 Mbit/s"
 
 msgid "ch.bakom.downlink100"
 msgstr "Download ≥ 100 Mbit/s"
-
-msgid "ch.bakom.downlink2"
-msgstr "Download ≥ 2 Mbit/s"
 
 msgid "ch.bakom.downlink2"
 msgstr "Download ≥ 2 Mbit/s"
@@ -2966,8 +2966,32 @@ msgstr "Measure"
 msgid "ch.bav.sachplan-infrastruktur-schifffahrt_anhoerung"
 msgstr "SIF consultation"
 
+msgid "ch.bav.sachplan-infrastruktur-schifffahrt_anhoerung.facname_de"
+msgstr "Facility"
+
+msgid "ch.bav.sachplan-infrastruktur-schifffahrt_anhoerung.facname_fr"
+msgstr "Facility"
+
 msgid "ch.bav.sachplan-infrastruktur-schifffahrt_ausgangslage"
 msgstr "SIF starting point"
+
+msgid "ch.bav.sachplan-infrastruktur-schifffahrt_ausgangslage.description_de"
+msgstr "Description"
+
+msgid "ch.bav.sachplan-infrastruktur-schifffahrt_ausgangslage.description_en"
+msgstr "Description"
+
+msgid "ch.bav.sachplan-infrastruktur-schifffahrt_ausgangslage.description_fr"
+msgstr "Description"
+
+msgid "ch.bav.sachplan-infrastruktur-schifffahrt_ausgangslage.description_it"
+msgstr "Description"
+
+msgid "ch.bav.sachplan-infrastruktur-schifffahrt_ausgangslage.description_rm"
+msgstr "Description"
+
+msgid "ch.bav.sachplan-infrastruktur-schifffahrt_ausgangslage.name"
+msgstr "Facility name"
 
 msgid "ch.bav.url"
 msgstr "http://www.bav.admin.ch/?lang=en"
@@ -3455,10 +3479,6 @@ msgstr "PDO spirits"
 msgid "ch.ensi"
 msgstr "ENSI"
 
-#. TODO
-msgid "ch.ensi.url"
-msgstr "ch.ensi.url"
-
 msgid "ch.ensi.zonenplan-notfallschutz-kernanlagen"
 msgstr "Plans for Emergency protection"
 
@@ -3473,6 +3493,15 @@ msgstr "CadastralWebMap"
 
 msgid "ch.kantone.ivs-reg_loc"
 msgstr "IHR Canton of Bern"
+
+msgid "ch.kantone.ivs-reg_loc.ivs_nummer"
+msgstr "IVS-Objekt"
+
+msgid "ch.kantone.ivs-reg_loc.ivs_signatur"
+msgstr "Substance"
+
+msgid "ch.kantone.ivs-reg_loc.ivs_slaname"
+msgstr "Route"
 
 msgid "ch.kt"
 msgstr "chantun"
@@ -3591,9 +3620,6 @@ msgstr "AGNES"
 msgid "ch.swisstopo.fixpunkte-hfp1"
 msgstr "Height control points HFP1"
 
-msgid "ch.swisstopo.fixpunkte-hfp1"
-msgstr "Height control points HFP1"
-
 msgid "ch.swisstopo.fixpunkte-hfp1.bgdi_label"
 msgstr "Identifiant"
 
@@ -3605,9 +3631,6 @@ msgstr "Height control points HFP2"
 
 msgid "ch.swisstopo.fixpunkte-hfp2.id"
 msgstr "Number"
-
-msgid "ch.swisstopo.fixpunkte-hoehe"
-msgstr "Vertical control point"
 
 msgid "ch.swisstopo.fixpunkte-hoehe"
 msgstr "Vertical control point"
@@ -3762,9 +3785,8 @@ msgstr "Geological Hiking Trails"
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-1000to21000km2"
 msgstr "Geol. Dokumente (1000-21000km2)"
 
-#. TODO
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-1000to21000km2.sgd_nr"
-msgstr "ch.swisstopo.geologie-gisgeol-flaechen-1000to21000km2.sgd_nr"
+msgstr "InfoGeol-Nr."
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-100to1000km2"
 msgstr "Geol. Dokumente (100-1000km2)"
@@ -3775,9 +3797,8 @@ msgstr "InfoGeol-Nr."
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-10to100km2"
 msgstr "Geol. Dokumente (10-100km2)"
 
-#. TODO
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-10to100km2.sgd_nr"
-msgstr "ch.swisstopo.geologie-gisgeol-flaechen-10to100km2.sgd_nr"
+msgstr "InfoGeol-Nr."
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-10x10km"
 msgstr "Geol. documents (10x10km)"
@@ -3877,14 +3898,6 @@ msgstr "Dufour Map First edition"
 
 msgid "ch.swisstopo.hiks-siegfried"
 msgstr "Siegfried Map First edition"
-
-#. TODO
-msgid "ch.swisstopo.hiks-siegfried-ta25"
-msgstr "ch.swisstopo.hiks-siegfried-ta25"
-
-#. TODO
-msgid "ch.swisstopo.hiks-siegfried-ta50"
-msgstr "ch.swisstopo.hiks-siegfried-ta50"
 
 msgid "ch.swisstopo.images-swissimage"
 msgstr "SWISSIMAGE"
@@ -4114,6 +4127,9 @@ msgstr "Elevations VECTOR200"
 msgid "ch.swisstopo.vec200-names-namedlocation"
 msgstr "Names VECTOR200"
 
+msgid "ch.swisstopo.vec200-names-namedlocation.id"
+msgstr "Official point  number"
+
 msgid "ch.swisstopo.vec200-names-namedlocation.objname1"
 msgstr "Name in der 1. Sprache"
 
@@ -4161,6 +4177,9 @@ msgstr "Official point  number"
 
 msgid "ch.swisstopo.verschiebungsvektoren-tsp2"
 msgstr "LV95 Displacement vectors TSP2"
+
+msgid "ch.swisstopo.verschiebungsvektoren-tsp2.id"
+msgstr "Official point  number"
 
 msgid "ch.swisstopo.verschiebungsvektoren-tsp2.name"
 msgstr "Official point  number"
@@ -5425,9 +5444,6 @@ msgstr "Power"
 msgid "leistungsaufnahme_pumpen"
 msgstr "Energy need of pumps"
 
-msgid "leistungsaufnahme_pumpen"
-msgstr "Energy need of pumps"
-
 msgid "length_km"
 msgstr "Länge [km]"
 
@@ -5818,9 +5834,6 @@ msgstr "Substanzgrad"
 msgid "technische_angaben"
 msgstr "Technical data"
 
-msgid "technische_angaben"
-msgstr "Technical data"
-
 msgid "teilezgfla"
 msgstr "Sub-catchment area size [km2]"
 
@@ -6151,38 +6164,20 @@ msgstr "The aviation obstacle data may include deviations regarding it's complet
 msgid "tt_ch.bfe.abgeltung-wasserkraftnutzung_area"
 msgstr "Fläche [ha]"
 
-msgid "tt_ch.bfe.abgeltung-wasserkraftnutzung_area"
-msgstr "Fläche [ha]"
-
-msgid "tt_ch.bfe.abgeltung-wasserkraftnutzung_endprotectioncommitment"
-msgstr "Ende Schutzverpflichtung"
-
 msgid "tt_ch.bfe.abgeltung-wasserkraftnutzung_endprotectioncommitment"
 msgstr "Ende Schutzverpflichtung"
 
 msgid "tt_ch.bfe.abgeltung-wasserkraftnutzung_objectnumber"
 msgstr "Objektnummer"
 
-msgid "tt_ch.bfe.abgeltung-wasserkraftnutzung_objectnumber"
-msgstr "Objektnummer"
-
 msgid "tt_ch.bfe.abgeltung-wasserkraftnutzung_perimeter"
 msgstr "Umfang [m]"
-
-msgid "tt_ch.bfe.abgeltung-wasserkraftnutzung_perimeter"
-msgstr "Umfang [m]"
-
-msgid "tt_ch.bfe.abgeltung-wasserkraftnutzung_startprotectioncommitment"
-msgstr "Beginn Schutzverpflichtung"
 
 msgid "tt_ch.bfe.abgeltung-wasserkraftnutzung_startprotectioncommitment"
 msgstr "Beginn Schutzverpflichtung"
 
 msgid "tt_ch.bfe.energieforschung_beauftragter"
 msgstr "Mandatory"
-
-msgid "tt_ch.bfe.energieforschung_beschreibung"
-msgstr "Description"
 
 msgid "tt_ch.bfe.energieforschung_beschreibung"
 msgstr "Description"
@@ -6205,14 +6200,8 @@ msgstr "Place of installation"
 msgid "tt_ch.bfe.energieforschung_kontaktperson"
 msgstr "Contact SFOE"
 
-msgid "tt_ch.bfe.energieforschung_kontaktperson"
-msgstr "Contact SFOE"
-
 msgid "tt_ch.bfe.energieforschung_land"
 msgstr "Country"
-
-msgid "tt_ch.bfe.energieforschung_projekt_nr"
-msgstr "Project no."
 
 msgid "tt_ch.bfe.energieforschung_projekt_nr"
 msgstr "Project no."
@@ -6226,20 +6215,11 @@ msgstr "End of project"
 msgid "tt_ch.bfe.energieforschung_projektstatus"
 msgstr "Project state"
 
-msgid "tt_ch.bfe.energieforschung_projektstatus"
-msgstr "Project state"
-
-msgid "tt_ch.bfe.energieforschung_projekttitel"
-msgstr "Project titel"
-
 msgid "tt_ch.bfe.energieforschung_projekttitel"
 msgstr "Project titel"
 
 msgid "tt_ch.bfe.energieforschung_schluesselwoerter"
 msgstr "Keyword"
-
-msgid "tt_ch.bfe.energieforschung_schlussbericht"
-msgstr "Final report"
 
 msgid "tt_ch.bfe.energieforschung_schlussbericht"
 msgstr "Final report"
@@ -6250,17 +6230,8 @@ msgstr "Language region"
 msgid "tt_ch.bfe.statistik-wasserkraftanlagen_beginningofoperation"
 msgstr "Beginning of operation"
 
-msgid "tt_ch.bfe.statistik-wasserkraftanlagen_beginningofoperation"
-msgstr "Beginning of operation"
-
 msgid "tt_ch.bfe.statistik-wasserkraftanlagen_canton"
 msgstr "Canton"
-
-msgid "tt_ch.bfe.statistik-wasserkraftanlagen_canton"
-msgstr "Canton"
-
-msgid "tt_ch.bfe.statistik-wasserkraftanlagen_endofoperation"
-msgstr "End of operation"
 
 msgid "tt_ch.bfe.statistik-wasserkraftanlagen_endofoperation"
 msgstr "End of operation"
@@ -6268,29 +6239,14 @@ msgstr "End of operation"
 msgid "tt_ch.bfe.statistik-wasserkraftanlagen_hydropowerplantoperationalstatus_de"
 msgstr "Status"
 
-msgid "tt_ch.bfe.statistik-wasserkraftanlagen_hydropowerplantoperationalstatus_de"
-msgstr "Status"
-
-msgid "tt_ch.bfe.statistik-wasserkraftanlagen_hydropowerplanttype"
-msgstr "Type"
-
 msgid "tt_ch.bfe.statistik-wasserkraftanlagen_hydropowerplanttype"
 msgstr "Type"
 
 msgid "tt_ch.bfe.statistik-wasserkraftanlagen_location"
 msgstr "Location"
 
-msgid "tt_ch.bfe.statistik-wasserkraftanlagen_location"
-msgstr "Location"
-
 msgid "tt_ch.bfe.statistik-wasserkraftanlagen_name"
 msgstr "Name"
-
-msgid "tt_ch.bfe.statistik-wasserkraftanlagen_name"
-msgstr "Name"
-
-msgid "tt_ch.bfe.statistik-wasserkraftanlagen_wastanumber"
-msgstr "WASTA-Number"
 
 msgid "tt_ch.bfe.statistik-wasserkraftanlagen_wastanumber"
 msgstr "WASTA-Number"
@@ -6301,27 +6257,14 @@ msgstr "Start Supervision"
 msgid "tt_ch.bfe.stauanlagen-bundesaufsicht_crestlength"
 msgstr "Crest Length"
 
-msgid "tt_ch.bfe.stauanlagen-bundesaufsicht_crestlength"
-msgstr "Crest Length"
-
 msgid "tt_ch.bfe.stauanlagen-bundesaufsicht_crestlevel"
 msgstr "Crest Level"
-
-msgid "tt_ch.bfe.stauanlagen-bundesaufsicht_crestlevel"
-msgstr "Crest Level"
-
-msgid "tt_ch.bfe.stauanlagen-bundesaufsicht_damheight"
-msgstr "Dam Height"
 
 msgid "tt_ch.bfe.stauanlagen-bundesaufsicht_damheight"
 msgstr "Dam Height"
 
 msgid "tt_ch.bfe.stauanlagen-bundesaufsicht_damtype"
 msgstr "Dam Type"
-
-#. TODO
-msgid "tt_ch.bfe.stauanlagen-bundesaufsicht_damtype_de"
-msgstr "tt_ch.bfe.stauanlagen-bundesaufsicht_damtype_de"
 
 msgid "tt_ch.bfe.stauanlagen-bundesaufsicht_inbetriebabnahme"
 msgstr "Beginning Of Operation"
@@ -6494,9 +6437,6 @@ msgstr "ARE commune type"
 msgid "tt_gemeindetypen_TYP_BEZ_F"
 msgstr "ARE commune type"
 
-msgid "tt_gemeindetypen_TYP_BEZ_F"
-msgstr "ARE commune type"
-
 msgid "tt_gemeindetypen_TYP_CODE"
 msgstr "Code type of commune"
 
@@ -6535,10 +6475,6 @@ msgstr "Waterbody type"
 
 msgid "tt_kantone_Filmart"
 msgstr "Film type"
-
-#. TODO
-msgid "tt_kantone_Firma"
-msgstr "tt_kantone_Firma"
 
 msgid "tt_kantone_Flugdatum"
 msgstr "Flight date"
