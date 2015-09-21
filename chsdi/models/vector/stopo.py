@@ -53,6 +53,7 @@ class GeologieGeowege (Base, Vector):
     id = Column('bgdi_id', Integer, primary_key=True)
     titel_1 = Column('titel_1', Text)
     titel_2 = Column('titel_2', Text)
+    link = Column('link', Text)
     the_geom = Column(Geometry(geometry_type='GEOMETRY',
                                dimension=2, srid=21781))
 
