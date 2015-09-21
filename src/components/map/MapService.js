@@ -592,7 +592,8 @@ goog.require('ga_urlutils_service');
         }
 
         // Apply the good style (with azimuth drawn) for measure feature
-        if (style && /^measure/.test(feature.getId())) {
+        if (style && gaMapUtils.isMeasureFeature(feature)) {
+          feature.set('type', 'measure');
           feature.setStyle(gaStyleFactory.getFeatureStyleFunction('measure'));
         // Remove image and text styles for polygons and lines
         } else if (!(geom instanceof ol.geom.Point ||
@@ -688,7 +689,7 @@ goog.require('ga_urlutils_service');
                 if (olLayer.getVisible()) {
                   angular.forEach(olLayer.getSource().getFeatures(),
                       function(feature) {
-                    if (/^measure/.test(feature.getId())) {
+                    if (gaMapUtils.isMeasureFeature(feature)) {
                       gaMeasure.addOverlays(olMap, olLayer, feature);
                     }
                   });
@@ -1440,6 +1441,13 @@ goog.require('ga_urlutils_service');
                 olLayerOrId.split('||').length == 4;
           }
           return olLayerOrId.type == 'WMS';
+        },
+
+        // Test if a feature is a measure
+        isMeasureFeature: function(olFeature) {
+          var regex = /^measure/;
+          return (olFeature && (regex.test(olFeature.get('type')) ||
+            regex.test(olFeature.getId())));
         },
 
         moveLayerOnTop: function(map, olLayer) {
