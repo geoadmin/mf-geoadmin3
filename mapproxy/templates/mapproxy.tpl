@@ -3,9 +3,6 @@ services:
   demo:
   kml:
   tms:
-      origin: 'sw'
-      use_grid_names: true
-
   wmts:
      restful: true
      kvp: false
@@ -150,12 +147,10 @@ globals:
     concurrent_tile_creators: 32
   image:
       resampling_method: bicubic
-      # for 24bits PNG
-      paletted: false
+      # for 8bits PNG
+      paletted: true
       formats:
-         image/png:
-             mode: RGBA 
-             transparent: true
+         # override setting
          image/jpeg:
              mode: RGB 
              encoding_options:
