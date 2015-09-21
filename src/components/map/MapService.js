@@ -359,7 +359,7 @@ goog.require('ga_urlutils_service');
           transparent: 'true'
         };
         return new Cesium.UrlTemplateImageryProvider({
-          url: layer.url + '?' + gaUrlUtils.toKeyValue(wmsParams),
+          url: gaUrlUtils.append(layer.url, gaUrlUtils.toKeyValue(wmsParams)),
           proxy: proxy,
           tilingScheme: new Cesium.GeographicTilingScheme(),
           hasAlphaChannel: true
@@ -1012,7 +1012,7 @@ goog.require('ga_urlutils_service');
             var url = config3d.wmsUrl ? gaUrlUtils.remove(config3d.wmsUrl,
                 ['request', 'service', 'version'], true) : wmsMapProxyUrl;
             params = {
-              url: url + '?' + gaUrlUtils.toKeyValue(wmsParams),
+              url: gaUrlUtils.append(url, gaUrlUtils.toKeyValue(wmsParams)),
               tileSize: tileSize
             };
           }

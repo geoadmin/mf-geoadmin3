@@ -156,12 +156,8 @@ goog.require('ga_urlutils_service');
 
           // Test if the layer can be displayed with a specific projection
           var canUseProj = function(layer, projCode) {
-            var projCodeList = layer.CRS || layer.SRS;
-            // If no proj code list available we assume the layer can be
-            // displayed, used for wms 1.1.1 until the PR
-            // https://github.com/openlayers/ol3/pull/2944 is finished.
-            return (!projCodeList ||
-                projCodeList.indexOf(projCode.toUpperCase()) != -1 ||
+            var projCodeList = layer.CRS || layer.SRS || [];
+            return (projCodeList.indexOf(projCode.toUpperCase()) != -1 ||
                 projCodeList.indexOf(projCode.toLowerCase()) != -1);
           };
 
@@ -172,7 +168,10 @@ goog.require('ga_urlutils_service');
             // If projCode is undefined that means the parent layer can be
             // displayed with the current map projection, since it's an herited
             // property no need to test again.
-            if (projCode) {
+            // We don't have proj codes list for wms 1.1.1 so we assume the
+            // layer can be displayed (wait for
+            // https://github.com/openlayers/ol3/pull/2944)
+            if (wmsVersion == '1.3.0' && projCode) {
               if (!canUseProj(layer, projCode)) {
                 layer.isInvalid = true;
                 layer.Abstract = 'layer_invalid_no_crs';
