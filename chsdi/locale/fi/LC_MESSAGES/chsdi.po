@@ -3665,8 +3665,14 @@ msgstr "Terrestrische Strahlung"
 msgid "ch.swisstopo.geologie-dosisleistung-terrestrisch.contour"
 msgstr "Terrestrische Dosisleistung [nSv/h]"
 
+msgid "ch.swisstopo.geologie-eiszeit-lgm"
+msgstr "Letzteiszeitl. Max. (Vektor) 500"
+
 msgid "ch.swisstopo.geologie-eiszeit-lgm-raster"
 msgstr "Maximum dal temp da glatsch"
+
+msgid "ch.swisstopo.geologie-eiszeit-lgm.ads_name"
+msgstr "Eisoberfläche während des letzteiszeitlichen Maximums LGM [m ü.M.]"
 
 msgid "ch.swisstopo.geologie-generalkarte-ggk200"
 msgstr "Charta geologica generala"

@@ -1258,6 +1258,19 @@ register('ch.swisstopo.geologie-tektonische_karte', GeologieTektonischeKarteLine
 register('ch.swisstopo.geologie-tektonische_karte', GeologieTektonischeKartePoly)
 
 
+class GeologieEiszeitLgm(Base, Vector):
+    __tablename__ = 'eiszeit_lgm500'
+    __table_args__ = ({'schema': 'geol', 'autoload': False})
+    __template__ = 'templates/htmlpopup/eiszeit_lgm.mako'
+    __bodId__ = 'ch.swisstopo.geologie-eiszeit-lgm'
+    __label__ = 'ads_name'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    ads_name = Column('ads_name', Text)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY', dimension=2, srid=21781))
+
+register('ch.swisstopo.geologie-eiszeit-lgm', GeologieEiszeitLgm)
+
+
 class Swisstlm3dWanderwege(Base, Vector):
     __tablename__ = 'wanderwege_swissmap'
     __table_args__ = ({'schema': 'karto', 'autoload': False})

@@ -3665,8 +3665,14 @@ msgstr "Radiation terrestre"
 msgid "ch.swisstopo.geologie-dosisleistung-terrestrisch.contour"
 msgstr "Débit de dose d´origine terrestre [nSv/h]"
 
+msgid "ch.swisstopo.geologie-eiszeit-lgm"
+msgstr "Dernier max. glaciaire (vect.) 500"
+
 msgid "ch.swisstopo.geologie-eiszeit-lgm-raster"
 msgstr "Maximum glaciaire 500"
+
+msgid "ch.swisstopo.geologie-eiszeit-lgm.ads_name"
+msgstr "Altitude de la glace durant le dernier maximum glaciaire LGM [m]"
 
 msgid "ch.swisstopo.geologie-generalkarte-ggk200"
 msgstr "Carte géologique générale"
