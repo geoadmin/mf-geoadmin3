@@ -3479,6 +3479,9 @@ msgstr "DOP Distillati"
 msgid "ch.ensi"
 msgstr "IFSN"
 
+msgid "ch.ensi.url"
+msgstr "http://www.ensi.ch/it/"
+
 msgid "ch.ensi.zonenplan-notfallschutz-kernanlagen"
 msgstr "Piani delle zone d'urgenza"
 

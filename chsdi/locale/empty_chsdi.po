@@ -1,3 +1,6 @@
+msgid "ch.ensi.url"
+msgstr ""
+
 msgid "ch.vbs.retablierungsstellen"
 msgstr ""
 

@@ -3479,6 +3479,9 @@ msgstr "PDO spirits"
 msgid "ch.ensi"
 msgstr "ENSI"
 
+msgid "ch.ensi.url"
+msgstr "http://www.ensi.ch/en/"
+
 msgid "ch.ensi.zonenplan-notfallschutz-kernanlagen"
 msgstr "Plans for Emergency protection"
 
