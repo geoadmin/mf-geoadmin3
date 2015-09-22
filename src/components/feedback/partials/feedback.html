@@ -16,8 +16,8 @@
     <label translate>feedback_description</label>
     <textarea rows=3 name="feedback" ng-model="feedback" class="form-control" required></textarea>
     <!-- drawing -->
-    <label ng-if="!isMobile" translate>feedback_drawing</label>
-    <div ng-if="!isMobile" ng-controller="GaDrawController">
+    <label class="ga-hidden-3d" ng-if="!isMobile" translate>feedback_drawing</label>
+    <div class="ga-hidden-3d" ng-if="!isMobile" ng-controller="GaDrawController">
       <div ga-draw 
            ga-draw-map="map" 
            ga-draw-options="options"
