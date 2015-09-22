@@ -3479,6 +3479,9 @@ msgstr "AOP spiritueux"
 msgid "ch.ensi"
 msgstr "IFSN"
 
+msgid "ch.ensi.url"
+msgstr "http://www.ensi.ch/fr/"
+
 msgid "ch.ensi.zonenplan-notfallschutz-kernanlagen"
 msgstr "Plans des zones d’urgence"
 
