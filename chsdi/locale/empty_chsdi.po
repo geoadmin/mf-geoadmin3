@@ -1135,16 +1135,10 @@ msgstr ""
 msgid "technische_angaben"
 msgstr ""
 
-msgid "technische_angaben"
-msgstr ""
-
 msgid "zentrale"
 msgstr ""
 
 msgid "wasserkraftanlagen"
-msgstr ""
-
-msgid "leistungsaufnahme_pumpen"
 msgstr ""
 
 msgid "leistungsaufnahme_pumpen"
@@ -1376,9 +1370,6 @@ msgid "ch.blw.url"
 msgstr ""
 
 msgid "ch.ensi"
-msgstr ""
-
-msgid "ch.ensi.url"
 msgstr ""
 
 msgid "ch.vbs"
@@ -1732,9 +1723,6 @@ msgstr ""
 msgid "ch.kantone.cadastralwebmap-farbe"
 msgstr ""
 
-msgid "ch.swisstopo.hiks-siegfried-ta50"
-msgstr ""
-
 msgid "ch.bafu.hydrologie-wassertemperaturmessstationen"
 msgstr ""
 
@@ -1747,9 +1735,6 @@ msgstr ""
 msgid "ch.bakom.uplink10"
 msgstr ""
 
-msgid "ch.bakom.downlink2"
-msgstr ""
-
 msgid "ch.bakom.downlink20"
 msgstr ""
 
@@ -1757,9 +1742,6 @@ msgid "ch.blw.bodeneignung-kulturtyp"
 msgstr ""
 
 msgid "ch.blw.bodeneignung-gruendigkeit"
-msgstr ""
-
-msgid "ch.bafu.schutzgebiete-biosphaerenreservate"
 msgstr ""
 
 msgid "ch.bakom.radio-fernsehsender"
@@ -1891,16 +1873,10 @@ msgstr ""
 msgid "ch.astra.ivs-nat_abgrenzungen"
 msgstr ""
 
-msgid "ch.swisstopo.hiks-siegfried-ta25"
-msgstr ""
-
 msgid "ch.swisstopo.fixpunkte-lfp1"
 msgstr ""
 
 msgid "ch.swisstopo.fixpunkte-lfp2"
-msgstr ""
-
-msgid "ch.swisstopo.fixpunkte-hfp1"
 msgstr ""
 
 msgid "ch.swisstopo.fixpunkte-hfp2"
@@ -2219,9 +2195,6 @@ msgid "ch.swisstopo.dreiecksvermaschung"
 msgstr ""
 
 msgid "ch.swisstopo.fixpunkte-agnes"
-msgstr ""
-
-msgid "ch.swisstopo.fixpunkte-hoehe"
 msgstr ""
 
 msgid "ch.swisstopo.fixpunkte-lage"
@@ -3918,13 +3891,7 @@ msgstr ""
 msgid "tt_ch.bfe.abgeltung-wasserkraftnutzung_area"
 msgstr ""
 
-msgid "tt_ch.bfe.abgeltung-wasserkraftnutzung_objectnumber"
-msgstr ""
-
 msgid "tt_ch.bfe.abgeltung-wasserkraftnutzung_perimeter"
-msgstr ""
-
-msgid "tt_ch.bfe.abgeltung-wasserkraftnutzung_startprotectioncommitment"
 msgstr ""
 
 msgid "tt_ch.bfe.energieforschung_beschreibung"
@@ -3970,15 +3937,6 @@ msgid "tt_ch.bfe.statistik-wasserkraftanlagen_hydropowerplantoperationalstatus_d
 msgstr ""
 
 msgid "tt_ch.bfe.statistik-wasserkraftanlagen_hydropowerplanttype"
-msgstr ""
-
-msgid "tt_ch.bfe.statistik-wasserkraftanlagen_location"
-msgstr ""
-
-msgid "tt_ch.bfe.statistik-wasserkraftanlagen_name"
-msgstr ""
-
-msgid "tt_ch.bfe.statistik-wasserkraftanlagen_wastanumber"
 msgstr ""
 
 msgid "tt_ch_bav_kataster_belasteter_standorte_oev_standortnummer"
@@ -4039,9 +3997,6 @@ msgid "optionaler_name"
 msgstr ""
 
 msgid "validierungsdatum"
-msgstr ""
-
-msgid "ch.bak.isos.warning"
 msgstr ""
 
 msgid "schiffbarkeit"
@@ -4287,43 +4242,13 @@ msgstr ""
 msgid "tt_gemeindetypen_TYP_BEZ_F"
 msgstr ""
 
-msgid "tt_gemeindetypen_TYP_BEZ_F"
-msgstr ""
-
 msgid "No additional information for this object type"
-msgstr ""
-
-msgid "tt_ch.bfe.abgeltung-wasserkraftnutzung_area"
-msgstr ""
-
-msgid "tt_ch.bfe.abgeltung-wasserkraftnutzung_endprotectioncommitment"
 msgstr ""
 
 msgid "tt_ch.bfe.abgeltung-wasserkraftnutzung_objectnumber"
 msgstr ""
 
-msgid "tt_ch.bfe.abgeltung-wasserkraftnutzung_perimeter"
-msgstr ""
-
 msgid "tt_ch.bfe.abgeltung-wasserkraftnutzung_startprotectioncommitment"
-msgstr ""
-
-msgid "tt_ch.bfe.energieforschung_beschreibung"
-msgstr ""
-
-msgid "tt_ch.bfe.energieforschung_kontaktperson"
-msgstr ""
-
-msgid "tt_ch.bfe.energieforschung_projekt_nr"
-msgstr ""
-
-msgid "tt_ch.bfe.energieforschung_projektstatus"
-msgstr ""
-
-msgid "tt_ch.bfe.energieforschung_projekttitel"
-msgstr ""
-
-msgid "tt_ch.bfe.energieforschung_schlussbericht"
 msgstr ""
 
 msgid "tt_ch.bfe.energieforschung_projektanfang"
@@ -4407,21 +4332,6 @@ msgstr ""
 msgid "ch.bfe.energieforschung.bild"
 msgstr ""
 
-msgid "tt_ch.bfe.statistik-wasserkraftanlagen_beginningofoperation"
-msgstr ""
-
-msgid "tt_ch.bfe.statistik-wasserkraftanlagen_canton"
-msgstr ""
-
-msgid "tt_ch.bfe.statistik-wasserkraftanlagen_endofoperation"
-msgstr ""
-
-msgid "tt_ch.bfe.statistik-wasserkraftanlagen_hydropowerplantoperationalstatus_de"
-msgstr ""
-
-msgid "tt_ch.bfe.statistik-wasserkraftanlagen_hydropowerplanttype"
-msgstr ""
-
 msgid "tt_ch.bfe.statistik-wasserkraftanlagen_location"
 msgstr ""
 
@@ -4429,18 +4339,6 @@ msgid "tt_ch.bfe.statistik-wasserkraftanlagen_name"
 msgstr ""
 
 msgid "tt_ch.bfe.statistik-wasserkraftanlagen_wastanumber"
-msgstr ""
-
-msgid "tt_ch.bfe.stauanlagen-bundesaufsicht_crestlength"
-msgstr ""
-
-msgid "tt_ch.bfe.stauanlagen-bundesaufsicht_crestlevel"
-msgstr ""
-
-msgid "tt_ch.bfe.stauanlagen-bundesaufsicht_damheight"
-msgstr ""
-
-msgid "tt_ch.bfe.stauanlagen-bundesaufsicht_damtype_de"
 msgstr ""
 
 msgid "abkuerzung"
@@ -4702,9 +4600,6 @@ msgid "tt_firmen_line_id"
 msgstr ""
 
 msgid "tt_kantone_Filmart"
-msgstr ""
-
-msgid "tt_kantone_Firma"
 msgstr ""
 
 msgid "tt_kantone_Flugdatum"
@@ -6390,9 +6285,6 @@ msgstr ""
 msgid "ch.bafu.hydrologie-niedrigwasserstatistik"
 msgstr ""
 
-msgid "ch.bafu.gewaesserschutz-klaeranlagen_anteilq347"
-msgstr ""
-
 msgid "ch.bafu.gewaesserschutz-klaeranlagen_ausbaugroesse"
 msgstr ""
 
@@ -7039,4 +6931,55 @@ msgid "ch.swisstopo.geologie-dosisleistung-terrestrisch"
 msgstr ""
 
 msgid "ch.swisstopo.geologie-dosisleistung-terrestrisch.contour"
+msgstr ""
+
+msgid "ch.bav.sachplan-infrastruktur-schifffahrt_anhoerung.facname_de"
+msgstr ""
+
+msgid "ch.bav.sachplan-infrastruktur-schifffahrt_anhoerung.facname_fr"
+msgstr ""
+
+msgid "ch.bafu.bundesinventare-auen.au_obj"
+msgstr ""
+
+msgid "ch.bafu.bundesinventare-auen.au_name"
+msgstr ""
+
+msgid "ch.bafu.bundesinventare-bln.bln_name"
+msgstr ""
+
+msgid "ch.bafu.bundesinventare-jagdbanngebiete.jb_name"
+msgstr ""
+
+msgid "ch.swisstopo.vec200-names-namedlocation.id"
+msgstr ""
+
+msgid "ch.swisstopo.verschiebungsvektoren-tsp2.id"
+msgstr ""
+
+msgid "ch.kantone.ivs-reg_loc.ivs_slaname"
+msgstr ""
+
+msgid "ch.kantone.ivs-reg_loc.ivs_nummer"
+msgstr ""
+
+msgid "ch.kantone.ivs-reg_loc.ivs_signatur"
+msgstr ""
+
+msgid "ch.bav.sachplan-infrastruktur-schifffahrt_ausgangslage.name"
+msgstr ""
+
+msgid "ch.bav.sachplan-infrastruktur-schifffahrt_ausgangslage.description_de"
+msgstr ""
+
+msgid "ch.bav.sachplan-infrastruktur-schifffahrt_ausgangslage.description_fr"
+msgstr ""
+
+msgid "ch.bav.sachplan-infrastruktur-schifffahrt_ausgangslage.description_it"
+msgstr ""
+
+msgid "ch.bav.sachplan-infrastruktur-schifffahrt_ausgangslage.description_en"
+msgstr ""
+
+msgid "ch.bav.sachplan-infrastruktur-schifffahrt_ausgangslage.description_rm"
 msgstr ""
