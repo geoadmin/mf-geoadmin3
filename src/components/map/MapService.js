@@ -975,6 +975,14 @@ goog.require('ga_urlutils_service');
           var requestedLayer = config3d.wmsLayers || config3d.serverLayerName ||
               bodId;
           var format = config3d.format || 'png';
+
+          if (config3d.type == 'aggregate') {
+            var providers = [];
+            config.subLayersIds.forEach(function(item) {
+              providers.push(this.getCesiumImageryProviderById(item));
+            }, this);
+            return providers;
+          }
           if (config3d.type == 'wmts') {
             var url = config3d.url ?
                 getWmtsUrlFromTemplate(config3d.url, requestedLayer, timestamp,
