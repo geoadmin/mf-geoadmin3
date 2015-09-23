@@ -3,6 +3,8 @@ import os
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 if len(sys.argv) < 2:
         print "ERROR: No URL provided. You need to set SAUCELABS_TARGETURL in your environment! Exit"
@@ -39,16 +41,26 @@ browser = webdriver.PhantomJS()
 print ("Starting SauceLabs script!");
 
 # This is your test logic. You can add multiple tests here.
-browser.implicitly_wait(1)
-browser.get(url)
+browser.implicitly_wait(10)
+#browser.get(url)
 ## Set the timeout to x ms
-browser.set_page_load_timeout(3);
+browser.set_page_load_timeout(10)
 ## Go to the deployed site.
 print "Passage en allemand Ok !"
-browser.get(url + '/?lang=de');
+browser.get('https://map.geo.admin.ch/?lang=de')
+#browser.get(url + '/?lang=de')
 ## Wait until topics related stuff is loaded. We know this when catalog is there
-browser.findElement(browser.By.xpath("//a[contains(text(), 'Grundlagen und Planung')]"));
-if not "Google" in driver.title:
+    #browser.find_elements_by_xpath("//a[contains(text(), 'Grunaasdfasdfasdfsdfsdfasdfdlagen und Planung')]")
+#browser.find_element_by_partial_link_text("Grundlagen und Planung")
+try:
+    WebDriverWait(browser, 10).until(EC.title_contains('chweiz'))
+except Exception as e:
+    print '-----------'
+    print str(e)
+
+
+#if not "Google" in browser.title:
+if not "chweiz" in browser.title:
             raise Exception("Unable to load google page!")
             elem = driver.find_element_by_name("q")
             elem.send_keys("Sauce Labs")
@@ -59,4 +71,4 @@ else:
 
 # This is where you tell Sauce Labs to stop running tests on your behalf.  
 # It's important so that you aren't billed after your test finishes.
-driver.quit()
+browser.quit()
