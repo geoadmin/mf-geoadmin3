@@ -110,6 +110,9 @@ goog.require('ga_permalink');
       var updateHelpTooltip = function(overlay, type, drawStarted, onFirstPoint,
           onLastPoint) {
         var helpMsg = $translate.instant('draw_start_' + type);
+        if (type == 'marker' || type == 'annotation') {
+          helpMsg = $translate.instant('draw_next_' + type);
+        }
         if (drawStarted) {
           if (type != 'Point') {
             helpMsg = $translate.instant('draw_next_' + type);
