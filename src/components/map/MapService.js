@@ -857,39 +857,33 @@ goog.require('ga_urlutils_service');
             // Live modifications for 3d test
             if (response.data) {
               var ids = [
-                'ch.swisstopo.swisstlm3d-karte-farbe_wmts',
-                'ch.swisstopo.swisstlm3d-karte-grau_wmts',
                 'ch.swisstopo.swissimage-product',
                 'ch.swisstopo.pixelkarte-farbe',
-                'ch.swisstopo.pixelkarte-farbe_wmts',
                 'ch.swisstopo.pixelkarte-grau',
-                'ch.swisstopo.pixelkarte-grau_wmts',
                 'ch.swisstopo.zeitreihen'
               ];
               angular.forEach(ids, function(id) {
                 if (response.data[id]) {
                   response.data[id].config3d = id + '_3d';
-
-                  if (id.indexOf('_wmts') != -1) {
-                    if (id.indexOf('farbe') != -1) {
-                    response.data[id].config3d =
-                        'ch.swisstopo.swisstlm3d-karte-farbe';
-                    } else {
-                      response.data[id].config3d =
-                        'ch.swisstopo.swisstlm3d-karte-grau';
-                    }
-                  }
                 }
               });
               response.data['ch.swisstopo.zeitreihen_3d'] = {
                 format: 'jpeg'
               };
               response.data['ch.swisstopo.pixelkarte-grau_3d'] = {
+                subLayersIds: [
+                  'ch.swisstopo.swisstlm3d-karte-grau',
+                  'ch.swisstopo.swissnames3d'
+                ],
                 attribution: 'tlm grau 3D',
                 attributionUrl: 'http://www.swisstopo.admin.ch/internet/' +
                     'swisstopo/en/home/products/height/swissALTI3D.html'
               };
               response.data['ch.swisstopo.pixelkarte-farbe_3d'] = {
+                subLayersIds: [
+                  'ch.swisstopo.swisstlm3d-karte-farbe',
+                  'ch.swisstopo.swissnames3d'
+                ],
                 attribution: 'tlm farbe 3D',
                 attributionUrl: 'http://www.swisstopo.admin.ch/internet/' +
                     'swisstopo/en/home/products/height/swissALTI3D.html'
