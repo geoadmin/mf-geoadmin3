@@ -69,7 +69,10 @@ class TileChecker(MapProxyTestsBase):
         self.session.headers.update(h['Header'])
         resp = self.session.get(url)
         checkcode = resp.status_code in h['Results']
-        assert checkcode, url
+        if 'ch.astra.ivs-nat-verlaeufe' in path:
+            assert checkcode, 500
+        else:
+            assert checkcode, url
 
     def itiles(self, epsg=21781):
         from urlparse import urlparse, urlunparse
