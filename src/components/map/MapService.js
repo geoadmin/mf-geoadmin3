@@ -979,7 +979,12 @@ goog.require('ga_urlutils_service');
           if (config3d.type == 'aggregate') {
             var providers = [];
             config3d.subLayersIds.forEach(function(item) {
-              providers.push(this.getCesiumImageryProviderById(item));
+              var subProvider = this.getCesiumImageryProviderById(item);
+              if (Array.isArray(subProvider)) {
+                providers.push.apply(providers, subProvider);
+              } else {
+                providers.push(this.getCesiumImageryProviderById(item));
+              }
             }, this);
             return providers;
           }
