@@ -1030,7 +1030,7 @@ goog.require('ga_time_service');
 
     $scope.layers = $scope.map.getLayers().getArray();
     $scope.layerFilter = function(layer) {
-      return layer.bodId == 'ch.swisstopo.zeitreihen';
+      return layer.bodId == 'ch.swisstopo.zeitreihen' && layer.visible;
     };
     $scope.$watchCollection('layers | filter:layerFilter', function(lrs) {
       $scope.options.multiprint = (lrs.length == 1);
