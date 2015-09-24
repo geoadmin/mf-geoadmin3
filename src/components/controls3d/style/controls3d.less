@@ -65,10 +65,20 @@
     display: inline-block;
     width: 27px;
     height: 72px;
+    @media (max-width: @screen-tablet) {
+      background-image: data-uri('pegman_standing_white_mobile.png');
+      width:18px;
+      height:47px;
+    }
     &.ga-fly-mode {
-      background-image: data-uri('SuperPegman_white.png');
+      background-image: data-uri('super_pegman_white.png');
       width: 78px;
       height: 100px;
+      @media (max-width: @screen-tablet) {
+         background-image: data-uri('super_pegman_white_mobile.png');
+         width: 49px;
+         height: 65px;
+      }
     }
   }
 }
