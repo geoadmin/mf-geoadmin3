@@ -198,7 +198,7 @@ goog.require('ga_urlutils_service');
           },
           getCesiumImageryProvider: {
             get: function() {
-              return this.get('getCesiumImageryProvider');
+              return this.get('getCesiumImageryProvider') || angular.noop;
             },
             set: function(val) {
               this.set('getCesiumImageryProvider', val);
@@ -299,7 +299,10 @@ goog.require('ga_urlutils_service');
           };
 
           if (!gaBrowserSniffer.touchDevice) {
-            return map.on('singleclick', callback);
+            var deregKey = map.on('singleclick', callback);
+            return function() {
+              ol.Observable.unByKey(deregKey);
+            };
 
           } else {
             // We can't register 'singleclick' map event on touch devices
