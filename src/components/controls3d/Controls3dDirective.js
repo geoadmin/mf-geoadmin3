@@ -55,13 +55,17 @@ goog.require('ga_map_service');
           }
         });
 
+        scope.$watch(function() {
+          return fps.getActive();
+        }, function(active) {
+          scope.isPegmanActive = active;
+        });
+
         scope.togglePegmanMode = function() {
-          var active = fps.getActive();
           var flyMode = fps.getFlyMode();
-          if (active) {
+          if (fps.getActive()) {
             if (flyMode) {
               // flyMode -> off
-              scope.isPegmanActive = false;
               scope.isFlyModeActive = false;
               fps.setActive(false);
             } else {
@@ -71,7 +75,6 @@ goog.require('ga_map_service');
             }
           } else {
             // off -> fpsMode
-            scope.isPegmanActive = true;
             fps.setActive(true);
           }
         };
