@@ -978,7 +978,7 @@ goog.require('ga_urlutils_service');
 
           if (config3d.type == 'aggregate') {
             var providers = [];
-            config.subLayersIds.forEach(function(item) {
+            config3d.subLayersIds.forEach(function(item) {
               providers.push(this.getCesiumImageryProviderById(item));
             }, this);
             return providers;
