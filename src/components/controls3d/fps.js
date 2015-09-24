@@ -139,6 +139,12 @@ FPS.prototype.getFlyMode = function() {
   return this.flyMode_;
 };
 
+/**
+ * @return {boolean}
+ */
+FPS.prototype.getJetMode = function() {
+  return this.flyMode_ && this.buttons_.shift;
+};
 
 /**
  * @private

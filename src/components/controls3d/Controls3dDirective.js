@@ -40,6 +40,8 @@ goog.require('ga_map_service');
 
         scope.isFlyModeActive = false;
 
+        scope.isJetModeActive = false;
+
         camera.moveStart.addEventListener(function() {
           moving = true;
         });
@@ -65,6 +67,12 @@ goog.require('ga_map_service');
           return fps.getFlyMode();
         }, function(flyMode) {
           scope.isFlyModeActive = flyMode;
+        });
+
+        scope.$watch(function() {
+          return fps.getJetMode();
+        }, function(jetMode) {
+          scope.isJetModeActive = jetMode;
         });
 
         scope.togglePegmanMode = function() {
