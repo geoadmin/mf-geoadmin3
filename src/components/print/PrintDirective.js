@@ -678,9 +678,10 @@ goog.require('ga_time_service');
           // Get all attributions to diaplay
           var attribution = gaAttribution.getTextFromLayer(layer);
           if (attribution !== undefined) {
-            if (layer.useThirdPartyData &&
-                thirdPartyAttributions.indexOf(attribution) == -1) {
-              thirdPartyAttributions.push(attribution);
+            if (layer.useThirdPartyData) {
+              if (thirdPartyAttributions.indexOf(attribution) == -1) {
+                thirdPartyAttributions.push(attribution);
+              }
             } else if (attributions.indexOf(attribution) == -1) {
               attributions.push(attribution);
             }
