@@ -61,16 +61,19 @@ goog.require('ga_map_service');
           scope.isPegmanActive = active;
         });
 
+        scope.$watch(function() {
+          return fps.getFlyMode();
+        }, function(flyMode) {
+          scope.isFlyModeActive = flyMode;
+        });
+
         scope.togglePegmanMode = function() {
-          var flyMode = fps.getFlyMode();
           if (fps.getActive()) {
-            if (flyMode) {
+            if (fps.getFlyMode()) {
               // flyMode -> off
-              scope.isFlyModeActive = false;
               fps.setActive(false);
             } else {
               // fpsMode -> flyMode
-              scope.isFlyModeActive = true;
               fps.setFlyMode(true);
             }
           } else {
