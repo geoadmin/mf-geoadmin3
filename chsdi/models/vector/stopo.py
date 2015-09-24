@@ -1375,12 +1375,15 @@ class geometaStandAV(Base, Vector):
     __template__ = 'templates/htmlpopup/standav.mako'
     __bodId__ = 'ch.swisstopo-vd.geometa-standav'
     __label__ = 'frame'
+    __returnedGeometry__ = 'the_geom_gen50'
     id = Column('gid', Integer, primary_key=True)
     fid = Column('id', Integer)
     quality = Column('quality', Text)
     frame = Column('frame', Text)
-    the_geom = Column('the_geom_gen50', Geometry(geometry_type='GEOMETRY',
-                                                 dimension=2, srid=21781))
+    the_geom = Column('the_geom', Geometry(geometry_type='GEOMETRY',
+                                           dimension=2, srid=21781))
+    the_geom_gen50 = Column('the_geom_gen50', Geometry(geometry_type='GEOMETRY',
+                                                       dimension=2, srid=21781))
 
 register('ch.swisstopo-vd.geometa-standav', geometaStandAV)
 
@@ -1391,6 +1394,7 @@ class geometaLos(Base, Vector):
     __template__ = 'templates/htmlpopup/los.mako'
     __bodId__ = 'ch.swisstopo-vd.geometa-los'
     __label__ = 'operatsname'
+    __returnedGeometry__ = 'the_geom_gen50'
     id = Column('gid', Integer, primary_key=True)
     fid = Column('id', Integer)
     neu_id = Column('neu_id', Text)
@@ -1403,8 +1407,10 @@ class geometaLos(Base, Vector):
     flaeche_vertrag = Column('flaeche_vertrag', Text)
     frame = Column('frame', Text)
     bgdi_created = Column('bgdi_created', Text)
-    the_geom = Column('the_geom_gen50', Geometry(geometry_type='GEOMETRY',
-                                                 dimension=2, srid=21781))
+    the_geom = Column('the_geom', Geometry(geometry_type='GEOMETRY',
+                                           dimension=2, srid=21781))
+    the_geom_gen50 = Column('the_geom_gen50', Geometry(geometry_type='GEOMETRY',
+                                                       dimension=2, srid=21781))
 
 register('ch.swisstopo-vd.geometa-los', geometaLos)
 
@@ -1417,6 +1423,7 @@ class geometaGemeinde(Base, Vector):
     __template__ = 'templates/htmlpopup/gemeinde.mako'
     __bodId__ = 'ch.swisstopo-vd.geometa-gemeinde'
     __label__ = 'gemeindename'
+    __returnedGeometry__ = 'the_geom_gen50'
     id = Column('gid', Integer, primary_key=True)
     fid = Column('id', Integer)
     gemeindename = Column('gemeindename', Text)
@@ -1426,8 +1433,10 @@ class geometaGemeinde(Base, Vector):
     pdf_liste = Column('pdf_liste', Text)
     abgabestelle = Column('abgabestelle', Text)
     bgdi_created = Column('bgdi_created', Text)
-    the_geom = Column('the_geom_gen50', Geometry(geometry_type='GEOMETRY',
-                                                 dimension=2, srid=21781))
+    the_geom = Column('the_geom', Geometry(geometry_type='GEOMETRY',
+                                           dimension=2, srid=21781))
+    the_geom_gen50 = Column('the_geom_gen50', Geometry(geometry_type='GEOMETRY',
+                                                       dimension=2, srid=21781))
 
 register('ch.swisstopo-vd.geometa-gemeinde', geometaGemeinde)
 
@@ -1438,6 +1447,7 @@ class geometaGrundbuch(Base, Vector):
     __template__ = 'templates/htmlpopup/grundbuch.mako'
     __bodId__ = 'ch.swisstopo-vd.geometa-grundbuch'
     __label__ = 'ortsteil_grundbuch'
+    __returnedGeometry__ = 'the_geom_gen50'
     id = Column('gid', Integer, primary_key=True)
     fid = Column('id', Integer)
     ortsteil_grundbuch = Column('ortsteil_grundbuch', Text)
@@ -1449,8 +1459,10 @@ class geometaGrundbuch(Base, Vector):
     telefon = Column('telefon', Text)
     email = Column('email', Text)
     bgdi_created = Column('bgdi_created', Text)
-    the_geom = Column('the_geom_gen50', Geometry(geometry_type='GEOMETRY',
-                                                 dimension=2, srid=21781))
+    the_geom = Column('the_geom', Geometry(geometry_type='GEOMETRY',
+                                           dimension=2, srid=21781))
+    the_geom_gen50 = Column('the_geom_gen50', Geometry(geometry_type='GEOMETRY',
+                                                       dimension=2, srid=21781))
 
 register('ch.swisstopo-vd.geometa-grundbuch', geometaGrundbuch)
 
@@ -1461,6 +1473,7 @@ class geometaNfgeom(Base, Vector):
     __template__ = 'templates/htmlpopup/nfgeom.mako'
     __bodId__ = 'ch.swisstopo-vd.geometa-nfgeom'
     __label__ = 'name'
+    __returnedGeometry__ = 'the_geom_gen50'
     id = Column('gid', Integer, primary_key=True)
     name = Column('name', Text)
     firmenname = Column('firmenname', Text)
@@ -1468,8 +1481,10 @@ class geometaNfgeom(Base, Vector):
     telefon = Column('telefon', Text)
     email = Column('email', Text)
     bgdi_created = Column('bgdi_created', Text)
-    the_geom = Column('the_geom_gen50', Geometry(geometry_type='GEOMETRY',
-                                                 dimension=2, srid=21781))
+    the_geom = Column('the_geom', Geometry(geometry_type='GEOMETRY',
+                                           dimension=2, srid=21781))
+    the_geom_gen50 = Column('the_geom_gen50', Geometry(geometry_type='GEOMETRY',
+                                                       dimension=2, srid=21781))
 
 register('ch.swisstopo-vd.geometa-nfgeom', geometaNfgeom)
 
