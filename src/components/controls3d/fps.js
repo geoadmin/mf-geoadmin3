@@ -4,9 +4,10 @@ goog.provide('fps');
 
 /**
  * @param {!Cesium.Scene} scene
+ * @param {!Angular.Scope} scope
  * @constructor
  */
-function FPS(scene) {
+function FPS(scene, scope) {
 
   /**
    * @type {boolean}
@@ -23,6 +24,11 @@ function FPS(scene) {
    * @private
    */
   this.scene_ = scene;
+
+  /**
+   * @private
+   */
+  this.scope_ = scope;
 
   /**
    * @private
@@ -224,24 +230,26 @@ FPS.prototype.onMouseMove_ = function(event) {
  */
 FPS.prototype.onKey_ = function(event) {
   if (this.active_) {
-    var pressed = event.type == 'keydown';
-    this.buttons_.shift = event.shiftKey;
-    if (event.keyCode == 65 || event.keyCode == 37) {
-      // A or Left.
-      this.buttons_.left = pressed;
-    } else if (event.keyCode == 68 || event.keyCode == 39) {
-      // D or Right.
-      this.buttons_.right = pressed;
-    } else if (event.keyCode == 87 || event.keyCode == 38) {
-      // W or Up.
-      this.buttons_.forward = pressed;
-    } else if (event.keyCode == 83 || event.keyCode == 40) {
-      // S or Down.
-      this.buttons_.backward = pressed;
-    } else if (pressed && event.keyCode == 70) {
-      // F
-      this.setFlyMode(!this.flyMode_);
-    }
+    this.scope_.$apply(function() {
+      var pressed = event.type == 'keydown';
+      this.buttons_.shift = event.shiftKey;
+      if (event.keyCode == 65 || event.keyCode == 37) {
+        // A or Left.
+        this.buttons_.left = pressed;
+      } else if (event.keyCode == 68 || event.keyCode == 39) {
+        // D or Right.
+        this.buttons_.right = pressed;
+      } else if (event.keyCode == 87 || event.keyCode == 38) {
+        // W or Up.
+        this.buttons_.forward = pressed;
+      } else if (event.keyCode == 83 || event.keyCode == 40) {
+        // S or Down.
+        this.buttons_.backward = pressed;
+      } else if (pressed && event.keyCode == 70) {
+        // F
+        this.setFlyMode(!this.flyMode_);
+      }
+    }.bind(this));
   }
 };
 

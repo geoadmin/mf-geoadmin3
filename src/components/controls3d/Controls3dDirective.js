@@ -29,7 +29,7 @@ goog.require('ga_map_service');
         var ol3d = scope.ol3d;
         var scene = ol3d.getCesiumScene();
         var camera = scene.camera;
-        var fps = new FPS(scene);
+        var fps = new FPS(scene, scope);
 
         var tiltIndicator = element.find('.ga-tilt .ga-indicator');
         var rotateIndicator = element.find('.ga-rotate .ga-indicator');
