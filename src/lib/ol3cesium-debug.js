@@ -1,6 +1,6 @@
 // Ol3-Cesium. See https://github.com/openlayers/ol3-cesium/
 // License: https://github.com/openlayers/ol3-cesium/blob/master/LICENSE
-// Version: v1.8
+// Version: v1.8-20-gd8124ea
 
 var CLOSURE_NO_DEPS = true;
 // Copyright 2006 The Closure Library Authors. All Rights Reserved.
@@ -20334,9 +20334,26 @@ ol.geom.Geometry.prototype.getExtent = function(opt_extent) {
 
 
 /**
+ * Create a simplified version of this geometry.  For linestrings, this uses
+ * the the {@link
+ * https://en.wikipedia.org/wiki/Ramer-Douglas-Peucker_algorithm
+ * Douglas Peucker} algorithm.  For polygons, a quantization-based
+ * simplification is used to preserve topology.
+ * @function
+ * @param {number} tolerance The tolerance distance for simplification.
+ * @return {ol.geom.Geometry} A new, simplified version of the original
+ *     geometry.
+ * @api
+ */
+ol.geom.Geometry.prototype.simplify = function(tolerance) {
+  return this.getSimplifiedGeometry(tolerance * tolerance);
+};
+
+
+/**
  * Create a simplified version of this geometry using the Douglas Peucker
  * algorithm.
- * @see http://en.wikipedia.org/wiki/Ramer%E2%80%93Douglas%E2%80%93Peucker_algorithm
+ * @see https://en.wikipedia.org/wiki/Ramer-Douglas-Peucker_algorithm
  * @function
  * @param {number} squaredTolerance Squared tolerance.
  * @return {ol.geom.Geometry} Simplified geometry.
@@ -37395,7 +37412,7 @@ ol.control.Control.prototype.setMap = function(map) {
   if (!goog.isNull(this.map_)) {
     goog.dom.removeNode(this.element);
   }
-  if (!goog.array.isEmpty(this.listenerKeys)) {
+  if (this.listenerKeys.length > 0) {
     goog.array.forEach(this.listenerKeys, goog.events.unlistenByKey);
     this.listenerKeys.length = 0;
   }
@@ -48936,7 +48953,6 @@ ol.pointer.EventSource.prototype.getHandlerForEvent = function(eventType) {
 
 goog.provide('ol.pointer.MouseSource');
 
-goog.require('goog.object');
 goog.require('ol.pointer.EventSource');
 
 
@@ -49067,11 +49083,9 @@ ol.pointer.MouseSource.prepareEvent = function(inEvent, dispatcher) {
  */
 ol.pointer.MouseSource.prototype.mousedown = function(inEvent) {
   if (!this.isEventSimulatedFromTouch_(inEvent)) {
-    var p = goog.object.containsKey(this.pointerMap,
-        ol.pointer.MouseSource.POINTER_ID.toString());
     // TODO(dfreedman) workaround for some elements not sending mouseup
     // http://crbug/149091
-    if (p) {
+    if (ol.pointer.MouseSource.POINTER_ID.toString() in this.pointerMap) {
       this.cancel(inEvent);
     }
     var e = ol.pointer.MouseSource.prepareEvent(inEvent, this.dispatcher);
@@ -49154,8 +49168,7 @@ ol.pointer.MouseSource.prototype.cancel = function(inEvent) {
  * Remove the mouse from the list of active pointers.
  */
 ol.pointer.MouseSource.prototype.cleanupMouse = function() {
-  goog.object.remove(this.pointerMap,
-      ol.pointer.MouseSource.POINTER_ID.toString());
+  delete this.pointerMap[ol.pointer.MouseSource.POINTER_ID.toString()];
 };
 
 // Based on https://github.com/Polymer/PointerEvents
@@ -49190,7 +49203,6 @@ ol.pointer.MouseSource.prototype.cleanupMouse = function() {
 
 goog.provide('ol.pointer.MsSource');
 
-goog.require('goog.object');
 goog.require('ol.pointer.EventSource');
 
 
@@ -49258,7 +49270,7 @@ ol.pointer.MsSource.prototype.prepareEvent_ = function(inEvent) {
  * @param {number} pointerId
  */
 ol.pointer.MsSource.prototype.cleanup = function(pointerId) {
-  goog.object.remove(this.pointerMap, pointerId);
+  delete this.pointerMap[pointerId.toString()];
 };
 
 
@@ -49268,7 +49280,7 @@ ol.pointer.MsSource.prototype.cleanup = function(pointerId) {
  * @param {goog.events.BrowserEvent} inEvent
  */
 ol.pointer.MsSource.prototype.msPointerDown = function(inEvent) {
-  this.pointerMap[inEvent.getBrowserEvent().pointerId] = inEvent;
+  this.pointerMap[inEvent.getBrowserEvent().pointerId.toString()] = inEvent;
   var e = this.prepareEvent_(inEvent);
   this.dispatcher.down(e, inEvent);
 };
@@ -49917,7 +49929,7 @@ ol.pointer.TouchSource.prototype.cancelOut_ =
  * @param {Object} inPointer
  */
 ol.pointer.TouchSource.prototype.cleanUpPointer_ = function(inPointer) {
-  goog.object.remove(this.pointerMap, inPointer.pointerId);
+  delete this.pointerMap[inPointer.pointerId];
   this.removePrimaryPointer_(inPointer);
 };
 
@@ -53430,9 +53442,11 @@ ol.renderer.Map.prototype.forEachFeatureAtCoordinate =
         (ol.layer.Layer.visibleAtResolution(layerState, viewResolution) &&
         layerFilter.call(thisArg2, layer))) {
       var layerRenderer = this.getLayerRenderer(layer);
-      result = layerRenderer.forEachFeatureAtCoordinate(
-          layer.getSource().getWrapX() ? translatedCoordinate : coordinate,
-          frameState, callback, thisArg);
+      if (!goog.isNull(layer.getSource())) {
+        result = layerRenderer.forEachFeatureAtCoordinate(
+            layer.getSource().getWrapX() ? translatedCoordinate : coordinate,
+            frameState, callback, thisArg);
+      }
       if (result) {
         return result;
       }
@@ -57125,7 +57139,7 @@ ol.style.Circle.prototype.drawHitDetectionCanvas_ =
       renderOptions.size / 2, renderOptions.size / 2,
       this.radius_, 0, 2 * Math.PI, true);
 
-  context.fillStyle = ol.render.canvas.defaultFillStyle;
+  context.fillStyle = ol.color.asString(ol.render.canvas.defaultFillStyle);
   context.fill();
   if (!goog.isNull(this.stroke_)) {
     context.strokeStyle = renderOptions.strokeStyle;
@@ -57867,6 +57881,13 @@ ol.interaction.MouseWheelZoom = function(opt_options) {
 
   /**
    * @private
+   * @type {boolean}
+   */
+  this.useAnchor_ = goog.isDef(options.useAnchor) ?
+      options.useAnchor : true;
+
+  /**
+   * @private
    * @type {?ol.Coordinate}
    */
   this.lastAnchor_ = null;
@@ -57904,7 +57925,10 @@ ol.interaction.MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
     goog.asserts.assertInstanceof(mouseWheelEvent, goog.events.MouseWheelEvent,
         'mouseWheelEvent should be of type MouseWheelEvent');
 
-    this.lastAnchor_ = mapBrowserEvent.coordinate;
+    if (this.useAnchor_) {
+      this.lastAnchor_ = mapBrowserEvent.coordinate;
+    }
+
     this.delta_ += mouseWheelEvent.deltaY;
 
     if (!goog.isDef(this.startTime_)) {
@@ -57944,6 +57968,20 @@ ol.interaction.MouseWheelZoom.prototype.doZoom_ = function(map) {
   this.lastAnchor_ = null;
   this.startTime_ = undefined;
   this.timeoutId_ = undefined;
+};
+
+
+/**
+ * Enable or disable using the mouse's location as an anchor when zooming
+ * @param {boolean} useAnchor true to zoom to the mouse's location, false
+ * to zoom to the center of the map
+ * @api
+ */
+ol.interaction.MouseWheelZoom.prototype.setMouseAnchor = function(useAnchor) {
+  this.useAnchor_ = useAnchor;
+  if (!useAnchor) {
+    this.lastAnchor_ = null;
+  }
 };
 
 goog.provide('ol.interaction.PinchRotate');
@@ -62888,7 +62926,6 @@ ol.geom.Circle.prototype.transform;
 
 goog.provide('ol.geom.GeometryCollection');
 
-goog.require('goog.array');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.object');
@@ -63119,7 +63156,7 @@ ol.geom.GeometryCollection.prototype.intersectsExtent = function(extent) {
  * @return {boolean} Is empty.
  */
 ol.geom.GeometryCollection.prototype.isEmpty = function() {
-  return goog.array.isEmpty(this.geometries_);
+  return this.geometries_.length === 0;
 };
 
 
@@ -72902,7 +72939,7 @@ ol.structs.RBush.prototype.remove = function(value) {
   // get the object in which the value was wrapped when adding to the
   // internal rbush. then use that object to do the removal.
   var item = this.items_[uid];
-  goog.object.remove(this.items_, uid);
+  delete this.items_[uid];
   return this.rbush_.remove(item) !== null;
 };
 
@@ -84048,6 +84085,7 @@ ol.Map = function(options) {
   this.viewport_.style.height = '100%';
   // prevent page zoom on IE >= 10 browsers
   this.viewport_.style.msTouchAction = 'none';
+  this.viewport_.style.touchAction = 'none';
   if (ol.has.TOUCH) {
     goog.dom.classlist.add(this.viewport_, 'ol-touch');
   }
@@ -84898,10 +84936,8 @@ ol.Map.prototype.handleLayerGroupPropertyChanged_ = function(event) {
  */
 ol.Map.prototype.handleLayerGroupChanged_ = function() {
   if (!goog.isNull(this.layerGroupPropertyListenerKeys_)) {
-    var length = this.layerGroupPropertyListenerKeys_.length;
-    for (var i = 0; i < length; ++i) {
-      goog.events.unlistenByKey(this.layerGroupPropertyListenerKeys_[i]);
-    }
+    goog.array.forEach(this.layerGroupPropertyListenerKeys_,
+        goog.events.unlistenByKey);
     this.layerGroupPropertyListenerKeys_ = null;
   }
   var layerGroup = this.getLayerGroup();
@@ -89922,7 +89958,7 @@ ol.format.EsriJSON.prototype.writeFeatureObject = function(
         ol.format.EsriJSON.writeGeometry_(geometry, opt_options);
   }
   var properties = feature.getProperties();
-  goog.object.remove(properties, feature.getGeometryName());
+  delete properties[feature.getGeometryName()];
   if (!goog.object.isEmpty(properties)) {
     object['attributes'] = properties;
   } else {
@@ -90518,7 +90554,7 @@ ol.format.GeoJSON.prototype.writeFeatureObject = function(
     object['geometry'] = null;
   }
   var properties = feature.getProperties();
-  goog.object.remove(properties, feature.getGeometryName());
+  delete properties[feature.getGeometryName()];
   if (!goog.object.isEmpty(properties)) {
     object['properties'] = properties;
   } else {
@@ -93283,7 +93319,6 @@ goog.provide('ol.format.GPX');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
-goog.require('goog.object');
 goog.require('ol.Feature');
 goog.require('ol.format.Feature');
 goog.require('ol.format.XMLFeature');
@@ -93351,17 +93386,15 @@ ol.format.GPX.appendCoordinate_ = function(flatCoordinates, node, values) {
   flatCoordinates.push(
       parseFloat(node.getAttribute('lon')),
       parseFloat(node.getAttribute('lat')));
-  if (goog.object.containsKey(values, 'ele')) {
-    flatCoordinates.push(
-        /** @type {number} */ (values['ele']));
-    goog.object.remove(values, 'ele');
+  if ('ele' in values) {
+    flatCoordinates.push(/** @type {number} */ (values['ele']));
+    delete values['ele'];
   } else {
     flatCoordinates.push(0);
   }
-  if (goog.object.containsKey(values, 'time')) {
-    flatCoordinates.push(
-        /** @type {number} */ (values['time']));
-    goog.object.remove(values, 'time');
+  if ('time' in values) {
+    flatCoordinates.push(/** @type {number} */ (values['time']));
+    delete values['time'];
   } else {
     flatCoordinates.push(0);
   }
@@ -93480,7 +93513,7 @@ ol.format.GPX.readRte_ = function(node, objectStack) {
   }
   var flatCoordinates = /** @type {Array.<number>} */
       (values['flatCoordinates']);
-  goog.object.remove(values, 'flatCoordinates');
+  delete values['flatCoordinates'];
   var geometry = new ol.geom.LineString(null);
   geometry.setFlatCoordinates(ol.geom.GeometryLayout.XYZM, flatCoordinates);
   ol.format.Feature.transformWithOptions(geometry, false, options);
@@ -93510,9 +93543,9 @@ ol.format.GPX.readTrk_ = function(node, objectStack) {
   }
   var flatCoordinates = /** @type {Array.<number>} */
       (values['flatCoordinates']);
-  goog.object.remove(values, 'flatCoordinates');
+  delete values['flatCoordinates'];
   var ends = /** @type {Array.<number>} */ (values['ends']);
-  goog.object.remove(values, 'ends');
+  delete values['ends'];
   var geometry = new ol.geom.MultiLineString(null);
   geometry.setFlatCoordinates(
       ol.geom.GeometryLayout.XYZM, flatCoordinates, ends);
@@ -96250,6 +96283,9 @@ goog.Uri.QueryData.prototype.extend = function(var_args) {
 goog.provide('ol.style.Text');
 
 
+goog.require('ol.style.Fill');
+
+
 
 /**
  * @classdesc
@@ -96303,7 +96339,8 @@ ol.style.Text = function(opt_options) {
    * @private
    * @type {ol.style.Fill}
    */
-  this.fill_ = goog.isDef(options.fill) ? options.fill : null;
+  this.fill_ = goog.isDef(options.fill) ? options.fill :
+      new ol.style.Fill({color: ol.style.Text.DEFAULT_FILL_COLOR_});
 
   /**
    * @private
@@ -96323,6 +96360,16 @@ ol.style.Text = function(opt_options) {
    */
   this.offsetY_ = goog.isDef(options.offsetY) ? options.offsetY : 0;
 };
+
+
+/**
+ * The default fill color to use if no fill was set at construction time; a
+ * blackish `#333`.
+ *
+ * @const {string}
+ * @private
+ */
+ol.style.Text.DEFAULT_FILL_COLOR_ = '#333';
 
 
 /**
@@ -98220,7 +98267,7 @@ ol.format.KML.prototype.readPlacemark_ = function(node, objectStack) {
     ol.format.Feature.transformWithOptions(geometry, false, options);
   }
   feature.setGeometry(geometry);
-  goog.object.remove(object, 'geometry');
+  delete object['geometry'];
 
   if (this.extractStyles_) {
     var style = object['Style'];
@@ -98229,7 +98276,7 @@ ol.format.KML.prototype.readPlacemark_ = function(node, objectStack) {
         style, styleUrl, this.defaultStyle_, this.sharedStyles_);
     feature.setStyle(styleFunction);
   }
-  goog.object.remove(object, 'Style');
+  delete object['Style'];
   // we do not remove the styleUrl property from the object, so it
   // gets stored on feature when setProperties is called
 
@@ -101863,7 +101910,6 @@ ol.format.WFS.prototype.readProjectionFromNode = function(node) {
 
 goog.provide('ol.format.WKT');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('ol.Feature');
 goog.require('ol.format.Feature');
@@ -101922,7 +101968,7 @@ ol.format.WKT.EMPTY = 'EMPTY';
  */
 ol.format.WKT.encodePointGeometry_ = function(geom) {
   var coordinates = geom.getCoordinates();
-  if (goog.array.isEmpty(coordinates)) {
+  if (coordinates.length === 0) {
     return '';
   }
   return coordinates[0] + ' ' + coordinates[1];
@@ -109915,9 +109961,8 @@ ol.interaction.Modify.prototype.setGeometryCoordinates_ =
 ol.interaction.Modify.prototype.updateSegmentIndices_ = function(
     geometry, index, depth, delta) {
   this.rBush_.forEachInExtent(geometry.getExtent(), function(segmentDataMatch) {
-    goog.asserts.assert(goog.isDef(segmentDataMatch.depth));
     if (segmentDataMatch.geometry === geometry &&
-        (!goog.isDef(depth) ||
+        (!goog.isDef(depth) || !goog.isDef(segmentDataMatch.depth) ||
         goog.array.equals(segmentDataMatch.depth, depth)) &&
         segmentDataMatch.index > index) {
       segmentDataMatch.index += delta;
@@ -110118,6 +110163,7 @@ ol.interaction.Select = function(opt_options) {
   this.featureOverlay_ = new ol.layer.Vector({
     source: new ol.source.Vector({
       useSpatialIndex: false,
+      features: options.features,
       wrapX: options.wrapX
     }),
     style: goog.isDef(options.style) ? options.style :
@@ -114529,7 +114575,6 @@ ol.source.Stamen.ATTRIBUTIONS = [
 
 goog.provide('ol.source.TileArcGISRest');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.math');
 goog.require('goog.object');
@@ -114630,7 +114675,7 @@ ol.source.TileArcGISRest.prototype.getRequestUrl_ =
         pixelRatio, projection, params) {
 
   var urls = this.urls_;
-  if (goog.array.isEmpty(urls)) {
+  if (urls.length === 0) {
     return undefined;
   }
 
@@ -115744,7 +115789,6 @@ ol.source.TileVector.prototype.setUrls = function(urls) {
 
 goog.provide('ol.source.TileWMS');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.math');
 goog.require('goog.object');
@@ -115962,7 +116006,7 @@ ol.source.TileWMS.prototype.getRequestUrl_ =
         pixelRatio, projection, params) {
 
   var urls = this.urls_;
-  if (goog.array.isEmpty(urls)) {
+  if (urls.length === 0) {
     return undefined;
   }
 
@@ -118007,7 +118051,6 @@ ol.style.RegularShape.prototype.getChecksum = function() {
 
 goog.provide('olcs.AbstractSynchronizer');
 
-goog.require('goog.array');
 goog.require('goog.object');
 
 goog.require('ol.Observable');
@@ -118054,15 +118097,15 @@ olcs.AbstractSynchronizer = function(map, scene) {
 
   /**
    * Map of ol3 layer ids (from goog.getUid) to the Cesium ImageryLayers.
-   * null value means, that we are unable to create equivalent layer.
-   * @type {Object.<number, ?T>}
+   * Null value means, that we are unable to create equivalent layers.
+   * @type {Object.<number, ?Array.<T>>}
    * @protected
    */
   this.layerMap = {};
 
   /**
    * Map of listen keys for ol3 layer layers ids (from goog.getUid).
-   * @type {!Object.<number, !goog.events.Key>}
+   * @type {!Object.<number, goog.events.Key>}
    * @private
    */
   this.olLayerListenKeys_ = {};
@@ -118131,35 +118174,36 @@ olcs.AbstractSynchronizer.prototype.orderLayers = function() {
  * @private
  */
 olcs.AbstractSynchronizer.prototype.addLayers_ = function(root) {
-  var layers = [];
-  var groups = [];
-  olcs.AbstractSynchronizer.flattenLayers(root, layers, groups);
-
-  layers.forEach(function(olLayer) {
-    if (goog.isNull(olLayer)) {
-      return;
-    }
+  /** @type {Array.<!ol.layer.Base>} */
+  var fifo = [root];
+  while (fifo.length > 0) {
+    var olLayer = fifo.splice(0, 1)[0];
     var olLayerId = goog.getUid(olLayer);
+    goog.asserts.assert(!goog.isDef(this.layerMap[olLayerId]));
 
-    var cesiumObject = this.layerMap[olLayerId];
-    goog.asserts.assert(!goog.isDef(cesiumObject));
-
-    // no mapping -> create new layer and set up synchronization
-    cesiumObject = this.createSingleCounterpart(olLayer);
+    var cesiumObjects = null;
+    if (olLayer instanceof ol.layer.Group) {
+      this.listenForGroupChanges_(olLayer);
+      cesiumObjects = this.createSingleLayerCounterparts(olLayer);
+      if (!cesiumObjects) {
+        olLayer.getLayers().forEach(function(l) {
+          fifo.push(l);
+        });
+      }
+    } else {
+      cesiumObjects = this.createSingleLayerCounterparts(olLayer);
+    }
 
     // add Cesium layers
-    if (!goog.isNull(cesiumObject)) {
-      cesiumObject.zIndex = olLayer.getZIndex();
-      this.addCesiumObject(cesiumObject);
-      this.layerMap[olLayerId] = cesiumObject;
+    if (!goog.isNull(cesiumObjects)) {
+      this.layerMap[olLayerId] = cesiumObjects;
       this.olLayerListenKeys_[olLayerId] = olLayer.on('change:zIndex',
           this.orderLayers, this);
+      cesiumObjects.forEach(function(cesiumObject) {
+        this.addCesiumObject(cesiumObject);
+      }, this);
     }
-  }, this);
-
-  groups.forEach(function(el) {
-    this.listenForGroupChanges_(el);
-  }, this);
+  }
 
   this.orderLayers();
 };
@@ -118173,10 +118217,12 @@ olcs.AbstractSynchronizer.prototype.addLayers_ = function(root) {
 olcs.AbstractSynchronizer.prototype.removeAndDestroySingleLayer_ =
     function(layer) {
   var uid = goog.getUid(layer);
-  var counterpart = this.layerMap[uid];
-  if (!!counterpart) {
-    this.removeSingleCesiumObject(counterpart, false);
-    this.destroyCesiumObject(counterpart);
+  var counterparts = this.layerMap[uid];
+  if (!!counterparts) {
+    counterparts.forEach(function(counterpart) {
+      this.removeSingleCesiumObject(counterpart, false);
+      this.destroyCesiumObject(counterpart);
+    }, this);
     ol.Observable.unByKey(this.olLayerListenKeys_[uid]);
     delete this.olLayerListenKeys_[uid];
   }
@@ -118241,7 +118287,7 @@ olcs.AbstractSynchronizer.prototype.listenForGroupChanges_ = function(group) {
 
   // only the keys that need to be relistened when collection changes
   var contentKeys = [];
-  var listenAddRemove = goog.bind(function() {
+  var listenAddRemove = (function() {
     var collection = group.getLayers();
     if (goog.isDef(collection)) {
       contentKeys = [
@@ -118254,13 +118300,16 @@ olcs.AbstractSynchronizer.prototype.listenForGroupChanges_ = function(group) {
       ];
       listenKeyArray.push.apply(listenKeyArray, contentKeys);
     }
-  }, this);
+  }).bind(this);
 
   listenAddRemove();
 
   listenKeyArray.push(group.on('change:layers', function(e) {
-    goog.array.forEach(contentKeys, function(el) {
-      goog.array.remove(listenKeyArray, el);
+    contentKeys.forEach(function(el) {
+      var i = listenKeyArray.indexOf(el);
+      if (i >= 0) {
+        listenKeyArray.splice(i, 1);
+      }
       ol.Observable.unByKey(el);
     });
     listenAddRemove();
@@ -118319,11 +118368,11 @@ olcs.AbstractSynchronizer.prototype.removeAllCesiumObjects =
 
 
 /**
- * @param {!ol.layer.Layer} olLayer
- * @return {T}
+ * @param {!ol.layer.Base} olLayer
+ * @return {?Array.<T>}
  * @protected
  */
-olcs.AbstractSynchronizer.prototype.createSingleCounterpart =
+olcs.AbstractSynchronizer.prototype.createSingleLayerCounterparts =
     goog.abstractMethod;
 
 goog.provide('olcs.core.OLImageryProvider');
@@ -118497,7 +118546,7 @@ olcs.core.OLImageryProvider.createCreditForSource = function(source) {
   var text = '';
   var attributions = source.getAttributions();
   if (!goog.isNull(attributions)) {
-    goog.array.forEach(attributions, function(el, i, arr) {
+    attributions.forEach(function(el) {
       // strip html tags (not supported in Cesium)
       text += el.getHTML().replace(/<\/?[^>]+(>|$)/g, '') + ' ';
     });
@@ -118510,7 +118559,7 @@ olcs.core.OLImageryProvider.createCreditForSource = function(source) {
     // "The text to be displayed on the screen if no imageUrl is specified."
     var logo = source.getLogo();
     if (goog.isDef(logo)) {
-      if (goog.isString(logo)) {
+      if (typeof logo == 'string') {
         imageUrl = logo;
       } else {
         imageUrl = logo.src;
@@ -118911,7 +118960,7 @@ olcs.core.extentToRectangle = function(extent, projection) {
 /**
  * Creates Cesium.ImageryLayer best corresponding to the given ol.layer.Layer.
  * Only supports raster layers
- * @param {!ol.layer.Layer} olLayer
+ * @param {!ol.layer.Base} olLayer
  * @param {?ol.proj.Projection} viewProj Projection of the view.
  * @return {?Cesium.ImageryLayer} null if not possible (or supported)
  * @api
@@ -118968,7 +119017,7 @@ olcs.core.tileLayerToImageryLayer = function(olLayer, viewProj) {
 /**
  * Synchronizes the layer rendering properties (brightness, contrast, hue,
  * opacity, saturation, visible) to the given Cesium ImageryLayer.
- * @param {!ol.layer.Layer} olLayer
+ * @param {!ol.layer.Base} olLayer
  * @param {!Cesium.ImageryLayer} csLayer
  * @api
  */
@@ -119074,14 +119123,14 @@ olcs.core.olGeometryCloneTo4326 = function(geometry, projection) {
  */
 olcs.core.convertColorToCesium = function(olColor) {
   olColor = olColor || 'black';
-  if (goog.isArray(olColor)) {
+  if (Array.isArray(olColor)) {
     return new Cesium.Color(
         Cesium.Color.byteToFloat(olColor[0]),
         Cesium.Color.byteToFloat(olColor[1]),
         Cesium.Color.byteToFloat(olColor[2]),
         olColor[3]
     );
-  } else if (goog.isString(olColor)) {
+  } else if (typeof olColor == 'string') {
     return Cesium.Color.fromCssColorString(olColor);
   }
   goog.asserts.fail('impossible');
@@ -119765,17 +119814,17 @@ olcs.DragBox.prototype.handleMouseDown = function(event) {
   var ray = this.scene_.camera.getPickRay(event.position);
   var intersection = this.scene_.globe.pick(ray, this.scene_);
   if (goog.isDef(intersection)) {
-    this.handler_.setInputAction(goog.bind(this.handleMouseMove, this),
+    this.handler_.setInputAction(this.handleMouseMove.bind(this),
         Cesium.ScreenSpaceEventType.MOUSE_MOVE);
-    this.handler_.setInputAction(goog.bind(this.handleMouseUp, this),
+    this.handler_.setInputAction(this.handleMouseUp.bind(this),
         Cesium.ScreenSpaceEventType.LEFT_UP);
 
     if (goog.isDef(this.modifier_)) {
       // listen to the event with and without the modifier to be able to start
       // a box with the key pressed and finish it without.
-      this.handler_.setInputAction(goog.bind(this.handleMouseMove, this),
+      this.handler_.setInputAction(this.handleMouseMove.bind(this),
           Cesium.ScreenSpaceEventType.MOUSE_MOVE, this.modifier_);
-      this.handler_.setInputAction(goog.bind(this.handleMouseUp, this),
+      this.handler_.setInputAction(this.handleMouseUp.bind(this),
           Cesium.ScreenSpaceEventType.LEFT_UP, this.modifier_);
     }
     var cartographic = ellipsoid.cartesianToCartographic(intersection);
@@ -119874,7 +119923,7 @@ olcs.DragBox.prototype.setScene = function(scene) {
   } else {
     goog.asserts.assert(scene.canvas);
     this.handler_ = new Cesium.ScreenSpaceEventHandler(scene.canvas);
-    this.handler_.setInputAction(goog.bind(this.handleMouseDown, this),
+    this.handler_.setInputAction(this.handleMouseDown.bind(this),
         Cesium.ScreenSpaceEventType.LEFT_DOWN, this.modifier_);
   }
   this.scene_ = scene;
@@ -119903,7 +119952,6 @@ olcs.DragBox.prototype.listen;
 
 goog.provide('olcs.FeatureConverter');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('ol.extent');
 goog.require('ol.geom.SimpleGeometry');
@@ -119946,7 +119994,8 @@ olcs.FeatureConverter.prototype.setReferenceForPicking =
  * Basics primitive creation using a color attribute.
  * Note that Cesium has 'interior' and outline geometries.
  * @param {ol.layer.Vector} layer
- * @param {!ol.Feature} feature Ol3 feature..
+ * @param {!ol.Feature} feature Ol3 feature.
+ * @param {!ol.geom.Geometry} olGeometry Ol3 geometry.
  * @param {!Cesium.Geometry} geometry
  * @param {!Cesium.Color} color
  * @param {number=} opt_lineWidth
@@ -119954,7 +120003,7 @@ olcs.FeatureConverter.prototype.setReferenceForPicking =
  * @protected
  */
 olcs.FeatureConverter.prototype.createColoredPrimitive =
-    function(layer, feature, geometry, color, opt_lineWidth) {
+    function(layer, feature, olGeometry, geometry, color, opt_lineWidth) {
   var createInstance = function(geometry, color) {
     return new Cesium.GeometryInstance({
       // always update Cesium externs before adding a property
@@ -119981,15 +120030,26 @@ olcs.FeatureConverter.prototype.createColoredPrimitive =
     }
     options.renderState.lineWidth = opt_lineWidth;
   }
-  var appearance = new Cesium.PerInstanceColorAppearance(options);
 
   var instances = createInstance(geometry, color);
 
-  var primitive = new Cesium.Primitive({
-    // always update Cesium externs before adding a property
-    geometryInstances: instances,
-    appearance: appearance
-  });
+  var heightReference = this.getHeightReference(layer, feature, olGeometry);
+
+  var primitive;
+
+  if (heightReference == Cesium.HeightReference.CLAMP_TO_GROUND) {
+    primitive = new Cesium.GroundPrimitive({
+      // always update Cesium externs before adding a property
+      geometryInstance: instances
+    });
+  } else {
+    var appearance = new Cesium.PerInstanceColorAppearance(options);
+    primitive = new Cesium.Primitive({
+      // always update Cesium externs before adding a property
+      geometryInstances: instances,
+      appearance: appearance
+    });
+  }
 
   this.setReferenceForPicking(layer, feature, primitive);
   return primitive;
@@ -120037,7 +120097,8 @@ olcs.FeatureConverter.prototype.extractLineWidthFromOlStyle =
  * Create a primitive collection out of two Cesium geometries.
  * Only the OpenLayers style colors will be used.
  * @param {ol.layer.Vector} layer
- * @param {!ol.Feature} feature Ol3 feature..
+ * @param {!ol.Feature} feature Ol3 feature.
+ * @param {!ol.geom.Geometry} olGeometry Ol3 geometry.
  * @param {!Cesium.Geometry} fillGeometry
  * @param {!Cesium.Geometry} outlineGeometry
  * @param {!ol.style.Style} olStyle
@@ -120045,21 +120106,22 @@ olcs.FeatureConverter.prototype.extractLineWidthFromOlStyle =
  * @protected
  */
 olcs.FeatureConverter.prototype.wrapFillAndOutlineGeometries =
-    function(layer, feature, fillGeometry, outlineGeometry, olStyle) {
+    function(layer, feature, olGeometry, fillGeometry, outlineGeometry,
+        olStyle) {
   var fillColor = this.extractColorFromOlStyle(olStyle, false);
   var outlineColor = this.extractColorFromOlStyle(olStyle, true);
 
   var primitives = new Cesium.PrimitiveCollection();
   if (olStyle.getFill()) {
-    var p = this.createColoredPrimitive(layer, feature, fillGeometry,
-        fillColor);
+    var p = this.createColoredPrimitive(layer, feature, olGeometry,
+        fillGeometry, fillColor);
     primitives.add(p);
   }
 
   if (olStyle.getStroke()) {
     var width = this.extractLineWidthFromOlStyle(olStyle);
-    var p = this.createColoredPrimitive(layer, feature, outlineGeometry,
-        outlineColor, width);
+    var p = this.createColoredPrimitive(layer, feature, olGeometry,
+        outlineGeometry, outlineColor, width);
     primitives.add(p);
   }
 
@@ -120168,7 +120230,7 @@ olcs.FeatureConverter.prototype.olCircleGeometryToCesium =
   });
 
   var primitives = this.wrapFillAndOutlineGeometries(
-      layer, feature, fillGeometry, outlineGeometry, olStyle);
+      layer, feature, olGeometry, fillGeometry, outlineGeometry, olStyle);
 
   return this.addTextStyle(layer, feature, olGeometry, olStyle, primitives);
 };
@@ -120270,7 +120332,7 @@ olcs.FeatureConverter.prototype.olPolygonGeometryToCesium =
   });
 
   var primitives = this.wrapFillAndOutlineGeometries(
-      layer, feature, fillGeometry, outlineGeometry, olStyle);
+      layer, feature, olGeometry, fillGeometry, outlineGeometry, olStyle);
 
   return this.addTextStyle(layer, feature, olGeometry, olStyle, primitives);
 };
@@ -120314,7 +120376,7 @@ olcs.FeatureConverter.prototype.getHeightReference =
  * Convert a point geometry to a Cesium BillboardCollection.
  * @param {ol.layer.Vector} layer
  * @param {!ol.Feature} feature Ol3 feature..
- * @param {!ol.geom.Point} geometry
+ * @param {!ol.geom.Point} olGeometry Ol3 point geometry.
  * @param {!ol.proj.ProjectionLike} projection
  * @param {!ol.style.Style} style
  * @param {!Cesium.BillboardCollection} billboards
@@ -120324,10 +120386,10 @@ olcs.FeatureConverter.prototype.getHeightReference =
  * @api
  */
 olcs.FeatureConverter.prototype.olPointGeometryToCesium =
-    function(layer, feature, geometry, projection, style, billboards,
+    function(layer, feature, olGeometry, projection, style, billboards,
     opt_newBillboardCallback) {
-  goog.asserts.assert(geometry.getType() == 'Point');
-  geometry = olcs.core.olGeometryCloneTo4326(geometry, projection);
+  goog.asserts.assert(olGeometry.getType() == 'Point');
+  olGeometry = olcs.core.olGeometryCloneTo4326(olGeometry, projection);
 
   var imageStyle = style.getImage();
   if (imageStyle instanceof ol.style.Icon) {
@@ -120342,7 +120404,7 @@ olcs.FeatureConverter.prototype.olPointGeometryToCesium =
         image.naturalWidth != 0 &&
         image.complete;
   };
-  var reallyCreateBillboard = goog.bind(function() {
+  var reallyCreateBillboard = (function() {
     if (goog.isNull(image)) {
       return;
     }
@@ -120351,7 +120413,7 @@ olcs.FeatureConverter.prototype.olPointGeometryToCesium =
         image instanceof HTMLImageElement)) {
       return;
     }
-    var center = geometry.getCoordinates();
+    var center = olGeometry.getCoordinates();
     var position = olcs.core.ol4326CoordinateToCesiumCartesian(center);
     var color;
     var opacity = imageStyle.getOpacity();
@@ -120359,7 +120421,7 @@ olcs.FeatureConverter.prototype.olPointGeometryToCesium =
       color = new Cesium.Color(1.0, 1.0, 1.0, opacity);
     }
 
-    var heightReference = this.getHeightReference(layer, feature, geometry);
+    var heightReference = this.getHeightReference(layer, feature, olGeometry);
 
     var bbOptions = /** @type {Cesium.optionsBillboardCollectionAdd} */ ({
       // always update Cesium externs before adding a property
@@ -120370,11 +120432,11 @@ olcs.FeatureConverter.prototype.olPointGeometryToCesium =
       position: position
     });
     var bb = this.csAddBillboard(billboards, bbOptions, layer, feature,
-        geometry, style);
+        olGeometry, style);
     if (opt_newBillboardCallback) {
       opt_newBillboardCallback(bb);
     }
-  }, this);
+  }).bind(this);
 
   if (image instanceof Image && !isImageLoaded(image)) {
     // Cesium requires the image to be loaded
@@ -120390,7 +120452,7 @@ olcs.FeatureConverter.prototype.olPointGeometryToCesium =
   }
 
   if (style.getText()) {
-    return this.addTextStyle(layer, feature, geometry, style,
+    return this.addTextStyle(layer, feature, olGeometry, style,
         new Cesium.Primitive());
   } else {
     return null;
@@ -120420,7 +120482,7 @@ olcs.FeatureConverter.prototype.olMultiGeometryToCesium =
   // instead we create n primitives for simplicity.
   var accumulate = function(geometries, functor) {
     var primitives = new Cesium.PrimitiveCollection();
-    goog.array.forEach(geometries, function(geometry) {
+    geometries.forEach(function(geometry) {
       primitives.add(functor(layer, feature, geometry, projection, olStyle));
     });
     return primitives;
@@ -120433,7 +120495,7 @@ olcs.FeatureConverter.prototype.olMultiGeometryToCesium =
       subgeos = geometry.getPoints();
       if (olStyle.getText()) {
         var primitives = new Cesium.PrimitiveCollection();
-        goog.array.forEach(subgeos, function(geometry) {
+        subgeos.forEach(function(geometry) {
           goog.asserts.assert(geometry);
           var result = this.olPointGeometryToCesium(layer, feature, geometry,
               projection, olStyle, billboards, opt_newBillboardCallback);
@@ -120443,7 +120505,7 @@ olcs.FeatureConverter.prototype.olMultiGeometryToCesium =
         }.bind(this));
         return primitives;
       } else {
-        goog.array.forEach(subgeos, function(geometry) {
+        subgeos.forEach(function(geometry) {
           goog.asserts.assert(!goog.isNull(geometry));
           this.olPointGeometryToCesium(layer, feature, geometry, projection,
               olStyle, billboards, opt_newBillboardCallback);
@@ -120634,7 +120696,7 @@ olcs.FeatureConverter.prototype.computePlainStyle =
     return null;
   }
 
-  goog.asserts.assert(goog.isArray(style));
+  goog.asserts.assert(Array.isArray(style));
   // FIXME combine materials as in cesium-materials-pack?
   // then this function must return a custom material
   // More simply, could blend the colors like described in
@@ -120671,7 +120733,8 @@ olcs.FeatureConverter.prototype.olFeatureToCesium =
     case 'GeometryCollection':
       var primitives = new Cesium.PrimitiveCollection();
       var collection = /** @type {!ol.geom.GeometryCollection} */ (geom);
-      goog.array.forEach(collection.getGeometries(), function(geom) {
+      // TODO: use getGeometriesArray() instead
+      collection.getGeometries().forEach(function(geom) {
         if (geom) {
           var prims = this.olFeatureToCesium(layer, feature, style, context,
               geom);
@@ -120872,57 +120935,70 @@ olcs.RasterSynchronizer.prototype.removeAllCesiumObjects = function(destroy) {
 
 
 /**
- * Creates a Cesium.ImageryLayer.
+ * Creates an array of Cesium.ImageryLayer.
  * May be overriden by child classes to implement custom behavior.
  * The default implementation handles tiled imageries in EPSG:4326 or
  * EPSG:3859.
- * @param {!ol.layer.Layer} olLayer
+ * @param {!ol.layer.Base} olLayer
  * @param {?ol.proj.Projection} viewProj Projection of the view.
- * @return {?Cesium.ImageryLayer} null if not possible (or supported)
+ * @return {?Array.<!Cesium.ImageryLayer>} array or null if not possible
+ * (or supported)
  * @protected
  */
-olcs.RasterSynchronizer.prototype.convertLayerToCesiumImagery =
-    olcs.core.tileLayerToImageryLayer;
+olcs.RasterSynchronizer.prototype.convertLayerToCesiumImageries =
+    function(olLayer, viewProj) {
+  var result = olcs.core.tileLayerToImageryLayer(olLayer, viewProj);
+  return result ? [result] : null;
+};
 
 
 /**
  * @inheritDoc
  */
-olcs.RasterSynchronizer.prototype.createSingleCounterpart = function(olLayer) {
+olcs.RasterSynchronizer.prototype.createSingleLayerCounterparts =
+    function(olLayer) {
   var viewProj = this.view.getProjection();
-  var cesiumObject = this.convertLayerToCesiumImagery(olLayer, viewProj);
-  if (!goog.isNull(cesiumObject)) {
+  var cesiumObjects = this.convertLayerToCesiumImageries(olLayer, viewProj);
+  if (!goog.isNull(cesiumObjects)) {
     olLayer.on(
         ['change:brightness', 'change:contrast', 'change:hue',
          'change:opacity', 'change:saturation', 'change:visible'],
         function(e) {
           // the compiler does not seem to be able to infer this
-          if (!goog.isNull(cesiumObject)) {
-            olcs.core.updateCesiumLayerProperties(olLayer, cesiumObject);
+          goog.asserts.assert(!goog.isNull(cesiumObjects));
+          for (var i = 0; i < cesiumObjects.length; ++i) {
+            olcs.core.updateCesiumLayerProperties(olLayer, cesiumObjects[i]);
           }
         });
-    olcs.core.updateCesiumLayerProperties(olLayer, cesiumObject);
+
+    for (var i = 0; i < cesiumObjects.length; ++i) {
+      olcs.core.updateCesiumLayerProperties(olLayer, cesiumObjects[i]);
+    }
 
     // there is no way to modify Cesium layer extent,
     // we have to recreate when ol3 layer extent changes:
     olLayer.on('change:extent', function(e) {
-      this.cesiumLayers_.remove(cesiumObject, true); // destroy
-      this.ourLayers_.remove(cesiumObject, false);
+      for (var i = 0; i < cesiumObjects.length; ++i) {
+        this.cesiumLayers_.remove(cesiumObjects[i], true); // destroy
+        this.ourLayers_.remove(cesiumObjects[i], false);
+      }
       delete this.layerMap[goog.getUid(olLayer)]; // invalidate the map entry
       this.synchronize();
     }, this);
 
     olLayer.on('change', function(e) {
       // when the source changes, re-add the layer to force update
-      var position = this.cesiumLayers_.indexOf(cesiumObject);
-      if (position >= 0) {
-        this.cesiumLayers_.remove(cesiumObject, false);
-        this.cesiumLayers_.add(cesiumObject, position);
+      for (var i = 0; i < cesiumObjects.length; ++i) {
+        var position = this.cesiumLayers_.indexOf(cesiumObjects[i]);
+        if (position >= 0) {
+          this.cesiumLayers_.remove(cesiumObjects[i], false);
+          this.cesiumLayers_.add(cesiumObjects[i], position);
+        }
       }
     }, this);
   }
 
-  return cesiumObject;
+  return Array.isArray(cesiumObjects) ? cesiumObjects : null;
 };
 
 
@@ -120944,9 +121020,9 @@ olcs.RasterSynchronizer.prototype.orderLayers = function() {
 
   layers.forEach(function(olLayer) {
     var olLayerId = goog.getUid(olLayer);
-    var cesiumObject = this.layerMap[olLayerId];
-    if (cesiumObject) {
-      this.raiseToTop(cesiumObject);
+    var cesiumObjects = this.layerMap[olLayerId];
+    if (cesiumObjects) {
+      cesiumObjects.forEach(this.raiseToTop, this);
     }
   }, this);
 };
@@ -121045,7 +121121,8 @@ olcs.VectorSynchronizer.prototype.removeAllCesiumObjects = function(destroy) {
 /**
  * @inheritDoc
  */
-olcs.VectorSynchronizer.prototype.createSingleCounterpart = function(olLayer) {
+olcs.VectorSynchronizer.prototype.createSingleLayerCounterparts =
+    function(olLayer) {
   if (!(olLayer instanceof ol.layer.Vector)) {
     return null;
   }
@@ -121064,7 +121141,7 @@ olcs.VectorSynchronizer.prototype.createSingleCounterpart = function(olLayer) {
     csPrimitives.show = olLayer.getVisible();
   }));
 
-  var onAddFeature = goog.bind(function(feature) {
+  var onAddFeature = (function(feature) {
     goog.asserts.assertInstanceof(olLayer, ol.layer.Vector);
     var context = counterpart.context;
     var prim = this.converter.convert(olLayer, view, feature, context);
@@ -121072,9 +121149,9 @@ olcs.VectorSynchronizer.prototype.createSingleCounterpart = function(olLayer) {
       featurePrimitiveMap[goog.getUid(feature)] = prim;
       csPrimitives.add(prim);
     }
-  }, this);
+  }).bind(this);
 
-  var onRemoveFeature = goog.bind(function(feature) {
+  var onRemoveFeature = (function(feature) {
     var geometry = feature.getGeometry();
     var id = goog.getUid(feature);
     if (!geometry || geometry.getType() == 'Point') {
@@ -121090,7 +121167,7 @@ olcs.VectorSynchronizer.prototype.createSingleCounterpart = function(olLayer) {
     if (goog.isDefAndNotNull(csPrimitive)) {
       csPrimitives.remove(csPrimitive);
     }
-  }, this);
+  }).bind(this);
 
   olListenKeys.push(source.on('addfeature', function(e) {
     goog.asserts.assert(goog.isDefAndNotNull(e.feature));
@@ -121109,7 +121186,7 @@ olcs.VectorSynchronizer.prototype.createSingleCounterpart = function(olLayer) {
     onAddFeature(feature);
   }, this));
 
-  return counterpart;
+  return counterpart ? [counterpart] : null;
 };
 
 goog.provide('olcs.OLCesium');
@@ -121358,9 +121435,9 @@ olcs.OLCesium.prototype.setEnabled = function(enable) {
   } else {
     if (this.isOverMap_) {
       var interactions = this.map_.getInteractions();
-      goog.array.forEach(this.pausedInteractions_, function(el, i, arr) {
-        interactions.push(el);
-      }, this);
+      this.pausedInteractions_.forEach(function(interaction) {
+        interactions.push(interaction);
+      });
       this.pausedInteractions_.length = 0;
 
       if (!goog.isNull(this.hiddenRootGroup_)) {
@@ -121433,21 +121510,26 @@ goog.inherits(ga.GaRasterSynchronizer, olcs.RasterSynchronizer);
 /**
  * @override
  */
-ga.GaRasterSynchronizer.prototype.convertLayerToCesiumImagery =
+ga.GaRasterSynchronizer.prototype.convertLayerToCesiumImageries =
     function(olLayer, viewProj) {
 
   /**
    * @type {Cesium.ImageryProvider}
    */
   var provider = null;
-  var source = olLayer.getSource();
 
-  if (source instanceof ol.source.Vector) {
+  var isGroup = olLayer instanceof ol.layer.Group;
+  if (!isGroup && (olLayer.getSource() instanceof ol.source.Vector)) {
     return null;
   }
 
   // Read custom, non standard properties
-  provider = olLayer['getCesiumImageryProvider']();
+  var factory = olLayer['getCesiumImageryProvider'];
+  if (!factory) {
+    // root layer group
+    return null;
+  }
+  provider = factory();
   if (!provider) {
     return null;
   }
@@ -121461,7 +121543,10 @@ ga.GaRasterSynchronizer.prototype.convertLayerToCesiumImagery =
     layerOptions.rectangle = olcs.core.extentToRectangle(ext, viewProj);
   }
 
-  return new Cesium.ImageryLayer(provider, layerOptions);
+  var providers = Array.isArray(provider) ? provider : [provider];
+  return providers.map(function(p) {
+    return new Cesium.ImageryLayer(p, layerOptions);
+  });
 };
 
 // Copyright 2009 The Closure Library Authors.
