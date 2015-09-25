@@ -96,6 +96,7 @@ goog.require('ga_topic_service');
         }
       });
       var globe = cesiumViewer.getCesiumScene().globe;
+      globe.baseColor = Cesium.Color.WHITE;
       globe.tileCacheSize = tileCacheSize;
       globe.maximumScreenSpaceError = maximumScreenSpaceError;
       cesiumViewer.setEnabled(enabled);
