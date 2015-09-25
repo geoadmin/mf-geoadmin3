@@ -872,8 +872,7 @@ goog.require('ga_urlutils_service');
               };
               response.data['ch.swisstopo.pixelkarte-grau_3d'] = {
                 subLayersIds: [
-                  'ch.swisstopo.swisstlm3d-karte-grau',
-                  'ch.swisstopo.swissnames3d'
+                  'ch.swisstopo.swisstlm3d-karte-grau'
                 ],
                 attribution: 'tlm grau 3D',
                 attributionUrl: 'http://www.swisstopo.admin.ch/internet/' +
@@ -881,8 +880,7 @@ goog.require('ga_urlutils_service');
               };
               response.data['ch.swisstopo.pixelkarte-farbe_3d'] = {
                 subLayersIds: [
-                  'ch.swisstopo.swisstlm3d-karte-farbe',
-                  'ch.swisstopo.swissnames3d'
+                  'ch.swisstopo.swisstlm3d-karte-farbe'
                 ],
                 attribution: 'tlm farbe 3D',
                 attributionUrl: 'http://www.swisstopo.admin.ch/internet/' +
