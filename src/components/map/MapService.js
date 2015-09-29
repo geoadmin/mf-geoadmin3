@@ -875,7 +875,7 @@ goog.require('ga_urlutils_service');
               };
               response.data['ch.swisstopo.pixelkarte-grau_3d'] = {
                 subLayersIds: [
-                  'ch.swisstopo.swisstlm3d-karte-grau'
+                  'ch.swisstopo.swisstlm3d-karte-grau.3d'
                 ],
                 attribution: 'tlm grau 3D',
                 attributionUrl: 'http://www.swisstopo.admin.ch/internet/' +
@@ -883,7 +883,7 @@ goog.require('ga_urlutils_service');
               };
               response.data['ch.swisstopo.pixelkarte-farbe_3d'] = {
                 subLayersIds: [
-                  'ch.swisstopo.swisstlm3d-karte-farbe'
+                  'ch.swisstopo.swisstlm3d-karte-farbe.3d'
                 ],
                 attribution: 'tlm farbe 3D',
                 attributionUrl: 'http://www.swisstopo.admin.ch/internet/' +
@@ -901,6 +901,33 @@ goog.require('ga_urlutils_service');
                 attributionUrl: 'http://www.swisstopo.admin.ch/internet/' +
                     'swisstopo/en/home/products/height/swissALTI3D.html'
               };
+              response.data['ch.swisstopo.swisstlm3d-karte-farbe.3d'] = {
+                type: 'wmts',
+                format: 'jpeg',
+                serverLayerName: 'ch.swisstopo.swisstlm3d-karte-farbe.3d',
+                url: '//wmts{s}.geo.admin.ch/1.0.0/' +
+                    '{Layer}/default/' +
+                    '20150401/{TileMatrixSet}/{z}/{y}/{x}.{Format}',
+                subdomains: '56789',
+                attribution: 'swisstlm 3D Farbe',
+                attributionUrl: 'http://www.swisstopo.admin.ch/internet/' +
+                    'swisstopo/en/home/products/height/swissALTI3D.html'
+              };
+              response.data['ch.swisstopo.swisstlm3d-karte-grau.3d'] = {
+                type: 'wmts',
+                format: 'jpeg',
+                serverLayerName: 'ch.swisstopo.swisstlm3d-karte-grau.3d',
+                url: '//wmts{s}.geo.admin.ch/1.0.0/' +
+                    '{Layer}/default/' +
+                    '20150401/{TileMatrixSet}/{z}/{y}/{x}.{Format}',
+                subdomains: '56789',
+                attribution: 'swisstlm 3D Grau',
+                attributionUrl: 'http://www.swisstopo.admin.ch/internet/' +
+                    'swisstopo/en/home/products/height/swissALTI3D.html'
+              };
+
+
+
               // Terain
               response.data['ch.swisstopo.terrain.3d'] = {
                 type: 'terrain',
