@@ -117,7 +117,7 @@ teste2e: guard-BROWSERSTACK_TARGETURL guard-BROWSERSTACK_USER guard-BROWSERSTACK
 
 .PHONY: testsaucelabs
 testsaucelabs: .build-artefacts/saucelab-requirements-installation.timestamp
-	${PYTHON_CMD} test/saucelabs/start_test.py ${SAUCELABS_TARGETURL}
+	${PYTHON_CMD} test/saucelabs/test.py ${SAUCELABS_TARGETURL}
 
 .PHONY: apache
 apache: apache/app.conf
