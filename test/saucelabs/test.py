@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import sys
 import os
 from selenium import webdriver
@@ -31,19 +32,36 @@ if __name__ == '__main__':
     # The command_executor tells the test to run on Sauce, while the desired_capabilties 
     # parameter tells us which browsers and OS to spin up.
     #desired_cap = {'platform': "Mac OS X 10.9", 'browserName': "chrome", 'version': "31"}
-    desired_cap = {'platform': "Windows 8.1", 'browserName': "chrome", 'version': "42.0"}
-    
-    # Locally test
-    #driver = webdriver.PhantomJS()
-    
-    driver = webdriver.Remote(
-       command_executor='http://' + saucelabs_user + ':' + saucelabs_key + '@ondemand.saucelabs.com:80/wd/hub',
-       desired_capabilities=desired_cap)
-    
-    ## okay we will start the script!
-    print "Starting SauceLabs script!"
+    ### Code pour la déclaration des browser à tester
+    desired_cap_list = [
+        {'platform': "Windows 7", 'browserName': "chrome", 'version': "43.0", 'screenResolution': "1280x1024" },
+        {'platform': "Windows 7", 'browserName': "chrome", 'version': "44.0", 'screenResolution': "1280x1024" },
+        {'platform': "Windows 7", 'browserName': "chrome", 'version': "45.0", 'screenResolution': "1280x1024" },
+        {'platform': "Windows 8.1", 'browserName': "chrome", 'version': "45.0", 'screenResolution': "1280x1024" },
+        {'platform': "Windows 7", 'browserName': "internet explorer", 'version': "9.0", 'screenResolution': "1280x1024" },
+        {'platform': "Windows 7", 'browserName': "internet explorer", 'version': "10.0", 'screenResolution': "1280x1024" },
+        {'platform': "Windows 7", 'browserName': "internet explorer", 'version': "11.0", 'screenResolution': "1280x1024" },
+        {'platform': "Windows 8.1", 'browserName': "chrome", 'version': "11.0", 'screenResolution': "1280x1024" },
+        {'platform': "Windows 7", 'browserName': "firefox", 'version': "38.0", 'screenResolution': "1280x1024" },
+        {'platform': "Windows 7", 'browserName': "firefox", 'version': "39.0", 'screenResolution': "1280x1024" },
+        {'platform': "Windows 7", 'browserName': "firefox", 'version': "40.0", 'screenResolution': "1280x1024" },
+        {'platform': "Windows 8.1", 'browserName': "firefox", 'version': "40.0", 'screenResolution': "1280x1024"}]
+                        
+    ### FOR TEST (test only one browser config)
+    desired_cap_list = [{'platform': "Windows 7", 'browserName': "firefox", 'version': "40.0", 'screenResolution': "1280x1024" }]
 
+    for current_desired_cap in desired_cap_list: # elt va prendre les valeurs successives des éléments de ma_liste
+        print "Start test with " + current_desired_cap['platform'] + " " + current_desired_cap['browserName'] + " (" + current_desired_cap['version'] + ")"
 
-    start_test(driver, url)
-    kml_test(cap, driver, target)
-    driver.quit()
+        driver = webdriver.Remote(
+            command_executor='http://' + saucelabs_user + ':' + saucelabs_key + '@ondemand.saucelabs.com:80/wd/hub', desired_capabilities=current_desired_cap)
+    
+        ## okay we will start the script!
+        print "Starting SauceLabs script!"
+
+        start_test(driver, url)
+        kml_test(cap, driver, target)
+        driver.quit()
+        print "--- end test for this browser"
+
+    print "End full tests"
