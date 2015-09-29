@@ -7,6 +7,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 from start_test import start_test
+from kml_test import kml_test
 
 if __name__ == '__main__':
     
@@ -44,4 +45,5 @@ if __name__ == '__main__':
 
 
     start_test(driver, url)
+    kml_test(cap, driver, target)
     driver.quit()
