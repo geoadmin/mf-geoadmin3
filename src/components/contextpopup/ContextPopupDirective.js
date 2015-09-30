@@ -19,7 +19,8 @@ goog.require('ga_permalink');
           templateUrl: 'components/contextpopup/partials/contextpopup.html',
           scope: {
             map: '=gaContextPopupMap',
-            options: '=gaContextPopupOptions'
+            options: '=gaContextPopupOptions',
+            is3dActive: '=gaContextPopupIs3d'
           },
           link: function(scope, element, attrs) {
             var heightUrl = scope.options.heightUrl;
@@ -62,6 +63,9 @@ goog.require('ga_permalink');
             };
 
             var handler = function(event) {
+              if (scope.is3dActive) {
+                return;
+              }
               event.stopPropagation();
               event.preventDefault();
 
