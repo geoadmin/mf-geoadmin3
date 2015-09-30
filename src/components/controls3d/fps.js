@@ -16,11 +16,6 @@ function FPS(scene, scope) {
   this.active_ = false;
 
   /**
-   * @type {boolean}
-   */
-  this.handleLookAt = false;
-
-  /**
    * @private
    */
   this.scene_ = scene;
@@ -139,12 +134,22 @@ FPS.prototype.getFlyMode = function() {
   return this.flyMode_;
 };
 
+
 /**
  * @return {boolean}
  */
 FPS.prototype.getJetMode = function() {
   return this.flyMode_ && this.buttons_.shift;
 };
+
+
+/**
+ * @return {boolean}
+ */
+FPS.prototype.getPointerLock = function() {
+  return !!(document.pointerLockElement || document.mozPointerLockElement);
+};
+
 
 /**
  * @private
@@ -178,9 +183,8 @@ FPS.prototype.setActive = function(active) {
   this.active_ = active;
   var positionCarto = this.camera_.positionCartographic;
   if (active) {
-    if (this.handleLookAt) {
-      this.requestPointerLock_();
-    }
+    this.requestPointerLock_();
+
     positionCarto.height = this.heightAboveTerrain_;
     this.scene_.camera.flyTo({
       destination: this.ellipsoid_.cartographicToCartesian(positionCarto),
@@ -217,7 +221,7 @@ FPS.prototype.setActive = function(active) {
  * @private
  */
 FPS.prototype.onMouseMove_ = function(event) {
-  if (document.pointerLockElement || document.mozPointerLockElement) {
+  if (this.getPointerLock()) {
     if (event.movementX && event.movementY) {
       this.movementX_ += event.movementX;
       this.movementY_ += event.movementY;
@@ -370,10 +374,10 @@ FPS.prototype.manTick_ = function(delta) {
   var pitch = this.camera_.pitch;
 
   // update camera orientation
-  heading += this.movementX_ * 0.025;
+  heading += this.movementX_ * 0.002;
   this.movementX_ = 0;
 
-  pitch -= this.movementY_ * 0.025;
+  pitch -= this.movementY_ * 0.002;
   pitch = Math.max(-Cesium.Math.PI_OVER_FOUR, pitch);
   pitch = Math.min(0.3, pitch);
   this.movementY_ = 0;
@@ -383,12 +387,10 @@ FPS.prototype.manTick_ = function(delta) {
   var speed = this.buttons_.shift ? this.runSpeed_ : this.walkSpeed_;
   var moveAmount = 50 * speed * delta / 1000;
   if (this.buttons_.left) {
-    //this.camera_.moveLeft(moveAmount);
-    heading -= moveAmount * 0.025;
+    this.camera_.moveLeft(moveAmount);
   }
   if (this.buttons_.right) {
-    //this.camera_.moveRight(moveAmount);
-    heading += moveAmount * 0.025;
+    this.camera_.moveRight(moveAmount);
   }
   if (this.buttons_.forward) {
     this.camera_.moveForward(moveAmount);
