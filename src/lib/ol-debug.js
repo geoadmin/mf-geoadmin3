@@ -1,6 +1,6 @@
 // OpenLayers 3. See http://openlayers.org/
 // License: https://raw.githubusercontent.com/openlayers/ol3/master/LICENSE.md
-// Version: v3.9.0-55-gdd8422c
+// Version: v3.9.0-14-g4f45bbc
 
 (function (root, factory) {
   if (typeof exports === "object") {
@@ -19401,26 +19401,9 @@ ol.geom.Geometry.prototype.getExtent = function(opt_extent) {
 
 
 /**
- * Create a simplified version of this geometry.  For linestrings, this uses
- * the the {@link
- * https://en.wikipedia.org/wiki/Ramer-Douglas-Peucker_algorithm
- * Douglas Peucker} algorithm.  For polygons, a quantization-based
- * simplification is used to preserve topology.
- * @function
- * @param {number} tolerance The tolerance distance for simplification.
- * @return {ol.geom.Geometry} A new, simplified version of the original
- *     geometry.
- * @api
- */
-ol.geom.Geometry.prototype.simplify = function(tolerance) {
-  return this.getSimplifiedGeometry(tolerance * tolerance);
-};
-
-
-/**
  * Create a simplified version of this geometry using the Douglas Peucker
  * algorithm.
- * @see https://en.wikipedia.org/wiki/Ramer-Douglas-Peucker_algorithm
+ * @see http://en.wikipedia.org/wiki/Ramer%E2%80%93Douglas%E2%80%93Peucker_algorithm
  * @function
  * @param {number} squaredTolerance Squared tolerance.
  * @return {ol.geom.Geometry} Simplified geometry.
@@ -36467,7 +36450,7 @@ ol.control.Control.prototype.setMap = function(map) {
   if (!goog.isNull(this.map_)) {
     goog.dom.removeNode(this.element);
   }
-  if (this.listenerKeys.length > 0) {
+  if (!goog.array.isEmpty(this.listenerKeys)) {
     goog.array.forEach(this.listenerKeys, goog.events.unlistenByKey);
     this.listenerKeys.length = 0;
   }
@@ -48007,6 +47990,7 @@ ol.pointer.EventSource.prototype.getHandlerForEvent = function(eventType) {
 
 goog.provide('ol.pointer.MouseSource');
 
+goog.require('goog.object');
 goog.require('ol.pointer.EventSource');
 
 
@@ -48137,9 +48121,11 @@ ol.pointer.MouseSource.prepareEvent = function(inEvent, dispatcher) {
  */
 ol.pointer.MouseSource.prototype.mousedown = function(inEvent) {
   if (!this.isEventSimulatedFromTouch_(inEvent)) {
+    var p = goog.object.containsKey(this.pointerMap,
+        ol.pointer.MouseSource.POINTER_ID.toString());
     // TODO(dfreedman) workaround for some elements not sending mouseup
     // http://crbug/149091
-    if (ol.pointer.MouseSource.POINTER_ID.toString() in this.pointerMap) {
+    if (p) {
       this.cancel(inEvent);
     }
     var e = ol.pointer.MouseSource.prepareEvent(inEvent, this.dispatcher);
@@ -48222,7 +48208,8 @@ ol.pointer.MouseSource.prototype.cancel = function(inEvent) {
  * Remove the mouse from the list of active pointers.
  */
 ol.pointer.MouseSource.prototype.cleanupMouse = function() {
-  delete this.pointerMap[ol.pointer.MouseSource.POINTER_ID.toString()];
+  goog.object.remove(this.pointerMap,
+      ol.pointer.MouseSource.POINTER_ID.toString());
 };
 
 // Based on https://github.com/Polymer/PointerEvents
@@ -48257,6 +48244,7 @@ ol.pointer.MouseSource.prototype.cleanupMouse = function() {
 
 goog.provide('ol.pointer.MsSource');
 
+goog.require('goog.object');
 goog.require('ol.pointer.EventSource');
 
 
@@ -48324,7 +48312,7 @@ ol.pointer.MsSource.prototype.prepareEvent_ = function(inEvent) {
  * @param {number} pointerId
  */
 ol.pointer.MsSource.prototype.cleanup = function(pointerId) {
-  delete this.pointerMap[pointerId.toString()];
+  goog.object.remove(this.pointerMap, pointerId);
 };
 
 
@@ -48334,7 +48322,7 @@ ol.pointer.MsSource.prototype.cleanup = function(pointerId) {
  * @param {goog.events.BrowserEvent} inEvent
  */
 ol.pointer.MsSource.prototype.msPointerDown = function(inEvent) {
-  this.pointerMap[inEvent.getBrowserEvent().pointerId.toString()] = inEvent;
+  this.pointerMap[inEvent.getBrowserEvent().pointerId] = inEvent;
   var e = this.prepareEvent_(inEvent);
   this.dispatcher.down(e, inEvent);
 };
@@ -48983,7 +48971,7 @@ ol.pointer.TouchSource.prototype.cancelOut_ =
  * @param {Object} inPointer
  */
 ol.pointer.TouchSource.prototype.cleanUpPointer_ = function(inPointer) {
-  delete this.pointerMap[inPointer.pointerId];
+  goog.object.remove(this.pointerMap, inPointer.pointerId);
   this.removePrimaryPointer_(inPointer);
 };
 
@@ -56193,7 +56181,7 @@ ol.style.Circle.prototype.drawHitDetectionCanvas_ =
       renderOptions.size / 2, renderOptions.size / 2,
       this.radius_, 0, 2 * Math.PI, true);
 
-  context.fillStyle = ol.color.asString(ol.render.canvas.defaultFillStyle);
+  context.fillStyle = ol.render.canvas.defaultFillStyle;
   context.fill();
   if (!goog.isNull(this.stroke_)) {
     context.strokeStyle = renderOptions.strokeStyle;
@@ -61980,6 +61968,7 @@ ol.geom.Circle.prototype.transform;
 
 goog.provide('ol.geom.GeometryCollection');
 
+goog.require('goog.array');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.object');
@@ -62210,7 +62199,7 @@ ol.geom.GeometryCollection.prototype.intersectsExtent = function(extent) {
  * @return {boolean} Is empty.
  */
 ol.geom.GeometryCollection.prototype.isEmpty = function() {
-  return this.geometries_.length === 0;
+  return goog.array.isEmpty(this.geometries_);
 };
 
 
@@ -72510,7 +72499,7 @@ ol.structs.RBush.prototype.remove = function(value) {
   // get the object in which the value was wrapped when adding to the
   // internal rbush. then use that object to do the removal.
   var item = this.items_[uid];
-  delete this.items_[uid];
+  goog.object.remove(this.items_, uid);
   return this.rbush_.remove(item) !== null;
 };
 
@@ -84507,8 +84496,10 @@ ol.Map.prototype.handleLayerGroupPropertyChanged_ = function(event) {
  */
 ol.Map.prototype.handleLayerGroupChanged_ = function() {
   if (!goog.isNull(this.layerGroupPropertyListenerKeys_)) {
-    goog.array.forEach(this.layerGroupPropertyListenerKeys_,
-        goog.events.unlistenByKey);
+    var length = this.layerGroupPropertyListenerKeys_.length;
+    for (var i = 0; i < length; ++i) {
+      goog.events.unlistenByKey(this.layerGroupPropertyListenerKeys_[i]);
+    }
     this.layerGroupPropertyListenerKeys_ = null;
   }
   var layerGroup = this.getLayerGroup();
@@ -89529,7 +89520,7 @@ ol.format.EsriJSON.prototype.writeFeatureObject = function(
         ol.format.EsriJSON.writeGeometry_(geometry, opt_options);
   }
   var properties = feature.getProperties();
-  delete properties[feature.getGeometryName()];
+  goog.object.remove(properties, feature.getGeometryName());
   if (!goog.object.isEmpty(properties)) {
     object['attributes'] = properties;
   } else {
@@ -90125,7 +90116,7 @@ ol.format.GeoJSON.prototype.writeFeatureObject = function(
     object['geometry'] = null;
   }
   var properties = feature.getProperties();
-  delete properties[feature.getGeometryName()];
+  goog.object.remove(properties, feature.getGeometryName());
   if (!goog.object.isEmpty(properties)) {
     object['properties'] = properties;
   } else {
@@ -92890,6 +92881,7 @@ goog.provide('ol.format.GPX');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
+goog.require('goog.object');
 goog.require('ol.Feature');
 goog.require('ol.format.Feature');
 goog.require('ol.format.XMLFeature');
@@ -92957,15 +92949,17 @@ ol.format.GPX.appendCoordinate_ = function(flatCoordinates, node, values) {
   flatCoordinates.push(
       parseFloat(node.getAttribute('lon')),
       parseFloat(node.getAttribute('lat')));
-  if ('ele' in values) {
-    flatCoordinates.push(/** @type {number} */ (values['ele']));
-    delete values['ele'];
+  if (goog.object.containsKey(values, 'ele')) {
+    flatCoordinates.push(
+        /** @type {number} */ (values['ele']));
+    goog.object.remove(values, 'ele');
   } else {
     flatCoordinates.push(0);
   }
-  if ('time' in values) {
-    flatCoordinates.push(/** @type {number} */ (values['time']));
-    delete values['time'];
+  if (goog.object.containsKey(values, 'time')) {
+    flatCoordinates.push(
+        /** @type {number} */ (values['time']));
+    goog.object.remove(values, 'time');
   } else {
     flatCoordinates.push(0);
   }
@@ -93084,7 +93078,7 @@ ol.format.GPX.readRte_ = function(node, objectStack) {
   }
   var flatCoordinates = /** @type {Array.<number>} */
       (values['flatCoordinates']);
-  delete values['flatCoordinates'];
+  goog.object.remove(values, 'flatCoordinates');
   var geometry = new ol.geom.LineString(null);
   geometry.setFlatCoordinates(ol.geom.GeometryLayout.XYZM, flatCoordinates);
   ol.format.Feature.transformWithOptions(geometry, false, options);
@@ -93114,9 +93108,9 @@ ol.format.GPX.readTrk_ = function(node, objectStack) {
   }
   var flatCoordinates = /** @type {Array.<number>} */
       (values['flatCoordinates']);
-  delete values['flatCoordinates'];
+  goog.object.remove(values, 'flatCoordinates');
   var ends = /** @type {Array.<number>} */ (values['ends']);
-  delete values['ends'];
+  goog.object.remove(values, 'ends');
   var geometry = new ol.geom.MultiLineString(null);
   geometry.setFlatCoordinates(
       ol.geom.GeometryLayout.XYZM, flatCoordinates, ends);
@@ -95854,9 +95848,6 @@ goog.Uri.QueryData.prototype.extend = function(var_args) {
 goog.provide('ol.style.Text');
 
 
-goog.require('ol.style.Fill');
-
-
 
 /**
  * @classdesc
@@ -95910,8 +95901,7 @@ ol.style.Text = function(opt_options) {
    * @private
    * @type {ol.style.Fill}
    */
-  this.fill_ = goog.isDef(options.fill) ? options.fill :
-      new ol.style.Fill({color: ol.style.Text.DEFAULT_FILL_COLOR_});
+  this.fill_ = goog.isDef(options.fill) ? options.fill : null;
 
   /**
    * @private
@@ -95931,16 +95921,6 @@ ol.style.Text = function(opt_options) {
    */
   this.offsetY_ = goog.isDef(options.offsetY) ? options.offsetY : 0;
 };
-
-
-/**
- * The default fill color to use if no fill was set at construction time; a
- * blackish `#333`.
- *
- * @const {string}
- * @private
- */
-ol.style.Text.DEFAULT_FILL_COLOR_ = '#333';
 
 
 /**
@@ -97838,7 +97818,7 @@ ol.format.KML.prototype.readPlacemark_ = function(node, objectStack) {
     ol.format.Feature.transformWithOptions(geometry, false, options);
   }
   feature.setGeometry(geometry);
-  delete object['geometry'];
+  goog.object.remove(object, 'geometry');
 
   if (this.extractStyles_) {
     var style = object['Style'];
@@ -97847,7 +97827,7 @@ ol.format.KML.prototype.readPlacemark_ = function(node, objectStack) {
         style, styleUrl, this.defaultStyle_, this.sharedStyles_);
     feature.setStyle(styleFunction);
   }
-  delete object['Style'];
+  goog.object.remove(object, 'Style');
   // we do not remove the styleUrl property from the object, so it
   // gets stored on feature when setProperties is called
 
@@ -101481,6 +101461,7 @@ ol.format.WFS.prototype.readProjectionFromNode = function(node) {
 
 goog.provide('ol.format.WKT');
 
+goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('ol.Feature');
 goog.require('ol.format.Feature');
@@ -101539,7 +101520,7 @@ ol.format.WKT.EMPTY = 'EMPTY';
  */
 ol.format.WKT.encodePointGeometry_ = function(geom) {
   var coordinates = geom.getCoordinates();
-  if (coordinates.length === 0) {
+  if (goog.array.isEmpty(coordinates)) {
     return '';
   }
   return coordinates[0] + ' ' + coordinates[1];
@@ -109532,8 +109513,9 @@ ol.interaction.Modify.prototype.setGeometryCoordinates_ =
 ol.interaction.Modify.prototype.updateSegmentIndices_ = function(
     geometry, index, depth, delta) {
   this.rBush_.forEachInExtent(geometry.getExtent(), function(segmentDataMatch) {
+    goog.asserts.assert(goog.isDef(segmentDataMatch.depth));
     if (segmentDataMatch.geometry === geometry &&
-        (!goog.isDef(depth) || !goog.isDef(segmentDataMatch.depth) ||
+        (!goog.isDef(depth) ||
         goog.array.equals(segmentDataMatch.depth, depth)) &&
         segmentDataMatch.index > index) {
       segmentDataMatch.index += delta;
@@ -109734,7 +109716,6 @@ ol.interaction.Select = function(opt_options) {
   this.featureOverlay_ = new ol.layer.Vector({
     source: new ol.source.Vector({
       useSpatialIndex: false,
-      features: options.features,
       wrapX: options.wrapX
     }),
     style: goog.isDef(options.style) ? options.style :
@@ -114416,6 +114397,7 @@ ol.source.Stamen.ATTRIBUTIONS = [
 
 goog.provide('ol.source.TileArcGISRest');
 
+goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.math');
 goog.require('goog.object');
@@ -114516,7 +114498,7 @@ ol.source.TileArcGISRest.prototype.getRequestUrl_ =
         pixelRatio, projection, params) {
 
   var urls = this.urls_;
-  if (urls.length === 0) {
+  if (goog.array.isEmpty(urls)) {
     return undefined;
   }
 
@@ -115630,6 +115612,7 @@ ol.source.TileVector.prototype.setUrls = function(urls) {
 
 goog.provide('ol.source.TileWMS');
 
+goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.math');
 goog.require('goog.object');
@@ -115847,7 +115830,7 @@ ol.source.TileWMS.prototype.getRequestUrl_ =
         pixelRatio, projection, params) {
 
   var urls = this.urls_;
-  if (urls.length === 0) {
+  if (goog.array.isEmpty(urls)) {
     return undefined;
   }
 
@@ -120918,11 +120901,6 @@ goog.exportProperty(
     ol.geom.Geometry.prototype,
     'getExtent',
     ol.geom.Geometry.prototype.getExtent);
-
-goog.exportProperty(
-    ol.geom.Geometry.prototype,
-    'simplify',
-    ol.geom.Geometry.prototype.simplify);
 
 goog.exportProperty(
     ol.geom.Geometry.prototype,
@@ -128076,11 +128054,6 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.geom.SimpleGeometry.prototype,
-    'simplify',
-    ol.geom.SimpleGeometry.prototype.simplify);
-
-goog.exportProperty(
-    ol.geom.SimpleGeometry.prototype,
     'transform',
     ol.geom.SimpleGeometry.prototype.transform);
 
@@ -128171,11 +128144,6 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.geom.Circle.prototype,
-    'simplify',
-    ol.geom.Circle.prototype.simplify);
-
-goog.exportProperty(
-    ol.geom.Circle.prototype,
     'get',
     ol.geom.Circle.prototype.get);
 
@@ -128243,11 +128211,6 @@ goog.exportProperty(
     ol.geom.GeometryCollection.prototype,
     'getExtent',
     ol.geom.GeometryCollection.prototype.getExtent);
-
-goog.exportProperty(
-    ol.geom.GeometryCollection.prototype,
-    'simplify',
-    ol.geom.GeometryCollection.prototype.simplify);
 
 goog.exportProperty(
     ol.geom.GeometryCollection.prototype,
@@ -128341,11 +128304,6 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.geom.LinearRing.prototype,
-    'simplify',
-    ol.geom.LinearRing.prototype.simplify);
-
-goog.exportProperty(
-    ol.geom.LinearRing.prototype,
     'transform',
     ol.geom.LinearRing.prototype.transform);
 
@@ -128433,11 +128391,6 @@ goog.exportProperty(
     ol.geom.LineString.prototype,
     'getExtent',
     ol.geom.LineString.prototype.getExtent);
-
-goog.exportProperty(
-    ol.geom.LineString.prototype,
-    'simplify',
-    ol.geom.LineString.prototype.simplify);
 
 goog.exportProperty(
     ol.geom.LineString.prototype,
@@ -128531,11 +128484,6 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.geom.MultiLineString.prototype,
-    'simplify',
-    ol.geom.MultiLineString.prototype.simplify);
-
-goog.exportProperty(
-    ol.geom.MultiLineString.prototype,
     'transform',
     ol.geom.MultiLineString.prototype.transform);
 
@@ -128623,11 +128571,6 @@ goog.exportProperty(
     ol.geom.MultiPoint.prototype,
     'getExtent',
     ol.geom.MultiPoint.prototype.getExtent);
-
-goog.exportProperty(
-    ol.geom.MultiPoint.prototype,
-    'simplify',
-    ol.geom.MultiPoint.prototype.simplify);
 
 goog.exportProperty(
     ol.geom.MultiPoint.prototype,
@@ -128721,11 +128664,6 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.geom.MultiPolygon.prototype,
-    'simplify',
-    ol.geom.MultiPolygon.prototype.simplify);
-
-goog.exportProperty(
-    ol.geom.MultiPolygon.prototype,
     'transform',
     ol.geom.MultiPolygon.prototype.transform);
 
@@ -128816,11 +128754,6 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.geom.Point.prototype,
-    'simplify',
-    ol.geom.Point.prototype.simplify);
-
-goog.exportProperty(
-    ol.geom.Point.prototype,
     'transform',
     ol.geom.Point.prototype.transform);
 
@@ -128908,11 +128841,6 @@ goog.exportProperty(
     ol.geom.Polygon.prototype,
     'getExtent',
     ol.geom.Polygon.prototype.getExtent);
-
-goog.exportProperty(
-    ol.geom.Polygon.prototype,
-    'simplify',
-    ol.geom.Polygon.prototype.simplify);
 
 goog.exportProperty(
     ol.geom.Polygon.prototype,

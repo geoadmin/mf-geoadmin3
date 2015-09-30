@@ -76,8 +76,16 @@ goog.require('ga_topic_service');
     // Url of ol3cesium library
     var ol3CesiumLibUrl = gaGlobalOptions.resourceUrl + 'lib/ol3cesium.js';
 
+    var intParam = function(name, defaultValue) {
+      var params = gaPermalink.getParams();
+      return parseInt(params[name] || defaultValue, 10);
+    };
+
     // Create the cesium viewer with basic layers
     var loadCesiumViewer = function(map, enabled) {
+      var tileCacheSize = intParam('tileCacheSize', '100');
+      var maximumScreenSpaceError = intParam('maximumScreenSpaceError', '2');
+      window.minimumRetrievingLevel = intParam('minimumRetrievingLevel', '6');
       var cesiumViewer = new olcs.OLCesium({
         map: map,
         createSynchronizers: function(map, scene) {
@@ -87,6 +95,10 @@ goog.require('ga_topic_service');
            ];
         }
       });
+      var globe = cesiumViewer.getCesiumScene().globe;
+      globe.baseColor = Cesium.Color.WHITE;
+      globe.tileCacheSize = tileCacheSize;
+      globe.maximumScreenSpaceError = maximumScreenSpaceError;
       cesiumViewer.setEnabled(enabled);
       var scene = cesiumViewer.getCesiumScene();
       scene.camera.setView({
