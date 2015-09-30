@@ -1,4 +1,5 @@
 .ga-controls3d {
+  .user-select(none);
   position: absolute;
   text-align: center;
   right: 0;
@@ -61,7 +62,8 @@
   }
   .ga-pegman {
     background-image: data-uri('pegman_standing_white.png');
-    cursor: pointer;
+    cursor: grab;
+    cursor: -webkit-grab;
     display: inline-block;
     width: 27px;
     height: 72px;
@@ -90,5 +92,13 @@
          height: 25px;
       }
     }
+  }
+}
+
+.ga-pegman-dragging {
+  cursor: crosshair;
+  .ga-pegman {
+    cursor: grabbing;
+    cursor: -webkit-grabbing;
   }
 }

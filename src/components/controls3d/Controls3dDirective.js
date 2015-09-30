@@ -75,18 +75,18 @@ goog.require('ga_map_service');
           scope.isJetModeActive = jetMode;
         });
 
-        scope.togglePegmanMode = function() {
-          if (fps.getActive()) {
-            if (fps.getFlyMode()) {
-              // flyMode -> off
-              fps.setActive(false);
-            } else {
-              // fpsMode -> flyMode
-              fps.setFlyMode(true);
-            }
-          } else {
-            // off -> fpsMode
-            fps.setActive(true);
+        scope.startDraggingPegman = function() {
+          if (!fps.getActive()) {
+            var body = $(document.body);
+            var canvas = angular.element(scene.canvas);
+            body.addClass('ga-pegman-dragging');
+            canvas.off('mouseup.pegman');
+            canvas.one('mouseup.pegman', function(event) {
+              var pixel = new Cesium.Cartesian2(event.clientX, event.clientY);
+              var cartesian = olcs.core.pickOnTerrainOrEllipsoid(scene, pixel);
+              fps.setActive(true, cartesian);
+              body.removeClass('ga-pegman-dragging');
+            });
           }
         };
 

@@ -4,7 +4,7 @@
     <div class="ga-inc" ng-click="tilt(+5)"></div>
     <div class="ga-dec" ng-click="tilt(-5)"></div>
   </div>
-  <div class="ga-pegman" ng-class="{'ga-fly-mode': isFlyModeActive, 'ga-jet-mode': isJetModeActive}" ng-click="togglePegmanMode()"></div>
+  <div class="ga-pegman" ng-class="{'ga-fly-mode': isFlyModeActive, 'ga-jet-mode': isJetModeActive}" ng-mousedown="startDraggingPegman()"></div>
   <div class="ga-rotate" ng-hide="isPegmanActive">
     <div class="ga-indicator" ng-click="resetRotation()"></div>
     <div class="ga-inc" ng-click="rotate(-15)"></div>

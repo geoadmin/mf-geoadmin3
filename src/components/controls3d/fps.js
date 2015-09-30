@@ -103,6 +103,11 @@ function FPS(scene, scope) {
   document.addEventListener('keydown', this.onKey_.bind(this));
   document.addEventListener('keyup', this.onKey_.bind(this));
   document.addEventListener('mousemove', this.onMouseMove_.bind(this));
+
+  document.addEventListener('pointerlockchange',
+      this.onPointerLockChange_.bind(this));
+  document.addEventListener('mozpointerlockchange',
+      this.onPointerLockChange_.bind(this));
 }
 
 
@@ -184,10 +189,16 @@ FPS.prototype.enableInputs_ = function(enable) {
 
 /**
  * @param {boolean} active
+ * @param {?Cesium.Cartesian3} opt_position
  */
-FPS.prototype.setActive = function(active) {
+FPS.prototype.setActive = function(active, opt_position) {
+  var positionCarto;
+  if (opt_position) {
+    positionCarto = this.ellipsoid_.cartesianToCartographic(opt_position);
+  } else {
+    positionCarto = this.camera_.positionCartographic;
+  }
   this.active_ = active;
-  var positionCarto = this.camera_.positionCartographic;
   if (active) {
     this.requestPointerLock_();
 
@@ -264,8 +275,23 @@ FPS.prototype.onKey_ = function(event) {
       } else if (pressed && event.keyCode == 70) {
         // F
         this.setFlyMode(!this.flyMode_);
+      } else if (pressed && event.keyCode == 27) {
+        // esc
+        this.setActive(false);
       }
     }.bind(this));
+  }
+};
+
+
+/**
+ * Handle pointer lock change event.
+ * @param {Event} event
+ * @private
+ */
+FPS.prototype.onPointerLockChange_ = function(event) {
+  if (!this.getPointerLock()) {
+    this.setActive(false);
   }
 };
 
