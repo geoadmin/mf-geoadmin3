@@ -73,6 +73,8 @@ goog.require('ga_topic_service');
       return map;
     };
 
+    var rotateOnEnable = true;
+
     // Url of ol3cesium library
     var ol3CesiumLibUrl = gaGlobalOptions.resourceUrl + 'lib/ol3cesium.js';
 
@@ -101,12 +103,10 @@ goog.require('ga_topic_service');
       globe.maximumScreenSpaceError = maximumScreenSpaceError;
       cesiumViewer.setEnabled(enabled);
       var scene = cesiumViewer.getCesiumScene();
-      scene.camera.setView({
-        pitch: -Cesium.Math.toRadians(50)
-      });
       scene.globe.depthTestAgainstTerrain = true;
       scene.terrainProvider =
           gaLayers.getCesiumTerrainProviderById(gaGlobalOptions.defaultTerrain);
+      enableOl3d(cesiumViewer, enabled);
       return cesiumViewer;
     };
 
@@ -119,7 +119,13 @@ goog.require('ga_topic_service');
         // 2d -> 3d transition
         ol3d.setEnabled(true);
         var angle = Cesium.Math.toRadians(50);
-        olcs.core.rotateAroundAxis(camera, -angle, camera.right, transform);
+        // This guard is used because the rotation is in conflict
+        // with the permalink driven initilisation of the view in
+        // the map directive. It's ... clumsy.
+        if (rotateOnEnable) {
+          olcs.core.rotateAroundAxis(camera, -angle, camera.right, transform);
+        }
+        rotateOnEnable = true;
       } else {
         // 3d -> 2d transition
         var angle = olcs.core.computeAngleToZenith(scene, bottom);
@@ -174,6 +180,7 @@ goog.require('ga_topic_service');
       gaLayers.loadConfig().then(function() {
         var params = gaPermalink.getParams();
         if (params.lon !== undefined && params.lat !== undefined) {
+          rotateOnEnable = false;
           $scope.globals.is3dActive = true;
         }
       });
