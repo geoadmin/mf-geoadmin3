@@ -21,7 +21,7 @@ DEPLOY_ROOT_DIR := /var/www/vhosts/mf-geoadmin3/private/branch
 DEPLOY_TARGET ?= 'dev'
 LAST_DEPLOY_TARGET := $(shell if [ -f .build-artefacts/last-deploy-target ]; then cat .build-artefacts/last-deploy-target 2> /dev/null; else echo '-none-'; fi)
 OL3_VERSION ?= 4f45bbc05d3defd05fb691f7956d702cc4143c34
-OL3_CESIUM_VERSION ?= d8124ead6b83832bacc86c537d9d46245b127a7f
+OL3_CESIUM_VERSION ?= a334396d3271e3068f26b108ad50f5d06acc9df5
 CESIUM_VERSION ?= fef3fac343140d7b83a323b6edf1cffd7ceb9cb5
 DEFAULT_TOPIC_ID ?= ech
 TRANSLATION_FALLBACK_CODE ?= de
@@ -197,7 +197,7 @@ ol3cesium: .build-artefacts/ol3-cesium
 	make dist; \
 	node build/build.js ../../scripts/ol3cesium-debug-geoadmin.json dist/ol3cesium-debug.js;  \
 	cp dist/ol3cesium-debug.js ../../src/lib/; \
-	make cesium/Build/Cesium/Cesium.js; \
+	make cesium/Build/Cesium/Cesium.js -e CESIUM_COMPILE_TARGET=minifyRelease; \
 	cp -r cesium/Build/Cesium ../../src/lib/; \
 	cat ../../src/lib/Cesium/Cesium.js dist/ol3cesium.js > ../../src/lib/ol3cesium.js;
 
