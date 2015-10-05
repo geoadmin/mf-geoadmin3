@@ -39,32 +39,31 @@ if __name__ == '__main__':
         {'platform': "Windows 7", 'browserName': "chrome", 'version': "44.0", 'screenResolution': "1280x1024" },
         {'platform': "Windows 7", 'browserName': "chrome", 'version': "45.0", 'screenResolution': "1280x1024" },
         {'platform': "Windows 8.1", 'browserName': "chrome", 'version': "45.0", 'screenResolution': "1280x1024" },
-        {'platform': "Windows 7", 'browserName': "internet explorer", 'version': "9.0", 'screenResolution': "1280x1024" },
-        {'platform': "Windows 7", 'browserName': "internet explorer", 'version': "10.0", 'screenResolution': "1280x1024" },
-        {'platform': "Windows 7", 'browserName': "internet explorer", 'version': "11.0", 'screenResolution': "1280x1024" },
-        {'platform': "Windows 8.1", 'browserName': "chrome", 'version': "11.0", 'screenResolution': "1280x1024" },
+#        {'platform': "Windows 7", 'browserName': "internet explorer", 'version': "9.0", 'screenResolution': "1280x1024" },
+#        {'platform': "Windows 7", 'browserName': "internet explorer", 'version': "10.0", 'screenResolution': "1280x1024" },
+#        {'platform': "Windows 7", 'browserName': "internet explorer", 'version': "11.0", 'screenResolution': "1280x1024" },
         {'platform': "Windows 7", 'browserName': "firefox", 'version': "38.0", 'screenResolution': "1280x1024" },
         {'platform': "Windows 7", 'browserName': "firefox", 'version': "39.0", 'screenResolution': "1280x1024" },
         {'platform': "Windows 7", 'browserName': "firefox", 'version': "40.0", 'screenResolution': "1280x1024" },
-        {'platform': "Windows 8.1", 'browserName': "firefox", 'version': "40.0", 'screenResolution': "1280x1024"}]
+        {'platform': "Windows 8.1", 'browserName': "firefox", 'version': "40.0", 'screenResolution': "1280x1024"}
+        ]
                         
     ### FOR TEST (test only one browser config)
     #desired_cap_list = [{'name': "ltalp test", 'build': "Swiss 1", 'platform': "Windows 7", 'browserName': "chrome", 'version': "43.0", 'screenResolution': "1280x1024", 'tags': "Swisssearch step 1" }]
-
-    ## okay we will start the script!
-    print "Starting SauceLabs script!"
 
     for current_desired_cap in desired_cap_list: # elt va prendre les valeurs successives des éléments de ma_liste
         print "+--> Start test with " + current_desired_cap['platform'] + " " + current_desired_cap['browserName'] + " (" + current_desired_cap['version'] + ")"
 
         driver = webdriver.Remote(
             command_executor='http://' + saucelabs_user + ':' + saucelabs_key + '@ondemand.saucelabs.com:80/wd/hub', desired_capabilities=current_desired_cap)
-       
+        
+        ## okay we will start the script!
+        print "Starting SauceLabs script!"
+
         try: 
             start_test(driver, url)
             search_test(desired_cap_list, driver, url)
             #kml_test(desired_cap_list, driver, url)
-            #start_test(driver, url)
             runSwissSearchTest(driver, url)
         finally:
             driver.quit()
