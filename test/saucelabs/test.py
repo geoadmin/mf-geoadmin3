@@ -10,6 +10,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from start_test import start_test
 from kml_test import kml_test
 from search_test import search_test
+from mobile_test import mobile_test
 
 if __name__ == '__main__':
     
@@ -61,7 +62,8 @@ if __name__ == '__main__':
         print "Starting SauceLabs script!"
 
         start_test(driver, url)
-        search_test(desired_cap_list, driver, url)
+        mobile_test(current_desired_cap, driver, url)
+        #search_test(current_desired_cap, driver, url)
         #kml_test(desired_cap_list, driver, url)
         driver.quit()
         print "--- end test for this browser"
