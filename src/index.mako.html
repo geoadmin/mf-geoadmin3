@@ -695,6 +695,11 @@ itemscope itemtype="http://schema.org/WebApplication"
 
     <script>
       (function() {
+        // Make sure ajax is using cached requests
+        $.ajaxSetup({
+          cache: true
+        });
+
         var module = angular.module('ga');
         var cacheAdd = '${version}' != '' ? '/' + '${version}' : '';
         var pathname = location.pathname.replace(/(index|mobile|embed)\.html$/g, '');
