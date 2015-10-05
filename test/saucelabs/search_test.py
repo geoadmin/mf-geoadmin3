@@ -12,10 +12,10 @@ from selenium.webdriver.support import expected_conditions as EC
 
 QUERYSTRING_OF_BERN = "X=200393.28&Y=596671.16";
 
-def search_test(cap, driver, target):
-  driver.get(target)
+def search_test(cap, driver, url):
+  driver.get(url)
   driver.maximize_window()
-  driver.get(target + '/?lang=de')
+  driver.get(url + '/?lang=de')
     
 #  Send "Bern" to the searchbar
   driver.find_element_by_xpath("//*[@type='search']").send_keys("Bern")

@@ -9,6 +9,7 @@ from selenium.webdriver.support import expected_conditions as EC
 
 from start_test import start_test
 from kml_test import kml_test
+from search_test import search_test
 
 if __name__ == '__main__':
     
@@ -17,7 +18,7 @@ if __name__ == '__main__':
             sys.exit(2)
     
     url = sys.argv[1]
-    
+
     ### Get value to connect to SauceLabs
     try:
         saucelabs_user = os.environ['SAUCELABS_USER']
@@ -49,18 +50,19 @@ if __name__ == '__main__':
                         
     ### FOR TEST (test only one browser config)
     desired_cap_list = [{'platform': "Windows 7", 'browserName': "firefox", 'version': "40.0", 'screenResolution': "1280x1024" }]
-
+    
     for current_desired_cap in desired_cap_list: # elt va prendre les valeurs successives des éléments de ma_liste
         print "Start test with " + current_desired_cap['platform'] + " " + current_desired_cap['browserName'] + " (" + current_desired_cap['version'] + ")"
 
         driver = webdriver.Remote(
             command_executor='http://' + saucelabs_user + ':' + saucelabs_key + '@ondemand.saucelabs.com:80/wd/hub', desired_capabilities=current_desired_cap)
-    
+        
         ## okay we will start the script!
         print "Starting SauceLabs script!"
 
         start_test(driver, url)
-        kml_test(cap, driver, target)
+        search_test(desired_cap_list, driver, url)
+        #kml_test(desired_cap_list, driver, url)
         driver.quit()
         print "--- end test for this browser"
 

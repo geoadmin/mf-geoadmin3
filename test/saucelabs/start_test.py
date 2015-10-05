@@ -26,7 +26,6 @@ def start_test(driver, url):
         print '-----------'
         print str(e)
     
-    
     #if not "Google" in driver.title:
     if not "chweiz" in driver.title:
                 raise Exception("Unable to load map.geo.admin page!")
