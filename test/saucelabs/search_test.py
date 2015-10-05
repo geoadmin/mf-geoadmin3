@@ -10,13 +10,13 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 # Search testing using browserstack
-
+print 'Search_test starts!'
 QUERYSTRING_OF_BERN = "X=200393.28&Y=596671.16";
 
-def search_test(cap, driver, target):
-  driver.get(target)
+def search_test(cap, driver, url):
+  driver.get(url)
   driver.maximize_window()
-  driver.get(target + '/?lang=de')
+  driver.get(url + '/?lang=de')
     
 #  Send "Bern" to the searchbar
 #  driver.findElement(webdriver.By.xpath("//*[@type='search']")).sendKeys('Bern');
@@ -34,12 +34,9 @@ def search_test(cap, driver, target):
   driver.find_element_by_xpath("//*[@id='toptools']//a[contains(@href,'" + QUERYSTRING_OF_BERN + "')]")
 
 #  Was the URL in the address bar adapted?
-#  if(!(cap.browser == "IE" && cap.browser_version == "9.0")) {
-#    driver.getCurrentUrl().then(function(url) {
-#      assert.ok(url.indexOf(QUERYSTRING_OF_BERN) > -1);
-#    });
-#  }
+  for item in cap: 
+    if(not(item['browserName'] == "IE" and item['version'] == "9.0")):
+      cUrl = driver.current_url
+      assert (cUrl.index(QUERYSTRING_OF_BERN) > -1)
 
-  if(not(cap['browserName'] == "IE" and cap['version'] == "9.0")):
-    cUrl = driver.current_url
-    assert (cUrl.index(QUERYSTRING_OF_BERN) > -1)
+print 'Search_test completed'
