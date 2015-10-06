@@ -652,7 +652,8 @@ goog.require('ga_urlutils_service');
               opacity: options.opacity,
               visible: options.visible,
               source: source,
-              extent: source.getExtent(),
+              extent: gaMapUtils.intersectWithDefaultExtent(
+                  source.getExtent()),
               attribution: options.attribution
             };
 
