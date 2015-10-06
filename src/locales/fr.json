@@ -267,6 +267,7 @@
 	"query_layer": "--- Selectionner une couche ---",
 	"query_more_values": "Récupérer plus de valeurs",
 	"query_num": "Condition n°{{num}}",
+	"query_operator": "Opérateurs de recherche avancée",
 	"query_remove": "Supprimer la condition",
 	"query_reset": "Réinitialiser la condition",
 	"query_search": "Rechercher",

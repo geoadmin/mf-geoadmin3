@@ -58,8 +58,9 @@ goog.require('ga_storage_service');
           list.push(paramsByLayer[filter.layer.bodId]);
         }
         var params = paramsByLayer[filter.layer.bodId].params;
+        var operator = $scope.selectedQueryOperator.value;
         // Where condition
-        var where = (params.where) ? params.where + ' and ' : '';
+        var where = (params.where) ? params.where + ' ' + operator + ' ' : '';
         where += filter.attribute.name + ' ' + filter.operator + ' ' +
             filter.attribute.transformToLiteral(filter.value);
         params.where = where;
@@ -73,6 +74,16 @@ goog.require('ga_storage_service');
       filter.attribute = filter.layer.attributes[0] || noAttr;
       $scope.updateOp(idx, filter);
     };
+
+    $scope.queryOperators = [{
+      label: 'AND',
+      value: 'and'
+    }, {
+      label: 'OR',
+      value: 'or'
+    }];
+
+    $scope.selectedQueryOperator = $scope.queryOperators[0];
 
     // Display the first operator as selected
     $scope.updateOp = function(idx, filter) {
