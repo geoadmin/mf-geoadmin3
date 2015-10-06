@@ -58,7 +58,10 @@ goog.require('ga_map_service');
           var bottom = olcs.core.pickBottomPoint(scene);
           if (bottom) {
             var transform = Cesium.Matrix4.fromTranslation(bottom);
-            olcs.core.rotateAroundAxis(camera, -angle, camera.right, transform);
+            olcs.core.rotateAroundAxis(
+                camera, -angle, camera.right, transform, {
+                  duration: 100
+                });
           }
         };
 
@@ -72,7 +75,9 @@ goog.require('ga_map_service');
           angle = Cesium.Math.toRadians(angle);
           var bottom = olcs.core.pickBottomPoint(scene);
           if (bottom) {
-            olcs.core.setHeadingUsingBottomCenter(scene, angle, bottom);
+            olcs.core.setHeadingUsingBottomCenter(scene, angle, bottom, {
+              duration: 100
+            });
           }
         };
 
