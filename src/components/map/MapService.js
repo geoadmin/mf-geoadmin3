@@ -652,7 +652,8 @@ goog.require('ga_urlutils_service');
               opacity: options.opacity,
               visible: options.visible,
               source: source,
-              extent: source.getExtent(),
+              extent: gaMapUtils.intersectWithDefaultExtent(
+                  source.getExtent()),
               attribution: options.attribution
             };
 
@@ -1532,7 +1533,7 @@ goog.require('ga_urlutils_service');
         },
 
         intersectWithDefaultExtent: function(extent) {
-          if (!extent || extent.lenght !== 4) {
+          if (!extent || extent.length !== 4) {
             return gaGlobalOptions.defaultExtent;
           }
           return [
