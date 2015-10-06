@@ -95,10 +95,13 @@ goog.require('ga_styles_service');
 
 
       // Get cacheable layers of a map.
-      var getCacheableLayers = function(layers) {
+      var getCacheableLayers = function(layers, onlyVisible) {
         var cache = [];
         for (var i = 0, ii = layers.length; i < ii; i++) {
           var layer = layers[i];
+          if (onlyVisible && !layer.getVisible()) {
+            continue;
+          }
           if (layer instanceof ol.layer.Group) {
             cache = cache.concat(
                 getCacheableLayers(layer.getLayers().getArray()));
@@ -394,7 +397,7 @@ goog.require('ga_styles_service');
         this.save = function(map) {
 
           // Get the cacheable layers
-          var layers = getCacheableLayers(map.getLayers().getArray());
+          var layers = getCacheableLayers(map.getLayers().getArray(), true);
           if (layers.length == 0) {
             alert($translate.instant('offline_no_cacheable_layers'));
             return;
