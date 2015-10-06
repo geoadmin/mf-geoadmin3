@@ -10,6 +10,7 @@ from start_test import start_test
 from kml_test import kml_test
 from search_test import search_test
 from swisssearch_test import runSwissSearchTest
+from print_test import runPrintTest
 
 if __name__ == '__main__':
     
@@ -36,20 +37,25 @@ if __name__ == '__main__':
     ### Code pour la déclaration des browser à tester
     desired_cap_list = [
         {'platform': "Windows 7", 'browserName': "chrome", 'version': "43.0", 'screenResolution': "1280x1024" },
-        {'platform': "Windows 7", 'browserName': "chrome", 'version': "44.0", 'screenResolution': "1280x1024" },
-        {'platform': "Windows 7", 'browserName': "chrome", 'version': "45.0", 'screenResolution': "1280x1024" },
-        {'platform': "Windows 8.1", 'browserName': "chrome", 'version': "45.0", 'screenResolution': "1280x1024" },
+#        {'platform': "Windows 7", 'browserName': "chrome", 'version': "44.0", 'screenResolution': "1280x1024" },
+#        {'platform': "Windows 7", 'browserName': "chrome", 'version': "45.0", 'screenResolution': "1280x1024" },
+         {'platform': "Windows 8.1", 'browserName': "chrome", 'version': "45.0", 'screenResolution': "1280x1024" },
 #        {'platform': "Windows 7", 'browserName': "internet explorer", 'version': "9.0", 'screenResolution': "1280x1024" },
 #        {'platform': "Windows 7", 'browserName': "internet explorer", 'version': "10.0", 'screenResolution': "1280x1024" },
 #        {'platform': "Windows 7", 'browserName': "internet explorer", 'version': "11.0", 'screenResolution': "1280x1024" },
         {'platform': "Windows 7", 'browserName': "firefox", 'version': "38.0", 'screenResolution': "1280x1024" },
-        {'platform': "Windows 7", 'browserName': "firefox", 'version': "39.0", 'screenResolution': "1280x1024" },
-        {'platform': "Windows 7", 'browserName': "firefox", 'version': "40.0", 'screenResolution': "1280x1024" },
+#        {'platform': "Windows 7", 'browserName': "firefox", 'version': "39.0", 'screenResolution': "1280x1024" },
+#        {'platform': "Windows 7", 'browserName': "firefox", 'version': "40.0", 'screenResolution': "1280x1024" },
         {'platform': "Windows 8.1", 'browserName': "firefox", 'version': "40.0", 'screenResolution': "1280x1024"}
         ]
                         
     ### FOR TEST (test only one browser config)
+    ## Chrome 43.0
     #desired_cap_list = [{'name': "ltalp test", 'build': "Swiss 1", 'platform': "Windows 7", 'browserName': "chrome", 'version': "43.0", 'screenResolution': "1280x1024", 'tags': "Swisssearch step 1" }]
+    ## Firefox 40.0
+    #desired_cap_list = [{'name': "ltalp test", 'build': "Swiss 1", 'platform': "Windows 7", 'browserName': "firefox", 'version': "40.0", 'screenResolution': "1280x1024", 'tags': "Swisssearch step 1" }]
+    ## Internet Explorer 10.0
+#    desired_cap_list = [{'name': "ltalp test", 'build': "Swiss 1", 'platform': "Windows 7", 'browserName': "internet explorer", 'version': "10.0", 'screenResolution': "1280x1024", 'tags': "Swisssearch step 1" }]
 
     for current_desired_cap in desired_cap_list: # elt va prendre les valeurs successives des éléments de ma_liste
         print "+--> Start test with " + current_desired_cap['platform'] + " " + current_desired_cap['browserName'] + " (" + current_desired_cap['version'] + ")"
@@ -61,10 +67,11 @@ if __name__ == '__main__':
         print "Starting SauceLabs script!"
 
         try: 
-            start_test(driver, url)
-            search_test(desired_cap_list, driver, url)
+            #start_test(driver, url)
+            #search_test(desired_cap_list, driver, url)
             #kml_test(desired_cap_list, driver, url)
-            runSwissSearchTest(driver, url)
+            #runSwissSearchTest(driver, url)
+            runPrintTest(driver, url)
         finally:
             driver.quit()
         print "--- end test for this browser"
