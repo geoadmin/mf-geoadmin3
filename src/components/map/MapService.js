@@ -1533,7 +1533,7 @@ goog.require('ga_urlutils_service');
         },
 
         intersectWithDefaultExtent: function(extent) {
-          if (!extent || extent.lenght !== 4) {
+          if (!extent || extent.length !== 4) {
             return gaGlobalOptions.defaultExtent;
           }
           return [
