@@ -518,7 +518,7 @@ goog.require('ga_urlutils_service');
                                                            res.attrs.layer);
 
               // Don't add preview layer if the layer is already on the map
-              if (!layer) {
+              if (!layer || !layer.visible) {
                 gaPreviewLayers.addBodLayer($scope.map, res.attrs.layer);
               }
             };
@@ -534,6 +534,9 @@ goog.require('ga_urlutils_service');
               if (!angular.isDefined(l)) {
                 var olLayer = gaLayers.getOlLayerById(res.attrs.layer);
                 $scope.map.addLayer(olLayer);
+              } else {
+                // Assure layer is visible
+                l.visible = true;
               }
               $scope.options.valueSelected(
                   gaSearchLabels.cleanLabel(res.attrs.label));
