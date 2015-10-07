@@ -333,14 +333,6 @@ FPS.prototype.flyModeTick_ = function(delta) {
   var heading = this.camera_.heading;
   var pitch = this.camera_.pitch;
 
-  // update camera orientation
-  var angleX = Cesium.Math.convertLongitudeRange(this.camera_.roll);
-  if (Math.abs(angleX) > 0.20) {
-    this.movementX_ = angleX / 4;
-  }
-  heading += this.movementX_ * 0.025;
-  this.movementX_ = 0;
-
   // update camera position
   var speed = this.buttons_.shift ? this.jetSpeed_ : this.flySpeed_;
   var moveAmount = speed * delta / 1000;
@@ -379,10 +371,10 @@ FPS.prototype.manTick_ = function(delta) {
   var pitch = this.camera_.pitch;
 
   // update camera orientation
-  heading += this.movementX_ * 0.002;
+  heading += this.movementX_ * 0.003;
   this.movementX_ = 0;
 
-  pitch -= this.movementY_ * 0.002;
+  pitch -= this.movementY_ * 0.003;
   pitch = Math.max(-Cesium.Math.PI_OVER_FOUR, pitch);
   pitch = Math.min(0.3, pitch);
   this.movementY_ = 0;
