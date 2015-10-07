@@ -70,21 +70,29 @@ function FPS(scene, scope) {
    * @const {number}
    * @private
    */
-  this.walkSpeed_ = 4 * 1000 / 3600;
+  this.walkSpeed_ = 6000 / 3600;
 
   /**
    * In meters/second.
    * @const {number}
    * @private
    */
-  this.runSpeed_ = 10 * 1000 / 3600;
+  this.runSpeed_ = 7 * this.walkSpeed_;
 
   /**
-   * Number of meters above terrain.
+   * In meters/second. ~ Pilatus PC-6 cruise speed
    * @const {number}
    * @private
    */
-  this.heightAboveTerrain_ = 4;
+  this.flySpeed_ = 69;
+
+  /**
+   * In meters/second. ~ FA18 top speed
+   * @const {number}
+   * @private
+   */
+  this.jetSpeed_ = 500;
+
 
   /**
    * @type {boolean}
@@ -105,12 +113,10 @@ function FPS(scene, scope) {
 FPS.prototype.setFlyMode = function(flyMode) {
   this.flyMode_ = flyMode;
   if (this.flyMode_) {
-    this.heightAboveTerrain_ = 400;
     this.camera_.setView({
       pitch: 0.1
     });
   } else {
-    this.heightAboveTerrain_ = 4;
     this.camera_.setView({
       pitch: 0.0,
       roll: 0.0
@@ -185,7 +191,7 @@ FPS.prototype.setActive = function(active) {
   if (active) {
     this.requestPointerLock_();
 
-    positionCarto.height = this.heightAboveTerrain_;
+    positionCarto.height = 2;
     this.scene_.camera.flyTo({
       destination: this.ellipsoid_.cartographicToCartesian(positionCarto),
       orientation: {
@@ -336,9 +342,8 @@ FPS.prototype.flyModeTick_ = function(delta) {
   this.movementX_ = 0;
 
   // update camera position
-  // 50x faster than the pysical speed
-  var speed = this.buttons_.shift ? this.runSpeed_ : this.walkSpeed_;
-  var moveAmount = 50 * speed * delta / 1000;
+  var speed = this.buttons_.shift ? this.jetSpeed_ : this.flySpeed_;
+  var moveAmount = speed * delta / 1000;
   if (this.buttons_.left) {
     this.camera_.twistLeft();
   }
@@ -383,9 +388,8 @@ FPS.prototype.manTick_ = function(delta) {
   this.movementY_ = 0;
 
   // update camera position
-  // 50x faster than the pysical speed
   var speed = this.buttons_.shift ? this.runSpeed_ : this.walkSpeed_;
-  var moveAmount = 50 * speed * delta / 1000;
+  var moveAmount = speed * delta / 1000;
   if (this.buttons_.left) {
     this.camera_.moveLeft(moveAmount);
   }
