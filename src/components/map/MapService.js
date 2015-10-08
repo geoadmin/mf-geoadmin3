@@ -433,8 +433,8 @@ goog.require('ga_urlutils_service');
         this.getLegend = function(layer) {
           var defer = $q.defer();
           var params = layer.getSource().getParams();
-          var html = '<img src="' + gaUrlUtils.append(layer.url,
-              gaUrlUtils.toKeyValue({
+          var html = '<img alt="No legend available" src="' +
+              gaUrlUtils.append(layer.url, gaUrlUtils.toKeyValue({
             request: 'GetLegendGraphic',
             layer: params.LAYERS,
             style: params.style || 'default',
