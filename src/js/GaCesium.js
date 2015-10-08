@@ -1,4 +1,4 @@
-goog.provide('ga_cesium_loader');
+goog.provide('ga_cesium');
 
 /**
  * Class to handle cesium library and cesium view
@@ -11,7 +11,7 @@ goog.provide('ga_cesium_loader');
  *
  * @constructor
  */
-var GaCesiumLoader = function(map, gaPermalink, gaLayers, gaGlobalOptions, $q) {
+var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions, $q) {
   // Url of ol3cesium library
   var ol3CesiumLibUrl = gaGlobalOptions.resourceUrl + 'lib/ol3cesium.js';
   var cesiumLoaded = $q.defer();

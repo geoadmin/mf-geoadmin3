@@ -5,7 +5,7 @@ goog.require('ga_attribution');
 goog.require('ga_backgroundselector');
 goog.require('ga_catalogtree');
 goog.require('ga_catalogtree_controller');
-goog.require('ga_cesium_loader');
+goog.require('ga_cesium');
 goog.require('ga_collapsible_directive');
 goog.require('ga_contextpopup');
 goog.require('ga_contextpopup_controller');

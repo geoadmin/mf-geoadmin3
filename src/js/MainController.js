@@ -1,7 +1,7 @@
 goog.provide('ga_main_controller');
 
 goog.require('ga_background_service');
-goog.require('ga_cesium_loader');
+goog.require('ga_cesium');
 goog.require('ga_map');
 goog.require('ga_networkstatus_service');
 goog.require('ga_storage_service');
@@ -94,15 +94,15 @@ goog.require('ga_topic_service');
         startWith3D = true;
       }
 
-      var cesiumLoader = new GaCesiumLoader($scope.map, gaPermalink, gaLayers,
+      var cesium = new GaCesium($scope.map, gaPermalink, gaLayers,
                                           gaGlobalOptions, $q);
-      cesiumLoader.loaded().then(function(ol3d) {
+      cesium.loaded().then(function(ol3d) {
         $scope.ol3d = ol3d;
       });
 
       if (startWith3D) {
-        cesiumLoader.suspendRotation();
-        cesiumLoader.enable(true);
+        cesium.suspendRotation();
+        cesium.enable(true);
       }
 
       $scope.map.on('change:target', function(event) {
@@ -112,7 +112,7 @@ goog.require('ga_topic_service');
           if (!startWith3D &&
               !gaBrowserSniffer.mobile && !gaBrowserSniffer.embed) {
             var unregIdle = $scope.$on('gaIdle', function() {
-              cesiumLoader.enable(false);
+              cesium.enable(false);
               unregIdle();
             });
           }
@@ -120,7 +120,7 @@ goog.require('ga_topic_service');
           $scope.$watch('globals.is3dActive', function(active) {
             if (active || $scope.ol3d) {
               unregIdle && unregIdle() && (unregIdle = undefined);
-              cesiumLoader.enable(active);
+              cesium.enable(active);
             }
           });
         }
