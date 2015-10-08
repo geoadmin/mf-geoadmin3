@@ -778,7 +778,7 @@ goog.require('ga_urlutils_service');
 
       var Layers = function(wmtsGetTileUrlTemplate,
           wmtsMapProxyGetTileUrlTemplate, terrainTileUrlTemplate,
-          layersConfigUrlTemplate, legendUrlTemplate, wmsMapProxyUrl) {
+          layersConfigUrlTemplate, legendUrlTemplate) {
         var layers;
 
         var getWmtsUrlFromTemplate = function(tpl, layer, time,
@@ -1048,8 +1048,11 @@ goog.require('ga_urlutils_service');
             if (timestamp) {
               wmsParams.time = timestamp;
             }
-            var url = config3d.wmsUrl ? gaUrlUtils.remove(config3d.wmsUrl,
-                ['request', 'service', 'version'], true) : wmsMapProxyUrl;
+            var url = gaUrlUtils.remove(config3d.wmsUrl,
+                                      ['request', 'service', 'version'], true);
+            url = url.replace('wms.geo.admin.ch', 'wms{s}.geo.admin.ch');
+            config3d.subdomains = config3d.subdomains ||
+                                  ['', '0', '1', '2', '3', '4'];
             params = {
               url: gaUrlUtils.append(url, gaUrlUtils.toKeyValue(wmsParams)),
               tileSize: tileSize
@@ -1316,8 +1319,7 @@ goog.require('ga_urlutils_service');
 
       return new Layers(this.wmtsGetTileUrlTemplate,
           this.wmtsMapProxyGetTileUrlTemplate, this.terrainTileUrlTemplate,
-          this.layersConfigUrlTemplate, this.legendUrlTemplate,
-          this.wmsMapProxyUrl);
+          this.layersConfigUrlTemplate, this.legendUrlTemplate);
     };
 
   });
