@@ -335,7 +335,7 @@ goog.require('ga_urlutils_service');
    */
   module.provider('gaWms', function() {
     this.$get = function(gaDefinePropertiesForLayer, gaMapUtils, gaUrlUtils,
-        gaGlobalOptions) {
+        gaGlobalOptions, $q) {
       var getCesiumImageryProvider = function(layer) {
         var params = layer.getSource().getParams();
         var proxy;
@@ -427,6 +427,24 @@ goog.require('ga_urlutils_service');
             map.addLayer(olLayer);
           }
           return olLayer;
+        };
+
+        // Make a GetLegendGraphic request
+        this.getLegend = function(layer) {
+          var defer = $q.defer();
+          var params = layer.getSource().getParams();
+          var html = '<img src="' + gaUrlUtils.append(layer.url,
+              gaUrlUtils.toKeyValue({
+            request: 'GetLegendGraphic',
+            layer: params.LAYERS,
+            style: params.style || 'default',
+            service: 'WMS',
+            version: params.version || '1.3.0',
+            format: 'image/png',
+            sld_version: '1.1.0'
+          })) + '"></img>';
+          defer.resolve({data: html});
+          return defer.promise;
         };
       };
       return new Wms();

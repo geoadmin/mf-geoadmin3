@@ -47,7 +47,8 @@ goog.require('ga_urlutils_service');
 
   module.directive('gaLayermanager', function($compile, $document, $timeout,
       $rootScope, $translate, $window, gaBrowserSniffer, gaLayerFilters,
-      gaLayerMetadataPopup, gaLayers, gaAttribution, gaUrlUtils) {
+      gaLayerMetadataPopup, gaLayers, gaAttribution, gaUrlUtils,
+      gaMapUtils) {
 
     // Timestamps list template
     var tpl =
@@ -194,6 +195,11 @@ goog.require('ga_urlutils_service');
           return !!gaLayers.getLayer(layer.bodId);
         };
 
+        scope.hasMetadata = function(layer) {
+          return scope.isBodLayer(layer) ||
+              gaMapUtils.isExternalWmsLayer(layer);
+        };
+
         scope.showWarning = function(layer) {
           var url = gaUrlUtils.isValid(layer.url) ?
               gaUrlUtils.getHostname(layer.url) : layer.url;
@@ -202,10 +208,7 @@ goog.require('ga_urlutils_service');
         };
 
         scope.displayLayerMetadata = function(evt, layer) {
-          var bodId = layer.bodId;
-          if (gaLayers.getLayer(bodId)) {
-            gaLayerMetadataPopup.toggle(bodId);
-          }
+          gaLayerMetadataPopup.toggle(layer);
           evt.preventDefault();
         };
 

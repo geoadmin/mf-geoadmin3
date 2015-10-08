@@ -43,7 +43,7 @@
         <button class="ga-icon ga-btn icon-arrow-down"
                 ng-disabled="$last"
                 ng-click="moveLayer($event, layer, -1)"></button>
-        <button ng-if="isBodLayer(layer)" class="ga-icon ga-btn icon-info-sign"
+        <button ng-if="hasMetadata(layer)" class="ga-icon ga-btn icon-info-sign"
                 ng-click="displayLayerMetadata($event, layer)"></button>
       </div>
     </div>

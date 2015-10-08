@@ -57,8 +57,8 @@ goog.require('ga_layer_metadata_popup_service');
               evt.stopPropagation();
             };
 
-            $scope.getLegend = function(evt, bodid) {
-              gaLayerMetadataPopup.toggle(bodid);
+            $scope.getLegend = function(evt, bodId) {
+              gaLayerMetadataPopup.toggle(bodId);
               evt.stopPropagation();
             };
           },
