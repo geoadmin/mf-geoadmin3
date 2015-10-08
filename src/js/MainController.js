@@ -84,21 +84,33 @@ goog.require('ga_topic_service');
     // is central, as most directives/components need a reference to it.
     $scope.map = createMap();
 
-    // 3d view
-    $scope.ol3d = undefined;
-    var cesiumLoader = new GaCesiumLoader($scope.map, gaPermalink, gaLayers,
-                                        gaGlobalOptions, $q);
-    cesiumLoader.loaded().then(function(ol3d) {
-      $scope.ol3d = ol3d;
-    });
+    // Set up 3D
+    var startWith3D = false;
 
-    // Set up lazy loading (only when 3D is possible)
     if (gaGlobalOptions.dev3d && gaBrowserSniffer.webgl) {
+
+      if (gaPermalink.getParams().lon !== undefined &&
+          gaPermalink.getParams().lat !== undefined) {
+        startWith3D = true;
+      }
+
+      var cesiumLoader = new GaCesiumLoader($scope.map, gaPermalink, gaLayers,
+                                          gaGlobalOptions, $q);
+      cesiumLoader.loaded().then(function(ol3d) {
+        $scope.ol3d = ol3d;
+      });
+
+      if (startWith3D) {
+        cesiumLoader.suspendRotation();
+        cesiumLoader.enable(true);
+      }
+
       $scope.map.on('change:target', function(event) {
         if (!!$scope.map.getTargetElement()) {
 
           // Lazy load on idle (Desktop only)
-          if (!gaBrowserSniffer.mobile && !gaBrowserSniffer.embed) {
+          if (!startWith3D &&
+              !gaBrowserSniffer.mobile && !gaBrowserSniffer.embed) {
             var unregIdle = $scope.$on('gaIdle', function() {
               cesiumLoader.enable(false);
               unregIdle();
@@ -111,13 +123,6 @@ goog.require('ga_topic_service');
               cesiumLoader.enable(active);
             }
           });
-        }
-      });
-      gaLayers.loadConfig().then(function() {
-        var params = gaPermalink.getParams();
-        if (params.lon !== undefined && params.lat !== undefined) {
-          cesiumLoader.suspendRotation();
-          $scope.globals.is3dActive = true;
         }
       });
     }
@@ -229,7 +234,7 @@ goog.require('ga_topic_service');
       isDrawActive: false,
       isFeatureTreeActive: false,
       isSwipeActive: false,
-      is3dActive: false
+      is3dActive: startWith3D
     };
 
     // Deactivate all tools when draw is opening
