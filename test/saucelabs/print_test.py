@@ -14,9 +14,10 @@ def wait_printSucessTagExist(driver, timeout=DEFAULT_WAIT):
     t0 = time.time()
     while not TagPrintSuccessExist:
         try:
+            #print "Test find element in wait_printSucessTagExist()"
             driver.find_element_by_xpath("//span[@ng-if='options.printsuccess']")
             TagPrintSuccessExist = True
-            #print "Time wait : " + str(t1 - t0)
+            print "Time wait : " + str(round((t1 - t0), 2))
         except Exception:
             pass
         t1 = time.time()
@@ -24,7 +25,7 @@ def wait_printSucessTagExist(driver, timeout=DEFAULT_WAIT):
             break
         continue
     if not TagPrintSuccessExist:
-        raise Exception("Print success tag not find, print was not done (" + str(timeout) + ")")
+        raise Exception("success tag not find, print was not done (" + str(timeout) + ")")
     return bool(not TagPrintSuccessExist)
 
 
@@ -32,11 +33,10 @@ def wait_printSucessTagExist(driver, timeout=DEFAULT_WAIT):
 def runPrintTest(driver, target): 
     #We maximize our window to be sure to be in full resolution
     #driver.manage().window().maximize();
-    # Goto the travis deployed site.
     target_url =  target + '/?lang=de'
+    print "URL test : " + target_url
     driver.get(target_url)
-    # wait until topics related stuff is loaded. We know this when catalog is there
-    #driver.findElement(webdriver.By.xpath("//a[contains(text(), 'Grundlagen und Planung')]"));
+    # wait until the page is loaded. We know this when title page is set to Schweiz
     try:
         WebDriverWait(driver, 10).until(EC.title_contains('chweiz'))
     except Exception as e:
@@ -51,9 +51,7 @@ def runPrintTest(driver, target):
     # Wait until configuration is loaded
     driver.find_element_by_xpath("//*[@id='print']//option[@label='A4 portrait']")
 
-    # Selenium IE and FF are not able to handle menu selection
-    #if(!(cap.browser != "IE" || cap.browser != "Firefox")): ### Ne fonctionne pas je pense !
-    #if (driver.name != "internet explorer") and (driver.name != "firefox"):
+    # Selenium with IE is not able to handle menu selection
     if (driver.name != "internet explorer"):
         # Click on the orientation
         driver.find_element_by_xpath("//*[@id='print']//select[@ng-model='layout']").click()
@@ -70,7 +68,6 @@ def runPrintTest(driver, target):
             driver.find_element_by_xpath("//*[@id='print']//input[@ng-model='options.graticule']").click()
 
     # Try Print
-    current_url = driver.current_url
     driver.find_element_by_xpath("//button[contains(text(), 'Erstelle PDF')]").click()
     # Did it succeed?
     try:
@@ -80,4 +77,3 @@ def runPrintTest(driver, target):
         print str(e)
         raise Exception("Print doesn't work, not find the tag for print success")
     print "Test Print Ok !"
-
