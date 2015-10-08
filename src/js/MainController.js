@@ -1,6 +1,7 @@
 goog.provide('ga_main_controller');
 
 goog.require('ga_background_service');
+goog.require('ga_cesium');
 goog.require('ga_map');
 goog.require('ga_networkstatus_service');
 goog.require('ga_storage_service');
@@ -21,7 +22,7 @@ goog.require('ga_topic_service');
    * The application's main controller.
    */
   module.controller('GaMainController', function($rootScope, $scope, $timeout,
-      $translate, $window, $document, gaBrowserSniffer, gaHistory,
+      $translate, $window, $document, $q, gaBrowserSniffer, gaHistory,
       gaFeaturesPermalinkManager, gaLayersPermalinkManager, gaMapUtils,
       gaRealtimeLayersManager, gaNetworkStatus, gaPermalink, gaStorage,
       gaGlobalOptions, gaBackground, gaTime, gaLayers, gaTopic) {
@@ -73,108 +74,55 @@ goog.require('ga_topic_service');
       return map;
     };
 
-    // Url of ol3cesium library
-    var ol3CesiumLibUrl = gaGlobalOptions.resourceUrl + 'lib/ol3cesium.js';
-
-    var intParam = function(name, defaultValue) {
-      var params = gaPermalink.getParams();
-      return parseInt(params[name] || defaultValue, 10);
-    };
-
-    // Create the cesium viewer with basic layers
-    var loadCesiumViewer = function(map, enabled) {
-      var tileCacheSize = intParam('tileCacheSize', '100');
-      var maximumScreenSpaceError = intParam('maximumScreenSpaceError', '2');
-      window.minimumRetrievingLevel = intParam('minimumRetrievingLevel', '6');
-      var cesiumViewer = new olcs.OLCesium({
-        map: map,
-        createSynchronizers: function(map, scene) {
-           return [
-             new ga.GaRasterSynchronizer(map, scene),
-             new olcs.VectorSynchronizer(map, scene)
-           ];
-        }
-      });
-      var globe = cesiumViewer.getCesiumScene().globe;
-      globe.baseColor = Cesium.Color.WHITE;
-      globe.tileCacheSize = tileCacheSize;
-      globe.maximumScreenSpaceError = maximumScreenSpaceError;
-      cesiumViewer.setEnabled(enabled);
-      var scene = cesiumViewer.getCesiumScene();
-      scene.camera.setView({
-        pitch: -Cesium.Math.toRadians(50)
-      });
-      scene.globe.depthTestAgainstTerrain = true;
-      scene.terrainProvider =
-          gaLayers.getCesiumTerrainProviderById(gaGlobalOptions.defaultTerrain);
-      return cesiumViewer;
-    };
-
-    var enableOl3d = function(ol3d, enable) {
-      var scene = ol3d.getCesiumScene();
-      var camera = scene.camera;
-      var bottom = olcs.core.pickBottomPoint(scene);
-      var transform = Cesium.Matrix4.fromTranslation(bottom);
-      if (enable) {
-        // 2d -> 3d transition
-        ol3d.setEnabled(true);
-        var angle = Cesium.Math.toRadians(50);
-        olcs.core.rotateAroundAxis(camera, -angle, camera.right, transform);
-      } else {
-        // 3d -> 2d transition
-        var angle = olcs.core.computeAngleToZenith(scene, bottom);
-        olcs.core.rotateAroundAxis(camera, -angle, camera.right, transform, {
-          callback: function() {
-            ol3d.setEnabled(false);
-            var view = ol3d.getOlMap().getView();
-            var resolution = view.getResolution();
-            var rotation = view.getRotation();
-
-            view.setResolution(view.constrainResolution(resolution));
-            view.setRotation(view.constrainRotation(rotation));
-          }
-        });
-      }
-    };
-
     // Determines if the window has a height <= 550
     var isWindowTooSmall = function() {
       return ($($window).height() <= 550);
     };
     var dismiss = 'none';
 
-    $scope.ol3d = undefined;
-
     // The main controller creates the OpenLayers map object. The map object
     // is central, as most directives/components need a reference to it.
     $scope.map = createMap();
 
+    // Set up 3D
+    var startWith3D = false;
+
     if (gaGlobalOptions.dev3d && gaBrowserSniffer.webgl) {
+
+      if (gaPermalink.getParams().lon !== undefined &&
+          gaPermalink.getParams().lat !== undefined) {
+        startWith3D = true;
+      }
+
+      var cesium = new GaCesium($scope.map, gaPermalink, gaLayers,
+                                          gaGlobalOptions, $q);
+      cesium.loaded().then(function(ol3d) {
+        $scope.ol3d = ol3d;
+      });
+
+      if (startWith3D) {
+        cesium.suspendRotation();
+        cesium.enable(true);
+      }
+
       $scope.map.on('change:target', function(event) {
         if (!!$scope.map.getTargetElement()) {
+
+          // Lazy load on idle (Desktop only)
+          if (!startWith3D &&
+              !gaBrowserSniffer.mobile && !gaBrowserSniffer.embed) {
+            var unregIdle = $scope.$on('gaIdle', function() {
+              cesium.enable(false);
+              unregIdle();
+            });
+          }
+
           $scope.$watch('globals.is3dActive', function(active) {
-            if (active && !$scope.ol3d) {
-              if (!$window.olcs) {
-                // lazy load cesium library
-                $.getScript(ol3CesiumLibUrl, function() {
-                  $scope.$applyAsync(function() {
-                    $scope.ol3d = loadCesiumViewer($scope.map, active);
-                  });
-                });
-              } else {
-                // cesium library is already loaded
-                $scope.ol3d = loadCesiumViewer($scope.map, active);
-              }
-            } else if ($scope.ol3d) {
-              enableOl3d($scope.ol3d, active);
+            if (active || $scope.ol3d) {
+              unregIdle && unregIdle() && (unregIdle = undefined);
+              cesium.enable(active);
             }
           });
-        }
-      });
-      gaLayers.loadConfig().then(function() {
-        var params = gaPermalink.getParams();
-        if (params.lon !== undefined && params.lat !== undefined) {
-          $scope.globals.is3dActive = true;
         }
       });
     }
@@ -286,7 +234,7 @@ goog.require('ga_topic_service');
       isDrawActive: false,
       isFeatureTreeActive: false,
       isSwipeActive: false,
-      is3dActive: false
+      is3dActive: startWith3D
     };
 
     // Deactivate all tools when draw is opening
