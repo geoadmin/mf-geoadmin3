@@ -50,7 +50,6 @@ def runSwissSearchTest(driver, target):
         print str(e)
         raise Exception("Unable to load map.geo.admin page!")
     current_url = driver.current_url
-    #driver.find_element_by_xpath("//div[@id='search-container']/div/form/span[2]/span/div/div/div[2]/div[3]/div").click()
     ## Ne marche pas avec IE !
     driver.find_element_by_xpath("//*[contains(text(), ', Flugplatz')]").click()
     current_url = driver.current_url
@@ -67,12 +66,13 @@ def runSwissSearchTest(driver, target):
             raise Exception("Coordinate of raron is not set in the url")
         # Check if url contain coordinate of raron
         assert QUERYSTRING_OF_RARON in driver.current_url
+    # Must also update the link of 'toptool'
+    ##TO DO : Make the test
 
     # parameter should disappear when selection is done
     assert "swisssearch" not in driver.current_url 
     print "Test Raron Ok"
 
-#    raise Exception("Stop TEST LTALP")
 
     #### NEW TEST ####
     # swisssearch parameter with multiple results (locations and layers), reset selection
@@ -109,6 +109,8 @@ def runSwissSearchTest(driver, target):
         url_result = driver.current_url
         # parameter should disappear when selection is done
         assert "swisssearch" not in url_result
+        # Must also update the link of 'toptool'
+        ## TO DO : Make the test
     print "Test Wasser for multiple results (locations and layers) Ok"
     
     
@@ -140,6 +142,8 @@ def runSwissSearchTest(driver, target):
             print str(e)
         # parameter should disappear when selection is done
         assert "swisssearch" not in driver.current_url
+    # Must also update the link of 'toptool'
+    ## TO DO : Make the test
     print "Test brückenmoostrasse Ok"
 
 
@@ -175,6 +179,8 @@ def runSwissSearchTest(driver, target):
             print str(e)
         current_url = driver.current_url
         assert QUERYSTRING_OF_REALTA in current_url
+    # Must also update the link of 'toptool'
+    ## TO DO : Make the test
     print "Test Realta Ok"
 
 
@@ -193,6 +199,8 @@ def runSwissSearchTest(driver, target):
             print str(e)
         current_url = driver.current_url
         assert QUERYSTRING_OF_PL_CHATEAU_AVENCHES in current_url
+    # Must also update the link of 'toptool'
+    ## TO DO : Make the test
     print "Test Place du chateau Avenches Ok"
 
 
@@ -211,4 +219,6 @@ def runSwissSearchTest(driver, target):
             print str(e)
         current_url = driver.current_url
         assert QUERYSTRING_OF_PIAZZA_MESOLCINA_BELLINZONA in current_url
+    # Must also update the link of 'toptool'
+    ## TO DO : Make the test
     print "Test Bellinzona Ok"
