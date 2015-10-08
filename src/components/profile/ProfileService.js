@@ -103,6 +103,33 @@ goog.require('ga_urlutils_service');
           }
           return data;
         };
+        
+        //total elevation difference
+        this.elevDiff = function(data) {
+          if (data.length != 0) {
+            var maxElev = data[data.length - 1].alts[elevationModel] || 0;
+            var minElev = data[0].alts[elevationModel] || 0;
+            var diffel = maxElev - minElev;
+            return diffel;
+          }
+        };
+
+        //total positive elevation & total negative elevation
+        this.twoElevDiff = function(data) {
+          if (data.length != 0) {
+            var sum_down = 0;
+            var sum_up = 0;
+            for (var i=0 ; i<data.length-1 ; i++) {
+              var dh = data[i+1].alts[elevationModel] - data[i].alts[elevationModel]; 
+              if (dh < 0) {
+                sum_down += dh;
+                } else if (dh > 0) { 
+                sum_up += dh; 
+              }
+            }
+            return [sum_up, Math.abs(sum_down)];
+          }
+        };
 
         var coordinatesToString = function(coordinates) {
           var res = '[';
@@ -187,7 +214,15 @@ goog.require('ga_urlutils_service');
           var x = d3.scale.linear().range([0, width]);
           var y = d3.scale.linear().range([height, 0]);
 
+          //for the total elevation diff of the path
+          this.diff = this.elevDiff(data);
+          //for the total elevation up & total elevation down of the path 
+          var two_diff = this.twoElevDiff(data);
+          var diff_up = two_diff[0];
+          var diff_down = two_diff[1];
+
           this.data = this.formatData(data);
+          
           this.domain = getXYDomains(x, y, elevationModel, that.data);
           var axis = createAxis(this.domain);
           var element = document.createElement('DIV');
@@ -265,6 +300,31 @@ goog.require('ga_urlutils_service');
               .attr('x', 0 - height / 2 - 20)
               .attr('dy', '1em')
               .text($translate.instant(options.yLabel) + ' [m]');
+          
+          //Total Elevation Difference
+           group.append('text')
+              .attr('class', 'ga-profile-label ga-profile-elevation-difference')
+              .attr('x', 0)
+              .attr('y', height + options.margin.bottom - 2)
+              .style('text-anchor', 'left')
+              .attr('font-size', '0.9em')
+              .text('\u03A3 \u0394 ' + $translate.instant(options.yLabel) + ': ' + Math.round(this.diff * 100) / 100 + ' m');
+          //Elevation Up 
+           group.append('text')
+              .attr('class', 'ga-profile-label ga-profile-elevation-up')
+              .attr('x', 125)
+              .attr('y', height + options.margin.bottom - 2)
+              .style('text-anchor', 'left')
+              .attr('font-size', '0.9em')
+              .text('\u03A3 + ' + $translate.instant(options.yLabel) + ': ' + Math.round(diff_up * 100) / 100 + ' m');
+         //Elevation Down  
+           group.append('text')
+              .attr('class', 'ga-profile-label ga-profile-elevation-down')
+              .attr('x', 250)
+              .attr('y', height + options.margin.bottom - 2)
+              .attr('font-size', '0.9em')
+              .style('text-anchor', 'left')
+              .text('\u03A3 - ' + $translate.instant(options.yLabel) + ': ' + Math.round(diff_down * 100) / 100 + ' m');
 
            return element;
         };
@@ -276,6 +336,14 @@ goog.require('ga_urlutils_service');
                   $translate.instant(that.unitX) + ']');
           this.group.select('text.ga-profile-label-y')
               .text($translate.instant(options.yLabel) + ' [m]');
+
+          this.group.select('text.ga-profile-elevation-difference')
+              .text('\u03A3 \u0394 ' + $translate.instant(options.yLabel) + ': ' + Math.round(this.diff * 100) / 100 + ' m');
+          this.group.select('text.ga-profile-elevation-up')
+              .text('\u03A3 + ' + $translate.instant(options.yLabel) + ': ' + Math.round(this.diff_up * 100) / 100 + ' m');
+          this.group.select('text.ga-profile-elevation-down')
+              .text('\u03A3 - ' + $translate.instant(options.yLabel) + ': ' + Math.round(this.diff_down * 100) / 100 + ' m');
+
         };
 
         this.update = function(data, size) {
@@ -298,7 +366,7 @@ goog.require('ga_urlutils_service');
               .transition().duration(transitionTime)
                 .attr('x', width - 113)
                 .attr('y', 11)
-                .text('swissALTI3D/DHM25');
+                .text('swissALTI3D/DHM25'); 
           } else {
             this.data = this.formatData(data);
           }
