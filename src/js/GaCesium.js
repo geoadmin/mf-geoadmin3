@@ -50,7 +50,7 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions, $q) {
     globe.maximumScreenSpaceError = maximumScreenSpaceError;
     var scene = cesiumViewer.getCesiumScene();
     scene.globe.depthTestAgainstTerrain = true;
-    scene.screenSpaceCameraController.minimumZoomDistance = 250;
+    scene.screenSpaceCameraController.minimumZoomDistance = 50;
     scene.terrainProvider =
         gaLayers.getCesiumTerrainProviderById(gaGlobalOptions.defaultTerrain);
     enableOl3d(cesiumViewer, enabled);
