@@ -29,15 +29,21 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions, $q) {
     var tileCacheSize = intParam('tileCacheSize', '100');
     var maximumScreenSpaceError = intParam('maximumScreenSpaceError', '2');
     window.minimumRetrievingLevel = intParam('minimumRetrievingLevel', '6');
-    var cesiumViewer = new olcs.OLCesium({
-      map: map,
-      createSynchronizers: function(map, scene) {
-         return [
-           new ga.GaRasterSynchronizer(map, scene),
-           new olcs.VectorSynchronizer(map, scene)
-         ];
-      }
-    });
+    var cesiumViewer;
+    try {
+      cesiumViewer = new olcs.OLCesium({
+        map: map,
+        createSynchronizers: function(map, scene) {
+           return [
+             new ga.GaRasterSynchronizer(map, scene),
+             new olcs.VectorSynchronizer(map, scene)
+           ];
+        }
+      });
+    } catch (e) {
+      alert(e.message);
+      return;
+    }
     var globe = cesiumViewer.getCesiumScene().globe;
     globe.baseColor = Cesium.Color.WHITE;
     globe.tileCacheSize = tileCacheSize;
