@@ -1,6 +1,6 @@
 // OpenLayers 3. See http://openlayers.org/
 // License: https://raw.githubusercontent.com/openlayers/ol3/master/LICENSE.md
-// Version: v3.9.0-14-g4f45bbc
+// Version: v3.9.0
 
 (function (root, factory) {
   if (typeof exports === "object") {
@@ -52484,11 +52484,9 @@ ol.renderer.Map.prototype.forEachFeatureAtCoordinate =
         (ol.layer.Layer.visibleAtResolution(layerState, viewResolution) &&
         layerFilter.call(thisArg2, layer))) {
       var layerRenderer = this.getLayerRenderer(layer);
-      if (!goog.isNull(layer.getSource())) {
-        result = layerRenderer.forEachFeatureAtCoordinate(
-            layer.getSource().getWrapX() ? translatedCoordinate : coordinate,
-            frameState, callback, thisArg);
-      }
+      result = layerRenderer.forEachFeatureAtCoordinate(
+          layer.getSource().getWrapX() ? translatedCoordinate : coordinate,
+          frameState, callback, thisArg);
       if (result) {
         return result;
       }
@@ -56923,13 +56921,6 @@ ol.interaction.MouseWheelZoom = function(opt_options) {
 
   /**
    * @private
-   * @type {boolean}
-   */
-  this.useAnchor_ = goog.isDef(options.useAnchor) ?
-      options.useAnchor : true;
-
-  /**
-   * @private
    * @type {?ol.Coordinate}
    */
   this.lastAnchor_ = null;
@@ -56967,10 +56958,7 @@ ol.interaction.MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
     goog.asserts.assertInstanceof(mouseWheelEvent, goog.events.MouseWheelEvent,
         'mouseWheelEvent should be of type MouseWheelEvent');
 
-    if (this.useAnchor_) {
-      this.lastAnchor_ = mapBrowserEvent.coordinate;
-    }
-
+    this.lastAnchor_ = mapBrowserEvent.coordinate;
     this.delta_ += mouseWheelEvent.deltaY;
 
     if (!goog.isDef(this.startTime_)) {
@@ -57010,20 +56998,6 @@ ol.interaction.MouseWheelZoom.prototype.doZoom_ = function(map) {
   this.lastAnchor_ = null;
   this.startTime_ = undefined;
   this.timeoutId_ = undefined;
-};
-
-
-/**
- * Enable or disable using the mouse's location as an anchor when zooming
- * @param {boolean} useAnchor true to zoom to the mouse's location, false
- * to zoom to the center of the map
- * @api
- */
-ol.interaction.MouseWheelZoom.prototype.setMouseAnchor = function(useAnchor) {
-  this.useAnchor_ = useAnchor;
-  if (!useAnchor) {
-    this.lastAnchor_ = null;
-  }
 };
 
 goog.provide('ol.interaction.PinchRotate');
@@ -83645,7 +83619,6 @@ ol.Map = function(options) {
   this.viewport_.style.height = '100%';
   // prevent page zoom on IE >= 10 browsers
   this.viewport_.style.msTouchAction = 'none';
-  this.viewport_.style.touchAction = 'none';
   if (ol.has.TOUCH) {
     goog.dom.classlist.add(this.viewport_, 'ol-touch');
   }
@@ -120756,11 +120729,6 @@ goog.exportSymbol(
     'ol.interaction.MouseWheelZoom.handleEvent',
     ol.interaction.MouseWheelZoom.handleEvent,
     OPENLAYERS);
-
-goog.exportProperty(
-    ol.interaction.MouseWheelZoom.prototype,
-    'setMouseAnchor',
-    ol.interaction.MouseWheelZoom.prototype.setMouseAnchor);
 
 goog.exportSymbol(
     'ol.interaction.PinchRotate',
