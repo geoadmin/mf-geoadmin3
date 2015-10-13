@@ -1920,7 +1920,11 @@ goog.require('ga_urlutils_service');
               // Do not consider BOD layers that are already in the map,
               // except for timeEnabled layers
               var isOverlay = gaMapUtils.getMapOverlayForBodId(map, layerSpec);
-              if (bodLayer.timeEnabled || !isOverlay) {
+              // We test if timestamps exist to differentiate between topic
+              // selected layers and topic activated layers (no timestamps
+              // parameter defined).
+              if ((bodLayer.timeEnabled && isOverlay && timestamps) ||
+                  !isOverlay) {
                 layer = gaLayers.getOlLayerById(layerSpec);
 
                 // If the layer is already on the map when need to increment
