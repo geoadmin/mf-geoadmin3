@@ -110,9 +110,12 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions, $q) {
     }
   }();
 
-  cesiumLoaded.promise.then(function(activate) {
-    ol3d = initCesiumViewer(map, activate);
-    cesiumClients.resolve(ol3d);
+  // We need the Cesium lib and the Layers config to create
+  // the 3D viewer
+  $q.all([cesiumLoaded.promise, gaLayers.loadConfig()])
+      .then(function(resolutions) {
+        ol3d = initCesiumViewer(map, resolutions[0]);
+        cesiumClients.resolve(ol3d);
   });
 
   this.enable = function(activate) {
