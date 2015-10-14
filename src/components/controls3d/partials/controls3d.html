@@ -1,12 +1,20 @@
 <div class="ga-controls3d">
-  <div class="ga-tilt">
+  <div class="ga-tilt" ng-hide="isPegmanActive">
     <div class="ga-indicator" ng-click="resetTilt()"></div>
     <div class="ga-inc" ng-click="tilt(+5)"></div>
     <div class="ga-dec" ng-click="tilt(-5)"></div>
   </div>
-  <div class="ga-rotate">
+  <div class="ga-pegman" ng-class="{'ga-fly-mode': isFlyModeActive, 'ga-jet-mode': isJetModeActive}" ng-mousedown="startDraggingPegman()"></div>
+  <div class="ga-rotate" ng-hide="isPegmanActive">
     <div class="ga-indicator" ng-click="resetRotation()"></div>
     <div class="ga-inc" ng-click="rotate(-15)"></div>
     <div class="ga-dec" ng-click="rotate(+15)"></div>
+  </div>
+  <div class="ga-pegman-help" ng-show="isPegmanActive">
+    pegman help text here.
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+    eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
+    nisi ut aliquip ex ea commodo consequat.
   </div>
 </div>

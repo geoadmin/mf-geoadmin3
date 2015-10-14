@@ -1,4 +1,5 @@
 .ga-controls3d {
+  .user-select(none);
   position: absolute;
   text-align: center;
   right: 0;
@@ -6,7 +7,7 @@
   bottom: 52px;
   margin-left: auto;
   margin-right: auto;
-  width: 160px;
+  width: 200px;
   @media (max-width: @screen-tablet) {
     bottom: 26px;
   }
@@ -59,5 +60,58 @@
       background-image: data-uri('icon_right_roll_mobile.png');
     }
   }
+  .ga-pegman-help {
+    position: fixed;
+    bottom: 30px;
+    left: 2px;
+    width: 380px;
+    font-size: 11px;
+    text-align: left;
+    padding: 7px;
+    .box-shadow(0 5px 10px rgba(0, 0, 0, 0.2));
+    background-color: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+  }
+  .ga-pegman {
+    background-image: data-uri('pegman_standing_white.png');
+    cursor: grab;
+    cursor: -webkit-grab;
+    display: inline-block;
+    width: 27px;
+    height: 72px;
+    @media (max-width: @screen-tablet) {
+      background-image: data-uri('pegman_standing_white_mobile.png');
+      width:18px;
+      height:47px;
+    }
+    &.ga-fly-mode {
+      background-image: data-uri('super_pegman_white.png');
+      width: 78px;
+      height: 100px;
+      @media (max-width: @screen-tablet) {
+         background-image: data-uri('super_pegman_white_mobile.png');
+         width: 49px;
+         height: 65px;
+      }
+    }
+    &.ga-jet-mode {
+      background-image: data-uri('fa18.png');
+      width: 100px;
+      height: 38px;
+      @media (max-width: @screen-tablet) {
+         background-image: data-uri('fa18_mobile.png');
+         width: 66px;
+         height: 25px;
+      }
+    }
+  }
+}
 
+.ga-pegman-dragging {
+  cursor: crosshair;
+  .ga-pegman {
+    cursor: grabbing;
+    cursor: -webkit-grabbing;
+  }
 }
