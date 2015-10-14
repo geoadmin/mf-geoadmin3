@@ -93,12 +93,17 @@ function FPS(scene, scope) {
    */
   this.jetSpeed_ = 500;
 
-
   /**
    * @type {boolean}
    * @private
    */
   this.flyMode_ = false;
+
+  /**
+   * @type {number}
+   * @private
+   */
+  this.minimumZoomDistance_ = undefined;
 
   document.addEventListener('keydown', this.onKey_.bind(this));
   document.addEventListener('keyup', this.onKey_.bind(this));
@@ -199,8 +204,14 @@ FPS.prototype.setActive = function(active, opt_position) {
     positionCarto = this.camera_.positionCartographic;
   }
   this.active_ = active;
+
+  var spaceController = this.scene_.screenSpaceCameraController;
   if (active) {
     this.requestPointerLock_();
+
+    // deactivate the minimumZoomDistance
+    this.minimumZoomDistance_ = spaceController.minimumZoomDistance;
+    spaceController.minimumZoomDistance = 0;
 
     positionCarto.height = 2;
     this.scene_.camera.flyTo({
@@ -219,6 +230,10 @@ FPS.prototype.setActive = function(active, opt_position) {
     this.setFlyMode(false);
     this.scene_.postRender.removeEventListener(this.tick_, this);
     this.enableInputs_(true);
+
+    // re-activate the minimumZoomDistance
+    spaceController.minimumZoomDistance = this.minimumZoomDistance_;
+
     positionCarto.height = 4000; // FIXME
     this.scene_.camera.flyTo({
       destination: this.ellipsoid_.cartographicToCartesian(positionCarto),
