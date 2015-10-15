@@ -373,21 +373,31 @@ FPS.prototype.clampAboveTerrain_ = function(gpos, minHeight, opt_maxHeight) {
 FPS.prototype.flyModeTick_ = function(delta) {
   var heading = this.camera_.heading;
   var pitch = this.camera_.pitch;
+  var roll = this.camera_.roll;
 
   // update camera position
   var speed = this.buttons_.shift ? this.jetSpeed_ : this.flySpeed_;
   var moveAmount = speed * delta / 1000;
   if (this.buttons_.left) {
-    this.camera_.twistLeft();
+    roll -= 0.02;
   }
   if (this.buttons_.right) {
-    this.camera_.twistRight();
+    roll += 0.02;
   }
   if (this.buttons_.forward) {
     pitch -= 0.02;
   }
   if (this.buttons_.backward) {
     pitch += 0.02;
+  }
+
+  // rotate the plane on roll
+  if (roll < Cesium.Math.PI) {
+    // turn right
+    heading += roll / 250;
+  } else {
+    // turn left
+    heading -= (Cesium.Math.TWO_PI - roll) / 250;
   }
 
   this.camera_.moveForward(moveAmount);
@@ -397,7 +407,8 @@ FPS.prototype.flyModeTick_ = function(delta) {
   this.camera_.setView({
     position: gpos,
     heading: heading,
-    pitch: pitch
+    pitch: pitch,
+    roll: roll
   });
 };
 
