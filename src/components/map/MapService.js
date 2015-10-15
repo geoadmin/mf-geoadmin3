@@ -361,9 +361,11 @@ goog.require('ga_urlutils_service');
           styles: 'default',
           transparent: 'true'
         };
+        var extent = gaGlobalOptions.defaultExtent;
         return new Cesium.UrlTemplateImageryProvider({
           minimumRetrievingLevel: window.minimumRetrievingLevel,
           url: gaUrlUtils.append(layer.url, gaUrlUtils.toKeyValue(wmsParams)),
+          rectangle: gaMapUtils.extentToRectangle(extent, 'EPSG:21781'),
           proxy: proxy,
           tilingScheme: new Cesium.GeographicTilingScheme(),
           hasAlphaChannel: true
@@ -378,7 +380,6 @@ goog.require('ga_urlutils_service');
           var source = new ol.source.ImageWMS({
             params: params,
             url: options.url,
-            extent: options.extent,
             ratio: options.ratio || 1
           });
 
@@ -890,6 +891,12 @@ goog.require('ga_urlutils_service');
                   response.data[id].config3d = id + '_3d';
                 }
               });
+              // Test extent define in config for tiled WMS an WMTS
+              response.data['ch.bfe.sachplan-geologie-tiefenlager'].extent =
+                  [635432, 182850, 708432, 291850];
+              response.data['ch.vbs.patrouilledesglaciers-z_rennen'].extent =
+                  [582382, 92500, 625032, 105700];
+
               response.data['ch.swisstopo.zeitreihen_3d'] = {
                 format: 'jpeg'
               };
@@ -931,7 +938,8 @@ goog.require('ga_urlutils_service');
                 subdomains: '56789',
                 attribution: 'swisstlm 3D Farbe',
                 attributionUrl: 'http://www.swisstopo.admin.ch/internet/' +
-                    'swisstopo/en/home/products/height/swissALTI3D.html'
+                    'swisstopo/en/home/products/height/swissALTI3D.html',
+                extent: [481500, 72250, 835750, 297800]
               };
               response.data['ch.swisstopo.swisstlm3d-karte-grau.3d'] = {
                 type: 'wmts',
@@ -1076,11 +1084,14 @@ goog.require('ga_urlutils_service');
               tileSize: tileSize
             };
           }
+          var extent = gaMapUtils.intersectWithDefaultExtent(config3d.extent ||
+              ol.proj.get('EPSG:21781').getExtent());
           if (params) {
             provider = new Cesium.UrlTemplateImageryProvider({
               url: params.url,
               minimumRetrievingLevel: window.minimumRetrievingLevel,
               subdomains: config3d.subdomains || ['10', '11', '12', '13', '14'],
+              rectangle: gaMapUtils.extentToRectangle(extent, 'EPSG:21781'),
               tilingScheme: new Cesium.GeographicTilingScheme(),
               tileWidth: params.tileSize,
               tileHeight: params.tileSize,
@@ -1102,6 +1113,8 @@ goog.require('ga_urlutils_service');
           var olLayer;
           var timestamp = this.getLayerTimestampFromYear(bodId, gaTime.get());
           var crossOrigin = 'anonymous';
+          var extent = gaMapUtils.intersectWithDefaultExtent(
+              layer.extent || ol.proj.get('EPSG:21781').getExtent());
 
           // For some obscure reasons, on iOS, displaying a base 64 image
           // in a tile with an existing crossOrigin attribute generates
@@ -1131,8 +1144,7 @@ goog.require('ga_urlutils_service');
               });
             }
             olLayer = new ol.layer.Tile({
-              extent: gaMapUtils.intersectWithDefaultExtent(
-                      olSource.getProjection().getExtent()),
+              extent: extent,
               minResolution: gaNetworkStatus.offline ? null :
                   layer.minResolution,
               preload: gaNetworkStatus.offline ? gaMapUtils.preload : 0,
@@ -1167,7 +1179,7 @@ goog.require('ga_urlutils_service');
                 maxResolution: layer.maxResolution,
                 opacity: layer.opacity || 1,
                 source: olSource,
-                extent: gaGlobalOptions.defaultExtent
+                extent: extent
               });
             } else {
               if (!olSource) {
@@ -1189,7 +1201,7 @@ goog.require('ga_urlutils_service');
                 source: olSource,
                 preload: gaNetworkStatus.offline ? gaMapUtils.preload : 0,
                 useInterimTilesOnError: gaNetworkStatus.offline,
-                extent: gaGlobalOptions.defaultExtent
+                extent: extent
               });
             }
           } else if (layer.type == 'aggregate') {
@@ -1213,7 +1225,7 @@ goog.require('ga_urlutils_service');
               minResolution: layer.minResolution,
               maxResolution: layer.maxResolution,
               source: olSource,
-              extent: gaGlobalOptions.defaultExtent
+              extent: extent
             });
             var setLayerSource = function() {
               var geojsonFormat = new ol.format.GeoJSON();
@@ -1346,11 +1358,6 @@ goog.require('ga_urlutils_service');
    * Service provides map util functions.
    */
   module.provider('gaMapUtils', function() {
-    var extentToRectangle = function(e, sourceProj) {
-      e = ol.proj.transformExtent(e, sourceProj, 'EPSG:4326');
-      return Cesium.Rectangle.fromDegrees(e[0], e[1], e[2], e[3]);
-    };
-
     this.$get = function($window, gaGlobalOptions, gaUrlUtils, $q) {
       var resolutions = gaGlobalOptions.resolutions;
       return {
@@ -1378,7 +1385,11 @@ goog.require('ga_urlutils_service');
           }
           return this.arrayBufferToBlob(uInt8Array.buffer, contentType);
         },
-
+        // Convert an extent to Cesium
+        extentToRectangle: function(e, sourceProj) {
+          e = ol.proj.transformExtent(e, sourceProj, 'EPSG:4326');
+          return Cesium.Rectangle.fromDegrees(e[0], e[1], e[2], e[3]);
+        },
         // Advantage of the blob is we have easy access to the size and the
         // type of the image, moreover in the future we could store it
         // directly in indexedDB, no need of fileReader anymore.
@@ -1458,7 +1469,7 @@ goog.require('ga_urlutils_service');
           var defer = $q.defer();
           if (ol3d && ol3d.getEnabled()) {
             ol3d.getCesiumScene().camera.flyTo({
-              destination: extentToRectangle(extent,
+              destination: this.extentToRectangle(extent,
                   ol3d.getOlMap().getView().getProjection()),
               complete: function() {
                 defer.resolve();

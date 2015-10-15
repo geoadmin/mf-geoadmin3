@@ -46,15 +46,8 @@ ga.GaRasterSynchronizer.prototype.convertLayerToCesiumImageries =
 
   // the provider is always non-null if we got this far
 
-  var layerOptions = {};
-
-  var ext = olLayer.getExtent();
-  if (goog.isDefAndNotNull(ext) && !goog.isNull(viewProj)) {
-    layerOptions.rectangle = olcs.core.extentToRectangle(ext, viewProj);
-  }
-
   var providers = Array.isArray(provider) ? provider : [provider];
   return providers.map(function(p) {
-    return new Cesium.ImageryLayer(p, layerOptions);
+    return new Cesium.ImageryLayer(p);
   });
 };

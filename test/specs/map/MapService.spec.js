@@ -137,7 +137,9 @@ describe('ga_map_service', function() {
           type: 'wmts',
           matrixSet: 'set2',
           timestamps: ['t3', 't4']
-        }
+        },
+        "ch.bfe.sachplan-geologie-tiefenlager": {},
+        "ch.vbs.patrouilledesglaciers-z_rennen": {}
       });
       $httpBackend.expectGET(expectedUrl);
       $rootScope.$digest();
