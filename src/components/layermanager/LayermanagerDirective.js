@@ -192,7 +192,7 @@ goog.require('ga_urlutils_service');
         };
 
         scope.isBodLayer = function(layer) {
-          return !!gaLayers.getLayer(layer.bodId);
+          return layer.bodId && !!gaLayers.getLayer(layer.bodId);
         };
 
         scope.hasMetadata = function(layer) {
@@ -269,13 +269,15 @@ goog.require('ga_urlutils_service');
           // Assemble first to not remove from the iterated over array
           var layersToRemove = [];
           scope.map.getLayers().forEach(function(olLayer) {
-            var l = gaLayers.getLayer(olLayer.bodId);
-            var regex = new RegExp('(^|,)(ech|' + topicId + ')(,|$)', 'g');
-            if (l &&
-                l.topics &&
-                !regex.test(l.topics) &&
-                !olLayer.background) {
-              layersToRemove.push(olLayer);
+            if (scope.isBodLayer(olLayer)) {
+              var l = gaLayers.getLayer(olLayer.bodId);
+              var regex = new RegExp('(^|,)(ech|' + topicId + ')(,|$)', 'g');
+              if (l &&
+                  l.topics &&
+                  !regex.test(l.topics) &&
+                  !olLayer.background) {
+                layersToRemove.push(olLayer);
+              }
             }
           });
           layersToRemove.forEach(function(olLayer) {
