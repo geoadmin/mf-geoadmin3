@@ -26,7 +26,8 @@ goog.require('ga_topic_service');
           gaPreviewFeatures, gaStyleFactory, gaMapUtils, gaTime, gaTopic) {
         var popupContent =
           '<div ng-repeat="htmlsnippet in options.htmls">' +
-            '<div ng-mouseenter="options.onMouseEnter($event)" ' +
+            '<div ng-mouseenter="options.onMouseEnter($event,' +
+                 'options.htmls.length)" ' +
                  'ng-mouseleave="options.onMouseLeave($event)" ' +
                  'ng-bind-html="htmlsnippet"></div>' +
             '<div class="ga-tooltip-separator" ' +
@@ -467,7 +468,8 @@ goog.require('ga_topic_service');
                       onCloseCB = angular.noop;
                       gaPreviewFeatures.clear(map);
                     },
-                    onMouseEnter: function(evt) {
+                    onMouseEnter: function(evt, nbTooltips) {
+                      if (nbTooltips == 1) return;
                       var target = $(evt.currentTarget).addClass('ga-active');
                       var containerId = target.find('.htmlpopup-container').
                           attr('id');
