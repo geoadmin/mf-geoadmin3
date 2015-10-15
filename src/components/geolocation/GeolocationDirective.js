@@ -71,13 +71,9 @@ goog.require('ga_throttle_service');
           if (tracking) {
             userTakesControl = false;
             map.addLayer(featuresOverlay);
-            gaPermalink.updateParams({
-              geolocation: tracking.toString()
-            });
             unreg3dSwitch = register3dSwitch();
           } else {
             map.removeLayer(featuresOverlay);
-            gaPermalink.deleteParam('geolocation');
           }
           geolocation.setTracking(tracking);
           deviceOrientation.setTracking(tracking);
@@ -279,6 +275,8 @@ goog.require('ga_throttle_service');
 
         // Initialize state of the component
         scope.tracking = (gaPermalink.getParams().geolocation == 'true');
+        // Always remove it from PL
+        gaPermalink.deleteParam('geolocation');
         var btnStatus = (scope.tracking) ? 1 : 0;
         var maxNumStatus = (ol.has.DEVICE_ORIENTATION) ? 2 : 1;
       }
