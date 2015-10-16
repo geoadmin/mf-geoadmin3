@@ -737,25 +737,21 @@ itemscope itemtype="http://schema.org/WebApplication"
             suffix: '.json'
           });
           $translateProvider.cloakClassName('ng-cloak');
-          // TODO: Use $snaitize instead in the future
+          // TODO: Use $sanitize instead in the future
           // see http://angular-translate.github.io/docs/#/guide/19_security
           $translateProvider.useSanitizeValueStrategy(null);
 
         });
 
         module.config(function(gaLayersProvider, gaGlobalOptions) {
+          gaLayersProvider.dfltWmsSubdomains = ['', '0', '1', '2', '3', '4'];
+          gaLayersProvider.dfltWmtsMapProxySubdomains = ['10', '11', '12', '13', '14'];
+          gaLayersProvider.wmsUrlTemplate = '//wms{s}.geo.admin.ch/';
           gaLayersProvider.wmtsGetTileUrlTemplate = '//wmts{5-9}.geo.admin.ch/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.{Format}';
-          
-          gaLayersProvider.wmtsMapProxyGetTileUrlTemplate =
-          '//wmts{s}.geo.admin.ch/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{x}/{y}.{Format}';
-          
+          gaLayersProvider.wmtsMapProxyGetTileUrlTemplate = '//wmts{s}.geo.admin.ch/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{x}/{y}.{Format}';
           gaLayersProvider.terrainTileUrlTemplate = '//3d.geo.admin.ch/1.0.0/{Layer}/default/{Time}/4326';
-
-          gaLayersProvider.layersConfigUrlTemplate =
-              gaGlobalOptions.resourceUrl + 'layersConfig?lang={Lang}';
-
-          gaLayersProvider.legendUrlTemplate =
-              gaGlobalOptions.apiUrl + '/rest/services/all/MapServer/{Layer}/legend?lang={Lang}';
+          gaLayersProvider.layersConfigUrlTemplate = gaGlobalOptions.resourceUrl + 'layersConfig?lang={Lang}';
+          gaLayersProvider.legendUrlTemplate = gaGlobalOptions.apiUrl + '/rest/services/all/MapServer/{Layer}/legend?lang={Lang}';
         });
         module.config(function(gaTopicProvider, gaGlobalOptions) {
           gaTopicProvider.topicsUrl = gaGlobalOptions.resourceUrl + 'services';

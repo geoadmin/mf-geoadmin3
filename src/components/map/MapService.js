@@ -795,32 +795,53 @@ goog.require('ga_urlutils_service');
         gaStylesFromLiterals, gaGlobalOptions, gaPermalink, gaTopic,
         gaLang, gaTime) {
 
-      var Layers = function(wmtsGetTileUrlTemplate,
+      var Layers = function(dfltWmsSubdomains, dfltWmtsMapProxySubdomains,
+          wmsUrlTemplate, wmtsGetTileUrlTemplate,
           wmtsMapProxyGetTileUrlTemplate, terrainTileUrlTemplate,
           layersConfigUrlTemplate, legendUrlTemplate) {
         var layers;
 
-        var getWmtsUrlFromTemplate = function(tpl, layer, time,
-            tileMatrixSet, format) {
-          var url = tpl.replace('{Layer}', layer).replace('{Format}', format);
-          if (time) {
-            url = url.replace('{Time}', time);
+        // Returns a unique WMS template url (e.g. //wms{s}.geo.admin.ch)
+        var getWmsTpl = function(tpl, wmsParams) {
+          if (tpl && /(request|service|version)/i.test(tpl)) {
+            tpl = gaUrlUtils.remove(tpl, ['request', 'service', 'version'],
+                true);
           }
-          if (tileMatrixSet) {
-             url = url.replace('{TileMatrixSet}', tileMatrixSet);
+          var url = (tpl || wmsUrlTemplate);
+          if (wmsParams) {
+            url = gaUrlUtils.append(url, gaUrlUtils.toKeyValue(wmsParams));
           }
           return url;
         };
 
-        var getWmtsGetTileUrl = function(layer, time, tileMatrixSet, format) {
-          return getWmtsUrlFromTemplate(wmtsGetTileUrlTemplate, layer, time,
-              tileMatrixSet, format);
+        // Returns a list of WMS servers using a template
+        // (e.g. //wms{s}.geo.admin.ch) and an array of
+        // subdomains (e.g. ['', '1', ...]).
+        var getWmsUrls = function(tpl, subdomains) {
+          var url = getWmsTpl(tpl);
+          var urls = [];
+          (subdomains || ['']).forEach(function(subdomain) {
+            urls.push(url.replace('{s}', subdomain));
+          });
+          return urls;
         };
-        var getWmtsMapProxyGetTileUrl = function(layer, time, tileMatrixSet,
-            format) {
-          return getWmtsUrlFromTemplate(wmtsMapProxyGetTileUrlTemplate, layer,
-              time, tileMatrixSet, format);
+
+        var getWmtsGetTileTpl = function(tpl, layer, time, tileMatrixSet,
+            format, use2dTpl) {
+          var dfltTpl = use2dTpl ? wmtsGetTileUrlTemplate :
+              wmtsMapProxyGetTileUrlTemplate;
+          var url = (tpl || dfltTpl)
+              .replace('{Layer}', layer)
+              .replace('{Format}', format);
+          if (time) {
+            url = url.replace('{Time}', time);
+          }
+          if (tileMatrixSet) {
+            url = url.replace('{TileMatrixSet}', tileMatrixSet);
+          }
+          return url;
         };
+
         var getTerrainTileUrl = function(layer, time) {
           return terrainTileUrlTemplate
               .replace('{Layer}', layer)
@@ -918,10 +939,8 @@ goog.require('ga_urlutils_service');
               };
               // WMTS (not MapProxy)
               response.data['ch.swisstopo.swissimage-product_3d'] = {
-                type: 'wmts',
                 serverLayerName: 'ch.swisstopo.swissimage-product',
-                url: '//wmts{s}.geo.admin.ch/1.0.0/' +
-                    '{Layer}/default/' +
+                url: '//wmts{s}.geo.admin.ch/1.0.0/{Layer}/default/' +
                     '{Time}/{TileMatrixSet}/{z}/{y}/{x}.{Format}',
                 subdomains: '56789',
                 attribution: 'swissimage 3D',
@@ -932,8 +951,7 @@ goog.require('ga_urlutils_service');
                 type: 'wmts',
                 format: 'jpeg',
                 serverLayerName: 'ch.swisstopo.swisstlm3d-karte-farbe.3d',
-                url: '//wmts{s}.geo.admin.ch/1.0.0/' +
-                    '{Layer}/default/' +
+                url: '//wmts{s}.geo.admin.ch/1.0.0/{Layer}/default/' +
                     '20150401/{TileMatrixSet}/{z}/{y}/{x}.{Format}',
                 subdomains: '56789',
                 attribution: 'swisstlm 3D Farbe',
@@ -945,16 +963,13 @@ goog.require('ga_urlutils_service');
                 type: 'wmts',
                 format: 'jpeg',
                 serverLayerName: 'ch.swisstopo.swisstlm3d-karte-grau.3d',
-                url: '//wmts{s}.geo.admin.ch/1.0.0/' +
-                    '{Layer}/default/' +
+                url: '//wmts{s}.geo.admin.ch/1.0.0/{Layer}/default/' +
                     '20150401/{TileMatrixSet}/{z}/{y}/{x}.{Format}',
                 subdomains: '56789',
                 attribution: 'swisstlm 3D Grau',
                 attributionUrl: 'http://www.swisstopo.admin.ch/internet/' +
                     'swisstopo/en/home/products/height/swissALTI3D.html'
               };
-
-
 
               // Terain
               response.data['ch.swisstopo.terrain.3d'] = {
@@ -965,6 +980,12 @@ goog.require('ga_urlutils_service');
                 attributionUrl: 'http://www.swisstopo.admin.ch/internet/' +
                     'swisstopo/en/home/products/height/swissALTI3D.html'
               };
+              // Use WMS multi-domains by default
+              angular.forEach(response.data, function(conf, id) {
+                if (conf.type == 'wms' && /wms.geo/.test(conf.wmsUrl)) {
+                   delete response.data[id].wmsUrl;
+                }
+              });
             }
             if (!layers) { // First load
               layers = response.data;
@@ -1026,8 +1047,8 @@ goog.require('ga_urlutils_service');
          */
         this.getCesiumImageryProviderById = function(bodId) {
           var provider, params, config = layers[bodId];
-          var timestamp = this.getLayerTimestampFromYear(bodId, gaTime.get());
           var config3d = this.getConfig3d(config);
+          var timestamp = this.getLayerTimestampFromYear(bodId, gaTime.get());
           var requestedLayer = config3d.wmsLayers || config3d.serverLayerName ||
               bodId;
           var format = config3d.format || 'png';
@@ -1045,16 +1066,13 @@ goog.require('ga_urlutils_service');
             return providers;
           }
           if (config3d.type == 'wmts') {
-            var url = config3d.url ?
-                getWmtsUrlFromTemplate(config3d.url, requestedLayer, timestamp,
-                    '4326', format) :
-                getWmtsMapProxyGetTileUrl(requestedLayer, timestamp, '4326',
-                format);
             params = {
-              url: url,
+              url: getWmtsGetTileTpl(config3d.url, requestedLayer, timestamp,
+                  '4326', format),
               minimumRetrievingLevel: window.minimumRetrievingLevel,
               maximumLevel: 20,
-              tileSize: 256
+              tileSize: 256,
+              subdomains: config3d.subdomains || dfltWmtsMapProxySubdomains
             };
           } else if (config3d.type == 'wms') {
             var tileSize = 512;
@@ -1074,14 +1092,10 @@ goog.require('ga_urlutils_service');
             if (timestamp) {
               wmsParams.time = timestamp;
             }
-            var url = gaUrlUtils.remove(config3d.wmsUrl,
-                                      ['request', 'service', 'version'], true);
-            url = url.replace('wms.geo.admin.ch', 'wms{s}.geo.admin.ch');
-            config3d.subdomains = config3d.subdomains ||
-                                  ['', '0', '1', '2', '3', '4'];
             params = {
-              url: gaUrlUtils.append(url, gaUrlUtils.toKeyValue(wmsParams)),
-              tileSize: tileSize
+              url: getWmsTpl(config3d.wmsUrl, wmsParams),
+              tileSize: tileSize,
+              subdomains: config3d.subdomains || dfltWmsSubdomains
             };
           }
           var extent = gaMapUtils.intersectWithDefaultExtent(config3d.extent ||
@@ -1090,7 +1104,7 @@ goog.require('ga_urlutils_service');
             provider = new Cesium.UrlTemplateImageryProvider({
               url: params.url,
               minimumRetrievingLevel: window.minimumRetrievingLevel,
-              subdomains: config3d.subdomains || ['10', '11', '12', '13', '14'],
+              subdomains: params.subdomains,
               rectangle: gaMapUtils.extentToRectangle(extent, 'EPSG:21781'),
               tilingScheme: new Cesium.GeographicTilingScheme(),
               tileWidth: params.tileSize,
@@ -1138,8 +1152,8 @@ goog.require('ga_urlutils_service');
                 tileGrid: gaTileGrid.get(layer.resolutions,
                     layer.minResolution),
                 tileLoadFunction: tileLoadFunction,
-                url: getWmtsGetTileUrl(layer.serverLayerName, null, '21781',
-                  layer.format),
+                url: getWmtsGetTileTpl(layer.url, layer.serverLayerName, null,
+                  '21781', layer.format, true),
                 crossOrigin: crossOrigin
               });
             }
@@ -1154,21 +1168,17 @@ goog.require('ga_urlutils_service');
               useInterimTilesOnError: gaNetworkStatus.offline
             });
           } else if (layer.type == 'wms') {
-            var wmsUrl = gaUrlUtils.remove(
-                layer.wmsUrl, ['request', 'service', 'version'], true);
-
             var wmsParams = {
               LAYERS: layer.wmsLayers,
               FORMAT: 'image/' + layer.format
             };
-
             if (timestamp) {
               wmsParams['TIME'] = timestamp;
             }
             if (layer.singleTile === true) {
               if (!olSource) {
                 olSource = layer.olSource = new ol.source.ImageWMS({
-                  url: wmsUrl,
+                  url: getWmsUrls(layer.wmsUrl)[0],
                   params: wmsParams,
                   crossOrigin: crossOrigin,
                   ratio: 1
@@ -1183,8 +1193,9 @@ goog.require('ga_urlutils_service');
               });
             } else {
               if (!olSource) {
+                var subdomains = layer.subdomains || dfltWmsSubdomains;
                 olSource = layer.olSource = new ol.source.TileWMS({
-                  url: wmsUrl,
+                  urls: getWmsUrls(layer.wmsUrl, subdomains),
                   params: wmsParams,
                   gutter: layer.gutter || 0,
                   crossOrigin: crossOrigin,
@@ -1347,7 +1358,8 @@ goog.require('ga_urlutils_service');
         };
       };
 
-      return new Layers(this.wmtsGetTileUrlTemplate,
+      return new Layers(this.dfltWmsSubdomains, this.dfltWmtsMapProxySubdomains,
+          this.wmsUrlTemplate, this.wmtsGetTileUrlTemplate,
           this.wmtsMapProxyGetTileUrlTemplate, this.terrainTileUrlTemplate,
           this.layersConfigUrlTemplate, this.legendUrlTemplate);
     };
