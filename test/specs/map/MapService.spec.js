@@ -139,7 +139,18 @@ describe('ga_map_service', function() {
           timestamps: ['t3', 't4']
         },
         "ch.bfe.sachplan-geologie-tiefenlager": {},
-        "ch.vbs.patrouilledesglaciers-z_rennen": {}
+        "ch.vbs.patrouilledesglaciers-z_rennen": {},
+        "ch.swisstopo.swissimage-product": {},
+        "ch.swisstopo.pixelkarte-farbe-pk25.noscale": {},
+        "ch.swisstopo.pixelkarte-farbe-pk50.noscale": {},
+        "ch.swisstopo.pixelkarte-farbe-pk100.noscale": {},
+        "ch.swisstopo.pixelkarte-farbe-pk200.noscale": {},
+        "ch.swisstopo.pixelkarte-farbe-pk500.noscale": {},
+        "ch.swisstopo.pixelkarte-farbe-pk1000.noscale": {},
+        "ch.swisstopo.swisstlm3d-karte-farbe": {},
+        "ch.swisstopo.swisstlm3d-karte-grau": {},
+        "ch.swisstopo.pixelkarte-farbe": {},
+        "ch.swisstopo.pixelkarte-grau": {}
       });
       $httpBackend.expectGET(expectedUrl);
       $rootScope.$digest();

@@ -82,14 +82,33 @@ goog.require('ga_urlutils_service');
         Object.defineProperties(olLayer, {
           visible: {
             get: function() {
-              return this.getVisible();
+              return this.userVisible;
             },
             set: function(val) {
+              this.userVisible = val;
+              var vis = this.userVisible && !this.hiddenByOther;
               // apply the value only if it has changed
               // otherwise the change:visible event is triggered when it's
-              // unseless
-              if (val != this.getVisible()) {
-                this.setVisible(val);
+              // useless
+              if (vis != this.getVisible()) {
+                this.setVisible(vis);
+              }
+            }
+          },
+          userVisible: {
+            writable: true,
+            value: true
+          },
+          hiddenByOther: {
+            get: function() {
+              return this.get('hiddenByOther');
+            },
+            set: function(val) {
+              this.set('hiddenByOther', val);
+              if (val && this.userVisible) {
+                this.setVisible(false);
+              } else {
+                this.visible = this.userVisible;
               }
             }
           },
@@ -912,6 +931,28 @@ goog.require('ga_urlutils_service');
                   response.data[id].config3d = id + '_3d';
                 }
               });
+
+              // Test layers opaque setting
+              ids = [
+                'ch.swisstopo.swissimage-product',
+                'ch.swisstopo.pixelkarte-farbe',
+                'ch.swisstopo.pixelkarte-grau',
+                'ch.swisstopo.swisstlm3d-karte-farbe',
+                'ch.swisstopo.swisstlm3d-karte-grau',
+                'ch.swisstopo.pixelkarte-farbe-pk25.noscale',
+                'ch.swisstopo.pixelkarte-farbe-pk50.noscale',
+                'ch.swisstopo.pixelkarte-farbe-pk100.noscale',
+                'ch.swisstopo.pixelkarte-farbe-pk200.noscale',
+                'ch.swisstopo.pixelkarte-farbe-pk500.noscale',
+                'ch.swisstopo.pixelkarte-farbe-pk500.noscale',
+                'ch.swisstopo.pixelkarte-farbe-pk1000.noscale'
+              ];
+              angular.forEach(ids, function(id) {
+                if (response.data[id]) {
+                  response.data[id].opaque = true;
+                }
+              });
+
               // Test extent define in config for tiled WMS an WMTS
               response.data['ch.bfe.sachplan-geologie-tiefenlager'].extent =
                   [635432, 182850, 708432, 291850];
@@ -2045,7 +2086,7 @@ goog.require('ga_urlutils_service');
                 }
               }
               if (angular.isDefined(layer)) {
-                layer.setVisible(visible);
+                layer.visible = visible;
                 // if there is no opacity defined in the permalink, we keep
                 // the default opacity of the layers
                 if (opacity) {
@@ -2473,5 +2514,68 @@ goog.require('ga_urlutils_service');
       return new PreviewLayers();
     };
   });
+
+  /**
+   * Service to pseudo-hide layers behind fully opaque layers
+   * to avoid loading tiles/data for such layers.
+   */
+  module.provider('gaLayerHideManager', function() {
+    this.$get = function($rootScope, gaDebounce, gaLayers, gaLayerFilters) {
+      var layers = [];
+      var unregKeys = [];
+
+      var unreg = function() {
+        angular.forEach(unregKeys, function(key) {
+          if (key) {
+            ol.Observable.unByKey(key);
+          }
+        });
+        unregKeys = [];
+      };
+
+      var updateHiddenState = gaDebounce.debounce(function() {
+        var sortedLayers = layers.slice().reverse();
+        var hide = false;
+
+        unreg();
+
+        angular.forEach(sortedLayers, function(layer) {
+          layer.hiddenByOther = hide;
+
+          // Register all layers for changes
+          unregKeys.push(layer.on('change:visible', function(evt) {
+            updateHiddenState();
+          }));
+          unregKeys.push(layer.on('change:opacity', function(evt) {
+            updateHiddenState();
+          }));
+
+          // First opaque layer
+          if (!hide &&
+              gaLayers.getLayer(layer.id) &&
+              gaLayers.getLayer(layer.id).opaque &&
+              layer.visible &&
+              layer.invertedOpacity == '0') {
+            hide = true;
+          }
+        });
+      }, 50, false, false);
+
+      return function(map) {
+        var scope = $rootScope.$new();
+        scope.layers = map.getLayers().getArray();
+        scope.f = function(l) {
+          return (gaLayerFilters.background(l) ||
+                  gaLayerFilters.selected(l));
+        };
+        scope.$watchCollection('layers | filter:f', function(l) {
+          layers = (l) ? l : [];
+          updateHiddenState();
+        });
+      };
+    };
+  });
+
+
 })();
 

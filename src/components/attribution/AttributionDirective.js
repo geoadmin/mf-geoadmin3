@@ -15,8 +15,7 @@ goog.require('ga_map_service');
   ]);
 
   module.directive('gaAttribution', function($translate, $window,
-      gaBrowserSniffer, gaLayerFilters, gaAttribution, $rootScope,
-      gaDebounce) {
+      gaBrowserSniffer, gaAttribution, $rootScope, gaDebounce) {
     return {
       restrict: 'A',
       scope: {
