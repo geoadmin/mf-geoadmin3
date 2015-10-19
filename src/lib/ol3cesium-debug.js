@@ -1,6 +1,6 @@
 // Ol3-Cesium. See https://github.com/openlayers/ol3-cesium/
 // License: https://github.com/openlayers/ol3-cesium/blob/master/LICENSE
-// Version: v1.8-31-gf476fa9
+// Version: v1.8-41-gd72857d
 
 var CLOSURE_NO_DEPS = true;
 // Copyright 2006 The Closure Library Authors. All Rights Reserved.
@@ -118086,35 +118086,6 @@ olcs.AbstractSynchronizer.prototype.synchronize = function() {
 
 
 /**
- * Populate the foundLayers and foundGroups using a breadth-first algorithm.
- * A map of layer uid to z-index is also populated.
- * @param {ol.layer.Base} layer
- * @param {Array.<ol.layer.Layer>} foundLayers Found leaves.
- * @param {Array.<ol.layer.Group>} foundGroups Found nodes.
- * @param {Object.<number, number>=} opt_zIndices Map of layer uid to z-index.
- * @protected
- */
-olcs.AbstractSynchronizer.flattenLayers =
-    function(layer, foundLayers, foundGroups, opt_zIndices) {
-  if (layer instanceof ol.layer.Group) {
-    foundGroups.push(layer);
-    var sublayers = layer.getLayers();
-    if (goog.isDef(sublayers)) {
-      sublayers.forEach(function(el) {
-        olcs.AbstractSynchronizer.flattenLayers(el, foundLayers, foundGroups,
-            opt_zIndices);
-      });
-    }
-  } else {
-    foundLayers.push(layer);
-    if (opt_zIndices) {
-      opt_zIndices[goog.getUid(layer)] = layer.getZIndex();
-    }
-  }
-};
-
-
-/**
  * Order counterparts using the same algorithm as the Openlayers renderer:
  * z-index then original sequence order.
  * @protected
@@ -118202,6 +118173,7 @@ olcs.AbstractSynchronizer.prototype.unlistenSingleGroup_ =
     ol.Observable.unByKey(key);
   });
   delete this.olGroupListenKeys_[uid];
+  delete this.layerMap[uid];
 };
 
 
@@ -118211,20 +118183,20 @@ olcs.AbstractSynchronizer.prototype.unlistenSingleGroup_ =
  * @private
  */
 olcs.AbstractSynchronizer.prototype.removeLayer_ = function(root) {
-  if (!root) {
-    return;
+  if (!!root) {
+    var fifo = [root];
+    while (fifo.length > 0) {
+      var olLayer = fifo.splice(0, 1)[0];
+      if (olLayer instanceof ol.layer.Group) {
+        this.unlistenSingleGroup_(olLayer);
+        olLayer.getLayers().forEach(function(l) {
+          fifo.push(l);
+        });
+      } else {
+        this.removeAndDestroySingleLayer_(olLayer);
+      }
+    }
   }
-  var layers = [];
-  var groups = [];
-  olcs.AbstractSynchronizer.flattenLayers(root, layers, groups);
-
-  layers.forEach(function(el) {
-    this.removeAndDestroySingleLayer_(el);
-  }, this);
-
-  groups.forEach(function(el) {
-    this.unlistenSingleGroup_(el);
-  }, this);
 };
 
 
@@ -119930,6 +119902,46 @@ olcs.FeatureConverter = function(scene) {
    * @protected
    */
   this.scene = scene;
+
+  /**
+   * Bind once to have a unique function for using as a listener
+   * @type {function(ol.source.VectorEvent)}
+   * @private
+   */
+  this.boundOnRemoveOrClearFeatureListener_ =
+      this.onRemoveOrClearFeature_.bind(this);
+};
+
+
+/**
+ * @param {ol.source.VectorEvent} evt
+ * @private
+ */
+olcs.FeatureConverter.prototype.onRemoveOrClearFeature_ = function(evt) {
+  var source = evt.target;
+  goog.asserts.assertInstanceof(source, ol.source.Vector);
+
+  var cancellers = source['olcs_cancellers'];
+  if (cancellers) {
+    var feature = evt.feature;
+    if (goog.isDef(feature)) {
+      // remove
+      var id = goog.getUid(feature);
+      var canceller = cancellers[id];
+      if (canceller) {
+        canceller();
+        delete cancellers[id];
+      }
+    } else {
+      // clear
+      for (var key in cancellers) {
+        if (cancellers.hasOwnProperty(key)) {
+          cancellers[key]();
+        }
+      }
+      source['olcs_cancellers'] = {};
+    }
+  }
 };
 
 
@@ -120397,8 +120409,21 @@ olcs.FeatureConverter.prototype.olPointGeometryToCesium =
 
     if (image instanceof Image && !isImageLoaded(image)) {
       // Cesium requires the image to be loaded
+      var cancelled = false;
+      var source = layer.getSource();
+      var canceller = function() {
+        cancelled = true;
+      };
+      source.on(['removefeature', 'clear'],
+          this.boundOnRemoveOrClearFeatureListener_);
+      source['olcs_cancellers'] = source['olcs_cancellers'] || {};
+
+      goog.asserts.assert(!source['olcs_cancellers'][goog.getUid(feature)]);
+      source['olcs_cancellers'][goog.getUid(feature)] = canceller;
+
       var listener = function() {
-        if (!billboards.isDestroyed()) {
+        if (!billboards.isDestroyed() && !cancelled) {
+          // Create billboard if the feature is still displayed on the map.
           reallyCreateBillboard();
         }
       };
@@ -120542,23 +120567,19 @@ olcs.FeatureConverter.prototype.olGeometry4326TextPartToCesium =
   }
   options.style = labelStyle;
 
-  if (style.getTextAlign()) {
-    var horizontalOrigin;
-    switch (style.getTextAlign()) {
-      case 'center':
-        horizontalOrigin = Cesium.HorizontalOrigin.CENTER;
-        break;
-      case 'left':
-        horizontalOrigin = Cesium.HorizontalOrigin.LEFT;
-        break;
-      case 'right':
-        horizontalOrigin = Cesium.HorizontalOrigin.RIGHT;
-        break;
-      default:
-        goog.asserts.fail('unhandled text align ' + style.getTextAlign());
-    }
-    options.horizontalOrigin = horizontalOrigin;
+  var horizontalOrigin;
+  switch (style.getTextAlign()) {
+    case 'left':
+      horizontalOrigin = Cesium.HorizontalOrigin.LEFT;
+      break;
+    case 'right':
+      horizontalOrigin = Cesium.HorizontalOrigin.RIGHT;
+      break;
+    case 'center':
+    default:
+      horizontalOrigin = Cesium.HorizontalOrigin.CENTER;
   }
+  options.horizontalOrigin = horizontalOrigin;
 
   if (style.getTextBaseline()) {
     var verticalOrigin;
@@ -120967,10 +120988,23 @@ olcs.RasterSynchronizer.prototype.createSingleLayerCounterparts =
  */
 olcs.RasterSynchronizer.prototype.orderLayers = function() {
   var layers = [];
-  var groups = [];
   var zIndices = {};
-  olcs.AbstractSynchronizer.flattenLayers(this.mapLayerGroup, layers, groups,
-      zIndices);
+  var fifo = [this.mapLayerGroup];
+
+  while (fifo.length > 0) {
+    var olLayer = fifo.splice(0, 1)[0];
+    layers.push(olLayer);
+    zIndices[goog.getUid(olLayer)] = olLayer.getZIndex();
+
+    if (olLayer instanceof ol.layer.Group) {
+      var sublayers = olLayer.getLayers();
+      if (goog.isDef(sublayers)) {
+        sublayers.forEach(function(el) {
+          fifo.push(el);
+        });
+      }
+    }
+  }
 
   goog.array.stableSort(layers, function(layer1, layer2) {
     return zIndices[goog.getUid(layer1)] - zIndices[goog.getUid(layer2)];
@@ -121237,7 +121271,7 @@ olcs.OLCesium = function(options) {
 
   var sscc = this.scene_.screenSpaceCameraController;
   sscc.inertiaSpin = 0;
-  sscc.ineartiaTranslate = 0;
+  sscc.inertiaTranslate = 0;
   sscc.inertiaZoom = 0;
 
   sscc.tiltEventTypes.push({
