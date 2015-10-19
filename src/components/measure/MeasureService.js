@@ -14,7 +14,7 @@ goog.provide('ga_measure_service');
       return measure;
     };
 
-    return function(floatInMeter, type, units, precision) {
+    return function(floatInMeter, type, units, precision, thousandSeparator) {
       // if the float is not a number, we display a '-'
       if (!angular.isNumber(floatInMeter) || !isFinite(floatInMeter)) {
         return '-';
@@ -42,15 +42,40 @@ goog.provide('ga_measure_service');
         default: units = units || [' km', ' m'];
                  break;
       }
+
       // Having only one unit means we don't want to transform the measure.
       if (units.length == 1) {
-        return cleanAfterComma(measure) + units[0];
+        if (thousandSeparator) {
+        // Number formatting: we add 1000 indicator (eg. 20'000)
+          var minus = '';
+          if (measure < 0) {
+            measure = Math.abs(measure);
+            minus = '-';
+          }
+          if (measure >= factor) {
+            var km = parseInt(measure / factor);
+            var m = Math.round(measure - km * factor);
+            var sep; //the separator
+            if (m >= 100) {
+              sep = '\'';
+            } else if (m >= 10) {
+              sep = '\'0';
+            } else if (m >= 0) {
+              sep = '\'00';
+            }
+            return minus + km + sep + m + units[0];
+          } else {
+            return minus + measure + units[0];
+          }
+        } else {
+          return cleanAfterComma(measure) + units[0];
+        }
       }
+
       var km = Math.floor(measure / factor);
       if (km <= 0) {
         return cleanAfterComma(measure) + units[1];
       }
-
       var str = '' + km;
       var m = Math.floor(Math.floor(measure) % factor * 100 / factor);
 

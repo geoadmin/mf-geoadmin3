@@ -46,8 +46,8 @@ goog.require('ga_urlutils_service');
       };
     };
 
-    this.$get = function($q, $http, $timeout, $translate, $window, gaUrlUtils,
-                         gaBrowserSniffer, gaGlobalOptions) {
+    this.$get = function($q, $http, $timeout, $translate, measureFilter,
+        $window, gaUrlUtils, gaBrowserSniffer, gaGlobalOptions) {
 
       var d3LibUrl = this.d3libUrl;
       var profileUrl = this.profileUrl;
@@ -102,6 +102,35 @@ goog.require('ga_urlutils_service');
             });
           }
           return data;
+        };
+
+        //total elevation difference
+        this.elevDiff = function(data) {
+          if (data.length != 0) {
+            var maxElev = data[data.length - 1].alts[elevationModel] || 0;
+            var minElev = data[0].alts[elevationModel] || 0;
+            var diffel = maxElev - minElev;
+            return diffel;
+          }
+        };
+
+        //total positive elevation & total negative elevation
+        this.twoElevDiff = function(data) {
+          if (data.length != 0) {
+            var sumDown = 0;
+            var sumUp = 0;
+            for (var i = 0; i < data.length - 1; i++) {
+              var h1 = data[i].alts[elevationModel] || 0;
+              var h2 = data[i + 1].alts[elevationModel] || 0;
+              var dh = h2 - h1;
+              if (dh < 0) {
+                sumDown += dh;
+              } else if (dh >= 0) {
+                sumUp += dh;
+              }
+            }
+            return [sumUp, Math.abs(sumDown)];
+          }
         };
 
         var coordinatesToString = function(coordinates) {
@@ -187,7 +216,13 @@ goog.require('ga_urlutils_service');
           var x = d3.scale.linear().range([0, width]);
           var y = d3.scale.linear().range([height, 0]);
 
+          //for the total elevation diff of the path
+          this.diff = this.elevDiff(data);
+          //for the total elevation up & total elevation down
+          var twoDiff = this.twoElevDiff(data);
+
           this.data = this.formatData(data);
+
           this.domain = getXYDomains(x, y, elevationModel, that.data);
           var axis = createAxis(this.domain);
           var element = document.createElement('DIV');
@@ -253,8 +288,9 @@ goog.require('ga_urlutils_service');
           group.append('text')
               .attr('class', 'ga-profile-label ga-profile-label-x')
               .attr('x', width / 2)
-              .attr('y', height + options.margin.bottom - 2)
+              .attr('y', height + options.margin.bottom - 12)
               .style('text-anchor', 'middle')
+              .attr('font-size', '0.95em')
               .text($translate.instant(options.xLabel) + ' [' +
                   $translate.instant(that.unitX) + ']');
 
@@ -262,11 +298,81 @@ goog.require('ga_urlutils_service');
               .attr('class', 'ga-profile-label ga-profile-label-y')
               .attr('transform', 'rotate(-90)')
               .attr('y', 0 - options.margin.left)
-              .attr('x', 0 - height / 2 - 20)
+              .attr('x', 0 - height / 2 - 30)
               .attr('dy', '1em')
+              .attr('font-size', '0.95em')
               .text($translate.instant(options.yLabel) + ' [m]');
 
-           return element;
+          //For having one pixel space below the elevation labels
+          var elevLabelY = height + options.margin.bottom - 1;
+
+          //Total Elevation Difference
+          // Using Unicode for the icons inside a normal text element
+          // by setting the font-family to 'FontAwesome'
+          // http://fortawesome.github.io/Font-Awesome/3.2.1/cheatsheet/
+          //Icon for total elevation diff
+          group.append('text')
+              .attr('class', 'ga-profile-icon')
+              .attr('font-size', '0.9em')
+              .attr('x', 0)
+              .attr('y', elevLabelY)
+              .attr('text-anchor', 'left')
+              .text(' \uf218 ');
+
+          //Number for total elevation diff
+          group.append('text')
+              .attr('class', 'ga-profile-elevation-difference')
+              .attr('font-size', '0.9em')
+              .attr('x', 12)
+              .attr('y', elevLabelY)
+              .style('text-anchor', 'left')
+              .text(measureFilter(this.diff,
+                    'distance', 'm', 2, true));
+
+          //Icon for elevation up
+          group.append('text')
+              .attr('class', 'ga-profile-icon')
+              .attr('font-size', '1.5em')
+              .attr('x', 100)
+              .attr('y', elevLabelY + 4)
+              .attr('text-anchor', 'left')
+              .text(' \uf213 ');
+
+          //Number for elevation Up
+          group.append('text')
+              .attr('class', 'ga-profile-elevation-up')
+              .attr('font-size', '0.9em')
+              .attr('x', 122)
+              .attr('y', elevLabelY)
+              .style('text-anchor', 'left')
+              .text(measureFilter(twoDiff[0],
+                    'distance', 'm', 2, true));
+
+          //Icon for elevation down
+          group.append('text')
+              .attr('class', 'ga-profile-icon')
+              .attr('font-size', '1.5em')
+              .attr('x', 200)
+              .attr('y', elevLabelY + 4)
+              .attr('text-anchor', 'left')
+              .text(' \uf212 ');
+
+          //Number for elevation Down
+          group.append('text')
+              .attr('class', 'ga-profile-elevation-down')
+              .attr('font-size', '0.9em')
+              .attr('x', 222)
+              .attr('y', elevLabelY)
+              .style('text-anchor', 'left')
+              .text(measureFilter(twoDiff[1], 'distance',
+                    'm', 2, true));
+
+          return element;
+        };
+
+        this.updateElevationLabels = function(name, number) {
+          this.group.select(name)
+              .text(measureFilter(number, 'distance', 'm', 2, true));
         };
 
         this.updateLabels = function() {
@@ -276,6 +382,13 @@ goog.require('ga_urlutils_service');
                   $translate.instant(that.unitX) + ']');
           this.group.select('text.ga-profile-label-y')
               .text($translate.instant(options.yLabel) + ' [m]');
+
+          this.updateElevationLabels('text.ga-profile-elevation-difference',
+              this.diff);
+          this.updateElevationLabels('text.ga-profile-elevation-up',
+              this.twoDiff[0]);
+          this.updateElevationLabels('text.ga-profile-elevation-down',
+              this.twoDiff[1]);
         };
 
         this.update = function(data, size) {
@@ -292,7 +405,7 @@ goog.require('ga_urlutils_service');
             this.group.select('text.ga-profile-label-x')
               .transition().duration(transitionTime)
                 .attr('x', width / 2)
-                .attr('y', height + options.margin.bottom - 2)
+                .attr('y', height + options.margin.bottom - 12)
                 .style('text-anchor', 'middle');
             this.group.select('text.ga-profile-legend')
               .transition().duration(transitionTime)
@@ -301,6 +414,8 @@ goog.require('ga_urlutils_service');
                 .text('swissALTI3D/DHM25');
           } else {
             this.data = this.formatData(data);
+            this.diff = this.elevDiff(data);
+            this.twoDiff = this.twoElevDiff(data);
           }
           var x = d3.scale.linear().range([0, width]);
           var y = d3.scale.linear().range([height, 0]);

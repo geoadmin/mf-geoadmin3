@@ -521,3 +521,24 @@ a .icon-flip-vertical:before {
 .icon-search:before {
   content: "\f002";
 }
+.icon-ga-elevation-down:before {
+  content: "\f212";
+}
+.icon-ga-elevation-up:before {
+  content: "\f213";
+}
+.icon-chevron-down:before {
+  content: "\f214";
+}
+.icon-chevron-left:before {
+  content: "\f215";
+}
+.icon-chevron-right:before {
+  content: "\f216";
+}
+.icon-chevron-up:before {
+  content: "\f217";
+}
+.icon-resize-vertical:before {
+  content: "\f218";
+}
