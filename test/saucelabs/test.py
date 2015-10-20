@@ -38,16 +38,16 @@ if __name__ == '__main__':
     ### Code pour la déclaration des browser à tester
     desired_cap_list = [
         {'platform': "Windows 7", 'browserName': "chrome", 'version': "43.0", 'screenResolution': "1280x1024" },
-#        {'platform': "Windows 7", 'browserName': "chrome", 'version': "44.0", 'screenResolution': "1280x1024" },
-#        {'platform': "Windows 7", 'browserName': "chrome", 'version': "45.0", 'screenResolution': "1280x1024" },
+        {'platform': "Windows 7", 'browserName': "chrome", 'version': "44.0", 'screenResolution': "1280x1024" },
+        {'platform': "Windows 7", 'browserName': "chrome", 'version': "45.0", 'screenResolution': "1280x1024" },
          {'platform': "Windows 8.1", 'browserName': "chrome", 'version': "45.0", 'screenResolution': "1280x1024" },
+        {'platform': "Windows 7", 'browserName': "firefox", 'version': "38.0", 'screenResolution': "1280x1024" },
+        {'platform': "Windows 7", 'browserName': "firefox", 'version': "39.0", 'screenResolution': "1280x1024" },
+        {'platform': "Windows 7", 'browserName': "firefox", 'version': "40.0", 'screenResolution': "1280x1024" },
+        {'platform': "Windows 8.1", 'browserName': "firefox", 'version': "40.0", 'screenResolution': "1280x1024"}
 #        {'platform': "Windows 7", 'browserName': "internet explorer", 'version': "9.0", 'screenResolution': "1280x1024" },
 #        {'platform': "Windows 7", 'browserName': "internet explorer", 'version': "10.0", 'screenResolution': "1280x1024" },
 #        {'platform': "Windows 7", 'browserName': "internet explorer", 'version': "11.0", 'screenResolution': "1280x1024" },
-        {'platform': "Windows 7", 'browserName': "firefox", 'version': "38.0", 'screenResolution': "1280x1024" },
-#        {'platform': "Windows 7", 'browserName': "firefox", 'version': "39.0", 'screenResolution': "1280x1024" },
-#        {'platform': "Windows 7", 'browserName': "firefox", 'version': "40.0", 'screenResolution': "1280x1024" },
-        {'platform': "Windows 8.1", 'browserName': "firefox", 'version': "40.0", 'screenResolution': "1280x1024"}
         ]
                         
     ### FOR TEST (test only one browser config)
@@ -69,13 +69,12 @@ if __name__ == '__main__':
 
         try: 
             #start_test(driver, url)
-            mobile_test(current_desired_cap, driver, url)
-            #search_test(desired_cap_list, driver, url)
-            #kml_test(desired_cap_list, driver, url)
-            #runSwissSearchTest(driver, url)
-            runPrintTest(driver, url)
+            #mobile_test(current_desired_cap, driver, url) ## Pb with Firefox
+            search_test(desired_cap_list, driver, url)
+            #kml_test(desired_cap_list, driver, url)    ## Ok with Chrome and FF 
+            #runSwissSearchTest(driver, url)            ## Ok with Chrome and FF
+            #runPrintTest(driver, url)                  ## Ok with Chrome and FF
         finally:
             driver.quit()
         print "--- end test for this browser"
-
     print "End full tests"
