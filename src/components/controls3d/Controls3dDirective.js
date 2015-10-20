@@ -29,18 +29,12 @@ goog.require('ga_map_service');
         var ol3d = scope.ol3d;
         var scene = ol3d.getCesiumScene();
         var camera = scene.camera;
-        var fps = new FPS(scene, scope);
+        scope.fps = new FPS(scene, scope);
 
         var tiltIndicator = element.find('.ga-tilt .ga-indicator');
         var rotateIndicator = element.find('.ga-rotate .ga-indicator');
 
         var moving = false;
-
-        scope.isPegmanActive = false;
-
-        scope.isFlyModeActive = false;
-
-        scope.isJetModeActive = false;
 
         camera.moveStart.addEventListener(function() {
           moving = true;
@@ -57,26 +51,8 @@ goog.require('ga_map_service');
           }
         });
 
-        scope.$watch(function() {
-          return fps.getActive();
-        }, function(active) {
-          scope.isPegmanActive = active;
-        });
-
-        scope.$watch(function() {
-          return fps.getFlyMode();
-        }, function(flyMode) {
-          scope.isFlyModeActive = flyMode;
-        });
-
-        scope.$watch(function() {
-          return fps.getJetMode();
-        }, function(jetMode) {
-          scope.isJetModeActive = jetMode;
-        });
-
         scope.startDraggingPegman = function() {
-          if (!fps.getActive()) {
+          if (!scope.fps.active) {
             var body = $(document.body);
             var canvas = angular.element(scene.canvas);
             body.addClass('ga-pegman-dragging');
@@ -84,7 +60,7 @@ goog.require('ga_map_service');
             canvas.one('mouseup.pegman', function(event) {
               var pixel = new Cesium.Cartesian2(event.clientX, event.clientY);
               var cartesian = olcs.core.pickOnTerrainOrEllipsoid(scene, pixel);
-              fps.setActive(true, cartesian);
+              scope.fps.setActive(true, cartesian);
               body.removeClass('ga-pegman-dragging');
             });
           }
