@@ -20,4 +20,15 @@
  * Portions licensed separately.
  * See https://github.com/AnalyticalGraphicsInc/cesium/blob/master/LICENSE.md for full licensing details.
  */
-{"version":3,"file":"transferTypedArrayTest.js","sources":["Workers/transferTypedArrayTest.js"],"names":[],"mappings":"AAGA,mBAAA,QACA,SAGA,KAAA,UAAA,SAAA,GACA,YACA,IAAA,GAAA,EAAA,KAAA,MACA,EAAA,KAAA,mBAAA,KAAA,WAEA,KAEA,GACA,MAAA,IACA,EAAA,SACA,MAAA,GACA","sourcesContent":["\n/*global self:true*/\n// make sure self is defined so that the Dojo build can evaluate this file without crashing.\nif (typeof self === 'undefined') {\n    self = {};\n}\n\nself.onmessage = function(event) {\n    \"use strict\";\n    var array = event.data.array;\n    var postMessage = self.webkitPostMessage || self.postMessage;\n\n    try {\n        // transfer the test array back to the caller\n        postMessage({\n            array : array\n        }, [array.buffer]);\n    } catch (e) {\n        postMessage({});\n    }\n};"]}
+{
+  "version": 3,
+  "file": "/home/ltgal/mf-geoadmin3/.build-artefacts/ol3-cesium/cesium/Build/combineOutput/Workers/transferTypedArrayTest.js",
+  "sources": [
+    "Workers/transferTypedArrayTest.js"
+  ],
+  "names": [],
+  "mappings": "AAAA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA",
+  "sourcesContent": [
+    "\n/*global self:true*/\n// make sure self is defined so that the Dojo build can evaluate this file without crashing.\nif (typeof self === 'undefined') {\n    self = {};\n}\n\nself.onmessage = function(event) {\n    \"use strict\";\n    var array = event.data.array;\n    var postMessage = self.webkitPostMessage || self.postMessage;\n\n    try {\n        // transfer the test array back to the caller\n        postMessage({\n            array : array\n        }, [array.buffer]);\n    } catch (e) {\n        postMessage({});\n    }\n};"
+  ]
+}
