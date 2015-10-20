@@ -419,6 +419,7 @@ FPS.prototype.flyModeTick_ = function(delta) {
  * @private
  */
 FPS.prototype.manTick_ = function(delta) {
+  var hasPointerLock = this.getPointerLock();
   var heading = this.camera_.heading;
   var pitch = this.camera_.pitch;
 
@@ -435,10 +436,18 @@ FPS.prototype.manTick_ = function(delta) {
   var speed = this.buttons_.shift ? this.runSpeed_ : this.walkSpeed_;
   var moveAmount = speed * delta / 1000;
   if (this.buttons_.left) {
-    this.camera_.moveLeft(moveAmount);
+    if (hasPointerLock) {
+      this.camera_.moveLeft(moveAmount);
+    } else {
+      heading -= 0.03;
+    }
   }
   if (this.buttons_.right) {
-    this.camera_.moveRight(moveAmount);
+    if (hasPointerLock) {
+      this.camera_.moveRight(moveAmount);
+    } else {
+      heading += 0.03;
+    }
   }
   if (this.buttons_.forward) {
     this.camera_.moveForward(moveAmount);
