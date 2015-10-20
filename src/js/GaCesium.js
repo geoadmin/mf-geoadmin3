@@ -56,8 +56,19 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions, $q) {
     scene.screenSpaceCameraController.maximumZoomDistance = 500000;
     scene.terrainProvider =
         gaLayers.getCesiumTerrainProviderById(gaGlobalOptions.defaultTerrain);
+    scene.postRender.addEventListener(limitCamera, scene);
     enableOl3d(cesiumViewer, enabled);
     return cesiumViewer;
+  };
+
+  var limitCamera = function() {
+    var camera = this.camera;
+    var angle = Cesium.Math.toRadians(-50);
+    if (camera.pitch > angle) {
+      camera.setView({
+        pitch: angle
+      });
+    }
   };
 
   var enableOl3d = function(ol3d, enable) {
