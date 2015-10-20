@@ -11,6 +11,7 @@ from kml_test import kml_test
 from search_test import search_test
 from swisssearch_test import runSwissSearchTest
 from print_test import runPrintTest
+from mobile_test import mobile_test
 
 if __name__ == '__main__':
     
