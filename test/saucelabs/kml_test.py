@@ -45,8 +45,8 @@ def kml_test(cap, driver, target):
     # Mobile Version URL contain POSITION_TO_KML ?
     assert POSITION_TO_KML in driver.find_element_by_xpath("//*[@id='toptools']/a[3]").get_attribute("href")
     # Was the URL in the address bar adapted?
-    if(not(cap['browserName'] == "internet explorer" and cap['version'] == "9.0")):
-        assert POSITION_TO_KML in driver.current_url 
+    #if(not(cap['browserName'] == "internet explorer" and cap['version'] == "9.0")):
+    assert POSITION_TO_KML in driver.current_url 
     # Go to the KML linkedURL
     driver.get(target + '/?lang=de&layers=' + QUERYSTRING_KML)
     # wait until topics related stuff is loaded.
