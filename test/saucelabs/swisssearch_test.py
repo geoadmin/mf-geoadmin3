@@ -87,7 +87,6 @@ def runSwissSearchTest(driver, target):
         raise Exception("Unable to load map.geo.admin page!")
 
     driver.find_element_by_xpath("//*[contains(text(), 'Gehe nach')]")
-#    driver.find_element_by_xpath("//div[@id='search-container']/div/form/span[2]/span/div/div/div[2]/div[3]/div, 'Gehe nach')]")
     driver.find_element_by_xpath("//*[contains(text(), 'Karte hinzufügen')]")
 
     # Clear the result, key word 'swisssearch' must be clear from url
