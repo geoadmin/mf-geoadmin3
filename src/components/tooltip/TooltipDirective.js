@@ -118,7 +118,11 @@ goog.require('ga_topic_service');
                 updateCursorStyle, 10, false, false);
 
         // Register click/touch/mousemove events on map
+        var deregMapEvents = angular.noop;
         var registerMapEvents = function(scope, onClick) {
+          if (deregMapEvents !== angular.noop) {
+            return;
+          }
           var map = scope.map;
           var onMapClick = function(evt) {
             var coordinate = (evt.originalEvent) ?
@@ -144,14 +148,19 @@ goog.require('ga_topic_service');
               updateCursorStyleDebounced(map, evt.pixel);
             });
           }
-          return function() {
+          deregMapEvents = function() {
             deregMapClick();
             ol.Observable.unByKey(deregPointerMove);
+            deregMapEvents = angular.noop;
           };
         };
 
         // Register leftclick event on globe
+        var deregGlobeEvents = angular.noop;
         var registerGlobeEvents = function(scope, onClick) {
+          if (deregGlobeEvents != angular.noop) {
+            return;
+          }
           var scene = scope.ol3d.getCesiumScene();
           var handler = new Cesium.ScreenSpaceEventHandler(scene.canvas);
           handler.setInputAction(function(evt) {
@@ -168,10 +177,12 @@ goog.require('ga_topic_service');
               onClick(coordinate, evt.position);
             });
           }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
-          return function() {
+          deregGlobeEvents = function() {
             if (!handler.isDestroyed()) {
-              handler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
+              handler.removeInputAction(
+                  Cesium.ScreenSpaceEventType.LEFT_CLICK);
               handler.destroy();
+              deregGlobeEvents = angular.noop;
             }
           };
         };
@@ -193,8 +204,6 @@ goog.require('ga_topic_service');
                 canceler,
                 vector,
                 vectorSource,
-                deregMapEvents = angular.noop,
-                deregGlobeEvents = angular.noop,
                 listenerKey,
                 parser = new ol.format.GeoJSON();
 
@@ -263,12 +272,10 @@ goog.require('ga_topic_service');
                   if (scope.isActive) {
                     if (enabled) {
                       deregMapEvents();
-                      deregGlobeEvents = registerGlobeEvents(scope,
-                          findFeatures);
+                      registerGlobeEvents(scope, findFeatures);
                     } else {
                       deregGlobeEvents();
-                      deregMapEvents = registerMapEvents(scope, findFeatures,
-                          gaBrowserSniffer.mobile);
+                      registerMapEvents(scope, findFeatures);
                     }
                   }
                 });
@@ -278,10 +285,9 @@ goog.require('ga_topic_service');
             scope.$watch('isActive', function(active) {
               if (active) {
                 if (is3dActive()) {
-                  deregGlobeEvents = registerGlobeEvents(scope, findFeatures);
+                  registerGlobeEvents(scope, findFeatures);
                 } else {
-                  deregMapEvents = registerMapEvents(scope, findFeatures,
-                      gaBrowserSniffer.mobile);
+                  registerMapEvents(scope, findFeatures);
                 }
               } else {
                 // Remove the highlighted feature when we deactivate the tooltip
