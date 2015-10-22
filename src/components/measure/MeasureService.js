@@ -252,7 +252,7 @@ goog.provide('ga_measure_service');
               var visible = evt.target.getVisible();
               var features = evt.target.getSource().getFeatures();
               for (var i in features) {
-                if (gaMapUtils.isMeasureFeature(features[1])) {
+                if (gaMapUtils.isMeasureFeature(features[i])) {
                   var overlays = features[i].get('overlays') || [];
                   for (var i in overlays) {
                     overlays[i].getElement().style.opacity = layer.getOpacity();
