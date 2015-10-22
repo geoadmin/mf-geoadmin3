@@ -22,7 +22,7 @@
  */
 {
   "version": 3,
-  "file": "/home/ltgal/mf-geoadmin3/.build-artefacts/ol3-cesium/cesium/Build/combineOutput/Workers/createWallOutlineGeometry.js",
+  "file": "/home/ltteo/mf-geoadmin3/.build-artefacts/ol3-cesium/cesium/Build/combineOutput/Workers/createWallOutlineGeometry.js",
   "sources": [
     "Core/defined.js",
     "Core/freezeObject.js",
