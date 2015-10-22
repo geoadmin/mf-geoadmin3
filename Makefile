@@ -198,8 +198,9 @@ ol3cesium: .build-artefacts/ol3-cesium
 	node build/build.js ../../scripts/ol3cesium-debug-geoadmin.json dist/ol3cesium-debug.js;  \
 	cp dist/ol3cesium-debug.js ../../src/lib/; \
 	make cesium/Build/Cesium/Cesium.js -e CESIUM_COMPILE_TARGET=minifyRelease; \
-	cp -r cesium/Build/Cesium ../../src/lib/; \
-	cat ../../src/lib/Cesium/Cesium.js dist/ol3cesium.js > ../../src/lib/ol3cesium.js;
+	cat cesium/Build/Cesium/Cesium.js dist/ol3cesium.js > ../../src/lib/ol3cesium.js; \
+	rm -rf ../../src/lib/Cesium/*; \
+	cp -r cesium/Build/CesiumUnminified/* ../../src/lib/Cesium;
 
 .PHONY: fastclick
 fastclick: .build-artefacts/fastclick .build-artefacts/closure-compiler/compiler.jar
