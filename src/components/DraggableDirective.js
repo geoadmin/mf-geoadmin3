@@ -68,7 +68,7 @@ goog.require('ga_browsersniffer_service');
           // When we start dragging we fix the width to avoid the popup to be
           // resized on borders
           element.css({
-            width: element.width() + 'px'
+            width: element.outerWidth() + 'px'
           });
         }
 
@@ -107,8 +107,8 @@ goog.require('ga_browsersniffer_service');
       var adjustX = function(x) {
         if (x < 0) {
           x = 0;
-        } else if (x + element.width() > $(document.body).width()) {
-          x = $(document.body).width() - element.width();
+        } else if (x + element.outerWidth() > $(document.body).width()) {
+          x = $(document.body).width() - element.outerWidth();
         }
         return x;
       };
