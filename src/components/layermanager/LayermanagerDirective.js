@@ -12,7 +12,8 @@ goog.require('ga_urlutils_service');
     'ga_layer_metadata_popup_service',
     'ga_map_service',
     'ga_attribution_service',
-    'ga_urlutils_service'
+    'ga_urlutils_service',
+    'ngDraggable'
   ]);
 
   /**
@@ -125,6 +126,19 @@ goog.require('ga_urlutils_service');
       },
       link: function(scope, element, attrs) {
         var map = scope.map;
+        var drag = {
+          above: 'drag-enter-above',
+          under: 'drag-enter-under',
+          scrollSpeed: 10,
+          layerManager: $('[ga-layermanager]'),
+          element: null,
+          position: {
+            index: undefined,
+            direction: undefined
+          },
+          previousClientY: undefined,
+          ty: undefined
+        };
         scope.mobile = gaBrowserSniffer.mobile;
 
         // Compile the time popover template
@@ -137,6 +151,11 @@ goog.require('ga_urlutils_service');
         // watch them.
         scope.layers = map.getLayers().getArray();
         scope.layerFilter = gaLayerFilters.selected;
+        scope.mobile = gaBrowserSniffer.mobile;
+        scope.tools = {
+          enabled: false,
+          index: -1
+        };
         scope.$watchCollection('layers | filter:layerFilter', function(items) {
           scope.filteredLayers = (items) ? items.slice().reverse() : [];
         });
@@ -184,7 +203,120 @@ goog.require('ga_urlutils_service');
           var layersCollection = map.getLayers();
           layersCollection.removeAt(index);
           layersCollection.insertAt(index + delta, layer);
+          scope.tools.index = scope.filteredLayers.indexOf(layer);
           evt.preventDefault();
+        };
+
+        scope.onDropComplete = function(currentLayer, evt) {
+          var currentIndex = scope.filteredLayers.indexOf(currentLayer);
+          if (drag.position.direction === drag.under &&
+              currentIndex > drag.position.index) {
+            drag.position.index++;
+          } else if (drag.position.direction === drag.above &&
+              currentIndex < drag.position.index) {
+            drag.position.index--;
+          }
+
+          if (drag.position.index < 0) {
+            drag.position.index = 0;
+          } else if (drag.position.index >= scope.layers.length) {
+            drag.position.index = scope.layers.length - 1;
+          }
+          evt.event.stopPropagation();
+          evt.event.preventDefault();
+          if (currentLayer) {
+            var layersCollection = map.getLayers();
+            var index = scope.layers.indexOf(currentLayer);
+            layersCollection.removeAt(index);
+            var correctedIndex = scope.layers.length - drag.position.index;
+            layersCollection.insertAt(correctedIndex, currentLayer);
+          }
+        };
+
+        scope.onDragStart = function() {
+          if (!drag.element) {
+            drag.element = $('.dragging');
+            // Use the original position the dragged element as an absolute
+            // position so it doesn't go off the layer manager during drag and
+            // drop.
+            drag.element.css('top', drag.element.position().top + 'px');
+            drag.element.css('position', 'absolute');
+
+            drag.layerManager.mousemove(function(evt) {
+              updateDragInfo(evt);
+              scrollLayerManager();
+            });
+          }
+        };
+
+        var updateDragInfo = function(evt) {
+          if (drag.previousClientY) {
+            drag.ty = evt.clientY - drag.previousClientY;
+            drag.previousClientY = evt.clientY;
+
+            cleanDragClass();
+            applyDragClass();
+          } else {
+            drag.previousClientY = evt.clientY;
+          }
+        };
+
+        var cleanDragClass = function(ty) {
+          if (ty === undefined || ty !== 0) {
+            var dragInfo = $('[ga-layermanager] li .drag-info');
+            dragInfo.removeClass(drag.under);
+            dragInfo.removeClass(drag.above);
+          }
+        };
+
+        var applyDragClass = function() {
+          var dragClass;
+          if (drag.ty > 0) {
+            dragClass = drag.under;
+          } else if (drag.ty < 0) {
+            dragClass = drag.above;
+          }
+          $('li.drag-enter').each(function(index, elt) {
+            if ($(elt).attr('class').indexOf('dragging') === -1 &&
+                drag.ty !== 0) {
+              $(elt).children('.drag-info').addClass(dragClass);
+              drag.position.index = $('[ga-layermanager] li').index(elt);
+              drag.position.direction = dragClass;
+            }
+          });
+        };
+
+        var scrollLayerManager = function() {
+          var upperBound = $('#selectionHeading').position().top +
+              $('#selectionHeading').height();
+          var lowerBound = $('#selection .ga-more-layers').position().top;
+
+          var elementTop = drag.element.position().top -
+              drag.element.height();
+          var elementBottom = drag.element.position().top +
+              drag.element.height();
+
+          if (elementBottom >= lowerBound) {
+            var scrollValue = drag.layerManager.scrollTop() +
+                drag.scrollSpeed;
+            drag.layerManager.scrollTop(scrollValue);
+          } else if (elementTop <= upperBound) {
+            var scrollValue = drag.layerManager.scrollTop() -
+                drag.scrollSpeed;
+            drag.layerManager.scrollTop(scrollValue);
+          }
+        };
+
+        scope.onDragStop = function() {
+          if (drag.element) {
+            cleanDragClass();
+            drag.layerManager.off('mousemove');
+            drag.element.css('top', '');
+            drag.element.css('position', '');
+            drag.element = null;
+            drag.previousClientY = undefined;
+            drag.ty = undefined;
+          }
         };
 
         scope.removeLayer = function(layer) {
@@ -239,15 +371,14 @@ goog.require('ga_urlutils_service');
         }
 
         // Toggle layer tools for small screen
-        element.on('click', '.icon-gear', function() {
-          var li = $(this).closest('li');
-          li.toggleClass('ga-layer-folded');
-          $(this).closest('ul').find('li').each(function(i, el) {
-            if (el != li[0]) {
-              $(el).addClass('ga-layer-folded');
-            }
-          });
-        });
+        scope.toggleTools = function($index) {
+          if (scope.tools.index === $index) {
+            scope.tools.enabled = !scope.tools.enabled;
+          } else {
+            scope.tools.enabled = true;
+          }
+          scope.tools.index = $index;
+        };
 
         if (!scope.mobile) {
           // Display the third party data tooltip
