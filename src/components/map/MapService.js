@@ -1780,6 +1780,33 @@ goog.require('ga_urlutils_service');
           }
           // TODO: Implement the calculation of the closest level of detail
           // available if res is not in the resolutions array
+        },
+
+        getCoord3d: function(map, ol3d, coord2d) {
+          var defer = $q.defer();
+          if (ol3d && ol3d.getEnabled()) {
+            var altitude = coord2d[2];
+            var proj = map.getView().getProjection();
+            var coordLonLat = ol.proj.toLonLat(coord2d, proj);
+            if (altitude) {
+              defer.resolve([coordLonLat[0], coordLonLat[1], altitude]);
+            } else {
+              var cart3 = Cesium.Cartesian3.fromDegrees(coordLonLat[0],
+                  coordLonLat[1]);
+              var carto = Cesium.Ellipsoid.WGS84.cartesianToCartographic(cart3);
+              return Cesium.sampleTerrain(ol3d.getCesiumScene().terrainProvider,
+                  17, [carto]).then(function(samples) {
+                // We verify the 3d is still active
+                if (ol3d.getEnabled()) {
+                  return [coordLonLat[0], coordLonLat[1], samples[0].height];
+                }
+                return undefined;
+              });
+            }
+          } else {
+            defer.resolve();
+          }
+          return defer.promise;
         }
       };
     };
