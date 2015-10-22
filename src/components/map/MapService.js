@@ -1671,7 +1671,7 @@ goog.require('ga_urlutils_service');
           if (!extent || extent.length !== 4) {
             return gaGlobalOptions.defaultExtent;
           }
-          var extent = [
+          extent = [
             Math.max(extent[0], gaGlobalOptions.defaultExtent[0]),
             Math.max(extent[1], gaGlobalOptions.defaultExtent[1]),
             Math.min(extent[2], gaGlobalOptions.defaultExtent[2]),
