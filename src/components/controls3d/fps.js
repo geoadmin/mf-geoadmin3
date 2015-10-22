@@ -116,6 +116,25 @@ function FPS(scene, scope) {
 }
 
 
+Object.defineProperties(FPS.prototype, {
+  active: {
+    get: function() {
+      return this.active_;
+    }
+  },
+  flyMode: {
+    get: function() {
+      return this.flyMode_;
+    }
+  },
+  jetMode: {
+    get: function() {
+      return this.flyMode_ && this.buttons_.shift;
+    }
+  }
+});
+
+
 /**
  * Set the mode.
  * @param {boolean} flyMode
@@ -132,30 +151,6 @@ FPS.prototype.setFlyMode = function(flyMode) {
       roll: 0.0
     });
   }
-};
-
-
-/**
- * @return {boolean}
- */
-FPS.prototype.getActive = function() {
-  return this.active_;
-};
-
-
-/**
- * @return {boolean}
- */
-FPS.prototype.getFlyMode = function() {
-  return this.flyMode_;
-};
-
-
-/**
- * @return {boolean}
- */
-FPS.prototype.getJetMode = function() {
-  return this.flyMode_ && this.buttons_.shift;
 };
 
 
