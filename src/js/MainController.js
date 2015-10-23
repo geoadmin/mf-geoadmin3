@@ -25,7 +25,8 @@ goog.require('ga_topic_service');
       $translate, $window, $document, $q, gaBrowserSniffer, gaHistory,
       gaFeaturesPermalinkManager, gaLayersPermalinkManager, gaMapUtils,
       gaRealtimeLayersManager, gaNetworkStatus, gaPermalink, gaStorage,
-      gaGlobalOptions, gaBackground, gaTime, gaLayers, gaTopic) {
+      gaGlobalOptions, gaBackground, gaTime, gaLayers, gaTopic,
+      gaLayerHideManager) {
 
     var createMap = function() {
       var toolbar = $('#zoomButtons')[0];
@@ -154,6 +155,9 @@ goog.require('ga_topic_service');
     gaFeaturesPermalinkManager($scope.map);
 
     gaRealtimeLayersManager($scope.map);
+
+    // Optimize performance by hiding non-visible layers
+    gaLayerHideManager($scope.map);
 
     var initWithPrint = /print/g.test(gaPermalink.getParams().widgets);
     var initWithFeedback = /feedback/g.test(gaPermalink.getParams().widgets);
