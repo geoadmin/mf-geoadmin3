@@ -26,8 +26,9 @@
               ng-click="showWarning(layer)"></button>
       <!--button ng-if="isBodLayer(layer)" class="ga-icon ga-btn icon-info-sign"
               ng-click="displayLayerMetadata($event, layer)"></button-->
-    </div>
-    <div class="ga-layer-tools">
+      <button class="ga-icon icon-gear"></button>
+    </div><!--ga-layer-infos-->
+    <div class="ga-layer-tools"">
       <label>
         <div translate>transparency</div>&nbsp;
         <input  ng-if="useRange" type="range" min="0" max="1" step="0.05" value="1" ng-model="layer.invertedOpacity"/>
@@ -46,8 +47,6 @@
         <button ng-if="hasMetadata(layer)" class="ga-icon ga-btn icon-info-sign"
                 ng-click="displayLayerMetadata($event, layer)"></button>
       </div>
-    </div>
-    <button class="ga-icon icon-gear"></button>
+    </div><!--ga-layer-tools-->
   </li>
 </ul>
-
