@@ -94,8 +94,8 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions, $q) {
   };
 
   // Load the cesium libary and initialize the viewer
+  var loading = false;
   var loadCesiumLib = function() {
-    var loading = false;
     var toActivate = false;
     return function(activate) {
       // Check if cesium library is already loaded
@@ -122,9 +122,9 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions, $q) {
   });
 
   this.enable = function(activate) {
-    if (!ol3d) {
+    if (!ol3d && !loading) {
       loadCesiumLib(activate);
-    } else {
+    } else if (ol3d && ol3d.getEnabled() != activate) {
       enableOl3d(ol3d, activate);
     }
   };
