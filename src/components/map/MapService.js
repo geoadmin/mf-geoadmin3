@@ -1093,7 +1093,6 @@ goog.require('ga_urlutils_service');
           var requestedLayer = config3d.wmsLayers || config3d.serverLayerName ||
               bodId;
           var format = config3d.format || 'png';
-
           if (config3d.type == 'aggregate') {
             var providers = [];
             config3d.subLayersIds.forEach(function(item) {
@@ -1110,8 +1109,6 @@ goog.require('ga_urlutils_service');
             params = {
               url: getWmtsGetTileTpl(config3d.url, requestedLayer, timestamp,
                   '4326', format),
-              minimumRetrievingLevel: window.minimumRetrievingLevel,
-              maximumLevel: 20,
               tileSize: 256,
               subdomains: config3d.subdomains || dfltWmtsMapProxySubdomains
             };
@@ -1142,10 +1139,17 @@ goog.require('ga_urlutils_service');
           var extent = gaMapUtils.intersectWithDefaultExtent(config3d.extent ||
               ol.proj.get('EPSG:21781').getExtent());
           if (params) {
+            var minLod = gaMapUtils.getLodFromRes(config3d.maxResolution) ||
+                window.minimumRetrievingLevel;
+            var maxLod = gaMapUtils.getLodFromRes(config3d.minResolution);
             provider = new Cesium.UrlTemplateImageryProvider({
               url: params.url,
-              minimumRetrievingLevel: window.minimumRetrievingLevel,
               subdomains: params.subdomains,
+              minimumRetrievingLevel: minLod,
+              maximumRetrievingLevel: maxLod,
+              // Terrain has only 17 levels. This property active client zoom
+              // for next levels.
+              maximumLevel: 17,
               rectangle: gaMapUtils.extentToRectangle(extent, 'EPSG:21781'),
               tilingScheme: new Cesium.GeographicTilingScheme(),
               tileWidth: params.tileSize,
@@ -1416,6 +1420,9 @@ goog.require('ga_urlutils_service');
       var isExtentEmpty = function(extent) {
         return extent[0] >= extent[2] || extent[1] >= extent[3];
       };
+      // Level of detail for the default resolution
+      var lodForDfltRes = gaGlobalOptions.defaultLod;
+      var dfltResIdx = resolutions.indexOf(gaGlobalOptions.defaultResolution);
 
       return {
         Z_PREVIEW_LAYER: 1000,
@@ -1738,6 +1745,18 @@ goog.require('ga_urlutils_service');
           });
           layer.set('altitudeMode', 'clampToGround');
           return layer;
+        },
+
+        getLodFromRes: function(res) {
+          if (!res) {
+            return;
+          }
+          var idx = resolutions.indexOf(res);
+          if (idx != -1) {
+            return lodForDfltRes + (idx - dfltResIdx);
+          }
+          // TODO: Implement the calculation of the closest level of detail
+          // available if res is not in the resolutions array
         }
       };
     };
