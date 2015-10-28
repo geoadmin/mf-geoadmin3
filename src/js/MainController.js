@@ -223,6 +223,7 @@ goog.require('ga_topic_service');
 
     $scope.globals = {
       dev3d: gaGlobalOptions.dev3d,
+      pegman: gaGlobalOptions.pegman,
       searchFocused: !gaBrowserSniffer.mobile,
       homescreen: false,
       tablet: gaBrowserSniffer.mobile && !gaBrowserSniffer.phone,

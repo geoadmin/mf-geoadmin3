@@ -234,7 +234,7 @@ itemscope itemtype="http://schema.org/WebApplication"
     </div>
 % endif
 
-    <div ga-controls3d ga-controls3d-ol3d="::ol3d" ng-if="ol3d" ng-show="globals.is3dActive"></div>
+    <div ga-controls3d ga-controls3d-ol3d="::ol3d" ng-if="ol3d" ng-show="globals.is3dActive" ga-controls3d-pegman="globals.pegman"></div>
 
 % if device != 'embed':
     <div ng-cloak ga-background-selector
@@ -708,6 +708,7 @@ itemscope itemtype="http://schema.org/WebApplication"
         module.constant('gaGlobalOptions', {
           //dev3d to be removed once 3d goes live
           dev3d: !!window.location.search.match(/(dev3d=true)/),
+          pegman: !!window.location.search.match(/(pegman=true)/),
           mapUrl : location.origin + '${apache_base_path}',
           apiUrl : location.protocol + '${api_url}',
           publicUrl : location.protocol + '${public_url}',
