@@ -10,6 +10,7 @@ goog.provide('ga_importwms_controller');
       defaultWMSList: [
         'https://wms.geo.admin.ch/',
         'http://ogc.heig-vd.ch/mapserver/wms',
+        'http://owsproxy.lgl-bw.de/owsproxy/ows/WMS_Maps4BW',
         'https://www.gis.stadt-zuerich.ch/maps/services/wms/WMS-ZH-STZH-OGD/MapServer/WMSServer',
         'https://wms.geo.gl.ch/',
         'http://mapserver1.gr.ch/wms/admineinteilung',
