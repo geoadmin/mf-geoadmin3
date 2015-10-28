@@ -17,7 +17,7 @@ def wait_printSucessTagExist(driver, timeout=DEFAULT_WAIT):
             #print "Test find element in wait_printSucessTagExist()"
             driver.find_element_by_xpath("//span[@ng-if='options.printsuccess']")
             TagPrintSuccessExist = True
-            print "Time wait : " + str(round((t1 - t0), 2))
+#            print "Time wait : " + str(round((t1 - t0), 2))
         except Exception:
             pass
         t1 = time.time()
@@ -33,8 +33,8 @@ def wait_printSucessTagExist(driver, timeout=DEFAULT_WAIT):
 def runPrintTest(driver, target): 
     #We maximize our window to be sure to be in full resolution
     #driver.manage().window().maximize();
+    print "Start Print tests"
     target_url =  target + '/?lang=de'
-    print "URL test : " + target_url
     driver.get(target_url)
     # wait until the page is loaded. We know this when title page is set to Schweiz
     try:

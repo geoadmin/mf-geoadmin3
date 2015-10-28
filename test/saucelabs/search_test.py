@@ -28,7 +28,7 @@ def wait_url_changed(driver, old_url, timeout=DEFAULT_WAIT):
     return bool(not UrlHasChanged)
 
 
-def search_test(cap, driver, url):
+def runSearch_test(cap, driver, url):
     print 'Search_test starts!'
     driver.get(url)
     driver.maximize_window()
@@ -41,7 +41,10 @@ def search_test(cap, driver, url):
     driver.find_element_by_xpath("//*[contains(text(), 'Bern')]").click()
 
     #  TO DO : Specifically search if href of links is updated
-    #driver.find_element_by_xpath("//*[@id='toptools']//a[contains(@href,'" + QUERYSTRING_OF_BERN + "')]")
+#    print 'Test link toptools start'
+#    assert QUERYSTRING_OF_BERN in driver.find_element_by_xpath("//*[@id='toptools']/a[3]").get_attribute("href")
+#    link_fr_toptool = driver.find_element_by_xpath("//div[@id='toptools']/div[2]/div/a[5]") ##English link
+#    print "Test link toptools end"
 
     #  Was the URL in the address bar adapted?
     current_url = driver.current_url

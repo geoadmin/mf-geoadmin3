@@ -6,12 +6,12 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from start_test import start_test
-from kml_test import kml_test
-from search_test import search_test
+from start_test import runStart_test
+from kml_test import runKml_test
+from search_test import runSearch_test
 from swisssearch_test import runSwissSearchTest
 from print_test import runPrintTest
-from mobile_test import mobile_test
+from mobile_test import runMobile_test
 
 if __name__ == '__main__':
     
@@ -40,7 +40,7 @@ if __name__ == '__main__':
         {'platform': "Windows 7", 'browserName': "chrome", 'version': "43.0", 'screenResolution': "1280x1024" },
         {'platform': "Windows 7", 'browserName': "chrome", 'version': "44.0", 'screenResolution': "1280x1024" },
         {'platform': "Windows 7", 'browserName': "chrome", 'version': "45.0", 'screenResolution': "1280x1024" },
-         {'platform': "Windows 8.1", 'browserName': "chrome", 'version': "45.0", 'screenResolution': "1280x1024" },
+        {'platform': "Windows 8.1", 'browserName': "chrome", 'version': "45.0", 'screenResolution': "1280x1024" },
         {'platform': "Windows 7", 'browserName': "firefox", 'version': "38.0", 'screenResolution': "1280x1024" },
         {'platform': "Windows 7", 'browserName': "firefox", 'version': "39.0", 'screenResolution': "1280x1024" },
         {'platform': "Windows 7", 'browserName': "firefox", 'version': "40.0", 'screenResolution': "1280x1024" },
@@ -58,22 +58,21 @@ if __name__ == '__main__':
     ## Internet Explorer 10.0
 #    desired_cap_list = [{'name': "ltalp test", 'build': "Swiss 1", 'platform': "Windows 7", 'browserName': "internet explorer", 'version': "10.0", 'screenResolution': "1280x1024", 'tags': "Swisssearch step 1" }]
 
+    ## okay we will start the script!
+    print "Starting SauceLabs script!"
+
     for current_desired_cap in desired_cap_list: # elt va prendre les valeurs successives des éléments de ma_liste
         print "+--> Start test with " + current_desired_cap['platform'] + " " + current_desired_cap['browserName'] + " (" + current_desired_cap['version'] + ")"
 
         driver = webdriver.Remote(
             command_executor='http://' + saucelabs_user + ':' + saucelabs_key + '@ondemand.saucelabs.com:80/wd/hub', desired_capabilities=current_desired_cap)
-        
-        ## okay we will start the script!
-        print "Starting SauceLabs script!"
-
         try: 
-            #start_test(driver, url)
-            #mobile_test(current_desired_cap, driver, url) ## Pb with Firefox
-            search_test(desired_cap_list, driver, url)
-            #kml_test(desired_cap_list, driver, url)    ## Ok with Chrome and FF 
-            #runSwissSearchTest(driver, url)            ## Ok with Chrome and FF
-            #runPrintTest(driver, url)                  ## Ok with Chrome and FF
+            runStart_test(driver, url)                         ## Ok with Chrome and FF
+            runMobile_test(current_desired_cap, driver, url)   ## Ok with Chrome and Firefox
+            runSearch_test(desired_cap_list, driver, url)      ## Ok with Chrome and FF
+            runKml_test(desired_cap_list, driver, url)         ## Ok with Chrome and FF  
+            runSwissSearchTest(driver, url)                 ## Ok with Chrome and FF 
+            runPrintTest(driver, url)                       ## Ok with Chrome and FF
         finally:
             driver.quit()
         print "--- end test for this browser"

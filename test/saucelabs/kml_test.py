@@ -12,7 +12,7 @@ from selenium.webdriver.support.ui import Select
 QUERYSTRING_KML = "KML%7C%7Chttp:%2F%2Fopendata.utou.ch%2Furbanproto%2Fgeneva%2Fgeo%2Fkml%2FRoutes.kml"
 POSITION_TO_KML = "X=124759.52&Y=499224.22"
 
-def kml_test(cap, driver, target):
+def runKml_test(cap, driver, target):
     driver.get(target)
     #We maximize our window to be sure to be in full resolution
     driver.maximize_window()
