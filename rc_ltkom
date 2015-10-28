@@ -1,0 +1,7 @@
+export DRIVE_USER=www-data
+export DRIVE_PWD=www-data
+
+export API_URL=//mf-chsdi3.dev.bgdi.ch/ltkom
+export APACHE_BASE_PATH=/ltkom
+export BROWSERSTACK_TARGETURL=https://mf-geoadmin3.dev.bgdi.ch/ltkom
+export SAUCELABS_TARGETURL=https://mf-geoadmin3.dev.bgdi.ch/ltkom
