@@ -67,6 +67,7 @@ help:
 	@echo "- testdev          Run the JavaScript tests in dev mode"
 	@echo "- testprod         Run the JavaScript tests in prod mode"
 	@echo "- teste2e          Run browserstack tests"
+	@echo "- saucelabs        Run browserstack tests"
 	@echo "- apache           Configure Apache (restart required)"
 	@echo "- appcache         Update appcache file"
 	@echo "- fixrights        Fix rights in common folder"
@@ -129,7 +130,11 @@ testprod: prd/lib/build.js test/karma-conf-prod.js node_modules
 
 .PHONY: teste2e
 teste2e: guard-BROWSERSTACK_TARGETURL guard-BROWSERSTACK_USER guard-BROWSERSTACK_KEY
-	node test/selenium/tests.js -t ${BROWSERSTACK_TARGETURL}
+	node test/selenium/tests.js -t ${E2E_TARGETURL}
+
+.PHONY: saucelabs
+saucelabs: .build-artefacts/saucelab-requirements-installation.timestamp
+	${PYTHON_CMD} test/saucelabs/test.py ${E2E_TARGETURL}
 
 .PHONY: apache
 apache: apache/app.conf
