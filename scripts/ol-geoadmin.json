@@ -37,6 +37,7 @@
     "ol.easing.linear",
     "ol.extent.buffer",
     "ol.extent.containsCoordinate",
+    "ol.extent.containsXY",
     "ol.extent.getCenter",
     "ol.extent.getHeight",
     "ol.extent.getWidth",

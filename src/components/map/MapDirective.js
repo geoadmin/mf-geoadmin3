@@ -118,10 +118,10 @@ goog.require('ga_permalink');
                 var position, heading, pitch;
                 if (isFinite(params.lon) && isFinite(params.lat) &&
                     isFinite(params.elevation)) {
-                  var lon = Cesium.Math.toRadians(parseFloat(params.lon));
-                  var lat = Cesium.Math.toRadians(parseFloat(params.lat));
+                  var lon = params.lon;
+                  var lat = params.lat;
                   var elevation = parseFloat(params.elevation);
-                  position = new Cesium.Cartographic(lon, lat, elevation);
+                  position = Cesium.Cartesian3.fromDegrees(lon, lat, elevation);
                 }
                 if (isFinite(params.heading)) {
                   heading = Cesium.Math.toRadians(parseFloat(params.heading));
@@ -130,10 +130,12 @@ goog.require('ga_permalink');
                   pitch = Cesium.Math.toRadians(parseFloat(params.pitch));
                 }
                 camera.setView({
-                  positionCartographic: position,
-                  heading: heading,
-                  pitch: pitch,
-                  roll: 0.0
+                  destination: position,
+                  orientation: {
+                    heading: heading,
+                    pitch: pitch,
+                    roll: 0.0
+                  }
                 });
 
                 // update permalink

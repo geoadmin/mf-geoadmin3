@@ -20,7 +20,6 @@
  * Portions licensed separately.
  * See https://github.com/AnalyticalGraphicsInc/cesium/blob/master/LICENSE.md for full licensing details.
  */
-
 /*global self:true*/
 // make sure self is defined so that the Dojo build can evaluate this file without crashing.
 if (typeof self === 'undefined') {
@@ -41,4 +40,3 @@ self.onmessage = function(event) {
         postMessage({});
     }
 };
-//# sourceMappingURL=transferTypedArrayTest.js.map

@@ -21,8 +21,8 @@ DEPLOY_ROOT_DIR := /var/www/vhosts/mf-geoadmin3/private/branch
 DEPLOY_TARGET ?= 'dev'
 LAST_DEPLOY_TARGET := $(shell if [ -f .build-artefacts/last-deploy-target ]; then cat .build-artefacts/last-deploy-target 2> /dev/null; else echo '-none-'; fi)
 OL3_VERSION ?= 4846a4925859fd34dff0371506f13824329b8765
-OL3_CESIUM_VERSION ?= cd65a124a2c9f907abf8907be44cfa45228dc5a7
-CESIUM_VERSION ?= f04e8953bbef9103f53b8564039608dbaa5d7e16
+OL3_CESIUM_VERSION ?= 7daac68d55284d7c2ff690cd551e879dfac3b126
+CESIUM_VERSION ?= 257364f24d12ac44006f92de597eaead755780b7
 DEFAULT_TOPIC_ID ?= ech
 TRANSLATION_FALLBACK_CODE ?= de
 LANGUAGES ?= '[\"de\", \"en\", \"fr\", \"it\", \"rm\"]'
@@ -195,10 +195,12 @@ ol3cesium: .build-artefacts/ol3-cesium
 	cd ..; \
 	git show; \
 	ln -T -f -s ../../../../ol3-cesium-plugin/ src/plugins/geoadmin; \
-	make dist; \
+	( cd cesium; [ -f node_modules/.bin/gulp ] || npm install ); \
+	( cd cesium; if [ -f "Build/Cesium/Cesium.js" ] ; then echo 'Skipping Cesium minified build'; else node_modules/.bin/gulp minifyRelease; fi ); \
+	( cd cesium; if [ -f "Build/CesiumUnminified/Cesium.js" ] ; then echo 'Skipping Cesium debug build'; else node_modules/.bin/gulp combine; fi ); \
+	NO_CESIUM=1 make dist; \
 	node build/build.js ../../scripts/ol3cesium-debug-geoadmin.json dist/ol3cesium-debug.js;  \
 	cp dist/ol3cesium-debug.js ../../src/lib/; \
-	make cesium/Build/Cesium/Cesium.js -e CESIUM_COMPILE_TARGET=minifyRelease; \
 	cat cesium/Build/Cesium/Cesium.js dist/ol3cesium.js > ../../src/lib/ol3cesium.js; \
 	rm -rf ../../src/lib/Cesium/*; \
 	cp -r cesium/Build/CesiumUnminified/* ../../src/lib/Cesium;
