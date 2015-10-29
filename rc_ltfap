@@ -1,3 +1,4 @@
 export API_URL=//mf-chsdi3.dev.bgdi.ch/ltfap
 export APACHE_BASE_PATH=/ltfap
 export BROWSERSTACK_TARGETURL=https://mf-geoadmin3.dev.bgdi.ch/ltfap
+export SAUCELABS_TARGETURL=https://mf-geoadmin3.dev.bgdi.ch/ltfap

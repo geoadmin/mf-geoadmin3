@@ -5,3 +5,4 @@ export PUBLIC_URL=//public.dev.bgdi.ch
 export APACHE_BASE_PATH=
 export BROWSERSTACK_TARGETURL=https://mf-geoadmin3.dev.bgdi.ch
 export VARNISH_HOSTS=(ip-10-220-4-250.eu-west-1.compute.internal)
+export SAUCELABS_TARGETURL=https://mf-geoadmin3.dev.bgdi.ch
