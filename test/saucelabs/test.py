@@ -44,7 +44,7 @@ if __name__ == '__main__':
         {'platform': "Windows 7", 'browserName': "firefox", 'version': "38.0", 'screenResolution': "1280x1024" },
         {'platform': "Windows 7", 'browserName': "firefox", 'version': "39.0", 'screenResolution': "1280x1024" },
         {'platform': "Windows 7", 'browserName': "firefox", 'version': "40.0", 'screenResolution': "1280x1024" },
-        {'platform': "Windows 8.1", 'browserName': "firefox", 'version': "40.0", 'screenResolution': "1280x1024"}
+#        {'platform': "Windows 8.1", 'browserName': "firefox", 'version': "40.0", 'screenResolution': "1280x1024"}
 #        {'platform': "Windows 7", 'browserName': "internet explorer", 'version': "9.0", 'screenResolution': "1280x1024" },
 #        {'platform': "Windows 7", 'browserName': "internet explorer", 'version': "10.0", 'screenResolution': "1280x1024" },
 #        {'platform': "Windows 7", 'browserName': "internet explorer", 'version': "11.0", 'screenResolution': "1280x1024" },
@@ -72,7 +72,7 @@ if __name__ == '__main__':
             runSearch_test(desired_cap_list, driver, url)      ## Ok with Chrome and FF
             runKml_test(desired_cap_list, driver, url)         ## Ok with Chrome and FF  
             runSwissSearchTest(driver, url)                 ## Ok with Chrome and FF 
-            runPrintTest(driver, url)                       ## Ok with Chrome and FF
+#            runPrintTest(driver, url)                       ## Ok with Chrome and FF
         finally:
             driver.quit()
         print "--- end test for this browser"

@@ -112,8 +112,7 @@ testprod: prd/lib/build.js test/karma-conf-prod.js node_modules
 	PHANTOMJS_BIN="node_modules/.bin/phantomjs" ./node_modules/.bin/karma start test/karma-conf-prod.js --single-run
 
 .PHONY: teste2e
-teste2e: guard-BROWSERSTACK_TARGETURL guard-BROWSERSTACK_USER guard-BROWSERSTACK_KEY
-	node test/selenium/tests.js -t ${BROWSERSTACK_TARGETURL}
+teste2e: .build-artefacts/saucelab-requirements-installation.timestamp
 	${PYTHON_CMD} test/saucelabs/test.py ${SAUCELABS_TARGETURL}
 
 .PHONY: testsaucelabs
