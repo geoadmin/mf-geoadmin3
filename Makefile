@@ -4,6 +4,7 @@ SRC_COMPONENTS_LESS_FILES := $(shell find src/components -type f -name '*.less')
 SRC_COMPONENTS_PARTIALS_FILES = $(shell find src/components -type f -path '*/partials/*' -name '*.html')
 APACHE_BASE_DIRECTORY ?= $(CURDIR)
 LAST_APACHE_BASE_DIRECTORY := $(shell if [ -f .build-artefacts/last-apache-base-directory ]; then cat .build-artefacts/last-apache-base-directory 2> /dev/null; else echo '-none-'; fi)
+LAST_SAUCELABS_TARGETURL := $(shell if [ -f .build-artefacts/last-saucelabs-targeturl ]; then cat .build-artefacts/last-saucelabs-targeturl 2> /dev/null; else echo '-none-'; fi)
 APACHE_BASE_PATH ?= /$(shell id -un)
 LAST_APACHE_BASE_PATH := $(shell if [ -f .build-artefacts/last-apache-base-path ]; then cat .build-artefacts/last-apache-base-path 2> /dev/null; else echo '-none-'; fi)
 API_URL ?= //mf-chsdi3.dev.bgdi.ch
@@ -52,6 +53,7 @@ help:
 	@echo "- testdev          Run the JavaScript tests in dev mode"
 	@echo "- testprod         Run the JavaScript tests in prod mode"
 	@echo "- teste2e          Run browserstack tests"
+	@echo "- testsaucelabs    Run aucelabs tests"
 	@echo "- apache           Configure Apache (restart required)"
 	@echo "- appcache         Update appcache file"
 	@echo "- fixrights        Fix rights in common folder"
@@ -75,6 +77,7 @@ help:
 	@echo "- API_URL Service URL         (build with: $(LAST_API_URL), current value: $(API_URL))"
 	@echo "- APACHE_BASE_PATH Base path  (build with: $(LAST_APACHE_BASE_PATH), current value: $(APACHE_BASE_PATH))"
 	@echo "- APACHE_BASE_DIRECTORY       (build with: $(LAST_APACHE_BASE_DIRECTORY), current value: $(APACHE_BASE_DIRECTORY))"
+	@echo "- SAUCELABS_TARGETURL         (build with: $(LAST_SAUCELABS_TARGETURL), current value: $(SAUCELABS_TARGETURL))"
 
 	@echo
 
@@ -112,6 +115,11 @@ testprod: prd/lib/build.js test/karma-conf-prod.js node_modules
 .PHONY: teste2e
 teste2e: guard-BROWSERSTACK_TARGETURL guard-BROWSERSTACK_USER guard-BROWSERSTACK_KEY
 	node test/selenium/tests.js -t ${BROWSERSTACK_TARGETURL}
+	${PYTHON_CMD} test/saucelabs/test.py ${SAUCELABS_TARGETURL}
+
+.PHONY: testsaucelabs
+testsaucelabs: .build-artefacts/saucelab-requirements-installation.timestamp
+	${PYTHON_CMD} test/saucelabs/test.py ${SAUCELABS_TARGETURL}
 
 .PHONY: apache
 apache: apache/app.conf
@@ -497,6 +505,13 @@ $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule
 
 .build-artefacts/python-venv/bin/htmlmin: .build-artefacts/python-venv
 	${PYTHON_CMD} .build-artefacts/python-venv/bin/pip install "htmlmin==0.1.6"
+	touch $@
+
+.build-artefacts/saucelab-requirements-installation.timestamp: .build-artefacts/python-venv
+	${PYTHON_CMD} .build-artefacts/python-venv/bin/pip install "selenium"
+	${PYTHON_CMD} .build-artefacts/python-venv/bin/pip install "sauceclient"
+	${PYTHON_CMD} .build-artefacts/python-venv/bin/pip install "pytest"
+	${PYTHON_CMD} .build-artefacts/python-venv/bin/pip install "pytest-xdist"
 	touch $@
 
 .build-artefacts/translate-requirements-installation.timestamp: .build-artefacts/python-venv
