@@ -22,6 +22,7 @@ goog.require('ga_map_service');
       restrict: 'A',
       templateUrl: 'components/controls3d/partials/controls3d.html',
       scope: {
+        pegman: '=gaControls3dPegman',
         ol3d: '=gaControls3dOl3d'
       },
       link: function(scope, element, attrs) {
