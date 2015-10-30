@@ -19,6 +19,13 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions, $q) {
   var ol3d = undefined;
   var rotateOnEnable = true;
 
+  // the maxium extent in EPSG:4326 and radians
+  var extent4326 = ol.proj.transformExtent(gaGlobalOptions.defaultExtent,
+      'EPSG:21781', 'EPSG:4326');
+  extent4326 = extent4326.map(function(angle) {
+    return angle * Math.PI / 180;
+  });
+
   var intParam = function(name, defaultValue) {
     var params = gaPermalink.getParams();
     return parseInt(params[name] || defaultValue, 10);
@@ -56,8 +63,23 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions, $q) {
     scene.screenSpaceCameraController.maximumZoomDistance = 500000;
     scene.terrainProvider =
         gaLayers.getCesiumTerrainProviderById(gaGlobalOptions.defaultTerrain);
+    scene.postRender.addEventListener(limitCamera, scene);
     enableOl3d(cesiumViewer, enabled);
     return cesiumViewer;
+  };
+
+  var limitCamera = function() {
+    var pos = this.camera.positionCartographic.clone();
+    var inside = ol.extent.containsXY(extent4326, pos.longitude, pos.latitude);
+    if (!inside) {
+      pos.longitude = Math.max(extent4326[0], pos.longitude);
+      pos.latitude = Math.max(extent4326[1], pos.latitude);
+      pos.longitude = Math.min(extent4326[2], pos.longitude);
+      pos.latitude = Math.min(extent4326[3], pos.latitude);
+      this.camera.setView({
+        positionCartographic: pos
+      });
+    }
   };
 
   var enableOl3d = function(ol3d, enable) {
