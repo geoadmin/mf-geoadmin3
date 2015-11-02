@@ -157,7 +157,7 @@ goog.require('ga_topic_service');
     gaRealtimeLayersManager($scope.map);
 
     // Optimize performance by hiding non-visible layers
-    gaLayerHideManager($scope.map);
+    gaLayerHideManager($scope);
 
     var initWithPrint = /print/g.test(gaPermalink.getParams().widgets);
     var initWithFeedback = /feedback/g.test(gaPermalink.getParams().widgets);
