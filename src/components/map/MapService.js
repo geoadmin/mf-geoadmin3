@@ -1168,7 +1168,10 @@ goog.require('ga_urlutils_service');
               tileWidth: params.tileSize,
               tileHeight: params.tileSize,
               hasAlphaChannel: (format == 'png'),
-              availableLevels: window.imageryAvailableLevels
+              availableLevels: window.imageryAvailableLevels,
+              // Experimental
+              metadataUrl: '//terrain3.geo.admin.ch/1.0.0/' + bodId +
+                  '/default/20150101/4326/'
             });
           }
           if (provider) {
