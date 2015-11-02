@@ -252,6 +252,16 @@ goog.require('ga_topic_service');
         $scope.globals.isSwipeActive = false;
       }
     });
+    // Deactivate all tools when 3d is opening
+    $scope.$watch('globals.is3dActive', function(active) {
+      if (active) {
+        $scope.globals.feedbackPopupShown = false;
+        $scope.globals.isFeatureTreeActive = false;
+        $scope.globals.isSwipeActive = false;
+        $scope.globals.isDrawActive = false;
+        $scope.globals.isShareActive = false;
+      }
+    });
     $rootScope.$on('gaNetworkStatusChange', function(evt, offline) {
       $scope.globals.offline = offline;
     });
