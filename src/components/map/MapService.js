@@ -982,7 +982,7 @@ goog.require('ga_urlutils_service');
               response.data['ch.swisstopo.swissimage-product_3d'] = {
                 serverLayerName: 'ch.swisstopo.swissimage-product',
                 url: '//wmts{s}.geo.admin.ch/1.0.0/{Layer}/default/' +
-                    '{Time}/{TileMatrixSet}/{z}/{y}/{x}.{Format}',
+                    '{Time}_50/{TileMatrixSet}/{z}/{y}/{x}.{Format}',
                 subdomains: '56789',
                 attribution: 'swissimage 3D',
                 attributionUrl: 'http://www.swisstopo.admin.ch/internet/' +
