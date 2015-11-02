@@ -45,14 +45,28 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions, $q) {
     return defaultValue;
   };
 
+  var arrayParam = function(name, defaultValue) {
+    var params = gaPermalink.getParams()[name];
+    var arr = (params && params.length) ? params.split(',') : defaultValue;
+    if (arr) {
+      arr.forEach(function(item, i) {
+        arr[i] = parseInt(item, 10);
+      });
+    }
+    return arr;
+  };
+
   // Create the cesium viewer with basic layers
   var initCesiumViewer = function(map, enabled) {
     var tileCacheSize = intParam('tileCacheSize', '100');
     var maximumScreenSpaceError = floatParam('maximumScreenSpaceError', '2');
-    window.minimumRetrievingLevel = intParam('minimumRetrievingLevel', '5');
     var fogEnabled = boolParam('fogEnabled', false);
     var fogDensity = floatParam('fogDensity', '0.0001');
     var fogSseFactor = floatParam('fogSseFactor', '25');
+    window.minimumRetrievingLevel = intParam('minimumRetrievingLevel', '5');
+    window.terrainAvailableLevels = arrayParam('terrainLevels', undefined);
+    window.imageryAvailableLevels = arrayParam('imageryLevels', undefined);
+
     var cesiumViewer;
     try {
       cesiumViewer = new olcs.OLCesium({
