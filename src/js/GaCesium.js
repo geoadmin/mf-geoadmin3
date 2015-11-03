@@ -33,7 +33,6 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions, $q) {
 
   // Create the cesium viewer with basic layers
   var initCesiumViewer = function(map, enabled) {
-    var frustumFar = intParam('frustumFar', '500000000');
     var tileCacheSize = intParam('tileCacheSize', '100');
     var maximumScreenSpaceError = intParam('maximumScreenSpaceError', '2');
     window.minimumRetrievingLevel = intParam('minimumRetrievingLevel', '6');
@@ -57,7 +56,6 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions, $q) {
     globe.tileCacheSize = tileCacheSize;
     globe.maximumScreenSpaceError = maximumScreenSpaceError;
     var scene = cesiumViewer.getCesiumScene();
-    scene.camera.frustum.far = frustumFar;
     scene.globe.depthTestAgainstTerrain = true;
     scene.screenSpaceCameraController.minimumZoomDistance = 50;
     scene.screenSpaceCameraController.maximumZoomDistance = 500000;
