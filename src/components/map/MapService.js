@@ -567,9 +567,13 @@ goog.require('ga_urlutils_service');
 
       // Sanitize the feature's properties (id, geometry, style).
       var sanitizeFeature = function(feature, projection) {
+        var geometry = feature.getGeometry();
+        // Remove feature without geometry.
+        if (!geometry) {
+          return;
+        }
         // Ensure polygons are closed.
         // Reason: print server failed when polygons are not closed.
-        var geometry = feature.getGeometry();
         closeGeometries((geometry instanceof ol.geom.GeometryCollection) ?
             geometry.getGeometries() : [geometry]);
 
@@ -650,6 +654,7 @@ goog.require('ga_urlutils_service');
           })];
           feature.setStyle(styles);
         }
+        return feature;
       };
 
       var Kml = function() {
@@ -675,11 +680,15 @@ goog.require('ga_urlutils_service');
 
           // Read features available in a kml string, then create an ol layer.
           return readFeatures(kml).then(function(features) {
+            var sanitizedFeatures = [];
             for (var i = 0, ii = features.length; i < ii; i++) {
-              sanitizeFeature(features[i], options.projection);
+              var feat = sanitizeFeature(features[i], options.projection);
+              if (feat) {
+                sanitizedFeatures.push(feat);
+              }
             }
             var source = new ol.source.Vector({
-              features: features
+              features: sanitizedFeatures
             });
             var layerOptions = {
               id: options.id,
