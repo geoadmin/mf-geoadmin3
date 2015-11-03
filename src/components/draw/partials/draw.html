@@ -123,7 +123,9 @@
         <input type="text" ng-model="userShortenUrl" class="form-control"
                ga-share-copy-input data-placement="top">
         <span class="input-group-btn">
-          <button class="btn btn-default" ga-share-copy-bt=".ga-share-permalink input"></button>
+          <button class="btn btn-default"
+                  ga-share-copy-bt=".ga-share-permalink input[ng-model=userShortenUrl]">
+          </button>
         </span>
       </div>
     </div>
@@ -133,7 +135,9 @@
         <input type="text" ng-model="adminShortenUrl" class="form-control"
                ga-share-copy-input data-placement="top">
         <span class="input-group-btn">
-          <button class="btn btn-default" ga-share-copy-bt=".ga-share-permalink input"></button>
+          <button class="btn btn-default"
+                  ga-share-copy-bt=".ga-share-permalink input[ng-model=adminShortenUrl]">
+          </button>
         </span>
       </div>
     </div>
