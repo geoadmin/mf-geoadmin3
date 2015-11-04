@@ -830,7 +830,11 @@ goog.require('ga_urlutils_service');
         var layers;
 
         // Returns a unique WMS template url (e.g. //wms{s}.geo.admin.ch)
-        var getWmsTpl = function(tpl, wmsParams) {
+        var getWmsTpl = function(wmsUrl, wmsParams) {
+          var tpl = wmsUrl;
+          if (/wms.geo/.test(wmsUrl)) {
+            tpl = undefined;
+          }
           if (tpl && /(request|service|version)/i.test(tpl)) {
             tpl = gaUrlUtils.remove(tpl, ['request', 'service', 'version'],
                 true);
@@ -1030,12 +1034,6 @@ goog.require('ga_urlutils_service');
                 attributionUrl: 'http://www.swisstopo.admin.ch/internet/' +
                     'swisstopo/en/home/products/height/swissALTI3D.html'
               };
-              // Use WMS multi-domains by default
-              angular.forEach(response.data, function(conf, id) {
-                if (conf.type == 'wms' && /wms.geo/.test(conf.wmsUrl)) {
-                   delete response.data[id].wmsUrl;
-                }
-              });
             }
             if (!layers) { // First load
               layers = response.data;
