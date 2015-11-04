@@ -31,6 +31,109 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions, $q) {
     return parseInt(params[name] || defaultValue, 10);
   };
 
+  // Building related code taken from original POC
+  // https://raw.githubusercontent.com/geoadmin/3d-testapp/198e5c3f5c5d22841d78183585874b4b5c85ddf4/poc.js?token=ACdAHY4w9qWFM6-g6ZISbNJWkhsLbEG7ks5WL2p0wA%3D%3D
+  //// This is a very simplified loading strategy for building tiles
+  var tileModelProvider = {
+     add: function(swCorner, neCorner, gltf) {
+        var rectangle = Cesium.Rectangle.fromCartographicArray([
+          Cesium.Cartographic.fromDegrees.apply(null, swCorner),
+          Cesium.Cartographic.fromDegrees.apply(null, neCorner)]
+        );
+        var center = Cesium.Rectangle.center(rectangle);
+        center.height = Math.max(swCorner[2], neCorner[2]) + 1400;
+        var top = Cesium.Ellipsoid.WGS84.cartographicToCartesian(center);
+        var tile = {
+          rectangle: rectangle,
+          southwest: Cesium.Cartesian3.fromDegrees.apply(null, swCorner),
+          top: top,
+          loaded: false,
+          gltf: 'https://mf-chsdi3.dev.bgdi.ch/ltjeg/files/buildings/' + gltf
+        };
+        this.tiles.push(tile);
+        return this;
+     },
+     tiles: [],
+
+     loadModel: function(tiles, scene) {
+        var camera = scene.camera;
+        var ray = new Cesium.Ray(camera.position, camera.direction);
+        var pointed = scene.globe.pick(ray, scene);
+        if (!Cesium.defined(pointed)) return;
+
+        var tile = [];
+        var bottom = Cesium.Ellipsoid.WGS84.cartesianToCartographic(pointed);
+        for (var i = 0; i < tiles.length; ++i) {
+          if (!Cesium.Rectangle.contains(tiles[i].rectangle, bottom)) continue;
+          tile.push(tiles[i]);
+        }
+        tile.forEach(function(tile) {
+          if (tile.loaded) {
+            return;
+          }
+          console.log('Loading model');
+          var modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(
+                                tile.southwest);
+          tile.model = scene.primitives.add(Cesium.Model.fromGltf({
+             url: tile.gltf,
+             modelMatrix: modelMatrix
+          }));
+          tile.loaded = true;
+          tile.show = true;
+        });
+     },
+
+     init: function(scene) {
+        var camera = scene.camera;
+
+        var lastCameraPos = new Cesium.Cartesian3(0, 0, 0);
+        scene.preRender.addEventListener(function() {
+          if (lastCameraPos.x != camera.position.x) {
+              camera.position.clone(lastCameraPos);
+              this.loadModel(this.tiles, scene);
+         }
+        }, this);
+    }
+  };
+
+  // Available tiles are added here
+  tileModelProvider
+  .add( // bern
+      [7.43818019986291, 46.9167638125432, 553.550877136178],
+      [7.4653662804426, 46.9333388028237, 892.672429788858],
+      'swissBUILDINGS3d.gltf')
+  .add(
+      [8.05009141910919, 47.381108240219, 391.473011062481],
+      [8.10900374809093, 47.4079011196116, 520.223172678612],
+      '1089_23b.gltf')
+  .add(
+      [7.8142161084778, 46.6804275671058, 605.808860636316],
+      [7.87238112753256, 46.7073213352311, 1461.69092196133],
+      '1208-43_1208-43.gltf')
+  .add(
+      [7.8712796027115, 46.6804421789384, 610.622131710872],
+      [7.92885675463667, 46.7072134531994, 1346.55061065778],
+      '1208-44_1208-44.gltf')
+  .add(
+      [7.81419746559074, 46.6536001948296, 569.625796063803],
+      [7.87167296424733, 46.6807611299416, 1453.67397088744],
+      '1228-21_1228-21.gltf')
+  .add(
+      [7.8712254319155, 46.6532888648325, 618.052885887213],
+      [7.92864745579657, 46.6802126075228, 2047.47427189257],
+      '1228-22_1228-22.gltf')
+  .add(
+      [7.83135480023845, 46.6685359653302, 607.396762281656],
+      [7.87370750067964, 46.694607752753, 643.499991984107],
+      'ponts_cityGML_test3.gltf')
+  .add(
+      [7.85529638642568, 46.6888939188272, 614.424975835718],
+      [7.86755034897686, 46.6908704351679, 617.587541328743],
+      'ponts_Eis_cityGML.gltf');
+
+
+
+
   // Create the cesium viewer with basic layers
   var initCesiumViewer = function(map, enabled) {
     var tileCacheSize = intParam('tileCacheSize', '100');
@@ -63,6 +166,8 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions, $q) {
         gaLayers.getCesiumTerrainProviderById(gaGlobalOptions.defaultTerrain);
     scene.postRender.addEventListener(limitCamera, scene);
     enableOl3d(cesiumViewer, enabled);
+
+    tileModelProvider.init(scene);
     return cesiumViewer;
   };
 
@@ -132,6 +237,7 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions, $q) {
       }
     }
   }();
+
 
   // We need the Cesium lib and the Layers config to create
   // the 3D viewer
