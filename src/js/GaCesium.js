@@ -89,6 +89,7 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions, $q) {
       this.camera.setView({
         destination: Cesium.Ellipsoid.WGS84.cartographicToCartesian(pos),
         orientation: {
+          heading: this.camera.heading,
           pitch: this.camera.pitch
         }
       });
