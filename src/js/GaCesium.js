@@ -87,7 +87,10 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions, $q) {
       pos.longitude = Math.min(extent4326[2], pos.longitude);
       pos.latitude = Math.min(extent4326[3], pos.latitude);
       this.camera.setView({
-        destination: Cesium.Ellipsoid.WGS84.cartographicToCartesian(pos)
+        destination: Cesium.Ellipsoid.WGS84.cartographicToCartesian(pos),
+        orientation: {
+          pitch: this.camera.pitch
+        }
       });
     }
   };
