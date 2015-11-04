@@ -28,6 +28,7 @@ TRANSLATION_FALLBACK_CODE ?= de
 LANGUAGES ?= '[\"de\", \"en\", \"fr\", \"it\", \"rm\"]'
 DEFAULT_EXTENT ?= '[420000, 30000, 900000, 350000]'
 DEFAULT_RESOLUTION ?= 500.0
+DEFAULT_LEVEL_OF_DETAIL ?= 7 #level of detail for the default resolution
 RESOLUTIONS ?= '[650.0, 500.0, 250.0, 100.0, 50.0, 20.0, 10.0, 5.0, 2.5, 2.0, 1.0, 0.5, 0.25, 0.1]'
 DEFAULT_EPSG ?= EPSG:21781
 DEFAULT_EPSG_EXTEND ?= '[420000, 30000, 900000, 350000]'
@@ -311,6 +312,7 @@ define buildpage
 		--var "languages=$(LANGUAGES)" \
 		--var "default_extent"="$(DEFAULT_EXTENT)" \
 		--var "default_resolution"="$(DEFAULT_RESOLUTION)" \
+		--var "default_level_of_detail"="$(DEFAULT_LEVEL_OF_DETAIL)" \
 		--var "resolutions"="$(RESOLUTIONS)" \
 		--var "public_url=$(PUBLIC_URL)" \
 		--var "default_elevation_model=${DEFAULT_ELEVATION_MODEL}" \
