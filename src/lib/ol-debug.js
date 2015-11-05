@@ -1,6 +1,6 @@
 // OpenLayers 3. See http://openlayers.org/
 // License: https://raw.githubusercontent.com/openlayers/ol3/master/LICENSE.md
-// Version: v3.10.1-201-g4846a49
+// Version: v3.10.1-202-g7b9b6d1
 
 (function (root, factory) {
   if (typeof exports === "object") {
@@ -97822,7 +97822,7 @@ ol.format.KML.createFeatureStyleFunction_ = function(style, styleUrl,
           if (drawName) {
             nameStyle = ol.format.KML.createNameStyleFunction_(style[0],
                 name);
-            return [style, nameStyle];
+            return style.concat(nameStyle);
           }
           return style;
         }

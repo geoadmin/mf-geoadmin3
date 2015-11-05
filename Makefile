@@ -170,6 +170,7 @@ ol: scripts/ol-geoadmin.json .build-artefacts/ol3
 	git reset HEAD --hard; \
 	git fetch -a; \
 	git checkout $(OL3_VERSION); \
+	git cherry-pick bea1501bb72d0315c067afb25fda5005aca42208; \
 	git show; \
 	cat ../../scripts/ga-ol3-style.exports >> src/ol/style/style.js; \
 	cat ../../scripts/ga-ol3-tilegrid.exports >> src/ol/tilegrid/tilegrid.js; \
