@@ -6,7 +6,7 @@ T="$(date +%s)"
 set -o errexit
 
 # adapt these for emergency deploys coming from branches
-GITBRANCH=master
+GITBRANCH=r_151104_1
 
 # set some variables
 BASEDIR=/var/www/vhosts/mf-geoadmin3/private
