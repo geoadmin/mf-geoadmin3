@@ -69,7 +69,6 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions, $q) {
     globe.maximumScreenSpaceError = maximumScreenSpaceError;
     var scene = cesiumViewer.getCesiumScene();
     scene.globe.depthTestAgainstTerrain = true;
-    scene.screenSpaceCameraController.minimumZoomDistance = 50;
     scene.screenSpaceCameraController.maximumZoomDistance = 500000;
     scene.terrainProvider =
         gaLayers.getCesiumTerrainProviderById(gaGlobalOptions.defaultTerrain);
@@ -97,6 +96,9 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions, $q) {
         }
       });
     }
+    // Set the minimumZoomDistance according to the camera height
+    var minimumZoomDistance = pos.height > 1800 ? 400 : 200;
+    this.screenSpaceCameraController.minimumZoomDistance = minimumZoomDistance;
   };
 
   var enableOl3d = function(ol3d, enable) {
