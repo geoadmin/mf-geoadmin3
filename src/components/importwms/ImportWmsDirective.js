@@ -154,13 +154,6 @@ goog.require('ga_urlutils_service');
                                     l.Abstract) || '';
           };
 
-          // Test if the layer can be displayed with a specific projection
-          var canUseProj = function(layer, projCode) {
-            var projCodeList = layer.CRS || layer.SRS || [];
-            return (projCodeList.indexOf(projCode.toUpperCase()) != -1 ||
-                projCodeList.indexOf(projCode.toLowerCase()) != -1);
-          };
-
           // Go through all layers, assign needed properties,
           // and remove useless layers (no name or bad crs without childs)
           var getChildLayers = function(layer, projCode, wmsVersion) {
@@ -172,12 +165,11 @@ goog.require('ga_urlutils_service');
             // layer can be displayed (wait for
             // https://github.com/openlayers/ol3/pull/2944)
             if (wmsVersion == '1.3.0' && projCode) {
-              if (!canUseProj(layer, projCode)) {
-                layer.isInvalid = true;
-                layer.Abstract = 'layer_invalid_no_crs';
-              } else {
-                projCode = undefined;
-              }
+              // The raster reprojection is triggered automatically when
+              // *projection* in *ol.View* differs from *projection* of
+              // a raster source such as WMTS or WMS
+              // https://github.com/openlayers/ol3/pull/4122
+              projCode = undefined;
             }
 
             // If the WMS layer has no name, it can't be displayed
@@ -197,6 +189,7 @@ goog.require('ga_urlutils_service');
             if (layer.Layer) {
 
               for (var i = 0; i < layer.Layer.length; i++) {
+                window.console.log(layer.Layer[i]);
                 var l = getChildLayers(layer.Layer[i], projCode, wmsVersion);
                 if (!l) {
                   layer.Layer.splice(i, 1);
