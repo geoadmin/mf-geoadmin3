@@ -31,6 +31,15 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions, $q) {
     return parseInt(params[name] || defaultValue, 10);
   };
 
+  var boolParam = function(name, defaultValue) {
+    var params = gaPermalink.getParams();
+    var value = params[name];
+    if (value !== undefined) {
+      return value == 'true' || value == '1';
+    }
+    return defaultValue;
+  };
+
   // Create the cesium viewer with basic layers
   var initCesiumViewer = function(map, enabled) {
     var tileCacheSize = intParam('tileCacheSize', '100');
@@ -47,6 +56,9 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions, $q) {
            ];
         }
       });
+      if (boolParam('autorender', true)) {
+        cesiumViewer.enableAutoRenderLoop();
+      }
     } catch (e) {
       alert(e.message);
       return;
@@ -75,7 +87,11 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions, $q) {
       pos.longitude = Math.min(extent4326[2], pos.longitude);
       pos.latitude = Math.min(extent4326[3], pos.latitude);
       this.camera.setView({
-        positionCartographic: pos
+        destination: Cesium.Ellipsoid.WGS84.cartographicToCartesian(pos),
+        orientation: {
+          heading: this.camera.heading,
+          pitch: this.camera.pitch
+        }
       });
     }
   };

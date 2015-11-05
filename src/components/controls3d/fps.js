@@ -143,12 +143,16 @@ FPS.prototype.setFlyMode = function(flyMode) {
   this.flyMode_ = flyMode;
   if (this.flyMode_) {
     this.camera_.setView({
-      pitch: 0.1
+      orientation: {
+        pitch: 0.1
+      }
     });
   } else {
     this.camera_.setView({
-      pitch: 0.0,
-      roll: 0.0
+      orientation: {
+        pitch: 0.0,
+        roll: 0.0
+      }
     });
   }
 };
@@ -400,10 +404,12 @@ FPS.prototype.flyModeTick_ = function(delta) {
   var gpos = this.clampAboveTerrain_(this.camera_.position, 2);
 
   this.camera_.setView({
-    position: gpos,
-    heading: heading,
-    pitch: pitch,
-    roll: roll
+    destination: gpos,
+    orientation: {
+      heading: heading,
+      pitch: pitch,
+      roll: roll
+    }
   });
 };
 
@@ -454,8 +460,10 @@ FPS.prototype.manTick_ = function(delta) {
   var gpos = this.clampAboveTerrain_(this.camera_.position, 2, 2);
 
   this.camera_.setView({
-    position: gpos,
-    heading: heading,
-    pitch: pitch
+    destination: gpos,
+    orientation: {
+      heading: heading,
+      pitch: pitch
+    }
   });
 };

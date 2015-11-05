@@ -20,8 +20,7 @@
  * Portions licensed separately.
  * See https://github.com/AnalyticalGraphicsInc/cesium/blob/master/LICENSE.md for full licensing details.
  */
-(function () {
-/*global define*/
+(function () {/*global define*/
 define('Core/defined',[],function() {
     "use strict";
 
@@ -20192,10 +20191,10 @@ define('Core/OrientedBoundingBox',[
         './EllipsoidTangentPlane',
         './Intersect',
         './Interval',
-        './Plane',
-        './Rectangle',
         './Math',
-        './Matrix3'
+        './Matrix3',
+        './Plane',
+        './Rectangle'
     ], function(
         BoundingSphere,
         Cartesian2,
@@ -20208,10 +20207,10 @@ define('Core/OrientedBoundingBox',[
         EllipsoidTangentPlane,
         Intersect,
         Interval,
-        Plane,
-        Rectangle,
         CesiumMath,
-        Matrix3) {
+        Matrix3,
+        Plane,
+        Rectangle) {
     "use strict";
 
     /**
@@ -21130,5 +21129,5 @@ define('Workers/createVerticesFromHeightmap',[
 
     return createTaskProcessorWorker(createVerticesFromHeightmap);
 });
+
 }());
-//# sourceMappingURL=createVerticesFromHeightmap.js.map
