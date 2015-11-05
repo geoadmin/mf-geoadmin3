@@ -82,10 +82,13 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions, $q) {
     var pos = this.camera.positionCartographic.clone();
     var inside = ol.extent.containsXY(extent4326, pos.longitude, pos.latitude);
     if (!inside) {
-      pos.longitude = Math.max(extent4326[0], pos.longitude);
-      pos.latitude = Math.max(extent4326[1], pos.latitude);
-      pos.longitude = Math.min(extent4326[2], pos.longitude);
-      pos.latitude = Math.min(extent4326[3], pos.latitude);
+      // add a padding based on the camera height
+      var maxHeight = this.screenSpaceCameraController.maximumZoomDistance;
+      var padding = pos.height * 0.05 / maxHeight;
+      pos.longitude = Math.max(extent4326[0] - padding, pos.longitude);
+      pos.latitude = Math.max(extent4326[1] - padding, pos.latitude);
+      pos.longitude = Math.min(extent4326[2] + padding, pos.longitude);
+      pos.latitude = Math.min(extent4326[3] + padding, pos.latitude);
       this.camera.setView({
         destination: Cesium.Ellipsoid.WGS84.cartographicToCartesian(pos),
         orientation: {
