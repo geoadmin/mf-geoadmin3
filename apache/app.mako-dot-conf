@@ -46,7 +46,7 @@ RewriteRule ${apache_base_path}/(src|[0-9]+)/services http:${api_url}/rest/servi
 </LocationMatch>
 
 # Cached resources
-RewriteRule ^${apache_base_path}/[0-9]+/(img|lib|style|locales)(.*) ${apache_base_directory}/prd/$1$2
+RewriteRule ^${apache_base_path}/[0-9]+/(data|img|lib|style|locales)(.*) ${apache_base_directory}/prd/$1$2
 <LocationMatch ^${apache_base_path}/[0-9]+/>
    ExpiresDefault "now plus 1 year"
    Header merge Cache-Control "public"

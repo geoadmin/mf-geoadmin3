@@ -90,6 +90,7 @@ prod: prd/lib/ \
 	prd/mobile.html \
 	prd/embed.html \
 	prd/img/ \
+	prd/data/ \
 	prd/style/font-awesome-3.2.1/font/ \
 	prd/locales/ \
 	prd/checker \
@@ -356,6 +357,10 @@ prd/embed.html: src/index.mako.html \
 	${PYTHON_CMD} .build-artefacts/python-venv/bin/htmlmin --remove-comments --keep-optional-attribute-quotes $@ $@
 
 prd/img/: src/img/*
+	mkdir -p $@
+	cp -R $^ $@
+
+prd/data/: src/data/*
 	mkdir -p $@
 	cp -R $^ $@
 
