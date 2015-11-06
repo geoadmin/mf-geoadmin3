@@ -322,7 +322,8 @@ define buildpage
 		--var "admin_url_regexp=$(ADMIN_URL_REGEXP)" \
 		--var "public_url_regexp=$(PUBLIC_URL_REGEXP)" \
 		--var "default_epsg"="$(DEFAULT_EPSG)" \
-		--var "default_epsg_extend"="$(DEFAULT_EPSG_EXTEND)" $< > $@
+		--var "default_epsg_extend"="$(DEFAULT_EPSG_EXTEND)" \
+		--var "staging"="$(DEPLOY_TARGET)" $< > $@
 endef
 
 prd/index.html: src/index.mako.html \
