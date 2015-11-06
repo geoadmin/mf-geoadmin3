@@ -1613,7 +1613,7 @@ body:not(.embed) {
   color: #f0f0f0;
   transform: rotate(-45deg);
   -webkit-transform: rotate(-45deg);
-  z-index: 10000;
+  z-index: 400;
 }
 
 /* Custom styles */
@@ -1629,10 +1629,15 @@ body:not(.embed) {
 /* Different positions */
 
 .corner-ribbon.top-left{
-  top: 25px;
+  top: 130px;
   left: -50px;
   transform: rotate(-45deg);
   -webkit-transform: rotate(-45deg);
+  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
+    top: 70px;
+  }
+
+
 }
 
 .corner-ribbon.top-right{
@@ -1645,8 +1650,9 @@ body:not(.embed) {
 
 .corner-ribbon.bottom-left{
   top: auto;
-  bottom: 25px;
-  left: -50px;
+  bottom: 50px;
+  left: -100px;
+  width: 300px;
   transform: rotate(45deg);
   -webkit-transform: rotate(45deg);
 }
