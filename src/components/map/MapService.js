@@ -1146,17 +1146,21 @@ goog.require('ga_urlutils_service');
           var extent = gaMapUtils.intersectWithDefaultExtent(config3d.extent ||
               ol.proj.get('EPSG:21781').getExtent());
           if (params) {
-            var minLod = gaMapUtils.getLodFromRes(config3d.maxResolution) ||
+            var minRetLod = gaMapUtils.getLodFromRes(config3d.maxResolution) ||
                 window.minimumRetrievingLevel;
-            var maxLod = gaMapUtils.getLodFromRes(config3d.minResolution);
+            var maxRetLod = gaMapUtils.getLodFromRes(config3d.minResolution);
+            var maxLod = 17;// 17 is the last terrain level
+            if (config3d.resolutions) {
+              maxLod = gaMapUtils.getLodFromRes(
+                  config3d.resolutions[config3d.resolutions.length - 1]);
+            }
             provider = new Cesium.UrlTemplateImageryProvider({
               url: params.url,
               subdomains: params.subdomains,
-              minimumRetrievingLevel: minLod,
-              maximumRetrievingLevel: maxLod,
-              // Terrain has only 17 levels. This property active client zoom
-              // for next levels.
-              maximumLevel: 17,
+              minimumRetrievingLevel: minRetLod,
+              maximumRetrievingLevel: maxRetLod,
+              // This property active client zoom for next levels.
+              maximumLevel: maxLod,
               rectangle: gaMapUtils.extentToRectangle(extent, 'EPSG:21781'),
               tilingScheme: new Cesium.GeographicTilingScheme(),
               tileWidth: params.tileSize,
