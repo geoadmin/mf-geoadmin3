@@ -7,6 +7,9 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 DEFAULT_WAIT=10
+QUERYSTRING_KML="KML%7C%7Chttp:%2F%2Fopendata.utou.ch%2Furbanproto%2Fgeneva%2Fgeo%2Fkml%2FRoutes.kml"
+QUERYSTRING_EXTERNAL_WMS="WMS||Schulkreis||https:%2F%2Fwww.gis.stadt-zuerich.ch%2Fmaps%2Fservices%2Fwms%2FWMS-ZH-STZH-OGD%2FMapServer%2FWMSServer||Schulkreis"
+QUERYSTRING_PUBLIC_GEO_KML="KML||https:%2F%2Fpublic.geo.admin.ch%2F6YiSYr3XRmG_14aKz2HNRg"
 
 def wait_printSucessTagExist(driver, timeout=DEFAULT_WAIT):
     UrlHasChanged = False
@@ -29,13 +32,58 @@ def wait_printSucessTagExist(driver, timeout=DEFAULT_WAIT):
     return bool(not TagPrintSuccessExist)
 
 
-
 def runPrintTest(driver, target): 
+    print "Start Print tests"
+
+    # Make a print test of differents layer types
+
+    # WMTS
+    print "Print test of WMTS Layer : ch.swisstopo.landesschwerenetz"
+    target_spec = target + '/?lang=de&layers=ch.swisstopo.landesschwerenetz&X=190000.00&Y=660000.00&zoom=3'
+    PrintTest(driver, target_spec)
+
+    # WMS 
+    print "Print test of WMS layer : ch.bazl.luftfahrthindernis"
+    target_spec = target + '/?lang=de&layers=ch.bazl.luftfahrthindernis&X=190000.00&Y=660000.00&zoom=5'
+    PrintTest(driver, target_spec)
+
+    # WMS without single tiles : ch.bav.sachplan-infrastruktur-schiene_kraft
+    print "Print test of WMS (single tile ='f') : ch.bav.sachplan-infrastruktur-schiene_kraft"
+    target_spec = target + '/?lang=de&ch.bav.sachplan-infrastruktur-schiene_kraft'
+    PrintTest(driver, target_spec)
+
+    # AGGREGATE : ch.bfs.gebaeude_wohnungs_register
+    print "Print test of Aggregate layer : ch.bfs.gebaeude_wohnungs_register"
+    target_spec = target + '/?lang=de&layers=ch.bfs.gebaeude_wohnungs_register&X=190000.00&Y=660000.00&zoom=3'
+    PrintTest(driver, target_spec)
+
+    # Geojson
+    print "Print test of Geojson layer : ch.bafu.hydroweb-messstationen_grundwasser"
+    target_spec = target + '/?lang=de&layers=ch.bafu.hydroweb-messstationen_grundwasser&X=190000.00&Y=660000.00&zoom=3'
+    PrintTest(driver, target_spec)
+
+    # External KML
+    print "Print test of external Kml : http://opendata.utou.ch/urbanproto/geneva/geo/kml/Routes.kml"
+    target_spec = target + '?lang=de&layers=' + QUERYSTRING_KML
+    PrintTest(driver, target_spec)
+
+    # External WMS 
+    print "Print test of external wms : Schukreis (Zurich)"
+    target_spec = target + '?lang=de&layers=' + QUERYSTRING_EXTERNAL_WMS 
+    PrintTest(driver, target_spec)
+
+    # KML from public.geo.admin.ch
+    print "Print test of KML from public.geo.admin.ch" 
+    target_spec = target + '?lang=de&layers=' + QUERYSTRING_PUBLIC_GEO_KML
+    PrintTest(driver, target_spec)
+ 
+    print "Test Print Ok !"
+
+
+def PrintTest(driver, target_spec):
     #We maximize our window to be sure to be in full resolution
     #driver.manage().window().maximize();
-    print "Start Print tests"
-    target_url =  target + '/?lang=de'
-    driver.get(target_url)
+    driver.get(target_spec)
     # wait until the page is loaded. We know this when title page is set to Schweiz
     try:
         WebDriverWait(driver, 10).until(EC.title_contains('chweiz'))
@@ -76,4 +124,3 @@ def runPrintTest(driver, target):
         print '-----------'
         print str(e)
         raise Exception("Print doesn't work, not find the tag for print success")
-    print "Test Print Ok !"
