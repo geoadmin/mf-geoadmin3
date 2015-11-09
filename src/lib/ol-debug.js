@@ -1,6 +1,6 @@
 // OpenLayers 3. See http://openlayers.org/
 // License: https://raw.githubusercontent.com/openlayers/ol3/master/LICENSE.md
-// Version: v3.10.1-201-g4846a49
+// Version: v3.10.1-269-g5b817f3
 
 (function (root, factory) {
   if (typeof exports === "object") {
@@ -50525,7 +50525,9 @@ ol.ImageState = {
  * @constructor
  * @extends {goog.events.EventTarget}
  * @param {ol.Extent} extent Extent.
- * @param {number|undefined} resolution Resolution.
+ * @param {Array.<number>|undefined} resolution Resolution, first value
+ *     is the resolution in the x direction, second value is the resolution
+ *     in the y direction.
  * @param {number} pixelRatio Pixel ratio.
  * @param {ol.ImageState} state State.
  * @param {Array.<ol.Attribution>} attributions Attributions.
@@ -50554,7 +50556,7 @@ ol.ImageBase = function(extent, resolution, pixelRatio, state, attributions) {
 
   /**
    * @protected
-   * @type {number|undefined}
+   * @type {Array.<number>|undefined}
    */
   this.resolution = resolution;
 
@@ -50608,7 +50610,7 @@ ol.ImageBase.prototype.getPixelRatio = function() {
 
 
 /**
- * @return {number} Resolution.
+ * @return {Array.<number>} Resolution.
  */
 ol.ImageBase.prototype.getResolution = function() {
   goog.asserts.assert(this.resolution !== undefined, 'resolution not yet set');
@@ -59740,8 +59742,10 @@ ol.render.canvas.Replay.prototype.replay_ = function(
             context.globalAlpha = alpha * opacity;
           }
 
-          context.drawImage(image, originX, originY, width, height,
-              x, y, width * pixelRatio, height * pixelRatio);
+          var w = width - originX;
+          var h = height - originY;
+          context.drawImage(image, originX, originY, w, h, x, y,
+              w * pixelRatio, h * pixelRatio);
 
           if (opacity != 1) {
             context.globalAlpha = alpha;
@@ -61992,7 +61996,8 @@ ol.ImageCanvas = function(extent, resolution, pixelRatio, attributions,
   var state = opt_loader !== undefined ?
       ol.ImageState.IDLE : ol.ImageState.LOADED;
 
-  goog.base(this, extent, resolution, pixelRatio, state, attributions);
+  goog.base(this, extent, [resolution, resolution], pixelRatio, state,
+      attributions);
 
   /**
    * @private
@@ -62161,7 +62166,7 @@ ol.reproj.enlargeClipPoint_ = function(centroidX, centroidY, x, y) {
  * @param {number} width Width of the canvas.
  * @param {number} height Height of the canvas.
  * @param {number} pixelRatio Pixel ratio.
- * @param {number} sourceResolution Source resolution.
+ * @param {Array.<number>} sourceResolution Source resolution.
  * @param {ol.Extent} sourceExtent Extent of the data source.
  * @param {number} targetResolution Target resolution.
  * @param {ol.Extent} targetExtent Target extent.
@@ -62192,12 +62197,14 @@ ol.reproj.render = function(width, height, pixelRatio,
 
   var canvasWidthInUnits = ol.extent.getWidth(sourceDataExtent);
   var canvasHeightInUnits = ol.extent.getHeight(sourceDataExtent);
+  var sourceResolutionX = sourceResolution[0];
+  var sourceResolutionY = sourceResolution[1];
   var stitchContext = ol.dom.createCanvasContext2D(
-      Math.round(pixelRatio * canvasWidthInUnits / sourceResolution),
-      Math.round(pixelRatio * canvasHeightInUnits / sourceResolution));
+      Math.round(pixelRatio * canvasWidthInUnits / sourceResolutionX),
+      Math.round(pixelRatio * canvasHeightInUnits / sourceResolutionY));
 
-  stitchContext.scale(pixelRatio / sourceResolution,
-                      pixelRatio / sourceResolution);
+  stitchContext.scale(pixelRatio / sourceResolutionX,
+                      pixelRatio / sourceResolutionY);
   stitchContext.translate(-sourceDataExtent[0], sourceDataExtent[3]);
 
   sources.forEach(function(src, i, arr) {
@@ -62290,8 +62297,8 @@ ol.reproj.render = function(width, height, pixelRatio,
     context.translate(sourceDataExtent[0] - sourceNumericalShiftX,
                       sourceDataExtent[3] - sourceNumericalShiftY);
 
-    context.scale(sourceResolution / pixelRatio,
-                  -sourceResolution / pixelRatio);
+    context.scale(sourceResolutionX / pixelRatio,
+                  -sourceResolutionY / pixelRatio);
 
     context.drawImage(stitchContext.canvas, 0, 0);
     context.restore();
@@ -62785,8 +62792,9 @@ ol.reproj.Image = function(sourceProj, targetProj,
     attributions = this.sourceImage_.getAttributions();
   }
 
-  goog.base(this, targetExtent, targetResolution, this.sourcePixelRatio_,
-            state, attributions);
+  goog.base(this, targetExtent, [targetResolution, targetResolution],
+            this.sourcePixelRatio_, state, attributions);
+
 };
 goog.inherits(ol.reproj.Image, ol.ImageBase);
 
@@ -70638,7 +70646,7 @@ var define;
  * @suppress {accessControls, ambiguousFunctionDecl, checkDebuggerStatement, checkRegExp, checkTypes, checkVars, const, constantProperty, deprecated, duplicate, es5Strict, fileoverviewTags, missingProperties, nonStandardJsDocs, strictModuleDepCheck, suspiciousCode, undefinedNames, undefinedVars, unknownDefines, uselessCode, visibility}
  */
 /*
- (c) 2013, Vladimir Agafonkin
+ (c) 2015, Vladimir Agafonkin
  RBush, a JavaScript library for high-performance 2D spatial indexing of points and rectangles.
  https://github.com/mourner/rbush
 */
@@ -70694,6 +70702,33 @@ rbush.prototype = {
         }
 
         return result;
+    },
+
+    collides: function (bbox) {
+
+        var node = this.data,
+            toBBox = this.toBBox;
+
+        if (!intersects(bbox, node.bbox)) return false;
+
+        var nodesToSearch = [],
+            i, len, child, childBBox;
+
+        while (node) {
+            for (i = 0, len = node.children.length; i < len; i++) {
+
+                child = node.children[i];
+                childBBox = node.leaf ? toBBox(child) : child.bbox;
+
+                if (intersects(bbox, childBBox)) {
+                    if (node.leaf || contains(bbox, childBBox)) return true;
+                    nodesToSearch.push(child);
+                }
+            }
+            node = nodesToSearch.pop();
+        }
+
+        return false;
     },
 
     load: function (data) {
@@ -70952,8 +70987,10 @@ rbush.prototype = {
 
         this._chooseSplitAxis(node, m, M);
 
+        var splitIndex = this._chooseSplitIndex(node, m, M);
+
         var newNode = {
-            children: node.children.splice(this._chooseSplitIndex(node, m, M)),
+            children: node.children.splice(splitIndex, node.children.length - splitIndex),
             height: node.height
         };
 
@@ -71168,7 +71205,8 @@ function multiSelect(arr, left, right, n, compare) {
     }
 }
 
-// sort array between left and right (inclusive) so that the smallest k elements come first (unordered)
+// Floyd-Rivest selection algorithm:
+// sort an array between left and right (inclusive) so that the smallest k elements come first (unordered)
 function select(arr, left, right, k, compare) {
     var n, i, z, s, sd, newLeft, newRight, t, j;
 
@@ -71483,7 +71521,7 @@ ol.structs.RBush.prototype.clear = function() {
 
 /**
  * @param {ol.Extent=} opt_extent Extent.
- * @return {ol.Extent} Extent.
+ * @return {!ol.Extent} Extent.
  */
 ol.structs.RBush.prototype.getExtent = function(opt_extent) {
   // FIXME add getExtent() to rbush
@@ -72151,7 +72189,7 @@ ol.source.Vector.prototype.getClosestFeatureToCoordinate =
  *
  * This method is not available when the source is configured with
  * `useSpatialIndex` set to `false`.
- * @return {ol.Extent} Extent.
+ * @return {!ol.Extent} Extent.
  * @api stable
  */
 ol.source.Vector.prototype.getExtent = function() {
@@ -72856,15 +72894,19 @@ ol.renderer.canvas.ImageLayer.prototype.prepareFrame =
     var imageExtent = image.getExtent();
     var imageResolution = image.getResolution();
     var imagePixelRatio = image.getPixelRatio();
-    var scale = pixelRatio * imageResolution /
+    var xImageResolution = imageResolution[0];
+    var yImageResolution = imageResolution[1];
+    var xScale = pixelRatio * xImageResolution /
+        (viewResolution * imagePixelRatio);
+    var yScale = pixelRatio * yImageResolution /
         (viewResolution * imagePixelRatio);
     ol.vec.Mat4.makeTransform2D(this.imageTransform_,
         pixelRatio * frameState.size[0] / 2,
         pixelRatio * frameState.size[1] / 2,
-        scale, scale,
+        xScale, yScale,
         viewRotation,
-        imagePixelRatio * (imageExtent[0] - viewCenter[0]) / imageResolution,
-        imagePixelRatio * (viewCenter[1] - imageExtent[3]) / imageResolution);
+        imagePixelRatio * (imageExtent[0] - viewCenter[0]) / xImageResolution,
+        imagePixelRatio * (viewCenter[1] - imageExtent[3]) / yImageResolution);
     this.imageTransformInv_ = null;
     this.updateAttributions(frameState.attributions, image.getAttributions());
     this.updateLogos(frameState, imageSource);
@@ -91395,7 +91437,7 @@ ol.format.GeoJSON.prototype.writeFeatureObject = function(
     'type': 'Feature'
   };
   var id = feature.getId();
-  if (id) {
+  if (id !== undefined) {
     object['id'] = id;
   }
   var geometry = feature.getGeometry();
@@ -95002,11 +95044,13 @@ ol.format.GPX.GPX_NODE_FACTORY_ = function(value, objectStack, opt_nodeName) {
       'value should be an ol.Feature');
   var geometry = value.getGeometry();
   if (geometry) {
-    var parentNode = objectStack[objectStack.length - 1].node;
-    goog.asserts.assert(ol.xml.isNode(parentNode),
-        'parentNode should be an XML node');
-    return ol.xml.createElementNS(parentNode.namespaceURI,
-        ol.format.GPX.GEOMETRY_TYPE_TO_NODENAME_[geometry.getType()]);
+    var nodeName = ol.format.GPX.GEOMETRY_TYPE_TO_NODENAME_[geometry.getType()];
+    if (nodeName) {
+      var parentNode = objectStack[objectStack.length - 1].node;
+      goog.asserts.assert(ol.xml.isNode(parentNode),
+          'parentNode should be an XML node');
+      return ol.xml.createElementNS(parentNode.namespaceURI, nodeName);
+    }
   }
 };
 
@@ -97522,6 +97566,13 @@ ol.format.KML = function(opt_options) {
 
   /**
    * @private
+   * @type {boolean}
+   */
+  this.writeStyles_ = options.writeStyles !== undefined ?
+      options.writeStyles : true;
+
+  /**
+   * @private
    * @type {Object.<string, (Array.<ol.style.Style>|string)>}
    */
   this.sharedStyles_ = {};
@@ -97770,11 +97821,7 @@ ol.format.KML.createNameStyleFunction_ = function(foundStyle, name) {
     });
   }
   var nameStyle = new ol.style.Style({
-    fill: undefined,
-    image: undefined,
-    text: textStyle,
-    stroke: undefined,
-    zIndex: undefined
+    text: textStyle
   });
   return nameStyle;
 };
@@ -97822,7 +97869,7 @@ ol.format.KML.createFeatureStyleFunction_ = function(style, styleUrl,
           if (drawName) {
             nameStyle = ol.format.KML.createNameStyleFunction_(style[0],
                 name);
-            return [style, nameStyle];
+            return style.concat(nameStyle);
           }
           return style;
         }
@@ -98079,6 +98126,9 @@ ol.format.KML.IconStyleParser_ = function(node, objectStack) {
       (object['scale']);
   if (src == ol.format.KML.DEFAULT_IMAGE_STYLE_SRC_) {
     size = ol.format.KML.DEFAULT_IMAGE_STYLE_SIZE_;
+    if (scale === undefined) {
+      scale = ol.format.KML.DEFAULT_IMAGE_SCALE_MULTIPLIER_;
+    }
   }
 
   var imageStyle = new ol.style.Icon({
@@ -98090,7 +98140,7 @@ ol.format.KML.IconStyleParser_ = function(node, objectStack) {
     offset: offset,
     offsetOrigin: ol.style.IconOrigin.BOTTOM_LEFT,
     rotation: rotation,
-    scale: ol.format.KML.DEFAULT_IMAGE_SCALE_MULTIPLIER_ * scale,
+    scale: scale,
     size: size,
     src: src
   });
@@ -99601,6 +99651,7 @@ ol.format.KML.writeCoordinatesTextNode_ =
  * @param {Node} node Node.
  * @param {Array.<ol.Feature>} features Features.
  * @param {Array.<*>} objectStack Object stack.
+ * @this {ol.format.KML}
  * @private
  */
 ol.format.KML.writeDocument_ = function(node, features, objectStack) {
@@ -99798,6 +99849,7 @@ ol.format.KML.writeBoundaryIs_ = function(node, linearRing, objectStack) {
  * @param {Node} node Node.
  * @param {ol.Feature} feature Feature.
  * @param {Array.<*>} objectStack Object stack.
+ * @this {ol.format.KML}
  * @private
  */
 ol.format.KML.writePlacemark_ = function(node, feature, objectStack) {
@@ -99810,14 +99862,18 @@ ol.format.KML.writePlacemark_ = function(node, feature, objectStack) {
 
   // serialize properties (properties unknown to KML are not serialized)
   var properties = feature.getProperties();
+
   var styleFunction = feature.getStyleFunction();
   if (styleFunction) {
     // FIXME the styles returned by the style function are supposed to be
     // resolution-independent here
     var styles = styleFunction.call(feature, 0);
     if (styles && styles.length > 0) {
-      properties['Style'] = styles[0];
-      var textStyle = styles[0].getText();
+      var style = styles[0];
+      if (this.writeStyles_) {
+        properties['Style'] = styles[0];
+      }
+      var textStyle = style.getText();
       if (textStyle) {
         properties['name'] = textStyle.getText();
       }
@@ -99928,7 +99984,7 @@ ol.format.KML.writeStyle_ = function(node, style, objectStack) {
   var strokeStyle = style.getStroke();
   var imageStyle = style.getImage();
   var textStyle = style.getText();
-  if (imageStyle) {
+  if (imageStyle instanceof ol.style.Icon) {
     properties['IconStyle'] = imageStyle;
   }
   if (textStyle) {
@@ -100420,7 +100476,8 @@ ol.format.KML.prototype.writeFeaturesNode = function(features, opt_options) {
   var orderedKeys = ol.format.KML.KML_SEQUENCE_[kml.namespaceURI];
   var values = ol.xml.makeSequence(properties, orderedKeys);
   ol.xml.pushSerializeAndPop(context, ol.format.KML.KML_SERIALIZERS_,
-      ol.xml.OBJECT_PROPERTY_NODE_FACTORY, values, [opt_options], orderedKeys);
+      ol.xml.OBJECT_PROPERTY_NODE_FACTORY, values, [opt_options], orderedKeys,
+      this);
   return kml;
 };
 
@@ -103043,7 +103100,7 @@ goog.require('ol.proj');
 
 /**
  * @classdesc
- * Feature format for reading and writing data in the TopoJSON format.
+ * Feature format for reading data in the TopoJSON format.
  *
  * @constructor
  * @extends {ol.format.JSONFeature}
@@ -103286,7 +103343,7 @@ ol.format.TopoJSON.readFeatureFromGeometry_ = function(object, arcs,
   var feature = new ol.Feature();
   feature.setGeometry(/** @type {ol.geom.Geometry} */ (
       ol.format.Feature.transformWithOptions(geometry, false, opt_options)));
-  if (object.id) {
+  if (object.id !== undefined) {
     feature.setId(object.id);
   }
   if (object.properties) {
@@ -107911,7 +107968,7 @@ goog.require('ol.extent');
  * @constructor
  * @extends {ol.ImageBase}
  * @param {ol.Extent} extent Extent.
- * @param {number|undefined} resolution Resolution.
+ * @param {Array.<number>|undefined} resolution Resolution.
  * @param {number} pixelRatio Pixel ratio.
  * @param {Array.<ol.Attribution>} attributions Attributions.
  * @param {string} src Image source URI.
@@ -108011,7 +108068,10 @@ ol.Image.prototype.handleImageError_ = function() {
  */
 ol.Image.prototype.handleImageLoad_ = function() {
   if (this.resolution === undefined) {
-    this.resolution = ol.extent.getHeight(this.extent) / this.image_.height;
+    this.resolution = [
+      ol.extent.getWidth(this.extent) / this.image_.width,
+      ol.extent.getHeight(this.extent) / this.image_.height
+    ];
   }
   this.state = ol.ImageState.LOADED;
   this.unlistenImage_();
@@ -112831,7 +112891,9 @@ ol.interaction.Select.prototype.getFeatures = function() {
 
 /**
  * Returns the associated {@link ol.layer.Vector vectorlayer} of
- * the (last) selected feature.
+ * the (last) selected feature. Note that this will not work with any
+ * programmatic method like pushing features to
+ * {@link ol.interaction.Select#getFeatures collection}.
  * @param {ol.Feature|ol.render.Feature} feature Feature
  * @return {ol.layer.Vector} Layer.
  * @api
@@ -114502,7 +114564,7 @@ ol.reproj.Tile.prototype.reproject_ = function() {
 
   var targetExtent = this.targetTileGrid_.getTileCoordExtent(tileCoord);
   this.canvas_ = ol.reproj.render(width, height, this.pixelRatio_,
-      sourceResolution, this.sourceTileGrid_.getExtent(),
+      [sourceResolution, sourceResolution], this.sourceTileGrid_.getExtent(),
       targetResolution, targetExtent, this.triangulation_, sources,
       this.renderEdges_);
 
@@ -116091,7 +116153,7 @@ ol.source.ImageMapGuide.prototype.getImageInternal =
 
   var imageUrl = this.imageUrlFunction_(extent, size, projection);
   if (imageUrl !== undefined) {
-    image = new ol.Image(extent, resolution, pixelRatio,
+    image = new ol.Image(extent, [resolution, resolution], pixelRatio,
         this.getAttributions(), imageUrl, this.crossOrigin_,
         this.imageLoadFunction_);
     goog.events.listen(image, goog.events.EventType.CHANGE,
@@ -116219,10 +116281,12 @@ ol.source.ImageStatic = function(options) {
 
   var imageExtent = options.imageExtent;
 
-  var resolution, resolutions;
+  var xResolution, yResolution, resolutions, imgResolution;
   if (options.imageSize !== undefined) {
-    resolution = ol.extent.getHeight(imageExtent) / options.imageSize[1];
-    resolutions = [resolution];
+    xResolution = ol.extent.getWidth(imageExtent) / options.imageSize[0];
+    yResolution = ol.extent.getHeight(imageExtent) / options.imageSize[1];
+    imgResolution = [xResolution, yResolution];
+    resolutions = [yResolution];
   }
 
   var crossOrigin = options.crossOrigin !== undefined ?
@@ -116243,8 +116307,8 @@ ol.source.ImageStatic = function(options) {
    * @private
    * @type {ol.Image}
    */
-  this.image_ = new ol.Image(imageExtent, resolution, 1, attributions,
-      options.url, crossOrigin, imageLoadFunction);
+  this.image_ = new ol.Image(imageExtent, imgResolution, 1,
+      attributions, options.url, crossOrigin, imageLoadFunction);
   goog.events.listen(this.image_, goog.events.EventType.CHANGE,
       this.handleImageChange, false, this);
 
@@ -116484,14 +116548,6 @@ ol.source.ImageWMS.prototype.getImageInternal =
   extent = extent.slice();
   var centerX = (extent[0] + extent[2]) / 2;
   var centerY = (extent[1] + extent[3]) / 2;
-  if (this.ratio_ != 1) {
-    var halfWidth = this.ratio_ * ol.extent.getWidth(extent) / 2;
-    var halfHeight = this.ratio_ * ol.extent.getHeight(extent) / 2;
-    extent[0] = centerX - halfWidth;
-    extent[1] = centerY - halfHeight;
-    extent[2] = centerX + halfWidth;
-    extent[3] = centerY + halfHeight;
-  }
 
   var imageResolution = resolution / pixelRatio;
 
@@ -116508,10 +116564,19 @@ ol.source.ImageWMS.prototype.getImageInternal =
   var image = this.image_;
   if (image &&
       this.renderedRevision_ == this.getRevision() &&
-      image.getResolution() == resolution &&
+      image.getResolution()[0] == resolution &&
       image.getPixelRatio() == pixelRatio &&
       ol.extent.containsExtent(image.getExtent(), extent)) {
     return image;
+  }
+
+  if (this.ratio_ != 1) {
+    var halfWidth = this.ratio_ * ol.extent.getWidth(extent) / 2;
+    var halfHeight = this.ratio_ * ol.extent.getHeight(extent) / 2;
+    extent[0] = centerX - halfWidth;
+    extent[1] = centerY - halfHeight;
+    extent[2] = centerX + halfWidth;
+    extent[3] = centerY + halfHeight;
   }
 
   var params = {
@@ -116529,7 +116594,7 @@ ol.source.ImageWMS.prototype.getImageInternal =
   var url = this.getRequestUrl_(extent, this.imageSize_, pixelRatio,
       projection, params);
 
-  this.image_ = new ol.Image(extent, resolution, pixelRatio,
+  this.image_ = new ol.Image(extent, [resolution, resolution], pixelRatio,
       this.getAttributions(), url, this.crossOrigin_, this.imageLoadFunction_);
 
   this.renderedRevision_ = this.getRevision();
