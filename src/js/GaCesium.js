@@ -61,6 +61,7 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions, $q) {
       }
     } catch (e) {
       alert(e.message);
+      window.console.error(e.stack);
       return;
     }
     var globe = cesiumViewer.getCesiumScene().globe;
