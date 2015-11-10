@@ -1006,7 +1006,7 @@ goog.require('ga_urlutils_service');
                 format: 'jpeg',
                 serverLayerName: 'ch.swisstopo.swisstlm3d-karte-farbe.3d',
                 url: '//wmts{s}.geo.admin.ch/1.0.0/{Layer}/default/' +
-                    '20150401/{TileMatrixSet}/{z}/{y}/{x}.{Format}',
+                    '20150501_50/{TileMatrixSet}/{z}/{y}/{x}.{Format}',
                 subdomains: '56789',
                 attribution: 'swisstlm 3D Farbe',
                 attributionUrl: 'http://www.swisstopo.admin.ch/internet/' +
@@ -1018,7 +1018,7 @@ goog.require('ga_urlutils_service');
                 format: 'jpeg',
                 serverLayerName: 'ch.swisstopo.swisstlm3d-karte-grau.3d',
                 url: '//wmts{s}.geo.admin.ch/1.0.0/{Layer}/default/' +
-                    '20150401/{TileMatrixSet}/{z}/{y}/{x}.{Format}',
+                    '20150501_50/{TileMatrixSet}/{z}/{y}/{x}.{Format}',
                 subdomains: '56789',
                 attribution: 'swisstlm 3D Grau',
                 attributionUrl: 'http://www.swisstopo.admin.ch/internet/' +
