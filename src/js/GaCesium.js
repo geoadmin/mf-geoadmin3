@@ -31,6 +31,12 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions, $q) {
     return parseInt(params[name] || defaultValue, 10);
   };
 
+  var floatParam = function(name, defaultValue) {
+    var params = gaPermalink.getParams();
+    return parseFloat(params[name] || defaultValue);
+  };
+
+
   var boolParam = function(name, defaultValue) {
     var params = gaPermalink.getParams();
     var value = params[name];
@@ -43,8 +49,11 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions, $q) {
   // Create the cesium viewer with basic layers
   var initCesiumViewer = function(map, enabled) {
     var tileCacheSize = intParam('tileCacheSize', '100');
-    var maximumScreenSpaceError = intParam('maximumScreenSpaceError', '2');
+    var maximumScreenSpaceError = floatParam('maximumScreenSpaceError', '2');
     window.minimumRetrievingLevel = intParam('minimumRetrievingLevel', '6');
+    var fogEnabled = boolParam('fogEnabled', false);
+    var fogDensity = floatParam('fogDensity', '0.0001');
+    var fogSseFactor = floatParam('fogSseFactor', '25');
     var cesiumViewer;
     try {
       cesiumViewer = new olcs.OLCesium({
@@ -73,6 +82,9 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions, $q) {
     scene.terrainProvider =
         gaLayers.getCesiumTerrainProviderById(gaGlobalOptions.defaultTerrain);
     scene.postRender.addEventListener(limitCamera, scene);
+    scene.fog.enabled = fogEnabled;
+    scene.fog.density = fogDensity;
+    scene.fog.screenSpaceErrorFactor = fogSseFactor;
     enableOl3d(cesiumViewer, enabled);
     return cesiumViewer;
   };
