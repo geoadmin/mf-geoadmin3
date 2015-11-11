@@ -861,8 +861,8 @@ goog.require('ga_urlutils_service');
         };
 
         var getWmtsGetTileTpl = function(tpl, layer, time, tileMatrixSet,
-            format, use2dTpl) {
-          var dfltTpl = use2dTpl ? wmtsGetTileUrlTemplate :
+            format, useMapProxyTpl) {
+          var dfltTpl = !useMapProxyTpl ? wmtsGetTileUrlTemplate :
               wmtsMapProxyGetTileUrlTemplate;
           var url = (tpl || dfltTpl)
               .replace('{Layer}', layer)
@@ -996,8 +996,9 @@ goog.require('ga_urlutils_service');
               // WMTS (not MapProxy)
               response.data['ch.swisstopo.swissimage-product_3d'] = {
                 serverLayerName: 'ch.swisstopo.swissimage-product',
+                timestamps: ['20151231_50'],
                 url: '//wmts{s}.geo.admin.ch/1.0.0/{Layer}/default/' +
-                    '{Time}_50/{TileMatrixSet}/{z}/{y}/{x}.{Format}',
+                    '{Time}/{TileMatrixSet}/{z}/{y}/{x}.{Format}',
                 subdomains: '56789',
                 attribution: 'swissimage 3D',
                 attributionUrl: 'http://www.swisstopo.admin.ch/internet/' +
@@ -1007,8 +1008,9 @@ goog.require('ga_urlutils_service');
                 type: 'wmts',
                 format: 'jpeg',
                 serverLayerName: 'ch.swisstopo.swisstlm3d-karte-farbe.3d',
+                timestamps: ['20150501_50'],
                 url: '//wmts{s}.geo.admin.ch/1.0.0/{Layer}/default/' +
-                    '20150501_50/{TileMatrixSet}/{z}/{y}/{x}.{Format}',
+                    '{Time}/{TileMatrixSet}/{z}/{y}/{x}.{Format}',
                 subdomains: '56789',
                 attribution: 'swisstlm 3D Farbe',
                 attributionUrl: 'http://www.swisstopo.admin.ch/internet/' +
@@ -1019,8 +1021,9 @@ goog.require('ga_urlutils_service');
                 type: 'wmts',
                 format: 'jpeg',
                 serverLayerName: 'ch.swisstopo.swisstlm3d-karte-grau.3d',
+                timestamps: ['20150501_50'],
                 url: '//wmts{s}.geo.admin.ch/1.0.0/{Layer}/default/' +
-                    '20150501_50/{TileMatrixSet}/{z}/{y}/{x}.{Format}',
+                    '{Time}/{TileMatrixSet}/{z}/{y}/{x}.{Format}',
                 subdomains: '56789',
                 attribution: 'swisstlm 3D Grau',
                 attributionUrl: 'http://www.swisstopo.admin.ch/internet/' +
@@ -1120,7 +1123,7 @@ goog.require('ga_urlutils_service');
           if (config3d.type == 'wmts') {
             params = {
               url: getWmtsGetTileTpl(config3d.url, requestedLayer, timestamp,
-                  '4326', format),
+                  '4326', format, true),
               tileSize: 256,
               subdomains: config3d.subdomains || dfltWmtsMapProxySubdomains
             };
@@ -1171,12 +1174,9 @@ goog.require('ga_urlutils_service');
               tileWidth: params.tileSize,
               tileHeight: params.tileSize,
               hasAlphaChannel: (format == 'png'),
-              availableLevels: window.imageryAvailableLevels
+              availableLevels: window.imageryAvailableLevels,
               // Experimental
-              // Because of troubles in layer.json definitions, we remove this
-              // feature for now. We will re-activate after demo
-              //metadataUrl: '//terrain3.geo.admin.ch/1.0.0/' + bodId +
-              //    '/default/20150101/4326/'
+              metadataUrl: getTerrainTileUrl(requestedLayer, timestamp) + '/'
             });
           }
           if (provider) {
@@ -1220,7 +1220,7 @@ goog.require('ga_urlutils_service');
                     layer.minResolution),
                 tileLoadFunction: tileLoadFunction,
                 url: getWmtsGetTileTpl(layer.url, layer.serverLayerName, null,
-                  '21781', layer.format, true),
+                  '21781', layer.format),
                 crossOrigin: crossOrigin
               });
             }
