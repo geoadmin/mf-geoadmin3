@@ -387,7 +387,8 @@ goog.require('ga_urlutils_service');
           rectangle: gaMapUtils.extentToRectangle(extent, 'EPSG:21781'),
           proxy: proxy,
           tilingScheme: new Cesium.GeographicTilingScheme(),
-          hasAlphaChannel: true
+          hasAlphaChannel: true,
+          availableLevels: window.imageryAvailableLevels
         });
       };
 
@@ -1083,7 +1084,8 @@ goog.require('ga_urlutils_service');
           var requestedLayer = config3d.serverLayerName || bodId;
           if (config3d.type == 'terrain') {
             provider = new Cesium.CesiumTerrainProvider({
-              url: getTerrainTileUrl(requestedLayer, timestamp)
+              url: getTerrainTileUrl(requestedLayer, timestamp),
+              availableLevels: window.terrainAvailableLevels
             });
             provider.bodId = bodId;
           }
@@ -1165,7 +1167,11 @@ goog.require('ga_urlutils_service');
               tilingScheme: new Cesium.GeographicTilingScheme(),
               tileWidth: params.tileSize,
               tileHeight: params.tileSize,
-              hasAlphaChannel: (format == 'png')
+              hasAlphaChannel: (format == 'png'),
+              availableLevels: window.imageryAvailableLevels,
+              // Experimental
+              metadataUrl: '//terrain3.geo.admin.ch/1.0.0/' + bodId +
+                  '/default/20150101/4326/'
             });
           }
           if (provider) {
