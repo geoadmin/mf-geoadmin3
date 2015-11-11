@@ -92,14 +92,15 @@ goog.require('ga_time_service');
     };
 
     var handlePostCompose = function(evt) {
-      var ctx = evt.context;
-      var size = $scope.map.getSize();
-      var height = size[1] * ol.has.DEVICE_PIXEL_RATIO;
-      var width = size[0] * ol.has.DEVICE_PIXEL_RATIO;
+      var ctx = evt.context,
+          size = $scope.map.getSize(),
+          minx = printRectangle[0],
+          miny = printRectangle[1],
+          maxx = printRectangle[2],
+          maxy = printRectangle[3];
 
-      var minx, miny, maxx, maxy;
-      minx = printRectangle[0], miny = printRectangle[1],
-           maxx = printRectangle[2], maxy = printRectangle[3];
+      var height = size[1] * ol.has.DEVICE_PIXEL_RATIO,
+          width = size[0] * ol.has.DEVICE_PIXEL_RATIO;
 
       ctx.beginPath();
       // Outside polygon, must be clockwise
@@ -127,16 +128,11 @@ goog.require('ga_time_service');
     // Encode ol.Layer to a basic js object
     var encodeLayer = function(layer, proj) {
       var encLayer, encLegend;
-      var minXY = $scope.map.getCoordinateFromPixel([printRectangle[0],
-          printRectangle[3]]);
-      var maxXY = $scope.map.getCoordinateFromPixel([printRectangle[2],
-          printRectangle[1]]);
-      var ext = minXY.concat(maxXY);
-      var resolution = $scope.map.getView().getResolution();
 
       if (!(layer instanceof ol.layer.Group)) {
         var src = layer.getSource();
         var layerConfig = gaLayers.getLayer(layer.bodId) || {};
+        var resolution = $scope.map.getView().getResolution();
         var minResolution = layerConfig.minResolution || 0;
         var maxResolution = layerConfig.maxResolution || Infinity;
 
@@ -155,14 +151,14 @@ goog.require('ga_time_service');
               src = src.getSource();
             }
             var features = [];
-            src.forEachFeatureInExtent(ext, function(feat) {
+            var extent = getPrintRectangleCoords();
+            src.forEachFeatureInExtent(extent, function(feat) {
               features.push(feat);
             });
 
             if (features && features.length > 0) {
-              encLayer =
-                  $scope.encoders.layers['Vector'].call(this,
-                     layer, features);
+              encLayer = $scope.encoders.layers['Vector'].call(this, layer,
+                  features);
             }
           }
         }
@@ -954,14 +950,12 @@ goog.require('ga_time_service');
       // Framebuffer size!!
       var displayCoords = printRectangle.map(function(c) {
           return c / ol.has.DEVICE_PIXEL_RATIO});
-      var bottomLeft = $scope.map.
-                        getCoordinateFromPixel(displayCoords.slice(0, 2));
-      var topRight = $scope.map.
-                       getCoordinateFromPixel(displayCoords.slice(2, 4));
-      var coords = bottomLeft;
-      [].push.apply(coords, topRight);
-
-      return coords;
+      // PrintRectangle coordinates have top-left as origin
+      var bottomLeft = $scope.map.getCoordinateFromPixel([displayCoords[0],
+          displayCoords[3]]);
+      var topRight = $scope.map.getCoordinateFromPixel([displayCoords[2],
+          displayCoords[1]]);
+      return bottomLeft.concat(topRight);
     };
 
     var getPrintRectangleCenterCoord = function() {
@@ -969,7 +963,7 @@ goog.require('ga_time_service');
       var rect = getPrintRectangleCoords();
 
       var centerCoords = [rect[0] + (rect[2] - rect[0]) / 2.0,
-          rect[3] + (rect[1] - rect[3]) / 2.0];
+          rect[1] + (rect[3] - rect[1]) / 2.0];
 
       return centerCoords;
     };
