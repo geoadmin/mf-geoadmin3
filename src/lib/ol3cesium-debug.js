@@ -101225,9 +101225,7 @@ ol.format.KML.writePlacemark_ = function(node, feature, objectStack) {
     var styles = styleFunction.call(feature, 0);
     if (styles && styles.length > 0) {
       var style = styles[0];
-      if (this.writeStyles_) {
-        properties['Style'] = styles[0];
-      }
+      properties['Style'] = styles[0];
       var textStyle = style.getText();
       if (textStyle) {
         properties['name'] = textStyle.getText();
