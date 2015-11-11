@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys
 import os
+import time
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
@@ -50,30 +51,55 @@ if __name__ == '__main__':
 #        {'platform': "Windows 7", 'browserName': "internet explorer", 'version': "11.0", 'screenResolution': "1280x1024" },
         ]
                         
-    ### FOR TEST (test only one browser config)
-    ## Chrome 43.0
-    #desired_cap_list = [{'name': "ltalp test", 'build': "Swiss 1", 'platform': "Windows 7", 'browserName': "chrome", 'version': "43.0", 'screenResolution': "1280x1024", 'tags': "Swisssearch step 1" }]
-    ## Firefox 40.0
-    #desired_cap_list = [{'name': "ltalp test", 'build': "Swiss 1", 'platform': "Windows 7", 'browserName': "firefox", 'version': "40.0", 'screenResolution': "1280x1024", 'tags': "Swisssearch step 1" }]
-    ## Internet Explorer 10.0
-#    desired_cap_list = [{'name': "ltalp test", 'build': "Swiss 1", 'platform': "Windows 7", 'browserName': "internet explorer", 'version': "10.0", 'screenResolution': "1280x1024", 'tags': "Swisssearch step 1" }]
-
     ## okay we will start the script!
     print "Starting SauceLabs script!"
+
+    t0 = time.time()
+    print "Start test at " + time.strftime('%d/%m/%y %H:%M',time.localtime())  
 
     for current_desired_cap in desired_cap_list: 
         print "+--> Start test with " + current_desired_cap['platform'] + " " + current_desired_cap['browserName'] + " (" + current_desired_cap['version'] + ")"
 
+        bDoStartTest = 1
+        bDoMobileTest = 1
+        bDoSearchTest = 1
+        bDoKmlTest = 1
+        bDoSwissSearchTest = 1
+        bDoPrintTest = 1
+        bDoWmsTest = 1
+
         driver = webdriver.Remote(
             command_executor='http://' + saucelabs_user + ':' + saucelabs_key + '@ondemand.saucelabs.com:80/wd/hub', desired_capabilities=current_desired_cap)
         try: 
-            runStart_test(driver, url)                         ## Ok with Chrome and FF
-            runMobile_test(current_desired_cap, driver, url)   ## Ok with Chrome and Firefox
-            runSearch_test(desired_cap_list, driver, url)      ## Ok with Chrome and FF
-            runKml_test(desired_cap_list, driver, url)         ## Ok with Chrome and FF  
-            runSwissSearchTest(driver, url)                 ## Ok with Chrome and FF 
-            runPrintTest(driver, url)                       ## Ok with Chrome and FF
+            if bDoStartTest:
+                tpartial = time.time()
+                runStart_test(driver, url)                         ## Ok with Chrome and FF
+                print("Temp partiel Start test : %.2f secondes" % (time.time() - tpartial))
+            if bDoMobileTest:
+                tpartial = time.time()
+                runMobile_test(current_desired_cap, driver, url)   ## Ok with Chrome and FF
+                print("Temp partiel Mobile : %.2f secondes" % (time.time() - tpartial))
+            if bDoSearchTest:
+                tpartial = time.time()
+                runSearch_test(desired_cap_list, driver, url)      ## Ok with Chrome and FF
+                print("Temp partiel Search : %.2f secondes" % (time.time() - tpartial))
+            if bDoKmlTest:
+                tpartial = time.time()
+                runKml_test(desired_cap_list, driver, url)         ## Ok with Chrome and FF  
+                print("Temp partiel Kml : %.2f secondes" % (time.time() - tpartial))
+            if bDoSwissSearchTest:
+                tpartial = time.time()
+                runSwissSearchTest(driver, url)                    ## Ok with Chrome and FF 
+                print("Temp partiel SwissSearch: %.2f secondes" % (time.time() - tpartial))
+            if bDoPrintTest:
+                tpartial = time.time()
+                runPrintTest(driver, url)                          ## Ok with Chrome and FF
+                print("Temp partiel Print : %.2f secondes" % (time.time() - tpartial))
         finally:
             driver.quit()
         print "--- end test for this browser"
     print "End full tests"
+
+    t1 = time.time()
+    print "End test at " + time.strftime('%d/%m/%y %H:%M',time.localtime())  
+    print("%.2f secondes" % (t1 - t0))

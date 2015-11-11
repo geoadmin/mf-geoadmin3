@@ -7,7 +7,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 
-def runStart_test(driver, url):
+def runStartTest(driver, url):
     # This is your test logic. You can add multiple tests here.
     driver.implicitly_wait(5)
     #driver.get(url)

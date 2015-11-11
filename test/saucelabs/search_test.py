@@ -28,7 +28,7 @@ def wait_url_changed(driver, old_url, timeout=DEFAULT_WAIT):
     return bool(not UrlHasChanged)
 
 
-def runSearch_test(cap, driver, url):
+def runSearchTest(cap, driver, url):
     print 'Search_test starts!'
     driver.get(url)
     driver.maximize_window()
