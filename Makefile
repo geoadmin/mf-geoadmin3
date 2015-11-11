@@ -26,6 +26,10 @@ CESIUM_VERSION ?= 257364f24d12ac44006f92de597eaead755780b7
 DEFAULT_TOPIC_ID ?= ech
 TRANSLATION_FALLBACK_CODE ?= de
 LANGUAGES ?= '[\"de\", \"en\", \"fr\", \"it\", \"rm\"]'
+TRANSLATE_GSPREAD_KEYS ?= 1F3R46w4PODfsbJq7jd79sapy3B7TXhQcYM7SEaccOA0
+TRANSLATE_CSV_FILES ?= "https://docs.google.com/spreadsheets/d/1F3R46w4PODfsbJq7jd79sapy3B7TXhQcYM7SEaccOA0/export?format=csv&gid=0"
+TRANSLATE_EMPTY_JSON ?= src/locales/empty.json
+TRANSLATE_OUTPUT ?= src/locales
 DEFAULT_EXTENT ?= '[420000, 30000, 900000, 350000]'
 DEFAULT_RESOLUTION ?= 500.0
 DEFAULT_LEVEL_OF_DETAIL ?= 7 #level of detail for the default resolution
@@ -232,8 +236,12 @@ datepicker: .build-artefacts/datepicker
 	cp .build-artefacts/datepicker/build/js/bootstrap-datetimepicker.min.js src/lib/
 
 .PHONY: translate
-translate: .build-artefacts/translate-requirements-installation.timestamp
-	${PYTHON_CMD} scripts/translation2js.py src/locales/
+translate:
+	${PYTHON_CMD} scripts/translation2json.py \
+            --files $(TRANSLATE_CSV_FILES) \
+	    --languages "$(LANGUAGES)" \
+	    --empty-json-file $(TRANSLATE_EMPTY_JSON) \
+            --output-folder $(TRANSLATE_OUTPUT)
 
 .PHONY: fixrights
 fixrights:
@@ -497,13 +505,6 @@ $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule
 
 .build-artefacts/python-venv/bin/htmlmin: .build-artefacts/python-venv
 	${PYTHON_CMD} .build-artefacts/python-venv/bin/pip install "htmlmin==0.1.6"
-	touch $@
-
-.build-artefacts/translate-requirements-installation.timestamp: .build-artefacts/python-venv
-	${PYTHON_CMD} .build-artefacts/python-venv/bin/pip install "PyYAML==3.10"
-	${PYTHON_CMD} .build-artefacts/python-venv/bin/pip install "oauth2client==1.4.11"
-	${PYTHON_CMD} .build-artefacts/python-venv/bin/pip install "gspread==0.2.5"
-	${PYTHON_CMD} .build-artefacts/python-venv/bin/pip install "pyopenssl==0.15.1"
 	touch $@
 
 .build-artefacts/python-venv/bin/gjslint: .build-artefacts/python-venv
