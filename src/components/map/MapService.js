@@ -1085,7 +1085,9 @@ goog.require('ga_urlutils_service');
           if (config3d.type == 'terrain') {
             provider = new Cesium.CesiumTerrainProvider({
               url: getTerrainTileUrl(requestedLayer, timestamp),
-              availableLevels: window.terrainAvailableLevels
+              availableLevels: window.terrainAvailableLevels,
+              rectangle: gaMapUtils.extentToRectangle(
+                gaGlobalOptions.defaultExtent, 'EPSG:21781')
             });
             provider.bodId = bodId;
           }
