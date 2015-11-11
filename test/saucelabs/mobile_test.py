@@ -28,7 +28,7 @@ def wait_url_changed(driver, old_url, timeout=DEFAULT_WAIT):
     return bool(not UrlHasChanged)
 
 
-def runMobile_test(cap, driver, target):
+def runMobileTest(cap, driver, target):
     print "Start Mobile tests"
     target_url =  target + '?lang=de'
     driver.get(target_url)
