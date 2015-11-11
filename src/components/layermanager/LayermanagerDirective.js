@@ -127,8 +127,9 @@ goog.require('ga_urlutils_service');
       link: function(scope, element, attrs) {
         var map = scope.map;
         var drag = {
-          above: 'drag-enter-above',
-          under: 'drag-enter-under',
+          info: $('#drag-info'),
+          above: 'above',
+          under: 'under',
           scrollSpeed: 10,
           layerManager: $('[ga-layermanager]'),
           element: null,
@@ -242,6 +243,13 @@ goog.require('ga_urlutils_service');
             drag.element.css('top', drag.element.position().top + 'px');
             drag.element.css('position', 'absolute');
 
+            // The size of #drag-info can be incorrect and not match the actual
+            // size of the ul element. We correct it before to start the drag
+            // and drop.
+            var list = $('[ga-layermanager] ul').get(0);
+            var listWidth = getComputedStyle(list).width;
+            drag.info.css('width', listWidth);
+
             drag.layerManager.mousemove(function(evt) {
               updateDragInfo(evt);
               scrollLayerManager();
@@ -254,36 +262,39 @@ goog.require('ga_urlutils_service');
             drag.ty = evt.clientY - drag.previousClientY;
             drag.previousClientY = evt.clientY;
 
-            cleanDragClass();
-            applyDragClass();
+            drag.info.hide();
+            showDragInfo();
           } else {
             drag.previousClientY = evt.clientY;
           }
         };
 
-        var cleanDragClass = function(ty) {
-          if (ty === undefined || ty !== 0) {
-            var dragInfo = $('[ga-layermanager] li .drag-info');
-            dragInfo.removeClass(drag.under);
-            dragInfo.removeClass(drag.above);
-          }
-        };
-
-        var applyDragClass = function() {
-          var dragClass;
+        var showDragInfo = function() {
+          var direction;
           if (drag.ty > 0) {
-            dragClass = drag.under;
+            direction = drag.under;
           } else if (drag.ty < 0) {
-            dragClass = drag.above;
+            direction = drag.above;
           }
           $('li.drag-enter').each(function(index, elt) {
             if ($(elt).attr('class').indexOf('dragging') === -1 &&
                 drag.ty !== 0) {
-              $(elt).children('.drag-info').addClass(dragClass);
               drag.position.index = $('[ga-layermanager] li').index(elt);
-              drag.position.direction = dragClass;
+              drag.position.direction = direction;
+              updateDragInfoElement(elt);
             }
           });
+        };
+
+        var updateDragInfoElement = function(elt) {
+          var elementPosition = $(elt).position().top;
+          var elementHeight = $(elt).height();
+          if (drag.position.direction === drag.under) {
+            drag.info.css('top', elementPosition + elementHeight - 5);
+          } else if (drag.position.direction === drag.above) {
+            drag.info.css('top', elementPosition - 5);
+          }
+          drag.info.show();
         };
 
         var scrollLayerManager = function() {
@@ -309,7 +320,7 @@ goog.require('ga_urlutils_service');
 
         scope.onDragStop = function() {
           if (drag.element) {
-            cleanDragClass();
+            drag.info.hide();
             drag.layerManager.off('mousemove');
             drag.element.css('top', '');
             drag.element.css('position', '');

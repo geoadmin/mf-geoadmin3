@@ -5,6 +5,8 @@
     border-bottom: #e9e9e9 1px solid;
     height: 6em;
     padding: 0;
+    overflow-x: hidden;
+    overflow-y: inherit;
     .transition(height .35s ease);
   }
 
@@ -17,7 +19,7 @@
     width: 5.5em;
     padding: 0;
   }
- 
+
   .ga-layer-infos label, input, select, options {
     cursor: pointer;
 
@@ -44,13 +46,13 @@
     padding: 0px;
     height: 14px;
     vertical-align: middle;
- 
+
     &::-ms-track {
       height: 4px;
       color: transparent;
       background: linear-gradient(to right, rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 100%);
     }
- 
+
     &::-ms-fill-lower, &::-ms-fill-upper {
       background: none;
     }
@@ -60,9 +62,9 @@
       border-radius: 5px;
       height: 12px;
       background: linear-gradient(to bottom, #eeeeee 0%,#cccccc 100%);
-    } 
+    }
   }
- 
+
   .ga-layer-infos {
     width: 100%;
     background-color: #fff;
@@ -104,10 +106,14 @@
         opacity: 0;
       }
     }
-    
+
     .icon-user {
       display: none;
       color: red;
+    }
+
+    .ga-layer-label-container {
+      height: 100%;
     }
   }
 
@@ -116,7 +122,7 @@
       display: block;
       right: 34px;
     }
-    
+
     .ga-layer-infos label {
       padding-right: 5.1em;
     }
@@ -144,13 +150,13 @@
       }
     }
   }
- 
+
   .ga-layer-tools, .ga-layer-infos {
     height: 3em;
   }
 
   .ga-layer-time-enabled .ga-layer-tools {
- 
+
     @media (max-width: 335px) {
       label > div {
         font-size: 0.8em;
@@ -209,25 +215,16 @@
     cursor: move;
   }
 
-  .drag-info {
+  #drag-info {
     border-style: solid;
-    border-width: 5px 10px 5px 0;
-    border-color: transparent #000000 transparent transparent;
     position: absolute;
-    z-index: 1;
+    z-index: 100;
+    left: 0px;
+    display: inline;
+    border-width: 5px 10px 5px 0px;
+    border-color: transparent #000000 transparent transparent;
+    height: 10px;
     display: none;
-  }
-
-  li .drag-enter-above {
-    right: 0;
-    top: -5px;
-    display: inline;
-  }
-
-  li .drag-enter-under {
-    right: 0;
-    bottom: -5px;
-    display: inline;
   }
 }
 
@@ -235,15 +232,10 @@
   display: none;
 }
 
-/* HACK for alignment in FF and IE */
-.no-webkit [ga-layermanager] .ga-layer-infos label {
-  margin-top: -1px;
-}
-
 /* The popover is outside the layermanager */
 .ga-layer-timestamps {
   width: 200px;
- 
+
   & div {
     width: 50px;
     height: 20px;
@@ -265,13 +257,12 @@
   border: 0;
   font-size: inherit;
   font-weight: normal;
- 
+
   &, &.ga-black, &.ga-black:hover {
     color: #000;
   }
- 
+
   &:not(.ga-black), &:not(.ga-black):hover {
     color: #f00;
   }
 }
-

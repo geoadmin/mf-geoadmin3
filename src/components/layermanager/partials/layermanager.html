@@ -1,3 +1,4 @@
+<div id="drag-info"></div>
 <ul>
   <li ng-repeat="layer in filteredLayers" class="ga-layer-folded"
       ng-class="{
@@ -12,12 +13,14 @@
       ng-drag-stop="onDragStop()"
       ng-drag-data="layer">
     <div class="ga-layer-infos">
-      <div>
+      <div class="ga-layer-label-container">
         <button class="ga-icon ga-btn icon-remove-sign"
               ng-click="removeLayer(layer)"></button>
-        <input class="ga-checkbox" type="checkbox" ng-model="layer.visible" />
-        <span></span>
-        {{layer.label}}
+        <span class="ga-checkbox">
+          <input type="checkbox" ng-model="layer.visible" />
+          <span></span>
+          {{layer.label}}
+        </span>
       </div>
       <div class="ga-layer-time" ng-if="layer.timeEnabled">
         <button class="ga-btn badge" tabindex="1"
@@ -33,7 +36,6 @@
               ng-click="showWarning(layer)"></button>
       <button class="ga-icon icon-gear" ng-click="toggleTools($index)"></button>
     </div><!--ga-layer-infos-->
-    <span class="drag-info"></span>
     <div class="ga-layer-tools" ng-if="tools.enabled && tools.index === $index">
       <label>
         <div translate>transparency</div>&nbsp;
