@@ -1,3 +1,4 @@
 export API_URL=//mf-chsdi3.dev.bgdi.ch/ltfrr
 export APACHE_BASE_PATH=/ltfrr
 export BROWSERSTACK_TARGETURL=https://mf-geoadmin3.dev.bgdi.ch/ltfrr
+export SAUCELABS_TARGETURL=https://mf-geoadmin3.dev.bgdi.ch/ltfrr
