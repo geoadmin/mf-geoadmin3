@@ -94,6 +94,7 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions, $q) {
     globe.tileCacheSize = tileCacheSize;
     globe.maximumScreenSpaceError = maximumScreenSpaceError;
     var scene = cesiumViewer.getCesiumScene();
+    scene.backgroundColor = Cesium.Color.WHITE;
     scene.globe.depthTestAgainstTerrain = true;
     scene.screenSpaceCameraController.maximumZoomDistance = 500000;
     scene.terrainProvider =
