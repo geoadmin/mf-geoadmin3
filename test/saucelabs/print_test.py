@@ -37,45 +37,62 @@ def runPrintTest(driver, target):
 
     # Make a print test of differents layer types
 
+    bDoWmts = 1
+    bDoWms = 1
+    bDoWmsWithoutSingleTile = 1
+    bDoAggregate = 1
+    bDoGeojson = 1
+    bDoExternalKml = 1
+    bDoExternalWms = 1
+    bDoMapGeoKml = 1
+
     # WMTS
-    print "Print test of WMTS Layer : ch.swisstopo.landesschwerenetz"
-    target_spec = target + '/?lang=de&layers=ch.swisstopo.landesschwerenetz&X=190000.00&Y=660000.00&zoom=3'
-    PrintTest(driver, target_spec)
+    if bDoWmts:
+        print "Print test of WMTS Layer : ch.swisstopo.landesschwerenetz"
+        target_spec = target + '/?lang=de&layers=ch.swisstopo.landesschwerenetz&X=190000.00&Y=660000.00&zoom=3'
+        PrintTest(driver, target_spec)
 
     # WMS 
-    print "Print test of WMS layer : ch.bazl.luftfahrthindernis"
-    target_spec = target + '/?lang=de&layers=ch.bazl.luftfahrthindernis&X=190000.00&Y=660000.00&zoom=5'
-    PrintTest(driver, target_spec)
+    if bDoWms:
+        print "Print test of WMS layer : ch.bazl.luftfahrthindernis"
+        target_spec = target + '/?lang=de&layers=ch.bazl.luftfahrthindernis&X=190000.00&Y=660000.00&zoom=5'
+        PrintTest(driver, target_spec)
 
     # WMS without single tiles : ch.bav.sachplan-infrastruktur-schiene_kraft
-    print "Print test of WMS (single tile ='f') : ch.bav.sachplan-infrastruktur-schiene_kraft"
-    target_spec = target + '/?lang=de&ch.bav.sachplan-infrastruktur-schiene_kraft'
-    PrintTest(driver, target_spec)
+    if bDoWmsWithoutSingleTile:
+        print "Print test of WMS (single tile ='f') : ch.bav.sachplan-infrastruktur-schiene_kraft"
+        target_spec = target + '/?lang=de&ch.bav.sachplan-infrastruktur-schiene_kraft'
+        PrintTest(driver, target_spec)
 
     # AGGREGATE : ch.bfs.gebaeude_wohnungs_register
-    print "Print test of Aggregate layer : ch.bfs.gebaeude_wohnungs_register"
-    target_spec = target + '/?lang=de&layers=ch.bfs.gebaeude_wohnungs_register&X=190000.00&Y=660000.00&zoom=3'
-    PrintTest(driver, target_spec)
+    if bDoAggregate:
+        print "Print test of Aggregate layer : ch.bfs.gebaeude_wohnungs_register"
+        target_spec = target + '/?lang=de&layers=ch.bfs.gebaeude_wohnungs_register&X=190000.00&Y=660000.00&zoom=3'
+        PrintTest(driver, target_spec)
 
     # Geojson
-    print "Print test of Geojson layer : ch.bafu.hydroweb-messstationen_grundwasser"
-    target_spec = target + '/?lang=de&layers=ch.bafu.hydroweb-messstationen_grundwasser&X=190000.00&Y=660000.00&zoom=3'
-    PrintTest(driver, target_spec)
+    if bDoGeojson:
+        print "Print test of Geojson layer : ch.bafu.hydroweb-messstationen_grundwasser"
+        target_spec = target + '/?lang=de&layers=ch.bafu.hydroweb-messstationen_grundwasser&X=190000.00&Y=660000.00&zoom=3'
+        PrintTest(driver, target_spec)
 
     # External KML
-    print "Print test of external Kml : http://opendata.utou.ch/urbanproto/geneva/geo/kml/Routes.kml"
-    target_spec = target + '?lang=de&layers=' + QUERYSTRING_KML
-    PrintTest(driver, target_spec)
+    if bDoExternalKml:
+        print "Print test of external Kml : http://opendata.utou.ch/urbanproto/geneva/geo/kml/Routes.kml"
+        target_spec = target + '?lang=de&layers=' + QUERYSTRING_KML
+        PrintTest(driver, target_spec)
 
     # External WMS 
-    print "Print test of external wms : Schukreis (Zurich)"
-    target_spec = target + '?lang=de&layers=' + QUERYSTRING_EXTERNAL_WMS 
-    PrintTest(driver, target_spec)
+    if bDoExternalWms:
+        print "Print test of external wms : Schukreis (Zurich)"
+        target_spec = target + '?lang=de&layers=' + QUERYSTRING_EXTERNAL_WMS 
+        PrintTest(driver, target_spec)
 
     # KML from public.geo.admin.ch
-    print "Print test of KML from public.geo.admin.ch" 
-    target_spec = target + '?lang=de&layers=' + QUERYSTRING_PUBLIC_GEO_KML
-    PrintTest(driver, target_spec)
+    if bDoMapGeoKml:
+        print "Print test of KML from public.geo.admin.ch" 
+        target_spec = target + '?lang=de&layers=' + QUERYSTRING_PUBLIC_GEO_KML
+        PrintTest(driver, target_spec)
  
     print "Test Print Ok !"
 
