@@ -1,6 +1,6 @@
 // Ol3-Cesium. See https://github.com/openlayers/ol3-cesium/
 // License: https://github.com/openlayers/ol3-cesium/blob/master/LICENSE
-// Version: v1.9-22-g7daac68
+// Version: v1.9-31-ge756630
 
 var CLOSURE_NO_DEPS = true;
 // Copyright 2006 The Closure Library Authors. All Rights Reserved.
@@ -121244,6 +121244,7 @@ olcs.AutoRenderLoop = function(ol3d, debug) {
   this._originalCameraMove = Cesium.Camera.prototype.move;
   this._originalCameraRotate = Cesium.Camera.prototype.rotate;
   this._originalCameraLookAt = Cesium.Camera.prototype.lookAt;
+  this._originalCameraFlyTo = Cesium.Camera.prototype.flyTo;
 
   this.enable();
 };
@@ -121337,7 +121338,10 @@ olcs.AutoRenderLoop.prototype.enable = function() {
     that._originalCameraLookAt.apply(this, arguments);
     that.notifyRepaintRequired();
   };
-
+  Cesium.Camera.prototype.flyTo = function() {
+    that._originalCameraFlyTo.apply(this, arguments);
+    that.notifyRepaintRequired();
+  };
 
   // Listen for changes on the layer group
   this.ol3d.getOlMap().getLayerGroup().on('change',
@@ -121377,6 +121381,7 @@ olcs.AutoRenderLoop.prototype.disable = function() {
   Cesium.Camera.prototype.move = this._originalCameraMove;
   Cesium.Camera.prototype.rotate = this._originalCameraRotate;
   Cesium.Camera.prototype.lookAt = this._originalCameraLookAt;
+  Cesium.Camera.prototype.flyTo = this._originalCameraFlyTo;
 
   this.ol3d.getOlMap().getLayerGroup().un('change',
       this._boundNotifyRepaintRequired);
@@ -124270,7 +124275,8 @@ olcs.VectorSynchronizer.prototype.removeAllCesiumObjects = function(destroy) {
 olcs.VectorSynchronizer.prototype.createSingleLayerCounterparts =
     function(olLayer) {
   if (!(olLayer instanceof ol.layer.Vector) &&
-      !(olLayer instanceof ol.layer.Image)) {
+      !(olLayer instanceof ol.layer.Image &&
+      olLayer.getSource() instanceof ol.source.ImageVector)) {
     return null;
   }
   goog.asserts.assertInstanceof(olLayer, ol.layer.Layer);
