@@ -1456,6 +1456,18 @@ goog.require('ga_urlutils_service');
         getViewResolutionForZoom: function(zoom) {
           return resolutions[zoom];
         },
+
+        animatePitch: function(scene, angle, duration) {
+          var bottom = olcs.core.pickBottomPoint(scene);
+          if (bottom) {
+            var transform = Cesium.Matrix4.fromTranslation(bottom);
+            var camera = scene.camera;
+            olcs.core.rotateAroundAxis(camera, angle, camera.right, transform, {
+              duration: duration
+            });
+          }
+        },
+
         // Example of a dataURI: 'data:image/png;base64,sdsdfdfsdfdf...'
         dataURIToBlob: function(dataURI) {
           var BASE64_MARKER = ';base64,';
@@ -1533,11 +1545,14 @@ goog.require('ga_urlutils_service');
           if (ol3d && ol3d.getEnabled()) {
             var deg = ol.proj.transform(center,
                 ol3d.getOlMap().getView().getProjection(), 'EPSG:4326');
-            ol3d.getCesiumScene().camera.flyTo({
+            var scene = ol3d.getCesiumScene();
+            var camera = scene.camera;
+            camera.flyTo({
               destination: Cesium.Cartesian3.fromDegrees(deg[0], deg[1], 3000),
               complete: function() {
+                this.animatePitch(scene, Cesium.Math.toRadians(-50), 25);
                 defer.resolve();
-              },
+              }.bind(this),
               cancel: function() {
                 defer.resolve();
               }
@@ -1553,12 +1568,15 @@ goog.require('ga_urlutils_service');
         zoomToExtent: function(map, ol3d, extent) {
           var defer = $q.defer();
           if (ol3d && ol3d.getEnabled()) {
-            ol3d.getCesiumScene().camera.flyTo({
+            var scene = ol3d.getCesiumScene();
+            var camera = scene.camera;
+            camera.flyTo({
               destination: this.extentToRectangle(extent,
                   ol3d.getOlMap().getView().getProjection()),
               complete: function() {
+                this.animatePitch(scene, Cesium.Math.toRadians(-50), 25);
                 defer.resolve();
-              },
+              }.bind(this),
               cancel: function() {
                 defer.resolve();
               }
