@@ -1111,7 +1111,7 @@ goog.require('ga_urlutils_service');
               if (Array.isArray(subProvider)) {
                 providers.push.apply(providers, subProvider);
               } else {
-                providers.push(this.getCesiumImageryProviderById(item));
+                providers.push(subProvider);
               }
             }, this);
             return providers;
