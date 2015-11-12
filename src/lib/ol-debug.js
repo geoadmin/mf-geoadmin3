@@ -1,6 +1,6 @@
 // OpenLayers 3. See http://openlayers.org/
 // License: https://raw.githubusercontent.com/openlayers/ol3/master/LICENSE.md
-// Version: v3.10.1-269-g5b817f3
+// Version: v3.11.0-6-gbd1febe
 
 (function (root, factory) {
   if (typeof exports === "object") {
@@ -13150,12 +13150,17 @@ ol.Object.prototype.notify = function(key, oldValue) {
  * Sets a value.
  * @param {string} key Key name.
  * @param {*} value Value.
+ * @param {boolean=} opt_silent Update without triggering an event.
  * @api stable
  */
-ol.Object.prototype.set = function(key, value) {
-  var oldValue = this.values_[key];
-  this.values_[key] = value;
-  this.notify(key, oldValue);
+ol.Object.prototype.set = function(key, value, opt_silent) {
+  if (opt_silent) {
+    this.values_[key] = value;
+  } else {
+    var oldValue = this.values_[key];
+    this.values_[key] = value;
+    this.notify(key, oldValue);
+  }
 };
 
 
@@ -13163,12 +13168,13 @@ ol.Object.prototype.set = function(key, value) {
  * Sets a collection of key-value pairs.  Note that this changes any existing
  * properties and adds new ones (it does not remove any existing properties).
  * @param {Object.<string, *>} values Values.
+ * @param {boolean=} opt_silent Update without triggering an event.
  * @api stable
  */
-ol.Object.prototype.setProperties = function(values) {
+ol.Object.prototype.setProperties = function(values, opt_silent) {
   var key;
   for (key in values) {
-    this.set(key, values[key]);
+    this.set(key, values[key], opt_silent);
   }
 };
 
@@ -13176,13 +13182,16 @@ ol.Object.prototype.setProperties = function(values) {
 /**
  * Unsets a property.
  * @param {string} key Key name.
+ * @param {boolean=} opt_silent Unset without triggering an event.
  * @api stable
  */
-ol.Object.prototype.unset = function(key) {
+ol.Object.prototype.unset = function(key, opt_silent) {
   if (key in this.values_) {
     var oldValue = this.values_[key];
     delete this.values_[key];
-    this.notify(key, oldValue);
+    if (!opt_silent) {
+      this.notify(key, oldValue);
+    }
   }
 };
 
@@ -38549,6 +38558,8 @@ ol.control.Rotate = function(opt_options) {
 
   var render = options.render ? options.render : ol.control.Rotate.render;
 
+  this.callResetNorth_ = options.resetNorth ? options.resetNorth : undefined;
+
   goog.base(this, {
     element: element,
     render: render,
@@ -38587,7 +38598,11 @@ goog.inherits(ol.control.Rotate, ol.control.Control);
  */
 ol.control.Rotate.prototype.handleClick_ = function(event) {
   event.preventDefault();
-  this.resetNorth_();
+  if (this.callResetNorth_ !== undefined) {
+    this.callResetNorth_();
+  } else {
+    this.resetNorth_();
+  }
 };
 
 
@@ -50326,6 +50341,11 @@ goog.require('ol.source.State');
  * Layers group together those properties that pertain to how the data is to be
  * displayed, irrespective of the source of that data.
  *
+ * Layers are usually added to a map with {@link ol.Map#addLayer}. Components
+ * like {@link ol.interaction.Select} use unmanaged layers internally. These
+ * unmanaged layers are associated with the map using
+ * {@link ol.layer.Layer#setMap} instead.
+ *
  * A generic `change` event is fired when the state of the source changes.
  *
  * @constructor
@@ -52169,7 +52189,9 @@ ol.renderer.Map.prototype.forEachFeatureAtCoordinate =
       if (layer.getSource()) {
         result = layerRenderer.forEachFeatureAtCoordinate(
             layer.getSource().getWrapX() ? translatedCoordinate : coordinate,
-            frameState, callback, thisArg);
+            frameState,
+            layerState.managed ? callback : forEachFeatureAtCoordinate,
+            thisArg);
       }
       if (result) {
         return result;
@@ -59645,6 +59667,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
     goog.asserts.assert(pixelCoordinates === this.pixelCoordinates_,
         'pixelCoordinates should be the same as this.pixelCoordinates_');
   }
+  var skipFeatures = !goog.object.isEmpty(skippedFeaturesHash);
   var i = 0; // instruction index
   var ii = instructions.length; // end of instructions
   var d = 0; // data index
@@ -59658,8 +59681,8 @@ ol.render.canvas.Replay.prototype.replay_ = function(
     switch (type) {
       case ol.render.canvas.Instruction.BEGIN_GEOMETRY:
         feature = /** @type {ol.Feature|ol.render.Feature} */ (instruction[1]);
-        var featureUid = goog.getUid(feature).toString();
-        if (skippedFeaturesHash[featureUid] !== undefined ||
+        if ((skipFeatures &&
+            skippedFeaturesHash[goog.getUid(feature).toString()]) ||
             !feature.getGeometry()) {
           i = /** @type {number} */ (instruction[2]);
         } else if (opt_hitExtent !== undefined && !ol.extent.intersects(
@@ -83486,8 +83509,9 @@ ol.Map.prototype.disposeInternal = function() {
  *     called with two arguments. The first argument is one
  *     {@link ol.Feature feature} or
  *     {@link ol.render.Feature render feature} at the pixel, the second is
- *     the {@link ol.layer.Layer layer} of the feature. To stop detection,
- *     callback functions can return a truthy value.
+ *     the {@link ol.layer.Layer layer} of the feature and will be null for
+ *     unmanaged layers. To stop detection, callback functions can return a
+ *     truthy value.
  * @param {S=} opt_this Value to use as `this` when executing `callback`.
  * @param {(function(this: U, ol.layer.Layer): boolean)=} opt_layerFilter Layer
  *     filter function. The filter function will receive one argument, the
@@ -97378,6 +97402,7 @@ ol.style.Text.prototype.setFont = function(font) {
  * Set the x offset.
  *
  * @param {number} offsetX Horizontal text offset.
+ * @api
  */
 ol.style.Text.prototype.setOffsetX = function(offsetX) {
   this.offsetX_ = offsetX;
@@ -97388,6 +97413,7 @@ ol.style.Text.prototype.setOffsetX = function(offsetX) {
  * Set the y offset.
  *
  * @param {number} offsetY Vertical text offset.
+ * @api
  */
 ol.style.Text.prototype.setOffsetY = function(offsetY) {
   this.offsetY_ = offsetY;
@@ -99657,7 +99683,8 @@ ol.format.KML.writeCoordinatesTextNode_ =
 ol.format.KML.writeDocument_ = function(node, features, objectStack) {
   var /** @type {ol.xml.NodeStackItem} */ context = {node: node};
   ol.xml.pushSerializeAndPop(context, ol.format.KML.DOCUMENT_SERIALIZERS_,
-      ol.format.KML.DOCUMENT_NODE_FACTORY_, features, objectStack);
+      ol.format.KML.DOCUMENT_NODE_FACTORY_, features, objectStack, undefined,
+      this);
 };
 
 
@@ -112753,6 +112780,8 @@ goog.inherits(ol.interaction.SelectEvent, goog.events.Event);
  * `toggle`, `add`/`remove`, and `multi` options; a `layers` filter; and a
  * further feature filter using the `filter` option.
  *
+ * Selected features are added to an internal unmanaged layer.
+ *
  * @constructor
  * @extends {ol.interaction.Interaction}
  * @param {olx.interaction.SelectOptions=} opt_options Options.
@@ -112937,7 +112966,7 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
          * @param {ol.layer.Layer} layer Layer.
          */
         function(feature, layer) {
-          if (this.filter_(feature, layer)) {
+          if (layer && this.filter_(feature, layer)) {
             selected.push(feature);
             this.addFeatureLayerAssociation_(feature, layer);
             return !this.multi_;
@@ -122599,6 +122628,16 @@ goog.exportProperty(
     ol.style.Text.prototype,
     'setFont',
     ol.style.Text.prototype.setFont);
+
+goog.exportProperty(
+    ol.style.Text.prototype,
+    'setOffsetX',
+    ol.style.Text.prototype.setOffsetX);
+
+goog.exportProperty(
+    ol.style.Text.prototype,
+    'setOffsetY',
+    ol.style.Text.prototype.setOffsetY);
 
 goog.exportProperty(
     ol.style.Text.prototype,
