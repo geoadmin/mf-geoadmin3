@@ -369,7 +369,11 @@ goog.require('ga_topic_service');
             // Highlight the features found
             var showFeatures = function(foundFeatures, coordinate,
                                         nohighlight) {
-              if (foundFeatures && foundFeatures.length > 0) {
+              if (!foundFeatures || foundFeatures.length <= 0) {
+                if (map.getTarget().style.cursor == 'pointer') {
+                  showNoInfo();
+                }
+              } else {
                 // Remove the tooltip, if a layer is removed, we don't care
                 // which layer. It worked like that in RE2.
                 listenerKey = map.getLayers().on('remove',
@@ -464,6 +468,18 @@ goog.require('ga_topic_service');
                   window.parent.postMessage(id, '*');
                 }
               }
+            };
+
+            var showNoInfo = function() {
+              if (!popup) {
+                popup = gaPopup.create({
+                  className: 'ga-tooltip',
+                  showReduce: false,
+                  title: 'object_information',
+                  content: '<br><div translate>no_more_information</div>'
+                });
+              }
+              popup.open(3000); //Close after 3 seconds
             };
 
             // Show the popup with all features informations

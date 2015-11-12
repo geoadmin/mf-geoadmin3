@@ -9,7 +9,7 @@ goog.require('ga_draggable_directive');
 
   module.provider('gaPopup', function() {
 
-    this.$get = function($compile, $rootScope) {
+    this.$get = function($compile, $rootScope, $timeout) {
 
       var Popup = function(options) {
 
@@ -45,8 +45,17 @@ goog.require('ga_draggable_directive');
         $(document.body).append(this.element);
       };
 
-      Popup.prototype.open = function() {
+      Popup.prototype.open = function(autocloseDelay) {
+        var that = this;
         this.scope.toggle = true;
+        if (autocloseDelay) {
+          $timeout(function() {
+            if (that && that.scope && that.scope.toggle) {
+              that.close();
+            }
+          }, autocloseDelay);
+        }
+
       };
 
       Popup.prototype.close = function() {

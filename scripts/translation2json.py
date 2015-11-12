@@ -139,7 +139,7 @@ def _save_translations(translations, output_folder, languages_to_save):
                 translations[lang],
                 json_file,
                 sort_keys=True,
-                indent=4,
+                indent=0,
                 ensure_ascii=False,
                 separators=(',', ': '))
 
