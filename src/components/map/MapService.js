@@ -2346,18 +2346,23 @@ goog.require('ga_urlutils_service');
         // Param onNextClear is a function to call on the next execution of
         // clear function.
         this.addBodFeatures = function(map, featureIdsByBodId, onNextClear) {
+          var defer = $q.defer();
+          var features = [];
           this.clear(map);
           var that = this;
           getFeatures(featureIdsByBodId).then(function(results) {
             angular.forEach(results, function(result) {
               result.data.feature.properties.layerId =
                   result.data.feature.layerBodId;
+              features.push(result.data.feature);
               that.add(map, geojson.readFeature(result.data.feature));
             });
             that.zoom(map);
+            defer.resolve(features);
           });
 
           onClear = onNextClear;
+          return defer.promise;
         };
 
         // Remove all.
@@ -2450,8 +2455,20 @@ goog.require('ga_urlutils_service');
           });
 
           if (featureIdsCount > 0) {
-            gaPreviewFeatures.addBodFeatures(map, featureIdsByBodId,
-                removeParamsFromPL);
+            var featuresShown = gaPreviewFeatures.addBodFeatures(map,
+                featureIdsByBodId, removeParamsFromPL);
+
+            if (queryParams.showTooltip == 'true') {
+              featuresShown.then(function(features) {
+                $rootScope.$broadcast('gaTriggerTooltipRequest', {
+                  features: features,
+                  onCloseCB: function() {
+                    gaPermalink.deleteParam('showTooltip');
+                  },
+                  nohighlight: true
+                });
+              });
+            }
 
             // When a layer is removed, we need to update the permalink
             listenerKey = map.getLayers().on('remove', function(event) {

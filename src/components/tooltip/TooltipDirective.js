@@ -244,12 +244,14 @@ goog.require('ga_topic_service');
             scope.$on('gaTopicChange', initTooltip);
             scope.$on('gaTriggerTooltipInit', initTooltip);
             scope.$on('gaTriggerTooltipRequest', function(event, data) {
-              initTooltip();
+              if (!data.nohighlight) {
+                initTooltip();
+              }
 
               // We use $timeout to execute the showFeature when the
               // popup is correctly closed.
               $timeout(function() {
-                showFeatures(data.features);
+                showFeatures(data.features, undefined, data.nohighlight);
                 onCloseCB = data.onCloseCB;
               }, 0);
             });
@@ -362,9 +364,9 @@ goog.require('ga_topic_service');
             };
 
             // Highlight the features found
-            var showFeatures = function(foundFeatures, coordinate) {
+            var showFeatures = function(foundFeatures, coordinate,
+                                        nohighlight) {
               if (foundFeatures && foundFeatures.length > 0) {
-
                 // Remove the tooltip, if a layer is removed, we don't care
                 // which layer. It worked like that in RE2.
                 listenerKey = map.getLayers().on('remove',
@@ -395,7 +397,8 @@ goog.require('ga_topic_service');
                       featuresByLayerId[value.layerBodId] = {};
                     }
                     //draw feature, but only if it should be drawn
-                    if (gaLayers.getLayer(value.layerBodId) &&
+                    if (!nohighlight &&
+                        gaLayers.getLayer(value.layerBodId) &&
                         gaLayers.getLayerProperty(value.layerBodId,
                                                   'highlightable')) {
                       var features = parser.readFeatures(value);
