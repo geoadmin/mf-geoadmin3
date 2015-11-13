@@ -7,11 +7,14 @@ goog.provide('ga_cesium');
  * @param {Object} gaPermalink
  * @param {Object} gaLayers
  * @param {Object} gaGlobalOptions
+ * @param {Object} gaBrowserSniffer
  * @param {Object} $q
+ * @param {Object} $translate
  *
  * @constructor
  */
-var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions, $q) {
+var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions,
+    gaBrowserSniffer, $q, $translate) {
   // Url of ol3cesium library
   var ol3CesiumLibUrl = gaGlobalOptions.resourceUrl + 'lib/ol3cesium.js';
   var cesiumLoaded = $q.defer();
@@ -138,6 +141,11 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions, $q) {
     var bottom = olcs.core.pickBottomPoint(scene);
     var transform = Cesium.Matrix4.fromTranslation(bottom);
     if (enable) {
+      //Show warning on IE browsers
+      if (gaBrowserSniffer.msie &&
+          gaBrowserSniffer.msie <= 11) {
+        alert($translate.instant('3d_ie11_alert'));
+      }
       // 2d -> 3d transition
       ol3d.setEnabled(true);
       var angle = Cesium.Math.toRadians(50);
