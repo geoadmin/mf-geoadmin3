@@ -21,6 +21,7 @@ goog.require('ga_permalink');
       },
       link: function(scope, element, attrs) {
         if (!angular.isDefined(gaPermalink.getParams().debug)) {
+          element[0].style['display'] = 'none';
           return;
         }
         var inspector;
