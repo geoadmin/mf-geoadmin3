@@ -138,6 +138,9 @@ describe('ga_map_service', function() {
           matrixSet: 'set2',
           timestamps: ['t3', 't4']
         },
+        "ch.bafu.wrz-wildruhezonen_portal": {},
+        "ch.swisstopo.swisstlm3d-wanderwege": {},
+        "ch.swisstopo.fixpunkte-agnes": {},
         "ch.bfe.sachplan-geologie-tiefenlager": {},
         "ch.vbs.patrouilledesglaciers-z_rennen": {},
         "ch.swisstopo.swissimage-product": {},

@@ -974,6 +974,14 @@ goog.require('ga_urlutils_service');
               response.data['ch.vbs.patrouilledesglaciers-z_rennen'].extent =
                   [582382, 92500, 625032, 105700];
 
+              // 3d metadata
+              response.data[
+                  'ch.swisstopo.swisstlm3d-wanderwege'].has3dMetadata = true;
+              response.data[
+                  'ch.bafu.wrz-wildruhezonen_portal'].has3dMetadata = true;
+              response.data[
+                  'ch.swisstopo.fixpunkte-agnes'].has3dMetadata = true;
+
               response.data['ch.swisstopo.zeitreihen_3d'] = {
                 format: 'jpeg'
               };
@@ -1002,7 +1010,8 @@ goog.require('ga_urlutils_service');
                 subdomains: '56789',
                 attribution: 'swissimage 3D',
                 attributionUrl: 'http://www.swisstopo.admin.ch/internet/' +
-                    'swisstopo/en/home/products/height/swissALTI3D.html'
+                    'swisstopo/en/home/products/height/swissALTI3D.html',
+                has3dMetadata: true
               };
               response.data['ch.swisstopo.swisstlm3d-karte-farbe.3d'] = {
                 type: 'wmts',
@@ -1015,7 +1024,8 @@ goog.require('ga_urlutils_service');
                 attribution: 'swisstlm 3D Farbe',
                 attributionUrl: 'http://www.swisstopo.admin.ch/internet/' +
                     'swisstopo/en/home/products/height/swissALTI3D.html',
-                extent: [481500, 72250, 835750, 297800]
+                extent: [481500, 72250, 835750, 297800],
+                has3dMetadata: true
               };
               response.data['ch.swisstopo.swisstlm3d-karte-grau.3d'] = {
                 type: 'wmts',
@@ -1027,7 +1037,8 @@ goog.require('ga_urlutils_service');
                 subdomains: '56789',
                 attribution: 'swisstlm 3D Grau',
                 attributionUrl: 'http://www.swisstopo.admin.ch/internet/' +
-                    'swisstopo/en/home/products/height/swissALTI3D.html'
+                    'swisstopo/en/home/products/height/swissALTI3D.html',
+                has3dMetadata: true
               };
 
               // Terain
@@ -1083,8 +1094,8 @@ goog.require('ga_urlutils_service');
          */
         this.getCesiumTerrainProviderById = function(bodId) {
           var provider, config = layers[bodId];
-          var timestamp = this.getLayerTimestampFromYear(bodId, gaTime.get());
           var config3d = this.getConfig3d(config);
+          var timestamp = this.getLayerTimestampFromYear(bodId, gaTime.get());
           var requestedLayer = config3d.serverLayerName || bodId;
           if (config3d.type == 'terrain') {
             provider = new Cesium.CesiumTerrainProvider({
@@ -1104,7 +1115,8 @@ goog.require('ga_urlutils_service');
         this.getCesiumImageryProviderById = function(bodId) {
           var provider, params, config = layers[bodId];
           var config3d = this.getConfig3d(config);
-          var timestamp = this.getLayerTimestampFromYear(bodId, gaTime.get());
+          var timestamp = this.getLayerTimestampFromYear(
+              config3d, gaTime.get());
           var requestedLayer = config3d.wmsLayers || config3d.serverLayerName ||
               bodId;
           var format = config3d.format || 'png';
@@ -1152,7 +1164,7 @@ goog.require('ga_urlutils_service');
             };
           }
           var extent = gaMapUtils.intersectWithDefaultExtent(config3d.extent ||
-              ol.proj.get('EPSG:21781').getExtent());
+              ol.proj.get(gaGlobalOptions.defaultEpsg).getExtent());
           if (params) {
             var minRetLod = gaMapUtils.getLodFromRes(config3d.maxResolution) ||
                 window.minimumRetrievingLevel;
@@ -1176,7 +1188,9 @@ goog.require('ga_urlutils_service');
               hasAlphaChannel: (format == 'png'),
               availableLevels: window.imageryAvailableLevels,
               // Experimental
-              metadataUrl: getTerrainTileUrl(requestedLayer, timestamp) + '/'
+              metadataUrl: config3d.has3dMetadata ?
+                  getTerrainTileUrl(requestedLayer, timestamp) + '/' :
+                  undefined
             });
           }
           if (provider) {
@@ -1194,8 +1208,8 @@ goog.require('ga_urlutils_service');
           var olLayer;
           var timestamp = this.getLayerTimestampFromYear(bodId, gaTime.get());
           var crossOrigin = 'anonymous';
-          var extent = gaMapUtils.intersectWithDefaultExtent(
-              layer.extent || ol.proj.get('EPSG:21781').getExtent());
+          var extent = gaMapUtils.intersectWithDefaultExtent(layer.extent ||
+              ol.proj.get(gaGlobalOptions.defaultEpsg).getExtent());
 
           // For some obscure reasons, on iOS, displaying a base 64 image
           // in a tile with an existing crossOrigin attribute generates
@@ -1214,7 +1228,7 @@ goog.require('ga_urlutils_service');
                 dimensions: {
                   'Time': timestamp
                 },
-                projection: 'EPSG:21781',
+                projection: gaGlobalOptions.defaultEpsg,
                 requestEncoding: 'REST',
                 tileGrid: gaTileGrid.get(layer.resolutions,
                     layer.minResolution),
@@ -1387,13 +1401,13 @@ goog.require('ga_urlutils_service');
          * If there is more than one timestamp for a year we choose the first
          * found.
          */
-        this.getLayerTimestampFromYear = function(bodId, yearStr) {
+        this.getLayerTimestampFromYear = function(configOrBodId, yearStr) {
+          var layer = angular.isString(configOrBodId) ?
+              this.getLayer(configOrBodId) : configOrBodId;
+          var timestamps = layer.timestamps || [];
           if (angular.isNumber(yearStr)) {
             yearStr = '' + yearStr;
           }
-          var layer = this.getLayer(bodId);
-          var timestamps = layer.timestamps || [];
-
           if (!layer.timeEnabled) {
             // a WMTS/Terrain layer has at least one timestamp
             return (layer.type == 'wmts' || layer.type == 'terrain') ?
@@ -1401,7 +1415,7 @@ goog.require('ga_urlutils_service');
           }
 
           if (!angular.isDefined(yearStr)) {
-            var timeBehaviour = this.getLayerProperty(bodId, 'timeBehaviour');
+            var timeBehaviour = layer.timeBehaviour;
             //check if specific 4/6/8 digit timestamp is specified
             if (/^\d{4}$|^\d{6}$|^\d{8}$/.test(timeBehaviour)) {
                 yearStr = timeBehaviour;
