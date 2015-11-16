@@ -67,7 +67,8 @@ def runSwissSearchTest(driver, target):
         # Check if url contain coordinate of raron
         assert QUERYSTRING_OF_RARON in driver.current_url
     # Must also update the link of 'toptool'
-    ##TO DO : Make the test
+    ## Check link in toptool
+    assert QUERYSTRING_OF_RARON in driver.find_element_by_xpath("//*[@id='toptools']/a[3]").get_attribute("href")
 
     # parameter should disappear when selection is done
     assert "swisssearch" not in driver.current_url 
@@ -108,8 +109,6 @@ def runSwissSearchTest(driver, target):
         url_result = driver.current_url
         # parameter should disappear when selection is done
         assert "swisssearch" not in url_result
-        # Must also update the link of 'toptool'
-        ## TO DO : Make the test
     print "Test Wasser for multiple results (locations and layers) Ok"
     
     
@@ -129,6 +128,9 @@ def runSwissSearchTest(driver, target):
         current_url = driver.current_url
         assert QUERYSTRING_MOOS in driver.current_url
 
+    ## Check link in toptool
+    assert QUERYSTRING_MOOS in driver.find_element_by_xpath("//*[@id='toptools']/a[3]").get_attribute("href")
+
     # parameter (swisssearch) is removed by map action (simulating zoom here)
     driver.find_element_by_css_selector("button.ol-zoom-out").click()
     try:
@@ -141,10 +143,7 @@ def runSwissSearchTest(driver, target):
             print str(e)
         # parameter should disappear when selection is done
         assert "swisssearch" not in driver.current_url
-    # Must also update the link of 'toptool'
-    ## TO DO : Make the test
     print "Test brückenmoostrasse Ok"
-
 
     #### NEW TEST ####
     # swisssearch Route de Berne 91 1010 Lausanne with wordforms rte
@@ -160,6 +159,9 @@ def runSwissSearchTest(driver, target):
             print str(e)
         # url has changed, now we can test url parameter's 
         assert QUERYSTRING_OF_RTE_BERNE_LAUSANNE in driver.current_url
+
+    ## Check link in toptool
+    assert QUERYSTRING_OF_RTE_BERNE_LAUSANNE in driver.find_element_by_xpath("//*[@id='toptools']/a[3]").get_attribute("href")
     print "Test Route de Berne à Lausanne Ok"
 
 
@@ -178,8 +180,9 @@ def runSwissSearchTest(driver, target):
             print str(e)
         current_url = driver.current_url
         assert QUERYSTRING_OF_REALTA in current_url
-    # Must also update the link of 'toptool'
-    ## TO DO : Make the test
+
+    ## Check link in toptool
+    assert QUERYSTRING_OF_REALTA in driver.find_element_by_xpath("//*[@id='toptools']/a[3]").get_attribute("href")
     print "Test Realta Ok"
 
 
@@ -198,8 +201,9 @@ def runSwissSearchTest(driver, target):
             print str(e)
         current_url = driver.current_url
         assert QUERYSTRING_OF_PL_CHATEAU_AVENCHES in current_url
-    # Must also update the link of 'toptool'
-    ## TO DO : Make the test
+
+    ## Check link in toptool
+    assert QUERYSTRING_OF_PL_CHATEAU_AVENCHES in driver.find_element_by_xpath("//*[@id='toptools']/a[3]").get_attribute("href")
     print "Test Place du chateau Avenches Ok"
 
 
@@ -218,6 +222,6 @@ def runSwissSearchTest(driver, target):
             print str(e)
         current_url = driver.current_url
         assert QUERYSTRING_OF_PIAZZA_MESOLCINA_BELLINZONA in current_url
-    # Must also update the link of 'toptool'
-    ## TO DO : Make the test
+    ## Check link in toptool
+    assert QUERYSTRING_OF_PIAZZA_MESOLCINA_BELLINZONA in driver.find_element_by_xpath("//*[@id='toptools']/a[3]").get_attribute("href")
     print "Test Bellinzona Ok"
