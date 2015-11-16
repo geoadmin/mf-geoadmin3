@@ -186,7 +186,7 @@ ol: scripts/ol-geoadmin.json .build-artefacts/ol3
 	cp $(addprefix .build-artefacts/ol3/build/,$(OL_JS)) src/lib/;
 
 .PHONY: ol3cesium
-ol3cesium: .build-artefacts/ol3-cesium
+ol3cesium: ol .build-artefacts/ol3-cesium
 	cd .build-artefacts/ol3-cesium; \
 	git reset HEAD --hard; \
 	git fetch -a; \
