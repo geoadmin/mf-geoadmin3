@@ -13,7 +13,7 @@ DEFAULT_WAIT_LOADING=15
 
 def bDoCheckAlertPopup(driver):
     ## alert popup don't exist with FF
-    if driver.name == 'firefox':
+    if driver.name == 'firefox' or driver.name == 'internet explorer':
         return 0
     else:
         return 1
