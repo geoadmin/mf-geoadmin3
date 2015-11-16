@@ -189,12 +189,12 @@ ol: scripts/ol-geoadmin.json .build-artefacts/ol3
 ol3cesium: .build-artefacts/ol3-cesium
 	cd .build-artefacts/ol3-cesium; \
 	git reset HEAD --hard; \
-	git fetch -a; \
+	git fetch --all; \
 	git checkout $(OL3_CESIUM_VERSION); \
 	git submodule update --recursive --init --force; \
 	cd cesium; \
 	git remote | grep c2c || git remote add c2c git://github.com/camptocamp/cesium; \
-	git fetch c2c; \
+	git fetch --all; \
 	git checkout $(CESIUM_VERSION); \
 	cd ..; \
 	git show; \
