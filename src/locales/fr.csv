@@ -1,0 +1,351 @@
+abort,Annuler
+add_layer,Ajouter couche
+add_wms_layer_failed,Erreur au chargement de la couche WMS
+add_wms_layer_succeeded,Couche WMS chargée avec succès
+appcache_update_available,Une mise à jour du site est disponible. Voulez-vous l'utiliser?
+are,ARE
+are_service_link_href,http://www.are.admin.ch/index.html?lang=fr
+are_service_link_label,www.are.admin.ch
+attach_drawing_kml,Joindre le dessin comme fichier KML
+aviation,Aviation
+aviation_service_link_href,http://www.bazl.admin.ch/experten/flugverkehr/03281/03681/index.html?lang=fr
+aviation_service_link_label,Téléchargement des données
+azimuth_label,Azimut de la 1ère ligne
+bafu,OFEV
+bafu_service_link_href,http://www.bafu.admin.ch/index.html?lang=fr
+bafu_service_link_label,www.bafu.admin.ch
+bg_chooser_label,Fond de plan
+bg_luftbild,Photo aérienne
+bg_pixel_color,Cartes couleurs
+bg_pixel_grey,Cartes noir & blanc
+big_size,Grande
+black,noir
+blue,bleu
+blw,OFAG
+blw_service_link_href,mailto:info@blw.admin.ch
+blw_service_link_label,info@blw.admin.ch
+browse,Browse
+cancel,Annuler
+catalog,Catalogue
+change_topic,Thème
+choose_theme,Changer thème
+choose_wms_url,URL
+close,Fermer
+close_menu,Fermer menu
+compare,Comparer
+confirm_remove_all_features,Voulez-vous vraiment effacer tous les objets?
+confirm_remove_selected_features,Voulez-vous vraiment effacer les objets sélectionnés?
+connect,Connecter
+contact_us,Contact
+coordinates_label,Coordonnées (m)
+copy_success,Lien copié !
+copy_url,Copier le lien
+copyright_label,Conditions d'utilisation
+ct,Ct. 
+custom_size,Taille personnalisé
+data,Données:
+description,Description
+description_instructions,Description des couches WMS
+desktop_redirect,Lien vers version PC
+display_profile,Afficher le profil
+distance_label,Distance
+district,District
+draw,Dessiner
+draw_annotation,Texte
+draw_back,Retour / Terminer dessin
+draw_del_all_features,Supprimer tous les objets
+draw_del_selected_features,Supprimer objets sélectionnés
+draw_delete,Effacer
+draw_delete_description,Effacer tous les objets
+draw_delete_selected_features,Effacer les objets sélectionnés
+draw_dl_kml,Télécharger au format KML
+draw_file_saved,Carte sauvegardée.
+draw_file_saving,Sauvegarde....
+draw_line,Ligne
+draw_line_description,Créer ligne
+draw_line_instructions,Créer ligne
+draw_linepolygon,Trait
+draw_marker,Symbole
+draw_measure,Mesurer
+draw_mode_title,Dessin & Mesure
+draw_modify,Modifier
+draw_modify_description,Modifier objet
+draw_modify_instructions,Modifier objet
+draw_more,Plus ...
+draw_new_text,Nouveau texte
+draw_next_annotation,Cliquer pour placer un texte
+draw_next_linepolygon,Cliquer pour ajouter un nouveau point (double-click pour terminer)
+draw_next_marker,Cliquer pour placer un symbole
+draw_next_measure,Cliquer pour ajouter un nouveau point (double-click pour terminer)
+draw_panel_title,Dessiner & Mesurer sur la carte
+draw_point,Point
+draw_point_description,Créer point
+draw_point_instructions,Créer point
+draw_polygon,Polygone
+draw_polygon_description,Créer polygone
+draw_polygon_instructions,Créer polygone
+draw_popup_title_annotation,Texte
+draw_popup_title_feature,Objet
+draw_popup_title_linepolygon,Trait / surface
+draw_popup_title_marker,Symbole
+draw_popup_title_measure,Mesurer distance, surface, profil
+draw_share_admin_link,Lien pour éditer votre dessin ultérieurement
+draw_share_user_link,Lien pour partager votre dessin
+draw_show_measure,Distance / surface
+draw_show_profile,Profil
+draw_snap_first_point_linepolygon,Cliquer pour fermer la surface
+draw_snap_first_point_measure,Cliquer pour fermer la surface
+draw_snap_last_point_linepolygon,Cliquer pour terminer le trait
+draw_snap_last_point_measure,Cliquer pour terminer la mesure
+draw_start_linepolygon,Cliquer pour commencer un trait ou une surface
+draw_start_measure,Cliquer pour commencer une mesure
+draw_text,Texte
+draw_text_description,Créer étiquette
+draw_text_instructions,Créer étiquette
+draw_text_placeholder,pas de titre
+draw_tooltip,Dessiner sur la carte
+draw_type_marker,Trait / surface
+drop_invalid_url,URL non valide.
+drop_me_here,Déplacer le fichier KML ici
+ech,Géocatalogue
+ech_service_link_href,http://www.geo.admin.ch/internet/geoportal/fr/home.html
+ech_service_link_label,geo.admin.ch
+elevation,Altitude
+email_us,Courriel
+emapis,eMapis
+emapis_service_link_href,mailto:info@blw.admin.ch
+emapis_service_link_label,info@blw.admin.ch
+embed_map,Intégrer la carte
+error,Erreur
+export_kml,Exporter
+export_kml_notsupported,Votre browser ne supporte pas la function exporter. Veuillez employer IE10, Firefox ou Chrome.
+external_data_tooltip,Données tierces
+external_data_warning,Attention: Mise en garde données tierces (--URL--). La disponibilité des données est assurée par des tiers. Les conditions d’utilisation du propriétaire respectif des données doivent être respectées.
+facebook_tooltip,Partager cette carte avec vos amis
+feature,Objet
+featuresearch_results_header,Aller sur l'objet ...
+featuretree_tooltip,Rechercher tous les objets situés dans un rectangle
+feedback_attachment,Joindre un fichier (optionnel)
+feedback_create_geometry,Vous avez la possibilité d'associer un dessin à votre annonce: 
+feedback_description,Saisissez votre feedback ici...
+feedback_drawing,Votre dessin (optionnel)
+feedback_error_message,Problème lors de l'envoi
+feedback_kml_attached,Le dessin actuel va être envoyé. 
+feedback_mail,Votre email (optionnel)
+feedback_modify_drawing,Modifier le dessin
+feedback_permalink,L'URL suivante va être transférée: 
+feedback_placeholder,Joindre un pdf, zip, jpg, jpeg, kml, kmz ou gpx
+feedback_revision,Pour une révision détaillée de la carte nationale:
+feedback_success_message,Envoi effectué avec succès
+feedback_unsupported_format,Le format du fichier n’est pas pris en charge, merci d’utiliser un autre format pour votre pièce jointe.
+file_is_not_kml,Ce fichier n'est pas un fichier KML.
+file_too_large,Ce fichier est trop volumineux
+follow_us,Suivez-nous
+full_screen,Plein écran
+funksender,Emetteur radio
+funksender_service_link_href,mailto:info@bakom.admin.ch
+funksender_service_link_label,info@bakom.admin.ch
+geol,Géologie
+geol_service_link_href,http://www.geologieportal.ch/internet/geologieportal/fr/home.html
+geol_service_link_label,www.geologieportal.ch
+gewiss,Eau
+gewiss_service_link_href,http://www.bafu.admin.ch/hydrologie/01835/02114/02116/index.html?lang=fr
+gewiss_service_link_label,gewiss.ch
+google_plus_tooltip,Partager cette carte sur Google Plus
+graticule,Réseau de coordonnées
+gray,gris
+green,vert
+help_label,Aide
+hide_profile,Masquer le profil
+homescreen_content,Nous vous recommandons d'utiliser cette fonction pour placer cette application directement sur l'écran d'accueil.
+homescreen_title,Ecran d'accueil
+import,Importer
+import_kml,KML import
+import_wms,WMS import
+inform_draw_rectangl_ctrl,Dessiner un rectangle sur la carte avec la touche CTRL (cmd on Mac) enfoncée pour choisir la zone de sélection.
+inspire,INSPIRE
+inspire_service_link_href,http://www.geo.admin.ch/internet/geoportal/fr/home.html
+inspire_service_link_label,geo.admin.ch
+items,Objets
+ivs,Voies comm. hist.
+ivs_service_link_href,http://www.ivs.admin.ch/index.php?id=111&L=3
+ivs_service_link_label,www.ivs.admin.ch
+kgs,Inventaire PBC 2009
+kgs_service_link_href,http://www.bevoelkerungsschutz.admin.ch/internet/bs/fr/home/themen/kgs.html
+kgs_service_link_label,Protection des biens culturels
+kml,KML
+kmlimport_tooltip,Importer des données KML externes
+lang_chooser_label,Langue
+last_available_year,Last year
+layer_invalid_no_crs,WMS  ne supporte pas la projection de la carte
+layer_invalid_no_name,La couche ne peut être affichée car elle n'a pas de nom.
+layer_selection,Sélection de couches
+layers_results_header,Ajouter la carte ...
+legend,Légende
+link_bowl_crosshair,Lien avec marqueur
+link_validate_kml,Lien vers validation KML
+load_kml,Charger KML
+locations_results_header,Aller à ...
+luftbilder,Photos aériennes
+luftbilder_service_link_href,http://www.swisstopo.admin.ch/internet/swisstopo/de/home/products/images.html
+luftbilder_service_link_label,Office fédéral de topographie swisstopo
+mail_tooltip,Envoyer une carte à vos amis
+map_tools,Outils avancés
+measure,Mesurer
+measure_instruction,Digitalisez une polyligne...
+measure_tooltip,Mesurer sur la carte
+medium_size,Moyenne
+metadata_window_title,Infobox
+mobile_redirect,Version mobile
+modify_color_label,Couleur
+modify_description,Description
+modify_icon_label,Icône
+modify_icon_size_label,Taille
+modify_text_label,Texte
+movie,Série temporelle (Multi-PDF)
+nga,Atlas large bande
+nga_service_link_href,http://www.bakom.admin.ch/index.html?lang=fr
+nga_service_link_label,www.bakom.admin.ch
+no_feature_results,Pas d'objets trouvés
+no_file,Pas de fichier
+no_layers_info,Aucune couche sur la carte
+no_searchable_layer,Pas de couche disponible
+not_enough_layer_for_swipe,La première couche est comparée avec les autres. Pour utiliser cette fonction, ajouter au moins une couche de données.
+object_information,Information objet
+obstacle_deleted_last_2_weeks,Obstacles supprimés ces 2 dernières semaines
+obstacle_started_last_2_weeks,Obstacles activés ces 2 dernières semaines
+offline_abort_warning,Voulez-vous vraiment supprimer tous les cartes?
+offline_bad_layer_type,Une couche a un type invalide. Elle ne peut être sauvegardée pour un usage hors-ligne.
+offline_clear_db_error,Erreur lors de la suppression de la base de données. Réessayez.
+offline_delete_data,Effacer carte
+offline_dl_succeed,Téléchargement réussi!
+offline_hide_extent,Masquer l'étendue
+offline_kml_too_big,Un fichier KML est trop volumineux (> 1mo). Il ne sera pas sauvegardé.
+offline_less_than_95,Problème: la carte n'a pas pu être téléchargée. Merci de réessayer.
+offline_modal_title,Carte offline
+offline_no_cacheable_layers,Aucune carte à sauvegarder.
+offline_save,Enregistrer carte
+offline_save_new_data,Sauvegarder une nouvelle carte
+offline_save_warning,- Vous allez télécharger ~50MB de carte (jusqu'à l'échelle 1:25'000) - Ne lockez pas votre appareil et ne quittez pas ce site durant le processus de téléchargement. Désactivez le mode « privé »
+offline_show_extent,Afficher l'étendue
+offline_sorry,Vous êtes actuellement offline. 
+offline_space_warning,Pas suffisament de place sur votre appareil, merci de libérer 50MB ou de ne sélectionner que 1 ou 2 couches.
+offline_zoom_extent,Zoomer sur l'étendue
+open_menu,Ouvrir menu
+operation_canceled,Opération annulée
+orange,orange
+page_description,map.geo.admin.ch est la plateforme cartographique de la Confédération suisse et des cantons. Elle donne accès aux cartes, géoinformations, géodonnées, géoservices et métadonnées de la Suisse.
+page_title,Cartes de la Suisse - Confédération suisse - map.geo.admin.ch
+parcel,Parcelle
+parse_failed,Erreur de parsing!
+parse_succeeded,Parsing OK!
+parsing_file,Parsing du fichier...
+paste_url,Coller URL
+permalink,Permalien
+plz,NPA
+popup_blocked,Le navigateur empêche l'ouverture d'une nouvelle fenêtre. Veuillez vérifier les paramètres de sécurité de votre navigateur.
+position,Position
+print,Imprimer
+print_action,Créer PDF pour impression
+print_layout,Orientation
+print_scale,Echelle
+print_underway_message,Translation is missing
+problem_announcement,Annoncer un problème
+profile_title,Profil
+profile_x_label,Distance
+profile_y_label,Altitude
+qrcode_tooltip,Créer un QRCode et ouvrir cette carte depuis votre appareil mobile
+queries,Filtres (BETA)
+query_choose,Sélectionner un filtre:
+query_conditions,Conditions
+query_custom,Filtre personnalisé
+query_duplicate,Dupliquer la condition
+query_layer,--- Selectionner une couche ---
+query_more_values,Récupérer plus de valeurs
+query_num,Condition n°{{num}}
+query_remove,Supprimer la condition
+query_reset,Réinitialiser la condition
+query_search,Rechercher
+query_with_bbox,Utiliser l'étendue
+read_failed,Erreur de lecture!
+read_succeeded,Lecture OK!
+reading_file,Lecture du fichier...
+red,rouge
+reduce_label,Réduire
+remove,Supprimer
+sachplan,Plans sectoriels
+sachplan_service_link_href,http://www.planssectoriels.ch
+sachplan_service_link_label,Les plans sectoriels de la Confédération
+search_help,Aide
+search_placeholder,par ex. Bundesplatz 1 Bern, 46.7 7.5, Carte du bruit ...
+search_title,Rechercher un lieu ou ajouter une carte :
+send,Envoyer
+settings,Réglages
+share,Partager
+share_disclaimer,Vous pouvez intégrer la carte dans votre site web ou votre blog. <a href='http://www.geo.admin.ch/internet/geoportal/fr/home/geoadmin/contact.html#iFrame' target='_blank'>Conditions d'utilisation</a>
+share_file_disclaimer,Votre dessin est automatiquement stocké pour une année, vous acceptez ainsi les <a href='http://www.geo.admin.ch/internet/geoportal/fr/home/geoadmin/contact.html#drawing ' target='_blank'> conditions d'utilisation</a>.
+share_file_link_title_admin,Vous pouvez éditer votre dessin plus tard en conservant ce lien : 
+share_less,Intégrer :
+share_link,Lien de partage
+share_link_tooltip,Pressez Ctrl+c pour copier
+share_more,Intégrer ...
+share_preview,Afficher un aperçu en taille réelle
+show_more_options,Prévisualiser
+show_more_results,Afficher plus de résultats ...
+small_size,Petite
+success,OK
+surface_label,Surface
+swipe,Comparer
+swipe_tooltip,Comparer 2 jeux de données
+swisstopo,swisstopo
+swisstopo_service_link_href,http://www.swisstopo.admin.ch/internet/swisstopo/fr/home.html
+swisstopo_service_link_label,Office fédéral de topographie swisstopo
+time_all,Tout
+time_all,Tout
+time_bt_disabled_tooltip,La représentation de données historiques n'est possible qu'avec les couches historisées. Veuillez d'abord ajouter une couche historisée sur la carte.
+time_bt_enabled_tooltip,Cette fonction permet d'activer ou désactiver l'outil de représentation historique des données.
+time_select_year,Choisissez une année
+time_select_year,Choisissez une année
+title,Titre
+tooltip,Tooltip
+topic_are_tooltip,Office fédéral du développement territorial 
+topic_aviation_tooltip,Données relatives à l'aviation suisse
+topic_bafu_tooltip,Office fédéral de l’environnement
+topic_blw_tooltip,Office fédéral de l’agriculture
+topic_ech_tooltip,Géocatalogue
+topic_emapis_tooltip,Améliorations structurelles
+topic_funksender_tooltip,Emetteur radio
+topic_geol_tooltip,Géologie
+topic_gewiss_tooltip,informations concernant les eaux
+topic_inspire_tooltip,INSPIRE
+topic_ivs_tooltip,Inventaire des voies de communication historiques
+topic_kgs_tooltip,Protection des biens culturels
+topic_luftbilder_tooltip,Photos aériennes
+topic_nga_tooltip,Atlas large bande
+topic_sachplan_tooltip,Plans sectoriels de la Confédération
+topic_swisstopo_tooltip,Office fédéral de la topographie
+topic_verteidigung_tooltip,Défense
+topic_vu_tooltip,Accidents de la route
+topic_wildruhezonen_tooltip,Zones de tranquillité en Suisse
+transparency,Transparence
+twitter_tooltip,Tweeter cette carte
+upload_failed,Erreur de chargement!
+upload_succeeded,Chargement OK!
+uploading_file,Chargement du fichier...
+verteidigung,Défense
+verteidigung_service_link_href,http://www.vtg.admin.ch/internet/vtg/fr/home.html
+verteidigung_service_link_label,www.vtg.admin.ch
+view_on_mapgeoadminch,Voir sur {{url}}
+void_layer,Fond blanc
+vu,Accidents de la route
+vu_service_link_href,http://www.donneesaccidents.ch
+vu_service_link_label,OFROU - Données des accidents
+wait_data_loading,Chargement...
+white,blanc
+wildruhezonen,Zones de tranquillité
+wildruhezonen_service_link_href,http://zones-de-tranquillite.ch/
+wildruhezonen_service_link_label,zones-de-tranquillite.ch
+wms,WMS
+wms_max_size_allowed,Taille maximum WMS autorisée
+wmsimport_tooltip,Importer des données WMS externes
+yellow,jaune

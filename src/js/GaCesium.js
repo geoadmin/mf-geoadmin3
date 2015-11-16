@@ -7,11 +7,14 @@ goog.provide('ga_cesium');
  * @param {Object} gaPermalink
  * @param {Object} gaLayers
  * @param {Object} gaGlobalOptions
+ * @param {Object} gaBrowserSniffer
  * @param {Object} $q
+ * @param {Object} $translate
  *
  * @constructor
  */
-var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions, $q) {
+var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions,
+    gaBrowserSniffer, $q, $translate) {
   // Url of ol3cesium library
   var ol3CesiumLibUrl = gaGlobalOptions.resourceUrl + 'lib/ol3cesium.js';
   var cesiumLoaded = $q.defer();
@@ -31,6 +34,11 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions, $q) {
     return parseInt(params[name] || defaultValue, 10);
   };
 
+  var floatParam = function(name, defaultValue) {
+    var params = gaPermalink.getParams();
+    return parseFloat(params[name] || defaultValue);
+  };
+
   var boolParam = function(name, defaultValue) {
     var params = gaPermalink.getParams();
     var value = params[name];
@@ -40,11 +48,29 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions, $q) {
     return defaultValue;
   };
 
+  var arrayParam = function(name, defaultValue) {
+    var params = gaPermalink.getParams()[name];
+    var arr = (params && params.length) ? params.split(',') : defaultValue;
+    if (arr) {
+      arr.forEach(function(item, i) {
+        arr[i] = parseInt(item, 10);
+      });
+    }
+    return arr;
+  };
+
   // Create the cesium viewer with basic layers
   var initCesiumViewer = function(map, enabled) {
     var tileCacheSize = intParam('tileCacheSize', '100');
-    var maximumScreenSpaceError = intParam('maximumScreenSpaceError', '2');
-    window.minimumRetrievingLevel = intParam('minimumRetrievingLevel', '6');
+    var maximumScreenSpaceError = floatParam('maximumScreenSpaceError', '2');
+    var fogEnabled = boolParam('fogEnabled', true);
+    var fogDensity = floatParam('fogDensity', '0.0001');
+    var fogSseFactor = floatParam('fogSseFactor', '25');
+    var terrainLevels = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
+    window.minimumRetrievingLevel = intParam('minimumRetrievingLevel', '5');
+    window.terrainAvailableLevels = arrayParam('terrainLevels', terrainLevels);
+    window.imageryAvailableLevels = arrayParam('imageryLevels', undefined);
+
     var cesiumViewer;
     try {
       cesiumViewer = new olcs.OLCesium({
@@ -59,6 +85,9 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions, $q) {
       if (boolParam('autorender', true)) {
         cesiumViewer.enableAutoRenderLoop();
       }
+
+      var corrector = new SSECorrector(gaPermalink);
+      cesiumViewer.getCesiumScene().globe._surface.sseCorrector = corrector;
     } catch (e) {
       alert(e.message);
       window.console.error(e.stack);
@@ -69,11 +98,15 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions, $q) {
     globe.tileCacheSize = tileCacheSize;
     globe.maximumScreenSpaceError = maximumScreenSpaceError;
     var scene = cesiumViewer.getCesiumScene();
+    scene.backgroundColor = Cesium.Color.WHITE;
     scene.globe.depthTestAgainstTerrain = true;
     scene.screenSpaceCameraController.maximumZoomDistance = 500000;
     scene.terrainProvider =
         gaLayers.getCesiumTerrainProviderById(gaGlobalOptions.defaultTerrain);
     scene.postRender.addEventListener(limitCamera, scene);
+    scene.fog.enabled = fogEnabled;
+    scene.fog.density = fogDensity;
+    scene.fog.screenSpaceErrorFactor = fogSseFactor;
     enableOl3d(cesiumViewer, enabled);
     return cesiumViewer;
   };
@@ -108,6 +141,11 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions, $q) {
     var bottom = olcs.core.pickBottomPoint(scene);
     var transform = Cesium.Matrix4.fromTranslation(bottom);
     if (enable) {
+      //Show warning on IE browsers
+      if (gaBrowserSniffer.msie &&
+          gaBrowserSniffer.msie <= 11) {
+        alert($translate.instant('3d_ie11_alert'));
+      }
       // 2d -> 3d transition
       ol3d.setEnabled(true);
       var angle = Cesium.Math.toRadians(50);
@@ -181,3 +219,84 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions, $q) {
 
 };
 
+var SSECorrector = function(gaPermalink) {
+  var params = gaPermalink.getParams();
+  this.mindist = parseInt(params['sseMindist'] || '5000', 10);
+  this.maxdist = parseInt(params['sseMaxdist'] || '10000', 10);
+  this.mincamfactor = parseFloat(params['sseMincamfactor'] || '0.9');
+  this.maxcamfactor = parseFloat(params['sseMaxcamfactor'] || '1.2');
+  // Max height to apply optmization
+  this.maxheight = parseInt(params['sseMaxheight'] || '0', 10);
+  this.allowtilelevels = parseInt(params['sseAllowtilelevels'] || '0', 10);
+  this.pickglobe = !params['sseNopickglobe'];
+  this.pickposition = parseFloat(params['ssePickposition'] || '0.6666');
+  this.shouldCut = !!params['sseEnabled'];
+  this.noheight = !!params['sseNoheight'];
+  this.maxerrorfactor = parseFloat(params['sseMaxerrorfactor'] || '0.25');
+  this.cameraHeight = undefined;
+};
+
+/**
+ * Called before the Quadtree will update its tiles.
+ * @param {Cesium.FrameState} frameState
+ */
+SSECorrector.prototype.newFrameState = function(frameState) {
+    this.cameraHeight = frameState.camera.positionCartographic.height;
+
+    if (this.pickglobe && !this.noheight && this.maxheight) {
+      var scene = frameState.camera._scene;
+      var canvas = scene.canvas;
+      var pixelHeight = this.pickposition * canvas.clientHeight;
+      var pixel = new Cesium.Cartesian2(canvas.clientWidth / 2, pixelHeight);
+      this.cameraHeight = undefined;
+      var target = olcs.core.pickOnTerrainOrEllipsoid(scene, pixel);
+      if (target) {
+        var position = frameState.camera.position;
+        var distance = Cesium.Cartesian3.distance(position, target);
+        this.cameraHeight = Math.max(this.cameraHeight || 0, distance);
+      }
+    }
+
+    this.min = this.mindist;
+    this.max = this.maxdist;
+    if (!this.noheight && this.cameraHeight) {
+      this.min = Math.min(this.mindist, this.mincamfactor * this.cameraHeight);
+      this.max = Math.max(this.maxdist, this.maxcamfactor * this.cameraHeight);
+    }
+
+    // 1 = a * min + b
+    // maxerrorfactor = a * max + b
+    this.a = (1 - this.maxerrorfactor) / (this.min - this.max);
+    this.b = 1 - this.a * this.min;
+};
+
+/**
+ * Called for each processed tile, in order to correct the error.
+ * Far tiles will have their error diminished so that they pass earlier
+ * the error test.
+ * @param {Cesium.FrameState} frameState
+ * @param {Cesium.GlobeSurfaceTile} tile
+ * @param {number} distance
+ * @param {number} original Screen space error before correction
+ * @return {number} lower screen space error after correction
+ */
+SSECorrector.prototype.correct = function(frameState, tile, distance,
+  original) {
+    if (!this.shouldCut ||
+        (this.maxheight && this.cameraHeight &&
+          (this.cameraHeight > this.maxheight)) ||
+        (this.allowtilelevels && (tile._level <= this.allowtilelevels))) {
+      return original;
+    }
+
+    if (distance < this.max) {
+      if (distance < this.min || this.min === this.max) {
+        return original;
+      } else {
+        var linearFactor = this.a * distance + this.b;
+        return linearFactor * original;
+      }
+    } else {
+      return this.maxerrorfactor * original;
+    }
+};

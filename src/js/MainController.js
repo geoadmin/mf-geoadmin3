@@ -96,7 +96,8 @@ goog.require('ga_topic_service');
       }
 
       var cesium = new GaCesium($scope.map, gaPermalink, gaLayers,
-                                          gaGlobalOptions, $q);
+                                gaGlobalOptions, gaBrowserSniffer, $q,
+                                $translate);
       cesium.loaded().then(function(ol3d) {
         $scope.ol3d = ol3d;
         if (!$scope.ol3d) {

@@ -387,7 +387,8 @@ goog.require('ga_urlutils_service');
           rectangle: gaMapUtils.extentToRectangle(extent, 'EPSG:21781'),
           proxy: proxy,
           tilingScheme: new Cesium.GeographicTilingScheme(),
-          hasAlphaChannel: true
+          hasAlphaChannel: true,
+          availableLevels: window.imageryAvailableLevels
         });
       };
 
@@ -1029,7 +1030,7 @@ goog.require('ga_urlutils_service');
               response.data['ch.swisstopo.terrain.3d'] = {
                 type: 'terrain',
                 serverLayerName: 'ch.swisstopo.terrain.3d',
-                timestamps: ['20151231'],
+                timestamps: ['20160101'],
                 attribution: 'swisstopo 3D',
                 attributionUrl: 'http://www.swisstopo.admin.ch/internet/' +
                     'swisstopo/en/home/products/height/swissALTI3D.html'
@@ -1083,7 +1084,10 @@ goog.require('ga_urlutils_service');
           var requestedLayer = config3d.serverLayerName || bodId;
           if (config3d.type == 'terrain') {
             provider = new Cesium.CesiumTerrainProvider({
-              url: getTerrainTileUrl(requestedLayer, timestamp)
+              url: getTerrainTileUrl(requestedLayer, timestamp),
+              availableLevels: window.terrainAvailableLevels,
+              rectangle: gaMapUtils.extentToRectangle(
+                gaGlobalOptions.defaultExtent, 'EPSG:21781')
             });
             provider.bodId = bodId;
           }
@@ -1107,7 +1111,7 @@ goog.require('ga_urlutils_service');
               if (Array.isArray(subProvider)) {
                 providers.push.apply(providers, subProvider);
               } else {
-                providers.push(this.getCesiumImageryProviderById(item));
+                providers.push(subProvider);
               }
             }, this);
             return providers;
@@ -1165,7 +1169,13 @@ goog.require('ga_urlutils_service');
               tilingScheme: new Cesium.GeographicTilingScheme(),
               tileWidth: params.tileSize,
               tileHeight: params.tileSize,
-              hasAlphaChannel: (format == 'png')
+              hasAlphaChannel: (format == 'png'),
+              availableLevels: window.imageryAvailableLevels
+              // Experimental
+              // Because of troubles in layer.json definitions, we remove this
+              // feature for now. We will re-activate after demo
+              //metadataUrl: '//terrain3.geo.admin.ch/1.0.0/' + bodId +
+              //    '/default/20150101/4326/'
             });
           }
           if (provider) {
@@ -2338,18 +2348,23 @@ goog.require('ga_urlutils_service');
         // Param onNextClear is a function to call on the next execution of
         // clear function.
         this.addBodFeatures = function(map, featureIdsByBodId, onNextClear) {
+          var defer = $q.defer();
+          var features = [];
           this.clear(map);
           var that = this;
           getFeatures(featureIdsByBodId).then(function(results) {
             angular.forEach(results, function(result) {
               result.data.feature.properties.layerId =
                   result.data.feature.layerBodId;
+              features.push(result.data.feature);
               that.add(map, geojson.readFeature(result.data.feature));
             });
             that.zoom(map);
+            defer.resolve(features);
           });
 
           onClear = onNextClear;
+          return defer.promise;
         };
 
         // Remove all.
@@ -2442,8 +2457,20 @@ goog.require('ga_urlutils_service');
           });
 
           if (featureIdsCount > 0) {
-            gaPreviewFeatures.addBodFeatures(map, featureIdsByBodId,
-                removeParamsFromPL);
+            var featuresShown = gaPreviewFeatures.addBodFeatures(map,
+                featureIdsByBodId, removeParamsFromPL);
+
+            if (queryParams.showTooltip == 'true') {
+              featuresShown.then(function(features) {
+                $rootScope.$broadcast('gaTriggerTooltipRequest', {
+                  features: features,
+                  onCloseCB: function() {
+                    gaPermalink.deleteParam('showTooltip');
+                  },
+                  nohighlight: true
+                });
+              });
+            }
 
             // When a layer is removed, we need to update the permalink
             listenerKey = map.getLayers().on('remove', function(event) {

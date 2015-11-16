@@ -13,13 +13,17 @@ goog.require('ga_permalink');
     'ga_permalink'
   ]);
 
-  module.directive('gaCesiumInspector', function($rootScope) {
+  module.directive('gaCesiumInspector', function($rootScope, gaPermalink) {
     return {
       restrict: 'A',
       scope: {
         ol3d: '=gaCesiumInspectorOl3d'
       },
       link: function(scope, element, attrs) {
+        if (!angular.isDefined(gaPermalink.getParams().debug)) {
+          element[0].style['display'] = 'none';
+          return;
+        }
         var inspector;
         scope.$watch('::ol3d', function(ol3d) {
           if (ol3d && !inspector) {
