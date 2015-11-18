@@ -1,5 +1,6 @@
 {
     "3d_ie11_alert": "Vous utilisez Internet Explorer ≤ 11 : la représentation 3D ne sera pas performante. Veuillez SVP utiliser la dernière version de Microsoft EDGE, Firefox ou Chrome pour obtenir un résultat optimal.",
+    "3d_render_error": "Conditions requises pour la vue 3D ne sont pas satisfaites. Pour bénéficier de toutes les fonctionnalités 3D votre ordinateur doit respecter la configuration requise suivante :utiliser la dernière version de Microsoft EDGE, Firefox ou Chrome et une carte graphique et des pilotes à jour.",
     "abort": "Annuler",
     "add_layer": "Ajouter couche",
     "add_wms_layer_failed": "Erreur au chargement de la couche WMS",
@@ -51,7 +52,7 @@
     "desktop_redirect": "Lien vers version PC",
     "display_profile": "Afficher le profil",
     "distance_label": "Distance",
-    "district": "District",
+    "district": "Par district",
     "draw": "Dessiner",
     "draw_annotation": "Texte",
     "draw_back": "Retour / Terminer dessin",

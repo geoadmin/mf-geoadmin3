@@ -1,5 +1,6 @@
 {
-    "3d_ie11_alert": "Sie verwenden InternetExplorer <= 11: Die 3D Darstellung wird nicht performant sein. Bitte nutzen Sie die neueste Version von Microsoft EDGE, Firefox or Chrome um beste Ergebnisse zu erhalten",
+    "3d_ie11_alert": "Sie verwenden InternetExplorer <= 11: Die 3D Darstellung wird nicht performant sein. Bitte nutzen Sie die neueste Version von Microsoft EDGE, Firefox oder Chrome um beste Ergebnisse zu erhalten",
+    "3d_render_error": "Systemvorraussetzung für 3D Ansicht nicht erfüllt. Damit die 3D-Darstellung funktioniert, muss Ihr Gerät folgende Anforderungen erfüllen.Nutzen Sie die neueste Version von Microsoft EDGE, Firefox oder Chrome. Verwendung einer aktuellen Grafikkarte mit aktuellen Treibern. .",
     "abort": "Abbrechen",
     "add_layer": "Layer hinzufügen",
     "add_wms_layer_failed": "Fehler beim Laden WMS Layer",
@@ -51,7 +52,7 @@
     "desktop_redirect": "Link zur Desktop Version",
     "display_profile": "Profil erstellen",
     "distance_label": "Distanz",
-    "district": "Bezirk",
+    "district": "Pro Bezirk",
     "draw": "Zeichnen",
     "draw_annotation": "Text",
     "draw_back": "Zurück / Zeichnen beenden",

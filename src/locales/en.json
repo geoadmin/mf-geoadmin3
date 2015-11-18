@@ -1,5 +1,6 @@
 {
     "3d_ie11_alert": "You are using InternetExplorer <= 11 : 3D rendering will be slow. Please use latest Version of Microsoft EDGE, Firefox or Chrome to experience maximum performance",
+    "3d_render_error": "Requirements for 3D not met. To use the 3D mode your computer needs:Latest Version of Microsoft EDGE, Firefox or Chrome and up-to-date video card hardware and drivers.",
     "abort": "Abort",
     "add_layer": "Add Layer",
     "add_wms_layer_failed": "Error when loading WMS layer",
@@ -51,7 +52,7 @@
     "desktop_redirect": "Link to desktop version",
     "display_profile": "Display profile",
     "distance_label": "Distance",
-    "district": "District",
+    "district": "By district",
     "draw": "Draw",
     "draw_annotation": "Text",
     "draw_back": "Back / Finish drawing",
