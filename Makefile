@@ -200,8 +200,7 @@ ol3cesium: ol .build-artefacts/ol3-cesium
 	git show; \
 	ln -T -f -s ../../../../ol3-cesium-plugin/ src/plugins/geoadmin; \
 	( cd cesium; [ -f node_modules/.bin/gulp ] || npm install ); \
-	( cd cesium; if [ -f "Build/Cesium/Cesium.js" ] ; then echo 'Skipping Cesium minified build'; else node_modules/.bin/gulp minifyRelease; fi ); \
-	( cd cesium; if [ -f "Build/CesiumUnminified/Cesium.js" ] ; then echo 'Skipping Cesium debug build'; else node_modules/.bin/gulp combine; fi ); \
+	( cd cesium; if [ -e "Build/Cesium" ] && [ -e "Build/CesiumUnminified" ]; then echo 'Skipping Cesium debug build'; else npm run combine; rm -rf Build/Cesium; npm run minifyRelease; fi ); \
 	NO_CESIUM=1 make dist; \
 	node build/build.js ../../scripts/ol3cesium-debug-geoadmin.json dist/ol3cesium-debug.js;  \
 	cp dist/ol3cesium-debug.js ../../src/lib/; \
