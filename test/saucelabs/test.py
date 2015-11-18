@@ -14,6 +14,7 @@ from swisssearch_test import runSwissSearchTest
 from print_test import runPrintTest
 from mobile_test import runMobileTest
 from wms_test import runWmsTest
+from checker_test import runCheckerTest
 
 if __name__ == '__main__':
     
@@ -40,8 +41,8 @@ if __name__ == '__main__':
     ### Code pour la déclaration des browser à tester
     desired_cap_list = [
 #        {'platform': "Windows 7", 'browserName': "chrome", 'version': "43.0", 'screenResolution': "1280x1024" },
-#        {'platform': "Windows 7", 'browserName': "chrome", 'version': "44.0", 'screenResolution': "1280x1024" },
-        {'platform': "Windows 7", 'browserName': "chrome", 'version': "45.0", 'screenResolution': "1280x1024" },
+        {'platform': "Windows 7", 'browserName': "chrome", 'version': "44.0", 'screenResolution': "1280x1024" },
+#        {'platform': "Windows 7", 'browserName': "chrome", 'version': "45.0", 'screenResolution': "1280x1024" },
 #        {'platform': "Windows 8.1", 'browserName': "chrome", 'version': "45.0", 'screenResolution': "1280x1024" },
 #        {'platform': "Windows 7", 'browserName': "firefox", 'version': "38.0", 'screenResolution': "1280x1024" },
 #        {'platform': "Windows 7", 'browserName': "firefox", 'version': "39.0", 'screenResolution': "1280x1024" },
@@ -61,13 +62,14 @@ if __name__ == '__main__':
     for current_desired_cap in desired_cap_list: 
         print "+--> Start test with " + current_desired_cap['platform'] + " " + current_desired_cap['browserName'] + " (" + current_desired_cap['version'] + ")"
 
-        bDoStartTest = 1
-        bDoMobileTest = 1
-        bDoSearchTest = 1
-        bDoKmlTest = 1
-        bDoSwissSearchTest = 1
-        bDoPrintTest = 1
-        bDoWmsTest = 1
+        bDoStartTest = 0
+        bDoMobileTest = 0
+        bDoSearchTest = 0
+        bDoKmlTest = 0
+        bDoSwissSearchTest = 0
+        bDoPrintTest = 0
+        bDoWmsTest = 0
+        bDoCheckerTest = 1
 
         driver = webdriver.Remote(
             command_executor='http://' + saucelabs_user + ':' + saucelabs_key + '@ondemand.saucelabs.com:80/wd/hub', desired_capabilities=current_desired_cap)
@@ -100,7 +102,10 @@ if __name__ == '__main__':
                 tpartial = time.time()
                 runWmsTest(driver, url)                            ## Ok with Chrome and FF
                 print("Temp partiel Wms : %.2f secondes" % (time.time() - tpartial))
-
+            if bDoCheckerTest:
+                tpartial = time.time()
+                runCheckerTest(driver, url)
+                print("Temp partiel Checker : %.2f secondes" % (time.time() - tpartial))
         finally:
             driver.quit()
         print "--- end test for this browser"
