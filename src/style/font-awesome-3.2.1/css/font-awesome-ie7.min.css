@@ -55,3 +55,10 @@ a [class^="icon-"],a [class*=" icon-"]{cursor:pointer;}
 .icon-ga-add-text{*zoom:expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf197;');}
 .icon-ga-edit{*zoom:expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf195;');}
 .icon-ga-marker{*zoom:expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf19a;');}
+.icon-ga-elevation-down{*zoom:expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf212;');}
+.icon-ga-elevation-up{*zoom:expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf213;');}
+.icon-chevron-down {*zoom:expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf214;');}
+.icon-chevron-left{*zoom:expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf215;');}
+.icon-chevron-right{*zoom:expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf216;');}
+.icon-chevron-up{*zoom:expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf217;');}
+.icon-resize-vertical{*zoom:expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf218;');}
