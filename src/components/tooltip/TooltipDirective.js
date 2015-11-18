@@ -162,16 +162,17 @@ goog.require('ga_topic_service');
             return;
           }
           var scene = scope.ol3d.getCesiumScene();
+          var ellipsoid = scene.globe.ellipsoid;
           var handler = new Cesium.ScreenSpaceEventHandler(scene.canvas);
           handler.setInputAction(function(evt) {
-            var coordinate, cartesian = scene.pickPosition(evt.position);
+            var cartesian = olcs.core.pickOnTerrainOrEllipsoid(scene,
+                evt.position);
             if (cartesian) {
-              var cartographic = scene.globe.ellipsoid.
-                  cartesianToCartographic(cartesian);
-              var lon = Cesium.Math.toDegrees(cartographic.longitude);
-              var lat = Cesium.Math.toDegrees(cartographic.latitude);
-              coordinate = ol.proj.transform([lon, lat], 'EPSG:4326',
-                    scope.map.getView().getProjection());
+              var cartographic = ellipsoid.cartesianToCartographic(cartesian);
+              var coordinate = ol.proj.transform([
+                Cesium.Math.toDegrees(cartographic.longitude),
+                Cesium.Math.toDegrees(cartographic.latitude)
+              ], 'EPSG:4326', scope.map.getView().getProjection());
             }
             scope.$applyAsync(function() {
               onClick(coordinate, evt.position);

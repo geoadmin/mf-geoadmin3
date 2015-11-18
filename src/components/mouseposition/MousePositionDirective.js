@@ -58,7 +58,7 @@ goog.require('ga_throttle_service');
                   target.innerHTML = '&nbsp;';
                 }
               }
-            }, 100), Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+            }, 100, false, false), Cesium.ScreenSpaceEventType.MOUSE_MOVE);
           }
         });
 
