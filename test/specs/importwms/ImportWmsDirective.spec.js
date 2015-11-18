@@ -184,4 +184,90 @@ describe('ga_importwms_directive', function() {
       }));
     });
   });
+
+  describe('a good WMS GetCapabilities but without the map projection iss received', function() {
+    var $httpBackend;
+    var expectedWmsGetCapAdminUrl = "http://admin.ch/ogcproxy?url=http%3A%2F%2Fwms.geo.admin.ch%2F%3FSERVICE%3DWMS%26REQUEST%3DGetCapabilities%26VERSION%3D1.3.0%26lang%3Dfr";
+
+    beforeEach(inject(function($injector, $rootScope) {
+      $httpBackend = $injector.get('$httpBackend');
+      $httpBackend.whenGET(expectedWmsGetCapAdminUrl).respond('<?xml version=\'1.0\' encoding="UTF-8" standalone="no" ?>' +
+         '<WMS_Capabilities version="1.3.0"  xmlns="http://www.opengis.net/wms">' +
+           '<Service>' +
+             '<Name>WMS</Name>' +
+             '<Title>Title WMS</Title>' +
+             '<Abstract>Abstract WMS</Abstract>' +
+             '<OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://wms.geo.admin.ch/?"/>' +
+           '</Service>' +
+           '<Capability>' + 
+             '<Request>' +
+               '<GetCapabilities>' +
+                 '<Format>text/xml</Format>' +
+                 '<DCPType>' +
+                   '<HTTP>' +
+                     '<Get><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://wms.geo.admin.ch/?"/></Get>' +
+                     '<Post><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://wms.geo.admin.ch/?"/></Post>' +
+                   '</HTTP>' +
+                 '</DCPType>' +
+               '</GetCapabilities>' +
+               '<GetMap>' +
+               '</GetMap>' +
+               '<GetFeatureInfo>' +
+               '</GetFeatureInfo>' +
+             '</Request>' +
+             '<Exception>' +
+               '<Format>XML</Format>' +
+               '<Format>INIMAGE</Format>' +
+               '<Format>BLANK</Format>' +
+             '</Exception>' +
+             '<Layer>' +
+                 '<Name>main</Name>' +
+                 '<Title>Title main</Title>' +
+                 '<Abstract>Abstract main</Abstract>' +
+                 '<CRS>EPSG:4326</CRS>' +
+                 '<Layer queryable="1" opaque="0" cascaded="0">' +
+                   '<Name>invalid</Name>' +
+                   '<Title>Invalid because no extent defined</Title>' +
+                   '<Abstract>Abstract foo</Abstract>' +
+                 '</Layer>' +
+                 '<Layer queryable="1" opaque="0" cascaded="0">' +
+                   '<Name>invalid</Name>' +
+                   '<Title>Invalid because no EX_GeographicBoundingBox tag defined</Title>' +
+                   '<Abstract>Abstract foo</Abstract>' +
+                   '<BoundingBox CRS="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90" />' +
+                 '</Layer>' +
+                 '<Layer queryable="1" opaque="0" cascaded="0">' +
+                   '<Name>foo</Name>' +
+                   '<Title>Title foo</Title>' +
+                   '<Abstract>Abstract foo</Abstract>' +
+                   '<BoundingBox CRS="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90" />' +
+                   '<EX_GeographicBoundingBox>'+
+                     '<westBoundLongitude>-180</westBoundLongitude>' +
+                     '<eastBoundLongitude>180</eastBoundLongitude>' +
+                     '<southBoundLatitude>-89.999999</southBoundLatitude>' +
+                     '<northBoundLatitude>89.999999</northBoundLatitude>' +
+                   '</EX_GeographicBoundingBox>' +
+                 '</Layer>' +
+               '</Layer>' +
+             '</Capability>' +
+           '</WMS_Capabilities>'
+      );
+      $httpBackend.expectGET(expectedWmsGetCapAdminUrl);
+      scope.fileUrl = scope.options.defaultWMSList[0];
+      scope.handleFileUrl(); 
+      $httpBackend.flush(); 
+      $rootScope.$digest();
+    }));
+
+    afterEach(function () {
+      $httpBackend.verifyNoOutstandingExpectation();
+      $httpBackend.verifyNoOutstandingRequest();
+    });
+
+    it('uploads and parses successfully', inject(function() {
+      expect(scope.userMessage).to.be('parse_succeeded');   
+      expect(scope.layers.length).to.be(1);
+      expect(scope.layers[0].Name).to.be('foo'); 
+    }));
+  });
 });

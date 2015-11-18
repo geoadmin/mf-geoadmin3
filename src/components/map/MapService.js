@@ -354,7 +354,7 @@ goog.require('ga_urlutils_service');
    */
   module.provider('gaWms', function() {
     this.$get = function(gaDefinePropertiesForLayer, gaMapUtils, gaUrlUtils,
-        gaGlobalOptions, $q) {
+        gaGlobalOptions, $q, gaLang) {
       var getCesiumImageryProvider = function(layer) {
         var params = layer.getSource().getParams();
         var proxy;
@@ -368,18 +368,26 @@ goog.require('ga_urlutils_service');
         }
         var wmsParams = {
           layers: params.LAYERS,
-          format: 'image/png',
+          format: params.FORMAT || 'image/png',
           service: 'WMS',
-          version: '1.3.0',
+          version: params.VERSION || '1.3.0',
           request: 'GetMap',
-          crs: 'CRS:84',
-          bbox: '{westProjected},{southProjected},' +
-                '{eastProjected},{northProjected}',
+          crs: 'EPSG:4326',
+          bbox: '{southProjected},{westProjected},' +
+                '{northProjected},{eastProjected}',
           width: '256',
           height: '256',
-          styles: 'default',
+          styles: params.STYLES || 'default',
           transparent: 'true'
         };
+
+        if (wmsParams.version == '1.1.1') {
+          wmsParams.srs = wmsParams.crs;
+          delete wmsParams.crs;
+          wmsParams.bbox = '{westProjected},{southProjected},' +
+                           '{eastProjected},{northProjected}';
+        }
+
         var extent = gaGlobalOptions.defaultExtent;
         return new Cesium.UrlTemplateImageryProvider({
           minimumRetrievingLevel: window.minimumRetrievingLevel,
@@ -390,22 +398,30 @@ goog.require('ga_urlutils_service');
           hasAlphaChannel: true,
           availableLevels: window.imageryAvailableLevels
         });
+
       };
 
       var Wms = function() {
 
+        // Test WMS 1.1.1 with  https://wms.geo.bs.ch/wmsBS
         var createWmsLayer = function(params, options, index) {
+          params.VERSION = params.VERSION || '1.3.0';
           options = options || {};
-
+          options.id = 'WMS||' + options.label + '||' + options.url + '||' +
+              params.LAYERS + '||' + params.VERSION;
+          if (options.useReprojection) {
+            options.projection = 'EPSG:4326';
+            options.id += '||true';
+          }
           var source = new ol.source.ImageWMS({
             params: params,
             url: options.url,
-            ratio: options.ratio || 1
+            ratio: options.ratio || 1,
+            projection: options.projection
           });
 
           var layer = new ol.layer.Image({
-            id: 'WMS||' + options.label + '||' + options.url + '||' +
-                params.LAYERS,
+            id: options.id,
             url: options.url,
             type: 'WMS',
             opacity: options.opacity,
@@ -434,7 +450,8 @@ goog.require('ga_urlutils_service');
           var wmsOptions = {
             url: getCapLayer.wmsUrl,
             label: getCapLayer.Title,
-            extent: gaMapUtils.intersectWithDefaultExtent(getCapLayer.extent)
+            extent: gaMapUtils.intersectWithDefaultExtent(getCapLayer.extent),
+            useReprojection: getCapLayer.useReprojection
           };
           return createWmsLayer(wmsParams, wmsOptions);
         };
@@ -458,11 +475,12 @@ goog.require('ga_urlutils_service');
               gaUrlUtils.append(layer.url, gaUrlUtils.toKeyValue({
             request: 'GetLegendGraphic',
             layer: params.LAYERS,
-            style: params.style || 'default',
+            style: params.STYLES || 'default',
             service: 'WMS',
-            version: params.version || '1.3.0',
+            version: params.VERSION || '1.3.0',
             format: 'image/png',
-            sld_version: '1.1.0'
+            sld_version: '1.1.0',
+            lang: gaLang.get()
           })) + '"></img>';
           defer.resolve({data: html});
           return defer.promise;
@@ -1654,7 +1672,7 @@ goog.require('ga_urlutils_service');
           }
           if (angular.isString(olLayerOrId)) {
             return /^WMS\|\|/.test(olLayerOrId) &&
-                olLayerOrId.split('||').length == 4;
+                olLayerOrId.split('||').length >= 4;
           }
           return olLayerOrId.type == 'WMS';
         },
@@ -2166,14 +2184,16 @@ goog.require('ga_urlutils_service');
               try {
                 gaWms.addWmsToMap(map,
                   {
-                    LAYERS: infos[3]
+                    LAYERS: infos[3],
+                    VERSION: infos[4]
                   },
                   {
                     url: infos[2],
                     label: infos[1],
                     opacity: opacity || 1,
                     visible: visible,
-                    extent: gaGlobalOptions.defaultExtent
+                    extent: gaGlobalOptions.defaultExtent,
+                    useReprojection: infos[5]
                   },
                   index + 1);
               } catch (e) {

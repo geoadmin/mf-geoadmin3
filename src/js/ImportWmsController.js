@@ -137,8 +137,29 @@ goog.provide('ga_importwms_controller');
         'http://webdienste.zugmap.ch/ortsplan/service.svc/get',
         'http://webdienste.zugmap.ch/Zonenplan_WMS/service.svc/get',
         'http://service.lisag.ch/wms',
-        'http://wms.geoportal.ch:8080/geoserver/AVAI/wms'
-      ]
+        'http://wms.geoportal.ch:8080/geoserver/AVAI/wms',
+        // non-SwissProjected test urls
+        'http://wms.ga.admin.ch/1GE',
+        'http://wms.ga.admin.ch/LG_DE_Geologie_und_Tektonik/wms',
+        'http://discomap.eea.europa.eu/arcgis/services/Land/CLC2000_Dyna_WM/MapServer/WMSServer',
+        'http://eumetview.eumetsat.int/geoserver/wms',
+        'http://eusoils.jrc.ec.europa.eu/wrb/wms_Threats.asp',
+        'http://osm.omniscale.net/proxy/service',
+        'https://ows.terrestris.de/osm/service',
+        'https://ows.terrestris.de/osm-gray/service',
+        'http://www.webatlasde.de/arcgis/services/Maps4BW/MapServer/WMSServer',
+        'http://rips-gdi.lubw.baden-wuerttemberg.de/arcgis/services/wms/UIS_0100000017900001/MapServer/WMSServer',
+        'http://rips-gdi.lubw.baden-wuerttemberg.de/arcgis/services/wms/UIS_0100000017400001/MapServer/WMSServer',
+        'http://rips-gdi.lubw.baden-wuerttemberg.de/arcgis/services/wms/UIS_0100000016900001/MapServer/WMSServer',
+        'http://rips-gdi.lubw.baden-wuerttemberg.de/arcgis/services/wms/UIS_0100000013500001/MapServer/WMSServer',
+        'http://rips-gdi.lubw.baden-wuerttemberg.de/arcgis/services/wms/UIS_0100000013300001/MapServer/WMSServer',
+        'http://rips-gdi.lubw.baden-wuerttemberg.de/arcgis/services/wms/UIS_0100000017100001/MapServer/WMSServer',
+        'http://rips-gdi.lubw.baden-wuerttemberg.de/arcgis/services/wms/UIS_0100000013400001/MapServer/WMSServer',
+        'http://rips-gdi.lubw.baden-wuerttemberg.de/arcgis/services/wms/UIS_0100000013600001/MapServer/WMSServer',
+        'http://rips-gdi.lubw.baden-wuerttemberg.de/arcgis/services/wms/UIS_0100000013100001/MapServer/WMSServer',
+        'http://rips-gdi.lubw.baden-wuerttemberg.de/arcgis/services/wms/UIS_0100000001500003/MapServer/WMSServer',
+        'http://rips-gdi.lubw.baden-wuerttemberg.de/arcgis/services/wms/UIS_0100000004200001/MapServer/WMSServer'
+     ]
     };
   });
 })();

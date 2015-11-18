@@ -196,6 +196,7 @@
 "last_available_year": "Last year",
 "layer_invalid_no_crs": "WMS unterstützt die Kartenprojektion nicht.",
 "layer_invalid_no_name": "Der Datensatz kann nicht angezeigt werden, da er keine Bezeichnung hat",
+"layer_invalid_outside_map": "Der Datensatz kann nicht angezeigt werden, da er keine Bezeichnung hat",
 "layers_displayed": "Dargestellte Karten",
 "layers_results_header": "Karte hinzufügen ...",
 "legend": "Legende",
