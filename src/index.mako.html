@@ -282,9 +282,10 @@ itemscope itemtype="http://schema.org/WebApplication"
 
 % if device != 'embed':
     <div ng-controller="GaTimeSelectorController">
-      <div ga-time-selector ga-time-selector-map="map"
-           ga-time-selector-options="options"
-           ng-show="!globals.is3dActive">
+      <div ga-time-selector
+           ga-time-selector-map="::map"
+           ga-time-selector-ol3d="::ol3d"
+           ga-time-selector-options="options">
       </div>
     </div>
 % endif
