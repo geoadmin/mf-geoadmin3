@@ -1436,7 +1436,8 @@ goog.require('ga_urlutils_service');
    * Service provides map util functions.
    */
   module.provider('gaMapUtils', function() {
-    this.$get = function($window, gaGlobalOptions, gaUrlUtils, $q) {
+    this.$get = function($window, gaGlobalOptions, gaUrlUtils, $q,
+        gaDefinePropertiesForLayer) {
       var resolutions = gaGlobalOptions.resolutions;
       var isExtentEmpty = function(extent) {
         return extent[0] >= extent[2] || extent[1] >= extent[3];
@@ -1765,6 +1766,7 @@ goog.require('ga_urlutils_service');
             zIndex: this.Z_FEATURE_OVERLAY
           });
           layer.set('altitudeMode', 'clampToGround');
+          gaDefinePropertiesForLayer(layer);
           return layer;
         },
 
