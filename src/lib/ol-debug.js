@@ -1,6 +1,6 @@
 // OpenLayers 3. See http://openlayers.org/
 // License: https://raw.githubusercontent.com/openlayers/ol3/master/LICENSE.md
-// Version: v3.11.0-6-gbd1febe
+// Version: v3.11.1-86-g627abaf
 
 (function (root, factory) {
   if (typeof exports === "object") {
@@ -13159,7 +13159,9 @@ ol.Object.prototype.set = function(key, value, opt_silent) {
   } else {
     var oldValue = this.values_[key];
     this.values_[key] = value;
-    this.notify(key, oldValue);
+    if (oldValue !== value) {
+      this.notify(key, oldValue);
+    }
   }
 };
 
@@ -25354,8 +25356,7 @@ ol.color.fromStringInternal_ = function(s) {
 
   var isHex = false;
   if (ol.ENABLE_NAMED_COLORS && goog.color.names.hasOwnProperty(s)) {
-    // goog.color.names does not have a type declaration, so add a typecast
-    s = /** @type {string} */ (goog.color.names[s]);
+    s = goog.color.names[s];
     isHex = true;
   }
 
@@ -36708,6 +36709,16 @@ ol.structs.LRUCache.prototype.pop = function() {
  * @param {string} key Key.
  * @param {T} value Value.
  */
+ol.structs.LRUCache.prototype.replace = function(key, value) {
+  this.get(key);  // update `newest_`
+  this.entries_[key].value_ = value;
+};
+
+
+/**
+ * @param {string} key Key.
+ * @param {T} value Value.
+ */
 ol.structs.LRUCache.prototype.set = function(key, value) {
   goog.asserts.assert(!(key in {}),
       'key is not a standard property of objects (e.g. "__proto__")');
@@ -36855,6 +36866,22 @@ ol.Tile = function(tileCoord, state) {
    * @type {ol.TileState}
    */
   this.state = state;
+
+  /**
+   * An "interim" tile for this tile. The interim tile may be used while this
+   * one is loading, for "smooth" transitions when changing params/dimensions
+   * on the source.
+   * @type {ol.Tile}
+   */
+  this.interimTile = null;
+
+  /**
+   * A key assigned to the tile. This is used by the tile source to determine
+   * if this tile can effectively be used, or if a new tile should be created
+   * and this one be used as an interim tile for this new tile.
+   * @type {string}
+   */
+  this.key = '';
 
 };
 goog.inherits(ol.Tile, goog.events.EventTarget);
@@ -37895,6 +37922,17 @@ ol.source.Tile.prototype.getGutter = function() {
 
 
 /**
+ * Return the "parameters" key, a string composed of the source's
+ * parameters/dimensions.
+ * @return {string} The parameters key.
+ * @protected
+ */
+ol.source.Tile.prototype.getKeyParams = function() {
+  return '';
+};
+
+
+/**
  * @param {number} z Z.
  * @param {number} x X.
  * @param {number} y Y.
@@ -38570,7 +38608,7 @@ ol.control.Rotate = function(opt_options) {
    * @type {number}
    * @private
    */
-  this.duration_ = options.duration ? options.duration : 250;
+  this.duration_ = options.duration !== undefined ? options.duration : 250;
 
   /**
    * @type {boolean}
@@ -39032,7 +39070,7 @@ ol.control.FullScreen = function(opt_options) {
    */
   this.cssClassName_ = options.className ? options.className : 'ol-full-screen';
 
-  var label = options.label ? options.label : '\u2194';
+  var label = options.label ? options.label : '\u2922';
 
   /**
    * @private
@@ -49091,7 +49129,7 @@ ol.pointer.PointerEventHandler.prototype.cloneEvent =
 /**
  * Triggers a 'pointerdown' event.
  * @param {Object} pointerEventData
- * @param {goog.events.BrowserEvent } browserEvent
+ * @param {goog.events.BrowserEvent} browserEvent
  */
 ol.pointer.PointerEventHandler.prototype.down =
     function(pointerEventData, browserEvent) {
@@ -49103,7 +49141,7 @@ ol.pointer.PointerEventHandler.prototype.down =
 /**
  * Triggers a 'pointermove' event.
  * @param {Object} pointerEventData
- * @param {goog.events.BrowserEvent } browserEvent
+ * @param {goog.events.BrowserEvent} browserEvent
  */
 ol.pointer.PointerEventHandler.prototype.move =
     function(pointerEventData, browserEvent) {
@@ -49115,7 +49153,7 @@ ol.pointer.PointerEventHandler.prototype.move =
 /**
  * Triggers a 'pointerup' event.
  * @param {Object} pointerEventData
- * @param {goog.events.BrowserEvent } browserEvent
+ * @param {goog.events.BrowserEvent} browserEvent
  */
 ol.pointer.PointerEventHandler.prototype.up =
     function(pointerEventData, browserEvent) {
@@ -49127,7 +49165,7 @@ ol.pointer.PointerEventHandler.prototype.up =
 /**
  * Triggers a 'pointerenter' event.
  * @param {Object} pointerEventData
- * @param {goog.events.BrowserEvent } browserEvent
+ * @param {goog.events.BrowserEvent} browserEvent
  */
 ol.pointer.PointerEventHandler.prototype.enter =
     function(pointerEventData, browserEvent) {
@@ -49140,7 +49178,7 @@ ol.pointer.PointerEventHandler.prototype.enter =
 /**
  * Triggers a 'pointerleave' event.
  * @param {Object} pointerEventData
- * @param {goog.events.BrowserEvent } browserEvent
+ * @param {goog.events.BrowserEvent} browserEvent
  */
 ol.pointer.PointerEventHandler.prototype.leave =
     function(pointerEventData, browserEvent) {
@@ -49153,7 +49191,7 @@ ol.pointer.PointerEventHandler.prototype.leave =
 /**
  * Triggers a 'pointerover' event.
  * @param {Object} pointerEventData
- * @param {goog.events.BrowserEvent } browserEvent
+ * @param {goog.events.BrowserEvent} browserEvent
  */
 ol.pointer.PointerEventHandler.prototype.over =
     function(pointerEventData, browserEvent) {
@@ -49166,7 +49204,7 @@ ol.pointer.PointerEventHandler.prototype.over =
 /**
  * Triggers a 'pointerout' event.
  * @param {Object} pointerEventData
- * @param {goog.events.BrowserEvent } browserEvent
+ * @param {goog.events.BrowserEvent} browserEvent
  */
 ol.pointer.PointerEventHandler.prototype.out =
     function(pointerEventData, browserEvent) {
@@ -49179,7 +49217,7 @@ ol.pointer.PointerEventHandler.prototype.out =
 /**
  * Triggers a 'pointercancel' event.
  * @param {Object} pointerEventData
- * @param {goog.events.BrowserEvent } browserEvent
+ * @param {goog.events.BrowserEvent} browserEvent
  */
 ol.pointer.PointerEventHandler.prototype.cancel =
     function(pointerEventData, browserEvent) {
@@ -49191,7 +49229,7 @@ ol.pointer.PointerEventHandler.prototype.cancel =
 /**
  * Triggers a combination of 'pointerout' and 'pointerleave' events.
  * @param {Object} pointerEventData
- * @param {goog.events.BrowserEvent } browserEvent
+ * @param {goog.events.BrowserEvent} browserEvent
  */
 ol.pointer.PointerEventHandler.prototype.leaveOut =
     function(pointerEventData, browserEvent) {
@@ -49207,7 +49245,7 @@ ol.pointer.PointerEventHandler.prototype.leaveOut =
 /**
  * Triggers a combination of 'pointerover' and 'pointerevents' events.
  * @param {Object} pointerEventData
- * @param {goog.events.BrowserEvent } browserEvent
+ * @param {goog.events.BrowserEvent} browserEvent
  */
 ol.pointer.PointerEventHandler.prototype.enterOver =
     function(pointerEventData, browserEvent) {
@@ -49243,7 +49281,7 @@ ol.pointer.PointerEventHandler.prototype.contains_ =
  *
  * @param {string} inType A string representing the type of event to create.
  * @param {Object} pointerEventData
- * @param {goog.events.BrowserEvent } browserEvent
+ * @param {goog.events.BrowserEvent} browserEvent
  * @return {ol.pointer.PointerEvent} A PointerEvent of type `inType`.
  */
 ol.pointer.PointerEventHandler.prototype.makeEvent =
@@ -49256,7 +49294,7 @@ ol.pointer.PointerEventHandler.prototype.makeEvent =
  * Make and dispatch an event in one call.
  * @param {string} inType A string representing the type of event.
  * @param {Object} pointerEventData
- * @param {goog.events.BrowserEvent } browserEvent
+ * @param {goog.events.BrowserEvent} browserEvent
  */
 ol.pointer.PointerEventHandler.prototype.fireEvent =
     function(inType, pointerEventData, browserEvent) {
@@ -50545,9 +50583,7 @@ ol.ImageState = {
  * @constructor
  * @extends {goog.events.EventTarget}
  * @param {ol.Extent} extent Extent.
- * @param {Array.<number>|undefined} resolution Resolution, first value
- *     is the resolution in the x direction, second value is the resolution
- *     in the y direction.
+ * @param {number|undefined} resolution Resolution.
  * @param {number} pixelRatio Pixel ratio.
  * @param {ol.ImageState} state State.
  * @param {Array.<ol.Attribution>} attributions Attributions.
@@ -50576,7 +50612,7 @@ ol.ImageBase = function(extent, resolution, pixelRatio, state, attributions) {
 
   /**
    * @protected
-   * @type {Array.<number>|undefined}
+   * @type {number|undefined}
    */
   this.resolution = resolution;
 
@@ -50630,7 +50666,7 @@ ol.ImageBase.prototype.getPixelRatio = function() {
 
 
 /**
- * @return {Array.<number>} Resolution.
+ * @return {number} Resolution.
  */
 ol.ImageBase.prototype.getResolution = function() {
   goog.asserts.assert(this.resolution !== undefined, 'resolution not yet set');
@@ -51728,7 +51764,7 @@ ol.style.IconImage_ = function(image, src, size, crossOrigin, imageState) {
    */
   this.image_ = !image ? new Image() : image;
 
-  if (crossOrigin) {
+  if (crossOrigin !== null) {
     this.image_.crossOrigin = crossOrigin;
   }
 
@@ -53254,7 +53290,7 @@ ol.interaction.DoubleClickZoom = function(opt_options) {
    * @private
    * @type {number}
    */
-  this.duration_ = options.duration ? options.duration : 250;
+  this.duration_ = options.duration !== undefined ? options.duration : 250;
 
 };
 goog.inherits(ol.interaction.DoubleClickZoom, ol.interaction.Interaction);
@@ -53936,7 +53972,7 @@ ol.interaction.DragRotate = function(opt_options) {
    * @private
    * @type {number}
    */
-  this.duration_ = options.duration ? options.duration : 250;
+  this.duration_ = options.duration !== undefined ? options.duration : 250;
 };
 goog.inherits(ol.interaction.DragRotate, ol.interaction.Pointer);
 
@@ -57604,7 +57640,7 @@ ol.style.Style.prototype.setZIndex = function(zIndex) {
  * {@link ol.style.Style}. This way e.g. a vector layer can be styled.
  *
  * @typedef {function((ol.Feature|ol.render.Feature), number):
- *     Array.<ol.style.Style>}
+ *     (ol.style.Style|Array.<ol.style.Style>)}
  * @api
  */
 ol.style.StyleFunction;
@@ -59765,10 +59801,8 @@ ol.render.canvas.Replay.prototype.replay_ = function(
             context.globalAlpha = alpha * opacity;
           }
 
-          var w = width - originX;
-          var h = height - originY;
-          context.drawImage(image, originX, originY, w, h, x, y,
-              w * pixelRatio, h * pixelRatio);
+          context.drawImage(image, originX, originY, width, height,
+              x, y, width * pixelRatio, height * pixelRatio);
 
           if (opacity != 1) {
             context.globalAlpha = alpha;
@@ -62019,8 +62053,7 @@ ol.ImageCanvas = function(extent, resolution, pixelRatio, attributions,
   var state = opt_loader !== undefined ?
       ol.ImageState.IDLE : ol.ImageState.LOADED;
 
-  goog.base(this, extent, [resolution, resolution], pixelRatio, state,
-      attributions);
+  goog.base(this, extent, resolution, pixelRatio, state, attributions);
 
   /**
    * @private
@@ -62189,7 +62222,7 @@ ol.reproj.enlargeClipPoint_ = function(centroidX, centroidY, x, y) {
  * @param {number} width Width of the canvas.
  * @param {number} height Height of the canvas.
  * @param {number} pixelRatio Pixel ratio.
- * @param {Array.<number>} sourceResolution Source resolution.
+ * @param {number} sourceResolution Source resolution.
  * @param {ol.Extent} sourceExtent Extent of the data source.
  * @param {number} targetResolution Target resolution.
  * @param {ol.Extent} targetExtent Target extent.
@@ -62220,14 +62253,12 @@ ol.reproj.render = function(width, height, pixelRatio,
 
   var canvasWidthInUnits = ol.extent.getWidth(sourceDataExtent);
   var canvasHeightInUnits = ol.extent.getHeight(sourceDataExtent);
-  var sourceResolutionX = sourceResolution[0];
-  var sourceResolutionY = sourceResolution[1];
   var stitchContext = ol.dom.createCanvasContext2D(
-      Math.round(pixelRatio * canvasWidthInUnits / sourceResolutionX),
-      Math.round(pixelRatio * canvasHeightInUnits / sourceResolutionY));
+      Math.round(pixelRatio * canvasWidthInUnits / sourceResolution),
+      Math.round(pixelRatio * canvasHeightInUnits / sourceResolution));
 
-  stitchContext.scale(pixelRatio / sourceResolutionX,
-                      pixelRatio / sourceResolutionY);
+  stitchContext.scale(pixelRatio / sourceResolution,
+                      pixelRatio / sourceResolution);
   stitchContext.translate(-sourceDataExtent[0], sourceDataExtent[3]);
 
   sources.forEach(function(src, i, arr) {
@@ -62320,8 +62351,8 @@ ol.reproj.render = function(width, height, pixelRatio,
     context.translate(sourceDataExtent[0] - sourceNumericalShiftX,
                       sourceDataExtent[3] - sourceNumericalShiftY);
 
-    context.scale(sourceResolutionX / pixelRatio,
-                  -sourceResolutionY / pixelRatio);
+    context.scale(sourceResolution / pixelRatio,
+                  -sourceResolution / pixelRatio);
 
     context.drawImage(stitchContext.canvas, 0, 0);
     context.restore();
@@ -62815,9 +62846,8 @@ ol.reproj.Image = function(sourceProj, targetProj,
     attributions = this.sourceImage_.getAttributions();
   }
 
-  goog.base(this, targetExtent, [targetResolution, targetResolution],
-            this.sourcePixelRatio_, state, attributions);
-
+  goog.base(this, targetExtent, targetResolution, this.sourcePixelRatio_,
+            state, attributions);
 };
 goog.inherits(ol.reproj.Image, ol.ImageBase);
 
@@ -63543,7 +63573,8 @@ ol.Feature.prototype.setGeometryName = function(name) {
  * resolution. The `this` keyword inside the function references the
  * {@link ol.Feature} to be styled.
  *
- * @typedef {function(this: ol.Feature, number): Array.<ol.style.Style>}
+ * @typedef {function(this: ol.Feature, number):
+ *     (ol.style.Style|Array.<ol.style.Style>)}
  * @api stable
  */
 ol.FeatureStyleFunction;
@@ -72917,19 +72948,15 @@ ol.renderer.canvas.ImageLayer.prototype.prepareFrame =
     var imageExtent = image.getExtent();
     var imageResolution = image.getResolution();
     var imagePixelRatio = image.getPixelRatio();
-    var xImageResolution = imageResolution[0];
-    var yImageResolution = imageResolution[1];
-    var xScale = pixelRatio * xImageResolution /
-        (viewResolution * imagePixelRatio);
-    var yScale = pixelRatio * yImageResolution /
+    var scale = pixelRatio * imageResolution /
         (viewResolution * imagePixelRatio);
     ol.vec.Mat4.makeTransform2D(this.imageTransform_,
         pixelRatio * frameState.size[0] / 2,
         pixelRatio * frameState.size[1] / 2,
-        xScale, yScale,
+        scale, scale,
         viewRotation,
-        imagePixelRatio * (imageExtent[0] - viewCenter[0]) / xImageResolution,
-        imagePixelRatio * (viewCenter[1] - imageExtent[3]) / yImageResolution);
+        imagePixelRatio * (imageExtent[0] - viewCenter[0]) / imageResolution,
+        imagePixelRatio * (viewCenter[1] - imageExtent[3]) / imageResolution);
     this.imageTransformInv_ = null;
     this.updateAttributions(frameState.attributions, image.getAttributions());
     this.updateLogos(frameState, imageSource);
@@ -73256,19 +73283,29 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
 
   var tmpExtent = ol.extent.createEmpty();
   var tmpTileRange = new ol.TileRange(0, 0, 0, 0);
-  var childTileRange, fullyLoaded, tile, tileState, x, y;
+  var childTileRange, fullyLoaded, tile, x, y;
+  var drawableTile = (
+      /**
+       * @param {!ol.Tile} tile Tile.
+       * @return {boolean} Tile is selected.
+       */
+      function(tile) {
+        var tileState = tile.getState();
+        return tileState == ol.TileState.LOADED ||
+            tileState == ol.TileState.EMPTY ||
+            tileState == ol.TileState.ERROR && !useInterimTilesOnError;
+      });
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
-
       tile = tileSource.getTile(z, x, y, pixelRatio, projection);
-      tileState = tile.getState();
-      if (tileState == ol.TileState.LOADED ||
-          tileState == ol.TileState.EMPTY ||
-          (tileState == ol.TileState.ERROR && !useInterimTilesOnError)) {
+      if (!drawableTile(tile) && tile.interimTile) {
+        tile = tile.interimTile;
+      }
+      goog.asserts.assert(tile);
+      if (drawableTile(tile)) {
         tilesToDrawByZ[z][ol.tilecoord.toString(tile.tileCoord)] = tile;
         continue;
       }
-
       fullyLoaded = tileGrid.forEachTileCoordParentTileRange(
           tile.tileCoord, findLoadedTiles, null, tmpTileRange, tmpExtent);
       if (!fullyLoaded) {
@@ -73300,7 +73337,7 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
   var origin = ol.extent.getTopLeft(tileGrid.getTileCoordExtent(
       [z, canvasTileRange.minX, canvasTileRange.maxY],
       tmpExtent));
-  var currentZ, index, scale, tileCoordKey, tileExtent, tilesToDraw;
+  var currentZ, index, scale, tileCoordKey, tileExtent, tileState, tilesToDraw;
   var ix, iy, interimTileRange, maxX, maxY;
   var height, width;
   for (i = 0, ii = zs.length; i < ii; ++i) {
@@ -73736,7 +73773,8 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
  * @param {ol.Feature} feature Feature.
  * @param {number} resolution Resolution.
  * @param {number} pixelRatio Pixel ratio.
- * @param {Array.<ol.style.Style>} styles Array of styles
+ * @param {(ol.style.Style|Array.<ol.style.Style>)} styles The style or array of
+ *     styles.
  * @param {ol.render.canvas.ReplayGroup} replayGroup Replay group.
  * @return {boolean} `true` if an image is loading.
  */
@@ -73745,10 +73783,17 @@ ol.renderer.canvas.VectorLayer.prototype.renderFeature =
   if (!styles) {
     return false;
   }
-  var i, ii, loading = false;
-  for (i = 0, ii = styles.length; i < ii; ++i) {
+  var loading = false;
+  if (goog.isArray(styles)) {
+    for (var i = 0, ii = styles.length; i < ii; ++i) {
+      loading = ol.renderer.vector.renderFeature(
+          replayGroup, feature, styles[i],
+          ol.renderer.vector.getSquaredTolerance(resolution, pixelRatio),
+          this.handleStyleImageChange_, this) || loading;
+    }
+  } else {
     loading = ol.renderer.vector.renderFeature(
-        replayGroup, feature, styles[i],
+        replayGroup, feature, styles,
         ol.renderer.vector.getSquaredTolerance(resolution, pixelRatio),
         this.handleStyleImageChange_, this) || loading;
   }
@@ -74537,7 +74582,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.composeFrame =
   var tilesToDraw = this.renderedTiles_;
   var tileGrid = source.getTileGrid();
 
-  var currentZ, i, ii, origin, scale, tile, tileExtent, tileSize;
+  var currentZ, i, ii, origin, tile, tileSize;
   var tilePixelRatio, tilePixelResolution, tilePixelSize, tileResolution;
   for (i = 0, ii = tilesToDraw.length; i < ii; ++i) {
     tile = tilesToDraw[i];
@@ -74625,13 +74670,20 @@ ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup = function(tile,
    */
   function renderFeature(feature) {
     var styles;
-    if (feature.getStyleFunction()) {
+    var styleFunction = feature.getStyleFunction();
+    if (styleFunction) {
       goog.asserts.assertInstanceof(feature, ol.Feature, 'Got an ol.Feature');
-      styles = feature.getStyleFunction().call(feature, resolution);
-    } else if (layer.getStyleFunction()) {
-      styles = layer.getStyleFunction()(feature, resolution);
+      styles = styleFunction.call(feature, resolution);
+    } else {
+      styleFunction = layer.getStyleFunction();
+      if (styleFunction) {
+        styles = styleFunction(feature, resolution);
+      }
     }
     if (styles) {
+      if (!goog.isArray(styles)) {
+        styles = [styles];
+      }
       var dirty = this.renderFeature(feature, squaredTolerance, styles,
           replayGroup);
       this.dirty_ = this.dirty_ || dirty;
@@ -74672,7 +74724,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate =
   var tileGrid = source.getTileGrid();
   var found, tileSpaceCoordinate;
   var i, ii, origin, replayGroup;
-  var tile, tileCoord, tileExtent, tilePixelRatio, tileResolution, tileSize;
+  var tile, tileCoord, tileExtent, tilePixelRatio, tileResolution;
   for (i = 0, ii = replayables.length; i < ii; ++i) {
     tile = replayables[i];
     tileCoord = tile.getTileCoord();
@@ -74685,7 +74737,6 @@ ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate =
       origin = ol.extent.getTopLeft(tileExtent);
       tilePixelRatio = source.getTilePixelRatio();
       tileResolution = tileGrid.getResolution(tileCoord[0]) / tilePixelRatio;
-      tileSize = ol.size.toSize(tileGrid.getTileSize(tileCoord[0]));
       tileSpaceCoordinate = [
         (coordinate[0] - origin[0]) / tileResolution,
         (origin[1] - coordinate[1]) / tileResolution
@@ -74847,7 +74898,8 @@ ol.renderer.canvas.VectorTileLayer.prototype.prepareFrame =
 /**
  * @param {ol.Feature|ol.render.Feature} feature Feature.
  * @param {number} squaredTolerance Squared tolerance.
- * @param {Array.<ol.style.Style>} styles Array of styles
+ * @param {(ol.style.Style|Array.<ol.style.Style>)} styles The style or array of
+ *     styles.
  * @param {ol.render.canvas.ReplayGroup} replayGroup Replay group.
  * @return {boolean} `true` if an image is loading.
  */
@@ -74856,10 +74908,16 @@ ol.renderer.canvas.VectorTileLayer.prototype.renderFeature =
   if (!styles) {
     return false;
   }
-  var i, ii, loading = false;
-  for (i = 0, ii = styles.length; i < ii; ++i) {
+  var loading = false;
+  if (goog.isArray(styles)) {
+    for (var i = 0, ii = styles.length; i < ii; ++i) {
+      loading = ol.renderer.vector.renderFeature(
+          replayGroup, feature, styles[i], squaredTolerance,
+          this.handleStyleImageChange_, this) || loading;
+    }
+  } else {
     loading = ol.renderer.vector.renderFeature(
-        replayGroup, feature, styles[i], squaredTolerance,
+        replayGroup, feature, styles, squaredTolerance,
         this.handleStyleImageChange_, this) || loading;
   }
   return loading;
@@ -75419,11 +75477,18 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame =
 
   var tmpExtent = ol.extent.createEmpty();
   var tmpTileRange = new ol.TileRange(0, 0, 0, 0);
-  var childTileRange, fullyLoaded, tile, tileState, x, y;
+  var childTileRange, drawable, fullyLoaded, tile, tileState, x, y;
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
-
       tile = tileSource.getTile(z, x, y, pixelRatio, projection);
+      tileState = tile.getState();
+      drawable = tileState == ol.TileState.LOADED ||
+          tileState == ol.TileState.EMPTY ||
+          tileState == ol.TileState.ERROR && !useInterimTilesOnError;
+      if (!drawable && tile.interimTile) {
+        tile = tile.interimTile;
+      }
+      goog.asserts.assert(tile);
       tileState = tile.getState();
       if (tileState == ol.TileState.LOADED) {
         tilesToDrawByZ[z][ol.tilecoord.toString(tile.tileCoord)] = tile;
@@ -75433,7 +75498,6 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame =
                   !useInterimTilesOnError)) {
         continue;
       }
-
       fullyLoaded = tileGrid.forEachTileCoordParentTileRange(
           tile.tileCoord, findLoadedTiles, null, tmpTileRange, tmpExtent);
       if (!fullyLoaded) {
@@ -76070,7 +76134,8 @@ ol.renderer.dom.VectorLayer.prototype.prepareFrame =
  * @param {ol.Feature} feature Feature.
  * @param {number} resolution Resolution.
  * @param {number} pixelRatio Pixel ratio.
- * @param {Array.<ol.style.Style>} styles Array of styles
+ * @param {(ol.style.Style|Array.<ol.style.Style>)} styles The style or array of
+ *     styles.
  * @param {ol.render.canvas.ReplayGroup} replayGroup Replay group.
  * @return {boolean} `true` if an image is loading.
  */
@@ -76079,10 +76144,17 @@ ol.renderer.dom.VectorLayer.prototype.renderFeature =
   if (!styles) {
     return false;
   }
-  var i, ii, loading = false;
-  for (i = 0, ii = styles.length; i < ii; ++i) {
+  var loading = false;
+  if (goog.isArray(styles)) {
+    for (var i = 0, ii = styles.length; i < ii; ++i) {
+      loading = ol.renderer.vector.renderFeature(
+          replayGroup, feature, styles[i],
+          ol.renderer.vector.getSquaredTolerance(resolution, pixelRatio),
+          this.handleStyleImageChange_, this) || loading;
+    }
+  } else {
     loading = ol.renderer.vector.renderFeature(
-        replayGroup, feature, styles[i],
+        replayGroup, feature, styles,
         ol.renderer.vector.getSquaredTolerance(resolution, pixelRatio),
         this.handleStyleImageChange_, this) || loading;
   }
@@ -81796,7 +81868,8 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame =
     var allTilesLoaded = true;
     var tmpExtent = ol.extent.createEmpty();
     var tmpTileRange = new ol.TileRange(0, 0, 0, 0);
-    var childTileRange, fullyLoaded, tile, tileState, x, y, tileExtent;
+    var childTileRange, drawable, fullyLoaded, tile, tileState;
+    var x, y, tileExtent;
     for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
       for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
 
@@ -81808,6 +81881,14 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame =
             continue;
           }
         }
+        tileState = tile.getState();
+        drawable = tileState == ol.TileState.LOADED ||
+            tileState == ol.TileState.EMPTY ||
+            tileState == ol.TileState.ERROR && !useInterimTilesOnError;
+        if (!drawable && tile.interimTile) {
+          tile = tile.interimTile;
+        }
+        goog.asserts.assert(tile);
         tileState = tile.getState();
         if (tileState == ol.TileState.LOADED) {
           if (mapRenderer.isTileTextureLoaded(tile)) {
@@ -82255,7 +82336,8 @@ ol.renderer.webgl.VectorLayer.prototype.prepareFrame =
  * @param {ol.Feature} feature Feature.
  * @param {number} resolution Resolution.
  * @param {number} pixelRatio Pixel ratio.
- * @param {Array.<ol.style.Style>} styles Array of styles
+ * @param {(ol.style.Style|Array.<ol.style.Style>)} styles The style or array of
+ *     styles.
  * @param {ol.render.webgl.ReplayGroup} replayGroup Replay group.
  * @return {boolean} `true` if an image is loading.
  */
@@ -82264,10 +82346,17 @@ ol.renderer.webgl.VectorLayer.prototype.renderFeature =
   if (!styles) {
     return false;
   }
-  var i, ii, loading = false;
-  for (i = 0, ii = styles.length; i < ii; ++i) {
+  var loading = false;
+  if (goog.isArray(styles)) {
+    for (var i = 0, ii = styles.length; i < ii; ++i) {
+      loading = ol.renderer.vector.renderFeature(
+          replayGroup, feature, styles[i],
+          ol.renderer.vector.getSquaredTolerance(resolution, pixelRatio),
+          this.handleStyleImageChange_, this) || loading;
+    }
+  } else {
     loading = ol.renderer.vector.renderFeature(
-        replayGroup, feature, styles[i],
+        replayGroup, feature, styles,
         ol.renderer.vector.getSquaredTolerance(resolution, pixelRatio),
         this.handleStyleImageChange_, this) || loading;
   }
@@ -87507,7 +87596,7 @@ ol.control.ZoomSlider = function(opt_options) {
    * @private
    * @type {number}
    */
-  this.duration_ = options.duration ? options.duration : 200;
+  this.duration_ = options.duration !== undefined ? options.duration : 200;
 
   var className = options.className ? options.className : 'ol-zoomslider';
   var thumbElement = goog.dom.createDom('BUTTON', {
@@ -107995,7 +108084,7 @@ goog.require('ol.extent');
  * @constructor
  * @extends {ol.ImageBase}
  * @param {ol.Extent} extent Extent.
- * @param {Array.<number>|undefined} resolution Resolution.
+ * @param {number|undefined} resolution Resolution.
  * @param {number} pixelRatio Pixel ratio.
  * @param {Array.<ol.Attribution>} attributions Attributions.
  * @param {string} src Image source URI.
@@ -108016,16 +108105,16 @@ ol.Image = function(extent, resolution, pixelRatio, attributions, src,
 
   /**
    * @private
-   * @type {Image}
+   * @type {HTMLCanvasElement|Image|HTMLVideoElement}
    */
   this.image_ = new Image();
-  if (crossOrigin) {
+  if (crossOrigin !== null) {
     this.image_.crossOrigin = crossOrigin;
   }
 
   /**
    * @private
-   * @type {Object.<number, Image>}
+   * @type {Object.<number, (HTMLCanvasElement|Image|HTMLVideoElement)>}
    */
   this.imageByContext_ = {};
 
@@ -108095,10 +108184,7 @@ ol.Image.prototype.handleImageError_ = function() {
  */
 ol.Image.prototype.handleImageLoad_ = function() {
   if (this.resolution === undefined) {
-    this.resolution = [
-      ol.extent.getWidth(this.extent) / this.image_.width,
-      ol.extent.getHeight(this.extent) / this.image_.height
-    ];
+    this.resolution = ol.extent.getHeight(this.extent) / this.image_.height;
   }
   this.state = ol.ImageState.LOADED;
   this.unlistenImage_();
@@ -108123,6 +108209,14 @@ ol.Image.prototype.load = function() {
     ];
     this.imageLoadFunction_(this, this.src_);
   }
+};
+
+
+/**
+ * @param {HTMLCanvasElement|Image|HTMLVideoElement} image Image.
+ */
+ol.Image.prototype.setImage = function(image) {
+  this.image_ = image;
 };
 
 
@@ -108199,7 +108293,7 @@ ol.ImageTile = function(tileCoord, state, src, crossOrigin, tileLoadFunction) {
    * @type {Image}
    */
   this.image_ = new Image();
-  if (crossOrigin) {
+  if (crossOrigin !== null) {
     this.image_.crossOrigin = crossOrigin;
   }
 
@@ -108231,6 +108325,9 @@ goog.inherits(ol.ImageTile, ol.Tile);
 ol.ImageTile.prototype.disposeInternal = function() {
   if (this.state == ol.TileState.LOADING) {
     this.unlistenImage_();
+  }
+  if (this.interimTile) {
+    goog.dispose(this.interimTile);
   }
   goog.base(this, 'disposeInternal');
 };
@@ -108326,53 +108423,6 @@ ol.ImageTile.prototype.unlistenImage_ = function() {
       'this.imageListenerKeys_ should not be null');
   this.imageListenerKeys_.forEach(goog.events.unlistenByKey);
   this.imageListenerKeys_ = null;
-};
-
-goog.provide('ol.ImageUrlFunction');
-goog.provide('ol.ImageUrlFunctionType');
-
-goog.require('ol.Size');
-
-
-/**
- * @typedef {function(this:ol.source.Image, ol.Extent, ol.Size,
- *     ol.proj.Projection): (string|undefined)}
- */
-ol.ImageUrlFunctionType;
-
-
-/**
- * @param {string} baseUrl Base URL (may have query data).
- * @param {Object.<string,*>} params to encode in the URL.
- * @param {function(string, Object.<string,*>, ol.Extent, ol.Size,
- *     ol.proj.Projection): (string|undefined)} paramsFunction params function.
- * @return {ol.ImageUrlFunctionType} Image URL function.
- */
-ol.ImageUrlFunction.createFromParamsFunction =
-    function(baseUrl, params, paramsFunction) {
-  return (
-      /**
-       * @this {ol.source.Image}
-       * @param {ol.Extent} extent Extent.
-       * @param {ol.Size} size Size.
-       * @param {ol.proj.Projection} projection Projection.
-       * @return {string|undefined} URL.
-       */
-      function(extent, size, projection) {
-        return paramsFunction(baseUrl, params, extent, size, projection);
-      });
-};
-
-
-/**
- * @this {ol.source.Image}
- * @param {ol.Extent} extent Extent.
- * @param {ol.Size} size Size.
- * @return {string|undefined} Image URL.
- */
-ol.ImageUrlFunction.nullImageUrlFunction =
-    function(extent, size) {
-  return undefined;
 };
 
 // Copyright 2010 The Closure Library Authors. All Rights Reserved.
@@ -110699,7 +110749,7 @@ ol.interaction.DragRotateAndZoom = function(opt_options) {
    * @private
    * @type {number}
    */
-  this.duration_ = options.duration ? options.duration : 400;
+  this.duration_ = options.duration !== undefined ? options.duration : 400;
 
 };
 goog.inherits(ol.interaction.DragRotateAndZoom, ol.interaction.Pointer);
@@ -111866,7 +111916,7 @@ ol.interaction.Modify = function(options) {
   /**
   * @const
   * @private
-  * @type {Object.<string, function(ol.Feature, ol.geom.Geometry)> }
+  * @type {Object.<string, function(ol.Feature, ol.geom.Geometry)>}
   */
   this.SEGMENT_WRITERS_ = {
     'Point': this.writePointGeometry_,
@@ -113247,7 +113297,7 @@ ol.interaction.Snap = function(opt_options) {
   /**
   * @const
   * @private
-  * @type {Object.<string, function(ol.Feature, ol.geom.Geometry)> }
+  * @type {Object.<string, function(ol.Feature, ol.geom.Geometry)>}
   */
   this.SEGMENT_WRITERS_ = {
     'Point': this.writePointGeometry_,
@@ -114593,7 +114643,7 @@ ol.reproj.Tile.prototype.reproject_ = function() {
 
   var targetExtent = this.targetTileGrid_.getTileCoordExtent(tileCoord);
   this.canvas_ = ol.reproj.render(width, height, this.pixelRatio_,
-      [sourceResolution, sourceResolution], this.sourceTileGrid_.getExtent(),
+      sourceResolution, this.sourceTileGrid_.getExtent(),
       targetResolution, targetExtent, this.triangulation_, sources,
       this.renderEdges_);
 
@@ -115557,6 +115607,36 @@ ol.source.TileImage.prototype.getTileCacheForProjection = function(projection) {
 
 
 /**
+ * @param {number} z Tile coordinate z.
+ * @param {number} x Tile coordinate x.
+ * @param {number} y Tile coordinate y.
+ * @param {number} pixelRatio Pixel ratio.
+ * @param {ol.proj.Projection} projection Projection.
+ * @param {string} key The key set on the tile.
+ * @return {ol.Tile} Tile.
+ * @private
+ */
+ol.source.TileImage.prototype.createTile_ =
+    function(z, x, y, pixelRatio, projection, key) {
+  var tileCoord = [z, x, y];
+  var urlTileCoord = this.getTileCoordForTileUrlFunction(
+      tileCoord, projection);
+  var tileUrl = urlTileCoord ?
+      this.tileUrlFunction(urlTileCoord, pixelRatio, projection) : undefined;
+  var tile = new this.tileClass(
+      tileCoord,
+      tileUrl !== undefined ? ol.TileState.IDLE : ol.TileState.EMPTY,
+      tileUrl !== undefined ? tileUrl : '',
+      this.crossOrigin,
+      this.tileLoadFunction);
+  tile.key = key;
+  goog.events.listen(tile, goog.events.EventType.CHANGE,
+      this.handleTileChange, false, this);
+  return tile;
+};
+
+
+/**
  * @inheritDoc
  */
 ol.source.TileImage.prototype.getTile =
@@ -115570,7 +115650,7 @@ ol.source.TileImage.prototype.getTile =
     var cache = this.getTileCacheForProjection(projection);
     var tileCoordKey = this.getKeyZXY(z, x, y);
     if (cache.containsKey(tileCoordKey)) {
-      return /** @type {!ol.Tile} */(cache.get(tileCoordKey));
+      return /** @type {!ol.Tile} */ (cache.get(tileCoordKey));
     } else {
       var sourceProjection = this.getProjection();
       var sourceTileGrid = this.getTileGridForProjection(sourceProjection);
@@ -115602,28 +115682,45 @@ ol.source.TileImage.prototype.getTile =
  */
 ol.source.TileImage.prototype.getTileInternal =
     function(z, x, y, pixelRatio, projection) {
+  var /** @type {ol.Tile} */ tile = null;
   var tileCoordKey = this.getKeyZXY(z, x, y);
-  if (this.tileCache.containsKey(tileCoordKey)) {
-    return /** @type {!ol.Tile} */ (this.tileCache.get(tileCoordKey));
-  } else {
+  var paramsKey = this.getKeyParams();
+  if (!this.tileCache.containsKey(tileCoordKey)) {
     goog.asserts.assert(projection, 'argument projection is truthy');
-    var tileCoord = [z, x, y];
-    var urlTileCoord = this.getTileCoordForTileUrlFunction(
-        tileCoord, projection);
-    var tileUrl = !urlTileCoord ? undefined :
-        this.tileUrlFunction(urlTileCoord, pixelRatio, projection);
-    var tile = new this.tileClass(
-        tileCoord,
-        tileUrl !== undefined ? ol.TileState.IDLE : ol.TileState.EMPTY,
-        tileUrl !== undefined ? tileUrl : '',
-        this.crossOrigin,
-        this.tileLoadFunction);
-    goog.events.listen(tile, goog.events.EventType.CHANGE,
-        this.handleTileChange, false, this);
-
+    tile = this.createTile_(z, x, y, pixelRatio, projection, paramsKey);
     this.tileCache.set(tileCoordKey, tile);
-    return tile;
+  } else {
+    tile = /** @type {!ol.Tile} */ (this.tileCache.get(tileCoordKey));
+    if (tile.key != paramsKey) {
+      // The source's params changed. If the tile has an interim tile and if we
+      // can use it then we use it. Otherwise we create a new tile.  In both
+      // cases we attempt to assign an interim tile to the new tile.
+      var /** @type {ol.Tile} */ interimTile = tile;
+      if (tile.interimTile && tile.interimTile.key == paramsKey) {
+        goog.asserts.assert(tile.interimTile.getState() == ol.TileState.LOADED);
+        goog.asserts.assert(tile.interimTile.interimTile === null);
+        tile = tile.interimTile;
+        if (interimTile.getState() == ol.TileState.LOADED) {
+          tile.interimTile = interimTile;
+        }
+      } else {
+        tile = this.createTile_(z, x, y, pixelRatio, projection, paramsKey);
+        if (interimTile.getState() == ol.TileState.LOADED) {
+          tile.interimTile = interimTile;
+        } else if (interimTile.interimTile &&
+            interimTile.interimTile.getState() == ol.TileState.LOADED) {
+          tile.interimTile = interimTile.interimTile;
+          interimTile.interimTile = null;
+        }
+      }
+      if (tile.interimTile) {
+        tile.interimTile.interimTile = null;
+      }
+      this.tileCache.replace(tileCoordKey, tile);
+    }
   }
+  goog.asserts.assert(tile);
+  return tile;
 };
 
 
@@ -116038,7 +116135,6 @@ goog.require('goog.object');
 goog.require('goog.uri.utils');
 goog.require('ol.Image');
 goog.require('ol.ImageLoadFunctionType');
-goog.require('ol.ImageUrlFunction');
 goog.require('ol.extent');
 goog.require('ol.source.Image');
 
@@ -116081,19 +116177,11 @@ ol.source.ImageMapGuide = function(options) {
    */
   this.params_ = options.params !== undefined ? options.params : {};
 
-  var imageUrlFunction;
-  if (options.url !== undefined) {
-    imageUrlFunction = ol.ImageUrlFunction.createFromParamsFunction(
-        options.url, this.params_, goog.bind(this.getUrl, this));
-  } else {
-    imageUrlFunction = ol.ImageUrlFunction.nullImageUrlFunction;
-  }
-
   /**
    * @private
-   * @type {ol.ImageUrlFunctionType}
+   * @type {string|undefined}
    */
-  this.imageUrlFunction_ = imageUrlFunction;
+  this.url_ = options.url;
 
   /**
    * @private
@@ -116180,9 +116268,10 @@ ol.source.ImageMapGuide.prototype.getImageInternal =
   var height = ol.extent.getHeight(extent) / resolution;
   var size = [width * pixelRatio, height * pixelRatio];
 
-  var imageUrl = this.imageUrlFunction_(extent, size, projection);
-  if (imageUrl !== undefined) {
-    image = new ol.Image(extent, [resolution, resolution], pixelRatio,
+  if (this.url_ !== undefined) {
+    var imageUrl = this.getUrl(this.url_, this.params_, extent, size,
+        projection);
+    image = new ol.Image(extent, resolution, pixelRatio,
         this.getAttributions(), imageUrl, this.crossOrigin_,
         this.imageLoadFunction_);
     goog.events.listen(image, goog.events.EventType.CHANGE,
@@ -116288,6 +116377,7 @@ goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('ol.Image');
 goog.require('ol.ImageLoadFunctionType');
+goog.require('ol.ImageState');
 goog.require('ol.extent');
 goog.require('ol.proj');
 goog.require('ol.source.Image');
@@ -116310,14 +116400,6 @@ ol.source.ImageStatic = function(options) {
 
   var imageExtent = options.imageExtent;
 
-  var xResolution, yResolution, resolutions, imgResolution;
-  if (options.imageSize !== undefined) {
-    xResolution = ol.extent.getWidth(imageExtent) / options.imageSize[0];
-    yResolution = ol.extent.getHeight(imageExtent) / options.imageSize[1];
-    imgResolution = [xResolution, yResolution];
-    resolutions = [yResolution];
-  }
-
   var crossOrigin = options.crossOrigin !== undefined ?
       options.crossOrigin : null;
 
@@ -116328,16 +116410,22 @@ ol.source.ImageStatic = function(options) {
   goog.base(this, {
     attributions: attributions,
     logo: options.logo,
-    projection: ol.proj.get(options.projection),
-    resolutions: resolutions
+    projection: ol.proj.get(options.projection)
   });
 
   /**
    * @private
    * @type {ol.Image}
    */
-  this.image_ = new ol.Image(imageExtent, imgResolution, 1,
-      attributions, options.url, crossOrigin, imageLoadFunction);
+  this.image_ = new ol.Image(imageExtent, undefined, 1, attributions,
+      options.url, crossOrigin, imageLoadFunction);
+
+  /**
+   * @private
+   * @type {ol.Size}
+   */
+  this.imageSize_ = options.imageSize ? options.imageSize : null;
+
   goog.events.listen(this.image_, goog.events.EventType.CHANGE,
       this.handleImageChange, false, this);
 
@@ -116354,6 +116442,38 @@ ol.source.ImageStatic.prototype.getImageInternal =
     return this.image_;
   }
   return null;
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.source.ImageStatic.prototype.handleImageChange = function(evt) {
+  if (this.image_.getState() == ol.ImageState.LOADED) {
+    var imageExtent = this.image_.getExtent();
+    var image = this.image_.getImage();
+    var imageWidth, imageHeight;
+    if (this.imageSize_) {
+      imageWidth = this.imageSize_[0];
+      imageHeight = this.imageSize_[1];
+    } else {
+      imageWidth = image.width;
+      imageHeight = image.height;
+    }
+    var resolution = ol.extent.getHeight(imageExtent) / imageHeight;
+    var targetWidth = Math.ceil(ol.extent.getWidth(imageExtent) / resolution);
+    if (targetWidth != imageWidth) {
+      var canvas = /** @type {HTMLCanvasElement} */
+          (document.createElement('canvas'));
+      canvas.width = targetWidth;
+      canvas.height = /** @type {number} */ (imageHeight);
+      var context = canvas.getContext('2d');
+      context.drawImage(image, 0, 0, imageWidth, imageHeight,
+          0, 0, canvas.width, canvas.height);
+      this.image_.setImage(canvas);
+    }
+  }
+  goog.base(this, 'handleImageChange', evt);
 };
 
 goog.provide('ol.source.wms');
@@ -116579,21 +116699,13 @@ ol.source.ImageWMS.prototype.getImageInternal =
   var centerY = (extent[1] + extent[3]) / 2;
 
   var imageResolution = resolution / pixelRatio;
-
-  // Compute an integer width and height.
-  var width = Math.ceil(ol.extent.getWidth(extent) / imageResolution);
-  var height = Math.ceil(ol.extent.getHeight(extent) / imageResolution);
-
-  // Modify the extent to match the integer width and height.
-  extent[0] = centerX - imageResolution * width / 2;
-  extent[2] = centerX + imageResolution * width / 2;
-  extent[1] = centerY - imageResolution * height / 2;
-  extent[3] = centerY + imageResolution * height / 2;
+  var imageWidth = ol.extent.getWidth(extent) / imageResolution;
+  var imageHeight = ol.extent.getHeight(extent) / imageResolution;
 
   var image = this.image_;
   if (image &&
       this.renderedRevision_ == this.getRevision() &&
-      image.getResolution()[0] == resolution &&
+      image.getResolution() == resolution &&
       image.getPixelRatio() == pixelRatio &&
       ol.extent.containsExtent(image.getExtent(), extent)) {
     return image;
@@ -116617,13 +116729,13 @@ ol.source.ImageWMS.prototype.getImageInternal =
   };
   goog.object.extend(params, this.params_);
 
-  this.imageSize_[0] = width;
-  this.imageSize_[1] = height;
+  this.imageSize_[0] = Math.ceil(imageWidth * this.ratio_);
+  this.imageSize_[1] = Math.ceil(imageHeight * this.ratio_);
 
   var url = this.getRequestUrl_(extent, this.imageSize_, pixelRatio,
       projection, params);
 
-  this.image_ = new ol.Image(extent, [resolution, resolution], pixelRatio,
+  this.image_ = new ol.Image(extent, resolution, pixelRatio,
       this.getAttributions(), url, this.crossOrigin_, this.imageLoadFunction_);
 
   this.renderedRevision_ = this.getRevision();
@@ -118027,7 +118139,7 @@ ol.source.TileArcGISRest.prototype.getRequestUrl_ =
         pixelRatio, projection, params) {
 
   var urls = this.urls;
-  if (urls.length === 0) {
+  if (!urls) {
     return undefined;
   }
 
@@ -118967,7 +119079,7 @@ ol.source.TileWMS.prototype.getRequestUrl_ =
         pixelRatio, projection, params) {
 
   var urls = this.urls;
-  if (urls.length === 0) {
+  if (!urls) {
     return undefined;
   }
 
@@ -119053,9 +119165,11 @@ ol.source.TileWMS.prototype.resetCoordKeyPrefix_ = function() {
   var i = 0;
   var res = [];
 
-  var j, jj;
-  for (j = 0, jj = this.urls.length; j < jj; ++j) {
-    res[i++] = this.urls[j];
+  if (this.urls) {
+    var j, jj;
+    for (j = 0, jj = this.urls.length; j < jj; ++j) {
+      res[i++] = this.urls[j];
+    }
   }
 
   var key;
@@ -119343,8 +119457,8 @@ ol.source.WMTS = function(options) {
    * @private
    * @type {string}
    */
-  this.coordKeyPrefix_ = '';
-  this.resetCoordKeyPrefix_();
+  this.dimensionsKey_ = '';
+  this.resetDimensionsKey_();
 
   /**
    * @private
@@ -119500,8 +119614,8 @@ ol.source.WMTS.prototype.getFormat = function() {
 /**
  * @inheritDoc
  */
-ol.source.WMTS.prototype.getKeyZXY = function(z, x, y) {
-  return this.coordKeyPrefix_ + goog.base(this, 'getKeyZXY', z, x, y);
+ol.source.WMTS.prototype.getKeyParams = function() {
+  return this.dimensionsKey_;
 };
 
 
@@ -119558,13 +119672,13 @@ ol.source.WMTS.prototype.getVersion = function() {
 /**
  * @private
  */
-ol.source.WMTS.prototype.resetCoordKeyPrefix_ = function() {
+ol.source.WMTS.prototype.resetDimensionsKey_ = function() {
   var i = 0;
   var res = [];
   for (var key in this.dimensions_) {
     res[i++] = key + '-' + this.dimensions_[key];
   }
-  this.coordKeyPrefix_ = res.join('/');
+  this.dimensionsKey_ = res.join('/');
 };
 
 
@@ -119575,7 +119689,7 @@ ol.source.WMTS.prototype.resetCoordKeyPrefix_ = function() {
  */
 ol.source.WMTS.prototype.updateDimensions = function(dimensions) {
   goog.object.extend(this.dimensions_, dimensions);
-  this.resetCoordKeyPrefix_();
+  this.resetDimensionsKey_();
   this.changed();
 };
 
