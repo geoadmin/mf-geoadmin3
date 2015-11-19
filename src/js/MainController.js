@@ -113,18 +113,8 @@ goog.require('ga_topic_service');
       $scope.map.on('change:target', function(event) {
         if (!!$scope.map.getTargetElement()) {
 
-          // Lazy load on idle (Desktop only)
-          if (!startWith3D &&
-              !gaBrowserSniffer.mobile && !gaBrowserSniffer.embed) {
-            var unregIdle = $scope.$on('gaIdle', function() {
-              cesium.enable(false);
-              unregIdle();
-            });
-          }
-
           $scope.$watch('globals.is3dActive', function(active) {
             if (active || $scope.ol3d) {
-              unregIdle && unregIdle() && (unregIdle = undefined);
               cesium.enable(active);
             }
           });
