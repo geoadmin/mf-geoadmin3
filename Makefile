@@ -21,7 +21,7 @@ DEPLOY_ROOT_DIR := /var/www/vhosts/mf-geoadmin3/private/branch
 DEPLOY_TARGET ?= 'dev'
 LAST_DEPLOY_TARGET := $(shell if [ -f .build-artefacts/last-deploy-target ]; then cat .build-artefacts/last-deploy-target 2> /dev/null; else echo '-none-'; fi)
 OL3_VERSION ?= 627abaf1a71d48627163eb00ea6a0b6fb8dede14
-OL3_CESIUM_VERSION ?= c68901adc91bbc019d6cc70056c51c00aa2fe99f
+OL3_CESIUM_VERSION ?= dbbc31dd2ec4751aab9e1892d78fdc1e7b55f7eb
 CESIUM_VERSION ?= 3e3cf938786ee48b4b376ed932904541d798671d
 DEFAULT_TOPIC_ID ?= ech
 TRANSLATION_FALLBACK_CODE ?= de
@@ -129,7 +129,7 @@ deploydev:
 		./scripts/deploydev.sh -s; \
 	else \
 		./scripts/deploydev.sh; \
-  fi
+	fi
 
 .PHONY: deploydemo
 deploydemo: guard-SNAPSHOT
@@ -167,32 +167,25 @@ deploybranchdemo: deploybranch
 .PHONY: preparebranch
 preparebranch: rc_branch scripts/00-$(GIT_BRANCH).conf
 
-.PHONY: ol
-ol: OL_JS = ol.js ol-debug.js
-ol: scripts/ol-geoadmin.json .build-artefacts/ol3
-	cd .build-artefacts/ol3; \
-	git reset HEAD --hard; \
-	git fetch -a; \
-	git checkout $(OL3_VERSION); \
-	git show; \
-	cat ../../scripts/ga-ol3-style.exports >> src/ol/style/style.js; \
-	cat ../../scripts/ga-ol3-tilegrid.exports >> src/ol/tilegrid/tilegrid.js; \
-	cat ../../scripts/ga-ol3-tilerange.exports >> src/ol/tilerange.js; \
-	cat ../../scripts/ga-ol3-view.exports >> src/ol/view.js; \
-	npm install; \
-	node tasks/build.js config/ol-debug.json build/ol-debug.js; \
-	node tasks/build.js ../../scripts/ol-geoadmin.json build/ol.js; \
-	cd ../../; \
-	cp $(addprefix .build-artefacts/ol3/build/,$(OL_JS)) src/lib/;
-
 .PHONY: ol3cesium
-ol3cesium: ol .build-artefacts/ol3-cesium
+ol3cesium: .build-artefacts/ol3-cesium
 	cd .build-artefacts/ol3-cesium; \
 	git reset HEAD --hard; \
 	git fetch --all; \
 	git checkout $(OL3_CESIUM_VERSION); \
 	git submodule update --recursive --init --force; \
-	cd cesium; \
+	cd ol3; \
+	git reset HEAD --hard; \
+	git fetch --all; \
+	git checkout $(OL3_VERSION); \
+	git show; \
+	cat ../../../scripts/ga-ol3-style.exports >> src/ol/style/style.js; \
+	cat ../../../scripts/ga-ol3-tilegrid.exports >> src/ol/tilegrid/tilegrid.js; \
+	cat ../../../scripts/ga-ol3-tilerange.exports >> src/ol/tilerange.js; \
+	cat ../../../scripts/ga-ol3-view.exports >> src/ol/view.js; \
+	npm install --production; \
+	node tasks/build-ext.js; \
+	cd ../cesium; \
 	git remote | grep c2c || git remote add c2c git://github.com/camptocamp/cesium; \
 	git fetch --all; \
 	git checkout $(CESIUM_VERSION); \
@@ -201,13 +194,16 @@ ol3cesium: ol .build-artefacts/ol3-cesium
 	ln -T -f -s ../../../../ol3-cesium-plugin/ src/plugins/geoadmin; \
 	( cd cesium; [ -f node_modules/.bin/gulp ] || npm install ); \
 	( cd cesium; if [ -f "Build/Cesium/Cesium.js" ] ; then echo 'Skipping Cesium minified build'; else node_modules/.bin/gulp minifyRelease; fi ); \
-	NO_CESIUM=1 make dist; \
 	( cd cesium; if [ -f "Build/CesiumUnminified/Cesium.js" ] ; then echo 'Skipping Cesium debug build'; else node_modules/.bin/gulp generateStubs combine; fi ); \
-	node build/build.js ../../scripts/ol3cesium-debug-geoadmin.json dist/ol3cesium-debug.js;  \
+	npm install; \
+	node build/generate-exports.js dist/exports.js; \
+	node build/build.js build/ol3cesium-debug.json dist/ol3cesium-debug.js; \
+	node build/build.js ../../scripts/ol3cesium-geoadmin.json dist/ol3cesium.js; \
 	cp dist/ol3cesium-debug.js ../../src/lib/; \
-	cat cesium/Build/Cesium/Cesium.js dist/ol3cesium.js > ../../src/lib/ol3cesium.js; \
-	rm -rf ../../src/lib/Cesium/*; \
-	cp -r cesium/Build/CesiumUnminified/* ../../src/lib/Cesium;
+	cp dist/ol3cesium.js ../../src/lib/ol3cesium.js; \
+	rm -rf ../../src/lib/Cesium; \
+	cp -r cesium/Build/CesiumUnminified ../../src/lib/Cesium; \
+	cp cesium/Build/Cesium/Cesium.js ../../src/lib/Cesium.min.js;
 
 .PHONY: fastclick
 fastclick: .build-artefacts/fastclick .build-artefacts/closure-compiler/compiler.jar
@@ -239,8 +235,8 @@ datepicker: .build-artefacts/datepicker
 translate:
 	${PYTHON_CMD} scripts/translation2json.py \
             --files $(TRANSLATE_CSV_FILES) \
-	    --languages "$(LANGUAGES)" \
-	    --empty-json-file $(TRANSLATE_EMPTY_JSON) \
+            --languages "$(LANGUAGES)" \
+            --empty-json-file $(TRANSLATE_EMPTY_JSON) \
             --output-folder $(TRANSLATE_OUTPUT)
 
 .PHONY: fixrights
@@ -264,6 +260,7 @@ prd/lib/: src/lib/d3-3.3.1.min.js \
 	    src/lib/IE9Fixes.js \
 	    src/lib/jQuery.XDomainRequest.js \
 	    src/lib/Cesium \
+	    src/lib/Cesium.min.js \
 	    src/lib/ol3cesium.js
 	mkdir -p $@
 	cp -rf  $^ $@
@@ -277,7 +274,7 @@ prd/lib/build.js: src/lib/jquery-2.0.3.min.js \
 		    src/lib/EPSG2056.js \
 		    src/lib/EPSG32631.js \
 		    src/lib/EPSG32632.js \
-		    src/lib/ol.js \
+		    src/lib/ol3cesium.js \
 		    src/lib/angular-translate.min.js \
 		    src/lib/angular-translate-loader-static-files.min.js \
 		    src/lib/fastclick.min.js \
@@ -487,7 +484,7 @@ $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule
 	${PYTHON_CMD} .build-artefacts/closure-library/closure/bin/build/closurebuilder.py \
 	    --root=.build-artefacts/annotated \
 	    --root=.build-artefacts/closure-library \
-	    --namespace="ga" \
+	    --namespace="geoadmin" \
 	    --namespace="__ga_template_cache__" \
 	    --output_mode=list > $@
 
@@ -580,9 +577,6 @@ scripts/00-$(GIT_BRANCH).conf: scripts/00-branch.mako-dot-conf \
 	mkdir -p $(dir $@)
 	test $(DEPLOY_TARGET) != $(LAST_DEPLOY_TARGET) && \
 	    echo $(DEPLOY_TARGET) > .build-artefacts/last-deploy-target || :
-
-.build-artefacts/ol3:
-	git clone https://github.com/openlayers/ol3.git $@
 
 .build-artefacts/ol3-cesium:
 	git clone --recursive https://github.com/openlayers/ol3-cesium.git $@

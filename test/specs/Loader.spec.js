@@ -44,7 +44,7 @@ beforeEach(function() {
     });
   });
 
-  module('ga');
+  module('geoadmin');
 
   // Configure the $translate service in such a way that no
   // requests to translation files are performed.

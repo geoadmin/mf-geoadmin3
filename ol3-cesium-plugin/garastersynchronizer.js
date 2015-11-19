@@ -1,4 +1,4 @@
-goog.provide('ga.GaRasterSynchronizer');
+goog.provide('olcs.GaRasterSynchronizer');
 goog.require('olcs.RasterSynchronizer');
 
 
@@ -11,16 +11,16 @@ goog.require('olcs.RasterSynchronizer');
  * @extends {olcs.RasterSynchronizer}
  * @api
  */
-ga.GaRasterSynchronizer = function(map, scene) {
+olcs.GaRasterSynchronizer = function(map, scene) {
   goog.base(this, map, scene);
 };
-goog.inherits(ga.GaRasterSynchronizer, olcs.RasterSynchronizer);
+goog.inherits(olcs.GaRasterSynchronizer, olcs.RasterSynchronizer);
 
 
 /**
  * @override
  */
-ga.GaRasterSynchronizer.prototype.convertLayerToCesiumImageries =
+olcs.GaRasterSynchronizer.prototype.convertLayerToCesiumImageries =
     function(olLayer, viewProj) {
 
   /**
