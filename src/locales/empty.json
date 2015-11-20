@@ -380,5 +380,16 @@
   "geoloc_permission_denied": "",
   "geoloc_pos_unavailable": "",
   "geoloc_time_out": "",
-  "geoloc_unknown": ""
+  "geoloc_unknown": "",
+  "shop_order": "",
+  "mapsheet": "",
+  "commune": "",
+  "district": "",
+  "rectangle": "",
+  "whole": "",
+  "shop_confirm": "",
+  "shop_go_to": "",
+  "shop_cancel": "",
+  "shop_not_available": "",
+  "query_alert_more_than_200_results": ""
 }

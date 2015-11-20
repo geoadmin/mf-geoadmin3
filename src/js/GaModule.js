@@ -47,6 +47,7 @@ goog.require('ga_seo');
 goog.require('ga_seo_controller');
 goog.require('ga_share');
 goog.require('ga_share_controller');
+goog.require('ga_shop');
 goog.require('ga_stylesfromliterals_service');
 goog.require('ga_swipe');
 goog.require('ga_tilt3d');
@@ -95,6 +96,7 @@ goog.require('ga_waitcursor_service');
     'ga_seo',
     'ga_draw',
     'ga_query',
+    'ga_shop',
     'ga_modal_directive',
     'ga_draggable_directive',
     'ga_placeholder_directive',
