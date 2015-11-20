@@ -150,7 +150,7 @@ goog.require('ga_time_service');
             var nextYear = nextValue(scope.currentYear, scope.availableYears);
             if (nextYear != scope.currentYear) {
               scope.currentYear = nextYear;
-              promise = $timeout(applyNextYear, 2000);
+              promise = $timeout(applyNextYear, 1000);
             } else {
               scope.stop();
             }
