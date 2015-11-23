@@ -34,6 +34,32 @@ goog.require('ga_map_service');
 
         var tiltIndicator = element.find('.ga-tilt .ga-indicator');
         var rotateIndicator = element.find('.ga-rotate .ga-indicator');
+        var help3dIndicator = element.find('.ga-help3d .ga-indicator');
+        var help3dPopup = element.find('.ga-popup-help3d');
+        var help3dButtonTouch = element.find('.button-help3d-touch');
+        var help3dButtonMouse = element.find('.button-help3d-mouse');
+        var help3dTouch = element.find('.help3d-touch');
+        var help3dMouse = element.find('.help3d-mouse');
+
+
+        help3dIndicator.click(function() {
+          help3dIndicator.toggleClass('ga-active');
+          help3dPopup.animate({height: 'toggle'});
+        });
+
+        help3dButtonTouch.click(function() {
+          help3dTouch.removeClass('help3d-touch-disabled');
+          help3dButtonMouse.removeClass('ga-mouse-selected');
+          help3dButtonTouch.addClass('ga-touch-selected');
+          help3dMouse.addClass('help3d-mouse-disabled');
+        });
+
+        help3dButtonMouse.click(function() {
+          help3dMouse.removeClass('help3d-mouse-disabled');
+          help3dTouch.addClass('help3d-touch-disabled');
+          help3dButtonTouch.removeClass('ga-touch-selected');
+          help3dButtonMouse.addClass('ga-mouse-selected');
+        });
 
         var moving = false;
 

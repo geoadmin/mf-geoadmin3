@@ -1,4 +1,7 @@
 <div class="ga-controls3d">
+  <div class="ga-help3d">
+    <div class="ga-indicator"></div>
+  </div>
   <div class="ga-tilt" ng-hide="fps.active">
     <div class="ga-indicator" ng-click="resetTilt()"></div>
     <div class="ga-inc" ng-click="tilt(+5)"></div>
@@ -17,4 +20,69 @@
     Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
     nisi ut aliquip ex ea commodo consequat.
   </div>
+</div>
+<div class="ga-popup-help3d">
+  <div class="ga-button-help3d">
+    <button class="button-help3d button-help3d-mouse ga-mouse-selected">Mouse</button>
+    <button class="button-help3d button-help3d-touch">Touch</button>
+  </div>
+  <table class="help3d-mouse">
+    <tr>
+      <td>
+        <div class="ga-icon-mouse ga-mouse-left"></div>
+      </td>
+      <td>
+        <div>Click left and drag</div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div class="ga-icon-mouse ga-mouse-right"></div>
+      </td>
+      <td>
+        <div>Click right and drag</div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div class="ga-icon-mouse ga-mouse-center"></div>
+      </td>
+      <td>
+        <div>Click middle and drag</div>
+      <td>
+    </tr>
+  </table>
+  <table class="help3d-touch help3d-touch-disabled">
+    <tr>
+      <td>
+        <div class="ga-icon-touch ga-touch-drag"></div>
+      </td>
+      <td>
+        <div>One finger drag</div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div class="ga-icon-touch ga-touch-rotate"></div>
+      </td>
+      <td>
+        <div>Two finger drag, opposite direction</div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div class="ga-icon-touch ga-touch-tilt"></div>
+      </td>
+      <td>
+        <div>Two finger drag, same direction</div>
+      <td>
+    </tr>
+    <tr>
+      <td>
+        <div class="ga-icon-touch ga-touch-zoom"></div>
+      </td>
+      <td>
+        <div>Two finger pinch</div>
+      <td>
+  </table>
 </div>

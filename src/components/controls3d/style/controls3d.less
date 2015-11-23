@@ -7,12 +7,12 @@
   bottom: 52px;
   margin-left: auto;
   margin-right: auto;
-  width: 200px;
+  width: 300px;
   z-index: 600;
   @media (max-width: @screen-tablet) {
     bottom: 26px;
   }
-  .ga-tilt, .ga-rotate {
+  .ga-tilt, .ga-rotate, .ga-help3d {
     display: inline-block;
     text-align: center;
     background-image: data-uri('white_rounded_bckgd.png');
@@ -61,6 +61,19 @@
       background-image: data-uri('icon_right_roll_mobile.png');
     }
   }
+  .ga-help3d .ga-indicator {
+    background-image: data-uri('help3d_icon.png');
+    @media (max-width: @screen-tablet) {
+      background-image: data-uri('help3d_icon_mobile.png');
+    }
+  }
+  .ga-help3d .ga-active {
+    background-image: data-uri('help3d_icon_on.png');
+    @media (max-width: @screen-tablet) {
+      background-image: data-uri('help3d_icon_on_mobile.png');
+    }
+  }
+  
   .ga-pegman-help {
     position: fixed;
     bottom: 30px;
@@ -114,5 +127,127 @@
   .ga-pegman {
     cursor: grabbing;
     cursor: -webkit-grabbing;
+  }
+}
+
+.ga-popup-help3d {
+  display: none;
+  position: absolute;
+  right: 0;
+  left: 0;
+  bottom: 170px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 250px;
+  height: auto;
+  z-index: 600;
+  border-radius: 5px;
+  background-color: rgba(74,73,73,0.8);
+  font-size: 16px;
+  font-weight: bold;
+  color: #D3D3D3;
+
+  .ga-button-help3d {
+    display: inline-table;
+    width: 250px;
+  }
+
+  .button-help3d {
+    border: none;
+    border-bottom: 1px solid #D8D8D8;
+    width: 125px;
+    cursor: pointer;
+    background: rgba(250,250,250,0.4);
+  }
+
+  .ga-mouse-selected {
+    background: none;
+    border-right: 1px solid #D8D8D8;
+    border-bottom: none;
+    color: #D3D3D3;
+  }
+
+  .ga-touch-selected {
+    background: none;
+    border-left: 1px solid #D8D8D8;
+    border-bottom: none;
+    color: #D3D3D3;
+  }
+
+  .button-help3d-touch {
+    color: #333;
+  }
+
+  .button-help3d-mouse {
+    border-right: 1px solid #D8D8D8;
+  }
+
+  .ga-icon-mouse {
+    background-position:left;
+    background-repeat: no-repeat;
+    height: 55px;
+    width: 35px;
+    margin: 5px;
+  }
+
+  .ga-icon-touch {
+    background-position:left;
+    background-repeat: no-repeat;
+    height: 55px;
+    width: 35px;
+    margin: 5px;
+  } 
+  
+  .help3d-touch-disabled, .help3d-mouse-disabled {
+    display:none;
+  }
+ 
+  .ga-mouse-left {
+    background-image: data-uri('mouse-left.png');
+    @media (max-width: @screen-tablet) {
+      background-image: data-uri('mouse-left.png');
+    }
+  }
+  .ga-mouse-right {
+    background-image: data-uri('mouse-right.png');
+    @media (max-width: @screen-tablet) {
+      background-image: data-uri('mouse-right.png');
+    }
+  }
+  .ga-mouse-center {
+    background-image: data-uri('mouse-center.png');
+    @media (max-width: @screen-tablet) {
+      background-image: data-uri('mouse-center.png');
+    }
+  }
+  .ga-touch-drag {
+    background-image: data-uri('TouchDrag.png');
+    @media (max-width: @screen-tablet) {
+      background-image: data-uri('TouchDrag.png');
+    }
+  }
+  .ga-touch-tilt {
+    background-image: data-uri('TouchTilt.png');
+    @media (max-width: @screen-tablet) {
+      background-image: data-uri('TouchTilt.png');
+    }
+  }
+  .ga-touch-rotate {
+    background-image: data-uri('TouchRotate.png');
+    @media (max-width: @screen-tablet) {
+      background-image: data-uri('TouchRotate.png');
+    }
+  }
+  .ga-touch-drag {
+    background-image: data-uri('TouchDrag.png');
+    @media (max-width: @screen-tablet) {
+      background-image: data-uri('TouchDrag.png');
+    }
+  }
+  .ga-touch-zoom {
+    background-image: data-uri('TouchZoom.png');
+    @media (max-width: @screen-tablet) {
+      background-image: data-uri('TouchZoom.png');
+    }
   }
 }
