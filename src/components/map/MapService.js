@@ -607,7 +607,8 @@ goog.require('ga_urlutils_service');
           }
 
           // If the feature has name we display it on the map as Google does
-          if (feature.get('name') && style.getText()) {
+          if (feature.get('name') && style.getText() &&
+              style.getText().getScale() != 0) {
             if (image && image.getScale() == 0) {
               // transparentCircle is used to allow selection
               image = gaStyleFactory.getStyle('transparentCircle');
@@ -1767,6 +1768,7 @@ goog.require('ga_urlutils_service');
           });
           layer.set('altitudeMode', 'clampToGround');
           gaDefinePropertiesForLayer(layer);
+          layer.displayInLayerManager = false;
           return layer;
         },
 
