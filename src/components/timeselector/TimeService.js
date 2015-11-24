@@ -55,7 +55,7 @@ goog.require('ga_permalink_service');
       var Time = function() {
 
         // This property active the auto update status. The main goal of this
-        // property is to deactiviate the auto display of the timeslector, when
+        // property is to deactivate the auto display of the timeslector, when
         // layers from permalink are not yet loaded.
         this.allowStatusUpdate = false;
 
@@ -64,7 +64,7 @@ goog.require('ga_permalink_service');
           // Listen on layer's time property change
           map.getLayers().on('add', function(evt) {
             var olLayer = evt.element;
-            if (olLayer.timeEnabled) {
+            if (!olLayer.preview && olLayer.timeEnabled) {
               ol.Observable.unByKey(propDeregKey[olLayer.id]);
               that.updateStatus(evt.target);
               propDeregKey[olLayer.id] = olLayer.on('propertychange',
@@ -80,7 +80,7 @@ goog.require('ga_permalink_service');
           map.getLayers().on('remove', function(evt) {
             var olLayer = evt.element;
             ol.Observable.unByKey(propDeregKey[olLayer.id]);
-            if (olLayer.timeEnabled) {
+            if (!olLayer.preview && olLayer.timeEnabled) {
               that.updateStatus(evt.target);
             }
           });

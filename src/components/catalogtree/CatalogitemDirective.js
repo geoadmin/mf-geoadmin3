@@ -80,13 +80,9 @@ goog.require('ga_layer_metadata_popup_service');
               // Leaf
               } else if (!gaBrowserSniffer.mobile) {
                 iEl.on('mouseenter', function(evt) {
-                  scope.$applyAsync(function() {
-                    addPreviewLayer(scope.map, scope.item);
-                  });
+                  addPreviewLayer(scope.map, scope.item);
                 }).on('mouseleave', function(evt) {
-                  scope.$applyAsync(function() {
-                    removePreviewLayer(scope.map);
-                  });
+                  removePreviewLayer(scope.map);
                 });
               }
               compiledContent(scope, function(clone, scope) {

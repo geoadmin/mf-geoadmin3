@@ -1388,17 +1388,16 @@ goog.require('ga_urlutils_service');
          * found.
          */
         this.getLayerTimestampFromYear = function(bodId, yearStr) {
+          if (angular.isNumber(yearStr)) {
+            yearStr = '' + yearStr;
+          }
           var layer = this.getLayer(bodId);
           var timestamps = layer.timestamps || [];
 
           if (!layer.timeEnabled) {
-            // a WMTS layer has at least one timestamp
+            // a WMTS/Terrain layer has at least one timestamp
             return (layer.type == 'wmts' || layer.type == 'terrain') ?
                 timestamps[0] : undefined;
-          } else if (layer.type == 'wms') {
-            // A time enabled WMS layer has no timestamps so we return the
-            // yearsStr unchanged
-            return yearStr;
           }
 
           if (!angular.isDefined(yearStr)) {
@@ -1817,7 +1816,8 @@ goog.require('ga_urlutils_service');
         timeEnabledLayersFilter: function(layer) {
           return !layer.background &&
                  layer.timeEnabled &&
-                 layer.visible;
+                 layer.visible &&
+                 !layer.preview;
         },
         /**
          * Keep layers with potential tooltip
