@@ -45,18 +45,16 @@ goog.require('ga_time_service');
           }
         });
 
-        // Enable the directive
-        var enable = function() {
-          if (scope.isDisable) {
-            scope.isDisable = false;
+        // Update the status of the directive
+        var timeEnabledLayers = [];
+        var updateStatus = function() {
+          if (timeEnabledLayers.length == 0) {
+            scope.isDisable = true;
+            scope.isActive = false;
+            return;
           }
+          scope.isDisable = false;
           scope.isActive = !!(gaTime.get());
-        };
-
-        // Disable the directive
-        var disable = function() {
-          scope.isDisable = true;
-          scope.isActive = false;
         };
 
         // Toggle the state of the component between active and enable
@@ -70,9 +68,9 @@ goog.require('ga_time_service');
           }
         };
 
-        // Show the tooltip on mouse enter
-        scope.onMouseEnter = function() {
-          if (!gaBrowserSniffer.mobile) {
+        // Show/hide tooltip on desktop
+        if (!gaBrowserSniffer.mobile) {
+          elt.mouseenter(function() {
             elt.tooltip({
               placement: 'left',
               container: 'body',
@@ -80,27 +78,18 @@ goog.require('ga_time_service');
                 return $translate.instant('time_bt_enabled_tooltip');
               }
             });
-          }
-        };
-
-        // Hide the tooltip on mouse leave
-        scope.onMouseLeave = function() {
-          elt.tooltip('hide');
-        };
+          }).mouseleave = function() {
+            elt.tooltip('hide');
+          };
+        }
 
         // Activate/deactivate automatically the time selector
-        scope.$on('gaTimeChange', function(evt, time) {
-          enable();
-        });
+        scope.$on('gaTimeChange', updateStatus);
 
         // If there is one or more timeEnabled layer we display the button
-        scope.$watchCollection('layers | filter:layerFilter',
-            function(olLayers) {
-          if (olLayers.length == 0) {
-            disable();
-          } else {
-            enable();
-          }
+        scope.$watchCollection('layers | filter:layerFilter', function(layers) {
+          timeEnabledLayers = layers;
+          updateStatus();
         });
       }
     };
@@ -137,6 +126,16 @@ goog.require('ga_time_service');
         link: function(scope, elt, attrs, controller) {
           scope.years = [];
 
+          // Update the status of the directive
+          var timeEnabledLayers = [];
+          var updateStatus = function() {
+            if (timeEnabledLayers.length == 0) {
+              scope.isActive = false;
+              return;
+            }
+            scope.isActive = !!(gaTime.get());
+          };
+
           // Events to force the state of the component from another directive
           scope.$on('gaTimeSelectorToggle', function(evt, active) {
             scope.isActive = active;
@@ -144,15 +143,16 @@ goog.require('ga_time_service');
 
           // Activate/deactivate automatically the time selector
           scope.$on('gaTimeChange', function(evt, time) {
-            scope.isActive = !!(time);
             if (angular.isDefined(time) && scope.currentYear != time) {
               scope.currentYear = time;
             }
+            updateStatus();
           });
 
           // Update then magnetize the current year
           scope.$watchCollection('layers | filter:layerFilter',
               function(olLayers) {
+            timeEnabledLayers = olLayers;
             // We update the list of dates available then
             // we magnetize the current year value
             // to the closest available year if needed
@@ -160,9 +160,7 @@ goog.require('ga_time_service');
               scope.currentYear = magnetize(scope.currentYear,
                   scope.availableYears);
             }
-            if (olLayers.length > 0 && scope.isActive) {
-              elt.show();
-            }
+            updateStatus();
           });
 
           // Watch if 3d is active
@@ -174,10 +172,14 @@ goog.require('ga_time_service');
           });
 
           // Activate/deactivate the component
-          scope.$watch('isActive', function(active) {
-            scope.years = active ? scope.options.years : [];
-            applyNewYear((active ? scope.currentYear : undefined));
-            elt.toggle(active && !scope.is3dActive);
+          scope.$watch('isActive', function(active, old) {
+            // On the first call old and active are false both but we don't want
+            // to apply the year
+            if (active !== old) {
+              scope.years = active ? scope.options.years : [];
+              applyNewYear((active ? scope.currentYear : undefined));
+              elt.toggle(active && !scope.is3dActive);
+            }
           });
 
           // currentYear is always an integer
