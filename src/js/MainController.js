@@ -95,6 +95,15 @@ goog.require('ga_topic_service');
         startWith3D = true;
       }
 
+      var onRenderError = function(scene, error) {
+        $scope.globals.is3dActive = undefined;
+        alert($translate.instant('3d_render_error'));
+        $window.console.error(error.stack);
+        // Avoid the alert comes twice
+        $scope.ol3d.getCesiumScene().renderError.removeEventListener(
+           onRenderError);
+      };
+
       var cesium = new GaCesium($scope.map, gaPermalink, gaLayers,
                                 gaGlobalOptions, gaBrowserSniffer, $q,
                                 $translate);
@@ -102,6 +111,9 @@ goog.require('ga_topic_service');
         $scope.ol3d = ol3d;
         if (!$scope.ol3d) {
           $scope.globals.is3dActive = undefined;
+        } else {
+          $scope.ol3d.getCesiumScene().renderError.addEventListener(
+              onRenderError);
         }
       });
 

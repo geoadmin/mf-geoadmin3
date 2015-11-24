@@ -1,5 +1,6 @@
 {
     "3d_ie11_alert": "State usando InternetExplorer versione 11 o più vecchia. La visualizzazione 3D sarà lenta. Usate se possibile l’ultima versione di Microsoft EDGE, Firefox o Chrome per avere prestazioni ottimali.",
+    "3d_render_error": "Requisiti per la vista 3D non soddisfatti. Per utilizzare la versione completa 3D il computer deve soddisfare i seguenti requisiti: Usate l’ultima versione di Microsoft EDGE, Firefox o Chrome.Hardware e driver della scheda video aggiornati. ",
     "abort": "Annullare",
     "add_layer": "Aggiungere layer",
     "add_wms_layer_failed": "Errore nel caricamento del layer WMS",
@@ -51,7 +52,7 @@
     "desktop_redirect": "Link per versione desktop",
     "display_profile": "Mostrare il profilo",
     "distance_label": "Distanza",
-    "district": "Distretto",
+    "district": "Par district",
     "draw": "Disegno",
     "draw_annotation": "Testo",
     "draw_back": "Indietro / Finire il disegno",

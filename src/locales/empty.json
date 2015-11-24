@@ -355,5 +355,6 @@
   "help_search_data": "",
   "query_operator": "",
   "no_more_information": "",
-  "3d_ie11_alert": ""
+  "3d_ie11_alert": "",
+  "3d_render_error": ""
 }
