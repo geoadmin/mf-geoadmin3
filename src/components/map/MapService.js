@@ -1768,6 +1768,7 @@ goog.require('ga_urlutils_service');
           });
           layer.set('altitudeMode', 'clampToGround');
           gaDefinePropertiesForLayer(layer);
+          layer.displayInLayerManager = false;
           return layer;
         },
 
