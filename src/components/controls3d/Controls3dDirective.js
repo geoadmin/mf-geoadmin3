@@ -13,6 +13,11 @@ goog.require('ga_map_service');
     });
   };
 
+  var isElementEditable = function(element) {
+    var tagName = element.tagName;
+    return tagName == 'INPUT' || tagName == 'SELECT' || tagName == 'TEXTAREA';
+  };
+
   var module = angular.module('ga_controls3d_directive', [
     'ga_map_service'
   ]);
@@ -43,6 +48,58 @@ goog.require('ga_map_service');
         camera.moveEnd.addEventListener(function() {
           moving = false;
         });
+
+        scope.onkey = function(event) {
+          if (isElementEditable(event.target)) {
+            return;
+          }
+          // FIXME: check if pageman is active
+          var moveAmount = 200;
+          var zoomAmount = 400;
+          var lowPitch = camera.pitch < Cesium.Math.toRadians(-30);
+          if (event.keyCode == 43) {
+            // + key
+            camera.moveForward(zoomAmount);
+          } else if (event.keyCode == 45) {
+            // - key
+            camera.moveBackward(zoomAmount);
+          }
+
+          if (event.keyCode == 37) {
+            // left key
+            if (lowPitch) {
+              camera.moveLeft(moveAmount);
+            } else {
+              scope.rotate(-5);
+            }
+          } else if (event.keyCode == 39) {
+            // left key
+            if (lowPitch) {
+              camera.moveRight(moveAmount);
+            } else {
+              scope.rotate(+5);
+            }
+          }
+
+          // Compute the "backward" vector to be used to
+          // translate forward and backward
+          var up = new Cesium.Cartesian3();
+          Cesium.Cartesian3.normalize(camera.position, up);
+          var backward = new Cesium.Cartesian3();
+          Cesium.Cartesian3.cross(up, camera.right, backward);
+
+          if (event.keyCode == 38) {
+            // up key
+            camera.move(backward, moveAmount);
+          } else if (event.keyCode == 40) {
+            // down key
+            camera.move(backward, -moveAmount);
+          }
+        };
+
+        // use keypress to detect '+' and '-' keys and keydown for the others
+        document.addEventListener('keydown', scope.onkey);
+        document.addEventListener('keypress', scope.onkey);
 
         scene.postRender.addEventListener(function() {
           if (moving) {
