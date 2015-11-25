@@ -39,7 +39,7 @@ goog.require('ga_permalink');
   });
 
   module.directive('gaMap',
-      function($window, $rootScope, $timeout, gaPermalink,
+      function($window, $rootScope, $timeout, $q, gaMapUtils, gaPermalink,
           gaBrowserSniffer, gaLayers, gaDebounce, gaOffline) {
         return {
           restrict: 'A',
@@ -148,7 +148,6 @@ goog.require('ga_permalink');
                   gaPermalink.deleteParam('X');
                   gaPermalink.deleteParam('Y');
                   gaPermalink.deleteParam('zoom');
-
                   var position = camera.positionCartographic;
                   gaPermalink.updateParams({
                     lon: Cesium.Math.toDegrees(position.longitude).toFixed(5),
@@ -158,6 +157,7 @@ goog.require('ga_permalink');
                     pitch: Cesium.Math.toDegrees(camera.pitch).toFixed(3)
                   });
                 }, 1000, false));
+                registerOverlaysSynchronizer();
               }
             });
 
@@ -260,6 +260,118 @@ goog.require('ga_permalink');
                 }
               }
             });
+
+
+            var deregAddOverlay, deregRemoveOverlay;
+            var registerOverlaysSynchronizer = function() {
+              scope.$watch(function() {
+                return !!(scope.ol3d && scope.ol3d.getEnabled());
+              }, function(active) {
+                if (scope.ol3d) {
+                  var scene = scope.ol3d.getCesiumScene();
+                  var camera = scene.camera;
+                  var overlays = map.getOverlays();
+                  if (active) {
+                    // Store the real position on 2d map
+                    overlays.forEach(function(overlay) {
+                      initOverlayFor3d(overlay);
+                    });
+                    // Init overlay property for the 3d.
+                    deregAddOverlay = map.getOverlays().on('add', function(e) {
+                      var elt = e.element;
+                      var target = e.target;
+                      initOverlayFor3d(elt);
+                      if (!elt.getPosition()) {
+                        // The first position set is the real position
+                        // (on 2d map)
+                        var deregPosChange = elt.on('change:position',
+                            function(evt) {
+                          var target = evt.target;
+                          target.set('realPosition', target.getPosition());
+                          ol.Observable.unByKey(deregPosChange);
+                          updateOverlaysDebounced();
+                        });
+                      } else {
+                        updateOverlaysDebounced();
+                      }
+                    });
+                    scene.postRender.addEventListener(updateOverlaysDebounced);
+                    camera.moveStart.addEventListener(hideOverlays);
+                    //camera.moveEnd.addEventListener(updateOverlaysDebounced);
+                  } else {
+                    camera.moveStart.removeEventListener(hideOverlays);
+                    //camera.moveEnd.removeEventListener(
+                    //    updateOverlaysDebounced);
+                    scene.postRender.removeEventListener(
+                        updateOverlaysDebounced);
+
+                    // When switching to 2d we go back to original state
+                    overlays.forEach(function(overlay) {
+                      if (overlay.get('realPosition')) {
+                        var pos2d = overlay.get('realPosition');
+                        overlay.setPosition(pos2d);
+                        overlay.set('realPosition', undefined);
+                      }
+                    });
+                    ol.Observable.unByKey(deregAddOverlay);
+                    ol.Observable.unByKey(deregRemoveOverlay);
+                  }
+                }
+              });
+            };
+
+            // Set the realPosition property of an overlay
+            var initOverlayFor3d = function(overlay) {
+              overlay.set('realPosition', overlay.getPosition());
+            };
+
+            // Hide all the overlays setting their position to undefined
+            var hideOverlays = function() {
+              var overlays = map.getOverlays();
+              overlays.forEach(function(overlay) {
+                overlay.setPosition(undefined);
+              });
+            };
+
+            // This function fakes the position of Overlays on the globe setting
+            // a false position on the 2d map.
+            // @param skipPickTest: when globe is loading the vector layer is
+            // not yet on the map so the overlays are not displayed.
+            var updateOverlaysPosition = function() {
+              var map = scope.map;
+              var ol3d = scope.ol3d;
+              var scene = ol3d.getCesiumScene();
+              map.getOverlays().forEach(function(overlay) {
+                var pos2d = overlay.get('realPosition');
+                if (!pos2d) {
+                  return;
+                }
+                var altitude = overlay.get('altitude');
+                if (altitude) {
+                  pos2d[2] = altitude;
+                }
+                gaMapUtils.getCoord3d(map, ol3d, pos2d).then(function(pos3d) {
+                  if (pos3d) {
+                    overlay.set('altitude', pos3d[2]);
+                    var cart3 = Cesium.Cartesian3.fromDegrees(pos3d[0],
+                        pos3d[1], pos3d[2]);
+                    var screenPos =
+                        Cesium.SceneTransforms.wgs84ToWindowCoordinates(scene,
+                        cart3);
+                    // If the coordinate can be picked that means the overlay
+                    // can be displayed. Exception when we load the page in 3d.
+                    if (!scene.pick(screenPos)) {
+                      //overlay.setPosition(undefined);
+                    } else if (screenPos) {
+                      overlay.setPosition(map.getCoordinateFromPixel(
+                          [screenPos.x, screenPos.y]));
+                    }
+                  }
+                });
+              });
+            };
+            var updateOverlaysDebounced = gaDebounce.debounce(
+                updateOverlaysPosition, 50, false);
           }
         };
       }

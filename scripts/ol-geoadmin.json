@@ -101,6 +101,7 @@
     "ol.proj.Projection#*",
     "ol.proj.get",
     "ol.proj.getTransform",
+    "ol.proj.toLonLat",
     "ol.proj.transform",
     "ol.proj.transformExtent",
     "ol.style.Circle",
