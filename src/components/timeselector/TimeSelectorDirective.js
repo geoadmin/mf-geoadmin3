@@ -130,6 +130,7 @@ goog.require('ga_time_service');
         templateUrl: 'components/timeselector/partials/timeselector.html',
         scope: {
           map: '=gaTimeSelectorMap',
+          ol3d: '=gaTimeSelectorOl3d',
           options: '=gaTimeSelectorOptions'
         },
         controller: 'GaTimeSelectorDirectiveController',
@@ -164,11 +165,19 @@ goog.require('ga_time_service');
             }
           });
 
+          // Watch if 3d is active
+          scope.$watch(function() {
+            return scope.ol3d && scope.ol3d.getEnabled();
+          }, function(active) {
+            scope.is3dActive = active;
+            elt.toggle(scope.isActive && !scope.is3dActive);
+          });
+
           // Activate/deactivate the component
           scope.$watch('isActive', function(active) {
             scope.years = active ? scope.options.years : [];
             applyNewYear((active ? scope.currentYear : undefined));
-            elt.toggle(active);
+            elt.toggle(active && !scope.is3dActive);
           });
 
           // currentYear is always an integer

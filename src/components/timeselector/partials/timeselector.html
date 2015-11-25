@@ -3,8 +3,8 @@
    ceiling="{{options.maxYear}}"
    ng-model="currentYear"
    ga-data="years"
-   ga-redraw="isActive"
-   ga-keyboard-events="isActive"
+   ga-redraw="isActive && !is3dActive"
+   ga-keyboard-events="isActive && !is3dActive"
    ga-magnetize="true"
    ga-input-text="true"
    ga-unfit-to-bar="true">
