@@ -73,9 +73,9 @@ goog.require('ga_map_service');
           if (finalAngle > 0 || finalAngle < -Cesium.Math.PI_OVER_TWO) {
             return;
           }
-          var bottom = olcs.core.pickBottomPoint(scene);
-          if (bottom) {
-            var transform = Cesium.Matrix4.fromTranslation(bottom);
+          var pivot = olcs.core.pickBottomPoint(scene);
+          if (pivot) {
+            var transform = Cesium.Matrix4.fromTranslation(pivot);
             olcs.core.rotateAroundAxis(
                 camera, -angle, camera.right, transform, {
                   duration: 100
