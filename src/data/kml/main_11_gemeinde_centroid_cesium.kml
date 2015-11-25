@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document id="root_doc">
+<Folder>
+  <name>main_11_gemeinde_centroid</name>
+  <Style id="basic">
+      <IconStyle>
+        <scale>0</scale>
+      </IconStyle>
+      <LabelStyle>
+        <color>ff000000</color>
+      </LabelStyle>
+  </Style>
+  <Placemark><styleUrl>#basic</styleUrl>
+	<name>Zürich</name>
+      <Point><altitudeMode>relativeToGround</altitudeMode><coordinates>8.531373251566892,47.381408804381209,2000</coordinates></Point>
+  </Placemark>
+  <Placemark><styleUrl>#basic</styleUrl>
+	<name>Bern</name>
+      <Point><altitudeMode>relativeToGround</altitudeMode><coordinates>7.40634727709064,46.947587372966737,2000</coordinates></Point>
+  </Placemark>
+  <Placemark><styleUrl>#basic</styleUrl>
+	<name>Luzern</name>
+      <Point><altitudeMode>relativeToGround</altitudeMode><coordinates>8.310246002122543,47.046968116629721,2000</coordinates></Point>
+  </Placemark>
+  <Placemark><styleUrl>#basic</styleUrl>
+	<name>Basel</name>
+      <Point><altitudeMode>relativeToGround</altitudeMode><coordinates>7.593593506581641,47.557748195915472,2000</coordinates></Point>
+  </Placemark>
+  <Placemark><styleUrl>#basic</styleUrl>
+	<name>Schaffhausen</name>
+      <Point><altitudeMode>relativeToGround</altitudeMode><coordinates>8.624738040475748,47.72137652529323,2000</coordinates></Point>
+  </Placemark>
+  <Placemark><styleUrl>#basic</styleUrl>
+	<name>St. Gallen</name>
+      <Point><altitudeMode>relativeToGround</altitudeMode><coordinates>9.375548143049896,47.422137962678924,2000</coordinates></Point>
+  </Placemark>
+  <Placemark><styleUrl>#basic</styleUrl>
+	<name>Davos</name>
+      <Point><altitudeMode>relativeToGround</altitudeMode><coordinates>9.833039752728016,46.753192615614608,2000</coordinates></Point>
+  </Placemark>
+  <Placemark><styleUrl>#basic</styleUrl>
+	<name>Lugano</name>
+      <Point><altitudeMode>relativeToGround</altitudeMode><coordinates>9.002384233209094,46.039247175464126,2000</coordinates></Point>
+  </Placemark>
+  <Placemark><styleUrl>#basic</styleUrl>
+	<name>Lausanne</name>
+      <Point><altitudeMode>relativeToGround</altitudeMode><coordinates>6.652211087017609,46.551891555581769,2000</coordinates></Point>
+  </Placemark>
+  <Placemark><styleUrl>#basic</styleUrl>
+	<name>Sion</name>
+      <Point><altitudeMode>relativeToGround</altitudeMode><coordinates>7.364285761359327,46.227200415635878,2000</coordinates></Point>
+  </Placemark>
+  <Placemark><styleUrl>#basic</styleUrl>
+	<name>Genève</name>
+      <Point><altitudeMode>relativeToGround</altitudeMode><coordinates>6.143750820459763,46.20707316861521,2000</coordinates></Point>
+  </Placemark>
+</Folder>
+</Document></kml>

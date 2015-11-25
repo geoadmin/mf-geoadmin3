@@ -108,6 +108,39 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions,
     scene.fog.density = fogDensity;
     scene.fog.screenSpaceErrorFactor = fogSseFactor;
     enableOl3d(cesiumViewer, enabled);
+
+    // Add KML names
+    cesiumViewer.getDataSources().add(Cesium.KmlDataSource.load(
+        gaGlobalOptions.resourceUrl +
+        'data/kml/main_11_gemeinde_centroid_cesium.kml'
+    )).then(function(ds) {
+      ds.entities.values.forEach(function(ent) {
+        if (ent.label) {
+           ent.label.font = 'bold 20px Helvetica';
+           ent.label.outlineColor = Cesium.Color.WHITE;
+           ent.label.outlineWidth = 5;
+           ent.label.style = Cesium.LabelStyle.FILL_AND_OUTLINE;
+           ent.label.translucencyByDistance = new Cesium.NearFarScalar(30000,
+               0.0, 31000, 1.0);
+         }
+      });
+    });
+    cesiumViewer.getDataSources().add(Cesium.KmlDataSource.load(
+      gaGlobalOptions.resourceUrl +
+      'data/kml/random_100_gemeinde_centroid_cesium.kml'
+    )).then(function(ds) {
+      ds.entities.values.forEach(function(ent) {
+        if (ent.label) {
+           ent.label.font = 'bold 20px Helvetica';
+           ent.label.outlineColor = Cesium.Color.WHITE;
+           ent.label.outlineWidth = 5;
+           ent.label.style = Cesium.LabelStyle.FILL_AND_OUTLINE;
+           ent.label.translucencyByDistance = new Cesium.NearFarScalar(29000,
+               1.0, 30000, 0.0);
+         }
+      });
+    });
+
     return cesiumViewer;
   };
 
