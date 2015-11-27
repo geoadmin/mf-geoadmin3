@@ -1440,6 +1440,7 @@ goog.require('ga_urlutils_service');
     this.$get = function($window, gaGlobalOptions, gaUrlUtils, $q,
         gaDefinePropertiesForLayer) {
       var resolutions = gaGlobalOptions.resolutions;
+      var lodsForRes = gaGlobalOptions.lods;
       var isExtentEmpty = function(extent) {
         return extent[0] >= extent[2] || extent[1] >= extent[3];
       };
@@ -1778,7 +1779,7 @@ goog.require('ga_urlutils_service');
           }
           var idx = resolutions.indexOf(res);
           if (idx != -1) {
-            return lodForDfltRes + (idx - dfltResIdx);
+            return lodsForRes[idx];
           }
           // TODO: Implement the calculation of the closest level of detail
           // available if res is not in the resolutions array
