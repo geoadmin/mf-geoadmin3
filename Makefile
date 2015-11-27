@@ -34,6 +34,7 @@ DEFAULT_EXTENT ?= '[420000, 30000, 900000, 350000]'
 DEFAULT_RESOLUTION ?= 500.0
 DEFAULT_LEVEL_OF_DETAIL ?= 7 #level of detail for the default resolution
 RESOLUTIONS ?= '[650.0, 500.0, 250.0, 100.0, 50.0, 20.0, 10.0, 5.0, 2.5, 2.0, 1.0, 0.5, 0.25, 0.1]'
+LEVEL_OF_DETAILS ?= '[6, 7, 8, 9, 10, 11, 12, 13, 14, 14, 16, 17, 18, 18]' #lods corresponding to resolutions
 DEFAULT_EPSG ?= EPSG:21781
 DEFAULT_EPSG_EXTEND ?= '[420000, 30000, 900000, 350000]'
 DEFAULT_ELEVATION_MODEL ?= COMB
@@ -323,6 +324,7 @@ define buildpage
 		--var "default_resolution"="$(DEFAULT_RESOLUTION)" \
 		--var "default_level_of_detail"="$(DEFAULT_LEVEL_OF_DETAIL)" \
 		--var "resolutions"="$(RESOLUTIONS)" \
+		--var "level_of_details"="$(LEVEL_OF_DETAILS)" \
 		--var "public_url=$(PUBLIC_URL)" \
 		--var "default_elevation_model=${DEFAULT_ELEVATION_MODEL}" \
 		--var "default_terrain=$(DEFAULT_TERRAIN)" \
