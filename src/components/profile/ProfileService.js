@@ -133,6 +133,33 @@ goog.require('ga_urlutils_service');
           }
         };
 
+        //Augmenting built-in Array object to use Math.max/Math.min
+        Array.prototype.max = function() {
+          return Math.max.apply(null, this);
+        };
+        Array.prototype.min = function() {
+          return Math.min.apply(null, this);
+        };
+
+        //Highest & lowest elevation points
+        this.elPoints = function(data) {
+          if (data.length != 0) {
+            var elArray = [];
+            for (var i = 0; i < data.length; i++) {
+              elArray.push(data[i].alts[elevationModel]);
+            }
+            var highPoi = elArray.max() || 0;
+            var lowPoi = elArray.min() || 0;
+            return [highPoi, lowPoi];
+          }
+        };
+
+        this.distance = function(data) {
+          if (data.length != 0) {
+            return data[data.length - 1].dist;
+          }
+        };
+
         var coordinatesToString = function(coordinates) {
           var res = '[';
           for (var i = 0; i < coordinates.length; i++) {
@@ -220,6 +247,10 @@ goog.require('ga_urlutils_service');
           this.diff = this.elevDiff(data);
           //for the total elevation up & total elevation down
           var twoDiff = this.twoElevDiff(data);
+          //fot the highest and the lowest elevation points
+          var elPoi = this.elPoints(data);
+          //for the distance
+          this.dist = this.distance(data);
 
           this.data = this.formatData(data);
 
@@ -313,7 +344,6 @@ goog.require('ga_urlutils_service');
           //Icon for total elevation diff
           group.append('text')
               .attr('class', 'ga-profile-icon')
-              .attr('font-size', '0.9em')
               .attr('x', 0)
               .attr('y', elevLabelY)
               .attr('text-anchor', 'left')
@@ -331,9 +361,8 @@ goog.require('ga_urlutils_service');
 
           //Icon for elevation up
           group.append('text')
-              .attr('class', 'ga-profile-icon')
-              .attr('font-size', '1.5em')
-              .attr('x', 100)
+              .attr('class', 'ga-profile-icon-updown')
+              .attr('x', 80)
               .attr('y', elevLabelY + 4)
               .attr('text-anchor', 'left')
               .text(' \uf213 ');
@@ -342,7 +371,7 @@ goog.require('ga_urlutils_service');
           group.append('text')
               .attr('class', 'ga-profile-elevation-up')
               .attr('font-size', '0.9em')
-              .attr('x', 122)
+              .attr('x', 102)
               .attr('y', elevLabelY)
               .style('text-anchor', 'left')
               .text(measureFilter(twoDiff[0],
@@ -350,9 +379,8 @@ goog.require('ga_urlutils_service');
 
           //Icon for elevation down
           group.append('text')
-              .attr('class', 'ga-profile-icon')
-              .attr('font-size', '1.5em')
-              .attr('x', 200)
+              .attr('class', 'ga-profile-icon-updown')
+              .attr('x', 160)
               .attr('y', elevLabelY + 4)
               .attr('text-anchor', 'left')
               .text(' \uf212 ');
@@ -361,11 +389,69 @@ goog.require('ga_urlutils_service');
           group.append('text')
               .attr('class', 'ga-profile-elevation-down')
               .attr('font-size', '0.9em')
-              .attr('x', 222)
+              .attr('x', 182)
               .attr('y', elevLabelY)
               .style('text-anchor', 'left')
               .text(measureFilter(twoDiff[1], 'distance',
                     'm', 2, true));
+
+          //Icon for the highest point
+          group.append('text')
+              .attr('class', 'ga-profile-icon')
+              .attr('x', 240)
+              .attr('y', elevLabelY)
+              .attr('text-anchor', 'left')
+              .text(' \uf217');
+
+          //Number for highest point
+          group.append('text')
+              .attr('class', 'ga-profile-poi-up')
+              .attr('font-size', '0.9em')
+              .attr('x', 258)
+              .attr('y', elevLabelY)
+              .style('text-anchor', 'left')
+              .text(measureFilter(elPoi[0], 'distance',
+                    'm', 2, true));
+
+          //Icon for the lowest point
+          group.append('text')
+              .attr('class', 'ga-profile-icon')
+              .attr('x', 320)
+              .attr('y', elevLabelY)
+              .attr('text-anchor', 'left')
+              .text(' \uf214');
+
+          //Number for the lowest point
+          group.append('text')
+              .attr('class', 'ga-profile-poi-down')
+              .attr('font-size', '0.9em')
+              .attr('x', 338)
+              .attr('y', elevLabelY)
+              .style('text-anchor', 'left')
+              .text(measureFilter(elPoi[1], 'distance',
+                    'm', 2, true));
+
+          //Icon for the distance
+          //the rotated icon-resize-horizontal is used only for now
+          //the icon-resize-vertical will be integrated in the icons
+          group.append('text')
+              .attr('font-family', 'FontAwesome')
+              .attr('font-size', '1em')
+              .attr('x', 400)
+              .attr('y', elevLabelY)
+              .attr('text-anchor', 'left')
+              .attr('transform', 'translate(264, 546) rotate(-90)')
+              .text(' \uf218 ');
+
+          //Number for the distance
+          group.append('text')
+              .attr('class', 'ga-profile-distance')
+              .attr('font-size', '0.9em')
+              .attr('x', 412)
+              .attr('y', elevLabelY)
+              .style('text-anchor', 'left')
+              .text(measureFilter(this.dist, 'distance',
+                    ['km', 'm'], 2, true));
 
           return element;
         };
@@ -389,7 +475,13 @@ goog.require('ga_urlutils_service');
               this.twoDiff[0]);
           this.updateElevationLabels('text.ga-profile-elevation-down',
               this.twoDiff[1]);
-        };
+          this.updateElevationLabels('text.ga-profile-poi-up',
+              this.elPoi[0]);
+          this.updateElevationLabels('text.ga-profile-poi-down',
+              this.elPoi[1]);
+          this.updateElevationLabels('text.ga-profile-distance',
+              this.dist);
+          };
 
         this.update = function(data, size) {
           var that = this;
@@ -416,6 +508,8 @@ goog.require('ga_urlutils_service');
             this.data = this.formatData(data);
             this.diff = this.elevDiff(data);
             this.twoDiff = this.twoElevDiff(data);
+            this.elPoi = this.elPoints(data);
+            this.dist = this.distance(data);
           }
           var x = d3.scale.linear().range([0, width]);
           var y = d3.scale.linear().range([height, 0]);
