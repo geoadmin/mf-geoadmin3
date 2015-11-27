@@ -248,7 +248,8 @@ var SSECorrector = function(gaPermalink) {
 SSECorrector.prototype.newFrameState = function(frameState) {
     this.cameraHeight = frameState.camera.positionCartographic.height;
 
-    if (this.pickglobe && !this.noheight && this.maxheight) {
+    if (this.pickglobe && !this.noheight &&
+        (!this.maxHeight || this.cameraHeight < this.maxheight)) {
       var scene = frameState.camera._scene;
       var canvas = scene.canvas;
       var pixelHeight = this.pickposition * canvas.clientHeight;
