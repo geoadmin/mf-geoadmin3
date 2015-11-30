@@ -178,6 +178,7 @@ itemscope itemtype="http://schema.org/WebApplication"
         </div>
       </div>
   % endif
+      <button class="btn btn-default ga-menu-bt" ng-click="globals.pulldownShown=true" translate>menu</button>
       ## css animation doesnt work on pseudo element, let use this instead
       <div class="alert alert-danger" translate>offline_sorry</div>
     </div> <!-- #header -->
@@ -309,6 +310,7 @@ itemscope itemtype="http://schema.org/WebApplication"
             'selection-and-catalog-shown': (globals.catalogShown && globals.selectionShown),
             'ga-pulldown-shown': globals.pulldownShown
           }">
+      <div class="ga-visible-mobile ga-pulldown-shadow" ng-click="globals.pulldownShown = false"></div>
       <div id="pulldown-content" class="content">
         <!-- Share -->
         <div class="panel">
@@ -507,20 +509,16 @@ itemscope itemtype="http://schema.org/WebApplication"
           </div>
         </div> <!-- .panel -->
   % endif
+        <button id="menu-button" class="btn btn-default"
+                ng-click="globals.pulldownShown=!globals.pulldownShown">
+          <span class="ga-hidden-mobile"> 
+            <i class="icon-caret-down"></i>
+            <span class="ga-hidden-collapsed" translate>close_menu</span>
+            <span class="ga-visible-collapsed" translate>open_menu</span>
+          </span>
+          <span class="ga-visible-mobile" translate>close</span>
+        </button>
       </div> <!-- #pulldown-content -->
-      <button id="menu-button" class="btn btn-default"
-              data-toggle="collapse" data-target="#pulldown-content"
-              ga-collapsible-show="globals.pulldownShown">
-        <i class="icon-caret-up"></i>
-        <span class="hidden-collapsed">
-          <i class="icon-remove"></i>
-          <span translate>close_menu</span>
-        </span>
-        <span class="visible-collapsed">
-          <i class="icon-reorder"></i>
-          <span translate>open_menu</span>
-        </span>
-      </button>
     </div> <!-- #pulldown -->
 
   % if device == 'mobile':

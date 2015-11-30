@@ -341,7 +341,9 @@ goog.require('ga_topic_service');
       };
 
       var hideAccordionPanels = function() {
-        hidePanel('share');
+        if ($($window).width() > 480) {
+          hidePanel('share');
+        }
         hidePanel('print');
         hidePanel('tools');
       };
@@ -365,6 +367,7 @@ goog.require('ga_topic_service');
           hidePanel('catalog');
         }
       });
+
     }
 
     // An appcache update is available.
