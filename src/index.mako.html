@@ -244,7 +244,8 @@ itemscope itemtype="http://schema.org/WebApplication"
     <div ga-controls3d ga-controls3d-ol3d="::ol3d" ng-if="ol3d" ng-show="globals.is3dActive" ga-controls3d-pegman="globals.pegman"></div>
 
 % if device != 'embed':
-    <div ng-cloak ga-background-selector
+    <div ng-cloak translate-cloak
+         ga-background-selector
          ga-background-selector-map="map"
          ga-background-selector-ol3d="::ol3d"
          ng-hide="globals.offline">
@@ -520,7 +521,7 @@ itemscope itemtype="http://schema.org/WebApplication"
 
   % if device == 'mobile':
     <!-- offline dialog -->
-    <div ga-offline-menu ga-offline-menu-map="map"></div>
+    <div ng-cloak translate-cloak ga-offline-menu ga-offline-menu-map="map"></div>
   % endif
     <!-- Popup: Feedback -->
     <div ga-popup="globals.feedbackPopupShown"
