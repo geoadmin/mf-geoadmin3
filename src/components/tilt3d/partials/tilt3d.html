@@ -1,1 +1,3 @@
-<button type="button" class="ga-btn ga-tilt3d" ng-click="tilt()" ng-class="{'ga-disabled': disabled, 'ga-unsupported': !supported}"></button>
+<button type="button" class="ga-btn"
+        ng-click="tilt()"
+        ng-disabled="disabled || !supported"></button>

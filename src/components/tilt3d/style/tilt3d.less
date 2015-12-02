@@ -1,14 +1,15 @@
-.ga-tilt3d {
-  background-image: data-uri('icon_3d_off.png');
+[ga-tilt3d] {
+  button {
+    background-image: data-uri('icon_25d_off.png');
 
-  &.ga-unsupported,  &.ga-disabled {
-    cursor: default;
-    background-image: data-uri('icon_3d_disabled.png');
+    &[disabled] {
+      background-image: data-uri('icon_25d_disabled.png');
+    }
   }
 }
 
 .ga-3d-active {
-  .ga-tilt3d {
-    background-image: data-uri('icon_3d_on.png');
+  [ga-tilt3d] button {
+    background-image: data-uri('icon_25d_on.png');
   }
 }
