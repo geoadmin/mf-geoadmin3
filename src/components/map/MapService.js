@@ -825,7 +825,8 @@ goog.require('ga_urlutils_service');
         gaStylesFromLiterals, gaGlobalOptions, gaPermalink, gaTopic,
         gaLang, gaTime) {
 
-      var Layers = function(dfltWmsSubdomains, dfltWmtsMapProxySubdomains,
+      var Layers = function(dfltWmsSubdomains,
+          dfltWmtsNativeSubdomains, dfltWmtsMapProxySubdomains,
           wmsUrlTemplate, wmtsGetTileUrlTemplate,
           wmtsMapProxyGetTileUrlTemplate, terrainTileUrlTemplate,
           layersConfigUrlTemplate, legendUrlTemplate) {
@@ -848,25 +849,26 @@ goog.require('ga_urlutils_service');
           return url;
         };
 
-        // Returns a list of WMS servers using a template
-        // (e.g. //wms{s}.geo.admin.ch) and an array of
+        // Returns a list of WMS or WMTS servers using a template
+        // (e.g. //wms{s}.geo.admin.ch or wmts{s}.geo.admin.ch) and an array of
         // subdomains (e.g. ['', '1', ...]).
-        var getWmsUrls = function(tpl, subdomains) {
-          var url = getWmsTpl(tpl);
+        var getImageryUrls = function(tpl, subdomains) {
           var urls = [];
           (subdomains || ['']).forEach(function(subdomain) {
-            urls.push(url.replace('{s}', subdomain));
+            urls.push(tpl.replace('{s}', subdomain));
           });
           return urls;
         };
 
-        var getWmtsGetTileTpl = function(tpl, layer, time, tileMatrixSet,
-            format, useMapProxyTpl) {
-          var dfltTpl = !useMapProxyTpl ? wmtsGetTileUrlTemplate :
-              wmtsMapProxyGetTileUrlTemplate;
-          var url = (tpl || dfltTpl)
-              .replace('{Layer}', layer)
-              .replace('{Format}', format);
+        var getWmtsGetTileTpl = function(layer, time, tileMatrixSet,
+            format, useNativeTpl) {
+          var tpl;
+          if (useNativeTpl) {
+              tpl = wmtsGetTileUrlTemplate;
+          } else {
+              tpl = wmtsMapProxyGetTileUrlTemplate;
+          }
+          var url = tpl.replace('{Layer}', layer).replace('{Format}', format);
           if (time) {
             url = url.replace('{Time}', time);
           }
@@ -935,15 +937,18 @@ goog.require('ga_urlutils_service');
           return $http.get(url).then(function(response) {
             // Live modifications for 3d test
             if (response.data) {
+              // Imagery layers with metadata
               var ids = [
-                'ch.swisstopo.swissimage-product',
-                'ch.swisstopo.pixelkarte-farbe',
-                'ch.swisstopo.pixelkarte-grau',
-                'ch.swisstopo.zeitreihen'
+                'ch.swisstopo.swisstlm3d-wanderwege',
+                'ch.bafu.wrz-wildruhezonen_portal',
+                'ch.swisstopo.fixpunkte-agnes',
+                'ch.swisstopo.swissimage-product_3d',
+                'ch.swisstopo.swisstlm3d-karte-farbe_3d',
+                'ch.swisstopo.swisstlm3d-karte-grau_3d'
               ];
               angular.forEach(ids, function(id) {
                 if (response.data[id]) {
-                  response.data[id].config3d = id + '_3d';
+                  response.data[id].has3dMetadata = true;
                 }
               });
 
@@ -968,87 +973,14 @@ goog.require('ga_urlutils_service');
                 }
               });
 
-              // Test extent define in config for tiled WMS an WMTS
-              response.data['ch.bfe.sachplan-geologie-tiefenlager'].extent =
-                  [635432, 182850, 708432, 291850];
-              response.data['ch.vbs.patrouilledesglaciers-z_rennen'].extent =
-                  [582382, 92500, 625032, 105700];
-
-              // 3d metadata
-              response.data[
-                  'ch.swisstopo.swisstlm3d-wanderwege'].has3dMetadata = true;
-              response.data[
-                  'ch.bafu.wrz-wildruhezonen_portal'].has3dMetadata = true;
-              response.data[
-                  'ch.swisstopo.fixpunkte-agnes'].has3dMetadata = true;
-
-              response.data['ch.swisstopo.zeitreihen_3d'] = {
-                format: 'jpeg'
-              };
-              response.data['ch.swisstopo.pixelkarte-grau_3d'] = {
-                subLayersIds: [
-                  'ch.swisstopo.swisstlm3d-karte-grau.3d'
-                ],
-                attribution: 'tlm grau 3D',
-                attributionUrl: 'http://www.swisstopo.admin.ch/internet/' +
-                    'swisstopo/en/home/products/height/swissALTI3D.html'
-              };
-              response.data['ch.swisstopo.pixelkarte-farbe_3d'] = {
-                subLayersIds: [
-                  'ch.swisstopo.swisstlm3d-karte-farbe.3d'
-                ],
-                attribution: 'tlm farbe 3D',
-                attributionUrl: 'http://www.swisstopo.admin.ch/internet/' +
-                    'swisstopo/en/home/products/height/swissALTI3D.html'
-              };
-              // WMTS (not MapProxy)
-              response.data['ch.swisstopo.swissimage-product_3d'] = {
-                serverLayerName: 'ch.swisstopo.swissimage-product',
-                timestamps: ['20151231_50'],
-                url: '//wmts{s}.geo.admin.ch/1.0.0/{Layer}/default/' +
-                    '{Time}/{TileMatrixSet}/{z}/{y}/{x}.{Format}',
-                subdomains: '56789',
-                attribution: 'swissimage 3D',
-                attributionUrl: 'http://www.swisstopo.admin.ch/internet/' +
-                    'swisstopo/en/home/products/height/swissALTI3D.html',
-                has3dMetadata: true
-              };
-              response.data['ch.swisstopo.swisstlm3d-karte-farbe.3d'] = {
-                type: 'wmts',
-                format: 'jpeg',
-                serverLayerName: 'ch.swisstopo.swisstlm3d-karte-farbe.3d',
-                timestamps: ['20150501_50'],
-                url: '//wmts{s}.geo.admin.ch/1.0.0/{Layer}/default/' +
-                    '{Time}/{TileMatrixSet}/{z}/{y}/{x}.{Format}',
-                subdomains: '56789',
-                attribution: 'swisstlm 3D Farbe',
-                attributionUrl: 'http://www.swisstopo.admin.ch/internet/' +
-                    'swisstopo/en/home/products/height/swissALTI3D.html',
-                extent: [481500, 72250, 835750, 297800],
-                has3dMetadata: true
-              };
-              response.data['ch.swisstopo.swisstlm3d-karte-grau.3d'] = {
-                type: 'wmts',
-                format: 'jpeg',
-                serverLayerName: 'ch.swisstopo.swisstlm3d-karte-grau.3d',
-                timestamps: ['20150501_50'],
-                url: '//wmts{s}.geo.admin.ch/1.0.0/{Layer}/default/' +
-                    '{Time}/{TileMatrixSet}/{z}/{y}/{x}.{Format}',
-                subdomains: '56789',
-                attribution: 'swisstlm 3D Grau',
-                attributionUrl: 'http://www.swisstopo.admin.ch/internet/' +
-                    'swisstopo/en/home/products/height/swissALTI3D.html',
-                has3dMetadata: true
-              };
-
               // Terain
               response.data['ch.swisstopo.terrain.3d'] = {
                 type: 'terrain',
                 serverLayerName: 'ch.swisstopo.terrain.3d',
                 timestamps: ['20151231'],
-                attribution: 'swisstopo 3D',
+                attribution: 'swisstopo',
                 attributionUrl: 'http://www.swisstopo.admin.ch/internet/' +
-                    'swisstopo/en/home/products/height/swissALTI3D.html'
+                    'swisstopo/' + gaLang.get() + '/home.html'
               };
             }
             if (!layers) { // First load
@@ -1077,14 +1009,8 @@ goog.require('ga_urlutils_service');
         };
 
         this.getConfig3d = function(config) {
-          while (config.config3d) {
-            var config3d = layers[config.config3d];
-
-            config = angular.extend({}, config, config3d);
-            if (!config3d.config3d) {
-              // avoid infinite loop
-              config.config3d = undefined;
-            }
+          if (config.config3d) {
+            return layers[config.config3d];
           }
           return config;
         };
@@ -1114,12 +1040,18 @@ goog.require('ga_urlutils_service');
          */
         this.getCesiumImageryProviderById = function(bodId) {
           var provider, params, config = layers[bodId];
+          bodId = config.config3d || bodId;
           var config3d = this.getConfig3d(config);
-          var timestamp = this.getLayerTimestampFromYear(
-              config3d, gaTime.get());
+          // Only native tiles have a 3d config
+          var hasNativeTiles = !!config.config3d;
+          var timestamp = this.getLayerTimestampFromYear(bodId, gaTime.get());
           var requestedLayer = config3d.wmsLayers || config3d.serverLayerName ||
               bodId;
           var format = config3d.format || 'png';
+          // pngjpeg not supported by Cesium (zeitreihen)
+          if (format == 'pngjpeg') {
+              format = 'jpeg';
+          }
           if (config3d.type == 'aggregate') {
             var providers = [];
             config3d.subLayersIds.forEach(function(item) {
@@ -1134,10 +1066,11 @@ goog.require('ga_urlutils_service');
           }
           if (config3d.type == 'wmts') {
             params = {
-              url: getWmtsGetTileTpl(config3d.url, requestedLayer, timestamp,
-                  '4326', format, true),
+              url: getWmtsGetTileTpl(requestedLayer, timestamp,
+                  '4326', format, hasNativeTiles),
               tileSize: 256,
-              subdomains: config3d.subdomains || dfltWmtsMapProxySubdomains
+              subdomains: hasNativeTiles ? dfltWmtsNativeSubdomains :
+                  dfltWmtsMapProxySubdomains
             };
           } else if (config3d.type == 'wms') {
             var tileSize = 512;
@@ -1160,7 +1093,7 @@ goog.require('ga_urlutils_service');
             params = {
               url: getWmsTpl(config3d.wmsUrl, wmsParams),
               tileSize: tileSize,
-              subdomains: config3d.subdomains || dfltWmsSubdomains
+              subdomains: dfltWmsSubdomains
             };
           }
           var extent = gaMapUtils.intersectWithDefaultExtent(config3d.extent ||
@@ -1224,6 +1157,12 @@ goog.require('ga_urlutils_service');
           var olSource = (layer.timeEnabled) ? null : layer.olSource;
           if (layer.type == 'wmts') {
             if (!olSource) {
+              var wmtsTplUrl = getWmtsGetTileTpl(layer.serverLayerName, null,
+                  '21781', layer.format, true)
+                  .replace('{z}', '{TileMatrix}')
+                  .replace('{x}', '{TileCol}')
+                  .replace('{y}', '{TileRow}');
+              var subdomains = dfltWmtsNativeSubdomains;
               olSource = layer.olSource = new ol.source.WMTS({
                 dimensions: {
                   'Time': timestamp
@@ -1233,8 +1172,7 @@ goog.require('ga_urlutils_service');
                 tileGrid: gaTileGrid.get(layer.resolutions,
                     layer.minResolution),
                 tileLoadFunction: tileLoadFunction,
-                url: getWmtsGetTileTpl(layer.url, layer.serverLayerName, null,
-                  '21781', layer.format),
+                urls: getImageryUrls(wmtsTplUrl, subdomains),
                 crossOrigin: crossOrigin
               });
             }
@@ -1259,7 +1197,7 @@ goog.require('ga_urlutils_service');
             if (layer.singleTile === true) {
               if (!olSource) {
                 olSource = layer.olSource = new ol.source.ImageWMS({
-                  url: getWmsUrls(layer.wmsUrl)[0],
+                  url: getImageryUrls(getWmsTpl(layer.wmsUrl))[0],
                   params: wmsParams,
                   crossOrigin: crossOrigin,
                   ratio: 1
@@ -1274,9 +1212,9 @@ goog.require('ga_urlutils_service');
               });
             } else {
               if (!olSource) {
-                var subdomains = layer.subdomains || dfltWmsSubdomains;
+                var subdomains = dfltWmsSubdomains;
                 olSource = layer.olSource = new ol.source.TileWMS({
-                  urls: getWmsUrls(layer.wmsUrl, subdomains),
+                  urls: getImageryUrls(getWmsTpl(layer.wmsUrl), subdomains),
                   params: wmsParams,
                   gutter: layer.gutter || 0,
                   crossOrigin: crossOrigin,
@@ -1413,7 +1351,6 @@ goog.require('ga_urlutils_service');
             return (layer.type == 'wmts' || layer.type == 'terrain') ?
                 timestamps[0] : undefined;
           }
-
           if (!angular.isDefined(yearStr)) {
             var timeBehaviour = layer.timeBehaviour;
             //check if specific 4/6/8 digit timestamp is specified
@@ -1438,7 +1375,8 @@ goog.require('ga_urlutils_service');
         };
       };
 
-      return new Layers(this.dfltWmsSubdomains, this.dfltWmtsMapProxySubdomains,
+      return new Layers(this.dfltWmsSubdomains,
+          this.dfltWmtsNativeSubdomains, this.dfltWmtsMapProxySubdomains,
           this.wmsUrlTemplate, this.wmtsGetTileUrlTemplate,
           this.wmtsMapProxyGetTileUrlTemplate, this.terrainTileUrlTemplate,
           this.layersConfigUrlTemplate, this.legendUrlTemplate);

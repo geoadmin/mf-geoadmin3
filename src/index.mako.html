@@ -766,9 +766,10 @@ itemscope itemtype="http://schema.org/WebApplication"
 
         module.config(function(gaLayersProvider, gaGlobalOptions) {
           gaLayersProvider.dfltWmsSubdomains = ['', '0', '1', '2', '3', '4'];
+          gaLayersProvider.dfltWmtsNativeSubdomains = ['5', '6', '7', '8', '9'];
           gaLayersProvider.dfltWmtsMapProxySubdomains = ['20', '21', '22', '23', '24'];
           gaLayersProvider.wmsUrlTemplate = '//wms{s}.geo.admin.ch/';
-          gaLayersProvider.wmtsGetTileUrlTemplate = '//wmts{5-9}.geo.admin.ch/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.{Format}';
+          gaLayersProvider.wmtsGetTileUrlTemplate = '//wmts{s}.geo.admin.ch/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{y}/{x}.{Format}';
           gaLayersProvider.wmtsMapProxyGetTileUrlTemplate = '//wmts{s}.geo.admin.ch/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{x}/{y}.{Format}';
           gaLayersProvider.terrainTileUrlTemplate = '//3d.geo.admin.ch/1.0.0/{Layer}/default/{Time}/4326';
           gaLayersProvider.layersConfigUrlTemplate = gaGlobalOptions.resourceUrl + 'layersConfig?lang={Lang}';
