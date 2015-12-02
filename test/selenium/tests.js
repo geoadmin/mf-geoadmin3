@@ -35,7 +35,7 @@ console.log("Starting Browserstack script!");
 
 // Start full test only for one browser (use Chrome for the print)
 var RunFullTests = function(cap) {
-  if(cap.browser == "Chrome" && cap.browser_version == "43.0" && cap.os_version == "7") {
+  if (cap.browser == "Chrome" && cap.browser_version == "46.0" && cap.os_version == "7") {
     return true;
   }
   return false;
