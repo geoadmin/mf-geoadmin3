@@ -107,6 +107,32 @@
       }
     }
   }
+
+  [ga-help] {
+     position: absolute;
+     width: 38px;
+     height: 28px;
+     top: -8px;
+     right: 0;
+     left: 0;
+     margin: auto;
+     font-size: 2em;
+ 
+     button.ga-icon {
+       font-size: inherit;
+     }
+
+     @media (max-width: @screen-tablet) {
+      font-size: 1.5em;
+      width: 20px;
+     }
+   }
+
+   &:hover {
+     [ga-help] {
+       opacity: 1;
+     }
+   }
 }
 
 .ga-pegman-dragging {
