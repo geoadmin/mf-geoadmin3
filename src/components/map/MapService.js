@@ -1437,7 +1437,7 @@ goog.require('ga_urlutils_service');
    */
   module.provider('gaMapUtils', function() {
     this.$get = function($window, gaGlobalOptions, gaUrlUtils, $q,
-        gaDefinePropertiesForLayer) {
+        gaDefinePropertiesForLayer, $http) {
       var resolutions = gaGlobalOptions.resolutions;
       var lodsForRes = gaGlobalOptions.lods;
       var isExtentEmpty = function(extent) {
@@ -1530,20 +1530,39 @@ goog.require('ga_urlutils_service');
           return layer;
         },
 
+        flyToAnimation: function(ol3d, center, destination, defer) {
+          var scene = ol3d.getCesiumScene();
+          var camera = scene.camera;
+          var globe = scene.globe;
+          var carto = globe.ellipsoid.cartesianToCartographic(destination);
+          $http.get(gaGlobalOptions.apiUrl + '/rest/services/height', {
+            params: {
+              easting: center[0],
+              northing: center[1]
+            }
+          }).then(function(response) {
+            var height = carto.height - response.data.height;
+            var offset = Math.tan(Cesium.Math.toRadians(50)) * (height + 50);
+            destination.x += offset * 2;
+            camera.flyTo({
+              destination: destination,
+              orientation: {
+                pitch: Cesium.Math.toRadians(-50)
+              },
+              complete: defer.resolve,
+              cancel: defer.resolve
+            });
+          });
+        },
+
         moveTo: function(map, ol3d, zoom, center) {
           var defer = $q.defer();
           if (ol3d && ol3d.getEnabled()) {
-            var deg = ol.proj.transform(center,
-                ol3d.getOlMap().getView().getProjection(), 'EPSG:4326');
-            ol3d.getCesiumScene().camera.flyTo({
-              destination: Cesium.Cartesian3.fromDegrees(deg[0], deg[1], 3000),
-              complete: function() {
-                defer.resolve();
-              },
-              cancel: function() {
-                defer.resolve();
-              }
-            });
+            var projection = ol3d.getOlMap().getView().getProjection();
+            var deg = ol.proj.transform(center, projection, 'EPSG:4326');
+            var destination = Cesium.Cartesian3.fromDegrees(
+                deg[0], deg[1], 3000);
+            this.flyToAnimation(ol3d, center, destination, defer);
           } else {
             var view = map.getView();
             view.setZoom(zoom);
@@ -1555,16 +1574,12 @@ goog.require('ga_urlutils_service');
         zoomToExtent: function(map, ol3d, extent) {
           var defer = $q.defer();
           if (ol3d && ol3d.getEnabled()) {
-            ol3d.getCesiumScene().camera.flyTo({
-              destination: this.extentToRectangle(extent,
-                  ol3d.getOlMap().getView().getProjection()),
-              complete: function() {
-                defer.resolve();
-              },
-              cancel: function() {
-                defer.resolve();
-              }
-            });
+            var camera = ol3d.getCesiumScene().camera;
+            var projection = ol3d.getOlMap().getView().getProjection();
+            var rectangle = this.extentToRectangle(extent, projection);
+            var destination = camera.getRectangleCameraCoordinates(rectangle);
+            var center = ol.extent.getCenter(extent);
+            this.flyToAnimation(ol3d, center, destination, defer);
           } else {
             map.getView().fit(extent, map.getSize());
             defer.resolve();
