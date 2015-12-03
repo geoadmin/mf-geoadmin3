@@ -4,13 +4,15 @@ goog.require('ga_browsersniffer_service');
 goog.require('ga_debounce_service');
 goog.require('ga_offline_service');
 goog.require('ga_permalink');
+goog.require('ga_styles_service');
 (function() {
 
   var module = angular.module('ga_map_directive', [
     'ga_browsersniffer_service',
     'ga_debounce_service',
     'ga_offline_service',
-    'ga_permalink'
+    'ga_permalink',
+    'ga_styles_service'
   ]);
 
   module.directive('gaCesiumInspector', function($rootScope, gaPermalink) {
@@ -39,8 +41,8 @@ goog.require('ga_permalink');
   });
 
   module.directive('gaMap',
-      function($window, $rootScope, $timeout, gaPermalink,
-          gaBrowserSniffer, gaLayers, gaDebounce, gaOffline) {
+      function($window, $rootScope, $timeout, gaPermalink, gaStyleFactory,
+          gaBrowserSniffer, gaLayers, gaDebounce, gaOffline, gaMapUtils) {
         return {
           restrict: 'A',
           scope: {
@@ -73,14 +75,12 @@ goog.require('ga_permalink');
             }
 
             if (queryParams.crosshair !== undefined) {
-              var crosshair = $('<div></div>')
-                .addClass('ga-crosshair')
-                .addClass(queryParams.crosshair),
-                unregister;
-              map.addOverlay(new ol.Overlay({
-                element: crosshair.get(0),
-                position: view.getCenter()
-              }));
+              var crosshair = new ol.Feature(new ol.geom.Point(view.getCenter()));
+              var style = gaStyleFactory.getStyle(queryParams.crosshair);
+              if (!style) {
+                style = gaStyleFactory.getStyle('marker');
+              }
+              map.addLayer(gaMapUtils.getFeatureOverlay([crosshair], style));
               unregister = view.on('propertychange', function() {
                 gaPermalink.deleteParam('crosshair');
                 ol.Observable.unByKey(unregister);

@@ -157,6 +157,38 @@ goog.require('ga_measure_service');
           src: imgPath + 'marker.png'
         })
       });
+      styles['bowl'] = new ol.style.Style({
+        image: new ol.style.Icon({
+          anchor: [0.5, 0.5],
+          anchorXUnits: 'fraction',
+          anchorYUnits: 'fraction',
+          src: imgPath + 'bowl.png'
+        })
+      });
+      styles['circle'] = new ol.style.Style({
+        image: new ol.style.Icon({
+          anchor: [0.5, 0.5],
+          anchorXUnits: 'fraction',
+          anchorYUnits: 'fraction',
+          src: imgPath + 'circle.png'
+        })
+      });
+      styles['cross'] = new ol.style.Style({
+        image: new ol.style.Icon({
+          anchor: [0.5, 0.5],
+          anchorXUnits: 'fraction',
+          anchorYUnits: 'fraction',
+          src: imgPath + 'cross.png'
+        })
+      });
+      styles['point'] = new ol.style.Style({
+        image: new ol.style.Icon({
+          anchor: [0.5, 0.5],
+          anchorXUnits: 'fraction',
+          anchorYUnits: 'fraction',
+          src: imgPath + 'point.png'
+        })
+      });
       var headingStyle = new ol.style.Style({
         image: new ol.style.Icon({
           rotateWithView: true,
