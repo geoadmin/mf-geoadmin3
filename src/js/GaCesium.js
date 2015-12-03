@@ -16,7 +16,12 @@ goog.provide('ga_cesium');
 var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions,
     gaBrowserSniffer, $q, $translate) {
   // Url of ol3cesium library
-  var ol3CesiumLibUrl = gaGlobalOptions.resourceUrl + 'lib/ol3cesium.js';
+  var ol3CesiumLibUrl = gaGlobalOptions.resourceUrl;
+  if (gaGlobalOptions.buildMode === 'prod') {
+    ol3CesiumLibUrl += 'lib/Cesium.min.js';
+  } else {
+    ol3CesiumLibUrl += 'lib/Cesium/Cesium.js';
+  }
   var cesiumLoaded = $q.defer();
   var cesiumClients = $q.defer();
   var ol3d = undefined;
@@ -77,7 +82,7 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions,
         map: map,
         createSynchronizers: function(map, scene) {
            return [
-             new ga.GaRasterSynchronizer(map, scene),
+             new olcs.GaRasterSynchronizer(map, scene),
              new olcs.VectorSynchronizer(map, scene)
            ];
         }
@@ -180,7 +185,7 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions,
     return function(activate) {
       // Check if cesium library is already loaded
       toActivate = activate;
-      if (!window.olcs) {
+      if (!window.Cesium) {
         loading = true;
         $.getScript(ol3CesiumLibUrl, function() {
           cesiumLoaded.resolve(toActivate);

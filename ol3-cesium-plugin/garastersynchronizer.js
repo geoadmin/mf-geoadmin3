@@ -1,4 +1,4 @@
-goog.provide('ga.GaRasterSynchronizer');
+goog.provide('olcs.GaRasterSynchronizer');
 goog.require('olcs.RasterSynchronizer');
 
 
@@ -11,16 +11,16 @@ goog.require('olcs.RasterSynchronizer');
  * @extends {olcs.RasterSynchronizer}
  * @api
  */
-ga.GaRasterSynchronizer = function(map, scene) {
+olcs.GaRasterSynchronizer = function(map, scene) {
   goog.base(this, map, scene);
 };
-goog.inherits(ga.GaRasterSynchronizer, olcs.RasterSynchronizer);
+goog.inherits(olcs.GaRasterSynchronizer, olcs.RasterSynchronizer);
 
 
 /**
  * @override
  */
-ga.GaRasterSynchronizer.prototype.convertLayerToCesiumImageries =
+olcs.GaRasterSynchronizer.prototype.convertLayerToCesiumImageries =
     function(olLayer, viewProj) {
 
   /**
@@ -28,13 +28,16 @@ ga.GaRasterSynchronizer.prototype.convertLayerToCesiumImageries =
    */
   var provider = null;
 
-  var isGroup = olLayer instanceof ol.layer.Group;
-  if (!isGroup && (olLayer.getSource() instanceof ol.source.Vector)) {
-    return null;
+  var isLayer = olLayer instanceof ol.layer.Layer;
+  if (olLayer instanceof ol.layer.Layer) {
+    var source = olLayer.getSource();
+    if (source instanceof ol.source.Vector) {
+      return null;
+    }
   }
 
   // Read custom, non standard properties
-  var factory = olLayer['getCesiumImageryProvider'];
+  var factory = olcs.obj(olLayer)['getCesiumImageryProvider'];
   if (!factory) {
     // root layer group
     return null;

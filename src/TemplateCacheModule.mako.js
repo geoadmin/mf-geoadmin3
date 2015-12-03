@@ -20,9 +20,9 @@
 %>\
 // Generated code. Do not edit.
 goog.provide('__ga_template_cache__');
-goog.require('ga');
+goog.require('geoadmin');
 (function() {
-  angular.module('ga').run(['$templateCache', function($templateCache) {
+  angular.module('geoadmin').run(['$templateCache', function($templateCache) {
 % for partial in _partials:
   $templateCache.put('${partial}', '${_partials[partial]}');
 %endfor

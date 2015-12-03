@@ -1,6 +1,6 @@
 ﻿# -*- coding: utf-8 -*-
 <!DOCTYPE html>
-<html ng-app="ga" ng-controller="GaMainController"
+<html ng-app="geoadmin" ng-controller="GaMainController"
 itemscope itemtype="http://schema.org/WebApplication"
 % if device == 'mobile' and mode=='prod' :
  manifest="geoadmin.appcache"
@@ -683,7 +683,7 @@ itemscope itemtype="http://schema.org/WebApplication"
     <script src="lib/ol3cesium-debug.js"></script>
     <script src="deps.js"></script>
     <script>
-      goog.require('ga');
+      goog.require('geoadmin');
     </script>
 % endif
 
@@ -710,7 +710,7 @@ itemscope itemtype="http://schema.org/WebApplication"
           cache: true
         });
 
-        var module = angular.module('ga');
+        var module = angular.module('geoadmin');
         var cacheAdd = '${version}' != '' ? '/' + '${version}' : '';
         var pathname = location.pathname.replace(/(index|mobile|embed)\.html$/g, '');
 
@@ -721,6 +721,7 @@ itemscope itemtype="http://schema.org/WebApplication"
 % else:
           dev3d: !!window.location.search.match(/(dev3d=true)/),
 % endif
+          buildMode: '${mode}',
           pegman: !!window.location.search.match(/(pegman=true)/),
           mapUrl : location.origin + '${apache_base_path}',
           apiUrl : location.protocol + '${api_url}',

@@ -1,4 +1,4 @@
-goog.provide('ga');
+goog.provide('geoadmin');
 
 
 goog.require('ga_attribution');
@@ -62,7 +62,7 @@ goog.require('ga_waitcursor_service');
 (function() {
 
 
-  var module = angular.module('ga', [
+  var module = angular.module('geoadmin', [
     'ga_controls3d',
     'ga_attribution',
     'ga_catalogtree',
