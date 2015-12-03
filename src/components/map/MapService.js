@@ -1045,7 +1045,7 @@ goog.require('ga_urlutils_service');
               response.data['ch.swisstopo.terrain.3d'] = {
                 type: 'terrain',
                 serverLayerName: 'ch.swisstopo.terrain.3d',
-                timestamps: ['20160101'],
+                timestamps: ['20151231'],
                 attribution: 'swisstopo 3D',
                 attributionUrl: 'http://www.swisstopo.admin.ch/internet/' +
                     'swisstopo/en/home/products/height/swissALTI3D.html'
