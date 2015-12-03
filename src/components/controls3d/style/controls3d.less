@@ -1,40 +1,47 @@
-.ga-controls3d {
+[ga-controls3d] {
   .user-select(none);
   position: absolute;
   text-align: center;
   right: 0;
   left: 0;
-  bottom: 52px;
+  bottom: 51px;
   margin-left: auto;
   margin-right: auto;
   width: 200px;
   z-index: 600;
   @media (max-width: @screen-tablet) {
     bottom: 26px;
+    width: 120px;
+    height: 44px;
+  }
+  button {
+    border: none;
+    background: transparent;
+    padding: 0;
+    margin: 0;
   }
   .ga-tilt, .ga-rotate {
     display: inline-block;
     text-align: center;
-    background-image: data-uri('white_rounded_bckgd.png');
+    border-radius: 37px;
+    background-color: rgba(255,255,255,0.5);
     height: 105px;
     width: 74px;
     @media (max-width: @screen-tablet) {
-      background-image: none;
-      height: 42px;
-      width: 52px;
+      background: none;
+      width: 50px;
+      height: auto;
     }
     .ga-indicator {
-      cursor: pointer;
-      background-position: center center;
-      background-repeat: no-repeat;
-      height: 68px;
+      width: 64px;
+      height: 64px;
+
       @media (max-width: @screen-tablet) {
-        height: 46px;
+        width: 44px;
+        height: 44px;
       }
-      margin-top: 3px;
     }
     .ga-inc, .ga-dec {
-      cursor: pointer;
       display: inline-block;
       width: 32px;
       height: 30px;

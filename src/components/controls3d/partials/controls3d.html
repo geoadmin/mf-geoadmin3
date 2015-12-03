@@ -1,21 +1,19 @@
-<div class="ga-controls3d">
-  <div class="ga-tilt" ng-hide="fps.active">
-    <div class="ga-indicator" ng-click="resetTilt()"></div>
-    <div class="ga-inc" ng-click="tilt(+5)"></div>
-    <div class="ga-dec" ng-click="tilt(-5)"></div>
-  </div>
-  <div class="ga-pegman" ng-show="pegman" ng-class="{'ga-fly-mode': fps.flyMode, 'ga-jet-mode': fps.jetMode}" ng-mousedown="startDraggingPegman()"></div>
-  <div class="ga-rotate" ng-hide="fps.active">
-    <div class="ga-indicator" ng-click="resetRotation()"></div>
-    <div class="ga-inc" ng-click="rotate(-15)"></div>
-    <div class="ga-dec" ng-click="rotate(+15)"></div>
-  </div>
-  <div class="ga-pegman-help" ng-show="fps.active">
-    pegman help text here.
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-    eiusmod tempor incididunt ut labore et dolore magna aliqua.
-    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
-    nisi ut aliquip ex ea commodo consequat.
-  </div>
-  <div ga-help="28"></div>
+<div class="ga-tilt" ng-hide="fps.active">
+  <button class="ga-btn ga-indicator" ng-click="resetTilt()"></button>
+  <button class="ga-btn ga-inc" ng-click="tilt(+5)"></button>
+  <button class="ga-btn ga-dec" ng-click="tilt(-5)"></button>
 </div>
+<div class="ga-pegman" ng-show="pegman" ng-class="{'ga-fly-mode': fps.flyMode, 'ga-jet-mode': fps.jetMode}" ng-mousedown="startDraggingPegman()"></div>
+<div class="ga-rotate" ng-hide="fps.active">
+  <button class="ga-btn ga-indicator" ng-click="resetRotation()"></button>
+  <button class="ga-btn ga-inc" ng-click="rotate(-15)"></button>
+  <button class="ga-btn ga-dec" ng-click="rotate(+15)"></button>
+</div>
+<div class="ga-pegman-help" ng-show="fps.active">
+  pegman help text here.
+  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+  eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
+  nisi ut aliquip ex ea commodo consequat.
+</div>
+<div ga-help="28"></div>
