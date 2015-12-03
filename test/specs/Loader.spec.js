@@ -35,6 +35,7 @@ beforeEach(function() {
       whitelist: [
         'https://' + location.host + '/**'
       ],
+      defaultEpsg: 'EPSG:21781',
       defaultTopicId: 'sometopic',
       translationFallbackCode: 'somelang',
       languages: ['de', 'fr', 'it', 'en', 'rm', 'somelang'],
