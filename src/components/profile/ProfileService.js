@@ -154,9 +154,54 @@ goog.require('ga_urlutils_service');
           }
         };
 
+        //Distance
         this.distance = function(data) {
           if (data.length != 0) {
             return data[data.length - 1].dist;
+          }
+        };
+
+        //Hiking time
+        this.hikingTime = function(data) {
+          var wayTime = 0;
+          if (data.length != 0) {
+            for (var i = 1; i < data.length; i++) {
+              //for (data.length - 1) line segments the time is calculated
+              var distance = (data[i].dist - data[i - 1].dist) || 0;
+              if (distance != 0) {
+                var dH = (data[i].alts[elevationModel] -
+                    data[i - 1].alts[elevationModel]) || 0;
+
+                //Constants of the formula
+                var arrConstants = [
+                  14.271, 3.6992, 2.5922, -1.4384,
+                   0.32105, 0.81542, -0.090261, -0.20757,
+                   0.010192, 0.028588, -0.00057466, -0.0021842,
+                   1.5176e-5, 8.6894e-5, -1.3584e-7, 1.4026e-6
+                    ];
+
+                //10ths instead of %
+                var s = (dH * 10.0) / distance;
+
+                //The swiss hiking formula is used between -25% and +25%
+                //(used to be -40% to +40%, which leads to a strange behaviour)
+                if (s > -2.5 && s < 2.5) {
+                  var minutesPerKilometer = 0.0;
+                  for (var j = 0; j < 15; j++) {
+                    minutesPerKilometer += arrConstants[j] * Math.pow(s, j);
+                  }
+                } else {
+                  //outside the -25% to +25% range, we use a linear formula
+                  if (s > 0) {
+                    minutesPerKilometer = (17 * s);
+                  } else {
+                    minutesPerKilometer = (-9 * s);
+                  }
+                }
+              }
+              wayTime += (distance * minutesPerKilometer / 1000);
+            }
+            return Math.round(wayTime);
           }
         };
 
@@ -247,10 +292,12 @@ goog.require('ga_urlutils_service');
           this.diff = this.elevDiff(data);
           //for the total elevation up & total elevation down
           var twoDiff = this.twoElevDiff(data);
-          //fot the highest and the lowest elevation points
+          //for the highest and the lowest elevation points
           var elPoi = this.elPoints(data);
           //for the distance
           this.dist = this.distance(data);
+          //for the hiking time
+          this.hikTime = this.hikingTime(data);
 
           this.data = this.formatData(data);
 
@@ -447,11 +494,28 @@ goog.require('ga_urlutils_service');
           group.append('text')
               .attr('class', 'ga-profile-distance')
               .attr('font-size', '0.9em')
-              .attr('x', 412)
+              .attr('x', 415)
               .attr('y', elevLabelY)
               .style('text-anchor', 'left')
               .text(measureFilter(this.dist, 'distance',
                     ['km', 'm'], 2, true));
+
+          //Icon for the hiking time
+          group.append('text')
+              .attr('class', 'ga-profile-icon')
+              .attr('x', 480)
+              .attr('y', elevLabelY)
+              .attr('text-anchor', 'left')
+              .text(' \uf017');
+
+          //Number for the lowest point
+          group.append('text')
+              .attr('class', 'ga-profile-hikTime')
+              .attr('font-size', '0.9em')
+              .attr('x', 495)
+              .attr('y', elevLabelY)
+              .style('text-anchor', 'left')
+              .text(this.hikTime + ' min');
 
           return element;
         };
@@ -481,6 +545,9 @@ goog.require('ga_urlutils_service');
               this.elPoi[1]);
           this.updateElevationLabels('text.ga-profile-distance',
               this.dist);
+
+          this.group.select('text.ga-profile-hikTime')
+              .text(this.hikTime + ' min');
           };
 
         this.update = function(data, size) {
@@ -510,6 +577,7 @@ goog.require('ga_urlutils_service');
             this.twoDiff = this.twoElevDiff(data);
             this.elPoi = this.elPoints(data);
             this.dist = this.distance(data);
+            this.hikTime = this.hikingTime(data);
           }
           var x = d3.scale.linear().range([0, width]);
           var y = d3.scale.linear().range([height, 0]);
