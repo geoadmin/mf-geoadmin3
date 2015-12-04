@@ -8,6 +8,28 @@ goog.require('ga_urlutils_service');
     'pascalprecht.translate'
   ]);
 
+  module.filter('time', function() {
+    return function(minutes) {
+      // if the float is not a number, we display a '-'
+      if (!angular.isNumber(minutes) || !isFinite(minutes)) {
+        return '-';
+      }
+      if (minutes >= 0) {
+        if (minutes >= 60) {
+          var hours = Math.floor(minutes / 60);
+          minutes = minutes - hours * 60;
+        }
+        if (hours) {
+          return hours + 'h ' + minutes + 'min';
+        } else {
+          return minutes + 'min';
+        }
+      } else {
+        return '-';
+      }
+    }
+  });
+
   module.provider('gaProfile', function() {
     var d3;
 
@@ -47,7 +69,7 @@ goog.require('ga_urlutils_service');
     };
 
     this.$get = function($q, $http, $timeout, $translate, measureFilter,
-        $window, gaUrlUtils, gaBrowserSniffer, gaGlobalOptions) {
+        timeFilter, $window, gaUrlUtils, gaBrowserSniffer, gaGlobalOptions) {
 
       var d3LibUrl = this.d3libUrl;
       var profileUrl = this.profileUrl;
@@ -515,7 +537,7 @@ goog.require('ga_urlutils_service');
               .attr('x', 495)
               .attr('y', elevLabelY)
               .style('text-anchor', 'left')
-              .text(this.hikTime + ' min');
+              .text(timeFilter(this.hikTime));
 
           return element;
         };
@@ -547,7 +569,7 @@ goog.require('ga_urlutils_service');
               this.dist);
 
           this.group.select('text.ga-profile-hikTime')
-              .text(this.hikTime + ' min');
+              .text(timeFilter(this.hikTime));
           };
 
         this.update = function(data, size) {
