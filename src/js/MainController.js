@@ -39,10 +39,10 @@ goog.require('ga_topic_service');
           rotate: false,
           zoomOptions: {
             target: toolbar,
-            zoomInLabel: '',
-            zoomOutLabel: '',
-            zoomInTipLabel: '',
-            zoomOutTipLabel: ''
+            zoomInLabel: ' ',
+            zoomOutLabel: ' ',
+            zoomInTipLabel: ' ',
+            zoomOutTipLabel: ' '
           }
         }),
         interactions: ol.interaction.defaults({
