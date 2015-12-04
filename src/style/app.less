@@ -156,7 +156,6 @@ button.ga-icon {
 }
 
 button.ga-btn, .ol-control button {
-  .user-select(none);
 
   &[disabled] {
     cursor: not-allowed;
@@ -1426,6 +1425,7 @@ input[type=range] {
 }
 
 #buttonGroup {
+  .user-select(none);
   position: absolute;
   top: unit(@header-height, px);
   right: unit(@control-btns-right, px);
