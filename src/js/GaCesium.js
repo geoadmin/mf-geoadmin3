@@ -71,8 +71,8 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions,
     var fogEnabled = boolParam('fogEnabled', true);
     var fogDensity = floatParam('fogDensity', '0.0001');
     var fogSseFactor = floatParam('fogSseFactor', '25');
-    var terrainLevels = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
-    window.minimumRetrievingLevel = intParam('minimumRetrievingLevel', '5');
+    var terrainLevels = [8, 11, 14, 16, 17];
+    window.minimumRetrievingLevel = intParam('minimumRetrievingLevel', '8');
     window.terrainAvailableLevels = arrayParam('terrainLevels', terrainLevels);
     window.imageryAvailableLevels = arrayParam('imageryLevels', undefined);
 
@@ -248,7 +248,8 @@ var SSECorrector = function(gaPermalink) {
 SSECorrector.prototype.newFrameState = function(frameState) {
     this.cameraHeight = frameState.camera.positionCartographic.height;
 
-    if (this.pickglobe && !this.noheight && this.maxheight) {
+    if (this.pickglobe && !this.noheight &&
+        (!this.maxHeight || this.cameraHeight < this.maxheight)) {
       var scene = frameState.camera._scene;
       var canvas = scene.canvas;
       var pixelHeight = this.pickposition * canvas.clientHeight;
