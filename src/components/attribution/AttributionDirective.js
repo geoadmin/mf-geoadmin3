@@ -106,7 +106,7 @@ goog.require('ga_map_service');
       gaBrowserSniffer, gaAttribution, $rootScope, gaDebounce) {
 
     var update = function(element, layers) {
-      element.toggle(!!(layers && layers.length)); 
+      element.toggle(!!(layers && layers.length));
     };
     var updateDebounced = gaDebounce.debounce(update, 50, false);
 
