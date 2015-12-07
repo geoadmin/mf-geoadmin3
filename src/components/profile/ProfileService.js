@@ -184,6 +184,8 @@ goog.require('ga_urlutils_service');
         };
 
         //Hiking time
+        //Source of the formula: Swiss Map online
+        //http://www.swisstopo.ch/swissmaponline
         this.hikingTime = function(data) {
           var wayTime = 0;
           if (data.length != 0) {
@@ -530,7 +532,7 @@ goog.require('ga_urlutils_service');
               .attr('text-anchor', 'left')
               .text(' \uf017');
 
-          //Number for the lowest point
+          //Number for the hiking time
           group.append('text')
               .attr('class', 'ga-profile-hikTime')
               .attr('font-size', '0.9em')
