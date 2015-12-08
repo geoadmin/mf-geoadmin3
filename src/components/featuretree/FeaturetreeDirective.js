@@ -16,7 +16,7 @@ goog.require('ga_map_service');
    **/
 
   module.directive('gaFeaturetree',
-      function($rootScope, $timeout, $http, $q, $translate, gaLayers,
+      function($rootScope, $timeout, $http, $q, $translate, $sce, gaLayers,
           gaPreviewFeatures) {
         var canceler = null;
         var timeoutPromise = null;
@@ -118,11 +118,16 @@ goog.require('ga_map_service');
 
               angular.forEach(tree, function(layerNode, layerBodId) {
                 var oldNode = scope.tree[layerBodId];
+                var className = layerNode.hasMoreResults ? 'ga-warn-color' : '';
+                var label = $sce.trustAsHtml(
+                    gaLayers.getLayer(layerBodId).label +
+                    ' <span class="' + className + '"' +
+                    '>(' + ((layerNode.hasMoreResults) ? '+' : '') +
+                    layerNode.features.length + ' ' +
+                    getItemText(layerNode.features.length) + ')</span>'
+                );
                 var newNode = {
-                  label: gaLayers.getLayer(layerBodId).label +
-                     ' (' + ((layerNode.hasMoreResults) ? '+' : '') +
-                     layerNode.features.length + ' ' +
-                     getItemText(layerNode.features.length) + ')',
+                  label: label,
                   hasMoreResults: layerNode.hasMoreResults,
                   offset: layerNode.offset,
                   open: oldNode ? oldNode.open : true,
