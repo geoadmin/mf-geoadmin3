@@ -721,7 +721,7 @@ itemscope itemtype="http://schema.org/WebApplication"
         module.constant('gaGlobalOptions', {
           //dev3d to be removed once 3d goes live
 % if staging=='prod' :
-          dev3d: true,
+          dev3d: false,
 % else:
           dev3d: !window.location.search.match(/(dev3d=false)/),
 % endif
