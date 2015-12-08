@@ -76,8 +76,9 @@ goog.require('ga_topic_service');
     };
 
     // Determines if the window has a height <= 550
+    var win = $($window), screenPhone = 480, screenSmMaxHeight = 550;
     var isWindowTooSmall = function() {
-      return ($($window).height() <= 550);
+      return win.height() <= screenSmMaxHeight;
     };
     var dismiss = 'none';
 
@@ -236,7 +237,7 @@ goog.require('ga_topic_service');
       ios: gaBrowserSniffer.ios,
       offline: gaNetworkStatus.offline,
       embed: gaBrowserSniffer.embed,
-      pulldownShown: !(gaBrowserSniffer.mobile || $($window).width() <= 1024),
+      pulldownShown: !(gaBrowserSniffer.mobile || win.width() <= 1024),
       printShown: false,
       catalogShown: false,
       selectionShown: false,
@@ -264,6 +265,13 @@ goog.require('ga_topic_service');
         $scope.globals.isSwipeActive = false;
         $scope.globals.isDrawActive = false;
         $scope.globals.isShareActive = false;
+      }
+    });
+    // Deactivate share tool when pulldown is closeddraw is opening
+    $scope.$watch('globals.pulldownShown', function(active) {
+      if (active && !$scope.globals.isShareActive &&
+          win.width() <= screenPhone) {
+        $scope.globals.isShareActive = true;
       }
     });
     $rootScope.$on('gaNetworkStatusChange', function(evt, offline) {
@@ -298,7 +306,7 @@ goog.require('ga_topic_service');
           }
         }
         if ((evt.which == 8 || evt.which == 27) &&
-          $scope.globals.isDrawActive) {
+            $scope.globals.isDrawActive) {
           $scope.globals.isDrawActive = false;
           $scope.$digest();
         }
@@ -323,13 +331,21 @@ goog.require('ga_topic_service');
         }
       };
 
-      $($window).on('resize', function() {
+      win.on('resize', function() {
         if (isWindowTooSmall()) {
           if ($scope.globals.catalogShown) {
             $scope.$applyAsync(function() {
               $scope.globals.catalogShown = false;
             });
           }
+        }
+        // Open share panel by default on phone
+        if ($scope.globals.pulldownShown && !$scope.globals.isShareActive &&
+            !$scope.globals.isDrawActive &&
+            win.width() <= screenPhone) {
+          $scope.$applyAsync(function() {
+            $scope.globals.isShareActive = true;
+          });
         }
       });
 
@@ -341,9 +357,7 @@ goog.require('ga_topic_service');
       };
 
       var hideAccordionPanels = function() {
-        if ($($window).width() > 480) {
-          hidePanel('share');
-        }
+        hidePanel('share');
         hidePanel('print');
         hidePanel('tools');
       };
