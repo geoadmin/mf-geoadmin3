@@ -267,6 +267,7 @@
     "profile_y_label": "Elevazione",
     "qrcode_tooltip": "Creare un QRCode e aprire questa carta su dispositivo mobile",
     "queries": "Filtri  (BETA)",
+    "query_alert_more_than_200_results": "Attenzione! La richiesta ha prodotto più di 200 risultati!",
     "query_choose": "Selezionare un filtro:",
     "query_conditions": "Condizioni",
     "query_custom": "FIltro personalizzato",

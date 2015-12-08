@@ -267,6 +267,7 @@
     "profile_y_label": "Altitude",
     "qrcode_tooltip": "Créer un QRCode et ouvrir cette carte depuis votre appareil mobile",
     "queries": "Filtres (BETA)",
+    "query_alert_more_than_200_results": "Attention! Votre requête a plus de 200 résultats!",
     "query_choose": "Sélectionner un filtre:",
     "query_conditions": "Conditions",
     "query_custom": "Filtre personnalisé",

@@ -267,6 +267,7 @@
     "profile_y_label": "Elevation",
     "qrcode_tooltip": "Create a QRCode and open this map on your mobile device",
     "queries": "Filters (BETA)",
+    "query_alert_more_than_200_results": "Alert! Your query returns more than 200 results!",
     "query_choose": "Select filter:",
     "query_conditions": "Query conditions",
     "query_custom": "Custom filter",
