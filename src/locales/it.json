@@ -1,5 +1,6 @@
 {
     "3d_ie11_alert": "State usando InternetExplorer versione 11 o più vecchia. La visualizzazione 3D sarà lenta. Usate se possibile l’ultima versione di Microsoft EDGE, Firefox o Chrome per avere prestazioni ottimali.",
+    "3d_overlay_warning": "Lorem Ipsum è un testo segnaposto utilizzato nel settore della tipografia e della stampa. Lorem Ipsum è considerato il testo segnaposto standard sin dal sedicesimo secolo, quando un anonimo tipografo prese una cassetta di caratteri e li assemblò per preparare un testo campione.",
     "3d_render_error": "Requisiti per la vista 3D non soddisfatti. Per utilizzare la versione completa 3D il computer deve soddisfare i seguenti requisiti: Usate l’ultima versione di Microsoft EDGE, Firefox o Chrome.Hardware e driver della scheda video aggiornati. ",
     "abort": "Annullare",
     "add_layer": "Aggiungere layer",

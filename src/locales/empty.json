@@ -356,5 +356,6 @@
   "query_operator": "",
   "no_more_information": "",
   "3d_ie11_alert": "",
-  "3d_render_error": ""
+  "3d_render_error": "",
+  "3d_overlay_warning": ""
 }

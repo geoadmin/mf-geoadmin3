@@ -156,14 +156,20 @@ button.ga-icon {
 }
 
 button.ga-btn, .ol-control button {
-  &:hover:not[disabled] {
-    opacity: 0.7;
+
+  &[disabled] {
+    cursor: not-allowed;
   }
 
-  &:active {
-    transform: scale(1.2);
-    -ms-transform: scale(1.2);
-    -webkit-transform: scale(1.2);
+  &:not([disabled]) {
+
+    &:hover {
+      opacity: 0.7;
+    }
+
+    &:active {
+      .scale(1.2);
+    }
   }
 }
 
@@ -1419,6 +1425,7 @@ input[type=range] {
 }
 
 #buttonGroup {
+  .user-select(none);
   position: absolute;
   top: unit(@header-height, px);
   right: unit(@control-btns-right, px);

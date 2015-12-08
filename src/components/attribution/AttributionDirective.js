@@ -98,4 +98,58 @@ goog.require('ga_map_service');
       }
     };
   });
+
+  /**
+   * ga-attribution-warning displays a warning about the data in 2.5d.
+   */
+  module.directive('gaAttributionWarning', function($translate, $window,
+      gaBrowserSniffer, gaAttribution, $rootScope, gaDebounce) {
+
+    var update = function(element, layers) {
+      element.toggle(!!(layers && layers.length));
+    };
+    var updateDebounced = gaDebounce.debounce(update, 50, false);
+
+    return {
+      restrict: 'A',
+      scope: {
+        ol3d: '=gaAttributionWarningOl3d'
+      },
+      link: function(scope, element, attrs) {
+        var layersFiltered = [], dereg = [];
+        scope.layerFilter = function(layer) {
+          return !layer.background && (layer.preview ||
+            layer.displayInLayerManager) && layer.visible;
+        };
+
+        // Activate/deactivate the directive
+        var toggle = function(active) {
+          if (active) {
+            scope.layers = scope.ol3d.getOlMap().getLayers().getArray();
+            dereg.push(scope.$watchCollection('layers | filter:layerFilter',
+                function(layers) {
+              layersFiltered = layers;
+              updateDebounced(element, layers);
+            }));
+            updateDebounced(element, layersFiltered);
+          } else {
+            dereg.forEach(function(deregFunc) {
+              deregFunc();
+            });
+            dereg = [];
+            element.hide();
+          }
+        };
+
+        scope.$watch('::ol3d', function(val) {
+          if (val) {
+            // Listen when the app switch between 2d/3d
+            scope.$watch(function() {
+              return scope.ol3d.getEnabled();
+            }, toggle);
+          }
+        });
+      }
+    };
+  });
 })();

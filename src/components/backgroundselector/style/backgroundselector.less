@@ -1,256 +1,265 @@
-.ga-bg-layer-bt, .ga-bg-layer, .ga-bg-layer-bt-close {
-  overflow: hidden;
-  cursor: pointer;
-  position: absolute; 
-  background: transparent no-repeat center;
-  transition: right 0.5s ease, bottom 0.5s ease, width 0.5s ease;
-}
+[ga-background-selector] {
+  .user-select(none);
 
-.ga-bg-layer-bt {
-  z-index: 1005;
-}
-
-.ga-bg-layer-0 {
-  z-index: 1004;
-}
-.ga-bg-layer-1 {
-  z-index: 1003;
-}
-
-.ga-bg-layer-2 {
-  z-index: 1002;
-}
-
-.ga-bg-layer-3 {
-  z-index: 1001;
-}
-
-.ga-bg-layer-text, .ga-bg-layer-bt-text {
-  margin: 3px;
-  padding: 1px;
-  font-size: 75%;
-  text-align: center;
-
-  @media (max-width: @screen-tablet) {
-    display: none;
+  .ga-bg-layer-bt, .ga-bg-layer, .ga-bg-layer-bt-close {
+    overflow: hidden;
+    cursor: pointer;
+    position: absolute; 
+    background: transparent no-repeat center;
+    transition: right 0.5s ease, bottom 0.5s ease, width 0.5s ease;
   }
-}
- 
-.ga-bg-layer-text {
-  background-color: rgba(255, 255, 255, 0.95);
- }
-
-.ga-bg-layer-bt-text {
-  color: white;
-  background-color: rgba(0, 0, 0, 0.7);
-}
-
-.ga-bg-mobile {
 
   .ga-bg-layer-bt {
-    width: 44px;
-    height: 44px;
-    left: 10px;
-    bottom: 51px;
-    background-image: data-uri('background-selector-black.png');
-    &:active {
-      transform: scale(1.2);
-      -ms-transform: scale(1.2);
-      -webkit-transform: scale(1.2);
-    }
-    @media (max-width: @screen-tablet) {
-      bottom: 26px;
-    }
-  }
-
-  .ga-bg-layer {
-    width: 42px;
-    height: 42px;
-    border-radius:21px;
-    left: 11px;
-    bottom: 52px;
-    background-color: rgba(51, 51, 51, 1);
-    &:active {
-      transform: scale(1.2);
-      -ms-transform: scale(1.2);
-      -webkit-transform: scale(1.2);
-    }
-    @media (max-width: @screen-tablet) {
-      bottom: 27px;
-    }
-  }
-
-  .ga-bg-highlight {
-    background-color: rgba(255, 0, 0, 1);
-    border-radius:21px;
-  }
-
-  .ga-pixelkarte-farbe {
-    background-image: data-uri('pixelkarte-farbe.png');
-    background-size: 38px 38px;
-  }
-
-  .ga-pixelkarte-grau {
-    background-image: data-uri('pixelkarte-grau.png');
-    background-size: 38px 38px;
-  } 
-
-  .ga-swissimage {
-    background-image: data-uri('swissimage.png');
-    background-size: 38px 38px;
-  }
-
-  .ga-voidLayer {
-    background-image: data-uri('voidLayer.png');
-    background-size: 38px 38px;
+    z-index: 1005;
   }
 
   .ga-bg-layer-0 {
-    bottom: 101px;
-    @media (max-width: @screen-tablet) {
-      bottom: 76px;
-    }
+    z-index: 1004;
+  }
+  .ga-bg-layer-1 {
+    z-index: 1003;
   }
 
-  .ga-bg-layer-1 {
-    bottom: 150px;
-    @media (max-width: @screen-tablet) {
-      bottom: 125px;
-    }
-  }  
-
   .ga-bg-layer-2 {
-    bottom: 199px;
-    @media (max-width: @screen-tablet) {
-      bottom: 174px;
-    }
+    z-index: 1002;
   }
 
   .ga-bg-layer-3 {
-    bottom: 248px;
-    @media (max-width: @screen-tablet) {
-      bottom: 223px;
-    }
+    z-index: 1001;
   }
 
-  .ga-bg-layer-4 {
-    bottom: 297px;
-    @media (max-width: @screen-tablet) {
-      bottom: 272px;
-    }
-  }
-}
-
-.ga-bg-desktop {
-  
-  .icon-chevron-sign-right {
-    line-height: 64px;
+  .ga-bg-layer-text, .ga-bg-layer-bt-text {
+    margin: 3px;
+    padding: 1px;
+    font-size: 75%;
     text-align: center;
-    display: none;
 
     @media (max-width: @screen-tablet) {
-      line-height: 32px;
-    }
-  }
-
-  .ga-bg-layer-bt {
-    width: 96px;
-    height: 64px;
-    bottom: 52px;
-    right: 10px;
-    background: #ffffff data-uri('swissimage-rect.png') no-repeat center;
-   
-    @media (max-width: @screen-tablet) {
-      width: 48px;
-      height: 32px;
-      bottom: 24px;
-      background-size: 44px 28px;
-    }
-  }
-
-  .ga-bg-layer-bt-close {
-    width: 20px;
-    background-image: none;
-
-    .ga-bg-layer-bt-text {
       display: none;
     }
+  }
+   
+  .ga-bg-layer-text {
+    background-color: rgba(255, 255, 255, 0.95);
+   }
 
+  .ga-bg-layer-bt-text {
+    color: white;
+    background-color: rgba(0, 0, 0, 0.7);
+  }
+
+  &.ga-bg-mobile {
+
+    .ga-bg-layer-bt {
+      width: 44px;
+      height: 44px;
+      left: 10px;
+      bottom: 51px;
+      background-image: data-uri('background-selector-black.png');
+      &:active {
+        transform: scale(1.2);
+        -ms-transform: scale(1.2);
+        -webkit-transform: scale(1.2);
+      }
+      @media (max-width: @screen-tablet) {
+        bottom: 26px;
+      }
+    }
+
+    .ga-bg-layer {
+      width: 42px;
+      height: 42px;
+      border-radius:21px;
+      left: 11px;
+      bottom: 52px;
+      background-color: rgba(51, 51, 51, 1);
+      &:active {
+        transform: scale(1.2);
+        -ms-transform: scale(1.2);
+        -webkit-transform: scale(1.2);
+      }
+      @media (max-width: @screen-tablet) {
+        bottom: 27px;
+      }
+    }
+
+    .ga-bg-highlight {
+      background-color: rgba(255, 0, 0, 1);
+      border-radius:21px;
+    }
+
+    .ga-pixelkarte-farbe {
+      background-image: data-uri('pixelkarte-farbe.png');
+      background-size: 38px 38px;
+    }
+
+    .ga-pixelkarte-grau {
+      background-image: data-uri('pixelkarte-grau.png');
+      background-size: 38px 38px;
+    } 
+
+    .ga-swissimage {
+      background-image: data-uri('swissimage.png');
+      background-size: 38px 38px;
+    }
+
+    .ga-voidLayer {
+      background-image: data-uri('voidLayer.png');
+      background-size: 38px 38px;
+    }
+
+    .ga-bg-layer-0 {
+      bottom: 101px;
+      @media (max-width: @screen-tablet) {
+        bottom: 76px;
+      }
+    }
+
+    .ga-bg-layer-1 {
+      bottom: 150px;
+      @media (max-width: @screen-tablet) {
+        bottom: 125px;
+      }
+    }  
+
+    .ga-bg-layer-2 {
+      bottom: 199px;
+      @media (max-width: @screen-tablet) {
+        bottom: 174px;
+      }
+    }
+
+    .ga-bg-layer-3 {
+      bottom: 248px;
+      @media (max-width: @screen-tablet) {
+        bottom: 223px;
+      }
+    }
+
+    .ga-bg-layer-4 {
+      bottom: 297px;
+      @media (max-width: @screen-tablet) {
+        bottom: 272px;
+      }
+    }
+  }
+
+  &.ga-bg-desktop {
+    
     .icon-chevron-sign-right {
-      display: block;
+      line-height: 64px;
+      text-align: center;
+      display: none;
+
+      @media (max-width: @screen-tablet) {
+        line-height: 32px;
+      }
     }
-  }
 
-  .ga-bg-layer {
-    width: 96px;
-    height: 64px;
-    bottom: 52px;
-    right: 10px;
-    background-color: rgba(255, 255, 255, 1);
-    &:hover {
-      background-color: red;
+    .ga-bg-layer-bt {
+      width: 96px;
+      height: 64px;
+      bottom: 52px;
+      right: 10px;
+      background: #ffffff data-uri('swissimage-rect.png') no-repeat center;
+     
+      @media (max-width: @screen-tablet) {
+        width: 48px;
+        height: 32px;
+        bottom: 24px;
+        background-size: 44px 28px;
+      }
     }
-    @media (max-width: @screen-tablet) {
-      width: 48px;
-      height: 32px;
-      bottom: 24px;
-      background-size: 44px 28px;
+
+    .ga-bg-layer-bt-close {
+      width: 20px;
+      background-image: none;
+
+      .ga-bg-layer-bt-text {
+        display: none;
+      }
+
+      .icon-chevron-sign-right {
+        display: block;
+      }
     }
-  }
 
-  .ga-bg-highlight {
-    background-color: rgba(255, 0, 0, 1);
-  }
-
-  .ga-pixelkarte-farbe {
-    background-image: data-uri('pixelkarte-farbe-rect.png');
-  }
-
-  .ga-pixelkarte-grau {
-    background-image: data-uri('pixelkarte-grau-rect.png');
-  }
-
-  .ga-swissimage {
-    background-image: data-uri('swissimage-rect.png');
-  }
-
-  .ga-voidLayer {
-    background-image: data-uri('voidLayer-rect.png');
-  }
-
-  .ga-bg-layer-0 {
-    right: 35px;
-  }
-
-  .ga-bg-layer-1 {
-    right: 136px;
-    @media (max-width: @screen-tablet) {
-      right: 88px;
+    .ga-bg-layer {
+      width: 96px;
+      height: 64px;
+      bottom: 52px;
+      right: 10px;
+      background-color: rgba(255, 255, 255, 1);
+      &:hover {
+        background-color: red;
+      }
+      @media (max-width: @screen-tablet) {
+        width: 48px;
+        height: 32px;
+        bottom: 24px;
+        background-size: 44px 28px;
+      }
     }
-  }
 
-  .ga-bg-layer-2 {
-    right: 237px;
-    @media (max-width: @screen-tablet) {
-      right: 141px;
+    .ga-bg-highlight {
+      background-color: rgba(255, 0, 0, 1);
     }
-  }
 
-  .ga-bg-layer-3 {
-    right: 338px;
-    @media (max-width: @screen-tablet) {
-      right: 194px;
+    .ga-pixelkarte-farbe {
+      background-image: data-uri('pixelkarte-farbe-rect.png');
+    }
+
+    .ga-pixelkarte-grau {
+      background-image: data-uri('pixelkarte-grau-rect.png');
+    }
+
+    .ga-swissimage {
+      background-image: data-uri('swissimage-rect.png');
+    }
+
+    .ga-voidLayer {
+      background-image: data-uri('voidLayer-rect.png');
+    }
+
+    .ga-bg-layer-0 {
+      right: 35px;
+    }
+
+    .ga-bg-layer-1 {
+      right: 136px;
+      @media (max-width: @screen-tablet) {
+        right: 88px;
+      }
+    }
+
+    .ga-bg-layer-2 {
+      right: 237px;
+      @media (max-width: @screen-tablet) {
+        right: 141px;
+      }
+    }
+
+    .ga-bg-layer-3 {
+      right: 338px;
+      @media (max-width: @screen-tablet) {
+        right: 194px;
+      }
     }
   }
 }
 
 .ga-3d-active {
-  .ga-disable3d {
-    cursor: default;
-    background-color: gray;
-    color: gray;
-    &:hover {
+
+  [ga-background-selector] {
+
+    .ga-disable3d {
+      cursor: not-allowed;
       background-color: gray;
+      color: gray;
+
+      &:hover {
+        background-color: gray;
+      }
     }
   }
 }

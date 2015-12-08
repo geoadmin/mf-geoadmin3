@@ -148,7 +148,7 @@ itemscope itemtype="http://schema.org/WebApplication"
     bottom-left
 % endif
     sticky red shadow" ng-show="globals.is3dActive">
-      3D - ALPHA
+      2.5D - ALPHA
     </div>
 
     <div ng-controller="GaSeoController">
@@ -249,6 +249,10 @@ itemscope itemtype="http://schema.org/WebApplication"
          ga-background-selector-map="map"
          ga-background-selector-ol3d="::ol3d"
          ng-hide="globals.offline">
+    </div>
+    <div ga-attribution-warning
+         ga-attribution-warning-ol3d="::ol3d">
+      <span translate>3d_overlay_warning</span>
     </div>
     <div ng-cloak translate-cloak id="footer" class="navbar navbar-fixed-bottom">
       <div  class="pull-left" ga-scale-line ga-scale-line-map="map" ng-show="!globals.is3dActive"></div>
@@ -719,7 +723,7 @@ itemscope itemtype="http://schema.org/WebApplication"
 % if staging=='prod' :
           dev3d: false,
 % else:
-          dev3d: !!window.location.search.match(/(dev3d=true)/),
+          dev3d: !window.location.search.match(/(dev3d=false)/),
 % endif
           buildMode: '${mode}',
           pegman: !!window.location.search.match(/(pegman=true)/),
