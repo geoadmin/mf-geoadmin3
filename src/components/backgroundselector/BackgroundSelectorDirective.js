@@ -77,12 +77,6 @@ goog.require('ga_topic_service');
               scope.currentLayer = newBg;
             }
           });
-
-          scope.$on('gaPermalinkChange', function(evt, newBg) {
-            if (!scope.isBackgroundSelectorClosed) {
-              scope.isBackgroundSelectorClosed = true;
-            }
-          });
         }
       };
     }
