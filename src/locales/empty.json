@@ -357,5 +357,9 @@
   "no_more_information": "",
   "3d_ie11_alert": "",
   "3d_render_error": "",
-  "3d_overlay_warning": ""
+  "3d_overlay_warning": "",
+  "geothermie": "",
+  "geothermie_service_link_label": "",
+  "geothermie_service_link_href": "",
+  "topic_geothermie_tooltip": ""
 }
