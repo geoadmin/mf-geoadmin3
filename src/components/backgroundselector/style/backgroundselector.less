@@ -54,15 +54,15 @@
       width: 44px;
       height: 44px;
       left: 10px;
-      bottom: 51px;
+      bottom: unit(@bt-bottom, px);
       background-image: data-uri('background-selector-black.png');
+
       &:active {
-        transform: scale(1.2);
-        -ms-transform: scale(1.2);
-        -webkit-transform: scale(1.2);
+        .scale(1.2);
       }
+
       @media (max-width: @screen-tablet) {
-        bottom: 26px;
+        bottom: unit(@bt-bottom-sm, px);
       }
     }
 

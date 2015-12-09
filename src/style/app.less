@@ -39,6 +39,8 @@
 @header-height: 89;
 @footer-height: 26;
 @small-header-height: 50;
+@bt-bottom: 51;
+@bt-bottom-sm: 26;
 @screen-sm-max-height: 600px;
 @tooltip-bg: #999;
 @pulldown-width: 320;
@@ -1467,36 +1469,39 @@ input[type=range] {
 }
 
 // ***** Button group
-@bottom-static-bt: 51px;
-@bottom-static-bt-screen-sm: 26px;
-@right-col-1: @control-btn-size + @control-btn-space;
-@right-static-bt-col-1: unit(@right-col-1 + @control-btn-space, px);
-@right-static-bt-col-2: unit(@right-col-1 * 2 + @control-btn-space, px);
-@right-static-bt-col-3: unit(@right-col-1 * 3 + @control-btn-space, px);
+@bt-right: @control-btn-size + @control-btn-space;
+@bt-right-col-1: unit(@bt-right, px);
+@bt-right-col-2: unit(@bt-right * 2, px);
+@bt-right-col-3: unit(@bt-right * 3, px);
 
-.static-bt-mixin(@bottom){
-  position: fixed;
-  right: @right-static-bt-col-1;  
-  bottom: @bottom;
-}
-
-.no-static-bt-mixin(){
-  position: relative;
-  right: none;  
-  bottom: none;
+.bt-bottom-mixin(){
+  position: absolute;
+  bottom: 0;
 }
 
 #buttonGroup {
   .user-select(none);
+  pointer-events: none;
   position: absolute;
   top: unit(@header-height, px);
   right: unit(@control-btns-right, px);
+  bottom: unit(@bt-bottom, px);
   z-index: 1000;
-  transition: 1s ease;
-  transition-property: top;
-  
-  > div {
-    display: block;
+  .transition(1s);
+  .transition-property(~"top, bottom");
+
+  @media (max-width: @screen-tablet) {
+    bottom: unit(@bt-bottom-sm, px);
+  }
+
+  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
+    top: unit(@small-header-height, px);
+  }
+
+  > div, > button, .ol-zoom-out {
+    margin-top: unit(@control-btn-space, px);
+    height: unit(@control-btn-size, px);
+    pointer-events: auto;
   }
  
   button {
@@ -1505,29 +1510,25 @@ input[type=range] {
     border: none;
     width: unit(@control-btn-size, px);
     height: unit(@control-btn-size, px);
-    margin-top: unit(@control-btn-space, px);
-    transition: right ease 1s;
-    background-position: center center;
-    background-repeat: no-repeat;
-  }
-
-  > button {
-    transition: right ease 1s;
-  }
-  
-  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
-    top: unit(@small-header-height, px);
   }
    
   [ga-offline-bt] {
-    .static-bt-mixin(@bottom-static-bt); 
-    right: inherit;
-     
-    @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
-      bottom: @bottom-static-bt-screen-sm;
-    }
-  } 
+    .bt-bottom-mixin();
+  }
+
+  #zoomButtons {
+    height: unit(@control-btn-size * 2 + @control-btn-space, px);
+  }
 }
+
+// ***** Position buttons management on resize
+@screen-height-step-1: 445;
+@screen-height-step-2: unit((@screen-height-step-1 - @control-btn-size), px);
+@screen-height-step-3: unit((@screen-height-step-1 - @control-btn-size * 2), px);
+
+@screen-sm-height-step-1: @screen-height-step-1 - (@bt-bottom - @bt-bottom-sm);
+@screen-sm-height-step-2: unit((@screen-sm-height-step-1 - @control-btn-size), px);
+@screen-sm-height-step-3: unit((@screen-sm-height-step-1 - @control-btn-size * 2), px);
 
 body:not(.embed) {
   /* Map rotated with device heading has its own rotation button */
@@ -1537,17 +1538,20 @@ body:not(.embed) {
 
   /* When the 3 optional buttons are displayed */
   .ga-time-selector-enabled + .ga-rotate-enabled + [ga-offline-bt] {
-    
-    @media (max-height: 420px) {
-      right: @right-static-bt-col-1;
+
+    @media (min-width: @screen-tablet) and (max-height: unit((@screen-height-step-1), px)),
+           (max-width: @screen-tablet) and (max-height: unit((@screen-sm-height-step-1), px)) {
+      right: @bt-right-col-1;
     }  
-    
-    @media (max-height: 370px) {
-      right: @right-static-bt-col-2; 
+
+    @media (min-width: @screen-tablet) and (max-height: @screen-height-step-2),
+           (max-width: @screen-tablet) and (max-height: @screen-sm-height-step-2) {
+      right: @bt-right-col-2;
     }
-    
-    @media (max-height: 320px) {
-      right: @right-static-bt-col-3;  
+
+    @media (min-width: @screen-tablet) and (max-height: @screen-height-step-3),
+           (max-width: @screen-tablet) and (max-height: @screen-sm-height-step-3) {
+      right: @bt-right-col-3;
     }
   }
   
@@ -1555,13 +1559,16 @@ body:not(.embed) {
   .ga-time-selector-enabled + .ga-rotate-enabled,
   .ga-time-selector-enabled ~ [ga-offline-bt],
   .ga-rotate-enabled + [ga-offline-bt] { 
-    
-    @media (max-height: 370px) {
-      .static-bt-mixin(@bottom-static-bt-screen-sm);
+
+    @media (min-width: @screen-tablet) and (max-height: @screen-height-step-2),
+           (max-width: @screen-tablet) and (max-height: @screen-sm-height-step-2) {
+      .bt-bottom-mixin();
+      right: @bt-right-col-1;
     }
-    
-    @media (max-height: 320px) {
-       right: @right-static-bt-col-2;
+
+    @media (min-width: @screen-tablet) and (max-height: @screen-height-step-3),
+           (max-width: @screen-tablet) and (max-height: @screen-sm-height-step-3) {
+      right: @bt-right-col-2;
     }
   }
   
@@ -1569,9 +1576,11 @@ body:not(.embed) {
   .ga-time-selector-enabled,
   .ga-rotate-enabled,
   [ga-offline-bt] {
-    
-    @media (max-height: 320px) {
-      .static-bt-mixin(@bottom-static-bt-screen-sm);
+
+    @media (min-width: @screen-tablet) and (max-height: @screen-height-step-3),
+           (max-width: @screen-tablet) and (max-height: @screen-sm-height-step-3) {
+      .bt-bottom-mixin();
+      right: @bt-right-col-1;
     }
   }
 }
