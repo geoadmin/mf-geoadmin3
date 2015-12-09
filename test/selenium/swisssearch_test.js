@@ -3,7 +3,7 @@
 var webdriver = require('browserstack-webdriver');
 var assert = require('assert');
 
-var QUERYSTRING_OF_RARON = "X=128176.00&Y=629766.00&zoom=10";
+var QUERYSTRING_OF_RARON = "X=128579.00&Y=627859.00&zoom=10";
 var QUERYSTRING_OF_RTE_BERNE_LAUSANNE = "X=154208.00&Y=539257.00&zoom=10";
 var QUERYSTRING_OF_PL_CHATEAU_AVENCHES = "X=192310.00&Y=569734.00&zoom=10";
 var QUERYSTRING_OF_PIAZZA_MESOLCINA_BELLINZONA = "X=117500.00&Y=722500.00&zoom=10";
@@ -16,7 +16,7 @@ var runTest = function(cap, driver, target){
   //wait until topics related stuff is loaded. We know this when catalog is there
   driver.findElement(webdriver.By.xpath("//a[contains(text(), 'Grundlagen und Planung')]"));
   driver.findElement(webdriver.By.xpath("//*[contains(text(), 'Raron')]"));
-  driver.findElement(webdriver.By.xpath("//*[contains(text(), ', Flugplatz')]")).click();
+  driver.findElement(webdriver.By.xpath("//*[contains(text(), ', Schulhaus')]")).click();
   driver.findElement(webdriver.By.xpath("//a[contains(@href, '" + QUERYSTRING_OF_RARON + "')]"));
   //parameter should disappear when selection is done
   driver.findElement(webdriver.By.xpath("//*[@id='toptools']//a[contains(@href,'http')]")).getAttribute("href").then(function(val) {
