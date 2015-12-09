@@ -357,5 +357,7 @@
   "no_more_information": "",
   "3d_ie11_alert": "",
   "3d_render_error": "",
-  "3d_overlay_warning": ""
+  "3d_overlay_warning": "",
+  "query_alert_more_than_200_results": "",
+  "alert_title": ""
 }

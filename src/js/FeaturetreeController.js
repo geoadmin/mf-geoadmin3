@@ -8,7 +8,13 @@ goog.require('ga_print_service');
   ]);
 
   module.controller('GaFeaturetreeController', function($http, $scope,
-      $timeout, $translate, $window, gaGlobalOptions, gaPrintService) {
+      $timeout, $translate, $window, gaGlobalOptions, gaPrintService, gaPopup) {
+
+    var warningPopup = gaPopup.create({
+      content: '<div translate="query_alert_more_than_200_results"></div>',
+      title: 'alert_title',
+      showReduce: false
+    });
 
     // List of layers using an extendHtmlPoup for the print instead of htmlPopup
     var extended = {
@@ -44,6 +50,11 @@ goog.require('ga_print_service');
       $scope.options.nbFeatures = nbFeatures;
       $scope.options.featuresShown = show;
       $scope.options.hasMoreResults = hasMoreResults;
+      if (hasMoreResults) {
+        warningPopup.open();
+      } else {
+        warningPopup.close();
+      }
       $scope.$broadcast('gaNewFeatureTree', featuresByLayer);
     });
 
