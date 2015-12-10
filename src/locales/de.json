@@ -1,6 +1,6 @@
 {
     "3d_ie11_alert": "Sie verwenden InternetExplorer <= 11: Die 3D Darstellung wird nicht performant sein. Bitte nutzen Sie die neueste Version von Microsoft EDGE, Firefox oder Chrome um beste Ergebnisse zu erhalten",
-    "3d_overlay_warning": "Lorem Ipsum ist ein einfacher Demo-Text für die Print- und Schriftindustrie. Lorem Ipsum ist in der Industrie bereits der Standard Demo-Text seit 1500, als ein unbekannter Schriftsteller eine Hand voll Wörter nahm und diese durcheinander warf um ein Musterbuch zu erstellen.",
+    "3d_overlay_warning": "Wichtiger Hinweis: 2D-Daten in 3D\r\nSie betrachten jetzt Daten, die für die Darstellung in 3D nicht geeignet sind. Dies gilt insbesondere für Karten und Luftbilder. Diese werden in steilem Gelände bei der Nutzung in 3D verzerrt dargestellt\r\n",
     "3d_render_error": "Systemvorraussetzung für 3D Ansicht nicht erfüllt. Damit die 3D-Darstellung funktioniert, muss Ihr Gerät folgende Anforderungen erfüllen.Nutzen Sie die neueste Version von Microsoft EDGE, Firefox oder Chrome. Verwendung einer aktuellen Grafikkarte mit aktuellen Treibern. .",
     "abort": "Abbrechen",
     "add_layer": "Layer hinzufügen",
