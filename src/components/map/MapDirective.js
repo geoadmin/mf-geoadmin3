@@ -156,6 +156,43 @@ goog.require('ga_styles_service');
                 pitch: Cesium.Math.toDegrees(camera.pitch).toFixed(3)
               });
             }, 1000, false));
+
+            var dereg = [];
+            var setRealPosition = function(itemOrEvt) {
+              var item = (itemOrEvt instanceof ol.Overlay) ? itemOrEvt :
+                  itemOrEvt.element;
+              item.set('realPosition', item.getPosition());
+              item.setPosition();
+              dereg.push(item.on('change:position', function(evt) {
+                var val = evt.target.getPosition();
+                if (val) {
+                  item.set('realPosition', val);
+                  item.setPosition();
+                }
+              }));
+            };
+
+            // Watch when 3d is enabled to show/hide overlays
+            scope.$watch(function() {
+              return ol3d.getEnabled();
+            }, function(active) {
+              if (active) {
+                // Hide the overlays
+                map.getOverlays().forEach(setRealPosition);
+                dereg.push(map.getOverlays().on('add', setRealPosition));
+              } else {
+                // Show the overlays
+                dereg.forEach(function(key) {
+                   ol.Observable.unByKey(key);
+                });
+                dereg = [];
+                map.getOverlays().forEach(function(item) {
+                  if (!item.getPosition()) {
+                    item.setPosition(item.get('realPosition'));
+                  }
+                });
+              }
+            });
           }
         });
 
