@@ -8,7 +8,7 @@ goog.require('ga_urlutils_service');
     'pascalprecht.translate'
   ]);
 
-  module.filter('time', function() {
+  module.filter('gaTimeFormat', function() {
     return function(minutes) {
       // if the float is not a number, we display a '-'
       if (!angular.isNumber(minutes) || !isFinite(minutes)) {
@@ -69,7 +69,8 @@ goog.require('ga_urlutils_service');
     };
 
     this.$get = function($q, $http, $timeout, $translate, measureFilter,
-        timeFilter, $window, gaUrlUtils, gaBrowserSniffer, gaGlobalOptions) {
+        gaTimeFormatFilter, $window, gaUrlUtils, gaBrowserSniffer,
+        gaGlobalOptions) {
 
       var d3LibUrl = this.d3libUrl;
       var profileUrl = this.profileUrl;
@@ -184,8 +185,8 @@ goog.require('ga_urlutils_service');
         };
 
         //Hiking time
-        //Source of the formula: Swiss Map online
-        //http://www.swisstopo.ch/swissmaponline
+        //Official formula: http://www.wandern.ch/download.php?id=4574_62003b89
+        //Reference link: http://www.wandern.ch
         this.hikingTime = function(data) {
           var wayTime = 0;
           if (data.length != 0) {
@@ -202,7 +203,7 @@ goog.require('ga_urlutils_service');
                    0.32105, 0.81542, -0.090261, -0.20757,
                    0.010192, 0.028588, -0.00057466, -0.0021842,
                    1.5176e-5, 8.6894e-5, -1.3584e-7, 1.4026e-6
-                    ];
+                ];
 
                 //10ths instead of %
                 var s = (dH * 10.0) / distance;
@@ -503,16 +504,12 @@ goog.require('ga_urlutils_service');
                     'm', 2, true));
 
           //Icon for the distance
-          //the rotated icon-resize-horizontal is used only for now
-          //the icon-resize-vertical will be integrated in the icons
           group.append('text')
-              .attr('font-family', 'FontAwesome')
-              .attr('font-size', '1em')
+              .attr('class', 'ga-profile-dist')
               .attr('x', 400)
-              .attr('y', elevLabelY)
+              .attr('y', elevLabelY + 2)
               .attr('text-anchor', 'left')
-              .attr('transform', 'translate(264, 546) rotate(-90)')
-              .text(' \uf218 ');
+              .text(' \uf220');
 
           //Number for the distance
           group.append('text')
@@ -530,7 +527,7 @@ goog.require('ga_urlutils_service');
               .attr('x', 480)
               .attr('y', elevLabelY)
               .attr('text-anchor', 'left')
-              .text(' \uf017');
+              .text(' \uf219');
 
           //Number for the hiking time
           group.append('text')
@@ -539,7 +536,7 @@ goog.require('ga_urlutils_service');
               .attr('x', 495)
               .attr('y', elevLabelY)
               .style('text-anchor', 'left')
-              .text(timeFilter(this.hikTime));
+              .text(gaTimeFormatFilter(this.hikTime));
 
           return element;
         };
@@ -571,8 +568,8 @@ goog.require('ga_urlutils_service');
               this.dist);
 
           this.group.select('text.ga-profile-hikTime')
-              .text(timeFilter(this.hikTime));
-          };
+              .text(gaTimeFormatFilter(this.hikTime));
+        };
 
         this.update = function(data, size) {
           var that = this;
