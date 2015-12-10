@@ -238,8 +238,8 @@ goog.require('ga_permalink');
           var defineLayerToModify = function() {
 
             // Unregister the events attached to the previous source
-            for (var i in unSourceEvents) {
-              ol.Observable.unByKey(unSourceEvents[i]);
+            while (unSourceEvents.length) {
+              ol.Observable.unByKey(unSourceEvents.pop());
             }
             ol.Observable.unByKey(unLayerVisible);
 
@@ -368,10 +368,9 @@ goog.require('ga_permalink');
             select.setActive(false);
 
             // Unregister the events attached to the source
-            for (var i in unSourceEvents) {
-              ol.Observable.unByKey(unSourceEvents[i]);
+            while (unSourceEvents.length) {
+              ol.Observable.unByKey(unSourceEvents.pop());
             }
-            unSourceEvents = [];
 
             // Remove the layer if no features added
             if (layer && layer.getSource().getFeatures().length == 0) {
