@@ -267,6 +267,7 @@
     "profile_y_label": "Höhe",
     "qrcode_tooltip": "Erstellen Sie einen QRCode und öffnen Sie die Karte auf Ihrem Mobilgerät",
     "queries": "Abfragen (BETA)",
+    "query_alert_more_than_200_results": "Achtung! Ihre Abfrage gibt mehr als 200 Resultate zurück!",
     "query_choose": "Abfrage auswählen:",
     "query_conditions": "Abfragebedingungen",
     "query_custom": "Benutzerdefiniert",

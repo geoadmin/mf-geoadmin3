@@ -267,6 +267,7 @@
     "profile_y_label": "Autezza",
     "qrcode_tooltip": "Creais in QRCode e avris la charta sin Voss apparat movibel",
     "queries": "Filters (BETA)",
+    "query_alert_more_than_200_results": "Achtung! Ihre Abfrage gibt mehr als 200 Resultate zurück!",
     "query_choose": "Tscherner in filter:",
     "query_conditions": "Cundiziuns per il filter",
     "query_custom": "Filter persunalisà",
