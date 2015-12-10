@@ -63,9 +63,9 @@ This can be fixed by running:
     sudo ln -s /usr/bin/nodejs /usr/bin/node 
     #see https://github.com/joyent/node/issues/3911
 
-### Update to the last OpenLayers Version
+### Update to the last OpenLayers/Cesium/OL3-Cesium Version
 
-Use `make ol` to update the `ol.js` and `ol-debug.js` files.
+Use `make ol3cesium` to update the `ol3cesium.js` and `ol3cesium-debug.js` files.
 
 Add the correct version tag
 
@@ -73,7 +73,9 @@ https://github.com/geoadmin/mf-geoadmin3/blob/master/Makefile#20
 
 You can also use an argument to test a new version of ol3, for instance you can do:
 
-    make OL3_VERSION="632205d902f8dcc1f03eb1dd1736d26a1b3ac2a3" ol
+    make OL3_VERSION=627abaf1a71d48627163eb00ea6a0b6fb8dede14 \
+    OL3_CESIUM_VERSION=10c5fcf1565ffdb484c4ef4e42835142f8f45e67 \
+    CESIUM_VERSION=3e3cf938786ee48b4b376ed932904541d798671d ol3cesium
 
 Remember to update the API and API doc at the same time to keep coherency.
 
