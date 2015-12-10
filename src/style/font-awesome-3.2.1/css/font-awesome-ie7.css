@@ -235,3 +235,9 @@ a [class*=" icon-"] {
 .icon-resize-vertical {
   *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf218;');
 }
+.icon-clock-o {
+  *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf219;');
+}
+.icon-resize-horizontal {
+  *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf220;');
+}
