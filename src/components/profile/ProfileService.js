@@ -133,14 +133,6 @@ goog.require('ga_urlutils_service');
           }
         };
 
-        //Augmenting built-in Array object to use Math.max/Math.min
-        Array.prototype.max = function() {
-          return Math.max.apply(null, this);
-        };
-        Array.prototype.min = function() {
-          return Math.min.apply(null, this);
-        };
-
         //Highest & lowest elevation points
         this.elPoints = function(data) {
           if (data.length != 0) {
@@ -148,8 +140,8 @@ goog.require('ga_urlutils_service');
             for (var i = 0; i < data.length; i++) {
               elArray.push(data[i].alts[elevationModel]);
             }
-            var highPoi = elArray.max() || 0;
-            var lowPoi = elArray.min() || 0;
+            var highPoi = d3.max(elArray) || 0;
+            var lowPoi = d3.min(elArray) || 0;
             return [highPoi, lowPoi];
           }
         };

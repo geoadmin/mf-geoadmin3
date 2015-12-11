@@ -251,7 +251,7 @@ goog.provide('ga_measure_service');
           map.getLayers().on('remove', function(evt) {
             if (evt.element === layer) {
               var features = evt.element.getSource().getFeatures();
-              for (var i in features) {
+              for (var i = 0; i < features.length; i++) {
                 this.removeOverlays(features[i]);
               }
             }
@@ -263,7 +263,7 @@ goog.provide('ga_measure_service');
             layer.on('change:visible', function(evt) {
               var visible = evt.target.getVisible();
               var features = evt.target.getSource().getFeatures();
-              for (var i in features) {
+              for (var i = 0; i < features.length; i++) {
                 if (gaMapUtils.isMeasureFeature(features[i])) {
                   if (visible) {
                     this.addOverlays(map, evt.target, features[i]);
@@ -276,11 +276,11 @@ goog.provide('ga_measure_service');
             layer.on('change:opacity', function(evt) {
               var visible = evt.target.getVisible();
               var features = evt.target.getSource().getFeatures();
-              for (var i in features) {
+              for (var i = 0; i < features.length; i++) {
                 if (gaMapUtils.isMeasureFeature(features[i])) {
                   var overlays = features[i].get('overlays') || [];
-                  for (var i in overlays) {
-                    overlays[i].getElement().style.opacity = layer.getOpacity();
+                  for (var j = 0; j < overlays.length; j++) {
+                    overlays[j].getElement().style.opacity = layer.getOpacity();
                   }
                 }
               }

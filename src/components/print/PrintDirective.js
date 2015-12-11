@@ -537,7 +537,7 @@ goog.require('ga_time_service');
             // If a feature has a style with a geometryFunction defined, we
             // must also display this geometry with the good style (used for
             // azimuth).
-            for (var i in styles) {
+            for (var i = 0; i < styles.length; i++) {
               var style = styles[i];
               if (angular.isFunction(style.getGeometry())) {
                 var geom = style.getGeometry()(feature);

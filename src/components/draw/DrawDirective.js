@@ -753,7 +753,7 @@ goog.require('ga_permalink');
               scope.showProfileTab(feature)
             ];
             var cpt = 0;
-            for (var i in bools) {
+            for (var i = 0; i < bools.length; i++) {
               if (bools[i]) {
                  cpt++;
               }
