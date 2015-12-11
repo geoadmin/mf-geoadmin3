@@ -29,7 +29,6 @@ goog.require('ga_time_service');
       gaBrowserSniffer, gaTime) {
     return {
       restrict: 'A',
-      replace: true,
       templateUrl: 'components/timeselector/partials/timeselector-bt.html',
       scope: {
         map: '=gaTimeSelectorBtMap'
@@ -49,12 +48,12 @@ goog.require('ga_time_service');
         var timeEnabledLayers = [];
         var updateStatus = function() {
           if (timeEnabledLayers.length == 0) {
-            scope.isDisable = true;
             scope.isActive = false;
-            return;
+          } else {
+            scope.isActive = !!(gaTime.get());
           }
-          scope.isDisable = false;
-          scope.isActive = !!(gaTime.get());
+          elt.toggleClass('ga-time-selector-enabled',
+              (timeEnabledLayers.length != 0));
         };
 
         // Toggle the state of the component between active and enable

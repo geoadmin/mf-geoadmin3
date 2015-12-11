@@ -1,13 +1,16 @@
 [ga-time-selector-bt] {
   display: none;
-  background: data-uri('time_black.png') center center no-repeat;
+
+  button {
+    background: data-uri('time_black.png') center center no-repeat;
+
+    &.ga-time-selector-active {
+      background-image: data-uri('time_red.png');
+    }
+  }
 
   &.ga-time-selector-enabled {
     display: block;
-  }
- 
-  &.ga-time-selector-active {
-    background-image: data-uri('time_red.png');
   }
 }
 
