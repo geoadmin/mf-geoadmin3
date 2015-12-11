@@ -1,19 +1,20 @@
 [ga-geolocation] {
 
   button {
-    background-image: data-uri('geolocation.png');
-
+    background-size: @control-btn-size-px;
+    background-image: data-uri('geolocationx2.png');
+    
+    &.ga-geolocation-error {
+      background-image: data-uri('geolocation_disabledx2.png');
+      cursor: default;
+    }
+    
     &.ga-geolocation-tracking {
-      background-image: data-uri('geolocation_on.png');
+      background-image: data-uri('geolocation_onx2.png');
     }
 
     &.ga-geolocation-northarrow {
-      background-image: data-uri('geolocation_northarrow.png');
-    }
-
-    &.ga-geolocation-error {
-      background-image: data-uri('geolocation_disabled.png');
-      cursor: default;
+      background-image: data-uri('geolocation_northarrowx2.png');
     }
   }
 }

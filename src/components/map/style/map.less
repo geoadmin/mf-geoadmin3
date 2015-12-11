@@ -2,9 +2,7 @@
   position: relative;
   width: 100%;
   height: 100%;
-  background-color: #f9f9f9;
-  background-image: data-uri('mapbg.png');
-  
+
   .ol-viewport .ol-unselectable {
     .ga-user-select(none);
   }
@@ -21,12 +19,16 @@
     display: block; /*without this, chrome add 3 pixels between zoomin/out buttons*/
   }
 
+  .ol-zoom-in, .ol-zoom-out {
+    background-size: @control-btn-size-px;
+  }
+
   .ol-zoom-in {
-    background-image: data-uri('zoomIn.png');
+    background-image: data-uri('zoomInx2.png');
   }
   
   .ol-zoom-out {
-    background-image: data-uri('zoomOut.png');
+    background-image: data-uri('zoomOutx2.png');
   }
 }
 

@@ -2,10 +2,11 @@
   display: none;
 
   button {
-    background: data-uri('time_black.png') center center no-repeat;
+    background-size: @control-btn-size-px;
+    background-image: data-uri('time_blackx2.png');
 
     &.ga-time-selector-active {
-      background-image: data-uri('time_red.png');
+      background-image: data-uri('time_redx2.png');
     }
   }
 
@@ -176,7 +177,6 @@
 
 .ga-3d-active [ga-time-selector-bt] {
   display: none;
-  background: data-uri('time_black.png') center center no-repeat;
 }
 
 .ga-3d-active [ga-time-selector] {
