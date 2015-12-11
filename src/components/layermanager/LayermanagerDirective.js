@@ -12,7 +12,8 @@ goog.require('ga_urlutils_service');
     'ga_layer_metadata_popup_service',
     'ga_map_service',
     'ga_attribution_service',
-    'ga_urlutils_service'
+    'ga_urlutils_service',
+    'ngDraggable'
   ]);
 
   /**
@@ -125,6 +126,20 @@ goog.require('ga_urlutils_service');
       },
       link: function(scope, element, attrs) {
         var map = scope.map;
+        var drag = {
+          info: $('#drag-info'),
+          above: 'above',
+          under: 'under',
+          scrollSpeed: 10,
+          layerManager: $('[ga-layermanager]'),
+          element: null,
+          position: {
+            index: undefined,
+            direction: undefined
+          },
+          previousClientY: undefined,
+          ty: undefined
+        };
         scope.mobile = gaBrowserSniffer.mobile;
 
         // Compile the time popover template
@@ -137,6 +152,11 @@ goog.require('ga_urlutils_service');
         // watch them.
         scope.layers = map.getLayers().getArray();
         scope.layerFilter = gaLayerFilters.selected;
+        scope.mobile = gaBrowserSniffer.mobile;
+        scope.tools = {
+          enabled: false,
+          index: -1
+        };
         scope.$watchCollection('layers | filter:layerFilter', function(items) {
           scope.filteredLayers = (items) ? items.slice().reverse() : [];
         });
@@ -184,7 +204,130 @@ goog.require('ga_urlutils_service');
           var layersCollection = map.getLayers();
           layersCollection.removeAt(index);
           layersCollection.insertAt(index + delta, layer);
+          scope.tools.index = scope.filteredLayers.indexOf(layer);
           evt.preventDefault();
+        };
+
+        scope.onDropComplete = function(currentLayer, evt) {
+          var currentIndex = scope.filteredLayers.indexOf(currentLayer);
+          if (drag.position.direction === drag.under &&
+              currentIndex > drag.position.index) {
+            drag.position.index++;
+          } else if (drag.position.direction === drag.above &&
+              currentIndex < drag.position.index) {
+            drag.position.index--;
+          }
+
+          if (drag.position.index < 0) {
+            drag.position.index = 0;
+          } else if (drag.position.index >= scope.layers.length) {
+            drag.position.index = scope.layers.length - 1;
+          }
+          evt.event.stopPropagation();
+          evt.event.preventDefault();
+          if (currentLayer) {
+            var layersCollection = map.getLayers();
+            var index = scope.layers.indexOf(currentLayer);
+            layersCollection.removeAt(index);
+            var correctedIndex = scope.layers.length - drag.position.index;
+            layersCollection.insertAt(correctedIndex, currentLayer);
+          }
+        };
+
+        scope.onDragStart = function() {
+          if (!drag.element) {
+            drag.element = $('.dragging');
+            // Use the original position the dragged element as an absolute
+            // position so it doesn't go off the layer manager during drag and
+            // drop.
+            drag.element.css('top', drag.element.position().top + 'px');
+            drag.element.css('position', 'absolute');
+
+            // The size of #drag-info can be incorrect and not match the actual
+            // size of the ul element. We correct it before to start the drag
+            // and drop.
+            var list = $('[ga-layermanager] ul').get(0);
+            var listWidth = getComputedStyle(list).width;
+            drag.info.css('width', listWidth);
+
+            drag.layerManager.mousemove(function(evt) {
+              updateDragInfo(evt);
+              scrollLayerManager();
+            });
+          }
+        };
+
+        var updateDragInfo = function(evt) {
+          if (drag.previousClientY) {
+            drag.ty = evt.clientY - drag.previousClientY;
+            drag.previousClientY = evt.clientY;
+
+            drag.info.hide();
+            showDragInfo();
+          } else {
+            drag.previousClientY = evt.clientY;
+          }
+        };
+
+        var showDragInfo = function() {
+          var direction;
+          if (drag.ty > 0) {
+            direction = drag.under;
+          } else if (drag.ty < 0) {
+            direction = drag.above;
+          }
+          $('li.drag-enter').each(function(index, elt) {
+            if ($(elt).attr('class').indexOf('dragging') === -1 &&
+                drag.ty !== 0) {
+              drag.position.index = $('[ga-layermanager] li').index(elt);
+              drag.position.direction = direction;
+              updateDragInfoElement(elt);
+            }
+          });
+        };
+
+        var updateDragInfoElement = function(elt) {
+          var elementPosition = $(elt).position().top;
+          var elementHeight = $(elt).height();
+          if (drag.position.direction === drag.under) {
+            drag.info.css('top', elementPosition + elementHeight - 5);
+          } else if (drag.position.direction === drag.above) {
+            drag.info.css('top', elementPosition - 5);
+          }
+          drag.info.show();
+        };
+
+        var scrollLayerManager = function() {
+          var upperBound = $('#selectionHeading').position().top +
+              $('#selectionHeading').height();
+          var lowerBound = $('#selection .ga-more-layers').position().top;
+
+          var elementTop = drag.element.position().top -
+              drag.element.height();
+          var elementBottom = drag.element.position().top +
+              drag.element.height();
+
+          if (elementBottom >= lowerBound) {
+            var scrollValue = drag.layerManager.scrollTop() +
+                drag.scrollSpeed;
+            drag.layerManager.scrollTop(scrollValue);
+          } else if (elementTop <= upperBound) {
+            var scrollValue = drag.layerManager.scrollTop() -
+                drag.scrollSpeed;
+            drag.layerManager.scrollTop(scrollValue);
+          }
+        };
+
+        scope.onDragStop = function() {
+          if (drag.element) {
+            drag.info.hide();
+            drag.layerManager.off('mousemove');
+            drag.element.css('top', '');
+            drag.element.css('position', '');
+            drag.element = null;
+            drag.previousClientY = undefined;
+            drag.ty = undefined;
+          }
         };
 
         scope.removeLayer = function(layer) {
@@ -239,15 +382,14 @@ goog.require('ga_urlutils_service');
         }
 
         // Toggle layer tools for small screen
-        element.on('click', '.icon-gear', function() {
-          var li = $(this).closest('li');
-          li.toggleClass('ga-layer-folded');
-          $(this).closest('ul').find('li').each(function(i, el) {
-            if (el != li[0]) {
-              $(el).addClass('ga-layer-folded');
-            }
-          });
-        });
+        scope.toggleTools = function($index) {
+          if (scope.tools.index === $index) {
+            scope.tools.enabled = !scope.tools.enabled;
+          } else {
+            scope.tools.enabled = true;
+          }
+          scope.tools.index = $index;
+        };
 
         if (!scope.mobile) {
           // Display the third party data tooltip

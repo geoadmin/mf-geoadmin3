@@ -1,17 +1,27 @@
+<div id="drag-info"></div>
 <ul>
   <li ng-repeat="layer in filteredLayers" class="ga-layer-folded"
       ng-class="{
         'ga-layer-time-enabled': layer.timeEnabled,
-        'ga-layer-warning': layer.useThirdPartyData
-      }">
+        'ga-layer-warning': layer.useThirdPartyData,
+        'ga-layer-folded': !tools.enabled || tools.index !== $index
+      }"
+      ng-drop="true"
+      ng-drop-success="onDropComplete($data, $event)"
+      ng-drag="!tools.enabled || tools.index != $index"
+      ng-drag-start="onDragStart()"
+      ng-drag-stop="onDragStop()"
+      ng-drag-data="layer">
     <div class="ga-layer-infos">
-      <button class="ga-icon ga-btn icon-remove-sign"
+      <div class="ga-layer-label-container">
+        <button class="ga-icon ga-btn icon-remove-sign"
               ng-click="removeLayer(layer)"></button>
-      <label class="ga-checkbox">
-        <input type="checkbox" ng-model="layer.visible" />
-        <span></span>
-        {{layer.label}}
-      </label>
+        <span class="ga-checkbox">
+          <input type="checkbox" ng-model="layer.visible" />
+          <span></span>
+          {{layer.label}}
+        </span>
+      </div>
       <div class="ga-layer-time" ng-if="layer.timeEnabled">
         <button class="ga-btn badge" tabindex="1"
                 ng-class="isDefaultValue(layer.time)"
@@ -24,11 +34,9 @@
       </div>
       <button class="ga-icon ga-btn icon-user"
               ng-click="showWarning(layer)"></button>
-      <!--button ng-if="isBodLayer(layer)" class="ga-icon ga-btn icon-info-sign"
-              ng-click="displayLayerMetadata($event, layer)"></button-->
-      <button class="ga-icon icon-gear"></button>
+      <button class="ga-icon icon-gear" ng-click="toggleTools($index)"></button>
     </div><!--ga-layer-infos-->
-    <div class="ga-layer-tools"">
+    <div class="ga-layer-tools" ng-if="tools.enabled && tools.index === $index">
       <label>
         <div translate>transparency</div>&nbsp;
         <input  ng-if="useRange" type="range" min="0" max="1" step="0.05" value="1" ng-model="layer.invertedOpacity"/>

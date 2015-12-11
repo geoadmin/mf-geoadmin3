@@ -278,6 +278,7 @@ prd/lib/build.js: src/lib/jquery-2.0.3.min.js \
 		    src/lib/ol3cesium.js \
 		    src/lib/angular-translate.min.js \
 		    src/lib/angular-translate-loader-static-files.min.js \
+		    src/lib/ngDraggable.js \
 		    src/lib/fastclick.min.js \
 		    src/lib/localforage.min.js \
 		    src/lib/filesaver.min.js \
