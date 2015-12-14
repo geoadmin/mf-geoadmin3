@@ -164,12 +164,15 @@ button.ga-btn, .ol-control button {
     cursor: not-allowed;
   }
 
-  &:hover:not[disabled] {
-    opacity: 0.7;
-  }
+  &:not([disabled]) {
+    .transition-transform(.2s);
 
-  &:active {
-    .scale(1.2);
+    &:hover {
+      opacity: 0.7;
+    }
+    &:active {
+      .scale(1.2);
+    }
   }
 }
 
