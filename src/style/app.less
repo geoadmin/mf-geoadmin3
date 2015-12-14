@@ -662,43 +662,26 @@ a .ga-icon-separator {
 // ****** PULLDOWN
 // Default state is collapsed
 #pulldown {
-  position: absolute;
-  width: unit(@pulldown-width, px);
-  height: 0;
-  z-index: 1000;
-  top: unit(@header-height, px);
-  left: 0;
-  .transition(top 1s ease);
-
-  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
-    top: unit(@small-header-height, px);
-  }
-  
-  @media (max-width: @screen-phone) {
-    width: 100%;
-    z-index: 1100;
-    top: 0;
-  }
 
   .ga-pulldown-shadow {
-    position: absolute;
-    background: #000;
-    opacity: 0;
-    .translate3d(-100%, 0, 0);
-    .transition-transform(~"0s .3s, opacity .3s");
-    -ms-transform: translateX(-100%); /* IE 9*/
-
     @media (max-width: @screen-phone) {
+      position: absolute;
       width: 100%;
-      height: 1000px;
+      height: 100%;
+      z-index: 1100;
+      top: 0;
+      background: #000;
+      opacity: 0;
+      .translate3d(-100%, 0, 0);
+      .transition-transform(~"0s .3s, opacity .3s");
+      -ms-transform: translateX(-100%); /* IE 9*/
     }
   }
 
   &.ga-pulldown-shown .ga-pulldown-shadow {
-    .transition(opacity .3s);
-
     @media (max-width: @screen-phone) {
       opacity: 0.5;
+      .transition(opacity .3s);
       .translate3d(0, 0, 0);
       -ms-transform: translateX(0); /* IE 9*/
     }
@@ -784,17 +767,25 @@ a .ga-icon-separator {
 }
 
 #pulldown-content {
+  position: absolute;
+  width: unit(@pulldown-width, px);
+  top: unit(@header-height, px);
   .box-shadow(6px 6px 12px rgba(0, 0, 0, 0.175));
-  .transition-transform(.3s ease);
+  .transition-transform(~".3s, width 0s .3s, top 1s");
   .translate3d(0, -100%, 0);
   -ms-transform: translateY(-100%); /* IE 9*/
 
-  @media (max-width: @screen-phone) {
-    .translate3d(100%, 0, 0);
+  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
+    top: unit(@small-header-height, px);
   }
 
   @media (max-width: @screen-phone) {
-    margin-left: 20px;
+    z-index: 1100;
+    top: 0;
+    right: 0;
+    width: 0;
+    overflow: hidden;
+    .translate3d(100%, 0, 0);
 
     #shareHeading {
       display: none;
@@ -851,8 +842,14 @@ a .ga-icon-separator {
 }
 
 .ga-pulldown-shown #pulldown-content {
+  .transition-transform(.3s);
   .translate3d(0, 0, 0);
   -ms-transform: translateY(0); /* IE 9*/
+
+  @media (max-width: @screen-phone) {
+    width: 96%;
+    .transition-delay(.1s); /* delay of .1s needed for Safari */
+  }
 }
 
 /* Default state is collapsed */
