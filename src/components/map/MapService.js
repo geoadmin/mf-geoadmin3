@@ -752,7 +752,10 @@ goog.require('ga_urlutils_service');
               }
 
               if (options.zoomToExtent) {
-                olMap.getView().fit(olLayer.getExtent(), olMap.getSize());
+                var extent = olLayer.getExtent();
+                if (extent) {
+                  olMap.getView().fit(extent, olMap.getSize());
+                }
               }
             }
           });
