@@ -1,26 +1,31 @@
 goog.provide('ga_rotate_directive');
+
+goog.require('ga_map_service');
 (function() {
 
-  var module = angular.module('ga_rotate_directive', []);
+  var module = angular.module('ga_rotate_directive', [
+    'ga_map_service'
+  ]);
 
   module.directive('gaRotate', function(gaMapUtils) {
     return {
       restrict: 'A',
-      replace: true,
+      templateUrl: 'components/rotate/partials/rotate.html',
       scope: {
         map: '=gaRotateMap'
       },
-      template: '<button></button>',
       link: function(scope, element, attrs) {
         var map = scope.map;
         var view = map.getView();
+        var bt = element.find('button');
         var setButtonRotation = function(rotation) {
           var rotateString = 'rotate(' + rotation + 'deg)';
-          element.css({
+          bt.css({
             'transform': rotateString,
             '-ms-transform': rotateString,
             '-webkit-transform': rotateString
-          }).toggleClass('ga-rotate-enabled', !(rotation == 0));
+          });
+          element.toggleClass('ga-rotate-enabled', !(rotation == 0));
         };
 
         // Button is rotated according to map rotation
@@ -29,8 +34,7 @@ goog.provide('ga_rotate_directive');
         });
 
         // Button event - map rotation is animated
-        element.bind('click', function(e) {
-          e.preventDefault();
+        bt.on('click', function(e) {
           gaMapUtils.resetMapToNorth(map);
         });
       }

@@ -220,9 +220,9 @@ itemscope itemtype="http://schema.org/WebApplication"
   % if device != 'embed':
         <div ga-time-selector-bt ga-time-selector-bt-map="map"></div> 
   % endif
-        <div ga-rotate ga-rotate-map="map" ng-show="!globals.is3dActive"></div>
+        <div ga-rotate ga-rotate-map="map"></div>
   % if device == 'mobile':
-        <div ga-offline-bt ng-show="!globals.is3dActive"></div>
+        <div ga-offline-bt></div>
   % endif
       </div>
       <div ga-swipe 

@@ -1,18 +1,20 @@
 [ga-geolocation] {
-  display: block;
-  background-image: data-uri('geolocation.png');
-  
-  &.ga-geolocation-error {
-    background-image: data-uri('geolocation_disabled.png');
-    cursor: default;
-  }
-  
-  &.ga-geolocation-tracking {
-    background-image: data-uri('geolocation_on.png');
-  }
 
-  &.ga-geolocation-northarrow {
-    background-image: data-uri('geolocation_northarrow.png');
+  button {
+    background-image: data-uri('geolocation.png');
+
+    &.ga-geolocation-tracking {
+      background-image: data-uri('geolocation_on.png');
+    }
+
+    &.ga-geolocation-northarrow {
+      background-image: data-uri('geolocation_northarrow.png');
+    }
+
+    &.ga-geolocation-error {
+      background-image: data-uri('geolocation_disabled.png');
+      cursor: default;
+    }
   }
 }
 

@@ -1,9 +1,16 @@
 [ga-rotate] {
   display: none;
-  background-image: data-uri('northarrow.png');
+
+  button {
+    background-image: data-uri('northarrow.png');
+
+  }
 
   &.ga-rotate-enabled {
     display: block;
   }
 }
 
+.ga-3d-active [ga-rotate] {
+  display: none!important;
+}

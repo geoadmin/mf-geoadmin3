@@ -182,8 +182,17 @@ goog.require('ga_urlutils_service');
         scope.moveLayer = function(evt, layer, delta) {
           var index = scope.layers.indexOf(layer);
           var layersCollection = map.getLayers();
+          var insertIndex;
+          // Find the next/previous layer with zIndex=0
+          for (var i = index + delta; i < layersCollection.getLength() ||
+              i >= 0; i += delta) {
+            if (layersCollection.item(i).getZIndex() == 0) {
+              insertIndex = i;
+              break;
+            }
+          }
           layersCollection.removeAt(index);
-          layersCollection.insertAt(index + delta, layer);
+          layersCollection.insertAt(insertIndex, layer);
           evt.preventDefault();
         };
 
