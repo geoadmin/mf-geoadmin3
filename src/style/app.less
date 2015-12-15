@@ -772,6 +772,7 @@ a .ga-icon-separator {
 #pulldown-content {
   position: absolute;
   width: unit(@pulldown-width, px);
+  z-index: 600;
   top: unit(@header-height, px);
   .box-shadow(6px 6px 12px rgba(0, 0, 0, 0.175));
   .transition-transform(~".3s, width 0s .3s, top 1s");
@@ -1706,11 +1707,15 @@ body:not(.embed) {
 /* Different positions */
 
 .corner-ribbon.top-left{
-  top: 130px;
+  top: 150px;
   left: -50px;
   .rotate(-45deg);
 
   @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
+    top: 108px;
+  }
+
+  @media (max-width: @screen-phone) {
     top: 70px;
   }
 }
