@@ -973,14 +973,18 @@ goog.require('ga_urlutils_service');
                 }
               });
 
-              // Terain
+              // Terrain
+              var lang = gaLang.get();
+              if (lang == 'rm') {
+                lang = 'de';
+              }
               response.data['ch.swisstopo.terrain.3d'] = {
                 type: 'terrain',
                 serverLayerName: 'ch.swisstopo.terrain.3d',
                 timestamps: ['20151231'],
                 attribution: 'swisstopo',
                 attributionUrl: 'http://www.swisstopo.admin.ch/internet/' +
-                    'swisstopo/' + gaLang.get() + '/home.html'
+                    'swisstopo/' + lang + '/home.html'
               };
             }
             if (!layers) { // First load
