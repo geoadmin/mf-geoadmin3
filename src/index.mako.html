@@ -588,7 +588,7 @@ itemscope itemtype="http://schema.org/WebApplication"
           </div>
           <div class="panel panel-default">
             <a class="panel-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#accordion-tree"
-               ga-collapsible-show="options.featuresShown">
+               ga-collapsible-show="options.featuresShown" ng-class="{'ga-query-more-results': options.hasMoreResults}">
               <span translate>items</span> {{getItemText()}}
               <div ng-show='printInProgress' class='pull-right'>{{printProgressPercentage}}%</div>
             </a>
