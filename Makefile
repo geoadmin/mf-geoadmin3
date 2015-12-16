@@ -216,6 +216,14 @@ fastclick: .build-artefacts/fastclick
 	    --compilation_level SIMPLE_OPTIMIZATIONS \
 	    --js_output_file  src/lib/fastclick.min.js
 
+.PHONY: slipjs
+slipjs: node_modules
+	java -jar node_modules/google-closure-compiler/compiler.jar \
+	    src/lib/slip.js \
+	    --compilation_level SIMPLE_OPTIMIZATIONS \
+	    --language_in ECMASCRIPT5 \
+	    --js_output_file src/lib/slip.min.js
+
 .PHONY: typeahead
 typeahead:
 	java -jar node_modules/google-closure-compiler/compiler.jar \
@@ -269,6 +277,7 @@ prd/lib/: src/lib/d3.min.js \
 	cp -rf  $^ $@
 
 prd/lib/build.js: src/lib/jquery.min.js \
+	    src/lib/slip.min.js \
 	    src/lib/bootstrap.min.js \
 	    src/lib/moment-with-customlocales.min.js \
 	    src/lib/typeahead-0.9.3.min.js \
@@ -455,12 +464,14 @@ node_modules: JQUERY = jquery.js jquery.min.js
 node_modules: JQUERYXDOMAIN = jQuery.XDomainRequest.js  jquery.xdomainrequest.min.js
 node_modules: D3 = d3.js  d3.min.js
 node_modules: BOOTSTRAP = bootstrap.js bootstrap.min.js
+node_modules: SLIPJS = slip.js
 node_modules: package.json
 	npm install
 	cp $(addprefix node_modules/angular/,$(ANGULAR_JS)) src/lib/;
 	cp $(addprefix node_modules/angular-translate/dist/,$(ANGULAR_TRANSLATE_JS)) src/lib/;
 	cp $(addprefix node_modules/angular-translate/dist/angular-translate-loader-static-files/,$(ANGULAR_TRANSLATE_LOADER_JS)) src/lib/;
 	cp $(addprefix node_modules/localforage/dist/,$(LOCALFORAGE)) src/lib/;
+	cp $(addprefix node_modules/slipjs/,$(SLIPJS)) src/lib;
 	cp $(addprefix node_modules/jquery/dist/,$(JQUERY)) src/lib/;
 	cp $(addprefix node_modules/jquery-ajax-transport-xdomainrequest/,$(JQUERYXDOMAIN)) src/lib/;
 	cp $(addprefix node_modules/d3/,$(D3)) src/lib/;
@@ -480,6 +491,7 @@ node_modules: package.json
 	    --externs externs/ol.js \
 	    --externs externs/ol3-cesium.js \
 	    --externs externs/Cesium.externs.js \
+	    --externs externs/slip.js \
 	    --externs externs/angular.js \
 	    --externs externs/jquery.js \
 	    --js_output_file $@

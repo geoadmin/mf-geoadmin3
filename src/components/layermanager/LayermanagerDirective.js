@@ -139,7 +139,66 @@ goog.require('ga_urlutils_service');
         scope.layerFilter = gaLayerFilters.selected;
         scope.$watchCollection('layers | filter:layerFilter', function(items) {
           scope.filteredLayers = (items) ? items.slice().reverse() : [];
+          scope.enableDragAndDrop();
         });
+
+        // Use to disable drag and drop if the user drops the layer at its
+        // initial place.
+        var dragging = false;
+        var slip;
+        var list;
+
+        var slipReorderCallback = function(evt) {
+          // The slip:reorder may be fired multiple times. If the dropped
+          // already took place, we mustn't do anything.
+          if (!dragging) {
+            evt.preventDefault();
+            return;
+          }
+
+          var delta = evt.detail.originalIndex - evt.detail.spliceIndex;
+          var layer = scope.filteredLayers[evt.detail.originalIndex];
+
+          if (delta !== 0) {
+            evt.target.parentNode.insertBefore(
+                evt.target, evt.detail.insertBefore);
+            scope.moveLayer(evt, layer, delta);
+            scope.disableDragAndDrop();
+          }
+        };
+
+        scope.disableDragAndDrop = function() {
+          if (gaBrowserSniffer.msie && gaBrowserSniffer.msie < 10) {
+            return;
+          }
+
+
+          dragging = false;
+          if (slip) {
+            slip.detach();
+            list.removeEventListener('slip:reorder', slipReorderCallback);
+          }
+          // Force a $digest so the new order of the layers is correctly taken
+          // into account.
+          scope.$applyAsync();
+        };
+
+        scope.enableDragAndDrop = function() {
+          if (gaBrowserSniffer.msie && gaBrowserSniffer.msie < 10) {
+            return;
+          }
+
+          dragging = true;
+
+          list = element.find('> ul').get(0);
+          if (!slip) {
+            slip = new Slip(list);
+          } else {
+            slip.attach(list);
+          }
+
+          list.addEventListener('slip:reorder', slipReorderCallback);
+        };
 
         // On mobile we use a classic select box, on desktop a popover
         if (!scope.mobile) {
@@ -186,7 +245,7 @@ goog.require('ga_urlutils_service');
           // Find the next/previous layer with zIndex=0
           for (var i = index + delta; i < layersCollection.getLength() ||
               i >= 0; i += delta) {
-            if (layersCollection.item(i).getZIndex() == 0) {
+            if (layersCollection.item(i).getZIndex() === 0) {
               insertIndex = i;
               break;
             }
