@@ -517,7 +517,7 @@ goog.require('ga_urlutils_service');
           group.append('text')
               .attr('class', 'ga-profile-icon')
               .attr('x', 480)
-              .attr('y', elevLabelY)
+              .attr('y', elevLabelY + 1)
               .attr('text-anchor', 'start')
               .text(' \uf219');
 
