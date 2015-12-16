@@ -250,7 +250,9 @@ button.ga-btn, .ol-control button {
     display: none;
   }
 
-  #pulldown {
+  #pulldown-content {
+    top: unit(@small-header-height, px);
+
     @media (max-width: @screen-phone) {
       top: 0px;
     }
@@ -1104,7 +1106,7 @@ a .ga-icon-separator {
   }
 }
 
-[ga-context-popup], [ga-offline-menu], .homescreen, [ga-share], .ga-draw-modify {
+[ga-context-popup], [ga-offline-menu], .homescreen, #gaEmbedModal, .ga-draw-modify {
   .popover-title, .modal-header {
     position: relative;
     padding-right: 0px;

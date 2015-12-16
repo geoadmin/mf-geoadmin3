@@ -169,7 +169,7 @@ goog.require('ga_permalink');
 
           // Load the content of iframe only when necessary
           var pulldown = $('#pulldown');
-          element.find('.modal').on('show.bs.modal', function() {
+          var modal = element.find('.modal').on('show.bs.modal', function() {
             // TODO: remove this hack and find something cleaner
             pulldown.css('z-index', 1040);
           }).on('shown.bs.modal', function() {
@@ -185,9 +185,12 @@ goog.require('ga_permalink');
             pulldown.css('z-index', '');
           });
 
+          // HACK: change the way to call modal.
+          $(document.body).append(modal);
+
           // Display a preview window
           var previewWindow;
-          element.find('.form-inline a').click(function() {
+          modal.find('.form-inline a').click(function() {
             if (previewWindow) {
               previewWindow.close();
             }
@@ -201,7 +204,7 @@ goog.require('ga_permalink');
 
           // Manage minimal size
           var minSize = 200;
-          element.find('.form-inline input').blur(function() {
+          modal.find('.form-inline input').blur(function() {
             if (scope.iframeWidth < minSize ||
                 scope.iframeHeight < minSize) {
               scope.$apply(function() {
