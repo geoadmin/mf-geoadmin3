@@ -410,7 +410,7 @@ goog.require('ga_urlutils_service');
               .attr('class', 'ga-profile-icon')
               .attr('x', 0)
               .attr('y', elevLabelY)
-              .attr('text-anchor', 'left')
+              .attr('text-anchor', 'start')
               .text(' \uf218 ');
 
           //Number for total elevation diff
@@ -419,7 +419,7 @@ goog.require('ga_urlutils_service');
               .attr('font-size', '0.9em')
               .attr('x', 12)
               .attr('y', elevLabelY)
-              .style('text-anchor', 'left')
+              .style('text-anchor', 'start')
               .text(measureFilter(this.diff,
                     'distance', 'm', 2, true));
 
@@ -428,7 +428,7 @@ goog.require('ga_urlutils_service');
               .attr('class', 'ga-profile-icon-updown')
               .attr('x', 80)
               .attr('y', elevLabelY + 4)
-              .attr('text-anchor', 'left')
+              .attr('text-anchor', 'start')
               .text(' \uf213 ');
 
           //Number for elevation Up
@@ -437,7 +437,7 @@ goog.require('ga_urlutils_service');
               .attr('font-size', '0.9em')
               .attr('x', 102)
               .attr('y', elevLabelY)
-              .style('text-anchor', 'left')
+              .style('text-anchor', 'start')
               .text(measureFilter(twoDiff[0],
                     'distance', 'm', 2, true));
 
@@ -446,7 +446,7 @@ goog.require('ga_urlutils_service');
               .attr('class', 'ga-profile-icon-updown')
               .attr('x', 160)
               .attr('y', elevLabelY + 4)
-              .attr('text-anchor', 'left')
+              .attr('text-anchor', 'start')
               .text(' \uf212 ');
 
           //Number for elevation Down
@@ -455,7 +455,7 @@ goog.require('ga_urlutils_service');
               .attr('font-size', '0.9em')
               .attr('x', 182)
               .attr('y', elevLabelY)
-              .style('text-anchor', 'left')
+              .style('text-anchor', 'start')
               .text(measureFilter(twoDiff[1], 'distance',
                     'm', 2, true));
 
@@ -464,7 +464,7 @@ goog.require('ga_urlutils_service');
               .attr('class', 'ga-profile-icon')
               .attr('x', 240)
               .attr('y', elevLabelY)
-              .attr('text-anchor', 'left')
+              .attr('text-anchor', 'start')
               .text(' \uf217');
 
           //Number for highest point
@@ -473,7 +473,7 @@ goog.require('ga_urlutils_service');
               .attr('font-size', '0.9em')
               .attr('x', 258)
               .attr('y', elevLabelY)
-              .style('text-anchor', 'left')
+              .style('text-anchor', 'start')
               .text(measureFilter(elPoi[0], 'distance',
                     'm', 2, true));
 
@@ -482,7 +482,7 @@ goog.require('ga_urlutils_service');
               .attr('class', 'ga-profile-icon')
               .attr('x', 320)
               .attr('y', elevLabelY)
-              .attr('text-anchor', 'left')
+              .attr('text-anchor', 'start')
               .text(' \uf214');
 
           //Number for the lowest point
@@ -491,7 +491,7 @@ goog.require('ga_urlutils_service');
               .attr('font-size', '0.9em')
               .attr('x', 338)
               .attr('y', elevLabelY)
-              .style('text-anchor', 'left')
+              .style('text-anchor', 'start')
               .text(measureFilter(elPoi[1], 'distance',
                     'm', 2, true));
 
@@ -500,7 +500,7 @@ goog.require('ga_urlutils_service');
               .attr('class', 'ga-profile-dist')
               .attr('x', 400)
               .attr('y', elevLabelY + 2)
-              .attr('text-anchor', 'left')
+              .attr('text-anchor', 'start')
               .text(' \uf220');
 
           //Number for the distance
@@ -509,7 +509,7 @@ goog.require('ga_urlutils_service');
               .attr('font-size', '0.9em')
               .attr('x', 415)
               .attr('y', elevLabelY)
-              .style('text-anchor', 'left')
+              .style('text-anchor', 'start')
               .text(measureFilter(this.dist, 'distance',
                     ['km', 'm'], 2, true));
 
@@ -518,7 +518,7 @@ goog.require('ga_urlutils_service');
               .attr('class', 'ga-profile-icon')
               .attr('x', 480)
               .attr('y', elevLabelY)
-              .attr('text-anchor', 'left')
+              .attr('text-anchor', 'start')
               .text(' \uf219');
 
           //Number for the hiking time
@@ -527,7 +527,7 @@ goog.require('ga_urlutils_service');
               .attr('font-size', '0.9em')
               .attr('x', 495)
               .attr('y', elevLabelY)
-              .style('text-anchor', 'left')
+              .style('text-anchor', 'start')
               .text(gaTimeFormatFilter(this.hikTime));
 
           return element;
