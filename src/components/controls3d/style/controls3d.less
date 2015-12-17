@@ -4,13 +4,13 @@
   text-align: center;
   right: 0;
   left: 0;
-  bottom: 51px;
+  bottom: unit(@bt-bottom, px);
   margin-left: auto;
   margin-right: auto;
   width: 200px;
   z-index: 600;
   @media (max-width: @screen-tablet) {
-    bottom: 26px;
+    bottom: unit(@bt-bottom-sm, px);
     width: 120px;
     height: 44px;
   }
@@ -25,16 +25,19 @@
     text-align: center;
     border-radius: 37px;
     background-color: rgba(255,255,255,0.5);
-    height: 105px;
+    height: 110px;
     width: 74px;
+    padding-top: 5px;
     @media (max-width: @screen-tablet) {
       background: none;
       width: 50px;
       height: auto;
+      padding: 0;
     }
     .ga-indicator {
       width: 64px;
       height: 64px;
+      .transition(none);
 
       @media (max-width: @screen-tablet) {
         width: 44px;

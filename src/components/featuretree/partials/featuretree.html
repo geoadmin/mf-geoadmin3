@@ -1,8 +1,9 @@
 <ul>
   <li ng-repeat="layer in tree">
-    <label ng-click="layer.open = !layer.open" class="ga-truncate-text">
+    <label ng-click="layer.open = !layer.open" class="ga-truncate-text"
+        title="{{ layer.hasMoreResults ? 'query_alert_more_than_200_results' : '' | translate }}">
       <i ng-class="{'icon-minus': layer.open, 'icon-plus': !layer.open}"></i>
-      {{layer.label}}
+      <span ng-bind-html="layer.label"></span>
     </label>
     <ul ng-if="layer.open" class="ga-feature">
       <li ng-repeat="feature in layer.features track by $index"

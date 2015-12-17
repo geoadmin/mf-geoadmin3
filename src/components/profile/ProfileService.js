@@ -8,6 +8,28 @@ goog.require('ga_urlutils_service');
     'pascalprecht.translate'
   ]);
 
+  module.filter('gaTimeFormat', function() {
+    return function(minutes) {
+      // if the float is not a number, we display a '-'
+      if (!angular.isNumber(minutes) || !isFinite(minutes)) {
+        return '-';
+      }
+      if (minutes >= 0) {
+        if (minutes >= 60) {
+          var hours = Math.floor(minutes / 60);
+          minutes = minutes - hours * 60;
+        }
+        if (hours) {
+          return hours + 'h ' + minutes + 'min';
+        } else {
+          return minutes + 'min';
+        }
+      } else {
+        return '-';
+      }
+    }
+  });
+
   module.provider('gaProfile', function() {
     var d3;
 
@@ -47,7 +69,8 @@ goog.require('ga_urlutils_service');
     };
 
     this.$get = function($q, $http, $timeout, $translate, measureFilter,
-        $window, gaUrlUtils, gaBrowserSniffer, gaGlobalOptions) {
+        gaTimeFormatFilter, $window, gaUrlUtils, gaBrowserSniffer,
+        gaGlobalOptions) {
 
       var d3LibUrl = this.d3libUrl;
       var profileUrl = this.profileUrl;
@@ -133,14 +156,6 @@ goog.require('ga_urlutils_service');
           }
         };
 
-        //Augmenting built-in Array object to use Math.max/Math.min
-        Array.prototype.max = function() {
-          return Math.max.apply(null, this);
-        };
-        Array.prototype.min = function() {
-          return Math.min.apply(null, this);
-        };
-
         //Highest & lowest elevation points
         this.elPoints = function(data) {
           if (data.length != 0) {
@@ -148,15 +163,62 @@ goog.require('ga_urlutils_service');
             for (var i = 0; i < data.length; i++) {
               elArray.push(data[i].alts[elevationModel]);
             }
-            var highPoi = elArray.max() || 0;
-            var lowPoi = elArray.min() || 0;
+            var highPoi = d3.max(elArray) || 0;
+            var lowPoi = d3.min(elArray) || 0;
             return [highPoi, lowPoi];
           }
         };
 
+        //Distance
         this.distance = function(data) {
           if (data.length != 0) {
             return data[data.length - 1].dist;
+          }
+        };
+
+        //Hiking time
+        //Official formula: http://www.wandern.ch/download.php?id=4574_62003b89
+        //Reference link: http://www.wandern.ch
+        this.hikingTime = function(data) {
+          var wayTime = 0;
+          if (data.length != 0) {
+            for (var i = 1; i < data.length; i++) {
+              //for (data.length - 1) line segments the time is calculated
+              var distance = (data[i].dist - data[i - 1].dist) || 0;
+              if (distance != 0) {
+                var dH = (data[i].alts[elevationModel] -
+                    data[i - 1].alts[elevationModel]) || 0;
+
+                //Constants of the formula
+                var arrConstants = [
+                  14.271, 3.6992, 2.5922, -1.4384,
+                   0.32105, 0.81542, -0.090261, -0.20757,
+                   0.010192, 0.028588, -0.00057466, -0.0021842,
+                   1.5176e-5, 8.6894e-5, -1.3584e-7, 1.4026e-6
+                ];
+
+                //10ths instead of %
+                var s = (dH * 10.0) / distance;
+
+                //The swiss hiking formula is used between -25% and +25%
+                //(used to be -40% to +40%, which leads to a strange behaviour)
+                if (s > -2.5 && s < 2.5) {
+                  var minutesPerKilometer = 0.0;
+                  for (var j = 0; j < 15; j++) {
+                    minutesPerKilometer += arrConstants[j] * Math.pow(s, j);
+                  }
+                } else {
+                  //outside the -25% to +25% range, we use a linear formula
+                  if (s > 0) {
+                    minutesPerKilometer = (17 * s);
+                  } else {
+                    minutesPerKilometer = (-9 * s);
+                  }
+                }
+              }
+              wayTime += (distance * minutesPerKilometer / 1000);
+            }
+            return Math.round(wayTime);
           }
         };
 
@@ -247,10 +309,12 @@ goog.require('ga_urlutils_service');
           this.diff = this.elevDiff(data);
           //for the total elevation up & total elevation down
           var twoDiff = this.twoElevDiff(data);
-          //fot the highest and the lowest elevation points
+          //for the highest and the lowest elevation points
           var elPoi = this.elPoints(data);
           //for the distance
           this.dist = this.distance(data);
+          //for the hiking time
+          this.hikTime = this.hikingTime(data);
 
           this.data = this.formatData(data);
 
@@ -346,7 +410,7 @@ goog.require('ga_urlutils_service');
               .attr('class', 'ga-profile-icon')
               .attr('x', 0)
               .attr('y', elevLabelY)
-              .attr('text-anchor', 'left')
+              .attr('text-anchor', 'start')
               .text(' \uf218 ');
 
           //Number for total elevation diff
@@ -355,7 +419,7 @@ goog.require('ga_urlutils_service');
               .attr('font-size', '0.9em')
               .attr('x', 12)
               .attr('y', elevLabelY)
-              .style('text-anchor', 'left')
+              .style('text-anchor', 'start')
               .text(measureFilter(this.diff,
                     'distance', 'm', 2, true));
 
@@ -364,7 +428,7 @@ goog.require('ga_urlutils_service');
               .attr('class', 'ga-profile-icon-updown')
               .attr('x', 80)
               .attr('y', elevLabelY + 4)
-              .attr('text-anchor', 'left')
+              .attr('text-anchor', 'start')
               .text(' \uf213 ');
 
           //Number for elevation Up
@@ -373,7 +437,7 @@ goog.require('ga_urlutils_service');
               .attr('font-size', '0.9em')
               .attr('x', 102)
               .attr('y', elevLabelY)
-              .style('text-anchor', 'left')
+              .style('text-anchor', 'start')
               .text(measureFilter(twoDiff[0],
                     'distance', 'm', 2, true));
 
@@ -382,7 +446,7 @@ goog.require('ga_urlutils_service');
               .attr('class', 'ga-profile-icon-updown')
               .attr('x', 160)
               .attr('y', elevLabelY + 4)
-              .attr('text-anchor', 'left')
+              .attr('text-anchor', 'start')
               .text(' \uf212 ');
 
           //Number for elevation Down
@@ -391,7 +455,7 @@ goog.require('ga_urlutils_service');
               .attr('font-size', '0.9em')
               .attr('x', 182)
               .attr('y', elevLabelY)
-              .style('text-anchor', 'left')
+              .style('text-anchor', 'start')
               .text(measureFilter(twoDiff[1], 'distance',
                     'm', 2, true));
 
@@ -400,7 +464,7 @@ goog.require('ga_urlutils_service');
               .attr('class', 'ga-profile-icon')
               .attr('x', 240)
               .attr('y', elevLabelY)
-              .attr('text-anchor', 'left')
+              .attr('text-anchor', 'start')
               .text(' \uf217');
 
           //Number for highest point
@@ -409,7 +473,7 @@ goog.require('ga_urlutils_service');
               .attr('font-size', '0.9em')
               .attr('x', 258)
               .attr('y', elevLabelY)
-              .style('text-anchor', 'left')
+              .style('text-anchor', 'start')
               .text(measureFilter(elPoi[0], 'distance',
                     'm', 2, true));
 
@@ -418,7 +482,7 @@ goog.require('ga_urlutils_service');
               .attr('class', 'ga-profile-icon')
               .attr('x', 320)
               .attr('y', elevLabelY)
-              .attr('text-anchor', 'left')
+              .attr('text-anchor', 'start')
               .text(' \uf214');
 
           //Number for the lowest point
@@ -427,31 +491,44 @@ goog.require('ga_urlutils_service');
               .attr('font-size', '0.9em')
               .attr('x', 338)
               .attr('y', elevLabelY)
-              .style('text-anchor', 'left')
+              .style('text-anchor', 'start')
               .text(measureFilter(elPoi[1], 'distance',
                     'm', 2, true));
 
           //Icon for the distance
-          //the rotated icon-resize-horizontal is used only for now
-          //the icon-resize-vertical will be integrated in the icons
           group.append('text')
-              .attr('font-family', 'FontAwesome')
-              .attr('font-size', '1em')
+              .attr('class', 'ga-profile-dist')
               .attr('x', 400)
-              .attr('y', elevLabelY)
-              .attr('text-anchor', 'left')
-              .attr('transform', 'translate(264, 546) rotate(-90)')
-              .text(' \uf218 ');
+              .attr('y', elevLabelY + 2)
+              .attr('text-anchor', 'start')
+              .text(' \uf220');
 
           //Number for the distance
           group.append('text')
               .attr('class', 'ga-profile-distance')
               .attr('font-size', '0.9em')
-              .attr('x', 412)
+              .attr('x', 415)
               .attr('y', elevLabelY)
-              .style('text-anchor', 'left')
+              .style('text-anchor', 'start')
               .text(measureFilter(this.dist, 'distance',
                     ['km', 'm'], 2, true));
+
+          //Icon for the hiking time
+          group.append('text')
+              .attr('class', 'ga-profile-icon')
+              .attr('x', 480)
+              .attr('y', elevLabelY)
+              .attr('text-anchor', 'start')
+              .text(' \uf219');
+
+          //Number for the hiking time
+          group.append('text')
+              .attr('class', 'ga-profile-hikTime')
+              .attr('font-size', '0.9em')
+              .attr('x', 495)
+              .attr('y', elevLabelY)
+              .style('text-anchor', 'start')
+              .text(gaTimeFormatFilter(this.hikTime));
 
           return element;
         };
@@ -481,7 +558,10 @@ goog.require('ga_urlutils_service');
               this.elPoi[1]);
           this.updateElevationLabels('text.ga-profile-distance',
               this.dist);
-          };
+
+          this.group.select('text.ga-profile-hikTime')
+              .text(gaTimeFormatFilter(this.hikTime));
+        };
 
         this.update = function(data, size) {
           var that = this;
@@ -510,6 +590,7 @@ goog.require('ga_urlutils_service');
             this.twoDiff = this.twoElevDiff(data);
             this.elPoi = this.elPoints(data);
             this.dist = this.distance(data);
+            this.hikTime = this.hikingTime(data);
           }
           var x = d3.scale.linear().range([0, width]);
           var y = d3.scale.linear().range([height, 0]);

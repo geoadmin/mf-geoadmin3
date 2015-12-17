@@ -238,8 +238,8 @@ goog.require('ga_permalink');
           var defineLayerToModify = function() {
 
             // Unregister the events attached to the previous source
-            for (var i in unSourceEvents) {
-              ol.Observable.unByKey(unSourceEvents[i]);
+            while (unSourceEvents.length) {
+              ol.Observable.unByKey(unSourceEvents.pop());
             }
             ol.Observable.unByKey(unLayerVisible);
 
@@ -368,10 +368,9 @@ goog.require('ga_permalink');
             select.setActive(false);
 
             // Unregister the events attached to the source
-            for (var i in unSourceEvents) {
-              ol.Observable.unByKey(unSourceEvents[i]);
+            while (unSourceEvents.length) {
+              ol.Observable.unByKey(unSourceEvents.pop());
             }
-            unSourceEvents = [];
 
             // Remove the layer if no features added
             if (layer && layer.getSource().getFeatures().length == 0) {
@@ -754,7 +753,7 @@ goog.require('ga_permalink');
               scope.showProfileTab(feature)
             ];
             var cpt = 0;
-            for (var i in bools) {
+            for (var i = 0; i < bools.length; i++) {
               if (bools[i]) {
                  cpt++;
               }

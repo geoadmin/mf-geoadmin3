@@ -73,8 +73,8 @@ goog.require('ga_networkstatus_service');
   module.directive('gaOfflineBt', function(gaOffline) {
     return {
       restrict: 'A',
-      replace: true,
       templateUrl: 'components/offline/partials/offline-bt.html',
+      scope: {},
       controller: 'GaOfflineDirectiveController',
       link: function(scope, elt, attrs) {
         scope.onClick = function(evt) {

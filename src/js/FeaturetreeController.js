@@ -10,6 +10,7 @@ goog.require('ga_print_service');
   module.controller('GaFeaturetreeController', function($http, $scope,
       $timeout, $translate, $window, gaGlobalOptions, gaPrintService) {
 
+    var featureTreeId = '#featuretree-popup';
     // List of layers using an extendHtmlPoup for the print instead of htmlPopup
     var extended = {
       'ch.bazl.luftfahrthindernis' : true
@@ -145,7 +146,7 @@ goog.require('ga_print_service');
           (useNewTab) ? function() {} : undefined);
     };
 
-    var ftPopup = $('#featuretree-popup');
+    var ftPopup = $(featureTreeId);
     $scope.$on('gaUpdateFeatureTree', function(evt, tree) {
       featureTree = tree;
 
@@ -154,8 +155,8 @@ goog.require('ga_print_service');
          ftPopup.hasClass('ga-popup-reduced')) {
         $scope.globals.isFeatureTreeActive = false;
       }
-
       evt.stopPropagation();
+
     });
 
     $scope.$on('gaGetMoreFeatureTree', function(evt, layer) {

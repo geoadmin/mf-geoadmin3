@@ -537,7 +537,7 @@ goog.require('ga_time_service');
             // If a feature has a style with a geometryFunction defined, we
             // must also display this geometry with the good style (used for
             // azimuth).
-            for (var i in styles) {
+            for (var i = 0; i < styles.length; i++) {
               var style = styles[i];
               if (angular.isFunction(style.getGeometry())) {
                 var geom = style.getGeometry()(feature);
@@ -662,12 +662,17 @@ goog.require('ga_time_service');
       var encLegends;
       var attributions = [];
       var thirdPartyAttributions = [];
-      var layers = this.map.getLayers();
+      var layers = this.map.getLayers().getArray();
       pdfLegendsToDownload = [];
       layersYears = [];
 
+      // Re order layer by z-index
+      layers.sort(function(a, b) {
+        return a.getZIndex() - b.getZIndex();
+      });
+
       // Transform layers to literal
-      angular.forEach(layers, function(layer) {
+      layers.forEach(function(layer) {
         if (layer.visible && (!layer.timeEnabled ||
             angular.isDefined(layer.time))) {
 

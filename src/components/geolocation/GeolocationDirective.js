@@ -17,16 +17,15 @@ goog.require('ga_throttle_service');
       gaBrowserSniffer, gaPermalink, gaStyleFactory, gaThrottle, gaMapUtils) {
     return {
       restrict: 'A',
-      replace: true,
       scope: {
         map: '=gaGeolocationMap',
         ol3d: '=gaGeolocationOl3d'
       },
       templateUrl: 'components/geolocation/partials/geolocation.html',
       link: function(scope, element, attrs) {
-
+        var bt = element.find('button');
         if (!('geolocation' in $window.navigator)) {
-          element.addClass('ga-geolocation-error');
+          bt.addClass('ga-geolocation-error');
           return;
         }
 
@@ -199,7 +198,7 @@ goog.require('ga_throttle_service');
 
         // Geolocation control events
         geolocation.on('change:position', function(evt) {
-          element.removeClass('ga-geolocation-error');
+          bt.removeClass('ga-geolocation-error');
           locate();
           updatePositionFeature();
           updateAccuracyFeature();
@@ -214,7 +213,7 @@ goog.require('ga_throttle_service');
           scope.$apply(function() {
             scope.tracking = false;
           });
-          element.addClass('ga-geolocation-error');
+          bt.addClass('ga-geolocation-error');
         });
 
         // View events
@@ -225,7 +224,7 @@ goog.require('ga_throttle_service');
 
 
         // Button events
-        element.bind('click', function(e) {
+        bt.on('click', function(e) {
           e.preventDefault();
           var tracking;
 
@@ -246,22 +245,23 @@ goog.require('ga_throttle_service');
           if (btnStatus == 0) {
             tracking = false;
             gaMapUtils.resetMapToNorth(map, scope.ol3d);
-            element.removeClass('ga-geolocation-northarrow');
+            bt.removeClass('ga-geolocation-northarrow');
           } else if (btnStatus == 1) {
             tracking = true;
           } else if (btnStatus == 2) {
             tracking = true;
-            element.addClass('ga-geolocation-northarrow');
+            bt.addClass('ga-geolocation-northarrow');
 
             // Button is rotated according to map rotation
             unRegKey = view.on('change:rotation', function(evt) {
               var rotation = evt.target.getRotation() * 180 / Math.PI;
               var rotateString = 'rotate(' + rotation + 'deg)';
-              element.css({
+              bt.css({
                 'transform': rotateString,
                 '-ms-transform': rotateString,
                 '-webkit-transform': rotateString
-              }).toggleClass('ga-rotate-enabled', !(rotation == 0));
+              });
+              bt.toggleClass('ga-rotate-enabled', !(rotation == 0));
             });
           }
 

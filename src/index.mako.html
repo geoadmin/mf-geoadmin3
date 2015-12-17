@@ -178,6 +178,7 @@ itemscope itemtype="http://schema.org/WebApplication"
         </div>
       </div>
   % endif
+      <button class="btn btn-default ga-menu-bt" ng-click="globals.pulldownShown=true" translate>menu</button>
       ## css animation doesnt work on pseudo element, let use this instead
       <div class="alert alert-danger" translate>offline_sorry</div>
     </div> <!-- #header -->
@@ -219,9 +220,9 @@ itemscope itemtype="http://schema.org/WebApplication"
   % if device != 'embed':
         <div ga-time-selector-bt ga-time-selector-bt-map="map"></div> 
   % endif
-        <div ga-rotate ga-rotate-map="map" ng-show="!globals.is3dActive"></div>
+        <div ga-rotate ga-rotate-map="map"></div>
   % if device == 'mobile':
-        <div ga-offline-bt ng-show="!globals.is3dActive"></div>
+        <div ga-offline-bt></div>
   % endif
       </div>
       <div ga-swipe 
@@ -309,6 +310,7 @@ itemscope itemtype="http://schema.org/WebApplication"
             'selection-and-catalog-shown': (globals.catalogShown && globals.selectionShown),
             'ga-pulldown-shown': globals.pulldownShown
           }">
+      <div class="ga-visible-mobile ga-pulldown-shadow" ng-click="globals.pulldownShown = false"></div>
       <div id="pulldown-content" class="content">
         <!-- Share -->
         <div class="panel">
@@ -507,20 +509,16 @@ itemscope itemtype="http://schema.org/WebApplication"
           </div>
         </div> <!-- .panel -->
   % endif
+        <button id="menu-button" class="btn btn-default"
+                ng-click="globals.pulldownShown=!globals.pulldownShown">
+          <span class="ga-hidden-mobile"> 
+            <i class="icon-caret-down"></i>
+            <span class="ga-hidden-collapsed" translate>close_menu</span>
+            <span class="ga-visible-collapsed" translate>open_menu</span>
+          </span>
+          <span class="ga-visible-mobile" translate>close</span>
+        </button>
       </div> <!-- #pulldown-content -->
-      <button id="menu-button" class="btn btn-default"
-              data-toggle="collapse" data-target="#pulldown-content"
-              ga-collapsible-show="globals.pulldownShown">
-        <i class="icon-caret-up"></i>
-        <span class="hidden-collapsed">
-          <i class="icon-remove"></i>
-          <span translate>close_menu</span>
-        </span>
-        <span class="visible-collapsed">
-          <i class="icon-reorder"></i>
-          <span translate>open_menu</span>
-        </span>
-      </button>
     </div> <!-- #pulldown -->
 
   % if device == 'mobile':
@@ -590,7 +588,7 @@ itemscope itemtype="http://schema.org/WebApplication"
           </div>
           <div class="panel panel-default">
             <a class="panel-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#accordion-tree"
-               ga-collapsible-show="options.featuresShown">
+               ga-collapsible-show="options.featuresShown" ng-class="{'ga-query-more-results': options.hasMoreResults}">
               <span translate>items</span> {{getItemText()}}
               <div ng-show='printInProgress' class='pull-right'>{{printProgressPercentage}}%</div>
             </a>
@@ -720,11 +718,7 @@ itemscope itemtype="http://schema.org/WebApplication"
 
         module.constant('gaGlobalOptions', {
           //dev3d to be removed once 3d goes live
-% if staging=='prod' :
-          dev3d: false,
-% else:
-          dev3d: !window.location.search.match(/(dev3d=false)/),
-% endif
+          dev3d: true,
           buildMode: '${mode}',
           pegman: !!window.location.search.match(/(pegman=true)/),
           mapUrl : location.origin + '${apache_base_path}',
@@ -766,9 +760,10 @@ itemscope itemtype="http://schema.org/WebApplication"
 
         module.config(function(gaLayersProvider, gaGlobalOptions) {
           gaLayersProvider.dfltWmsSubdomains = ['', '0', '1', '2', '3', '4'];
+          gaLayersProvider.dfltWmtsNativeSubdomains = ['5', '6', '7', '8', '9'];
           gaLayersProvider.dfltWmtsMapProxySubdomains = ['20', '21', '22', '23', '24'];
           gaLayersProvider.wmsUrlTemplate = '//wms{s}.geo.admin.ch/';
-          gaLayersProvider.wmtsGetTileUrlTemplate = '//wmts{5-9}.geo.admin.ch/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.{Format}';
+          gaLayersProvider.wmtsGetTileUrlTemplate = '//wmts{s}.geo.admin.ch/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{y}/{x}.{Format}';
           gaLayersProvider.wmtsMapProxyGetTileUrlTemplate = '//wmts{s}.geo.admin.ch/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{x}/{y}.{Format}';
           gaLayersProvider.terrainTileUrlTemplate = '//3d.geo.admin.ch/1.0.0/{Layer}/default/{Time}/4326';
           gaLayersProvider.layersConfigUrlTemplate = gaGlobalOptions.resourceUrl + 'layersConfig?lang={Lang}';

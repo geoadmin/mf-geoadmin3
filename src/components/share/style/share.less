@@ -1,47 +1,4 @@
 [ga-share] {
-  
-  div a {
-    color: red;
-  }
-
-  iframe {
-    border: 1px solid #b2b2b2;
-    transition: all 1s ease;
-  }
-
-  select {
-    width: 165px;
-    display: inline-block;
-    margin-right: 15px;
-    float: left;
-  }
-
-  .modal-content, .modal.in .modal-dialog, iframe {
-    transition: all 1s ease;
-  }
-
-  .modal-dialog {
-    width: auto;
-    left: 0%;
-  }
-
-  .form-inline {
-    display: none;
-
-    label, input {
-      display: inline-block;
-      width: 75px;
-    }
-
-    label {
-      width: 20px;
-      text-align: center;
-    }
-
-    a {
-      margin-left: 15px;
-    }
-  }
 
   .input-group {
     width: 100%;
@@ -62,14 +19,6 @@
 
   .ga-embed-input {
     display: inline-block;
-  }
-
-  .ga-embed-input-modal {
-    width: ~"calc(100% - 185px)";
-  }
-
-  .input-modal-container {
-    margin-bottom: 5px;
   }
 
   .ga-share-icons, .ga-share-permalink {
@@ -100,6 +49,78 @@
     font-size: 24px;
   }
 
+  .ga-share-embed {
+    margin-top: 8px;
+
+    @media (max-width: @screen-tablet) {
+      .input-group {
+        width: 100%;
+      }
+      .input-group-btn {
+        display: none;
+      }
+    }
+  }
+
+}
+
+#gaEmbedModal {
+  iframe {
+    border: 1px solid #b2b2b2;
+    transition: all 1s ease;
+  }
+
+  div a {
+    color: red;
+  }
+
+  .panel-body {
+    font-size: 12px;
+  }
+
+  .input-group {
+    width: 100%;
+
+    button {
+    width: 100px;
+    }
+  }
+
+
+  .form-inline {
+    display: none;
+
+    label, input {
+      display: inline-block;
+      width: 75px;
+    }
+
+    label {
+      width: 20px;
+      text-align: center;
+    }
+
+    a {
+      margin-left: 15px;
+    }
+  }
+
+  select {
+    width: 165px;
+    display: inline-block;
+    margin-right: 15px;
+    float: left;
+  }
+
+  .modal-content, .modal.in .modal-dialog, iframe {
+    transition: all 1s ease;
+  }
+
+  .modal-dialog {
+    width: auto;
+    left: 0%;
+  }
+
   .ga-user-size {
     .ga-embed-input-modal {
       width: 100%;
@@ -120,18 +141,12 @@
     }
   }
 
-  .ga-share-embed {
-    margin-top: 8px;
+  .ga-embed-input-modal {
+    width: ~"calc(100% - 185px)";
+  }
 
-    @media (max-width: @screen-tablet) {
-      .input-group {
-        width: 100%;
-      }
-      .input-group-btn {
-        display: none;
-      }
-    }
+  .input-modal-container {
+    margin-bottom: 5px;
   }
 
 }
-
