@@ -119,8 +119,8 @@ teste2e: .build-artefacts/saucelab-requirements-installation.timestamp
 	${PYTHON_CMD} test/saucelabs/test.py ${SAUCELABS_TARGETURL}
 
 .PHONY: testsaucelabs
-testsaucelabs: .build-artefacts/saucelab-requirements-installation.timestamp
-	${PYTHON_CMD} test/saucelabs/test.py ${SAUCELABS_TARGETURL}
+##testsaucelabs: .build-artefacts/saucelab-requirements-installation.timestamp
+##	${PYTHON_CMD} test/saucelabs/test.py ${SAUCELABS_TARGETURL}
 
 .PHONY: apache
 apache: apache/app.conf
