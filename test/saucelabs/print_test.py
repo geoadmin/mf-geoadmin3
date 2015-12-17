@@ -36,15 +36,22 @@ def runPrintTest(driver, target):
     print "Start Print tests"
 
     # Make a print test of differents layer types
+    bDoAllTogether = 1
+    bDoWmts = 0
+    bDoWms = 0
+    bDoWmsWithoutSingleTile = 0
+    bDoAggregate = 0
+    bDoGeojson = 0
+    bDoExternalKml = 0
+    bDoExternalWms = 0
+    bDoMapGeoKml = 0
 
-    bDoWmts = 1
-    bDoWms = 1
-    bDoWmsWithoutSingleTile = 1
-    bDoAggregate = 1
-    bDoGeojson = 1
-    bDoExternalKml = 1
-    bDoExternalWms = 1
-    bDoMapGeoKml = 1
+    ### Put all layer type together for one print only 
+    if bDoAllTogether:
+        print "Print all layer type (wmts, wms, wms single tiles, aggregate, geojson, internal andexternal kml, external wms)"
+        target_full = target + '/?lang=de&layers=ch.swisstopo.landesschwerenetz,ch.swisstopo.landesschwerenetz,ch.bazl.luftfahrthindernis,ch.bav.sachplan-infrastruktur-schiene_kraft,'
+        target_full += 'ch.bfs.gebaeude_wohnungs_register,ch.bafu.hydroweb-messstationen_grundwasser,' + QUERYSTRING_KML + ',' + QUERYSTRING_EXTERNAL_WMS + ',' + QUERYSTRING_PUBLIC_GEO_KML
+        PrintTest(driver, target_full)
 
     # WMTS
     if bDoWmts:
