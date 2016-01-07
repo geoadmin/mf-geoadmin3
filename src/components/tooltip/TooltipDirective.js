@@ -41,7 +41,7 @@ goog.require('ga_topic_service');
         };
 
         // Test if the layer has a tooltip
-        var isQueryableBodLayer = function(olLayer) {
+        var hasTooltipBodLayer = function(olLayer) {
           var bodId = olLayer.bodId;
           if (bodId) {
             bodId = gaLayers.getLayerProperty(bodId, 'parentLayerId') || bodId;
@@ -55,7 +55,7 @@ goog.require('ga_topic_service');
           var layersToQuery = [];
           map.getLayers().forEach(function(l) {
             if (l.visible && !l.preview &&
-                (isQueryableBodLayer(l) || isVectorLayer(l))) {
+                (hasTooltipBodLayer(l) || isVectorLayer(l))) {
               layersToQuery.push(l);
             }
           });
@@ -105,7 +105,7 @@ goog.require('ga_topic_service');
               },
               undefined,
               function(layer) {
-                return isQueryableBodLayer(layer);
+                return hasTooltipBodLayer(layer);
               });
           }
           if (!hasQueryableLayer) {
@@ -345,9 +345,11 @@ goog.require('ga_topic_service');
                     imageDisplay: size[0] + ',' + size[1] + ',96',
                     mapExtent: mapExtent.join(','),
                     tolerance: scope.options.tolerance,
+                    returnGeometry: gaLayers.getLayerProperty(
+                        layerToQuery.bodId, 'highlightable') ?
+                            'true' : 'false',
                     layers: 'all:' + layerToQuery.bodId
                   };
-
                   // Only timeEnabled layers use the timeInstant parameter
                   if (layerToQuery.timeEnabled) {
                     params.timeInstant = gaTime.get() ||
