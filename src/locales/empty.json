@@ -363,5 +363,9 @@
   "geothermie_service_link_label": "",
   "geothermie_service_link_href": "",
   "topic_geothermie_tooltip": "",
-  "query_alert_more_than_200_results": ""
+  "query_alert_more_than_200_results": "",
+  "schneesport": "",
+  "schneesport_service_link_label": "",
+  "schneesport_service_link_href": "",
+  "topic_schneesport_tooltip": ""
 }
