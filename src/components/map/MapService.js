@@ -2371,11 +2371,13 @@ goog.require('ga_urlutils_service');
         // Remove the precedent feature highlighted then add the new one.
         this.highlight = function(map, feature) {
           this.clearHighlight();
-          // We clone the feature to avoid duplicate features with same ids
-          highlightedFeature = new ol.Feature(feature.getGeometry());
-          highlightedFeature.setStyle(highlightStyle);
-          source.addFeature(highlightedFeature);
-          updateLayer(map);
+          if (feature) {
+            // We clone the feature to avoid duplicate features with same ids
+            highlightedFeature = new ol.Feature(feature.getGeometry());
+            highlightedFeature.setStyle(highlightStyle);
+            source.addFeature(highlightedFeature);
+            updateLayer(map);
+          }
         };
 
         // Zoom on a feature (if defined) or zoom on the entire source
