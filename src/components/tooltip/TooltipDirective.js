@@ -329,6 +329,7 @@ goog.require('ga_topic_service');
                    }
                 }
               }
+              var all = []; // List of promises launched
               for (var i = 0, ii = layersToQuery.length; i < ii; i++) {
                 var layerToQuery = layersToQuery[i];
                 if (!is3dActive() && isVectorLayer(layerToQuery)) {
@@ -356,24 +357,36 @@ goog.require('ga_topic_service');
                         yearFromString(layerToQuery.time);
                   }
 
-                  $http.get(identifyUrl, {
+                  all.push($http.get(identifyUrl, {
                     timeout: canceler.promise,
-                    params: params
-                  }).success(function(features) {
-                    showFeatures(features.results, coordinate);
-                  });
+                    params: params,
+                    layer: layerToQuery
+                  }).then(function(response) {
+                    showFeatures(response.data.results, coordinate);
+                    return response.data.results.length;
+                  }));
                 }
+              }
+
+              // When all the requests are finished we test how many features
+              // are displayed. If there is none we close the popup after 3
+              // seconds.
+              if (all.length > 0) {
+                $q.all(all).then(function(nbResults) {
+                  var sum = nbResults.reduce(function(a, b) {
+                    return a + b;
+                  });
+                  if (sum == 0) {
+                    showNoInfo();
+                  }
+                });
               }
             };
 
             // Highlight the features found
             var showFeatures = function(foundFeatures, coordinate,
                                         nohighlight) {
-              if (!foundFeatures || foundFeatures.length <= 0) {
-                if (map.getTarget().style.cursor == 'pointer') {
-                  showNoInfo();
-                }
-              } else {
+              if (foundFeatures && foundFeatures.length > 0) {
                 // Remove the tooltip, if a layer is removed, we don't care
                 // which layer. It worked like that in RE2.
                 listenerKey = map.getLayers().on('remove',
@@ -476,7 +489,8 @@ goog.require('ga_topic_service');
                   className: 'ga-tooltip',
                   showReduce: false,
                   title: 'object_information',
-                  content: '<br><div translate>no_more_information</div>'
+                  content: '<div class="ga-popup-no-info" translate>' +
+                      'no_more_information</div>'
                 });
               }
               popup.open(3000); //Close after 3 seconds
