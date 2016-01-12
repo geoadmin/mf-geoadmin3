@@ -266,7 +266,7 @@ prd/lib/: src/lib/d3-3.3.1.min.js \
 	mkdir -p $@
 	cp -rf  $^ $@
 
-prd/lib/build.js: src/lib/jquery-2.0.3.min.js \
+prd/lib/build.js: src/lib/jquery.min.js \
 		    src/lib/bootstrap-3.3.1.min.js \
 		    src/lib/moment-with-customlocales.min.js \
 		    src/lib/typeahead-0.9.3.min.js src/lib/angular.min.js \
@@ -442,11 +442,14 @@ node_modules: ANGULAR_JS = angular.js angular.min.js
 node_modules: ANGULAR_TRANSLATE_JS = angular-translate.js angular-translate.min.js
 node_modules: ANGULAR_TRANSLATE_LOADER_JS = angular-translate-loader-static-files.js angular-translate-loader-static-files.min.js
 node_modules: LOCALFORAGE = localforage.js localforage.min.js
+node_modules: JQUERY = jquery.js jquery.min.js
 node_modules: package.json
 	npm install
 	cp $(addprefix node_modules/angular/,$(ANGULAR_JS)) src/lib/;
 	cp $(addprefix node_modules/angular-translate/dist/,$(ANGULAR_TRANSLATE_JS)) src/lib/;
 	cp $(addprefix node_modules/angular-translate/dist/angular-translate-loader-static-files/,$(ANGULAR_TRANSLATE_LOADER_JS)) src/lib/;
+	cp $(addprefix node_modules/localforage/dist/,$(LOCALFORAGE)) src/lib/;
+	cp $(addprefix node_modules/jquery/dist/,$(JQUERY)) src/lib/;
 	cp node_modules/angular-mocks/angular-mocks.js test/lib/;
 	cp node_modules/expect.js/index.js test/lib/expect.js;
 	cp node_modules/sinon/pkg/sinon.js test/lib/;

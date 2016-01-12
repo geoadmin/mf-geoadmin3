@@ -14,7 +14,7 @@ module.exports = function(config) {
     % if mode == 'prod':
        'lib/build.js',
     % else:
-       'lib/jquery-2.0.3.js',
+       'lib/jquery.js',
        'lib/angular.js',
        'lib/angular-translate.js',
        'lib/angular-translate-loader-static-files.js',
