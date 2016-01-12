@@ -383,7 +383,7 @@ goog.require('ga_urlutils_service');
           group.append('text')
               .attr('class', 'ga-profile-label ga-profile-label-x')
               .attr('x', width / 2)
-              .attr('y', height + options.margin.bottom - 12)
+              .attr('y', height + options.margin.bottom - 18)
               .style('text-anchor', 'middle')
               .attr('font-size', '0.95em')
               .text($translate.instant(options.xLabel) + ' [' +
@@ -517,7 +517,7 @@ goog.require('ga_urlutils_service');
           group.append('text')
               .attr('class', 'ga-profile-icon')
               .attr('x', 480)
-              .attr('y', elevLabelY)
+              .attr('y', elevLabelY + 1)
               .attr('text-anchor', 'start')
               .text(' \uf219');
 
@@ -577,7 +577,7 @@ goog.require('ga_urlutils_service');
             this.group.select('text.ga-profile-label-x')
               .transition().duration(transitionTime)
                 .attr('x', width / 2)
-                .attr('y', height + options.margin.bottom - 12)
+                .attr('y', height + options.margin.bottom - 18)
                 .style('text-anchor', 'middle');
             this.group.select('text.ga-profile-legend')
               .transition().duration(transitionTime)
@@ -624,6 +624,8 @@ goog.require('ga_urlutils_service');
         };
       }
       return function(options, lazyLoadCB) {
+        // Gain some more space for the profile labels
+        options.margin.bottom = options.margin.bottom + 10;
         // Lazy load of D3 library
         var onD3Loaded = function() {
           d3 = $window.d3;
