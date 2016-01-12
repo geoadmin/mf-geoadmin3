@@ -329,6 +329,7 @@ goog.require('ga_topic_service');
                    }
                 }
               }
+              var all = []; // List of promises launched
               for (var i = 0, ii = layersToQuery.length; i < ii; i++) {
                 var layerToQuery = layersToQuery[i];
                 if (!is3dActive() && isVectorLayer(layerToQuery)) {
@@ -356,13 +357,29 @@ goog.require('ga_topic_service');
                         yearFromString(layerToQuery.time);
                   }
 
-                  $http.get(identifyUrl, {
+                  all.push($http.get(identifyUrl, {
                     timeout: canceler.promise,
-                    params: params
-                  }).success(function(features) {
-                    showFeatures(features.results, coordinate);
-                  });
+                    params: params,
+                    layer: layerToQuery
+                  }).then(function(response) {
+                    showFeatures(response.data.results, coordinate);
+                    return response.data.results.length;
+                  }));
                 }
+              }
+
+              // When all the requests are finished we test how many features
+              // are displayed. If there is none we close the popup after 3
+              // seconds.
+              if (all.length > 0) {
+                $q.all(all).then(function(nbResults) {
+                  var sum = nbResults.reduce(function(a, b) {
+                    return a + b;
+                  });
+                  if (sum == 0) {
+                    showNoInfo();
+                  }
+                });
               }
             };
 
@@ -464,6 +481,19 @@ goog.require('ga_topic_service');
                   window.parent.postMessage(id, '*');
                 }
               }
+            };
+
+            var showNoInfo = function() {
+              if (!popup) {
+                popup = gaPopup.create({
+                  className: 'ga-tooltip',
+                  showReduce: false,
+                  title: 'object_information',
+                  content: '<div class="ga-popup-no-info" translate>' +
+                      'no_more_information</div>'
+                });
+              }
+              popup.open(3000); //Close after 3 seconds
             };
 
             // Show the popup with all features informations
