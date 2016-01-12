@@ -447,7 +447,9 @@ node_modules: package.json
 	cp $(addprefix node_modules/angular/,$(ANGULAR_JS)) src/lib/;
 	cp $(addprefix node_modules/angular-translate/dist/,$(ANGULAR_TRANSLATE_JS)) src/lib/;
 	cp $(addprefix node_modules/angular-translate/dist/angular-translate-loader-static-files/,$(ANGULAR_TRANSLATE_LOADER_JS)) src/lib/;
-	cp $(addprefix node_modules/localforage/dist/,$(LOCALFORAGE)) src/lib;
+	cp node_modules/angular-mocks/angular-mocks.js test/lib/;
+	cp node_modules/expect.js/index.js test/lib/expect.js;
+	cp node_modules/sinon/pkg/sinon.js test/lib/;
 
 
 .build-artefacts/app.js: .build-artefacts/js-files \
