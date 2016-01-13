@@ -84,7 +84,7 @@ beforeEach(function() {
 
   module(function(gaProfileProvider, gaGlobalOptions) {
     gaProfileProvider.d3libUrl =
-        gaGlobalOptions.resourceUrl + 'lib/d3-3.3.1.min.js';
+        gaGlobalOptions.resourceUrl + 'lib/d3.min.js';
     gaProfileProvider.profileUrl =
         gaGlobalOptions.apiUrl + '/rest/services/profile.json';
   });

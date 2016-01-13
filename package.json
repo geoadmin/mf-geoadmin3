@@ -28,6 +28,7 @@
     "angular-translate": "2.8.1",
     "localforage": "1.2.3",
     "jquery": "2.2.0",
-    "jquery-ajax-transport-xdomainrequest": "1.0.4"
+    "jquery-ajax-transport-xdomainrequest": "1.0.4",
+    "d3": "3.5.12"
   }
 }

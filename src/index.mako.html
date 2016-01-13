@@ -640,7 +640,7 @@ itemscope itemtype="http://schema.org/WebApplication"
          dynamic/lazy loading of javascript -->
     <!--![if IE]>
     <script src="${versionslashed}lib/bootstrap-datetimepicker.min.js"></script>
-    <script src="${versionslashed}lib/d3-3.3.1.min.js"></script>
+    <script src="${versionslashed}lib/d3.min.js"></script>
     <script src="${versionslashed}lib/jquery.xdomainrequest.min.js"></script>
     <![endif]-->
 % else:
@@ -657,7 +657,7 @@ itemscope itemtype="http://schema.org/WebApplication"
     <script src="lib/angular.js"></script>
     <script src="lib/angular-translate.js"></script>
     <script src="lib/angular-translate-loader-static-files.js"></script>
-    <script src="lib/d3-3.3.1.js"></script>
+    <script src="lib/d3.js"></script>
     <script src="lib/bootstrap-3.3.1.js"></script>
     <script src="lib/typeahead-0.9.3.js"></script>
     <script src="lib/proj4js-compressed.js"></script>
@@ -790,7 +790,7 @@ itemscope itemtype="http://schema.org/WebApplication"
 
         module.config(function(gaProfileProvider, gaGlobalOptions) {
           gaProfileProvider.d3libUrl =
-              gaGlobalOptions.resourceUrl + 'lib/d3-3.3.1.min.js';
+              gaGlobalOptions.resourceUrl + 'lib/d3.min.js';
           gaProfileProvider.profileUrl =
               gaGlobalOptions.apiUrl + '/rest/services/profile.json';
         });

@@ -256,7 +256,7 @@ prd/robots.txt: scripts/robots.mako-dot-txt .build-artefacts/last-deploy-target
 	${PYTHON_CMD} .build-artefacts/python-venv/bin/mako-render \
 	    --var "deploy_target=$(DEPLOY_TARGET)" $< > $@
 
-prd/lib/: src/lib/d3-3.3.1.min.js \
+prd/lib/: src/lib/d3.min.js \
 	    src/lib/bootstrap-datetimepicker.min.js  \
 	    src/lib/IE9Fixes.js \
 	    src/lib/jquery.xdomainrequest.min.js \
@@ -445,6 +445,7 @@ node_modules: ANGULAR_TRANSLATE_LOADER_JS = angular-translate-loader-static-file
 node_modules: LOCALFORAGE = localforage.js localforage.min.js
 node_modules: JQUERY = jquery.js jquery.min.js
 node_modules: JQUERYXDOMAIN = jQuery.XDomainRequest.js  jquery.xdomainrequest.min.js
+node_modules: D3 = d3.js  d3.min.js
 node_modules: package.json
 	npm install
 	cp $(addprefix node_modules/angular/,$(ANGULAR_JS)) src/lib/;
@@ -453,6 +454,7 @@ node_modules: package.json
 	cp $(addprefix node_modules/localforage/dist/,$(LOCALFORAGE)) src/lib/;
 	cp $(addprefix node_modules/jquery/dist/,$(JQUERY)) src/lib/;
 	cp $(addprefix node_modules/jquery-ajax-transport-xdomainrequest/,$(JQUERYXDOMAIN)) src/lib/;
+	cp $(addprefix node_modules/d3/,$(D3)) src/lib/;
 	cp node_modules/angular-mocks/angular-mocks.js test/lib/;
 	cp node_modules/expect.js/index.js test/lib/expect.js;
 	cp node_modules/sinon/pkg/sinon.js test/lib/;
