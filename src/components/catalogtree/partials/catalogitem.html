@@ -7,12 +7,12 @@
       <span></span>
       {{item.label}}
     </label>
-    <button class="ga-icon ga-btn icon-info-sign" ng-click="getLegend($event, item.layerBodId)"></button>
+    <button class="ga-icon ga-btn fa fa-info-sign" ng-click="getLegend($event, item.layerBodId)"></button>
   </div>
 
   <div ng-switch-default="" class="ga-catalogitem-node">
     <a href="#" ng-click="toggle($event)" class="ga-catalogitem-entry ga-truncate-text" title="{{item.label}}">
-      <i ng-class="{'icon-minus': item.selectedOpen, 'icon-plus': !item.selectedOpen}"></i>
+      <i ng-class="{'fa fa-minus': item.selectedOpen, 'fa fa-plus': !item.selectedOpen}"></i>
       {{item.label}}
     </a>
     <ul ng-if="item.selectedOpen">

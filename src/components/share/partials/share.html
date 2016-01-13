@@ -2,31 +2,31 @@
   <a class="ga-share-icon" target="_blank"
     data-original-title="{{'mail_tooltip' | translate}}"
     href="mailto:?body={{encodedPermalinkHref}}">
-    <i class="icon-envelope-alt"></i>
+    <i class="fa fa-envelope-alt"></i>
   </a>
 
   <a class="ga-share-icon" target="_blank"
     data-original-title="{{'qrcode_tooltip' | translate}}"
     href="{{qrcodegeneratorPath}}?url={{encodedPermalinkHref}}">
-    <i class="icon-qrcode"></i>
+    <i class="fa fa-qrcode"></i>
   </a>
 
   <a class="ga-share-icon" target="_blank"
     data-original-title="{{'facebook_tooltip' | translate}}"
     href="http://www.facebook.com/sharer.php?u={{encodedPermalinkHref}}&t={{encodedDocumentTitle}}">
-    <i class="icon-facebook"></i>
+    <i class="fa fa-facebook"></i>
   </a>
 
   <a class="ga-share-icon" target="_blank"
     data-original-title="{{'twitter_tooltip' | translate}}"
     href="https://twitter.com/intent/tweet?url={{encodedPermalinkHref}}&text={{encodedDocumentTitle}}">
-    <i class="icon-twitter"></i>
+    <i class="fa fa-twitter"></i>
   </a>
 
   <a class="ga-share-icon" target="_blank"
     data-original-title="{{'google_plus_tooltip' | translate}}"
     href="https://plus.google.com/share?url={{encodedPermalinkHref}}">
-    <i class="icon-google-plus"></i>
+    <i class="fa fa-google-plus"></i>
   </a>
 </div>
 
@@ -44,7 +44,7 @@
 
 <div class="ga-show-more" ng-if="!mobile">
   <div ng-click="showMoreClick()">
-    <i ng-class="{'icon-minus': showMore, 'icon-plus': !showMore}"></i>
+    <i ng-class="{'fa fa-minus': showMore, 'fa fa-plus': !showMore}"></i>
     <span ng-show="showMore" translate>share_less</span>
     <span ng-hide="showMore" translate>share_more</span>
   </div>
@@ -70,7 +70,7 @@
     <div class="modal-content">
       <div class="modal-header">
          <h4 class="modal-title" translate>embed_map</h4>
-         <button class="ga-icon ga-btn icon-remove" data-dismiss="modal"></button>
+         <button class="ga-icon ga-btn fa fa-remove" data-dismiss="modal"></button>
       </div>
       <div class="modal-body" ng-class="{'ga-user-size': !iframeSize}">
         <div class="input-modal-container">

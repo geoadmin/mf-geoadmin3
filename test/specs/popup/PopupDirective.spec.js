@@ -18,16 +18,16 @@ describe('ga_popup_directive', function() {
     var title = elt.find('.ga-popup-title');
     expect(title.length).to.be(1);
 
-    var close = elt.find('.icon-remove');
+    var close = elt.find('.fa-remove');
     expect(close.length).to.be(1);
 
-    var reduce = elt.find('.icon-minus');
+    var reduce = elt.find('.fa-minus');
     expect(reduce.length).to.be(1);
 
-    var print = elt.find('.icon-print');
+    var print = elt.find('.fa-print');
     expect(print.length).to.be(0);
 
-    var help = elt.find('.icon-question-circle');
+    var help = elt.find('.fa-question-circle');
     expect(help.length).to.be(0);
 
     elt = element.find('.ga-popup-content');
@@ -52,7 +52,7 @@ describe('ga_popup_directive', function() {
     $rootScope.$digest();
     expect(element.css('display')).to.be('block');
 
-    element.find('.icon-remove').click();
+    element.find('.fa-remove').click();
     expect(element.css('display')).to.be('none');
     expect($rootScope.popupShown).to.be(false);
   }));
