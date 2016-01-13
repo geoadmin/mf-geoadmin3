@@ -29,6 +29,7 @@
     "localforage": "1.2.3",
     "jquery": "2.2.0",
     "jquery-ajax-transport-xdomainrequest": "1.0.4",
-    "d3": "3.5.12"
+    "d3": "3.5.12",
+    "fastclick": "1.0.6"
   }
 }

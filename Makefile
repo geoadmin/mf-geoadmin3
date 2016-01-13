@@ -455,6 +455,7 @@ node_modules: package.json
 	cp $(addprefix node_modules/jquery/dist/,$(JQUERY)) src/lib/;
 	cp $(addprefix node_modules/jquery-ajax-transport-xdomainrequest/,$(JQUERYXDOMAIN)) src/lib/;
 	cp $(addprefix node_modules/d3/,$(D3)) src/lib/;
+	cp node_modules/fastclick/lib/fastclick.js src/lib/;
 	cp node_modules/angular-mocks/angular-mocks.js test/lib/;
 	cp node_modules/expect.js/index.js test/lib/expect.js;
 	cp node_modules/sinon/pkg/sinon.js test/lib/;
@@ -595,9 +596,6 @@ scripts/00-$(GIT_BRANCH).conf: scripts/00-branch.mako-dot-conf \
 
 .build-artefacts/bootstrap:
 	git clone https://github.com/twbs/bootstrap.git $@ && cd $@ && git checkout v3.3.1
-
-.build-artefacts/fastclick:
-	git clone https://github.com/ftlabs/fastclick.git $@ && cd $@ && git checkout v1.0.6
 
 .build-artefacts/filesaver:
 	git clone https://github.com/eligrey/FileSaver.js.git $@
