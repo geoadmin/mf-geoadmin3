@@ -39,15 +39,16 @@ if __name__ == '__main__':
     # parameter tells us which browsers and OS to spin up.
     #desired_cap = {'platform': "Mac OS X 10.9", 'browserName': "chrome", 'version': "31"}
     ### Code pour la déclaration des browser à tester
+    ### browser list : https://wiki.saucelabs.com/display/DOCS/Platform+Configurator#/
     desired_cap_list = [
-#        {'platform': "Windows 7", 'browserName': "chrome", 'version': "43.0", 'screenResolution': "1280x1024" },
-        {'platform': "Windows 7", 'browserName': "chrome", 'version': "44.0", 'screenResolution': "1280x1024" },
-#        {'platform': "Windows 7", 'browserName': "chrome", 'version': "45.0", 'screenResolution': "1280x1024" },
-#        {'platform': "Windows 8.1", 'browserName': "chrome", 'version': "45.0", 'screenResolution': "1280x1024" },
-#        {'platform': "Windows 7", 'browserName': "firefox", 'version': "38.0", 'screenResolution': "1280x1024" },
-#        {'platform': "Windows 7", 'browserName': "firefox", 'version': "39.0", 'screenResolution': "1280x1024" },
-#        {'platform': "Windows 7", 'browserName': "firefox", 'version': "40.0", 'screenResolution': "1280x1024" },
-#        {'platform': "Windows 8.1", 'browserName': "firefox", 'version': "40.0", 'screenResolution': "1280x1024"}
+        {'platform': "Windows 7", 'browserName': "chrome", 'version': "47.0", 'screenResolution': "1280x1024" },
+        {'platform': "Windows 7", 'browserName': "chrome", 'version': "46.0", 'screenResolution': "1280x1024" },
+        {'platform': "Windows 7", 'browserName': "chrome", 'version': "45.0", 'screenResolution': "1280x1024" },
+        {'platform': "Windows 8.1", 'browserName': "chrome", 'version': "47.0", 'screenResolution': "1280x1024" },
+        {'platform': "Windows 7", 'browserName': "firefox", 'version': "43.0", 'screenResolution': "1280x1024" },
+        {'platform': "Windows 7", 'browserName': "firefox", 'version': "42.0", 'screenResolution': "1280x1024" },
+        {'platform': "Windows 7", 'browserName': "firefox", 'version': "41.0", 'screenResolution': "1280x1024" },
+        {'platform': "Windows 8.1", 'browserName': "firefox", 'version': "43.0", 'screenResolution': "1280x1024"}
 #        {'platform': "Windows 7", 'browserName': "internet explorer", 'version': "9.0", 'screenResolution': "1280x1024" },
 #        {'platform': "Windows 7", 'browserName': "internet explorer", 'version': "10.0", 'screenResolution': "1280x1024" },
 #        {'platform': "Windows 7", 'browserName': "internet explorer", 'version': "11.0", 'screenResolution': "1280x1024" },
@@ -62,13 +63,13 @@ if __name__ == '__main__':
     for current_desired_cap in desired_cap_list: 
         print "+--> Start test with " + current_desired_cap['platform'] + " " + current_desired_cap['browserName'] + " (" + current_desired_cap['version'] + ")"
 
-        bDoStartTest = 0
+        bDoStartTest = 1
         bDoMobileTest = 0
         bDoSearchTest = 0
         bDoKmlTest = 0
         bDoSwissSearchTest = 0
         bDoPrintTest = 0
-        bDoWmsTest = 0
+        bDoWmsTest = 1
         bDoCheckerTest = 1
 
         driver = webdriver.Remote(
