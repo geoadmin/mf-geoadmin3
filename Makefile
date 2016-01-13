@@ -104,7 +104,7 @@ prod: prd/lib/ \
 dev: src/deps.js src/style/app.css src/index.html src/mobile.html src/embed.html
 
 .PHONY: lint
-lint: .build-artefacts/lint.timestamp
+lint: node_modules .build-artefacts/lint.timestamp
 
 .PHONY: testdev
 testdev: .build-artefacts/app-whitespace.js test/karma-conf-dev.js node_modules
@@ -207,16 +207,16 @@ ol3cesium: .build-artefacts/ol3-cesium
 	cp cesium/Build/Cesium/Cesium.js ../../src/lib/Cesium.min.js;
 
 .PHONY: fastclick
-fastclick: .build-artefacts/fastclick .build-artefacts/closure-compiler/compiler.jar
+fastclick: .build-artefacts/fastclick
 	cp .build-artefacts/fastclick/lib/fastclick.js src/lib/fastclick.js
-	java -jar .build-artefacts/closure-compiler/compiler.jar \
+	java -jar node_modules/google-closure-compiler/compiler.jar \
 	    src/lib/fastclick.js \
 	    --compilation_level SIMPLE_OPTIMIZATIONS \
 	    --js_output_file  src/lib/fastclick.min.js
 
 .PHONY: typeahead
-typeahead: .build-artefacts/closure-compiler/compiler.jar
-	java -jar .build-artefacts/closure-compiler/compiler.jar \
+typeahead:
+	java -jar node_modules/google-closure-compiler/compiler.jar \
 	    src/lib/typeahead-0.9.3.js \
 	    --compilation_level SIMPLE_OPTIMIZATIONS \
 	    --js_output_file  src/lib/typeahead-0.9.3.min.js
@@ -380,8 +380,8 @@ prd/checker: src/checker
 	mkdir -p $(dir $@)
 	cp $< $@
 
-src/deps.js: $(SRC_JS_FILES) .build-artefacts/python-venv .build-artefacts/closure-library
-	${PYTHON_CMD} .build-artefacts/closure-library/closure/bin/build/depswriter.py \
+src/deps.js: $(SRC_JS_FILES) .build-artefacts/python-venv
+	${PYTHON_CMD} node_modules/google-closure-library/closure/bin/build/depswriter.py \
 	    --root_with_prefix="src/components components" \
 	    --root_with_prefix="src/js js" \
 	    --output_file=$@
@@ -459,21 +459,19 @@ node_modules: package.json
 	cp node_modules/angular-mocks/angular-mocks.js test/lib/;
 	cp node_modules/expect.js/index.js test/lib/expect.js;
 	cp node_modules/sinon/pkg/sinon.js test/lib/;
+	cp node_modules/google-closure-compiler/contrib/externs/angular-1.4.js externs/angular.js;
+	cp node_modules/google-closure-compiler/contrib/externs/jquery-1.9.js externs/jquery.js;
 
-
-.build-artefacts/app.js: .build-artefacts/js-files \
-	    .build-artefacts/closure-compiler/compiler.jar \
-	    .build-artefacts/externs/angular.js \
-	    .build-artefacts/externs/jquery.js
+.build-artefacts/app.js: .build-artefacts/js-files
 	mkdir -p $(dir $@)
-	java -jar .build-artefacts/closure-compiler/compiler.jar $(SRC_JS_FILES_FOR_COMPILER) \
+	java -jar node_modules/google-closure-compiler/compiler.jar $(SRC_JS_FILES_FOR_COMPILER) \
 	    --compilation_level SIMPLE_OPTIMIZATIONS \
 	    --jscomp_error checkVars \
 	    --externs externs/ol.js \
 	    --externs externs/ol3-cesium.js \
 	    --externs externs/Cesium.externs.js \
-	    --externs .build-artefacts/externs/angular.js \
-	    --externs .build-artefacts/externs/jquery.js \
+	    --externs externs/angular.js \
+	    --externs externs/jquery.js \
 	    --js_output_file $@
 
 $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule.js): \
@@ -481,9 +479,8 @@ $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule
 	mkdir -p $(dir $@)
 	./node_modules/.bin/ng-annotate -a $< > $@
 
-.build-artefacts/app-whitespace.js: .build-artefacts/js-files \
-	    .build-artefacts/closure-compiler/compiler.jar
-	java -jar .build-artefacts/closure-compiler/compiler.jar  $(SRC_JS_FILES_FOR_COMPILER) \
+.build-artefacts/app-whitespace.js: .build-artefacts/js-files
+	java -jar node_modules/google-closure-compiler/compiler.jar  $(SRC_JS_FILES_FOR_COMPILER) \
 	    --compilation_level WHITESPACE_ONLY \
 	    --formatting PRETTY_PRINT \
 	    --js_output_file $@
@@ -493,10 +490,10 @@ $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule
 # passed to the Closure compiler.
 .build-artefacts/js-files: $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule.js) \
 	    .build-artefacts/python-venv \
-	    .build-artefacts/closure-library
-	${PYTHON_CMD} .build-artefacts/closure-library/closure/bin/build/closurebuilder.py \
+	    node_modules/google-closure-library
+	${PYTHON_CMD} node_modules/google-closure-library/closure/bin/build/closurebuilder.py \
 	    --root=.build-artefacts/annotated \
-	    --root=.build-artefacts/closure-library \
+	    --root=node_modules/google-closure-library \
 	    --namespace="geoadmin" \
 	    --namespace="__ga_template_cache__" \
 	    --output_mode=list > $@
@@ -525,20 +522,6 @@ $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule
 .build-artefacts/python-venv:
 	mkdir -p .build-artefacts
 	virtualenv --no-site-packages $@
-
-## Check compatibility with ol3 https://github.com/openlayers/ol3/blob/master/closure-util.json
-.build-artefacts/closure-library:
-	mkdir -p .build-artefacts
-	git clone http://github.com/google/closure-library/ $@
-	cd $@ && git reset --hard 5b25e65 && cd ../../
-
-.build-artefacts/closure-compiler/compiler-latest.zip:
-	mkdir -p $(dir $@)
-	wget -O $@ http://dl.google.com/closure-compiler/compiler-latest.zip
-
-.build-artefacts/closure-compiler/compiler.jar: .build-artefacts/closure-compiler/compiler-latest.zip
-	unzip $< -d .build-artefacts/closure-compiler
-	touch $@
 
 $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH)/.git/config:
 	rm -rf $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH)
@@ -607,18 +590,6 @@ scripts/00-$(GIT_BRANCH).conf: scripts/00-branch.mako-dot-conf \
 .build-artefacts/datepicker:
 	git clone https://github.com/Eonasdan/bootstrap-datetimepicker.git $@ && \
 	    cd $@ && git checkout 3.1.4
-
-.build-artefacts/externs/angular.js:
-	mkdir -p $(dir $@)
-	wget -O $@ https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/angular-1.4.js
-	touch $@
-
-# Closure's contrib dir doesn't include externs for jQuery 2, but the jQuery
-# 1.9 externs are sufficient for our usage.
-.build-artefacts/externs/jquery.js:
-	mkdir -p $(dir $@)
-	wget -O $(subst -1.9,,$@) https://raw.github.com/google/closure-compiler/master/contrib/externs/jquery-1.9.js
-	touch $@
 
 .PHONY: cleanall
 cleanall: clean
