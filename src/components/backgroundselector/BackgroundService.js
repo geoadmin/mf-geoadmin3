@@ -18,6 +18,7 @@ goog.require('ga_permalink');
       var isOfflineToOnline = false;
       var bg; // The current background
       var bgs = []; // The list of backgrounds available
+      var bgsP; // Promise resolved when the background service is initialized.
       var voidLayer = {id: 'voidLayer', label: 'void_layer'};
       var predefinedBgs = {
         'voidLayer': voidLayer,
@@ -81,7 +82,7 @@ goog.require('ga_permalink');
           var that = this;
           // Initialize the service when topics and layers config are
           // loaded
-          $q.all([gaTopic.loadConfig(), gaLayers.loadConfig()]).
+          bgsP = $q.all([gaTopic.loadConfig(), gaLayers.loadConfig()]).
               then(function() {
             updateDefaultBgOrder(gaTopic.get().backgroundLayers);
             var initBg = getBgById(gaPermalink.getParams().bgLayer);
@@ -99,6 +100,8 @@ goog.require('ga_permalink');
               isOfflineToOnline = !offline;
             });
           });
+
+          return bgsP;
         };
 
         this.getBackgrounds = function() {
@@ -135,6 +138,10 @@ goog.require('ga_permalink');
               broadcast();
              }
           }
+        };
+
+        this.loadConfig = function() {
+          return bgsP;
         };
 
         this.get = function() {
