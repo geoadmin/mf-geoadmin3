@@ -26,7 +26,8 @@
     "angular-mocks": "1.4.8",
     "angular": "1.4.8",
     "angular-translate": "2.8.1",
-    "localforage": "1.0.1",
-    "jquery": "2.2.0"
+    "localforage": "1.2.3",
+    "jquery": "2.2.0",
+    "jquery-ajax-transport-xdomainrequest": "1.0.4"
   }
 }

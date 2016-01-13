@@ -259,7 +259,7 @@ prd/robots.txt: scripts/robots.mako-dot-txt .build-artefacts/last-deploy-target
 prd/lib/: src/lib/d3-3.3.1.min.js \
 	    src/lib/bootstrap-datetimepicker.min.js  \
 	    src/lib/IE9Fixes.js \
-	    src/lib/jQuery.XDomainRequest.js \
+	    src/lib/jquery.xdomainrequest.min.js \
 	    src/lib/Cesium \
 	    src/lib/Cesium.min.js \
 	    src/lib/ol3cesium.js
@@ -269,7 +269,8 @@ prd/lib/: src/lib/d3-3.3.1.min.js \
 prd/lib/build.js: src/lib/jquery.min.js \
 		    src/lib/bootstrap-3.3.1.min.js \
 		    src/lib/moment-with-customlocales.min.js \
-		    src/lib/typeahead-0.9.3.min.js src/lib/angular.min.js \
+		    src/lib/typeahead-0.9.3.min.js \
+				src/lib/angular.min.js \
 		    src/lib/proj4js-compressed.js \
 		    src/lib/EPSG21781.js \
 		    src/lib/EPSG2056.js \
@@ -443,6 +444,7 @@ node_modules: ANGULAR_TRANSLATE_JS = angular-translate.js angular-translate.min.
 node_modules: ANGULAR_TRANSLATE_LOADER_JS = angular-translate-loader-static-files.js angular-translate-loader-static-files.min.js
 node_modules: LOCALFORAGE = localforage.js localforage.min.js
 node_modules: JQUERY = jquery.js jquery.min.js
+node_modules: JQUERYXDOMAIN = jQuery.XDomainRequest.js  jquery.xdomainrequest.min.js
 node_modules: package.json
 	npm install
 	cp $(addprefix node_modules/angular/,$(ANGULAR_JS)) src/lib/;
@@ -450,6 +452,7 @@ node_modules: package.json
 	cp $(addprefix node_modules/angular-translate/dist/angular-translate-loader-static-files/,$(ANGULAR_TRANSLATE_LOADER_JS)) src/lib/;
 	cp $(addprefix node_modules/localforage/dist/,$(LOCALFORAGE)) src/lib/;
 	cp $(addprefix node_modules/jquery/dist/,$(JQUERY)) src/lib/;
+	cp $(addprefix node_modules/jquery-ajax-transport-xdomainrequest/,$(JQUERYXDOMAIN)) src/lib/;
 	cp node_modules/angular-mocks/angular-mocks.js test/lib/;
 	cp node_modules/expect.js/index.js test/lib/expect.js;
 	cp node_modules/sinon/pkg/sinon.js test/lib/;
