@@ -597,13 +597,16 @@ scripts/00-$(GIT_BRANCH).conf: scripts/00-branch.mako-dot-conf \
 .build-artefacts/bootstrap:
 	git clone https://github.com/twbs/bootstrap.git $@ && cd $@ && git checkout v3.3.1
 
+# No npm module 
 .build-artefacts/filesaver:
 	git clone https://github.com/eligrey/FileSaver.js.git $@
 
+# No npm module for version 3 
 # datepicker needs custom build of moment js with specific locales
+# don't use version 4 the uncompresssed file is twice bigger
 .build-artefacts/datepicker:
 	git clone https://github.com/Eonasdan/bootstrap-datetimepicker.git $@ && \
-	    cd $@ && git checkout v3.1.3
+	    cd $@ && git checkout 3.1.4
 
 .build-artefacts/externs/angular.js:
 	mkdir -p $(dir $@)
