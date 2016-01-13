@@ -14,6 +14,7 @@ from helpers import bCheckIfUrlHasChanged
 # Swisssearch Test Using saucelabs
 
 QUERYSTRING_OF_RARON = "X=128114.80&Y=629758.13&zoom=10";
+QUERYSTRING_OF_RARON_HELIPORT = "X=127877.50&Y=630374.18&zoom=12";
 QUERYSTRING_OF_RTE_BERNE_LAUSANNE = "X=154208.00&Y=539257.00&zoom=10";
 QUERYSTRING_OF_PL_CHATEAU_AVENCHES = "X=192310.00&Y=569734.00&zoom=10";
 QUERYSTRING_OF_PIAZZA_MESOLCINA_BELLINZONA = "X=117501.36&Y=722496.94&zoom=10";
@@ -54,10 +55,12 @@ def runSwissSearchTest(driver, target):
     current_url = driver.current_url
     ## Ne marche pas avec IE !
     if bCheckIfUrlHasChanged(driver):
-        driver.find_element_by_xpath("//*[contains(text(), ', Flugplatz')]").click()
+        #driver.find_element_by_xpath("//*[contains(text(), ', Flugplatz')]").click()
+        driver.find_element_by_xpath("//*[contains(text(), ', Heliport')]").click()
         current_url = driver.current_url
         try:
-            assert QUERYSTRING_OF_RARON in current_url
+#            assert QUERYSTRING_OF_RARON in current_url
+            assert QUERYSTRING_OF_RARON_HELIPORT 
         except Exception as e:
             # Wait refresh URL
             try:
@@ -68,9 +71,11 @@ def runSwissSearchTest(driver, target):
                 print "Current url: " + current_url
                 raise Exception("Coordinate of raron is not set in the url")
             # Check if url contain coordinate of raron
-            assert QUERYSTRING_OF_RARON in driver.current_url
+            #assert QUERYSTRING_OF_RARON in driver.current_url
+            assert QUERYSTRING_OF_RARON_HELIPORT 
         # Must also update the link of 'toptool'
         assert QUERYSTRING_OF_RARON in driver.find_element_by_xpath("//*[@id='toptools']/a[3]").get_attribute("href")
+        assert QUERYSTRING_OF_RARON_HELIPORT in driver.find_element_by_xpath("//*[@id='toptools']/a[3]").get_attribute("href")
 
         # parameter should disappear when selection is done
         assert "swisssearch" not in driver.current_url 
