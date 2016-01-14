@@ -267,7 +267,7 @@ prd/lib/: src/lib/d3.min.js \
 	cp -rf  $^ $@
 
 prd/lib/build.js: src/lib/jquery.min.js \
-		    src/lib/bootstrap-3.3.1.min.js \
+		    src/lib/bootstrap.min.js \
 		    src/lib/moment-with-customlocales.min.js \
 		    src/lib/typeahead-0.9.3.min.js \
 				src/lib/angular.min.js \
@@ -291,8 +291,7 @@ prd/style/app.css: src/style/app.less \
 		    src/style/ga_bootstrap.less \
 		    src/style/ga_variables.less \
 		    $(SRC_COMPONENTS_LESS_FILES) \
-		    node_modules \
-		    .build-artefacts/bootstrap
+		    node_modules
 	mkdir -p $(dir $@)
 	node_modules/.bin/lessc -ru --clean-css $< $@
 
@@ -391,8 +390,7 @@ src/style/app.css: src/style/app.less \
 	    src/style/ga_bootstrap.less \
 	    src/style/ga_variables.less \
 	    $(SRC_COMPONENTS_LESS_FILES) \
-	    node_modules \
-	    .build-artefacts/bootstrap
+	    node_modules
 	node_modules/.bin/lessc $(LESS_PARAMETERS) $< $@
 
 src/index.html: src/index.mako.html \
@@ -446,6 +444,7 @@ node_modules: LOCALFORAGE = localforage.js localforage.min.js
 node_modules: JQUERY = jquery.js jquery.min.js
 node_modules: JQUERYXDOMAIN = jQuery.XDomainRequest.js  jquery.xdomainrequest.min.js
 node_modules: D3 = d3.js  d3.min.js
+node_modules: BOOTSTRAP = bootstrap.js bootstrap.min.js
 node_modules: package.json
 	npm install
 	cp $(addprefix node_modules/angular/,$(ANGULAR_JS)) src/lib/;
@@ -455,6 +454,7 @@ node_modules: package.json
 	cp $(addprefix node_modules/jquery/dist/,$(JQUERY)) src/lib/;
 	cp $(addprefix node_modules/jquery-ajax-transport-xdomainrequest/,$(JQUERYXDOMAIN)) src/lib/;
 	cp $(addprefix node_modules/d3/,$(D3)) src/lib/;
+	cp $(addprefix node_modules/bootstrap/dist/js/,$(BOOTSTRAP)) src/lib/;
 	cp node_modules/fastclick/lib/fastclick.js src/lib/;
 	cp node_modules/angular-mocks/angular-mocks.js test/lib/;
 	cp node_modules/expect.js/index.js test/lib/expect.js;
@@ -576,9 +576,6 @@ scripts/00-$(GIT_BRANCH).conf: scripts/00-branch.mako-dot-conf \
 
 .build-artefacts/ol3-cesium:
 	git clone --recursive https://github.com/openlayers/ol3-cesium.git $@
-
-.build-artefacts/bootstrap:
-	git clone https://github.com/twbs/bootstrap.git $@ && cd $@ && git checkout v3.3.1
 
 # No npm module 
 .build-artefacts/filesaver:
