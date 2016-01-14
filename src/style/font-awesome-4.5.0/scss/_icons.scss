@@ -1,0 +1,53 @@
+/* Font Awesome uses the Unicode Private Use Area (PUA) to ensure screen
+ * readers do not read off random characters that represent icons */
+
+.#{$fa-css-prefix}-search:before { content: $fa-search; }
+.#{$fa-css-prefix}-remove:before { content: $fa-remove; }
+.#{$fa-css-prefix}-zoom-in:before { content: $fa-zoom-in; }
+.#{$fa-css-prefix}-refresh:before { content: $fa-refresh; }
+.#{$fa-css-prefix}-qrcode:before { content: $fa-qrcode; }
+.#{$fa-css-prefix}-print:before { content: $fa-print; }
+.#{$fa-css-prefix}-share:before { content: $fa-share; }
+.#{$fa-css-prefix}-check:before { content: $fa-check; }
+.#{$fa-css-prefix}-remove-sign:before { content: $fa-remove-sign; }
+.#{$fa-css-prefix}-question-circle:before { content: $fa-question-circle; }
+.#{$fa-css-prefix}-info-sign:before { content: $fa-info-sign; }
+.#{$fa-css-prefix}-arrow-left:before { content: $fa-arrow-left; }
+.#{$fa-css-prefix}-arrow-right:before { content: $fa-arrow-right; }
+.#{$fa-css-prefix}-arrow-up:before { content: $fa-arrow-up; }
+.#{$fa-css-prefix}-arrow-down:before { content: $fa-arrow-down; }
+.#{$fa-css-prefix}-plus:before { content: $fa-plus; }
+.#{$fa-css-prefix}-minus:before { content: $fa-minus; }
+.#{$fa-css-prefix}-warning-sign:before { content: $fa-warning-sign; }
+.#{$fa-css-prefix}-gear:before { content: $fa-gear; }
+.#{$fa-css-prefix}-external-link:before { content: $fa-external-link; }
+.#{$fa-css-prefix}-phone:before { content: $fa-phone; }
+.#{$fa-css-prefix}-unchecked:before,
+.#{$fa-css-prefix}-check-empty:before { content: $fa-check-empty; }
+.#{$fa-css-prefix}-twitter:before { content: $fa-twitter; }
+.#{$fa-css-prefix}-facebook:before { content: $fa-facebook; }
+.#{$fa-css-prefix}-copy:before { content: $fa-copy; }
+.#{$fa-css-prefix}-reorder:before { content: $fa-reorder; }
+.#{$fa-css-prefix}-google-plus:before { content: $fa-google-plus; }
+.#{$fa-css-prefix}-caret-down:before { content: $fa-caret-down; }
+.#{$fa-css-prefix}-caret-up:before { content: $fa-caret-up; }
+.#{$fa-css-prefix}-caret-right:before { content: $fa-caret-right; }
+.#{$fa-css-prefix}-envelope-alt:before { content: $fa-envelope-alt; }
+.#{$fa-css-prefix}-expand-alt:before { content: $fa-expand-alt; }
+.#{$fa-css-prefix}-collapse-alt:before { content: $fa-collapse-alt; }
+.#{$fa-css-prefix}-chevron-sign-right:before { content: $fa-chevron-sign-right; }
+.#{$fa-css-prefix}-collapse:before { content: $fa-collapse; }
+.#{$fa-css-prefix}-file:before { content: $fa-file; }
+.#{$fa-css-prefix}-sort-by-alphabet:before { content: $fa-sort-by-alphabet; }
+.#{$fa-css-prefix}-sort-by-alphabet-alt:before { content: $fa-sort-by-alphabet-alt; }
+.#{$fa-css-prefix}-thumbs-up:before { content: $fa-thumbs-up; }
+.#{$fa-css-prefix}-thumbs-down:before { content: $fa-thumbs-down; }
+.#{$fa-css-prefix}-user:before { content: $fa-user; }
+.#{$fa-css-prefix}-ga-slider:before { content: $fa-ga-slider; }
+.#{$fa-css-prefix}-ga-slider-bckgd:before { content: $fa-ga-slider-bckgd; }
+.#{$fa-css-prefix}-ga-mapfunction:before { content: $fa-ga-mapfunction; }
+.#{$fa-css-prefix}-ga-add-line:before { content: $fa-ga-add-line; }
+.#{$fa-css-prefix}-ga-measure:before { content: $fa-ga-measure; }
+.#{$fa-css-prefix}-ga-add-text:before { content: $fa-ga-add-text; }
+.#{$fa-css-prefix}-ga-edit:before { content: $fa-ga-edit; }
+.#{$fa-css-prefix}-ga-marker:before { content: $fa-ga-marker; }

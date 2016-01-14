@@ -1,0 +1,554 @@
+@charset "UTF-8";
+
+@font-face {
+  font-family: "fontawesome-webfont";
+  src:url("font/fontawesome-webfont.eot");
+  src:url("font/fontawesome-webfont.eot?#iefix") format("embedded-opentype"),
+    url("font/fontawesome-webfont.woff") format("woff"),
+    url("font/fontawesome-webfont.ttf") format("truetype"),
+    url("font/fontawesome-webfont.svg#fontawesome-webfont") format("svg");
+  font-weight: normal;
+  font-style: normal;
+
+}
+
+[data-icon]:before {
+  font-family: "fontawesome-webfont" !important;
+  content: attr(data-icon);
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-variant: normal !important;
+  text-transform: none !important;
+  speak: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+[class^="fa-"]:before,
+[class*=" fa-"]:before {
+  font-family: "fontawesome-webfont" !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-variant: normal !important;
+  text-transform: none !important;
+  speak: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.fa-ga-marker:before {
+  content: "\f19a";
+}
+.fa-ga-slider-bckgd:before {
+  content: "\f18f";
+}
+.fa-ga-mapfunction:before {
+  content: "\f190";
+}
+.fa-thumbs-up:before {
+  content: "\f164";
+}
+.fa-sort-by-alphabet:before {
+  content: "\f15d";
+}
+.fa-file:before {
+  content: "\f15b";
+}
+.fa-collapse:before {
+  content: "\f150";
+}
+.fa-collapse-alt:before {
+  content: "\f117";
+}
+.fa-expand-alt:before {
+  content: "\f116";
+}
+.fa-envelope-alt:before {
+  content: "\f0e0";
+}
+.fa-google-plus:before {
+  content: "\f0d5";
+}
+.fa-copy:before {
+  content: "\f0c5";
+}
+.fa-facebook:before {
+  content: "\f09a";
+}
+.fa-twitter:before {
+  content: "\f099";
+}
+.fa-phone:before {
+  content: "\f095";
+}
+.fa-external-link:before {
+  content: "\f08e";
+}
+.fa-warning-sign:before {
+  content: "\f071";
+}
+.fa-minus:before {
+  content: "\f068";
+}
+.fa-plus:before {
+  content: "\f067";
+}
+.fa-arrow-down:before {
+  content: "\f063";
+}
+.fa-arrow-up:before {
+  content: "\f062";
+}
+.fa-arrow-right:before {
+  content: "\f061";
+}
+.fa-info-sign:before {
+  content: "\f05a";
+}
+.fa-remove-sign:before {
+  content: "\f057";
+}
+.fa-share:before {
+  content: "\f045";
+}
+.fa-print:before {
+  content: "\f02f";
+}
+.fa-qrcode:before {
+  content: "\f029";
+}
+.fa-refresh:before {
+  content: "\f021";
+}
+.fa-gear:before {
+  content: "\f013";
+}
+.fa-remove:before {
+  content: "\f00d";
+}
+.fa-ga-add-line:before {
+  content: "\f199";
+}
+.fa-ga-add-text:before {
+  content: "\f197";
+}
+.fa-ga-edit:before {
+  content: "\f195";
+}
+.fa-zoom-in:before {
+  content: "\f00e";
+}
+.fa-search:before {
+  content: "\f002";
+}
+.fa-user:before {
+  content: "\f007";
+}
+.fa-ga-slider:before {
+  content: "\f18e";
+}
+.fa-ga-measure:before {
+  content: "\f198";
+}
+.fa-maki-airfield:before {
+  content: "\f19c";
+}
+.fa-maki-airport:before {
+  content: "\f19d";
+}
+.fa-maki-alcohol-shop:before {
+  content: "\f19e";
+}
+.fa-maki-america-football:before {
+  content: "\f19f";
+}
+.fa-maki-art-gallery:before {
+  content: "\f1a0";
+}
+.fa-maki-bakery:before {
+  content: "\f1a1";
+}
+.fa-maki-bank:before {
+  content: "\f1a2";
+}
+.fa-maki-bar:before {
+  content: "\f1a3";
+}
+.fa-maki-baseball:before {
+  content: "\f1a4";
+}
+.fa-maki-basketball:before {
+  content: "\f1a5";
+}
+.fa-maki-beer:before {
+  content: "\f1a6";
+}
+.fa-maki-building:before {
+  content: "\f1a8";
+}
+.fa-maki-bus:before {
+  content: "\f1a9";
+}
+.fa-maki-cafe:before {
+  content: "\f1aa";
+}
+.fa-maki-camera:before {
+  content: "\f1ab";
+}
+.fa-maki-campsite:before {
+  content: "\f1ac";
+}
+.fa-maki-car:before {
+  content: "\f1ad";
+}
+.fa-maki-cemetery:before {
+  content: "\f1ae";
+}
+.fa-maki-chemist:before {
+  content: "\f1af";
+}
+.fa-maki-cinema:before {
+  content: "\f1b0";
+}
+.fa-maki-circle:before {
+  content: "\f1b1";
+}
+.fa-maki-circle-stroked:before {
+  content: "\f1b2";
+}
+.fa-maki-city:before {
+  content: "\f1b3";
+}
+.fa-maki-clothing-store:before {
+  content: "\f1b4";
+}
+.fa-maki-college:before {
+  content: "\f1b5";
+}
+.fa-maki-commercial:before {
+  content: "\f1b6";
+}
+.fa-maki-cricket:before {
+  content: "\f1b7";
+}
+.fa-maki-cross:before {
+  content: "\f1b8";
+}
+.fa-maki-dam:before {
+  content: "\f1b9";
+}
+.fa-maki-danger:before {
+  content: "\f1ba";
+}
+.fa-maki-disability:before {
+  content: "\f1bc";
+}
+.fa-maki-dog-park:before {
+  content: "\f1bd";
+}
+.fa-maki-embassy:before {
+  content: "\f1be";
+}
+.fa-maki-emergency-telephone:before {
+  content: "\f1bf";
+}
+.fa-maki-entrance:before {
+  content: "\f1c0";
+}
+.fa-maki-farm:before {
+  content: "\f1c1";
+}
+.fa-maki-fast-food:before {
+  content: "\f1c2";
+}
+.fa-maki-ferry:before {
+  content: "\f1c3";
+}
+.fa-maki-fire-station:before {
+  content: "\f1c4";
+}
+.fa-maki-fuel:before {
+  content: "\f1c5";
+}
+.fa-maki-garden:before {
+  content: "\f1c6";
+}
+.fa-maki-golf:before {
+  content: "\f1c9";
+}
+.fa-maki-grocery:before {
+  content: "\f1ca";
+}
+.fa-maki-hairdresser:before {
+  content: "\f1cb";
+}
+.fa-maki-harbor:before {
+  content: "\f1cc";
+}
+.fa-maki-heart:before {
+  content: "\f1cd";
+}
+.fa-maki-heliport:before {
+  content: "\f1ce";
+}
+.fa-maki-hospital:before {
+  content: "\f1cf";
+}
+.fa-maki-industrial:before {
+  content: "\f1d1";
+}
+.fa-maki-land-use:before {
+  content: "\f1d2";
+}
+.fa-maki-laundry:before {
+  content: "\f1d3";
+}
+.fa-maki-library:before {
+  content: "\f1d4";
+}
+.fa-maki-lighthouse:before {
+  content: "\f1d5";
+}
+.fa-maki-lodging:before {
+  content: "\f1d6";
+}
+.fa-maki-logging:before {
+  content: "\f1d7";
+}
+.fa-maki-london-underground:before {
+  content: "\f1d8";
+}
+.fa-maki-marker:before {
+  content: "\f1d9";
+}
+.fa-maki-marker-stroked:before {
+  content: "\f1da";
+}
+.fa-maki-minefield:before {
+  content: "\f1db";
+}
+.fa-maki-mobilephone:before {
+  content: "\f1dc";
+}
+.fa-maki-monument:before {
+  content: "\f1dd";
+}
+.fa-maki-museum:before {
+  content: "\f1de";
+}
+.fa-maki-music:before {
+  content: "\f1df";
+}
+.fa-maki-oil-well:before {
+  content: "\f1e0";
+}
+.fa-maki-park:before {
+  content: "\f1e1";
+}
+.fa-maki-park2:before {
+  content: "\f1e2";
+}
+.fa-maki-parking:before {
+  content: "\f1e3";
+}
+.fa-maki-parking-garage:before {
+  content: "\f1e4";
+}
+.fa-maki-pharmacy:before {
+  content: "\f1e5";
+}
+.fa-maki-place-of-worship:before {
+  content: "\f1e6";
+}
+.fa-maki-playground:before {
+  content: "\f1e7";
+}
+.fa-maki-pitch:before {
+  content: "\f1e8";
+}
+.fa-maki-police:before {
+  content: "\f1e9";
+}
+.fa-maki-polling-place:before {
+  content: "\f1ea";
+}
+.fa-maki-post:before {
+  content: "\f1eb";
+}
+.fa-maki-prison:before {
+  content: "\f1ec";
+}
+.fa-maki-rail:before {
+  content: "\f1ed";
+}
+.fa-maki-rail-above:before {
+  content: "\f1ee";
+}
+.fa-maki-rail-light:before {
+  content: "\f1ef";
+}
+.fa-maki-rail-metro:before {
+  content: "\f1f0";
+}
+.fa-maki-rail-underground:before {
+  content: "\f1f1";
+}
+.fa-maki-religious-muslim:before {
+  content: "\f1f2";
+}
+.fa-maki-religious-jewish:before {
+  content: "\f1f3";
+}
+.fa-maki-religious-christian:before {
+  content: "\f1f4";
+}
+.fa-maki-restaurant:before {
+  content: "\f1f5";
+}
+.fa-maki-roadblock:before {
+  content: "\f1f6";
+}
+.fa-maki-rocket:before {
+  content: "\f1f7";
+}
+.fa-maki-school:before {
+  content: "\f1f8";
+}
+.fa-maki-scooter:before {
+  content: "\f1f9";
+}
+.fa-maki-shop:before {
+  content: "\f1fa";
+}
+.fa-maki-skiing:before {
+  content: "\f1fb";
+}
+.fa-maki-slaughterhouse:before {
+  content: "\f1fc";
+}
+.fa-maki-soccer:before {
+  content: "\f1fd";
+}
+.fa-maki-square:before {
+  content: "\f1fe";
+}
+.fa-maki-square-stroked:before {
+  content: "\f1ff";
+}
+.fa-maki-star:before {
+  content: "\f200";
+}
+.fa-maki-star-stroked:before {
+  content: "\f201";
+}
+.fa-maki-suitcase:before {
+  content: "\f202";
+}
+.fa-maki-swimming:before {
+  content: "\f203";
+}
+.fa-maki-telephone:before {
+  content: "\f204";
+}
+.fa-maki-tennis:before {
+  content: "\f205";
+}
+.fa-maki-theatre:before {
+  content: "\f206";
+}
+.fa-maki-toilets:before {
+  content: "\f207";
+}
+.fa-maki-town:before {
+  content: "\f208";
+}
+.fa-maki-town-hall:before {
+  content: "\f209";
+}
+.fa-maki-triangle:before {
+  content: "\f20a";
+}
+.fa-maki-triangle-stroked:before {
+  content: "\f20b";
+}
+.fa-maki-village:before {
+  content: "\f20c";
+}
+.fa-maki-warehouse:before {
+  content: "\f20d";
+}
+.fa-maki-waste-basket:before {
+  content: "\f20e";
+}
+.fa-maki-water:before {
+  content: "\f20f";
+}
+.fa-maki-wetland:before {
+  content: "\f210";
+}
+.fa-maki-zoo:before {
+  content: "\f211";
+}
+.fa-arrow-left:before {
+  content: "\f060";
+}
+.fa-caret-down:before {
+  content: "\f0d7";
+}
+.fa-caret-right:before {
+  content: "\f0da";
+}
+.fa-caret-up:before {
+  content: "\f0d8";
+}
+.fa-question-circle:before {
+  content: "\f059";
+}
+.fa-reorder:before {
+  content: "\f0c9";
+}
+.fa-chevron-sign-right:before {
+  content: "\f138";
+}
+.fa-check:before {
+  content: "\f046";
+}
+.fa-unchecked:before {
+  content: "\f096";
+}
+.fa-maki-bicycle:before {
+  content: "\f1a7";
+}
+.fa-ga-elevation-down:before {
+  content: "\f212";
+}
+.fa-ga-elevation-up:before {
+  content: "\f213";
+}
+.fa-chevron-down:before {
+  content: "\f214";
+}
+.fa-chevron-left:before {
+  content: "\f215";
+}
+.fa-chevron-right:before {
+  content: "\f216";
+}
+.fa-chevron-up:before {
+  content: "\f217";
+}
+.fa-resize-vertical:before {
+  content: "\f218";
+}
+.fa-clock-o:before {
+  content: "\f219";
+}
+.fa-resize-horizontal:before {
+  content: "\f220";
+}
+.fa-sort-by-alphabet-alt:before {
+  content: "\f15e";
+}
+

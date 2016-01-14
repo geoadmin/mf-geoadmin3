@@ -41,7 +41,7 @@
   <button type="button" class="btn btn-default ga-import-kml-load" ng-click="loadKML()" translate>load_kml</button>
   <!-- TODO: Display information about the uploaded file and the upload process -->
   <div class="ga-import-kml-result">
-    <div class="ga-import-kml-abort icon-remove-sign" ng-click="cancel()"
+    <div class="ga-import-kml-abort fa fa-remove-sign" ng-click="cancel()"
       ng-show="(0 < progress && progress < 100)" ></div>{{userMessage}}
     <div ng-if="!isIE" class="progress progress-striped active"
       ng-show="(0 < progress && progress < 100)">

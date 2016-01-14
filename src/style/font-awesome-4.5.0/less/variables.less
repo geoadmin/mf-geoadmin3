@@ -1,0 +1,358 @@
+// Variables
+// --------------------------
+
+@fa-font-path:        "../font";
+@fa-font-size-base:   14px;
+@fa-line-height-base: 1;
+//@fa-font-path:        "//netdna.bootstrapcdn.com/font-awesome/4.5.0/font"; // for referencing Bootstrap CDN font files directly
+@fa-css-prefix:       fa;
+@fa-version:          "4.5.0";
+@fa-border-color:     #eee;
+@fa-inverse:          #fff;
+@fa-li-width:         (30em / 14);
+
+
+  @fa-search: "\f002";
+
+  @fa-remove: "\f00d";
+  
+  @fa-zoom-in: "\f00e";
+  
+  @fa-gear: "\f013";
+  
+  @fa-refresh: "\f021";
+
+  @fa-qrcode: "\f029";
+
+  @fa-print: "\f02f";
+
+  @fa-share: "\f045";
+  
+  @fa-check: "\f046";
+
+  @fa-remove-sign: "\f057";
+  
+  @fa-question-circle: "\f059";  
+  
+  @fa-info-sign: "\f05a";
+  
+  @fa-arrow-left: "\f060";
+	
+  @fa-arrow-right: "\f061";
+
+  @fa-arrow-up: "\f062";
+
+  @fa-arrow-down: "\f063";
+
+  @fa-plus: "\f067";
+
+  @fa-minus: "\f068";
+
+  @fa-warning-sign: "\f071";
+
+  @fa-external-link: "\f08e";
+
+  @fa-phone: "\f095";
+  
+  @fa-check-empty: "\f096";
+
+  @fa-twitter: "\f099";
+
+  @fa-facebook: "\f09a";
+
+  @fa-copy: "\f0c5";
+  
+  @fa-reorder: "\f0c9";
+
+  @fa-google-plus: "\f0d5";
+
+  @fa-caret-down: "\f0d7";
+
+  @fa-caret-up: "\f0d8";
+
+  @fa-caret-right: "\f0da";
+
+  @fa-envelope-alt: "\f0e0";
+
+  @fa-expand-alt: "\f116";
+
+  @fa-collapse-alt: "\f117";
+
+  @fa-chevron-sign-right: "\f138";
+
+  @fa-collapse: "\f150";
+
+  @fa-file: "\f15b";
+
+  @fa-sort-by-alphabet: "\f15d";
+
+  @fa-sort-by-alphabet-alt: "\f15e";
+
+  @fa-thumbs-up: "\f164";
+
+  @fa-thumbs-down: "\f165";
+
+  @fa-user: "\f007";
+
+  @fa-ga-slider: "\f18e";
+
+  @fa-ga-slider-bckgd: "\f18f";
+
+  @fa-ga-mapfunction: "\f190";
+  
+  @fa-ga-add-line: "\f199";
+  
+  @fa-ga-measure: "\f198";
+  
+  @fa-ga-add-text: "\f197";
+  
+  @fa-ga-edit: "\f195";
+  
+  @fa-ga-marker: "\f19a";  
+  
+  @fa-maki-airfield: "\f19c";
+
+  @fa-maki-airport: "\f19d";
+  
+  @fa-maki-alcohol-shop: "\f19e";
+  
+  @fa-maki-america-football: "\f19f";
+  
+  @fa-maki-art-gallery: "\f1a0";
+  
+  @fa-maki-bakery: "\f1a1";
+  
+  @fa-maki-bank: "\f1a2";
+  
+  @fa-maki-bar: "\f1a3";
+  
+  @fa-maki-baseball: "\f1a4";
+  
+  @fa-maki-basketball: "\f1a5";
+  
+  @fa-maki-beer: "\f1a6";
+  
+  @fa-maki-bicycle: "\f1a7";
+  
+  @fa-maki-building: "\f1a8";
+  
+  @fa-maki-bus: "\f1a9";
+  
+  @fa-maki-cafe: "\f1aa";
+  
+  @fa-maki-camera: "\f1ab";
+  
+  @fa-maki-campsite: "\f1ac";
+  
+  @fa-maki-car: "\f1ad";
+  
+  @fa-maki-cemetery: "\f1ae";
+
+  @fa-maki-chemist: "\f1af";
+
+  @fa-maki-cinema: "\f1b0";
+
+  @fa-maki-circle: "\f1b1";
+  
+  @fa-maki-circle-stroked: "\f1b2";
+  
+  @fa-maki-city: "\f1b3";
+  
+  @fa-maki-clothing-store: "\f1b4";
+  
+  @fa-maki-college: "\f1b5";
+  
+  @fa-maki-commercial: "\f1b6";
+  
+  @fa-maki-cricket: "\f1b7";
+  
+  @fa-maki-cross: "\f1b8";
+  
+  @fa-maki-dam: "\f1b9";
+  
+  @fa-maki-danger: "\f1ba";
+  
+  @fa-maki-disability: "\f1bc";
+  
+  @fa-maki-dog-park: "\f1bd";
+  
+  @fa-maki-embassy: "\f1be";
+  
+  @fa-maki-emergency-telephone: "\f1bf";
+  
+  @fa-maki-entrance: "\f1c0";
+  
+  @fa-maki-farm: "\f1c1";
+  
+  @fa-maki-fast-food: "\f1c2";
+  
+  @fa-maki-ferry: "\f1c3";
+  
+  @fa-maki-fire-station: "\f1c4";
+  
+  @fa-maki-fuel: "\f1c5";
+  
+  @fa-maki-garden: "\f1c6";
+  
+  @fa-maki-golf: "\f1c9";
+  
+  @fa-maki-grocery: "\f1ca";
+  
+  @fa-maki-hairdresser: "\f1cb";
+  
+  @fa-maki-harbor: "\f1cc";
+  
+  @fa-maki-heart: "\f1cd";
+  
+  @fa-maki-heliport: "\f1ce";
+  
+  @fa-maki-hospital: "\f1cf";
+  
+  @fa-maki-industrial: "\f1d1";
+  
+  @fa-maki-land-use: "\f1d2";
+    
+  @fa-maki-laundry: "\f1d3";
+  
+  @fa-maki-library: "\f1d4";
+  
+  @fa-maki-lighthouse: "\f1d5";
+  
+  @fa-maki-lodging: "\f1d6";
+  
+  @fa-maki-logging: "\f1d7";
+  
+  @fa-maki-london-underground: "\f1d8";
+  
+  @fa-maki-marker: "\f1d9";
+  
+  @fa-maki-marker-stroked: "\f1da";
+  
+  @fa-maki-minefield: "\f1db";
+  
+  @fa-maki-mobilephone: "\f1dc";
+  
+  @fa-maki-monument: "\f1dd";
+  
+  @fa-maki-museum: "\f1de";
+  
+  @fa-maki-music: "\f1df";
+  
+  @fa-maki-oil-well: "\f1e0";
+  
+  @fa-maki-park: "\f1e1";
+  
+  @fa-maki-park2: "\f1e2";
+  
+  @fa-maki-parking: "\f1e3";
+  
+  @fa-maki-parking-garage: "\f1e4";
+  
+  @fa-maki-pharmacy: "\f1e5";
+  
+  @fa-maki-place-of-worship: "\f1e6";
+  
+  @fa-maki-playground: "\f1e7";
+  
+  @fa-maki-pitch: "\f1e8";
+  
+  @fa-maki-police: "\f1e9";
+  
+  @fa-maki-polling-place: "\f1ea";
+  
+  @fa-maki-post: "\f1eb";
+  
+  @fa-maki-prison: "\f1ec";
+  
+  @fa-maki-rail: "\f1ed";
+  
+  @fa-maki-rail-above: "\f1ee";
+  
+  @fa-maki-rail-light: "\f1ef";
+  
+  @fa-maki-rail-metro: "\f1f0";
+  
+  @fa-maki-rail-underground: "\f1f1";
+  
+  @fa-maki-religious-muslim: "\f1f2";
+  
+  @fa-maki-religious-jewish: "\f1f3";
+  
+  @fa-maki-religious-christian: "\f1f4";
+  
+  @fa-maki-restaurant: "\f1f5";
+  
+  @fa-maki-roadblock: "\f1f6";
+  
+  @fa-maki-rocket: "\f1f7";
+  
+  @fa-maki-school: "\f1f8";
+  
+  @fa-maki-scooter: "\f1f9";
+ 
+  @fa-maki-shop: "\f1fa";
+ 
+  @fa-maki-skiing: "\f1fb";
+  
+  @fa-maki-slaughterhouse: "\f1fc";
+  
+  @fa-maki-soccer: "\f1fd";
+  
+  @fa-maki-square: "\f1fe";
+  
+  @fa-maki-square-stroked: "\f1ff";
+  
+  @fa-maki-star: "\f200";
+  
+  @fa-maki-star-stroked: "\f201";
+  
+  @fa-maki-suitcase: "\f202";
+  
+  @fa-maki-swimming: "\f203";
+  
+  @fa-maki-telephone: "\f204";
+  
+  @fa-maki-tennis: "\f205";
+  
+  @fa-maki-theatre: "\f206";
+  
+  @fa-maki-toilets: "\f207";
+  
+  @fa-maki-town: "\f208";
+  
+  @fa-maki-town-hall: "\f209";
+  
+  @fa-maki-triangle: "\f20a";
+  
+  @fa-maki-triangle-stroked: "\f20b";
+  
+  @fa-maki-village: "\f20c";
+  
+  @fa-maki-warehouse: "\f20d";
+  
+  @fa-maki-waste-basket: "\f20e";
+  
+  @fa-maki-water: "\f20f";
+  
+  @fa-maki-wetland: "\f210";
+  
+  @fa-maki-zoo  : "\f211";
+  
+  @fa-ga-elevation-down  : "\f212";
+  
+  @fa-ga-elevation-up  : "\f213";
+  
+  @fa-chevron-down  : "\f214";
+  
+  @fa-chevron-left  : "\f215";
+  
+  @fa-chevron-right  : "\f216";
+  
+  @fa-chevron-up  : "\f217";
+  
+  @fa-resize-vertical  : "\f218";
+  
+  @fa-clock-o  : "\f219";
+  
+  @fa-resize-horizontal  : "\f220";
+  

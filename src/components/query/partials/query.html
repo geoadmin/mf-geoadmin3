@@ -23,23 +23,23 @@
   </div>
   <div class="well">
     <label data-toggle="collapse" class="collapsed" href="#queryContainer">
-       <i class="icon-caret-down"></i> 
+       <i class="fa fa-caret-down"></i> 
        <span translate>query_conditions</span>
     </label>
     <div id="queryContainer" class="collapse"> 
       <div class="ga-query" ng-repeat="f in filters">
         <div class="ga-header">
           <label translate translate-values="{num: $index+1}">query_num</label>
-          <button class="ga-icon ga-btn icon-remove-sign pull-right"
+          <button class="ga-icon ga-btn fa fa-remove-sign pull-right"
                   title="{{'query_remove' | translate}}" 
                   ng-show="filters.length > 1"
                   ng-click="onChange();remove($index)">
           </button>
-          <button class="ga-icon ga-btn icon-refresh pull-right"
+          <button class="ga-icon ga-btn fa fa-refresh pull-right"
                   title="{{'query_reset' | translate}}" 
                   ng-click="onChange();clear($index)">
           </button>
-          <button class="ga-icon ga-btn icon-copy pull-right" 
+          <button class="ga-icon ga-btn fa fa-copy pull-right" 
                   title="{{'query_duplicate' | translate}}" 
                   ng-show="filters.length < 2"
                   ng-click="onChange();duplicate($index)">
@@ -77,7 +77,7 @@
                     ng-model="f.value"
                     ng-options="v for v in f.moreValues" ng-change="onChange()" >
             </select>
-            <button class="btn btn-default ga-more icon-remove"
+            <button class="btn btn-default ga-more fa fa-remove"
                     title="{{'query_more_values' | translate}}"
                     ng-class="{active: (f.moreValues)}"
                     ng-click="toggleAttributeValues($event, $index, f)"></button>
@@ -96,8 +96,7 @@
   <button class="btn btn-default" 
           ng-disabled="loading || (!filters[0].value && !useBbox) "
           ng-click="searchByAttributes()">
-    <i ng-class="{'icon-refresh': loading}"></i>
+    <i ng-class="{'fa fa-refresh': loading}"></i>
     <span translate>query_search<span>
   </button>
 </div>
-

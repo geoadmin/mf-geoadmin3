@@ -5,7 +5,7 @@
         'ga-layer-warning': layer.useThirdPartyData
       }">
     <div class="ga-layer-infos">
-      <button class="ga-icon ga-btn icon-remove-sign"
+      <button class="ga-icon ga-btn fa fa-remove-sign"
               ng-click="removeLayer(layer)"></button>
       <label class="ga-checkbox">
         <input type="checkbox" ng-model="layer.visible" />
@@ -22,13 +22,13 @@
                 ng-change="setLayerTime(layer)"
                 ng-options="(i | gaTimeLabel:layer) for i in layer.timestamps"></select>
       </div>
-      <button class="ga-icon ga-btn icon-user"
+      <button class="ga-icon ga-btn fa fa-user"
               ng-click="showWarning(layer)"></button>
       <!--button ng-if="isBodLayer(layer)" class="ga-icon ga-btn icon-info-sign"
               ng-click="displayLayerMetadata($event, layer)"></button-->
-      <button class="ga-icon icon-gear"></button>
+      <button class="ga-icon fa fa-gear"></button>
     </div><!--ga-layer-infos-->
-    <div class="ga-layer-tools"">
+    <div class="ga-layer-tools">
       <label>
         <div translate>transparency</div>&nbsp;
         <input  ng-if="useRange" type="range" min="0" max="1" step="0.05" value="1" ng-model="layer.invertedOpacity"/>
@@ -36,15 +36,15 @@
         </select>
       </label>
       <div class="ga-layer-ordering">
-        <button ng-if="layer.timeEnabled" class="ga-icon ga-btn icon-copy"
+        <button ng-if="layer.timeEnabled" class="ga-icon ga-btn fa fa-copy"
                 ng-click="duplicateLayer($event, layer)"></button>
-        <button class="ga-icon ga-btn icon-arrow-up"
+        <button class="ga-icon ga-btn fa fa-arrow-up"
                 ng-disabled="$first"
                 ng-click="moveLayer($event, layer, 1)"></button>
-        <button class="ga-icon ga-btn icon-arrow-down"
+        <button class="ga-icon ga-btn fa fa-arrow-down"
                 ng-disabled="$last"
                 ng-click="moveLayer($event, layer, -1)"></button>
-        <button ng-if="hasMetadata(layer)" class="ga-icon ga-btn icon-info-sign"
+        <button ng-if="hasMetadata(layer)" class="ga-icon ga-btn fa fa-info-sign"
                 ng-click="displayLayerMetadata($event, layer)"></button>
       </div>
     </div><!--ga-layer-tools-->

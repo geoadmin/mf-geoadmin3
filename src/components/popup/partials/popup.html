@@ -1,19 +1,19 @@
 <div class="popover-title" ng-click="controlDisplay($event)">
   <div class="ga-popup-title ga-truncate-text" translate="{{options.title}}"></div>
   <div class="ga-buttons hidden-print">
-    <button class="ga-btn icon-question-circle" title="{{titleHelp}}"
+    <button class="ga-btn fa fa-question-circle" title="{{titleHelp}}"
             ng-if="options.help"
             ga-help-action="{{options.help}}">
     </button>
-    <button class="ga-btn icon-print" title="{{titlePrint}}"
+    <button class="ga-btn fa fa-print" title="{{titlePrint}}"
             ng-if="options.showPrint"
             ng-click="print()">
     </button>
-    <button class="ga-btn icon-minus" title="{{titleReduce}}"
+    <button class="ga-btn fa fa-minus" title="{{titleReduce}}"
             ng-if="options.showReduce"
             ng-click="reduce($event)">
     </button>
-    <button class="ga-btn icon-remove" title="{{titleClose}}" ng-click="close($event)"></button>
+    <button class="ga-btn fa fa-remove" title="{{titleClose}}" ng-click="close($event)"></button>
   </div>
 </div>
 <div class="popover-content ga-popup-content" ng-transclude></div>

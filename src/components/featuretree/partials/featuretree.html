@@ -2,7 +2,7 @@
   <li ng-repeat="layer in tree">
     <label ng-click="layer.open = !layer.open" class="ga-truncate-text"
         title="{{ layer.hasMoreResults ? 'query_alert_more_than_200_results' : '' | translate }}">
-      <i ng-class="{'icon-minus': layer.open, 'icon-plus': !layer.open}"></i>
+      <i ng-class="{'fa fa-minus': layer.open, 'fa fa-plus': !layer.open}"></i>
       <span ng-bind-html="layer.label"></span>
     </label>
     <ul ng-if="layer.open" class="ga-feature">
@@ -18,7 +18,7 @@
         <label class="ga-truncate-text">
           {{feature.label}}
         </label>
-        <i ng-if="feature.geometry" ng-click="zoom($event, feature)" class="icon-zoom-in"></i>
+        <i ng-if="feature.geometry" ng-click="zoom($event, feature)" class="fa fa-zoom-in"></i>
       </li>
       <li ng-if="layer.hasMoreResults">
         <button class="btn btn-default" ng-click="more($event, layer)" translate>show_more_results</button>

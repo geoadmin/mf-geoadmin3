@@ -339,17 +339,17 @@ goog.require('ga_urlutils_service');
           });
 
           var headerGroup = iEl.find('> .ga-header-group');
-          var toggleBt = headerGroup.find('.icon-plus');
+          var toggleBt = headerGroup.find('.fa-plus');
           var childGroup;
 
-          headerGroup.find('.icon-zoom-in').on('click', function(evt) {
+          headerGroup.find('.fa-zoom-in').on('click', function(evt) {
             evt.stopPropagation();
             zoomToLayerExtent(scope.layer, scope.map);
           });
 
           toggleBt.on('click', function(evt) {
             evt.stopPropagation();
-            toggleBt.toggleClass('icon-minus');
+            toggleBt.toggleClass('fa-minus');
             if (!childGroup) {
               childGroup = iEl.find('> .ga-child-group');
             }
