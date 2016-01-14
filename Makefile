@@ -95,7 +95,7 @@ prod: prd/lib/ \
 	prd/mobile.html \
 	prd/embed.html \
 	prd/img/ \
-	prd/style/font-awesome-3.2.1/font/ \
+	prd/style/font-awesome-4.5.0/font/ \
 	prd/locales/ \
 	prd/checker \
 	prd/robots.txt
@@ -367,7 +367,7 @@ prd/img/: src/img/*
 	mkdir -p $@
 	cp -R $^ $@
 
-prd/style/font-awesome-3.2.1/font/: src/style/font-awesome-3.2.1/font/*
+prd/style/font-awesome-4.5.0/font/: src/style/font-awesome-4.5.0/font/*
 	mkdir -p $@
 	cp $^ $@
 

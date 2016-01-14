@@ -448,7 +448,7 @@ goog.require('ga_styles_service');
     // Define tools
     $scope.options.tools = [{
       id: 'marker',
-      cssClass: 'icon-ga-marker',
+      cssClass: 'fa fa-ga-marker',
       drawOptions: {
         type: 'Point',
         style: markerDrawStyleFunc
@@ -457,7 +457,7 @@ goog.require('ga_styles_service');
       useIconStyle: true
     }, {
       id: 'annotation',
-      cssClass: 'icon-ga-add-text',
+      cssClass: 'fa fa-ga-add-text',
       drawOptions: {
         type: 'Point',
         style: annotationDrawStyleFunc
@@ -465,7 +465,7 @@ goog.require('ga_styles_service');
       style: annotationDrawStyleFunc
     }, {
       id: 'linepolygon',
-      cssClass: 'icon-ga-add-line',
+      cssClass: 'fa fa-ga-add-line',
       drawOptions: {
         type: 'Polygon',
         style: generateDrawStyleFunc(linepolygonDrawStyleFunc)
@@ -473,7 +473,7 @@ goog.require('ga_styles_service');
       style: linepolygonDrawStyleFunc
     }, {
       id: 'measure',
-      cssClass: 'icon-ga-measure',
+      cssClass: 'fa fa-ga-measure',
       drawOptions: {
         type: 'Polygon',
         minPoints: 2,
