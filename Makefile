@@ -88,17 +88,17 @@ all: lint dev prod apache testdev testprod deploy/deploy-branch.cfg fixrights
 
 .PHONY: prod
 prod: prd/lib/ \
-	prd/lib/build.js \
-	prd/style/app.css \
-	prd/geoadmin.appcache \
-	prd/index.html \
-	prd/mobile.html \
-	prd/embed.html \
-	prd/img/ \
-	prd/style/font-awesome-4.5.0/font/ \
-	prd/locales/ \
-	prd/checker \
-	prd/robots.txt
+	    prd/lib/build.js \
+	    prd/style/app.css \
+	    prd/geoadmin.appcache \
+	    prd/index.html \
+	    prd/mobile.html \
+	    prd/embed.html \
+	    prd/img/ \
+	    prd/style/font-awesome-4.5.0/font/ \
+	    prd/locales/ \
+	    prd/checker \
+	    prd/robots.txt
 
 .PHONY: dev
 dev: src/deps.js src/style/app.css src/index.html src/mobile.html src/embed.html
@@ -267,31 +267,31 @@ prd/lib/: src/lib/d3.min.js \
 	cp -rf  $^ $@
 
 prd/lib/build.js: src/lib/jquery.min.js \
-		    src/lib/bootstrap.min.js \
-		    src/lib/moment-with-customlocales.min.js \
-		    src/lib/typeahead-0.9.3.min.js \
-				src/lib/angular.min.js \
-		    src/lib/proj4js-compressed.js \
-		    src/lib/EPSG21781.js \
-		    src/lib/EPSG2056.js \
-		    src/lib/EPSG32631.js \
-		    src/lib/EPSG32632.js \
-		    src/lib/ol3cesium.js \
-		    src/lib/angular-translate.min.js \
-		    src/lib/angular-translate-loader-static-files.min.js \
-		    src/lib/fastclick.min.js \
-		    src/lib/localforage.min.js \
-		    src/lib/filesaver.min.js \
-		    .build-artefacts/app.js
+	    src/lib/bootstrap.min.js \
+	    src/lib/moment-with-customlocales.min.js \
+	    src/lib/typeahead-0.9.3.min.js \
+	    src/lib/angular.min.js \
+	    src/lib/proj4js-compressed.js \
+	    src/lib/EPSG21781.js \
+	    src/lib/EPSG2056.js \
+	    src/lib/EPSG32631.js \
+	    src/lib/EPSG32632.js \
+	    src/lib/ol3cesium.js \
+	    src/lib/angular-translate.min.js \
+	    src/lib/angular-translate-loader-static-files.min.js \
+	    src/lib/fastclick.min.js \
+	    src/lib/localforage.min.js \
+	    src/lib/filesaver.min.js \
+	    .build-artefacts/app.js
 	mkdir -p $(dir $@)
 	cat $^ | sed 's/^\/\/[#,@] sourceMappingURL=.*//' > $@
 
 prd/style/app.css: src/style/app.less \
-		    src/style/print.less \
-		    src/style/ga_bootstrap.less \
-		    src/style/ga_variables.less \
-		    $(SRC_COMPONENTS_LESS_FILES) \
-		    node_modules
+	    src/style/print.less \
+	    src/style/ga_bootstrap.less \
+	    src/style/ga_variables.less \
+	    $(SRC_COMPONENTS_LESS_FILES) \
+	    node_modules
 	mkdir -p $(dir $@)
 	node_modules/.bin/lessc -ru --clean-css $< $@
 
