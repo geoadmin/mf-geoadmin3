@@ -46,19 +46,30 @@ goog.require('ga_topic_service');
           if (bodId) {
             bodId = gaLayers.getLayerProperty(bodId, 'parentLayerId') || bodId;
           }
-          return (bodId &&
+          return (bodId && olLayer.visible && !olLayer.preview &&
               gaLayers.getLayerProperty(bodId, 'tooltip'));
         };
 
-        // Get all the queryable layers
-        var getLayersToQuery = function(map) {
+        // Get all the queryable layers at a pixel
+        var getLayersToQueryAtPixel = function(map, pixel) {
           var layersToQuery = [];
-          map.getLayers().forEach(function(l) {
-            if (l.visible && !l.preview &&
-                (hasTooltipBodLayer(l) || isVectorLayer(l))) {
-              layersToQuery.push(l);
-            }
-          });
+          if (!gaBrowserSniffer.msie || gaBrowserSniffer.msie > 10) {
+            map.forEachLayerAtPixel(pixel,
+              function(l) {
+                layersToQuery.push(l);
+              },
+              undefined,
+              function(l) {
+                return hasTooltipBodLayer(l) || isVectorLayer(l);
+              }
+            );
+          } else {
+            map.getLayers().forEach(function(l) {
+              if (hasTooltipBodLayer(l) || isVectorLayer(l)) {
+                layersToQuery.push(l);
+              }
+            });
+          }
           return layersToQuery;
         };
 
@@ -313,8 +324,8 @@ goog.require('ga_topic_service');
               var mapExtent = map.getView().calculateExtent(size);
               var identifyUrl = scope.options.identifyUrlTemplate
                   .replace('{Topic}', gaTopic.get().id),
-                  layersToQuery = getLayersToQuery(map),
-                  pixel = map.getPixelFromCoordinate(coordinate);
+                  pixel = map.getPixelFromCoordinate(coordinate),
+                  layersToQuery = getLayersToQueryAtPixel(map, pixel);
 
               // When 3d is Active we use the cesium native function to get the
               // first queryable feature.
