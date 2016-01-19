@@ -16,6 +16,7 @@ ${version}/services
 ${version}/layersConfig?lang=${lang}
 ${version}/locales/${lang}.json
 % endfor
+${version}/img/geolocation_heading_marker.png
 
 NETWORK:
 #use by CatalogServer, checker, tiles
