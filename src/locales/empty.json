@@ -367,5 +367,9 @@
   "schneesport": "",
   "schneesport_service_link_label": "",
   "schneesport_service_link_href": "",
-  "topic_schneesport_tooltip": ""
+  "topic_schneesport_tooltip": "",
+  "geoloc_permission_denied": "",
+  "geoloc_pos_unavailable": "",
+  "geoloc_time_out": "",
+  "geoloc_unknown": ""
 }
