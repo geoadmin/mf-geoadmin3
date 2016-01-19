@@ -243,17 +243,16 @@ itemscope itemtype="http://schema.org/WebApplication"
 % endif
 
     <div ga-controls3d ga-controls3d-ol3d="::ol3d" ng-if="ol3d" ng-show="globals.is3dActive" ga-controls3d-pegman="globals.pegman"></div>
-
+    <div ga-attribution-warning
+         ga-attribution-warning-ol3d="::ol3d">
+      <span translate>3d_overlay_warning</span>
+    </div>
 % if device != 'embed':
     <div ng-cloak translate-cloak
          ga-background-selector
          ga-background-selector-map="map"
          ga-background-selector-ol3d="::ol3d"
          ng-hide="globals.offline">
-    </div>
-    <div ga-attribution-warning
-         ga-attribution-warning-ol3d="::ol3d">
-      <span translate>3d_overlay_warning</span>
     </div>
     <div ng-cloak translate-cloak id="footer" class="navbar navbar-fixed-bottom">
       <div  class="pull-left" ga-scale-line ga-scale-line-map="map" ng-show="!globals.is3dActive"></div>
