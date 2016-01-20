@@ -26,7 +26,7 @@ goog.require('ga_topic_service');
           scope.isBackgroundSelectorClosed = true;
           var mobile = gaBrowserSniffer.mobile;
           scope.desktop = !gaBrowserSniffer.embed && !mobile;
-          scope.backgroundLayers = gaBackground.getBackgrounds();
+          scope.backgroundLayers = [];
 
           if (mobile) {
             elt.addClass('ga-bg-mobile');
@@ -68,6 +68,7 @@ goog.require('ga_topic_service');
           // Get the first background with the loadConfig promise: this
           // directive may not be listening to the first broadcast.
           gaBackground.loadConfig().then(function() {
+            scope.backgroundLayers = gaBackground.getBackgrounds();
             scope.currentLayer = gaBackground.get();
           });
           scope.$on('gaBgChange', function(evt, newBg) {
