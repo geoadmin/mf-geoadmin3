@@ -37,9 +37,9 @@ define('Core/defined',[],function() {
      *      doSomethingElse();
      * }
      */
-    var defined = function(value) {
+    function defined(value) {
         return value !== undefined;
-    };
+    }
 
     return defined;
 });
@@ -89,12 +89,12 @@ define('Core/defaultValue',[
      * @example
      * param = Cesium.defaultValue(param, 'default');
      */
-    var defaultValue = function(a, b) {
+    function defaultValue(a, b) {
         if (a !== undefined) {
             return a;
         }
         return b;
-    };
+    }
 
     /**
      * A frozen empty object that can be used as the default value for options passed as
@@ -104,6 +104,7 @@ define('Core/defaultValue',[
 
     return defaultValue;
 });
+
 /*global define*/
 define('Core/DeveloperError',[
         './defined'
@@ -128,7 +129,7 @@ define('Core/DeveloperError',[
      *
      * @see RuntimeError
      */
-    var DeveloperError = function(message) {
+    function DeveloperError(message) {
         /**
          * 'DeveloperError' indicating that this exception was thrown due to a developer error.
          * @type {String}
@@ -157,7 +158,7 @@ define('Core/DeveloperError',[
          * @readonly
          */
         this.stack = stack;
-    };
+    }
 
     DeveloperError.prototype.toString = function() {
         var str = this.name + ': ' + this.message;
@@ -398,8 +399,7 @@ define('Core/Math',[
     /**
      * Math functions.
      *
-     * @namespace
-     * @alias CesiumMath
+     * @exports CesiumMath
      */
     var CesiumMath = {};
 
@@ -934,11 +934,12 @@ define('Core/Math',[
      *
      * @exception {DeveloperError} A number greater than or equal to 0 is required.
      *
-     * @see {@link http://en.wikipedia.org/wiki/Factorial|Factorial on Wikipedia}
      *
      * @example
      * //Compute 7!, which is equal to 5040
      * var computedFactorial = Cesium.Math.factorial(7);
+     * 
+     * @see {@link http://en.wikipedia.org/wiki/Factorial|Factorial on Wikipedia}
      */
     CesiumMath.factorial = function(n) {
                 if (typeof n !== 'number' || n < 0) {
@@ -1171,7 +1172,7 @@ define('Core/Cartesian3',[
      * @see Cartesian4
      * @see Packable
      */
-    var Cartesian3 = function(x, y, z) {
+    function Cartesian3(x, y, z) {
         /**
          * The X component.
          * @type {Number}
@@ -1192,7 +1193,7 @@ define('Core/Cartesian3',[
          * @default 0.0
          */
         this.z = defaultValue(z, 0.0);
-    };
+    }
 
     /**
      * Converts the provided Spherical into Cartesian3 coordinates.
@@ -2154,18 +2155,157 @@ define('Core/Cartesian3',[
 });
 
 /*global define*/
+define('Core/scaleToGeodeticSurface',[
+        './Cartesian3',
+        './defined',
+        './DeveloperError',
+        './Math'
+    ], function(
+        Cartesian3,
+        defined,
+        DeveloperError,
+        CesiumMath) {
+    "use strict";
+
+    var scaleToGeodeticSurfaceIntersection = new Cartesian3();
+    var scaleToGeodeticSurfaceGradient = new Cartesian3();
+
+    /**
+     * Scales the provided Cartesian position along the geodetic surface normal
+     * so that it is on the surface of this ellipsoid.  If the position is
+     * at the center of the ellipsoid, this function returns undefined.
+     *
+     * @param {Cartesian3} cartesian The Cartesian position to scale.
+     * @param {Cartesian3} oneOverRadii One over radii of the ellipsoid.
+     * @param {Cartesian3} oneOverRadiiSquared One over radii squared of the ellipsoid.
+     * @param {Number} centerToleranceSquared Tolerance for closeness to the center.
+     * @param {Cartesian3} [result] The object onto which to store the result.
+     * @returns {Cartesian3} The modified result parameter, a new Cartesian3 instance if none was provided, or undefined if the position is at the center.
+     *
+     * @exports scaleToGeodeticSurface
+     *
+     * @private
+     */
+    function scaleToGeodeticSurface(cartesian, oneOverRadii, oneOverRadiiSquared, centerToleranceSquared, result) {
+                if (!defined(cartesian)) {
+            throw new DeveloperError('cartesian is required.');
+        }
+        if (!defined(oneOverRadii)) {
+            throw new DeveloperError('oneOverRadii is required.');
+        }
+        if (!defined(oneOverRadiiSquared)) {
+            throw new DeveloperError('oneOverRadiiSquared is required.');
+        }
+        if (!defined(centerToleranceSquared)) {
+            throw new DeveloperError('centerToleranceSquared is required.');
+        }
+        
+        var positionX = cartesian.x;
+        var positionY = cartesian.y;
+        var positionZ = cartesian.z;
+
+        var oneOverRadiiX = oneOverRadii.x;
+        var oneOverRadiiY = oneOverRadii.y;
+        var oneOverRadiiZ = oneOverRadii.z;
+
+        var x2 = positionX * positionX * oneOverRadiiX * oneOverRadiiX;
+        var y2 = positionY * positionY * oneOverRadiiY * oneOverRadiiY;
+        var z2 = positionZ * positionZ * oneOverRadiiZ * oneOverRadiiZ;
+
+        // Compute the squared ellipsoid norm.
+        var squaredNorm = x2 + y2 + z2;
+        var ratio = Math.sqrt(1.0 / squaredNorm);
+
+        // As an initial approximation, assume that the radial intersection is the projection point.
+        var intersection = Cartesian3.multiplyByScalar(cartesian, ratio, scaleToGeodeticSurfaceIntersection);
+
+        // If the position is near the center, the iteration will not converge.
+        if (squaredNorm < centerToleranceSquared) {
+            return !isFinite(ratio) ? undefined : Cartesian3.clone(intersection, result);
+        }
+
+        var oneOverRadiiSquaredX = oneOverRadiiSquared.x;
+        var oneOverRadiiSquaredY = oneOverRadiiSquared.y;
+        var oneOverRadiiSquaredZ = oneOverRadiiSquared.z;
+
+        // Use the gradient at the intersection point in place of the true unit normal.
+        // The difference in magnitude will be absorbed in the multiplier.
+        var gradient = scaleToGeodeticSurfaceGradient;
+        gradient.x = intersection.x * oneOverRadiiSquaredX * 2.0;
+        gradient.y = intersection.y * oneOverRadiiSquaredY * 2.0;
+        gradient.z = intersection.z * oneOverRadiiSquaredZ * 2.0;
+
+        // Compute the initial guess at the normal vector multiplier, lambda.
+        var lambda = (1.0 - ratio) * Cartesian3.magnitude(cartesian) / (0.5 * Cartesian3.magnitude(gradient));
+        var correction = 0.0;
+
+        var func;
+        var denominator;
+        var xMultiplier;
+        var yMultiplier;
+        var zMultiplier;
+        var xMultiplier2;
+        var yMultiplier2;
+        var zMultiplier2;
+        var xMultiplier3;
+        var yMultiplier3;
+        var zMultiplier3;
+
+        do {
+            lambda -= correction;
+
+            xMultiplier = 1.0 / (1.0 + lambda * oneOverRadiiSquaredX);
+            yMultiplier = 1.0 / (1.0 + lambda * oneOverRadiiSquaredY);
+            zMultiplier = 1.0 / (1.0 + lambda * oneOverRadiiSquaredZ);
+
+            xMultiplier2 = xMultiplier * xMultiplier;
+            yMultiplier2 = yMultiplier * yMultiplier;
+            zMultiplier2 = zMultiplier * zMultiplier;
+
+            xMultiplier3 = xMultiplier2 * xMultiplier;
+            yMultiplier3 = yMultiplier2 * yMultiplier;
+            zMultiplier3 = zMultiplier2 * zMultiplier;
+
+            func = x2 * xMultiplier2 + y2 * yMultiplier2 + z2 * zMultiplier2 - 1.0;
+
+            // "denominator" here refers to the use of this expression in the velocity and acceleration
+            // computations in the sections to follow.
+            denominator = x2 * xMultiplier3 * oneOverRadiiSquaredX + y2 * yMultiplier3 * oneOverRadiiSquaredY + z2 * zMultiplier3 * oneOverRadiiSquaredZ;
+
+            var derivative = -2.0 * denominator;
+
+            correction = func / derivative;
+        } while (Math.abs(func) > CesiumMath.EPSILON12);
+
+        if (!defined(result)) {
+            return new Cartesian3(positionX * xMultiplier, positionY * yMultiplier, positionZ * zMultiplier);
+        }
+        result.x = positionX * xMultiplier;
+        result.y = positionY * yMultiplier;
+        result.z = positionZ * zMultiplier;
+        return result;
+    }
+
+    return scaleToGeodeticSurface;
+});
+
+/*global define*/
 define('Core/Cartographic',[
+        './Cartesian3',
         './defaultValue',
         './defined',
         './DeveloperError',
         './freezeObject',
-        './Math'
+        './Math',
+        './scaleToGeodeticSurface'
     ], function(
+        Cartesian3,
         defaultValue,
         defined,
         DeveloperError,
         freezeObject,
-        CesiumMath) {
+        CesiumMath,
+        scaleToGeodeticSurface) {
     "use strict";
 
     /**
@@ -2179,7 +2319,7 @@ define('Core/Cartographic',[
      *
      * @see Ellipsoid
      */
-    var Cartographic = function(longitude, latitude, height) {
+    function Cartographic(longitude, latitude, height) {
         /**
          * The longitude, in radians.
          * @type {Number}
@@ -2200,7 +2340,7 @@ define('Core/Cartographic',[
          * @default 0.0
          */
         this.height = defaultValue(height, 0.0);
-    };
+    }
 
     /**
      * Creates a new Cartographic instance from longitude and latitude
@@ -2254,6 +2394,52 @@ define('Core/Cartographic',[
         latitude = CesiumMath.toRadians(latitude);
 
         return Cartographic.fromRadians(longitude, latitude, height, result);
+    };
+
+    var cartesianToCartographicN = new Cartesian3();
+    var cartesianToCartographicP = new Cartesian3();
+    var cartesianToCartographicH = new Cartesian3();
+    var wgs84OneOverRadii = new Cartesian3(1.0 / 6378137.0, 1.0 / 6378137.0, 1.0 / 6356752.3142451793);
+    var wgs84OneOverRadiiSquared = new Cartesian3(1.0 / (6378137.0 * 6378137.0), 1.0 / (6378137.0 * 6378137.0), 1.0 / (6356752.3142451793 * 6356752.3142451793));
+    var wgs84CenterToleranceSquared = CesiumMath.EPSILON1;
+
+    /**
+     * Creates a new Cartographic instance from a Cartesian position. The values in the
+     * resulting object will be in radians.
+     *
+     * @param {Cartesian3} cartesian The Cartesian position to convert to cartographic representation.
+     * @param {Ellipsoid} [ellipsoid=Ellipsoid.WGS84] The ellipsoid on which the position lies.
+     * @param {Cartographic} [result] The object onto which to store the result.
+     * @returns {Cartographic} The modified result parameter, new Cartographic instance if none was provided, or undefined if the cartesian is at the center of the ellipsoid.
+     */
+    Cartographic.fromCartesian = function(cartesian, ellipsoid, result) {
+        var oneOverRadii = defined(ellipsoid) ? ellipsoid.oneOverRadii : wgs84OneOverRadii;
+        var oneOverRadiiSquared = defined(ellipsoid) ? ellipsoid.oneOverRadiiSquared : wgs84OneOverRadiiSquared;
+        var centerToleranceSquared = defined(ellipsoid) ? ellipsoid._centerToleranceSquared : wgs84CenterToleranceSquared;
+
+        //`cartesian is required.` is thrown from scaleToGeodeticSurface
+        var p = scaleToGeodeticSurface(cartesian, oneOverRadii, oneOverRadiiSquared, centerToleranceSquared, cartesianToCartographicP);
+
+        if (!defined(p)) {
+            return undefined;
+        }
+
+        var n = Cartesian3.multiplyComponents(cartesian, oneOverRadiiSquared, cartesianToCartographicN);
+        n = Cartesian3.normalize(n, n);
+
+        var h = Cartesian3.subtract(cartesian, p, cartesianToCartographicH);
+
+        var longitude = Math.atan2(n.y, n.x);
+        var latitude = Math.asin(n.z);
+        var height = CesiumMath.sign(Cartesian3.dot(h, cartesian)) * Cartesian3.magnitude(h);
+
+        if (!defined(result)) {
+            return new Cartographic(longitude, latitude, height);
+        }
+        result.longitude = longitude;
+        result.latitude = latitude;
+        result.height = height;
+        return result;
     };
 
     /**
@@ -2370,69 +2556,6 @@ define('Core/Cartographic',[
     return Cartographic;
 });
 
-/*global define,console*/
-define('Core/deprecationWarning',[
-        './defined',
-        './DeveloperError'
-    ], function(
-        defined,
-        DeveloperError) {
-    "use strict";
-
-    var warnings = {};
-
-    /**
-     * Logs a deprecation message to the console.  Use this function instead of
-     * <code>console.log</code> directly since this does not log duplicate messages
-     * unless it is called from multiple workers.
-     *
-     * @exports deprecationWarning
-     *
-     * @param {String} identifier The unique identifier for this deprecated API.
-     * @param {String} message The message to log to the console.
-     *
-     * @example
-     * // Deprecated function or class
-     * var Foo = function() {
-     *    deprecationWarning('Foo', 'Foo was deprecated in Cesium 1.01.  It will be removed in 1.03.  Use newFoo instead.');
-     *    // ...
-     * }
-     *
-     * // Deprecated function
-     * Bar.prototype.func = function() {
-     *    deprecationWarning('Bar.func', 'Bar.func() was deprecated in Cesium 1.01.  It will be removed in 1.03.  Use Bar.newFunc() instead.');
-     *    // ...
-     * };
-     *
-     * // Deprecated property
-     * defineProperties(Bar.prototype, {
-     *     prop : {
-     *         get : function() {
-     *             deprecationWarning('Bar.prop', 'Bar.prop was deprecated in Cesium 1.01.  It will be removed in 1.03.  Use Bar.newProp instead.');
-     *             // ...
-     *         },
-     *         set : function(value) {
-     *             deprecationWarning('Bar.prop', 'Bar.prop was deprecated in Cesium 1.01.  It will be removed in 1.03.  Use Bar.newProp instead.');
-     *             // ...
-     *         }
-     *     }
-     * });
-     *
-     * @private
-     */
-    var deprecationWarning = function(identifier, message) {
-                if (!defined(identifier) || !defined(message)) {
-            throw new DeveloperError('identifier and message are required.');
-        }
-        
-        if (!defined(warnings[identifier])) {
-            warnings[identifier] = true;
-            console.log(message);
-        }
-    };
-
-    return deprecationWarning;
-});
 /*global define*/
 define('Core/defineProperties',[
         './defined'
@@ -2476,7 +2599,8 @@ define('Core/Ellipsoid',[
         './defineProperties',
         './DeveloperError',
         './freezeObject',
-        './Math'
+        './Math',
+        './scaleToGeodeticSurface'
     ], function(
         Cartesian3,
         Cartographic,
@@ -2485,7 +2609,8 @@ define('Core/Ellipsoid',[
         defineProperties,
         DeveloperError,
         freezeObject,
-        CesiumMath) {
+        CesiumMath,
+        scaleToGeodeticSurface) {
     "use strict";
 
     function initialize(ellipsoid, x, y, z) {
@@ -2542,7 +2667,7 @@ define('Core/Ellipsoid',[
      * @see Ellipsoid.WGS84
      * @see Ellipsoid.UNIT_SPHERE
      */
-    var Ellipsoid = function(x, y, z) {
+    function Ellipsoid(x, y, z) {
         this._radii = undefined;
         this._radiiSquared = undefined;
         this._radiiToTheFourth = undefined;
@@ -2553,7 +2678,7 @@ define('Core/Ellipsoid',[
         this._centerToleranceSquared = undefined;
 
         initialize(this, x, y, z);
-    };
+    }
 
     defineProperties(Ellipsoid.prototype, {
         /**
@@ -2732,7 +2857,6 @@ define('Core/Ellipsoid',[
 
     /**
      * Stores the provided instance into the provided array.
-     * @function
      *
      * @param {Ellipsoid} value The value to pack.
      * @param {Number[]} array The array to pack into.
@@ -2958,9 +3082,6 @@ define('Core/Ellipsoid',[
         return result;
     };
 
-    var scaleToGeodeticSurfaceIntersection = new Cartesian3();
-    var scaleToGeodeticSurfaceGradient = new Cartesian3();
-
     /**
      * Scales the provided Cartesian position along the geodetic surface normal
      * so that it is on the surface of this ellipsoid.  If the position is
@@ -2971,96 +3092,7 @@ define('Core/Ellipsoid',[
      * @returns {Cartesian3} The modified result parameter, a new Cartesian3 instance if none was provided, or undefined if the position is at the center.
      */
     Ellipsoid.prototype.scaleToGeodeticSurface = function(cartesian, result) {
-                if (!defined(cartesian)) {
-            throw new DeveloperError('cartesian is required.');
-        }
-        
-        var positionX = cartesian.x;
-        var positionY = cartesian.y;
-        var positionZ = cartesian.z;
-
-        var oneOverRadii = this._oneOverRadii;
-        var oneOverRadiiX = oneOverRadii.x;
-        var oneOverRadiiY = oneOverRadii.y;
-        var oneOverRadiiZ = oneOverRadii.z;
-
-        var x2 = positionX * positionX * oneOverRadiiX * oneOverRadiiX;
-        var y2 = positionY * positionY * oneOverRadiiY * oneOverRadiiY;
-        var z2 = positionZ * positionZ * oneOverRadiiZ * oneOverRadiiZ;
-
-        // Compute the squared ellipsoid norm.
-        var squaredNorm = x2 + y2 + z2;
-        var ratio = Math.sqrt(1.0 / squaredNorm);
-
-        // As an initial approximation, assume that the radial intersection is the projection point.
-        var intersection = Cartesian3.multiplyByScalar(cartesian, ratio, scaleToGeodeticSurfaceIntersection);
-
-        //* If the position is near the center, the iteration will not converge.
-        if (squaredNorm < this._centerToleranceSquared) {
-            return !isFinite(ratio) ? undefined : Cartesian3.clone(intersection, result);
-        }
-
-        var oneOverRadiiSquared = this._oneOverRadiiSquared;
-        var oneOverRadiiSquaredX = oneOverRadiiSquared.x;
-        var oneOverRadiiSquaredY = oneOverRadiiSquared.y;
-        var oneOverRadiiSquaredZ = oneOverRadiiSquared.z;
-
-        // Use the gradient at the intersection point in place of the true unit normal.
-        // The difference in magnitude will be absorbed in the multiplier.
-        var gradient = scaleToGeodeticSurfaceGradient;
-        gradient.x = intersection.x * oneOverRadiiSquaredX * 2.0;
-        gradient.y = intersection.y * oneOverRadiiSquaredY * 2.0;
-        gradient.z = intersection.z * oneOverRadiiSquaredZ * 2.0;
-
-        // Compute the initial guess at the normal vector multiplier, lambda.
-        var lambda = (1.0 - ratio) * Cartesian3.magnitude(cartesian) / (0.5 * Cartesian3.magnitude(gradient));
-        var correction = 0.0;
-
-        var func;
-        var denominator;
-        var xMultiplier;
-        var yMultiplier;
-        var zMultiplier;
-        var xMultiplier2;
-        var yMultiplier2;
-        var zMultiplier2;
-        var xMultiplier3;
-        var yMultiplier3;
-        var zMultiplier3;
-
-        do {
-            lambda -= correction;
-
-            xMultiplier = 1.0 / (1.0 + lambda * oneOverRadiiSquaredX);
-            yMultiplier = 1.0 / (1.0 + lambda * oneOverRadiiSquaredY);
-            zMultiplier = 1.0 / (1.0 + lambda * oneOverRadiiSquaredZ);
-
-            xMultiplier2 = xMultiplier * xMultiplier;
-            yMultiplier2 = yMultiplier * yMultiplier;
-            zMultiplier2 = zMultiplier * zMultiplier;
-
-            xMultiplier3 = xMultiplier2 * xMultiplier;
-            yMultiplier3 = yMultiplier2 * yMultiplier;
-            zMultiplier3 = zMultiplier2 * zMultiplier;
-
-            func = x2 * xMultiplier2 + y2 * yMultiplier2 + z2 * zMultiplier2 - 1.0;
-
-            // "denominator" here refers to the use of this expression in the velocity and acceleration
-            // computations in the sections to follow.
-            denominator = x2 * xMultiplier3 * oneOverRadiiSquaredX + y2 * yMultiplier3 * oneOverRadiiSquaredY + z2 * zMultiplier3 * oneOverRadiiSquaredZ;
-
-            var derivative = -2.0 * denominator;
-
-            correction = func / derivative;
-        } while (Math.abs(func) > CesiumMath.EPSILON12);
-
-        if (!defined(result)) {
-            return new Cartesian3(positionX * xMultiplier, positionY * yMultiplier, positionZ * zMultiplier);
-        }
-        result.x = positionX * xMultiplier;
-        result.y = positionY * yMultiplier;
-        result.z = positionZ * zMultiplier;
-        return result;
+        return scaleToGeodeticSurface(cartesian, this._oneOverRadii, this._oneOverRadiiSquared, this._centerToleranceSquared, result);
     };
 
     /**
@@ -3154,6 +3186,282 @@ define('Core/Ellipsoid',[
 });
 
 /*global define*/
+define('Core/Intersect',[
+        './freezeObject'
+    ], function(
+        freezeObject) {
+    "use strict";
+
+    /**
+     * This enumerated type is used in determining where, relative to the frustum, an
+     * object is located. The object can either be fully contained within the frustum (INSIDE),
+     * partially inside the frustum and partially outside (INTERSECTING), or somwhere entirely
+     * outside of the frustum's 6 planes (OUTSIDE).
+     *
+     * @exports Intersect
+     */
+    var Intersect = {
+        /**
+         * Represents that an object is not contained within the frustum.
+         *
+         * @type {Number}
+         * @constant
+         */
+        OUTSIDE : -1,
+
+        /**
+         * Represents that an object intersects one of the frustum's planes.
+         *
+         * @type {Number}
+         * @constant
+         */
+        INTERSECTING : 0,
+
+        /**
+         * Represents that an object is fully within the frustum.
+         *
+         * @type {Number}
+         * @constant
+         */
+        INSIDE : 1
+    };
+
+    return freezeObject(Intersect);
+});
+/*global define*/
+define('Core/AxisAlignedBoundingBox',[
+        './Cartesian3',
+        './defaultValue',
+        './defined',
+        './DeveloperError',
+        './Intersect'
+    ], function(
+        Cartesian3,
+        defaultValue,
+        defined,
+        DeveloperError,
+        Intersect) {
+    "use strict";
+
+    /**
+     * Creates an instance of an AxisAlignedBoundingBox from the minimum and maximum points along the x, y, and z axes.
+     * @alias AxisAlignedBoundingBox
+     * @constructor
+     *
+     * @param {Cartesian3} [minimum=Cartesian3.ZERO] The minimum point along the x, y, and z axes.
+     * @param {Cartesian3} [maximum=Cartesian3.ZERO] The maximum point along the x, y, and z axes.
+     * @param {Cartesian3} [center] The center of the box; automatically computed if not supplied.
+     *
+     * @see BoundingSphere
+     * @see BoundingRectangle
+     */
+    function AxisAlignedBoundingBox(minimum, maximum, center) {
+        /**
+         * The minimum point defining the bounding box.
+         * @type {Cartesian3}
+         * @default {@link Cartesian3.ZERO}
+         */
+        this.minimum = Cartesian3.clone(defaultValue(minimum, Cartesian3.ZERO));
+
+        /**
+         * The maximum point defining the bounding box.
+         * @type {Cartesian3}
+         * @default {@link Cartesian3.ZERO}
+         */
+        this.maximum = Cartesian3.clone(defaultValue(maximum, Cartesian3.ZERO));
+
+        //If center was not defined, compute it.
+        if (!defined(center)) {
+            center = Cartesian3.add(this.minimum, this.maximum, new Cartesian3());
+            Cartesian3.multiplyByScalar(center, 0.5, center);
+        } else {
+            center = Cartesian3.clone(center);
+        }
+
+        /**
+         * The center point of the bounding box.
+         * @type {Cartesian3}
+         */
+        this.center = center;
+    }
+
+    /**
+     * Computes an instance of an AxisAlignedBoundingBox. The box is determined by
+     * finding the points spaced the farthest apart on the x, y, and z axes.
+     *
+     * @param {Cartesian3[]} positions List of points that the bounding box will enclose.  Each point must have a <code>x</code>, <code>y</code>, and <code>z</code> properties.
+     * @param {AxisAlignedBoundingBox} [result] The object onto which to store the result.
+     * @returns {AxisAlignedBoundingBox} The modified result parameter or a new AxisAlignedBoundingBox instance if one was not provided.
+     *
+     * @example
+     * // Compute an axis aligned bounding box enclosing two points.
+     * var box = Cesium.AxisAlignedBoundingBox.fromPoints([new Cesium.Cartesian3(2, 0, 0), new Cesium.Cartesian3(-2, 0, 0)]);
+     */
+    AxisAlignedBoundingBox.fromPoints = function(positions, result) {
+        if (!defined(result)) {
+            result = new AxisAlignedBoundingBox();
+        }
+
+        if (!defined(positions) || positions.length === 0) {
+            result.minimum = Cartesian3.clone(Cartesian3.ZERO, result.minimum);
+            result.maximum = Cartesian3.clone(Cartesian3.ZERO, result.maximum);
+            result.center = Cartesian3.clone(Cartesian3.ZERO, result.center);
+            return result;
+        }
+
+        var minimumX = positions[0].x;
+        var minimumY = positions[0].y;
+        var minimumZ = positions[0].z;
+
+        var maximumX = positions[0].x;
+        var maximumY = positions[0].y;
+        var maximumZ = positions[0].z;
+
+        var length = positions.length;
+        for ( var i = 1; i < length; i++) {
+            var p = positions[i];
+            var x = p.x;
+            var y = p.y;
+            var z = p.z;
+
+            minimumX = Math.min(x, minimumX);
+            maximumX = Math.max(x, maximumX);
+            minimumY = Math.min(y, minimumY);
+            maximumY = Math.max(y, maximumY);
+            minimumZ = Math.min(z, minimumZ);
+            maximumZ = Math.max(z, maximumZ);
+        }
+
+        var minimum = result.minimum;
+        minimum.x = minimumX;
+        minimum.y = minimumY;
+        minimum.z = minimumZ;
+
+        var maximum = result.maximum;
+        maximum.x = maximumX;
+        maximum.y = maximumY;
+        maximum.z = maximumZ;
+
+        var center = Cartesian3.add(minimum, maximum, result.center);
+        Cartesian3.multiplyByScalar(center, 0.5, center);
+
+        return result;
+    };
+
+    /**
+     * Duplicates a AxisAlignedBoundingBox instance.
+     *
+     * @param {AxisAlignedBoundingBox} box The bounding box to duplicate.
+     * @param {AxisAlignedBoundingBox} [result] The object onto which to store the result.
+     * @returns {AxisAlignedBoundingBox} The modified result parameter or a new AxisAlignedBoundingBox instance if none was provided. (Returns undefined if box is undefined)
+     */
+    AxisAlignedBoundingBox.clone = function(box, result) {
+        if (!defined(box)) {
+            return undefined;
+        }
+
+        if (!defined(result)) {
+            return new AxisAlignedBoundingBox(box.minimum, box.maximum);
+        }
+
+        result.minimum = Cartesian3.clone(box.minimum, result.minimum);
+        result.maximum = Cartesian3.clone(box.maximum, result.maximum);
+        result.center = Cartesian3.clone(box.center, result.center);
+        return result;
+    };
+
+    /**
+     * Compares the provided AxisAlignedBoundingBox componentwise and returns
+     * <code>true</code> if they are equal, <code>false</code> otherwise.
+     *
+     * @param {AxisAlignedBoundingBox} [left] The first AxisAlignedBoundingBox.
+     * @param {AxisAlignedBoundingBox} [right] The second AxisAlignedBoundingBox.
+     * @returns {Boolean} <code>true</code> if left and right are equal, <code>false</code> otherwise.
+     */
+    AxisAlignedBoundingBox.equals = function(left, right) {
+        return (left === right) ||
+               ((defined(left)) &&
+                (defined(right)) &&
+                Cartesian3.equals(left.center, right.center) &&
+                Cartesian3.equals(left.minimum, right.minimum) &&
+                Cartesian3.equals(left.maximum, right.maximum));
+    };
+
+    var intersectScratch = new Cartesian3();
+    /**
+     * Determines which side of a plane a box is located.
+     *
+     * @param {AxisAlignedBoundingBox} box The bounding box to test.
+     * @param {Plane} plane The plane to test against.
+     * @returns {Intersect} {@link Intersect.INSIDE} if the entire box is on the side of the plane
+     *                      the normal is pointing, {@link Intersect.OUTSIDE} if the entire box is
+     *                      on the opposite side, and {@link Intersect.INTERSECTING} if the box
+     *                      intersects the plane.
+     */
+    AxisAlignedBoundingBox.intersectPlane = function(box, plane) {
+                if (!defined(box)) {
+            throw new DeveloperError('box is required.');
+        }
+        if (!defined(plane)) {
+            throw new DeveloperError('plane is required.');
+        }
+        
+        intersectScratch = Cartesian3.subtract(box.maximum, box.minimum, intersectScratch);
+        var h = Cartesian3.multiplyByScalar(intersectScratch, 0.5, intersectScratch); //The positive half diagonal
+        var normal = plane.normal;
+        var e = h.x * Math.abs(normal.x) + h.y * Math.abs(normal.y) + h.z * Math.abs(normal.z);
+        var s = Cartesian3.dot(box.center, normal) + plane.distance; //signed distance from center
+
+        if (s - e > 0) {
+            return Intersect.INSIDE;
+        }
+
+        if (s + e < 0) {
+            //Not in front because normals point inward
+            return Intersect.OUTSIDE;
+        }
+
+        return Intersect.INTERSECTING;
+    };
+
+    /**
+     * Duplicates this AxisAlignedBoundingBox instance.
+     *
+     * @param {AxisAlignedBoundingBox} [result] The object onto which to store the result.
+     * @returns {AxisAlignedBoundingBox} The modified result parameter or a new AxisAlignedBoundingBox instance if one was not provided.
+     */
+    AxisAlignedBoundingBox.prototype.clone = function(result) {
+        return AxisAlignedBoundingBox.clone(this, result);
+    };
+
+    /**
+     * Determines which side of a plane this box is located.
+     *
+     * @param {Plane} plane The plane to test against.
+     * @returns {Intersect} {@link Intersect.INSIDE} if the entire box is on the side of the plane
+     *                      the normal is pointing, {@link Intersect.OUTSIDE} if the entire box is
+     *                      on the opposite side, and {@link Intersect.INTERSECTING} if the box
+     *                      intersects the plane.
+     */
+    AxisAlignedBoundingBox.prototype.intersectPlane = function(plane) {
+        return AxisAlignedBoundingBox.intersectPlane(this, plane);
+    };
+
+    /**
+     * Compares this AxisAlignedBoundingBox against the provided AxisAlignedBoundingBox componentwise and returns
+     * <code>true</code> if they are equal, <code>false</code> otherwise.
+     *
+     * @param {AxisAlignedBoundingBox} [right] The right hand side AxisAlignedBoundingBox.
+     * @returns {Boolean} <code>true</code> if they are equal, <code>false</code> otherwise.
+     */
+    AxisAlignedBoundingBox.prototype.equals = function(right) {
+        return AxisAlignedBoundingBox.equals(this, right);
+    };
+
+    return AxisAlignedBoundingBox;
+});
+
+/*global define*/
 define('Core/GeographicProjection',[
         './Cartesian3',
         './Cartographic',
@@ -3185,11 +3493,11 @@ define('Core/GeographicProjection',[
      *
      * @see WebMercatorProjection
      */
-    var GeographicProjection = function(ellipsoid) {
+    function GeographicProjection(ellipsoid) {
         this._ellipsoid = defaultValue(ellipsoid, Ellipsoid.WGS84);
         this._semimajorAxis = this._ellipsoid.maximumRadius;
         this._oneOverSemimajorAxis = 1.0 / this._semimajorAxis;
-    };
+    }
 
     defineProperties(GeographicProjection.prototype, {
         /**
@@ -3272,50 +3580,6 @@ define('Core/GeographicProjection',[
 });
 
 /*global define*/
-define('Core/Intersect',[
-        './freezeObject'
-    ], function(
-        freezeObject) {
-    "use strict";
-
-    /**
-     * This enumerated type is used in determining where, relative to the frustum, an
-     * object is located. The object can either be fully contained within the frustum (INSIDE),
-     * partially inside the frustum and partially outside (INTERSECTING), or somwhere entirely
-     * outside of the frustum's 6 planes (OUTSIDE).
-     *
-     * @namespace
-     * @alias Intersect
-     */
-    var Intersect = {
-        /**
-         * Represents that an object is not contained within the frustum.
-         *
-         * @type {Number}
-         * @constant
-         */
-        OUTSIDE : -1,
-
-        /**
-         * Represents that an object intersects one of the frustum's planes.
-         *
-         * @type {Number}
-         * @constant
-         */
-        INTERSECTING : 0,
-
-        /**
-         * Represents that an object is fully within the frustum.
-         *
-         * @type {Number}
-         * @constant
-         */
-        INSIDE : 1
-    };
-
-    return freezeObject(Intersect);
-});
-/*global define*/
 define('Core/Interval',[
         './defaultValue'
     ], function(
@@ -3330,7 +3594,7 @@ define('Core/Interval',[
      * @param {Number} [start=0.0] The beginning of the interval.
      * @param {Number} [stop=0.0] The end of the interval.
      */
-    var Interval = function(start, stop) {
+    function Interval(start, stop) {
         /**
          * The beginning of the interval.
          * @type {Number}
@@ -3343,7 +3607,7 @@ define('Core/Interval',[
          * @default 0.0
          */
         this.stop = defaultValue(stop, 0.0);
-    };
+    }
 
     return Interval;
 });
@@ -3389,7 +3653,7 @@ define('Core/Matrix3',[
      * @see Matrix2
      * @see Matrix4
      */
-    var Matrix3 = function(column0Row0, column1Row0, column2Row0,
+    function Matrix3(column0Row0, column1Row0, column2Row0,
                            column0Row1, column1Row1, column2Row1,
                            column0Row2, column1Row2, column2Row2) {
         this[0] = defaultValue(column0Row0, 0.0);
@@ -3401,7 +3665,7 @@ define('Core/Matrix3',[
         this[6] = defaultValue(column2Row0, 0.0);
         this[7] = defaultValue(column2Row1, 0.0);
         this[8] = defaultValue(column2Row2, 0.0);
-    };
+    }
 
     /**
      * The number of elements used to pack the object into an array.
@@ -4273,12 +4537,13 @@ define('Core/Matrix3',[
      * @param {Matrix3} result The object onto which to store the result.
      * @returns {Matrix3} The modified result parameter.
      *
-     * @see Matrix3.fromScale
-     * @see Matrix3.multiplyByUniformScale
      *
      * @example
      * // Instead of Cesium.Matrix3.multiply(m, Cesium.Matrix3.fromScale(scale), m);
      * Cesium.Matrix3.multiplyByScale(m, scale, m);
+     * 
+     * @see Matrix3.fromScale
+     * @see Matrix3.multiplyByUniformScale
      */
     Matrix3.multiplyByScale = function(matrix, scale, result) {
                 if (!defined(matrix)) {
@@ -4857,7 +5122,7 @@ define('Core/Cartesian4',[
      * @see Cartesian3
      * @see Packable
      */
-    var Cartesian4 = function(x, y, z, w) {
+    function Cartesian4(x, y, z, w) {
         /**
          * The X component.
          * @type {Number}
@@ -4885,7 +5150,7 @@ define('Core/Cartesian4',[
          * @default 0.0
          */
         this.w = defaultValue(w, 0.0);
-    };
+    }
 
     /**
      * Creates a Cartesian4 instance from x, y, z and w coordinates.
@@ -5633,7 +5898,7 @@ define('Core/RuntimeError',[
      *
      * @see DeveloperError
      */
-    var RuntimeError = function(message) {
+    function RuntimeError(message) {
         /**
          * 'RuntimeError' indicating that this exception was thrown due to a runtime error.
          * @type {String}
@@ -5662,8 +5927,7 @@ define('Core/RuntimeError',[
          * @readonly
          */
         this.stack = stack;
-    };
-
+    }
     RuntimeError.prototype.toString = function() {
         var str = this.name + ': ' + this.message;
 
@@ -5726,6 +5990,7 @@ define('Core/Matrix4',[
      * @see Matrix4.fromColumnMajorArray
      * @see Matrix4.fromRowMajorArray
      * @see Matrix4.fromRotationTranslation
+     * @see Matrix4.fromTranslationRotationScale
      * @see Matrix4.fromTranslationQuaternionRotationScale
      * @see Matrix4.fromTranslation
      * @see Matrix4.fromScale
@@ -5740,7 +6005,7 @@ define('Core/Matrix4',[
      * @see Matrix3
      * @see Packable
      */
-    var Matrix4 = function(column0Row0, column1Row0, column2Row0, column3Row0,
+    function Matrix4(column0Row0, column1Row0, column2Row0, column3Row0,
                            column0Row1, column1Row1, column2Row1, column3Row1,
                            column0Row2, column1Row2, column2Row2, column3Row2,
                            column0Row3, column1Row3, column2Row3, column3Row3) {
@@ -5760,7 +6025,7 @@ define('Core/Matrix4',[
         this[13] = defaultValue(column3Row1, 0.0);
         this[14] = defaultValue(column3Row2, 0.0);
         this[15] = defaultValue(column3Row3, 0.0);
-    };
+    }
 
     /**
      * The number of elements used to pack the object into an array.
@@ -6075,6 +6340,21 @@ define('Core/Matrix4',[
         result[15] = 1.0;
 
         return result;
+    };
+
+    /**
+     * Creates a Matrix4 instance from a {@link TranslationRotationScale} instance.
+     *
+     * @param {TranslationRotationScale} translationRotationScale The instance.
+     * @param {Matrix4} [result] The object in which the result will be stored, if undefined a new instance will be created.
+     * @returns {Matrix4} The modified result parameter, or a new Matrix4 instance if one was not provided.
+     */
+    Matrix4.fromTranslationRotationScale = function(translationRotationScale, result) {
+                if (!defined(translationRotationScale)) {
+            throw new DeveloperError('translationRotationScale is required.');
+        }
+        
+        return Matrix4.fromTranslationQuaternionRotationScale(translationRotationScale.translation, translationRotationScale.rotation, translationRotationScale.scale, result);
     };
 
     /**
@@ -7343,12 +7623,13 @@ define('Core/Matrix4',[
      * @param {Matrix4} result The object onto which to store the result.
      * @returns {Matrix4} The modified result parameter.
      *
-     * @see Matrix4.fromUniformScale
-     * @see Matrix4.multiplyByScale
      *
      * @example
      * // Instead of Cesium.Matrix4.multiply(m, Cesium.Matrix4.fromUniformScale(scale), m);
      * Cesium.Matrix4.multiplyByUniformScale(m, scale, m);
+     * 
+     * @see Matrix4.fromUniformScale
+     * @see Matrix4.multiplyByScale
      */
     Matrix4.multiplyByUniformScale = function(matrix, scale, result) {
                 if (!defined(matrix)) {
@@ -7379,12 +7660,13 @@ define('Core/Matrix4',[
      * @param {Matrix4} result The object onto which to store the result.
      * @returns {Matrix4} The modified result parameter.
      *
-     * @see Matrix4.fromScale
-     * @see Matrix4.multiplyByUniformScale
      *
      * @example
      * // Instead of Cesium.Matrix4.multiply(m, Cesium.Matrix4.fromScale(scale), m);
      * Cesium.Matrix4.multiplyByScale(m, scale, m);
+     * 
+     * @see Matrix4.fromScale
+     * @see Matrix4.multiplyByUniformScale
      */
     Matrix4.multiplyByScale = function(matrix, scale, result) {
                 if (!defined(matrix)) {
@@ -8383,7 +8665,7 @@ define('Core/Plane',[
      * // The plane x=0
      * var plane = new Cesium.Plane(Cesium.Cartesian3.UNIT_X, 0.0);
      */
-    var Plane = function(normal, distance) {
+    function Plane(normal, distance) {
                 if (!defined(normal))  {
             throw new DeveloperError('normal is required.');
         }
@@ -8408,7 +8690,7 @@ define('Core/Plane',[
          * @type {Number}
          */
         this.distance = distance;
-    };
+    }
 
     /**
      * Creates a plane from a normal and a point on the plane.
@@ -8550,7 +8832,7 @@ define('Core/Rectangle',[
      *
      * @see Packable
      */
-    var Rectangle = function(west, south, east, north) {
+    function Rectangle(west, south, east, north) {
         /**
          * The westernmost longitude in radians in the range [-Pi, Pi].
          *
@@ -8582,7 +8864,7 @@ define('Core/Rectangle',[
          * @default 0.0
          */
         this.north = defaultValue(north, 0.0);
-    };
+    }
 
     defineProperties(Rectangle.prototype, {
         /**
@@ -8736,27 +9018,45 @@ define('Core/Rectangle',[
             throw new DeveloperError('cartographics is required.');
         }
         
-        var minLon = Number.MAX_VALUE;
-        var maxLon = -Number.MAX_VALUE;
-        var minLat = Number.MAX_VALUE;
-        var maxLat = -Number.MAX_VALUE;
+        var west = Number.MAX_VALUE;
+        var east = -Number.MAX_VALUE;
+        var westOverIDL = Number.MAX_VALUE;
+        var eastOverIDL = -Number.MAX_VALUE;
+        var south = Number.MAX_VALUE;
+        var north = -Number.MAX_VALUE;
 
         for ( var i = 0, len = cartographics.length; i < len; i++) {
             var position = cartographics[i];
-            minLon = Math.min(minLon, position.longitude);
-            maxLon = Math.max(maxLon, position.longitude);
-            minLat = Math.min(minLat, position.latitude);
-            maxLat = Math.max(maxLat, position.latitude);
+            west = Math.min(west, position.longitude);
+            east = Math.max(east, position.longitude);
+            south = Math.min(south, position.latitude);
+            north = Math.max(north, position.latitude);
+
+            var lonAdjusted = position.longitude >= 0 ?  position.longitude : position.longitude +  CesiumMath.TWO_PI;
+            westOverIDL = Math.min(westOverIDL, lonAdjusted);
+            eastOverIDL = Math.max(eastOverIDL, lonAdjusted);
+        }
+
+        if(east - west > eastOverIDL - westOverIDL) {
+            west = westOverIDL;
+            east = eastOverIDL;
+
+            if (east > CesiumMath.PI) {
+                east = east - CesiumMath.TWO_PI;
+            }
+            if (west > CesiumMath.PI) {
+                west = west - CesiumMath.TWO_PI;
+            }
         }
 
         if (!defined(result)) {
-            return new Rectangle(minLon, minLat, maxLon, maxLat);
+            return new Rectangle(west, south, east, north);
         }
 
-        result.west = minLon;
-        result.south = minLat;
-        result.east = maxLon;
-        result.north = maxLat;
+        result.west = west;
+        result.south = south;
+        result.east = east;
+        result.north = north;
         return result;
     };
 
@@ -9197,7 +9497,6 @@ define('Core/BoundingSphere',[
         './Cartographic',
         './defaultValue',
         './defined',
-        './deprecationWarning',
         './DeveloperError',
         './Ellipsoid',
         './GeographicProjection',
@@ -9212,7 +9511,6 @@ define('Core/BoundingSphere',[
         Cartographic,
         defaultValue,
         defined,
-        deprecationWarning,
         DeveloperError,
         Ellipsoid,
         GeographicProjection,
@@ -9236,7 +9534,7 @@ define('Core/BoundingSphere',[
      * @see BoundingRectangle
      * @see Packable
      */
-    var BoundingSphere = function(center, radius) {
+    function BoundingSphere(center, radius) {
         /**
          * The center point of the sphere.
          * @type {Cartesian3}
@@ -9250,7 +9548,7 @@ define('Core/BoundingSphere',[
          * @default 0.0
          */
         this.radius = defaultValue(radius, 0.0);
-    };
+    }
 
     var fromPointsXMin = new Cartesian3();
     var fromPointsYMin = new Cartesian3();
@@ -9517,8 +9815,7 @@ define('Core/BoundingSphere',[
      * @param {BoundingSphere} [result] The object onto which to store the result.
      * @returns {BoundingSphere} The modified result parameter or a new BoundingSphere instance if one was not provided.
      *
-     * @see {@link http://blogs.agi.com/insight3d/index.php/2008/02/04/a-bounding/|Bounding Sphere computation article}
-     *
+     * 
      * @example
      * // Compute the bounding sphere from 3 positions, each specified relative to a center.
      * // In addition to the X, Y, and Z coordinates, the points array contains two additional
@@ -9528,6 +9825,8 @@ define('Core/BoundingSphere',[
      *               4.0, 5.0, 6.0, 0.1, 0.2,
      *               7.0, 8.0, 9.0, 0.1, 0.2];
      * var sphere = Cesium.BoundingSphere.fromVertices(points, center, 5);
+     * 
+     * @see {@link http://blogs.agi.com/insight3d/index.php/2008/02/04/a-bounding/|Bounding Sphere computation article}
      */
     BoundingSphere.fromVertices = function(positions, center, stride, result) {
         if (!defined(result)) {
@@ -10144,6 +10443,7 @@ define('Core/BoundingSphere',[
     for (var n = 0; n < 8; ++n) {
         projectTo2DPositionsScratch[n] = new Cartesian3();
     }
+
     var projectTo2DProjection = new GeographicProjection();
     /**
      * Creates a bounding sphere in 2D from a bounding sphere in 3D world coordinates.
@@ -10356,632 +10656,6 @@ define('Core/BoundingSphere',[
 });
 
 /*global define*/
-define('Core/EllipsoidalOccluder',[
-        './BoundingSphere',
-        './Cartesian3',
-        './defaultValue',
-        './defined',
-        './defineProperties',
-        './DeveloperError',
-        './Rectangle'
-    ], function(
-        BoundingSphere,
-        Cartesian3,
-        defaultValue,
-        defined,
-        defineProperties,
-        DeveloperError,
-        Rectangle) {
-    "use strict";
-
-    /**
-     * Determine whether or not other objects are visible or hidden behind the visible horizon defined by
-     * an {@link Ellipsoid} and a camera position.  The ellipsoid is assumed to be located at the
-     * origin of the coordinate system.  This class uses the algorithm described in the
-     * {@link http://cesiumjs.org/2013/04/25/Horizon-culling/|Horizon Culling} blog post.
-     *
-     * @alias EllipsoidalOccluder
-     *
-     * @param {Ellipsoid} ellipsoid The ellipsoid to use as an occluder.
-     * @param {Cartesian3} [cameraPosition] The coordinate of the viewer/camera.  If this parameter is not
-     *        specified, {@link EllipsoidalOccluder#cameraPosition} must be called before
-     *        testing visibility.
-     *
-     * @constructor
-     *
-     * @example
-     * // Construct an ellipsoidal occluder with radii 1.0, 1.1, and 0.9.
-     * var cameraPosition = new Cesium.Cartesian3(5.0, 6.0, 7.0);
-     * var occluderEllipsoid = new Cesium.Ellipsoid(1.0, 1.1, 0.9);
-     * var occluder = new Cesium.EllipsoidalOccluder(occluderEllipsoid, cameraPosition);
-     *
-     * @private
-     */
-    var EllipsoidalOccluder = function(ellipsoid, cameraPosition) {
-                if (!defined(ellipsoid)) {
-            throw new DeveloperError('ellipsoid is required.');
-        }
-        
-        this._ellipsoid = ellipsoid;
-        this._cameraPosition = new Cartesian3();
-        this._cameraPositionInScaledSpace = new Cartesian3();
-        this._distanceToLimbInScaledSpaceSquared = 0.0;
-
-        // cameraPosition fills in the above values
-        if (defined(cameraPosition)) {
-            this.cameraPosition = cameraPosition;
-        }
-    };
-
-    defineProperties(EllipsoidalOccluder.prototype, {
-        /**
-         * Gets the occluding ellipsoid.
-         * @memberof EllipsoidalOccluder.prototype
-         * @type {Ellipsoid}
-         */
-        ellipsoid : {
-            get: function() {
-                return this._ellipsoid;
-            }
-        },
-        /**
-         * Gets or sets the position of the camera.
-         * @memberof EllipsoidalOccluder.prototype
-         * @type {Cartesian3}
-         */
-        cameraPosition : {
-            get : function() {
-                return this._cameraPosition;
-            },
-            set : function(cameraPosition) {
-                // See http://cesiumjs.org/2013/04/25/Horizon-culling/
-                var ellipsoid = this._ellipsoid;
-                var cv = ellipsoid.transformPositionToScaledSpace(cameraPosition, this._cameraPositionInScaledSpace);
-                var vhMagnitudeSquared = Cartesian3.magnitudeSquared(cv) - 1.0;
-
-                Cartesian3.clone(cameraPosition, this._cameraPosition);
-                this._cameraPositionInScaledSpace = cv;
-                this._distanceToLimbInScaledSpaceSquared = vhMagnitudeSquared;
-            }
-        }
-    });
-
-    var scratchCartesian = new Cartesian3();
-
-    /**
-     * Determines whether or not a point, the <code>occludee</code>, is hidden from view by the occluder.
-     *
-     * @param {Cartesian3} occludee The point to test for visibility.
-     * @returns {Boolean} <code>true</code> if the occludee is visible; otherwise <code>false</code>.
-     *
-     * @example
-     * var cameraPosition = new Cesium.Cartesian3(0, 0, 2.5);
-     * var ellipsoid = new Cesium.Ellipsoid(1.0, 1.1, 0.9);
-     * var occluder = new Cesium.EllipsoidalOccluder(ellipsoid, cameraPosition);
-     * var point = new Cesium.Cartesian3(0, -3, -3);
-     * occluder.isPointVisible(point); //returns true
-     */
-    EllipsoidalOccluder.prototype.isPointVisible = function(occludee) {
-        var ellipsoid = this._ellipsoid;
-        var occludeeScaledSpacePosition = ellipsoid.transformPositionToScaledSpace(occludee, scratchCartesian);
-        return this.isScaledSpacePointVisible(occludeeScaledSpacePosition);
-    };
-
-    /**
-     * Determines whether or not a point expressed in the ellipsoid scaled space, is hidden from view by the
-     * occluder.  To transform a Cartesian X, Y, Z position in the coordinate system aligned with the ellipsoid
-     * into the scaled space, call {@link Ellipsoid#transformPositionToScaledSpace}.
-     *
-     * @param {Cartesian3} occludeeScaledSpacePosition The point to test for visibility, represented in the scaled space.
-     * @returns {Boolean} <code>true</code> if the occludee is visible; otherwise <code>false</code>.
-     *
-     * @example
-     * var cameraPosition = new Cesium.Cartesian3(0, 0, 2.5);
-     * var ellipsoid = new Cesium.Ellipsoid(1.0, 1.1, 0.9);
-     * var occluder = new Cesium.EllipsoidalOccluder(ellipsoid, cameraPosition);
-     * var point = new Cesium.Cartesian3(0, -3, -3);
-     * var scaledSpacePoint = ellipsoid.transformPositionToScaledSpace(point);
-     * occluder.isScaledSpacePointVisible(scaledSpacePoint); //returns true
-     */
-    EllipsoidalOccluder.prototype.isScaledSpacePointVisible = function(occludeeScaledSpacePosition) {
-        // Disable occlusion culling when the viewer is under the ellipsoid to avoid false occulsion.
-        if (this._distanceToLimbInScaledSpaceSquared < 0.0) {
-            return true;
-        }
-
-        // See http://cesiumjs.org/2013/04/25/Horizon-culling/
-        var cv = this._cameraPositionInScaledSpace;
-        var vhMagnitudeSquared = this._distanceToLimbInScaledSpaceSquared;
-        var vt = Cartesian3.subtract(occludeeScaledSpacePosition, cv, scratchCartesian);
-        var vtDotVc = -Cartesian3.dot(vt, cv);
-        var isOccluded = vtDotVc > vhMagnitudeSquared &&
-                         vtDotVc * vtDotVc / Cartesian3.magnitudeSquared(vt) > vhMagnitudeSquared;
-        return !isOccluded;
-    };
-
-    /**
-     * Computes a point that can be used for horizon culling from a list of positions.  If the point is below
-     * the horizon, all of the positions are guaranteed to be below the horizon as well.  The returned point
-     * is expressed in the ellipsoid-scaled space and is suitable for use with
-     * {@link EllipsoidalOccluder#isScaledSpacePointVisible}.
-     *
-     * @param {Cartesian3} directionToPoint The direction that the computed point will lie along.
-     *                     A reasonable direction to use is the direction from the center of the ellipsoid to
-     *                     the center of the bounding sphere computed from the positions.  The direction need not
-     *                     be normalized.
-     * @param {Cartesian3[]} positions The positions from which to compute the horizon culling point.  The positions
-     *                       must be expressed in a reference frame centered at the ellipsoid and aligned with the
-     *                       ellipsoid's axes.
-     * @param {Cartesian3} [result] The instance on which to store the result instead of allocating a new instance.
-     * @returns {Cartesian3} The computed horizon culling point, expressed in the ellipsoid-scaled space.
-     */
-    EllipsoidalOccluder.prototype.computeHorizonCullingPoint = function(directionToPoint, positions, result) {
-                if (!defined(directionToPoint)) {
-            throw new DeveloperError('directionToPoint is required');
-        }
-        if (!defined(positions)) {
-            throw new DeveloperError('positions is required');
-        }
-        
-        if (!defined(result)) {
-            result = new Cartesian3();
-        }
-
-        var ellipsoid = this._ellipsoid;
-        var scaledSpaceDirectionToPoint = computeScaledSpaceDirectionToPoint(ellipsoid, directionToPoint);
-        var resultMagnitude = 0.0;
-
-        for (var i = 0, len = positions.length; i < len; ++i) {
-            var position = positions[i];
-            var candidateMagnitude = computeMagnitude(ellipsoid, position, scaledSpaceDirectionToPoint);
-            resultMagnitude = Math.max(resultMagnitude, candidateMagnitude);
-        }
-
-        return magnitudeToPoint(scaledSpaceDirectionToPoint, resultMagnitude, result);
-    };
-
-    var positionScratch = new Cartesian3();
-
-    /**
-     * Computes a point that can be used for horizon culling from a list of positions.  If the point is below
-     * the horizon, all of the positions are guaranteed to be below the horizon as well.  The returned point
-     * is expressed in the ellipsoid-scaled space and is suitable for use with
-     * {@link EllipsoidalOccluder#isScaledSpacePointVisible}.
-     *
-     * @param {Cartesian3} directionToPoint The direction that the computed point will lie along.
-     *                     A reasonable direction to use is the direction from the center of the ellipsoid to
-     *                     the center of the bounding sphere computed from the positions.  The direction need not
-     *                     be normalized.
-     * @param {Number[]} vertices  The vertices from which to compute the horizon culling point.  The positions
-     *                   must be expressed in a reference frame centered at the ellipsoid and aligned with the
-     *                   ellipsoid's axes.
-     * @param {Number} [stride=3]
-     * @param {Cartesian3} [center=Cartesian3.ZERO]
-     * @param {Cartesian3} [result] The instance on which to store the result instead of allocating a new instance.
-     * @returns {Cartesian3} The computed horizon culling point, expressed in the ellipsoid-scaled space.
-     */
-    EllipsoidalOccluder.prototype.computeHorizonCullingPointFromVertices = function(directionToPoint, vertices, stride, center, result) {
-                if (!defined(directionToPoint)) {
-            throw new DeveloperError('directionToPoint is required');
-        }
-        if (!defined(vertices)) {
-            throw new DeveloperError('vertices is required');
-        }
-        if (!defined(stride)) {
-            throw new DeveloperError('stride is required');
-        }
-        
-        if (!defined(result)) {
-            result = new Cartesian3();
-        }
-
-        center = defaultValue(center, Cartesian3.ZERO);
-        var ellipsoid = this._ellipsoid;
-        var scaledSpaceDirectionToPoint = computeScaledSpaceDirectionToPoint(ellipsoid, directionToPoint);
-        var resultMagnitude = 0.0;
-
-        for (var i = 0, len = vertices.length; i < len; i += stride) {
-            positionScratch.x = vertices[i] + center.x;
-            positionScratch.y = vertices[i + 1] + center.y;
-            positionScratch.z = vertices[i + 2] + center.z;
-
-            var candidateMagnitude = computeMagnitude(ellipsoid, positionScratch, scaledSpaceDirectionToPoint);
-            resultMagnitude = Math.max(resultMagnitude, candidateMagnitude);
-        }
-
-        return magnitudeToPoint(scaledSpaceDirectionToPoint, resultMagnitude, result);
-    };
-
-    var subsampleScratch = [];
-
-    /**
-     * Computes a point that can be used for horizon culling of an rectangle.  If the point is below
-     * the horizon, the ellipsoid-conforming rectangle is guaranteed to be below the horizon as well.
-     * The returned point is expressed in the ellipsoid-scaled space and is suitable for use with
-     * {@link EllipsoidalOccluder#isScaledSpacePointVisible}.
-     *
-     * @param {Rectangle} rectangle The rectangle for which to compute the horizon culling point.
-     * @param {Ellipsoid} ellipsoid The ellipsoid on which the rectangle is defined.  This may be different from
-     *                    the ellipsoid used by this instance for occlusion testing.
-     * @param {Cartesian3} [result] The instance on which to store the result instead of allocating a new instance.
-     * @returns {Cartesian3} The computed horizon culling point, expressed in the ellipsoid-scaled space.
-     */
-    EllipsoidalOccluder.prototype.computeHorizonCullingPointFromRectangle = function(rectangle, ellipsoid, result) {
-                if (!defined(rectangle)) {
-            throw new DeveloperError('rectangle is required.');
-        }
-        
-        var positions = Rectangle.subsample(rectangle, ellipsoid, 0.0, subsampleScratch);
-        var bs = BoundingSphere.fromPoints(positions);
-
-        // If the bounding sphere center is too close to the center of the occluder, it doesn't make
-        // sense to try to horizon cull it.
-        if (Cartesian3.magnitude(bs.center) < 0.1 * ellipsoid.minimumRadius) {
-            return undefined;
-        }
-
-        return this.computeHorizonCullingPoint(bs.center, positions, result);
-    };
-
-    var scaledSpaceScratch = new Cartesian3();
-    var directionScratch = new Cartesian3();
-
-    function computeMagnitude(ellipsoid, position, scaledSpaceDirectionToPoint) {
-        var scaledSpacePosition = ellipsoid.transformPositionToScaledSpace(position, scaledSpaceScratch);
-        var magnitudeSquared = Cartesian3.magnitudeSquared(scaledSpacePosition);
-        var magnitude = Math.sqrt(magnitudeSquared);
-        var direction = Cartesian3.divideByScalar(scaledSpacePosition, magnitude, directionScratch);
-
-        // For the purpose of this computation, points below the ellipsoid are consider to be on it instead.
-        magnitudeSquared = Math.max(1.0, magnitudeSquared);
-        magnitude = Math.max(1.0, magnitude);
-
-        var cosAlpha = Cartesian3.dot(direction, scaledSpaceDirectionToPoint);
-        var sinAlpha = Cartesian3.magnitude(Cartesian3.cross(direction, scaledSpaceDirectionToPoint, direction));
-        var cosBeta = 1.0 / magnitude;
-        var sinBeta = Math.sqrt(magnitudeSquared - 1.0) * cosBeta;
-
-        return 1.0 / (cosAlpha * cosBeta - sinAlpha * sinBeta);
-    }
-
-    function magnitudeToPoint(scaledSpaceDirectionToPoint, resultMagnitude, result) {
-        // The horizon culling point is undefined if there were no positions from which to compute it,
-        // the directionToPoint is pointing opposite all of the positions,  or if we computed NaN or infinity.
-        if (resultMagnitude <= 0.0 || resultMagnitude === 1.0 / 0.0 || resultMagnitude !== resultMagnitude) {
-            return undefined;
-        }
-
-        return Cartesian3.multiplyByScalar(scaledSpaceDirectionToPoint, resultMagnitude, result);
-    }
-
-    var directionToPointScratch = new Cartesian3();
-
-    function computeScaledSpaceDirectionToPoint(ellipsoid, directionToPoint) {
-        ellipsoid.transformPositionToScaledSpace(directionToPoint, directionToPointScratch);
-        return Cartesian3.normalize(directionToPointScratch, directionToPointScratch);
-    }
-
-    return EllipsoidalOccluder;
-});
-
-/*global define*/
-define('Core/HeightmapTessellator',[
-        './Cartesian3',
-        './defaultValue',
-        './defined',
-        './DeveloperError',
-        './Ellipsoid',
-        './freezeObject',
-        './Math',
-        './Rectangle'
-    ], function(
-        Cartesian3,
-        defaultValue,
-        defined,
-        DeveloperError,
-        Ellipsoid,
-        freezeObject,
-        CesiumMath,
-        Rectangle) {
-    "use strict";
-
-    /**
-     * Contains functions to create a mesh from a heightmap image.
-     *
-     * @namespace
-     * @alias HeightmapTessellator
-     */
-    var HeightmapTessellator = {};
-
-    /**
-     * The default structure of a heightmap, as given to {@link HeightmapTessellator.computeVertices}.
-     *
-     * @constant
-     */
-    HeightmapTessellator.DEFAULT_STRUCTURE = freezeObject({
-        heightScale : 1.0,
-        heightOffset : 0.0,
-        elementsPerHeight : 1,
-        stride : 1,
-        elementMultiplier : 256.0,
-        isBigEndian : false
-    });
-
-    /**
-     * Fills an array of vertices from a heightmap image.  On return, the vertex data is in the order
-     * [X, Y, Z, H, U, V], where X, Y, and Z represent the Cartesian position of the vertex, H is the
-     * height above the ellipsoid, and U and V are the texture coordinates.
-     *
-     * @param {Object} options Object with the following properties:
-     * @param {Array|Float32Array} options.vertices The array to use to store computed vertices.
-     *                             If options.skirtHeight is 0.0, the array should have
-     *                             options.width * options.height * 6 elements.  If
-     *                             options.skirtHeight is greater than 0.0, the array should
-     *                             have (options.width + 2) * (options.height * 2) * 6
-     *                             elements.
-     * @param {TypedArray} options.heightmap The heightmap to tessellate.
-     * @param {Number} options.width The width of the heightmap, in height samples.
-     * @param {Number} options.height The height of the heightmap, in height samples.
-     * @param {Number} options.skirtHeight The height of skirts to drape at the edges of the heightmap.
-     * @param {Rectangle} options.nativeRectangle An rectangle in the native coordinates of the heightmap's projection.  For
-     *                 a heightmap with a geographic projection, this is degrees.  For the web mercator
-     *                 projection, this is meters.
-     * @param {Rectangle} [options.rectangle] The rectangle covered by the heightmap, in geodetic coordinates with north, south, east and
-     *                 west properties in radians.  Either rectangle or nativeRectangle must be provided.  If both
-     *                 are provided, they're assumed to be consistent.
-     * @param {Boolean} [options.isGeographic=true] True if the heightmap uses a {@link GeographicProjection}, or false if it uses
-     *                  a {@link WebMercatorProjection}.
-     * @param {Cartesian3} [options.relativetoCenter=Cartesian3.ZERO] The positions will be computed as <code>Cartesian3.subtract(worldPosition, relativeToCenter)</code>.
-     * @param {Ellipsoid} [options.ellipsoid=Ellipsoid.WGS84] The ellipsoid to which the heightmap applies.
-     * @param {Object} [options.structure] An object describing the structure of the height data.
-     * @param {Number} [options.structure.heightScale=1.0] The factor by which to multiply height samples in order to obtain
-     *                 the height above the heightOffset, in meters.  The heightOffset is added to the resulting
-     *                 height after multiplying by the scale.
-     * @param {Number} [options.structure.heightOffset=0.0] The offset to add to the scaled height to obtain the final
-     *                 height in meters.  The offset is added after the height sample is multiplied by the
-     *                 heightScale.
-     * @param {Number} [options.structure.elementsPerHeight=1] The number of elements in the buffer that make up a single height
-     *                 sample.  This is usually 1, indicating that each element is a separate height sample.  If
-     *                 it is greater than 1, that number of elements together form the height sample, which is
-     *                 computed according to the structure.elementMultiplier and structure.isBigEndian properties.
-     * @param {Number} [options.structure.stride=1] The number of elements to skip to get from the first element of
-     *                 one height to the first element of the next height.
-     * @param {Number} [options.structure.elementMultiplier=256.0] The multiplier used to compute the height value when the
-     *                 stride property is greater than 1.  For example, if the stride is 4 and the strideMultiplier
-     *                 is 256, the height is computed as follows:
-     *                 `height = buffer[index] + buffer[index + 1] * 256 + buffer[index + 2] * 256 * 256 + buffer[index + 3] * 256 * 256 * 256`
-     *                 This is assuming that the isBigEndian property is false.  If it is true, the order of the
-     *                 elements is reversed.
-     * @param {Boolean} [options.structure.isBigEndian=false] Indicates endianness of the elements in the buffer when the
-     *                  stride property is greater than 1.  If this property is false, the first element is the
-     *                  low-order element.  If it is true, the first element is the high-order element.
-     *
-     * @example
-     * var width = 5;
-     * var height = 5;
-     * var vertices = new Float32Array(width * height * 6);
-     * Cesium.HeightmapTessellator.computeVertices({
-     *     vertices : vertices,
-     *     heightmap : [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0],
-     *     width : width,
-     *     height : height,
-     *     skirtHeight : 0.0,
-     *     nativeRectangle : {
-     *         west : 10.0,
-     *         east : 20.0,
-     *         south : 30.0,
-     *         north : 40.0
-     *     }
-     * });
-     */
-    HeightmapTessellator.computeVertices = function(options) {
-                if (!defined(options) || !defined(options.heightmap)) {
-            throw new DeveloperError('options.heightmap is required.');
-        }
-        if (!defined(options.width) || !defined(options.height)) {
-            throw new DeveloperError('options.width and options.height are required.');
-        }
-        if (!defined(options.vertices)) {
-            throw new DeveloperError('options.vertices is required.');
-        }
-        if (!defined(options.nativeRectangle)) {
-            throw new DeveloperError('options.nativeRectangle is required.');
-        }
-        if (!defined(options.skirtHeight)) {
-            throw new DeveloperError('options.skirtHeight is required.');
-        }
-        
-        // This function tends to be a performance hotspot for terrain rendering,
-        // so it employs a lot of inlining and unrolling as an optimization.
-        // In particular, the functionality of Ellipsoid.cartographicToCartesian
-        // is inlined.
-
-        var cos = Math.cos;
-        var sin = Math.sin;
-        var sqrt = Math.sqrt;
-        var atan = Math.atan;
-        var exp = Math.exp;
-        var piOverTwo = CesiumMath.PI_OVER_TWO;
-        var toRadians = CesiumMath.toRadians;
-
-        var vertices = options.vertices;
-        var heightmap = options.heightmap;
-        var width = options.width;
-        var height = options.height;
-        var skirtHeight = options.skirtHeight;
-
-        var isGeographic = defaultValue(options.isGeographic, true);
-        var ellipsoid = defaultValue(options.ellipsoid, Ellipsoid.WGS84);
-
-        var oneOverGlobeSemimajorAxis = 1.0 / ellipsoid.maximumRadius;
-
-        var nativeRectangle = options.nativeRectangle;
-
-        var geographicWest;
-        var geographicSouth;
-        var geographicEast;
-        var geographicNorth;
-
-        var rectangle = options.rectangle;
-        if (!defined(rectangle)) {
-            if (isGeographic) {
-                geographicWest = toRadians(nativeRectangle.west);
-                geographicSouth = toRadians(nativeRectangle.south);
-                geographicEast = toRadians(nativeRectangle.east);
-                geographicNorth = toRadians(nativeRectangle.north);
-            } else {
-                geographicWest = nativeRectangle.west * oneOverGlobeSemimajorAxis;
-                geographicSouth = piOverTwo - (2.0 * atan(exp(-nativeRectangle.south * oneOverGlobeSemimajorAxis)));
-                geographicEast = nativeRectangle.east * oneOverGlobeSemimajorAxis;
-                geographicNorth = piOverTwo - (2.0 * atan(exp(-nativeRectangle.north * oneOverGlobeSemimajorAxis)));
-            }
-        } else {
-            geographicWest = rectangle.west;
-            geographicSouth = rectangle.south;
-            geographicEast = rectangle.east;
-            geographicNorth = rectangle.north;
-        }
-
-        var relativeToCenter = defaultValue(options.relativeToCenter, Cartesian3.ZERO);
-
-        var structure = defaultValue(options.structure, HeightmapTessellator.DEFAULT_STRUCTURE);
-        var heightScale = defaultValue(structure.heightScale, HeightmapTessellator.DEFAULT_STRUCTURE.heightScale);
-        var heightOffset = defaultValue(structure.heightOffset, HeightmapTessellator.DEFAULT_STRUCTURE.heightOffset);
-        var elementsPerHeight = defaultValue(structure.elementsPerHeight, HeightmapTessellator.DEFAULT_STRUCTURE.elementsPerHeight);
-        var stride = defaultValue(structure.stride, HeightmapTessellator.DEFAULT_STRUCTURE.stride);
-        var elementMultiplier = defaultValue(structure.elementMultiplier, HeightmapTessellator.DEFAULT_STRUCTURE.elementMultiplier);
-        var isBigEndian = defaultValue(structure.isBigEndian, HeightmapTessellator.DEFAULT_STRUCTURE.isBigEndian);
-
-        var granularityX = Rectangle.computeWidth(nativeRectangle) / (width - 1);
-        var granularityY = Rectangle.computeHeight(nativeRectangle) / (height - 1);
-
-        var radiiSquared = ellipsoid.radiiSquared;
-        var radiiSquaredX = radiiSquared.x;
-        var radiiSquaredY = radiiSquared.y;
-        var radiiSquaredZ = radiiSquared.z;
-
-        var vertexArrayIndex = 0;
-
-        var minimumHeight = 65536.0;
-        var maximumHeight = -65536.0;
-
-        var startRow = 0;
-        var endRow = height;
-        var startCol = 0;
-        var endCol = width;
-
-        if (skirtHeight > 0) {
-            --startRow;
-            ++endRow;
-            --startCol;
-            ++endCol;
-        }
-
-        for (var rowIndex = startRow; rowIndex < endRow; ++rowIndex) {
-            var row = rowIndex;
-            if (row < 0) {
-                row = 0;
-            }
-            if (row >= height) {
-                row = height - 1;
-            }
-
-            var latitude = nativeRectangle.north - granularityY * row;
-
-            if (!isGeographic) {
-                latitude = piOverTwo - (2.0 * atan(exp(-latitude * oneOverGlobeSemimajorAxis)));
-            } else {
-                latitude = toRadians(latitude);
-            }
-
-            var cosLatitude = cos(latitude);
-            var nZ = sin(latitude);
-            var kZ = radiiSquaredZ * nZ;
-
-            var v = (latitude - geographicSouth) / (geographicNorth - geographicSouth);
-
-            for (var colIndex = startCol; colIndex < endCol; ++colIndex) {
-                var col = colIndex;
-                if (col < 0) {
-                    col = 0;
-                }
-                if (col >= width) {
-                    col = width - 1;
-                }
-
-                var longitude = nativeRectangle.west + granularityX * col;
-
-                if (!isGeographic) {
-                    longitude = longitude * oneOverGlobeSemimajorAxis;
-                } else {
-                    longitude = toRadians(longitude);
-                }
-
-                var terrainOffset = row * (width * stride) + col * stride;
-
-                var heightSample;
-                if (elementsPerHeight === 1) {
-                    heightSample = heightmap[terrainOffset];
-                } else {
-                    heightSample = 0;
-
-                    var elementOffset;
-                    if (isBigEndian) {
-                        for (elementOffset = 0; elementOffset < elementsPerHeight; ++elementOffset) {
-                            heightSample = (heightSample * elementMultiplier) + heightmap[terrainOffset + elementOffset];
-                        }
-                    } else {
-                        for (elementOffset = elementsPerHeight - 1; elementOffset >= 0; --elementOffset) {
-                            heightSample = (heightSample * elementMultiplier) + heightmap[terrainOffset + elementOffset];
-                        }
-                    }
-                }
-
-                heightSample = heightSample * heightScale + heightOffset;
-
-                maximumHeight = Math.max(maximumHeight, heightSample);
-                minimumHeight = Math.min(minimumHeight, heightSample);
-
-                if (colIndex !== col || rowIndex !== row) {
-                    heightSample -= skirtHeight;
-                }
-
-                var nX = cosLatitude * cos(longitude);
-                var nY = cosLatitude * sin(longitude);
-
-                var kX = radiiSquaredX * nX;
-                var kY = radiiSquaredY * nY;
-
-                var gamma = sqrt((kX * nX) + (kY * nY) + (kZ * nZ));
-                var oneOverGamma = 1.0 / gamma;
-
-                var rSurfaceX = kX * oneOverGamma;
-                var rSurfaceY = kY * oneOverGamma;
-                var rSurfaceZ = kZ * oneOverGamma;
-
-                vertices[vertexArrayIndex++] = rSurfaceX + nX * heightSample - relativeToCenter.x;
-                vertices[vertexArrayIndex++] = rSurfaceY + nY * heightSample - relativeToCenter.y;
-                vertices[vertexArrayIndex++] = rSurfaceZ + nZ * heightSample - relativeToCenter.z;
-
-                vertices[vertexArrayIndex++] = heightSample;
-
-                var u = (longitude - geographicWest) / (geographicEast - geographicWest);
-
-                vertices[vertexArrayIndex++] = u;
-                vertices[vertexArrayIndex++] = v;
-            }
-        }
-
-        return {
-            maximumHeight : maximumHeight,
-            minimumHeight : minimumHeight
-        };
-    };
-
-    return HeightmapTessellator;
-});
-
-/*global define*/
 define('Core/Cartesian2',[
         './defaultValue',
         './defined',
@@ -11008,7 +10682,7 @@ define('Core/Cartesian2',[
      * @see Cartesian4
      * @see Packable
      */
-    var Cartesian2 = function(x, y) {
+    function Cartesian2(x, y) {
         /**
          * The X component.
          * @type {Number}
@@ -11022,7 +10696,7 @@ define('Core/Cartesian2',[
          * @default 0.0
          */
         this.y = defaultValue(y, 0.0);
-    };
+    }
 
     /**
      * Creates a Cartesian2 instance from x and y coordinates.
@@ -11693,240 +11367,349 @@ define('Core/Cartesian2',[
 });
 
 /*global define*/
-define('Core/AxisAlignedBoundingBox',[
+define('Core/EllipsoidalOccluder',[
+        './BoundingSphere',
         './Cartesian3',
         './defaultValue',
         './defined',
-        './deprecationWarning',
+        './defineProperties',
         './DeveloperError',
-        './Intersect',
-        './Plane'
+        './Rectangle'
     ], function(
+        BoundingSphere,
         Cartesian3,
         defaultValue,
         defined,
-        deprecationWarning,
+        defineProperties,
         DeveloperError,
-        Intersect,
-        Plane) {
+        Rectangle) {
     "use strict";
 
     /**
-     * Creates an instance of an AxisAlignedBoundingBox from the minimum and maximum points along the x, y, and z axes.
-     * @alias AxisAlignedBoundingBox
+     * Determine whether or not other objects are visible or hidden behind the visible horizon defined by
+     * an {@link Ellipsoid} and a camera position.  The ellipsoid is assumed to be located at the
+     * origin of the coordinate system.  This class uses the algorithm described in the
+     * {@link http://cesiumjs.org/2013/04/25/Horizon-culling/|Horizon Culling} blog post.
+     *
+     * @alias EllipsoidalOccluder
+     *
+     * @param {Ellipsoid} ellipsoid The ellipsoid to use as an occluder.
+     * @param {Cartesian3} [cameraPosition] The coordinate of the viewer/camera.  If this parameter is not
+     *        specified, {@link EllipsoidalOccluder#cameraPosition} must be called before
+     *        testing visibility.
+     *
      * @constructor
      *
-     * @param {Cartesian3} [minimum=Cartesian3.ZERO] The minimum point along the x, y, and z axes.
-     * @param {Cartesian3} [maximum=Cartesian3.ZERO] The maximum point along the x, y, and z axes.
-     * @param {Cartesian3} [center] The center of the box; automatically computed if not supplied.
+     * @example
+     * // Construct an ellipsoidal occluder with radii 1.0, 1.1, and 0.9.
+     * var cameraPosition = new Cesium.Cartesian3(5.0, 6.0, 7.0);
+     * var occluderEllipsoid = new Cesium.Ellipsoid(1.0, 1.1, 0.9);
+     * var occluder = new Cesium.EllipsoidalOccluder(occluderEllipsoid, cameraPosition);
      *
-     * @see BoundingSphere
-     * @see BoundingRectangle
+     * @private
      */
-    var AxisAlignedBoundingBox = function(minimum, maximum, center) {
-        /**
-         * The minimum point defining the bounding box.
-         * @type {Cartesian3}
-         * @default {@link Cartesian3.ZERO}
-         */
-        this.minimum = Cartesian3.clone(defaultValue(minimum, Cartesian3.ZERO));
-
-        /**
-         * The maximum point defining the bounding box.
-         * @type {Cartesian3}
-         * @default {@link Cartesian3.ZERO}
-         */
-        this.maximum = Cartesian3.clone(defaultValue(maximum, Cartesian3.ZERO));
-
-        //If center was not defined, compute it.
-        if (!defined(center)) {
-            center = Cartesian3.add(this.minimum, this.maximum, new Cartesian3());
-            Cartesian3.multiplyByScalar(center, 0.5, center);
-        } else {
-            center = Cartesian3.clone(center);
+    function EllipsoidalOccluder(ellipsoid, cameraPosition) {
+                if (!defined(ellipsoid)) {
+            throw new DeveloperError('ellipsoid is required.');
         }
+        
+        this._ellipsoid = ellipsoid;
+        this._cameraPosition = new Cartesian3();
+        this._cameraPositionInScaledSpace = new Cartesian3();
+        this._distanceToLimbInScaledSpaceSquared = 0.0;
 
+        // cameraPosition fills in the above values
+        if (defined(cameraPosition)) {
+            this.cameraPosition = cameraPosition;
+        }
+    }
+
+    defineProperties(EllipsoidalOccluder.prototype, {
         /**
-         * The center point of the bounding box.
+         * Gets the occluding ellipsoid.
+         * @memberof EllipsoidalOccluder.prototype
+         * @type {Ellipsoid}
+         */
+        ellipsoid : {
+            get: function() {
+                return this._ellipsoid;
+            }
+        },
+        /**
+         * Gets or sets the position of the camera.
+         * @memberof EllipsoidalOccluder.prototype
          * @type {Cartesian3}
          */
-        this.center = center;
-    };
+        cameraPosition : {
+            get : function() {
+                return this._cameraPosition;
+            },
+            set : function(cameraPosition) {
+                // See http://cesiumjs.org/2013/04/25/Horizon-culling/
+                var ellipsoid = this._ellipsoid;
+                var cv = ellipsoid.transformPositionToScaledSpace(cameraPosition, this._cameraPositionInScaledSpace);
+                var vhMagnitudeSquared = Cartesian3.magnitudeSquared(cv) - 1.0;
+
+                Cartesian3.clone(cameraPosition, this._cameraPosition);
+                this._cameraPositionInScaledSpace = cv;
+                this._distanceToLimbInScaledSpaceSquared = vhMagnitudeSquared;
+            }
+        }
+    });
+
+    var scratchCartesian = new Cartesian3();
 
     /**
-     * Computes an instance of an AxisAlignedBoundingBox. The box is determined by
-     * finding the points spaced the farthest apart on the x, y, and z axes.
+     * Determines whether or not a point, the <code>occludee</code>, is hidden from view by the occluder.
      *
-     * @param {Cartesian3[]} positions List of points that the bounding box will enclose.  Each point must have a <code>x</code>, <code>y</code>, and <code>z</code> properties.
-     * @param {AxisAlignedBoundingBox} [result] The object onto which to store the result.
-     * @returns {AxisAlignedBoundingBox} The modified result parameter or a new AxisAlignedBoundingBox instance if one was not provided.
+     * @param {Cartesian3} occludee The point to test for visibility.
+     * @returns {Boolean} <code>true</code> if the occludee is visible; otherwise <code>false</code>.
      *
      * @example
-     * // Compute an axis aligned bounding box enclosing two points.
-     * var box = Cesium.AxisAlignedBoundingBox.fromPoints([new Cesium.Cartesian3(2, 0, 0), new Cesium.Cartesian3(-2, 0, 0)]);
+     * var cameraPosition = new Cesium.Cartesian3(0, 0, 2.5);
+     * var ellipsoid = new Cesium.Ellipsoid(1.0, 1.1, 0.9);
+     * var occluder = new Cesium.EllipsoidalOccluder(ellipsoid, cameraPosition);
+     * var point = new Cesium.Cartesian3(0, -3, -3);
+     * occluder.isPointVisible(point); //returns true
      */
-    AxisAlignedBoundingBox.fromPoints = function(positions, result) {
-        if (!defined(result)) {
-            result = new AxisAlignedBoundingBox();
-        }
-
-        if (!defined(positions) || positions.length === 0) {
-            result.minimum = Cartesian3.clone(Cartesian3.ZERO, result.minimum);
-            result.maximum = Cartesian3.clone(Cartesian3.ZERO, result.maximum);
-            result.center = Cartesian3.clone(Cartesian3.ZERO, result.center);
-            return result;
-        }
-
-        var minimumX = positions[0].x;
-        var minimumY = positions[0].y;
-        var minimumZ = positions[0].z;
-
-        var maximumX = positions[0].x;
-        var maximumY = positions[0].y;
-        var maximumZ = positions[0].z;
-
-        var length = positions.length;
-        for ( var i = 1; i < length; i++) {
-            var p = positions[i];
-            var x = p.x;
-            var y = p.y;
-            var z = p.z;
-
-            minimumX = Math.min(x, minimumX);
-            maximumX = Math.max(x, maximumX);
-            minimumY = Math.min(y, minimumY);
-            maximumY = Math.max(y, maximumY);
-            minimumZ = Math.min(z, minimumZ);
-            maximumZ = Math.max(z, maximumZ);
-        }
-
-        var minimum = result.minimum;
-        minimum.x = minimumX;
-        minimum.y = minimumY;
-        minimum.z = minimumZ;
-
-        var maximum = result.maximum;
-        maximum.x = maximumX;
-        maximum.y = maximumY;
-        maximum.z = maximumZ;
-
-        var center = Cartesian3.add(minimum, maximum, result.center);
-        Cartesian3.multiplyByScalar(center, 0.5, center);
-
-        return result;
+    EllipsoidalOccluder.prototype.isPointVisible = function(occludee) {
+        var ellipsoid = this._ellipsoid;
+        var occludeeScaledSpacePosition = ellipsoid.transformPositionToScaledSpace(occludee, scratchCartesian);
+        return this.isScaledSpacePointVisible(occludeeScaledSpacePosition);
     };
 
     /**
-     * Duplicates a AxisAlignedBoundingBox instance.
+     * Determines whether or not a point expressed in the ellipsoid scaled space, is hidden from view by the
+     * occluder.  To transform a Cartesian X, Y, Z position in the coordinate system aligned with the ellipsoid
+     * into the scaled space, call {@link Ellipsoid#transformPositionToScaledSpace}.
      *
-     * @param {AxisAlignedBoundingBox} box The bounding box to duplicate.
-     * @param {AxisAlignedBoundingBox} [result] The object onto which to store the result.
-     * @returns {AxisAlignedBoundingBox} The modified result parameter or a new AxisAlignedBoundingBox instance if none was provided. (Returns undefined if box is undefined)
+     * @param {Cartesian3} occludeeScaledSpacePosition The point to test for visibility, represented in the scaled space.
+     * @returns {Boolean} <code>true</code> if the occludee is visible; otherwise <code>false</code>.
+     *
+     * @example
+     * var cameraPosition = new Cesium.Cartesian3(0, 0, 2.5);
+     * var ellipsoid = new Cesium.Ellipsoid(1.0, 1.1, 0.9);
+     * var occluder = new Cesium.EllipsoidalOccluder(ellipsoid, cameraPosition);
+     * var point = new Cesium.Cartesian3(0, -3, -3);
+     * var scaledSpacePoint = ellipsoid.transformPositionToScaledSpace(point);
+     * occluder.isScaledSpacePointVisible(scaledSpacePoint); //returns true
      */
-    AxisAlignedBoundingBox.clone = function(box, result) {
-        if (!defined(box)) {
+    EllipsoidalOccluder.prototype.isScaledSpacePointVisible = function(occludeeScaledSpacePosition) {
+        // See http://cesiumjs.org/2013/04/25/Horizon-culling/
+        var cv = this._cameraPositionInScaledSpace;
+        var vhMagnitudeSquared = this._distanceToLimbInScaledSpaceSquared;
+        var vt = Cartesian3.subtract(occludeeScaledSpacePosition, cv, scratchCartesian);
+        var vtDotVc = -Cartesian3.dot(vt, cv);
+        // If vhMagnitudeSquared < 0 then we are below the surface of the ellipsoid and
+        // in this case, set the culling plane to be on V.
+        var isOccluded = vhMagnitudeSquared < 0 ? vtDotVc > 0 : (vtDotVc > vhMagnitudeSquared &&
+                         vtDotVc * vtDotVc / Cartesian3.magnitudeSquared(vt) > vhMagnitudeSquared);
+        return !isOccluded;
+    };
+
+    /**
+     * Computes a point that can be used for horizon culling from a list of positions.  If the point is below
+     * the horizon, all of the positions are guaranteed to be below the horizon as well.  The returned point
+     * is expressed in the ellipsoid-scaled space and is suitable for use with
+     * {@link EllipsoidalOccluder#isScaledSpacePointVisible}.
+     *
+     * @param {Cartesian3} directionToPoint The direction that the computed point will lie along.
+     *                     A reasonable direction to use is the direction from the center of the ellipsoid to
+     *                     the center of the bounding sphere computed from the positions.  The direction need not
+     *                     be normalized.
+     * @param {Cartesian3[]} positions The positions from which to compute the horizon culling point.  The positions
+     *                       must be expressed in a reference frame centered at the ellipsoid and aligned with the
+     *                       ellipsoid's axes.
+     * @param {Cartesian3} [result] The instance on which to store the result instead of allocating a new instance.
+     * @returns {Cartesian3} The computed horizon culling point, expressed in the ellipsoid-scaled space.
+     */
+    EllipsoidalOccluder.prototype.computeHorizonCullingPoint = function(directionToPoint, positions, result) {
+                if (!defined(directionToPoint)) {
+            throw new DeveloperError('directionToPoint is required');
+        }
+        if (!defined(positions)) {
+            throw new DeveloperError('positions is required');
+        }
+        
+        if (!defined(result)) {
+            result = new Cartesian3();
+        }
+
+        var ellipsoid = this._ellipsoid;
+        var scaledSpaceDirectionToPoint = computeScaledSpaceDirectionToPoint(ellipsoid, directionToPoint);
+        var resultMagnitude = 0.0;
+
+        for (var i = 0, len = positions.length; i < len; ++i) {
+            var position = positions[i];
+            var candidateMagnitude = computeMagnitude(ellipsoid, position, scaledSpaceDirectionToPoint);
+            resultMagnitude = Math.max(resultMagnitude, candidateMagnitude);
+        }
+
+        return magnitudeToPoint(scaledSpaceDirectionToPoint, resultMagnitude, result);
+    };
+
+    var positionScratch = new Cartesian3();
+
+    /**
+     * Computes a point that can be used for horizon culling from a list of positions.  If the point is below
+     * the horizon, all of the positions are guaranteed to be below the horizon as well.  The returned point
+     * is expressed in the ellipsoid-scaled space and is suitable for use with
+     * {@link EllipsoidalOccluder#isScaledSpacePointVisible}.
+     *
+     * @param {Cartesian3} directionToPoint The direction that the computed point will lie along.
+     *                     A reasonable direction to use is the direction from the center of the ellipsoid to
+     *                     the center of the bounding sphere computed from the positions.  The direction need not
+     *                     be normalized.
+     * @param {Number[]} vertices  The vertices from which to compute the horizon culling point.  The positions
+     *                   must be expressed in a reference frame centered at the ellipsoid and aligned with the
+     *                   ellipsoid's axes.
+     * @param {Number} [stride=3]
+     * @param {Cartesian3} [center=Cartesian3.ZERO]
+     * @param {Cartesian3} [result] The instance on which to store the result instead of allocating a new instance.
+     * @returns {Cartesian3} The computed horizon culling point, expressed in the ellipsoid-scaled space.
+     */
+    EllipsoidalOccluder.prototype.computeHorizonCullingPointFromVertices = function(directionToPoint, vertices, stride, center, result) {
+                if (!defined(directionToPoint)) {
+            throw new DeveloperError('directionToPoint is required');
+        }
+        if (!defined(vertices)) {
+            throw new DeveloperError('vertices is required');
+        }
+        if (!defined(stride)) {
+            throw new DeveloperError('stride is required');
+        }
+        
+        if (!defined(result)) {
+            result = new Cartesian3();
+        }
+
+        center = defaultValue(center, Cartesian3.ZERO);
+        var ellipsoid = this._ellipsoid;
+        var scaledSpaceDirectionToPoint = computeScaledSpaceDirectionToPoint(ellipsoid, directionToPoint);
+        var resultMagnitude = 0.0;
+
+        for (var i = 0, len = vertices.length; i < len; i += stride) {
+            positionScratch.x = vertices[i] + center.x;
+            positionScratch.y = vertices[i + 1] + center.y;
+            positionScratch.z = vertices[i + 2] + center.z;
+
+            var candidateMagnitude = computeMagnitude(ellipsoid, positionScratch, scaledSpaceDirectionToPoint);
+            resultMagnitude = Math.max(resultMagnitude, candidateMagnitude);
+        }
+
+        return magnitudeToPoint(scaledSpaceDirectionToPoint, resultMagnitude, result);
+    };
+
+    /**
+     * Computes a point that can be used for horizon culling from a list of positions.  If the point is below
+     * the horizon, all of the positions are guaranteed to be below the horizon as well.  The returned point
+     * is expressed in the ellipsoid-scaled space and is suitable for use with
+     * {@link EllipsoidalOccluder#isScaledSpacePointVisible}.
+     *
+     * @param {Cartesian3} directionToPoint The direction that the computed point will lie along.
+     *                     A reasonable direction to use is the direction from the center of the ellipsoid to
+     *                     the center of the bounding sphere computed from the positions.  The direction need not
+     *                     be normalized.
+     * @param {Cartesian3[]} points  The vertices from which to compute the horizon culling point.  The positions
+     *                   must be expressed in a reference frame centered at the ellipsoid and aligned with the
+     *                   ellipsoid's axes.
+     * @param {Cartesian3} [result] The instance on which to store the result instead of allocating a new instance.
+     * @returns {Cartesian3} The computed horizon culling point, expressed in the ellipsoid-scaled space.
+     */
+    EllipsoidalOccluder.prototype.computeHorizonCullingPointFromPoints = function(directionToPoint, points, result) {
+                if (!defined(directionToPoint)) {
+            throw new DeveloperError('directionToPoint is required');
+        }
+        if (!defined(points)) {
+            throw new DeveloperError('points is required');
+        }
+        
+        if (!defined(result)) {
+            result = new Cartesian3();
+        }
+
+        var ellipsoid = this._ellipsoid;
+        var scaledSpaceDirectionToPoint = computeScaledSpaceDirectionToPoint(ellipsoid, directionToPoint);
+        var resultMagnitude = 0.0;
+
+        for (var i = 0, len = points.length; i < len; ++i) {
+            var candidateMagnitude = computeMagnitude(ellipsoid, points[i], scaledSpaceDirectionToPoint);
+            resultMagnitude = Math.max(resultMagnitude, candidateMagnitude);
+        }
+
+        return magnitudeToPoint(scaledSpaceDirectionToPoint, resultMagnitude, result);
+    };
+
+    var subsampleScratch = [];
+
+    /**
+     * Computes a point that can be used for horizon culling of an rectangle.  If the point is below
+     * the horizon, the ellipsoid-conforming rectangle is guaranteed to be below the horizon as well.
+     * The returned point is expressed in the ellipsoid-scaled space and is suitable for use with
+     * {@link EllipsoidalOccluder#isScaledSpacePointVisible}.
+     *
+     * @param {Rectangle} rectangle The rectangle for which to compute the horizon culling point.
+     * @param {Ellipsoid} ellipsoid The ellipsoid on which the rectangle is defined.  This may be different from
+     *                    the ellipsoid used by this instance for occlusion testing.
+     * @param {Cartesian3} [result] The instance on which to store the result instead of allocating a new instance.
+     * @returns {Cartesian3} The computed horizon culling point, expressed in the ellipsoid-scaled space.
+     */
+    EllipsoidalOccluder.prototype.computeHorizonCullingPointFromRectangle = function(rectangle, ellipsoid, result) {
+                if (!defined(rectangle)) {
+            throw new DeveloperError('rectangle is required.');
+        }
+        
+        var positions = Rectangle.subsample(rectangle, ellipsoid, 0.0, subsampleScratch);
+        var bs = BoundingSphere.fromPoints(positions);
+
+        // If the bounding sphere center is too close to the center of the occluder, it doesn't make
+        // sense to try to horizon cull it.
+        if (Cartesian3.magnitude(bs.center) < 0.1 * ellipsoid.minimumRadius) {
             return undefined;
         }
 
-        if (!defined(result)) {
-            return new AxisAlignedBoundingBox(box.minimum, box.maximum);
+        return this.computeHorizonCullingPoint(bs.center, positions, result);
+    };
+
+    var scaledSpaceScratch = new Cartesian3();
+    var directionScratch = new Cartesian3();
+
+    function computeMagnitude(ellipsoid, position, scaledSpaceDirectionToPoint) {
+        var scaledSpacePosition = ellipsoid.transformPositionToScaledSpace(position, scaledSpaceScratch);
+        var magnitudeSquared = Cartesian3.magnitudeSquared(scaledSpacePosition);
+        var magnitude = Math.sqrt(magnitudeSquared);
+        var direction = Cartesian3.divideByScalar(scaledSpacePosition, magnitude, directionScratch);
+
+        // For the purpose of this computation, points below the ellipsoid are consider to be on it instead.
+        magnitudeSquared = Math.max(1.0, magnitudeSquared);
+        magnitude = Math.max(1.0, magnitude);
+
+        var cosAlpha = Cartesian3.dot(direction, scaledSpaceDirectionToPoint);
+        var sinAlpha = Cartesian3.magnitude(Cartesian3.cross(direction, scaledSpaceDirectionToPoint, direction));
+        var cosBeta = 1.0 / magnitude;
+        var sinBeta = Math.sqrt(magnitudeSquared - 1.0) * cosBeta;
+
+        return 1.0 / (cosAlpha * cosBeta - sinAlpha * sinBeta);
+    }
+
+    function magnitudeToPoint(scaledSpaceDirectionToPoint, resultMagnitude, result) {
+        // The horizon culling point is undefined if there were no positions from which to compute it,
+        // the directionToPoint is pointing opposite all of the positions,  or if we computed NaN or infinity.
+        if (resultMagnitude <= 0.0 || resultMagnitude === 1.0 / 0.0 || resultMagnitude !== resultMagnitude) {
+            return undefined;
         }
 
-        result.minimum = Cartesian3.clone(box.minimum, result.minimum);
-        result.maximum = Cartesian3.clone(box.maximum, result.maximum);
-        result.center = Cartesian3.clone(box.center, result.center);
-        return result;
-    };
+        return Cartesian3.multiplyByScalar(scaledSpaceDirectionToPoint, resultMagnitude, result);
+    }
 
-    /**
-     * Compares the provided AxisAlignedBoundingBox componentwise and returns
-     * <code>true</code> if they are equal, <code>false</code> otherwise.
-     *
-     * @param {AxisAlignedBoundingBox} [left] The first AxisAlignedBoundingBox.
-     * @param {AxisAlignedBoundingBox} [right] The second AxisAlignedBoundingBox.
-     * @returns {Boolean} <code>true</code> if left and right are equal, <code>false</code> otherwise.
-     */
-    AxisAlignedBoundingBox.equals = function(left, right) {
-        return (left === right) ||
-               ((defined(left)) &&
-                (defined(right)) &&
-                Cartesian3.equals(left.center, right.center) &&
-                Cartesian3.equals(left.minimum, right.minimum) &&
-                Cartesian3.equals(left.maximum, right.maximum));
-    };
+    var directionToPointScratch = new Cartesian3();
 
-    var intersectScratch = new Cartesian3();
-    /**
-     * Determines which side of a plane a box is located.
-     *
-     * @param {AxisAlignedBoundingBox} box The bounding box to test.
-     * @param {Plane} plane The plane to test against.
-     * @returns {Intersect} {@link Intersect.INSIDE} if the entire box is on the side of the plane
-     *                      the normal is pointing, {@link Intersect.OUTSIDE} if the entire box is
-     *                      on the opposite side, and {@link Intersect.INTERSECTING} if the box
-     *                      intersects the plane.
-     */
-    AxisAlignedBoundingBox.intersectPlane = function(box, plane) {
-                if (!defined(box)) {
-            throw new DeveloperError('box is required.');
-        }
-        if (!defined(plane)) {
-            throw new DeveloperError('plane is required.');
-        }
-        
-        intersectScratch = Cartesian3.subtract(box.maximum, box.minimum, intersectScratch);
-        var h = Cartesian3.multiplyByScalar(intersectScratch, 0.5, intersectScratch); //The positive half diagonal
-        var normal = plane.normal;
-        var e = h.x * Math.abs(normal.x) + h.y * Math.abs(normal.y) + h.z * Math.abs(normal.z);
-        var s = Cartesian3.dot(box.center, normal) + plane.distance; //signed distance from center
+    function computeScaledSpaceDirectionToPoint(ellipsoid, directionToPoint) {
+        ellipsoid.transformPositionToScaledSpace(directionToPoint, directionToPointScratch);
+        return Cartesian3.normalize(directionToPointScratch, directionToPointScratch);
+    }
 
-        if (s - e > 0) {
-            return Intersect.INSIDE;
-        }
-
-        if (s + e < 0) {
-            //Not in front because normals point inward
-            return Intersect.OUTSIDE;
-        }
-
-        return Intersect.INTERSECTING;
-    };
-
-    /**
-     * Duplicates this AxisAlignedBoundingBox instance.
-     *
-     * @param {AxisAlignedBoundingBox} [result] The object onto which to store the result.
-     * @returns {AxisAlignedBoundingBox} The modified result parameter or a new AxisAlignedBoundingBox instance if one was not provided.
-     */
-    AxisAlignedBoundingBox.prototype.clone = function(result) {
-        return AxisAlignedBoundingBox.clone(this, result);
-    };
-
-    /**
-     * Determines which side of a plane this box is located.
-     *
-     * @param {Plane} plane The plane to test against.
-     * @returns {Intersect} {@link Intersect.INSIDE} if the entire box is on the side of the plane
-     *                      the normal is pointing, {@link Intersect.OUTSIDE} if the entire box is
-     *                      on the opposite side, and {@link Intersect.INTERSECTING} if the box
-     *                      intersects the plane.
-     */
-    AxisAlignedBoundingBox.prototype.intersectPlane = function(plane) {
-        return AxisAlignedBoundingBox.intersectPlane(this, plane);
-    };
-
-    /**
-     * Compares this AxisAlignedBoundingBox against the provided AxisAlignedBoundingBox componentwise and returns
-     * <code>true</code> if they are equal, <code>false</code> otherwise.
-     *
-     * @param {AxisAlignedBoundingBox} [right] The right hand side AxisAlignedBoundingBox.
-     * @returns {Boolean} <code>true</code> if they are equal, <code>false</code> otherwise.
-     */
-    AxisAlignedBoundingBox.prototype.equals = function(right) {
-        return AxisAlignedBoundingBox.equals(this, right);
-    };
-
-    return AxisAlignedBoundingBox;
+    return EllipsoidalOccluder;
 });
 
 /*global define*/
@@ -11941,8 +11724,7 @@ define('Core/QuadraticRealPolynomial',[
     /**
      * Defines functions for 2nd order polynomial functions of one variable with only real coefficients.
      *
-     * @namespace
-     * @alias QuadraticRealPolynomial
+     * @exports QuadraticRealPolynomial
      */
     var QuadraticRealPolynomial = {};
 
@@ -12077,8 +11859,7 @@ define('Core/CubicRealPolynomial',[
     /**
      * Defines functions for 3rd order polynomial functions of one variable with only real coefficients.
      *
-     * @namespace
-     * @alias CubicRealPolynomial
+     * @exports CubicRealPolynomial
      */
     var CubicRealPolynomial = {};
 
@@ -12318,8 +12099,7 @@ define('Core/QuarticRealPolynomial',[
     /**
      * Defines functions for 4th order polynomial functions of one variable with only real coefficients.
      *
-     * @namespace
-     * @alias QuarticRealPolynomial
+     * @exports QuarticRealPolynomial
      */
     var QuarticRealPolynomial = {};
 
@@ -12648,7 +12428,7 @@ define('Core/Ray',[
      * @param {Cartesian3} [origin=Cartesian3.ZERO] The origin of the ray.
      * @param {Cartesian3} [direction=Cartesian3.ZERO] The direction of the ray.
      */
-    var Ray = function(origin, direction) {
+    function Ray(origin, direction) {
         direction = Cartesian3.clone(defaultValue(direction, Cartesian3.ZERO));
         if (!Cartesian3.equals(direction, Cartesian3.ZERO)) {
             Cartesian3.normalize(direction, direction);
@@ -12666,7 +12446,7 @@ define('Core/Ray',[
          * @type {Cartesian3}
          */
         this.direction = direction;
-    };
+    }
 
     /**
      * Computes the point along the ray given by r(t) = o + t*d,
@@ -12729,8 +12509,7 @@ define('Core/IntersectionTests',[
     /**
      * Functions for computing the intersection between geometries such as rays, planes, triangles, and ellipsoids.
      *
-     * @namespace
-     * @alias IntersectionTests
+     * @exports IntersectionTests
      */
     var IntersectionTests = {};
 
@@ -13037,7 +12816,6 @@ define('Core/IntersectionTests',[
         }
         
         var ray = scratchLineSegmentRay;
-        var origin = Cartesian3.clone(p0, ray.origin);
         var direction = Cartesian3.subtract(p1, p0, ray.direction);
 
         var maxT = Cartesian3.magnitude(direction);
@@ -14347,13 +14125,13 @@ define('Core/binarySearch',[
      *
      * @example
      * // Create a comparator function to search through an array of numbers.
-     * var comparator = function(a, b) {
+     * function comparator(a, b) {
      *     return a - b;
      * };
      * var numbers = [0, 2, 4, 6, 8];
      * var index = Cesium.binarySearch(numbers, 6, comparator); // 3
      */
-    var binarySearch = function(array, itemToFind, comparator) {
+    function binarySearch(array, itemToFind, comparator) {
                 if (!defined(array)) {
             throw new DeveloperError('array is required.');
         }
@@ -14383,7 +14161,7 @@ define('Core/binarySearch',[
             return i;
         }
         return ~(high + 1);
-    };
+    }
 
     /**
      * A function used to compare two items while performing a binary search.
@@ -14403,6 +14181,7 @@ define('Core/binarySearch',[
 
     return binarySearch;
 });
+
 /*global define*/
 define('Core/EarthOrientationParametersSample',[],function() {
     "use strict";
@@ -14421,7 +14200,7 @@ define('Core/EarthOrientationParametersSample',[],function() {
      *
      * @private
      */
-    var EarthOrientationParametersSample = function EarthOrientationParametersSample(xPoleWander, yPoleWander, xPoleOffset, yPoleOffset, ut1MinusUtc) {
+    function EarthOrientationParametersSample(xPoleWander, yPoleWander, xPoleOffset, yPoleOffset, ut1MinusUtc) {
         /**
          * The pole wander about the X axis, in radians.
          * @type {Number}
@@ -14451,10 +14230,11 @@ define('Core/EarthOrientationParametersSample',[],function() {
          * @type {Number}
          */
         this.ut1MinusUtc = ut1MinusUtc;
-    };
+    }
 
     return EarthOrientationParametersSample;
 });
+
 /**
 @license
 sprintf.js from the php.js project - https://github.com/kvz/phpjs
@@ -14615,6 +14395,7 @@ function sprintf () {
     if (!chr) {
       chr = ' ';
     }
+
     var padding = (str.length >= len) ? '' : Array(1 + len - str.length >>> 0).join(chr);
     return leftJustify ? str + padding : padding + str;
   };
@@ -14774,6 +14555,7 @@ function sprintf () {
 
 return sprintf;
 });
+
 /*global define*/
 define('Core/GregorianDate',[],function() {
     "use strict";
@@ -14786,7 +14568,7 @@ define('Core/GregorianDate',[],function() {
      *
      * @see JulianDate#toGregorianDate
      */
-    var GregorianDate = function(year, month, day, hour, minute, second, millisecond, isLeapSecond) {
+    function GregorianDate(year, month, day, hour, minute, second, millisecond, isLeapSecond) {
         /**
          * Gets or sets the year as a whole number.
          * @type {Number}
@@ -14827,10 +14609,11 @@ define('Core/GregorianDate',[],function() {
          * @type {Boolean}
          */
         this.isLeapSecond = isLeapSecond;
-    };
+    }
 
     return GregorianDate;
 });
+
 /*global define*/
 define('Core/isLeapYear',[
         './DeveloperError'
@@ -14873,7 +14656,7 @@ define('Core/LeapSecond',[],function() {
      * @param {JulianDate} [date] A Julian date representing the time of the leap second.
      * @param {Number} [offset] The cumulative number of seconds that TAI is ahead of UTC at the provided date.
      */
-    var LeapSecond = function(date, offset) {
+    function LeapSecond(date, offset) {
         /**
          * Gets or sets the date at which this leap second occurs.
          * @type {JulianDate}
@@ -14886,10 +14669,11 @@ define('Core/LeapSecond',[],function() {
          * @type {Number}
          */
         this.offset = offset;
-    };
+    }
 
     return LeapSecond;
 });
+
 /*global define*/
 define('Core/TimeConstants',[
         './freezeObject'
@@ -14900,8 +14684,7 @@ define('Core/TimeConstants',[
     /**
      * Constants for time conversions like those done by {@link JulianDate}.
      *
-     * @namespace
-     * @alias TimeConstants
+     * @exports TimeConstants
      *
      * @see JulianDate
      *
@@ -14994,8 +14777,7 @@ define('Core/TimeStandard',[
     /**
      * Provides the type of time standards which JulianDate can take as input.
      *
-     * @namespace
-     * @alias TimeStandard
+     * @exports TimeStandard
      *
      * @see JulianDate
      */
@@ -15195,7 +14977,7 @@ define('Core/JulianDate',[
      * @param {Number} secondsOfDay The number of seconds into the current Julian Day Number.  Fractional seconds, negative seconds and seconds greater than a day will be handled correctly.
      * @param {TimeStandard} [timeStandard=TimeStandard.UTC] The time standard in which the first two parameters are defined.
      */
-    var JulianDate = function(julianDayNumber, secondsOfDay, timeStandard) {
+    function JulianDate(julianDayNumber, secondsOfDay, timeStandard) {
         /**
          * Gets or sets the number of whole days.
          * @type {Number}
@@ -15221,7 +15003,7 @@ define('Core/JulianDate',[
         if (timeStandard === TimeStandard.UTC) {
             convertUtcToTai(this);
         }
-    };
+    }
 
     /**
      * Creates a new instance from a JavaScript Date.
@@ -15377,7 +15159,7 @@ define('Core/JulianDate',[
                 tokens = time.match(matchHoursMinutes);
                 if (tokens !== null) {
                     dashCount = time.split(':').length - 1;
-                    if (dashCount > 0 && dashCount !== 1) {
+                    if (dashCount > 2) {
                         throw new DeveloperError(iso8601ErrorMessage);
                     }
 
@@ -16026,7 +15808,7 @@ define('Core/clone',[
      * @param {Boolean} [deep=false] If true, all properties will be deep cloned recursively.
      * @returns {Object} The cloned object.
      */
-    var clone = function(object, deep) {
+    function clone(object, deep) {
         if (object === null || typeof object !== 'object') {
             return object;
         }
@@ -16045,7 +15827,7 @@ define('Core/clone',[
         }
 
         return result;
-    };
+    }
 
     return clone;
 });
@@ -16067,7 +15849,7 @@ define('Core/parseResponseHeaders',[], function() {
      * 
      * @private
      */
-    var parseResponseHeaders = function(headerString) {
+    function parseResponseHeaders(headerString) {
         var headers = {};
 
         if (!headerString) {
@@ -16089,7 +15871,7 @@ define('Core/parseResponseHeaders',[], function() {
         }
 
         return headers;
-    };
+    }
 
     return parseResponseHeaders;
 });
@@ -16114,7 +15896,7 @@ define('Core/RequestErrorEvent',[
      * @param {String|Object} [responseHeaders] The response headers, represented either as an object literal or as a
      *                        string in the format returned by XMLHttpRequest's getAllResponseHeaders() function.
      */
-    var RequestErrorEvent = function RequestErrorEvent(statusCode, response, responseHeaders) {
+    function RequestErrorEvent(statusCode, response, responseHeaders) {
         /**
          * The HTTP error status code, such as 404.  If the error does not have a particular
          * HTTP code, this property will be undefined.
@@ -16142,7 +15924,7 @@ define('Core/RequestErrorEvent',[
         if (typeof this.responseHeaders === 'string') {
             this.responseHeaders = parseResponseHeaders(this.responseHeaders);
         }
-    };
+    }
 
     /**
      * Creates a string representing this RequestErrorEvent.
@@ -16160,6 +15942,7 @@ define('Core/RequestErrorEvent',[
 
     return RequestErrorEvent;
 });
+
 /*global define*/
 define('Core/loadWithXhr',[
         '../ThirdParty/when',
@@ -16194,12 +15977,6 @@ define('Core/loadWithXhr',[
      * @param {String} [options.overrideMimeType] Overrides the MIME type returned by the server.
      * @returns {Promise.<Object>} a promise that will resolve to the requested data when loaded.
      *
-     * @see loadArrayBuffer
-     * @see loadBlob
-     * @see loadJson
-     * @see loadText
-     * @see {@link http://www.w3.org/TR/cors/|Cross-Origin Resource Sharing}
-     * @see {@link http://wiki.commonjs.org/wiki/Promises/A|CommonJS Promises/A}
      *
      * @example
      * // Load a single URL asynchronously. In real code, you should use loadBlob instead.
@@ -16211,8 +15988,15 @@ define('Core/loadWithXhr',[
      * }).otherwise(function(error) {
      *     // an error occurred
      * });
+     * 
+     * @see loadArrayBuffer
+     * @see loadBlob
+     * @see loadJson
+     * @see loadText
+     * @see {@link http://www.w3.org/TR/cors/|Cross-Origin Resource Sharing}
+     * @see {@link http://wiki.commonjs.org/wiki/Promises/A|CommonJS Promises/A}
      */
-    var loadWithXhr = function(options) {
+    function loadWithXhr(options) {
         options = defaultValue(options, defaultValue.EMPTY_OBJECT);
 
                 if (!defined(options.url)) {
@@ -16232,7 +16016,7 @@ define('Core/loadWithXhr',[
 
             return deferred.promise;
         });
-    };
+    }
 
     var dataUriRegex = /^data:(.*?)(;base64)?,(.*)$/;
 
@@ -16310,7 +16094,7 @@ define('Core/loadWithXhr',[
         }
 
         xhr.onload = function() {
-            if (xhr.status === 200) {
+            if (xhr.status >= 200 && xhr.status < 300) {
                 if (defined(xhr.response)) {
                     deferred.resolve(xhr.response);
                 } else {
@@ -16359,9 +16143,6 @@ define('Core/loadText',[
      * @param {Object} [headers] HTTP headers to send with the request.
      * @returns {Promise.<String>} a promise that will resolve to the requested data when loaded.
      *
-     * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest|XMLHttpRequest}
-     * @see {@link http://www.w3.org/TR/cors/|Cross-Origin Resource Sharing}
-     * @see {@link http://wiki.commonjs.org/wiki/Promises/A|CommonJS Promises/A}
      *
      * @example
      * // load text from a URL, setting a custom header
@@ -16372,13 +16153,17 @@ define('Core/loadText',[
      * }).otherwise(function(error) {
      *     // an error occurred
      * });
+     * 
+     * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest|XMLHttpRequest}
+     * @see {@link http://www.w3.org/TR/cors/|Cross-Origin Resource Sharing}
+     * @see {@link http://wiki.commonjs.org/wiki/Promises/A|CommonJS Promises/A}
      */
-    var loadText = function(url, headers) {
+    function loadText(url, headers) {
         return loadWithXhr({
             url : url,
             headers : headers
         });
-    };
+    }
 
     return loadText;
 });
@@ -16417,9 +16202,6 @@ define('Core/loadJson',[
      * if not specified.
      * @returns {Promise.<Object>} a promise that will resolve to the requested data when loaded.
      *
-     * @see loadText
-     * @see {@link http://www.w3.org/TR/cors/|Cross-Origin Resource Sharing}
-     * @see {@link http://wiki.commonjs.org/wiki/Promises/A|CommonJS Promises/A}
      *
      * @example
      * Cesium.loadJson('http://someUrl.com/someJson.txt').then(function(jsonData) {
@@ -16427,8 +16209,12 @@ define('Core/loadJson',[
      * }).otherwise(function(error) {
      *     // an error occurred
      * });
+     * 
+     * @see loadText
+     * @see {@link http://www.w3.org/TR/cors/|Cross-Origin Resource Sharing}
+     * @see {@link http://wiki.commonjs.org/wiki/Promises/A|CommonJS Promises/A}
      */
-    var loadJson = function loadJson(url, headers) {
+    function loadJson(url, headers) {
                 if (!defined(url)) {
             throw new DeveloperError('url is required.');
         }
@@ -16444,7 +16230,7 @@ define('Core/loadJson',[
         return loadText(url, headers).then(function(value) {
             return JSON.parse(value);
         });
-    };
+    }
 
     return loadJson;
 });
@@ -16519,7 +16305,7 @@ define('Core/EarthOrientationParameters',[
      *
      * @private
      */
-    var EarthOrientationParameters = function EarthOrientationParameters(options) {
+    function EarthOrientationParameters(options) {
         options = defaultValue(options, defaultValue.EMPTY_OBJECT);
 
         this._dates = undefined;
@@ -16559,7 +16345,7 @@ define('Core/EarthOrientationParameters',[
                 'samples' : []
             });
         }
-    };
+    }
 
     /**
      * A default {@link EarthOrientationParameters} instance that returns zero for all EOP values.
@@ -16881,8 +16667,7 @@ define('ThirdParty/Uri',[],function() {
 			this.query = c[4];
 			this.fragment = c[5];
 		}
-	};
-
+	}
 	// Initial values on the prototype
 	URI.prototype.scheme    = null;
 	URI.prototype.authority = null;
@@ -17179,7 +16964,7 @@ define('Core/buildModuleUrl',[
      *
      * @private
      */
-    var buildModuleUrl = function(moduleID) {
+    function buildModuleUrl(moduleID) {
         if (!defined(implementation)) {
             //select implementation
             if (defined(require.toUrl)) {
@@ -17199,7 +16984,7 @@ define('Core/buildModuleUrl',[
         a.href = a.href; // IE only absolutizes href on get, not set
 
         return a.href;
-    };
+    }
 
     // exposed for testing
     buildModuleUrl._cesiumScriptRegex = cesiumScriptRegex;
@@ -17214,6 +16999,7 @@ define('Core/buildModuleUrl',[
 
     return buildModuleUrl;
 });
+
 /*global define*/
 define('Core/Iau2006XysSample',[],function() {
     "use strict";
@@ -17230,7 +17016,7 @@ define('Core/Iau2006XysSample',[],function() {
      *
      * @private
      */
-    var Iau2006XysSample = function Iau2006XysSample(x, y, s) {
+    function Iau2006XysSample(x, y, s) {
         /**
          * The X value.
          * @type {Number}
@@ -17248,10 +17034,11 @@ define('Core/Iau2006XysSample',[],function() {
          * @type {Number}
          */
         this.s = s;
-    };
+    }
 
     return Iau2006XysSample;
 });
+
 /*global define*/
 define('Core/Iau2006XysData',[
         '../ThirdParty/when',
@@ -17292,7 +17079,7 @@ define('Core/Iau2006XysData',[
      *
      * @private
      */
-    var Iau2006XysData = function Iau2006XysData(options) {
+    function Iau2006XysData(options) {
         options = defaultValue(options, defaultValue.EMPTY_OBJECT);
 
         this._xysFileUrlTemplate = options.xysFileUrlTemplate;
@@ -17329,7 +17116,7 @@ define('Core/Iau2006XysData',[
         // Allocate scratch arrays for interpolation.
         this._work = new Array(order + 1);
         this._coef = new Array(order + 1);
-    };
+    }
 
     var julianDateScratch = new JulianDate(0, 0.0, TimeStandard.TAI);
 
@@ -17540,8 +17327,7 @@ define('Core/Fullscreen',[
     /**
      * Browser-independent functions for working with the standard fullscreen API.
      *
-     * @namespace
-     * @alias Fullscreen
+     * @exports Fullscreen
      *
      * @see {@link http://dvcs.w3.org/hg/fullscreen/raw-file/tip/Overview.html|W3C Fullscreen Living Specification}
      */
@@ -17784,6 +17570,13 @@ define('Core/FeatureDetection',[
         Fullscreen) {
     "use strict";
 
+    var theNavigator;
+    if (typeof navigator !== 'undefined') {
+        theNavigator = navigator;
+    } else {
+        theNavigator = {};
+    }
+
     function extractVersion(versionString) {
         var parts = versionString.split('.');
         for (var i = 0, len = parts.length; i < len; ++i) {
@@ -17798,7 +17591,7 @@ define('Core/FeatureDetection',[
         if (!defined(isChromeResult)) {
             isChromeResult = false;
 
-            var fields = (/ Chrome\/([\.0-9]+)/).exec(navigator.userAgent);
+            var fields = (/ Chrome\/([\.0-9]+)/).exec(theNavigator.userAgent);
             if (fields !== null) {
                 isChromeResult = true;
                 chromeVersionResult = extractVersion(fields[1]);
@@ -17819,8 +17612,8 @@ define('Core/FeatureDetection',[
             isSafariResult = false;
 
             // Chrome contains Safari in the user agent too
-            if (!isChrome() && (/ Safari\/[\.0-9]+/).test(navigator.userAgent)) {
-                var fields = (/ Version\/([\.0-9]+)/).exec(navigator.userAgent);
+            if (!isChrome() && (/ Safari\/[\.0-9]+/).test(theNavigator.userAgent)) {
+                var fields = (/ Version\/([\.0-9]+)/).exec(theNavigator.userAgent);
                 if (fields !== null) {
                     isSafariResult = true;
                     safariVersionResult = extractVersion(fields[1]);
@@ -17841,7 +17634,7 @@ define('Core/FeatureDetection',[
         if (!defined(isWebkitResult)) {
             isWebkitResult = false;
 
-            var fields = (/ AppleWebKit\/([\.0-9]+)(\+?)/).exec(navigator.userAgent);
+            var fields = (/ AppleWebKit\/([\.0-9]+)(\+?)/).exec(theNavigator.userAgent);
             if (fields !== null) {
                 isWebkitResult = true;
                 webkitVersionResult = extractVersion(fields[1]);
@@ -17863,14 +17656,14 @@ define('Core/FeatureDetection',[
             isInternetExplorerResult = false;
 
             var fields;
-            if (navigator.appName === 'Microsoft Internet Explorer') {
-                fields = /MSIE ([0-9]{1,}[\.0-9]{0,})/.exec(navigator.userAgent);
+            if (theNavigator.appName === 'Microsoft Internet Explorer') {
+                fields = /MSIE ([0-9]{1,}[\.0-9]{0,})/.exec(theNavigator.userAgent);
                 if (fields !== null) {
                     isInternetExplorerResult = true;
                     internetExplorerVersionResult = extractVersion(fields[1]);
                 }
-            } else if (navigator.appName === 'Netscape') {
-                fields = /Trident\/.*rv:([0-9]{1,}[\.0-9]{0,})/.exec(navigator.userAgent);
+            } else if (theNavigator.appName === 'Netscape') {
+                fields = /Trident\/.*rv:([0-9]{1,}[\.0-9]{0,})/.exec(theNavigator.userAgent);
                 if (fields !== null) {
                     isInternetExplorerResult = true;
                     internetExplorerVersionResult = extractVersion(fields[1]);
@@ -17890,7 +17683,7 @@ define('Core/FeatureDetection',[
         if (!defined(isFirefoxResult)) {
             isFirefoxResult = false;
 
-            var fields = /Firefox\/([\.0-9]+)/.exec(navigator.userAgent);
+            var fields = /Firefox\/([\.0-9]+)/.exec(theNavigator.userAgent);
             if (fields !== null) {
                 isFirefoxResult = true;
                 firefoxVersionResult = extractVersion(fields[1]);
@@ -17902,7 +17695,7 @@ define('Core/FeatureDetection',[
     var isWindowsResult;
     function isWindows() {
         if (!defined(isWindowsResult)) {
-            isWindowsResult = /Windows/i.test(navigator.appVersion);
+            isWindowsResult = /Windows/i.test(theNavigator.appVersion);
         }
         return isWindowsResult;
     }
@@ -17915,11 +17708,11 @@ define('Core/FeatureDetection',[
     var hasPointerEvents;
     function supportsPointerEvents() {
         if (!defined(hasPointerEvents)) {
-            //While window.navigator.pointerEnabled is deprecated in the W3C specification
+            //While navigator.pointerEnabled is deprecated in the W3C specification
             //we still need to use it if it exists in order to support browsers
             //that rely on it, such as the Windows WebBrowser control which defines
-            //window.PointerEvent but sets window.navigator.pointerEnabled to false.
-            hasPointerEvents = defined(window.PointerEvent) && (!defined(window.navigator.pointerEnabled) || window.navigator.pointerEnabled);
+            //PointerEvent but sets navigator.pointerEnabled to false.
+            hasPointerEvents = typeof PointerEvent !== 'undefined' && (!defined(theNavigator.pointerEnabled) || theNavigator.pointerEnabled);
         }
         return hasPointerEvents;
     }
@@ -17928,8 +17721,7 @@ define('Core/FeatureDetection',[
      * A set of functions to detect whether the current browser supports
      * various features.
      *
-     * @namespace
-     * @alias FeatureDetection
+     * @exports FeatureDetection
      */
     var FeatureDetection = {
         isChrome : isChrome,
@@ -17943,7 +17735,7 @@ define('Core/FeatureDetection',[
         isFirefox : isFirefox,
         firefoxVersion : firefoxVersion,
         isWindows : isWindows,
-        hardwareConcurrency : defaultValue(navigator.hardwareConcurrency, 3),
+        hardwareConcurrency : defaultValue(theNavigator.hardwareConcurrency, 3),
         supportsPointerEvents : supportsPointerEvents
     };
 
@@ -18016,7 +17808,7 @@ define('Core/Quaternion',[
      *
      * @see PackableForInterpolation
      */
-    var Quaternion = function(x, y, z, w) {
+    function Quaternion(x, y, z, w) {
         /**
          * The X component.
          * @type {Number}
@@ -18044,7 +17836,7 @@ define('Core/Quaternion',[
          * @default 0.0
          */
         this.w = defaultValue(w, 0.0);
-    };
+    }
 
     var fromAxisAngleScratch = new Cartesian3();
 
@@ -18840,7 +18632,6 @@ define('Core/Quaternion',[
      * @param {Quaternion} result The object onto which to store the result.
      * @returns {Quaternion} The modified result parameter.
      *
-     * @see Quaternion#computeInnerQuadrangle
      *
      * @example
      * // 1. compute the squad interpolation between two quaternions on a curve
@@ -18851,6 +18642,8 @@ define('Core/Quaternion',[
      * // 2. compute the squad interpolation as above but where the first quaternion is a end point.
      * var s1 = Cesium.Quaternion.computeInnerQuadrangle(quaternions[0], quaternions[1], quaternions[2], new Cesium.Quaternion());
      * var q = Cesium.Quaternion.squad(quaternions[0], quaternions[1], quaternions[0], s1, t, new Cesium.Quaternion());
+     * 
+     * @see Quaternion#computeInnerQuadrangle
      */
     Quaternion.squad = function(q0, q1, s0, s1, t, result) {
                 if (!defined(q0) || !defined(q1) || !defined(s0) || !defined(s1)) {
@@ -19076,6 +18869,7 @@ define('Core/Quaternion',[
 
     return Quaternion;
 });
+
 /*global define*/
 define('Core/Transforms',[
         '../ThirdParty/when',
@@ -19120,8 +18914,7 @@ define('Core/Transforms',[
     /**
      * Contains functions for transforming positions to various reference frames.
      *
-     * @namespace
-     * @alias Transforms
+     * @exports Transforms
      */
     var Transforms = {};
 
@@ -19597,15 +19390,16 @@ define('Core/Transforms',[
      *          and evaluation of the transformation between the fixed and ICRF axes will
      *          no longer return undefined for a time inside the interval.
      *
-     * @see Transforms.computeIcrfToFixedMatrix
-     * @see Transforms.computeFixedToIcrfMatrix
-     * @see when
      *
      * @example
      * var interval = new Cesium.TimeInterval(...);
      * when(Cesium.Transforms.preloadIcrfFixed(interval), function() {
      *     // the data is now loaded
      * });
+     * 
+     * @see Transforms.computeIcrfToFixedMatrix
+     * @see Transforms.computeFixedToIcrfMatrix
+     * @see when
      */
     Transforms.preloadIcrfFixed = function(timeInterval) {
         var startDayTT = timeInterval.start.dayNumber;
@@ -19631,7 +19425,6 @@ define('Core/Transforms',[
      * @returns {Matrix3} The rotation matrix, or undefined if the data necessary to do the
      *                   transformation is not yet loaded.
      *
-     * @see Transforms.preloadIcrfFixed
      *
      * @example
      * scene.preRender.addEventListener(function(scene, time) {
@@ -19644,6 +19437,8 @@ define('Core/Transforms',[
      *     camera.lookAtTransform(transform, offset);
      *   }
      * });
+     * 
+     * @see Transforms.preloadIcrfFixed
      */
     Transforms.computeIcrfToFixedMatrix = function(date, result) {
                 if (!defined(date)) {
@@ -19678,7 +19473,6 @@ define('Core/Transforms',[
      * @returns {Matrix3} The rotation matrix, or undefined if the data necessary to do the
      *                   transformation is not yet loaded.
      *
-     * @see Transforms.preloadIcrfFixed
      *
      * @example
      * // Transform a point from the ICRF axes to the Fixed axes.
@@ -19689,6 +19483,8 @@ define('Core/Transforms',[
      * if (Cesium.defined(fixedToIcrf)) {
      *     pointInInertial = Cesium.Matrix3.multiplyByVector(fixedToIcrf, pointInFixed, pointInInertial);
      * }
+     * 
+     * @see Transforms.preloadIcrfFixed
      */
     Transforms.computeFixedToIcrfMatrix = function(date, result) {
                 if (!defined(date)) {
@@ -19931,7 +19727,7 @@ define('Core/EllipsoidTangentPlane',[
      *
      * @exception {DeveloperError} origin must not be at the center of the ellipsoid.
      */
-    var EllipsoidTangentPlane = function(origin, ellipsoid) {
+    function EllipsoidTangentPlane(origin, ellipsoid) {
                 if (!defined(origin)) {
             throw new DeveloperError('origin is required.');
         }
@@ -19951,7 +19747,7 @@ define('Core/EllipsoidTangentPlane',[
 
         var normal = Cartesian3.fromCartesian4(Matrix4.getColumn(eastNorthUp, 2, scratchCart4));
         this._plane = Plane.fromPointNormal(origin, normal);
-    };
+    }
 
     defineProperties(EllipsoidTangentPlane.prototype, {
         /**
@@ -20265,8 +20061,6 @@ define('Core/OrientedBoundingBox',[
      *                                          Equivalently, the transformation matrix, to rotate and scale a 2x2x2
      *                                          cube centered at the origin.
      *
-     * @see BoundingSphere
-     * @see BoundingRectangle
      *
      * @example
      * // Create an OrientedBoundingBox using a transformation matrix, a position where the box will be translated, and a scale.
@@ -20274,8 +20068,11 @@ define('Core/OrientedBoundingBox',[
      * var halfAxes = Cesium.Matrix3.fromScale(new Cesium.Cartesian3(1.0, 3.0, 2.0), new Cesium.Matrix3());
      *
      * var obb = new Cesium.OrientedBoundingBox(center, halfAxes);
+     * 
+     * @see BoundingSphere
+     * @see BoundingRectangle
      */
-    var OrientedBoundingBox = function(center, halfAxes) {
+    function OrientedBoundingBox(center, halfAxes) {
         /**
          * The center of the box.
          * @type {Cartesian3}
@@ -20288,7 +20085,7 @@ define('Core/OrientedBoundingBox',[
          * @default {@link Matrix3.IDENTITY}
          */
         this.halfAxes = Matrix3.clone(defaultValue(halfAxes, Matrix3.ZERO));
-    };
+    }
 
     var scratchCartesian1 = new Cartesian3();
     var scratchCartesian2 = new Cartesian3();
@@ -20412,7 +20209,7 @@ define('Core/OrientedBoundingBox',[
      * @param {OrientedBoundingBox} [result] The object onto which to store the result.
      * @returns {OrientedBoundingBox} The modified result parameter or a new OrientedBoundingBox instance if one was not provided.
      */
-    var fromTangentPlaneExtents = function(tangentPlane, minimumX, maximumX, minimumY, maximumY, minimumZ, maximumZ, result) {
+    function fromTangentPlaneExtents(tangentPlane, minimumX, maximumX, minimumY, maximumY, minimumZ, maximumZ, result) {
                 if (!defined(minimumX) ||
             !defined(maximumX) ||
             !defined(minimumY) ||
@@ -20447,7 +20244,7 @@ define('Core/OrientedBoundingBox',[
         Matrix3.multiplyByScale(halfAxes, scale, halfAxes);
 
         return result;
-    };
+    }
 
     var scratchRectangleCenterCartographic = new Cartographic();
     var scratchRectangleCenter = new Cartesian3();
@@ -20683,7 +20480,6 @@ define('Core/OrientedBoundingBox',[
 
     var scratchCorner = new Cartesian3();
     var scratchToCenter = new Cartesian3();
-    var scratchProj = new Cartesian3();
 
     /**
      * The distances calculated by the vector from the center of the bounding box to position projected onto direction.
@@ -20934,6 +20730,1856 @@ define('Core/OrientedBoundingBox',[
 });
 
 /*global define*/
+define('Core/AttributeCompression',[
+        './Cartesian2',
+        './Cartesian3',
+        './defined',
+        './DeveloperError',
+        './Math'
+    ], function(
+        Cartesian2,
+        Cartesian3,
+        defined,
+        DeveloperError,
+        CesiumMath) {
+    "use strict";
+
+    /**
+     * Attribute compression and decompression functions.
+     *
+     * @exports AttributeCompression
+     *
+     * @private
+     */
+    var AttributeCompression = {};
+
+    /**
+     * Encodes a normalized vector into 2 SNORM values in the range of [0-255] following the 'oct' encoding.
+     *
+     * Oct encoding is a compact representation of unit length vectors.  The encoding and decoding functions are low cost, and represent the normalized vector within 1 degree of error.
+     * The 'oct' encoding is described in "A Survey of Efficient Representations of Independent Unit Vectors",
+     * Cigolle et al 2014: {@link http://jcgt.org/published/0003/02/01/}
+     *
+     * @param {Cartesian3} vector The normalized vector to be compressed into 2 byte 'oct' encoding.
+     * @param {Cartesian2} result The 2 byte oct-encoded unit length vector.
+     * @returns {Cartesian2} The 2 byte oct-encoded unit length vector.
+     *
+     * @exception {DeveloperError} vector must be defined.
+     * @exception {DeveloperError} result must be defined.
+     * @exception {DeveloperError} vector must be normalized.
+     *
+     * @see AttributeCompression.octDecode
+     */
+    AttributeCompression.octEncode = function(vector, result) {
+                if (!defined(vector)) {
+            throw new DeveloperError('vector is required.');
+        }
+        if (!defined(result)) {
+            throw new DeveloperError('result is required.');
+        }
+        var magSquared = Cartesian3.magnitudeSquared(vector);
+        if (Math.abs(magSquared - 1.0) > CesiumMath.EPSILON6) {
+            throw new DeveloperError('vector must be normalized.');
+        }
+        
+        result.x = vector.x / (Math.abs(vector.x) + Math.abs(vector.y) + Math.abs(vector.z));
+        result.y = vector.y / (Math.abs(vector.x) + Math.abs(vector.y) + Math.abs(vector.z));
+        if (vector.z < 0) {
+            var x = result.x;
+            var y = result.y;
+            result.x = (1.0 - Math.abs(y)) * CesiumMath.signNotZero(x);
+            result.y = (1.0 - Math.abs(x)) * CesiumMath.signNotZero(y);
+        }
+
+        result.x = CesiumMath.toSNorm(result.x);
+        result.y = CesiumMath.toSNorm(result.y);
+
+        return result;
+    };
+
+    /**
+     * Decodes a unit-length vector in 'oct' encoding to a normalized 3-component vector.
+     *
+     * @param {Number} x The x component of the oct-encoded unit length vector.
+     * @param {Number} y The y component of the oct-encoded unit length vector.
+     * @param {Cartesian3} result The decoded and normalized vector
+     * @returns {Cartesian3} The decoded and normalized vector.
+     *
+     * @exception {DeveloperError} result must be defined.
+     * @exception {DeveloperError} x and y must be a signed normalized integer between 0 and 255.
+     *
+     * @see AttributeCompression.octEncode
+     */
+    AttributeCompression.octDecode = function(x, y, result) {
+                if (!defined(result)) {
+            throw new DeveloperError('result is required.');
+        }
+        if (x < 0 || x > 255 || y < 0 || y > 255) {
+            throw new DeveloperError('x and y must be a signed normalized integer between 0 and 255');
+        }
+        
+        result.x = CesiumMath.fromSNorm(x);
+        result.y = CesiumMath.fromSNorm(y);
+        result.z = 1.0 - (Math.abs(result.x) + Math.abs(result.y));
+
+        if (result.z < 0.0)
+        {
+            var oldVX = result.x;
+            result.x = (1.0 - Math.abs(result.y)) * CesiumMath.signNotZero(oldVX);
+            result.y = (1.0 - Math.abs(oldVX)) * CesiumMath.signNotZero(result.y);
+        }
+
+        return Cartesian3.normalize(result, result);
+    };
+
+    /**
+     * Packs an oct encoded vector into a single floating-point number.
+     *
+     * @param {Cartesian2} encoded The oct encoded vector.
+     * @returns {Number} The oct encoded vector packed into a single float.
+     *
+     * @exception {DeveloperError} encoded is required.
+     */
+    AttributeCompression.octPackFloat = function(encoded) {
+                if (!defined(encoded)) {
+            throw new DeveloperError('encoded is required.');
+        }
+                return 256.0 * encoded.x + encoded.y;
+    };
+
+    var scratchEncodeCart2 = new Cartesian2();
+
+    /**
+     * Encodes a normalized vector into 2 SNORM values in the range of [0-255] following the 'oct' encoding and
+     * stores those values in a single float-point number.
+     *
+     * @param {Cartesian3} vector The normalized vector to be compressed into 2 byte 'oct' encoding.
+     * @returns {Number} The 2 byte oct-encoded unit length vector.
+     *
+     * @exception {DeveloperError} vector must be defined.
+     * @exception {DeveloperError} vector must be normalized.
+     */
+    AttributeCompression.octEncodeFloat = function(vector) {
+        AttributeCompression.octEncode(vector, scratchEncodeCart2);
+        return AttributeCompression.octPackFloat(scratchEncodeCart2);
+    };
+
+    /**
+     * Decodes a unit-length vector in 'oct' encoding packed in a floating-point number to a normalized 3-component vector.
+     *
+     * @param {Number} value The oct-encoded unit length vector stored as a single floating-point number.
+     * @param {Cartesian3} result The decoded and normalized vector
+     * @returns {Cartesian3} The decoded and normalized vector.
+     *
+     * @exception {DeveloperError} value must be defined.
+     * @exception {DeveloperError} result must be defined.
+     */
+    AttributeCompression.octDecodeFloat = function(value, result) {
+                if (!defined(value)) {
+            throw new DeveloperError('value is required.');
+        }
+        
+        var temp = value / 256.0;
+        var x = Math.floor(temp);
+        var y = (temp - x) * 256.0;
+
+        return AttributeCompression.octDecode(x, y, result);
+    };
+
+    /**
+     * Encodes three normalized vectors into 6 SNORM values in the range of [0-255] following the 'oct' encoding and
+     * packs those into two floating-point numbers.
+     *
+     * @param {Cartesian3} v1 A normalized vector to be compressed.
+     * @param {Cartesian3} v2 A normalized vector to be compressed.
+     * @param {Cartesian3} v3 A normalized vector to be compressed.
+     * @param {Cartesian2} result The 'oct' encoded vectors packed into two floating-point numbers.
+     * @returns {Cartesian2} The 'oct' encoded vectors packed into two floating-point numbers.
+     *
+     * @exception {DeveloperError} v1 must be defined.
+     * @exception {DeveloperError} v2 must be defined.
+     * @exception {DeveloperError} v3 must be defined.
+     * @exception {DeveloperError} result must be defined.
+     */
+    AttributeCompression.octPack = function(v1, v2, v3, result) {
+                if (!defined(v1)) {
+            throw new DeveloperError('v1 is required.');
+        }
+        if (!defined(v2)) {
+            throw new DeveloperError('v2 is required.');
+        }
+        if (!defined(v3)) {
+            throw new DeveloperError('v3 is required.');
+        }
+        if (!defined(result)) {
+            throw new DeveloperError('result is required.');
+        }
+        
+        var encoded1 = AttributeCompression.octEncodeFloat(v1);
+        var encoded2 = AttributeCompression.octEncodeFloat(v2);
+
+        var encoded3 = AttributeCompression.octEncode(v3, scratchEncodeCart2);
+        result.x = 65536.0 * encoded3.x + encoded1;
+        result.y = 65536.0 * encoded3.y + encoded2;
+        return result;
+    };
+
+    /**
+     * Decodes three unit-length vectors in 'oct' encoding packed into a floating-point number to a normalized 3-component vector.
+     *
+     * @param {Cartesian2} packed The three oct-encoded unit length vectors stored as two floating-point number.
+     * @param {Cartesian3} v1 One decoded and normalized vector.
+     * @param {Cartesian3} v2 One decoded and normalized vector.
+     * @param {Cartesian3} v3 One decoded and normalized vector.
+     *
+     * @exception {DeveloperError} packed must be defined.
+     * @exception {DeveloperError} v1 must be defined.
+     * @exception {DeveloperError} v2 must be defined.
+     * @exception {DeveloperError} v3 must be defined.
+     */
+    AttributeCompression.octUnpack = function(packed, v1, v2, v3) {
+                if (!defined(packed)) {
+            throw new DeveloperError('packed is required.');
+        }
+        if (!defined(v1)) {
+            throw new DeveloperError('v1 is required.');
+        }
+        if (!defined(v2)) {
+            throw new DeveloperError('v2 is required.');
+        }
+        if (!defined(v3)) {
+            throw new DeveloperError('v3 is required.');
+        }
+        
+        var temp = packed.x / 65536.0;
+        var x = Math.floor(temp);
+        var encodedFloat1 = (temp - x) * 65536.0;
+
+        temp = packed.y / 65536.0;
+        var y = Math.floor(temp);
+        var encodedFloat2 = (temp - y) * 65536.0;
+
+        AttributeCompression.octDecodeFloat(encodedFloat1, v1);
+        AttributeCompression.octDecodeFloat(encodedFloat2, v2);
+        AttributeCompression.octDecode(x, y, v3);
+    };
+
+    /**
+     * Pack texture coordinates into a single float. The texture coordinates will only preserve 12 bits of precision.
+     *
+     * @param {Cartesian2} textureCoordinates The texture coordinates to compress
+     * @returns {Number} The packed texture coordinates.
+     *
+     * @exception {DeveloperError} textureCoordinates is required.
+     */
+    AttributeCompression.compressTextureCoordinates = function(textureCoordinates) {
+                if (!defined(textureCoordinates)) {
+            throw new DeveloperError('textureCoordinates is required.');
+        }
+        
+        var x = textureCoordinates.x === 1.0 ? 4095.0 : (textureCoordinates.x * 4096.0) | 0;
+        var y = textureCoordinates.y === 1.0 ? 4095.0 : (textureCoordinates.y * 4096.0) | 0;
+        return 4096.0 * x + y;
+    };
+
+    /**
+     * Decompresses texture coordinates that were packed into a single float.
+     *
+     * @param {Number} compressed The compressed texture coordinates.
+     * @param {Cartesian2} result The decompressed texture coordinates.
+     * @returns {Cartesian2} The modified result parameter.
+     *
+     * @exception {DeveloperError} compressed is required.
+     * @exception {DeveloperError} result is required.
+     */
+    AttributeCompression.decompressTextureCoordinates = function(compressed, result) {
+                if (!defined(compressed)) {
+            throw new DeveloperError('compressed is required.');
+        }
+        if (!defined(result)) {
+            throw new DeveloperError('result is required.');
+        }
+        
+        var temp = compressed / 4096.0;
+        result.x = Math.floor(temp) / 4096.0;
+        result.y = temp - Math.floor(temp);
+        return result;
+    };
+
+    return AttributeCompression;
+});
+/*global define*/
+define('Renderer/WebGLConstants',[
+        '../Core/freezeObject'
+    ], function(
+        freezeObject) {
+    "use strict";
+
+    /**
+     * WebGL constants.
+     *
+     * This file provides a workaround for Safari 9 where WebGL constants can't be accessed
+     * through WebGLRenderingContext.  See https://github.com/AnalyticalGraphicsInc/cesium/issues/2989
+     *
+     * @private
+     */
+    var WebGLConstants = {
+        DEPTH_BUFFER_BIT : 0x00000100,
+        STENCIL_BUFFER_BIT : 0x00000400,
+        COLOR_BUFFER_BIT : 0x00004000,
+        POINTS : 0x0000,
+        LINES : 0x0001,
+        LINE_LOOP : 0x0002,
+        LINE_STRIP : 0x0003,
+        TRIANGLES : 0x0004,
+        TRIANGLE_STRIP : 0x0005,
+        TRIANGLE_FAN : 0x0006,
+        ZERO : 0,
+        ONE : 1,
+        SRC_COLOR : 0x0300,
+        ONE_MINUS_SRC_COLOR : 0x0301,
+        SRC_ALPHA : 0x0302,
+        ONE_MINUS_SRC_ALPHA : 0x0303,
+        DST_ALPHA : 0x0304,
+        ONE_MINUS_DST_ALPHA : 0x0305,
+        DST_COLOR : 0x0306,
+        ONE_MINUS_DST_COLOR : 0x0307,
+        SRC_ALPHA_SATURATE : 0x0308,
+        FUNC_ADD : 0x8006,
+        BLEND_EQUATION : 0x8009,
+        BLEND_EQUATION_RGB : 0x8009, // same as BLEND_EQUATION
+        BLEND_EQUATION_ALPHA : 0x883D,
+        FUNC_SUBTRACT : 0x800A,
+        FUNC_REVERSE_SUBTRACT : 0x800B,
+        BLEND_DST_RGB : 0x80C8,
+        BLEND_SRC_RGB : 0x80C9,
+        BLEND_DST_ALPHA : 0x80CA,
+        BLEND_SRC_ALPHA : 0x80CB,
+        CONSTANT_COLOR : 0x8001,
+        ONE_MINUS_CONSTANT_COLOR : 0x8002,
+        CONSTANT_ALPHA : 0x8003,
+        ONE_MINUS_CONSTANT_ALPHA : 0x8004,
+        BLEND_COLOR : 0x8005,
+        ARRAY_BUFFER : 0x8892,
+        ELEMENT_ARRAY_BUFFER : 0x8893,
+        ARRAY_BUFFER_BINDING : 0x8894,
+        ELEMENT_ARRAY_BUFFER_BINDING : 0x8895,
+        STREAM_DRAW : 0x88E0,
+        STATIC_DRAW : 0x88E4,
+        DYNAMIC_DRAW : 0x88E8,
+        BUFFER_SIZE : 0x8764,
+        BUFFER_USAGE : 0x8765,
+        CURRENT_VERTEX_ATTRIB : 0x8626,
+        FRONT : 0x0404,
+        BACK : 0x0405,
+        FRONT_AND_BACK : 0x0408,
+        CULL_FACE : 0x0B44,
+        BLEND : 0x0BE2,
+        DITHER : 0x0BD0,
+        STENCIL_TEST : 0x0B90,
+        DEPTH_TEST : 0x0B71,
+        SCISSOR_TEST : 0x0C11,
+        POLYGON_OFFSET_FILL : 0x8037,
+        SAMPLE_ALPHA_TO_COVERAGE : 0x809E,
+        SAMPLE_COVERAGE : 0x80A0,
+        NO_ERROR : 0,
+        INVALID_ENUM : 0x0500,
+        INVALID_VALUE : 0x0501,
+        INVALID_OPERATION : 0x0502,
+        OUT_OF_MEMORY : 0x0505,
+        CW : 0x0900,
+        CCW : 0x0901,
+        LINE_WIDTH : 0x0B21,
+        ALIASED_POINT_SIZE_RANGE : 0x846D,
+        ALIASED_LINE_WIDTH_RANGE : 0x846E,
+        CULL_FACE_MODE : 0x0B45,
+        FRONT_FACE : 0x0B46,
+        DEPTH_RANGE : 0x0B70,
+        DEPTH_WRITEMASK : 0x0B72,
+        DEPTH_CLEAR_VALUE : 0x0B73,
+        DEPTH_FUNC : 0x0B74,
+        STENCIL_CLEAR_VALUE : 0x0B91,
+        STENCIL_FUNC : 0x0B92,
+        STENCIL_FAIL : 0x0B94,
+        STENCIL_PASS_DEPTH_FAIL : 0x0B95,
+        STENCIL_PASS_DEPTH_PASS : 0x0B96,
+        STENCIL_REF : 0x0B97,
+        STENCIL_VALUE_MASK : 0x0B93,
+        STENCIL_WRITEMASK : 0x0B98,
+        STENCIL_BACK_FUNC : 0x8800,
+        STENCIL_BACK_FAIL : 0x8801,
+        STENCIL_BACK_PASS_DEPTH_FAIL : 0x8802,
+        STENCIL_BACK_PASS_DEPTH_PASS : 0x8803,
+        STENCIL_BACK_REF : 0x8CA3,
+        STENCIL_BACK_VALUE_MASK : 0x8CA4,
+        STENCIL_BACK_WRITEMASK : 0x8CA5,
+        VIEWPORT : 0x0BA2,
+        SCISSOR_BOX : 0x0C10,
+        COLOR_CLEAR_VALUE : 0x0C22,
+        COLOR_WRITEMASK : 0x0C23,
+        UNPACK_ALIGNMENT : 0x0CF5,
+        PACK_ALIGNMENT : 0x0D05,
+        MAX_TEXTURE_SIZE : 0x0D33,
+        MAX_VIEWPORT_DIMS : 0x0D3A,
+        SUBPIXEL_BITS : 0x0D50,
+        RED_BITS : 0x0D52,
+        GREEN_BITS : 0x0D53,
+        BLUE_BITS : 0x0D54,
+        ALPHA_BITS : 0x0D55,
+        DEPTH_BITS : 0x0D56,
+        STENCIL_BITS : 0x0D57,
+        POLYGON_OFFSET_UNITS : 0x2A00,
+        POLYGON_OFFSET_FACTOR : 0x8038,
+        TEXTURE_BINDING_2D : 0x8069,
+        SAMPLE_BUFFERS : 0x80A8,
+        SAMPLES : 0x80A9,
+        SAMPLE_COVERAGE_VALUE : 0x80AA,
+        SAMPLE_COVERAGE_INVERT : 0x80AB,
+        COMPRESSED_TEXTURE_FORMATS : 0x86A3,
+        DONT_CARE : 0x1100,
+        FASTEST : 0x1101,
+        NICEST : 0x1102,
+        GENERATE_MIPMAP_HINT : 0x8192,
+        BYTE : 0x1400,
+        UNSIGNED_BYTE : 0x1401,
+        SHORT : 0x1402,
+        UNSIGNED_SHORT : 0x1403,
+        INT : 0x1404,
+        UNSIGNED_INT : 0x1405,
+        FLOAT : 0x1406,
+        DEPTH_COMPONENT : 0x1902,
+        ALPHA : 0x1906,
+        RGB : 0x1907,
+        RGBA : 0x1908,
+        LUMINANCE : 0x1909,
+        LUMINANCE_ALPHA : 0x190A,
+        UNSIGNED_SHORT_4_4_4_4 : 0x8033,
+        UNSIGNED_SHORT_5_5_5_1 : 0x8034,
+        UNSIGNED_SHORT_5_6_5 : 0x8363,
+        FRAGMENT_SHADER : 0x8B30,
+        VERTEX_SHADER : 0x8B31,
+        MAX_VERTEX_ATTRIBS : 0x8869,
+        MAX_VERTEX_UNIFORM_VECTORS : 0x8DFB,
+        MAX_VARYING_VECTORS : 0x8DFC,
+        MAX_COMBINED_TEXTURE_IMAGE_UNITS : 0x8B4D,
+        MAX_VERTEX_TEXTURE_IMAGE_UNITS : 0x8B4C,
+        MAX_TEXTURE_IMAGE_UNITS : 0x8872,
+        MAX_FRAGMENT_UNIFORM_VECTORS : 0x8DFD,
+        SHADER_TYPE : 0x8B4F,
+        DELETE_STATUS : 0x8B80,
+        LINK_STATUS : 0x8B82,
+        VALIDATE_STATUS : 0x8B83,
+        ATTACHED_SHADERS : 0x8B85,
+        ACTIVE_UNIFORMS : 0x8B86,
+        ACTIVE_ATTRIBUTES : 0x8B89,
+        SHADING_LANGUAGE_VERSION : 0x8B8C,
+        CURRENT_PROGRAM : 0x8B8D,
+        NEVER : 0x0200,
+        LESS : 0x0201,
+        EQUAL : 0x0202,
+        LEQUAL : 0x0203,
+        GREATER : 0x0204,
+        NOTEQUAL : 0x0205,
+        GEQUAL : 0x0206,
+        ALWAYS : 0x0207,
+        KEEP : 0x1E00,
+        REPLACE : 0x1E01,
+        INCR : 0x1E02,
+        DECR : 0x1E03,
+        INVERT : 0x150A,
+        INCR_WRAP : 0x8507,
+        DECR_WRAP : 0x8508,
+        VENDOR : 0x1F00,
+        RENDERER : 0x1F01,
+        VERSION : 0x1F02,
+        NEAREST : 0x2600,
+        LINEAR : 0x2601,
+        NEAREST_MIPMAP_NEAREST : 0x2700,
+        LINEAR_MIPMAP_NEAREST : 0x2701,
+        NEAREST_MIPMAP_LINEAR : 0x2702,
+        LINEAR_MIPMAP_LINEAR : 0x2703,
+        TEXTURE_MAG_FILTER : 0x2800,
+        TEXTURE_MIN_FILTER : 0x2801,
+        TEXTURE_WRAP_S : 0x2802,
+        TEXTURE_WRAP_T : 0x2803,
+        TEXTURE_2D : 0x0DE1,
+        TEXTURE : 0x1702,
+        TEXTURE_CUBE_MAP : 0x8513,
+        TEXTURE_BINDING_CUBE_MAP : 0x8514,
+        TEXTURE_CUBE_MAP_POSITIVE_X : 0x8515,
+        TEXTURE_CUBE_MAP_NEGATIVE_X : 0x8516,
+        TEXTURE_CUBE_MAP_POSITIVE_Y : 0x8517,
+        TEXTURE_CUBE_MAP_NEGATIVE_Y : 0x8518,
+        TEXTURE_CUBE_MAP_POSITIVE_Z : 0x8519,
+        TEXTURE_CUBE_MAP_NEGATIVE_Z : 0x851A,
+        MAX_CUBE_MAP_TEXTURE_SIZE : 0x851C,
+        TEXTURE0 : 0x84C0,
+        TEXTURE1 : 0x84C1,
+        TEXTURE2 : 0x84C2,
+        TEXTURE3 : 0x84C3,
+        TEXTURE4 : 0x84C4,
+        TEXTURE5 : 0x84C5,
+        TEXTURE6 : 0x84C6,
+        TEXTURE7 : 0x84C7,
+        TEXTURE8 : 0x84C8,
+        TEXTURE9 : 0x84C9,
+        TEXTURE10 : 0x84CA,
+        TEXTURE11 : 0x84CB,
+        TEXTURE12 : 0x84CC,
+        TEXTURE13 : 0x84CD,
+        TEXTURE14 : 0x84CE,
+        TEXTURE15 : 0x84CF,
+        TEXTURE16 : 0x84D0,
+        TEXTURE17 : 0x84D1,
+        TEXTURE18 : 0x84D2,
+        TEXTURE19 : 0x84D3,
+        TEXTURE20 : 0x84D4,
+        TEXTURE21 : 0x84D5,
+        TEXTURE22 : 0x84D6,
+        TEXTURE23 : 0x84D7,
+        TEXTURE24 : 0x84D8,
+        TEXTURE25 : 0x84D9,
+        TEXTURE26 : 0x84DA,
+        TEXTURE27 : 0x84DB,
+        TEXTURE28 : 0x84DC,
+        TEXTURE29 : 0x84DD,
+        TEXTURE30 : 0x84DE,
+        TEXTURE31 : 0x84DF,
+        ACTIVE_TEXTURE : 0x84E0,
+        REPEAT : 0x2901,
+        CLAMP_TO_EDGE : 0x812F,
+        MIRRORED_REPEAT : 0x8370,
+        FLOAT_VEC2 : 0x8B50,
+        FLOAT_VEC3 : 0x8B51,
+        FLOAT_VEC4 : 0x8B52,
+        INT_VEC2 : 0x8B53,
+        INT_VEC3 : 0x8B54,
+        INT_VEC4 : 0x8B55,
+        BOOL : 0x8B56,
+        BOOL_VEC2 : 0x8B57,
+        BOOL_VEC3 : 0x8B58,
+        BOOL_VEC4 : 0x8B59,
+        FLOAT_MAT2 : 0x8B5A,
+        FLOAT_MAT3 : 0x8B5B,
+        FLOAT_MAT4 : 0x8B5C,
+        SAMPLER_2D : 0x8B5E,
+        SAMPLER_CUBE : 0x8B60,
+        VERTEX_ATTRIB_ARRAY_ENABLED : 0x8622,
+        VERTEX_ATTRIB_ARRAY_SIZE : 0x8623,
+        VERTEX_ATTRIB_ARRAY_STRIDE : 0x8624,
+        VERTEX_ATTRIB_ARRAY_TYPE : 0x8625,
+        VERTEX_ATTRIB_ARRAY_NORMALIZED : 0x886A,
+        VERTEX_ATTRIB_ARRAY_POINTER : 0x8645,
+        VERTEX_ATTRIB_ARRAY_BUFFER_BINDING : 0x889F,
+        IMPLEMENTATION_COLOR_READ_TYPE : 0x8B9A,
+        IMPLEMENTATION_COLOR_READ_FORMAT : 0x8B9B,
+        COMPILE_STATUS : 0x8B81,
+        LOW_FLOAT : 0x8DF0,
+        MEDIUM_FLOAT : 0x8DF1,
+        HIGH_FLOAT : 0x8DF2,
+        LOW_INT : 0x8DF3,
+        MEDIUM_INT : 0x8DF4,
+        HIGH_INT : 0x8DF5,
+        FRAMEBUFFER : 0x8D40,
+        RENDERBUFFER : 0x8D41,
+        RGBA4 : 0x8056,
+        RGB5_A1 : 0x8057,
+        RGB565 : 0x8D62,
+        DEPTH_COMPONENT16 : 0x81A5,
+        STENCIL_INDEX : 0x1901,
+        STENCIL_INDEX8 : 0x8D48,
+        DEPTH_STENCIL : 0x84F9,
+        RENDERBUFFER_WIDTH : 0x8D42,
+        RENDERBUFFER_HEIGHT : 0x8D43,
+        RENDERBUFFER_INTERNAL_FORMAT : 0x8D44,
+        RENDERBUFFER_RED_SIZE : 0x8D50,
+        RENDERBUFFER_GREEN_SIZE : 0x8D51,
+        RENDERBUFFER_BLUE_SIZE : 0x8D52,
+        RENDERBUFFER_ALPHA_SIZE : 0x8D53,
+        RENDERBUFFER_DEPTH_SIZE : 0x8D54,
+        RENDERBUFFER_STENCIL_SIZE : 0x8D55,
+        FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE : 0x8CD0,
+        FRAMEBUFFER_ATTACHMENT_OBJECT_NAME : 0x8CD1,
+        FRAMEBUFFER_ATTACHMENT_TEXTURE_LEVEL : 0x8CD2,
+        FRAMEBUFFER_ATTACHMENT_TEXTURE_CUBE_MAP_FACE : 0x8CD3,
+        COLOR_ATTACHMENT0 : 0x8CE0,
+        DEPTH_ATTACHMENT : 0x8D00,
+        STENCIL_ATTACHMENT : 0x8D20,
+        DEPTH_STENCIL_ATTACHMENT : 0x821A,
+        NONE : 0,
+        FRAMEBUFFER_COMPLETE : 0x8CD5,
+        FRAMEBUFFER_INCOMPLETE_ATTACHMENT : 0x8CD6,
+        FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT : 0x8CD7,
+        FRAMEBUFFER_INCOMPLETE_DIMENSIONS : 0x8CD9,
+        FRAMEBUFFER_UNSUPPORTED : 0x8CDD,
+        FRAMEBUFFER_BINDING : 0x8CA6,
+        RENDERBUFFER_BINDING : 0x8CA7,
+        MAX_RENDERBUFFER_SIZE : 0x84E8,
+        INVALID_FRAMEBUFFER_OPERATION : 0x0506,
+        UNPACK_FLIP_Y_WEBGL : 0x9240,
+        UNPACK_PREMULTIPLY_ALPHA_WEBGL : 0x9241,
+        CONTEXT_LOST_WEBGL : 0x9242,
+        UNPACK_COLORSPACE_CONVERSION_WEBGL : 0x9243,
+        BROWSER_DEFAULT_WEBGL : 0x9244,
+
+        // Desktop OpenGL
+        DOUBLE : 0x140A,
+
+        // WebGL 2
+        READ_BUFFER : 0x0C02,
+        UNPACK_ROW_LENGTH : 0x0CF2,
+        UNPACK_SKIP_ROWS : 0x0CF3,
+        UNPACK_SKIP_PIXELS : 0x0CF4,
+        PACK_ROW_LENGTH : 0x0D02,
+        PACK_SKIP_ROWS : 0x0D03,
+        PACK_SKIP_PIXELS : 0x0D04,
+        COLOR : 0x1800,
+        DEPTH : 0x1801,
+        STENCIL : 0x1802,
+        RED : 0x1903,
+        RGB8 : 0x8051,
+        RGBA8 : 0x8058,
+        RGB10_A2 : 0x8059,
+        TEXTURE_BINDING_3D : 0x806A,
+        UNPACK_SKIP_IMAGES : 0x806D,
+        UNPACK_IMAGE_HEIGHT : 0x806E,
+        TEXTURE_3D : 0x806F,
+        TEXTURE_WRAP_R : 0x8072,
+        MAX_3D_TEXTURE_SIZE : 0x8073,
+        UNSIGNED_INT_2_10_10_10_REV : 0x8368,
+        MAX_ELEMENTS_VERTICES : 0x80E8,
+        MAX_ELEMENTS_INDICES : 0x80E9,
+        TEXTURE_MIN_LOD : 0x813A,
+        TEXTURE_MAX_LOD : 0x813B,
+        TEXTURE_BASE_LEVEL : 0x813C,
+        TEXTURE_MAX_LEVEL : 0x813D,
+        MIN : 0x8007,
+        MAX : 0x8008,
+        DEPTH_COMPONENT24 : 0x81A6,
+        MAX_TEXTURE_LOD_BIAS : 0x84FD,
+        TEXTURE_COMPARE_MODE : 0x884C,
+        TEXTURE_COMPARE_FUNC : 0x884D,
+        CURRENT_QUERY : 0x8865,
+        QUERY_RESULT : 0x8866,
+        QUERY_RESULT_AVAILABLE : 0x8867,
+        STREAM_READ : 0x88E1,
+        STREAM_COPY : 0x88E2,
+        STATIC_READ : 0x88E5,
+        STATIC_COPY : 0x88E6,
+        DYNAMIC_READ : 0x88E9,
+        DYNAMIC_COPY : 0x88EA,
+        MAX_DRAW_BUFFERS : 0x8824,
+        DRAW_BUFFER0 : 0x8825,
+        DRAW_BUFFER1 : 0x8826,
+        DRAW_BUFFER2 : 0x8827,
+        DRAW_BUFFER3 : 0x8828,
+        DRAW_BUFFER4 : 0x8829,
+        DRAW_BUFFER5 : 0x882A,
+        DRAW_BUFFER6 : 0x882B,
+        DRAW_BUFFER7 : 0x882C,
+        DRAW_BUFFER8 : 0x882D,
+        DRAW_BUFFER9 : 0x882E,
+        DRAW_BUFFER10 : 0x882F,
+        DRAW_BUFFER11 : 0x8830,
+        DRAW_BUFFER12 : 0x8831,
+        DRAW_BUFFER13 : 0x8832,
+        DRAW_BUFFER14 : 0x8833,
+        DRAW_BUFFER15 : 0x8834,
+        MAX_FRAGMENT_UNIFORM_COMPONENTS : 0x8B49,
+        MAX_VERTEX_UNIFORM_COMPONENTS : 0x8B4A,
+        SAMPLER_3D : 0x8B5F,
+        SAMPLER_2D_SHADOW : 0x8B62,
+        FRAGMENT_SHADER_DERIVATIVE_HINT : 0x8B8B,
+        PIXEL_PACK_BUFFER : 0x88EB,
+        PIXEL_UNPACK_BUFFER : 0x88EC,
+        PIXEL_PACK_BUFFER_BINDING : 0x88ED,
+        PIXEL_UNPACK_BUFFER_BINDING : 0x88EF,
+        FLOAT_MAT2x3 : 0x8B65,
+        FLOAT_MAT2x4 : 0x8B66,
+        FLOAT_MAT3x2 : 0x8B67,
+        FLOAT_MAT3x4 : 0x8B68,
+        FLOAT_MAT4x2 : 0x8B69,
+        FLOAT_MAT4x3 : 0x8B6A,
+        SRGB : 0x8C40,
+        SRGB8 : 0x8C41,
+        SRGB8_ALPHA8 : 0x8C43,
+        COMPARE_REF_TO_TEXTURE : 0x884E,
+        RGBA32F : 0x8814,
+        RGB32F : 0x8815,
+        RGBA16F : 0x881A,
+        RGB16F : 0x881B,
+        VERTEX_ATTRIB_ARRAY_INTEGER : 0x88FD,
+        MAX_ARRAY_TEXTURE_LAYERS : 0x88FF,
+        MIN_PROGRAM_TEXEL_OFFSET : 0x8904,
+        MAX_PROGRAM_TEXEL_OFFSET : 0x8905,
+        MAX_VARYING_COMPONENTS : 0x8B4B,
+        TEXTURE_2D_ARRAY : 0x8C1A,
+        TEXTURE_BINDING_2D_ARRAY : 0x8C1D,
+        R11F_G11F_B10F : 0x8C3A,
+        UNSIGNED_INT_10F_11F_11F_REV : 0x8C3B,
+        RGB9_E5 : 0x8C3D,
+        UNSIGNED_INT_5_9_9_9_REV : 0x8C3E,
+        TRANSFORM_FEEDBACK_BUFFER_MODE : 0x8C7F,
+        MAX_TRANSFORM_FEEDBACK_SEPARATE_COMPONENTS : 0x8C80,
+        TRANSFORM_FEEDBACK_VARYINGS : 0x8C83,
+        TRANSFORM_FEEDBACK_BUFFER_START : 0x8C84,
+        TRANSFORM_FEEDBACK_BUFFER_SIZE : 0x8C85,
+        TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN : 0x8C88,
+        RASTERIZER_DISCARD : 0x8C89,
+        MAX_TRANSFORM_FEEDBACK_INTERLEAVED_COMPONENTS : 0x8C8A,
+        MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS : 0x8C8B,
+        INTERLEAVED_ATTRIBS : 0x8C8C,
+        SEPARATE_ATTRIBS : 0x8C8D,
+        TRANSFORM_FEEDBACK_BUFFER : 0x8C8E,
+        TRANSFORM_FEEDBACK_BUFFER_BINDING : 0x8C8F,
+        RGBA32UI : 0x8D70,
+        RGB32UI : 0x8D71,
+        RGBA16UI : 0x8D76,
+        RGB16UI : 0x8D77,
+        RGBA8UI : 0x8D7C,
+        RGB8UI : 0x8D7D,
+        RGBA32I : 0x8D82,
+        RGB32I : 0x8D83,
+        RGBA16I : 0x8D88,
+        RGB16I : 0x8D89,
+        RGBA8I : 0x8D8E,
+        RGB8I : 0x8D8F,
+        RED_INTEGER : 0x8D94,
+        RGB_INTEGER : 0x8D98,
+        RGBA_INTEGER : 0x8D99,
+        SAMPLER_2D_ARRAY : 0x8DC1,
+        SAMPLER_2D_ARRAY_SHADOW : 0x8DC4,
+        SAMPLER_CUBE_SHADOW : 0x8DC5,
+        UNSIGNED_INT_VEC2 : 0x8DC6,
+        UNSIGNED_INT_VEC3 : 0x8DC7,
+        UNSIGNED_INT_VEC4 : 0x8DC8,
+        INT_SAMPLER_2D : 0x8DCA,
+        INT_SAMPLER_3D : 0x8DCB,
+        INT_SAMPLER_CUBE : 0x8DCC,
+        INT_SAMPLER_2D_ARRAY : 0x8DCF,
+        UNSIGNED_INT_SAMPLER_2D : 0x8DD2,
+        UNSIGNED_INT_SAMPLER_3D : 0x8DD3,
+        UNSIGNED_INT_SAMPLER_CUBE : 0x8DD4,
+        UNSIGNED_INT_SAMPLER_2D_ARRAY : 0x8DD7,
+        DEPTH_COMPONENT32F : 0x8CAC,
+        DEPTH32F_STENCIL8 : 0x8CAD,
+        FLOAT_32_UNSIGNED_INT_24_8_REV : 0x8DAD,
+        FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING : 0x8210,
+        FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE : 0x8211,
+        FRAMEBUFFER_ATTACHMENT_RED_SIZE : 0x8212,
+        FRAMEBUFFER_ATTACHMENT_GREEN_SIZE : 0x8213,
+        FRAMEBUFFER_ATTACHMENT_BLUE_SIZE : 0x8214,
+        FRAMEBUFFER_ATTACHMENT_ALPHA_SIZE : 0x8215,
+        FRAMEBUFFER_ATTACHMENT_DEPTH_SIZE : 0x8216,
+        FRAMEBUFFER_ATTACHMENT_STENCIL_SIZE : 0x8217,
+        FRAMEBUFFER_DEFAULT : 0x8218,
+        UNSIGNED_INT_24_8 : 0x84FA,
+        DEPTH24_STENCIL8 : 0x88F0,
+        UNSIGNED_NORMALIZED : 0x8C17,
+        DRAW_FRAMEBUFFER_BINDING : 0x8CA6, // Same as FRAMEBUFFER_BINDING
+        READ_FRAMEBUFFER : 0x8CA8,
+        DRAW_FRAMEBUFFER : 0x8CA9,
+        READ_FRAMEBUFFER_BINDING : 0x8CAA,
+        RENDERBUFFER_SAMPLES : 0x8CAB,
+        FRAMEBUFFER_ATTACHMENT_TEXTURE_LAYER : 0x8CD4,
+        MAX_COLOR_ATTACHMENTS : 0x8CDF,
+        COLOR_ATTACHMENT1 : 0x8CE1,
+        COLOR_ATTACHMENT2 : 0x8CE2,
+        COLOR_ATTACHMENT3 : 0x8CE3,
+        COLOR_ATTACHMENT4 : 0x8CE4,
+        COLOR_ATTACHMENT5 : 0x8CE5,
+        COLOR_ATTACHMENT6 : 0x8CE6,
+        COLOR_ATTACHMENT7 : 0x8CE7,
+        COLOR_ATTACHMENT8 : 0x8CE8,
+        COLOR_ATTACHMENT9 : 0x8CE9,
+        COLOR_ATTACHMENT10 : 0x8CEA,
+        COLOR_ATTACHMENT11 : 0x8CEB,
+        COLOR_ATTACHMENT12 : 0x8CEC,
+        COLOR_ATTACHMENT13 : 0x8CED,
+        COLOR_ATTACHMENT14 : 0x8CEE,
+        COLOR_ATTACHMENT15 : 0x8CEF,
+        FRAMEBUFFER_INCOMPLETE_MULTISAMPLE : 0x8D56,
+        MAX_SAMPLES : 0x8D57,
+        HALF_FLOAT : 0x140B,
+        RG : 0x8227,
+        RG_INTEGER : 0x8228,
+        R8 : 0x8229,
+        RG8 : 0x822B,
+        R16F : 0x822D,
+        R32F : 0x822E,
+        RG16F : 0x822F,
+        RG32F : 0x8230,
+        R8I : 0x8231,
+        R8UI : 0x8232,
+        R16I : 0x8233,
+        R16UI : 0x8234,
+        R32I : 0x8235,
+        R32UI : 0x8236,
+        RG8I : 0x8237,
+        RG8UI : 0x8238,
+        RG16I : 0x8239,
+        RG16UI : 0x823A,
+        RG32I : 0x823B,
+        RG32UI : 0x823C,
+        VERTEX_ARRAY_BINDING : 0x85B5,
+        R8_SNORM : 0x8F94,
+        RG8_SNORM : 0x8F95,
+        RGB8_SNORM : 0x8F96,
+        RGBA8_SNORM : 0x8F97,
+        SIGNED_NORMALIZED : 0x8F9C,
+        COPY_READ_BUFFER : 0x8F36,
+        COPY_WRITE_BUFFER : 0x8F37,
+        COPY_READ_BUFFER_BINDING : 0x8F36, // Same as COPY_READ_BUFFER
+        COPY_WRITE_BUFFER_BINDING : 0x8F37, // Same as COPY_WRITE_BUFFER
+        UNIFORM_BUFFER : 0x8A11,
+        UNIFORM_BUFFER_BINDING : 0x8A28,
+        UNIFORM_BUFFER_START : 0x8A29,
+        UNIFORM_BUFFER_SIZE : 0x8A2A,
+        MAX_VERTEX_UNIFORM_BLOCKS : 0x8A2B,
+        MAX_FRAGMENT_UNIFORM_BLOCKS : 0x8A2D,
+        MAX_COMBINED_UNIFORM_BLOCKS : 0x8A2E,
+        MAX_UNIFORM_BUFFER_BINDINGS : 0x8A2F,
+        MAX_UNIFORM_BLOCK_SIZE : 0x8A30,
+        MAX_COMBINED_VERTEX_UNIFORM_COMPONENTS : 0x8A31,
+        MAX_COMBINED_FRAGMENT_UNIFORM_COMPONENTS : 0x8A33,
+        UNIFORM_BUFFER_OFFSET_ALIGNMENT : 0x8A34,
+        ACTIVE_UNIFORM_BLOCKS : 0x8A36,
+        UNIFORM_TYPE : 0x8A37,
+        UNIFORM_SIZE : 0x8A38,
+        UNIFORM_BLOCK_INDEX : 0x8A3A,
+        UNIFORM_OFFSET : 0x8A3B,
+        UNIFORM_ARRAY_STRIDE : 0x8A3C,
+        UNIFORM_MATRIX_STRIDE : 0x8A3D,
+        UNIFORM_IS_ROW_MAJOR : 0x8A3E,
+        UNIFORM_BLOCK_BINDING : 0x8A3F,
+        UNIFORM_BLOCK_DATA_SIZE : 0x8A40,
+        UNIFORM_BLOCK_ACTIVE_UNIFORMS : 0x8A42,
+        UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES : 0x8A43,
+        UNIFORM_BLOCK_REFERENCED_BY_VERTEX_SHADER : 0x8A44,
+        UNIFORM_BLOCK_REFERENCED_BY_FRAGMENT_SHADER : 0x8A46,
+        INVALID_INDEX : 0xFFFFFFFF,
+        MAX_VERTEX_OUTPUT_COMPONENTS : 0x9122,
+        MAX_FRAGMENT_INPUT_COMPONENTS : 0x9125,
+        MAX_SERVER_WAIT_TIMEOUT : 0x9111,
+        OBJECT_TYPE : 0x9112,
+        SYNC_CONDITION : 0x9113,
+        SYNC_STATUS : 0x9114,
+        SYNC_FLAGS : 0x9115,
+        SYNC_FENCE : 0x9116,
+        SYNC_GPU_COMMANDS_COMPLETE : 0x9117,
+        UNSIGNALED : 0x9118,
+        SIGNALED : 0x9119,
+        ALREADY_SIGNALED : 0x911A,
+        TIMEOUT_EXPIRED : 0x911B,
+        CONDITION_SATISFIED : 0x911C,
+        WAIT_FAILED : 0x911D,
+        SYNC_FLUSH_COMMANDS_BIT : 0x00000001,
+        VERTEX_ATTRIB_ARRAY_DIVISOR : 0x88FE,
+        ANY_SAMPLES_PASSED : 0x8C2F,
+        ANY_SAMPLES_PASSED_CONSERVATIVE : 0x8D6A,
+        SAMPLER_BINDING : 0x8919,
+        RGB10_A2UI : 0x906F,
+        INT_2_10_10_10_REV : 0x8D9F,
+        TRANSFORM_FEEDBACK : 0x8E22,
+        TRANSFORM_FEEDBACK_PAUSED : 0x8E23,
+        TRANSFORM_FEEDBACK_ACTIVE : 0x8E24,
+        TRANSFORM_FEEDBACK_BINDING : 0x8E25,
+        COMPRESSED_R11_EAC : 0x9270,
+        COMPRESSED_SIGNED_R11_EAC : 0x9271,
+        COMPRESSED_RG11_EAC : 0x9272,
+        COMPRESSED_SIGNED_RG11_EAC : 0x9273,
+        COMPRESSED_RGB8_ETC2 : 0x9274,
+        COMPRESSED_SRGB8_ETC2 : 0x9275,
+        COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2 : 0x9276,
+        COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2 : 0x9277,
+        COMPRESSED_RGBA8_ETC2_EAC : 0x9278,
+        COMPRESSED_SRGB8_ALPHA8_ETC2_EAC : 0x9279,
+        TEXTURE_IMMUTABLE_FORMAT : 0x912F,
+        MAX_ELEMENT_INDEX : 0x8D6B,
+        TEXTURE_IMMUTABLE_LEVELS : 0x82DF
+    };
+
+    return freezeObject(WebGLConstants);
+});
+
+/*global define*/
+define('Core/ComponentDatatype',[
+        '../Renderer/WebGLConstants',
+        './defaultValue',
+        './defined',
+        './DeveloperError',
+        './FeatureDetection',
+        './freezeObject'
+    ], function(
+        WebGLConstants,
+        defaultValue,
+        defined,
+        DeveloperError,
+        FeatureDetection,
+        freezeObject) {
+    "use strict";
+
+    // Bail out if the browser doesn't support typed arrays, to prevent the setup function
+    // from failing, since we won't be able to create a WebGL context anyway.
+    if (!FeatureDetection.supportsTypedArrays()) {
+        return {};
+    }
+
+    /**
+     * WebGL component datatypes.  Components are intrinsics,
+     * which form attributes, which form vertices.
+     *
+     * @exports ComponentDatatype
+     */
+    var ComponentDatatype = {
+        /**
+         * 8-bit signed byte corresponding to <code>gl.BYTE</code> and the type
+         * of an element in <code>Int8Array</code>.
+         *
+         * @type {Number}
+         * @constant
+         */
+        BYTE : WebGLConstants.BYTE,
+
+        /**
+         * 8-bit unsigned byte corresponding to <code>UNSIGNED_BYTE</code> and the type
+         * of an element in <code>Uint8Array</code>.
+         *
+         * @type {Number}
+         * @constant
+         */
+        UNSIGNED_BYTE : WebGLConstants.UNSIGNED_BYTE,
+
+        /**
+         * 16-bit signed short corresponding to <code>SHORT</code> and the type
+         * of an element in <code>Int16Array</code>.
+         *
+         * @type {Number}
+         * @constant
+         */
+        SHORT : WebGLConstants.SHORT,
+
+        /**
+         * 16-bit unsigned short corresponding to <code>UNSIGNED_SHORT</code> and the type
+         * of an element in <code>Uint16Array</code>.
+         *
+         * @type {Number}
+         * @constant
+         */
+        UNSIGNED_SHORT : WebGLConstants.UNSIGNED_SHORT,
+
+        /**
+         * 32-bit floating-point corresponding to <code>FLOAT</code> and the type
+         * of an element in <code>Float32Array</code>.
+         *
+         * @type {Number}
+         * @constant
+         */
+        FLOAT : WebGLConstants.FLOAT,
+
+        /**
+         * 64-bit floating-point corresponding to <code>gl.DOUBLE</code> (in Desktop OpenGL;
+         * this is not supported in WebGL, and is emulated in Cesium via {@link GeometryPipeline.encodeAttribute})
+         * and the type of an element in <code>Float64Array</code>.
+         *
+         * @memberOf ComponentDatatype
+         *
+         * @type {Number}
+         * @constant
+         * @default 0x140A
+         */
+        DOUBLE : WebGLConstants.DOUBLE
+    };
+
+    /**
+     * Returns the size, in bytes, of the corresponding datatype.
+     *
+     * @param {ComponentDatatype} componentDatatype The component datatype to get the size of.
+     * @returns {Number} The size in bytes.
+     *
+     * @exception {DeveloperError} componentDatatype is not a valid value.
+     *
+     * @example
+     * // Returns Int8Array.BYTES_PER_ELEMENT
+     * var size = Cesium.ComponentDatatype.getSizeInBytes(Cesium.ComponentDatatype.BYTE);
+     */
+    ComponentDatatype.getSizeInBytes = function(componentDatatype){
+                if (!defined(componentDatatype)) {
+            throw new DeveloperError('value is required.');
+        }
+        
+        switch (componentDatatype) {
+        case ComponentDatatype.BYTE:
+            return Int8Array.BYTES_PER_ELEMENT;
+        case ComponentDatatype.UNSIGNED_BYTE:
+            return Uint8Array.BYTES_PER_ELEMENT;
+        case ComponentDatatype.SHORT:
+            return Int16Array.BYTES_PER_ELEMENT;
+        case ComponentDatatype.UNSIGNED_SHORT:
+            return Uint16Array.BYTES_PER_ELEMENT;
+        case ComponentDatatype.FLOAT:
+            return Float32Array.BYTES_PER_ELEMENT;
+        case ComponentDatatype.DOUBLE:
+            return Float64Array.BYTES_PER_ELEMENT;
+        default:
+            throw new DeveloperError('componentDatatype is not a valid value.');
+        }
+    };
+
+    /**
+     * Gets the ComponentDatatype for the provided TypedArray instance.
+     *
+     * @param {TypedArray} array The typed array.
+     * @returns {ComponentDatatype} The ComponentDatatype for the provided array, or undefined if the array is not a TypedArray.
+     */
+    ComponentDatatype.fromTypedArray = function(array) {
+        if (array instanceof Int8Array) {
+            return ComponentDatatype.BYTE;
+        }
+        if (array instanceof Uint8Array) {
+            return ComponentDatatype.UNSIGNED_BYTE;
+        }
+        if (array instanceof Int16Array) {
+            return ComponentDatatype.SHORT;
+        }
+        if (array instanceof Uint16Array) {
+            return ComponentDatatype.UNSIGNED_SHORT;
+        }
+        if (array instanceof Float32Array) {
+            return ComponentDatatype.FLOAT;
+        }
+        if (array instanceof Float64Array) {
+            return ComponentDatatype.DOUBLE;
+        }
+    };
+
+    /**
+     * Validates that the provided component datatype is a valid {@link ComponentDatatype}
+     *
+     * @param {ComponentDatatype} componentDatatype The component datatype to validate.
+     * @returns {Boolean} <code>true</code> if the provided component datatype is a valid value; otherwise, <code>false</code>.
+     *
+     * @example
+     * if (!Cesium.ComponentDatatype.validate(componentDatatype)) {
+     *   throw new Cesium.DeveloperError('componentDatatype must be a valid value.');
+     * }
+     */
+    ComponentDatatype.validate = function(componentDatatype) {
+        return defined(componentDatatype) &&
+               (componentDatatype === ComponentDatatype.BYTE ||
+                componentDatatype === ComponentDatatype.UNSIGNED_BYTE ||
+                componentDatatype === ComponentDatatype.SHORT ||
+                componentDatatype === ComponentDatatype.UNSIGNED_SHORT ||
+                componentDatatype === ComponentDatatype.FLOAT ||
+                componentDatatype === ComponentDatatype.DOUBLE);
+    };
+
+    /**
+     * Creates a typed array corresponding to component data type.
+     *
+     * @param {ComponentDatatype} componentDatatype The component data type.
+     * @param {Number|Array} valuesOrLength The length of the array to create or an array.
+     * @returns {Int8Array|Uint8Array|Int16Array|Uint16Array|Float32Array|Float64Array} A typed array.
+     *
+     * @exception {DeveloperError} componentDatatype is not a valid value.
+     *
+     * @example
+     * // creates a Float32Array with length of 100
+     * var typedArray = Cesium.ComponentDatatype.createTypedArray(Cesium.ComponentDatatype.FLOAT, 100);
+     */
+    ComponentDatatype.createTypedArray = function(componentDatatype, valuesOrLength) {
+                if (!defined(componentDatatype)) {
+            throw new DeveloperError('componentDatatype is required.');
+        }
+        if (!defined(valuesOrLength)) {
+            throw new DeveloperError('valuesOrLength is required.');
+        }
+        
+        switch (componentDatatype) {
+        case ComponentDatatype.BYTE:
+            return new Int8Array(valuesOrLength);
+        case ComponentDatatype.UNSIGNED_BYTE:
+            return new Uint8Array(valuesOrLength);
+        case ComponentDatatype.SHORT:
+            return new Int16Array(valuesOrLength);
+        case ComponentDatatype.UNSIGNED_SHORT:
+            return new Uint16Array(valuesOrLength);
+        case ComponentDatatype.FLOAT:
+            return new Float32Array(valuesOrLength);
+        case ComponentDatatype.DOUBLE:
+            return new Float64Array(valuesOrLength);
+        default:
+            throw new DeveloperError('componentDatatype is not a valid value.');
+        }
+    };
+
+    /**
+     * Creates a typed view of an array of bytes.
+     *
+     * @param {ComponentDatatype} componentDatatype The type of the view to create.
+     * @param {ArrayBuffer} buffer The buffer storage to use for the view.
+     * @param {Number} [byteOffset] The offset, in bytes, to the first element in the view.
+     * @param {Number} [length] The number of elements in the view.
+     * @returns {Int8Array|Uint8Array|Int16Array|Uint16Array|Float32Array|Float64Array} A typed array view of the buffer.
+     *
+     * @exception {DeveloperError} componentDatatype is not a valid value.
+     */
+    ComponentDatatype.createArrayBufferView = function(componentDatatype, buffer, byteOffset, length) {
+                if (!defined(componentDatatype)) {
+            throw new DeveloperError('componentDatatype is required.');
+        }
+        if (!defined(buffer)) {
+            throw new DeveloperError('buffer is required.');
+        }
+        
+        byteOffset = defaultValue(byteOffset, 0);
+        length = defaultValue(length, (buffer.byteLength - byteOffset) / ComponentDatatype.getSizeInBytes(componentDatatype));
+
+        switch (componentDatatype) {
+        case ComponentDatatype.BYTE:
+            return new Int8Array(buffer, byteOffset, length);
+        case ComponentDatatype.UNSIGNED_BYTE:
+            return new Uint8Array(buffer, byteOffset, length);
+        case ComponentDatatype.SHORT:
+            return new Int16Array(buffer, byteOffset, length);
+        case ComponentDatatype.UNSIGNED_SHORT:
+            return new Uint16Array(buffer, byteOffset, length);
+        case ComponentDatatype.FLOAT:
+            return new Float32Array(buffer, byteOffset, length);
+        case ComponentDatatype.DOUBLE:
+            return new Float64Array(buffer, byteOffset, length);
+        default:
+            throw new DeveloperError('componentDatatype is not a valid value.');
+        }
+    };
+
+    return freezeObject(ComponentDatatype);
+});
+
+/*global define*/
+define('Core/TerrainQuantization',[
+        './freezeObject'
+    ], function(
+        freezeObject) {
+    "use strict";
+
+    /**
+     * This enumerated type is used to determine how the vertices of the terrain mesh are compressed.
+     *
+     * @exports TerrainQuantization
+     *
+     * @private
+     */
+    var TerrainQuantization = {
+        /**
+         * The vertices are not compressed.
+         *
+         * @type {Number}
+         * @constant
+         */
+        NONE : 0,
+
+        /**
+         * The vertices are compressed to 12 bits.
+         *
+         * @type {Number}
+         * @constant
+         */
+        BITS12 : 1
+    };
+
+    return freezeObject(TerrainQuantization);
+});
+
+/*global define*/
+define('Core/TerrainEncoding',[
+        './AttributeCompression',
+        './Cartesian2',
+        './Cartesian3',
+        './ComponentDatatype',
+        './defined',
+        './Math',
+        './Matrix3',
+        './Matrix4',
+        './TerrainQuantization'
+    ], function(
+        AttributeCompression,
+        Cartesian2,
+        Cartesian3,
+        ComponentDatatype,
+        defined,
+        CesiumMath,
+        Matrix3,
+        Matrix4,
+        TerrainQuantization
+    ) {
+    "use strict";
+
+    var cartesian3Scratch = new Cartesian3();
+    var cartesian3DimScratch = new Cartesian3();
+    var cartesian2Scratch = new Cartesian2();
+    var matrix4Scratch = new Matrix4();
+    var matrix4Scratch2 = new Matrix4();
+
+    var SHIFT_LEFT_12 = Math.pow(2.0, 12.0);
+
+    /**
+     * Data used to quantize and pack the terrain mesh. The position can be unpacked for picking and all attributes
+     * are unpacked in the vertex shader.
+     *
+     * @alias TerrainEncoding
+     * @constructor
+     *
+     * @param {AxisAlignedBoundingBox} axisAlignedBoundingBox The bounds of the tile in the east-north-up coordinates at the tiles center.
+     * @param {Number} minimumHeight The minimum height.
+     * @param {Number} maximumHeight The maximum height.
+     * @param {Matrix4} fromENU The east-north-up to fixed frame matrix at the center of the terrain mesh.
+     * @param {Boolean} hasVertexNormals If the mesh has vertex normals.
+     *
+     * @private
+     */
+    function TerrainEncoding(axisAlignedBoundingBox, minimumHeight, maximumHeight, fromENU, hasVertexNormals) {
+        var quantization;
+        var center;
+        var toENU;
+        var matrix;
+
+        if (defined(axisAlignedBoundingBox) && defined(minimumHeight) && defined(maximumHeight) && defined(fromENU)) {
+            var minimum = axisAlignedBoundingBox.minimum;
+            var maximum = axisAlignedBoundingBox.maximum;
+
+            var dimensions = Cartesian3.subtract(maximum, minimum, cartesian3DimScratch);
+            var hDim = maximumHeight - minimumHeight;
+            var maxDim = Math.max(Cartesian3.maximumComponent(dimensions), hDim);
+
+            if (maxDim < SHIFT_LEFT_12 - 1.0) {
+                quantization = TerrainQuantization.BITS12;
+            } else {
+                quantization = TerrainQuantization.NONE;
+            }
+
+            center = axisAlignedBoundingBox.center;
+            toENU = Matrix4.inverseTransformation(fromENU, new Matrix4());
+
+            var translation = Cartesian3.negate(minimum, cartesian3Scratch);
+            Matrix4.multiply(Matrix4.fromTranslation(translation, matrix4Scratch), toENU, toENU);
+
+            var scale = cartesian3Scratch;
+            scale.x = 1.0 / dimensions.x;
+            scale.y = 1.0 / dimensions.y;
+            scale.z = 1.0 / dimensions.z;
+            Matrix4.multiply(Matrix4.fromScale(scale, matrix4Scratch), toENU, toENU);
+
+            matrix = Matrix4.clone(fromENU);
+            Matrix4.setTranslation(matrix, Cartesian3.ZERO, matrix);
+
+            fromENU = Matrix4.clone(fromENU, new Matrix4());
+
+            var translationMatrix = Matrix4.fromTranslation(minimum, matrix4Scratch);
+            var scaleMatrix =  Matrix4.fromScale(dimensions, matrix4Scratch2);
+            var st = Matrix4.multiply(translationMatrix, scaleMatrix,matrix4Scratch);
+
+            Matrix4.multiply(fromENU, st, fromENU);
+            Matrix4.multiply(matrix, st, matrix);
+        }
+
+        /**
+         * How the vertices of the mesh were compressed.
+         * @type {TerrainQuantization}
+         */
+        this.quantization = quantization;
+
+        /**
+         * The minimum height of the tile including the skirts.
+         * @type {Number}
+         */
+        this.minimumHeight = minimumHeight;
+
+        /**
+         * The maximum height of the tile.
+         * @type {Number}
+         */
+        this.maximumHeight = maximumHeight;
+
+        /**
+         * The center of the tile.
+         * @type {Cartesian3}
+         */
+        this.center = center;
+
+        /**
+         * A matrix that takes a vertex from the tile, transforms it to east-north-up at the center and scales
+         * it so each component is in the [0, 1] range.
+         * @type {Matrix4}
+         */
+        this.toScaledENU = toENU;
+
+        /**
+         * A matrix that restores a vertex transformed with toScaledENU back to the earth fixed reference frame
+         * @type {Matrix4}
+         */
+        this.fromScaledENU = fromENU;
+
+        /**
+         * The matrix used to decompress the terrain vertices in the shader for RTE rendering.
+         * @type {Matrix4}
+         */
+        this.matrix = matrix;
+
+        /**
+         * The terrain mesh contains normals.
+         * @type {Boolean}
+         */
+        this.hasVertexNormals = hasVertexNormals;
+    }
+    TerrainEncoding.prototype.encode = function(vertexBuffer, bufferIndex, position, uv, height, normalToPack) {
+        var u = uv.x;
+        var v = uv.y;
+
+        if (this.quantization === TerrainQuantization.BITS12) {
+            position = Matrix4.multiplyByPoint(this.toScaledENU, position, cartesian3Scratch);
+
+            position.x = CesiumMath.clamp(position.x, 0.0, 1.0);
+            position.y = CesiumMath.clamp(position.y, 0.0, 1.0);
+            position.z = CesiumMath.clamp(position.z, 0.0, 1.0);
+
+            var hDim = this.maximumHeight - this.minimumHeight;
+            var h = CesiumMath.clamp((height - this.minimumHeight) / hDim, 0.0, 1.0);
+
+            Cartesian2.fromElements(position.x, position.y, cartesian2Scratch);
+            var compressed0 = AttributeCompression.compressTextureCoordinates(cartesian2Scratch);
+
+            Cartesian2.fromElements(position.z, h, cartesian2Scratch);
+            var compressed1 = AttributeCompression.compressTextureCoordinates(cartesian2Scratch);
+
+            Cartesian2.fromElements(u, v, cartesian2Scratch);
+            var compressed2 = AttributeCompression.compressTextureCoordinates(cartesian2Scratch);
+
+            vertexBuffer[bufferIndex++] = compressed0;
+            vertexBuffer[bufferIndex++] = compressed1;
+            vertexBuffer[bufferIndex++] = compressed2;
+        } else {
+            Cartesian3.subtract(position, this.center, cartesian3Scratch);
+
+            vertexBuffer[bufferIndex++] = cartesian3Scratch.x;
+            vertexBuffer[bufferIndex++] = cartesian3Scratch.y;
+            vertexBuffer[bufferIndex++] = cartesian3Scratch.z;
+            vertexBuffer[bufferIndex++] = height;
+            vertexBuffer[bufferIndex++] = u;
+            vertexBuffer[bufferIndex++] = v;
+        }
+
+        if (this.hasVertexNormals) {
+            vertexBuffer[bufferIndex++] = AttributeCompression.octPackFloat(normalToPack);
+        }
+
+        return bufferIndex;
+    };
+
+    TerrainEncoding.prototype.decodePosition = function(buffer, index, result) {
+        if (!defined(result)) {
+            result = new Cartesian3();
+        }
+
+        index *= this.getStride();
+
+        if (this.quantization === TerrainQuantization.BITS12) {
+            var xy = AttributeCompression.decompressTextureCoordinates(buffer[index], cartesian2Scratch);
+            result.x = xy.x;
+            result.y = xy.y;
+
+            var zh = AttributeCompression.decompressTextureCoordinates(buffer[index + 1], cartesian2Scratch);
+            result.z = zh.x;
+
+            return Matrix4.multiplyByPoint(this.fromScaledENU, result, result);
+        }
+
+        result.x = buffer[index];
+        result.y = buffer[index + 1];
+        result.z = buffer[index + 2];
+        return Cartesian3.add(result, this.center, result);
+    };
+
+    TerrainEncoding.prototype.getStride = function() {
+        var vertexStride;
+
+        switch (this.quantization) {
+            case TerrainQuantization.BITS12:
+                vertexStride = 3;
+                break;
+            default:
+                vertexStride = 6;
+        }
+
+        if (this.hasVertexNormals) {
+            ++vertexStride;
+        }
+
+        return vertexStride;
+    };
+
+    var attributesNone = {
+        position3DAndHeight : 0,
+        textureCoordAndEncodedNormals : 1
+    };
+    var attributes = {
+        compressed : 0
+    };
+
+    TerrainEncoding.prototype.getAttributes = function(buffer) {
+        var datatype = ComponentDatatype.FLOAT;
+
+        if (this.quantization === TerrainQuantization.NONE) {
+            var sizeInBytes = ComponentDatatype.getSizeInBytes(datatype);
+            var position3DAndHeightLength = 4;
+            var numTexCoordComponents = this.hasVertexNormals ? 3 : 2;
+            var stride = (this.hasVertexNormals ? 7 : 6) * sizeInBytes;
+            return [{
+                index : attributesNone.position3DAndHeight,
+                vertexBuffer : buffer,
+                componentDatatype : datatype,
+                componentsPerAttribute : position3DAndHeightLength,
+                offsetInBytes : 0,
+                strideInBytes : stride
+            }, {
+                index : attributesNone.textureCoordAndEncodedNormals,
+                vertexBuffer : buffer,
+                componentDatatype : datatype,
+                componentsPerAttribute : numTexCoordComponents,
+                offsetInBytes : position3DAndHeightLength * sizeInBytes,
+                strideInBytes : stride
+            }];
+        }
+
+        var numComponents = 3;
+        numComponents += this.hasVertexNormals ? 1 : 0;
+        return [{
+            index : attributes.compressed,
+            vertexBuffer : buffer,
+            componentDatatype : datatype,
+            componentsPerAttribute : numComponents
+        }];
+    };
+
+    TerrainEncoding.prototype.getAttributeLocations = function() {
+        if (this.quantization === TerrainQuantization.NONE) {
+            return attributesNone;
+        } else {
+            return attributes;
+        }
+    };
+
+    TerrainEncoding.clone = function(encoding, result) {
+        if (!defined(result)) {
+            result = new TerrainEncoding();
+        }
+
+        result.quantization = encoding.quantization;
+        result.minimumHeight = encoding.minimumHeight;
+        result.maximumHeight = encoding.maximumHeight;
+        result.center = Cartesian3.clone(encoding.center);
+        result.toScaledENU = Matrix4.clone(encoding.toScaledENU);
+        result.fromScaledENU = Matrix4.clone(encoding.fromScaledENU);
+        result.matrix = Matrix4.clone(encoding.matrix);
+        result.hasVertexNormals = encoding.hasVertexNormals;
+        return result;
+    };
+
+    return TerrainEncoding;
+});
+
+/*global define*/
+define('Core/HeightmapTessellator',[
+        './AxisAlignedBoundingBox',
+        './BoundingSphere',
+        './Cartesian2',
+        './Cartesian3',
+        './defaultValue',
+        './defined',
+        './DeveloperError',
+        './Ellipsoid',
+        './EllipsoidalOccluder',
+        './freezeObject',
+        './Math',
+        './Matrix4',
+        './OrientedBoundingBox',
+        './Rectangle',
+        './TerrainEncoding',
+        './Transforms'
+    ], function(
+        AxisAlignedBoundingBox,
+        BoundingSphere,
+        Cartesian2,
+        Cartesian3,
+        defaultValue,
+        defined,
+        DeveloperError,
+        Ellipsoid,
+        EllipsoidalOccluder,
+        freezeObject,
+        CesiumMath,
+        Matrix4,
+        OrientedBoundingBox,
+        Rectangle,
+        TerrainEncoding,
+        Transforms) {
+    "use strict";
+
+    /**
+     * Contains functions to create a mesh from a heightmap image.
+     *
+     * @exports HeightmapTessellator
+     *
+     * @private
+     */
+    var HeightmapTessellator = {};
+
+    /**
+     * The default structure of a heightmap, as given to {@link HeightmapTessellator.computeVertices}.
+     *
+     * @constant
+     */
+    HeightmapTessellator.DEFAULT_STRUCTURE = freezeObject({
+        heightScale : 1.0,
+        heightOffset : 0.0,
+        elementsPerHeight : 1,
+        stride : 1,
+        elementMultiplier : 256.0,
+        isBigEndian : false
+    });
+
+    var cartesian3Scratch = new Cartesian3();
+    var matrix4Scratch = new Matrix4();
+    var minimumScratch = new Cartesian3();
+    var maximumScratch = new Cartesian3();
+
+    /**
+     * Fills an array of vertices from a heightmap image.
+     *
+     * @param {Object} options Object with the following properties:
+     * @param {TypedArray} options.heightmap The heightmap to tessellate.
+     * @param {Number} options.width The width of the heightmap, in height samples.
+     * @param {Number} options.height The height of the heightmap, in height samples.
+     * @param {Number} options.skirtHeight The height of skirts to drape at the edges of the heightmap.
+     * @param {Rectangle} options.nativeRectangle An rectangle in the native coordinates of the heightmap's projection.  For
+     *                 a heightmap with a geographic projection, this is degrees.  For the web mercator
+     *                 projection, this is meters.
+     * @param {Number} [options.exaggeration=1.0] The scale used to exaggerate the terrain.
+     * @param {Rectangle} [options.rectangle] The rectangle covered by the heightmap, in geodetic coordinates with north, south, east and
+     *                 west properties in radians.  Either rectangle or nativeRectangle must be provided.  If both
+     *                 are provided, they're assumed to be consistent.
+     * @param {Boolean} [options.isGeographic=true] True if the heightmap uses a {@link GeographicProjection}, or false if it uses
+     *                  a {@link WebMercatorProjection}.
+     * @param {Cartesian3} [options.relativetoCenter=Cartesian3.ZERO] The positions will be computed as <code>Cartesian3.subtract(worldPosition, relativeToCenter)</code>.
+     * @param {Ellipsoid} [options.ellipsoid=Ellipsoid.WGS84] The ellipsoid to which the heightmap applies.
+     * @param {Object} [options.structure] An object describing the structure of the height data.
+     * @param {Number} [options.structure.heightScale=1.0] The factor by which to multiply height samples in order to obtain
+     *                 the height above the heightOffset, in meters.  The heightOffset is added to the resulting
+     *                 height after multiplying by the scale.
+     * @param {Number} [options.structure.heightOffset=0.0] The offset to add to the scaled height to obtain the final
+     *                 height in meters.  The offset is added after the height sample is multiplied by the
+     *                 heightScale.
+     * @param {Number} [options.structure.elementsPerHeight=1] The number of elements in the buffer that make up a single height
+     *                 sample.  This is usually 1, indicating that each element is a separate height sample.  If
+     *                 it is greater than 1, that number of elements together form the height sample, which is
+     *                 computed according to the structure.elementMultiplier and structure.isBigEndian properties.
+     * @param {Number} [options.structure.stride=1] The number of elements to skip to get from the first element of
+     *                 one height to the first element of the next height.
+     * @param {Number} [options.structure.elementMultiplier=256.0] The multiplier used to compute the height value when the
+     *                 stride property is greater than 1.  For example, if the stride is 4 and the strideMultiplier
+     *                 is 256, the height is computed as follows:
+     *                 `height = buffer[index] + buffer[index + 1] * 256 + buffer[index + 2] * 256 * 256 + buffer[index + 3] * 256 * 256 * 256`
+     *                 This is assuming that the isBigEndian property is false.  If it is true, the order of the
+     *                 elements is reversed.
+     * @param {Boolean} [options.structure.isBigEndian=false] Indicates endianness of the elements in the buffer when the
+     *                  stride property is greater than 1.  If this property is false, the first element is the
+     *                  low-order element.  If it is true, the first element is the high-order element.
+     *
+     * @example
+     * var width = 5;
+     * var height = 5;
+     * var statistics = Cesium.HeightmapTessellator.computeVertices({
+     *     heightmap : [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0],
+     *     width : width,
+     *     height : height,
+     *     skirtHeight : 0.0,
+     *     nativeRectangle : {
+     *         west : 10.0,
+     *         east : 20.0,
+     *         south : 30.0,
+     *         north : 40.0
+     *     }
+     * });
+     *
+     * var encoding = statistics.encoding;
+     * var position = encoding.decodePosition(statistics.vertices, index * encoding.getStride());
+     */
+    HeightmapTessellator.computeVertices = function(options) {
+                if (!defined(options) || !defined(options.heightmap)) {
+            throw new DeveloperError('options.heightmap is required.');
+        }
+        if (!defined(options.width) || !defined(options.height)) {
+            throw new DeveloperError('options.width and options.height are required.');
+        }
+        if (!defined(options.nativeRectangle)) {
+            throw new DeveloperError('options.nativeRectangle is required.');
+        }
+        if (!defined(options.skirtHeight)) {
+            throw new DeveloperError('options.skirtHeight is required.');
+        }
+        
+        // This function tends to be a performance hotspot for terrain rendering,
+        // so it employs a lot of inlining and unrolling as an optimization.
+        // In particular, the functionality of Ellipsoid.cartographicToCartesian
+        // is inlined.
+
+        var cos = Math.cos;
+        var sin = Math.sin;
+        var sqrt = Math.sqrt;
+        var atan = Math.atan;
+        var exp = Math.exp;
+        var piOverTwo = CesiumMath.PI_OVER_TWO;
+        var toRadians = CesiumMath.toRadians;
+
+        var heightmap = options.heightmap;
+        var width = options.width;
+        var height = options.height;
+        var skirtHeight = options.skirtHeight;
+
+        var isGeographic = defaultValue(options.isGeographic, true);
+        var ellipsoid = defaultValue(options.ellipsoid, Ellipsoid.WGS84);
+
+        var oneOverGlobeSemimajorAxis = 1.0 / ellipsoid.maximumRadius;
+
+        var nativeRectangle = options.nativeRectangle;
+
+        var geographicWest;
+        var geographicSouth;
+        var geographicEast;
+        var geographicNorth;
+
+        var rectangle = options.rectangle;
+        if (!defined(rectangle)) {
+            if (isGeographic) {
+                geographicWest = toRadians(nativeRectangle.west);
+                geographicSouth = toRadians(nativeRectangle.south);
+                geographicEast = toRadians(nativeRectangle.east);
+                geographicNorth = toRadians(nativeRectangle.north);
+            } else {
+                geographicWest = nativeRectangle.west * oneOverGlobeSemimajorAxis;
+                geographicSouth = piOverTwo - (2.0 * atan(exp(-nativeRectangle.south * oneOverGlobeSemimajorAxis)));
+                geographicEast = nativeRectangle.east * oneOverGlobeSemimajorAxis;
+                geographicNorth = piOverTwo - (2.0 * atan(exp(-nativeRectangle.north * oneOverGlobeSemimajorAxis)));
+            }
+        } else {
+            geographicWest = rectangle.west;
+            geographicSouth = rectangle.south;
+            geographicEast = rectangle.east;
+            geographicNorth = rectangle.north;
+        }
+
+        var relativeToCenter = defaultValue(options.relativeToCenter, Cartesian3.ZERO);
+        var exaggeration = defaultValue(options.exaggeration, 1.0);
+
+        var structure = defaultValue(options.structure, HeightmapTessellator.DEFAULT_STRUCTURE);
+        var heightScale = defaultValue(structure.heightScale, HeightmapTessellator.DEFAULT_STRUCTURE.heightScale);
+        var heightOffset = defaultValue(structure.heightOffset, HeightmapTessellator.DEFAULT_STRUCTURE.heightOffset);
+        var elementsPerHeight = defaultValue(structure.elementsPerHeight, HeightmapTessellator.DEFAULT_STRUCTURE.elementsPerHeight);
+        var stride = defaultValue(structure.stride, HeightmapTessellator.DEFAULT_STRUCTURE.stride);
+        var elementMultiplier = defaultValue(structure.elementMultiplier, HeightmapTessellator.DEFAULT_STRUCTURE.elementMultiplier);
+        var isBigEndian = defaultValue(structure.isBigEndian, HeightmapTessellator.DEFAULT_STRUCTURE.isBigEndian);
+
+        var granularityX = Rectangle.computeWidth(nativeRectangle) / (width - 1);
+        var granularityY = Rectangle.computeHeight(nativeRectangle) / (height - 1);
+
+        var radiiSquared = ellipsoid.radiiSquared;
+        var radiiSquaredX = radiiSquared.x;
+        var radiiSquaredY = radiiSquared.y;
+        var radiiSquaredZ = radiiSquared.z;
+
+        var minimumHeight = 65536.0;
+        var maximumHeight = -65536.0;
+
+        var fromENU = Transforms.eastNorthUpToFixedFrame(relativeToCenter, ellipsoid);
+        var toENU = Matrix4.inverseTransformation(fromENU, matrix4Scratch);
+
+        var minimum = minimumScratch;
+        minimum.x = Number.POSITIVE_INFINITY;
+        minimum.y = Number.POSITIVE_INFINITY;
+        minimum.z = Number.POSITIVE_INFINITY;
+
+        var maximum = maximumScratch;
+        maximum.x = Number.NEGATIVE_INFINITY;
+        maximum.y = Number.NEGATIVE_INFINITY;
+        maximum.z = Number.NEGATIVE_INFINITY;
+
+        var hMin = Number.POSITIVE_INFINITY;
+
+        var arrayWidth = width + (skirtHeight > 0.0 ? 2.0 : 0.0);
+        var arrayHeight = height + (skirtHeight > 0.0 ? 2.0 : 0.0);
+        var size = arrayWidth * arrayHeight;
+        var positions = new Array(size);
+        var heights = new Array(size);
+        var uvs = new Array(size);
+
+        var startRow = 0;
+        var endRow = height;
+        var startCol = 0;
+        var endCol = width;
+
+        if (skirtHeight > 0) {
+            --startRow;
+            ++endRow;
+            --startCol;
+            ++endCol;
+        }
+
+        var index = 0;
+
+        for (var rowIndex = startRow; rowIndex < endRow; ++rowIndex) {
+            var row = rowIndex;
+            if (row < 0) {
+                row = 0;
+            }
+            if (row >= height) {
+                row = height - 1;
+            }
+
+            var latitude = nativeRectangle.north - granularityY * row;
+
+            if (!isGeographic) {
+                latitude = piOverTwo - (2.0 * atan(exp(-latitude * oneOverGlobeSemimajorAxis)));
+            } else {
+                latitude = toRadians(latitude);
+            }
+
+            var cosLatitude = cos(latitude);
+            var nZ = sin(latitude);
+            var kZ = radiiSquaredZ * nZ;
+
+            var v = (latitude - geographicSouth) / (geographicNorth - geographicSouth);
+            v = CesiumMath.clamp(v, 0.0, 1.0);
+
+            for (var colIndex = startCol; colIndex < endCol; ++colIndex) {
+                var col = colIndex;
+                if (col < 0) {
+                    col = 0;
+                }
+                if (col >= width) {
+                    col = width - 1;
+                }
+
+                var longitude = nativeRectangle.west + granularityX * col;
+
+                if (!isGeographic) {
+                    longitude = longitude * oneOverGlobeSemimajorAxis;
+                } else {
+                    longitude = toRadians(longitude);
+                }
+
+                var terrainOffset = row * (width * stride) + col * stride;
+
+                var heightSample;
+                if (elementsPerHeight === 1) {
+                    heightSample = heightmap[terrainOffset];
+                } else {
+                    heightSample = 0;
+
+                    var elementOffset;
+                    if (isBigEndian) {
+                        for (elementOffset = 0; elementOffset < elementsPerHeight; ++elementOffset) {
+                            heightSample = (heightSample * elementMultiplier) + heightmap[terrainOffset + elementOffset];
+                        }
+                    } else {
+                        for (elementOffset = elementsPerHeight - 1; elementOffset >= 0; --elementOffset) {
+                            heightSample = (heightSample * elementMultiplier) + heightmap[terrainOffset + elementOffset];
+                        }
+                    }
+                }
+
+                heightSample = (heightSample * heightScale + heightOffset) * exaggeration;
+
+                maximumHeight = Math.max(maximumHeight, heightSample);
+                minimumHeight = Math.min(minimumHeight, heightSample);
+
+                if (colIndex !== col || rowIndex !== row) {
+                    heightSample -= skirtHeight;
+                }
+
+                var nX = cosLatitude * cos(longitude);
+                var nY = cosLatitude * sin(longitude);
+
+                var kX = radiiSquaredX * nX;
+                var kY = radiiSquaredY * nY;
+
+                var gamma = sqrt((kX * nX) + (kY * nY) + (kZ * nZ));
+                var oneOverGamma = 1.0 / gamma;
+
+                var rSurfaceX = kX * oneOverGamma;
+                var rSurfaceY = kY * oneOverGamma;
+                var rSurfaceZ = kZ * oneOverGamma;
+
+                var position = new Cartesian3();
+                position.x = rSurfaceX + nX * heightSample;
+                position.y = rSurfaceY + nY * heightSample;
+                position.z = rSurfaceZ + nZ * heightSample;
+
+                positions[index] = position;
+                heights[index] = heightSample;
+
+                var u = (longitude - geographicWest) / (geographicEast - geographicWest);
+                u = CesiumMath.clamp(u, 0.0, 1.0);
+                uvs[index] = new Cartesian2(u, v);
+
+                index++;
+
+                Matrix4.multiplyByPoint(toENU, position, cartesian3Scratch);
+
+                Cartesian3.minimumByComponent(cartesian3Scratch, minimum, minimum);
+                Cartesian3.maximumByComponent(cartesian3Scratch, maximum, maximum);
+                hMin = Math.min(hMin, heightSample);
+            }
+        }
+
+        var boundingSphere3D = BoundingSphere.fromPoints(positions);
+        var orientedBoundingBox;
+        if (defined(rectangle) && rectangle.width < CesiumMath.PI_OVER_TWO + CesiumMath.EPSILON5) {
+            // Here, rectangle.width < pi/2, and rectangle.height < pi
+            // (though it would still work with rectangle.width up to pi)
+            orientedBoundingBox = OrientedBoundingBox.fromRectangle(rectangle, minimumHeight, maximumHeight, ellipsoid);
+        }
+
+        var occludeePointInScaledSpace;
+        var center = options.relativetoCenter;
+        if (defined(center)) {
+            var occluder = new EllipsoidalOccluder(ellipsoid);
+            occludeePointInScaledSpace = occluder.computeHorizonCullingPointFromPoints(center, positions);
+        }
+
+        var aaBox = new AxisAlignedBoundingBox(minimum, maximum, relativeToCenter);
+        var encoding = new TerrainEncoding(aaBox, hMin, maximumHeight, fromENU, false);
+        var vertices = new Float32Array(size * encoding.getStride());
+
+        var bufferIndex = 0;
+        for (var j = 0; j < size; ++j) {
+            bufferIndex = encoding.encode(vertices, bufferIndex, positions[j], uvs[j], heights[j]);
+        }
+
+        return {
+            vertices : vertices,
+            maximumHeight : maximumHeight,
+            minimumHeight : minimumHeight,
+            encoding : encoding,
+            boundingSphere3D : boundingSphere3D,
+            orientedBoundingBox : orientedBoundingBox,
+            occludeePointInScaledSpace : occludeePointInScaledSpace
+        };
+    };
+
+    return HeightmapTessellator;
+});
+
+/*global define*/
 define('Core/formatError',[
         './defined'
     ], function(
@@ -20949,7 +22595,7 @@ define('Core/formatError',[
      * @param {Object} object The item to find in the array.
      * @returns {String} A string containing the formatted error.
      */
-    var formatError = function(object) {
+    function formatError(object) {
         var result;
 
         var name = object.name;
@@ -20966,10 +22612,11 @@ define('Core/formatError',[
         }
 
         return result;
-    };
+    }
 
     return formatError;
 });
+
 /*global define*/
 define('Workers/createTaskProcessorWorker',[
         '../Core/defaultValue',
@@ -20992,9 +22639,6 @@ define('Workers/createTaskProcessorWorker',[
      * @returns {createTaskProcessorWorker~TaskProcessorWorkerFunction} A function that adapts the
      *          calculation function to work as a Web Worker onmessage listener with TaskProcessor.
      *
-     * @see TaskProcessor
-     * @see {@link http://www.w3.org/TR/workers/|Web Workers}
-     * @see {@link http://www.w3.org/TR/html5/common-dom-interfaces.html#transferable-objects|Transferable objects}
      *
      * @example
      * function doCalculation(parameters, transferableObjects) {
@@ -21004,8 +22648,12 @@ define('Workers/createTaskProcessorWorker',[
      *
      * return Cesium.createTaskProcessorWorker(doCalculation);
      * // the resulting function is compatible with TaskProcessor
+     * 
+     * @see TaskProcessor
+     * @see {@link http://www.w3.org/TR/workers/|Web Workers}
+     * @see {@link http://www.w3.org/TR/html5/common-dom-interfaces.html#transferable-objects|Transferable objects}
      */
-    var createTaskProcessorWorker = function(workerFunction) {
+    function createTaskProcessorWorker(workerFunction) {
         var postMessage;
         var transferableObjects = [];
         var responseMessage = {
@@ -21056,7 +22704,7 @@ define('Workers/createTaskProcessorWorker',[
                 postMessage(responseMessage);
             }
         };
-    };
+    }
 
     /**
      * A function that performs a calculation in a Web Worker.
@@ -21091,30 +22739,21 @@ define('Workers/createTaskProcessorWorker',[
 
     return createTaskProcessorWorker;
 });
+
 /*global define*/
 define('Workers/createVerticesFromHeightmap',[
-        '../Core/BoundingSphere',
         '../Core/Ellipsoid',
-        '../Core/EllipsoidalOccluder',
         '../Core/HeightmapTessellator',
-        '../Core/Math',
-        '../Core/OrientedBoundingBox',
         '../Core/Rectangle',
         './createTaskProcessorWorker'
     ], function(
-        BoundingSphere,
         Ellipsoid,
-        EllipsoidalOccluder,
         HeightmapTessellator,
-        CesiumMath,
-        OrientedBoundingBox,
         Rectangle,
         createTaskProcessorWorker) {
     "use strict";
 
     function createVerticesFromHeightmap(parameters, transferableObjects) {
-        var numberOfAttributes = 6;
-
         var arrayWidth = parameters.width;
         var arrayHeight = parameters.height;
 
@@ -21123,37 +22762,24 @@ define('Workers/createVerticesFromHeightmap',[
             arrayHeight += 2;
         }
 
-        var vertices = new Float32Array(arrayWidth * arrayHeight * numberOfAttributes);
-        transferableObjects.push(vertices.buffer);
-
         parameters.ellipsoid = Ellipsoid.clone(parameters.ellipsoid);
         parameters.rectangle = Rectangle.clone(parameters.rectangle);
 
-        parameters.vertices = vertices;
-
         var statistics = HeightmapTessellator.computeVertices(parameters);
-        var boundingSphere3D = BoundingSphere.fromVertices(vertices, parameters.relativeToCenter, numberOfAttributes);
-        var orientedBoundingBox;
-        if (parameters.rectangle.width < CesiumMath.PI_OVER_TWO + CesiumMath.EPSILON5) {
-            // Here, rectangle.width < pi/2, and rectangle.height < pi
-            // (though it would still work with rectangle.width up to pi)
-            orientedBoundingBox = OrientedBoundingBox.fromRectangle(parameters.rectangle, statistics.minimumHeight, statistics.maximumHeight, parameters.ellipsoid);
-        }
-
-        var ellipsoid = parameters.ellipsoid;
-        var occluder = new EllipsoidalOccluder(ellipsoid);
-        var occludeePointInScaledSpace = occluder.computeHorizonCullingPointFromVertices(parameters.relativeToCenter, vertices, numberOfAttributes, parameters.relativeToCenter);
+        var vertices = statistics.vertices;
+        transferableObjects.push(vertices.buffer);
 
         return {
             vertices : vertices.buffer,
-            numberOfAttributes : numberOfAttributes,
+            numberOfAttributes : statistics.encoding.getStride(),
             minimumHeight : statistics.minimumHeight,
             maximumHeight : statistics.maximumHeight,
             gridWidth : arrayWidth,
             gridHeight : arrayHeight,
-            boundingSphere3D : boundingSphere3D,
-            orientedBoundingBox : orientedBoundingBox,
-            occludeePointInScaledSpace : occludeePointInScaledSpace
+            boundingSphere3D : statistics.boundingSphere3D,
+            orientedBoundingBox : statistics.orientedBoundingBox,
+            occludeePointInScaledSpace : statistics.occludeePointInScaledSpace,
+            encoding : statistics.encoding
         };
     }
 

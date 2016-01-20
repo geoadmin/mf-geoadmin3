@@ -99,8 +99,8 @@
         <span translate>{{'modify_icon_label'}}:</span> 
         <div class="ga-select-box ga-select-icons ga-item-size-{{options.iconSize.value[0]}}"
              ng-class="{'ga-select-box-open': gaSelectBoxOpen}">
-          <i tabindex=1 ng-repeat="i in options.icons" class="ga-icon-draw icon-maki-{{i.id}}" ng-click="options.icon = i;$event.preventDefault();"></i>
-          <button class="ga-icon icon-caret-down"
+          <i tabindex=1 ng-repeat="i in options.icons" class="ga-icon-draw fa fa-maki-{{i.id}}" ng-click="options.icon = i;$event.preventDefault();"></i>
+          <button class="ga-icon fa fa-caret-down"
                 ng-click="gaSelectBoxOpen=!gaSelectBoxOpen"></button>
         </div>
       </label>

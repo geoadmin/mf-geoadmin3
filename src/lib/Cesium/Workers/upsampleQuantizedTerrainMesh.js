@@ -37,9 +37,9 @@ define('Core/defined',[],function() {
      *      doSomethingElse();
      * }
      */
-    var defined = function(value) {
+    function defined(value) {
         return value !== undefined;
-    };
+    }
 
     return defined;
 });
@@ -89,12 +89,12 @@ define('Core/defaultValue',[
      * @example
      * param = Cesium.defaultValue(param, 'default');
      */
-    var defaultValue = function(a, b) {
+    function defaultValue(a, b) {
         if (a !== undefined) {
             return a;
         }
         return b;
-    };
+    }
 
     /**
      * A frozen empty object that can be used as the default value for options passed as
@@ -104,6 +104,7 @@ define('Core/defaultValue',[
 
     return defaultValue;
 });
+
 /*global define*/
 define('Core/DeveloperError',[
         './defined'
@@ -128,7 +129,7 @@ define('Core/DeveloperError',[
      *
      * @see RuntimeError
      */
-    var DeveloperError = function(message) {
+    function DeveloperError(message) {
         /**
          * 'DeveloperError' indicating that this exception was thrown due to a developer error.
          * @type {String}
@@ -157,7 +158,7 @@ define('Core/DeveloperError',[
          * @readonly
          */
         this.stack = stack;
-    };
+    }
 
     DeveloperError.prototype.toString = function() {
         var str = this.name + ': ' + this.message;
@@ -398,8 +399,7 @@ define('Core/Math',[
     /**
      * Math functions.
      *
-     * @namespace
-     * @alias CesiumMath
+     * @exports CesiumMath
      */
     var CesiumMath = {};
 
@@ -934,11 +934,12 @@ define('Core/Math',[
      *
      * @exception {DeveloperError} A number greater than or equal to 0 is required.
      *
-     * @see {@link http://en.wikipedia.org/wiki/Factorial|Factorial on Wikipedia}
      *
      * @example
      * //Compute 7!, which is equal to 5040
      * var computedFactorial = Cesium.Math.factorial(7);
+     * 
+     * @see {@link http://en.wikipedia.org/wiki/Factorial|Factorial on Wikipedia}
      */
     CesiumMath.factorial = function(n) {
                 if (typeof n !== 'number' || n < 0) {
@@ -1170,7 +1171,7 @@ define('Core/Cartesian2',[
      * @see Cartesian4
      * @see Packable
      */
-    var Cartesian2 = function(x, y) {
+    function Cartesian2(x, y) {
         /**
          * The X component.
          * @type {Number}
@@ -1184,7 +1185,7 @@ define('Core/Cartesian2',[
          * @default 0.0
          */
         this.y = defaultValue(y, 0.0);
-    };
+    }
 
     /**
      * Creates a Cartesian2 instance from x and y coordinates.
@@ -1882,7 +1883,7 @@ define('Core/Cartesian3',[
      * @see Cartesian4
      * @see Packable
      */
-    var Cartesian3 = function(x, y, z) {
+    function Cartesian3(x, y, z) {
         /**
          * The X component.
          * @type {Number}
@@ -1903,7 +1904,7 @@ define('Core/Cartesian3',[
          * @default 0.0
          */
         this.z = defaultValue(z, 0.0);
-    };
+    }
 
     /**
      * Converts the provided Spherical into Cartesian3 coordinates.
@@ -2882,8 +2883,7 @@ define('Core/AttributeCompression',[
     /**
      * Attribute compression and decompression functions.
      *
-     * @namespace
-     * @alias AttributeCompression
+     * @exports AttributeCompression
      *
      * @private
      */
@@ -3145,18 +3145,157 @@ define('Core/AttributeCompression',[
     return AttributeCompression;
 });
 /*global define*/
+define('Core/scaleToGeodeticSurface',[
+        './Cartesian3',
+        './defined',
+        './DeveloperError',
+        './Math'
+    ], function(
+        Cartesian3,
+        defined,
+        DeveloperError,
+        CesiumMath) {
+    "use strict";
+
+    var scaleToGeodeticSurfaceIntersection = new Cartesian3();
+    var scaleToGeodeticSurfaceGradient = new Cartesian3();
+
+    /**
+     * Scales the provided Cartesian position along the geodetic surface normal
+     * so that it is on the surface of this ellipsoid.  If the position is
+     * at the center of the ellipsoid, this function returns undefined.
+     *
+     * @param {Cartesian3} cartesian The Cartesian position to scale.
+     * @param {Cartesian3} oneOverRadii One over radii of the ellipsoid.
+     * @param {Cartesian3} oneOverRadiiSquared One over radii squared of the ellipsoid.
+     * @param {Number} centerToleranceSquared Tolerance for closeness to the center.
+     * @param {Cartesian3} [result] The object onto which to store the result.
+     * @returns {Cartesian3} The modified result parameter, a new Cartesian3 instance if none was provided, or undefined if the position is at the center.
+     *
+     * @exports scaleToGeodeticSurface
+     *
+     * @private
+     */
+    function scaleToGeodeticSurface(cartesian, oneOverRadii, oneOverRadiiSquared, centerToleranceSquared, result) {
+                if (!defined(cartesian)) {
+            throw new DeveloperError('cartesian is required.');
+        }
+        if (!defined(oneOverRadii)) {
+            throw new DeveloperError('oneOverRadii is required.');
+        }
+        if (!defined(oneOverRadiiSquared)) {
+            throw new DeveloperError('oneOverRadiiSquared is required.');
+        }
+        if (!defined(centerToleranceSquared)) {
+            throw new DeveloperError('centerToleranceSquared is required.');
+        }
+        
+        var positionX = cartesian.x;
+        var positionY = cartesian.y;
+        var positionZ = cartesian.z;
+
+        var oneOverRadiiX = oneOverRadii.x;
+        var oneOverRadiiY = oneOverRadii.y;
+        var oneOverRadiiZ = oneOverRadii.z;
+
+        var x2 = positionX * positionX * oneOverRadiiX * oneOverRadiiX;
+        var y2 = positionY * positionY * oneOverRadiiY * oneOverRadiiY;
+        var z2 = positionZ * positionZ * oneOverRadiiZ * oneOverRadiiZ;
+
+        // Compute the squared ellipsoid norm.
+        var squaredNorm = x2 + y2 + z2;
+        var ratio = Math.sqrt(1.0 / squaredNorm);
+
+        // As an initial approximation, assume that the radial intersection is the projection point.
+        var intersection = Cartesian3.multiplyByScalar(cartesian, ratio, scaleToGeodeticSurfaceIntersection);
+
+        // If the position is near the center, the iteration will not converge.
+        if (squaredNorm < centerToleranceSquared) {
+            return !isFinite(ratio) ? undefined : Cartesian3.clone(intersection, result);
+        }
+
+        var oneOverRadiiSquaredX = oneOverRadiiSquared.x;
+        var oneOverRadiiSquaredY = oneOverRadiiSquared.y;
+        var oneOverRadiiSquaredZ = oneOverRadiiSquared.z;
+
+        // Use the gradient at the intersection point in place of the true unit normal.
+        // The difference in magnitude will be absorbed in the multiplier.
+        var gradient = scaleToGeodeticSurfaceGradient;
+        gradient.x = intersection.x * oneOverRadiiSquaredX * 2.0;
+        gradient.y = intersection.y * oneOverRadiiSquaredY * 2.0;
+        gradient.z = intersection.z * oneOverRadiiSquaredZ * 2.0;
+
+        // Compute the initial guess at the normal vector multiplier, lambda.
+        var lambda = (1.0 - ratio) * Cartesian3.magnitude(cartesian) / (0.5 * Cartesian3.magnitude(gradient));
+        var correction = 0.0;
+
+        var func;
+        var denominator;
+        var xMultiplier;
+        var yMultiplier;
+        var zMultiplier;
+        var xMultiplier2;
+        var yMultiplier2;
+        var zMultiplier2;
+        var xMultiplier3;
+        var yMultiplier3;
+        var zMultiplier3;
+
+        do {
+            lambda -= correction;
+
+            xMultiplier = 1.0 / (1.0 + lambda * oneOverRadiiSquaredX);
+            yMultiplier = 1.0 / (1.0 + lambda * oneOverRadiiSquaredY);
+            zMultiplier = 1.0 / (1.0 + lambda * oneOverRadiiSquaredZ);
+
+            xMultiplier2 = xMultiplier * xMultiplier;
+            yMultiplier2 = yMultiplier * yMultiplier;
+            zMultiplier2 = zMultiplier * zMultiplier;
+
+            xMultiplier3 = xMultiplier2 * xMultiplier;
+            yMultiplier3 = yMultiplier2 * yMultiplier;
+            zMultiplier3 = zMultiplier2 * zMultiplier;
+
+            func = x2 * xMultiplier2 + y2 * yMultiplier2 + z2 * zMultiplier2 - 1.0;
+
+            // "denominator" here refers to the use of this expression in the velocity and acceleration
+            // computations in the sections to follow.
+            denominator = x2 * xMultiplier3 * oneOverRadiiSquaredX + y2 * yMultiplier3 * oneOverRadiiSquaredY + z2 * zMultiplier3 * oneOverRadiiSquaredZ;
+
+            var derivative = -2.0 * denominator;
+
+            correction = func / derivative;
+        } while (Math.abs(func) > CesiumMath.EPSILON12);
+
+        if (!defined(result)) {
+            return new Cartesian3(positionX * xMultiplier, positionY * yMultiplier, positionZ * zMultiplier);
+        }
+        result.x = positionX * xMultiplier;
+        result.y = positionY * yMultiplier;
+        result.z = positionZ * zMultiplier;
+        return result;
+    }
+
+    return scaleToGeodeticSurface;
+});
+
+/*global define*/
 define('Core/Cartographic',[
+        './Cartesian3',
         './defaultValue',
         './defined',
         './DeveloperError',
         './freezeObject',
-        './Math'
+        './Math',
+        './scaleToGeodeticSurface'
     ], function(
+        Cartesian3,
         defaultValue,
         defined,
         DeveloperError,
         freezeObject,
-        CesiumMath) {
+        CesiumMath,
+        scaleToGeodeticSurface) {
     "use strict";
 
     /**
@@ -3170,7 +3309,7 @@ define('Core/Cartographic',[
      *
      * @see Ellipsoid
      */
-    var Cartographic = function(longitude, latitude, height) {
+    function Cartographic(longitude, latitude, height) {
         /**
          * The longitude, in radians.
          * @type {Number}
@@ -3191,7 +3330,7 @@ define('Core/Cartographic',[
          * @default 0.0
          */
         this.height = defaultValue(height, 0.0);
-    };
+    }
 
     /**
      * Creates a new Cartographic instance from longitude and latitude
@@ -3245,6 +3384,52 @@ define('Core/Cartographic',[
         latitude = CesiumMath.toRadians(latitude);
 
         return Cartographic.fromRadians(longitude, latitude, height, result);
+    };
+
+    var cartesianToCartographicN = new Cartesian3();
+    var cartesianToCartographicP = new Cartesian3();
+    var cartesianToCartographicH = new Cartesian3();
+    var wgs84OneOverRadii = new Cartesian3(1.0 / 6378137.0, 1.0 / 6378137.0, 1.0 / 6356752.3142451793);
+    var wgs84OneOverRadiiSquared = new Cartesian3(1.0 / (6378137.0 * 6378137.0), 1.0 / (6378137.0 * 6378137.0), 1.0 / (6356752.3142451793 * 6356752.3142451793));
+    var wgs84CenterToleranceSquared = CesiumMath.EPSILON1;
+
+    /**
+     * Creates a new Cartographic instance from a Cartesian position. The values in the
+     * resulting object will be in radians.
+     *
+     * @param {Cartesian3} cartesian The Cartesian position to convert to cartographic representation.
+     * @param {Ellipsoid} [ellipsoid=Ellipsoid.WGS84] The ellipsoid on which the position lies.
+     * @param {Cartographic} [result] The object onto which to store the result.
+     * @returns {Cartographic} The modified result parameter, new Cartographic instance if none was provided, or undefined if the cartesian is at the center of the ellipsoid.
+     */
+    Cartographic.fromCartesian = function(cartesian, ellipsoid, result) {
+        var oneOverRadii = defined(ellipsoid) ? ellipsoid.oneOverRadii : wgs84OneOverRadii;
+        var oneOverRadiiSquared = defined(ellipsoid) ? ellipsoid.oneOverRadiiSquared : wgs84OneOverRadiiSquared;
+        var centerToleranceSquared = defined(ellipsoid) ? ellipsoid._centerToleranceSquared : wgs84CenterToleranceSquared;
+
+        //`cartesian is required.` is thrown from scaleToGeodeticSurface
+        var p = scaleToGeodeticSurface(cartesian, oneOverRadii, oneOverRadiiSquared, centerToleranceSquared, cartesianToCartographicP);
+
+        if (!defined(p)) {
+            return undefined;
+        }
+
+        var n = Cartesian3.multiplyComponents(cartesian, oneOverRadiiSquared, cartesianToCartographicN);
+        n = Cartesian3.normalize(n, n);
+
+        var h = Cartesian3.subtract(cartesian, p, cartesianToCartographicH);
+
+        var longitude = Math.atan2(n.y, n.x);
+        var latitude = Math.asin(n.z);
+        var height = CesiumMath.sign(Cartesian3.dot(h, cartesian)) * Cartesian3.magnitude(h);
+
+        if (!defined(result)) {
+            return new Cartographic(longitude, latitude, height);
+        }
+        result.longitude = longitude;
+        result.latitude = latitude;
+        result.height = height;
+        return result;
     };
 
     /**
@@ -3361,69 +3546,6 @@ define('Core/Cartographic',[
     return Cartographic;
 });
 
-/*global define,console*/
-define('Core/deprecationWarning',[
-        './defined',
-        './DeveloperError'
-    ], function(
-        defined,
-        DeveloperError) {
-    "use strict";
-
-    var warnings = {};
-
-    /**
-     * Logs a deprecation message to the console.  Use this function instead of
-     * <code>console.log</code> directly since this does not log duplicate messages
-     * unless it is called from multiple workers.
-     *
-     * @exports deprecationWarning
-     *
-     * @param {String} identifier The unique identifier for this deprecated API.
-     * @param {String} message The message to log to the console.
-     *
-     * @example
-     * // Deprecated function or class
-     * var Foo = function() {
-     *    deprecationWarning('Foo', 'Foo was deprecated in Cesium 1.01.  It will be removed in 1.03.  Use newFoo instead.');
-     *    // ...
-     * }
-     *
-     * // Deprecated function
-     * Bar.prototype.func = function() {
-     *    deprecationWarning('Bar.func', 'Bar.func() was deprecated in Cesium 1.01.  It will be removed in 1.03.  Use Bar.newFunc() instead.');
-     *    // ...
-     * };
-     *
-     * // Deprecated property
-     * defineProperties(Bar.prototype, {
-     *     prop : {
-     *         get : function() {
-     *             deprecationWarning('Bar.prop', 'Bar.prop was deprecated in Cesium 1.01.  It will be removed in 1.03.  Use Bar.newProp instead.');
-     *             // ...
-     *         },
-     *         set : function(value) {
-     *             deprecationWarning('Bar.prop', 'Bar.prop was deprecated in Cesium 1.01.  It will be removed in 1.03.  Use Bar.newProp instead.');
-     *             // ...
-     *         }
-     *     }
-     * });
-     *
-     * @private
-     */
-    var deprecationWarning = function(identifier, message) {
-                if (!defined(identifier) || !defined(message)) {
-            throw new DeveloperError('identifier and message are required.');
-        }
-        
-        if (!defined(warnings[identifier])) {
-            warnings[identifier] = true;
-            console.log(message);
-        }
-    };
-
-    return deprecationWarning;
-});
 /*global define*/
 define('Core/defineProperties',[
         './defined'
@@ -3467,7 +3589,8 @@ define('Core/Ellipsoid',[
         './defineProperties',
         './DeveloperError',
         './freezeObject',
-        './Math'
+        './Math',
+        './scaleToGeodeticSurface'
     ], function(
         Cartesian3,
         Cartographic,
@@ -3476,7 +3599,8 @@ define('Core/Ellipsoid',[
         defineProperties,
         DeveloperError,
         freezeObject,
-        CesiumMath) {
+        CesiumMath,
+        scaleToGeodeticSurface) {
     "use strict";
 
     function initialize(ellipsoid, x, y, z) {
@@ -3533,7 +3657,7 @@ define('Core/Ellipsoid',[
      * @see Ellipsoid.WGS84
      * @see Ellipsoid.UNIT_SPHERE
      */
-    var Ellipsoid = function(x, y, z) {
+    function Ellipsoid(x, y, z) {
         this._radii = undefined;
         this._radiiSquared = undefined;
         this._radiiToTheFourth = undefined;
@@ -3544,7 +3668,7 @@ define('Core/Ellipsoid',[
         this._centerToleranceSquared = undefined;
 
         initialize(this, x, y, z);
-    };
+    }
 
     defineProperties(Ellipsoid.prototype, {
         /**
@@ -3723,7 +3847,6 @@ define('Core/Ellipsoid',[
 
     /**
      * Stores the provided instance into the provided array.
-     * @function
      *
      * @param {Ellipsoid} value The value to pack.
      * @param {Number[]} array The array to pack into.
@@ -3949,9 +4072,6 @@ define('Core/Ellipsoid',[
         return result;
     };
 
-    var scaleToGeodeticSurfaceIntersection = new Cartesian3();
-    var scaleToGeodeticSurfaceGradient = new Cartesian3();
-
     /**
      * Scales the provided Cartesian position along the geodetic surface normal
      * so that it is on the surface of this ellipsoid.  If the position is
@@ -3962,96 +4082,7 @@ define('Core/Ellipsoid',[
      * @returns {Cartesian3} The modified result parameter, a new Cartesian3 instance if none was provided, or undefined if the position is at the center.
      */
     Ellipsoid.prototype.scaleToGeodeticSurface = function(cartesian, result) {
-                if (!defined(cartesian)) {
-            throw new DeveloperError('cartesian is required.');
-        }
-        
-        var positionX = cartesian.x;
-        var positionY = cartesian.y;
-        var positionZ = cartesian.z;
-
-        var oneOverRadii = this._oneOverRadii;
-        var oneOverRadiiX = oneOverRadii.x;
-        var oneOverRadiiY = oneOverRadii.y;
-        var oneOverRadiiZ = oneOverRadii.z;
-
-        var x2 = positionX * positionX * oneOverRadiiX * oneOverRadiiX;
-        var y2 = positionY * positionY * oneOverRadiiY * oneOverRadiiY;
-        var z2 = positionZ * positionZ * oneOverRadiiZ * oneOverRadiiZ;
-
-        // Compute the squared ellipsoid norm.
-        var squaredNorm = x2 + y2 + z2;
-        var ratio = Math.sqrt(1.0 / squaredNorm);
-
-        // As an initial approximation, assume that the radial intersection is the projection point.
-        var intersection = Cartesian3.multiplyByScalar(cartesian, ratio, scaleToGeodeticSurfaceIntersection);
-
-        //* If the position is near the center, the iteration will not converge.
-        if (squaredNorm < this._centerToleranceSquared) {
-            return !isFinite(ratio) ? undefined : Cartesian3.clone(intersection, result);
-        }
-
-        var oneOverRadiiSquared = this._oneOverRadiiSquared;
-        var oneOverRadiiSquaredX = oneOverRadiiSquared.x;
-        var oneOverRadiiSquaredY = oneOverRadiiSquared.y;
-        var oneOverRadiiSquaredZ = oneOverRadiiSquared.z;
-
-        // Use the gradient at the intersection point in place of the true unit normal.
-        // The difference in magnitude will be absorbed in the multiplier.
-        var gradient = scaleToGeodeticSurfaceGradient;
-        gradient.x = intersection.x * oneOverRadiiSquaredX * 2.0;
-        gradient.y = intersection.y * oneOverRadiiSquaredY * 2.0;
-        gradient.z = intersection.z * oneOverRadiiSquaredZ * 2.0;
-
-        // Compute the initial guess at the normal vector multiplier, lambda.
-        var lambda = (1.0 - ratio) * Cartesian3.magnitude(cartesian) / (0.5 * Cartesian3.magnitude(gradient));
-        var correction = 0.0;
-
-        var func;
-        var denominator;
-        var xMultiplier;
-        var yMultiplier;
-        var zMultiplier;
-        var xMultiplier2;
-        var yMultiplier2;
-        var zMultiplier2;
-        var xMultiplier3;
-        var yMultiplier3;
-        var zMultiplier3;
-
-        do {
-            lambda -= correction;
-
-            xMultiplier = 1.0 / (1.0 + lambda * oneOverRadiiSquaredX);
-            yMultiplier = 1.0 / (1.0 + lambda * oneOverRadiiSquaredY);
-            zMultiplier = 1.0 / (1.0 + lambda * oneOverRadiiSquaredZ);
-
-            xMultiplier2 = xMultiplier * xMultiplier;
-            yMultiplier2 = yMultiplier * yMultiplier;
-            zMultiplier2 = zMultiplier * zMultiplier;
-
-            xMultiplier3 = xMultiplier2 * xMultiplier;
-            yMultiplier3 = yMultiplier2 * yMultiplier;
-            zMultiplier3 = zMultiplier2 * zMultiplier;
-
-            func = x2 * xMultiplier2 + y2 * yMultiplier2 + z2 * zMultiplier2 - 1.0;
-
-            // "denominator" here refers to the use of this expression in the velocity and acceleration
-            // computations in the sections to follow.
-            denominator = x2 * xMultiplier3 * oneOverRadiiSquaredX + y2 * yMultiplier3 * oneOverRadiiSquaredY + z2 * zMultiplier3 * oneOverRadiiSquaredZ;
-
-            var derivative = -2.0 * denominator;
-
-            correction = func / derivative;
-        } while (Math.abs(func) > CesiumMath.EPSILON12);
-
-        if (!defined(result)) {
-            return new Cartesian3(positionX * xMultiplier, positionY * yMultiplier, positionZ * zMultiplier);
-        }
-        result.x = positionX * xMultiplier;
-        result.y = positionY * yMultiplier;
-        result.z = positionZ * zMultiplier;
-        return result;
+        return scaleToGeodeticSurface(cartesian, this._oneOverRadii, this._oneOverRadiiSquared, this._centerToleranceSquared, result);
     };
 
     /**
@@ -4176,11 +4207,11 @@ define('Core/GeographicProjection',[
      *
      * @see WebMercatorProjection
      */
-    var GeographicProjection = function(ellipsoid) {
+    function GeographicProjection(ellipsoid) {
         this._ellipsoid = defaultValue(ellipsoid, Ellipsoid.WGS84);
         this._semimajorAxis = this._ellipsoid.maximumRadius;
         this._oneOverSemimajorAxis = 1.0 / this._semimajorAxis;
-    };
+    }
 
     defineProperties(GeographicProjection.prototype, {
         /**
@@ -4275,8 +4306,7 @@ define('Core/Intersect',[
      * partially inside the frustum and partially outside (INTERSECTING), or somwhere entirely
      * outside of the frustum's 6 planes (OUTSIDE).
      *
-     * @namespace
-     * @alias Intersect
+     * @exports Intersect
      */
     var Intersect = {
         /**
@@ -4321,7 +4351,7 @@ define('Core/Interval',[
      * @param {Number} [start=0.0] The beginning of the interval.
      * @param {Number} [stop=0.0] The end of the interval.
      */
-    var Interval = function(start, stop) {
+    function Interval(start, stop) {
         /**
          * The beginning of the interval.
          * @type {Number}
@@ -4334,7 +4364,7 @@ define('Core/Interval',[
          * @default 0.0
          */
         this.stop = defaultValue(stop, 0.0);
-    };
+    }
 
     return Interval;
 });
@@ -4380,7 +4410,7 @@ define('Core/Matrix3',[
      * @see Matrix2
      * @see Matrix4
      */
-    var Matrix3 = function(column0Row0, column1Row0, column2Row0,
+    function Matrix3(column0Row0, column1Row0, column2Row0,
                            column0Row1, column1Row1, column2Row1,
                            column0Row2, column1Row2, column2Row2) {
         this[0] = defaultValue(column0Row0, 0.0);
@@ -4392,7 +4422,7 @@ define('Core/Matrix3',[
         this[6] = defaultValue(column2Row0, 0.0);
         this[7] = defaultValue(column2Row1, 0.0);
         this[8] = defaultValue(column2Row2, 0.0);
-    };
+    }
 
     /**
      * The number of elements used to pack the object into an array.
@@ -5264,12 +5294,13 @@ define('Core/Matrix3',[
      * @param {Matrix3} result The object onto which to store the result.
      * @returns {Matrix3} The modified result parameter.
      *
-     * @see Matrix3.fromScale
-     * @see Matrix3.multiplyByUniformScale
      *
      * @example
      * // Instead of Cesium.Matrix3.multiply(m, Cesium.Matrix3.fromScale(scale), m);
      * Cesium.Matrix3.multiplyByScale(m, scale, m);
+     * 
+     * @see Matrix3.fromScale
+     * @see Matrix3.multiplyByUniformScale
      */
     Matrix3.multiplyByScale = function(matrix, scale, result) {
                 if (!defined(matrix)) {
@@ -5848,7 +5879,7 @@ define('Core/Cartesian4',[
      * @see Cartesian3
      * @see Packable
      */
-    var Cartesian4 = function(x, y, z, w) {
+    function Cartesian4(x, y, z, w) {
         /**
          * The X component.
          * @type {Number}
@@ -5876,7 +5907,7 @@ define('Core/Cartesian4',[
          * @default 0.0
          */
         this.w = defaultValue(w, 0.0);
-    };
+    }
 
     /**
      * Creates a Cartesian4 instance from x, y, z and w coordinates.
@@ -6624,7 +6655,7 @@ define('Core/RuntimeError',[
      *
      * @see DeveloperError
      */
-    var RuntimeError = function(message) {
+    function RuntimeError(message) {
         /**
          * 'RuntimeError' indicating that this exception was thrown due to a runtime error.
          * @type {String}
@@ -6653,8 +6684,7 @@ define('Core/RuntimeError',[
          * @readonly
          */
         this.stack = stack;
-    };
-
+    }
     RuntimeError.prototype.toString = function() {
         var str = this.name + ': ' + this.message;
 
@@ -6717,6 +6747,7 @@ define('Core/Matrix4',[
      * @see Matrix4.fromColumnMajorArray
      * @see Matrix4.fromRowMajorArray
      * @see Matrix4.fromRotationTranslation
+     * @see Matrix4.fromTranslationRotationScale
      * @see Matrix4.fromTranslationQuaternionRotationScale
      * @see Matrix4.fromTranslation
      * @see Matrix4.fromScale
@@ -6731,7 +6762,7 @@ define('Core/Matrix4',[
      * @see Matrix3
      * @see Packable
      */
-    var Matrix4 = function(column0Row0, column1Row0, column2Row0, column3Row0,
+    function Matrix4(column0Row0, column1Row0, column2Row0, column3Row0,
                            column0Row1, column1Row1, column2Row1, column3Row1,
                            column0Row2, column1Row2, column2Row2, column3Row2,
                            column0Row3, column1Row3, column2Row3, column3Row3) {
@@ -6751,7 +6782,7 @@ define('Core/Matrix4',[
         this[13] = defaultValue(column3Row1, 0.0);
         this[14] = defaultValue(column3Row2, 0.0);
         this[15] = defaultValue(column3Row3, 0.0);
-    };
+    }
 
     /**
      * The number of elements used to pack the object into an array.
@@ -7066,6 +7097,21 @@ define('Core/Matrix4',[
         result[15] = 1.0;
 
         return result;
+    };
+
+    /**
+     * Creates a Matrix4 instance from a {@link TranslationRotationScale} instance.
+     *
+     * @param {TranslationRotationScale} translationRotationScale The instance.
+     * @param {Matrix4} [result] The object in which the result will be stored, if undefined a new instance will be created.
+     * @returns {Matrix4} The modified result parameter, or a new Matrix4 instance if one was not provided.
+     */
+    Matrix4.fromTranslationRotationScale = function(translationRotationScale, result) {
+                if (!defined(translationRotationScale)) {
+            throw new DeveloperError('translationRotationScale is required.');
+        }
+        
+        return Matrix4.fromTranslationQuaternionRotationScale(translationRotationScale.translation, translationRotationScale.rotation, translationRotationScale.scale, result);
     };
 
     /**
@@ -8334,12 +8380,13 @@ define('Core/Matrix4',[
      * @param {Matrix4} result The object onto which to store the result.
      * @returns {Matrix4} The modified result parameter.
      *
-     * @see Matrix4.fromUniformScale
-     * @see Matrix4.multiplyByScale
      *
      * @example
      * // Instead of Cesium.Matrix4.multiply(m, Cesium.Matrix4.fromUniformScale(scale), m);
      * Cesium.Matrix4.multiplyByUniformScale(m, scale, m);
+     * 
+     * @see Matrix4.fromUniformScale
+     * @see Matrix4.multiplyByScale
      */
     Matrix4.multiplyByUniformScale = function(matrix, scale, result) {
                 if (!defined(matrix)) {
@@ -8370,12 +8417,13 @@ define('Core/Matrix4',[
      * @param {Matrix4} result The object onto which to store the result.
      * @returns {Matrix4} The modified result parameter.
      *
-     * @see Matrix4.fromScale
-     * @see Matrix4.multiplyByUniformScale
      *
      * @example
      * // Instead of Cesium.Matrix4.multiply(m, Cesium.Matrix4.fromScale(scale), m);
      * Cesium.Matrix4.multiplyByScale(m, scale, m);
+     * 
+     * @see Matrix4.fromScale
+     * @see Matrix4.multiplyByUniformScale
      */
     Matrix4.multiplyByScale = function(matrix, scale, result) {
                 if (!defined(matrix)) {
@@ -9374,7 +9422,7 @@ define('Core/Plane',[
      * // The plane x=0
      * var plane = new Cesium.Plane(Cesium.Cartesian3.UNIT_X, 0.0);
      */
-    var Plane = function(normal, distance) {
+    function Plane(normal, distance) {
                 if (!defined(normal))  {
             throw new DeveloperError('normal is required.');
         }
@@ -9399,7 +9447,7 @@ define('Core/Plane',[
          * @type {Number}
          */
         this.distance = distance;
-    };
+    }
 
     /**
      * Creates a plane from a normal and a point on the plane.
@@ -9541,7 +9589,7 @@ define('Core/Rectangle',[
      *
      * @see Packable
      */
-    var Rectangle = function(west, south, east, north) {
+    function Rectangle(west, south, east, north) {
         /**
          * The westernmost longitude in radians in the range [-Pi, Pi].
          *
@@ -9573,7 +9621,7 @@ define('Core/Rectangle',[
          * @default 0.0
          */
         this.north = defaultValue(north, 0.0);
-    };
+    }
 
     defineProperties(Rectangle.prototype, {
         /**
@@ -9727,27 +9775,45 @@ define('Core/Rectangle',[
             throw new DeveloperError('cartographics is required.');
         }
         
-        var minLon = Number.MAX_VALUE;
-        var maxLon = -Number.MAX_VALUE;
-        var minLat = Number.MAX_VALUE;
-        var maxLat = -Number.MAX_VALUE;
+        var west = Number.MAX_VALUE;
+        var east = -Number.MAX_VALUE;
+        var westOverIDL = Number.MAX_VALUE;
+        var eastOverIDL = -Number.MAX_VALUE;
+        var south = Number.MAX_VALUE;
+        var north = -Number.MAX_VALUE;
 
         for ( var i = 0, len = cartographics.length; i < len; i++) {
             var position = cartographics[i];
-            minLon = Math.min(minLon, position.longitude);
-            maxLon = Math.max(maxLon, position.longitude);
-            minLat = Math.min(minLat, position.latitude);
-            maxLat = Math.max(maxLat, position.latitude);
+            west = Math.min(west, position.longitude);
+            east = Math.max(east, position.longitude);
+            south = Math.min(south, position.latitude);
+            north = Math.max(north, position.latitude);
+
+            var lonAdjusted = position.longitude >= 0 ?  position.longitude : position.longitude +  CesiumMath.TWO_PI;
+            westOverIDL = Math.min(westOverIDL, lonAdjusted);
+            eastOverIDL = Math.max(eastOverIDL, lonAdjusted);
+        }
+
+        if(east - west > eastOverIDL - westOverIDL) {
+            west = westOverIDL;
+            east = eastOverIDL;
+
+            if (east > CesiumMath.PI) {
+                east = east - CesiumMath.TWO_PI;
+            }
+            if (west > CesiumMath.PI) {
+                west = west - CesiumMath.TWO_PI;
+            }
         }
 
         if (!defined(result)) {
-            return new Rectangle(minLon, minLat, maxLon, maxLat);
+            return new Rectangle(west, south, east, north);
         }
 
-        result.west = minLon;
-        result.south = minLat;
-        result.east = maxLon;
-        result.north = maxLat;
+        result.west = west;
+        result.south = south;
+        result.east = east;
+        result.north = north;
         return result;
     };
 
@@ -10188,7 +10254,6 @@ define('Core/BoundingSphere',[
         './Cartographic',
         './defaultValue',
         './defined',
-        './deprecationWarning',
         './DeveloperError',
         './Ellipsoid',
         './GeographicProjection',
@@ -10203,7 +10268,6 @@ define('Core/BoundingSphere',[
         Cartographic,
         defaultValue,
         defined,
-        deprecationWarning,
         DeveloperError,
         Ellipsoid,
         GeographicProjection,
@@ -10227,7 +10291,7 @@ define('Core/BoundingSphere',[
      * @see BoundingRectangle
      * @see Packable
      */
-    var BoundingSphere = function(center, radius) {
+    function BoundingSphere(center, radius) {
         /**
          * The center point of the sphere.
          * @type {Cartesian3}
@@ -10241,7 +10305,7 @@ define('Core/BoundingSphere',[
          * @default 0.0
          */
         this.radius = defaultValue(radius, 0.0);
-    };
+    }
 
     var fromPointsXMin = new Cartesian3();
     var fromPointsYMin = new Cartesian3();
@@ -10508,8 +10572,7 @@ define('Core/BoundingSphere',[
      * @param {BoundingSphere} [result] The object onto which to store the result.
      * @returns {BoundingSphere} The modified result parameter or a new BoundingSphere instance if one was not provided.
      *
-     * @see {@link http://blogs.agi.com/insight3d/index.php/2008/02/04/a-bounding/|Bounding Sphere computation article}
-     *
+     * 
      * @example
      * // Compute the bounding sphere from 3 positions, each specified relative to a center.
      * // In addition to the X, Y, and Z coordinates, the points array contains two additional
@@ -10519,6 +10582,8 @@ define('Core/BoundingSphere',[
      *               4.0, 5.0, 6.0, 0.1, 0.2,
      *               7.0, 8.0, 9.0, 0.1, 0.2];
      * var sphere = Cesium.BoundingSphere.fromVertices(points, center, 5);
+     * 
+     * @see {@link http://blogs.agi.com/insight3d/index.php/2008/02/04/a-bounding/|Bounding Sphere computation article}
      */
     BoundingSphere.fromVertices = function(positions, center, stride, result) {
         if (!defined(result)) {
@@ -11135,6 +11200,7 @@ define('Core/BoundingSphere',[
     for (var n = 0; n < 8; ++n) {
         projectTo2DPositionsScratch[n] = new Cartesian3();
     }
+
     var projectTo2DProjection = new GeographicProjection();
     /**
      * Creates a bounding sphere in 2D from a bounding sphere in 3D world coordinates.
@@ -11388,7 +11454,7 @@ define('Core/EllipsoidalOccluder',[
      *
      * @private
      */
-    var EllipsoidalOccluder = function(ellipsoid, cameraPosition) {
+    function EllipsoidalOccluder(ellipsoid, cameraPosition) {
                 if (!defined(ellipsoid)) {
             throw new DeveloperError('ellipsoid is required.');
         }
@@ -11402,7 +11468,7 @@ define('Core/EllipsoidalOccluder',[
         if (defined(cameraPosition)) {
             this.cameraPosition = cameraPosition;
         }
-    };
+    }
 
     defineProperties(EllipsoidalOccluder.prototype, {
         /**
@@ -11475,18 +11541,15 @@ define('Core/EllipsoidalOccluder',[
      * occluder.isScaledSpacePointVisible(scaledSpacePoint); //returns true
      */
     EllipsoidalOccluder.prototype.isScaledSpacePointVisible = function(occludeeScaledSpacePosition) {
-        // Disable occlusion culling when the viewer is under the ellipsoid to avoid false occulsion.
-        if (this._distanceToLimbInScaledSpaceSquared < 0.0) {
-            return true;
-        }
-
         // See http://cesiumjs.org/2013/04/25/Horizon-culling/
         var cv = this._cameraPositionInScaledSpace;
         var vhMagnitudeSquared = this._distanceToLimbInScaledSpaceSquared;
         var vt = Cartesian3.subtract(occludeeScaledSpacePosition, cv, scratchCartesian);
         var vtDotVc = -Cartesian3.dot(vt, cv);
-        var isOccluded = vtDotVc > vhMagnitudeSquared &&
-                         vtDotVc * vtDotVc / Cartesian3.magnitudeSquared(vt) > vhMagnitudeSquared;
+        // If vhMagnitudeSquared < 0 then we are below the surface of the ellipsoid and
+        // in this case, set the culling plane to be on V.
+        var isOccluded = vhMagnitudeSquared < 0 ? vtDotVc > 0 : (vtDotVc > vhMagnitudeSquared &&
+                         vtDotVc * vtDotVc / Cartesian3.magnitudeSquared(vt) > vhMagnitudeSquared);
         return !isOccluded;
     };
 
@@ -11577,6 +11640,46 @@ define('Core/EllipsoidalOccluder',[
             positionScratch.z = vertices[i + 2] + center.z;
 
             var candidateMagnitude = computeMagnitude(ellipsoid, positionScratch, scaledSpaceDirectionToPoint);
+            resultMagnitude = Math.max(resultMagnitude, candidateMagnitude);
+        }
+
+        return magnitudeToPoint(scaledSpaceDirectionToPoint, resultMagnitude, result);
+    };
+
+    /**
+     * Computes a point that can be used for horizon culling from a list of positions.  If the point is below
+     * the horizon, all of the positions are guaranteed to be below the horizon as well.  The returned point
+     * is expressed in the ellipsoid-scaled space and is suitable for use with
+     * {@link EllipsoidalOccluder#isScaledSpacePointVisible}.
+     *
+     * @param {Cartesian3} directionToPoint The direction that the computed point will lie along.
+     *                     A reasonable direction to use is the direction from the center of the ellipsoid to
+     *                     the center of the bounding sphere computed from the positions.  The direction need not
+     *                     be normalized.
+     * @param {Cartesian3[]} points  The vertices from which to compute the horizon culling point.  The positions
+     *                   must be expressed in a reference frame centered at the ellipsoid and aligned with the
+     *                   ellipsoid's axes.
+     * @param {Cartesian3} [result] The instance on which to store the result instead of allocating a new instance.
+     * @returns {Cartesian3} The computed horizon culling point, expressed in the ellipsoid-scaled space.
+     */
+    EllipsoidalOccluder.prototype.computeHorizonCullingPointFromPoints = function(directionToPoint, points, result) {
+                if (!defined(directionToPoint)) {
+            throw new DeveloperError('directionToPoint is required');
+        }
+        if (!defined(points)) {
+            throw new DeveloperError('points is required');
+        }
+        
+        if (!defined(result)) {
+            result = new Cartesian3();
+        }
+
+        var ellipsoid = this._ellipsoid;
+        var scaledSpaceDirectionToPoint = computeScaledSpaceDirectionToPoint(ellipsoid, directionToPoint);
+        var resultMagnitude = 0.0;
+
+        for (var i = 0, len = points.length; i < len; ++i) {
+            var candidateMagnitude = computeMagnitude(ellipsoid, points[i], scaledSpaceDirectionToPoint);
             resultMagnitude = Math.max(resultMagnitude, candidateMagnitude);
         }
 
@@ -12268,8 +12371,7 @@ define('Core/IndexDatatype',[
      * Constants for WebGL index datatypes.  These corresponds to the
      * <code>type</code> parameter of {@link http://www.khronos.org/opengles/sdk/docs/man/xhtml/glDrawElements.xml|drawElements}.
      *
-     * @namespace
-     * @alias IndexDatatype
+     * @exports IndexDatatype
      */
     var IndexDatatype = {
         /**
@@ -12410,8 +12512,7 @@ define('Core/Intersections2D',[
     /**
      * Contains functions for operating on 2D triangles.
      *
-     * @namespace
-     * @alias Intersections2D
+     * @exports Intersections2D
      */
     var Intersections2D = {};
 
@@ -12598,14 +12699,13 @@ define('Core/Intersections2D',[
                 result.push(2);
                 result.push(u12Ratio);
             }
-        } else if (numBehind === 3) {
-            // Completely behind threshold
-        } else {
+        } else if (numBehind !== 3) {
             // Completely in front of threshold
             result.push(0);
             result.push(1);
             result.push(2);
         }
+        // else Completely behind threshold
 
         return result;
     };
@@ -12678,23 +12778,20 @@ define('Core/Intersections2D',[
 
     return Intersections2D;
 });
+
 /*global define*/
 define('Core/AxisAlignedBoundingBox',[
         './Cartesian3',
         './defaultValue',
         './defined',
-        './deprecationWarning',
         './DeveloperError',
-        './Intersect',
-        './Plane'
+        './Intersect'
     ], function(
         Cartesian3,
         defaultValue,
         defined,
-        deprecationWarning,
         DeveloperError,
-        Intersect,
-        Plane) {
+        Intersect) {
     "use strict";
 
     /**
@@ -12709,7 +12806,7 @@ define('Core/AxisAlignedBoundingBox',[
      * @see BoundingSphere
      * @see BoundingRectangle
      */
-    var AxisAlignedBoundingBox = function(minimum, maximum, center) {
+    function AxisAlignedBoundingBox(minimum, maximum, center) {
         /**
          * The minimum point defining the bounding box.
          * @type {Cartesian3}
@@ -12737,7 +12834,7 @@ define('Core/AxisAlignedBoundingBox',[
          * @type {Cartesian3}
          */
         this.center = center;
-    };
+    }
 
     /**
      * Computes an instance of an AxisAlignedBoundingBox. The box is determined by
@@ -12927,8 +13024,7 @@ define('Core/QuadraticRealPolynomial',[
     /**
      * Defines functions for 2nd order polynomial functions of one variable with only real coefficients.
      *
-     * @namespace
-     * @alias QuadraticRealPolynomial
+     * @exports QuadraticRealPolynomial
      */
     var QuadraticRealPolynomial = {};
 
@@ -13063,8 +13159,7 @@ define('Core/CubicRealPolynomial',[
     /**
      * Defines functions for 3rd order polynomial functions of one variable with only real coefficients.
      *
-     * @namespace
-     * @alias CubicRealPolynomial
+     * @exports CubicRealPolynomial
      */
     var CubicRealPolynomial = {};
 
@@ -13304,8 +13399,7 @@ define('Core/QuarticRealPolynomial',[
     /**
      * Defines functions for 4th order polynomial functions of one variable with only real coefficients.
      *
-     * @namespace
-     * @alias QuarticRealPolynomial
+     * @exports QuarticRealPolynomial
      */
     var QuarticRealPolynomial = {};
 
@@ -13634,7 +13728,7 @@ define('Core/Ray',[
      * @param {Cartesian3} [origin=Cartesian3.ZERO] The origin of the ray.
      * @param {Cartesian3} [direction=Cartesian3.ZERO] The direction of the ray.
      */
-    var Ray = function(origin, direction) {
+    function Ray(origin, direction) {
         direction = Cartesian3.clone(defaultValue(direction, Cartesian3.ZERO));
         if (!Cartesian3.equals(direction, Cartesian3.ZERO)) {
             Cartesian3.normalize(direction, direction);
@@ -13652,7 +13746,7 @@ define('Core/Ray',[
          * @type {Cartesian3}
          */
         this.direction = direction;
-    };
+    }
 
     /**
      * Computes the point along the ray given by r(t) = o + t*d,
@@ -13715,8 +13809,7 @@ define('Core/IntersectionTests',[
     /**
      * Functions for computing the intersection between geometries such as rays, planes, triangles, and ellipsoids.
      *
-     * @namespace
-     * @alias IntersectionTests
+     * @exports IntersectionTests
      */
     var IntersectionTests = {};
 
@@ -14023,7 +14116,6 @@ define('Core/IntersectionTests',[
         }
         
         var ray = scratchLineSegmentRay;
-        var origin = Cartesian3.clone(p0, ray.origin);
         var direction = Cartesian3.subtract(p1, p0, ray.direction);
 
         var maxT = Cartesian3.magnitude(direction);
@@ -15333,13 +15425,13 @@ define('Core/binarySearch',[
      *
      * @example
      * // Create a comparator function to search through an array of numbers.
-     * var comparator = function(a, b) {
+     * function comparator(a, b) {
      *     return a - b;
      * };
      * var numbers = [0, 2, 4, 6, 8];
      * var index = Cesium.binarySearch(numbers, 6, comparator); // 3
      */
-    var binarySearch = function(array, itemToFind, comparator) {
+    function binarySearch(array, itemToFind, comparator) {
                 if (!defined(array)) {
             throw new DeveloperError('array is required.');
         }
@@ -15369,7 +15461,7 @@ define('Core/binarySearch',[
             return i;
         }
         return ~(high + 1);
-    };
+    }
 
     /**
      * A function used to compare two items while performing a binary search.
@@ -15389,6 +15481,7 @@ define('Core/binarySearch',[
 
     return binarySearch;
 });
+
 /*global define*/
 define('Core/EarthOrientationParametersSample',[],function() {
     "use strict";
@@ -15407,7 +15500,7 @@ define('Core/EarthOrientationParametersSample',[],function() {
      *
      * @private
      */
-    var EarthOrientationParametersSample = function EarthOrientationParametersSample(xPoleWander, yPoleWander, xPoleOffset, yPoleOffset, ut1MinusUtc) {
+    function EarthOrientationParametersSample(xPoleWander, yPoleWander, xPoleOffset, yPoleOffset, ut1MinusUtc) {
         /**
          * The pole wander about the X axis, in radians.
          * @type {Number}
@@ -15437,10 +15530,11 @@ define('Core/EarthOrientationParametersSample',[],function() {
          * @type {Number}
          */
         this.ut1MinusUtc = ut1MinusUtc;
-    };
+    }
 
     return EarthOrientationParametersSample;
 });
+
 /**
 @license
 sprintf.js from the php.js project - https://github.com/kvz/phpjs
@@ -15601,6 +15695,7 @@ function sprintf () {
     if (!chr) {
       chr = ' ';
     }
+
     var padding = (str.length >= len) ? '' : Array(1 + len - str.length >>> 0).join(chr);
     return leftJustify ? str + padding : padding + str;
   };
@@ -15760,6 +15855,7 @@ function sprintf () {
 
 return sprintf;
 });
+
 /*global define*/
 define('Core/GregorianDate',[],function() {
     "use strict";
@@ -15772,7 +15868,7 @@ define('Core/GregorianDate',[],function() {
      *
      * @see JulianDate#toGregorianDate
      */
-    var GregorianDate = function(year, month, day, hour, minute, second, millisecond, isLeapSecond) {
+    function GregorianDate(year, month, day, hour, minute, second, millisecond, isLeapSecond) {
         /**
          * Gets or sets the year as a whole number.
          * @type {Number}
@@ -15813,10 +15909,11 @@ define('Core/GregorianDate',[],function() {
          * @type {Boolean}
          */
         this.isLeapSecond = isLeapSecond;
-    };
+    }
 
     return GregorianDate;
 });
+
 /*global define*/
 define('Core/isLeapYear',[
         './DeveloperError'
@@ -15859,7 +15956,7 @@ define('Core/LeapSecond',[],function() {
      * @param {JulianDate} [date] A Julian date representing the time of the leap second.
      * @param {Number} [offset] The cumulative number of seconds that TAI is ahead of UTC at the provided date.
      */
-    var LeapSecond = function(date, offset) {
+    function LeapSecond(date, offset) {
         /**
          * Gets or sets the date at which this leap second occurs.
          * @type {JulianDate}
@@ -15872,10 +15969,11 @@ define('Core/LeapSecond',[],function() {
          * @type {Number}
          */
         this.offset = offset;
-    };
+    }
 
     return LeapSecond;
 });
+
 /*global define*/
 define('Core/TimeConstants',[
         './freezeObject'
@@ -15886,8 +15984,7 @@ define('Core/TimeConstants',[
     /**
      * Constants for time conversions like those done by {@link JulianDate}.
      *
-     * @namespace
-     * @alias TimeConstants
+     * @exports TimeConstants
      *
      * @see JulianDate
      *
@@ -15980,8 +16077,7 @@ define('Core/TimeStandard',[
     /**
      * Provides the type of time standards which JulianDate can take as input.
      *
-     * @namespace
-     * @alias TimeStandard
+     * @exports TimeStandard
      *
      * @see JulianDate
      */
@@ -16181,7 +16277,7 @@ define('Core/JulianDate',[
      * @param {Number} secondsOfDay The number of seconds into the current Julian Day Number.  Fractional seconds, negative seconds and seconds greater than a day will be handled correctly.
      * @param {TimeStandard} [timeStandard=TimeStandard.UTC] The time standard in which the first two parameters are defined.
      */
-    var JulianDate = function(julianDayNumber, secondsOfDay, timeStandard) {
+    function JulianDate(julianDayNumber, secondsOfDay, timeStandard) {
         /**
          * Gets or sets the number of whole days.
          * @type {Number}
@@ -16207,7 +16303,7 @@ define('Core/JulianDate',[
         if (timeStandard === TimeStandard.UTC) {
             convertUtcToTai(this);
         }
-    };
+    }
 
     /**
      * Creates a new instance from a JavaScript Date.
@@ -16363,7 +16459,7 @@ define('Core/JulianDate',[
                 tokens = time.match(matchHoursMinutes);
                 if (tokens !== null) {
                     dashCount = time.split(':').length - 1;
-                    if (dashCount > 0 && dashCount !== 1) {
+                    if (dashCount > 2) {
                         throw new DeveloperError(iso8601ErrorMessage);
                     }
 
@@ -17012,7 +17108,7 @@ define('Core/clone',[
      * @param {Boolean} [deep=false] If true, all properties will be deep cloned recursively.
      * @returns {Object} The cloned object.
      */
-    var clone = function(object, deep) {
+    function clone(object, deep) {
         if (object === null || typeof object !== 'object') {
             return object;
         }
@@ -17031,7 +17127,7 @@ define('Core/clone',[
         }
 
         return result;
-    };
+    }
 
     return clone;
 });
@@ -17053,7 +17149,7 @@ define('Core/parseResponseHeaders',[], function() {
      * 
      * @private
      */
-    var parseResponseHeaders = function(headerString) {
+    function parseResponseHeaders(headerString) {
         var headers = {};
 
         if (!headerString) {
@@ -17075,7 +17171,7 @@ define('Core/parseResponseHeaders',[], function() {
         }
 
         return headers;
-    };
+    }
 
     return parseResponseHeaders;
 });
@@ -17100,7 +17196,7 @@ define('Core/RequestErrorEvent',[
      * @param {String|Object} [responseHeaders] The response headers, represented either as an object literal or as a
      *                        string in the format returned by XMLHttpRequest's getAllResponseHeaders() function.
      */
-    var RequestErrorEvent = function RequestErrorEvent(statusCode, response, responseHeaders) {
+    function RequestErrorEvent(statusCode, response, responseHeaders) {
         /**
          * The HTTP error status code, such as 404.  If the error does not have a particular
          * HTTP code, this property will be undefined.
@@ -17128,7 +17224,7 @@ define('Core/RequestErrorEvent',[
         if (typeof this.responseHeaders === 'string') {
             this.responseHeaders = parseResponseHeaders(this.responseHeaders);
         }
-    };
+    }
 
     /**
      * Creates a string representing this RequestErrorEvent.
@@ -17146,6 +17242,7 @@ define('Core/RequestErrorEvent',[
 
     return RequestErrorEvent;
 });
+
 /*global define*/
 define('Core/loadWithXhr',[
         '../ThirdParty/when',
@@ -17180,12 +17277,6 @@ define('Core/loadWithXhr',[
      * @param {String} [options.overrideMimeType] Overrides the MIME type returned by the server.
      * @returns {Promise.<Object>} a promise that will resolve to the requested data when loaded.
      *
-     * @see loadArrayBuffer
-     * @see loadBlob
-     * @see loadJson
-     * @see loadText
-     * @see {@link http://www.w3.org/TR/cors/|Cross-Origin Resource Sharing}
-     * @see {@link http://wiki.commonjs.org/wiki/Promises/A|CommonJS Promises/A}
      *
      * @example
      * // Load a single URL asynchronously. In real code, you should use loadBlob instead.
@@ -17197,8 +17288,15 @@ define('Core/loadWithXhr',[
      * }).otherwise(function(error) {
      *     // an error occurred
      * });
+     * 
+     * @see loadArrayBuffer
+     * @see loadBlob
+     * @see loadJson
+     * @see loadText
+     * @see {@link http://www.w3.org/TR/cors/|Cross-Origin Resource Sharing}
+     * @see {@link http://wiki.commonjs.org/wiki/Promises/A|CommonJS Promises/A}
      */
-    var loadWithXhr = function(options) {
+    function loadWithXhr(options) {
         options = defaultValue(options, defaultValue.EMPTY_OBJECT);
 
                 if (!defined(options.url)) {
@@ -17218,7 +17316,7 @@ define('Core/loadWithXhr',[
 
             return deferred.promise;
         });
-    };
+    }
 
     var dataUriRegex = /^data:(.*?)(;base64)?,(.*)$/;
 
@@ -17296,7 +17394,7 @@ define('Core/loadWithXhr',[
         }
 
         xhr.onload = function() {
-            if (xhr.status === 200) {
+            if (xhr.status >= 200 && xhr.status < 300) {
                 if (defined(xhr.response)) {
                     deferred.resolve(xhr.response);
                 } else {
@@ -17345,9 +17443,6 @@ define('Core/loadText',[
      * @param {Object} [headers] HTTP headers to send with the request.
      * @returns {Promise.<String>} a promise that will resolve to the requested data when loaded.
      *
-     * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest|XMLHttpRequest}
-     * @see {@link http://www.w3.org/TR/cors/|Cross-Origin Resource Sharing}
-     * @see {@link http://wiki.commonjs.org/wiki/Promises/A|CommonJS Promises/A}
      *
      * @example
      * // load text from a URL, setting a custom header
@@ -17358,13 +17453,17 @@ define('Core/loadText',[
      * }).otherwise(function(error) {
      *     // an error occurred
      * });
+     * 
+     * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest|XMLHttpRequest}
+     * @see {@link http://www.w3.org/TR/cors/|Cross-Origin Resource Sharing}
+     * @see {@link http://wiki.commonjs.org/wiki/Promises/A|CommonJS Promises/A}
      */
-    var loadText = function(url, headers) {
+    function loadText(url, headers) {
         return loadWithXhr({
             url : url,
             headers : headers
         });
-    };
+    }
 
     return loadText;
 });
@@ -17403,9 +17502,6 @@ define('Core/loadJson',[
      * if not specified.
      * @returns {Promise.<Object>} a promise that will resolve to the requested data when loaded.
      *
-     * @see loadText
-     * @see {@link http://www.w3.org/TR/cors/|Cross-Origin Resource Sharing}
-     * @see {@link http://wiki.commonjs.org/wiki/Promises/A|CommonJS Promises/A}
      *
      * @example
      * Cesium.loadJson('http://someUrl.com/someJson.txt').then(function(jsonData) {
@@ -17413,8 +17509,12 @@ define('Core/loadJson',[
      * }).otherwise(function(error) {
      *     // an error occurred
      * });
+     * 
+     * @see loadText
+     * @see {@link http://www.w3.org/TR/cors/|Cross-Origin Resource Sharing}
+     * @see {@link http://wiki.commonjs.org/wiki/Promises/A|CommonJS Promises/A}
      */
-    var loadJson = function loadJson(url, headers) {
+    function loadJson(url, headers) {
                 if (!defined(url)) {
             throw new DeveloperError('url is required.');
         }
@@ -17430,7 +17530,7 @@ define('Core/loadJson',[
         return loadText(url, headers).then(function(value) {
             return JSON.parse(value);
         });
-    };
+    }
 
     return loadJson;
 });
@@ -17505,7 +17605,7 @@ define('Core/EarthOrientationParameters',[
      *
      * @private
      */
-    var EarthOrientationParameters = function EarthOrientationParameters(options) {
+    function EarthOrientationParameters(options) {
         options = defaultValue(options, defaultValue.EMPTY_OBJECT);
 
         this._dates = undefined;
@@ -17545,7 +17645,7 @@ define('Core/EarthOrientationParameters',[
                 'samples' : []
             });
         }
-    };
+    }
 
     /**
      * A default {@link EarthOrientationParameters} instance that returns zero for all EOP values.
@@ -17867,8 +17967,7 @@ define('ThirdParty/Uri',[],function() {
 			this.query = c[4];
 			this.fragment = c[5];
 		}
-	};
-
+	}
 	// Initial values on the prototype
 	URI.prototype.scheme    = null;
 	URI.prototype.authority = null;
@@ -18165,7 +18264,7 @@ define('Core/buildModuleUrl',[
      *
      * @private
      */
-    var buildModuleUrl = function(moduleID) {
+    function buildModuleUrl(moduleID) {
         if (!defined(implementation)) {
             //select implementation
             if (defined(require.toUrl)) {
@@ -18185,7 +18284,7 @@ define('Core/buildModuleUrl',[
         a.href = a.href; // IE only absolutizes href on get, not set
 
         return a.href;
-    };
+    }
 
     // exposed for testing
     buildModuleUrl._cesiumScriptRegex = cesiumScriptRegex;
@@ -18200,6 +18299,7 @@ define('Core/buildModuleUrl',[
 
     return buildModuleUrl;
 });
+
 /*global define*/
 define('Core/Iau2006XysSample',[],function() {
     "use strict";
@@ -18216,7 +18316,7 @@ define('Core/Iau2006XysSample',[],function() {
      *
      * @private
      */
-    var Iau2006XysSample = function Iau2006XysSample(x, y, s) {
+    function Iau2006XysSample(x, y, s) {
         /**
          * The X value.
          * @type {Number}
@@ -18234,10 +18334,11 @@ define('Core/Iau2006XysSample',[],function() {
          * @type {Number}
          */
         this.s = s;
-    };
+    }
 
     return Iau2006XysSample;
 });
+
 /*global define*/
 define('Core/Iau2006XysData',[
         '../ThirdParty/when',
@@ -18278,7 +18379,7 @@ define('Core/Iau2006XysData',[
      *
      * @private
      */
-    var Iau2006XysData = function Iau2006XysData(options) {
+    function Iau2006XysData(options) {
         options = defaultValue(options, defaultValue.EMPTY_OBJECT);
 
         this._xysFileUrlTemplate = options.xysFileUrlTemplate;
@@ -18315,7 +18416,7 @@ define('Core/Iau2006XysData',[
         // Allocate scratch arrays for interpolation.
         this._work = new Array(order + 1);
         this._coef = new Array(order + 1);
-    };
+    }
 
     var julianDateScratch = new JulianDate(0, 0.0, TimeStandard.TAI);
 
@@ -18526,8 +18627,7 @@ define('Core/Fullscreen',[
     /**
      * Browser-independent functions for working with the standard fullscreen API.
      *
-     * @namespace
-     * @alias Fullscreen
+     * @exports Fullscreen
      *
      * @see {@link http://dvcs.w3.org/hg/fullscreen/raw-file/tip/Overview.html|W3C Fullscreen Living Specification}
      */
@@ -18770,6 +18870,13 @@ define('Core/FeatureDetection',[
         Fullscreen) {
     "use strict";
 
+    var theNavigator;
+    if (typeof navigator !== 'undefined') {
+        theNavigator = navigator;
+    } else {
+        theNavigator = {};
+    }
+
     function extractVersion(versionString) {
         var parts = versionString.split('.');
         for (var i = 0, len = parts.length; i < len; ++i) {
@@ -18784,7 +18891,7 @@ define('Core/FeatureDetection',[
         if (!defined(isChromeResult)) {
             isChromeResult = false;
 
-            var fields = (/ Chrome\/([\.0-9]+)/).exec(navigator.userAgent);
+            var fields = (/ Chrome\/([\.0-9]+)/).exec(theNavigator.userAgent);
             if (fields !== null) {
                 isChromeResult = true;
                 chromeVersionResult = extractVersion(fields[1]);
@@ -18805,8 +18912,8 @@ define('Core/FeatureDetection',[
             isSafariResult = false;
 
             // Chrome contains Safari in the user agent too
-            if (!isChrome() && (/ Safari\/[\.0-9]+/).test(navigator.userAgent)) {
-                var fields = (/ Version\/([\.0-9]+)/).exec(navigator.userAgent);
+            if (!isChrome() && (/ Safari\/[\.0-9]+/).test(theNavigator.userAgent)) {
+                var fields = (/ Version\/([\.0-9]+)/).exec(theNavigator.userAgent);
                 if (fields !== null) {
                     isSafariResult = true;
                     safariVersionResult = extractVersion(fields[1]);
@@ -18827,7 +18934,7 @@ define('Core/FeatureDetection',[
         if (!defined(isWebkitResult)) {
             isWebkitResult = false;
 
-            var fields = (/ AppleWebKit\/([\.0-9]+)(\+?)/).exec(navigator.userAgent);
+            var fields = (/ AppleWebKit\/([\.0-9]+)(\+?)/).exec(theNavigator.userAgent);
             if (fields !== null) {
                 isWebkitResult = true;
                 webkitVersionResult = extractVersion(fields[1]);
@@ -18849,14 +18956,14 @@ define('Core/FeatureDetection',[
             isInternetExplorerResult = false;
 
             var fields;
-            if (navigator.appName === 'Microsoft Internet Explorer') {
-                fields = /MSIE ([0-9]{1,}[\.0-9]{0,})/.exec(navigator.userAgent);
+            if (theNavigator.appName === 'Microsoft Internet Explorer') {
+                fields = /MSIE ([0-9]{1,}[\.0-9]{0,})/.exec(theNavigator.userAgent);
                 if (fields !== null) {
                     isInternetExplorerResult = true;
                     internetExplorerVersionResult = extractVersion(fields[1]);
                 }
-            } else if (navigator.appName === 'Netscape') {
-                fields = /Trident\/.*rv:([0-9]{1,}[\.0-9]{0,})/.exec(navigator.userAgent);
+            } else if (theNavigator.appName === 'Netscape') {
+                fields = /Trident\/.*rv:([0-9]{1,}[\.0-9]{0,})/.exec(theNavigator.userAgent);
                 if (fields !== null) {
                     isInternetExplorerResult = true;
                     internetExplorerVersionResult = extractVersion(fields[1]);
@@ -18876,7 +18983,7 @@ define('Core/FeatureDetection',[
         if (!defined(isFirefoxResult)) {
             isFirefoxResult = false;
 
-            var fields = /Firefox\/([\.0-9]+)/.exec(navigator.userAgent);
+            var fields = /Firefox\/([\.0-9]+)/.exec(theNavigator.userAgent);
             if (fields !== null) {
                 isFirefoxResult = true;
                 firefoxVersionResult = extractVersion(fields[1]);
@@ -18888,7 +18995,7 @@ define('Core/FeatureDetection',[
     var isWindowsResult;
     function isWindows() {
         if (!defined(isWindowsResult)) {
-            isWindowsResult = /Windows/i.test(navigator.appVersion);
+            isWindowsResult = /Windows/i.test(theNavigator.appVersion);
         }
         return isWindowsResult;
     }
@@ -18901,11 +19008,11 @@ define('Core/FeatureDetection',[
     var hasPointerEvents;
     function supportsPointerEvents() {
         if (!defined(hasPointerEvents)) {
-            //While window.navigator.pointerEnabled is deprecated in the W3C specification
+            //While navigator.pointerEnabled is deprecated in the W3C specification
             //we still need to use it if it exists in order to support browsers
             //that rely on it, such as the Windows WebBrowser control which defines
-            //window.PointerEvent but sets window.navigator.pointerEnabled to false.
-            hasPointerEvents = defined(window.PointerEvent) && (!defined(window.navigator.pointerEnabled) || window.navigator.pointerEnabled);
+            //PointerEvent but sets navigator.pointerEnabled to false.
+            hasPointerEvents = typeof PointerEvent !== 'undefined' && (!defined(theNavigator.pointerEnabled) || theNavigator.pointerEnabled);
         }
         return hasPointerEvents;
     }
@@ -18914,8 +19021,7 @@ define('Core/FeatureDetection',[
      * A set of functions to detect whether the current browser supports
      * various features.
      *
-     * @namespace
-     * @alias FeatureDetection
+     * @exports FeatureDetection
      */
     var FeatureDetection = {
         isChrome : isChrome,
@@ -18929,7 +19035,7 @@ define('Core/FeatureDetection',[
         isFirefox : isFirefox,
         firefoxVersion : firefoxVersion,
         isWindows : isWindows,
-        hardwareConcurrency : defaultValue(navigator.hardwareConcurrency, 3),
+        hardwareConcurrency : defaultValue(theNavigator.hardwareConcurrency, 3),
         supportsPointerEvents : supportsPointerEvents
     };
 
@@ -19002,7 +19108,7 @@ define('Core/Quaternion',[
      *
      * @see PackableForInterpolation
      */
-    var Quaternion = function(x, y, z, w) {
+    function Quaternion(x, y, z, w) {
         /**
          * The X component.
          * @type {Number}
@@ -19030,7 +19136,7 @@ define('Core/Quaternion',[
          * @default 0.0
          */
         this.w = defaultValue(w, 0.0);
-    };
+    }
 
     var fromAxisAngleScratch = new Cartesian3();
 
@@ -19826,7 +19932,6 @@ define('Core/Quaternion',[
      * @param {Quaternion} result The object onto which to store the result.
      * @returns {Quaternion} The modified result parameter.
      *
-     * @see Quaternion#computeInnerQuadrangle
      *
      * @example
      * // 1. compute the squad interpolation between two quaternions on a curve
@@ -19837,6 +19942,8 @@ define('Core/Quaternion',[
      * // 2. compute the squad interpolation as above but where the first quaternion is a end point.
      * var s1 = Cesium.Quaternion.computeInnerQuadrangle(quaternions[0], quaternions[1], quaternions[2], new Cesium.Quaternion());
      * var q = Cesium.Quaternion.squad(quaternions[0], quaternions[1], quaternions[0], s1, t, new Cesium.Quaternion());
+     * 
+     * @see Quaternion#computeInnerQuadrangle
      */
     Quaternion.squad = function(q0, q1, s0, s1, t, result) {
                 if (!defined(q0) || !defined(q1) || !defined(s0) || !defined(s1)) {
@@ -20062,6 +20169,7 @@ define('Core/Quaternion',[
 
     return Quaternion;
 });
+
 /*global define*/
 define('Core/Transforms',[
         '../ThirdParty/when',
@@ -20106,8 +20214,7 @@ define('Core/Transforms',[
     /**
      * Contains functions for transforming positions to various reference frames.
      *
-     * @namespace
-     * @alias Transforms
+     * @exports Transforms
      */
     var Transforms = {};
 
@@ -20583,15 +20690,16 @@ define('Core/Transforms',[
      *          and evaluation of the transformation between the fixed and ICRF axes will
      *          no longer return undefined for a time inside the interval.
      *
-     * @see Transforms.computeIcrfToFixedMatrix
-     * @see Transforms.computeFixedToIcrfMatrix
-     * @see when
      *
      * @example
      * var interval = new Cesium.TimeInterval(...);
      * when(Cesium.Transforms.preloadIcrfFixed(interval), function() {
      *     // the data is now loaded
      * });
+     * 
+     * @see Transforms.computeIcrfToFixedMatrix
+     * @see Transforms.computeFixedToIcrfMatrix
+     * @see when
      */
     Transforms.preloadIcrfFixed = function(timeInterval) {
         var startDayTT = timeInterval.start.dayNumber;
@@ -20617,7 +20725,6 @@ define('Core/Transforms',[
      * @returns {Matrix3} The rotation matrix, or undefined if the data necessary to do the
      *                   transformation is not yet loaded.
      *
-     * @see Transforms.preloadIcrfFixed
      *
      * @example
      * scene.preRender.addEventListener(function(scene, time) {
@@ -20630,6 +20737,8 @@ define('Core/Transforms',[
      *     camera.lookAtTransform(transform, offset);
      *   }
      * });
+     * 
+     * @see Transforms.preloadIcrfFixed
      */
     Transforms.computeIcrfToFixedMatrix = function(date, result) {
                 if (!defined(date)) {
@@ -20664,7 +20773,6 @@ define('Core/Transforms',[
      * @returns {Matrix3} The rotation matrix, or undefined if the data necessary to do the
      *                   transformation is not yet loaded.
      *
-     * @see Transforms.preloadIcrfFixed
      *
      * @example
      * // Transform a point from the ICRF axes to the Fixed axes.
@@ -20675,6 +20783,8 @@ define('Core/Transforms',[
      * if (Cesium.defined(fixedToIcrf)) {
      *     pointInInertial = Cesium.Matrix3.multiplyByVector(fixedToIcrf, pointInFixed, pointInInertial);
      * }
+     * 
+     * @see Transforms.preloadIcrfFixed
      */
     Transforms.computeFixedToIcrfMatrix = function(date, result) {
                 if (!defined(date)) {
@@ -20917,7 +21027,7 @@ define('Core/EllipsoidTangentPlane',[
      *
      * @exception {DeveloperError} origin must not be at the center of the ellipsoid.
      */
-    var EllipsoidTangentPlane = function(origin, ellipsoid) {
+    function EllipsoidTangentPlane(origin, ellipsoid) {
                 if (!defined(origin)) {
             throw new DeveloperError('origin is required.');
         }
@@ -20937,7 +21047,7 @@ define('Core/EllipsoidTangentPlane',[
 
         var normal = Cartesian3.fromCartesian4(Matrix4.getColumn(eastNorthUp, 2, scratchCart4));
         this._plane = Plane.fromPointNormal(origin, normal);
-    };
+    }
 
     defineProperties(EllipsoidTangentPlane.prototype, {
         /**
@@ -21251,8 +21361,6 @@ define('Core/OrientedBoundingBox',[
      *                                          Equivalently, the transformation matrix, to rotate and scale a 2x2x2
      *                                          cube centered at the origin.
      *
-     * @see BoundingSphere
-     * @see BoundingRectangle
      *
      * @example
      * // Create an OrientedBoundingBox using a transformation matrix, a position where the box will be translated, and a scale.
@@ -21260,8 +21368,11 @@ define('Core/OrientedBoundingBox',[
      * var halfAxes = Cesium.Matrix3.fromScale(new Cesium.Cartesian3(1.0, 3.0, 2.0), new Cesium.Matrix3());
      *
      * var obb = new Cesium.OrientedBoundingBox(center, halfAxes);
+     * 
+     * @see BoundingSphere
+     * @see BoundingRectangle
      */
-    var OrientedBoundingBox = function(center, halfAxes) {
+    function OrientedBoundingBox(center, halfAxes) {
         /**
          * The center of the box.
          * @type {Cartesian3}
@@ -21274,7 +21385,7 @@ define('Core/OrientedBoundingBox',[
          * @default {@link Matrix3.IDENTITY}
          */
         this.halfAxes = Matrix3.clone(defaultValue(halfAxes, Matrix3.ZERO));
-    };
+    }
 
     var scratchCartesian1 = new Cartesian3();
     var scratchCartesian2 = new Cartesian3();
@@ -21398,7 +21509,7 @@ define('Core/OrientedBoundingBox',[
      * @param {OrientedBoundingBox} [result] The object onto which to store the result.
      * @returns {OrientedBoundingBox} The modified result parameter or a new OrientedBoundingBox instance if one was not provided.
      */
-    var fromTangentPlaneExtents = function(tangentPlane, minimumX, maximumX, minimumY, maximumY, minimumZ, maximumZ, result) {
+    function fromTangentPlaneExtents(tangentPlane, minimumX, maximumX, minimumY, maximumY, minimumZ, maximumZ, result) {
                 if (!defined(minimumX) ||
             !defined(maximumX) ||
             !defined(minimumY) ||
@@ -21433,7 +21544,7 @@ define('Core/OrientedBoundingBox',[
         Matrix3.multiplyByScale(halfAxes, scale, halfAxes);
 
         return result;
-    };
+    }
 
     var scratchRectangleCenterCartographic = new Cartographic();
     var scratchRectangleCenter = new Cartesian3();
@@ -21669,7 +21780,6 @@ define('Core/OrientedBoundingBox',[
 
     var scratchCorner = new Cartesian3();
     var scratchToCenter = new Cartesian3();
-    var scratchProj = new Cartesian3();
 
     /**
      * The distances calculated by the vector from the center of the bounding box to position projected onto direction.
@@ -21935,7 +22045,7 @@ define('Core/formatError',[
      * @param {Object} object The item to find in the array.
      * @returns {String} A string containing the formatted error.
      */
-    var formatError = function(object) {
+    function formatError(object) {
         var result;
 
         var name = object.name;
@@ -21952,10 +22062,11 @@ define('Core/formatError',[
         }
 
         return result;
-    };
+    }
 
     return formatError;
 });
+
 /*global define*/
 define('Workers/createTaskProcessorWorker',[
         '../Core/defaultValue',
@@ -21978,9 +22089,6 @@ define('Workers/createTaskProcessorWorker',[
      * @returns {createTaskProcessorWorker~TaskProcessorWorkerFunction} A function that adapts the
      *          calculation function to work as a Web Worker onmessage listener with TaskProcessor.
      *
-     * @see TaskProcessor
-     * @see {@link http://www.w3.org/TR/workers/|Web Workers}
-     * @see {@link http://www.w3.org/TR/html5/common-dom-interfaces.html#transferable-objects|Transferable objects}
      *
      * @example
      * function doCalculation(parameters, transferableObjects) {
@@ -21990,8 +22098,12 @@ define('Workers/createTaskProcessorWorker',[
      *
      * return Cesium.createTaskProcessorWorker(doCalculation);
      * // the resulting function is compatible with TaskProcessor
+     * 
+     * @see TaskProcessor
+     * @see {@link http://www.w3.org/TR/workers/|Web Workers}
+     * @see {@link http://www.w3.org/TR/html5/common-dom-interfaces.html#transferable-objects|Transferable objects}
      */
-    var createTaskProcessorWorker = function(workerFunction) {
+    function createTaskProcessorWorker(workerFunction) {
         var postMessage;
         var transferableObjects = [];
         var responseMessage = {
@@ -22042,7 +22154,7 @@ define('Workers/createTaskProcessorWorker',[
                 postMessage(responseMessage);
             }
         };
-    };
+    }
 
     /**
      * A function that performs a calculation in a Web Worker.
@@ -22077,6 +22189,7 @@ define('Workers/createTaskProcessorWorker',[
 
     return createTaskProcessorWorker;
 });
+
 /*global define*/
 define('Workers/upsampleQuantizedTerrainMesh',[
         '../Core/AttributeCompression',

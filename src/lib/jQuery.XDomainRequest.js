@@ -1,7 +1,7 @@
 /*!
- * jQuery-ajaxTransport-XDomainRequest - v1.0.3 - 2014-06-06
+ * jQuery-ajaxTransport-XDomainRequest - v1.0.4 - 2015-03-05
  * https://github.com/MoonScript/jQuery-ajaxTransport-XDomainRequest
- * Copyright (c) 2014 Jason Moon (@JSONMOON)
+ * Copyright (c) 2015 Jason Moon (@JSONMOON)
  * Licensed MIT (/blob/master/LICENSE.txt)
  */
 (function(factory) {
@@ -19,16 +19,16 @@
 
 // Only continue if we're on IE8/IE9 with jQuery 1.5+ (contains the ajaxTransport function)
 if ($.support.cors || !$.ajaxTransport || !window.XDomainRequest) {
-  return;
+  return $;
 }
 
-var httpRegEx = /^https?:\/\//i;
+var httpRegEx = /^(https?:)?\/\//i;
 var getOrPostRegEx = /^get|post$/i;
-var sameSchemeRegEx = new RegExp('^'+location.protocol, 'i');
+var sameSchemeRegEx = new RegExp('^(\/\/|' + location.protocol + ')', 'i');
 
 // ajaxTransport exists in jQuery 1.5+
 $.ajaxTransport('* text html xml json', function(options, userOptions, jqXHR) {
-  
+
   // Only continue if the request is: asynchronous, uses GET or POST method, has HTTP or HTTPS protocol, and has the same scheme as the calling page
   if (!options.crossDomain || !options.async || !getOrPostRegEx.test(options.type) || !httpRegEx.test(options.url) || !sameSchemeRegEx.test(options.url)) {
     return;
@@ -113,5 +113,7 @@ $.ajaxTransport('* text html xml json', function(options, userOptions, jqXHR) {
     }
   };
 });
+
+return $;
 
 }));

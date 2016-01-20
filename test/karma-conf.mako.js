@@ -14,11 +14,11 @@ module.exports = function(config) {
     % if mode == 'prod':
        'lib/build.js',
     % else:
-       'lib/jquery-2.0.3.js',
+       'lib/jquery.js',
        'lib/angular.js',
        'lib/angular-translate.js',
        'lib/angular-translate-loader-static-files.js',
-       'lib/bootstrap-3.3.1.js',
+       'lib/bootstrap.js',
        'lib/typeahead-0.9.3.js',
        'lib/proj4js-compressed.js',
        'lib/EPSG21781.js',
@@ -30,9 +30,9 @@ module.exports = function(config) {
        'lib/ol3cesium-debug.js',
        '../.build-artefacts/app-whitespace.js',
     % endif
-       '../test/angular/angular-mocks.js',
-       '../test/expect-0.2.0/expect.js',
-       '../test/sinon-1.7.3/sinon.js',
+       '../test/lib/angular-mocks.js',
+       '../test/lib/expect.js',
+       '../test/lib/sinon.js',
        '../test/specs/Loader.spec.js',
        '../test/specs/**/*.js'
   ],

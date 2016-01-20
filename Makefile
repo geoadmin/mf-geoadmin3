@@ -20,9 +20,9 @@ GIT_LAST_BRANCH := $(shell if [ -f .build-artefacts/last-git-branch ]; then cat 
 DEPLOY_ROOT_DIR := /var/www/vhosts/mf-geoadmin3/private/branch
 DEPLOY_TARGET ?= 'dev'
 LAST_DEPLOY_TARGET := $(shell if [ -f .build-artefacts/last-deploy-target ]; then cat .build-artefacts/last-deploy-target 2> /dev/null; else echo '-none-'; fi)
-OL3_VERSION ?= 627abaf1a71d48627163eb00ea6a0b6fb8dede14
-OL3_CESIUM_VERSION ?= 10c5fcf1565ffdb484c4ef4e42835142f8f45e67
-CESIUM_VERSION ?= 3e3cf938786ee48b4b376ed932904541d798671d
+OL3_VERSION ?= dccf867308d22a5efeec0b6643e00734ca15623c # master, 12 january 2016
+OL3_CESIUM_VERSION ?= be1e97e50b963b8db1aa28f5172adc229b57676b # master, 23 december 2015
+CESIUM_VERSION ?= b4da72d63ca6df06dd4af513fdef15f5ff94ce0c # camptocamp/c2c_patches (cesium 1.17), 13 january 2015
 DEFAULT_TOPIC_ID ?= ech
 TRANSLATION_FALLBACK_CODE ?= de
 LANGUAGES ?= '[\"de\", \"en\", \"fr\", \"it\", \"rm\"]'
@@ -88,23 +88,23 @@ all: lint dev prod apache testdev testprod deploy/deploy-branch.cfg fixrights
 
 .PHONY: prod
 prod: prd/lib/ \
-	prd/lib/build.js \
-	prd/style/app.css \
-	prd/geoadmin.appcache \
-	prd/index.html \
-	prd/mobile.html \
-	prd/embed.html \
-	prd/img/ \
-	prd/style/font-awesome-3.2.1/font/ \
-	prd/locales/ \
-	prd/checker \
-	prd/robots.txt
+	    prd/lib/build.js \
+	    prd/style/app.css \
+	    prd/geoadmin.appcache \
+	    prd/index.html \
+	    prd/mobile.html \
+	    prd/embed.html \
+	    prd/img/ \
+	    prd/style/font-awesome-4.5.0/font/ \
+	    prd/locales/ \
+	    prd/checker \
+	    prd/robots.txt
 
 .PHONY: dev
 dev: src/deps.js src/style/app.css src/index.html src/mobile.html src/embed.html
 
 .PHONY: lint
-lint: .build-artefacts/lint.timestamp
+lint: node_modules .build-artefacts/lint.timestamp
 
 .PHONY: testdev
 testdev: .build-artefacts/app-whitespace.js test/karma-conf-dev.js node_modules
@@ -207,16 +207,16 @@ ol3cesium: .build-artefacts/ol3-cesium
 	cp cesium/Build/Cesium/Cesium.js ../../src/lib/Cesium.min.js;
 
 .PHONY: fastclick
-fastclick: .build-artefacts/fastclick .build-artefacts/closure-compiler/compiler.jar
+fastclick: .build-artefacts/fastclick
 	cp .build-artefacts/fastclick/lib/fastclick.js src/lib/fastclick.js
-	java -jar .build-artefacts/closure-compiler/compiler.jar \
+	java -jar node_modules/google-closure-compiler/compiler.jar \
 	    src/lib/fastclick.js \
 	    --compilation_level SIMPLE_OPTIMIZATIONS \
 	    --js_output_file  src/lib/fastclick.min.js
 
 .PHONY: typeahead
-typeahead: .build-artefacts/closure-compiler/compiler.jar
-	java -jar .build-artefacts/closure-compiler/compiler.jar \
+typeahead:
+	java -jar node_modules/google-closure-compiler/compiler.jar \
 	    src/lib/typeahead-0.9.3.js \
 	    --compilation_level SIMPLE_OPTIMIZATIONS \
 	    --js_output_file  src/lib/typeahead-0.9.3.min.js
@@ -256,42 +256,42 @@ prd/robots.txt: scripts/robots.mako-dot-txt .build-artefacts/last-deploy-target
 	${PYTHON_CMD} .build-artefacts/python-venv/bin/mako-render \
 	    --var "deploy_target=$(DEPLOY_TARGET)" $< > $@
 
-prd/lib/: src/lib/d3-3.3.1.min.js \
+prd/lib/: src/lib/d3.min.js \
 	    src/lib/bootstrap-datetimepicker.min.js  \
 	    src/lib/IE9Fixes.js \
-	    src/lib/jQuery.XDomainRequest.js \
+	    src/lib/jquery.xdomainrequest.min.js \
 	    src/lib/Cesium \
 	    src/lib/Cesium.min.js \
 	    src/lib/ol3cesium.js
 	mkdir -p $@
 	cp -rf  $^ $@
 
-prd/lib/build.js: src/lib/jquery-2.0.3.min.js \
-		    src/lib/bootstrap-3.3.1.min.js \
-		    src/lib/moment-with-customlocales.min.js \
-		    src/lib/typeahead-0.9.3.min.js src/lib/angular.min.js \
-		    src/lib/proj4js-compressed.js \
-		    src/lib/EPSG21781.js \
-		    src/lib/EPSG2056.js \
-		    src/lib/EPSG32631.js \
-		    src/lib/EPSG32632.js \
-		    src/lib/ol3cesium.js \
-		    src/lib/angular-translate.min.js \
-		    src/lib/angular-translate-loader-static-files.min.js \
-		    src/lib/fastclick.min.js \
-		    src/lib/localforage.min.js \
-		    src/lib/filesaver.min.js \
-		    .build-artefacts/app.js
+prd/lib/build.js: src/lib/jquery.min.js \
+	    src/lib/bootstrap.min.js \
+	    src/lib/moment-with-customlocales.min.js \
+	    src/lib/typeahead-0.9.3.min.js \
+	    src/lib/angular.min.js \
+	    src/lib/proj4js-compressed.js \
+	    src/lib/EPSG21781.js \
+	    src/lib/EPSG2056.js \
+	    src/lib/EPSG32631.js \
+	    src/lib/EPSG32632.js \
+	    src/lib/ol3cesium.js \
+	    src/lib/angular-translate.min.js \
+	    src/lib/angular-translate-loader-static-files.min.js \
+	    src/lib/fastclick.min.js \
+	    src/lib/localforage.min.js \
+	    src/lib/filesaver.min.js \
+	    .build-artefacts/app.js
 	mkdir -p $(dir $@)
 	cat $^ | sed 's/^\/\/[#,@] sourceMappingURL=.*//' > $@
 
 prd/style/app.css: src/style/app.less \
-		    src/style/print.less \
-		    src/style/ga_bootstrap.less \
-		    src/style/ga_variables.less \
-		    $(SRC_COMPONENTS_LESS_FILES) \
-		    node_modules \
-		    .build-artefacts/bootstrap
+	    src/style/print.less \
+	    src/style/ga_bootstrap.less \
+	    src/style/ga_variables.less \
+	    $(SRC_COMPONENTS_LESS_FILES) \
+	    node_modules
 	mkdir -p $(dir $@)
 	node_modules/.bin/lessc -ru --clean-css $< $@
 
@@ -367,7 +367,7 @@ prd/img/: src/img/*
 	mkdir -p $@
 	cp -R $^ $@
 
-prd/style/font-awesome-3.2.1/font/: src/style/font-awesome-3.2.1/font/*
+prd/style/font-awesome-4.5.0/font/: src/style/font-awesome-4.5.0/font/*
 	mkdir -p $@
 	cp $^ $@
 
@@ -379,8 +379,8 @@ prd/checker: src/checker
 	mkdir -p $(dir $@)
 	cp $< $@
 
-src/deps.js: $(SRC_JS_FILES) .build-artefacts/python-venv .build-artefacts/closure-library
-	${PYTHON_CMD} .build-artefacts/closure-library/closure/bin/build/depswriter.py \
+src/deps.js: $(SRC_JS_FILES) .build-artefacts/python-venv
+	${PYTHON_CMD} node_modules/google-closure-library/closure/bin/build/depswriter.py \
 	    --root_with_prefix="src/components components" \
 	    --root_with_prefix="src/js js" \
 	    --output_file=$@
@@ -390,8 +390,7 @@ src/style/app.css: src/style/app.less \
 	    src/style/ga_bootstrap.less \
 	    src/style/ga_variables.less \
 	    $(SRC_COMPONENTS_LESS_FILES) \
-	    node_modules \
-	    .build-artefacts/bootstrap
+	    node_modules
 	node_modules/.bin/lessc $(LESS_PARAMETERS) $< $@
 
 src/index.html: src/index.mako.html \
@@ -442,27 +441,37 @@ node_modules: ANGULAR_JS = angular.js angular.min.js
 node_modules: ANGULAR_TRANSLATE_JS = angular-translate.js angular-translate.min.js
 node_modules: ANGULAR_TRANSLATE_LOADER_JS = angular-translate-loader-static-files.js angular-translate-loader-static-files.min.js
 node_modules: LOCALFORAGE = localforage.js localforage.min.js
+node_modules: JQUERY = jquery.js jquery.min.js
+node_modules: JQUERYXDOMAIN = jQuery.XDomainRequest.js  jquery.xdomainrequest.min.js
+node_modules: D3 = d3.js  d3.min.js
+node_modules: BOOTSTRAP = bootstrap.js bootstrap.min.js
 node_modules: package.json
 	npm install
 	cp $(addprefix node_modules/angular/,$(ANGULAR_JS)) src/lib/;
 	cp $(addprefix node_modules/angular-translate/dist/,$(ANGULAR_TRANSLATE_JS)) src/lib/;
 	cp $(addprefix node_modules/angular-translate/dist/angular-translate-loader-static-files/,$(ANGULAR_TRANSLATE_LOADER_JS)) src/lib/;
-	cp $(addprefix node_modules/localforage/dist/,$(LOCALFORAGE)) src/lib;
+	cp $(addprefix node_modules/localforage/dist/,$(LOCALFORAGE)) src/lib/;
+	cp $(addprefix node_modules/jquery/dist/,$(JQUERY)) src/lib/;
+	cp $(addprefix node_modules/jquery-ajax-transport-xdomainrequest/,$(JQUERYXDOMAIN)) src/lib/;
+	cp $(addprefix node_modules/d3/,$(D3)) src/lib/;
+	cp $(addprefix node_modules/bootstrap/dist/js/,$(BOOTSTRAP)) src/lib/;
+	cp node_modules/fastclick/lib/fastclick.js src/lib/;
+	cp node_modules/angular-mocks/angular-mocks.js test/lib/;
+	cp node_modules/expect.js/index.js test/lib/expect.js;
+	cp node_modules/sinon/pkg/sinon.js test/lib/;
+	cp node_modules/google-closure-compiler/contrib/externs/angular-1.4.js externs/angular.js;
+	cp node_modules/google-closure-compiler/contrib/externs/jquery-1.9.js externs/jquery.js;
 
-
-.build-artefacts/app.js: .build-artefacts/js-files \
-	    .build-artefacts/closure-compiler/compiler.jar \
-	    .build-artefacts/externs/angular.js \
-	    .build-artefacts/externs/jquery.js
+.build-artefacts/app.js: .build-artefacts/js-files
 	mkdir -p $(dir $@)
-	java -jar .build-artefacts/closure-compiler/compiler.jar $(SRC_JS_FILES_FOR_COMPILER) \
+	java -jar node_modules/google-closure-compiler/compiler.jar $(SRC_JS_FILES_FOR_COMPILER) \
 	    --compilation_level SIMPLE_OPTIMIZATIONS \
 	    --jscomp_error checkVars \
 	    --externs externs/ol.js \
 	    --externs externs/ol3-cesium.js \
 	    --externs externs/Cesium.externs.js \
-	    --externs .build-artefacts/externs/angular.js \
-	    --externs .build-artefacts/externs/jquery.js \
+	    --externs externs/angular.js \
+	    --externs externs/jquery.js \
 	    --js_output_file $@
 
 $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule.js): \
@@ -470,9 +479,8 @@ $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule
 	mkdir -p $(dir $@)
 	./node_modules/.bin/ng-annotate -a $< > $@
 
-.build-artefacts/app-whitespace.js: .build-artefacts/js-files \
-	    .build-artefacts/closure-compiler/compiler.jar
-	java -jar .build-artefacts/closure-compiler/compiler.jar  $(SRC_JS_FILES_FOR_COMPILER) \
+.build-artefacts/app-whitespace.js: .build-artefacts/js-files
+	java -jar node_modules/google-closure-compiler/compiler.jar  $(SRC_JS_FILES_FOR_COMPILER) \
 	    --compilation_level WHITESPACE_ONLY \
 	    --formatting PRETTY_PRINT \
 	    --js_output_file $@
@@ -482,10 +490,10 @@ $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule
 # passed to the Closure compiler.
 .build-artefacts/js-files: $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule.js) \
 	    .build-artefacts/python-venv \
-	    .build-artefacts/closure-library
-	${PYTHON_CMD} .build-artefacts/closure-library/closure/bin/build/closurebuilder.py \
+	    node_modules/google-closure-library
+	${PYTHON_CMD} node_modules/google-closure-library/closure/bin/build/closurebuilder.py \
 	    --root=.build-artefacts/annotated \
-	    --root=.build-artefacts/closure-library \
+	    --root=node_modules/google-closure-library \
 	    --namespace="geoadmin" \
 	    --namespace="__ga_template_cache__" \
 	    --output_mode=list > $@
@@ -514,20 +522,6 @@ $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule
 .build-artefacts/python-venv:
 	mkdir -p .build-artefacts
 	virtualenv --no-site-packages $@
-
-## Check compatibility with ol3 https://github.com/openlayers/ol3/blob/master/closure-util.json
-.build-artefacts/closure-library:
-	mkdir -p .build-artefacts
-	git clone http://github.com/google/closure-library/ $@
-	cd $@ && git reset --hard 5b25e65 && cd ../../
-
-.build-artefacts/closure-compiler/compiler-latest.zip:
-	mkdir -p $(dir $@)
-	wget -O $@ http://dl.google.com/closure-compiler/compiler-latest.zip
-
-.build-artefacts/closure-compiler/compiler.jar: .build-artefacts/closure-compiler/compiler-latest.zip
-	unzip $< -d .build-artefacts/closure-compiler
-	touch $@
 
 $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH)/.git/config:
 	rm -rf $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH)
@@ -583,31 +577,16 @@ scripts/00-$(GIT_BRANCH).conf: scripts/00-branch.mako-dot-conf \
 .build-artefacts/ol3-cesium:
 	git clone --recursive https://github.com/openlayers/ol3-cesium.git $@
 
-.build-artefacts/bootstrap:
-	git clone https://github.com/twbs/bootstrap.git $@ && cd $@ && git checkout v3.3.1
-
-.build-artefacts/fastclick:
-	git clone https://github.com/ftlabs/fastclick.git $@ && cd $@ && git checkout v1.0.6
-
+# No npm module 
 .build-artefacts/filesaver:
 	git clone https://github.com/eligrey/FileSaver.js.git $@
 
+# No npm module for version 3 
 # datepicker needs custom build of moment js with specific locales
+# don't use version 4 the uncompresssed file is twice bigger
 .build-artefacts/datepicker:
 	git clone https://github.com/Eonasdan/bootstrap-datetimepicker.git $@ && \
-	    cd $@ && git checkout v3.1.3
-
-.build-artefacts/externs/angular.js:
-	mkdir -p $(dir $@)
-	wget -O $@ https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/angular-1.4.js
-	touch $@
-
-# Closure's contrib dir doesn't include externs for jQuery 2, but the jQuery
-# 1.9 externs are sufficient for our usage.
-.build-artefacts/externs/jquery.js:
-	mkdir -p $(dir $@)
-	wget -O $(subst -1.9,,$@) https://raw.github.com/google/closure-compiler/master/contrib/externs/jquery-1.9.js
-	touch $@
+	    cd $@ && git checkout 3.1.4
 
 .PHONY: cleanall
 cleanall: clean

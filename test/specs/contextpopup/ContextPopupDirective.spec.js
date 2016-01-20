@@ -83,7 +83,10 @@ describe('ga_contextpopup_directive', function() {
     it('correctly handles map contextmenu events', function() {
       $httpBackend.expectGET(expectedHeightUrl);
       $httpBackend.expectGET(expectedReframeUrl);
-      viewport.trigger($.Event("contextmenu", originalEvt));
+      var evt = $.Event("contextmenu");
+      evt.coordinate = [661473, 188192];
+      evt.pixel = [25, 50];
+      viewport.trigger(evt);
       $httpBackend.flush();
 
       var tables = element.find('div.popover-content table');

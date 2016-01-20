@@ -6,8 +6,8 @@
      ng-mouseenter="addPreviewLayer($event, layer)"
      ng-mouseleave="removePreviewLayer($event)"
      ng-click="toggleLayerSelected($event, layer)" >
-  <button class="icon-zoom-in ga-btn" ng-disabled="!(layer.extent)"></button>
-  <button class="icon-plus" ng-hide="!(layer.Layer)"></button>
+  <button class="fa fa-zoom-in ga-btn" ng-disabled="!(layer.extent)"></button>
+  <button class="fa fa-plus" ng-hide="!(layer.Layer)"></button>
   {{layer.Title}}
 </div>
 <ul class="ga-child-group" ng-if="!!(layer.Layer)">
