@@ -10,7 +10,7 @@ goog.provide('ga_print_controller');
 
       $scope.options = {
         printPath: printPath,
-        printConfigUrl: printCachedPath + '/info.json?url=' +
+        printConfigUrl: printCachedPath + '/print/geoadmin3/capabilities.json?url=' +
             encodeURIComponent(printPath),
         legendUrl: gaGlobalOptions.apiUrl + '/static/images/legends/',
         qrcodeUrl: gaGlobalOptions.apiUrl + '/qrcodegenerator?url=',
