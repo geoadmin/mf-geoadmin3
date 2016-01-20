@@ -46,8 +46,8 @@ goog.require('ga_topic_service');
               if (!(bgLayer.disable3d && ol3dEnabled)) {
                 scope.currentLayer = bgLayer;
               }
-              scope.toggleMenu();
             }
+            scope.toggleMenu();
           };
 
           scope.toggleMenu = function() {
