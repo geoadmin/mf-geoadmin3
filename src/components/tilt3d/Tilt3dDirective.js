@@ -19,12 +19,13 @@ goog.provide('ga_tilt3d_directive');
         });
 
         // if cesium initialisation failed, is3dActive becomes undefined
+        var bt = element.find('button');
         scope.$watch('globals.is3dActive', function(val) {
           if (!angular.isDefined(val)) {
             scope.supported = false;
             unregBgChange();
           } else {
-            element.toggleClass('ga-active', val);
+            bt.toggleClass('ga-btn-active', val);
           }
         });
 

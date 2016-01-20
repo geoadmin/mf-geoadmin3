@@ -1,20 +1,42 @@
 [ga-geolocation] {
 
   button {
-    background-size: @control-btn-size-px;
-    background-image: data-uri('geolocationx2.png');
-    
-    &.ga-geolocation-error {
-      background-image: data-uri('geolocation_disabledx2.png');
-      cursor: default;
+
+    i {
+      margin: 2px;
     }
-    
-    &.ga-geolocation-tracking {
-      background-image: data-uri('geolocation_onx2.png');
+
+    .fa-ga-circle, .fa-ga-geolocation-point {
+      font-size: 40px;
+    }
+
+    .fa-ga-circle-bg {
+       font-size: 38px;
+       padding: 1px;
+    }
+
+    .fa-ga-northarrow {
+      display: none;
+      font-size: 40px;
+      color: #ed1c24;
     }
 
     &.ga-geolocation-northarrow {
-      background-image: data-uri('geolocation_northarrowx2.png');
+
+      .fa-ga-geolocation-point, .fa-ga-circle {
+         display: none;
+      }
+
+      .fa-ga-northarrow {
+        display: block;
+      }
+    }
+
+    &.ga-btn-disabled {
+
+      .fa-ga-northarrow {
+        display: none;
+      }
     }
   }
 }

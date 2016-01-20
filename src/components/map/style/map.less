@@ -14,21 +14,29 @@
   .ol-dragzoom {
     border: 2px solid red;
   }
-  
-  .ol-zoom-in, .ol-zoom-out button  { 
+
+  .ol-zoom-in, .ol-zoom-out button {
     display: block; /*without this, chrome add 3 pixels between zoomin/out buttons*/
   }
 
   .ol-zoom-in, .ol-zoom-out {
-    background-size: @control-btn-size-px;
-  }
 
-  .ol-zoom-in {
-    background-image: data-uri('zoomInx2.png');
-  }
+    i {
+      margin: 2px;
+    }
   
-  .ol-zoom-out {
-    background-image: data-uri('zoomOutx2.png');
+    .fa-ga-circle {
+      font-size: 40px;
+    }
+
+    .fa-ga-zoom-plus, .fa-ga-zoom-minus {
+      font-size: 40px;
+    }
+
+    .fa-ga-circle-bg {
+      font-size: 38px;
+      padding: 1px;
+    }  
   }
 }
 

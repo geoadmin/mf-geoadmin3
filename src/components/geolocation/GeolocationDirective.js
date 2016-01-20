@@ -25,10 +25,11 @@ goog.require('ga_throttle_service');
       link: function(scope, element, attrs) {
         var bt = element.find('button');
         if (!('geolocation' in $window.navigator)) {
-          bt.addClass('ga-geolocation-error');
+          bt.addClass('ga-btn-disabled');
           return;
         }
-
+        var elts = $([bt[0], element[0]]);
+        var naClass = 'ga-geolocation-northarrow';
         var unRegKey;
         // This object defines if the user has dragged the map.
         var userTakesControl = false;
@@ -207,7 +208,7 @@ goog.require('ga_throttle_service');
 
         // Geolocation control events
         geolocation.on('change:position', function(evt) {
-          bt.removeClass('ga-geolocation-error');
+          bt.removeClass('ga-btn-disabled');
           locate();
           updatePositionFeature();
           updateAccuracyFeature();
@@ -222,7 +223,8 @@ goog.require('ga_throttle_service');
           scope.$apply(function() {
             scope.tracking = false;
           });
-          bt.addClass('ga-geolocation-error');
+          bt.addClass('ga-btn-disabled');
+          elts.removeClass(naClass);
           var msgId;
           switch (error.code) {
             case error.PERMISSION_DENIED:
@@ -270,12 +272,12 @@ goog.require('ga_throttle_service');
           if (btnStatus == 0) {
             tracking = false;
             gaMapUtils.resetMapToNorth(map, scope.ol3d);
-            bt.removeClass('ga-geolocation-northarrow');
+            elts.removeClass(naClass);
           } else if (btnStatus == 1) {
             tracking = true;
           } else if (btnStatus == 2) {
             tracking = true;
-            bt.addClass('ga-geolocation-northarrow');
+            elts.addClass(naClass);
 
             // Button is rotated according to map rotation
             unRegKey = view.on('change:rotation', function(evt) {

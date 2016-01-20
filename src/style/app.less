@@ -36,6 +36,7 @@
 @import "../components/controls3d/style/controls3d.less";
 
 
+@cdbund-margin: 12;
 @header-height: 89;
 @footer-height: 26;
 @small-header-height: 50;
@@ -134,12 +135,52 @@ form {
 }
 
 
+button.ga-btn, .ol-control button {
+  position: relative;
+
+  i {
+    position: absolute;
+    display: block;
+    top: 0;
+    right: 0;
+    color: #343434;
+  }
+  
+  .fa-ga-circle-bg {
+    color: #fff;
+  }
+
+  &.ga-btn-disabled {
+
+    i {
+      color: #545454;
+    }
+
+    .fa-ga-circle-bg {
+      color: #d3d3d3;
+    }
+  }
+
+  &.ga-btn-active {
+
+    i {
+      color: #ed1c24;
+    }
+
+    .fa-ga-circle-bg {
+      color: #fff;
+    }  
+  }
+}
+
+
+
 /* This allow the display of not-allowed cursor on hover */
-.btn[disabled] {
+.btn[disabled], &.ga-btn-disabled {
   pointer-events: auto;
 }
 
-button.ga-icon {
+button.ga-icon, &.ga-btn-disabled {
   width: 1.3em;
   margin: 0;
   padding: 0;
@@ -162,7 +203,7 @@ button.ga-icon {
 
 button.ga-btn, .ol-control button {
 
-  &[disabled] {
+  &[disabled], &.ga-btn-disabled {
     cursor: not-allowed;
   }
 
@@ -359,7 +400,6 @@ input[type=text][readonly] {
   .box-shadow(6px 6px 12px rgba(0, 0, 0, 0.175));
 }
 
-// ***** HEADER
 #header {
   top: 0px;
   height: unit(@header-height, px);
@@ -482,42 +522,77 @@ input[type=text][readonly] {
   }
 }
 
-.logo-small(){
-  background-image: data-uri('../img/logo.ch-19x21x2.png');
-  background-size: 21px 21px;  
+.fa-ga-logo-bund {
+  color: #f00;
 }
 
 .ga-logo {
+  position: relative;
+  width: 329px;
+  height: unit(@header-height, px);
   background: white no-repeat left center;
+
+  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
+    width: 44px;
+    height: unit(@small-header-height, px);
+  }
+
+  .fa-ga-logo-bund, .ga-logo-text {
+    position: absolute;
+    top: unit(@cdbund-margin/2, px);
+  }
+
+  .fa-ga-logo-bund {
+    font-size: 33px;
+    left: unit(@cdbund-margin, px);
+  }
+
+  .ga-logo-text {
+    left: unit(30 + @cdbund-margin*2, px);
+    width: 185px;
+    height: 57px;
+    background: data-uri('../img/logo.textx2.png') no-repeat top left;
+    background-size: 187px 135px;
+
+    &[class^="ga-subtitle-"], &[class*=" ga-subtitle-"] {
+      top: unit(57 + @cdbund-margin, px);
+      height: 12px;
+    }
+  }
+
+  .ga-subtitle-de {
+    background-position: 0 -64px;
+  }
+
+  .ga-subtitle-en {
+    background-position: 0 -78px;
+  }
+
+  .ga-subtitle-fr {
+    background-position: 0 -93px;
+  }
+
+  .ga-subtitle-it {
+    background-position: 0 -107px;
+  }
+
+  .ga-subtitle-rm {
+    background-position: 0 -120px;
+  }
 }
 
 #logo {
   display: inline-block;
-  width: 329px;
-  height: 100%;
-  background-size: 246px 89px; 
 
-  &.ga-logo-de {
-    background-image: url('../img/logo.ch.dex2.png');
-  }
-  &.ga-logo-fr {
-    background-image: url('../img/logo.ch.frx2.png');
-  }
-  &.ga-logo-it {
-    background-image: url('../img/logo.ch.itx2.png');
-  }
-  &.ga-logo-rm {
-    background-image: url('../img/logo.ch.rmx2.png');
-  }
-  &.ga-logo-en {
-    background-image: url('../img/logo.ch.enx2.png');
-  }
+  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
 
-  &[class^="ga-logo-"], &[class*=" ga-logo-"] {
-    @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
-      width: 44px;
-      .logo-small();
-      background-position: center;
+    .fa-ga-logo-bund {
+      font-size: 21px;
+      line-height: 39px;
+    }
+
+    .ga-logo-text, .ga-logo-subtitle {
+      display: none;
     }
   }
 }
@@ -1636,14 +1711,8 @@ body:not(.embed) {
     top: 5px;
     left: 5px;
 
-    .ga-logo {
-      .logo-small();
-      background-size: 14px;
-      background-position-x: 5px; 
-
-      span {
-        padding-left: 19px;
-      }
+    .fa-ga-logo-bund {
+      vertical-align: middle;
     }
 
     > div {
@@ -1665,7 +1734,8 @@ body:not(.embed) {
   #buttonGroup {
     top: 0px;
     right: 5px;
-    button {
+
+    > div, > button, .ol-zoom-out {
       margin-top: 5px;
     }
   }

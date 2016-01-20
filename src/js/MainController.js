@@ -39,8 +39,16 @@ goog.require('ga_topic_service');
           rotate: false,
           zoomOptions: {
             target: toolbar,
-            zoomInLabel: ' ',
-            zoomOutLabel: ' ',
+            zoomInLabel: $('<span>' +
+                           '<i class="fa fa-ga-circle-bg"></i>' +
+                           '<i class="fa fa-ga-circle"></i>' +
+                           '<i class="fa fa-ga-zoom-plus"></i>' +
+                           '</span>')[0],
+            zoomOutLabel: $('<span>' +
+                            '<i class="fa fa-ga-circle-bg"></i>' +
+                            '<i class="fa fa-ga-circle"></i>' +
+                            '<i class="fa fa-ga-zoom-minus"></i>' +
+                            '</span>')[0],
             zoomInTipLabel: ' ',
             zoomOutTipLabel: ' '
           }

@@ -2,11 +2,18 @@
   display: none;
 
   button {
-    background-size: @control-btn-size-px;
-    background-image: data-uri('time_blackx2.png');
 
-    &.ga-time-selector-active {
-      background-image: data-uri('time_redx2.png');
+    i {
+      margin: 2px;
+    }
+
+    .fa-ga-circle-bg {
+      font-size: 38px;
+      padding: 1px;
+    }
+
+    .fa-ga-time-selector {
+      font-size: 40px;
     }
   }
 
@@ -183,11 +190,8 @@
   }
 }
 
-.ga-3d-active [ga-time-selector-bt] {
-  display: none;
+.ga-3d-active {
+  [ga-time-selector-bt], [ga-time-selector] {
+    display: none;
+  }
 }
-
-.ga-3d-active [ga-time-selector] {
-  display: none;
-}
-
