@@ -62,11 +62,9 @@ describe('ga_backgroundselector_directive', function() {
 
       $rootScope.map = map;
       element = angular.element(
-        '<div>' +
-            '<div ga-background-selector ' +
-                'ga-background-selector-map="map">' +
-            '</div>' +
-        '</div>');
+          '<div ga-background-selector ' +
+            'ga-background-selector-map="map">' +
+          '</div>');
       gaBackground.init(map);
       $compile(element)($rootScope);
       def.resolve();
@@ -75,24 +73,23 @@ describe('ga_backgroundselector_directive', function() {
 
     describe('toggle activation', function() {
       it('shows and hides bgselectors div', function() {
-        expect(element.find('.ga-swissimage').hasClass('ga-bg-layer')).to.be(true);
-        expect(element.find('.ga-swissimage').hasClass('ga-bg-layer-0')).to.be(false);
+        $rootScope.$digest();
+
+        expect(element.hasClass('ga-open')).to.be(false);
 
         element.find('.ga-bg-layer-bt').click();
-        $rootScope.$digest();
-        expect(element.find('.ga-swissimage').hasClass('ga-bg-layer-0')).to.be(true);
+        expect(element.hasClass('ga-open')).to.be(true);
 
         element.find('.ga-bg-layer-bt').click();
-        $rootScope.$digest();
-        expect(element.find('.ga-swissimage').hasClass('ga-bg-layer')).to.be(true);
+        expect(element.hasClass('ga-open')).to.be(false);
 
         element.find('.ga-bg-layer-bt').click();
-        $rootScope.$digest();
-        expect(element.find('.ga-swissimage').hasClass('ga-bg-layer-0')).to.be(true);
+        expect(element.hasClass('ga-open')).to.be(true);
 
         element.find('.ga-swissimage').click();
         $rootScope.$digest();
-        expect(element.find('.ga-swissimage').hasClass('ga-bg-layer')).to.be(true);
+        expect(element.hasClass('ga-open')).to.be(false);
+        expect(element.find('.ga-swissimage').hasClass('ga-bg-highlight')).to.be(true);
       });
 
       it('creates 4 layer bgselectors div', function() {
@@ -164,11 +161,9 @@ describe('ga_backgroundselector_directive', function() {
 
       $rootScope.map = map;
       element = angular.element(
-        '<div>' +
-            '<div ga-background-selector ' +
-                'ga-background-selector-map="map">' +
-            '</div>' +
-        '</div>');
+          '<div ga-background-selector ' +
+              'ga-background-selector-map="map">' +
+          '</div>');
       gaBackground.init(map);
       $compile(element)($rootScope);
       def.resolve();

@@ -23,6 +23,8 @@ goog.provide('ga_tilt3d_directive');
           if (!angular.isDefined(val)) {
             scope.supported = false;
             unregBgChange();
+          } else {
+            element.toggleClass('ga-active', val);
           }
         });
 

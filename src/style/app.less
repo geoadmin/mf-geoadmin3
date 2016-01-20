@@ -45,6 +45,7 @@
 @tooltip-bg: #999;
 @pulldown-width: 320;
 @control-btn-size: 44;
+@control-btn-size-px: unit(@control-btn-size, px);
 @control-btn-space: 7;
 @control-btn-next: @control-btn-size + @control-btn-space;
 @control-btns-top: @control-btn-space;
@@ -74,6 +75,7 @@ html, body {
     z-index: 3000;
   }
 }
+
 
 .ga-visible-3d {
   display: none !important;
@@ -478,7 +480,8 @@ input[type=text][readonly] {
 }
 
 .logo-small(){
-  background-image: data-uri('../img/logo.ch-19x21.png');
+  background-image: data-uri('../img/logo.ch-19x21x2.png');
+  background-size: 21px 21px;  
 }
 
 .ga-logo {
@@ -489,21 +492,22 @@ input[type=text][readonly] {
   display: inline-block;
   width: 329px;
   height: 100%;
+  background-size: 246px 89px; 
 
   &.ga-logo-de {
-    background-image: data-uri('../img/logo.ch.de.png');
+    background-image: url('../img/logo.ch.dex2.png');
   }
   &.ga-logo-fr {
-    background-image: data-uri('../img/logo.ch.fr.png');
+    background-image: url('../img/logo.ch.frx2.png');
   }
   &.ga-logo-it {
-    background-image: data-uri('../img/logo.ch.it.png');
+    background-image: url('../img/logo.ch.itx2.png');
   }
   &.ga-logo-rm {
-    background-image: data-uri('../img/logo.ch.rm.png');
+    background-image: url('../img/logo.ch.rmx2.png');
   }
   &.ga-logo-en {
-    background-image: data-uri('../img/logo.ch.en.png');
+    background-image: url('../img/logo.ch.enx2.png');
   }
 
   &[class^="ga-logo-"], &[class*=" ga-logo-"] {
@@ -537,6 +541,11 @@ input[type=text][readonly] {
   @media (max-width: 534px) {
     display: none;
   }
+}
+
+// ***** MAP
+[ga-map], [ga-background-selector] .ga-voidLayer{
+  background: #fff data-uri('../img/mapbg.png') !important;
 }
 
 // ***** DRAW MODE HEADER

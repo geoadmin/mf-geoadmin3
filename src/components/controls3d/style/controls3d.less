@@ -12,7 +12,7 @@
   @media (max-width: @screen-tablet) {
     bottom: unit(@bt-bottom-sm, px);
     width: 120px;
-    height: 44px;
+    height: @control-btn-size-px;
   }
   button {
     border: none;
@@ -38,38 +38,40 @@
       width: 64px;
       height: 64px;
       .transition(none);
+      background-size: 64px;
 
       @media (max-width: @screen-tablet) {
-        width: 44px;
-        height: 44px;
+        width: @control-btn-size-px;
+        height: @control-btn-size-px;
+        background-size: @control-btn-size-px;
       }
     }
     .ga-inc, .ga-dec {
       display: inline-block;
       width: 32px;
       height: 30px;
+      background-image: data-uri('left_arrow_redx2.png');
+      background-size: 32px 30px;
+
       @media (max-width: @screen-tablet) {
         display: none;
       }
     }
-    .ga-inc {
-      background-image: data-uri('left_arrow_red.png');
-    }
+
     .ga-dec {
-      background-image: data-uri('right_arrow_red.png');
+      .rotateY(180deg);
+
+      &:active {
+        -webkit-transform: rotateY(180deg) scale(1.2);
+        transform: rotateY(180deg) scale(1.2);
+      }
     }
   }
   .ga-tilt .ga-indicator {
-    background-image: data-uri('icon_left_tilt.png');
-    @media (max-width: @screen-tablet) {
-      background-image: data-uri('icon_left_tilt_mobile.png');
-    }
+    background-image: data-uri('icon_left_tiltx2.png');
   }
   .ga-rotate .ga-indicator {
-    background-image: data-uri('icon_right_roll.png');
-    @media (max-width: @screen-tablet) {
-      background-image: data-uri('icon_right_roll_mobile.png');
-    }
+    background-image: data-uri('icon_right_rollx2.png');
   }
   .ga-pegman-help {
     position: fixed;
@@ -92,18 +94,18 @@
     width: 27px;
     height: 72px;
     @media (max-width: @screen-tablet) {
-      background-image: data-uri('pegman_standing_white_mobile.png');
-      width:18px;
-      height:47px;
+      width: 18px;
+      height: 47px;
+      background-size: 18px 47px;
     }
     &.ga-fly-mode {
       background-image: data-uri('super_pegman_white.png');
       width: 78px;
       height: 100px;
       @media (max-width: @screen-tablet) {
-         background-image: data-uri('super_pegman_white_mobile.png');
          width: 49px;
          height: 65px;
+         background-size: 49px 65px;
       }
     }
     &.ga-jet-mode {
@@ -111,9 +113,9 @@
       width: 100px;
       height: 38px;
       @media (max-width: @screen-tablet) {
-         background-image: data-uri('fa18_mobile.png');
          width: 66px;
          height: 25px;
+         background-size: 66px 25px;
       }
     }
   }

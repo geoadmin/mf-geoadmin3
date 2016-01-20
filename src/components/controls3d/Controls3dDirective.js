@@ -31,7 +31,6 @@ goog.require('ga_map_service');
         ol3d: '=gaControls3dOl3d'
       },
       link: function(scope, element, attrs) {
-
         var ol3d = scope.ol3d;
         var scene = ol3d.getCesiumScene();
         var camera = scene.camera;

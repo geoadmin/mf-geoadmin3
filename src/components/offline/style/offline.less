@@ -1,13 +1,10 @@
 [ga-offline-bt] {
-  background: data-uri('offline_black.png');
-  transition: all ease 1s;
-  transform: rotateY(360deg);
-  -webkit-transform: rotateY(-360deg);
+  background-size: @control-btn-size-px;
+  background-image: data-uri('offline_blackx2.png');
+  .transition(right 1s);
 
   &.ga-active {
-    background-image: data-uri('offline_red.png');
-    transform: rotateY(360deg);
-    -webkit-transform: rotateY(360deg);
+    background-image: data-uri('offline_redx2.png');
   }
 }
 
