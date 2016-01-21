@@ -13,7 +13,7 @@ goog.require('ga_throttle_service');
     'ga_throttle_service'
   ]);
 
-  module.directive('gaGeolocation', function($parse, $window,
+  module.directive('gaGeolocation', function($parse, $window, $translate,
       gaBrowserSniffer, gaPermalink, gaStyleFactory, gaThrottle, gaMapUtils) {
     return {
       restrict: 'A',
@@ -209,11 +209,28 @@ goog.require('ga_throttle_service');
           updateAccuracyFeature();
         });
 
-        geolocation.on('error', function() {
+        geolocation.on('error', function(error) {
           scope.$apply(function() {
             scope.tracking = false;
           });
           bt.addClass('ga-geolocation-error');
+          var msgId;
+          switch (error.code) {
+            case error.PERMISSION_DENIED:
+              msgId = 'geoloc_permisson_denied';
+              break;
+            case error.POSITION_UNAVAILABLE:
+              msgId = 'geoloc_pos_unavailable';
+              break;
+            case error.TIMEOUT:
+              msgId = 'geoloc_time_out';
+              break;
+            case error.UNKNOWN_ERROR:
+              msgId = 'geoloc_unknown';
+              break;
+          }
+          alert($translate.instant(msgId));
+          $window.console.log(error.message);
         });
 
         // View events
