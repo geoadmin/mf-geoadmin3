@@ -403,13 +403,16 @@ input[type=text][readonly] {
     position: absolute;
     text-align: center;
     top: unit(-@header-height, px);
-    transition: top ease 1s;
-  }
-}
+    .transition-transform(.5s);
+    z-index: 200;
+    padding: 0;
+    margin: 0;
+    line-height: unit(@header-height - 5, px);
 
-.offline #header .alert {
-  top: 0px;
-  z-index: 100;
+    @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
+       line-height: unit(@small-header-height - 5, px);
+    }
+  }
 }
 
 #search-container {
@@ -1774,3 +1777,4 @@ body:not(.embed) {
 
 
 @import "print.less";
+@import "offline.less";

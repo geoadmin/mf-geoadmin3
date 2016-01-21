@@ -251,8 +251,7 @@ itemscope itemtype="http://schema.org/WebApplication"
     <div ng-cloak translate-cloak
          ga-background-selector
          ga-background-selector-map="map"
-         ga-background-selector-ol3d="::ol3d"
-         ng-hide="globals.offline">
+         ga-background-selector-ol3d="::ol3d">
     </div>
     <div ng-cloak translate-cloak id="footer" class="navbar navbar-fixed-bottom">
       <div  class="pull-left" ga-scale-line ga-scale-line-map="map" ng-show="!globals.is3dActive"></div>
@@ -304,7 +303,7 @@ itemscope itemtype="http://schema.org/WebApplication"
     </div>
 
 % if device != 'embed':
-    <div  id="pulldown" ng-cloak translate-cloak ng-show="!globals.offline"
+    <div  id="pulldown" ng-cloak translate-cloak
           ng-class="{
             'selection-and-catalog-shown': (globals.catalogShown && globals.selectionShown),
             'ga-pulldown-shown': globals.pulldownShown
@@ -444,7 +443,9 @@ itemscope itemtype="http://schema.org/WebApplication"
               <div ga-topic ga-topic-ui="select"></div>
             </label>
   % endif
-            <div class="panel-body panel-body-wide accordion-inner-catalog" ng-if="!globals.offline" ga-catalogtree ga-catalogtree-map="map" ga-catalogtree-options="options">
+            <div class="panel-body panel-body-wide accordion-inner-catalog"
+                 ng-if="!globals.offline"
+                 ga-catalogtree ga-catalogtree-map="map" ga-catalogtree-options="options">
             </div>
           </div>
         </div> <!-- .panel -->
