@@ -1,0 +1,12 @@
+.offline {
+  @header-height-px: unit(@header-height, px); 
+  #header .alert {
+    .translate3d(0, @header-height-px, 0);
+  }
+
+  #pulldown,
+  [ga-background-selector],
+  &:not(.ga-3d-active) [ga-tilt3d] {
+    display: none;
+  }
+}

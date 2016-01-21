@@ -288,6 +288,7 @@ prd/lib/build.js: src/lib/jquery.min.js \
 
 prd/style/app.css: src/style/app.less \
 	    src/style/print.less \
+	    src/style/offline.less \
 	    src/style/ga_bootstrap.less \
 	    src/style/ga_variables.less \
 	    $(SRC_COMPONENTS_LESS_FILES) \
@@ -387,6 +388,7 @@ src/deps.js: $(SRC_JS_FILES) .build-artefacts/python-venv
 
 src/style/app.css: src/style/app.less \
 	    src/style/print.less \
+	    src/style/offline.less \
 	    src/style/ga_bootstrap.less \
 	    src/style/ga_variables.less \
 	    $(SRC_COMPONENTS_LESS_FILES) \

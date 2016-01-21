@@ -51,9 +51,10 @@ goog.require('ga_topic_service');
         };
 
         // Get all the queryable layers at a pixel
-        var getLayersToQueryAtPixel = function(map, pixel) {
+        var getLayersToQueryAtPixel = function(map, pixel, is3dActive) {
           var layersToQuery = [];
-          if (!gaBrowserSniffer.msie || gaBrowserSniffer.msie > 10) {
+          if (!is3dActive && (!gaBrowserSniffer.msie ||
+              gaBrowserSniffer.msie > 10)) {
             map.forEachLayerAtPixel(pixel,
               function(l) {
                 layersToQuery.push(l);
@@ -325,7 +326,8 @@ goog.require('ga_topic_service');
               var identifyUrl = scope.options.identifyUrlTemplate
                   .replace('{Topic}', gaTopic.get().id),
                   pixel = map.getPixelFromCoordinate(coordinate),
-                  layersToQuery = getLayersToQueryAtPixel(map, pixel);
+                  layersToQuery = getLayersToQueryAtPixel(map, pixel,
+                      is3dActive());
 
               // When 3d is Active we use the cesium native function to get the
               // first queryable feature.
