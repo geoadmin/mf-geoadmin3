@@ -551,4 +551,59 @@
 .fa-sort-by-alphabet-alt:before {
   content: "\f15e";
 }
+.fa-ga-circle:before {
+  content: "\f221";
+}
+.fa-ga-zoom-plus:before {
+  content: "\f223";
+}
+.fa-ga-circle-bg:before {
+  content: "\f222";
+}
+.fa-ga-zoom-minus:before {
+  content: "\f224";
+}
+.fa-ga-northarrow:before {
+  content: "\f21a";
+}
+.fa-ga-offline:before {
+  content: "\f21b";
+}
+.fa-ga-circle-3d:before {
+  content: "\f21c";
+}
+.fa-ga-3d-text:before {
+  content: "\f21d";
+}
+.fa-ga-indicator-northarrow:before {
+  content: "\f21e";
+}
+.fa-ga-tilt:before {
+  content: "\f21f";
+}
+.fa-ga-tilt-indicator:before {
+  content: "\f226";
+}
+.fa-ga-time-selector:before {
+  content: "\f227";
+}
+.fa-ga-geolocation-point:before {
+  content: "\f228";
+}
+.fa-ga-logo-bund:before {
+  content: "\f229";
+}
+.fa-ga-left-arrow:before {
+  content: "\f22a";
+}
+.fa-ga-right-arrow:before {
+  content: "\f22b";
+}
+.fa-play:before {
+  content: "\f22c";
+}
+.fa-stop:before {
+  content: "\f22d";
+}
+
 

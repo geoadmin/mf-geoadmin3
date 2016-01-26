@@ -1,10 +1,36 @@
-[ga-offline-bt] {
-  background-size: @control-btn-size-px;
-  background-image: data-uri('offline_blackx2.png');
-  .transition(right 1s);
+[ga-offline-bt] { 
+ 
+  i {
+    margin: 2px;
+  }
 
-  &.ga-active {
-    background-image: data-uri('offline_redx2.png');
+  .fa-ga-circle {
+    font-size: 40px;
+  }
+ 
+  .fa-ga-circle-bg {
+    font-size: 38px;
+    padding: 1px;
+  }
+
+  .fa-ga-offline {
+    font-size: 40px;
+    color: #343434;
+  }
+
+  button {
+    transition: all ease 1s;
+    transform: rotateY(360deg);
+    -webkit-transform: rotateY(-360deg);
+
+    &.ga-btn-active {
+      transform: rotateY(360deg);
+      -webkit-transform: rotateY(360deg);
+
+      .fa-ga-offline {
+        color: #ed1c24;
+      }
+    }
   }
 }
 

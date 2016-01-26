@@ -1,5 +1,9 @@
 <button class="ga-btn"
         ng-if="!isIE9"
-        ng-class="{'ga-active': (hasOfflineData && !isDownloading)}" 
+        ng-class="{'ga-btn-active': (hasOfflineData && !isDownloading)}" 
         ng-hide="offline && !hasOfflineData"
-        ng-click="onClick($event)"></button>
+        ng-click="onClick($event)">
+  <i class="fa fa-ga-circle-bg"></i>
+  <i class="fa fa-ga-circle"></i>
+  <i class="fa fa-ga-offline"></i>
+</button>

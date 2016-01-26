@@ -9,17 +9,23 @@
   margin-right: auto;
   width: 200px;
   z-index: 600;
-  @media (max-width: @screen-tablet) {
-    bottom: unit(@bt-bottom-sm, px);
+
+  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
     width: 120px;
     height: @control-btn-size-px;
   }
+
+  @media (max-width: @screen-tablet) {
+    bottom: unit(@bt-bottom-sm, px);
+  }
+
   button {
     border: none;
     background: transparent;
     padding: 0;
     margin: 0;
   }
+
   .ga-tilt, .ga-rotate {
     display: inline-block;
     text-align: center;
@@ -28,51 +34,62 @@
     height: 110px;
     width: 74px;
     padding-top: 5px;
-    @media (max-width: @screen-tablet) {
+
+    @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
       background: none;
       width: 50px;
       height: auto;
       padding: 0;
     }
-    .ga-indicator {
-      width: 64px;
-      height: 64px;
-      .transition(none);
-      background-size: 64px;
+  }
 
-      @media (max-width: @screen-tablet) {
-        width: @control-btn-size-px;
-        height: @control-btn-size-px;
-        background-size: @control-btn-size-px;
-      }
-    }
-    .ga-inc, .ga-dec {
-      display: inline-block;
-      width: 32px;
-      height: 30px;
-      background-image: data-uri('left_arrow_redx2.png');
-      background-size: 32px 30px;
+  .ga-indicator {
+    width: 64px;
+    height: 64px;
+    .transition(none);
+    background-size: 64px;
 
-      @media (max-width: @screen-tablet) {
-        display: none;
-      }
+    i {
+      font-size: 64px;
+      padding-top: 1px;
     }
 
-    .ga-dec {
-      .rotateY(180deg);
+    .fa-ga-tilt-indicator, .fa-ga-indicator-northarrow {
+      color: #ed1c24;
+    }
 
-      &:active {
-        -webkit-transform: rotateY(180deg) scale(1.2);
-        transform: rotateY(180deg) scale(1.2);
+    @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
+      width: @control-btn-size-px;
+      height: @control-btn-size-px;
+      background-size: @control-btn-size-px;
+
+      .fa-ga-tilt-indicator, 
+      .fa-ga-tilt, 
+      .fa-ga-circle-bg,
+      .fa-ga-northarrow,
+      .fa-ga-indicator-northarrow  {
+        font-size: 44px;
       }
     }
   }
-  .ga-tilt .ga-indicator {
-    background-image: data-uri('icon_left_tiltx2.png');
+
+  .ga-inc, .ga-dec {
+    display: inline-block;
+    width: 28px;
+    height: 28px;
+    font-size: 28px;
+    text-shadow: 0px 1px 3px #020202;
+    margin: 2px;
+
+    .fa-ga-right-arrow, .fa-ga-left-arrow {
+      color: #ed1c24
+    }
+
+    @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
+      display: none;
+    }
   }
-  .ga-rotate .ga-indicator {
-    background-image: data-uri('icon_right_rollx2.png');
-  }
+
   .ga-pegman-help {
     position: fixed;
     bottom: 30px;
@@ -86,6 +103,7 @@
     border: 1px solid rgba(0, 0, 0, 0.2);
     border-radius: 6px;
   }
+
   .ga-pegman {
     background-image: data-uri('pegman_standing_white.png');
     cursor: grab;
@@ -93,26 +111,31 @@
     display: inline-block;
     width: 27px;
     height: 72px;
-    @media (max-width: @screen-tablet) {
+
+    @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
       width: 18px;
       height: 47px;
       background-size: 18px 47px;
     }
+
     &.ga-fly-mode {
       background-image: data-uri('super_pegman_white.png');
       width: 78px;
       height: 100px;
-      @media (max-width: @screen-tablet) {
+
+      @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
          width: 49px;
          height: 65px;
          background-size: 49px 65px;
       }
     }
+
     &.ga-jet-mode {
       background-image: data-uri('fa18.png');
       width: 100px;
       height: 38px;
-      @media (max-width: @screen-tablet) {
+
+      @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
          width: 66px;
          height: 25px;
          background-size: 66px 25px;
@@ -133,7 +156,7 @@
        font-size: inherit;
      }
 
-     @media (max-width: @screen-tablet) {
+     @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
       top: 8px;
       font-size: 1.5em;
       width: 20px;
@@ -149,6 +172,7 @@
 
 .ga-pegman-dragging {
   cursor: crosshair;
+
   .ga-pegman {
     cursor: grabbing;
     cursor: -webkit-grabbing;

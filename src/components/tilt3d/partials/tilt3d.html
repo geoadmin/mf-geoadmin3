@@ -1,3 +1,7 @@
 <button type="button" class="ga-btn"
         ng-click="tilt()"
-        ng-disabled="disabled || !supported"></button>
+        ng-class="{'ga-btn-disabled': disabled || !supported}">
+  <i class="fa fa-ga-circle-bg"></i>
+  <i class="fa fa-ga-circle-3d"></i>
+  <i class="fa fa-ga-3d-text"></i>
+</button>

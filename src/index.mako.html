@@ -157,7 +157,11 @@ itemscope itemtype="http://schema.org/WebApplication"
 % if device != 'embed':
     <div ng-cloak translate-cloak id="header" class="navbar navbar-fixed-top">
       <a href="?topic={{topicId}}&lang={{langId}}">
-        <div id="logo" class="pull-left ga-logo ga-logo-{{langId}}"></div>
+        <div id="logo" class="pull-left ga-logo">
+          <i class="fa fa-ga-logo-bund"></i>
+          <div class="ga-logo-text"></div>
+          <div class="ga-logo-text ga-subtitle-{{langId}}"></div>
+        </div>
       </a>
       <div id="search-container" ng-controller="GaSearchController">
         <div ga-search ga-search-map="map" ga-search-options="options" ga-search-focused="globals.searchFocused" ga-search-ol3d="::ol3d"></div>
@@ -203,7 +207,8 @@ itemscope itemtype="http://schema.org/WebApplication"
       </div>
   % if device == 'embed':
       <a ng-cloak translate-cloak id="bigMapLink" target="_blank" href="{{toMainHref}}">
-        <div class="ga-logo">
+        <div>
+          <i class="fa fa-ga-logo-bund"></i>
           <span translate-values="{{host}}" translate>view_on_mapgeoadminch</span>
         </div>
         <div ng-show="time">{{time}}</div>
