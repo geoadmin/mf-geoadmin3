@@ -16,7 +16,7 @@ goog.require('ga_permalink');
       link: function(scope, element, attrs) {
         if (!gaBrowserSniffer.mobile) {
           element.attr('readonly', 'readonly').tooltip({
-            placement: attrs.placement || 'bottom',
+            placement: attrs.gaTooltipPlacement || 'bottom',
             trigger: 'focus',
             title: function() {
               return $translate.instant('share_link_tooltip');
