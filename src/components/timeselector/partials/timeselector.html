@@ -13,5 +13,5 @@
         ng-options="year.value as year.value for year in availableYears">
   <option value="" disabled translate>time_select_year</option>
 </select>
-<button class="btn btn-default" ng-hide="isPlaying" ng-click="play()">Play</button>
-<button class="btn btn-danger" ng-show="isPlaying" ng-click="stop()">Stop</button>
+<button class="btn btn-default fa fa-play" ng-hide="isPlaying" ng-click="play()"></button>
+<button class="btn btn-danger fa fa-stop" ng-show="isPlaying" ng-click="stop()"></button>
