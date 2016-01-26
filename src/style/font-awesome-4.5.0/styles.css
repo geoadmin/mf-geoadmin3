@@ -599,4 +599,11 @@
 .fa-ga-right-arrow:before {
   content: "\f22b";
 }
+.fa-play:before {
+  content: "\f22c";
+}
+.fa-stop:before {
+  content: "\f22d";
+}
+
 
