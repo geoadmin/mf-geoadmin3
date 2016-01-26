@@ -203,7 +203,16 @@ describe('ga_browsersniffer_service', function() {
         expectIE(11);
       });
     });
-    
+
+    describe('IE EDGE', function() {
+
+      it('on win 10 ', function() {
+        win.navigator.userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.10240";
+        snif = injector.get('gaBrowserSniffer');
+        expectIE(12);
+      });
+    });
+
     describe('Chrome', function() {
       
       it('40.0.2214.111 on win 7', function() {

@@ -18,6 +18,9 @@ goog.require('ga_permalink');
         msie = +((/trident\/.*; rv:(\d+)/.exec(ua.toLowerCase()) || [])[1]);
       }
       if (isNaN(msie)) {
+        msie = +((/edge\/(\d+)\./.exec(ua.toLowerCase()) || [])[1]);
+      }
+      if (isNaN(msie)) {
         msie = false;
       }
       var ios = !msie && /(iPhone|iPad|iPod)/.test(ua);
