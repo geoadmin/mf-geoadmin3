@@ -137,7 +137,7 @@ goog.require('ga_time_service');
                   // if we have reached the end of the list restart from the
                   // beginning
                   if (value == elt.value && list.length > 1) {
-                    value = list[list.length - 1].value;
+                    value = list[0].value;
                   }
                   break;
                 }
