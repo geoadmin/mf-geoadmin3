@@ -310,7 +310,8 @@ prd/geoadmin.appcache: src/geoadmin.mako.appcache \
 	    --var "api_url=$(API_URL)" \
 	    --var "public_url=$(PUBLIC_URL)" $< > $@
 
-prd/cache/:
+prd/cache/: .build-artefacts/last-version \
+			.build-artefacts/last-api-url
 	mkdir -p $@
 	curl -q -o prd/cache/services http:$(API_URL)/rest/services
 	$(foreach lang, $(LANGS), curl -q -o prd/cache/layersConfig.$(lang) http:$(API_URL)/rest/services/all/MapServer/layersConfig?lang=$(lang);)
@@ -609,6 +610,7 @@ cleanappcache:
 	rm -f prd/index.html
 	rm -f prd/mobile.html
 	rm -f prd/embed.html
+
 
 .PHONY: clean
 clean:
