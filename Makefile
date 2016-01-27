@@ -26,6 +26,7 @@ CESIUM_VERSION ?= b4da72d63ca6df06dd4af513fdef15f5ff94ce0c # camptocamp/c2c_patc
 DEFAULT_TOPIC_ID ?= ech
 TRANSLATION_FALLBACK_CODE ?= de
 LANGUAGES ?= '[\"de\", \"en\", \"fr\", \"it\", \"rm\"]'
+LANGS ?= de fr it rm en
 TRANSLATE_GSPREAD_KEYS ?= 1F3R46w4PODfsbJq7jd79sapy3B7TXhQcYM7SEaccOA0
 TRANSLATE_CSV_FILES ?= "https://docs.google.com/spreadsheets/d/1F3R46w4PODfsbJq7jd79sapy3B7TXhQcYM7SEaccOA0/export?format=csv&gid=0"
 TRANSLATE_EMPTY_JSON ?= src/locales/empty.json
@@ -88,17 +89,18 @@ all: lint dev prod apache testdev testprod deploy/deploy-branch.cfg fixrights
 
 .PHONY: prod
 prod: prd/lib/ \
-	    prd/lib/build.js \
-	    prd/style/app.css \
-	    prd/geoadmin.appcache \
-	    prd/index.html \
-	    prd/mobile.html \
-	    prd/embed.html \
-	    prd/img/ \
-	    prd/style/font-awesome-4.5.0/font/ \
-	    prd/locales/ \
-	    prd/checker \
-	    prd/robots.txt
+	prd/lib/build.js \
+	prd/style/app.css \
+	prd/geoadmin.appcache \
+	prd/index.html \
+	prd/mobile.html \
+	prd/embed.html \
+	prd/img/ \
+	prd/style/font-awesome-4.5.0/font/ \
+	prd/locales/ \
+	prd/checker \
+	prd/cache/ \
+	prd/robots.txt
 
 .PHONY: dev
 dev: src/deps.js src/style/app.css src/index.html src/mobile.html src/embed.html
@@ -307,6 +309,12 @@ prd/geoadmin.appcache: src/geoadmin.mako.appcache \
 	    --var "languages=$(LANGUAGES)" \
 	    --var "api_url=$(API_URL)" \
 	    --var "public_url=$(PUBLIC_URL)" $< > $@
+
+prd/cache/: .build-artefacts/last-version \
+			.build-artefacts/last-api-url
+	mkdir -p $@
+	curl -q -o prd/cache/services http:$(API_URL)/rest/services
+	$(foreach lang, $(LANGS), curl -s --retry 3 -o prd/cache/layersConfig.$(lang) http:$(API_URL)/rest/services/all/MapServer/layersConfig?lang=$(lang);)
 
 define buildpage
 	${PYTHON_CMD} .build-artefacts/python-venv/bin/mako-render \
@@ -602,6 +610,7 @@ cleanappcache:
 	rm -f prd/index.html
 	rm -f prd/mobile.html
 	rm -f prd/embed.html
+
 
 .PHONY: clean
 clean:

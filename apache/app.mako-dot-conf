@@ -37,8 +37,13 @@ RedirectMatch ^${apache_base_path}$ ${apache_base_path}/
 
 Alias ${apache_base_path}/src ${apache_base_directory}/src
 Alias ${apache_base_path}/ ${apache_base_directory}/prd/
-RewriteRule ${apache_base_path}/(src|[0-9]+)/layersConfig http:${api_url}/rest/services/all/MapServer/layersConfig [P]
-RewriteRule ${apache_base_path}/(src|[0-9]+)/services http:${api_url}/rest/services [P]
+RewriteRule ${apache_base_path}/src/layersConfig http:${api_url}/rest/services/all/MapServer/layersConfig [P]
+RewriteRule ${apache_base_path}/src/services http:${api_url}/rest/services [P]
+
+# Static config
+RewriteCond %{QUERY_STRING}     ^lang=(de|fr|it|rm|en)$    [NC]
+RewriteRule ${apache_base_path}/([0-9]+)/layersConfig  ${apache_base_directory}/prd/cache/layersConfig.%1 [NC,L]
+RewriteRule ${apache_base_path}/([0-9]+)/(services|layersConfig)  ${apache_base_directory}/prd/cache/$2
 
 <LocationMatch ${apache_base_path}/(src|[0-9]+)/(layersConfig|services)>
    Order allow,deny

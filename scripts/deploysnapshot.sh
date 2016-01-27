@@ -18,8 +18,27 @@ SNAPSHOTDIR=/var/www/vhosts/mf-geoadmin3/private/snapshots/$1
 cwd=$(pwd)
 cd $SNAPSHOTDIR/geoadmin/code/geoadmin
 KEEP_VERSION=false
+source rc_$2
 make all
+
+echo -n "Checking service and layersConfig files"
+cat prd/cache/services  | python -c 'import json,sys;obj=json.load(sys.stdin);print "Topics numbers:",len(obj["topics"])'
+for lang in de fr it rm en; do
+  echo -e "${lang}: \c"
+  cat prd/cache/layersConfig.${lang}  | python -c 'import json,sys;obj=json.load(sys.stdin);print "Layers numbers:",len(obj.keys())'
+done
+
+echo -n "Did you verified them? (y/n)"
+echo
+read answer
+if [ ! "${answer}" == "y" ]; then
+  echo "deploy aborted"
+  exit 1
+fi
+
 cd $cwd
+
+
 
 sudo -u deploy deploy -r deploy/deploy.cfg $2 $SNAPSHOTDIR
 
