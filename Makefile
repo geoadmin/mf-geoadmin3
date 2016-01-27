@@ -314,7 +314,7 @@ prd/cache/: .build-artefacts/last-version \
 			.build-artefacts/last-api-url
 	mkdir -p $@
 	curl -q -o prd/cache/services http:$(API_URL)/rest/services
-	$(foreach lang, $(LANGS), curl -q -o prd/cache/layersConfig.$(lang) http:$(API_URL)/rest/services/all/MapServer/layersConfig?lang=$(lang);)
+	$(foreach lang, $(LANGS), curl -s --retry 3 -o prd/cache/layersConfig.$(lang) http:$(API_URL)/rest/services/all/MapServer/layersConfig?lang=$(lang);)
 
 define buildpage
 	${PYTHON_CMD} .build-artefacts/python-venv/bin/mako-render \
