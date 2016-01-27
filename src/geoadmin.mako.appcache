@@ -10,7 +10,7 @@
 CACHE:
 ${version}/lib/build.js	
 ${version}/style/app.css
-${version}/style/font-awesome-4.5.0/font/fontawesome-webfont.woff?v=4.5.0
+${version}/style/font-awesome-4.5.0/font/fontawesome-webfont.woff
 ${version}/services
 % for lang in languages:
 ${version}/layersConfig?lang=${lang}
