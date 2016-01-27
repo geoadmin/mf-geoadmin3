@@ -282,7 +282,7 @@ goog.require('ga_styles_service');
               var layerTimeStr =
                   gaLayers.getLayerTimestampFromYear(olLayer.bodId, time);
               if (switchTimeActive) {
-                // We save the current value after a global deactivation.
+                // We save the current value after a global activation.
                 // (ex: using the time selector toggle)
                 savedTimeStr[olLayer.id] = olLayer.time;
               } else if (switchTimeDeactive && savedTimeStr[olLayer.id]) {

@@ -51,7 +51,6 @@ goog.require('ga_permalink_service');
       if (isNaN(time)) {
         time = undefined;
       }
-
       var Time = function() {
 
         // This property active the auto update status. The main goal of this
@@ -66,13 +65,13 @@ goog.require('ga_permalink_service');
             var olLayer = evt.element;
             if (!olLayer.preview && olLayer.timeEnabled) {
               ol.Observable.unByKey(propDeregKey[olLayer.id]);
-              that.updateStatus(evt.target);
+              that.updateStatus(evt.target.getArray());
               propDeregKey[olLayer.id] = olLayer.on('propertychange',
                   function(evtProp) {
                 if (evtProp.key == 'visible' || (evtProp.key == 'time' &&
                     angular.isDefined(evtProp.target.time) &&
                     parseInt(evtProp.target.time.substr(0, 4)) != time)) {
-                  that.updateStatus(evt.target);
+                  that.updateStatus(evt.target.getArray());
                 }
               });
             }
@@ -81,17 +80,28 @@ goog.require('ga_permalink_service');
             var olLayer = evt.element;
             ol.Observable.unByKey(propDeregKey[olLayer.id]);
             if (!olLayer.preview && olLayer.timeEnabled) {
-              that.updateStatus(evt.target);
+              that.updateStatus(evt.target.getArray());
             }
           });
         };
 
         this.updateStatus = function(olLayers) {
           if (this.allowStatusUpdate) {
-            // This function automatically set time value when all timeEnabled
-            // layers have/don't have the same time property.
-            var year = hasLayersSameTime(olLayers.getArray());
-            this.set((year !== false) ? year : undefined);
+            // When only one time enabled layer is displayed, we let the
+            // permalink decide if we display the time selector or not, so we
+            // deactivate the auto update.
+            var count = 0;
+            for (var i = 0, ii = olLayers.length; i < ii; i++) {
+              if (olLayers[i].visible && olLayers[i].timeEnabled) {
+                count++;
+              }
+            }
+            if (count > 1) {
+              // This function automatically set time value when all timeEnabled
+              // layers have/don't have the same time property.
+              var year = hasLayersSameTime(olLayers);
+              this.set((year !== false) ? year : undefined);
+            }
           }
         };
 
