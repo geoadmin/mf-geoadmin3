@@ -2073,10 +2073,25 @@ goog.require('ga_urlutils_service');
         var mustReorder = false;
 
         var addTopicSelectedLayers = function() {
-          addLayers(gaTopic.get().selectedLayers.slice(0).reverse());
-          var activatedLayers = gaTopic.get().activatedLayers;
-          if (activatedLayers.length) {
-            addLayers(activatedLayers.slice(0).reverse(), null, false);
+          // if plConf is active, we get layers from there. This
+          // might include opacity and visibility
+          var topic = gaTopic.get();
+          if (topic.plConfig) {
+            var p = gaUrlUtils.parseKeyValue(topic.plConfig);
+            addLayers(p.layers ? p.layers.split(',') : [],
+                      p.layers_opacity ?
+                          p.layers_opacity.split(',') : undefined,
+                      p.layers_visibility ?
+                          p.layers_visibility.split(',') : false,
+                      p.layers_timestamp ?
+                          p.layers_timestamp.split(',') : undefined
+            );
+          } else {
+            addLayers(topic.selectedLayers.slice(0).reverse());
+            var activatedLayers = topic.activatedLayers;
+            if (activatedLayers.length) {
+              addLayers(activatedLayers.slice(0).reverse(), null, false);
+            }
           }
         };
 

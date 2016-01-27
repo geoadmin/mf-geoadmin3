@@ -14,7 +14,8 @@ goog.require('ga_permalink');
    * Backgrounds manager
    */
   module.provider('gaBackground', function() {
-    this.$get = function($rootScope, $q, gaTopic, gaLayers, gaPermalink) {
+    this.$get = function($rootScope, $q, gaTopic, gaLayers, gaPermalink,
+        gaUrlUtils) {
       var isOfflineToOnline = false;
       var bg; // The current background
       var bgs = []; // The list of backgrounds available
@@ -45,7 +46,12 @@ goog.require('ga_permalink');
       };
 
       var getBgByTopic = function(topic) {
-        var topicBg = getBgById(topic.defaultBackground) || bgs[0];
+        var topicBg = null;
+        if (topic.plConfig) {
+          var p = gaUrlUtils.parseKeyValue(topic.plConfig);
+          topicBg = getBgById(p.bgLayer);
+        }
+        topicBg = topicBg || getBgById(topic.defaultBackground) || bgs[0];
         if (topicBg && !isOfflineToOnline) {
            return topicBg;
         }

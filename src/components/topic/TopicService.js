@@ -26,6 +26,9 @@ goog.require('ga_permalink');
             if (!value.activatedLayers) {
               value.activatedLayers = [];
             }
+            if (!value.plConfig || !value.plConfig.length) {
+              value.plConfig = false;
+            }
           });
           topic = getTopicById(gaPermalink.getParams().topic, true);
           if (topic) {
