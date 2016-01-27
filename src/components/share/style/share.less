@@ -1,5 +1,13 @@
 [ga-share] {
 
+  .tooltip.bottom {
+    margin-top: -3px;
+  }
+
+  .tooltip-inner {
+    max-width: 240px;
+  }
+
   .input-group {
     width: 100%;
 
@@ -51,6 +59,11 @@
 
   .ga-share-embed {
     margin-top: 8px;
+
+    button {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
 
     @media (max-width: @screen-tablet) {
       .input-group {
