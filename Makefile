@@ -1,6 +1,6 @@
 SRC_JS_FILES := $(shell find src/components src/js -type f -name '*.js')
 SRC_JS_FILES_FOR_COMPILER = $(shell sed -e ':a' -e 'N' -e '$$!ba' -e 's/\n/ --js /g' .build-artefacts/js-files | sed 's/^.*base\.js //')
-SRC_COMPONENTS_LESS_FILES := $(shell find src/components -type f -name '*.less')
+SRC_LESS_FILES := $(shell find src -type f -name '*.less')
 SRC_COMPONENTS_PARTIALS_FILES = $(shell find src/components -type f -path '*/partials/*' -name '*.html')
 APACHE_BASE_DIRECTORY ?= $(CURDIR)
 LAST_APACHE_BASE_DIRECTORY := $(shell if [ -f .build-artefacts/last-apache-base-directory ]; then cat .build-artefacts/last-apache-base-directory 2> /dev/null; else echo '-none-'; fi)
@@ -11,7 +11,7 @@ LAST_API_URL := $(shell if [ -f .build-artefacts/last-api-url ]; then cat .build
 PUBLIC_URL ?= //public.dev.bgdi.ch
 PUBLIC_URL_REGEXP ?= ^https?:\/\/public\..*\.(bgdi|admin)\.ch\/.*
 ADMIN_URL_REGEXP ?= ^(ftp|http|https):\/\/(.*(\.bgdi|\.geo\.admin)\.ch)
-LESS_PARAMETERS ?= '-ru'
+LESS_PARAMETERS ?= -ru
 KEEP_VERSION ?= 'false'
 LAST_VERSION := $(shell if [ -f .build-artefacts/last-version ]; then cat .build-artefacts/last-version 2> /dev/null; else echo '-none-'; fi)
 VERSION := $(shell if [ '$(KEEP_VERSION)' = 'true' ] && [ '$(LAST_VERSION)' != '-none-' ]; then echo $(LAST_VERSION); else date '+%s'; fi)
@@ -292,15 +292,9 @@ prd/lib/build.js: src/lib/jquery.min.js \
 	mkdir -p $(dir $@)
 	cat $^ | sed 's/^\/\/[#,@] sourceMappingURL=.*//' > $@
 
-prd/style/app.css: src/style/app.less \
-	    src/style/print.less \
-	    src/style/offline.less \
-	    src/style/ga_bootstrap.less \
-	    src/style/ga_variables.less \
-	    $(SRC_COMPONENTS_LESS_FILES) \
-	    node_modules
+prd/style/app.css: $(SRC_LESS_FILES)
 	mkdir -p $(dir $@)
-	node_modules/.bin/lessc -ru --clean-css $< $@
+	node_modules/.bin/lessc $(LESS_PARAMETERS) --clean-css src/style/app.less $@
 
 prd/geoadmin.appcache: src/geoadmin.mako.appcache \
 			${MAKO_CMD} \
@@ -392,14 +386,8 @@ src/deps.js: $(SRC_JS_FILES) ${PYTHON_VENV}
 	    --root_with_prefix="src/js js" \
 	    --output_file=$@
 
-src/style/app.css: src/style/app.less \
-	    src/style/print.less \
-	    src/style/offline.less \
-	    src/style/ga_bootstrap.less \
-	    src/style/ga_variables.less \
-	    $(SRC_COMPONENTS_LESS_FILES) \
-	    node_modules
-	node_modules/.bin/lessc $(LESS_PARAMETERS) $< $@
+src/style/app.css: $(SRC_LESS_FILES)
+	node_modules/.bin/lessc $(LESS_PARAMETERS) src/style/app.less $@
 
 src/index.html: src/index.mako.html \
 	    ${MAKO_CMD} \
