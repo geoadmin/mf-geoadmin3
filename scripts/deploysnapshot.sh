@@ -18,8 +18,20 @@ SNAPSHOTDIR=/var/www/vhosts/mf-geoadmin3/private/snapshots/$1
 cwd=$(pwd)
 cd $SNAPSHOTDIR/geoadmin/code/geoadmin
 KEEP_VERSION=false
+source rc_$2
 make all
+
+echo -n "New topic and layerConfig files were created. Did you verify them? (y/n)"
+echo
+read answer
+if [ ! "${answer}" == "y" ]; then
+    echo "deploy aborted"
+    exit 1
+fi
+
 cd $cwd
+
+
 
 sudo -u deploy deploy -r deploy/deploy.cfg $2 $SNAPSHOTDIR
 
