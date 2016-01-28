@@ -91,7 +91,6 @@ all: lint dev prod apache testdev testprod deploy/deploy-branch.cfg fixrights
 prod: prd/lib/ \
 	prd/lib/build.js \
 	prd/style/app.css \
-	prd/empty.appcache \
 	prd/geoadmin.appcache \
 	prd/index.html \
 	prd/mobile.html \
@@ -125,7 +124,7 @@ teste2e: guard-BROWSERSTACK_TARGETURL guard-BROWSERSTACK_USER guard-BROWSERSTACK
 apache: apache/app.conf
 
 .PHONY: appcache
-appcache: cleanappcache prd/empty.appcache prd/geoadmin.appcache prd/index.html prd/mobile.html prd/embed.html
+appcache: cleanappcache prd/geoadmin.appcache prd/index.html prd/mobile.html prd/embed.html
 
 .PHONY: deploydev
 deploydev:
@@ -389,10 +388,6 @@ prd/checker: src/checker
 	mkdir -p $(dir $@)
 	cp $< $@
 
-prd/empty.appcache: src/empty.appcache
-	mkdir -p $(dir $@)
-	cp $< $@
-
 src/deps.js: $(SRC_JS_FILES) .build-artefacts/python-venv
 	${PYTHON_CMD} node_modules/google-closure-library/closure/bin/build/depswriter.py \
 	    --root_with_prefix="src/components components" \
@@ -612,7 +607,6 @@ cleanall: clean
 .PHONY: cleanappcache
 cleanappcache:
 	rm -f prd/geoadmin.appcache
-	rm -f prd/empty.appcache
 	rm -f prd/index.html
 	rm -f prd/mobile.html
 	rm -f prd/embed.html
