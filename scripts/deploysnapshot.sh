@@ -56,7 +56,8 @@ echo "Flushing varnishes"
 source $VARNISH_FLUSH_FILE
 for VARNISHHOST in ${VARNISH_HOSTS[@]}
 do
-  ./scripts/flushvarnish.sh $VARNISHHOST "${API_URL////}"
+  ./scripts/flushvarnish.sh $VARNISHHOST "${API_URL#*//}"
+  ./scripts/flushvarnish.sh $VARNISHHOST "${BROWSERSTACK_TARGETURL#*https://}"
   echo "Flushed varnish at: ${VARNISHHOST}"
 done
 
