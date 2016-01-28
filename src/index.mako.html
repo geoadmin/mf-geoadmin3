@@ -4,6 +4,8 @@
 itemscope itemtype="http://schema.org/WebApplication"
 % if device == 'mobile' and mode=='prod' :
  manifest="geoadmin.appcache"
+% elif device == 'desktop' and mode=='prod' :
+ manifest="empty.appcache"
 % endif
 >
   <head>
