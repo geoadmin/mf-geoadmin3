@@ -50,18 +50,36 @@ goog.require('ga_topic_service');
               gaLayers.getLayerProperty(bodId, 'tooltip'));
         };
 
+        var getOlParentLayer = function(l) {
+          var parentLayerBodId;
+          if (l.bodId) {
+            parentLayerBodId =
+              gaLayers.getLayerProperty(l.bodId, 'parentLayerId');
+          }
+          if (parentLayerBodId) {
+            l = gaLayers.getOlLayerById(parentLayerBodId);
+          }
+          return l;
+        };
+
         // Get all the queryable layers at a pixel
         var getLayersToQueryAtPixel = function(map, pixel, is3dActive) {
+          var bodIds = [];
           var layersToQuery = [];
           if (!is3dActive && (!gaBrowserSniffer.msie ||
               gaBrowserSniffer.msie > 10)) {
+            // Works only on sublayers
             map.forEachLayerAtPixel(pixel,
               function(l) {
+                l = getOlParentLayer(l);
+                bodIds.push(l.bodId);
                 layersToQuery.push(l);
               },
               undefined,
               function(l) {
-                return hasTooltipBodLayer(l) || isVectorLayer(l);
+                l = getOlParentLayer(l);
+                return (bodIds.indexOf(l.bodId) === -1 &&
+                    hasTooltipBodLayer(l)) || isVectorLayer(l);
               }
             );
           } else {
