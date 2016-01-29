@@ -66,8 +66,8 @@ goog.require('ga_topic_service');
         var getLayersToQueryAtPixel = function(map, pixel, is3dActive) {
           var bodIds = [];
           var layersToQuery = [];
-          if (!is3dActive && (!gaBrowserSniffer.msie ||
-              gaBrowserSniffer.msie > 10)) {
+          if (!is3dActive && !gaBrowserSniffer.ios &&
+              (!gaBrowserSniffer.msie || gaBrowserSniffer.msie > 10)) {
             // Works only on sublayers
             map.forEachLayerAtPixel(pixel,
               function(l) {
