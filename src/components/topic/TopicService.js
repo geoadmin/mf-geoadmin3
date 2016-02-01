@@ -11,7 +11,8 @@ goog.require('ga_permalink');
    * Topics manager
    */
   module.provider('gaTopic', function() {
-    this.$get = function($rootScope, $http, gaPermalink, gaGlobalOptions) {
+    this.$get = function($rootScope, $http, gaPermalink, gaGlobalOptions,
+                         gaUrlUtils) {
       var topic; // The current topic
       var topics = []; // The list of topics available
 
@@ -28,6 +29,30 @@ goog.require('ga_permalink');
             }
             if (!value.plConfig || !value.plConfig.length) {
               value.plConfig = false;
+            } else {
+              //plConfig overwrites some default settings. So we
+              //apply them here
+              var p = gaUrlUtils.parseKeyValue(value.plConfig);
+              //Overwrite background layer if available
+              if (p.bgLayer) {
+                value.defaultBackground = p.bgLayer;
+              }
+              //Overwrite activated and selected layers
+              if (p.layers && p.layers.length) {
+                value.activatedLayers = [];
+                value.selectedLayers = [];
+                var ls = p.layers.split(',');
+                var lv = p.layers_visibility ?
+                         p.layers_visibility.split(',') : [];
+                for (var i = 0; i < ls.length; i++) {
+                  if (i < lv.length && lv[i] != 'false') {
+                    value.selectedLayers.push(ls[i]);
+                  } else {
+                    value.activatedLayers.push(ls[i]);
+                  }
+                }
+              }
+
             }
           });
           topic = getTopicById(gaPermalink.getParams().topic, true);
