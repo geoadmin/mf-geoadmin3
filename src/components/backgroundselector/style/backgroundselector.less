@@ -76,17 +76,18 @@
     }
 
     .ga-bg-layer-bt, .ga-bg-layer {
-      width: @control-btn-size-px;
-      height: @control-btn-size-px;
-      border-radius: 22px;
+      width: unit(@control-btn-size - 2, px);
+      height: unit(@control-btn-size - 2, px);
+      border-radius: 21px;
+      margin: 1px;
     }
 
     .ga-pixelkarte-grau {
-      background-position-x: -118px; 
+      background-position: -118px center;
     }
 
     .ga-pixelkarte-farbe {
-      background-position-x: -210px; 
+      background-position: -210px center;
     }
 
     &.ga-open {
@@ -129,11 +130,11 @@
     }
 
     .ga-pixelkarte-farbe {
-      background-position-x: -185px;
+      background-position: -185px 0;
     }
 
     .ga-pixelkarte-grau {
-      background-position-x: -92px;
+      background-position: -92px 0;
     }
 
     &.ga-open {
