@@ -729,6 +729,7 @@ itemscope itemtype="http://schema.org/WebApplication"
           pegman: !!window.location.search.match(/(pegman=true)/),
           mapUrl : location.origin + '${apache_base_path}',
           apiUrl : location.protocol + '${api_url}',
+          mapproxyUrl : location.protocol + '${mapproxy_url}',
           publicUrl : location.protocol + '${public_url}',
           publicUrlRegexp: new RegExp('${public_url_regexp}'),
           adminUrlRegexp: new RegExp('${admin_url_regexp}'),
@@ -770,7 +771,7 @@ itemscope itemtype="http://schema.org/WebApplication"
           gaLayersProvider.dfltWmtsMapProxySubdomains = ['20', '21', '22', '23', '24'];
           gaLayersProvider.wmsUrlTemplate = '//wms{s}.geo.admin.ch/';
           gaLayersProvider.wmtsGetTileUrlTemplate = '//wmts{s}.geo.admin.ch/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{y}/{x}.{Format}';
-          gaLayersProvider.wmtsMapProxyGetTileUrlTemplate = '//wmts{s}.geo.admin.ch/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{x}/{y}.{Format}';
+          gaLayersProvider.wmtsMapProxyGetTileUrlTemplate =  gaGlobalOptions.mapproxyUrl + '/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{x}/{y}.{Format}';
           gaLayersProvider.terrainTileUrlTemplate = '//3d.geo.admin.ch/1.0.0/{Layer}/default/{Time}/4326';
           gaLayersProvider.layersConfigUrlTemplate = gaGlobalOptions.resourceUrl + 'layersConfig?lang={Lang}';
           gaLayersProvider.legendUrlTemplate = gaGlobalOptions.apiUrl + '/rest/services/all/MapServer/{Layer}/legend?lang={Lang}';
