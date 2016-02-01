@@ -173,7 +173,7 @@ describe('ga_backgroundselector_directive', function() {
     it('voidLayer is only added once', function() {
       var divsBg = element.find('.ga-bg-layer');
       expect(divsBg.length).to.equal(4);
-      expect(divsBg[1].className).to.contain('ga-voidLayer');
+      expect(divsBg[0].className).to.contain('ga-voidLayer');
     });
   });
 });
