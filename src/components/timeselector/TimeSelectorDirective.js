@@ -213,6 +213,7 @@ goog.require('ga_time_service');
           scope.$watch(function() {
             return scope.ol3d && scope.ol3d.getEnabled();
           }, function(active) {
+            scope.stop();
             scope.is3dActive = active;
             elt.toggle(scope.isActive && !scope.is3dActive);
           });
