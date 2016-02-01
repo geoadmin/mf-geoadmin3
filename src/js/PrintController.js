@@ -12,6 +12,9 @@ goog.provide('ga_print_controller');
         printPath: printPath,
         printConfigUrl: printCachedPath + '/print/geoadmin3/capabilities.json?url=' +
             encodeURIComponent(printPath),
+        createURL: printCachedPath + '/print/geoadmin3/buildreport.pdf',
+        printURL: printCachedPath + '/print/geoadmin3/print.pdf?url=' +
+            encodeURIComponent(printPath),
         legendUrl: gaGlobalOptions.apiUrl + '/static/images/legends/',
         qrcodeUrl: gaGlobalOptions.apiUrl + '/qrcodegenerator?url=',
         shortenUrl: gaGlobalOptions.apiUrl + '/shorten.json',

@@ -64,19 +64,17 @@ goog.require('ga_time_service');
         $scope.map.on('postcompose', handlePostCompose),
         $scope.map.on('change:size', function(event) {
           updatePrintRectanglePixels($scope.scale);
-          window.console.log('in activate function $scope.scale0 ' + $scope.scale);
         }),
         $scope.map.getView().on('propertychange', function(event) {
           updatePrintRectanglePixels($scope.scale);
-          window.console.log('in activate function $scope.scale1 ' + $scope.scale);
         }),
         $scope.$watchGroup(['scale', 'layout'], function() {
           updatePrintRectanglePixels($scope.scale);
-          window.console.log('in activate function $scope.scale2 ' + $scope.scale);
         })
       ];
+      window.console.log('ACTIVATE FUNCTION: $scope.scale before function getOptimal ' + $scope.scale);
       $scope.scale = getOptimalScale();
-      window.console.log('in activate function $scope.scale3 ' + $scope.scale);
+      window.console.log('ACTIVATE FUNCTION: $scope.scale after getOptimal  ' + $scope.scale);
       refreshComp();
 
     };
@@ -198,7 +196,6 @@ goog.require('ga_time_service');
       }
       return {layer: encLayer, legend: encLegend};
     };
-
 
     // Transform an ol.Color to an hexadecimal string
     var toHexa = function(olColor) {
@@ -372,6 +369,9 @@ goog.require('ga_time_service');
             layer: layer.bodId,
             opacity: layer.getOpacity()
           };
+          window.console.log('enc');
+          window.console.log('------------------------');
+          window.console.log(enc);          
           return enc;
         },
         'Group': function(layer, proj) {
@@ -388,6 +388,9 @@ goog.require('ga_time_service');
               }
             }
           });
+          window.console.log('encs');
+          window.console.log('------------------------');
+          window.console.log(encs);          
           return encs;
         },
         'Vector': function(layer, features) {
@@ -432,6 +435,10 @@ goog.require('ga_time_service');
             name: layer.bodId,
             opacity: (layer.opacity != null) ? layer.opacity : 1.0
           });
+          window.console.log('encVector');
+          window.console.log('------------------------');
+          window.console.log(enc);          
+
           return enc;
         },
         'WMS': function(layer, config) {
@@ -447,7 +454,7 @@ goog.require('ga_time_service');
               baseURL: config.wmsUrl || layer.url,
               layers: layers,
               styles: styles,
-              format: 'image/' + (config.format || 'png'),
+              imageFormat: 'image/' + (config.format || 'png'),
               customParams: {
                 'EXCEPTIONS': 'XML',
                 'TRANSPARENT': 'true',
@@ -456,7 +463,10 @@ goog.require('ga_time_service');
               },
               singleTile: config.singleTile || false
             });
-            return enc;
+          window.console.log('encWMS');
+          window.console.log('------------------------');
+          window.console.log(enc);          
+          return enc;
 
         },
         'WMTS': function(layer, config) {
@@ -471,18 +481,24 @@ goog.require('ga_time_service');
               type: 'WMTS',
               baseURL: location.protocol + '//wmts.geo.admin.ch',
               layer: config.serverLayerName,
-              maxExtent: layer.getExtent(),
-              tileOrigin: tileGrid.getOrigin(),
-              tileSize: [tileGrid.getTileSize(), tileGrid.getTileSize()],
-              resolutions: tileGrid.getResolutions(),
-              zoomOffset: tileGrid.getMinZoom(),
-              version: '1.0.0',
+              //maxExtent: layer.getExtent(),
+              //tileOrigin: tileGrid.getOrigin(),
+              //tileSize: [tileGrid.getTileSize(), tileGrid.getTileSize()],
+              //resolutions: tileGrid.getResolutions(),
+              //zoomOffset: tileGrid.getMinZoom(),
               requestEncoding: 'REST',
-              formatSuffix: config.format || 'jpeg',
+              version: '1.0.0',
               style: 'default',
+              imageFormat: config.format || 'jpeg',
               dimensions: ['TIME'],
-              params: {'TIME': source.getDimensions().Time},
-              matrixSet: '21781'
+              dimensionParams: {'TIME': source.getDimensions().Time},
+              matrixSet: '21781',
+              matrices: [{
+                identifier: tileGrid.matrixIds_,
+                tileSize: [tileGrid.getTileSize(), tileGrid.getTileSize()],
+                topLeftCorner: tileGrid.origin,
+                matrixSize: [1, 1]
+               }] 
           });
           var multiPagesPrint = false;
           if (config.timestamps) {
@@ -495,7 +511,17 @@ goog.require('ga_time_service');
               multiPagesPrint) {
             enc['timestamps'] = config.timestamps;
           }
-
+          window.console.log('config');
+          window.console.log(config);
+          window.console.log('layer');
+          window.console.log(layer);
+          window.console.log('source');
+          window.console.log(source);
+          window.console.log('tileGrid');
+          window.console.log(tileGrid);
+          window.console.log('encWMTS');
+          window.console.log('------------------------');
+          window.console.log(enc);          
           return enc;
         }
       },
@@ -572,6 +598,10 @@ goog.require('ga_time_service');
             }
           }
 
+          window.console.log('encFeatures');
+          window.console.log(encFeatures);
+          window.console.log('encStyles');
+          window.console.log(encStyles);
           return {
             encFeatures: encFeatures,
             encStyles: encStyles
@@ -668,6 +698,8 @@ goog.require('ga_time_service');
     // Start the print process
     $scope.submit = function() {
       window.console.log('$SCOPE: $scope.submit');
+      window.console.log('****************************************');
+      window.console.log('****************************************');
       if (!$scope.active) {
         return;
       }
@@ -678,17 +710,21 @@ goog.require('ga_time_service');
       var view = $scope.map.getView();
       var proj = view.getProjection();
       var lang = $translate.use();
-      window.console.log('view ' + view);
-      window.console.log('proj ' + proj);
+      window.console.log('view ');
+      window.console.log(view);
+      window.console.log('proj ');
+      window.console.log(proj);
       window.console.log('lang ' + lang);
       var defaultPage = {};
       defaultPage['lang' + lang] = true;
       var qrcodeUrl = $scope.options.qrcodeUrl +
           encodeURIComponent(gaPermalink.getHref());
-      var print_zoom = getZoomFromScale($scope.scale.value);
+      var print_zoom = getZoomFromScale($scope.scale); //edw epaize scope.value
       window.console.log('print_zoom');
       window.console.log(print_zoom);
       qrcodeUrl = qrcodeUrl.replace(/zoom%3D(\d{1,2})/, 'zoom%3D' + print_zoom);
+      window.console.log('qrcodeUrl');
+      window.console.log(qrcodeUrl);
       var encLayers = [];
       var encLegends;
       var attributions = [];
@@ -947,13 +983,19 @@ goog.require('ga_time_service');
           }, POLL_INTERVAL, false);
         };
 
-        var printUrl = $scope.capabilities.createURL;
+        var printUrl = $scope.options.createURL;
+        window.console.log('printUrl');
+        window.console.log('***************************');
+        window.console.log(printUrl);
+        window.console.log('$scope.options.printing');
+        window.console.log($scope.options.printing);
+
         //When movie is on, we use printmulti
         if (movieprint) {
-          printUrl = printUrl.replace('/print/', '/printmulti/');
+          printUrl = printUrl.replace('/print/', '/printmulti/');//afterwards have to take a look here!
         }
         canceller = $q.defer();
-        var http = $http.post(printUrl + '?url=' + encodeURIComponent(printUrl),
+        var http = $http.post(printUrl,
           spec, {
           timeout: canceller.promise
         }).success(function(data) {
@@ -971,6 +1013,12 @@ goog.require('ga_time_service');
         }).error(function() {
           $scope.options.printing = false;
         });
+
+        window.console.log('http');
+        window.console.log(http);
+        //window.console.log('$scope.downloadUrl');
+        //window.console.log($scope.downloadUrl(http));
+
       });
     };
 
@@ -1017,7 +1065,6 @@ goog.require('ga_time_service');
 
     var getOptimalScale = function() {
       window.console.log('FUNCTION 16: GET OPTIMAL SCALE');
-      window.console.log('-----------------');
       window.console.log('$scope');
       window.console.log($scope);
       var size = $scope.map.getSize();
@@ -1040,8 +1087,12 @@ goog.require('ga_time_service');
       window.console.log(scaleWidth);
       var scaleHeight = height * UNITS_RATIO * POINTS_PER_INCH / layoutHeight;
       //    layoutSize.height;
+      window.console.log('scaleHeight');
+      window.console.log(scaleHeight);
       var testScale = scaleWidth;
+      window.console.log('testScale is equal to scaleWidth and we test is scaleHeight < testScale');
       if (scaleHeight < testScale) {
+        window.console.log('yes, testScale is ' + scaleHeight);
         testScale = scaleHeight;
       }
       var nextBiggest = null;
@@ -1049,29 +1100,36 @@ goog.require('ga_time_service');
       //biggest (1:500) to smallest (1:2500000)
       angular.forEach($scope.scales, function(scale) {
         if (nextBiggest == null ||
-            testScale > scale.value) {
+            testScale > scale) { // edw genika epaize to scale.value
+              window.console.log('scale.value: ' + scale);
               nextBiggest = scale;
         }
       });
+      window.console.log('nextBiggest to return: ' + nextBiggest);
       return nextBiggest;
     };
 
     var calculatePageBoundsPixels = function(scale) {
       window.console.log('FUNCTION 17: CALCULATE PAGE BOUNDS PIXELS');
-      window.console.log(scale);
+      window.console.log('scale: ' + scale);
       //var s = parseFloat(scale.value);
       var s = parseFloat(scale);
-      window.console.log(s);
-      //var size = $scope.layout.map; // papersize in dot!
-      var layoutWidth = $scope.layoutWidth;
-      var layoutHeight = $scope.layoutHeight;
+      window.console.log('s: ' + s);
+      var size = $scope.layout.map; // papersize in dot!
+      //var layoutWidth = $scope.layouts.attributes.clientInfo.width;
+      //window.console.log('layoutWidth: ' + layoutWidth);
+      //var layoutHeight = $scope.layouts.attributes.clientInfo.height;
+      //window.console.log('layoutHeight: ' + layoutHeight);
+      window.console.log('to size tou layout einai ' + size);
       var view = $scope.map.getView();
       var resolution = view.getResolution();
       //instead of size.width layoutWidth, same as for size.height
-      var w = layoutWidth / POINTS_PER_INCH * MM_PER_INCHES / 1000.0 *
+      var w = size.width / POINTS_PER_INCH * MM_PER_INCHES / 1000.0 *
           s / resolution * ol.has.DEVICE_PIXEL_RATIO;
-      var h = layoutHeight / POINTS_PER_INCH * MM_PER_INCHES / 1000.0 *
+      window.console.log('w: ' + w);
+      var h = size.height / POINTS_PER_INCH * MM_PER_INCHES / 1000.0 *
           s / resolution * ol.has.DEVICE_PIXEL_RATIO;
+      window.console.log('h: ' + h);
       var mapSize = $scope.map.getSize();
       var center = [mapSize[0] * ol.has.DEVICE_PIXEL_RATIO / 2 ,
           mapSize[1] * ol.has.DEVICE_PIXEL_RATIO / 2];
@@ -1115,26 +1173,41 @@ goog.require('ga_time_service');
               window.console.log('lay.name ' + lay.name);
 
               lay.stripped = lay.name.substr(2);
+              lay.map = {width: lay.attributes[5].clientInfo.width, height: lay.attributes[5].clientInfo.height};
+              window.console.log('lay.map: ');
+              window.console.log(lay.map);
+
+
             });
             
+
+            // Default values
+            window.console.log('DEFAULT VALUES');
+            window.console.log('*****************************');
+
             $scope.scales = $scope.capabilities.layouts[0].attributes[5].clientInfo.scales;
             window.console.log('$scope.scales');
             window.console.log($scope.scales);
-            // Default scale 2500000
+            // Default scale: 2500000
             $scope.scale = $scope.capabilities.layouts[0].attributes[5].clientInfo.scales[0];
             window.console.log('$scope.scale');
             window.console.log($scope.scale);
 
-            // default values
-            window.console.log('DEFAULT VALUES');
 
             $scope.layout = data.layouts[0];
-            window.console.log('$scope.layout ' + $scope.layout);
-            $scope.layoutHeight = data.layouts[0].attributes[5].clientInfo.height;
-            $scope.layoutWidth = data.layouts[0].attributes[5].clientInfo.width;
-            window.console.log('layoutWidth & layoutHeight ' + $scope.layoutWidth + ' ' + $scope.layoutHeight);
+            window.console.log('$scope.layout:');                
+            window.console.log($scope.layout);
+            $scope.layouts = data.layouts;
+            window.console.log('$scope.layouts:');
+            window.console.log($scope.layouts);
+
+            //$scope.layoutHeight = $scope.layouts.attributes[5].clientInfo.height;
+            //$scope.layoutWidth = $scope.layouts.attributes[5].clientInfo.width;
+            //window.console.log('layoutWidth & layoutHeight ' + $scope.layoutWidth + ' ' + $scope.layoutHeight);
+
             $scope.dpi = data.layouts[0].attributes[5].clientInfo.dpiSuggestions;
             window.console.log('$scope.dpi ' + $scope.dpi);
+
             //$scope.scales = data.layouts[0].attributes[5].clientInfo.scales;
             //window.console.log('$scope.scales ' + $scope.scales);
             //$scope.scale = data.layouts[0].attributes[5].clientInfo.scales[5];
