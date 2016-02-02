@@ -1,6 +1,7 @@
 export KEEP_VERSION=false
 export DEPLOY_TARGET=dev
 export API_URL=//mf-chsdi3.dev.bgdi.ch
+export MAPPROXY_URL=//wmts{s}.dev.bgdi.ch
 export PUBLIC_URL=//public.dev.bgdi.ch
 export APACHE_BASE_PATH=
 export BROWSERSTACK_TARGETURL=https://mf-geoadmin3.dev.bgdi.ch
