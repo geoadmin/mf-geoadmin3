@@ -62,33 +62,14 @@ goog.require('ga_topic_service');
           return l;
         };
 
-        // Get all the queryable layers at a pixel
-        var getLayersToQueryAtPixel = function(map, pixel, is3dActive) {
-          var bodIds = [];
+        // Get all the queryable layers
+        var getLayersToQuery = function(map) {
           var layersToQuery = [];
-          if (!is3dActive && !gaBrowserSniffer.ios &&
-              (!gaBrowserSniffer.msie || gaBrowserSniffer.msie > 10)) {
-            // Works only on sublayers
-            map.forEachLayerAtPixel(pixel,
-              function(l) {
-                l = getOlParentLayer(l);
-                bodIds.push(l.bodId);
-                layersToQuery.push(l);
-              },
-              undefined,
-              function(l) {
-                l = getOlParentLayer(l);
-                return (bodIds.indexOf(l.bodId) === -1 &&
-                    hasTooltipBodLayer(l)) || isVectorLayer(l);
-              }
-            );
-          } else {
-            map.getLayers().forEach(function(l) {
-              if (hasTooltipBodLayer(l) || isVectorLayer(l)) {
-                layersToQuery.push(l);
-              }
-            });
-          }
+          map.getLayers().forEach(function(l) {
+            if (hasTooltipBodLayer(l) || isVectorLayer(l)) {
+              layersToQuery.push(l);
+            }
+          });
           return layersToQuery;
         };
 
@@ -344,8 +325,7 @@ goog.require('ga_topic_service');
               var identifyUrl = scope.options.identifyUrlTemplate
                   .replace('{Topic}', gaTopic.get().id),
                   pixel = map.getPixelFromCoordinate(coordinate),
-                  layersToQuery = getLayersToQueryAtPixel(map, pixel,
-                      is3dActive());
+                  layersToQuery = getLayersToQuery(map);
 
               // When 3d is Active we use the cesium native function to get the
               // first queryable feature.
