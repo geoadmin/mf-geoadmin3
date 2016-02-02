@@ -984,7 +984,7 @@ goog.require('ga_urlutils_service');
               response.data['ch.swisstopo.terrain.3d'] = {
                 type: 'terrain',
                 serverLayerName: 'ch.swisstopo.terrain.3d',
-                timestamps: ['20151231'],
+                timestamps: ['20160115'],
                 attribution: 'swisstopo',
                 attributionUrl: 'http://www.swisstopo.admin.ch/internet/' +
                     'swisstopo/' + lang + '/home.html'
