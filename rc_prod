@@ -1,7 +1,7 @@
 export KEEP_VERSION=true
 export DEPLOY_TARGET=prod
 export API_URL=//api3.geo.admin.ch
-export API_URL=//wmts{s}.geo.admin.ch
+export MAPPROXY_URL=//wmts{s}.geo.admin.ch
 export PUBLIC_URL=//public.geo.admin.ch
 export APACHE_BASE_PATH=
 export BROWSERSTACK_TARGETURL=https://map.geo.admin.ch

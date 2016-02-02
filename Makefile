@@ -314,8 +314,7 @@ prd/geoadmin.appcache: src/geoadmin.mako.appcache \
 	    --var "public_url=$(PUBLIC_URL)" $< > $@
 
 prd/cache/: .build-artefacts/last-version \
-			.build-artefacts/last-api-url \
-			.build-artefacts/last-mapproxy-url
+			.build-artefacts/last-api-url
 	mkdir -p $@
 	curl -q -o prd/cache/services http:$(API_URL)/rest/services
 	$(foreach lang, $(LANGS), curl -s --retry 3 -o prd/cache/layersConfig.$(lang) http:$(API_URL)/rest/services/all/MapServer/layersConfig?lang=$(lang);)
@@ -436,7 +435,6 @@ src/TemplateCacheModule.js: src/TemplateCacheModule.mako.js \
 apache/app.conf: apache/app.mako-dot-conf \
 	    ${MAKO_CMD} \
 	    .build-artefacts/last-api-url \
-	    .build-artefacts/last-mapproxy-url \
 	    .build-artefacts/last-apache-base-path \
 	    .build-artefacts/last-apache-base-directory \
 	    .build-artefacts/last-version
