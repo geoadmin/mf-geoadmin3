@@ -1109,8 +1109,9 @@ goog.require('ga_urlutils_service');
             var minRetLod = gaMapUtils.getLodFromRes(config3d.maxResolution) ||
                 window.minimumRetrievingLevel;
             var maxRetLod = gaMapUtils.getLodFromRes(config3d.minResolution);
-            var maxLod = 17;// 17 is the last terrain level
-            if (config3d.resolutions) {
+            // Set maxLod as undefined deactivate client zoom.
+            var maxLod = (maxRetLod) ? undefined : 17;
+            if (maxLod && config3d.resolutions) {
               maxLod = gaMapUtils.getLodFromRes(
                   config3d.resolutions[config3d.resolutions.length - 1]);
             }
