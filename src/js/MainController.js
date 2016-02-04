@@ -4,6 +4,7 @@ goog.require('ga_background_service');
 goog.require('ga_cesium');
 goog.require('ga_map');
 goog.require('ga_networkstatus_service');
+goog.require('ga_service_worker_service');
 goog.require('ga_storage_service');
 goog.require('ga_topic_service');
 
@@ -11,6 +12,7 @@ goog.require('ga_topic_service');
 
   var module = angular.module('ga_main_controller', [
     'pascalprecht.translate',
+    'ga_service_worker_service',
     'ga_map',
     'ga_networkstatus_service',
     'ga_storage_service',
@@ -26,7 +28,7 @@ goog.require('ga_topic_service');
       gaPermalinkFeaturesManager, gaPermalinkLayersManager, gaMapUtils,
       gaRealtimeLayersManager, gaNetworkStatus, gaPermalink, gaStorage,
       gaGlobalOptions, gaBackground, gaTime, gaLayers, gaTopic,
-      gaOpaqueLayersManager) {
+      gaOpaqueLayersManager, gaServiceWorker) {
 
     var createMap = function() {
       var toolbar = $('#zoomButtons')[0];
@@ -82,6 +84,13 @@ goog.require('ga_topic_service');
 
       return map;
     };
+
+    // Register boost service workers
+    if (gaGlobalOptions.buildMode !== 'prod') {
+      gaServiceWorker.register(gaGlobalOptions.resourceUrl + 'boost.js');
+    } else {
+      gaServiceWorker.register(gaGlobalOptions.mapUrl + '/boost.js');
+    }
 
     // Determines if the window has a height <= 550
     var win = $($window), screenPhone = 480, screenSmMaxHeight = 550;
