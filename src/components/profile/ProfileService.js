@@ -156,6 +156,24 @@ goog.require('ga_urlutils_service');
           }
         };
 
+        //Sum of slope/surface distances (distance on the ground)
+        this.slopeDistance = function(data) {
+          if (data.length != 0) {
+            var sumSlopeDist = 0;
+            for (var i = 0; i < data.length - 1; i++) {
+              var h1 = data[i].alts[elevationModel] || 0;
+              var h2 = data[i + 1].alts[elevationModel] || 0;
+              var s1 = data[i].dist || 0;
+              var s2 = data[i + 1].dist || 0;
+              var dh = h2 - h1;
+              var ds = s2 - s1;
+              //Pythagorean theorem (hypotenuse: the slope/surface distance)
+              sumSlopeDist += Math.abs((dh ^ 2 + ds ^ 2) ^ (1 / 2));
+            }
+            return sumSlopeDist;
+          }
+        };
+
         //Highest & lowest elevation points
         this.elPoints = function(data) {
           if (data.length != 0) {
@@ -313,6 +331,8 @@ goog.require('ga_urlutils_service');
           var elPoi = this.elPoints(data);
           //for the distance
           this.dist = this.distance(data);
+          //for the sum of the slope/surface distances
+          this.slopeDist = this.slopeDistance(data);
           //for the hiking time
           this.hikTime = this.hikingTime(data);
 
@@ -513,10 +533,29 @@ goog.require('ga_urlutils_service');
               .text(measureFilter(this.dist, 'distance',
                     ['km', 'm'], 2, true));
 
+          //Icon for the sum of the slope/surface distances
+          //Need new icon!!!
+          group.append('text')
+              .attr('class', 'ga-profile-dist')
+              .attr('x', 480)
+              .attr('y', elevLabelY + 2)
+              .attr('text-anchor', 'start')
+              .text(' \uf220');
+
+          //Number for the sum of the slope/surface distances
+          group.append('text')
+              .attr('class', 'ga-profile-slopeDist')
+              .attr('font-size', '0.9em')
+              .attr('x', 495)
+              .attr('y', elevLabelY)
+              .style('text-anchor', 'start')
+              .text(measureFilter(this.slopeDist, 'distance',
+                    ['km', 'm'], 2, true));
+
           //Icon for the hiking time
           group.append('text')
               .attr('class', 'ga-profile-icon')
-              .attr('x', 480)
+              .attr('x', 560)
               .attr('y', elevLabelY + 1)
               .attr('text-anchor', 'start')
               .text(' \uf219');
@@ -525,7 +564,7 @@ goog.require('ga_urlutils_service');
           group.append('text')
               .attr('class', 'ga-profile-hikTime')
               .attr('font-size', '0.9em')
-              .attr('x', 495)
+              .attr('x', 575)
               .attr('y', elevLabelY)
               .style('text-anchor', 'start')
               .text(gaTimeFormatFilter(this.hikTime));
@@ -536,6 +575,11 @@ goog.require('ga_urlutils_service');
         this.updateElevationLabels = function(name, number) {
           this.group.select(name)
               .text(measureFilter(number, 'distance', 'm', 2, true));
+        };
+
+        this.updateDistanceLabels = function(name, number) {
+          this.group.select(name)
+              .text(measureFilter(number, 'distance', ['km', 'm'], 2, true));
         };
 
         this.updateLabels = function() {
@@ -556,8 +600,10 @@ goog.require('ga_urlutils_service');
               this.elPoi[0]);
           this.updateElevationLabels('text.ga-profile-poi-down',
               this.elPoi[1]);
-          this.updateElevationLabels('text.ga-profile-distance',
+          this.updateDistanceLabels('text.ga-profile-distance',
               this.dist);
+          this.updateDistanceLabels('text.ga-profile-slopeDist',
+              this.slopeDist);
 
           this.group.select('text.ga-profile-hikTime')
               .text(gaTimeFormatFilter(this.hikTime));
@@ -585,12 +631,14 @@ goog.require('ga_urlutils_service');
                 .attr('y', 11)
                 .text('swissALTI3D/DHM25');
           } else {
-            this.data = this.formatData(data);
             this.diff = this.elevDiff(data);
             this.twoDiff = this.twoElevDiff(data);
             this.elPoi = this.elPoints(data);
             this.dist = this.distance(data);
+            this.slopeDist = this.slopeDistance(data);
             this.hikTime = this.hikingTime(data);
+
+            this.data = this.formatData(data);
           }
           var x = d3.scale.linear().range([0, width]);
           var y = d3.scale.linear().range([height, 0]);
