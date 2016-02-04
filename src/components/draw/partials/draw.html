@@ -65,11 +65,17 @@
     </ul>
 
     <div ng-if="isPropsActive" class="ga-draw-modify">
+      <label ng-if="useIconStyle || !options.useTextStyle">
+        <span translate>{{'modify_description'}}:</span>
+        <textarea class="form-control" ng-model="options.description"></textarea>
+      </label>
+
       <label class="ga-checkbox" ng-if="useIconStyle">
         <input type="checkbox" ng-model="options.useTextStyle"></input>
         <span></span>
         <span translate>{{'add_text_label'}}</span> 
       </label>
+
       <label ng-if="options.useTextStyle">
         <span translate>{{'modify_text_label'}}:</span> 
         <textarea class="form-control" ng-model="options.name"></textarea>
@@ -93,11 +99,8 @@
             </div> 
           </div>
         </div>
-      </label> 
-      <label ng-if="useIconStyle || !options.useTextStyle">
-        <span translate>{{'modify_description'}}:</span> 
-        <textarea class="form-control" ng-model="options.description"></textarea>
       </label>
+
       <label ng-if="useColorStyle">
         <span translate>{{'modify_color_label'}}:</span> 
         <div class="ga-select-box ga-select-colors ga-item-size-{{options.iconSize.value[0]}}"

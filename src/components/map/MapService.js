@@ -372,7 +372,7 @@ goog.require('ga_urlutils_service');
     };
   });
 
-  /*
+  /**
    * Manage BOD layers
    */
   module.provider('gaLayers', function() {
