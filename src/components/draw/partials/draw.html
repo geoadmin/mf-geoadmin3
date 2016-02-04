@@ -89,6 +89,22 @@
           </div>
         </div>
       </label>
+
+      <label ng-if="useColorStyle">
+        <span translate>{{'modify_color_label'}}:</span> 
+        <div class="ga-select-box ga-select-colors ga-item-size-{{options.iconSize.value[0]}}"
+             ng-class="{'ga-select-box-open': gaSelectBoxOpen}">
+          <div ng-repeat="c in options.colors"
+               ng-class="{'ga-selected': (options.color == c)}" 
+               ng-click="options.color = c">
+            <div ng-style="{
+              'background-color': c.name,
+              border: (useTextStyle ? '1px solid ' + c.border : '')
+            }">
+            </div> 
+          </div>
+        </div>
+      </label>
       <div ng-if="useIconStyle">
         <label>
           <span translate>{{'modify_icon_size_label'}}:</span> 
