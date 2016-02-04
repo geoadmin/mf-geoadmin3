@@ -65,6 +65,8 @@ goog.require('ga_styles_service');
 
     $scope.options.description = '';
 
+    $scope.options.font = gaStyleFactory.FONT;
+
     $scope.options.colors = [
       {name: 'black', fill: [0, 0, 0], border: 'white'},
       {name: 'blue', fill: [0, 0, 255], border: 'white'},
@@ -215,6 +217,9 @@ goog.require('ga_styles_service');
       // Set default color
       $scope.options.color = $scope.options.colors[5];
 
+      // Set default text color
+      $scope.options.textColor = $scope.options.colors[0];
+
       // Set default icon
       $scope.options.icon = $scope.options.icons[0];
 
@@ -234,8 +239,8 @@ goog.require('ga_styles_service');
       return i.url;
     };
 
-    // Get the current style defined by inputs
-    $scope.options.updateStyle = function(feature) {
+    // Get the current style defined by the properties object
+    $scope.options.updateStyle = function(feature, properties) {
       var style;
       var oldStyles = feature.getStyle();
       if (oldStyles.length) {
@@ -246,7 +251,7 @@ goog.require('ga_styles_service');
       }
 
       // Update Fill if it exists
-      var color = $scope.options.color;
+      var color = properties.color;
       var fill = style.getFill();
       if (fill) {
         fill.setColor(color.fill.concat([0.4]));
@@ -259,33 +264,31 @@ goog.require('ga_styles_service');
       }
 
       // Update text style
-      var text = style.getText();
-      if (text && $scope.options.name) {
+      var text;
+      if (properties.name) {
         text = new ol.style.Text({
-          font: gaStyleFactory.FONT,
-          text: $scope.options.name,
+          font: properties.font,
+          text: properties.name,
           fill: new ol.style.Fill({
-            color: color.fill.concat([1])
+            color: properties.textColor.fill.concat([1])
           }),
-          stroke: gaStyleFactory.getTextStroke(color.fill.concat([1]))
+          stroke: gaStyleFactory.getTextStroke(properties.textColor.fill.concat([1]))
         });
       }
 
       // Update Icon style if it exists
       var icon = style.getImage();
       if (icon instanceof ol.style.Icon &&
-          angular.isDefined($scope.options.icon)) {
+          angular.isDefined(properties.icon)) {
         icon = new ol.style.Icon({
-          src: $scope.getIconUrl($scope.options.icon),
-          scale: $scope.options.iconSize.scale
+          src: $scope.getIconUrl(properties.icon),
+          scale: properties.iconSize.scale
         });
       }
 
       // Set feature's properties
-      if ($scope.options.name) {
-        feature.set('name', $scope.options.name);
-      }
-      feature.set('description', $scope.options.description);
+      feature.set('name', properties.name);
+      feature.set('description', properties.description);
 
       var styles = [
         new ol.style.Style({
@@ -301,8 +304,13 @@ goog.require('ga_styles_service');
 
     // Draw a marker
     var markerDrawStyleFunc = function(feature, resolution) {
+      var textStyle;
+      if ($scope.options.name) {
+        textStyle = annotationDrawStyleFunc(feature, resolution)[0].getText();
+      }
       var styles = [
         new ol.style.Style({
+          text: textStyle,
           image: new ol.style.Icon({
             src: $scope.getIconUrl($scope.options.icon),
             scale: $scope.options.iconSize.scale
@@ -316,12 +324,12 @@ goog.require('ga_styles_service');
 
     // Draw a text
     var annotationDrawStyleFunc = function(feature, resolution) {
-      var color = $scope.options.color;
+      var color = $scope.options.textColor;
       if (!$scope.options.name) {
         $scope.options.name = $translate.instant('draw_new_text');
       }
       var text = new ol.style.Text({
-          font: gaStyleFactory.FONT,
+          font: $scope.options.font,
           text: $scope.options.name,
           fill: new ol.style.Fill({
             color: color.fill.concat([1])

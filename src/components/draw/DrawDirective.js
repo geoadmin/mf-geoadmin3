@@ -324,9 +324,11 @@ goog.require('ga_permalink');
             // Active watchers
             // Update selected feature's style when the user change a value
             unWatch.push(scope.$watchGroup([
+              'options.useTextStyle',
               'options.icon',
               'options.iconSize',
               'options.color',
+              'options.textColor',
               'options.name',
               'options.description'
             ], function() {
@@ -334,7 +336,16 @@ goog.require('ga_permalink');
                 var feature = select.getFeatures().item(0);
                 if (feature) {
                   // Update the style of the feature with the current style
-                  var styles = scope.options.updateStyle(feature);
+                  var styles = scope.options.updateStyle(feature, {
+                    name: (scope.options.useTextStyle) ? scope.options.name : undefined,
+                    description: scope.options.description,
+                    color: scope.options.color,
+                    font: scope.options.font,
+                    textColor: (scope.options.useTextStyle) ?
+                        scope.options.textColor : undefined,
+                    icon: scope.options.icon,
+                    iconSize: scope.options.iconSize
+                  });
                   feature.setStyle(styles);
                   // then apply the select style
                   styles = scope.options.selectStyleFunction(feature);
@@ -767,11 +778,10 @@ goog.require('ga_permalink');
                     featStyle.getStroke().getColor(),
                     scope.options.colors);
               }
-              if (!useIconStyle && featStyle.getText()) {
-                useColorStyle = true;
+              if (featStyle.getText()) {
                 useTextStyle = true;
                 scope.options.name = featStyle.getText().getText();
-                scope.options.color = findColor(
+                scope.options.textColor = findColor(
                     featStyle.getText().getFill().getColor(),
                     scope.options.colors);
               }
@@ -782,7 +792,7 @@ goog.require('ga_permalink');
               scope.options.name = '';
               scope.options.description = '';
             }
-            scope.useTextStyle = useTextStyle;
+            scope.options.useTextStyle = useTextStyle;
             scope.useIconStyle = useIconStyle;
             scope.useColorStyle = useColorStyle;
             scope.$evalAsync();
