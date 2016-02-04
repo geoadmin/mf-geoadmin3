@@ -65,9 +65,10 @@
     </ul>
 
     <div ng-if="isPropsActive" class="ga-draw-modify">
-      <label ng-show="useIconStyle">
-        <span translate>{{'add_text_label'}}:</span> 
-        <input type=checkbox ng-model="options.useTextStyle"></input>
+      <label class="ga-checkbox" ng-if="useIconStyle">
+        <input type="checkbox" ng-model="options.useTextStyle"></input>
+        <span></span>
+        <span translate>{{'add_text_label'}}</span> 
       </label>
       <label ng-if="options.useTextStyle">
         <span translate>{{'modify_text_label'}}:</span> 
@@ -83,7 +84,6 @@
             <div ng-style="{
               color: c.name,
               font: options.font,
-              'text-shadow' : c.border,
               'text-shadow': '-1px -1px 0 ' + c.border + ',' +  
                   '1px -1px 0 ' + c.border + ',' + 
                   '-1px 1px 0 ' + c.border + ',' +

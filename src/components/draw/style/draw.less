@@ -27,6 +27,8 @@
     width: auto;
   }
 
+
+
   .ga-draw-info-save {
     color: lightgray;
     margin-left: 30px;
@@ -181,6 +183,8 @@
 
   [ga-profile] {
     height: 173px;
+    margin-top: 28px;
+    width: 100%;
   }
 
   @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
@@ -189,6 +193,7 @@
       height: auto;
     }
   }
+
   .popover-title, .popover-content {
     width: auto;
   }
@@ -199,10 +204,6 @@
     &.ga-active {
       background-color: red;
     }
-  }
-  
-  [ga-profile] {
-    width: 100%;
   }
 
   .popover-content {
@@ -243,7 +244,11 @@
         display: block;
       }
     }
-    
+
+    .ga-checkbox {
+      font-weight: normal;
+    }
+
     /* Generic css for custom select box */  
     .ga-select-box {
       position: relative;

@@ -337,7 +337,8 @@ goog.require('ga_permalink');
                 if (feature) {
                   // Update the style of the feature with the current style
                   var styles = scope.options.updateStyle(feature, {
-                    name: (scope.options.useTextStyle) ? scope.options.name : undefined,
+                    name: (scope.options.useTextStyle) ?
+                        scope.options.name : undefined,
                     description: scope.options.description,
                     color: scope.options.color,
                     font: scope.options.font,

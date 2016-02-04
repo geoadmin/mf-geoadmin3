@@ -400,5 +400,7 @@
   "west": "",
   "east": "",
   "area": "",
-  "shop_choose": ""
+  "shop_choose": "",
+  "add_text_label": "",
+  "modify_text_color_label": ""
 }

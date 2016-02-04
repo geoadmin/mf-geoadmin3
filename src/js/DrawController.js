@@ -272,7 +272,8 @@ goog.require('ga_styles_service');
           fill: new ol.style.Fill({
             color: properties.textColor.fill.concat([1])
           }),
-          stroke: gaStyleFactory.getTextStroke(properties.textColor.fill.concat([1]))
+          stroke: gaStyleFactory.getTextStroke(
+              properties.textColor.fill.concat([1]))
         });
       }
 
