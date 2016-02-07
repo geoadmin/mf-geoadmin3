@@ -172,10 +172,16 @@ goog.require('ga_topic_service');
           if (deregGlobeEvents != angular.noop) {
             return;
           }
+          var ms = 0;
+          var blockNextLeftClick = false;
           var scene = scope.ol3d.getCesiumScene();
           var ellipsoid = scene.globe.ellipsoid;
           var handler = new Cesium.ScreenSpaceEventHandler(scene.canvas);
-          handler.setInputAction(function(evt) {
+          handler.setInputAction(function(evt, a, b) {
+            if (blockNextLeftClick && (new Date() - ms) < 1000) {
+              blockNextLeftClick = false;
+              return;
+            }
             var cartesian = olcs.core.pickOnTerrainOrEllipsoid(scene,
                 evt.position);
             if (cartesian) {
@@ -189,10 +195,17 @@ goog.require('ga_topic_service');
               onClick(coordinate, evt.position);
             });
           }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+
+          handler.setInputAction(function(evt, a, b) {
+            blockNextLeftClick = true;
+            ms = new Date();
+          }, Cesium.ScreenSpaceEventType.PINCH_END);
+
+
           deregGlobeEvents = function() {
             if (!handler.isDestroyed()) {
-              handler.removeInputAction(
-                  Cesium.ScreenSpaceEventType.LEFT_CLICK);
+              handler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
+              handler.removeInputAction(Cesium.ScreenSpaceEventType.PINCH_END);
               handler.destroy();
               deregGlobeEvents = angular.noop;
             }
