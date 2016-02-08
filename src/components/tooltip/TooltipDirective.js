@@ -333,6 +333,7 @@ goog.require('ga_topic_service');
                  coordinate)) {
                 return;
               }
+              var pointerShown = (map.getTarget().style.cursor == 'pointer');
               var size = map.getSize();
               var mapExtent = map.getView().calculateExtent(size);
               var identifyUrl = scope.options.identifyUrlTemplate
@@ -393,14 +394,16 @@ goog.require('ga_topic_service');
               }
 
               // When all the requests are finished we test how many features
-              // are displayed. If there is none we close the popup after 3
-              // seconds.
+              // are displayed. If there is none and the cursor was a pointer
+              // in the moment of the click, we show a no-info box for
+              // 3 seconds. As we show pointer only on desktop, this also
+              // means that no-info box is never shown on mobile
               if (all.length > 0) {
                 $q.all(all).then(function(nbResults) {
                   var sum = nbResults.reduce(function(a, b) {
                     return a + b;
                   });
-                  if (sum == 0) {
+                  if (sum == 0 && pointerShown) {
                     showNoInfo();
                   }
                 });
