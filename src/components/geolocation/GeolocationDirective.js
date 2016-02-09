@@ -228,7 +228,7 @@ goog.require('ga_throttle_service');
           var msgId;
           switch (error.code) {
             case error.PERMISSION_DENIED:
-              msgId = 'geoloc_permisson_denied';
+              msgId = 'geoloc_permission_denied';
               break;
             case error.POSITION_UNAVAILABLE:
               msgId = 'geoloc_pos_unavailable';
