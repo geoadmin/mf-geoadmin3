@@ -940,23 +940,8 @@ goog.require('ga_urlutils_service');
           return $http.get(url).then(function(response) {
             // Live modifications for 3d test
             if (response.data) {
-              // Imagery layers with metadata
-              var ids = [
-                'ch.swisstopo.swisstlm3d-wanderwege',
-                'ch.bafu.wrz-wildruhezonen_portal',
-                'ch.swisstopo.fixpunkte-agnes',
-                'ch.swisstopo.swissimage-product_3d',
-                'ch.swisstopo.swisstlm3d-karte-farbe_3d',
-                'ch.swisstopo.swisstlm3d-karte-grau_3d'
-              ];
-              angular.forEach(ids, function(id) {
-                if (response.data[id]) {
-                  response.data[id].has3dMetadata = true;
-                }
-              });
-
               // Test layers opaque setting
-              ids = [
+              var ids = [
                 'ch.swisstopo.swissimage-product',
                 'ch.swisstopo.pixelkarte-farbe',
                 'ch.swisstopo.pixelkarte-grau',
@@ -1115,6 +1100,9 @@ goog.require('ga_urlutils_service');
               maxLod = gaMapUtils.getLodFromRes(
                   config3d.resolutions[config3d.resolutions.length - 1]);
             }
+
+            var terrainTimestamp = this.getLayerTimestampFromYear(
+                gaGlobalOptions.defaultTerrain, gaTime.get());
             provider = new Cesium.UrlTemplateImageryProvider({
               url: params.url,
               subdomains: params.subdomains,
@@ -1128,10 +1116,9 @@ goog.require('ga_urlutils_service');
               tileHeight: params.tileSize,
               hasAlphaChannel: (format == 'png'),
               availableLevels: window.imageryAvailableLevels,
-              // Experimental
-              metadataUrl: config3d.has3dMetadata ?
-                  getTerrainTileUrl(requestedLayer, timestamp) + '/' :
-                  undefined
+              // Experimental: restrict all rasters to terrain availability
+              metadataUrl: getTerrainTileUrl(
+                  gaGlobalOptions.defaultTerrain, terrainTimestamp) + '/'
             });
           }
           if (provider) {
@@ -2109,7 +2096,6 @@ goog.require('ga_urlutils_service');
                 false : true;
             var timestamp = (timestamps && index < timestamps.length &&
                 timestamps != '') ? timestamps[index] : '';
-
             var bodLayer = gaLayers.getLayer(layerSpec);
             if (bodLayer) {
               // BOD layer.
