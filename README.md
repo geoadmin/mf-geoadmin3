@@ -178,6 +178,14 @@ Please only use integration url for external communication (including here on
 github), even though the exact same structure is also available on our test 
 instances.
 
+## Deleting a branch
+
+To list all the deployed branch:
+`make deletebranch`
+
+To delete a given branch:
+make deletebranch BRANCH_TO_DELETE=my_deployed_branch`
+
 ### Get correct link the API
 Per default, the API used in the **main** instance of mf-chsdi3. If you want
 to target a specific branch of mf-chsdi3, please adapt the `API_URL` variable
