@@ -1134,6 +1134,23 @@ define('Core/Math',[
     };
 
     /**
+     * Finds the logarithm of a number to a base.
+     *
+     * @param {Number} number The number.
+     * @param {Number} base The base.
+     * @returns {Number} The result.
+     */
+    CesiumMath.logBase = function(number, base) {
+                if (!defined(number)) {
+            throw new DeveloperError('number is required.');
+        }
+        if (!defined(base)) {
+            throw new DeveloperError('base is required.');
+        }
+                return Math.log(number) / Math.log(base);
+    };
+
+    /**
      * @private
      */
     CesiumMath.fog = function(distanceToCamera, density) {
@@ -2900,8 +2917,6 @@ define('Core/AttributeCompression',[
      * @param {Cartesian2} result The 2 byte oct-encoded unit length vector.
      * @returns {Cartesian2} The 2 byte oct-encoded unit length vector.
      *
-     * @exception {DeveloperError} vector must be defined.
-     * @exception {DeveloperError} result must be defined.
      * @exception {DeveloperError} vector must be normalized.
      *
      * @see AttributeCompression.octDecode
@@ -2941,7 +2956,6 @@ define('Core/AttributeCompression',[
      * @param {Cartesian3} result The decoded and normalized vector
      * @returns {Cartesian3} The decoded and normalized vector.
      *
-     * @exception {DeveloperError} result must be defined.
      * @exception {DeveloperError} x and y must be a signed normalized integer between 0 and 255.
      *
      * @see AttributeCompression.octEncode
@@ -2974,7 +2988,6 @@ define('Core/AttributeCompression',[
      * @param {Cartesian2} encoded The oct encoded vector.
      * @returns {Number} The oct encoded vector packed into a single float.
      *
-     * @exception {DeveloperError} encoded is required.
      */
     AttributeCompression.octPackFloat = function(encoded) {
                 if (!defined(encoded)) {
@@ -2992,7 +3005,6 @@ define('Core/AttributeCompression',[
      * @param {Cartesian3} vector The normalized vector to be compressed into 2 byte 'oct' encoding.
      * @returns {Number} The 2 byte oct-encoded unit length vector.
      *
-     * @exception {DeveloperError} vector must be defined.
      * @exception {DeveloperError} vector must be normalized.
      */
     AttributeCompression.octEncodeFloat = function(vector) {
@@ -3007,8 +3019,6 @@ define('Core/AttributeCompression',[
      * @param {Cartesian3} result The decoded and normalized vector
      * @returns {Cartesian3} The decoded and normalized vector.
      *
-     * @exception {DeveloperError} value must be defined.
-     * @exception {DeveloperError} result must be defined.
      */
     AttributeCompression.octDecodeFloat = function(value, result) {
                 if (!defined(value)) {
@@ -3032,10 +3042,6 @@ define('Core/AttributeCompression',[
      * @param {Cartesian2} result The 'oct' encoded vectors packed into two floating-point numbers.
      * @returns {Cartesian2} The 'oct' encoded vectors packed into two floating-point numbers.
      *
-     * @exception {DeveloperError} v1 must be defined.
-     * @exception {DeveloperError} v2 must be defined.
-     * @exception {DeveloperError} v3 must be defined.
-     * @exception {DeveloperError} result must be defined.
      */
     AttributeCompression.octPack = function(v1, v2, v3, result) {
                 if (!defined(v1)) {
@@ -3067,11 +3073,6 @@ define('Core/AttributeCompression',[
      * @param {Cartesian3} v1 One decoded and normalized vector.
      * @param {Cartesian3} v2 One decoded and normalized vector.
      * @param {Cartesian3} v3 One decoded and normalized vector.
-     *
-     * @exception {DeveloperError} packed must be defined.
-     * @exception {DeveloperError} v1 must be defined.
-     * @exception {DeveloperError} v2 must be defined.
-     * @exception {DeveloperError} v3 must be defined.
      */
     AttributeCompression.octUnpack = function(packed, v1, v2, v3) {
                 if (!defined(packed)) {
@@ -3106,7 +3107,6 @@ define('Core/AttributeCompression',[
      * @param {Cartesian2} textureCoordinates The texture coordinates to compress
      * @returns {Number} The packed texture coordinates.
      *
-     * @exception {DeveloperError} textureCoordinates is required.
      */
     AttributeCompression.compressTextureCoordinates = function(textureCoordinates) {
                 if (!defined(textureCoordinates)) {
@@ -3125,8 +3125,6 @@ define('Core/AttributeCompression',[
      * @param {Cartesian2} result The decompressed texture coordinates.
      * @returns {Cartesian2} The modified result parameter.
      *
-     * @exception {DeveloperError} compressed is required.
-     * @exception {DeveloperError} result is required.
      */
     AttributeCompression.decompressTextureCoordinates = function(compressed, result) {
                 if (!defined(compressed)) {
@@ -3144,6 +3142,7 @@ define('Core/AttributeCompression',[
 
     return AttributeCompression;
 });
+
 /*global define*/
 define('Core/Intersect',[
         './freezeObject'
@@ -10360,6 +10359,62 @@ define('Core/Rectangle',[
     };
 
     /**
+     * Computes a rectangle that is the union of two rectangles.
+     *
+     * @param {Rectangle} rectangle A rectangle to enclose in rectangle.
+     * @param {Rectangle} otherRectangle A rectangle to enclose in a rectangle.
+     * @param {Rectangle} [result] The object onto which to store the result.
+     * @returns {Rectangle} The modified result parameter or a new Rectangle instance if none was provided.
+     */
+    Rectangle.union = function(rectangle, otherRectangle, result) {
+                if (!defined(rectangle)) {
+            throw new DeveloperError('rectangle is required');
+        }
+        if (!defined(otherRectangle)) {
+            throw new DeveloperError('otherRectangle is required.');
+        }
+        
+        if (!defined(result)) {
+            result = new Rectangle();
+        }
+
+        result.west = Math.min(rectangle.west, otherRectangle.west);
+        result.south = Math.min(rectangle.south, otherRectangle.south);
+        result.east = Math.max(rectangle.east, otherRectangle.east);
+        result.north = Math.max(rectangle.north, otherRectangle.north);
+
+        return result;
+    };
+
+    /**
+     * Computes a rectangle by enlarging the provided rectangle until it contains the provided cartographic.
+     *
+     * @param {Rectangle} rectangle A rectangle to expand.
+     * @param {Cartographic} cartographic A cartographic to enclose in a rectangle.
+     * @param {Rectangle} [result] The object onto which to store the result.
+     * @returns {Rectangle} The modified result parameter or a new Rectangle instance if one was not provided.
+     */
+    Rectangle.expand = function(rectangle, cartographic, result) {
+                if (!defined(rectangle)) {
+            throw new DeveloperError('rectangle is required.');
+        }
+        if (!defined(cartographic)) {
+            throw new DeveloperError('cartographic is required.');
+        }
+        
+        if (!defined(result)) {
+            result = new Rectangle();
+        }
+
+        result.west = Math.min(rectangle.west, cartographic.longitude);
+        result.south = Math.min(rectangle.south, cartographic.latitude);
+        result.east = Math.max(rectangle.east, cartographic.longitude);
+        result.north = Math.max(rectangle.north, cartographic.latitude);
+
+        return result;
+    };
+
+    /**
      * Returns true if the cartographic is on or inside the rectangle, false otherwise.
      *
      * @param {Rectangle} rectangle The rectangle
@@ -10805,7 +10860,6 @@ define('Core/BoundingSphere',[
      * @param {BoundingSphere} [result] The object onto which to store the result.
      * @returns {BoundingSphere} The modified result parameter or a new BoundingSphere instance if one was not provided.
      *
-     * 
      * @example
      * // Compute the bounding sphere from 3 positions, each specified relative to a center.
      * // In addition to the X, Y, and Z coordinates, the points array contains two additional
@@ -10815,7 +10869,7 @@ define('Core/BoundingSphere',[
      *               4.0, 5.0, 6.0, 0.1, 0.2,
      *               7.0, 8.0, 9.0, 0.1, 0.2];
      * var sphere = Cesium.BoundingSphere.fromVertices(points, center, 5);
-     * 
+     *
      * @see {@link http://blogs.agi.com/insight3d/index.php/2008/02/04/a-bounding/|Bounding Sphere computation article}
      */
     BoundingSphere.fromVertices = function(positions, center, stride, result) {
@@ -10935,6 +10989,163 @@ define('Core/BoundingSphere',[
             currentPos.x = positions[i] + center.x;
             currentPos.y = positions[i + 1] + center.y;
             currentPos.z = positions[i + 2] + center.z;
+
+            // Find the furthest point from the naive center to calculate the naive radius.
+            var r = Cartesian3.magnitude(Cartesian3.subtract(currentPos, naiveCenter, fromPointsScratch));
+            if (r > naiveRadius) {
+                naiveRadius = r;
+            }
+
+            // Make adjustments to the Ritter Sphere to include all points.
+            var oldCenterToPointSquared = Cartesian3.magnitudeSquared(Cartesian3.subtract(currentPos, ritterCenter, fromPointsScratch));
+            if (oldCenterToPointSquared > radiusSquared) {
+                var oldCenterToPoint = Math.sqrt(oldCenterToPointSquared);
+                // Calculate new radius to include the point that lies outside
+                ritterRadius = (ritterRadius + oldCenterToPoint) * 0.5;
+                radiusSquared = ritterRadius * ritterRadius;
+                // Calculate center of new Ritter sphere
+                var oldToNew = oldCenterToPoint - ritterRadius;
+                ritterCenter.x = (ritterRadius * ritterCenter.x + oldToNew * currentPos.x) / oldCenterToPoint;
+                ritterCenter.y = (ritterRadius * ritterCenter.y + oldToNew * currentPos.y) / oldCenterToPoint;
+                ritterCenter.z = (ritterRadius * ritterCenter.z + oldToNew * currentPos.z) / oldCenterToPoint;
+            }
+        }
+
+        if (ritterRadius < naiveRadius) {
+            Cartesian3.clone(ritterCenter, result.center);
+            result.radius = ritterRadius;
+        } else {
+            Cartesian3.clone(naiveCenter, result.center);
+            result.radius = naiveRadius;
+        }
+
+        return result;
+    };
+
+    /**
+     * Computes a tight-fitting bounding sphere enclosing a list of {@link EncodedCartesian3}s, where the points are
+     * stored in parallel flat arrays in X, Y, Z, order.  The bounding sphere is computed by running two
+     * algorithms, a naive algorithm and Ritter's algorithm. The smaller of the two spheres is used to
+     * ensure a tight fit.
+     *
+     * @param {Number[]} positionsHigh An array of high bits of the encoded cartesians that the bounding sphere will enclose.  Each point
+     *        is formed from three elements in the array in the order X, Y, Z.
+     * @param {Number[]} positionsLow An array of low bits of the encoded cartesians that the bounding sphere will enclose.  Each point
+     *        is formed from three elements in the array in the order X, Y, Z.
+     * @param {BoundingSphere} [result] The object onto which to store the result.
+     * @returns {BoundingSphere} The modified result parameter or a new BoundingSphere instance if one was not provided.
+     *
+     * @see {@link http://blogs.agi.com/insight3d/index.php/2008/02/04/a-bounding/|Bounding Sphere computation article}
+     */
+    BoundingSphere.fromEncodedCartesianVertices = function(positionsHigh, positionsLow, result) {
+        if (!defined(result)) {
+            result = new BoundingSphere();
+        }
+
+        if (!defined(positionsHigh) || !defined(positionsLow) || positionsHigh.length !== positionsLow.length || positionsHigh.length === 0) {
+            result.center = Cartesian3.clone(Cartesian3.ZERO, result.center);
+            result.radius = 0.0;
+            return result;
+        }
+
+        var currentPos = fromPointsCurrentPos;
+        currentPos.x = positionsHigh[0] + positionsLow[0];
+        currentPos.y = positionsHigh[1] + positionsLow[1];
+        currentPos.z = positionsHigh[2] + positionsLow[2];
+
+        var xMin = Cartesian3.clone(currentPos, fromPointsXMin);
+        var yMin = Cartesian3.clone(currentPos, fromPointsYMin);
+        var zMin = Cartesian3.clone(currentPos, fromPointsZMin);
+
+        var xMax = Cartesian3.clone(currentPos, fromPointsXMax);
+        var yMax = Cartesian3.clone(currentPos, fromPointsYMax);
+        var zMax = Cartesian3.clone(currentPos, fromPointsZMax);
+
+        var numElements = positionsHigh.length;
+        for (var i = 0; i < numElements; i += 3) {
+            var x = positionsHigh[i] + positionsLow[i];
+            var y = positionsHigh[i + 1] + positionsLow[i + 1];
+            var z = positionsHigh[i + 2] + positionsLow[i + 2];
+
+            currentPos.x = x;
+            currentPos.y = y;
+            currentPos.z = z;
+
+            // Store points containing the the smallest and largest components
+            if (x < xMin.x) {
+                Cartesian3.clone(currentPos, xMin);
+            }
+
+            if (x > xMax.x) {
+                Cartesian3.clone(currentPos, xMax);
+            }
+
+            if (y < yMin.y) {
+                Cartesian3.clone(currentPos, yMin);
+            }
+
+            if (y > yMax.y) {
+                Cartesian3.clone(currentPos, yMax);
+            }
+
+            if (z < zMin.z) {
+                Cartesian3.clone(currentPos, zMin);
+            }
+
+            if (z > zMax.z) {
+                Cartesian3.clone(currentPos, zMax);
+            }
+        }
+
+        // Compute x-, y-, and z-spans (Squared distances b/n each component's min. and max.).
+        var xSpan = Cartesian3.magnitudeSquared(Cartesian3.subtract(xMax, xMin, fromPointsScratch));
+        var ySpan = Cartesian3.magnitudeSquared(Cartesian3.subtract(yMax, yMin, fromPointsScratch));
+        var zSpan = Cartesian3.magnitudeSquared(Cartesian3.subtract(zMax, zMin, fromPointsScratch));
+
+        // Set the diameter endpoints to the largest span.
+        var diameter1 = xMin;
+        var diameter2 = xMax;
+        var maxSpan = xSpan;
+        if (ySpan > maxSpan) {
+            maxSpan = ySpan;
+            diameter1 = yMin;
+            diameter2 = yMax;
+        }
+        if (zSpan > maxSpan) {
+            maxSpan = zSpan;
+            diameter1 = zMin;
+            diameter2 = zMax;
+        }
+
+        // Calculate the center of the initial sphere found by Ritter's algorithm
+        var ritterCenter = fromPointsRitterCenter;
+        ritterCenter.x = (diameter1.x + diameter2.x) * 0.5;
+        ritterCenter.y = (diameter1.y + diameter2.y) * 0.5;
+        ritterCenter.z = (diameter1.z + diameter2.z) * 0.5;
+
+        // Calculate the radius of the initial sphere found by Ritter's algorithm
+        var radiusSquared = Cartesian3.magnitudeSquared(Cartesian3.subtract(diameter2, ritterCenter, fromPointsScratch));
+        var ritterRadius = Math.sqrt(radiusSquared);
+
+        // Find the center of the sphere found using the Naive method.
+        var minBoxPt = fromPointsMinBoxPt;
+        minBoxPt.x = xMin.x;
+        minBoxPt.y = yMin.y;
+        minBoxPt.z = zMin.z;
+
+        var maxBoxPt = fromPointsMaxBoxPt;
+        maxBoxPt.x = xMax.x;
+        maxBoxPt.y = yMax.y;
+        maxBoxPt.z = zMax.z;
+
+        var naiveCenter = Cartesian3.multiplyByScalar(Cartesian3.add(minBoxPt, maxBoxPt, fromPointsScratch), 0.5, fromPointsNaiveCenterScratch);
+
+        // Begin 2nd pass to find naive radius and modify the ritter sphere.
+        var naiveRadius = 0;
+        for (i = 0; i < numElements; i += 3) {
+            currentPos.x = positionsHigh[i] + positionsLow[i];
+            currentPos.y = positionsHigh[i + 1] + positionsLow[i + 1];
+            currentPos.z = positionsHigh[i + 2] + positionsLow[i + 2];
 
             // Find the furthest point from the naive center to calculate the naive radius.
             var r = Cartesian3.magnitude(Cartesian3.subtract(currentPos, naiveCenter, fromPointsScratch));
@@ -17309,11 +17520,11 @@ define('Core/EarthOrientationParameters',[
      * @example
      * // An example EOP data file, EOP.json:
      * {
-     *   "columnNames" : ["dateIso8601","xPoleWanderRadians","yPoleWanderRadians","ut1MinusUtcSeconds","lengthOfDayCorrectionSeconds","xCelestialPoleOffsetRadians","yCelestialPoleOffsetRadians","taiMinusUtcSeconds"],
+     *   "columnNames" : ["dateIso8601","modifiedJulianDateUtc","xPoleWanderRadians","yPoleWanderRadians","ut1MinusUtcSeconds","lengthOfDayCorrectionSeconds","xCelestialPoleOffsetRadians","yCelestialPoleOffsetRadians","taiMinusUtcSeconds"],
      *   "samples" : [
-     *      "2011-07-01T00:00:00Z",2.117957047295119e-7,2.111518721609984e-6,-0.2908948,-2.956e-4,3.393695767766752e-11,3.3452143996557983e-10,34.0,
-     *      "2011-07-02T00:00:00Z",2.193297093339541e-7,2.115460256837405e-6,-0.29065,-1.824e-4,-8.241832578862112e-11,5.623838700870617e-10,34.0,
-     *      "2011-07-03T00:00:00Z",2.262286080161428e-7,2.1191157519929706e-6,-0.2905572,1.9e-6,-3.490658503988659e-10,6.981317007977318e-10,34.0
+     *      "2011-07-01T00:00:00Z",55743.0,2.117957047295119e-7,2.111518721609984e-6,-0.2908948,-2.956e-4,3.393695767766752e-11,3.3452143996557983e-10,34.0,
+     *      "2011-07-02T00:00:00Z",55744.0,2.193297093339541e-7,2.115460256837405e-6,-0.29065,-1.824e-4,-8.241832578862112e-11,5.623838700870617e-10,34.0,
+     *      "2011-07-03T00:00:00Z",55745.0,2.262286080161428e-7,2.1191157519929706e-6,-0.2905572,1.9e-6,-3.490658503988659e-10,6.981317007977318e-10,34.0
      *   ]
      * }
      *
@@ -17916,15 +18127,55 @@ return URI;
 });
 
 /*global define*/
+define('Core/getAbsoluteUri',[
+        '../ThirdParty/Uri',
+        './defaultValue',
+        './defined',
+        './DeveloperError'
+    ], function(
+        Uri,
+        defaultValue,
+        defined,
+        DeveloperError) {
+    "use strict";
+
+    /**
+     * Given a relative Uri and a base Uri, returns the absolute Uri of the relative Uri.
+     * @exports getAbsoluteUri
+     *
+     * @param {String} relative The relative Uri.
+     * @param {String} [base] The base Uri.
+     * @returns {String} The absolute Uri of the given relative Uri.
+     *
+     * @example
+     * //absolute Uri will be "https://test.com/awesome.png";
+     * var absoluteUri = Cesium.getAbsoluteUri('awesome.png', 'https://test.com');
+     */
+    function getAbsoluteUri(relative, base) {
+                if (!defined(relative)) {
+            throw new DeveloperError('relative uri is required.');
+        }
+                base = defaultValue(base, document.location.href);
+        var baseUri = new Uri(base);
+        var relativeUri = new Uri(relative);
+        return relativeUri.resolve(baseUri).toString();
+    }
+
+    return getAbsoluteUri;
+});
+
+/*global define*/
 define('Core/buildModuleUrl',[
         '../ThirdParty/Uri',
         './defined',
         './DeveloperError',
+        './getAbsoluteUri',
         'require'
     ], function(
         Uri,
         defined,
         DeveloperError,
+        getAbsoluteUri,
         require) {
     "use strict";
     /*global CESIUM_BASE_URL*/
@@ -17959,7 +18210,7 @@ define('Core/buildModuleUrl',[
             throw new DeveloperError('Unable to determine Cesium base URL automatically, try defining a global variable called CESIUM_BASE_URL.');
         }
 
-        baseUrl = new Uri(baseUrlString).resolve(new Uri(document.location.href));
+        baseUrl = new Uri(getAbsoluteUri(baseUrlString));
 
         return baseUrl;
     }
@@ -18548,6 +18799,7 @@ define('Core/Fullscreen',[
      * If fullscreen mode is not supported by the browser, does nothing.
      *
      * @param {Object} element The HTML element which will be placed into fullscreen mode.
+     * @param {HMDVRDevice} vrDevice The VR device.
      *
      * @example
      * // Put the entire page into fullscreen.
@@ -18556,12 +18808,12 @@ define('Core/Fullscreen',[
      * // Place only the Cesium canvas into fullscreen.
      * Cesium.Fullscreen.requestFullscreen(scene.canvas)
      */
-    Fullscreen.requestFullscreen = function(element) {
+    Fullscreen.requestFullscreen = function(element, vrDevice) {
         if (!Fullscreen.supportsFullscreen()) {
             return;
         }
 
-        element[_names.requestFullscreen]();
+        element[_names.requestFullscreen]({ vrDisplay: vrDevice });
     };
 
     /**
@@ -18736,6 +18988,28 @@ define('Core/FeatureDetection',[
         return hasPointerEvents;
     }
 
+    var imageRenderingValueResult;
+    var supportsImageRenderingPixelatedResult;
+    function supportsImageRenderingPixelated() {
+        if (!defined(supportsImageRenderingPixelatedResult)) {
+            var canvas = document.createElement('canvas');
+            canvas.setAttribute('style',
+                                'image-rendering: -moz-crisp-edges;' +
+                                'image-rendering: pixelated;');
+            //canvas.style.imageRendering will be undefined, null or an empty string on unsupported browsers.
+            var tmp = canvas.style.imageRendering;
+            supportsImageRenderingPixelatedResult = defined(tmp) && tmp !== '';
+            if (supportsImageRenderingPixelatedResult) {
+                imageRenderingValueResult = tmp;
+            }
+        }
+        return supportsImageRenderingPixelatedResult;
+    }
+
+    function imageRenderingValue() {
+        return supportsImageRenderingPixelated() ? imageRenderingValueResult : undefined;
+    }
+
     /**
      * A set of functions to detect whether the current browser supports
      * various features.
@@ -18755,7 +19029,9 @@ define('Core/FeatureDetection',[
         firefoxVersion : firefoxVersion,
         isWindows : isWindows,
         hardwareConcurrency : defaultValue(theNavigator.hardwareConcurrency, 3),
-        supportsPointerEvents : supportsPointerEvents
+        supportsPointerEvents : supportsPointerEvents,
+        supportsImageRenderingPixelated: supportsImageRenderingPixelated,
+        imageRenderingValue: imageRenderingValue
     };
 
     /**
@@ -18794,6 +19070,7 @@ define('Core/FeatureDetection',[
 
     return FeatureDetection;
 });
+
 /*global define*/
 define('Core/Quaternion',[
         './Cartesian3',
@@ -22057,8 +22334,7 @@ define('Core/TerrainEncoding',[
         CesiumMath,
         Matrix3,
         Matrix4,
-        TerrainQuantization
-    ) {
+        TerrainQuantization) {
     "use strict";
 
     var cartesian3Scratch = new Cartesian3();
@@ -22178,6 +22454,7 @@ define('Core/TerrainEncoding',[
          */
         this.hasVertexNormals = hasVertexNormals;
     }
+
     TerrainEncoding.prototype.encode = function(vertexBuffer, bufferIndex, position, uv, height, normalToPack) {
         var u = uv.x;
         var v = uv.y;
@@ -22244,6 +22521,42 @@ define('Core/TerrainEncoding',[
         result.y = buffer[index + 1];
         result.z = buffer[index + 2];
         return Cartesian3.add(result, this.center, result);
+    };
+
+    TerrainEncoding.prototype.decodeTextureCoordinates = function(buffer, index, result) {
+        if (!defined(result)) {
+            result = new Cartesian2();
+        }
+
+        index *= this.getStride();
+
+        if (this.quantization === TerrainQuantization.BITS12) {
+            return AttributeCompression.decompressTextureCoordinates(buffer[index + 2], result);
+        }
+
+        return Cartesian2.fromElements(buffer[index + 4], buffer[index + 5], result);
+    };
+
+    TerrainEncoding.prototype.decodeHeight = function(buffer, index) {
+        index *= this.getStride();
+
+        if (this.quantization === TerrainQuantization.BITS12) {
+            var zh = AttributeCompression.decompressTextureCoordinates(buffer[index + 1], cartesian2Scratch);
+            return zh.y * (this.maximumHeight - this.minimumHeight) + this.minimumHeight;
+        }
+
+        return buffer[index + 3];
+    };
+
+    TerrainEncoding.prototype.getOctEncodedNormal = function(buffer, index, result) {
+        var stride = this.getStride();
+        index = (index + 1) * stride - 1;
+
+        var temp = buffer[index] / 256.0;
+        var x = Math.floor(temp);
+        var y = (temp - x) * 256.0;
+
+        return Cartesian2.fromElements(x, y, result);
     };
 
     TerrainEncoding.prototype.getStride = function() {
@@ -22687,7 +23000,8 @@ define('Workers/createVerticesFromQuantizedTerrainMesh',[
             boundingSphere : boundingSphere,
             orientedBoundingBox : orientedBoundingBox,
             occludeePointInScaledSpace : occludeePointInScaledSpace,
-            encoding : encoding
+            encoding : encoding,
+            skirtIndex : parameters.indices.length
         };
     }
 
