@@ -7,7 +7,6 @@ AddType application/json .json
 AddType application/font-woff .woff
 AddType text/cache-manifest .appcache
 
-ExpiresByType text/cache-manifest "access plus 0 seconds"
 ExpiresByType text/html "access plus 0 seconds"
 
 AddOutputFilterByType DEFLATE text/css
@@ -81,7 +80,7 @@ RewriteRule ^${apache_base_path}/sitemap_(.*)\.xml http:${api_url}/${version}/si
 # Assure main pages are not cached with headers set according to
 # http://stackoverflow.com/questions/49547/making-sure-a-web-page-is-not-cached-across-all-browser
 # and http://tools.ietf.org/html/rfc2616
-<LocationMatch ^${apache_base_path}/(index.html|mobile.html|embed.html)$>
+<LocationMatch ^${apache_base_path}/(index.html|mobile.html|embed.html|geoadmin.${version}.appcache)$>
     Header unset Age
     Header unset Last-Modified
     Header unset Vary

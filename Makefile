@@ -67,7 +67,6 @@ help:
 	@echo "- testprod         Run the JavaScript tests in prod mode"
 	@echo "- teste2e          Run browserstack tests"
 	@echo "- apache           Configure Apache (restart required)"
-	@echo "- appcache         Update appcache file"
 	@echo "- fixrights        Fix rights in common folder"
 	@echo "- all              All of the above (target to run prior to creating a PR)"
 	@echo "- clean            Remove generated files"
@@ -131,9 +130,6 @@ teste2e: guard-BROWSERSTACK_TARGETURL guard-BROWSERSTACK_USER guard-BROWSERSTACK
 
 .PHONY: apache
 apache: apache/app.conf
-
-.PHONY: appcache
-appcache: cleanappcache prd/geoadmin.appcache prd/index.html prd/mobile.html prd/embed.html
 
 .PHONY: deploydev
 deploydev:
@@ -304,6 +300,7 @@ prd/style/app.css: $(SRC_LESS_FILES)
 prd/geoadmin.appcache: src/geoadmin.mako.appcache \
 			${MAKO_CMD} \
 			.build-artefacts/last-version
+	rm -f prd/*.appcache
 	mkdir -p $(dir $@);
 	${PYTHON_CMD} ${MAKO_CMD} \
 	    --var "version=$(VERSION)" \
@@ -312,6 +309,7 @@ prd/geoadmin.appcache: src/geoadmin.mako.appcache \
 	    --var "languages=$(LANGUAGES)" \
 	    --var "api_url=$(API_URL)" \
 	    --var "public_url=$(PUBLIC_URL)" $< > $@
+	mv $@ prd/geoadmin.$(VERSION).appcache
 
 prd/cache/: .build-artefacts/last-version \
 			.build-artefacts/last-api-url
@@ -610,14 +608,6 @@ scripts/00-$(GIT_BRANCH).conf: scripts/00-branch.mako-dot-conf \
 cleanall: clean
 	rm -rf node_modules
 	rm -rf .build-artefacts
-
-
-.PHONY: cleanappcache
-cleanappcache:
-	rm -f prd/geoadmin.appcache
-	rm -f prd/index.html
-	rm -f prd/mobile.html
-	rm -f prd/embed.html
 
 
 .PHONY: clean
