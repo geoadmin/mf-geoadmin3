@@ -48,8 +48,8 @@ def main(args, delimiter=',', quotechar='"'):
 
 def _get_empty_json(empty_json_file_name):
     if os.path.exists(empty_json_file_name):
-            with open(empty_json_file_name, 'r') as empty_json_file:
-                return json.load(empty_json_file)
+        with open(empty_json_file_name, 'r') as empty_json_file:
+            return json.load(empty_json_file)
     elif _is_url(empty_json_file_name):
         json_content = urlopen(empty_json_file_name).read()
         if PY3:
@@ -89,7 +89,7 @@ def _open_csv_file(filename):
     else:
         try:
             csv_file = open(filename, 'r')
-        except FileNotFoundError:
+        except IOError:
             print('Could not open {}'.format(filename))
             csv_file = None
 
