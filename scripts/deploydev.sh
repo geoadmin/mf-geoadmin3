@@ -47,6 +47,10 @@ done
 if [ $CREATE_SNAPSHOT == 'true' ]; then
   sudo -u deploy deploy -c deploy/deploy.cfg $SNAPSHOTDIR
   echo "Snapshot of branch $GITBRANCH created at $SNAPSHOTDIR"
+  cd $SNAPSHOTDIR
+  git describe --tags --abbrev=0 > .last-release
+  git log -1 --pretty=format:"%h - %an, %ar : %s" > .last-commit-ref
+  rm -rf .git*
 else
   echo "NO Snapshot created. Specify '-s' parameter got create snapshot."
 fi
