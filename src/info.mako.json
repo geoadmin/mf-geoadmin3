@@ -1,0 +1,10 @@
+{
+  "branch":"${git_branch}",
+  "version": "${version}",
+  "api_url": "${api_url}",
+  "mapproxy_urls": "${mapproxy_url}"
+  "last_commit_hash": "${git_commit_hash}",
+  "last_commit_date": "${git_commit_date}",
+  "user": "${user_name}",
+  "build_date": "${build_date}"
+}
