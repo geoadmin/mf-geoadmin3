@@ -335,8 +335,8 @@ goog.require('ga_urlutils_service');
               unregisterMove();
               //Gazetteer results that are not points zoom to full bbox extent
               if (res.attrs.origin == 'gazetteer') {
-                isGazetteerPoly = (Math.abs(e[0] - e[2]) > 0.1 &&
-                                   Math.abs(e[1] - e[3]) > 0.1);
+                isGazetteerPoly = (Math.abs(e[0] - e[2]) > 100 &&
+                                   Math.abs(e[1] - e[3]) > 100);
 
               }
               var ol3d = $scope.ol3d;
