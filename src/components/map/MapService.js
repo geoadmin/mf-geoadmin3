@@ -1492,10 +1492,16 @@ goog.require('ga_urlutils_service');
         },
 
         flyToAnimation: function(ol3d, center, destination, defer) {
+          // In degrees
+          var pitch = 50;
+          // Default camera field of view
+          // https://cesiumjs.org/Cesium/Build/Documentation/Camera.html
+          var cameraFieldOfView = 60;
           var scene = ol3d.getCesiumScene();
-          var camera = scene.camera;
           var globe = scene.globe;
           var carto = globe.ellipsoid.cartesianToCartographic(destination);
+          var camera = scene.camera;
+
           $http.get(gaGlobalOptions.apiUrl + '/rest/services/height', {
             params: {
               easting: center[0],
@@ -1503,12 +1509,15 @@ goog.require('ga_urlutils_service');
             }
           }).then(function(response) {
             var height = carto.height - response.data.height;
-            var offset = Math.tan(Cesium.Math.toRadians(50)) * (height + 50);
-            destination.x += offset * 2;
+            var magnitude = Math.tan(
+                Cesium.Math.toRadians(pitch + cameraFieldOfView / 2)) * height;
+            // Approx. direction on x and y (only valid for Swiss extent)
+            destination.x += (7 / 8) * magnitude;
+            destination.y += (1 / 8) * magnitude;
             camera.flyTo({
               destination: destination,
               orientation: {
-                pitch: Cesium.Math.toRadians(-50)
+                pitch: Cesium.Math.toRadians(-pitch)
               },
               complete: defer.resolve,
               cancel: defer.resolve
