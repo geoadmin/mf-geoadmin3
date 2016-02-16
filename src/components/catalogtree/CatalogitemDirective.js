@@ -28,6 +28,13 @@ goog.require('ga_layer_metadata_popup_service');
           gaPreviewLayers.removeAll(map);
         };
 
+        var getOlLayer = function(map, item) {
+          if (!item) {
+            return undefined;
+          }
+          return gaMapUtils.getMapOverlayForBodId(map, item.layerBodId);
+        };
+
         return {
           restrict: 'A',
           replace: true,
@@ -40,14 +47,23 @@ goog.require('ga_layer_metadata_popup_service');
           },
           controller: function($scope) {
 
-            $scope.toggleLayer = function() {
-              removePreviewLayer($scope.map);
-              if ($scope.item.selectedOpen) {
-                gaCatalogtreeMapUtils.addLayer($scope.map, $scope.item);
-              } else {
-                var layer = gaMapUtils.getMapOverlayForBodId(
-                    $scope.map, $scope.item.layerBodId);
-                $scope.map.removeLayer(layer);
+            $scope.item.active = function(activate) {
+              var layer = getOlLayer($scope.map, $scope.item);
+              //setter called
+              if (arguments.length) {
+                if (layer) {
+                  layer.visible = activate;
+                }
+                if (activate) {
+                  $scope.item.selectedOpen = true;
+                  // Add it if it's not already on the map
+                  if (!layer) {
+                    removePreviewLayer($scope.map);
+                    gaCatalogtreeMapUtils.addLayer($scope.map, $scope.item);
+                  }
+                }
+              } else { //getter called
+                return $scope.item.selectedOpen && layer && layer.visible;
               }
             };
 
