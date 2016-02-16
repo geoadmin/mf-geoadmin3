@@ -19,6 +19,7 @@ LAST_VERSION := $(shell if [ -f .build-artefacts/last-version ]; then cat .build
 VERSION := $(shell if [ '$(KEEP_VERSION)' = 'true' ] && [ '$(LAST_VERSION)' != '-none-' ]; then echo $(LAST_VERSION); else date '+%s'; fi)
 GIT_BRANCH := $(shell git rev-parse --symbolic-full-name --abbrev-ref HEAD)
 GIT_LAST_BRANCH := $(shell if [ -f .build-artefacts/last-git-branch ]; then cat .build-artefacts/last-git-branch 2> /dev/null; else echo 'dummy'; fi)
+BRANCH_TO_DELETE ?=
 DEPLOY_ROOT_DIR := /var/www/vhosts/mf-geoadmin3/private/branch
 DEPLOY_TARGET ?= 'dev'
 LAST_DEPLOY_TARGET := $(shell if [ -f .build-artefacts/last-deploy-target ]; then cat .build-artefacts/last-deploy-target 2> /dev/null; else echo '-none-'; fi)
@@ -76,6 +77,7 @@ help:
 	@echo "- deployint        Deploys snapshot specified with SNAPSHOT=xxx to int."
 	@echo "- deployprod       Deploys snapshot specified with SNAPSHOT=xxx to prod."
 	@echo "- deploydemo       Deploys snapshot specified with SNAPSHOT=xxx to demo."
+	@echo "- deletebranch     List deployed branches or delete a deployed branch (BRANCH_TO_DELETE=...)"
 	@echo "- deploybranch     Deploys current branch to test (note: takes code from github)"
 	@echo "- deploybranchint  Deploys current branch to test and int (note: takes code from github)"
 	@echo "- deploybranchdemo Deploys current branch to test and demo (note: takes code from github)"
@@ -165,6 +167,10 @@ deploybranch: deploy/deploy-branch.cfg $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH)/.git/con
 	make preparebranch; \
 	cp scripts/00-$(GIT_BRANCH).conf /var/www/vhosts/mf-geoadmin3/conf; \
 	bash -c "source rc_branch && make cleanall all";
+
+.PHONY: deletebranch
+deletebranch:
+	./scripts/delete_branch.sh $(BRANCH_TO_DELETE)
 
 .PHONY: deploybranchint
 deploybranchint: deploybranch
