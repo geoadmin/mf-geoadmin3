@@ -122,13 +122,30 @@
           <select ng-model="options.iconSize" ng-options="s.label | translate for s in options.iconSizes">
           </select>
         </label>
+        
+        <label>
+          <span translate>{{'modify_color_icon_label'}}:</span>
+          <div class="ga-select-box ga-select-colors">
+            <div ng-repeat="c in options.colors"
+                 ng-class="{'ga-selected': (options.iconColor == c)}" 
+                 ng-click="options.iconColor = c">
+              <div ng-style="{
+                'background-color': c.name,
+              }">
+              </div> 
+            </div>
+          </div>
+        </label>
+ 
         <label class="ga-icons">
           <span translate>{{'modify_icon_label'}}:</span> 
           <div class="ga-select-box ga-select-icons ga-item-size-{{options.iconSize.value[0]}}"
                ng-class="{'ga-select-box-open': gaSelectBoxOpen}">
-            <i tabindex=1 ng-repeat="i in options.icons" class="ga-icon-draw fa fa-maki-{{i.id}}" ng-click="options.icon = i;$event.preventDefault();"></i>
+            <i tabindex=1 ng-repeat="i in options.icons"
+               class="ga-icon-draw fa fa-maki-{{i.id}}"
+               ng-click="options.icon = i;$event.preventDefault();"></i>
             <button class="ga-icon fa fa-caret-down"
-                  ng-click="gaSelectBoxOpen=!gaSelectBoxOpen"></button>
+                    ng-click="gaSelectBoxOpen=!gaSelectBoxOpen"></button>
           </div>
         </label>
       </div>

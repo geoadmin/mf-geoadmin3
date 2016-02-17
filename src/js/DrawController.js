@@ -26,6 +26,7 @@ goog.require('ga_styles_service');
 
     $scope.options = $scope.options || {};
     $scope.options.shortenUrl = gaGlobalOptions.apiUrl + '/shorten.json';
+    $scope.options.colorUrl = gaGlobalOptions.apiUrl + '/color/';
 
     // Add popup options
     $scope.options.popupOptions = {
@@ -218,7 +219,10 @@ goog.require('ga_styles_service');
       $scope.options.color = $scope.options.colors[5];
 
       // Set default text color
-      $scope.options.textColor = $scope.options.colors[0];
+      $scope.options.textColor = $scope.options.colors[5];
+
+      // Set default text color
+      $scope.options.iconColor = $scope.options.colors[5];
 
       // Set default icon
       $scope.options.icon = $scope.options.icons[0];
@@ -229,14 +233,11 @@ goog.require('ga_styles_service');
     };
     $scope.options.setDefaultValues();
 
-    // Define icons properties
-    for (var i = 0, ii = $scope.options.icons.length; i < ii; i++) {
-      var icon = $scope.options.icons[i];
-      icon.url = gaGlobalOptions.resourceUrl + 'img/maki/' + icon.id +
+    // Return the icon url with the good color
+    $scope.getIconUrl = function(icon) {
+      return $scope.options.colorUrl +
+          $scope.options.iconColor.fill.toString() + '/' + icon.id +
           '-24@2x.png';
-    }
-    $scope.getIconUrl = function(i) {
-      return i.url;
     };
 
     // Get the current style defined by the properties object

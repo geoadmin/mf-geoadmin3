@@ -70,7 +70,23 @@ goog.require('ga_permalink');
             return iconSizes[i];
           }
         }
-        return iconSizes[0];
+        return iconSizes[2];
+      };
+
+      var findIconColor = function(olIcon, colors) {
+        var url = olIcon.getSrc();
+        // Test if the url use the color service
+        var colorReg = /\/([0-9]{1,3},[0-9]{1,3},[0-9]{1,3})\//;
+        var rgb = url.match(colorReg);
+        if (rgb) {
+          for (var i = 0; i < colors.length; i++) {
+            if (colors[i].fill.toString() == rgb[1].toString()) {
+              return colors[i];
+            }
+          }
+        }
+        // Red
+        return colors[5];
       };
 
       var findColor = function(olColor, colors) {
@@ -80,7 +96,7 @@ goog.require('ga_permalink');
             return colors[i];
           }
         }
-        return colors[0];
+        return colors[5];
       };
 
       // Creates a new help tooltip
@@ -329,6 +345,7 @@ goog.require('ga_permalink');
               'options.iconSize',
               'options.color',
               'options.textColor',
+              'options.iconColor',
               'options.name',
               'options.description'
             ], function() {
@@ -344,6 +361,7 @@ goog.require('ga_permalink');
                     font: scope.options.font,
                     textColor: (scope.options.useTextStyle) ?
                         scope.options.textColor : undefined,
+                    iconColor: scope.options.iconColor,
                     icon: scope.options.icon,
                     iconSize: scope.options.iconSize
                   });
@@ -768,10 +786,12 @@ goog.require('ga_permalink');
               var featStyle = styles[0];
               if (featStyle.getImage() instanceof ol.style.Icon) {
                 useIconStyle = true;
-                scope.options.icon = findIcon(featStyle.getImage(),
-                    scope.options.icons);
-                scope.options.iconSize = findIconSize(featStyle.getImage(),
+                var img = featStyle.getImage();
+                scope.options.icon = findIcon(img, scope.options.icons);
+                scope.options.iconSize = findIconSize(img,
                     scope.options.iconSizes);
+                scope.options.iconColor = findIconColor(img,
+                    scope.options.colors);
               }
               if (!useIconStyle && featStyle.getStroke()) {
                 useColorStyle = true;
