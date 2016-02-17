@@ -273,30 +273,11 @@ goog.require('ga_urlutils_service');
           });
         }
 
-
-        var removeNonTopicLayers = function(topicId) {
-          // Assemble first to not remove from the iterated over array
-          var layersToRemove = [];
-          scope.map.getLayers().forEach(function(olLayer) {
-            if (scope.isBodLayer(olLayer)) {
-              var l = gaLayers.getLayer(olLayer.bodId);
-              var regex = new RegExp('(^|,)(ech|' + topicId + ')(,|$)', 'g');
-              if (l &&
-                  l.topics &&
-                  !regex.test(l.topics) &&
-                  !olLayer.background) {
-                layersToRemove.push(olLayer);
-              }
-            }
-          });
-          layersToRemove.forEach(function(olLayer) {
-            scope.removeLayer(olLayer);
-          });
-        };
-
         // Remove non topic layer
         scope.$on('gaTopicChange', function(evt, newTopic) {
-          removeNonTopicLayers(newTopic.id);
+          scope.filteredLayers.forEach(function(l) {
+            scope.removeLayer(l);
+          });
         });
 
         // Change layers label when topic changes
