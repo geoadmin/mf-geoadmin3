@@ -392,9 +392,9 @@ goog.require('ga_topic_service');
 
     }
 
-    // An appcache update is available.
+    // An new appcache file is available.
     if ($window.applicationCache) { // IE9
-      $window.applicationCache.addEventListener('updateready', function(e) {
+      $window.applicationCache.addEventListener('obsolete', function(e) {
         $window.location.reload();
       });
     }

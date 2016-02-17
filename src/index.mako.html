@@ -3,7 +3,7 @@
 <html ng-app="geoadmin" ng-controller="GaMainController"
 itemscope itemtype="http://schema.org/WebApplication"
 % if device == 'mobile' and mode=='prod' :
- manifest="geoadmin.appcache"
+ manifest="geoadmin.${version}.appcache"
 % endif
 >
   <head>
