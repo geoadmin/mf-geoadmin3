@@ -37,3 +37,4 @@ rc_branch
 
 # Vim swap files
 *.swp
+*.pyc

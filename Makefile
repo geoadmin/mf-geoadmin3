@@ -1,7 +1,8 @@
 SRC_JS_FILES := $(shell find src/components src/js -type f -name '*.js')
 SRC_JS_FILES_FOR_COMPILER = $(shell sed -e ':a' -e 'N' -e '$$!ba' -e 's/\n/ --js /g' .build-artefacts/js-files | sed 's/^.*base\.js //')
 SRC_LESS_FILES := $(shell find src -type f -name '*.less')
-SRC_COMPONENTS_PARTIALS_FILES = $(shell find src/components -type f -path '*/partials/*' -name '*.html')
+SRC_COMPONENTS_PARTIALS_FILES := $(shell find src/components -type f -path '*/partials/*' -name '*.html')
+PYTHON_FILES := $(shell find test/saucelabs -type f -name "*.py" -print)
 APACHE_BASE_DIRECTORY ?= $(CURDIR)
 LAST_APACHE_BASE_DIRECTORY := $(shell if [ -f .build-artefacts/last-apache-base-directory ]; then cat .build-artefacts/last-apache-base-directory 2> /dev/null; else echo '-none-'; fi)
 APACHE_BASE_PATH ?= /$(shell id -un)
@@ -9,6 +10,7 @@ LAST_APACHE_BASE_PATH := $(shell if [ -f .build-artefacts/last-apache-base-path 
 API_URL ?= //mf-chsdi3.dev.bgdi.ch
 LAST_API_URL := $(shell if [ -f .build-artefacts/last-api-url ]; then cat .build-artefacts/last-api-url 2> /dev/null; else echo '-none-'; fi)
 PUBLIC_URL ?= //public.dev.bgdi.ch
+E2E_TARGETURL ?= https://mf-geoadmin3.dev.bgdi.ch
 PUBLIC_URL_REGEXP ?= ^https?:\/\/public\..*\.(bgdi|admin)\.ch\/.*
 ADMIN_URL_REGEXP ?= ^(ftp|http|https):\/\/(.*(\.bgdi|\.geo\.admin)\.ch)
 MAPPROXY_URL ?= //wmts{s}.dev.bgdi.ch
@@ -43,6 +45,7 @@ DEFAULT_EPSG ?= EPSG:21781
 DEFAULT_EPSG_EXTEND ?= '[420000, 30000, 900000, 350000]'
 DEFAULT_ELEVATION_MODEL ?= COMB
 DEFAULT_TERRAIN ?= ch.swisstopo.terrain.3d
+SAUCELABS_TESTS ?=
 
 ## Python interpreter can't have space in path name
 ## So prepend all python scripts with python cmd
@@ -53,6 +56,8 @@ PIP_CMD=${PYTHON_VENV}/bin/pip
 MAKO_CMD=${PYTHON_VENV}/bin/mako-render 
 HTMLMIN_CMD=${PYTHON_VENV}/bin/htmlmin
 GJSLINT_CMD=${PYTHON_VENV}/bin/gjslint
+FLAKE8_CMD=${PYTHON_VENV}/bin/flake8
+AUTOPEP8_CMD=${PYTHON_VENV}/bin/autopep8
 
 
 .PHONY: help
@@ -64,10 +69,13 @@ help:
 	@echo "- prod             Build app for prod (/prd)"
 	@echo "- dev              Build app for dev (/src)"
 	@echo "- lint             Run the linter"
+	@echo "- lintpy           Run the linter for the python files"
+	@echo "- autolintpy       Run the auto-corrector for python files"
 	@echo "- testdev          Run the JavaScript tests in dev mode"
 	@echo "- testprod         Run the JavaScript tests in prod mode"
-	@echo "- teste2e          Run browserstack tests"
-	@echo "- saucelabs        Run browserstack tests"
+	@echo "- teste2e          Run browserstack and saucelabs tests"
+	@echo "- browserstack     Run browserstack tests"
+	@echo "- saucelabs        Run saucelabs tests"
 	@echo "- apache           Configure Apache (restart required)"
 	@echo "- appcache         Update appcache file"
 	@echo "- fixrights        Fix rights in common folder"
@@ -120,6 +128,14 @@ dev: src/deps.js src/style/app.css src/index.html src/mobile.html src/embed.html
 .PHONY: lint
 lint: node_modules .build-artefacts/lint.timestamp
 
+.PHONY: lintpy
+lintpy: ${FLAKE8_CMD}
+	${FLAKE8_CMD} --max-line-length=110 $(PYTHON_FILES)
+
+.PHONY: autolintpy
+autolintpy: ${AUTOPEP8_CMD}
+	${AUTOPEP8_CMD} --in-place --aggressive --aggressive --verbose --max-line-lengt=110 $(PYTHON_FILES)
+
 .PHONY: testdev
 testdev: .build-artefacts/app-whitespace.js test/karma-conf-dev.js node_modules
 	PHANTOMJS_BIN="node_modules/.bin/phantomjs" ./node_modules/.bin/karma start test/karma-conf-dev.js --single-run
@@ -129,12 +145,15 @@ testprod: prd/lib/build.js test/karma-conf-prod.js node_modules
 	PHANTOMJS_BIN="node_modules/.bin/phantomjs" ./node_modules/.bin/karma start test/karma-conf-prod.js --single-run
 
 .PHONY: teste2e
-teste2e: guard-BROWSERSTACK_TARGETURL guard-BROWSERSTACK_USER guard-BROWSERSTACK_KEY
+teste2e: saucelabs browserstack
+
+.PHONY: browserstack
+browserstack: guard-BROWSERSTACK_USER guard-BROWSERSTACK_KEY
 	node test/selenium/tests.js -t ${E2E_TARGETURL}
 
 .PHONY: saucelabs
-saucelabs: .build-artefacts/saucelab-requirements-installation.timestamp
-	${PYTHON_CMD} test/saucelabs/test.py ${E2E_TARGETURL}
+saucelabs: guard-SAUCELABS_USER guard-SAUCELABS_KEY .build-artefacts/requirements.timestamp lintpy
+	${PYTHON_CMD} test/saucelabs/test.py ${E2E_TARGETURL} ${SAUCELABS_TESTS}
 
 .PHONY: apache
 apache: apache/app.conf
@@ -528,7 +547,7 @@ $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule
 	touch $@
 
 ${MAKO_CMD}: ${PYTHON_VENV}
-	${PYTHON_CMD} ${PIP_CMD} install "Mako==1.0.0"
+	${PIP_CMD} install "Mako==1.0.0"
 	touch $@
 	@ if [[ ! -e ${PYTHON_VENV}/local ]]; then \
 	    ln -s . ${PYTHON_VENV}/local; \
@@ -536,12 +555,22 @@ ${MAKO_CMD}: ${PYTHON_VENV}
 	cp scripts/cmd.py ${PYTHON_VENV}/local/lib/python2.7/site-packages/mako/cmd.py
 
 ${HTMLMIN_CMD}: ${PYTHON_VENV}
-	${PYTHON_CMD} ${PIP_CMD} install "htmlmin==0.1.6"
+	${PIP_CMD} install "htmlmin==0.1.6"
 	touch $@
 
 ${GJSLINT_CMD}: ${PYTHON_VENV}
-	${PYTHON_CMD} ${PIP_CMD} install \
+	${PIP_CMD} install \
 	    "http://closure-linter.googlecode.com/files/closure_linter-latest.tar.gz"
+	touch $@
+
+${FLAKE8_CMD}: ${PYTHON_VENV}
+	${PIP_CMD} install flake8
+
+${AUTOPEP8_CMD}: ${PYTHON_VENV}
+	${PIP_CMD} install autopep8
+
+.build-artefacts/requirements.timestamp: ${PYTHON_VENV} requirements.txt
+	${PIP_CMD} install -r requirements.txt
 	touch $@
 
 ${PYTHON_VENV}:
