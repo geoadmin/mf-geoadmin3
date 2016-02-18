@@ -17,8 +17,8 @@ SNAPSHOTDIR=/var/www/vhosts/mf-geoadmin3/private/snapshots/$1
 # we assure that snapshot is re-build with new version
 cwd=$(pwd)
 cd $SNAPSHOTDIR/geoadmin/code/geoadmin
-KEEP_VERSION=false
 source rc_$2
+KEEP_VERSION=false
 make all
 
 echo -n "Checking service and layersConfig files"
