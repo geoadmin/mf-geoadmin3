@@ -2238,7 +2238,7 @@ goog.require('ga_urlutils_service');
           gaTime.allowStatusUpdate = true;
           registerLayersPermalink(scope, map);
           // Listen for next topic change events
-          $rootScope.$on('gaTopicChange', addTopicSelectedLayers);
+          $rootScope.$on('gaPostTopicChange', addTopicSelectedLayers);
         });
       };
     };

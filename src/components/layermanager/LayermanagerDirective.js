@@ -278,6 +278,7 @@ goog.require('ga_urlutils_service');
           scope.filteredLayers.forEach(function(l) {
             scope.removeLayer(l);
           });
+          $rootScope.$broadcast('gaPostTopicChange', newTopic);
         });
 
         // Change layers label when topic changes

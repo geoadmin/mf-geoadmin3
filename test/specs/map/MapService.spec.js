@@ -489,7 +489,7 @@ describe('ga_map_service', function() {
 
         // On next topic change the selected layers are added
         topic = topicLoaded3;
-        $rootScope.$broadcast('gaTopicChange', {});
+        $rootScope.$broadcast('gaPostTopicChange', {});
         expect(map.getLayers().getLength()).to.be(4);
         $rootScope.$digest();
         expect(permalink.getParams().layers).to.be('bar,foo,bar2,foo2');
@@ -509,7 +509,7 @@ describe('ga_map_service', function() {
 
         // On next topic change the selected layers are added
         topic = topicLoaded2;
-        $rootScope.$broadcast('gaTopicChange', {});
+        $rootScope.$broadcast('gaPostTopicChange', {});
         expect(map.getLayers().getLength()).to.be(3);
         $rootScope.$digest();
         expect(permalink.getParams().layers).to.be('ged,bar,foo');
