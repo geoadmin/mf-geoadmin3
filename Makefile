@@ -245,6 +245,11 @@ datepicker: .build-artefacts/datepicker
 	cp .build-artefacts/datepicker/src/less/bootstrap-datetimepicker.less src/style/
 	cp .build-artefacts/datepicker/build/js/bootstrap-datetimepicker.min.js src/lib/
 
+.PHONY: polyfill
+polyfill: .build-artefacts/polyfill 
+	cp $</polyfill.js src/lib/
+	cp $</polyfill.min.js src/lib/
+
 .PHONY: translate
 translate:
 	${PYTHON_CMD} scripts/translation2json.py \
@@ -269,7 +274,8 @@ prd/robots.txt: scripts/robots.mako-dot-txt .build-artefacts/last-deploy-target
 	${PYTHON_CMD} ${MAKO_CMD} \
 	    --var "deploy_target=$(DEPLOY_TARGET)" $< > $@
 
-prd/lib/: src/lib/d3.min.js \
+prd/lib/: src/lib/polyfill.min.js \
+      src/lib/d3.min.js \
 	    src/lib/bootstrap-datetimepicker.min.js  \
 	    src/lib/IE9Fixes.js \
 	    src/lib/jquery.xdomainrequest.min.js \
@@ -609,6 +615,13 @@ scripts/00-$(GIT_BRANCH).conf: scripts/00-branch.mako-dot-conf \
 .build-artefacts/datepicker:
 	git clone https://github.com/Eonasdan/bootstrap-datetimepicker.git $@ && \
 	    cd $@ && git checkout 3.1.4
+
+# No npm module
+# We use the service to get only the minimal polyfill file for ie9
+.build-artefacts/polyfill:
+	mkdir -p $@
+	curl -q -o $@/polyfill.js 'https://cdn.polyfill.io/v2/polyfill.js?features=requestAnimationFrame&ua=MSIE%209.0'
+	curl -q -o $@/polyfill.min.js 'https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame&ua=MSIE%209.0'
 
 .PHONY: cleanall
 cleanall: clean
