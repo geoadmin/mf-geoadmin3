@@ -196,6 +196,7 @@
 "last_available_year": "Last year",
 "layer_invalid_no_crs": "WMS na sustegna betg la projecziun cartografica",
 "layer_invalid_no_name": "L'unitad da datas na po betg vegnir mussada, perquai ch'ella n'ha nagin num.",
+"layer_invalid_outside_map": "",
 "layers_displayed": "Dargestellte Karten",
 "layers_results_header": "Agiuntar charta ...",
 "legend": "Legenda",

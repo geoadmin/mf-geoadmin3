@@ -273,6 +273,7 @@
   "time_select_year": "",
   "layer_invalid_no_name": "",
   "layer_invalid_no_crs": "",
+  "layer_invalid_outside_map": "",
   "feedback_create_geometry": "",
   "feedback_kml_attached": "",
   "feedback_modify_drawing": "",

@@ -84,8 +84,7 @@ goog.require('ga_urlutils_service');
 
               if (result.Capability.Layer) {
                 var root = getChildLayers(result.Capability.Layer,
-                    $scope.map.getView().getProjection().getCode(),
-                    result.version);
+                    $scope.map, result.version);
                 if (root) {
                   $scope.layers = root.Layer;
                 }
@@ -162,23 +161,9 @@ goog.require('ga_urlutils_service');
           };
 
           // Go through all layers, assign needed properties,
-          // and remove useless layers (no name or bad crs without childs)
-          var getChildLayers = function(layer, projCode, wmsVersion) {
-
-            // If projCode is undefined that means the parent layer can be
-            // displayed with the current map projection, since it's an herited
-            // property no need to test again.
-            // We don't have proj codes list for wms 1.1.1 so we assume the
-            // layer can be displayed (wait for
-            // https://github.com/openlayers/ol3/pull/2944)
-            if (wmsVersion == '1.3.0' && projCode) {
-              if (!canUseProj(layer, projCode)) {
-                layer.isInvalid = true;
-                layer.Abstract = 'layer_invalid_no_crs';
-              } else {
-                projCode = undefined;
-              }
-            }
+          // and remove useless layers (no name or bad crs without children
+          // or no intersection between map extent and layer extent)
+          var getChildLayers = function(layer, map, wmsVersion) {
 
             // If the WMS layer has no name, it can't be displayed
             if (!layer.Name) {
@@ -190,14 +175,28 @@ goog.require('ga_urlutils_service');
               layer.wmsUrl = $scope.fileUrl;
               layer.wmsVersion = wmsVersion;
               layer.id = 'WMS||' + layer.wmsUrl + '||' + layer.Name;
-              layer.extent = getLayerExtentFromGetCap(layer);
+              layer.extent = getLayerExtentFromGetCap(layer, map);
+
+              // if the layer has no extent, it is set as invalid.
+              // We don't have proj codes list for wms 1.1.1 so we assume the
+              // layer can be displayed (wait for
+              // https://github.com/openlayers/ol3/pull/2944)
+              var projCode = map.getView().getProjection().getCode();
+              if (wmsVersion == '1.3.0' && !canUseProj(layer, projCode)) {
+                layer.useReprojection = true;
+
+                if (!layer.extent) {
+                  layer.isInvalid = true;
+                  layer.Abstract = 'layer_invalid_outside_map';
+                }
+              }
             }
 
             // Go through the child to get valid layers
             if (layer.Layer) {
 
               for (var i = 0; i < layer.Layer.length; i++) {
-                var l = getChildLayers(layer.Layer[i], projCode, wmsVersion);
+                var l = getChildLayers(layer.Layer[i], map, wmsVersion);
                 if (!l) {
                   layer.Layer.splice(i, 1);
                   i--;
@@ -218,9 +217,11 @@ goog.require('ga_urlutils_service');
           };
 
           // Get the layer extent defines in the GetCapabilities
-          var getLayerExtentFromGetCap = function(getCapLayer) {
+          var getLayerExtentFromGetCap = function(getCapLayer, map) {
+            var wgs84 = 'EPSG:4326';
             var layer = getCapLayer;
-            var projCode = $scope.map.getView().getProjection().getCode();
+            var proj = map.getView().getProjection();
+            var projCode = proj.getCode();
 
             if (layer.BoundingBox) {
               for (var i = 0, ii = layer.BoundingBox.length; i < ii; i++) {
@@ -231,10 +232,23 @@ goog.require('ga_urlutils_service');
                 }
               }
             }
-            var extent = layer.EX_GeographicBoundingBox ||
+
+            var wgs84Extent = layer.EX_GeographicBoundingBox ||
                 layer.LatLonBoundingBox;
-            if (extent) {
-              return ol.proj.transformExtent(extent, 'EPSG:4326', projCode);
+            if (wgs84Extent) {
+              // If only an extent in wgs 84 is available, we use the
+              // intersection between proj extent and layer extent as the new
+              // layer extent. We compare extients in wgs 84 to avoid
+              // transformations errors of large wgs 84 extent like
+              // (-180,-90,180,90)
+              var projWgs84Extent = ol.proj.transformExtent(proj.getExtent(),
+                  projCode, wgs84);
+              var layerWgs84Extent = ol.extent.getIntersection(projWgs84Extent,
+                  wgs84Extent);
+              if (layerWgs84Extent) {
+                return ol.proj.transformExtent(layerWgs84Extent, wgs84,
+                    projCode);
+              }
             }
          };
   });
@@ -291,6 +305,8 @@ goog.require('ga_urlutils_service');
       var view = map.getView();
       var mapSize = map.getSize();
 
+      // Test this with this wms:
+      // http://wms.vd.ch/public/services/VD_WMS/Mapserver/Wmsserver
       // If a minScale is defined
       if (layer.MaxScaleDenominator && extent) {
 
@@ -310,8 +326,8 @@ goog.require('ga_urlutils_service');
             layerExtentCenter[1] + height / 2
           ];
 
-          var res = view.constrainResolution(
-              view.getResolutionForExtent(extent, mapSize), 0, -1);
+          var res = view.constrainResolution(view.getResolutionForExtent(extent,
+              mapSize), 0, -1);
           view.setCenter(layerExtentCenter);
           view.setResolution(res);
           return;

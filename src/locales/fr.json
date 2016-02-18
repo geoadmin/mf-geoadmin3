@@ -196,6 +196,7 @@
 "last_available_year": "Last year",
 "layer_invalid_no_crs": "WMS  ne supporte pas la projection de la carte",
 "layer_invalid_no_name": "La couche ne peut être affichée car elle n'a pas de nom.",
+"layer_invalid_outside_map": "La couche ne peut être affichée car elle est en dehors de l'étendue de la carte.",
 "layers_displayed": "Cartes affichées",
 "layers_results_header": "Ajouter la carte ...",
 "legend": "Légende",
