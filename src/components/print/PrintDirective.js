@@ -43,14 +43,13 @@ goog.require('ga_time_service');
 
     // Get print config
     var loadPrintConfig = function() {
-      window.console.log('FUNCTION 1: GET PRINT CONFIG');
       canceller = $q.defer();
       var http = $http.get($scope.options.printConfigUrl, {
         timeout: canceller.promise
       });
       window.console.log('$scope.options');
       window.console.log($scope.options);
-      window.console.log('$scope.options.printConfigUrl');
+      window.console.log('$scope.options.printConfigUrl --> capabilities.json');
       window.console.log($scope.options.printConfigUrl);
       window.console.log('http');
       window.console.log(http);
@@ -58,7 +57,6 @@ goog.require('ga_time_service');
     };
 
     var activate = function() {
-      window.console.log('FUNCTION 2: ACTIVATE');
       deregister = [
         $scope.map.on('precompose', handlePreCompose),
         $scope.map.on('postcompose', handlePostCompose),
@@ -72,14 +70,11 @@ goog.require('ga_time_service');
           updatePrintRectanglePixels($scope.scale);
         })
       ];
-      window.console.log('ACTIVATE FUNCTION: $scope.scale before function getOptimal ' + $scope.scale);
       $scope.scale = getOptimalScale();
-      window.console.log('ACTIVATE FUNCTION: $scope.scale after getOptimal  ' + $scope.scale);
       refreshComp();
 
     };
     var deactivate = function() {
-      window.console.log('FUNCTION 3: DEACTIVATE');
       var item;
       while (item = deregister.pop()) {
         if (angular.isFunction(item)) {
@@ -92,20 +87,17 @@ goog.require('ga_time_service');
     };
 
     var refreshComp = function() {
-      window.console.log('FUNCTION 4: REFRESHCOMP');
       updatePrintRectanglePixels($scope.scale);
       $scope.map.render();
     };
 
     // Compose events
     var handlePreCompose = function(evt) {
-      window.console.log('FUNCTION 5: HANDLEPRECOMPOSE');
       var ctx = evt.context;
       ctx.save();
     };
 
     var handlePostCompose = function(evt) {
-      window.console.log('FUNCTION 6: HANDLEPOSTPROCOMPOSE');
       var ctx = evt.context,
           size = $scope.map.getSize(),
           minx = printRectangle[0],
@@ -141,7 +133,6 @@ goog.require('ga_time_service');
 
     // Encode ol.Layer to a basic js object
     var encodeLayer = function(layer, proj) {
-      window.console.log('FUNCTION 7: ENCODE LAYER');
       var encLayer, encLegend;
 
       if (!(layer instanceof ol.layer.Group)) {
@@ -199,7 +190,6 @@ goog.require('ga_time_service');
 
     // Transform an ol.Color to an hexadecimal string
     var toHexa = function(olColor) {
-      window.console.log('FUNCTION 8: TO HEXA');
       var hex = '#';
       for (var i = 0; i < 3; i++) {
         var part = olColor[i].toString(16);
@@ -213,7 +203,6 @@ goog.require('ga_time_service');
 
     // Transform a ol.style.Style to a print literal object
     var transformToPrintLiteral = function(feature, style) {
-      window.console.log('FUNCTION 9: TRANSFORM TO PRINTLITERAL');
       /**
        * ol.style.Style properties:
        *
@@ -369,9 +358,6 @@ goog.require('ga_time_service');
             layer: layer.bodId,
             opacity: layer.getOpacity()
           };
-          window.console.log('enc');
-          window.console.log('------------------------');
-          window.console.log(enc);          
           return enc;
         },
         'Group': function(layer, proj) {
@@ -388,9 +374,6 @@ goog.require('ga_time_service');
               }
             }
           });
-          window.console.log('encs');
-          window.console.log('------------------------');
-          window.console.log(encs);          
           return encs;
         },
         'Vector': function(layer, features) {
@@ -426,7 +409,7 @@ goog.require('ga_time_service');
           });
           angular.extend(enc, {
             type: 'Vector',
-            styles: encStyles,
+            style: encStyles,
             styleProperty: '_gx_style',
             geoJson: {
               type: 'FeatureCollection',
@@ -435,10 +418,6 @@ goog.require('ga_time_service');
             name: layer.bodId,
             opacity: (layer.opacity != null) ? layer.opacity : 1.0
           });
-          window.console.log('encVector');
-          window.console.log('------------------------');
-          window.console.log(enc);          
-
           return enc;
         },
         'WMS': function(layer, config) {
@@ -459,46 +438,41 @@ goog.require('ga_time_service');
                 'EXCEPTIONS': 'XML',
                 'TRANSPARENT': 'true',
                 'CRS': 'EPSG:21781',
+                'VERSION': '1.3.0',
                 'TIME': params.TIME
-              },
-              singleTile: config.singleTile || false
+              }
             });
-          window.console.log('encWMS');
-          window.console.log('------------------------');
-          window.console.log(enc);          
           return enc;
 
         },
         'WMTS': function(layer, config) {
+          window.console.log('in the WMTS');
             var enc = $scope.encoders.layers['Layer'].
                 call(this, layer);
             var source = layer.getSource();
             var tileGrid = source.getTileGrid();
+            var opacity = layer.getOpacity();
             if (!config.background && layer.visible && config.timeEnabled) {
               layersYears.push(layer.time);
             }
             angular.extend(enc, {
               type: 'WMTS',
               baseURL: location.protocol + '//wmts.geo.admin.ch',
+              opacity: opacity,
               layer: config.serverLayerName,
-              //maxExtent: layer.getExtent(),
-              //tileOrigin: tileGrid.getOrigin(),
-              //tileSize: [tileGrid.getTileSize(), tileGrid.getTileSize()],
-              //resolutions: tileGrid.getResolutions(),
-              //zoomOffset: tileGrid.getMinZoom(),
               requestEncoding: 'REST',
               version: '1.0.0',
               style: 'default',
-              imageFormat: config.format || 'jpeg',
-              dimensions: ['TIME'],
+              dimensions: ['Time'],
               dimensionParams: {'TIME': source.getDimensions().Time},
               matrixSet: '21781',
               matrices: [{
                 identifier: tileGrid.matrixIds_,
                 tileSize: [tileGrid.getTileSize(), tileGrid.getTileSize()],
-                topLeftCorner: tileGrid.origin,
+                topLeftCorner: [tileGrid.origin_[0], tileGrid.origin_[1]],
                 matrixSize: [1, 1]
-               }] 
+               }], 
+              imageFormat: config.format || 'jpeg'
           });
           var multiPagesPrint = false;
           if (config.timestamps) {
@@ -632,7 +606,6 @@ goog.require('ga_time_service');
     };
 
     var getZoomFromScale = function(scale) {
-      window.console.log('FUNCTION 10: GET ZOOM FROM SCALE');
       var i, len;
       var resolution = scale / UNITS_RATIO / POINTS_PER_INCH;
       var resolutions = gaMapUtils.viewResolutions;
@@ -647,7 +620,6 @@ goog.require('ga_time_service');
     };
 
     var getNearestScale = function(target, scales) {
-      window.console.log('FUNCTION 11: GET NEARESR SCALE');
       var nearest = null;
       angular.forEach(scales, function(scale) {
         if (nearest == null ||
@@ -658,9 +630,9 @@ goog.require('ga_time_service');
       return nearest;
     };
 
+    // In capabilities.json (unlike info.json) there is no downloadUrl
     $scope.downloadUrl = function(url) {
       $scope.options.printsuccess = true;
-      window.console.log('$SCOPE: $scope.downloadUrl');
       if (gaBrowserSniffer.msie == 9) {
         $window.open(url);
       } else {
@@ -677,7 +649,6 @@ goog.require('ga_time_service');
     // Abort the print process
     var pollMultiPromise; // Promise of the last $timeout called
     $scope.abort = function() {
-      window.console.log('$SCOPE: $scope.abort');
       $scope.options.printing = false;
       // Abort the current $http request
       if (canceller) {
@@ -697,9 +668,6 @@ goog.require('ga_time_service');
 
     // Start the print process
     $scope.submit = function() {
-      window.console.log('$SCOPE: $scope.submit');
-      window.console.log('****************************************');
-      window.console.log('****************************************');
       if (!$scope.active) {
         return;
       }
@@ -710,21 +678,12 @@ goog.require('ga_time_service');
       var view = $scope.map.getView();
       var proj = view.getProjection();
       var lang = $translate.use();
-      window.console.log('view ');
-      window.console.log(view);
-      window.console.log('proj ');
-      window.console.log(proj);
-      window.console.log('lang ' + lang);
       var defaultPage = {};
       defaultPage['lang' + lang] = true;
       var qrcodeUrl = $scope.options.qrcodeUrl +
           encodeURIComponent(gaPermalink.getHref());
       var print_zoom = getZoomFromScale($scope.scale); //edw epaize scope.value
-      window.console.log('print_zoom');
-      window.console.log(print_zoom);
       qrcodeUrl = qrcodeUrl.replace(/zoom%3D(\d{1,2})/, 'zoom%3D' + print_zoom);
-      window.console.log('qrcodeUrl');
-      window.console.log(qrcodeUrl);
       var encLayers = [];
       var encLegends;
       var attributions = [];
@@ -820,7 +779,7 @@ goog.require('ga_time_service');
         if (center) {
           var encOverlayLayer = {
             'type': 'Vector',
-            'styles': {
+            'style': {
               '1': { // Style for marker position
                 'externalGraphic': $scope.options.markerUrl,
                 'graphicWidth': 20,
@@ -877,6 +836,11 @@ goog.require('ga_time_service');
         shortLink = response.shorturl.replace('/shorten', '');
       });
 
+      // Description should be defined and needed to exist in specifications
+      var description = "";
+      var name = "";
+      var scalebar = {fontSize: 8, type: "line"};
+
       // Build the complete json then send it to the print server
       promise.then(function() {
         if (!$scope.options.printing) {
@@ -902,12 +866,23 @@ goog.require('ga_time_service');
           rotation: -((view.getRotation() * 180.0) / Math.PI),
           app: 'config',
           lang: lang,
-          //use a function to get correct dpi according to layout (A4/A3)
-          dpi: getDpi($scope.layout.name, $scope.dpi),
-          layers: encLayers,
-          legends: encLegends,
-          enableLegends: (encLegends && encLegends.length > 0),
-          qrcodeurl: qrcodeUrl,
+          attributes: {
+            scale: $scope.scale,
+            url: shortLink || '',
+            qrimage: qrcodeUrl,
+            legends: encLegends,
+            enableLegends: (encLegends && encLegends.length > 0),
+            description: description,
+            name: name,
+            scalebar: scalebar,
+            map: {
+              //use a function to get correct dpi according to layout (A4/A3)
+              dpi: 300, //getDpi($scope.layout.name, $scope.dpi),
+              layers: encLayers,
+              //center: getPrintRectangleCenterCoord()
+              bbox: getPrintRectangleCoords()
+            }
+          },
           movie: movieprint,
           pages: [
             angular.extend({
@@ -923,7 +898,7 @@ goog.require('ga_time_service');
             }, defaultPage)
           ]
         };
-        var startPollTime;
+        var startPollTime = 0;
         var pollErrors;
         var pollMulti = function(url) {
           pollMultiPromise = $timeout(function() {
@@ -932,41 +907,30 @@ goog.require('ga_time_service');
             }
             canceller = $q.defer();
             var http = $http.get(url, {
-               timeout: canceller.promise
+              timeout: canceller.promise
             }).success(function(data) {
+              window.console.log('Data at get request status');
+              window.console.log(data);
               if (!$scope.options.printing) {
                 return;
               }
-              if (!data.getURL) {
-                // Write progress using the following logic
-                // First 60% is pdf page creationg
-                // 60-70% is merging of pdf
-                // 70-100% is writing of resulting pdf
-                if (data.filesize) {
-                  var written = data.written || 0;
-                  $scope.options.progress =
-                      (70 + Math.floor(written * 30 / data.filesize)) +
-                      '%';
-                } else if (data.total) {
-                  if (angular.isDefined(data.merged)) {
-                    $scope.options.progress =
-                        (60 + Math.floor(data.done * 10 / data.total)) +
-                        '%';
-                  } else if (angular.isDefined(data.done)) {
-                    $scope.options.progress =
-                        Math.floor(data.done * 60 / data.total) + '%';
-                  }
-                }
 
-                var now = new Date();
+              if (!data.done) {
+                if (data.elapsedTime) {
+                  var startPollTime =+ data.elapsedTime; 
+                  //For Multiprint later I should 
+                  //add something like https://github.com/geoadmin/mf-geoadmin3/blob/master/src/components/print/PrintDirective.js#L874
+                  //to have proportion of the printing progress of multiprint
+                }
                 //We abort if we waited too long
-                if (now - startPollTime < POLL_MAX_TIME) {
+                if (startPollTime < POLL_MAX_TIME) {
                   pollMulti(url);
                 } else {
                   $scope.options.printing = false;
-                }
+                }  
               } else {
-                $scope.downloadUrl(data.getURL);
+                var downloadURL = $scope.options.printPath + data.downloadURL.replace('/print-chsdi3-ltkom', '')
+                $scope.downloadUrl(downloadURL);
               }
             }).error(function() {
               if ($scope.options.printing == false) {
@@ -985,10 +949,7 @@ goog.require('ga_time_service');
 
         var printUrl = $scope.options.createURL;
         window.console.log('printUrl');
-        window.console.log('***************************');
         window.console.log(printUrl);
-        window.console.log('$scope.options.printing');
-        window.console.log($scope.options.printing);
 
         //When movie is on, we use printmulti
         if (movieprint) {
@@ -999,31 +960,22 @@ goog.require('ga_time_service');
           spec, {
           timeout: canceller.promise
         }).success(function(data) {
-          if (movieprint) {
-            //start polling process
-            var pollUrl = $scope.options.printPath + 'progress?id=' +
-                data.idToCheck;
-            currentMultiPrintId = data.idToCheck;
-            startPollTime = new Date();
-            pollErrors = 0;
-            pollMulti(pollUrl);
-          } else {
-            $scope.downloadUrl(data.getURL);
-          }
+          window.console.log('Data at post request to craete the print job');
+          window.console.log(data);
+          var pollUrl = data.statusURL;
+          var pollUrl = $scope.options.printPath + '/print/status/' + data.ref + '.json';
+          window.console.log('pollUrl');
+          window.console.log(pollUrl);
+          currentMultiPrintId = data.ref;
+          pollErrors = 0;
+          pollMulti(pollUrl);
         }).error(function() {
           $scope.options.printing = false;
         });
-
-        window.console.log('http');
-        window.console.log(http);
-        //window.console.log('$scope.downloadUrl');
-        //window.console.log($scope.downloadUrl(http));
-
       });
     };
 
     var getDpi = function(layoutName, dpiConfig) {
-      window.console.log('FUNCTION 12: GET DPI');
       if (/a4/i.test(layoutName) && dpiConfig.length > 1) {
         return dpiConfig[1].value;
       } else {
@@ -1032,7 +984,6 @@ goog.require('ga_time_service');
     };
 
     var getPrintRectangleCoords = function() {
-      window.console.log('FUNCTION 13: GET PRINT RECTANGLE COORDS');
       // Framebuffer size!!
       var displayCoords = printRectangle.map(function(c) {
           return c / ol.has.DEVICE_PIXEL_RATIO});
@@ -1045,7 +996,6 @@ goog.require('ga_time_service');
     };
 
     var getPrintRectangleCenterCoord = function() {
-      window.console.log('FUNCTION 14: GET PRINT RECTANGLE CENTER COORD');
       // Framebuffer size!!
       var rect = getPrintRectangleCoords();
 
@@ -1056,7 +1006,6 @@ goog.require('ga_time_service');
     };
 
     var updatePrintRectanglePixels = function(scale) {
-      window.console.log('FUNCTION 15: UPDATE PRINT RECTANGLE PIXELS');
       if ($scope.active) {
         printRectangle = calculatePageBoundsPixels(scale);
         $scope.map.render();
@@ -1064,35 +1013,18 @@ goog.require('ga_time_service');
     };
 
     var getOptimalScale = function() {
-      window.console.log('FUNCTION 16: GET OPTIMAL SCALE');
       window.console.log('$scope');
       window.console.log($scope);
       var size = $scope.map.getSize();
-      window.console.log('size ' + size);
       var resolution = $scope.map.getView().getResolution();
-      window.console.log('resolution ' + resolution);
       var width = resolution * (size[0] - ($scope.options.widthMargin * 2));
-      window.console.log('width ' + width);
       var height = resolution * (size[1] - ($scope.options.heightMargin * 2));
-      window.console.log('height ' + height);
-      //var layoutSize = $scope.layout; 
-      //window.console.log('layoutSize');
-      //window.console.log(layoutSize);
       var layoutWidth = $scope.layoutWidth;
       var layoutHeight = $scope.layoutHeight;
-      window.console.log('layoutWidth & layoutHeight ' + layoutWidth + ' ' + layoutHeight);
       var scaleWidth = width * UNITS_RATIO * POINTS_PER_INCH / layoutWidth;
-      //    layoutSize.width;
-      window.console.log('scaleWidth');
-      window.console.log(scaleWidth);
       var scaleHeight = height * UNITS_RATIO * POINTS_PER_INCH / layoutHeight;
-      //    layoutSize.height;
-      window.console.log('scaleHeight');
-      window.console.log(scaleHeight);
       var testScale = scaleWidth;
-      window.console.log('testScale is equal to scaleWidth and we test is scaleHeight < testScale');
       if (scaleHeight < testScale) {
-        window.console.log('yes, testScale is ' + scaleHeight);
         testScale = scaleHeight;
       }
       var nextBiggest = null;
@@ -1101,35 +1033,22 @@ goog.require('ga_time_service');
       angular.forEach($scope.scales, function(scale) {
         if (nextBiggest == null ||
             testScale > scale) { // edw genika epaize to scale.value
-              window.console.log('scale.value: ' + scale);
               nextBiggest = scale;
         }
       });
-      window.console.log('nextBiggest to return: ' + nextBiggest);
       return nextBiggest;
     };
 
     var calculatePageBoundsPixels = function(scale) {
-      window.console.log('FUNCTION 17: CALCULATE PAGE BOUNDS PIXELS');
-      window.console.log('scale: ' + scale);
-      //var s = parseFloat(scale.value);
       var s = parseFloat(scale);
-      window.console.log('s: ' + s);
       var size = $scope.layout.map; // papersize in dot!
-      //var layoutWidth = $scope.layouts.attributes.clientInfo.width;
-      //window.console.log('layoutWidth: ' + layoutWidth);
-      //var layoutHeight = $scope.layouts.attributes.clientInfo.height;
-      //window.console.log('layoutHeight: ' + layoutHeight);
-      window.console.log('to size tou layout einai ' + size);
       var view = $scope.map.getView();
       var resolution = view.getResolution();
       //instead of size.width layoutWidth, same as for size.height
       var w = size.width / POINTS_PER_INCH * MM_PER_INCHES / 1000.0 *
           s / resolution * ol.has.DEVICE_PIXEL_RATIO;
-      window.console.log('w: ' + w);
       var h = size.height / POINTS_PER_INCH * MM_PER_INCHES / 1000.0 *
           s / resolution * ol.has.DEVICE_PIXEL_RATIO;
-      window.console.log('h: ' + h);
       var mapSize = $scope.map.getSize();
       var center = [mapSize[0] * ol.has.DEVICE_PIXEL_RATIO / 2 ,
           mapSize[1] * ol.has.DEVICE_PIXEL_RATIO / 2];
@@ -1145,73 +1064,29 @@ goog.require('ga_time_service');
 
     $scope.layers = $scope.map.getLayers().getArray();
     $scope.layerFilter = function(layer) {
-      window.console.log('$SCOPE: $scope.layerFilter zeitreihen');
       return layer.bodId == 'ch.swisstopo.zeitreihen' && layer.visible;
     };
     $scope.$watchCollection('layers | filter:layerFilter', function(lrs) {
-      window.console.log('$SCOPE: $scope.watchCollection multiprint');
       $scope.options.multiprint = (lrs.length == 1);
     });
 
     $scope.$watch('active', function(newVal, oldVal) {
-      window.console.log('$SCOPE: $scope.$watch is active');
       if (newVal === true) {
-        window.console.log('$scope.printConfigLoaded ' + $scope.printConfigLoaded);
         if (!$scope.printConfigLoaded) {
           loadPrintConfig().success(function(data) {
             $scope.capabilities = data;
-            window.console.log('$scope.capabilities');
-            window.console.log($scope.capabilities);
-            window.console.log('data');
-            window.console.log(data);
-
             angular.forEach($scope.capabilities.layouts, function(lay) {
-              window.console.log('$scope.capabilities.layouts');
-              window.console.log($scope.capabilities.layouts)
-              window.console.log('lay');
-              window.console.log(lay);
-              window.console.log('lay.name ' + lay.name);
-
               lay.stripped = lay.name.substr(2);
               lay.map = {width: lay.attributes[5].clientInfo.width, height: lay.attributes[5].clientInfo.height};
-              window.console.log('lay.map: ');
-              window.console.log(lay.map);
-
-
             });
             
-
             // Default values
-            window.console.log('DEFAULT VALUES');
-            window.console.log('*****************************');
-
             $scope.scales = $scope.capabilities.layouts[0].attributes[5].clientInfo.scales;
-            window.console.log('$scope.scales');
-            window.console.log($scope.scales);
             // Default scale: 2500000
             $scope.scale = $scope.capabilities.layouts[0].attributes[5].clientInfo.scales[0];
-            window.console.log('$scope.scale');
-            window.console.log($scope.scale);
-
-
             $scope.layout = data.layouts[0];
-            window.console.log('$scope.layout:');                
-            window.console.log($scope.layout);
             $scope.layouts = data.layouts;
-            window.console.log('$scope.layouts:');
-            window.console.log($scope.layouts);
-
-            //$scope.layoutHeight = $scope.layouts.attributes[5].clientInfo.height;
-            //$scope.layoutWidth = $scope.layouts.attributes[5].clientInfo.width;
-            //window.console.log('layoutWidth & layoutHeight ' + $scope.layoutWidth + ' ' + $scope.layoutHeight);
-
             $scope.dpi = data.layouts[0].attributes[5].clientInfo.dpiSuggestions;
-            window.console.log('$scope.dpi ' + $scope.dpi);
-
-            //$scope.scales = data.layouts[0].attributes[5].clientInfo.scales;
-            //window.console.log('$scope.scales ' + $scope.scales);
-            //$scope.scale = data.layouts[0].attributes[5].clientInfo.scales[5];
-            //window.console.log('$scope.scale ' + $scope.scale);
             $scope.options.legend = false;
             $scope.options.graticule = false;
             activate();
@@ -1229,7 +1104,6 @@ goog.require('ga_time_service');
     // waitcursor from the NetworkStatusService. Multi-page
     // print might be underway without pending http request.
     $scope.$watch('options.printing', function(newVal, oldVal) {
-      window.console.log('$SCOPE: check if $scope.$watch is active');
       if (newVal === true) {
         gaWaitCursor.increment();
       } else {
