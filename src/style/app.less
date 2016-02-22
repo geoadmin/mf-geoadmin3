@@ -77,6 +77,12 @@ html, body {
   }
 }
 
+// Remove 300ms click delay on IE > 10
+// See: http//patrickhlauke.github.io/touch/tests/results/#suppressing-300ms-delay
+button, a, .ga-bg-layer, .ga-bg-layer-bt {
+  touch-action: manipulation;
+  -ms-touch-action: manipulation;
+}
 
 .ga-visible-3d {
   display: none !important;
