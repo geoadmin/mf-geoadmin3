@@ -766,14 +766,14 @@ goog.require('ga_time_service');
                 'externalGraphic': $scope.options.bubbleUrl,
                 'graphicWidth': 97,
                 'graphicHeight': 27,
-                'graphicXOffset': -46,
+                'graphicXOffset': -48,
                 'graphicYOffset': -27,
                 'label': $(elt).text(),
                 'labelXOffset': 0,
                 'labelYOffset': 18,
                 'fontColor': '#ffffff',
-                'fontSize': 12,
-                'fontWeight': 'bold'
+                'fontSize': 10,
+                'fontWeight': 'normal'
               }
             },
             'styleProperty': '_gx_style',
