@@ -26,7 +26,8 @@ goog.require('ga_topic_service');
   module.directive('gaTooltip',
       function($timeout, $http, $q, $translate, $sce, gaPopup, gaLayers,
           gaBrowserSniffer, gaMapClick, gaDebounce, gaPreviewFeatures,
-          gaMapUtils, gaTime, gaTopic, gaIdentify, gaGlobalOptions) {
+          gaMapUtils, gaTime, gaTopic, gaIdentify, gaGlobalOptions
+          gaPermalink) {
         var mouseEvts = '';
         if (!gaBrowserSniffer.mobile) {
           mouseEvts = 'ng-mouseenter="options.onMouseEnter($event,' +
@@ -532,6 +533,12 @@ goog.require('ga_topic_service');
               var name = feature.get('name');
               var featureId = feature.getId();
               var layerId = feature.get('layerId') || layer.id;
+              if (layer.get('type') == 'KML') {
+                layerId = layer.label;
+                if (name && name.length) {
+                  featureId = name;
+                }
+              }
               var id = layerId + '#' + featureId;
               htmlpopup = htmlpopup.
                   replace('{{id}}', id).
@@ -566,6 +573,11 @@ goog.require('ga_topic_service');
 
             // Show the popup with all features informations
             var showPopup = function(html, value) {
+              // Don't show popup when notooltip paramter is active
+              if (gaPermalink.getParams().notooltip == 'true') {
+                return;
+              }
+
               // Show popup on first result
               if (htmls.length === 0) {
 
