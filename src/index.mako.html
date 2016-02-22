@@ -182,9 +182,9 @@ itemscope itemtype="http://schema.org/WebApplication"
         </div>
       </div>
   % endif
-      <button class="btn btn-default ga-menu-bt" ng-click="globals.pulldownShown=true" translate>menu</button>
+      <button class="btn ga-menu-bt" ng-click="globals.pulldownShown=true" translate>menu</button>
       ## css animation doesnt work on pseudo element, let use this instead
-      <div class="alert alert-danger" translate>offline_sorry</div>
+      <div class="ga-offline-msg alert-danger" translate>offline_sorry</div>
     </div> <!-- #header -->
 
     <div id="drawModeHeader" class="navbar navbar-fixed-top">
@@ -194,7 +194,9 @@ itemscope itemtype="http://schema.org/WebApplication"
         <span translate>draw_back</span>
       </button>
       <span ga-help="66"></span>
-
+      <button class="btn ga-menu-bt" ng-click="globals.pulldownShown=true" translate>menu</button>
+      ## css animation doesnt work on pseudo element, let use this instead
+      <div class="ga-offline-msg alert-danger" translate>offline_sorry</div>
     </div><!-- #drawModeHeader -->
 
 % endif
