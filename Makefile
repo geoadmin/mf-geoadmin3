@@ -23,9 +23,9 @@ BRANCH_TO_DELETE ?=
 DEPLOY_ROOT_DIR := /var/www/vhosts/mf-geoadmin3/private/branch
 DEPLOY_TARGET ?= 'dev'
 LAST_DEPLOY_TARGET := $(shell if [ -f .build-artefacts/last-deploy-target ]; then cat .build-artefacts/last-deploy-target 2> /dev/null; else echo '-none-'; fi)
-OL3_VERSION ?= ccdb189e774db75b04b62e856fc813475523acba # tag v3.13.0, 20 january 2016
-OL3_CESIUM_VERSION ?= 62631d2e6820b5d08e836a336782052f1f59123b # tag v1.12, 30 january 2015
-CESIUM_VERSION ?= b4da72d63ca6df06dd4af513fdef15f5ff94ce0c # camptocamp/c2c_patches (cesium 1.17), 13 january 2015
+OL3_VERSION ?= 9baa296a49a75045e756089516f610c58cdc82eb # master, 17 february 2016
+OL3_CESIUM_VERSION ?= 30ed9504286a3d88365e900ab242279f588d5898 # master, 17 february 2016
+CESIUM_VERSION ?= e9d3a04697a902b8cce772e9bd3d5116d8a895b2 # camptocamp/c2c_patches (cesium 1.18), 5 january 2016
 DEFAULT_TOPIC_ID ?= ech
 TRANSLATION_FALLBACK_CODE ?= de
 LANGUAGES ?= '[\"de\", \"en\", \"fr\", \"it\", \"rm\"]'
@@ -245,6 +245,11 @@ datepicker: .build-artefacts/datepicker
 	cp .build-artefacts/datepicker/src/less/bootstrap-datetimepicker.less src/style/
 	cp .build-artefacts/datepicker/build/js/bootstrap-datetimepicker.min.js src/lib/
 
+.PHONY: polyfill
+polyfill: .build-artefacts/polyfill 
+	cp $</polyfill.js src/lib/
+	cp $</polyfill.min.js src/lib/
+
 .PHONY: translate
 translate:
 	${PYTHON_CMD} scripts/translation2json.py \
@@ -269,7 +274,8 @@ prd/robots.txt: scripts/robots.mako-dot-txt .build-artefacts/last-deploy-target
 	${PYTHON_CMD} ${MAKO_CMD} \
 	    --var "deploy_target=$(DEPLOY_TARGET)" $< > $@
 
-prd/lib/: src/lib/d3.min.js \
+prd/lib/: src/lib/polyfill.min.js \
+      src/lib/d3.min.js \
 	    src/lib/bootstrap-datetimepicker.min.js  \
 	    src/lib/IE9Fixes.js \
 	    src/lib/jquery.xdomainrequest.min.js \
@@ -609,6 +615,13 @@ scripts/00-$(GIT_BRANCH).conf: scripts/00-branch.mako-dot-conf \
 .build-artefacts/datepicker:
 	git clone https://github.com/Eonasdan/bootstrap-datetimepicker.git $@ && \
 	    cd $@ && git checkout 3.1.4
+
+# No npm module
+# We use the service to get only the minimal polyfill file for ie9
+.build-artefacts/polyfill:
+	mkdir -p $@
+	curl -q -o $@/polyfill.js 'https://cdn.polyfill.io/v2/polyfill.js?features=requestAnimationFrame&ua=MSIE%209.0'
+	curl -q -o $@/polyfill.min.js 'https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame&ua=MSIE%209.0'
 
 .PHONY: cleanall
 cleanall: clean

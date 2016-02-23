@@ -646,6 +646,7 @@ itemscope itemtype="http://schema.org/WebApplication"
     <!-- For <= IE9, we load it explicitely as XDomain does not support
          dynamic/lazy loading of javascript -->
     <!--![if IE]>
+    <script src="${versionslashed}lib/polyfill.min.js"></script>
     <script src="${versionslashed}lib/bootstrap-datetimepicker.min.js"></script>
     <script src="${versionslashed}lib/d3.min.js"></script>
     <script src="${versionslashed}lib/jquery.xdomainrequest.min.js"></script>
@@ -654,6 +655,7 @@ itemscope itemtype="http://schema.org/WebApplication"
     <!-- in source, we need to load it here because IE9 ignores it in
          the comments for reasons unknown to me. In prod, it's only
          loaded in IE9 -->
+    <script src="lib/polyfill.js"></script>
     <script src="lib/IE9Fixes.js"></script>
     <script>
       //This call only affects browser <= IE9
