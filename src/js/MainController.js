@@ -277,7 +277,8 @@ goog.require('ga_topic_service');
     });
     // Deactivate share tool when pulldown is closeddraw is opening
     $scope.$watch('globals.pulldownShown', function(active) {
-      if (active && !$scope.globals.isShareActive &&
+      if (active && !$scope.globals.isDrawActive &&
+          !$scope.globals.isShareActive &&
           win.width() <= screenPhone) {
         $scope.globals.isShareActive = true;
       }

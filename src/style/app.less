@@ -318,9 +318,6 @@ button.ga-btn, .ol-control button {
       @media (max-height: 680px) {
         max-height: 300px;
       }
-      @media (max-width: @screen-phone) {
-        max-height: 110px;
-      }
     }
   }
 
@@ -410,26 +407,49 @@ input[type=text][readonly] {
   .box-shadow(6px 6px 12px rgba(0, 0, 0, 0.175));
 }
 
+.ga-menu-bt {
+  display: none;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  width: 50px;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  &:hover, &:active {
+    box-shadow: none;
+    opacity: 0.5;
+  }
+
+  @media (max-width: @screen-phone) {
+    display: inline-block;
+  }
+}
+
+.ga-offline-msg {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  text-align: center;
+  top: unit(-@header-height, px);
+  .transition-transform(.5s);
+  z-index: 200;
+  padding: 0;
+  margin: 0;
+  line-height: unit(@header-height - 5, px);
+  font-weight: normal;
+
+  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
+     line-height: unit(@small-header-height - 5, px);
+  }
+}
+
 #header {
   top: 0px;
   height: unit(@header-height, px);
   background-color: rgba(255, 255, 255, 0.9);
-
-  .ga-menu-bt {
-    display: none;
-    position: absolute;
-    right: 0px;
-    width: 50px;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    border: none;
-    background: none;
-    &:hover, &:active {
-      box-shadow: none;
-      opacity: 0.5;
-    }
-  }
 
   @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
     height: unit(@small-header-height, px);
@@ -437,32 +457,11 @@ input[type=text][readonly] {
   }
 
   @media (max-width: @screen-phone) {
-
     [ga-help] {
       display: none;
     }
-
-    .ga-menu-bt {
-      display: inline-block;
-    }
   }
 
-  .alert {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    text-align: center;
-    top: unit(-@header-height, px);
-    .transition-transform(.5s);
-    z-index: 200;
-    padding: 0;
-    margin: 0;
-    line-height: unit(@header-height - 5, px);
-
-    @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
-       line-height: unit(@small-header-height - 5, px);
-    }
-  }
 }
 
 #search-container {
@@ -638,7 +637,7 @@ input[type=text][readonly] {
 
 // ***** DRAW MODE HEADER
 #drawModeHeader {
-  top: -100px;
+  top: unit(-15-@small-header-height, px); //-15 for the shadow
   height: unit(@small-header-height, px);
   font-weight: bold;
   text-align: center;
