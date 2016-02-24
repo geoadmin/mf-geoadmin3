@@ -339,12 +339,13 @@ describe('ga_permalinklayers_service', function() {
         expect(map.getLayers().getLength()).to.be(2);
         expect(permalink.getParams().layers).to.be('bar,foo');
 
-        // On next topic change the selected layers are added
+        // On next topic change the selected layers are added and the previous
+        // removed
         topic = topicLoaded3;
-        $rootScope.$broadcast('gaPostTopicChange', {});
-        expect(map.getLayers().getLength()).to.be(4);
+        $rootScope.$broadcast('gaTopicChange', {});
+        expect(map.getLayers().getLength()).to.be(2);
         $rootScope.$digest();
-        expect(permalink.getParams().layers).to.be('bar,foo,bar2,foo2');
+        expect(permalink.getParams().layers).to.be('bar2,foo2');
 
         // For next test 
         permalink.deleteParam('layers');
@@ -359,12 +360,12 @@ describe('ga_permalinklayers_service', function() {
         expect(map.getLayers().getLength()).to.be(1);
         expect(permalink.getParams().layers).to.be('ged');
 
-        // On next topic change the selected layers are added
+        // Even when layers are defined, a topic change does reset the selection
         topic = topicLoaded2;
-        $rootScope.$broadcast('gaPostTopicChange', {});
-        expect(map.getLayers().getLength()).to.be(3);
+        $rootScope.$broadcast('gaTopicChange', {});
+        expect(map.getLayers().getLength()).to.be(2);
         $rootScope.$digest();
-        expect(permalink.getParams().layers).to.be('ged,bar,foo');
+        expect(permalink.getParams().layers).to.be('bar,foo');
 
         // For next test
         topic = undefined;
