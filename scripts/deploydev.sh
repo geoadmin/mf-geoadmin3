@@ -39,7 +39,7 @@ echo "Flushing varnishes"
 for VARNISHHOST in ${VARNISH_HOSTS[@]}
 do
   ./scripts/flushvarnish.sh $VARNISHHOST "${API_URL#*//}"
-  ./scripts/flushvarnish.sh $VARNISHHOST "${BROWSERSTACK_TARGETURL#*https://}"
+  ./scripts/flushvarnish.sh $VARNISHHOST "${E2E_TARGETURL#*https://}"
   echo "Flushed varnish at: ${VARNISHHOST}"
 done
 

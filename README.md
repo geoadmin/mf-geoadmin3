@@ -96,6 +96,17 @@ are defined in `test/specs`. They are run as part of the standard build.
 
 Ideally, each component is fully tested with unit tests.
 
+## Saucelab cross-browser tests with saucelabs.com
+
+In your `.bashrc` please make sure you have the variables `SAUCELABS_USER` and
+`SAUCELABS_KEY` set.
+
+In order to lauch only some of the tests, you can use the following command:
+
+    make saucelabs SAUCELABS_TESTS=kml,search
+
+Per default all tests are launched.
+
 ## Cross-browser end-to-end tests with browserstack.com
 
 To run the e2e browserstack tests, a few things need to be set up in your 
