@@ -10,7 +10,8 @@ goog.provide('ga_print_controller');
 
       $scope.options = {
         printPath: printPath,
-        printConfigUrl: printCachedPath + '/print/geoadmin3/capabilities.json?url=' +
+        printConfigUrl: printCachedPath +
+          '/print/geoadmin3/capabilities.json?url=' +
             encodeURIComponent(printPath),
         createURL: printCachedPath + '/print/geoadmin3/report.pdf',
         printURL: printCachedPath + '/print/geoadmin3/print.pdf?url=' +

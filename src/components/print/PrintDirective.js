@@ -452,27 +452,473 @@ goog.require('ga_time_service');
             var source = layer.getSource();
             var tileGrid = source.getTileGrid();
             var opacity = layer.getOpacity();
+            var imageFormat = config.format || 'jpeg';
             if (!config.background && layer.visible && config.timeEnabled) {
               layersYears.push(layer.time);
             }
             angular.extend(enc, {
               type: 'WMTS',
-              baseURL: location.protocol + '//wmts.geo.admin.ch',
+              baseURL: 'http://wmts6.geo.admin.ch/1.0.0/' +
+                '{Layer}/{style}/{Time}/{TileMatrixSet}/' +
+                '{TileMatrix}/{TileRow}/{TileCol}.' + imageFormat,
+              //baseURL: location.protocol + '//wmts.geo.admin.ch',
               opacity: opacity,
               layer: config.serverLayerName,
               requestEncoding: 'REST',
-              version: '1.0.0',
               style: 'default',
               dimensions: ['Time'],
               dimensionParams: {'TIME': source.getDimensions().Time},
               matrixSet: '21781',
-              matrices: [{
-                identifier: tileGrid.matrixIds_,
-                tileSize: [tileGrid.getTileSize(), tileGrid.getTileSize()],
-                topLeftCorner: [tileGrid.origin_[0], tileGrid.origin_[1]],
-                matrixSize: [1, 1]
-               }], 
-              imageFormat: config.format || 'jpeg'
+              matrices: [
+                    {
+                        'identifier': '0',
+                        'matrixSize': [
+                            1,
+                            1
+                        ],
+                        'scaleDenominator': 1.42857505715E7,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '1',
+                        'matrixSize': [
+                            1,
+                            1
+                        ],
+                        'scaleDenominator': 1.33928911608E7,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '2',
+                        'matrixSize': [
+                            1,
+                            1
+                        ],
+                        'scaleDenominator': 1.25000317501E7,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '3',
+                        'matrixSize': [
+                            1,
+                            1
+                        ],
+                        'scaleDenominator': 1.16071723393E7,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '4',
+                        'matrixSize': [
+                            1,
+                            1
+                        ],
+                        'scaleDenominator': 1.07143129286E7,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '5',
+                        'matrixSize': [
+                            1,
+                            1
+                        ],
+                        'scaleDenominator': 9821453.51791,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '6',
+                        'matrixSize': [
+                            1,
+                            1
+                        ],
+                        'scaleDenominator': 8928594.10719,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '7',
+                        'matrixSize': [
+                            1,
+                            1
+                        ],
+                        'scaleDenominator': 8035734.69647,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '8',
+                        'matrixSize': [
+                            1,
+                            1
+                        ],
+                        'scaleDenominator': 7142875.28575,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '9',
+                        'matrixSize': [
+                            2,
+                            1
+                        ],
+                        'scaleDenominator': 6250015.87503,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '10',
+                        'matrixSize': [
+                            2,
+                            1
+                        ],
+                        'scaleDenominator': 5357156.46431,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '11',
+                        'matrixSize': [
+                            2,
+                            1
+                        ],
+                        'scaleDenominator': 4464297.05359,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '12',
+                        'matrixSize': [
+                            2,
+                            2
+                        ],
+                        'scaleDenominator': 3571437.64288,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '13',
+                        'matrixSize': [
+                            3,
+                            2
+                        ],
+                        'scaleDenominator': 2678578.23216,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '14',
+                        'matrixSize': [
+                            3,
+                            2
+                        ],
+                        'scaleDenominator': 2321434.46787,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '15',
+                        'matrixSize': [
+                            4,
+                            3
+                        ],
+                        'scaleDenominator': 1785718.82144,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '16',
+                        'matrixSize': [
+                            8,
+                            5
+                        ],
+                        'scaleDenominator': 892859.410719,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '17',
+                        'matrixSize': [
+                            19,
+                            13
+                        ],
+                        'scaleDenominator': 357143.764288,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '18',
+                        'matrixSize': [
+                            38,
+                            25
+                        ],
+                        'scaleDenominator': 178571.882144,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '19',
+                        'matrixSize': [
+                            94,
+                            63
+                        ],
+                        'scaleDenominator': 71428.7528575,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '20',
+                        'matrixSize': [
+                            188,
+                            125
+                        ],
+                        'scaleDenominator': 35714.3764288,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '21',
+                        'matrixSize': [
+                            375,
+                            250
+                        ],
+                        'scaleDenominator': 17857.1882144,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '22',
+                        'matrixSize': [
+                            750,
+                            500
+                        ],
+                        'scaleDenominator': 8928.59410719,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '23',
+                        'matrixSize': [
+                            938,
+                            625
+                        ],
+                        'scaleDenominator': 7142.87528575,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '24',
+                        'matrixSize': [
+                            1250,
+                            834
+                        ],
+                        'scaleDenominator': 5357.15646431,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '25',
+                        'matrixSize': [
+                            1875,
+                            1250
+                        ],
+                        'scaleDenominator': 3571.43764288,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '26',
+                        'matrixSize': [
+                            3750,
+                            2500
+                        ],
+                        'scaleDenominator': 1785.71882144,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '27',
+                        'matrixSize': [
+                            7500,
+                            5000
+                        ],
+                        'scaleDenominator': 892.85941072,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    }
+                ]
           });
           var multiPagesPrint = false;
           if (config.timestamps) {
@@ -495,7 +941,7 @@ goog.require('ga_time_service');
           window.console.log(tileGrid);
           window.console.log('encWMTS');
           window.console.log('------------------------');
-          window.console.log(enc);          
+          window.console.log(enc);
           return enc;
         }
       },
@@ -837,9 +1283,9 @@ goog.require('ga_time_service');
       });
 
       // Description should be defined and needed to exist in specifications
-      var description = "";
-      var name = "";
-      var scalebar = {fontSize: 8, type: "line"};
+      var description = '';
+      var name = '';
+      var scalebar = {fontSize: 8, type: 'line'};
 
       // Build the complete json then send it to the print server
       promise.then(function() {
@@ -917,9 +1363,10 @@ goog.require('ga_time_service');
 
               if (!data.done) {
                 if (data.elapsedTime) {
-                  var startPollTime =+ data.elapsedTime; 
-                  //For Multiprint later I should 
-                  //add something like https://github.com/geoadmin/mf-geoadmin3/blob/master/src/components/print/PrintDirective.js#L874
+                  var startPollTime = + data.elapsedTime;
+                  //For Multiprint later I should
+                  //add something like:
+                  //https://github.com/geoadmin/mf-geoadmin3/blob/master/src/components/print/PrintDirective.js#L874
                   //to have proportion of the printing progress of multiprint
                 }
                 //We abort if we waited too long
@@ -927,9 +1374,10 @@ goog.require('ga_time_service');
                   pollMulti(url);
                 } else {
                   $scope.options.printing = false;
-                }  
+                }
               } else {
-                var downloadURL = $scope.options.printPath + data.downloadURL.replace('/print-chsdi3-ltkom', '')
+                var downloadURL = $scope.options.printPath +
+                  data.downloadURL.replace('/print-chsdi3-ltkom', '');
                 $scope.downloadUrl(downloadURL);
               }
             }).error(function() {
@@ -953,7 +1401,7 @@ goog.require('ga_time_service');
 
         //When movie is on, we use printmulti
         if (movieprint) {
-          printUrl = printUrl.replace('/print/', '/printmulti/');//afterwards have to take a look here!
+          printUrl = printUrl.replace('/print/', '/printmulti/');
         }
         canceller = $q.defer();
         var http = $http.post(printUrl,
@@ -962,8 +1410,9 @@ goog.require('ga_time_service');
         }).success(function(data) {
           window.console.log('Data at post request to craete the print job');
           window.console.log(data);
-          var pollUrl = data.statusURL;
-          var pollUrl = $scope.options.printPath + '/print/status/' + data.ref + '.json';
+          //var pollUrl = data.statusURL;
+          var pollUrl = $scope.options.printPath +
+            '/print/status/' + data.ref + '.json';
           window.console.log('pollUrl');
           window.console.log(pollUrl);
           currentMultiPrintId = data.ref;
@@ -1077,16 +1526,20 @@ goog.require('ga_time_service');
             $scope.capabilities = data;
             angular.forEach($scope.capabilities.layouts, function(lay) {
               lay.stripped = lay.name.substr(2);
-              lay.map = {width: lay.attributes[5].clientInfo.width, height: lay.attributes[5].clientInfo.height};
+              lay.map = {width: lay.attributes[5].clientInfo.width,
+                height: lay.attributes[5].clientInfo.height};
             });
-            
+
             // Default values
-            $scope.scales = $scope.capabilities.layouts[0].attributes[5].clientInfo.scales;
+            $scope.scales =
+              $scope.capabilities.layouts[0].attributes[5].clientInfo.scales;
             // Default scale: 2500000
-            $scope.scale = $scope.capabilities.layouts[0].attributes[5].clientInfo.scales[0];
+            $scope.scale =
+              $scope.capabilities.layouts[0].attributes[5].clientInfo.scales[0];
             $scope.layout = data.layouts[0];
             $scope.layouts = data.layouts;
-            $scope.dpi = data.layouts[0].attributes[5].clientInfo.dpiSuggestions;
+            $scope.dpi =
+              data.layouts[0].attributes[5].clientInfo.dpiSuggestions;
             $scope.options.legend = false;
             $scope.options.graticule = false;
             activate();
