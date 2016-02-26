@@ -76,6 +76,7 @@ help:
 	@echo "- teste2e          Run browserstack and saucelabs tests"
 	@echo "- browserstack     Run browserstack tests"
 	@echo "- saucelabs        Run saucelabs tests"
+	@echo "- saucelabssingle  Run saucelabs tests but only with single platform/browser"
 	@echo "- apache           Configure Apache (restart required)"
 	@echo "- fixrights        Fix rights in common folder"
 	@echo "- all              All of the above (target to run prior to creating a PR)"
@@ -153,6 +154,10 @@ browserstack: guard-BROWSERSTACK_USER guard-BROWSERSTACK_KEY
 .PHONY: saucelabs
 saucelabs: guard-SAUCELABS_USER guard-SAUCELABS_KEY .build-artefacts/requirements.timestamp lintpy
 	${PYTHON_CMD} test/saucelabs/test.py ${E2E_TARGETURL} ${SAUCELABS_TESTS}
+
+.PHONY: saucelabssingle
+saucelabssingle: guard-SAUCELABS_USER guard-SAUCELABS_KEY .build-artefacts/requirements.timestamp lintpy
+	${PYTHON_CMD} test/saucelabs/test.py ${E2E_TARGETURL} all true
 
 .PHONY: apache
 apache: apache/app.conf

@@ -107,6 +107,11 @@ In order to lauch only some of the tests, you can use the following command:
 
 Per default all tests are launched.
 
+If you only want to launch sauclab tests on a single platform/browser, you can use
+the following command
+
+    make saucelabssingle
+
 ## Cross-browser end-to-end tests with browserstack.com
 
 To run the e2e browserstack tests, a few things need to be set up in your 

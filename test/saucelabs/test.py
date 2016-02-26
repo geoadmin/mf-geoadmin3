@@ -18,23 +18,26 @@ DEFAULT_WAIT_FOUND = 5
 
 def parse_args(args):
     tests = []
+    singlebrowser = False
     if len(args) < 2:
         print 'ERROR: No URL provided. You need to set SAUCELABS_TARGETURL in your environment! Exit!'
         sys.exit(1)
-    elif len(args) > 3:
+    elif len(args) > 4:
         print 'ERROR: too many arguments! Exit!'
         sys.exit(1)
     else:
         url = args[1]
-        if len(args) == 3:
+        if len(args) >= 3:
             tests = args[2].split(',')
+        if len(args) >= 4:
+            singlebrowser = True if args[3] == 'true' else False
 
-    return url, tests
+    return url, tests, singlebrowser
 
 
 if __name__ == '__main__':
 
-    url, tests = parse_args(sys.argv)
+    url, tests, singlebrowser = parse_args(sys.argv)
 
     # Get value to connect to SauceLabs
     try:
@@ -48,6 +51,11 @@ if __name__ == '__main__':
     # The command_executor tells the test to run on Sauce, while the desired_capabilties
     # parameter tells us which browsers and OS to spin up.
     # browser list : https://wiki.saucelabs.com/display/DOCS/Platform+Configurator#/
+
+    # Top browser and platform according to stats. Update from time to time
+    top_browser = {'platform': "Windows 7", 'browserName': "firefox",
+                   'version': "44.0", 'screenResolution': "1280x1024"}
+
     desired_cap_list = [
         {'platform': "Windows 7", 'browserName': "chrome",
             'version': "48.0", 'screenResolution': "1280x1024"},
@@ -57,8 +65,6 @@ if __name__ == '__main__':
             'version': "48.0", 'screenResolution': "1280x1024"},
         {'platform': "Windows 10", 'browserName': "chrome",
             'version': "48.0", 'screenResolution': "1280x1024"},
-        {'platform': "Windows 7", 'browserName': "firefox",
-            'version': "44.0", 'screenResolution': "1280x1024"},
         {'platform': "Windows 7", 'browserName': "firefox",
             'version': "43.0", 'screenResolution': "1280x1024"},
         {'platform': "Windows 8.1", 'browserName': "firefox",
@@ -72,6 +78,8 @@ if __name__ == '__main__':
         # {'platform': "Windows 7", 'browserName': "internet explorer",
         #     'version': "11.0", 'screenResolution': "1280x1024" }
     ]
+
+    desired_cap_list.append(top_browser)
 
     # okay we will start the script!
     print "Starting SauceLabs script!"
@@ -90,6 +98,9 @@ if __name__ == '__main__':
         'checker': runCheckerTest
     }
 
+    if len(tests) > 0 and tests[0] == 'all':
+        tests = []
+
     if len(tests) > 0:
         tests = [t for t in tests if t in doTests.keys()]
         if len(tests) == 0:
@@ -97,7 +108,9 @@ if __name__ == '__main__':
             print 'Please try again...'
             sys.exit(1)
 
-    for current_desired_cap in desired_cap_list:
+    caps_used = [top_browser] if singlebrowser else desired_cap_list
+
+    for current_desired_cap in caps_used:
         print "+--> Start test with " + current_desired_cap['platform'] + \
             " " + current_desired_cap['browserName'] + " (" + current_desired_cap['version'] + ")"
 
