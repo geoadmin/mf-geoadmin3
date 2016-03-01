@@ -283,7 +283,7 @@ goog.require('ga_urlutils_service');
     };
   });
 
-  module.directive('gaImportWmsItem', function($compile) {
+  module.directive('gaImportWmsItem', function($compile, gaMapUtils) {
 
     /**** UTILS functions ****/
     // from OL2
@@ -301,7 +301,7 @@ goog.require('ga_urlutils_service');
 
     // Zoom to layer extent
     var zoomToLayerExtent = function(layer, map) {
-      var extent = layer.extent;
+      var extent = gaMapUtils.intersectWithDefaultExtent(layer.extent);
       var view = map.getView();
       var mapSize = map.getSize();
 
@@ -325,11 +325,14 @@ goog.require('ga_urlutils_service');
             layerExtentCenter[0] + width / 2,
             layerExtentCenter[1] + height / 2
           ];
+          extent = gaMapUtils.intersectWithDefaultExtent(extent);
 
-          var res = view.constrainResolution(view.getResolutionForExtent(extent,
-              mapSize), 0, -1);
-          view.setCenter(layerExtentCenter);
-          view.setResolution(res);
+          if (extent) {
+            var res = view.constrainResolution(
+                view.getResolutionForExtent(extent, mapSize), 0, -1);
+            view.setCenter(layerExtentCenter);
+            view.setResolution(res);
+          }
           return;
         }
       }
