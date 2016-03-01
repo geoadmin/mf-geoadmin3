@@ -173,6 +173,22 @@ button.ga-btn, .ol-control button {
   }
 }
 
+.cadastre.de, .cadastre.fr {
+   #catalogHeading {
+       &[aria-expanded="true"] span {
+           letter-spacing: -0.4px;
+       }
+       [ga-help] {
+         display: none;
+       }
+   }
+}
+
+.cadastre.it #catalogHeading[aria-expanded="true"] {
+  [ga-help] {
+    display: none;
+  }
+}
 
 
 /* This allow the display of not-allowed cursor on hover */
