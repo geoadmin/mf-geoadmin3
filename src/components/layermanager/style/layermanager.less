@@ -1,5 +1,6 @@
 [ga-layermanager] {
   padding: 0 !important;
+  overflow-x: hidden;
 
   li {
     border-bottom: #e9e9e9 1px solid;
@@ -7,6 +8,15 @@
     padding: 0;
     overflow: hidden;
     .transition(height .35s ease);
+    .user-select(none);
+  }
+
+  .slip-reordering {
+      color: #F2EFE8;
+
+      .ga-layer-infos label:hover {
+          color: #F2EFE8;
+      }
   }
 
   li, li > div {
@@ -246,4 +256,3 @@
     color: #f00;
   }
 }
-

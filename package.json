@@ -33,6 +33,7 @@
     "jquery-ajax-transport-xdomainrequest": "1.0.4",
     "d3": "3.5.12",
     "fastclick": "1.0.6",
-    "bootstrap": "3.3.6"
+    "bootstrap": "3.3.6",
+    "slipjs": "pornel/slip#0626afc"
   }
 }
