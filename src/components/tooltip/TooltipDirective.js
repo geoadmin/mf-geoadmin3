@@ -3,27 +3,28 @@ goog.provide('ga_tooltip_directive');
 goog.require('ga_browsersniffer_service');
 goog.require('ga_debounce_service');
 goog.require('ga_map_service');
-
 goog.require('ga_popup_service');
-goog.require('ga_styles_service');
+goog.require('ga_previewfeatures_service');
+goog.require('ga_time_service');
 goog.require('ga_topic_service');
 
 (function() {
 
   var module = angular.module('ga_tooltip_directive', [
+    'ga_browsersniffer_service',
     'ga_debounce_service',
-    'ga_popup_service',
     'ga_map_service',
-    'ga_styles_service',
+    'ga_popup_service',
+    'ga_previewfeatures_service',
     'ga_time_service',
-    'pascalprecht.translate',
-    'ga_topic_service'
+    'ga_topic_service',
+    'pascalprecht.translate'
   ]);
 
   module.directive('gaTooltip',
       function($timeout, $http, $q, $translate, $sce, gaPopup, gaLayers,
-          gaBrowserSniffer, gaDefinePropertiesForLayer, gaMapClick, gaDebounce,
-          gaPreviewFeatures, gaStyleFactory, gaMapUtils, gaTime, gaTopic) {
+          gaBrowserSniffer, gaMapClick, gaDebounce, gaPreviewFeatures,
+          gaMapUtils, gaTime, gaTopic) {
         var popupContent =
           '<div ng-repeat="htmlsnippet in options.htmls">' +
             '<div ng-mouseenter="options.onMouseEnter($event,' +

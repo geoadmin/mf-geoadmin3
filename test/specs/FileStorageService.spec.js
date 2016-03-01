@@ -1,4 +1,4 @@
-describe('ga_file_storage_service', function() {
+describe('ga_filestorage_service', function() {
   var gaFileStorage, $httpBackend,
       adminId = 'aaaaaaaaaaaaaaaaaaaaa', // length must > 20
       fileId = 'fffffffffffffffffffff', // length must > 20

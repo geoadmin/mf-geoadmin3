@@ -1,10 +1,13 @@
 goog.provide('ga_featuretree_directive');
 
 goog.require('ga_map_service');
+goog.require('ga_previewfeatures_service');
+
 (function() {
 
   var module = angular.module('ga_featuretree_directive', [
     'ga_map_service',
+    'ga_previewfeatures_service',
     'pascalprecht.translate'
   ]);
 

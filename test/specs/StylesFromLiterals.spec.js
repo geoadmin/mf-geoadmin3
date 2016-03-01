@@ -1,4 +1,4 @@
-describe('ga_styles_from_literals_service', function() {
+describe('ga_stylesfromliterals_service', function() {
   var gaStylesFromLiterals;
 
   beforeEach(function() {

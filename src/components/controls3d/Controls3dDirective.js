@@ -2,6 +2,7 @@ goog.provide('ga_controls3d_directive');
 
 goog.require('fps');
 goog.require('ga_map_service');
+
 (function() {
 
   var cssRotate = function(element, angle) {

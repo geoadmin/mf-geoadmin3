@@ -1,7 +1,8 @@
-goog.provide('ga_styles_from_literals_service');
+goog.provide('ga_stylesfromliterals_service');
+
 (function() {
 
-  var module = angular.module('ga_styles_from_literals_service', []);
+  var module = angular.module('ga_stylesfromliterals_service', []);
 
   module.provider('gaStylesFromLiterals', function() {
 

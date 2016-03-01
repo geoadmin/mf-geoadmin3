@@ -1,12 +1,13 @@
 goog.provide('ga_importwms_directive');
 
-goog.require('ga_map_service');
 goog.require('ga_urlutils_service');
+goog.require('ga_wms_service');
+
 (function() {
 
   var module = angular.module('ga_importwms_directive', [
-    'ga_map_service',
     'ga_urlutils_service',
+    'ga_wms_service',
     'pascalprecht.translate'
   ]);
 

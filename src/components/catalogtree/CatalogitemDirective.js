@@ -1,12 +1,20 @@
 goog.provide('ga_catalogitem_directive');
 
+goog.require('ga_browsersniffer_service');
 goog.require('ga_catalogtree_directive');
-goog.require('ga_layer_metadata_popup_service');
+goog.require('ga_catalogtree_service');
+goog.require('ga_layermetadatapopup_service');
+goog.require('ga_map_service');
+goog.require('ga_previewlayers_service');
 (function() {
 
   var module = angular.module('ga_catalogitem_directive', [
+    'ga_browsersniffer_service',
     'ga_catalogtree_directive',
-    'ga_layer_metadata_popup_service'
+    'ga_catalogtree_service',
+    'ga_layermetadatapopup_service',
+    'ga_map_service',
+    'ga_previewlayers_service'
   ]);
 
   /**

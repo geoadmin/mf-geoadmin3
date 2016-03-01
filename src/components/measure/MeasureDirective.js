@@ -1,15 +1,12 @@
 goog.provide('ga_measure_directive');
 
 goog.require('ga_debounce_service');
-goog.require('ga_export_kml_service');
-goog.require('ga_map_service');
 goog.require('ga_measure_service');
+
 (function() {
 
   var module = angular.module('ga_measure_directive', [
     'ga_debounce_service',
-    'ga_export_kml_service',
-    'ga_map_service',
     'ga_measure_service'
   ]);
 

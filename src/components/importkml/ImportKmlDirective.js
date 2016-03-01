@@ -2,21 +2,21 @@ goog.provide('ga_importkml_directive');
 
 goog.require('ga_browsersniffer_service');
 goog.require('ga_filereader_service');
-goog.require('ga_map_service');
+goog.require('ga_kml_service');
 goog.require('ga_urlutils_service');
 (function() {
 
   var module = angular.module('ga_importkml_directive', [
     'ga_browsersniffer_service',
     'ga_filereader_service',
-    'ga_map_service',
+    'ga_kml_service',
     'ga_urlutils_service',
     'pascalprecht.translate'
   ]);
 
   module.controller('GaImportKmlDirectiveController',
       function($scope, $http, $q, $log, $translate, gaBrowserSniffer,
-            gaLayers, gaKml, gaUrlUtils, gaFileReader) {
+          gaKml, gaUrlUtils, gaFileReader) {
         $scope.isIE9 = (gaBrowserSniffer.msie == 9);
         $scope.isIE = !isNaN(gaBrowserSniffer.msie);
         $scope.currentTab = ($scope.isIE9) ? 2 : 1;
