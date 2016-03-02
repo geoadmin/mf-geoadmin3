@@ -22,7 +22,7 @@
  */
 (function () {/*global define*/
 define('Core/defined',[],function() {
-    "use strict";
+    'use strict';
 
     /**
      * @exports defined
@@ -38,7 +38,7 @@ define('Core/defined',[],function() {
      * }
      */
     function defined(value) {
-        return value !== undefined;
+        return value !== undefined && value !== null;
     }
 
     return defined;
@@ -49,7 +49,7 @@ define('Core/freezeObject',[
         './defined'
     ], function(
         defined) {
-    "use strict";
+    'use strict';
 
     /**
      * Freezes an object, using Object.freeze if available, otherwise returns
@@ -74,7 +74,7 @@ define('Core/defaultValue',[
         './freezeObject'
     ], function(
         freezeObject) {
-    "use strict";
+    'use strict';
 
     /**
      * Returns the first parameter if not undefined, otherwise the second parameter.
@@ -110,7 +110,7 @@ define('Core/DeveloperError',[
         './defined'
     ], function(
         defined) {
-    "use strict";
+    'use strict';
 
     /**
      * Constructs an exception object that is thrown due to a developer error, e.g., invalid argument,
@@ -394,7 +394,7 @@ define('Core/Math',[
         defaultValue,
         defined,
         DeveloperError) {
-    "use strict";
+    'use strict';
 
     /**
      * Math functions.
@@ -1174,7 +1174,7 @@ define('Core/Cartesian3',[
         DeveloperError,
         freezeObject,
         CesiumMath) {
-    "use strict";
+    'use strict';
 
     /**
      * A 3D Cartesian point.
@@ -2182,7 +2182,7 @@ define('Core/scaleToGeodeticSurface',[
         defined,
         DeveloperError,
         CesiumMath) {
-    "use strict";
+    'use strict';
 
     var scaleToGeodeticSurfaceIntersection = new Cartesian3();
     var scaleToGeodeticSurfaceGradient = new Cartesian3();
@@ -2323,7 +2323,7 @@ define('Core/Cartographic',[
         freezeObject,
         CesiumMath,
         scaleToGeodeticSurface) {
-    "use strict";
+    'use strict';
 
     /**
      * A position defined by longitude, latitude, and height.
@@ -2578,7 +2578,7 @@ define('Core/defineProperties',[
         './defined'
     ], function(
         defined) {
-    "use strict";
+    'use strict';
 
     var definePropertyWorks = (function() {
         try {
@@ -2628,7 +2628,7 @@ define('Core/Ellipsoid',[
         freezeObject,
         CesiumMath,
         scaleToGeodeticSurface) {
-    "use strict";
+    'use strict';
 
     function initialize(ellipsoid, x, y, z) {
         x = defaultValue(x, 0.0);
@@ -3215,7 +3215,7 @@ define('Core/Cartesian2',[
         DeveloperError,
         freezeObject,
         CesiumMath) {
-    "use strict";
+    'use strict';
 
     /**
      * A 2D Cartesian point.
@@ -3930,7 +3930,7 @@ define('Core/GeographicProjection',[
         defineProperties,
         DeveloperError,
         Ellipsoid) {
-    "use strict";
+    'use strict';
 
     /**
      * A simple map projection where longitude and latitude are linearly mapped to X and Y by multiplying
@@ -4036,7 +4036,7 @@ define('Core/Intersect',[
         './freezeObject'
     ], function(
         freezeObject) {
-    "use strict";
+    'use strict';
 
     /**
      * This enumerated type is used in determining where, relative to the frustum, an
@@ -4093,7 +4093,7 @@ define('Core/Rectangle',[
         Ellipsoid,
         freezeObject,
         CesiumMath) {
-    "use strict";
+    'use strict';
 
     /**
      * A two dimensional region specified as longitude and latitude coordinates.
@@ -4842,7 +4842,7 @@ define('Core/BoundingRectangle',[
         GeographicProjection,
         Intersect,
         Rectangle) {
-    "use strict";
+    'use strict';
 
     /**
      * A bounding rectangle given by a corner, width and height.
@@ -5150,7 +5150,7 @@ define('Core/Interval',[
         './defaultValue'
     ], function(
         defaultValue) {
-    "use strict";
+    'use strict';
 
     /**
      * Represents the closed interval [start, stop].
@@ -5183,6 +5183,7 @@ define('Core/Matrix3',[
         './Cartesian3',
         './defaultValue',
         './defined',
+        './defineProperties',
         './DeveloperError',
         './freezeObject',
         './Math'
@@ -5190,10 +5191,11 @@ define('Core/Matrix3',[
         Cartesian3,
         defaultValue,
         defined,
+        defineProperties,
         DeveloperError,
         freezeObject,
         CesiumMath) {
-    "use strict";
+    'use strict';
 
     /**
      * A 3x3 matrix, indexable as a column-major order array.
@@ -6595,6 +6597,20 @@ define('Core/Matrix3',[
      */
     Matrix3.COLUMN2ROW2 = 8;
 
+    defineProperties(Matrix3.prototype, {
+        /**
+         * Gets the number of items in the collection.
+         * @memberof Matrix3.prototype
+         *
+         * @type {Number}
+         */
+        length : {
+            get : function() {
+                return Matrix3.packedLength;
+            }
+        }
+    });
+
     /**
      * Duplicates the provided Matrix3 instance.
      *
@@ -6672,7 +6688,7 @@ define('Core/Cartesian4',[
         DeveloperError,
         freezeObject,
         CesiumMath) {
-    "use strict";
+    'use strict';
 
     /**
      * A 4D Cartesian point.
@@ -7446,7 +7462,7 @@ define('Core/RuntimeError',[
         './defined'
     ], function(
         defined) {
-    "use strict";
+    'use strict';
 
     /**
      * Constructs an exception object that is thrown due to an error that can occur at runtime, e.g.,
@@ -7513,6 +7529,7 @@ define('Core/Matrix4',[
         './Cartesian4',
         './defaultValue',
         './defined',
+        './defineProperties',
         './DeveloperError',
         './freezeObject',
         './Math',
@@ -7523,12 +7540,13 @@ define('Core/Matrix4',[
         Cartesian4,
         defaultValue,
         defined,
+        defineProperties,
         DeveloperError,
         freezeObject,
         CesiumMath,
         Matrix3,
         RuntimeError) {
-    "use strict";
+    'use strict';
 
     /**
      * A 4x4 matrix, indexable as a column-major order array.
@@ -10123,6 +10141,20 @@ define('Core/Matrix4',[
      */
     Matrix4.COLUMN3ROW3 = 15;
 
+    defineProperties(Matrix4.prototype, {
+        /**
+         * Gets the number of items in the collection.
+         * @memberof Matrix4.prototype
+         *
+         * @type {Number}
+         */
+        length : {
+            get : function() {
+                return Matrix4.packedLength;
+            }
+        }
+    });
+
     /**
      * Duplicates the provided Matrix4 instance.
      *
@@ -10206,7 +10238,7 @@ define('Core/Plane',[
         defined,
         DeveloperError,
         freezeObject) {
-    "use strict";
+    'use strict';
 
     /**
      * A plane in Hessian Normal Form defined by
@@ -10393,7 +10425,7 @@ define('Core/BoundingSphere',[
         Matrix4,
         Plane,
         Rectangle) {
-    "use strict";
+    'use strict';
 
     /**
      * A bounding sphere with a center and a radius.
@@ -11689,7 +11721,7 @@ define('Renderer/WebGLConstants',[
         '../Core/freezeObject'
     ], function(
         freezeObject) {
-    "use strict";
+    'use strict';
 
     /**
      * WebGL constants.
@@ -12285,7 +12317,7 @@ define('Core/Fullscreen',[
     ], function(
         defined,
         defineProperties) {
-    "use strict";
+    'use strict';
 
     var _supportsFullscreen;
     var _names = {
@@ -12453,22 +12485,22 @@ define('Core/Fullscreen',[
 
             // casing of Fullscreen differs across browsers
             name = prefix + 'FullscreenEnabled';
-            if (defined(document[name])) {
+            if (document[name] !== undefined) {
                 _names.fullscreenEnabled = name;
             } else {
                 name = prefix + 'FullScreenEnabled';
-                if (defined(document[name])) {
+                if (document[name] !== undefined) {
                     _names.fullscreenEnabled = name;
                 }
             }
 
             // casing of Fullscreen differs across browsers
             name = prefix + 'FullscreenElement';
-            if (defined(document[name])) {
+            if (document[name] !== undefined) {
                 _names.fullscreenElement = name;
             } else {
                 name = prefix + 'FullScreenElement';
-                if (defined(document[name])) {
+                if (document[name] !== undefined) {
                     _names.fullscreenElement = name;
                 }
             }
@@ -12476,7 +12508,7 @@ define('Core/Fullscreen',[
             // thankfully, event names are all lowercase per spec
             name = prefix + 'fullscreenchange';
             // event names do not have 'on' in the front, but the property on the document does
-            if (defined(document['on' + name])) {
+            if (document['on' + name] !== undefined) {
                 //except on IE
                 if (prefix === 'ms') {
                     name = 'MSFullscreenChange';
@@ -12485,7 +12517,7 @@ define('Core/Fullscreen',[
             }
 
             name = prefix + 'fullscreenerror';
-            if (defined(document['on' + name])) {
+            if (document['on' + name] !== undefined) {
                 //except on IE
                 if (prefix === 'ms') {
                     name = 'MSFullscreenError';
@@ -12533,6 +12565,7 @@ define('Core/Fullscreen',[
 
     return Fullscreen;
 });
+
 /*global define*/
 define('Core/FeatureDetection',[
         './defaultValue',
@@ -12542,7 +12575,7 @@ define('Core/FeatureDetection',[
         defaultValue,
         defined,
         Fullscreen) {
-    "use strict";
+    'use strict';
 
     var theNavigator;
     if (typeof navigator !== 'undefined') {
@@ -12789,7 +12822,7 @@ define('Core/ComponentDatatype',[
         DeveloperError,
         FeatureDetection,
         freezeObject) {
-    "use strict";
+    'use strict';
 
     // Bail out if the browser doesn't support typed arrays, to prevent the setup function
     // from failing, since we won't be able to create a WebGL context anyway.
@@ -13041,7 +13074,7 @@ define('Core/AxisAlignedBoundingBox',[
         defined,
         DeveloperError,
         Intersect) {
-    "use strict";
+    'use strict';
 
     /**
      * Creates an instance of an AxisAlignedBoundingBox from the minimum and maximum points along the x, y, and z axes.
@@ -13268,7 +13301,7 @@ define('Core/QuadraticRealPolynomial',[
     ], function(
         DeveloperError,
         CesiumMath) {
-    "use strict";
+    'use strict';
 
     /**
      * Defines functions for 2nd order polynomial functions of one variable with only real coefficients.
@@ -13403,7 +13436,7 @@ define('Core/CubicRealPolynomial',[
     ], function(
         DeveloperError,
         QuadraticRealPolynomial) {
-    "use strict";
+    'use strict';
 
     /**
      * Defines functions for 3rd order polynomial functions of one variable with only real coefficients.
@@ -13643,7 +13676,7 @@ define('Core/QuarticRealPolynomial',[
         DeveloperError,
         CesiumMath,
         QuadraticRealPolynomial) {
-    "use strict";
+    'use strict';
 
     /**
      * Defines functions for 4th order polynomial functions of one variable with only real coefficients.
@@ -13967,7 +14000,7 @@ define('Core/Ray',[
         defaultValue,
         defined,
         DeveloperError) {
-    "use strict";
+    'use strict';
 
     /**
      * Represents a ray that extends infinitely from the provided origin in the provided direction.
@@ -14053,7 +14086,7 @@ define('Core/IntersectionTests',[
         QuadraticRealPolynomial,
         QuarticRealPolynomial,
         Ray) {
-    "use strict";
+    'use strict';
 
     /**
      * Functions for computing the intersection between geometries such as rays, planes, triangles, and ellipsoids.
@@ -14365,6 +14398,7 @@ define('Core/IntersectionTests',[
         }
         
         var ray = scratchLineSegmentRay;
+        Cartesian3.clone(p0, ray.origin);
         var direction = Cartesian3.subtract(p1, p0, ray.direction);
 
         var maxT = Cartesian3.magnitude(direction);
@@ -15656,7 +15690,7 @@ define('Core/binarySearch',[
     ], function(
         defined,
         DeveloperError) {
-    "use strict";
+    'use strict';
 
     /**
      * Finds an item in a sorted array.
@@ -15733,7 +15767,7 @@ define('Core/binarySearch',[
 
 /*global define*/
 define('Core/EarthOrientationParametersSample',[],function() {
-    "use strict";
+    'use strict';
 
     /**
      * A set of Earth Orientation Parameters (EOP) sampled at a time.
@@ -16107,7 +16141,7 @@ return sprintf;
 
 /*global define*/
 define('Core/GregorianDate',[],function() {
-    "use strict";
+    'use strict';
 
     /**
      * Represents a Gregorian date in a more precise format than the JavaScript Date object.
@@ -16168,7 +16202,7 @@ define('Core/isLeapYear',[
         './DeveloperError'
     ], function(
         DeveloperError) {
-    "use strict";
+    'use strict';
 
     /**
      * Determines if a given date is a leap year.
@@ -16194,7 +16228,7 @@ define('Core/isLeapYear',[
 
 /*global define*/
 define('Core/LeapSecond',[],function() {
-    "use strict";
+    'use strict';
 
     /**
      * Describes a single leap second, which is constructed from a {@link JulianDate} and a
@@ -16228,7 +16262,7 @@ define('Core/TimeConstants',[
         './freezeObject'
     ], function(
         freezeObject) {
-    "use strict";
+    'use strict';
 
     /**
      * Constants for time conversions like those done by {@link JulianDate}.
@@ -16321,7 +16355,7 @@ define('Core/TimeStandard',[
         './freezeObject'
     ], function(
         freezeObject) {
-    "use strict";
+    'use strict';
 
     /**
      * Provides the type of time standards which JulianDate can take as input.
@@ -16373,7 +16407,7 @@ define('Core/JulianDate',[
         LeapSecond,
         TimeConstants,
         TimeStandard) {
-    "use strict";
+    'use strict';
 
     var gregorianDateScratch = new GregorianDate();
     var daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
@@ -17346,7 +17380,7 @@ define('Core/clone',[
         './defaultValue'
     ], function(
         defaultValue) {
-    "use strict";
+    'use strict';
 
     /**
      * Clones an object, returning a new object containing the same properties.
@@ -17383,7 +17417,7 @@ define('Core/clone',[
 
 /*global define*/
 define('Core/parseResponseHeaders',[], function() {
-    "use strict";
+    'use strict';
 
     /**
      * Parses the result of XMLHttpRequest's getAllResponseHeaders() method into
@@ -17432,7 +17466,7 @@ define('Core/RequestErrorEvent',[
     ], function(
         defined,
         parseResponseHeaders) {
-    "use strict";
+    'use strict';
 
     /**
      * An event that is raised when a request encounters an error.
@@ -17507,7 +17541,7 @@ define('Core/loadWithXhr',[
         DeveloperError,
         RequestErrorEvent,
         RuntimeError) {
-    "use strict";
+    'use strict';
 
     /**
      * Asynchronously loads the given URL.  Returns a promise that will resolve to
@@ -17678,7 +17712,7 @@ define('Core/loadText',[
         './loadWithXhr'
     ], function(
         loadWithXhr) {
-    "use strict";
+    'use strict';
 
     /**
      * Asynchronously loads the given URL as text.  Returns a promise that will resolve to
@@ -17728,7 +17762,7 @@ define('Core/loadJson',[
         defined,
         DeveloperError,
         loadText) {
-    "use strict";
+    'use strict';
 
     var defaultHeaders = {
         Accept : 'application/json,*/*;q=0.01'
@@ -17811,7 +17845,7 @@ define('Core/EarthOrientationParameters',[
         RuntimeError,
         TimeConstants,
         TimeStandard) {
-    "use strict";
+    'use strict';
 
     /**
      * Specifies Earth polar motion coordinates and the difference between UT1 and UTC.
@@ -18456,7 +18490,7 @@ define('Core/getAbsoluteUri',[
         defaultValue,
         defined,
         DeveloperError) {
-    "use strict";
+    'use strict';
 
     /**
      * Given a relative Uri and a base Uri, returns the absolute Uri of the relative Uri.
@@ -18484,19 +18518,126 @@ define('Core/getAbsoluteUri',[
 });
 
 /*global define*/
+define('Core/joinUrls',[
+        '../ThirdParty/Uri',
+        './defaultValue',
+        './defined',
+        './DeveloperError'
+    ], function(
+        Uri,
+        defaultValue,
+        defined,
+        DeveloperError) {
+    'use strict';
+
+    /**
+     * Function for joining URLs in a manner that is aware of query strings and fragments.
+     * This is useful when the base URL has a query string that needs to be maintained
+     * (e.g. a presigned base URL).
+     * @param {String|Uri} first The base URL.
+     * @param {String|Uri} second The URL path to join to the base URL.  If this URL is absolute, it is returned unmodified.
+     * @param {Boolean} [appendSlash=true] The boolean determining whether there should be a forward slash between first and second.
+     * @private
+     */
+    function joinUrls(first, second, appendSlash) {
+                if (!defined(first)) {
+            throw new DeveloperError('first is required');
+        }
+        if (!defined(second)) {
+            throw new DeveloperError('second is required');
+        }
+        
+        appendSlash = defaultValue(appendSlash, true);
+
+        if (!(first instanceof Uri)) {
+            first = new Uri(first);
+        }
+
+        if (!(second instanceof Uri)) {
+            second = new Uri(second);
+        }
+
+        // Uri.isAbsolute returns false for a URL like '//foo.com'.  So if we have an authority but
+        // not a scheme, add a scheme matching the page's scheme.
+        if (defined(second.authority) && !defined(second.scheme)) {
+            if (typeof document !== 'undefined' && defined(document.location) && defined(document.location.href)) {
+                second.scheme = new Uri(document.location.href).scheme;
+            } else {
+                // Not in a browser?  Use the first URL's scheme instead.
+                second.scheme = first.scheme;
+            }
+        }
+
+        // If the second URL is absolute, use it for the scheme, authority, and path.
+        var baseUri = first;
+        if (second.isAbsolute()) {
+            baseUri = second;
+        }
+
+        var url = '';
+        if (defined(baseUri.scheme)) {
+            url += baseUri.scheme + ':';
+        }
+        if (defined(baseUri.authority)) {
+            url += '//' + baseUri.authority;
+
+            if (baseUri.path !== '' && baseUri.path !== '/') {
+                url = url.replace(/\/?$/, '/');
+                baseUri.path = baseUri.path.replace(/^\/?/g, '');
+            }
+        }
+
+        // Combine the paths (only if second is relative).
+        if (baseUri === first) {
+            if (appendSlash) {
+                url += first.path.replace(/\/?$/, '/') + second.path.replace(/^\/?/g, '');
+            } else {
+                url += first.path + second.path;
+            }
+        } else {
+            url += second.path;
+        }
+
+        // Combine the queries and fragments.
+        var hasFirstQuery = defined(first.query);
+        var hasSecondQuery = defined(second.query);
+        if (hasFirstQuery && hasSecondQuery) {
+            url += '?' + first.query + '&' + second.query;
+        } else if (hasFirstQuery && !hasSecondQuery) {
+            url += '?' + first.query;
+        } else if (!hasFirstQuery && hasSecondQuery) {
+            url += '?' + second.query;
+        }
+
+        var hasSecondFragment = defined(second.fragment);
+        if (defined(first.fragment) && !hasSecondFragment) {
+            url += '#' + first.fragment;
+        } else if (hasSecondFragment) {
+            url += '#' + second.fragment;
+        }
+
+        return url;
+    }
+
+    return joinUrls;
+});
+
+/*global define*/
 define('Core/buildModuleUrl',[
         '../ThirdParty/Uri',
         './defined',
         './DeveloperError',
         './getAbsoluteUri',
+        './joinUrls',
         'require'
     ], function(
         Uri,
         defined,
         DeveloperError,
         getAbsoluteUri,
+        joinUrls,
         require) {
-    "use strict";
+    'use strict';
     /*global CESIUM_BASE_URL*/
 
     var cesiumScriptRegex = /((?:.*\/)|^)cesium[\w-]*\.js(?:\W|$)/i;
@@ -18540,7 +18681,7 @@ define('Core/buildModuleUrl',[
     }
 
     function buildModuleUrlFromBaseUrl(moduleID) {
-        return new Uri(moduleID).resolve(getCesiumBaseUrl()).toString();
+        return joinUrls(getCesiumBaseUrl(), moduleID);
     }
 
     var implementation;
@@ -18591,7 +18732,7 @@ define('Core/buildModuleUrl',[
 
 /*global define*/
 define('Core/Iau2006XysSample',[],function() {
-    "use strict";
+    'use strict';
 
     /**
      * An IAU 2006 XYS value sampled at a particular time.
@@ -18647,7 +18788,7 @@ define('Core/Iau2006XysData',[
         JulianDate,
         loadJson,
         TimeStandard) {
-    "use strict";
+    'use strict';
 
     /**
      * A set of IAU2006 XYS data that is used to evaluate the transformation between the International
@@ -18913,7 +19054,7 @@ define('Core/Quaternion',[
         freezeObject,
         CesiumMath,
         Matrix3) {
-    "use strict";
+    'use strict';
 
     /**
      * A set of 4-dimensional coordinates used to represent rotation in 3-dimensional space.
@@ -20028,7 +20169,7 @@ define('Core/Transforms',[
         Matrix4,
         Quaternion,
         TimeConstants) {
-    "use strict";
+    'use strict';
 
     /**
      * Contains functions for transforming positions to various reference frames.
@@ -20831,7 +20972,7 @@ define('Core/EllipsoidTangentPlane',[
         Plane,
         Ray,
         Transforms) {
-    "use strict";
+    'use strict';
 
     var scratchCart4 = new Cartesian4();
     /**
@@ -21139,7 +21280,7 @@ define('Core/GeometryType',[
         './freezeObject'
     ], function(
         freezeObject) {
-    "use strict";
+    'use strict';
 
     /**
      * @private
@@ -21161,7 +21302,7 @@ define('Core/PrimitiveType',[
     ], function(
         WebGLConstants,
         freezeObject) {
-    "use strict";
+    'use strict';
 
     /**
      * The type of a geometric primitive, i.e., points, lines, and triangles.
@@ -21259,7 +21400,7 @@ define('Core/Geometry',[
         DeveloperError,
         GeometryType,
         PrimitiveType) {
-    "use strict";
+    'use strict';
 
     /**
      * A geometry representation with attributes forming vertices and optional index data
@@ -21452,7 +21593,7 @@ define('Core/GeometryAttribute',[
         defaultValue,
         defined,
         DeveloperError) {
-    "use strict";
+    'use strict';
 
     /**
      * Values and type information for geometry attributes.  A {@link Geometry}
@@ -21589,7 +21730,7 @@ define('Core/GeometryAttributes',[
         './defaultValue'
     ], function(
         defaultValue) {
-    "use strict";
+    'use strict';
 
     /**
      * Attributes, which make up a geometry's vertices.  Each property in this object corresponds to a
@@ -21691,7 +21832,7 @@ define('Core/GeometryInstance',[
         defined,
         DeveloperError,
         Matrix4) {
-    "use strict";
+    'use strict';
 
     /**
      * Geometry instancing allows one {@link Geometry} object to be positions in several
@@ -21821,7 +21962,7 @@ define('Core/AttributeCompression',[
         defined,
         DeveloperError,
         CesiumMath) {
-    "use strict";
+    'use strict';
 
     /**
      * Attribute compression and decompression functions.
@@ -22080,7 +22221,7 @@ define('Core/barycentricCoordinates',[
         Cartesian3,
         defined,
         DeveloperError) {
-    "use strict";
+    'use strict';
 
     var scratchCartesian1 = new Cartesian3();
     var scratchCartesian2 = new Cartesian3();
@@ -22161,7 +22302,7 @@ define('Core/EncodedCartesian3',[
         Cartesian3,
         defined,
         DeveloperError) {
-    "use strict";
+    'use strict';
 
     /**
      * A fixed-point encoding of a {@link Cartesian3} with 64-bit floating-point components, as two {@link Cartesian3}
@@ -22349,7 +22490,7 @@ define('Core/IndexDatatype',[
         DeveloperError,
         freezeObject,
         CesiumMath) {
-    "use strict";
+    'use strict';
 
     /**
      * Constants for WebGL index datatypes.  These corresponds to the
@@ -22491,7 +22632,7 @@ define('Core/Tipsify',[
         defaultValue,
         defined,
         DeveloperError) {
-    "use strict";
+    'use strict';
 
     /**
      * Encapsulates an algorithm to optimize triangles for the post
@@ -22830,7 +22971,7 @@ define('Core/GeometryPipeline',[
         Plane,
         PrimitiveType,
         Tipsify) {
-    "use strict";
+    'use strict';
 
     /**
      * Content pipeline functions for geometries.
@@ -25167,7 +25308,7 @@ define('Core/pointInsideTriangle',[
     ], function(
         barycentricCoordinates,
         Cartesian3) {
-    "use strict";
+    'use strict';
 
     var coords = new Cartesian3();
 
@@ -25217,7 +25358,7 @@ define('Core/EllipsoidGeodesic',[
         DeveloperError,
         Ellipsoid,
         CesiumMath) {
-    "use strict";
+    'use strict';
 
     function setConstants(ellipsoidGeodesic) {
         var uSquared = ellipsoidGeodesic._uSquared;
@@ -25613,7 +25754,7 @@ define('Core/isArray',[
         './defined'
     ], function(
         defined) {
-    "use strict";
+    'use strict';
 
     /**
      * Tests an object to see if it is an array.
@@ -25658,7 +25799,7 @@ define('Core/PolylinePipeline',[
         CesiumMath,
         Matrix4,
         Plane) {
-    "use strict";
+    'use strict';
 
     /**
      * @private
@@ -26009,7 +26150,7 @@ define('Core/Queue',[
         '../Core/defineProperties'
     ], function(
         defineProperties) {
-    "use strict";
+    'use strict';
 
     /**
      * A queue that can enqueue items at the end, and dequeue items from the front.
@@ -26147,7 +26288,7 @@ define('Core/WindingOrder',[
     ], function(
         WebGLConstants,
         freezeObject) {
-    "use strict";
+    'use strict';
 
     /**
      * Winding order defines the order of vertices for a triangle to be considered front-facing.
@@ -26217,7 +26358,7 @@ define('Core/PolygonPipeline',[
         PrimitiveType,
         Queue,
         WindingOrder) {
-    "use strict";
+    'use strict';
 
     var uScratch = new Cartesian2();
     var vScratch = new Cartesian2();
@@ -27128,13 +27269,13 @@ define('Core/PolygonPipeline',[
     /**
      * Scales each position of a geometry's position attribute to a height, in place.
      *
-     * @param {Geometry} geometry The geometry whose positions are to be scaled.
-     * @param {Number} [height=0.0] The desired height to add to the positions of the geometry.
+     * @param {Number[]} positions The array of numbers representing the positions to be scaled
+     * @param {Number} [height=0.0] The desired height to add to the positions
      * @param {Ellipsoid} [ellipsoid=Ellipsoid.WGS84] The ellipsoid on which the positions lie.
      * @param {Boolean} [scaleToSurface=true] <code>true</code> if the positions need to be scaled to the surface before the height is added.
-     * @returns {Geometry} The same geometry whose positions where scaled.
+     * @returns {Number[]} The input array of positions, scaled to height
      */
-    PolygonPipeline.scaleToGeodeticHeight = function(geometry, height, ellipsoid, scaleToSurface) {
+    PolygonPipeline.scaleToGeodeticHeight = function(positions, height, ellipsoid, scaleToSurface) {
         ellipsoid = defaultValue(ellipsoid, Ellipsoid.WGS84);
 
         var n = scaleToGeodeticHeightN;
@@ -27143,8 +27284,7 @@ define('Core/PolygonPipeline',[
         height = defaultValue(height, 0.0);
         scaleToSurface = defaultValue(scaleToSurface, true);
 
-        if (defined(geometry) && defined(geometry.attributes) && defined(geometry.attributes.position)) {
-            var positions = geometry.attributes.position.values;
+        if (defined(positions)) {
             var length = positions.length;
 
             for ( var i = 0; i < length; i += 3) {
@@ -27167,7 +27307,7 @@ define('Core/PolygonPipeline',[
             }
         }
 
-        return geometry;
+        return positions;
     };
 
     /**
@@ -27250,7 +27390,7 @@ define('Core/PolygonGeometryLibrary',[
         PrimitiveType,
         Queue,
         WindingOrder) {
-    "use strict";
+    'use strict';
 
     /**
      * @private
@@ -27421,7 +27561,7 @@ define('Core/PolygonGeometryLibrary',[
         return geometry;
     };
 
-    PolygonGeometryLibrary.polygonsFromHierarchy = function(polygonHierarchy) {
+    PolygonGeometryLibrary.polygonsFromHierarchy = function(polygonHierarchy, perPositionHeight, ellipsoid) {
         // create from a polygon hierarchy
         // Algorithm adapted from http://www.geometrictools.com/Documentation/TriangulationByEarClipping.pdf
         var polygons = [];
@@ -27442,8 +27582,8 @@ define('Core/PolygonGeometryLibrary',[
 
             var numChildren = defined(holes) ? holes.length : 0;
             var polygonHoles = [];
-
-            for (var i = 0; i < numChildren; i++) {
+            var i;
+            for (i = 0; i < numChildren; i++) {
                 var hole = holes[i];
                 hole.positions = PolygonPipeline.removeDuplicates(hole.positions);
                 if (hole.positions.length < 3) {
@@ -27461,6 +27601,14 @@ define('Core/PolygonGeometryLibrary',[
                 }
             }
 
+            if (!perPositionHeight) {
+                for (i = 0; i < outerRing.length; i++) {
+                    ellipsoid.scaleToGeodeticSurface(outerRing[i], outerRing[i]);
+                }
+                for (i = 0; i < polygonHoles.length; i++) {
+                    ellipsoid.scaleToGeodeticSurface(polygonHoles[i], polygonHoles[i]);
+                }
+            }
             hierarchy.push({
                 outerRing : outerRing,
                 holes : polygonHoles
@@ -27640,7 +27788,7 @@ define('Core/VertexFormat',[
         defined,
         DeveloperError,
         freezeObject) {
-    "use strict";
+    'use strict';
 
     /**
      * A vertex format defines what attributes make up a vertex.  A VertexFormat can be provided
@@ -27981,7 +28129,7 @@ define('Core/PolygonGeometry',[
         Quaternion,
         VertexFormat,
         WindingOrder) {
-    "use strict";
+    'use strict';
 
     var computeBoundingRectangleCartesian2 = new Cartesian2();
     var computeBoundingRectangleCartesian3 = new Cartesian3();
@@ -28033,12 +28181,18 @@ define('Core/PolygonGeometry',[
     var appendTextureCoordinatesQuaternion = new Quaternion();
     var appendTextureCoordinatesMatrix3 = new Matrix3();
 
-    function computeAttributes(vertexFormat, geometry, outerPositions, ellipsoid, stRotation, bottom, wall) {
+    function computeAttributes(options) {
+        var vertexFormat = options.vertexFormat;
+        var geometry = options.geometry;
         if (vertexFormat.st || vertexFormat.normal || vertexFormat.tangent || vertexFormat.binormal) {
             // PERFORMANCE_IDEA: Compute before subdivision, then just interpolate during subdivision.
             // PERFORMANCE_IDEA: Compute with createGeometryFromPositions() for fast path when there's no holes.
-            var tangentPlane = EllipsoidTangentPlane.fromPoints(outerPositions, ellipsoid);
-            var boundingRectangle = computeBoundingRectangle(tangentPlane, outerPositions, stRotation, scratchBoundingRectangle);
+            var boundingRectangle = options.boundingRectangle;
+            var tangentPlane = options.tangentPlane;
+            var ellipsoid = options.ellipsoid;
+            var stRotation = options.stRotation;
+            var bottom = options.bottom;
+            var wall = options.wall;
 
             var origin = appendTextureCoordinatesOrigin;
             origin.x = boundingRectangle.x;
@@ -28079,13 +28233,15 @@ define('Core/PolygonGeometry',[
                     var st = tangentPlane.projectPointOntoPlane(p, appendTextureCoordinatesCartesian2);
                     Cartesian2.subtract(st, origin, st);
 
+                    var stx = CesiumMath.clamp(st.x / boundingRectangle.width, 0, 1);
+                    var sty = CesiumMath.clamp(st.y / boundingRectangle.height, 0, 1);
                     if (bottom) {
-                        textureCoordinates[textureCoordIndex + bottomOffset2] = st.x / boundingRectangle.width;
-                        textureCoordinates[textureCoordIndex + 1 + bottomOffset2] = st.y / boundingRectangle.height;
+                        textureCoordinates[textureCoordIndex + bottomOffset2] = stx;
+                        textureCoordinates[textureCoordIndex + 1 + bottomOffset2] = sty;
                     }
 
-                    textureCoordinates[textureCoordIndex] = st.x / boundingRectangle.width;
-                    textureCoordinates[textureCoordIndex + 1] = st.y / boundingRectangle.height;
+                    textureCoordinates[textureCoordIndex] = stx;
+                    textureCoordinates[textureCoordIndex + 1] = sty;
 
                     textureCoordIndex += 2;
                 }
@@ -28584,33 +28740,55 @@ define('Core/PolygonGeometry',[
         var topAndBottom;
         var outerPositions;
 
-        var results = PolygonGeometryLibrary.polygonsFromHierarchy(polygonHierarchy);
+        var results = PolygonGeometryLibrary.polygonsFromHierarchy(polygonHierarchy, perPositionHeight, ellipsoid);
         var hierarchy = results.hierarchy;
         var polygons = results.polygons;
+        var i;
 
         if (polygons.length === 0) {
-            return undefined;
+            return;
         }
 
-        outerPositions = polygons[0];
+        if (perPositionHeight) {
+            outerPositions = polygons[0].slice();
+            for (i = 0; i < outerPositions.length; i++) {
+                outerPositions[i] = ellipsoid.scaleToGeodeticSurface(outerPositions[i]);
+            }
+        } else {
+            outerPositions = polygons[0];
+        }
+
+        var tangentPlane = EllipsoidTangentPlane.fromPoints(outerPositions, ellipsoid);
+        var boundingRectangle = computeBoundingRectangle(tangentPlane, outerPositions, stRotation, scratchBoundingRectangle);
 
         var geometry;
         var geometries = [];
-        var i;
 
+        var options = {
+            vertexFormat: vertexFormat,
+            geometry: undefined,
+            tangentPlane: tangentPlane,
+            boundingRectangle: boundingRectangle,
+            ellipsoid: ellipsoid,
+            stRotation: stRotation,
+            bottom: false,
+            wall: false
+        };
         if (extrude) {
+            options.bottom = true;
             for (i = 0; i < polygons.length; i++) {
                 geometry = createGeometryFromPositionsExtruded(ellipsoid, polygons[i], granularity, hierarchy[i], perPositionHeight);
                 topAndBottom = geometry.topAndBottom;
-                topAndBottom.geometry = PolygonGeometryLibrary.scaleToGeodeticHeightExtruded(topAndBottom.geometry, height, extrudedHeight, ellipsoid, perPositionHeight);
-                topAndBottom.geometry = computeAttributes(vertexFormat, topAndBottom.geometry, outerPositions, ellipsoid, stRotation, true, false);
+                options.geometry = PolygonGeometryLibrary.scaleToGeodeticHeightExtruded(topAndBottom.geometry, height, extrudedHeight, ellipsoid, perPositionHeight);
+                topAndBottom.geometry = computeAttributes(options);
                 geometries.push(topAndBottom);
 
                 walls = geometry.walls;
+                options.wall = true;
                 for ( var k = 0; k < walls.length; k++) {
                     var wall = walls[k];
-                    wall.geometry = PolygonGeometryLibrary.scaleToGeodeticHeightExtruded(wall.geometry, height, extrudedHeight, ellipsoid, perPositionHeight);
-                    wall.geometry = computeAttributes(vertexFormat, wall.geometry, outerPositions, ellipsoid, stRotation, true, true);
+                    options.geometry = PolygonGeometryLibrary.scaleToGeodeticHeightExtruded(wall.geometry, height, extrudedHeight, ellipsoid, perPositionHeight);
+                    wall.geometry = computeAttributes(options);
                     geometries.push(wall);
                 }
             }
@@ -28619,8 +28797,9 @@ define('Core/PolygonGeometry',[
                 geometry = new GeometryInstance({
                     geometry : PolygonGeometryLibrary.createGeometryFromPositions(ellipsoid, polygons[i], granularity, perPositionHeight)
                 });
-                geometry.geometry = PolygonPipeline.scaleToGeodeticHeight(geometry.geometry, height, ellipsoid, !perPositionHeight);
-                geometry.geometry = computeAttributes(vertexFormat, geometry.geometry, outerPositions, ellipsoid, stRotation, false, false);
+                geometry.geometry.attributes.position.values = PolygonPipeline.scaleToGeodeticHeight(geometry.geometry.attributes.position.values, height, ellipsoid, !perPositionHeight);
+                options.geometry = geometry.geometry;
+                geometry.geometry = computeAttributes(options);
                 geometries.push(geometry);
             }
         }
@@ -28678,7 +28857,7 @@ define('Workers/createPolygonGeometry',[
         defined,
         Ellipsoid,
         PolygonGeometry) {
-    "use strict";
+    'use strict';
 
     function createPolygonGeometry(polygonGeometry, offset) {
         if (defined(offset)) {
