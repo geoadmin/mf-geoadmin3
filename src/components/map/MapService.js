@@ -405,14 +405,23 @@ goog.require('ga_urlutils_service');
 
         // Test WMS 1.1.1 with  https://wms.geo.bs.ch/wmsBS
         var createWmsLayer = function(params, options, index) {
-          params.VERSION = params.VERSION || '1.3.0';
           options = options || {};
           options.id = 'WMS||' + options.label + '||' + options.url + '||' +
-              params.LAYERS + '||' + params.VERSION;
+              params.LAYERS;
+
+          // If the WMS has a version specified, we add it in
+          // the id. It's important that the layer keeps the same id as the
+          // one in the url otherwise it breaks the asynchronous reordering of
+          // layers.
+          if (params.VERSION) {
+            options.id += '||' + params.VERSION;
+          }
+
           if (options.useReprojection) {
             options.projection = 'EPSG:4326';
             options.id += '||true';
           }
+
           var source = new ol.source.ImageWMS({
             params: params,
             url: options.url,
@@ -2193,7 +2202,7 @@ goog.require('ga_urlutils_service');
                     opacity: opacity || 1,
                     visible: visible,
                     extent: gaGlobalOptions.defaultExtent,
-                    useReprojection: infos[5]
+                    useReprojection: (infos[5] === 'true')
                   },
                   index + 1);
               } catch (e) {
