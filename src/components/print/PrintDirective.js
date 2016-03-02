@@ -253,15 +253,32 @@ goog.require('ga_time_service');
        * graphicYOffset
        * zIndex
        */
-
+      console.log('TransformToPrintLiteral');
+      
       var literal = {
         zIndex: style.getZIndex()
       };
+      console.log('literal');
+      console.log(literal);
       var type = feature.getGeometry().getType();
+      literal.type = type; //.toLowerCase();
+      console.log('type');
+      console.log(type);
       var fill = style.getFill();
+      console.log('fill');
+      console.log(fill);
       var stroke = style.getStroke();
+      console.log('stroke');
+      console.log(stroke);
       var textStyle = style.getText();
+      console.log('textSryle');
+      console.log(textStyle);
       var imageStyle = style.getImage();
+      console.log('imageStyle');
+      console.log(imageStyle);
+
+      console.log('Literal');
+      console.log(literal);
 
       if (imageStyle) {
         var size, anchor, scale = imageStyle.getScale();
@@ -347,6 +364,8 @@ goog.require('ga_time_service');
         }*/
       }
 
+      console.log('Literal after all');
+      console.log(literal);
       return literal;
     };
 
@@ -355,7 +374,7 @@ goog.require('ga_time_service');
       'layers': {
         'Layer': function(layer) {
           var enc = {
-            layer: layer.bodId,
+            //layer: layer.bodId,
             opacity: layer.getOpacity()
           };
           return enc;
@@ -409,8 +428,10 @@ goog.require('ga_time_service');
           });
           angular.extend(enc, {
             type: 'Vector',
-            style: encStyles,
-            styleProperty: '_gx_style',
+            style: {
+              'version': '2',
+              '*': {'symbolizers': [encStyles]}
+            }, //'_gx_style', //encStyles, _gx_style is the default style
             geoJson: {
               type: 'FeatureCollection',
               features: encFeatures
@@ -432,6 +453,7 @@ goog.require('ga_time_service');
               type: 'WMS',
               baseURL: config.wmsUrl || layer.url,
               layers: layers,
+              layer: layer.bodId,
               styles: styles,
               imageFormat: 'image/' + (config.format || 'png'),
               customParams: {
@@ -446,7 +468,6 @@ goog.require('ga_time_service');
 
         },
         'WMTS': function(layer, config) {
-          window.console.log('in the WMTS');
             var enc = $scope.encoders.layers['Layer'].
                 call(this, layer);
             var source = layer.getSource();
@@ -458,6 +479,7 @@ goog.require('ga_time_service');
             }
             angular.extend(enc, {
               type: 'WMTS',
+              layer: layer.bodId,
               baseURL: 'http://wmts6.geo.admin.ch/1.0.0/' +
                 '{Layer}/{style}/{Time}/{TileMatrixSet}/' +
                 '{TileMatrix}/{TileRow}/{TileCol}.' + imageFormat,
@@ -931,17 +953,6 @@ goog.require('ga_time_service');
               multiPagesPrint) {
             enc['timestamps'] = config.timestamps;
           }
-          window.console.log('config');
-          window.console.log(config);
-          window.console.log('layer');
-          window.console.log(layer);
-          window.console.log('source');
-          window.console.log(source);
-          window.console.log('tileGrid');
-          window.console.log(tileGrid);
-          window.console.log('encWMTS');
-          window.console.log('------------------------');
-          window.console.log(enc);
           return enc;
         }
       },
@@ -952,15 +963,23 @@ goog.require('ga_time_service');
           var encStyle = {
             id: styleId++
           };
+          console.log('Initialization at feature');
+          console.log('the first styles');
+          console.log(styles);
+          console.log('the first encStyle');
+          console.log(encStyle);
 
           // Get the styles of the feature
           if (!styles) {
             if (feature.getStyleFunction()) {
               styles = feature.getStyleFunction().call(feature);
+              console.log('1 ' + styles);
             } else if (layer.getStyleFunction()) {
               styles = layer.getStyleFunction()(feature);
+              console.log('2 ' + styles);
             } else {
               styles = ol.style.defaultStyleFunction(feature);
+              console.log('3 ' + styles);
             }
           }
 
@@ -975,8 +994,6 @@ goog.require('ga_time_service');
           var image = styles[0].getImage();
           if (image instanceof ol.style.RegularShape) {
             var scale = parseFloat($scope.scale.value);
-            window.console.log('scale in image style');
-            window.console.log(scale);
             var resolution = scale / UNITS_RATIO / POINTS_PER_INCH;
             feature = gaPrintStyleService.olPointToPolygon(
                 styles[0], feature, resolution);
@@ -986,7 +1003,7 @@ goog.require('ga_time_service');
           var encFeature = format.writeFeatureObject(feature);
           if (!encFeature.properties) {
             encFeature.properties = {};
-         } else {
+          } else {
            // Fix circular structure to JSON
            // see: https://github.com/geoadmin/mf-geoadmin3/issues/1213
             delete encFeature.properties.Style;
@@ -996,35 +1013,59 @@ goog.require('ga_time_service');
           encFeatures.push(encFeature);
 
           // Encode a style of a feature
-                   if (styles && styles.length > 0) {
+          console.log('Encode a style of a feature');
+          if (styles && styles.length > 0) {
+                     console.log('styles');
+                     console.log(styles);
+                     console.log('styles[0]');
+                     console.log(styles[0]);
             angular.extend(encStyle, transformToPrintLiteral(feature,
                 styles[0]));
-            encStyles[encStyle.id] = encStyle;
+            console.log('back from the transform');
+            console.log('encStyle');
+            console.log(encStyle);
+          }
+            //encStyles[encStyle.id] = encStyle;
+/*            console.log('encStyles');
+            console.log(encStyles);
             var styleToEncode = styles[0];
+            console.log('styleToEncode');
+            console.log(styleToEncode);
             // If a feature has a style with a geometryFunction defined, we
             // must also display this geometry with the good style (used for
             // azimuth).
             for (var i = 0; i < styles.length; i++) {
+              console.log('in the loop of styles for geom');
               var style = styles[i];
+              console.log('style');
+              console.log(style);
               if (angular.isFunction(style.getGeometry())) {
                 var geom = style.getGeometry()(feature);
-                if (geom) {
+                console.log('geom');
+                console.log(geom);
+                encStyles = encStyle;
+                /*if (geom) {
                   var encoded = $scope.encoders.features.feature(layer,
                       new ol.Feature(geom), [style]);
+                  console.log('still in the loop of geom');
+                  console.log('encoded');
+                  console.log(encoded);
                   encFeatures = encFeatures.concat(encoded.encFeatures);
+                  console.log('encFeatures');
+                  console.log(encFeatures);
                   angular.extend(encStyles, encoded.encStyles);
-                }
-              }
-            }
-          }
-
-          window.console.log('encFeatures');
-          window.console.log(encFeatures);
-          window.console.log('encStyles');
-          window.console.log(encStyles);
+                  console.log('encStyles');
+                  console.log(encStyles);
+                }*/
+        //      }
+        //    }*/
+          
+          //}
+          console.log('encStyle all together');
+          console.log(encStyle);
           return {
             encFeatures: encFeatures,
-            encStyles: encStyles
+            encStyles: encStyle
           };
         }
       },
@@ -1224,8 +1265,8 @@ goog.require('ga_time_service');
 
         if (center) {
           var encOverlayLayer = {
-            'type': 'Vector',
-            'style': {
+          'type': 'Vector',
+            'styles': {
               '1': { // Style for marker position
                 'externalGraphic': $scope.options.markerUrl,
                 'graphicWidth': 20,
@@ -1248,7 +1289,7 @@ goog.require('ga_time_service');
                 'fontWeight': 'normal'
               }
             },
-            'styleProperty': '_gx_style',
+            'styleProperty': '_gx_style', 
             'geoJson': {
               'type': 'FeatureCollection',
               'features': [{
@@ -1259,7 +1300,7 @@ goog.require('ga_time_service');
                 'geometry': {
                   'type': 'Point',
                   'coordinates': [center[0], center[1], 0]
-                }
+                } 
               }]
             },
             'name': 'drawing',
@@ -1355,8 +1396,6 @@ goog.require('ga_time_service');
             var http = $http.get(url, {
               timeout: canceller.promise
             }).success(function(data) {
-              window.console.log('Data at get request status');
-              window.console.log(data);
               if (!$scope.options.printing) {
                 return;
               }
