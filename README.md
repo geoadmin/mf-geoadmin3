@@ -175,10 +175,6 @@ The code for deployment, however, does not come from your working directory,
 but does get cloned (first time) or pulled (if done once) *directly from github*.
 So you'll likely use this command *after* you push your branch to github.
 
-Use `make deploybranch GIT_BRANCH=dev_other_branch` to deploy a different 
-branch than the one you are currently working on. Make sure that the branch 
-specified exists on github.
-
 The first time you use the command will take some time to execute.
 
 The code of the deployed branch is in a specific directory 

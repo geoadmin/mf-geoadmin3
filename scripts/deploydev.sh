@@ -48,8 +48,9 @@ if [ $CREATE_SNAPSHOT == 'true' ]; then
   sudo -u deploy deploy -c deploy/deploy.cfg $SNAPSHOTDIR
   echo "Snapshot of branch $GITBRANCH created at $SNAPSHOTDIR"
   cd $SNAPSHOTDIR/geoadmin/code/geoadmin/
-  git describe --tags --abbrev=0 > .last-release
-  git log -1 --pretty=format:"%h - %an, %ar : %s" > .last-commit-ref
+  git describe --tags --abbrev=0 > .build-artefacts/last-release
+  git log -1 --pretty=format:"%h - %an, %ar : %s" > .build-artefacts/last-commit-ref
+  git rev-parse --symbolic-full-name --abbrev-ref HEAD > .build-artefacts/deployed-git-branch
   rm -rf .git*
 else
   echo "NO Snapshot created. Specify '-s' parameter got create snapshot."
