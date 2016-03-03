@@ -570,7 +570,7 @@ $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule
 ${MAKO_CMD}: ${PYTHON_VENV}
 	${PIP_CMD} install "Mako==1.0.0"
 	touch $@
-	@ if [[ ! -e ${PYTHON_VENV}/local ]]; then \
+	@if [ ! -e ${PYTHON_VENV}/local ]; then \
 	    ln -s . ${PYTHON_VENV}/local; \
 	fi
 	cp scripts/cmd.py ${PYTHON_VENV}/local/lib/python2.7/site-packages/mako/cmd.py
