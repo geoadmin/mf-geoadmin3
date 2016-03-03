@@ -22,7 +22,7 @@
  */
 (function () {/*global define*/
 define('Core/defined',[],function() {
-    "use strict";
+    'use strict';
 
     /**
      * @exports defined
@@ -38,7 +38,7 @@ define('Core/defined',[],function() {
      * }
      */
     function defined(value) {
-        return value !== undefined;
+        return value !== undefined && value !== null;
     }
 
     return defined;
@@ -49,7 +49,7 @@ define('Core/freezeObject',[
         './defined'
     ], function(
         defined) {
-    "use strict";
+    'use strict';
 
     /**
      * Freezes an object, using Object.freeze if available, otherwise returns
@@ -74,7 +74,7 @@ define('Core/defaultValue',[
         './freezeObject'
     ], function(
         freezeObject) {
-    "use strict";
+    'use strict';
 
     /**
      * Returns the first parameter if not undefined, otherwise the second parameter.
@@ -110,7 +110,7 @@ define('Core/DeveloperError',[
         './defined'
     ], function(
         defined) {
-    "use strict";
+    'use strict';
 
     /**
      * Constructs an exception object that is thrown due to a developer error, e.g., invalid argument,
@@ -394,7 +394,7 @@ define('Core/Math',[
         defaultValue,
         defined,
         DeveloperError) {
-    "use strict";
+    'use strict';
 
     /**
      * Math functions.
@@ -1174,7 +1174,7 @@ define('Core/Cartesian3',[
         DeveloperError,
         freezeObject,
         CesiumMath) {
-    "use strict";
+    'use strict';
 
     /**
      * A 3D Cartesian point.
@@ -2182,7 +2182,7 @@ define('Core/scaleToGeodeticSurface',[
         defined,
         DeveloperError,
         CesiumMath) {
-    "use strict";
+    'use strict';
 
     var scaleToGeodeticSurfaceIntersection = new Cartesian3();
     var scaleToGeodeticSurfaceGradient = new Cartesian3();
@@ -2323,7 +2323,7 @@ define('Core/Cartographic',[
         freezeObject,
         CesiumMath,
         scaleToGeodeticSurface) {
-    "use strict";
+    'use strict';
 
     /**
      * A position defined by longitude, latitude, and height.
@@ -2578,7 +2578,7 @@ define('Core/defineProperties',[
         './defined'
     ], function(
         defined) {
-    "use strict";
+    'use strict';
 
     var definePropertyWorks = (function() {
         try {
@@ -2628,7 +2628,7 @@ define('Core/Ellipsoid',[
         freezeObject,
         CesiumMath,
         scaleToGeodeticSurface) {
-    "use strict";
+    'use strict';
 
     function initialize(ellipsoid, x, y, z) {
         x = defaultValue(x, 0.0);
@@ -3219,7 +3219,7 @@ define('Core/GeographicProjection',[
         defineProperties,
         DeveloperError,
         Ellipsoid) {
-    "use strict";
+    'use strict';
 
     /**
      * A simple map projection where longitude and latitude are linearly mapped to X and Y by multiplying
@@ -3325,7 +3325,7 @@ define('Core/Intersect',[
         './freezeObject'
     ], function(
         freezeObject) {
-    "use strict";
+    'use strict';
 
     /**
      * This enumerated type is used in determining where, relative to the frustum, an
@@ -3368,7 +3368,7 @@ define('Core/Interval',[
         './defaultValue'
     ], function(
         defaultValue) {
-    "use strict";
+    'use strict';
 
     /**
      * Represents the closed interval [start, stop].
@@ -3401,6 +3401,7 @@ define('Core/Matrix3',[
         './Cartesian3',
         './defaultValue',
         './defined',
+        './defineProperties',
         './DeveloperError',
         './freezeObject',
         './Math'
@@ -3408,10 +3409,11 @@ define('Core/Matrix3',[
         Cartesian3,
         defaultValue,
         defined,
+        defineProperties,
         DeveloperError,
         freezeObject,
         CesiumMath) {
-    "use strict";
+    'use strict';
 
     /**
      * A 3x3 matrix, indexable as a column-major order array.
@@ -4813,6 +4815,20 @@ define('Core/Matrix3',[
      */
     Matrix3.COLUMN2ROW2 = 8;
 
+    defineProperties(Matrix3.prototype, {
+        /**
+         * Gets the number of items in the collection.
+         * @memberof Matrix3.prototype
+         *
+         * @type {Number}
+         */
+        length : {
+            get : function() {
+                return Matrix3.packedLength;
+            }
+        }
+    });
+
     /**
      * Duplicates the provided Matrix3 instance.
      *
@@ -4890,7 +4906,7 @@ define('Core/Cartesian4',[
         DeveloperError,
         freezeObject,
         CesiumMath) {
-    "use strict";
+    'use strict';
 
     /**
      * A 4D Cartesian point.
@@ -5664,7 +5680,7 @@ define('Core/RuntimeError',[
         './defined'
     ], function(
         defined) {
-    "use strict";
+    'use strict';
 
     /**
      * Constructs an exception object that is thrown due to an error that can occur at runtime, e.g.,
@@ -5731,6 +5747,7 @@ define('Core/Matrix4',[
         './Cartesian4',
         './defaultValue',
         './defined',
+        './defineProperties',
         './DeveloperError',
         './freezeObject',
         './Math',
@@ -5741,12 +5758,13 @@ define('Core/Matrix4',[
         Cartesian4,
         defaultValue,
         defined,
+        defineProperties,
         DeveloperError,
         freezeObject,
         CesiumMath,
         Matrix3,
         RuntimeError) {
-    "use strict";
+    'use strict';
 
     /**
      * A 4x4 matrix, indexable as a column-major order array.
@@ -8341,6 +8359,20 @@ define('Core/Matrix4',[
      */
     Matrix4.COLUMN3ROW3 = 15;
 
+    defineProperties(Matrix4.prototype, {
+        /**
+         * Gets the number of items in the collection.
+         * @memberof Matrix4.prototype
+         *
+         * @type {Number}
+         */
+        length : {
+            get : function() {
+                return Matrix4.packedLength;
+            }
+        }
+    });
+
     /**
      * Duplicates the provided Matrix4 instance.
      *
@@ -8424,7 +8456,7 @@ define('Core/Plane',[
         defined,
         DeveloperError,
         freezeObject) {
-    "use strict";
+    'use strict';
 
     /**
      * A plane in Hessian Normal Form defined by
@@ -8601,7 +8633,7 @@ define('Core/Rectangle',[
         Ellipsoid,
         freezeObject,
         CesiumMath) {
-    "use strict";
+    'use strict';
 
     /**
      * A two dimensional region specified as longitude and latitude coordinates.
@@ -9360,7 +9392,7 @@ define('Core/BoundingSphere',[
         Matrix4,
         Plane,
         Rectangle) {
-    "use strict";
+    'use strict';
 
     /**
      * A bounding sphere with a center and a radius.
@@ -10656,7 +10688,7 @@ define('Renderer/WebGLConstants',[
         '../Core/freezeObject'
     ], function(
         freezeObject) {
-    "use strict";
+    'use strict';
 
     /**
      * WebGL constants.
@@ -11252,7 +11284,7 @@ define('Core/Fullscreen',[
     ], function(
         defined,
         defineProperties) {
-    "use strict";
+    'use strict';
 
     var _supportsFullscreen;
     var _names = {
@@ -11420,22 +11452,22 @@ define('Core/Fullscreen',[
 
             // casing of Fullscreen differs across browsers
             name = prefix + 'FullscreenEnabled';
-            if (defined(document[name])) {
+            if (document[name] !== undefined) {
                 _names.fullscreenEnabled = name;
             } else {
                 name = prefix + 'FullScreenEnabled';
-                if (defined(document[name])) {
+                if (document[name] !== undefined) {
                     _names.fullscreenEnabled = name;
                 }
             }
 
             // casing of Fullscreen differs across browsers
             name = prefix + 'FullscreenElement';
-            if (defined(document[name])) {
+            if (document[name] !== undefined) {
                 _names.fullscreenElement = name;
             } else {
                 name = prefix + 'FullScreenElement';
-                if (defined(document[name])) {
+                if (document[name] !== undefined) {
                     _names.fullscreenElement = name;
                 }
             }
@@ -11443,7 +11475,7 @@ define('Core/Fullscreen',[
             // thankfully, event names are all lowercase per spec
             name = prefix + 'fullscreenchange';
             // event names do not have 'on' in the front, but the property on the document does
-            if (defined(document['on' + name])) {
+            if (document['on' + name] !== undefined) {
                 //except on IE
                 if (prefix === 'ms') {
                     name = 'MSFullscreenChange';
@@ -11452,7 +11484,7 @@ define('Core/Fullscreen',[
             }
 
             name = prefix + 'fullscreenerror';
-            if (defined(document['on' + name])) {
+            if (document['on' + name] !== undefined) {
                 //except on IE
                 if (prefix === 'ms') {
                     name = 'MSFullscreenError';
@@ -11500,6 +11532,7 @@ define('Core/Fullscreen',[
 
     return Fullscreen;
 });
+
 /*global define*/
 define('Core/FeatureDetection',[
         './defaultValue',
@@ -11509,7 +11542,7 @@ define('Core/FeatureDetection',[
         defaultValue,
         defined,
         Fullscreen) {
-    "use strict";
+    'use strict';
 
     var theNavigator;
     if (typeof navigator !== 'undefined') {
@@ -11756,7 +11789,7 @@ define('Core/ComponentDatatype',[
         DeveloperError,
         FeatureDetection,
         freezeObject) {
-    "use strict";
+    'use strict';
 
     // Bail out if the browser doesn't support typed arrays, to prevent the setup function
     // from failing, since we won't be able to create a WebGL context anyway.
@@ -12014,7 +12047,7 @@ define('Core/Quaternion',[
         freezeObject,
         CesiumMath,
         Matrix3) {
-    "use strict";
+    'use strict';
 
     /**
      * A set of 4-dimensional coordinates used to represent rotation in 3-dimensional space.
@@ -13101,7 +13134,7 @@ define('Core/EllipseGeometryLibrary',[
         CesiumMath,
         Matrix3,
         Quaternion) {
-    "use strict";
+    'use strict';
 
     var EllipseGeometryLibrary = {};
 
@@ -13369,7 +13402,7 @@ define('Core/GeometryType',[
         './freezeObject'
     ], function(
         freezeObject) {
-    "use strict";
+    'use strict';
 
     /**
      * @private
@@ -13391,7 +13424,7 @@ define('Core/PrimitiveType',[
     ], function(
         WebGLConstants,
         freezeObject) {
-    "use strict";
+    'use strict';
 
     /**
      * The type of a geometric primitive, i.e., points, lines, and triangles.
@@ -13489,7 +13522,7 @@ define('Core/Geometry',[
         DeveloperError,
         GeometryType,
         PrimitiveType) {
-    "use strict";
+    'use strict';
 
     /**
      * A geometry representation with attributes forming vertices and optional index data
@@ -13682,7 +13715,7 @@ define('Core/GeometryAttribute',[
         defaultValue,
         defined,
         DeveloperError) {
-    "use strict";
+    'use strict';
 
     /**
      * Values and type information for geometry attributes.  A {@link Geometry}
@@ -13819,7 +13852,7 @@ define('Core/GeometryAttributes',[
         './defaultValue'
     ], function(
         defaultValue) {
-    "use strict";
+    'use strict';
 
     /**
      * Attributes, which make up a geometry's vertices.  Each property in this object corresponds to a
@@ -13923,7 +13956,7 @@ define('Core/IndexDatatype',[
         DeveloperError,
         freezeObject,
         CesiumMath) {
-    "use strict";
+    'use strict';
 
     /**
      * Constants for WebGL index datatypes.  These corresponds to the
@@ -14087,7 +14120,7 @@ define('Core/EllipseOutlineGeometry',[
         IndexDatatype,
         CesiumMath,
         PrimitiveType) {
-    "use strict";
+    'use strict';
 
     var scratchCartesian1 = new Cartesian3();
     var boundingSphereCenter = new Cartesian3();
@@ -14238,9 +14271,6 @@ define('Core/EllipseOutlineGeometry',[
         if (!defined(semiMinorAxis)) {
             throw new DeveloperError('semiMinorAxis is required.');
         }
-        if (semiMajorAxis <= 0.0 || semiMinorAxis <= 0.0) {
-            throw new DeveloperError('Semi-major and semi-minor axes must be greater than zero.');
-        }
         if (semiMajorAxis < semiMinorAxis) {
             throw new DeveloperError('semiMajorAxis must be greater than or equal to the semiMinorAxis.');
         }
@@ -14375,9 +14405,13 @@ define('Core/EllipseOutlineGeometry',[
      * Computes the geometric representation of an outline of an ellipse on an ellipsoid, including its vertices, indices, and a bounding sphere.
      *
      * @param {EllipseOutlineGeometry} ellipseGeometry A description of the ellipse.
-     * @returns {Geometry} The computed vertices and indices.
+     * @returns {Geometry|undefined} The computed vertices and indices.
      */
     EllipseOutlineGeometry.createGeometry = function(ellipseGeometry) {
+        if ((ellipseGeometry._semiMajorAxis <= 0.0) || (ellipseGeometry._semiMinorAxis <= 0.0)) {
+            return;
+        }
+
         ellipseGeometry._center = ellipseGeometry._ellipsoid.scaleToGeodeticSurface(ellipseGeometry._center, ellipseGeometry._center);
         var options = {
             center : ellipseGeometry._center,
@@ -14425,7 +14459,7 @@ define('Core/CircleOutlineGeometry',[
         DeveloperError,
         EllipseOutlineGeometry,
         Ellipsoid) {
-    "use strict";
+    'use strict';
 
     /**
      * A description of the outline of a circle on the ellipsoid.
@@ -14462,9 +14496,6 @@ define('Core/CircleOutlineGeometry',[
 
                 if (!defined(radius)) {
             throw new DeveloperError('radius is required.');
-        }
-        if (radius <= 0.0) {
-            throw new DeveloperError('radius must be greater than zero.');
         }
         
         var ellipseGeometryOptions = {
@@ -14550,7 +14581,7 @@ define('Core/CircleOutlineGeometry',[
      * Computes the geometric representation of an outline of a circle on an ellipsoid, including its vertices, indices, and a bounding sphere.
      *
      * @param {CircleOutlineGeometry} circleGeometry A description of the circle.
-     * @returns {Geometry} The computed vertices and indices.
+     * @returns {Geometry|undefined} The computed vertices and indices.
      */
     CircleOutlineGeometry.createGeometry = function(circleGeometry) {
         return EllipseOutlineGeometry.createGeometry(circleGeometry._ellipseGeometry);
@@ -14570,7 +14601,7 @@ define('Workers/createCircleOutlineGeometry',[
         CircleOutlineGeometry,
         defined,
         Ellipsoid) {
-    "use strict";
+    'use strict';
 
     function createCircleOutlineGeometry(circleGeometry, offset) {
         if (defined(offset)) {

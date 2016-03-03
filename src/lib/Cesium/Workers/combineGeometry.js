@@ -22,7 +22,7 @@
  */
 (function () {/*global define*/
 define('Core/defined',[],function() {
-    "use strict";
+    'use strict';
 
     /**
      * @exports defined
@@ -38,7 +38,7 @@ define('Core/defined',[],function() {
      * }
      */
     function defined(value) {
-        return value !== undefined;
+        return value !== undefined && value !== null;
     }
 
     return defined;
@@ -49,7 +49,7 @@ define('Core/freezeObject',[
         './defined'
     ], function(
         defined) {
-    "use strict";
+    'use strict';
 
     /**
      * Freezes an object, using Object.freeze if available, otherwise returns
@@ -74,7 +74,7 @@ define('Core/defaultValue',[
         './freezeObject'
     ], function(
         freezeObject) {
-    "use strict";
+    'use strict';
 
     /**
      * Returns the first parameter if not undefined, otherwise the second parameter.
@@ -110,7 +110,7 @@ define('Core/DeveloperError',[
         './defined'
     ], function(
         defined) {
-    "use strict";
+    'use strict';
 
     /**
      * Constructs an exception object that is thrown due to a developer error, e.g., invalid argument,
@@ -394,7 +394,7 @@ define('Core/Math',[
         defaultValue,
         defined,
         DeveloperError) {
-    "use strict";
+    'use strict';
 
     /**
      * Math functions.
@@ -1174,7 +1174,7 @@ define('Core/Cartesian3',[
         DeveloperError,
         freezeObject,
         CesiumMath) {
-    "use strict";
+    'use strict';
 
     /**
      * A 3D Cartesian point.
@@ -2182,7 +2182,7 @@ define('Core/scaleToGeodeticSurface',[
         defined,
         DeveloperError,
         CesiumMath) {
-    "use strict";
+    'use strict';
 
     var scaleToGeodeticSurfaceIntersection = new Cartesian3();
     var scaleToGeodeticSurfaceGradient = new Cartesian3();
@@ -2323,7 +2323,7 @@ define('Core/Cartographic',[
         freezeObject,
         CesiumMath,
         scaleToGeodeticSurface) {
-    "use strict";
+    'use strict';
 
     /**
      * A position defined by longitude, latitude, and height.
@@ -2578,7 +2578,7 @@ define('Core/defineProperties',[
         './defined'
     ], function(
         defined) {
-    "use strict";
+    'use strict';
 
     var definePropertyWorks = (function() {
         try {
@@ -2628,7 +2628,7 @@ define('Core/Ellipsoid',[
         freezeObject,
         CesiumMath,
         scaleToGeodeticSurface) {
-    "use strict";
+    'use strict';
 
     function initialize(ellipsoid, x, y, z) {
         x = defaultValue(x, 0.0);
@@ -3219,7 +3219,7 @@ define('Core/GeographicProjection',[
         defineProperties,
         DeveloperError,
         Ellipsoid) {
-    "use strict";
+    'use strict';
 
     /**
      * A simple map projection where longitude and latitude are linearly mapped to X and Y by multiplying
@@ -3325,7 +3325,7 @@ define('Core/Intersect',[
         './freezeObject'
     ], function(
         freezeObject) {
-    "use strict";
+    'use strict';
 
     /**
      * This enumerated type is used in determining where, relative to the frustum, an
@@ -3368,7 +3368,7 @@ define('Core/Interval',[
         './defaultValue'
     ], function(
         defaultValue) {
-    "use strict";
+    'use strict';
 
     /**
      * Represents the closed interval [start, stop].
@@ -3401,6 +3401,7 @@ define('Core/Matrix3',[
         './Cartesian3',
         './defaultValue',
         './defined',
+        './defineProperties',
         './DeveloperError',
         './freezeObject',
         './Math'
@@ -3408,10 +3409,11 @@ define('Core/Matrix3',[
         Cartesian3,
         defaultValue,
         defined,
+        defineProperties,
         DeveloperError,
         freezeObject,
         CesiumMath) {
-    "use strict";
+    'use strict';
 
     /**
      * A 3x3 matrix, indexable as a column-major order array.
@@ -4813,6 +4815,20 @@ define('Core/Matrix3',[
      */
     Matrix3.COLUMN2ROW2 = 8;
 
+    defineProperties(Matrix3.prototype, {
+        /**
+         * Gets the number of items in the collection.
+         * @memberof Matrix3.prototype
+         *
+         * @type {Number}
+         */
+        length : {
+            get : function() {
+                return Matrix3.packedLength;
+            }
+        }
+    });
+
     /**
      * Duplicates the provided Matrix3 instance.
      *
@@ -4890,7 +4906,7 @@ define('Core/Cartesian4',[
         DeveloperError,
         freezeObject,
         CesiumMath) {
-    "use strict";
+    'use strict';
 
     /**
      * A 4D Cartesian point.
@@ -5664,7 +5680,7 @@ define('Core/RuntimeError',[
         './defined'
     ], function(
         defined) {
-    "use strict";
+    'use strict';
 
     /**
      * Constructs an exception object that is thrown due to an error that can occur at runtime, e.g.,
@@ -5731,6 +5747,7 @@ define('Core/Matrix4',[
         './Cartesian4',
         './defaultValue',
         './defined',
+        './defineProperties',
         './DeveloperError',
         './freezeObject',
         './Math',
@@ -5741,12 +5758,13 @@ define('Core/Matrix4',[
         Cartesian4,
         defaultValue,
         defined,
+        defineProperties,
         DeveloperError,
         freezeObject,
         CesiumMath,
         Matrix3,
         RuntimeError) {
-    "use strict";
+    'use strict';
 
     /**
      * A 4x4 matrix, indexable as a column-major order array.
@@ -8341,6 +8359,20 @@ define('Core/Matrix4',[
      */
     Matrix4.COLUMN3ROW3 = 15;
 
+    defineProperties(Matrix4.prototype, {
+        /**
+         * Gets the number of items in the collection.
+         * @memberof Matrix4.prototype
+         *
+         * @type {Number}
+         */
+        length : {
+            get : function() {
+                return Matrix4.packedLength;
+            }
+        }
+    });
+
     /**
      * Duplicates the provided Matrix4 instance.
      *
@@ -8424,7 +8456,7 @@ define('Core/Plane',[
         defined,
         DeveloperError,
         freezeObject) {
-    "use strict";
+    'use strict';
 
     /**
      * A plane in Hessian Normal Form defined by
@@ -8601,7 +8633,7 @@ define('Core/Rectangle',[
         Ellipsoid,
         freezeObject,
         CesiumMath) {
-    "use strict";
+    'use strict';
 
     /**
      * A two dimensional region specified as longitude and latitude coordinates.
@@ -9360,7 +9392,7 @@ define('Core/BoundingSphere',[
         Matrix4,
         Plane,
         Rectangle) {
-    "use strict";
+    'use strict';
 
     /**
      * A bounding sphere with a center and a radius.
@@ -10658,7 +10690,7 @@ define('Core/Fullscreen',[
     ], function(
         defined,
         defineProperties) {
-    "use strict";
+    'use strict';
 
     var _supportsFullscreen;
     var _names = {
@@ -10826,22 +10858,22 @@ define('Core/Fullscreen',[
 
             // casing of Fullscreen differs across browsers
             name = prefix + 'FullscreenEnabled';
-            if (defined(document[name])) {
+            if (document[name] !== undefined) {
                 _names.fullscreenEnabled = name;
             } else {
                 name = prefix + 'FullScreenEnabled';
-                if (defined(document[name])) {
+                if (document[name] !== undefined) {
                     _names.fullscreenEnabled = name;
                 }
             }
 
             // casing of Fullscreen differs across browsers
             name = prefix + 'FullscreenElement';
-            if (defined(document[name])) {
+            if (document[name] !== undefined) {
                 _names.fullscreenElement = name;
             } else {
                 name = prefix + 'FullScreenElement';
-                if (defined(document[name])) {
+                if (document[name] !== undefined) {
                     _names.fullscreenElement = name;
                 }
             }
@@ -10849,7 +10881,7 @@ define('Core/Fullscreen',[
             // thankfully, event names are all lowercase per spec
             name = prefix + 'fullscreenchange';
             // event names do not have 'on' in the front, but the property on the document does
-            if (defined(document['on' + name])) {
+            if (document['on' + name] !== undefined) {
                 //except on IE
                 if (prefix === 'ms') {
                     name = 'MSFullscreenChange';
@@ -10858,7 +10890,7 @@ define('Core/Fullscreen',[
             }
 
             name = prefix + 'fullscreenerror';
-            if (defined(document['on' + name])) {
+            if (document['on' + name] !== undefined) {
                 //except on IE
                 if (prefix === 'ms') {
                     name = 'MSFullscreenError';
@@ -10906,6 +10938,7 @@ define('Core/Fullscreen',[
 
     return Fullscreen;
 });
+
 /*global define*/
 define('Core/FeatureDetection',[
         './defaultValue',
@@ -10915,7 +10948,7 @@ define('Core/FeatureDetection',[
         defaultValue,
         defined,
         Fullscreen) {
-    "use strict";
+    'use strict';
 
     var theNavigator;
     if (typeof navigator !== 'undefined') {
@@ -11162,7 +11195,7 @@ define('Core/Color',[
         FeatureDetection,
         freezeObject,
         CesiumMath) {
-    "use strict";
+    'use strict';
 
     function hue2rgb(m1, m2, h) {
         if (h < 0) {
@@ -11319,17 +11352,18 @@ define('Core/Color',[
      * of the system.
      *
      * @param {Number} rgba A single numeric unsigned 32-bit RGBA value.
-     * @returns {Color} A new color instance.
+     * @param {Color} [result] The object to store the result in, if undefined a new instance will be created.
+     * @returns {Color} The color object.
      *
      * @example
      * var color = Cesium.Color.fromRgba(0x67ADDFFF);
      *
      * @see Color#toRgba
      */
-    Color.fromRgba = function(rgba) {
+    Color.fromRgba = function(rgba, result) {
         // scratchUint32Array and scratchUint8Array share an underlying array buffer
         scratchUint32Array[0] = rgba;
-        return Color.fromBytes(scratchUint8Array[0], scratchUint8Array[1], scratchUint8Array[2], scratchUint8Array[3]);
+        return Color.fromBytes(scratchUint8Array[0], scratchUint8Array[1], scratchUint8Array[2], scratchUint8Array[3], result);
     };
 
     /**
@@ -11339,11 +11373,12 @@ define('Core/Color',[
      * @param {Number} [saturation=0] The saturation value 0...1
      * @param {Number} [lightness=0] The lightness value 0...1
      * @param {Number} [alpha=1.0] The alpha component 0...1
+     * @param {Color} [result] The object to store the result in, if undefined a new instance will be created.
      * @returns {Color} The color object.
      *
      * @see {@link http://www.w3.org/TR/css3-color/#hsl-color|CSS color values}
      */
-    Color.fromHsl = function(hue, saturation, lightness, alpha) {
+    Color.fromHsl = function(hue, saturation, lightness, alpha, result) {
         hue = defaultValue(hue, 0.0) % 1.0;
         saturation = defaultValue(saturation, 0.0);
         lightness = defaultValue(lightness, 0.0);
@@ -11367,7 +11402,15 @@ define('Core/Color',[
             blue = hue2rgb(m1, m2, hue - 1 / 3);
         }
 
-        return new Color(red, green, blue, alpha);
+        if (!defined(result)) {
+            return new Color(red, green, blue, alpha);
+        }
+
+        result.red = red;
+        result.green = green;
+        result.blue = blue;
+        result.alpha = alpha;
+        return result;
     };
 
     /**
@@ -11489,6 +11532,7 @@ define('Core/Color',[
      * Creates a Color instance from a CSS color value.
      *
      * @param {String} color The CSS color value in #rgb, #rrggbb, rgb(), rgba(), hsl(), or hsla() format.
+     * @param {Color} [result] The object to store the result in, if undefined a new instance will be created.
      * @returns {Color} The color object, or undefined if the string was not a valid CSS color.
      *
      *
@@ -11498,36 +11542,44 @@ define('Core/Color',[
      * 
      * @see {@link http://www.w3.org/TR/css3-color|CSS color values}
      */
-    Color.fromCssColorString = function(color) {
+    Color.fromCssColorString = function(color, result) {
                 if (!defined(color)) {
             throw new DeveloperError('color is required');
         }
         
+        if (!defined(result)) {
+            result = new Color();
+        }
+
         var namedColor = Color[color.toUpperCase()];
         if (defined(namedColor)) {
-            return Color.clone(namedColor);
+            Color.clone(namedColor, result);
+            return result;
         }
 
         var matches = rgbMatcher.exec(color);
         if (matches !== null) {
-            return new Color(parseInt(matches[1], 16) / 15.0,
-                             parseInt(matches[2], 16) / 15.0,
-                             parseInt(matches[3], 16) / 15.0);
+            result.red = parseInt(matches[1], 16) / 15;
+            result.green = parseInt(matches[2], 16) / 15.0;
+            result.blue = parseInt(matches[3], 16) / 15.0;
+            return result;
         }
 
         matches = rrggbbMatcher.exec(color);
         if (matches !== null) {
-            return new Color(parseInt(matches[1], 16) / 255.0,
-                             parseInt(matches[2], 16) / 255.0,
-                             parseInt(matches[3], 16) / 255.0);
+            result.red = parseInt(matches[1], 16) / 255.0;
+            result.green = parseInt(matches[2], 16) / 255.0;
+            result.blue = parseInt(matches[3], 16) / 255.0;
+            return result;
         }
 
         matches = rgbParenthesesMatcher.exec(color);
         if (matches !== null) {
-            return new Color(parseFloat(matches[1]) / ('%' === matches[1].substr(-1) ? 100.0 : 255.0),
-                             parseFloat(matches[2]) / ('%' === matches[2].substr(-1) ? 100.0 : 255.0),
-                             parseFloat(matches[3]) / ('%' === matches[3].substr(-1) ? 100.0 : 255.0),
-                             parseFloat(defaultValue(matches[4], '1.0')));
+            result.red = parseFloat(matches[1]) / ('%' === matches[1].substr(-1) ? 100.0 : 255.0);
+            result.green = parseFloat(matches[2]) / ('%' === matches[2].substr(-1) ? 100.0 : 255.0);
+            result.blue = parseFloat(matches[3]) / ('%' === matches[3].substr(-1) ? 100.0 : 255.0);
+            result.alpha = parseFloat(defaultValue(matches[4], '1.0'));
+            return result;
         }
 
         matches = hslParenthesesMatcher.exec(color);
@@ -11535,10 +11587,11 @@ define('Core/Color',[
             return Color.fromHsl(parseFloat(matches[1]) / 360.0,
                                  parseFloat(matches[2]) / 100.0,
                                  parseFloat(matches[3]) / 100.0,
-                                 parseFloat(defaultValue(matches[4], '1.0')));
+                                 parseFloat(defaultValue(matches[4], '1.0')), result);
         }
 
-        return undefined;
+        result = undefined;
+        return result;
     };
 
     /**
@@ -11839,6 +11892,188 @@ define('Core/Color',[
      */
     Color.prototype.withAlpha = function(alpha, result) {
         return Color.fromAlpha(this, alpha, result);
+    };
+
+    /**
+     * Computes the componentwise sum of two Colors.
+     *
+     * @param {Color} left The first Color.
+     * @param {Color} right The second Color.
+     * @param {Color} result The object onto which to store the result.
+     * @returns {Color} The modified result parameter.
+     */
+    Color.add = function(left, right, result) {
+                if (!defined(left)) {
+            throw new DeveloperError('left is required');
+        }
+        if (!defined(right)) {
+            throw new DeveloperError('right is required');
+        }
+        if (!defined(result)) {
+            throw new DeveloperError('result is required');
+        }
+        
+        result.red = left.red + right.red;
+        result.green = left.green + right.green;
+        result.blue = left.blue + right.blue;
+        result.alpha = left.alpha + right.alpha;
+        return result;
+    };
+
+    /**
+     * Computes the componentwise difference of two Colors.
+     *
+     * @param {Color} left The first Color.
+     * @param {Color} right The second Color.
+     * @param {Color} result The object onto which to store the result.
+     * @returns {Color} The modified result parameter.
+     */
+    Color.subtract = function(left, right, result) {
+                if (!defined(left)) {
+            throw new DeveloperError('left is required');
+        }
+        if (!defined(right)) {
+            throw new DeveloperError('right is required');
+        }
+        if (!defined(result)) {
+            throw new DeveloperError('result is required');
+        }
+        
+        result.red = left.red - right.red;
+        result.green = left.green - right.green;
+        result.blue = left.blue - right.blue;
+        result.alpha = left.alpha - right.alpha;
+        return result;
+    };
+
+    /**
+     * Computes the componentwise product of two Colors.
+     *
+     * @param {Color} left The first Color.
+     * @param {Color} right The second Color.
+     * @param {Color} result The object onto which to store the result.
+     * @returns {Color} The modified result parameter.
+     */
+    Color.multiply = function(left, right, result) {
+                if (!defined(left)) {
+            throw new DeveloperError('left is required');
+        }
+        if (!defined(right)) {
+            throw new DeveloperError('right is required');
+        }
+        if (!defined(result)) {
+            throw new DeveloperError('result is required');
+        }
+        
+        result.red = left.red * right.red;
+        result.green = left.green * right.green;
+        result.blue = left.blue * right.blue;
+        result.alpha = left.alpha * right.alpha;
+        return result;
+    };
+
+    /**
+     * Computes the componentwise quotient of two Colors.
+     *
+     * @param {Color} left The first Color.
+     * @param {Color} right The second Color.
+     * @param {Color} result The object onto which to store the result.
+     * @returns {Color} The modified result parameter.
+     */
+    Color.divide = function(left, right, result) {
+                if (!defined(left)) {
+            throw new DeveloperError('left is required');
+        }
+        if (!defined(right)) {
+            throw new DeveloperError('right is required');
+        }
+        if (!defined(result)) {
+            throw new DeveloperError('result is required');
+        }
+        
+        result.red = left.red / right.red;
+        result.green = left.green / right.green;
+        result.blue = left.blue / right.blue;
+        result.alpha = left.alpha / right.alpha;
+        return result;
+    };
+
+    /**
+     * Computes the componentwise modulus of two Colors.
+     *
+     * @param {Color} left The first Color.
+     * @param {Color} right The second Color.
+     * @param {Color} result The object onto which to store the result.
+     * @returns {Color} The modified result parameter.
+     */
+    Color.mod = function(left, right, result) {
+                if (!defined(left)) {
+            throw new DeveloperError('left is required');
+        }
+        if (!defined(right)) {
+            throw new DeveloperError('right is required');
+        }
+        if (!defined(result)) {
+            throw new DeveloperError('result is required');
+        }
+        
+        result.red = left.red % right.red;
+        result.green = left.green % right.green;
+        result.blue = left.blue % right.blue;
+        result.alpha = left.alpha % right.alpha;
+        return result;
+    };
+
+    /**
+     * Multiplies the provided Color componentwise by the provided scalar.
+     *
+     * @param {Color} color The Color to be scaled.
+     * @param {Number} scalar The scalar to multiply with.
+     * @param {Color} result The object onto which to store the result.
+     * @returns {Color} The modified result parameter.
+     */
+    Color.multiplyByScalar = function(color, scalar, result) {
+                if (!defined(color)) {
+            throw new DeveloperError('cartesian is required');
+        }
+        if (typeof scalar !== 'number') {
+            throw new DeveloperError('scalar is required and must be a number.');
+        }
+        if (!defined(result)) {
+            throw new DeveloperError('result is required');
+        }
+        
+        result.red = color.red * scalar;
+        result.green = color.green * scalar;
+        result.blue = color.blue * scalar;
+        result.alpha = color.alpha * scalar;
+        return result;
+    };
+
+    /**
+     * Divides the provided Color componentwise by the provided scalar.
+     *
+     * @param {Color} color The Color to be divided.
+     * @param {Number} scalar The scalar to divide with.
+     * @param {Color} result The object onto which to store the result.
+     * @returns {Color} The modified result parameter.
+     */
+    Color.divideByScalar = function(color, scalar, result) {
+                if (!defined(color)) {
+            throw new DeveloperError('cartesian is required');
+        }
+        if (typeof scalar !== 'number') {
+            throw new DeveloperError('scalar is required and must be a number.');
+        }
+        if (!defined(result)) {
+            throw new DeveloperError('result is required');
+        }
+        
+        result.red = color.red / scalar;
+        result.green = color.green / scalar;
+        result.blue = color.blue / scalar;
+        result.alpha = color.alpha / scalar;
+        return result;
     };
 
     /**
@@ -13171,7 +13406,7 @@ define('Renderer/WebGLConstants',[
         '../Core/freezeObject'
     ], function(
         freezeObject) {
-    "use strict";
+    'use strict';
 
     /**
      * WebGL constants.
@@ -13775,7 +14010,7 @@ define('Core/ComponentDatatype',[
         DeveloperError,
         FeatureDetection,
         freezeObject) {
-    "use strict";
+    'use strict';
 
     // Bail out if the browser doesn't support typed arrays, to prevent the setup function
     // from failing, since we won't be able to create a WebGL context anyway.
@@ -14019,7 +14254,7 @@ define('Core/GeometryType',[
         './freezeObject'
     ], function(
         freezeObject) {
-    "use strict";
+    'use strict';
 
     /**
      * @private
@@ -14041,7 +14276,7 @@ define('Core/PrimitiveType',[
     ], function(
         WebGLConstants,
         freezeObject) {
-    "use strict";
+    'use strict';
 
     /**
      * The type of a geometric primitive, i.e., points, lines, and triangles.
@@ -14139,7 +14374,7 @@ define('Core/Geometry',[
         DeveloperError,
         GeometryType,
         PrimitiveType) {
-    "use strict";
+    'use strict';
 
     /**
      * A geometry representation with attributes forming vertices and optional index data
@@ -14332,7 +14567,7 @@ define('Core/GeometryAttribute',[
         defaultValue,
         defined,
         DeveloperError) {
-    "use strict";
+    'use strict';
 
     /**
      * Values and type information for geometry attributes.  A {@link Geometry}
@@ -14469,7 +14704,7 @@ define('Core/GeometryAttributes',[
         './defaultValue'
     ], function(
         defaultValue) {
-    "use strict";
+    'use strict';
 
     /**
      * Attributes, which make up a geometry's vertices.  Each property in this object corresponds to a
@@ -14573,7 +14808,7 @@ define('Core/Cartesian2',[
         DeveloperError,
         freezeObject,
         CesiumMath) {
-    "use strict";
+    'use strict';
 
     /**
      * A 2D Cartesian point.
@@ -15284,7 +15519,7 @@ define('Core/AttributeCompression',[
         defined,
         DeveloperError,
         CesiumMath) {
-    "use strict";
+    'use strict';
 
     /**
      * Attribute compression and decompression functions.
@@ -15543,7 +15778,7 @@ define('Core/barycentricCoordinates',[
         Cartesian3,
         defined,
         DeveloperError) {
-    "use strict";
+    'use strict';
 
     var scratchCartesian1 = new Cartesian3();
     var scratchCartesian2 = new Cartesian3();
@@ -15624,7 +15859,7 @@ define('Core/EncodedCartesian3',[
         Cartesian3,
         defined,
         DeveloperError) {
-    "use strict";
+    'use strict';
 
     /**
      * A fixed-point encoding of a {@link Cartesian3} with 64-bit floating-point components, as two {@link Cartesian3}
@@ -15810,7 +16045,7 @@ define('Core/GeometryInstance',[
         defined,
         DeveloperError,
         Matrix4) {
-    "use strict";
+    'use strict';
 
     /**
      * Geometry instancing allows one {@link Geometry} object to be positions in several
@@ -15940,7 +16175,7 @@ define('Core/IndexDatatype',[
         DeveloperError,
         freezeObject,
         CesiumMath) {
-    "use strict";
+    'use strict';
 
     /**
      * Constants for WebGL index datatypes.  These corresponds to the
@@ -16080,7 +16315,7 @@ define('Core/QuadraticRealPolynomial',[
     ], function(
         DeveloperError,
         CesiumMath) {
-    "use strict";
+    'use strict';
 
     /**
      * Defines functions for 2nd order polynomial functions of one variable with only real coefficients.
@@ -16215,7 +16450,7 @@ define('Core/CubicRealPolynomial',[
     ], function(
         DeveloperError,
         QuadraticRealPolynomial) {
-    "use strict";
+    'use strict';
 
     /**
      * Defines functions for 3rd order polynomial functions of one variable with only real coefficients.
@@ -16455,7 +16690,7 @@ define('Core/QuarticRealPolynomial',[
         DeveloperError,
         CesiumMath,
         QuadraticRealPolynomial) {
-    "use strict";
+    'use strict';
 
     /**
      * Defines functions for 4th order polynomial functions of one variable with only real coefficients.
@@ -16779,7 +17014,7 @@ define('Core/Ray',[
         defaultValue,
         defined,
         DeveloperError) {
-    "use strict";
+    'use strict';
 
     /**
      * Represents a ray that extends infinitely from the provided origin in the provided direction.
@@ -16865,7 +17100,7 @@ define('Core/IntersectionTests',[
         QuadraticRealPolynomial,
         QuarticRealPolynomial,
         Ray) {
-    "use strict";
+    'use strict';
 
     /**
      * Functions for computing the intersection between geometries such as rays, planes, triangles, and ellipsoids.
@@ -17177,6 +17412,7 @@ define('Core/IntersectionTests',[
         }
         
         var ray = scratchLineSegmentRay;
+        Cartesian3.clone(p0, ray.origin);
         var direction = Cartesian3.subtract(p1, p0, ray.direction);
 
         var maxT = Cartesian3.magnitude(direction);
@@ -17722,7 +17958,7 @@ define('Core/Tipsify',[
         defaultValue,
         defined,
         DeveloperError) {
-    "use strict";
+    'use strict';
 
     /**
      * Encapsulates an algorithm to optimize triangles for the post
@@ -18061,7 +18297,7 @@ define('Core/GeometryPipeline',[
         Plane,
         PrimitiveType,
         Tipsify) {
-    "use strict";
+    'use strict';
 
     /**
      * Content pipeline functions for geometries.
@@ -20410,7 +20646,7 @@ define('Core/WebMercatorProjection',[
         DeveloperError,
         Ellipsoid,
         CesiumMath) {
-    "use strict";
+    'use strict';
 
     /**
      * The map projection used by Google Maps, Bing Maps, and most of ArcGIS Online, EPSG:3857.  This
@@ -20585,7 +20821,7 @@ define('Scene/PrimitivePipeline',[
         IndexDatatype,
         Matrix4,
         WebMercatorProjection) {
-    "use strict";
+    'use strict';
 
     // Bail out if the browser doesn't support typed arrays, to prevent the setup function
     // from failing, since we won't be able to create a WebGL context anyway.
@@ -21747,12 +21983,13 @@ define('Scene/PrimitivePipeline',[
 
     return PrimitivePipeline;
 });
+
 /*global define*/
 define('Core/formatError',[
         './defined'
     ], function(
         defined) {
-    "use strict";
+    'use strict';
 
     /**
      * Formats an error object into a String.  If available, uses name, message, and stack
@@ -21794,7 +22031,7 @@ define('Workers/createTaskProcessorWorker',[
         defaultValue,
         defined,
         formatError) {
-    "use strict";
+    'use strict';
 
     /**
      * Creates an adapter function to allow a calculation function to operate as a Web Worker,
@@ -21915,7 +22152,7 @@ define('Workers/combineGeometry',[
     ], function(
         PrimitivePipeline,
         createTaskProcessorWorker) {
-    "use strict";
+    'use strict';
 
     function combineGeometry(packedParameters, transferableObjects) {
         var parameters = PrimitivePipeline.unpackCombineGeometryParameters(packedParameters);

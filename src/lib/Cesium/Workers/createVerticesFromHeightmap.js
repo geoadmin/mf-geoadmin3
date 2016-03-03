@@ -22,7 +22,7 @@
  */
 (function () {/*global define*/
 define('Core/defined',[],function() {
-    "use strict";
+    'use strict';
 
     /**
      * @exports defined
@@ -38,7 +38,7 @@ define('Core/defined',[],function() {
      * }
      */
     function defined(value) {
-        return value !== undefined;
+        return value !== undefined && value !== null;
     }
 
     return defined;
@@ -49,7 +49,7 @@ define('Core/freezeObject',[
         './defined'
     ], function(
         defined) {
-    "use strict";
+    'use strict';
 
     /**
      * Freezes an object, using Object.freeze if available, otherwise returns
@@ -74,7 +74,7 @@ define('Core/defaultValue',[
         './freezeObject'
     ], function(
         freezeObject) {
-    "use strict";
+    'use strict';
 
     /**
      * Returns the first parameter if not undefined, otherwise the second parameter.
@@ -110,7 +110,7 @@ define('Core/DeveloperError',[
         './defined'
     ], function(
         defined) {
-    "use strict";
+    'use strict';
 
     /**
      * Constructs an exception object that is thrown due to a developer error, e.g., invalid argument,
@@ -394,7 +394,7 @@ define('Core/Math',[
         defaultValue,
         defined,
         DeveloperError) {
-    "use strict";
+    'use strict';
 
     /**
      * Math functions.
@@ -1174,7 +1174,7 @@ define('Core/Cartesian3',[
         DeveloperError,
         freezeObject,
         CesiumMath) {
-    "use strict";
+    'use strict';
 
     /**
      * A 3D Cartesian point.
@@ -2182,7 +2182,7 @@ define('Core/scaleToGeodeticSurface',[
         defined,
         DeveloperError,
         CesiumMath) {
-    "use strict";
+    'use strict';
 
     var scaleToGeodeticSurfaceIntersection = new Cartesian3();
     var scaleToGeodeticSurfaceGradient = new Cartesian3();
@@ -2323,7 +2323,7 @@ define('Core/Cartographic',[
         freezeObject,
         CesiumMath,
         scaleToGeodeticSurface) {
-    "use strict";
+    'use strict';
 
     /**
      * A position defined by longitude, latitude, and height.
@@ -2578,7 +2578,7 @@ define('Core/defineProperties',[
         './defined'
     ], function(
         defined) {
-    "use strict";
+    'use strict';
 
     var definePropertyWorks = (function() {
         try {
@@ -2628,7 +2628,7 @@ define('Core/Ellipsoid',[
         freezeObject,
         CesiumMath,
         scaleToGeodeticSurface) {
-    "use strict";
+    'use strict';
 
     function initialize(ellipsoid, x, y, z) {
         x = defaultValue(x, 0.0);
@@ -3207,7 +3207,7 @@ define('Core/Intersect',[
         './freezeObject'
     ], function(
         freezeObject) {
-    "use strict";
+    'use strict';
 
     /**
      * This enumerated type is used in determining where, relative to the frustum, an
@@ -3258,7 +3258,7 @@ define('Core/AxisAlignedBoundingBox',[
         defined,
         DeveloperError,
         Intersect) {
-    "use strict";
+    'use strict';
 
     /**
      * Creates an instance of an AxisAlignedBoundingBox from the minimum and maximum points along the x, y, and z axes.
@@ -3495,7 +3495,7 @@ define('Core/GeographicProjection',[
         defineProperties,
         DeveloperError,
         Ellipsoid) {
-    "use strict";
+    'use strict';
 
     /**
      * A simple map projection where longitude and latitude are linearly mapped to X and Y by multiplying
@@ -3601,7 +3601,7 @@ define('Core/Interval',[
         './defaultValue'
     ], function(
         defaultValue) {
-    "use strict";
+    'use strict';
 
     /**
      * Represents the closed interval [start, stop].
@@ -3634,6 +3634,7 @@ define('Core/Matrix3',[
         './Cartesian3',
         './defaultValue',
         './defined',
+        './defineProperties',
         './DeveloperError',
         './freezeObject',
         './Math'
@@ -3641,10 +3642,11 @@ define('Core/Matrix3',[
         Cartesian3,
         defaultValue,
         defined,
+        defineProperties,
         DeveloperError,
         freezeObject,
         CesiumMath) {
-    "use strict";
+    'use strict';
 
     /**
      * A 3x3 matrix, indexable as a column-major order array.
@@ -5046,6 +5048,20 @@ define('Core/Matrix3',[
      */
     Matrix3.COLUMN2ROW2 = 8;
 
+    defineProperties(Matrix3.prototype, {
+        /**
+         * Gets the number of items in the collection.
+         * @memberof Matrix3.prototype
+         *
+         * @type {Number}
+         */
+        length : {
+            get : function() {
+                return Matrix3.packedLength;
+            }
+        }
+    });
+
     /**
      * Duplicates the provided Matrix3 instance.
      *
@@ -5123,7 +5139,7 @@ define('Core/Cartesian4',[
         DeveloperError,
         freezeObject,
         CesiumMath) {
-    "use strict";
+    'use strict';
 
     /**
      * A 4D Cartesian point.
@@ -5897,7 +5913,7 @@ define('Core/RuntimeError',[
         './defined'
     ], function(
         defined) {
-    "use strict";
+    'use strict';
 
     /**
      * Constructs an exception object that is thrown due to an error that can occur at runtime, e.g.,
@@ -5964,6 +5980,7 @@ define('Core/Matrix4',[
         './Cartesian4',
         './defaultValue',
         './defined',
+        './defineProperties',
         './DeveloperError',
         './freezeObject',
         './Math',
@@ -5974,12 +5991,13 @@ define('Core/Matrix4',[
         Cartesian4,
         defaultValue,
         defined,
+        defineProperties,
         DeveloperError,
         freezeObject,
         CesiumMath,
         Matrix3,
         RuntimeError) {
-    "use strict";
+    'use strict';
 
     /**
      * A 4x4 matrix, indexable as a column-major order array.
@@ -8574,6 +8592,20 @@ define('Core/Matrix4',[
      */
     Matrix4.COLUMN3ROW3 = 15;
 
+    defineProperties(Matrix4.prototype, {
+        /**
+         * Gets the number of items in the collection.
+         * @memberof Matrix4.prototype
+         *
+         * @type {Number}
+         */
+        length : {
+            get : function() {
+                return Matrix4.packedLength;
+            }
+        }
+    });
+
     /**
      * Duplicates the provided Matrix4 instance.
      *
@@ -8657,7 +8689,7 @@ define('Core/Plane',[
         defined,
         DeveloperError,
         freezeObject) {
-    "use strict";
+    'use strict';
 
     /**
      * A plane in Hessian Normal Form defined by
@@ -8834,7 +8866,7 @@ define('Core/Rectangle',[
         Ellipsoid,
         freezeObject,
         CesiumMath) {
-    "use strict";
+    'use strict';
 
     /**
      * A two dimensional region specified as longitude and latitude coordinates.
@@ -9593,7 +9625,7 @@ define('Core/BoundingSphere',[
         Matrix4,
         Plane,
         Rectangle) {
-    "use strict";
+    'use strict';
 
     /**
      * A bounding sphere with a center and a radius.
@@ -10897,7 +10929,7 @@ define('Core/Cartesian2',[
         DeveloperError,
         freezeObject,
         CesiumMath) {
-    "use strict";
+    'use strict';
 
     /**
      * A 2D Cartesian point.
@@ -11612,7 +11644,7 @@ define('Core/EllipsoidalOccluder',[
         defineProperties,
         DeveloperError,
         Rectangle) {
-    "use strict";
+    'use strict';
 
     /**
      * Determine whether or not other objects are visible or hidden behind the visible horizon defined by
@@ -11948,7 +11980,7 @@ define('Core/QuadraticRealPolynomial',[
     ], function(
         DeveloperError,
         CesiumMath) {
-    "use strict";
+    'use strict';
 
     /**
      * Defines functions for 2nd order polynomial functions of one variable with only real coefficients.
@@ -12083,7 +12115,7 @@ define('Core/CubicRealPolynomial',[
     ], function(
         DeveloperError,
         QuadraticRealPolynomial) {
-    "use strict";
+    'use strict';
 
     /**
      * Defines functions for 3rd order polynomial functions of one variable with only real coefficients.
@@ -12323,7 +12355,7 @@ define('Core/QuarticRealPolynomial',[
         DeveloperError,
         CesiumMath,
         QuadraticRealPolynomial) {
-    "use strict";
+    'use strict';
 
     /**
      * Defines functions for 4th order polynomial functions of one variable with only real coefficients.
@@ -12647,7 +12679,7 @@ define('Core/Ray',[
         defaultValue,
         defined,
         DeveloperError) {
-    "use strict";
+    'use strict';
 
     /**
      * Represents a ray that extends infinitely from the provided origin in the provided direction.
@@ -12733,7 +12765,7 @@ define('Core/IntersectionTests',[
         QuadraticRealPolynomial,
         QuarticRealPolynomial,
         Ray) {
-    "use strict";
+    'use strict';
 
     /**
      * Functions for computing the intersection between geometries such as rays, planes, triangles, and ellipsoids.
@@ -13045,6 +13077,7 @@ define('Core/IntersectionTests',[
         }
         
         var ray = scratchLineSegmentRay;
+        Cartesian3.clone(p0, ray.origin);
         var direction = Cartesian3.subtract(p1, p0, ray.direction);
 
         var maxT = Cartesian3.magnitude(direction);
@@ -14336,7 +14369,7 @@ define('Core/binarySearch',[
     ], function(
         defined,
         DeveloperError) {
-    "use strict";
+    'use strict';
 
     /**
      * Finds an item in a sorted array.
@@ -14413,7 +14446,7 @@ define('Core/binarySearch',[
 
 /*global define*/
 define('Core/EarthOrientationParametersSample',[],function() {
-    "use strict";
+    'use strict';
 
     /**
      * A set of Earth Orientation Parameters (EOP) sampled at a time.
@@ -14787,7 +14820,7 @@ return sprintf;
 
 /*global define*/
 define('Core/GregorianDate',[],function() {
-    "use strict";
+    'use strict';
 
     /**
      * Represents a Gregorian date in a more precise format than the JavaScript Date object.
@@ -14848,7 +14881,7 @@ define('Core/isLeapYear',[
         './DeveloperError'
     ], function(
         DeveloperError) {
-    "use strict";
+    'use strict';
 
     /**
      * Determines if a given date is a leap year.
@@ -14874,7 +14907,7 @@ define('Core/isLeapYear',[
 
 /*global define*/
 define('Core/LeapSecond',[],function() {
-    "use strict";
+    'use strict';
 
     /**
      * Describes a single leap second, which is constructed from a {@link JulianDate} and a
@@ -14908,7 +14941,7 @@ define('Core/TimeConstants',[
         './freezeObject'
     ], function(
         freezeObject) {
-    "use strict";
+    'use strict';
 
     /**
      * Constants for time conversions like those done by {@link JulianDate}.
@@ -15001,7 +15034,7 @@ define('Core/TimeStandard',[
         './freezeObject'
     ], function(
         freezeObject) {
-    "use strict";
+    'use strict';
 
     /**
      * Provides the type of time standards which JulianDate can take as input.
@@ -15053,7 +15086,7 @@ define('Core/JulianDate',[
         LeapSecond,
         TimeConstants,
         TimeStandard) {
-    "use strict";
+    'use strict';
 
     var gregorianDateScratch = new GregorianDate();
     var daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
@@ -16026,7 +16059,7 @@ define('Core/clone',[
         './defaultValue'
     ], function(
         defaultValue) {
-    "use strict";
+    'use strict';
 
     /**
      * Clones an object, returning a new object containing the same properties.
@@ -16063,7 +16096,7 @@ define('Core/clone',[
 
 /*global define*/
 define('Core/parseResponseHeaders',[], function() {
-    "use strict";
+    'use strict';
 
     /**
      * Parses the result of XMLHttpRequest's getAllResponseHeaders() method into
@@ -16112,7 +16145,7 @@ define('Core/RequestErrorEvent',[
     ], function(
         defined,
         parseResponseHeaders) {
-    "use strict";
+    'use strict';
 
     /**
      * An event that is raised when a request encounters an error.
@@ -16187,7 +16220,7 @@ define('Core/loadWithXhr',[
         DeveloperError,
         RequestErrorEvent,
         RuntimeError) {
-    "use strict";
+    'use strict';
 
     /**
      * Asynchronously loads the given URL.  Returns a promise that will resolve to
@@ -16358,7 +16391,7 @@ define('Core/loadText',[
         './loadWithXhr'
     ], function(
         loadWithXhr) {
-    "use strict";
+    'use strict';
 
     /**
      * Asynchronously loads the given URL as text.  Returns a promise that will resolve to
@@ -16408,7 +16441,7 @@ define('Core/loadJson',[
         defined,
         DeveloperError,
         loadText) {
-    "use strict";
+    'use strict';
 
     var defaultHeaders = {
         Accept : 'application/json,*/*;q=0.01'
@@ -16491,7 +16524,7 @@ define('Core/EarthOrientationParameters',[
         RuntimeError,
         TimeConstants,
         TimeStandard) {
-    "use strict";
+    'use strict';
 
     /**
      * Specifies Earth polar motion coordinates and the difference between UT1 and UTC.
@@ -17136,7 +17169,7 @@ define('Core/getAbsoluteUri',[
         defaultValue,
         defined,
         DeveloperError) {
-    "use strict";
+    'use strict';
 
     /**
      * Given a relative Uri and a base Uri, returns the absolute Uri of the relative Uri.
@@ -17164,19 +17197,126 @@ define('Core/getAbsoluteUri',[
 });
 
 /*global define*/
+define('Core/joinUrls',[
+        '../ThirdParty/Uri',
+        './defaultValue',
+        './defined',
+        './DeveloperError'
+    ], function(
+        Uri,
+        defaultValue,
+        defined,
+        DeveloperError) {
+    'use strict';
+
+    /**
+     * Function for joining URLs in a manner that is aware of query strings and fragments.
+     * This is useful when the base URL has a query string that needs to be maintained
+     * (e.g. a presigned base URL).
+     * @param {String|Uri} first The base URL.
+     * @param {String|Uri} second The URL path to join to the base URL.  If this URL is absolute, it is returned unmodified.
+     * @param {Boolean} [appendSlash=true] The boolean determining whether there should be a forward slash between first and second.
+     * @private
+     */
+    function joinUrls(first, second, appendSlash) {
+                if (!defined(first)) {
+            throw new DeveloperError('first is required');
+        }
+        if (!defined(second)) {
+            throw new DeveloperError('second is required');
+        }
+        
+        appendSlash = defaultValue(appendSlash, true);
+
+        if (!(first instanceof Uri)) {
+            first = new Uri(first);
+        }
+
+        if (!(second instanceof Uri)) {
+            second = new Uri(second);
+        }
+
+        // Uri.isAbsolute returns false for a URL like '//foo.com'.  So if we have an authority but
+        // not a scheme, add a scheme matching the page's scheme.
+        if (defined(second.authority) && !defined(second.scheme)) {
+            if (typeof document !== 'undefined' && defined(document.location) && defined(document.location.href)) {
+                second.scheme = new Uri(document.location.href).scheme;
+            } else {
+                // Not in a browser?  Use the first URL's scheme instead.
+                second.scheme = first.scheme;
+            }
+        }
+
+        // If the second URL is absolute, use it for the scheme, authority, and path.
+        var baseUri = first;
+        if (second.isAbsolute()) {
+            baseUri = second;
+        }
+
+        var url = '';
+        if (defined(baseUri.scheme)) {
+            url += baseUri.scheme + ':';
+        }
+        if (defined(baseUri.authority)) {
+            url += '//' + baseUri.authority;
+
+            if (baseUri.path !== '' && baseUri.path !== '/') {
+                url = url.replace(/\/?$/, '/');
+                baseUri.path = baseUri.path.replace(/^\/?/g, '');
+            }
+        }
+
+        // Combine the paths (only if second is relative).
+        if (baseUri === first) {
+            if (appendSlash) {
+                url += first.path.replace(/\/?$/, '/') + second.path.replace(/^\/?/g, '');
+            } else {
+                url += first.path + second.path;
+            }
+        } else {
+            url += second.path;
+        }
+
+        // Combine the queries and fragments.
+        var hasFirstQuery = defined(first.query);
+        var hasSecondQuery = defined(second.query);
+        if (hasFirstQuery && hasSecondQuery) {
+            url += '?' + first.query + '&' + second.query;
+        } else if (hasFirstQuery && !hasSecondQuery) {
+            url += '?' + first.query;
+        } else if (!hasFirstQuery && hasSecondQuery) {
+            url += '?' + second.query;
+        }
+
+        var hasSecondFragment = defined(second.fragment);
+        if (defined(first.fragment) && !hasSecondFragment) {
+            url += '#' + first.fragment;
+        } else if (hasSecondFragment) {
+            url += '#' + second.fragment;
+        }
+
+        return url;
+    }
+
+    return joinUrls;
+});
+
+/*global define*/
 define('Core/buildModuleUrl',[
         '../ThirdParty/Uri',
         './defined',
         './DeveloperError',
         './getAbsoluteUri',
+        './joinUrls',
         'require'
     ], function(
         Uri,
         defined,
         DeveloperError,
         getAbsoluteUri,
+        joinUrls,
         require) {
-    "use strict";
+    'use strict';
     /*global CESIUM_BASE_URL*/
 
     var cesiumScriptRegex = /((?:.*\/)|^)cesium[\w-]*\.js(?:\W|$)/i;
@@ -17220,7 +17360,7 @@ define('Core/buildModuleUrl',[
     }
 
     function buildModuleUrlFromBaseUrl(moduleID) {
-        return new Uri(moduleID).resolve(getCesiumBaseUrl()).toString();
+        return joinUrls(getCesiumBaseUrl(), moduleID);
     }
 
     var implementation;
@@ -17271,7 +17411,7 @@ define('Core/buildModuleUrl',[
 
 /*global define*/
 define('Core/Iau2006XysSample',[],function() {
-    "use strict";
+    'use strict';
 
     /**
      * An IAU 2006 XYS value sampled at a particular time.
@@ -17327,7 +17467,7 @@ define('Core/Iau2006XysData',[
         JulianDate,
         loadJson,
         TimeStandard) {
-    "use strict";
+    'use strict';
 
     /**
      * A set of IAU2006 XYS data that is used to evaluate the transformation between the International
@@ -17581,7 +17721,7 @@ define('Core/Fullscreen',[
     ], function(
         defined,
         defineProperties) {
-    "use strict";
+    'use strict';
 
     var _supportsFullscreen;
     var _names = {
@@ -17749,22 +17889,22 @@ define('Core/Fullscreen',[
 
             // casing of Fullscreen differs across browsers
             name = prefix + 'FullscreenEnabled';
-            if (defined(document[name])) {
+            if (document[name] !== undefined) {
                 _names.fullscreenEnabled = name;
             } else {
                 name = prefix + 'FullScreenEnabled';
-                if (defined(document[name])) {
+                if (document[name] !== undefined) {
                     _names.fullscreenEnabled = name;
                 }
             }
 
             // casing of Fullscreen differs across browsers
             name = prefix + 'FullscreenElement';
-            if (defined(document[name])) {
+            if (document[name] !== undefined) {
                 _names.fullscreenElement = name;
             } else {
                 name = prefix + 'FullScreenElement';
-                if (defined(document[name])) {
+                if (document[name] !== undefined) {
                     _names.fullscreenElement = name;
                 }
             }
@@ -17772,7 +17912,7 @@ define('Core/Fullscreen',[
             // thankfully, event names are all lowercase per spec
             name = prefix + 'fullscreenchange';
             // event names do not have 'on' in the front, but the property on the document does
-            if (defined(document['on' + name])) {
+            if (document['on' + name] !== undefined) {
                 //except on IE
                 if (prefix === 'ms') {
                     name = 'MSFullscreenChange';
@@ -17781,7 +17921,7 @@ define('Core/Fullscreen',[
             }
 
             name = prefix + 'fullscreenerror';
-            if (defined(document['on' + name])) {
+            if (document['on' + name] !== undefined) {
                 //except on IE
                 if (prefix === 'ms') {
                     name = 'MSFullscreenError';
@@ -17829,6 +17969,7 @@ define('Core/Fullscreen',[
 
     return Fullscreen;
 });
+
 /*global define*/
 define('Core/FeatureDetection',[
         './defaultValue',
@@ -17838,7 +17979,7 @@ define('Core/FeatureDetection',[
         defaultValue,
         defined,
         Fullscreen) {
-    "use strict";
+    'use strict';
 
     var theNavigator;
     if (typeof navigator !== 'undefined') {
@@ -18089,7 +18230,7 @@ define('Core/Quaternion',[
         freezeObject,
         CesiumMath,
         Matrix3) {
-    "use strict";
+    'use strict';
 
     /**
      * A set of 4-dimensional coordinates used to represent rotation in 3-dimensional space.
@@ -19204,7 +19345,7 @@ define('Core/Transforms',[
         Matrix4,
         Quaternion,
         TimeConstants) {
-    "use strict";
+    'use strict';
 
     /**
      * Contains functions for transforming positions to various reference frames.
@@ -20007,7 +20148,7 @@ define('Core/EllipsoidTangentPlane',[
         Plane,
         Ray,
         Transforms) {
-    "use strict";
+    'use strict';
 
     var scratchCart4 = new Cartesian4();
     /**
@@ -20343,7 +20484,7 @@ define('Core/OrientedBoundingBox',[
         Matrix3,
         Plane,
         Rectangle) {
-    "use strict";
+    'use strict';
 
     /**
      * Creates an instance of an OrientedBoundingBox.
@@ -21037,7 +21178,7 @@ define('Core/AttributeCompression',[
         defined,
         DeveloperError,
         CesiumMath) {
-    "use strict";
+    'use strict';
 
     /**
      * Attribute compression and decompression functions.
@@ -21290,7 +21431,7 @@ define('Renderer/WebGLConstants',[
         '../Core/freezeObject'
     ], function(
         freezeObject) {
-    "use strict";
+    'use strict';
 
     /**
      * WebGL constants.
@@ -21894,7 +22035,7 @@ define('Core/ComponentDatatype',[
         DeveloperError,
         FeatureDetection,
         freezeObject) {
-    "use strict";
+    'use strict';
 
     // Bail out if the browser doesn't support typed arrays, to prevent the setup function
     // from failing, since we won't be able to create a WebGL context anyway.
@@ -22138,7 +22279,7 @@ define('Core/TerrainQuantization',[
         './freezeObject'
     ], function(
         freezeObject) {
-    "use strict";
+    'use strict';
 
     /**
      * This enumerated type is used to determine how the vertices of the terrain mesh are compressed.
@@ -22189,7 +22330,7 @@ define('Core/TerrainEncoding',[
         Matrix3,
         Matrix4,
         TerrainQuantization) {
-    "use strict";
+    'use strict';
 
     var cartesian3Scratch = new Cartesian3();
     var cartesian3DimScratch = new Cartesian3();
@@ -22536,7 +22677,7 @@ define('Core/HeightmapTessellator',[
         Rectangle,
         TerrainEncoding,
         Transforms) {
-    "use strict";
+    'use strict';
 
     /**
      * Contains functions to create a mesh from a heightmap image.
@@ -22897,7 +23038,7 @@ define('Core/formatError',[
         './defined'
     ], function(
         defined) {
-    "use strict";
+    'use strict';
 
     /**
      * Formats an error object into a String.  If available, uses name, message, and stack
@@ -22939,7 +23080,7 @@ define('Workers/createTaskProcessorWorker',[
         defaultValue,
         defined,
         formatError) {
-    "use strict";
+    'use strict';
 
     /**
      * Creates an adapter function to allow a calculation function to operate as a Web Worker,
@@ -23064,7 +23205,7 @@ define('Workers/createVerticesFromHeightmap',[
         HeightmapTessellator,
         Rectangle,
         createTaskProcessorWorker) {
-    "use strict";
+    'use strict';
 
     function createVerticesFromHeightmap(parameters, transferableObjects) {
         var arrayWidth = parameters.width;
