@@ -1,12 +1,15 @@
-goog.provide('ga_layer_metadata_popup_service');
+goog.provide('ga_layermetadatapopup_service');
 
 goog.require('ga_map_service');
 goog.require('ga_popup');
+goog.require('ga_wms_service');
+
 (function() {
 
-  var module = angular.module('ga_layer_metadata_popup_service', [
+  var module = angular.module('ga_layermetadatapopup_service', [
     'ga_map_service',
     'ga_popup',
+    'ga_wms_service',
     'pascalprecht.translate'
   ]);
 

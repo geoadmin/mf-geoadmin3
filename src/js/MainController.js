@@ -6,8 +6,8 @@ goog.require('ga_map');
 goog.require('ga_networkstatus_service');
 goog.require('ga_storage_service');
 goog.require('ga_topic_service');
-(function() {
 
+(function() {
 
   var module = angular.module('ga_main_controller', [
     'pascalprecht.translate',
@@ -23,10 +23,10 @@ goog.require('ga_topic_service');
    */
   module.controller('GaMainController', function($rootScope, $scope, $timeout,
       $translate, $window, $document, $q, gaBrowserSniffer, gaHistory,
-      gaFeaturesPermalinkManager, gaLayersPermalinkManager, gaMapUtils,
+      gaPermalinkFeaturesManager, gaPermalinkLayersManager, gaMapUtils,
       gaRealtimeLayersManager, gaNetworkStatus, gaPermalink, gaStorage,
       gaGlobalOptions, gaBackground, gaTime, gaLayers, gaTopic,
-      gaLayerHideManager) {
+      gaOpaqueLayersManager) {
 
     var createMap = function() {
       var toolbar = $('#zoomButtons')[0];
@@ -161,15 +161,15 @@ goog.require('ga_topic_service');
     gaBackground.init($scope.map);
 
     // Activate the "layers" parameter permalink manager for the map.
-    gaLayersPermalinkManager($scope.map);
+    gaPermalinkLayersManager($scope.map);
 
     // Activate the "features" permalink manager for the map.
-    gaFeaturesPermalinkManager($scope.map);
+    gaPermalinkFeaturesManager($scope.map);
 
     gaRealtimeLayersManager($scope.map);
 
     // Optimize performance by hiding non-visible layers
-    gaLayerHideManager($scope);
+    gaOpaqueLayersManager($scope);
 
     var initWithPrint = /print/g.test(gaPermalink.getParams().widgets);
     var initWithFeedback = /feedback/g.test(gaPermalink.getParams().widgets);

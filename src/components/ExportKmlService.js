@@ -1,8 +1,8 @@
-goog.provide('ga_export_kml_service');
+goog.provide('ga_exportkml_service');
 goog.require('ga_browsersniffer_service');
 (function() {
 
-  var module = angular.module('ga_export_kml_service', [
+  var module = angular.module('ga_exportkml_service', [
     'ga_browsersniffer_service',
     'pascalprecht.translate'
   ]);

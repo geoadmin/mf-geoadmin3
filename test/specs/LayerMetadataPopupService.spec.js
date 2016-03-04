@@ -1,4 +1,4 @@
-describe('ga_layer_metadata_popup_service', function() {
+describe('ga_layermetadatapopup_service', function() {
   var gaLayerMetadataPopup,
       gaLang, gaLayers, $http,
       $httpBackend, $q,

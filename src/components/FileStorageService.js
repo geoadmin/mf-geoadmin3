@@ -1,7 +1,7 @@
-goog.provide('ga_file_storage_service');
+goog.provide('ga_filestorage_service');
 (function() {
 
-  var module = angular.module('ga_file_storage_service', []);
+  var module = angular.module('ga_filestorage_service', []);
 
   /**
    * This service can create/read/write/delete a file on s3.
