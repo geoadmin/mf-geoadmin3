@@ -164,19 +164,25 @@
 
 
 .ga-draw-popup {
-  
+
   &.ga-profile-active {
     right: 0px;
+
+    .ga-popup-content {
+      overflow: visible;
+    }
   }
 
   &.ga-tabs {
     [ga-profile] {
-      margin-top: 0px;
+      height: 145px;
     }
   }
+
   [ga-profile] {
-    margin-top: 28px;
+    height: 173px;
   }
+
   @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
     .ga-icons, .ga-choose-icon {
       width: 100%;
@@ -227,7 +233,7 @@
     }
     
     ul {
-      margin-bottom: 15px;
+      margin-bottom: 9px;
     }
 
     .ga-draw-modify {

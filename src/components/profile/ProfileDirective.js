@@ -29,7 +29,7 @@ goog.require('ga_profile_service');
             scope.unitX = '';
 
             var create = function(feature) {
-              profile.get(feature, function(data) {
+              profile.get(feature).then(function(data) {
                 isProfileCreated = true;
                 var d3 = $window.d3;
                 var profileEl = angular.element(
@@ -49,7 +49,7 @@ goog.require('ga_profile_service');
             };
 
             var update = function(feature) {
-              profile.get(feature, function(data) {
+              profile.get(feature).then(function(data) {
                 profile.update(data);
                 profile.updateLabels();
                 scope.unitX = profile.unitX;
@@ -64,7 +64,6 @@ goog.require('ga_profile_service');
             var updateSizeDebounced = gaDebounce.debounce(updateSize, 133,
                 false, false);
 
-
             $($window).on('resize', function() {
               if (isProfileCreated) {
                 updateSizeDebounced([
@@ -74,6 +73,23 @@ goog.require('ga_profile_service');
               }
             });
 
+            // Create or update the profile
+            var reload = function(feature) {
+              if (!angular.isDefined(profile)) {
+                 // we use applyAsync to wait the profile element to be
+                 // displayed
+                 scope.$applyAsync(function() {
+                   options.width = element.width();
+                   options.height = element.height();
+                   gaProfile(options).then(function(newProfile) {
+                     profile = newProfile;
+                     create(feature);
+                   });
+                 });
+               } else if (isProfileCreated) {
+                 updateDebounced(feature);
+               }
+            };
             var useFeature = function(newFeature) {
               if (deregisterKey) {
                 ol.Observable.unByKey(deregisterKey);
@@ -81,20 +97,9 @@ goog.require('ga_profile_service');
               }
               if (newFeature) {
                 deregisterKey = newFeature.on('change', function(evt) {
-                  if (!angular.isDefined(profile)) {
-                    // we use applyAsync to wait the profile element to be
-                    // displayed
-                    scope.$applyAsync(function() {
-                      options.width = element.width();
-                      profile = gaProfile(options, function() {
-                        create(evt.target);
-                      });
-                    });
-                  } else if (isProfileCreated) {
-                    updateDebounced(evt.target);
-                  }
+                  reload(evt.target);
                 });
-                newFeature.changed();
+                reload(newFeature);
               }
             };
             scope.$watch('feature', useFeature);
@@ -186,7 +191,7 @@ goog.require('ga_profile_service');
               var deactivateMapPosition = function(coords) {
                 overlay.setMap(null);
               };
-            }
+            };
           }
         };
       });

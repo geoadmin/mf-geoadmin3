@@ -43,7 +43,7 @@ goog.require('ga_measure_service');
                 update(evt.target);
               });
             });
-            newFeature.changed();
+            update(newFeature);
           }
         };
         scope.$watch('feature', useFeature);

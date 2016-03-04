@@ -255,7 +255,7 @@ goog.require('ga_urlutils_service');
           return res;
         };
 
-        this.get = function(feature, callback) {
+        this.get = function(feature) {
           var coordinates = feature.getGeometry().getCoordinates();
 
           // TODO: manage all kind of geometry
@@ -299,23 +299,24 @@ goog.require('ga_urlutils_service');
                 'application/x-www-form-urlencoded'};
           }
 
-          $http(params).success(function(data, status) {
+          return $http(params).then(function(response) {
+            var data = response.data;
             // When all the geometry is outside switzerland
             if (data.length == 0) {
               data = [{alts: {}, dist: 0}];
               data[0].alts[elevationModel] = 0;
             }
-            callback(data, status);
-          }).error(function(data, status) {
-              // If request is canceled, statuscode is 0 and we don't announce
-              // it
-              if (status !== 0) {
-                // Display an empty profile
-                data = [{alts: {}, dist: 0}];
-                data[0].alts[elevationModel] = 0;
-                callback(data, status);
-              }
-            });
+            return data;
+          }, function(response) {
+            // If request is canceled, statuscode is 0 and we don't announce
+            // it
+            if (response.status !== 0) {
+              // Display an empty profile
+              var data = [{alts: {}, dist: 0}];
+              data[0].alts[elevationModel] = 0;
+              return data;
+            }
+          });
         };
 
         this.create = function(data) {
@@ -394,7 +395,7 @@ goog.require('ga_urlutils_service');
 
           group.append('text')
               .attr('class', 'ga-profile-legend')
-              .attr('x', width - 113)
+              .attr('x', width - 118)
               .attr('y', 11)
               .attr('width', 100)
               .attr('height', 30)
@@ -617,7 +618,7 @@ goog.require('ga_urlutils_service');
             width = size[0] - marginHoriz;
             height = size[1] - marginVert;
             this.svg.transition().duration(transitionTime)
-              .attr('width', width + marginHoriz + 0)
+              .attr('width', width + marginHoriz)
               .attr('height', height + marginVert)
               .attr('class', 'ga-profile-svg');
             this.group.select('text.ga-profile-label-x')
@@ -627,7 +628,7 @@ goog.require('ga_urlutils_service');
                 .style('text-anchor', 'middle');
             this.group.select('text.ga-profile-legend')
               .transition().duration(transitionTime)
-                .attr('x', width - 113)
+                .attr('x', width - 118)
                 .attr('y', 11)
                 .text('swissALTI3D/DHM25');
           } else {
@@ -671,20 +672,20 @@ goog.require('ga_urlutils_service');
               );
         };
       }
-      return function(options, lazyLoadCB) {
-        // Gain some more space for the profile labels
-        options.margin.bottom = options.margin.bottom + 10;
+      return function(options) {
+        var deferred = $q.defer();
+        var profile = new ProfileChart(options);
         // Lazy load of D3 library
         var onD3Loaded = function() {
           d3 = $window.d3;
-          lazyLoadCB();
+          deferred.resolve(new ProfileChart(options));
         };
         if (!$window.d3) {
-          $.getScript(d3LibUrl, onD3Loaded);
+          $.getScript(d3LibUrl).then(onD3Loaded);
         } else {
-          $timeout(onD3Loaded, 0);
+          onD3Loaded();
         }
-        return new ProfileChart(options);
+        return deferred.promise;
       };
     };
   });
