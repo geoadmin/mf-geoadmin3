@@ -249,8 +249,8 @@ ol3cesium: .build-artefacts/ol3-cesium
 	cp cesium/Build/Cesium/Cesium.js ../../src/lib/Cesium.min.js;
 
 .PHONY: fastclick
-fastclick: .build-artefacts/fastclick
-	cp .build-artefacts/fastclick/lib/fastclick.js src/lib/fastclick.js
+fastclick: node_modules
+	git apply --directory=src scripts/fastclick.patch
 	java -jar node_modules/google-closure-compiler/compiler.jar \
 	    src/lib/fastclick.js \
 	    --compilation_level SIMPLE_OPTIMIZATIONS \
