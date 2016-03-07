@@ -1,0 +1,1 @@
+goog.exportSymbol('ol.reproj.calculateSourceResolution', ol.reproj.calculateSourceResolution);

@@ -33441,6 +33441,7 @@ ol.reproj.render = function(width, height, pixelRatio,
   }
   return context.canvas;
 };
+goog.exportSymbol('ol.reproj.calculateSourceResolution', ol.reproj.calculateSourceResolution);
 
 goog.provide('ol.reproj.Triangulation');
 
