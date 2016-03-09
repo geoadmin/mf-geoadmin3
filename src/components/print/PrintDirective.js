@@ -260,10 +260,11 @@ goog.require('ga_time_service');
       };
       console.log('literal');
       console.log(literal);
-      var type = feature.getGeometry().getType();
-      literal.type = type; //.toLowerCase();
-      console.log('type');
-      console.log(type);
+      //var type = feature.getGeometry().getType();
+      //literal.type = 'polygon';//type; //.toLowerCase();
+      var geometry = feature.getGeometry();
+      console.log('geom for type');
+      console.log(geometry);
       var fill = style.getFill();
       console.log('fill');
       console.log(fill);
@@ -279,7 +280,22 @@ goog.require('ga_time_service');
 
       console.log('Literal');
       console.log(literal);
+      
+      var geomtype = feature.getGeometry().getType();
+      console.log('geomtype');
+      console.log(geomtype);
 
+      if (geometry) {
+        if (geometry instanceof ol.geom.Polygon) {
+          literal.type = 'polygon';
+        } else if (geometry instanceof ol.geom.LineString) {
+          literal.type = 'line';
+        } else if (geometry instanceof ol.geom.Point) {
+          literal.type = 'point';
+        }
+      }
+     
+      
       if (imageStyle) {
         var size, anchor, scale = imageStyle.getScale();
         literal.rotation = imageStyle.getRotation();
@@ -431,7 +447,7 @@ goog.require('ga_time_service');
             style: {
               'version': '2',
               '*': {'symbolizers': [encStyles]}
-            }, //'_gx_style', //encStyles, _gx_style is the default style
+            }, //'_gx_style' is the default style
             geoJson: {
               type: 'FeatureCollection',
               features: encFeatures
@@ -973,22 +989,32 @@ goog.require('ga_time_service');
           if (!styles) {
             if (feature.getStyleFunction()) {
               styles = feature.getStyleFunction().call(feature);
-              console.log('1 ' + styles);
+              console.log('1 ');
+              console.log(styles);
             } else if (layer.getStyleFunction()) {
               styles = layer.getStyleFunction()(feature);
-              console.log('2 ' + styles);
+              console.log('2 ');
+              console.log(styles);
             } else {
               styles = ol.style.defaultStyleFunction(feature);
-              console.log('3 ' + styles);
+              console.log('3 ');
+              console.log(styles);
             }
           }
 
           // Transform an ol.geom.Circle to a ol.geom.Polygon
           var geometry = feature.getGeometry();
+          console.log('Geometry');
+          console.log(geometry);
           if (geometry instanceof ol.geom.Circle) {
+            console.log('polygon');
             var polygon = gaPrintStyleService.olCircleToPolygon(geometry);
+            console.log(polygon);
+            console.log('feature');
             feature = new ol.Feature(polygon);
+            console.log(feature);
           }
+
 
           // Handle ol.style.RegularShape by converting points to poylgons
           var image = styles[0].getImage();
@@ -1025,9 +1051,18 @@ goog.require('ga_time_service');
             console.log('encStyle');
             console.log(encStyle);
           }
-            //encStyles[encStyle.id] = encStyle;
-/*            console.log('encStyles');
+            encStyles[encStyle.id] = encStyle;
+            console.log('encStyle.id');
+            console.log(encStyle.id);
+            console.log('encStyle');
+            console.log(encStyle);
+            console.log('encStyles[encStyle.id]');
+            console.log(encStyles[encStyle.id]);
+
+            
+            console.log('encStyles');
             console.log(encStyles);
+            angular.extend(encStyles, encStyle);
             var styleToEncode = styles[0];
             console.log('styleToEncode');
             console.log(styleToEncode);
@@ -1044,7 +1079,7 @@ goog.require('ga_time_service');
                 console.log('geom');
                 console.log(geom);
                 encStyles = encStyle;
-                /*if (geom) {
+                if (geom) {
                   var encoded = $scope.encoders.features.feature(layer,
                       new ol.Feature(geom), [style]);
                   console.log('still in the loop of geom');
@@ -1056,11 +1091,10 @@ goog.require('ga_time_service');
                   angular.extend(encStyles, encoded.encStyles);
                   console.log('encStyles');
                   console.log(encStyles);
-                }*/
-        //      }
-        //    }*/
-          
-          //}
+                }
+              }
+            }
+          }
           console.log('encStyle all together');
           console.log(encStyle);
           return {
@@ -1253,7 +1287,7 @@ goog.require('ga_time_service');
       var overlays = $scope.map.getOverlays();
       var resolution = $scope.map.getView().getResolution();
 
-      overlays.forEach(function(overlay) {
+      /*overlays.forEach(function(overlay) {
         var elt = overlay.getElement();
         // We print only overlay added by the MarkerOverlayService
         // or by crosshair permalink
@@ -1308,7 +1342,7 @@ goog.require('ga_time_service');
           };
           encLayers.push(encOverlayLayer);
         }
-      });
+      });*/
 
 
       // Get the short link
