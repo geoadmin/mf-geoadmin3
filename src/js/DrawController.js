@@ -42,12 +42,11 @@ goog.require('ga_styles_service');
       xLabel: 'profile_x_label',
       yLabel: 'profile_y_label',
       margin: {
-         top: 0,
+         top: 6,
          right: 20,
-         bottom: 40,
+         bottom: 45,
          left: 60
       },
-      height: 145,
       elevationModel: gaGlobalOptions.defaultElevationModel
     };
 
