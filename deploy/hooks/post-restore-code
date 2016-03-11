@@ -10,6 +10,12 @@ CODE_DIR=$2
 
 cd $CODE_DIR
 
+# ---------IMPORTANT---------
+# We assume that code deployed does not need re-build on target.
+# It should be rebuild in source machine with correct settings
+
+# On a branch deploy, we rebuild, as we are not coming from
+# a snapshot
 if [ -f rc_$TARGET ]; then
     source rc_$TARGET
     if [[ $CODE_DIR == */branch/* ]]; then
@@ -17,8 +23,8 @@ if [ -f rc_$TARGET ]; then
         if [ -f rc_branch ]; then
             source rc_branch
         fi
+        make all
     fi
-    make all
 fi
 
 exit $?
