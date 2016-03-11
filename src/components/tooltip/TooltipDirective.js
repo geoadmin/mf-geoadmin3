@@ -494,7 +494,8 @@ goog.require('ga_topic_service');
                 '</div>';
               var name = feature.get('name');
               var featureId = feature.getId();
-              var layerId = feature.get('layerId') || layer.get('bodId');
+              var layerId = feature.get('layerId') || layer.get('bodId') ||
+                  layer.getId();
               var id = layerId + '#' + featureId;
               htmlpopup = htmlpopup.
                   replace('{{id}}', id).
@@ -506,7 +507,8 @@ goog.require('ga_topic_service');
               // Iframe communication from inside out
               if (top != window) {
                if (featureId && layerId) {
-                  window.parent.postMessage(id, '*');
+                  window.parent.postMessage(parser.writeFeatureObject(feature),
+                      '*');
                 }
               }
             };
