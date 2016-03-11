@@ -9,7 +9,10 @@
               ng-click="removeLayer(layer)"></button>
       <label class="ga-checkbox">
         <input type="checkbox" ng-model="layer.visible" />
-        <span></span>
+        <!-- \f046, http://www.utf8icons.com/character/61510/UTF-8-character -->
+        <i ng-if="layer.visible"></i>
+        <!-- \f096, http://www.utf8icons.com/character/61590/UTF-8-character -->
+        <i ng-if="!layer.visible"></i>
         {{layer.label}}
       </label>
       <div class="ga-layer-time" ng-if="layer.timeEnabled">

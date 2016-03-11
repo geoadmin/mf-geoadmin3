@@ -43,6 +43,23 @@
     font-weight: normal;
     height: inherit;
     line-height: 2.4em;
+
+    input[type=checkbox] {
+      display: none;
+
+      & + i {
+        font-family: "FontAwesome";
+        font-size: 14px;
+        font-style: normal;
+        letter-spacing: 4px;
+        vertical-align: -0.1em;
+      }
+
+      &:checked + i {
+        color: #000;
+        letter-spacing: 2px;
+      }
+    }
   }
 
   button {
