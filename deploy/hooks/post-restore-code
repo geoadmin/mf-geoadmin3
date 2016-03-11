@@ -11,13 +11,11 @@ CODE_DIR=$2
 cd $CODE_DIR
 
 # ---------IMPORTANT---------
-# We assume that code deployed does not need re-build on target.
-# It should be rebuild in source machine with correct settings
-
-# On a branch deploy, we rebuild, as we are not coming from
-# a snapshot
+# We rebuild only the minimum on the target machine. We assume
+# that the package was pre-build with the correct environment
 if [ -f rc_$TARGET ]; then
     source rc_$TARGET
+    make apache/app.conf
     if [[ $CODE_DIR == */branch/* ]]; then
         make preparebranch
         if [ -f rc_branch ]; then
