@@ -132,6 +132,9 @@ window['Slip'] = (function(){
     var transitionPrefix = "webkitTransition" in testElement.style ? "webkitTransition" : "transition";
     var transformPrefix = "webkitTransform" in testElement.style ? "webkitTransform" : "transform";
     var transformProperty = transformPrefix === "webkitTransform" ? "-webkit-transform" : "transform";
+    if ("MozTransform" in testElement.style) {
+      transformProperty = "-moz-transform";
+    }
     var userSelectPrefix = "webkitUserSelect" in testElement.style ? "webkitUserSelect" : "userSelect";
 
     testElement.style[transformPrefix] = 'translateZ(0)';
