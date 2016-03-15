@@ -1080,7 +1080,7 @@ goog.require('ga_time_service');
             console.log('encStyle');
             console.log(encStyle);
           }
-          encStyles['[_gx_style = ' +  encStyle.id +']'] = {"symbolizers": encStyle};
+          encStyles['[_gx_style = ' +  encStyle.id +']'] = {"symbolizers": [encStyle]};
           //encStyles['[*]'] = {"symbolizers": encStyle};
           console.log('encStyle.id');
           console.log(encStyle.id);
