@@ -605,5 +605,8 @@
 .fa-stop:before {
   content: "\f22d";
 }
+.fa-eye:before {
+  content: "\f22e";
+}
 
 
