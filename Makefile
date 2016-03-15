@@ -25,8 +25,8 @@ BRANCH_TO_DELETE ?=
 DEPLOY_ROOT_DIR := /var/www/vhosts/mf-geoadmin3/private/branch
 DEPLOY_TARGET ?= 'dev'
 LAST_DEPLOY_TARGET := $(shell if [ -f .build-artefacts/last-deploy-target ]; then cat .build-artefacts/last-deploy-target 2> /dev/null; else echo '-none-'; fi)
-OL3_VERSION ?= 37113837d129bccd9e37c182d04c2a2a19ab7dcd # 3.14.0, 1 mars 2016
-OL3_CESIUM_VERSION ?= 3968b90d7e82ef5a77843af4c8c241529b0a8839 # 1.13, 29 february 2016
+OL3_VERSION ?= 34d8d77344ee0b653770f065c593d4ab7b5d102b # master, 2 mars 2016
+OL3_CESIUM_VERSION ?= 81f0bfc43c3fb9d3a93f11b9cf4fb2d03ce477be # master, 3 mars 2016
 CESIUM_VERSION ?= 00face25bbb9fbc9b281d1d4b0932cf174db0a8e # camptocamp/c2c_patches (cesium 1.19), 2 mars 2016
 DEFAULT_TOPIC_ID ?= ech
 TRANSLATION_FALLBACK_CODE ?= de
@@ -249,8 +249,8 @@ ol3cesium: .build-artefacts/ol3-cesium
 	cp cesium/Build/Cesium/Cesium.js ../../src/lib/Cesium.min.js;
 
 .PHONY: fastclick
-fastclick: .build-artefacts/fastclick
-	cp .build-artefacts/fastclick/lib/fastclick.js src/lib/fastclick.js
+fastclick: node_modules
+	git apply --directory=src scripts/fastclick.patch
 	java -jar node_modules/google-closure-compiler/compiler.jar \
 	    src/lib/fastclick.js \
 	    --compilation_level SIMPLE_OPTIMIZATIONS \

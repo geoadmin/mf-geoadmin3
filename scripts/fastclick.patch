@@ -1,0 +1,30 @@
+From 24753034d3c295c3027731f87037dbeb42c79b6c Mon Sep 17 00:00:00 2001
+From: oterral <olivier.terral@swisstopo.ch>
+Date: Tue, 24 Jun 2014 14:01:45 +0200
+Subject: [PATCH] Test if the targetElement has changed between the last
+ touchstart event and the current touchend event
+
+If, for some reasons, the touchstart event is stopped by some third party library but not the touchend event, the value of this.targetElement is out of date. This commit add a test to verify if the current element is the good one to test.
+---
+ lib/fastclick.js |    5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/lib/fastclick.js b/lib/fastclick.js
+index 3af4f9d..ad4f2bd 100644
+--- a/lib/fastclick.js
++++ b/lib/fastclick.js
+@@ -521,6 +521,11 @@
+ 	FastClick.prototype.onTouchEnd = function(event) {
+ 		var forElement, trackingClickStart, targetTagName, scrollParent, touch, targetElement = this.targetElement;
+ 
++		if (this.targetElement !== this.getTargetElementFromEventTarget(event.target)) {
++			this.trackingClick = false;
++			this.targetElement = null;
++		}
++
+ 		if (!this.trackingClick) {
+ 			return true;
+ 		}
+-- 
+1.7.10.4
+
