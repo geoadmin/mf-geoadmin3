@@ -236,7 +236,7 @@ window['Slip'] = (function(){
 
             undecided: function undecidedStateInit() {
                 this.target.height = this.target.node.offsetHeight;
-                this.target.node.style.willChange = transformProperty;
+                //this.target.node.style.willChange = transformProperty;
                 this.target.node.style[transitionPrefix] = '';
 
                 if (!this.dispatch(this.target.originalTarget, 'beforewait')) {
