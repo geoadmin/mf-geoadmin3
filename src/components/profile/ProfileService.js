@@ -168,7 +168,7 @@ goog.require('ga_urlutils_service');
               var dh = h2 - h1;
               var ds = s2 - s1;
               //Pythagorean theorem (hypotenuse: the slope/surface distance)
-              sumSlopeDist += Math.abs((dh ^ 2 + ds ^ 2) ^ (1 / 2));
+              sumSlopeDist += Math.sqrt(Math.pow(dh, 2) + Math.pow(ds, 2));
             }
             return sumSlopeDist;
           }
@@ -522,23 +522,29 @@ goog.require('ga_urlutils_service');
               .attr('x', 400)
               .attr('y', elevLabelY + 2)
               .attr('text-anchor', 'start')
+              .text(' \uf22e');
+
+          group.append('text')
+              .attr('class', 'ga-profile-dist')
+              .attr('x', 415)
+              .attr('y', elevLabelY + 2)
+              .attr('text-anchor', 'start')
               .text(' \uf220');
 
           //Number for the distance
           group.append('text')
               .attr('class', 'ga-profile-distance')
               .attr('font-size', '0.9em')
-              .attr('x', 415)
+              .attr('x', 430)
               .attr('y', elevLabelY)
               .style('text-anchor', 'start')
               .text(measureFilter(this.dist, 'distance',
                     ['km', 'm'], 2, true));
 
-          //Icon for the sum of the slope/surface distances
-          //Need new icon!!!
+          //Icons for the sum of the slope/surface distances
           group.append('text')
               .attr('class', 'ga-profile-dist')
-              .attr('x', 480)
+              .attr('x', 490)
               .attr('y', elevLabelY + 2)
               .attr('text-anchor', 'start')
               .text(' \uf220');
@@ -547,7 +553,7 @@ goog.require('ga_urlutils_service');
           group.append('text')
               .attr('class', 'ga-profile-slopeDist')
               .attr('font-size', '0.9em')
-              .attr('x', 495)
+              .attr('x', 505)
               .attr('y', elevLabelY)
               .style('text-anchor', 'start')
               .text(measureFilter(this.slopeDist, 'distance',
@@ -556,7 +562,7 @@ goog.require('ga_urlutils_service');
           //Icon for the hiking time
           group.append('text')
               .attr('class', 'ga-profile-icon')
-              .attr('x', 560)
+              .attr('x', 570)
               .attr('y', elevLabelY + 1)
               .attr('text-anchor', 'start')
               .text(' \uf219');
@@ -565,7 +571,7 @@ goog.require('ga_urlutils_service');
           group.append('text')
               .attr('class', 'ga-profile-hikTime')
               .attr('font-size', '0.9em')
-              .attr('x', 575)
+              .attr('x', 585)
               .attr('y', elevLabelY)
               .style('text-anchor', 'start')
               .text(gaTimeFormatFilter(this.hikTime));
