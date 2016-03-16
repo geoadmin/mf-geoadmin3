@@ -17,7 +17,7 @@ goog.require('ga_previewfeatures_service');
         gaPreviewFeatures, gaMapUtils) {
       var queryParams = gaPermalink.getParams();
       return function(map) {
-        var deregister = $rootScope.$on('gaLayersChange', function() {
+        gaLayers.loadConfig().then(function() {
           var featureIdsCount = 0;
           var featureIdsByBodId = {};
           var paramKey;
@@ -71,7 +71,6 @@ goog.require('ga_previewfeatures_service');
               }
             });
           }
-          deregister();
         });
       };
     };
