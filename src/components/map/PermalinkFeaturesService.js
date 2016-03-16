@@ -16,6 +16,9 @@ goog.require('ga_previewfeatures_service');
     this.$get = function($rootScope, gaPermalink, gaLayers,
         gaPreviewFeatures, gaMapUtils) {
       var queryParams = gaPermalink.getParams();
+      var layersParamValue = queryParams.layers;
+      var layerSpecs = layersParamValue ? layersParamValue.split(',') : [];
+
       return function(map) {
         gaLayers.loadConfig().then(function() {
           var featureIdsCount = 0;
@@ -33,7 +36,8 @@ goog.require('ga_previewfeatures_service');
                 featureIdsCount += featureIds.length;
                 Array.prototype.push.apply(featureIdsByBodId[bodId],
                     featureIds);
-                if (!gaMapUtils.getMapOverlayForBodId(map, bodId)) {
+                if (!gaMapUtils.getMapOverlayForBodId(map, bodId) &&
+                    layerSpecs.indexOf(bodId) == -1) {
                   map.addLayer(gaLayers.getOlLayerById(bodId));
                 }
               }
@@ -54,8 +58,20 @@ goog.require('ga_previewfeatures_service');
           });
 
           if (featureIdsCount > 0) {
-            gaPreviewFeatures.addBodFeatures(map, featureIdsByBodId,
-                removeParamsFromPL);
+            var featuresShown = gaPreviewFeatures.addBodFeatures(map,
+                featureIdsByBodId, removeParamsFromPL);
+
+            if (queryParams.showTooltip == 'true') {
+              featuresShown.then(function(features) {
+                $rootScope.$broadcast('gaTriggerTooltipRequest', {
+                  features: features,
+                  onCloseCB: function() {
+                    gaPermalink.deleteParam('showTooltip');
+                  },
+                  nohighlight: true
+                });
+              });
+            }
 
             // When a layer is removed, we need to update the permalink
             listenerKey = map.getLayers().on('remove', function(event) {
@@ -67,7 +83,7 @@ goog.require('ga_previewfeatures_service');
               if (featureIdsCount == 0 && listenerKey) {
                 // Unlisten the remove event when there is no more features
                 // (from permalink) displayed.
-                map.getLayers().unByKey(listenerKey);
+                ol.Observable.unByKey(listenerKey);
               }
             });
           }
