@@ -1,13 +1,11 @@
 goog.provide('ga_previewlayers_service');
 
 goog.require('ga_map_service');
-goog.require('ga_time_service');
 goog.require('ga_wms_service');
 (function() {
 
   var module = angular.module('ga_previewlayers_service', [
     'ga_map_service',
-    'ga_time_service',
     'ga_wms_service'
   ]);
 
