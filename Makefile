@@ -258,6 +258,7 @@ fastclick: node_modules
 
 .PHONY: slipjs
 slipjs: node_modules
+	git apply --directory=src/lib scripts/slipjs.patch
 	java -jar node_modules/google-closure-compiler/compiler.jar \
 	    src/lib/slip.js \
 	    --compilation_level SIMPLE_OPTIMIZATIONS \

@@ -167,16 +167,28 @@ goog.require('ga_urlutils_service');
           }
         };
 
+        var slipBeforeReorderCallback = function(evt) {
+          if (evt.target.nodeName === 'BUTTON') {
+            evt.preventDefault();
+          }
+        };
+
+        var slipBeforeSwipeCallback = function(evt) {
+          evt.preventDefault();
+        };
+
         scope.disableDragAndDrop = function() {
           if (gaBrowserSniffer.msie && gaBrowserSniffer.msie < 10) {
             return;
           }
-
-
           dragging = false;
           if (slip) {
             slip.detach();
             list.removeEventListener('slip:reorder', slipReorderCallback);
+            list.removeEventListener('slip:beforereorder',
+                slipBeforeReorderCallback);
+            list.removeEventListener('slip:beforeswipe',
+                slipBeforeSwipeCallback);
           }
           // Force a $digest so the new order of the layers is correctly taken
           // into account.
@@ -198,6 +210,9 @@ goog.require('ga_urlutils_service');
           }
 
           list.addEventListener('slip:reorder', slipReorderCallback);
+          list.addEventListener('slip:beforereorder',
+              slipBeforeReorderCallback);
+          list.addEventListener('slip:beforeswipe', slipBeforeSwipeCallback);
         };
 
         // On mobile we use a classic select box, on desktop a popover

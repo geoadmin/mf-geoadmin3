@@ -1,0 +1,13 @@
+diff --git a/slip.js b/slip.js
+index 9c5e3aa..6f15743 100644
+--- a/slip.js
++++ b/slip.js
+@@ -236,7 +236,7 @@ window['Slip'] = (function(){
+ 
+             undecided: function undecidedStateInit() {
+                 this.target.height = this.target.node.offsetHeight;
+-                this.target.node.style.willChange = transformProperty;
++                //this.target.node.style.willChange = transformProperty;
+                 this.target.node.style[transitionPrefix] = '';
+ 
+                 if (!this.dispatch(this.target.originalTarget, 'beforewait')) {
