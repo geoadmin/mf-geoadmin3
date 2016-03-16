@@ -98,7 +98,8 @@ goog.require('ga_permalink');
 
           // Store in the scope the permalink value which is bound to
           // the input field
-          scope.encodedDocumentTitle = encodeURIComponent(document.title);
+          scope.encodedDocumentTitle = encodeURIComponent(
+              $translate.instant('page_title'));
           scope.urlShortened = false;
           // Listen to permalink change events from the scope.
           scope.$on('gaPermalinkChange', function(event) {
@@ -116,6 +117,8 @@ goog.require('ga_permalink');
           // Function to shorten url
           // Make an asynchronous request to url shortener
           scope.shortenUrl = function() {
+            scope.encodedDocumentTitle = encodeURIComponent(
+                $translate.instant('page_title'));
             $http.get(shortenUrl, {
               params: {
                 url: scope.permalinkValue
