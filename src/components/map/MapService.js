@@ -688,6 +688,9 @@ goog.require('ga_urlutils_service');
                 dimensions: {
                   'Time': timestamp
                 },
+                // Temporary until https://github.com/openlayers/ol3/pull/4964
+                // is merged upstream
+                cacheSize: 2048 * 3,
                 projection: gaGlobalOptions.defaultEpsg,
                 requestEncoding: 'REST',
                 tileGrid: gaTileGrid.get(layer.resolutions,
@@ -736,6 +739,9 @@ goog.require('ga_urlutils_service');
                 var subdomains = dfltWmsSubdomains;
                 olSource = layer.olSource = new ol.source.TileWMS({
                   urls: getImageryUrls(getWmsTpl(layer.wmsUrl), subdomains),
+                  // Temporary until https://github.com/openlayers/ol3/pull/4964
+                  // is merged upstream
+                  cacheSize: 2048 * 3,
                   params: wmsParams,
                   gutter: layer.gutter || 0,
                   crossOrigin: crossOrigin,
