@@ -1080,20 +1080,18 @@ goog.require('ga_time_service');
             console.log('encStyle');
             console.log(encStyle);
           }
-          encStyles['[_gx_style = ' +  encStyle.id +']'] = {"symbolizers": [encStyle]};
+          console.log('encStyle stringify');
+          console.log(JSON.stringify(encStyle));
+          encStyles['[_gx_style = ' +  encStyle.id +']'] = {"symbolizers": [encStyle]};//encStyle[Object.keys(encStyle)[0]]};
           //encStyles['[*]'] = {"symbolizers": encStyle};
-          console.log('encStyle.id');
-          console.log(encStyle.id);
-          console.log('encStyle');
-          console.log(encStyle);
-          console.log('encStyles[encStyle.id]');
-          console.log(encStyles[encStyle.id]);
 
 
           console.log('///////////////////////////////');
-          console.log('encStyles');
-          console.log(encStyles);
-          angular.extend(encStyles, encStyles);
+          console.log('encStyles stringify');
+          console.log(JSON.stringify(encStyles));
+
+          //angular.extend(encStyles, encStyles);
+
           //console.log('angularextend encStyles');
           //console.log(encStyles);
           console.log('///////////////////////////////');
@@ -1112,7 +1110,7 @@ goog.require('ga_time_service');
               var geom = style.getGeometry()(feature);
               console.log('geom');
               console.log(geom);
-              encStyles = encStyle;
+              //encStyles = encStyle;
               if (geom) {
                 var encoded = $scope.encoders.features.feature(layer,
                     new ol.Feature(geom), [style]);
@@ -1327,7 +1325,7 @@ goog.require('ga_time_service');
       var overlays = $scope.map.getOverlays();
       var resolution = $scope.map.getView().getResolution();
 
-      /*overlays.forEach(function(overlay) {
+      overlays.forEach(function(overlay) {
         var elt = overlay.getElement();
         // We print only overlay added by the MarkerOverlayService
         // or by crosshair permalink
@@ -1338,32 +1336,8 @@ goog.require('ga_time_service');
         var offset = 5 * resolution;
 
         if (center) {
+
           var encOverlayLayer = {
-          'type': 'Vector',
-            'styles': {
-              '1': { // Style for marker position
-                'externalGraphic': $scope.options.markerUrl,
-                'graphicWidth': 20,
-                'graphicHeight': 30,
-                // the icon is not perfectly centered in the image
-                // these values must be the same in map.less
-                'graphicXOffset': -12,
-                'graphicYOffset': -30
-              }, '2': { // Style for measure tooltip
-                'externalGraphic': $scope.options.bubbleUrl,
-                'graphicWidth': 97,
-                'graphicHeight': 27,
-                'graphicXOffset': -48,
-                'graphicYOffset': -27,
-                'label': $(elt).text(),
-                'labelXOffset': 0,
-                'labelYOffset': 18,
-                'fontColor': '#ffffff',
-                'fontSize': 10,
-                'fontWeight': 'normal'
-              }
-            },
-            'styleProperty': '_gx_style', 
             'geoJson': {
               'type': 'FeatureCollection',
               'features': [{
@@ -1373,17 +1347,66 @@ goog.require('ga_time_service');
                 },
                 'geometry': {
                   'type': 'Point',
-                  'coordinates': [center[0], center[1], 0]
+                  'coordinates': [center[0], center[1]]
                 } 
               }]
             },
-            'name': 'drawing',
-            'opacity': 1
+            'type': 'geojson',
+            'style': {
+              'version': '2',
+              // Style for measure tooltip
+              '[_gx_style = 2]': { // Style for measure tooltip
+                'symbolizers': [{
+                  'type': 'point',
+                  'externalGraphic': $scope.options.bubbleUrl,
+                  'graphicWidth': 9.7,
+                  'graphicHeight': 2.7,
+                  'graphicXOffset': -4.8,
+                  'graphicYOffset': -2.7
+                 },{
+                  'type': 'text',
+                  'label': $(elt).text(),
+                  'labelAlign': 'cm',
+                  'labelXOffset': 0,
+                  'labelYOffset': 1.8,
+                  'fontColor': '#ffffff',
+                  'fontSize': "10px",
+                  'fontWeight': 'normal',
+                  "fontStyle": "normal",
+                  "fontWeight": "bold",
+                  "haloColor": "#123456",
+                  "haloOpacity": "0.7",
+                  "haloRadius": "1.0"
+                }]
+              },
+              //Style for marker position
+              '[_gx_style = 1]': { 
+                'symbolizers': [{
+                  'type': 'point',
+                  'externalGraphic': $scope.options.markerUrl,
+                  'graphicWidth': 20,
+                  'graphicHeight': 30,
+                  // the icon is not perfectly centered in the image
+                  // these values must be the same in map.less
+                  'graphicXOffset': -12,
+                  'graphicYOffset': -30
+                }]
+              }
+            }
+            
+            //'name': 'drawing',
+            //'opacity': 1
           };
           encLayers.push(encOverlayLayer);
         }
-      });*/
+      });
 
+      console.log('encLayers');
+      console.log(encLayers);
+
+
+      console.log('overlays');
+      console.log(overlays);
 
       // Get the short link
       var shortLink;
