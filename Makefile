@@ -145,7 +145,7 @@ testprod: prd/lib/build.js test/karma-conf-prod.js node_modules
 	PHANTOMJS_BIN="node_modules/.bin/phantomjs" ./node_modules/.bin/karma start test/karma-conf-prod.js --single-run
 
 .PHONY: teste2e
-teste2e: saucelabs browserstack
+teste2e: saucelabs
 
 .PHONY: browserstack
 browserstack: guard-BROWSERSTACK_USER guard-BROWSERSTACK_KEY
