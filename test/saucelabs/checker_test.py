@@ -85,19 +85,19 @@ def wait_url_changed(driver, old_url, timeout=DEFAULT_WAIT):
 def runCheckerTest(driver, url):
     print 'Checker tests starts!'
 
-    bApiPage = 0
+    bApiPage = 1
     bCheckerApi = 0
     bCheckerGeoAdmin = 0
     bCheckerSphinx = 0
-    bApiDevPage = 0
-    bPythonTranslations = 0
-    bShortenUrl = 0
+    bApiDevPage = 1
+    bPythonTranslations = 1
+    bShortenUrl = 1
     bLoaderJs = 0
     bSitemapService = 0
     bTopicListing = 0
-    bFindService = 0
+    bFindService = 1
     bTestCatalogApiExample = 0
-    bTestRectangleApiExample = 1
+    bTestRectangleApiExample = 0
 
     try:
         assert "dev" in url
