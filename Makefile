@@ -25,6 +25,7 @@ GIT_BRANCH := $(shell if [ -f .build-artefacts/deployed-git-branch ]; then cat .
 GIT_LAST_BRANCH := $(shell if [ -f .build-artefacts/last-git-branch ]; then cat .build-artefacts/last-git-branch 2> /dev/null; else echo 'dummy'; fi)
 BRANCH_TO_DELETE ?=
 DEPLOY_ROOT_DIR := /var/www/vhosts/mf-geoadmin3/private/branch
+DEPLOYCONFIG ?=
 DEPLOY_TARGET ?= 'dev'
 LAST_DEPLOY_TARGET := $(shell if [ -f .build-artefacts/last-deploy-target ]; then cat .build-artefacts/last-deploy-target 2> /dev/null; else echo '-none-'; fi)
 OL3_VERSION ?= 34d8d77344ee0b653770f065c593d4ab7b5d102b # master, 2 mars 2016
@@ -182,11 +183,11 @@ deploydemo: guard-SNAPSHOT
 
 .PHONY: deployint
 deployint: guard-SNAPSHOT
-	./scripts/deploysnapshot.sh $(SNAPSHOT) int
+	./scripts/deploysnapshot.sh $(SNAPSHOT) int $(DEPLOYCONFIG)
 
 .PHONY: deployprod
 deployprod: guard-SNAPSHOT
-	./scripts/deploysnapshot.sh $(SNAPSHOT) prod
+	./scripts/deploysnapshot.sh $(SNAPSHOT) prod $(DEPLOYCONFIG)
 
 .PHONY: deploybranch
 deploybranch: deploy/deploy-branch.cfg $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH)/.git/config

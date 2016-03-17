@@ -36,11 +36,19 @@ if [ ! "${answer}" == "y" ]; then
   exit 1
 fi
 
+# Deterimine which deploy configuration to use
+if [ -z $3 ] || [ $3 != "from_current_directory" ]
+then
+  echo "Using snapshot deploy configuration"
+  DEPLOYCONFIG=$SNAPSHOTDIR_CODE/deploy/deploy.cfg
+else
+  echo "Using local deploy configuration"
+  DEPLOYCONFIG=deploy/deploy.cfg
+fi
+
 cd $cwd
 
-
-
-sudo -u deploy deploy -r deploy/deploy.cfg $2 $SNAPSHOTDIR
+sudo -u deploy deploy -r $DEPLOYCONFIG $2 $SNAPSHOTDIR
 
 VARNISH_FLUSH_FILE=rc_int
 
