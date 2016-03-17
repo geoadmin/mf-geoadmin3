@@ -70,13 +70,13 @@ help:
 	@echo
 	@echo "Possible targets:"
 	@echo
-	@echo "- prod               Build app for prod (/prd)"
-	@echo "- dev                Build app for dev (/src)"
+	@echo "- release            Build app for release (/prd)"
+	@echo "- debug              Build app for debug (/src)"
 	@echo "- lint               Run the linter"
 	@echo "- lintpy             Run the linter for the python files"
 	@echo "- autolintpy         Run the auto-corrector for python files"
-	@echo "- testdev            Run the JavaScript tests in dev mode"
-	@echo "- testprod           Run the JavaScript tests in prod mode"
+	@echo "- testdebug          Run the JavaScript tests in debug mode"
+	@echo "- testrelease        Run the JavaScript tests in release mode"
 	@echo "- teste2e            Run browserstack and saucelabs tests"
 	@echo "- browserstack       Run browserstack tests"
 	@echo "- saucelabs          Run saucelabs tests"
@@ -111,10 +111,10 @@ help:
 	@echo
 
 .PHONY: all
-all: lint dev prod apache testdev testprod deploy/deploy-branch.cfg fixrights
+all: lint debug release apache testdebug testrelease deploy/deploy-branch.cfg fixrights
 
-.PHONY: prod
-prod: devlibs \
+.PHONY: release
+release: devlibs \
 	prd/lib/ \
 	prd/lib/build.js \
 	prd/style/app.css \
@@ -129,8 +129,8 @@ prod: devlibs \
 	prd/cache/ \
 	prd/robots.txt
 
-.PHONY: dev
-dev: devlibs src/deps.js src/style/app.css src/index.html src/mobile.html src/embed.html
+.PHONY: debug
+debug: devlibs src/deps.js src/style/app.css src/index.html src/mobile.html src/embed.html
 
 .PHONY: lint
 lint: devlibs .build-artefacts/lint.timestamp
@@ -143,13 +143,13 @@ lintpy: ${FLAKE8_CMD}
 autolintpy: ${AUTOPEP8_CMD}
 	${AUTOPEP8_CMD} --in-place --aggressive --aggressive --verbose --max-line-lengt=110 $(PYTHON_FILES)
 
-.PHONY: testdev
-testdev: .build-artefacts/app-whitespace.js test/karma-conf-dev.js 
-	PHANTOMJS_BIN="node_modules/.bin/phantomjs" ./node_modules/.bin/karma start test/karma-conf-dev.js --single-run
+.PHONY: testdebug
+testdebug: .build-artefacts/app-whitespace.js test/karma-conf-debug.js 
+	PHANTOMJS_BIN="node_modules/.bin/phantomjs" ./node_modules/.bin/karma start test/karma-conf-debug.js --single-run
 
-.PHONY: testprod
-testprod: prd/lib/build.js test/karma-conf-prod.js devlibs
-	PHANTOMJS_BIN="node_modules/.bin/phantomjs" ./node_modules/.bin/karma start test/karma-conf-prod.js --single-run
+.PHONY: testrelease
+testrelease: prd/lib/build.js test/karma-conf-release.js devlibs
+	PHANTOMJS_BIN="node_modules/.bin/phantomjs" ./node_modules/.bin/karma start test/karma-conf-release.js --single-run
 
 .PHONY: teste2e
 teste2e: saucelabs 
@@ -496,10 +496,10 @@ apache/app.conf: apache/app.mako-dot-conf \
 	    --var "apache_base_directory=$(APACHE_BASE_DIRECTORY)" \
 	    --var "version=$(VERSION)" $< > $@
 
-test/karma-conf-dev.js: test/karma-conf.mako.js ${MAKO_CMD}
+test/karma-conf-debug.js: test/karma-conf.mako.js ${MAKO_CMD}
 	${PYTHON_CMD} ${MAKO_CMD} $< > $@
 
-test/karma-conf-prod.js: test/karma-conf.mako.js ${MAKO_CMD}
+test/karma-conf-release.js: test/karma-conf.mako.js ${MAKO_CMD}
 	${PYTHON_CMD} ${MAKO_CMD} --var "mode=prod" $< > $@
 
 test/lib/angular-mocks.js test/lib/expect.js test/lib/sinon.js externs/angular.js externs/jquery.js: package.json

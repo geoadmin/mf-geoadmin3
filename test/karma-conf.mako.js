@@ -3,7 +3,7 @@
 module.exports = function(config) {
   config.set({
   // base path, that will be used to resolve files and exclude
-  % if mode == 'prod':
+  % if mode == 'release':
      basePath: '../prd',
   % else:
      basePath: '../src',
@@ -11,7 +11,7 @@ module.exports = function(config) {
 
   // list of files / patterns to load in the browser
   files: [
-    % if mode == 'prod':
+    % if mode == 'release':
        'lib/build.js',
     % else:
        'lib/jquery.js',
@@ -44,7 +44,7 @@ module.exports = function(config) {
 
 
   preprocessors: {
-    // In both prod mode (build.js) and dev mode (app-whitespace.js) the
+    // In both release mode (build.js) and debug mode (app-whitespace.js) the
     // partials are pre-cached in Angular's $templateCache. So we don't
     // need to use Karma's html2js preprocessor, and cache partials in
     // tests using ngMock's "module" function.
