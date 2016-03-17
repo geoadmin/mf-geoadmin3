@@ -1,3 +1,0 @@
-export API_URL=//mf-chsdi3.dev.bgdi.ch/fredj
-export APACHE_BASE_PATH=/fredj
-export E2E_TARGETURL=https://mf-geoadmin3.dev.bgdi.ch/fredj

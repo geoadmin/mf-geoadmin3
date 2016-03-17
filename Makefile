@@ -1,3 +1,4 @@
+SHELL = /bin/bash
 SRC_JS_FILES := $(shell find src/components src/js -type f -name '*.js')
 SRC_JS_FILES_FOR_COMPILER = $(shell sed -e ':a' -e 'N' -e '$$!ba' -e 's/\n/ --js /g' .build-artefacts/js-files | sed 's/^.*base\.js //')
 SRC_LESS_FILES := $(shell find src -type f -name '*.less')
@@ -49,6 +50,7 @@ DEFAULT_EPSG_EXTEND ?= '[420000, 30000, 900000, 350000]'
 DEFAULT_ELEVATION_MODEL ?= COMB
 DEFAULT_TERRAIN ?= ch.swisstopo.terrain.3d
 SAUCELABS_TESTS ?=
+USER_SOURCE ?= rc_user
 
 ## Python interpreter can't have space in path name
 ## So prepend all python scripts with python cmd
@@ -70,6 +72,8 @@ help:
 	@echo
 	@echo "Possible targets:"
 	@echo
+	@echo "- user               Build the app with user specific configuration"
+	@echo "- all                Build the app with current environment"
 	@echo "- release            Build app for release (/prd)"
 	@echo "- debug              Build app for debug (/src)"
 	@echo "- lint               Run the linter"
@@ -83,7 +87,6 @@ help:
 	@echo "- saucelabssingle    Run saucelabs tests but only with single platform/browser"
 	@echo "- apache             Configure Apache (restart required)"
 	@echo "- fixrights          Fix rights in common folder"
-	@echo "- all                All of the above (target to run prior to creating a PR)"
 	@echo "- clean              Remove generated files"
 	@echo "- cleanall           Remove all the build artefacts"
 	@echo "- deploydev          Deploys current github master to dev. Specify SNAPSHOT=true to create snapshot as well."
@@ -109,6 +112,10 @@ help:
 	@echo "- APACHE_BASE_DIRECTORY       (build with: $(LAST_APACHE_BASE_DIRECTORY), current value: $(APACHE_BASE_DIRECTORY))"
 
 	@echo
+
+.PHONY: user
+user:
+	source $(USER_SOURCE) && make all
 
 .PHONY: all
 all: lint debug release apache testdebug testrelease deploy/deploy-branch.cfg fixrights
