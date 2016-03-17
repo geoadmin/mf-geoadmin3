@@ -32,19 +32,11 @@ var create = function(os, osver, res, browser, brover) {
 // https://www.browserstack.com/list-of-browsers-and-platforms?product=automate
 
 var capabilities = [
-    create('Windows', '7', '1280x1024', 'Chrome', '47.0'),
-    create('Windows', '7', '1280x1024', 'Chrome', '48.0'),
-    create('Windows', '8.1', '1280x1024', 'Chrome', '48.0'),
-    create('Windows', '10', '1280x1024', 'Chrome', '48.0'),
     create('Windows', '7', '1280x1024', 'IE', '9.0'),
     create('Windows', '7', '1280x1024', 'IE', '10.0'),
     create('Windows', '7', '1280x1024', 'IE', '11.0'),
     create('Windows', '8.1', '1280x1024', 'IE', '11.0'),
-    create('Windows', '10', '1280x1024', 'IE', '11.0'),
-    create('Windows', '7', '1280x1024', 'Firefox', '43.0'),
-    create('Windows', '7', '1280x1024', 'Firefox', '44.0'),
-    create('Windows', '8.1', '1280x1024', 'Firefox', '44.0'),
-    create('Windows', '10', '1280x1024', 'Firefox', '44.0')
+    create('Windows', '10', '1280x1024', 'Edge', '13.0')
 ];
 
 module.exports.capabilities = capabilities;
