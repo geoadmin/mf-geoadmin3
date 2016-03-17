@@ -526,6 +526,7 @@ node_modules: package.json
 	cp node_modules/sinon/pkg/sinon.js test/lib/;
 	cp node_modules/google-closure-compiler/contrib/externs/angular-1.4.js externs/angular.js;
 	cp node_modules/google-closure-compiler/contrib/externs/jquery-1.9.js externs/jquery.js;
+	git apply --directory=src/lib scripts/slipjs.patch
 
 .build-artefacts/app.js: .build-artefacts/js-files
 	mkdir -p $(dir $@)
