@@ -177,6 +177,16 @@ goog.require('ga_topic_service');
         !!(gaPermalink.getParams().adminId);
     gaPermalink.deleteParam('widgets');
 
+    var onTopicsLoaded = function() {
+      if (gaPermalink.getParams().layers !== undefined) {
+        $scope.globals.catalogShown = false;
+        $scope.globals.selectionShown = true;
+      } else {
+        $scope.globals.catalogShown = true;
+        $scope.globals.selectionShown = false;
+      }
+    };
+
     var onTopicChange = function(event, topic) {
       $scope.topicId = topic.id;
 
@@ -184,14 +194,22 @@ goog.require('ga_topic_service');
       if (gaBrowserSniffer.ios) {
         $window.scrollTo(0, 0);
       }
+
       if (topic.activatedLayers.length) {
         $scope.globals.selectionShown = true;
         $scope.globals.catalogShown = false;
       } else if (topic.selectedLayers.length) {
         $scope.globals.catalogShown = true;
         $scope.globals.selectionShown = false;
+      } else {
+        if (event === null) {
+          onTopicsLoaded();
+        } else {
+          $scope.globals.catalogShown = true;
+        }
       }
     };
+
     gaTopic.loadConfig().then(function() {
       $scope.topicId = gaTopic.get().id;
 
