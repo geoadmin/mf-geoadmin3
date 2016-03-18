@@ -292,6 +292,7 @@ goog.require('ga_time_service');
 
       console.log('One break here to check');
 
+      alert('hey');
       if (geometry) {
         if (geometry instanceof ol.geom.Polygon) {
           literal.type = 'polygon';
@@ -306,6 +307,7 @@ goog.require('ga_time_service');
       }
 
 
+      alert(imageStyle);
       if (imageStyle) {
         var size, anchor, scale = imageStyle.getScale();
         literal.rotation = imageStyle.getRotation();
@@ -335,7 +337,9 @@ goog.require('ga_time_service');
         }
         if (anchor) {
           literal.graphicXOffset = -anchor[0] * scale;
+          alert(literal.graphicXOffset);
           literal.graphicYOffset = -anchor[1] * scale;
+          alert(literal.graphicYOffset);
         }
 
       }
@@ -1132,6 +1136,7 @@ goog.require('ga_time_service');
           console.log('*************************************');
           console.log(encStyles);
           console.log('***----------------------------------***');
+          
           return {
             encFeatures: encFeatures,
             encStyles: encStyles
@@ -1342,13 +1347,13 @@ goog.require('ga_time_service');
               'type': 'FeatureCollection',
               'features': [{
                 'type': 'Feature',
-                'properties': {
-                  '_gx_style': ($(elt).text() ? 2 : 1)
-                },
                 'geometry': {
                   'type': 'Point',
                   'coordinates': [center[0], center[1]]
-                } 
+                },
+                'properties': {
+                  '_gx_style': ($(elt).text() ? 2 : 1)
+                }
               }]
             },
             'type': 'geojson',
@@ -1359,10 +1364,10 @@ goog.require('ga_time_service');
                 'symbolizers': [{
                   'type': 'point',
                   'externalGraphic': $scope.options.bubbleUrl,
-                  'graphicWidth': 9.7,
-                  'graphicHeight': 2.7,
-                  'graphicXOffset': -4.8,
-                  'graphicYOffset': -2.7
+                  'graphicWidth': 21,
+                  'graphicHeight': 4,
+                  'graphicXOffset': "-120", //-4.8,
+                  'graphicYOffset': "-300" //-2.7
                  },{
                   'type': 'text',
                   'label': $(elt).text(),
@@ -1370,13 +1375,13 @@ goog.require('ga_time_service');
                   'labelXOffset': 0,
                   'labelYOffset': 1.8,
                   'fontColor': '#ffffff',
-                  'fontSize': "10px",
+                  'fontSize': '7px',
                   'fontWeight': 'normal',
-                  "fontStyle": "normal",
-                  "fontWeight": "bold",
-                  "haloColor": "#123456",
-                  "haloOpacity": "0.7",
-                  "haloRadius": "1.0"
+                  'fontStyle': 'normal',
+                  'fontWeight': 'bold',
+                  'haloColor': '#123456',
+                  'haloOpacity': '0.5',
+                  'haloRadius': '0.5'
                 }]
               },
               //Style for marker position
@@ -1392,10 +1397,9 @@ goog.require('ga_time_service');
                   'graphicYOffset': -30
                 }]
               }
-            }
-            
-            //'name': 'drawing',
-            //'opacity': 1
+            },
+            'name': 'drawing',
+            'opacity': 1
           };
           encLayers.push(encOverlayLayer);
         }
@@ -1403,6 +1407,9 @@ goog.require('ga_time_service');
 
       console.log('encLayers');
       console.log(encLayers);
+
+      //First layer is top layer of the map (Mapfish: version 3)
+      encLayers.reverse();
 
 
       console.log('overlays');
