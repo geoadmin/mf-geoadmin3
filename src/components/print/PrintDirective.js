@@ -260,46 +260,19 @@ goog.require('ga_time_service');
       var literal = {
         zIndex: style.getZIndex()
       };
-      console.log('literal');
-      console.log(literal);
-      //var type = feature.getGeometry().getType();
-      //literal.type = 'polygon';//type; //.toLowerCase();
       var geometry = feature.getGeometry();
-      console.log('geom for type');
-      console.log(geometry);
       var fill = style.getFill();
-      console.log('fill');
-      console.log(fill);
       var stroke = style.getStroke();
-      console.log('stroke');
-      console.log(stroke);
-      textStyle = style.getText();
-      console.log('transformToPrintLiteral ---- TextStyle-- if there is, it will be on console');
-      if (textStyle) {
-        console.log(textStyle);
-      }
-      console.log('textstyle: ' + textStyle + 'for geom ' + geometry);
+      var textStyle = style.getText();
       var imageStyle = style.getImage();
-      console.log('imageStyle ---- imagestyle always exist??');
-      console.log(imageStyle);
-
-      console.log('Literal');
-      console.log(literal);
-
       var geomtype = feature.getGeometry().getType();
-      console.log('geomtype');
-      console.log(geomtype);
 
-      console.log('One break here to check');
-
-      alert('hey');
       if (geometry) {
         if (geometry instanceof ol.geom.Polygon) {
           literal.type = 'polygon';
         } else if (geometry instanceof ol.geom.LineString) {
           literal.type = 'line';
-        } else if ((geometry instanceof ol.geom.Point) && (textStyle)){
-          console.log('Now it is POINT, whats going with the text?');
+        } else if ((geometry instanceof ol.geom.Point) && (textStyle)) {
           literal.type = 'text';
         } else if (geometry instanceof ol.geom.Point) {
           literal.type = 'point';
@@ -307,7 +280,6 @@ goog.require('ga_time_service');
       }
 
 
-      alert(imageStyle);
       if (imageStyle) {
         var size, anchor, scale = imageStyle.getScale();
         literal.rotation = imageStyle.getRotation();
@@ -337,9 +309,7 @@ goog.require('ga_time_service');
         }
         if (anchor) {
           literal.graphicXOffset = -anchor[0] * scale;
-          alert(literal.graphicXOffset);
           literal.graphicYOffset = -anchor[1] * scale;
-          alert(literal.graphicYOffset);
         }
 
       }
@@ -370,11 +340,6 @@ goog.require('ga_time_service');
       }
 
       if (textStyle && textStyle.getText()) {
-        console.log('literal text');
-        console.log('textStyle');
-        console.log(textStyle);
-        console.log('textStyle.getText');
-        console.log(textStyle.getText());
         literal.label = textStyle.getText();
         literal.labelAlign = textStyle.getTextAlign();
 
@@ -386,21 +351,20 @@ goog.require('ga_time_service');
         if (textStyle.getFont()) {
           var fontValues = textStyle.getFont().split(' ');
           // Fonts managed by print server: COURIER, HELVETICA, TIMES_ROMAN
-          literal.fontFamily = fontValues[2].toUpperCase();
+          literal.fontFamily = 'sans-serif'; //fontValues[1].toLowerCase();
           literal.fontSize = parseInt(fontValues[1]);
           literal.fontWeight = fontValues[0];
         }
 
-        /* TO FIX: Not managed by the print server
         if (textStyle.getStroke()) {
           var strokeColor = ol.color.asArray(textStyle.getStroke().getColor());
-          literal.labelOutlineColor = toHexa(strokeColor);
-          literal.labelOutlineWidth = textStyle.getStroke().getWidth();
-        }*/
+          literal.haloColor = toHexa(strokeColor);
+          literal.haloOpacity = strokeColor[3];
+          if (textStyle.getStroke().getWidth()) {
+            literal.haloRadius = textStyle.getStroke().getWidth() / 2;
+          }
+        }
       }
-
-      console.log('Literal after all');
-      console.log(literal);
       return literal;
     };
 
@@ -433,7 +397,7 @@ goog.require('ga_time_service');
         'Vector': function(layer, features) {
           var enc = $scope.encoders.
               layers['Layer'].call(this, layer);
-          var encStyles = {"version": "2"};
+          var encStyles = {'version': '2'};
           var encFeatures = [];
           var stylesDict = {};
 
@@ -445,35 +409,20 @@ goog.require('ga_time_service');
           var texts = [];
 
           angular.forEach(features, function(feature) {
-            console.log('IN VECTOR');
             var geotype = feature.getGeometry().getType();
-            console.log('GEOTYPE');
-            console.log('----------------------------');
-            console.log(geotype);
-            console.log('FEATURE');
-            console.log('----------------------------');
-            console.log(feature);
             if (/^(Polygon|MultiPolygon|Circle|GeometryCollection)$/.
                 test(geotype)) {
               polygons.push(feature);
             } else if (/^(LineString|MultiLineString)$/.test(geotype)) {
               lines.push(feature);
-            } else if ((/^(Point)$/.test(geotype)) && (feature.style_[0].getText())) {
-              console.log('IT IS A TEXT');
-              console.log(feature.style_[0].getText());
+            } else if ((/^(Point)$/.test(geotype)) &&
+              (feature.style_[0].getText())) {
               texts.push(feature);
-              console.log('-------------');
             } else {
-              console.log('IT IS A POINT');
               points.push(feature);
-              console.log('------------');
             }
           });
           features = newFeatures.concat(polygons, lines, points, texts);
-          console.log('------------');
-          console.log('FOR EACH FEATURE OF THE FEATURES PRINT THE CONCAT FEATURES');
-          console.log(features);
-          console.log('------------');
 
           angular.forEach(features, function(feature) {
             var encoded = $scope.encoders.features.feature(layer, feature);
@@ -1024,7 +973,6 @@ goog.require('ga_time_service');
           var encStyle = {
             id: styleId++
           };
-          console.log('IN EACH FEATURE');
 
           // Get the styles of the feature
           if (!styles) {
@@ -1039,8 +987,6 @@ goog.require('ga_time_service');
 
           // Transform an ol.geom.Circle to a ol.geom.Polygon
           var geometry = feature.getGeometry();
-          console.log('geometry of the feature');
-          console.log(geometry);
           if (geometry instanceof ol.geom.Circle) {
             var polygon = gaPrintStyleService.olCircleToPolygon(geometry);
             feature = new ol.Feature(polygon);
@@ -1070,73 +1016,38 @@ goog.require('ga_time_service');
           encFeatures.push(encFeature);
 
           // Encode a style of a feature
-          console.log('Encode the style of the feature');
           if (styles && styles.length > 0) {
-                     console.log('styles');
-                     console.log(styles);
-                     console.log('styles[0]');
-                     console.log(styles[0]);
             angular.extend(encStyle, transformToPrintLiteral(feature,
                 styles[0]));
-            console.log('************************************');
-            console.log('BACK FROM TRANSFORM TO PRINT LITERAL');
-            console.log('************************************');
-            console.log('encStyle');
-            console.log(encStyle);
           }
           console.log('encStyle stringify');
           console.log(JSON.stringify(encStyle));
-          encStyles['[_gx_style = ' +  encStyle.id +']'] = {"symbolizers": [encStyle]};//encStyle[Object.keys(encStyle)[0]]};
-          //encStyles['[*]'] = {"symbolizers": encStyle};
-
+          encStyles['[_gx_style = ' + encStyle.id + ']'] =
+            {'symbolizers': [encStyle]};
 
           console.log('///////////////////////////////');
           console.log('encStyles stringify');
           console.log(JSON.stringify(encStyles));
 
-          //angular.extend(encStyles, encStyles);
-
-          //console.log('angularextend encStyles');
-          //console.log(encStyles);
-          console.log('///////////////////////////////');
-          //var styleToEncode = styles[0];
-          //console.log('styleToEncode');
-          //console.log(styleToEncode);
           // If a feature has a style with a geometryFunction defined, we
           // must also display this geometry with the good style (used for
           // azimuth).
           for (var i = 0; i < styles.length; i++) {
-            console.log('in the loop of styles for geom');
             var style = styles[i];
-            console.log('style');
-            console.log(style);
             if (angular.isFunction(style.getGeometry())) {
               var geom = style.getGeometry()(feature);
-              console.log('geom');
-              console.log(geom);
-              //encStyles = encStyle;
               if (geom) {
                 var encoded = $scope.encoders.features.feature(layer,
                     new ol.Feature(geom), [style]);
-                console.log('still in the loop of geom');
-                console.log('encoded');
-                console.log(encoded);
                 encFeatures = encFeatures.concat(encoded.encFeatures);
-                console.log('encFeatures');
-                console.log(encFeatures);
                 angular.extend(encStyles, encoded.encStyles);
-                console.log('encStyles');
-                console.log(encStyles);
               }
             }
           }
-        
           console.log('ENCFEATURES AND ENCSTYLES ALL TOGETHER');
           console.log(encFeatures);
           console.log('*************************************');
           console.log(encStyles);
-          console.log('***----------------------------------***');
-          
           return {
             encFeatures: encFeatures,
             encStyles: encStyles
@@ -1243,7 +1154,7 @@ goog.require('ga_time_service');
       defaultPage['lang' + lang] = true;
       var qrcodeUrl = $scope.options.qrcodeUrl +
           encodeURIComponent(gaPermalink.getHref());
-      var print_zoom = getZoomFromScale($scope.scale); //edw epaize scope.value
+      var print_zoom = getZoomFromScale($scope.scale);
       qrcodeUrl = qrcodeUrl.replace(/zoom%3D(\d{1,2})/, 'zoom%3D' + print_zoom);
       var encLayers = [];
       var encLegends;
@@ -1279,9 +1190,6 @@ goog.require('ga_time_service');
           if (layer instanceof ol.layer.Group) {
             var encs = $scope.encoders.layers['Group'].call(this,
                 layer, proj);
-            console.log('ENCSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS');
-            console.log(encs);
-            console.log('ENCSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS');
             encLayers = encLayers.concat(encs);
           } else {
             var enc = encodeLayer(layer, proj);
@@ -1349,7 +1257,7 @@ goog.require('ga_time_service');
                 'type': 'Feature',
                 'geometry': {
                   'type': 'Point',
-                  'coordinates': [center[0], center[1]]
+                  'coordinates': [center[0], center[1] + 2 * offset]
                 },
                 'properties': {
                   '_gx_style': ($(elt).text() ? 2 : 1)
@@ -1365,15 +1273,14 @@ goog.require('ga_time_service');
                   'type': 'point',
                   'externalGraphic': $scope.options.bubbleUrl,
                   'graphicWidth': 21,
-                  'graphicHeight': 4,
-                  'graphicXOffset': "-120", //-4.8,
-                  'graphicYOffset': "-300" //-2.7
+                  'graphicHeight': 4
                  },{
                   'type': 'text',
                   'label': $(elt).text(),
                   'labelAlign': 'cm',
                   'labelXOffset': 0,
                   'labelYOffset': 1.8,
+                  'fontFamily': 'sans-serif',
                   'fontColor': '#ffffff',
                   'fontSize': '7px',
                   'fontWeight': 'normal',
@@ -1385,7 +1292,7 @@ goog.require('ga_time_service');
                 }]
               },
               //Style for marker position
-              '[_gx_style = 1]': { 
+              '[_gx_style = 1]': {
                 'symbolizers': [{
                   'type': 'point',
                   'externalGraphic': $scope.options.markerUrl,
@@ -1410,10 +1317,6 @@ goog.require('ga_time_service');
 
       //First layer is top layer of the map (Mapfish: version 3)
       encLayers.reverse();
-
-
-      console.log('overlays');
-      console.log(overlays);
 
       // Get the short link
       var shortLink;
@@ -1490,7 +1393,7 @@ goog.require('ga_time_service');
           ]
         };
 
-        console.log("########## Finale spec #################");
+        console.log('########## Finale spec #################');
         console.log(JSON.stringify(spec));
         var startPollTime = 0;
         var pollErrors;
