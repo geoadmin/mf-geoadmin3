@@ -1,4 +1,6 @@
 /node_modules
+/externs/angular.js
+/externs/jquery.js
 /src/deps.js
 /src/style/app.css
 /src/index.html
