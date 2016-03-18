@@ -13,7 +13,6 @@
 /deploy/deploy-branch.cfg
 /src/locales/*.csv
 /scripts/00-*.conf
-/src/lib/angular*.js
 /src/lib/Cesium/Assets/Textures/NaturalEarthII
 /src/lib/Cesium/Assets/Textures/SkyBox
 /src/lib/Cesium/Assets/Textures/maki
