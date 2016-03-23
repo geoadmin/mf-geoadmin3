@@ -9,6 +9,7 @@ SHORTEN_LAYER = "ch.swisstopo.lubis-bildstreifen"
 SHORTEN_CODE = "20cc812c90"
 URL_API_DEV = "https://mf-chsdi3.dev.bgdi.ch/"
 URL_API_INT = "https://mf-chsdi3.int.bgdi.ch/"
+URL_API_CI = "https://mf-chsdi3.ci.bgdi.ch/"
 URL_API_PROD = "https://api3.geo.admin.ch/"
 SPHINX_CHECKER = "rest/services/inspire/SearchServer?searchText=wasser&type=locations"
 URL_SHORTEN = 'shorten.json?url=https://mf-geoadmin3.int.bgdi.ch/' + \
@@ -103,7 +104,11 @@ def runCheckerTest(driver, url):
             assert "int" in url
             url_4_api = URL_API_INT
         except Exception as e:
-            url_4_api = URL_API_PROD
+            try:
+                assert "ci" in url
+                url_4_api = URL_API_CI
+            except Exception as e:
+                url_4_api = URL_API_PROD
 
     if bFindService:
         print "Test FindService"
