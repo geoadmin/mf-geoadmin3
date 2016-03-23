@@ -89,6 +89,18 @@ goog.provide('ga_query_service');
             operator: '>=',
             value: twoWeeksAgo
           }]
+        }],
+        'ch.astra.unfaelle-personenschaeden_alle': [{
+          id: 'astra_alle_lastyear_casualties',
+          filters: [{
+            attrName: 'accidentyear',
+            operator: '=',
+            value: '2015'
+          }, {
+            attrName: 'severitycategorycode',
+            operator: 'ilike',
+            value: 'UGT'
+          }]
         }]
       };
 
