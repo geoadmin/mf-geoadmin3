@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*
 
 import time
-from selenium.webdriver.common.keys import Keys
 from helpers import bCheckIfUrlHasChanged
 
 # Search testing using saucelabs
@@ -10,6 +9,7 @@ SHORTEN_LAYER = "ch.swisstopo.lubis-bildstreifen"
 SHORTEN_CODE = "20cc812c90"
 URL_API_DEV = "https://mf-chsdi3.dev.bgdi.ch/"
 URL_API_INT = "https://mf-chsdi3.int.bgdi.ch/"
+URL_API_CI = "https://mf-chsdi3.ci.bgdi.ch/"
 URL_API_PROD = "https://api3.geo.admin.ch/"
 SPHINX_CHECKER = "rest/services/inspire/SearchServer?searchText=wasser&type=locations"
 URL_SHORTEN = 'shorten.json?url=https://mf-geoadmin3.int.bgdi.ch/' + \
@@ -17,9 +17,9 @@ URL_SHORTEN = 'shorten.json?url=https://mf-geoadmin3.int.bgdi.ch/' + \
     'ch.swisstopo.pixelkarte-grau%26catalogNodes%3D1179,1180,1184,1186%26layers%3D' + \
     'ch.swisstopo.lubis-bildstreifen'
 
-urls_sitemap = ['https://map.geo.admin.ch/sitemap_base.xml',
-                'https://map.geo.admin.ch/sitemap_topics.xml',
-                'https://map.geo.admin.ch/sitemap_layers.xml']
+list_sitemap = ['sitemap_base.xml',
+                'sitemap_topics.xml',
+                'sitemap_layers.xml']
 key_words_loaderjs = [
     'ch.swisstopo.pixelkarte-farbe',
     'static/js/ga.js',
@@ -61,8 +61,7 @@ important_layers = [
     'ch.bav.sachplan-infrastruktur-schiene_kraft',
     'ch.bfe.sachplan-geologie-tiefenlager',
     'ch.bfe.sachplan-uebertragungsleitungen_anhoerung',
-    'ch.bfe.sachplan-uebertragungsleitungen_kraft',
-    'ch.bav.sachplan-infrastruktur-schifffahrt_anhoerung']
+    'ch.bfe.sachplan-uebertragungsleitungen_kraft']
 
 
 def wait_url_changed(driver, old_url, timeout=DEFAULT_WAIT):
@@ -86,18 +85,16 @@ def runCheckerTest(driver, url):
     print 'Checker tests starts!'
 
     bApiPage = 1
-    bCheckerApi = 0
-    bCheckerGeoAdmin = 0
-    bCheckerSphinx = 0
+    bCheckerApi = 1
+    bCheckerGeoAdmin = 1
+    bCheckerSphinx = 1
     bApiDevPage = 1
     bPythonTranslations = 1
     bShortenUrl = 1
-    bLoaderJs = 0
-    bSitemapService = 0
-    bTopicListing = 0
     bFindService = 1
-    bTestCatalogApiExample = 0
-    bTestRectangleApiExample = 0
+    bLoaderJs = 1
+    bSitemapService = 1
+    bTopicListing = 1
 
     try:
         assert "dev" in url
@@ -107,59 +104,11 @@ def runCheckerTest(driver, url):
             assert "int" in url
             url_4_api = URL_API_INT
         except Exception as e:
-            url_4_api = URL_API_PROD
-
-    if bTestRectangleApiExample:
-        print "Test Rectangle Api Examples (1.1.03)"
-        driver.get(url_4_api + 'examples/geoadmin_rectangle.html')
-        print "Create a rectangle"
-        driver.find_element_by_id("north").send_keys("185300")
-        driver.find_element_by_id("south").send_keys("128800")
-        driver.find_element_by_id("east").send_keys("654500")
-        driver.find_element_by_id("west").send_keys("565500", Keys.RETURN)
-
-        # Comment verifier la valeur de la textbox ??
-        print "Valeur pour north : --" + str(driver.find_element_by_id("north").text) + '--'
-
-        # Click button "Delete rectangle" -> Remove coordinate
-        driver.find_element_by_link_text("Delete rectangle").click()
-        print "Valeur pour north (after clear) : --"
-        # + str(driver.find_element_by_id("north").value) + '--'
-
-        # click Link to see the Code source
-        driver.find_element_by_link_text("See the code").click()
-
-        # Check some word on source code page
-        page_source_tmp = driver.page_source
-        try:
-            # code to Create a GeoAdmin Map
-            assert "var map = new ga.Map({" in page_source_tmp
-            # code to Create a Listeners dragbox intersection event
-            assert "dragBox.on('boxstart', function(evt) {" in page_source_tmp
-        except:
-            raise Exception(
-                "Error : missing source code in page " +
-                url_4_api +
-                "examples/geoadmin_catalog.js")
-
-    if bTestCatalogApiExample:
-        print "Test Catalog Api Examples"
-        driver.get(url_4_api + 'examples/geoadmin_catalog.html')
-        driver.find_element_by_xpath("(//input[@type='checkbox'])[4]").click()
-        # click Link to see the Code source
-        driver.find_element_by_link_text("See the code").click()
-        # Check if some source code line exist on the page
-        page_source_tmp = driver.page_source
-        try:
-            # code to Create a GeoAdmin Map
-            assert "var map = new ga.Map({" in page_source_tmp
-            # code to Create a background layer
-            assert "var lyr = ga.layer.create('ch.swisstopo.pixelkarte-grau');" in page_source_tmp
-        except:
-            raise Exception(
-                "Error : missing source code in page " +
-                url_4_api +
-                "examples/geoadmin_catalog.js")
+            try:
+                assert "ci" in url
+                url_4_api = URL_API_CI
+            except Exception as e:
+                url_4_api = URL_API_PROD
 
     if bFindService:
         print "Test FindService"
@@ -197,6 +146,11 @@ def runCheckerTest(driver, url):
     if bSitemapService:
         print "Test Sitemap (index)"
         driver.get(url_4_api + 'sitemap?content=index')
+        # create dynamic list (depends of environment)
+        urls_sitemap = []
+        for elt in list_sitemap:
+            urls_sitemap.append(url + '/' + elt)
+
         for elt in urls_sitemap:
             try:
                 assert elt in driver.page_source
@@ -286,7 +240,7 @@ def runCheckerTest(driver, url):
         assert "OK" in driver.page_source
 
     if bCheckerGeoAdmin:
-        driver.get(url + 'checker')
+        driver.get(url + '/' + 'checker')
         print "test si Ok est sur la page"
         assert "OK" in driver.page_source
 
