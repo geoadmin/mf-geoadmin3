@@ -672,8 +672,8 @@ scripts/00-$(GIT_BRANCH).conf: scripts/00-branch.mako-dot-conf \
 # We use the service to get only the minimal polyfill file for ie9
 .build-artefacts/polyfill:
 	mkdir -p $@
-	curl -q -o $@/polyfill.js 'https://cdn.polyfill.io/v2/polyfill.js?features=requestAnimationFrame&ua=MSIE%209.0'
-	curl -q -o $@/polyfill.min.js 'https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame&ua=MSIE%209.0'
+	curl -q -o $@/polyfill.js 'https://cdn.polyfill.io/v2/polyfill.js?features=Array.isArray,requestAnimationFrame&flags=always,gated&unknown=polyfill'
+	curl -q -o $@/polyfill.min.js 'https://cdn.polyfill.io/v2/polyfill.min.js?features=Array.isArray,requestAnimationFrame&flags=always,gated&unknown=polyfill'
 
 .PHONY: cleanall
 cleanall: clean
