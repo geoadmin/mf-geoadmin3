@@ -55,19 +55,19 @@ if __name__ == '__main__':
     # Top browser and platform according to stats. Update from time to time
     top_browser = {'platform': "Windows 7", 'browserName': "firefox",
                    'version': "44.0", 'screenResolution': "1280x1024"}
-    
+
     # Tests specific browser (FOR DEBUG ONLY)
     test_browser_FF = {'platform': "Windows 7", 'browserName': "firefox",
-                   'version': "9.0", 'screenResolution': "1280x1024"}
+                       'version': "9.0", 'screenResolution': "1280x1024"}
 
     test_browser_IE = {'platform': "Windows 7", 'browserName': "internet explorer",
-                   'version': "10.0", 'screenResolution': "1280x1024"}
+                       'version': "10.0", 'screenResolution': "1280x1024"}
 
     test_browser_Safari = {'platform': "OS X 10.11", 'browserName': "safari",
-                   'version': "9.0", 'screenResolution': "1280x1024"}
+                           'version': "9.0", 'screenResolution': "1280x1024"}
 
     test_browser_Opera = {'platform': "Windows 7", 'browserName': "opera",
-                   'version': "12.12", 'screenResolution': "1280x1024" }
+                          'version': "12.12", 'screenResolution': "1280x1024"}
 
     # Use top browser to test a specific browser and use 3rd param to true (FOR DEBUG ONLY)
     # top_browser = test_browser_IE
@@ -94,11 +94,11 @@ if __name__ == '__main__':
             'version': "44.0", 'screenResolution': "1280x1024"},
         # Internet Exeplorer
         {'platform': "Windows 7", 'browserName': "internet explorer",
-            'version': "9.0", 'screenResolution': "1280x1024" },
+            'version': "9.0", 'screenResolution': "1280x1024"},
         {'platform': "Windows 7", 'browserName': "internet explorer",
-            'version': "10.0", 'screenResolution': "1280x1024" },
+            'version': "10.0", 'screenResolution': "1280x1024"},
         {'platform': "Windows 7", 'browserName': "internet explorer",
-            'version': "11.0", 'screenResolution': "1280x1024" }
+            'version': "11.0", 'screenResolution': "1280x1024"}
     ]
 
     # Add top browser
