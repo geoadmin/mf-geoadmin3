@@ -111,7 +111,7 @@ def runCheckerTest(driver, url):
                 url_4_api = URL_API_PROD
 
     if bFindService:
-        print "Test FindService"
+        print "  Test FindService"
         driver.get(
             url_4_api +
             'rest/services/ech/MapServer/find?layer=ch.bafu.bundesinventare-bln' +
@@ -127,12 +127,12 @@ def runCheckerTest(driver, url):
         assert 'sand' in driver.page_source
 
     if bTopicListing:
-        print "Test Topic Listing"
+        print "  Test Topic Listing"
         driver.get(url_4_api + 'rest/services')
         page_source_tmp = driver.page_source
         for elt in topics_list:
             str2search = '"id":"' + elt + '"}'
-            print "search topic " + elt + ", key=" + str2search
+            # print "search topic " + elt + ", key=" + str2search
             try:
                 assert str2search in page_source_tmp
             except:
@@ -144,7 +144,7 @@ def runCheckerTest(driver, url):
                     "rest/services")
 
     if bSitemapService:
-        print "Test Sitemap (index)"
+        print "  Test Sitemap (index)"
         driver.get(url_4_api + 'sitemap?content=index')
         # create dynamic list (depends of environment)
         urls_sitemap = []
@@ -160,7 +160,7 @@ def runCheckerTest(driver, url):
                     str(elt) +
                     " not found in Sitemap Service page")
 
-        print "Test Sitemap (base)"
+        print "  Test Sitemap (base)"
         driver.get(url_4_api + 'sitemap?content=base')
         for elt in available_language:
             str2search = '/?lang=' + elt
@@ -174,7 +174,7 @@ def runCheckerTest(driver, url):
                     url_4_api +
                     "sitemap?content=base")
 
-        print "Test Sitemap (topics)"
+        print "  Test Sitemap (topics)"
         driver.get(url_4_api + 'sitemap?content=topics')
         for elt in topics_list:
             str2search = 'topic=' + elt + '&amp;lang='
@@ -188,12 +188,12 @@ def runCheckerTest(driver, url):
                     url_4_api +
                     "sitemap?content=index page")
 
-        print "Test Sitemap (layers)"
+        print "  Test Sitemap (layers)"
         driver.get(url_4_api + 'sitemap?content=layers')
         page_source_tmp = driver.page_source
         for elt in important_layers:
             str2search = '&amp;layers=' + elt + '&amp;lang='
-            print "Search layer : " + elt
+            # print "Search layer : " + elt
             try:
                 assert str2search in page_source_tmp
             except:
@@ -211,7 +211,7 @@ def runCheckerTest(driver, url):
         # https://api3.geo.admin.ch/sitemap?content=addresses_33
 
     if bLoaderJs:
-        print "Test Loader JS"
+        print "  Test Loader JS"
         driver.get(url_4_api + 'loader.js')
         for elt in key_words_loaderjs:
             try:
@@ -228,24 +228,24 @@ def runCheckerTest(driver, url):
         assert "static/js/ga-debug.js" in driver.page_source
 
     if bApiPage:
-        print "Test API (search words Welcome)"
+        print "  Test API (search words Welcome)"
         driver.get(url_4_api)
         assert "Welcome" in driver.page_source
 
     if bCheckerApi:
-        print "Test Checker API"
+        print "  Test Checker API"
         driver.get(url_4_api + 'checker')
         assert "OK" in driver.page_source
         driver.get(url_4_api + 'checker_dev')
         assert "OK" in driver.page_source
 
     if bCheckerGeoAdmin:
+        print "  Test Checker GeoAdmin"
         driver.get(url + '/' + 'checker')
-        print "test si Ok est sur la page"
         assert "OK" in driver.page_source
 
     if bCheckerSphinx:
-        print "Test Sphinx Checker"
+        print "  Test Sphinx Checker"
         driver.get(url_4_api + SPHINX_CHECKER)
         assert "results" in driver.page_source
         assert "origin" in driver.page_source
@@ -253,7 +253,7 @@ def runCheckerTest(driver, url):
         assert "label" in driver.page_source
 
     if bApiDevPage:
-        print "Test Api Dev Page"
+        print "  Test Api Dev Page"
         driver.get(url_4_api + 'dev')
         assert "Shorten url" in driver.page_source
         assert "Map Services" in driver.page_source
@@ -261,7 +261,7 @@ def runCheckerTest(driver, url):
         assert "Layers Configuration" in driver.page_source
 
     if bPythonTranslations:
-        print "Test python Translations"
+        print "  Test python Translations"
         driver.get(url_4_api + 'testi18n?lang=de')
         assert "BLN" in driver.page_source
         assert "Jagdbanngebiete" in driver.page_source
@@ -279,7 +279,7 @@ def runCheckerTest(driver, url):
                     "Unable to find translation when lang=toto (BLN/ILNM)")
 
     if bShortenUrl:
-        print "Test Shorten URL"
+        print "  Test Shorten URL"
         driver.get(url_4_api + URL_SHORTEN)
         assert "shorturl" in driver.page_source
         assert SHORTEN_CODE in driver.page_source
@@ -288,7 +288,7 @@ def runCheckerTest(driver, url):
             driver.get(url_4_api + 'shorten/' + SHORTEN_CODE)
             current_url = driver.current_url
             try:
-                print "search in url directly"
+                # print "search in url directly"
                 assert SHORTEN_LAYER in current_url
             except Exception as e:
                 try:

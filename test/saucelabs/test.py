@@ -55,8 +55,28 @@ if __name__ == '__main__':
     # Top browser and platform according to stats. Update from time to time
     top_browser = {'platform': "Windows 7", 'browserName': "firefox",
                    'version': "44.0", 'screenResolution': "1280x1024"}
+    
+    # Tests specific browser (FOR DEBUG ONLY)
+    test_browser_FF = {'platform': "Windows 7", 'browserName': "firefox",
+                   'version': "9.0", 'screenResolution': "1280x1024"}
+
+    test_browser_IE = {'platform': "Windows 7", 'browserName': "internet explorer",
+                   'version': "10.0", 'screenResolution': "1280x1024"}
+
+    test_browser_Safari = {'platform': "OS X 10.11", 'browserName': "safari",
+                   'version': "9.0", 'screenResolution': "1280x1024"}
+
+    test_browser_Opera = {'platform': "Windows 7", 'browserName': "opera",
+                   'version': "12.12", 'screenResolution': "1280x1024" }
+
+    # Use top browser to test a specific browser and use 3rd param to true (FOR DEBUG ONLY)
+    # top_browser = test_browser_IE
+    # top_browser = test_browser_FF
+    # top_browser = test_browser_Safari
+    # top_browser = test_browser_Opera
 
     desired_cap_list = [
+        # Chrome
         {'platform': "Windows 7", 'browserName': "chrome",
             'version': "48.0", 'screenResolution': "1280x1024"},
         {'platform': "Windows 7", 'browserName': "chrome",
@@ -65,20 +85,23 @@ if __name__ == '__main__':
             'version': "48.0", 'screenResolution': "1280x1024"},
         {'platform': "Windows 10", 'browserName': "chrome",
             'version': "48.0", 'screenResolution': "1280x1024"},
+        # FireFox
         {'platform': "Windows 7", 'browserName': "firefox",
             'version': "43.0", 'screenResolution': "1280x1024"},
         {'platform': "Windows 8.1", 'browserName': "firefox",
             'version': "44.0", 'screenResolution': "1280x1024"},
         {'platform': "Windows 10", 'browserName': "firefox",
-            'version': "44.0", 'screenResolution': "1280x1024"}
-        # {'platform': "Windows 7", 'browserName': "internet explorer",
-        #     'version': "9.0", 'screenResolution': "1280x1024" },
-        # {'platform': "Windows 7", 'browserName': "internet explorer",
-        #     'version': "10.0", 'screenResolution': "1280x1024" },
-        # {'platform': "Windows 7", 'browserName': "internet explorer",
-        #     'version': "11.0", 'screenResolution': "1280x1024" }
+            'version': "44.0", 'screenResolution': "1280x1024"},
+        # Internet Exeplorer
+        {'platform': "Windows 7", 'browserName': "internet explorer",
+            'version': "9.0", 'screenResolution': "1280x1024" },
+        {'platform': "Windows 7", 'browserName': "internet explorer",
+            'version': "10.0", 'screenResolution': "1280x1024" },
+        {'platform': "Windows 7", 'browserName': "internet explorer",
+            'version': "11.0", 'screenResolution': "1280x1024" }
     ]
 
+    # Add top browser
     desired_cap_list.append(top_browser)
 
     # okay we will start the script!
@@ -87,6 +110,10 @@ if __name__ == '__main__':
     t0 = time.time()
     print "Start test at " + time.strftime('%d/%m/%y %H:%M', time.localtime())
 
+    doTestsLight = {
+        'start': runStartTest
+        # 'checker': runCheckerTest
+    }
     doTests = {
         'start': runStartTest,
         'mobile': runMobileTest,
@@ -108,6 +135,7 @@ if __name__ == '__main__':
             print 'Please try again...'
             sys.exit(1)
 
+    # if 3rd parameter equal 'true' use only top browser
     caps_used = [top_browser] if singlebrowser else desired_cap_list
 
     for current_desired_cap in caps_used:
@@ -123,7 +151,13 @@ if __name__ == '__main__':
             desired_capabilities=current_desired_cap)
         driver.implicitly_wait(DEFAULT_WAIT_FOUND)
         try:
-            for k, dotest in doTests.iteritems():
+            if driver.name == "internet explorer" or driver.name == "opera" or driver.name == "safari":
+                # Use specific test list for IE, Opera and Safari
+                DoTestCurrentrowser = doTestsLight
+            else:
+                # Use full test list for all browser
+                DoTestCurrentrowser = doTests
+            for k, dotest in DoTestCurrentrowser.iteritems():
                 if k in tests or len(tests) == 0:
                     t1 = time.time()
                     dotest(driver, url)
