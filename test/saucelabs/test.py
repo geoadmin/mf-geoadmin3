@@ -58,7 +58,7 @@ if __name__ == '__main__':
 
     # Tests specific browser (FOR DEBUG ONLY)
     test_browser_FF = {'platform': "Windows 7", 'browserName': "firefox",
-                       'version': "9.0", 'screenResolution': "1280x1024"}
+                       'version': "44.0", 'screenResolution': "1280x1024"}
 
     test_browser_IE = {'platform': "Windows 7", 'browserName': "internet explorer",
                        'version': "10.0", 'screenResolution': "1280x1024"}
@@ -69,11 +69,15 @@ if __name__ == '__main__':
     test_browser_Opera = {'platform': "Windows 7", 'browserName': "opera",
                           'version': "12.12", 'screenResolution': "1280x1024"}
 
+    test_browser_Edge = {'platform': "Windows 10", 'browserName': "MicrosoftEdge",
+                         'version': "13.10586", 'screenResolution': "1280x1024"}
+
     # Use top browser to test a specific browser and use 3rd param to true (FOR DEBUG ONLY)
-    # top_browser = test_browser_IE
     # top_browser = test_browser_FF
-    # top_browser = test_browser_Safari
     # top_browser = test_browser_Opera
+    # top_browser = test_browser_Edge
+    # top_browser = test_browser_IE
+    # top_browser = test_browser_Safari
 
     desired_cap_list = [
         # Chrome
@@ -98,7 +102,13 @@ if __name__ == '__main__':
         {'platform': "Windows 7", 'browserName': "internet explorer",
             'version': "10.0", 'screenResolution': "1280x1024"},
         {'platform': "Windows 7", 'browserName': "internet explorer",
-            'version': "11.0", 'screenResolution': "1280x1024"}
+            'version': "11.0", 'screenResolution': "1280x1024"},
+        # Edge
+        {'platform': "Windows 10", 'browserName': "MicrosoftEdge",
+            'version': "13.10586", 'screenResolution': "1280x1024"},
+        # Opera
+        {'platform': "Windows 7", 'browserName': "opera",
+            'version': "12.12", 'screenResolution': "1280x1024"}
     ]
 
     # Add top browser
@@ -113,6 +123,12 @@ if __name__ == '__main__':
     doTestsLight = {
         'start': runStartTest
         # 'checker': runCheckerTest
+    }
+    doTestsEdge = {
+        'start': runStartTest,
+        'search': runSearchTest,
+        'swisssearch': runSwissSearchTest,
+        'checker': runCheckerTest
     }
     doTests = {
         'start': runStartTest,
@@ -141,7 +157,6 @@ if __name__ == '__main__':
     for current_desired_cap in caps_used:
         print "+--> Start test with " + current_desired_cap['platform'] + \
             " " + current_desired_cap['browserName'] + " (" + current_desired_cap['version'] + ")"
-
         driver = webdriver.Remote(
             command_executor='http://' +
             saucelabs_user +
@@ -150,10 +165,16 @@ if __name__ == '__main__':
             '@ondemand.saucelabs.com:80/wd/hub',
             desired_capabilities=current_desired_cap)
         driver.implicitly_wait(DEFAULT_WAIT_FOUND)
+        if driver.name == "MicrosoftEdge":
+            # print 'Force set version, strange...'
+            driver.desired_capabilities['version'] = current_desired_cap['version']
         try:
             if driver.name == "internet explorer" or driver.name == "opera" or driver.name == "safari":
                 # Use specific test list for IE, Opera and Safari
                 DoTestCurrentrowser = doTestsLight
+            elif driver.name == "MicrosoftEdge":
+                # Use full test list for Edge
+                DoTestCurrentrowser = doTestsEdge
             else:
                 # Use full test list for all browser
                 DoTestCurrentrowser = doTests
