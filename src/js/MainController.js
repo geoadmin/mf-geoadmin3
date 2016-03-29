@@ -394,11 +394,15 @@ goog.require('ga_topic_service');
     }
 
     // An new appcache file is available.
-    if ($window.applicationCache) { // IE9
+    if ($window.applicationCache) {
       $window.applicationCache.addEventListener('obsolete', function(e) {
-        $window.location.reload();
+        // setTimeout is needed for correct appcache update on Firefox
+        setTimeout(function() {
+          $window.location.reload(true);
+        });
       });
     }
+
   });
 })();
 
