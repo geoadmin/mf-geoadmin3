@@ -47,6 +47,12 @@ goog.require('ga_time_service');
       var http = $http.get($scope.options.printConfigUrl, {
         timeout: canceller.promise
       });
+      window.console.log('$scope.options');
+      window.console.log($scope.options);
+      window.console.log('$scope.options.printConfigUrl --> capabilities.json');
+      window.console.log($scope.options.printConfigUrl);
+      window.console.log('http');
+      window.console.log(http);
       return http;
     };
 
@@ -66,8 +72,8 @@ goog.require('ga_time_service');
       ];
       $scope.scale = getOptimalScale();
       refreshComp();
-    };
 
+    };
     var deactivate = function() {
       var item;
       while (item = deregister.pop()) {
@@ -182,7 +188,6 @@ goog.require('ga_time_service');
       return {layer: encLayer, legend: encLegend};
     };
 
-
     // Transform an ol.Color to an hexadecimal string
     var toHexa = function(olColor) {
       var hex = '#';
@@ -248,15 +253,32 @@ goog.require('ga_time_service');
        * graphicYOffset
        * zIndex
        */
+      console.log('**************************');
+      console.log('TRANSFORM TO PRINT LITERAL');
+      console.log('**************************');
 
       var literal = {
         zIndex: style.getZIndex()
       };
-      var type = feature.getGeometry().getType();
+      var geometry = feature.getGeometry();
       var fill = style.getFill();
       var stroke = style.getStroke();
       var textStyle = style.getText();
       var imageStyle = style.getImage();
+      var geomtype = feature.getGeometry().getType();
+
+      if (geometry) {
+        if (geometry instanceof ol.geom.Polygon) {
+          literal.type = 'polygon';
+        } else if (geometry instanceof ol.geom.LineString) {
+          literal.type = 'line';
+        } else if ((geometry instanceof ol.geom.Point) && (textStyle)) {
+          literal.type = 'text';
+        } else if (geometry instanceof ol.geom.Point) {
+          literal.type = 'point';
+        }
+      }
+
 
       if (imageStyle) {
         var size, anchor, scale = imageStyle.getScale();
@@ -329,19 +351,20 @@ goog.require('ga_time_service');
         if (textStyle.getFont()) {
           var fontValues = textStyle.getFont().split(' ');
           // Fonts managed by print server: COURIER, HELVETICA, TIMES_ROMAN
-          literal.fontFamily = fontValues[2].toUpperCase();
+          literal.fontFamily = 'sans-serif'; //fontValues[1].toLowerCase();
           literal.fontSize = parseInt(fontValues[1]);
           literal.fontWeight = fontValues[0];
         }
 
-        /* TO FIX: Not managed by the print server
         if (textStyle.getStroke()) {
           var strokeColor = ol.color.asArray(textStyle.getStroke().getColor());
-          literal.labelOutlineColor = toHexa(strokeColor);
-          literal.labelOutlineWidth = textStyle.getStroke().getWidth();
-        }*/
+          literal.haloColor = toHexa(strokeColor);
+          literal.haloOpacity = strokeColor[3];
+          if (textStyle.getStroke().getWidth()) {
+            literal.haloRadius = textStyle.getStroke().getWidth() / 2;
+          }
+        }
       }
-
       return literal;
     };
 
@@ -350,7 +373,7 @@ goog.require('ga_time_service');
       'layers': {
         'Layer': function(layer) {
           var enc = {
-            layer: layer.bodId,
+            //layer: layer.bodId,
             opacity: layer.getOpacity()
           };
           return enc;
@@ -374,7 +397,7 @@ goog.require('ga_time_service');
         'Vector': function(layer, features) {
           var enc = $scope.encoders.
               layers['Layer'].call(this, layer);
-          var encStyles = {};
+          var encStyles = {'version': '2'};
           var encFeatures = [];
           var stylesDict = {};
 
@@ -383,6 +406,7 @@ goog.require('ga_time_service');
           var polygons = [];
           var lines = [];
           var points = [];
+          var texts = [];
 
           angular.forEach(features, function(feature) {
             var geotype = feature.getGeometry().getType();
@@ -391,28 +415,40 @@ goog.require('ga_time_service');
               polygons.push(feature);
             } else if (/^(LineString|MultiLineString)$/.test(geotype)) {
               lines.push(feature);
+            } else if ((/^(Point)$/.test(geotype)) &&
+              (feature.style_[0].getText())) {
+              texts.push(feature);
             } else {
               points.push(feature);
             }
           });
-          features = newFeatures.concat(polygons, lines, points);
+          features = newFeatures.concat(polygons, lines, points, texts);
 
           angular.forEach(features, function(feature) {
             var encoded = $scope.encoders.features.feature(layer, feature);
             encFeatures = encFeatures.concat(encoded.encFeatures);
-            angular.extend(encStyles, encoded.encStyles);
+             angular.extend(encStyles, encoded.encStyles);
+            /*angular.forEach(encoded.encStyles, function(encStyle) {
+              console.log(encStyle);
+            });*/
           });
+          console.log('encFeatures');
+          console.log(encFeatures);
+          console.log('---------------');
+          console.log('encStyles');
+          console.log(encStyles);
+          console.log('---------------');
           angular.extend(enc, {
-            type: 'Vector',
-            styles: encStyles,
-            styleProperty: '_gx_style',
-            geoJson: {
-              type: 'FeatureCollection',
-              features: encFeatures
+            'type': 'geojson',
+            'style': encStyles, //'_gx_style' is the default style
+            'geoJson': {
+              'type': 'FeatureCollection',
+              'features': encFeatures
             },
-            name: layer.bodId,
-            opacity: (layer.opacity != null) ? layer.opacity : 1.0
+            'name': layer.bodId,
+            'opacity': (layer.opacity != null) ? layer.opacity : 1.0
           });
+          console.log(JSON.stringify(enc));
           return enc;
         },
         'WMS': function(layer, config) {
@@ -427,17 +463,18 @@ goog.require('ga_time_service');
               type: 'WMS',
               baseURL: config.wmsUrl || layer.url,
               layers: layers,
+              layer: layer.bodId,
               styles: styles,
-              format: 'image/' + (config.format || 'png'),
+              imageFormat: 'image/' + (config.format || 'png'),
               customParams: {
                 'EXCEPTIONS': 'XML',
                 'TRANSPARENT': 'true',
                 'CRS': 'EPSG:21781',
+                'VERSION': '1.3.0',
                 'TIME': params.TIME
-              },
-              singleTile: config.singleTile || false
+              }
             });
-            return enc;
+          return enc;
 
         },
         'WMTS': function(layer, config) {
@@ -445,25 +482,475 @@ goog.require('ga_time_service');
                 call(this, layer);
             var source = layer.getSource();
             var tileGrid = source.getTileGrid();
+            var opacity = layer.getOpacity();
+            var imageFormat = config.format || 'jpeg';
             if (!config.background && layer.visible && config.timeEnabled) {
               layersYears.push(layer.time);
             }
             angular.extend(enc, {
               type: 'WMTS',
-              baseURL: location.protocol + '//wmts.geo.admin.ch',
+              layer: layer.bodId,
+              baseURL: 'http://wmts6.geo.admin.ch/1.0.0/' +
+                '{Layer}/{style}/{Time}/{TileMatrixSet}/' +
+                '{TileMatrix}/{TileRow}/{TileCol}.' + imageFormat,
+              //baseURL: location.protocol + '//wmts.geo.admin.ch',
+              opacity: opacity,
               layer: config.serverLayerName,
-              maxExtent: layer.getExtent(),
-              tileOrigin: tileGrid.getOrigin(),
-              tileSize: [tileGrid.getTileSize(), tileGrid.getTileSize()],
-              resolutions: tileGrid.getResolutions(),
-              zoomOffset: tileGrid.getMinZoom(),
-              version: '1.0.0',
               requestEncoding: 'REST',
-              formatSuffix: config.format || 'jpeg',
               style: 'default',
-              dimensions: ['TIME'],
-              params: {'TIME': source.getDimensions().Time},
-              matrixSet: '21781'
+              dimensions: ['Time'],
+              dimensionParams: {'TIME': source.getDimensions().Time},
+              matrixSet: '21781',
+              matrices: [
+                    {
+                        'identifier': '0',
+                        'matrixSize': [
+                            1,
+                            1
+                        ],
+                        'scaleDenominator': 1.42857505715E7,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '1',
+                        'matrixSize': [
+                            1,
+                            1
+                        ],
+                        'scaleDenominator': 1.33928911608E7,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '2',
+                        'matrixSize': [
+                            1,
+                            1
+                        ],
+                        'scaleDenominator': 1.25000317501E7,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '3',
+                        'matrixSize': [
+                            1,
+                            1
+                        ],
+                        'scaleDenominator': 1.16071723393E7,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '4',
+                        'matrixSize': [
+                            1,
+                            1
+                        ],
+                        'scaleDenominator': 1.07143129286E7,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '5',
+                        'matrixSize': [
+                            1,
+                            1
+                        ],
+                        'scaleDenominator': 9821453.51791,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '6',
+                        'matrixSize': [
+                            1,
+                            1
+                        ],
+                        'scaleDenominator': 8928594.10719,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '7',
+                        'matrixSize': [
+                            1,
+                            1
+                        ],
+                        'scaleDenominator': 8035734.69647,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '8',
+                        'matrixSize': [
+                            1,
+                            1
+                        ],
+                        'scaleDenominator': 7142875.28575,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '9',
+                        'matrixSize': [
+                            2,
+                            1
+                        ],
+                        'scaleDenominator': 6250015.87503,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '10',
+                        'matrixSize': [
+                            2,
+                            1
+                        ],
+                        'scaleDenominator': 5357156.46431,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '11',
+                        'matrixSize': [
+                            2,
+                            1
+                        ],
+                        'scaleDenominator': 4464297.05359,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '12',
+                        'matrixSize': [
+                            2,
+                            2
+                        ],
+                        'scaleDenominator': 3571437.64288,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '13',
+                        'matrixSize': [
+                            3,
+                            2
+                        ],
+                        'scaleDenominator': 2678578.23216,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '14',
+                        'matrixSize': [
+                            3,
+                            2
+                        ],
+                        'scaleDenominator': 2321434.46787,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '15',
+                        'matrixSize': [
+                            4,
+                            3
+                        ],
+                        'scaleDenominator': 1785718.82144,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '16',
+                        'matrixSize': [
+                            8,
+                            5
+                        ],
+                        'scaleDenominator': 892859.410719,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '17',
+                        'matrixSize': [
+                            19,
+                            13
+                        ],
+                        'scaleDenominator': 357143.764288,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '18',
+                        'matrixSize': [
+                            38,
+                            25
+                        ],
+                        'scaleDenominator': 178571.882144,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '19',
+                        'matrixSize': [
+                            94,
+                            63
+                        ],
+                        'scaleDenominator': 71428.7528575,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '20',
+                        'matrixSize': [
+                            188,
+                            125
+                        ],
+                        'scaleDenominator': 35714.3764288,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '21',
+                        'matrixSize': [
+                            375,
+                            250
+                        ],
+                        'scaleDenominator': 17857.1882144,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '22',
+                        'matrixSize': [
+                            750,
+                            500
+                        ],
+                        'scaleDenominator': 8928.59410719,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '23',
+                        'matrixSize': [
+                            938,
+                            625
+                        ],
+                        'scaleDenominator': 7142.87528575,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '24',
+                        'matrixSize': [
+                            1250,
+                            834
+                        ],
+                        'scaleDenominator': 5357.15646431,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '25',
+                        'matrixSize': [
+                            1875,
+                            1250
+                        ],
+                        'scaleDenominator': 3571.43764288,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '26',
+                        'matrixSize': [
+                            3750,
+                            2500
+                        ],
+                        'scaleDenominator': 1785.71882144,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '27',
+                        'matrixSize': [
+                            7500,
+                            5000
+                        ],
+                        'scaleDenominator': 892.85941072,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    }
+                ]
           });
           var multiPagesPrint = false;
           if (config.timestamps) {
@@ -476,7 +963,6 @@ goog.require('ga_time_service');
               multiPagesPrint) {
             enc['timestamps'] = config.timestamps;
           }
-
           return enc;
         }
       },
@@ -506,6 +992,7 @@ goog.require('ga_time_service');
             feature = new ol.Feature(polygon);
           }
 
+
           // Handle ol.style.RegularShape by converting points to poylgons
           var image = styles[0].getImage();
           if (image instanceof ol.style.RegularShape) {
@@ -519,7 +1006,7 @@ goog.require('ga_time_service');
           var encFeature = format.writeFeatureObject(feature);
           if (!encFeature.properties) {
             encFeature.properties = {};
-         } else {
+          } else {
            // Fix circular structure to JSON
            // see: https://github.com/geoadmin/mf-geoadmin3/issues/1213
             delete encFeature.properties.Style;
@@ -529,28 +1016,38 @@ goog.require('ga_time_service');
           encFeatures.push(encFeature);
 
           // Encode a style of a feature
-                   if (styles && styles.length > 0) {
+          if (styles && styles.length > 0) {
             angular.extend(encStyle, transformToPrintLiteral(feature,
                 styles[0]));
-            encStyles[encStyle.id] = encStyle;
-            var styleToEncode = styles[0];
-            // If a feature has a style with a geometryFunction defined, we
-            // must also display this geometry with the good style (used for
-            // azimuth).
-            for (var i = 0; i < styles.length; i++) {
-              var style = styles[i];
-              if (angular.isFunction(style.getGeometry())) {
-                var geom = style.getGeometry()(feature);
-                if (geom) {
-                  var encoded = $scope.encoders.features.feature(layer,
-                      new ol.Feature(geom), [style]);
-                  encFeatures = encFeatures.concat(encoded.encFeatures);
-                  angular.extend(encStyles, encoded.encStyles);
-                }
+          }
+          console.log('encStyle stringify');
+          console.log(JSON.stringify(encStyle));
+          encStyles['[_gx_style = ' + encStyle.id + ']'] =
+            {'symbolizers': [encStyle]};
+
+          console.log('///////////////////////////////');
+          console.log('encStyles stringify');
+          console.log(JSON.stringify(encStyles));
+
+          // If a feature has a style with a geometryFunction defined, we
+          // must also display this geometry with the good style (used for
+          // azimuth).
+          for (var i = 0; i < styles.length; i++) {
+            var style = styles[i];
+            if (angular.isFunction(style.getGeometry())) {
+              var geom = style.getGeometry()(feature);
+              if (geom) {
+                var encoded = $scope.encoders.features.feature(layer,
+                    new ol.Feature(geom), [style]);
+                encFeatures = encFeatures.concat(encoded.encFeatures);
+                angular.extend(encStyles, encoded.encStyles);
               }
             }
           }
-
+          console.log('ENCFEATURES AND ENCSTYLES ALL TOGETHER');
+          console.log(encFeatures);
+          console.log('*************************************');
+          console.log(encStyles);
           return {
             encFeatures: encFeatures,
             encStyles: encStyles
@@ -605,6 +1102,7 @@ goog.require('ga_time_service');
       return nearest;
     };
 
+    // In capabilities.json (unlike info.json) there is no downloadUrl
     $scope.downloadUrl = function(url) {
       $scope.options.printsuccess = true;
       if (gaBrowserSniffer.msie == 9) {
@@ -634,7 +1132,7 @@ goog.require('ga_time_service');
       }
       // Tell the server to cancel the print process
       if (currentMultiPrintId) {
-        $http.get($scope.options.printPath + 'cancel?id=' +
+        $http.delete($scope.options.printPath + '/cancel/' +
           currentMultiPrintId);
         currentMultiPrintId = null;
       }
@@ -656,7 +1154,7 @@ goog.require('ga_time_service');
       defaultPage['lang' + lang] = true;
       var qrcodeUrl = $scope.options.qrcodeUrl +
           encodeURIComponent(gaPermalink.getHref());
-      var print_zoom = getZoomFromScale($scope.scale.value);
+      var print_zoom = getZoomFromScale($scope.scale);
       qrcodeUrl = qrcodeUrl.replace(/zoom%3D(\d{1,2})/, 'zoom%3D' + print_zoom);
       var encLayers = [];
       var encLegends;
@@ -751,44 +1249,61 @@ goog.require('ga_time_service');
         var offset = 5 * resolution;
 
         if (center) {
+
           var encOverlayLayer = {
-            'type': 'Vector',
-            'styles': {
-              '1': { // Style for marker position
-                'externalGraphic': $scope.options.markerUrl,
-                'graphicWidth': 20,
-                'graphicHeight': 30,
-                // the icon is not perfectly centered in the image
-                // these values must be the same in map.less
-                'graphicXOffset': -12,
-                'graphicYOffset': -30
-              }, '2': { // Style for measure tooltip
-                'externalGraphic': $scope.options.bubbleUrl,
-                'graphicWidth': 97,
-                'graphicHeight': 27,
-                'graphicXOffset': -48,
-                'graphicYOffset': -27,
-                'label': $(elt).text(),
-                'labelXOffset': 0,
-                'labelYOffset': 18,
-                'fontColor': '#ffffff',
-                'fontSize': 10,
-                'fontWeight': 'normal'
-              }
-            },
-            'styleProperty': '_gx_style',
             'geoJson': {
               'type': 'FeatureCollection',
               'features': [{
                 'type': 'Feature',
-                'properties': {
-                  '_gx_style': ($(elt).text() ? 2 : 1)
-                },
                 'geometry': {
                   'type': 'Point',
-                  'coordinates': [center[0], center[1], 0]
+                  'coordinates': [center[0], center[1] + 2 * offset]
+                },
+                'properties': {
+                  '_gx_style': ($(elt).text() ? 2 : 1)
                 }
               }]
+            },
+            'type': 'geojson',
+            'style': {
+              'version': '2',
+              // Style for measure tooltip
+              '[_gx_style = 2]': { // Style for measure tooltip
+                'symbolizers': [{
+                  'type': 'point',
+                  'externalGraphic': $scope.options.bubbleUrl,
+                  'graphicWidth': 21,
+                  'graphicHeight': 4
+                 },{
+                  'type': 'text',
+                  'label': $(elt).text(),
+                  'labelAlign': 'cm',
+                  'labelXOffset': 0,
+                  'labelYOffset': 1.8,
+                  'fontFamily': 'sans-serif',
+                  'fontColor': '#ffffff',
+                  'fontSize': '7px',
+                  'fontWeight': 'normal',
+                  'fontStyle': 'normal',
+                  'fontWeight': 'bold',
+                  'haloColor': '#123456',
+                  'haloOpacity': '0.5',
+                  'haloRadius': '0.5'
+                }]
+              },
+              //Style for marker position
+              '[_gx_style = 1]': {
+                'symbolizers': [{
+                  'type': 'point',
+                  'externalGraphic': $scope.options.markerUrl,
+                  'graphicWidth': 20,
+                  'graphicHeight': 30,
+                  // the icon is not perfectly centered in the image
+                  // these values must be the same in map.less
+                  'graphicXOffset': -12,
+                  'graphicYOffset': -30
+                }]
+              }
             },
             'name': 'drawing',
             'opacity': 1
@@ -797,6 +1312,11 @@ goog.require('ga_time_service');
         }
       });
 
+      console.log('encLayers');
+      console.log(encLayers);
+
+      //First layer is top layer of the map (Mapfish: version 3)
+      encLayers.reverse();
 
       // Get the short link
       var shortLink;
@@ -809,6 +1329,11 @@ goog.require('ga_time_service');
       }).success(function(response) {
         shortLink = response.shorturl.replace('/shorten', '');
       });
+
+      // Description should be defined and needed to exist in specifications
+      var description = '';
+      var name = '';
+      var scalebar = {fontSize: 8, type: 'line'};
 
       // Build the complete json then send it to the print server
       promise.then(function() {
@@ -835,12 +1360,23 @@ goog.require('ga_time_service');
           rotation: -((view.getRotation() * 180.0) / Math.PI),
           app: 'config',
           lang: lang,
-          //use a function to get correct dpi according to layout (A4/A3)
-          dpi: getDpi($scope.layout.name, $scope.dpi),
-          layers: encLayers,
-          legends: encLegends,
-          enableLegends: (encLegends && encLegends.length > 0),
-          qrcodeurl: qrcodeUrl,
+          attributes: {
+            scale: $scope.scale,
+            url: shortLink || '',
+            qrimage: qrcodeUrl,
+            legends: encLegends,
+            enableLegends: (encLegends && encLegends.length > 0),
+            description: description,
+            name: name,
+            scalebar: scalebar,
+            map: {
+              //use a function to get correct dpi according to layout (A4/A3)
+              dpi: 300, //getDpi($scope.layout.name, $scope.dpi),
+              layers: encLayers,
+              //center: getPrintRectangleCenterCoord()
+              bbox: getPrintRectangleCoords()
+            }
+          },
           movie: movieprint,
           pages: [
             angular.extend({
@@ -856,7 +1392,10 @@ goog.require('ga_time_service');
             }, defaultPage)
           ]
         };
-        var startPollTime;
+
+        console.log('########## Finale spec #################');
+        console.log(JSON.stringify(spec));
+        var startPollTime = 0;
         var pollErrors;
         var pollMulti = function(url) {
           pollMultiPromise = $timeout(function() {
@@ -865,41 +1404,30 @@ goog.require('ga_time_service');
             }
             canceller = $q.defer();
             var http = $http.get(url, {
-               timeout: canceller.promise
+              timeout: canceller.promise
             }).success(function(data) {
               if (!$scope.options.printing) {
                 return;
               }
-              if (!data.getURL) {
-                // Write progress using the following logic
-                // First 60% is pdf page creationg
-                // 60-70% is merging of pdf
-                // 70-100% is writing of resulting pdf
-                if (data.filesize) {
-                  var written = data.written || 0;
-                  $scope.options.progress =
-                      (70 + Math.floor(written * 30 / data.filesize)) +
-                      '%';
-                } else if (data.total) {
-                  if (angular.isDefined(data.merged)) {
-                    $scope.options.progress =
-                        (60 + Math.floor(data.done * 10 / data.total)) +
-                        '%';
-                  } else if (angular.isDefined(data.done)) {
-                    $scope.options.progress =
-                        Math.floor(data.done * 60 / data.total) + '%';
-                  }
-                }
 
-                var now = new Date();
+              if (!data.done) {
+                if (data.elapsedTime) {
+                  var startPollTime = + data.elapsedTime;
+                  //For Multiprint later I should
+                  //add something like:
+                  //https://github.com/geoadmin/mf-geoadmin3/blob/master/src/components/print/PrintDirective.js#L874
+                  //to have proportion of the printing progress of multiprint
+                }
                 //We abort if we waited too long
-                if (now - startPollTime < POLL_MAX_TIME) {
+                if (startPollTime < POLL_MAX_TIME) {
                   pollMulti(url);
                 } else {
                   $scope.options.printing = false;
                 }
               } else {
-                $scope.downloadUrl(data.getURL);
+                var downloadURL = $scope.options.printPath
+                    .replace('/print', '') + data.downloadURL;
+                $scope.downloadUrl(downloadURL);
               }
             }).error(function() {
               if ($scope.options.printing == false) {
@@ -916,27 +1444,30 @@ goog.require('ga_time_service');
           }, POLL_INTERVAL, false);
         };
 
-        var printUrl = $scope.capabilities.createURL;
-        //When movie is on, we use printmulti
-        if (movieprint) {
-          printUrl = printUrl.replace('/print/', '/printmulti/');
-        }
+        var printUrl = $scope.options.createURL;
+        window.console.log('printUrl');
+        window.console.log(printUrl);
+
+        // We always use printmulti
+        // In non movie mode, you may try direct print to tomcat server
+        /*if (!movieprint) {
+          printUrl = printUrl.replace('/print/', '/printserver/');
+        } */
         canceller = $q.defer();
-        var http = $http.post(printUrl + '?url=' + encodeURIComponent(printUrl),
+        var http = $http.post(printUrl,
           spec, {
           timeout: canceller.promise
         }).success(function(data) {
-          if (movieprint) {
-            //start polling process
-            var pollUrl = $scope.options.printPath + 'progress?id=' +
-                data.idToCheck;
-            currentMultiPrintId = data.idToCheck;
-            startPollTime = new Date();
-            pollErrors = 0;
-            pollMulti(pollUrl);
-          } else {
-            $scope.downloadUrl(data.getURL);
-          }
+          window.console.log('Data at post request to craete the print job');
+          window.console.log(data);
+          //var pollUrl = data.statusURL;
+          var pollUrl = $scope.options.printPath +
+            '/print/status/' + data.ref + '.json';
+          window.console.log('pollUrl');
+          window.console.log(pollUrl);
+          currentMultiPrintId = data.ref;
+          pollErrors = 0;
+          pollMulti(pollUrl);
         }).error(function() {
           $scope.options.printing = false;
         });
@@ -981,15 +1512,16 @@ goog.require('ga_time_service');
     };
 
     var getOptimalScale = function() {
+      window.console.log('$scope');
+      window.console.log($scope);
       var size = $scope.map.getSize();
       var resolution = $scope.map.getView().getResolution();
       var width = resolution * (size[0] - ($scope.options.widthMargin * 2));
       var height = resolution * (size[1] - ($scope.options.heightMargin * 2));
-      var layoutSize = $scope.layout.map;
-      var scaleWidth = width * UNITS_RATIO * POINTS_PER_INCH /
-          layoutSize.width;
-      var scaleHeight = height * UNITS_RATIO * POINTS_PER_INCH /
-          layoutSize.height;
+      var layoutWidth = $scope.layoutWidth;
+      var layoutHeight = $scope.layoutHeight;
+      var scaleWidth = width * UNITS_RATIO * POINTS_PER_INCH / layoutWidth;
+      var scaleHeight = height * UNITS_RATIO * POINTS_PER_INCH / layoutHeight;
       var testScale = scaleWidth;
       if (scaleHeight < testScale) {
         testScale = scaleHeight;
@@ -999,7 +1531,7 @@ goog.require('ga_time_service');
       //biggest (1:500) to smallest (1:2500000)
       angular.forEach($scope.scales, function(scale) {
         if (nextBiggest == null ||
-            testScale > scale.value) {
+            testScale > scale) { // edw genika epaize to scale.value
               nextBiggest = scale;
         }
       });
@@ -1007,10 +1539,11 @@ goog.require('ga_time_service');
     };
 
     var calculatePageBoundsPixels = function(scale) {
-      var s = parseFloat(scale.value);
+      var s = parseFloat(scale);
       var size = $scope.layout.map; // papersize in dot!
       var view = $scope.map.getView();
       var resolution = view.getResolution();
+      //instead of size.width layoutWidth, same as for size.height
       var w = size.width / POINTS_PER_INCH * MM_PER_INCHES / 1000.0 *
           s / resolution * ol.has.DEVICE_PIXEL_RATIO;
       var h = size.height / POINTS_PER_INCH * MM_PER_INCHES / 1000.0 *
@@ -1043,13 +1576,20 @@ goog.require('ga_time_service');
             $scope.capabilities = data;
             angular.forEach($scope.capabilities.layouts, function(lay) {
               lay.stripped = lay.name.substr(2);
+              lay.map = {width: lay.attributes[5].clientInfo.width,
+                height: lay.attributes[5].clientInfo.height};
             });
 
-            // default values:
+            // Default values
+            $scope.scales =
+              $scope.capabilities.layouts[0].attributes[5].clientInfo.scales;
+            // Default scale: 2500000
+            $scope.scale =
+              $scope.capabilities.layouts[0].attributes[5].clientInfo.scales[0];
             $scope.layout = data.layouts[0];
-            $scope.dpi = data.dpis;
-            $scope.scales = data.scales;
-            $scope.scale = data.scales[5];
+            $scope.layouts = data.layouts;
+            $scope.dpi =
+              data.layouts[0].attributes[5].clientInfo.dpiSuggestions;
             $scope.options.legend = false;
             $scope.options.graticule = false;
             activate();
