@@ -1132,7 +1132,7 @@ goog.require('ga_time_service');
       }
       // Tell the server to cancel the print process
       if (currentMultiPrintId) {
-        $http.get($scope.options.printPath + 'cancel?id=' +
+        $http.delete($scope.options.printPath + '/cancel/' +
           currentMultiPrintId);
         currentMultiPrintId = null;
       }
@@ -1425,8 +1425,8 @@ goog.require('ga_time_service');
                   $scope.options.printing = false;
                 }
               } else {
-                var downloadURL = $scope.options.printPath +
-                  data.downloadURL.replace('/print-chsdi3-ltkom', '');
+                var downloadURL = $scope.options.printPath
+                    .replace('/print', '') + data.downloadURL;
                 $scope.downloadUrl(downloadURL);
               }
             }).error(function() {
@@ -1448,10 +1448,11 @@ goog.require('ga_time_service');
         window.console.log('printUrl');
         window.console.log(printUrl);
 
-        //When movie is on, we use printmulti
-        if (movieprint) {
-          printUrl = printUrl.replace('/print/', '/printmulti/');
-        }
+        // We always use printmulti
+        // In non movie mode, you may try direct print to tomcat server
+        /*if (!movieprint) {
+          printUrl = printUrl.replace('/print/', '/printserver/');
+        } */
         canceller = $q.defer();
         var http = $http.post(printUrl,
           spec, {
