@@ -62,11 +62,16 @@ goog.require('ga_print_service');
           });
 
           // Set default x and y values on non mobile device if not defined
-          if (!gaBrowserSniffer.mobile && !scope.options.position &&
-              !scope.options.x && !scope.options.y) {
-            scope.options.x =
+          if (!gaBrowserSniffer.mobile && !scope.options.position) {
+            if (angular.isFunction(scope.options.x)) {
+              scope.options.x = scope.options.x(element);
+            }
+            if (angular.isFunction(scope.options.y)) {
+              scope.options.y = scope.options.y(element);
+            }
+            scope.options.x = scope.options.x ||
                 $(document.body).width() / 2 - element.width() / 2;
-            scope.options.y = 89; //89 is the default size of the header
+            scope.options.y = scope.options.y || 89; //89 size of the header
           }
 
           if (!gaBrowserSniffer.mobile && scope.options.x && scope.options.y) {

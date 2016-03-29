@@ -26,11 +26,14 @@ goog.require('ga_topic_service');
           gaBrowserSniffer, gaMapClick, gaDebounce, gaPreviewFeatures,
           gaMapUtils, gaTime, gaTopic) {
         var popupContent =
-          '<div ng-repeat="htmlsnippet in options.htmls">' +
-            '<div ng-mouseenter="options.onMouseEnter($event,' +
-                 'options.htmls.length)" ' +
-                 'ng-mouseleave="options.onMouseLeave($event)" ' +
-                 'ng-bind-html="htmlsnippet"></div>' +
+          '<div ng-repeat="html in options.htmls" ' +
+               'ng-mouseenter="options.onMouseEnter($event,' +
+                   'options.htmls.length)" ' +
+               'ng-mouseleave="options.onMouseLeave($event)">' +
+            '<div ng-bind-html="html.snippet"></div>' +
+            '<div ga-shop ' +
+                 'ga-shop-map="::html.map" ' +
+                 'ga-shop-feature="::html.feature"></div>' +
             '<div class="ga-tooltip-separator" ' +
                  'ng-show="!$last"></div>' +
           '</div>';
@@ -436,7 +439,7 @@ goog.require('ga_topic_service');
                     feature.setId(value.getId());
                     feature.set('layerId', layerId);
                     gaPreviewFeatures.add(map, feature);
-                    showPopup(value.get('htmlpopup'));
+                    showPopup(value.get('htmlpopup'), value);
 
                     // Store the ol feature for highlighting
                     featuresByLayerId[layerId][feature.getId()] = feature;
@@ -473,7 +476,7 @@ goog.require('ga_topic_service');
                         imageDisplay: size[0] + ',' + size[1] + ',96'
                       }
                     }).success(function(html) {
-                      showPopup(html);
+                      showPopup(html, value);
                     });
                   }
                 });
@@ -525,12 +528,22 @@ goog.require('ga_topic_service');
             };
 
             // Show the popup with all features informations
-            var showPopup = function(html) {
+            var showPopup = function(html, value) {
               // Show popup on first result
               if (htmls.length === 0) {
+
+                //always reposition element when newly opened
+                var x;
+                if (!gaBrowserSniffer.mobile) {
+                  x = function(element) {
+                    return map.getSize()[0] -
+                        parseFloat(element.css('max-width')) - 58;
+                  };
+                }
                 if (!popup) {
                   popup = gaPopup.create({
                     className: 'ga-tooltip',
+                    x: x,
                     onCloseCallback: function() {
                       if (onCloseCB) {
                         onCloseCB();
@@ -560,17 +573,14 @@ goog.require('ga_topic_service');
                   });
                 }
                 popup.open();
-                //always reposition element when newly opened
-                if (!gaBrowserSniffer.mobile) {
-                  popup.element.css({
-                    left: ((map.getSize()[0] / 2) -
-                        (parseFloat(popup.element.css('max-width')) / 2))
-                  });
-                }
               }
               // Add result to array. ng-repeat will take
               // care of the rest
-              htmls.push($sce.trustAsHtml(html));
+              htmls.push({
+                map: scope.map,
+                feature: value,
+                snippet: $sce.trustAsHtml(html)
+              });
             };
           }
         };
