@@ -1,6 +1,6 @@
 // Ol3-Cesium. See https://github.com/openlayers/ol3-cesium/
 // License: https://github.com/openlayers/ol3-cesium/blob/master/LICENSE
-// Version: v1.13-9-g81f0bfc
+// Version: v1.13-15-g9680556
 
 var CLOSURE_NO_DEPS = true;
 // Copyright 2006 The Closure Library Authors. All Rights Reserved.
@@ -39971,7 +39971,7 @@ olcs.FeatureConverter.prototype.createColoredPrimitive =
 
   if (heightReference == Cesium.HeightReference.CLAMP_TO_GROUND) {
     var ctor = instances.geometry.constructor;
-    if (ctor && !ctor.createShadowVolume) {
+    if (ctor && !ctor['createShadowVolume']) {
       return null;
     }
     primitive = new Cesium.GroundPrimitive({
@@ -40398,8 +40398,13 @@ olcs.FeatureConverter.prototype.olPointGeometryToCesium =
         cancellers = olcs.obj(source)['olcs_cancellers'] = {};
       }
 
-      goog.asserts.assert(!cancellers[goog.getUid(feature)]);
-      cancellers[goog.getUid(feature)] = canceller;
+      var fuid = goog.getUid(feature);
+      if (cancellers[fuid]) {
+        // When the feature change quickly, a canceller may still be present so
+        // we cancel it here to prevent creation of a billboard.
+        cancellers[fuid]();
+      }
+      cancellers[fuid] = canceller;
 
       var listener = function() {
         if (!billboards.isDestroyed() && !cancelled) {
@@ -45241,14 +45246,16 @@ olcs.OLCesium = function(options) {
    */
   this.hiddenRootGroup_ = null;
 
+  var sceneOptions = options.sceneOptions !== undefined ? options.sceneOptions :
+      /** @type {Cesium.SceneOptions} */ ({});
+  sceneOptions.canvas = this.canvas_;
+  sceneOptions.scene3DOnly = true;
+
   /**
    * @type {!Cesium.Scene}
    * @private
    */
-  this.scene_ = new Cesium.Scene({
-    canvas: this.canvas_,
-    scene3DOnly: true
-  });
+  this.scene_ = new Cesium.Scene(sceneOptions);
 
   var sscc = this.scene_.screenSpaceCameraController;
   sscc.inertiaSpin = 0;
