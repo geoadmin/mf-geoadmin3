@@ -713,7 +713,8 @@ goog.require('ga_urlutils_service');
           } else if (layer.type == 'wms') {
             var wmsParams = {
               LAYERS: layer.wmsLayers,
-              FORMAT: 'image/' + layer.format
+              FORMAT: 'image/' + layer.format,
+              LANG: gaLang.get()
             };
             if (timestamp) {
               wmsParams['TIME'] = timestamp;
