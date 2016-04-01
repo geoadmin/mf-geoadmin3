@@ -1,3 +1,4 @@
+SHELL = /bin/bash
 SRC_JS_FILES := $(shell find src/components src/js -type f -name '*.js')
 SRC_JS_FILES_FOR_COMPILER = $(shell sed -e ':a' -e 'N' -e '$$!ba' -e 's/\n/ --js /g' .build-artefacts/js-files | sed 's/^.*base\.js //')
 SRC_LESS_FILES := $(shell find src -type f -name '*.less')
@@ -25,6 +26,7 @@ GIT_BRANCH := $(shell if [ -f .build-artefacts/deployed-git-branch ]; then cat .
 GIT_LAST_BRANCH := $(shell if [ -f .build-artefacts/last-git-branch ]; then cat .build-artefacts/last-git-branch 2> /dev/null; else echo 'dummy'; fi)
 BRANCH_TO_DELETE ?=
 DEPLOY_ROOT_DIR := /var/www/vhosts/mf-geoadmin3/private/branch
+DEPLOYCONFIG ?=
 DEPLOY_TARGET ?= 'dev'
 LAST_DEPLOY_TARGET := $(shell if [ -f .build-artefacts/last-deploy-target ]; then cat .build-artefacts/last-deploy-target 2> /dev/null; else echo '-none-'; fi)
 OL3_VERSION ?= 34d8d77344ee0b653770f065c593d4ab7b5d102b # master, 2 mars 2016
@@ -48,6 +50,7 @@ DEFAULT_EPSG_EXTEND ?= '[420000, 30000, 900000, 350000]'
 DEFAULT_ELEVATION_MODEL ?= COMB
 DEFAULT_TERRAIN ?= ch.swisstopo.terrain.3d
 SAUCELABS_TESTS ?=
+USER_SOURCE ?= rc_user
 
 ## Python interpreter can't have space in path name
 ## So prepend all python scripts with python cmd
@@ -69,20 +72,21 @@ help:
 	@echo
 	@echo "Possible targets:"
 	@echo
-	@echo "- prod               Build app for prod (/prd)"
-	@echo "- dev                Build app for dev (/src)"
+	@echo "- user               Build the app with user specific configuration"
+	@echo "- all                Build the app with current environment"
+	@echo "- release            Build app for release (/prd)"
+	@echo "- debug              Build app for debug (/src)"
 	@echo "- lint               Run the linter"
 	@echo "- lintpy             Run the linter for the python files"
 	@echo "- autolintpy         Run the auto-corrector for python files"
-	@echo "- testdev            Run the JavaScript tests in dev mode"
-	@echo "- testprod           Run the JavaScript tests in prod mode"
+	@echo "- testdebug          Run the JavaScript tests in debug mode"
+	@echo "- testrelease        Run the JavaScript tests in release mode"
 	@echo "- teste2e            Run browserstack and saucelabs tests"
 	@echo "- browserstack       Run browserstack tests"
 	@echo "- saucelabs          Run saucelabs tests"
 	@echo "- saucelabssingle    Run saucelabs tests but only with single platform/browser"
 	@echo "- apache             Configure Apache (restart required)"
 	@echo "- fixrights          Fix rights in common folder"
-	@echo "- all                All of the above (target to run prior to creating a PR)"
 	@echo "- clean              Remove generated files"
 	@echo "- cleanall           Remove all the build artefacts"
 	@echo "- deploydev          Deploys current github master to dev. Specify SNAPSHOT=true to create snapshot as well."
@@ -109,11 +113,15 @@ help:
 
 	@echo
 
-.PHONY: all
-all: lint dev prod apache testdev testprod deploy/deploy-branch.cfg fixrights
+.PHONY: user
+user:
+	source $(USER_SOURCE) && make all
 
-.PHONY: prod
-prod: devlibs \
+.PHONY: all
+all: lint debug release apache testdebug testrelease deploy/deploy-branch.cfg fixrights
+
+.PHONY: release
+release: devlibs \
 	prd/lib/ \
 	prd/lib/build.js \
 	prd/style/app.css \
@@ -128,8 +136,8 @@ prod: devlibs \
 	prd/cache/ \
 	prd/robots.txt
 
-.PHONY: dev
-dev: devlibs src/deps.js src/style/app.css src/index.html src/mobile.html src/embed.html
+.PHONY: debug
+debug: devlibs src/deps.js src/style/app.css src/index.html src/mobile.html src/embed.html
 
 .PHONY: lint
 lint: devlibs .build-artefacts/lint.timestamp
@@ -142,13 +150,13 @@ lintpy: ${FLAKE8_CMD}
 autolintpy: ${AUTOPEP8_CMD}
 	${AUTOPEP8_CMD} --in-place --aggressive --aggressive --verbose --max-line-lengt=110 $(PYTHON_FILES)
 
-.PHONY: testdev
-testdev: .build-artefacts/app-whitespace.js test/karma-conf-dev.js 
-	PHANTOMJS_BIN="node_modules/.bin/phantomjs" ./node_modules/.bin/karma start test/karma-conf-dev.js --single-run
+.PHONY: testdebug
+testdebug: .build-artefacts/app-whitespace.js test/karma-conf-debug.js 
+	PHANTOMJS_BIN="node_modules/.bin/phantomjs" ./node_modules/.bin/karma start test/karma-conf-debug.js --single-run
 
-.PHONY: testprod
-testprod: prd/lib/build.js test/karma-conf-prod.js devlibs
-	PHANTOMJS_BIN="node_modules/.bin/phantomjs" ./node_modules/.bin/karma start test/karma-conf-prod.js --single-run
+.PHONY: testrelease
+testrelease: prd/lib/build.js test/karma-conf-release.js devlibs
+	PHANTOMJS_BIN="node_modules/.bin/phantomjs" ./node_modules/.bin/karma start test/karma-conf-release.js --single-run
 
 .PHONY: teste2e
 teste2e: saucelabs 
@@ -182,11 +190,11 @@ deploydemo: guard-SNAPSHOT
 
 .PHONY: deployint
 deployint: guard-SNAPSHOT
-	./scripts/deploysnapshot.sh $(SNAPSHOT) int
+	./scripts/deploysnapshot.sh $(SNAPSHOT) int $(DEPLOYCONFIG)
 
 .PHONY: deployprod
 deployprod: guard-SNAPSHOT
-	./scripts/deploysnapshot.sh $(SNAPSHOT) prod
+	./scripts/deploysnapshot.sh $(SNAPSHOT) prod $(DEPLOYCONFIG)
 
 .PHONY: deploybranch
 deploybranch: deploy/deploy-branch.cfg $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH)/.git/config
@@ -495,10 +503,10 @@ apache/app.conf: apache/app.mako-dot-conf \
 	    --var "apache_base_directory=$(APACHE_BASE_DIRECTORY)" \
 	    --var "version=$(VERSION)" $< > $@
 
-test/karma-conf-dev.js: test/karma-conf.mako.js ${MAKO_CMD}
+test/karma-conf-debug.js: test/karma-conf.mako.js ${MAKO_CMD}
 	${PYTHON_CMD} ${MAKO_CMD} $< > $@
 
-test/karma-conf-prod.js: test/karma-conf.mako.js ${MAKO_CMD}
+test/karma-conf-release.js: test/karma-conf.mako.js ${MAKO_CMD}
 	${PYTHON_CMD} ${MAKO_CMD} --var "mode=prod" $< > $@
 
 test/lib/angular-mocks.js test/lib/expect.js test/lib/sinon.js externs/angular.js externs/jquery.js: package.json

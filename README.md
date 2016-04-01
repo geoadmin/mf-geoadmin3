@@ -15,9 +15,14 @@ or when you're using ssh key (see https://help.github.com/articles/generating-ss
 
     $ git clone git@github.com:geoadmin/mf-geoadmin3.git
 
-Build:
+There's no need to create a user specific source file. Simply use the following
+build command:
 
-    $ make all
+    $ make user
+
+Variables have sensible default values for development. Anyhow, they can be set as make macros or envvars in a customized source file. E.G. you can copy the rc_user file and adapt it to your needs. They you can lauch:
+
+    $ source rc_customized && make all
 
 Use `make help` to know about the possible `make` targets and the currently set variables:
 
@@ -27,21 +32,6 @@ Use `make translate` to import directly translations from the Google spreadsheet
     
     export DRIVE_USER=your_login
     export DRIVE_PWD=your_password
-
-Variables have sensible default values for development. Anyhow, they can be set as make macros or envvars. For example:
-
-    $ make APACHE_BASE_PATH=/elemoine apache 
-    $ APACHE_BASE_PATH=/elemoine make 
-
-You can customize the build by creating an `rc` file that you source once. Ex:  
-
-    $ cat rc_elemoine 
-    export APACHE_BASE_PATH=/mypath
-    export APACHE_BASE_DIRECTORY=/home/elemoine/mf-geoadmin3
-    export API_URL=//mf-chsdi.3dev.bgdi.ch
-    export DEPLOY_TARGET=dev
-    $ source rc_elemoine 
-    $ make  
 
 For builds on test (rc_dev), integration (rc_int) and production (rc_prod), you
 should source the corresponding `rc` file.
@@ -164,6 +154,10 @@ This will do the corresponding thing for prod:
 
 `make deployprod SNAPSHOT=201407031411`
 
+Per default the deploy command uses the deploy configuration of the snapshot directory.
+If you want to use the deploy configuration of directory from which you are executing this command, you can use:
+
+`make deployint SNAPSHOT=201512011411 DEPLOYCONFIG=from_current_directory`
 
 Note: we should NOT manually adapt code in /var/www/vhosts/mf-geoadmin3 directory
 

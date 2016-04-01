@@ -10,8 +10,7 @@
 /prd
 /.build-artefacts
 /apache/app.conf
-/test/karma-conf-dev.js
-/test/karma-conf-prod.js
+/test/karma-conf-*.js
 /deploy/deploy-branch.cfg
 /src/locales/*.csv
 /scripts/00-*.conf
