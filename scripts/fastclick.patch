@@ -9,10 +9,10 @@ If, for some reasons, the touchstart event is stopped by some third party librar
  lib/fastclick.js |    5 +++++
  1 file changed, 5 insertions(+)
 
-diff --git a/lib/fastclick.js b/lib/fastclick.js
+diff --git a/fastclick.js b/fastclick.js
 index 3af4f9d..ad4f2bd 100644
---- a/lib/fastclick.js
-+++ b/lib/fastclick.js
+--- a/fastclick.js
++++ b/fastclick.js
 @@ -521,6 +521,11 @@
  	FastClick.prototype.onTouchEnd = function(event) {
  		var forElement, trackingClickStart, targetTagName, scrollParent, touch, targetElement = this.targetElement;
