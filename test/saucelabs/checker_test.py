@@ -267,7 +267,7 @@ def SitemapService(driver, url, url_4_api):
                 "' is missing in " +
                 url_4_api +
                 "sitemap?content=index page")
-
+'''
     print "  Test Sitemap (layers)"
     driver.get(url_4_api + 'sitemap?content=layers')
     page_source_tmp = driver.page_source
@@ -283,12 +283,12 @@ def SitemapService(driver, url, url_4_api):
                 "' is missing in " +
                 url_4_api +
                 "sitemap?content=layers")
+'''
+# Address index page : TO DO ?
+# https://map.geo.admin.ch/sitemap_addresses_10.xml
 
-    # Address index page : TO DO ?
-    # https://map.geo.admin.ch/sitemap_addresses_10.xml
-
-    # Sample address index : TO DO ?
-    # https://api3.geo.admin.ch/sitemap?content=addresses_33
+# Sample address index : TO DO ?
+# https://api3.geo.admin.ch/sitemap?content=addresses_33
 
 
 def TopicListing(driver, url, url_4_api):
