@@ -9,7 +9,7 @@ from start_test import runStartTest
 from kml_test import runKmlTest
 from search_test import runSearchTest
 from swisssearch_test import runSwissSearchTest
-# from print_test import runPrintTest
+from print_test import runPrintTest
 from mobile_test import runMobileTest
 from wms_test import runWmsTest
 from checker_test import runCheckerTest
@@ -56,29 +56,6 @@ if __name__ == '__main__':
     top_browser = {'platform': "Windows 7", 'browserName': "firefox",
                    'version': "44.0", 'screenResolution': "1280x1024"}
 
-    # Tests specific browser (FOR DEBUG ONLY)
-    test_browser_FF = {'platform': "Windows 7", 'browserName': "firefox",
-                       'version': "44.0", 'screenResolution': "1280x1024"}
-
-    test_browser_IE = {'platform': "Windows 7", 'browserName': "internet explorer",
-                       'version': "10.0", 'screenResolution': "1280x1024"}
-
-    test_browser_Safari = {'platform': "OS X 10.11", 'browserName': "safari",
-                           'version': "9.0", 'screenResolution': "1280x1024"}
-
-    test_browser_Opera = {'platform': "Windows 7", 'browserName': "opera",
-                          'version': "12.12", 'screenResolution': "1280x1024"}
-
-    test_browser_Edge = {'platform': "Windows 10", 'browserName': "MicrosoftEdge",
-                         'version': "13.10586", 'screenResolution': "1280x1024"}
-
-    # Use top browser to test a specific browser and use 3rd param to true (FOR DEBUG ONLY)
-    # top_browser = test_browser_FF
-    # top_browser = test_browser_Opera
-    # top_browser = test_browser_Edge
-    # top_browser = test_browser_IE
-    # top_browser = test_browser_Safari
-
     desired_cap_list = [
         # Chrome
         {'platform': "Windows 7", 'browserName': "chrome",
@@ -111,8 +88,14 @@ if __name__ == '__main__':
             'version': "12.12", 'screenResolution': "1280x1024"}
     ]
 
-    # Add top browser
-    desired_cap_list.append(top_browser)
+    config_test_list = {
+        "firefox": ['start', 'mobile', 'search', 'swisssearch', 'checker', 'wms', 'checker'],
+        "chrome": ['start', 'mobile', 'search', 'swisssearch', 'checker', 'wms', 'checker'],
+        "internet explorer": ['start'],
+        "opera": ['start'],
+        "safari": ['start'],
+        "MicrosoftEdge": ['start', 'search', 'swisssearch', 'checker']
+    }
 
     # okay we will start the script!
     print "Starting SauceLabs script!"
@@ -120,23 +103,13 @@ if __name__ == '__main__':
     t0 = time.time()
     print "Start test at " + time.strftime('%d/%m/%y %H:%M', time.localtime())
 
-    doTestsLight = {
-        'start': runStartTest
-        # 'checker': runCheckerTest
-    }
-    doTestsEdge = {
-        'start': runStartTest,
-        'search': runSearchTest,
-        'swisssearch': runSwissSearchTest,
-        'checker': runCheckerTest
-    }
     doTests = {
         'start': runStartTest,
         'mobile': runMobileTest,
         'search': runSearchTest,
         'kml': runKmlTest,
         'swisssearch': runSwissSearchTest,
-        # 'print': runPrintTest,
+        'print': runPrintTest,
         'wms': runWmsTest,
         'checker': runCheckerTest
     }
@@ -155,35 +128,28 @@ if __name__ == '__main__':
     caps_used = [top_browser] if singlebrowser else desired_cap_list
 
     for current_desired_cap in caps_used:
-        print "+--> Start test with " + current_desired_cap['platform'] + \
-            " " + current_desired_cap['browserName'] + " (" + current_desired_cap['version'] + ")"
-        driver = webdriver.Remote(
-            command_executor='http://' +
-            saucelabs_user +
-            ':' +
-            saucelabs_key +
-            '@ondemand.saucelabs.com:80/wd/hub',
-            desired_capabilities=current_desired_cap)
-        driver.implicitly_wait(DEFAULT_WAIT_FOUND)
-        if driver.name == "MicrosoftEdge":
-            # print 'Force set version, strange...'
-            driver.desired_capabilities['version'] = current_desired_cap['version']
         try:
-            if driver.name == "internet explorer" or driver.name == "opera" or driver.name == "safari":
-                # Use specific test list for IE, Opera and Safari
-                DoTestCurrentrowser = doTestsLight
-            elif driver.name == "MicrosoftEdge":
-                # Use full test list for Edge
-                DoTestCurrentrowser = doTestsEdge
-            else:
-                # Use full test list for all browser
-                DoTestCurrentrowser = doTests
-            for k, dotest in DoTestCurrentrowser.iteritems():
-                if k in tests or len(tests) == 0:
+            print "+--> Start test with " + current_desired_cap['platform'] + \
+                " " + current_desired_cap['browserName'] + " (" + current_desired_cap['version'] + ")"
+            driver = webdriver.Remote(
+                command_executor='http://' +
+                saucelabs_user +
+                ':' +
+                saucelabs_key +
+                '@ondemand.saucelabs.com:80/wd/hub',
+                desired_capabilities=current_desired_cap)
+            driver.implicitly_wait(DEFAULT_WAIT_FOUND)
+
+            if driver.name == "MicrosoftEdge":
+                print 'Force set version, strange...'
+                driver.desired_capabilities['version'] = current_desired_cap['version']
+
+            for elt in config_test_list[current_desired_cap['browserName']]:
+                if elt in tests or len(tests) == 0:
                     t1 = time.time()
-                    dotest(driver, url)
+                    doTests[elt](driver, url)
                     tf = time.time()
-                    print 'It took %.2f to execute %s...' % ((tf - t1), k)
+                    print 'It took %.2f to execute %s...' % ((tf - t1), elt)
         finally:
             driver.quit()
 
