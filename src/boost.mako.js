@@ -5,7 +5,7 @@ var CACHE_NAME = CACHE_BASE_NAME + '${version}';
 
 var log = function(txt) {
   // Quick switch to enable/disable console output
-  if (false) {
+  if (true) {
     console.log('SW ' + VERSION + ': ' + txt);
   }
 };
@@ -100,7 +100,7 @@ self.addEventListener('activate', function(event) {
 });
 
 self.addEventListener('fetch', function(event) {
-  //log('fetch called');
+  log('fetch called');
 
   event.respondWith(
 
@@ -121,18 +121,30 @@ self.addEventListener('fetch', function(event) {
         return cache.match(ckey).then(function(response) {
             // Cache hit - return response
             if (response) {
-              //log('cache hit with: ' + ckey);
+              log('cache hit with: ' + ckey);
               return response;
             }
 
             //Decide if we want to cache this requets
             if (!urlToCache(ckey)) {
-              //log('non caching url: ' + ckey);
+              log('non caching url: ' + ckey);
+              //
+              //
+              if (ckey.indexOf('ch.swisstopo.pixelkarte-farbe/default/current/21781/23/432/405.jpeg') != -1) {
+                log('simulating timeout for resource');
+                return new Promise(function(resolve) {
+                  setTimeout(function() {
+                    log('resolved with 503');
+                    resolve(new Response('', {'status': 503}));
+                  },1000);
+                });
+
+              }
+
               return fetch(event.request);
             } 
             
-
-            //log('trying to cache url: ' + ckey);
+            log('trying to cache url: ' + ckey);
 
             // IMPORTANT: Clone the request. A request is a stream and
             // can only be consumed once. Since we are consuming this
