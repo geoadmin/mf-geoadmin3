@@ -473,7 +473,6 @@ goog.require('ga_time_service');
               baseURL: 'http://wmts6.geo.admin.ch/1.0.0/' +
                 '{Layer}/{style}/{Time}/{TileMatrixSet}/' +
                 '{TileMatrix}/{TileRow}/{TileCol}.' + imageFormat,
-              //baseURL: location.protocol + '//wmts.geo.admin.ch',
               opacity: opacity,
               layer: config.serverLayerName,
               requestEncoding: 'REST',
@@ -1447,10 +1446,11 @@ goog.require('ga_time_service');
               if (!data.done) {
                 if (data.elapsedTime) {
                   var startPollTime = + data.elapsedTime;
-                  //For Multiprint later I should
-                  //add something like:
-                  //https://github.com/geoadmin/mf-geoadmin3/blob/master/src/components/print/PrintDirective.js#L874
-                  //to have proportion of the printing progress of multiprint
+                  if (movieprint) {
+                    // Print status for Multiprint
+                    $scope.options.progress =
+                      Math.floor((data.printed / data.total) * 100) + '%';
+                  }
                 }
                 //We abort if we waited too long
                 if (startPollTime < POLL_MAX_TIME) {
