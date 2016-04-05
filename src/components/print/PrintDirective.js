@@ -47,12 +47,6 @@ goog.require('ga_time_service');
       var http = $http.get($scope.options.printConfigUrl, {
         timeout: canceller.promise
       });
-      window.console.log('$scope.options');
-      window.console.log($scope.options);
-      window.console.log('$scope.options.printConfigUrl --> capabilities.json');
-      window.console.log($scope.options.printConfigUrl);
-      window.console.log('http');
-      window.console.log(http);
       return http;
     };
 
@@ -176,8 +170,8 @@ goog.require('ga_time_service');
 
         if (encLegend.classes &&
             encLegend.classes[0] &&
-            encLegend.classes[0].icon) {
-          var legStr = encLegend.classes[0].icon;
+            encLegend.classes[0].icons) {
+          var legStr = encLegend.classes[0].icons;
           if (legStr.indexOf(pdfLegendString,
               legStr.length - pdfLegendString.length) !== -1) {
             pdfLegendsToDownload.push(legStr);
@@ -253,9 +247,6 @@ goog.require('ga_time_service');
        * graphicYOffset
        * zIndex
        */
-      console.log('**************************');
-      console.log('TRANSFORM TO PRINT LITERAL');
-      console.log('**************************');
 
       var literal = {
         zIndex: style.getZIndex()
@@ -350,8 +341,7 @@ goog.require('ga_time_service');
 
         if (textStyle.getFont()) {
           var fontValues = textStyle.getFont().split(' ');
-          // Fonts managed by print server: COURIER, HELVETICA, TIMES_ROMAN
-          literal.fontFamily = 'sans-serif'; //fontValues[1].toLowerCase();
+          literal.fontFamily = 'sans-serif';
           literal.fontSize = parseInt(fontValues[1]);
           literal.fontWeight = fontValues[0];
         }
@@ -373,7 +363,7 @@ goog.require('ga_time_service');
       'layers': {
         'Layer': function(layer) {
           var enc = {
-            //layer: layer.bodId,
+            layer: layer.bodId,
             opacity: layer.getOpacity()
           };
           return enc;
@@ -427,17 +417,8 @@ goog.require('ga_time_service');
           angular.forEach(features, function(feature) {
             var encoded = $scope.encoders.features.feature(layer, feature);
             encFeatures = encFeatures.concat(encoded.encFeatures);
-             angular.extend(encStyles, encoded.encStyles);
-            /*angular.forEach(encoded.encStyles, function(encStyle) {
-              console.log(encStyle);
-            });*/
+            angular.extend(encStyles, encoded.encStyles);
           });
-          console.log('encFeatures');
-          console.log(encFeatures);
-          console.log('---------------');
-          console.log('encStyles');
-          console.log(encStyles);
-          console.log('---------------');
           angular.extend(enc, {
             'type': 'geojson',
             'style': encStyles, //'_gx_style' is the default style
@@ -448,7 +429,6 @@ goog.require('ga_time_service');
             'name': layer.bodId,
             'opacity': (layer.opacity != null) ? layer.opacity : 1.0
           });
-          console.log(JSON.stringify(enc));
           return enc;
         },
         'WMS': function(layer, config) {
@@ -992,7 +972,6 @@ goog.require('ga_time_service');
             feature = new ol.Feature(polygon);
           }
 
-
           // Handle ol.style.RegularShape by converting points to poylgons
           var image = styles[0].getImage();
           if (image instanceof ol.style.RegularShape) {
@@ -1020,14 +999,8 @@ goog.require('ga_time_service');
             angular.extend(encStyle, transformToPrintLiteral(feature,
                 styles[0]));
           }
-          console.log('encStyle stringify');
-          console.log(JSON.stringify(encStyle));
           encStyles['[_gx_style = ' + encStyle.id + ']'] =
             {'symbolizers': [encStyle]};
-
-          console.log('///////////////////////////////');
-          console.log('encStyles stringify');
-          console.log(JSON.stringify(encStyles));
 
           // If a feature has a style with a geometryFunction defined, we
           // must also display this geometry with the good style (used for
@@ -1044,10 +1017,6 @@ goog.require('ga_time_service');
               }
             }
           }
-          console.log('ENCFEATURES AND ENCSTYLES ALL TOGETHER');
-          console.log(encFeatures);
-          console.log('*************************************');
-          console.log(encStyles);
           return {
             encFeatures: encFeatures,
             encStyles: encStyles
@@ -1062,15 +1031,14 @@ goog.require('ga_time_service');
           }
           var enc = $scope.encoders.legends.base.call(this, config);
           enc.classes.push({
-            name: '',
-            icon: $scope.options.legendUrl +
-                layer.bodId + '_' + $translate.use() + format
+            name: config.label,
+            icons: [$scope.options.legendUrl +
+                layer.bodId + '_' + $translate.use() + format]
           });
           return enc;
         },
         'base': function(config) {
           return {
-            name: config.label,
             classes: []
           };
         }
@@ -1150,6 +1118,76 @@ goog.require('ga_time_service');
       var view = $scope.map.getView();
       var proj = view.getProjection();
       var lang = $translate.use();
+
+      // Translations
+      if (lang == 'en') {
+        var scale_string = 'Scale';
+        var printed_on = 'Printed on';
+        var copyright = 'www.geo.admin.ch is a portal provided by ' +
+          'the Federal Authorities of the Swiss Confederation to ' +
+          'gain insight on publicly accessible geographical ' +
+          'information, data and services. \nLimitation of ' +
+          'liability. Although every care has been taken by the Federal ' +
+          'Authorities to ensure the accuracy of the information published,' +
+          'no warranty can be given in respect of the accuracy,' +
+          'reliability, up-to-dateness or completeness of this information.' +
+          'Copyright, Swiss federal authorities, 2007.' +
+          'http://www.disclaimer.admin.ch/terms_and_conditions.html';
+      } else if (lang == 'fr') {
+        var scale_string = 'Echelle';
+        var printed_on = 'Imprimé le';
+        var copyright = 'www.geo.admin.ch est un portail d\'accès ' +
+          'aux informations géoläocalisées, données et services qui' +
+          'sont mis à disposition par l\'administration fédérale. ' +
+          '\nResponsabilité: Malgré la grande attention qu\'elles ' +
+          'portent à la justesse des informations diffusées sur ce ' +
+          'site, les autorités fédérales ne peuvent endosser aucune ' +
+          'responsabilité quant à la fidélité, à l\'exactitude, à ' +
+          'l\'actualité, à la fiabilité et à l\'intégralité de ces ' +
+          'informations. Droits d\'auteur: autorités de la ' +
+          'Confédération suisse, 2007. http://www.disclaimer.admin.ch/' +
+          'informations_juridiques.html';
+      } else if (lang == 'it') {
+        var scale_string = 'Scala';
+        var printed_on = 'Stampato il';
+        var copyright = 'www.geo.admin è una piattaforma pubblica ' +
+          'accessibile per la ricerca di geo-informazioni, i dati ' +
+          'e servizi. \nResponsabilità: Nonostante si presti grande ' +
+          'attenzione all’esattezza delle informazioni pubblicate su ' +
+          'questo sito, le autorità federali declinano ogni ' +
+          'responsabilità per la fedeltà, l’esattezza, l’attualità, ' +
+          'l’affidabilità e la completezza di tali informazioni. ' +
+          'Diritti d’autore: autorità della Confederazione Svizzera, ' +
+          'anno 2007. http://www.disclaimer.admin.ch/basi_legali.html';
+      } else if (lang == 'rm') {
+        var scale_string = 'Scala';
+        var printed_on = 'Stampà il(s)';
+        var copyright = 'www.geo.admin è in portal d\'access ad ' +
+          'infurmaziuns geolocalisadas, a datas ed a servetschs che ' +
+          'vegnan mess a disposiziun da l\'administraziun federala. ' +
+          '\nResponsabladad: Malgrà che las autoritads dattan bain adatg ' +
+          'che las infurmaziuns publitgadas sin questa pagina d\'internet ' +
+          'sajan correctas, na pon ellas surpigliar nagina responsabladad' +
+          'per la correctadad dal cuntegn, per l\'exactezza, per ' +
+          'l\'actualitad, per l\'autenticitad e per la cumplettezza ' +
+          'da talas infurmaziuns. Copyright: autoritads da la ' +
+          'confederaziun svizra, 2007. http://www.disclaimer.admin.ch';
+      } else {
+        // default language: German
+        var scale_string = 'Massstab';
+        var printed_on = 'Gedruckt am';
+        var copyright = 'www.geo.admin.ch ist ein Portal zur Einsicht von ' +
+          'geolokalisierten Informationen, Daten und Diensten, die von ' +
+          'öffentlichen Einrichtungen zur Verfügung gestellt werden. ' +
+          '\nHaftung: Obwohl die Bundesbehörden mit aller Sorgfalt auf ' +
+          'die Richtigkeit der veröffentlichten Informationen achten, ' +
+          'kann hinsichtlich der inhaltlichen Richtigkeit, Genauigkeit, ' +
+          'Aktualität, Zuverlässigkeit und Vollständigkeit dieser ' +
+          'Informationen keine Gewährleistung übernommen werden. ' +
+          'Copyright, Bundesbehörden der Schweizerischen Eidgenossenschaft,' +
+          '2007. http://www.disclaimer.admin.ch';
+      }
+
       var defaultPage = {};
       defaultPage['lang' + lang] = true;
       var qrcodeUrl = $scope.options.qrcodeUrl +
@@ -1157,13 +1195,12 @@ goog.require('ga_time_service');
       var print_zoom = getZoomFromScale($scope.scale);
       qrcodeUrl = qrcodeUrl.replace(/zoom%3D(\d{1,2})/, 'zoom%3D' + print_zoom);
       var encLayers = [];
-      var encLegends;
+      var encLegendClasses;
       var attributions = [];
       var thirdPartyAttributions = [];
       var layers = this.map.getLayers().getArray();
       pdfLegendsToDownload = [];
       layersYears = [];
-
       // Re order layer by z-index
       layers.sort(function(a, b) {
         return a.getZIndex() - b.getZIndex();
@@ -1196,8 +1233,9 @@ goog.require('ga_time_service');
             if (enc && enc.layer) {
               encLayers.push(enc.layer);
               if (enc.legend) {
-                encLegends = encLegends || [];
-                encLegends.push(enc.legend);
+                var legendClass = enc.legend.classes.shift();
+                encLegendClasses = encLegendClasses || [];
+                encLegendClasses.push(legendClass);
               }
             }
           }
@@ -1249,7 +1287,6 @@ goog.require('ga_time_service');
         var offset = 5 * resolution;
 
         if (center) {
-
           var encOverlayLayer = {
             'geoJson': {
               'type': 'FeatureCollection',
@@ -1312,9 +1349,6 @@ goog.require('ga_time_service');
         }
       });
 
-      console.log('encLayers');
-      console.log(encLayers);
-
       //First layer is top layer of the map (Mapfish: version 3)
       encLayers.reverse();
 
@@ -1330,9 +1364,7 @@ goog.require('ga_time_service');
         shortLink = response.shorturl.replace('/shorten', '');
       });
 
-      // Description should be defined and needed to exist in specifications
-      var description = '';
-      var name = '';
+      // The attributes should be defined and needed to exist in specifications
       var scalebar = {fontSize: 8, type: 'line'};
 
       // Build the complete json then send it to the print server
@@ -1364,14 +1396,18 @@ goog.require('ga_time_service');
             scale: $scope.scale,
             url: shortLink || '',
             qrimage: qrcodeUrl,
-            legends: encLegends,
-            enableLegends: (encLegends && encLegends.length > 0),
-            description: description,
-            name: name,
+            legend: {
+              'name': '',
+              'classes': encLegendClasses
+            },
+            name: dataOwner,
             scalebar: scalebar,
+            scale_string: scale_string,
+            printed_on: printed_on,
+            copyright: copyright,
             map: {
               //use a function to get correct dpi according to layout (A4/A3)
-              dpi: 300, //getDpi($scope.layout.name, $scope.dpi),
+              dpi: 96, //getDpi($scope.layout.name, $scope.dpi),
               layers: encLayers,
               //center: getPrintRectangleCenterCoord()
               bbox: getPrintRectangleCoords()
@@ -1393,8 +1429,6 @@ goog.require('ga_time_service');
           ]
         };
 
-        console.log('########## Finale spec #################');
-        console.log(JSON.stringify(spec));
         var startPollTime = 0;
         var pollErrors;
         var pollMulti = function(url) {
@@ -1445,26 +1479,16 @@ goog.require('ga_time_service');
         };
 
         var printUrl = $scope.options.createURL;
-        window.console.log('printUrl');
-        window.console.log(printUrl);
 
         // We always use printmulti
-        // In non movie mode, you may try direct print to tomcat server
-        /*if (!movieprint) {
-          printUrl = printUrl.replace('/print/', '/printserver/');
-        } */
         canceller = $q.defer();
         var http = $http.post(printUrl,
           spec, {
           timeout: canceller.promise
         }).success(function(data) {
-          window.console.log('Data at post request to craete the print job');
-          window.console.log(data);
           //var pollUrl = data.statusURL;
           var pollUrl = $scope.options.printPath +
             '/print/status/' + data.ref + '.json';
-          window.console.log('pollUrl');
-          window.console.log(pollUrl);
           currentMultiPrintId = data.ref;
           pollErrors = 0;
           pollMulti(pollUrl);
@@ -1512,8 +1536,6 @@ goog.require('ga_time_service');
     };
 
     var getOptimalScale = function() {
-      window.console.log('$scope');
-      window.console.log($scope);
       var size = $scope.map.getSize();
       var resolution = $scope.map.getView().getResolution();
       var width = resolution * (size[0] - ($scope.options.widthMargin * 2));
@@ -1531,7 +1553,7 @@ goog.require('ga_time_service');
       //biggest (1:500) to smallest (1:2500000)
       angular.forEach($scope.scales, function(scale) {
         if (nextBiggest == null ||
-            testScale > scale) { // edw genika epaize to scale.value
+            testScale > scale) {
               nextBiggest = scale;
         }
       });
