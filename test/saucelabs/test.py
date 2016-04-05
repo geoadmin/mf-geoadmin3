@@ -85,7 +85,10 @@ if __name__ == '__main__':
             'version': "13.10586", 'screenResolution': "1280x1024"},
         # Opera
         {'platform': "Windows 7", 'browserName': "opera",
-            'version': "12.12", 'screenResolution': "1280x1024"}
+            'version': "12.12", 'screenResolution': "1280x1024"},
+        # Safari
+        {'platform': "Windows 7", 'browserName': "safari",
+            'version': "5.1", 'screenResolution': "1280x1024"}
     ]
 
     config_test_list = {
