@@ -11,60 +11,13 @@ URL_API_DEV = "https://mf-chsdi3.dev.bgdi.ch/"
 URL_API_INT = "https://mf-chsdi3.int.bgdi.ch/"
 URL_API_CI = "https://mf-chsdi3.ci.bgdi.ch/"
 URL_API_PROD = "https://api3.geo.admin.ch/"
-SPHINX_CHECKER = "rest/services/inspire/SearchServer?searchText=wasser&type=locations"
 URL_SHORTEN = 'shorten.json?url=https://mf-geoadmin3.int.bgdi.ch/' + \
     '%3FX%3D164565.22%26Y%3D620538.74%26zoom%3D2%26lang%3Den%26topic%3Dlubis%26bgLayer%3D' + \
     'ch.swisstopo.pixelkarte-grau%26catalogNodes%3D1179,1180,1184,1186%26layers%3D' + \
     'ch.swisstopo.lubis-bildstreifen'
 
-list_sitemap = ['sitemap_base.xml',
-                'sitemap_topics.xml',
-                'sitemap_layers.xml']
-key_words_loaderjs = [
-    'ch.swisstopo.pixelkarte-farbe',
-    'static/js/ga.js',
-    'EPSG21781.js']
-topics_list = [
-    'blw',
-    'are',
-    'bafu',
-    'swisstopo',
-    'kgs',
-    'funksender',
-    'nga',
-    'ivs',
-    'sachplan',
-    'geol',
-    'luftbilder',
-    'wildruhezonen',
-    'vu',
-    'aviation',
-    'verteidigung',
-    'gewiss',
-    'inspire',
-    'ech']
-available_language = ['de', 'fr', 'it', 'en', 'rm']
-important_layers = [
-    'ch.swisstopo.zeitreihen',
-    'ch.swisstopo.lubis-luftbilder_schwarzweiss',
-    'ch.swisstopo.lubis-bildstreifen',
-    'ch.swisstopo.lubis-luftbilder_infrarot',
-    'ch.swisstopo.lubis-luftbilder_farbe',
-    'ch.swisstopo.lubis-luftbilder-dritte-firmen',
-    'ch.swisstopo.lubis-luftbilder-dritte-kantone',
-    'ch.swisstopo.lubis-luftbilder_schraegaufnahmen',
-    'ch.swisstopo-vd.stand-oerebkataster',
-    'ch.bazl.sachplan-infrastruktur-luftfahrt_kraft',
-    'ch.bav.sachplan-infrastruktur-schiene_ausgangslage',
-    'ch.bav.sachplan-infrastruktur-schifffahrt_ausgangslage',
-    'ch.bazl.sachplan-infrastruktur-luftfahrt_anhorung',
-    'ch.bav.sachplan-infrastruktur-schiene_kraft',
-    'ch.bfe.sachplan-geologie-tiefenlager',
-    'ch.bfe.sachplan-uebertragungsleitungen_anhoerung',
-    'ch.bfe.sachplan-uebertragungsleitungen_kraft']
 
-
-def runCheckerTest(driver, url):
+def runCheckerTest(driver, url, is_top_browser):
     print 'Checker tests starts!'
 
     try:
@@ -85,7 +38,7 @@ def runCheckerTest(driver, url):
                 print "Current url: " + url
 
     for ckFunc in checkerFunctions:
-        ckFunc(driver, url, url_4_api)
+        ckFunc(driver, url, url_4_api, is_top_browser)
 
     print 'Checker tests completed'
 
@@ -107,19 +60,27 @@ def wait_url_changed(driver, old_url, timeout=DEFAULT_WAIT):
     return bool(not UrlHasChanged)
 
 
-def ApiPage(driver, url, url_4_api):
+def SiteMap(driver, url, url_4_api, is_top_browser):
+    if is_top_browser == 1:
+        print "  Test geoadmin Sitemap"
+        driver.get(url + '/' + 'sitemap_index.xml')
+        assert "sitemapindex" in driver.page_source
+
+
+def ApiPage(driver, url, url_4_api, is_top_browser):
     print "  Test API (search words Welcome)"
     driver.get(url_4_api)
     assert "Welcome" in driver.page_source
 
 
-def CheckerGeoAdmin(driver, url, url_4_api):
-    print "  Test Checker GeoAdmin"
-    driver.get(url + '/' + 'checker')
-    assert "OK" in driver.page_source
+def CheckerGeoAdmin(driver, url, url_4_api, is_top_browser):
+    if is_top_browser == 1:
+        print "  Test Checker GeoAdmin"
+        driver.get(url + '/' + 'checker')
+        assert "OK" in driver.page_source
 
 
-def ShortenUrl(driver, url, url_4_api):
+def ShortenUrl(driver, url, url_4_api, is_top_browser):
     print "  Test Shorten URL"
     driver.get(url_4_api + URL_SHORTEN)
     assert "shorturl" in driver.page_source
@@ -142,6 +103,7 @@ def ShortenUrl(driver, url, url_4_api):
 
 
 checkerFunctions = [
+    SiteMap,
     ApiPage,
     CheckerGeoAdmin,
     ShortenUrl]

@@ -132,6 +132,11 @@ if __name__ == '__main__':
 
     for current_desired_cap in caps_used:
         try:
+            is_top_browser = 0
+            if (current_desired_cap['browserName'] == top_browser['browserName']) and (
+                    current_desired_cap['version'] == top_browser['version']) and (
+                    current_desired_cap['platform'] == top_browser['platform']):
+                is_top_browser = 1
             print "+--> Start test with " + current_desired_cap['platform'] + \
                 " " + current_desired_cap['browserName'] + " (" + current_desired_cap['version'] + ")"
             driver = webdriver.Remote(
@@ -150,7 +155,7 @@ if __name__ == '__main__':
             for elt in config_test_list[current_desired_cap['browserName']]:
                 if elt in tests or len(tests) == 0:
                     t1 = time.time()
-                    doTests[elt](driver, url)
+                    doTests[elt](driver, url, is_top_browser)
                     tf = time.time()
                     print 'It took %.2f to execute %s...' % ((tf - t1), elt)
         finally:

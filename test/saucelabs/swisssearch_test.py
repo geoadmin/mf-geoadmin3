@@ -34,7 +34,7 @@ def wait_url_changed(driver, old_url, timeout=DEFAULT_WAIT):
     return bool(not UrlHasChanged)
 
 
-def runSwissSearchTest(driver, target):
+def runSwissSearchTest(driver, target, is_top_browser):
     print "Start Swissearch tests"
 
     # swissearch parameter with multiple results

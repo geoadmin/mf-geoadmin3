@@ -5,7 +5,7 @@ from selenium.webdriver.support import expected_conditions as EC
 DEFAULT_WAIT_LOAD = 20
 
 
-def runStartTest(driver, url):
+def runStartTest(driver, url, is_top_browser):
     # Set the timeout to x ms
     driver.set_page_load_timeout(DEFAULT_WAIT_LOAD)
     print 'Start %s:' % url
