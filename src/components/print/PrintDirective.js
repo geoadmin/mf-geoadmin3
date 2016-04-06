@@ -450,7 +450,8 @@ goog.require('ga_time_service');
             }
             angular.extend(enc, {
               type: 'WMTS',
-              baseURL: location.protocol + '//wmts.geo.admin.ch',
+              baseURL: location.protocol +
+                '//s3-eu-west-1.amazonaws.com/akiai4jxkwjqv5tgsaoq-wmts',
               layer: config.serverLayerName,
               maxExtent: layer.getExtent(),
               tileOrigin: tileGrid.getOrigin(),
