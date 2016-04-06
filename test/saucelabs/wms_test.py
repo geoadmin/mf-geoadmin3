@@ -17,7 +17,7 @@ def bDoCheckAlertPopup(driver):
         return 1
 
 
-def runWmsTest(driver, target):
+def runWmsTest(driver, target, is_top_browser):
     print "Start Wms tests"
     driver.get(target)
     # We maximize our window to be sure to be in full resolution

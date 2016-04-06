@@ -9,7 +9,7 @@ QUERYSTRING_KML = "KML%7C%7Chttp:%2F%2Fopendata.utou.ch%2Furbanproto%2Fgeneva%2F
 POSITION_TO_KML = "X=124759.52&Y=499224.22"
 
 
-def runKmlTest(driver, target):
+def runKmlTest(driver, target, is_top_browser):
     driver.get(target)
     # We maximize our window to be sure to be in full resolution
     driver.maximize_window()

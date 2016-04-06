@@ -8,7 +8,7 @@ from helpers import bCheckIfLinkIsUpdatedEverywhere
 QUERYSTRING_OF_BERN = "X=200393.28&Y=596671.16"
 
 
-def runSearchTest(driver, url):
+def runSearchTest(driver, url, is_top_browser):
     print 'Search_test starts!'
     driver.get(url)
     driver.maximize_window()

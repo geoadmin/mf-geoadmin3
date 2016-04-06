@@ -31,86 +31,18 @@ def wait_printSucessTagExist(driver, timeout=DEFAULT_WAIT):
     return bool(not TagPrintSuccessExist)
 
 
-def runPrintTest(driver, target):
+def runPrintTest(driver, target, is_top_browser):
     print "Start Print tests"
 
-    # Make a print test of differents layer types
-    bDoAllTogether = 1
-    bDoWmts = 0
-    bDoWms = 0
-    bDoWmsWithoutSingleTile = 0
-    bDoAggregate = 0
-    bDoGeojson = 0
-    bDoExternalKml = 0
-    bDoExternalWms = 0
-    bDoMapGeoKml = 0
-
     # Put all layer type together for one print only
-    if bDoAllTogether:
-        print 'Print all layer type (wmts, wms, wms single tiles, aggregate, geojson,' + \
-            ' internal andexternal kml, external wms)'
-        target_full = target + '/?lang=de&layers=ch.swisstopo.landesschwerenetz,' + \
-            'ch.swisstopo.landesschwerenetz,ch.bazl.luftfahrthindernis,' + \
-            'ch.bav.sachplan-infrastruktur-schiene_kraft,'
-        target_full += 'ch.bfs.gebaeude_wohnungs_register,ch.bafu.hydroweb-messstationen_grundwasser,' + \
-            QUERYSTRING_KML + ',' + QUERYSTRING_EXTERNAL_WMS + ',' + QUERYSTRING_PUBLIC_GEO_KML
-        PrintTest(driver, target_full)
-
-    else:
-        # Test print step by step
-        # WMTS
-        if bDoWmts:
-            print "Print test of WMTS Layer : ch.swisstopo.landesschwerenetz"
-            target_spec = target + \
-                '/?lang=de&layers=ch.swisstopo.landesschwerenetz&X=190000.00&Y=660000.00&zoom=3'
-            PrintTest(driver, target_spec)
-
-        # WMS
-        if bDoWms:
-            print "Print test of WMS layer : ch.bazl.luftfahrthindernis"
-            target_spec = target + \
-                '/?lang=de&layers=ch.bazl.luftfahrthindernis&X=190000.00&Y=660000.00&zoom=5'
-            PrintTest(driver, target_spec)
-
-        # WMS without single tiles :
-        # ch.bav.sachplan-infrastruktur-schiene_kraft
-        if bDoWmsWithoutSingleTile:
-            print "Print test of WMS (single tile ='f') : ch.bav.sachplan-infrastruktur-schiene_kraft"
-            target_spec = target + '/?lang=de&ch.bav.sachplan-infrastruktur-schiene_kraft'
-            PrintTest(driver, target_spec)
-
-        # AGGREGATE : ch.bfs.gebaeude_wohnungs_register
-        if bDoAggregate:
-            print "Print test of Aggregate layer : ch.bfs.gebaeude_wohnungs_register"
-            target_spec = target + \
-                '/?lang=de&layers=ch.bfs.gebaeude_wohnungs_register&X=190000.00&Y=660000.00&zoom=3'
-            PrintTest(driver, target_spec)
-
-        # Geojson
-        if bDoGeojson:
-            print "Print test of Geojson layer : ch.bafu.hydroweb-messstationen_grundwasser"
-            target_spec = target + \
-                '/?lang=de&layers=ch.bafu.hydroweb-messstationen_grundwasser&X=190000.00&Y=660000.00&zoom=3'
-            PrintTest(driver, target_spec)
-
-        # External KML
-        if bDoExternalKml:
-            print "Print test of external Kml : http://opendata.utou.ch/urbanproto/geneva/geo/kml/Routes.kml"
-            target_spec = target + '?lang=de&layers=' + QUERYSTRING_KML
-            PrintTest(driver, target_spec)
-
-        # External WMS
-        if bDoExternalWms:
-            print "Print test of external wms : Schukreis (Zurich)"
-            target_spec = target + '?lang=de&layers=' + QUERYSTRING_EXTERNAL_WMS
-            PrintTest(driver, target_spec)
-
-        # KML from public.geo.admin.ch
-        if bDoMapGeoKml:
-            print "Print test of KML from public.geo.admin.ch"
-            target_spec = target + '?lang=de&layers=' + QUERYSTRING_PUBLIC_GEO_KML
-            PrintTest(driver, target_spec)
-
+    print 'Print all layer type (wmts, wms, wms single tiles, aggregate, geojson,' + \
+        ' internal andexternal kml, external wms)'
+    target_full = target + '/?lang=de&layers=ch.swisstopo.landesschwerenetz,' + \
+        'ch.swisstopo.landesschwerenetz,ch.bazl.luftfahrthindernis,' + \
+        'ch.bav.sachplan-infrastruktur-schiene_kraft,'
+    target_full += 'ch.bfs.gebaeude_wohnungs_register,ch.bafu.hydroweb-messstationen_grundwasser,' + \
+        QUERYSTRING_KML + ',' + QUERYSTRING_EXTERNAL_WMS + ',' + QUERYSTRING_PUBLIC_GEO_KML
+    PrintTest(driver, target_full)
     print "Test Print Ok !"
 
 

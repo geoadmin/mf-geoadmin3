@@ -9,7 +9,7 @@ QUERYSTRING_WHEN_ZOOM_IN = 'zoom=2'
 DEFAULT_WAIT = 6
 
 
-def runMobileTest(driver, target):
+def runMobileTest(driver, target, is_top_browser):
     print "Start Mobile tests"
     target_url = target + '?lang=de'
     driver.get(target_url)

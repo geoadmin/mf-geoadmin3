@@ -81,9 +81,7 @@ help:
 	@echo "- autolintpy         Run the auto-corrector for python files"
 	@echo "- testdebug          Run the JavaScript tests in debug mode"
 	@echo "- testrelease        Run the JavaScript tests in release mode"
-	@echo "- teste2e            Run browserstack and saucelabs tests"
-	@echo "- browserstack       Run browserstack tests"
-	@echo "- saucelabs          Run saucelabs tests"
+	@echo "- teste2e            Run saucelabs tests"
 	@echo "- saucelabssingle    Run saucelabs tests but only with single platform/browser"
 	@echo "- apache             Configure Apache (restart required)"
 	@echo "- fixrights          Fix rights in common folder"
@@ -160,10 +158,6 @@ testrelease: prd/lib/build.js test/karma-conf-release.js devlibs
 
 .PHONY: teste2e
 teste2e: saucelabs 
-
-.PHONY: browserstack
-browserstack: guard-BROWSERSTACK_USER guard-BROWSERSTACK_KEY
-	node test/selenium/tests.js -t ${E2E_TARGETURL}
 
 .PHONY: saucelabs
 saucelabs: guard-SAUCELABS_USER guard-SAUCELABS_KEY .build-artefacts/requirements.timestamp lintpy
