@@ -331,7 +331,7 @@ goog.require('ga_urlutils_service');
 
             // Can be removed onnce real type contains gazetter
             $scope.typeSpecificUrl = function(url) {
-              return url.replace('type=locations', 'type=locations_preview');
+              return url;
             };
 
             $scope.select = function(res) {
