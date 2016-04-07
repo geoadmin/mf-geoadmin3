@@ -725,7 +725,7 @@ goog.require('ga_time_service');
           'opacity': 1,
           'singleTile': true,
           'type': 'WMS',
-          'layers': ['org.epsg.grid_21781,org.epsg.grid_4326'],
+          'layers': ['org.epsg.grid_2056'],
           'format': 'image/png',
           'styles': [''],
           'customParams': {
