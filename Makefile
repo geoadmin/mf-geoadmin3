@@ -150,7 +150,8 @@ autolintpy: ${AUTOPEP8_CMD}
 
 .PHONY: testdebug
 testdebug: .build-artefacts/app-whitespace.js test/karma-conf-debug.js 
-	PHANTOMJS_BIN="node_modules/.bin/phantomjs" ./node_modules/.bin/karma start test/karma-conf-debug.js --single-run
+	PHANTOMJS_BIN="node_modules/.bin/phantomjs" ./node_modules/.bin/karma start test/karma-conf-debug.js --single-run;
+	cat .build-artefacts/coverage.txt; echo;
 
 .PHONY: testrelease
 testrelease: prd/lib/build.js test/karma-conf-release.js devlibs
