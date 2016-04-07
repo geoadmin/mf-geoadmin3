@@ -16,6 +16,10 @@
 
       .ga-layer-infos label:hover {
           color: #F2EFE8;
+          // Fallback for IE
+          cursor: url(../../../img/grab.cur), move;
+          cursor: -webkit-grab;
+          cursor: grab;
       }
   }
 
