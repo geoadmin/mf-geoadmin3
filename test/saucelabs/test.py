@@ -87,8 +87,8 @@ if __name__ == '__main__':
         {'platform': "Windows 7", 'browserName': "opera",
             'version': "12.12", 'screenResolution': "1280x1024"},
         # Safari
-        {'platform': "Windows 7", 'browserName': "safari",
-            'version': "5.1", 'screenResolution': "1280x1024"}
+        {'platform': "OS X 10.11", 'browserName': "safari",
+            'version': "9.0", 'screenResolution': "1024x768"}
     ]
 
     config_test_list = {
