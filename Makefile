@@ -150,7 +150,8 @@ autolintpy: ${AUTOPEP8_CMD}
 
 .PHONY: testdebug
 testdebug: .build-artefacts/app-whitespace.js test/karma-conf-debug.js 
-	PHANTOMJS_BIN="node_modules/.bin/phantomjs" ./node_modules/.bin/karma start test/karma-conf-debug.js --single-run
+	PHANTOMJS_BIN="node_modules/.bin/phantomjs" ./node_modules/.bin/karma start test/karma-conf-debug.js --single-run;
+	cat .build-artefacts/coverage.txt; echo;
 
 .PHONY: testrelease
 testrelease: prd/lib/build.js test/karma-conf-release.js devlibs
@@ -498,10 +499,10 @@ apache/app.conf: apache/app.mako-dot-conf \
 	    --var "version=$(VERSION)" $< > $@
 
 test/karma-conf-debug.js: test/karma-conf.mako.js ${MAKO_CMD}
-	${PYTHON_CMD} ${MAKO_CMD} $< > $@
+	${PYTHON_CMD} ${MAKO_CMD} --var "mode=debug" $< > $@
 
 test/karma-conf-release.js: test/karma-conf.mako.js ${MAKO_CMD}
-	${PYTHON_CMD} ${MAKO_CMD} --var "mode=prod" $< > $@
+	${PYTHON_CMD} ${MAKO_CMD} --var "mode=release" $< > $@
 
 test/lib/angular-mocks.js test/lib/expect.js test/lib/sinon.js externs/angular.js externs/jquery.js: package.json
 	npm install --only=dev;

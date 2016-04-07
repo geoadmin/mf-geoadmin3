@@ -3,38 +3,38 @@
 module.exports = function(config) {
   config.set({
   // base path, that will be used to resolve files and exclude
-  % if mode == 'release':
-     basePath: '../prd',
-  % else:
-     basePath: '../src',
-  % endif
+% if mode == 'release':
+  basePath: '../prd',
+% else:
+  basePath: '../src',
+% endif
 
   // list of files / patterns to load in the browser
   files: [
-    % if mode == 'release':
-       'lib/build.js',
-    % else:
-       'lib/jquery.js',
-       'lib/angular.js',
-       'lib/angular-translate.js',
-       'lib/angular-translate-loader-static-files.js',
-       'lib/bootstrap.js',
-       'lib/typeahead-0.9.3.js',
-       'lib/proj4js-compressed.js',
-       'lib/EPSG21781.js',
-       'lib/EPSG2056.js',
-       'lib/EPSG32631.js',
-       'lib/EPSG32632.js',
-       'lib/Cesium/Cesium.js',
-       '../test/closure-loader-globals.js',
-       'lib/ol3cesium-debug.js',
-       '../.build-artefacts/app-whitespace.js',
-    % endif
-       '../test/lib/angular-mocks.js',
-       '../test/lib/expect.js',
-       '../test/lib/sinon.js',
-       '../test/specs/Loader.spec.js',
-       '../test/specs/**/*.js'
+  % if mode == 'release':
+    'lib/build.js',
+  % else:
+    'lib/jquery.js',
+    'lib/angular.js',
+    'lib/angular-translate.js',
+    'lib/angular-translate-loader-static-files.js',
+    'lib/bootstrap.js',
+    'lib/typeahead-0.9.3.js',
+    'lib/proj4js-compressed.js',
+    'lib/EPSG21781.js',
+    'lib/EPSG2056.js',
+    'lib/EPSG32631.js',
+    'lib/EPSG32632.js',
+    'lib/Cesium/Cesium.js',
+    '../test/closure-loader-globals.js',
+    'lib/ol3cesium-debug.js',
+    '../.build-artefacts/app-whitespace.js',
+  % endif
+    '../test/lib/angular-mocks.js',
+    '../test/lib/expect.js',
+    '../test/lib/sinon.js',
+    '../test/specs/Loader.spec.js',
+    '../test/specs/**/*.js'
   ],
 
 
@@ -49,6 +49,9 @@ module.exports = function(config) {
     // need to use Karma's html2js preprocessor, and cache partials in
     // tests using ngMock's "module" function.
     //'components/**/*.html': 'html2js'
+  % if mode == 'debug':
+    '../.build-artefacts/app-whitespace.js': ['coverage']
+  % endif
   },
 
 
@@ -57,9 +60,25 @@ module.exports = function(config) {
   ],
 
 
-  // test results reporter to use
-  // possible values: 'dots', 'progress', 'junit'
+% if mode == 'debug':
+  coverageReporter: {
+    dir: '../.build-artefacts',
+    includeAllSources: true,
+    reporters: [
+      { type: 'cobertura', subdir: '.', file: 'coverage.xml' },
+      { type: 'text-summary', subdir: '.', file: 'coverage.txt' }
+    ]
+  },
+% endif
+
+
+// test results reporter to use
+// possible values: 'dots', 'progress', 'junit'
+% if mode == 'release':
   reporters: ['progress'],
+% else:
+  reporters: ['coverage', 'progress'],
+% endif
 
 
   // web server port
