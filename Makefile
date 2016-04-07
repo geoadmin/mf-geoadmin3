@@ -515,7 +515,7 @@ devlibs: test/lib/angular-mocks.js test/lib/expect.js test/lib/sinon.js externs/
 
 .PHONY: libs
 libs:
-	npm install --only=production
+	npm install --only=production;
 	cp -f $(addprefix node_modules/angular/, angular.js angular.min.js) src/lib/;
 	cp -f $(addprefix node_modules/angular-translate/dist/, angular-translate.js angular-translate.min.js) src/lib/;
 	cp -f $(addprefix node_modules/angular-translate/dist/angular-translate-loader-static-files/, angular-translate-loader-static-files.js angular-translate-loader-static-files.min.js) src/lib/;
