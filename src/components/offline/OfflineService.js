@@ -19,6 +19,7 @@ goog.require('ga_styles_service');
     var extentKey = 'ga-offline-extent';
     var layersKey = 'ga-offline-layers';
     var opacityKey = 'ga-offline-layers-opacity';
+    var timestampKey = 'ga-offline-layers-timestamp';
     var bgKey = 'ga-offline-layers-bg';
     var promptKey = 'ga-offline-prompt-db';
 
@@ -205,10 +206,29 @@ goog.require('ga_styles_service');
       };
 
       var Offline = function(proxyUrl) {
-        this.hasData = function(map) {
+        this.hasData = function() {
           return !!(gaStorage.getItem(extentKey));
         };
-
+        this.isDataObsolete = function() {
+          if (!this.hasData()) {
+            return false;
+          }
+          var timestamp = gaStorage.getItem(timestampKey);
+          var isObsolete = !timestamp;// old version hasn't timestamps stored
+          if (!isObsolete) {
+            var ts = timestamp.split(',');
+            // We go through all saved bod layers and test if the timestamp has
+            // changed.
+            gaStorage.getItem(layersKey).split(',').forEach(function(id, idx) {
+              var layer = gaLayers.getLayer(id);
+              if (layer && !layer.timeEnabled &&
+                  layer.timestamps[0] != ts[idx]) {
+                isObsolete = true;
+              }
+            });
+          }
+          return isObsolete;
+        };
         this.calculateExtentToSave = function(center) {
           return ol.extent.buffer(center.concat(center), 5000);
         };
@@ -334,6 +354,7 @@ goog.require('ga_styles_service');
           }
           var layersIds = gaStorage.getItem(layersKey).split(',');
           var opacity = gaStorage.getItem(opacityKey).split(',');
+          var timestamp = gaStorage.getItem(timestampKey).split(',');
           var bg = gaStorage.getItem(bgKey).split(',');
 
           for (var i = 0, ii = layersIds.length; i < ii; i++) {
@@ -358,6 +379,10 @@ goog.require('ga_styles_service');
               if (olLayer) {
                 olLayer.visible = true;
                 olLayer.invertedOpacity = opacity[i];
+                // We apply the timestamp saved
+                if (timestamp[i]) {
+                  olLayer.time = timestamp[i];
+                }
               }
             }
           }
@@ -388,6 +413,7 @@ goog.require('ga_styles_service');
               gaStorage.removeItem(extentKey);
               gaStorage.removeItem(layersKey);
               gaStorage.removeItem(opacityKey);
+              gaStorage.removeItem(timestampKey);
               gaStorage.removeItem(bgKey);
               $rootScope.$broadcast('gaOfflineAbort');
             }
@@ -422,11 +448,17 @@ goog.require('ga_styles_service');
           var queue = [];
           var layersIds = [];
           var layersOpacity = [];
+          var layersTimestamp = [];
           var layersBg = [];
           for (var i = 0, ii = layers.length; i < ii; i++) {
             var layer = layers[i];
             layersIds.push(layer.id);
             layersOpacity.push(layer.invertedOpacity);
+            var time = layer.time || '';
+            if (!time && layer.timestamps) {
+              time = layer.timestamps[0];
+            }
+            layersTimestamp.push(time);
 
             // if the layer is a KML
             if (gaMapUtils.isKmlLayer(layer) &&
@@ -502,6 +534,7 @@ goog.require('ga_styles_service');
           // We store layers informations.
           gaStorage.setItem(layersKey, layersIds.join(','));
           gaStorage.setItem(opacityKey, layersOpacity.join(','));
+          gaStorage.setItem(timestampKey, layersTimestamp.join(','));
           gaStorage.setItem(bgKey, layersBg.join(','));
 
           // Nothing to save or only KML layers
