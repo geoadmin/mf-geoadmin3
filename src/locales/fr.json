@@ -247,6 +247,7 @@
 "obstacle_started_last_2_weeks": "Obstacles activés ces 2 dernières semaines",
 "offline_abort_warning": "Voulez-vous vraiment supprimer tous les cartes?",
 "offline_bad_layer_type": "Une couche a un type invalide. Elle ne peut être sauvegardée pour un usage hors-ligne.",
+"offline_cache_obsolete": "Une nouvelle version des données sauvergardées pour un usage hors-ligne est disponible. Veuillez supprimer les données via le bouton offline et sauvergarder une nouvelle version.",
 "offline_clear_db_error": "Erreur lors de la suppression de la base de données. Réessayez.",
 "offline_delete_data": "Effacer carte",
 "offline_dl_succeed": "Téléchargement réussi!",

@@ -247,6 +247,7 @@
 "obstacle_started_last_2_weeks": "Obstachels activads da las ultimas 2 emnas",
 "offline_abort_warning": "Vulais Vus propi stizzar tut ils chartas?",
 "offline_bad_layer_type": "Ina da las unitads da datas na po betg vegnir arcunada per la duvrar offline.",
+"offline_cache_obsolete": "Eine aktuellere Version der gespeicherten Offline Karte steht zur Verfügung. Löschen Sie die aktuell gespeicherte Karte über den Offline Knopf unten rechts. Speichern Sie dann die neuere Karte neu ab.",
 "offline_clear_db_error": "Errur cun stizzar las chartas memorisadas. Per plaschair empruvais anc ina giada.",
 "offline_delete_data": "Stizzar charta",
 "offline_dl_succeed": "Download reussì ",

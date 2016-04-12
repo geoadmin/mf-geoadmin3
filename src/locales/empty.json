@@ -263,6 +263,7 @@
   "offline_clear_db_error": "",
   "offline_kml_too_big": "",
   "offline_bad_layer_type": "",
+  "offline_cache_obsolete": "",
   "appcache_update_available": "",
   "attach_drawing_kml": "",
   "export_kml": "",

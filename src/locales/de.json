@@ -247,6 +247,7 @@
 "obstacle_started_last_2_weeks": "Aktivierte Hindernisse letzte 2 Wochen",
 "offline_abort_warning": "Wollen Sie wirklich alle Karten löschen?",
 "offline_bad_layer_type": "Einer der Datensätze kann nicht für den Offline-Gebrauch gespeichert werden.",
+"offline_cache_obsolete": "Eine aktuellere Version der gespeicherten Offline Karte steht zur Verfügung. Löschen Sie die aktuell gespeicherte Karte über den Offline Knopf. Speichern Sie dann die neuere Karte neu ab.",
 "offline_clear_db_error": "Fehler beim Löschen der gespeicherten Karten. Bitte versuchen Sie es noch einmal.",
 "offline_delete_data": "Karte löschen",
 "offline_dl_succeed": "Abspeichern erfolgreich!",

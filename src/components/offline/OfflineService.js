@@ -638,7 +638,16 @@ goog.require('ga_styles_service');
           gaStorage.init();
         }
       };
-      return new Offline(gaGlobalOptions.ogcproxyUrl);
+
+      var off = new Offline(gaGlobalOptions.ogcproxyUrl);
+      if (gaBrowserSniffer.mobile) {
+        gaLayers.loadConfig().then(function() {
+          if (off.isDataObsolete()) {
+            alert($translate.instant('offline_cache_obsolete'));
+          }
+        });
+      }
+      return off;
     };
   });
 })();
