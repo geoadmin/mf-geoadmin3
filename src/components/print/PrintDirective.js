@@ -271,9 +271,9 @@ goog.require('ga_time_service');
           fill = imageStyle.getFill();
           stroke = imageStyle.getStroke();
           var radius = imageStyle.getRadius();
-          var width = 2 * radius;
+          var width = adjustDist(2 * radius);
           if (stroke) {
-            width += stroke.getWidth() + 1;
+            width += adjustDist(stroke.getWidth() + 1);
           }
           size = [width, width];
           anchor = [width / 2, width / 2];
@@ -282,12 +282,12 @@ goog.require('ga_time_service');
 
         if (size) {
           // Print server doesn't handle correctly 0 values for the size
-          literal.graphicWidth = (size[0] * scale || 0.1);
-          literal.graphicHeight = (size[1] * scale || 0.1);
+          literal.graphicWidth = adjustDist((size[0] * scale || 0.1));
+          literal.graphicHeight = adjustDist((size[1] * scale || 0.1));
         }
         if (anchor) {
-          literal.graphicXOffset = -anchor[0] * scale;
-          literal.graphicYOffset = -anchor[1] * scale;
+          literal.graphicXOffset = adjustDist(-anchor[0] * scale);
+          literal.graphicYOffset = adjustDist(-anchor[1] * scale);
         }
 
       }
@@ -302,7 +302,7 @@ goog.require('ga_time_service');
 
       if (stroke) {
         var color = ol.color.asArray(stroke.getColor());
-        literal.strokeWidth = stroke.getWidth();
+        literal.strokeWidth = adjustDist(stroke.getWidth());
         literal.strokeColor = toHexa(color);
         literal.strokeOpacity = color[3];
         literal.strokeLinecap = stroke.getLineCap() || 'round';
@@ -949,6 +949,14 @@ goog.require('ga_time_service');
       } else {
         return dpiConfig[0].value;
       }
+    };
+
+    // Change a distance according to the change of DPI
+    var adjustDist = function(dist) {
+      if (!dist) {
+        return;
+      }
+      return dist * 90 / getDpi($scope.layout.name, $scope.dpi);
     };
 
     var getPrintRectangleCoords = function() {
