@@ -66,8 +66,8 @@ goog.require('ga_time_service');
       ];
       $scope.scale = getOptimalScale();
       refreshComp();
-    };
 
+    };
     var deactivate = function() {
       var item;
       while (item = deregister.pop()) {
@@ -170,8 +170,8 @@ goog.require('ga_time_service');
 
         if (encLegend.classes &&
             encLegend.classes[0] &&
-            encLegend.classes[0].icon) {
-          var legStr = encLegend.classes[0].icon;
+            encLegend.classes[0].icons) {
+          var legStr = encLegend.classes[0].icons;
           if (legStr.indexOf(pdfLegendString,
               legStr.length - pdfLegendString.length) !== -1) {
             pdfLegendsToDownload.push(legStr);
@@ -181,7 +181,6 @@ goog.require('ga_time_service');
       }
       return {layer: encLayer, legend: encLegend};
     };
-
 
     // Transform an ol.Color to an hexadecimal string
     var toHexa = function(olColor) {
@@ -252,11 +251,25 @@ goog.require('ga_time_service');
       var literal = {
         zIndex: style.getZIndex()
       };
-      var type = feature.getGeometry().getType();
+      var geometry = feature.getGeometry();
       var fill = style.getFill();
       var stroke = style.getStroke();
       var textStyle = style.getText();
       var imageStyle = style.getImage();
+      var geomtype = feature.getGeometry().getType();
+
+      if (geometry) {
+        if (geometry instanceof ol.geom.Polygon) {
+          literal.type = 'polygon';
+        } else if (geometry instanceof ol.geom.LineString) {
+          literal.type = 'line';
+        } else if ((geometry instanceof ol.geom.Point) && (textStyle)) {
+          literal.type = 'text';
+        } else if (geometry instanceof ol.geom.Point) {
+          literal.type = 'point';
+        }
+      }
+
 
       if (imageStyle) {
         var size, anchor, scale = imageStyle.getScale();
@@ -328,20 +341,20 @@ goog.require('ga_time_service');
 
         if (textStyle.getFont()) {
           var fontValues = textStyle.getFont().split(' ');
-          // Fonts managed by print server: COURIER, HELVETICA, TIMES_ROMAN
-          literal.fontFamily = fontValues[2].toUpperCase();
+          literal.fontFamily = 'sans-serif';
           literal.fontSize = parseInt(fontValues[1]);
           literal.fontWeight = fontValues[0];
         }
 
-        /* TO FIX: Not managed by the print server
         if (textStyle.getStroke()) {
           var strokeColor = ol.color.asArray(textStyle.getStroke().getColor());
-          literal.labelOutlineColor = toHexa(strokeColor);
-          literal.labelOutlineWidth = textStyle.getStroke().getWidth();
-        }*/
+          literal.haloColor = toHexa(strokeColor);
+          literal.haloOpacity = strokeColor[3];
+          if (textStyle.getStroke().getWidth()) {
+            literal.haloRadius = textStyle.getStroke().getWidth() / 2;
+          }
+        }
       }
-
       return literal;
     };
 
@@ -374,7 +387,7 @@ goog.require('ga_time_service');
         'Vector': function(layer, features) {
           var enc = $scope.encoders.
               layers['Layer'].call(this, layer);
-          var encStyles = {};
+          var encStyles = {'version': '2'};
           var encFeatures = [];
           var stylesDict = {};
 
@@ -383,6 +396,7 @@ goog.require('ga_time_service');
           var polygons = [];
           var lines = [];
           var points = [];
+          var texts = [];
 
           angular.forEach(features, function(feature) {
             var geotype = feature.getGeometry().getType();
@@ -391,11 +405,14 @@ goog.require('ga_time_service');
               polygons.push(feature);
             } else if (/^(LineString|MultiLineString)$/.test(geotype)) {
               lines.push(feature);
+            } else if ((/^(Point)$/.test(geotype)) &&
+              (feature.style_[0].getText())) {
+              texts.push(feature);
             } else {
               points.push(feature);
             }
           });
-          features = newFeatures.concat(polygons, lines, points);
+          features = newFeatures.concat(polygons, lines, points, texts);
 
           angular.forEach(features, function(feature) {
             var encoded = $scope.encoders.features.feature(layer, feature);
@@ -403,15 +420,14 @@ goog.require('ga_time_service');
             angular.extend(encStyles, encoded.encStyles);
           });
           angular.extend(enc, {
-            type: 'Vector',
-            styles: encStyles,
-            styleProperty: '_gx_style',
-            geoJson: {
-              type: 'FeatureCollection',
-              features: encFeatures
+            'type': 'geojson',
+            'style': encStyles, //'_gx_style' is the default style
+            'geoJson': {
+              'type': 'FeatureCollection',
+              'features': encFeatures
             },
-            name: layer.bodId,
-            opacity: (layer.opacity != null) ? layer.opacity : 1.0
+            'name': layer.bodId,
+            'opacity': (layer.opacity != null) ? layer.opacity : 1.0
           });
           return enc;
         },
@@ -427,17 +443,18 @@ goog.require('ga_time_service');
               type: 'WMS',
               baseURL: config.wmsUrl || layer.url,
               layers: layers,
+              layer: layer.bodId,
               styles: styles,
-              format: 'image/' + (config.format || 'png'),
+              imageFormat: 'image/' + (config.format || 'png'),
               customParams: {
                 'EXCEPTIONS': 'XML',
                 'TRANSPARENT': 'true',
                 'CRS': 'EPSG:21781',
+                'VERSION': '1.3.0',
                 'TIME': params.TIME
-              },
-              singleTile: config.singleTile || false
+              }
             });
-            return enc;
+          return enc;
 
         },
         'WMTS': function(layer, config) {
@@ -445,25 +462,474 @@ goog.require('ga_time_service');
                 call(this, layer);
             var source = layer.getSource();
             var tileGrid = source.getTileGrid();
+            var opacity = layer.getOpacity();
+            var imageFormat = config.format || 'jpeg';
             if (!config.background && layer.visible && config.timeEnabled) {
               layersYears.push(layer.time);
             }
             angular.extend(enc, {
               type: 'WMTS',
-              baseURL: location.protocol + '//wmts.geo.admin.ch',
+              layer: layer.bodId,
+              baseURL: 'http://wmts6.geo.admin.ch/1.0.0/' +
+                '{Layer}/{style}/{Time}/{TileMatrixSet}/' +
+                '{TileMatrix}/{TileRow}/{TileCol}.' + imageFormat,
+              opacity: opacity,
               layer: config.serverLayerName,
-              maxExtent: layer.getExtent(),
-              tileOrigin: tileGrid.getOrigin(),
-              tileSize: [tileGrid.getTileSize(), tileGrid.getTileSize()],
-              resolutions: tileGrid.getResolutions(),
-              zoomOffset: tileGrid.getMinZoom(),
-              version: '1.0.0',
               requestEncoding: 'REST',
-              formatSuffix: config.format || 'jpeg',
               style: 'default',
-              dimensions: ['TIME'],
-              params: {'TIME': source.getDimensions().Time},
-              matrixSet: '21781'
+              dimensions: ['Time'],
+              dimensionParams: {'TIME': source.getDimensions().Time},
+              matrixSet: '21781',
+              matrices: [
+                    {
+                        'identifier': '0',
+                        'matrixSize': [
+                            1,
+                            1
+                        ],
+                        'scaleDenominator': 1.42857505715E7,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '1',
+                        'matrixSize': [
+                            1,
+                            1
+                        ],
+                        'scaleDenominator': 1.33928911608E7,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '2',
+                        'matrixSize': [
+                            1,
+                            1
+                        ],
+                        'scaleDenominator': 1.25000317501E7,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '3',
+                        'matrixSize': [
+                            1,
+                            1
+                        ],
+                        'scaleDenominator': 1.16071723393E7,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '4',
+                        'matrixSize': [
+                            1,
+                            1
+                        ],
+                        'scaleDenominator': 1.07143129286E7,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '5',
+                        'matrixSize': [
+                            1,
+                            1
+                        ],
+                        'scaleDenominator': 9821453.51791,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '6',
+                        'matrixSize': [
+                            1,
+                            1
+                        ],
+                        'scaleDenominator': 8928594.10719,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '7',
+                        'matrixSize': [
+                            1,
+                            1
+                        ],
+                        'scaleDenominator': 8035734.69647,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '8',
+                        'matrixSize': [
+                            1,
+                            1
+                        ],
+                        'scaleDenominator': 7142875.28575,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '9',
+                        'matrixSize': [
+                            2,
+                            1
+                        ],
+                        'scaleDenominator': 6250015.87503,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '10',
+                        'matrixSize': [
+                            2,
+                            1
+                        ],
+                        'scaleDenominator': 5357156.46431,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '11',
+                        'matrixSize': [
+                            2,
+                            1
+                        ],
+                        'scaleDenominator': 4464297.05359,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '12',
+                        'matrixSize': [
+                            2,
+                            2
+                        ],
+                        'scaleDenominator': 3571437.64288,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '13',
+                        'matrixSize': [
+                            3,
+                            2
+                        ],
+                        'scaleDenominator': 2678578.23216,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '14',
+                        'matrixSize': [
+                            3,
+                            2
+                        ],
+                        'scaleDenominator': 2321434.46787,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '15',
+                        'matrixSize': [
+                            4,
+                            3
+                        ],
+                        'scaleDenominator': 1785718.82144,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '16',
+                        'matrixSize': [
+                            8,
+                            5
+                        ],
+                        'scaleDenominator': 892859.410719,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '17',
+                        'matrixSize': [
+                            19,
+                            13
+                        ],
+                        'scaleDenominator': 357143.764288,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '18',
+                        'matrixSize': [
+                            38,
+                            25
+                        ],
+                        'scaleDenominator': 178571.882144,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '19',
+                        'matrixSize': [
+                            94,
+                            63
+                        ],
+                        'scaleDenominator': 71428.7528575,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '20',
+                        'matrixSize': [
+                            188,
+                            125
+                        ],
+                        'scaleDenominator': 35714.3764288,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '21',
+                        'matrixSize': [
+                            375,
+                            250
+                        ],
+                        'scaleDenominator': 17857.1882144,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '22',
+                        'matrixSize': [
+                            750,
+                            500
+                        ],
+                        'scaleDenominator': 8928.59410719,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '23',
+                        'matrixSize': [
+                            938,
+                            625
+                        ],
+                        'scaleDenominator': 7142.87528575,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '24',
+                        'matrixSize': [
+                            1250,
+                            834
+                        ],
+                        'scaleDenominator': 5357.15646431,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '25',
+                        'matrixSize': [
+                            1875,
+                            1250
+                        ],
+                        'scaleDenominator': 3571.43764288,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '26',
+                        'matrixSize': [
+                            3750,
+                            2500
+                        ],
+                        'scaleDenominator': 1785.71882144,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    },
+                    {
+                        'identifier': '27',
+                        'matrixSize': [
+                            7500,
+                            5000
+                        ],
+                        'scaleDenominator': 892.85941072,
+                        'tileSize': [
+                            256,
+                            256
+                        ],
+                        'topLeftCorner': [
+                            420000,
+                            350000
+                        ]
+                    }
+                ]
           });
           var multiPagesPrint = false;
           if (config.timestamps) {
@@ -476,7 +942,6 @@ goog.require('ga_time_service');
               multiPagesPrint) {
             enc['timestamps'] = config.timestamps;
           }
-
           return enc;
         }
       },
@@ -519,7 +984,7 @@ goog.require('ga_time_service');
           var encFeature = format.writeFeatureObject(feature);
           if (!encFeature.properties) {
             encFeature.properties = {};
-         } else {
+          } else {
            // Fix circular structure to JSON
            // see: https://github.com/geoadmin/mf-geoadmin3/issues/1213
             delete encFeature.properties.Style;
@@ -529,28 +994,28 @@ goog.require('ga_time_service');
           encFeatures.push(encFeature);
 
           // Encode a style of a feature
-                   if (styles && styles.length > 0) {
+          if (styles && styles.length > 0) {
             angular.extend(encStyle, transformToPrintLiteral(feature,
                 styles[0]));
-            encStyles[encStyle.id] = encStyle;
-            var styleToEncode = styles[0];
-            // If a feature has a style with a geometryFunction defined, we
-            // must also display this geometry with the good style (used for
-            // azimuth).
-            for (var i = 0; i < styles.length; i++) {
-              var style = styles[i];
-              if (angular.isFunction(style.getGeometry())) {
-                var geom = style.getGeometry()(feature);
-                if (geom) {
-                  var encoded = $scope.encoders.features.feature(layer,
-                      new ol.Feature(geom), [style]);
-                  encFeatures = encFeatures.concat(encoded.encFeatures);
-                  angular.extend(encStyles, encoded.encStyles);
-                }
+          }
+          encStyles['[_gx_style = ' + encStyle.id + ']'] =
+            {'symbolizers': [encStyle]};
+
+          // If a feature has a style with a geometryFunction defined, we
+          // must also display this geometry with the good style (used for
+          // azimuth).
+          for (var i = 0; i < styles.length; i++) {
+            var style = styles[i];
+            if (angular.isFunction(style.getGeometry())) {
+              var geom = style.getGeometry()(feature);
+              if (geom) {
+                var encoded = $scope.encoders.features.feature(layer,
+                    new ol.Feature(geom), [style]);
+                encFeatures = encFeatures.concat(encoded.encFeatures);
+                angular.extend(encStyles, encoded.encStyles);
               }
             }
           }
-
           return {
             encFeatures: encFeatures,
             encStyles: encStyles
@@ -565,15 +1030,14 @@ goog.require('ga_time_service');
           }
           var enc = $scope.encoders.legends.base.call(this, config);
           enc.classes.push({
-            name: '',
-            icon: $scope.options.legendUrl +
-                layer.bodId + '_' + $translate.use() + format
+            name: config.label,
+            icons: [$scope.options.legendUrl +
+                layer.bodId + '_' + $translate.use() + format]
           });
           return enc;
         },
         'base': function(config) {
           return {
-            name: config.label,
             classes: []
           };
         }
@@ -605,6 +1069,7 @@ goog.require('ga_time_service');
       return nearest;
     };
 
+    // In capabilities.json (unlike info.json) there is no downloadUrl
     $scope.downloadUrl = function(url) {
       $scope.options.printsuccess = true;
       if (gaBrowserSniffer.msie == 9) {
@@ -634,7 +1099,7 @@ goog.require('ga_time_service');
       }
       // Tell the server to cancel the print process
       if (currentMultiPrintId) {
-        $http.get($scope.options.printPath + 'cancel?id=' +
+        $http.delete($scope.options.printPath + '/cancel/' +
           currentMultiPrintId);
         currentMultiPrintId = null;
       }
@@ -652,20 +1117,89 @@ goog.require('ga_time_service');
       var view = $scope.map.getView();
       var proj = view.getProjection();
       var lang = $translate.use();
+
+      // Translations
+      if (lang == 'en') {
+        var scale_string = 'Scale';
+        var printed_on = 'Printed on';
+        var copyright = 'www.geo.admin.ch is a portal provided by ' +
+          'the Federal Authorities of the Swiss Confederation to ' +
+          'gain insight on publicly accessible geographical ' +
+          'information, data and services. \nLimitation of ' +
+          'liability. Although every care has been taken by the Federal ' +
+          'Authorities to ensure the accuracy of the information published,' +
+          'no warranty can be given in respect of the accuracy,' +
+          'reliability, up-to-dateness or completeness of this information.' +
+          'Copyright, Swiss federal authorities, 2007.' +
+          'http://www.disclaimer.admin.ch/terms_and_conditions.html';
+      } else if (lang == 'fr') {
+        var scale_string = 'Echelle';
+        var printed_on = 'Imprimé le';
+        var copyright = 'www.geo.admin.ch est un portail d\'accès ' +
+          'aux informations géoläocalisées, données et services qui' +
+          'sont mis à disposition par l\'administration fédérale. ' +
+          '\nResponsabilité: Malgré la grande attention qu\'elles ' +
+          'portent à la justesse des informations diffusées sur ce ' +
+          'site, les autorités fédérales ne peuvent endosser aucune ' +
+          'responsabilité quant à la fidélité, à l\'exactitude, à ' +
+          'l\'actualité, à la fiabilité et à l\'intégralité de ces ' +
+          'informations. Droits d\'auteur: autorités de la ' +
+          'Confédération suisse, 2007. http://www.disclaimer.admin.ch/' +
+          'informations_juridiques.html';
+      } else if (lang == 'it') {
+        var scale_string = 'Scala';
+        var printed_on = 'Stampato il';
+        var copyright = 'www.geo.admin è una piattaforma pubblica ' +
+          'accessibile per la ricerca di geo-informazioni, i dati ' +
+          'e servizi. \nResponsabilità: Nonostante si presti grande ' +
+          'attenzione all’esattezza delle informazioni pubblicate su ' +
+          'questo sito, le autorità federali declinano ogni ' +
+          'responsabilità per la fedeltà, l’esattezza, l’attualità, ' +
+          'l’affidabilità e la completezza di tali informazioni. ' +
+          'Diritti d’autore: autorità della Confederazione Svizzera, ' +
+          'anno 2007. http://www.disclaimer.admin.ch/basi_legali.html';
+      } else if (lang == 'rm') {
+        var scale_string = 'Scala';
+        var printed_on = 'Stampà il(s)';
+        var copyright = 'www.geo.admin è in portal d\'access ad ' +
+          'infurmaziuns geolocalisadas, a datas ed a servetschs che ' +
+          'vegnan mess a disposiziun da l\'administraziun federala. ' +
+          '\nResponsabladad: Malgrà che las autoritads dattan bain adatg ' +
+          'che las infurmaziuns publitgadas sin questa pagina d\'internet ' +
+          'sajan correctas, na pon ellas surpigliar nagina responsabladad' +
+          'per la correctadad dal cuntegn, per l\'exactezza, per ' +
+          'l\'actualitad, per l\'autenticitad e per la cumplettezza ' +
+          'da talas infurmaziuns. Copyright: autoritads da la ' +
+          'confederaziun svizra, 2007. http://www.disclaimer.admin.ch';
+      } else {
+        // default language: German
+        var scale_string = 'Massstab';
+        var printed_on = 'Gedruckt am';
+        var copyright = 'www.geo.admin.ch ist ein Portal zur Einsicht von ' +
+          'geolokalisierten Informationen, Daten und Diensten, die von ' +
+          'öffentlichen Einrichtungen zur Verfügung gestellt werden. ' +
+          '\nHaftung: Obwohl die Bundesbehörden mit aller Sorgfalt auf ' +
+          'die Richtigkeit der veröffentlichten Informationen achten, ' +
+          'kann hinsichtlich der inhaltlichen Richtigkeit, Genauigkeit, ' +
+          'Aktualität, Zuverlässigkeit und Vollständigkeit dieser ' +
+          'Informationen keine Gewährleistung übernommen werden. ' +
+          'Copyright, Bundesbehörden der Schweizerischen Eidgenossenschaft,' +
+          '2007. http://www.disclaimer.admin.ch';
+      }
+
       var defaultPage = {};
       defaultPage['lang' + lang] = true;
       var qrcodeUrl = $scope.options.qrcodeUrl +
           encodeURIComponent(gaPermalink.getHref());
-      var print_zoom = getZoomFromScale($scope.scale.value);
+      var print_zoom = getZoomFromScale($scope.scale);
       qrcodeUrl = qrcodeUrl.replace(/zoom%3D(\d{1,2})/, 'zoom%3D' + print_zoom);
       var encLayers = [];
-      var encLegends;
+      var encLegendClasses;
       var attributions = [];
       var thirdPartyAttributions = [];
       var layers = this.map.getLayers().getArray();
       pdfLegendsToDownload = [];
       layersYears = [];
-
       // Re order layer by z-index
       layers.sort(function(a, b) {
         return a.getZIndex() - b.getZIndex();
@@ -698,8 +1232,9 @@ goog.require('ga_time_service');
             if (enc && enc.layer) {
               encLayers.push(enc.layer);
               if (enc.legend) {
-                encLegends = encLegends || [];
-                encLegends.push(enc.legend);
+                var legendClass = enc.legend.classes.shift();
+                encLegendClasses = encLegendClasses || [];
+                encLegendClasses.push(legendClass);
               }
             }
           }
@@ -752,43 +1287,59 @@ goog.require('ga_time_service');
 
         if (center) {
           var encOverlayLayer = {
-            'type': 'Vector',
-            'styles': {
-              '1': { // Style for marker position
-                'externalGraphic': $scope.options.markerUrl,
-                'graphicWidth': 20,
-                'graphicHeight': 30,
-                // the icon is not perfectly centered in the image
-                // these values must be the same in map.less
-                'graphicXOffset': -12,
-                'graphicYOffset': -30
-              }, '2': { // Style for measure tooltip
-                'externalGraphic': $scope.options.bubbleUrl,
-                'graphicWidth': 97,
-                'graphicHeight': 27,
-                'graphicXOffset': -48,
-                'graphicYOffset': -27,
-                'label': $(elt).text(),
-                'labelXOffset': 0,
-                'labelYOffset': 18,
-                'fontColor': '#ffffff',
-                'fontSize': 10,
-                'fontWeight': 'normal'
-              }
-            },
-            'styleProperty': '_gx_style',
             'geoJson': {
               'type': 'FeatureCollection',
               'features': [{
                 'type': 'Feature',
-                'properties': {
-                  '_gx_style': ($(elt).text() ? 2 : 1)
-                },
                 'geometry': {
                   'type': 'Point',
-                  'coordinates': [center[0], center[1], 0]
+                  'coordinates': [center[0], center[1] + 2 * offset]
+                },
+                'properties': {
+                  '_gx_style': ($(elt).text() ? 2 : 1)
                 }
               }]
+            },
+            'type': 'geojson',
+            'style': {
+              'version': '2',
+              // Style for measure tooltip
+              '[_gx_style = 2]': { // Style for measure tooltip
+                'symbolizers': [{
+                  'type': 'point',
+                  'externalGraphic': $scope.options.bubbleUrl,
+                  'graphicWidth': 21,
+                  'graphicHeight': 4
+                 },{
+                  'type': 'text',
+                  'label': $(elt).text(),
+                  'labelAlign': 'cm',
+                  'labelXOffset': 0,
+                  'labelYOffset': 1.8,
+                  'fontFamily': 'sans-serif',
+                  'fontColor': '#ffffff',
+                  'fontSize': '7px',
+                  'fontWeight': 'normal',
+                  'fontStyle': 'normal',
+                  'fontWeight': 'bold',
+                  'haloColor': '#123456',
+                  'haloOpacity': '0.5',
+                  'haloRadius': '0.5'
+                }]
+              },
+              //Style for marker position
+              '[_gx_style = 1]': {
+                'symbolizers': [{
+                  'type': 'point',
+                  'externalGraphic': $scope.options.markerUrl,
+                  'graphicWidth': 20,
+                  'graphicHeight': 30,
+                  // the icon is not perfectly centered in the image
+                  // these values must be the same in map.less
+                  'graphicXOffset': -12,
+                  'graphicYOffset': -30
+                }]
+              }
             },
             'name': 'drawing',
             'opacity': 1
@@ -797,6 +1348,8 @@ goog.require('ga_time_service');
         }
       });
 
+      //First layer is top layer of the map (Mapfish: version 3)
+      encLayers.reverse();
 
       // Get the short link
       var shortLink;
@@ -809,6 +1362,9 @@ goog.require('ga_time_service');
       }).success(function(response) {
         shortLink = response.shorturl.replace('/shorten', '');
       });
+
+      // The attributes should be defined and needed to exist in specifications
+      var scalebar = {fontSize: 8, type: 'line'};
 
       // Build the complete json then send it to the print server
       promise.then(function() {
@@ -835,12 +1391,27 @@ goog.require('ga_time_service');
           rotation: -((view.getRotation() * 180.0) / Math.PI),
           app: 'config',
           lang: lang,
-          //use a function to get correct dpi according to layout (A4/A3)
-          dpi: getDpi($scope.layout.name, $scope.dpi),
-          layers: encLayers,
-          legends: encLegends,
-          enableLegends: (encLegends && encLegends.length > 0),
-          qrcodeurl: qrcodeUrl,
+          attributes: {
+            scale: $scope.scale,
+            url: shortLink || '',
+            qrimage: qrcodeUrl,
+            legend: {
+              'name': '',
+              'classes': encLegendClasses
+            },
+            name: dataOwner,
+            scalebar: scalebar,
+            scale_string: scale_string,
+            printed_on: printed_on,
+            copyright: copyright,
+            map: {
+              //use a function to get correct dpi according to layout (A4/A3)
+              dpi: 96, //getDpi($scope.layout.name, $scope.dpi),
+              layers: encLayers,
+              //center: getPrintRectangleCenterCoord()
+              bbox: getPrintRectangleCoords()
+            }
+          },
           movie: movieprint,
           pages: [
             angular.extend({
@@ -856,7 +1427,8 @@ goog.require('ga_time_service');
             }, defaultPage)
           ]
         };
-        var startPollTime;
+
+        var startPollTime = 0;
         var pollErrors;
         var pollMulti = function(url) {
           pollMultiPromise = $timeout(function() {
@@ -865,41 +1437,31 @@ goog.require('ga_time_service');
             }
             canceller = $q.defer();
             var http = $http.get(url, {
-               timeout: canceller.promise
+              timeout: canceller.promise
             }).success(function(data) {
               if (!$scope.options.printing) {
                 return;
               }
-              if (!data.getURL) {
-                // Write progress using the following logic
-                // First 60% is pdf page creationg
-                // 60-70% is merging of pdf
-                // 70-100% is writing of resulting pdf
-                if (data.filesize) {
-                  var written = data.written || 0;
-                  $scope.options.progress =
-                      (70 + Math.floor(written * 30 / data.filesize)) +
-                      '%';
-                } else if (data.total) {
-                  if (angular.isDefined(data.merged)) {
+
+              if (!data.done) {
+                if (data.elapsedTime) {
+                  var startPollTime = + data.elapsedTime;
+                  if (movieprint) {
+                    // Print status for Multiprint
                     $scope.options.progress =
-                        (60 + Math.floor(data.done * 10 / data.total)) +
-                        '%';
-                  } else if (angular.isDefined(data.done)) {
-                    $scope.options.progress =
-                        Math.floor(data.done * 60 / data.total) + '%';
+                      Math.floor((data.printed / data.total) * 100) + '%';
                   }
                 }
-
-                var now = new Date();
                 //We abort if we waited too long
-                if (now - startPollTime < POLL_MAX_TIME) {
+                if (startPollTime < POLL_MAX_TIME) {
                   pollMulti(url);
                 } else {
                   $scope.options.printing = false;
                 }
               } else {
-                $scope.downloadUrl(data.getURL);
+                var downloadURL = $scope.options.printPath
+                    .replace('/print', '') + data.downloadURL;
+                $scope.downloadUrl(downloadURL);
               }
             }).error(function() {
               if ($scope.options.printing == false) {
@@ -916,27 +1478,20 @@ goog.require('ga_time_service');
           }, POLL_INTERVAL, false);
         };
 
-        var printUrl = $scope.capabilities.createURL;
-        //When movie is on, we use printmulti
-        if (movieprint) {
-          printUrl = printUrl.replace('/print/', '/printmulti/');
-        }
+        var printUrl = $scope.options.createURL;
+
+        // We always use printmulti
         canceller = $q.defer();
-        var http = $http.post(printUrl + '?url=' + encodeURIComponent(printUrl),
+        var http = $http.post(printUrl,
           spec, {
           timeout: canceller.promise
         }).success(function(data) {
-          if (movieprint) {
-            //start polling process
-            var pollUrl = $scope.options.printPath + 'progress?id=' +
-                data.idToCheck;
-            currentMultiPrintId = data.idToCheck;
-            startPollTime = new Date();
-            pollErrors = 0;
-            pollMulti(pollUrl);
-          } else {
-            $scope.downloadUrl(data.getURL);
-          }
+          //var pollUrl = data.statusURL;
+          var pollUrl = $scope.options.printPath +
+            '/print/status/' + data.ref + '.json';
+          currentMultiPrintId = data.ref;
+          pollErrors = 0;
+          pollMulti(pollUrl);
         }).error(function() {
           $scope.options.printing = false;
         });
@@ -993,11 +1548,10 @@ goog.require('ga_time_service');
       var resolution = $scope.map.getView().getResolution();
       var width = resolution * (size[0] - ($scope.options.widthMargin * 2));
       var height = resolution * (size[1] - ($scope.options.heightMargin * 2));
-      var layoutSize = $scope.layout.map;
-      var scaleWidth = width * UNITS_RATIO * POINTS_PER_INCH /
-          layoutSize.width;
-      var scaleHeight = height * UNITS_RATIO * POINTS_PER_INCH /
-          layoutSize.height;
+      var layoutWidth = $scope.layoutWidth;
+      var layoutHeight = $scope.layoutHeight;
+      var scaleWidth = width * UNITS_RATIO * POINTS_PER_INCH / layoutWidth;
+      var scaleHeight = height * UNITS_RATIO * POINTS_PER_INCH / layoutHeight;
       var testScale = scaleWidth;
       if (scaleHeight < testScale) {
         testScale = scaleHeight;
@@ -1007,7 +1561,7 @@ goog.require('ga_time_service');
       //biggest (1:500) to smallest (1:2500000)
       angular.forEach($scope.scales, function(scale) {
         if (nextBiggest == null ||
-            testScale > scale.value) {
+            testScale > scale) {
               nextBiggest = scale;
         }
       });
@@ -1015,10 +1569,11 @@ goog.require('ga_time_service');
     };
 
     var calculatePageBoundsPixels = function(scale) {
-      var s = parseFloat(scale.value);
+      var s = parseFloat(scale);
       var size = $scope.layout.map; // papersize in dot!
       var view = $scope.map.getView();
       var resolution = view.getResolution();
+      //instead of size.width layoutWidth, same as for size.height
       var w = size.width / POINTS_PER_INCH * MM_PER_INCHES / 1000.0 *
           s / resolution * ol.has.DEVICE_PIXEL_RATIO;
       var h = size.height / POINTS_PER_INCH * MM_PER_INCHES / 1000.0 *
@@ -1051,13 +1606,20 @@ goog.require('ga_time_service');
             $scope.capabilities = data;
             angular.forEach($scope.capabilities.layouts, function(lay) {
               lay.stripped = lay.name.substr(2);
+              lay.map = {width: lay.attributes[5].clientInfo.width,
+                height: lay.attributes[5].clientInfo.height};
             });
 
-            // default values:
+            // Default values
+            $scope.scales =
+              $scope.capabilities.layouts[0].attributes[5].clientInfo.scales;
+            // Default scale: 2500000
+            $scope.scale =
+              $scope.capabilities.layouts[0].attributes[5].clientInfo.scales[0];
             $scope.layout = data.layouts[0];
-            $scope.dpi = data.dpis;
-            $scope.scales = data.scales;
-            $scope.scale = data.scales[5];
+            $scope.layouts = data.layouts;
+            $scope.dpi =
+              data.layouts[0].attributes[5].clientInfo.dpiSuggestions;
             $scope.options.legend = false;
             $scope.options.graticule = false;
             activate();
