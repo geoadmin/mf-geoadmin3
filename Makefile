@@ -630,37 +630,37 @@ scripts/00-$(GIT_BRANCH).conf: scripts/00-branch.mako-dot-conf \
 
 .build-artefacts/last-version::
 	mkdir -p $(dir $@)
-	test $(VERSION) != $(LAST_VERSION) && echo $(VERSION) > .build-artefacts/last-version || :
+	test "$(VERSION)" != "$(LAST_VERSION)" && echo $(VERSION) > .build-artefacts/last-version || :
 
 .build-artefacts/last-git-branch::
 	mkdir -p $(dir $@)
-	test $(GIT_BRANCH) != $(GIT_LAST_BRANCH) && echo $(GIT_BRANCH) > .build-artefacts/last-git-branch || :
+	test "$(GIT_BRANCH)" != "$(GIT_LAST_BRANCH)" && echo $(GIT_BRANCH) > .build-artefacts/last-git-branch || :
 
 .build-artefacts/last-api-url::
 	mkdir -p $(dir $@)
-	test $(API_URL) != $(LAST_API_URL) && echo $(API_URL) > .build-artefacts/last-api-url || :
+	test "$(API_URL)" != "$(LAST_API_URL)" && echo $(API_URL) > .build-artefacts/last-api-url || :
 
 .build-artefacts/last-mapproxy-url::
 	mkdir -p $(dir $@)
-	test $(MAPPROXY_URL) != $(LAST_MAPPROXY_URL) && echo $(MAPPROXY_URL) > .build-artefacts/last-mapproxy-url || :
+	test "$(MAPPROXY_URL)" != "$(LAST_MAPPROXY_URL)" && echo $(MAPPROXY_URL) > .build-artefacts/last-mapproxy-url || :
 
 .build-artefacts/last-shop-url::
 	mkdir -p $(dir $@)
-	test $(SHOP_URL) != $(LAST_SHOP_URL) && echo $(SHOP_URL) > .build-artefacts/last-shop-url || :
+	test "$(SHOP_URL)" != "$(LAST_SHOP_URL)" && echo $(SHOP_URL) > .build-artefacts/last-shop-url || :
 
 .build-artefacts/last-apache-base-path::
 	mkdir -p $(dir $@)
-	test $(APACHE_BASE_PATH) != $(LAST_APACHE_BASE_PATH) && \
+	test "$(APACHE_BASE_PATH)" != "$(LAST_APACHE_BASE_PATH)" && \
 	    echo $(APACHE_BASE_PATH) > .build-artefacts/last-apache-base-path || :
 
 .build-artefacts/last-apache-base-directory::
 	mkdir -p $(dir $@)
-	test $(APACHE_BASE_DIRECTORY) != $(LAST_APACHE_BASE_DIRECTORY) && \
-	    echo $(APACHE_BASE_DIRECTORY) > .build-artefacts/last-apache-base-directory || :
+	test "$(APACHE_BASE_DIRECTORY)" != "$(LAST_APACHE_BASE_DIRECTORY)" && \
+	    echo "$(APACHE_BASE_DIRECTORY)" > .build-artefacts/last-apache-base-directory || :
 
 .build-artefacts/last-deploy-target::
 	mkdir -p $(dir $@)
-	test $(DEPLOY_TARGET) != $(LAST_DEPLOY_TARGET) && \
+	test "$(DEPLOY_TARGET)" != "$(LAST_DEPLOY_TARGET)" && \
 	    echo $(DEPLOY_TARGET) > .build-artefacts/last-deploy-target || :
 
 .build-artefacts/ol3-cesium:
