@@ -40,7 +40,7 @@ fi
 if [ -z $3 ] || [ $3 != "from_current_directory" ]
 then
   echo "Using snapshot deploy configuration"
-  DEPLOYCONFIG=$SNAPSHOTDIR/deploy/deploy.cfg
+  DEPLOYCONFIG=$SNAPSHOTDIR/geoadmin/code/geoadmin/deploy/deploy.cfg
 else
   echo "Using local deploy configuration"
   DEPLOYCONFIG=deploy/deploy.cfg
