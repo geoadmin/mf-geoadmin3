@@ -433,7 +433,8 @@ goog.require('ga_time_service');
                 'EXCEPTIONS': 'XML',
                 'TRANSPARENT': 'true',
                 'CRS': 'EPSG:21781',
-                'TIME': params.TIME
+                'TIME': params.TIME,
+                'MAP_RESOLUTION': getDpi($scope.layout.name, $scope.dpi)
               },
               singleTile: config.singleTile || false
             });
@@ -729,7 +730,8 @@ goog.require('ga_time_service');
           'format': 'image/png',
           'styles': [''],
           'customParams': {
-            'TRANSPARENT': true
+            'TRANSPARENT': true,
+            'MAP_RESOLUTION': getDpi($scope.layout.name, $scope.dpi)
           }
         };
         encLayers.push(graticule);
