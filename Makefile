@@ -119,7 +119,7 @@ user:
 all: lint debug release apache testdebug testrelease deploy/deploy-branch.cfg fixrights
 
 .PHONY: release
-release: devlibs \
+release: .build-artefacts/devlibs \
 	prd/lib/ \
 	prd/lib/build.js \
 	prd/style/app.css \
@@ -135,10 +135,10 @@ release: devlibs \
 	prd/robots.txt
 
 .PHONY: debug
-debug: devlibs src/deps.js src/style/app.css src/index.html src/mobile.html src/embed.html
+debug: .build-artefacts/devlibs src/deps.js src/style/app.css src/index.html src/mobile.html src/embed.html
 
 .PHONY: lint
-lint: devlibs .build-artefacts/lint.timestamp
+lint: .build-artefacts/devlibs .build-artefacts/lint.timestamp
 
 .PHONY: lintpy
 lintpy: ${FLAKE8_CMD}
@@ -154,7 +154,7 @@ testdebug: .build-artefacts/app-whitespace.js test/karma-conf-debug.js
 	cat .build-artefacts/coverage.txt; echo;
 
 .PHONY: testrelease
-testrelease: prd/lib/build.js test/karma-conf-release.js devlibs
+testrelease: prd/lib/build.js test/karma-conf-release.js .build-artefacts/devlibs
 	PHANTOMJS_BIN="node_modules/.bin/phantomjs" ./node_modules/.bin/karma start test/karma-conf-release.js --single-run
 
 .PHONY: teste2e
@@ -512,7 +512,9 @@ test/lib/angular-mocks.js test/lib/expect.js test/lib/sinon.js externs/angular.j
 	cp -f node_modules/google-closure-compiler/contrib/externs/angular-1.4.js externs/angular.js;
 	cp -f node_modules/google-closure-compiler/contrib/externs/jquery-1.9.js externs/jquery.js;
 
-devlibs: test/lib/angular-mocks.js test/lib/expect.js test/lib/sinon.js externs/angular.js externs/jquery.js
+.build-artefacts/devlibs: test/lib/angular-mocks.js test/lib/expect.js test/lib/sinon.js externs/angular.js externs/jquery.js
+	mkdir -p .build-artefacts
+	touch $@
 
 .PHONY: libs
 libs:
@@ -546,7 +548,7 @@ libs:
 	    --js_output_file $@
 
 $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule.js): \
-	    .build-artefacts/annotated/%.js: %.js devlibs
+	    .build-artefacts/annotated/%.js: %.js .build-artefacts/devlibs
 	mkdir -p $(dir $@)
 	./node_modules/.bin/ng-annotate -a $< > $@
 
