@@ -29,6 +29,7 @@ goog.require('ga_urlutils_service');
         var coords = linearRing.getCoordinates();
         coords.push(linearRing.getFirstCoordinate());
         linearRing.setCoordinates(coords);
+
       }
     };
     var closePolygon = function(polygon) {
@@ -49,7 +50,11 @@ goog.require('ga_urlutils_service');
       }
       multiPolygon.setCoordinates(coords);
     };
-    var closeGeometries = function(geometries) {
+    var closeGeometry = function(geom) {
+      var geometries = [geom];
+      if (geom instanceof ol.geom.GeometryCollection) {
+        geometries = geom.getGeometries();
+      }
       for (var i = 0, ii = geometries.length; i < ii; i++) {
         var geometry = geometries[i];
         if (geometry instanceof ol.geom.MultiPolygon) {
@@ -60,18 +65,17 @@ goog.require('ga_urlutils_service');
           closeLinearRing(geometry);
         }
       }
+      if (geom instanceof ol.geom.GeometryCollection) {
+        geom.setGeometries(geometries);
+      }
     };
 
     this.$get = function($http, $q, $rootScope, $timeout, $translate,
         gaDefinePropertiesForLayer, gaGlobalOptions, gaMapClick, gaMapUtils,
         gaNetworkStatus, gaStorage, gaStyleFactory, gaUrlUtils, gaMeasure) {
 
-      // Create the parser
-      var kmlFormat = new ol.format.KML({
-        extractStyles: true,
-        extractAttributes: true,
-        defaultStyle: [gaStyleFactory.getStyle('kml')]
-      });
+      // Store the parser.
+      var kmlFormat;
 
       // Read a kml string then return a list of features.
       var readFeatures = function(kml) {
@@ -93,20 +97,31 @@ goog.require('ga_urlutils_service');
           '<href>https'
         );
 
+        // Load the parser only when needed.
+        // WARNING: it's needed to initialize it here for test.
+        if (!kmlFormat) {
+          kmlFormat = new ol.format.KML({
+            extractStyles: true,
+            defaultStyle: [gaStyleFactory.getStyle('kml')]
+          });
+        }
+
+        // Manage networkLink tags
         var all = [];
         var features = kmlFormat.readFeatures(kml);
         var networkLinks = kmlFormat.readNetworkLinks(kml);
         if (networkLinks.length) {
           angular.forEach(networkLinks, function(networkLink) {
             if (gaUrlUtils.isValid(networkLink.href)) {
-              all.push($http.get(networkLink.href).success(function(data) {
-                return readFeatures(data).then(function(newFeatures) {
+              all.push($http.get(networkLink.href).then(function(response) {
+                return readFeatures(response.data).then(function(newFeatures) {
                   features = features.concat(newFeatures);
                 });
               }));
             }
           });
         }
+
         return $q.all(all).then(function() {
           return features;
         });
@@ -121,8 +136,7 @@ goog.require('ga_urlutils_service');
         }
         // Ensure polygons are closed.
         // Reason: print server failed when polygons are not closed.
-        closeGeometries((geometry instanceof ol.geom.GeometryCollection) ?
-            geometry.getGeometries() : [geometry]);
+        closeGeometry(geometry);
 
         // Replace empty id by undefined.
         // Reason: If 2 features have their id empty, an assertion error
@@ -130,9 +144,7 @@ goog.require('ga_urlutils_service');
         if (feature.getId() === '') {
           feature.setId(undefined);
         }
-        if (feature.getGeometry()) {
-          feature.getGeometry().transform('EPSG:4326', projection);
-        }
+        feature.getGeometry().transform('EPSG:4326', projection);
         var geom = feature.getGeometry();
         var styles = feature.getStyleFunction().call(feature);
         var style = styles[0];
@@ -155,6 +167,7 @@ goog.require('ga_urlutils_service');
           // If the feature has name we display it on the map as Google does
           if (feature.get('name') && style.getText() &&
               style.getText().getScale() != 0) {
+
             if (image && image.getScale() == 0) {
               // transparentCircle is used to allow selection
               image = gaStyleFactory.getStyle('transparentCircle');
@@ -178,6 +191,8 @@ goog.require('ga_urlutils_service');
           })];
           feature.setStyle(styles);
         }
+
+        // Get the type of the feature (creates by drawing tools)
         if (feature.getId()) {
           var split = feature.getId().split('_');
           if (split.length == 2) {
@@ -273,9 +288,9 @@ goog.require('ga_urlutils_service');
         };
 
         // Add an ol layer to the map
-        var addKmlLayer = function(olMap, data, options, index) {
+        var addKmlLayer = function(olMap, kmlString, options, index) {
           options.projection = olMap.getView().getProjection();
-          createKmlLayer(data, options).then(function(olLayer) {
+          return createKmlLayer(kmlString, options).then(function(olLayer) {
             if (olLayer) {
               if (index) {
                 olMap.getLayers().insertAt(index, olLayer);
@@ -304,11 +319,12 @@ goog.require('ga_urlutils_service');
                 }
               }
             }
+            return olLayer;
           });
         };
 
-        this.addKmlToMap = function(map, data, layerOptions, index) {
-          addKmlLayer(map, data, layerOptions, index);
+        this.addKmlToMap = function(map, kmlString, layerOptions, index) {
+          return addKmlLayer(map, kmlString, layerOptions || {}, index);
         };
 
         this.addKmlToMapForUrl = function(map, url, layerOptions, index) {
