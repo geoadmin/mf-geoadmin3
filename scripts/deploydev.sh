@@ -24,7 +24,7 @@ fi
 cd $BASEDIR/geoadmin
 
 # remove all local changes and get latest GITBRANCH from remote
-git fetch --all && git reset --hard && git checkout $GITBRANCH && git reset --hard origin/$GITBRANCH
+git fetch --all && git reset --hard && git checkout $GITBRANCH && git reset --hard origin/$GITBRANCH && git clean -fxd .
 
 # build the project
 source rc_dev 
