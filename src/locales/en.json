@@ -70,6 +70,7 @@
 "draw_dl_kml": "Download as KML",
 "draw_file_saved": "Map saved.",
 "draw_file_saving": "Saving ...",
+"draw_layer_label": "Drawing",
 "draw_line": "Line",
 "draw_line_description": "Create line",
 "draw_line_instructions": "Create line",

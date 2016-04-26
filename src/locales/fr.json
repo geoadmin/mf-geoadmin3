@@ -70,6 +70,7 @@
 "draw_dl_kml": "Télécharger au format KML",
 "draw_file_saved": "Carte sauvegardée.",
 "draw_file_saving": "Sauvegarde....",
+"draw_layer_label": "Dessin",
 "draw_line": "Ligne",
 "draw_line_description": "Créer ligne",
 "draw_line_instructions": "Créer ligne",
