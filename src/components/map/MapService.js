@@ -89,10 +89,6 @@ goog.require('ga_urlutils_service');
               }
             }
           },
-          userVisible: {
-            writable: true,
-            value: true
-          },
           hiddenByOther: {
             get: function() {
               return this.get('hiddenByOther');
@@ -217,6 +213,14 @@ goog.require('ga_urlutils_service');
               this.set('getCesiumImageryProvider', val);
             }
           },
+          altitudeMode: {
+            get: function() {
+              return this.get('altitudeMode');
+            },
+            set: function(val) {
+              this.set('altitudeMode', val);
+            }
+          },
           background: {
             writable: true,
             value: false
@@ -240,6 +244,10 @@ goog.require('ga_urlutils_service');
           updateDelay: {
             writable: true,
             value: null
+          },
+          userVisible: {
+            writable: true,
+            value: olLayer.getVisible()
           }
         });
       };
@@ -1270,7 +1278,6 @@ goog.require('ga_urlutils_service');
             updateWhileInteracting: true,
             zIndex: this.Z_FEATURE_OVERLAY
           });
-          layer.set('altitudeMode', 'clampToGround');
           gaDefinePropertiesForLayer(layer);
           layer.displayInLayerManager = false;
           return layer;
