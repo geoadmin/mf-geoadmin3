@@ -30,13 +30,15 @@ goog.require('ga_topic_service');
                'ng-mouseenter="options.onMouseEnter($event,' +
                    'options.htmls.length)" ' +
                'ng-mouseleave="options.onMouseLeave($event)">' +
-            '<div ng-bind-html="html.snippet"></div>' +
-            '<div ga-shop ' +
+            '<div ng-bind-html="html.snippet"></div>';
+            /*
+            + '<div ga-shop ' +
                  'ga-shop-map="::html.map" ' +
                  'ga-shop-feature="::html.feature"></div>' +
             '<div class="ga-tooltip-separator" ' +
                  'ng-show="!$last"></div>' +
           '</div>';
+           */
         // Test if the layer is a vector layer
         var isVectorLayer = function(olLayer) {
           return (olLayer instanceof ol.layer.Vector ||
