@@ -261,6 +261,7 @@ goog.require('ga_topic_service');
       touch: gaBrowserSniffer.touchDevice,
       webkit: gaBrowserSniffer.webkit,
       ios: gaBrowserSniffer.ios,
+      animation: gaBrowserSniffer.animation,
       offline: gaNetworkStatus.offline,
       embed: gaBrowserSniffer.embed,
       pulldownShown: !(gaBrowserSniffer.mobile || win.width() <= 1024),

@@ -121,7 +121,8 @@ goog.require('ga_permalink');
         events: eventsKeys,
         embed: embed,
         isInFrame: ($window.location != $window.parent.location),
-        webgl: !(typeof WebGLRenderingContext === 'undefined')
+        webgl: !(typeof WebGLRenderingContext === 'undefined'),
+        animation: (!msie || msie > 9)
       };
     };
   });

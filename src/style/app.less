@@ -1436,13 +1436,15 @@ ul.panel-body-wide {
 }
 
 #loader {
-  display: none;
   position: absolute;
   z-index: 1050; /* on top of the map but not on popup */
   top: 0;
   left: 0;
-  height: 4px;
+  height: 2px;
   background: #F00;
+  opacity: 0;
+  transition: opacity 1s ease, width 1s ease;
+  width: 100%;
 
   &:before {
     content: normal;
@@ -1450,14 +1452,19 @@ ul.panel-body-wide {
 }
 
 .online.ga-wait-cursor {
-  cursor: wait;
+  #loader {
+    -webkit-animation: loader 1s infinite;
+    animation: loader 1s infinite;
+    opacity: 1;
+  }
+}
 
-  @media (max-width: @screen-tablet) {
-    #loader {
-      display: block;
-      -webkit-animation: loader 1s infinite;
-      animation: loader 1s infinite;
-    }
+// Only IE9
+.no-animation.online.ga-wait-cursor {
+  cursor: wait;
+ 
+  #loader {
+    display: none;
   }
 }
 
