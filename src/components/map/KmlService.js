@@ -359,8 +359,8 @@ goog.require('ga_urlutils_service');
 
         // Test the validity of the file size
         this.isValidFileSize = function(fileSize) {
-          if (fileSize > 20000000) { // 20mo
-            alert($translate.instant('file_too_large'));
+          if (fileSize > 20000000) { // 20 Mo
+            alert($translate.instant('file_too_large') + ' (max. 20 MB)');
             return false;
           }
           return true;
