@@ -98,6 +98,59 @@ describe('ga_map_service', function() {
     return layer;
   };
 
+  describe('gaDefinePropertiesForLayer', function() {
+    var gaDefine;
+
+    var addLayerToMap = function() {
+      var layer = new ol.layer.Tile();
+      map.addLayer(layer);
+      return layer;
+    };
+
+    beforeEach(function() {
+      map = new ol.Map({});
+
+      inject(function($injector) {
+        gaDefine = $injector.get('gaDefinePropertiesForLayer');
+      });
+
+      it('verifies default value and writablity of propertiesi added', function() {
+        var layer = addLayerToMap();
+        var userVisible = layer.getVisible();
+        gaDefine(layer);
+        expect(layer.get('altitudeMode')).to.be('clampToGround');
+        expect(layer.background).to.be(false);
+        layer.background = true;
+        expect(layer.background).to.be(true);
+        expect(layer.displayInLayerManager).to.be(true);
+        layer.displayInLayerManager = false;
+        expect(layer.displayInLayerManager).to.be(false);
+        expect(layer.useThirdPartyData).to.be(false);
+        layer.useThirdPartyData = true;
+        expect(layer.useThirdPartyData).to.be(true);
+        expect(layer.preview).to.be(false);
+        layer.preview = true;
+        expect(layer.preview).to.be(true);
+        expect(layer.geojsonUrl).to.be(null);
+        layer.geojsonUrl = 'test';
+        expect(layer.geojsonUrl).to.be('test');
+        expect(layer.updateDelay).to.be(null);
+        layer.updateDelay = 60;
+        expect(layer.updateDelay).to.be(60);
+        expect(layer.userVisible).to.be(userVisible);
+        layer.userVisible = !userVisible;
+        expect(layer.userVisible).to.be(!userVisible);
+      });
+
+      it('set userVisible initially to false', function() {
+        var layer = addLayerToMap();
+        layer.setVisible(false);
+        gaDefine(layer);
+        expect(layer.userVisible).to.be(false);
+      });
+    });
+  });
+
   describe('gaLayers', function() {
     var layers, $httpBackend, $rootScope;
 

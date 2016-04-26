@@ -9,6 +9,7 @@ describe('ga_browsersniffer_service', function() {
   var expectNotApple = function() {
     expect(snif.mac).to.not.be.ok();
     expect(snif.ios).to.not.be.ok();
+    expect(snif.animation).to.be.ok();
   };
 
   var expectMac = function() {
@@ -22,6 +23,7 @@ describe('ga_browsersniffer_service', function() {
     expect(snif.ios).to.equal(version);
     expect(snif.msie).to.not.be.ok();
   };
+
    
   // Expect JS engine
   var expectWebkit = function() {
@@ -42,6 +44,12 @@ describe('ga_browsersniffer_service', function() {
     expect(snif.safari).to.not.be.ok();
     expect(snif.iosChrome).to.not.be.ok();
     expect(snif.chrome).to.not.be.ok();
+
+    if (version == 9) {
+      expect(snif.animation).to.not.be.ok();
+    } else {
+      expect(snif.animation).to.be.ok();
+    }
   };
   
   var expectOperaOrFF = function(version) {
@@ -49,6 +57,7 @@ describe('ga_browsersniffer_service', function() {
     expect(snif.safari).to.not.be.ok();
     expect(snif.iosChrome).to.not.be.ok();
     expect(snif.chrome).to.not.be.ok();
+    expect(snif.animation).to.be.ok();
   };
 
   var expectSafari = function() {
@@ -56,6 +65,7 @@ describe('ga_browsersniffer_service', function() {
     expect(snif.msie).to.not.be.ok();
     expect(snif.iosChrome).to.not.be.ok();
     expect(snif.chrome).to.not.be.ok();
+    expect(snif.animation).to.be.ok();
   };
 
   var expectIOSChrome = function(version) {
@@ -66,15 +76,17 @@ describe('ga_browsersniffer_service', function() {
     expect(snif.safari).to.not.be.ok();
     expect(snif.iosChrome).to.be.ok();
     expect(snif.chrome).to.equal(version);
+    expect(snif.animation).to.be.ok();
   };
 
-   var expectChrome = function(version) {
+  var expectChrome = function(version) {
     expect(snif.ios).to.not.be.ok();
     expect(snif.webkit).to.be.ok();
     expect(snif.msie).to.not.be.ok();
     expect(snif.safari).to.not.be.ok();
     expect(snif.iosChrome).to.not.be.ok();
     expect(snif.chrome).to.equal(version);
+    expect(snif.animation).to.be.ok();
   };
 
  

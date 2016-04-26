@@ -392,5 +392,6 @@
   "shop_go_to": "",
   "shop_cancel": "",
   "shop_not_available": "",
-  "query_alert_more_than_200_results": ""
+  "query_alert_more_than_200_results": "",
+  "draw_layer_label": ""
 }

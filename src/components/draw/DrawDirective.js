@@ -45,7 +45,7 @@ goog.require('ga_permalink');
           dfltLayer.preview = true;
         }
         gaMeasure.registerOverlaysEvents(map, dfltLayer);
-        dfltLayer.label = 'Drawing';
+        dfltLayer.label = $translate.instant('draw_layer_label');
         dfltLayer.type = 'KML';
         return dfltLayer;
       };
@@ -814,7 +814,7 @@ goog.require('ga_permalink');
 
           $rootScope.$on('$translateChangeEnd', function() {
             if (layer) {
-              layer.label = $translate.instant('draw');
+              layer.label = $translate.instant('draw_layer_label');
             }
           });
 
