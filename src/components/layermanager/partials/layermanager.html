@@ -19,7 +19,6 @@
         </button>
         <select ng-if="mobile"
                 ng-model="layer.time"
-                ng-change="setLayerTime(layer)"
                 ng-options="(i | gaTimeLabel:layer) for i in layer.timestamps"></select>
       </div>
       <button class="ga-icon ga-btn fa fa-user"
