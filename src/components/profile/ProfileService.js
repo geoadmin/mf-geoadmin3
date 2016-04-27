@@ -45,7 +45,7 @@ goog.require('ga_urlutils_service');
     var createAxis = function(domain) {
       return {
         X: d3.svg.axis().scale(domain.X).orient('bottom'),
-        Y: d3.svg.axis().scale(domain.Y).orient('left')
+        Y: d3.svg.axis().scale(domain.Y).ticks(5).orient('left')
       };
     };
 
