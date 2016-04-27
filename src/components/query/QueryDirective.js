@@ -3,17 +3,20 @@ goog.provide('ga_query_directive');
 goog.require('ga_map_service');
 goog.require('ga_query_service');
 goog.require('ga_storage_service');
+goog.require('ga_time_service');
+
 (function() {
 
   var module = angular.module('ga_query_directive', [
     'ga_map_service',
     'ga_query_service',
-    'ga_storage_service'
+    'ga_storage_service',
+    'ga_time_service'
   ]);
 
   module.controller('GaQueryDirectiveController', function($filter, $rootScope,
       $scope, $timeout, $translate, gaLayers, gaLayerFilters, gaQuery,
-      gaMapUtils, gaStorage) {
+      gaMapUtils, gaStorage, gaTime) {
     var geojson = new ol.format.GeoJSON();
     var stored;
     $scope.queryType = 1; // Filter attributes
@@ -22,10 +25,11 @@ goog.require('ga_storage_service');
     $scope.queriesPredef = [];
     $scope.filters = [];
     $scope.featuresByLayer = {};
-    // return the year of the timestamp
-    var getYear = function(time) {
-      return (time && time.substr(0, 4) != '9999') ?
-          time.substr(0, 4) : undefined;
+
+    var getTimeInstantParam = function(layer) {
+      if (layer.timeEnabled) {
+        return gaTime.get() || gaTime.getYearFromTimestamp(layer.time);
+      }
     };
 
     var getEmptyFilter = function() {
@@ -49,12 +53,16 @@ goog.require('ga_storage_service');
           return;
         }
         if (!paramsByLayer[filter.layer.bodId]) {
+          var params = {};
+          var timeInstant = getTimeInstantParam(filter.layer);
+          if (timeInstant) {
+            params.timeInstant = timeInstant;
+          }
           paramsByLayer[filter.layer.bodId] = {
             bodId: filter.layer.bodId,
-            params: {
-              timeInstant: getYear(filter.layer.time)
-            }
+            params: params
           };
+
           list.push(paramsByLayer[filter.layer.bodId]);
         }
         var params = paramsByLayer[filter.layer.bodId].params;
@@ -268,12 +276,15 @@ goog.require('ga_storage_service');
           ];
         }
         angular.forEach(layersRequested, function(layer) {
+          var params = {};
+          var timeInstant = getTimeInstantParam(layer);
+          if (timeInstant) {
+            params.timeInstant = timeInstant;
+          }
           gaQuery.getLayerIdentifyFeatures(
               $scope,
               layer.bodId,
-              angular.extend({
-                timeInstant: getYear(layer.time)
-              }, common)
+              angular.extend(params, common)
           ).then(function(layerFeatures) {
             onSearchSuccess(layerFeatures, layer.bodId, offset);
           }, function(reason) {
