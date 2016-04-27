@@ -79,16 +79,6 @@ goog.require('ga_topic_service');
           return layersToQuery;
         };
 
-        // Return a year as number from a timestamp string
-        var yearFromString = function(timestamp) {
-          if (timestamp && timestamp.length) {
-            timestamp = parseInt(timestamp.substr(0, 4));
-            if (timestamp <= new Date().getFullYear()) {
-              return timestamp;
-            }
-          }
-        };
-
         // Test if a feature is queryable.
         var isFeatureQueryable = function(feature) {
           return feature && feature.get('name') || feature.get('description');
@@ -385,7 +375,7 @@ goog.require('ga_topic_service');
                   // Only timeEnabled layers use the timeInstant parameter
                   if (layerToQuery.timeEnabled) {
                     params.timeInstant = gaTime.get() ||
-                        yearFromString(layerToQuery.time);
+                        gaTime.getYearFromTimestamp(layerToQuery.time);
                   }
 
                   all.push($http.get(identifyUrl, {

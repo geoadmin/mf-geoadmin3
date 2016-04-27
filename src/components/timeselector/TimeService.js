@@ -122,6 +122,18 @@ goog.require('ga_permalink_service');
           }
         };
        };
+
+       // Returns the year (as integer) from a complete timestmap
+       // (ex: 1999:12:31).
+       // Returns undefined when timestamp is 'current' or '99991231
+       this.getYearFromTimestamp = function(timestamp) {
+         if (timestamp && timestamp.length) {
+          timestamp = parseInt(timestamp.substr(0, 4));
+          if (timestamp <= new Date().getFullYear()) {
+            return timestamp;
+          }
+        }
+       };
        return new Time();
     };
   });
