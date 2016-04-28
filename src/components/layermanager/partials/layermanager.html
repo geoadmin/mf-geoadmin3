@@ -19,7 +19,9 @@
         </button>
         <select ng-if="mobile"
                 ng-model="layer.time"
-                ng-options="(i | gaTimeLabel:layer) for i in layer.timestamps"></select>
+                ng-options="(i | gaTimeLabel:layer) for i in layer.timestamps">
+          <option ng-if="layer.type == 'wms'" value="" translate>time_all</option>
+        </select>
       </div>
       <button class="ga-icon ga-btn fa fa-user"
               ng-click="showWarning(layer)"></button>
