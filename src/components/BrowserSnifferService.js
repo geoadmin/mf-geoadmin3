@@ -106,7 +106,11 @@ goog.require('ga_permalink');
       } else if (useTouchEvents) {
         eventsKeys = events.touch;
       }
-
+      var isBlobSupported = false;
+      try {
+        isBlobSupported = !!new Blob;
+      } catch (e) {
+      }
       return {
         msie: msie, // false or ie version number
         webkit: webkit,
@@ -122,7 +126,8 @@ goog.require('ga_permalink');
         embed: embed,
         isInFrame: ($window.location != $window.parent.location),
         webgl: !(typeof WebGLRenderingContext === 'undefined'),
-        animation: (!msie || msie > 9)
+        animation: (!msie || msie > 9),
+        blob: isBlobSupported
       };
     };
   });
