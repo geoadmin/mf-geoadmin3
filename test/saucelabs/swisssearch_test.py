@@ -207,6 +207,7 @@ def runSwissSearchTest(driver, target, is_top_browser):
     driver.get(target_url)
     current_url = driver.current_url
     if bCheckIfUrlHasChanged(driver):
+        driver.find_element_by_css_selector("div.ga-search-item.ng-binding").click()
         for i in range(10):
             try:
                 if QUERYSTRING_OF_PL_CHATEAU_AVENCHES in driver.current_url:
