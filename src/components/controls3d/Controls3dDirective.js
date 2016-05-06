@@ -53,7 +53,6 @@ goog.require('ga_map_service');
           if (isElementEditable(event.target)) {
             return;
           }
-          // FIXME: check if pageman is active
           var moveAmount = 200;
           var zoomAmount = 400;
           var lowPitch = camera.pitch < Cesium.Math.toRadians(-30);
@@ -64,7 +63,10 @@ goog.require('ga_map_service');
             // - key
             camera.moveBackward(zoomAmount);
           }
-
+          // If pegman active we do nothing
+          if (scope.fps.active) {
+            return;
+          }
           if (event.keyCode == 37) {
             // left key
             if (lowPitch) {

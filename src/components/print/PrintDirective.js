@@ -150,16 +150,8 @@ goog.require('ga_time_service');
             if (src instanceof ol.source.ImageVector) {
               src = src.getSource();
             }
-            var features = [];
-            var extent = getPrintRectangleCoords();
-            src.forEachFeatureInExtent(extent, function(feat) {
-              features.push(feat);
-            });
-
-            if (features && features.length > 0) {
-              encLayer = $scope.encoders.layers['Vector'].call(this, layer,
-                  features);
-            }
+            encLayer = $scope.encoders.layers['Vector'].call(this, layer,
+                src.getFeatures());
           }
         }
       }
@@ -500,37 +492,42 @@ goog.require('ga_time_service');
             }
           }
 
-          // Transform an ol.geom.Circle to a ol.geom.Polygon
           var geometry = feature.getGeometry();
-          if (geometry instanceof ol.geom.Circle) {
-            var polygon = gaPrintStyleService.olCircleToPolygon(geometry);
-            feature = new ol.Feature(polygon);
-          }
 
-          // Handle ol.style.RegularShape by converting points to poylgons
-          var image = styles[0].getImage();
-          if (image instanceof ol.style.RegularShape) {
-            var scale = parseFloat($scope.scale.value);
-            var resolution = scale / UNITS_RATIO / POINTS_PER_INCH;
-            feature = gaPrintStyleService.olPointToPolygon(
-                styles[0], feature, resolution);
-          }
+          // We encode the feature only if the geometry intersects the extent
+          if (geometry.intersectsExtent(getPrintRectangleCoords())) {
 
-          // Encode a feature
-          var encFeature = format.writeFeatureObject(feature);
-          if (!encFeature.properties) {
-            encFeature.properties = {};
-         } else {
-           // Fix circular structure to JSON
-           // see: https://github.com/geoadmin/mf-geoadmin3/issues/1213
-            delete encFeature.properties.Style;
-            delete encFeature.properties.overlays;
+            // Transform an ol.geom.Circle to a ol.geom.Polygon
+            if (geometry instanceof ol.geom.Circle) {
+              var polygon = gaPrintStyleService.olCircleToPolygon(geometry);
+              feature = new ol.Feature(polygon);
+            }
+
+            // Handle ol.style.RegularShape by converting points to poylgons
+            var image = styles[0].getImage();
+            if (image instanceof ol.style.RegularShape) {
+              var scale = parseFloat($scope.scale.value);
+              var resolution = scale / UNITS_RATIO / POINTS_PER_INCH;
+              feature = gaPrintStyleService.olPointToPolygon(
+                  styles[0], feature, resolution);
+            }
+
+            // Encode a feature
+            var encFeature = format.writeFeatureObject(feature);
+            if (!encFeature.properties) {
+              encFeature.properties = {};
+            } else {
+             // Fix circular structure to JSON
+             // see: https://github.com/geoadmin/mf-geoadmin3/issues/1213
+              delete encFeature.properties.Style;
+              delete encFeature.properties.overlays;
+            }
+            encFeature.properties._gx_style = encStyle.id;
+            encFeatures.push(encFeature);
           }
-          encFeature.properties._gx_style = encStyle.id;
-          encFeatures.push(encFeature);
 
           // Encode a style of a feature
-                   if (styles && styles.length > 0) {
+          if (styles && styles.length > 0) {
             angular.extend(encStyle, transformToPrintLiteral(feature,
                 styles[0]));
             encStyles[encStyle.id] = encStyle;
@@ -544,7 +541,7 @@ goog.require('ga_time_service');
                 var geom = style.getGeometry()(feature);
                 if (geom) {
                   var encoded = $scope.encoders.features.feature(layer,
-                      new ol.Feature(geom), [style]);
+                       new ol.Feature(geom), [style]);
                   encFeatures = encFeatures.concat(encoded.encFeatures);
                   angular.extend(encStyles, encoded.encStyles);
                 }

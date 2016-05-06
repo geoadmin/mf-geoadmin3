@@ -144,12 +144,14 @@ FPS.prototype.setFlyMode = function(flyMode) {
   if (this.flyMode_) {
     this.camera_.setView({
       orientation: {
+        heading: this.scene_.camera.heading,
         pitch: 0.1
       }
     });
   } else {
     this.camera_.setView({
       orientation: {
+        heading: this.scene_.camera.heading,
         pitch: 0.0,
         roll: 0.0
       }
