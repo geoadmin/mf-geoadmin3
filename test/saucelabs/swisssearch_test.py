@@ -44,7 +44,7 @@ def onLocationFail(currentUrl, searchText, resultLocation):
     sys.exit(1)
 
 
-def selectLocationItem(driver, inputEl, searchText, resultTitle, resultLocation):
+def checkVisibleDropDown(driver, inputEl, searchText):
     try:
         # We expect to have the dropdown open
         WebDriverWait(driver, 10).until(
@@ -53,6 +53,18 @@ def selectLocationItem(driver, inputEl, searchText, resultTitle, resultLocation)
         print 'Could not toggle dropdown visibility using searchText: %s' % searchText
         print 'Input value is: %s' % inputEl.get_attribute('value')
         raise Exception(e)
+
+
+def checkHiddenDropDown(driver, inputEl, searchText):
+    try:
+        WebDriverWait(driver, 10).until(
+            EC.invisibility_of_element_located((By.CLASS_NAME, dropDownClass)))
+    except Exception as e:
+        print 'Could not hide dropdown visibility using the search button'
+        raise Exception(e)
+
+
+def selectLocationItem(driver, inputEl, searchText, resultTitle, resultLocation):
     searchResultEls = driver.find_elements_by_class_name(itemClass)
     for resultEl in searchResultEls:
         if resultTitle == resultEl.get_attribute('title'):
@@ -63,7 +75,19 @@ def selectLocationItem(driver, inputEl, searchText, resultTitle, resultLocation)
         onLocationFail(driver.current_url, searchText, resultLocation)
 
 
-def testSearchInput(driver, inputEl, searchTest, timeout=DEFAULT_WAIT):
+def selectLayerInputItem(driver, inputEl, searchText, resultTitle, layerId):
+    searchResultEls = driver.find_elements_by_class_name(itemClass)
+    for resultEl in searchResultEls:
+        if resultTitle == resultEl.get_attribute('title'):
+            resultEl.click()
+            break
+    # Make sure map is zoomed to the desired location
+    if waitUrlChange(driver, layerId):
+        print '%s layer cannot be found in the permalink' % layerId
+        sys.exit(1)
+
+
+def testSearchLocationInput(driver, inputEl, searchTest, timeout=DEFAULT_WAIT):
     searchText = searchTest['searchText']
     resultTitle = searchTest['resultTitle']
     resultLocation = searchTest['resultLocation']
@@ -71,23 +95,44 @@ def testSearchInput(driver, inputEl, searchTest, timeout=DEFAULT_WAIT):
     # Because of the search design we have to trigger a change event
     # to trigger a search request
     driver.execute_script("$('ga-search-input').change()")
+    checkVisibleDropDown(driver, inputEl, searchText)
     selectLocationItem(driver, inputEl, searchText, resultTitle, resultLocation)
 
     # Use clear button
     driver.find_element_by_css_selector(
         '.%s .ga-btn' % inputContainerClass).click()
-    try:
-        WebDriverWait(driver, 10).until(
-            EC.invisibility_of_element_located((By.CLASS_NAME, dropDownClass)))
-    except Exception as e:
-        print 'Could not hide dropdown visibility using the search button'
-        raise Exception(e)
     # Make sure input field is empty
     if inputEl.get_attribute('value') != '':
         print 'Clear button in search input did not work as expected'
         sys.exit(1)
+    checkHiddenDropDown(driver, inputEl, searchText)
 
-    print 'Search test for %s OK!' % searchText
+    print 'Location Search test for %s OK!' % searchText
+
+
+def testSearchLayerInput(driver, inputEl, searchTest, timeout=DEFAULT_WAIT):
+    searchText = searchTest['searchText']
+    resultTitle = searchTest['resultTitle']
+    layerId = searchTest['layerId']
+    inputEl.send_keys(searchText)
+    # Because of the search design we have to trigger a change event
+    # to trigger a search request
+    driver.execute_script("$('ga-search-input').change()")
+    checkVisibleDropDown(driver, inputEl, searchText)
+    selectLayerInputItem(driver, inputEl, searchText, resultTitle, layerId)
+
+    # Use clear button
+    driver.find_element_by_css_selector(
+        '.%s .ga-btn' % inputContainerClass).click()
+    # Make sure input field is empty
+    if inputEl.get_attribute('value') != '':
+        print 'Clear button in search input did not work as expected'
+        sys.exit(1)
+    checkHiddenDropDown(driver, inputEl, searchText)
+
+    # TODO: Check that the layer has been added to the layer selection
+
+    print 'Layer Search test for %s OK!' % searchText
 
 
 def testSwissSearchParameter(driver, url, inputEl, searchTest, timeout=DEFAULT_WAIT):
@@ -149,6 +194,21 @@ searchLocationTests = [
     }
 ]
 
+
+searchLayerTests = [
+    {
+        'searchText': u'wasser',
+        'resultTitle': u'Grundwasser: VOC',
+        'layerId': u'ch.bafu.naqua-grundwasser_voc'
+    },
+    {
+        'searchText': u'kulturt',
+        'resultTitle': u'Bodeneignung: Kulturtyp',
+        'layerId': 'ch.blw.bodeneignung-kulturtyp'
+    }
+]
+
+
 swissSearchParamTests = [
     {
         'searchText': u'chemin des caves 11',
@@ -183,7 +243,10 @@ def runSwissSearchTest(driver, target, is_top_browser):
     # Test interactions with input element, dropdown list, clear btn etc..
     inputSearchEl = driver.find_element_by_class_name('ga-search-input')
     for searchTest in searchLocationTests:
-        testSearchInput(driver, inputSearchEl, searchTest)
+        testSearchLocationInput(driver, inputSearchEl, searchTest)
+
+    for searchTest in searchLayerTests:
+        testSearchLayerInput(driver, inputSearchEl, searchTest)
 
     # Test swissearch parameter in permalink
     for swissSearchTest in swissSearchParamTests:
