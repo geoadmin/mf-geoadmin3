@@ -44,6 +44,7 @@
     "ol.extent.buffer",
     "ol.extent.containsCoordinate",
     "ol.extent.containsXY",
+    "ol.extent.extend",
     "ol.extent.getCenter",
     "ol.extent.getHeight",
     "ol.extent.getIntersection",

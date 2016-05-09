@@ -34,8 +34,10 @@ goog.require('ga_permalink');
         $document, gaMeasure) {
 
       var createDefaultLayer = function(map, useTemporaryLayer) {
+        // #2820: we set useSpatialIndex to false to allow display of azimuth
+        // circle created by style.
         var dfltLayer = new ol.layer.Vector({
-          source: new ol.source.Vector(),
+          source: new ol.source.Vector({useSpatialIndex: false}),
           visible: true
         });
         gaDefinePropertiesForLayer(dfltLayer);

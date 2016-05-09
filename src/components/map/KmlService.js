@@ -250,9 +250,15 @@ goog.require('ga_urlutils_service');
                 sanitizedFeatures.push(feat);
               }
             }
+
+            // #2820: we set useSpatialIndex to false for KML created with draw
+            // tool
             var source = new ol.source.Vector({
-              features: sanitizedFeatures
+              features: sanitizedFeatures,
+              useSpatialIndex: !gaMapUtils.isStoredKmlLayer(options.id)
             });
+
+            var sourceExtent = gaMapUtils.getVectorSourceExtent(source);
             var layerOptions = {
               id: options.id,
               adminId: options.adminId,
@@ -262,8 +268,7 @@ goog.require('ga_urlutils_service');
               opacity: options.opacity,
               visible: options.visible,
               source: source,
-              extent: gaMapUtils.intersectWithDefaultExtent(
-                  source.getExtent()),
+              extent: gaMapUtils.intersectWithDefaultExtent(sourceExtent),
               attribution: options.attribution
             };
 
