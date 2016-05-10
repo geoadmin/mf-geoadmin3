@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*
 
+import sys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from helpers import waitForUrlChange
@@ -22,8 +23,8 @@ def runMobileTest(driver, target, is_top_browser):
         print '-----------'
         print str(e)
         raise Exception("Unable to load map.geo.admin page!")
-    current_url = driver.current_url
 
+    current_url = driver.current_url
     # Switch to Mobile Version
     driver.find_element_by_link_text("Mobile Version").click()
 
@@ -38,44 +39,19 @@ def runMobileTest(driver, target, is_top_browser):
 
     # Zoom-in
     driver.find_element_by_css_selector("button.ol-zoom-in").click()
-    current_url = driver.current_url
-    try:
-        assert QUERYSTRING_WHEN_ZOOM_IN in current_url
-    except Exception as e:
-        # Wait refresh URL
-        try:
-            waitForUrlChange(driver, current_url)
-        except Exception as e:
-            print '-----------'
-            print str(e)
-            raise Exception('URL has not changed')
-        try:
-            assert QUERYSTRING_WHEN_ZOOM_IN in driver.current_url
-        except AssertionError as e:
-            print '-----------'
-            print str(e)
-            raise Exception("Zoom click not set in the url")
-        # Check if the zoom in click update the url
-        assert QUERYSTRING_WHEN_ZOOM_IN in driver.current_url
+    if waitForUrlChange(driver, QUERYSTRING_WHEN_ZOOM_IN):
+        print 'Mobile: expected pattern %s was not found after a zoom in' % QUERYSTRING_WHEN_ZOOM_IN
+        sys.exit(1)
 
     # Make a search
     driver.find_element_by_xpath("//input[@type='search']").clear()
     driver.find_element_by_xpath(
         "//input[@type='search']").send_keys("Avenches")
     driver.find_element_by_css_selector("span.ga-search-highlight").click()
-    current_url = driver.current_url
-    try:
-        assert QUERYSTRING_OF_AVENCHES in current_url
-    except Exception as e:
-        # Wait refresh URL
-        try:
-            waitForUrlChange(driver, current_url)
-        except Exception as e:
-            print '-----------'
-            print str(e)
-            raise Exception("Coordinate of Avenches is not set in the url")
-        # Check if url contain coordinate of avenches
-        assert QUERYSTRING_OF_AVENCHES in driver.current_url
+
+    if waitForUrlChange(driver, QUERYSTRING_OF_AVENCHES):
+        print 'Mobile: expected pattern %s was not found after a search' % QUERYSTRING_OF_AVENCHES
+        sys.exit(1)
 
     # Check result search of 'wasser'. Must return locations (Gehe nach) and
     # layers (Karte hinzufügen)
@@ -85,4 +61,4 @@ def runMobileTest(driver, target, is_top_browser):
     driver.find_element_by_xpath("//*[contains(text(), 'Gehe nach')]")
     driver.find_element_by_xpath("//*[contains(text(), 'Karte hinzufügen')]")
 
-    print "Mobile test Ok !"
+    print "Mobile tests Ok !"

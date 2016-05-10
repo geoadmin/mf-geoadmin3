@@ -8,7 +8,6 @@ from selenium import webdriver
 from start_test import runStartTest
 from kml_test import runKmlTest
 from search_test import runSearchTest
-from swisssearch_test import runSwissSearchTest
 from print_test import runPrintTest
 from mobile_test import runMobileTest
 from wms_test import runWmsTest
@@ -92,12 +91,12 @@ if __name__ == '__main__':
     ]
 
     config_test_list = {
-        "firefox": ['start', 'mobile', 'search', 'swisssearch', 'checker', 'wms', 'checker'],
-        "chrome": ['start', 'mobile', 'search', 'swisssearch', 'checker', 'wms', 'checker'],
+        "firefox": ['start', 'mobile', 'search', 'checker', 'wms', 'checker'],
+        "chrome": ['start', 'mobile', 'search', 'checker', 'wms', 'checker'],
         "internet explorer": ['start'],
         "opera": ['start'],
         "safari": ['start'],
-        "MicrosoftEdge": ['start', 'search', 'swisssearch', 'checker']
+        "MicrosoftEdge": ['start', 'search', 'checker']
     }
 
     # okay we will start the script!
@@ -111,7 +110,6 @@ if __name__ == '__main__':
         'mobile': runMobileTest,
         'search': runSearchTest,
         'kml': runKmlTest,
-        'swisssearch': runSwissSearchTest,
         'print': runPrintTest,
         'wms': runWmsTest,
         'checker': runCheckerTest
