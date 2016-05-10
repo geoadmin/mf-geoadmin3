@@ -1,39 +1,17 @@
 # -*- coding: utf-8 -*-
 
-import time
 import sys
+
+from helpers import waitForUrlChange
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 
-DEFAULT_WAIT = 10
 # Gloabl css selectors
 inputContainerClass = 'ga-search-input-container'
+inputClass = 'ga-search-input'
 dropDownClass = 'ga-search-dropdown'
 itemClass = 'ga-search-item'
-
-
-def waitUrlChange(driver, pattern, find=True, timeout=DEFAULT_WAIT):
-    t0 = time.time()
-    newUrl = driver.current_url
-    if find:
-        # We wait until we find pattern
-        while pattern not in newUrl:
-            newUrl = driver.current_url
-            t1 = time.time()
-            if t1 - t0 > timeout:
-                return True
-            time.sleep(.5)
-        return False
-    else:
-        # We wait until we don't find a pattern
-        while pattern in newUrl:
-            newUrl = driver.current_url
-            t1 = time.time()
-            if t1 - t0 > timeout:
-                return True
-            time.sleep(.5)
-        return False
 
 
 def onLocationFail(currentUrl, searchText, resultLocation):
@@ -50,7 +28,7 @@ def checkVisibleDropDown(driver, inputEl, searchText):
         WebDriverWait(driver, 10).until(
             EC.visibility_of_element_located((By.CLASS_NAME, dropDownClass)))
     except Exception as e:
-        print 'Could not toggle dropdown visibility using searchText: %s' % searchText
+        print 'Could not toggle dropdown visibility'
         print 'Input value is: %s' % inputEl.get_attribute('value')
         raise Exception(e)
 
@@ -60,7 +38,8 @@ def checkHiddenDropDown(driver, inputEl, searchText):
         WebDriverWait(driver, 10).until(
             EC.invisibility_of_element_located((By.CLASS_NAME, dropDownClass)))
     except Exception as e:
-        print 'Could not hide dropdown visibility using the search button'
+        print 'Could not hide dropdown visibility'
+        print 'Input value is: %s' % inputEl.get_attribute('value')
         raise Exception(e)
 
 
@@ -71,7 +50,7 @@ def selectLocationItem(driver, inputEl, searchText, resultTitle, resultLocation)
             resultEl.click()
             break
     # Make sure map is zoomed to the desired location
-    if waitUrlChange(driver, resultLocation):
+    if waitForUrlChange(driver, resultLocation):
         onLocationFail(driver.current_url, searchText, resultLocation)
 
 
@@ -82,21 +61,22 @@ def selectLayerInputItem(driver, inputEl, searchText, resultTitle, layerId):
             resultEl.click()
             break
     # Make sure map is zoomed to the desired location
-    if waitUrlChange(driver, layerId):
+    if waitForUrlChange(driver, layerId):
         print '%s layer cannot be found in the permalink' % layerId
         sys.exit(1)
 
 
-def testSearchLocationInput(driver, inputEl, searchTest, timeout=DEFAULT_WAIT):
+def testSearchLocationInput(driver, inputEl, searchTest, timeout=10):
     searchText = searchTest['searchText']
     resultTitle = searchTest['resultTitle']
     resultLocation = searchTest['resultLocation']
     inputEl.send_keys(searchText)
     # Because of the search design we have to trigger a change event
     # to trigger a search request
-    driver.execute_script("$('ga-search-input').change()")
+    driver.execute_script("$('%s').change()" % inputClass)
     checkVisibleDropDown(driver, inputEl, searchText)
     selectLocationItem(driver, inputEl, searchText, resultTitle, resultLocation)
+    checkHiddenDropDown(driver, inputEl, searchText)
 
     # Use clear button
     driver.find_element_by_css_selector(
@@ -105,21 +85,21 @@ def testSearchLocationInput(driver, inputEl, searchTest, timeout=DEFAULT_WAIT):
     if inputEl.get_attribute('value') != '':
         print 'Clear button in search input did not work as expected'
         sys.exit(1)
-    checkHiddenDropDown(driver, inputEl, searchText)
 
     print 'Location Search test for %s OK!' % searchText
 
 
-def testSearchLayerInput(driver, inputEl, searchTest, timeout=DEFAULT_WAIT):
+def testSearchLayerInput(driver, inputEl, searchTest, timeout=10):
     searchText = searchTest['searchText']
     resultTitle = searchTest['resultTitle']
     layerId = searchTest['layerId']
     inputEl.send_keys(searchText)
     # Because of the search design we have to trigger a change event
     # to trigger a search request
-    driver.execute_script("$('ga-search-input').change()")
+    driver.execute_script("$('%s').change()" % inputClass)
     checkVisibleDropDown(driver, inputEl, searchText)
     selectLayerInputItem(driver, inputEl, searchText, resultTitle, layerId)
+    checkHiddenDropDown(driver, inputEl, searchText)
 
     # Use clear button
     driver.find_element_by_css_selector(
@@ -128,14 +108,13 @@ def testSearchLayerInput(driver, inputEl, searchTest, timeout=DEFAULT_WAIT):
     if inputEl.get_attribute('value') != '':
         print 'Clear button in search input did not work as expected'
         sys.exit(1)
-    checkHiddenDropDown(driver, inputEl, searchText)
 
     # TODO: Check that the layer has been added to the layer selection
 
     print 'Layer Search test for %s OK!' % searchText
 
 
-def testSwissSearchParameter(driver, url, inputEl, searchTest, timeout=DEFAULT_WAIT):
+def testSwissSearchParameter(driver, url, inputEl, searchTest, timeout=10):
     searchText = searchTest['searchText']
     oneResOnly = searchTest['oneResOnly']
     resultTitle = searchTest['resultTitle']
@@ -144,7 +123,7 @@ def testSwissSearchParameter(driver, url, inputEl, searchTest, timeout=DEFAULT_W
     driver.get(targetUrl)
     # One result only -> zoom to the desired location
     if oneResOnly:
-        if waitUrlChange(driver, resultLocation):
+        if waitForUrlChange(driver, resultLocation):
             onLocationFail(driver.current_url, searchText, resultLocation)
         try:
             assert "swisssearch" in driver.current_url
@@ -154,7 +133,7 @@ def testSwissSearchParameter(driver, url, inputEl, searchTest, timeout=DEFAULT_W
         driver.find_element_by_css_selector("button.ol-zoom-out").click()
     else:
         selectLocationItem(driver, inputEl, searchText, resultTitle, resultLocation)
-    if waitUrlChange(driver, 'swisssearch', find=False):
+    if waitForUrlChange(driver, 'swisssearch', find=False):
         print 'swissearch param can still be found in the URL after a map move'
         sys.exit(1)
 
@@ -241,7 +220,7 @@ def runSwissSearchTest(driver, target, is_top_browser):
         raise Exception('Unable to load map.geo.admin page!')
 
     # Test interactions with input element, dropdown list, clear btn etc..
-    inputSearchEl = driver.find_element_by_class_name('ga-search-input')
+    inputSearchEl = driver.find_element_by_class_name(inputClass)
     for searchTest in searchLocationTests:
         testSearchLocationInput(driver, inputSearchEl, searchTest)
 

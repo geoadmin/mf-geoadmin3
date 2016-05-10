@@ -21,16 +21,27 @@ def bCheckIfUrlHasChanged(driver):
         return 1
 
 
-def waitForUrlChange(driver, oldUrl, timeout=15):
+def waitForUrlChange(driver, pattern, find=True, timeout=10):
     t0 = time.time()
-    newUrl = oldUrl
-    while oldUrl == newUrl:
-        newUrl = driver.current_url
-        time.sleep(1)
-        ti = time.time()
-        tf = ti - t0
-        if tf > timeout:
-            raise Exception('%s has not changed in %.2f seconds' % (oldUrl, tf))
+    newUrl = driver.current_url
+    if find:
+        # We wait until we find pattern
+        while pattern not in newUrl:
+            newUrl = driver.current_url
+            t1 = time.time()
+            if t1 - t0 > timeout:
+                return True
+            time.sleep(.5)
+        return False
+    else:
+        # We wait until we don't find a pattern
+        while pattern in newUrl:
+            newUrl = driver.current_url
+            t1 = time.time()
+            if t1 - t0 > timeout:
+                return True
+            time.sleep(.5)
+        return False
 
 
 def bCheckIfLinkIsUpdatedEverywhere(driver, stringExpected):
