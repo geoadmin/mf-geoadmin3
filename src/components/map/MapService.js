@@ -448,7 +448,7 @@ goog.require('ga_urlutils_service');
                   var blob = gaMapUtils.dataURIToBlob(content);
                   imageTile.getImage().addEventListener('load', revokeBlob);
                   imageTile.getImage().src = $window.URL.createObjectURL(blob);
-                } catch () {
+                } catch (e) {
                   // INVALID_CHAR_ERROR on ie and ios(only jpeg), it's an
                   // encoding problem.
                   // TODO: fix it
@@ -1304,7 +1304,7 @@ goog.require('ga_urlutils_service');
         getVectorSourceExtent: function(source) {
           try {
             return source.getExtent();
-          } catch () {
+          } catch (e) {
             var sourceExtent;
             source.getFeatures().forEach(function(item) {
               var extent = item.getGeometry().getExtent();
