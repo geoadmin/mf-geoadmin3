@@ -289,14 +289,40 @@ describe('ga_map_service', function() {
     });
 
     it('tests constants', function() {
+      expect(gaMapUtils.Z_PREVIEW_LAYER).to.eql(1000);
+      expect(gaMapUtils.Z_PREVIEW_FEATURE).to.eql(1100);
+      expect(gaMapUtils.Z_FEATURE_OVERLAY).to.eql(2000);
       expect(gaMapUtils.preload).to.eql(6);
       expect(gaMapUtils.defaultExtent).to.eql([420000, 30000, 900000, 350000]);
       expect(gaMapUtils.viewResolutions).to.eql([650.0, 500.0, 250.0, 100.0, 50.0, 20.0, 10.0, 5.0,
           2.5, 2.0, 1.0, 0.5, 0.25, 0.1]);
+      expect(gaMapUtils.defaultResolution).to.eql(500);
     });
 
     it('tests getViewResolutionForZoom', function() {
       expect(gaMapUtils.getViewResolutionForZoom(10)).to.eql(1);
+    });
+
+    it('transforms a data URI in Blob', function() {
+      // base 64 representation of the background image of the map
+      var blob = gaMapUtils.dataURIToBlob("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAAAAABzHgM7AAAAAnRSTlMAAHaTzTgAAAARSURBVHgBY3iKBFEAOp/+MgB+UQnYeBZPWAAAAABJRU5ErkJggg==");
+      expect(blob.size).to.eql(88);
+      expect(blob.type).to.eql('image/png');
+    });
+
+    describe('transforms an ol.extent to a Cesium.Rectangle object', function() {
+
+      it('using the default projection', function() {
+        var rect = gaMapUtils.extentToRectangle([0, 0, 30, 30]);
+        expect(rect).to.be.a(Cesium.Rectangle);
+        expect([rect.west, rect.south, rect.east, rect.north]).to.eql([-0.002860778099859713, 0.7834821027741324, -0.0028535435287705122, 0.783487245504938]);
+      });
+
+      it('using a user defined projection', function() {
+        var rect = gaMapUtils.extentToRectangle([0, 0, 20000000, 10000000], ol.proj.get('EPSG:3857'));
+        expect(rect).to.be.a(Cesium.Rectangle);
+        expect([rect.west, rect.south, rect.east, rect.north]).to.eql([0, 0, 3.1357118857747954, 1.1597019584657118]);
+      });
     });
 
     it('tests getTileKey', function() {
@@ -330,7 +356,6 @@ describe('ga_map_service', function() {
        bodLayer.bodId = 'ch.bod.layer';
        foundLayer = gaMapUtils.getMapLayerForBodId(map, 'ch.bod.layer');
        expect(foundLayer).to.eql(bodLayer);
-
     }));
 
     it('tests getMapOverlayForBodId', inject(function(gaDefinePropertiesForLayer) {
@@ -493,7 +518,25 @@ describe('ga_map_service', function() {
       layer = addStoredKmlLayerToMap();
       gaDefinePropertiesForLayer(layer);
       expect(gaMapUtils.isExternalWmsLayer(layer)).to.eql(false);
-     }));
+    }));
+
+    it('test if a feature has been created by the measure tool', function() {
+      var feat = new ol.Feature();
+      expect(gaMapUtils.isMeasureFeature(feat)).to.eql(false);
+
+      feat.setId('mymeasure');
+      expect(gaMapUtils.isMeasureFeature(feat)).to.eql(false);
+
+      feat.setId('measure_343434');
+      expect(gaMapUtils.isMeasureFeature(feat)).to.eql(true);
+
+      feat.setId(null);
+      feat.set('type', 'measure');
+      expect(gaMapUtils.isMeasureFeature(feat)).to.eql(true);
+
+      feat.set('type', 'mymeasure');
+      expect(gaMapUtils.isMeasureFeature(feat)).to.eql(false);
+    });
 
     it('tests moveLayerOnTop', inject(function(gaDefinePropertiesForLayer) {
       var firstLayerAdded = addLayerToMap();
@@ -510,5 +553,65 @@ describe('ga_map_service', function() {
       expect(firstLayerAdded).to.eql(map.getLayers().getArray()[1]);
       expect(thirdLayerAdded).to.eql(map.getLayers().getArray()[0]);
     }));
+
+    it('reset map to north', function() {
+      map.getView().setRotation(90);
+      expect(map.getView().getRotation()).to.be(90);
+      gaMapUtils.resetMapToNorth(map);
+      expect(map.getView().getRotation()).to.be(0);
+    });
+
+    describe('intersects with default extent', function() {
+      var dflt = [420000, 30000, 900000, 350000];
+
+      it('returns the default extent if the extent is not valid', function() {
+        expect(gaMapUtils.intersectWithDefaultExtent()).to.eql(dflt);
+        expect(gaMapUtils.intersectWithDefaultExtent([1,2])).to.eql(dflt);
+      });
+
+      it('returns undefined if there is no intersection', function() {
+        expect(gaMapUtils.intersectWithDefaultExtent([0, 0, 1, 1])).to.eql(undefined);
+      });
+
+      it('returns the intersection', function() {
+        expect(gaMapUtils.intersectWithDefaultExtent([320000, 310000, 800000, 450000])).to.eql([420000, 310000, 800000, 350000]);
+      });
+    });
+
+    it('creates a feature overlay', function() {
+      var feats = [new ol.Feature(), new ol.Feature()];
+      var style =  new ol.style.Style({
+        fill: new ol.style.Fill({
+          color: 'red'
+        })
+      });
+      var layer = gaMapUtils.getFeatureOverlay(feats, style);
+      expect(layer).to.be.an(ol.layer.Vector);
+      expect(layer.getStyle().getFill().getColor()).to.eql('red');
+      expect(layer.getSource()).to.be.an(ol.source.Vector);
+      expect(layer.getZIndex()).to.eql(gaMapUtils.Z_FEATURE_OVERLAY);
+      expect(layer.getSource().getFeatures().length).to.eql(2);
+      expect(layer.displayInLayerManager).to.eql(false);
+    });
+
+    it('gets lod from resolution', function() {
+      expect(gaMapUtils.getLodFromRes()).to.eql(undefined);
+      expect(gaMapUtils.getLodFromRes(500)).to.eql(7);
+    });
+
+    it('gets the extent of an ol.source.Vector', function() {
+      var feat = new ol.Feature(new ol.geom.Point([1, 2]));
+      var feat2 = new ol.Feature(new ol.geom.LineString([[-1, -1], [1, 2], [0, 0]]));
+      var src = new ol.source.Vector({
+        features: [feat, feat2]
+      });
+      expect(gaMapUtils.getVectorSourceExtent(src)).to.eql([-1, -1, 1, 2]);
+
+      var src2 = new ol.source.Vector({
+        features: [feat, feat2],
+        useSpatialIndex: false
+      });
+      expect(gaMapUtils.getVectorSourceExtent(src2)).to.eql([-1, -1, 1, 2]);
+    });
   });
 });

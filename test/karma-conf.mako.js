@@ -12,6 +12,8 @@ module.exports = function(config) {
   // list of files / patterns to load in the browser
   files: [
   % if mode == 'release':
+    'lib/Cesium.min.js',
+    'lib/ol3cesium.js',
     'lib/build.js',
   % else:
     'lib/jquery.js',
