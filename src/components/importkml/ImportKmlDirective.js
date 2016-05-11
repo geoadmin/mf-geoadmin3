@@ -1,29 +1,27 @@
 goog.provide('ga_importkml_directive');
 
 goog.require('ga_browsersniffer_service');
-goog.require('ga_filereader_service');
 goog.require('ga_kml_service');
 goog.require('ga_urlutils_service');
 (function() {
 
   var module = angular.module('ga_importkml_directive', [
     'ga_browsersniffer_service',
-    'ga_filereader_service',
     'ga_kml_service',
     'ga_urlutils_service',
     'pascalprecht.translate'
   ]);
 
   module.controller('GaImportKmlDirectiveController',
-      function($scope, $http, $q, $log, $translate, gaBrowserSniffer,
-          gaKml, gaUrlUtils, gaFileReader) {
+      function($scope, $http, $q, $translate, gaBrowserSniffer, gaKml,
+          gaUrlUtils) {
+        var fileReader;
         $scope.isIE9 = (gaBrowserSniffer.msie == 9);
         $scope.isIE = !isNaN(gaBrowserSniffer.msie);
         $scope.currentTab = ($scope.isIE9) ? 2 : 1;
         $scope.file = null;
         $scope.userMessage = '';
         $scope.progress = 0;
-        var fileReader = gaFileReader($scope);
 
         // Tabs management stuff
         $scope.activeTab = function(numTab) {
@@ -57,8 +55,9 @@ goog.require('ga_urlutils_service');
                 encodeURIComponent($scope.fileUrl), {
               cache: true,
               timeout: $scope.canceler.promise
-            }).success(function(data, status, headers, config) {
-              var fileSize = headers('content-length');
+            }).then(function(response) {
+              var data = response.data;
+              var fileSize = response.headers('content-length');
               if (gaKml.isValidFileContent(data) &&
                   gaKml.isValidFileSize(fileSize)) {
                 $scope.userMessage = $translate.instant('upload_succeeded');
@@ -68,8 +67,7 @@ goog.require('ga_urlutils_service');
                 $scope.userMessage = $translate.instant('upload_failed');
                 $scope.progress = 0;
               }
-            })
-            .error(function(data, status, headers, config) {
+            }, function() {
               $scope.userMessage = $translate.instant('upload_failed');
               $scope.progress = 0;
             });
@@ -92,17 +90,13 @@ goog.require('ga_urlutils_service');
           }
         };
 
-        $scope.$on('gaFileProgress', function(evt, progress) {
-          $scope.$apply(function() {
-            $scope.progress = (progress.loaded / progress.total) * 80;
-          });
-        });
-
         // Callback when FileReader has finished
-        var handleReaderLoadEnd = function(result) {
+        var handleReaderLoadEnd = function(evt) {
+          var result = evt.target.result;
           if (gaKml.isValidFileContent(result)) {
             $scope.userMessage = $translate.instant('read_succeeded');
             $scope.fileContent = result;
+            $scope.$digest();
           } else {
             handleReaderError();
           }
@@ -112,6 +106,15 @@ goog.require('ga_urlutils_service');
         var handleReaderError = function() {
           $scope.userMessage = $translate.instant('read_failed');
           $scope.progress = 0;
+          $scope.$digest();
+        };
+
+        // Callback when FileReader is reading
+        var handleReaderProgress = function(evt) {
+          if (evt.lengthComputable) {
+            $scope.progress = (evt.loaded / evt.total) * 80;
+            $scope.$digest();
+          }
         };
 
         // Handle a File (from a FileList),
@@ -123,14 +126,16 @@ goog.require('ga_urlutils_service');
             $scope.userMessage = $translate.instant('reading_file');
             $scope.progress = 0.1;
 
+            if (!fileReader) {
+              // Initialize the fileReader
+              fileReader = new FileReader();
+              fileReader.onload = handleReaderLoadEnd;
+              fileReader.onerror = handleReaderError;
+              fileReader.onprogress = handleReaderProgress;
+            }
+
             // Read the file
-            fileReader.readAsText($scope.file).then(function(result) {
-              if (result) {
-                handleReaderLoadEnd(result);
-              }
-            }, function() {
-              handleReaderError();
-            });
+            fileReader.readAsText($scope.file);
           }
           $scope.isDropped = false;
         };
@@ -141,23 +146,19 @@ goog.require('ga_urlutils_service');
             $scope.userMessage = $translate.instant('parsing_file');
             $scope.progress = 80;
 
-            try {
-              // Add the layer
-              gaKml.addKmlToMap($scope.map, $scope.fileContent, {
-                url: ($scope.currentTab === 2) ? $scope.fileUrl :
-                    $scope.file.name,
-                useImageVector: gaKml.useImageVector($scope.fileSize),
-                zoomToExtent: true
-              });
-
+            // Add the layer
+            gaKml.addKmlToMap($scope.map, $scope.fileContent, {
+              url: ($scope.currentTab === 2) ? $scope.fileUrl :
+                  $scope.file.name,
+              useImageVector: gaKml.useImageVector($scope.fileSize),
+              zoomToExtent: true
+            }).then(function() {
               $scope.userMessage = $translate.instant('parse_succeeded');
               $scope.progress += 20;
-
-            } catch (e) {
-              $scope.userMessage = $translate.instant('parse_failed') +
-                                   e.message;
+            }, function(msg) {
+              $scope.userMessage = $translate.instant('parse_failed') + msg;
               $scope.progress = 0;
-            }
+            });
           }
         };
 
@@ -170,7 +171,9 @@ goog.require('ga_urlutils_service');
           $scope.userMessage = $translate.instant('operation_canceled');
           $scope.progress = 0;
           // Kill file reading
-          fileReader.abort();
+          if (fileReader) {
+            fileReader.abort();
+          }
           // Kill $http request
           if ($scope.canceler) {
             $scope.canceler.resolve();
@@ -189,7 +192,7 @@ goog.require('ga_urlutils_service');
   );
 
   module.directive('gaImportKml',
-      function($log, $compile, $document, $translate, gaBrowserSniffer,
+      function($compile, $document, $translate, gaBrowserSniffer,
           gaUrlUtils) {
         return {
           restrict: 'A',

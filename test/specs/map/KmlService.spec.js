@@ -169,49 +169,54 @@ describe('ga_kml_service', function() {
 
     describe('addKmlToMap', function() {
 
-      it('doesn\'t add layer if kml string is not defined', function() {
+      it('doesn\'t add layer if kml string is not defined', function(done) {
         gaKml.addKmlToMap(map).then(function() {
         }, function(reason) {
           expect(reason).to.be('No KML data found');
           expect(map.getLayers().getLength()).to.be(0); 
+          done();
         });
         $rootScope.$digest();
       });
 
-      it('adds layer if a kml string is defined (parseable or not)', function() {
+      it('adds layer if a kml string is defined (parseable or not)', function(done) {
         var kml = 'sdgfsdgfdgg'; 
         gaKml.addKmlToMap(map, kml).then(function() {
           expect(map.getLayers().getLength()).to.be(1); 
+          done();
         });
         $rootScope.$digest();
       });
          
-      it('set a correct layer\'s id', function() {
+      it('set a correct layer\'s id', function(done) {
         // When layerOptions is not defined
         gaKml.addKmlToMap(map, validKml).then(function(olLayer) {
           expect(olLayer.id).to.be('KML||undefined');
+          done();
         });
         $rootScope.$digest();
 
         // When layerOptions has an url property
         gaKml.addKmlToMap(map, validKml, {url: 'http://test.ch'}).then(function(olLayer) {
           expect(olLayer.id).to.be('KML||http://test.ch');
+          done();
         });
         $rootScope.$digest();
       });
    
-      it('search for offline data', function() {
+      it('search for offline data', function(done) {
         var getItem = gaStorageMock.expects('getItem').once().withArgs('KML||undefined');
         var setItem = gaStorageMock.expects('setItem').never();
           
         gaKml.addKmlToMap(map, validKml).then(function(olLayer) {
           getItem.verify();
           setItem.verify();
+          done();
         });
         $rootScope.$digest();
       });
       
-      it('updates offline data', function() {
+      it('updates offline data', function(done) {
         var getItem = gaStorageMock.expects('getItem').once()
             .withArgs('KML||offdataexist').returns(validKml2);
         var setItem = gaStorageMock.expects('setItem').once()
@@ -220,11 +225,12 @@ describe('ga_kml_service', function() {
         gaKml.addKmlToMap(map, validKml, {url: 'offdataexist'}).then(function(olLayer) {
           getItem.verify();
           setItem.verify();
+          done();
         });
         $rootScope.$digest();
       });
        
-      it('uses offline data', function() {
+      it('uses offline data', function(done) {
         var getItem = gaStorageMock.expects('getItem').once()
             .withArgs('KML||offdataexist').returns(validKml2);
         var setItem = gaStorageMock.expects('setItem').never()
@@ -234,13 +240,14 @@ describe('ga_kml_service', function() {
           getItem.verify();
           setItem.verify();
           expect(olLayer.getSource().getFeatures().length).to.be(1);
+          done();
         });
         $rootScope.$digest();
       });
 
       // TODO: The regex doesn't work correctly when the file is all in one
       // line
-      it('uses ogcproxy for all hrefs (except google and geo.admin images) and use https for geo.admin images (include ogcproxy urls)', function() {
+      it('uses ogcproxy for all hrefs (except google and geo.admin images) and use https for geo.admin images (include ogcproxy urls)', function(done) {
         var hrefs = [
           'http://maps.google.com/blue.png',
           'https://maps.gstatic.com/pushpin.png',
@@ -270,12 +277,13 @@ describe('ga_kml_service', function() {
               hrefTest = hrefTest.replace(/^http:/, 'https:');
             }
             expect(feat.getStyleFunction().call(feat)[0].getImage().getSrc()).to.be(hrefTest);
+            done();
           });
         });
         $rootScope.$digest();
       });
 
-      it('download files from network links tags when the link is valid', function() {
+      it('download files from network links tags when the link is valid', function(done) {
         // WARNING: these urls are transformed like the urls in the test above. 
         var hrefs = [
           'https://geo.admin.ch/test.php',
@@ -302,6 +310,7 @@ describe('ga_kml_service', function() {
           isNotValid.verify();
           var feats = olLayer.getSource().getFeatures(); 
           expect(feats.length).to.be(4);
+          done();
         });
         $httpBackend.flush();
         $rootScope.$digest();
@@ -309,15 +318,16 @@ describe('ga_kml_service', function() {
         $httpBackend.verifyNoOutstandingRequest();
       });
 
-      it('doesn\'t add feature without geometry', function() {
+      it('doesn\'t add feature without geometry', function(done) {
         var kml = '<kml><Placemark></Placemark></kml>';
         gaKml.addKmlToMap(map, kml).then(function(olLayer) {
           expect(olLayer.getSource().getFeatures().length).to.be(0);
+          done();
         });
         $rootScope.$digest();
       });
 
-      it('closes unclosed geometry', function() {
+      it('closes unclosed geometry', function(done) {
         var unclosedCoords = '<coordinates>0,0,0 1,0,0 1,1,0 0,1,0</coordinates>';
         var unclosedLinearRing = '<LinearRing>' + unclosedCoords + '</LinearRing>'; 
         var unclosedPolygon = '<Polygon>' +
@@ -367,29 +377,32 @@ describe('ga_kml_service', function() {
           // we verify the point is still there
           coords = feats[3].getGeometry().getGeometries()[1].getCoordinates();
           expect(coords).to.eql([0, -7.081154551613622e-10, 0]);
+          done();
         });
         $rootScope.$digest();
       });
 
-      it('set empty feature\'s id to undefined', function() {
+      it('set empty feature\'s id to undefined', function(done) {
         var kml = '<kml>' + createValidPlkPoint('') + '</kml>';
         gaKml.addKmlToMap(map, kml).then(function(olLayer) {
           var feats = olLayer.getSource().getFeatures();
           expect(feats[0].getId()).to.be(undefined);
+          done();
         });
         $rootScope.$digest();
       });
 
-      it('transforms the feature\'s geometry using the map projection', function() {
+      it('transforms the feature\'s geometry using the map projection', function(done) {
         var kml = '<kml>' + createValidPlkPoint('') + '</kml>';
         gaKml.addKmlToMap(map, kml).then(function(olLayer) {
           var feats = olLayer.getSource().getFeatures();
           expect(feats[0].getGeometry().getCoordinates()).to.eql([1013007.3662187896, 5909489.863677091, 0]);
+          done();
         });
         $rootScope.$digest();
       });
 
-      it('uses default style', function() {
+      it('uses default style', function(done) {
         var kml = '<kml>' + createValidPlkPoint() + '</kml>';
         var getStyle = gaStyleFactoryMock.expects('getStyle').once()
             .withArgs('kml').returns(dfltStyle);
@@ -398,11 +411,12 @@ describe('ga_kml_service', function() {
           var feat = olLayer.getSource().getFeatures()[0];
           var style = feat.getStyleFunction().call(feat)[0];
           expect(style.getFill().getColor()).to.eql(dfltStyle.getFill().getColor());
+          done();
         });
         $rootScope.$digest();
       });
 
-      it('extracts styles and properties', function() {
+      it('extracts styles and properties', function(done) {
         // WARNING: <Document> tag is needed to parse styles
         var kml = '<kml><Document>' + styleLine1 + createValidPlkLineString() + '</Document></kml>';
         gaKml.addKmlToMap(map, kml).then(function(olLayer) {
@@ -411,11 +425,12 @@ describe('ga_kml_service', function() {
           expect(style.getStroke().getColor()).to.eql([18, 17, 16, 0.4980392156862745]);
           expect(feat.get('name')).not.to.be(undefined);
           expect(feat.get('description')).not.to.be(undefined);
+          done();
         });
         $rootScope.$digest();
       });
 
-      it('applies default image style if offline', function() {
+      it('applies default image style if offline', function(done) {
         var kml = '<kml>' + createPlacemarkWithHref('http://test.vh/test.png') + '</kml>';
         var getStyle = gaStyleFactoryMock.expects('getStyle').twice()
             .withArgs('kml').returns(dfltStyle);
@@ -425,13 +440,14 @@ describe('ga_kml_service', function() {
           var style = feat.getStyleFunction().call(feat)[0];
           expect(style.getImage() instanceof ol.style.Circle).to.be(true);
           expect(style.getImage().getFill().getColor()).to.eql(dfltStyle.getImage().getFill().getColor());
+          done();
         });
         $rootScope.$digest();
       });
       
       describe('displays feature\'s name', function() {
         // TODO: Tests polygon, multipolygon ....
-        it('only on Point and MultiPoint geometry by default', function() {
+        it('only on Point and MultiPoint geometry by default', function(done) {
           // WARNING: <Document> tag is needed to parse styles
           var kml = '<kml><Document>' +
               createValidPlkPoint() +
@@ -447,11 +463,12 @@ describe('ga_kml_service', function() {
             expect(style.getText().getText()).to.be('MultiPoint');
             style = feats[2].getStyleFunction().call(feats[2])[0];
             expect(style.getText()).to.be(null);
+            done();
           });
           $rootScope.$digest();
         });
 
-        it('with transparent circle if image\'s scale == 0', function() {
+        it('with transparent circle if image\'s scale == 0', function(done) {
           // WARNING: <Document> tag is needed to parse styles
           var kml = '<kml><Document>' +
               styleIconScale0 +
@@ -475,12 +492,13 @@ describe('ga_kml_service', function() {
             expect(style.getImage() instanceof ol.style.Circle).to.be(true);
             expect(style.getImage().getFill().getColor()).to.eql(trsp);
             expect(style.getImage().getStroke().getColor()).to.eql(trsp);
+            done();
           });
           $rootScope.$digest();
         });
       });
       
-      it('set feature\'s type property if the feature has been created by draw tool', function() {
+      it('set feature\'s type property if the feature has been created by draw tool', function(done) {
         var kml = '<kml><Document>' +
             createValidPlkPoint('linepolygon_bbbb') +
             createValidPlkPoint() + // id defined
@@ -492,11 +510,12 @@ describe('ga_kml_service', function() {
           expect(feats[0].get('type')).to.be('linepolygon');
           expect(feats[1].get('type')).to.be(undefined);
           expect(feats[2].get('type')).to.be(undefined);
+          done();
         });
         $rootScope.$digest();         
       });
 
-      it('applies measure style to measure feature', function() {
+      it('applies measure style to measure feature', function(done) {
         var kml = '<kml><Document>' +
             createValidPlkPoint('measure_bbbb') +
           '</Document></kml>';
@@ -509,12 +528,13 @@ describe('ga_kml_service', function() {
            getStyle.verify();
            var feats = olLayer.getSource().getFeatures();
            expect(feats[0].get('type')).to.be('measure');
+           done();
          });
          $rootScope.$digest();  
       });
 
       // TODO: tests more geometry types
-      it('removes image and text styles for all geometries except (Point, MultiPoint and GeometryCollection)', function() {
+      it('removes image and text styles for all geometries except (Point, MultiPoint and GeometryCollection)', function(done) {
         // WARNING: <Document> tag is needed to parse styles
         var kml = '<kml><Document>' +
             createValidPlkPoint() +
@@ -531,11 +551,12 @@ describe('ga_kml_service', function() {
           style = feats[2].getStyleFunction().call(feats[2])[0];
           expect(style.getText()).to.be(null);
           expect(style.getImage()).to.be(null);
+          done();
         });
         $rootScope.$digest();
       });
       
-      it('adds Layer at the correct place', function() {
+      it('adds Layer at the correct place', function(done) {
         var kml = '<kml><Document><name>Layer1</name></Document></kml>'; 
         gaKml.addKmlToMap(map, kml);
         $rootScope.$digest();
@@ -545,6 +566,7 @@ describe('ga_kml_service', function() {
         gaKml.addKmlToMap(map, kml).then(function() {
           expect(map.getLayers().getLength()).to.be(2);
           expect(map.getLayers().item(1).label).to.be('Layer2');
+          done();
         });
         $rootScope.$digest();
 
@@ -553,6 +575,7 @@ describe('ga_kml_service', function() {
         gaKml.addKmlToMap(map, kml, {}, 1).then(function() {
           expect(map.getLayers().getLength()).to.be(3);
           expect(map.getLayers().item(1).label).to.be('Layer3');
+          done();
         });
         $rootScope.$digest();
       });

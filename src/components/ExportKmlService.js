@@ -10,18 +10,12 @@ goog.require('ga_browsersniffer_service');
   /**
    * This service can be used to export a kml file based on some
    * features on an ol3 map
-   *
    */
   module.provider('gaExportKml', function() {
     this.$get = function($translate, $window, $document, $http,
-                         gaBrowserSniffer) {
+        gaBrowserSniffer) {
 
       var downloadUrl = this.downloadKmlUrl;
-      var isBlobSupported = false;
-      try {
-        isBlobSupported = !!new Blob;
-      } catch (e) {
-      }
 
       var pp0 = function(s) {
         return s.length === 2 ? s : '0' + s;
@@ -40,7 +34,7 @@ goog.require('ga_browsersniffer_service');
       var useDownloadService = function() {
         if (gaBrowserSniffer.msie == 9 ||
             gaBrowserSniffer.safari ||
-            !isBlobSupported) {
+            !gaBrowserSniffer.blob) {
           return true;
         }
         return false;
@@ -51,10 +45,16 @@ goog.require('ga_browsersniffer_service');
           var kmlString,
               exportFeatures = [];
           layer.getSource().forEachFeature(function(f) {
+            //We silently ignore Circle elements as they are not supported
+            //in kml
+            if (f.getGeometry().getType() === 'Circle') {
+              return;
+            }
             var clone = f.clone();
             clone.setId(f.getId());
             clone.getGeometry().transform(projection, 'EPSG:4326');
             var styles;
+            // TODO should we test getStyle() too?
             if (clone.getStyleFunction()) {
               styles = clone.getStyleFunction().call(clone);
             } else {
@@ -82,12 +82,7 @@ goog.require('ga_browsersniffer_service');
 
             var myStyle = new ol.style.Style(newStyle);
             clone.setStyle(myStyle);
-
-            //We silently ignore Circle elements as they are not supported
-            //in kml
-            if (f.getGeometry().getType() !== 'Circle') {
-              exportFeatures.push(clone);
-            }
+            exportFeatures.push(clone);
           });
 
           if (exportFeatures.length > 0) {
@@ -119,11 +114,10 @@ goog.require('ga_browsersniffer_service');
           var saveAs = $window.saveAs;
           var filename = 'map.geo.admin.ch_KML_' + now + '.kml';
           var charset = $document.characterSet || 'UTF-8';
-          var type = 'application/vnd.google-earth.kml+xml';
-          type = type + ';charset=' + charset;
+          var type = 'application/vnd.google-earth.kml+xml;charset=' + charset;
 
           if (!this.canSave()) {
-            alert($translate.instant('export_kml_notsupported'));
+            $window.alert($translate.instant('export_kml_notsupported'));
           } else {
             var kmlString = this.create(layer, projection);
             if (kmlString) {
@@ -131,7 +125,8 @@ goog.require('ga_browsersniffer_service');
                 $http.post(downloadUrl, {
                   kml: kmlString,
                   filename: filename
-                }).success(function(data) {
+                }).then(function(response) {
+                  var data = response.data;
                   if (gaBrowserSniffer.msie == 9) {
                     $window.open(data.url);
                   } else {
