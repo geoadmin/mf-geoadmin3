@@ -109,8 +109,32 @@ goog.require('ga_throttle_service');
         // Get heading depending on devices
         var headingFromDevices = function() {
           var hdg = deviceOrientation.getHeading();
+          var orientation = $window.orientation;
           if (!gaBrowserSniffer.ios) {
             hdg = -hdg;
+            if ($window.screen.orientation.angle) {
+              orientation = $window.screen.orientation.angle;
+            }
+          }
+          switch (orientation) {
+            case -90:
+              hdg = hdg - (Math.PI / 2);
+              break;
+
+            case 180:
+              hdg = hdg + Math.PI;
+              break;
+
+            case 90:
+              hdg = hdg + (Math.PI / 2);
+              break;
+
+            case 270:
+              hdg = hdg - (Math.PI / 2);
+              break;
+
+            default:
+              hdg = hdg;
           }
           return hdg;
         };
