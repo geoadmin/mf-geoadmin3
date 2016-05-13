@@ -91,8 +91,8 @@ if __name__ == '__main__':
     ]
 
     config_test_list = {
-        "firefox": ['start', 'mobile', 'search', 'checker', 'wms', 'checker'],
-        "chrome": ['start', 'mobile', 'search', 'checker', 'wms', 'checker'],
+        "firefox": ['start', 'mobile', 'search', 'checker', 'wms'],
+        "chrome": ['start', 'mobile', 'search', 'checker', 'wms'],
         "internet explorer": ['start'],
         "opera": ['start'],
         "safari": ['start'],
