@@ -216,6 +216,10 @@ itemscope itemtype="http://schema.org/WebApplication"
         </div>
         <div ng-show="time">{{time}}</div>
       </a>
+      <div id="search-container" ng-controller="GaSearchController">
+        <div ga-search ga-search-map="map" ga-search-options="options" ga-search-ol3d="::ol3d"></div>
+      </div>
+
       <div ga-scale-line ga-scale-line-map="map" ng-show="!globals.is3dActive"></div>
   % endif
 
