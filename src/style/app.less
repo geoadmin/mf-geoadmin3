@@ -14,8 +14,7 @@
 @import "../components/contextpopup/style/contextpopup.less";
 @import "../components/feedback/style/feedback.less";
 @import "../components/topic/style/topic.less";
-@import "../components/importkml/style/importkml.less";
-@import "../components/importwms/style/importwms.less";
+@import "../components/import/style/import.less";
 @import "../components/popup/style/popup.less";
 @import "../components/profile/style/profile.less";
 @import "../components/catalogtree/style/catalogtree.less";
@@ -1142,9 +1141,35 @@ a .ga-icon-separator {
 }
 
 // ****** POPUP
+<<<<<<< HEAD
 #import-wms-popup {
   width: 770px;  /* Fix resize from tablet to desktop */
   max-width: 770px;
+=======
+#import-popup, #measure-popup, #draw-popup,
+#featuretree-popup {
+  .panel-heading {
+    display: block;
+  }
+  @media (max-width: @screen-tablet) {
+    top: auto!important;
+    height: 190px;
+
+    .ga-popup-content {
+      overflow: auto;
+    }
+  }
+}
+
+#import-popup {
+  max-width: none;
+  max-height: none;
+  display: none;
+  
+  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
+    height: 435px;
+  }
+>>>>>>> Unification of WMS and KML import tool
 
   @media (max-width: @screen-tablet) {
     max-width: 480px;

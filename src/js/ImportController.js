@@ -1,9 +1,9 @@
-goog.provide('ga_importwms_controller');
+goog.provide('ga_import_controller');
 (function() {
 
-  var module = angular.module('ga_importwms_controller', []);
+  var module = angular.module('ga_import_controller', []);
 
-  module.controller('GaImportWmsController', function($scope, gaGlobalOptions) {
+  module.controller('GaImportController', function($scope, gaGlobalOptions) {
     $scope.options = {
       defaultGetCapParams: 'SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0',
       defaultWMSList: [
