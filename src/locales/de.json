@@ -193,8 +193,7 @@
 "homescreen_content": "Wir empfehlen Ihnen diese Funktion zu benutzen, um diese Applikation direkt auf Ihrer Startseite zu platzieren.",
 "homescreen_title": "Startseite",
 "import": "Importieren",
-"import_kml": "KML Import",
-"import_wms": "WMS Import",
+"import_tooltip": "Importieren Sie Datenquellen",
 "inform_draw_rectangl_ctrl": "Mit CTRL + Rechteck (cmd für Mac) über die Karte ziehen lassen sich mehrere Objekte auf einmal räumlich abfragen.",
 "inspire": "INSPIRE",
 "inspire_service_link_href": "https://www.geo.admin.ch/de/home.html",
@@ -207,7 +206,6 @@
 "kgs_service_link_href": "http://www.babs.admin.ch/de/aufgabenbabs/kgs/inventar.html",
 "kgs_service_link_label": "Kulturgüterschutz",
 "kml": "KML",
-"kmlimport_tooltip": "Importieren Sie externe KML Datenquellen",
 "lang_chooser_label": "Sprache",
 "last_available_year": "Last year",
 "layer_invalid_no_crs": "WMS unterstützt die Kartenprojektion nicht.",
@@ -430,6 +428,5 @@
 "wildruhezonen_service_link_label": "wildruhezonen.ch",
 "wms": "WMS",
 "wms_max_size_allowed": "Maximal erlaubte WMS Grösse",
-"wmsimport_tooltip": "Importieren Sie externe WMS Datenquellen",
 "yellow": "Gelb"
 }

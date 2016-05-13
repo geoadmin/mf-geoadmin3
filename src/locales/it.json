@@ -193,8 +193,7 @@
 "homescreen_content": "Consigliamo di usare questa funzione per posizionare l'applicazione direttamente sulla schermata iniziale.",
 "homescreen_title": "Pagina iniziale",
 "import": "Importare",
-"import_kml": "Importare KML",
-"import_wms": "Importare WMS",
+"import_tooltip": "Importare dati",
 "inform_draw_rectangl_ctrl": "Disegnare un rettangolo sulla mappa tenendo premuto il tasto CTRL (cmd per Mac) per selezionare più oggetti contemporaneamente",
 "inspire": "INSPIRE",
 "inspire_service_link_href": "https://www.geo.admin.ch/it/home.html",
@@ -207,7 +206,6 @@
 "kgs_service_link_href": "http://www.babs.admin.ch/it/aufgabenbabs/kgs/inventar.html",
 "kgs_service_link_label": "Protezione dei beni culturali",
 "kml": "KML",
-"kmlimport_tooltip": "Importare dati KML esterni",
 "lang_chooser_label": "Lingua",
 "last_available_year": "Last year",
 "layer_invalid_no_crs": "WMS: L'attuale proiezione della carta non è supportata",
@@ -430,6 +428,5 @@
 "wildruhezonen_service_link_label": "zone-di-tranquillita.ch",
 "wms": "WMS",
 "wms_max_size_allowed": "Dimensione massima WMS",
-"wmsimport_tooltip": "Importare dati WMS esterni",
 "yellow": "giallo"
 }

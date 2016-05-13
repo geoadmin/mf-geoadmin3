@@ -193,8 +193,7 @@
 "homescreen_content": "We recommand to use this function in order to place this application on your homescreen.",
 "homescreen_title": "Homescreen",
 "import": "Import",
-"import_kml": "KML import",
-"import_wms": "WMS import",
+"import_tooltip": "Import data sources",
 "inform_draw_rectangl_ctrl": "To select several objects use CTRL (cmd on Mac) and draw a rectangle on the map.",
 "inspire": "INSPIRE",
 "inspire_service_link_href": "https://www.geo.admin.ch/en/home.html",
@@ -207,7 +206,6 @@
 "kgs_service_link_href": "http://www.babs.admin.ch/de/aufgabenbabs/kgs/inventar.html",
 "kgs_service_link_label": "Protection of Cultural Property",
 "kml": "KML",
-"kmlimport_tooltip": "Import external KML data sources",
 "lang_chooser_label": "Language",
 "last_available_year": "Last year",
 "layer_invalid_no_crs": "WMS does not support current map projection",
@@ -430,6 +428,5 @@
 "wildruhezonen_service_link_label": "wildruhezonen.ch",
 "wms": "WMS",
 "wms_max_size_allowed": "WMS max size allowed",
-"wmsimport_tooltip": "Import external WMS data sources",
 "yellow": "yellow"
 }

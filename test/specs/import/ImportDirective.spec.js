@@ -1,6 +1,12 @@
+<<<<<<< HEAD:test/specs/importwms/ImportWmsDirective.spec.js
 describe('ga_importwms_directive', function() {
   var element, scope, map, httpBackend;
 
+=======
+describe('ga_import_directive', function() {
+  var element, scope, map;
+   
+>>>>>>> Unification of WMS and KML import tool:test/specs/import/ImportDirective.spec.js
   beforeEach(function() {
 
     module(function($provide) {
@@ -23,8 +29,8 @@ describe('ga_importwms_directive', function() {
       map.getView().fit([-20000000, -20000000, 20000000, 20000000], map.getSize());
 
       element = angular.element(
-          '<div ga-import-wms ga-import-wms-map="map" ' +
-               'ga-import-wms-options="options">' +
+          '<div ga-import ga-import-map="map" ' +
+               'ga-import-options="options">' +
           '</div>');
       scope = $rootScope.$new();
       scope.map = map;
@@ -38,8 +44,8 @@ describe('ga_importwms_directive', function() {
            'http://mapserver1.gr.ch/wms/admineinteilung?'
         ]
       };
-      $injector.get('$controller')('GaImportWmsDirectiveController', {'$scope': scope});
-      $injector.get('$controller')('GaImportWmsItemDirectiveController', {'$scope': scope});
+      $injector.get('$controller')('GaImportDirectiveController', {'$scope': scope});
+      $injector.get('$controller')('GaImportItemDirectiveController', {'$scope': scope});
       $compile(element)(scope);
       var expectedUrl = 'https://example.com/all?lang=somelang';
       httpBackend.whenGET(expectedUrl).respond({});
@@ -65,6 +71,7 @@ describe('ga_importwms_directive', function() {
     var form = element.find('form');
     expect(form.find('input[type=url][ng-model=fileUrl]').length).to.be(1);
     expect(form.find('.twitter-typeahead').length).to.be(1);
+<<<<<<< HEAD:test/specs/importwms/ImportWmsDirective.spec.js
     expect(form.find('.ga-import-wms-open').length).to.be(1);
     expect(form.find('.ga-import-wms-connect').length).to.be(1);
     expect(element.find('.ga-import-wms-container').length).to.be(1);
@@ -72,6 +79,15 @@ describe('ga_importwms_directive', function() {
     expect(element.find('textarea').length).to.be(1);
     expect(element.find('.ga-import-wms-add').length).to.be(1);
     form.find('.ga-import-wms-open').click();
+=======
+    expect(form.find('.ga-import-open').length).to.be(1);    
+    expect(form.find('.ga-import-connect').length).to.be(1); 
+    expect(element.find('.ga-import-container').length).to.be(1); 
+    expect(element.find('.ga-import-content').length).to.be(1);  
+    expect(element.find('textarea').length).to.be(1); 
+    expect(element.find('.ga-import-add').length).to.be(1); 
+    form.find('.ga-import-open').click();
+>>>>>>> Unification of WMS and KML import tool:test/specs/import/ImportDirective.spec.js
     expect(element.find('.tt-dropdown-menu').css('display')).not.to.be('none');
     expect(element.find('.tt-suggestion').length).to.be(5);
   }));
@@ -167,8 +183,13 @@ describe('ga_importwms_directive', function() {
       expect(scope.layers.length).to.be(2);
       expect(scope.layers[1].Layer.length).to.be(1);
     }));
+<<<<<<< HEAD:test/specs/importwms/ImportWmsDirective.spec.js
 
     describe('ga_importwms_item_directive', function() {
+=======
+    
+    describe('ga_import_item_directive', function() {
+>>>>>>> Unification of WMS and KML import tool:test/specs/import/ImportDirective.spec.js
       var evt = {
         stopPropagation: function() {}
       };
@@ -198,7 +219,7 @@ describe('ga_importwms_directive', function() {
     });
   });
 
-  describe('a good WMS GetCapabilities but without the map projection iss received', function() {
+  describe('a good WMS GetCapabilities but without the map projection is received', function() {
     var $httpBackend;
     var expectedWmsGetCapAdminUrl = 'https://wms.geo.admin.ch/?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0&lang=fr';
 
