@@ -127,8 +127,12 @@ goog.require('ga_permalink_service');
         // Returns undefined when timestamp is 'current' or '99991231
         this.getYearFromTimestamp = function(timestamp) {
           if (timestamp && timestamp.length) {
+            var fullYear = new Date().getFullYear();
+            if (timestamp === 'current') {
+              return fullYear;
+            }
             timestamp = parseInt(timestamp.substr(0, 4));
-            if (timestamp <= new Date().getFullYear()) {
+            if (timestamp <= fullYear) {
               return timestamp;
             }
           }

@@ -268,7 +268,9 @@ goog.require('ga_time_service');
                 var timestamps = gaLayers.getLayerProperty(olLayer.bodId,
                     'timestamps') || [];
                 for (var i = 0, length = timestamps.length; i < length; i++) {
-                  if (year.value === parseInt(timestamps[i].substr(0, 4))) {
+                  var yearTimestamp = gaTime.getYearFromTimestamp(
+                      timestamps[i]);
+                  if (year.value == yearTimestamp) {
                     year.available = true;
                     scope.availableYears.push(year);
                     if (year.value === scope.currentYear) {
