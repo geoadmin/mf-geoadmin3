@@ -151,3 +151,101 @@ describe('ga_search_labels_highlight', function() {
   });
 
 });
+
+
+describe('ga_search_token_analyser', function() {
+
+  var tokenAnalyser;
+  var testQuery;
+  var res;
+
+  beforeEach(function() {
+    inject(function($injector) {
+      tokenAnalyser = $injector.get('gaSearchTokenAnalyser');
+    });
+  });
+
+  it('Empty Strings', function() {
+    res = tokenAnalyser.run('');
+    expect(res.query).to.eql('');
+    expect(res.parameters.length).to.eql(0);
+  });
+
+  it('No token', function() {
+    res = tokenAnalyser.run('dummy');
+    expect(res.query).to.eql('dummy');
+    expect(res.parameters.length).to.eql(0);
+  });
+
+  it('Incomplete Token', function() {
+    //A complete toke is of the form 'token: value'
+    //Multiple spaces between colon and value are allowed
+    res = tokenAnalyser.run('dummy limit:  ');
+    expect(res.query).to.eql('dummy limit:  ');
+    expect(res.parameters.length).to.eql(0);
+  });
+
+  it('Token at start', function() {
+    res = tokenAnalyser.run('limit: 1');
+    expect(res.query).to.eql('');
+    expect(res.parameters.length).to.eql(1);
+    expect(res.parameters[0]).to.eql('limit=1');
+    // add some spaces
+    res = tokenAnalyser.run(' limit:  1q ');
+    expect(res.query).to.eql(' ');
+    expect(res.parameters.length).to.eql(1);
+    expect(res.parameters[0]).to.eql('limit=1q');
+    // add query
+    res = tokenAnalyser.run(' limit:  1 myquery');
+    expect(res.query).to.eql(' myquery');
+    expect(res.parameters.length).to.eql(1);
+    expect(res.parameters[0]).to.eql('limit=1');
+  });
+
+  it('Token at end', function() {
+    res = tokenAnalyser.run('text limit:  1q');
+    expect(res.query).to.eql('text');
+    expect(res.parameters.length).to.eql(1);
+    expect(res.parameters[0]).to.eql('limit=1q');
+
+    res = tokenAnalyser.run('text limit:  1q ');
+    expect(res.query).to.eql('text ');
+    expect(res.parameters.length).to.eql(1);
+    expect(res.parameters[0]).to.eql('limit=1q');
+ 
+  });
+
+  it('Token in the middle', function() {
+    res = tokenAnalyser.run('text limit:  1q has');
+    expect(res.query).to.eql('text has');
+    expect(res.parameters.length).to.eql(1);
+    expect(res.parameters[0]).to.eql('limit=1q');
+
+    res = tokenAnalyser.run('text  limit:  1q  has');
+    expect(res.query).to.eql('text  has');
+    expect(res.parameters.length).to.eql(1);
+    expect(res.parameters[0]).to.eql('limit=1q');
+ 
+  });
+
+  it('Multiple Tokens', function() {
+    res = tokenAnalyser.run('limit: sd origins: 44');
+    expect(res.query).to.eql('');
+    expect(res.parameters.length).to.eql(2);
+    expect(res.parameters[0]).to.eql('limit=sd');
+    expect(res.parameters[1]).to.eql('origins=44');
+
+    res = tokenAnalyser.run('origins: 44 limit: sd');
+    expect(res.query).to.eql('');
+    expect(res.parameters.length).to.eql(2);
+    expect(res.parameters[0]).to.eql('limit=sd');
+    expect(res.parameters[1]).to.eql('origins=44');
+
+    res = tokenAnalyser.run('origins: 44 query text limit: sd then this');
+    expect(res.query).to.eql(' query text then this');
+    expect(res.parameters.length).to.eql(2);
+    expect(res.parameters[0]).to.eql('limit=sd');
+    expect(res.parameters[1]).to.eql('origins=44');
+  });
+
+});

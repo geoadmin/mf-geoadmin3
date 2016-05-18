@@ -71,7 +71,8 @@ goog.require('ga_translation_service');
   module.controller('GaSearchDirectiveController',
     function($scope, $rootScope, $sce, $timeout, gaPermalink,
              gaUrlUtils, gaSearchGetCoordinate, gaMapUtils, gaMarkerOverlay,
-             gaKml, gaPreviewLayers, gaLang, gaTopic, gaLayers) {
+             gaKml, gaPreviewLayers, gaLang, gaTopic, gaLayers,
+             gaSearchTokenAnalyser) {
       var blockQuery = false;
       var restat = new ResultStats();
       $scope.restat = restat;
@@ -106,6 +107,7 @@ goog.require('ga_translation_service');
       };
 
       $scope.query = '';
+      $scope.childoptions.searchUrl = '';
       $scope.childoptions.query = '';
 
       $scope.clearInput = function() {
@@ -113,6 +115,7 @@ goog.require('ga_translation_service');
         gaMarkerOverlay.remove($scope.map);
         gaPreviewLayers.removeAll($scope.map);
         $scope.query = '';
+        $scope.childoptions.searchUrl = '';
         $scope.childoptions.query = '';
         $scope.input.blur();
       };
@@ -152,16 +155,22 @@ goog.require('ga_translation_service');
                                 [position, position], true);
           } else {
             // Standard query then
+            var tokenized = gaSearchTokenAnalyser.run(q);
+            q = tokenized.query;
             var url = gaUrlUtils.append($scope.options.searchUrl,
                                         'searchText=' + encodeURIComponent(q));
+            for (var i = 0; i < tokenized.parameters.length; i++) {
+              url = gaUrlUtils.append(url, tokenized.parameters[i]);
+            }
             url = gaUrlUtils.append(url, 'lang=' + gaLang.get());
             url = url.replace('{Topic}', gaTopic.get().id);
 
-            $scope.childoptions.baseUrl = url;
+            $scope.childoptions.searchUrl = url;
             $scope.childoptions.query = q;
           }
         } else {
           blockQuery = false;
+          $scope.childoptions.searchUrl = '';
           $scope.childoptions.query = '';
         }
       };

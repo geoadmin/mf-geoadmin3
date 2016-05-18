@@ -190,7 +190,48 @@ goog.provide('ga_search_service');
     };
   });
 
+  module.provider('gaSearchTokenAnalyser', function() {
 
+    var tokenlist = ['limit', 'origins'];
+    var regs = {};
+
+    for (var i = 0; i < tokenlist.length; i++) {
+      var tk = tokenlist[i];
+      regs[tk] = {
+        tk: tk,
+        list: new RegExp('(^ *' + tk + ': *\\w+|\\s+' + tk + ': *\\w+)', 'i'),
+        value: new RegExp(tk + ': *(\\w+)', 'i')
+      };
+    }
+
+    var apply = function(input, regs) {
+      var res = regs.list.exec(input.query);
+      if (res && res.length) {
+        var value = regs.value.exec(res[0]);
+        if (value && value.length >= 2) {
+          input.parameters.push(regs.tk + '=' + value[1]);
+        }
+        //Strip token and value from query
+        input.query = input.query.replace(res[0], '');
+      }
+    };
+
+    this.$get = function() {
+
+      return {
+        run: function(q) {
+          var res = {
+            query: q,
+            parameters: []
+          };
+          for (var reg in regs) {
+            apply(res, regs[reg]);
+          }
+          return res;
+        }
+      };
+    };
+  });
 
 })();
 
