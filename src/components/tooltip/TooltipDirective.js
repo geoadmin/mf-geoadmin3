@@ -89,7 +89,7 @@ goog.require('ga_topic_service');
             // onclick
             if (layer) {
               if (!vectorLayer || vectorLayer == layer) {
-                if (!featureFound && isFeatureQueryable(feature)) {
+                if (!featureFound) {
                   featureFound = feature;
                 }
               }
@@ -473,8 +473,9 @@ goog.require('ga_topic_service');
                     feature.setId(value.getId());
                     feature.set('layerId', layerId);
                     gaPreviewFeatures.add(map, feature);
-                    showPopup(value.get('htmlpopup'), value);
-
+                    if (value.get('htmlpopup')) {
+                      showPopup(value.get('htmlpopup'), value);
+                    }
                     // Store the ol feature for highlighting
                     featuresByLayerId[layerId][feature.getId()] = feature;
                   } else {
@@ -545,6 +546,9 @@ goog.require('ga_topic_service');
                   replace('{{descr}}', feature.get('description') || '').
                   replace('{{name}}', (name) ? '(' + name + ')' : '');
               feature.set('htmlpopup', htmlpopup);
+              if (!isFeatureQueryable(feature)) {
+                feature.set('htmlpopup', undefined);
+              }
               feature.set('layerId', layerId);
               showFeatures([feature]);
               // Iframe communication from inside out
