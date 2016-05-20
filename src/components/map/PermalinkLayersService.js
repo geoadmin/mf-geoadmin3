@@ -269,7 +269,7 @@ goog.require('ga_wms_service');
                 gaWms.addWmsToMap(map,
                   {
                     LAYERS: infos[3],
-                    VERSION: infos[4]
+                    VERSION: infos[4] || '1.3.0'
                   },
                   {
                     url: infos[2],
