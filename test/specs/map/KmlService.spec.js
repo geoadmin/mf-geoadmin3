@@ -382,6 +382,52 @@ describe('ga_kml_service', function() {
         $rootScope.$digest();
       });
 
+      it('remove geometries with unique coordinates', function(done) {
+        var uniqCoords = '<coordinates>0,0,0 0,0,0 0,0,0 0,0,0</coordinates>';
+        var linearRing = '<LinearRing>' + uniqCoords + '</LinearRing>'; 
+        var polygon = '<Polygon>' +
+            '<outerBoundaryIs>' + linearRing + '</outerBoundaryIs>' +
+            '<innerBoundaryIs>' + linearRing + '</innerBoundaryIs>' +
+          '</Polygon>';
+        var multiPolygon = '<MultiGeometry>' +
+            polygon + polygon +
+         '</MultiGeometry>';
+        var line = '<LineString>' + uniqCoords + '</LineString>'; 
+        var multiLine = '<MultiGeometry>' +
+            line + line +
+         '</MultiGeometry>';
+         var lineWithOneCoord = '<LineString>0,0,0</LineString>'; 
+        
+        
+        // a heterogenous MultiGeometry creates a GeometryCollection feature
+        var geomColl = '<MultiGeometry>' +
+            polygon + '<Point><coordinates>0,0,0</coordinates></Point>' +
+            line +
+         '</MultiGeometry>';
+
+
+        var kml = '<kml>' +
+            '<Placemark>' + linearRing + '</Placemark>' + 
+            '<Placemark>' + polygon + '</Placemark>' + 
+            '<Placemark>' + multiPolygon + '</Placemark>' +
+            '<Placemark>' + geomColl + '</Placemark>' +
+            '<Placemark>' + line + '</Placemark>' + 
+            '<Placemark>' + multiLine + '</Placemark>' +
+            '<Placemark>' + lineWithOneCoord + '</Placemark>' +
+          '</kml>';
+        gaKml.addKmlToMap(map, kml).then(function(olLayer) {
+          var feats = olLayer.getSource().getFeatures();
+          expect(feats.length).to.be(1);
+          
+          // we verify the point is still there
+          coords = feats[0].getGeometry().getGeometries()[0].getCoordinates();
+          expect(coords).to.eql([0, -7.081154551613622e-10, 0]);
+
+          done();
+        });
+        $rootScope.$digest();
+      });
+
       it('set empty feature\'s id to undefined', function(done) {
         var kml = '<kml>' + createValidPlkPoint('') + '</kml>';
         gaKml.addKmlToMap(map, kml).then(function(olLayer) {
