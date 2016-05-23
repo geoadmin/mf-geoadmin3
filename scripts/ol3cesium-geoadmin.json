@@ -73,6 +73,7 @@
     "ol.geom.Point#*",
     "ol.geom.Polygon",
     "ol.geom.Polygon#*",
+    "ol.geom.Polygon.fromExtent",
     "ol.has.DEVICE_ORIENTATION",
     "ol.has.DEVICE_PIXEL_RATIO",
     "ol.interaction.DragBox",
