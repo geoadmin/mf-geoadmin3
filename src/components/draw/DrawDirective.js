@@ -464,8 +464,37 @@ goog.require('ga_permalink');
             }));
 
             unDrawEvts.push(draw.on('drawend', function(evt) {
+              // Unregister the change event
+              ol.Observable.unByKey(deregFeatureChange);
+              deactivateTool(lastActiveTool);
+              scope.$applyAsync();
+
               var featureToAdd = evt.feature;
               var geom = featureToAdd.getGeometry();
+
+              // According to #3319, it seems LineString can be created with one
+              // point (or with an array of exact same points). If it's the case
+              // we ignore it.
+              if (geom instanceof ol.geom.Polygon) {
+                var hasUniqueCoords = true;
+                var coords;
+                geom.getCoordinates()[0].forEach(function(item) {
+                  if (!coords) {
+                    coords = item;
+                  } else if (hasUniqueCoords &&
+                      coords[0] == item[0] &&
+                      coords[1] == item[1] &&
+                      coords[2] == item[2]) {
+                    coords = item;
+                  } else {
+                    hasUniqueCoords = false;
+                  }
+                });
+                if (hasUniqueCoords) {
+                  return;
+                }
+              }
+
               if (geom instanceof ol.geom.Polygon && !isFinishOnFirstPoint) {
                 // The sketchFeatureArea is automatically closed by the draw
                 // interaction even if the user has finished drawing on the
@@ -485,24 +514,19 @@ goog.require('ga_permalink');
                 featureToAdd.set('type', lastActiveTool.id);
               }
 
-
-              // Unregister the change event
-              ol.Observable.unByKey(deregFeatureChange);
-
               // Set the definitve style of the feature
               featureToAdd.getGeometry().set('altitudeMode', 'clampToGround');
               layer.getSource().addFeature(featureToAdd);
               var styles = tool.style(featureToAdd);
               featureToAdd.setStyle(styles);
-              scope.$apply();
-              deactivateTool(lastActiveTool);
               select.getFeatures().push(featureToAdd);
+
               // Add final measure tooltips
               if (tool.showMeasure) {
                 gaMeasure.addOverlays(map, layer, featureToAdd);
                 map.removeOverlay(distTooltip);
                 map.removeOverlay(areaTooltip);
-             }
+              }
             }));
             map.addInteraction(draw);
           };
