@@ -267,11 +267,26 @@ goog.require('ga_urlutils_service');
   module.provider('gaMapClick', function() {
     this.$get = function($timeout, gaBrowserSniffer) {
       return {
-        listen: function(map, callback) {
+        listen: function(map, onClick) {
           var down = null;
           var moving = false;
           var timeoutPromise = null;
           var touchstartTime;
+          var callback = function(evt) {
+            // if a draw or a select interaction is active, do
+            // nothing.
+            var cancel = false;
+            var arr = map.getInteractions().getArray();
+            arr.slice().reverse().forEach(function(item) {
+              if (!cancel && (item instanceof ol.interaction.Select ||
+                  item instanceof ol.interaction.Draw) && item.getActive()) {
+               cancel = true;
+              }
+            });
+            if (!cancel) {
+              onClick(evt);
+            }
+          };
 
           var isMouseRightAction = function(evt) {
             return (evt.button === 2 || evt.which === 3);
@@ -929,6 +944,11 @@ goog.require('ga_urlutils_service');
       var resolutions = gaGlobalOptions.resolutions;
       var lodsForRes = gaGlobalOptions.lods;
       var isExtentEmpty = function(extent) {
+        for (var i = 0, ii = extent.length; i < ii; i++) {
+           if (!extent[i]) {
+             return true;
+           }
+        }
         return extent[0] >= extent[2] || extent[1] >= extent[3];
       };
       // Level of detail for the default resolution
