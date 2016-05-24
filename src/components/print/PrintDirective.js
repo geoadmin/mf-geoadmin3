@@ -180,7 +180,7 @@ goog.require('ga_time_service');
       var hex = '#';
       for (var i = 0; i < 3; i++) {
         var part = olColor[i].toString(16);
-        if (part.length === 1 && parseInt(part) < 10) {
+        if (part.length === 1) {
           hex += '0';
         }
         hex += part;
