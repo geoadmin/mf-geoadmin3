@@ -2,7 +2,7 @@ goog.provide('ga_print_directive');
 
 goog.require('ga_attribution_service');
 goog.require('ga_browsersniffer_service');
-goog.require('ga_print_style_service');
+goog.require('ga_printstyle_service');
 goog.require('ga_time_service');
 
 (function() {
@@ -10,14 +10,14 @@ goog.require('ga_time_service');
   var module = angular.module('ga_print_directive', [
     'ga_browsersniffer_service',
     'pascalprecht.translate',
-    'ga_print_style_service',
+    'ga_printstyle_service',
     'ga_time_service',
     'ga_attribution_service'
   ]);
 
   module.controller('GaPrintDirectiveController', function($rootScope, $scope,
       $http, $q, $window, $translate, $timeout, gaLayers, gaMapUtils, 
-      gaPermalink, gaBrowserSniffer, gaWaitCursor, gaPrintStyleService,
+      gaPermalink, gaBrowserSniffer, gaWaitCursor, gaPrintStyle,
       gaTime, gaAttribution) {
 
     var pdfLegendsToDownload = [];
@@ -175,168 +175,6 @@ goog.require('ga_time_service');
     };
 
 
-    // Transform an ol.Color to an hexadecimal string
-    var toHexa = function(olColor) {
-      var hex = '#';
-      for (var i = 0; i < 3; i++) {
-        var part = olColor[i].toString(16);
-        if (part.length === 1) {
-          hex += '0';
-        }
-        hex += part;
-      }
-      return hex;
-    };
-
-    // Transform a ol.style.Style to a print literal object
-    var transformToPrintLiteral = function(feature, style) {
-      /**
-       * ol.style.Style properties:
-       *
-       *  fill: ol.style.Fill :
-       *    fill: String
-       *  image: ol.style.Image:
-       *    anchor: array[2]
-       *    rotation
-       *    size: array[2]
-       *    src: String
-       *  stroke: ol.style.Stroke:
-       *    color: String
-       *    lineCap
-       *    lineDash
-       *    lineJoin
-       *    miterLimit
-       *    width: Number
-       *  text
-       *  zIndex
-       */
-
-      /**
-       * Print server properties:
-       *
-       * fillColor
-       * fillOpacity
-       * strokeColor
-       * strokeOpacity
-       * strokeWidth
-       * strokeLinecap
-       * strokeLinejoin
-       * strokeDashstyle
-       * pointRadius
-       * label
-       * fontFamily
-       * fontSize
-       * fontWeight
-       * fontColor
-       * labelAlign
-       * labelXOffset
-       * labelYOffset
-       * labelOutlineColor
-       * labelOutlineWidth
-       * graphicHeight
-       * graphicOpacity
-       * graphicWidth
-       * graphicXOffset
-       * graphicYOffset
-       * zIndex
-       */
-
-      var literal = {
-        zIndex: style.getZIndex()
-      };
-      var type = feature.getGeometry().getType();
-      var fill = style.getFill();
-      var stroke = style.getStroke();
-      var textStyle = style.getText();
-      var imageStyle = style.getImage();
-
-      if (imageStyle) {
-        var size, anchor, scale = imageStyle.getScale();
-        literal.rotation = imageStyle.getRotation();
-
-        if (imageStyle instanceof ol.style.Icon) {
-          size = imageStyle.getSize();
-          anchor = imageStyle.getAnchor();
-          literal.externalGraphic = imageStyle.getSrc();
-          literal.fillOpacity = 1;
-        } else if (imageStyle instanceof ol.style.Circle) {
-          fill = imageStyle.getFill();
-          stroke = imageStyle.getStroke();
-          var radius = imageStyle.getRadius();
-          var width = adjustDist(2 * radius);
-          if (stroke) {
-            width += adjustDist(stroke.getWidth() + 1);
-          }
-          size = [width, width];
-          anchor = [width / 2, width / 2];
-          literal.pointRadius = radius;
-        }
-
-        if (size) {
-          // Print server doesn't handle correctly 0 values for the size
-          literal.graphicWidth = adjustDist((size[0] * scale || 0.1));
-          literal.graphicHeight = adjustDist((size[1] * scale || 0.1));
-        }
-        if (anchor) {
-          literal.graphicXOffset = adjustDist(-anchor[0] * scale);
-          literal.graphicYOffset = adjustDist(-anchor[1] * scale);
-        }
-
-      }
-
-      if (fill) {
-        var color = ol.color.asArray(fill.getColor());
-        literal.fillColor = toHexa(color);
-        literal.fillOpacity = color[3];
-      } else if (!literal.fillOpacity) {
-        literal.fillOpacity = 0; // No fill
-      }
-
-      if (stroke) {
-        var color = ol.color.asArray(stroke.getColor());
-        literal.strokeWidth = adjustDist(stroke.getWidth());
-        literal.strokeColor = toHexa(color);
-        literal.strokeOpacity = color[3];
-        literal.strokeLinecap = stroke.getLineCap() || 'round';
-        literal.strokeLinejoin = stroke.getLineJoin() || 'round';
-
-        if (stroke.getLineDash()) {
-          literal.strokeDashstyle = 'dash';
-        }
-        // TO FIX: Not managed by the print server
-        // literal.strokeMiterlimit = stroke.getMiterLimit();
-      } else {
-        literal.strokeOpacity = 0; // No Stroke
-      }
-
-      if (textStyle && textStyle.getText()) {
-        literal.label = textStyle.getText();
-        literal.labelAlign = textStyle.getTextAlign();
-
-        if (textStyle.getFill()) {
-          var fillColor = ol.color.asArray(textStyle.getFill().getColor());
-          literal.fontColor = toHexa(fillColor);
-        }
-
-        if (textStyle.getFont()) {
-          var fontValues = textStyle.getFont().split(' ');
-          // Fonts managed by print server: COURIER, HELVETICA, TIMES_ROMAN
-          literal.fontFamily = fontValues[2].toUpperCase();
-          literal.fontSize = parseInt(fontValues[1]);
-          literal.fontWeight = fontValues[0];
-        }
-
-        /* TO FIX: Not managed by the print server
-        if (textStyle.getStroke()) {
-          var strokeColor = ol.color.asArray(textStyle.getStroke().getColor());
-          literal.labelOutlineColor = toHexa(strokeColor);
-          literal.labelOutlineWidth = textStyle.getStroke().getWidth();
-        }*/
-      }
-
-      return literal;
-    };
-
     // Encoders by type of layer
     $scope.encoders = {
       'layers': {
@@ -492,26 +330,43 @@ goog.require('ga_time_service');
           }
 
           var geometry = feature.getGeometry();
+          var styleToEncode;
+          if (styles && styles.length > 0) {
+            styleToEncode = styles[0];
+          }
 
-          // We encode the feature only if the geometry intersects the extent
+          // We encode the feature only if the feature has a style.
+          if (!styleToEncode) {
+            return {
+              encFeatures: [],
+              encStyles: []
+            };
+          }
+
+          // Transform an ol.geom.Circle to a ol.geom.Polygon
+          if (geometry instanceof ol.geom.Circle) {
+            geometry = gaPrintStyle.olCircleToPolygon(geometry);
+            feature = new ol.Feature(geometry);
+          }
+
+          // Handle ol.style.RegularShape by converting points to polygons
+          var image = styleToEncode.getImage();
+          if (geometry instanceof ol.geom.Point &&
+              image instanceof ol.style.RegularShape) {
+            var scale = parseFloat($scope.scale.value);
+            var resolution = scale / UNITS_RATIO / POINTS_PER_INCH;
+            geometry = gaPrintStyle.olPointToPolygon(
+              feature.getGeometry(),
+              image.getRadius(),
+              resolution,
+              image.getPoints(),
+              image.getRotation()
+            );
+            feature = new ol.Feature(geometry);
+          }
+
+          // Encode a feature if it intersects with the extent
           if (geometry.intersectsExtent(getPrintRectangleCoords())) {
-
-            // Transform an ol.geom.Circle to a ol.geom.Polygon
-            if (geometry instanceof ol.geom.Circle) {
-              var polygon = gaPrintStyleService.olCircleToPolygon(geometry);
-              feature = new ol.Feature(polygon);
-            }
-
-            // Handle ol.style.RegularShape by converting points to poylgons
-            var image = styles[0].getImage();
-            if (image instanceof ol.style.RegularShape) {
-              var scale = parseFloat($scope.scale.value);
-              var resolution = scale / UNITS_RATIO / POINTS_PER_INCH;
-              feature = gaPrintStyleService.olPointToPolygon(
-                  styles[0], feature, resolution);
-            }
-
-            // Encode a feature
             var encFeature = format.writeFeatureObject(feature);
             if (!encFeature.properties) {
               encFeature.properties = {};
@@ -523,12 +378,10 @@ goog.require('ga_time_service');
             }
             encFeature.properties._gx_style = encStyle.id;
             encFeatures.push(encFeature);
-          }
 
-          // Encode a style of a feature
-          if (styles && styles.length > 0) {
-            angular.extend(encStyle, transformToPrintLiteral(feature,
-                styles[0]));
+            // Encode the style of the feature added
+            angular.extend(encStyle, gaPrintStyle.olStyleToPrintLiteral(
+                styleToEncode, getDpi($scope.layout.name, $scope.dpi)));
 
             // Apply the layer's opacity on fill and stroke
             if (encStyle.fillOpacity) {
@@ -540,20 +393,20 @@ goog.require('ga_time_service');
             }
 
             encStyles[encStyle.id] = encStyle;
-            var styleToEncode = styles[0];
-            // If a feature has a style with a geometryFunction defined, we
-            // must also display this geometry with the good style (used for
-            // azimuth).
-            for (var i = 0; i < styles.length; i++) {
-              var style = styles[i];
-              if (angular.isFunction(style.getGeometry())) {
-                var geom = style.getGeometry()(feature);
-                if (geom) {
-                  var encoded = $scope.encoders.features.feature(layer,
-                       new ol.Feature(geom), [style]);
-                  encFeatures = encFeatures.concat(encoded.encFeatures);
-                  angular.extend(encStyles, encoded.encStyles);
-                }
+          }
+
+          // If a feature has a style with a geometryFunction defined, we
+          // must also display this geometry with the good style (used for
+          // azimuth).
+          for (var i = 0; i < styles.length; i++) {
+            var style = styles[i];
+            if (angular.isFunction(style.getGeometry())) {
+              var geom = style.getGeometry()(feature);
+              if (geom) {
+                var encoded = $scope.encoders.features.feature(layer,
+                     new ol.Feature(geom), [style]);
+                encFeatures = encFeatures.concat(encoded.encFeatures);
+                angular.extend(encStyles, encoded.encStyles);
               }
             }
           }
@@ -957,14 +810,6 @@ goog.require('ga_time_service');
       } else {
         return dpiConfig[0].value;
       }
-    };
-
-    // Change a distance according to the change of DPI
-    var adjustDist = function(dist) {
-      if (!dist) {
-        return;
-      }
-      return dist * 90 / getDpi($scope.layout.name, $scope.dpi);
     };
 
     var getPrintRectangleCoords = function() {
