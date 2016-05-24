@@ -57,9 +57,7 @@ goog.require('ga_topic_service');
           altShiftDragRotate: true,
           touchRotate: false,
           keyboard: false
-        }).extend([
-          new ol.interaction.DragZoom()
-        ]),
+        }),
         renderer: 'canvas',
         view: new ol.View({
           projection: defaultProjection,

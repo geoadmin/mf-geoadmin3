@@ -12,7 +12,7 @@
     <i class="{{tool.cssClass}}"></i>
     <span translate>{{tool.title}}</span>
   </button>
-  <div class="ga-more">
+  <div class="ga-more" ng-show="::!options.noMoreFunctions">
     <button class="btn btn-default btn-sm dropdown-toggle"
             data-toggle="dropdown" data-container="body"
             aria-expanded="false">
@@ -38,82 +38,82 @@
     </ul>
   </div>
 </div>
-
-<div class="ga-draw-popup"
-     ga-popup="popupToggle"
-     ga-popup-options="options.popupOptions"
-     ng-class="{'ga-profile-active': options.isProfileActive, 'ga-tabs': (feature && showTabs(feature))}">
-  <ul class="nav nav-tabs" role="tablist" ng-if="feature && showTabs(feature)">
-    <li ng-show="showPropsTab(feature)">
-      <a href=""
-         ng-click="activeTabProps()"
-         ng-class="{'ga-active': isPropsActive}"
-         translate>draw_type_marker</a>
-    </li>
-    <li ng-show="showMeasureTab(feature)">
-      <a href=""
-         ng-click="activeTabProfile()"
-         ng-class="{'ga-active': options.isProfileActive}"
-         translate>draw_show_profile</a>
-    </li>
-    <li ng-show="showProfileTab(feature)">
-      <a href=""
-         ng-click="activeTabMeasure()"
-         ng-class="{'ga-active': isMeasureActive}"
-         translate>draw_show_measure</a>
-    </li>
-  </ul>
-  <div ng-if="isPropsActive" class="ga-draw-modify">
-    <label ng-if="useTextStyle">
-      <span translate>{{'modify_text_label'}}:</span> 
-      <input type="text" class="form-control" ng-model="options.name"/>
-    </label>
-    
-    <label ng-if="!useTextStyle">
-      <span translate>{{'modify_description'}}:</span> 
-      <textarea class="form-control" ng-model="options.description"></textarea>
-    </label>
-
-    <label ng-if="useColorStyle">
-      <span translate>{{'modify_color_label'}}:</span> 
-      <div class="ga-select-box ga-select-colors ga-item-size-{{options.iconSize.value[0]}}"
-           ng-class="{'ga-select-box-open': gaSelectBoxOpen}">
-        <div ng-repeat="c in options.colors"
-             ng-class="{'ga-selected': (options.color == c)}" 
-             ng-click="options.color = c">
-          <div ng-style="{
-            'background-color': c.name,
-            border: (useTextStyle ? '1px solid ' + c.border : '')
-          }">
-          </div> 
-        </div>
-      </div>
-    </label>
-    <div ng-if="useIconStyle">
-      <label>
-        <span translate>{{'modify_icon_size_label'}}:</span> 
-        <select ng-model="options.iconSize" ng-options="s.label | translate for s in options.iconSizes">
-        </select>
+<div ng-if="::!options.noStyleUpdate">
+  <div class="ga-draw-popup"
+       ga-popup="options.popupToggle"
+       ga-popup-options="options.popupOptions"
+       ng-class="{'ga-profile-active': options.isProfileActive, 'ga-tabs': (feature && showTabs(feature))}">
+    <ul class="nav nav-tabs" role="tablist" ng-if="feature && showTabs(feature)">
+      <li ng-show="showPropsTab(feature)">
+        <a href=""
+           ng-click="activeTabProps()"
+           ng-class="{'ga-active': isPropsActive}"
+           translate>draw_type_marker</a>
+      </li>
+      <li ng-show="showMeasureTab(feature)">
+        <a href=""
+           ng-click="activeTabProfile()"
+           ng-class="{'ga-active': options.isProfileActive}"
+           translate>draw_show_profile</a>
+      </li>
+      <li ng-show="showProfileTab(feature)">
+        <a href=""
+           ng-click="activeTabMeasure()"
+           ng-class="{'ga-active': isMeasureActive}"
+           translate>draw_show_measure</a>
+      </li>
+    </ul>
+    <div ng-if="isPropsActive" class="ga-draw-modify">
+      <label ng-if="useTextStyle">
+        <span translate>{{'modify_text_label'}}:</span> 
+        <input type="text" class="form-control" ng-model="options.name"/>
       </label>
-      <label class="ga-icons">
-        <span translate>{{'modify_icon_label'}}:</span> 
-        <div class="ga-select-box ga-select-icons ga-item-size-{{options.iconSize.value[0]}}"
+      
+      <label ng-if="!useTextStyle">
+        <span translate>{{'modify_description'}}:</span> 
+        <textarea class="form-control" ng-model="options.description"></textarea>
+      </label>
+
+      <label ng-if="useColorStyle">
+        <span translate>{{'modify_color_label'}}:</span> 
+        <div class="ga-select-box ga-select-colors ga-item-size-{{options.iconSize.value[0]}}"
              ng-class="{'ga-select-box-open': gaSelectBoxOpen}">
-          <i tabindex=1 ng-repeat="i in options.icons" class="ga-icon-draw fa fa-maki-{{i.id}}" ng-click="options.icon = i;$event.preventDefault();"></i>
-          <button class="ga-icon fa fa-caret-down"
-                ng-click="gaSelectBoxOpen=!gaSelectBoxOpen"></button>
+          <div ng-repeat="c in options.colors"
+               ng-class="{'ga-selected': (options.color == c)}" 
+               ng-click="options.color = c">
+            <div ng-style="{
+              'background-color': c.name,
+              border: (useTextStyle ? '1px solid ' + c.border : '')
+            }">
+            </div> 
+          </div>
         </div>
       </label>
+      <div ng-if="useIconStyle">
+        <label>
+          <span translate>{{'modify_icon_size_label'}}:</span> 
+          <select ng-model="options.iconSize" ng-options="s.label | translate for s in options.iconSizes">
+          </select>
+        </label>
+        <label class="ga-icons">
+          <span translate>{{'modify_icon_label'}}:</span> 
+          <div class="ga-select-box ga-select-icons ga-item-size-{{options.iconSize.value[0]}}"
+               ng-class="{'ga-select-box-open': gaSelectBoxOpen}">
+            <i tabindex=1 ng-repeat="i in options.icons" class="ga-icon-draw fa fa-maki-{{i.id}}" ng-click="options.icon = i;$event.preventDefault();"></i>
+            <button class="ga-icon fa fa-caret-down"
+                  ng-click="gaSelectBoxOpen=!gaSelectBoxOpen"></button>
+          </div>
+        </label>
+      </div>
     </div>
+    <div ng-if="isMeasureActive"
+         ga-measure-infos="feature"
+         ga-measure-infos-options="options.measureOptions"></div>
+    <div ng-if="options.isProfileActive"
+         ga-profile="feature" 
+         ga-profile-map="map"
+         ga-profile-options="options.profileOptions"></div>
   </div>
-  <div ng-if="isMeasureActive"
-       ga-measure-infos="feature"
-       ga-measure-infos-options="options.measureOptions"></div>
-  <div ng-if="options.isProfileActive"
-       ga-profile="feature" 
-       ga-profile-map="map"
-       ga-profile-options="options.profileOptions"></div>
-
 </div>
 <div class="ga-draw-interaction-share" ng-if="adminShortenUrl">
   <div class="ga-share-permalink">

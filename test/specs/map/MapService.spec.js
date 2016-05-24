@@ -573,6 +573,12 @@ describe('ga_map_service', function() {
         expect(gaMapUtils.intersectWithDefaultExtent([0, 0, 1, 1])).to.eql(undefined);
       });
 
+      it('returns undefined if the extent doesn\'t contains number', function() {
+        expect(gaMapUtils.intersectWithDefaultExtent([undefined, 1, 2, 2])).to.eql(undefined);
+        // NaN
+        expect(gaMapUtils.intersectWithDefaultExtent([0, 1, Math.max(undefined,5), 2])).to.eql(undefined);
+      });
+
       it('returns the intersection', function() {
         expect(gaMapUtils.intersectWithDefaultExtent([320000, 310000, 800000, 450000])).to.eql([420000, 310000, 800000, 350000]);
       });

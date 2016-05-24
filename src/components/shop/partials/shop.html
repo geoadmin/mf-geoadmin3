@@ -1,20 +1,24 @@
-<div class="ga-shop-order" ng-hide="showConfirm">
-  <span class="ga-shop-not-available" ng-if="notAvailable" translate>shop_not_available</span>
-  <button ng-show="orderTypes.length == 1" class="btn btn-default"
-          ng-click="orderMapsheet()"
-          translate>shop_order</button>
-  <select ng-show="orderTypes.length > 1"
-          ng-model="orderType"
-          ng-options="label for label in orderTypes"
-          ng-change="chooseOrderType(this)">
-  </select>
-</div>
-<div class="ga-shop-confirm" ng-show="showConfirm">
-  <div translate>shop_confirm</div>
-  <div class="ga-shop-btns">
-    <button ng-if="orderTypes.length == 1" class="btn btn-default"
-            ng-click="goToShop()" translate>shop_go_to</button>
-    <button ng-if="orderTypes.length == 1" class="btn btn-default"
-          ng-click="confirm(false)" translate>shop_cancel</button>
+<div class="ga-shop-not-available" ng-if="::notAvailable" translate>shop_not_available</div>
+<div class="ga-shop-available" ng-show="::!notAvailable">
+  <div class="ga-shop-order">
+    <button class="btn btn-default"
+            ng-click="order()"
+            ng-disabled="!orderType || !price">
+      <span translate>shop_order</span>
+      <span ng-show="price"> ({{price | price}})</span>
+    </button>
+    <select ng-if="::orderTypes.length > 1"
+            ng-model="orderType"
+            ng-options="((label | translate) + '' + getClipperFeatureLabel(label)) for label in orderTypes"
+            ng-change="onChangeOrderType(orderType)"
+            class="form-control">
+      <option value="" translate>{{'shop_choose'}}:</option>
+    </select>
+  </div>
+  <div ng-show="orderType == 'rectangle'"
+       ga-shop-rectangle
+       ga-shop-rectangle-map="map"
+       ga-shop-rectangle-active="orderType == 'rectangle'"
+       ga-shop-rectangle-update-price="updatePrice">
   </div>
 </div>

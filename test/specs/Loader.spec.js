@@ -33,6 +33,7 @@ beforeEach(function() {
       cachedApiUrl: location.protocol + apiUrl + cacheAdd,
       resourceUrl: location.origin + pathname + versionSlashed,
       ogcproxyUrl : location.protocol + apiUrl + '/ogcproxy?url=',
+      shopUrl : location.protocol + '//shop.bgdi.ch',
       whitelist: [
         'https://' + location.host + '/**'
       ],

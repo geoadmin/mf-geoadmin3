@@ -359,6 +359,7 @@ goog.require('ga_styles_service');
 
     var measureDrawStyleFunc = gaStyleFactory.getStyleFunction('measure');
 
+
     var generateDrawStyleFunc = function(styleFunction) {
       // ol.interaction.Draw generates automatically a sketchLine when
       // drawing  polygon
@@ -445,43 +446,44 @@ goog.require('ga_styles_service');
     })();
 
     // Define tools
-    $scope.options.tools = [{
-      id: 'marker',
-      cssClass: 'fa fa-ga-marker',
-      drawOptions: {
-        type: 'Point',
-        style: markerDrawStyleFunc
-      },
-      style: markerDrawStyleFunc,
-      useIconStyle: true
-    }, {
-      id: 'annotation',
-      cssClass: 'fa fa-ga-add-text',
-      drawOptions: {
-        type: 'Point',
+    if (!$scope.options.tools) {
+      $scope.options.tools = [{
+        id: 'marker',
+        cssClass: 'fa fa-ga-marker',
+        drawOptions: {
+          type: 'Point',
+          style: markerDrawStyleFunc
+        },
+        style: markerDrawStyleFunc,
+        useIconStyle: true
+      }, {
+        id: 'annotation',
+        cssClass: 'fa fa-ga-add-text',
+        drawOptions: {
+          type: 'Point',
+          style: annotationDrawStyleFunc
+        },
         style: annotationDrawStyleFunc
-      },
-      style: annotationDrawStyleFunc
-    }, {
-      id: 'linepolygon',
-      cssClass: 'fa fa-ga-add-line',
-      drawOptions: {
-        type: 'Polygon',
-        style: generateDrawStyleFunc(linepolygonDrawStyleFunc)
-      },
-      style: linepolygonDrawStyleFunc
-    }, {
-      id: 'measure',
-      cssClass: 'fa fa-ga-measure',
-      drawOptions: {
-        type: 'Polygon',
-        minPoints: 2,
-        style: generateDrawStyleFunc(measureDrawStyleFunc)
-      },
-      style: measureDrawStyleFunc,
-      showMeasure: true
-    }];
-
+      }, {
+        id: 'linepolygon',
+        cssClass: 'fa fa-ga-add-line',
+        drawOptions: {
+          type: 'Polygon',
+          style: generateDrawStyleFunc(linepolygonDrawStyleFunc)
+        },
+        style: linepolygonDrawStyleFunc
+      }, {
+        id: 'measure',
+        cssClass: 'fa fa-ga-measure',
+        drawOptions: {
+          type: 'Polygon',
+          minPoints: 2,
+          style: generateDrawStyleFunc(measureDrawStyleFunc)
+        },
+        style: measureDrawStyleFunc,
+        showMeasure: true
+      }];
+    }
     for (var i = 0, ii = $scope.options.tools.length; i < ii; i++) {
       var tool = $scope.options.tools[i];
       tool.activeKey = 'is' + tool.id.charAt(0).toUpperCase() +

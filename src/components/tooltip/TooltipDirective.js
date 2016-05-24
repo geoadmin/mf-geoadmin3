@@ -30,15 +30,14 @@ goog.require('ga_topic_service');
                'ng-mouseenter="options.onMouseEnter($event,' +
                    'options.htmls.length)" ' +
                'ng-mouseleave="options.onMouseLeave($event)">' +
-            '<div ng-bind-html="html.snippet"></div>';
-            /*
-            + '<div ga-shop ' +
+            '<div ng-bind-html="html.snippet"></div>' +
+            '<div ga-shop ' +
                  'ga-shop-map="::html.map" ' +
-                 'ga-shop-feature="::html.feature"></div>' +
+                 'ga-shop-feature="::html.feature" ' +
+                 'ga-shop-clipper-geometry="::html.clickGeometry"></div>' +
             '<div class="ga-tooltip-separator" ' +
                  'ng-show="!$last"></div>' +
           '</div>';
-           */
         // Test if the layer is a vector layer
         var isVectorLayer = function(olLayer) {
           return (olLayer instanceof ol.layer.Vector ||
@@ -232,7 +231,7 @@ goog.require('ga_topic_service');
               return scope.ol3d && scope.ol3d.getEnabled();
             };
 
-            // Destro popup and highlight
+            // Destroy popup and highlight
             var initTooltip = function() {
                // Cancel all pending requests
               if (canceler) {
@@ -244,14 +243,6 @@ goog.require('ga_topic_service');
               htmls.splice(0, htmls.length);
               if (popup) {
                 popup.close();
-                $timeout(function() {
-                  // We destroy the popup only if it's still closed
-                  if (popup && popup.scope &&
-                      popup.scope.toggle === false) {
-                    popup.destroy();
-                    popup = undefined;
-                  }
-                },0);
               }
 
               // Clear the preview features
@@ -305,21 +296,32 @@ goog.require('ga_topic_service');
               }
             });
 
+            var activate = function() {
+              if (is3dActive()) {
+                registerGlobeEvents(scope, findFeatures);
+              } else {
+                registerMapEvents(scope, findFeatures);
+              }
+            };
+
+            var deactivate = function() {
+              // Remove the highlighted feature when we deactivate the tooltip
+              initTooltip();
+              deregMapEvents();
+              deregGlobeEvents();
+            };
+
             scope.$watch('isActive', function(active) {
               if (active) {
-                if (is3dActive()) {
-                  registerGlobeEvents(scope, findFeatures);
-                } else {
-                  registerMapEvents(scope, findFeatures);
-                }
+                activate();
               } else {
-                // Remove the highlighted feature when we deactivate the tooltip
-                initTooltip();
-                deregMapEvents();
-                deregGlobeEvents();
+                deactivate();
               }
             });
 
+            scope.$on('destroy', function() {
+              deactivate();
+            });
 
             // Find features for all type of layers
             var findFeatures = function(coordinate, position3d) {
@@ -329,6 +331,8 @@ goog.require('ga_topic_service');
                  coordinate)) {
                 return;
               }
+              // Use by the ga-shop directive
+              scope.clickCoordinate = coordinate;
               var pointerShown = (map.getTarget().style.cursor == 'pointer');
               var size = map.getSize();
               var mapExtent = map.getView().calculateExtent(size);
@@ -414,7 +418,7 @@ goog.require('ga_topic_service');
                 // which layer. It worked like that in RE2.
                 listenerKey = map.getLayers().on('remove',
                   function(evt) {
-                    if (!evt.element.preview) {
+                    if (evt.element.displayInLayerManager) {
                       initTooltip();
                     }
                   }
@@ -542,6 +546,14 @@ goog.require('ga_topic_service');
                       }
                       onCloseCB = angular.noop;
                       gaPreviewFeatures.clear(map);
+                      $timeout(function() {
+                        // We destroy the popup only if it's still closed
+                        if (popup && popup.scope &&
+                            popup.scope.toggle === false) {
+                          popup.destroy();
+                          popup = undefined;
+                        }
+                      },0);
                     },
                     onMouseEnter: function(evt, nbTooltips) {
                       if (nbTooltips == 1) return;
@@ -571,6 +583,7 @@ goog.require('ga_topic_service');
               htmls.push({
                 map: scope.map,
                 feature: value,
+                clickGeometry: new ol.geom.Point(scope.clickCoordinate),
                 snippet: $sce.trustAsHtml(html)
               });
             };

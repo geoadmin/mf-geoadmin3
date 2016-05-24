@@ -1,0 +1,41 @@
+<div class="ga-shop-rect-help">
+    <button class="btn btn-default"
+            ng-class="{active: dragBox.getActive()}"
+            ng-click="dragBox.setActive(true)"
+            ng-disabled translate>shop_draw_rectangle</button>
+    <span translate>shop_or_fill</span>:
+</div>
+<div class="ga-shop-rect-inputs form-inline">
+  <div class="form-group">
+    <label translate>west</label>:
+    <input type="text"
+           class="form-control"
+           ng-model="west" 
+           ng-change="onInputChange($event)">
+  </div>
+  <div class="form-group"div>
+    <label translate>south</label>:
+    <input type="text"
+           class="form-control"
+           ng-model="south" 
+           ng-change="onInputChange($event)">
+  </div>
+  <div class="form-group">
+    <label translate>east</label>:
+    <input type="text"
+           class="form-control"
+           ng-model="east" 
+           ng-change="onInputChange($event)">
+  </div>
+  <div class="form-group">
+    <label translate>north</label>:
+    <input type="text"
+           class="form-control"
+           ng-model="north"     
+           ng-change="onInputChange($event)">
+  </div>
+</div>
+<div class="ga-shop-rect-labels">
+  <span translate>area</span>:<span> {{area | measure:'area':[' km&sup2', ' m&sup2']}}</span>
+</div>
+

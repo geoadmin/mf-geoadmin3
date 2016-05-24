@@ -164,6 +164,9 @@ goog.require('ga_permalink');
           isActive: '=gaDrawActive'
         },
         link: function(scope, element, attrs, controller) {
+          if (!scope.options) {
+            scope.options = {};
+          }
           var layer, draw, lastActiveTool, snap;
           var unDblClick, unLayerAdd, unLayerRemove, unSourceEvents = [],
               deregPointerMove, deregFeatureChange, unLayerVisible,
@@ -225,7 +228,6 @@ goog.require('ga_permalink');
             togglePopup();
           });
           select.setActive(false);
-          map.addInteraction(select);
 
           // Add modify interaction
           // The modify interaction works with features selected by the select
@@ -235,7 +237,6 @@ goog.require('ga_permalink');
             features: select.getFeatures(),
             style: scope.options.selectStyleFunction
           });
-          map.addInteraction(modify);
 
           var defineLayerToModify = function() {
 
@@ -289,6 +290,10 @@ goog.require('ga_permalink');
           // Activate the component: active a tool if one was active when draw
           // has been deactivated.
           var activate = function() {
+            if (!scope.options.noModify) {
+              map.addInteraction(select);
+              map.addInteraction(modify);
+            }
             defineLayerToModify();
 
             if (layer.adminId) {
@@ -338,7 +343,7 @@ goog.require('ga_permalink');
               }
             }));
 
-            unWatch.push(scope.$watch('popupToggle', function(active) {
+            unWatch.push(scope.$watch('options.popupToggle', function(active) {
               if (!active) {
                 select.getFeatures().clear();
               }
@@ -375,10 +380,14 @@ goog.require('ga_permalink');
             }
 
             // Remove the layer if no features added
-            if (layer && layer.getSource().getFeatures().length == 0) {
+            if (layer && (useTemporaryLayer ||
+                layer.getSource().getFeatures().length == 0)) {
               map.removeLayer(layer);
               layer = null;
             }
+            map.removeInteraction(select);
+            map.removeInteraction(modify);
+            map.removeInteraction(snap);
           };
 
           // Set the draw interaction with the good geometry
@@ -401,6 +410,12 @@ goog.require('ga_permalink');
             draw = new ol.interaction.Draw(tool.drawOptions);
             var isFinishOnFirstPoint;
             unDrawEvts.push(draw.on('drawstart', function(evt) {
+              // Remove the first features created if wanted
+              var src = layer.getSource();
+              if (tool.maxFeatures &&
+                  src.getFeatures().length >= tool.maxFeatures) {
+                src.removeFeature(src.getFeatures()[0]);
+              }
               var nbPoint = 1;
               var isSnapOnLastPoint = false;
               updateHelpTooltip(helpTooltip, tool.id, true,
@@ -552,6 +567,14 @@ goog.require('ga_permalink');
           });
 
 
+          // Deactivate tools if another draw directive actives one
+          scope.$on('gaDrawToolActive', function(evt, drawScope) {
+            if (drawScope !== scope && lastActiveTool &&
+                scope.options[lastActiveTool.activeKey]) {
+              deactivateTool(lastActiveTool);
+            }
+          });
+
           ///////////////////////////////////
           // Tools managment
           ///////////////////////////////////
@@ -576,8 +599,12 @@ goog.require('ga_permalink');
             if (snap) {
               map.removeInteraction(snap);
             }
-            map.addInteraction(snap);
+            if (!scope.options.noModify) {
+              map.addInteraction(snap);
+            }
 
+            // Warn other draw directive that a tool has been activated
+            $rootScope.$broadcast('gaDrawToolActive', scope);
           };
 
           var deactivateTool = function(tool) {
@@ -654,7 +681,9 @@ goog.require('ga_permalink');
           // Shorten url stuff
           ////////////////////////////////////
           var updateShortenUrl = function(adminId) {
-
+            if (scope.options.noShareUpdate) {
+              return;
+            }
             // For now we pass the long permalink otherwoise we need to
             // regenerate the permalink on each map interaction
             /*$http.get(scope.options.shortenUrl, {
@@ -687,10 +716,13 @@ goog.require('ga_permalink');
           ////////////////////////////////////
           var popupTitlePrefix = 'draw_popup_title_';
           var togglePopup = function(feature) {
+            if (scope.options.noStyleUpdate) {
+              return;
+            }
             if (feature) {
               scope.feature = feature;
               // Open the popup
-              scope.popupToggle = true;
+              scope.options.popupToggle = true;
               // Set the correct title
               scope.options.popupOptions.title = popupTitlePrefix +
                   feature.get('type');
@@ -703,7 +735,7 @@ goog.require('ga_permalink');
               }
             } else {
               scope.feature = undefined;
-              scope.popupToggle = false;
+              scope.options.popupToggle = false;
               scope.options.popupOptions.title = popupTitlePrefix + 'feature';
             }
           };
@@ -711,6 +743,9 @@ goog.require('ga_permalink');
           // Determines which elements to display in the feature's propereties
           // tab
           var updatePropsTabContent = function() {
+            if (scope.options.noStyleUpdate) {
+              return;
+            }
             // The select interaction selects only one feature
             var feature = select.getFeatures().item(0);
             var useTextStyle = false;
@@ -844,6 +879,10 @@ goog.require('ga_permalink');
             }
           });
 
+          // Remove interactions on destroy
+          scope.$on('$destroy', function() {
+            deactivate();
+          });
 
 
           ////////////////////////////////////
