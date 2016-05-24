@@ -87,7 +87,7 @@ goog.require('ga_wms_service');
                 var root = getChildLayers(result.Capability.Layer,
                     $scope.map, result.version);
                 if (root) {
-                  $scope.layers = root.Layer;
+                  $scope.layers = root.Layer || [root];
                 }
               }
 
