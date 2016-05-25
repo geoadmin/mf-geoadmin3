@@ -40,7 +40,7 @@ goog.require('ga_wms_service');
 
     this.$get = function($rootScope, gaLayers, gaPermalink, $translate, $http,
         gaKml, gaMapUtils, gaWms, gaLayerFilters, gaUrlUtils, gaFileStorage,
-        gaTopic, gaGlobalOptions, $q, gaTime) {
+        gaTopic, gaGlobalOptions, $q, gaTime, $log) {
 
       var layersParamValue = gaPermalink.getParams().layers;
       var layersOpacityParamValue = gaPermalink.getParams().layers_opacity;
@@ -259,6 +259,7 @@ goog.require('ga_wms_service');
                 mustReorder = true;
               } catch (e) {
                 // Adding KML layer failed, native alert, log message?
+                $log.error(e.message);
               }
 
             } else if (gaMapUtils.isExternalWmsLayer(layerSpec)) {
@@ -269,7 +270,7 @@ goog.require('ga_wms_service');
                 gaWms.addWmsToMap(map,
                   {
                     LAYERS: infos[3],
-                    VERSION: infos[4] || '1.3.0'
+                    VERSION: infos[4]
                   },
                   {
                     url: infos[2],
@@ -282,6 +283,7 @@ goog.require('ga_wms_service');
                   index + 1);
               } catch (e) {
                 // Adding external WMS layer failed, native alert, log message?
+                $log.error(e.message);
               }
             }
           });
@@ -323,6 +325,7 @@ goog.require('ga_wms_service');
                 gaPermalink.deleteParam('adminId');
               } catch (e) {
                 // Adding KML layer failed, native alert, log message?
+                $log.error(e.message);
               }
             });
           }
