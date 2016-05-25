@@ -4,36 +4,20 @@
   padding: 5px;
 
   .ga-shop-order {
-    height: 44px;
+    height: auto;
 
     @media (max-width: @screen-phone) {
-      height: auto;
-      
       option[value="string:rectangle"] {
         display: none;
       }
     }
 
-    select {
-      float: left;
-      width: 130px;
-    }
-    
-    button {
-      float: right;
-      max-width: 58%;
-    }
-
     button, select {
-      margin: 5px;
-
-      @media (max-width: @screen-phone) {
-        display: block;
-        float: none;
-        max-width: 100%;
-        margin: 5px 0;
-        width: 100%;
-      }
+      display: block;
+      float: none;
+      max-width: 100%;
+      margin: 5px 0;
+      width: 100%;
     }
   }
 
