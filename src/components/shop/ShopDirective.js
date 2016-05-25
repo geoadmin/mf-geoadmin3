@@ -115,8 +115,15 @@ goog.require('ga_price_filter');
             ];
             gaIdentify.get(scope.map, layers, scope.clipperGeometry, 1,
                 false).then(function(response) {
-              scope.clipperFeatures[scope.orderType] = response.data.results[0];
-              scope.updatePrice();
+              var results = response.data.results;
+              if (results.length) {
+                scope.clipperFeatures[scope.orderType] = results[0];
+                scope.updatePrice();
+              } else {
+                scope.price = null;
+              }
+            }, function() {
+              scope.price = null;
             });
           } else {
             scope.updatePrice();
@@ -137,6 +144,8 @@ goog.require('ga_price_filter');
             gaShop.getPrice(scope.orderType, layerBodId,
                 getFeatureIdToRequest(), geometry).then(function(price) {
               scope.price = price;
+            }, function() {
+              scope.price = null;
             });
           } else {
             scope.price = null;
