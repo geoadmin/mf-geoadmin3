@@ -91,7 +91,8 @@ goog.require('ga_browsersniffer_service');
         try {
           $window.localStorage.getItem('testkey');
           localStorageSupport = true;
-        } catch (e) {}
+        } catch (e) {
+        }
 
         if (localStorageSupport) {
           this.getItem = function(key) {
