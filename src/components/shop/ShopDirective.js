@@ -25,7 +25,6 @@ goog.require('ga_price_filter');
       },
       link: function(scope, elt, attrs, controller) {
         scope.clipperFeatures = {};
-        scope.showConfirm = false;
         scope.showRectangle = false;
         scope.price = null;
         // Remove the element if no feature defined
@@ -58,17 +57,17 @@ goog.require('ga_price_filter');
 
         // Remove the element if no shop config available
         if (!layerConfig || !layerConfig.shop ||
-            layerConfig.shop.length == 0) {
+            layerConfig.shop.length == 0 || (scope.feature.properties &&
+            !angular.isDefined(scope.feature.properties.available))) {
           elt.remove();
           return;
         }
 
         // The feature is not available in the shop so we display a message
-        if (scope.feature.properties && !scope.feature.properties.available) {
-          if (layerConfig.shop.length <= 1) {
-            scope.notAvailable = true;
-            return;
-          }
+        if (scope.feature.properties && !scope.feature.properties.available &&
+            layerConfig.shop.length <= 1) {
+          scope.notAvailable = true;
+          return;
         }
 
         scope.getClipperFeatureLabel = function(orderType) {
