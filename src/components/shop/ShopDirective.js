@@ -25,7 +25,6 @@ goog.require('ga_price_filter');
       },
       link: function(scope, elt, attrs, controller) {
         scope.clipperFeatures = {};
-        scope.showConfirm = false;
         scope.showRectangle = false;
         scope.price = null;
         // Remove the element if no feature defined
@@ -58,17 +57,17 @@ goog.require('ga_price_filter');
 
         // Remove the element if no shop config available
         if (!layerConfig || !layerConfig.shop ||
-            layerConfig.shop.length == 0) {
+            layerConfig.shop.length == 0 || (scope.feature.properties &&
+            !angular.isDefined(scope.feature.properties.available))) {
           elt.remove();
           return;
         }
 
         // The feature is not available in the shop so we display a message
-        if (scope.feature.properties && !scope.feature.properties.available) {
-          if (layerConfig.shop.length <= 1) {
-            scope.notAvailable = true;
-            return;
-          }
+        if (scope.feature.properties && !scope.feature.properties.available &&
+            layerConfig.shop.length <= 1) {
+          scope.notAvailable = true;
+          return;
         }
 
         scope.getClipperFeatureLabel = function(orderType) {
@@ -116,8 +115,15 @@ goog.require('ga_price_filter');
             ];
             gaIdentify.get(scope.map, layers, scope.clipperGeometry, 1,
                 false).then(function(response) {
-              scope.clipperFeatures[scope.orderType] = response.data.results[0];
-              scope.updatePrice();
+              var results = response.data.results;
+              if (results.length) {
+                scope.clipperFeatures[scope.orderType] = results[0];
+                scope.updatePrice();
+              } else {
+                scope.price = null;
+              }
+            }, function() {
+              scope.price = null;
             });
           } else {
             scope.updatePrice();
@@ -138,6 +144,8 @@ goog.require('ga_price_filter');
             gaShop.getPrice(scope.orderType, layerBodId,
                 getFeatureIdToRequest(), geometry).then(function(price) {
               scope.price = price;
+            }, function() {
+              scope.price = null;
             });
           } else {
             scope.price = null;
