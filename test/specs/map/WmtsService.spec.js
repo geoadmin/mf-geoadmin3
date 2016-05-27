@@ -33,10 +33,10 @@ describe('ga_wmts_service', function() {
       expect(prov.url).to.be(url);
       expect(prov.minimumRetrievingLevel).to.be(window.minimumRetrievingLevel);
       expect(prov.rectangle).to.be.an(Cesium.Rectangle);
-      expect(prov.rectangle.west).to.be(0.08750953387026605);
-      expect(prov.rectangle.south).to.be(0.7916115588834566);
-      expect(prov.rectangle.east).to.be(0.20031905334970368);
-      expect(prov.rectangle.north).to.be(0.8425581080106397);
+      expect(prov.rectangle.west).to.be(-0.29442293174255596);
+      expect(prov.rectangle.south).to.be(0.5857374801382434);
+      expect(prov.rectangle.east).to.be(-0.19026022765439166);
+      expect(prov.rectangle.north).to.be(0.6536247392283254);
 
       if (options.useThirdPartyData) {
         expect(prov.proxy.getURL('http://wmts.ch')).to.be(

@@ -5,11 +5,8 @@ describe('ga_printlayer_service', function() {
 
     var $translate, gaPrintLayer;
 
-    var extent = [420000, 30000, 900000, 350000];
-    var center = [600000, 200000];
-    var matrixIds = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25'];
-    var resolutions = [4000, 3750, 3500, 3250, 3000, 2750, 2500, 2250, 2000, 1750, 1500, 1250, 1000, 750, 650, 500, 250, 100, 50, 20, 10, 5, 2.5, 2, 1.5];
-    var tileOrigin = [420000, 350000];
+    var extent = [2420000, 1030000, 2900000, 1350000];
+    var center = [2600000, 1200000];
 
     beforeEach(function() {
       module(function($provide) {
@@ -90,80 +87,6 @@ describe('ga_printlayer_service', function() {
           strokeLinecap: 'round',
           strokeLinejoin: 'round' }
         );
-      });
-    });
-
-    describe('#encodeWMTS()', function() {
-
-      var config = {
-        'attribution': 'swisstopo',
-        'chargeable': true,
-        'searchable': false,
-        'format': 'jpeg',
-        'hasLegend': true,
-        'serverLayerName': 'ch.swisstopo.pixelkarte-farbe',
-        'attributionUrl': 'https://www.swisstopo.admin.ch/fr/home.html',
-        'tooltip': false,
-        'parentLayerId': 'ch.swisstopo.pixelkarte-farbe',
-        'highlightable': true,
-        'background': true,
-        'timestamps': ['current'],
-        'topics': 'api,swissmaponline,wms-naz,wms-swisstopowms',
-        'resolutions': [1, 0.5, 0.25],
-        'label': 'ch.swisstopo.pixelkarte-farbe_wmts',
-        'type': 'wmts',
-        'timeEnabled': false,
-        'minResolution': 1.5
-      };
-
-      var options = {
-        origin: [420000, 350000],
-        tileSize: 256,
-        matrixIds: matrixIds,
-        resolutions: resolutions
-      };
-
-      var tileGrid = new ol.tilegrid.WMTS(options);
-
-      var source = new ol.source.WMTS({
-        url: '//wmts100.geo.admin.ch/1.0.0/{Layer}/default/current/21781/{TileMatrix}/{TileCol}/{TileRow}.jpeg',
-        tileGrid: tileGrid,
-        projection: 'EPSG:21781',
-        layer: config.serverLayerName,
-        requestEncoding: 'REST',
-        dimensions: {
-          'Time': 'current'
-        }
-      });
-
-      var layer = new ol.layer.Tile({
-        source: source,
-        extent: extent
-      });
-
-      it('returns an encoded WMTS layer (simplified version, only for layers in layersConfig)', function() {
-        var encWMTS = gaPrintLayer.encodeWMTS(layer, config);
-
-        expect(encWMTS).to.eql({
-          'layer': 'ch.swisstopo.pixelkarte-farbe',
-          'opacity': 1,
-          'type': 'WMTS',
-          'version': '1.0.0',
-          'requestEncoding': 'REST',
-          'formatSuffix': 'jpeg',
-          'style': 'default',
-          'dimensions': ['TIME'],
-          'params': {
-            'TIME': 'current'
-          },
-          'matrixSet': '21781',
-          'baseURL': 'https://wmts.geo.admin.ch',
-          'zoomOffset': 0,
-          'tileOrigin': tileOrigin,
-          'tileSize': [256, 256],
-          'resolutions': resolutions,
-          'maxExtent': extent
-        });
       });
     });
 
@@ -250,9 +173,15 @@ describe('ga_printlayer_service', function() {
 
     describe('#encodeWMS()', function() {
 
+      var proj = new ol.proj.Projection({
+        code: 'EPSG:2056',
+        units: 'm',
+        extent: extent
+      });
+
       var options = {
         url: 'https://wms.geo.admin.ch/?',
-        projection: 'EPSG:21781',
+        projection: proj,
         ratio: 1,
         params: {
           LAYERS: 'ch.swisstopo.fixpunkte-agnes'
@@ -260,11 +189,6 @@ describe('ga_printlayer_service', function() {
       };
 
       var source = new ol.source.ImageWMS(options);
-      var proj = new ol.proj.Projection({
-        code: 'EPSG:21781',
-        units: 'm',
-        extent: extent
-      });
 
       var layer = new ol.layer.Image({
         id: options.id,
@@ -290,7 +214,7 @@ describe('ga_printlayer_service', function() {
           'customParams': {
             'EXCEPTIONS': 'XML',
             'TRANSPARENT': 'true',
-            'CRS': 'EPSG:21781',
+            'CRS': 'EPSG:2056',
             'MAP_RESOLUTION': '150'
           },
           'singleTile': false

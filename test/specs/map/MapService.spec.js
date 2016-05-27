@@ -178,7 +178,7 @@ describe('ga_map_service', function() {
 
   describe('gaTileGrid', function() {
     var gaTileGrid;
-    var orig = [420000, 350000];
+    var orig = [2420000, 1350000];
     var dfltRes = [4000, 3750, 3500, 3250, 3000, 2750, 2500, 2250,
       2000, 1750, 1500, 1250, 1000, 750, 650, 500, 250, 100, 50, 20, 10, 5,
       2.5, 2, 1.5, 1, 0.5];
@@ -494,7 +494,7 @@ describe('ga_map_service', function() {
   });
 
   describe('gaLayers', function() {
-    var gaLayers, gaTime, $httpBackend, $rootScope, gaGlobalOptions, gaNetworkStatus;
+    var gaLayers, gaTime, $httpBackend, $rootScope, gaGlobalOptions, gaNetworkStatus, $timeout;
     var expectedUrl = 'https://example.com/all?lang=somelang';
     var dfltLayersConfig = {
       foo: {
@@ -594,6 +594,7 @@ describe('ga_map_service', function() {
 
       inject(function($injector) {
         $rootScope = $injector.get('$rootScope');
+        $timeout = $injector.get('$timeout');
         $httpBackend = $injector.get('$httpBackend');
         gaLayers = $injector.get('gaLayers');
         gaTime = $injector.get('gaTime');
@@ -605,6 +606,11 @@ describe('ga_map_service', function() {
     afterEach(function() {
       $httpBackend.verifyNoOutstandingExpectation();
       $httpBackend.verifyNoOutstandingRequest();
+      try {
+        $timeout.verifyNoPendingTasks();
+      } catch (e) {
+        $timeout.flush();
+      }
     });
 
     describe('constructor', function() {
@@ -768,7 +774,7 @@ describe('ga_map_service', function() {
           expect(prov._url).to.be(expectTerrainUrl('terrain', '20160101'));
           var rect = prov._rectangle;
           expect(rect).to.be.a(Cesium.Rectangle);
-          expect([rect.west, rect.south, rect.east, rect.north]).to.eql([0.08750953387026623, 0.7916115588834566, 0.20031905334970387, 0.8425581080106397]);
+          expect([rect.west, rect.south, rect.east, rect.north]).to.eql([-0.2944229317425553, 0.5857374801382434, -0.19026022765439154, 0.6536247392283254]);
           expect(prov._terrainAvailabLeLevels).to.be(window.terrainAvailableLevels);
           expect(prov.bodId).to.be('terrain');
           done();
@@ -899,6 +905,12 @@ describe('ga_map_service', function() {
           maxResolution: 100
         },
         wmtsmapproxy: {
+          type: 'wmts',
+          timestamps: [
+            '20160201'
+          ]
+        },
+        wmtstod: {
           type: 'wmts',
           timestamps: [
             '20160201'
@@ -1125,10 +1137,10 @@ describe('ga_map_service', function() {
           var source = layer.getSource();
           expect(source instanceof ol.source.WMTS).to.be.ok();
           expect(source.getDimensions().Time).to.be('20180101');
-          expect(source.getProjection().getCode()).to.be('EPSG:21781');
+          expect(source.getProjection().getCode()).to.be('EPSG:2056');
           expect(source.getRequestEncoding()).to.be('REST');
           expect(source.getUrls().length).to.be(5);
-          expect(source.getUrls()[0]).to.be('//wmts5.geo.admin.ch/1.0.0/serverLayerName/default/{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.jpeg');
+          expect(source.getUrls()[0]).to.be('//wmts5.geo.admin.ch/1.0.0/serverLayerName/default/{Time}/2056/{TileMatrix}/{TileCol}/{TileRow}.jpeg');
           expect(source.getTileLoadFunction()).to.be.a(Function);
           var tileGrid = source.getTileGrid();
           expect(tileGrid instanceof ol.tilegrid.WMTS).to.be.ok();
@@ -1191,13 +1203,13 @@ describe('ga_map_service', function() {
           expectCommonProperties(layer, 'aggregate');
         });
 
-        it('returns a GeoJSON layer', function() {
+        it('returns a GeoJSON layer', function(done) {
           $httpBackend.expectGET('http://mystyle.json').respond({});
           $httpBackend.expectGET(gaGlobalOptions.proxyUrl + 'http/my.json').respond({
             'features': [{
               'type': 'Feature',
               'geometry': {
-                'coordinates': [557660, 33280],
+                'coordinates': [24, 56],
                 'type': 'Point'
               },
               'id': '2009',
@@ -1214,6 +1226,10 @@ describe('ga_map_service', function() {
           var source = layer.getSource();
           expect(source instanceof ol.source.Vector).to.be.ok();
           expectCommonProperties(layer, 'geojson');
+          gaLayers.getLayerPromise('geojson').then(function(feats) {
+            expect(feats[0].getGeometry().getCoordinates()).to.eql([3639371.9660116024, 2322382.8078037957]);
+            done();
+          });
           $httpBackend.flush();
         });
 
@@ -1776,7 +1792,7 @@ describe('ga_map_service', function() {
       it('using the default projection', function() {
         var rect = gaMapUtils.extentToRectangle([0, 0, 30, 30]);
         expect(rect).to.be.a(Cesium.Rectangle);
-        expect([rect.west, rect.south, rect.east, rect.north]).to.eql([-0.002860778099859713, 0.7834821027741324, -0.0028535435287705122, 0.783487245504938]);
+        expect([rect.west, rect.south, rect.east, rect.north]).to.eql([-0.3476364767103224, 0.5606780597735368, -0.3476294900800263, 0.5606840053038138]);
       });
 
       it('using a user defined projection', function() {

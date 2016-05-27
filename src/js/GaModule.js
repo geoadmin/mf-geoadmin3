@@ -141,6 +141,9 @@ goog.require('ga_waitcursor_service');
   });
 
   module.config(function(gaLayersProvider, gaGlobalOptions) {
+
+    // Domains
+    gaLayersProvider.dfltToDSubdomains = ['100', '101', '102', '103', '104'];
     gaLayersProvider.dfltWmsSubdomains = ['', '0', '1', '2', '3', '4'];
     gaLayersProvider.wmsUrlTemplate = '//wms{s}.geo.admin.ch/';
 
@@ -162,6 +165,7 @@ goog.require('ga_waitcursor_service');
         ['', '0', '1', '2', '3', '4'];
 
     gaLayersProvider.imageryMetadataUrl = '//3d.geo.admin.ch/imagery/';
+
     if (gaGlobalOptions.apiOverwrite) {
       gaLayersProvider.layersConfigUrlTemplate = gaGlobalOptions.apiUrl +
           '/rest/services/all/MapServer/layersConfig?lang={Lang}';

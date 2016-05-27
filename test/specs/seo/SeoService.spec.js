@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 describe('ga_seo_service', function() {
   var gaSeo;
-  var url = 'https://map.geo.admin.ch/?lang=fr&topic=luftbilder&bgLayer=ch.swisstopo.pixelkarte-grau&layers=ch.swisstopo.lubis-luftbilder_schwarzweiss,ch.swisstopo.lubis-luftbilder_farbe&layers_timestamp=99991231,99991231&catalogNodes=1179,1180,1186&X=262400.58&Y=708049.38&zoom=2&layers_visibility=true,false';
+  var url = 'https://map.geo.admin.ch/?lang=fr&topic=luftbilder&bgLayer=ch.swisstopo.pixelkarte-grau&layers=ch.swisstopo.lubis-luftbilder_schwarzweiss,ch.swisstopo.lubis-luftbilder_farbe&layers_timestamp=99991231,99991231&catalogNodes=1179,1180,1186&N=1262400.58&E=2708049.38&zoom=2&layers_visibility=true,false';
 
   describe('gaSeo', function() {
     var spy;
@@ -10,6 +10,8 @@ describe('ga_seo_service', function() {
         var params = {
           Y: '200000',
           X: '300000',
+          E: '2200000',
+          N: '1300000',
           zoom: 15
         };
 
@@ -59,11 +61,13 @@ describe('ga_seo_service', function() {
         });
       });
 
-      describe('#getYXZoom()', function() {
+      describe('#getParams()', function() {
         it('gets the map info from the permalink', function() {
-          expect(gaSeo.getYXZoom()).to.eql({
+          expect(gaSeo.getParams()).to.eql({
             Y: '200000',
             X: '300000',
+            E: '2200000',
+            N: '1300000',
             zoom: 15
           });
         });

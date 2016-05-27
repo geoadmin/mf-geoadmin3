@@ -80,15 +80,24 @@ goog.require('ga_styles_service');
 
         // set view states based on URL query string
         var queryParams = gaPermalink.getParams();
-        if (queryParams.Y !== undefined && queryParams.X !== undefined) {
-          var easting = parseFloat(queryParams.Y.replace(/,/g, '.'));
-          var northing = parseFloat(queryParams.X.replace(/,/g, '.'));
+        if ((queryParams.E && queryParams.N) ||
+           (queryParams.X && queryParams.Y)) {
+          var easting = queryParams.Y;
+          var northing = queryParams.X;
+          if (queryParams.E && queryParams.N) {
+            easting = queryParams.E;
+            northing = queryParams.N;
+          }
+
+          easting = parseFloat(easting.replace(/,/g, '.'));
+          northing = parseFloat(northing.replace(/,/g, '.'));
+
           if (isFinite(easting) && isFinite(northing)) {
             var position = [easting, northing];
             if (ol.extent.containsCoordinate(
-                [2420000, 1030000, 2900000, 1350000], position)) {
+                [420000, 30000, 900000, 350000], position)) {
               position = ol.proj.transform([easting, northing],
-                  'EPSG:2056', 'EPSG:21781');
+                  'EPSG:21781', view.getProjection().getCode());
             }
             view.setCenter(position);
           }
@@ -128,9 +137,11 @@ goog.require('ga_styles_service');
             // when the directive is instantiated the view may not
             // be defined yet.
             if (center && zoom !== undefined) {
-              var x = center[1].toFixed(2);
-              var y = center[0].toFixed(2);
-              gaPermalink.updateParams({X: x, Y: y, zoom: zoom});
+              var e = center[0].toFixed(2);
+              var n = center[1].toFixed(2);
+              gaPermalink.updateParams({E: e, N: n, zoom: zoom});
+              gaPermalink.deleteParam('X');
+              gaPermalink.deleteParam('Y');
             }
           }
         };
@@ -171,8 +182,8 @@ goog.require('ga_styles_service');
             // update permalink
             camera.moveEnd.addEventListener(gaDebounce.debounce(function() {
               // remove 2d params
-              gaPermalink.deleteParam('X');
-              gaPermalink.deleteParam('Y');
+              gaPermalink.deleteParam('E');
+              gaPermalink.deleteParam('N');
               gaPermalink.deleteParam('zoom');
 
               var position = camera.positionCartographic;
