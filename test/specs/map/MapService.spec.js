@@ -1101,7 +1101,7 @@ describe('ga_map_service', function() {
           expect(source.getProjection().getCode()).to.be('EPSG:21781');
           expect(source.getRequestEncoding()).to.be('REST');
           expect(source.getUrls().length).to.be(5);
-          expect(source.getUrls()[0]).to.be('//wmts5.geo.admin.ch/1.0.0/serverLayerName/default/{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.jpeg');
+          expect(source.getUrls()[0]).to.be('//wmts5.geo.admin.ch/1.0.0/serverLayerName/default/{Time}/2056/{TileMatrix}/{TileCol}/{TileRow}.jpeg');
           expect(source.getTileLoadFunction()).to.be.a(Function);
           var tileGrid = source.getTileGrid();
           expect(tileGrid instanceof ol.tilegrid.WMTS).to.be.ok();
