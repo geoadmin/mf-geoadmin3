@@ -37,8 +37,9 @@ goog.require('ga_styles_service');
       vector.setZIndex(gaMapUtils.Z_PREVIEW_FEATURE);
 
       // TO DO: May be this method should be elsewher?
-      var getFeatures = function(featureIdsByBodId) {
+      var getFeatures = function(featureIdsByBodId, map) {
         var promises = [];
+        var epsgCode = map.getView().getProjection().getCode();
         angular.forEach(featureIdsByBodId, function(featureIds, bodId) {
           if (gaLayers.getLayerProperty(bodId, 'type') === 'geojson') {
             var loadPromise = gaLayers.getLayerPromise(bodId);
@@ -57,7 +58,8 @@ goog.require('ga_styles_service');
             });
           } else {
             featureIds.forEach(function(id) {
-              var reqUrl = url + bodId + '/' + id + '?geometryFormat=geojson';
+              var reqUrl = url + bodId + '/' + id + '?sr=' +
+                  epsgCode.split(':')[1] + '&geometryFormat=geojson';
               promises.push($http.get(reqUrl, {cache: true}));
             });
           }
@@ -143,7 +145,7 @@ goog.require('ga_styles_service');
           var defer = $q.defer();
           this.clear(map);
           var that = this;
-          getFeatures(featureIdsByBodId).then(function(results) {
+          getFeatures(featureIdsByBodId, map).then(function(results) {
             var features = [];
             angular.forEach(results, function(result) {
               // for geojson-layers

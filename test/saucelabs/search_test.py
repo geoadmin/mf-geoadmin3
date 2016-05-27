@@ -144,37 +144,37 @@ searchLocationTests = [
     {
         'searchText': u'Kanalstrasse bus rar',
         'resultTitle': u'Bus Raron, Kanalstrasse',
-        'resultLocation': u'X=128141.00&Y=627443.00&zoom=13'
+        'resultLocation': u'E=2627442.63&N=1128140.86&zoom=13'
     },
     {
         'searchText': u'p Mesolcina Bellinzona',
         'resultTitle': u'Bus Bellinzona, Piazza Mesolcina',
-        'resultLocation': u'X=117500.00&Y=722500.00&zoom=13'
+        'resultLocation': u'E=2722500.46&N=1117499.12&zoom=13'
     },
     {
         'searchText': u'bruckenmoostrasse 11 raron',
         'resultTitle': u'Brückenmoosstrasse 11 3942 Raron',
-        'resultLocation': u'X=128630.12&Y=627650.38&zoom=10'
+        'resultLocation': u'E=2627650.00&N=1128630.00&zoom=10'
     },
     {
         'searchText': u'rte berne 91 1010',
         'resultTitle': u'Route de Berne 91 1010 Lausanne',
-        'resultLocation': u'X=154207.56&Y=539257.44&zoom=10'
+        'resultLocation': u'E=2539257.00&N=1154208.00&zoom=10'
     },
     {
         'searchText': u'pl chateau 3 laus',
         'resultTitle': u'Place du Château 3 1005 Lausanne',
-        'resultLocation': u'X=152884.59&Y=538433.38&zoom=10'
+        'resultLocation': u'E=2538433.00&N=1152885.00&zoom=10'
     },
     {
         'searchText': u'basel',
         'resultTitle': u'Basel (BS)',
-        'resultLocation': 'X=267108.81&Y=611722.92&zoom=6'
+        'resultLocation': 'E=2611723.45&N=1267109.36&zoom=6'
     },
     {
         'searchText': u'bern',
         'resultTitle': u'Bern (BE)',
-        'resultLocation': u'X=200393.28&Y=596671.10&zoom=5'
+        'resultLocation': u'E=2596671.19&N=1200393.39&zoom=5'
     }
 ]
 
@@ -198,13 +198,13 @@ swissSearchParamTests = [
         'searchText': u'chemin des caves 11',
         'oneResOnly': True,
         'resultTitle': u'Chemin des Caves 11 1040 Echallens',
-        'resultLocation': u'X=166095.47&Y=538398.31&zoom=10'
+        'resultLocation': u'E=2538398.00&N=1166096.00&zoom=10'
     },
     {
         'searchText': u'oliviers vinzel 1',
         'oneResOnly': False,
         'resultTitle': u'Chemin des Oliviers 8 1184 Vinzel',
-        'resultLocation': u'X=144686.36&Y=511163.53&zoom=10'
+        'resultLocation': u'E=2511163.00&N=1144687.00&zoom=10'
     }
 ]
 

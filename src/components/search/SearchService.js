@@ -48,7 +48,7 @@ goog.require('ga_reframe_service');
           var mgrsStr = matchMGRS[0].split(' ').join('');
           if ((mgrsStr.length - MGRSMinimalPrecision) % 2 === 0) {
             var wgs84 = $window.proj4.mgrs.toPoint(mgrsStr);
-            position = ol.proj.transform(wgs84, 'EPSG:4326', 'EPSG:21781');
+            position = ol.proj.transform(wgs84, 'EPSG:4326', 'EPSG:2056');
             if (ol.extent.containsCoordinate(extent, position)) {
               return $q.when(roundCoordinates(position));
             }
@@ -88,9 +88,8 @@ goog.require('ga_reframe_service');
               replace('\'\'', '').replace('′′', '').
               replace('″', '')) / 3600;
           position = ol.proj.transform([easting, northing],
-              'EPSG:4326', 'EPSG:21781');
-          if (ol.extent.containsCoordinate(
-              extent, position)) {
+              'EPSG:4326', 'EPSG:2056');
+          if (ol.extent.containsCoordinate(extent, position)) {
             return $q.when(roundCoordinates(position));
           }
         }
@@ -108,24 +107,24 @@ goog.require('ga_reframe_service');
           }
           position = [left > right ? left : right,
             right < left ? right : left];
-          // LV03 or EPSG:21781
+          // Match LV95
           if (ol.extent.containsCoordinate(extent, position)) {
             return $q.when(roundCoordinates(position));
           }
-
           // Match decimal notation EPSG:4326
           if (left <= 180 && left >= -180 &&
               right <= 180 && right >= -180) {
             position = [left > right ? right : left,
-              right < left ? left : right];
-            position = ol.proj.transform(position, 'EPSG:4326', 'EPSG:21781');
+              right < left ? left : right
+            ];
+            position = ol.proj.transform(position, 'EPSG:4326', 'EPSG:2056');
             if (ol.extent.containsCoordinate(extent, position)) {
               return $q.when(roundCoordinates(position));
             }
           }
 
-          // Match LV95 coordinates
-          return gaReframe.get95To03(position).then(function(position) {
+          // Match LV03 coordinates
+          return gaReframe.get03To95(position).then(function(position) {
             if (ol.extent.containsCoordinate(extent, position)) {
               return roundCoordinates(position);
             }

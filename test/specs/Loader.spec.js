@@ -80,7 +80,6 @@ beforeEach(function() {
     gaLayersProvider.wmtsLV03PathTemplate = '/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{y}/{x}.{Format}';
     gaLayersProvider.wmtsPathTemplate = '/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{x}/{y}.{Format}';
 
-    // https://regex101.com/r/U5ccHi/3
     gaLayersProvider.terrainTileUrlTemplate = '//3d.geo.admin.ch/1.0.0/{Layer}/default/{Time}/4326';
     gaLayersProvider.vectorTilesUrlTemplate = '//vectortiles{s}.geo.admin.ch/{Layer}/{Time}/';
     gaLayersProvider.layersConfigUrlTemplate = 'https://example.com/all?lang={Lang}';

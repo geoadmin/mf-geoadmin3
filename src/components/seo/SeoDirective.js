@@ -31,6 +31,9 @@ goog.require('ga_seo_service');
             scope.featureMetadatas = [];
             scope.coordinateLocations = [];
 
+            var srParam = scope.map.getView().getProjection().getCode().
+                split(':')[1];
+
             var getWaitPromise = function(time) {
               var def = $q.defer();
               $timeout(function() {
@@ -187,7 +190,7 @@ goog.require('ga_seo_service');
 
             var permalinkYXZoom = function() {
               var def = $q.defer(),
-                xyzoom = gaSeo.getYXZoom(),
+                params = gaSeo.getParams(),
                 bailed = false,
                 BBOX_SIZE = 1000, // 1km on each side...likely to be changed
                 MIN_ZOOM = 5, // Minimal zoom to include xy based location info
@@ -222,12 +225,18 @@ goog.require('ga_seo_service');
                                  '">{result}</a>',
                 east, north, zoom, bbox;
 
-              if (xyzoom.Y !== undefined &&
-                  xyzoom.X !== undefined &&
-                  xyzoom.zoom !== undefined) {
-                east = parseFloat(xyzoom.Y.replace(/,/g, '.'));
-                north = parseFloat(xyzoom.X.replace(/,/g, '.'));
-                zoom = parseInt(xyzoom.zoom, 10);
+              if (((params.Y !== undefined && params.X !== undefined) ||
+                  (params.E !== undefined && params.N !== undefined)) &&
+                  params.zoom !== undefined) {
+                east = params.Y;
+                north = params.X;
+                if (params.E && params.N) {
+                  east = params.E;
+                  north = params.N;
+                }
+                east = parseFloat(east.replace(/,/g, '.'));
+                north = parseFloat(north.replace(/,/g, '.'));
+                zoom = parseInt(params.zoom, 10);
                 if (isFinite(east) &&
                     isFinite(north) &&
                     isFinite(zoom) &&
@@ -247,6 +256,7 @@ goog.require('ga_seo_service');
                       bbox: bbox,
                       type: 'features',
                       features: searchLayers.join(','),
+                      sr: srParam,
                       timeEnabled: $.map(searchLayers, function(layer) {
                         return 'false';
                       }).join(',')
@@ -289,7 +299,8 @@ goog.require('ga_seo_service');
                       imageDisplay: size[0] + ',' + size[1] + ',96',
                       mapExtent: map.getView().calculateExtent(size).join(','),
                       tolerance: PIXEL_TOLERANCE,
-                      layers: 'all:' + identifyLayers.join(',')
+                      layers: 'all:' + identifyLayers.join(','),
+                      sr: srParam
                     }
                   }).then(function(response) {
                     var json = response.data;

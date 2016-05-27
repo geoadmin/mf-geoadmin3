@@ -156,7 +156,7 @@ describe('ga_printlayer_service', function() {
           'params': {
             'TIME': 'current'
           },
-          'matrixSet': '21781',
+          'matrixSet': '2056',
           'baseURL': 'https://wmts.geo.admin.ch',
           'zoomOffset': 0,
           'tileOrigin': tileOrigin,
