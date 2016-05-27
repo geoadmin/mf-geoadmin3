@@ -2,6 +2,7 @@ goog.provide('ga_main_controller');
 
 goog.require('ga_background_service');
 goog.require('ga_cesium');
+goog.require('ga_layer_retry_service');
 goog.require('ga_map');
 goog.require('ga_networkstatus_service');
 goog.require('ga_storage_service');
@@ -11,6 +12,7 @@ goog.require('ga_topic_service');
 
   var module = angular.module('ga_main_controller', [
     'pascalprecht.translate',
+    'ga_layer_retry_service',
     'ga_map',
     'ga_networkstatus_service',
     'ga_storage_service',
@@ -26,7 +28,7 @@ goog.require('ga_topic_service');
       gaPermalinkFeaturesManager, gaPermalinkLayersManager, gaMapUtils,
       gaRealtimeLayersManager, gaNetworkStatus, gaPermalink, gaStorage,
       gaGlobalOptions, gaBackground, gaTime, gaLayers, gaTopic,
-      gaOpaqueLayersManager) {
+      gaOpaqueLayersManager, gaLayerRetry) {
 
     var createMap = function() {
       var toolbar = $('#zoomButtons')[0];
@@ -91,6 +93,9 @@ goog.require('ga_topic_service');
     // The main controller creates the OpenLayers map object. The map object
     // is central, as most directives/components need a reference to it.
     $scope.map = createMap();
+
+    // Activate retry mechanism for all layers
+    gaLayerRetry.init($scope);
 
     // Set up 3D
     var startWith3D = false;
