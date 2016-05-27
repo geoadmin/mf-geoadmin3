@@ -423,7 +423,7 @@ goog.require('ga_urlutils_service');
         style: source.getStyle() || 'default',
         dimensions: Object.keys(wmtsDimensions),
         params: wmtsDimensions,
-        matrixSet: source.getMatrixSet() || '21781'
+        matrixSet: source.getMatrixSet() || '2056'
       });
 
       if (!isExternalWmts) {

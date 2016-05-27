@@ -17,7 +17,8 @@ goog.provide('ga_identify_service');
       var mapSize = olMap.getSize();
       return {
         imageDisplay: mapSize.concat([dpi]).toString(),
-        mapExtent: olMap.getView().calculateExtent(mapSize).toString()
+        mapExtent: olMap.getView().calculateExtent(mapSize).toString(),
+        sr: olMap.getView().getProjection().getCode().split(':')[1]
       };
     };
 

@@ -178,7 +178,7 @@ describe('ga_map_service', function() {
 
   describe('gaTileGrid', function() {
     var gaTileGrid;
-    var orig = [420000, 350000];
+    var orig = [2420000, 1350000];
     var dfltRes = [4000, 3750, 3500, 3250, 3000, 2750, 2500, 2250,
       2000, 1750, 1500, 1250, 1000, 750, 650, 500, 250, 100, 50, 20, 10, 5,
       2.5, 2, 1.5, 1, 0.5];
@@ -912,6 +912,12 @@ describe('ga_map_service', function() {
             '20160201'
           ]
         },
+        wmtstod: {
+          type: 'wmts',
+          timestamps: [
+            '20160201'
+          ]
+        },
         badtype: {
           type: 'geojson'
         }
@@ -1150,10 +1156,10 @@ describe('ga_map_service', function() {
           expect(source.getProjection().getCode()).to.be('EPSG:21781');
           expect(source.getRequestEncoding()).to.be('REST');
           expect(source.getUrls().length).to.be(5);
-          if (gaLayers.useToD('serverLayerName', '21781')) {
-            expect(source.getUrls()[0]).to.be('http://tod100.bgdi.ch/1.0.0/serverLayerName/default/{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.jpeg');
+          if (gaLayers.useToD('serverLayerName', '2056')) {
+            expect(source.getUrls()[0]).to.be('http://tod100.bgdi.ch/1.0.0/serverLayerName/default/{Time}/2056/{TileMatrix}/{TileCol}/{TileRow}.jpeg');
           } else {
-            expect(source.getUrls()[0]).to.be('http://wmts5.geo.admin.ch/1.0.0/serverLayerName/default/{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.jpeg');
+            expect(source.getUrls()[0]).to.be('http://wmts5.geo.admin.ch/1.0.0/serverLayerName/default/{Time}/2056/{TileMatrix}/{TileCol}/{TileRow}.jpeg');
           }
           expect(source.getTileLoadFunction()).to.be.a(Function);
           var tileGrid = source.getTileGrid();

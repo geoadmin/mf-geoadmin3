@@ -141,6 +141,9 @@ goog.require('ga_waitcursor_service');
   });
 
   module.config(function(gaLayersProvider, gaGlobalOptions) {
+
+    // Domains
+    gaLayersProvider.dfltToDSubdomains = ['100', '101', '102', '103', '104'];
     gaLayersProvider.dfltWmsSubdomains = ['', '0', '1', '2', '3', '4'];
     gaLayersProvider.dfltWmtsNativeSubdomains = ['100', '101', '102', '103',
       '104', '105', '106', '107', '108', '109'];
@@ -152,9 +155,11 @@ goog.require('ga_waitcursor_service');
       gaGlobalOptions.staging === 'prod' ?
         ['100', '101', '102', '103', '104'] :
         ['', '0', '1', '2', '3', '4'];
+
+    // URL templates
     gaLayersProvider.wmsUrlTemplate = '//wms{s}.geo.admin.ch/';
     gaLayersProvider.wmtsGetTileUrlTemplate = '//wmts{s}.geo.admin.ch/1.0.0/' +
-        '{Layer}/default/{Time}/{TileMatrixSet}/{z}/{y}/{x}.{Format}';
+        '{Layer}/default/{Time}/{TileMatrixSet}/{z}/{x}/{y}.{Format}';
     gaLayersProvider.wmtsMapProxyGetTileUrlTemplate =
         gaGlobalOptions.mapproxyUrl +
         '/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{x}/{y}.{Format}';
@@ -162,12 +167,12 @@ goog.require('ga_waitcursor_service');
         '/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{x}/{y}.{Format}';
     gaLayersProvider.wmtsToD03UrlTemplate = gaGlobalOptions.wmtsUrl +
         '/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{y}/{x}.{Format}';
-    gaLayersProvider.dfltToDSubdomains = ['100', '101', '102', '103', '104'];
     gaLayersProvider.terrainTileUrlTemplate =
         '//terrain100.geo.admin.ch/1.0.0/{Layer}/default/{Time}/4326';
     gaLayersProvider.vectorTilesUrlTemplate = gaGlobalOptions.vectorTilesUrl +
         '/{Layer}/{Time}/';
     gaLayersProvider.imageryMetadataUrl = '//3d.geo.admin.ch/imagery/';
+
     if (gaGlobalOptions.apiOverwrite) {
       gaLayersProvider.layersConfigUrlTemplate = gaGlobalOptions.apiUrl +
           '/rest/services/all/MapServer/layersConfig?lang={Lang}';

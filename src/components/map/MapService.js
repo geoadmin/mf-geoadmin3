@@ -20,7 +20,7 @@ goog.require('ga_urlutils_service');
   ]);
 
   module.provider('gaTileGrid', function() {
-    var origin = [420000, 350000];
+    var origin = [2420000, 1350000];
 
     function getDefaultResolutions() {
       return [4000, 3750, 3500, 3250, 3000, 2750, 2500, 2250,
@@ -352,7 +352,12 @@ goog.require('ga_urlutils_service');
 
       var h2 = function(domainsArray) {
         if (gaBrowserSniffer.h2) {
-          return domainsArray.slice(1, 2);
+          // Only Cloudfront supports h2, so only subs > 100
+          for (var i = 0; i < domainsArray.length; i++) {
+            if (parseInt(domainsArray[i]) > 99) {
+              return [domainsArray[i]];
+            }
+          }
         }
         return domainsArray;
       };
@@ -820,7 +825,7 @@ goog.require('ga_urlutils_service');
           if (config.type === 'wmts') {
             if (!olSource) {
               var wmtsTplUrl = getWmtsGetTileTpl(config.serverLayerName, null,
-                  '21781', config.format, true).
+                  '2056', config.format, true).
                   replace('{z}', '{TileMatrix}').
                   replace('{x}', '{TileCol}').
                   replace('{y}', '{TileRow}');
@@ -840,7 +845,7 @@ goog.require('ga_urlutils_service');
                     config.minResolution),
                 tileLoadFunction: tileLoadFunction,
                 urls: getImageryUrls(wmtsTplUrl,
-                    useToD(config.serverLayerName, '21781') ?
+                    useToD(config.serverLayerName, '2056') ?
                       h2(dfltToDSubdomains) :
                       h2(dfltWmtsNativeSubdomains)),
                 crossOrigin: crossOrigin,

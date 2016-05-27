@@ -26,9 +26,8 @@ goog.require('ga_measure_service');
 
           var geom = feature.getGeometry();
           if (geom instanceof ol.geom.Point) {
-            var coord = ol.proj.transform(geom.getCoordinates(),
-                gaGlobalOptions.defaultEpsg, 'EPSG:2056');
-            scope.coord = gaMeasure.formatCoordinates(coord, scope.precision);
+            scope.coord = gaMeasure.formatCoordinates(geom.getCoordinates(),
+                scope.precision);
           } else {
             scope.distance = gaMeasure.getLength(geom);
             scope.surface = gaMeasure.getArea(geom);

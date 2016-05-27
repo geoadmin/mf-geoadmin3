@@ -6,7 +6,7 @@ import time
 # KML import test using browserstack
 
 QUERYSTRING_KML = "KML%7C%7Chttp:%2F%2Fopendata.utou.ch%2Furbanproto%2Fgeneva%2Fgeo%2Fkml%2FRoutes.kml"
-POSITION_TO_KML = "X=124759.52&Y=499224.22"
+POSITION_TO_KML = "E=2499224.22&N=1124759.52"
 
 
 def runKmlTest(driver, target, is_top_browser):
