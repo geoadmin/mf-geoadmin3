@@ -20,7 +20,7 @@ goog.require('ga_urlutils_service');
   ]);
 
   module.provider('gaTileGrid', function() {
-    var origin = [420000, 350000];
+    var origin = [2420000, 1350000];
 
     function getDefaultResolutions() {
       return [4000, 3750, 3500, 3250, 3000, 2750, 2500, 2250,
@@ -352,7 +352,12 @@ goog.require('ga_urlutils_service');
 
       var h2 = function(domainsArray) {
         if (gaBrowserSniffer.h2) {
-          return domainsArray.slice(1, 2);
+          // Only Cloudfront supports h2, so only subs > 100
+          for (var i = 0; i < domainsArray.length; i++) {
+            if (parseInt(domainsArray[i]) > 99) {
+              return [domainsArray[i]];
+            }
+          }
         }
         return domainsArray;
       };
@@ -812,8 +817,9 @@ goog.require('ga_urlutils_service');
           var olSource = (config.timeEnabled) ? null : config.olSource;
           if (config.type === 'wmts') {
             if (!olSource) {
+              var tileMatrixSet = gaGlobalOptions.defaultEpsg.split(':')[1];
               var wmtsTplUrl = getWmtsGetTileTpl(config.serverLayerName, null,
-                  '21781', config.format).
+                  tileMatrixSet, config.format).
                   replace('{z}', '{TileMatrix}').
                   replace('{x}', '{TileCol}').
                   replace('{y}', '{TileRow}');
@@ -916,30 +922,30 @@ goog.require('ga_urlutils_service');
             });
           } else if (config.type === 'geojson') {
             // cannot request resources over https in S3
-            olSource = new ol.source.Vector();
+            olSource = new ol.source.Vector({
+              format: new ol.format.GeoJSON({
+                featureProjection: gaGlobalOptions.defaultEpsg
+              })
+            });
             olLayer = new ol.layer.Vector({
               minResolution: config.minResolution,
               maxResolution: config.maxResolution,
               source: olSource,
               extent: extent
             });
-            var setLayerSource = function() {
-              var geojsonFormat = new ol.format.GeoJSON();
-              geojsonPromises[bodId] = gaUrlUtils.proxifyUrl(config.geojsonUrl).
-                  then(function(proxyUrl) {
-                    return $http.get(proxyUrl).then(function(response) {
-                      var data = response.data;
-                      olSource.clear();
-                      olSource.addFeatures(
-                          geojsonFormat.readFeatures(data)
-                      );
-                      if (data.timestamp) {
-                        olLayer.timestamps = [data.timestamp];
-                      }
-                      return olSource.getFeatures();
-                    });
+            geojsonPromises[bodId] = gaUrlUtils.proxifyUrl(config.geojsonUrl).
+                then(function(proxyUrl) {
+                  return $http.get(proxyUrl).then(function(response) {
+                    var data = response.data;
+                    olSource.clear();
+                    olSource.addFeatures(
+                        olSource.getFormat().readFeatures(data));
+                    if (data.timestamp) {
+                      olLayer.timestamps = [data.timestamp];
+                    }
+                    return olSource.getFeatures();
                   });
-            };
+                });
 
             // IE doesn't understand agnostic URLs
             $http.get($window.location.protocol + config.styleUrl, {
@@ -947,12 +953,9 @@ goog.require('ga_urlutils_service');
             }).then(function(response) {
               var olStyleForVector = gaStylesFromLiterals(response.data);
               olLayer.setStyle(function(feature, resolution) {
-                return [olStyleForVector.getFeatureStyle(
-                    feature, resolution)];
+                return [olStyleForVector.getFeatureStyle(feature, resolution)];
               });
             });
-            // TODO: Handle error
-            setLayerSource();
           }
           if (angular.isDefined(olLayer)) {
             gaDefinePropertiesForLayer(olLayer);

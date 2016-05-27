@@ -27,7 +27,7 @@ goog.require('ga_urlutils_service');
             gaTime, gaMapUtils),
         encodeWMS: encodeWMS,
         encodeDimensions: encodeDimensions,
-        encodeWMTS: getEncodeWMTS(gaTime, gaMapUtils),
+        encodeWMTS: getEncodeWMTS(gaTime, gaMapUtils, gaGlobalOptions),
         encodeFeatures: getEncodeFeatures(gaPrintStyle),
         encodeVector: getEncodeVector(gaPrintStyle),
         encodeLayer: getEncodeLayer(gaLayers, gaPrintStyle,
@@ -138,7 +138,8 @@ goog.require('ga_urlutils_service');
     }
   };
 
-  function getEncodeGroup(gaLayers, gaPrintStyle, gaTime, gaMapUtils) {
+  function getEncodeGroup(gaLayers, gaPrintStyle, gaTime,
+      gaMapUtils) {
     return function(layer, viewProj, scaleDenom, printRectangeCoords,
         resolution, dpi) {
       var encs = [];
@@ -382,7 +383,7 @@ goog.require('ga_urlutils_service');
     }
   };
 
-  function getEncodeWMTS(gaTime, gaMapUtils) {
+  function getEncodeWMTS(gaTime, gaMapUtils, gaGlobalOptions) {
     return function(layer, config) {
       // config is not defined for external WMTS
       // For internal WMTS layer, we use the simplified
@@ -391,12 +392,12 @@ goog.require('ga_urlutils_service');
       // See http://www.mapfish.org/doc/print/protocol.html#wmts
       // TODO: simplified protocol is only valid for LV03 layers!
 
-      var isExternalWmts = angular.equals(config, {});
       var enc = encodeBase(layer);
       var source = layer.getSource();
       var tileGrid = source.getTileGrid();
       var extent = layer.getExtent();
       var requestEncoding = source.getRequestEncoding() || 'REST';
+      var dfltTileMatrixSet = gaGlobalOptions.defaultEpsg.split(':')[1];
 
       // resourceURL for RESTful, service endpoint for KVP
       var url = source.getUrls()[0];
@@ -406,47 +407,28 @@ goog.require('ga_urlutils_service');
         baseUrl = baseUrl.
             replace(/\{Time\}/i, '{TIME}').
             replace(/\{/g, '%7B').
-            replace(/\}/g, '%7D').
-            replace(/wmts\d{1,3}\.geo\.admin\.ch/, 'wmts.geo.admin.ch');
+            replace(/\}/g, '%7D');
       }
 
       var wmtsDimensions = encodeDimensions(source.getDimensions());
-      // common config
+      var encodeMatrixIds = getMatrixIds(gaMapUtils);
+      var matrices = encodeMatrixIds(tileGrid, extent);
+
+      // use the full monty WMTS definition fo external source
+      // the simplified definition was EPSG:21781 swisstopo only
       angular.extend(enc, {
         type: 'WMTS',
         layer: source.getLayer(),
+        baseURL: baseUrl,
+        matrixIds: matrices,
         version: source.getVersion() || '1.0.0',
         requestEncoding: requestEncoding,
         formatSuffix: source.getFormat().replace('image/', ''),
         style: source.getStyle() || 'default',
         dimensions: Object.keys(wmtsDimensions),
         params: wmtsDimensions,
-        matrixSet: source.getMatrixSet() || '21781'
+        matrixSet: source.getMatrixSet() || dfltTileMatrixSet
       });
-
-      if (!isExternalWmts) {
-
-        angular.extend(enc, {
-          baseURL: baseUrl.slice(0, baseUrl.indexOf('/1.0.0')),
-          zoomOffset: tileGrid.getMinZoom(),
-          tileOrigin: tileGrid.getOrigin(),
-          tileSize: [tileGrid.getTileSize(), tileGrid.getTileSize()],
-          resolutions: tileGrid.getResolutions(),
-          maxExtent: extent
-        });
-
-      } else {
-        // use the full monty WMTS definition fo external source
-
-        var encodeMatrixIds = getMatrixIds(gaMapUtils);
-        var matrices = encodeMatrixIds(tileGrid, extent);
-
-        angular.extend(enc, {
-          layer: source.getLayer(),
-          baseURL: baseUrl,
-          matrixIds: matrices
-        });
-      }
 
       var multiPagesPrint = false;
       if (config.timestamps) {

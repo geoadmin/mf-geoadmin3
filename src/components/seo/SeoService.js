@@ -23,9 +23,11 @@ goog.require('ga_permalink_service');
       var layersAtStart = gaPermalink.getParams().layers ?
         gaPermalink.getParams().layers.split(',') : [];
 
-      var yxzoom = {
+      var params = {
         Y: gaPermalink.getParams().Y,
         X: gaPermalink.getParams().X,
+        E: gaPermalink.getParams().E,
+        N: gaPermalink.getParams().N,
         zoom: gaPermalink.getParams().zoom
       };
 
@@ -50,8 +52,8 @@ goog.require('ga_permalink_service');
           return layersAtStart;
         };
 
-        this.getYXZoom = function() {
-          return yxzoom;
+        this.getParams = function() {
+          return params;
         };
       };
 

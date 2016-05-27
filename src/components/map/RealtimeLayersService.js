@@ -16,7 +16,6 @@ goog.require('ga_vector_service');
       var timers = [];
       var map;
       var realTimeLayersId = [];
-      var geojsonFormat = new ol.format.GeoJSON();
 
       var handleTimer = function(layer) {
         if (!layer.preview) {
@@ -47,9 +46,7 @@ goog.require('ga_vector_service');
                   });
             } else {
               olSource.clear();
-              olSource.addFeatures(
-                  geojsonFormat.readFeatures(data)
-              );
+              olSource.addFeatures(olSource.getFormat().readFeatures(data));
               layer.timestamps = [data.timestamp];
             }
             handleTimer(layer);

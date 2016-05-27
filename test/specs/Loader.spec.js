@@ -12,7 +12,6 @@ beforeEach(function() {
     var publicUrl = '//public.geo.admin.ch';
     var printUrl = '//print.geo.admin.ch';
     var proxyUrl = '//proxy.geo.admin.ch';
-    var mapproxyUrl = '//wmts{s}.geo.admin.ch';
     var shopUrl = '//shop.bgdi.ch';
     var wmsUrl = '//wms.geo.admin.ch';
     var wmtsUrl = '//tod{s}.bgdi.ch';
@@ -29,7 +28,6 @@ beforeEach(function() {
       apiUrl: location.protocol + apiUrl,
       altiUrl: location.protocol + altiUrl,
       printUrl: location.protocol + printUrl,
-      mapproxyUrl: location.protocol + mapproxyUrl,
       shopUrl: location.protocol + shopUrl,
       publicUrl: location.protocol + publicUrl,
       publicUrlRegexp: /^https?:\/\/public\..*\.(bgdi|admin)\.ch\/.*/,
@@ -56,8 +54,8 @@ beforeEach(function() {
       resolutions: [650.0, 500.0, 250.0, 100.0, 50.0, 20.0, 10.0, 5.0,
         2.5, 2.0, 1.0, 0.5, 0.25, 0.1],
       lods: [6, 7, 8, 9, 10, 11, 12, 13, 14, 14, 16, 17, 18, 18],
-      defaultEpsg: 'EPSG:21781',
-      defaultEpsgExtent: [420000, 30000, 900000, 350000],
+      defaultEpsg: 'EPSG:2056',
+      defaultEpsgExtent: [2420000, 1030000, 2900000, 1350000],
       defaultElevationModel: 'COMB',
       defaultTerrain: 'ch.dummy.terrain.3d',
       languages: ['de', 'fr', 'it', 'en', 'rm', 'somelang']
@@ -82,7 +80,6 @@ beforeEach(function() {
     gaLayersProvider.wmtsLV03PathTemplate = '/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{y}/{x}.{Format}';
     gaLayersProvider.wmtsPathTemplate = '/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{x}/{y}.{Format}';
 
-    // https://regex101.com/r/U5ccHi/3
     gaLayersProvider.terrainTileUrlTemplate = '//3d.geo.admin.ch/1.0.0/{Layer}/default/{Time}/4326';
     gaLayersProvider.vectorTilesUrlTemplate = '//vectortiles{s}.geo.admin.ch/{Layer}/{Time}/';
     gaLayersProvider.layersConfigUrlTemplate = 'https://example.com/all?lang={Lang}';

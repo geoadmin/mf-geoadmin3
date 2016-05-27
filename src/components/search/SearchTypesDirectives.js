@@ -28,7 +28,7 @@ goog.require('ga_urlutils_service');
     var center = [res.attrs.y, res.attrs.x];
     if (!res.attrs.y || !res.attrs.x) {
       center = ol.proj.transform([res.attrs.lon, res.attrs.lat],
-          'EPSG:4326', 'EPSG:21781');
+          'EPSG:4326', map.getView().getProjection());
     }
     gaMarkerOverlay.add(map,
         center,
