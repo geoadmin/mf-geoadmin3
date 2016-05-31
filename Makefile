@@ -295,6 +295,7 @@ guard-%:
 prd/robots.txt: scripts/robots.mako-dot-txt .build-artefacts/last-deploy-target
 	mkdir -p $(dir $@)
 	${PYTHON_CMD} ${MAKO_CMD} \
+		--var "apache_base_path=$(APACHE_BASE_PATH)" \
 	    --var "deploy_target=$(DEPLOY_TARGET)" $< > $@
 
 prd/lib/: src/lib/d3.min.js \
