@@ -231,6 +231,7 @@ ol3cesium: .build-artefacts/ol3-cesium
 	git fetch --all; \
 	git checkout $(OL3_VERSION); \
 	git show; \
+	cat ../../../scripts/ga-ol3-reproj.exports >> src/ol/reproj/reproj.js; \
 	cat ../../../scripts/ga-ol3-style.exports >> src/ol/style/style.js; \
 	cat ../../../scripts/ga-ol3-tilegrid.exports >> src/ol/tilegrid/tilegrid.js; \
 	cat ../../../scripts/ga-ol3-tilerange.exports >> src/ol/tilerange.js; \
