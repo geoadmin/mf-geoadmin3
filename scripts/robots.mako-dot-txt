@@ -9,7 +9,7 @@ Sitemap: https://map.geo.admin.ch/sitemap_index.xml
 
 % else:
 
-Disallow: /
+Disallow: ${apache_base_path}/
 
 % endif
 
