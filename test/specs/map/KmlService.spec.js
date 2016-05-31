@@ -428,6 +428,47 @@ describe('ga_kml_service', function() {
         $rootScope.$digest();
       });
 
+      it('don\'t remove geometries with good coordinates, at least 2 (#3334)', function(done) {
+        var uniqCoords = '<coordinates>1,0,0 2,0,0</coordinates>';
+        var linearRing = '<LinearRing>' + uniqCoords + '</LinearRing>'; 
+        var polygon = '<Polygon>' +
+            '<outerBoundaryIs>' + linearRing + '</outerBoundaryIs>' +
+            '<innerBoundaryIs>' + linearRing + '</innerBoundaryIs>' +
+          '</Polygon>';
+        var multiPolygon = '<MultiGeometry>' +
+            polygon + polygon +
+         '</MultiGeometry>';
+        var line = '<LineString>' + uniqCoords + '</LineString>'; 
+        var multiLine = '<MultiGeometry>' +
+            line + line +
+         '</MultiGeometry>';
+         var lineWithOneCoord = '<LineString>0,0,0</LineString>'; 
+        
+        
+        // a heterogenous MultiGeometry creates a GeometryCollection feature
+        var geomColl = '<MultiGeometry>' +
+            polygon +
+            '<Point><coordinates>0,0,0</coordinates></Point>' +
+            line +
+         '</MultiGeometry>';
+
+
+        var kml = '<kml>' +
+            '<Placemark>' + linearRing + '</Placemark>' + 
+            '<Placemark>' + polygon + '</Placemark>' + 
+            '<Placemark>' + multiPolygon + '</Placemark>' +
+            '<Placemark>' + geomColl + '</Placemark>' +
+            '<Placemark>' + line + '</Placemark>' + 
+            '<Placemark>' + multiLine + '</Placemark>' +
+          '</kml>';
+        gaKml.addKmlToMap(map, kml).then(function(olLayer) {
+          var feats = olLayer.getSource().getFeatures();
+          expect(feats.length).to.be(6);
+          done();
+        });
+        $rootScope.$digest();
+      });
+
       it('set empty feature\'s id to undefined', function(done) {
         var kml = '<kml>' + createValidPlkPoint('') + '</kml>';
         gaKml.addKmlToMap(map, kml).then(function(olLayer) {

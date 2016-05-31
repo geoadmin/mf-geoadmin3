@@ -91,7 +91,7 @@ goog.require('ga_urlutils_service');
      */
     var uniqueCoords = function(coords) {
       var unique = true;
-      for (var i = 1, ii = coords.length; i < ii; i++) {
+      for (var i = 0, ii = coords.length; i < ii; i++) {
         var coord = coords[i];
         var nextCoord = coords[i + 1];
         if (unique && nextCoord &&
