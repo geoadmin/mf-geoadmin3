@@ -7,7 +7,7 @@
       <span translate>shop_order</span>
       <span ng-show="price"> ({{price | price}})</span>
     </button>
-    <select ng-if="::orderTypes.length > 1"
+    <select ng-if="::!(orderTypes.length == 1 && orderType == 'mapsheet')"
             ng-model="orderType"
             ng-options="((label | translate) + '' + getClipperFeatureLabel(label)) for label in orderTypes"
             ng-change="onChangeOrderType(orderType)"
