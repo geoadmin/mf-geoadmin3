@@ -402,8 +402,7 @@ goog.require('ga_time_service');
               type: 'FeatureCollection',
               features: encFeatures
             },
-            name: layer.bodId,
-            opacity: (layer.opacity != null) ? layer.opacity : 1.0
+            name: layer.bodId
           });
           return enc;
         },
@@ -530,6 +529,16 @@ goog.require('ga_time_service');
           if (styles && styles.length > 0) {
             angular.extend(encStyle, transformToPrintLiteral(feature,
                 styles[0]));
+
+            // Apply the layer's opacity on fill and stroke
+            if (encStyle.fillOpacity) {
+              encStyle.fillOpacity *= layer.getOpacity();
+            }
+
+            if (encStyle.strokeOpacity) {
+              encStyle.strokeOpacity *= layer.getOpacity();
+            }
+
             encStyles[encStyle.id] = encStyle;
             var styleToEncode = styles[0];
             // If a feature has a style with a geometryFunction defined, we

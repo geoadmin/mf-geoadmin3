@@ -250,6 +250,17 @@ goog.require('ga_topic_service');
               return scope.ol3d && scope.ol3d.getEnabled();
             };
 
+            // Destroy the popup specified when needed
+            var destroyPopup = function() {
+              $timeout(function() {
+                // We destroy the popup only if it's still closed
+                if (popup && popup.scope && popup.scope.toggle === false) {
+                  popup.destroy();
+                  popup = undefined;
+                }
+              }, 0);
+            };
+
             // Destroy popup and highlight
             var initTooltip = function() {
                // Cancel all pending requests
@@ -584,7 +595,10 @@ goog.require('ga_topic_service');
                   showReduce: false,
                   title: 'object_information',
                   content: '<div class="ga-popup-no-info" translate>' +
-                      'no_more_information</div>'
+                      'no_more_information</div>',
+                  onCloseCallback: function() {
+                    destroyPopup();
+                  }
                 });
               }
               popup.open(3000); //Close after 3 seconds
@@ -613,14 +627,7 @@ goog.require('ga_topic_service');
                       }
                       onCloseCB = angular.noop;
                       gaPreviewFeatures.clear(map);
-                      $timeout(function() {
-                        // We destroy the popup only if it's still closed
-                        if (popup && popup.scope &&
-                            popup.scope.toggle === false) {
-                          popup.destroy();
-                          popup = undefined;
-                        }
-                      },0);
+                      destroyPopup();
                     },
                     onMouseEnter: function(evt, nbTooltips) {
                       if (nbTooltips == 1) return;
