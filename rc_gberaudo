@@ -1,4 +1,0 @@
-export API_URL=//mf-chsdi3.dev.bgdi.ch/
-export APACHE_BASE_PATH=/gberaudo
-export DEV3D=true
-export E2E_TARGETURL=https://mf-geoadmin3.dev.bgdi.ch/gberaudo
