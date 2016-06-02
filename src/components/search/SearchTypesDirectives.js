@@ -218,7 +218,6 @@ goog.require('ga_urlutils_service');
         var url = gaUrlUtils.append($scope.options.searchUrl,
                                     'type=' + $scope.type);
         url = $scope.typeSpecificUrl(url);
-
         $http.get(url, {
           cache: true,
           timeout: canceler.promise
@@ -300,10 +299,10 @@ goog.require('ga_urlutils_service');
 
       $scope.fuzzy = '';
 
-      $scope.$watch('options.searchUrl', function(newval) {
-        //cancel old requests
+      $scope.$watch('options.searchUrl', function() {
+        // cancel old requests
         cancel();
-        if (newval != '') {
+        if ($scope.options.query != '') {
           blockEvent = false;
           triggerSearch();
         } else {

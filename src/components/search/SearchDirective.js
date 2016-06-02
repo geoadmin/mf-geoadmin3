@@ -103,6 +103,8 @@ goog.require('ga_translation_service');
           }
           swisssearchActive = false;
           $rootScope.$broadcast('gaSwisssearchDone');
+        } else {
+          restat.reset();
         }
       };
 
