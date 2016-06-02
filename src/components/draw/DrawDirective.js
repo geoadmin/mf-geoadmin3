@@ -866,6 +866,11 @@ goog.require('ga_permalink');
                 layer.id = 'KML||' + layer.url;
               }
 
+              // Inform parent window that a KML has been saved
+              if (top != window) {
+                window.parent.postMessage(layer.url, '*');
+              }
+
               if (!scope.adminShortenUrl) {
                 updateShortenUrl(layer.adminId);
               }
