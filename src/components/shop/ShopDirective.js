@@ -113,8 +113,8 @@ goog.require('ga_price_filter');
             var layers = [
               gaLayers.getOlLayerById(clipper)
             ];
-            gaIdentify.get(scope.map, layers, scope.clipperGeometry, 1,
-                false).then(function(response) {
+            gaIdentify.get(scope.map, layers, scope.clipperGeometry, 1, false,
+                null, 1).then(function(response) {
               var results = response.data.results;
               if (results.length) {
                 scope.clipperFeatures[scope.orderType] = results[0];

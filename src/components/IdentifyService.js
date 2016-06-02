@@ -77,7 +77,7 @@ goog.provide('ga_identify_service');
 
       var Identify = function() {
         this.get = function(olMap, olLayers, olGeometry, tolerance,
-            returnGeometry, timeout) {
+            returnGeometry, timeout, limit) {
           if (!olMap || !olLayers || !olGeometry) {
             return reject('Missing required parameters');
           }
@@ -89,6 +89,9 @@ goog.provide('ga_identify_service');
             returnGeometry: !!returnGeometry,
             lang: gaLang.get()
           };
+          if (limit) {
+            othersParams.limit = limit;
+          }
           var params = angular.extend(mapParams, layersParams, geometryParams,
               othersParams);
           var timeo = timeout || {}; // could be an integer or a canceler

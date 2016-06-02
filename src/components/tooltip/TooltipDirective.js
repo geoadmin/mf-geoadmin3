@@ -2,6 +2,7 @@ goog.provide('ga_tooltip_directive');
 
 goog.require('ga_browsersniffer_service');
 goog.require('ga_debounce_service');
+goog.require('ga_identify_service');
 goog.require('ga_map_service');
 goog.require('ga_popup_service');
 goog.require('ga_previewfeatures_service');
@@ -13,6 +14,7 @@ goog.require('ga_topic_service');
   var module = angular.module('ga_tooltip_directive', [
     'ga_browsersniffer_service',
     'ga_debounce_service',
+    'ga_identify_service',
     'ga_map_service',
     'ga_popup_service',
     'ga_previewfeatures_service',
@@ -24,7 +26,7 @@ goog.require('ga_topic_service');
   module.directive('gaTooltip',
       function($timeout, $http, $q, $translate, $sce, gaPopup, gaLayers,
           gaBrowserSniffer, gaMapClick, gaDebounce, gaPreviewFeatures,
-          gaMapUtils, gaTime, gaTopic, gaGlobalOptions) {
+          gaMapUtils, gaTime, gaTopic, gaIdentify, gaGlobalOptions) {
         var mouseEvts = '';
         if (!gaBrowserSniffer.mobile) {
           mouseEvts = 'ng-mouseenter="options.onMouseEnter($event,' +
@@ -366,12 +368,8 @@ goog.require('ga_topic_service');
               var pointerShown = (map.getTarget().style.cursor == 'pointer');
               var mapRes = map.getView().getResolution();
               var mapProj = map.getView().getProjection();
-              var mapSize = map.getSize();
-              var mapExtent = map.getView().calculateExtent(mapSize);
-              var identifyUrl = scope.options.identifyUrlTemplate
-                  .replace('{Topic}', gaTopic.get().id),
-                  pixel = map.getPixelFromCoordinate(coordinate),
-                  layersToQuery = getLayersToQuery(map);
+              var pixel = map.getPixelFromCoordinate(coordinate);
+              var layersToQuery = getLayersToQuery(map);
 
               // When 3d is Active we use the cesium native function to get the
               // first queryable feature.
@@ -401,31 +399,17 @@ goog.require('ga_topic_service');
               // Go through all queryable bod layers.
               // Launch identify requests.
               layersToQuery.bodLayers.forEach(function(layerToQuery) {
-                var params = {
-                  geometryType: 'esriGeometryPoint',
-                  geometryFormat: 'geojson',
-                  geometry: coordinate.toString(),
-                  // FIXME: make sure we are passing the right dpi here.
-                  imageDisplay: mapSize.toString() + ',96',
-                  mapExtent: mapExtent.toString(),
-                  tolerance: scope.options.tolerance,
-                  returnGeometry: !!gaLayers.getLayerProperty(
-                      layerToQuery.bodId, 'highlightable'),
-                  layers: 'all:' + layerToQuery.bodId
-                };
-
-                // Only timeEnabled layers use the timeInstant parameter
-                if (layerToQuery.timeEnabled) {
-                  params.timeInstant = gaTime.get() ||
-                      gaTime.getYearFromTimestamp(layerToQuery.time);
-                }
-
-                all.push($http.get(identifyUrl, {
-                  timeout: canceler.promise,
-                  params: params
-                }).then(function(response) {
-                  showFeatures(response.data.results, coordinate);
-                  return response.data.results.length;
+                var tol = scope.options.tolerance;
+                var geometry = new ol.geom.Point(coordinate);
+                var returnGeometry = !!gaLayers.getLayerProperty(
+                    layerToQuery.bodId, 'highlightable');
+                var limit = gaLayers.getLayerProperty(
+                    layerToQuery.bodId, 'shop') ? 1 : null;
+                all.push(gaIdentify.get(map, [layerToQuery], geometry, tol,
+                    returnGeometry, canceler.promise, limit).then(
+                  function(response) {
+                    showFeatures(response.data.results, coordinate);
+                    return response.data.results.length;
                 }));
               });
 

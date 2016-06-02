@@ -3,7 +3,7 @@ describe('ga_identify_service', function() {
 
   var expectedDfltRequest =  'http://api3.geo.admin.ch/rest/services/all/MapServer/identify?geometry=0,0&geometryFormat=geojson&geometryType=esriGeometryPoint&imageDisplay=600,300,96&lang=custom&layers=all:mybodid&mapExtent=-46962910.17841229,-23481455.089206144,46962910.17841229,23481455.089206144&returnGeometry=false&tolerance=0';
 
-  var expectedComplexRequest = 'http://api3.geo.admin.ch/rest/services/all/MapServer/identify?geometry=0,0&geometryFormat=geojson&geometryType=esriGeometryPoint&imageDisplay=600,300,96&lang=custom&layers=all:mybodid,bodtelayer&mapExtent=-46962910.17841229,-23481455.089206144,46962910.17841229,23481455.089206144&returnGeometry=false&timeInstant=,2012&tolerance=28';
+  var expectedComplexRequest = 'http://api3.geo.admin.ch/rest/services/all/MapServer/identify?geometry=0,0&geometryFormat=geojson&geometryType=esriGeometryPoint&imageDisplay=600,300,96&lang=custom&layers=all:mybodid,bodtelayer&limit=1&mapExtent=-46962910.17841229,-23481455.089206144,46962910.17841229,23481455.089206144&returnGeometry=false&timeInstant=,2012&tolerance=28'
 
   var getBodLayer = function(bodId) {
     var layer = getNonBodLayer();
@@ -106,7 +106,7 @@ describe('ga_identify_service', function() {
       map.addLayer(getBodTimeEnabledLayer('bodtelayer'));
       var gaTimeGet = sinon.spy(gaTime, 'get');
       $httpBackend.expectGET(expectedComplexRequest).respond({});
-      gaIdentify.get(map, map.getLayers().getArray(), point, 28, false, 10000).then(function(msg) {
+      gaIdentify.get(map, map.getLayers().getArray(), point, 28, false, 10000, 1).then(function(msg) {
         expect(gaTimeGet.calledOnce).to.eql(true);
         done();
       });
