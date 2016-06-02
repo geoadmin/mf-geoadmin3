@@ -3,6 +3,7 @@ goog.provide('ga_tooltip_directive');
 goog.require('ga_browsersniffer_service');
 goog.require('ga_debounce_service');
 goog.require('ga_identify_service');
+goog.require('ga_iframe_com_service');
 goog.require('ga_map_service');
 goog.require('ga_popup_service');
 goog.require('ga_previewfeatures_service');
@@ -15,6 +16,7 @@ goog.require('ga_topic_service');
     'ga_browsersniffer_service',
     'ga_debounce_service',
     'ga_identify_service',
+    'ga_iframe_com_service',
     'ga_map_service',
     'ga_popup_service',
     'ga_previewfeatures_service',
@@ -26,8 +28,8 @@ goog.require('ga_topic_service');
   module.directive('gaTooltip',
       function($timeout, $http, $q, $translate, $sce, gaPopup, gaLayers,
           gaBrowserSniffer, gaMapClick, gaDebounce, gaPreviewFeatures,
-          gaMapUtils, gaTime, gaTopic, gaIdentify, gaGlobalOptions
-          gaPermalink) {
+          gaMapUtils, gaTime, gaTopic, gaIdentify, gaGlobalOptions,
+          gaPermalink, gaIFrameCom) {
         var mouseEvts = '';
         if (!gaBrowserSniffer.mobile) {
           mouseEvts = 'ng-mouseenter="options.onMouseEnter($event,' +
@@ -551,7 +553,16 @@ goog.require('ga_topic_service');
               }
               feature.set('layerId', layerId);
               showFeatures([feature]);
+
               // Iframe communication from inside out
+              gaIFrameCom.send('gaFeatureSelection', {
+                layerId: layerId,
+                featureId: featureId
+              });
+
+              // We leave the old code to not break existing clients
+              // Once they have adapted to new implementation, we
+              // can remove the code below
               if (top != window) {
                if (featureId && layerId) {
                   window.parent.postMessage(id, '*');
