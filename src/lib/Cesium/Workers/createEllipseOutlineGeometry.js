@@ -20,7 +20,8 @@
  * Portions licensed separately.
  * See https://github.com/AnalyticalGraphicsInc/cesium/blob/master/LICENSE.md for full licensing details.
  */
-(function () {/*global define*/
+(function () {
+/*global define*/
 define('Core/defined',[],function() {
     'use strict';
 
@@ -124,6 +125,7 @@ define('Core/DeveloperError',[
      *
      * @alias DeveloperError
      * @constructor
+     * @extends Error
      *
      * @param {String} [message] The error message for this exception.
      *
@@ -158,6 +160,11 @@ define('Core/DeveloperError',[
          * @readonly
          */
         this.stack = stack;
+    }
+
+    if (defined(Object.create)) {
+        DeveloperError.prototype = Object.create(Error.prototype);
+        DeveloperError.prototype.constructor = DeveloperError;
     }
 
     DeveloperError.prototype.toString = function() {
@@ -5693,6 +5700,7 @@ define('Core/RuntimeError',[
      *
      * @alias RuntimeError
      * @constructor
+     * @extends Error
      *
      * @param {String} [message] The error message for this exception.
      *
@@ -5728,6 +5736,12 @@ define('Core/RuntimeError',[
          */
         this.stack = stack;
     }
+
+    if (defined(Object.create)) {
+        RuntimeError.prototype = Object.create(Error.prototype);
+        RuntimeError.prototype.constructor = RuntimeError;
+    }
+
     RuntimeError.prototype.toString = function() {
         var str = this.name + ': ' + this.message;
 
@@ -6554,7 +6568,6 @@ define('Core/Matrix4',[
      * @param {Number} bottom The number of meters below of the camera that will be in view.
      * @param {Number} top The number of meters above of the camera that will be in view.
      * @param {Number} near The distance to the near plane in meters.
-     * @param {Number} far The distance to the far plane in meters.
      * @param {Matrix4} result The object in which the result will be stored.
      * @returns {Matrix4} The modified result parameter.
      */
@@ -11501,7 +11514,7 @@ define('Core/Fullscreen',[
      * If fullscreen mode is not supported by the browser, does nothing.
      *
      * @param {Object} element The HTML element which will be placed into fullscreen mode.
-     * @param {HMDVRDevice} vrDevice The VR device.
+     * @param {HMDVRDevice} [vrDevice] The VR device.
      *
      * @example
      * // Put the entire page into fullscreen.
@@ -14158,9 +14171,6 @@ define('Core/EllipseOutlineGeometry',[
     var topBoundingSphere = new BoundingSphere();
     var bottomBoundingSphere = new BoundingSphere();
     function computeExtrudedEllipse(options) {
-        var numberOfVerticalLines = defaultValue(options.numberOfVerticalLines, 16);
-        numberOfVerticalLines = Math.max(numberOfVerticalLines, 0);
-
         var center = options.center;
         var ellipsoid = options.ellipsoid;
         var semiMajorAxis = options.semiMajorAxis;
@@ -14184,6 +14194,9 @@ define('Core/EllipseOutlineGeometry',[
         positions = attributes.position.values;
         var boundingSphere = BoundingSphere.union(topBoundingSphere, bottomBoundingSphere);
         var length = positions.length/3;
+        var numberOfVerticalLines = defaultValue(options.numberOfVerticalLines, 16);
+        numberOfVerticalLines = CesiumMath.clamp(numberOfVerticalLines, 0, length/2);
+
         var indices = IndexDatatype.createTypedArray(length, length * 2 + numberOfVerticalLines * 2);
 
         length /= 2;
@@ -14200,11 +14213,8 @@ define('Core/EllipseOutlineGeometry',[
         if (numberOfVerticalLines > 0) {
             var numSideLines = Math.min(numberOfVerticalLines, length);
             numSide = Math.round(length / numSideLines);
-        }
 
-
-        var maxI = Math.min(numSide * numberOfVerticalLines, length);
-        if (numberOfVerticalLines > 0) {
+            var maxI = Math.min(numSide * numberOfVerticalLines, length);
             for (i = 0; i < maxI; i += numSide) {
                 indices[index++] = i;
                 indices[index++] = i + length;
@@ -14443,7 +14453,6 @@ define('Core/EllipseOutlineGeometry',[
 
     return EllipseOutlineGeometry;
 });
-
 /*global define*/
 define('Workers/createEllipseOutlineGeometry',[
         '../Core/Cartesian3',

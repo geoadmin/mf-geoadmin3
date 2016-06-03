@@ -20,7 +20,8 @@
  * Portions licensed separately.
  * See https://github.com/AnalyticalGraphicsInc/cesium/blob/master/LICENSE.md for full licensing details.
  */
-(function () {/*global define*/
+(function () {
+/*global define*/
 define('Core/defined',[],function() {
     'use strict';
 
@@ -124,6 +125,7 @@ define('Core/DeveloperError',[
      *
      * @alias DeveloperError
      * @constructor
+     * @extends Error
      *
      * @param {String} [message] The error message for this exception.
      *
@@ -158,6 +160,11 @@ define('Core/DeveloperError',[
          * @readonly
          */
         this.stack = stack;
+    }
+
+    if (defined(Object.create)) {
+        DeveloperError.prototype = Object.create(Error.prototype);
+        DeveloperError.prototype.constructor = DeveloperError;
     }
 
     DeveloperError.prototype.toString = function() {
@@ -5693,6 +5700,7 @@ define('Core/RuntimeError',[
      *
      * @alias RuntimeError
      * @constructor
+     * @extends Error
      *
      * @param {String} [message] The error message for this exception.
      *
@@ -5728,6 +5736,12 @@ define('Core/RuntimeError',[
          */
         this.stack = stack;
     }
+
+    if (defined(Object.create)) {
+        RuntimeError.prototype = Object.create(Error.prototype);
+        RuntimeError.prototype.constructor = RuntimeError;
+    }
+
     RuntimeError.prototype.toString = function() {
         var str = this.name + ': ' + this.message;
 
@@ -6554,7 +6568,6 @@ define('Core/Matrix4',[
      * @param {Number} bottom The number of meters below of the camera that will be in view.
      * @param {Number} top The number of meters above of the camera that will be in view.
      * @param {Number} near The distance to the near plane in meters.
-     * @param {Number} far The distance to the far plane in meters.
      * @param {Matrix4} result The object in which the result will be stored.
      * @returns {Matrix4} The modified result parameter.
      */
@@ -10907,7 +10920,7 @@ define('Core/Fullscreen',[
      * If fullscreen mode is not supported by the browser, does nothing.
      *
      * @param {Object} element The HTML element which will be placed into fullscreen mode.
-     * @param {HMDVRDevice} vrDevice The VR device.
+     * @param {HMDVRDevice} [vrDevice] The VR device.
      *
      * @example
      * // Put the entire page into fullscreen.
@@ -11562,6 +11575,7 @@ define('Core/Color',[
             result.red = parseInt(matches[1], 16) / 15;
             result.green = parseInt(matches[2], 16) / 15.0;
             result.blue = parseInt(matches[3], 16) / 15.0;
+            result.alpha = 1.0;
             return result;
         }
 
@@ -11570,6 +11584,7 @@ define('Core/Color',[
             result.red = parseInt(matches[1], 16) / 255.0;
             result.green = parseInt(matches[2], 16) / 255.0;
             result.blue = parseInt(matches[3], 16) / 255.0;
+            result.alpha = 1.0;
             return result;
         }
 
@@ -17155,7 +17170,7 @@ define('Core/PolylinePipeline',[
      * var positions = polyline.positions;
      * var modelMatrix = polylines.modelMatrix;
      * var segments = Cesium.PolylinePipeline.wrapLongitude(positions, modelMatrix);
-     * 
+     *
      * @see PolygonPipeline.wrapLongitude
      * @see Polyline
      * @see PolylineCollection
@@ -17215,61 +17230,6 @@ define('Core/PolylinePipeline',[
             positions : cartesians,
             lengths : segments
         };
-    };
-
-    var removeDuplicatesEpsilon = CesiumMath.EPSILON10;
-
-    /**
-     * Removes adjacent duplicate positions in an array of positions.
-     *
-     * @param {Cartesian3[]} positions The array of positions.
-     * @returns {Cartesian3[]|undefined} A new array of positions with no adjacent duplicate positions or the input array if no duplicates were found.
-     *
-     * @example
-     * // Returns [(1.0, 1.0, 1.0), (2.0, 2.0, 2.0)]
-     * var positions = [
-     *     new Cesium.Cartesian3(1.0, 1.0, 1.0),
-     *     new Cesium.Cartesian3(1.0, 1.0, 1.0),
-     *     new Cesium.Cartesian3(2.0, 2.0, 2.0)];
-     * var nonDuplicatePositions = Cesium.PolylinePipeline.removeDuplicates(positions);
-     */
-    PolylinePipeline.removeDuplicates = function(positions) {
-                if (!defined(positions)) {
-            throw new DeveloperError('positions is required.');
-        }
-        
-        var length = positions.length;
-        if (length < 2) {
-            return positions;
-        }
-
-        var i;
-        var v0;
-        var v1;
-
-        for (i = 1; i < length; ++i) {
-            v0 = positions[i - 1];
-            v1 = positions[i];
-            if (Cartesian3.equalsEpsilon(v0, v1, removeDuplicatesEpsilon)) {
-                break;
-            }
-        }
-
-        if (i === length) {
-            return positions;
-        }
-
-        var cleanedPositions = positions.slice(0, i);
-        for (; i < length; ++i) {
-            // v0 is set by either the previous loop, or the previous clean point.
-            v1 = positions[i];
-            if (!Cartesian3.equalsEpsilon(v0, v1, removeDuplicatesEpsilon)) {
-                cleanedPositions.push(Cartesian3.clone(v1));
-                v0 = v1;
-            }
-        }
-
-        return cleanedPositions;
     };
 
     /**
