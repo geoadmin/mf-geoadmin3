@@ -20,7 +20,8 @@
  * Portions licensed separately.
  * See https://github.com/AnalyticalGraphicsInc/cesium/blob/master/LICENSE.md for full licensing details.
  */
-(function () {/*global define*/
+(function () {
+/*global define*/
 define('Core/defined',[],function() {
     'use strict';
 
@@ -124,6 +125,7 @@ define('Core/DeveloperError',[
      *
      * @alias DeveloperError
      * @constructor
+     * @extends Error
      *
      * @param {String} [message] The error message for this exception.
      *
@@ -158,6 +160,11 @@ define('Core/DeveloperError',[
          * @readonly
          */
         this.stack = stack;
+    }
+
+    if (defined(Object.create)) {
+        DeveloperError.prototype = Object.create(Error.prototype);
+        DeveloperError.prototype.constructor = DeveloperError;
     }
 
     DeveloperError.prototype.toString = function() {
@@ -7475,6 +7482,7 @@ define('Core/RuntimeError',[
      *
      * @alias RuntimeError
      * @constructor
+     * @extends Error
      *
      * @param {String} [message] The error message for this exception.
      *
@@ -7510,6 +7518,12 @@ define('Core/RuntimeError',[
          */
         this.stack = stack;
     }
+
+    if (defined(Object.create)) {
+        RuntimeError.prototype = Object.create(Error.prototype);
+        RuntimeError.prototype.constructor = RuntimeError;
+    }
+
     RuntimeError.prototype.toString = function() {
         var str = this.name + ': ' + this.message;
 
@@ -8336,7 +8350,6 @@ define('Core/Matrix4',[
      * @param {Number} bottom The number of meters below of the camera that will be in view.
      * @param {Number} top The number of meters above of the camera that will be in view.
      * @param {Number} near The distance to the near plane in meters.
-     * @param {Number} far The distance to the far plane in meters.
      * @param {Matrix4} result The object in which the result will be stored.
      * @returns {Matrix4} The modified result parameter.
      */
@@ -12534,7 +12547,7 @@ define('Core/Fullscreen',[
      * If fullscreen mode is not supported by the browser, does nothing.
      *
      * @param {Object} element The HTML element which will be placed into fullscreen mode.
-     * @param {HMDVRDevice} vrDevice The VR device.
+     * @param {HMDVRDevice} [vrDevice] The VR device.
      *
      * @example
      * // Put the entire page into fullscreen.
@@ -25050,7 +25063,6 @@ define('Core/GeometryPipeline',[
     var cartesian2Scratch1 = new Cartesian2();
 
     var cartesian3Scratch0 = new Cartesian3();
-    var cartesian3Scratch1 = new Cartesian3();
     var cartesian3Scratch2 = new Cartesian3();
     var cartesian3Scratch3 = new Cartesian3();
     var cartesian3Scratch4 = new Cartesian3();
@@ -25058,6 +25070,46 @@ define('Core/GeometryPipeline',[
     var cartesian3Scratch6 = new Cartesian3();
 
     var cartesian4Scratch0 = new Cartesian4();
+
+    function updateAdjacencyAfterSplit(geometry) {
+        var attributes = geometry.attributes;
+        var positions = attributes.position.values;
+        var prevPositions = attributes.prevPosition.values;
+        var nextPositions = attributes.nextPosition.values;
+
+        var length = positions.length;
+        for (var j = 0; j < length; j += 3) {
+            var position = Cartesian3.unpack(positions, j, cartesian3Scratch0);
+            if (position.x > 0.0) {
+                continue;
+            }
+
+            var prevPosition = Cartesian3.unpack(prevPositions, j, cartesian3Scratch2);
+            if ((position.y < 0.0 && prevPosition.y > 0.0) || (position.y > 0.0 && prevPosition.y < 0.0)) {
+                if (j - 3 > 0) {
+                    prevPositions[j] = positions[j - 3];
+                    prevPositions[j + 1] = positions[j - 2];
+                    prevPositions[j + 2] = positions[j - 1];
+                } else {
+                    Cartesian3.pack(position, prevPositions, j);
+                }
+            }
+
+            var nextPosition = Cartesian3.unpack(nextPositions, j, cartesian3Scratch3);
+            if ((position.y < 0.0 && nextPosition.y > 0.0) || (position.y > 0.0 && nextPosition.y < 0.0)) {
+                if (j + 3 < length) {
+                    nextPositions[j] = positions[j + 3];
+                    nextPositions[j + 1] = positions[j + 4];
+                    nextPositions[j + 2] = positions[j + 5];
+                } else {
+                    Cartesian3.pack(position, nextPositions, j);
+                }
+            }
+        }
+    }
+
+    var offsetScalar = 5.0 * CesiumMath.EPSILON9;
+    var coplanarOffset = CesiumMath.EPSILON6;
 
     function splitLongitudePolyline(instance) {
         var geometry = instance.geometry;
@@ -25077,26 +25129,42 @@ define('Core/GeometryPipeline',[
         var j;
         var index;
 
+        var intersectionFound = false;
+
         var length = positions.length / 3;
         for (i = 0; i < length; i += 4) {
             var i0 = i;
-            var i1 = i + 1;
             var i2 = i + 2;
-            var i3 = i + 3;
 
             var p0 = Cartesian3.fromArray(positions, i0 * 3, cartesian3Scratch0);
-            var p1 = Cartesian3.fromArray(positions, i1 * 3, cartesian3Scratch1);
             var p2 = Cartesian3.fromArray(positions, i2 * 3, cartesian3Scratch2);
-            var p3 = Cartesian3.fromArray(positions, i3 * 3, cartesian3Scratch3);
 
-            if (Math.abs(p0.y) < CesiumMath.EPSILON6) {
-                p0.y = CesiumMath.EPSILON6 * (p2.y < 0.0 ? -1.0 : 1.0);
-                p1.y = p0.y;
+            // Offset points that are close to the 180 longitude and change the previous/next point
+            // to be the same offset point so it can be projected to 2D. There is special handling in the
+            // shader for when position == prevPosition || position == nextPosition.
+            if (Math.abs(p0.y) < coplanarOffset) {
+                p0.y = coplanarOffset * (p2.y < 0.0 ? -1.0 : 1.0);
+                positions[i * 3 + 1] = p0.y;
+                positions[(i + 1) * 3 + 1] = p0.y;
+
+                for (j = i0 * 3; j < i0 * 3 + 4 * 3; j += 3) {
+                    prevPositions[j] = positions[i * 3];
+                    prevPositions[j + 1] = positions[i * 3 + 1];
+                    prevPositions[j + 2] = positions[i * 3 + 2];
+                }
             }
 
-            if (Math.abs(p2.y) < CesiumMath.EPSILON6) {
-                p2.y = CesiumMath.EPSILON6 * (p0.y < 0.0 ? -1.0 : 1.0);
-                p3.y = p2.y;
+            // Do the same but for when the line crosses 180 longitude in the opposite direction.
+            if (Math.abs(p2.y) < coplanarOffset) {
+                p2.y = coplanarOffset * (p0.y < 0.0 ? -1.0 : 1.0);
+                positions[(i + 2) * 3 + 1] = p2.y;
+                positions[(i + 3) * 3 + 1] = p2.y;
+
+                for (j = i0 * 3; j < i0 * 3 + 4 * 3; j += 3) {
+                    nextPositions[j] = positions[(i + 2) * 3];
+                    nextPositions[j + 1] = positions[(i + 2) * 3 + 1];
+                    nextPositions[j + 2] = positions[(i + 2) * 3 + 2];
+                }
             }
 
             var p0Attributes = eastGeometry.attributes;
@@ -25106,8 +25174,10 @@ define('Core/GeometryPipeline',[
 
             var intersection = IntersectionTests.lineSegmentPlane(p0, p2, xzPlane, cartesian3Scratch4);
             if (defined(intersection)) {
+                intersectionFound = true;
+
                 // move point on the xz-plane slightly away from the plane
-                var offset = Cartesian3.multiplyByScalar(Cartesian3.UNIT_Y, 5.0 * CesiumMath.EPSILON9, cartesian3Scratch5);
+                var offset = Cartesian3.multiplyByScalar(Cartesian3.UNIT_Y, offsetScalar, cartesian3Scratch5);
                 if (p0.y < 0.0) {
                     Cartesian3.negate(offset, offset);
                     p0Attributes = westGeometry.attributes;
@@ -25117,33 +25187,33 @@ define('Core/GeometryPipeline',[
                 }
 
                 var offsetPoint = Cartesian3.add(intersection, offset, cartesian3Scratch6);
-                p0Attributes.position.values.push(p0.x, p0.y, p0.z, p1.x, p1.y, p1.z);
+                p0Attributes.position.values.push(p0.x, p0.y, p0.z, p0.x, p0.y, p0.z);
                 p0Attributes.position.values.push(offsetPoint.x, offsetPoint.y, offsetPoint.z);
                 p0Attributes.position.values.push(offsetPoint.x, offsetPoint.y, offsetPoint.z);
+
+                p0Attributes.prevPosition.values.push(prevPositions[i0 * 3], prevPositions[i0 * 3 + 1], prevPositions[i0 * 3 + 2]);
+                p0Attributes.prevPosition.values.push(prevPositions[i0 * 3 + 3], prevPositions[i0 * 3 + 4], prevPositions[i0 * 3 + 5]);
+                p0Attributes.prevPosition.values.push(p0.x, p0.y, p0.z, p0.x, p0.y, p0.z);
+
+                p0Attributes.nextPosition.values.push(offsetPoint.x, offsetPoint.y, offsetPoint.z);
+                p0Attributes.nextPosition.values.push(offsetPoint.x, offsetPoint.y, offsetPoint.z);
+                p0Attributes.nextPosition.values.push(offsetPoint.x, offsetPoint.y, offsetPoint.z);
+                p0Attributes.nextPosition.values.push(offsetPoint.x, offsetPoint.y, offsetPoint.z);
 
                 Cartesian3.negate(offset, offset);
                 Cartesian3.add(intersection, offset, offsetPoint);
                 p2Attributes.position.values.push(offsetPoint.x, offsetPoint.y, offsetPoint.z);
                 p2Attributes.position.values.push(offsetPoint.x, offsetPoint.y, offsetPoint.z);
-                p2Attributes.position.values.push(p2.x, p2.y, p2.z, p3.x, p3.y, p3.z);
+                p2Attributes.position.values.push(p2.x, p2.y, p2.z, p2.x, p2.y, p2.z);
 
-                for (j = i0 * 3; j < i0 * 3 + 2 * 3; ++j) {
-                    p0Attributes.prevPosition.values.push(prevPositions[j]);
-                }
-                p0Attributes.prevPosition.values.push(p0.x, p0.y, p0.z, p0.x, p0.y, p0.z);
-                p2Attributes.prevPosition.values.push(p0.x, p0.y, p0.z, p0.x, p0.y, p0.z);
-                for (j = i2 * 3; j < i2 * 3 + 2 * 3; ++j) {
-                    p2Attributes.prevPosition.values.push(prevPositions[j]);
-                }
+                p2Attributes.prevPosition.values.push(offsetPoint.x, offsetPoint.y, offsetPoint.z);
+                p2Attributes.prevPosition.values.push(offsetPoint.x, offsetPoint.y, offsetPoint.z);
+                p2Attributes.prevPosition.values.push(offsetPoint.x, offsetPoint.y, offsetPoint.z);
+                p2Attributes.prevPosition.values.push(offsetPoint.x, offsetPoint.y, offsetPoint.z);
 
-                for (j = i0 * 3; j < i0 * 3 + 2 * 3; ++j) {
-                    p0Attributes.nextPosition.values.push(nextPositions[j]);
-                }
-                p0Attributes.nextPosition.values.push(p2.x, p2.y, p2.z, p2.x, p2.y, p2.z);
                 p2Attributes.nextPosition.values.push(p2.x, p2.y, p2.z, p2.x, p2.y, p2.z);
-                for (j = i2 * 3; j < i2 * 3 + 2 * 3; ++j) {
-                    p2Attributes.nextPosition.values.push(nextPositions[j]);
-                }
+                p2Attributes.nextPosition.values.push(nextPositions[i2 * 3], nextPositions[i2 * 3 + 1], nextPositions[i2 * 3 + 2]);
+                p2Attributes.nextPosition.values.push(nextPositions[i2 * 3 + 3], nextPositions[i2 * 3 + 4], nextPositions[i2 * 3 + 5]);
 
                 var ew0 = Cartesian2.fromArray(expandAndWidths, i0 * 2, cartesian2Scratch0);
                 var width = Math.abs(ew0.y);
@@ -25215,9 +25285,9 @@ define('Core/GeometryPipeline',[
                 }
 
                 currentAttributes.position.values.push(p0.x, p0.y, p0.z);
-                currentAttributes.position.values.push(p1.x, p1.y, p1.z);
+                currentAttributes.position.values.push(p0.x, p0.y, p0.z);
                 currentAttributes.position.values.push(p2.x, p2.y, p2.z);
-                currentAttributes.position.values.push(p3.x, p3.y, p3.z);
+                currentAttributes.position.values.push(p2.x, p2.y, p2.z);
 
                 for (j = i * 3; j < i * 3 + 4 * 3; ++j) {
                     currentAttributes.prevPosition.values.push(prevPositions[j]);
@@ -25241,6 +25311,11 @@ define('Core/GeometryPipeline',[
                 currentIndices.push(index, index + 2, index + 1);
                 currentIndices.push(index + 1, index + 2, index + 3);
             }
+        }
+
+        if (intersectionFound) {
+            updateAdjacencyAfterSplit(westGeometry);
+            updateAdjacencyAfterSplit(eastGeometry);
         }
 
         updateInstanceAfterSplit(instance, westGeometry, eastGeometry);
@@ -25302,6 +25377,106 @@ define('Core/GeometryPipeline',[
 });
 
 /*global define*/
+define('Core/arrayRemoveDuplicates',[
+        './defaultValue',
+        './defined',
+        './DeveloperError',
+        './Math'
+    ], function(
+        defaultValue,
+        defined,
+        DeveloperError,
+        CesiumMath) {
+    'use strict';
+
+    var removeDuplicatesEpsilon = CesiumMath.EPSILON10;
+
+    /**
+     * Removes adjacent duplicate values in an array of values.
+     *
+     * @param {Object[]} [values] The array of values.
+     * @param {Function} equalsEpsilon Function to compare values with an epsilon. Boolean equalsEpsilon(left, right, epsilon).
+     * @param {Boolean} [wrapAround=false] Compare the last value in the array against the first value.
+     * @returns {Object[]|undefined} A new array of values with no adjacent duplicate values or the input array if no duplicates were found.
+     *
+     * @example
+     * // Returns [(1.0, 1.0, 1.0), (2.0, 2.0, 2.0), (3.0, 3.0, 3.0), (1.0, 1.0, 1.0)]
+     * var values = [
+     *     new Cesium.Cartesian3(1.0, 1.0, 1.0),
+     *     new Cesium.Cartesian3(1.0, 1.0, 1.0),
+     *     new Cesium.Cartesian3(2.0, 2.0, 2.0),
+     *     new Cesium.Cartesian3(3.0, 3.0, 3.0),
+     *     new Cesium.Cartesian3(1.0, 1.0, 1.0)];
+     * var nonDuplicatevalues = Cesium.PolylinePipeline.removeDuplicates(values, Cartesian3.equalsEpsilon);
+     *
+     * @example
+     * // Returns [(1.0, 1.0, 1.0), (2.0, 2.0, 2.0), (3.0, 3.0, 3.0)]
+     * var values = [
+     *     new Cesium.Cartesian3(1.0, 1.0, 1.0),
+     *     new Cesium.Cartesian3(1.0, 1.0, 1.0),
+     *     new Cesium.Cartesian3(2.0, 2.0, 2.0),
+     *     new Cesium.Cartesian3(3.0, 3.0, 3.0),
+     *     new Cesium.Cartesian3(1.0, 1.0, 1.0)];
+     * var nonDuplicatevalues = Cesium.PolylinePipeline.removeDuplicates(values, Cartesian3.equalsEpsilon, true);
+     *
+     * @private
+     */
+    function arrayRemoveDuplicates(values, equalsEpsilon, wrapAround) {
+                if (!defined(equalsEpsilon)) {
+            throw new DeveloperError('equalsEpsilon is required.');
+        }
+        
+        if (!defined(values)) {
+            return undefined;
+        }
+
+        wrapAround = defaultValue(wrapAround, false);
+
+        var length = values.length;
+        if (length < 2) {
+            return values;
+        }
+
+        var i;
+        var v0;
+        var v1;
+
+        for (i = 1; i < length; ++i) {
+            v0 = values[i - 1];
+            v1 = values[i];
+            if (equalsEpsilon(v0, v1, removeDuplicatesEpsilon)) {
+                break;
+            }
+        }
+
+        if (i === length) {
+            if (wrapAround && equalsEpsilon(values[0], values[values.length - 1], removeDuplicatesEpsilon)) {
+                return values.slice(1);
+            }
+            return values;
+        }
+
+        var cleanedvalues = values.slice(0, i);
+        for (; i < length; ++i) {
+            // v0 is set by either the previous loop, or the previous clean point.
+            v1 = values[i];
+            if (!equalsEpsilon(v0, v1, removeDuplicatesEpsilon)) {
+                cleanedvalues.push(v1);
+                v0 = v1;
+            }
+        }
+
+        if (wrapAround && cleanedvalues.length > 1 && equalsEpsilon(cleanedvalues[0], cleanedvalues[cleanedvalues.length - 1], removeDuplicatesEpsilon)) {
+            cleanedvalues.shift();
+        }
+
+        return cleanedvalues;
+    }
+
+    return arrayRemoveDuplicates;
+});
+
+/*global define*/
 define('Core/pointInsideTriangle',[
         './barycentricCoordinates',
         './Cartesian3'
@@ -25337,812 +25512,6 @@ define('Core/pointInsideTriangle',[
     }
 
     return pointInsideTriangle;
-});
-
-/*global define*/
-define('Core/EllipsoidGeodesic',[
-        './Cartesian3',
-        './Cartographic',
-        './defaultValue',
-        './defined',
-        './defineProperties',
-        './DeveloperError',
-        './Ellipsoid',
-        './Math'
-    ], function(
-        Cartesian3,
-        Cartographic,
-        defaultValue,
-        defined,
-        defineProperties,
-        DeveloperError,
-        Ellipsoid,
-        CesiumMath) {
-    'use strict';
-
-    function setConstants(ellipsoidGeodesic) {
-        var uSquared = ellipsoidGeodesic._uSquared;
-        var a = ellipsoidGeodesic._ellipsoid.maximumRadius;
-        var b = ellipsoidGeodesic._ellipsoid.minimumRadius;
-        var f = (a - b) / a;
-
-        var cosineHeading = Math.cos(ellipsoidGeodesic._startHeading);
-        var sineHeading = Math.sin(ellipsoidGeodesic._startHeading);
-
-        var tanU = (1 - f) * Math.tan(ellipsoidGeodesic._start.latitude);
-
-        var cosineU = 1.0 / Math.sqrt(1.0 + tanU * tanU);
-        var sineU = cosineU * tanU;
-
-        var sigma = Math.atan2(tanU, cosineHeading);
-
-        var sineAlpha = cosineU * sineHeading;
-        var sineSquaredAlpha = sineAlpha * sineAlpha;
-
-        var cosineSquaredAlpha = 1.0 - sineSquaredAlpha;
-        var cosineAlpha = Math.sqrt(cosineSquaredAlpha);
-
-        var u2Over4 = uSquared / 4.0;
-        var u4Over16 = u2Over4 * u2Over4;
-        var u6Over64 = u4Over16 * u2Over4;
-        var u8Over256 = u4Over16 * u4Over16;
-
-        var a0 = (1.0 + u2Over4 - 3.0 * u4Over16 / 4.0 + 5.0 * u6Over64 / 4.0 - 175.0 * u8Over256 / 64.0);
-        var a1 = (1.0 - u2Over4 + 15.0 * u4Over16 / 8.0 - 35.0 * u6Over64 / 8.0);
-        var a2 = (1.0 - 3.0 * u2Over4 + 35.0 * u4Over16 / 4.0);
-        var a3 = (1.0 - 5.0 * u2Over4);
-
-        var distanceRatio = a0 * sigma - a1 * Math.sin(2.0 * sigma) * u2Over4 / 2.0 - a2 * Math.sin(4.0 * sigma) * u4Over16 / 16.0 -
-                            a3 * Math.sin(6.0 * sigma) * u6Over64 / 48.0 - Math.sin(8.0 * sigma) * 5.0 * u8Over256 / 512;
-
-        var constants = ellipsoidGeodesic._constants;
-
-        constants.a = a;
-        constants.b = b;
-        constants.f = f;
-        constants.cosineHeading = cosineHeading;
-        constants.sineHeading = sineHeading;
-        constants.tanU = tanU;
-        constants.cosineU = cosineU;
-        constants.sineU = sineU;
-        constants.sigma = sigma;
-        constants.sineAlpha = sineAlpha;
-        constants.sineSquaredAlpha = sineSquaredAlpha;
-        constants.cosineSquaredAlpha = cosineSquaredAlpha;
-        constants.cosineAlpha = cosineAlpha;
-        constants.u2Over4 = u2Over4;
-        constants.u4Over16 = u4Over16;
-        constants.u6Over64 = u6Over64;
-        constants.u8Over256 = u8Over256;
-        constants.a0 = a0;
-        constants.a1 = a1;
-        constants.a2 = a2;
-        constants.a3 = a3;
-        constants.distanceRatio = distanceRatio;
-    }
-
-    function computeC(f, cosineSquaredAlpha) {
-        return f * cosineSquaredAlpha * (4.0 + f * (4.0 - 3.0 * cosineSquaredAlpha)) / 16.0;
-    }
-
-    function computeDeltaLambda(f, sineAlpha, cosineSquaredAlpha, sigma, sineSigma, cosineSigma, cosineTwiceSigmaMidpoint) {
-        var C = computeC(f, cosineSquaredAlpha);
-
-        return (1.0 - C) * f * sineAlpha * (sigma + C * sineSigma * (cosineTwiceSigmaMidpoint +
-                C * cosineSigma * (2.0 * cosineTwiceSigmaMidpoint * cosineTwiceSigmaMidpoint - 1.0)));
-    }
-
-    function vincentyInverseFormula(ellipsoidGeodesic, major, minor, firstLongitude, firstLatitude, secondLongitude, secondLatitude) {
-        var eff = (major - minor) / major;
-        var l = secondLongitude - firstLongitude;
-
-        var u1 = Math.atan((1 - eff) * Math.tan(firstLatitude));
-        var u2 = Math.atan((1 - eff) * Math.tan(secondLatitude));
-
-        var cosineU1 = Math.cos(u1);
-        var sineU1 = Math.sin(u1);
-        var cosineU2 = Math.cos(u2);
-        var sineU2 = Math.sin(u2);
-
-        var cc = cosineU1 * cosineU2;
-        var cs = cosineU1 * sineU2;
-        var ss = sineU1 * sineU2;
-        var sc = sineU1 * cosineU2;
-
-        var lambda = l;
-        var lambdaDot = CesiumMath.TWO_PI;
-
-        var cosineLambda = Math.cos(lambda);
-        var sineLambda = Math.sin(lambda);
-
-        var sigma;
-        var cosineSigma;
-        var sineSigma;
-        var cosineSquaredAlpha;
-        var cosineTwiceSigmaMidpoint;
-
-        do {
-            cosineLambda = Math.cos(lambda);
-            sineLambda = Math.sin(lambda);
-
-            var temp = cs - sc * cosineLambda;
-            sineSigma = Math.sqrt(cosineU2 * cosineU2 * sineLambda * sineLambda + temp * temp);
-            cosineSigma = ss + cc * cosineLambda;
-
-            sigma = Math.atan2(sineSigma, cosineSigma);
-
-            var sineAlpha;
-
-            if (sineSigma === 0.0) {
-                sineAlpha = 0.0;
-                cosineSquaredAlpha = 1.0;
-            } else {
-                sineAlpha = cc * sineLambda / sineSigma;
-                cosineSquaredAlpha = 1.0 - sineAlpha * sineAlpha;
-            }
-
-            lambdaDot = lambda;
-
-            cosineTwiceSigmaMidpoint = cosineSigma - 2.0 * ss / cosineSquaredAlpha;
-
-            if (isNaN(cosineTwiceSigmaMidpoint)) {
-                cosineTwiceSigmaMidpoint = 0.0;
-            }
-
-            lambda = l + computeDeltaLambda(eff, sineAlpha, cosineSquaredAlpha,
-                                            sigma, sineSigma, cosineSigma, cosineTwiceSigmaMidpoint);
-        } while (Math.abs(lambda - lambdaDot) > CesiumMath.EPSILON12);
-
-        var uSquared = cosineSquaredAlpha * (major * major - minor * minor) / (minor * minor);
-        var A = 1.0 + uSquared * (4096.0 + uSquared * (uSquared * (320.0 - 175.0 * uSquared) - 768.0)) / 16384.0;
-        var B = uSquared * (256.0 + uSquared * (uSquared * (74.0 - 47.0 * uSquared) - 128.0)) / 1024.0;
-
-        var cosineSquaredTwiceSigmaMidpoint = cosineTwiceSigmaMidpoint * cosineTwiceSigmaMidpoint;
-        var deltaSigma = B * sineSigma * (cosineTwiceSigmaMidpoint + B * (cosineSigma *
-                (2.0 * cosineSquaredTwiceSigmaMidpoint - 1.0) - B * cosineTwiceSigmaMidpoint *
-                (4.0 * sineSigma * sineSigma - 3.0) * (4.0 * cosineSquaredTwiceSigmaMidpoint - 3.0) / 6.0) / 4.0);
-
-        var distance = minor * A * (sigma - deltaSigma);
-
-        var startHeading = Math.atan2(cosineU2 * sineLambda, cs - sc * cosineLambda);
-        var endHeading = Math.atan2(cosineU1 * sineLambda, cs * cosineLambda - sc);
-
-        ellipsoidGeodesic._distance = distance;
-        ellipsoidGeodesic._startHeading = startHeading;
-        ellipsoidGeodesic._endHeading = endHeading;
-        ellipsoidGeodesic._uSquared = uSquared;
-    }
-
-    function computeProperties(ellipsoidGeodesic, start, end, ellipsoid) {
-        var firstCartesian = Cartesian3.normalize(ellipsoid.cartographicToCartesian(start, scratchCart2), scratchCart1);
-        var lastCartesian = Cartesian3.normalize(ellipsoid.cartographicToCartesian(end, scratchCart2), scratchCart2);
-
-                if (Math.abs(Math.abs(Cartesian3.angleBetween(firstCartesian, lastCartesian)) - Math.PI) < 0.0125) {
-            throw new DeveloperError('geodesic position is not unique');
-        }
-        
-        vincentyInverseFormula(ellipsoidGeodesic, ellipsoid.maximumRadius, ellipsoid.minimumRadius,
-                               start.longitude, start.latitude, end.longitude, end.latitude);
-
-        ellipsoidGeodesic._start = Cartographic.clone(start, ellipsoidGeodesic._start);
-        ellipsoidGeodesic._end = Cartographic.clone(end, ellipsoidGeodesic._end);
-        ellipsoidGeodesic._start.height = 0;
-        ellipsoidGeodesic._end.height = 0;
-
-        setConstants(ellipsoidGeodesic);
-    }
-
-    var scratchCart1 = new Cartesian3();
-    var scratchCart2 = new Cartesian3();
-    /**
-     * Initializes a geodesic on the ellipsoid connecting the two provided planetodetic points.
-     *
-     * @alias EllipsoidGeodesic
-     * @constructor
-     *
-     * @param {Cartographic} [start] The initial planetodetic point on the path.
-     * @param {Cartographic} [end] The final planetodetic point on the path.
-     * @param {Ellipsoid} [ellipsoid=Ellipsoid.WGS84] The ellipsoid on which the geodesic lies.
-     */
-    function EllipsoidGeodesic(start, end, ellipsoid) {
-        var e = defaultValue(ellipsoid, Ellipsoid.WGS84);
-        this._ellipsoid = e;
-        this._start = new Cartographic();
-        this._end = new Cartographic();
-
-        this._constants = {};
-        this._startHeading = undefined;
-        this._endHeading = undefined;
-        this._distance = undefined;
-        this._uSquared = undefined;
-
-        if (defined(start) && defined(end)) {
-            computeProperties(this, start, end, e);
-        }
-    }
-
-    defineProperties(EllipsoidGeodesic.prototype, {
-        /**
-         * Gets the ellipsoid.
-         * @memberof EllipsoidGeodesic.prototype
-         * @type {Ellipsoid}
-         * @readonly
-         */
-        ellipsoid : {
-            get : function() {
-                return this._ellipsoid;
-            }
-        },
-
-        /**
-         * Gets the surface distance between the start and end point
-         * @memberof EllipsoidGeodesic.prototype
-         * @type {Number}
-         * @readonly
-         */
-        surfaceDistance : {
-            get : function() {
-                                if (!defined(this._distance)) {
-                    throw new DeveloperError('set end positions before getting surfaceDistance');
-                }
-                
-                return this._distance;
-            }
-        },
-
-        /**
-         * Gets the initial planetodetic point on the path.
-         * @memberof EllipsoidGeodesic.prototype
-         * @type {Cartographic}
-         * @readonly
-         */
-        start : {
-            get : function() {
-                return this._start;
-            }
-        },
-
-        /**
-         * Gets the final planetodetic point on the path.
-         * @memberof EllipsoidGeodesic.prototype
-         * @type {Cartographic}
-         * @readonly
-         */
-        end : {
-            get : function() {
-                return this._end;
-            }
-        },
-
-        /**
-         * Gets the heading at the initial point.
-         * @memberof EllipsoidGeodesic.prototype
-         * @type {Number}
-         * @readonly
-         */
-        startHeading : {
-            get : function() {
-                                if (!defined(this._distance)) {
-                    throw new DeveloperError('set end positions before getting startHeading');
-                }
-                
-                return this._startHeading;
-            }
-        },
-
-        /**
-         * Gets the heading at the final point.
-         * @memberof EllipsoidGeodesic.prototype
-         * @type {Number}
-         * @readonly
-         */
-        endHeading : {
-            get : function() {
-                                if (!defined(this._distance)) {
-                    throw new DeveloperError('set end positions before getting endHeading');
-                }
-                
-                return this._endHeading;
-            }
-        }
-    });
-
-    /**
-     * Sets the start and end points of the geodesic
-     *
-     * @param {Cartographic} start The initial planetodetic point on the path.
-     * @param {Cartographic} end The final planetodetic point on the path.
-     */
-    EllipsoidGeodesic.prototype.setEndPoints = function(start, end) {
-                if (!defined(start)) {
-            throw new DeveloperError('start cartographic position is required');
-        }
-        if (!defined(end)) {
-            throw new DeveloperError('end cartgraphic position is required');
-        }
-        
-        computeProperties(this, start, end, this._ellipsoid);
-    };
-
-    /**
-     * Provides the location of a point at the indicated portion along the geodesic.
-     *
-     * @param {Number} fraction The portion of the distance between the initial and final points.
-     * @returns {Cartographic} The location of the point along the geodesic.
-     */
-    EllipsoidGeodesic.prototype.interpolateUsingFraction = function(fraction, result) {
-        return this.interpolateUsingSurfaceDistance(this._distance * fraction, result);
-    };
-
-    /**
-     * Provides the location of a point at the indicated distance along the geodesic.
-     *
-     * @param {Number} distance The distance from the inital point to the point of interest along the geodesic
-     * @returns {Cartographic} The location of the point along the geodesic.
-     *
-     * @exception {DeveloperError} start and end must be set before calling funciton interpolateUsingSurfaceDistance
-     */
-    EllipsoidGeodesic.prototype.interpolateUsingSurfaceDistance = function(distance, result) {
-                if (!defined(this._distance)) {
-            throw new DeveloperError('start and end must be set before calling funciton interpolateUsingSurfaceDistance');
-        }
-        
-        var constants = this._constants;
-
-        var s = constants.distanceRatio + distance / constants.b;
-
-        var cosine2S = Math.cos(2.0 * s);
-        var cosine4S = Math.cos(4.0 * s);
-        var cosine6S = Math.cos(6.0 * s);
-        var sine2S = Math.sin(2.0 * s);
-        var sine4S = Math.sin(4.0 * s);
-        var sine6S = Math.sin(6.0 * s);
-        var sine8S = Math.sin(8.0 * s);
-
-        var s2 = s * s;
-        var s3 = s * s2;
-
-        var u8Over256 = constants.u8Over256;
-        var u2Over4 = constants.u2Over4;
-        var u6Over64 = constants.u6Over64;
-        var u4Over16 = constants.u4Over16;
-        var sigma = 2.0 * s3 * u8Over256 * cosine2S / 3.0 +
-            s * (1.0 - u2Over4 + 7.0 * u4Over16 / 4.0 - 15.0 * u6Over64 / 4.0 + 579.0 * u8Over256 / 64.0 -
-            (u4Over16 - 15.0 * u6Over64 / 4.0 + 187.0 * u8Over256 / 16.0) * cosine2S -
-            (5.0 * u6Over64 / 4.0 - 115.0 * u8Over256 / 16.0) * cosine4S -
-            29.0 * u8Over256 * cosine6S / 16.0) +
-            (u2Over4 / 2.0 - u4Over16 + 71.0 * u6Over64 / 32.0 - 85.0 * u8Over256 / 16.0) * sine2S +
-            (5.0 * u4Over16 / 16.0 - 5.0 * u6Over64 / 4.0 + 383.0 * u8Over256 / 96.0) * sine4S -
-            s2 * ((u6Over64 - 11.0 * u8Over256 / 2.0) * sine2S + 5.0 * u8Over256 * sine4S / 2.0) +
-            (29.0 * u6Over64 / 96.0 - 29.0 * u8Over256 / 16.0) * sine6S +
-            539.0 * u8Over256 * sine8S / 1536.0;
-
-        var theta = Math.asin(Math.sin(sigma) * constants.cosineAlpha);
-        var latitude = Math.atan(constants.a / constants.b * Math.tan(theta));
-
-        // Redefine in terms of relative argument of latitude.
-        sigma = sigma - constants.sigma;
-
-        var cosineTwiceSigmaMidpoint = Math.cos(2.0 * constants.sigma + sigma);
-
-        var sineSigma = Math.sin(sigma);
-        var cosineSigma = Math.cos(sigma);
-
-        var cc = constants.cosineU * cosineSigma;
-        var ss = constants.sineU * sineSigma;
-
-        var lambda = Math.atan2(sineSigma * constants.sineHeading, cc - ss * constants.cosineHeading);
-
-        var l = lambda - computeDeltaLambda(constants.f, constants.sineAlpha, constants.cosineSquaredAlpha,
-                                            sigma, sineSigma, cosineSigma, cosineTwiceSigmaMidpoint);
-
-        if (defined(result)) {
-            result.longitude = this._start.longitude + l;
-            result.latitude = latitude;
-            result.height = 0.0;
-            return result;
-        }
-
-        return new Cartographic(this._start.longitude + l, latitude, 0.0);
-    };
-
-    return EllipsoidGeodesic;
-});
-
-/*global define*/
-define('Core/isArray',[
-        './defined'
-    ], function(
-        defined) {
-    'use strict';
-
-    /**
-     * Tests an object to see if it is an array.
-     * @exports isArray
-     *
-     * @param {Object} value The value to test.
-     * @returns {Boolean} true if the value is an array, false otherwise.
-     */
-    var isArray = Array.isArray;
-    if (!defined(isArray)) {
-        isArray = function(value) {
-            return Object.prototype.toString.call(value) === '[object Array]';
-        };
-    }
-
-    return isArray;
-});
-/*global define*/
-define('Core/PolylinePipeline',[
-        './Cartesian3',
-        './Cartographic',
-        './defaultValue',
-        './defined',
-        './DeveloperError',
-        './Ellipsoid',
-        './EllipsoidGeodesic',
-        './IntersectionTests',
-        './isArray',
-        './Math',
-        './Matrix4',
-        './Plane'
-    ], function(
-        Cartesian3,
-        Cartographic,
-        defaultValue,
-        defined,
-        DeveloperError,
-        Ellipsoid,
-        EllipsoidGeodesic,
-        IntersectionTests,
-        isArray,
-        CesiumMath,
-        Matrix4,
-        Plane) {
-    'use strict';
-
-    /**
-     * @private
-     */
-    var PolylinePipeline = {};
-
-    PolylinePipeline.numberOfPoints = function(p0, p1, minDistance) {
-        var distance = Cartesian3.distance(p0, p1);
-        return Math.ceil(distance / minDistance);
-    };
-
-    var cartoScratch = new Cartographic();
-    PolylinePipeline.extractHeights = function(positions, ellipsoid) {
-        var length = positions.length;
-        var heights = new Array(length);
-        for (var i = 0; i < length; i++) {
-            var p = positions[i];
-            heights[i] = ellipsoid.cartesianToCartographic(p, cartoScratch).height;
-        }
-        return heights;
-    };
-
-    var wrapLongitudeInversMatrix = new Matrix4();
-    var wrapLongitudeOrigin = new Cartesian3();
-    var wrapLongitudeXZNormal = new Cartesian3();
-    var wrapLongitudeXZPlane = new Plane(Cartesian3.ZERO, 0.0);
-    var wrapLongitudeYZNormal = new Cartesian3();
-    var wrapLongitudeYZPlane = new Plane(Cartesian3.ZERO, 0.0);
-    var wrapLongitudeIntersection = new Cartesian3();
-    var wrapLongitudeOffset = new Cartesian3();
-
-    var subdivideHeightsScratchArray = [];
-
-    function subdivideHeights(numPoints, h0, h1) {
-        var heights = subdivideHeightsScratchArray;
-        heights.length = numPoints;
-
-        var i;
-        if (h0 === h1) {
-            for (i = 0; i < numPoints; i++) {
-                heights[i] = h0;
-            }
-            return heights;
-        }
-
-        var dHeight = h1 - h0;
-        var heightPerVertex = dHeight / numPoints;
-
-        for (i = 0; i < numPoints; i++) {
-            var h = h0 + i*heightPerVertex;
-            heights[i] = h;
-        }
-
-        return heights;
-    }
-
-    var carto1 = new Cartographic();
-    var carto2 = new Cartographic();
-    var cartesian = new Cartesian3();
-    var scaleFirst = new Cartesian3();
-    var scaleLast = new Cartesian3();
-    var ellipsoidGeodesic = new EllipsoidGeodesic();
-
-    //Returns subdivided line scaled to ellipsoid surface starting at p1 and ending at p2.
-    //Result includes p1, but not include p2.  This function is called for a sequence of line segments,
-    //and this prevents duplication of end point.
-    function generateCartesianArc(p0, p1, minDistance, ellipsoid, h0, h1, array, offset) {
-        var first = ellipsoid.scaleToGeodeticSurface(p0, scaleFirst);
-        var last = ellipsoid.scaleToGeodeticSurface(p1, scaleLast);
-        var numPoints = PolylinePipeline.numberOfPoints(p0, p1, minDistance);
-        var start = ellipsoid.cartesianToCartographic(first, carto1);
-        var end = ellipsoid.cartesianToCartographic(last, carto2);
-        var heights = subdivideHeights(numPoints, h0, h1);
-
-        ellipsoidGeodesic.setEndPoints(start, end);
-        var surfaceDistanceBetweenPoints = ellipsoidGeodesic.surfaceDistance / numPoints;
-
-        var index = offset;
-        start.height = h0;
-        var cart = ellipsoid.cartographicToCartesian(start, cartesian);
-        Cartesian3.pack(cart, array, index);
-        index += 3;
-
-        for (var i = 1; i < numPoints; i++) {
-            var carto = ellipsoidGeodesic.interpolateUsingSurfaceDistance(i * surfaceDistanceBetweenPoints, carto2);
-            carto.height = heights[i];
-            cart = ellipsoid.cartographicToCartesian(carto, cartesian);
-            Cartesian3.pack(cart, array, index);
-            index += 3;
-        }
-
-        return index;
-    }
-
-    /**
-     * Breaks a {@link Polyline} into segments such that it does not cross the &plusmn;180 degree meridian of an ellipsoid.
-     *
-     * @param {Cartesian3[]} positions The polyline's Cartesian positions.
-     * @param {Matrix4} [modelMatrix=Matrix4.IDENTITY] The polyline's model matrix. Assumed to be an affine
-     * transformation matrix, where the upper left 3x3 elements are a rotation matrix, and
-     * the upper three elements in the fourth column are the translation.  The bottom row is assumed to be [0, 0, 0, 1].
-     * The matrix is not verified to be in the proper form.
-     * @returns {Object} An object with a <code>positions</code> property that is an array of positions and a
-     * <code>segments</code> property.
-     *
-     *
-     * @example
-     * var polylines = new Cesium.PolylineCollection();
-     * var polyline = polylines.add(...);
-     * var positions = polyline.positions;
-     * var modelMatrix = polylines.modelMatrix;
-     * var segments = Cesium.PolylinePipeline.wrapLongitude(positions, modelMatrix);
-     * 
-     * @see PolygonPipeline.wrapLongitude
-     * @see Polyline
-     * @see PolylineCollection
-     */
-    PolylinePipeline.wrapLongitude = function(positions, modelMatrix) {
-        var cartesians = [];
-        var segments = [];
-
-        if (defined(positions) && positions.length > 0) {
-            modelMatrix = defaultValue(modelMatrix, Matrix4.IDENTITY);
-            var inverseModelMatrix = Matrix4.inverseTransformation(modelMatrix, wrapLongitudeInversMatrix);
-
-            var origin = Matrix4.multiplyByPoint(inverseModelMatrix, Cartesian3.ZERO, wrapLongitudeOrigin);
-            var xzNormal = Matrix4.multiplyByPointAsVector(inverseModelMatrix, Cartesian3.UNIT_Y, wrapLongitudeXZNormal);
-            var xzPlane = Plane.fromPointNormal(origin, xzNormal, wrapLongitudeXZPlane);
-            var yzNormal = Matrix4.multiplyByPointAsVector(inverseModelMatrix, Cartesian3.UNIT_X, wrapLongitudeYZNormal);
-            var yzPlane = Plane.fromPointNormal(origin, yzNormal, wrapLongitudeYZPlane);
-
-            var count = 1;
-            cartesians.push(Cartesian3.clone(positions[0]));
-            var prev = cartesians[0];
-
-            var length = positions.length;
-            for (var i = 1; i < length; ++i) {
-                var cur = positions[i];
-
-                // intersects the IDL if either endpoint is on the negative side of the yz-plane
-                if (Plane.getPointDistance(yzPlane, prev) < 0.0 || Plane.getPointDistance(yzPlane, cur) < 0.0) {
-                    // and intersects the xz-plane
-                    var intersection = IntersectionTests.lineSegmentPlane(prev, cur, xzPlane, wrapLongitudeIntersection);
-                    if (defined(intersection)) {
-                        // move point on the xz-plane slightly away from the plane
-                        var offset = Cartesian3.multiplyByScalar(xzNormal, 5.0e-9, wrapLongitudeOffset);
-                        if (Plane.getPointDistance(xzPlane, prev) < 0.0) {
-                            Cartesian3.negate(offset, offset);
-                        }
-
-                        cartesians.push(Cartesian3.add(intersection, offset, new Cartesian3()));
-                        segments.push(count + 1);
-
-                        Cartesian3.negate(offset, offset);
-                        cartesians.push(Cartesian3.add(intersection, offset, new Cartesian3()));
-                        count = 1;
-                    }
-                }
-
-                cartesians.push(Cartesian3.clone(positions[i]));
-                count++;
-
-                prev = cur;
-            }
-
-            segments.push(count);
-        }
-
-        return {
-            positions : cartesians,
-            lengths : segments
-        };
-    };
-
-    var removeDuplicatesEpsilon = CesiumMath.EPSILON10;
-
-    /**
-     * Removes adjacent duplicate positions in an array of positions.
-     *
-     * @param {Cartesian3[]} positions The array of positions.
-     * @returns {Cartesian3[]|undefined} A new array of positions with no adjacent duplicate positions or the input array if no duplicates were found.
-     *
-     * @example
-     * // Returns [(1.0, 1.0, 1.0), (2.0, 2.0, 2.0)]
-     * var positions = [
-     *     new Cesium.Cartesian3(1.0, 1.0, 1.0),
-     *     new Cesium.Cartesian3(1.0, 1.0, 1.0),
-     *     new Cesium.Cartesian3(2.0, 2.0, 2.0)];
-     * var nonDuplicatePositions = Cesium.PolylinePipeline.removeDuplicates(positions);
-     */
-    PolylinePipeline.removeDuplicates = function(positions) {
-                if (!defined(positions)) {
-            throw new DeveloperError('positions is required.');
-        }
-        
-        var length = positions.length;
-        if (length < 2) {
-            return positions;
-        }
-
-        var i;
-        var v0;
-        var v1;
-
-        for (i = 1; i < length; ++i) {
-            v0 = positions[i - 1];
-            v1 = positions[i];
-            if (Cartesian3.equalsEpsilon(v0, v1, removeDuplicatesEpsilon)) {
-                break;
-            }
-        }
-
-        if (i === length) {
-            return positions;
-        }
-
-        var cleanedPositions = positions.slice(0, i);
-        for (; i < length; ++i) {
-            // v0 is set by either the previous loop, or the previous clean point.
-            v1 = positions[i];
-            if (!Cartesian3.equalsEpsilon(v0, v1, removeDuplicatesEpsilon)) {
-                cleanedPositions.push(Cartesian3.clone(v1));
-                v0 = v1;
-            }
-        }
-
-        return cleanedPositions;
-    };
-
-    /**
-     * Subdivides polyline and raises all points to the specified height.  Returns an array of numbers to represent the positions.
-     * @param {Cartesian3[]} positions The array of type {Cartesian3} representing positions.
-     * @param {Number|Number[]} [height=0.0] A number or array of numbers representing the heights of each position.
-     * @param {Number} [granularity = CesiumMath.RADIANS_PER_DEGREE] The distance, in radians, between each latitude and longitude. Determines the number of positions in the buffer.
-     * @param {Ellipsoid} [ellipsoid=Ellipsoid.WGS84] The ellipsoid on which the positions lie.
-     * @returns {Number[]} A new array of positions of type {Number} that have been subdivided and raised to the surface of the ellipsoid.
-     *
-     * @example
-     * var positions = Cesium.Cartesian3.fromDegreesArray([
-     *   -105.0, 40.0,
-     *   -100.0, 38.0,
-     *   -105.0, 35.0,
-     *   -100.0, 32.0
-     * ]);
-     * var surfacePositions = Cesium.PolylinePipeline.generateArc({
-     *   positons: positions
-     * });
-     */
-    PolylinePipeline.generateArc = function(options) {
-        if (!defined(options)) {
-            options = {};
-        }
-        var positions = options.positions;
-                if (!defined(positions)) {
-            throw new DeveloperError('options.positions is required.');
-        }
-        
-        var length = positions.length;
-        var ellipsoid = defaultValue(options.ellipsoid, Ellipsoid.WGS84);
-        var height = defaultValue(options.height, 0);
-
-        if (length < 1) {
-            return [];
-        } else if (length === 1) {
-            var p = ellipsoid.scaleToGeodeticSurface(positions[0], scaleFirst);
-            if (height !== 0) {
-                var n = ellipsoid.geodeticSurfaceNormal(p, cartesian);
-                Cartesian3.multiplyByScalar(n, height, n);
-                Cartesian3.add(p, n, p);
-            }
-
-            return [p.x, p.y, p.z];
-        }
-
-        var minDistance = options.minDistance;
-        if (!defined(minDistance)) {
-            var granularity = defaultValue(options.granularity, CesiumMath.RADIANS_PER_DEGREE);
-            minDistance = CesiumMath.chordLength(granularity, ellipsoid.maximumRadius);
-        }
-
-        var numPoints = 0;
-        var i;
-
-        for (i = 0; i < length -1; i++) {
-            numPoints += PolylinePipeline.numberOfPoints(positions[i], positions[i+1], minDistance);
-        }
-
-        var arrayLength = (numPoints + 1) * 3;
-        var newPositions = new Array(arrayLength);
-        var offset = 0;
-        var hasHeightArray = isArray(height);
-
-        for (i = 0; i < length - 1; i++) {
-            var p0 = positions[i];
-            var p1 = positions[i + 1];
-
-            var h0 = hasHeightArray ? height[i] : height;
-            var h1 = hasHeightArray ? height[i + 1] : height;
-
-            offset = generateCartesianArc(p0, p1, minDistance, ellipsoid, h0, h1, newPositions, offset);
-        }
-
-        subdivideHeightsScratchArray.length = 0;
-
-        var lastPoint = positions[length - 1];
-        var carto = ellipsoid.cartesianToCartographic(lastPoint, carto1);
-        carto.height = hasHeightArray ? height[length - 1] : height;
-        var cart = ellipsoid.cartographicToCartesian(carto, cartesian);
-        Cartesian3.pack(cart, newPositions, arrayLength - 3);
-
-        return newPositions;
-    };
-
-    /**
-     * Subdivides polyline and raises all points to the specified height. Returns an array of new {Cartesian3} positions.
-     * @param {Cartesian3[]} positions The array of type {Cartesian3} representing positions.
-     * @param {Number|Number[]} [height=0.0] A number or array of numbers representing the heights of each position.
-     * @param {Number} [granularity = CesiumMath.RADIANS_PER_DEGREE] The distance, in radians, between each latitude and longitude. Determines the number of positions in the buffer.
-     * @param {Ellipsoid} [ellipsoid=Ellipsoid.WGS84] The ellipsoid on which the positions lie.
-     * @returns {Cartesian3[]} A new array of cartesian3 positions that have been subdivided and raised to the surface of the ellipsoid.
-     *
-     * @example
-     * var positions = Cesium.Cartesian3.fromDegreesArray([
-     *   -105.0, 40.0,
-     *   -100.0, 38.0,
-     *   -105.0, 35.0,
-     *   -100.0, 32.0
-     * ]);
-     * var surfacePositions = Cesium.PolylinePipeline.generateCartesianArc({
-     *   positons: positions
-     * });
-     */
-    PolylinePipeline.generateCartesianArc = function(options) {
-        var numberArray = PolylinePipeline.generateArc(options);
-        var size = numberArray.length/3;
-        var newPositions = new Array(size);
-        for (var i = 0; i < size; i++) {
-            newPositions[i] = Cartesian3.unpack(numberArray, i*3);
-        }
-        return newPositions;
-    };
-
-    return PolylinePipeline;
 });
 
 /*global define*/
@@ -26337,7 +25706,6 @@ define('Core/PolygonPipeline',[
         './GeometryAttribute',
         './Math',
         './pointInsideTriangle',
-        './PolylinePipeline',
         './PrimitiveType',
         './Queue',
         './WindingOrder'
@@ -26354,7 +25722,6 @@ define('Core/PolygonPipeline',[
         GeometryAttribute,
         CesiumMath,
         pointInsideTriangle,
-        PolylinePipeline,
         PrimitiveType,
         Queue,
         WindingOrder) {
@@ -27032,24 +26399,6 @@ define('Core/PolygonPipeline',[
     var PolygonPipeline = {};
 
     /**
-     * Cleans up a simple polygon by removing duplicate adjacent positions and making
-     * the first position not equal the last position.
-     *
-     * @exception {DeveloperError} At least three positions are required.
-     */
-    PolygonPipeline.removeDuplicates = function(positions) {
-                if (!defined(positions)) {
-            throw new DeveloperError('positions is required.');
-        }
-        
-        var cleanedPositions = PolylinePipeline.removeDuplicates(positions);
-        if (Cartesian3.equals(cleanedPositions[0], cleanedPositions[cleanedPositions.length - 1])) {
-            return cleanedPositions.slice(1);
-        }
-        return cleanedPositions;
-    };
-
-    /**
      * @exception {DeveloperError} At least three positions are required.
      */
     PolygonPipeline.computeArea2D = function(positions) {
@@ -27359,6 +26708,7 @@ define('Core/PolygonPipeline',[
 
 /*global define*/
 define('Core/PolygonGeometryLibrary',[
+        './arrayRemoveDuplicates',
         './Cartesian3',
         './ComponentDatatype',
         './defaultValue',
@@ -27375,6 +26725,7 @@ define('Core/PolygonGeometryLibrary',[
         './Queue',
         './WindingOrder'
     ], function(
+        arrayRemoveDuplicates,
         Cartesian3,
         ComponentDatatype,
         defaultValue,
@@ -27575,7 +26926,7 @@ define('Core/PolygonGeometryLibrary',[
             var outerRing = outerNode.positions;
             var holes = outerNode.holes;
 
-            outerRing = PolygonPipeline.removeDuplicates(outerRing);
+            outerRing = arrayRemoveDuplicates(outerRing, Cartesian3.equalsEpsilon, true);
             if (outerRing.length < 3) {
                 continue;
             }
@@ -27585,7 +26936,7 @@ define('Core/PolygonGeometryLibrary',[
             var i;
             for (i = 0; i < numChildren; i++) {
                 var hole = holes[i];
-                hole.positions = PolygonPipeline.removeDuplicates(hole.positions);
+                hole.positions = arrayRemoveDuplicates(hole.positions, Cartesian3.equalsEpsilon, true);
                 if (hole.positions.length < 3) {
                     continue;
                 }
@@ -28191,8 +27542,8 @@ define('Core/PolygonGeometry',[
             var tangentPlane = options.tangentPlane;
             var ellipsoid = options.ellipsoid;
             var stRotation = options.stRotation;
-            var bottom = options.bottom;
-            var wall = options.wall;
+            var top = options.top || options.wall;
+            var bottom = options.bottom || options.wall;
 
             var origin = appendTextureCoordinatesOrigin;
             origin.x = boundingRectangle.x;
@@ -28217,10 +27568,13 @@ define('Core/PolygonGeometry',[
             var rotation = Quaternion.fromAxisAngle(tangentPlane._plane.normal, stRotation, appendTextureCoordinatesQuaternion);
             var textureMatrix = Matrix3.fromQuaternion(rotation, appendTextureCoordinatesMatrix3);
 
-            var bottomOffset = length / 2;
-            var bottomOffset2 = length / 3;
+            var bottomOffset = 0;
+            var bottomOffset2 = 0;
 
-            if (bottom) {
+            if (top && bottom) {
+                bottomOffset = length / 2;
+                bottomOffset2 = length / 3;
+
                 length /= 2;
             }
 
@@ -28239,9 +27593,10 @@ define('Core/PolygonGeometry',[
                         textureCoordinates[textureCoordIndex + bottomOffset2] = stx;
                         textureCoordinates[textureCoordIndex + 1 + bottomOffset2] = sty;
                     }
-
-                    textureCoordinates[textureCoordIndex] = stx;
-                    textureCoordinates[textureCoordIndex + 1] = sty;
+                    if (top) {
+                        textureCoordinates[textureCoordIndex] = stx;
+                        textureCoordinates[textureCoordIndex + 1] = sty;
+                    }
 
                     textureCoordIndex += 2;
                 }
@@ -28250,7 +27605,7 @@ define('Core/PolygonGeometry',[
                     var attrIndex1 = attrIndex + 1;
                     var attrIndex2 = attrIndex + 2;
 
-                    if (wall) {
+                    if (options.wall) {
                         if (i + 3 < length) {
                             var p1 = Cartesian3.fromArray(flatPositions, i + 3, p1Scratch);
 
@@ -28273,7 +27628,6 @@ define('Core/PolygonGeometry',[
                                 tangent = Cartesian3.normalize(Cartesian3.cross(binormal, normal, tangent), tangent);
                             }
                         }
-
                     } else {
                         normal = ellipsoid.geodeticSurfaceNormal(position, normal);
                         if (vertexFormat.tangent || vertexFormat.binormal) {
@@ -28286,35 +27640,38 @@ define('Core/PolygonGeometry',[
                     }
 
                     if (vertexFormat.normal) {
-                        if (bottom && !wall) {
-                            normals[attrIndex + bottomOffset] = -normal.x;
-                            normals[attrIndex1 + bottomOffset] = -normal.y;
-                            normals[attrIndex2 + bottomOffset] = -normal.z;
-                        } else {
+                        if (options.wall) {
                             normals[attrIndex + bottomOffset] = normal.x;
                             normals[attrIndex1 + bottomOffset] = normal.y;
                             normals[attrIndex2 + bottomOffset] = normal.z;
+                        } else if (bottom){
+                            normals[attrIndex + bottomOffset] = -normal.x;
+                            normals[attrIndex1 + bottomOffset] = -normal.y;
+                            normals[attrIndex2 + bottomOffset] = -normal.z;
                         }
-
-                        normals[attrIndex] = normal.x;
-                        normals[attrIndex1] = normal.y;
-                        normals[attrIndex2] = normal.z;
+                        if (top) {
+                            normals[attrIndex] = normal.x;
+                            normals[attrIndex1] = normal.y;
+                            normals[attrIndex2] = normal.z;
+                        }
                     }
 
                     if (vertexFormat.tangent) {
-                        if (bottom && !wall) {
-                            tangents[attrIndex + bottomOffset] = -tangent.x;
-                            tangents[attrIndex1 + bottomOffset] = -tangent.y;
-                            tangents[attrIndex2 + bottomOffset] = -tangent.z;
-                        } else {
+                        if (options.wall) {
                             tangents[attrIndex + bottomOffset] = tangent.x;
                             tangents[attrIndex1 + bottomOffset] = tangent.y;
                             tangents[attrIndex2 + bottomOffset] = tangent.z;
+                        } else if (bottom) {
+                            tangents[attrIndex + bottomOffset] = -tangent.x;
+                            tangents[attrIndex1 + bottomOffset] = -tangent.y;
+                            tangents[attrIndex2 + bottomOffset] = -tangent.z;
                         }
 
-                        tangents[attrIndex] = tangent.x;
-                        tangents[attrIndex1] = tangent.y;
-                        tangents[attrIndex2] = tangent.z;
+                        if(top) {
+                            tangents[attrIndex] = tangent.x;
+                            tangents[attrIndex1] = tangent.y;
+                            tangents[attrIndex2] = tangent.z;
+                        }
                     }
 
                     if (vertexFormat.binormal) {
@@ -28323,10 +27680,11 @@ define('Core/PolygonGeometry',[
                             binormals[attrIndex1 + bottomOffset] = binormal.y;
                             binormals[attrIndex2 + bottomOffset] = binormal.z;
                         }
-
-                        binormals[attrIndex] = binormal.x;
-                        binormals[attrIndex1] = binormal.y;
-                        binormals[attrIndex2] = binormal.z;
+                        if (top) {
+                            binormals[attrIndex] = binormal.x;
+                            binormals[attrIndex1] = binormal.y;
+                            binormals[attrIndex2] = binormal.z;
+                        }
                     }
                     attrIndex += 3;
                 }
@@ -28369,50 +27727,61 @@ define('Core/PolygonGeometry',[
 
     var createGeometryFromPositionsExtrudedPositions = [];
 
-    function createGeometryFromPositionsExtruded(ellipsoid, positions, granularity, hierarchy, perPositionHeight) {
-        var topGeo = PolygonGeometryLibrary.createGeometryFromPositions(ellipsoid, positions, granularity, perPositionHeight);
-
-        var edgePoints = topGeo.attributes.position.values;
-        var indices = topGeo.indices;
-
-        var topBottomPositions = edgePoints.concat(edgePoints);
-        var numPositions = topBottomPositions.length / 3;
-
-        var newIndices = IndexDatatype.createTypedArray(numPositions, indices.length * 2);
-        newIndices.set(indices);
-        var ilength = indices.length;
-
-        var i;
-        var length = numPositions / 2;
-
-        for (i = 0; i < ilength; i += 3) {
-            var i0 = newIndices[i] + length;
-            var i1 = newIndices[i + 1] + length;
-            var i2 = newIndices[i + 2] + length;
-
-            newIndices[i + ilength] = i2;
-            newIndices[i + 1 + ilength] = i1;
-            newIndices[i + 2 + ilength] = i0;
-        }
-
-        var topAndBottomGeo = new Geometry({
-            attributes : new GeometryAttributes({
-                position : new GeometryAttribute({
-                    componentDatatype : ComponentDatatype.DOUBLE,
-                    componentsPerAttribute : 3,
-                    values : topBottomPositions
-                })
-            }),
-            indices : newIndices,
-            primitiveType : topGeo.primitiveType
-        });
-
+    function createGeometryFromPositionsExtruded(ellipsoid, positions, granularity, hierarchy, perPositionHeight, closeTop, closeBottom) {
         var geos = {
-            topAndBottom : new GeometryInstance({
-                geometry : topAndBottomGeo
-            }),
             walls : []
         };
+        var i;
+
+        if (closeTop || closeBottom) {
+            var topGeo = PolygonGeometryLibrary.createGeometryFromPositions(ellipsoid, positions, granularity, perPositionHeight);
+
+            var edgePoints = topGeo.attributes.position.values;
+            var indices = topGeo.indices;
+            var numPositions;
+            var newIndices;
+
+            if (closeTop && closeBottom) {
+                var topBottomPositions = edgePoints.concat(edgePoints);
+                numPositions = topBottomPositions.length / 3;
+
+                newIndices = IndexDatatype.createTypedArray(numPositions, indices.length * 2);
+                newIndices.set(indices);
+                var ilength = indices.length;
+
+
+                var length = numPositions / 2;
+
+                for (i = 0; i < ilength; i += 3) {
+                    var i0 = newIndices[i] + length;
+                    var i1 = newIndices[i + 1] + length;
+                    var i2 = newIndices[i + 2] + length;
+
+                    newIndices[i + ilength] = i2;
+                    newIndices[i + 1 + ilength] = i1;
+                    newIndices[i + 2 + ilength] = i0;
+                }
+
+                topGeo.attributes.position.values = topBottomPositions;
+                topGeo.indices = newIndices;
+            } else if (closeBottom) {
+                numPositions = edgePoints.length / 3;
+                newIndices = IndexDatatype.createTypedArray(numPositions, indices.length);
+
+                for (i = 0; i < indices.length; i += 3) {
+                    newIndices[i] = indices[i + 2];
+                    newIndices[i + 1] = indices[i + 1];
+                    newIndices[i + 2] = indices[i];
+                }
+
+                topGeo.indices = newIndices;
+            }
+
+            geos.topAndBottom = new GeometryInstance({
+                geometry : topGeo
+            });
+
+        }
 
         var outerRing = hierarchy.outerRing;
         var tangentPlane = EllipsoidTangentPlane.fromPoints(outerRing, ellipsoid);
@@ -28464,6 +27833,8 @@ define('Core/PolygonGeometry',[
      * @param {Ellipsoid} [options.ellipsoid=Ellipsoid.WGS84] The ellipsoid to be used as a reference.
      * @param {Number} [options.granularity=CesiumMath.RADIANS_PER_DEGREE] The distance, in radians, between each latitude and longitude. Determines the number of positions in the buffer.
      * @param {Boolean} [options.perPositionHeight=false] Use the height of options.positions for each position instead of using options.height to determine the height.
+     * @param {Boolean} [options.closeTop=true] When false, leaves off the top of an extruded polygon open.
+     * @param {Boolean} [options.closeBottom=true] When false, leaves off the bottom of an extruded polygon open.
      *
      * @see PolygonGeometry#createGeometry
      * @see PolygonGeometry#fromPositions
@@ -28473,73 +27844,76 @@ define('Core/PolygonGeometry',[
      * @example
      * // 1. create a polygon from points
      * var polygon = new Cesium.PolygonGeometry({
-     *   polygonHierarchy : {
-     *     positions : Cesium.Cartesian3.fromDegreesArray([
+     *   polygonHierarchy : new Cesium.PolygonHierarchy(
+     *     Cesium.Cartesian3.fromDegreesArray([
      *       -72.0, 40.0,
      *       -70.0, 35.0,
      *       -75.0, 30.0,
      *       -70.0, 30.0,
      *       -68.0, 40.0
      *     ])
-     *   }
+     *   )
      * });
      * var geometry = Cesium.PolygonGeometry.createGeometry(polygon);
      *
      * // 2. create a nested polygon with holes
      * var polygonWithHole = new Cesium.PolygonGeometry({
-     *   polygonHierarchy : {
-     *     positions : Cesium.Cartesian3.fromDegreesArray([
+     *   polygonHierarchy : new Cesium.PolygonHierarchy(
+     *     Cesium.Cartesian3.fromDegreesArray([
      *       -109.0, 30.0,
      *       -95.0, 30.0,
      *       -95.0, 40.0,
      *       -109.0, 40.0
      *     ]),
-     *     holes : [{
-     *       positions : Cesium.Cartesian3.fromDegreesArray([
+     *     [new Cesium.PolygonHierarchy(
+     *       Cesium.Cartesian3.fromDegreesArray([
      *         -107.0, 31.0,
      *         -107.0, 39.0,
      *         -97.0, 39.0,
      *         -97.0, 31.0
      *       ]),
-     *       holes : [{
-     *         positions : Cesium.Cartesian3.fromDegreesArray([
+     *       [new Cesium.PolygonHierarchy(
+     *         Cesium.Cartesian3.fromDegreesArray([
      *           -105.0, 33.0,
      *           -99.0, 33.0,
      *           -99.0, 37.0,
      *           -105.0, 37.0
      *         ]),
-     *         holes : [{
-     *           positions : Cesium.Cartesian3.fromDegreesArray([
+     *         [new Cesium.PolygonHierarchy(
+     *           Cesium.Cartesian3.fromDegreesArray([
      *             -103.0, 34.0,
      *             -101.0, 34.0,
      *             -101.0, 36.0,
      *             -103.0, 36.0
      *           ])
-     *         }]
-     *       }]
-     *     }]
-     *   }
+     *         )]
+     *       )]
+     *     )]
+     *   )
      * });
      * var geometry = Cesium.PolygonGeometry.createGeometry(polygonWithHole);
      *
      * // 3. create extruded polygon
      * var extrudedPolygon = new Cesium.PolygonGeometry({
-     *   polygonHierarchy : {
-     *     positions : Cesium.Cartesian3.fromDegreesArray([
+     *   polygonHierarchy : new Cesium.PolygonHierarchy(
+     *     Cesium.Cartesian3.fromDegreesArray([
      *       -72.0, 40.0,
      *       -70.0, 35.0,
      *       -75.0, 30.0,
      *       -70.0, 30.0,
      *       -68.0, 40.0
-     *     ]),
-     *     extrudedHeight: 300000
-     *   }
+     *     ])
+     *   ),
+     *   extrudedHeight: 300000
      * });
      * var geometry = Cesium.PolygonGeometry.createGeometry(extrudedPolygon);
      */
     function PolygonGeometry(options) {
                 if (!defined(options) || !defined(options.polygonHierarchy)) {
             throw new DeveloperError('options.polygonHierarchy is required.');
+        }
+        if (defined(options.perPositionHeight) && options.perPositionHeight && defined(options.height)) {
+            throw new DeveloperError('Cannot use both options.perPositionHeight and options.height');
         }
         
         var polygonHierarchy = options.polygonHierarchy;
@@ -28552,10 +27926,17 @@ define('Core/PolygonGeometry',[
 
         var extrudedHeight = options.extrudedHeight;
         var extrude = defined(extrudedHeight);
-        if (extrude && !perPositionHeight) {
-            var h = extrudedHeight;
-            extrudedHeight = Math.min(h, height);
-            height = Math.max(h, height);
+
+        if (!perPositionHeight && extrude) {
+            //Ignore extrudedHeight if it matches height
+            if (CesiumMath.equalsEpsilon(height, extrudedHeight, CesiumMath.EPSILON10)) {
+                extrudedHeight = undefined;
+                extrude = false;
+            } else {
+                var h = extrudedHeight;
+                extrudedHeight = Math.min(h, height);
+                height = Math.max(h, height);
+            }
         }
 
         this._vertexFormat = VertexFormat.clone(vertexFormat);
@@ -28565,6 +27946,8 @@ define('Core/PolygonGeometry',[
         this._height = height;
         this._extrudedHeight = defaultValue(extrudedHeight, 0.0);
         this._extrude = extrude;
+        this._closeTop = defaultValue(options.closeTop, true);
+        this._closeBottom = defaultValue(options.closeBottom, true);
         this._polygonHierarchy = polygonHierarchy;
         this._perPositionHeight = perPositionHeight;
         this._workerName = 'createPolygonGeometry';
@@ -28573,7 +27956,7 @@ define('Core/PolygonGeometry',[
          * The number of elements used to pack the object into an array.
          * @type {Number}
          */
-        this.packedLength = PolygonGeometryLibrary.computeHierarchyPackedLength(polygonHierarchy) + Ellipsoid.packedLength + VertexFormat.packedLength + 7;
+        this.packedLength = PolygonGeometryLibrary.computeHierarchyPackedLength(polygonHierarchy) + Ellipsoid.packedLength + VertexFormat.packedLength + 9;
     }
 
     /**
@@ -28588,6 +27971,8 @@ define('Core/PolygonGeometry',[
      * @param {Ellipsoid} [options.ellipsoid=Ellipsoid.WGS84] The ellipsoid to be used as a reference.
      * @param {Number} [options.granularity=CesiumMath.RADIANS_PER_DEGREE] The distance, in radians, between each latitude and longitude. Determines the number of positions in the buffer.
      * @param {Boolean} [options.perPositionHeight=false] Use the height of options.positions for each position instead of using options.height to determine the height.
+     * @param {Boolean} [options.closeTop=true] When false, leaves off the top of an extruded polygon open.
+     * @param {Boolean} [options.closeBottom=true] When false, leaves off the bottom of an extruded polygon open.
      * @returns {PolygonGeometry}
      *
      *
@@ -28623,7 +28008,9 @@ define('Core/PolygonGeometry',[
             stRotation : options.stRotation,
             ellipsoid : options.ellipsoid,
             granularity : options.granularity,
-            perPositionHeight : options.perPositionHeight
+            perPositionHeight : options.perPositionHeight,
+            closeTop : options.closeTop,
+            closeBottom: options.closeBottom
         };
         return new PolygonGeometry(newOptions);
     };
@@ -28659,6 +28046,8 @@ define('Core/PolygonGeometry',[
         array[startingIndex++] = value._stRotation;
         array[startingIndex++] = value._extrude ? 1.0 : 0.0;
         array[startingIndex++] = value._perPositionHeight ? 1.0 : 0.0;
+        array[startingIndex++] = value._closeTop ? 1.0 : 0.0;
+        array[startingIndex++] = value._closeBottom ? 1.0 : 0.0;
         array[startingIndex] = value.packedLength;
     };
 
@@ -28700,6 +28089,8 @@ define('Core/PolygonGeometry',[
         var stRotation = array[startingIndex++];
         var extrude = array[startingIndex++] === 1.0;
         var perPositionHeight = array[startingIndex++] === 1.0;
+        var closeTop = array[startingIndex++] === 1.0;
+        var closeBottom = array[startingIndex++] === 1.0;
         var packedLength = array[startingIndex];
 
         if (!defined(result)) {
@@ -28715,6 +28106,8 @@ define('Core/PolygonGeometry',[
         result._stRotation = stRotation;
         result._extrude = extrude;
         result._perPositionHeight = perPositionHeight;
+        result._closeTop = closeTop;
+        result._closeBottom = closeBottom;
         result.packedLength = packedLength;
         return result;
     };
@@ -28735,6 +28128,8 @@ define('Core/PolygonGeometry',[
         var extrude = polygonGeometry._extrude;
         var polygonHierarchy = polygonGeometry._polygonHierarchy;
         var perPositionHeight = polygonGeometry._perPositionHeight;
+        var closeTop = polygonGeometry._closeTop;
+        var closeBottom = polygonGeometry._closeBottom;
 
         var walls;
         var topAndBottom;
@@ -28772,16 +28167,31 @@ define('Core/PolygonGeometry',[
             ellipsoid: ellipsoid,
             stRotation: stRotation,
             bottom: false,
+            top: true,
             wall: false
         };
         if (extrude) {
-            options.bottom = true;
+            options.top = closeTop;
+            options.bottom = closeBottom;
             for (i = 0; i < polygons.length; i++) {
-                geometry = createGeometryFromPositionsExtruded(ellipsoid, polygons[i], granularity, hierarchy[i], perPositionHeight);
-                topAndBottom = geometry.topAndBottom;
-                options.geometry = PolygonGeometryLibrary.scaleToGeodeticHeightExtruded(topAndBottom.geometry, height, extrudedHeight, ellipsoid, perPositionHeight);
-                topAndBottom.geometry = computeAttributes(options);
-                geometries.push(topAndBottom);
+                geometry = createGeometryFromPositionsExtruded(ellipsoid, polygons[i], granularity, hierarchy[i], perPositionHeight, closeTop, closeBottom);
+                if (closeTop && closeBottom) {
+                    topAndBottom = geometry.topAndBottom;
+                    options.geometry = PolygonGeometryLibrary.scaleToGeodeticHeightExtruded(topAndBottom.geometry, height, extrudedHeight, ellipsoid, perPositionHeight);
+                } else if (closeTop) {
+                    topAndBottom = geometry.topAndBottom;
+                    topAndBottom.geometry.attributes.position.values = PolygonPipeline.scaleToGeodeticHeight(topAndBottom.geometry.attributes.position.values, height, ellipsoid, !perPositionHeight);
+                    options.geometry = topAndBottom.geometry;
+                } else if (closeBottom) {
+                    topAndBottom = geometry.topAndBottom;
+                    topAndBottom.geometry.attributes.position.values = PolygonPipeline.scaleToGeodeticHeight(topAndBottom.geometry.attributes.position.values, extrudedHeight, ellipsoid, true);
+                    options.geometry = topAndBottom.geometry;
+                }
+                if (closeTop || closeBottom) {
+                    options.wall = false;
+                    topAndBottom.geometry = computeAttributes(options);
+                    geometries.push(topAndBottom);
+                }
 
                 walls = geometry.walls;
                 options.wall = true;
