@@ -195,49 +195,50 @@ goog.require('ga_urlutils_service');
         };
 
         //Hiking time
-        //Official formula: http://www.wandern.ch/download.php?id=4574_62003b89
-        //Reference link: http://www.wandern.ch
+        //Official formula as agreed with the cantons
+        //ASTRA wander.ch FALV CODE
         this.hikingTime = function(data) {
           var wayTime = 0;
           if (data.length != 0) {
             for (var i = 1; i < data.length; i++) {
               //for (data.length - 1) line segments the time is calculated
+              //Horizontal distance (Projection) between two points
               var distance = (data[i].dist - data[i - 1].dist) || 0;
               if (distance != 0) {
+                //Height difference between two points
                 var dH = (data[i].alts[elevationModel] -
                     data[i - 1].alts[elevationModel]) || 0;
 
                 //Constants of the formula
                 var arrConstants = [
-                  14.271, 3.6992, 2.5922, -1.4384,
-                   0.32105, 0.81542, -0.090261, -0.20757,
-                   0.010192, 0.028588, -0.00057466, -0.0021842,
-                   1.5176e-5, 8.6894e-5, -1.3584e-7, 1.4026e-6
+                  14.271, 0.36992, 0.025922, -0.0014384,
+                  0.000032105, 8.1542e-06, -9.0261e-08, -2.0757e-08,
+                  1.0192e-10, 2.8588e-11, -5.7466e-14, -2.1842e-14,
+                  1.5176e-17, 8.6894e-18, -1.3584e-21, -1.4026e-21
                 ];
 
-                //10ths instead of %
-                var s = (dH * 10.0) / distance;
+                //Slope between two points
+                var s = (dH * 100.0) / distance;
 
-                //The swiss hiking formula is used between -25% and +25%
-                //(used to be -40% to +40%, which leads to a strange behaviour)
-                if (s > -2.5 && s < 2.5) {
-                  var minutesPerKilometer = 0.0;
-                  for (var j = 0; j < 15; j++) {
-                    minutesPerKilometer += arrConstants[j] * Math.pow(s, j);
-                  }
-                } else {
-                  //outside the -25% to +25% range, we use a linear formula
-                  if (s > 0) {
-                    minutesPerKilometer = (17 * s);
-                  } else {
-                    minutesPerKilometer = (-9 * s);
-                  }
+                //If we have a slope > 40%, the algorithm can't calculate it
+                //So we force this value to 40% (the limit value) in order
+                //to be able to calculate it
+                //(seen with EPL the 18/03/2014 and 10/04/2014)
+                if (s < -40) {
+                  s = -40;
+                } else if (s > 40) {
+                  s = 40;
                 }
+
+                var minutesPerKilometer = 0.0;
+                for (var j = 0; j <= 15; j++) {
+                  minutesPerKilometer += arrConstants[j] * Math.pow(s, j);
+                }
+                wayTime += (distance * minutesPerKilometer / 1000);
               }
-              wayTime += (distance * minutesPerKilometer / 1000);
             }
-            return Math.round(wayTime);
           }
+          return Math.round(wayTime);
         };
 
         var coordinatesToString = function(coordinates) {
