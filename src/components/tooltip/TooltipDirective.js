@@ -53,6 +53,12 @@ goog.require('ga_topic_service');
               olLayer.getSource() instanceof ol.source.ImageVector));
         };
 
+        var isWMSLayer = function(olLayer) {
+          return (olLayer.getSource &&
+              (olLayer.getSource() instanceof ol.source.ImageWMS ||
+              olLayer.getSource() instanceof ol.source.TileWMS));
+        };
+
         // Test if the layer has a tooltip
         var hasTooltipBodLayer = function(olLayer) {
           var bodId = olLayer.bodId;
@@ -86,13 +92,14 @@ goog.require('ga_topic_service');
             if (!l.visible || l.preview) {
               return;
             }
+
             if (hasTooltipBodLayer(l)) {
-              layersToQuery.bodLayers.push(l);
-            } else if (isVectorLayer(l)) {
-              layersToQuery.vectorLayers.push(l);
-            } else if (l.getSource &&
-                (l.getSource() instanceof ol.source.ImageWMS ||
-                l.getSource() instanceof ol.source.TileWMS)) {
+              if (isVectorLayer(l)) {
+                layersToQuery.vectorLayers.push(l);
+              } else {
+                layersToQuery.bodLayers.push(l);
+              }
+            } else if (isWMSLayer(l)) {
               layersToQuery.wmsLayers.push(l);
             }
           });
