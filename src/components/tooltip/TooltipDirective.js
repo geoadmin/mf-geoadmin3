@@ -46,39 +46,10 @@ goog.require('ga_topic_service');
             '<div class="ga-tooltip-separator" ' +
                  'ng-show="!$last"></div>' +
           '</div>';
-        // Test if the layer is a vector layer
-        var isVectorLayer = function(olLayer) {
-          return (olLayer instanceof ol.layer.Vector ||
-              (olLayer instanceof ol.layer.Image &&
-              olLayer.getSource() instanceof ol.source.ImageVector));
-        };
 
-        var isWMSLayer = function(olLayer) {
-          return (olLayer.getSource &&
-              (olLayer.getSource() instanceof ol.source.ImageWMS ||
-              olLayer.getSource() instanceof ol.source.TileWMS));
-        };
-
-        // Test if the layer has a tooltip
-        var hasTooltipBodLayer = function(olLayer) {
-          var bodId = olLayer.bodId;
-          if (bodId) {
-            bodId = gaLayers.getLayerProperty(bodId, 'parentLayerId') || bodId;
-          }
-          return (bodId && olLayer.visible && !olLayer.preview &&
-              gaLayers.getLayerProperty(bodId, 'tooltip'));
-        };
-
-        var getOlParentLayer = function(l) {
-          var parentLayerBodId;
-          if (l.bodId) {
-            parentLayerBodId =
-              gaLayers.getLayerProperty(l.bodId, 'parentLayerId');
-          }
-          if (parentLayerBodId) {
-            l = gaLayers.getOlLayerById(parentLayerBodId);
-          }
-          return l;
+        var getOlParentLayer = function(olLayer) {
+          var parentLayerBodId = gaLayers.getBodParentLayerId(olLayer);
+          return gaLayers.getOlLayerById(parentLayerBodId) || olLayer;
         };
 
         // Get all the queryable layers
@@ -93,13 +64,11 @@ goog.require('ga_topic_service');
               return;
             }
 
-            if (hasTooltipBodLayer(l)) {
-              if (isVectorLayer(l)) {
-                layersToQuery.vectorLayers.push(l);
-              } else {
-                layersToQuery.bodLayers.push(l);
-              }
-            } else if (isWMSLayer(l)) {
+            if (gaMapUtils.isVectorLayer(l)) {
+              layersToQuery.vectorLayers.push(l);
+            } else if (gaLayers.hasTooltipBodLayer(l)) {
+              layersToQuery.bodLayers.push(l);
+            } else if (gaMapUtils.isWMSLayer(l)) {
               layersToQuery.wmsLayers.push(l);
             }
           });
@@ -139,7 +108,7 @@ goog.require('ga_topic_service');
               },
               undefined,
               function(layer) {
-                return hasTooltipBodLayer(layer);
+                return gaLayers.hasTooltipBodLayer(layer);
               });
           }
           if (!hasQueryableLayer) {

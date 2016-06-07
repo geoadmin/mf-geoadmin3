@@ -84,10 +84,8 @@ goog.require('ga_wms_service');
         this.removeAll = function(map) {
           var layers = map.getLayers().getArray();
           for (var i = 0; i < layers.length; i++) {
-            if (layers[i].preview && !(layers[i] instanceof ol.layer.Vector)) {
-              map.removeLayer(layers[i]);
-              i--;
-            } else if (layers[i].preview && layers[i].type == 'geojson') {
+            if (layers[i].preview && (gaLayers.isBodLayer(layers[i]) ||
+                !gaMapUtils.isVectorLayer(layers[i]))) {
               map.removeLayer(layers[i]);
               i--;
             }

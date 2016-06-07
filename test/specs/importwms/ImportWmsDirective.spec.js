@@ -1,10 +1,9 @@
 describe('ga_importwms_directive', function() {
-  var element, scope, map;
+  var element, scope, map, httpBackend;
    
   beforeEach(function() {
 
     module(function($provide) {
-      $provide.value('gaLayers', {});
       $provide.value('gaTopic', {});
       $provide.value('gaLang', {
         get: function() {
@@ -13,7 +12,9 @@ describe('ga_importwms_directive', function() {
       });
     });
 
-    inject(function($injector, $rootScope, $compile, $translate, gaGlobalOptions) {
+    inject(function($injector, $rootScope, $compile,
+        $translate, $httpBackend, gaGlobalOptions) {
+      httpBackend = $httpBackend;
       map = new ol.Map({});
       map.setSize([600,300]);
       map.getView().fit([-20000000, -20000000, 20000000, 20000000], map.getSize());
@@ -38,9 +39,24 @@ describe('ga_importwms_directive', function() {
       $injector.get('$controller')('GaImportWmsDirectiveController', {'$scope': scope});
       $injector.get('$controller')('GaImportWmsItemDirectiveController', {'$scope': scope});
       $compile(element)(scope);
+      var expectedUrl = 'http://example.com/all?lang=somelang';
+      httpBackend.whenGET(expectedUrl).respond({});
+      httpBackend.expectGET(expectedUrl);
       $rootScope.$digest();
+      httpBackend.flush();
+      expectedUrl = 'http://example.com/all?lang=fr';
+      httpBackend.whenGET(expectedUrl).respond({});
+      httpBackend.expectGET(expectedUrl);
       $translate.use('fr');
+      $rootScope.$digest();
+      httpBackend.flush();
     });
+
+  });
+
+  afterEach(function () {
+    httpBackend.verifyNoOutstandingExpectation();
+    httpBackend.verifyNoOutstandingRequest();
   });
 
   it('verifies html elements', inject(function($rootScope) {
@@ -144,11 +160,6 @@ describe('ga_importwms_directive', function() {
       $rootScope.$digest();
     }));
 
-    afterEach(function () {
-      $httpBackend.verifyNoOutstandingExpectation();
-      $httpBackend.verifyNoOutstandingRequest();
-    });
-
     it('uploads and parses successfully', inject(function() {
       expect(scope.userMessage).to.be('parse_succeeded');   
       expect(scope.layers.length).to.be(2); 
@@ -164,7 +175,7 @@ describe('ga_importwms_directive', function() {
         scope.addPreviewLayer(evt, scope.layers[0]);
         expect(scope.map.getLayers().getLength()).to.be(1);      
         expect(scope.map.getLayers().item(0).preview).to.be(true);
-        scope.removePreviewLayer(evt);   
+        scope.removePreviewLayer(evt);
         expect(scope.map.getLayers().getLength()).to.be(0);
         expect(scope.options.layerHovered).to.be(null);
       }));
