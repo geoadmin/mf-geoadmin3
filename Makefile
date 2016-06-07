@@ -10,6 +10,8 @@ APACHE_BASE_PATH ?= /$(shell id -un)
 LAST_APACHE_BASE_PATH := $(shell if [ -f .build-artefacts/last-apache-base-path ]; then cat .build-artefacts/last-apache-base-path 2> /dev/null; else echo '-none-'; fi)
 API_URL ?= //mf-chsdi3.dev.bgdi.ch
 LAST_API_URL := $(shell if [ -f .build-artefacts/last-api-url ]; then cat .build-artefacts/last-api-url 2> /dev/null; else echo '-none-'; fi)
+PRINT_URL ?= //service-print.dev.bgdi.ch
+LAST_PRINT_URL := $(shell if [ -f .build-artefacts/last-print-url ]; then cat .build-artefacts/last-print-url 2> /dev/null; else echo '-none-'; fi)
 PUBLIC_URL ?= //public.dev.bgdi.ch
 E2E_TARGETURL ?= https://mf-geoadmin3.dev.bgdi.ch
 APPLICATION_URL ?= $(E2E_TARGETURL)
@@ -107,6 +109,7 @@ help:
 	@echo
 	@echo "- DEPLOY_TARGET Deploy target (build with: $(LAST_DEPLOY_TARGET), current value: $(DEPLOY_TARGET))"
 	@echo "- API_URL Service URL         (build with: $(LAST_API_URL), current value: $(API_URL))"
+	@echo "- PRINT_URL Print service URL (build with: $(LAST_PRINT_URL), current value: $(PRINT_URL))"
 	@echo "- MAPPROXY_URL Service URL    (build with: $(LAST_MAPPROXY_URL), current value: $(MAPPROXY_URL))"
 	@echo "- SHOP_URL Service URL        (build with: $(LAST_SHOP_URL), current value: $(SHOP_URL))"
 	@echo "- WMS_URL Service URL         (build with  $(LAST_WMS_URL), current value: $(WMS_URL))"
@@ -349,6 +352,7 @@ prd/geoadmin.appcache: src/geoadmin.mako.appcache \
 	    --var "apache_base_path=$(APACHE_BASE_PATH)" \
 	    --var "languages=$(LANGUAGES)" \
 	    --var "api_url=$(API_URL)" \
+		--var "print_url=$(PRINT_URL)" \
 	    --var "public_url=$(PUBLIC_URL)" $< > $@
 	mv $@ prd/geoadmin.$(VERSION).appcache
 
@@ -367,6 +371,7 @@ define buildpage
 		--var "apache_base_path=$(APACHE_BASE_PATH)" \
 		--var "api_url=$(API_URL)" \
 		--var "application_url=$(APPLICATION_URL)" \
+		--var "print_url=$(PRINT_URL)" \
 		--var "mapproxy_url=$(MAPPROXY_URL)" \
 		--var "shop_url=$(SHOP_URL)" \
 		--var "wms_url=$(WMS_URL)" \
@@ -507,6 +512,7 @@ apache/app.conf: apache/app.mako-dot-conf \
 	${PYTHON_CMD} ${MAKO_CMD} \
 	    --var "apache_base_path=$(APACHE_BASE_PATH)" \
 	    --var "api_url=$(API_URL)" \
+		--var "print_url=$(PRINT_URL)" \
 	    --var "public_url=$(PUBLIC_URL)" \
 	    --var "apache_base_directory=$(APACHE_BASE_DIRECTORY)" \
 	    --var "version=$(VERSION)" $< > $@
