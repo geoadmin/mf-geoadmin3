@@ -247,6 +247,7 @@
 "obstacle_started_last_2_weeks": "Activated obstacles of last 2 weeks",
 "offline_abort_warning": "Do you really want to delete all maps?",
 "offline_bad_layer_type": "A layer has an invalid type. It can't be saved for an offline use. ",
+"offline_cache_obsolete": "A newer version of your stored offline map is available. Please delete your stored map via the offline button and save the desired map extent.",
 "offline_clear_db_error": "Error clearing  saved maps. Please try again.",
 "offline_delete_data": "Delete map",
 "offline_dl_succeed": "Download successfull!",
