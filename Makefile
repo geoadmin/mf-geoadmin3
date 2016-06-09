@@ -12,6 +12,7 @@ API_URL ?= //mf-chsdi3.dev.bgdi.ch
 LAST_API_URL := $(shell if [ -f .build-artefacts/last-api-url ]; then cat .build-artefacts/last-api-url 2> /dev/null; else echo '-none-'; fi)
 PUBLIC_URL ?= //public.dev.bgdi.ch
 E2E_TARGETURL ?= https://mf-geoadmin3.dev.bgdi.ch
+APPLICATION_URL ?= $(E2E_TARGETURL)
 PUBLIC_URL_REGEXP ?= ^https?:\/\/public\..*\.(bgdi|admin)\.ch\/.*
 ADMIN_URL_REGEXP ?= ^(ftp|http|https):\/\/(.*(\.bgdi|\.geo\.admin)\.ch)
 MAPPROXY_URL ?= //wmts{s}.dev.bgdi.ch
@@ -362,6 +363,7 @@ define buildpage
 		--var "versionslashed=$4" \
 		--var "apache_base_path=$(APACHE_BASE_PATH)" \
 		--var "api_url=$(API_URL)" \
+		--var "application_url=$(APPLICATION_URL)" \
 		--var "mapproxy_url=$(MAPPROXY_URL)" \
 		--var "shop_url=$(SHOP_URL)" \
 		--var "default_topic_id=$(DEFAULT_TOPIC_ID)" \
