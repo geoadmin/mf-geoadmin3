@@ -1459,8 +1459,8 @@ goog.require('ga_urlutils_service');
           return layer.displayInLayerManager &&
                  layer.visible &&
                  layer.bodId &&
-                 gaLayers.getLayerProperty(layer.bodId, 'tooltip') &&
-                 !gaLayers.isVectorLayer(layer);
+                 gaLayers.hasTooltipBodLayer(layer) &&
+                 !gaMapUtils.isVectorLayer(layer);
         },
         /**
          * Searchable layers
