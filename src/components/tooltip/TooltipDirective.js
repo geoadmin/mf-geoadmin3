@@ -3,6 +3,7 @@ goog.provide('ga_tooltip_directive');
 goog.require('ga_browsersniffer_service');
 goog.require('ga_debounce_service');
 goog.require('ga_identify_service');
+goog.require('ga_iframe_com_service');
 goog.require('ga_map_service');
 goog.require('ga_popup_service');
 goog.require('ga_previewfeatures_service');
@@ -15,6 +16,7 @@ goog.require('ga_topic_service');
     'ga_browsersniffer_service',
     'ga_debounce_service',
     'ga_identify_service',
+    'ga_iframe_com_service',
     'ga_map_service',
     'ga_popup_service',
     'ga_previewfeatures_service',
@@ -26,7 +28,8 @@ goog.require('ga_topic_service');
   module.directive('gaTooltip',
       function($timeout, $http, $q, $translate, $sce, gaPopup, gaLayers,
           gaBrowserSniffer, gaMapClick, gaDebounce, gaPreviewFeatures,
-          gaMapUtils, gaTime, gaTopic, gaIdentify, gaGlobalOptions) {
+          gaMapUtils, gaTime, gaTopic, gaIdentify, gaGlobalOptions,
+          gaPermalink, gaIFrameCom) {
         var mouseEvts = '';
         if (!gaBrowserSniffer.mobile) {
           mouseEvts = 'ng-mouseenter="options.onMouseEnter($event,' +
@@ -88,7 +91,7 @@ goog.require('ga_topic_service');
             // onclick
             if (layer) {
               if (!vectorLayer || vectorLayer == layer) {
-                if (!featureFound && isFeatureQueryable(feature)) {
+                if (!featureFound) {
                   featureFound = feature;
                 }
               }
@@ -472,8 +475,9 @@ goog.require('ga_topic_service');
                     feature.setId(value.getId());
                     feature.set('layerId', layerId);
                     gaPreviewFeatures.add(map, feature);
-                    showPopup(value.get('htmlpopup'), value);
-
+                    if (value.get('htmlpopup')) {
+                      showPopup(value.get('htmlpopup'), value);
+                    }
                     // Store the ol feature for highlighting
                     featuresByLayerId[layerId][feature.getId()] = feature;
                   } else {
@@ -532,15 +536,33 @@ goog.require('ga_topic_service');
               var name = feature.get('name');
               var featureId = feature.getId();
               var layerId = feature.get('layerId') || layer.id;
+              if (layer.get('type') == 'KML') {
+                layerId = layer.label;
+                if (name && name.length) {
+                  featureId = name;
+                }
+              }
               var id = layerId + '#' + featureId;
               htmlpopup = htmlpopup.
                   replace('{{id}}', id).
                   replace('{{descr}}', feature.get('description') || '').
                   replace('{{name}}', (name) ? '(' + name + ')' : '');
               feature.set('htmlpopup', htmlpopup);
+              if (!isFeatureQueryable(feature)) {
+                feature.set('htmlpopup', undefined);
+              }
               feature.set('layerId', layerId);
               showFeatures([feature]);
+
               // Iframe communication from inside out
+              gaIFrameCom.send('gaFeatureSelection', {
+                layerId: layerId,
+                featureId: featureId
+              });
+
+              // We leave the old code to not break existing clients
+              // Once they have adapted to new implementation, we
+              // can remove the code below
               if (top != window) {
                if (featureId && layerId) {
                   window.parent.postMessage(id, '*');
@@ -566,6 +588,11 @@ goog.require('ga_topic_service');
 
             // Show the popup with all features informations
             var showPopup = function(html, value) {
+              // Don't show popup when notooltip paramter is active
+              if (gaPermalink.getParams().notooltip == 'true') {
+                return;
+              }
+
               // Show popup on first result
               if (htmls.length === 0) {
 
