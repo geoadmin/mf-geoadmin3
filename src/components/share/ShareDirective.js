@@ -10,6 +10,18 @@ goog.require('ga_permalink');
     'pascalprecht.translate'
   ]);
 
+  function setIframeValue(input) {
+    var previewFrame = angular.element(document).
+                find('#gaEmbedModal iframe')[0];
+              if (previewFrame) {
+                var url = previewFrame.contentWindow.location.href;
+                var frame = input.val();
+                var prFrame = $(frame)[0];
+                prFrame.src = url;
+                input.val(prFrame.outerHTML);
+              }
+  };
+
   module.directive('gaShareCopyInput', function(gaBrowserSniffer, $translate) {
     return {
       restrict: 'A',
@@ -23,6 +35,7 @@ goog.require('ga_permalink');
             }
           }).on({
             focus: function() {
+              setIframeValue(element);
               this.setSelectionRange(0, 9999);
             }
           });
@@ -45,9 +58,12 @@ goog.require('ga_permalink');
         if (!isCopyAllow) {
           element.remove();
         }
+
         // Use clipboard API to copy URL in OS clipboard
         element.on('click', function() {
+
             var inputToCopy = $(attrs.gaShareCopyBt);
+            setIframeValue(inputToCopy);
             inputToCopy[0].setSelectionRange(0, 9999);
 
             // Execute the copy command
