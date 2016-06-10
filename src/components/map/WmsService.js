@@ -87,7 +87,10 @@ goog.require('ga_urlutils_service');
           } else {
             params.VERSION = '1.3.0';
           }
-
+          // For some WMS server &STYLES& breaks the WMS.
+          // Therefore we use a simple hack to ensure &STYLES=default& is sent
+          // instead.
+          params.STYLES = params.STYLES || 'default';
           var source = new ol.source.ImageWMS({
             params: params,
             url: options.url,
