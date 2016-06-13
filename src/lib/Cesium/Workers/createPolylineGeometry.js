@@ -20,7 +20,8 @@
  * Portions licensed separately.
  * See https://github.com/AnalyticalGraphicsInc/cesium/blob/master/LICENSE.md for full licensing details.
  */
-(function () {/*global define*/
+(function () {
+/*global define*/
 define('Core/defined',[],function() {
     'use strict';
 
@@ -124,6 +125,7 @@ define('Core/DeveloperError',[
      *
      * @alias DeveloperError
      * @constructor
+     * @extends Error
      *
      * @param {String} [message] The error message for this exception.
      *
@@ -158,6 +160,11 @@ define('Core/DeveloperError',[
          * @readonly
          */
         this.stack = stack;
+    }
+
+    if (defined(Object.create)) {
+        DeveloperError.prototype = Object.create(Error.prototype);
+        DeveloperError.prototype.constructor = DeveloperError;
     }
 
     DeveloperError.prototype.toString = function() {
@@ -3203,6 +3210,106 @@ define('Core/Ellipsoid',[
 });
 
 /*global define*/
+define('Core/arrayRemoveDuplicates',[
+        './defaultValue',
+        './defined',
+        './DeveloperError',
+        './Math'
+    ], function(
+        defaultValue,
+        defined,
+        DeveloperError,
+        CesiumMath) {
+    'use strict';
+
+    var removeDuplicatesEpsilon = CesiumMath.EPSILON10;
+
+    /**
+     * Removes adjacent duplicate values in an array of values.
+     *
+     * @param {Object[]} [values] The array of values.
+     * @param {Function} equalsEpsilon Function to compare values with an epsilon. Boolean equalsEpsilon(left, right, epsilon).
+     * @param {Boolean} [wrapAround=false] Compare the last value in the array against the first value.
+     * @returns {Object[]|undefined} A new array of values with no adjacent duplicate values or the input array if no duplicates were found.
+     *
+     * @example
+     * // Returns [(1.0, 1.0, 1.0), (2.0, 2.0, 2.0), (3.0, 3.0, 3.0), (1.0, 1.0, 1.0)]
+     * var values = [
+     *     new Cesium.Cartesian3(1.0, 1.0, 1.0),
+     *     new Cesium.Cartesian3(1.0, 1.0, 1.0),
+     *     new Cesium.Cartesian3(2.0, 2.0, 2.0),
+     *     new Cesium.Cartesian3(3.0, 3.0, 3.0),
+     *     new Cesium.Cartesian3(1.0, 1.0, 1.0)];
+     * var nonDuplicatevalues = Cesium.PolylinePipeline.removeDuplicates(values, Cartesian3.equalsEpsilon);
+     *
+     * @example
+     * // Returns [(1.0, 1.0, 1.0), (2.0, 2.0, 2.0), (3.0, 3.0, 3.0)]
+     * var values = [
+     *     new Cesium.Cartesian3(1.0, 1.0, 1.0),
+     *     new Cesium.Cartesian3(1.0, 1.0, 1.0),
+     *     new Cesium.Cartesian3(2.0, 2.0, 2.0),
+     *     new Cesium.Cartesian3(3.0, 3.0, 3.0),
+     *     new Cesium.Cartesian3(1.0, 1.0, 1.0)];
+     * var nonDuplicatevalues = Cesium.PolylinePipeline.removeDuplicates(values, Cartesian3.equalsEpsilon, true);
+     *
+     * @private
+     */
+    function arrayRemoveDuplicates(values, equalsEpsilon, wrapAround) {
+                if (!defined(equalsEpsilon)) {
+            throw new DeveloperError('equalsEpsilon is required.');
+        }
+        
+        if (!defined(values)) {
+            return undefined;
+        }
+
+        wrapAround = defaultValue(wrapAround, false);
+
+        var length = values.length;
+        if (length < 2) {
+            return values;
+        }
+
+        var i;
+        var v0;
+        var v1;
+
+        for (i = 1; i < length; ++i) {
+            v0 = values[i - 1];
+            v1 = values[i];
+            if (equalsEpsilon(v0, v1, removeDuplicatesEpsilon)) {
+                break;
+            }
+        }
+
+        if (i === length) {
+            if (wrapAround && equalsEpsilon(values[0], values[values.length - 1], removeDuplicatesEpsilon)) {
+                return values.slice(1);
+            }
+            return values;
+        }
+
+        var cleanedvalues = values.slice(0, i);
+        for (; i < length; ++i) {
+            // v0 is set by either the previous loop, or the previous clean point.
+            v1 = values[i];
+            if (!equalsEpsilon(v0, v1, removeDuplicatesEpsilon)) {
+                cleanedvalues.push(v1);
+                v0 = v1;
+            }
+        }
+
+        if (wrapAround && cleanedvalues.length > 1 && equalsEpsilon(cleanedvalues[0], cleanedvalues[cleanedvalues.length - 1], removeDuplicatesEpsilon)) {
+            cleanedvalues.shift();
+        }
+
+        return cleanedvalues;
+    }
+
+    return arrayRemoveDuplicates;
+});
+
+/*global define*/
 define('Core/GeographicProjection',[
         './Cartesian3',
         './Cartographic',
@@ -5693,6 +5800,7 @@ define('Core/RuntimeError',[
      *
      * @alias RuntimeError
      * @constructor
+     * @extends Error
      *
      * @param {String} [message] The error message for this exception.
      *
@@ -5728,6 +5836,12 @@ define('Core/RuntimeError',[
          */
         this.stack = stack;
     }
+
+    if (defined(Object.create)) {
+        RuntimeError.prototype = Object.create(Error.prototype);
+        RuntimeError.prototype.constructor = RuntimeError;
+    }
+
     RuntimeError.prototype.toString = function() {
         var str = this.name + ': ' + this.message;
 
@@ -6554,7 +6668,6 @@ define('Core/Matrix4',[
      * @param {Number} bottom The number of meters below of the camera that will be in view.
      * @param {Number} top The number of meters above of the camera that will be in view.
      * @param {Number} near The distance to the near plane in meters.
-     * @param {Number} far The distance to the far plane in meters.
      * @param {Matrix4} result The object in which the result will be stored.
      * @returns {Matrix4} The modified result parameter.
      */
@@ -10907,7 +11020,7 @@ define('Core/Fullscreen',[
      * If fullscreen mode is not supported by the browser, does nothing.
      *
      * @param {Object} element The HTML element which will be placed into fullscreen mode.
-     * @param {HMDVRDevice} vrDevice The VR device.
+     * @param {HMDVRDevice} [vrDevice] The VR device.
      *
      * @example
      * // Put the entire page into fullscreen.
@@ -11562,6 +11675,7 @@ define('Core/Color',[
             result.red = parseInt(matches[1], 16) / 15;
             result.green = parseInt(matches[2], 16) / 15.0;
             result.blue = parseInt(matches[3], 16) / 15.0;
+            result.alpha = 1.0;
             return result;
         }
 
@@ -11570,6 +11684,7 @@ define('Core/Color',[
             result.red = parseInt(matches[1], 16) / 255.0;
             result.green = parseInt(matches[2], 16) / 255.0;
             result.blue = parseInt(matches[3], 16) / 255.0;
+            result.alpha = 1.0;
             return result;
         }
 
@@ -17155,7 +17270,7 @@ define('Core/PolylinePipeline',[
      * var positions = polyline.positions;
      * var modelMatrix = polylines.modelMatrix;
      * var segments = Cesium.PolylinePipeline.wrapLongitude(positions, modelMatrix);
-     * 
+     *
      * @see PolygonPipeline.wrapLongitude
      * @see Polyline
      * @see PolylineCollection
@@ -17215,61 +17330,6 @@ define('Core/PolylinePipeline',[
             positions : cartesians,
             lengths : segments
         };
-    };
-
-    var removeDuplicatesEpsilon = CesiumMath.EPSILON10;
-
-    /**
-     * Removes adjacent duplicate positions in an array of positions.
-     *
-     * @param {Cartesian3[]} positions The array of positions.
-     * @returns {Cartesian3[]|undefined} A new array of positions with no adjacent duplicate positions or the input array if no duplicates were found.
-     *
-     * @example
-     * // Returns [(1.0, 1.0, 1.0), (2.0, 2.0, 2.0)]
-     * var positions = [
-     *     new Cesium.Cartesian3(1.0, 1.0, 1.0),
-     *     new Cesium.Cartesian3(1.0, 1.0, 1.0),
-     *     new Cesium.Cartesian3(2.0, 2.0, 2.0)];
-     * var nonDuplicatePositions = Cesium.PolylinePipeline.removeDuplicates(positions);
-     */
-    PolylinePipeline.removeDuplicates = function(positions) {
-                if (!defined(positions)) {
-            throw new DeveloperError('positions is required.');
-        }
-        
-        var length = positions.length;
-        if (length < 2) {
-            return positions;
-        }
-
-        var i;
-        var v0;
-        var v1;
-
-        for (i = 1; i < length; ++i) {
-            v0 = positions[i - 1];
-            v1 = positions[i];
-            if (Cartesian3.equalsEpsilon(v0, v1, removeDuplicatesEpsilon)) {
-                break;
-            }
-        }
-
-        if (i === length) {
-            return positions;
-        }
-
-        var cleanedPositions = positions.slice(0, i);
-        for (; i < length; ++i) {
-            // v0 is set by either the previous loop, or the previous clean point.
-            v1 = positions[i];
-            if (!Cartesian3.equalsEpsilon(v0, v1, removeDuplicatesEpsilon)) {
-                cleanedPositions.push(Cartesian3.clone(v1));
-                v0 = v1;
-            }
-        }
-
-        return cleanedPositions;
     };
 
     /**
@@ -17693,6 +17753,7 @@ define('Core/VertexFormat',[
 
 /*global define*/
 define('Core/PolylineGeometry',[
+        './arrayRemoveDuplicates',
         './BoundingSphere',
         './Cartesian3',
         './Color',
@@ -17711,6 +17772,7 @@ define('Core/PolylineGeometry',[
         './PrimitiveType',
         './VertexFormat'
     ], function(
+        arrayRemoveDuplicates,
         BoundingSphere,
         Cartesian3,
         Color,
@@ -17781,6 +17843,7 @@ define('Core/PolylineGeometry',[
      * @param {Boolean} [options.colorsPerVertex=false] A boolean that determines whether the colors will be flat across each segment of the line or interpolated across the vertices.
      * @param {Boolean} [options.followSurface=true] A boolean that determines whether positions will be adjusted to the surface of the ellipsoid via a great arc.
      * @param {Number} [options.granularity=CesiumMath.RADIANS_PER_DEGREE] The distance, in radians, between each latitude and longitude if options.followSurface=true. Determines the number of positions in the buffer.
+     * @param {VertexFormat} [options.vertexFormat=VertexFormat.DEFAULT] The vertex attributes to be computed.
      * @param {Ellipsoid} [options.ellipsoid=Ellipsoid.WGS84] The ellipsoid to be used as a reference.
      *
      * @exception {DeveloperError} At least two positions are required.
@@ -17984,13 +18047,11 @@ define('Core/PolylineGeometry',[
         var granularity = polylineGeometry._granularity;
         var ellipsoid = polylineGeometry._ellipsoid;
 
-        var minDistance = CesiumMath.chordLength(granularity, ellipsoid.maximumRadius);
-
         var i;
         var j;
         var k;
 
-        var positions = PolylinePipeline.removeDuplicates(polylineGeometry._positions);
+        var positions = arrayRemoveDuplicates(polylineGeometry._positions, Cartesian3.equalsEpsilon);
 
         var positionsLength = positions.length;
         if (positionsLength < 2) {
@@ -17999,6 +18060,7 @@ define('Core/PolylineGeometry',[
 
         if (followSurface) {
             var heights = PolylinePipeline.extractHeights(positions, ellipsoid);
+            var minDistance = CesiumMath.chordLength(granularity, ellipsoid.maximumRadius);
 
             if (defined(colors)) {
                 var colorLength = 1;

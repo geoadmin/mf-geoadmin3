@@ -20,7 +20,8 @@
  * Portions licensed separately.
  * See https://github.com/AnalyticalGraphicsInc/cesium/blob/master/LICENSE.md for full licensing details.
  */
-(function () {/*global define*/
+(function () {
+/*global define*/
 define('Core/defined',[],function() {
     'use strict';
 
@@ -124,6 +125,7 @@ define('Core/DeveloperError',[
      *
      * @alias DeveloperError
      * @constructor
+     * @extends Error
      *
      * @param {String} [message] The error message for this exception.
      *
@@ -158,6 +160,11 @@ define('Core/DeveloperError',[
          * @readonly
          */
         this.stack = stack;
+    }
+
+    if (defined(Object.create)) {
+        DeveloperError.prototype = Object.create(Error.prototype);
+        DeveloperError.prototype.constructor = DeveloperError;
     }
 
     DeveloperError.prototype.toString = function() {
@@ -5693,6 +5700,7 @@ define('Core/RuntimeError',[
      *
      * @alias RuntimeError
      * @constructor
+     * @extends Error
      *
      * @param {String} [message] The error message for this exception.
      *
@@ -5728,6 +5736,12 @@ define('Core/RuntimeError',[
          */
         this.stack = stack;
     }
+
+    if (defined(Object.create)) {
+        RuntimeError.prototype = Object.create(Error.prototype);
+        RuntimeError.prototype.constructor = RuntimeError;
+    }
+
     RuntimeError.prototype.toString = function() {
         var str = this.name + ': ' + this.message;
 
@@ -6554,7 +6568,6 @@ define('Core/Matrix4',[
      * @param {Number} bottom The number of meters below of the camera that will be in view.
      * @param {Number} top The number of meters above of the camera that will be in view.
      * @param {Number} near The distance to the near plane in meters.
-     * @param {Number} far The distance to the far plane in meters.
      * @param {Matrix4} result The object in which the result will be stored.
      * @returns {Matrix4} The modified result parameter.
      */
@@ -11501,7 +11514,7 @@ define('Core/Fullscreen',[
      * If fullscreen mode is not supported by the browser, does nothing.
      *
      * @param {Object} element The HTML element which will be placed into fullscreen mode.
-     * @param {HMDVRDevice} vrDevice The VR device.
+     * @param {HMDVRDevice} [vrDevice] The VR device.
      *
      * @example
      * // Put the entire page into fullscreen.
@@ -13008,42 +13021,7 @@ define('Core/BoxGeometry',[
      *      -70.0, 30.0,
      *      -68.0, 40.0
      * ]));
-     * var box = Cesium.BoxGeometry.fromAxisAlignedBoundingBox({
-     *      boundingBox: aabb
-     * });
-     * 
-     * @see BoxGeometry.createGeometry
-     */
-    BoxGeometry.fromAxisAlignedBoundingBox = function (boundingBox) {
-        if (!defined(boundingBox)) {
-            throw new DeveloperError('boundingBox is required.');
-        }
-
-        return new BoxGeometry({
-            minimum: boundingBox.minimum,
-            maximum: boundingBox.maximum
-        });
-    };
-
-    /**
-     * Creates a cube from the dimensions of an AxisAlignedBoundingBox.
-     *
-     * @param {AxisAlignedBoundingBox} boundingBox A description of the AxisAlignedBoundingBox.
-     * @returns {BoxGeometry}
-     *
-     *
-     * 
-     * @example
-     * var aabb = Cesium.AxisAlignedBoundingBox.fromPoints(Cesium.Cartesian3.fromDegreesArray([
-     *      -72.0, 40.0,
-     *      -70.0, 35.0,
-     *      -75.0, 30.0,
-     *      -70.0, 30.0,
-     *      -68.0, 40.0
-     * ]));
-     * var box = Cesium.BoxGeometry.fromAxisAlignedBoundingBox({
-     *      boundingBox: aabb
-     * });
+     * var box = Cesium.BoxGeometry.fromAxisAlignedBoundingBox(aabb);
      * 
      * @see BoxGeometry.createGeometry
      */

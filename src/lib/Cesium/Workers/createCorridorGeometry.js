@@ -20,7 +20,8 @@
  * Portions licensed separately.
  * See https://github.com/AnalyticalGraphicsInc/cesium/blob/master/LICENSE.md for full licensing details.
  */
-(function () {/*global define*/
+(function () {
+/*global define*/
 define('Core/defined',[],function() {
     'use strict';
 
@@ -124,6 +125,7 @@ define('Core/DeveloperError',[
      *
      * @alias DeveloperError
      * @constructor
+     * @extends Error
      *
      * @param {String} [message] The error message for this exception.
      *
@@ -158,6 +160,11 @@ define('Core/DeveloperError',[
          * @readonly
          */
         this.stack = stack;
+    }
+
+    if (defined(Object.create)) {
+        DeveloperError.prototype = Object.create(Error.prototype);
+        DeveloperError.prototype.constructor = DeveloperError;
     }
 
     DeveloperError.prototype.toString = function() {
@@ -1159,6 +1166,106 @@ define('Core/Math',[
     };
 
     return CesiumMath;
+});
+
+/*global define*/
+define('Core/arrayRemoveDuplicates',[
+        './defaultValue',
+        './defined',
+        './DeveloperError',
+        './Math'
+    ], function(
+        defaultValue,
+        defined,
+        DeveloperError,
+        CesiumMath) {
+    'use strict';
+
+    var removeDuplicatesEpsilon = CesiumMath.EPSILON10;
+
+    /**
+     * Removes adjacent duplicate values in an array of values.
+     *
+     * @param {Object[]} [values] The array of values.
+     * @param {Function} equalsEpsilon Function to compare values with an epsilon. Boolean equalsEpsilon(left, right, epsilon).
+     * @param {Boolean} [wrapAround=false] Compare the last value in the array against the first value.
+     * @returns {Object[]|undefined} A new array of values with no adjacent duplicate values or the input array if no duplicates were found.
+     *
+     * @example
+     * // Returns [(1.0, 1.0, 1.0), (2.0, 2.0, 2.0), (3.0, 3.0, 3.0), (1.0, 1.0, 1.0)]
+     * var values = [
+     *     new Cesium.Cartesian3(1.0, 1.0, 1.0),
+     *     new Cesium.Cartesian3(1.0, 1.0, 1.0),
+     *     new Cesium.Cartesian3(2.0, 2.0, 2.0),
+     *     new Cesium.Cartesian3(3.0, 3.0, 3.0),
+     *     new Cesium.Cartesian3(1.0, 1.0, 1.0)];
+     * var nonDuplicatevalues = Cesium.PolylinePipeline.removeDuplicates(values, Cartesian3.equalsEpsilon);
+     *
+     * @example
+     * // Returns [(1.0, 1.0, 1.0), (2.0, 2.0, 2.0), (3.0, 3.0, 3.0)]
+     * var values = [
+     *     new Cesium.Cartesian3(1.0, 1.0, 1.0),
+     *     new Cesium.Cartesian3(1.0, 1.0, 1.0),
+     *     new Cesium.Cartesian3(2.0, 2.0, 2.0),
+     *     new Cesium.Cartesian3(3.0, 3.0, 3.0),
+     *     new Cesium.Cartesian3(1.0, 1.0, 1.0)];
+     * var nonDuplicatevalues = Cesium.PolylinePipeline.removeDuplicates(values, Cartesian3.equalsEpsilon, true);
+     *
+     * @private
+     */
+    function arrayRemoveDuplicates(values, equalsEpsilon, wrapAround) {
+                if (!defined(equalsEpsilon)) {
+            throw new DeveloperError('equalsEpsilon is required.');
+        }
+        
+        if (!defined(values)) {
+            return undefined;
+        }
+
+        wrapAround = defaultValue(wrapAround, false);
+
+        var length = values.length;
+        if (length < 2) {
+            return values;
+        }
+
+        var i;
+        var v0;
+        var v1;
+
+        for (i = 1; i < length; ++i) {
+            v0 = values[i - 1];
+            v1 = values[i];
+            if (equalsEpsilon(v0, v1, removeDuplicatesEpsilon)) {
+                break;
+            }
+        }
+
+        if (i === length) {
+            if (wrapAround && equalsEpsilon(values[0], values[values.length - 1], removeDuplicatesEpsilon)) {
+                return values.slice(1);
+            }
+            return values;
+        }
+
+        var cleanedvalues = values.slice(0, i);
+        for (; i < length; ++i) {
+            // v0 is set by either the previous loop, or the previous clean point.
+            v1 = values[i];
+            if (!equalsEpsilon(v0, v1, removeDuplicatesEpsilon)) {
+                cleanedvalues.push(v1);
+                v0 = v1;
+            }
+        }
+
+        if (wrapAround && cleanedvalues.length > 1 && equalsEpsilon(cleanedvalues[0], cleanedvalues[cleanedvalues.length - 1], removeDuplicatesEpsilon)) {
+            cleanedvalues.shift();
+        }
+
+        return cleanedvalues;
+    }
+
+    return arrayRemoveDuplicates;
 });
 
 /*global define*/
@@ -5693,6 +5800,7 @@ define('Core/RuntimeError',[
      *
      * @alias RuntimeError
      * @constructor
+     * @extends Error
      *
      * @param {String} [message] The error message for this exception.
      *
@@ -5728,6 +5836,12 @@ define('Core/RuntimeError',[
          */
         this.stack = stack;
     }
+
+    if (defined(Object.create)) {
+        RuntimeError.prototype = Object.create(Error.prototype);
+        RuntimeError.prototype.constructor = RuntimeError;
+    }
+
     RuntimeError.prototype.toString = function() {
         var str = this.name + ': ' + this.message;
 
@@ -6554,7 +6668,6 @@ define('Core/Matrix4',[
      * @param {Number} bottom The number of meters below of the camera that will be in view.
      * @param {Number} top The number of meters above of the camera that will be in view.
      * @param {Number} near The distance to the near plane in meters.
-     * @param {Number} far The distance to the far plane in meters.
      * @param {Matrix4} result The object in which the result will be stored.
      * @returns {Matrix4} The modified result parameter.
      */
@@ -11501,7 +11614,7 @@ define('Core/Fullscreen',[
      * If fullscreen mode is not supported by the browser, does nothing.
      *
      * @param {Object} element The HTML element which will be placed into fullscreen mode.
-     * @param {HMDVRDevice} vrDevice The VR device.
+     * @param {HMDVRDevice} [vrDevice] The VR device.
      *
      * @example
      * // Put the entire page into fullscreen.
@@ -14288,7 +14401,7 @@ define('Core/PolylinePipeline',[
      * var positions = polyline.positions;
      * var modelMatrix = polylines.modelMatrix;
      * var segments = Cesium.PolylinePipeline.wrapLongitude(positions, modelMatrix);
-     * 
+     *
      * @see PolygonPipeline.wrapLongitude
      * @see Polyline
      * @see PolylineCollection
@@ -14348,61 +14461,6 @@ define('Core/PolylinePipeline',[
             positions : cartesians,
             lengths : segments
         };
-    };
-
-    var removeDuplicatesEpsilon = CesiumMath.EPSILON10;
-
-    /**
-     * Removes adjacent duplicate positions in an array of positions.
-     *
-     * @param {Cartesian3[]} positions The array of positions.
-     * @returns {Cartesian3[]|undefined} A new array of positions with no adjacent duplicate positions or the input array if no duplicates were found.
-     *
-     * @example
-     * // Returns [(1.0, 1.0, 1.0), (2.0, 2.0, 2.0)]
-     * var positions = [
-     *     new Cesium.Cartesian3(1.0, 1.0, 1.0),
-     *     new Cesium.Cartesian3(1.0, 1.0, 1.0),
-     *     new Cesium.Cartesian3(2.0, 2.0, 2.0)];
-     * var nonDuplicatePositions = Cesium.PolylinePipeline.removeDuplicates(positions);
-     */
-    PolylinePipeline.removeDuplicates = function(positions) {
-                if (!defined(positions)) {
-            throw new DeveloperError('positions is required.');
-        }
-        
-        var length = positions.length;
-        if (length < 2) {
-            return positions;
-        }
-
-        var i;
-        var v0;
-        var v1;
-
-        for (i = 1; i < length; ++i) {
-            v0 = positions[i - 1];
-            v1 = positions[i];
-            if (Cartesian3.equalsEpsilon(v0, v1, removeDuplicatesEpsilon)) {
-                break;
-            }
-        }
-
-        if (i === length) {
-            return positions;
-        }
-
-        var cleanedPositions = positions.slice(0, i);
-        for (; i < length; ++i) {
-            // v0 is set by either the previous loop, or the previous clean point.
-            v1 = positions[i];
-            if (!Cartesian3.equalsEpsilon(v0, v1, removeDuplicatesEpsilon)) {
-                cleanedPositions.push(Cartesian3.clone(v1));
-                v0 = v1;
-            }
-        }
-
-        return cleanedPositions;
     };
 
     /**
@@ -23546,7 +23604,6 @@ define('Core/PolygonPipeline',[
         './GeometryAttribute',
         './Math',
         './pointInsideTriangle',
-        './PolylinePipeline',
         './PrimitiveType',
         './Queue',
         './WindingOrder'
@@ -23563,7 +23620,6 @@ define('Core/PolygonPipeline',[
         GeometryAttribute,
         CesiumMath,
         pointInsideTriangle,
-        PolylinePipeline,
         PrimitiveType,
         Queue,
         WindingOrder) {
@@ -24241,24 +24297,6 @@ define('Core/PolygonPipeline',[
     var PolygonPipeline = {};
 
     /**
-     * Cleans up a simple polygon by removing duplicate adjacent positions and making
-     * the first position not equal the last position.
-     *
-     * @exception {DeveloperError} At least three positions are required.
-     */
-    PolygonPipeline.removeDuplicates = function(positions) {
-                if (!defined(positions)) {
-            throw new DeveloperError('positions is required.');
-        }
-        
-        var cleanedPositions = PolylinePipeline.removeDuplicates(positions);
-        if (Cartesian3.equals(cleanedPositions[0], cleanedPositions[cleanedPositions.length - 1])) {
-            return cleanedPositions.slice(1);
-        }
-        return cleanedPositions;
-    };
-
-    /**
      * @exception {DeveloperError} At least three positions are required.
      */
     PolygonPipeline.computeArea2D = function(positions) {
@@ -24871,6 +24909,7 @@ define('Core/VertexFormat',[
 
 /*global define*/
 define('Core/CorridorGeometry',[
+        './arrayRemoveDuplicates',
         './BoundingSphere',
         './Cartesian3',
         './ComponentDatatype',
@@ -24885,11 +24924,11 @@ define('Core/CorridorGeometry',[
         './GeometryAttributes',
         './IndexDatatype',
         './Math',
-        './PolylinePipeline',
         './PolygonPipeline',
         './PrimitiveType',
         './VertexFormat'
     ], function(
+        arrayRemoveDuplicates,
         BoundingSphere,
         Cartesian3,
         ComponentDatatype,
@@ -24904,7 +24943,6 @@ define('Core/CorridorGeometry',[
         GeometryAttributes,
         IndexDatatype,
         CesiumMath,
-        PolylinePipeline,
         PolygonPipeline,
         PrimitiveType,
         VertexFormat) {
@@ -25670,7 +25708,7 @@ define('Core/CorridorGeometry',[
         var extrudedHeight = corridorGeometry._extrudedHeight;
         var extrude = (height !== extrudedHeight);
 
-        var cleanPositions = PolylinePipeline.removeDuplicates(positions);
+        var cleanPositions = arrayRemoveDuplicates(positions, Cartesian3.equalsEpsilon);
 
         if ((cleanPositions.length < 2) || (width <= 0)) {
             return;
