@@ -176,7 +176,6 @@ describe('ga_map_service', function() {
   describe('gaLayers', function() {
     var layers, $httpBackend, $rootScope;
 
-
     beforeEach(function() {
 
       module(function($provide) {
@@ -277,7 +276,6 @@ describe('ga_map_service', function() {
       $httpBackend.verifyNoOutstandingRequest();
     });
 
-
     describe('getOlLayerById', function() {
       it('returns layers with correct settings', function() {
         var layer = layers.getOlLayerById('foo');
@@ -350,6 +348,131 @@ describe('ga_map_service', function() {
     });
   });
 
+  describe('gaLayerFilters', function() {
+    var $rootScope, $httpBackend, gaLayerFilters, gaDefinePropertiesForLayer;
+
+    beforeEach(function() {
+      module(function($provide) {
+        $provide.value('gaTopic', {
+          get: function() {
+            return {
+              id: 'sometopic',
+              backgroundLayers: ['bar']
+            }
+          }
+        });
+        $provide.value('gaLang',{
+          get: function() {
+            return 'somelang';
+          }
+        });
+      });
+      inject(function($injector) {
+        $rootScope = $injector.get('$rootScope');
+        $httpBackend = $injector.get('$httpBackend');
+        gaLayerFilters = $injector.get('gaLayerFilters');
+        gaDefinePropertiesForLayer = $injector.get(
+            'gaDefinePropertiesForLayer');
+      });
+      var expectedUrl = 'http://example.com/all?lang=somelang';
+      $httpBackend.whenGET(expectedUrl).respond({
+        toto: {
+          type: 'wmts',
+          matrixSet: 'set1',
+          timestamps: ['t1', 't2'],
+          tooltip: true
+        },
+        samere: {
+          type: 'wms',
+          matrixSet: 'set2',
+          timestamps: ['t3', 't4'],
+          tooltip: false
+        }
+      });
+      $httpBackend.expectGET(expectedUrl);
+      $rootScope.$digest();
+      $httpBackend.flush();
+    });
+
+    afterEach(function () {
+      $httpBackend.verifyNoOutstandingExpectation();
+      $httpBackend.verifyNoOutstandingRequest();
+    });
+
+    it('selected keeps layers in the display manager', function() {
+      // We use a type caster "!!" because they are used as filters and
+      // that's how they are evaluated in angular.
+      var layer = new ol.layer.Tile();
+      gaDefinePropertiesForLayer(layer);
+      layer.displayInLayerManager = true;
+      expect(!!gaLayerFilters.selected(layer)).to.be(true);
+      layer.displayInLayerManager = false;
+      expect(!!gaLayerFilters.selected(layer)).to.be(false);
+      layer.displayInLayerManager = undefined;
+      expect(!!gaLayerFilters.selected(layer)).to.be(false);
+      layer.displayInLayerManager = null;
+      expect(!!gaLayerFilters.selected(layer)).to.be(false);
+    });
+
+    it('selectedAndVisible keeps visible layers in the display manager',
+        function() {
+      var layer = new ol.layer.Tile();
+      gaDefinePropertiesForLayer(layer);
+      layer.displayInLayerManager = true;
+      layer.visible = true;
+      expect(!!gaLayerFilters.selectedAndVisible(layer)).to.be(true);
+      layer.visible = false;
+      expect(!!gaLayerFilters.selectedAndVisible(layer)).to.be(false);
+      layer.visible = true;
+      layer.displayInLayerManager = false;
+      expect(!!gaLayerFilters.selectedAndVisible(layer)).to.be(false);
+      layer.visible = false;
+      expect(!!gaLayerFilters.selectedAndVisible(layer)).to.be(false);
+    });
+
+    it('realtime keeps only realtime layers', function() {
+      var layer = new ol.layer.Vector();
+      gaDefinePropertiesForLayer(layer);
+      expect(gaLayerFilters.realtime(layer)).to.be(false);
+      layer.updateDelay = null;
+      expect(gaLayerFilters.realtime(layer)).to.be(false);
+      layer.updateDelay = 100;
+      expect(gaLayerFilters.realtime(layer)).to.be(true);
+    });
+
+    it('potentialTooltip keeps visible layers in the display manager',
+        function() {
+      var layer = new ol.layer.Tile();
+      gaDefinePropertiesForLayer(layer);
+      layer.displayInLayerManager = true;
+      expect(!!gaLayerFilters.potentialTooltip(layer)).to.be(false);
+      layer.visible = true;
+      expect(!!gaLayerFilters.potentialTooltip(layer)).to.be(false);
+      layer.bodId = 'toto';
+      expect(!!gaLayerFilters.potentialTooltip(layer)).to.be(true);
+
+      var layer = new ol.layer.Tile();
+      gaDefinePropertiesForLayer(layer);
+      layer.displayInLayerManager = true;
+      expect(!!gaLayerFilters.potentialTooltip(layer)).to.be(false);
+      layer.visible = true;
+      expect(!!gaLayerFilters.potentialTooltip(layer)).to.be(false);
+      layer.bodId = 'samere';
+      expect(!!gaLayerFilters.potentialTooltip(layer)).to.be(false);
+
+      // Not a vector layer -> no support of intersection on vector layers
+      // in query tool
+      layer = new ol.layer.Vector({ source: new ol.source.Vector({}) });
+      gaDefinePropertiesForLayer(layer);
+      layer.displayInLayerManager = true;
+      expect(!!gaLayerFilters.potentialTooltip(layer)).to.be(false);
+      layer.visible = true;
+      expect(!!gaLayerFilters.potentialTooltip(layer)).to.be(false);
+      layer.bodId = 'toto';
+      expect(!!gaLayerFilters.potentialTooltip(layer)).to.be(false);
+    });
+  });
+
   describe('gaMapUtils', function() {
     var gaMapUtils;
 
@@ -361,7 +484,6 @@ describe('ga_map_service', function() {
 
     beforeEach(function() {
       map = new ol.Map({});
-
       inject(function($injector) {
         gaMapUtils = $injector.get('gaMapUtils');
       });
