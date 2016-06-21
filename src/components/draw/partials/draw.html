@@ -42,7 +42,10 @@
   <div class="ga-draw-popup"
        ga-popup="options.popupToggle"
        ga-popup-options="options.popupOptions"
-       ng-class="{'ga-profile-active': options.isProfileActive, 'ga-tabs': (feature && showTabs(feature))}">
+       ng-class="{
+         'ga-profile-active': options.isProfileActive,
+         'ga-tabs': (feature && showTabs(feature))
+       }">
     <ul class="nav nav-tabs" role="tablist" ng-if="feature && showTabs(feature)">
       <li ng-show="showPropsTab(feature)">
         <a href=""
@@ -140,7 +143,8 @@
         <label class="ga-icons">
           <span translate>{{'modify_icon_label'}}:</span> 
           <div class="ga-select-box ga-select-icons ga-item-size-{{options.iconSize.value[0]}}"
-               ng-class="{'ga-select-box-open': gaSelectBoxOpen}">
+               ng-class="{'ga-select-box-open': gaSelectBoxOpen}"
+               ng-style="{color:options.iconColor.name}">
             <i tabindex=1 ng-repeat="i in options.icons"
                class="ga-icon-draw fa fa-maki-{{i.id}}"
                ng-click="options.icon = i;$event.preventDefault();"></i>
