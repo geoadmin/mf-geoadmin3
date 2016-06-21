@@ -118,6 +118,96 @@ describe('ga_stylesfromliterals_service', function() {
     expect(olImage.getStroke().getWidth() === 2).to.be(true);
   });
 
+  it('supports simple unique type style assignment resolution dependent', function() {
+
+    // ]maxResolution, minResolution]
+
+    var uniqueTypeStyleWithRes = {
+      type: 'unique',
+      property: 'foo',
+      values: [
+        {
+          geomType: 'point',
+          minResolution: 1.5,
+          maxResolution: 750,
+          value: 'bar',
+          vectorOptions: {
+            type: 'circle',
+            radius: 8,
+            fill: {
+              color: '#FF1FF1'
+            },
+            stroke: {
+              color: '#FFFFFF',
+              width: 3
+            }
+          }
+        }, {
+          geomType: 'point',
+          minResolution: 750,
+          value: 'bar',
+          vectorOptions: {
+            type: 'circle',
+            radius: 3,
+            fill: {
+              color: '#C03199'
+            },
+            stroke: {
+              color: '#C03199',
+              width: 1
+            }
+          }
+        }, {
+          geomType: 'point',
+          minResolution: 50,
+          maxResolution: 750,
+          value: 'toto',
+          vectorOptions: {
+            type: 'circle',
+            radius: 8,
+            fill: {
+              color: '#FF2222'
+            },
+            stroke: {
+              color: '#F55555',
+              width: 3
+            }
+          }
+        }, {
+          geomType: 'point',
+          minResolution: 750,
+          value: 'toto',
+          vectorOptions: {
+            type: 'circle',
+            radius: 3,
+            fill: {
+              color: '#C03122'
+            },
+            stroke: {
+              color: '#C03122',
+              width: 1
+            }
+          }
+        }
+      ]
+    };
+    var gaStyle = gaStylesFromLiterals(uniqueTypeStyleWithRes);
+    var geoJsonFormat = new ol.format.GeoJSON();
+    var olFeature = geoJsonFormat.readFeature(
+      '{"type": "Feature",' +
+        '"geometry": {' +
+          '"coordinates": [' +
+            '10000,' +
+            '20000' +
+          '],' +
+          '"type": "Point"' +
+        '},' +
+        '"properties": {' +
+          '"foo": "bar"' +
+        '}}'
+    );
+    var olStyle = gaStyle.getFeatureStyle(olFeature, 5.0);
+  });
 
   it('supports range type style assignment', function() {
     var rangeTypeStyle = {
