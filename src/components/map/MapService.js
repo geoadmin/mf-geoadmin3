@@ -825,8 +825,9 @@ goog.require('ga_urlutils_service');
                 cache: true
               }).success(function(data) {
                 var olStyleForVector = gaStylesFromLiterals(data);
-                olLayer.setStyle(function(feature) {
-                  return [olStyleForVector.getFeatureStyle(feature)];
+                olLayer.setStyle(function(feature, resolution) {
+                  return [olStyleForVector.getFeatureStyle(
+                      feature, resolution)];
                 });
               });
               // Handle error

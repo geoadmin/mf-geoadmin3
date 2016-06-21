@@ -104,16 +104,40 @@ goog.provide('ga_stylesfromliterals_service');
           var values = properties.values;
           for (var i = 0; i < values.length; i++) {
             var value = values[i];
-            olStyle = getOlStyleFromLiterals(value);
-            this.styles[value.geomType][value.value] = olStyle;
+            var minResolution = value.minResolution !== undefined ?
+                value.minResolution : 0;
+            var maxResolution = value.maxResolution !== undefined ?
+                value.maxResolution : Infinity;
+            olStyle = {
+              olStyle: getOlStyleFromLiterals(value),
+              minResolution: minResolution,
+              maxResolution: maxResolution
+            };
+            if (!this.styles[value.geomType][value.value]) {
+              this.styles[value.geomType][value.value] = [olStyle];
+            } else {
+              this.styles[value.geomType][value.value].push(olStyle);
+            }
           }
         } else if (this.type === 'range') {
           var ranges = properties.ranges;
           for (var i = 0; i < ranges.length; i++) {
             var range = ranges[i];
-            olStyle = getOlStyleFromLiterals(range);
+            var minResolution = range.minResolution !== undefined ?
+                range.minResolution : 0;
+            var maxResolution = range.maxResolution !== undefined ?
+                range.maxResolution : Infinity;
+            olStyle = {
+              olStyle: getOlStyleFromLiterals(range),
+              minResolution: minResolution,
+              maxResolution: maxResolution
+            };
             var key = range.range.toLocaleString();
-            this.styles[range.geomType][key] = olStyle;
+            if (!this.styles[range.geomType][key]) {
+              this.styles[range.geomType][key] = [olStyle];
+            } else {
+              this.styles[range.geomType][key].push(olStyle);
+            }
           }
         }
 
@@ -131,7 +155,19 @@ goog.provide('ga_stylesfromliterals_service');
           return olStyle;
         };
 
-        this.getFeatureStyle = function(feature) {
+        this.getOlStyleForResolution = function(olStyles, resolution) {
+          var i, ii, olStyle;
+          for (i = 0, ii = olStyles.length; i < ii; i++) {
+            olStyle = olStyles[i];
+            if (olStyle.minResolution <= resolution &&
+                olStyle.maxResolution > resolution) {
+              break;
+            }
+          }
+          return olStyle;
+        };
+
+        this.getFeatureStyle = function(feature, resolution) {
           var getGeomTypeFromGeometry = function(olGeometry) {
             if (olGeometry instanceof ol.geom.Point ||
                 olGeometry instanceof ol.geom.MultiPoint) {
@@ -151,12 +187,16 @@ goog.provide('ga_stylesfromliterals_service');
             var properties = feature.getProperties();
             var value = properties[this.key];
             var geomType = getGeomTypeFromGeometry(feature.getGeometry());
-            return this.styles[geomType][value];
+            var olStyles = this.styles[geomType][value];
+            var res = this.getOlStyleForResolution(olStyles, resolution);
+            return res.olStyle;
           } else if (this.type === 'range') {
             var properties = feature.getProperties();
             var value = properties[this.key];
             var geomType = getGeomTypeFromGeometry(feature.getGeometry());
-            return this.findOlStyleInRange(value, geomType);
+            var olStyles = this.findOlStyleInRange(value, geomType);
+            var res = this.getOlStyleForResolution(olStyles, resolution);
+            return res.olStyle;
           }
         };
       }
