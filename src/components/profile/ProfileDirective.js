@@ -14,7 +14,6 @@ goog.require('ga_profile_service');
           gaStyleFactory) {
         return {
           restrict: 'A',
-          replace: true,
           templateUrl: 'components/profile/partials/profile.html',
           scope: {
             feature: '=gaProfile',

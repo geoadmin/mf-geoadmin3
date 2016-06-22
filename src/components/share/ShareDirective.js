@@ -10,16 +10,16 @@ goog.require('ga_permalink');
     'pascalprecht.translate'
   ]);
 
+  /* TODO: remove the use of id */
   function setIframeValue(input) {
-    var previewFrame = angular.element(document).
-                find('#gaEmbedModal iframe')[0];
-              if (previewFrame) {
-                var url = previewFrame.contentWindow.location.href;
-                var frame = input.val();
-                var prFrame = $(frame)[0];
-                prFrame.src = url;
-                input.val(prFrame.outerHTML);
-              }
+    var previewFrame = $('#gaEmbedModal iframe')[0];
+    if (previewFrame) {
+      var url = previewFrame.contentWindow.location.href;
+      var frame = input.val();
+      var prFrame = $(frame)[0];
+      prFrame.src = url;
+      input.val(prFrame.outerHTML);
+    }
   };
 
   module.directive('gaShareCopyInput', function(gaBrowserSniffer, $translate) {
@@ -58,32 +58,43 @@ goog.require('ga_permalink');
         if (!isCopyAllow) {
           element.remove();
         }
-
-        // Use clipboard API to copy URL in OS clipboard
+            // Use clipboard API to copy URL in OS clipboard
         element.on('click', function() {
+          var inputToCopy = $(attrs.gaShareCopyBt);
+          setIframeValue(inputToCopy);
+          inputToCopy[0].setSelectionRange(0, 9999);
 
-            var inputToCopy = $(attrs.gaShareCopyBt);
-            setIframeValue(inputToCopy);
-            inputToCopy[0].setSelectionRange(0, 9999);
-
-            // Execute the copy command
-            var res = $document[0].execCommand('copy');
-            if (res) {
-              scope.isCopied = true;
+          // Execute the copy command
+          var res = $document[0].execCommand('copy');
+          if (res) {
+            scope.isCopied = true;
+            scope.$digest();
+            $timeout(function() {
+              scope.isCopied = false;
               scope.$digest();
-              $timeout(function() {
-                scope.isCopied = false;
-                scope.$digest();
-              }, 5000, false);
-            }
+            }, 5000, false);
+          }
 
-            // Remove the selections - NOTE: the two following lines
-            // do the job for all three browsers
-            $document[0].getSelection().removeAllRanges();
-            $document[0].getSelection().addRange($document[0]
-                .createRange());
+          // Remove the selections - NOTE: the two following lines
+          // do the job for all three browsers
+          $document[0].getSelection().removeAllRanges();
+          $document[0].getSelection().addRange($document[0]
+              .createRange());
         });
 
+      }
+    };
+  });
+
+  module.directive('gaShareInput', function() {
+    return {
+      restrict: 'A',
+      scope: {
+        url: '=gaShareInput',
+        translateId: '&gaShareInputTranslateId'
+      },
+      templateUrl: 'components/share/partials/share-input.html',
+      link: function(scope, element, attrs) {
       }
     };
   });

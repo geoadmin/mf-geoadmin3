@@ -75,8 +75,9 @@ goog.require('ga_urlutils_service');
         callback = function(evt) {
           destroyPopover(evt.target, element);
         };
-        closeBt = $('<button class="close">&times;</button>').on('click',
-            function() {
+        var bt =
+        closeBt = $('<button class="ga-icon ga-btn fa fa-remove"></button>')
+            .on('click', function() {
           destroyPopover(null, element);
         });
       }

@@ -710,6 +710,7 @@ goog.require('ga_permalink');
           ////////////////////////////////////
           // Shorten url stuff
           ////////////////////////////////////
+
           var updateShortenUrl = function(adminId) {
             if (scope.options.noShareUpdate) {
               return;
@@ -737,6 +738,11 @@ goog.require('ga_permalink');
             scope.adminShortenUrl = gaPermalink.getHref().replace(regex, '') +
                 '&adminId=' + adminId;
             scope.userShortenUrl = gaPermalink.getHref();
+            $('#drawShareModal').one('show.bs.modal', function(event) {
+              var modal = $(this);
+              modal.find('#drawShareUserUrl').val(scope.userShortenUrl);
+              modal.find('#drawShareAdminUrl').val(scope.adminShortenUrl);
+            });
           };
 
 

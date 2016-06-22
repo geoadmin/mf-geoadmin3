@@ -258,6 +258,8 @@ goog.require('ga_urlutils_service');
           }
 
           styles = [new ol.style.Style({
+            fill: style.getFill(),
+            stroke: style.getStroke(),
             image: image,
             text: text,
             zIndex: style.getZIndex()

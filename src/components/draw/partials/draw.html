@@ -1,6 +1,3 @@
-<div ng-if="!options.useTemporaryLayer" class="ga-draw-info-save">
-  <span class="ga-success" translate="{{statusMsgId}}"></span>
-</div>
 <div class="ga-draw-buttons">
   <button ng-repeat="tool in options.tools"
           ng-click="toggleTool($event, tool)"
@@ -12,32 +9,38 @@
     <i class="{{tool.cssClass}}"></i>
     <span translate>{{tool.title}}</span>
   </button>
-  <div class="ga-more" ng-show="::!options.noMoreFunctions">
-    <button class="btn btn-default btn-sm dropdown-toggle"
-            data-toggle="dropdown" data-container="body"
-            aria-expanded="false">
-      <span translate>draw_more</span>
-      <span class="caret"></span>
-    </button>
-    <ul class="dropdown-menu" role="menu">
-      <li><a href="" class="btn"
-             ng-disabled="!canExport()"
-             ng-click="exportKml($event)"
-             translate>draw_dl_kml</a></li>
-      <li class="divider"></li>
-      <li><a href="" class="btn"
-             ng-disabled="!canExport()"
-             ng-click="deleteSelectedFeature()"
-             translate>draw_del_selected_features</a>
-      </li>
-      <li><a href="" class="btn"
-             ng-disabled="!canExport()"
-             ng-click="deleteAllFeatures()"
-             translate>draw_del_all_features</a>
-      </li>
-    </ul>
-  </div>
 </div>
+<div ng-if="!options.useTemporaryLayer" class="ga-draw-info-save">
+  <span class="ga-success" translate="{{statusMsgId}}"></span>
+</div>
+<hr>
+<div class="ga-more" ng-show="::!options.noMoreFunctions">
+  <ul class="list-inline row">
+    <li class="col-sm-4 col-xs-4 vr">
+      <a href="" class="btn"
+         ng-disabled="!canExport()"
+         ng-click="deleteAllFeatures()"
+         translate>draw_delete</a>
+    </li>
+    <li class="col-sm-4 col-xs-4 vr">
+      <a href="" class="btn"
+         ng-disabled="!canExport()"
+         ng-click="exportKml($event)"
+         translate>export_kml</a>
+    </li>
+    <li class="col-sm-4 col-xs-4">
+      <a href="" class="btn"
+         data-toggle="modal"
+         data-target="#drawShareModal"
+         ng-disabled="!canExport()"
+         translate>share</a>
+    </li>
+  </ul>
+</div>
+<hr>
+<div class="ga-draw-disclaimer" ng-if="!options.useTemporaryLayer" translate>share_file_disclaimer</div>
+
+<!-- POPUP FOR PROFILE/MEASURE/STYLE UPDATE -->
 <div ng-if="::!options.noStyleUpdate">
   <div class="ga-draw-popup"
        ga-popup="options.popupToggle"
@@ -163,34 +166,4 @@
          ga-profile-options="options.profileOptions"></div>
   </div>
 </div>
-<div class="ga-draw-interaction-share" ng-if="adminShortenUrl">
-  <div class="ga-share-permalink">
-    <div class="form-group">
-      <label translate>{{'draw_share_user_link'}}:</label>
-      <div class="input-group input-group-sm">
-        <input type="text" ng-model="userShortenUrl" class="form-control"
-               ga-share-copy-input data-placement="top">
-        <span class="input-group-btn">
-          <button class="btn btn-default"
-                  ga-share-copy-bt=".ga-share-permalink input[ng-model=userShortenUrl]">
-          </button>
-        </span>
-      </div>
-    </div>
-    <div class="form-group">
-      <label translate>{{'draw_share_admin_link'}}:</label>
-      <div class="input-group input-group-sm">
-        <input type="text" ng-model="adminShortenUrl" class="form-control"
-               ga-share-copy-input data-placement="top">
-        <span class="input-group-btn">
-          <button class="btn btn-default"
-                  ga-share-copy-bt=".ga-share-permalink input[ng-model=adminShortenUrl]">
-          </button>
-        </span>
-      </div>
-    </div>
-
-  </div>
-</div>
-<div class="ga-draw-disclaimer" ng-if="!options.useTemporaryLayer" translate>share_file_disclaimer</div>
 
