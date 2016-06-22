@@ -4,7 +4,8 @@ goog.require('ga_translation_service');
 (function() {
 
   var module = angular.module('ga_shop_service', [
-    'ga_translation_service'
+    'ga_translation_service',
+    'ga_browsersniffer_service'
   ]);
 
   /**
@@ -16,7 +17,8 @@ goog.require('ga_translation_service');
     var WIN_MAP_REG = new RegExp('^' + WIN_MAP_PREFIX + '(.*)$');
     var winShop;
 
-    this.$get = function($q, $window, gaGlobalOptions, gaLang, $http) {
+    this.$get = function($q, $window, $http, gaBrowserSniffer, gaGlobalOptions,
+        gaLang) {
       var priceUrl = gaGlobalOptions.shopUrl +
           '/shop-server/resources/products/price?';
       var clipper = {
@@ -68,16 +70,23 @@ goog.require('ga_translation_service');
             return;
           }
           var sessionId;
+          // If the map viewer is opened from the shop, the session id is set
+          // in its name.
+          // ex: map-toposhop-MonApr112016093724GMT0200(CEST)
           if ($window.name && WIN_MAP_REG.test($window.name)) {
             sessionId = $window.name.match(WIN_MAP_REG)[1];
+            winShop = $window.opener;
           }
 
-          // If the map viewer has been opened by a shop window
-          if (sessionId && $window.opener) {
-            $window.opener.close();
-          }
           if (winShop) {
+            // WARNING: Scripts don't allow to close the window if the window
+            // hasn't been opened by it. FF and Chrome simply ignore it.
+            // IE displays an alert message.
             winShop.close();
+          } else if (gaBrowserSniffer.msie) {
+            // The following hack allow IE to close a window which has not been
+            // opened by a script and remove the display of the alert message.
+            $window.open('', '_self', '');
           }
           sessionId = sessionId || new Date();
           var url = gaGlobalOptions.shopUrl + '/' + gaLang.get() +
