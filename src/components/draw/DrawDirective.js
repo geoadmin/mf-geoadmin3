@@ -704,11 +704,14 @@ goog.require('ga_permalink');
           ////////////////////////////////////
           // Show share modal
           ////////////////////////////////////
+          scope.canShare = function() {
+            return layer && layer.adminId;
+          };
           scope.share = function(evt) {
             if (evt.currentTarget.attributes.disabled) {
               return;
             }
-            $rootScope.$broadcast('gaDrawShareActive', layer);
+            $rootScope.$broadcast('gaShareDrawActive', layer);
           };
 
           ////////////////////////////////////
