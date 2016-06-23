@@ -5,6 +5,7 @@ goog.require('ga_filestorage_service');
 goog.require('ga_map_service');
 goog.require('ga_measure_service');
 goog.require('ga_permalink');
+
 (function() {
 
   var module = angular.module('ga_draw_directive', [
@@ -266,8 +267,6 @@ goog.require('ga_permalink');
             // layer
             layer = createDefaultLayer(map, useTemporaryLayer);
             if (!useTemporaryLayer) {
-              scope.adminShortenUrl = undefined;
-              scope.userShortenUrl = undefined;
 
               // If there is a layer loaded from public.admin.ch, we use it for
               // modification.
@@ -312,9 +311,6 @@ goog.require('ga_permalink');
             }
             defineLayerToModify();
 
-            if (layer.adminId) {
-              updateShortenUrl(layer.adminId);
-            }
             ol.Observable.unByKey(unLayerAdd);
             ol.Observable.unByKey(unLayerRemove);
             while (unWatch.length) {
@@ -376,12 +372,6 @@ goog.require('ga_permalink');
             unWatch.push(scope.$watch('options.popupToggle', function(active) {
               if (!active) {
                 select.getFeatures().clear();
-              }
-            }));
-
-            unWatch.push(scope.$on('gaPermalinkChange', function() {
-              if (layer.adminId) {
-                updateShortenUrl(layer.adminId);
               }
             }));
           };
@@ -664,6 +654,9 @@ goog.require('ga_permalink');
           // More... button functions
           ///////////////////////////////////
           scope.exportKml = function(evt) {
+            if (evt.currentTarget.attributes.disabled) {
+              return;
+            }
             gaExportKml.createAndDownload(layer, map.getView().getProjection());
             evt.preventDefault();
           };
@@ -684,7 +677,10 @@ goog.require('ga_permalink');
             }
           };
           // Delete all features of the layer
-          scope.deleteAllFeatures = function() {
+          scope.deleteAllFeatures = function(evt) {
+            if (evt.currentTarget.attributes.disabled) {
+              return;
+            }
             if (confirm($translate.instant('confirm_remove_all_features'))) {
               select.getFeatures().clear();
               layer.getSource().clear();
@@ -693,8 +689,6 @@ goog.require('ga_permalink');
                 gaFileStorage.del(layer.adminId).then(function() {
                   layer.adminId = undefined;
                   layer.url = undefined;
-                  scope.adminShortenUrl = undefined;
-                  scope.userShortenUrl = undefined;
                 });
               }
               map.removeLayer(layer);
@@ -708,44 +702,14 @@ goog.require('ga_permalink');
 
 
           ////////////////////////////////////
-          // Shorten url stuff
+          // Show share modal
           ////////////////////////////////////
-
-          var updateShortenUrl = function(adminId) {
-            if (scope.options.noShareUpdate) {
+          scope.share = function(evt) {
+            if (evt.currentTarget.attributes.disabled) {
               return;
             }
-            // For now we pass the long permalink otherwoise we need to
-            // regenerate the permalink on each map interaction
-            /*$http.get(scope.options.shortenUrl, {
-              params: {
-                url: gaPermalink.getHref().replace(
-                    gaUrlUtils.encodeUriQuery(layer.id, true), '') +
-                    '&adminId=' + adminId
-              }
-            }).success(function(data) {
-              scope.adminShortenUrl = data.shorturl;
-            });
-            $http.get(scope.options.shortenUrl, {
-              params: {
-                url: gaPermalink.getHref()
-              }
-            }).success(function(data) {
-              scope.userShortenUrl = data.shorturl;
-            });*/
-            var regex = new RegExp(',{0,1}' +
-                gaUrlUtils.encodeUriQuery(layer.id, true));
-            scope.adminShortenUrl = gaPermalink.getHref().replace(regex, '') +
-                '&adminId=' + adminId;
-            scope.userShortenUrl = gaPermalink.getHref();
-            $('#drawShareModal').one('show.bs.modal', function(event) {
-              var modal = $(this);
-              modal.find('#drawShareUserUrl').val(scope.userShortenUrl);
-              modal.find('#drawShareAdminUrl').val(scope.adminShortenUrl);
-            });
+            $rootScope.$broadcast('gaDrawShareActive', layer);
           };
-
-
 
           ////////////////////////////////////
           // Popup content management
@@ -901,10 +865,6 @@ goog.require('ga_permalink');
                 layer.adminId = data.adminId;
                 layer.url = data.fileUrl;
                 layer.id = 'KML||' + layer.url;
-              }
-
-              if (!scope.adminShortenUrl) {
-                updateShortenUrl(layer.adminId);
               }
             });
           };

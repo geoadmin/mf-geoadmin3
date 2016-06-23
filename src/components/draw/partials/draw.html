@@ -19,7 +19,7 @@
     <li class="col-sm-4 col-xs-4 vr">
       <a href="" class="btn"
          ng-disabled="!canExport()"
-         ng-click="deleteAllFeatures()"
+         ng-click="deleteAllFeatures($event)"
          translate>draw_delete</a>
     </li>
     <li class="col-sm-4 col-xs-4 vr">
@@ -30,9 +30,8 @@
     </li>
     <li class="col-sm-4 col-xs-4">
       <a href="" class="btn"
-         data-toggle="modal"
-         data-target="#drawShareModal"
          ng-disabled="!canExport()"
+         ng-click="share($event)"
          translate>share</a>
     </li>
   </ul>

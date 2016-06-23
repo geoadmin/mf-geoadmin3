@@ -29,7 +29,7 @@ goog.provide('ga_modal_directive');
    * This directive doesn't have its own isolated scope, and it effectively
    * writes to its parent's scope when the modal is shown or hidden.
    */
-  module.directive('gaModalShow', function($parse) {
+  module.directive('gaModalShow', function($parse, $rootScope) {
     return {
       restrict: 'A',
       link: function(scope, element, attrs) {
@@ -43,6 +43,7 @@ goog.provide('ga_modal_directive');
         if (setter) {
           element.on('hide.bs.modal show.bs.modal', function(e) {
             setter(scope, e.type == 'show' ? true : false);
+            scope.$applyAsync();
           });
         }
       }
