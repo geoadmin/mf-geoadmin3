@@ -3,22 +3,18 @@
   border-top: #e9e9e9 1px solid;
   padding: 5px;
 
-  .ga-shop-order {
-    height: auto;
-
-    @media (max-width: @screen-phone) {
-      option[value="string:rectangle"] {
-        display: none;
-      }
+  @media (max-width: @screen-phone) {
+    option[value="string:rectangle"] {
+      display: none;
     }
+  }
 
-    button, select {
-      display: block;
-      float: none;
-      max-width: 100%;
-      margin: 5px 0;
-      width: 100%;
-    }
+  .ga-order-bt, select {
+    display: block;
+    float: none;
+    max-width: 100%;
+    margin: 5px 0;
+    width: 100%;
   }
 
   .ga-shop-not-available {
