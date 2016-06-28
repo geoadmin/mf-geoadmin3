@@ -24,218 +24,195 @@ goog.require('ga_styles_service');
     var white = [255, 255, 255];
     var black = [0, 0, 0];
 
-    $scope.options = $scope.options || {};
-    $scope.options.shortenUrl = gaGlobalOptions.apiUrl + '/shorten.json';
-    $scope.options.colorUrl = gaGlobalOptions.apiUrl + '/color/';
+    var options = {
 
-    // Add popup options
-    $scope.options.popupOptions = {
-      title: '',
-      container: 'body',
-      position: 'bottom-left'
-    };
-
-    // Add measure options
-    $scope.options.measureOptions = {};
-
-    // Add profile options
-    $scope.options.profileOptions = {
-      xLabel: 'profile_x_label',
-      yLabel: 'profile_y_label',
-      margin: {
-         top: 6,
-         right: 20,
-         bottom: 45,
-         left: 60
+      popupOptions: {
+        title: '',
+        container: 'body',
+        position: 'bottom-left'
       },
-      elevationModel: gaGlobalOptions.defaultElevationModel
+
+      measureOptions: {},
+
+      profileOptions: {
+        xLabel: 'profile_x_label',
+        yLabel: 'profile_y_label',
+        margin: {
+           top: 6,
+           right: 20,
+           bottom: 45,
+           left: 60
+        },
+        elevationModel: gaGlobalOptions.defaultElevationModel
+      },
+
+      // Defines directive options
+      showExport: true,
+      broadcastLayer: false,
+      useTemporaryLayer: false,
+      translate: $translate, // For translation of ng-options
+
+      // Draw style directive options
+      name: '',
+      description: '',
+      font: gaStyleFactory.FONT,
+      colors: [
+        {name: 'black', fill: [0, 0, 0], border: 'white'},
+        {name: 'blue', fill: [0, 0, 255], border: 'white'},
+        {name: 'gray', fill: [128, 128, 128], border: 'white'},
+        {name: 'green', fill: [0, 128, 0], border: 'white'},
+        {name: 'orange', fill: [255, 165, 0], border: 'black'},
+        {name: 'red', fill: [255, 0, 0], border: 'white'},
+        {name: 'white', fill: [255, 255, 255], border: 'black'},
+        {name: 'yellow', fill: [255, 255, 0], border: 'black'}
+      ],
+      iconSizes: [
+        {label: 'small_size', value: [24, 24], scale: 0.5},
+        {label: 'medium_size', value: [36, 36], scale: 0.75},
+        {label: 'big_size', value: [48, 48], scale: 1}
+      ],
+      icons: [
+          // Basics
+          {id: 'marker'},
+          {id: 'circle'},
+          {id: 'square'},
+          {id: 'triangle'},
+          {id: 'star'},
+          {id: 'star-stroked'},
+          {id: 'marker-stroked'},
+          {id: 'circle-stroked'},
+          {id: 'square-stroked'},
+          {id: 'triangle-stroked'},
+          {id: 'cross'},
+          {id: 'disability'},
+          {id: 'danger'},
+
+          // Shops
+          {id: 'art-gallery'},
+          {id: 'alcohol-shop'},
+          {id: 'bakery'},
+          {id: 'bank'},
+          {id: 'bar'},
+          {id: 'beer'},
+          {id: 'cafe'},
+          {id: 'cinema'},
+          {id: 'commercial'},
+          {id: 'clothing-store'},
+          {id: 'grocery'},
+          {id: 'fast-food'},
+          {id: 'hairdresser'},
+          {id: 'fuel'},
+          {id: 'laundry'},
+          {id: 'library'},
+          {id: 'lodging'},
+          {id: 'pharmacy'},
+          {id: 'restaurant'},
+          {id: 'shop'},
+
+          // Transport
+          {id: 'airport'},
+          {id: 'bicycle'},
+          {id: 'bus'},
+          {id: 'car'},
+          {id: 'ferry'},
+          {id: 'london-underground'},
+          {id: 'rail'},
+          {id: 'rail-above'},
+          {id: 'rail-light'},
+          {id: 'rail-metro'},
+          {id: 'rail-underground'},
+          {id: 'scooter'},
+
+          // Sport
+          {id: 'america-football'},
+          {id: 'baseball'},
+          {id: 'basketball'},
+          {id: 'cricket'},
+          {id: 'golf'},
+          {id: 'skiing'},
+          {id: 'soccer'},
+          {id: 'swimming'},
+          {id: 'tennis'},
+
+          // Places
+          {id: 'airfield'},
+          {id: 'building'},
+          {id: 'campsite'},
+          {id: 'cemetery'},
+          {id: 'city'},
+          {id: 'college'},
+          {id: 'dog-park'},
+          {id: 'embassy'},
+          {id: 'farm'},
+          {id: 'fire-station'},
+          {id: 'garden'},
+          {id: 'harbor'},
+          {id: 'heliport'},
+          {id: 'hospital'},
+          {id: 'industrial'},
+          {id: 'land-use'},
+          {id: 'lighthouse'},
+          {id: 'monument'},
+          {id: 'minefield'},
+          {id: 'museum'},
+          {id: 'oil-well'},
+          {id: 'park2'},
+          {id: 'park'},
+          {id: 'parking'},
+          {id: 'parking-garage'},
+          {id: 'pitch'},
+          {id: 'place-of-worship'},
+          {id: 'playground'},
+          {id: 'police'},
+          {id: 'polling-place'},
+          {id: 'post'},
+          {id: 'religious-christian'},
+          {id: 'religious-jewish'},
+          {id: 'religious-muslim'},
+          {id: 'prison'},
+          {id: 'school'},
+          {id: 'slaughterhouse'},
+          {id: 'theatre'},
+          {id: 'toilets'},
+          {id: 'town'},
+          {id: 'town-hall'},
+          {id: 'village'},
+          {id: 'warehouse'},
+          {id: 'wetland'},
+          {id: 'zoo'},
+
+
+          {id: 'camera'},
+          {id: 'chemist'},
+          {id: 'dam'},
+          {id: 'emergency-telephone'},
+          {id: 'entrance'},
+          {id: 'heart'},
+          {id: 'logging'},
+          {id: 'mobilephone'},
+          {id: 'music'},
+          {id: 'roadblock'},
+          {id: 'rocket'},
+          {id: 'suitcase'},
+          {id: 'telephone'},
+          {id: 'waste-basket'},
+          {id: 'water'}
+      ]
     };
 
-    // Defines directive options
-    $scope.options.showExport = angular.isDefined($scope.options.showExport) ?
-        $scope.options.showExport : true;
+    // We use options provided by parent controller.
+    $scope.options = angular.extend(options, $scope.options || {});
 
-    $scope.options.broadcastLayer = $scope.options.broadcastLayer || false;
+    // Set default options for draw style directive.
+    $scope.options.color = $scope.options.colors[5];
+    $scope.options.textColor = $scope.options.colors[5];
+    $scope.options.iconColor = $scope.options.colors[5];
+    $scope.options.icon = $scope.options.icons[0];
+    $scope.options.iconSize = $scope.options.iconSizes[2];
 
-    $scope.options.useTemporaryLayer = $scope.options.useTemporaryLayer ||
-        false;
-
-    $scope.options.translate = $translate; // For translation of ng-options
-
-    $scope.options.name = '';
-
-    $scope.options.description = '';
-
-    $scope.options.font = gaStyleFactory.FONT;
-
-    $scope.options.colors = [
-      {name: 'black', fill: [0, 0, 0], border: 'white'},
-      {name: 'blue', fill: [0, 0, 255], border: 'white'},
-      {name: 'gray', fill: [128, 128, 128], border: 'white'},
-      {name: 'green', fill: [0, 128, 0], border: 'white'},
-      {name: 'orange', fill: [255, 165, 0], border: 'black'},
-      {name: 'red', fill: [255, 0, 0], border: 'white'},
-      {name: 'white', fill: [255, 255, 255], border: 'black'},
-      {name: 'yellow', fill: [255, 255, 0], border: 'black'}
-    ];
-
-    $scope.options.iconSizes = [
-      {label: 'small_size', value: [24, 24], scale: 0.5},
-      {label: 'medium_size', value: [36, 36], scale: 0.75},
-      {label: 'big_size', value: [48, 48], scale: 1}
-    ];
-
-    $scope.options.icons = [
-
-        // Basics
-        {id: 'marker'},
-        {id: 'circle'},
-        {id: 'square'},
-        {id: 'triangle'},
-        {id: 'star'},
-        {id: 'star-stroked'},
-        {id: 'marker-stroked'},
-        {id: 'circle-stroked'},
-        {id: 'square-stroked'},
-        {id: 'triangle-stroked'},
-        {id: 'cross'},
-        {id: 'disability'},
-        {id: 'danger'},
-
-        // Shops
-        {id: 'art-gallery'},
-        {id: 'alcohol-shop'},
-        {id: 'bakery'},
-        {id: 'bank'},
-        {id: 'bar'},
-        {id: 'beer'},
-        {id: 'cafe'},
-        {id: 'cinema'},
-        {id: 'commercial'},
-        {id: 'clothing-store'},
-        {id: 'grocery'},
-        {id: 'fast-food'},
-        {id: 'hairdresser'},
-        {id: 'fuel'},
-        {id: 'laundry'},
-        {id: 'library'},
-        {id: 'lodging'},
-        {id: 'pharmacy'},
-        {id: 'restaurant'},
-        {id: 'shop'},
-
-        // Transport
-        {id: 'airport'},
-        {id: 'bicycle'},
-        {id: 'bus'},
-        {id: 'car'},
-        {id: 'ferry'},
-        {id: 'london-underground'},
-        {id: 'rail'},
-        {id: 'rail-above'},
-        {id: 'rail-light'},
-        {id: 'rail-metro'},
-        {id: 'rail-underground'},
-        {id: 'scooter'},
-
-        // Sport
-        {id: 'america-football'},
-        {id: 'baseball'},
-        {id: 'basketball'},
-        {id: 'cricket'},
-        {id: 'golf'},
-        {id: 'skiing'},
-        {id: 'soccer'},
-        {id: 'swimming'},
-        {id: 'tennis'},
-
-        // Places
-        {id: 'airfield'},
-        {id: 'building'},
-        {id: 'campsite'},
-        {id: 'cemetery'},
-        {id: 'city'},
-        {id: 'college'},
-        {id: 'dog-park'},
-        {id: 'embassy'},
-        {id: 'farm'},
-        {id: 'fire-station'},
-        {id: 'garden'},
-        {id: 'harbor'},
-        {id: 'heliport'},
-        {id: 'hospital'},
-        {id: 'industrial'},
-        {id: 'land-use'},
-        {id: 'lighthouse'},
-        {id: 'monument'},
-        {id: 'minefield'},
-        {id: 'museum'},
-        {id: 'oil-well'},
-        {id: 'park2'},
-        {id: 'park'},
-        {id: 'parking'},
-        {id: 'parking-garage'},
-        {id: 'pitch'},
-        {id: 'place-of-worship'},
-        {id: 'playground'},
-        {id: 'police'},
-        {id: 'polling-place'},
-        {id: 'post'},
-        {id: 'religious-christian'},
-        {id: 'religious-jewish'},
-        {id: 'religious-muslim'},
-        {id: 'prison'},
-        {id: 'school'},
-        {id: 'slaughterhouse'},
-        {id: 'theatre'},
-        {id: 'toilets'},
-        {id: 'town'},
-        {id: 'town-hall'},
-        {id: 'village'},
-        {id: 'warehouse'},
-        {id: 'wetland'},
-        {id: 'zoo'},
-
-
-        {id: 'camera'},
-        {id: 'chemist'},
-        {id: 'dam'},
-        {id: 'emergency-telephone'},
-        {id: 'entrance'},
-        {id: 'heart'},
-        {id: 'logging'},
-        {id: 'mobilephone'},
-        {id: 'music'},
-        {id: 'roadblock'},
-        {id: 'rocket'},
-        {id: 'suitcase'},
-        {id: 'telephone'},
-        {id: 'waste-basket'},
-        {id: 'water'}
-    ];
-
-    $scope.options.setDefaultValues = function() {
-      // Set default color
-      $scope.options.color = $scope.options.colors[5];
-
-      // Set default text color
-      $scope.options.textColor = $scope.options.colors[5];
-
-      // Set default text color
-      $scope.options.iconColor = $scope.options.colors[5];
-
-      // Set default icon
-      $scope.options.icon = $scope.options.icons[0];
-
-      // Set default icon size
-      $scope.options.iconSize = $scope.options.iconSizes[2];
-
-    };
-    $scope.options.setDefaultValues();
-
-    // Return the icon url with the good color
-    $scope.getIconUrl = function(icon) {
-      return $scope.options.colorUrl +
+    // Return the icon url with the good color.
+    var getIconUrl = function(icon) {
+      return gaGlobalOptions.apiUrl + '/color/' +
           $scope.options.iconColor.fill.toString() + '/' + icon.id +
           '-24@2x.png';
     };
@@ -283,7 +260,7 @@ goog.require('ga_styles_service');
       if (icon instanceof ol.style.Icon &&
           angular.isDefined(properties.icon)) {
         icon = new ol.style.Icon({
-          src: $scope.getIconUrl(properties.icon),
+          src: getIconUrl(properties.icon),
           scale: properties.iconSize.scale
         });
       }
@@ -314,7 +291,7 @@ goog.require('ga_styles_service');
         new ol.style.Style({
           text: textStyle,
           image: new ol.style.Icon({
-            src: $scope.getIconUrl($scope.options.icon),
+            src: getIconUrl($scope.options.icon),
             scale: $scope.options.iconSize.scale
           }),
           zIndex: gaStyleFactory.ZICON
@@ -464,8 +441,7 @@ goog.require('ga_styles_service');
           type: 'Point',
           style: markerDrawStyleFunc
         },
-        style: markerDrawStyleFunc,
-        useIconStyle: true
+        style: markerDrawStyleFunc
       }, {
         id: 'annotation',
         cssClass: 'fa fa-ga-add-text',

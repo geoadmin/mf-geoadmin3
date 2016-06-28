@@ -52,53 +52,6 @@ goog.require('ga_permalink');
         dfltLayer.type = 'KML';
         return dfltLayer;
       };
-      // Find the corresponding style
-      var findIcon = function(olIcon, icons) {
-        var id = olIcon.getSrc();
-        for (var i = 0; i < icons.length; i++) {
-          var regex = new RegExp('/' + icons[i].id + '-24');
-          if (regex.test(id)) {
-            return icons[i];
-          }
-        }
-        return icons[0];
-      };
-
-      var findIconSize = function(olIcon, iconSizes) {
-        var scale = olIcon.getScale();
-        for (var i = 0; i < iconSizes.length; i++) {
-          if (scale == iconSizes[i].scale) {
-            return iconSizes[i];
-          }
-        }
-        return iconSizes[2];
-      };
-
-      var findIconColor = function(olIcon, colors) {
-        var url = olIcon.getSrc();
-        // Test if the url use the color service
-        var colorReg = /\/([0-9]{1,3},[0-9]{1,3},[0-9]{1,3})\//;
-        var rgb = url.match(colorReg);
-        if (rgb) {
-          for (var i = 0; i < colors.length; i++) {
-            if (colors[i].fill.toString() == rgb[1].toString()) {
-              return colors[i];
-            }
-          }
-        }
-        // Red
-        return colors[5];
-      };
-
-      var findColor = function(olColor, colors) {
-        var rgb = ol.color.asString(olColor.slice(0, 3));
-        for (var i = 0; i < colors.length; i++) {
-          if (rgb == ol.color.asString(colors[i].fill)) {
-            return colors[i];
-          }
-        }
-        return colors[5];
-      };
 
       // Creates a new help tooltip
       var createHelpTooltip = function() {
@@ -192,7 +145,7 @@ goog.require('ga_permalink');
           var helpTooltip, distTooltip, areaTooltip;
           var map = scope.map;
           var viewport = $(map.getViewport());
-          scope.isPropsActive = true;
+          scope.isPropsActive = false;
           scope.isMeasureActive = false;
           scope.options.isProfileActive = false;
           scope.statusMsgId = '';
@@ -233,7 +186,6 @@ goog.require('ga_permalink');
             // Apply the select style
             var styles = scope.options.selectStyleFunction(evt.element);
             evt.element.setStyle(styles);
-            updatePropsTabContent();
             togglePopup(evt.element);
           });
           select.getFeatures().on('remove', function(evt) {
@@ -241,7 +193,10 @@ goog.require('ga_permalink');
             var styles = evt.element.getStyle();
             styles.pop();
             evt.element.setStyle(styles);
-            updatePropsTabContent();
+            scope.isPropsActive = false;
+            scope.isMeasureActive = false;
+            scope.options.isProfileActive = false;
+
             togglePopup();
           });
           select.setActive(false);
@@ -332,42 +287,6 @@ goog.require('ga_permalink');
               return false;
             });
             select.setActive(true);
-
-            // Active watchers
-            // Update selected feature's style when the user change a value
-            unWatch.push(scope.$watchGroup([
-              'options.useTextStyle',
-              'options.icon',
-              'options.iconSize',
-              'options.color',
-              'options.textColor',
-              'options.iconColor',
-              'options.name',
-              'options.description'
-            ], function() {
-              if (select.getActive()) {
-                var feature = select.getFeatures().item(0);
-                if (feature) {
-                  // Update the style of the feature with the current style
-                  var styles = scope.options.updateStyle(feature, {
-                    name: (scope.options.useTextStyle) ?
-                        scope.options.name : undefined,
-                    description: scope.options.description,
-                    color: scope.options.color,
-                    font: scope.options.font,
-                    textColor: (scope.options.useTextStyle) ?
-                        scope.options.textColor : undefined,
-                    iconColor: scope.options.iconColor,
-                    icon: scope.options.icon,
-                    iconSize: scope.options.iconSize
-                  });
-                  feature.setStyle(styles);
-                  // then apply the select style
-                  styles = scope.options.selectStyleFunction(feature);
-                  feature.setStyle(styles);
-                }
-              }
-            }));
 
             unWatch.push(scope.$watch('options.popupToggle', function(active) {
               if (!active) {
@@ -595,6 +514,7 @@ goog.require('ga_permalink');
             }
           });
 
+
           ///////////////////////////////////
           // Tools managment
           ///////////////////////////////////
@@ -611,7 +531,6 @@ goog.require('ga_permalink');
             for (var i = 0, ii = tools.length; i < ii; i++) {
               scope.options[tools[i].activeKey] = (tools[i].id == tool.id);
             }
-            scope.options.setDefaultValues();
             activateDrawInteraction(lastActiveTool);
 
             // The snap interaction must be added after modify and draw
@@ -647,7 +566,6 @@ goog.require('ga_permalink');
           scope.aToolIsActive = function() {
             return !!lastActiveTool;
           };
-
 
 
           ///////////////////////////////////
@@ -700,7 +618,6 @@ goog.require('ga_permalink');
           };
 
 
-
           ////////////////////////////////////
           // Show share modal
           ////////////////////////////////////
@@ -713,6 +630,7 @@ goog.require('ga_permalink');
             }
             $rootScope.$broadcast('gaShareDrawActive', layer);
           };
+
 
           ////////////////////////////////////
           // Popup content management
@@ -741,57 +659,8 @@ goog.require('ga_permalink');
               scope.options.popupToggle = false;
               scope.options.popupOptions.title = popupTitlePrefix + 'feature';
             }
+            scope.$applyAsync();
           };
-
-          // Determines which elements to display in the feature's propereties
-          // tab
-          var updatePropsTabContent = function() {
-            if (scope.options.noStyleUpdate) {
-              return;
-            }
-            // The select interaction selects only one feature
-            var feature = select.getFeatures().item(0);
-            var useTextStyle = false;
-            var useIconStyle = false;
-            var useColorStyle = false;
-            if (feature) {
-              var styles = feature.getStyleFunction()();
-              var featStyle = styles[0];
-              if (featStyle.getImage() instanceof ol.style.Icon) {
-                useIconStyle = true;
-                var img = featStyle.getImage();
-                scope.options.icon = findIcon(img, scope.options.icons);
-                scope.options.iconSize = findIconSize(img,
-                    scope.options.iconSizes);
-                scope.options.iconColor = findIconColor(img,
-                    scope.options.colors);
-              }
-              if (!useIconStyle && featStyle.getStroke()) {
-                useColorStyle = true;
-                scope.options.color = findColor(
-                    featStyle.getStroke().getColor(),
-                    scope.options.colors);
-              }
-              if (featStyle.getText()) {
-                useTextStyle = true;
-                scope.options.name = featStyle.getText().getText();
-                scope.options.textColor = findColor(
-                    featStyle.getText().getFill().getColor(),
-                    scope.options.colors);
-              }
-
-              scope.options.name = feature.get('name') || '';
-              scope.options.description = feature.get('description') || '';
-            } else {
-              scope.options.name = '';
-              scope.options.description = '';
-            }
-            scope.options.useTextStyle = useTextStyle;
-            scope.useIconStyle = useIconStyle;
-            scope.useColorStyle = useColorStyle;
-            scope.$evalAsync();
-          };
-
 
 
           ////////////////////////////////////
@@ -842,8 +711,6 @@ goog.require('ga_permalink');
             }
             return (!isPoint && !gaMapUtils.isMeasureFeature(feature));
           };
-
-
 
 
           ////////////////////////////////////
