@@ -1,0 +1,107 @@
+[ga-draw-style] {
+  width: 100%;
+ 
+  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
+    .ga-icons, .ga-choose-icon {
+      width: 100%;
+      height: auto;
+    }
+  }
+     
+  label {
+    display: block;
+  }
+
+  .popover-content {
+    max-height: 200px;
+  }
+  
+  /* Generic css for custom select box */  
+  .ga-select-box {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid lightgray;
+    border-radius: 2px;
+    padding: unit(@ga-select-box-padding, px);
+    transition: height 0.5s ease;
+             
+    button {
+      position: absolute;
+      top: 0px;
+      right: 0px;
+      .transition-transform(0.5s ease);
+    }
+
+    > :not(button) {
+      display: inline-block;
+      cursor: pointer;
+      margin: 2px;
+          
+      &:hover {
+        background-color: #e9e9e9;
+      }
+
+      &.ga-selected, &.ga-selected:hover {
+        background-color: darkgray;
+        cursor: default;
+      }
+    }
+  }
+  .ga-select-box-open {
+    button {
+      .rotate(180deg);
+    }
+  }
+
+  .ga-select-icons {
+    .ga-item-size(36, 36, 5, 114, 38, 0);
+
+    i {
+      padding-top: 2px;
+    }
+  }
+
+  .ga-select-colors {
+    padding-left: 6px;
+    padding-right: 6px;
+    .ga-item-size(24, 24, 8, 8, 2, 6);
+    
+    [style] {
+       width: 20px;
+       height: 20px;
+       margin: 2px;
+       border-radius: 10px; 
+    }
+  }
+  
+  .ga-icon-draw {
+    font-size: 32px;
+    text-align: center;
+  }
+
+  .fa-caret-down {
+    color: black;
+  }
+  
+  /* Hide the content of popover before the first opening */
+  .ga-popover-content {
+    scale: 0;
+  }
+
+  .popover-content .ga-popover-content {
+    scale: 1;
+  }
+  
+  button {
+    width: 44px;
+    height: 34px;
+    margin-left: 5px; 
+    float: right;
+  }
+
+  .fa-ga-marker {      
+   
+    font-size: 1.5em;
+  }
+}
+

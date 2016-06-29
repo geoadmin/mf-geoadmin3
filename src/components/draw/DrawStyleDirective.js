@@ -4,7 +4,7 @@ goog.provide('ga_drawstyle_directive');
 
   var module = angular.module('ga_drawstyle_directive', []);
 
-  module.directive('gaDrawStyle', function() {
+  module.directive('gaDrawStyle', function($document, $window, $translate) {
 
     // Find the corresponding style
     var findIcon = function(olIcon, icons) {
@@ -146,11 +146,49 @@ goog.provide('ga_drawstyle_directive');
           }
         }));
 
-        scope.openIcons = function() {
-         $('.lala').popover({
-            html: true,
-            content: $('.lala2')[0]
-          });
+        // Open the popover with style inside
+        var win = $($window);
+        scope.toggleStyle = function(evt) {
+          var bt = $(evt.currentTarget);
+
+          if (!bt.data('bs.popover')) {
+
+            var closePopover = function(evt) {
+              // Don't
+              if (bt.is(evt.target)) {
+                return;
+              }
+              bt.popover('hide');
+            };
+
+            var content = $(bt.data('target')).on('click', function(evt) {
+              // Avoid to close the popup when we click inside the popover
+              // content
+              evt.stopPropagation();
+            });
+
+            bt.popover({
+              html: true,
+              placement: function() {
+                return win.width() < 340 ? 'top' : 'auto right';
+              },
+              content: content[0]
+              //title: $translate.instant('style') +
+              //    '<button class="ga-icon ga-btn fa fa-remove"></button>'
+            });
+
+            // Close popover on outside popover mouse event
+            bt.on('show.bs.popover', function() {
+              element.on('scroll', closePopover);
+              $document.on('click', closePopover);
+              win.on('resize', closePopover);
+            }).on('hide.bs.popover', function() {
+              element.off('scroll', closePopover);
+              $document.off('click', closePopover);
+              win.off('resize', closePopover);
+            });
+          }
+          bt.popover('toggle');
         };
       }
     };

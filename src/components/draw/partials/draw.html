@@ -13,7 +13,7 @@
 <div ng-if="!options.useTemporaryLayer" class="ga-draw-info-save">
   <span class="ga-success" translate="{{statusMsgId}}"></span>
 </div>
-<hr>
+<hr ng-show="::!options.noMoreFunctions">
 <div class="ga-more" ng-show="::!options.noMoreFunctions">
   <ul class="list-inline row">
     <li class="col-sm-4 col-xs-4 vr">
@@ -55,12 +55,12 @@
            ng-class="{'ga-active': isPropsActive}"
            translate>draw_type_marker</a>
       </li>
-      <li ng-show="showMeasureTab(feature)">
+      <!--li ng-show="showMeasureTab(feature)">
         <a href=""
            ng-click="activeTabProfile()"
            ng-class="{'ga-active': options.isProfileActive}"
            translate>draw_show_profile</a>
-      </li>
+      </li-->
       <li ng-show="showProfileTab(feature)">
         <a href=""
            ng-click="activeTabMeasure()"
@@ -69,7 +69,7 @@
       </li>
     </ul>
 
-    <div ng-if="isPropsActive" class="ga-draw-modify"
+    <div ng-if="isPropsActive"
          ga-draw-style="feature"
          ga-draw-style-options="options">
     </div>
@@ -82,6 +82,8 @@
          ga-profile="feature" 
          ga-profile-map="map"
          ga-profile-options="options.profileOptions"></div>
+    
+    <div ng-click="deleteSelectedFeature($event)"></div>
   </div>
 </div>
 
