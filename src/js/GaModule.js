@@ -34,9 +34,10 @@ goog.require('ga_mouseposition_controller');
 goog.require('ga_offline');
 goog.require('ga_placeholder_directive');
 goog.require('ga_popup');
+goog.require('ga_print');
 goog.require('ga_print_controller');
-goog.require('ga_print_directive');
 goog.require('ga_profile');
+goog.require('ga_profile_controller');
 goog.require('ga_query');
 goog.require('ga_query_controller');
 goog.require('ga_rotate');
@@ -96,6 +97,7 @@ goog.require('ga_waitcursor_service');
     'ga_seo',
     'ga_draw',
     'ga_query',
+    'ga_print',
     'ga_shop',
     'ga_tilt3d',
     'ga_modal_directive',
@@ -112,7 +114,7 @@ goog.require('ga_waitcursor_service');
     'ga_mouseposition_controller',
     'ga_share_controller',
     'ga_print_controller',
-    'ga_print_directive',
+    'ga_profile_controller',
     'ga_translation_controller',
     'ga_feedback_controller',
     'ga_contextpopup_controller',

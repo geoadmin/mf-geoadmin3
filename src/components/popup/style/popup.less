@@ -15,24 +15,23 @@
     padding: 20px 14px;
   }
 
-  &.ga-popup-bottom-left {
-    max-width: none;
-    max-height: none;
-    overflow: hidden;
+  &.ga-popup-bottom {
     top: auto!important;
+    left: 0!important;
     bottom: 34px;
-    border-radius: 0;
-    background-clip: initial;
-    height: 240px;
-    
-    .ga-popup-content {
-      max-height: inherit;
-    }
+    right: 0;
     
     @media (max-width: @screen-tablet) {
-      left: 0 !important;
-      right: 0 !important;
-      bottom: 0 !important;
+      bottom: 0;
+      right: 0;
+    }
+  }
+  &.ga-popup-mobile-bottom {
+    @media (max-width: @screen-tablet) {
+      top: auto!important;
+      left: 0!important;
+      bottom: 0;
+      right: 0;
     }
   }
 
@@ -66,7 +65,7 @@
       }
     }
 
-    .fa-print, .fa-question-circle, .fa-minus {
+    .popover-content, .fa-print, .fa-question-circle, .fa-minus {
       display: none;
     }
 

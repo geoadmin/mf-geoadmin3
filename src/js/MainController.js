@@ -267,6 +267,8 @@ goog.require('ga_topic_service');
       catalogShown: false,
       selectionShown: false,
       feedbackPopupShown: false,
+      profilePopupShown: false,
+      drawStylePopupShown: false,
       isShareActive: false,
       isDrawActive: false,
       isFeatureTreeActive: false,
@@ -300,6 +302,42 @@ goog.require('ga_topic_service');
         $scope.globals.isShareActive = true;
       }
     });
+
+    // Show/hide the profile popup
+    $rootScope.$on('gaProfileActive', function(evt, feature, callback) {
+      $scope.globals.profilePopupShown = !!(feature);
+      $scope.globals.drawStylePopupShown = false;
+      if (callback) {
+        // Remove the measure feature correctly (without digest cycle
+        // fails)
+        var unreg = $scope.$watch('globals.profilePopupShown',
+           function(newValue, oldValue) {
+          if (oldValue && !newValue) { //The popup is closing
+            callback(feature);
+            unreg();
+          }
+        });
+      }
+    });
+
+    // Show/hide the draw style popup
+    $rootScope.$on('gaDrawStyleActive', function(evt, feature, pixel,
+        callback) {
+      $scope.globals.drawStylePopupShown = !!(feature);
+      $scope.globals.popupStylePopupShown = false;
+      if (callback) {
+        // Remove the measure feature correctly (without digest cycle
+        // fails)
+        var unreg = $scope.$watch('globals.drawStylePopupShown',
+             function(newValue, oldValue) {
+          if (oldValue && !newValue) { //The popup is closing
+            callback(feature);
+            unreg();
+          }
+        });
+      }
+    });
+
     $rootScope.$on('gaNetworkStatusChange', function(evt, offline) {
       $scope.globals.offline = offline;
     });

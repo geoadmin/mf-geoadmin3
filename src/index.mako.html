@@ -567,6 +567,31 @@ itemscope itemtype="http://schema.org/WebApplication"
       </div>
     </div><!-- end Import KML -->
   % endif
+
+    <!-- Popup: Profile --> 
+    <div id="profile-popup"
+         ga-popup="globals.profilePopupShown"
+         ga-popup-options="{title:'profile', position: 'bottom'}">
+      <div ng-controller="GaProfileController">
+        <div ng-if="globals.profilePopupShown"
+             ga-profile="feature" 
+             ga-profile-map="::map"
+             ga-profile-options="options">
+        </div>
+      </div>
+    </div><!-- end Profile -->
+
+    <!-- Popup: Draw style -->
+    <div id="draw-style-popup" class="ga-draw-popup ga-popup-mobile-bottom"
+         ga-popup="globals.drawStylePopupShown"
+         ga-popup-options="{title:'style'}">
+      <div ng-controller="GaDrawController">
+        <div ga-draw-style="feature"
+             ga-draw-style-options="options">
+        </div>
+      </div>
+    </div><!-- end Draw style -->
+
     <!-- Popup: Feature Tree -->
     <div ng-controller="GaFeaturetreeController">
       <div ga-popup="globals.isFeatureTreeActive"

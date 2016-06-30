@@ -19,6 +19,14 @@ goog.require('ga_print_service');
         el.css('z-index', zIndex);
         $rootScope.$emit('gaPopupFocused', el);
       };
+      var updatePosition = function(scope, element) {
+        if (!gaBrowserSniffer.mobile && scope.options.x && scope.options.y) {
+          element.css({
+            left: scope.options.x,
+            top: scope.options.y
+          });
+        }
+      };
       return {
         restrict: 'A',
         transclude: true,
@@ -74,12 +82,7 @@ goog.require('ga_print_service');
             scope.options.y = scope.options.y || 89; //89 size of the header
           }
 
-          if (!gaBrowserSniffer.mobile && scope.options.x && scope.options.y) {
-            element.css({
-              left: scope.options.x,
-              top: scope.options.y
-            });
-          }
+          updatePosition(scope, element);
 
           // Add close popup function
           scope.close = function(evt) {
@@ -127,6 +130,7 @@ goog.require('ga_print_service');
                   return;
                 }
 
+                updatePosition(scope, element);
                 element.toggle(newVal);
 
                 if (!newVal) {
@@ -161,10 +165,10 @@ goog.require('ga_print_service');
 
           // This scope can be destroyed manually by the gaPopupService
           // so we deregister event on rootScope when it's happening
-          scope.$on('$destroy', function(evt, args) {
-            for (var i = 0, ii = deregister.length; i < ii; i++) {
-              deregister[i]();
-            }
+          scope.$on('$destroy', function() {
+            deregister.forEach(function(item) {
+              item();
+            });
           });
 
           // Execute the custom close callback
@@ -174,7 +178,7 @@ goog.require('ga_print_service');
             }
           };
 
-          $rootScope.$on('gaPopupFocused', function(evt, el) {
+          scope.$on('gaPopupFocused', function(evt, el) {
             var isFocused = (el == element);
             if (scope.hasFocus != isFocused) {
               scope.$broadcast('gaPopupFocusChange', isFocused);

@@ -17,7 +17,7 @@ goog.require('ga_styles_service');
       gaPrintService) {
 
     $scope.$on('gaPopupFocusChange', function(evt, isFocus) {
-      $scope.options.hasPopupFocus = isFocus;
+       $scope.options.hasPopupFocus = isFocus;
     });
 
     // Defines static styles
@@ -25,26 +25,6 @@ goog.require('ga_styles_service');
     var black = [0, 0, 0];
 
     var options = {
-
-      popupOptions: {
-        title: '',
-        container: 'body',
-        position: 'bottom-left'
-      },
-
-      measureOptions: {},
-
-      profileOptions: {
-        xLabel: 'profile_x_label',
-        yLabel: 'profile_y_label',
-        margin: {
-           top: 6,
-           right: 20,
-           bottom: 45,
-           left: 60
-        },
-        elevationModel: gaGlobalOptions.defaultElevationModel
-      },
 
       // Defines directive options
       showExport: true,
@@ -215,70 +195,6 @@ goog.require('ga_styles_service');
       return gaGlobalOptions.apiUrl + '/color/' +
           $scope.options.iconColor.fill.toString() + '/' + icon.id +
           '-24@2x.png';
-    };
-
-    // Get the current style defined by the properties object
-    $scope.options.updateStyle = function(feature, properties) {
-      var style;
-      var oldStyles = feature.getStyle();
-      if (oldStyles.length) {
-        style = oldStyles[0];
-      } else {
-        // No style to update
-        return;
-      }
-
-      // Update Fill if it exists
-      var color = properties.color;
-      var fill = style.getFill();
-      if (fill) {
-        fill.setColor(color.fill.concat([0.4]));
-      }
-
-      // Update Stroke if it exists
-      var stroke = style.getStroke();
-      if (stroke) {
-        stroke.setColor(color.fill.concat([1]));
-      }
-
-      // Update text style
-      var text;
-      if (properties.name) {
-        text = new ol.style.Text({
-          font: properties.font,
-          text: properties.name,
-          fill: new ol.style.Fill({
-            color: properties.textColor.fill.concat([1])
-          }),
-          stroke: gaStyleFactory.getTextStroke(
-              properties.textColor.fill.concat([1]))
-        });
-      }
-
-      // Update Icon style if it exists
-      var icon = style.getImage();
-      if (icon instanceof ol.style.Icon &&
-          angular.isDefined(properties.icon)) {
-        icon = new ol.style.Icon({
-          src: getIconUrl(properties.icon),
-          scale: properties.iconSize.scale
-        });
-      }
-
-      // Set feature's properties
-      feature.set('name', properties.name);
-      feature.set('description', properties.description);
-
-      var styles = [
-        new ol.style.Style({
-          fill: fill,
-          stroke: stroke,
-          text: text,
-          image: icon,
-          zIndex: style.getZIndex()
-        })
-      ];
-      return styles;
     };
 
     // Draw a marker
@@ -477,31 +393,9 @@ goog.require('ga_styles_service');
       tool.title = 'draw_' + tool.id;
     }
 
-    // Allow to print dynamic profile from feature's popup
-    // TODO: Verify f it's working, currently print profile is deactivated.
-    $scope.print = function() {
-      var contentEl = $('ga-draw-popup .ga-popup-content');
-      var onLoad = function(printWindow) {
-        var profile = $(printWindow.document).find('[ga-profile]');
-        // HACK IE, for some obscure reason an A4 page in IE is not
-        // 600 pixels width so calculation of the scale is not optimal.
-        var b = (gaBrowserSniffer.msie) ? 1000 : 600;
-        // Same IE mistery here, a js error occurs using jQuery width()
-        // function.
-        var a = parseInt(profile.find('svg').attr('width'), 10);
-        var scale = b / a;
-        profile.css({
-          position: 'absolute',
-          left: (-(a - a * scale) / 2) + 'px',
-          top: '200px',
-          transform: 'scale(' + scale + ')'
-        });
-        printWindow.print();
-      };
-      $timeout(function() {
-        gaPrintService.htmlPrintout(contentEl.clone().html(), undefined,
-            onLoad);
-      }, 0, false);
-    };
+    $scope.$on('gaDrawStyleActive', function(evt, feature) {
+      $scope.feature = feature;
+    });
+
   });
 })();

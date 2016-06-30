@@ -97,10 +97,17 @@ goog.require('ga_profile_service');
             scope.$watch('feature', useFeature);
 
 
-            $rootScope.$on('$translateChangeEnd', function() {
-              if (angular.isDefined(profile)) {
-                profile.updateLabels();
-              }
+            var dereg = [
+              $rootScope.$on('$translateChangeEnd', function() {
+                if (angular.isDefined(profile)) {
+                  profile.updateLabels();
+                }
+              })
+            ];
+            scope.$on('destroy', function() {
+              dereg.forEach(function(item) {
+                item();
+              });
             });
 
             /**

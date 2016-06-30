@@ -1,19 +1,53 @@
+@ga-select-box-padding: 1;
+.ga-item-size(@width, @height, @nbCol, @nbItems, @btWidth, @paddingLeftRight) {
+   /* (@width + 2*margin)*@nbCol + @btWidth + 2*padding */
+   width: unit((@width + 4)*@nbCol + @btWidth + 2*@ga-select-box-padding + 2*@paddingLeftRight, px);
+   
+   /* @height + 2*margin + 2*padding + 2*borderWidth */
+   height: unit(@height + 4 + 2*@ga-select-box-padding + 2, px); 
+      
+   &.ga-select-box-open {
+     height: unit(ceil(@nbItems/@nbCol)*(@height + 4) + 2*@ga-select-box-padding, px);
+   }
+   > * {
+     margin: 2px;
+     width: unit(@width, px);
+     height: unit(@height, px);
+   }
+   button {
+     padding-top: unit(@ga-select-box-padding, px);
+   }
+}
+
 [ga-draw-style] {
   width: 100%;
- 
-  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
-    .ga-icons, .ga-choose-icon {
-      width: 100%;
-      height: auto;
-    }
-  }
      
   label {
     display: block;
   }
+  
+  button {
+    width: 44px;
+    height: 34px;
+    margin-left: 5px; 
+    float: right;
+  }
 
   .popover-content {
     max-height: 200px;
+  }
+  
+  /* Hide the content of popover before the first opening */
+  .ga-popover-content {
+    position: absolute;
+    transform: scaleX(0);
+    width: 100px;
+  }
+
+  .popover-content .ga-popover-content {
+    position: relative;
+    transform: scaleX(1);
+    width: auto;
   }
   
   /* Generic css for custom select box */  
@@ -47,6 +81,7 @@
       }
     }
   }
+
   .ga-select-box-open {
     button {
       .rotate(180deg);
@@ -58,6 +93,9 @@
 
     i {
       padding-top: 2px;
+      font-size: 32px;
+      text-align: center;
+      transition: color .3s ease;
     }
   }
 
@@ -73,35 +111,13 @@
        border-radius: 10px; 
     }
   }
-  
-  .ga-icon-draw {
-    font-size: 32px;
-    text-align: center;
-  }
 
   .fa-caret-down {
     color: black;
   }
-  
-  /* Hide the content of popover before the first opening */
-  .ga-popover-content {
-    scale: 0;
-  }
-
-  .popover-content .ga-popover-content {
-    scale: 1;
-  }
-  
-  button {
-    width: 44px;
-    height: 34px;
-    margin-left: 5px; 
-    float: right;
-  }
-
+ 
   .fa-ga-marker {      
-   
     font-size: 1.5em;
-  }
+  } 
 }
 

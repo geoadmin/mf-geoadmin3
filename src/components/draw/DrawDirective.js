@@ -145,9 +145,6 @@ goog.require('ga_permalink');
           var helpTooltip, distTooltip, areaTooltip;
           var map = scope.map;
           var viewport = $(map.getViewport());
-          scope.isPropsActive = false;
-          scope.isMeasureActive = false;
-          scope.options.isProfileActive = false;
           scope.statusMsgId = '';
 
           // Filters functions
@@ -193,10 +190,6 @@ goog.require('ga_permalink');
             var styles = evt.element.getStyle();
             styles.pop();
             evt.element.setStyle(styles);
-            scope.isPropsActive = false;
-            scope.isMeasureActive = false;
-            scope.options.isProfileActive = false;
-
             togglePopup();
           });
           select.setActive(false);
@@ -288,11 +281,6 @@ goog.require('ga_permalink');
             });
             select.setActive(true);
 
-            unWatch.push(scope.$watch('options.popupToggle', function(active) {
-              if (!active) {
-                select.getFeatures().clear();
-              }
-            }));
           };
 
 
@@ -635,81 +623,31 @@ goog.require('ga_permalink');
           ////////////////////////////////////
           // Popup content management
           ////////////////////////////////////
-          var popupTitlePrefix = 'draw_popup_title_';
           var togglePopup = function(feature) {
             if (scope.options.noStyleUpdate) {
               return;
             }
-            if (feature) {
-              scope.feature = feature;
-              // Open the popup
-              scope.options.popupToggle = true;
-              // Set the correct title
-              scope.options.popupOptions.title = popupTitlePrefix +
-                  feature.get('type');
-              if (gaMapUtils.isMeasureFeature(feature)) {
-                scope.activeTabProfile();
-              } else if (feature.get('type') == 'linepolygon') {
-                scope.activeTabMeasure();
-              } else {
-                scope.activeTabProps();
-              }
+            scope.feature = feature;
+            if (!scope.feature || gaMapUtils.isMeasureFeature(scope.feature)) {
+              // Hide or show the Profile popup
+              $rootScope.$broadcast('gaProfileActive', scope.feature,
+                  function(featToRemove) {
+                select.getFeatures().remove(featToRemove);
+              });
+
             } else {
-              scope.feature = undefined;
-              scope.options.popupToggle = false;
-              scope.options.popupOptions.title = popupTitlePrefix + 'feature';
+              // Move the popup on the first coordinate of the feature
+              var coord = feature.getGeometry().getFirstCoordinate();
+              var pixel = map.getPixelFromCoordinate(coord);
+
+              $rootScope.$broadcast('gaDrawStyleActive', scope.feature, [
+                pixel[0] - element.width() / 2,
+                pixel[1] - element.height()
+              ], function(featToRemove) {
+                select.getFeatures().remove(featToRemove);
+              });
             }
             scope.$applyAsync();
-          };
-
-
-          ////////////////////////////////////
-          // Tab managment
-          ////////////////////////////////////
-          scope.activeTabProps = function() {
-            scope.isPropsActive = true;
-            scope.isMeasureActive = false;
-            scope.options.isProfileActive = false;
-          };
-          scope.activeTabProfile = function() {
-            scope.isPropsActive = false;
-            scope.isMeasureActive = false;
-            scope.options.isProfileActive = true;
-          };
-          scope.activeTabMeasure = function() {
-            scope.isPropsActive = false;
-            scope.isMeasureActive = true;
-            scope.options.isProfileActive = false;
-          };
-          scope.showTabs = function(feature) {
-            var bools = [
-              scope.showPropsTab(feature),
-              scope.showMeasureTab(feature),
-              scope.showProfileTab(feature)
-            ];
-            var cpt = 0;
-            for (var i = 0; i < bools.length; i++) {
-              if (bools[i]) {
-                 cpt++;
-              }
-            }
-            return (cpt > 1);
-          };
-          scope.showMeasureTab = function(feature) {
-            var geom = feature.getGeometry();
-            var isPoint = (geom instanceof ol.geom.Point);
-            return (!gaMapUtils.isMeasureFeature(feature) && !isPoint);
-          };
-          scope.showProfileTab = function(feature) {
-            return scope.showMeasureTab(feature);
-          };
-          scope.showPropsTab = function(feature) {
-            var geom = feature.getGeometry();
-            var isPoint = (geom instanceof ol.geom.Point);
-            if (isPoint) {
-              scope.activeTabProps();
-            }
-            return (!isPoint && !gaMapUtils.isMeasureFeature(feature));
           };
 
 
@@ -740,15 +678,21 @@ goog.require('ga_permalink');
           };
           var saveDebounced = gaDebounce.debounce(save, 2000, false, false);
 
-          $rootScope.$on('$translateChangeEnd', function() {
-            if (layer) {
-              layer.label = $translate.instant('draw_layer_label');
-            }
-          });
+
+          var dereg = [
+            $rootScope.$on('$translateChangeEnd', function() {
+              if (layer) {
+                layer.label = $translate.instant('draw_layer_label');
+              }
+            })
+          ];
 
           // Remove interactions on destroy
           scope.$on('$destroy', function() {
             deactivate();
+            dereg.forEach(function(item) {
+              item();
+            });
           });
 
 
@@ -765,17 +709,6 @@ goog.require('ga_permalink');
           };
           var updateCursorStyleDebounced = gaDebounce.debounce(
               updateCursorStyle, 10, false, false);
-
-          // Fix position of dropdown
-          element.find('.dropdown-toggle').click(function() {
-            var bt = $(this);
-            var dropdown = bt.next('.dropdown-menu');
-            var dropDownTop = bt.offset().top + bt.outerHeight() -
-                50; // 50 seems to be the size of the #header
-            dropdown.css('top', dropDownTop + 'px');
-            dropdown.css('left', bt.offset().left -
-                (dropdown.outerWidth() - bt.outerWidth()) + 'px');
-          });
         }
       };
   });

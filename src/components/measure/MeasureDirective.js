@@ -1,16 +1,14 @@
 goog.provide('ga_measure_directive');
 
-goog.require('ga_debounce_service');
 goog.require('ga_measure_service');
 
 (function() {
 
   var module = angular.module('ga_measure_directive', [
-    'ga_debounce_service',
     'ga_measure_service'
   ]);
 
-  module.directive('gaMeasureInfos', function(gaDebounce, gaMeasure) {
+  module.directive('gaMeasureInfos', function(gaMeasure) {
     return {
       restrict: 'A',
       templateUrl: 'components/measure/partials/measure-infos.html',

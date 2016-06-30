@@ -1,10 +1,15 @@
 goog.provide('ga_drawstyle_directive');
 
+goog.require('ga_styles_service');
+
 (function() {
 
-  var module = angular.module('ga_drawstyle_directive', []);
+  var module = angular.module('ga_drawstyle_directive', [
+    'ga_styles_service'
+  ]);
 
-  module.directive('gaDrawStyle', function($document, $window, $translate) {
+  module.directive('gaDrawStyle', function($document, $window, $translate,
+      gaGlobalOptions, gaStyleFactory) {
 
     // Find the corresponding style
     var findIcon = function(olIcon, icons) {
@@ -98,6 +103,97 @@ goog.provide('ga_drawstyle_directive');
       scope.useColorStyle = useColorStyle;
     };
 
+    // Return the icon url with the good color.
+    var getIconUrl = function(icon, olColor) {
+      return gaGlobalOptions.apiUrl + '/color/' +
+          olColor.toString() + '/' + icon.id +
+          '-24@2x.png';
+    };
+
+    // Get the current style defined by the properties object
+    var updateStylesFromProperties = function(feature, properties) {
+      var oldStyles = feature.getStyle();
+      if (!oldStyles || !oldStyles.length) {
+        // No style to update
+        return;
+      }
+      var oldStyle = oldStyles.shift();
+
+      // Update Fill if it exists
+      var color = properties.color;
+      var fill = oldStyle.getFill();
+      if (fill) {
+        fill.setColor(color.fill.concat(fill.getColor()[3]));
+      }
+
+      // Update Stroke if it exists
+      var stroke = oldStyle.getStroke();
+      if (stroke) {
+        stroke.setColor(color.fill.concat(stroke.getColor()[3]));
+      }
+
+      // Update text style
+      var text;
+      if (properties.text) {
+        text = oldStyle.getText() || new ol.style.Text();
+        text.setText(properties.text);
+
+        if (properties.font) {
+          text.setFont(properties.font);
+        }
+
+        var textColor = properties.textColor.fill.concat([1]);
+        var textFill = text.getFill() || new ol.style.Fill();
+        textFill.setColor(textColor);
+        text.setFill(textFill);
+        text.setStroke(gaStyleFactory.getTextStroke(textColor));
+
+      }
+
+      // Update Icon style if it exists
+      var icon = oldStyle.getImage();
+      if (icon instanceof ol.style.Icon &&
+          angular.isDefined(properties.icon)) {
+        icon = new ol.style.Icon({
+          src: getIconUrl(properties.icon, properties.iconColor.fill),
+          scale: properties.iconSize.scale
+        });
+      }
+      var styles = [
+        new ol.style.Style({
+          fill: fill,
+          stroke: stroke,
+          text: text,
+          image: icon,
+          zIndex: oldStyle.getZIndex()
+        })
+      ].concat(oldStyles);
+      return styles;
+    };
+
+    var applyStyle = function(newValues, oldValues, scope) {
+      var feature = scope.feature;
+      if (feature) {
+        var text = (newValues[0]) ? newValues[1] : undefined;
+        // Update the style of the feature with the current style
+        var styles = updateStylesFromProperties(feature, {
+          font: scope.options.font,
+          description: newValues[2],
+          color: newValues[3],
+          icon: newValues[4],
+          iconColor: newValues[5],
+          iconSize: newValues[6],
+          text: text,
+          textColor: newValues[7]
+        });
+
+        // Set feature's properties
+        feature.set('name', text);
+        feature.set('description', newValues[2]);
+        feature.setStyle(styles);
+      }
+    };
+
     return {
       restrict: 'A',
       templateUrl: 'components/draw/partials/draw-style.html',
@@ -106,45 +202,26 @@ goog.provide('ga_drawstyle_directive');
         options: '=gaDrawStyleOptions'
       },
       link: function(scope, element, attrs, controller) {
-        if (!scope.feature && !scope.options) {
+        if (!scope.options) {
           return;
         }
-        var unWatch = [];
-        updateContent(scope);
+
+        scope.$watch('feature', function() {
+          updateContent(scope);
+        });
 
         // Active watchers
         // Update selected feature's style when the user change a value
-        unWatch.push(scope.$watchGroup([
+        scope.$watchGroup([
           'useTextStyle',
-          'options.icon',
-          'options.iconSize',
-          'options.color',
-          'options.textColor',
-          'options.iconColor',
           'options.name',
-          'options.description'
-        ], function() {
-          var feature = scope.feature;
-          if (feature) {
-            // Update the style of the feature with the current style
-            var styles = scope.options.updateStyle(feature, {
-              name: (scope.useTextStyle) ?
-                  scope.options.name : undefined,
-              description: scope.options.description,
-              color: scope.options.color,
-              font: scope.options.font,
-              textColor: (scope.useTextStyle) ?
-                  scope.options.textColor : undefined,
-              iconColor: scope.options.iconColor,
-              icon: scope.options.icon,
-              iconSize: scope.options.iconSize
-            });
-            feature.setStyle(styles);
-            // then apply the select style
-            styles = scope.options.selectStyleFunction(feature);
-            feature.setStyle(styles);
-          }
-        }));
+          'options.description',
+          'options.color',
+          'options.icon',
+          'options.iconColor',
+          'options.iconSize',
+          'options.textColor'
+        ], applyStyle);
 
         // Open the popover with style inside
         var win = $($window);
@@ -170,7 +247,7 @@ goog.provide('ga_drawstyle_directive');
             bt.popover({
               html: true,
               placement: function() {
-                return win.width() < 340 ? 'top' : 'auto right';
+                return win.width() < 480 ? 'top' : 'auto right';
               },
               content: content[0]
               //title: $translate.instant('style') +
