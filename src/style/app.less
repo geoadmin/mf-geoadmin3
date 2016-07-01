@@ -78,9 +78,6 @@ html, body {
   padding: 0;
   overflow: hidden;
 
-  > .popover {
-    z-index: 3000;
-  }
 }
 
 // Remove 300ms click delay on IE > 10
@@ -1157,49 +1154,8 @@ a .ga-icon-separator {
 }
 
 // ****** POPUP
-#import-wms-popup, #import-kml-popup, #measure-popup, #draw-popup,
-#featuretree-popup {
-  .panel-heading {
-    display: block;
-  }
-  @media (max-width: @screen-tablet) {
-    top: auto!important;
-    height: 190px;
-
-    .ga-popup-content {
-      overflow: auto;
-    }
-  }
-}
-
 #import-wms-popup {
   max-width: none;
-  max-height: none;
-  display: none;
-  
-  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
-    height: 435px;
-  }
-
-  .ga-popup-content {
-    max-height: inherit;
-  }
-}
-
-#measure-popup {
-  &.ga-profile-active {
-    right: 0px;
-  }
-  
-  .ga-popup-content {
-    overflow: visible;
-  }
-
-  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
-    .ga-profile-inner {
-      overflow: visible;
-    }
-  }
 }
 
 #featuretree-popup {
@@ -1224,17 +1180,90 @@ a .ga-icon-separator {
   }
 }
 
-#profile-popup {
-  width: 100%;
-  max-width: none;
+#feedback-popup {
+  width: 350px;
+  max-height: none;
 
+  > .popover-content {
+    max-height: none;
+  }
+}
+
+#profile-popup {
   .popover-content { 
     overflow: visible;
   }
 }
 
-.ga-popup-content,
-[ga-context-popup] .popover-content {
+#draw-style-popup {
+  width: 320px;
+  margin-left: -160px;
+  
+  @media (max-width: @screen-tablet) {
+    margin-left: auto;
+  }  
+}
+
+// ****** LEGEND
+.ga-tooltip-metadata {
+  > .popover-content {
+    padding: 0px;
+  }
+}
+
+.bod-title {
+  color: red;
+}
+
+.legend-header, .bodsearch-header {
+  background-color: #eee;
+  padding: 8px;
+}
+
+.office-provider {
+  color: red;
+  font-style: italic;
+  margin-bottom: 5px;
+  margin-top: 1px;
+}
+
+.legend-abstract {
+  width: 100%; /* Use by old android browser */
+}
+
+.legend-footer {
+  padding: 8px;
+  .img-container {
+    overflow-x: auto;
+  }
+  .bod-footer {
+    background-color: white;
+  }
+  span {
+    font-weight: bold;
+  }
+  table {
+    font-size: 100%;
+    width: 100%;
+    border: 0;
+  }
+}
+
+// ***** PANEL HEADING
+a.panel-heading {
+  display: block;
+}
+
+// ***** POPOVER and MODAL (ga-popup and bs popover) 
+.popover {
+  z-index: 3000;
+}
+
+.popover-content, .popover-content .btn, .popover-content .form-control {
+  font-size: 12px;
+}
+
+.popover-content {
   a {
     text-decoration: underline;
     color: #069;
@@ -1348,51 +1377,6 @@ ul.panel-body-wide {
 
 .tooltip-inner {
   text-align: left;
-}
-
-// ****** LEGEND
-.ga-tooltip-metadata {
-  .popover-content {
-    padding: 0px;
-  }
-}
-
-.bod-title {
-  color: red;
-}
-
-.legend-header, .bodsearch-header {
-  background-color: #eee;
-  padding: 8px;
-}
-
-.office-provider {
-  color: red;
-  font-style: italic;
-  margin-bottom: 5px;
-  margin-top: 1px;
-}
-
-.legend-abstract {
-  width: 100%; /* Use by old android browser */
-}
-
-.legend-footer {
-  padding: 8px;
-  .img-container {
-    overflow-x: auto;
-  }
-  .bod-footer {
-    background-color: white;
-  }
-  span {
-    font-weight: bold;
-  }
-  table {
-    font-size: 100%;
-    width: 100%;
-    border: 0;
-  }
 }
 
 // ****** HTMLPOPUP
@@ -1729,23 +1713,6 @@ body:not(.embed) {
   }
 }
 
-#feedback-popup {
-  max-height: 480px !important;
-  width: 350px;
-
-  @media (max-width: @screen-tablet) and (min-width: @screen-phone) {
-    bottom: auto;
-  }
-
-  @media (max-width: @screen-phone){
-    width: auto;
-    top: auto !important;
-  }
-
-  .ga-popup-content {
-    max-height: none;
-  }
-}
 
 .embed, .ga-full-screen {
   #buttonGroup {

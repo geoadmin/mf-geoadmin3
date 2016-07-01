@@ -19,11 +19,13 @@ goog.require('ga_print_service');
         el.css('z-index', zIndex);
         $rootScope.$emit('gaPopupFocused', el);
       };
-      var updatePosition = function(scope, element) {
+      var updatePosition = function(scope, element, pixel) {
         if (!gaBrowserSniffer.mobile && scope.options.x && scope.options.y) {
+          pixel = pixel || [];
           element.css({
-            left: scope.options.x,
-            top: scope.options.y
+            left: pixel[0] || scope.options.x,
+            top: pixel[1] || scope.options.y,
+            transform: 'translate3d(0, 0, 0)'
           });
         }
       };
@@ -33,6 +35,7 @@ goog.require('ga_print_service');
         transclude: true,
         scope: {
           toggle: '=gaPopup',
+          map: '=gaPopupMap',
           optionsFunc: '&gaPopupOptions' // Options from directive
         },
         templateUrl: 'components/popup/partials/popup.html',
@@ -40,7 +43,7 @@ goog.require('ga_print_service');
           var header = element.find('.popover-title');
 
           // Init css
-          element.addClass('popover').css('display', 'none');
+          element.addClass('popover');
 
           // Initialize the popup properties
           scope.toggle = scope.toggle || false;
@@ -83,8 +86,24 @@ goog.require('ga_print_service');
             scope.options.y = scope.options.y || 89; //89 size of the header
           }
 
-          updatePosition(scope, element);
+          // if a map is apecified that mean the popup must attached to a
+          // coordinate and moved on pan.
+          var oldCoord, deregOl = [];
+          if (scope.map) {
+            deregOl.push(scope.map.on('postrender', function() {
+              if (oldCoord && scope.options.x && scope.options.y) {
+                var pixel = scope.map.getPixelFromCoordinate(oldCoord);
+                //updatePosition(scope, element, pixel);
+                var tr = 'translate3d(' +
+                  (pixel[0] - scope.options.x) + 'px, ' +
+                  (pixel[1] - scope.options.y) + 'px, 0)';
+                element.css({
+                  transform: tr
+                });
 
+              }
+            }));
+          }
           // Add close popup function
           scope.close = function(evt) {
             if (evt) {
@@ -146,8 +165,9 @@ goog.require('ga_print_service');
             if (newVal != oldVal) {
               element.toggleClass('ga-popup-reduced', scope.isReduced);
               // Deactivate draggable directive
-              header.toggleClass('ga-draggable-zone', !scope.isReduced);
-
+              if (element.attr('ga-draggable')) {
+                header.toggleClass('ga-draggable-zone', !scope.isReduced);
+              }
               // To keep a reference for the parent scope
               scope.options.isReduced = scope.isReduced;
             }
@@ -157,6 +177,9 @@ goog.require('ga_print_service');
             'options.x',
             'options.y'
           ], function(newValues, oldValues, scope) {
+            if (scope.map && newValues[0] && newValues[1]) {
+              oldCoord = scope.map.getCoordinateFromPixel(newValues);
+            }
             updatePosition(scope, element);
           });
 
@@ -167,8 +190,7 @@ goog.require('ga_print_service');
               scope.hasFocus = isFocused;
             }
           });
-          // Could be bottom, bottom-left....
-          // Currently only bottom-left is managed in css
+
           var moveOnWindow = function() {
             if (scope.isReduced) {
               return;
@@ -200,9 +222,7 @@ goog.require('ga_print_service');
           };
 
           var win;
-          if (scope.options.position) {
-            element.addClass('ga-popup-' + scope.options.position);
-          } else {
+          if (!scope.options.position && !scope.map) {
             // If the position is not defined we try to keep the entire popup
             // inside the window.
             // Adjust element's position and keep fixed width
@@ -219,6 +239,9 @@ goog.require('ga_print_service');
             if (win) {
               win.off('resize', moveOnWindow);
             }
+            deregOl.forEach(function(deregFunc) {
+              deregFunc();
+            });
           });
 
         }

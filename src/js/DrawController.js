@@ -393,9 +393,8 @@ goog.require('ga_styles_service');
       tool.title = 'draw_' + tool.id;
     }
 
-    $scope.$on('gaDrawStyleActive', function(evt, feature) {
+    $scope.$on('gaDrawStyleActive', function(evt, feature, pixel) {
       $scope.feature = feature;
     });
-
   });
 })();

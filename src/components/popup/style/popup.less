@@ -2,6 +2,20 @@
 @ga-popup-reduced-height: 40px;
 @ga-popup-max-width: 620px;
 
+.ga-bottom-fixed() { 
+  top: auto!important;
+  left: 0!important;
+  bottom: 0;
+  right: 0;
+  transform: translate3d(0,0,0)!important;
+  max-width: none;
+  width: auto!important;
+
+  .arrow {
+    display: none;
+  }
+}
+ 
 [ga-popup] {
   display: none;
   overflow: hidden;
@@ -14,93 +28,12 @@
   .ga-popup-no-info {
     padding: 20px 14px;
   }
-
-  &.ga-popup-bottom {
-    top: auto!important;
-    left: 0!important;
-    bottom: 34px;
-    right: 0;
-    
-    @media (max-width: @screen-tablet) {
-      bottom: 0;
-      right: 0;
-    }
-  }
-  &.ga-popup-mobile-bottom {
-    @media (max-width: @screen-tablet) {
-      top: auto!important;
-      left: 0!important;
-      bottom: 0;
-      right: 0;
-    }
-  }
-
-  /* !important is used to override (and so deactivate) draggable styles
-  and specific popups styles */
-  &.ga-popup-reduced {
-    position: relative!important;
-    float: left!important;
-    height: unit(@ga-popup-reduced-height, px) !important;
-    min-height:  unit(@ga-popup-reduced-height, px) !important;
-    width: 190px!important;
-    min-width: 190px!important;
-    top: initial!important;
-    left: initial!important;
-    bottom: unit(@footer-height + @ga-popup-reduced-height, px)!important;
-    right: initial!important;
-    top: auto!important; // for IE
-    left: auto!important; // for IE
-    right: auto!important; // for IE
-    z-index: 500;
-    .transition(bottom 1s ease);
-
-    .popover-title {
-      padding-right: 30px;
-      cursor: pointer;
-      color: white;
-      background-color: red;
-
-      &:active {
-       opacity: 0.3;
-      }
-    }
-
-    .popover-content, .fa-print, .fa-question-circle, .fa-minus {
-      display: none;
-    }
-
-    @media (max-width: @screen-tablet) {
-      width: 160px!important;
-      min-width: 160px!important;
-      bottom: unit(@ga-popup-reduced-height + 14, px);
-    }
-  }
-
-  /* !important is used to override (and so deactivate) draggable styles
-  applied */
-  @media (max-width: @screen-tablet) {
-    z-index: 1500;
-    top: 2% !important;
-    left: 2% !important;
-    right: 2%;
-    bottom: 2%;
-    width: auto!important;
-    max-height: none;
-    max-width: none;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  @media (max-width: @screen-phone) {
-    position: absolute;
-    overflow: hidden;
-  }
-
-  .ga-popup-content {
+  
+  > .popover-content {
     overflow: auto;
     width: 100%;
     max-width: inherit;
     max-height: (@ga-popup-max-height - 60);
-    font-size: 12px;
 
     @media (max-width: @screen-tablet) {
       width: 100%;
@@ -166,6 +99,93 @@
           padding-top: 10px;
         }
       }
+    }
+  }
+
+  /* REDUCED POPUP */
+  /* !important is used to override (and so deactivate) draggable styles
+  and specific popups styles */
+  &.ga-popup-reduced {
+    position: relative!important;
+    float: left!important;
+    height: unit(@ga-popup-reduced-height, px) !important;
+    min-height:  unit(@ga-popup-reduced-height, px) !important;
+    width: 190px!important;
+    min-width: 190px!important;
+    top: initial!important;
+    left: initial!important;
+    bottom: unit(@footer-height + @ga-popup-reduced-height, px)!important;
+    right: initial!important;
+    top: auto!important; // for IE
+    left: auto!important; // for IE
+    right: auto!important; // for IE
+    z-index: 500;
+    transform: translate3d(0,0,0)!important;
+    
+    &.bottom {
+      margin-left: 0!important;
+    }
+
+    .transition(bottom 1s ease);
+
+    .popover-title {
+      padding-right: 30px;
+      cursor: pointer;
+      color: white;
+      background-color: red;
+
+      &:active {
+       opacity: 0.3;
+      }
+    }
+
+    .popover-content, .fa-print, .fa-question-circle, .fa-minus {
+      display: none;
+    }
+
+    @medi (max-width: @screen-tablet) {
+      width: 160px!important;
+      min-width: 160px!important;
+      bottom: unit(@ga-popup-reduced-height + 14, px);
+    }
+  }
+ 
+  /* POPUP display at the bottomi */
+  &.ga-popup-bottom {
+    .ga-bottom-fixed();
+    bottom: 34px;
+  }
+  
+  /* POPUP MOBILE display at the bottom */
+  &.ga-popup-bottom, &.ga-popup-mobile-bottom {
+    @media (max-width: @screen-phone) {
+      .ga-bottom-fixed();
+        
+      > .popover-content {
+        max-height: 250px;
+      }
+    }
+  }
+ 
+  /* POPUP MOBILE & TABLET display in full screen (ex: metadata popup) */
+  &.ga-popup-mobile-full {
+    /* !important is used to override (and so deactivate) draggable styles
+    applied */
+    @media (max-width: @screen-tablet) {
+      z-index: 1500;
+      top: 2% !important;
+      left: 2% !important;
+      right: 2%;
+      bottom: 2%;
+      width: auto!important;
+      max-height: none;
+      max-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    @media (max-width: @screen-phone) {
+      position: absolute;
+      overflow: hidden;
     }
   }
 }

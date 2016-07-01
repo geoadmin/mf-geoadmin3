@@ -540,7 +540,8 @@ itemscope itemtype="http://schema.org/WebApplication"
     <div ga-popup="globals.feedbackPopupShown"
          ga-popup-options="{title:'problem_announcement', help:'70'}"
          ga-draggable=".popover-title"
-         id="feedback-popup" >
+         id="feedback-popup"
+         class="ga-popup-mobile-bottom">
       <div ng-controller="GaFeedbackController">
         <div ga-feedback
              ga-feedback-map="map"
@@ -555,7 +556,8 @@ itemscope itemtype="http://schema.org/WebApplication"
     <div ga-popup="globals.importWmsPopupShown"
          ga-popup-options="{title:'import_wms', help:'62'}"
          ga-draggable=".popover-title"
-         id="import-wms-popup" >
+         id="import-wms-popup"
+         class="ga-popup-mobile-bottom">
       <div ng-controller="GaImportWmsController">
         <div ga-import-wms
              ga-import-wms-map="map"
@@ -568,7 +570,8 @@ itemscope itemtype="http://schema.org/WebApplication"
     <div ga-popup="globals.importKmlPopupShown"
          ga-popup-options="{title:'import_kml', help:'63'}"
          ga-draggable=".popover-title"
-         id="import-kml-popup" >
+         id="import-kml-popup"
+         class="ga-popup-mobile-bottom">
       <div ga-import-kml
            ga-import-kml-map="map">
       </div>
@@ -576,9 +579,10 @@ itemscope itemtype="http://schema.org/WebApplication"
   % endif
 
     <!-- Popup: Profile --> 
-    <div id="profile-popup"
-         ga-popup="globals.profilePopupShown"
-         ga-popup-options="{title:'profile', position: 'bottom'}">
+    <div ga-popup="globals.profilePopupShown"
+         ga-popup-options="{title:'profile', position: 'fixed'}"
+         id="profile-popup"
+         class="ga-popup-bottom">
       <div ng-controller="GaProfileController">
         <div ng-if="globals.profilePopupShown"
              ga-profile="feature" 
@@ -589,9 +593,11 @@ itemscope itemtype="http://schema.org/WebApplication"
     </div><!-- end Profile -->
 
     <!-- Popup: Draw style -->
-    <div id="draw-style-popup" class="ga-draw-popup ga-popup-mobile-bottom"
-         ga-popup="globals.drawStylePopupShown"
-         ga-popup-options="{title:'style'}">
+    <div ga-popup="globals.drawStylePopupShown"
+         ga-popup-map="::map"
+         ga-popup-options="drawStylePopupOptions"
+         id="draw-style-popup"
+         class="ga-draw-popup ga-popup-mobile-bottom bottom">
       <div ng-controller="GaDrawController">
         <div ga-draw-style="feature"
              ga-draw-style-options="options">
@@ -604,7 +610,8 @@ itemscope itemtype="http://schema.org/WebApplication"
       <div ga-popup="globals.isFeatureTreeActive"
            ga-popup-options="{title:'object_information', showPrint:true, print: print, help:'68'}"
            ga-draggable=".popover-title"
-           id="featuretree-popup">
+           id="featuretree-popup"
+           class="ga-popup-mobile-bottom">
         <div class="panel-group" id="accordion">
           <div class="panel panel-default">
             <a class="panel-heading" data-toggle="collapse" data-parent="#accordion" href="#accordion-query">

@@ -314,10 +314,15 @@ goog.require('ga_topic_service');
     });
 
     // Show/hide the draw style popup
+    $scope.drawStylePopupOptions = {
+      title: 'style'
+    };
     $rootScope.$on('gaDrawStyleActive', function(evt, feature, pixel,
         callback) {
       $scope.globals.drawStylePopupShown = !!(feature);
       $scope.globals.popupStylePopupShown = false;
+      $scope.drawStylePopupOptions.x = pixel[0];
+      $scope.drawStylePopupOptions.y = pixel[1];
       if (callback) {
         // Remove the measure feature correctly (without digest cycle
         // fails)

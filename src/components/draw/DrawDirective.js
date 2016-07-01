@@ -641,8 +641,8 @@ goog.require('ga_permalink');
               var pixel = map.getPixelFromCoordinate(coord);
 
               $rootScope.$broadcast('gaDrawStyleActive', scope.feature, [
-                pixel[0] - element.width() / 2,
-                pixel[1] - element.height()
+                pixel[0],
+                pixel[1]
               ], function(featToRemove) {
                 select.getFeatures().remove(featToRemove);
               });
