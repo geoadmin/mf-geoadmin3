@@ -30,8 +30,6 @@ goog.require('ga_what3words_service');
             var qrcodeUrl = scope.options.qrcodeUrl;
             var lv03tolv95Url = scope.options.lv03tolv95Url;
 
-            scope.titleClose = $translate.instant('close');
-
             // The popup content is updated (a) on contextmenu events,
             // and (b) when the permalink is updated.
 
@@ -211,12 +209,11 @@ goog.require('ga_what3words_service');
             }
 
             $rootScope.$on('$translateChangeEnd', function() {
-              scope.titleClose = $translate.instant('close');
               if (popoverShown) {
                 updateW3W();
               }
             });
-
+            
             // Listen to permalink change events from the scope.
             scope.$on('gaPermalinkChange', function(event) {
               if (angular.isDefined(coord21781) && popoverShown) {

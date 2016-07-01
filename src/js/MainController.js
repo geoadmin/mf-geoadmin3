@@ -225,13 +225,6 @@ goog.require('ga_topic_service');
 
     $rootScope.$on('$translateChangeEnd', function() {
       $scope.langId = $translate.use();
-      var descr = $translate.instant('page_description');
-      var title = $translate.instant('page_title');
-      $('meta[name=description]').attr('content', descr);
-      $('meta[property="og:description"]').attr('content', descr);
-      $('meta[name="twitter:description"]').attr('content', descr);
-      $('meta[itemprop="description"]').attr('content', descr);
-      $('meta[name="application-name"]').attr('content', title);
     });
 
     $scope.time = gaTime.get();

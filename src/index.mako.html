@@ -41,14 +41,14 @@ itemscope itemtype="http://schema.org/WebApplication"
     <link rel="apple-touch-icon" sizes="152x152" href="${s3basepath}${versionslashed}img/touch-icon-bund-152x152.png"/>
 
     <!-- Description is translated 'by hand' in the MainController -->
-    <meta name="description" content="geo.admin.ch ist die Geoinformationsplattform der Schweizerischen Eidgenossenschaft. // geo.admin.ch est la plateforme de géoinformation de la Confédération suisse."/>
+    <meta name="description" translate translate-attr-content="page_description" content="geo.admin.ch ist die Geoinformationsplattform der Schweizerischen Eidgenossenschaft. // geo.admin.ch est la plateforme de géoinformation de la Confédération suisse."/>
     <meta name="keywords" content="maps Switzerland, map viewer, Confederation, geodata, public platform, geographical information, geoportal, orthophotos, geolocation, geoinformation, Geodaten, Geoinformation, Bund, Plattform, Karte, Kartendienst, Kartenviewer"/>
     <meta name="news_keywords" content="Maps of Switzerland"/>
 
     <!-- Open Graph metas SMO -->
     <meta property="og:site_name" content="geo.admin.ch"/>
     <meta property="og:title" content="Swiss Geoportal"/>
-    <meta property="og:description" content="geo.admin.ch ist die Geoinformationsplattform der Schweizerischen Eidgenossenschaft. // geo.admin.ch est la plateforme de géoinformation de la Confédération suisse."/>
+    <meta property="og:description" translate translate-attr-content="page_description" content="geo.admin.ch ist die Geoinformationsplattform der Schweizerischen Eidgenossenschaft. // geo.admin.ch est la plateforme de géoinformation de la Confédération suisse."/>
     <meta property="og:type" content="WebApplication"/>
     <meta property="og:url" content="https://map.geo.admin.ch"/>
     <meta property="og:image" content="https://cms.geo.admin.ch/img/logo_geoportal.png"/>
@@ -159,7 +159,7 @@ itemscope itemtype="http://schema.org/WebApplication"
       <div id="toptools">
         <div ga-fullscreen ga-fullscreen-map="map"></div>&nbsp;&nbsp;
         <a href="" ng-click="globals.feedbackPopupShown = !globals.feedbackPopupShown">
-          <span ng-class="{'selected': globals.feedbackPopupShown}" translate>problem_announcement</span>
+          <span translate>problem_announcement</span>
         </a>&nbsp;&nbsp;
         <a target="_blank" href="//help.geo.admin.ch/?lang={{langId}}" translate>help_label</a>&nbsp;&nbsp;
         <a href="{{deviceSwitcherHref}}" translate>mobile_redirect</a>&nbsp;&nbsp;
@@ -235,7 +235,7 @@ itemscope itemtype="http://schema.org/WebApplication"
 % endif
 % if device == 'mobile':
     <div ga-offline-selector
-         ga-offline-selector-map="map">
+         ga-offline-selector-map="::map">
     </div>
 % endif
 
@@ -247,19 +247,19 @@ itemscope itemtype="http://schema.org/WebApplication"
 % if device != 'embed':
     <div ng-cloak translate-cloak
          ga-background-selector
-         ga-background-selector-map="map"
+         ga-background-selector-map="::map"
          ga-background-selector-ol3d="::ol3d">
     </div>
     <div ng-cloak translate-cloak id="footer" class="navbar navbar-fixed-bottom">
-      <div  class="pull-left" ga-scale-line ga-scale-line-map="map" ng-show="!globals.is3dActive"></div>
+      <div  class="pull-left" ga-scale-line ga-scale-line-map="::map" ng-show="!globals.is3dActive"></div>
 
   % if device == 'desktop':
       <div id="mouseposition" class="pull-left hidden-xs" ng-controller="GaMousePositionController">
         <select ng-model="options.projection"
-                ng-options="p.label for p in mousePositionProjections">
+                ng-options="p.label for p in ::mousePositionProjections">
         </select>
         <div ga-mouse-position
-             ga-mouse-position-map="map"
+             ga-mouse-position-map="::map"
              ga-mouse-position-ol3d="::ol3d"
              ga-mouse-position-options="options"></div>
       </div>
@@ -269,13 +269,19 @@ itemscope itemtype="http://schema.org/WebApplication"
       </div>
   % if device == 'desktop':
       <div class="pull-right">
-        <a target="_blank" translate="{{topicId + '_service_link_label'}}" translate-attr-href="{{topicId + '_service_link_href'}}"></a>
+        <a target="_blank"
+           translate="{{topicId + '_service_link_label'}}"
+           translate-attr-href="{{topicId + '_service_link_href'}}"></a>
       </div>
   % endif
     </div><!-- #footer -->
 
     <div ng-controller="GaContextPopupController">
-      <div ga-context-popup ga-context-popup-map="map" ga-context-popup-options="options" ga-context-popup-is3d="globals.is3dActive"></div>
+      <div ga-context-popup
+           ga-context-popup-map="::map"
+           ga-context-popup-options="::options"
+           ga-context-popup-is3d="globals.is3dActive">
+      </div>
     </div>
 % endif
 
@@ -296,7 +302,8 @@ itemscope itemtype="http://schema.org/WebApplication"
            ga-tooltip-map="::map"
            ga-tooltip-ol3d="::ol3d" 
            ga-tooltip-options="options"
-           ga-tooltip-active="!globals.feedbackPopupShown && !globals.isDrawActive"></div>
+           ga-tooltip-active="!globals.feedbackPopupShown && !globals.isDrawActive">
+      </div>
     </div>
 
 % if device != 'embed':

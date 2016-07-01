@@ -27,6 +27,7 @@ goog.require('ga_print_service');
           });
         }
       };
+
       return {
         restrict: 'A',
         transclude: true,
@@ -36,15 +37,15 @@ goog.require('ga_print_service');
         },
         templateUrl: 'components/popup/partials/popup.html',
         link: function(scope, element, attrs) {
+          var header = element.find('.popover-title');
+
+          // Init css
+          element.addClass('popover').css('display', 'none');
 
           // Initialize the popup properties
           scope.toggle = scope.toggle || false;
           scope.isReduced = false;
           scope.options = scope.optionsFunc() || {title: ''};
-          scope.titlePrint = $translate.instant('print');
-          scope.titleHelp = $translate.instant('help_label');
-          scope.titleReduce = $translate.instant('reduce_label');
-          scope.titleClose = $translate.instant('close');
 
           // Per default hide the print function
           if (!angular.isDefined(scope.options.showPrint) ||
@@ -61,7 +62,7 @@ goog.require('ga_print_service');
               gaBrowserSniffer.mobile) {
             scope.options.showReduce = true;
           }
-          // Bring thre popup to front on click on it.
+          // Bring the popup to front on click on it.
           element.find('.popover-content').click(function(evt) {
             if (!scope.isReduced && scope.toggle &&
                 element.css('z-index') != zIndex) {
@@ -94,11 +95,10 @@ goog.require('ga_print_service');
             scope.toggle = false;
           };
 
-          scope.print = scope.options.print ||
-              (function() {
-                var contentEl = element.find('.ga-popup-content');
-                gaPrintService.htmlPrintout(contentEl.clone().html());
-              });
+          scope.print = scope.options.print || (function() {
+            var contentEl = element.find('.ga-popup-content');
+            gaPrintService.htmlPrintout(contentEl.clone().html());
+          });
 
           scope.reduce = function(evt) {
             evt.stopPropagation();
@@ -116,34 +116,32 @@ goog.require('ga_print_service');
           };
 
           // Watch the shown property
-          scope.$watch(
-            'toggle',
-            function(newVal, oldVal) {
-              // in some case newVal is equal to oldVal when it shouldn't,
-              // so we make  a test if the popup is displayed or not
-              if (newVal != oldVal ||
-                (newVal != (element.css('display') == 'block'))) {
+          scope.$watch('toggle', function(newVal, oldVal) {
+            // in some case newVal is equal to oldVal when it shouldn't,
+            // so we make  a test if the popup is displayed or not
+            if (newVal != oldVal ||
+              (newVal != (element.css('display') == 'block'))) {
 
-                if (scope.isReduced) {
-                  scope.isReduced = false;
-                  scope.toggle = true;
-                  return;
+              if (scope.isReduced) {
+                scope.isReduced = false;
+                scope.toggle = true;
+                return;
+              }
+
+              updatePosition(scope, element);
+              element.toggle(newVal);
+
+              if (!newVal) {
+                scope.isReduced = false;
+                if (scope.options.close) {
+                  scope.options.close();
                 }
-
-                updatePosition(scope, element);
-                element.toggle(newVal);
-
-                if (!newVal) {
-                  scope.isReduced = false;
-                  onClose();
-                } else if (newVal) {
-                  bringUpFront(element);
-                }
+              } else if (newVal) {
+                bringUpFront(element);
               }
             }
-          );
+          });
 
-          var header = element.find('.popover-title');
           scope.$watch('isReduced', function(newVal, oldVal) {
             if (newVal != oldVal) {
               element.toggleClass('ga-popup-reduced', scope.isReduced);
@@ -155,28 +153,12 @@ goog.require('ga_print_service');
             }
           });
 
-          var deregister = [];
-          deregister.push($rootScope.$on('$translateChangeEnd', function() {
-            scope.titlePrint = $translate.instant('print');
-            scope.titleHelp = $translate.instant('help_label');
-            scope.titleReduce = $translate.instant('reduce_label');
-            scope.titleClose = $translate.instant('close');
-          }));
-
-          // This scope can be destroyed manually by the gaPopupService
-          // so we deregister event on rootScope when it's happening
-          scope.$on('$destroy', function() {
-            deregister.forEach(function(item) {
-              item();
-            });
+          scope.$watchGroup([
+            'options.x',
+            'options.y'
+          ], function(newValues, oldValues, scope) {
+            updatePosition(scope, element);
           });
-
-          // Execute the custom close callback
-          var onClose = function() {
-            if (scope.options.close) {
-              scope.options.close();
-            }
-          };
 
           scope.$on('gaPopupFocused', function(evt, el) {
             var isFocused = (el == element);
@@ -185,12 +167,39 @@ goog.require('ga_print_service');
               scope.hasFocus = isFocused;
             }
           });
-
-          element.addClass('popover');
-          element.css('display', 'none'); // hidden by default
-
           // Could be bottom, bottom-left....
           // Currently only bottom-left is managed in css
+          var moveOnWindow = function() {
+            if (scope.isReduced) {
+              return;
+            }
+            var screenSmLimit = 768;
+            var winWidth = win.width();
+            if (winWidth > screenSmLimit) {
+              var winHeight = win.height();
+              var popupWidth = element.outerWidth();
+              var popupHeight = element.outerHeight();
+              var offset = element.offset();
+              var x = offset.left;
+              var y = offset.top;
+              if (x + popupWidth > winWidth) {
+                x = winWidth - popupWidth;
+              }
+              if (y + popupHeight > winHeight) {
+                y = winHeight - popupHeight;
+                if (y < 0) {
+                  y = 0;
+                }
+              }
+              element.css({
+                width: popupWidth + 'px',
+                top: y + 'px',
+                left: x + 'px'
+              });
+            }
+          };
+
+          var win;
           if (scope.options.position) {
             element.addClass('ga-popup-' + scope.options.position);
           } else {
@@ -198,40 +207,20 @@ goog.require('ga_print_service');
             // inside the window.
             // Adjust element's position and keep fixed width
             // when window is resized (except for small screens)
-            var screenSmLimit = 768;
-            var win = $($window);
-            win.on('resize', function() {
-              if (scope.isReduced) {
-                return;
-              }
-              var winWidth = win.width();
-              if (winWidth > screenSmLimit) {
-                var winHeight = win.height();
-                var popupWidth = element.outerWidth();
-                var popupHeight = element.outerHeight();
-                var offset = element.offset();
-                var x = offset.left;
-                var y = offset.top;
-                if (x + popupWidth > winWidth) {
-                  x = winWidth - popupWidth;
-                }
-                if (y + popupHeight > winHeight) {
-                  y = winHeight - popupHeight;
-                  if (y < 0) {
-                    y = 0;
-                  }
-                }
-                element.css({
-                  width: popupWidth + 'px',
-                  top: y + 'px',
-                  left: x + 'px'
-                });
-              }
-            });
+            win = $($window).on('resize', moveOnWindow);
           }
           if (scope.options.container) {
             $(scope.options.container).append(element);
           }
+
+          // This scope can be destroyed manually by the gaPopupService
+          // so we deregister event on rootScope/window/map when it's happening
+          scope.$on('$destroy', function() {
+            if (win) {
+              win.off('resize', moveOnWindow);
+            }
+          });
+
         }
       };
     }
