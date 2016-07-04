@@ -1,11 +1,13 @@
-<form ng-class="{'has-error': error}">
+<form ng-class="{'has-error': error}" class="input-group input-group-sm">
   <input type="url" name="url" autocomplete="off" placeholder="{{'choose_wms_url' | translate}}"
     ng-model="fileUrl" required class="form-control"/>
   <div class="ga-import-wms-open fa fa-collapse"></div>
-  <button type="button" class="btn btn-default ga-import-wms-connect"
-          ng-click="handleFileUrl()" translate>connect</button>
-  <div class="ga-message">{{userMessage}}</div>
+  <span class="input-group-btn">
+    <button type="button" class="btn btn-default ga-import-wms-connect"
+            ng-click="handleFileUrl()" translate>connect</button>
+  </span>
 </form>
+<div class="ga-message">{{userMessage}}</div>
 <div class="ga-import-wms-container">
   <div class="ga-import-wms-header" ng-click="reverse = !reverse">
     <label translate>title</label>

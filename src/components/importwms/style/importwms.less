@@ -1,16 +1,15 @@
 [ga-import-wms] {
   position: relative;
 
-  form {
-    position: relative;
-  }
-
   button[disabled]:before {
     visibility: hidden;
   }
 
+  input[type=url] {
+    height: 30px;
+  }
+ 
   input[name=url], .tt-dropdown-menu {
-    width: 586px;
     padding-right: 20px;
   }
  
@@ -20,7 +19,15 @@
     height: 206px;
     cursor: auto;
     background-color: #ffffff;
-    font-size: 12px;
+    
+    @media (max-width: @screen-tablet) {
+      width: 100%;
+    }
+  }
+
+  .twitter-typeahead[style] {
+    position: static!important;
+    display: inline!important;
   }
 
   .tt-dropdown-menu {
@@ -28,6 +35,7 @@
     overflow-y: auto;
     border: 1px solid black;
     background-color: white;
+    width: ~"calc(100% - 98px)";
     
     p {
       margin: 5px 10px;
@@ -65,7 +73,11 @@
     border: 1px solid #dddddd;
     border-collapse: separate;
     border-radius: 4px;
-    z-index: 50;
+    z-index: 50; 
+    
+    @media (max-width: @screen-tablet) {
+      width: 100%;
+    }
    
     div[ng-click] {
       cursor: pointer;
@@ -150,25 +162,28 @@
     position: relative;
     margin: 10px 0px 0px 0px;
   }
-
+  
   .ga-import-wms-connect {
-    position: absolute;
-    left: 596px;
-    top: 0px;
-    width: 120px;
+    width: 98px;
   }
 
   .ga-import-wms-open {
     cursor: pointer;
     position: absolute;
-    left: 566px;
+    right: 105px;
     top: .7em;
     font-size: 14px;
+    z-index: 10;
   }
 
   .ga-import-wms-descr {
     vertical-align: top;
     margin-left: 20px;
+     
+    @media (max-width: @screen-tablet) {
+      width: 100%;
+      margin-left: 0;
+    }
   }
  
   .ga-import-wms-add {

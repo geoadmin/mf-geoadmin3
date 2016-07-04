@@ -115,9 +115,28 @@ form {
   }
 }
 
-.ga-dragging {
+.ga-pointer {
+  cursor: pointer;
+}
+
+.ga-move {
   cursor: move;
 }
+
+.ga-grab {
+  // Fallback for IE
+  cursor: url(../../../img/grab.cur), move;
+  cursor: -webkit-grab;
+  cursor: grab;
+}
+
+.ga-grabbing {
+  // Fallback for IE
+  cursor: url(../../../img/grab.cur), move;
+  cursor: -webkit-grab;
+  cursor: grab;
+}
+
 
 .ga-red-tooltip {
   opacity: 1;
@@ -1155,7 +1174,17 @@ a .ga-icon-separator {
 
 // ****** POPUP
 #import-wms-popup {
-  max-width: none;
+  width: 770px;  /* Fix resize from tablet to desktop */
+  max-width: 770px;
+ 
+  @media (max-width: @screen-tablet) {
+    max-width: 480px;
+  }
+}
+
+#import-kml-popup {
+  width: 420px; /* only IE9 */
+  max-width: 420px;
 }
 
 #featuretree-popup {
@@ -1199,8 +1228,8 @@ a .ga-icon-separator {
   width: 320px;
   margin-left: -160px;
   
-  @media (max-width: @screen-tablet) {
-    margin-left: auto;
+  @media (max-width: @screen-phone) {
+    margin-left: 0;
   }  
 }
 

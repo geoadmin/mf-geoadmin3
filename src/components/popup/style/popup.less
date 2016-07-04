@@ -2,15 +2,14 @@
 @ga-popup-reduced-height: 40px;
 @ga-popup-max-width: 620px;
 
-.ga-bottom-fixed() { 
+.ga-bottom-fixed() {
+  max-width: none!important;
+  width: auto!important;
   top: auto!important;
   left: 0!important;
   bottom: 0;
   right: 0;
   transform: translate3d(0,0,0)!important;
-  max-width: none;
-  width: auto!important;
-
   .arrow {
     display: none;
   }
@@ -38,7 +37,6 @@
     @media (max-width: @screen-tablet) {
       width: 100%;
       height: ~"calc(100% - 36px)";
-      max-height: none;
       overflow-x: hidden;
       overflow-y: auto;
     }
@@ -168,7 +166,8 @@
   }
  
   /* POPUP MOBILE & TABLET display in full screen (ex: metadata popup) */
-  &.ga-popup-mobile-full {
+  &.ga-popup-tablet-full {
+    
     /* !important is used to override (and so deactivate) draggable styles
     applied */
     @media (max-width: @screen-tablet) {
@@ -181,6 +180,10 @@
       max-height: none;
       max-width: none;
       -webkit-overflow-scrolling: touch;
+      
+      .popover-content {
+        max-height: none;
+      }
     }
 
     @media (max-width: @screen-phone) {
