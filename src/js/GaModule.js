@@ -13,6 +13,7 @@ goog.require('ga_controls3d');
 goog.require('ga_draggable_directive');
 goog.require('ga_draw');
 goog.require('ga_draw_controller');
+goog.require('ga_drawstyle_controller');
 goog.require('ga_drawstylepopup_controller');
 goog.require('ga_featuretree');
 goog.require('ga_featuretree_controller');
@@ -127,6 +128,7 @@ goog.require('ga_waitcursor_service');
     'ga_tooltip_controller',
     'ga_featuretree_controller',
     'ga_draw_controller',
+    'ga_drawstyle_controller',
     'ga_drawstylepopup_controller',
     'ga_query_controller'
   ]);

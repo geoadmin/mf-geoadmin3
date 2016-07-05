@@ -14,6 +14,10 @@
   <textarea class="form-control" ng-model="options.description"></textarea>
 </label>
 
+<button  class="btn btn-default fa fa-remove"
+         ng-if="layer"
+         ng-click="deleteSelectedFeature(layer, feature)"></button>
+
 <button  class="btn btn-default fa fa-ga-marker"
          ng-if="useColorStyle"
          ng-click="toggleStyle($event)"

@@ -601,9 +601,10 @@ itemscope itemtype="http://schema.org/WebApplication"
            ga-popup-options="options"
            id="draw-style-popup"
            class="ga-draw-popup ga-popup-mobile-bottom bottom">
-        <div ng-controller="GaDrawController">
+        <div ng-controller="GaDrawStyleController">
           <div ng-if="toggle"
                ga-draw-style="feature"
+               ga-draw-style-layer="layer"
                ga-draw-style-options="options">
           </div>
         </div>

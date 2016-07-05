@@ -5,6 +5,7 @@ goog.require('ga_filestorage_service');
 goog.require('ga_map_service');
 goog.require('ga_measure_service');
 goog.require('ga_permalink');
+goog.require('ga_styles_service');
 
 (function() {
 
@@ -14,6 +15,7 @@ goog.require('ga_permalink');
     'ga_map_service',
     'ga_measure_service',
     'ga_permalink',
+    'ga_styles_service',
     'pascalprecht.translate'
   ]);
 
@@ -32,7 +34,7 @@ goog.require('ga_permalink');
     function($timeout, $translate, $window, $rootScope, gaBrowserSniffer,
         gaDefinePropertiesForLayer, gaDebounce, gaFileStorage, gaLayerFilters,
         gaExportKml, gaMapUtils, gaPermalink, gaUrlUtils,
-        $document, gaMeasure) {
+        $document, gaMeasure, gaStyleFactory) {
 
       var createDefaultLayer = function(map, useTemporaryLayer) {
         // #2820: we set useSpatialIndex to false to allow display of azimuth
@@ -147,6 +149,10 @@ goog.require('ga_permalink');
           var viewport = $(map.getViewport());
           var body = $($document[0].body);
           var cssModify = 'ga-draw-modifying';
+          var cssPointer = 'ga-pointer';
+          var cssGrab = 'ga-grab';
+          var cssGrabbing = 'ga-grabbing';
+          var mapDiv = $(map.getTarget());
           scope.statusMsgId = '';
 
           // Filters functions
@@ -196,6 +202,15 @@ goog.require('ga_permalink');
           });
           select.setActive(false);
 
+          var unselectFeature = function(feature) {
+            var selected = select.getFeatures().getArray();
+            for (var i = 0, ii = selected.length; i < ii; i++) {
+              if (selected[i] == feature) {
+                select.getFeatures().remove(feature);
+                break;
+              }
+            }
+          };
           // Add modify interaction
           // The modify interaction works with features selected by the select
           // interaction so no need to activate/deactivate it.
@@ -206,10 +221,12 @@ goog.require('ga_permalink');
           });
           modify.on('modifystart', function(evt) {
             body.addClass(cssModify);
+            mapDiv.addClass(cssGrabbing);
           });
           modify.on('modifyend', function(evt) {
             body.removeClass(cssModify);
             togglePopup(scope.feature); // Update popup position
+            mapDiv.removeClass(cssGrabbing);
           });
           var defineLayerToModify = function() {
 
@@ -238,7 +255,11 @@ goog.require('ga_permalink');
               unSourceEvents = [
                 source.on('addfeature', saveDebounced),
                 source.on('changefeature', saveDebounced),
-                source.on('removefeature', saveDebounced)
+                source.on('removefeature', saveDebounced),
+                source.on('removefeature', function(evt) {
+                  // Use when the feature is removed outside the draw directive.
+                  unselectFeature(evt.feature);
+                })
               ];
 
             }
@@ -631,9 +652,6 @@ goog.require('ga_permalink');
           ////////////////////////////////////
           // Popup content management
           ////////////////////////////////////
-          var unselectFeature = function(featToRemove) {
-            select.getFeatures().remove(featToRemove);
-          };
           var togglePopup = function(feature) {
             if (scope.options.noStyleUpdate) {
               return;
@@ -653,7 +671,7 @@ goog.require('ga_permalink');
               var coord = feature.getGeometry().getFirstCoordinate();
               var pixel = map.getPixelFromCoordinate(coord);
 
-              $rootScope.$broadcast('gaDrawStyleActive', scope.feature, [
+              $rootScope.$broadcast('gaDrawStyleActive', layer, scope.feature, [
                 pixel[0],
                 pixel[1]
               ], unselectFeature);
@@ -711,20 +729,21 @@ goog.require('ga_permalink');
           // Utils functions
           ////////////////////////////////////
           // Change cursor style on mouse move, only on desktop
-          var mapDiv = $(map.getTarget());
           var updateCursorStyle = function(evt) {
-            if (mapDiv.hasClass('ga-grabbing')) {
-              mapDiv.removeClass('ga-grab');
+            if (mapDiv.hasClass(cssGrabbing)) {
+              mapDiv.removeClass(cssGrab);
               return;
             }
             var featureFound = map.forEachFeatureAtPixel(evt.pixel,
                 featureFilter, this, layerFilter);
-            var classes = 'ga-pointer ga-grab';
+            var classes = cssPointer + ' ' + cssGrab;
             if (featureFound) {
-              classes = 'ga-pointer';
+              classes = cssPointer;
               var styles = featureFound.getStyle();
-              if (styles && styles.length > 1) {
-                classes += ' ga-grab';
+              if (styles && styles.length > 1 &&
+                  styles[styles.length - 1].getZIndex() ==
+                  gaStyleFactory.ZSKETCH) {
+                classes += ' ' + cssGrab;
               }
               mapDiv.addClass(classes);
             } else {

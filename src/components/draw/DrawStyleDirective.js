@@ -199,12 +199,24 @@ goog.require('ga_styles_service');
       templateUrl: 'components/draw/partials/draw-style.html',
       scope: {
         feature: '=gaDrawStyle',
+        layer: '=gaDrawStyleLayer',
         options: '=gaDrawStyleOptions'
       },
       link: function(scope, element, attrs, controller) {
         if (!scope.options) {
           return;
         }
+
+        scope.deleteSelectedFeature = function(layer, feature) {
+          if (layer.getSource().getFeatures().length == 1) {
+            //scope.deleteAllFeatures();
+            //return;
+          } else if (confirm($translate.instant(
+              'confirm_remove_selected_features'))) {
+            layer.getSource().removeFeature(feature);
+          }
+          scope.feature = undefined;
+        };
 
         scope.$watch('feature', function() {
           updateContent(scope);

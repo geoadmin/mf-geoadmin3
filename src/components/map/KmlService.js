@@ -234,6 +234,8 @@ goog.require('ga_urlutils_service');
             geom instanceof ol.geom.MultiPoint)) {
           var image = style.getImage();
           var text = null;
+          var fill = style.getFill();
+          var stroke = style.getStroke();
 
           if (gaNetworkStatus.offline) {
             image = gaStyleFactory.getStyle('kml').getImage();
@@ -255,11 +257,13 @@ goog.require('ga_urlutils_service');
                   style.getText().getFill().getColor()),
               scale: style.getText().getScale()
             });
+            fill = undefined;
+            stroke = undefined;
           }
 
           styles = [new ol.style.Style({
-            fill: style.getFill(),
-            stroke: style.getStroke(),
+            fill: fill,
+            stroke: stroke,
             image: image,
             text: text,
             zIndex: style.getZIndex()

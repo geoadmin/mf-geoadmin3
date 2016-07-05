@@ -5,27 +5,44 @@ goog.provide('ga_drawstylepopup_controller');
   var module = angular.module('ga_drawstylepopup_controller', []);
 
   module.controller('GaDrawStylePopupController', function($scope) {
-
+    var deregister = [];
     $scope.options = {
       title: 'style'
     };
 
-    $scope.$on('gaDrawStyleActive', function(evt, feature, pixel, callback) {
+    var off = function() {
+      deregister.forEach(function(item) {
+        if (angular.isFunction(item)) {
+          item();
+        } else {
+          ol.Observable.unByKey(item);
+        }
+      });
+      deregister = [];
+    };
+
+    $scope.$on('gaDrawStyleActive', function(evt, layer, feature, pixel,
+        onClose) {
       $scope.toggle = !!(feature);
       $scope.options.isReduced = false;
       if (pixel) {
         $scope.options.x = pixel[0];
         $scope.options.y = pixel[1];
       }
-      if (callback) {
-        // Remove the feature correctly (without digest cycle error)
-        var unreg = $scope.$watch('toggle', function(newValue, oldValue) {
+      if (onClose) {
+        off();
+        // Unselect the feature correctly (without digest cycle error)
+        deregister.push($scope.$watch('toggle', function(newValue, oldValue) {
           if (oldValue && !newValue) { //The popup is closing
-            callback(feature);
-            unreg();
+            onClose(feature);
+            off();
           }
-        });
+        }));
       }
+    });
+
+    $scope.$on('destroy', function() {
+      off();
     });
 
     $scope.$on('gaProfileActive', function(evt, feature) {
