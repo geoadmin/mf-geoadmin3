@@ -65,7 +65,7 @@
       <div ng-repeat="c in ::options.colors"
            ng-class="{'ga-selected': (options.color == c)}" 
            ng-click="options.color = c">
-        <div style="background-color:{{::c.name}}">
+        <div ng-style="::{'background-color': c.name}">
         </div> 
       </div>
     </div>
@@ -85,7 +85,7 @@
       <div ng-repeat="c in ::options.colors"
            ng-class="{'ga-selected': (options.iconColor == c)}" 
            ng-click="options.iconColor = c">
-        <div style="background-color:{{::c.name}}">
+        <div ng-style="::{'background-color': c.name}">
         </div> 
       </div>
     </div>

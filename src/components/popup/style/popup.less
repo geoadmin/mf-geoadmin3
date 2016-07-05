@@ -10,6 +10,8 @@
   bottom: 0;
   right: 0;
   transform: translate3d(0,0,0)!important;
+  -ms-transform: translateX(0) translateY(0)!important;
+
   .arrow {
     display: none;
   }
@@ -119,9 +121,14 @@
     right: auto!important; // for IE
     z-index: 500;
     transform: translate3d(0,0,0)!important;
-    
+    -ms-transform: translateX(0) translateY(0)!important;
+
     &.bottom {
       margin: 0!important;
+    }
+
+    .arrow {
+      display: none;
     }
 
     .transition(bottom 1s ease);

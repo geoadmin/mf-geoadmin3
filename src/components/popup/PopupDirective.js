@@ -93,11 +93,11 @@ goog.require('ga_print_service');
             deregOl.push(scope.map.on('postrender', function() {
               if (oldCoord && scope.options.x && scope.options.y) {
                 var pixel = scope.map.getPixelFromCoordinate(oldCoord);
-                var tr = 'translate3d(' +
-                  (pixel[0] - scope.options.x) + 'px, ' +
-                  (pixel[1] - scope.options.y) + 'px, 0)';
+                var x = (pixel[0] - scope.options.x) + 'px';
+                var y = (pixel[1] - scope.options.y) + 'px';
                 element.css({
-                  transform: tr
+                  transform: 'translate3d(' + x + ', ' + y + ', 0)',
+                  '-ms-transform': 'translateX(' + x + ') translateY(' + y + ')'
                 });
               }
             }));
