@@ -591,7 +591,7 @@ describe('ga_kml_service', function() {
         $rootScope.$digest();
       });
 
-      it('uses default style', function(done) {
+      it('uses default point style', function(done) {
         var kml = '<kml>' + createValidPlkPoint() + '</kml>';
         var getStyle = gaStyleFactoryMock.expects('getStyle').once()
             .withArgs('kml').returns(dfltStyle);
@@ -599,7 +599,23 @@ describe('ga_kml_service', function() {
           getStyle.verify();
           var feat = olLayer.getSource().getFeatures()[0];
           var style = feat.getStyleFunction().call(feat)[0];
+          expect(style.getImage().getFill().getColor()).to.eql(dfltStyle.getImage().getFill().getColor());
+          expect(style.getImage().getStroke().getColor()).to.eql(dfltStyle.getImage().getStroke().getColor());
+          done();
+        });
+        $rootScope.$digest();
+      });
+
+      it('uses default line style', function(done) {
+        var kml = '<kml>' + createValidPlkLineString() + '</kml>';
+        var getStyle = gaStyleFactoryMock.expects('getStyle').once()
+            .withArgs('kml').returns(dfltStyle);
+        gaKml.addKmlToMap(map, kml).then(function(olLayer) {
+          getStyle.verify();
+          var feat = olLayer.getSource().getFeatures()[0];
+          var style = feat.getStyleFunction().call(feat)[0];
           expect(style.getFill().getColor()).to.eql(dfltStyle.getFill().getColor());
+          expect(style.getStroke().getColor()).to.eql(dfltStyle.getStroke().getColor());
           done();
         });
         $rootScope.$digest();
