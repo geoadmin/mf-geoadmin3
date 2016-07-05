@@ -4,7 +4,6 @@ goog.require('ga_exportkml_service');
 goog.require('ga_filestorage_service');
 goog.require('ga_map_service');
 goog.require('ga_measure_service');
-goog.require('ga_permalink');
 goog.require('ga_styles_service');
 
 (function() {
@@ -14,7 +13,6 @@ goog.require('ga_styles_service');
     'ga_filestorage_service',
     'ga_map_service',
     'ga_measure_service',
-    'ga_permalink',
     'ga_styles_service',
     'pascalprecht.translate'
   ]);
@@ -31,9 +29,8 @@ goog.require('ga_styles_service');
    *
    */
   module.directive('gaDraw',
-    function($timeout, $translate, $window, $rootScope, gaBrowserSniffer,
-        gaDefinePropertiesForLayer, gaDebounce, gaFileStorage, gaLayerFilters,
-        gaExportKml, gaMapUtils, gaPermalink, gaUrlUtils,
+    function($translate,  gaBrowserSniffer, gaDefinePropertiesForLayer,
+        gaDebounce, gaFileStorage, gaLayerFilters, gaExportKml, gaMapUtils,
         $document, gaMeasure, gaStyleFactory) {
 
       var createDefaultLayer = function(map, useTemporaryLayer) {
