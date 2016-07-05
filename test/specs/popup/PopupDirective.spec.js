@@ -45,8 +45,6 @@ describe('ga_popup_directive', function() {
   });
 
   it('shows/closes the popup with scope property', inject(function($rootScope) {
-    expect(element.css('display')).to.be('none'); // hidden by default
-
     $rootScope.popupShown = true;
     $rootScope.$digest();
     expect(element.css('display')).to.be('block');
