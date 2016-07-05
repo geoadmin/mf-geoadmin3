@@ -48,6 +48,7 @@ goog.require('ga_draggable_directive');
       Popup.prototype.open = function(autocloseDelay) {
         var that = this;
         this.scope.toggle = true;
+        this.scope.options.isReduced = false;
         if (autocloseDelay) {
           $timeout(function() {
             if (that && that.scope && that.scope.toggle) {

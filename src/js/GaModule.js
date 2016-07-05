@@ -13,6 +13,7 @@ goog.require('ga_controls3d');
 goog.require('ga_draggable_directive');
 goog.require('ga_draw');
 goog.require('ga_draw_controller');
+goog.require('ga_drawstylepopup_controller');
 goog.require('ga_featuretree');
 goog.require('ga_featuretree_controller');
 goog.require('ga_feedback');
@@ -38,6 +39,7 @@ goog.require('ga_print');
 goog.require('ga_print_controller');
 goog.require('ga_profile');
 goog.require('ga_profile_controller');
+goog.require('ga_profilepopup_controller');
 goog.require('ga_query');
 goog.require('ga_query_controller');
 goog.require('ga_rotate');
@@ -115,6 +117,7 @@ goog.require('ga_waitcursor_service');
     'ga_share_controller',
     'ga_print_controller',
     'ga_profile_controller',
+    'ga_profilepopup_controller',
     'ga_translation_controller',
     'ga_feedback_controller',
     'ga_contextpopup_controller',
@@ -124,6 +127,7 @@ goog.require('ga_waitcursor_service');
     'ga_tooltip_controller',
     'ga_featuretree_controller',
     'ga_draw_controller',
+    'ga_drawstylepopup_controller',
     'ga_query_controller'
   ]);
 

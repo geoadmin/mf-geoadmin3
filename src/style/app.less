@@ -100,6 +100,12 @@ button, a, .ga-bg-layer, .ga-bg-layer-bt {
   }
 }
 
+.ga-draw-modifying {
+  #draw-style-popup{
+    display: none!important;
+  }
+}
+
 input::-ms-clear {
   display: none;
 }
@@ -119,22 +125,20 @@ form {
   cursor: pointer;
 }
 
-.ga-move {
-  cursor: move;
-}
-
+.ga-drag,
 .ga-grab {
   // Fallback for IE
-  cursor: url(../../../img/grab.cur), move;
+  cursor: data-uri('../img/grab.cur'), move;
   cursor: -webkit-grab;
   cursor: grab;
 }
 
+.ga-dragging,
 .ga-grabbing {
   // Fallback for IE
-  cursor: url(../../../img/grab.cur), move;
-  cursor: -webkit-grab;
-  cursor: grab;
+  cursor: data-uri('../img/grabbing.cur'), move;
+  cursor: -webkit-grabbing;
+  cursor: grabbing;
 }
 
 
@@ -1226,10 +1230,10 @@ a .ga-icon-separator {
 
 #draw-style-popup {
   width: 320px;
-  margin-left: -160px;
+  margin: 18px 0 0 -160px;
   
   @media (max-width: @screen-phone) {
-    margin-left: 0;
+    margin: 0;
   }  
 }
 

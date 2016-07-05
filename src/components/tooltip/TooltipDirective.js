@@ -101,9 +101,13 @@ goog.require('ga_topic_service');
         };
 
         // Change cursor style on mouse move, only on desktop
+        var mapDiv;
         var updateCursorStyle = function(map, pixel) {
           var feature;
           var hasQueryableLayer = false;
+          if (!mapDiv) {
+            mapDiv = $(map.getTarget());
+          }
           if (!gaBrowserSniffer.msie || gaBrowserSniffer.msie > 10) {
             hasQueryableLayer = map.forEachLayerAtPixel(pixel,
               function() {
@@ -117,8 +121,11 @@ goog.require('ga_topic_service');
           if (!hasQueryableLayer) {
             feature = findVectorFeature(map, pixel);
           }
-          map.getTarget().style.cursor = (hasQueryableLayer || feature) ?
-              'pointer' : '';
+          if (hasQueryableLayer || feature) {
+            mapDiv.addClass('ga-pointer');
+          } else {
+            mapDiv.removeClass('ga-pointer');
+          }
         };
         var updateCursorStyleDebounced = gaDebounce.debounce(
                 updateCursorStyle, 10, false, false);

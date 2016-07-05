@@ -578,29 +578,34 @@ itemscope itemtype="http://schema.org/WebApplication"
     </div><!-- end Import KML -->
   % endif
 
-    <!-- Popup: Profile --> 
-    <div ga-popup="globals.profilePopupShown"
-         ga-popup-options="{title:'profile', position: 'fixed'}"
-         id="profile-popup"
-         class="ga-popup-bottom">
-      <div ng-controller="GaProfileController">
-        <div ng-if="globals.profilePopupShown"
-             ga-profile="feature" 
-             ga-profile-map="::map"
-             ga-profile-options="options">
+    <!-- Popup: Profile -->
+    <div ng-controller="GaProfilePopupController">
+      <div ga-popup="toggle"
+           ga-popup-options="options"
+           id="profile-popup"
+           class="ga-popup-bottom">
+        <div ng-controller="GaProfileController">
+          <div ng-if="toggle"
+               ga-profile="feature" 
+               ga-profile-map="::map"
+               ga-profile-options="options">
+          </div>
         </div>
       </div>
     </div><!-- end Profile -->
 
     <!-- Popup: Draw style -->
-    <div ga-popup="globals.drawStylePopupShown"
-         ga-popup-map="::map"
-         ga-popup-options="drawStylePopupOptions"
-         id="draw-style-popup"
-         class="ga-draw-popup ga-popup-mobile-bottom bottom">
-      <div ng-controller="GaDrawController">
-        <div ga-draw-style="feature"
-             ga-draw-style-options="options">
+    <div ng-controller="GaDrawStylePopupController">
+      <div ga-popup="toggle"
+           ga-popup-map="::map"
+           ga-popup-options="options"
+           id="draw-style-popup"
+           class="ga-draw-popup ga-popup-mobile-bottom bottom">
+        <div ng-controller="GaDrawController">
+          <div ng-if="toggle"
+               ga-draw-style="feature"
+               ga-draw-style-options="options">
+          </div>
         </div>
       </div>
     </div><!-- end Draw style -->

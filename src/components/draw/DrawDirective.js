@@ -145,6 +145,8 @@ goog.require('ga_permalink');
           var helpTooltip, distTooltip, areaTooltip;
           var map = scope.map;
           var viewport = $(map.getViewport());
+          var body = $($document[0].body);
+          var cssModify = 'ga-draw-modifying';
           scope.statusMsgId = '';
 
           // Filters functions
@@ -202,7 +204,13 @@ goog.require('ga_permalink');
             features: select.getFeatures(),
             style: scope.options.selectStyleFunction
           });
-
+          modify.on('modifystart', function(evt) {
+            body.addClass(cssModify);
+          });
+          modify.on('modifyend', function(evt) {
+            body.removeClass(cssModify);
+            togglePopup(scope.feature); // Update popup position
+          });
           var defineLayerToModify = function() {
 
             // Unregister the events attached to the previous source
@@ -623,17 +631,22 @@ goog.require('ga_permalink');
           ////////////////////////////////////
           // Popup content management
           ////////////////////////////////////
+          var unselectFeature = function(featToRemove) {
+            select.getFeatures().remove(featToRemove);
+          };
           var togglePopup = function(feature) {
             if (scope.options.noStyleUpdate) {
               return;
             }
             scope.feature = feature;
-            if (!scope.feature || gaMapUtils.isMeasureFeature(scope.feature)) {
+            if (!scope.feature) {
+              // Deactivate popups
+              $rootScope.$broadcast('gaProfileActive');
+              $rootScope.$broadcast('gaDrawStyleActive');
+            } else if (gaMapUtils.isMeasureFeature(scope.feature)) {
               // Hide or show the Profile popup
               $rootScope.$broadcast('gaProfileActive', scope.feature,
-                  function(featToRemove) {
-                select.getFeatures().remove(featToRemove);
-              });
+                  unselectFeature);
 
             } else {
               // Move the popup on the first coordinate of the feature
@@ -643,9 +656,7 @@ goog.require('ga_permalink');
               $rootScope.$broadcast('gaDrawStyleActive', scope.feature, [
                 pixel[0],
                 pixel[1]
-              ], function(featToRemove) {
-                select.getFeatures().remove(featToRemove);
-              });
+              ], unselectFeature);
             }
             scope.$applyAsync();
           };
@@ -700,12 +711,25 @@ goog.require('ga_permalink');
           // Utils functions
           ////////////////////////////////////
           // Change cursor style on mouse move, only on desktop
+          var mapDiv = $(map.getTarget());
           var updateCursorStyle = function(evt) {
+            if (mapDiv.hasClass('ga-grabbing')) {
+              mapDiv.removeClass('ga-grab');
+              return;
+            }
             var featureFound = map.forEachFeatureAtPixel(evt.pixel,
                 featureFilter, this, layerFilter);
-            var isSketchFeature = !!featureFound && !featureFound.getStyle();
-            map.getTarget().style.cursor = (featureFound) ?
-                ((isSketchFeature) ? 'move' : 'pointer') : '';
+            var classes = 'ga-pointer ga-grab';
+            if (featureFound) {
+              classes = 'ga-pointer';
+              var styles = featureFound.getStyle();
+              if (styles && styles.length > 1) {
+                classes += ' ga-grab';
+              }
+              mapDiv.addClass(classes);
+            } else {
+              mapDiv.removeClass(classes);
+            }
           };
           var updateCursorStyleDebounced = gaDebounce.debounce(
               updateCursorStyle, 10, false, false);

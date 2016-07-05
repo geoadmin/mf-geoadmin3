@@ -47,8 +47,8 @@ goog.require('ga_print_service');
 
           // Initialize the popup properties
           scope.toggle = scope.toggle || false;
-          scope.isReduced = false;
           scope.options = scope.optionsFunc() || {title: ''};
+          scope.options.isReduced = false;
 
           // Per default hide the print function
           if (!angular.isDefined(scope.options.showPrint) ||
@@ -67,7 +67,7 @@ goog.require('ga_print_service');
           }
           // Bring the popup to front on click on it.
           element.find('.popover-content').click(function(evt) {
-            if (!scope.isReduced && scope.toggle &&
+            if (!scope.options.isReduced && scope.toggle &&
                 element.css('z-index') != zIndex) {
               bringUpFront(element);
             }
@@ -93,14 +93,12 @@ goog.require('ga_print_service');
             deregOl.push(scope.map.on('postrender', function() {
               if (oldCoord && scope.options.x && scope.options.y) {
                 var pixel = scope.map.getPixelFromCoordinate(oldCoord);
-                //updatePosition(scope, element, pixel);
                 var tr = 'translate3d(' +
                   (pixel[0] - scope.options.x) + 'px, ' +
                   (pixel[1] - scope.options.y) + 'px, 0)';
                 element.css({
                   transform: tr
                 });
-
               }
             }));
           }
@@ -110,7 +108,7 @@ goog.require('ga_print_service');
               evt.stopPropagation();
               evt.preventDefault();
             }
-            scope.isReduced = false;
+            scope.options.isReduced = false;
             scope.toggle = false;
           };
 
@@ -121,7 +119,7 @@ goog.require('ga_print_service');
 
           scope.reduce = function(evt) {
             evt.stopPropagation();
-            scope.isReduced = true;
+            scope.options.isReduced = true;
           };
 
           // Expand only if necessary
@@ -131,7 +129,7 @@ goog.require('ga_print_service');
             if (scope.toggle) {
               bringUpFront(element);
             }
-            scope.isReduced = false;
+            scope.options.isReduced = false;
           };
 
           // Watch the shown property
@@ -141,8 +139,8 @@ goog.require('ga_print_service');
             if (newVal != oldVal ||
               (newVal != (element.css('display') == 'block'))) {
 
-              if (scope.isReduced) {
-                scope.isReduced = false;
+              if (scope.options.isReduced) {
+                scope.options.isReduced = false;
                 scope.toggle = true;
                 return;
               }
@@ -151,7 +149,7 @@ goog.require('ga_print_service');
               element.toggle(newVal);
 
               if (!newVal) {
-                scope.isReduced = false;
+                scope.options.isReduced = false;
                 if (scope.options.close) {
                   scope.options.close();
                 }
@@ -161,15 +159,14 @@ goog.require('ga_print_service');
             }
           });
 
-          scope.$watch('isReduced', function(newVal, oldVal) {
+          scope.$watch('options.isReduced', function(newVal, oldVal) {
             if (newVal != oldVal) {
-              element.toggleClass('ga-popup-reduced', scope.isReduced);
+              element.toggleClass('ga-popup-reduced', scope.options.isReduced);
               // Deactivate draggable directive
               if (element.attr('ga-draggable')) {
-                header.toggleClass('ga-draggable-zone', !scope.isReduced);
+                header.toggleClass('ga-draggable-zone',
+                    !scope.options.isReduced);
               }
-              // To keep a reference for the parent scope
-              scope.options.isReduced = scope.isReduced;
             }
           });
 
@@ -192,7 +189,7 @@ goog.require('ga_print_service');
           });
 
           var moveOnWindow = function() {
-            if (scope.isReduced) {
+            if (scope.options.isReduced) {
               return;
             }
             var screenSmLimit = 768;
