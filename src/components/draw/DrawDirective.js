@@ -217,16 +217,20 @@ gaMeasure, gaStyleFactory) {
           style: scope.options.selectStyleFunction
         });
         modify.on('modifystart', function(evt) {
-          body.addClass(cssModify);
-          mapDiv.addClass(cssGrabbing);
+          if (evt.mapBrowserPointerEvent.type == 'pointerdrag') {
+            body.addClass(cssModify);
+            mapDiv.addClass(cssGrabbing);
+          }
         });
         modify.on('modifyend', function(evt) {
-          togglePopup(scope.feature); // Update popup position
-          mapDiv.removeClass(cssGrabbing);
-          // Remove the css class after digest cycle to avoid flickering
-          $timeout(function() {
-            body.removeClass(cssModify);
-          }, 5, false);
+          if (evt.mapBrowserPointerEvent.type == 'pointerup') {
+            togglePopup(scope.feature); // Update popup position
+            mapDiv.removeClass(cssGrabbing);
+            // Remove the css class after digest cycle to avoid flickering
+            $timeout(function() {
+              body.removeClass(cssModify);
+            }, 0, false);
+          }
         });
         var defineLayerToModify = function() {
 
@@ -596,28 +600,29 @@ gaMeasure, gaStyleFactory) {
           evt.preventDefault();
         };
         scope.deleteSelectedFeature = function(evt) {
+          var length = select.getFeatures().getLength(); 
           if ((!evt || (evt.which == 46 &&
-                !/^(input|textarea)$/i.test(evt.target.nodeName))) &&
-              select.getFeatures().getLength() > 0) {
-            if (layer.getSource().getFeatures().length == 1) {
-              scope.deleteAllFeatures();
+              !/^(input|textarea)$/i.test(evt.target.nodeName))) &&
+              length > 0) {
+            if (layer.getSource().getFeatures().length == length) {
+              scope.deleteAllFeatures(evt);
               return;
             } else if (confirm($translate.instant(
                 'confirm_remove_selected_features'))) {
-              select.getFeatures().forEach(function(feature) {
-                layer.getSource().removeFeature(feature);
-              });
-              select.getFeatures().clear();
+              var feats = select.getFeatures().getArray();
+              for (var i = length - 1; i >= 0; i--) {
+                layer.getSource().removeFeature(feats[i]);
+              };
             }
           }
         };
         // Delete all features of the layer
         scope.deleteAllFeatures = function(evt) {
-          if (evt.currentTarget.attributes.disabled) {
+          if (evt.currentTarget.attributes &&
+              evt.currentTarget.attributes.disabled) {
             return;
           }
           if (confirm($translate.instant('confirm_remove_all_features'))) {
-            select.getFeatures().clear();
             layer.getSource().clear();
             if (layer.adminId) {
               scope.statusMsgId = '';
