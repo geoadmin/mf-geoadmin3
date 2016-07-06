@@ -48,13 +48,8 @@ goog.require('ga_styles_service');
 
     // Draw a marker
     var markerDrawStyleFunc = function(feature, resolution) {
-      var textStyle;
-      if ($scope.options.name) {
-        textStyle = annotationDrawStyleFunc(feature, resolution)[0].getText();
-      }
       var styles = [
         new ol.style.Style({
-          text: textStyle,
           image: new ol.style.Icon({
             src: getIconUrl($scope.options.icon),
             scale: $scope.options.iconSize.scale
