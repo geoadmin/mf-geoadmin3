@@ -184,18 +184,22 @@ gaMeasure, gaStyleFactory) {
             select.getFeatures().clear();
           }
         });
+        select.on('select', function(evt) {
+          if (evt.selected[0]) {
+            togglePopup(evt.selected[0], evt.mapBrowserEvent.coordinate);
+          }
+        });
         select.getFeatures().on('add', function(evt) {
-          // Apply the select style
+           // Apply the select style
           var styles = scope.options.selectStyleFunction(evt.element);
           evt.element.setStyle(styles);
-          togglePopup(evt.element);
         });
         select.getFeatures().on('remove', function(evt) {
           // Remove the select style
           var styles = evt.element.getStyle();
           styles.pop();
           evt.element.setStyle(styles);
-          togglePopup();
+          togglePopup(evt.target.item(0));
         });
         select.setActive(false);
 
@@ -224,13 +228,14 @@ gaMeasure, gaStyleFactory) {
         });
         modify.on('modifyend', function(evt) {
           if (evt.mapBrowserPointerEvent.type == 'pointerup') {
-            togglePopup(scope.feature); // Update popup position
             mapDiv.removeClass(cssGrabbing);
             // Remove the css class after digest cycle to avoid flickering
             $timeout(function() {
               body.removeClass(cssModify);
             }, 0, false);
           }
+          togglePopup(evt.features.item(0),
+              evt.mapBrowserPointerEvent.coordinate);
         });
         var defineLayerToModify = function() {
 
@@ -600,7 +605,7 @@ gaMeasure, gaStyleFactory) {
           evt.preventDefault();
         };
         scope.deleteSelectedFeature = function(evt) {
-          var length = select.getFeatures().getLength(); 
+          var length = select.getFeatures().getLength();
           if ((!evt || (evt.which == 46 &&
               !/^(input|textarea)$/i.test(evt.target.nodeName))) &&
               length > 0) {
@@ -612,7 +617,7 @@ gaMeasure, gaStyleFactory) {
               var feats = select.getFeatures().getArray();
               for (var i = length - 1; i >= 0; i--) {
                 layer.getSource().removeFeature(feats[i]);
-              };
+              }
             }
           }
         };
@@ -657,23 +662,26 @@ gaMeasure, gaStyleFactory) {
         ////////////////////////////////////
         // Popup content management
         ////////////////////////////////////
-        var togglePopup = function(feature) {
+        var togglePopup = function(feature, clickCoord) {
           if (scope.options.noStyleUpdate) {
             return;
           }
           scope.feature = feature;
           if (!scope.feature) {
-            // Deactivate popups
+            // Hide popups
             $rootScope.$broadcast('gaProfileActive');
             $rootScope.$broadcast('gaDrawStyleActive');
+
           } else if (gaMapUtils.isMeasureFeature(scope.feature)) {
             // Hide or show the Profile popup
             $rootScope.$broadcast('gaProfileActive', scope.feature,
                 unselectFeature);
 
           } else {
-            // Move the popup on the first coordinate of the feature
-            var coord = feature.getGeometry().getFirstCoordinate();
+            // Move the popup on the closest coordinate of the click event
+            var coord = clickCoord ?
+                feature.getGeometry().getClosestPoint(clickCoord) :
+                feature.getGeometry().getLastCoordinate();
             var pixel = map.getPixelFromCoordinate(coord);
 
             $rootScope.$broadcast('gaDrawStyleActive', layer, scope.feature, [
