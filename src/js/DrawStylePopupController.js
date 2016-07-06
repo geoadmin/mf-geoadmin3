@@ -7,7 +7,7 @@ goog.provide('ga_drawstylepopup_controller');
   module.controller('GaDrawStylePopupController', function($scope) {
     var lastFeature, deregister = [];
     $scope.options = {
-      title: 'style'
+      title: 'draw_popup_title_feature'
     };
 
     var off = function() {

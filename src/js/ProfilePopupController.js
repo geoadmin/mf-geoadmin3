@@ -7,7 +7,7 @@ goog.provide('ga_profilepopup_controller');
   module.controller('GaProfilePopupController', function($scope) {
 
     $scope.options = {
-      title: 'profile',
+      title: 'draw_popup_title_measure',
       position: 'fixed'
     };
 
