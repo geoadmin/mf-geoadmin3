@@ -5,7 +5,7 @@ goog.provide('ga_drawstylepopup_controller');
   var module = angular.module('ga_drawstylepopup_controller', []);
 
   module.controller('GaDrawStylePopupController', function($scope) {
-    var deregister = [];
+    var lastFeature, deregister = [];
     $scope.options = {
       title: 'style'
     };
@@ -24,7 +24,11 @@ goog.provide('ga_drawstylepopup_controller');
     $scope.$on('gaDrawStyleActive', function(evt, layer, feature, pixel,
         onClose) {
       $scope.toggle = !!(feature);
-      $scope.options.isReduced = false;
+      // If the selected feature has changed, we force the popup to unreduce
+      if (lastFeature != feature) {
+        $scope.options.isReduced = false;
+      }
+      lastFeature = feature;
       if (pixel) {
         $scope.options.x = pixel[0];
         $scope.options.y = pixel[1];

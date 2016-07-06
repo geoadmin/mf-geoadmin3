@@ -28,9 +28,10 @@ goog.require('ga_styles_service');
    *                        automatically on s3.
    *
    */
-  module.directive('gaDraw', function($translate, $rootScope, gaBrowserSniffer,
-      gaDefinePropertiesForLayer, gaDebounce, gaFileStorage, gaLayerFilters,
-      gaExportKml, gaMapUtils, $document, gaMeasure, gaStyleFactory) {
+  module.directive('gaDraw', function($translate, $rootScope, $timeout,
+      gaBrowserSniffer, gaDefinePropertiesForLayer, gaDebounce, gaFileStorage,
+      gaLayerFilters, gaExportKml, gaMapUtils, $document,
+gaMeasure, gaStyleFactory) {
 
     var createDefaultLayer = function(map, useTemporaryLayer) {
       // #2820: we set useSpatialIndex to false to allow display of azimuth
@@ -220,9 +221,12 @@ goog.require('ga_styles_service');
           mapDiv.addClass(cssGrabbing);
         });
         modify.on('modifyend', function(evt) {
-          body.removeClass(cssModify);
           togglePopup(scope.feature); // Update popup position
           mapDiv.removeClass(cssGrabbing);
+          // Remove the css class after digest cycle to avoid flickering
+          $timeout(function() {
+            body.removeClass(cssModify);
+          }, 5, false);
         });
         var defineLayerToModify = function() {
 
