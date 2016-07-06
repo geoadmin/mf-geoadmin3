@@ -215,6 +215,7 @@ goog.require('ga_styles_service');
         cssClass: 'fa fa-ga-add-line',
         drawOptions: {
           type: 'Polygon',
+          minPoints: 2,
           style: generateDrawStyleFunc(linepolygonDrawStyleFunc)
         },
         style: linepolygonDrawStyleFunc

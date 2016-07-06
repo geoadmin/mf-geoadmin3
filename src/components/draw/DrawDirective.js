@@ -30,8 +30,8 @@ goog.require('ga_styles_service');
    */
   module.directive('gaDraw', function($translate, $rootScope, $timeout,
       gaBrowserSniffer, gaDefinePropertiesForLayer, gaDebounce, gaFileStorage,
-      gaLayerFilters, gaExportKml, gaMapUtils, $document,
-gaMeasure, gaStyleFactory) {
+      gaLayerFilters, gaExportKml, gaMapUtils, $document, gaMeasure,
+      gaStyleFactory) {
 
     var createDefaultLayer = function(map, useTemporaryLayer) {
       // #2820: we set useSpatialIndex to false to allow display of azimuth
@@ -186,6 +186,7 @@ gaMeasure, gaStyleFactory) {
         });
         select.on('select', function(evt) {
           if (evt.selected[0]) {
+            // Update the position of the popup according to the click event.
             togglePopup(evt.selected[0], evt.mapBrowserEvent.coordinate);
           }
         });
@@ -193,12 +194,15 @@ gaMeasure, gaStyleFactory) {
            // Apply the select style
           var styles = scope.options.selectStyleFunction(evt.element);
           evt.element.setStyle(styles);
+          // Show the popup
+          togglePopup(evt.element);
         });
         select.getFeatures().on('remove', function(evt) {
           // Remove the select style
           var styles = evt.element.getStyle();
           styles.pop();
           evt.element.setStyle(styles);
+          // Hide or move the popup to the next selected feature
           togglePopup(evt.target.item(0));
         });
         select.setActive(false);
@@ -221,7 +225,7 @@ gaMeasure, gaStyleFactory) {
           style: scope.options.selectStyleFunction
         });
         modify.on('modifystart', function(evt) {
-          if (evt.mapBrowserPointerEvent.type == 'pointerdrag') {
+          if (evt.mapBrowserPointerEvent.type != 'singleclick') {
             body.addClass(cssModify);
             mapDiv.addClass(cssGrabbing);
           }
@@ -233,10 +237,12 @@ gaMeasure, gaStyleFactory) {
             $timeout(function() {
               body.removeClass(cssModify);
             }, 0, false);
+            // Move the popup to the new position
+            togglePopup(evt.features.item(0),
+                evt.mapBrowserPointerEvent.coordinate);
           }
-          togglePopup(evt.features.item(0),
-              evt.mapBrowserPointerEvent.coordinate);
         });
+
         var defineLayerToModify = function() {
 
           // Unregister the events attached to the previous source
@@ -684,10 +690,8 @@ gaMeasure, gaStyleFactory) {
                 feature.getGeometry().getLastCoordinate();
             var pixel = map.getPixelFromCoordinate(coord);
 
-            $rootScope.$broadcast('gaDrawStyleActive', layer, scope.feature, [
-              pixel[0],
-              pixel[1]
-            ], unselectFeature);
+            $rootScope.$broadcast('gaDrawStyleActive', layer, scope.feature,
+                pixel, unselectFeature);
           }
           scope.$applyAsync();
         };
