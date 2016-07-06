@@ -212,7 +212,7 @@ goog.require('ga_styles_service');
               confirm($translate.instant('confirm_remove_all_features'))) {
             layer.getSource().clear();
           } else if (confirm($translate.instant(
-              'confirm_remove_selected_feature'))) {
+              'confirm_remove_selected_features'))) {
             layer.getSource().removeFeature(feature);
           }
           scope.feature = undefined;

@@ -216,6 +216,13 @@ goog.require('ga_styles_service');
             }
           }
         };
+        var onClosePopup = function(feature) {
+          if (select.getFeatures().getLength() > 1) {
+            return;
+          }
+          unselectFeature(feature);
+        };
+
         // Add modify interaction
         // The modify interaction works with features selected by the select
         // interaction so no need to activate/deactivate it.
@@ -675,7 +682,7 @@ goog.require('ga_styles_service');
             if (!clickCoord) {
               // Hide or show the Profile popup
               $rootScope.$broadcast('gaProfileActive', scope.feature,
-                  unselectFeature);
+                  onClosePopup);
               scope.$applyAsync();
             }
           } else {
@@ -686,7 +693,7 @@ goog.require('ga_styles_service');
             var pixel = map.getPixelFromCoordinate(coord);
 
             $rootScope.$broadcast('gaDrawStyleActive', layer, scope.feature,
-                pixel, unselectFeature);
+                pixel, onClosePopup);
             scope.$applyAsync();
           }
         };
