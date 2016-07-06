@@ -270,9 +270,9 @@ goog.require('ga_styles_service');
             unSourceEvents = [
               source.on('addfeature', saveDebounced),
               source.on('changefeature', saveDebounced),
-              source.on('removefeature', saveDebounced),
               source.on('removefeature', function(evt) {
-                // Use when the feature is removed outside the draw directive.
+                saveDebounced();
+                // Used when the feature is removed outside the draw directive.
                 unselectFeature(evt.feature);
               })
             ];
@@ -353,7 +353,7 @@ goog.require('ga_styles_service');
           // Remove the layer if no features added
           if (layer && (useTemporaryLayer ||
               layer.getSource().getFeatures().length == 0)) {
-            map.removeLayer(layer);
+            map.removeLaye(layer);
             layer = null;
           }
           map.removeInteraction(select);
@@ -635,16 +635,9 @@ goog.require('ga_styles_service');
           }
           if (confirm($translate.instant('confirm_remove_all_features'))) {
             layer.getSource().clear();
-            if (layer.adminId) {
-              scope.statusMsgId = '';
-              gaFileStorage.del(layer.adminId).then(function() {
-                layer.adminId = undefined;
-                layer.url = undefined;
-              });
-            }
-            map.removeLayer(layer);
           }
         };
+
 
         scope.canExport = function() {
           return (layer) ? layer.getSource().getFeatures().length > 0 : false;
@@ -677,12 +670,14 @@ goog.require('ga_styles_service');
             // Hide popups
             $rootScope.$broadcast('gaProfileActive');
             $rootScope.$broadcast('gaDrawStyleActive');
-
+            scope.$applyAsync();
           } else if (gaMapUtils.isMeasureFeature(scope.feature)) {
-            // Hide or show the Profile popup
-            $rootScope.$broadcast('gaProfileActive', scope.feature,
-                unselectFeature);
-
+            if (!clickCoord) {
+              // Hide or show the Profile popup
+              $rootScope.$broadcast('gaProfileActive', scope.feature,
+                  unselectFeature);
+              scope.$applyAsync();
+            }
           } else {
             // Move the popup on the closest coordinate of the click event
             var coord = clickCoord ?
@@ -692,8 +687,8 @@ goog.require('ga_styles_service');
 
             $rootScope.$broadcast('gaDrawStyleActive', layer, scope.feature,
                 pixel, unselectFeature);
+            scope.$applyAsync();
           }
-          scope.$applyAsync();
         };
 
 
@@ -702,7 +697,15 @@ goog.require('ga_styles_service');
         ////////////////////////////////////
         var save = function(evt) {
           if (layer.getSource().getFeatures().length == 0) {
-            //if no features to save do nothing
+            //if no features to save, delete the file
+            if (layer.adminId) {
+              scope.statusMsgId = '';
+              gaFileStorage.del(layer.adminId).then(function() {
+                layer.adminId = undefined;
+                layer.url = undefined;
+              });
+            }
+            map.removeLayer(layer);
             return;
           }
           scope.statusMsgId = 'draw_file_saving';

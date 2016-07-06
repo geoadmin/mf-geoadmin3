@@ -208,11 +208,11 @@ goog.require('ga_styles_service');
         }
 
         scope.deleteSelectedFeature = function(layer, feature) {
-          if (layer.getSource().getFeatures().length == 1) {
-            //scope.deleteAllFeatures();
-            //return;
+          if (layer.getSource().getFeatures().length == 1 &&
+              confirm($translate.instant('confirm_remove_all_features'))) {
+            layer.getSource().clear();
           } else if (confirm($translate.instant(
-              'confirm_remove_selected_features'))) {
+              'confirm_remove_selected_feature'))) {
             layer.getSource().removeFeature(feature);
           }
           scope.feature = undefined;
