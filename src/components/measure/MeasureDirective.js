@@ -29,15 +29,11 @@ goog.require('ga_measure_service');
           if (geom instanceof ol.geom.Point) {
             var coord = geom.getCoordinates();
             scope.coord = coord[0].toFixed(2) + ', ' + coord[1].toFixed(2);
-          }
-          if (geom instanceof ol.geom.Polygon ||
-              geom instanceof ol.geom.LineString) {
+          } else {
             scope.distance = gaMeasure.getLength(geom);
-            //scope.azimuth = gaMeasure.getAzimuth(geom);
-          }
-          if (geom instanceof ol.geom.Polygon) {
             scope.surface = gaMeasure.getArea(geom,
                 scope.options.showLineStringArea);
+            //scope.azimuth = gaMeasure.getAzimuth(geom);
           }
         };
         var useFeature = function(newFeature) {

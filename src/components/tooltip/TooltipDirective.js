@@ -42,7 +42,10 @@ goog.require('ga_topic_service');
                    'options.htmls.length)" ' +
                'ng-mouseleave="options.onMouseLeave($event)">' +
             '<div ng-bind-html="html.snippet"></div>' +
-            '<div ga-measure="::html.feature"></div>' +
+            '<div ng-if="::html.showVectorInfos" class="ga-vector-tools">' +
+              '<div ga-measure="::html.feature"></div>' +
+              '<div ga-profile-bt="::html.feature"></div>' +
+            '</div>' +
             '<div ga-shop ' +
                  'ga-shop-map="::html.map" ' +
                  'ga-shop-feature="::html.feature" ' +
@@ -83,9 +86,10 @@ goog.require('ga_topic_service');
         var isFeatureQueryable = function(feature) {
           var geom = feature.getGeometry();
           return feature && feature.get('name') || feature.get('description') ||
-           geom instanceof ol.geom.Point ||
-           geom instanceof ol.geom.LineString ||
-           geom instanceof ol.geom.Polygon;
+              !(geom instanceof ol.geom.MultiPoint ||
+              geom instanceof ol.geom.MultiLineString ||
+              geom instanceof ol.geom.MultiPolygon ||
+              geom instanceof ol.geom.GeometryCollection);
         };
 
         // Find the first feature from a vector layer
@@ -549,12 +553,6 @@ goog.require('ga_topic_service');
               var name = feature.get('name');
               var featureId = feature.getId();
               var layerId = feature.get('layerId') || layer.id;
-              if (layer.get('type') == 'KML') {
-                layerId = layer.label;
-                if (name && name.length) {
-                  featureId = name;
-                }
-              }
               var id = layerId + '#' + featureId;
               htmlpopup = htmlpopup.
                   replace('{{id}}', id).
@@ -568,6 +566,12 @@ goog.require('ga_topic_service');
               showFeatures([feature]);
 
               // Iframe communication from inside out
+              if (layer.get('type') == 'KML') {
+                layerId = layer.label;
+                if (name && name.length) {
+                  featureId = name;
+                }
+              }
               gaIFrameCom.send('gaFeatureSelection', {
                 layerId: layerId,
                 featureId: featureId
@@ -660,6 +664,7 @@ goog.require('ga_topic_service');
               htmls.push({
                 map: scope.map,
                 feature: value,
+                showVectorInfos: (value instanceof ol.Feature),
                 clickGeometry: new ol.geom.Point(scope.clickCoordinate),
                 snippet: $sce.trustAsHtml(html)
               });
