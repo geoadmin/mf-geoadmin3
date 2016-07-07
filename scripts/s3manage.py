@@ -452,7 +452,11 @@ def main():
             sys.exit()
 
 
-        BUCKET_NAME = "S3_MF_GEOADMIN3_{}".format(target) 
+        BUCKET_NAME = os.environ.get("S3_MF_GEOADMIN3_{}".format(target.upper()))
+
+        if BUCKET_NAME is None:
+            print "Please define the BUCKET_NAME you want to deploy."
+            sys.exit(2)
 
         if len(sys.argv) == 4:
             base_dir = os.path.abspath(sys.argv[3])
