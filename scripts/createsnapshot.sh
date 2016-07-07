@@ -21,7 +21,7 @@ if [ $CREATE_SNAPSHOT == 'true' ]; then
   git log -1 --pretty=format:"%h - %an, %ar : %s" > .build-artefacts/last-commit-ref
   git rev-parse --symbolic-full-name --abbrev-ref HEAD > .build-artefacts/deployed-git-branch
   rm -rf .git*
-  export SNAPSHOT
+  export SNAPSHOT=${SNAPSHOT}
 else
   echo "NO Snapshot created. Specify '-s' parameter got create snapshot."
   exit 2

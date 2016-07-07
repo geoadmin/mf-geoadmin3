@@ -7,6 +7,8 @@ import boto3
 import sys
 import os
 import json
+import glob
+import time
 
 import StringIO
 import gzip
@@ -14,6 +16,9 @@ from datetime import datetime
 
 import mimetypes
 mimetypes.init()
+
+
+BASEDIR = "/var/www/vhosts/mf-geoadmin3/private"
 
 BUCKET_NAME = os.environ.get('BUCKET_NAME', None)
 BUCKET_LOCATION = os.environ.get('BUCKET_LOCATION', 'eu-central-1')
@@ -88,14 +93,17 @@ def _unzip_data(compressed):
     return data
 
 
-def save_to_s3(src, dest, cached=True, mimetype=None):
+def save_to_s3(src, dest, cached=True, mimetype=None, break_on_error=True):
 
     try:
         with open(src, 'r') as f:
             data = f.read()
     except EnvironmentError:
         print "Cannot upload {}".format(src)
-        sys.exit(2)
+        if break_on_error:
+            sys.exit(2)
+        else:
+            return False
     if mimetype is None:
         mimetype, _ = mimetypes.guess_type(src)
 
@@ -178,6 +186,9 @@ def usage():
 
 
 def upload(version, base_dir):
+
+    epoch_time = int(time.time())
+
     FILES = ['prd/lib/build.js',
              'prd/style/app.css',
              'prd/index.html',
@@ -231,15 +242,34 @@ def upload(version, base_dir):
         mimetype='application/js')
 
     for lang in ('de', 'fr', 'it', 'rm', 'en'):
-        save_to_s3(os.path.join(base_dir, 'prd/cache/layersConfig.{}.json'.format(lang)),
-                   '{}/layersConfig.{}.json'.format(VERSION, lang), cached=True, mimetype='application/js')
+        # FIXME This is needed until https://github.com/geoadmin/mf-chsdi3/pull/1905 is merged
+        oldname = os.path.join(base_dir, 'prd/cache/layersConfig.{}'.format(lang))
+        newname = os.path.join(base_dir, 'prd/cache/layersConfig.{}.json'.format(lang))
+        if os.path.isfile(newname):
+            filename = newname
+        else:
+            filename = oldname
+        save_to_s3(filename,
+                   '{}/layersConfig.{}.json'.format(VERSION, lang),
+                   cached=True,
+                   mimetype='application/js')
+        save_to_s3(filename,
+                   '{}/src/layersConfig.{}.json'.format(VERSION, lang),
+                   cached=True,
+                   mimetype='application/js')
+        # Ugly, for old projects
+        save_to_s3(filename,
+                   '{}/layersConfig'.format(VERSION),
+                   cached=True,
+                   mimetype='application/js')
 
-    appcache_versioned_file = 'geoadmin.{}.appcache'.format(VERSION)
+    # appcache need to be changed by every upload!
+    appcache_versioned_file = get_appcache_file(os.path.join(base_dir, 'prd'))
+    print appcache_versioned_file
     save_to_s3(
         os.path.join(
-            base_dir,
-            'prd/' + appcache_versioned_file),
-        VERSION + '/' + appcache_versioned_file,
+            appcache_versioned_file),
+        VERSION + '/' + 'geoadmin.{}.appcache'.format(epoch_time),
         cached=False,
         mimetype='text/cache-manifest')
 
@@ -267,17 +297,22 @@ def upload(version, base_dir):
         cached=True,
         mimetype='application/js')
 
-    for lang in ('de', 'fr', 'it', 'rm', 'en'):
-        save_to_s3(os.path.join(base_dir, 'prd/cache/layersConfig.{}.json'.format(lang)),
-                   '{}/src/layersConfig.{}.json'.format(VERSION, lang),
-                   cached=True,
-                   mimetype='application/js')
+    # for lang in ('de', 'fr', 'it', 'rm', 'en'):
+    #    save_to_s3(os.path.join(base_dir, 'prd/cache/layersConfig.{}.json'.format(lang)),
+    #               '{}/src/layersConfig.{}.json'.format(VERSION, lang),
+    #               cached=True,
+    #               mimetype='application/js')
 
     check_url = get_url("index.{}.html".format(VERSION))
 
     print "Upload finished"
     print("\n\nPlease check it on {}\n".format(check_url))
     print("and {}\n".format(get_url("{}/src/index.html".format(VERSION))))
+
+
+def get_appcache_file(directory):
+    for filename in glob.glob(os.path.join(directory, '*.appcache')):
+        return filename
 
 
 def get_active_version():
@@ -294,7 +329,6 @@ def get_active_version():
             sys.exit(3)
     except IOError as e:
         return 0
-
 
     return int(get_index_version(d))
 
@@ -402,7 +436,11 @@ def activate(version):
             '.html',
             ACL='public-read')
     print "Special files"
-    for j in ('robots.txt', 'geoadmin.{}.appcache'.format(version), 'checker'):
+    appcache = None
+    files = list(bucket.objects.filter(Prefix='{}/geoadmin.'.format(version)).all())
+    if len(files) > 0:
+        appcache = os.path.basename(sorted(files)[-1].key)
+    for j in ('robots.txt', 'checker', appcache):
         src_key_name = '{}/{}'.format(version, j)
         print src_key_name, os.path.basename(src_key_name)
         try:
@@ -447,10 +485,9 @@ def main():
             usage()
             sys.exit()
         target = sys.argv[2]
-        if target not in ['dev', 'int','prod']:
+        if target not in ['dev', 'int', 'prod']:
             usage()
             sys.exit()
-
 
         BUCKET_NAME = os.environ.get("S3_MF_GEOADMIN3_{}".format(target.upper()))
 
@@ -458,18 +495,34 @@ def main():
             print "Please define the BUCKET_NAME you want to deploy."
             sys.exit(2)
 
-        if len(sys.argv) == 4:
-            base_dir = os.path.abspath(sys.argv[3])
+        SNAPSHOT = os.environ.get('SNAPSHOT')
+        if SNAPSHOT is not None:
+            try:
+                SNAPSHOT = int(SNAPSHOT)
+            except ValueError:
+                print "SNAPSHOT name is not in the form 'YYYYMMDDhhmm'"
+                sys.exit(2)
+
+            base_dir = os.path.join(BASEDIR, 'snapshots', str(SNAPSHOT), 'geoadmin/code/geoadmin')
+
             if not os.path.isdir(base_dir):
                 print "No code found in directory {}".format(base_dir)
                 sys.exit(2)
+            # VERSION = SNAPSHOT
         else:
-            base_dir = os.getcwd()
+            if len(sys.argv) == 4:
+                base_dir = os.path.abspath(sys.argv[3])
+                if not os.path.isdir(base_dir):
+                    print "No code found in directory {}".format(base_dir)
+                    sys.exit(2)
+            else:
+                base_dir = os.getcwd()
 
         with open(os.path.join(base_dir, 'prd/index.html'), 'r') as f:
             ctx = f.read()
 
         VERSION = get_index_version(ctx)
+        print "Using version={} from directory={}".format(VERSION, base_dir)
 
         active_version = get_active_version()
 
