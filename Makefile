@@ -218,12 +218,14 @@ deployprod: guard-SNAPSHOT
 s3uploaddev: boto3
 	@ if test "$(SNAPSHOT)" = "true"; then   \
 		 ./scripts/createsnapshot.sh;      \
-	fi;                                     
-	@ if [ ! -z "$(SNAPSHOT)" ];   then          \
+		 exit 1; \
+	fi; \
+	if [ ! -z "$(SNAPSHOT)" ];   then          \
 		echo "Uploading SNAPSHOT=${SNAPSHOT} to 'dev'"; \
 		${PYTHON_CMD} ./scripts/s3manage.py upload  dev /var/www/vhosts/mf-geoadmin3/private/snapshots/$(SNAPSHOT)/geoadmin/code/geoadmin/ \
+		exit 1; \
 	else \
-		echo "How MUST specify a SNAPSHOT, either 'true' or a 'timestamp'"; \
+		echo "You MUST specify a SNAPSHOT, either 'true' or a 'timestamp'"; \
 	fi
 
 .PHONY: s3uploadint
@@ -236,7 +238,7 @@ s3uploadprod: boto3
 
 .PHONY: s3activate
 s3activate: boto3
-	${PYTHON_CMD} ./scripts/s3manage.py activate $(VERSION)
+	${PYTHON_CMD} ./scripts/s3manage.py activate $(SNAPSHOT)
 
 .PHONY: s3list
 s3list: boto3
@@ -244,11 +246,11 @@ s3list: boto3
 
 .PHONY: s3info
 s3info: boto3
-	${PYTHON_CMD} ./scripts/s3manage.py info $(VERSION)
+	${PYTHON_CMD} ./scripts/s3manage.py info $(SNAPSHOT)
 
 .PHONY: s3delete
 s3delete: boto3
-	${PYTHON_CMD} ./scripts/s3manage.py delete $(VERSION)
+	${PYTHON_CMD} ./scripts/s3manage.py delete $(SNAPSHOT)
 
 .PHONY: deploybranch
 deploybranch: deploy/deploy-branch.cfg $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH)/.git/config
