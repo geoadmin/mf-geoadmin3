@@ -31,8 +31,11 @@ goog.require('ga_urlutils_service');
           attribs[lang] = {};
         }
         if (!attribs[lang][key]) {
-          attribs[lang][key] = '<a target="new" href="' +
-              config.attributionUrl + '">' + config.attribution + '</a>';
+          attribs[lang][key] = config.attribution;
+          if (gaUrlUtils.isValid(config.attributionUrl)) {
+            attribs[lang][key] = '<a target="new" href="' +
+                config.attributionUrl + '">' + config.attribution + '</a>';
+          }
         }
         return attribs[lang][key];
       };
