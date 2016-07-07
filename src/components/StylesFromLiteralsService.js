@@ -146,7 +146,7 @@ goog.provide('ga_stylesfromliterals_service');
           for (range in this.styles[geomType]) {
             range = range.split(',');
             if (value >= parseFloat(range[0]) &&
-                value <= parseFloat(range[1])) {
+                value < parseFloat(range[1])) {
               var style = this.styles[geomType][range];
               olStyle = style;
               break;

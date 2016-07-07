@@ -162,7 +162,7 @@ describe('ga_stylesfromliterals_service', function() {
   });
 
   it('supports simple unique type style assignment resolution dependent', function() {
-    // ]maxResolution, minResolution]
+    // [minResolution, maxResolution[
     var uniqueTypeStyleWithRes = {
       type: 'unique',
       property: 'foo',
@@ -340,7 +340,7 @@ describe('ga_stylesfromliterals_service', function() {
     expect(olImage.getStroke().getColor()).to.equal('#FFFFFF');
     expect(olImage.getStroke().getWidth()).to.equal(3);
 
-    var olFeature = geoJsonFormat.readFeature(
+    olFeature = geoJsonFormat.readFeature(
       '{"type": "Feature",' +
         '"geometry": {' +
           '"coordinates": [' +
@@ -353,8 +353,30 @@ describe('ga_stylesfromliterals_service', function() {
           '"foo": 11' +
         '}}'
     );
-    var olStyle = gaStyle.getFeatureStyle(olFeature);
-    var olImage = olStyle.getImage();
+    olStyle = gaStyle.getFeatureStyle(olFeature);
+    olImage = olStyle.getImage();
+    expect(olStyle.getImage()).to.be.an(ol.style.Image);
+    expect(olImage.getFill()).to.be.an(ol.style.Fill);
+    expect(olImage.getFill().getColor()).to.equal('#FF2222');
+    expect(olImage.getStroke()).to.be.an(ol.style.Stroke);
+    expect(olImage.getStroke().getColor()).to.equal('#F55555');
+    expect(olImage.getStroke().getWidth()).to.equal(2);
+
+    olFeature = geoJsonFormat.readFeature(
+      '{"type": "Feature",' +
+        '"geometry": {' +
+          '"coordinates": [' +
+            '11000,' +
+            '21000' +
+          '],' +
+          '"type": "Point"' +
+        '},' +
+        '"properties": {' +
+          '"foo": 10' +
+        '}}'
+    );
+    olStyle = gaStyle.getFeatureStyle(olFeature);
+    olImage = olStyle.getImage();
     expect(olStyle.getImage()).to.be.an(ol.style.Image);
     expect(olImage.getFill()).to.be.an(ol.style.Fill);
     expect(olImage.getFill().getColor()).to.equal('#FF2222');
