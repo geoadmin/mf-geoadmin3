@@ -7,7 +7,7 @@ describe('ga_stylesfromliterals_service', function() {
     });
   });
   
-  it('supports single type style assignment for a point', function() {
+  it('supports single type style assignment for a point, line and polygon', function() {
     var singleTypeStyle = {
       type: 'single',
       geomType: 'point',
@@ -26,13 +26,56 @@ describe('ga_stylesfromliterals_service', function() {
     var gaStyle = gaStylesFromLiterals(singleTypeStyle);
     var olStyle = gaStyle.getFeatureStyle();
     var olImage = olStyle.getImage();
-    expect(olStyle instanceof ol.style.Style).to.be(true);
-    expect(olImage instanceof ol.style.Image).to.be(true);
-    expect(olImage.getFill() instanceof ol.style.Fill).to.be(true);
+    expect(olStyle).to.be.an(ol.style.Style);
+    expect(olImage).to.be.an(ol.style.Image);
+    expect(olImage.getFill()).to.be.an(ol.style.Fill);
     expect(olImage.getFill().getColor()).to.equal('#FFFFFF');
-    expect(olImage.getStroke() instanceof ol.style.Stroke).to.be(true);
+    expect(olImage.getStroke()).to.be.an(ol.style.Stroke);
     expect(olImage.getStroke().getColor()).to.equal('#FFFFFF');
     expect(olImage.getStroke().getWidth()).to.equal(2);
+
+    singleTypeStyle = {
+      type: 'single',
+      geomType: 'line',
+      vectorOptions: {
+        stroke: {
+          color: '#FF1FF1',
+          width: 3,
+          lineCap: 'square',
+          lineJoin: 'square'
+        }
+      }
+    };
+    gaStyle = gaStylesFromLiterals(singleTypeStyle);
+    olStyle = gaStyle.getFeatureStyle();
+    expect(olStyle).to.be.an(ol.style.Style);
+    expect(olStyle.getStroke()).to.be.an(ol.style.Stroke);
+    expect(olStyle.getStroke().getColor()).to.equal('#FF1FF1');
+    expect(olStyle.getStroke().getWidth()).to.equal(3);
+    expect(olStyle.getStroke().getLineCap()).to.equal('square');
+    expect(olStyle.getStroke().getLineJoin()).to.equal('square');
+
+    singleTypeStyle = {
+      type: 'single',
+      geomType: 'polygon',
+      vectorOptions: {
+        fill: {
+          color: '#FF2FF2',
+        },
+        stroke: {
+          color: '#GG1GG1',
+          width: 5
+        }
+      }
+    };
+    gaStyle = gaStylesFromLiterals(singleTypeStyle);
+    olStyle = gaStyle.getFeatureStyle();
+    expect(olStyle).to.be.an(ol.style.Style);
+    expect(olStyle.getStroke()).to.be.an(ol.style.Stroke);
+    expect(olStyle.getStroke().getColor()).to.equal('#GG1GG1');
+    expect(olStyle.getStroke().getWidth()).to.equal(5);
+    expect(olStyle.getFill()).to.be.an(ol.style.Fill);
+    expect(olStyle.getFill().getColor()).to.equal('#FF2FF2');
   });
 
   it('supports simple unique type style assignment', function() {
@@ -88,10 +131,10 @@ describe('ga_stylesfromliterals_service', function() {
     );
     olStyle = gaStyle.getFeatureStyle(olFeature);
     olImage = olStyle.getImage();
-    expect(olStyle.getImage() instanceof ol.style.Image).to.be(true);
-    expect(olImage.getFill() instanceof ol.style.Fill).to.be(true);
+    expect(olStyle.getImage()).to.be.an(ol.style.Image);
+    expect(olImage.getFill()).to.be.an(ol.style.Fill);
     expect(olImage.getFill().getColor()).to.equal('#FF1FF1');
-    expect(olImage.getStroke() instanceof ol.style.Stroke).to.be(true);
+    expect(olImage.getStroke()).to.be.an(ol.style.Stroke);
     expect(olImage.getStroke().getColor()).to.equal('#FFFFFF');
     expect(olImage.getStroke().getWidth()).to.equal(3);
 
@@ -110,10 +153,10 @@ describe('ga_stylesfromliterals_service', function() {
     );
     olStyle = gaStyle.getFeatureStyle(olFeature);
     olImage = olStyle.getImage();
-    expect(olStyle.getImage() instanceof ol.style.Image).to.be(true);
-    expect(olImage.getFill() instanceof ol.style.Fill).to.be(true);
+    expect(olStyle.getImage()).to.be.an(ol.style.Image);
+    expect(olImage.getFill()).to.be.an(ol.style.Fill);
     expect(olImage.getFill().getColor()).to.equal('#FF2222');
-    expect(olImage.getStroke() instanceof ol.style.Stroke).to.be(true);
+    expect(olImage.getStroke()).to.be.an(ol.style.Stroke);
     expect(olImage.getStroke().getColor()).to.equal('#F55555');
     expect(olImage.getStroke().getWidth()).to.equal(2);
   });
@@ -189,28 +232,28 @@ describe('ga_stylesfromliterals_service', function() {
     );
     var olStyle = gaStyle.getFeatureStyle(olFeature, 5);
     var olImage = olStyle.getImage();
-    expect(olStyle.getImage() instanceof ol.style.Image).to.be(true);
-    expect(olImage.getFill() instanceof ol.style.Fill).to.be(true);
+    expect(olStyle.getImage()).to.be.an(ol.style.Image);
+    expect(olImage.getFill()).to.be.an(ol.style.Fill);
     expect(olImage.getFill().getColor()).to.equal('#FF1FF1');
-    expect(olImage.getStroke() instanceof ol.style.Stroke).to.be(true);
+    expect(olImage.getStroke()).to.be.an(ol.style.Stroke);
     expect(olImage.getStroke().getColor()).to.equal('#FFFFFF');
     expect(olImage.getStroke().getWidth()).to.equal(3);
 
     olStyle = gaStyle.getFeatureStyle(olFeature, 750);
     olImage = olStyle.getImage();
-    expect(olStyle.getImage() instanceof ol.style.Image).to.be(true);
-    expect(olImage.getFill() instanceof ol.style.Fill).to.be(true);
+    expect(olStyle.getImage()).to.be.an(ol.style.Image);
+    expect(olImage.getFill()).to.be.an(ol.style.Fill);
     expect(olImage.getFill().getColor()).to.equal('#C03199');
-    expect(olImage.getStroke() instanceof ol.style.Stroke).to.be(true);
+    expect(olImage.getStroke()).to.be.an(ol.style.Stroke);
     expect(olImage.getStroke().getColor()).to.equal('#C03199');
     expect(olImage.getStroke().getWidth()).to.equal(1);
 
     olStyle = gaStyle.getFeatureStyle(olFeature, 2000);
     olImage = olStyle.getImage();
-    expect(olStyle.getImage() instanceof ol.style.Image).to.be(true);
-    expect(olImage.getFill() instanceof ol.style.Fill).to.be(true);
+    expect(olStyle.getImage()).to.be.an(ol.style.Image);
+    expect(olImage.getFill()).to.be.an(ol.style.Fill);
     expect(olImage.getFill().getColor()).to.equal('#C03199');
-    expect(olImage.getStroke() instanceof ol.style.Stroke).to.be(true);
+    expect(olImage.getStroke()).to.be.an(ol.style.Stroke);
     expect(olImage.getStroke().getColor()).to.equal('#C03199');
     expect(olImage.getStroke().getWidth()).to.equal(1);
 
@@ -229,10 +272,10 @@ describe('ga_stylesfromliterals_service', function() {
     );
     olStyle = gaStyle.getFeatureStyle(olFeature, 2000);
     olImage = olStyle.getImage();
-    expect(olStyle.getImage() instanceof ol.style.Image).to.be(true);
-    expect(olImage.getFill() instanceof ol.style.Fill).to.be(true);
+    expect(olStyle.getImage()).to.be.an(ol.style.Image);
+    expect(olImage.getFill()).to.be.an(ol.style.Fill);
     expect(olImage.getFill().getColor()).to.equal('#FF2222');
-    expect(olImage.getStroke() instanceof ol.style.Stroke).to.be(true);
+    expect(olImage.getStroke()).to.be.an(ol.style.Stroke);
     expect(olImage.getStroke().getColor()).to.equal('#F55555');
     expect(olImage.getStroke().getWidth()).to.equal(2);
   });
@@ -290,10 +333,10 @@ describe('ga_stylesfromliterals_service', function() {
     );
     olStyle = gaStyle.getFeatureStyle(olFeature);
     olImage = olStyle.getImage();
-    expect(olStyle.getImage() instanceof ol.style.Image).to.be(true);
-    expect(olImage.getFill() instanceof ol.style.Fill).to.be(true);
+    expect(olStyle.getImage()).to.be.an(ol.style.Image);
+    expect(olImage.getFill()).to.be.an(ol.style.Fill);
     expect(olImage.getFill().getColor()).to.equal('#FF1FF1');
-    expect(olImage.getStroke() instanceof ol.style.Stroke).to.be(true);
+    expect(olImage.getStroke()).to.be.an(ol.style.Stroke);
     expect(olImage.getStroke().getColor()).to.equal('#FFFFFF');
     expect(olImage.getStroke().getWidth()).to.equal(3);
 
@@ -312,10 +355,10 @@ describe('ga_stylesfromliterals_service', function() {
     );
     var olStyle = gaStyle.getFeatureStyle(olFeature);
     var olImage = olStyle.getImage();
-    expect(olStyle.getImage() instanceof ol.style.Image).to.be(true);
-    expect(olImage.getFill() instanceof ol.style.Fill).to.be(true);
+    expect(olStyle.getImage()).to.be.an(ol.style.Image);
+    expect(olImage.getFill()).to.be.an(ol.style.Fill);
     expect(olImage.getFill().getColor()).to.equal('#FF2222');
-    expect(olImage.getStroke() instanceof ol.style.Stroke).to.be(true);
+    expect(olImage.getStroke()).to.be.an(ol.style.Stroke);
     expect(olImage.getStroke().getColor()).to.equal('#F55555');
     expect(olImage.getStroke().getWidth()).to.equal(2);
   });
@@ -390,19 +433,19 @@ describe('ga_stylesfromliterals_service', function() {
     );
     var olStyle = gaStyle.getFeatureStyle(olFeature, 10);
     var olImage = olStyle.getImage();
-    expect(olStyle.getImage() instanceof ol.style.Image).to.be(true);
-    expect(olImage.getFill() instanceof ol.style.Fill).to.be(true);
+    expect(olStyle.getImage()).to.be.an(ol.style.Image);
+    expect(olImage.getFill()).to.be.an(ol.style.Fill);
     expect(olImage.getFill().getColor()).to.equal('#FF1FF1');
-    expect(olImage.getStroke() instanceof ol.style.Stroke).to.be(true);
+    expect(olImage.getStroke()).to.be.an(ol.style.Stroke);
     expect(olImage.getStroke().getColor()).to.equal('#FFFFFF');
     expect(olImage.getStroke().getWidth()).to.equal(3);
 
     olStyle = gaStyle.getFeatureStyle(olFeature, 1000);
     olImage = olStyle.getImage();
-    expect(olStyle.getImage() instanceof ol.style.Image).to.be(true);
-    expect(olImage.getFill() instanceof ol.style.Fill).to.be(true);
+    expect(olStyle.getImage()).to.be.an(ol.style.Image);
+    expect(olImage.getFill()).to.be.an(ol.style.Fill);
     expect(olImage.getFill().getColor()).to.equal('#GGGGGG');
-    expect(olImage.getStroke() instanceof ol.style.Stroke).to.be(true);
+    expect(olImage.getStroke()).to.be.an(ol.style.Stroke);
     expect(olImage.getStroke().getColor()).to.equal('#AAAAAA');
     expect(olImage.getStroke().getWidth()).to.equal(1);
 
@@ -421,10 +464,10 @@ describe('ga_stylesfromliterals_service', function() {
     );
     olStyle = gaStyle.getFeatureStyle(olFeature, 2000);
     olImage = olStyle.getImage();
-    expect(olStyle.getImage() instanceof ol.style.Image).to.be(true);
-    expect(olImage.getFill() instanceof ol.style.Fill).to.be(true);
+    expect(olStyle.getImage()).to.be.an(ol.style.Image);
+    expect(olImage.getFill()).to.be.an(ol.style.Fill);
     expect(olImage.getFill().getColor()).to.equal('#FF2222');
-    expect(olImage.getStroke() instanceof ol.style.Stroke).to.be(true);
+    expect(olImage.getStroke()).to.be.an(ol.style.Stroke);
     expect(olImage.getStroke().getColor()).to.equal('#F55555');
     expect(olImage.getStroke().getWidth()).to.equal(2);
   });
