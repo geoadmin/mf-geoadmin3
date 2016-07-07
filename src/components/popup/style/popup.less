@@ -12,7 +12,7 @@
   transform: translate3d(0,0,0)!important;
   -ms-transform: translateX(0) translateY(0)!important;
 
-  .arrow {
+  > .arrow {
     display: none;
   }
 }
@@ -30,6 +30,12 @@
     padding: 20px 14px;
   }
   
+  label {
+    &.ga-checkbox, input, select, textarea {
+      font-weight: normal;
+    }
+  }
+
   > .popover-content {
     overflow: auto;
     width: 100%;
@@ -127,7 +133,7 @@
       margin: 0!important;
     }
 
-    .arrow {
+    > .arrow {
       display: none;
     }
 

@@ -34,20 +34,25 @@
   }
 
   .popover-content {
+    overflow-y: auto;
+    overflow-x: hidden;
     max-height: 200px;
+
+    label {
+      margin-right: 5px;
+    }
   }
   
   /* Hide the content of popover before the first opening */
   .ga-popover-content {
     position: absolute;
     transform: scaleX(0);
-    width: 100px;
+    width: 245px;
   }
 
   .popover-content .ga-popover-content {
     position: relative;
     transform: scaleX(1);
-    width: auto;
   }
   
   /* Generic css for custom select box */  
@@ -115,9 +120,9 @@
   .fa-caret-down {
     color: black;
   }
- 
-  .fa-ga-marker {      
-    font-size: 1.5em;
-  } 
+
+  .ga-coord, .ga-distance {
+    margin-top: 15px;
+  }
 }
 

@@ -8,27 +8,37 @@ goog.require('ga_measure_service');
     'ga_measure_service'
   ]);
 
-  module.directive('gaMeasureInfos', function(gaMeasure) {
+  module.directive('gaMeasure', function(gaMeasure) {
     return {
       restrict: 'A',
-      templateUrl: 'components/measure/partials/measure-infos.html',
+      templateUrl: 'components/measure/partials/measure.html',
       scope: {
-        feature: '=gaMeasureInfos',
-        options: '=gaMeasureInfosOptions'
+        feature: '=gaMeasure',
+        options: '=gaMeasureOptions'
       },
       link: function(scope, elt) {
         scope.options = scope.options || {};
         var deregisterKey;
         var update = function(feature) {
+          scope.coord = undefined;
+          scope.distance = undefined;
+          scope.surface = undefined;
+          scope.azimuth = undefined;
+
           var geom = feature.getGeometry();
-          if (!(geom instanceof ol.geom.LineString) &&
-              !(geom instanceof ol.geom.Polygon)) {
-            return;
+          if (geom instanceof ol.geom.Point) {
+            var coord = geom.getCoordinates();
+            scope.coord = coord[0].toFixed(2) + ', ' + coord[1].toFixed(2);
           }
-          scope.distance = gaMeasure.getLength(geom);
-          scope.surface = gaMeasure.getArea(geom,
-              scope.options.showLineStringArea);
-          scope.azimuth = gaMeasure.getAzimuth(geom);
+          if (geom instanceof ol.geom.Polygon ||
+              geom instanceof ol.geom.LineString) {
+            scope.distance = gaMeasure.getLength(geom);
+            //scope.azimuth = gaMeasure.getAzimuth(geom);
+          }
+          if (geom instanceof ol.geom.Polygon) {
+            scope.surface = gaMeasure.getArea(geom,
+                scope.options.showLineStringArea);
+          }
         };
         var useFeature = function(newFeature) {
           if (deregisterKey) {
