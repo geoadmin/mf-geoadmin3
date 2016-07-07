@@ -1,0 +1,15 @@
+<div ng-if="coord" class="ga-coord">
+  <i class="fa fa-ga-marker"></i> {{coord}}
+</div>
+<div ng-if="distance && !surface" class="ga-distance">
+  <i class="fa fa-resize-horizontal"></i> {{distance | measure}}
+</div>
+<div ng-if="surface">
+  <div>
+    <i class="ga-perimeter"></i> {{distance | measure}}
+  </div>
+  <div>
+    <i class="ga-area"></i> {{surface | measure:'area':[' km&sup2', ' m&sup2']}}
+  </div>
+</div>
+<!--p class="pull-right">{{azimuth | measure:'angle':['&deg']}}</p-->

@@ -42,6 +42,7 @@ goog.require('ga_topic_service');
                    'options.htmls.length)" ' +
                'ng-mouseleave="options.onMouseLeave($event)">' +
             '<div ng-bind-html="html.snippet"></div>' +
+            '<div ga-measure="::html.feature"></div>' +
             '<div ga-shop ' +
                  'ga-shop-map="::html.map" ' +
                  'ga-shop-feature="::html.feature" ' +
@@ -80,7 +81,11 @@ goog.require('ga_topic_service');
 
         // Test if a feature is queryable.
         var isFeatureQueryable = function(feature) {
-          return feature && feature.get('name') || feature.get('description');
+          var geom = feature.getGeometry();
+          return feature && feature.get('name') || feature.get('description') ||
+           geom instanceof ol.geom.Point ||
+           geom instanceof ol.geom.LineString ||
+           geom instanceof ol.geom.Polygon;
         };
 
         // Find the first feature from a vector layer
