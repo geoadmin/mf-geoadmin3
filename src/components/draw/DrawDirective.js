@@ -360,7 +360,7 @@ goog.require('ga_styles_service');
           // Remove the layer if no features added
           if (layer && (useTemporaryLayer ||
               layer.getSource().getFeatures().length == 0)) {
-            map.removeLaye(layer);
+            map.removeLayer(layer);
             layer = null;
           }
           map.removeInteraction(select);
@@ -681,7 +681,7 @@ goog.require('ga_styles_service');
           } else if (gaMapUtils.isMeasureFeature(scope.feature)) {
             if (!clickCoord) {
               // Hide or show the Profile popup
-              $rootScope.$broadcast('gaProfileActive', scope.feature,
+              $rootScope.$broadcast('gaProfileActive', scope.feature, layer,
                   onClosePopup);
               scope.$applyAsync();
             }
@@ -692,7 +692,7 @@ goog.require('ga_styles_service');
                 feature.getGeometry().getLastCoordinate();
             var pixel = map.getPixelFromCoordinate(coord);
 
-            $rootScope.$broadcast('gaDrawStyleActive', layer, scope.feature,
+            $rootScope.$broadcast('gaDrawStyleActive', scope.feature, layer,
                 pixel, onClosePopup);
             scope.$applyAsync();
           }

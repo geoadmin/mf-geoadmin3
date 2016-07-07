@@ -21,7 +21,7 @@ goog.provide('ga_drawstylepopup_controller');
       deregister = [];
     };
 
-    $scope.$on('gaDrawStyleActive', function(evt, layer, feature, pixel,
+    $scope.$on('gaDrawStyleActive', function(evt, feature, layer, pixel,
         onClose) {
       $scope.toggle = !!(feature);
       // If the selected feature has changed, we force the popup to unreduce

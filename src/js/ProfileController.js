@@ -52,8 +52,9 @@ goog.require('ga_print_service');
       }, 0, false);
     };
 
-    $scope.$on('gaProfileActive', function(evt, feature) {
+    $scope.$on('gaProfileActive', function(evt, feature, layer) {
       $scope.feature = feature;
+      $scope.layer = layer;
     });
   });
 })();

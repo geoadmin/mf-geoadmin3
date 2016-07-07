@@ -172,7 +172,7 @@ goog.require('ga_styles_service');
     $scope.options.icon = options.colors[0];
     $scope.options.iconSize = options.iconSizes[2];
 
-    $scope.$on('gaDrawStyleActive', function(evt, layer, feature, pixel) {
+    $scope.$on('gaDrawStyleActive', function(evt, feature, layer, pixel) {
       $scope.feature = feature;
       $scope.layer = layer;
     });

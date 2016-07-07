@@ -11,7 +11,7 @@ goog.provide('ga_profilepopup_controller');
       position: 'fixed'
     };
 
-    $scope.$on('gaProfileActive', function(evt, feature, callback) {
+    $scope.$on('gaProfileActive', function(evt, feature, layer, callback) {
       $scope.toggle = !!(feature);
       $scope.options.isReduced = false;
       if (callback) {
