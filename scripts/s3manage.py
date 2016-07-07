@@ -157,7 +157,7 @@ def usage():
     print "  list"
     print "     list available <version> in bucket"
     print
-    print "  upload [dir]"
+    print "  upload [target] [dir]"
     print "      upload content of /prd directory to bucket. You may specify"
     print "      a directory (default to current)."
     print "      Active project is NOT changed. Project has to be statified, "
@@ -292,6 +292,9 @@ def get_active_version():
         else:
             print "Error: ", e
             sys.exit(3)
+    except IOError as e:
+        return 0
+
 
     return int(get_index_version(d))
 
@@ -426,6 +429,8 @@ def get_url(key_name='index.html'):
 
 
 def main():
+    global BUCKET_NAME
+
     if BUCKET_NAME is None:
         print "Please define the BUCKET_NAME you want to deploy."
         sys.exit(2)
@@ -438,8 +443,19 @@ def main():
 
     if str(sys.argv[1]) == 'upload':
 
-        if len(sys.argv) == 3:
-            base_dir = os.path.abspath(sys.argv[2])
+        if len(sys.argv) < 4:
+            usage()
+            sys.exit()
+        target = sys.argv[2]
+        if target not in ['dev', 'int','prod']:
+            usage()
+            sys.exit()
+
+
+        BUCKET_NAME = "S3_MF_GEOADMIN3_{}".format(target) 
+
+        if len(sys.argv) == 4:
+            base_dir = os.path.abspath(sys.argv[3])
             if not os.path.isdir(base_dir):
                 print "No code found in directory {}".format(base_dir)
                 sys.exit(2)

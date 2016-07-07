@@ -101,11 +101,13 @@ help:
 	@echo "- deploybranch       Deploys current branch to test (note: takes code from github)"
 	@echo "- deploybranchint    Deploys current branch to test and int (note: takes code from github)"
 	@echo "- deploybranchdemo   Deploys current branch to test and demo (note: takes code from github)"
-	@echo "- s3upload         Uploads current build to S3, from current directory or SNAPSHOT=xxx"
-	@echo "- s3activate       Activates version on S3 with VERSION=xxxxxxxxx"
-	@echo "- s3info           Print build infos for version on S3 with VERSION=xxxxxxxxx"
-	@echo "- s3list           Lists uploaded version to S3"
-	@echo "- s3delete         Deletes version VERSION=xxxxxx on S3"
+	@echo "- s3uploaddev        Uploads current build to S3 bucket dev, from current directory or SNAPSHOT=xxx"
+	@echo "- s3uploadint        Uploads current build to S3 bucket int, from current directory or SNAPSHOT=xxx"
+	@echo "- s3uploadprod       Uploads current build to S3bucket prod, from current directory or SNAPSHOT=xxx"
+	@echo "- s3activate         Activates version on S3 with VERSION=xxxxxxxxx"
+	@echo "- s3info             Print build infos for version on S3 with VERSION=xxxxxxxxx"
+	@echo "- s3list             Lists uploaded version to S3"
+	@echo "- s3delete           Deletes version VERSION=xxxxxx on S3"
 	@echo "- ol3cesium          Update ol3cesium.js, ol3cesium-debug.js, Cesium.min.js and Cesium folder"
 	@echo "- libs               Update js librairies used in index.html, see npm packages defined in section 'dependencies' of package.json"
 	@echo "- translate          Generate the translation files (requires db user pwd in ~/.pgpass: dbServer:dbPort:*:dbUser:dbUserPwd)"
@@ -120,6 +122,10 @@ help:
 	@echo "- APACHE_BASE_PATH Base path  (build with: $(LAST_APACHE_BASE_PATH), current value: $(APACHE_BASE_PATH))"
 	@echo "- APACHE_BASE_DIRECTORY       (build with: $(LAST_APACHE_BASE_DIRECTORY), current value: $(APACHE_BASE_DIRECTORY))"
 	@echo "- VERSION                     (build with: $(LAST_VERSION), current value: $(VERSION))"
+	@echo "- S3_MF_GEOADMIN3_DEV         (current value: $(S3_MF_GEOADMIN3_DEV))"
+	@echo "- S3_MF_GEOADMIN3_INT         (current value: $(S3_MF_GEOADMIN3_INT))"
+	@echo "- S3_MF_GEOADMIN3_PROD        (current value: $(S3_MF_GEOADMIN3_PROD))"
+	@echo "- SNAPSHOT                    (current value: $(SNAPSHOT))"
 
 	@echo
 
@@ -204,14 +210,24 @@ deployint: guard-SNAPSHOT
 deployprod: guard-SNAPSHOT
 	./scripts/deploysnapshot.sh $(SNAPSHOT) prod $(DEPLOYCONFIG)
 
-.PHONY: s3upload
-s3upload: boto3
-	@ if test "$(SNAPSHOT)"; then \
-		${PYTHON_CMD} ./scripts/s3manage.py upload  /var/www/vhosts/mf-geoadmin3/private/snapshots/$(SNAPSHOT)/geoadmin/code/geoadmin/ ; \
+.PHONY: s3uploaddev
+s3uploaddev: boto3
+	@ if test "$(SNAPSHOT)" = "true"; then \
+		 ./scripts/deploydev.sh -s; \
+	fi
+	@ if test "$(SNAPSHOT)"  then \
+		${PYTHON_CMD} ./scripts/s3manage.py upload  dev /var/www/vhosts/mf-geoadmin3/private/snapshots/$(SNAPSHOT)/geoadmin/code/geoadmin/ ; \
 	else \
-		${PYTHON_CMD} ./scripts/s3manage.py upload ; \
+		echo "How MUST specify a SNAPSHOT,either 'true' or a timestamp';
 	fi
 
+.PHONY: s3uploadint
+s3uploadint: boto3
+		${PYTHON_CMD} ./scripts/s3manage.py upload int; \
+
+.PHONY: s3uploadprod
+s3uploadprod: boto3
+		${PYTHON_CMD} ./scripts/s3manage.py upload prod; \
 
 .PHONY: s3activate
 s3activate: boto3
