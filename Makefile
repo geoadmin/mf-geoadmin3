@@ -129,6 +129,7 @@ help:
 	@echo "- S3_MF_GEOADMIN3_INT         (current value: $(S3_MF_GEOADMIN3_INT))"
 	@echo "- S3_MF_GEOADMIN3_PROD        (current value: $(S3_MF_GEOADMIN3_PROD))"
 	@echo "- SNAPSHOT                    (current value: $(SNAPSHOT))"
+	@echo "- GIT_BRANCH                  (current value: $(GIT_BRANCH))"
 
 	@echo
 
@@ -215,13 +216,14 @@ deployprod: guard-SNAPSHOT
 
 .PHONY: s3uploaddev
 s3uploaddev: boto3
-	@ if test "$(SNAPSHOT)" = "true"; then \
-		 ./scripts/deploydev.sh -s; \
-	fi
-	@ if test "$(SNAPSHOT)"  then \
-		${PYTHON_CMD} ./scripts/s3manage.py upload  dev /var/www/vhosts/mf-geoadmin3/private/snapshots/$(SNAPSHOT)/geoadmin/code/geoadmin/ ; \
+	@ if test "$(SNAPSHOT)" = "true"; then   \
+		 ./scripts/createsnapshot.sh;      \
+	fi;                                     
+	@ if [ ! -z "$(SNAPSHOT)" ];   then          \
+		echo "Uploading SNAPSHOT=${SNAPSHOT} to 'dev'"; \
+		${PYTHON_CMD} ./scripts/s3manage.py upload  dev /var/www/vhosts/mf-geoadmin3/private/snapshots/$(SNAPSHOT)/geoadmin/code/geoadmin/ \
 	else \
-		echo "How MUST specify a SNAPSHOT,either 'true' or a timestamp';
+		echo "How MUST specify a SNAPSHOT, either 'true' or a 'timestamp'"; \
 	fi
 
 .PHONY: s3uploadint
