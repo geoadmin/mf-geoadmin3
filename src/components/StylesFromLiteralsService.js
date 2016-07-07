@@ -49,6 +49,8 @@ goog.provide('ga_stylesfromliterals_service');
           } else if (type === 'fill') {
             olStyles[type] = new ol.style.Fill(style);
           } else if (type === 'text') {
+            style.stroke = new ol.style.Stroke(style.stroke);
+            style.fill = new ol.style.Fill(style.fill);
             olStyles[type] = new ol.style.Text(style);
           }
         });
@@ -59,30 +61,61 @@ goog.provide('ga_stylesfromliterals_service');
         var olStyles = {};
         var style = value.vectorOptions;
         var geomType = value.geomType;
+
         if (geomType === 'point') {
-          style = {
-            image: style
-          };
-        }
-        angular.forEach(style, function(value, key) {
-          var olStyle = {};
-          if (key === 'image') {
-            var styleP = style[key];
-            var options = getOlBasicStyles(styleP);
-            // {} to preserve the original object
-            options = angular.extend({}, styleP, options);
-            olStyle = getOlStyleForPoint(options, value.type);
-            olStyles[key] = olStyle;
-          } else {
-            olStyles = angular.extend({}, olStyle, getOlBasicStyles(style));
+          var olText;
+          if (style.label) {
+            olText = getOlBasicStyles(style.label).text;
           }
-        });
+          var basicStyles = getOlBasicStyles(style);
+          var olImage = angular.extend({}, style, basicStyles);
+          delete olImage.label;
+          olImage = getOlStyleForPoint(basicStyles, style.type);
+          olStyles.image = olImage;
+          olStyles.text = olText;
+        } else {
+          angular.forEach(style, function(value, key) {
+            if (key === 'label') {
+              olStyles['text'] = getOlBasicStyles(style[key])['text'];
+            } else if (['stroke', 'fill', 'image'].indexOf(key) !== -1) {
+              olStyles[key] = getOlBasicStyles(style)[key];
+            }
+          });
+        }
         return new ol.style.Style(olStyles);
       }
 
-      function olStyleForPropertyValue(properties) {
-        var olStyle;
+      function getGeomTypeFromGeometry(olGeometry) {
+        if (olGeometry instanceof ol.geom.Point ||
+            olGeometry instanceof ol.geom.MultiPoint) {
+          return 'point';
+        } else if (olGeometry instanceof ol.geom.LineString ||
+            olGeometry instanceof ol.geom.MultiLineString) {
+          return 'line';
+        } else if (olGeometry instanceof ol.geom.Polygon ||
+            olGeometry instanceof ol.geom.MultiPolygon) {
+          return 'polygon';
+        }
+      }
 
+      function getLabelProperty(value) {
+        if (value) {
+          return value.property !== undefined ? value.property : null;
+        }
+        return null;
+      }
+
+      function getMinResolution(value) {
+        return value.minResolution !== undefined ? value.minResolution : 0;
+      }
+
+      function getMaxResolution(value) {
+        return value.maxResolution !== undefined ? value.maxResolution :
+            Infinity;
+      }
+
+
+      var olStyleForPropertyValue = function(properties) {
         this.singleStyle = null;
 
         this.styles = {
@@ -93,113 +126,122 @@ goog.provide('ga_stylesfromliterals_service');
 
         this.type = properties.type;
 
+        this.initialize_(properties);
+      };
+
+      olStyleForPropertyValue.prototype.initialize_ = function(properties) {
+        var styleSpec;
         if (this.type === 'unique' || this.type === 'range') {
           this.key = properties.property;
         }
 
         if (this.type === 'single') {
-          olStyle = getOlStyleFromLiterals(properties);
-          this.singleStyle = olStyle;
+          this.singleStyle = {
+            olStyle: getOlStyleFromLiterals(properties),
+            labelProperty: getLabelProperty(properties.vectorOptions.label)
+          };
         } else if (this.type === 'unique') {
           var values = properties.values;
           for (var i = 0; i < values.length; i++) {
             var value = values[i];
-            var minResolution = value.minResolution !== undefined ?
-                value.minResolution : 0;
-            var maxResolution = value.maxResolution !== undefined ?
-                value.maxResolution : Infinity;
-            olStyle = {
+            styleSpec = {
               olStyle: getOlStyleFromLiterals(value),
-              minResolution: minResolution,
-              maxResolution: maxResolution
+              minResolution: getMinResolution(value),
+              maxResolution: getMaxResolution(value),
+              labelProperty: getLabelProperty(value.vectorOptions.label)
             };
-            if (!this.styles[value.geomType][value.value]) {
-              this.styles[value.geomType][value.value] = [olStyle];
-            } else {
-              this.styles[value.geomType][value.value].push(olStyle);
-            }
+            this.pushOrInitialize_(value.geomType, value.value, styleSpec);
           }
         } else if (this.type === 'range') {
           var ranges = properties.ranges;
           for (var i = 0; i < ranges.length; i++) {
             var range = ranges[i];
-            var minResolution = range.minResolution !== undefined ?
-                range.minResolution : 0;
-            var maxResolution = range.maxResolution !== undefined ?
-                range.maxResolution : Infinity;
-            olStyle = {
+            styleSpec = {
               olStyle: getOlStyleFromLiterals(range),
-              minResolution: minResolution,
-              maxResolution: maxResolution
+              minResolution: getMinResolution(range),
+              maxResolution: getMaxResolution(range),
+              labelProperty: getLabelProperty(range.vectorOptions.label)
             };
             var key = range.range.toLocaleString();
-            if (!this.styles[range.geomType][key]) {
-              this.styles[range.geomType][key] = [olStyle];
-            } else {
-              this.styles[range.geomType][key].push(olStyle);
-            }
+            this.pushOrInitialize_(range.geomType, key, styleSpec);
           }
         }
+      };
 
-        this.findOlStyleInRange = function(value, geomType) {
-          var olStyle, range;
-          for (range in this.styles[geomType]) {
-            range = range.split(',');
-            if (value >= parseFloat(range[0]) &&
-                value < parseFloat(range[1])) {
-              var style = this.styles[geomType][range];
-              olStyle = style;
-              break;
-            }
+      olStyleForPropertyValue.prototype.pushOrInitialize_ = function(
+          geomType, key, styleSpec) {
+        if (!this.styles[geomType][key]) {
+          this.styles[geomType][key] = [styleSpec];
+        } else {
+          this.styles[geomType][key].push(styleSpec);
+        }
+      };
+
+      olStyleForPropertyValue.prototype.findOlStyleInRange_ = function(value,
+          geomType) {
+        var olStyle, range;
+        for (range in this.styles[geomType]) {
+          range = range.split(',');
+          if (value >= parseFloat(range[0]) &&
+              value < parseFloat(range[1])) {
+            var style = this.styles[geomType][range];
+            olStyle = style;
+            break;
           }
-          return olStyle;
-        };
+        }
+        return olStyle;
+      };
 
-        this.getOlStyleForResolution = function(olStyles, resolution) {
-          var i, ii, olStyle;
-          for (i = 0, ii = olStyles.length; i < ii; i++) {
-            olStyle = olStyles[i];
-            if (olStyle.minResolution <= resolution &&
-                olStyle.maxResolution > resolution) {
-              break;
-            }
+      olStyleForPropertyValue.prototype.getOlStyleForResolution_ = function(
+          olStyles, resolution) {
+        var i, ii, olStyle;
+        for (i = 0, ii = olStyles.length; i < ii; i++) {
+          olStyle = olStyles[i];
+          if (olStyle.minResolution <= resolution &&
+              olStyle.maxResolution > resolution) {
+            break;
           }
-          return olStyle;
-        };
+        }
+        return olStyle;
+      };
 
-        this.getFeatureStyle = function(feature, resolution) {
-          var getGeomTypeFromGeometry = function(olGeometry) {
-            if (olGeometry instanceof ol.geom.Point ||
-                olGeometry instanceof ol.geom.MultiPoint) {
-              return 'point';
-            } else if (olGeometry instanceof ol.geom.LineString ||
-                olGeometry instanceof ol.geom.MultiLineString) {
-              return 'line';
-            } else if (olGeometry instanceof ol.geom.Polygon ||
-                olGeometry instanceof ol.geom.MultiPolygon) {
-              return 'polygon';
-            }
-          };
-
-          if (this.type === 'single') {
-            return this.singleStyle;
-          } else if (this.type === 'unique') {
+      olStyleForPropertyValue.prototype.getFeatureStyle = function(feature,
+          resolution) {
+        if (this.type === 'single') {
+          var labelProperty = this.singleStyle.labelProperty;
+          if (labelProperty) {
             var properties = feature.getProperties();
-            var value = properties[this.key];
-            var geomType = getGeomTypeFromGeometry(feature.getGeometry());
-            var olStyles = this.styles[geomType][value];
-            var res = this.getOlStyleForResolution(olStyles, resolution);
-            return res.olStyle;
-          } else if (this.type === 'range') {
-            var properties = feature.getProperties();
-            var value = properties[this.key];
-            var geomType = getGeomTypeFromGeometry(feature.getGeometry());
-            var olStyles = this.findOlStyleInRange(value, geomType);
-            var res = this.getOlStyleForResolution(olStyles, resolution);
-            return res.olStyle;
+            var text = properties[labelProperty];
+            var olText = this.singleStyle.olStyle.getText();
+            this.singleStyle.olStyle.getText().setText(text);
           }
-        };
-      }
+          return this.singleStyle.olStyle;
+        } else if (this.type === 'unique') {
+          var properties = feature.getProperties();
+          var value = properties[this.key];
+          var geomType = getGeomTypeFromGeometry(feature.getGeometry());
+          var olStyles = this.styles[geomType][value];
+          var res = this.getOlStyleForResolution_(olStyles, resolution);
+          var labelProperty = res.labelProperty;
+          if (labelProperty) {
+            var text = properties[labelProperty];
+            res.olStyle.getText().setText(text);
+          }
+          return res.olStyle;
+        } else if (this.type === 'range') {
+          var properties = feature.getProperties();
+          var value = properties[this.key];
+          var geomType = getGeomTypeFromGeometry(feature.getGeometry());
+          var olStyles = this.findOlStyleInRange_(value, geomType);
+          var res = this.getOlStyleForResolution_(olStyles, resolution);
+          var labelProperty = res.labelProperty;
+          if (labelProperty) {
+            var text = properties[labelProperty];
+            res.olStyle.getText().setText(text);
+          }
+          return res.olStyle;
+        }
+      };
 
       return function(properties) {
         return new olStyleForPropertyValue(properties);
