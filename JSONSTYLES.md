@@ -81,11 +81,11 @@ A JSON stylesheet of `single` type is structured as follow:
 ```json
 {
   "type": "unique",
-  "property": "aPropertyName",
+  "property": "optionalPropertyName",
   "values": [
     {
       "geomType": "point|line|polygon",
-      "value": "aPropertyValue",
+      "value": "optionalPropertyValue",
       "minResolution": "optionalMinResolution",
       "maxResolution": "optionalMaxResolution",
       "vectorOptions": {
@@ -99,8 +99,8 @@ A JSON stylesheet of `single` type is structured as follow:
 }
 ```
 
-A `unique` JSON style is always based on a property available on all the features.
-Once a `property` is defined, an array of possible `values` determine all the possible combinations for a given layer.
+A `unique` JSON style can be based on a property available on all features, a resolution range or a combination of both.
+If `property` is defined, an array of possible `values` determine all the possible combinations for a given layer.
 Notice the use of `value` which determine for which value of the features the style should be apply.
 Optionally, one can define a `minResolution` and `maxResolution` at which the style should be applied. `[minResolution, maxResolution[`
 

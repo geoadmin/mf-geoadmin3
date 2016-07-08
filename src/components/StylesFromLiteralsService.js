@@ -70,7 +70,7 @@ goog.provide('ga_stylesfromliterals_service');
           var basicStyles = getOlBasicStyles(style);
           var olImage = angular.extend({}, style, basicStyles);
           delete olImage.label;
-          olImage = getOlStyleForPoint(basicStyles, style.type);
+          olImage = getOlStyleForPoint(olImage, style.type);
           olStyles.image = olImage;
           olStyles.text = olText;
         } else {
@@ -100,23 +100,23 @@ goog.provide('ga_stylesfromliterals_service');
 
       function getLabelProperty(value) {
         if (value) {
-          return value.property !== undefined ? value.property : null;
+          return value.property;
         }
-        return null;
       }
 
       function getMinResolution(value) {
-        return value.minResolution !== undefined ? value.minResolution : 0;
+        return value.minResolution || 0;
       }
 
       function getMaxResolution(value) {
-        return value.maxResolution !== undefined ? value.maxResolution :
-            Infinity;
+        return value.maxResolution || Infinity;
       }
 
 
       var olStyleForPropertyValue = function(properties) {
         this.singleStyle = null;
+
+        this.defaultVal = 'defaultVal';
 
         this.styles = {
           point: {},
@@ -170,6 +170,10 @@ goog.provide('ga_stylesfromliterals_service');
 
       olStyleForPropertyValue.prototype.pushOrInitialize_ = function(
           geomType, key, styleSpec) {
+        // Happens when styling is only resolution dependent (unique type only)
+        if (key === undefined) {
+          key = this.defaultVal;
+        }
         if (!this.styles[geomType][key]) {
           this.styles[geomType][key] = [styleSpec];
         } else {
@@ -184,8 +188,7 @@ goog.provide('ga_stylesfromliterals_service');
           range = range.split(',');
           if (value >= parseFloat(range[0]) &&
               value < parseFloat(range[1])) {
-            var style = this.styles[geomType][range];
-            olStyle = style;
+            olStyle = this.styles[geomType][range];
             break;
           }
         }
@@ -218,7 +221,7 @@ goog.provide('ga_stylesfromliterals_service');
           return this.singleStyle.olStyle;
         } else if (this.type === 'unique') {
           var properties = feature.getProperties();
-          var value = properties[this.key];
+          var value = properties[this.key] || this.defaultVal;
           var geomType = getGeomTypeFromGeometry(feature.getGeometry());
           var olStyles = this.styles[geomType][value];
           var res = this.getOlStyleForResolution_(olStyles, resolution);

@@ -33,6 +33,7 @@ describe('ga_stylesfromliterals_service', function() {
     expect(olImage.getStroke()).to.be.an(ol.style.Stroke);
     expect(olImage.getStroke().getColor()).to.equal('#FFFFFF');
     expect(olImage.getStroke().getWidth()).to.equal(2);
+    expect(olImage.getRadius()).to.equal(8);
 
     singleTypeStyle = {
       type: 'single',
@@ -139,6 +140,7 @@ describe('ga_stylesfromliterals_service', function() {
     expect(olImage.getStroke().getWidth()).to.equal(3);
     expect(olImage.getFill()).to.be.an(ol.style.Fill);
     expect(olImage.getFill().getColor()).to.equal('#FF1FF1');
+    expect(olImage.getRadius()).to.equal(8);
     expect(olText.getText()).to.equal('bar');
     expect(olText.getFill()).to.be.an(ol.style.Fill);
     expect(olText.getStroke()).to.an(ol.style.Stroke);
@@ -460,6 +462,54 @@ describe('ga_stylesfromliterals_service', function() {
     expect(olImage.getStroke()).to.be.an(ol.style.Stroke);
     expect(olImage.getStroke().getColor()).to.equal('#F55555');
     expect(olImage.getStroke().getWidth()).to.equal(2);
+
+    // Resolution only
+    uniqueTypeStyleWithRes = {
+      type: 'unique',
+      values: [
+        {
+          geomType: 'point',
+          minResolution: 1.5,
+          maxResolution: 750,
+          vectorOptions: {
+            type: 'circle',
+            radius: 8,
+            fill: {
+              color: '#FF1FF1'
+            },
+            stroke: {
+              color: '#FFFFFF',
+              width: 3
+            }
+          }
+        }, {
+          geomType: 'point',
+          minResolution: 750,
+          vectorOptions: {
+            type: 'circle',
+            radius: 3,
+            fill: {
+              color: '#C03199'
+            },
+            stroke: {
+              color: '#C03199',
+              width: 1
+            }
+          }
+        }
+      ]
+    };
+
+    gaStyle = gaStylesFromLiterals(uniqueTypeStyleWithRes);
+    olStyle = gaStyle.getFeatureStyle(olFeature, 2000);
+    olImage = olStyle.getImage();
+    expect(olStyle.getImage()).to.be.an(ol.style.Image);
+    expect(olImage.getFill()).to.be.an(ol.style.Fill);
+    expect(olImage.getFill().getColor()).to.equal('#C03199');
+    expect(olImage.getStroke()).to.be.an(ol.style.Stroke);
+    expect(olImage.getStroke().getColor()).to.equal('#C03199');
+    expect(olImage.getStroke().getWidth()).to.equal(1);
+    expect(olImage.getRadius()).to.equal(3);
   });
 
   it('supports range type style assignment', function() {
