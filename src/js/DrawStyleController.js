@@ -28,6 +28,11 @@ goog.require('ga_styles_service');
         {name: 'white', fill: [255, 255, 255], border: 'black'},
         {name: 'yellow', fill: [255, 255, 0], border: 'black'}
       ],
+      textSizes: [
+        {label: 'small_size', scale: 1},
+        {label: 'medium_size', scale: 1.5},
+        {label: 'big_size', scale: 2}
+      ],
       iconSizes: [
         {label: 'small_size', value: [24, 24], scale: 0.5},
         {label: 'medium_size', value: [36, 36], scale: 0.75},
@@ -168,8 +173,9 @@ goog.require('ga_styles_service');
 
     $scope.options.color = options.colors[5];
     $scope.options.textColor = options.colors[5];
-    $scope.options.iconColor = options.colors[5];
+    $scope.options.textSize = options.textSizes[0];
     $scope.options.icon = options.colors[0];
+    $scope.options.iconColor = options.colors[5];
     $scope.options.iconSize = options.iconSizes[2];
 
     $scope.$on('gaDrawStyleActive', function(evt, feature, layer, pixel) {

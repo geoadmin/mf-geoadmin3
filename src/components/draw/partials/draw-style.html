@@ -36,6 +36,12 @@
 
 <div ng-if="useTextStyle" class="ga-popover-content ga-text-style">
   <label>
+    <span translate>{{'modify_text_size_label'}}:</span> 
+    <select ng-model="options.textSize"
+            ng-options="s.label | translate for s in options.textSizes">
+    </select>
+  </label>
+  <label>
     <span translate>{{'modify_text_color_label'}}:</span> 
     <div class="ga-select-box ga-select-colors ga-item-size-{{options.iconSize.value[0]}}"
          ng-class="{'ga-select-box-open': gaSelectBoxOpen}">

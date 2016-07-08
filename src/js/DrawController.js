@@ -34,8 +34,9 @@ goog.require('ga_styles_service');
     var red = {name: 'red', fill: [255, 0, 0], border: 'white'};
     $scope.options.color = red;
     $scope.options.textColor = red;
-    $scope.options.iconColor = red;
+    $scope.options.textSize = {label: 'small_size', scale: 1};
     $scope.options.icon = {id: 'marker'},
+    $scope.options.iconColor = red;
     $scope.options.iconSize = {label: 'big_size', value: [48, 48], scale: 1};
     $scope.options.font = gaStyleFactory.FONT;
 
@@ -73,7 +74,8 @@ goog.require('ga_styles_service');
           fill: new ol.style.Fill({
             color: color.fill.concat([1])
           }),
-          stroke: gaStyleFactory.getTextStroke(color.fill)
+          stroke: gaStyleFactory.getTextStroke(color.fill),
+          scale: $scope.options.textSize.scale
       });
       feature.set('name', $scope.options.name);
 

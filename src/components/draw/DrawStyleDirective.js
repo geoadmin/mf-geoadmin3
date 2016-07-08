@@ -23,14 +23,14 @@ goog.require('ga_styles_service');
       return icons[0];
     };
 
-    var findIconSize = function(olIcon, iconSizes) {
-      var scale = olIcon.getScale();
-      for (var i = 0; i < iconSizes.length; i++) {
-        if (scale == iconSizes[i].scale) {
-          return iconSizes[i];
+    var findSize = function(olStyle, sizes) {
+      var scale = olStyle.getScale();
+      for (var i = 0; i < sizes.length; i++) {
+        if (scale == sizes[i].scale) {
+          return sizes[i];
         }
       }
-      return iconSizes[2];
+      return sizes[2];
     };
 
     var findIconColor = function(olIcon, colors) {
@@ -73,15 +73,12 @@ goog.require('ga_styles_service');
           useIconStyle = true;
           var img = featStyle.getImage();
           scope.options.icon = findIcon(img, scope.options.icons);
-          scope.options.iconSize = findIconSize(img,
-              scope.options.iconSizes);
-          scope.options.iconColor = findIconColor(img,
-              scope.options.colors);
+          scope.options.iconSize = findSize(img, scope.options.iconSizes);
+          scope.options.iconColor = findIconColor(img, scope.options.colors);
         }
         if (!useIconStyle && featStyle.getStroke()) {
           useColorStyle = true;
-          scope.options.color = findColor(
-              featStyle.getStroke().getColor(),
+          scope.options.color = findColor(featStyle.getStroke().getColor(),
               scope.options.colors);
         }
         if (featStyle.getText()) {
@@ -90,6 +87,8 @@ goog.require('ga_styles_service');
           scope.options.textColor = findColor(
               featStyle.getText().getFill().getColor(),
               scope.options.colors);
+          scope.options.textSize = findSize(featStyle.getText(),
+              scope.options.textSizes);
         }
 
         scope.options.name = feature.get('name') || '';
@@ -137,6 +136,7 @@ goog.require('ga_styles_service');
       if (properties.text) {
         text = oldStyle.getText() || new ol.style.Text();
         text.setText(properties.text);
+        text.setScale(properties.textSize.scale);
 
         if (properties.font) {
           text.setFont(properties.font);
@@ -184,7 +184,8 @@ goog.require('ga_styles_service');
           iconColor: newValues[5],
           iconSize: newValues[6],
           text: text,
-          textColor: newValues[7]
+          textColor: newValues[7],
+          textSize: newValues[8]
         });
 
         // Set feature's properties
@@ -232,7 +233,8 @@ goog.require('ga_styles_service');
           'options.icon',
           'options.iconColor',
           'options.iconSize',
-          'options.textColor'
+          'options.textColor',
+          'options.textSize'
         ], applyStyle);
 
         // Open the popover with style inside
@@ -261,9 +263,8 @@ goog.require('ga_styles_service');
               placement: function() {
                 return win.width() < 480 ? 'top' : 'auto right';
               },
-              content: content[0]
-              //title: $translate.instant('style') +
-              //    '<button class="ga-icon ga-btn fa fa-remove"></button>'
+              content: content[0],
+              title: '<button class="ga-icon ga-btn fa fa-remove"></button>'
             });
 
             // Close popover on outside popover mouse event
