@@ -232,6 +232,7 @@ goog.provide('ga_stylesfromliterals_service');
           }
           return this.singleStyle.olStyle;
         } else if (this.type === 'unique') {
+          var value;
           var properties = feature.getProperties();
           // A value can be 0
           var value = properties[this.key];
