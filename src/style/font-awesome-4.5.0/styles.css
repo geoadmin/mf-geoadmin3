@@ -608,5 +608,14 @@
 .fa-eye:before {
   content: "\f22e";
 }
+.fa-paint-brush:before {
+  content: "\f22f";
+}
+.fa-font:before {
+  content: "\f230";
+}
+.fa-trash:before {
+  content: "\f231";
+}
 
 
