@@ -34,8 +34,9 @@ goog.require('ga_translation_service');
         'ch.swisstopo.pixelkarte-farbe-pk100.noscale':
             'ch.swisstopo.pixelkarte-pk100.metadata',
         'ch.swisstopo.pixelkarte-farbe-pk200.noscale':
-            'ch.swisstopo.pixelkarte-pk200.metadata'
-        //,'ch.swisstopo.digitales-hoehenmodell_25_reliefschattierung': '
+            'ch.swisstopo.pixelkarte-pk200.metadata',
+        'ch.swisstopo.digitales-hoehenmodell_25_reliefschattierung':
+            'ch.swisstopo.digitales-hoehenmodell_25_reliefschattierung'
       };
       var getParams = function(orderType, layerBodId, featureId, geometry) {
         var params = {
