@@ -62,13 +62,13 @@ goog.provide('ga_what3words_service');
               coords: lon + ',' + lat,
               lang: gaLang.get()
             }
-            }).then(function(response) {
-              var words = response.data.words;
-              if (words) {
-                return words;
-              }
-              return '-';
-           });
+          }).then(function(response) {
+            var words = response.data.words;
+            if (words) {
+              return words;
+            }
+            return '-';
+          });
         };
       };
       return new What3Words();

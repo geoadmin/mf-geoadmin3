@@ -2,19 +2,19 @@ describe('ga_what3words', function() {
 
   var gaWhat3Words;
 
-  describe('without_requests', function() {
+  describe('does not send requests', function() {
     beforeEach(function() {
       inject(function($injector) {
         gaWhat3Words = $injector.get('gaWhat3Words');
       });
     });
 
-    it('Empty Strings', function() {
+    it('if w3w string is emoty', function() {
       res = gaWhat3Words.getCoordinate('');
       expect(res).to.eql(null);
     });
 
-    it('No w3w string', function() {
+    it('if w3w string is not valid', function() {
       res = gaWhat3Words.getCoordinate('dummy');
       expect(res).to.eql(null);
       res = gaWhat3Words.getCoordinate('dummy.wer.D');
@@ -37,36 +37,45 @@ describe('ga_what3words', function() {
 
 
   });
-  describe('with_requests', function() {
+  describe('send requests', function() {
   
-    var $httpBackend;
-    var testUrl = 'dummy.test.url.com/v2/forward?key=testkey&addr=first.c%C3%B6rrect.t%C3%A8st';
+    var $httpBackend, $rootScope;
+    var testUrl = 'dummy.test.url.com/v2/forward?addr=first.c%C3%B6rrect.t%C3%A8st&key=testkey';
 
     beforeEach(function() {
+      
+      module(function($provide) {
+        $provide.value('gaTopic', {
+          get: function() {}
+        });
+        $provide.value('gaLang', {
+          get: function() {
+            return 'custom';
+          }
+        })
+      });
+
       inject(function($injector) {
         $httpBackend = $injector.get('$httpBackend');
-        $httpBackend.when('GET', testUrl).respond({geometry: {lat: 51.484463, lng: -0.195405}});
+        $rootScope = $injector.get('$rootScope');
         gaWhat3Words = $injector.get('gaWhat3Words');
       });
     });
 
     afterEach(function() {
+      $httpBackend.verifyNoOutstandingExpectation();
       $httpBackend.verifyNoOutstandingRequest();
     });
 
-    it('w3w string', function(done) {
-      var res = gaWhat3Words.getCoordinate('first.cörrect.tèst');
-      expect(res).to.not.eql(null);
-      //$httpBackend.flush();
-  /*
-   *  The test below doesn't work. then function is never called.
-      res.then(function(resp) {
-        expect(resp.geometry.lat).to.eql(51.484463);
-        expect(resp.geometry.lng).to.eql(-0.195405);
+    it('gets coordinates', function(done) {
+      $httpBackend.expectGET(testUrl).respond({geometry: {lat: 51.484463, lng: -0.195405}});
+      var res = gaWhat3Words.getCoordinate('first.cörrect.tèst').then(function(resp) {
+        expect(resp.data.geometry.lat).to.eql(51.484463);
+        expect(resp.data.geometry.lng).to.eql(-0.195405);
         done();
       });
-      */
-      done();
+      $httpBackend.flush();
+      $rootScope.$digest();
     });
   });
 });
