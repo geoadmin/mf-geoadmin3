@@ -14,19 +14,19 @@
   <textarea class="form-control" ng-model="options.description"></textarea>
 </label>
 
-<button  class="btn btn-default fa fa-remove"
+<button  class="btn btn-default fa fa-trash"
          ng-if="layer"
          ng-click="deleteSelectedFeature(layer, feature)"></button>
 
-<button  class="btn btn-default fa fa-ga-marker"
+<button  class="btn btn-default fa fa-paint-brush"
          ng-if="useColorStyle"
          ng-click="toggleStyle($event)"
          data-target=".ga-color-style"></button>
 
-<button  class="btn btn-default"
+<button  class="btn btn-default fa fa-font"
          ng-if="useTextStyle"
          ng-click="toggleStyle($event)"
-         data-target=".ga-text-style">Aa</button>
+         data-target=".ga-text-style"></button>
 
 <button  class="btn btn-default fa fa-ga-marker"
          ng-if="useIconStyle"
