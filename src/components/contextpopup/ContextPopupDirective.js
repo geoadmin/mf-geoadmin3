@@ -2,17 +2,20 @@ goog.provide('ga_contextpopup_directive');
 
 goog.require('ga_networkstatus_service');
 goog.require('ga_permalink');
+goog.require('ga_what3words_service');
 (function() {
 
   var module = angular.module('ga_contextpopup_directive', [
     'ga_networkstatus_service',
     'ga_permalink',
+    'ga_what3words_service',
     'pascalprecht.translate'
   ]);
 
   module.directive('gaContextPopup',
       function($rootScope, $http, $translate, $q, $timeout, $window,
-          gaBrowserSniffer, gaNetworkStatus, gaPermalink, gaGlobalOptions) {
+          gaBrowserSniffer, gaNetworkStatus, gaPermalink, gaGlobalOptions,
+          gaLang, gaWhat3Words) {
         return {
           restrict: 'A',
           replace: true,
@@ -35,7 +38,7 @@ goog.require('ga_permalink');
             var map = scope.map;
             var view = map.getView();
 
-            var coord21781;
+            var coord21781, coord4326;
             var popoverShown = false;
 
             var overlay = new ol.Overlay({
@@ -62,6 +65,13 @@ goog.require('ga_permalink');
               return coord + ' ' + zone;
             };
 
+            var updateW3W = function() {
+              gaWhat3Words.getWords(coord4326[1],
+                                    coord4326[0]).then(function(res) {
+                scope.w3w = res;
+              });
+            };
+
             var handler = function(event) {
               if (scope.is3dActive) {
                 return;
@@ -84,7 +94,7 @@ goog.require('ga_permalink');
               coord21781 = (event.originalEvent) ?
                   map.getEventCoordinate(event.originalEvent) :
                   event.coordinate;
-              var coord4326 = ol.proj.transform(coord21781,
+              coord4326 = ol.proj.transform(coord21781,
                   'EPSG:21781', 'EPSG:4326');
               var coord2056 = ol.proj.transform(coord21781,
                   'EPSG:21781', 'EPSG:2056');
@@ -151,6 +161,8 @@ goog.require('ga_permalink');
                   scope.coord2056 = formatCoordinates(coord2056, 2);
                 });
 
+                updateW3W();
+
               });
 
               updatePopupLinks();
@@ -200,6 +212,9 @@ goog.require('ga_permalink');
 
             $rootScope.$on('$translateChangeEnd', function() {
               scope.titleClose = $translate.instant('close');
+              if (popoverShown) {
+                updateW3W();
+              }
             });
 
             // Listen to permalink change events from the scope.
