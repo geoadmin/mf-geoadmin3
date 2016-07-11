@@ -181,6 +181,9 @@ goog.require('ga_styles_service');
             return itemFeature;
           }
         };
+        var hideHelpTooltip = function() {
+          helpTooltip.setPosition(undefined);
+        };
         // Add select interaction
         var select = new ol.interaction.Select({
           layers: layerFilter,
@@ -200,6 +203,7 @@ goog.require('ga_styles_service');
                 helpTooltip.setPosition(evt.coordinate);
                 updateCursorStyleDebounced(evt);
               });
+              mapDiv.on('mouseout', hideHelpTooltip);
             }
             // Delete keyboard button
             $document.keyup(scope.deleteSelectedFeature);
@@ -208,6 +212,7 @@ goog.require('ga_styles_service');
               ol.Observable.unByKey(item);
             });
             $document.off('keyup', scope.deleteSelectedFeature);
+            mapDiv.off('mouseout', hideHelpTooltip);
             select.getFeatures().clear();
           }
         });
