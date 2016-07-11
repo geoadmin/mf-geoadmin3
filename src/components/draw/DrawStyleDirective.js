@@ -23,14 +23,14 @@ goog.require('ga_styles_service');
       return icons[0];
     };
 
-    var findSize = function(olStyle, sizes) {
+    var findSize = function(olStyle, sizes, dflt) {
       var scale = olStyle.getScale();
       for (var i = 0; i < sizes.length; i++) {
         if (scale == sizes[i].scale) {
           return sizes[i];
         }
       }
-      return sizes[2];
+      return dflt || sizes[2];
     };
 
     var findIconColor = function(olIcon, colors) {
@@ -88,7 +88,7 @@ goog.require('ga_styles_service');
               featStyle.getText().getFill().getColor(),
               scope.options.colors);
           scope.options.textSize = findSize(featStyle.getText(),
-              scope.options.textSizes);
+              scope.options.textSizes, scope.options.textSizes[0]);
         }
 
         scope.options.name = feature.get('name') || '';

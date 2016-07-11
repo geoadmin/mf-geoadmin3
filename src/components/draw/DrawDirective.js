@@ -78,21 +78,40 @@ goog.require('ga_styles_service');
       return tooltip;
     };
 
+    // Display an help tooltip for when drawing
     var updateHelpTooltip = function(overlay, type, drawStarted, onFirstPoint,
         onLastPoint) {
-      var helpMsg = $translate.instant('draw_start_' + type);
+      var helpMsgId = 'draw_start_';
       if (drawStarted) {
         if (type != 'Point') {
-          helpMsg = $translate.instant('draw_next_' + type);
+          helpMsgId = 'draw_next_';
         }
         if (onLastPoint) {
-          helpMsg = $translate.instant('draw_snap_last_point_' + type);
+          helpMsgId = 'draw_snap_last_point_';
         }
         if (onFirstPoint) {
-          helpMsg = $translate.instant('draw_snap_first_point_' + type);
+          helpMsgId = 'draw_snap_first_point_';
         }
       }
-      overlay.getElement().innerHTML = helpMsg;
+      overlay.getElement().innerHTML = $translate.instant(helpMsgId + type);
+    };
+
+    // Display an help tooltip when modifying
+    var updateModifyHelpTooltip = function(overlay, type, onExistingVertex) {
+      var helpMsgId = 'modify_new_vertex_';
+      if (onExistingVertex) {
+        helpMsgId = 'modify_existing_vertex_';
+      }
+      overlay.getElement().innerHTML = $translate.instant(helpMsgId + type);
+    };
+
+    // Display an help tooltip when selecting
+    var updateSelectHelpTooltip = function(overlay, type) {
+      var helpMsgId = 'select_no_feature';
+      if (type) {
+        helpMsgId = 'select_feature_' + type;
+      }
+      overlay.getElement().innerHTML = $translate.instant(helpMsgId);
     };
 
     // Display measure overlays if the geometry alloow it otherwise hide them.
@@ -138,10 +157,10 @@ goog.require('ga_styles_service');
         }
         var layer, draw, lastActiveTool, snap;
         var unDblClick, unLayerAdd, unLayerRemove, unSourceEvents = [],
-            deregPointerMove, deregFeatureChange, unLayerVisible,
+            deregPointerEvts = [], deregFeatureChange, unLayerVisible,
             unWatch = [], unDrawEvts = [];
         var useTemporaryLayer = scope.options.useTemporaryLayer || false;
-        var helpTooltip, distTooltip, areaTooltip;
+        var helpTooltip, helpModifyTooltip, distTooltip, areaTooltip;
         var map = scope.map;
         var viewport = $(map.getViewport());
         var body = $($document[0].body);
@@ -173,13 +192,21 @@ goog.require('ga_styles_service');
           var active = evt.target.get(evt.key);
           if (active) {
             if (!gaBrowserSniffer.mobile) {
-              deregPointerMove = map.on('pointermove',
-                  updateCursorStyleDebounced);
+              deregPointerEvts = map.on([
+                'pointerdown',
+                'pointerup',
+                'pointermove'
+              ], function(evt) {
+                helpTooltip.setPosition(evt.coordinate);
+                updateCursorStyleDebounced(evt);
+              });
             }
             // Delete keyboard button
             $document.keyup(scope.deleteSelectedFeature);
           } else {
-            ol.Observable.unByKey(deregPointerMove);
+            deregPointerEvts.forEach(function(item) {
+              ol.Observable.unByKey(item);
+            });
             $document.off('keyup', scope.deleteSelectedFeature);
             select.getFeatures().clear();
           }
@@ -332,6 +359,11 @@ goog.require('ga_styles_service');
           });
           select.setActive(true);
 
+          // Create temporary help overlays
+          if (!gaBrowserSniffer.mobile && !helpTooltip) {
+            helpTooltip = createHelpTooltip();
+            map.addOverlay(helpTooltip);
+          }
         };
 
 
@@ -366,16 +398,18 @@ goog.require('ga_styles_service');
           map.removeInteraction(select);
           map.removeInteraction(modify);
           map.removeInteraction(snap);
+
+          // Remove help overlay
+          if (helpTooltip) {
+            map.removeOverlay(helpTooltip);
+          }
+
         };
 
         // Set the draw interaction with the good geometry
         var activateDrawInteraction = function(tool) {
           select.setActive(false);
           deactivateDrawInteraction();
-
-          // Create temporary help overlays
-          helpTooltip = createHelpTooltip();
-          map.addOverlay(helpTooltip);
 
           updateHelpTooltip(helpTooltip, tool.id, false);
 
@@ -527,7 +561,6 @@ goog.require('ga_styles_service');
           while (unDrawEvts.length) {
             ol.Observable.unByKey(unDrawEvts.pop());
           }
-          map.removeOverlay(helpTooltip);
           map.removeOverlay(distTooltip);
           map.removeOverlay(areaTooltip);
           if (draw) {
@@ -761,20 +794,67 @@ goog.require('ga_styles_service');
             mapDiv.removeClass(cssGrab);
             return;
           }
-          var featureFound = map.forEachFeatureAtPixel(evt.pixel,
-              featureFilter, this, layerFilter);
+          var hoverSelectableFeature = false;
+          var hoverNewVertex = false;
+          var hoverVertex = false;
+          var selectableFeat, newVertexFeat;
+          var type;
           var classes = cssPointer + ' ' + cssGrab;
-          if (featureFound) {
-            classes = cssPointer;
-            var styles = featureFound.getStyle();
-            if (styles && styles.length > 1 &&
-                styles[styles.length - 1].getZIndex() ==
-                gaStyleFactory.ZSKETCH) {
-              classes += ' ' + cssGrab;
+
+          // Try to find a selectable feature
+          map.forEachFeatureAtPixel(
+            evt.pixel,
+            function(feature, layer) {
+              if (layer) {
+                selectableFeat = feature;
+                hoverSelectableFeature = true;
+              } else {
+                newVertexFeat = feature;
+                hoverNewVertex = true;
+              }
+            },
+            this,
+            function(itemLayer) {
+              return layerFilter(itemLayer) ||
+                  (itemLayer.getStyle &&
+                  itemLayer.getStyle() == scope.options.selectStyleFunction);
             }
-            mapDiv.addClass(classes);
-          } else {
-            mapDiv.removeClass(classes);
+          );
+          if (selectableFeat) {
+            // Get the type of the feature
+            type = selectableFeat.getId().split('_')[0];
+
+            if (newVertexFeat) {
+              // We try to found if the newVertex is snapped on an existing
+              // one.
+              var styles = selectableFeat.getStyle();
+              var vertexStyle = styles[styles.length - 1];
+              var coord = newVertexFeat.getGeometry().getCoordinates();
+              var closestPt = vertexStyle.getGeometryFunction()(selectableFeat)
+                  .getClosestPoint(coord);
+              hoverVertex = (coord[0] == closestPt[0] &&
+                  coord[1] == closestPt[1]);
+            }
+          }
+
+          if (!hoverSelectableFeature) {
+            // If the cursor is not hover a selectable feature.
+            mapDiv.removeClass(cssPointer + ' ' + cssGrab);
+            updateSelectHelpTooltip(helpTooltip);
+
+          } else if (hoverSelectableFeature && !hoverNewVertex &&
+              !hoverVertex) {
+            // If the cursor is hover a selectable feature.
+            mapDiv.addClass(cssPointer);
+            mapDiv.removeClass(cssGrab);
+
+            updateSelectHelpTooltip(helpTooltip, type);
+
+          } else if (hoverNewVertex || hoverVertex) {
+            // If a feature is selected and if the cursor is hover a draggable
+            // vertex.
+            mapDiv.addClass(cssGrab);
+            updateModifyHelpTooltip(helpTooltip, type, hoverVertex);
           }
         };
         var updateCursorStyleDebounced = gaDebounce.debounce(

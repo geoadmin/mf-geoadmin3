@@ -179,11 +179,23 @@ goog.require('ga_styles_service');
         },
         zIndex: gaStyleFactory.ZSKETCH
       });
+      var newVertexStyle = new ol.style.Style({
+        image: new ol.style.Circle({
+          radius: 7,
+          fill: new ol.style.Fill({
+            color: white.concat([0.4])
+          }),
+          stroke: new ol.style.Stroke({
+            color: black.concat([1])
+          })
+        }),
+        zIndex: gaStyleFactory.ZSKETCH - 1
+      });
 
       return function(feature, resolution) {
         if (!feature.getStyleFunction() ||
             !feature.getStyleFunction().call(feature, resolution)) {
-          return [vertexStyle];
+          return [newVertexStyle];
         }
         var styles = feature.getStyleFunction().call(feature, resolution);
         // When a feature is selected we apply its current style and the
