@@ -92,6 +92,12 @@ FLAKE8_CMD=${PYTHON_VENV}/bin/flake8
 AUTOPEP8_CMD=${PYTHON_VENV}/bin/autopep8
 CLOSURE_COMPILER=node_modules/google-closure-compiler/compiler.jar
 
+# Node executables
+NODE_BIN=node_modules/.bin
+LESSC=${NODE_BIN}/lessc
+KARMA=${NODE_BIN}/karma
+PHANTOMJS=${NODE_BIN}/phantomjs
+NG_ANNOTATE=${NODE_BIN}/ng-annotate
 
 .PHONY: help
 help:
@@ -190,12 +196,12 @@ autolintpy: ${AUTOPEP8_CMD}
 
 .PHONY: testdebug
 testdebug: .build-artefacts/app-whitespace.js test/karma-conf-debug.js
-	PHANTOMJS_BIN="node_modules/.bin/phantomjs" ./node_modules/.bin/karma start test/karma-conf-debug.js --single-run;
+	PHANTOMJS_BIN="${PHANTOMJS}" ${KARMA} start test/karma-conf-debug.js --single-run;
 	cat .build-artefacts/coverage.txt; echo;
 
 .PHONY: testrelease
 testrelease: prd/lib/build.js test/karma-conf-release.js .build-artefacts/devlibs
-	PHANTOMJS_BIN="node_modules/.bin/phantomjs" ./node_modules/.bin/karma start test/karma-conf-release.js --single-run
+	PHANTOMJS_BIN="${PHANTOMJS}" ${KARMA} start test/karma-conf-release.js --single-run
 
 .PHONY: teste2e
 teste2e: saucelabs
@@ -287,7 +293,7 @@ ol3cesium: .build-artefacts/ol3-cesium
 	cat ../../../scripts/ga-ol3-tilegrid.exports >> src/ol/tilegrid/tilegrid.js; \
 	cat ../../../scripts/ga-ol3-tilerange.exports >> src/ol/tilerange.js; \
 	cat ../../../scripts/ga-ol3-view.exports >> src/ol/view.js; \
-	npm install --production; \
+	npm install --only prod; \
 	node tasks/build-ext.js; \
 	cd ../cesium; \
 	git remote | grep c2c || git remote add c2c git://github.com/camptocamp/cesium; \
@@ -391,7 +397,7 @@ prd/lib/build.js: src/lib/polyfill.min.js \
 
 prd/style/app.css: $(SRC_LESS_FILES)
 	mkdir -p $(dir $@)
-	node_modules/.bin/lessc $(LESS_PARAMETERS) --clean-css src/style/app.less $@
+	${LESSC} $(LESS_PARAMETERS) --clean-css src/style/app.less $@
 
 prd/geoadmin.appcache: src/geoadmin.mako.appcache \
 			${MAKO_CMD} \
@@ -541,7 +547,7 @@ src/deps.js: $(SRC_JS_FILES) ${PYTHON_VENV}
 	    --output_file=$@
 
 src/style/app.css: $(SRC_LESS_FILES)
-	node_modules/.bin/lessc $(LESS_PARAMETERS) src/style/app.less $@
+	${LESSC} $(LESS_PARAMETERS) src/style/app.less $@
 
 src/index.html: src/index.mako.html \
 	    ${MAKO_CMD} \
@@ -601,7 +607,7 @@ test/karma-conf-release.js: test/karma-conf.mako.js ${MAKO_CMD}
 	${PYTHON_CMD} ${MAKO_CMD} --var "mode=release" $< > $@
 
 test/lib/angular-mocks.js test/lib/expect.js test/lib/sinon.js externs/angular.js externs/jquery.js: package.json
-	npm install --only=dev;
+	npm install --only dev;
 	cp -f node_modules/angular-mocks/angular-mocks.js test/lib/;
 	cp -f node_modules/expect.js/index.js test/lib/expect.js;
 	cp -f node_modules/sinon/pkg/sinon.js test/lib/;
@@ -614,7 +620,7 @@ test/lib/angular-mocks.js test/lib/expect.js test/lib/sinon.js externs/angular.j
 
 .PHONY: libs
 libs:
-	npm install --only=production;
+	npm install --only prod;
 	cp -f $(addprefix node_modules/angular/, angular.js angular.min.js) src/lib/;
 	cp -f $(addprefix node_modules/angular-translate/dist/, angular-translate.js angular-translate.min.js) src/lib/;
 	cp -f $(addprefix node_modules/angular-translate/dist/angular-translate-loader-static-files/, angular-translate-loader-static-files.js angular-translate-loader-static-files.min.js) src/lib/;
@@ -646,7 +652,7 @@ libs:
 $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule.js): \
 	    .build-artefacts/annotated/%.js: %.js .build-artefacts/devlibs
 	mkdir -p $(dir $@)
-	./node_modules/.bin/ng-annotate -a $< > $@
+	${NG_ANNOTATE} -a $< > $@
 
 .build-artefacts/app-whitespace.js: .build-artefacts/js-files
 	java -jar ${CLOSURE_COMPILER} $(SRC_JS_FILES_FOR_COMPILER) \
