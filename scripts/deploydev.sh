@@ -11,9 +11,12 @@ GITBRANCH=master
 echo "Deploying branch" $GITBRANCH "to dev"
 
 # set some variables
-BASEDIR=/var/www/vhosts/mf-geoadmin3/private
+UUID=$(uuidgen)
+ROOTDIR=/var/www/vhosts/mf-geoadmin3/private
+DEPLOYDIR=$ROOTDIR/geoadmin
+TEMPDIR=$ROOTDIR/geoadmin_temp_$UUID
 SNAPSHOT=`date '+%Y%m%d%H%M'`
-SNAPSHOTDIR=$BASEDIR/snapshots/$SNAPSHOT
+SNAPSHOTDIR=$ROOTDIR/snapshots/$SNAPSHOT
 
 # parse parameter (if -s is specified, snapshot will be created)
 CREATE_SNAPSHOT='false'
@@ -22,19 +25,47 @@ then
   CREATE_SNAPSHOT='true'
 fi
 
-# build latest 'master' version on dev
-if [ ! -d $BASEDIR/geoadmin ]
-then
-  git clone git@github.com:geoadmin/mf-geoadmin3.git $BASEDIR/geoadmin
+if mv -f $DEPLOYDIR $TEMPDIR; then
+  echo "Project backup in $TEMPDIR."
+else
+  echo "Could not backup the project."
 fi
 
-cd $BASEDIR/geoadmin
+if cd $ROOTDIR; then
+  git clone https://github.com/geoadmin/mf-geoadmin3.git $DEPLOYDIR
+else
+  echo "Could not change directory. Restoring previous project." 1>&2
+  rm -rf $DEPLOYDIR
+  mv -f $TEMPDIR $DEPLOYDIR
+  exit 1
+fi
 
-# remove all local changes and get latest GITBRANCH from remote
-git fetch --all && git reset --hard && git checkout $GITBRANCH && git reset --hard origin/$GITBRANCH && git clean -fxd .
+# Create a fresh clone of the project
+if cd $DEPLOYDIR; then
+  # remove all local changes and get latest GITBRANCH from remote
+  git fetch origin && git reset --hard && git checkout $GITBRANCH && git reset --hard origin/$GITBRANCH
+else
+  echo "Could not change directory. Restoring previous project." 1>&2
+  rm -rf $DEPLOYDIR
+  mv -f $TEMPDIR $DEPLOYDIR
+  exit 1
+fi
 
 # build the project
 source rc_dev && make cleanall all
+
+exit_code=$?
+
+if [ "$exit_code" -gt "0" ]
+then
+  echo "Failed to build the app. Restoring previous project." 1>&2
+  rm -rf $DEPLOYDIR
+  mv -f $TEMPDIR $DEPLOYDIR
+  exit $exit_code
+else
+  echo "Build is successfull. Deleting old project."
+  rm -rf $TEMPDIR
+fi
 
 # restart apache
 sudo apache2ctl graceful
@@ -52,7 +83,7 @@ done
 # create a snapshot
 if [ $CREATE_SNAPSHOT == 'true' ]; then
   mkdir -p $SNAPSHOTDIR/geoadmin/code
-  rsync -rl $BASEDIR/geoadmin/ $SNAPSHOTDIR/geoadmin/code/geoadmin
+  rsync -rl $DEPLOYDIR $SNAPSHOTDIR/geoadmin/code/geoadmin
   echo "Snapshot of branch $GITBRANCH created at $SNAPSHOTDIR"
   cd $SNAPSHOTDIR/geoadmin/code/geoadmin/
   git describe --tags --abbrev=0 > .build-artefacts/last-release
