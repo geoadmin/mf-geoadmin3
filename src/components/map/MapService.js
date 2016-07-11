@@ -520,8 +520,8 @@ goog.require('ga_urlutils_service');
                 serverLayerName: 'ch.swisstopo.terrain.3d',
                 timestamps: ['20160115'],
                 attribution: 'swisstopo',
-                attributionUrl: 'http://www.swisstopo.admin.ch/internet/' +
-                    'swisstopo/' + lang + '/home.html'
+                attributionUrl: 'https://www.swisstopo.admin.ch/' + lang +
+                    '/home.html'
               };
             }
             if (!layers) { // First load

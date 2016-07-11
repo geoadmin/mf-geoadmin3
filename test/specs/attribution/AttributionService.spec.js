@@ -1,6 +1,7 @@
 describe('ga_attribution_service', function() {
   var gaAttribution, def, gaLang, lang = 'somelang';
   var bodAttribTemplate = '<a target="new" href="{{Url}}">{{Text}}</a>';
+  var bodAttribTemplateNoLink = '{{Text}}';
   var thirdPartyAttribTemplate = '<span class="ga-warning-tooltip">{{Text}}</span>';
   var layersConfig = {
     'layer': {
@@ -8,36 +9,35 @@ describe('ga_attribution_service', function() {
       attribution: 'Some text',
       attributionUrl: 'http://foo.com/bar.html',
       config3d: 'layer3d'
+    },
+    'layerNoLink': {
+      bodId: 'layerNoLink',
+      attribution: 'Some text',
+      attributionUrl: 'just.some.stuff',
+      config3d: 'layer3dNoLink'
     }
-  };
-  var layersConfigFR = {
-    'layer': {
-      bodId: 'layer',
-      attribution: 'Du texte',
-      attributionUrl: 'http://foo.com/fr/bar.html',
-      config3d: 'layer3d'
-    }
-  };
 
+  };
   var layersConfig3d = {
     'layer3d': {
       bodId: 'layer',
       attribution: 'Some 3d text',
       attributionUrl: 'http://foo3d.com/bar.html'
+    },
+    'layer3dNoLink': {
+      bodId: 'layerNoLink',
+      attribution: 'Some 3d text',
+      attributionUrl: 'just.some.stuff'
     }
   };
- 
-  var layersConfig3Fr = {
-    'layer3d': {
-      bodId: 'layer',
-      attribution: 'Du texte 3d',
-      attributionUrl: 'http://foo3d.com/fr/bar.html'
-    }
-  }; 
 
   var getBodAttrib = function(config) {
     return bodAttribTemplate.replace('{{Text}}', config.attribution).
         replace('{{Url}}', config.attributionUrl);
+  };
+
+  var getBodAttribNoLink = function(config) {
+    return bodAttribTemplateNoLink.replace('{{Text}}', config.attribution);
   };
 
   var getThirdPartyAttrib = function(text) {
@@ -88,6 +88,18 @@ describe('ga_attribution_service', function() {
     expect(attrib).to.be.eql(getBodAttrib(layerConfig));
     attrib = gaAttribution.getHtmlFromLayer(olLayer, true);
     expect(attrib).to.be.eql(getBodAttrib(layerConfig3d));
+    attrib = gaAttribution.getTextFromLayer(olLayer);
+    expect(attrib).to.be.eql(layerConfig.attribution);
+  });
+
+  it('gets attribution of bod layer with no link', function() {
+    var olLayer = {bodId: 'layerNoLink'};
+    var layerConfig = layersConfig['layerNoLink'];
+    var layerConfig3d = layersConfig3d['layer3dNoLink'];  
+    var attrib = gaAttribution.getHtmlFromLayer(olLayer); 
+    expect(attrib).to.be.eql(getBodAttribNoLink(layerConfig));
+    attrib = gaAttribution.getHtmlFromLayer(olLayer, true);
+    expect(attrib).to.be.eql(getBodAttribNoLink(layerConfig3d));
     attrib = gaAttribution.getTextFromLayer(olLayer);
     expect(attrib).to.be.eql(layerConfig.attribution);
   });
