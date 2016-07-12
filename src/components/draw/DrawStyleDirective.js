@@ -209,12 +209,12 @@ goog.require('ga_urlutils_service');
         if (!scope.options) {
           return;
         }
-        
+
         scope.appendToDescr = function(linkType, linkHref) {
           scope.options.description += linkType.tpl.replace(/{{linkHref}}/g,
               linkHref);
         };
-        
+
         scope.linkHref = '';
         scope.isValidUrl = function(linkHref) {
           return gaUrlUtils.isValid(linkHref);
