@@ -411,5 +411,10 @@
   "area": "",
   "shop_choose": "",
   "add_text_label": "",
-  "modify_text_color_label": ""
+  "modify_text_color_label": "",
+  "add": "",
+  "a_link": "",
+  "an_image": "",
+  "an_iframe": "",
+  "to_the_description": ""
 }
