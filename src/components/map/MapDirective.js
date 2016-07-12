@@ -42,7 +42,7 @@ goog.require('ga_styles_service');
 
   module.directive('gaMap', function($window, $rootScope, $timeout, gaPermalink,
       gaStyleFactory, gaBrowserSniffer, gaLayers, gaDebounce, gaOffline,
-      gaMapUtils) {
+      gaMapUtils, gaGlobalOptions) {
     return {
       restrict: 'A',
       scope: {
@@ -61,9 +61,9 @@ goog.require('ga_styles_service');
           if (isFinite(easting) && isFinite(northing)) {
             var position = [easting, northing];
             if (ol.extent.containsCoordinate(
-                [2420000, 1030000, 2900000, 1350000], position)) {
+                gaGlobalOptions.secondaryEpsgExtent, position)) {
               position = ol.proj.transform([easting, northing],
-                'EPSG:2056', 'EPSG:21781');
+                gaGlobalOptions.secondaryEpsg, gaGlobalOptions.defaultEpsg);
             }
             view.setCenter(position);
           }
