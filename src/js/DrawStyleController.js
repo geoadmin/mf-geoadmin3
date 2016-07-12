@@ -18,6 +18,16 @@ goog.require('ga_styles_service');
       name: '',
       description: '',
       font: gaStyleFactory.FONT,
+      linkTypes: [{
+        label: 'a_link',
+        tpl: '<a  target="_blank" href="{{linkHref}}">{{linkHref}}</a>'
+      }, {
+        label: 'an_image',
+        tpl: '<img src="{{linkHref}}"/>'
+      }, {
+        label: 'an_iframe',
+        tpl: '<iframe src="{{linkHref}}"></iframe>'
+      }],
       colors: [
         {name: 'black', fill: [0, 0, 0], border: 'white'},
         {name: 'blue', fill: [0, 0, 255], border: 'white'},
@@ -170,7 +180,7 @@ goog.require('ga_styles_service');
 
     // We use options provided by parent controller.
     $scope.options = angular.extend(options, $scope.options || {});
-
+    $scope.options.linkType = options.linkTypes[0];
     $scope.options.color = options.colors[5];
     $scope.options.textColor = options.colors[5];
     $scope.options.textSize = options.textSizes[0];

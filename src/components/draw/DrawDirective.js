@@ -81,9 +81,12 @@ goog.require('ga_styles_service');
     // Display an help tooltip for when drawing
     var updateHelpTooltip = function(overlay, type, drawStarted, onFirstPoint,
         onLastPoint) {
+      if (!overlay) {
+        return;
+      }
       var helpMsgId = 'draw_start_';
       if (drawStarted) {
-        if (type != 'Point') {
+        if (type != 'marker' && type != 'annotation') {
           helpMsgId = 'draw_next_';
         }
         if (onLastPoint) {
@@ -98,6 +101,9 @@ goog.require('ga_styles_service');
 
     // Display an help tooltip when modifying
     var updateModifyHelpTooltip = function(overlay, type, onExistingVertex) {
+      if (!overlay) {
+        return;
+      }
       var helpMsgId = 'modify_new_vertex_';
       if (onExistingVertex) {
         helpMsgId = 'modify_existing_vertex_';
@@ -107,6 +113,9 @@ goog.require('ga_styles_service');
 
     // Display an help tooltip when selecting
     var updateSelectHelpTooltip = function(overlay, type) {
+      if (!overlay) {
+        return;
+      }
       var helpMsgId = 'select_no_feature';
       if (type) {
         helpMsgId = 'select_feature_' + type;
@@ -362,13 +371,16 @@ goog.require('ga_styles_service');
           unDblClick = map.on('dblclick', function(evt) {
             return false;
           });
-          select.setActive(true);
 
           // Create temporary help overlays
-          if (!gaBrowserSniffer.mobile && !helpTooltip) {
-            helpTooltip = createHelpTooltip();
+          if (!gaBrowserSniffer.mobile) {
+            if (!helpTooltip) {
+              helpTooltip = createHelpTooltip();
+            }
             map.addOverlay(helpTooltip);
           }
+
+          select.setActive(true);
         };
 
 

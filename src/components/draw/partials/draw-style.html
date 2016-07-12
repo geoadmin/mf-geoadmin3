@@ -14,6 +14,28 @@
   <textarea class="form-control" ng-model="options.description"></textarea>
 </label>
 
+<label ng-if="useIconStyle || !useTextStyle" class="ga-add-link">
+  <span translate>add</span>
+  <select class="form-control"
+          ng-model="options.linkType"
+          ng-options="t.label | translate for t in options.linkTypes">
+  </select>
+  <span translate>{{'to_the_description'}}:</span>
+  <div ng-class="{'has-error': (linkHref != '' && !linkHref && !isValidUrl(linkHref))}">
+    <div class="input-group input-group-sm">
+      <input class="form-control" type="url"
+             placeholder="{{'paste_url' | translate}}"
+             ng-model="linkHref"></input>
+      <span class="input-group-btn">
+        <button class="btn btn-default"
+                ng-click="appendToDescr(options.linkType, linkHref)"
+                ng-disabled="!isValidUrl(linkHref)">OK</button>
+      </span>
+    </div>
+    <div class="ga-message" translate>drop_invalid_url</div>
+  </div>
+</label>
+
 <button  class="btn btn-default fa fa-trash"
          ng-if="layer"
          ng-click="deleteSelectedFeature(layer, feature)"></button>

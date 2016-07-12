@@ -1,15 +1,17 @@
 goog.provide('ga_drawstyle_directive');
 
 goog.require('ga_styles_service');
+goog.require('ga_urlutils_service');
 
 (function() {
 
   var module = angular.module('ga_drawstyle_directive', [
-    'ga_styles_service'
+    'ga_styles_service',
+    'ga_urlutils_service'
   ]);
 
   module.directive('gaDrawStyle', function($document, $window, $translate,
-      gaGlobalOptions, gaStyleFactory) {
+      gaGlobalOptions, gaStyleFactory, gaUrlUtils) {
 
     // Find the corresponding style
     var findIcon = function(olIcon, icons) {
@@ -207,6 +209,16 @@ goog.require('ga_styles_service');
         if (!scope.options) {
           return;
         }
+        
+        scope.appendToDescr = function(linkType, linkHref) {
+          scope.options.description += linkType.tpl.replace(/{{linkHref}}/g,
+              linkHref);
+        };
+        
+        scope.linkHref = '';
+        scope.isValidUrl = function(linkHref) {
+          return gaUrlUtils.isValid(linkHref);
+        };
 
         scope.deleteSelectedFeature = function(layer, feature) {
           if (layer.getSource().getFeatures().length == 1 &&

@@ -13,11 +13,9 @@ goog.require('ga_measure_service');
       restrict: 'A',
       templateUrl: 'components/measure/partials/measure.html',
       scope: {
-        feature: '=gaMeasure',
-        options: '=gaMeasureOptions'
+        feature: '=gaMeasure'
       },
       link: function(scope, elt) {
-        scope.options = scope.options || {};
         var deregisterKey;
         var update = function(feature) {
           scope.coord = undefined;
@@ -31,8 +29,7 @@ goog.require('ga_measure_service');
             scope.coord = coord[0].toFixed(2) + ', ' + coord[1].toFixed(2);
           } else {
             scope.distance = gaMeasure.getLength(geom);
-            scope.surface = gaMeasure.getArea(geom,
-                scope.options.showLineStringArea);
+            scope.surface = gaMeasure.getArea(geom);
             //scope.azimuth = gaMeasure.getAzimuth(geom);
           }
         };
