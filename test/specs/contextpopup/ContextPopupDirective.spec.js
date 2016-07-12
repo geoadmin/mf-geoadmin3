@@ -34,7 +34,7 @@ describe('ga_contextpopup_directive', function() {
       map = new ol.Map({});
       $rootScope.map = map;
       $rootScope.options = {
-        lv03tolv95Url: "//api.example.com/reframe/lv03tolv95",
+        defaultToSecondaryEpsgUrl: "//api.example.com/reframe/lv03tolv95",
         heightUrl: "//api.geo.admin.ch/height",
         qrcodeUrl: "//api.geo.admin.ch/qrcodegenerator"
       };

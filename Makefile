@@ -48,6 +48,11 @@ RESOLUTIONS ?= '[650.0, 500.0, 250.0, 100.0, 50.0, 20.0, 10.0, 5.0, 2.5, 2.0, 1.
 LEVEL_OF_DETAILS ?= '[6, 7, 8, 9, 10, 11, 12, 13, 14, 14, 16, 17, 18, 18]' #lods corresponding to resolutions
 DEFAULT_EPSG ?= EPSG:21781
 DEFAULT_EPSG_EXTEND ?= '[420000, 30000, 900000, 350000]'
+DEFAULT_EPSG_CONTEXT_POPUP_TITLE ?= CH1903 / LV03
+DEFAULT_TO_SECONDARY_EPSG_URL ?= https://geodesy.geo.admin.ch/reframe/lv03tolv95
+SECONDARY_EPSG ?= EPSG:2056
+SECONDARY_EPSG_EXTENT ?= '[2485071.58, 1075346.31, 2828515.82, 1299941.79]'
+SECONDARY_EPSG_CONTEXT_POPUP_TITLE ?= CH1903+ / LV95
 DEFAULT_ELEVATION_MODEL ?= COMB
 DEFAULT_TERRAIN ?= ch.swisstopo.terrain.3d
 SAUCELABS_TESTS ?=
@@ -381,6 +386,11 @@ define buildpage
 		--var "public_url_regexp=$(PUBLIC_URL_REGEXP)" \
 		--var "default_epsg"="$(DEFAULT_EPSG)" \
 		--var "default_epsg_extend"="$(DEFAULT_EPSG_EXTEND)" \
+        --var "default_epsg_context_popup_title"="$(DEFAULT_EPSG_CONTEXT_POPUP_TITLE)" \
+        --var "default_to_secondary_epsg_url"="$(DEFAULT_TO_SECONDARY_EPSG_URL)" \
+        --var "secondary_epsg"="$(SECONDARY_EPSG)" \
+        --var "secondary_epsg_extent"="$(SECONDARY_EPSG_EXTENT)" \
+        --var "secondary_epsg_context_popup_title"="$(SECONDARY_EPSG_CONTEXT_POPUP_TITLE)" \
 		--var "staging"="$(DEPLOY_TARGET)" $< > $@
 endef
 

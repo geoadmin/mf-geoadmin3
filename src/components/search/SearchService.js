@@ -24,7 +24,7 @@ goog.provide('ga_search_service');
     '([\\s,]+([\\d\\.\']+)[\\s,]+([\\d\\.\']+))?');
 
   module.provider('gaSearchGetCoordinate', function() {
-    this.$get = function() {
+    this.$get = function(gaGlobalOptions) {
       return function(extent, query) {
         var position;
         var valid = false;
@@ -61,7 +61,7 @@ goog.provide('ga_search_service');
             .replace('\'\'' , '').replace('′′' , '')
             .replace('″' , '')) / 3600;
           position = ol.proj.transform([easting, northing],
-                'EPSG:4326', 'EPSG:21781');
+                'EPSG:4326', gaGlobalOptions.defaultEpsg);
           if (ol.extent.containsCoordinate(
             extent, position)) {
               valid = true;
@@ -88,7 +88,7 @@ goog.provide('ga_search_service');
             valid = true;
           } else {
             position = ol.proj.transform(position,
-              'EPSG:2056', 'EPSG:21781');
+              gaGlobalOptions.secondaryEpsg, gaGlobalOptions.defaultEpsg);
             if (ol.extent.containsCoordinate(
                 extent, position)) {
               valid = true;
@@ -97,7 +97,7 @@ goog.provide('ga_search_service');
                 [left < right ? left : right,
                   right > left ? right : left];
               position = ol.proj.transform(position,
-                'EPSG:4326', 'EPSG:21781');
+                'EPSG:4326', gaGlobalOptions.defaultEpsg);
               if (ol.extent.containsCoordinate(
                 extent, position)) {
                 valid = true;

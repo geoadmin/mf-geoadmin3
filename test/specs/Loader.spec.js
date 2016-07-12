@@ -40,6 +40,9 @@ beforeEach(function() {
         'https://' + location.host + '/**'
       ],
       defaultEpsg: 'EPSG:21781',
+      secondaryEpsg: 'EPSG:2056',
+      defaultToSecondaryEpsgUrl: '//api.example.com/reframe/' +
+          'lv03tolv95?easting=661473&northing=188192',
       defaultTopicId: 'sometopic',
       translationFallbackCode: 'somelang',
       languages: ['de', 'fr', 'it', 'en', 'rm', 'somelang'],

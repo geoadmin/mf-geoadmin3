@@ -701,8 +701,11 @@ goog.require('ga_urlutils_service');
           var olSource = (layer.timeEnabled) ? null : layer.olSource;
           if (layer.type == 'wmts') {
             if (!olSource) {
+              var tileMatrixSet = layer.epsg ?
+                  layer.epsg : gaGlobalOptions.defaultEpsg;
+              tileMatrixSet = tileMatrixSet.replace('EPSG:', '');
               var wmtsTplUrl = getWmtsGetTileTpl(layer.serverLayerName, null,
-                  '21781', layer.format, true)
+                  tileMatrixSet, layer.format, true)
                   .replace('{z}', '{TileMatrix}')
                   .replace('{x}', '{TileCol}')
                   .replace('{y}', '{TileRow}');
@@ -714,7 +717,7 @@ goog.require('ga_urlutils_service');
                 // Temporary until https://github.com/openlayers/ol3/pull/4964
                 // is merged upstream
                 cacheSize: 2048 * 3,
-                projection: gaGlobalOptions.defaultEpsg,
+                projection: layer.epsg || gaGlobalOptions.defaultEpsg,
                 requestEncoding: 'REST',
                 tileGrid: gaTileGrid.get(layer.resolutions,
                     layer.minResolution),
