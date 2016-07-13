@@ -410,11 +410,13 @@
   "east": "",
   "area": "",
   "shop_choose": "",
-  "add_text_label": "",
   "modify_text_color_label": "",
   "add": "",
-  "a_link": "",
-  "an_image": "",
-  "an_iframe": "",
-  "to_the_description": ""
+  "add_link": "",
+  "add_image": "",
+  "add_video": "",
+  "text_to_display": "",
+  "url_link": "",
+  "url_image": "",
+  "url_video": ""
 }

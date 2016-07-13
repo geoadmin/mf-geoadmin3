@@ -73,6 +73,7 @@ goog.require('ga_urlutils_service');
         var featStyle = styles[0];
         if (featStyle.getImage() instanceof ol.style.Icon) {
           useIconStyle = true;
+          useTextStyle = true;
           var img = featStyle.getImage();
           scope.options.icon = findIcon(img, scope.options.icons);
           scope.options.iconSize = findSize(img, scope.options.iconSizes);
@@ -210,25 +211,30 @@ goog.require('ga_urlutils_service');
           return;
         }
 
-        scope.appendToDescr = function(linkType, linkHref) {
-          scope.options.description += linkType.tpl.replace(/{{linkHref}}/g,
-              linkHref);
+        scope.appendToDescr = function(linkType) {
+          scope.options.description += linkType.tpl
+              .replace(/{{url}}/g, linkType.value)
+              .replace(/{{textToDisplay}}/, linkType.textToDisplay || '');
         };
 
-        scope.linkHref = '';
-        scope.isValidUrl = function(linkHref) {
-          return gaUrlUtils.isValid(linkHref);
+        scope.linkUrl = '';
+        scope.imageUrl = '';
+        scope.videoUrl = '';
+
+        scope.isValidUrl = function(url) {
+          return gaUrlUtils.isValid(url);
         };
 
         scope.deleteSelectedFeature = function(layer, feature) {
           if (layer.getSource().getFeatures().length == 1 &&
               confirm($translate.instant('confirm_remove_all_features'))) {
             layer.getSource().clear();
+            scope.feature = undefined;
           } else if (confirm($translate.instant(
               'confirm_remove_selected_features'))) {
             layer.getSource().removeFeature(feature);
+            scope.feature = undefined;
           }
-          scope.feature = undefined;
         };
 
         scope.$watch('feature', function() {
@@ -251,7 +257,7 @@ goog.require('ga_urlutils_service');
 
         // Open the popover with style inside
         var win = $($window);
-        scope.toggleStyle = function(evt) {
+        scope.togglePopover = function(evt, title) {
           var bt = $(evt.currentTarget);
 
           if (!bt.data('bs.popover')) {
@@ -269,6 +275,8 @@ goog.require('ga_urlutils_service');
               // content
               evt.stopPropagation();
             });
+            title = $translate.instant(title || '') +
+                '<button class="ga-icon ga-btn fa fa-remove"></button>';
 
             bt.popover({
               html: true,
@@ -276,7 +284,7 @@ goog.require('ga_urlutils_service');
                 return win.width() < 480 ? 'top' : 'auto right';
               },
               content: content[0],
-              title: '<button class="ga-icon ga-btn fa fa-remove"></button>'
+              title: title
             });
 
             // Close popover on outside popover mouse event

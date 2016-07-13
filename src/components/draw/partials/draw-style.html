@@ -1,9 +1,3 @@
-<label class="ga-checkbox" ng-show="useIconStyle">
-  <input type="checkbox" ng-model="useTextStyle"></input>
-  <span></span>
-  <span translate>{{'add_text_label'}}</span> 
-</label>
-
 <label ng-if="useTextStyle">
   <span translate>{{'modify_text_label'}}:</span> 
   <textarea class="form-control" rows="1" ng-model="options.name" ng-disabled="!useTextStyle"></textarea>
@@ -11,29 +5,18 @@
 
 <label ng-if="useIconStyle || !useTextStyle">
   <span translate>{{'modify_description'}}:</span>
-  <textarea class="form-control" ng-model="options.description"></textarea>
-</label>
-
-<label ng-if="useIconStyle || !useTextStyle" class="ga-add-link">
-  <span translate>add</span>
-  <select class="form-control"
-          ng-model="options.linkType"
-          ng-options="t.label | translate for t in options.linkTypes">
-  </select>
-  <span translate>{{'to_the_description'}}:</span>
-  <div ng-class="{'has-error': (linkHref != '' && !linkHref && !isValidUrl(linkHref))}">
-    <div class="input-group input-group-sm">
-      <input class="form-control" type="url"
-             placeholder="{{'paste_url' | translate}}"
-             ng-model="linkHref"></input>
-      <span class="input-group-btn">
-        <button class="btn btn-default"
-                ng-click="appendToDescr(options.linkType, linkHref)"
-                ng-disabled="!isValidUrl(linkHref)">OK</button>
-      </span>
-    </div>
-    <div class="ga-message" translate>drop_invalid_url</div>
+  <div class="ga-descr-buttons">
+    <button  class="ga-icon ga-btn fa fa-ga-marker"
+             ng-click="togglePopover($event, 'add_link')"
+             data-target=".ga-html-link"></button>
+    <button  class="ga-icon ga-btn fa fa-paint-brush"
+             ng-click="togglePopover($event, 'add_image')"
+             data-target=".ga-html-image"></button>
+    <button  class="ga-icon ga-btn fa fa-remove"
+             ng-click="togglePopover($event, 'add_video')"
+             data-target=".ga-html-video"></button>
   </div>
+  <textarea class="form-control ga-descr" ng-model="options.description"></textarea>
 </label>
 
 <button  class="btn btn-default fa fa-trash"
@@ -42,19 +25,18 @@
 
 <button  class="btn btn-default fa fa-paint-brush"
          ng-if="useColorStyle"
-         ng-click="toggleStyle($event)"
+         ng-click="togglePopover($event)"
          data-target=".ga-color-style"></button>
 
 <button  class="btn btn-default fa fa-font"
          ng-if="useTextStyle"
-         ng-click="toggleStyle($event)"
+         ng-click="togglePopover($event)"
          data-target=".ga-text-style"></button>
 
 <button  class="btn btn-default fa fa-ga-marker"
          ng-if="useIconStyle"
-         ng-click="toggleStyle($event)"
+         ng-click="togglePopover($event)"
          data-target=".ga-icon-style"></button>
-
 
 <div ng-if="useTextStyle" class="ga-popover-content ga-text-style">
   <label>
@@ -132,3 +114,29 @@
   </label>
 </div>
 <div ga-measure="feature"></div>
+
+<div ng-repeat="t in ::options.linkTypes" class="ga-popover-content ga-html-{{t.label}}">
+  <label ng-if="t.label == 'link'">
+    <span translate>{{'text_to_display'}}:</span>
+    <input type="text" ng-model="t.textToDisplay" class="form-control"/>
+  </label>
+
+  <label class="ga-add-link">
+    <span translate>{{'url_' + t.label}}:</span>
+    <div ng-class="{'has-error': (t.value != '' && (!t.value || !isValidUrl(t.value)))}">
+      <div class="input-group input-group-sm">
+        <input class="form-control" type="url"
+               placeholder="{{'paste_url' | translate}}"
+               ng-model="t.value"></input>
+        <span class="input-group-btn">
+          <button class="btn btn-default"
+                  ng-click="appendToDescr(t)"
+                  ng-disabled="!isValidUrl(t.value)"
+                  translate>add</button>
+        </span>
+      </div>
+      <div class="ga-message" translate>drop_invalid_url</div>
+    </div>
+  </label>
+</div>
+

@@ -19,14 +19,17 @@ goog.require('ga_styles_service');
       description: '',
       font: gaStyleFactory.FONT,
       linkTypes: [{
-        label: 'a_link',
-        tpl: '<a  target="_blank" href="{{linkHref}}">{{linkHref}}</a>'
+        label: 'link',
+        value: '',
+        tpl: '<a  target="_blank" href="{{url}}">{{textToDisplay}}</a>'
       }, {
-        label: 'an_image',
-        tpl: '<img src="{{linkHref}}"/>'
+        label: 'image',
+        value: '',
+        tpl: '<img src="{{url}}"/>'
       }, {
-        label: 'an_iframe',
-        tpl: '<iframe src="{{linkHref}}"></iframe>'
+        label: 'video',
+        value: '',
+        tpl: '<iframe src="{{url}}"></iframe>'
       }],
       colors: [
         {name: 'black', fill: [0, 0, 0], border: 'white'},
