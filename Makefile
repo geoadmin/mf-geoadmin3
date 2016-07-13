@@ -19,6 +19,8 @@ MAPPROXY_URL ?= //wmts{s}.dev.bgdi.ch
 LAST_MAPPROXY_URL := $(shell if [ -f .build-artefacts/last-mapproxy-url ]; then cat .build-artefacts/last-mapproxy-url 2> /dev/null; else echo '-none-'; fi)
 SHOP_URL ?= //shop-bgdi.dev.bgdi.ch
 LAST_SHOP_URL := $(shell if [ -f .build-artefacts/last-shop-url ]; then cat .build-artefacts/last-shop-url 2> /dev/null; else echo '-none-'; fi)
+WMS_URL ?= //wms-bgdi.dev.bgdi.ch
+LAST_WMS_URL := $(shell if [ -f .build-artefacts/last-wms-url ]; then cat .build-artefacts/last-wms-url 2> /dev/null; else echo '-none-'; fi)
 LESS_PARAMETERS ?= -ru
 KEEP_VERSION ?= 'false'
 LAST_VERSION := $(shell if [ -f .build-artefacts/last-version ]; then cat .build-artefacts/last-version 2> /dev/null; else echo '-none-'; fi)
@@ -107,6 +109,7 @@ help:
 	@echo "- API_URL Service URL         (build with: $(LAST_API_URL), current value: $(API_URL))"
 	@echo "- MAPPROXY_URL Service URL    (build with: $(LAST_MAPPROXY_URL), current value: $(MAPPROXY_URL))"
 	@echo "- SHOP_URL Service URL        (build with: $(LAST_SHOP_URL), current value: $(SHOP_URL))"
+	@echo "- WMS_URL Service URL         (build with  $(LAST_WMS_URL), current value: $(WMS_URL))"
 	@echo "- APACHE_BASE_PATH Base path  (build with: $(LAST_APACHE_BASE_PATH), current value: $(APACHE_BASE_PATH))"
 	@echo "- APACHE_BASE_DIRECTORY       (build with: $(LAST_APACHE_BASE_DIRECTORY), current value: $(APACHE_BASE_DIRECTORY))"
 
@@ -366,6 +369,7 @@ define buildpage
 		--var "application_url=$(APPLICATION_URL)" \
 		--var "mapproxy_url=$(MAPPROXY_URL)" \
 		--var "shop_url=$(SHOP_URL)" \
+		--var "wms_url=$(WMS_URL)" \
 		--var "default_topic_id=$(DEFAULT_TOPIC_ID)" \
 		--var "translation_fallback_code=$(TRANSLATION_FALLBACK_CODE)" \
 		--var "languages=$(LANGUAGES)" \
@@ -402,6 +406,7 @@ prd/index.html: src/index.mako.html \
 	    .build-artefacts/last-api-url \
 	    .build-artefacts/last-mapproxy-url \
 	    .build-artefacts/last-shop-url \
+	    .build-artefacts/last-wms-url \
 	    .build-artefacts/last-apache-base-path \
 	    .build-artefacts/last-version
 	mkdir -p $(dir $@)
@@ -414,6 +419,7 @@ prd/mobile.html: src/index.mako.html \
 	    .build-artefacts/last-api-url \
 	    .build-artefacts/last-mapproxy-url \
 	    .build-artefacts/last-shop-url \
+	    .build-artefacts/last-wms-url \
 	    .build-artefacts/last-apache-base-path \
 	    .build-artefacts/last-version
 	mkdir -p $(dir $@)
@@ -426,6 +432,7 @@ prd/embed.html: src/index.mako.html \
 	    .build-artefacts/last-api-url \
 	    .build-artefacts/last-mapproxy-url \
 	    .build-artefacts/last-shop-url \
+	    .build-artefacts/last-wms-url \
 	    .build-artefacts/last-apache-base-path \
 	    .build-artefacts/last-version
 	mkdir -p $(dir $@)
@@ -462,6 +469,7 @@ src/index.html: src/index.mako.html \
 	    .build-artefacts/last-api-url \
 	    .build-artefacts/last-mapproxy-url \
 	    .build-artefacts/last-shop-url \
+	    .build-artefacts/last-wms-url \
 	    .build-artefacts/last-apache-base-path
 	$(call buildpage,desktop,,,)
 
@@ -470,6 +478,7 @@ src/mobile.html: src/index.mako.html \
 	    .build-artefacts/last-api-url \
 	    .build-artefacts/last-mapproxy-url \
 	    .build-artefacts/last-shop-url \
+	    .build-artefacts/last-wms-url \
 	    .build-artefacts/last-apache-base-path
 	$(call buildpage,mobile,,,)
 
@@ -478,6 +487,7 @@ src/embed.html: src/index.mako.html \
 	    .build-artefacts/last-api-url \
 	    .build-artefacts/last-mapproxy-url \
 	    .build-artefacts/last-shop-url \
+	    .build-artefacts/last-wms-url \
 	    .build-artefacts/last-apache-base-path
 	$(call buildpage,embed,,,)
 
@@ -652,6 +662,10 @@ scripts/00-$(GIT_BRANCH).conf: scripts/00-branch.mako-dot-conf \
 .build-artefacts/last-shop-url::
 	mkdir -p $(dir $@)
 	test "$(SHOP_URL)" != "$(LAST_SHOP_URL)" && echo $(SHOP_URL) > .build-artefacts/last-shop-url || :
+
+.build-artefacts/last-wms-url::
+	mkdir -p $(dir $@)
+	test "$(WMS_URL)" != "$(LAST_WMS_URL)" && echo $(WMS_URL) > .build-artefacts/last-wms-url || :
 
 .build-artefacts/last-apache-base-path::
 	mkdir -p $(dir $@)

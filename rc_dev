@@ -7,3 +7,4 @@ export APACHE_BASE_PATH=
 export VARNISH_HOSTS=(ip-10-220-4-250.eu-west-1.compute.internal)
 export E2E_TARGETURL=https://mf-geoadmin3.dev.bgdi.ch
 export SHOP_URL=//shop-bgdi.dev.bgdi.ch
+export WMS_URL=//wms-bgdi.dev.bgdi.ch

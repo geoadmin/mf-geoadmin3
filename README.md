@@ -204,3 +204,9 @@ You can flush varnish instances manually.
     ./scripts/flushvarnish.sh varnihs_host_ip api_host
 
 Where `varnish_host_ip` is the ip of the varnish server and api_host is the hostname of the url you want to flush. e.g. mf-chsdi3.dev.bgdi.ch for dev and api3.geo.admin.ch for prod.
+
+# Use a custom backend and WMS server via permalink parameters
+
+Add `api_url=theNameOfABranch` to use a custom backend.
+
+Add `wms_url=//theNameOfAWMSServer` to use a cutsom wms service.
