@@ -213,7 +213,7 @@ goog.require('ga_what3words_service');
                 updateW3W();
               }
             });
-            
+
             // Listen to permalink change events from the scope.
             scope.$on('gaPermalinkChange', function(event) {
               if (angular.isDefined(coord21781) && popoverShown) {
