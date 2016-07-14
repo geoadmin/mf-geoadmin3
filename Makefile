@@ -58,6 +58,9 @@ GIT_COMMIT_HASH ?= $(shell git rev-parse --verify HEAD)
 GIT_COMMIT_DATE ?= $(shell git log -1  --date=iso --pretty=format:%cd)
 CURRENT_DATE ?= $(shell date -u +"%Y-%m-%d %H:%M:%S %z")
 
+# S3 related config variables
+SNAPSHOT_DIR = /var/www/vhosts/mf-geoadmin3/private/snapshots/
+
 ## Python interpreter can't have space in path name
 ## So prepend all python scripts with python cmd
 ## See: https://bugs.launchpad.net/virtualenv/+bug/241581/comments/11
@@ -212,41 +215,41 @@ deployprod: guard-SNAPSHOT
 	./scripts/deploysnapshot.sh $(SNAPSHOT) prod $(DEPLOYCONFIG)
 
 .PHONY: s3uploaddev
-s3uploaddev: boto3
-	@ if test "$(SNAPSHOT)" = "true"; then   \
-		 ./scripts/createsnapshot.sh;      \
-		 exit 1; \
+s3uploaddev: .build-artefacts/requirements.timestamp
+	@ if test "$(SNAPSHOT)" = "true"; then \
+		./scripts/createsnapshot.sh; \
+		exit 1; \
 	fi; \
-	if [ ! -z "$(SNAPSHOT)" ];   then          \
+	if [ ! -z "$(SNAPSHOT)" ];   then \
 		echo "Uploading SNAPSHOT=${SNAPSHOT} to 'dev'"; \
-		${PYTHON_CMD} ./scripts/s3manage.py upload  dev /var/www/vhosts/mf-geoadmin3/private/snapshots/$(SNAPSHOT)/geoadmin/code/geoadmin/ \
+		${PYTHON_CMD} ./scripts/s3manage.py upload  dev $(SNAPSHOT_DIR)$(SNAPSHOT)/geoadmin/code/geoadmin/ \
 		exit 1; \
 	else \
 		echo "You MUST specify a SNAPSHOT, either 'true' or a 'timestamp'"; \
 	fi
 
 .PHONY: s3uploadint
-s3uploadint: boto3
-		${PYTHON_CMD} ./scripts/s3manage.py upload int; \
+s3uploadint: .build-artefacts/requirements.timestamp
+		${PYTHON_CMD} ./scripts/s3manage.py upload int
 
 .PHONY: s3uploadprod
-s3uploadprod: boto3
-		${PYTHON_CMD} ./scripts/s3manage.py upload prod; \
+s3uploadprod: .build-artefacts/requirements.timestamp
+		${PYTHON_CMD} ./scripts/s3manage.py upload prod
 
 .PHONY: s3activate
-s3activate: boto3
+s3activate: .build-artefacts/requirements.timestamp
 	${PYTHON_CMD} ./scripts/s3manage.py activate $(SNAPSHOT)
 
 .PHONY: s3list
-s3list: boto3
+s3list: .build-artefacts/requirements.timestamp
 	${PYTHON_CMD} ./scripts/s3manage.py list
 
 .PHONY: s3info
-s3info: boto3
+s3info: .build-artefacts/requirements.timestamp
 	${PYTHON_CMD} ./scripts/s3manage.py info $(SNAPSHOT)
 
 .PHONY: s3delete
-s3delete: boto3
+s3delete: .build-artefacts/requirements.timestamp
 	${PYTHON_CMD} ./scripts/s3manage.py delete $(SNAPSHOT)
 
 .PHONY: deploybranch
@@ -672,9 +675,6 @@ ${AUTOPEP8_CMD}: ${PYTHON_VENV}
 
 .build-artefacts/requirements.timestamp: ${PYTHON_VENV} requirements.txt
 	${PIP_CMD} install -r requirements.txt
-
-boto3: ${PYTHON_VENV}
-	${PYTHON_CMD} ${PIP_CMD} install "boto3==1.2.5"
 	touch $@
 
 ${PYTHON_VENV}:
