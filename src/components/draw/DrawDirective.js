@@ -822,10 +822,12 @@ goog.require('ga_styles_service');
           map.forEachFeatureAtPixel(
             evt.pixel,
             function(feature, layer) {
-              if (layer) {
+              if (layer && !selectableFeat) {
+                // The selected feature is the first we caught with an array as
+                // style property.
                 selectableFeat = feature;
                 hoverSelectableFeature = true;
-              } else {
+              } else if (select.getFeatures().getLength() > 0) {
                 newVertexFeat = feature;
                 hoverNewVertex = true;
               }
@@ -846,11 +848,15 @@ goog.require('ga_styles_service');
               // one.
               var styles = selectableFeat.getStyle();
               var vertexStyle = styles[styles.length - 1];
-              var coord = newVertexFeat.getGeometry().getCoordinates();
-              var closestPt = vertexStyle.getGeometryFunction()(selectableFeat)
-                  .getClosestPoint(coord);
-              hoverVertex = (coord[0] == closestPt[0] &&
-                  coord[1] == closestPt[1]);
+              if (vertexStyle) {
+                var geom = vertexStyle.getGeometryFunction()(selectableFeat);
+                if (geom) {
+                  var coord = newVertexFeat.getGeometry().getCoordinates();
+                  var closestPt = geom.getClosestPoint(coord);
+                  hoverVertex = (coord[0] == closestPt[0] &&
+                      coord[1] == closestPt[1]);
+                }
+              }
             }
           }
 
