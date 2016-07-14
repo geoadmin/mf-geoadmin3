@@ -12,7 +12,6 @@ API_URL ?= //mf-chsdi3.dev.bgdi.ch
 LAST_API_URL := $(shell if [ -f .build-artefacts/last-api-url ]; then cat .build-artefacts/last-api-url 2> /dev/null; else echo '-none-'; fi)
 PUBLIC_URL ?= //public.dev.bgdi.ch
 E2E_TARGETURL ?= https://mf-geoadmin3.dev.bgdi.ch
-APPLICATION_URL ?= $(E2E_TARGETURL)
 PUBLIC_URL_REGEXP ?= ^https?:\/\/public\..*\.(bgdi|admin)\.ch\/.*
 ADMIN_URL_REGEXP ?= ^(ftp|http|https):\/\/(.*(\.bgdi|\.geo\.admin)\.ch)
 MAPPROXY_URL ?= //wmts{s}.dev.bgdi.ch
@@ -364,12 +363,6 @@ define buildpage
 		--var "mode=$2" \
 		--var "version=$3" \
 		--var "versionslashed=$4" \
-		--var "apache_base_path=$(APACHE_BASE_PATH)" \
-		--var "api_url=$(API_URL)" \
-		--var "application_url=$(APPLICATION_URL)" \
-		--var "mapproxy_url=$(MAPPROXY_URL)" \
-		--var "shop_url=$(SHOP_URL)" \
-		--var "wms_url=$(WMS_URL)" \
 		--var "default_topic_id=$(DEFAULT_TOPIC_ID)" \
 		--var "translation_fallback_code=$(TRANSLATION_FALLBACK_CODE)" \
 		--var "languages=$(LANGUAGES)" \
@@ -378,14 +371,12 @@ define buildpage
 		--var "default_level_of_detail"="$(DEFAULT_LEVEL_OF_DETAIL)" \
 		--var "resolutions"="$(RESOLUTIONS)" \
 		--var "level_of_details"="$(LEVEL_OF_DETAILS)" \
-		--var "public_url=$(PUBLIC_URL)" \
 		--var "default_elevation_model=${DEFAULT_ELEVATION_MODEL}" \
 		--var "default_terrain=$(DEFAULT_TERRAIN)" \
 		--var "admin_url_regexp=$(ADMIN_URL_REGEXP)" \
 		--var "public_url_regexp=$(PUBLIC_URL_REGEXP)" \
 		--var "default_epsg"="$(DEFAULT_EPSG)" \
-		--var "default_epsg_extend"="$(DEFAULT_EPSG_EXTEND)" \
-		--var "staging"="$(DEPLOY_TARGET)" $< > $@
+		--var "default_epsg_extend"="$(DEFAULT_EPSG_EXTEND)" $< > $@
 endef
 
 define applypatches
@@ -403,11 +394,6 @@ endef
 prd/index.html: src/index.mako.html \
 	    ${MAKO_CMD} \
 	    ${HTMLMIN_CMD} \
-	    .build-artefacts/last-api-url \
-	    .build-artefacts/last-mapproxy-url \
-	    .build-artefacts/last-shop-url \
-	    .build-artefacts/last-wms-url \
-	    .build-artefacts/last-apache-base-path \
 	    .build-artefacts/last-version
 	mkdir -p $(dir $@)
 	$(call buildpage,desktop,prod,$(VERSION),$(VERSION)/)
@@ -416,11 +402,6 @@ prd/index.html: src/index.mako.html \
 prd/mobile.html: src/index.mako.html \
 	    ${MAKO_CMD} \
 	    ${HTMLMIN_CMD} \
-	    .build-artefacts/last-api-url \
-	    .build-artefacts/last-mapproxy-url \
-	    .build-artefacts/last-shop-url \
-	    .build-artefacts/last-wms-url \
-	    .build-artefacts/last-apache-base-path \
 	    .build-artefacts/last-version
 	mkdir -p $(dir $@)
 	$(call buildpage,mobile,prod,$(VERSION),$(VERSION)/)
@@ -429,11 +410,6 @@ prd/mobile.html: src/index.mako.html \
 prd/embed.html: src/index.mako.html \
 	    ${MAKO_CMD} \
 	    ${HTMLMIN_CMD} \
-	    .build-artefacts/last-api-url \
-	    .build-artefacts/last-mapproxy-url \
-	    .build-artefacts/last-shop-url \
-	    .build-artefacts/last-wms-url \
-	    .build-artefacts/last-apache-base-path \
 	    .build-artefacts/last-version
 	mkdir -p $(dir $@)
 	$(call buildpage,embed,prod,$(VERSION),$(VERSION)/)
@@ -465,30 +441,15 @@ src/style/app.css: $(SRC_LESS_FILES)
 	node_modules/.bin/lessc $(LESS_PARAMETERS) src/style/app.less $@
 
 src/index.html: src/index.mako.html \
-	    ${MAKO_CMD} \
-	    .build-artefacts/last-api-url \
-	    .build-artefacts/last-mapproxy-url \
-	    .build-artefacts/last-shop-url \
-	    .build-artefacts/last-wms-url \
-	    .build-artefacts/last-apache-base-path
+	    ${MAKO_CMD}
 	$(call buildpage,desktop,,,)
 
 src/mobile.html: src/index.mako.html \
-	    ${MAKO_CMD} \
-	    .build-artefacts/last-api-url \
-	    .build-artefacts/last-mapproxy-url \
-	    .build-artefacts/last-shop-url \
-	    .build-artefacts/last-wms-url \
-	    .build-artefacts/last-apache-base-path
+	    ${MAKO_CMD}
 	$(call buildpage,mobile,,,)
 
 src/embed.html: src/index.mako.html \
-	    ${MAKO_CMD} \
-	    .build-artefacts/last-api-url \
-	    .build-artefacts/last-mapproxy-url \
-	    .build-artefacts/last-shop-url \
-	    .build-artefacts/last-wms-url \
-	    .build-artefacts/last-apache-base-path
+	    ${MAKO_CMD}
 	$(call buildpage,embed,,,)
 
 src/TemplateCacheModule.js: src/TemplateCacheModule.mako.js \

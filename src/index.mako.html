@@ -34,7 +34,7 @@ itemscope itemtype="http://schema.org/WebApplication"
     <meta name="msapplication-square70x70logo" content="${versionslashed}img/touch-icon-bund-70x70.png"/>
     <meta name="msapplication-square150x150logo" content="${versionslashed}img/touch-icon-bund-150x150.png"/>
     <meta name="msapplication-square310x310logo" content="${versionslashed}img/touch-icon-bund-310x310.png"/>
-    <link rel="dns-prefetch" href="${api_url}"/>
+    <link rel="dns-prefetch" href="https://api3.geo.admin.ch"/>
 
     <link rel="apple-touch-icon" sizes="76x76" href="${versionslashed}img/touch-icon-bund-76x76.png"/>
     <link rel="apple-touch-icon" sizes="120x120" href="${versionslashed}img/touch-icon-bund-120x120.png"/>
@@ -50,8 +50,9 @@ itemscope itemtype="http://schema.org/WebApplication"
     <meta property="og:title" content="Swiss Geoportal"/>
     <meta property="og:description" content="geo.admin.ch ist die Geoinformationsplattform der Schweizerischen Eidgenossenschaft. // geo.admin.ch est la plateforme de géoinformation de la Confédération suisse."/>
     <meta property="og:type" content="WebApplication"/>
-    <meta property="og:url" content="${application_url}"/>
-    <meta property="og:image" content="${application_url}/${versionslashed}img/logo_geoportal.png"/>
+    <meta property="og:url" content=https://map.geo.admin.ch"/>
+    <!-- TODO: assure the logo is there withou version numbers -->
+    <meta property="og:image" content="https://map.geo.admin.ch/img/logo_geoportal.png"/>
 
     <!-- Twitter Card Infos -->
     <meta name="twitter:card" content="summary"/>
@@ -59,15 +60,15 @@ itemscope itemtype="http://schema.org/WebApplication"
     <meta name="twitter:creator" content="@swiss_geoportal"/>
     <meta name="twitter:title" content="geo.admin.ch"/>
     <meta name="twitter:description" content="geo.admin.ch ist die Geoinformationsplattform der Schweizerischen Eidgenossenschaft. // geo.admin.ch est la plateforme de géoinformation de la Confédération suisse."/>
-    <meta name="twitter:image" content="${application_url}/${versionslashed}img/logo_geoportal.png"/>
-    <meta name="twitter:url" content="${application_url}"/>
+    <meta name="twitter:image" content="https://map.geo.admin.ch/img/logo_geoportal.png"/>
+    <meta name="twitter:url" content="https://map.geo.admin.ch"/>
 
     <!-- Facebook Specific fb:admins and fb.appid -->
 
     <!-- Google+ Specific Tags -->
     <meta itemprop="name" content="geo.admin.ch"/>
     <meta itemprop="description" content="geo.admin.ch ist die Geoinformationsplattform der Schweizerischen Eidgenossenschaft. // geo.admin.ch est la plateforme de géoinformation de la Confédération suisse."/>
-    <meta itemprop="image" content="${application_url}/${versionslashed}img/logo_geoportal.png"/>
+    <meta itemprop="image" content="https://map.geo.admin.ch/img/logo_geoportal.png"/>
 
     <script>
       (function(){
@@ -721,62 +722,46 @@ itemscope itemtype="http://schema.org/WebApplication"
 
     <script>
       (function() {
-        // Make sure ajax is using cached requests
-        $.ajaxSetup({
-          cache: true
-        });
-
-        var module = angular.module('geoadmin');
-        var cacheAdd = '${version}' != '' ? '/' + '${version}' : '';
-        var pathname = location.pathname.replace(/(index|mobile|embed)\.html$/g, '');
-
         function getParam(name){
           return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null;
         }
 
+
+        // Make sure ajax is using cached requests
+        $.ajaxSetup({
+          cache: true
+        });
+ 
         var adminUrlRegexp = new RegExp('${admin_url_regexp}');
-        var wmsUrl = location.protocol + getParam('wms_url');
-        wmsUrl = adminUrlRegexp.test(wmsUrl) ? wmsUrl : null;
+        var module = angular.module('geoadmin');
+        var cacheAdd = '${version}' != '' ? '/' + '${version}' : '';
+        var pathname = location.pathname.replace(/(index|mobile|embed)\.html$/g, '');
+        var staging = 'prod';
+        var testres = /^mf-geoadmin3\.([a-z]+)\.bgdi.ch$/.exec(location.hostname);
+        if (testres && testres.length == 2) {
+          staging = testres[1];
+        }
+        var hasOverWrite = false;
 
-        var apiParam = getParam('api_url');
-        var apiEnv = getParam('api_env');
-        var apiUrlBase = '${api_url}';
-
-        if (apiEnv){
-          if (apiEnv == 'prod'){
-            host = '//api3.geo.admin.ch';
-          } else {
-            host = '//mf-chsdi3.' + apiEnv + '.bgdi.ch';
+        function setBackend(prodUrl, techUrl, overWriteParam) {
+          hasOverWrite = false;
+          var url = prodUrl;
+          if (staging != 'prod') {
+            url = techUrl + staging + '.bgdi.ch';
           }
-        } else {
-          host = '${api_url}';
+          var overWrite = 'https://' + getParam(overWriteParam);
+          hasOverWrite = adminUrlRegexp.test(overWrite);
+          url = hasOverWrite ? overWrite : url;
+          return url;
         }
 
-        if (host.slice(-1) == '/'){
-          host = host.slice(0, -1);
-        }
-
-        if (apiParam){
-          apiUrl = host + '/' + apiParam;
-        } else {
-          apiUrl = host;
-        }
-
-        var shopUrl = getParam('shop_url');
-        var shopUrlBase = '${shop_url}';
-
-        if (shopUrl){
-          shopUrl = shopUrl;
-          if (shopUrl == 'dev' || shopUrl == 'int'){
-            shopUrl = '//shop-bgdi.'+ shopUrl + '.bgdi.ch';
-          } else if (shopUrl == 'prod'){
-              shopUrl = '//beta.shop.swisstopo.ch';
-          } else if (shopUrl == 'puzzle'){
-              shopUrl = '//shop-shopbgdi.openshift.puzzle.ch';
-          }
-        } else {
-          shopUrl = shopUrlBase;
-        }
+        // Setting backends
+        var apiUrl = setBackend('https://api3.geo.admin.ch', 'https://mf-chsdi3.', 'api_url');
+        var apiOverwrite = hasOverWrite;
+        var mapproxyUrl = setBackend('https://wmts{s}.geo.admin.ch', 'https://wmts{s}.', 'mapproxy_url');
+        var wmsUrl = setBackend('https://wms.geo.admin.ch', 'https://wms-bgdi.', 'wms_url');
+        var shopUrl = setBackend('https://shop.swisstopo.admin.ch', 'https://shop-bgdi.', 'shop_url');
+        var publicUrl = setBackend('https://publich.geo.admin.ch', 'https://public.', 'public_url');
 
         module.constant('gaGlobalOptions', {
           //dev3d to be removed once 3d goes live
@@ -784,17 +769,17 @@ itemscope itemtype="http://schema.org/WebApplication"
           buildMode: '${mode}',
           version: '${version}',
           pegman: !!window.location.search.match(/(pegman=true)/),
-          mapUrl : location.origin + '${apache_base_path}',
-          apiUrl : location.protocol + apiUrl,
-          mapproxyUrl : location.protocol + '${mapproxy_url}',
+          mapUrl : location.origin + pathname,
+          apiUrl : apiUrl,
+          mapproxyUrl : mapproxyUrl,
           shopUrl : location.protocol + shopUrl,
-          publicUrl : location.protocol + '${public_url}',
+          publicUrl : publicUrl,
           publicUrlRegexp: new RegExp('${public_url_regexp}'),
           adminUrlRegexp: adminUrlRegexp,
-          cachedApiUrl: location.protocol + apiUrl + cacheAdd,
+          cachedApiUrl: apiUrl + cacheAdd,
           resourceUrl: location.origin + pathname + '${versionslashed}',
-          ogcproxyUrl : location.protocol + apiUrl + '/ogcproxy?url=',
-          wmsUrl: wmsUrl ? wmsUrl : location.protocol + '${wms_url}',
+          ogcproxyUrl : apiUrl + '/ogcproxy?url=',
+          wmsUrl: wmsUrl,
           w3wUrl : 'https://api.what3words.com',
           w3wApiKey : 'OM48J50Y',
           whitelist: [
@@ -834,7 +819,7 @@ itemscope itemtype="http://schema.org/WebApplication"
           gaLayersProvider.wmtsGetTileUrlTemplate = '//wmts{s}.geo.admin.ch/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{y}/{x}.{Format}';
           gaLayersProvider.wmtsMapProxyGetTileUrlTemplate =  gaGlobalOptions.mapproxyUrl + '/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{x}/{y}.{Format}';
           gaLayersProvider.terrainTileUrlTemplate = '//3d.geo.admin.ch/1.0.0/{Layer}/default/{Time}/4326';
-          if (apiEnv || apiParam){
+          if (apiOverwrite){
             gaLayersProvider.layersConfigUrlTemplate = apiUrl + '/rest/services/all/MapServer/layersConfig?lang={Lang}';
           } else{
             gaLayersProvider.layersConfigUrlTemplate = gaGlobalOptions.resourceUrl + 'layersConfig?lang={Lang}';
@@ -842,7 +827,7 @@ itemscope itemtype="http://schema.org/WebApplication"
           gaLayersProvider.legendUrlTemplate = gaGlobalOptions.apiUrl + '/rest/services/all/MapServer/{Layer}/legend?lang={Lang}';
         });
         module.config(function(gaTopicProvider, gaGlobalOptions) {
-          if (apiEnv || apiParam){
+          if (apiOverwrite){
             gaTopicProvider.topicsUrl = apiUrl + '/rest/services';
           } else {
             gaTopicProvider.topicsUrl = gaGlobalOptions.resourceUrl + 'services';
