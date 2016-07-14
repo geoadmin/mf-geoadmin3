@@ -12,7 +12,7 @@
     <button  class="ga-icon ga-btn fa fa-paint-brush"
              ng-click="togglePopover($event, 'add_image')"
              data-target=".ga-html-image"></button>
-    <button  class="ga-icon ga-btn fa fa-remove"
+    <button  class="ga-icon ga-btn fa fa-trash"
              ng-click="togglePopover($event, 'add_video')"
              data-target=".ga-html-video"></button>
   </div>
@@ -47,8 +47,7 @@
   </label>
   <label>
     <span translate>{{'modify_text_color_label'}}:</span> 
-    <div class="ga-select-box ga-select-colors ga-item-size-{{options.iconSize.value[0]}}"
-         ng-class="{'ga-select-box-open': gaSelectBoxOpen}">
+    <div class="ga-select-box ga-select-colors">
       <div ng-repeat="c in ::options.colors"
            ng-class="{'ga-selected': (options.textColor == c)}" 
            ng-click="options.textColor = c">
@@ -70,8 +69,7 @@
 <div ng-if="useColorStyle" class="ga-popover-content ga-color-style">
   <label>
     <span translate>{{'modify_color_label'}}:</span> 
-    <div class="ga-select-box ga-select-colors ga-item-size-{{options.iconSize.value[0]}}"
-         ng-class="{'ga-select-box-open': gaSelectBoxOpen}">
+    <div class="ga-select-box ga-select-colors">
       <div ng-repeat="c in ::options.colors"
            ng-class="{'ga-selected': (options.color == c)}" 
            ng-click="options.color = c">
@@ -83,6 +81,7 @@
 </div>
 
 <div ng-if="useIconStyle" class="ga-popover-content ga-icon-style">
+
   <label>
     <span translate>{{'modify_icon_size_label'}}:</span> 
     <select ng-model="options.iconSize"
@@ -130,7 +129,7 @@
                ng-model="t.value"></input>
         <span class="input-group-btn">
           <button class="btn btn-default"
-                  ng-click="appendToDescr(t)"
+                  ng-click="appendToDescr($event, t)"
                   ng-disabled="!isValidUrl(t.value)"
                   translate>add</button>
         </span>

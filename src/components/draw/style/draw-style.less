@@ -33,25 +33,31 @@
     float: right;
   }
   
-  > .popover{
+  > .popover {
+
     .popover-title {
       padding: 0;
       border: none;
 
       button {
-        top: 5px;
-        right: -5px;
         z-index: 10;
+        height: 38px;
+        background-color: white;
       }
     }
 
     .popover-content {
+      position: relative;
       overflow-y: auto;
       overflow-x: hidden;
       max-height: 200px;
 
       label {
         margin-right: 5px;
+      }
+
+      > .fa-remove {
+        height: 38px;
       }
     }
   }
@@ -137,7 +143,11 @@
   .ga-coord, .ga-distance {
     margin-top: 15px;
   }
-
+  
+  .ga-color-style {
+    padding-top: 10px;
+  }
+  
   .ga-descr {
     border-top-right-radius: 0;
   }
@@ -155,6 +165,12 @@
       vertical-align: text-bottom;
       font-size: 11px!important;
       margin-top: 3px;
+    }
+
+    > .popover {
+      label {
+        width: 100%;
+      }
     }
   }
   

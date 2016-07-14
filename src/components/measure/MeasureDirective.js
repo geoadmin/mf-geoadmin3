@@ -8,7 +8,7 @@ goog.require('ga_measure_service');
     'ga_measure_service'
   ]);
 
-  module.directive('gaMeasure', function(gaMeasure) {
+  module.directive('gaMeasure', function(gaMeasure, gaGlobalOptions) {
     return {
       restrict: 'A',
       templateUrl: 'components/measure/partials/measure.html',
@@ -25,8 +25,9 @@ goog.require('ga_measure_service');
 
           var geom = feature.getGeometry();
           if (geom instanceof ol.geom.Point) {
-            var coord = geom.getCoordinates();
-            scope.coord = coord[0].toFixed(2) + ', ' + coord[1].toFixed(2);
+            var coord = ol.proj.transform(geom.getCoordinates(),
+                gaGlobalOptions.defaultEpsg, 'EPSG:2056');
+            scope.coord = coord[0].toFixed(0) + ', ' + coord[1].toFixed(0);
           } else {
             scope.distance = gaMeasure.getLength(geom);
             scope.surface = gaMeasure.getArea(geom);

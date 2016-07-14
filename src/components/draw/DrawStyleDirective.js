@@ -211,15 +211,13 @@ goog.require('ga_urlutils_service');
           return;
         }
 
-        scope.appendToDescr = function(linkType) {
+        scope.appendToDescr = function($event, linkType) {
           scope.options.description += linkType.tpl
               .replace(/{{url}}/g, linkType.value)
               .replace(/{{textToDisplay}}/, linkType.textToDisplay || '');
+          // Close the popover then focus the textarea
+          $('.ga-descr-buttons').next('textarea').click().focus();
         };
-
-        scope.linkUrl = '';
-        scope.imageUrl = '';
-        scope.videoUrl = '';
 
         scope.isValidUrl = function(url) {
           return gaUrlUtils.isValid(url);
@@ -257,6 +255,7 @@ goog.require('ga_urlutils_service');
 
         // Open the popover with style inside
         var win = $($window);
+        var closeBt = '<button class="ga-icon ga-btn fa fa-remove"></button>';
         scope.togglePopover = function(evt, title) {
           var bt = $(evt.currentTarget);
 
@@ -275,23 +274,30 @@ goog.require('ga_urlutils_service');
               // content
               evt.stopPropagation();
             });
-            title = $translate.instant(title || '') +
-                '<button class="ga-icon ga-btn fa fa-remove"></button>';
+
+            if (title) {
+              title = $translate.instant(title) + closeBt;
+            } else {
+              content = content.add($(closeBt));
+            }
 
             bt.popover({
               html: true,
               placement: function() {
                 return win.width() < 480 ? 'top' : 'auto right';
               },
-              content: content[0],
-              title: title
+              content: content,
+              title: title,
+              trigger: 'manual'
             });
 
             // Close popover on outside popover mouse event
-            bt.on('show.bs.popover', function() {
+            bt.on('shown.bs.popover', function(evt) {
               element.on('scroll', closePopover);
               $document.on('click', closePopover);
               win.on('resize', closePopover);
+              $(evt.currentTarget).next('.popover').find('input,select')
+                  .first().focus();
             }).on('hide.bs.popover', function() {
               element.off('scroll', closePopover);
               $document.off('click', closePopover);
