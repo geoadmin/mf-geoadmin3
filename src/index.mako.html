@@ -734,6 +734,10 @@ itemscope itemtype="http://schema.org/WebApplication"
           return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null;
         }
 
+        var adminUrlRegexp = new RegExp('${admin_url_regexp}');
+        var wmsUrl = location.protocol + getParam('wms_url');
+        wmsUrl = adminUrlRegexp.test(wmsUrl) ? wmsUrl : null;
+
         var apiParam = getParam('api_url');
         var apiEnv = getParam('api_env');
         var apiUrlBase = '${api_url}';
@@ -786,10 +790,11 @@ itemscope itemtype="http://schema.org/WebApplication"
           shopUrl : location.protocol + shopUrl,
           publicUrl : location.protocol + '${public_url}',
           publicUrlRegexp: new RegExp('${public_url_regexp}'),
-          adminUrlRegexp: new RegExp('${admin_url_regexp}'),
+          adminUrlRegexp: adminUrlRegexp,
           cachedApiUrl: location.protocol + apiUrl + cacheAdd,
           resourceUrl: location.origin + pathname + '${versionslashed}',
           ogcproxyUrl : location.protocol + apiUrl + '/ogcproxy?url=',
+          wmsUrl: wmsUrl ? wmsUrl : location.protocol + '${wms_url}',
           w3wUrl : 'https://api.what3words.com',
           w3wApiKey : 'OM48J50Y',
           whitelist: [

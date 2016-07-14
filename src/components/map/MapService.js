@@ -632,7 +632,7 @@ goog.require('ga_urlutils_service');
               wmsParams.time = timestamp;
             }
             params = {
-              url: getWmsTpl(config3d.wmsUrl, wmsParams),
+              url: getWmsTpl(gaGlobalOptions.wmsUrl, wmsParams),
               tileSize: tileSize,
               subdomains: dfltWmsSubdomains
             };
@@ -745,7 +745,7 @@ goog.require('ga_urlutils_service');
             if (layer.singleTile === true) {
               if (!olSource) {
                 olSource = layer.olSource = new ol.source.ImageWMS({
-                  url: getImageryUrls(getWmsTpl(layer.wmsUrl))[0],
+                  url: getImageryUrls(getWmsTpl(gaGlobalOptions.wmsUrl))[0],
                   params: wmsParams,
                   crossOrigin: crossOrigin,
                   ratio: 1
@@ -762,7 +762,8 @@ goog.require('ga_urlutils_service');
               if (!olSource) {
                 var subdomains = dfltWmsSubdomains;
                 olSource = layer.olSource = new ol.source.TileWMS({
-                  urls: getImageryUrls(getWmsTpl(layer.wmsUrl), subdomains),
+                  urls: getImageryUrls(
+                      getWmsTpl(gaGlobalOptions.wmsUrl), subdomains),
                   // Temporary until https://github.com/openlayers/ol3/pull/4964
                   // is merged upstream
                   cacheSize: 2048 * 3,
