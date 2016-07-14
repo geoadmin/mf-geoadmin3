@@ -310,9 +310,12 @@ def upload(version, base_dir):
     print("and {}\n".format(get_url("{}/src/index.html".format(VERSION))))
 
 
-def get_appcache_file(directory):
-    for filename in glob.glob(os.path.join(directory, '*.appcache')):
-        return filename
+def get_appcache_file(directory, first=True):
+    filenames = glob.glob(os.path.join(directory, '*.appcache'))
+    if first:
+        return filenames[0] if len(filenames) > 0 else filenames
+    else:
+        return filenames
 
 
 def get_active_version():
@@ -436,6 +439,13 @@ def activate(version):
             '.html',
             ACL='public-read')
     print "Special files"
+
+    # Delete older appcache files
+    appcache_versioned_files = list(bucket.objects.filter(Prefix='geoadmin.').all())
+    indexes = [{'Key': k.key} for k in appcache_versioned_files if k.key.endswith('.appcache')]
+    if len(indexes) > 0:
+        resp = s3client.delete_objects(Bucket=BUCKET_NAME, Delete={'Objects': indexes})
+
     appcache = None
     files = list(bucket.objects.filter(Prefix='{}/geoadmin.'.format(version)).all())
     if len(files) > 0:

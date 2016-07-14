@@ -164,23 +164,27 @@ Note: we should NOT manually adapt code in /var/www/vhosts/mf-geoadmin3 director
 
 ## Building the project to int and prod (S3)
 
-Deploying a project to int or prod consists of three steps:
+Deploying a project to dev, int or prod buckets consists of three steps:
 
-- Building
-- Uploading to S3
+- Creating a snapshot
+- Uploading the snapshot to S3
 - Activating a version, as only one version may be active at time (`index.html`)
 
 You may deploy a build from your local environnement or a previously build snapshot.
+The following environemental variables are defined:
 
-    export BUCKET_NAME=<int/prod aws s3 bucket>
+* S3_MF_GEOADMIN3_DEV
+* S3_MF_GEOADMIN3_INT
+* S3_MF_GEOADMIN3_PROD
 
-If you want to upload a locally build project:
 
-    make s3upload
+To create and then upload a snapshot:
 
-or for a previously build snapshot:
+    SNAPSHOT=true make s3uploaddev
 
-    make s3upload SNAPSHOT=20140703141
+To upload a previously build snapshot:
+
+    SNAPSHOT=20140703141 make s3uploaddev
 
 Nota:
 
