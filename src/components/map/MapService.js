@@ -394,7 +394,8 @@ goog.require('ga_urlutils_service');
           dfltWmtsNativeSubdomains, dfltWmtsMapProxySubdomains,
           wmsUrlTemplate, wmtsGetTileUrlTemplate,
           wmtsMapProxyGetTileUrlTemplate, terrainTileUrlTemplate,
-          layersConfigUrlTemplate, legendUrlTemplate, imageryMetadataUrl) {
+          tileset3DUrlTemplate, layersConfigUrlTemplate, legendUrlTemplate,
+          imageryMetadataUrl) {
         var layers;
 
         // Returns a unique WMS template url (e.g. //wms{s}.geo.admin.ch)
@@ -448,6 +449,13 @@ goog.require('ga_urlutils_service');
               .replace('{Layer}', layer)
               .replace('{Time}', time);
         };
+
+        var getTileset3DUrl = function(layer, time) {
+          return tileset3DUrlTemplate
+              .replace('{Layer}', layer)
+              .replace('{Time}', time);
+        };
+
         var getLayersConfigUrl = function(lang) {
           return layersConfigUrlTemplate
               .replace('{Lang}', lang);
@@ -548,6 +556,19 @@ goog.require('ga_urlutils_service');
                 attributionUrl: 'https://www.swisstopo.admin.ch/' + lang +
                     '/home.html'
               };
+
+              // 3D Tileset
+              var params = gaPermalink.getParams();
+              var tileset3d = params['tileset3d'] || 'buildings-v2';
+              var tilesetTs = params['tilesetTs'] || '20160714';
+              response.data[tileset3d] = {
+                type: 'tileset3d',
+                serverLayerName: tileset3d,
+                timestamps: [tilesetTs],
+                attribution: 'swisstopo',
+                attributionUrl: 'https://www.swisstopo.admin.ch/' + lang +
+                    '/home.html'
+              };
             }
             if (!layers) { // First load
               layers = response.data;
@@ -599,6 +620,25 @@ goog.require('ga_urlutils_service');
             provider.bodId = bodId;
           }
           return provider;
+        };
+
+        /**
+         * Returns an Cesium 3D Tileset.
+         */
+        this.getCesiumTileset3DById = function(bodId) {
+          var tileset, config = layers[bodId];
+          var config3d = this.getConfig3d(config);
+          var timestamp = this.getLayerTimestampFromYear(bodId, gaTime.get());
+          var requestedLayer = config3d.serverLayerName || bodId;
+          if (config3d.type == 'tileset3d') {
+            tileset = new Cesium.Cesium3DTileset({
+              url: getTileset3DUrl(requestedLayer, timestamp),
+              debugShowStatistics: true,
+              maximumNumberOfLoadedTiles: 3
+            });
+            tileset.bodId = bodId;
+          }
+          return tileset;
         };
 
         /**
@@ -915,8 +955,8 @@ goog.require('ga_urlutils_service');
               this.getLayer(configOrBodId) : configOrBodId;
           if (!layer.timeEnabled) {
             // a WMTS/Terrain layer has at least one timestamp
-            return (layer.type == 'wmts' || layer.type == 'terrain') ?
-                layer.timestamps[0] : undefined;
+            return (layer.type == 'wmts' || layer.type == 'terrain' ||
+                layer.type == 'tileset3d') ? layer.timestamps[0] : undefined;
           }
           var timestamps = layer.timestamps || [];
           if (angular.isNumber(yearStr)) {
@@ -994,10 +1034,11 @@ goog.require('ga_urlutils_service');
         };
       };
 
-      return new Layers(this.dfltWmsSubdomains, this.dfltWmtsNativeSubdomains,
-          this.dfltWmtsMapProxySubdomains, this.wmsUrlTemplate,
-          this.wmtsGetTileUrlTemplate, this.wmtsMapProxyGetTileUrlTemplate,
-          this.terrainTileUrlTemplate, this.layersConfigUrlTemplate,
+      return new Layers(this.dfltWmsSubdomains,
+          this.dfltWmtsNativeSubdomains, this.dfltWmtsMapProxySubdomains,
+          this.wmsUrlTemplate, this.wmtsGetTileUrlTemplate,
+          this.wmtsMapProxyGetTileUrlTemplate, this.terrainTileUrlTemplate,
+          this.tileset3DUrlTemplate, this.layersConfigUrlTemplate,
           this.legendUrlTemplate, this.imageryMetadataUrl);
     };
 
