@@ -93,6 +93,7 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions,
 
       var corrector = new SSECorrector(gaPermalink);
       cesiumViewer.getCesiumScene().globe._surface.sseCorrector = corrector;
+
     } catch (e) {
       alert(e.message);
       window.console.error(e.stack);
@@ -116,6 +117,12 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions,
     scene.screenSpaceCameraController.inertiaTranslate = 0.8;
     scene.screenSpaceCameraController.inertiaZoom = 0.9;
     enableOl3d(cesiumViewer, enabled);
+
+    // Tileset 3D
+    var tileset3d = gaPermalink.getParams()['tileset3d'] || 'buildings-v2';
+    scene.primitives.add(
+        gaLayers.getCesiumTileset3DById(tileset3d));
+
     return cesiumViewer;
   };
 
