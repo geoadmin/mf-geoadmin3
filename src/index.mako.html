@@ -857,6 +857,7 @@ itemscope itemtype="http://schema.org/WebApplication"
           gaLayersProvider.wmtsGetTileUrlTemplate = '//wmts{s}.geo.admin.ch/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{y}/{x}.{Format}';
           gaLayersProvider.wmtsMapProxyGetTileUrlTemplate =  gaGlobalOptions.mapproxyUrl + '/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{x}/{y}.{Format}';
           gaLayersProvider.terrainTileUrlTemplate = '//terrain100.geo.admin.ch/1.0.0/{Layer}/default/{Time}/4326';
+          gaLayersProvider.tileset3DUrlTemplate = '//vectortiles.dev.bgdi.ch/3D/{Layer}/{Time}/';
           gaLayersProvider.imageryMetadataUrl = '//3d.geo.admin.ch/imagery/';
           if (apiOverwrite) {
             gaLayersProvider.layersConfigUrlTemplate = apiUrl + '/rest/services/all/MapServer/layersConfig?lang={Lang}';
