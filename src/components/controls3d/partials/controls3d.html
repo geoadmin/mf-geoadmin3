@@ -4,11 +4,11 @@
     <i class="fa fa-ga-tilt"></i>
     <i class="fa fa-ga-tilt-indicator"></i>
   </button>
-  <button class="ga-btn ga-inc" ng-click="tilt(+5)">
-    <i class="fa fa-ga-left-arrow"></i>  
+  <button class="ga-btn ga-inc fa fa-ga-left-arrow" ng-click="tilt(+5)"
+          ng-disabled="tiltUpDisabled">
   </button>
-  <button class="ga-btn ga-dec" ng-click="tilt(-5)">
-    <i class="fa fa-ga-right-arrow"></i>
+  <button class="ga-btn ga-dec fa fa-ga-right-arrow" ng-click="tilt(-5)"
+          ng-disabled="tiltDownDisabled">
   </button>
 </div>
 <div class="ga-pegman" ng-show="pegman" ng-class="{'ga-fly-mode': fps.flyMode, 'ga-jet-mode': fps.jetMode}" ng-mousedown="startDraggingPegman()"></div>
@@ -18,12 +18,8 @@
     <i class="fa fa-ga-northarrow"></i>
     <i class="fa fa-ga-indicator-northarrow"></i>
   </button>
-  <button class="ga-btn ga-inc" ng-click="rotate(-15)">
-    <i class="fa fa-ga-left-arrow"></i>
-  </button>
-  <button class="ga-btn ga-dec" ng-click="rotate(+15)">
-    <i class="fa fa-ga-right-arrow"></i>
-  </button>
+  <button class="ga-btn ga-inc fa fa-ga-left-arrow" ng-click="rotate(-15)"></button>
+  <button class="ga-btn ga-dec fa fa-ga-right-arrow" ng-click="rotate(+15)"></button>
 </div>
 <div class="ga-pegman-help" ng-show="fps.active">
   pegman help text here.
