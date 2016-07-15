@@ -24,6 +24,11 @@
     background: transparent;
     padding: 0;
     margin: 0;
+
+    &[disabled] {
+      color: #ccc;
+      text-shadow: none;
+    }
   }
 
   .ga-tilt, .ga-rotate {
@@ -81,13 +86,13 @@
     text-shadow: 0px 1px 3px #020202;
     margin: 2px;
 
-    .fa-ga-right-arrow, .fa-ga-left-arrow {
-      color: #ed1c24
-    }
-
     @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
       display: none;
     }
+  }
+
+  .fa-ga-right-arrow, .fa-ga-left-arrow {
+    color: #ed1c24
   }
 
   .ga-pegman-help {

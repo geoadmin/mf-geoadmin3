@@ -42,6 +42,13 @@ goog.require('ga_map_service');
 
         var moving = false;
 
+        var setTiltDisabled = function(angleDeg) {
+          var angle = Cesium.Math.toRadians(Math.abs(angleDeg));
+          scope.tiltUpDisabled = camera.pitch + angle >= 0;
+          scope.tiltDownDisabled = camera.pitch - angle <=
+              -Cesium.Math.PI_OVER_TWO;
+        };
+
         camera.moveStart.addEventListener(function() {
           moving = true;
         });
@@ -108,6 +115,7 @@ goog.require('ga_map_service');
             var tiltOnGlobe = olcs.core.computeSignedTiltAngleOnGlobe(scene);
             cssRotate(tiltIndicator, -tiltOnGlobe - Cesium.Math.PI_OVER_TWO);
             cssRotate(rotateIndicator, -camera.heading);
+            setTiltDisabled(5);
           }
         });
 
@@ -126,12 +134,13 @@ goog.require('ga_map_service');
           }
         };
 
-        scope.tilt = function(angle) {
-          angle = Cesium.Math.toRadians(angle);
-          var finalAngle = camera.pitch + angle;
-          if (finalAngle > 0 || finalAngle < -Cesium.Math.PI_OVER_TWO) {
+        scope.tilt = function(angleDeg) {
+          setTiltDisabled(angleDeg);
+          if ((angleDeg >= 0 && scope.tiltUpDisabled) ||
+              (angleDeg < 0 && scope.tiltDownDisabled)) {
             return;
           }
+          var angle = Cesium.Math.toRadians(angleDeg);
           var pivot = olcs.core.pickBottomPoint(scene);
           if (pivot) {
             var transform = Cesium.Matrix4.fromTranslation(pivot);
