@@ -185,6 +185,23 @@ To create and then upload a snapshot:
 To upload a previously build snapshot:
 
     SNAPSHOT=20140703141 make s3uploaddev
+Deploying a project to int or prod consists of three steps:
+
+- Building
+- Uploading to S3
+- Activating a version, as only one version may be active at time (`index.html`)
+
+You may deploy a build from your local environnement or a previously build snapshot.
+
+    export BUCKET_NAME=<int/prod aws s3 bucket>
+
+If you want to upload a locally build project:
+
+    make s3upload
+
+or for a previously build snapshot:
+
+    make s3upload SNAPSHOT=20140703141
 
 Nota:
 

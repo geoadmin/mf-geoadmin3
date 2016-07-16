@@ -128,7 +128,6 @@ help:
 	@echo "- S3_MF_GEOADMIN3_INT         (current value: $(S3_MF_GEOADMIN3_INT))"
 	@echo "- S3_MF_GEOADMIN3_PROD        (current value: $(S3_MF_GEOADMIN3_PROD))"
 
-
 	@echo
 
 .PHONY: user
@@ -212,7 +211,6 @@ deployint: guard-SNAPSHOT
 deployprod: guard-SNAPSHOT
 	./scripts/deploysnapshot.sh $(SNAPSHOT) prod $(DEPLOYCONFIG)
 
-	
 .PHONY: s3uploaddev
 builddeploys3: .build-artefacts/requirements.timestamp
 	echo /tmp/${USER}/${TIMESTAMP};
