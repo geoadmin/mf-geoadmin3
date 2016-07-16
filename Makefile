@@ -105,13 +105,7 @@ help:
 	@echo "- deploybranch       Deploys current branch to test (note: takes code from github)"
 	@echo "- deploybranchint    Deploys current branch to test and int (note: takes code from github)"
 	@echo "- deploybranchdemo   Deploys current branch to test and demo (note: takes code from github)"
-	@echo "- s3uploaddev        Uploads current build to S3 bucket dev, from current directory or SNAPSHOT=xxx"
-	@echo "- s3uploadint        Uploads current build to S3 bucket int, from current directory or SNAPSHOT=xxx"
-	@echo "- s3uploadprod       Uploads current build to S3bucket prod, from current directory or SNAPSHOT=xxx"
-	@echo "- s3activate         Activates version on S3 with VERSION=xxxxxxxxx"
-	@echo "- s3info             Print build infos for version on S3 with VERSION=xxxxxxxxx"
-	@echo "- s3list             Lists uploaded version to S3"
-	@echo "- s3delete           Deletes version VERSION=xxxxxx on S3"
+	@echo "- builddeploys3      Build branch DEPLOY_GIT_BRANCH and deploy to S3"
 	@echo "- ol3cesium          Update ol3cesium.js, ol3cesium-debug.js, Cesium.min.js and Cesium folder"
 	@echo "- libs               Update js librairies used in index.html, see npm packages defined in section 'dependencies' of package.json"
 	@echo "- translate          Generate the translation files (requires db user pwd in ~/.pgpass: dbServer:dbPort:*:dbUser:dbUserPwd)"
@@ -220,35 +214,11 @@ deployprod: guard-SNAPSHOT
 
 	
 .PHONY: s3uploaddev
-s3uploaddev: .build-artefacts/requirements.timestamp
+builddeploys3: .build-artefacts/requirements.timestamp
 	echo /tmp/${USER}/${TIMESTAMP};
 	@ mkdir -p /tmp/${USER}/${TIMESTAMP}; \
 	./scripts/clonebuild.sh /tmp/${USER}/${TIMESTAMP}   $(DEPLOY_GIT_BRANCH)   $(DEPLOY_GIT_HASH); \
 	${PYTHON_CMD} ./scripts/s3manage.py upload infra /tmp/${USER}/${TIMESTAMP}/mf-geoadmin3 && rm -rf /tmp/${USER}/${TIMESTAMP}  ||  rm -rf /tmp/${USER}/${TIMESTAMP} ;
-
-.PHONY: s3uploadint
-s3uploadint: 
-		${PYTHON_CMD} ./scripts/s3manage.py upload int; \
-
-.PHONY: s3uploadprod
-s3uploadprod: 
-		${PYTHON_CMD} ./scripts/s3manage.py upload prod; \
-
-.PHONY: s3activate
-s3activate: 
-	${PYTHON_CMD} ./scripts/s3manage.py activate $(SNAPSHOT)
-
-.PHONY: s3list
-s3list: 
-	${PYTHON_CMD} ./scripts/s3manage.py list
-
-.PHONY: s3info
-s3info: 
-	${PYTHON_CMD} ./scripts/s3manage.py info $(SNAPSHOT)
-
-.PHONY: s3delete
-s3delete: 
-	${PYTHON_CMD} ./scripts/s3manage.py delete $(SNAPSHOT)
 
 .PHONY: deploybranch
 deploybranch: deploy/deploy-branch.cfg $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH)/.git/config
