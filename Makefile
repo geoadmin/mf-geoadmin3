@@ -58,6 +58,9 @@ USER_NAME ?= $(shell id -un)
 GIT_COMMIT_HASH ?= $(shell git rev-parse --verify HEAD)
 GIT_COMMIT_DATE ?= $(shell git log -1  --date=iso --pretty=format:%cd)
 CURRENT_DATE ?= $(shell date -u +"%Y-%m-%d %H:%M:%S %z")
+TIMESTAMP := $(shell /bin/date "+%s")
+DEPLOY_GIT_BRANCH ?= $(GIT_BRANCH)
+DEPLOY_GIT_HASH ?=
 
 ## Python interpreter can't have space in path name
 ## So prepend all python scripts with python cmd
@@ -123,12 +126,14 @@ help:
 	@echo "- WMS_URL Service URL         (build with  $(LAST_WMS_URL), current value: $(WMS_URL))"
 	@echo "- APACHE_BASE_PATH Base path  (build with: $(LAST_APACHE_BASE_PATH), current value: $(APACHE_BASE_PATH))"
 	@echo "- APACHE_BASE_DIRECTORY       (build with: $(LAST_APACHE_BASE_DIRECTORY), current value: $(APACHE_BASE_DIRECTORY))"
+	@echo "- SNAPSHOT                    (current value: $(SNAPSHOT))"
+	@echo "- GIT_BRANCH                  (current value: $(GIT_BRANCH))"
+	@echo "- GIT_COMMIT_HASH             (current value: $(GIT_COMMIT_HASH))"
 	@echo "- VERSION                     (build with: $(LAST_VERSION), current value: $(VERSION))"
 	@echo "- S3_MF_GEOADMIN3_DEV         (current value: $(S3_MF_GEOADMIN3_DEV))"
 	@echo "- S3_MF_GEOADMIN3_INT         (current value: $(S3_MF_GEOADMIN3_INT))"
 	@echo "- S3_MF_GEOADMIN3_PROD        (current value: $(S3_MF_GEOADMIN3_PROD))"
-	@echo "- SNAPSHOT                    (current value: $(SNAPSHOT))"
-	@echo "- GIT_BRANCH                  (current value: $(GIT_BRANCH))"
+
 
 	@echo
 
@@ -213,42 +218,36 @@ deployint: guard-SNAPSHOT
 deployprod: guard-SNAPSHOT
 	./scripts/deploysnapshot.sh $(SNAPSHOT) prod $(DEPLOYCONFIG)
 
+	
 .PHONY: s3uploaddev
-s3uploaddev: boto3
-	@ if test "$(SNAPSHOT)" = "true"; then   \
-		 ./scripts/createsnapshot.sh;      \
-		 exit 1; \
-	fi; \
-	if [ ! -z "$(SNAPSHOT)" ];   then          \
-		echo "Uploading SNAPSHOT=${SNAPSHOT} to 'dev'"; \
-		${PYTHON_CMD} ./scripts/s3manage.py upload  dev /var/www/vhosts/mf-geoadmin3/private/snapshots/$(SNAPSHOT)/geoadmin/code/geoadmin/ \
-		exit 1; \
-	else \
-		echo "You MUST specify a SNAPSHOT, either 'true' or a 'timestamp'"; \
-	fi
+s3uploaddev: .build-artefacts/requirements.timestamp
+	echo /tmp/${USER}/${TIMESTAMP};
+	@ mkdir -p /tmp/${USER}/${TIMESTAMP}; \
+	./scripts/clonebuild.sh /tmp/${USER}/${TIMESTAMP}   $(DEPLOY_GIT_BRANCH)   $(DEPLOY_GIT_HASH); \
+	${PYTHON_CMD} ./scripts/s3manage.py upload infra /tmp/${USER}/${TIMESTAMP}/mf-geoadmin3 && rm -rf /tmp/${USER}/${TIMESTAMP}  ||  rm -rf /tmp/${USER}/${TIMESTAMP} ;
 
 .PHONY: s3uploadint
-s3uploadint: boto3
+s3uploadint: 
 		${PYTHON_CMD} ./scripts/s3manage.py upload int; \
 
 .PHONY: s3uploadprod
-s3uploadprod: boto3
+s3uploadprod: 
 		${PYTHON_CMD} ./scripts/s3manage.py upload prod; \
 
 .PHONY: s3activate
-s3activate: boto3
+s3activate: 
 	${PYTHON_CMD} ./scripts/s3manage.py activate $(SNAPSHOT)
 
 .PHONY: s3list
-s3list: boto3
+s3list: 
 	${PYTHON_CMD} ./scripts/s3manage.py list
 
 .PHONY: s3info
-s3info: boto3
+s3info: 
 	${PYTHON_CMD} ./scripts/s3manage.py info $(SNAPSHOT)
 
 .PHONY: s3delete
-s3delete: boto3
+s3delete: 
 	${PYTHON_CMD} ./scripts/s3manage.py delete $(SNAPSHOT)
 
 .PHONY: deploybranch
@@ -681,10 +680,6 @@ ${AUTOPEP8_CMD}: ${PYTHON_VENV}
 
 .build-artefacts/requirements.timestamp: ${PYTHON_VENV} requirements.txt
 	${PIP_CMD} install -r requirements.txt
-
-boto3: ${PYTHON_VENV}
-	${PYTHON_CMD} ${PIP_CMD} install "boto3==1.2.5"
-	touch $@
 
 ${PYTHON_VENV}:
 	mkdir -p .build-artefacts

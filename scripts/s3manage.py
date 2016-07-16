@@ -9,6 +9,8 @@ import os
 import json
 import glob
 import time
+import subprocess
+import tempfile
 
 import StringIO
 import gzip
@@ -16,6 +18,9 @@ from datetime import datetime
 
 import mimetypes
 mimetypes.init()
+
+
+USE_S3_UPLOAD_FILE = False
 
 
 BASEDIR = "/var/www/vhosts/mf-geoadmin3/private"
@@ -44,6 +49,36 @@ headers = {}
 mimetypes.add_type('application/x-font-ttf', '.ttf')
 mimetypes.add_type('application/x-font-opentype', '.otf')
 mimetypes.add_type('application/vnd.ms-fontobject', '.eot')
+
+
+def local_git_last_commit(basedir):
+    try:
+        output = subprocess.check_output(('git rev-parse HEAD',), cwd=basedir, shell=True)
+        return output.strip()
+    except subprocess.CalledProcessError:
+        print "Not a git directory: {}".format(basedir)
+    try:
+        with open(os.path.join(basedir, '.build-artefacts', 'last-commit-ref'), 'r') as f:
+            data = f.read()
+        return data
+    except IOError:
+        print "Error while reading 'last-commit-ref' from {}".format(basedir)
+    return None
+
+
+def local_git_branch(basedir):
+    output = subprocess.check_output(('git rev-parse --abbrev-ref HEAD',), cwd=basedir, shell=True)
+    return output.strip()
+
+
+def local_last_version(basedir):
+    try:
+        with open(os.path.join(basedir, '.build-artefacts', 'last-version'), 'r') as f:
+            data = f.read()
+        return data
+    except IOError as e:
+        pass
+    return None
 
 
 def init_connection():
@@ -140,7 +175,16 @@ def _save_to_s3(in_data, dest, mimetype, compress=True, cached=True):
             extra_args['Expires'] = datetime(1990, 1, 1)
             extra_args['Metadata'] = {'Pragma': 'no-cache', 'Vary': '*'}
 
-        s3.Object(BUCKET_NAME, dest).put(Body=data, **extra_args)
+        if USE_S3_UPLOAD_FILE:
+            temp = tempfile.NamedTemporaryFile()
+            try:
+                temp.write(data)
+                temp.seek(0)
+                s3.Object(BUCKET_NAME, dest).upload_file(temp.name, ExtraArgs=extra_args)
+            finally:
+                temp.close()
+        else:
+            s3.Object(BUCKET_NAME, dest).put(Body=data, **extra_args)
 
     except Exception as e:
         print "Error while uploading {}: {}".format(dest, e)
@@ -189,6 +233,20 @@ def upload(version, base_dir):
 
     epoch_time = int(time.time())
 
+    GIT_SHORT_SHA = local_git_last_commit(base_dir)[:7]
+
+    GIT_BRANCH = local_git_branch(base_dir)
+    version = LAST_VERSION = local_last_version(base_dir).strip()
+
+    print "version={}, branch={}, version={}".format(GIT_SHORT_SHA, GIT_BRANCH, LAST_VERSION)
+
+    BRANCH_DIR = GIT_BRANCH if GIT_BRANCH != 'master' else ''
+    DESTINATION_BASEDIR = os.path.join(BRANCH_DIR, GIT_SHORT_SHA, LAST_VERSION)
+
+    DESTINATION_VERSIONED_DIR = os.path.join(DESTINATION_BASEDIR, LAST_VERSION)
+
+    print DESTINATION_BASEDIR, DESTINATION_VERSIONED_DIR
+
     FILES = ['prd/lib/build.js',
              'prd/style/app.css',
              'prd/index.html',
@@ -218,26 +276,27 @@ def upload(version, base_dir):
                     if extension in EXCLUDES or _ in EXCLUDES:
                         continue
                     relpath = os.path.relpath(path, os.path.commonprefix([base_dir, path]))
-                    dest = relpath.replace('prd', VERSION)
+                    dest = relpath.replace('prd', DESTINATION_VERSIONED_DIR)
                     if dest == relpath:
-                        dest = relpath.replace('src', VERSION + '/src')
+                        dest = relpath.replace('src', DESTINATION_BASEDIR + '/src')
                     save_to_s3(path, dest, cached=True)
+                    print path
+                    print '-->', dest
 
     for n in ('index', 'embed', 'mobile'):
         save_to_s3(
             os.path.join(
                 base_dir,
                 'prd/{}.html'.format(n)),
-            '{}.{}.html'.format(
-                n,
-                VERSION),
+            DESTINATION_BASEDIR + '/{}.html'.format(
+                n),
             cached=False)
 
     save_to_s3(
         os.path.join(
             base_dir,
             'prd/cache/services'),
-        '{}/services'.format(VERSION),
+        '{}/services'.format(DESTINATION_VERSIONED_DIR),
         cached=True,
         mimetype='application/js')
 
@@ -250,16 +309,16 @@ def upload(version, base_dir):
         else:
             filename = oldname
         save_to_s3(filename,
-                   '{}/layersConfig.{}.json'.format(VERSION, lang),
+                   '{}/layersConfig.{}.json'.format(DESTINATION_VERSIONED_DIR, lang),
                    cached=True,
                    mimetype='application/js')
         save_to_s3(filename,
-                   '{}/src/layersConfig.{}.json'.format(VERSION, lang),
+                   '{}/src/layersConfig.{}.json'.format(DESTINATION_BASEDIR, lang),
                    cached=True,
                    mimetype='application/js')
         # Ugly, for old projects
         save_to_s3(filename,
-                   '{}/layersConfig'.format(VERSION),
+                   '{}/layersConfig'.format(DESTINATION_VERSIONED_DIR),
                    cached=True,
                    mimetype='application/js')
 
@@ -269,7 +328,7 @@ def upload(version, base_dir):
     save_to_s3(
         os.path.join(
             appcache_versioned_file),
-        VERSION + '/' + 'geoadmin.{}.appcache'.format(epoch_time),
+        DESTINATION_BASEDIR + '/' + 'geoadmin.{}.appcache'.format(epoch_time),
         cached=False,
         mimetype='text/cache-manifest')
 
@@ -277,7 +336,7 @@ def upload(version, base_dir):
         os.path.join(
             base_dir,
             'prd/robots.txt'),
-        '{}/robots.txt'.format(VERSION),
+        '{}/robots.txt'.format(DESTINATION_BASEDIR),
         cached=False,
         mimetype='text/plain')
 
@@ -285,7 +344,7 @@ def upload(version, base_dir):
         os.path.join(
             base_dir,
             'prd/checker'),
-        '{}/checker'.format(VERSION),
+        '{}/checker'.format(DESTINATION_BASEDIR),
         cached=False,
         mimetype='text/plain')
 
@@ -293,7 +352,7 @@ def upload(version, base_dir):
         os.path.join(
             base_dir,
             'prd/cache/services'),
-        '{}/src/services'.format(VERSION),
+        '{}/src/services'.format(DESTINATION_BASEDIR),
         cached=True,
         mimetype='application/js')
 
@@ -307,7 +366,7 @@ def upload(version, base_dir):
 
     print "Upload finished"
     print("\n\nPlease check it on {}\n".format(check_url))
-    print("and {}\n".format(get_url("{}/src/index.html".format(VERSION))))
+    print("and {}\n".format(get_url("{}/src/index.html".format(DESTINATION_BASEDIR))))
 
 
 def get_appcache_file(directory, first=True):
@@ -444,7 +503,7 @@ def activate(version):
     appcache_versioned_files = list(bucket.objects.filter(Prefix='geoadmin.').all())
     indexes = [{'Key': k.key} for k in appcache_versioned_files if k.key.endswith('.appcache')]
     if len(indexes) > 0:
-        resp = s3client.delete_objects(Bucket=BUCKET_NAME, Delete={'Objects': indexes})
+        s3client.delete_objects(Bucket=BUCKET_NAME, Delete={'Objects': indexes})
 
     appcache = None
     files = list(bucket.objects.filter(Prefix='{}/geoadmin.'.format(version)).all())
@@ -475,6 +534,31 @@ def get_url(key_name='index.html'):
         key_name)
     return object_url
 
+def build(git_branch, git_sha):
+    dirpath = tempfile.mkdtemp()
+    epoch_time = int(time.time())
+    
+    git_clone_cmd = "git clone --depth 1 -b {}  https://github.com/geoadmin/mf-geoadmin3.git  {}".format(git_branch, epoch_time)
+    
+    print dirpath
+    
+    
+    try:
+        output = subprocess.check_output((git_clone_cmd,), cwd=dirpath, shell=True)
+        print output
+    except subprocess.CalledProcessError:
+         print "Error"
+    try:
+        output = subprocess.check_output(('make cleanall all',), cwd=os.path.join(dirpath,str(epoch_time)) , shell=True)
+        print output
+    except subprocess.CalledProcessError:
+         print "Error"
+         
+
+        
+    #shutil.rmtree(dirpath)
+    
+    
 
 def main():
     global BUCKET_NAME
@@ -484,18 +568,28 @@ def main():
         sys.exit(2)
     if s3client is None:
         init_connection()
-
+    print sys.argv
     if len(sys.argv) < 2:
         usage()
         sys.exit()
+        
+    if str(sys.argv[1]) == 'build':
+        git_branch = 'master'
+        git_sha = None
+        if len(sys.argv) > 2:
+            git_branch = sys.argv[2]
+        if len(sys.argv) > 3:
+            git_sha = sys.argv[3]
+        build(git_branch, git_sha)
+        
 
     if str(sys.argv[1]) == 'upload':
 
-        if len(sys.argv) < 4:
+        if len(sys.argv) < 3:
             usage()
             sys.exit()
         target = sys.argv[2]
-        if target not in ['dev', 'int', 'prod']:
+        if target not in ['dev', 'int', 'prod', 'infra']:
             usage()
             sys.exit()
 
@@ -506,6 +600,7 @@ def main():
             sys.exit(2)
 
         SNAPSHOT = os.environ.get('SNAPSHOT')
+        print SNAPSHOT
         if SNAPSHOT is not None:
             try:
                 SNAPSHOT = int(SNAPSHOT)
