@@ -2,4 +2,5 @@ export USERNAME='$(shell whoami)'
 export API_URL=//mf-chsdi3.dev.bgdi.ch/$USERNAME
 export APACHE_BASE_PATH=/$USERNAME
 export E2E_TARGETURL=https://mf-geoadmin3.dev.bgdi.ch/$USERNAME
+export PRINT_URL=//service-print.dev.bgdi.ch/$USERNAME
 export SHOP_URL=//shop-bgdi.dev.bgdi.ch

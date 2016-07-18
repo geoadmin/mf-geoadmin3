@@ -352,7 +352,7 @@ prd/geoadmin.appcache: src/geoadmin.mako.appcache \
 	    --var "apache_base_path=$(APACHE_BASE_PATH)" \
 	    --var "languages=$(LANGUAGES)" \
 	    --var "api_url=$(API_URL)" \
-		--var "print_url=$(PRINT_URL)" \
+	    --var "print_url=$(PRINT_URL)" \
 	    --var "public_url=$(PUBLIC_URL)" $< > $@
 	mv $@ prd/geoadmin.$(VERSION).appcache
 
@@ -512,7 +512,7 @@ apache/app.conf: apache/app.mako-dot-conf \
 	${PYTHON_CMD} ${MAKO_CMD} \
 	    --var "apache_base_path=$(APACHE_BASE_PATH)" \
 	    --var "api_url=$(API_URL)" \
-		--var "print_url=$(PRINT_URL)" \
+	    --var "print_url=$(PRINT_URL)" \
 	    --var "public_url=$(PUBLIC_URL)" \
 	    --var "apache_base_directory=$(APACHE_BASE_DIRECTORY)" \
 	    --var "version=$(VERSION)" $< > $@
