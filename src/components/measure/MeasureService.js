@@ -12,6 +12,12 @@ goog.require('ga_measure_filter');
     this.$get = function($document, measureFilter, gaMapUtils) {
       var Measure = function() {
 
+        // Transform 2111333 in 2'111'333
+        this.formatCoordinates = function(coordinates) {
+          return ol.coordinate.toStringXY(coordinates, 0).
+              replace(/\B(?=(\d{3})+(?!\d))/g, "'");
+        };
+
         this.getLength = function(geom) {
           var lineString;
           if (geom instanceof ol.geom.LineString) {

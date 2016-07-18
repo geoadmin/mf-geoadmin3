@@ -1,22 +1,23 @@
 goog.provide('ga_mouseposition_controller');
+
+goog.require('ga_measure_service');
+
 (function() {
 
   var module = angular.module('ga_mouseposition_controller', [
+    'ga_measure_service',
     'pascalprecht.translate'
   ]);
 
   module.controller('GaMousePositionController',
-      function($scope, $translate, $window) {
+      function($scope, $translate, $window, gaMeasure) {
         var coordinatesFormat = function(coordinates) {
           return $translate.instant('coordinates_label') + ': ' +
-              ol.coordinate.toStringXY(coordinates, 0).
-                replace(/\B(?=(\d{3})+(?!\d))/g, "'");
+              gaMeasure.formatCoordinates(coordinates);
         };
 
         var coordinatesFormatUTM = function(coordinates, zone) {
-          var coord = ol.coordinate.toStringXY(coordinates, 0).
-            replace(/\B(?=(\d{3})+(?!\d))/g, "'");
-          return coord + ' ' + zone;
+          return gaMeasure.formatCoordinates(coordinates) + ' ' + zone;
         };
 
         $scope.mousePositionProjections = [{

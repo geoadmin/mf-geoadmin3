@@ -269,6 +269,7 @@ goog.require('ga_urlutils_service');
               bt.popover('hide');
             };
 
+            var title;
             var content = $(bt.data('target')).on('click', function(evt) {
               // Avoid to close the popup when we click inside the popover
               // content
@@ -296,6 +297,7 @@ goog.require('ga_urlutils_service');
               if (linkType.onOpen) {
                 linkType.onOpen();
               }
+            }).on('shown.bs.popover', function(evt) {
               element.on('scroll', closePopover);
               $document.on('click', closePopover);
               win.on('resize', closePopover);
