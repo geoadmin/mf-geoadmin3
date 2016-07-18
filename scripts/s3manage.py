@@ -11,6 +11,7 @@ import glob
 import time
 import subprocess
 import tempfile
+import urllib2
 
 import StringIO
 import gzip
@@ -31,6 +32,8 @@ UPLOAD_SRC_DIR = os.environ.get('UPLOAD_SRC_DIR', 'False').lower() in ("yes", "t
 
 user = os.environ.get('USER')
 PROFILE_NAME = '{}_aws_admin'.format(user)
+
+
 s3 = None
 s3client = None
 bucket = None
@@ -77,12 +80,20 @@ def local_last_version(basedir):
             data = f.read()
         return data
     except IOError as e:
-        pass
+        print("Cannot find version: {}".format(e))
     return None
 
 
-def init_connection():
-    global s3, s3client, bucket
+def init_connection(target='infra'):
+    global s3, s3client, bucket, BUCKET_NAME
+
+    if target not in ['dev', 'int', 'prod', 'infra']:
+        print("Unknown DEPLOY_TARGET={}".format(target))
+        usage()
+        sys.exit()
+
+    BUCKET_NAME = os.environ.get("S3_MF_GEOADMIN3_{}".format(target.upper()))
+
     try:
         session = boto3.session.Session(profile_name=PROFILE_NAME, region_name=BUCKET_LOCATION)
     except botocore.exceptions.ProfileNotFound as e:
@@ -128,7 +139,7 @@ def _unzip_data(compressed):
     return data
 
 
-def save_to_s3(src, dest, cached=True, mimetype=None, break_on_error=True):
+def save_to_s3(src, dest, cached=True, mimetype=None, break_on_error=False):
 
     try:
         with open(src, 'r') as f:
@@ -136,6 +147,7 @@ def save_to_s3(src, dest, cached=True, mimetype=None, break_on_error=True):
     except EnvironmentError:
         print "Cannot upload {}".format(src)
         if break_on_error:
+            print("Exiting...")
             sys.exit(2)
         else:
             return False
@@ -229,7 +241,7 @@ def usage():
     print "      print this message"
 
 
-def upload(version, base_dir):
+def upload(base_dir):
 
     epoch_time = int(time.time())
 
@@ -240,7 +252,7 @@ def upload(version, base_dir):
 
     print "version={}, branch={}, version={}".format(GIT_SHORT_SHA, GIT_BRANCH, LAST_VERSION)
 
-    BRANCH_DIR = GIT_BRANCH if GIT_BRANCH != 'master' else ''
+    BRANCH_DIR = GIT_BRANCH  # if GIT_BRANCH != 'master' else ''
     DESTINATION_BASEDIR = os.path.join(BRANCH_DIR, GIT_SHORT_SHA, LAST_VERSION)
 
     DESTINATION_VERSIONED_DIR = os.path.join(DESTINATION_BASEDIR, LAST_VERSION)
@@ -280,16 +292,14 @@ def upload(version, base_dir):
                     if dest == relpath:
                         dest = relpath.replace('src', DESTINATION_BASEDIR + '/src')
                     save_to_s3(path, dest, cached=True)
-                    print path
-                    print '-->', dest
 
-    for n in ('index', 'embed', 'mobile'):
+    for fname in ('index.html', 'embed.html', 'mobile.html', 'info.json'):
         save_to_s3(
             os.path.join(
                 base_dir,
-                'prd/{}.html'.format(n)),
-            DESTINATION_BASEDIR + '/{}.html'.format(
-                n),
+                'prd/{}'.format(fname)),
+            DESTINATION_BASEDIR + '/{}'.format(
+                fname),
             cached=False)
 
     save_to_s3(
@@ -356,17 +366,11 @@ def upload(version, base_dir):
         cached=True,
         mimetype='application/js')
 
-    # for lang in ('de', 'fr', 'it', 'rm', 'en'):
-    #    save_to_s3(os.path.join(base_dir, 'prd/cache/layersConfig.{}.json'.format(lang)),
-    #               '{}/src/layersConfig.{}.json'.format(VERSION, lang),
-    #               cached=True,
-    #               mimetype='application/js')
-
-    check_url = get_url("index.{}.html".format(VERSION))
+    url_to_check = "https://mf-geoadmin3.infra.bgdi.ch/{}/".format(DESTINATION_BASEDIR)
 
     print "Upload finished"
-    print("\n\nPlease check it on {}\n".format(check_url))
-    print("and {}\n".format(get_url("{}/src/index.html".format(DESTINATION_BASEDIR))))
+    print("\n\nPlease check it on: {}index.html\n".format(url_to_check))
+    print("and {}src/index.html\n".format(url_to_check))
 
 
 def get_appcache_file(directory, first=True):
@@ -402,29 +406,54 @@ def version_exists(version):
 
 
 def get_version_info(version):
+    print version
     obj = s3.Object(bucket.name, '{}/info.json'.format(version))
     try:
         content = obj.get()["Body"].read()
         raw = _unzip_data(content)
         data = json.loads(raw)
+    except botocore.exceptions.ClientError:
+        return None
     except botocore.exceptions.BotoCoreError:
         return None
     return data
 
 
+def get_head_sha(branch):
+
+    resp = urllib2.urlopen(
+        "https://api.github.com/repos/geoadmin/mf-geoadmin3/commits?sha={}".format(branch.replace('/', '')))
+    data = json.load(resp)
+
+    return data[0]['sha']
+
+
 def list_version():
-    active_version = int(get_active_version())
 
-    indexes = bucket.objects.filter(Prefix="index").all()
+    branches = bucket.meta.client.list_objects(Bucket=bucket.name,
+                                               Delimiter='/')
+    for o in branches.get('CommonPrefixes'):
+        branch = o.get('Prefix')
+        head_sha = None
+        if re.search(r"^\D", branch):
+            print(branch)
+            shas = bucket.meta.client.list_objects(Bucket=bucket.name,
+                                                   Prefix=branch, Delimiter="/")
 
-    p = re.compile(ur'index.(\d+).html')
-    print "Version      Build date"
-    print "-----------+------------------------"
-    for index in indexes:
-        match = re.search(p, index.key)
-        if match:
-            version = int(match.groups()[0])
-            print version, index.last_modified, 'active' if version == active_version else ''
+            for s in shas.get('CommonPrefixes'):
+                sha = s.get('Prefix')
+                nice_sha = sha.replace(branch, "").replace('/', '')
+
+                if head_sha is None:
+                    head_sha = get_head_sha(branch)
+                    is_head = 'HEAD' if nice_sha in head_sha else '--'
+                print('  {} - {} ({})'.format(nice_sha, is_head, head_sha))
+
+                builds = bucket.meta.client.list_objects(Bucket=bucket.name,
+                                                         Prefix=sha, Delimiter="/")
+                for b in builds.get('CommonPrefixes'):
+                    build = b.get('Prefix')
+                    print('    ' + build.replace(sha, ""))
 
 
 def version_info(version):
@@ -534,45 +563,44 @@ def get_url(key_name='index.html'):
         key_name)
     return object_url
 
+
 def build(git_branch, git_sha):
     dirpath = tempfile.mkdtemp()
     epoch_time = int(time.time())
-    
-    git_clone_cmd = "git clone --depth 1 -b {}  https://github.com/geoadmin/mf-geoadmin3.git  {}".format(git_branch, epoch_time)
-    
+
+    git_clone_cmd = "git clone --depth 1 -b {}  https://github.com/geoadmin/mf-geoadmin3.git  {}".format(
+        git_branch, epoch_time)
+
     print dirpath
-    
-    
+
     try:
         output = subprocess.check_output((git_clone_cmd,), cwd=dirpath, shell=True)
         print output
     except subprocess.CalledProcessError:
-         print "Error"
+        print "Error"
     try:
-        output = subprocess.check_output(('make cleanall all',), cwd=os.path.join(dirpath,str(epoch_time)) , shell=True)
+        output = subprocess.check_output(
+            ('make cleanall all',), cwd=os.path.join(
+                dirpath, str(epoch_time)), shell=True)
         print output
     except subprocess.CalledProcessError:
-         print "Error"
-         
+        print "Error"
 
-        
-    #shutil.rmtree(dirpath)
-    
-    
+    # shutil.rmtree(dirpath)
+
 
 def main():
     global BUCKET_NAME
 
-    if BUCKET_NAME is None:
-        print "Please define the BUCKET_NAME you want to deploy."
-        sys.exit(2)
-    if s3client is None:
-        init_connection()
-    print sys.argv
+    # We use Bucket infra for now
+
+    target = os.environ.get("DEPLOY_TARGET", None)
+    init_connection(target=target)
+
     if len(sys.argv) < 2:
         usage()
         sys.exit()
-        
+
     if str(sys.argv[1]) == 'build':
         git_branch = 'master'
         git_sha = None
@@ -581,7 +609,6 @@ def main():
         if len(sys.argv) > 3:
             git_sha = sys.argv[3]
         build(git_branch, git_sha)
-        
 
     if str(sys.argv[1]) == 'upload':
 
@@ -589,68 +616,29 @@ def main():
             usage()
             sys.exit()
         target = sys.argv[2]
-        if target not in ['dev', 'int', 'prod', 'infra']:
-            usage()
-            sys.exit()
-
-        BUCKET_NAME = os.environ.get("S3_MF_GEOADMIN3_{}".format(target.upper()))
+        init_connection(target)
 
         if BUCKET_NAME is None:
             print "Please define the BUCKET_NAME you want to deploy."
             sys.exit(2)
 
-        SNAPSHOT = os.environ.get('SNAPSHOT')
-        print SNAPSHOT
-        if SNAPSHOT is not None:
-            try:
-                SNAPSHOT = int(SNAPSHOT)
-            except ValueError:
-                print "SNAPSHOT name is not in the form 'YYYYMMDDhhmm'"
-                sys.exit(2)
-
-            base_dir = os.path.join(BASEDIR, 'snapshots', str(SNAPSHOT), 'geoadmin/code/geoadmin')
-
+        if len(sys.argv) == 4:
+            base_dir = os.path.abspath(sys.argv[3])
             if not os.path.isdir(base_dir):
                 print "No code found in directory {}".format(base_dir)
                 sys.exit(2)
-            # VERSION = SNAPSHOT
         else:
-            if len(sys.argv) == 4:
-                base_dir = os.path.abspath(sys.argv[3])
-                if not os.path.isdir(base_dir):
-                    print "No code found in directory {}".format(base_dir)
-                    sys.exit(2)
-            else:
-                base_dir = os.getcwd()
+            base_dir = os.getcwd()
 
-        with open(os.path.join(base_dir, 'prd/index.html'), 'r') as f:
-            ctx = f.read()
-
-        VERSION = get_index_version(ctx)
-        print "Using version={} from directory={}".format(VERSION, base_dir)
-
-        active_version = get_active_version()
-
-        if VERSION == active_version:
-            msg = "WARNING!!!\nVersion {} is the active one!!!\n" + \
-                "Do you really want to upload it from '{}'?: [y/N]"
-            response = raw_input(msg.format(VERSION, base_dir))
-        else:
-            if version_exists(VERSION) is False:
-                msg = "Do you want to upload version '{}' from '{} " + \
-                    "into bucket {}'?: [y/N]"
-                response = raw_input(msg.format(VERSION, base_dir, BUCKET_NAME))
-            else:
-                msg = "Version '{}' already exists in bucket {}. Do you really want to overwrite " + \
-                    "it with files from '{}'?: [y/N]"
-                response = raw_input(msg.format(VERSION, BUCKET_NAME, base_dir))
-
-        if response != 'y':
-            print "Aborting"
-            sys.exit()
-        upload(VERSION, base_dir)
+        upload(base_dir)
 
     elif str(sys.argv[1]) == 'list':
+        if len(sys.argv) < 3:
+            usage()
+            sys.exit()
+        target = sys.argv[2]
+
+        init_connection(target=target)
         list_version()
 
     elif str(sys.argv[1]) == 'info' and len(sys.argv) == 3:

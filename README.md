@@ -162,86 +162,38 @@ If you want to use the deploy configuration of directory from which you are exec
 Note: we should NOT manually adapt code in /var/www/vhosts/mf-geoadmin3 directory
 
 
-## Building the project to int and prod (S3)
+## Building and deploying to AWS S3
 
-Deploying a project to dev, int or prod buckets consists of three steps:
+The three technical hostnames:
 
-- Creating a snapshot
-- Uploading the snapshot to S3
-- Activating a version, as only one version may be active at time (`index.html`)
+* mf-geoadmin.dev.bgdi.ch
+* mf-geoadmin.int.bgdi.ch
+* mf-geoadmin.prod.bgdi.ch
 
-You may deploy a build from your local environnement or a previously build snapshot.
-The following environemental variables are defined:
-
-* S3_MF_GEOADMIN3_DEV
-* S3_MF_GEOADMIN3_INT
-* S3_MF_GEOADMIN3_PROD
+are pointing on the same bucket, defined by S3_MF_GEOADMIN3_PROD, their values defines what backends
+the application will use (See [PR 3402]](https://github.com/geoadmin/mf-geoadmin3/pull/3402)).
 
 
-To create and then upload a snapshot:
+To build a branch/hash of mf-geoadmin3 and upload the result to AWS S3, 
 
-    SNAPSHOT=true make s3uploaddev
+    DEPLOY_GIT_BRANCH=my_branch DEPLOY_GIT_HASH=656e343 make s3builddeploy
+    
+By default, DEPLOY_GIT_HASH refers to HEAD version, and DEPLOY_GIT_BRANCH to 'master'.
 
-To upload a previously build snapshot:
+If the project builds and the tests are passing, then, files will be uploaded to a directory:
 
-    SNAPSHOT=20140703141 make s3uploaddev
-Deploying a project to int or prod consists of three steps:
+    <DEPLOY_GIT_BRANCH>/<DEPLOY_GIT_HASH>/<EPOCH_BUILD>/
 
-- Building
-- Uploading to S3
-- Activating a version, as only one version may be active at time (`index.html`)
+For instance:
 
-You may deploy a build from your local environnement or a previously build snapshot.
-
-    export BUCKET_NAME=<int/prod aws s3 bucket>
-
-If you want to upload a locally build project:
-
-    make s3upload
-
-or for a previously build snapshot:
-
-    make s3upload SNAPSHOT=20140703141
-
-Nota:
-
-- You may build and deploy any branch, commit, using any services independantly.
-- By default, the directory `/src` is not uploaded. If you want to upload it, set
-  a variable `UPLOAD_SRC_DIR` to True
-
-    make s3upload UPLOAD_SRC_DIR=True
-
-- If you build locally, you probably still want use production services, as:
-
-    make clean prod dev APACHE_BASE_PATH="" API_URL=//api3.geo.admin.ch MAPPROXY_URL=//wmts{s}.geo.admin.ch
-
-Listing all uploaded versions:
-
-    make s3list
-
-    Version      Build date
-    -----------+------------------------
-    1456906717 2016-03-02 14:18:38+00:00 active
-    1456928924 2016-03-02 14:36:37+00:00
-
-
-Activating an uploaded version:
-
-    make s3activate VERSION=1456928924
-
-Display build info on a version:
-
-    make s3info VERSION=1456928924
-
-    build_date: 2016-03-02 08:36:14 +0000
-    api_url: //mf-chsdi3.dev.bgdi.ch
-    last_commit_date: 2016-03-01 23:11:47 +0100
-    version: 1456907774
-    user: ltmom
-    branch: mom_layersconfig_lang
-    last_commit_hash: f24310914b842414e58ce6ec920d7e779fceff26
-
-
+    mom_layersconfig_lang/75098c2/1468688399/index.html
+    
+and for source:
+    
+    mom_layersconfig_lang/75098c2/1468688399/src/index.html
+    
+    
+Metadata to a build are available next to the index.html, as info.json
 
 ## Deploying a branch
 

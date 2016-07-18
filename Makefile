@@ -59,8 +59,9 @@ GIT_COMMIT_HASH ?= $(shell git rev-parse --verify HEAD)
 GIT_COMMIT_DATE ?= $(shell git log -1  --date=iso --pretty=format:%cd)
 CURRENT_DATE ?= $(shell date -u +"%Y-%m-%d %H:%M:%S %z")
 TIMESTAMP := $(shell /bin/date "+%s")
-DEPLOY_GIT_BRANCH ?= $(GIT_BRANCH)
+DEPLOY_GIT_BRANCH ?= master
 DEPLOY_GIT_HASH ?=
+CLONEDIR ?=/home/$(USER_NAME)/tmp/delete_me/$(TIMESTAMP)
 
 ## Python interpreter can't have space in path name
 ## So prepend all python scripts with python cmd
@@ -105,7 +106,8 @@ help:
 	@echo "- deploybranch       Deploys current branch to test (note: takes code from github)"
 	@echo "- deploybranchint    Deploys current branch to test and int (note: takes code from github)"
 	@echo "- deploybranchdemo   Deploys current branch to test and demo (note: takes code from github)"
-	@echo "- builddeploys3      Build branch DEPLOY_GIT_BRANCH and deploy to S3"
+	@echo "- s3builddeploy      Build branch DEPLOY_GIT_BRANCH (default to 'master) and hash DEPLOY_GIT_HASH (default to 'HEAD') and deploy to S3"
+	@echo "- s3list             List availables branches, revision and build on the deploy bucket"
 	@echo "- ol3cesium          Update ol3cesium.js, ol3cesium-debug.js, Cesium.min.js and Cesium folder"
 	@echo "- libs               Update js librairies used in index.html, see npm packages defined in section 'dependencies' of package.json"
 	@echo "- translate          Generate the translation files (requires db user pwd in ~/.pgpass: dbServer:dbPort:*:dbUser:dbUserPwd)"
@@ -211,12 +213,15 @@ deployint: guard-SNAPSHOT
 deployprod: guard-SNAPSHOT
 	./scripts/deploysnapshot.sh $(SNAPSHOT) prod $(DEPLOYCONFIG)
 
-.PHONY: s3uploaddev
-builddeploys3: .build-artefacts/requirements.timestamp
-	echo /tmp/${USER}/${TIMESTAMP};
-	@ mkdir -p /tmp/${USER}/${TIMESTAMP}; \
-	./scripts/clonebuild.sh /tmp/${USER}/${TIMESTAMP}   $(DEPLOY_GIT_BRANCH)   $(DEPLOY_GIT_HASH); \
-	${PYTHON_CMD} ./scripts/s3manage.py upload infra /tmp/${USER}/${TIMESTAMP}/mf-geoadmin3 && rm -rf /tmp/${USER}/${TIMESTAMP}  ||  rm -rf /tmp/${USER}/${TIMESTAMP} ;
+.PHONY: s3builddeploy
+s3builddeploy: .build-artefacts/requirements.timestamp
+	@ mkdir -p ${CLONEDIR}; \
+	./scripts/clonebuild.sh ${CLONEDIR}   $(DEPLOY_GIT_BRANCH)   $(DEPLOY_GIT_HASH)  || (echo "Cloning and building failed $$?"; exit 1); \
+	${PYTHON_CMD} ./scripts/s3manage.py upload $(DEPLOY_TARGET) ${CLONEDIR}/mf-geoadmin3 && rm -rf ${CLONEDIR}  ||  rm -rf ${CLONEDIR} ;
+
+.PHONY: s3list
+s3list:
+	@ ${PYTHON_CMD} ./scripts/s3manage.py list $(DEPLOY_TARGET);
 
 .PHONY: deploybranch
 deploybranch: deploy/deploy-branch.cfg $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH)/.git/config
