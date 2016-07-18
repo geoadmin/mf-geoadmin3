@@ -6,15 +6,9 @@
 <label ng-if="useIconStyle || !useTextStyle">
   <span translate>{{'modify_description'}}:</span>
   <div class="ga-descr-buttons">
-    <button  class="ga-icon ga-btn fa fa-ga-marker"
-             ng-click="togglePopover($event, 'add_link')"
-             data-target=".ga-html-link"></button>
-    <button  class="ga-icon ga-btn fa fa-paint-brush"
-             ng-click="togglePopover($event, 'add_image')"
-             data-target=".ga-html-image"></button>
-    <button  class="ga-icon ga-btn fa fa-trash"
-             ng-click="togglePopover($event, 'add_video')"
-             data-target=".ga-html-video"></button>
+    <button  ng-repeat="t in ::options.linkTypes" class="ga-icon ga-btn fa {{::t.btnClass}}"
+             ng-click="togglePopover($event, t)"
+             data-target=".ga-html-{{::t.label}}"></button>
   </div>
   <textarea class="form-control ga-descr" ng-model="options.description"></textarea>
 </label>

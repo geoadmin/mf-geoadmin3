@@ -8,7 +8,8 @@ goog.require('ga_styles_service');
     'ga_styles_service'
   ]);
 
-  module.controller('GaDrawStyleController', function($scope, gaStyleFactory) {
+  module.controller('GaDrawStyleController', function($scope, $translate,
+      gaStyleFactory) {
 
     // Defines static styles
     var white = [255, 255, 255];
@@ -21,15 +22,21 @@ goog.require('ga_styles_service');
       linkTypes: [{
         label: 'link',
         value: '',
-        tpl: '<a  target="_blank" href="{{url}}">{{textToDisplay}}</a>'
+        tpl: '<a  target="_blank" href="{{url}}">{{textToDisplay}}</a>',
+        btnClass: 'fa-ga-marker',
+        onOpen: function() {
+          this.textToDisplay = $translate.instant('more_info');
+        }
       }, {
         label: 'image',
         value: '',
-        tpl: '<img src="{{url}}"/>'
+        tpl: '<img src="{{url}}"/>',
+        btnClass: 'fa-ga-marker'
       }, {
         label: 'video',
         value: '',
-        tpl: '<iframe src="{{url}}"></iframe>'
+        tpl: '<iframe src="{{url}}"></iframe>',
+        btnClass: 'fa-ga-marker'
       }],
       colors: [
         {name: 'black', fill: [0, 0, 0], border: 'white'},

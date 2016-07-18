@@ -256,7 +256,7 @@ goog.require('ga_urlutils_service');
         // Open the popover with style inside
         var win = $($window);
         var closeBt = '<button class="ga-icon ga-btn fa fa-remove"></button>';
-        scope.togglePopover = function(evt, title) {
+        scope.togglePopover = function(evt, linkType) {
           var bt = $(evt.currentTarget);
 
           if (!bt.data('bs.popover')) {
@@ -275,8 +275,8 @@ goog.require('ga_urlutils_service');
               evt.stopPropagation();
             });
 
-            if (title) {
-              title = $translate.instant(title) + closeBt;
+            if (linkType) {
+              title = $translate.instant('add_' + linkType.label) + closeBt;
             } else {
               content = content.add($(closeBt));
             }
@@ -292,7 +292,10 @@ goog.require('ga_urlutils_service');
             });
 
             // Close popover on outside popover mouse event
-            bt.on('shown.bs.popover', function(evt) {
+            bt.on('show.bs.popover', function(evt) {
+              if (linkType.onOpen) {
+                linkType.onOpen();
+              }
               element.on('scroll', closePopover);
               $document.on('click', closePopover);
               win.on('resize', closePopover);
