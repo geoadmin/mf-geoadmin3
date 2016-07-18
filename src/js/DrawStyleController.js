@@ -22,7 +22,7 @@ goog.require('ga_styles_service');
       linkTypes: [{
         label: 'link',
         value: '',
-        tpl: '<a  target="_blank" href="{{url}}">{{textToDisplay}}</a>',
+        tpl: '<a target="_blank" href="{{url}}">{{textToDisplay}}</a>',
         btnClass: 'fa-ga-marker',
         onOpen: function() {
           this.textToDisplay = $translate.instant('more_info');
@@ -30,12 +30,12 @@ goog.require('ga_styles_service');
       }, {
         label: 'image',
         value: '',
-        tpl: '<img src="{{url}}"/>',
+        tpl: '<img src="{{url}}" style="max-height:200px;"/>',
         btnClass: 'fa-ga-marker'
       }, {
         label: 'video',
         value: '',
-        tpl: '<iframe src="{{url}}"></iframe>',
+        tpl: '<iframe src="{{url}}" height="200" width="auto"></iframe>',
         btnClass: 'fa-ga-marker'
       }],
       colors: [
