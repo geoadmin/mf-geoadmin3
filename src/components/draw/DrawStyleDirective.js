@@ -293,11 +293,12 @@ goog.require('ga_urlutils_service');
             });
 
             // Close popover on outside popover mouse event
-            bt.on('show.bs.popover', function(evt) {
-              if (linkType.onOpen) {
+            if (linkType && linkType.onOpen) {
+              bt.on('show.bs.popover', function(evt) {
                 linkType.onOpen();
-              }
-            }).on('shown.bs.popover', function(evt) {
+              });
+            }
+            bt.on('shown.bs.popover', function(evt) {
               element.on('scroll', closePopover);
               $document.on('click', closePopover);
               win.on('resize', closePopover);
