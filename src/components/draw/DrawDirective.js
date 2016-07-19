@@ -65,19 +65,6 @@ goog.require('ga_styles_service');
       return tooltip;
     };
 
-    // Creates a new measure tooltip with a nice arrow
-    var createMeasureTooltip = function() {
-      var tooltipElement = $document[0].createElement('div');
-      tooltipElement.className = 'ga-draw-measure';
-      var tooltip = new ol.Overlay({
-        element: tooltipElement,
-        offset: [0, -15],
-        positioning: 'bottom-center',
-        stopEvent: true // for copy/paste
-      });
-      return tooltip;
-    };
-
     // Display an help tooltip for when drawing
     var updateHelpTooltip = function(overlay, type, drawStarted, onFirstPoint,
         onLastPoint) {
@@ -123,35 +110,6 @@ goog.require('ga_styles_service');
       overlay.getElement().innerHTML = $translate.instant(helpMsgId);
     };
 
-    // Display measure overlays if the geometry alloow it otherwise hide them.
-    var updateMeasureTooltips = function(distTooltip, areaTooltip, geom) {
-      if (geom instanceof ol.geom.Polygon) {
-        if (areaTooltip) {
-          areaTooltip.getElement().innerHTML = gaMeasure.getAreaLabel(geom);
-          areaTooltip.setPosition(geom.getInteriorPoint().getCoordinates());
-        }
-        geom = new ol.geom.LineString(geom.getCoordinates()[0]);
-      } else if (areaTooltip) {
-        areaTooltip.setPosition(undefined);
-      }
-      if (geom instanceof ol.geom.LineString) {
-        if (distTooltip) {
-          var label = '';
-          var coords = geom.getCoordinates();
-          if (coords.length == 2 || (coords.length == 3 &&
-              coords[1][0] == coords[2][0] &&
-              coords[1][1] == coords[2][1])) {
-            label += gaMeasure.getAzimuthLabel(geom) + ' / ';
-          }
-          label += gaMeasure.getLengthLabel(geom);
-          distTooltip.getElement().innerHTML = label;
-          distTooltip.setPosition(geom.getLastCoordinate());
-        }
-      } else if (distTooltip) {
-        distTooltip.setPosition(undefined);
-      }
-    };
-
     return {
       restrict: 'A',
       templateUrl: 'components/draw/partials/draw.html',
@@ -169,7 +127,7 @@ goog.require('ga_styles_service');
             deregPointerEvts = [], deregFeatureChange, unLayerVisible,
             unWatch = [], unDrawEvts = [];
         var useTemporaryLayer = scope.options.useTemporaryLayer || false;
-        var helpTooltip, helpModifyTooltip, distTooltip, areaTooltip;
+        var helpTooltip, helpModifyTooltip;
         var map = scope.map;
         var viewport = $(map.getViewport());
         var body = $($document[0].body);
@@ -452,13 +410,7 @@ goog.require('ga_styles_service');
 
             // Add temporary measure tooltips
             if (tool.showMeasure) {
-              // Distance overlay
-              distTooltip = createMeasureTooltip();
-              map.addOverlay(distTooltip);
-
-              // Area overlay
-              areaTooltip = createMeasureTooltip();
-              map.addOverlay(areaTooltip);
+              gaMeasure.addOverlays(map, layer, evt.feature);
             }
 
             deregFeatureChange = evt.feature.on('change', function(evt) {
@@ -488,21 +440,9 @@ goog.require('ga_styles_service');
 
                   isSnapOnLastPoint = (lastPoint[0] == lastPoint2[0] &&
                       lastPoint[1] == lastPoint2[1]);
-
-                  if (isSnapOnLastPoint) {
-                    // In that case the 2 last points of the coordinates
-                    // array are identical, so we remove the useless one.
-                    lineCoords.pop();
-                  }
                 }
                 updateHelpTooltip(helpTooltip, tool.id, true,
                     isFinishOnFirstPoint, isSnapOnLastPoint);
-                if (tool.showMeasure) {
-                  if (!isFinishOnFirstPoint) {
-                    geom = new ol.geom.LineString(lineCoords);
-                  }
-                  updateMeasureTooltips(distTooltip, areaTooltip, geom);
-                }
               }
             });
           }));
@@ -545,8 +485,11 @@ goog.require('ga_styles_service');
               // last point. So we remove the useless coordinates.
               var lineCoords = featureToAdd.getGeometry().getCoordinates()[0];
               lineCoords.pop();
-              featureToAdd = new ol.Feature(
-                  new ol.geom.LineString(lineCoords));
+              if (tool.showMeasure) {
+                // We remove the area tooltip.
+                gaMeasure.removeOverlays(featureToAdd);
+              }
+              featureToAdd.setGeometry(new ol.geom.LineString(lineCoords));
             }
 
             // Update feature properties
@@ -557,29 +500,23 @@ goog.require('ga_styles_service');
             if (lastActiveTool) {
               featureToAdd.set('type', lastActiveTool.id);
             }
+            featureToAdd.getGeometry().set('altitudeMode', 'clampToGround');
 
             // Set the definitve style of the feature
-            featureToAdd.getGeometry().set('altitudeMode', 'clampToGround');
-            layer.getSource().addFeature(featureToAdd);
-            var styles = tool.style(featureToAdd);
-            featureToAdd.setStyle(styles);
-            select.getFeatures().push(featureToAdd);
+            featureToAdd.setStyle(tool.style(featureToAdd));
 
-            // Add final measure tooltips
-            if (tool.showMeasure) {
-              gaMeasure.addOverlays(map, layer, featureToAdd);
-              map.removeOverlay(distTooltip);
-              map.removeOverlay(areaTooltip);
-            }
+            // Add the feature to the layer and select it
+            layer.getSource().addFeature(featureToAdd);
+            select.getFeatures().push(featureToAdd);
           }));
+
           map.addInteraction(draw);
         };
+
         var deactivateDrawInteraction = function() {
           while (unDrawEvts.length) {
             ol.Observable.unByKey(unDrawEvts.pop());
           }
-          map.removeOverlay(distTooltip);
-          map.removeOverlay(areaTooltip);
           if (draw) {
             map.removeInteraction(draw);
           }

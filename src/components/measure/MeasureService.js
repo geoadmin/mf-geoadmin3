@@ -87,72 +87,136 @@ goog.require('ga_measure_filter');
         };
 
         // Creates a new measure tooltip with a nice arrow
-        this.createOverlay = function() {
+        this.createOverlay = function(cssClass, stopEvent) {
           var tooltipElement = $document[0].createElement('div');
-          tooltipElement.className = 'ga-draw-measure-static';
+          tooltipElement.className = cssClass || 'ga-draw-measure-static';
           var tooltip = new ol.Overlay({
             element: tooltipElement,
             offset: [0, -7],
             positioning: 'bottom-center',
-            stopEvent: true // for copy/paste
+            stopEvent: angular.isDefined(stopEvent) ?
+                stopEvent : true // for copy/paste
           });
           return tooltip;
         };
-        this.updateOverlays = function(feature) {
+
+        this.updateOverlays = function(layer, feature) {
           var overlays = feature.get('overlays');
+
           if (overlays) {
-            var geom = feature.getGeometry();
+            var currIdx = 0, geomLine;
+            var geom = geomLine = feature.getGeometry();
+
             if (geom instanceof ol.geom.Polygon) {
-              var areaOverlay = overlays[0];
+              var areaOverlay = overlays.item(currIdx) || this.createOverlay();
               areaOverlay.getElement().innerHTML = this.getAreaLabel(geom);
-              areaOverlay.setPosition(geom.getInteriorPoint().getCoordinates());
-              geom = new ol.geom.LineString(geom.getCoordinates()[0]);
-            }
-            if (geom instanceof ol.geom.LineString) {
-              var label = '';
-              if (this.canShowAzimuthCircle(feature.getGeometry())) {
-                label += this.getAzimuthLabel(feature.getGeometry()) + ' / ';
+              areaOverlay.getElement().style.opacity = layer.getOpacity();
+
+              // We compare first and last coordinates because during drawing
+              // the polygon are not closed correctly.
+              var first = geom.getFirstCoordinate();
+              var last = geom.getLastCoordinate();
+              var pos;
+
+              if (geom.getArea() && first[0] == last[0] &&
+                  first[1] == last[1]) {
+                pos = geom.getInteriorPoint().getCoordinates();
               }
-              var distOverlay = overlays[1] || overlays[0];
-              label += this.getLengthLabel(geom);
+
+              areaOverlay.setPosition(pos);
+
+              geomLine = new ol.geom.LineString(geom.getCoordinates()[0]);
+
+              if (!overlays.item(currIdx)) {
+                overlays.push(areaOverlay);
+              }
+              currIdx++;
+            }
+
+            if (geomLine instanceof ol.geom.LineString) {
+              var label = '',
+                  delta = 1,
+                  length = geomLine.getLength();
+              if (this.canShowAzimuthCircle(geomLine)) {
+                label += this.getAzimuthLabel(geomLine) + ' / ';
+              }
+              var distOverlay = overlays.item(currIdx) || this.createOverlay();
+              label += this.getLengthLabel(geomLine);
               distOverlay.getElement().innerHTML = label;
-              distOverlay.setPosition(geom.getLastCoordinate());
+              distOverlay.getElement().style.opacity = layer.getOpacity();
+
+              if (length) {
+                distOverlay.setPosition(geomLine.getLastCoordinate());
+              } else {
+                distOverlay.setPosition(undefined);
+              }
+
+              if (!overlays.item(currIdx)) {
+                overlays.push(distOverlay);
+              }
+
+              currIdx++;
+
+              // Add intermediate tootlip only on line.
+                if (length > 200000) {
+                  delta = 100000 / length;
+                } else if (length > 20000) {
+                  delta = 10000 / length;
+                } else if (length != 0) {
+                  delta = 1000 / length;
+                }
+                for (var i = delta; i < 1; i += delta, currIdx++) {
+                  var t = overlays.item(currIdx) ||
+                      this.createOverlay('ga-draw-measure-tmp', false);
+                  t.getElement().innerHTML = measureFilter(length * i);
+                  t.getElement().style.opacity = layer.getOpacity();
+                  t.setPosition(geomLine.getCoordinateAt(i));
+
+                  if (!overlays.item(currIdx)) {
+                    overlays.push(t);
+                  }
+                }
+                if (currIdx < overlays.getLength()) {
+                 for (var j = overlays.getLength() - 1; j >= currIdx; j--) {
+                   overlays.pop();
+                 }
+                }
             }
           }
         };
         // Add overlays with distance, azimuth and area, depending on the
         // feature's geometry
         this.addOverlays = function(map, layer, feature) {
-          var overlays = [], geom = feature.getGeometry();
-          if (geom instanceof ol.geom.Polygon) {
-            var areaOverlay = this.createOverlay();
-            areaOverlay.getElement().style.opacity = layer.getOpacity();
-            map.addOverlay(areaOverlay);
-            overlays.push(areaOverlay);
-            geom = new ol.geom.LineString(geom.getCoordinates()[0]);
-          }
-          if (geom instanceof ol.geom.LineString) {
-            var distOverlay = this.createOverlay();
-            distOverlay.getElement().style.opacity = layer.getOpacity();
-            map.addOverlay(distOverlay);
-            overlays.push(distOverlay);
-          }
-          if (overlays.length) {
-            feature.set('overlays', overlays);
-            this.updateOverlays(feature);
-            feature.on('change', function(evt) {
-              this.updateOverlays(evt.target);
-            }, this);
+          var geom = feature.getGeometry();
+          if (geom instanceof ol.geom.Polygon ||
+              geom instanceof ol.geom.LineString) {
+            var overlays = feature.get('overlays');
+            if (!overlays) {
+              overlays = new ol.Collection();
+              overlays.on('add', function(evt) {
+                map.addOverlay(evt.element);
+              });
+              overlays.on('remove', function(evt) {
+                map.removeOverlay(evt.element);
+              });
+              feature.set('overlays', overlays);
+              feature.on('change', function(evt) {
+                // If overlays is undefined that means the feature has been
+                // removed from the layer.
+                if (evt.target.get('overlays')) {
+                  this.updateOverlays(layer, evt.target);
+                }
+              }, this);
+            }
+            this.updateOverlays(layer, feature);
           }
         };
         // Remove the overlays attached to the feature
         this.removeOverlays = function(feature) {
           var overlays = feature.get('overlays');
-          while (overlays && overlays.length) {
-            var overlay = overlays.pop();
-            overlay.getMap().removeOverlay(overlay);
+          if (overlays instanceof ol.Collection) {
+            overlays.clear();
           }
-          feature.set('overlays', undefined);
         };
 
         // Determine if the geometry can display azimuth circle or not
@@ -176,11 +240,14 @@ goog.require('ga_measure_filter');
               var features = evt.element.getSource().getFeatures();
               for (var i = 0; i < features.length; i++) {
                 this.removeOverlays(features[i]);
+                features[i].set('overlays', undefined);
               }
+
             }
           }, this);
           layer.getSource().on('removefeature', function(evt) {
             this.removeOverlays(evt.feature);
+            evt.feature.set('overlays', undefined);
           }, this);
           if (layer.displayInLayerManager) {
             layer.on('change:visible', function(evt) {
@@ -201,9 +268,11 @@ goog.require('ga_measure_filter');
               var features = evt.target.getSource().getFeatures();
               for (var i = 0; i < features.length; i++) {
                 if (gaMapUtils.isMeasureFeature(features[i])) {
-                  var overlays = features[i].get('overlays') || [];
-                  for (var j = 0; j < overlays.length; j++) {
-                    overlays[j].getElement().style.opacity = layer.getOpacity();
+                  var overlays = features[i].get('overlays');
+                  if (overlays) {
+                    overlays.forEach(function(item) {
+                      item.getElement().style.opacity = layer.getOpacity();
+                    });
                   }
                 }
               }
