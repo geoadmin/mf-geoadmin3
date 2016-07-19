@@ -736,7 +736,9 @@ itemscope itemtype="http://schema.org/WebApplication"
 
         var adminUrlRegexp = new RegExp('${admin_url_regexp}');
         var wmsUrl = location.protocol + getParam('wms_url');
-        wmsUrl = adminUrlRegexp.test(wmsUrl) ? wmsUrl : null;
+        wmsUrl = adminUrlRegexp.test(wmsUrl) ? wmsUrl : location.protocol + '${wms_url}';
+        var printUrl = location.protocol + getParam('print_url');
+        printUrl = adminUrlRegexp.test(printUrl) ? printUrl : location.protocol + '${print_url}';
 
         var apiParam = getParam('api_url');
         var apiEnv = getParam('api_env');
@@ -786,15 +788,17 @@ itemscope itemtype="http://schema.org/WebApplication"
           pegman: !!window.location.search.match(/(pegman=true)/),
           mapUrl : location.origin + '${apache_base_path}',
           apiUrl : location.protocol + apiUrl,
+          printUrl : printUrl,
           mapproxyUrl : location.protocol + '${mapproxy_url}',
           shopUrl : location.protocol + shopUrl,
           publicUrl : location.protocol + '${public_url}',
           publicUrlRegexp: new RegExp('${public_url_regexp}'),
           adminUrlRegexp: adminUrlRegexp,
           cachedApiUrl: location.protocol + apiUrl + cacheAdd,
+          cachedPrintUrl: printUrl + cacheAdd,
           resourceUrl: location.origin + pathname + '${versionslashed}',
           ogcproxyUrl : location.protocol + apiUrl + '/ogcproxy?url=',
-          wmsUrl: wmsUrl ? wmsUrl : location.protocol + '${wms_url}',
+          wmsUrl: wmsUrl,
           w3wUrl : 'https://api.what3words.com',
           w3wApiKey : 'OM48J50Y',
           whitelist: [
