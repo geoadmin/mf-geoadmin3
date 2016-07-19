@@ -210,3 +210,5 @@ Where `varnish_host_ip` is the ip of the varnish server and api_host is the host
 Add `api_url=theNameOfABranch` to use a custom backend.
 
 Add `wms_url=//theNameOfAWMSServer` to use a cutsom wms service.
+
+Add `print_url=//theNameOfAPrintServer` to use a custom print server.
