@@ -1,5 +1,13 @@
-export USERNAME='$(shell whoami)'
+source rc_dev
+export USERNAME=$(whoami)
 export API_URL=//mf-chsdi3.dev.bgdi.ch/$USERNAME
 export APACHE_BASE_PATH=/$USERNAME
 export E2E_TARGETURL=https://mf-geoadmin3.dev.bgdi.ch/$USERNAME
 export SHOP_URL=//shop-bgdi.dev.bgdi.ch
+if [ -f rc_user_$USERNAME ]; then
+  echo 'Sourcing:'
+  echo rc_user_$USERNAME
+  source rc_user_$USERNAME;
+else
+  echo 'Please provide a custom config file using the pattern rc_user_$USERNAME'
+fi
