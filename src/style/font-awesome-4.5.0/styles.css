@@ -617,5 +617,16 @@
 .fa-trash:before {
   content: "\f231";
 }
-
+.fa-area-chart:before {
+  content: "\f232";
+}
+.fa-picture-o:before {
+  content: "\f233";
+}
+.fa-film:before {
+  content: "\f234";
+}
+.fa-link:before {
+  content: "\f235";
+}
 
