@@ -70,35 +70,22 @@ itemscope itemtype="http://schema.org/WebApplication"
     <meta itemprop="image" content="${application_url}/${versionslashed}img/logo_geoportal.png"/>
 
     <script>
-      (function(){
-        var w = window, l = w.location, n = w.navigator, pathname, p = '${device}',
-          m = l.search.match(/(?:mobile=(true|false))/);
-
-        if (!l.origin) { l.origin = l.protocol + "//" + l.hostname } // IE fix
-
-        // avoid loops
-        m = (m) ? m[1] : m;
-        if ((p=='desktop' && m=='false') || (p=='mobile' && m=='true')) {
-          return;
+      (function() {
+        var w = window, l = w.location, n = w.navigator, p = '${device}', m = l.search.match(/(?:mobile=(true|false))/);
+        if (!l.origin) {
+          l.origin=l.protocol + "//" +l.hostname; // IE fix
         }
-
-        var redirectToMobile = function() {
-          pathname = !/(index|embed)\.html$/.test(l.pathname) ?
-            l.pathname + 'mobile.html' : l.pathname.replace(/(index|embed)\.html$/, 'mobile.html');
-          l.href = l.origin + pathname + l.search;
-        }
-        var redirectToDesktop = function() {
-          l.href = l.origin + l.pathname.replace(/(mobile|embed)\.html$/, 'index.html') + l.search;
-        }
-
-        var onMobile = ((('ontouchstart' in w) ||
-            (('maxTouchPoints' in n) && n.maxTouchPoints > 1) ||
-            (('msMaxTouchPoints' in n) && n.msMaxTouchPoints > 1)) &&
-            (screen.width<=768 || screen.height<=768));
-        if (m=='false' || (!onMobile && p=='mobile') ) {
-          redirectToDesktop();
-        } else if (m=='true' || (onMobile && p=='desktop') ) {
-          redirectToMobile();
+        m = (m) ? m[1] : m; // avoid loops
+        if (!(p == 'desktop' && m == 'false') && !(p == 'mobile' && m == 'true')) {
+          var href, onMobile = (('ontouchstart' in w) || n.maxTouchPoints > 1 || n.msMaxTouchPoints > 1) && (screen.width <= 768 || screen.height <= 768);
+          if (m == 'false' || (!onMobile && p == 'mobile')) {
+            href = l.origin + l.pathname.replace(/\/(|(mobile|embed)\.html)$/, '/index.html') + l.search;
+          } else if (m == 'true' || (onMobile && p == 'desktop')) {
+            href = l.origin + l.pathname.replace(/\/(|(index|embed)\.html)$/, '/mobile.html') + l.search;
+          }
+          if (href && href != l.href) {
+            l.href = href;
+          }
         }
       })();
     </script>
