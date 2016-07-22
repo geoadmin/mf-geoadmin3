@@ -29,16 +29,16 @@ itemscope itemtype="http://schema.org/WebApplication"
     <meta name="apple-mobile-web-app-capable" content="yes"/>
     <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
     <meta name="application-name" content="map.geo.admin.ch"/>
-    <meta name="msapplication-TileImage" content="${versionslashed}img/touch-icon-bund-144x144.png"/>
+    <meta name="msapplication-TileImage" content="${s3basepath}${versionslashed}img/touch-icon-bund-144x144.png"/>
     <meta name="msapplication-TileColor" content="#ffffff"/>
-    <meta name="msapplication-square70x70logo" content="${versionslashed}img/touch-icon-bund-70x70.png"/>
-    <meta name="msapplication-square150x150logo" content="${versionslashed}img/touch-icon-bund-150x150.png"/>
-    <meta name="msapplication-square310x310logo" content="${versionslashed}img/touch-icon-bund-310x310.png"/>
+    <meta name="msapplication-square70x70logo" content="${s3basepath}${versionslashed}img/touch-icon-bund-70x70.png"/>
+    <meta name="msapplication-square150x150logo" content="${s3basepath}${versionslashed}img/touch-icon-bund-150x150.png"/>
+    <meta name="msapplication-square310x310logo" content="${s3basepath}${versionslashed}img/touch-icon-bund-310x310.png"/>
     <link rel="dns-prefetch" href="${api_url}"/>
 
-    <link rel="apple-touch-icon" sizes="76x76" href="${versionslashed}img/touch-icon-bund-76x76.png"/>
-    <link rel="apple-touch-icon" sizes="120x120" href="${versionslashed}img/touch-icon-bund-120x120.png"/>
-    <link rel="apple-touch-icon" sizes="152x152" href="${versionslashed}img/touch-icon-bund-152x152.png"/>
+    <link rel="apple-touch-icon" sizes="76x76" href="${s3basepath}${versionslashed}img/touch-icon-bund-76x76.png"/>
+    <link rel="apple-touch-icon" sizes="120x120" href="${s3basepath}${versionslashed}img/touch-icon-bund-120x120.png"/>
+    <link rel="apple-touch-icon" sizes="152x152" href="${s3basepath}${versionslashed}img/touch-icon-bund-152x152.png"/>
 
     <!-- Description is translated 'by hand' in the MainController -->
     <meta name="description" content="geo.admin.ch ist die Geoinformationsplattform der Schweizerischen Eidgenossenschaft. // geo.admin.ch est la plateforme de géoinformation de la Confédération suisse."/>
@@ -50,8 +50,8 @@ itemscope itemtype="http://schema.org/WebApplication"
     <meta property="og:title" content="Swiss Geoportal"/>
     <meta property="og:description" content="geo.admin.ch ist die Geoinformationsplattform der Schweizerischen Eidgenossenschaft. // geo.admin.ch est la plateforme de géoinformation de la Confédération suisse."/>
     <meta property="og:type" content="WebApplication"/>
-    <meta property="og:url" content="${application_url}"/>
-    <meta property="og:image" content="${application_url}/${versionslashed}img/logo_geoportal.png"/>
+    <meta property="og:url" content="https://map.geo.admin.ch"/>
+    <meta property="og:image" content="https://cms.geo.admin.ch/img/logo_geoportal.png"/>
 
     <!-- Twitter Card Infos -->
     <meta name="twitter:card" content="summary"/>
@@ -59,15 +59,15 @@ itemscope itemtype="http://schema.org/WebApplication"
     <meta name="twitter:creator" content="@swiss_geoportal"/>
     <meta name="twitter:title" content="geo.admin.ch"/>
     <meta name="twitter:description" content="geo.admin.ch ist die Geoinformationsplattform der Schweizerischen Eidgenossenschaft. // geo.admin.ch est la plateforme de géoinformation de la Confédération suisse."/>
-    <meta name="twitter:image" content="${application_url}/${versionslashed}img/logo_geoportal.png"/>
-    <meta name="twitter:url" content="${application_url}"/>
+    <meta name="twitter:image" content="https://cms.geo.admin.ch/img/logo_geoportal.png"/>
+    <meta name="twitter:url" content="https://map.geo.admin.ch"/>
 
     <!-- Facebook Specific fb:admins and fb.appid -->
 
     <!-- Google+ Specific Tags -->
     <meta itemprop="name" content="geo.admin.ch"/>
     <meta itemprop="description" content="geo.admin.ch ist die Geoinformationsplattform der Schweizerischen Eidgenossenschaft. // geo.admin.ch est la plateforme de géoinformation de la Confédération suisse."/>
-    <meta itemprop="image" content="${application_url}/${versionslashed}img/logo_geoportal.png"/>
+    <meta itemprop="image" content="https://cms.geo.admin.ch/img/logo_geoportal.png"/>
 
     <script>
       (function() {
@@ -89,8 +89,8 @@ itemscope itemtype="http://schema.org/WebApplication"
         }
       })();
     </script>
-    <link href="${versionslashed}style/app.css" rel="stylesheet"/>
-    <link rel="shortcut icon" type="image/x-icon" href="${versionslashed}img/favicon.ico"/>
+    <link href="${s3basepath}${versionslashed}style/app.css" rel="stylesheet"/>
+    <link rel="shortcut icon" type="image/x-icon" href="${s3basepath}${versionslashed}img/favicon.ico"/>
   </head>
 
   <body class="{{topicId}} {{langId}}" 
@@ -123,7 +123,7 @@ itemscope itemtype="http://schema.org/WebApplication"
        }
        })();
       </script>
-      <script src="${versionslashed}lib/IE9Fixes.js"></script>
+      <script src="${s3basepath}${versionslashed}lib/IE9Fixes.js"></script>
       <script>
         IE9Fix.call(this);
       </script>
@@ -629,45 +629,45 @@ itemscope itemtype="http://schema.org/WebApplication"
 % if mode == 'prod':
   
     <script>
-      window.CESIUM_BASE_URL="${versionslashed}lib/Cesium/";
+      window.CESIUM_BASE_URL="${s3basepath}${versionslashed}lib/Cesium/";
     </script>
-    <script src="${versionslashed}lib/build.js"></script>
+    <script src="${s3basepath}${versionslashed}lib/build.js"></script>
     <!-- For <= IE9, we load it explicitely as XDomain does not support
          dynamic/lazy loading of javascript -->
     <!--![if IE]>
-    <script src="${versionslashed}lib/bootstrap-datetimepicker.min.js"></script>
-    <script src="${versionslashed}lib/d3.min.js"></script>
-    <script src="${versionslashed}lib/jquery.xdomainrequest.min.js"></script>
+    <script src="${s3basepath}${versionslashed}lib/bootstrap-datetimepicker.min.js"></script>
+    <script src="${s3basepath}${versionslashed}lib/d3.min.js"></script>
+    <script src="${s3basepath}${versionslashed}lib/jquery.xdomainrequest.min.js"></script>
     <![endif]-->
 % else:
     <!-- in source, we need to load it here because IE9 ignores it in
          the comments for reasons unknown to me. In prod, it's only
          loaded in IE9 -->
-    <script src="lib/polyfill.js"></script>
-    <script src="lib/IE9Fixes.js"></script>
+    <script src="${s3basepath}lib/polyfill.js"></script>
+    <script src="${s3basepath}lib/IE9Fixes.js"></script>
     <script>
       //This call only affects browser <= IE9
       IE9Fix.call(this);
     </script>
-    <script src="lib/jquery.js"></script>
-    <script src="lib/jQuery.XDomainRequest.js"></script>
-    <script src="lib/slip.js"></script>
-    <script src="lib/angular.js"></script>
-    <script src="lib/angular-translate.js"></script>
-    <script src="lib/angular-translate-loader-static-files.js"></script>
-    <script src="lib/d3.js"></script>
-    <script src="lib/bootstrap.js"></script>
-    <script src="lib/typeahead-0.9.3.js"></script>
-    <script src="lib/proj4js-compressed.js"></script>
-    <script src="lib/EPSG21781.js"></script>
-    <script src="lib/EPSG2056.js"></script>
-    <script src="lib/EPSG32631.js"></script>
-    <script src="lib/EPSG32632.js"></script>
-    <script src="lib/fastclick.js"></script>
-    <script src="lib/localforage.js"></script>
-    <script src="lib/filesaver.js"></script>
-    <script src="lib/moment-with-customlocales.js"></script>
-    <script src="lib/Cesium/Cesium.js"></script>
+    <script src="${s3basepath}lib/jquery.js"></script>
+    <script src="${s3basepath}lib/jQuery.XDomainRequest.js"></script>
+    <script src="${s3basepath}lib/slip.js"></script>
+    <script src="${s3basepath}lib/angular.js"></script>
+    <script src="${s3basepath}lib/angular-translate.js"></script>
+    <script src="${s3basepath}lib/angular-translate-loader-static-files.js"></script>
+    <script src="${s3basepath}lib/d3.js"></script>
+    <script src="${s3basepath}lib/bootstrap.js"></script>
+    <script src="${s3basepath}lib/typeahead-0.9.3.js"></script>
+    <script src="${s3basepath}lib/proj4js-compressed.js"></script>
+    <script src="${s3basepath}lib/EPSG21781.js"></script>
+    <script src="${s3basepath}lib/EPSG2056.js"></script>
+    <script src="${s3basepath}lib/EPSG32631.js"></script>
+    <script src="${s3basepath}lib/EPSG32632.js"></script>
+    <script src="${s3basepath}lib/fastclick.js"></script>
+    <script src="${s3basepath}lib/localforage.js"></script>
+    <script src="${s3basepath}lib/filesaver.js"></script>
+    <script src="${s3basepath}lib/moment-with-customlocales.js"></script>
+    <script src="${s3basepath}lib/Cesium/Cesium.js"></script>
    
 
     <!-- Use Closure to load the application scripts -->
@@ -678,10 +678,10 @@ itemscope itemtype="http://schema.org/WebApplication"
     <!-- ol3cesium-debug.js includes Closure's base.js code, so we don't
          need to load base.js ourselves. We keep Closure's base.js file
          around in case we need to test with ol.js or ol-simple.js. -->
-    <!--<script src="lib/closure/base.js"></script>-->
+    <!--<script src="${s3basepath}lib/closure/base.js"></script>-->
     <!-- ol3 and ol3-cesium are built together in debug mode --> 
-    <script src="lib/ol3cesium-debug.js"></script>
-    <script src="deps.js"></script>
+    <script src="${s3basepath}lib/ol3cesium-debug.js"></script>
+    <script src="${s3basepath}deps.js"></script>
     <script>
       goog.require('geoadmin');
     </script>
@@ -709,60 +709,44 @@ itemscope itemtype="http://schema.org/WebApplication"
         $.ajaxSetup({
           cache: true
         });
-
-        var module = angular.module('geoadmin');
-        var cacheAdd = '${version}' != '' ? '/' + '${version}' : '';
-        var pathname = location.pathname.replace(/(index|mobile|embed)\.html$/g, '');
-
-        function getParam(name){
-          return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null;
+        function getParam(name) {
+          return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20')) || null;
         }
 
         var adminUrlRegexp = new RegExp('${admin_url_regexp}');
-        var wmsUrl = location.protocol + getParam('wms_url');
-        wmsUrl = adminUrlRegexp.test(wmsUrl) ? wmsUrl : location.protocol + '${wms_url}';
-        var printUrl = location.protocol + getParam('print_url');
-        printUrl = adminUrlRegexp.test(printUrl) ? printUrl : location.protocol + '${print_url}';
+        var module = angular.module('geoadmin');
+        var cacheAdd = '${version}' != '' ? '/' + '${version}' : '';
+        var pathname = location.pathname.replace(/(index|mobile|embed)\.html$/g, '');
+        var s3pathname = '${s3basepath}' == '' ? pathname : '${s3basepath}';
+        var prtl = location.protocol;
+        // Because s3 is hosted on infra
+        var supportedEnv = ['dev', 'int', 'prod', 'ci'];
+        var staging = '${staging}';
 
-        var apiParam = getParam('api_url');
-        var apiEnv = getParam('api_env');
-        var apiUrlBase = '${api_url}';
-
-        if (apiEnv){
-          if (apiEnv == 'prod'){
-            host = '//api3.geo.admin.ch';
-          } else {
-            host = '//mf-chsdi3.' + apiEnv + '.bgdi.ch';
+        // Determines if one is using custom prodUrl (for user env)
+        var userEnvRegexp = new RegExp('\/\/.*(\/[a-z]*)');
+        // Force env via parameter for testing purposes (before Varnish)
+        var env = getParam('env');
+        function setBackend(prodUrl, techUrl, overwriteParam) {
+          var url = prodUrl;
+          if (env && env != 'prod' && supportedEnv.indexOf(env) !== -1) {
+            url = techUrl + env + '${tech_suffix}';
+          } else if (staging != 'prod' && !userEnvRegexp.test(prodUrl)) {
+            url = techUrl + staging + '${tech_suffix}';
           }
-        } else {
-          host = '${api_url}';
+          var overwrite = prtl + getParam(overwriteParam);
+          url = adminUrlRegexp.test(overwrite) ? overwrite : url;
+          return url;
         }
 
-        if (host.slice(-1) == '/'){
-          host = host.slice(0, -1);
-        }
-
-        if (apiParam){
-          apiUrl = host + '/' + apiParam;
-        } else {
-          apiUrl = host;
-        }
-
-        var shopUrl = getParam('shop_url');
-        var shopUrlBase = '${shop_url}';
-
-        if (shopUrl){
-          shopUrl = shopUrl;
-          if (shopUrl == 'dev' || shopUrl == 'int'){
-            shopUrl = '//shop-bgdi.'+ shopUrl + '.bgdi.ch';
-          } else if (shopUrl == 'prod'){
-              shopUrl = '//beta.shop.swisstopo.ch';
-          } else if (shopUrl == 'puzzle'){
-              shopUrl = '//shop-shopbgdi.openshift.puzzle.ch';
-          }
-        } else {
-          shopUrl = shopUrlBase;
-        }
+        var defaultApiUrl = prtl + '${api_url}';
+        var apiUrl = setBackend(defaultApiUrl, prtl + '${api_tech_url}', 'api_url');
+        var mapproxyUrl = setBackend(prtl + '${mapproxy_url}', prtl + '${mapproxy_tech_url}', 'mapproxy_url');
+        var wmsUrl = setBackend(prtl + '${wms_url}',  prtl + '${wms_tech_url}', 'wms_url');
+        var shopUrl = setBackend(prtl + '${shop_url}', prtl + '${shop_tech_url}', 'shop_url');
+        var publicUrl = setBackend(prtl + '${public_url}', prtl + '${public_tech_url}', 'public_url');
+        var printUrl = setBackend(prtl + '${print_url}', prtl + '${print_tech_url}', 'print_url');
+        var apiOverwrite = !!(getParam('api_url') || env);
 
         module.constant('gaGlobalOptions', {
           //dev3d to be removed once 3d goes live
@@ -770,21 +754,21 @@ itemscope itemtype="http://schema.org/WebApplication"
           buildMode: '${mode}',
           version: '${version}',
           pegman: !!window.location.search.match(/(pegman=true)/),
-          mapUrl : location.origin + '${apache_base_path}',
-          apiUrl : location.protocol + apiUrl,
-          printUrl : printUrl,
-          mapproxyUrl : location.protocol + '${mapproxy_url}',
-          shopUrl : location.protocol + shopUrl,
-          publicUrl : location.protocol + '${public_url}',
+          mapUrl: location.origin + pathname,
+          apiUrl: apiUrl,
+          printUrl: printUrl,
+          mapproxyUrl: mapproxyUrl,
+          shopUrl: shopUrl,
+          publicUrl: publicUrl,
           publicUrlRegexp: new RegExp('${public_url_regexp}'),
           adminUrlRegexp: adminUrlRegexp,
-          cachedApiUrl: location.protocol + apiUrl + cacheAdd,
+          cachedApiUrl: apiUrl + cacheAdd,
           cachedPrintUrl: printUrl + cacheAdd,
-          resourceUrl: location.origin + pathname + '${versionslashed}',
-          ogcproxyUrl : location.protocol + apiUrl + '/ogcproxy?url=',
+          resourceUrl: location.origin + s3pathname + '${versionslashed}',
+          ogcproxyUrl: apiUrl + '/ogcproxy?url=',
           wmsUrl: wmsUrl,
-          w3wUrl : 'https://api.what3words.com',
-          w3wApiKey : 'OM48J50Y',
+          w3wUrl: 'https://api.what3words.com',
+          w3wApiKey: 'OM48J50Y',
           whitelist: [
             'https://' + window.location.host + '/**'
           ],
@@ -804,7 +788,7 @@ itemscope itemtype="http://schema.org/WebApplication"
 
         module.config(function($translateProvider, gaGlobalOptions) {
           $translateProvider.useStaticFilesLoader({
-            prefix: '${versionslashed}locales/',
+            prefix: '${s3basepath}${versionslashed}locales/',
             suffix: '.json'
           });
           $translateProvider.cloakClassName('ng-cloak');
@@ -822,15 +806,15 @@ itemscope itemtype="http://schema.org/WebApplication"
           gaLayersProvider.wmtsGetTileUrlTemplate = '//wmts{s}.geo.admin.ch/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{y}/{x}.{Format}';
           gaLayersProvider.wmtsMapProxyGetTileUrlTemplate =  gaGlobalOptions.mapproxyUrl + '/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{x}/{y}.{Format}';
           gaLayersProvider.terrainTileUrlTemplate = '//3d.geo.admin.ch/1.0.0/{Layer}/default/{Time}/4326';
-          if (apiEnv || apiParam){
+          if (apiOverwrite) {
             gaLayersProvider.layersConfigUrlTemplate = apiUrl + '/rest/services/all/MapServer/layersConfig?lang={Lang}';
-          } else{
-            gaLayersProvider.layersConfigUrlTemplate = gaGlobalOptions.resourceUrl + 'layersConfig?lang={Lang}';
+          } else {
+            gaLayersProvider.layersConfigUrlTemplate = gaGlobalOptions.resourceUrl + 'layersConfig.{Lang}.json';
           }
           gaLayersProvider.legendUrlTemplate = gaGlobalOptions.apiUrl + '/rest/services/all/MapServer/{Layer}/legend?lang={Lang}';
         });
         module.config(function(gaTopicProvider, gaGlobalOptions) {
-          if (apiEnv || apiParam){
+          if (apiOverwrite) {
             gaTopicProvider.topicsUrl = apiUrl + '/rest/services';
           } else {
             gaTopicProvider.topicsUrl = gaGlobalOptions.resourceUrl + 'services';

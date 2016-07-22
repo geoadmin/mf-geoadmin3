@@ -1,0 +1,8 @@
+{
+  "branch":"${git_branch}",
+  "version": "${version}",
+  "last_commit_hash": "${git_commit_hash}",
+  "last_commit_date": "${git_commit_date}",
+  "user": "${user_name}",
+  "build_date": "${build_date}"
+}

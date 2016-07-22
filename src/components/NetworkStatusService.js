@@ -78,7 +78,7 @@ goog.require('ga_waitcursor_service');
           }
           $.ajax({
             method: 'GET',
-            url: gaGlobalOptions.mapUrl + '/checker',
+            url: gaGlobalOptions.mapUrl + 'checker',
             timeout: 1000,
             success: function() {
               count = 0;

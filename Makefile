@@ -3,26 +3,37 @@ SRC_JS_FILES := $(shell find src/components src/js -type f -name '*.js')
 SRC_JS_FILES_FOR_COMPILER = $(shell sed -e ':a' -e 'N' -e '$$!ba' -e 's/\n/ --js /g' .build-artefacts/js-files | sed 's/^.*base\.js //')
 SRC_LESS_FILES := $(shell find src -type f -name '*.less')
 SRC_COMPONENTS_PARTIALS_FILES := $(shell find src/components -type f -path '*/partials/*' -name '*.html')
-PYTHON_FILES := $(shell find test/saucelabs -type f -name "*.py" -print)
+PYTHON_FILES := $(shell find scripts test/saucelabs -type f -name "*.py" -print)
 APACHE_BASE_DIRECTORY ?= $(CURDIR)
 LAST_APACHE_BASE_DIRECTORY := $(shell if [ -f .build-artefacts/last-apache-base-directory ]; then cat .build-artefacts/last-apache-base-directory 2> /dev/null; else echo '-none-'; fi)
 APACHE_BASE_PATH ?= /$(shell id -un)
 LAST_APACHE_BASE_PATH := $(shell if [ -f .build-artefacts/last-apache-base-path ]; then cat .build-artefacts/last-apache-base-path 2> /dev/null; else echo '-none-'; fi)
-API_URL ?= //mf-chsdi3.dev.bgdi.ch
+
+TECH_SUFFIX = .bgdi.ch
+VARNISH_HOSTS ?= (ip-10-220-4-250.eu-west-1.compute.internal)
+API_URL ?= //api3.geo.admin.ch
+API_TECH_URL ?= //mf-chsdi3.
 LAST_API_URL := $(shell if [ -f .build-artefacts/last-api-url ]; then cat .build-artefacts/last-api-url 2> /dev/null; else echo '-none-'; fi)
-PRINT_URL ?= //service-print.dev.bgdi.ch
+MAPPROXY_URL ?= //wmts{s}.geo.admin.ch
+MAPPROXY_TECH_URL ?= //wmts{s}.
+LAST_MAPPROXY_URL := $(shell if [ -f .build-artefacts/last-mapproxy-url ]; then cat .build-artefacts/last-mapproxy-url 2> /dev/null; else echo '-none-'; fi)
+WMS_URL ?= //wms.geo.admin.ch
+WMS_TECH_URL ?= //wms-bgdi.
+LAST_WMS_URL := $(shell if [ -f .build-artefacts/last-wms-url ]; then cat .build-artefacts/last-wms-url 2> /dev/null; else echo '-none-'; fi)
+SHOP_URL ?= //shop.swisstopo.admin.ch
+SHOP_TECH_URL ?= //shop-bgdi.
+LAST_SHOP_URL := $(shell if [ -f .build-artefacts/last-shop-url ]; then cat .build-artefacts/last-shop-url 2> /dev/null; else echo '-none-'; fi)
+PUBLIC_URL ?= //public.geo.admin.ch
+PUBLIC_TECH_URL ?= //public.
+LAST_PUBLIC_URL := $(shell if [ -f .build-artefacts/last-public-url ];  then cat .build-artefacts/last-public-url 2> /dev/null; else echo '-none-'; fi)
+PRINT_URL ?= //print.geo.admin.ch
+PRINT_TECH_URL ?= //service-print.
 LAST_PRINT_URL := $(shell if [ -f .build-artefacts/last-print-url ]; then cat .build-artefacts/last-print-url 2> /dev/null; else echo '-none-'; fi)
-PUBLIC_URL ?= //public.dev.bgdi.ch
-E2E_TARGETURL ?= https://mf-geoadmin3.dev.bgdi.ch
-APPLICATION_URL ?= $(E2E_TARGETURL)
 PUBLIC_URL_REGEXP ?= ^https?:\/\/public\..*\.(bgdi|admin)\.ch\/.*
 ADMIN_URL_REGEXP ?= ^(ftp|http|https):\/\/(.*(\.bgdi|\.geo\.admin)\.ch)
-MAPPROXY_URL ?= //wmts{s}.dev.bgdi.ch
-LAST_MAPPROXY_URL := $(shell if [ -f .build-artefacts/last-mapproxy-url ]; then cat .build-artefacts/last-mapproxy-url 2> /dev/null; else echo '-none-'; fi)
-SHOP_URL ?= //shop-bgdi.dev.bgdi.ch
-LAST_SHOP_URL := $(shell if [ -f .build-artefacts/last-shop-url ]; then cat .build-artefacts/last-shop-url 2> /dev/null; else echo '-none-'; fi)
-WMS_URL ?= //wms-bgdi.dev.bgdi.ch
-LAST_WMS_URL := $(shell if [ -f .build-artefacts/last-wms-url ]; then cat .build-artefacts/last-wms-url 2> /dev/null; else echo '-none-'; fi)
+E2E_TARGETURL ?= https://mf-geoadmin3.dev.bgdi.ch
+
+DEPLOY_TARGET ?= dev
 LESS_PARAMETERS ?= -ru
 KEEP_VERSION ?= 'false'
 LAST_VERSION := $(shell if [ -f .build-artefacts/last-version ]; then cat .build-artefacts/last-version 2> /dev/null; else echo '-none-'; fi)
@@ -32,8 +43,6 @@ GIT_LAST_BRANCH := $(shell if [ -f .build-artefacts/last-git-branch ]; then cat 
 BRANCH_TO_DELETE ?=
 DEPLOY_ROOT_DIR := /var/www/vhosts/mf-geoadmin3/private/branch
 DEPLOYCONFIG ?=
-DEPLOY_TARGET ?= 'dev'
-LAST_DEPLOY_TARGET := $(shell if [ -f .build-artefacts/last-deploy-target ]; then cat .build-artefacts/last-deploy-target 2> /dev/null; else echo '-none-'; fi)
 OL3_VERSION ?= 27853ea7dd8f4d7416ec9523b5acc2ea7bd43dc4 # a little after v3.16.0, 3 Juin 2016
 OL3_CESIUM_VERSION ?= 2ea22cfa287e6bd4a773a5d93de292c35aabf71c #v1.16, 30 mai 2016
 CESIUM_VERSION ?= d710b61029dcb66db9854f1add711e7fe296a55e # camptocamp/c2c_patches (cesium 1.21), 1 mai 2016
@@ -41,6 +50,7 @@ DEFAULT_TOPIC_ID ?= ech
 TRANSLATION_FALLBACK_CODE ?= de
 LANGUAGES ?= '[\"de\", \"en\", \"fr\", \"it\", \"rm\"]'
 LANGS ?= de fr it rm en
+HTMLFILES ?= index mobile embed
 TRANSLATE_GSPREAD_KEYS ?= 1F3R46w4PODfsbJq7jd79sapy3B7TXhQcYM7SEaccOA0
 TRANSLATE_CSV_FILES ?= "https://docs.google.com/spreadsheets/d/1F3R46w4PODfsbJq7jd79sapy3B7TXhQcYM7SEaccOA0/export?format=csv&gid=0"
 TRANSLATE_EMPTY_JSON ?= src/locales/empty.json
@@ -56,6 +66,17 @@ DEFAULT_ELEVATION_MODEL ?= COMB
 DEFAULT_TERRAIN ?= ch.swisstopo.terrain.3d
 SAUCELABS_TESTS ?=
 USER_SOURCE ?= rc_user
+USER_NAME ?= $(shell id -un)
+GIT_COMMIT_HASH ?= $(shell git rev-parse --verify HEAD)
+GIT_COMMIT_DATE ?= $(shell git log -1  --date=iso --pretty=format:%cd)
+CURRENT_DATE ?= $(shell date -u +"%Y-%m-%d %H:%M:%S %z")
+DEPLOY_GIT_BRANCH ?= master
+S3_VERSION_PATH ?=
+S3_MF_GEOADMIN3_INFRA = mf-geoadmin3-infra-dublin
+S3_BASE_PATH ?=
+S3_SRC_BASE_PATH ?=
+CLONEDIR = /home/$(USER_NAME)/tmp/branches/${DEPLOY_GIT_BRANCH}
+
 
 ## Python interpreter can't have space in path name
 ## So prepend all python scripts with python cmd
@@ -93,13 +114,17 @@ help:
 	@echo "- clean              Remove generated files"
 	@echo "- cleanall           Remove all the build artefacts"
 	@echo "- deploydev          Deploys current github master to dev. Specify SNAPSHOT=true to create snapshot as well."
-	@echo "- deployint          Deploys snapshot specified with SNAPSHOT=xxx to int."
-	@echo "- deployprod         Deploys snapshot specified with SNAPSHOT=xxx to prod."
-	@echo "- deploydemo         Deploys snapshot specified with SNAPSHOT=xxx to demo."
-	@echo "- deletebranch       List deployed branches or delete a deployed branch (BRANCH_TO_DELETE=...)"
-	@echo "- deploybranch       Deploys current branch to test (note: takes code from github)"
-	@echo "- deploybranchint    Deploys current branch to test and int (note: takes code from github)"
-	@echo "- deploybranchdemo   Deploys current branch to test and demo (note: takes code from github)"
+	@echo "- s3deploybranch     Build a branch and deploy it to S3 int (usage: make s3deploybranch DEPLOY_GIT_BRANCH=branch_to_deploy)"
+	@echo "- s3deployint        Deploys a snapshot specified with SNAPSHOT=xxx to s3 int."
+	@echo "- s3deployprod       Deploys a snapshot specified with SNAPSHOT=xxx to s3 prod."
+	@echo "- s3activateint      Activate a version at the root of a remote bucket. (usage: make s3activateint S3_VERSION_PATH=<branch>/<sha>/<version>)"
+	@echo "- s3activateprod     Activate a version at the root of a remote bucket. (usage: make s3activateprod S3_VERSION_PATH=<branch>/<sha>/<version>)"
+	@echo "- s3listint          List availables branches, revision and build on int bucket."
+	@echo "- s3listprod         List availables branches, revision and build on prod bucket."
+	@echo "- s3infoint          Get version info on remote int bucket. (usage: make s3info S3_VERSION_PATH=<branch>/<sha>/<version>)"
+	@echo "- s3infoprod         Get version info on remote prod bucket. (usage: make s3info S3_VERSION_PATH=<branch>/<sha>/<version>)"
+	@echo "- s3deleteint        Delete a project version in a remote int bucket. (usage: make s3delete S3_VERSION_PATH=<branch>/<sha>/<version>)"
+	@echo "- s3deleteprod       Delete a project version in a remote prod bucket. (usage: make s3delete S3_VERSION_PATH=<branch>/<sha>/<version>)"
 	@echo "- ol3cesium          Update ol3cesium.js, ol3cesium-debug.js, Cesium.min.js and Cesium folder"
 	@echo "- libs               Update js librairies used in index.html, see npm packages defined in section 'dependencies' of package.json"
 	@echo "- translate          Generate the translation files (requires db user pwd in ~/.pgpass: dbServer:dbPort:*:dbUser:dbUserPwd)"
@@ -107,7 +132,6 @@ help:
 	@echo
 	@echo "Variables:"
 	@echo
-	@echo "- DEPLOY_TARGET Deploy target (build with: $(LAST_DEPLOY_TARGET), current value: $(DEPLOY_TARGET))"
 	@echo "- API_URL Service URL         (build with: $(LAST_API_URL), current value: $(API_URL))"
 	@echo "- PRINT_URL Print service URL (build with: $(LAST_PRINT_URL), current value: $(PRINT_URL))"
 	@echo "- MAPPROXY_URL Service URL    (build with: $(LAST_MAPPROXY_URL), current value: $(MAPPROXY_URL))"
@@ -115,6 +139,12 @@ help:
 	@echo "- WMS_URL Service URL         (build with  $(LAST_WMS_URL), current value: $(WMS_URL))"
 	@echo "- APACHE_BASE_PATH Base path  (build with: $(LAST_APACHE_BASE_PATH), current value: $(APACHE_BASE_PATH))"
 	@echo "- APACHE_BASE_DIRECTORY       (build with: $(LAST_APACHE_BASE_DIRECTORY), current value: $(APACHE_BASE_DIRECTORY))"
+	@echo "- SNAPSHOT                    (current value: $(SNAPSHOT))"
+	@echo "- GIT_BRANCH                  (current value: $(GIT_BRANCH))"
+	@echo "- GIT_COMMIT_HASH             (current value: $(GIT_COMMIT_HASH))"
+	@echo "- VERSION                     (build with: $(LAST_VERSION), current value: $(VERSION))"
+	@echo "- S3_MF_GEOADMIN3_INT         (current value: $(S3_MF_GEOADMIN3_INT))"
+	@echo "- S3_MF_GEOADMIN3_PROD        (current value: $(S3_MF_GEOADMIN3_PROD))"
 
 	@echo
 
@@ -123,7 +153,7 @@ user:
 	source $(USER_SOURCE) && make all
 
 .PHONY: all
-all: lint debug release apache testdebug testrelease deploy/deploy-branch.cfg fixrights
+all: lint debug release apache testdebug testrelease fixrights
 
 .PHONY: release
 release: .build-artefacts/devlibs \
@@ -139,7 +169,9 @@ release: .build-artefacts/devlibs \
 	prd/locales/ \
 	prd/checker \
 	prd/cache/ \
-	prd/robots.txt
+	prd/info.json \
+	prd/robots.txt \
+	prd/robots_prod.txt
 
 .PHONY: debug
 debug: .build-artefacts/devlibs src/deps.js src/style/app.css src/index.html src/mobile.html src/embed.html
@@ -186,45 +218,50 @@ deploydev:
 		./scripts/deploydev.sh; \
 	fi
 
-.PHONY: deploydemo
-deploydemo: guard-SNAPSHOT
-	./scripts/deploysnapshot.sh $(SNAPSHOT) demo
-
-.PHONY: deployint
-deployint: guard-SNAPSHOT
+.PHONY: s3deployint
+s3deployint: guard-SNAPSHOT
 	./scripts/deploysnapshot.sh $(SNAPSHOT) int $(DEPLOYCONFIG)
 
-.PHONY: deployprod
-deployprod: guard-SNAPSHOT
+.PHONY: s3deployprod
+s3deployprod: guard-SNAPSHOT
 	./scripts/deploysnapshot.sh $(SNAPSHOT) prod $(DEPLOYCONFIG)
 
-.PHONY: deploybranch
-deploybranch: deploy/deploy-branch.cfg $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH)/.git/config
-	cd $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH); \
-	git checkout master; \
-	git branch -D $(GIT_BRANCH); \
-	git pull; \
-	git checkout $(GIT_BRANCH); \
-	make preparebranch; \
-	cp scripts/00-$(GIT_BRANCH).conf /var/www/vhosts/mf-geoadmin3/conf; \
-	bash -c "source rc_branch && make cleanall all";
+.PHONY: s3deploybranch
+s3deploybranch: guard-CLONEDIR guard-DEPLOY_GIT_BRANCH
+	./scripts/clonebuild.sh ${CLONEDIR} ${DEPLOY_GIT_BRANCH} int || (echo "Cloning and building failed $$?"; exit 1);
+	${PYTHON_CMD} ./scripts/s3manage.py upload ${CLONEDIR}/mf-geoadmin3 int;
 
-.PHONY: deletebranch
-deletebranch:
-	./scripts/delete_branch.sh $(BRANCH_TO_DELETE)
+.PHONY: s3listint
+s3listint: .build-artefacts/requirements.timestamp
+	${PYTHON_CMD} ./scripts/s3manage.py list int;
 
-.PHONY: deploybranchint
-deploybranchint: deploybranch
-	cd $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH); \
-	sudo -u deploy deploy -r deploy/deploy-branch.cfg int;
+.PHONY: s3listprod
+s3listprod: .build-artefacts/requirements.timestamp
+	${PYTHON_CMD} ./scripts/s3manage.py list prod;
 
-.PHONY: deploybranchdemo
-deploybranchdemo: deploybranch
-	cd $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH); \
-	sudo -u deploy deploy -r deploy/deploy-branch.cfg demo;
+.PHONY: s3infoint
+s3infoint: guard-S3_VERSION_PATH .build-artefacts/requirements.timestamp
+	${PYTHON_CMD} ./scripts/s3manage.py info ${S3_VERSION_PATH} int;
 
-.PHONY: preparebranch
-preparebranch: rc_branch scripts/00-$(GIT_BRANCH).conf
+.PHONY: s3infoprod
+s3infoprod: guard-S3_VERSION_PATH .build-artefacts/requirements.timestamp
+	${PYTHON_CMD} ./scripts/s3manage.py info ${S3_VERSION_PATH} prod;
+
+.PHONY: s3activateint
+s3activateint: guard-S3_VERSION_PATH .build-artefacts/requirements.timestamp
+	${PYTHON_CMD} ./scripts/s3manage.py activate ${S3_VERSION_PATH} int;
+
+.PHONY: s3activateprod
+s3activateprod: guard-S3_VERSION_PATH .build-artefacts/requirements.timestamp
+	${PYTHON_CMD} ./scripts/s3manage.py activate ${S3_VERSION_PATH} prod;
+
+.PHONY: s3deleteint
+s3deleteint: guard-S3_VERSION_PATH .build-artefacts/requirements.timestamp
+	${PYTHON_CMD} ./scripts/s3manage.py delete ${S3_VERSION_PATH} int;
+
+.PHONY: s3deleteprod
+s3deleteprod: guard-S3_VERSION_PATH .build-artefacts/requirements.timestamp
+	${PYTHON_CMD} ./scripts/s3manage.py delete ${S3_VERSION_PATH} prod;
 
 .PHONY: ol3cesium
 ol3cesium: .build-artefacts/ol3-cesium
@@ -300,10 +337,17 @@ guard-%:
 	  exit 1; \
 	fi
 
-prd/robots.txt: scripts/robots.mako-dot-txt .build-artefacts/last-deploy-target
+prd/robots.txt: scripts/robots.mako-dot-txt .build-artefacts/last-version
 	mkdir -p $(dir $@)
 	${PYTHON_CMD} ${MAKO_CMD} \
-	    --var "deploy_target=$(DEPLOY_TARGET)" $< > $@
+	    --var "version=$(VERSION)" \
+	    --var "deploy_target=dev" $< > $@
+
+prd/robots_prod.txt: scripts/robots.mako-dot-txt .build-artefacts/last-version
+	mkdir -p $(dir $@)
+	${PYTHON_CMD} ${MAKO_CMD} \
+	    --var "version=$(VERSION)" \
+	    --var "deploy_target=prod" $< > $@
 
 prd/lib/: src/lib/d3.min.js \
 	    src/lib/bootstrap-datetimepicker.min.js  \
@@ -353,6 +397,7 @@ prd/geoadmin.appcache: src/geoadmin.mako.appcache \
 	    --var "languages=$(LANGUAGES)" \
 	    --var "api_url=$(API_URL)" \
 	    --var "print_url=$(PRINT_URL)" \
+	    --var "s3basepath=$(S3_BASE_PATH)" \
 	    --var "public_url=$(PUBLIC_URL)" $< > $@
 	mv $@ prd/geoadmin.$(VERSION).appcache
 
@@ -360,7 +405,16 @@ prd/cache/: .build-artefacts/last-version \
 			.build-artefacts/last-api-url
 	mkdir -p $@
 	curl -q -o prd/cache/services http:$(API_URL)/rest/services
-	$(foreach lang, $(LANGS), curl -s --retry 3 -o prd/cache/layersConfig.$(lang) http:$(API_URL)/rest/services/all/MapServer/layersConfig?lang=$(lang);)
+	$(foreach lang, $(LANGS), curl -s --retry 3 -o prd/cache/layersConfig.$(lang).json http:$(API_URL)/rest/services/all/MapServer/layersConfig?lang=$(lang);)
+
+prd/info.json: src/info.mako.json
+	${PYTHON_CMD} ${MAKO_CMD} \
+		--var "version=$(VERSION)" \
+		--var "user_name=$(USER_NAME)" \
+		--var "git_branch=$(GIT_BRANCH)" \
+		--var "git_commit_date=$(GIT_COMMIT_DATE)" \
+		--var "git_commit_hash=$(GIT_COMMIT_HASH)" \
+		--var "build_date=$(CURRENT_DATE)"  $< > $@
 
 define buildpage
 	${PYTHON_CMD} ${MAKO_CMD} \
@@ -368,13 +422,21 @@ define buildpage
 		--var "mode=$2" \
 		--var "version=$3" \
 		--var "versionslashed=$4" \
+		--var "s3basepath"="$5" \
 		--var "apache_base_path=$(APACHE_BASE_PATH)" \
+		--var "tech_suffix=$(TECH_SUFFIX)" \
 		--var "api_url=$(API_URL)" \
-		--var "application_url=$(APPLICATION_URL)" \
+		--var "api_tech_url=$(API_TECH_URL)" \
 		--var "print_url=$(PRINT_URL)" \
+		--var "print_tech_url=$(PRINT_TECH_URL)" \
 		--var "mapproxy_url=$(MAPPROXY_URL)" \
+		--var "mapproxy_tech_url=$(MAPPROXY_TECH_URL)" \
+		--var "public_url=$(PUBLIC_URL)" \
+		--var "public_tech_url=$(PUBLIC_TECH_URL)" \
 		--var "shop_url=$(SHOP_URL)" \
+		--var "shop_tech_url=$(SHOP_TECH_URL)" \
 		--var "wms_url=$(WMS_URL)" \
+		--var "wms_tech_url=$(WMS_TECH_URL)" \
 		--var "default_topic_id=$(DEFAULT_TOPIC_ID)" \
 		--var "translation_fallback_code=$(TRANSLATION_FALLBACK_CODE)" \
 		--var "languages=$(LANGUAGES)" \
@@ -412,10 +474,11 @@ prd/index.html: src/index.mako.html \
 	    .build-artefacts/last-mapproxy-url \
 	    .build-artefacts/last-shop-url \
 	    .build-artefacts/last-wms-url \
+	    .build-artefacts/last-public-url \
 	    .build-artefacts/last-apache-base-path \
 	    .build-artefacts/last-version
 	mkdir -p $(dir $@)
-	$(call buildpage,desktop,prod,$(VERSION),$(VERSION)/)
+	$(call buildpage,desktop,prod,$(VERSION),$(VERSION)/,$(S3_BASE_PATH))
 	${PYTHON_CMD} ${HTMLMIN_CMD} --remove-comments --keep-optional-attribute-quotes $@ $@
 
 prd/mobile.html: src/index.mako.html \
@@ -425,10 +488,11 @@ prd/mobile.html: src/index.mako.html \
 	    .build-artefacts/last-mapproxy-url \
 	    .build-artefacts/last-shop-url \
 	    .build-artefacts/last-wms-url \
+	    .build-artefacts/last-public-url \
 	    .build-artefacts/last-apache-base-path \
 	    .build-artefacts/last-version
 	mkdir -p $(dir $@)
-	$(call buildpage,mobile,prod,$(VERSION),$(VERSION)/)
+	$(call buildpage,mobile,prod,$(VERSION),$(VERSION)/,$(S3_BASE_PATH))
 	${PYTHON_CMD} ${HTMLMIN_CMD} --remove-comments --keep-optional-attribute-quotes $@ $@
 
 prd/embed.html: src/index.mako.html \
@@ -438,10 +502,11 @@ prd/embed.html: src/index.mako.html \
 	    .build-artefacts/last-mapproxy-url \
 	    .build-artefacts/last-shop-url \
 	    .build-artefacts/last-wms-url \
+	    .build-artefacts/last-public-url \
 	    .build-artefacts/last-apache-base-path \
 	    .build-artefacts/last-version
 	mkdir -p $(dir $@)
-	$(call buildpage,embed,prod,$(VERSION),$(VERSION)/)
+	$(call buildpage,embed,prod,$(VERSION),$(VERSION)/,$(S3_BASE_PATH))
 	${PYTHON_CMD} ${HTMLMIN_CMD} --remove-comments --keep-optional-attribute-quotes $@ $@
 
 prd/img/: src/img/*
@@ -475,8 +540,9 @@ src/index.html: src/index.mako.html \
 	    .build-artefacts/last-mapproxy-url \
 	    .build-artefacts/last-shop-url \
 	    .build-artefacts/last-wms-url \
+	    .build-artefacts/last-public-url \
 	    .build-artefacts/last-apache-base-path
-	$(call buildpage,desktop,,,)
+	$(call buildpage,desktop,,,,$(S3_SRC_BASE_PATH))
 
 src/mobile.html: src/index.mako.html \
 	    ${MAKO_CMD} \
@@ -484,8 +550,9 @@ src/mobile.html: src/index.mako.html \
 	    .build-artefacts/last-mapproxy-url \
 	    .build-artefacts/last-shop-url \
 	    .build-artefacts/last-wms-url \
+	    .build-artefacts/last-public-url \
 	    .build-artefacts/last-apache-base-path
-	$(call buildpage,mobile,,,)
+	$(call buildpage,mobile,,,,$(S3_SRC_BASE_PATH))
 
 src/embed.html: src/index.mako.html \
 	    ${MAKO_CMD} \
@@ -493,8 +560,9 @@ src/embed.html: src/index.mako.html \
 	    .build-artefacts/last-mapproxy-url \
 	    .build-artefacts/last-shop-url \
 	    .build-artefacts/last-wms-url \
+	    .build-artefacts/last-public-url \
 	    .build-artefacts/last-apache-base-path
-	$(call buildpage,embed,,,)
+	$(call buildpage,embed,,,,$(S3_SRC_BASE_PATH))
 
 src/TemplateCacheModule.js: src/TemplateCacheModule.mako.js \
 	    $(SRC_COMPONENTS_PARTIALS_FILES) \
@@ -625,30 +693,6 @@ ${PYTHON_VENV}:
 	mkdir -p .build-artefacts
 	virtualenv --no-site-packages $@
 
-$(DEPLOY_ROOT_DIR)/$(GIT_BRANCH)/.git/config:
-	rm -rf $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH)
-	git clone https://github.com/geoadmin/mf-geoadmin3 $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH)
-
-deploy/deploy-branch.cfg: deploy/deploy-branch.mako.cfg \
-	    .build-artefacts/last-git-branch \
-	    ${MAKO_CMD}
-	${PYTHON_CMD} ${MAKO_CMD} \
-	    --var "git_branch=$(GIT_BRANCH)" $< > $@
-
-rc_branch: rc_branch.mako \
-	    .build-artefacts/last-git-branch \
-	    .build-artefacts/last-deploy-target \
-	    ${MAKO_CMD}
-	${PYTHON_CMD} ${MAKO_CMD} \
-	    --var "deploy_target=$(DEPLOY_TARGET)" \
-	    --var "apache_base_path=$(GIT_BRANCH)" $< > $@
-
-scripts/00-$(GIT_BRANCH).conf: scripts/00-branch.mako-dot-conf \
-	    .build-artefacts/last-git-branch \
-	    ${MAKO_CMD}
-	${PYTHON_CMD} ${MAKO_CMD} \
-	    --var "git_branch=$(GIT_BRANCH)" $< > $@
-
 .build-artefacts/last-version::
 	mkdir -p $(dir $@)
 	test "$(VERSION)" != "$(LAST_VERSION)" && echo $(VERSION) > .build-artefacts/last-version || :
@@ -673,20 +717,24 @@ scripts/00-$(GIT_BRANCH).conf: scripts/00-branch.mako-dot-conf \
 	mkdir -p $(dir $@)
 	test "$(WMS_URL)" != "$(LAST_WMS_URL)" && echo $(WMS_URL) > .build-artefacts/last-wms-url || :
 
+.build-artefacts/last-public-url::
+	mkdir -p $(dir $@)
+	test "$(PUBLIC_URL)" != "$(LAST_PUBLIC_URL)" && echo $(PUBLIC_URL) > .build-artefacts/last-public-url || :
+
 .build-artefacts/last-apache-base-path::
 	mkdir -p $(dir $@)
 	test "$(APACHE_BASE_PATH)" != "$(LAST_APACHE_BASE_PATH)" && \
 	    echo $(APACHE_BASE_PATH) > .build-artefacts/last-apache-base-path || :
 
+.build-artefacts/last-deploy-target::
+	mkdir -p $(dir $@)
+	test "$(DEPLOY_TARGET)" != "$(LAST_DEPLOY_TARGET)" && \
+	     echo $(DEPLOY_TARGET) > .build-artefacts/last-deploy-target || :
+
 .build-artefacts/last-apache-base-directory::
 	mkdir -p $(dir $@)
 	test "$(APACHE_BASE_DIRECTORY)" != "$(LAST_APACHE_BASE_DIRECTORY)" && \
 	    echo "$(APACHE_BASE_DIRECTORY)" > .build-artefacts/last-apache-base-directory || :
-
-.build-artefacts/last-deploy-target::
-	mkdir -p $(dir $@)
-	test "$(DEPLOY_TARGET)" != "$(LAST_DEPLOY_TARGET)" && \
-	    echo $(DEPLOY_TARGET) > .build-artefacts/last-deploy-target || :
 
 .build-artefacts/ol3-cesium:
 	git clone --recursive https://github.com/openlayers/ol3-cesium.git $@
@@ -713,7 +761,6 @@ scripts/00-$(GIT_BRANCH).conf: scripts/00-branch.mako-dot-conf \
 cleanall: clean
 	rm -rf node_modules
 	rm -rf .build-artefacts
-
 
 .PHONY: clean
 clean:
