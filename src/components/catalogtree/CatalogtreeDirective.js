@@ -1,6 +1,5 @@
 goog.provide('ga_catalogtree_directive');
 
-goog.require('ga_catalogtree_service');
 goog.require('ga_map_service');
 goog.require('ga_permalink');
 goog.require('ga_topic_service');
@@ -8,10 +7,8 @@ goog.require('ga_translation_service');
 (function() {
 
   var module = angular.module('ga_catalogtree_directive', [
-    'ga_catalogtree_service',
     'ga_map_service',
     'ga_permalink',
-    'pascalprecht.translate',
     'ga_topic_service',
     'ga_translation_service'
   ]);
@@ -20,8 +17,8 @@ goog.require('ga_translation_service');
    * See examples on how it can be used
    */
   module.directive('gaCatalogtree',
-      function($http, $q, $translate, $rootScope, gaPermalink, gaMapUtils,
-          gaCatalogtreeMapUtils, gaLayers, gaLayerFilters, gaTopic, gaLang) {
+      function($http, $q, $rootScope, gaPermalink, gaLayerFilters, gaTopic,
+          gaLang) {
 
         return {
           restrict: 'A',

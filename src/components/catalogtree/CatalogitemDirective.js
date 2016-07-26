@@ -2,16 +2,15 @@ goog.provide('ga_catalogitem_directive');
 
 goog.require('ga_browsersniffer_service');
 goog.require('ga_catalogtree_directive');
-goog.require('ga_catalogtree_service');
 goog.require('ga_layermetadatapopup_service');
 goog.require('ga_map_service');
 goog.require('ga_previewlayers_service');
+
 (function() {
 
   var module = angular.module('ga_catalogitem_directive', [
     'ga_browsersniffer_service',
     'ga_catalogtree_directive',
-    'ga_catalogtree_service',
     'ga_layermetadatapopup_service',
     'ga_map_service',
     'ga_previewlayers_service'
@@ -21,8 +20,17 @@ goog.require('ga_previewlayers_service');
    * See examples on how it can be used
    */
   module.directive('gaCatalogitem',
-      function($compile, gaCatalogtreeMapUtils, gaMapUtils,
-          gaLayerMetadataPopup, gaBrowserSniffer, gaPreviewLayers) {
+      function($compile, gaMapUtils, gaLayerMetadataPopup, gaBrowserSniffer,
+          gaPreviewLayers, gaLayers) {
+
+        var addBodLayer = function(map, layerBodId) {
+          if (gaLayers.getLayer(layerBodId)) {
+            var layer = gaLayers.getOlLayerById(layerBodId);
+            if (layer) {
+              map.addLayer(layer);
+            }
+          }
+        };
 
         // Don't add preview layer if the layer is already on the map
         var addPreviewLayer = function(map, item) {
@@ -67,7 +75,7 @@ goog.require('ga_previewlayers_service');
                   // Add it if it's not already on the map
                   if (!layer) {
                     removePreviewLayer($scope.map);
-                    gaCatalogtreeMapUtils.addLayer($scope.map, $scope.item);
+                    addBodLayer($scope.map, $scope.item.layerBodId);
                   }
                 }
               } else { //getter called
