@@ -13,8 +13,8 @@ goog.require('ga_previewfeatures_service');
   ]);
 
   module.provider('gaPermalinkFeaturesManager', function() {
-    this.$get = function($rootScope, gaPermalink, gaLayers,
-        gaPreviewFeatures, gaMapUtils) {
+    this.$get = function($rootScope, gaPermalink, gaLayers, gaPreviewFeatures,
+        gaMapUtils) {
       var queryParams = gaPermalink.getParams();
       var layersParamValue = queryParams.layers;
       var layerSpecs = layersParamValue ? layersParamValue.split(',') : [];
