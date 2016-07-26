@@ -2,6 +2,15 @@ describe('ga_popup_directive', function() {
   var element;
 
   beforeEach(function() {
+     
+    module(function($provide) {
+      $provide.value('gaLang', {
+        get: function() {
+          return 'fr';
+        }
+      });
+    });
+    
     element = angular.element(
         '<div ga-popup="popupShown" ga-popup-options="{title:\'Title popup\'}"></div>');
     inject(function($rootScope, $compile) {

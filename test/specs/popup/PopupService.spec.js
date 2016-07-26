@@ -1,20 +1,28 @@
 describe('ga_popup_service', function() {
   var popup, rootScope;
 
-  beforeEach(inject(function($rootScope) {
+  beforeEach(function() {
     var gaPopup;
+    
+    module(function($provide) {
+      $provide.value('gaLang', {
+        get: function() {
+          return 'fr';
+        }
+      });
+    });
 
     inject(function($injector) {
       gaPopup = $injector.get('gaPopup');
+      rootScope = $injector.get('$rootScope');
     });
     
     popup = gaPopup.create({
       className: 'custom-class',
       content: '<div> content </div>'
     });
-    rootScope = $rootScope;
     rootScope.$digest();
-  }));
+  });
   
   it('creates a popup with a content', function() {
     expect(popup.scope).not.to.be(null);

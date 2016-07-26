@@ -46,7 +46,7 @@ goog.require('ga_help_service');
     };
   });
 
-  module.directive('gaHelpAction', function($rootScope, $sce, gaHelpService,
+  module.directive('gaHelpAction', function($rootScope, $sce, gaHelp,
       gaPopup) {
     var popupContent = '<div class="ga-help-content" ' +
                             'ng-repeat="res in options.results">' +
@@ -112,7 +112,7 @@ goog.require('ga_help_service');
                 resCount++;
               };
               for (i = 0; i < len; i++) {
-                gaHelpService.get(ids[i]).then(function(res) {
+                gaHelp.get(ids[i]).then(function(res) {
                   results.push([
                     $sce.trustAsHtml(res.rows[0][1]),
                     $sce.trustAsHtml(res.rows[0][2]),
