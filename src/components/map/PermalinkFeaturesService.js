@@ -52,6 +52,7 @@ goog.require('ga_previewfeatures_service');
             featureIdsCount = 0;
           };
 
+          // only use by SEO directive
           $rootScope.$broadcast('gaPermalinkFeaturesAdd', {
             featureIdsByBodId: featureIdsByBodId,
             count: featureIdsCount
