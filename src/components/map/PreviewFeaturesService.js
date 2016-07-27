@@ -16,21 +16,21 @@ goog.require('ga_styles_service');
    * Used by Tooltip, FeatureTree, Search and Permalink.
    */
   module.provider('gaPreviewFeatures', function() {
-    var MINIMAL_EXTENT_SIZE = 1965;
-    var highlightedFeature, onClear, listenerKeyRemove, listenerKeyAdd;
-    var geojson = new ol.format.GeoJSON();
-    var source = new ol.source.Vector();
-    var vector = new ol.layer.Vector({
-      source: source
-    });
 
-    this.$get = function($rootScope, $q, $http, gaDefinePropertiesForLayer,
-        gaStyleFactory, gaMapUtils) {
+    this.$get = function($q, $http, gaDefinePropertiesForLayer, gaStyleFactory,
+        gaMapUtils) {
+      var MINIMAL_EXTENT_SIZE = 1965;
+      var highlightedFeature, onClear, listenerKeyRemove;
       var url = this.url;
       var selectStyle = gaStyleFactory.getStyle('select');
       var highlightStyle = gaStyleFactory.getStyle('highlight');
+      var geojson = new ol.format.GeoJSON();
 
       // Define layer default properties
+      var source = new ol.source.Vector();
+      var vector = new ol.layer.Vector({
+        source: source
+      });
       gaDefinePropertiesForLayer(vector);
       vector.preview = true;
       vector.displayInLayerManager = false;
@@ -40,12 +40,10 @@ goog.require('ga_styles_service');
       var getFeatures = function(featureIdsByBodId) {
         var promises = [];
         angular.forEach(featureIdsByBodId, function(featureIds, bodId) {
-          Array.prototype.push.apply(promises, $.map(featureIds,
-              function(featureId) {
-                return $http.get(url + bodId + '/' +
-                  featureId + '?geometryFormat=geojson');
-              }
-          ));
+          featureIds.forEach(function(id) {
+            var reqUrl = url + bodId + '/' + id + '?geometryFormat=geojson';
+            promises.push($http.get(reqUrl, {cache: true}));
+          });
         });
         return $q.all(promises);
       };
@@ -77,7 +75,6 @@ goog.require('ga_styles_service');
       var updateLayer = function(map) {
         if (source.getFeatures().length == 0) {
           ol.Observable.unByKey(listenerKeyRemove);
-          ol.Observable.unByKey(listenerKeyAdd);
           map.removeLayer(vector);
         } else if (map.getLayers().getArray().indexOf(vector) == -1) {
           map.addLayer(vector);
@@ -86,6 +83,7 @@ goog.require('ga_styles_service');
           // corresponding layer is removed.
           listenerKeyRemove = map.getLayers().on('remove', function(event) {
             removeFromLayer(event.element);
+            updateLayer(map);
           });
         }
       };
@@ -104,10 +102,10 @@ goog.require('ga_styles_service');
         // clear function.
         this.addBodFeatures = function(map, featureIdsByBodId, onNextClear) {
           var defer = $q.defer();
-          var features = [];
           this.clear(map);
           var that = this;
           getFeatures(featureIdsByBodId).then(function(results) {
+            var features = [];
             angular.forEach(results, function(result) {
               result.data.feature.properties.layerId =
                   result.data.feature.layerBodId;
