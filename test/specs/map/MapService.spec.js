@@ -186,55 +186,230 @@ describe('ga_map_service', function() {
   });
 
   describe('gaDefinePropertiesForLayer', function() {
-    var gaDefine;
+    var gaDefine, layer;
 
-    var addLayerToMap = function() {
-      var layer = new ol.layer.Tile();
-      map.addLayer(layer);
-      return layer;
+    var expectLinkedToLayer = function(olLayer, prop) {
+      olLayer.set(prop, 'test');
+      expect(olLayer[prop]).to.be('test');
+      olLayer[prop] = 'test2';
+      expect(olLayer.get(prop)).to.be('test2');
     };
 
     beforeEach(function() {
-      map = new ol.Map({});
 
       inject(function($injector) {
         gaDefine = $injector.get('gaDefinePropertiesForLayer');
       });
 
-      it('verifies default value and writablity of propertiesi added', function() {
-        var layer = addLayerToMap();
-        var userVisible = layer.getVisible();
+      layer = new ol.layer.Tile();
+    });
+
+    it('verifies properties linked to a layer\'s property', function() {
+      gaDefine(layer);
+
+      var properties = [
+        'bodId',
+        'label',
+        'url',
+        'type',
+        'altitudeMode',
+        'timeEnabled',
+        'timestamps',
+        'altitudeMode'
+      ];
+
+      properties.forEach(function(prop) {
+        expect(layer[prop]).to.be(layer.get(prop));
+        expectLinkedToLayer(layer, prop);
+      });
+    });
+
+    it('verifies writability and default values of properties added', function() {
+      // Use for test of userVisible property
+      layer.setVisible(false);
+      gaDefine(layer);
+
+      var properties = [
+        'altitudeMode',
+        'background',
+        'displayInLayerManager',
+        'useThirdPartyData',
+        'preview',
+        'geojsonUrl',
+        'updateDelay',
+        'userVisible'
+      ];
+
+      var dfltValues = [
+        'clampToGround',
+        false,
+        true,
+        false,
+        false,
+        null,
+        null,
+        layer.getVisible()
+      ];
+
+      properties.forEach(function(prop, i) {
+        expect(layer[prop]).to.be(dfltValues[i]);
+        layer[prop] = 'test';
+        expect(layer[prop]).to.be('test');
+      });
+    });
+
+    it('verifies visible property', function() {
+      var prop = 'visible';
+      gaDefine(layer);
+
+      expect(layer[prop]).to.be(layer.userVisible);
+
+      layer[prop] = true;
+      layer.hiddenByOther = false;
+      expect(layer.visible).to.be(layer.getVisible());
+
+      layer[prop] = false;
+      layer.hiddenByOther = true;
+      expect(layer.visible).to.be(layer.getVisible());
+
+      layer[prop] = true;
+      layer.hiddenByOther = true;
+      expect(layer.visible).to.be(!layer.getVisible());
+
+      layer[prop] = false;
+      layer.hiddenByOther = false;
+      expect(layer.visible).to.be(layer.getVisible());
+    });
+
+    it('verifies hiddenByOther property', function() {
+      var prop = 'hiddenByOther';
+      gaDefine(layer);
+
+      expect(layer[prop]).to.be(layer.get(prop));
+      expectLinkedToLayer(layer, prop);
+
+      layer.userVisible = false;
+      layer[prop] = false;
+      expect(layer.visible).to.be(false);
+      expect(layer.getVisible()).to.be(false);
+
+      layer.userVisible = true;
+      layer[prop] = false;
+      expect(layer.visible).to.be(true);
+      expect(layer.getVisible()).to.be(true);
+
+      layer.userVisible = false;
+      layer[prop] = true;
+      expect(layer.visible).to.be(false);
+      expect(layer.getVisible()).to.be(false);
+
+      layer.userVisible = true;
+      layer[prop] = true;
+      expect(layer.visible).to.be(true);
+      expect(layer.getVisible()).to.be(false);
+    });
+
+    it('verifies invertedOpacity property', function() {
+      var prop = 'invertedOpacity';
+      gaDefine(layer);
+
+      expect(layer.getOpacity()).to.be.a('number');
+      expect(layer.getOpacity()).to.be(1);
+      expect(layer[prop]).to.be.a('string');
+      expect(layer[prop]).to.be('0');
+
+      layer.setOpacity(0.2);
+      expect(layer[prop]).to.be.a('string');
+      expect(layer[prop]).to.be('0.8');
+
+      layer.invertedOpacity = '0.3';
+      expect(layer.getOpacity()).to.be.a('number');
+      expect(layer.getOpacity()).to.be(0.7);
+    });
+
+    it('verifies id property', function() {
+      var prop = 'id';
+      gaDefine(layer);
+      layer.bodId = 'bodId';
+      expect(layer.get(prop)).to.be(undefined);
+      expect(layer[prop]).to.be('bodId');
+      expectLinkedToLayer(layer, prop);
+    });
+
+    it('verifies adminId property', function() {
+      var prop = 'adminId';
+      gaDefine(layer);
+      layer.bodId = 'bodId';
+      expect(layer.get(prop)).to.be(undefined);
+      expect(layer[prop]).to.be('bodId');
+      expectLinkedToLayer(layer, prop);
+    });
+
+    it('verifies time property', function() {
+      var prop = 'time';
+
+      // WMTS
+      var layer = new ol.layer.Tile({
+        source: new ol.source.WMTS({})
+      });
+      gaDefine(layer);
+      expect(layer.get(prop)).to.be(undefined);
+      expect(layer[prop]).to.be(undefined);
+      layer[prop] = 'test';
+      expect(layer.get(prop)).to.be('test');
+      expect(layer.getSource().getDimensions().Time).to.be('test');
+      // If the value hasn't change don't set the dimension
+      layer.getSource().updateDimensions({Time: 'test2'});
+      expect(layer[prop]).to.be('test2');
+
+      // If the value hasn't change,  don't set the dimension
+      var spy = sinon.spy(layer.getSource(), 'updateDimensions');
+      layer[prop] = 'test2';
+      expect(spy.callCount).to.be(0);
+      spy.restore();
+
+      // ImageWMS && TileWMS
+      var layers = [
+        new ol.layer.Tile({
+          source: new ol.source.ImageWMS({})
+        }),
+        new ol.layer.Tile({
+          source: new ol.source.TileWMS({})
+        })
+      ];
+      layers.forEach(function(layer) {
         gaDefine(layer);
-        expect(layer.get('altitudeMode')).to.be('clampToGround');
-        expect(layer.background).to.be(false);
-        layer.background = true;
-        expect(layer.background).to.be(true);
-        expect(layer.displayInLayerManager).to.be(true);
-        layer.displayInLayerManager = false;
-        expect(layer.displayInLayerManager).to.be(false);
-        expect(layer.useThirdPartyData).to.be(false);
-        layer.useThirdPartyData = true;
-        expect(layer.useThirdPartyData).to.be(true);
-        expect(layer.preview).to.be(false);
-        layer.preview = true;
-        expect(layer.preview).to.be(true);
-        expect(layer.geojsonUrl).to.be(null);
-        layer.geojsonUrl = 'test';
-        expect(layer.geojsonUrl).to.be('test');
-        expect(layer.updateDelay).to.be(null);
-        layer.updateDelay = 60;
-        expect(layer.updateDelay).to.be(60);
-        expect(layer.userVisible).to.be(userVisible);
-        layer.userVisible = !userVisible;
-        expect(layer.userVisible).to.be(!userVisible);
+        expect(layer.get(prop)).to.be(undefined);
+        expect(layer[prop]).to.be(undefined);
+        layer[prop] = 'test';
+        expect(layer.get(prop)).to.be('test');
+        expect(layer.getSource().getParams().TIME).to.be('test');
+        layer.getSource().updateParams({TIME: 'test3'});
+        expect(layer[prop]).to.be('test3');
+
+        // If the value hasn't change,  don't set the dimension
+        var spy = sinon.spy(layer.getSource(), 'updateParams');
+        layer[prop] = 'test3';
+        expect(spy.callCount).to.be(0);
+        spy.restore();
       });
 
-      it('set userVisible initially to false', function() {
-        var layer = addLayerToMap();
-        layer.setVisible(false);
-        gaDefine(layer);
-        expect(layer.userVisible).to.be(false);
-      });
+      // LayerGroup
+      layer = new ol.layer.Group({});
+      gaDefine(layer);
+      expect(layer.get(prop)).to.be(undefined);
+      expect(layer[prop]).to.be(undefined);
+      layer[prop] = 'test';
+      expect(layer.get(prop)).to.be(undefined);
+      expect(layer[prop]).to.be(undefined);
+    });
+
+    it('verifies getCesiumImageryProvider property', function() {
+      var prop = 'getCesiumImageryProvider';
+      gaDefine(layer);
+      expect(layer.get(prop)).to.be(undefined);
+      expect(layer[prop]).to.be.a(Function);
+      expectLinkedToLayer(layer, prop);
     });
   });
 
