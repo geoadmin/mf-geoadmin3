@@ -56,11 +56,16 @@ goog.require('ga_price_filter');
         var layerConfig = gaLayers.getLayer(layerBodId);
 
         // Remove the element if no shop config available
-        if (!layerConfig || !layerConfig.shop ||
-            layerConfig.shop.length == 0 || (scope.feature.properties &&
-            !angular.isDefined(scope.feature.properties.available))) {
+        if (!layerConfig.shop || layerConfig.shop.length == 0) {
           elt.remove();
           return;
+        }
+
+        // We consider a shopable feature as available by default if not
+        // explicitly defined.
+        if (scope.feature.properties &&
+            !angular.isDefined(scope.feature.properties.available)) {
+          scope.feature.properties.available = true;
         }
 
         // The feature is not available in the shop so we display a message
