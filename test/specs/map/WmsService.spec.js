@@ -1,7 +1,7 @@
 describe('ga_wms_service', function() {
 
   describe('gaWms', function() {
-    var gaWms, map;
+    var gaWms, map, gaGlobalOptions;
 
     var getExternalWmsLayer = function(params) {
       var layer = new ol.layer.Image({
@@ -17,13 +17,13 @@ describe('ga_wms_service', function() {
     };
     
     var expectProperties = function(layer, options) {
-       // set in constructor
+      // Test Layer's properties
+      // set in constructor
       expect(layer).to.be.an(ol.layer.Image);
       expect(layer.id).to.be(options.id || 'WMS||' + options.label + '||' + options.url + '||' + options.LAYERS);
       expect(layer.url).to.be(options.url);
       expect(layer.type).to.be('WMS');
       expect(layer.invertedOpacity).to.be(options.invertedOpacity || '0');
-      
       expect(layer.visible).to.be(angular.isDefined(options.visible)? options.visible : true);
       expect(layer.get('attribution')).to.be(options.attribution);
       expect(layer.getExtent()).to.be(options.extent);
@@ -36,20 +36,67 @@ describe('ga_wms_service', function() {
       expect(layer.getCesiumImageryProvider).to.be.a(Function);
 
 
+      // Tests source's properties
       var source = layer.getSource();
       expect(source).to.be.an(ol.source.ImageWMS);
       expect(source.getUrl()).to.be(options.url);
       var projCode = (source.getProjection()) ? source.getProjection().getCode() : undefined;
       expect(projCode).to.be(options.projection);
-    
+
+      // Tests WMS params
+      options.VERSION = options.VERSION || '1.3.0';
+      options.FORMAT = options.FORMAT || 'image%2Fpng';
+      options.STYLES = options.STYLES || 'default';
+
       var params = source.getParams();
       expect(params.LAYERS).to.be(options.LAYERS);
-      expect(params.VERSION).to.be(options.VERSION || '1.3.0');
+      expect(params.VERSION).to.be(options.VERSION);
+ 
+      // Tests Cesium provider
+      var srsStr = '', crsStr = '&crs=EPSG:4326';
+      options.bbox = '{southProjected},{westProjected},{northProjected},{eastProjected}';
+      if (options.VERSION == '1.1.1') {
+        options.bbox = '{westProjected},{southProjected},{eastProjected},{northProjected}';
+        srsStr = '&srs=EPSG:4326';
+        crsStr = '';
+      }
+
+      var prov = layer.getCesiumImageryProvider();
+      expect(prov).to.be.an(Cesium.UrlTemplateImageryProvider);
+      var url = options.url +
+          '?layers=' + options.LAYERS +
+          '&format=' + options.FORMAT +
+          '&service=WMS' +
+          '&version=' + options.VERSION +
+          '&request=GetMap' +
+          crsStr +
+          '&bbox=' + options.bbox +
+          '&width=256&height=256' +
+          '&styles=' + options.STYLES +
+          '&transparent=true' +
+          srsStr;
+      expect(prov.url).to.be(url);
+      expect(prov.minimumRetrievingLevel).to.be(window.minimumRetrievingLevel);
+      expect(prov.rectangle).to.be.an(Cesium.Rectangle);
+      expect(prov.rectangle.west).to.be(0.08750953387026605);
+      expect(prov.rectangle.south).to.be(0.7916115588834566);
+      expect(prov.rectangle.east).to.be(0.20031905334970368);
+      expect(prov.rectangle.north).to.be(0.8425581080106397);
+
+      if (options.useThirdPartyData) {
+        expect(prov.proxy.getURL('a')).to.be(gaGlobalOptions.ogcproxyUrl + 'a');
+      } else {
+        expect(prov.proxy).to.be(undefined);
+      }
+      expect(prov.tilingScheme).to.be.an(Cesium.GeographicTilingScheme);
+      expect(prov.hasAlphaChannel).to.be(true);
+      expect(prov.availableLevels).to.be(window.imageryAvailableLevels);
     };
     
     beforeEach(function() {
       inject(function($injector) {
         gaWms = $injector.get('gaWms');
+        gaGlobalOptions = $injector.get('gaGlobalOptions');
       });
       map = new ol.Map({});
     });
@@ -81,7 +128,7 @@ describe('ga_wms_service', function() {
       it('adds a layer with custom options', function() {
         var params = {
           LAYERS: 'some',
-          VERSION: 'custom'
+          VERSION: '1.1.1'
         };
         var options =  {
           url: 'https://wms.geo.admin.ch',
