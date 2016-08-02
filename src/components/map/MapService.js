@@ -525,6 +525,19 @@ goog.require('ga_urlutils_service');
                 }
               });
 
+              // Test shop layers allowing multiple results in tooltip.
+              ids = [
+                'ch.swisstopo.lubis-luftbilder_farbe',
+                'ch.swisstopo.lubis-luftbilder_schwarzweiss',
+                'ch.swisstopo.lubis-luftbilder_infrarot',
+                'ch.swisstopo.lubis-bildstreifen'
+              ];
+              angular.forEach(ids, function(id) {
+                if (response.data[id]) {
+                  response.data[id].shopMulti = true;
+                }
+              });
+
               // Terrain
               var lang = gaLang.getNoRm();
               response.data['ch.swisstopo.terrain.3d'] = {
