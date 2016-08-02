@@ -382,10 +382,12 @@ goog.require('ga_topic_service');
                 var geometry = new ol.geom.Point(coordinate);
                 var returnGeometry = !!gaLayers.getLayerProperty(
                     layerToQuery.bodId, 'highlightable');
-                var limit = gaLayers.getLayerProperty(
-                    layerToQuery.bodId, 'shop') ? 1 : null;
+                var shopLayer = gaLayers.getLayerProperty(layerToQuery.bodId,
+                                                          'shop');
+                var limit = shopLayer ? 1 : null;
+                var order = shopLayer ? 'distance' : null;
                 all.push(gaIdentify.get(map, [layerToQuery], geometry, tol,
-                    returnGeometry, canceler.promise, limit).then(
+                    returnGeometry, canceler.promise, limit, order).then(
                   function(response) {
                     showFeatures(response.data.results, coordinate);
                     return response.data.results.length;

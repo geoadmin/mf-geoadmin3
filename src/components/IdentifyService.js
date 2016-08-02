@@ -77,7 +77,7 @@ goog.provide('ga_identify_service');
 
       var Identify = function() {
         this.get = function(olMap, olLayers, olGeometry, tolerance,
-            returnGeometry, timeout, limit) {
+            returnGeometry, timeout, limit, order) {
           if (!olMap || !olLayers || !olGeometry) {
             return reject('Missing required parameters');
           }
@@ -91,6 +91,9 @@ goog.provide('ga_identify_service');
           };
           if (limit) {
             othersParams.limit = limit;
+          }
+          if (order) {
+            othersParams.order = order;
           }
           var params = angular.extend(mapParams, layersParams, geometryParams,
               othersParams);
