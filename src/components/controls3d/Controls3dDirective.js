@@ -76,20 +76,29 @@ goog.require('ga_map_service');
           }
           if (event.keyCode == 37) {
             // left key
-            if (lowPitch) {
+            if (lowPitch && !event.shiftKey) {
               camera.moveLeft(moveAmount);
             } else {
               scope.rotate(-5);
             }
           } else if (event.keyCode == 39) {
-            // left key
-            if (lowPitch) {
+            // right key
+            if (lowPitch && !event.shiftKey) {
               camera.moveRight(moveAmount);
             } else {
               scope.rotate(+5);
             }
           }
-
+          if (event.shiftKey) {
+            if (event.keyCode == 38) {
+              // up key
+              scope.tilt(+15);
+            } else if (event.keyCode == 40) {
+              // down key
+              scope.tilt(-15);
+            }
+            return;
+          }
           // Compute the "backward" vector to be used to
           // translate forward and backward
           var up = new Cesium.Cartesian3();
