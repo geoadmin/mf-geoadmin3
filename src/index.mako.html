@@ -715,7 +715,7 @@ itemscope itemtype="http://schema.org/WebApplication"
 
         var module = angular.module('geoadmin');
         var cacheAdd = '${version}' != '' ? '/' + '${version}' : '';
-        var pathname = location.pathname.replace(/(index|mobile|embed)\.html$/g, '');
+        var pathname = location.pathname.replace(/(index|mobile|embed)\.[\.\d]*html$/g, '');
 
         function getParam(name){
           return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null;
@@ -826,9 +826,10 @@ itemscope itemtype="http://schema.org/WebApplication"
           gaLayersProvider.wmtsMapProxyGetTileUrlTemplate =  gaGlobalOptions.mapproxyUrl + '/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{x}/{y}.{Format}';
           gaLayersProvider.terrainTileUrlTemplate = '//3d.geo.admin.ch/1.0.0/{Layer}/default/{Time}/4326';
           if (apiEnv || apiParam){
+            // FIXME This should also be a filename, not a parameter
             gaLayersProvider.layersConfigUrlTemplate = apiUrl + '/rest/services/all/MapServer/layersConfig?lang={Lang}';
           } else{
-            gaLayersProvider.layersConfigUrlTemplate = gaGlobalOptions.resourceUrl + 'layersConfig?lang={Lang}';
+            gaLayersProvider.layersConfigUrlTemplate = gaGlobalOptions.resourceUrl + 'layersConfig.{Lang}.json';
           }
           gaLayersProvider.legendUrlTemplate = gaGlobalOptions.apiUrl + '/rest/services/all/MapServer/{Layer}/legend?lang={Lang}';
         });

@@ -13,7 +13,7 @@ ${version}/style/app.css
 ${version}/style/font-awesome-4.5.0/font/fontawesome-webfont.woff
 ${version}/services
 % for lang in languages:
-${version}/layersConfig?lang=${lang}
+${version}/layersConfig.${lang}.json
 ${version}/locales/${lang}.json
 % endfor
 ${version}/img/geolocation_heading_marker.png
