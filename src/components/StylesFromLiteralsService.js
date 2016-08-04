@@ -221,7 +221,9 @@ goog.provide('ga_stylesfromliterals_service');
           return this.singleStyle.olStyle;
         } else if (this.type === 'unique') {
           var properties = feature.getProperties();
-          var value = properties[this.key] || this.defaultVal;
+          // A value can be 0
+          var value = properties[this.key];
+          value = value !== undefined ? value : this.defaultVal;
           var geomType = getGeomTypeFromGeometry(feature.getGeometry());
           var olStyles = this.styles[geomType][value];
           var res = this.getOlStyleForResolution_(olStyles, resolution);
