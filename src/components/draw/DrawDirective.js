@@ -397,12 +397,6 @@ goog.require('ga_styles_service');
           draw = new ol.interaction.Draw(tool.drawOptions);
           var isFinishOnFirstPoint;
           unDrawEvts.push(draw.on('drawstart', function(evt) {
-            // Remove the first features created if wanted
-            var src = layer.getSource();
-            if (tool.maxFeatures &&
-                src.getFeatures().length >= tool.maxFeatures) {
-              src.removeFeature(src.getFeatures()[0]);
-            }
             var nbPoint = 1;
             var isSnapOnLastPoint = false;
             updateHelpTooltip(helpTooltip, tool.id, true,
