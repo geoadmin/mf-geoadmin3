@@ -25,6 +25,25 @@ goog.provide('ga_urlutils_service');
                   gaGlobalOptions.adminUrlRegexp.test(url));
         };
 
+        // Test if URL uses https
+        this.isHttps = function(url) {
+          return (this.isValid(url) && /^https/.test(url));
+        };
+
+        // Test if URL represents resource that needs to pass via ogcProxy
+        this.needsProxy = function(url) {
+          return (!this.isHttps(url) ||
+                  !this.isAdminValid(url) ||
+                  /.*kmz$/.test(url));
+        };
+
+        this.proxifyUrl = function(url) {
+          if (this.needsProxy(url)) {
+            return gaGlobalOptions.ogcproxyUrl + encodeURIComponent(url);
+          }
+          return url;
+        };
+
         // Test if the URL comes from a third party site
         this.isThirdPartyValid = function(url) {
           return !this.isAdminValid(url) ||

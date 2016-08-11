@@ -26,8 +26,7 @@ goog.require('ga_urlutils_service');
         if (!gaUrlUtils.isAdminValid(layer.url)) {
           proxy = {
             getURL: function(resource) {
-               return gaGlobalOptions.ogcproxyUrl +
-                   encodeURIComponent(resource);
+               return gaUrlUtils.proxifyUrl(resource);
             }
           };
         }

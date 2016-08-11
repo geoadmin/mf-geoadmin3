@@ -22,7 +22,6 @@ goog.require('ga_geolocation');
 goog.require('ga_help');
 goog.require('ga_identify_service');
 goog.require('ga_importkml');
-goog.require('ga_importkml_controller');
 goog.require('ga_importwms');
 goog.require('ga_importwms_controller');
 goog.require('ga_layermanager');
@@ -104,7 +103,6 @@ goog.require('ga_waitcursor_service');
     'ga_placeholder_directive',
     'ga_collapsible_directive',
     'ga_slider_directive',
-    'ga_importkml_controller',
     'ga_geolocation',
     'ga_rotate',
     'ga_identify_service',

@@ -2,7 +2,7 @@ describe('ga_realtimelayers_service', function() {
 
   describe('gaRealtimeLayersManager', function() {
     var map, gaRealtime, $rootScope, $httpBackend, $timeout, gaLayerFilters, gaMapUtils, gaGlobalOptions, clock, gaLang;
-    var dataUrl = 'http://api3.geo.admin.ch/ogcproxy?url=https://data.geo.admin.ch/some/some_custom.json';
+    var dataUrl = 'https://data.geo.admin.ch/some/some_custom.json';
     var jsonData1 = {
       'features': [{
         'type': 'Feature',

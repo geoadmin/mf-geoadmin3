@@ -26,7 +26,6 @@ describe('ga_importwms_directive', function() {
       scope = $rootScope.$new();
       scope.map = map;
       scope.options = {
-        proxyUrl: 'http://admin.ch/ogcproxy?url=',
         defaultGetCapParams: 'SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0',
         defaultWMSList: [
            'http://wms.geo.admin.ch/',
@@ -76,7 +75,7 @@ describe('ga_importwms_directive', function() {
 
   describe('a good WMS GetCapabilities is received', function() {
     var $httpBackend;
-    var expectedWmsGetCapAdminUrl = 'http://admin.ch/ogcproxy?url=http%3A%2F%2Fwms.geo.admin.ch%2F%3FSERVICE%3DWMS%26REQUEST%3DGetCapabilities%26VERSION%3D1.3.0%26lang%3Dfr';
+    var expectedWmsGetCapAdminUrl = "http://api3.geo.admin.ch/ogcproxy?url=http%3A%2F%2Fwms.geo.admin.ch%2F%3FSERVICE%3DWMS%26REQUEST%3DGetCapabilities%26VERSION%3D1.3.0%26lang%3Dfr";
 
     beforeEach(inject(function($injector, $rootScope) {
       $httpBackend = $injector.get('$httpBackend');
@@ -198,7 +197,7 @@ describe('ga_importwms_directive', function() {
 
   describe('a good WMS GetCapabilities but without the map projection iss received', function() {
     var $httpBackend;
-    var expectedWmsGetCapAdminUrl = 'http://admin.ch/ogcproxy?url=http%3A%2F%2Fwms.geo.admin.ch%2F%3FSERVICE%3DWMS%26REQUEST%3DGetCapabilities%26VERSION%3D1.3.0%26lang%3Dfr';
+    var expectedWmsGetCapAdminUrl = "http://api3.geo.admin.ch/ogcproxy?url=http%3A%2F%2Fwms.geo.admin.ch%2F%3FSERVICE%3DWMS%26REQUEST%3DGetCapabilities%26VERSION%3D1.3.0%26lang%3Dfr";
 
     beforeEach(inject(function($injector, $rootScope) {
       $httpBackend = $injector.get('$httpBackend');

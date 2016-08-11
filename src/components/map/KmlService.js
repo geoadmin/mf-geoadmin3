@@ -408,8 +408,7 @@ goog.require('ga_urlutils_service');
           if (gaNetworkStatus.offline) {
             return this.addKmlToMap(map, null, layerOptions, index);
           } else {
-            return $http.get(gaGlobalOptions.ogcproxyUrl +
-                encodeURIComponent(url), {
+            return $http.get(gaUrlUtils.proxifyUrl(url), {
               cache: true
             }).then(function(response) {
               var data = response.data;
