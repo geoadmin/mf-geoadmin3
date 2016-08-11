@@ -191,7 +191,7 @@ describe('ga_importwms_directive', function() {
         scope.toggleLayerSelected(evt, scope.layers[0]);
         scope.addLayerSelected();
         expect(scope.map.getLayers().getLength()).to.be(1);      
-        expect(scope.map.getLayers().item(0).preview).to.be(undefined);
+        expect(scope.map.getLayers().item(0).preview).to.be(false);
       }));
     });
   });

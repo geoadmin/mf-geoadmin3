@@ -16,36 +16,50 @@ beforeEach(function() {
     var versionSlashed = version + '/';
     var apiUrl = '//api3.geo.admin.ch';
     var publicUrl = '//public.geo.admin.ch';
+    var printUrl = '//print.geo.admin.ch';
+    var mapproxyUrl = '//wmts{s}.geo.admin.ch';
+    var shopUrl = '//shop.bgdi.ch';
+    var wmsUrl = '//wms.geo.admin.ch';
     var apacheBasePath = '/';
     var cacheAdd = '/' + version;
     var pathname = location.pathname.replace(/(index|mobile|embed)\.html$/g, '');
+
     $provide.constant('gaGlobalOptions', {
       dev3d: false,
+      buildMode: 'prod',
       version: '123456',
-      defaultExtent: [420000, 30000, 900000, 350000],
-      resolutions: [650.0, 500.0, 250.0, 100.0, 50.0, 20.0, 10.0, 5.0,
-          2.5, 2.0, 1.0, 0.5, 0.25, 0.1],
-      lods: [6, 7, 8, 9, 10, 11, 12, 13, 14, 14, 16, 17, 18, 18],
-      defaultElevationModel: 'COMB',
-      mapUrl : location.origin + apacheBasePath,
-      apiUrl : location.protocol + apiUrl,
+      pegman: false,
+      mapUrl: location.origin + apacheBasePath,
+      apiUrl: location.protocol + apiUrl,
+      printUrl: location.protocol + printUrl,
+      mapproxyUrl: location.protocol + mapproxyUrl,
+      shopUrl: location.protocol + shopUrl,
       publicUrl: location.protocol + publicUrl,
+      publicUrlRegexp: /^https?:\/\/public\..*\.(bgdi|admin)\.ch\/.*/,
+      adminUrlRegexp: /^(ftp|http|https):\/\/(.*(\.bgdi|\.geo\.admin)\.ch)/,
       cachedApiUrl: location.protocol + apiUrl + cacheAdd,
+      cachedPrintUrl: location.protocol + printUrl + cacheAdd,
       resourceUrl: location.origin + pathname + versionSlashed,
-      ogcproxyUrl : location.protocol + apiUrl + '/ogcproxy?url=',
-      shopUrl : location.protocol + '//shop.bgdi.ch',
+      ogcproxyUrl: location.protocol + apiUrl + '/ogcproxy?url=',
+      wmsUrl: location.protocol + wmsUrl,
       w3wUrl: 'dummy.test.url.com',
       w3wApiKey: 'testkey',
       whitelist: [
-        'https://' + location.host + '/**'
+        'https://' + window.location.host + '/**'
       ],
-      defaultEpsg: 'EPSG:21781',
       defaultTopicId: 'sometopic',
       translationFallbackCode: 'somelang',
-      languages: ['de', 'fr', 'it', 'en', 'rm', 'somelang'],
+      defaultExtent: [420000, 30000, 900000, 350000],
       defaultResolution: 500.0,
-      publicUrlRegexp: /^https?:\/\/public\..*\.(bgdi|admin)\.ch\/.*/,
-      adminUrlRegexp: /^(ftp|http|https):\/\/(.*(\.bgdi|\.geo\.admin)\.ch)/
+      defaultLod: 7,
+      resolutions: [650.0, 500.0, 250.0, 100.0, 50.0, 20.0, 10.0, 5.0,
+          2.5, 2.0, 1.0, 0.5, 0.25, 0.1],
+      lods: [6, 7, 8, 9, 10, 11, 12, 13, 14, 14, 16, 17, 18, 18],
+      defaultEpsg: 'EPSG:21781',
+      defaultEpsgExtent: [420000, 30000, 900000, 350000],
+      defaultElevationModel: 'COMB',
+      defaultTerrain: 'ch.dummy.terrain.3d',
+      languages: ['de', 'fr', 'it', 'en', 'rm', 'somelang']
     });
   });
 
@@ -58,18 +72,22 @@ beforeEach(function() {
     $translateProvider.useLoader(undefined);
   });
 
-  module(function(gaLayersProvider) {
-    gaLayersProvider.wmtsGetTileUrlTemplate =
-        'http://wmts.com/foo/{Layer}/default/{Time}/21781/' +
-        '{TileMatrix}/{TileRow}/{TileCol}.{Format}';
-    gaLayersProvider.layersConfigUrlTemplate =
-        'http://example.com/all?lang={Lang}';
-    gaLayersProvider.legendUrlTemplate =
-        'http://legendservice.com/all/{Layer}?lang={Lang}';
+  module(function(gaLayersProvider, gaGlobalOptions) {
+    gaLayersProvider.dfltWmsSubdomains = ['', '0', '1', '2', '3', '4'];
+    gaLayersProvider.dfltWmtsNativeSubdomains = ['5', '6', '7', '8', '9'];
+    gaLayersProvider.dfltWmtsMapProxySubdomains = ['20', '21', '22', '23', '24'];
+    gaLayersProvider.wmsUrlTemplate = '//wms{s}.geo.admin.ch/';
+    gaLayersProvider.wmtsGetTileUrlTemplate = '//wmts{s}.geo.admin.ch/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{y}/{x}.{Format}';
+
+    gaLayersProvider.wmtsMapProxyGetTileUrlTemplate =  gaGlobalOptions.mapproxyUrl +
+        '/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{x}/{y}.{Format}';
+    gaLayersProvider.terrainTileUrlTemplate = '//3d.geo.admin.ch/1.0.0/{Layer}/default/{Time}/4326';
+    gaLayersProvider.layersConfigUrlTemplate = 'http://example.com/all?lang={Lang}';
+    gaLayersProvider.legendUrlTemplate = 'http://legendservice.com/all/{Layer}?lang={Lang}';
   });
 
   module(function(gaTopicProvider, gaGlobalOptions) {
-    gaTopicProvider.topicsUrl = gaGlobalOptions.cachedApiUrl + '/rest/services';
+    gaTopicProvider.topicsUrl = gaGlobalOptions.resourceUrl + 'services';
   });
 
   module(function(gaExportKmlProvider, gaGlobalOptions) {

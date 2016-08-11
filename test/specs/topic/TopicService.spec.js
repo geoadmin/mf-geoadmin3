@@ -1,6 +1,6 @@
 describe('ga_topic_service', function() {
   var gaTopic, $httpBackend, $rootScope, gaGlobalOptions, topicPermalink, gaPermalink,
-      expectedUrl = 'http://api3.geo.admin.ch/123456/rest/services',
+      expectedUrl = 'http://map.geo.admin.ch/123456/services',
       topics = [{
         "langs": "de,fr,it",
         "selectedLayers": [],

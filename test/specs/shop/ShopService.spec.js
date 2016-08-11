@@ -1,6 +1,5 @@
 describe('ga_shop_service', function() {
-  var gaShop;
-  var shopUrl = 'http://shop.bgdi.ch';
+  var gaShop, gaGlobalOptions;
   var mapsheetParams = '?layer=layerBodId&featureid=featureId';
   var mapsheetWithClipperParamsTpl = '?layer={layerBodId}&clipper={clipper}&featureid=featureId';
   var communeParams = '?layer=layerBodId&clipper=ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill&featureid=featureId';
@@ -28,15 +27,16 @@ describe('ga_shop_service', function() {
       })
     });
 
-    inject(function($injector, gaGlobalOptions) {
+    inject(function($injector) {
       gaShop = $injector.get('gaShop');
+      gaGlobalOptions = $injector.get('gaGlobalOptions');
     });
   });
 
   describe('#dispatch()', function() {
     var closeSpy, openStub, clock, $window;
-    var dispatchUrl = shopUrl + '/custom/dispatcher';
-    var dfltDispatchUrl = dispatchUrl + '?layer=layerBodId';
+    var dispatchUrl;
+    var dfltDispatchUrl;
     var fakeWindow = {
       close: function(){}
     };
@@ -45,7 +45,8 @@ describe('ga_shop_service', function() {
       inject(function($injector) {
         $window = $injector.get('$window');
       });
-
+      dispatchUrl = gaGlobalOptions.shopUrl + '/custom/dispatcher';
+      dfltDispatchUrl = dispatchUrl + '?layer=layerBodId';
       clock = sinon.useFakeTimers();
       openStub = sinon.stub($window, 'open');
       closeSpy = sinon.spy($window, 'close');
@@ -142,13 +143,14 @@ describe('ga_shop_service', function() {
 
   describe('#getPrice()', function() {
     var $httpBackend, $rootScope;
-    var priceUrl = shopUrl + '/shop-server/resources/products/price';
+    var priceUrl;
     
     beforeEach(function() {
       inject(function($injector) {
         $httpBackend = $injector.get('$httpBackend');
         $rootScope = $injector.get('$rootScope');
       });
+      priceUrl =  gaGlobalOptions.shopUrl + '/shop-server/resources/products/price';
     });
     
     afterEach(function() {
@@ -239,3 +241,4 @@ describe('ga_shop_service', function() {
     });
   });
 });
+

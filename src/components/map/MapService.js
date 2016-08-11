@@ -47,7 +47,7 @@ goog.require('ga_urlutils_service');
           }
           if (minResolution) { // we remove useless resolutions
             for (var i = 0, ii = resolutions.length; i < ii; i++) {
-              if (resolutions[i] === i) {
+              if (resolutions[i] === minResolution) {
                 resolutions = resolutions.splice(0, i + 1);
                 break;
               }
