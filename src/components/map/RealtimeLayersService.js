@@ -10,7 +10,7 @@ goog.require('ga_map_service');
 
   module.provider('gaRealtimeLayersManager', function() {
     this.$get = function($rootScope, $http, $timeout, gaLayerFilters,
-        gaMapUtils, gaGlobalOptions, gaUrlUtils) {
+        gaMapUtils, gaUrlUtils) {
 
       var timers = [];
       var realTimeLayersId = [];

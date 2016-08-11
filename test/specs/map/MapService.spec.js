@@ -415,7 +415,7 @@ describe('ga_map_service', function() {
 
   describe('gaLayers', function() {
     var gaLayers, gaTime, $httpBackend, $rootScope, gaGlobalOptions, gaBrowserSniffer, gaNetworkStatus;
-    var expectedUrl = 'http://example.com/all?lang=somelang';
+    var expectedUrl = 'https://example.com/all?lang=somelang';
     var dfltLayersConfig = {
       foo: {
         type: 'wmts',
@@ -473,7 +473,7 @@ describe('ga_map_service', function() {
     };
     var terrainTpl = '//3d.geo.admin.ch/1.0.0/{layer}/default/{time}/4326';
     var wmtsTpl = '//wmts{s}.geo.admin.ch/1.0.0/{layer}/default/{time}/4326/{z}/{y}/{x}.{format}';
-    var wmtsMpTpl = 'http://wmts{s}.geo.admin.ch/1.0.0/{layer}/default/{time}/4326/{z}/{x}/{y}.{format}';
+    var wmtsMpTpl = 'https://wmts{s}.geo.admin.ch/1.0.0/{layer}/default/{time}/4326/{z}/{x}/{y}.{format}';
     var wmsTpl = '//wms{s}.geo.admin.ch/?layers={layer}&format=image%2F{format}&service=WMS&version=1.3.0&request=GetMap&crs=CRS:84&bbox={westProjected},{southProjected},{eastProjected},{northProjected}&width=512&height=512&styles=default';
     var expectWmtsUrl = function(l, t, f) {
       return expectUrl(wmtsTpl, l, t, f);
@@ -1021,7 +1021,7 @@ describe('ga_map_service', function() {
 
         it('returns a GeoJSON layer', function() {
           $httpBackend.expectGET('http://mystyle.json').respond({});
-          $httpBackend.expectGET(gaGlobalOptions.ogcproxyUrl + 'https://my.json').respond({
+          $httpBackend.expectGET(gaGlobalOptions.ogcproxyUrl + 'https%3A%2F%2Fmy.json').respond({
             'features': [{
               'type': 'Feature',
               'geometry': {
@@ -1100,7 +1100,7 @@ describe('ga_map_service', function() {
       });
 
       it('returns correct metadata url from a bod id', function() {
-        var expectedMdUrl = 'http://legendservice.com/all/somelayer?lang=somelang';
+        var expectedMdUrl = 'https://legendservice.com/all/somelayer?lang=somelang';
         $httpBackend.expectGET(expectedMdUrl).respond({});
         gaLayers.getMetaDataOfLayer('somelayer');
         $httpBackend.flush();
@@ -1289,7 +1289,7 @@ describe('ga_map_service', function() {
         gaDefinePropertiesForLayer = $injector.get(
             'gaDefinePropertiesForLayer');
       });
-      var expectedUrl = 'http://example.com/all?lang=somelang';
+      var expectedUrl = 'https://example.com/all?lang=somelang';
       $httpBackend.whenGET(expectedUrl).respond({
         toto: {
           type: 'wmts',

@@ -6,11 +6,11 @@ beforeEach(function() {
     var location = {
       host: 'map.admin.ch',
       hostname: 'map.geo.admin.ch',
-      href: 'http://map.geo.admin.ch/?lang=en&topic=ech&bgLayer=ch.swisstopo.pixelkarte-farbe&X=207277.79&Y=690852.63&zoom=1',
-      origin: 'http://map.geo.admin.ch',
+      href: 'https://map.geo.admin.ch/?lang=en&topic=ech&bgLayer=ch.swisstopo.pixelkarte-farbe&X=207277.79&Y=690852.63&zoom=1',
+      origin: 'https://map.geo.admin.ch',
       pathname: '/',
       port: '',
-      protocol: 'http:'
+      protocol: 'https:'
     };
     var version = '123456';
     var versionSlashed = version + '/';
@@ -82,8 +82,8 @@ beforeEach(function() {
     gaLayersProvider.wmtsMapProxyGetTileUrlTemplate = gaGlobalOptions.mapproxyUrl +
         '/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{x}/{y}.{Format}';
     gaLayersProvider.terrainTileUrlTemplate = '//3d.geo.admin.ch/1.0.0/{Layer}/default/{Time}/4326';
-    gaLayersProvider.layersConfigUrlTemplate = 'http://example.com/all?lang={Lang}';
-    gaLayersProvider.legendUrlTemplate = 'http://legendservice.com/all/{Layer}?lang={Lang}';
+    gaLayersProvider.layersConfigUrlTemplate = 'https://example.com/all?lang={Lang}';
+    gaLayersProvider.legendUrlTemplate = 'https://legendservice.com/all/{Layer}?lang={Lang}';
   });
 
   module(function(gaTopicProvider, gaGlobalOptions) {
