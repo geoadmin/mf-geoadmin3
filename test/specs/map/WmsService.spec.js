@@ -15,7 +15,7 @@ describe('ga_wms_service', function() {
       layer.url = 'http://foo.ch/wms';
       return layer;
     };
-    
+
     var expectProperties = function(layer, options) {
       // Test Layer's properties
       // set in constructor
@@ -24,10 +24,10 @@ describe('ga_wms_service', function() {
       expect(layer.url).to.be(options.url);
       expect(layer.type).to.be('WMS');
       expect(layer.invertedOpacity).to.be(options.invertedOpacity || '0');
-      expect(layer.visible).to.be(angular.isDefined(options.visible)? options.visible : true);
+      expect(layer.visible).to.be(angular.isDefined(options.visible) ? options.visible : true);
       expect(layer.get('attribution')).to.be(options.attribution);
       expect(layer.getExtent()).to.be(options.extent);
-      
+
       // set after creation
       expect(layer.preview).to.be(!!options.preview);
       expect(layer.displayInLayerManager).to.be(!layer.preview);
@@ -51,7 +51,7 @@ describe('ga_wms_service', function() {
       var params = source.getParams();
       expect(params.LAYERS).to.be(options.LAYERS);
       expect(params.VERSION).to.be(options.VERSION);
- 
+
       // Tests Cesium provider
       var srsStr = '', crsStr = '&crs=EPSG:4326';
       options.bbox = '{southProjected},{westProjected},{northProjected},{eastProjected}';
@@ -92,7 +92,7 @@ describe('ga_wms_service', function() {
       expect(prov.hasAlphaChannel).to.be(true);
       expect(prov.availableLevels).to.be(window.imageryAvailableLevels);
     };
-    
+
     beforeEach(function() {
       inject(function($injector) {
         gaWms = $injector.get('gaWms');
@@ -100,14 +100,14 @@ describe('ga_wms_service', function() {
       });
       map = new ol.Map({});
     });
-    
+
     describe('addWmsToMap', function() {
-      
+
       it('adds a layer using minimal parameters', function() {
         var params = {
           LAYERS: 'some'
         };
-        var options =  {
+        var options = {
           label: 'somelabel',
           url: 'https://wms.ch'
         };
@@ -124,13 +124,13 @@ describe('ga_wms_service', function() {
           LAYERS: params.LAYERS
         });
       });
-       
+
       it('adds a layer with custom options', function() {
         var params = {
           LAYERS: 'some',
           VERSION: '1.1.1'
         };
-        var options =  {
+        var options = {
           url: 'https://wms.geo.admin.ch',
           opacity: 0.5,
           visible: false,
@@ -159,13 +159,13 @@ describe('ga_wms_service', function() {
           VERSION: params.VERSION
         });
       });
- 
+
       it('adds a layer using reprojection', function() {
         var params = {
           LAYERS: 'some',
           VERSION: 'custom'
         };
-        var options =  {
+        var options = {
           url: 'https://wms.geo.admin.ch',
           label: 'somelabel',
           useReprojection: true
@@ -183,11 +183,11 @@ describe('ga_wms_service', function() {
           VERSION: params.VERSION
         });
       });
-       
+
       it('adds a layer at the correct index in the layer list', function() {
         var idx = 2;
         var params = {LAYERS: 'some'};
-        var options =  {label: 'somelabel', url: 'https://wms.ch'};
+        var options = {label: 'somelabel', url: 'https://wms.ch'};
         map.addLayer(new ol.layer.Layer({}));
         map.addLayer(new ol.layer.Layer({}));
         map.addLayer(new ol.layer.Layer({}));
@@ -209,7 +209,7 @@ describe('ga_wms_service', function() {
     });
 
     describe('getOlLayerFromGetCapLayer', function() {
-      
+
       it('creates a layer with minimal param', function() {
         var options = {
           Name: 'some',
@@ -219,9 +219,9 @@ describe('ga_wms_service', function() {
           extent: [0, 0, 10, 10],
           useReprojection: true
         };
-        
+
         var layer = gaWms.getOlLayerFromGetCapLayer(options);
-        
+
         expectProperties(layer, {
           id: 'WMS||' + options.Title + '||' + options.wmsUrl + '||' + options.Name + '||' + options.wmsVersion + '||true',
           url: options.wmsUrl,
@@ -235,7 +235,7 @@ describe('ga_wms_service', function() {
     });
 
     describe('getLegend', function() {
-      it('tests with default values', function(){
+      it('tests with default values', function() {
         var wmsLayer = getExternalWmsLayer({
           LAYERS: 'somelayer'
         });
@@ -248,7 +248,7 @@ describe('ga_wms_service', function() {
           expect(html).to.be(expectedHtml);
         });
       });
-      it('tests with custom values', function(){
+      it('tests with custom values', function() {
         var wmsLayer = getExternalWmsLayer({
           LAYERS: 'somelayer',
           STYLE: 'layerstyle',

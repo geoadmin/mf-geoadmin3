@@ -57,7 +57,7 @@ describe('ga_permalink_service', function() {
 
   describe('correctly creates embed url', function() {
     var win, embedUrl = 'https://some-hostname:443/some/path/embed.html?some=key&value=pairs';
-    
+
     beforeEach(function() {
       inject(function($injector) {
         win = $injector.get('$window');
@@ -82,7 +82,7 @@ describe('ga_permalink_service', function() {
     it('with embed.html at the end', function() {
       win.location.pathname += '/embed.html';
       expect(permalink.getEmbedHref()).to.be(embedUrl);
-    }); 
+    });
     it('with mobile param defined', function() {
       win.location.pathname += '/embed.html';
       permalink.updateParams({mobile: false});
@@ -95,10 +95,10 @@ describe('ga_permalink_service', function() {
       expect(permalink.getEmbedHref()).to.be(embedUrl);
     });
   });
-  
+
   describe('correctly creates main url', function() {
     var win, url = 'https://some-hostname:443/some/path/?some=key&value=pairs';
-    
+
     beforeEach(function() {
       inject(function($injector) {
         win = $injector.get('$window');
@@ -123,7 +123,7 @@ describe('ga_permalink_service', function() {
     it('with embed.html at the end', function() {
       win.location.pathname += '/embed.html';
       expect(permalink.getMainHref()).to.be(url);
-    }); 
+    });
     it('with mobile param defined', function() {
       win.location.pathname += '/embed.html';
       permalink.updateParams({mobile: false});

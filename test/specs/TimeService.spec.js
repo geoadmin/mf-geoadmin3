@@ -6,7 +6,7 @@ describe('ga_time_service', function() {
       gaTime = $injector.get('gaTime');
     });
   });
-  
+
   it('converts correct timestamps to year', function() {
     var t = '20101231';
     var y = gaTime.getYearFromTimestamp(t);
@@ -20,7 +20,7 @@ describe('ga_time_service', function() {
     y = gaTime.getYearFromTimestamp(t);
     expect(y).to.equal(undefined);
 
-    t = '2100'
+    t = '2100';
     y = gaTime.getYearFromTimestamp(t);
     expect(y).to.equal(undefined);
 

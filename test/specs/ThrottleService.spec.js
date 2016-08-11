@@ -6,10 +6,10 @@ describe('ga_throttle_service', function() {
       gaThrottle = $injector.get('gaThrottle');
       cpt = 0, cptNoTrail = 0, runs = 0;
       now = +new Date();
-      last = now + 1000; 
+      last = now + 1000;
     });
   });
-  
+
   it('throttles', inject(function($timeout) {
     var funcThrottled = gaThrottle.throttle(function() {
       cpt++;

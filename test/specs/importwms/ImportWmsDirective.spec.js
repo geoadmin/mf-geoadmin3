@@ -1,6 +1,6 @@
 describe('ga_importwms_directive', function() {
   var element, scope, map, httpBackend;
-   
+
   beforeEach(function() {
 
     module(function($provide) {
@@ -16,7 +16,7 @@ describe('ga_importwms_directive', function() {
         $translate, $httpBackend, gaGlobalOptions) {
       httpBackend = $httpBackend;
       map = new ol.Map({});
-      map.setSize([600,300]);
+      map.setSize([600, 300]);
       map.getView().fit([-20000000, -20000000, 20000000, 20000000], map.getSize());
 
       element = angular.element(
@@ -54,7 +54,7 @@ describe('ga_importwms_directive', function() {
 
   });
 
-  afterEach(function () {
+  afterEach(function() {
     httpBackend.verifyNoOutstandingExpectation();
     httpBackend.verifyNoOutstandingRequest();
   });
@@ -63,12 +63,12 @@ describe('ga_importwms_directive', function() {
     var form = element.find('form');
     expect(form.find('input[type=url][ng-model=fileUrl]').length).to.be(1);
     expect(form.find('.twitter-typeahead').length).to.be(1);
-    expect(form.find('.ga-import-wms-open').length).to.be(1);    
-    expect(form.find('.ga-import-wms-connect').length).to.be(1); 
-    expect(element.find('.ga-import-wms-container').length).to.be(1); 
-    expect(element.find('.ga-import-wms-content').length).to.be(1);  
-    expect(element.find('textarea').length).to.be(1); 
-    expect(element.find('.ga-import-wms-add').length).to.be(1); 
+    expect(form.find('.ga-import-wms-open').length).to.be(1);
+    expect(form.find('.ga-import-wms-connect').length).to.be(1);
+    expect(element.find('.ga-import-wms-container').length).to.be(1);
+    expect(element.find('.ga-import-wms-content').length).to.be(1);
+    expect(element.find('textarea').length).to.be(1);
+    expect(element.find('.ga-import-wms-add').length).to.be(1);
     form.find('.ga-import-wms-open').click();
     expect(element.find('.tt-dropdown-menu').css('display')).not.to.be('none');
     expect(element.find('.tt-suggestion').length).to.be(5);
@@ -76,7 +76,7 @@ describe('ga_importwms_directive', function() {
 
   describe('a good WMS GetCapabilities is received', function() {
     var $httpBackend;
-    var expectedWmsGetCapAdminUrl = "http://admin.ch/ogcproxy?url=http%3A%2F%2Fwms.geo.admin.ch%2F%3FSERVICE%3DWMS%26REQUEST%3DGetCapabilities%26VERSION%3D1.3.0%26lang%3Dfr";
+    var expectedWmsGetCapAdminUrl = 'http://admin.ch/ogcproxy?url=http%3A%2F%2Fwms.geo.admin.ch%2F%3FSERVICE%3DWMS%26REQUEST%3DGetCapabilities%26VERSION%3D1.3.0%26lang%3Dfr';
 
     beforeEach(inject(function($injector, $rootScope) {
       $httpBackend = $injector.get('$httpBackend');
@@ -88,7 +88,7 @@ describe('ga_importwms_directive', function() {
              '<Abstract>Abstract WMS</Abstract>' +
              '<OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://wms.geo.admin.ch/?"/>' +
            '</Service>' +
-           '<Capability>' + 
+           '<Capability>' +
              '<Request>' +
                '<GetCapabilities>' +
                  '<Format>text/xml</Format>' +
@@ -155,42 +155,42 @@ describe('ga_importwms_directive', function() {
       );
       $httpBackend.expectGET(expectedWmsGetCapAdminUrl);
       scope.fileUrl = scope.options.defaultWMSList[0];
-      scope.handleFileUrl(); 
-      $httpBackend.flush(); 
+      scope.handleFileUrl();
+      $httpBackend.flush();
       $rootScope.$digest();
     }));
 
     it('uploads and parses successfully', inject(function() {
-      expect(scope.userMessage).to.be('parse_succeeded');   
-      expect(scope.layers.length).to.be(2); 
+      expect(scope.userMessage).to.be('parse_succeeded');
+      expect(scope.layers.length).to.be(2);
       expect(scope.layers[1].Layer.length).to.be(1);
     }));
-    
+
     describe('ga_importwms_item_directive', function() {
       var evt = {
-        stopPropagation: function(){}
+        stopPropagation: function() {}
       };
 
       it('adds/removes a preview layer to the map', inject(function() {
         scope.addPreviewLayer(evt, scope.layers[0]);
-        expect(scope.map.getLayers().getLength()).to.be(1);      
+        expect(scope.map.getLayers().getLength()).to.be(1);
         expect(scope.map.getLayers().item(0).preview).to.be(true);
         scope.removePreviewLayer(evt);
         expect(scope.map.getLayers().getLength()).to.be(0);
         expect(scope.options.layerHovered).to.be(null);
       }));
-      
+
       it('selects/unselects a layer', inject(function() {
         scope.toggleLayerSelected(evt, scope.layers[0]);
         expect(scope.options.layerSelected.Title).to.be('Title foo');
         scope.toggleLayerSelected(evt, scope.layers[0]);
         expect(scope.options.layerSelected).to.be(null);
       }));
-      
+
       it('adds a selected layer to the map', inject(function() {
         scope.toggleLayerSelected(evt, scope.layers[0]);
         scope.addLayerSelected();
-        expect(scope.map.getLayers().getLength()).to.be(1);      
+        expect(scope.map.getLayers().getLength()).to.be(1);
         expect(scope.map.getLayers().item(0).preview).to.be(false);
       }));
     });
@@ -198,7 +198,7 @@ describe('ga_importwms_directive', function() {
 
   describe('a good WMS GetCapabilities but without the map projection iss received', function() {
     var $httpBackend;
-    var expectedWmsGetCapAdminUrl = "http://admin.ch/ogcproxy?url=http%3A%2F%2Fwms.geo.admin.ch%2F%3FSERVICE%3DWMS%26REQUEST%3DGetCapabilities%26VERSION%3D1.3.0%26lang%3Dfr";
+    var expectedWmsGetCapAdminUrl = 'http://admin.ch/ogcproxy?url=http%3A%2F%2Fwms.geo.admin.ch%2F%3FSERVICE%3DWMS%26REQUEST%3DGetCapabilities%26VERSION%3D1.3.0%26lang%3Dfr';
 
     beforeEach(inject(function($injector, $rootScope) {
       $httpBackend = $injector.get('$httpBackend');
@@ -210,7 +210,7 @@ describe('ga_importwms_directive', function() {
              '<Abstract>Abstract WMS</Abstract>' +
              '<OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://wms.geo.admin.ch/?"/>' +
            '</Service>' +
-           '<Capability>' + 
+           '<Capability>' +
              '<Request>' +
                '<GetCapabilities>' +
                  '<Format>text/xml</Format>' +
@@ -252,7 +252,7 @@ describe('ga_importwms_directive', function() {
                    '<Title>Title foo</Title>' +
                    '<Abstract>Abstract foo</Abstract>' +
                    '<BoundingBox CRS="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90" />' +
-                   '<EX_GeographicBoundingBox>'+
+                   '<EX_GeographicBoundingBox>' +
                      '<westBoundLongitude>-180</westBoundLongitude>' +
                      '<eastBoundLongitude>180</eastBoundLongitude>' +
                      '<southBoundLatitude>-89.999999</southBoundLatitude>' +
@@ -265,20 +265,20 @@ describe('ga_importwms_directive', function() {
       );
       $httpBackend.expectGET(expectedWmsGetCapAdminUrl);
       scope.fileUrl = scope.options.defaultWMSList[0];
-      scope.handleFileUrl(); 
-      $httpBackend.flush(); 
+      scope.handleFileUrl();
+      $httpBackend.flush();
       $rootScope.$digest();
     }));
 
-    afterEach(function () {
+    afterEach(function() {
       $httpBackend.verifyNoOutstandingExpectation();
       $httpBackend.verifyNoOutstandingRequest();
     });
 
     it('uploads and parses successfully', inject(function() {
-      expect(scope.userMessage).to.be('parse_succeeded');   
+      expect(scope.userMessage).to.be('parse_succeeded');
       expect(scope.layers.length).to.be(1);
-      expect(scope.layers[0].Name).to.be('foo'); 
+      expect(scope.layers[0].Name).to.be('foo');
     }));
   });
 });

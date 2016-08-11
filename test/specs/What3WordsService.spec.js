@@ -38,12 +38,12 @@ describe('ga_what3words', function() {
 
   });
   describe('send requests', function() {
-  
+
     var $httpBackend, $rootScope;
     var testUrl = 'dummy.test.url.com/v2/forward?addr=first.c%C3%B6rrect.t%C3%A8st&key=testkey';
 
     beforeEach(function() {
-      
+
       module(function($provide) {
         $provide.value('gaTopic', {
           get: function() {}
@@ -52,7 +52,7 @@ describe('ga_what3words', function() {
           get: function() {
             return 'custom';
           }
-        })
+        });
       });
 
       inject(function($injector) {

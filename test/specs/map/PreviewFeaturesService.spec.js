@@ -1,5 +1,5 @@
 describe('ga_previewfeatures_service', function() {
-  
+
   describe('gaPreviewFeatures', function() {
     var gaPreviewFeatures, map, $q, $httpBackend, gaMapUtils, gaStyleFactory;
 
@@ -9,21 +9,21 @@ describe('ga_previewfeatures_service', function() {
         featIds.forEach(function(featId) {
           var url = tpl.replace('{{layerId}}', layerId).replace('{{featId}}', featId);
           $httpBackend.expectGET(url).respond({
-            "feature":{
-              "geometry": {
-                "type": "Point",
-                "coordinates": [599647.904, 200509.928]
+            'feature': {
+              'geometry': {
+                'type': 'Point',
+                'coordinates': [599647.904, 200509.928]
               },
-              "layerBodId": layerId,
-              "geometryType": "Feature",
-              "bbox": [599647.904, 200509.928, 599647.904, 200509.928],
-              "featureId": featId,
-              "layerName": "Registre des b\u00e2timents et des logements",
-              "type": "Feature",
-              "properties": {
-                "bgdi_created": "2016-07-24T19:16:28.596736"
+              'layerBodId': layerId,
+              'geometryType': 'Feature',
+              'bbox': [599647.904, 200509.928, 599647.904, 200509.928],
+              'featureId': featId,
+              'layerName': 'Registre des b\u00e2timents et des logements',
+              'type': 'Feature',
+              'properties': {
+                'bgdi_created': '2016-07-24T19:16:28.596736'
               },
-              "id": layerId + featId
+              'id': layerId + featId
             }
           });
         });
@@ -44,13 +44,13 @@ describe('ga_previewfeatures_service', function() {
       map.setSize([600, 300]);
     });
 
-    afterEach(function () {
+    afterEach(function() {
       $httpBackend.verifyNoOutstandingExpectation();
       $httpBackend.verifyNoOutstandingRequest();
     });
 
     describe('add', function() {
-      
+
       beforeEach(function() {
         var feat = new ol.Feature();
         feat.set('layerId', 'somelayer');
@@ -58,7 +58,7 @@ describe('ga_previewfeatures_service', function() {
       });
 
       it('adds a vector layer correctly configured', function() {
-        var layers =  map.getLayers();
+        var layers = map.getLayers();
         expect(layers.getLength()).to.be(1);
         var layer = layers.item(0);
         expect(layer).to.be.an(ol.layer.Vector);
@@ -66,45 +66,45 @@ describe('ga_previewfeatures_service', function() {
         expect(layer.displayInLayerManager).to.be(false);
         expect(layer.getZIndex()).to.be(gaMapUtils.Z_PREVIEW_FEATURE);
       });
-    
+
       it('adds a feature correctly configured', function() {
-        var feats =  map.getLayers().item(0).getSource().getFeatures();
+        var feats = map.getLayers().item(0).getSource().getFeatures();
         expect(feats.length).to.be(1);
         var feat = feats[0];
         expect(feat.getStyle()).to.be(gaStyleFactory.getStyle('select'));
       });
-       
+
       it('doesn\'t add a 2nd layer on the next call', function() {
-        var layers =  map.getLayers();
+        var layers = map.getLayers();
         expect(layers.getLength()).to.be(1);
         gaPreviewFeatures.add(map, new ol.Feature());
         expect(layers.getLength()).to.be(1);
       });
- 
+
       it('adds a 2nd feature on the next call', function() {
-        var feats =  map.getLayers().item(0).getSource().getFeatures();
+        var feats = map.getLayers().item(0).getSource().getFeatures();
         expect(feats.length).to.be(1);
         gaPreviewFeatures.add(map, new ol.Feature());
-        feats =  map.getLayers().item(0).getSource().getFeatures();
+        feats = map.getLayers().item(0).getSource().getFeatures();
         expect(feats.length).to.be(2);
       });
- 
+
       it('removes the features and the layer when the associated layer is removed', function() {
         var layer = new ol.layer.Layer({});
         layer.id = 'somelayer';
         map.addLayer(layer);
-        var feats =  map.getLayers().item(0).getSource().getFeatures();
+        var feats = map.getLayers().item(0).getSource().getFeatures();
         expect(feats.length).to.be(1);
         map.removeLayer(layer);
         expect(map.getLayers().getLength()).to.be(0);
       });
-       
+
       it('removes the feature and not the layer when the associated layer is removed', function() {
         gaPreviewFeatures.add(map, new ol.Feature());
         var layer = new ol.layer.Layer({});
         layer.id = 'somelayer';
         map.addLayer(layer);
-        var feats =  map.getLayers().item(0).getSource().getFeatures();
+        var feats = map.getLayers().item(0).getSource().getFeatures();
         expect(feats.length).to.be(2);
         map.removeLayer(layer);
         expect(map.getLayers().getLength()).to.be(1);
@@ -113,7 +113,7 @@ describe('ga_previewfeatures_service', function() {
       });
     });
 
-    describe('addBodFeatures', function() { 
+    describe('addBodFeatures', function() {
 
       it('clear the preview features first', function() {
         var spy = sinon.spy(gaPreviewFeatures, 'clear');
@@ -128,7 +128,7 @@ describe('ga_previewfeatures_service', function() {
           'somelayer2': ['id1', 'id2']
         };
         var spy = sinon.spy(gaPreviewFeatures, 'zoom');
-        expectGET(ids);      
+        expectGET(ids);
         gaPreviewFeatures.addBodFeatures(map, ids).then(function(feats) {
           expect(feats.length).to.be(4);
           feats.forEach(function(item) {
@@ -138,12 +138,12 @@ describe('ga_previewfeatures_service', function() {
           expect(layer).to.be.an(ol.layer.Vector);
           expect(layer.getSource().getFeatures().length).to.be(4);
           expect(spy.calledWith(map)).to.be(true);
-          
+
           // verify the request are stored in angular cache
           gaPreviewFeatures.addBodFeatures(map, ids).then(function(feats) {
             done();
           });
-        });;
+        });
         $httpBackend.flush();
       });
 
@@ -158,13 +158,13 @@ describe('ga_previewfeatures_service', function() {
     });
 
     describe('clear', function() {
-      
+
       beforeEach(function() {
         var feat = new ol.Feature();
         feat.set('layerId', 'somelayer');
         gaPreviewFeatures.add(map, feat);
       });
-       
+
       it('removes features from the source', function() {
         var layers = map.getLayers();
         var layer = layers.item(0);
@@ -187,7 +187,7 @@ describe('ga_previewfeatures_service', function() {
     });
 
     describe('highlight/clearHighlight', function() {
-      
+
       beforeEach(function() {
         var feat = new ol.Feature();
         feat.set('layerId', 'somelayer');
@@ -196,7 +196,7 @@ describe('ga_previewfeatures_service', function() {
       });
 
       it('adds a feature with highlight style', function() {
-        var feats =  map.getLayers().item(0).getSource().getFeatures();
+        var feats = map.getLayers().item(0).getSource().getFeatures();
         expect(feats.length).to.be(2);
         var feat = feats[1];
         expect(feat.getStyle()).to.be(gaStyleFactory.getStyle('highlight'));
@@ -204,7 +204,7 @@ describe('ga_previewfeatures_service', function() {
 
       it('doesn\'t add 2 highlighted features', function() {
         gaPreviewFeatures.highlight(map, new ol.Feature());
-        var feats =  map.getLayers().item(0).getSource().getFeatures();
+        var feats = map.getLayers().item(0).getSource().getFeatures();
         expect(feats.length).to.be(2);
       });
     });
@@ -217,14 +217,14 @@ describe('ga_previewfeatures_service', function() {
       });
 
       it('zooms on a feature\'s extent', function() {
-        var feat = new ol.Feature(new ol.geom.LineString([[0, 0],[1966, 1966]]));
+        var feat = new ol.Feature(new ol.geom.LineString([[0, 0], [1966, 1966]]));
         var zoomTo = gaMapUtilsMock.expects('zoomToExtent').withArgs(map, ol3d, feat.getGeometry().getExtent());
         gaPreviewFeatures.zoom(map, ol3d, feat);
         zoomTo.verify();
       });
 
       it('zooms on source\'s extent if no feature defined', function() {
-        gaPreviewFeatures.add(map, new ol.Feature(new ol.geom.LineString([[0, 0],[1967, 1967]])));
+        gaPreviewFeatures.add(map, new ol.Feature(new ol.geom.LineString([[0, 0], [1967, 1967]])));
         var source = map.getLayers().item(0).getSource();
         var zoomTo = gaMapUtilsMock.expects('zoomToExtent').withArgs(map, ol3d, source.getExtent());
         gaPreviewFeatures.zoom(map, ol3d);

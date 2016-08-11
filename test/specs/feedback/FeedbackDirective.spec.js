@@ -37,11 +37,11 @@ describe('ga_feedback_directive', function() {
         '<div ga-feedback ' +
              'ga-feedback-options="options"' +
              'ga-feedback-map="map">' +
-        '</div>')
+        '</div>');
 
     inject(function($injector, gaUrlUtils) {
       map = new ol.Map({});
-      map.setSize([600,300]);
+      map.setSize([600, 300]);
       map.getView().fit([-20000000, -20000000, 20000000, 20000000],
           map.getSize());
       gaPermalink = $injector.get('gaPermalink');
@@ -58,7 +58,7 @@ describe('ga_feedback_directive', function() {
     });
   });
 
-  afterEach(function () {
+  afterEach(function() {
     $httpBackend.verifyNoOutstandingExpectation();
     $httpBackend.verifyNoOutstandingRequest();
   });

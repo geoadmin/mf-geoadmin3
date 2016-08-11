@@ -1,6 +1,6 @@
 describe('ga_contextpopup_directive', function() {
   var element, handlers = {}, viewport, map, originalEvt;
-   
+
   beforeEach(function() {
 
     module(function($provide) {
@@ -8,7 +8,7 @@ describe('ga_contextpopup_directive', function() {
         msie: false,
         mobile: false,
         phone: false,
-        events:{
+        events: {
           menu: 'contextmenu'
         }
       });
@@ -23,7 +23,7 @@ describe('ga_contextpopup_directive', function() {
         }
       });
     });
-    originalEvt = {originalEvent:{}}; 
+    originalEvt = {originalEvent: {}};
     element = angular.element(
       '<div>' +
         '<div ga-context-popup ga-context-popup-map="map" ga-context-popup-options="options"></div>' +
@@ -34,9 +34,9 @@ describe('ga_contextpopup_directive', function() {
       map = new ol.Map({});
       $rootScope.map = map;
       $rootScope.options = {
-        lv03tolv95Url: "//api.example.com/reframe/lv03tolv95",
-        heightUrl: "//api.geo.admin.ch/height",
-        qrcodeUrl: "//api.geo.admin.ch/qrcodegenerator"
+        lv03tolv95Url: '//api.example.com/reframe/lv03tolv95',
+        heightUrl: '//api.geo.admin.ch/height',
+        qrcodeUrl: '//api.geo.admin.ch/qrcodegenerator'
       };
       map.on = function(eventType, handler) {
         handlers[eventType] = handler;
@@ -71,7 +71,7 @@ describe('ga_contextpopup_directive', function() {
     beforeEach(inject(function($injector) {
       map.getEventPixel = function(event) { return [25, 50]; };
       map.getEventCoordinate = function(event) { return [661473, 188192]; };
-        
+
       $httpBackend = $injector.get('$httpBackend');
       $httpBackend.when('GET', expectedHeightUrl).respond(
         {height: '1233'});
@@ -88,7 +88,7 @@ describe('ga_contextpopup_directive', function() {
     });
 
     it('correctly handles map contextmenu events', function() {
-      var evt = $.Event("contextmenu");
+      var evt = $.Event('contextmenu');
       evt.coordinate = [661473, 188192];
       evt.pixel = [25, 50];
       viewport.trigger(evt);
@@ -105,7 +105,7 @@ describe('ga_contextpopup_directive', function() {
 
     describe('On device without contextmenu event', function() {
       var mapEvt;
-      
+
       beforeEach(inject(function($rootScope, $compile, gaBrowserSniffer) {
         mapEvt = {
            stopPropagation: function() {},

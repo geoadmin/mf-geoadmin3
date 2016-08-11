@@ -28,12 +28,12 @@ describe('ga_layermetadatapopup_service', function() {
 
   var getMetaDataUrl = function(bodId) {
      return 'http://legendservice.com/all/' + bodId + '?lang=' + gaLang.get();
-  }
+  };
 
   var getWmsHtmlLegend = function(olLayer) {
     return '<img src="' + olLayer.url + '/' +
         olLayer.getSource().getParams()['LAYERS'] + '">';
-  }
+  };
 
   beforeEach(function() {
     module(function($provide) {
@@ -76,7 +76,7 @@ describe('ga_layermetadatapopup_service', function() {
     });
   });
 
-  afterEach(function () {
+  afterEach(function() {
     $httpBackend.verifyNoOutstandingExpectation();
     $httpBackend.verifyNoOutstandingRequest();
   });

@@ -96,7 +96,7 @@ describe('ga_map_service', function() {
   var addExternalWmsLayerToMap = function() {
     var source = new ol.source.ImageWMS({
       params: {LAYERS: 'ch.wms.name'},
-      url: 'http://foo.ch/wms',
+      url: 'http://foo.ch/wms'
     });
     var layer = new ol.layer.Image({
       id: 'WMS||The wms layer||http://foo.ch/wms||ch.wms.name',
@@ -465,16 +465,16 @@ describe('ga_map_service', function() {
         timestamps: ['t12', 't13'],
         parentLayerId: 'notooltip'
       },
-      "ch.bafu.wrz-wildruhezonen_portal": {},
-      "ch.swisstopo.swisstlm3d-wanderwege": {},
-      "ch.swisstopo.fixpunkte-agnes": {},
-      "ch.bfe.sachplan-geologie-tiefenlager": {},
-      "ch.vbs.patrouilledesglaciers-z_rennen": {}
-    }
+      'ch.bafu.wrz-wildruhezonen_portal': {},
+      'ch.swisstopo.swisstlm3d-wanderwege': {},
+      'ch.swisstopo.fixpunkte-agnes': {},
+      'ch.bfe.sachplan-geologie-tiefenlager': {},
+      'ch.vbs.patrouilledesglaciers-z_rennen': {}
+    };
     var terrainTpl = '//3d.geo.admin.ch/1.0.0/{layer}/default/{time}/4326';
     var wmtsTpl = '//wmts{s}.geo.admin.ch/1.0.0/{layer}/default/{time}/4326/{z}/{y}/{x}.{format}';
     var wmtsMpTpl = 'http://wmts{s}.geo.admin.ch/1.0.0/{layer}/default/{time}/4326/{z}/{x}/{y}.{format}';
-    var wmsTpl = '//wms{s}.geo.admin.ch/?layers={layer}&format=image%2F{format}&service=WMS&version=1.3.0&request=GetMap&crs=CRS:84&bbox={westProjected},{southProjected},{eastProjected},{northProjected}&width=512&height=512&styles=default'
+    var wmsTpl = '//wms{s}.geo.admin.ch/?layers={layer}&format=image%2F{format}&service=WMS&version=1.3.0&request=GetMap&crs=CRS:84&bbox={westProjected},{southProjected},{eastProjected},{northProjected}&width=512&height=512&styles=default';
     var expectWmtsUrl = function(l, t, f) {
       return expectUrl(wmtsTpl, l, t, f);
     };
@@ -497,7 +497,7 @@ describe('ga_map_service', function() {
         $provide.value('gaTopic', {
           get: function() {}
         });
-        $provide.value('gaLang',{
+        $provide.value('gaLang', {
           get: function() {
             return 'somelang';
           }
@@ -515,7 +515,7 @@ describe('ga_map_service', function() {
       });
     });
 
-    afterEach(function () {
+    afterEach(function() {
       $httpBackend.verifyNoOutstandingExpectation();
       $httpBackend.verifyNoOutstandingRequest();
     });
@@ -604,7 +604,7 @@ describe('ga_map_service', function() {
         'config3d': 'foo3d'
         },
         foo3d: {},
-        fooNo3d:{}
+        fooNo3d: {}
       };
 
       beforeEach(function() {
@@ -636,13 +636,13 @@ describe('ga_map_service', function() {
       var layersConfig = {
         terrain: {
           type: 'terrain',
-          timestamps:[
+          timestamps: [
             '20160101'
           ]
         },
         terrainserver: {
           type: 'terrain',
-          timestamps:[
+          timestamps: [
             '20160101'
           ],
           serverLayerName: 'serverlayername'
@@ -710,30 +710,30 @@ describe('ga_map_service', function() {
       var layersConfig = {
         'ch.dummy.terrain.3d': {
           type: 'terrain',
-          timestamps:[
+          timestamps: [
             '20180101'
           ]
         },
         aggregate: {
           type: 'aggregate',
-          subLayersIds: ['wms','wmts']
+          subLayersIds: ['wms', 'wmts']
         },
         aggregateofaggregate: {
           type: 'aggregate',
-          subLayersIds: ['aggregate','wmts']
+          subLayersIds: ['aggregate', 'wmts']
         },
 
         wmts: {
           type: 'wmts',
           config3d: 'wmts3d',
-          timestamps:[
+          timestamps: [
             '20160101'
           ],
           serverLayerName: 'serverlayername'
         },
         wmts3d: {
           type: 'wmts',
-          timestamps:[
+          timestamps: [
             '20160201'
           ],
           serverLayerName: 'serverlayername3d'
@@ -748,7 +748,7 @@ describe('ga_map_service', function() {
         },
         wmts3dcustom: {
           type: 'wmts',
-          timestamps:[
+          timestamps: [
             '20160201'
           ],
           serverLayerName: 'serverlayername3d',
@@ -758,7 +758,7 @@ describe('ga_map_service', function() {
         },
         wmtsmapproxy: {
           type: 'wmts',
-          timestamps:[
+          timestamps: [
             '20160201'
           ]
         },
@@ -870,7 +870,7 @@ describe('ga_map_service', function() {
       var layersConfig = {
         wmts: {
           type: 'wmts',
-          timestamps:[
+          timestamps: [
             '20180101'
           ],
           serverLayerName: 'serverLayerName',
@@ -883,7 +883,7 @@ describe('ga_map_service', function() {
         },
         wms: {
           type: 'wms',
-          timestamps:[
+          timestamps: [
             '20180101'
           ],
           wmsLayers: 'serverLayerName',
@@ -1022,16 +1022,16 @@ describe('ga_map_service', function() {
         it('returns a GeoJSON layer', function() {
           $httpBackend.expectGET('http://mystyle.json').respond({});
           $httpBackend.expectGET(gaGlobalOptions.ogcproxyUrl + 'https://my.json').respond({
-            "features": [{
-              "type": "Feature",
-              "geometry": {
-                "coordinates": [557660, 33280],
-                "type": "Point"
+            'features': [{
+              'type': 'Feature',
+              'geometry': {
+                'coordinates': [557660, 33280],
+                'type': 'Point'
               },
-              "id": "2009",
-              "properties": {}
+              'id': '2009',
+              'properties': {}
             }],
-            "type": "FeatureCollection"
+            'type': 'FeatureCollection'
           });
           var layer = gaLayers.getOlLayerById('geojson');
           expect(layer instanceof ol.layer.Vector).to.be.ok();
@@ -1273,10 +1273,10 @@ describe('ga_map_service', function() {
             return {
               id: 'sometopic',
               backgroundLayers: ['bar']
-            }
+            };
           }
         });
-        $provide.value('gaLang',{
+        $provide.value('gaLang', {
           get: function() {
             return 'somelang';
           }
@@ -1309,7 +1309,7 @@ describe('ga_map_service', function() {
       $httpBackend.flush();
     });
 
-    afterEach(function () {
+    afterEach(function() {
       $httpBackend.verifyNoOutstandingExpectation();
       $httpBackend.verifyNoOutstandingRequest();
     });
@@ -1421,7 +1421,7 @@ describe('ga_map_service', function() {
 
     it('transforms a data URI in Blob', function() {
       // base 64 representation of the background image of the map
-      var blob = gaMapUtils.dataURIToBlob("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAAAAABzHgM7AAAAAnRSTlMAAHaTzTgAAAARSURBVHgBY3iKBFEAOp/+MgB+UQnYeBZPWAAAAABJRU5ErkJggg==");
+      var blob = gaMapUtils.dataURIToBlob('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAAAAABzHgM7AAAAAnRSTlMAAHaTzTgAAAARSURBVHgBY3iKBFEAOp/+MgB+UQnYeBZPWAAAAABJRU5ErkJggg==');
       expect(blob.size).to.eql(88);
       expect(blob.type).to.eql('image/png');
     });
@@ -1442,8 +1442,8 @@ describe('ga_map_service', function() {
     });
 
     it('tests getTileKey', function() {
-      var tileUrl = "//wmts5.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/20140520/21781/18/15/20.jpeg";
-      expect(gaMapUtils.getTileKey(tileUrl)).to.eql(".geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/20140520/21781/18/15/20.jpeg");
+      var tileUrl = '//wmts5.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/20140520/21781/18/15/20.jpeg';
+      expect(gaMapUtils.getTileKey(tileUrl)).to.eql('.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/20140520/21781/18/15/20.jpeg');
     });
 
     it('tests getMapLayerForBodId', inject(function(gaDefinePropertiesForLayer) {
@@ -1573,7 +1573,7 @@ describe('ga_map_service', function() {
       gaDefinePropertiesForLayer(layer);
       expect(gaMapUtils.isKmlLayer(layer)).to.eql(true);
     }));
-    
+
     it('tests isLocalKmlLayer', inject(function(gaDefinePropertiesForLayer) {
       expect(gaMapUtils.isLocalKmlLayer(undefined)).to.eql(false);
       expect(gaMapUtils.isLocalKmlLayer(null)).to.eql(false);
@@ -1616,7 +1616,7 @@ describe('ga_map_service', function() {
       expect(gaMapUtils.isStoredKmlLayer('KML||http://public.bgdi.ch/ggggg.kml')).to.eql(false);
       expect(gaMapUtils.isStoredKmlLayer('KML||http://public.admin.ch/gggg.kml')).to.eql(false);
       expect(gaMapUtils.isStoredKmlLayer('KML||http://public.dev.bgdi.ch/ggggg.kml')).to.eql(true);
-      expect(gaMapUtils.isStoredKmlLayer('KML||http://public.geo.admin.ch/gggg.kml')).to.eql(true)
+      expect(gaMapUtils.isStoredKmlLayer('KML||http://public.geo.admin.ch/gggg.kml')).to.eql(true);
       expect(gaMapUtils.isStoredKmlLayer('KML||https://public.dev.bgdi.ch/ggggg.kml')).to.eql(true);
       expect(gaMapUtils.isStoredKmlLayer('KML||https://public.geo.admin.ch/gggg.kml')).to.eql(true);
 
@@ -1724,7 +1724,7 @@ describe('ga_map_service', function() {
 
       it('returns the default extent if the extent is not valid', function() {
         expect(gaMapUtils.intersectWithDefaultExtent()).to.eql(dflt);
-        expect(gaMapUtils.intersectWithDefaultExtent([1,2])).to.eql(dflt);
+        expect(gaMapUtils.intersectWithDefaultExtent([1, 2])).to.eql(dflt);
       });
 
       it('returns undefined if there is no intersection', function() {
@@ -1734,7 +1734,7 @@ describe('ga_map_service', function() {
       it('returns undefined if the extent doesn\'t contains number', function() {
         expect(gaMapUtils.intersectWithDefaultExtent([undefined, 1, 2, 2])).to.eql(undefined);
         // NaN
-        expect(gaMapUtils.intersectWithDefaultExtent([0, 1, Math.max(undefined,5), 2])).to.eql(undefined);
+        expect(gaMapUtils.intersectWithDefaultExtent([0, 1, Math.max(undefined, 5), 2])).to.eql(undefined);
       });
 
       it('returns the intersection', function() {
@@ -1744,7 +1744,7 @@ describe('ga_map_service', function() {
 
     it('creates a feature overlay', function() {
       var feats = [new ol.Feature(), new ol.Feature()];
-      var style =  new ol.style.Style({
+      var style = new ol.style.Style({
         fill: new ol.style.Fill({
           color: 'red'
         })

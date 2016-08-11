@@ -60,7 +60,7 @@ describe('ga_translation_directive', function() {
     });
     gaGlobalOptions.translationFallbackCode = 'de';
   });
-   
+
   describe('uses template by default (desktop)', function() {
 
     beforeEach(function() {
@@ -68,7 +68,7 @@ describe('ga_translation_directive', function() {
       $compile(element)($rootScope);
       $rootScope.$digest();
     });
- 
+
     it('displays nothing if no langs defined', function() {
       var items = element.find('a');
       expect(items.length).to.be(0);
@@ -106,7 +106,7 @@ describe('ga_translation_directive', function() {
       items = element.find('a');
       expect(items.length).to.be(3);
     });
-    
+
     it('updates correctly the html on multiple $translate change event', function() {
       $rootScope.$broadcast('$translateChangeEnd', {language: 'fr'});
       $rootScope.$digest();
@@ -135,7 +135,7 @@ describe('ga_translation_directive', function() {
       expect(item1.hasClass('ga-lang-selected')).to.be(true);
     });
   });
-  
+
   describe('uses select box template (mobile)', function() {
 
     beforeEach(function() {
@@ -144,7 +144,7 @@ describe('ga_translation_directive', function() {
       $compile(element)($rootScope);
       $rootScope.$digest();
     });
- 
+
     it('displays nothing if no langs defined', function() {
       var items = element.find('select option');
       expect(items.length).to.be(1); //empty option
@@ -178,14 +178,14 @@ describe('ga_translation_directive', function() {
       $rootScope.$digest();
       // In phantomjs an empty option is added but not in a real browser
       var items = element.find('select option[value]');
-      expect(items.length).to.be(4); 
+      expect(items.length).to.be(4);
 
       gaTopic.set(topics[2]);
       $rootScope.$digest();
       items = element.find('select option[value]');
       expect(items.length).to.be(3);
     });
-    
+
     it('updates correctly the html on multiple $translate change event', function() {
       $rootScope.$broadcast('$translateChangeEnd', {language: 'fr'});
       $rootScope.$digest();

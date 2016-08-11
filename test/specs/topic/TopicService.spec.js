@@ -2,25 +2,25 @@ describe('ga_topic_service', function() {
   var gaTopic, $httpBackend, $rootScope, gaGlobalOptions, topicPermalink, gaPermalink,
       expectedUrl = 'http://map.geo.admin.ch/123456/services',
       topics = [{
-        "langs": "de,fr,it",
-        "selectedLayers": [],
-        "backgroundLayers": [
-          "ch.swisstopo.pixelkarte-farbe",
-          "ch.swisstopo.pixelkarte-grau",
-          "ch.swisstopo.swissimage"
+        'langs': 'de,fr,it',
+        'selectedLayers': [],
+        'backgroundLayers': [
+          'ch.swisstopo.pixelkarte-farbe',
+          'ch.swisstopo.pixelkarte-grau',
+          'ch.swisstopo.swissimage'
         ],
-        "id": "sometopic",
-        "showCatalog": true
+        'id': 'sometopic',
+        'showCatalog': true
       }, {
-        "langs": "de,fr",
-        "selectedLayers": [],
-        "backgroundLayers": [
-          "ch.swisstopo.pixelkarte-grau",
-          "ch.swisstopo.pixelkarte-farbe",
-          "ch.swisstopo.swissimage"
+        'langs': 'de,fr',
+        'selectedLayers': [],
+        'backgroundLayers': [
+          'ch.swisstopo.pixelkarte-grau',
+          'ch.swisstopo.pixelkarte-farbe',
+          'ch.swisstopo.swissimage'
         ],
-        "id": "anothertopic",
-        "showCatalog": true
+        'id': 'anothertopic',
+        'showCatalog': true
       }];
 
   beforeEach(function() {
@@ -31,7 +31,7 @@ describe('ga_topic_service', function() {
             topic: topicPermalink
           };
         },
-        updateParams: function(params){
+        updateParams: function(params) {
           topicPermalink = params.topic;
         }
       });
@@ -44,12 +44,12 @@ describe('ga_topic_service', function() {
       gaPermalink = $injector.get('gaPermalink');
     });
     $httpBackend.whenGET(expectedUrl).respond({
-      "topics": topics
+      'topics': topics
     });
     $httpBackend.expectGET(expectedUrl);
   });
 
-  afterEach(function () {
+  afterEach(function() {
     $httpBackend.verifyNoOutstandingExpectation();
     $httpBackend.verifyNoOutstandingRequest();
   });
@@ -90,7 +90,7 @@ describe('ga_topic_service', function() {
     });
 
     it('does nothing when trying to set a wrong topic', function() {
-      gaTopic.set({id:'topicnotexisting'});
+      gaTopic.set({id: 'topicnotexisting'});
       expect(gaTopic.get().id).to.be(topics[0].id);
       expect(cpt).to.be(1);
       expect(gaPermalink.getParams().topic).to.be(topics[0].id);

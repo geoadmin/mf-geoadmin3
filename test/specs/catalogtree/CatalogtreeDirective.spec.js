@@ -79,7 +79,7 @@ describe('ga_catalogtree_directive', function() {
     });
   });
 
-  afterEach(function () {
+  afterEach(function() {
     $httpBackend.verifyNoOutstandingExpectation();
     $httpBackend.verifyNoOutstandingRequest();
   });

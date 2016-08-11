@@ -34,7 +34,7 @@ describe('ga_topic_directive', function() {
 
 
   });
-   
+
   describe('uses template by default (desktop)', function() {
 
     beforeEach(function() {
@@ -42,7 +42,7 @@ describe('ga_topic_directive', function() {
       $compile(element)($rootScope);
       $rootScope.$digest();
     });
- 
+
     it('displays nothing if topics are not loaded', function() {
       var items = element.find('.ga-topic-item');
       expect(items.length).to.be(0);
@@ -96,7 +96,7 @@ describe('ga_topic_directive', function() {
       $compile(element)($rootScope);
       $rootScope.$digest();
     });
- 
+
     it('displays nothing if topics are not loaded', function() {
       var items = element.find('select option');
       expect(items.length).to.be(1); //empty option
@@ -123,7 +123,7 @@ describe('ga_topic_directive', function() {
         var items = element.find('select option');
         expect(items.length).to.be(2);
         expect($(items[1]).attr('selected')).to.be('selected');
-     
+
         $rootScope.$broadcast('gaTopicChange', topics[0]);
         $rootScope.$digest();
         var items = element.find('select option');

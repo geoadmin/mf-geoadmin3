@@ -2,7 +2,7 @@ describe('ga_importkml__directive', function() {
   var element, map, urlTab, localFileTab, loadKmlBt, tabsContainer,
       tabContents, formLocalFile, formUrl, inputFile, inputFileUrl, tabsLi,
       $httpBackend, $rootScope, $compile;
-  
+
   beforeEach(function() {
 
     module(function($provide) {
@@ -18,10 +18,10 @@ describe('ga_importkml__directive', function() {
     });
 
     map = new ol.Map({});
-    map.setSize([600,300]);
+    map.setSize([600, 300]);
     map.getView().fit([-20000000, -20000000, 20000000, 20000000],
-        map.getSize()); 
-    
+        map.getSize());
+
     element = angular.element(
         '<div ga-import-kml ga-import-kml-map="map" ' +
              'ga-import-kml-options="options">' +
@@ -35,9 +35,9 @@ describe('ga_importkml__directive', function() {
     $compile(element)($rootScope);
     $rootScope.$digest();
 
-    // Get HTML elements  
+    // Get HTML elements
     tabsContainer = element.find('.tabbable');
-    tabContents = tabsContainer.find('.tab-content > div'); 
+    tabContents = tabsContainer.find('.tab-content > div');
     tabsLi = tabsContainer.find('.nav-tabs > li');
     loadKmlBt = element.find('button[type=button][ng-click="loadKML()"]');
     localFileTab = $(tabContents[0]);
@@ -52,20 +52,20 @@ describe('ga_importkml__directive', function() {
     expect(tabsLi.length).to.be(2);
     expect(tabContents.length).to.be(2);
     expect(localFileTab.length).to.be(1);
-    expect(inputFile.length).to.be(1); 
-    expect(localFileTab.find('input[type=text][readonly]').length).to.be(1); 
+    expect(inputFile.length).to.be(1);
+    expect(localFileTab.find('input[type=text][readonly]').length).to.be(1);
     expect(localFileTab.find('button').length).to.be(1);
     expect(urlTab.length).to.be(1);
-    expect(inputFileUrl.length).to.be(1); 
+    expect(inputFileUrl.length).to.be(1);
   });
 
   describe('load KML from an URL', function() {
     var expectedKmlUrl = 'http://admin.ch/ogcproxy?url=http%3A%2F%2Fgeo.admin.ch%2Ftest.kml';
     var fileUrlTest = 'http://geo.admin.ch/test.kml';
     var fileContent = '<?xml version=\'1.0\' encoding="UTF-8" standalone="no" ?>' +
-        '<kml xmlns="http://www.opengis.net/kml/2.2"' + 
+        '<kml xmlns="http://www.opengis.net/kml/2.2"' +
             ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
-            ' xmlns:kml="http://www.opengis.net/kml/2.2"' + 
+            ' xmlns:kml="http://www.opengis.net/kml/2.2"' +
             ' xmlns:atom="http://www.w3.org/2005/Atom">' +
           '<Placemark id="Point">' +
             '<name>Swiss Miniatur</name>' +
@@ -92,7 +92,7 @@ describe('ga_importkml__directive', function() {
       $httpBackend.expectGET(expectedKmlUrl);
     }));
 
-    afterEach(function () {
+    afterEach(function() {
       $httpBackend.verifyNoOutstandingExpectation();
       $httpBackend.verifyNoOutstandingRequest();
     });
