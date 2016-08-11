@@ -231,12 +231,12 @@ describe('ga_previewfeatures_service', function() {
         zoomTo.verify();
       });
 
-      it('zooms on a buffered extent if feature\'s extent is to small', function() {
+      it('zooms on a buffered extent if feature\'s extent is to small (MINIMAL_EXTENT_SIZE=1965)', function() {
         var feat = new ol.Feature(new ol.geom.Point([0, 0]));
         var zoomTo = gaMapUtilsMock.expects('zoomToExtent').withArgs(map, ol3d, [-982.5, -982.5, 982.5, 982.5]);
         gaPreviewFeatures.zoom(map, ol3d, feat);
         zoomTo.verify();
-});
+      });
     });
   });
 });

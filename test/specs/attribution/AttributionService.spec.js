@@ -86,11 +86,11 @@ describe('ga_attribution_service', function() {
       var layerConfig = layersConfig['layer'];
       var layerConfig3d = layersConfig3d['layer3d'];  
       var attrib = gaAttribution.getHtmlFromLayer(olLayer); 
-      expect(attrib).to.be.eql(getBodAttrib(layerConfig));
+      expect(attrib).to.eql(getBodAttrib(layerConfig));
       attrib = gaAttribution.getHtmlFromLayer(olLayer, true);
-      expect(attrib).to.be.eql(getBodAttrib(layerConfig3d));
+      expect(attrib).to.eql(getBodAttrib(layerConfig3d));
       attrib = gaAttribution.getTextFromLayer(olLayer);
-      expect(attrib).to.be.eql(layerConfig.attribution);
+      expect(attrib).to.eql(layerConfig.attribution);
     });
 
     it('gets attribution of bod layer with no link', function() {
@@ -98,53 +98,53 @@ describe('ga_attribution_service', function() {
       var layerConfig = layersConfig['layerNoLink'];
       var layerConfig3d = layersConfig3d['layer3dNoLink'];  
       var attrib = gaAttribution.getHtmlFromLayer(olLayer); 
-      expect(attrib).to.be.eql(getBodAttribNoLink(layerConfig));
+      expect(attrib).to.eql(getBodAttribNoLink(layerConfig));
       attrib = gaAttribution.getHtmlFromLayer(olLayer, true);
-      expect(attrib).to.be.eql(getBodAttribNoLink(layerConfig3d));
+      expect(attrib).to.eql(getBodAttribNoLink(layerConfig3d));
       attrib = gaAttribution.getTextFromLayer(olLayer);
-      expect(attrib).to.be.eql(layerConfig.attribution);
+      expect(attrib).to.eql(layerConfig.attribution);
     });
 
     it('gets attribution of external (third party) layer', function() {
       var olLayer = {url:'http://foo.ch/admin/wms'};
       var host = 'foo.ch';
       var attrib = gaAttribution.getHtmlFromLayer(olLayer); 
-      expect(attrib).to.be.eql(getThirdPartyAttrib(host));
+      expect(attrib).to.eql(getThirdPartyAttrib(host));
       attrib = gaAttribution.getHtmlFromLayer(olLayer, true);
-      expect(attrib).to.be.eql(getThirdPartyAttrib(host));
+      expect(attrib).to.eql(getThirdPartyAttrib(host));
       attrib = gaAttribution.getTextFromLayer(olLayer);
-      expect(attrib).to.be.eql(host);
+      expect(attrib).to.eql(host);
 
       // public.geo.admin.ch
       olLayer = {url:'http://public.geo.admin.ch/idsfdsf'};
       var host = 'public.geo.admin.ch';
       var attrib = gaAttribution.getHtmlFromLayer(olLayer); 
-      expect(attrib).to.be.eql(getThirdPartyAttrib(host));
+      expect(attrib).to.eql(getThirdPartyAttrib(host));
       attrib = gaAttribution.getHtmlFromLayer(olLayer, true);
-      expect(attrib).to.be.eql(getThirdPartyAttrib(host));
+      expect(attrib).to.eql(getThirdPartyAttrib(host));
       attrib = gaAttribution.getTextFromLayer(olLayer);
-      expect(attrib).to.be.eql(host);
+      expect(attrib).to.eql(host);
     });
 
     it('gets attribution of external (but admin) layer', function() {
       var olLayer = {url:'http://wms.geo.admin.ch/wms'};
       var host = 'wms.geo.admin.ch';
       var attrib = gaAttribution.getHtmlFromLayer(olLayer); 
-      expect(attrib).to.be.eql(host);
+      expect(attrib).to.eql(host);
       attrib = gaAttribution.getHtmlFromLayer(olLayer, true);
-      expect(attrib).to.be.eql(host);
+      expect(attrib).to.eql(host);
       attrib = gaAttribution.getTextFromLayer(olLayer);
-      expect(attrib).to.be.eql(host);
+      expect(attrib).to.eql(host);
     });
 
     it('doesn\'t get attribution for local layer (dnd)', function() {
       var olLayer = {url:'my_kml_file_kml'};
       var attrib = gaAttribution.getHtmlFromLayer(olLayer); 
-      expect(attrib).to.be.eql(undefined);
+      expect(attrib).to.eql(undefined);
       attrib = gaAttribution.getHtmlFromLayer(olLayer, true);
-      expect(attrib).to.be.eql(undefined);
+      expect(attrib).to.eql(undefined);
       attrib = gaAttribution.getTextFromLayer(olLayer);
-      expect(attrib).to.be.eql(undefined);
+      expect(attrib).to.eql(undefined);
     });
   });
 });

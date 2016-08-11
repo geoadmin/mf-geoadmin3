@@ -124,19 +124,17 @@ describe('ga_previewlayers_service', function() {
     });
 
     describe('removeAll', function() {
+      var previewFeaturesLayer = new ol.layer.Vector({
+        source: new ol.source.Vector({})
+      });
+      previewFeaturesLayer.preview = true;
 
-      beforeEach(function() {
-        var previewFeaturesLayer = new ol.layer.Vector({
-          source: new ol.source.Vector({})
-        });
-        previewFeaturesLayer.preview = true;
+      it('remove only preview layers', function() {
         map.addLayer(previewFeaturesLayer);
         map.addLayer(new ol.layer.Layer({}));
         gaPreviewLayers.addBodLayer(map, 'some');
         gaPreviewLayers.addGetCapWMSLayer(map, {id: 'some1'});
-      });
 
-      it('remove only preview layers', function() {
         var layers = map.getLayers();
         expect(layers.getLength()).to.be(3);
         gaPreviewLayers.removeAll(map);

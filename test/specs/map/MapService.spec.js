@@ -147,7 +147,7 @@ describe('ga_map_service', function() {
         expect(tg.getResolutions()).to.eql(dfltRes);
       });
 
-      it('creates a WMSS tilegrid with default values', function() {
+      it('creates a WMS tilegrid with default values', function() {
         var tg = gaTileGrid.get(undefined, undefined, 'wms');
         expect(tg).to.be.an(ol.tilegrid.TileGrid);
         expect(tg.getTileSize()).to.be(512);

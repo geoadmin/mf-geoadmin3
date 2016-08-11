@@ -91,7 +91,7 @@ describe('ga_background_service', function() {
         });
 
         it('resolves the promise when layers and topics are loaded', function(done) {
-          var p = gaBg.init(map).then(function() {
+          gaBg.init(map).then(function() {
             done();
           });
           deferGaTopic.resolve();
@@ -100,7 +100,7 @@ describe('ga_background_service', function() {
         });
 
         it('rejects the promise when layers loading fails', function(done) {
-          var p = gaBg.init(map).then(function() {
+          gaBg.init(map).then(function() {
           }, function() {
             done();
           });
@@ -110,7 +110,7 @@ describe('ga_background_service', function() {
         });
 
         it('rejects the promise when topics loading fails', function(done) {
-          var p = gaBg.init(map).then(function() {
+          gaBg.init(map).then(function() {
           }, function() {
             done();
           });
@@ -120,7 +120,7 @@ describe('ga_background_service', function() {
         });
 
         it('initializes the list of background layers', function(done) {
-          var p = gaBg.init(map).then(function() {
+          gaBg.init(map).then(function() {
             var bgs = gaBg.getBackgrounds();
             expect(bgs.length).to.equal(3);
             expect(bgs[0].id).to.equal('bg2');
@@ -137,7 +137,7 @@ describe('ga_background_service', function() {
         });
 
         it('initializes the default background from topic', function(done) {
-         var p = gaBg.init(map).then(function() {
+          gaBg.init(map).then(function() {
             var bg = gaBg.get();
             expect(bg.id).to.equal('bg1');
             done();
@@ -148,7 +148,7 @@ describe('ga_background_service', function() {
         });
 
         it('adds a bg layer to the map', function(done) {
-          var p = gaBg.init(map).then(function() {
+          gaBg.init(map).then(function() {
             var bg = gaBg.get();
             expect(bg.id).to.equal('bg1');
 
@@ -167,7 +167,7 @@ describe('ga_background_service', function() {
           gaTopic.get = function() {
             return topicVoidLayer;
           };
-          var p = gaBg.init(map).then(function() {
+          gaBg.init(map).then(function() {
             var bg = gaBg.get();
             expect(bg.id).to.equal('voidLayer');
 
@@ -182,7 +182,7 @@ describe('ga_background_service', function() {
    
         it('updates permalink', function(done) {
           var upParams = gaPermalinkMock.expects('updateParams').withArgs({bgLayer: 'bg1'}).once();
-          var p = gaBg.init(map).then(function() {
+          gaBg.init(map).then(function() {
             upParams.verify();
             done();
           });
@@ -193,7 +193,7 @@ describe('ga_background_service', function() {
    
         it('broadcast gaBgChange event', function(done) {
           var bcast = $rootScopeMock.expects('$broadcast').withArgs('gaBgChange').once();
-          var p = gaBg.init(map).then(function() {
+          gaBg.init(map).then(function() {
             bcast.verify();
             done();
           });
@@ -204,7 +204,7 @@ describe('ga_background_service', function() {
    
         it('listens gaTopicChange event', function(done) {
           var onTopicChange = $rootScopeMock.expects('$on').withArgs('gaTopicChange').once();
-          var p = gaBg.init(map).then(function() {
+          gaBg.init(map).then(function() {
             onTopicChange.verify();
             done();
           });
@@ -213,8 +213,8 @@ describe('ga_background_service', function() {
           $rootScope.$digest();
         });
          
-        it('change bg on gaTopicChange event', function(done) {
-          var p = gaBg.init(map).then(function() {
+        it('changes bg on gaTopicChange event', function(done) {
+          gaBg.init(map).then(function() {
             var layers = map.getLayers();
             expect(gaBg.get().id).to.equal('bg1');
             expect(gaBg.getBackgrounds().length).to.equal(3);
@@ -247,7 +247,7 @@ describe('ga_background_service', function() {
         });
 
         it('uses default bg from plConfig (priority over defaultBackground property)', function(done) {
-          var p = gaBg.init(map).then(function() {
+          gaBg.init(map).then(function() {
             var bg = gaBg.get();
             expect(bg.id).to.equal('bg3');
             done();
@@ -259,7 +259,7 @@ describe('ga_background_service', function() {
 
         it('initializes the default background from permalink (priority over plConfig)', function(done) {
           var getParams = gaPermalinkMock.expects('getParams').twice().returns({bgLayer: 'voidLayer'});
-          var p = gaBg.init(map).then(function() {
+          gaBg.init(map).then(function() {
             getParams.verify();
             var bg = gaBg.get();
             expect(bg.id).to.equal('voidLayer');
