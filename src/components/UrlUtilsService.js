@@ -10,7 +10,7 @@ goog.provide('ga_urlutils_service');
       var UrlUtils = function() {
 
         // from Angular
-        // https://github.com/angular/angular.js/blob/master/src/ng/directive/input.js#L3
+        // https://github.com/angular/angular.js/blob/v1.4.8/src/ng/directive/input.js#L15
         var URL_REGEXP =
         /^(ftp|http|https):\/\/(?:\w+(?::\w+)?@)?[^\s/]+(?::\d+)?(?:\/[\w#!:.?+=&%@\-/[\]$'()*,;~]*)?$/;
 

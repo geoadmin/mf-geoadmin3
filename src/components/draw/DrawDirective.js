@@ -65,7 +65,7 @@ goog.require('ga_styles_service');
       return tooltip;
     };
 
-    // Display an help tooltip for when drawing
+    // Display an help tooltip when drawing
     var updateHelpTooltip = function(overlay, type, drawStarted, onFirstPoint,
         onLastPoint) {
       if (!overlay) {
@@ -168,7 +168,7 @@ goog.require('ga_styles_service');
                 'pointermove'
               ], function(evt) {
                 helpTooltip.setPosition(evt.coordinate);
-                updateCursorStyleDebounced(evt);
+                updateCursorAndTooltipsDebounced(evt);
               });
               mapDiv.on('mouseout', hideHelpTooltip);
             }
@@ -186,7 +186,7 @@ goog.require('ga_styles_service');
         select.on('select', function(evt) {
           if (evt.selected[0]) {
             // Update the position of the popup according to the click event.
-            togglePopup(evt.selected[0], evt.mapBrowserEvent.coordinate);
+            managePopup(evt.selected[0], evt.mapBrowserEvent.coordinate);
           }
         });
         select.getFeatures().on('add', function(evt) {
@@ -194,7 +194,7 @@ goog.require('ga_styles_service');
           var styles = scope.options.selectStyleFunction(evt.element);
           evt.element.setStyle(styles);
           // Show the popup
-          togglePopup(evt.element);
+          managePopup(evt.element);
         });
         select.getFeatures().on('remove', function(evt) {
           // Remove the select style
@@ -202,7 +202,7 @@ goog.require('ga_styles_service');
           styles.pop();
           evt.element.setStyle(styles);
           // Hide or move the popup to the next selected feature
-          togglePopup(evt.target.item(0));
+          managePopup(evt.target.item(0));
         });
         select.setActive(false);
 
@@ -244,7 +244,7 @@ goog.require('ga_styles_service');
               body.removeClass(cssModify);
             }, 0, false);
             // Move the popup to the new position
-            togglePopup(evt.features.item(0),
+            managePopup(evt.features.item(0),
                 evt.mapBrowserPointerEvent.coordinate);
           }
         });
@@ -483,7 +483,7 @@ goog.require('ga_styles_service');
               // The sketchFeatureArea is automatically closed by the draw
               // interaction even if the user has finished drawing on the
               // last point. So we remove the useless coordinates.
-              var lineCoords = featureToAdd.getGeometry().getCoordinates()[0];
+              var lineCoords = geom.getCoordinates()[0];
               lineCoords.pop();
               if (tool.showMeasure) {
                 // We remove the area tooltip.
@@ -502,7 +502,7 @@ goog.require('ga_styles_service');
             }
             featureToAdd.getGeometry().set('altitudeMode', 'clampToGround');
 
-            // Set the definitve style of the feature
+            // Set the definitive style of the feature
             featureToAdd.setStyle(tool.style(featureToAdd));
 
             // Add the feature to the layer and select it
@@ -653,9 +653,9 @@ goog.require('ga_styles_service');
 
 
         ////////////////////////////////////
-        // Popup content management
+        // Popup management
         ////////////////////////////////////
-        var togglePopup = function(feature, clickCoord) {
+        var managePopup = function(feature, clickCoord) {
           if (scope.options.noStyleUpdate) {
             return;
           }
@@ -722,20 +722,16 @@ goog.require('ga_styles_service');
         var saveDebounced = gaDebounce.debounce(save, 2000, false, false);
 
 
-        var dereg = [
-          $rootScope.$on('$translateChangeEnd', function() {
-            if (layer) {
-              layer.label = $translate.instant('draw_layer_label');
-            }
-          })
-        ];
+        var dereg = $rootScope.$on('$translateChangeEnd', function() {
+          if (layer) {
+            layer.label = $translate.instant('draw_layer_label');
+          }
+        });
 
         // Remove interactions on destroy
         scope.$on('$destroy', function() {
           deactivate();
-          dereg.forEach(function(item) {
-            item();
-          });
+          dereg();
         });
 
 
@@ -743,7 +739,7 @@ goog.require('ga_styles_service');
         // Utils functions
         ////////////////////////////////////
         // Change cursor style on mouse move, only on desktop
-        var updateCursorStyle = function(evt) {
+        var updateCursorAndTooltips = function(evt) {
           if (mapDiv.hasClass(cssGrabbing)) {
             mapDiv.removeClass(cssGrab);
             return;
@@ -753,7 +749,6 @@ goog.require('ga_styles_service');
           var hoverVertex = false;
           var selectableFeat, newVertexFeat;
           var type;
-          var classes = cssPointer + ' ' + cssGrab;
 
           // Try to find a selectable feature
           map.forEachFeatureAtPixel(
@@ -781,7 +776,7 @@ goog.require('ga_styles_service');
             type = selectableFeat.getId().split('_')[0];
 
             if (newVertexFeat) {
-              // We try to found if the newVertex is snapped on an existing
+              // We try to find out if the newVertex is snapped on an existing
               // one.
               var styles = selectableFeat.getStyle();
               var vertexStyle = styles[styles.length - 1];
@@ -807,7 +802,6 @@ goog.require('ga_styles_service');
             // If the cursor is hover a selectable feature.
             mapDiv.addClass(cssPointer);
             mapDiv.removeClass(cssGrab);
-
             updateSelectHelpTooltip(helpTooltip, type);
 
           } else if (hoverNewVertex || hoverVertex) {
@@ -817,8 +811,8 @@ goog.require('ga_styles_service');
             updateModifyHelpTooltip(helpTooltip, type, hoverVertex);
           }
         };
-        var updateCursorStyleDebounced = gaDebounce.debounce(
-            updateCursorStyle, 10, false, false);
+        var updateCursorAndTooltipsDebounced = gaDebounce.debounce(
+            updateCursorAndTooltips, 10, false, false);
       }
     };
   });
