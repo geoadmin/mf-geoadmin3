@@ -7,12 +7,9 @@ goog.provide('ga_feedback_controller');
       gaGlobalOptions) {
 
     $scope.options = {
-      showExport: false,
       useTemporaryLayer: true,
       broadcastLayer: true,
       noMoreFunctions: true,
-      noShareFunctions: true,
-      noStyleUpdate: true,
       feedbackUrl: gaGlobalOptions.apiUrl + '/feedback'
     };
   });

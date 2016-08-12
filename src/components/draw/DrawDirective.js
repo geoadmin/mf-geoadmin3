@@ -23,7 +23,6 @@ goog.require('ga_styles_service');
    *
    *   - broadcastLayer : send the current layer drawn through the rootScope
    *                      with the event 'gaDrawingLayer'.
-   *   - showExport: show the export button which allow to download a KML file.
    *   - useTemporaryLayer: force to use a new layer which will not be saved
    *                        automatically on s3.
    *
@@ -650,9 +649,6 @@ goog.require('ga_styles_service');
         // Popup management
         ////////////////////////////////////
         var managePopup = function(feature, clickCoord) {
-          if (scope.options.noStyleUpdate) {
-            return;
-          }
           scope.feature = feature;
           if (!scope.feature) {
             // Hide popups

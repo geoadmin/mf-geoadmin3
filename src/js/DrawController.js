@@ -21,7 +21,6 @@ goog.require('ga_styles_service');
     var black = [0, 0, 0];
 
     var options = {
-      showExport: true,
       broadcastLayer: false,
       useTemporaryLayer: false,
       translate: $translate // For translation of ng-options

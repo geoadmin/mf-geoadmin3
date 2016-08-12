@@ -51,7 +51,6 @@ describe('ga_feedback_directive', function() {
       $compile = $injector.get('$compile');
       $rootScope.options = {
         feedbackUrl: 'http://feedback.com',
-        showExport: false,
         broadcastLayer: false
       };
       encodeUriQuery = gaUrlUtils.encodeUriQuery;
