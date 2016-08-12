@@ -6,10 +6,10 @@ describe('ga_printstyle_service', function() {
       gaPrintStyle = $injector.get('gaPrintStyle');
     });
   });
-   
+
   describe('#olPointToPolygon()', function() {
     var pt = new ol.geom.Point([1, 2]);
-    
+
     it('returns nothing if mandatory values are not defined', function() {
       var poly = gaPrintStyle.olPointToPolygon();
       expect(poly).to.be(undefined);
@@ -51,10 +51,10 @@ describe('ga_printstyle_service', function() {
         ]]);
       });
     });
-  });  
- 
+  });
+
   describe('#olCircleToPolygon()', function() {
-    
+
     it('returns nothing if mandatory values are not defined', function() {
       var poly = gaPrintStyle.olCircleToPolygon();
       expect(poly).to.be(undefined);
@@ -64,7 +64,7 @@ describe('ga_printstyle_service', function() {
 
     describe('transforms a circle to polygon', function() {
       var circle = new ol.geom.Circle([1, 2], 100);
-      
+
       it('using default values', function() {
         var poly = gaPrintStyle.olCircleToPolygon(circle);
         expect(poly).to.be.an(ol.geom.Polygon);
@@ -128,9 +128,9 @@ describe('ga_printstyle_service', function() {
     });
 
   });
- 
+
   describe('#olStyleToPrintLiterals()', function() {
-    
+
     var dfltFill = new ol.style.Fill({
       color: [21, 22, 23, 0.1]
     });
@@ -142,7 +142,7 @@ describe('ga_printstyle_service', function() {
       lineJoin: 'bevel',
       lineDash: [5, 6]
     });
-        
+
     it('returns nothing if style and/or dpi are not defined', function() {
       var literal = gaPrintStyle.olStyleToPrintLiteral();
       expect(literal).to.be(undefined);
@@ -162,7 +162,7 @@ describe('ga_printstyle_service', function() {
         strokeOpacity: 0
       });
     });
-    
+
     it('transforms correctly a complete style', function() {
       var allStyle = new ol.style.Style({
         zIndex: 3,
@@ -170,7 +170,7 @@ describe('ga_printstyle_service', function() {
         stroke: dfltStroke,
         text: new ol.style.Text({
           text: 'test',
-          textAlign: 'center', 
+          textAlign: 'center',
           fill: new ol.style.Fill({
             color: [27, 28, 29, 0.3]
           }),
@@ -209,7 +209,7 @@ describe('ga_printstyle_service', function() {
         fontWeight: 'bold'
       });
     });
-     
+
     it('transforms correctly a color with an hexa value of one letter(#3322)', function() {
        var style = new ol.style.Style({
           fill: new ol.style.Fill({
@@ -226,7 +226,7 @@ describe('ga_printstyle_service', function() {
     });
 
     describe('transforms correctly a image style', function() {
-       
+
       it('containing an ol.style.Circle', function() {
         var style = new ol.style.Style({
           image: new ol.style.Circle({
@@ -251,7 +251,7 @@ describe('ga_printstyle_service', function() {
           strokeOpacity: 0.2,
           strokeLinecap: 'round',
           strokeLinejoin: 'bevel',
-          strokeDashstyle: 'dash' 
+          strokeDashstyle: 'dash'
         });
       });
 
@@ -279,7 +279,7 @@ describe('ga_printstyle_service', function() {
           strokeOpacity: 0.2,
           strokeLinecap: 'round',
           strokeLinejoin: 'bevel',
-          strokeDashstyle: 'dash' 
+          strokeDashstyle: 'dash'
         });
       });
 
@@ -306,12 +306,12 @@ describe('ga_printstyle_service', function() {
     });
 
     describe('transforms correctly a stroke style', function() {
-      
+
       it('using default values (lineCap, lineJoin, lineDash ...)', function() {
         var style = new ol.style.Style({
           stroke: new ol.style.Stroke({
             color: [28, 255, 0, 0.2],
-            width: 1.2,
+            width: 1.2
           })
         });
         var literal = gaPrintStyle.olStyleToPrintLiteral(style, 96);
@@ -322,7 +322,7 @@ describe('ga_printstyle_service', function() {
           strokeColor: '#1cff00',
           strokeOpacity: 0.2,
           strokeLinecap: 'round',
-          strokeLinejoin: 'round' 
+          strokeLinejoin: 'round'
         });
       });
     });

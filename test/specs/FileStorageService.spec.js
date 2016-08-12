@@ -6,12 +6,12 @@ describe('ga_filestorage_service', function() {
       fileInfo = {
         adminId: adminId,
         fileId: fileId,
-        fileUrl: 'http://public.geo.admin.ch/' + fileId,
+        fileUrl: 'http://public.geo.admin.ch/' + fileId
       },
       fileInfoHttps = {
         adminId: adminId,
         fileId: fileId,
-        fileUrl: 'https://public.geo.admin.ch/' + fileId,
+        fileUrl: 'https://public.geo.admin.ch/' + fileId
       },
       serviceUrl, publicUrl;
 
@@ -23,8 +23,8 @@ describe('ga_filestorage_service', function() {
       publicUrl = gaGlobalOptions.publicUrl;
     });
   });
-  
-  afterEach(function () {
+
+  afterEach(function() {
     $httpBackend.verifyNoOutstandingExpectation();
     $httpBackend.verifyNoOutstandingRequest();
   });
@@ -41,15 +41,15 @@ describe('ga_filestorage_service', function() {
     $httpBackend.expectGET(expectedUrl).respond(fileContent);
     gaFileStorage.get(fileId);
     $httpBackend.flush();
-  })); 
-  
+  }));
+
   it('creates a file', inject(function($timeout, gaGlobalOptions) {
     var expectedUrl = serviceUrl;
     $httpBackend.expectPOST(serviceUrl, fileContent).respond(fileInfo);
     gaFileStorage.save(null, fileContent);
     $httpBackend.flush();
-  }));  
-  
+  }));
+
   it('updates a file', inject(function($timeout) {
     var expectedUrl = serviceUrl + '/' + adminId;
     $httpBackend.expectPOST(expectedUrl, fileContent, function(headers) {
@@ -58,7 +58,7 @@ describe('ga_filestorage_service', function() {
     gaFileStorage.save(adminId, fileContent, 'text/plain');
     $httpBackend.flush();
   }));
-   
+
   it('deletes a file', inject(function($timeout) {
     var expectedUrl = serviceUrl + '/' + adminId;
     $httpBackend.expectDELETE(expectedUrl).respond({success: true});

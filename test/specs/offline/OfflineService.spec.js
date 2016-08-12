@@ -15,7 +15,7 @@ describe('ga_offline_service', function() {
   };
   var layerBodTimeEnabledConfig = {
     timeEnabled: true,
-    timestamps: ['20121231','18641231']
+    timestamps: ['20121231', '18641231']
   };
 
   beforeEach(function() {
@@ -26,7 +26,7 @@ describe('ga_offline_service', function() {
     });
     map = new ol.Map({});
   });
-  
+
   describe('hasData', function() {
 
     it('detects data', function() {
@@ -42,7 +42,7 @@ describe('ga_offline_service', function() {
       getItem.verify();
       expect(has).to.equal(false);
     });
-  });   
+  });
 
   describe('isDataObsolete', function() {
 
@@ -53,7 +53,7 @@ describe('ga_offline_service', function() {
       getTs.verify();
       expect(obs).to.be(false);
     });
-    
+
     it('returns false if there is data but ' + timestampKey + 'is not set (old offline version)', function() {
      var getExt = gaStorageMock.expects('getItem').once().withArgs(extentKey).returns('655000,185000,665000,195000');
      var getTs = gaStorageMock.expects('getItem').once().withArgs(timestampKey).returns(undefined);
@@ -62,7 +62,7 @@ describe('ga_offline_service', function() {
      getTs.verify();
      expect(obs).to.be(true);
     });
-    
+
     describe('detects obsolences from data stored', function() {
       var verif;
       beforeEach(function() {
@@ -81,7 +81,7 @@ describe('ga_offline_service', function() {
               .returns(layerBodTimeEnabledConfig)
         ];
       });
-       
+
       it('contains an obsolete layer', function() {
         verif = verif.concat([
           gaStorageMock.expects('getItem').once().withArgs(timestampKey)
@@ -92,7 +92,7 @@ describe('ga_offline_service', function() {
           item.verify();
         });
       });
-             
+
       it('doesn\'t contains an obsolete layer', function() {
         verif = verif.concat([
           gaStorageMock.expects('getItem').once().withArgs(timestampKey)
@@ -108,8 +108,8 @@ describe('ga_offline_service', function() {
 
   describe('calculateExtentToSave', function() {
     it('returns a buffer of 5000 m', function() {
-      expect(gaOffline.calculateExtentToSave([0,0])).to.eql([-5000,-5000, 5000, 5000]);
-    }); 
+      expect(gaOffline.calculateExtentToSave([0, 0])).to.eql([-5000, -5000, 5000, 5000]);
+    });
   });
 
   describe('isSelectorActive', function() {

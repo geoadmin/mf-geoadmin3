@@ -1,11 +1,11 @@
 describe('ga_previewlayers_service', function() {
-  
+
   describe('gaPreviewLayers', function() {
     var gaPreviewLayers, map, gaLayers, gaWms, gaTime, gaMapUtils;
 
     beforeEach(function() {
       module(function($provide) {
-        
+
         $provide.value('gaLayers', {
           loadConfig: function() {},
           getOlLayerById: function(bodId) {
@@ -26,7 +26,7 @@ describe('ga_previewlayers_service', function() {
            return !!(olLayer.bodId);
           }
         });
-        
+
         $provide.value('gaWms', {
           getOlLayerFromGetCapLayer: function(getCapLayer) {
             var layer = new ol.layer.Layer({});
@@ -34,7 +34,7 @@ describe('ga_previewlayers_service', function() {
             return layer;
           }
         });
- 
+
         $provide.value('gaTime', {
           get: function() {}
         });
@@ -80,7 +80,7 @@ describe('ga_previewlayers_service', function() {
         expect(layers.getLength()).to.be(1);
         expect(layers.item(0).bodId).to.be('other');
       });
-      
+
       it('updates the time property of an existing preview layer', function() {
         var layers = map.getLayers();
         expect(layers.getLength()).to.be(1);

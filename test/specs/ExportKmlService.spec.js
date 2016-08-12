@@ -5,9 +5,9 @@ describe('ga_exportkml_service', function() {
   var completeStyle = new ol.style.Style({
     fill: new ol.style.Fill({color: [128, 64, 32, 0.2]}),
     stroke: new ol.style.Stroke({color: [129, 65, 33, 0.4], width: 3}),
-    text: new ol.style.Text({text: 'featureWithText'}),        
+    text: new ol.style.Text({text: 'featureWithText'}),
     image: new ol.style.Icon({src: 'http://featWithImg.png', scale: 2}),
-    zIndex: 3 
+    zIndex: 3
   });
   var dfltProps = {
     description: 'featWithDescr',
@@ -23,10 +23,10 @@ describe('ga_exportkml_service', function() {
   var featWithProps = new ol.Feature(dfltProps);
   featWithProps.setId('featWithId');
   featWithProps.setStyle([completeStyle]);
-  
+
   var featWithNoImageHack = new ol.Feature(pointGeom);
   featWithNoImageHack.setStyle([new ol.style.Style({
-      text: new ol.style.Text({text: 'featureWithText'}),        
+      text: new ol.style.Text({text: 'featureWithText'}),
       image: new ol.style.Circle()
   })]);
 
@@ -35,11 +35,11 @@ describe('ga_exportkml_service', function() {
     '<name>featureWithText</name>' +
     '<description>featWithDescr</description>' +
     '<Style>' +
-      '<IconStyle>' + 
-        '<scale>4</scale>' + 
-        '<Icon>' + 
+      '<IconStyle>' +
+        '<scale>4</scale>' +
+        '<Icon>' +
           '<href>http://featWithImg.png</href>' +
-        '</Icon>' + 
+        '</Icon>' +
       '</IconStyle>' +
       '<LabelStyle>' +
         '<color>ff333333</color>' +
@@ -47,32 +47,32 @@ describe('ga_exportkml_service', function() {
       '<LineStyle>' +
         '<color>66214181</color>' +
         '<width>3</width>' +
-      '</LineStyle>' + 
-      '<PolyStyle>' + 
-        '<color>33204080</color>' + 
-      '</PolyStyle>' + 
+      '</LineStyle>' +
+      '<PolyStyle>' +
+        '<color>33204080</color>' +
+      '</PolyStyle>' +
     '</Style>' +
-    '<Point>' + 
+    '<Point>' +
       '<coordinates>-89.83152841195214,66.44602771314118</coordinates>' +
-    '</Point>' + 
+    '</Point>' +
   '</Placemark>';
-   
+
   var plkFeatWithNoImageHack = '<Placemark>' +
     '<name>featureWithText</name>' +
     '<Style>' +
-      '<IconStyle>' + 
-        '<scale>0</scale>' + 
+      '<IconStyle>' +
+        '<scale>0</scale>' +
       '</IconStyle>' +
       '<LabelStyle>' +
         '<color>ff333333</color>' +
       '</LabelStyle>' +
     '</Style>' +
-    '<Point>' + 
+    '<Point>' +
       '<coordinates>-89.83152841195214,66.44602771314118</coordinates>' +
-    '</Point>' + 
-  '</Placemark>'; 
+    '</Point>' +
+  '</Placemark>';
 
-  // Create a KML string from a list of KML placemarks 
+  // Create a KML string from a list of KML placemarks
   var getKml = function(plks) {
     var kml = '<kml xmlns="http://www.opengis.net/kml/2.2" ' +
                    'xmlns:gx="http://www.google.com/kml/ext/2.2" ' +
@@ -84,14 +84,14 @@ describe('ga_exportkml_service', function() {
       kml += item;
     });
     kml += '</Document></kml>';
-    return kml; 
+    return kml;
   };
-   
+
   // Create a vector layer ifrom a liste of ol.Feature
   var createVectorLayer = function(feats, useStyle) {
     var layer = new ol.layer.Vector({
       label: 'layerWithLabel',
-      source:  new ol.source.Vector({
+      source: new ol.source.Vector({
         features: feats
       })
     });
@@ -100,10 +100,10 @@ describe('ga_exportkml_service', function() {
     }
     gaDefineLayerProperties(layer);
     return layer;
-  }
+  };
 
   beforeEach(function() {
-        
+
     inject(function($injector) {
       $translate = $injector.get('$translate');
       $window = $injector.get('$window');
@@ -117,7 +117,7 @@ describe('ga_exportkml_service', function() {
       $windowMock = sinon.mock($window);
       gaExportKmlMock = sinon.mock(gaExportKml);
     });
-    clock = sinon.useFakeTimers(new Date(2016,1,1).getTime());
+    clock = sinon.useFakeTimers(new Date(2016, 1, 1).getTime());
   });
 
   afterEach(function() {
@@ -125,7 +125,7 @@ describe('ga_exportkml_service', function() {
     $windowMock.restore();
     gaExportKmlMock.restore();
   });
-  
+
   describe('creates', function() {
 
     it('a KML with one complete feature', function() {
@@ -151,11 +151,11 @@ describe('ga_exportkml_service', function() {
       var kml = gaExportKml.create(layer, 'EPSG:3857');
       expect(kml).to.be(getKml([plkFeatWithProps]));
     });
-  
+
   });
-  
+
   describe('creates and download', function() {
-  
+
     it('nothing', function() {
       var layer = createVectorLayer([featWithProps]);
       var canSave = gaExportKmlMock.expects('canSave').once().returns(false);
@@ -164,31 +164,31 @@ describe('ga_exportkml_service', function() {
       canSave.verify();
       alret.verify();
     });
-    
+
     describe('using download service', function() {
-      var dlUrl, fileName, fileUrl, open; 
-       
+      var dlUrl, fileName, fileUrl, open;
+
       var expectations = function() {
         var canSave = gaExportKmlMock.expects('canSave').once().returns(true);
- 
-        $httpBackend.whenPOST(dlUrl).respond({"url": fileUrl});
+
+        $httpBackend.whenPOST(dlUrl).respond({'url': fileUrl});
         $httpBackend.expectPOST(dlUrl, {
           kml: getKml([plkFeatWithProps]),
           filename: fileName
         });
-       
+
         var layer = createVectorLayer([featWithProps]);
         gaExportKml.createAndDownload(layer, 'EPSG:3857');
-     
+
         $httpBackend.flush();
         canSave.verify();
         open.verify();
       };
-      
+
       beforeEach(function() {
         dlUrl = gaGlobalOptions.apiUrl + '/downloadkml';
-        fileName = 'map.geo.admin.ch_KML_20160201000000.kml'; 
-        fileUrl = gaGlobalOptions.apiUrl + '/kml/' + fileName; 
+        fileName = 'map.geo.admin.ch_KML_20160201000000.kml';
+        fileUrl = gaGlobalOptions.apiUrl + '/kml/' + fileName;
       });
 
       afterEach(function() {
@@ -202,8 +202,8 @@ describe('ga_exportkml_service', function() {
         gaBrowserSniffer.blob = true;
         open = $windowMock.expects('open').once().withArgs(fileUrl).returns({});
         expectations();
-      });  
-      
+      });
+
       // TODO: How to avoid page reload
       /*it('on Safari', function() {
         gaBrowserSniffer.msie = false;
@@ -213,7 +213,7 @@ describe('ga_exportkml_service', function() {
         open = $windowMock.expects('location').once().returns({});
         expectations();
       });*/
-      
+
       /*it('on browser where Blob is not supported', function() {
         gaBrowserSniffer.msie = false;
         gaBrowserSniffer.safari = false;
@@ -227,18 +227,18 @@ describe('ga_exportkml_service', function() {
        });*/
     });
 
-    // TODO: Test Blob creation     
+    // TODO: Test Blob creation
     it('using Blob and saveAs', function() {
-      $window.saveAs = function(){};
+      $window.saveAs = function() {};
       gaBrowserSniffer.safari = false;
       gaBrowserSniffer.blob = true;
       var fileName = 'map.geo.admin.ch_KML_.kml';
       var canSave = gaExportKmlMock.expects('canSave').once().returns(true);
       var spySaveAs = sinon.spy($window, 'saveAs');
-      
+
       var layer = createVectorLayer([featWithProps]);
       gaExportKml.createAndDownload(layer, 'EPSG:3857');
-     
+
       canSave.verify();
       expect(spySaveAs.calledOnce).to.be.ok();
     });

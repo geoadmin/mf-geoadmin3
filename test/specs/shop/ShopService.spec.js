@@ -24,7 +24,7 @@ describe('ga_shop_service', function() {
         get: function() {
           return 'custom';
         }
-      })
+      });
     });
 
     inject(function($injector) {
@@ -38,7 +38,7 @@ describe('ga_shop_service', function() {
     var dispatchUrl;
     var dfltDispatchUrl;
     var fakeWindow = {
-      close: function(){}
+      close: function() {}
     };
 
     beforeEach(function() {
@@ -57,7 +57,7 @@ describe('ga_shop_service', function() {
       closeSpy.restore();
     });
 
-     
+
     it('do nothing if orderType or layerBodId are not defined', function() {
       gaShop.dispatch();
       sinon.assert.notCalled(openStub);
@@ -81,17 +81,17 @@ describe('ga_shop_service', function() {
       var fakeCloseSpy = sinon.spy(fakeWindow, 'close');
       gaShop.dispatch('orderType', 'layerBodId');
       sinon.assert.calledOnce(openStub);
-    
+
       gaShop.dispatch('orderType', 'layerBodId');
       sinon.assert.calledOnce(fakeCloseSpy);
       sinon.assert.calledTwice(openStub);
       fakeCloseSpy.restore();
     });
-     
+
     it('closes the shop window then opens the new one keeping the sessionId', function() {
-      var tpshopId = 'toposhop-344';  
-      $window.name = 'map-' + tpshopId; 
-      $window.opener = fakeWindow; 
+      var tpshopId = 'toposhop-344';
+      $window.name = 'map-' + tpshopId;
+      $window.opener = fakeWindow;
       var openerCloseSpy = sinon.spy($window.opener, 'close');
 
       gaShop.dispatch('orderType', 'layerBodId');
@@ -99,7 +99,7 @@ describe('ga_shop_service', function() {
       sinon.assert.notCalled(closeSpy);
       sinon.assert.calledWith(openStub, dfltDispatchUrl, tpshopId);
     });
-     
+
     it('opens a good mapsheet url', function() {
       gaShop.dispatch('mapsheet', 'layerBodId', 'featureId');
       sinon.assert.calledWith(openStub, dispatchUrl + mapsheetParams);
@@ -144,22 +144,22 @@ describe('ga_shop_service', function() {
   describe('#getPrice()', function() {
     var $httpBackend, $rootScope;
     var priceUrl;
-    
+
     beforeEach(function() {
       inject(function($injector) {
         $httpBackend = $injector.get('$httpBackend');
         $rootScope = $injector.get('$rootScope');
       });
-      priceUrl =  gaGlobalOptions.shopUrl + '/shop-server/resources/products/price';
+      priceUrl = gaGlobalOptions.shopUrl + '/shop-server/resources/products/price';
     });
-    
+
     afterEach(function() {
       $httpBackend.verifyNoOutstandingExpectation();
       $httpBackend.verifyNoOutstandingRequest();
     });
 
     it('returns a promise', function(done) {
-      gaShop.getPrice().catch(function() {
+      gaShop.getPrice().catch (function() {
         done();
       });
       $rootScope.$digest();
@@ -188,7 +188,7 @@ describe('ga_shop_service', function() {
         $rootScope.$digest();
         $httpBackend.flush();
       });
-    };
+    }
 
     it('send a good commune url', function(done) {
       $httpBackend.expectGET(priceUrl + communeParams).respond(200, {productPrice: 30});

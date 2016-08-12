@@ -10,7 +10,7 @@ describe('ga_permalinkfeatures_service', function() {
           loadConfig: function() {
             var defer = $q.defer();
             defer.resolve();
-            return defer.promise; 
+            return defer.promise;
           },
           getLayer: function(id) {
             return (id == 'somelayer') ? {} : undefined;
@@ -22,7 +22,7 @@ describe('ga_permalinkfeatures_service', function() {
             return layer;
           }
         });
-      
+
         $provide.value('gaPreviewFeatures', {
           addBodFeatures: function() {
             var defer2 = $q.defer();
@@ -44,57 +44,57 @@ describe('ga_permalinkfeatures_service', function() {
     });
 
     describe('without features defined in permalink', function() {
-      
+
       beforeEach(function() {
         gaPermalink.getParams = function() {
           return {};
         };
-        
+
         inject(function($injector) {
           gaPermFeat = $injector.get('gaPermalinkFeaturesManager');
         });
 
         gaPermFeat(map);
       });
-      
+
       it('broadcast an event', function() {
         var spy = sinon.spy($rootScope, '$broadcast');
         $rootScope.$digest();
         expect(map.getLayers().getLength()).to.equal(0);
-        expect(spy.calledWith('gaPermalinkFeaturesAdd')).to.equal(true);          
+        expect(spy.calledWith('gaPermalinkFeaturesAdd')).to.equal(true);
       });
     });
 
     describe('with features defined in permalink', function() {
-      
+
       beforeEach(function() {
         gaPermalink.getParams = function() {
           return {
             somelayer: 'featureid1,featureid2'
           };
         };
-        
+
         inject(function($injector) {
           gaPermFeat = $injector.get('gaPermalinkFeaturesManager');
         });
 
         gaPermFeat(map);
       });
-      
+
       it('adds the feature\'s layer', function() {
         $rootScope.$digest();
-        expect(map.getLayers().getLength()).to.equal(1);          
+        expect(map.getLayers().getLength()).to.equal(1);
       });
-       
+
       it('doesn\'t add the feature\'s layer if it is already on the map', function() {
         map.addLayer(gaLayers.getOlLayerById('somelayer'));
-        expect(map.getLayers().getLength()).to.equal(1);          
+        expect(map.getLayers().getLength()).to.equal(1);
         var spy = sinon.spy(map, 'addLayer');
         $rootScope.$digest();
         expect(spy.callCount).to.equal(0);
-        expect(map.getLayers().getLength()).to.equal(1);          
+        expect(map.getLayers().getLength()).to.equal(1);
       });
-       
+
       it('adds a preview feature', function() {
         var spy = sinon.spy(gaPreviewFeatures, 'addBodFeatures');
         $rootScope.$digest();
@@ -103,18 +103,18 @@ describe('ga_permalinkfeatures_service', function() {
         expect(spy.args[0][1]['somelayer'].length).to.equal(2);
         expect(spy.args[0][2]).to.be.a(Function);
       });
- 
+
       it('remove the feature from permalink when we remove the layer', function() {
         var spy = sinon.spy(gaPermalink, 'deleteParam');
         $rootScope.$digest();
-        expect(map.getLayers().getLength()).to.equal(1);          
-        map.getLayers().remove(map.getLayers().item(0)); 
+        expect(map.getLayers().getLength()).to.equal(1);
+        map.getLayers().remove(map.getLayers().item(0));
         expect(spy.calledWith('somelayer')).to.equal(true);
       });
     });
 
     describe('with features and features\'s layer defined in permalink', function() {
-      
+
       beforeEach(function() {
         gaPermalink.getParams = function() {
           return {
@@ -122,24 +122,24 @@ describe('ga_permalinkfeatures_service', function() {
             somelayer: 'featureid1,featureid2'
           };
         };
-        
+
         inject(function($injector) {
           gaPermFeat = $injector.get('gaPermalinkFeaturesManager');
         });
 
         gaPermFeat(map);
       });
-       
+
       it('doesn\'t add the feature\'s layer', function() {
-        expect(map.getLayers().getLength()).to.equal(0);          
+        expect(map.getLayers().getLength()).to.equal(0);
         var spy = sinon.spy(map, 'addLayer');
         $rootScope.$digest();
         expect(spy.callCount).to.equal(0);
       });
     });
-    
+
     describe('with features and showTooltip defined in permalink', function() {
-      
+
       beforeEach(function() {
         gaPermalink.getParams = function() {
           return {
@@ -147,14 +147,14 @@ describe('ga_permalinkfeatures_service', function() {
             somelayer: 'featureid1,featureid2'
           };
         };
-        
+
         inject(function($injector) {
           gaPermFeat = $injector.get('gaPermalinkFeaturesManager');
         });
 
         gaPermFeat(map);
       });
-       
+
       it('broadcast a tooltip event', function() {
         var spy = sinon.spy($rootScope, '$broadcast');
         $rootScope.$digest();

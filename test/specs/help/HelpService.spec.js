@@ -1,6 +1,6 @@
 describe('ga_help_service', function() {
 
-  describe('gaHelp', function() {  
+  describe('gaHelp', function() {
     var gaHelp, $httpBackend, gaLang, $rootScope;
     var url = 'https://www.googleapis.com/fusiontables/v1/query?callback=JSON_CALLBACK&key=AIzaSyDT7wmEx97gAG5OnPwKyz2PnCx3yT4j7C0&sql=select+*+from+1Tx2VSM1WHZfDXzf8rweRLG1kd23AA4aw8xnZ_3c+where+col0%3D31+and+col5%3D';
     var frUrl = url + '\'fr\'';
@@ -29,9 +29,9 @@ describe('ga_help_service', function() {
     });
 
     describe('get', function() {
-   
+
       it('gets help from id', function(done) {
-        $httpBackend.expectJSONP(frUrl).respond({columns:[], rows:[]});
+        $httpBackend.expectJSONP(frUrl).respond({columns: [], rows: []});
 
         gaHelp.get('31').then(function(data) {
           expect(data.columns).to.be.an(Array);
@@ -41,9 +41,9 @@ describe('ga_help_service', function() {
         $httpBackend.flush();
         $rootScope.$digest();
       });
-       
+
       it('gets help from cache the 2nd time', function(done) {
-        $httpBackend.expectJSONP(frUrl).respond({columns:[], rows:[]});
+        $httpBackend.expectJSONP(frUrl).respond({columns: [], rows: []});
         gaHelp.get('31');
         $httpBackend.flush();
         $rootScope.$digest();
@@ -54,10 +54,10 @@ describe('ga_help_service', function() {
         $httpBackend.flush();
         $rootScope.$digest();
       });
-       
+
       it('gets help in de when lang is rm', function(done) {
         gaLang.get = function() {return 'rm';};
-        $httpBackend.expectJSONP(deUrl).respond({columns:[], rows:[]});
+        $httpBackend.expectJSONP(deUrl).respond({columns: [], rows: []});
         gaHelp.get('31').then(function() {
           done();
         });

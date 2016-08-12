@@ -49,7 +49,7 @@ describe('ga_attribution_service', function() {
       module(function($provide) {
         $provide.value('gaLayers', {
           loadConfig: function() {
-            return def.promise; 
+            return def.promise;
           },
           getLayer: function(bodId) {
             return layersConfig[bodId];
@@ -75,7 +75,7 @@ describe('ga_attribution_service', function() {
 
       inject(function(_gaAttribution_, _gaLang_, $q) {
         def = $q.defer();
-        gaAttribution = _gaAttribution_;;
+        gaAttribution = _gaAttribution_;
         gaLang = _gaLang_;
       });
       def.resolve();
@@ -84,8 +84,8 @@ describe('ga_attribution_service', function() {
     it('gets attribution of bod layer', function() {
       var olLayer = {bodId: 'layer'};
       var layerConfig = layersConfig['layer'];
-      var layerConfig3d = layersConfig3d['layer3d'];  
-      var attrib = gaAttribution.getHtmlFromLayer(olLayer); 
+      var layerConfig3d = layersConfig3d['layer3d'];
+      var attrib = gaAttribution.getHtmlFromLayer(olLayer);
       expect(attrib).to.eql(getBodAttrib(layerConfig));
       attrib = gaAttribution.getHtmlFromLayer(olLayer, true);
       expect(attrib).to.eql(getBodAttrib(layerConfig3d));
@@ -96,8 +96,8 @@ describe('ga_attribution_service', function() {
     it('gets attribution of bod layer with no link', function() {
       var olLayer = {bodId: 'layerNoLink'};
       var layerConfig = layersConfig['layerNoLink'];
-      var layerConfig3d = layersConfig3d['layer3dNoLink'];  
-      var attrib = gaAttribution.getHtmlFromLayer(olLayer); 
+      var layerConfig3d = layersConfig3d['layer3dNoLink'];
+      var attrib = gaAttribution.getHtmlFromLayer(olLayer);
       expect(attrib).to.eql(getBodAttribNoLink(layerConfig));
       attrib = gaAttribution.getHtmlFromLayer(olLayer, true);
       expect(attrib).to.eql(getBodAttribNoLink(layerConfig3d));
@@ -106,9 +106,9 @@ describe('ga_attribution_service', function() {
     });
 
     it('gets attribution of external (third party) layer', function() {
-      var olLayer = {url:'http://foo.ch/admin/wms'};
+      var olLayer = {url: 'http://foo.ch/admin/wms'};
       var host = 'foo.ch';
-      var attrib = gaAttribution.getHtmlFromLayer(olLayer); 
+      var attrib = gaAttribution.getHtmlFromLayer(olLayer);
       expect(attrib).to.eql(getThirdPartyAttrib(host));
       attrib = gaAttribution.getHtmlFromLayer(olLayer, true);
       expect(attrib).to.eql(getThirdPartyAttrib(host));
@@ -116,9 +116,9 @@ describe('ga_attribution_service', function() {
       expect(attrib).to.eql(host);
 
       // public.geo.admin.ch
-      olLayer = {url:'http://public.geo.admin.ch/idsfdsf'};
+      olLayer = {url: 'http://public.geo.admin.ch/idsfdsf'};
       var host = 'public.geo.admin.ch';
-      var attrib = gaAttribution.getHtmlFromLayer(olLayer); 
+      var attrib = gaAttribution.getHtmlFromLayer(olLayer);
       expect(attrib).to.eql(getThirdPartyAttrib(host));
       attrib = gaAttribution.getHtmlFromLayer(olLayer, true);
       expect(attrib).to.eql(getThirdPartyAttrib(host));
@@ -127,9 +127,9 @@ describe('ga_attribution_service', function() {
     });
 
     it('gets attribution of external (but admin) layer', function() {
-      var olLayer = {url:'http://wms.geo.admin.ch/wms'};
+      var olLayer = {url: 'http://wms.geo.admin.ch/wms'};
       var host = 'wms.geo.admin.ch';
-      var attrib = gaAttribution.getHtmlFromLayer(olLayer); 
+      var attrib = gaAttribution.getHtmlFromLayer(olLayer);
       expect(attrib).to.eql(host);
       attrib = gaAttribution.getHtmlFromLayer(olLayer, true);
       expect(attrib).to.eql(host);
@@ -138,8 +138,8 @@ describe('ga_attribution_service', function() {
     });
 
     it('doesn\'t get attribution for local layer (dnd)', function() {
-      var olLayer = {url:'my_kml_file_kml'};
-      var attrib = gaAttribution.getHtmlFromLayer(olLayer); 
+      var olLayer = {url: 'my_kml_file_kml'};
+      var attrib = gaAttribution.getHtmlFromLayer(olLayer);
       expect(attrib).to.eql(undefined);
       attrib = gaAttribution.getHtmlFromLayer(olLayer, true);
       expect(attrib).to.eql(undefined);

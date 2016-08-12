@@ -4,44 +4,44 @@ describe('ga_realtimelayers_service', function() {
     var map, gaRealtime, $rootScope, $httpBackend, $timeout, gaLayerFilters, gaMapUtils, gaGlobalOptions, clock, gaLang;
     var dataUrl = 'http://api3.geo.admin.ch/ogcproxy?url=https://data.geo.admin.ch/some/some_custom.json';
     var jsonData1 = {
-      "features": [{
-        "type": "Feature",
-        "id": "1",
-        "geometry": {
-          "type": "Point",
-          "coordinates": [0, 0]
+      'features': [{
+        'type': 'Feature',
+        'id': '1',
+        'geometry': {
+          'type': 'Point',
+          'coordinates': [0, 0]
         },
-        "properties": {
-          "descr": ""
+        'properties': {
+          'descr': ''
         }
       }],
-      "mapname": "some",
-      "timestamp": "atimestamp",
-      "type": "FeatureCollection"
-    }; 
+      'mapname': 'some',
+      'timestamp': 'atimestamp',
+      'type': 'FeatureCollection'
+    };
     var jsonData2 = {
-      "mapname": "some",
-      "timestamp": "atimestamp2",
-      "type": "FeatureCollection",
-      "features": [{
-        "type": "Feature",
-        "id": "1",
-        "geometry": {
-          "type": "Point",
-          "coordinates": [0, 0]
+      'mapname': 'some',
+      'timestamp': 'atimestamp2',
+      'type': 'FeatureCollection',
+      'features': [{
+        'type': 'Feature',
+        'id': '1',
+        'geometry': {
+          'type': 'Point',
+          'coordinates': [0, 0]
         },
-        "properties": {
-          "descr": ""
+        'properties': {
+          'descr': ''
         }
       }, {
-        "type": "Feature",
-        "id": "2",
-        "geometry": {
-          "type": "Point",
-          "coordinates": [0, 0]
+        'type': 'Feature',
+        'id': '2',
+        'geometry': {
+          'type': 'Point',
+          'coordinates': [0, 0]
         },
-        "properties": {
-          "descr": ""
+        'properties': {
+          'descr': ''
         }
       }]
     };
@@ -52,7 +52,7 @@ describe('ga_realtimelayers_service', function() {
       gaDefinePropertiesForLayer(layer);
       layer.bodId = bodId;
       layer.updateDelay = 1000;
-      layer.geojsonUrl = "https://data.geo.admin.ch/" + bodId + "/" + bodId + "_" + gaLang.get() + ".json";
+      layer.geojsonUrl = 'https://data.geo.admin.ch/' + bodId + '/' + bodId + '_' + gaLang.get() + '.json';
       map.addLayer(layer);
       return layer;
     };
@@ -65,7 +65,7 @@ describe('ga_realtimelayers_service', function() {
       layer.bodId = bodId;
       layer.preview = true;
       layer.updateDelay = 1000;
-      layer.geojsonUrl = "https://data.geo.admin.ch/" + bodId + "/" + bodId + "_custom.json";
+      layer.geojsonUrl = 'https://data.geo.admin.ch/' + bodId + '/' + bodId + '_custom.json';
       map.addLayer(layer);
       return layer;
     };
@@ -76,7 +76,7 @@ describe('ga_realtimelayers_service', function() {
         $provide.value('gaLayers', {
           loadConfig: function() {}
         });
-        var  lang = 'custom'; 
+        var lang = 'custom';
         $provide.value('gaLang', {
           get: function() {
             return lang;
@@ -100,13 +100,13 @@ describe('ga_realtimelayers_service', function() {
         gaMapUtils = $injector.get('gaMapUtils');
         gaLang = $injector.get('gaLang');
       });
-      
+
       map = new ol.Map({});
       clock = sinon.useFakeTimers();
       gaRealtime(map);
     });
 
-    afterEach(function () {
+    afterEach(function() {
       $httpBackend.verifyNoOutstandingExpectation();
       $httpBackend.verifyNoOutstandingRequest();
       clock.restore();
@@ -120,7 +120,7 @@ describe('ga_realtimelayers_service', function() {
     });
 
     it('broadcasts a gaNewLayerTimestamp event', function() {
-      var spy = sinon.spy($rootScope,'$broadcast');
+      var spy = sinon.spy($rootScope, '$broadcast');
       $httpBackend.whenGET(dataUrl).respond(jsonData1);
       addRealtimeLayerToMap('some');
       $httpBackend.flush();
@@ -135,7 +135,7 @@ describe('ga_realtimelayers_service', function() {
       var layer = map.getLayers().item(0);
       expect(layer.getSource().getFeatures().length).to.be(1);
 
-      var spy = sinon.spy($rootScope,'$broadcast');
+      var spy = sinon.spy($rootScope, '$broadcast');
       $httpBackend.expectGET(dataUrl).respond(jsonData2);
       $timeout(function() {
         $httpBackend.flush();
@@ -143,7 +143,7 @@ describe('ga_realtimelayers_service', function() {
         expect(layer.getSource().getFeatures().length).to.be(2);
         done();
       }, layer.updateDelay);
-      
+
       clock.tick(layer.updateDelay);
       $timeout.flush();
     });
@@ -155,7 +155,7 @@ describe('ga_realtimelayers_service', function() {
       $rootScope.$digest();
       var layer = map.getLayers().item(0);
       expect(layer.getSource().getFeatures().length).to.be(1);
-      
+
       var spy = sinon.spy($rootScope, '$broadcast');
       map.removeLayer(layer);
       $rootScope.$digest();
@@ -164,7 +164,7 @@ describe('ga_realtimelayers_service', function() {
         expect(map.getLayers().getLength()).to.be(0);
         done();
       }, layer.updateDelay);
-      
+
       clock.tick(layer.updateDelay);
       $timeout.flush();
     });
@@ -178,7 +178,7 @@ describe('ga_realtimelayers_service', function() {
       var layer = map.getLayers().item(0);
       expect(layer.getSource().getFeatures().length).to.be(1);
       expect(spy.callCount).to.be(0);
-      
+
       // No $httpBackend errors means no layer's update
       $timeout(function() {
         done();
@@ -194,9 +194,9 @@ describe('ga_realtimelayers_service', function() {
       $rootScope.$digest();
       var layer = map.getLayers().item(0);
       expect(layer.getSource().getFeatures().length).to.be(1);
-     
+
       // Here we don't test the change of the url because it's done in another
-      // service, we only test if the data are requetsed on language change. 
+      // service, we only test if the data are requetsed on language change.
       $httpBackend.expectGET(dataUrl).respond(jsonData1);
       gaLang.set('custom2');
       $httpBackend.flush();

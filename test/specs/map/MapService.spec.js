@@ -96,7 +96,7 @@ describe('ga_map_service', function() {
   var addExternalWmsLayerToMap = function() {
     var source = new ol.source.ImageWMS({
       params: {LAYERS: 'ch.wms.name'},
-      url: 'http://foo.ch/wms',
+      url: 'http://foo.ch/wms'
     });
     var layer = new ol.layer.Image({
       id: 'WMS||The wms layer||http://foo.ch/wms||ch.wms.name',
@@ -414,20 +414,90 @@ describe('ga_map_service', function() {
   });
 
   describe('gaLayers', function() {
-    var layers, $httpBackend, $rootScope;
+    var gaLayers, gaTime, $httpBackend, $rootScope, gaGlobalOptions, gaBrowserSniffer, gaNetworkStatus;
+    var expectedUrl = 'http://example.com/all?lang=somelang';
+    var dfltLayersConfig = {
+      foo: {
+        type: 'wmts',
+        matrixSet: 'set1',
+        timestamps: ['t1', 't2'],
+        parentLayerId: 'bar'
+      },
+      bar: {
+        type: 'wmts',
+        matrixSet: 'set2',
+        timestamps: ['t3', 't4']
+      },
+      bodwms: {
+        type: 'wms'
+      },
+      tooltip: {
+        type: 'aggregate',
+        tooltip: true,
+        subLayersIds: ['childtooltip1', 'childtooltip2']
+      },
+      notooltip: {
+        type: 'aggreagate',
+        tooltip: false,
+        subLayersIds: ['childnotooltip1', 'childnotooltip2']
+      },
+      childtooltip1: {
+        type: 'wmts',
+        matrixSet: 'set5',
+        timestamps: ['t8', 't9'],
+        parentLayerId: 'tooltip'
+      },
+      childtooltip2: {
+        type: 'wmts',
+        matrixSet: 'set5',
+        timestamps: ['t8', 't9'],
+        parentLayerId: 'tooltip'
+      },
+      childnotooltip1: {
+        type: 'wmts',
+        matrixSet: 'set6',
+        timestamps: ['t10', 't11'],
+        parentLayerId: 'notooltip'
+      },
+      childnotooltip2: {
+        type: 'wmts',
+        matrixSet: 'set7',
+        timestamps: ['t12', 't13'],
+        parentLayerId: 'notooltip'
+      },
+      'ch.bafu.wrz-wildruhezonen_portal': {},
+      'ch.swisstopo.swisstlm3d-wanderwege': {},
+      'ch.swisstopo.fixpunkte-agnes': {},
+      'ch.bfe.sachplan-geologie-tiefenlager': {},
+      'ch.vbs.patrouilledesglaciers-z_rennen': {}
+    };
+    var terrainTpl = '//3d.geo.admin.ch/1.0.0/{layer}/default/{time}/4326';
+    var wmtsTpl = '//wmts{s}.geo.admin.ch/1.0.0/{layer}/default/{time}/4326/{z}/{y}/{x}.{format}';
+    var wmtsMpTpl = 'http://wmts{s}.geo.admin.ch/1.0.0/{layer}/default/{time}/4326/{z}/{x}/{y}.{format}';
+    var wmsTpl = '//wms{s}.geo.admin.ch/?layers={layer}&format=image%2F{format}&service=WMS&version=1.3.0&request=GetMap&crs=CRS:84&bbox={westProjected},{southProjected},{eastProjected},{northProjected}&width=512&height=512&styles=default';
+    var expectWmtsUrl = function(l, t, f) {
+      return expectUrl(wmtsTpl, l, t, f);
+    };
+    var expectWmtsMpUrl = function(l, t, f) {
+      return expectUrl(wmtsMpTpl, l, t, f);
+    };
+    var expectTerrainUrl = function(l, t, f) {
+      return expectUrl(terrainTpl, l, t, f);
+    };
+    var expectWmsUrl = function(l, f) {
+      return expectUrl(wmsTpl, l, null, f);
+    };
+    var expectUrl = function(tpl, l, t, f) {
+      return tpl.replace('{layer}', l).replace('{time}', t).replace('{format}', f || 'png');
+    };
 
     beforeEach(function() {
 
       module(function($provide) {
         $provide.value('gaTopic', {
-          get: function() {
-            return {
-              id: 'sometopic',
-              backgroundLayers: ['bar']
-            }
-          }
+          get: function() {}
         });
-        $provide.value('gaLang',{
+        $provide.value('gaLang', {
           get: function() {
             return 'somelang';
           }
@@ -437,153 +507,758 @@ describe('ga_map_service', function() {
       inject(function($injector) {
         $rootScope = $injector.get('$rootScope');
         $httpBackend = $injector.get('$httpBackend');
-        layers = $injector.get('gaLayers');
+        gaLayers = $injector.get('gaLayers');
+        gaTime = $injector.get('gaTime');
+        gaGlobalOptions = $injector.get('gaGlobalOptions');
+        gaBrowserSniffer = $injector.get('gaBrowserSniffer');
+        gaNetworkStatus = $injector.get('gaNetworkStatus');
       });
-
-      var expectedUrl = 'http://example.com/all?lang=somelang';
-      $httpBackend.whenGET(expectedUrl).respond({
-        foo: {
-          type: 'wmts',
-          matrixSet: 'set1',
-          timestamps: ['t1', 't2']
-        },
-        bar: {
-          type: 'wmts',
-          matrixSet: 'set2',
-          timestamps: ['t3', 't4']
-        },
-        bodwms: {
-          type: 'wms'
-        },
-        tooltip: {
-          type: 'aggregate',
-          tooltip: true,
-          subLayersIds: ['childtooltip1', 'childtooltip2']
-        },
-        notooltip: {
-          type: 'aggreagate',
-          tooltip: false,
-          subLayersIds: ['childnotooltip1', 'childnotooltip2']
-        },
-        childtooltip1: {
-          type: 'wmts',
-          matrixSet: 'set5',
-          timestamps: ['t8', 't9'],
-          parentLayerId: 'tooltip'
-        },
-        childtooltip2: {
-          type: 'wmts',
-          matrixSet: 'set5',
-          timestamps: ['t8', 't9'],
-          parentLayerId: 'tooltip'
-        },
-        childnotooltip1: {
-          type: 'wmts',
-          matrixSet: 'set6',
-          timestamps: ['t10', 't11'],
-          parentLayerId: 'notooltip'
-        },
-        childnotooltip2: {
-          type: 'wmts',
-          matrixSet: 'set7',
-          timestamps: ['t12', 't13'],
-          parentLayerId: 'notooltip'
-        },
-        "ch.bafu.wrz-wildruhezonen_portal": {},
-        "ch.swisstopo.swisstlm3d-wanderwege": {},
-        "ch.swisstopo.fixpunkte-agnes": {},
-        "ch.bfe.sachplan-geologie-tiefenlager": {},
-        "ch.vbs.patrouilledesglaciers-z_rennen": {},
-        "ch.swisstopo.swissimage-product": {},
-        "ch.swisstopo.pixelkarte-farbe-pk25.noscale": {},
-        "ch.swisstopo.pixelkarte-farbe-pk50.noscale": {},
-        "ch.swisstopo.pixelkarte-farbe-pk100.noscale": {},
-        "ch.swisstopo.pixelkarte-farbe-pk200.noscale": {},
-        "ch.swisstopo.pixelkarte-farbe-pk500.noscale": {},
-        "ch.swisstopo.pixelkarte-farbe-pk1000.noscale": {},
-        "ch.swisstopo.swisstlm3d-karte-farbe": {},
-        "ch.swisstopo.swisstlm3d-karte-grau": {},
-        "ch.swisstopo.pixelkarte-farbe": {},
-        "ch.swisstopo.pixelkarte-grau": {}
-      });
-      $httpBackend.expectGET(expectedUrl);
-      $rootScope.$digest();
-      $httpBackend.flush();
     });
 
-    afterEach(function () {
+    afterEach(function() {
       $httpBackend.verifyNoOutstandingExpectation();
       $httpBackend.verifyNoOutstandingRequest();
     });
 
-    describe('getOlLayerById', function() {
-      it('returns layers with correct settings', function() {
-        var layer = layers.getOlLayerById('foo');
-        expect(layer instanceof ol.layer.Tile).to.be.ok();
-        var source = layer.getSource();
-        expect(source instanceof ol.source.WMTS).to.be.ok();
-        var tileGrid = source.getTileGrid();
-        expect(tileGrid instanceof ol.tilegrid.WMTS).to.be.ok();
-        var resolutions = tileGrid.getResolutions();
-        expect(resolutions.length).to.eql(27);
+    describe('constructor', function() {
+      var opaqueLayersIds = [
+        'ch.swisstopo.swissimage-product',
+        'ch.swisstopo.pixelkarte-farbe',
+        'ch.swisstopo.pixelkarte-grau',
+        'ch.swisstopo.swisstlm3d-karte-farbe',
+        'ch.swisstopo.swisstlm3d-karte-grau',
+        'ch.swisstopo.pixelkarte-farbe-pk25.noscale',
+        'ch.swisstopo.pixelkarte-farbe-pk50.noscale',
+        'ch.swisstopo.pixelkarte-farbe-pk100.noscale',
+        'ch.swisstopo.pixelkarte-farbe-pk200.noscale',
+        'ch.swisstopo.pixelkarte-farbe-pk500.noscale',
+        'ch.swisstopo.pixelkarte-farbe-pk1000.noscale'
+      ];
+      var layersConfig = {
+        'noopaque': {}
+      };
+      opaqueLayersIds.forEach(function(id) {
+        layersConfig[id] = {};
+      });
+
+      beforeEach(function() {
+        $httpBackend.whenGET(expectedUrl).respond(layersConfig);
+      });
+
+      it('sets opaque property to hardcoded layers if exists', function() {
+        $httpBackend.flush();
+        $rootScope.$digest();
+        opaqueLayersIds.forEach(function(id) {
+          expect(gaLayers.getLayer(id).opaque).to.be(!(id == 'nonopaque'));
+        });
+      });
+
+      it('adds terrain layer config', function() {
+        $httpBackend.flush();
+        $rootScope.$digest();
+        var terrain = gaLayers.getLayer('ch.swisstopo.terrain.3d');
+        expect(terrain).to.eql({
+          type: 'terrain',
+          serverLayerName: 'ch.swisstopo.terrain.3d',
+          timestamps: ['20160115'],
+          attribution: 'swisstopo',
+          attributionUrl: 'https://www.swisstopo.admin.ch/somelang/home.html'
+        });
+      });
+
+      it('register to $translateChangeEnd event on first load', function() {
+        var spy = sinon.spy($rootScope, '$on');
+        $httpBackend.flush();
+        $rootScope.$digest();
+        expect(spy.calledWith('$translateChangeEnd')).to.be(true);
+      });
+
+      it('reload the layer\'s config then broadcast a gaLayersTranslationChange event on language change (2nd load)', function() {
+        $httpBackend.flush();
+        $rootScope.$digest();
+        $httpBackend.expectGET(expectedUrl.replace('somelang', 'someotherlang')).respond(layersConfig);
+
+        var spy = sinon.spy($rootScope, '$broadcast');
+        $rootScope.$broadcast('$translateChangeEnd', {language: 'someotherlang'});
+        $httpBackend.flush();
+        $rootScope.$digest();
+        expect(spy.calledWith('gaLayersTranslationChange')).to.be(true);
       });
     });
 
-    describe('getMetaDataOfLayer', function() {
-      it('returns correct metadata url from a bod id', function() {
-        var expectedMdUrl = 'http://legendservice.com/all/somelayer?lang=somelang';
-        $httpBackend.whenGET(expectedMdUrl).respond({});
-        $httpBackend.expectGET(expectedMdUrl);
-        layers.getMetaDataOfLayer('somelayer');
+    describe('loadConfig', function() {
+
+      it('returns a promise', function(done) {
+        $httpBackend.expectGET(expectedUrl).respond({});
+        gaLayers.loadConfig().then(function() {
+          done();
+        });
+        $rootScope.$digest();
         $httpBackend.flush();
       });
     });
 
-    describe('set layer visibility through accessor', function() {
-      it('sets the visibility as expected', function() {
-        var layer = layers.getOlLayerById('foo');
-        expect(layer.getVisible()).to.be.ok();
-        expect(layer.visible).to.be.ok();
-        layer.visible = false;
-        expect(layer.getVisible()).not.to.be.ok();
-        expect(layer.visible).not.to.be.ok();
-        layer.visible = true;
-        expect(layer.getVisible()).to.be.ok();
-        expect(layer.visible).to.be.ok();
+    describe('getConfig3d', function() {
+      var layersConfig = {
+        foo: {
+        'config3d': 'foo3d'
+        },
+        foo3d: {},
+        fooNo3d: {}
+      };
+
+      beforeEach(function() {
+        $httpBackend.whenGET(expectedUrl).respond(layersConfig);
+      });
+
+      it('gets the config 3d of a layer', function(done) {
+        gaLayers.loadConfig().then(function(layers) {
+          var conf3d = gaLayers.getConfig3d(gaLayers.getLayer('foo'));
+          expect(conf3d).to.be(gaLayers.getLayer('foo3d'));
+          done();
+        });
+        $httpBackend.flush();
+        $rootScope.$digest();
+      });
+
+      it('gets the config 2d if no config 3d available', function(done) {
+        gaLayers.loadConfig().then(function(layers) {
+          var conf3d = gaLayers.getConfig3d(gaLayers.getLayer('fooNo3d'));
+          expect(conf3d).to.be(gaLayers.getLayer('fooNo3d'));
+          done();
+        });
+        $httpBackend.flush();
+        $rootScope.$digest();
       });
     });
 
-    describe('set layer opacity through accessor', function() {
-      it('sets the visibility as expected', function() {
-        var layer = layers.getOlLayerById('foo');
-        expect(layer.getOpacity()).to.be(1);
-        expect(layer.invertedOpacity).to.be("0");
-        layer.invertedOpacity = 0.2;
-        expect(layer.getOpacity()).to.be(0.8);
-        expect(typeof layer.invertedOpacity).to.eql('string');
-        layer.invertedOpacity = 1;
-        expect(layer.getOpacity()).to.be(0);
-        expect(layer.invertedOpacity).to.be("1");
+    describe('getCesiumTerrainProviderById' , function() {
+      var layersConfig = {
+        terrain: {
+          type: 'terrain',
+          timestamps: [
+            '20160101'
+          ]
+        },
+        terrainserver: {
+          type: 'terrain',
+          timestamps: [
+            '20160101'
+          ],
+          serverLayerName: 'serverlayername'
+        },
+        notterrain: {
+          type: 'wms'
+        }
+      };
+
+      beforeEach(function() {
+        $httpBackend.whenGET(expectedUrl).respond(layersConfig);
+      });
+
+      it('returns undefined when layer\'s type is not managed', function(done) {
+        gaLayers.loadConfig().then(function(layers) {
+          var prov = gaLayers.getCesiumTerrainProviderById('notterrain');
+          expect(prov).to.eql(undefined);
+          done();
+        });
+        $httpBackend.flush();
+        $rootScope.$digest();
+      });
+
+      it('returns a CesiumTerrainProvider', function(done) {
+        gaLayers.loadConfig().then(function(layers) {
+          var prov = gaLayers.getCesiumTerrainProviderById('terrain');
+          expect(prov).to.be.an(Cesium.CesiumTerrainProvider);
+          expect(prov._url).to.be(expectTerrainUrl('terrain', '20160101'));
+          var rect = prov._rectangle;
+          expect(rect).to.be.a(Cesium.Rectangle);
+          expect([rect.west, rect.south, rect.east, rect.north]).to.eql([0.08750953387026623, 0.7916115588834566, 0.20031905334970387, 0.8425581080106397]);
+          expect(prov._terrainAvailabLeLevels).to.be(window.terrainAvailableLevels);
+          expect(prov.bodId).to.be('terrain');
+          done();
+        });
+        $httpBackend.flush();
+        $rootScope.$digest();
+      });
+
+      it('uses current time', function(done) {
+        gaTime.get = function() {return '2017';};
+        gaLayers.loadConfig().then(function(layers) {
+          var spy = sinon.spy(gaLayers, 'getLayerTimestampFromYear');
+          var prov = gaLayers.getCesiumTerrainProviderById('terrain');
+          expect(spy.calledWith('terrain', '2017')).to.be(true);
+          done();
+        });
+        $httpBackend.flush();
+        $rootScope.$digest();
+      });
+
+      it('uses serverLayerName if exist', function(done) {
+        gaLayers.loadConfig().then(function(layers) {
+          var prov = gaLayers.getCesiumTerrainProviderById('terrainserver');
+          expect(prov._url).to.be(expectTerrainUrl('serverlayername', '20160101'));
+          expect(prov.bodId).to.be('terrainserver');
+          done();
+        });
+        $httpBackend.flush();
+        $rootScope.$digest();
+      });
+    });
+
+    describe('getCesiumImageryProviderById' , function() {
+      var layersConfig = {
+        'ch.dummy.terrain.3d': {
+          type: 'terrain',
+          timestamps: [
+            '20180101'
+          ]
+        },
+        aggregate: {
+          type: 'aggregate',
+          subLayersIds: ['wms', 'wmts']
+        },
+        aggregateofaggregate: {
+          type: 'aggregate',
+          subLayersIds: ['aggregate', 'wmts']
+        },
+
+        wmts: {
+          type: 'wmts',
+          config3d: 'wmts3d',
+          timestamps: [
+            '20160101'
+          ],
+          serverLayerName: 'serverlayername'
+        },
+        wmts3d: {
+          type: 'wmts',
+          timestamps: [
+            '20160201'
+          ],
+          serverLayerName: 'serverlayername3d'
+        },
+        wms: {
+          type: 'wms',
+          wmsLayers: 'wmsLayers'
+        },
+        custom: {
+          type: 'wmts',
+          config3d: 'wmts3dcustom'
+        },
+        wmts3dcustom: {
+          type: 'wmts',
+          timestamps: [
+            '20160201'
+          ],
+          serverLayerName: 'serverlayername3d',
+          format: 'pngjpeg',
+          minResolution: 0.5,
+          maxResolution: 100
+        },
+        wmtsmapproxy: {
+          type: 'wmts',
+          timestamps: [
+            '20160201'
+          ]
+        },
+        badtype: {
+          type: 'geojson'
+        }
+      };
+
+      beforeEach(function() {
+        $httpBackend.whenGET(expectedUrl).respond(layersConfig);
+        $httpBackend.flush();
+        $rootScope.$digest();
+      });
+
+      it('returns undefined when layer\'s type is not managed', function() {
+        var prov = gaLayers.getCesiumImageryProviderById('badtype');
+        expect(prov).to.eql(undefined);
+      });
+
+      it('returns a CesiumImageryProvider from wmts config', function() {
+        var spy = sinon.spy(Cesium, 'UrlTemplateImageryProvider');
+        var prov = gaLayers.getCesiumImageryProviderById('wmts');
+        expect(prov).to.be.an(Cesium.UrlTemplateImageryProvider);
+        // Properties of Cesium object are set in a promise and I don 't
+        // succeed to test it so we test the params we send to the constructor
+        // instead.
+        var params = spy.args[0][0];
+        expect(params.url).to.eql(expectWmtsUrl('serverlayername3d', '20160201'));
+        expect(params.subdomains).to.eql(['5', '6', '7', '8', '9']);
+        expect(params.minimumRetrievingLevel).to.eql(window.minimumRetrievingLevel);
+        expect(params.maximumRetrievingLevel).to.eql(window.maximumRetrievingLevel);
+        expect(params.minimumLevel).to.eql(undefined);
+        expect(params.maximumLevel).to.eql(17);
+        expect(params.tilingScheme).to.be.an(Cesium.GeographicTilingScheme);
+        expect(params.tileWidth).to.eql(256);
+        expect(params.tileHeight).to.eql(256);
+        expect(params.hasAlphaChannel).to.eql(true);
+        expect(params.availableLevels).to.be(window.imagerAvailableLevels);
+        expect(params.metadataUrl).to.eql(expectTerrainUrl('ch.dummy.terrain.3d', '20180101') + '/');
+        expect(prov.bodId).to.be('wmts3d');
+        spy.restore();
+      });
+
+      it('returns a CesiumImageryProvider from a wmts with custom value', function() {
+        var spy = sinon.spy(Cesium, 'UrlTemplateImageryProvider');
+        var prov = gaLayers.getCesiumImageryProviderById('custom');
+        expect(prov).to.be.an(Cesium.UrlTemplateImageryProvider);
+        // Properties of Cesium object are set in a promise and I don 't
+        // succeed to test it so we test the params we send to the constructor
+        // instead.
+        var params = spy.args[0][0];
+        expect(params.url).to.eql(expectWmtsUrl('serverlayername3d', '20160201', 'jpeg'));
+        expect(params.minimumRetrievingLevel).to.eql(9);
+        expect(params.maximumRetrievingLevel).to.eql(17);
+        expect(params.maximumLevel).to.eql(undefined);
+        expect(params.hasAlphaChannel).to.eql(false);
+        expect(prov.bodId).to.be('wmts3dcustom');
+        spy.restore();
+      });
+
+      it('returns a CesiumImageryProvider from a wmts using mapproxy tiles', function() {
+        var spy = sinon.spy(Cesium, 'UrlTemplateImageryProvider');
+        var prov = gaLayers.getCesiumImageryProviderById('wmtsmapproxy');
+        expect(prov).to.be.an(Cesium.UrlTemplateImageryProvider);
+        // Properties of Cesium object are set in a promise and I don 't
+        // succeed to test it so we test the params we send to the constructor
+        // instead.
+        var params = spy.args[0][0];
+        expect(params.url).to.eql(expectWmtsMpUrl('wmtsmapproxy', '20160201'));
+        expect(params.subdomains).to.eql(['20', '21', '22', '23', '24']);
+        expect(prov.bodId).to.be('wmtsmapproxy');
+        spy.restore();
+      });
+
+      it('returns a CesiumImageryProvider from a wms config', function() {
+        var spy = sinon.spy(Cesium, 'UrlTemplateImageryProvider');
+        var prov = gaLayers.getCesiumImageryProviderById('wms');
+        expect(prov).to.be.an(Cesium.UrlTemplateImageryProvider);
+        // Properties of Cesium object are set in a promise and I don 't
+        // succeed to test it so we test the params we send to the constructor
+        // instead.
+        var params = spy.args[0][0];
+        expect(params.url).to.eql(expectWmsUrl('wmsLayers'));
+        expect(params.subdomains).to.eql(['', '0', '1', '2', '3', '4']);
+        expect(params.tileWidth).to.eql(512);
+        expect(params.tileHeight).to.eql(512);
+        expect(prov.bodId).to.be('wms');
+        spy.restore();
+      });
+
+      it('returns an array of CesiumImageryProvider from an aggregate layer config', function() {
+        var prov = gaLayers.getCesiumImageryProviderById('aggregate');
+        prov.forEach(function(item) {
+          expect(item).to.be.an(Cesium.UrlTemplateImageryProvider);
+        });
+        expect(prov.length).to.be(2);
+      });
+
+      it('returns an array of CesiumImageryProvider from a recursive aggregate layer config', function() {
+        var prov = gaLayers.getCesiumImageryProviderById('aggregateofaggregate');
+        prov.forEach(function(item) {
+          expect(item).to.be.an(Cesium.UrlTemplateImageryProvider);
+        });
+        expect(prov.length).to.be(3);
+      });
+    });
+
+    describe('getOlLayerById', function() {
+      var layersConfig = {
+        wmts: {
+          type: 'wmts',
+          timestamps: [
+            '20180101'
+          ],
+          serverLayerName: 'serverLayerName',
+          label: 'label',
+          timeEnabled: true,
+          minResolution: 0.5,
+          maxResolution: 100,
+          opacity: 0.35,
+          format: 'jpeg'
+        },
+        wms: {
+          type: 'wms',
+          timestamps: [
+            '20180101'
+          ],
+          wmsLayers: 'serverLayerName',
+          label: 'label',
+          timeEnabled: true,
+          minResolution: 0.5,
+          maxResolution: 100,
+          opacity: 0.35,
+          singleTile: true,
+          format: 'png'
+        },
+        aggregate: {
+          type: 'aggregate',
+          subLayersIds: ['wms', 'wmts'],
+          minResolution: 0.5,
+          maxResolution: 100,
+          opacity: 0.35
+        },
+        geojson: {
+          type: 'geojson',
+          minResolution: 0.5,
+          maxResolution: 100,
+          opacity: 0.35,
+          geojsonUrl: 'https://my.json',
+          styleUrl: '//mystyle.json'
+        }
+      };
+      layersConfig.wmstiled = angular.copy(layersConfig.wms);
+      layersConfig.wmstiled.singleTile = undefined;
+      layersConfig.geojsondelay = angular.copy(layersConfig.geojson);
+      layersConfig.geojsondelay.updateDelay = 60000;
+
+      var expectCommonProperties = function(olLayer, bodId) {
+        var layer = layersConfig[bodId];
+        var props = [
+          'label',
+          'type',
+          'timeEnabled',
+          'timestamps',
+          'geojsonUrl',
+          'updateDelay'
+        ];
+        props.forEach(function(item) {
+          expect(olLayer[item]).to.eql(layer[item]);
+        });
+        expect(olLayer.bodId).to.eql(bodId);
+        expect(olLayer.getCesiumImageryProvider).to.be.a(Function);
+      };
+
+      beforeEach(function() {
+        $httpBackend.whenGET(expectedUrl).respond(layersConfig);
+        $httpBackend.flush();
+        $rootScope.$digest();
+      });
+
+      describe('when online', function() {
+
+        it('returns a WMTS layer', function() {
+          var layer = gaLayers.getOlLayerById('wmts');
+          expect(layer instanceof ol.layer.Tile).to.be.ok();
+          expect(layer.getMinResolution()).to.be(0.5);
+          expect(layer.getMaxResolution()).to.be(100);
+          expect(layer.getOpacity()).to.be(0.35);
+          expect(layer.getExtent()).to.eql(gaGlobalOptions.defaultExtent);
+          expect(layer.getPreload()).to.be(0);
+          expect(layer.getUseInterimTilesOnError()).to.be(false);
+          var source = layer.getSource();
+          expect(source instanceof ol.source.WMTS).to.be.ok();
+          expect(source.getDimensions().Time).to.be('20180101');
+          expect(source.getProjection().getCode()).to.be('EPSG:21781');
+          expect(source.getRequestEncoding()).to.be('REST');
+          expect(source.getUrls().length).to.be(5);
+          expect(source.getUrls()[0]).to.be('//wmts5.geo.admin.ch/1.0.0/serverLayerName/default/{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.jpeg');
+          expect(source.getTileLoadFunction()).to.be.a(Function);
+          var tileGrid = source.getTileGrid();
+          expect(tileGrid instanceof ol.tilegrid.WMTS).to.be.ok();
+          expect(tileGrid.getResolutions().length).to.eql(27);
+          expectCommonProperties(layer, 'wmts');
+        });
+
+        it('returns a WMS layer', function() {
+          var layer = gaLayers.getOlLayerById('wms');
+          expect(layer instanceof ol.layer.Image).to.be.ok();
+          expect(layer.getMinResolution()).to.be(0.5);
+          expect(layer.getMaxResolution()).to.be(100);
+          expect(layer.getOpacity()).to.be(0.35);
+          expect(layer.getExtent()).to.eql(gaGlobalOptions.defaultExtent);
+          var source = layer.getSource();
+          expect(source instanceof ol.source.ImageWMS).to.be.ok();
+          expect(source.getUrl()).to.be('//wms.geo.admin.ch/');
+          expect(source.getParams()).to.eql({
+            LAYERS: 'serverLayerName',
+            FORMAT: 'image/png',
+            LANG: 'somelang',
+            TIME: '20180101'
+          });
+          expectCommonProperties(layer, 'wms');
+        });
+
+        it('returns a tiled WMS layer', function() {
+          var layer = gaLayers.getOlLayerById('wmstiled');
+          expect(layer instanceof ol.layer.Tile).to.be.ok();
+          expect(layer.getMinResolution()).to.be(0.5);
+          expect(layer.getMaxResolution()).to.be(100);
+          expect(layer.getOpacity()).to.be(0.35);
+          expect(layer.getExtent()).to.eql(gaGlobalOptions.defaultExtent);
+          expect(layer.getPreload()).to.be(0);
+          expect(layer.getUseInterimTilesOnError()).to.be(false);
+          var source = layer.getSource();
+          expect(source instanceof ol.source.TileWMS).to.be.ok();
+          expect(source.getUrls().length).to.be(6);
+          expect(source.getUrls()[0]).to.be('//wms.geo.admin.ch/');
+          expect(source.getParams()).to.eql({
+            LAYERS: 'serverLayerName',
+            FORMAT: 'image/png',
+            LANG: 'somelang',
+            TIME: '20180101'
+          });
+          expect(source.getTileLoadFunction()).to.be.a(Function);
+          var tileGrid = source.getTileGrid();
+          expect(tileGrid instanceof ol.tilegrid.TileGrid).to.be.ok();
+          expect(tileGrid.getResolutions().length).to.eql(27);
+          expectCommonProperties(layer, 'wmstiled');
+        });
+
+        it('returns a layer group', function() {
+          var layer = gaLayers.getOlLayerById('aggregate');
+          expect(layer instanceof ol.layer.Group).to.be.ok();
+          expect(layer.getMinResolution()).to.be(0.5);
+          expect(layer.getMaxResolution()).to.be(100);
+          expect(layer.getOpacity()).to.be(0.35);
+          expect(layer.getLayers().getLength()).to.be(2);
+          expectCommonProperties(layer, 'aggregate');
+        });
+
+        it('returns a GeoJSON layer', function() {
+          $httpBackend.expectGET('http://mystyle.json').respond({});
+          $httpBackend.expectGET(gaGlobalOptions.ogcproxyUrl + 'https://my.json').respond({
+            'features': [{
+              'type': 'Feature',
+              'geometry': {
+                'coordinates': [557660, 33280],
+                'type': 'Point'
+              },
+              'id': '2009',
+              'properties': {}
+            }],
+            'type': 'FeatureCollection'
+          });
+          var layer = gaLayers.getOlLayerById('geojson');
+          expect(layer instanceof ol.layer.Vector).to.be.ok();
+          expect(layer.getMinResolution()).to.be(0.5);
+          expect(layer.getMaxResolution()).to.be(100);
+          expect(layer.getOpacity()).to.be(1);
+          expect(layer.getExtent()).to.eql(gaGlobalOptions.defaultExtent);
+          var source = layer.getSource();
+          expect(source instanceof ol.source.Vector).to.be.ok();
+          expectCommonProperties(layer, 'geojson');
+          $httpBackend.flush();
+        });
+
+        it('returns a GeoJSON layer with updateDelay', function() {
+          $httpBackend.expectGET('http://mystyle.json').respond({});
+          var layer = gaLayers.getOlLayerById('geojsondelay');
+          expectCommonProperties(layer, 'geojsondelay');
+          $httpBackend.flush();
+        });
+      });
+
+      describe('when offline', function() {
+
+        beforeEach(function() {
+          gaNetworkStatus.offline = true;
+        });
+
+        it('returns a WMTS layer', function() {
+          var layer = gaLayers.getOlLayerById('wmts');
+          expect(layer.getMinResolution()).to.be(null);
+          expect(layer.getPreload()).to.be(6);
+          expect(layer.getUseInterimTilesOnError()).to.be(true);
+        });
+
+        it('returns a tiled WMS layer', function() {
+          var layer = gaLayers.getOlLayerById('wmstiled');
+          expect(layer.getPreload()).to.be(6);
+          expect(layer.getUseInterimTilesOnError()).to.be(true);
+        });
+      });
+    });
+
+    describe('getLayer', function() {
+
+      it('gets the config of a layer', function() {
+        $httpBackend.expectGET(expectedUrl).respond(dfltLayersConfig);
+        $httpBackend.flush();
+        expect(gaLayers.getLayer('foo')).to.be.an(Object);
+      });
+    });
+
+    describe('getLayerProperty', function() {
+
+      it('gets the property of a layer\'s config', function() {
+        $httpBackend.expectGET(expectedUrl).respond(dfltLayersConfig);
+        $httpBackend.flush();
+        expect(gaLayers.getLayerProperty('foo', 'type')).to.be('wmts');
+      });
+    });
+
+    describe('getMetaDataOfLayer', function() {
+
+      beforeEach(function() {
+        $httpBackend.whenGET(expectedUrl).respond(dfltLayersConfig);
+        $httpBackend.flush();
+      });
+
+      it('returns correct metadata url from a bod id', function() {
+        var expectedMdUrl = 'http://legendservice.com/all/somelayer?lang=somelang';
+        $httpBackend.expectGET(expectedMdUrl).respond({});
+        gaLayers.getMetaDataOfLayer('somelayer');
+        $httpBackend.flush();
+      });
+    });
+
+    describe('getLayerTimestampFromYear', function() {
+      var layersConfig = {
+        wmts: {
+          type: 'wmts',
+          timestamps: [
+            '20160101',
+            '19280101',
+            '18643112'
+          ]
+        },
+        terrain: {
+          type: 'terrain',
+          timestamps: [
+            '20150101',
+            '19280101'
+          ]
+        },
+        othertype: {
+          type: 'othertype'
+        }
+      };
+
+      layersConfig.wmtste = angular.copy(layersConfig.wmts);
+      layersConfig.wmtste.timeEnabled = true;
+
+      layersConfig.wmtsyear = angular.copy(layersConfig.wmtste);
+      layersConfig.wmtsyear.timeBehaviour = '1928';
+
+      layersConfig.wmtsmonth = angular.copy(layersConfig.wmtste);
+      layersConfig.wmtsmonth.timeBehaviour = '192804';
+
+      layersConfig.wmtsday = angular.copy(layersConfig.wmtste);
+      layersConfig.wmtsday.timeBehaviour = '19280504';
+
+      layersConfig.wmtsall = angular.copy(layersConfig.wmtste);
+      layersConfig.wmtsall.timeBehaviour = 'all';
+
+      layersConfig.wmtslast = angular.copy(layersConfig.wmtste);
+      layersConfig.wmtslast.timeBehaviour = 'last';
+
+      beforeEach(function() {
+        $httpBackend.whenGET(expectedUrl).respond(layersConfig);
+        $httpBackend.flush();
+      });
+
+      it('accepts a layer\'s config or a bodId as paramater', function() {
+        var ts = gaLayers.getLayerTimestampFromYear(layersConfig.wmts);
+        expect(ts).to.be('20160101');
+
+        ts = gaLayers.getLayerTimestampFromYear('wmts');
+        expect(ts).to.be('20160101');
+      });
+
+      describe('no time enabled layer', function() {
+
+        it('returns first timestamp found for WMTS and Terrain', function() {
+          var ts = gaLayers.getLayerTimestampFromYear('wmts');
+          expect(ts).to.be('20160101');
+
+          ts = gaLayers.getLayerTimestampFromYear('terrain');
+          expect(ts).to.be('20150101');
+
+          ts = gaLayers.getLayerTimestampFromYear('othertype');
+          expect(ts).to.be(undefined);
+        });
+      });
+
+      describe('time enabled layer', function() {
+
+        it('accepts a number as yearStr parameter', function() {
+          var ts = gaLayers.getLayerTimestampFromYear('wmtste', 2016);
+          expect(ts).to.be('20160101');
+          ts = gaLayers.getLayerTimestampFromYear('wmtste', '2016');
+          expect(ts).to.be('20160101');
+        });
+
+        it('returns a timestamp depending on timeBehavior property', function() {
+          var ts = gaLayers.getLayerTimestampFromYear('wmtsyear');
+          expect(ts).to.be('19280101');
+          ts = gaLayers.getLayerTimestampFromYear('wmtsmonth');
+          expect(ts).to.be('19280101');
+          ts = gaLayers.getLayerTimestampFromYear('wmtsday');
+          expect(ts).to.be('19280101');
+          ts = gaLayers.getLayerTimestampFromYear('wmtsall');
+          expect(ts).to.be(undefined);
+          ts = gaLayers.getLayerTimestampFromYear('wmtslast');
+          expect(ts).to.be('20160101');
+        });
+
+        it('returns a timestmap depending on yearStr defined in parameter', function() {
+          var ts = gaLayers.getLayerTimestampFromYear('wmtste', '1978');
+          expect(ts).to.be(undefined);
+          ts = gaLayers.getLayerTimestampFromYear('wmtste', '1864');
+          expect(ts).to.be('18643112');
+        });
+      });
+    });
+
+    describe('isBodLayer', function() {
+
+      beforeEach(function() {
+        $httpBackend.whenGET(expectedUrl).respond(dfltLayersConfig);
+        $httpBackend.flush();
+      });
+
+      it('returns a boolean', function() {
+       var layer = new ol.layer.Layer({});
+       expect(gaLayers.isBodLayer(layer)).to.be(false);
+       layer.bodId = 'foo';
+       expect(gaLayers.isBodLayer(layer)).to.be(true);
+      });
+    });
+
+    describe('getBodParentLayerId', function() {
+
+      beforeEach(function() {
+        $httpBackend.whenGET(expectedUrl).respond(dfltLayersConfig);
+        $httpBackend.flush();
+      });
+
+      it('returns parent layer id if it exists', function() {
+       var layer = new ol.layer.Layer({});
+       expect(gaLayers.getBodParentLayerId(layer)).to.be(undefined);
+       layer.bodId = 'foo';
+       expect(gaLayers.getBodParentLayerId(layer)).to.be('bar');
       });
     });
 
     describe('hasTooltipBodLayer', function() {
+
+      beforeEach(function() {
+        $httpBackend.whenGET(expectedUrl).respond(dfltLayersConfig);
+        $rootScope.$digest();
+        $httpBackend.flush();
+      });
+
       it('determines if a bod layer has a tooltip', function() {
-        expect(layers.hasTooltipBodLayer(undefined)).to.be(false);
-        expect(layers.hasTooltipBodLayer(null)).to.be(false);
-        expect(layers.hasTooltipBodLayer('')).to.be(false);
+        expect(gaLayers.hasTooltipBodLayer(undefined)).to.be(false);
+        expect(gaLayers.hasTooltipBodLayer(null)).to.be(false);
+        expect(gaLayers.hasTooltipBodLayer('')).to.be(false);
 
-        var layer = layers.getOlLayerById('tooltip');
-        expect(layers.hasTooltipBodLayer(layer)).to.be(true);
-        layer = layers.getOlLayerById('notooltip');
-        expect(layers.hasTooltipBodLayer(layer)).to.be(false);
-        layer = layers.getOlLayerById('childtooltip1');
-        expect(layers.hasTooltipBodLayer(layer)).to.be(true);
-        layer = layers.getOlLayerById('childnotooltip2');
-        expect(layers.hasTooltipBodLayer(layer)).to.be(false);
+        var layer = gaLayers.getOlLayerById('tooltip');
+        expect(gaLayers.hasTooltipBodLayer(layer)).to.be(true);
+        layer = gaLayers.getOlLayerById('notooltip');
+        expect(gaLayers.hasTooltipBodLayer(layer)).to.be(false);
+        layer = gaLayers.getOlLayerById('childtooltip1');
+        expect(gaLayers.hasTooltipBodLayer(layer)).to.be(true);
+        layer = gaLayers.getOlLayerById('childnotooltip2');
+        expect(gaLayers.hasTooltipBodLayer(layer)).to.be(false);
 
-        expect(layers.hasTooltipBodLayer(new ol.layer.Image())).to.be(false);
-        expect(layers.hasTooltipBodLayer(new ol.layer.Vector())).to.be(false);
+        expect(gaLayers.hasTooltipBodLayer(new ol.layer.Image())).to.be(false);
+        expect(gaLayers.hasTooltipBodLayer(new ol.layer.Vector())).to.be(false);
       });
     });
   });
@@ -598,10 +1273,10 @@ describe('ga_map_service', function() {
             return {
               id: 'sometopic',
               backgroundLayers: ['bar']
-            }
+            };
           }
         });
-        $provide.value('gaLang',{
+        $provide.value('gaLang', {
           get: function() {
             return 'somelang';
           }
@@ -634,7 +1309,7 @@ describe('ga_map_service', function() {
       $httpBackend.flush();
     });
 
-    afterEach(function () {
+    afterEach(function() {
       $httpBackend.verifyNoOutstandingExpectation();
       $httpBackend.verifyNoOutstandingRequest();
     });
@@ -746,7 +1421,7 @@ describe('ga_map_service', function() {
 
     it('transforms a data URI in Blob', function() {
       // base 64 representation of the background image of the map
-      var blob = gaMapUtils.dataURIToBlob("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAAAAABzHgM7AAAAAnRSTlMAAHaTzTgAAAARSURBVHgBY3iKBFEAOp/+MgB+UQnYeBZPWAAAAABJRU5ErkJggg==");
+      var blob = gaMapUtils.dataURIToBlob('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAAAAABzHgM7AAAAAnRSTlMAAHaTzTgAAAARSURBVHgBY3iKBFEAOp/+MgB+UQnYeBZPWAAAAABJRU5ErkJggg==');
       expect(blob.size).to.eql(88);
       expect(blob.type).to.eql('image/png');
     });
@@ -767,8 +1442,8 @@ describe('ga_map_service', function() {
     });
 
     it('tests getTileKey', function() {
-      var tileUrl = "//wmts5.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/20140520/21781/18/15/20.jpeg";
-      expect(gaMapUtils.getTileKey(tileUrl)).to.eql(".geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/20140520/21781/18/15/20.jpeg");
+      var tileUrl = '//wmts5.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/20140520/21781/18/15/20.jpeg';
+      expect(gaMapUtils.getTileKey(tileUrl)).to.eql('.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/20140520/21781/18/15/20.jpeg');
     });
 
     it('tests getMapLayerForBodId', inject(function(gaDefinePropertiesForLayer) {
@@ -898,7 +1573,7 @@ describe('ga_map_service', function() {
       gaDefinePropertiesForLayer(layer);
       expect(gaMapUtils.isKmlLayer(layer)).to.eql(true);
     }));
-    
+
     it('tests isLocalKmlLayer', inject(function(gaDefinePropertiesForLayer) {
       expect(gaMapUtils.isLocalKmlLayer(undefined)).to.eql(false);
       expect(gaMapUtils.isLocalKmlLayer(null)).to.eql(false);
@@ -941,7 +1616,7 @@ describe('ga_map_service', function() {
       expect(gaMapUtils.isStoredKmlLayer('KML||http://public.bgdi.ch/ggggg.kml')).to.eql(false);
       expect(gaMapUtils.isStoredKmlLayer('KML||http://public.admin.ch/gggg.kml')).to.eql(false);
       expect(gaMapUtils.isStoredKmlLayer('KML||http://public.dev.bgdi.ch/ggggg.kml')).to.eql(true);
-      expect(gaMapUtils.isStoredKmlLayer('KML||http://public.geo.admin.ch/gggg.kml')).to.eql(true)
+      expect(gaMapUtils.isStoredKmlLayer('KML||http://public.geo.admin.ch/gggg.kml')).to.eql(true);
       expect(gaMapUtils.isStoredKmlLayer('KML||https://public.dev.bgdi.ch/ggggg.kml')).to.eql(true);
       expect(gaMapUtils.isStoredKmlLayer('KML||https://public.geo.admin.ch/gggg.kml')).to.eql(true);
 
@@ -1049,7 +1724,7 @@ describe('ga_map_service', function() {
 
       it('returns the default extent if the extent is not valid', function() {
         expect(gaMapUtils.intersectWithDefaultExtent()).to.eql(dflt);
-        expect(gaMapUtils.intersectWithDefaultExtent([1,2])).to.eql(dflt);
+        expect(gaMapUtils.intersectWithDefaultExtent([1, 2])).to.eql(dflt);
       });
 
       it('returns undefined if there is no intersection', function() {
@@ -1059,7 +1734,7 @@ describe('ga_map_service', function() {
       it('returns undefined if the extent doesn\'t contains number', function() {
         expect(gaMapUtils.intersectWithDefaultExtent([undefined, 1, 2, 2])).to.eql(undefined);
         // NaN
-        expect(gaMapUtils.intersectWithDefaultExtent([0, 1, Math.max(undefined,5), 2])).to.eql(undefined);
+        expect(gaMapUtils.intersectWithDefaultExtent([0, 1, Math.max(undefined, 5), 2])).to.eql(undefined);
       });
 
       it('returns the intersection', function() {
@@ -1069,7 +1744,7 @@ describe('ga_map_service', function() {
 
     it('creates a feature overlay', function() {
       var feats = [new ol.Feature(), new ol.Feature()];
-      var style =  new ol.style.Style({
+      var style = new ol.style.Style({
         fill: new ol.style.Fill({
           color: 'red'
         })

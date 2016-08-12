@@ -3,25 +3,25 @@ describe('ga_translation_service', function() {
       navLang = (window.navigator.userLanguage || window.navigator.language).split('-')[0],
       topics = [], cpt = 0,
       topicsLoaded = [{
-        "langs": "somelang,de,fr,it",
-        "selectedLayers": [],
-        "backgroundLayers": [
-          "ch.swisstopo.pixelkarte-farbe",
-          "ch.swisstopo.pixelkarte-grau",
-          "ch.swisstopo.swissimage"
+        'langs': 'somelang,de,fr,it',
+        'selectedLayers': [],
+        'backgroundLayers': [
+          'ch.swisstopo.pixelkarte-farbe',
+          'ch.swisstopo.pixelkarte-grau',
+          'ch.swisstopo.swissimage'
         ],
-        "id": "sometopic",
-        "showCatalog": true
+        'id': 'sometopic',
+        'showCatalog': true
       }, {
-        "langs": "somelang,de,fr",
-        "selectedLayers": [],
-        "backgroundLayers": [
-          "ch.swisstopo.pixelkarte-grau",
-          "ch.swisstopo.pixelkarte-farbe",
-          "ch.swisstopo.swissimage"
+        'langs': 'somelang,de,fr',
+        'selectedLayers': [],
+        'backgroundLayers': [
+          'ch.swisstopo.pixelkarte-grau',
+          'ch.swisstopo.pixelkarte-farbe',
+          'ch.swisstopo.swissimage'
         ],
-        "id": "anothertopic",
-        "showCatalog": true
+        'id': 'anothertopic',
+        'showCatalog': true
       }];
 
   beforeEach(function() {
@@ -43,7 +43,7 @@ describe('ga_translation_service', function() {
         getTopics: function() {
           return topics;
         },
-        get: function(params){
+        get: function(params) {
           return topics[0];
         }
       });
@@ -53,7 +53,7 @@ describe('ga_translation_service', function() {
             lang: langPermalink
           };
         },
-        updateParams: function(params){
+        updateParams: function(params) {
           langPermalink = params.lang;
         }
       });
@@ -77,11 +77,11 @@ describe('ga_translation_service', function() {
     $httpBackend.whenGET('locales/rm.json').respond({});
   });
 
-  afterEach(function () {
+  afterEach(function() {
     $httpBackend.verifyNoOutstandingExpectation();
     $httpBackend.verifyNoOutstandingRequest();
   });
-  
+
   describe('lang defined by navigator', function() {
     it('uses navigator language as default language', function() {
       expect(gaLang.get()).to.be(navLang);
@@ -95,7 +95,7 @@ describe('ga_translation_service', function() {
       langPermalink = 'rm';
     });
   });
-  
+
   describe('lang defined from permalink', function() {
     beforeEach(function() {
       cpt = 0;
@@ -107,7 +107,7 @@ describe('ga_translation_service', function() {
       $httpBackend.expectGET(expectedUrl);
       $httpBackend.flush();
       expect(cpt).to.be(1);
-      
+
       // For the next test
       langPermalink = 'langnotexisting';
     });
@@ -130,7 +130,7 @@ describe('ga_translation_service', function() {
       $httpBackend.flush();
       expect(gaPermalink.getParams().lang).to.be(langPermalink);
       topics = topicsLoaded;
-      $rootScope.$broadcast('gaTopicChange', topicsLoaded[0]); 
+      $rootScope.$broadcast('gaTopicChange', topicsLoaded[0]);
       $httpBackend.expectGET('locales/' + gaGlobalOptions.translationFallbackCode + '.json');
       $httpBackend.flush();
       expect(gaPermalink.getParams().lang).to.be(gaGlobalOptions.translationFallbackCode);

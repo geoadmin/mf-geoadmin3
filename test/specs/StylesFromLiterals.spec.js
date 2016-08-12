@@ -6,7 +6,7 @@ describe('ga_stylesfromliterals_service', function() {
       gaStylesFromLiterals = $injector.get('gaStylesFromLiterals');
     });
   });
-  
+
   it('supports single type style assignment for a point, line and polygon', function() {
     var singleTypeStyle = {
       type: 'single',
@@ -61,7 +61,7 @@ describe('ga_stylesfromliterals_service', function() {
       geomType: 'polygon',
       vectorOptions: {
         fill: {
-          color: '#FF2FF2',
+          color: '#FF2FF2'
         },
         stroke: {
           color: '#GG1GG1',
@@ -107,7 +107,7 @@ describe('ga_stylesfromliterals_service', function() {
               width: 4
             },
             fill: {
-              color: 'rgba(52, 52, 52, 0.95)',
+              color: 'rgba(52, 52, 52, 0.95)'
             }
           }
         }
@@ -178,7 +178,7 @@ describe('ga_stylesfromliterals_service', function() {
                   width: 4
                 },
                 fill: {
-                  color: 'rgba(52, 52, 52, 0.3)',
+                  color: 'rgba(52, 52, 52, 0.3)'
                 }
               }
             }

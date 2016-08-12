@@ -74,7 +74,7 @@ describe('ga_kml_service', function() {
 
   var validKml2 = '<kml>' + createValidPlkPoint() + '</kml>';
   var validKml3 = '<kml>' + createValidPlkPoint() + createValidPlkPoint() + '</kml>';
-  
+
   var createPlacemarkWithHref = function(href) {
     return '<Placemark>' +
         '<Style>' +
@@ -86,7 +86,7 @@ describe('ga_kml_service', function() {
         '</Style>' +
         '<Point>' +
           '<coordinates>170.1435558771009,-43.60505741890396,0</coordinates>' +
-        '</Point>' + 
+        '</Point>' +
       '</Placemark>';
   };
 
@@ -137,7 +137,7 @@ describe('ga_kml_service', function() {
       });
       map = new ol.Map({});
     });
-   
+
     it('defines if we should use an ol.layer.ImageVector', function() {
       expect(gaKml.useImageVector(100000)).to.be(false);
       expect(gaKml.useImageVector(30000000)).to.be(true);
@@ -158,7 +158,7 @@ describe('ga_kml_service', function() {
       expect(gaKml.isValidFileSize('sdfsdfdsfsd')).to.be(true);
 
     });
-     
+
     it('tests validity of a file content', function() {
       expect(gaKml.isValidFileContent('<html></html>')).to.be(false);
       expect(gaKml.isValidFileContent('<kml></kml>')).to.be(true);
@@ -173,21 +173,21 @@ describe('ga_kml_service', function() {
         gaKml.addKmlToMap(map).then(function() {
         }, function(reason) {
           expect(reason).to.be('No KML data found');
-          expect(map.getLayers().getLength()).to.be(0); 
+          expect(map.getLayers().getLength()).to.be(0);
           done();
         });
         $rootScope.$digest();
       });
 
       it('adds layer if a kml string is defined (parseable or not)', function(done) {
-        var kml = 'sdgfsdgfdgg'; 
+        var kml = 'sdgfsdgfdgg';
         gaKml.addKmlToMap(map, kml).then(function() {
-          expect(map.getLayers().getLength()).to.be(1); 
+          expect(map.getLayers().getLength()).to.be(1);
           done();
         });
         $rootScope.$digest();
       });
-         
+
       it('set a correct layer\'s id', function(done) {
         // When layerOptions is not defined
         gaKml.addKmlToMap(map, validKml).then(function(olLayer) {
@@ -203,11 +203,11 @@ describe('ga_kml_service', function() {
         });
         $rootScope.$digest();
       });
-   
+
       it('search for offline data', function(done) {
         var getItem = gaStorageMock.expects('getItem').once().withArgs('KML||undefined');
         var setItem = gaStorageMock.expects('setItem').never();
-          
+
         gaKml.addKmlToMap(map, validKml).then(function(olLayer) {
           getItem.verify();
           setItem.verify();
@@ -215,13 +215,13 @@ describe('ga_kml_service', function() {
         });
         $rootScope.$digest();
       });
-      
+
       it('updates offline data', function(done) {
         var getItem = gaStorageMock.expects('getItem').once()
             .withArgs('KML||offdataexist').returns(validKml2);
         var setItem = gaStorageMock.expects('setItem').once()
             .withArgs('KML||offdataexist', validKml);
-          
+
         gaKml.addKmlToMap(map, validKml, {url: 'offdataexist'}).then(function(olLayer) {
           getItem.verify();
           setItem.verify();
@@ -229,13 +229,13 @@ describe('ga_kml_service', function() {
         });
         $rootScope.$digest();
       });
-       
+
       it('uses offline data', function(done) {
         var getItem = gaStorageMock.expects('getItem').once()
             .withArgs('KML||offdataexist').returns(validKml2);
         var setItem = gaStorageMock.expects('setItem').never()
             .withArgs('KML||offdataexist', validKml);
-          
+
         gaKml.addKmlToMap(map, undefined, {url: 'offdataexist'}).then(function(olLayer) {
           getItem.verify();
           setItem.verify();
@@ -265,14 +265,14 @@ describe('ga_kml_service', function() {
         });
         kml += '</kml>';
         gaKml.addKmlToMap(map, kml).then(function(olLayer) {
-          var feats = olLayer.getSource().getFeatures(); 
+          var feats = olLayer.getSource().getFeatures();
           feats.forEach(function(feat, idx) {
             var hrefTest = hrefs[idx];
-           
+
             if (idxProxify.indexOf(idx) != -1) {
               hrefTest = gaGlobalOptions.ogcproxyUrl + hrefTest;
             }
-            
+
             if (idxHttps.indexOf(idx) != -1) {
               hrefTest = hrefTest.replace(/^http:/, 'https:');
             }
@@ -284,7 +284,7 @@ describe('ga_kml_service', function() {
       });
 
       it('download files from network links tags when the link is valid', function(done) {
-        // WARNING: these urls are transformed like the urls in the test above. 
+        // WARNING: these urls are transformed like the urls in the test above.
         var hrefs = [
           'https://geo.admin.ch/test.php',
           'nonvalidurl.py',
@@ -295,7 +295,7 @@ describe('ga_kml_service', function() {
           kml += createNetLink(href);
         });
         kml += '</kml>';
-        
+
         $httpBackend.whenGET(hrefs[0]).respond(validKml2);
         $httpBackend.whenGET(hrefs[2]).respond(validKml3);
         $httpBackend.expectGET(hrefs[0]);
@@ -308,7 +308,7 @@ describe('ga_kml_service', function() {
           isValid1.verify();
           isValid2.verify();
           isNotValid.verify();
-          var feats = olLayer.getSource().getFeatures(); 
+          var feats = olLayer.getSource().getFeatures();
           expect(feats.length).to.be(4);
           done();
         });
@@ -329,7 +329,7 @@ describe('ga_kml_service', function() {
 
       it('closes unclosed geometry', function(done) {
         var unclosedCoords = '<coordinates>0,0,0 1,0,0 1,1,0 0,1,0</coordinates>';
-        var unclosedLinearRing = '<LinearRing>' + unclosedCoords + '</LinearRing>'; 
+        var unclosedLinearRing = '<LinearRing>' + unclosedCoords + '</LinearRing>';
         var unclosedPolygon = '<Polygon>' +
             '<outerBoundaryIs>' + unclosedLinearRing + '</outerBoundaryIs>' +
             '<innerBoundaryIs>' + unclosedLinearRing + '</innerBoundaryIs>' +
@@ -345,26 +345,26 @@ describe('ga_kml_service', function() {
 
 
         var kml = '<kml>' +
-            '<Placemark>' + unclosedLinearRing + '</Placemark>' + 
-            '<Placemark>' + unclosedPolygon + '</Placemark>' + 
+            '<Placemark>' + unclosedLinearRing + '</Placemark>' +
+            '<Placemark>' + unclosedPolygon + '</Placemark>' +
             '<Placemark>' + unclosedMultiPolygon + '</Placemark>' +
             '<Placemark>' + unclosedGeomColl + '</Placemark>' +
           '</kml>';
         gaKml.addKmlToMap(map, kml).then(function(olLayer) {
           var feats = olLayer.getSource().getFeatures();
           expect(feats.length).to.be(4);
-           
+
           // LinearRing (the kml parser creates a Polygon geometry)
-          var coords = feats[0].getGeometry().getCoordinates(); 
+          var coords = feats[0].getGeometry().getCoordinates();
           expect(coords[0][0]).to.eql(coords[0][coords[0].length - 1]);
 
           // Polygon
-          coords = feats[1].getGeometry().getCoordinates(); 
+          coords = feats[1].getGeometry().getCoordinates();
           expect(coords[0][0]).to.eql(coords[0][coords[0].length - 1]);
           expect(coords[1][0]).to.eql(coords[1][coords[1].length - 1]);
 
           // MultiPolygon
-          coords = feats[2].getGeometry().getCoordinates(); 
+          coords = feats[2].getGeometry().getCoordinates();
           expect(coords[0][0][0]).to.eql(coords[0][0][coords[0][0].length - 1]);
           expect(coords[0][1][0]).to.eql(coords[0][1][coords[0][1].length - 1]);
           expect(coords[1][0][0]).to.eql(coords[1][0][coords[1][0].length - 1]);
@@ -384,7 +384,7 @@ describe('ga_kml_service', function() {
 
       it('remove geometries with unique coordinates', function(done) {
         var uniqCoords = '<coordinates>0,0,0 0,0,0 0,0,0 0,0,0</coordinates>';
-        var linearRing = '<LinearRing>' + uniqCoords + '</LinearRing>'; 
+        var linearRing = '<LinearRing>' + uniqCoords + '</LinearRing>';
         var polygon = '<Polygon>' +
             '<outerBoundaryIs>' + linearRing + '</outerBoundaryIs>' +
             '<innerBoundaryIs>' + linearRing + '</innerBoundaryIs>' +
@@ -392,13 +392,13 @@ describe('ga_kml_service', function() {
         var multiPolygon = '<MultiGeometry>' +
             polygon + polygon +
          '</MultiGeometry>';
-        var line = '<LineString>' + uniqCoords + '</LineString>'; 
+        var line = '<LineString>' + uniqCoords + '</LineString>';
         var multiLine = '<MultiGeometry>' +
             line + line +
          '</MultiGeometry>';
-         var lineWithOneCoord = '<LineString>0,0,0</LineString>'; 
-        
-        
+         var lineWithOneCoord = '<LineString>0,0,0</LineString>';
+
+
         // a heterogenous MultiGeometry creates a GeometryCollection feature
         var geomColl = '<MultiGeometry>' +
             polygon + '<Point><coordinates>0,0,0</coordinates></Point>' +
@@ -407,18 +407,18 @@ describe('ga_kml_service', function() {
 
 
         var kml = '<kml>' +
-            '<Placemark>' + linearRing + '</Placemark>' + 
-            '<Placemark>' + polygon + '</Placemark>' + 
+            '<Placemark>' + linearRing + '</Placemark>' +
+            '<Placemark>' + polygon + '</Placemark>' +
             '<Placemark>' + multiPolygon + '</Placemark>' +
             '<Placemark>' + geomColl + '</Placemark>' +
-            '<Placemark>' + line + '</Placemark>' + 
+            '<Placemark>' + line + '</Placemark>' +
             '<Placemark>' + multiLine + '</Placemark>' +
             '<Placemark>' + lineWithOneCoord + '</Placemark>' +
           '</kml>';
         gaKml.addKmlToMap(map, kml).then(function(olLayer) {
           var feats = olLayer.getSource().getFeatures();
           expect(feats.length).to.be(1);
-          
+
           // we verify the point is still there
           coords = feats[0].getGeometry().getGeometries()[0].getCoordinates();
           expect(coords).to.eql([0, -7.081154551613622e-10, 0]);
@@ -430,7 +430,7 @@ describe('ga_kml_service', function() {
 
       it('don\'t remove geometries with good coordinates, at least 2 (#3334)', function(done) {
         var uniqCoords = '<coordinates>1,0,0 2,0,0</coordinates>';
-        var linearRing = '<LinearRing>' + uniqCoords + '</LinearRing>'; 
+        var linearRing = '<LinearRing>' + uniqCoords + '</LinearRing>';
         var polygon = '<Polygon>' +
             '<outerBoundaryIs>' + linearRing + '</outerBoundaryIs>' +
             '<innerBoundaryIs>' + linearRing + '</innerBoundaryIs>' +
@@ -438,13 +438,13 @@ describe('ga_kml_service', function() {
         var multiPolygon = '<MultiGeometry>' +
             polygon + polygon +
          '</MultiGeometry>';
-        var line = '<LineString>' + uniqCoords + '</LineString>'; 
+        var line = '<LineString>' + uniqCoords + '</LineString>';
         var multiLine = '<MultiGeometry>' +
             line + line +
          '</MultiGeometry>';
-         var lineWithOneCoord = '<LineString>0,0,0</LineString>'; 
-        
-        
+         var lineWithOneCoord = '<LineString>0,0,0</LineString>';
+
+
         // a heterogenous MultiGeometry creates a GeometryCollection feature
         var geomColl = '<MultiGeometry>' +
             polygon +
@@ -454,11 +454,11 @@ describe('ga_kml_service', function() {
 
 
         var kml = '<kml>' +
-            '<Placemark>' + linearRing + '</Placemark>' + 
-            '<Placemark>' + polygon + '</Placemark>' + 
+            '<Placemark>' + linearRing + '</Placemark>' +
+            '<Placemark>' + polygon + '</Placemark>' +
             '<Placemark>' + multiPolygon + '</Placemark>' +
             '<Placemark>' + geomColl + '</Placemark>' +
-            '<Placemark>' + line + '</Placemark>' + 
+            '<Placemark>' + line + '</Placemark>' +
             '<Placemark>' + multiLine + '</Placemark>' +
           '</kml>';
         gaKml.addKmlToMap(map, kml).then(function(olLayer) {
@@ -531,7 +531,7 @@ describe('ga_kml_service', function() {
         });
         $rootScope.$digest();
       });
-      
+
       describe('displays feature\'s name', function() {
         // TODO: Tests polygon, multipolygon ....
         it('only on Point and MultiPoint geometry by default', function(done) {
@@ -569,7 +569,7 @@ describe('ga_kml_service', function() {
           });
           gaStyleFactoryMock.expects('getStyle').once()
               .withArgs('kml').returns(dfltStyle);
-          var getStyle =  gaStyleFactoryMock.expects('getStyle').once()
+          var getStyle = gaStyleFactoryMock.expects('getStyle').once()
               .withArgs('transparentCircle').returns(trspStyle);
 
           gaKml.addKmlToMap(map, kml).then(function(olLayer) {
@@ -584,7 +584,7 @@ describe('ga_kml_service', function() {
           $rootScope.$digest();
         });
       });
-      
+
       it('set feature\'s type property if the feature has been created by draw tool', function(done) {
         var kml = '<kml><Document>' +
             createValidPlkPoint('linepolygon_bbbb') +
@@ -599,7 +599,7 @@ describe('ga_kml_service', function() {
           expect(feats[2].get('type')).to.be(undefined);
           done();
         });
-        $rootScope.$digest();         
+        $rootScope.$digest();
       });
 
       it('applies measure style to measure feature', function(done) {
@@ -609,7 +609,7 @@ describe('ga_kml_service', function() {
         var isMeasFeat = gaMapUtilsMock.expects('isMeasureFeature').once().returns(true);
         var getStyle = gaStyleFactoryMock.expects('getFeatureStyleFunction').once()
              .withArgs('measure').returns(new ol.style.Style());
-          
+
          gaKml.addKmlToMap(map, kml).then(function(olLayer) {
            isMeasFeat.verify();
            getStyle.verify();
@@ -617,7 +617,7 @@ describe('ga_kml_service', function() {
            expect(feats[0].get('type')).to.be('measure');
            done();
          });
-         $rootScope.$digest();  
+         $rootScope.$digest();
       });
 
       // TODO: tests more geometry types
@@ -642,14 +642,14 @@ describe('ga_kml_service', function() {
         });
         $rootScope.$digest();
       });
-      
+
       it('adds Layer at the correct place', function(done) {
-        var kml = '<kml><Document><name>Layer1</name></Document></kml>'; 
+        var kml = '<kml><Document><name>Layer1</name></Document></kml>';
         gaKml.addKmlToMap(map, kml);
         $rootScope.$digest();
 
         // at the end to the collection
-        kml = '<kml><Document><name>Layer2</name></Document></kml>'; 
+        kml = '<kml><Document><name>Layer2</name></Document></kml>';
         gaKml.addKmlToMap(map, kml).then(function() {
           expect(map.getLayers().getLength()).to.be(2);
           expect(map.getLayers().item(1).label).to.be('Layer2');
@@ -658,7 +658,7 @@ describe('ga_kml_service', function() {
         $rootScope.$digest();
 
         // at a specific index
-        kml = '<kml><Document><name>Layer3</name></Document></kml>'; 
+        kml = '<kml><Document><name>Layer3</name></Document></kml>';
         gaKml.addKmlToMap(map, kml, {}, 1).then(function() {
           expect(map.getLayers().getLength()).to.be(3);
           expect(map.getLayers().item(1).label).to.be('Layer3');
@@ -740,7 +740,7 @@ describe('ga_kml_service', function() {
         url = 'https://test.kml';
         encoded = gaGlobalOptions.ogcproxyUrl + encodeURIComponent(url);
       });
-      
+
       afterEach(function() {
         $httpBackend.verifyNoOutstandingExpectation();
         $httpBackend.verifyNoOutstandingRequest();
@@ -749,15 +749,15 @@ describe('ga_kml_service', function() {
       it('set good properties before calling addKmlToMap', function() {
         $httpBackend.whenGET(encoded).respond(validKml2);
         $httpBackend.expectGET(encoded);
-      
+
         var useImgVec = gaKmlMock.expects('useImageVector').once().returns(true);
         var addKmlToMap = gaKmlMock.expects('addKmlToMap').once().withArgs(map, validKml2, {
           url: url,
           useImageVector: true
         });
-       
+
         gaKml.addKmlToMapForUrl(map, url);
- 
+
         $httpBackend.flush();
         $rootScope.$digest();
         addKmlToMap.verify();
@@ -771,32 +771,32 @@ describe('ga_kml_service', function() {
         $rootScope.$digest();
         addKmlToMap.verify();
       });
- 
+
       it('calls addKmlToMap directly when request failed', function() {
         $httpBackend.whenGET(encoded).respond(404, 'File not found');
         $httpBackend.expectGET(encoded);
-        
+
         var addKmlToMap = gaKmlMock.expects('addKmlToMap').once();
-        
+
         gaKml.addKmlToMapForUrl(map, 'https://test.kml');
-        
+
         $httpBackend.flush();
         $rootScope.$digest();
         addKmlToMap.verify();
       });
-     
+
       it('doesn\'t call addKmlToMap if content is not valid', function() {
         $httpBackend.whenGET(encoded).respond(validKml2);
         $httpBackend.expectGET(encoded);
 
         var addKmlToMap = gaKmlMock.expects('addKmlToMap').never();
         var isValid = gaKmlMock.expects('isValidFileContent').once().returns(false);
-        
+
         gaKml.addKmlToMapForUrl(map, 'https://test.kml');
-        
+
         $httpBackend.flush();
         $rootScope.$digest();
-        
+
         addKmlToMap.verify();
         isValid.verify();
       });
@@ -807,12 +807,12 @@ describe('ga_kml_service', function() {
 
         var addKmlToMap = gaKmlMock.expects('addKmlToMap').never();
         var isValid = gaKmlMock.expects('isValidFileSize').once().returns(false);
-        
+
         gaKml.addKmlToMapForUrl(map, 'https://test.kml');
-        
+
         $httpBackend.flush();
         $rootScope.$digest();
-        
+
         addKmlToMap.verify();
         isValid.verify();
       });
