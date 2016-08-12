@@ -32,7 +32,6 @@ Alias ${apache_base_path}/src ${apache_base_directory}/src
 Alias ${apache_base_path}/ ${apache_base_directory}/prd/
 RewriteRule ${apache_base_path}/src/layersConfig\.(\w+)\.json http:${api_url}/rest/services/all/MapServer/layersConfig?lang=$1 [P]
 RewriteRule ${apache_base_path}/src/services http:${api_url}/rest/services [P]
-RewriteRule ${apache_base_path}/(?:src\/)?img\/maki/(.*) https:${api_url}/color/255,0,0/$1
 
 # Static config
 #RewriteCond %{QUERY_STRING}     ^lang=(de|fr|it|rm|en)$    [NC]
