@@ -146,22 +146,28 @@ goog.require('ga_urlutils_service');
       var readFeatures = function(kml) {
         // Replace all hrefs to prevent errors if image doesn't have
         // CORS headers. Exception for *.geo.admin.ch, *.bgdi.ch and google
-        // markers icons (lightblue.png, ltblue-dot.png, ltblu-pushpin.png, ...)
+        // markers icons (only https)
         // to keep the OL3 magic for anchor origin.
-        // Test regex here: http://regex101.com/r/tF3vM0/3
+        // Test regex here: http://regex101.com/r/tF3vM0/9
         // List of google icons: http://www.lass.it/Web/viewer.aspx?id=4
         kml = kml.replace(
-          /<href>http(?!(s?):\/\/(maps\.(?:google|gstatic)\.com.*(blue|green|orange|pink|purple|red|yellow|pushpin).*\.png|.*(bgdi|geo.admin)\.ch))/g,
+          /<href>http(?!(s:\/\/maps\.(google|gstatic)\.com[a-zA-Z\d\.\-\/_]*\.png|s?:\/\/[a-z\d\.\-]*(bgdi|geo.admin)\.ch))/g,
           '<href>' + gaGlobalOptions.ogcproxyUrl + 'http'
         );
 
         // Replace all http hrefs from *.geo.admin.ch or *.bgdi.ch by https
-        // Test regex here: http://regex101.com/r/fY7wB3/3
+        // Test regex here: http://regex101.com/r/fY7wB3/5
         kml = kml.replace(
-          /<href>http(?!(s))(?=:\/\/(.*(bgdi|geo.admin)\.ch))/g,
+          /<href>http(?=s{0}:\/\/[a-z\d\.\-]*(bgdi|admin)\.ch)/g,
           '<href>https'
         );
 
+        // Replace all old maki urls image by the color service url
+        // Test regex here: https://regex101.com/r/rF2tA1/3
+        kml = kml.replace(
+          /<href>https?:\/\/[a-z\d\.\-]*(bgdi|geo.admin)\.ch[a-zA-Z\d\-_\/]*img\/maki\/([a-z]*-24@2x\.png)/g,
+          '<href>' + gaGlobalOptions.apiUrl + '/color/255,0,0/$2'
+        );
         // Load the parser only when needed.
         // WARNING: it's needed to initialize it here for test.
         if (!kmlFormat) {
