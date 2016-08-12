@@ -109,6 +109,14 @@ goog.require('ga_styles_service');
       overlay.getElement().innerHTML = $translate.instant(helpMsgId);
     };
 
+    // Remove last point when drawing a feature
+    var removeLastPoint = function(evt) {
+      if (evt.data && evt.which == 46 &&
+          !/^(input|textarea)$/i.test(evt.target.nodeName)) {
+        evt.data.removeLastPoint();
+      }
+    };
+
     return {
       restrict: 'A',
       templateUrl: 'components/draw/partials/draw.html',
@@ -150,6 +158,7 @@ goog.require('ga_styles_service');
         var hideHelpTooltip = function() {
           helpTooltip.setPosition(undefined);
         };
+
         // Add select interaction
         var select = new ol.interaction.Select({
           layers: layerFilter,
@@ -401,6 +410,10 @@ goog.require('ga_styles_service');
             updateHelpTooltip(helpTooltip, tool.id, true,
                 isFinishOnFirstPoint, isSnapOnLastPoint);
 
+            if (!gaBrowserSniffer.mobile) {
+              $document.keyup(draw, removeLastPoint);
+            }
+
             // Add temporary measure tooltips
             if (tool.showMeasure) {
               gaMeasure.addOverlays(map, layer, evt.feature);
@@ -441,6 +454,9 @@ goog.require('ga_styles_service');
           }));
 
           unDrawEvts.push(draw.on('drawend', function(evt) {
+            // Unregister key event
+            $document.off('keyup', removeLastPoint);
+
             // Unregister the change event
             ol.Observable.unByKey(deregFeatureChange);
             deactivateTool(lastActiveTool);
@@ -624,7 +640,6 @@ goog.require('ga_styles_service');
             layer.getSource().clear();
           }
         };
-
 
         scope.canExport = function() {
           return (layer) ? layer.getSource().getFeatures().length > 0 : false;
