@@ -26,16 +26,22 @@ describe('ga_kml_service', function() {
         '</MultiGeometry>' +
       '</Placemark>';
   };
-  var createValidPlkLineString = function(id) {
+  var createValidPlkLineString = function(id, styleId) {
     return '<Placemark id="' + (angular.isDefined(id) ? id : cpt++) + '">' +
         '<name>Swiss Line</name>' +
         '<description><![CDATA[<!DOCTYPE html><html><head></head><body><p>Line</p></body></html>]]></description>' +
-        '<styleUrl>#styleLine1</styleUrl>' +
+        '<styleUrl>#' + (styleId || 'styleLine1') + '</styleUrl>' +
         '<LineString>' +
           '<coordinates>9.1,46.8,0 10.1,46.4,0 11.1,46.8,0</coordinates>' +
         '</LineString>' +
       '</Placemark>';
   };
+  var styleLine0 = '<Style id="styleLine0">' +
+      '<LineStyle>' +
+        '<color>7f101112</color>' +
+        '<width>0</width>' +
+      '</LineStyle>' +
+    '</Style>';
   var styleLine1 = '<Style id="styleLine1">' +
       '<LineStyle>' +
         '<color>7f101112</color>' +
@@ -645,6 +651,18 @@ describe('ga_kml_service', function() {
           var style = feat.getStyleFunction().call(feat)[0];
           expect(style.getImage() instanceof ol.style.Circle).to.be(true);
           expect(style.getImage().getFill().getColor()).to.eql(dfltStyle.getImage().getFill().getColor());
+          done();
+        });
+        $rootScope.$digest();
+      });
+
+      it('remove stroke\'s if width=0', function(done) {
+        // WARNING: <Document> tag is needed to parse styles
+        var kml = '<kml><Document>' + styleLine0 + createValidPlkLineString(undefined, 'styleLine0') + '</Document></kml>';
+        gaKml.addKmlToMap(map, kml).then(function(olLayer) {
+          var feat = olLayer.getSource().getFeatures()[0];
+          var style = feat.getStyleFunction().call(feat)[0];
+          expect(style.getStroke()).to.be(null);
           done();
         });
         $rootScope.$digest();

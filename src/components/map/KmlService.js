@@ -111,6 +111,14 @@ goog.require('ga_urlutils_service');
         var styles = feature.getStyleFunction().call(feature);
         var style = styles[0];
 
+        // The canvas draws a stroke width=1 by default if width=0, so we
+        // remove the stroke style in that case.
+        // See https://github.com/geoadmin/mf-geoadmin3/issues/3421
+        var stroke = style.getStroke();
+        if (stroke && stroke.getWidth() == 0) {
+          stroke = undefined;
+        }
+
         // if the feature is a Point and we are offline, we use default kml
         // style.
         // if the feature is a Point and has a name with a text style, we
@@ -122,7 +130,6 @@ goog.require('ga_urlutils_service');
           var image = style.getImage();
           var text = null;
           var fill = style.getFill();
-          var stroke = style.getStroke();
 
           if (gaNetworkStatus.offline) {
             image = gaStyleFactory.getStyle('kml').getImage();
@@ -176,7 +183,7 @@ goog.require('ga_urlutils_service');
             geom instanceof ol.geom.GeometryCollection)) {
           styles = [new ol.style.Style({
             fill: style.getFill(),
-            stroke: style.getStroke(),
+            stroke: stroke,
             image: null,
             text: null,
             zIndex: style.getZIndex()
