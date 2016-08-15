@@ -2,6 +2,7 @@ goog.provide('ga_draw_directive');
 
 goog.require('ga_exportkml_service');
 goog.require('ga_filestorage_service');
+goog.require('ga_geomutils_service');
 goog.require('ga_map_service');
 goog.require('ga_measure_service');
 goog.require('ga_styles_service');
@@ -11,6 +12,7 @@ goog.require('ga_styles_service');
   var module = angular.module('ga_draw_directive', [
     'ga_exportkml_service',
     'ga_filestorage_service',
+    'ga_geomutils_service',
     'ga_map_service',
     'ga_measure_service',
     'ga_styles_service',
@@ -30,7 +32,7 @@ goog.require('ga_styles_service');
   module.directive('gaDraw', function($translate, $rootScope, $timeout,
       gaBrowserSniffer, gaDefinePropertiesForLayer, gaDebounce, gaFileStorage,
       gaLayerFilters, gaExportKml, gaMapUtils, $document, gaMeasure,
-      gaStyleFactory) {
+      gaStyleFactory, gaGeomUtils) {
 
     var createDefaultLayer = function(map, useTemporaryLayer) {
       // #2820: we set useSpatialIndex to false to allow display of azimuth
@@ -468,24 +470,9 @@ goog.require('ga_styles_service');
             // According to #3319, it seems LineString can be created with one
             // point (or with an array of exact same points). If it's the case
             // we ignore it.
-            if (geom instanceof ol.geom.Polygon) {
-              var hasUniqueCoords = true;
-              var coords;
-              geom.getCoordinates()[0].forEach(function(item) {
-                if (!coords) {
-                  coords = item;
-                } else if (hasUniqueCoords &&
-                    coords[0] == item[0] &&
-                    coords[1] == item[1] &&
-                    coords[2] == item[2]) {
-                  coords = item;
-                } else {
-                  hasUniqueCoords = false;
-                }
-              });
-              if (hasUniqueCoords) {
-                return;
-              }
+            if (geom instanceof ol.geom.Polygon &&
+                gaGeomUtils.hasUniqueCoord(geom.getCoordinates()[0])) {
+              return;
             }
 
             if (geom instanceof ol.geom.Polygon && !isFinishOnFirstPoint) {
