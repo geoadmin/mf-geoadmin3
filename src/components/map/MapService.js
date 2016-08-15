@@ -199,7 +199,12 @@ goog.require('ga_urlutils_service');
                   src.updateDimensions({'Time': val});
                 } else if (src instanceof ol.source.ImageWMS ||
                     src instanceof ol.source.TileWMS) {
-                  src.updateParams({'TIME': val});
+                  if (angular.isDefined(val)) {
+                    src.updateParams({'TIME': val});
+                  } else {
+                    delete src.getParams().TIME;
+                    src.updateParams();
+                  }
                 }
                 this.set('time', val);
               }
