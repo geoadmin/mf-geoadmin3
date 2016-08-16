@@ -1271,127 +1271,242 @@ describe('ga_map_service', function() {
   });
 
   describe('gaLayerFilters', function() {
-    var $rootScope, $httpBackend, gaLayerFilters, gaDefinePropertiesForLayer;
+    var gaLayerFilters, gaDefinePropertiesForLayer, gaLayers;
 
     beforeEach(function() {
+
       module(function($provide) {
         $provide.value('gaTopic', {
-          get: function() {
-            return {
-              id: 'sometopic',
-              backgroundLayers: ['bar']
-            };
-          }
-        });
-        $provide.value('gaLang', {
-          get: function() {
-            return 'somelang';
-          }
+          get: function() {}
         });
       });
+
       inject(function($injector) {
-        $rootScope = $injector.get('$rootScope');
-        $httpBackend = $injector.get('$httpBackend');
         gaLayerFilters = $injector.get('gaLayerFilters');
-        gaDefinePropertiesForLayer = $injector.get(
-            'gaDefinePropertiesForLayer');
+        gaDefinePropertiesForLayer = $injector.get('gaDefinePropertiesForLayer');
+        gaLayers = $injector.get('gaLayers');
       });
-      var expectedUrl = 'https://example.com/all?lang=somelang';
-      $httpBackend.whenGET(expectedUrl).respond({
-        toto: {
-          type: 'wmts',
-          matrixSet: 'set1',
-          timestamps: ['t1', 't2'],
-          tooltip: true
-        },
-        samere: {
-          type: 'wms',
-          matrixSet: 'set2',
-          timestamps: ['t3', 't4'],
-          tooltip: false
-        }
+    });
+
+    describe('selected', function() {
+
+      it('keeps layers in the display manager', function() {
+        var layer = new ol.layer.Tile();
+        gaDefinePropertiesForLayer(layer);
+        layer.displayInLayerManager = true;
+        expect(gaLayerFilters.selected(layer)).to.be(true);
+        layer.displayInLayerManager = false;
+        expect(gaLayerFilters.selected(layer)).to.be(false);
       });
-      $httpBackend.expectGET(expectedUrl);
-      $rootScope.$digest();
-      $httpBackend.flush();
     });
 
-    afterEach(function() {
-      $httpBackend.verifyNoOutstandingExpectation();
-      $httpBackend.verifyNoOutstandingRequest();
+    describe('selectAndVisible', function() {
+
+      it('keeps visible layers in the display manager', function() {
+        var layer = new ol.layer.Tile();
+        gaDefinePropertiesForLayer(layer);
+        layer.displayInLayerManager = true;
+        layer.visible = true;
+        expect(gaLayerFilters.selectedAndVisible(layer)).to.be(true);
+        layer.visible = false;
+        expect(gaLayerFilters.selectedAndVisible(layer)).to.be(false);
+        layer.visible = true;
+        layer.displayInLayerManager = false;
+        expect(gaLayerFilters.selectedAndVisible(layer)).to.be(false);
+        layer.visible = false;
+        expect(gaLayerFilters.selectedAndVisible(layer)).to.be(false);
+      });
     });
 
-    it('selected keeps layers in the display manager', function() {
-      // We use a type caster "!!" because they are used as filters and
-      // that's how they are evaluated in angular.
-      var layer = new ol.layer.Tile();
-      gaDefinePropertiesForLayer(layer);
-      layer.displayInLayerManager = true;
-      expect(!!gaLayerFilters.selected(layer)).to.be(true);
-      layer.displayInLayerManager = false;
-      expect(!!gaLayerFilters.selected(layer)).to.be(false);
-      layer.displayInLayerManager = undefined;
-      expect(!!gaLayerFilters.selected(layer)).to.be(false);
-      layer.displayInLayerManager = null;
-      expect(!!gaLayerFilters.selected(layer)).to.be(false);
+    describe('permalinked', function() {
+
+      it('keeps layers displayed in layer manager', function() {
+        var layer = new ol.layer.Vector();
+        gaDefinePropertiesForLayer(layer);
+        layer.displayInLayerManager = false;
+        expect(gaLayerFilters.permalinked(layer)).to.be(false);
+        layer.displayInLayerManager = true;
+        expect(gaLayerFilters.permalinked(layer)).to.be(true);
+      });
+
+      it('excludes local kml layer', function() {
+        var layer = new ol.layer.Vector();
+        gaDefinePropertiesForLayer(layer);
+        layer.id = 'KML||mykml';
+        layer.url = 'http://mykml';
+        layer.type = 'KML';
+        layer.displayInLayerManager = true;
+        expect(gaLayerFilters.permalinked(layer)).to.be(true);
+        layer.url = 'mylocalkml';
+        expect(gaLayerFilters.permalinked(layer)).to.be(false);
+      });
     });
 
-    it('selectedAndVisible keeps visible layers in the display manager',
-        function() {
-      var layer = new ol.layer.Tile();
-      gaDefinePropertiesForLayer(layer);
-      layer.displayInLayerManager = true;
-      layer.visible = true;
-      expect(!!gaLayerFilters.selectedAndVisible(layer)).to.be(true);
-      layer.visible = false;
-      expect(!!gaLayerFilters.selectedAndVisible(layer)).to.be(false);
-      layer.visible = true;
-      layer.displayInLayerManager = false;
-      expect(!!gaLayerFilters.selectedAndVisible(layer)).to.be(false);
-      layer.visible = false;
-      expect(!!gaLayerFilters.selectedAndVisible(layer)).to.be(false);
+    describe('timeEnabled', function() {
+      var layer;
+
+      beforeEach(function() {
+        layer = new ol.layer.Vector();
+        gaDefinePropertiesForLayer(layer);
+        layer.timeEnabled = true;
+      });
+
+      it('keeps only visible time enabled layers', function() {
+        expect(gaLayerFilters.timeEnabled(layer)).to.be(true);
+        layer.visible = false;
+        expect(gaLayerFilters.timeEnabled(layer)).to.be(false);
+      });
+
+      it('excludes background layers', function() {
+        layer.background = true;
+        expect(gaLayerFilters.timeEnabled(layer)).to.be(false);
+      });
+
+      it('excludes preview layers', function() {
+        layer.preview = true;
+        expect(gaLayerFilters.timeEnabled(layer)).to.be(false);
+      });
     });
 
-    it('realtime keeps only realtime layers', function() {
-      var layer = new ol.layer.Vector();
-      gaDefinePropertiesForLayer(layer);
-      expect(gaLayerFilters.realtime(layer)).to.be(false);
-      layer.updateDelay = null;
-      expect(gaLayerFilters.realtime(layer)).to.be(false);
-      layer.updateDelay = 100;
-      expect(gaLayerFilters.realtime(layer)).to.be(true);
+    describe('potentialTooltip', function() {
+      var stub;
+
+      beforeEach(function() {
+        stub = sinon.stub(gaLayers, 'hasTooltipBodLayer');
+      });
+
+      afterEach(function() {
+        stub.restore();
+      });
+
+      it('keeps visible bod layers', function() {
+        stub.returns(true);
+        var layer = new ol.layer.Tile();
+        gaDefinePropertiesForLayer(layer);
+        layer.displayInLayerManager = true;
+        expect(gaLayerFilters.potentialTooltip(layer)).to.be(false);
+        layer.visible = true;
+        expect(gaLayerFilters.potentialTooltip(layer)).to.be(false);
+        layer.bodId = 'toto';
+        expect(gaLayerFilters.potentialTooltip(layer)).to.be(true);
+      });
+
+      it('excludes bod layer without tooltip', function() {
+        stub.returns(false);
+        var layer = new ol.layer.Tile();
+        gaDefinePropertiesForLayer(layer);
+        layer.displayInLayerManager = true;
+        layer.visible = true;
+        layer.bodId = 'toto';
+        expect(gaLayerFilters.potentialTooltip(layer)).to.be(false);
+      });
+
+      it('excludes vector layers', function() {
+        stub.returns(true);
+        // Not a vector layer -> no support of intersection on vector layers
+        // in query tool
+        var layer = new ol.layer.Vector({ source: new ol.source.Vector({}) });
+        gaDefinePropertiesForLayer(layer);
+        layer.bodId = 'foo';
+        layer.displayInLayerManager = true;
+        expect(gaLayerFilters.potentialTooltip(layer)).to.be(false);
+        layer.visible = true;
+        expect(gaLayerFilters.potentialTooltip(layer)).to.be(false);
+        layer.bodId = 'toto';
+        expect(gaLayerFilters.potentialTooltip(layer)).to.be(false);
+      });
     });
 
-    it('potentialTooltip keeps visible layers in the display manager',
-        function() {
-      var layer = new ol.layer.Tile();
-      gaDefinePropertiesForLayer(layer);
-      layer.displayInLayerManager = true;
-      expect(!!gaLayerFilters.potentialTooltip(layer)).to.be(false);
-      layer.visible = true;
-      expect(!!gaLayerFilters.potentialTooltip(layer)).to.be(false);
-      layer.bodId = 'toto';
-      expect(!!gaLayerFilters.potentialTooltip(layer)).to.be(true);
+    describe('searchable', function() {
+      var layer, stub;
 
-      var layer = new ol.layer.Tile();
-      gaDefinePropertiesForLayer(layer);
-      layer.displayInLayerManager = true;
-      expect(!!gaLayerFilters.potentialTooltip(layer)).to.be(false);
-      layer.visible = true;
-      expect(!!gaLayerFilters.potentialTooltip(layer)).to.be(false);
-      layer.bodId = 'samere';
-      expect(!!gaLayerFilters.potentialTooltip(layer)).to.be(false);
+      beforeEach(function() {
+        stub = sinon.stub(gaLayers, 'getLayerProperty');
+        layer = new ol.layer.Tile();
+        gaDefinePropertiesForLayer(layer);
+        layer.displayInLayerManager = true;
+      });
 
-      // Not a vector layer -> no support of intersection on vector layers
-      // in query tool
-      layer = new ol.layer.Vector({ source: new ol.source.Vector({}) });
-      gaDefinePropertiesForLayer(layer);
-      layer.displayInLayerManager = true;
-      expect(!!gaLayerFilters.potentialTooltip(layer)).to.be(false);
-      layer.visible = true;
-      expect(!!gaLayerFilters.potentialTooltip(layer)).to.be(false);
-      layer.bodId = 'toto';
-      expect(!!gaLayerFilters.potentialTooltip(layer)).to.be(false);
+      afterEach(function() {
+        stub.restore();
+      });
+
+      it('keeps searchable and visible bod layers', function() {
+        stub.returns(true);
+        expect(gaLayerFilters.searchable(layer)).to.be(false);
+        layer.visible = true;
+        expect(gaLayerFilters.searchable(layer)).to.be(false);
+        layer.bodId = 'toto';
+        expect(gaLayerFilters.searchable(layer)).to.be(true);
+      });
+
+      it('excludes bod layer not searchable', function() {
+        stub.returns(false);
+        layer.visible = true;
+        layer.bodId = 'toto';
+        expect(gaLayerFilters.searchable(layer)).to.be(false);
+      });
+    });
+
+    describe('queryable', function() {
+      var layer, stub;
+
+      beforeEach(function() {
+        stub = sinon.stub(gaLayers, 'getLayerProperty');
+        layer = new ol.layer.Tile();
+        gaDefinePropertiesForLayer(layer);
+        layer.displayInLayerManager = true;
+      });
+
+      afterEach(function() {
+        stub.restore();
+      });
+
+      it('keeps queryable and visible bod layers', function() {
+        stub.returns(['attr1']);
+        expect(gaLayerFilters.queryable(layer)).to.be(false);
+        layer.visible = true;
+        expect(gaLayerFilters.queryable(layer)).to.be(false);
+        layer.bodId = 'toto';
+        expect(gaLayerFilters.queryable(layer)).to.be(true);
+      });
+
+      it('excludes bod layer not queryable', function() {
+        stub.returns([]);
+        layer.visible = true;
+        layer.bodId = 'toto';
+        expect(gaLayerFilters.queryable(layer)).to.be(false);
+
+        stub.returns();
+        layer.visible = true;
+        layer.bodId = 'toto';
+        expect(gaLayerFilters.queryable(layer)).to.be(false);
+      });
+    });
+
+    describe('background', function() {
+
+      it('keeps background layers', function() {
+        var layer = new ol.layer.Tile();
+        gaDefinePropertiesForLayer(layer);
+        layer.background = true;
+        expect(gaLayerFilters.background(layer)).to.be(true);
+        layer.background = false;
+        expect(gaLayerFilters.background(layer)).to.be(false);
+      });
+    });
+
+    describe('realtime', function() {
+
+      it('keeps only realtime layers', function() {
+        var layer = new ol.layer.Vector();
+        gaDefinePropertiesForLayer(layer);
+        expect(gaLayerFilters.realtime(layer)).to.be(false);
+        layer.updateDelay = null;
+        expect(gaLayerFilters.realtime(layer)).to.be(false);
+        layer.updateDelay = 100;
+        expect(gaLayerFilters.realtime(layer)).to.be(true);
+      });
     });
   });
 

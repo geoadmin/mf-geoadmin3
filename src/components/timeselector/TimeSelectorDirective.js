@@ -20,7 +20,7 @@ goog.require('ga_time_service');
   module.controller('GaTimeSelectorDirectiveController',
     function($scope, gaLayerFilters) {
       $scope.layers = $scope.map.getLayers().getArray();
-      $scope.layerFilter = gaLayerFilters.timeEnabledLayersFilter;
+      $scope.layerFilter = gaLayerFilters.timeEnabled;
       $scope.isActive = false;
     }
   );

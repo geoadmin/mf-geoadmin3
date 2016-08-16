@@ -972,13 +972,9 @@ goog.require('ga_urlutils_service');
           if (!this.isBodLayer(olLayer)) {
             return false;
           }
-          var hasTooltip;
           var parentLayerId = this.getBodParentLayerId(olLayer);
           var bodId = parentLayerId || olLayer.bodId;
-          if (bodId) {
-            hasTooltip = this.getLayerProperty(bodId, 'tooltip');
-          }
-          return !!(bodId && hasTooltip);
+          return this.getLayerProperty(bodId, 'tooltip');
         };
       };
 
@@ -1446,47 +1442,47 @@ goog.require('ga_urlutils_service');
         },
         permalinked: function(layer) {
           return layer.displayInLayerManager &&
-              !gaMapUtils.isLocalKmlLayer(layer);
+                 !gaMapUtils.isLocalKmlLayer(layer);
         },
         /**
          * Keep only time enabled layer
          */
-        timeEnabledLayersFilter: function(layer) {
-          return !layer.background &&
-                 layer.timeEnabled &&
+        timeEnabled: function(layer) {
+          return layer.timeEnabled &&
                  layer.visible &&
+                 !layer.background &&
                  !layer.preview;
         },
         /**
          * Keep layers with potential tooltip for query tool
          */
         potentialTooltip: function(layer) {
-          return layer.displayInLayerManager &&
+          return !!(layer.displayInLayerManager &&
                  layer.visible &&
                  layer.bodId &&
                  gaLayers.hasTooltipBodLayer(layer) &&
-                 !gaMapUtils.isVectorLayer(layer);
+                 !gaMapUtils.isVectorLayer(layer));
         },
         /**
          * Searchable layers
          */
         searchable: function(layer) {
-          return layer.displayInLayerManager &&
+          return !!(layer.displayInLayerManager &&
                  layer.visible &&
                  layer.bodId &&
-                 gaLayers.getLayerProperty(layer.bodId, 'searchable');
+                 gaLayers.getLayerProperty(layer.bodId, 'searchable'));
         },
         /**
          * Queryable layers (layers with queryable attributes)
          */
         queryable: function(layer) {
-          return layer.displayInLayerManager &&
+          return !!(layer.displayInLayerManager &&
                  layer.visible &&
                  layer.bodId &&
                  gaLayers.getLayerProperty(layer.bodId,
                                            'queryableAttributes') &&
                  gaLayers.getLayerProperty(layer.bodId,
-                                           'queryableAttributes').length > 0;
+                                           'queryableAttributes').length);
         },
         /**
          * Keep only background layers
