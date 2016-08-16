@@ -391,8 +391,15 @@ describe('ga_map_service', function() {
         var spy = sinon.spy(layer.getSource(), 'updateParams');
         layer[prop] = 'test3';
         expect(spy.callCount).to.be(0);
+
+        // Verifies the TIME parameter is correctly deleted from the object when
+        // it is set to undefined.
+        layer[prop] = undefined;
+        expect(layer.getSource().getParams().hasOwnProperty('TIME')).to.be(false);
+        expect(spy.callCount).to.be(1);
         spy.restore();
       });
+
 
       // LayerGroup
       layer = new ol.layer.Group({});
