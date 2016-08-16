@@ -92,7 +92,8 @@
           languages: ["de", "en", "fr", "it", "rm"],
           resolutions: [650.0, 500.0, 250.0, 100.0, 50.0, 20.0, 10.0, 5.0,
               2.5, 2.0, 1.0, 0.5, 0.25, 0.1],
-          serviceUrl : 'https://mf-chsdi3.dev.bgdi.ch'
+          serviceUrl : 'https://mf-chsdi3.dev.bgdi.ch',
+          ogcproxyUrl : 'https://mf-chsdi3.dev.bgdi.ch/ogcproxy?url='
         });
 
         module.config(['gaLayersProvider', function(gaLayersProvider) {
@@ -144,7 +145,6 @@
           function($scope, gaGlobalOptions) {
             $scope.options = {
               maxFileSize: 20000000, //20mo
-              proxyUrl: gaGlobalOptions.serviceUrl + '/ogcproxy?url=',
               validationServiceUrl: 'http://www.kmlvalidator.org/validate.htm'
             };
         }]);        

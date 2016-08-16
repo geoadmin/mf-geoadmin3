@@ -51,8 +51,7 @@ goog.require('ga_urlutils_service');
             $scope.canceler = $q.defer();
 
             // Angularjs doesn't handle onprogress event
-            $http.get($scope.options.proxyUrl +
-                encodeURIComponent($scope.fileUrl), {
+            $http.get(gaUrlUtils.proxifyUrl($scope.fileUrl), {
               cache: true,
               timeout: $scope.canceler.promise
             }).then(function(response) {
@@ -198,8 +197,7 @@ goog.require('ga_urlutils_service');
           restrict: 'A',
           templateUrl: 'components/importkml/partials/importkml.html',
           scope: {
-            map: '=gaImportKmlMap',
-            options: '=gaImportKmlOptions'
+            map: '=gaImportKmlMap'
           },
           controller: 'GaImportKmlDirectiveController',
           link: function(scope, elt, attrs, controller) {

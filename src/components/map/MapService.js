@@ -815,7 +815,7 @@ goog.require('ga_urlutils_service');
               extent: extent
             });
             var setLayerSource = function() {
-              var fullUrl = gaGlobalOptions.ogcproxyUrl + layer.geojsonUrl;
+              var fullUrl = gaUrlUtils.proxifyUrl(layer.geojsonUrl);
               var geojsonFormat = new ol.format.GeoJSON();
               $http.get(fullUrl).then(function(response) {
                 olSource.clear();

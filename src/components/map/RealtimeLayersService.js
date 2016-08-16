@@ -10,14 +10,14 @@ goog.require('ga_map_service');
 
   module.provider('gaRealtimeLayersManager', function() {
     this.$get = function($rootScope, $http, $timeout, gaLayerFilters,
-        gaMapUtils, gaGlobalOptions) {
+        gaMapUtils, gaUrlUtils) {
 
       var timers = [];
       var realTimeLayersId = [];
       var geojsonFormat = new ol.format.GeoJSON();
 
       function setLayerSource(layer) {
-        var fullUrl = gaGlobalOptions.ogcproxyUrl + layer.geojsonUrl;
+        var fullUrl = gaUrlUtils.proxifyUrl(layer.geojsonUrl);
         var olSource = layer.getSource();
         $http.get(fullUrl).then(function(response) {
           var data = response.data;

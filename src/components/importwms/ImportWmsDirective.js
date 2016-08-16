@@ -43,7 +43,7 @@ goog.require('ga_wms_service');
               // Kill the current uploading
               $scope.cancel();
 
-              var proxyUrl = $scope.options.proxyUrl + encodeURIComponent(url);
+              var proxyUrl = gaUrlUtils.proxifyUrl(url);
               $scope.error = false;
               $scope.userMessage = $translate.instant('uploading_file');
               $scope.progress = 0.1;

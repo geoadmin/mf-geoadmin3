@@ -1,9 +1,9 @@
 describe('ga_identify_service', function() {
   var gaIdentify, $httpBackend, $rootScope, map, point, gaTime;
 
-  var expectedDfltRequest = 'http://api3.geo.admin.ch/rest/services/all/MapServer/identify?geometry=0,0&geometryFormat=geojson&geometryType=esriGeometryPoint&imageDisplay=600,300,96&lang=custom&layers=all:mybodid&mapExtent=-46962910.17841229,-23481455.089206144,46962910.17841229,23481455.089206144&returnGeometry=false&tolerance=0';
+  var expectedDfltRequest =  'https://api3.geo.admin.ch/rest/services/all/MapServer/identify?geometry=0,0&geometryFormat=geojson&geometryType=esriGeometryPoint&imageDisplay=600,300,96&lang=custom&layers=all:mybodid&mapExtent=-46962910.17841229,-23481455.089206144,46962910.17841229,23481455.089206144&returnGeometry=false&tolerance=0';
 
-  var expectedComplexRequest = 'http://api3.geo.admin.ch/rest/services/all/MapServer/identify?geometry=0,0&geometryFormat=geojson&geometryType=esriGeometryPoint&imageDisplay=600,300,96&lang=custom&layers=all:mybodid,bodtelayer&limit=1&mapExtent=-46962910.17841229,-23481455.089206144,46962910.17841229,23481455.089206144&returnGeometry=false&timeInstant=,2012&tolerance=28';
+  var expectedComplexRequest = 'https://api3.geo.admin.ch/rest/services/all/MapServer/identify?geometry=0,0&geometryFormat=geojson&geometryType=esriGeometryPoint&imageDisplay=600,300,96&lang=custom&layers=all:mybodid,bodtelayer&limit=1&mapExtent=-46962910.17841229,-23481455.089206144,46962910.17841229,23481455.089206144&returnGeometry=false&timeInstant=,2012&tolerance=28'
 
   var getBodLayer = function(bodId) {
     var layer = getNonBodLayer();

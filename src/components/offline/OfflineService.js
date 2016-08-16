@@ -205,7 +205,7 @@ goog.require('ga_styles_service');
         fileReader.readAsDataURL(blob);
       };
 
-      var Offline = function(proxyUrl) {
+      var Offline = function() {
         this.hasData = function() {
           return !!(gaStorage.getItem(extentKey));
         };
@@ -463,7 +463,7 @@ goog.require('ga_styles_service');
             // if the layer is a KML
             if (gaMapUtils.isKmlLayer(layer) &&
                 /^https?:\/\//.test(layer.url)) {
-              $http.get(proxyUrl + encodeURIComponent(layer.url))
+              $http.get(gaUrlUtils.proxifyUrl(layer.url))
                 .success(function(data) {
                   gaStorage.setItem(layer.id, data);
                 });
@@ -639,7 +639,7 @@ goog.require('ga_styles_service');
         }
       };
 
-      var off = new Offline(gaGlobalOptions.ogcproxyUrl);
+      var off = new Offline();
       if (gaBrowserSniffer.mobile) {
         gaLayers.loadConfig().then(function() {
           if (off.isDataObsolete()) {

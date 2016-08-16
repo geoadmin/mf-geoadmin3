@@ -26,10 +26,9 @@ describe('ga_importwms_directive', function() {
       scope = $rootScope.$new();
       scope.map = map;
       scope.options = {
-        proxyUrl: 'http://admin.ch/ogcproxy?url=',
         defaultGetCapParams: 'SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0',
         defaultWMSList: [
-           'http://wms.geo.admin.ch/',
+           'https://wms.geo.admin.ch/',
            'http://ogc.heig-vd.ch/mapserver/wms?',
            'http://www.wms.stadt-zuerich.ch/WMS-ZH-STZH-OGD/MapServer/WMSServer?',
            'http://wms.geo.gl.ch/?',
@@ -39,12 +38,12 @@ describe('ga_importwms_directive', function() {
       $injector.get('$controller')('GaImportWmsDirectiveController', {'$scope': scope});
       $injector.get('$controller')('GaImportWmsItemDirectiveController', {'$scope': scope});
       $compile(element)(scope);
-      var expectedUrl = 'http://example.com/all?lang=somelang';
+      var expectedUrl = 'https://example.com/all?lang=somelang';
       httpBackend.whenGET(expectedUrl).respond({});
       httpBackend.expectGET(expectedUrl);
       $rootScope.$digest();
       httpBackend.flush();
-      expectedUrl = 'http://example.com/all?lang=fr';
+      expectedUrl = 'https://example.com/all?lang=fr';
       httpBackend.whenGET(expectedUrl).respond({});
       httpBackend.expectGET(expectedUrl);
       $translate.use('fr');
@@ -76,7 +75,7 @@ describe('ga_importwms_directive', function() {
 
   describe('a good WMS GetCapabilities is received', function() {
     var $httpBackend;
-    var expectedWmsGetCapAdminUrl = 'http://admin.ch/ogcproxy?url=http%3A%2F%2Fwms.geo.admin.ch%2F%3FSERVICE%3DWMS%26REQUEST%3DGetCapabilities%26VERSION%3D1.3.0%26lang%3Dfr';
+    var expectedWmsGetCapAdminUrl = "https://wms.geo.admin.ch/?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0&lang=fr";
 
     beforeEach(inject(function($injector, $rootScope) {
       $httpBackend = $injector.get('$httpBackend');
@@ -198,7 +197,7 @@ describe('ga_importwms_directive', function() {
 
   describe('a good WMS GetCapabilities but without the map projection iss received', function() {
     var $httpBackend;
-    var expectedWmsGetCapAdminUrl = 'http://admin.ch/ogcproxy?url=http%3A%2F%2Fwms.geo.admin.ch%2F%3FSERVICE%3DWMS%26REQUEST%3DGetCapabilities%26VERSION%3D1.3.0%26lang%3Dfr';
+    var expectedWmsGetCapAdminUrl = "https://wms.geo.admin.ch/?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0&lang=fr";
 
     beforeEach(inject(function($injector, $rootScope) {
       $httpBackend = $injector.get('$httpBackend');
