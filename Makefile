@@ -512,6 +512,7 @@ prd/embed.html: src/index.mako.html \
 prd/img/: src/img/*
 	mkdir -p $@
 	cp -R $^ $@
+	cp -f $@/favicon.ico $@/../
 
 prd/style/font-awesome-4.5.0/font/: src/style/font-awesome-4.5.0/font/*
 	mkdir -p $@
