@@ -17,32 +17,29 @@ def bDoCheckAlertPopup(driver):
         return 1
 
 
+def getMsgText(driver):
+    return driver.find_element_by_css_selector("#import-wms-popup div[ga-import-wms] form .ga-message").text
+
+
 def runWmsTest(driver, target, is_top_browser):
     print "Start Wms tests"
     driver.get(target)
     # We maximize our window to be sure to be in full resolution
     driver.maximize_window()
     driver.get(target + '/?lang=de')
-    # open Geokatalog
-    driver.find_element_by_css_selector(
-        "#catalogHeading > span.ng-binding").click()
-    # choose Grundlagen und Planung
-    driver.find_element_by_link_text("Grundlagen und Planung").click()
     # Click on "Werkzeuge"
-    driver.find_element_by_xpath("//a[@id='toolsHeading']/span").click()
+    driver.find_element_by_css_selector("#toolsHeading").click()
     # Click on "WMS Import"
-    driver.find_element_by_xpath("//*[contains(text(), 'WMS Import')]").click()
-    # Click on the URL input field
-    driver.find_element_by_name("url").click()
+    driver.find_element_by_link_text("WMS Import").click()
     # Write URL of the chosen WMS
-    driver.find_element_by_name("url").send_keys("https://wms.geo.admin.ch/")
+    driver.find_element_by_css_selector("#import-wms-popup [name=\"url\"]").send_keys(
+        "https://wms.geo.admin.ch/")
     # Click on "Verbinden"
     driver.find_element_by_xpath(
         "//*[@id='import-wms-popup']//button[contains(text(),'Verbinden')]").click()
     for i in range(DEFAULT_WAIT_LOADING):
         try:
-            if re.search(r"^Parsing[\s\S]*$", driver.find_element_by_xpath(
-                    "//div[@id='import-wms-popup']/div[2]/div/div/div/form/div[2]").text):
+            if re.search(r"^Parsing[\s\S]*$", getMsgText(driver)):
                 break
         except:
             pass
@@ -54,14 +51,12 @@ def runWmsTest(driver, target, is_top_browser):
         "//*[@id='import-wms-popup']//div[contains(text(),'AGNES')]").click()
     # Click on "Layer hinzufügen"
     # print driver.current_url
-    driver.find_element_by_xpath(
-        "//div[@id='import-wms-popup']/div[2]/div/div/div/div[2]/button").click()
+    driver.find_element_by_css_selector("#import-wms-popup .ga-import-wms-add").click()
     # wait layer "erfolgreich geladen":
     for i in range(DEFAULT_WAIT_LOADING):
         try:
             # print "Try re.search..."
-            if re.search(r"^[\s\S]*erfolgreich[\s\S]*$", driver.find_element_by_xpath(
-                    "//div[@id='import-wms-popup']/div[2]/div/div/div/form/div[2]").text):
+            if re.search(r"^[\s\S]*erfolgreich[\s\S]*$", getMsgText(driver)):
                 break
         except:
             pass
@@ -75,8 +70,7 @@ def runWmsTest(driver, target, is_top_browser):
                 print '------------'
                 print str(e)
         try:
-            if re.search(r"^[\s\S]*erfolgreich[\s\S]*$", driver.find_element_by_xpath(
-                    "//div[@id='import-wms-popup']/div[2]/div/div/div/form/div[2]").text):
+            if re.search(r"^[\s\S]*erfolgreich[\s\S]*$", getMsgText(driver)):
                 break
         except:
             pass
@@ -85,8 +79,7 @@ def runWmsTest(driver, target, is_top_browser):
         raise Exception("parsed WMS - time out(" + str(i) + ")")
     # print driver.current_url
     # Close popup
-    driver.find_element_by_xpath(
-        "//*[@id='import-wms-popup']//button[@ng-click='close($event)']").click()
+    driver.find_element_by_css_selector("#import-wms-popup .fa-remove").click()
     # print driver.current_url
     # Mobile Version URL contain QUERYSTRING_WMS ?
     assert QUERYSTRING_WMS in driver.find_element_by_xpath(
@@ -96,9 +89,6 @@ def runWmsTest(driver, target, is_top_browser):
     assert QUERYSTRING_WMS in driver.current_url
     # Go to the WMS layer page
     driver.get(target + '/?lang=de&layers=' + QUERYSTRING_WMS)
-    # Check if the page is loaded
-    driver.find_element_by_xpath(
-        "//a[contains(text(), 'Grundlagen und Planung')]")
     # Check if the WMS Layer is loaded
     driver.find_element_by_xpath(
         "//*[@id='selection']//*[contains(text(), 'AGNES')]")
