@@ -51,18 +51,21 @@ describe('ga_urlutils_service', function() {
 
   it('verifies proxy needs', function() {
     expect(gaUrlUtils.needsProxy('http://public.geo.admin.ch')).to.be(true);
-    expect(gaUrlUtils.needsProxy('https://public.geo.admin.ch')).to.be(false);
+    expect(gaUrlUtils.needsProxy('https://public.geo.admin.ch/')).to.be(true);
+    expect(gaUrlUtils.needsProxy('http://data.geo.admin.ch')).to.be(true);
+    expect(gaUrlUtils.needsProxy('https://data.geo.admin.ch')).to.be(false);
     expect(gaUrlUtils.needsProxy('https://google.com')).to.be(true);
     expect(gaUrlUtils.needsProxy('https://admin.ch')).to.be(true);
     expect(gaUrlUtils.needsProxy('ftp://geo.admin.ch')).to.be(true);
     expect(gaUrlUtils.needsProxy('https://some.geo.admin.ch')).to.be(false);
-    expect(gaUrlUtils.needsProxy('https://public.geo.admin.ch/test.kml')).to.be(false);
+    expect(gaUrlUtils.needsProxy('https://public.geo.admin.ch/test.kml')).to.be(true);
+    expect(gaUrlUtils.needsProxy('https://data.geo.admin.ch/test.kml')).to.be(false);
     expect(gaUrlUtils.needsProxy('https://public.geo.admin.ch/test.kmz')).to.be(true);
   });
 
   it('applies proxy correctly', function() {
-    expect(gaUrlUtils.proxifyUrl('http://public.geo.admin.ch')).to.be('https://api3.geo.admin.ch/ogcproxy?url=http%3A%2F%2Fpublic.geo.admin.ch');
-    expect(gaUrlUtils.proxifyUrl('https://public.geo.admin.ch')).to.be('https://public.geo.admin.ch');
+    expect(gaUrlUtils.proxifyUrl('http://data.geo.admin.ch')).to.be('https://api3.geo.admin.ch/ogcproxy?url=http%3A%2F%2Fdata.geo.admin.ch');
+    expect(gaUrlUtils.proxifyUrl('https://data.geo.admin.ch')).to.be('https://data.geo.admin.ch');
   });
 
   it('verifies third party validity', function() {
