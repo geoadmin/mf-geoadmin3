@@ -34,6 +34,7 @@ goog.provide('ga_urlutils_service');
         this.needsProxy = function(url) {
           return (!this.isHttps(url) ||
                   !this.isAdminValid(url) ||
+                  this.isPublicValid(url) ||
                   /.*kmz$/.test(url));
         };
 
