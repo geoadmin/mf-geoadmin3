@@ -51,14 +51,14 @@ describe('ga_urlutils_service', function() {
 
   it('verifies proxy needs', function() {
     expect(gaUrlUtils.needsProxy('http://public.geo.admin.ch')).to.be(true);
-    expect(gaUrlUtils.needsProxy('https://public.geo.admin.ch/')).to.be(true);
+    expect(gaUrlUtils.needsProxy('https://public.geo.admin.ch/')).to.be(false);
     expect(gaUrlUtils.needsProxy('http://data.geo.admin.ch')).to.be(true);
     expect(gaUrlUtils.needsProxy('https://data.geo.admin.ch')).to.be(false);
     expect(gaUrlUtils.needsProxy('https://google.com')).to.be(true);
     expect(gaUrlUtils.needsProxy('https://admin.ch')).to.be(true);
     expect(gaUrlUtils.needsProxy('ftp://geo.admin.ch')).to.be(true);
     expect(gaUrlUtils.needsProxy('https://some.geo.admin.ch')).to.be(false);
-    expect(gaUrlUtils.needsProxy('https://public.geo.admin.ch/test.kml')).to.be(true);
+    expect(gaUrlUtils.needsProxy('https://public.geo.admin.ch/test.kml')).to.be(false);
     expect(gaUrlUtils.needsProxy('https://data.geo.admin.ch/test.kml')).to.be(false);
     expect(gaUrlUtils.needsProxy('https://public.geo.admin.ch/test.kmz')).to.be(true);
   });

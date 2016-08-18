@@ -33,7 +33,6 @@ goog.provide('ga_urlutils_service');
         // Test if URL represents resource that needs to pass via ogcProxy
         this.needsProxy = function(url) {
           return (!this.isHttps(url) ||
-                  this.isPublicValid(url) ||
                   !this.isAdminValid(url) ||
                   /.*kmz$/.test(url));
         };
