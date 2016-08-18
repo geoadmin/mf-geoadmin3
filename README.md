@@ -77,6 +77,7 @@ You can also use an argument to test a new version of ol3, for instance you can 
     OL3_CESIUM_VERSION=10c5fcf1565ffdb484c4ef4e42835142f8f45e67 \
     CESIUM_VERSION=3e3cf938786ee48b4b376ed932904541d798671d ol3cesium
 
+
 Remember to update the API and API doc at the same time to keep coherency.
 
 # Automated tests
@@ -137,64 +138,65 @@ These tests are not part of the normal build. They need to be launched manually.
 
 # Deploying project and branches
 
+## Building and deploying to AWS S3
+
+To build a branch of mf-geoadmin3 and upload the result to AWS S3 int,
+
+    make s3deploybranch DEPLOY_GIT_BRANCH=my_branch
+
+If the project builds and the tests are passing, then, files will be uploaded to a directory:
+
+    <DEPLOY_GIT_BRANCH>/<DEPLOY_GIT_HASH>/<EPOCH_BUILD>
+
+For instance:
+
+    mom_layersconfig_lang/75098c2/1468688399/index.html
+    
+and for source:
+    
+    mom_layersconfig_lang/75098c2/1468688399/src/index.html
+
+Metadata to a build are available next to the index.html, as info.json
+
 ## Deploying the project to dev, int and prod
 
-Do the following **inside your working directory**:
+#### Deploying to dev
 
-`make deploydev SNAPSHOT=true`
+    make deploydev SNAPSHOT=true
 
-This updates the source in /var/www...to the latest master branch from github,
-builds it from scratch, runs the tests and creates a snapshot. The snapshot directory
-will be shown when the script is done. *Note*: you can omit the `SNAPSHOT=true` parameter if
-you don't want to create a snapshot e.g. for intermediate releases on dev main.
+will create a snapshot and output a snapshot version. (uses Apache)
 
-A snapshot (e.g. 201407031411) can be deployed to integration with:
+#### Deploying to int
 
-`make deployint SNAPSHOT=201407031411`
+    make s3deployint SNAPSHOT=123456 (a snapshot version)
 
-This will do the corresponding thing for prod:
+will deploy the snapshot to AWS S3 in the int bucket. It will output a S3 URL.
+Take the version and use the following command to activate the version.
 
-`make deployprod SNAPSHOT=201407031411`
+    make s3activateint S3_VERSION_PATH=<DEPLOY_GIT_BRANCH>/<DEPLOY_GIT_HASH>/<EPOCH_BUILD>
 
-Per default the deploy command uses the deploy configuration of the snapshot directory.
-If you want to use the deploy configuration of directory from which you are executing this command, you can use:
+#### Deploying to prod
 
-`make deployint SNAPSHOT=201512011411 DEPLOYCONFIG=from_current_directory`
+    make s3deployprod SNAPSHOT=123456 (a snapshot version)
 
-Note: we should NOT manually adapt code in /var/www/vhosts/mf-geoadmin3 directory
+will deploy the snapshot to AWS S3 in the int bucket. It will output a S3 URL.
+Take the version and use the following command to activate the version.
 
-## Deploying a branch
+    make s3activateprod S3_VERSION_PATH=<DEPLOY_GIT_BRANCH>/<DEPLOY_GIT_HASH>/<EPOCH_BUILD>
 
-Use `make deploybranch` *in your working directory* to deploy your current 
-branch to test (Use `make deploybranchint` to also deploy it to integration).
-The code for deployment, however, does not come from your working directory,
-but does get cloned (first time) or pulled (if done once) *directly from github*.
-So you'll likely use this command *after* you push your branch to github.
+## Deleting a build on AWS S3
 
-The first time you use the command will take some time to execute.
+To list all the builds:
+`make s3listint` or `make s3listprod`
 
-The code of the deployed branch is in a specific directory 
-`/var/www/vhosts/mf-geoadmin3/private/branch` on both test and integration.
-The command adds a branch specific configuration to
-`/var/www/vhosts/mf-geoadmin3/conf`. This way, the deployed branch
-behaves exactly the same as any user specific deploy.
+To get more information about a build:
+`make s3infoint S3_VERSION_PATH=<DEPLOY_GIT_BRANCH>/<DEPLOY_GIT_HASH>/<EPOCH_BUILD>`
 
-Sample path:
-https://mf-geoadmin3.int.bgdi.ch/dev_bottombar/prod
-
-Please only use integration url for external communication (including here on 
-github), even though the exact same structure is also available on our test 
-instances.
-
-## Deleting a branch
-
-To list all the deployed branch:
-`make deletebranch`
-
-To delete a given branch:
-make deletebranch BRANCH_TO_DELETE=my_deployed_branch`
+To delete a given build:
+`make s3deleteint S3_VERSION_PATH=<DEPLOY_GIT_BRANCH>/<DEPLOY_GIT_HASH>/<EPOCH_BUILD>`
 
 ### Get correct link the API
+
 Per default, the API used in the **main** instance of mf-chsdi3. If you want
 to target a specific branch of mf-chsdi3, please adapt the `API_URL` variable
 in the `rc_branch.mako` file on **your branch**
@@ -207,10 +209,20 @@ You can flush varnish instances manually.
 
 Where `varnish_host_ip` is the ip of the varnish server and api_host is the hostname of the url you want to flush. e.g. mf-chsdi3.dev.bgdi.ch for dev and api3.geo.admin.ch for prod.
 
+# Point to a target env for all services
+
+Add `env=(dev|int|prod)`
+
 # Use a custom backend and WMS server via permalink parameters
 
-Add `api_url=theNameOfABranch` to use a custom backend.
+Add `api_url=//theNameOfAnAPIServer`
 
-Add `wms_url=//theNameOfAWMSServer` to use a cutsom wms service.
+Add `wms_url=//theNameOfAWMSServer`
 
-Add `print_url=//theNameOfAPrintServer` to use a custom print server.
+Add `print_url=//theNameOfAPrintServer`
+
+Add `shop_url=//theNameOfAShopServer`
+
+Add `mapproxy_url=//theNameOfAMapProxyServer`
+
+Add `public_url=//theNameOfAPublicServer`

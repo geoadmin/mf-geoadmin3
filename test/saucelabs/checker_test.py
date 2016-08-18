@@ -60,13 +60,6 @@ def wait_url_changed(driver, old_url, timeout=DEFAULT_WAIT):
     return bool(not UrlHasChanged)
 
 
-def SiteMap(driver, url, url_4_api, is_top_browser):
-    if is_top_browser == 1:
-        print "  Test geoadmin Sitemap"
-        driver.get(url + '/' + 'sitemap_index.xml')
-        assert "sitemapindex" in driver.page_source
-
-
 def ApiPage(driver, url, url_4_api, is_top_browser):
     print "  Test API (search words Welcome)"
     driver.get(url_4_api)
@@ -103,7 +96,6 @@ def ShortenUrl(driver, url, url_4_api, is_top_browser):
 
 
 checkerFunctions = [
-    SiteMap,
     ApiPage,
     CheckerGeoAdmin,
     ShortenUrl]

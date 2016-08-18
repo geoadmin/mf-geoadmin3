@@ -1,4 +1,0 @@
-export DEPLOY_TARGET=demo
-export API_URL=//mf-chsdi3.demo.bgdi.ch
-export APACHE_BASE_PATH=
-export E2E_TARGETURL=https://mf-geoadmin3.demo.bgdi.ch

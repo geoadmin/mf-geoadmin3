@@ -4,8 +4,8 @@ User-agent: *
 
 Disallow: /checker
 
-Sitemap: https://map.geo.admin.ch/sitemap_addresses.xml
-Sitemap: https://map.geo.admin.ch/sitemap_index.xml
+Sitemap: https://api3.geo.admin.ch/${version}/sitemap?content=addresses
+Sitemap: https://api3.geo.admin.ch/${version}/sitemap?content=index
 
 % else:
 

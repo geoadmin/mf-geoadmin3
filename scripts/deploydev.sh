@@ -6,7 +6,9 @@ T="$(date +%s)"
 set -o errexit
 
 # adapt these for emergency deploys coming from branches
+# TODO Change me back!
 GITBRANCH=master
+echo "Deploying branch" $GITBRANCH "to dev"
 
 # set some variables
 BASEDIR=/var/www/vhosts/mf-geoadmin3/private
@@ -21,14 +23,18 @@ then
 fi
 
 # build latest 'master' version on dev
+if [ ! -d $BASEDIR/geoadmin ]
+then
+  git clone git@github.com:geoadmin/mf-geoadmin3.git $BASEDIR/geoadmin
+fi
+
 cd $BASEDIR/geoadmin
 
 # remove all local changes and get latest GITBRANCH from remote
 git fetch --all && git reset --hard && git checkout $GITBRANCH && git reset --hard origin/$GITBRANCH && git clean -fxd .
 
 # build the project
-source rc_dev 
-make cleanall all
+source rc_dev && make cleanall all
 
 # restart apache
 sudo apache2ctl graceful
@@ -45,18 +51,16 @@ done
 
 # create a snapshot
 if [ $CREATE_SNAPSHOT == 'true' ]; then
-  sudo -u deploy deploy -c deploy/deploy.cfg $SNAPSHOTDIR
+  mkdir -p $SNAPSHOTDIR/geoadmin/code
+  rsync -rl $BASEDIR/geoadmin/ $SNAPSHOTDIR/geoadmin/code/geoadmin
   echo "Snapshot of branch $GITBRANCH created at $SNAPSHOTDIR"
   cd $SNAPSHOTDIR/geoadmin/code/geoadmin/
   git describe --tags --abbrev=0 > .build-artefacts/last-release
   git log -1 --pretty=format:"%h - %an, %ar : %s" > .build-artefacts/last-commit-ref
   git rev-parse --symbolic-full-name --abbrev-ref HEAD > .build-artefacts/deployed-git-branch
-  rm -rf .git*
 else
   echo "NO Snapshot created. Specify '-s' parameter got create snapshot."
 fi
 
 T="$(($(date +%s)-T))"
-
 printf "Deploy time: %02d:%02d:%02d\n" "$((T/3600%24))" "$((T/60%60))" "$((T%60))"
-
