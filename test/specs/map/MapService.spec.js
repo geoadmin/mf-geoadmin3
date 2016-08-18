@@ -480,7 +480,7 @@ describe('ga_map_service', function() {
     };
     var terrainTpl = '//3d.geo.admin.ch/1.0.0/{layer}/default/{time}/4326';
     var wmtsTpl = '//wmts{s}.geo.admin.ch/1.0.0/{layer}/default/{time}/4326/{z}/{y}/{x}.{format}';
-    var wmtsMpTpl = 'https://wmts{s}.geo.admin.ch/1.0.0/{layer}/default/{time}/4326/{z}/{x}/{y}.{format}';
+    var wmtsMpTpl = window.location.protocol + '//wmts{s}.geo.admin.ch/1.0.0/{layer}/default/{time}/4326/{z}/{x}/{y}.{format}';
     var wmsTpl = '//wms{s}.geo.admin.ch/?layers={layer}&format=image%2F{format}&service=WMS&version=1.3.0&request=GetMap&crs=CRS:84&bbox={westProjected},{southProjected},{eastProjected},{northProjected}&width=512&height=512&styles=default';
     var expectWmtsUrl = function(l, t, f) {
       return expectUrl(wmtsTpl, l, t, f);

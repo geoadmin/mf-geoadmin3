@@ -11,27 +11,31 @@ goog.require('ga_urlutils_service');
   module.filter('gaTimeFormat', function() {
     return function(minutes) {
       // if the float is not a number, we display a '-'
-      if (!angular.isNumber(minutes) || !isFinite(minutes)) {
+      if (!angular.isNumber(minutes) || !isFinite(minutes) || minutes < 0) {
         return '-';
       }
-      if (minutes >= 0) {
-        if (minutes >= 60) {
-          var hours = Math.floor(minutes / 60);
-          minutes = minutes - hours * 60;
-        }
+      var str = '', hours;
+      if (minutes >= 60) {
+        hours = Math.floor(minutes / 60);
+        minutes = minutes - hours * 60;
+      }
+      if (hours) {
+        str += hours + 'h';
+      }
+      if (!hours || (hours && minutes > 0)) {
         if (hours) {
-          return hours + 'h ' + minutes + 'min';
-        } else {
-          return minutes + 'min';
+          str += ' ';
         }
-      } else {
-        return '-';
+        str += minutes + 'min';
       }
+      return str;
     }
   });
 
   module.provider('gaProfile', function() {
     var d3;
+    var emptyData = [{alts: {}, dist: 0}];
+    emptyData[0].alts['COMB'] = 0;
 
     // Utils functions
     var createArea = function(domain, height, elevationModel) {
@@ -76,9 +80,19 @@ goog.require('ga_urlutils_service');
       var profileUrl = this.profileUrl;
       var isIE = gaBrowserSniffer.msie ? true : false;
 
-      function ProfileChart(options) {
-        var marginHoriz = options.margin.left + options.margin.right;
-        var marginVert = options.margin.top + options.margin.bottom;
+      var elevationFilter = function(number) {
+        return measureFilter(number, 'distance', 'm', 2, true);
+      };
+
+      var distanceFilter = function(number) {
+        return measureFilter(number, 'distance', ['km', 'm'], 2, true);
+      };
+
+      var ProfileChart = function(options) {
+        options = options || {};
+        options.margin = options.margin || {};
+        var marginHoriz = (options.margin.left + options.margin.right) || 0;
+        var marginVert = (options.margin.top + options.margin.bottom) || 0;
         var elevationModel = options.elevationModel ||
             gaGlobalOptions.defaultElevationModel;
         var width = options.width - marginHoriz;
@@ -114,7 +128,7 @@ goog.require('ga_urlutils_service');
         };
 
         this.formatData = function(data) {
-          if (data.length != 0) {
+          if (data.length) {
             var maxX = data[data.length - 1].dist;
             var denom = maxX >= 10000 ? 1000 : 1;
             this.unitX = maxX >= 10000 ? ' km' : ' m';
@@ -128,23 +142,22 @@ goog.require('ga_urlutils_service');
         };
 
         //total elevation difference
-        this.elevDiff = function(data) {
-          if (data.length != 0) {
-            var maxElev = data[data.length - 1].alts[elevationModel] || 0;
-            var minElev = data[0].alts[elevationModel] || 0;
-            var diffel = maxElev - minElev;
-            return diffel;
+        this.elevDiff = function() {
+          if (this.data.length) {
+            var max = this.data[this.data.length - 1].alts[elevationModel] || 0;
+            var min = this.data[0].alts[elevationModel] || 0;
+            return max - min;
           }
         };
 
         //total positive elevation & total negative elevation
-        this.twoElevDiff = function(data) {
-          if (data.length != 0) {
+        this.twoElevDiff = function() {
+          if (this.data.length) {
             var sumDown = 0;
             var sumUp = 0;
-            for (var i = 0; i < data.length - 1; i++) {
-              var h1 = data[i].alts[elevationModel] || 0;
-              var h2 = data[i + 1].alts[elevationModel] || 0;
+            for (var i = 0; i < this.data.length - 1; i++) {
+              var h1 = this.data[i].alts[elevationModel] || 0;
+              var h2 = this.data[i + 1].alts[elevationModel] || 0;
               var dh = h2 - h1;
               if (dh < 0) {
                 sumDown += dh;
@@ -157,14 +170,14 @@ goog.require('ga_urlutils_service');
         };
 
         //Sum of slope/surface distances (distance on the ground)
-        this.slopeDistance = function(data) {
-          if (data.length != 0) {
+        this.slopeDistance = function() {
+          if (this.data.length) {
             var sumSlopeDist = 0;
-            for (var i = 0; i < data.length - 1; i++) {
-              var h1 = data[i].alts[elevationModel] || 0;
-              var h2 = data[i + 1].alts[elevationModel] || 0;
-              var s1 = data[i].dist || 0;
-              var s2 = data[i + 1].dist || 0;
+            for (var i = 0; i < this.data.length - 1; i++) {
+              var h1 = this.data[i].alts[elevationModel] || 0;
+              var h2 = this.data[i + 1].alts[elevationModel] || 0;
+              var s1 = this.data[i].dist || 0;
+              var s2 = this.data[i + 1].dist || 0;
               var dh = h2 - h1;
               var ds = s2 - s1;
               //Pythagorean theorem (hypotenuse: the slope/surface distance)
@@ -175,11 +188,11 @@ goog.require('ga_urlutils_service');
         };
 
         //Highest & lowest elevation points
-        this.elPoints = function(data) {
-          if (data.length != 0) {
+        this.elPoints = function() {
+          if (this.data.length) {
             var elArray = [];
-            for (var i = 0; i < data.length; i++) {
-              elArray.push(data[i].alts[elevationModel]);
+            for (var i = 0; i < this.data.length; i++) {
+              elArray.push(this.data[i].alts[elevationModel]);
             }
             var highPoi = d3.max(elArray) || 0;
             var lowPoi = d3.min(elArray) || 0;
@@ -188,24 +201,24 @@ goog.require('ga_urlutils_service');
         };
 
         //Distance
-        this.distance = function(data) {
-          if (data.length != 0) {
-            return data[data.length - 1].dist;
+        this.distance = function() {
+          if (this.data.length) {
+            return this.data[this.data.length - 1].dist;
           }
         };
 
         //Hiking time
         //Official formula: http://www.wandern.ch/download.php?id=4574_62003b89
         //Reference link: http://www.wandern.ch
-        this.hikingTime = function(data) {
+        this.hikingTime = function() {
           var wayTime = 0;
-          if (data.length != 0) {
-            for (var i = 1; i < data.length; i++) {
+          if (this.data.length) {
+            for (var i = 1; i < this.data.length; i++) {
               //for (data.length - 1) line segments the time is calculated
-              var distance = (data[i].dist - data[i - 1].dist) || 0;
+              var distance = (this.data[i].dist - this.data[i - 1].dist) || 0;
               if (distance != 0) {
-                var dH = (data[i].alts[elevationModel] -
-                    data[i - 1].alts[elevationModel]) || 0;
+                var dH = (this.data[i].alts[elevationModel] -
+                    this.data[i - 1].alts[elevationModel]) || 0;
 
                 //Constants of the formula
                 var arrConstants = [
@@ -256,11 +269,16 @@ goog.require('ga_urlutils_service');
         };
 
         this.get = function(feature) {
+          if (!feature || !feature.getGeometry()) {
+            var defer = $q.defer();
+            defer.resolve(emptyData);
+            return defer.promise;
+          }
           var coordinates = feature.getGeometry().getCoordinates();
 
           // TODO: manage all kind of geometry
-          if (feature.getGeometry() instanceof ol.geom.Polygon ||
-              feature.getGeometry() instanceof ol.geom.LinearRing) {
+          if (feature && (feature.getGeometry() instanceof ol.geom.Polygon ||
+              feature.getGeometry() instanceof ol.geom.LinearRing)) {
             coordinates = coordinates[0];
           }
           var wkt = '{"type":"LineString","coordinates":' +
@@ -302,9 +320,8 @@ goog.require('ga_urlutils_service');
           return $http(params).then(function(response) {
             var data = response.data;
             // When all the geometry is outside switzerland
-            if (data.length == 0) {
-              data = [{alts: {}, dist: 0}];
-              data[0].alts[elevationModel] = 0;
+            if (!data.length) {
+              data = emptyData;
             }
             return data;
           }, function(response) {
@@ -312,39 +329,21 @@ goog.require('ga_urlutils_service');
             // it
             if (response.status !== 0) {
               // Display an empty profile
-              var data = [{alts: {}, dist: 0}];
-              data[0].alts[elevationModel] = 0;
-              return data;
+              return emptyData;
             }
           });
         };
 
         this.create = function(data) {
-          var that = this;
+          this.updateProperties(data);
           var x = d3.scale.linear().range([0, width]);
           var y = d3.scale.linear().range([height, 0]);
-
-          //for the total elevation diff of the path
-          this.diff = this.elevDiff(data);
-          //for the total elevation up & total elevation down
-          var twoDiff = this.twoElevDiff(data);
-          //for the highest and the lowest elevation points
-          var elPoi = this.elPoints(data);
-          //for the distance
-          this.dist = this.distance(data);
-          //for the sum of the slope/surface distances
-          this.slopeDist = this.slopeDistance(data);
-          //for the hiking time
-          this.hikTime = this.hikingTime(data);
-
-          this.data = this.formatData(data);
-
-          this.domain = getXYDomains(x, y, elevationModel, that.data);
+          this.domain = getXYDomains(x, y, elevationModel, this.data);
           var axis = createAxis(this.domain);
-          var element = document.createElement('DIV');
-          element.className = 'ga-profile-inner';
+          this.element = document.createElement('DIV');
+          this.element.className = 'ga-profile-inner';
 
-          this.svg = d3.select(element).append('svg')
+          this.svg = d3.select(this.element).append('svg')
               .attr('width', width + marginHoriz)
               .attr('height', height + marginVert)
               .attr('class', 'ga-profile-svg');
@@ -387,7 +386,7 @@ goog.require('ga_urlutils_service');
               );
 
           group.append('path')
-              .datum(that.data)
+              .datum(this.data)
               .attr('class', 'ga-profile-area')
               .attr('d', area);
 
@@ -406,9 +405,7 @@ goog.require('ga_urlutils_service');
               .attr('x', width / 2)
               .attr('y', height + options.margin.bottom - 18)
               .style('text-anchor', 'middle')
-              .attr('font-size', '0.95em')
-              .text($translate.instant(options.xLabel) + ' [' +
-                  $translate.instant(that.unitX) + ']');
+              .attr('font-size', '0.95em');
 
           group.append('text')
               .attr('class', 'ga-profile-label ga-profile-label-y')
@@ -416,8 +413,7 @@ goog.require('ga_urlutils_service');
               .attr('y', 0 - options.margin.left)
               .attr('x', 0 - height / 2 - 30)
               .attr('dy', '1em')
-              .attr('font-size', '0.95em')
-              .text($translate.instant(options.yLabel) + ' [m]');
+              .attr('font-size', '0.95em');
 
           //For having one pixel space below the elevation labels
           var elevLabelY = height + options.margin.bottom - 1;
@@ -458,9 +454,7 @@ goog.require('ga_urlutils_service');
               .attr('font-size', '0.9em')
               .attr('x', 102)
               .attr('y', elevLabelY)
-              .style('text-anchor', 'start')
-              .text(measureFilter(twoDiff[0],
-                    'distance', 'm', 2, true));
+              .style('text-anchor', 'start');
 
           //Icon for elevation down
           group.append('text')
@@ -476,9 +470,7 @@ goog.require('ga_urlutils_service');
               .attr('font-size', '0.9em')
               .attr('x', 182)
               .attr('y', elevLabelY)
-              .style('text-anchor', 'start')
-              .text(measureFilter(twoDiff[1], 'distance',
-                    'm', 2, true));
+              .style('text-anchor', 'start');
 
           //Icon for the highest point
           group.append('text')
@@ -494,9 +486,7 @@ goog.require('ga_urlutils_service');
               .attr('font-size', '0.9em')
               .attr('x', 258)
               .attr('y', elevLabelY)
-              .style('text-anchor', 'start')
-              .text(measureFilter(elPoi[0], 'distance',
-                    'm', 2, true));
+              .style('text-anchor', 'start');
 
           //Icon for the lowest point
           group.append('text')
@@ -512,9 +502,7 @@ goog.require('ga_urlutils_service');
               .attr('font-size', '0.9em')
               .attr('x', 338)
               .attr('y', elevLabelY)
-              .style('text-anchor', 'start')
-              .text(measureFilter(elPoi[1], 'distance',
-                    'm', 2, true));
+              .style('text-anchor', 'start');
 
           //Icon for the distance
           group.append('text')
@@ -537,9 +525,7 @@ goog.require('ga_urlutils_service');
               .attr('font-size', '0.9em')
               .attr('x', 430)
               .attr('y', elevLabelY)
-              .style('text-anchor', 'start')
-              .text(measureFilter(this.dist, 'distance',
-                    ['km', 'm'], 2, true));
+              .style('text-anchor', 'start');
 
           //Icons for the sum of the slope/surface distances
           group.append('text')
@@ -555,9 +541,7 @@ goog.require('ga_urlutils_service');
               .attr('font-size', '0.9em')
               .attr('x', 505)
               .attr('y', elevLabelY)
-              .style('text-anchor', 'start')
-              .text(measureFilter(this.slopeDist, 'distance',
-                    ['km', 'm'], 2, true));
+              .style('text-anchor', 'start');
 
           //Icon for the hiking time
           group.append('text')
@@ -573,51 +557,54 @@ goog.require('ga_urlutils_service');
               .attr('font-size', '0.9em')
               .attr('x', 585)
               .attr('y', elevLabelY)
-              .style('text-anchor', 'start')
-              .text(gaTimeFormatFilter(this.hikTime));
+              .style('text-anchor', 'start');
 
-          return element;
-        };
-
-        this.updateElevationLabels = function(name, number) {
-          this.group.select(name)
-              .text(measureFilter(number, 'distance', 'm', 2, true));
-        };
-
-        this.updateDistanceLabels = function(name, number) {
-          this.group.select(name)
-              .text(measureFilter(number, 'distance', ['km', 'm'], 2, true));
+          this.updateLabels();
         };
 
         this.updateLabels = function() {
-          var that = this;
           this.group.select('text.ga-profile-label-x')
               .text($translate.instant(options.xLabel) + ' [' +
-                  $translate.instant(that.unitX) + ']');
+                  $translate.instant(this.unitX) + ']');
           this.group.select('text.ga-profile-label-y')
               .text($translate.instant(options.yLabel) + ' [m]');
 
-          this.updateElevationLabels('text.ga-profile-elevation-difference',
-              this.diff);
-          this.updateElevationLabels('text.ga-profile-elevation-up',
-              this.twoDiff[0]);
-          this.updateElevationLabels('text.ga-profile-elevation-down',
-              this.twoDiff[1]);
-          this.updateElevationLabels('text.ga-profile-poi-up',
-              this.elPoi[0]);
-          this.updateElevationLabels('text.ga-profile-poi-down',
-              this.elPoi[1]);
-          this.updateDistanceLabels('text.ga-profile-distance',
-              this.dist);
-          this.updateDistanceLabels('text.ga-profile-slopeDist',
-              this.slopeDist);
+          this.group.select('text.ga-profile-elevation-difference')
+              .text(elevationFilter(this.diff));
+          this.group.select('text.ga-profile-elevation-up')
+              .text(elevationFilter(this.twoDiff[0]));
+          this.group.select('text.ga-profile-elevation-down')
+              .text(elevationFilter(this.twoDiff[1]));
+          this.group.select('text.ga-profile-poi-up')
+              .text(elevationFilter(this.elPoi[0]));
+          this.group.select('text.ga-profile-poi-down')
+              .text(elevationFilter(this.elPoi[1]));
+          this.group.select('text.ga-profile-distance')
+              .text(distanceFilter(this.dist));
+          this.group.select('text.ga-profile-slopeDist')
+              .text(distanceFilter(this.slopeDist));
 
           this.group.select('text.ga-profile-hikTime')
               .text(gaTimeFormatFilter(this.hikTime));
         };
 
+        this.updateProperties = function(data) {
+          this.data = this.formatData(data);
+          //for the total elevation diff of the path
+          this.diff = this.elevDiff();
+          //for the total elevation up & total elevation down
+          this.twoDiff = this.twoElevDiff();
+          //for the highest and the lowest elevation points
+          this.elPoi = this.elPoints();
+          //for the distance
+          this.dist = this.distance();
+          //for the sum of the slope/surface distances
+          this.slopeDist = this.slopeDistance();
+          //for the hiking time
+          this.hikTime = this.hikingTime();
+        };
+
         this.update = function(data, size) {
-          var that = this;
           var transitionTime = 1500;
           if (size) {
             transitionTime = 250;
@@ -637,27 +624,22 @@ goog.require('ga_urlutils_service');
                 .attr('x', width - 118)
                 .attr('y', 11)
                 .text('swissALTI3D/DHM25');
-          } else {
-            this.diff = this.elevDiff(data);
-            this.twoDiff = this.twoElevDiff(data);
-            this.elPoi = this.elPoints(data);
-            this.dist = this.distance(data);
-            this.slopeDist = this.slopeDistance(data);
-            this.hikTime = this.hikingTime(data);
-
-            this.data = this.formatData(data);
+          }
+          if (data) {
+            this.updateProperties(data);
           }
           var x = d3.scale.linear().range([0, width]);
           var y = d3.scale.linear().range([height, 0]);
-          this.domain = getXYDomains(x, y, elevationModel, that.data);
+
+          this.domain = getXYDomains(x, y, elevationModel, this.data);
+
           var axis = createAxis(this.domain);
           var area = createArea(this.domain, height, elevationModel);
-          var path = this.group.select('.ga-profile-area');
-          path.datum(that.data)
+
+          this.group.select('.ga-profile-area').datum(this.data)
             .transition().duration(transitionTime)
               .attr('class', 'ga-profile-area')
               .attr('d', area);
-
           this.group.select('g.x')
             .transition().duration(transitionTime)
               .call(axis.X);
@@ -676,23 +658,51 @@ goog.require('ga_urlutils_service');
                   .tickSize(-width, 0, 0)
                   .tickFormat('')
               );
+          this.updateLabels();
         };
-      }
-      return function(options) {
-        var deferred = $q.defer();
-        var profile = new ProfileChart(options);
-        // Lazy load of D3 library
-        var onD3Loaded = function() {
-          d3 = $window.d3;
-          deferred.resolve(new ProfileChart(options));
-        };
-        if (!$window.d3) {
-          $.getScript(d3LibUrl).then(onD3Loaded);
-        } else {
-          onD3Loaded();
-        }
-        return deferred.promise;
       };
+
+      // Lazy load of D3 library
+      var onD3Loaded = function(feature, options) {
+        d3 = $window.d3;
+        var profile = new ProfileChart(options);
+        return profile.get(feature).then(function(data) {
+          if (d3 && data) {
+            profile.create(data);
+          }
+          return profile;
+        });
+      };
+
+      var Profile = function() {
+
+        // Create a ProfileChart object
+        this.create = function(feature, options) {
+          if (!$window.d3) {
+            var defer = $q.defer();
+            $.getScript(d3LibUrl).then(function() {
+              defer.resolve(onD3Loaded(feature, options));
+            });
+            return defer.promise;
+          }
+          return onD3Loaded(feature, options);
+        };
+
+        // Update a ProfileChart object
+        this.update = function(profile, feature) {
+          if (!profile || !feature) {
+            var defer = $q.defer();
+            defer.reject();
+            return defer.promise;
+          }
+          return profile.get(feature).then(function(data) {
+            profile.update(data);
+            return profile;
+          });
+        };
+      };
+
+      return new Profile();
     };
   });
 })();

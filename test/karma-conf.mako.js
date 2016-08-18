@@ -12,6 +12,7 @@ module.exports = function(config) {
   // list of files / patterns to load in the browser
   files: [
   % if mode == 'release':
+    'lib/d3.min.js',
     'lib/Cesium.min.js',
     'lib/ol3cesium.js',
     'lib/build.js',
@@ -22,6 +23,7 @@ module.exports = function(config) {
     'lib/angular-translate-loader-static-files.js',
     'lib/bootstrap.js',
     'lib/typeahead-0.9.3.js',
+    'lib/d3.js',
     'lib/proj4js-compressed.js',
     'lib/EPSG21781.js',
     'lib/EPSG2056.js',

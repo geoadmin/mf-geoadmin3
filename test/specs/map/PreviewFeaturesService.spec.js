@@ -3,7 +3,7 @@ describe('ga_previewfeatures_service', function() {
   describe('gaPreviewFeatures', function() {
     var gaPreviewFeatures, map, $q, $httpBackend, gaMapUtils, gaStyleFactory;
 
-    var tpl = 'https://api3.geo.admin.ch/123456/rest/services/all/MapServer/{{layerId}}/{{featId}}?geometryFormat=geojson';
+    var tpl = window.location.protocol + '//api3.geo.admin.ch/123456/rest/services/all/MapServer/{{layerId}}/{{featId}}?geometryFormat=geojson';
     var expectGET = function(featIdsByBodId) {
       angular.forEach(featIdsByBodId, function(featIds, layerId) {
         featIds.forEach(function(featId) {

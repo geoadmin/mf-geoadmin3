@@ -22,37 +22,32 @@ goog.require('ga_profile_service');
             options: '=gaProfileOptions'
           },
           link: function(scope, element, attrs) {
-            var profile, deregisterKey, isProfileCreated;
+            var profile, deregisterKey;
             var options = scope.options;
             var tooltipEl = element.find('.ga-profile-tooltip');
             scope.coordinates = [0, 0];
             scope.unitX = '';
 
-            var create = function(feature) {
-              profile.get(feature).then(function(data) {
-                isProfileCreated = true;
-                var d3 = $window.d3;
-                var profileEl = angular.element(
-                    profile.create(data)
-                );
-                $compile(profileEl)(scope);
-                scope.unitX = profile.unitX;
-                var previousProfileEl = element.find('.ga-profile-inner');
-                if (previousProfileEl.length > 0) {
-                  previousProfileEl.replaceWith(profileEl);
-                } else {
-                  element.append(profileEl);
-                }
-                var areaChartPath = d3.select('.ga-profile-area');
-                attachPathListeners(areaChartPath);
-              });
+            var onCreate = function(newProfile) {
+              profile = newProfile;
+              var profileEl = angular.element(
+                  profile.element
+              );
+              $compile(profileEl)(scope);
+              scope.unitX = profile.unitX;
+              var previousProfileEl = element.find('.ga-profile-inner');
+              if (previousProfileEl.length > 0) {
+                previousProfileEl.replaceWith(profileEl);
+              } else {
+                element.append(profileEl);
+              }
+              var areaChartPath = $window.d3.select('.ga-profile-area');
+              attachPathListeners(areaChartPath);
             };
 
             var update = function(feature) {
-              profile.get(feature).then(function(data) {
-                profile.update(data);
-                profile.updateLabels();
-                scope.unitX = profile.unitX;
+              gaProfile.update(profile, feature).then(function(prof) {
+                scope.unitX = prof.unitX;
               });
             };
             var updateDebounced = gaDebounce.debounce(update, 133, false,
@@ -65,7 +60,7 @@ goog.require('ga_profile_service');
                 false, false);
 
             $($window).on('resize', function() {
-              if (isProfileCreated) {
+              if (profile) {
                 updateSizeDebounced([
                   element.width(),
                   element.height()
@@ -75,21 +70,19 @@ goog.require('ga_profile_service');
 
             // Create or update the profile
             var reload = function(feature) {
-              if (!angular.isDefined(profile)) {
+              if (!profile) {
                  // we use applyAsync to wait the profile element to be
                  // displayed
                  scope.$applyAsync(function() {
                    options.width = element.width();
                    options.height = element.height();
-                   gaProfile(options).then(function(newProfile) {
-                     profile = newProfile;
-                     create(feature);
-                   });
+                   gaProfile.create(feature, options).then(onCreate);
                  });
-               } else if (isProfileCreated) {
+               } else {
                  updateDebounced(feature);
                }
             };
+
             var useFeature = function(newFeature) {
               if (deregisterKey) {
                 ol.Observable.unByKey(deregisterKey);
@@ -111,6 +104,9 @@ goog.require('ga_profile_service');
               }
             });
 
+            /**
+             * Mouse events on profile stuff
+             */
             function attachPathListeners(areaChartPath) {
               areaChartPath.on('mousemove', function() {
                 var d3 = $window.d3;
@@ -137,9 +133,9 @@ goog.require('ga_profile_service');
                   var yCoord = profile.domain.Y.invert(pos.y);
                   // Get the tooltip position
                   var positionX = profile.domain.X(xCoord) +
-                      scope.options.margin.left;
+                      options.margin.left;
                   var positionY = profile.domain.Y(yCoord) +
-                      scope.options.margin.top;
+                      options.margin.top;
                   tooltipEl.css({
                     left: positionX + 'px',
                     top: positionY + 'px'
