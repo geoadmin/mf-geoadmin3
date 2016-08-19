@@ -34,6 +34,20 @@ goog.require('ga_styles_service');
       gaLayerFilters, gaExportKml, gaMapUtils, $document, gaMeasure,
       gaStyleFactory, gaGeomUtils) {
 
+    var pp0 = function(s) {
+      return s.length === 2 ? s : '0' + s;
+    };
+
+    var dateFormat = function(d) {
+      var YYYY = d.getFullYear().toString();
+      var MM = (d.getMonth() + 1).toString(); // getMonth() is zero-based
+      var DD = d.getDate().toString();
+      var hh = d.getHours().toString();
+      var mm = d.getMinutes().toString();
+      var ss = d.getSeconds().toString();
+      return YYYY + pp0(MM) + pp0(DD) + pp0(hh) + pp0(mm) + pp0(ss);
+    };
+
     var createDefaultLayer = function(map, useTemporaryLayer) {
       // #2820: we set useSpatialIndex to false to allow display of azimuth
       // circle created by style.
@@ -707,6 +721,7 @@ goog.require('ga_styles_service');
               gaFileStorage.del(layer.adminId).then(function() {
                 layer.adminId = undefined;
                 layer.url = undefined;
+                scope.downloadUrl = undefined;
               });
             }
             map.removeLayer(layer);
@@ -725,8 +740,11 @@ goog.require('ga_styles_service');
             if (data.adminId && data.adminId != layer.adminId) {
               layer.adminId = data.adminId;
               layer.url = data.fileUrl;
+              scope.downloadUrl = layer.url;
               layer.id = 'KML||' + layer.url;
             }
+            scope.filename = 'map.geo.admin.ch_KML_' +
+                             dateFormat(new Date()) + '.kml';
           });
         };
         var saveDebounced = gaDebounce.debounce(save, 2000, false, false);

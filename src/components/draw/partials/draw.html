@@ -23,9 +23,9 @@
          translate>draw_delete</a>
     </li>
     <li class="col-sm-4 col-xs-4 vr">
-      <a href="" class="btn"
-         ng-disabled="!canExport()"
-         ng-click="exportKml($event)"
+      <a ng-href="{{downloadUrl}}" class="btn"
+         ng-disabled="!downloadUrl"
+         download="{{filename}}"
          translate>export_kml</a>
     </li>
     <li class="col-sm-4 col-xs-4">
