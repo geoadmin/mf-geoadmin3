@@ -158,29 +158,29 @@ goog.require('ga_measure_filter');
               currIdx++;
 
               // Add intermediate tootlip only on line.
-                if (length > 200000) {
-                  delta = 100000 / length;
-                } else if (length > 20000) {
-                  delta = 10000 / length;
-                } else if (length != 0) {
-                  delta = 1000 / length;
-                }
-                for (var i = delta; i < 1; i += delta, currIdx++) {
-                  var t = overlays.item(currIdx) ||
-                      this.createOverlay('ga-draw-measure-tmp', false);
-                  t.getElement().innerHTML = measureFilter(length * i);
-                  t.getElement().style.opacity = layer.getOpacity();
-                  t.setPosition(geomLine.getCoordinateAt(i));
+              if (length > 200000) {
+                delta = 100000 / length;
+              } else if (length > 20000) {
+                delta = 10000 / length;
+              } else if (length != 0) {
+                delta = 1000 / length;
+              }
+              for (var i = delta; i < 1; i += delta, currIdx++) {
+                var t = overlays.item(currIdx) ||
+                    this.createOverlay('ga-draw-measure-tmp', false);
+                t.getElement().innerHTML = measureFilter(length * i);
+                t.getElement().style.opacity = layer.getOpacity();
+                t.setPosition(geomLine.getCoordinateAt(i));
 
-                  if (!overlays.item(currIdx)) {
-                    overlays.push(t);
-                  }
+                if (!overlays.item(currIdx)) {
+                  overlays.push(t);
                 }
-                if (currIdx < overlays.getLength()) {
-                 for (var j = overlays.getLength() - 1; j >= currIdx; j--) {
-                   overlays.pop();
-                 }
-                }
+              }
+              if (currIdx < overlays.getLength()) {
+               for (var j = overlays.getLength() - 1; j >= currIdx; j--) {
+                 overlays.pop();
+               }
+              }
             }
           }
         };

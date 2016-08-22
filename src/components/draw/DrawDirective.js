@@ -136,7 +136,7 @@ goog.require('ga_styles_service');
             deregPointerEvts = [], deregFeatureChange, unLayerVisible,
             unWatch = [], unDrawEvts = [];
         var useTemporaryLayer = scope.options.useTemporaryLayer || false;
-        var helpTooltip, helpModifyTooltip;
+        var helpTooltip;
         var map = scope.map;
         var viewport = $(map.getViewport());
         var body = $($document[0].body);
@@ -388,7 +388,6 @@ goog.require('ga_styles_service');
           if (helpTooltip) {
             map.removeOverlay(helpTooltip);
           }
-
         };
 
         // Set the draw interaction with the good geometry
@@ -422,6 +421,11 @@ goog.require('ga_styles_service');
             }
 
             deregFeatureChange = evt.feature.on('change', function(evt) {
+
+              // Keep the overlays on draw to remove it if the draw mode is
+              // deactivated during drawing.
+              draw.set('overlays', evt.target.get('overlays') || []);
+
               var geom = evt.target.getGeometry();
               if (geom instanceof ol.geom.Polygon) {
                 var lineCoords = geom.getCoordinates()[0];
@@ -466,6 +470,9 @@ goog.require('ga_styles_service');
 
             var featureToAdd = evt.feature;
             var geom = featureToAdd.getGeometry();
+
+            // Clear overlays property.
+            draw.unset('overlays');
 
             // According to #3319, it seems LineString can be created with one
             // point (or with an array of exact same points). If it's the case
@@ -515,6 +522,12 @@ goog.require('ga_styles_service');
           }
           if (draw) {
             map.removeInteraction(draw);
+
+            if (draw.get('overlays')) {
+              draw.get('overlays').forEach(function(overlay) {
+                map.removeOverlay(overlay);
+              });
+            }
           }
         };
 
