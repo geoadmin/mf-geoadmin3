@@ -211,7 +211,7 @@ saucelabssingle: guard-SAUCELABS_USER guard-SAUCELABS_KEY .build-artefacts/requi
 apache: apache/app.conf
 
 .PHONY: deploydev
-deploydev:
+deploydev: 
 	@ if test "$(SNAPSHOT)" = "true"; then \
 		./scripts/deploydev.sh -s; \
 	else \
@@ -219,15 +219,15 @@ deploydev:
 	fi
 
 .PHONY: s3deployint
-s3deployint: guard-SNAPSHOT
+s3deployint: guard-SNAPSHOT .build-artefacts/requirements.timestamp
 	./scripts/deploysnapshot.sh $(SNAPSHOT) int $(DEPLOYCONFIG)
 
 .PHONY: s3deployprod
-s3deployprod: guard-SNAPSHOT
+s3deployprod: guard-SNAPSHOT .build-artefacts/requirements.timestamp
 	./scripts/deploysnapshot.sh $(SNAPSHOT) prod $(DEPLOYCONFIG)
 
 .PHONY: s3deploybranch
-s3deploybranch: guard-CLONEDIR guard-DEPLOY_GIT_BRANCH
+s3deploybranch: guard-CLONEDIR guard-DEPLOY_GIT_BRANCH .build-artefacts/requirements.timestamp
 	./scripts/clonebuild.sh ${CLONEDIR} ${DEPLOY_GIT_BRANCH} int || (echo "Cloning and building failed $$?"; exit 1);
 	${PYTHON_CMD} ./scripts/s3manage.py upload ${CLONEDIR}/mf-geoadmin3 int;
 

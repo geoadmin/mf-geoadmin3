@@ -120,7 +120,7 @@ describe('ga_kml_service', function() {
   });
 
   describe('gaKml', function() {
-    var map, gaKml, $rootScope, $httpBackend, gaNetworkStatus, gaStorageMock, gaUrlUtilsMock, gaStyleFactoryMock, gaMapUtilsMock, gaMeasureMock;
+    var map, gaKml, $rootScope, $httpBackend, gaNetworkStatus, gaStorageMock, gaUrlUtilsMock, gaStyleFactoryMock, gaMapUtilsMock, gaMeasureMock, gaGlobalOptions;
 
     beforeEach(function() {
       inject(function($injector) {
@@ -245,19 +245,18 @@ describe('ga_kml_service', function() {
         $rootScope.$digest();
       });
 
-      // TODO: The regex doesn't work correctly when the file is all in one
-      // line
-      it('uses ogcproxy for all hrefs (except google and geo.admin images) and use https for geo.admin images (include ogcproxy urls)', function(done) {
+      it('uses ogcproxy for all hrefs (except google (only png) and geo.admin images))', function(done) {
         var hrefs = [
-          'http://maps.google.com/blue.png',
-          'https://maps.gstatic.com/pushpin.png',
-          'http://test.ch/blue.png',
-          'http://map.geo.admin.ch/blue.png',
-          'https://map.dev.bgdi.ch/blue.png',
-          'https://test.ch/yellow.jpeg'
+          'http://amoinughudhfoihnkvpodf.com/aA.aA-aA_aA1.png',
+          'https://amoinughudhfoihnkvpodf.com/aA.aA-aA_aA1.png',
+          'http://maps.gstatic.com/aaa/aaa/aaa/aA.aA-aA_aA1.png',
+          'http://maps.gstatic.com/aaa/aaa/aaa/aA.aA-aA_aA1.jpeg',
+          'http://maps.gstatic.com/aaa/aaa/aaa/aA.aA-aA_aA1.png',
+          'https://maps.gstatic.com/aaa/aaa/aaa/aA.aA-aA_aA1.jpeg',
+          'http://maps.google.com/aaa/aaa/aaa/aA.aA-aA_aA1.png',
+          'http://maps.google.com/aaa/aaa/aaa/aA.aA-aA_aA1.jpeg',
+          'https://maps.google.com/aaa/aaa/aaa/aA.aA-aA_aA1.jpeg'
         ];
-        var idxProxify = [2, 5]; // urls transformed with ogcproxy
-        var idxHttps = [2, 3, 5]; // urls transformed from http to https
 
         var kml = '<kml>';
         hrefs.forEach(function(href) {
@@ -267,16 +266,113 @@ describe('ga_kml_service', function() {
         gaKml.addKmlToMap(map, kml).then(function(olLayer) {
           var feats = olLayer.getSource().getFeatures();
           feats.forEach(function(feat, idx) {
-            var hrefTest = hrefs[idx];
+            var src = feat.getStyleFunction().call(feat)[0].getImage().getSrc();
+            expect(src.indexOf('/ogcproxy?url=') != -1).to.be(true);
+            done();
+          });
+        });
+        $rootScope.$digest();
+      });
 
-            if (idxProxify.indexOf(idx) != -1) {
-              hrefTest = gaGlobalOptions.ogcproxyUrl + hrefTest;
-            }
+      it('doesn\'t use ogcproxy for google (only png) and geo.admin images))', function(done) {
+        var hrefs = [
+          'http://public.geo.admin.ch/aA.aA-aA_aA1.png',
+          'https://public.geo.admin.ch/aA.aA-aA_aA1.png',
+          'http://public.geo.admin.ch/aaa/aaa/aaa/aaa/aA.aA-aA_aA1.png',
+          'https://public.geo.admin.ch/aaa/aaa/aaa/aaa/aA.aA-aA_aA1.png',
+          'http://map.geo.admin.ch/aaa/aaa/aaa/aA.aA-aA_aA1.png',
+          'https://map.geo.admin.ch/aaa/aaa/aaa/aA.aA-aA_aA1.png',
+          'http://mf-geoadmin3.dev.bgdi.ch/aaa/aaa/aaa/aA.aA-aA_aA1.png',
+          'https://mf-geoadmin3.dev.bgdi.ch/aaa/aaa/aaa/aA.aA-aA_aA1.png',
+          'https://maps.gstatic.com/aA.aA-aA_aA1.png',
+          'https://maps.google.com/aaa/aaa/aaa/aA.aA-aA_aA1.png'
+        ];
 
-            if (idxHttps.indexOf(idx) != -1) {
-              hrefTest = hrefTest.replace(/^http:/, 'https:');
-            }
+        var kml = '<kml>';
+        hrefs.forEach(function(href) {
+          kml += createPlacemarkWithHref(href);
+        });
+        kml += '</kml>';
+        gaKml.addKmlToMap(map, kml).then(function(olLayer) {
+          var feats = olLayer.getSource().getFeatures();
+          feats.forEach(function(feat, idx) {
+            var src = feat.getStyleFunction().call(feat)[0].getImage().getSrc();
+            expect(src.indexOf('/ogcproxy?url=') != -1).to.be(false);
+            done();
+          });
+        });
+        $rootScope.$digest();
+      });
+
+      it('forces https for geo.admin hrefs using http', function(done) {
+        var hrefs = [
+          'http://map.geo.admin.ch',
+          'http://public.geo.admin.ch',
+          'http://mf-geoadmin3.dev.bgdi.ch'
+        ];
+        var kml = '<kml>';
+        hrefs.forEach(function(href) {
+          kml += createPlacemarkWithHref(href);
+        });
+        kml += '</kml>';
+        gaKml.addKmlToMap(map, kml).then(function(olLayer) {
+          var feats = olLayer.getSource().getFeatures();
+          feats.forEach(function(feat, idx) {
+            var hrefTest = hrefs[idx].replace(/^http:/, 'https:');
             expect(feat.getStyleFunction().call(feat)[0].getImage().getSrc()).to.be(hrefTest);
+            done();
+          });
+        });
+        $rootScope.$digest();
+      });
+
+      it('doesn\'t force https', function(done) {
+        var hrefs = [
+          'https://map.geo.admin.ch',
+          'https://public.geo.admin.ch',
+          'https://mf-geoadmin3.dev.bgdi.ch',
+          'http://test.test.ch/aaa/aaa/aA',
+          'https://test.test.ch/aaa/aaa/aA'
+        ];
+        var kml = '<kml>';
+        hrefs.forEach(function(href) {
+          kml += createPlacemarkWithHref(href);
+        });
+        kml += '</kml>';
+        gaKml.addKmlToMap(map, kml).then(function(olLayer) {
+          var feats = olLayer.getSource().getFeatures();
+          feats.forEach(function(feat, idx) {
+            var src = feat.getStyleFunction().call(feat)[0].getImage().getSrc();
+            var hrefTest = hrefs[idx];
+            if (/^http:/.test(hrefTest)) {
+              hrefTest = hrefTest.replace(/^http:/, 'https:');
+              expect(src).not.to.be(hrefTest);
+            } else {
+              expect(src).to.be(hrefTest);
+            }
+            done();
+          });
+        });
+        $rootScope.$digest();
+      });
+
+      it('replaces old maki urls by color service', function(done) {
+        var hrefs = [
+          'http://map.geo.admin.ch/aaa/aA4-aA4_aA61470313709/img/maki/marker-24@2x.png',
+          'http://mf-geoadmin3.dev.bgdi.ch/aaa/aA4-aA4_aA6/img/maki/marker-24@2x.png',
+          'https://map.geo.admin.ch/1470313709/img/maki/marker-24@2x.png',
+          'https://mf-geoadmin3.dev.bgdi.ch/aaa/aA4-aA4_aA6/img/maki/marker-24@2x.png'
+        ];
+        var kml = '<kml>';
+        hrefs.forEach(function(href) {
+          kml += createPlacemarkWithHref(href);
+        });
+        kml += '</kml>';
+        gaKml.addKmlToMap(map, kml).then(function(olLayer) {
+          var feats = olLayer.getSource().getFeatures();
+          feats.forEach(function(feat, idx) {
+            var src = feat.getStyleFunction().call(feat)[0].getImage().getSrc();
+            expect(src.indexOf('/color/255,0,0') != -1).to.be(true);
             done();
           });
         });
