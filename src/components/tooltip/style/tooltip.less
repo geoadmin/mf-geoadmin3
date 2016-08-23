@@ -23,21 +23,18 @@
   }
 
   .ga-vector-tools {
-    height: 34px;
-    padding: 0 7px 7px;
+    position: relative;
+    margin: 0 7px 7px;
   }
 
   [ga-measure] {
-    float: left;
     font-size: 11px;
-
-    .ga-coord, .ga-distance {
-      margin-top: 5px;
-    }
   }
   
   [ga-profile-bt] {
-    float: right;
+    position: absolute;
+    top: 0;
+    right: 0;
   }
 
   @media (max-width: @screen-tablet) {
