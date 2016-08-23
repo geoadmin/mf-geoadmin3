@@ -70,7 +70,7 @@ USER_NAME ?= $(shell id -un)
 GIT_COMMIT_HASH ?= $(shell git rev-parse --verify HEAD)
 GIT_COMMIT_DATE ?= $(shell git log -1  --date=iso --pretty=format:%cd)
 CURRENT_DATE ?= $(shell date -u +"%Y-%m-%d %H:%M:%S %z")
-DEPLOY_GIT_BRANCH ?= master
+DEPLOY_GIT_BRANCH ?= $(shell git rev-parse --symbolic-full-name --abbrev-ref HEAD)
 S3_VERSION_PATH ?=
 S3_MF_GEOADMIN3_INFRA = mf-geoadmin3-infra-dublin
 S3_BASE_PATH ?=
