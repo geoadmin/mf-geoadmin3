@@ -70,6 +70,7 @@
 "draw_back": "Retour / Terminer dessin",
 "draw_delete": "Effacer",
 "draw_delete_description": "Effacer tous les objets",
+"draw_delete_last_point": "Appuyer sur DEL pour effacer le dernier point",
 "draw_delete_selected_features": "Effacer les objets sélectionnés",
 "draw_file_saved": "Carte sauvegardée.",
 "draw_file_saving": "Sauvegarde....",

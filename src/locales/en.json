@@ -70,6 +70,7 @@
 "draw_back": "Back / Finish drawing",
 "draw_delete": "Delete",
 "draw_delete_description": "Delete all features",
+"draw_delete_last_point": "Press DEL to remove the last point drawn",
 "draw_delete_selected_features": "Delete selected features",
 "draw_file_saved": "Map saved.",
 "draw_file_saving": "Saving ...",

@@ -70,6 +70,7 @@
 "draw_back": "Enavos / finir dissegnar",
 "draw_delete": "Delete",
 "draw_delete_description": "Stizzar tut ils objects",
+"draw_delete_last_point": "Letzter Punkt löschen: DEL Taste ",
 "draw_delete_selected_features": "Stizzar tut ils objects",
 "draw_file_saved": "Arcunà tut las midadas",
 "draw_file_saving": "Arcunar ...",

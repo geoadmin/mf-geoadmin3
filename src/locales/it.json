@@ -70,6 +70,7 @@
 "draw_back": "Indietro / Finire il disegno",
 "draw_delete": "Delete",
 "draw_delete_description": "Cancellare tutti gli oggetti",
+"draw_delete_last_point": "Premere DEL per rimuovere l'ultimo punto",
 "draw_delete_selected_features": "Cancellare gli oggetti selezionati",
 "draw_file_saved": "Tutte le modifiche salvate",
 "draw_file_saving": "Salvataggio...",

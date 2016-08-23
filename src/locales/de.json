@@ -70,6 +70,7 @@
 "draw_back": "Zurück / Zeichnen beenden",
 "draw_delete": "Delete",
 "draw_delete_description": "Alle Objekte löschen",
+"draw_delete_last_point": "Letzter Punkt löschen: DEL Taste ",
 "draw_delete_selected_features": "Selektierte Objekte löschen",
 "draw_file_saved": "Alle Änderungen gespeichert",
 "draw_file_saving": "Speichern ....",
