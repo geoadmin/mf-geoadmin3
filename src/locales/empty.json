@@ -195,6 +195,7 @@
   "draw_delete_description": "",
   "draw_delete_selected_features": "",
   "draw_text_placeholder": "",
+  "draw_delete_last_point": "",
   "modify_color_label": "",
   "modify_text_label": "",
   "modify_text_size_label": "",

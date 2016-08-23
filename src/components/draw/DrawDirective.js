@@ -67,8 +67,8 @@ goog.require('ga_styles_service');
     };
 
     // Display an help tooltip when drawing
-    var updateHelpTooltip = function(overlay, type, drawStarted, onFirstPoint,
-        onLastPoint) {
+    var updateHelpTooltip = function(overlay, type, drawStarted,
+        hasMinNbPoints, onFirstPoint, onLastPoint) {
       if (!overlay) {
         return;
       }
@@ -84,7 +84,12 @@ goog.require('ga_styles_service');
           helpMsgId = 'draw_snap_first_point_';
         }
       }
-      overlay.getElement().innerHTML = $translate.instant(helpMsgId + type);
+      var msg = $translate.instant(helpMsgId + type);
+
+      if (drawStarted && hasMinNbPoints) {
+        msg += '<br/>' + $translate.instant('draw_delete_last_point');
+      }
+      overlay.getElement().innerHTML = msg;
     };
 
     // Display an help tooltip when modifying
@@ -408,7 +413,7 @@ goog.require('ga_styles_service');
           unDrawEvts.push(draw.on('drawstart', function(evt) {
             var nbPoint = 1;
             var isSnapOnLastPoint = false;
-            updateHelpTooltip(helpTooltip, tool.id, true,
+            updateHelpTooltip(helpTooltip, tool.id, true, false,
                 isFinishOnFirstPoint, isSnapOnLastPoint);
 
             if (!gaBrowserSniffer.mobile) {
@@ -431,8 +436,8 @@ goog.require('ga_styles_service');
                 var lineCoords = geom.getCoordinates()[0];
 
                 if (nbPoint != lineCoords.length) {
-                  // A point is added
-                  nbPoint++;
+                  // A point is added or removed
+                  nbPoint = lineCoords.length;
                 } else {
                   var firstPoint = lineCoords[0];
 
@@ -454,6 +459,7 @@ goog.require('ga_styles_service');
                       lastPoint[1] == lastPoint2[1]);
                 }
                 updateHelpTooltip(helpTooltip, tool.id, true,
+                    (tool.drawOptions.minPoints < lineCoords.length),
                     isFinishOnFirstPoint, isSnapOnLastPoint);
               }
             });
