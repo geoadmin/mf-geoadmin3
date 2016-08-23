@@ -220,7 +220,7 @@ def upload(bucket_name, base_dir, deploy_target):
     upload_directories = ['prd', 'src']
     exclude_filename_patterns = ['.less', '.gitignore', '.mako.']
     root_files = ('index.html', 'mobile.html', 'embed.html',
-                  'robots.txt', 'robots_prod.txt',
+                  'robots.txt', 'robots_prod.txt', 'favicon.ico',
                   'checker', 'geoadmin.%s.appcache' % version)
 
     for directory in upload_directories:
@@ -383,7 +383,7 @@ def activate_version(s3_path, bucket_name, deploy_target):
         files = list(bucket.objects.filter(Prefix='{}/geoadmin.'.format(s3_path)).all())
         if len(files) > 0:
             appcache = os.path.basename(sorted(files)[-1].key)
-        for j in ('robots.txt', 'checker', appcache):
+        for j in ('robots.txt', 'checker', 'favicon.ico', appcache):
             # In prod move robots prod
             src_file_name = 'robots_prod.txt' if j == 'robots.txt' and deploy_target == 'prod' else j
             src_key_name = '{}/{}'.format(s3_path, src_file_name)
