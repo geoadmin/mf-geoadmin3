@@ -161,22 +161,22 @@ goog.provide('ga_query_service');
         };
 
         // Use custom attribute service
-        this.getAttributeValues = function(bodId, attrName, params) {
+        this.getAttributeValues = function(bodId, attrName) {
           var deferred = $q.defer();
           $http.get(msUrl + bodId + '/attributes/' + attrName, {
             cache: true
-          }).success(function(data) {
-
+          }).then(function(response) {
+            var data = response.data;
             // Transform null value to 'null' string
             if (data.values && data.values[0] === null) {
               data.values[0] = 'null';
             }
 
             deferred.resolve(data.values);
-          }).error(function(data, status, headers, config) {
+          }, function(response) {
             $log.error('Request failed');
-            $log.debug(config);
-            deferred.reject(status);
+            $log.debug(response.config);
+            deferred.reject(response.status);
           });
           return deferred.promise;
         };
