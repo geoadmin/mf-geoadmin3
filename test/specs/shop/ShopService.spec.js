@@ -68,6 +68,7 @@ describe('ga_shop_service', function() {
     afterEach(function() {
       openStub.restore();
       closeSpy.restore();
+      clock.restore();
     });
 
 

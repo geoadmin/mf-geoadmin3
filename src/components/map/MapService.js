@@ -184,6 +184,7 @@ goog.require('ga_urlutils_service');
                     src instanceof ol.source.TileWMS) {
                   return src.getParams().TIME;
                 }
+                return this.get('time');
               }
               return undefined;
             },

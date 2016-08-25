@@ -400,15 +400,21 @@ describe('ga_map_service', function() {
         spy.restore();
       });
 
+      // Base layer
+      layer = new ol.layer.Layer({});
+      gaDefine(layer);
+      expect(layer.get(prop)).to.be(undefined);
+      expect(layer[prop]).to.be(undefined);
+      layer[prop] = 'test';
+      expect(layer.get(prop)).to.be('test');
 
-      // LayerGroup
+      // Layer group
       layer = new ol.layer.Group({});
       gaDefine(layer);
       expect(layer.get(prop)).to.be(undefined);
       expect(layer[prop]).to.be(undefined);
       layer[prop] = 'test';
       expect(layer.get(prop)).to.be(undefined);
-      expect(layer[prop]).to.be(undefined);
     });
 
     it('verifies getCesiumImageryProvider property', function() {
