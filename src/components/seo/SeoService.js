@@ -17,7 +17,7 @@ goog.require('ga_permalink_service');
    * the initialisation of the application works
    *
    */
-  module.provider('gaSeoService', function() {
+  module.provider('gaSeo', function() {
     this.$get = function(gaPermalink) {
       var isActive = gaPermalink.getParams()._escaped_fragment_ !== undefined;
       var layersAtStart = gaPermalink.getParams().layers ?
