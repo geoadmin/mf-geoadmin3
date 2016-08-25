@@ -31,7 +31,7 @@ describe('ga_seo_service', function() {
         injectSeo(false);
       });
 
-      describe('getLinkAtStart', function() {
+      describe('#getLinkAtStart()', function() {
 
         beforeEach(function() {
           inject(function($injector) {
@@ -43,13 +43,13 @@ describe('ga_seo_service', function() {
         });
       });
 
-      describe('isActive', function() {
+      describe('#isActive()', function() {
         it('returns false', function() {
           expect(gaSeo.isActive()).to.be(false);
         });
       });
 
-      describe('getLayers', function() {
+      describe('#getLayers()', function() {
         it('gets the layers from the permalink', function() {
           expect(gaSeo.getLayers()).to.eql([
             'somelayer1',
@@ -58,7 +58,7 @@ describe('ga_seo_service', function() {
         });
       });
 
-      describe('getYXZoom', function() {
+      describe('#getYXZoom()', function() {
         it('gets the map info from the permalink', function() {
           expect(gaSeo.getYXZoom()).to.eql({
             Y: '200000',
@@ -75,14 +75,14 @@ describe('ga_seo_service', function() {
         injectSeo(true);
       });
 
-      describe('isActive', function() {
+      describe('#isActive()', function() {
         it('returns true if \'_escaped_fragment_\' exists then this param is removed', function() {
           expect(gaSeo.isActive()).to.be(true);
           expect(spy.calledWith('_escaped_fragment_')).to.be(true);
         });
       });
 
-      describe('getLayers', function() {
+      describe('#getLayers()', function() {
         it('gets an empty array', function() {
           expect(gaSeo.getLayers()).to.eql([]);
         });

@@ -1,6 +1,6 @@
 describe('ga_search_service', function() {
-  describe('gaSearchGetcoordinate', function() {
 
+  describe('gaSearchGetcoordinate', function() {
     var extent = [420000, 30000, 900000, 350000];
     var getCoordinate;
 
@@ -69,7 +69,7 @@ describe('ga_search_service', function() {
       });
     });
 
-    describe('highlight', function() {
+    describe('#highlight()', function() {
 
       it('Empty Strings', function() {
         var testString = '';
@@ -130,8 +130,6 @@ describe('ga_search_service', function() {
         expect(res).to.eql('Das sin.d ein * <span class="ga-search-highlight">pa*r</span> ^reg$exp charachters');
         res = labelsService.highlight(testString, '.');
         expect(res).to.eql('Das sin<span class="ga-search-highlight">.</span>d ein * pa*r ^reg$exp charachters');
-
-
       });
 
       it('Should correctly highlight border cases', function() {
@@ -153,8 +151,7 @@ describe('ga_search_service', function() {
       });
     });
 
-    describe('cleanLabel', function() {
-
+    describe('#cleanLabel()', function() {
       it('cleans label', function() {
         var testString = 'test<b>test</b>test<i>test</i>test<b></b><i></i><B></B><I></I>';
         expect(labelsService.cleanLabel(testString)).to.be('testtesttesttesttest');
@@ -175,7 +172,7 @@ describe('ga_search_service', function() {
       });
     });
 
-    describe('run', function() {
+    describe('#run()', function() {
       it('Empty Strings', function() {
         res = tokenAnalyser.run('');
         expect(res.query).to.eql('');

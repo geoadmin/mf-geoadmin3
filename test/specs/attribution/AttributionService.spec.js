@@ -1,4 +1,5 @@
 describe('ga_attribution_service', function() {
+
   describe('gaAttribution', function() {
     var gaAttribution, def, gaLang, lang = 'somelang';
     var bodAttribTemplate = '<a target="new" href="{{Url}}">{{Text}}</a>';
