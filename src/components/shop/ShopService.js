@@ -118,7 +118,6 @@ goog.require('ga_translation_service');
         this.getMapsheetClipperFromBodId = function(layerBodId) {
           return mapsheetClipper[layerBodId];
         };
-
       };
       return new Shop();
     };

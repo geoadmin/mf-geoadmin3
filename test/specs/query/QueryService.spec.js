@@ -241,7 +241,7 @@ describe('ga_query_service', function() {
     });
 
     it('caches the request', function() {
-      $httpBackend.expectGET(url).respond({fields:[]});
+      $httpBackend.expectGET(url).respond({fields: []});
       gaQuery.getLayerAttributes('somelayer');
       gaQuery.getLayerAttributes('somelayer');
       $httpBackend.flush();

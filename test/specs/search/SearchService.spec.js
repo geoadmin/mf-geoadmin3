@@ -1,4 +1,4 @@
-describe('ga_search_service', function() {  
+describe('ga_search_service', function() {
   describe('gaSearchGetcoordinate', function() {
 
     var extent = [420000, 30000, 900000, 350000];
@@ -152,7 +152,7 @@ describe('ga_search_service', function() {
         expect(res).to.eql('Dast <b><span class="ga-search-highlight">></span></b> ein Test');
       });
     });
-    
+
     describe('cleanLabel', function() {
 
       it('cleans label', function() {

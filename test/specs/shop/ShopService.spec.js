@@ -14,6 +14,19 @@ describe('ga_shop_service', function() {
     'ch.swisstopo.pixelkarte-farbe-pk200.noscale': 'ch.swisstopo.pixelkarte-pk200.metadata'
     //,'ch.swisstopo.digitales-hoehenmodell_25_reliefschattierung': '
   };
+  var bodIds = [
+    'ch.swisstopo.pixelkarte-farbe-pk25.noscale',
+    'ch.swisstopo.pixelkarte-farbe-pk50.noscale',
+    'ch.swisstopo.pixelkarte-farbe-pk100.noscale',
+    'ch.swisstopo.pixelkarte-farbe-pk200.noscale'
+    //,'ch.swisstopo.digitales-hoehenmodell_25_reliefschattierung': '
+  ];
+  var clipper = {
+    'commune': 'ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill',
+    'district': 'ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill',
+    'canton': 'ch.swisstopo.swissboundaries3d-kanton-flaeche.fill'
+  };
+  var orderTypes = ['commune', 'canton', 'district'];
 
   beforeEach(function() {
     module(function($provide) {
@@ -240,5 +253,24 @@ describe('ga_shop_service', function() {
       $httpBackend.flush();
     });
   });
+
+  describe('#getClipperFromOrderType()', function() {
+
+    it('returns the clipper associated to an orderType', function() {
+      orderTypes.forEach(function(item) {
+        expect(gaShop.getClipperFromOrderType(item)).to.be(clipper[item]);
+      });
+    });
+  });
+
+  describe('#getMapsheetClipperFromBodId()', function() {
+
+    it('returns the clipper associated to a bod id', function() {
+      bodIds.forEach(function(item) {
+        expect(gaShop.getMapsheetClipperFromBodId(item)).to.be(mapsheetClippers[item]);
+      });
+    });
+  });
+
 });
 
