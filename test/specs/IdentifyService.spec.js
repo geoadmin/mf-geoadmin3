@@ -1,5 +1,7 @@
 describe('ga_identify_service', function() {
   var gaIdentify, $httpBackend, $rootScope, map, point, gaTime;
+  
+  var expectedNoGeomRequest = window.location.protocol + '//api3.geo.admin.ch/rest/services/all/MapServer/identify?geometryFormat=geojson&imageDisplay=600,300,96&lang=custom&layers=all:mybodid&mapExtent=-46962910.17841229,-23481455.089206144,46962910.17841229,23481455.089206144&returnGeometry=false&tolerance=0';
 
   var expectedDfltRequest = window.location.protocol + '//api3.geo.admin.ch/rest/services/all/MapServer/identify?geometry=0,0&geometryFormat=geojson&geometryType=esriGeometryPoint&imageDisplay=600,300,96&lang=custom&layers=all:mybodid&mapExtent=-46962910.17841229,-23481455.089206144,46962910.17841229,23481455.089206144&returnGeometry=false&tolerance=0';
 
@@ -83,13 +85,15 @@ describe('ga_identify_service', function() {
         });
         $rootScope.$digest();
       });
+    });
 
-      it('if geometry parameter is not defined', function(done) {
-        gaIdentify.get(map, map.getLayers().getArray(), null).catch (function(msg) {
-          expectErr(msg, done);
-        });
-        $rootScope.$digest();
+    it('sends request with geometryFormat if no geometry provided', function(done) {
+      $httpBackend.expectGET(expectedNoGeomRequest).respond({});
+      gaIdentify.get(map, map.getLayers().getArray()).then(function(msg) {
+        done();
       });
+      $httpBackend.flush();
+      $rootScope.$digest();
     });
 
     it('sends request with default optional parameters if not defined', function(done) {

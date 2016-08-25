@@ -59,16 +59,13 @@ goog.provide('ga_query_service');
     };
 
 
-    this.$get = function($http, $log, $q, $translate, $window,
+    this.$get = function($http, $log, $q, gaLang, $window,
                          gaGlobalOptions) {
       var msUrl = gaGlobalOptions.apiUrl + '/rest/services/all/MapServer/';
-      var moment;
-      // List of predefined queries by layer
-      if (!moment) {
-        moment = $window.moment;
-      }
-      var twoWeeksAgo = moment().subtract(2, 'weeks').
+      var twoWeeksAgo = $window.moment().subtract(2, 'weeks').
           format('YYYY-MM-DD');
+
+      // List of predefined queries by layer
       var predefQueriesByLayer = {
         'ch.bazl.luftfahrthindernis': [{
           id: 'obstacle_started_last_2_weeks',
@@ -111,24 +108,20 @@ goog.provide('ga_query_service');
         };
 
         // Use ESRI layer service
-        this.getLayerAttributes = function(scope, layer) {
+        this.getLayerAttributes = function(bodId) {
           var deferred = $q.defer();
-          $http.get(msUrl + layer.bodId, {
+          $http.get(msUrl + bodId, {
             params: {
-              lang: $translate.use()
+              lang: gaLang.get()
             },
             cache: true
-          }).success(function(data) {
+          }).then(function(response) {
+            var data = response.data;
             // if the layer has already a list of attributes only update labels
             // we do this to avoid loosing reference in ng-repeat
             var attr = [];
             for (var i = 0, ii = data.fields.length; i < ii; i++) {
               var field = data.fields[i];
-              var label = field.alias;
-              if (layer.attributes) {
-                layer.attributes[i].label = label;
-                continue;
-              }
 
               // Set STRING as default field type.
               var type = attrInfos[field.type] || attrInfos.STRING;
@@ -140,14 +133,14 @@ goog.provide('ga_query_service');
 
               attr.push({
                 name: field.name,
-                label: label,
+                label: field.alias,
                 type: field.type,
                 inputType: type.inputType,
                 inputPlaceholder: attrValuesToString(field, 30),
                 inputTitle: attrValuesToString(field),
                 operators: type.operators,
                 transformToLiteral: function(value) {
-                  if (value && this.inputType != 'number' &&
+                  if (angular.isDefined(value) && this.inputType != 'number' &&
                       this.inputType != 'checkbox') {
                     if (this.inputType == 'text') {
                       return '\'%' + value + '%\'';
@@ -158,39 +151,17 @@ goog.provide('ga_query_service');
                 }
               });
             }
-
-            if (!layer.attributes) {
-              layer.attributes = attr;
-            }
-            deferred.resolve(layer.attributes);
-          }).error(function(data, status, headers, config) {
+            deferred.resolve(attr);
+          }, function(response) {
             $log.error('Request failed');
-            $log.debug(config);
-            deferred.reject(status);
-          });
-          return deferred.promise;
-        };
-
-        // Use ESRI dentify service
-        this.getLayerIdentifyFeatures = function(scope, bodId, params) {
-          var deferred = $q.defer();
-          params = params || {};
-          params.layers = 'all:' + bodId;
-          $http.get(msUrl + 'identify', {
-            params: params,
-            cache: true
-          }).success(function(data) {
-            deferred.resolve(data.results);
-          }).error(function(data, status, headers, config) {
-            $log.error('Request failed');
-            $log.debug(config);
-            deferred.reject(status);
+            $log.debug(response.config);
+            deferred.reject(response.status);
           });
           return deferred.promise;
         };
 
         // Use custom attribute service
-        this.getAttributeValues = function(scope, bodId, attrName, params) {
+        this.getAttributeValues = function(bodId, attrName, params) {
           var deferred = $q.defer();
           $http.get(msUrl + bodId + '/attributes/' + attrName, {
             cache: true
@@ -212,8 +183,7 @@ goog.provide('ga_query_service');
 
       };
       var query = new Query();
-      query.momentUrl = this.momentUrl;
-      query.dpUrl = this.dpUrl;
+      query.dpUrl = this.dpUrl; // DatePicker lib
       return query;
     };
   });
