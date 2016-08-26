@@ -677,7 +677,7 @@ ${HTMLMIN_CMD}: ${PYTHON_VENV}
 
 ${GJSLINT_CMD}: ${PYTHON_VENV}
 	${PIP_CMD} install \
-	    "http://closure-linter.googlecode.com/files/closure_linter-latest.tar.gz"
+	    "https://github.com/google/closure-linter/archive/v2.3.19.tar.gz"
 	touch $@
 
 ${FLAKE8_CMD}: ${PYTHON_VENV}
