@@ -28,9 +28,9 @@ goog.require('ga_styles_service');
             (bbox[3] - bbox[1]) <= 1;
       }
 
-      function addMarker(map, center, extent, visible) {
+      function addMarker(map, center, visible, extent) {
         initialize(map);
-        bbox = extent;
+        bbox = extent || center.concat(center);
         removeMarker(map);
         isAlwaysVisible = visible;
         setVisibility(map.getView().getZoom());

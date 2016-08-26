@@ -78,7 +78,7 @@ describe('ga_profile_service', function() {
         $rootScope.$digest();
       });
 
-      it('creates an chart from a feature', function(done) {
+      it('creates a chart from a feature', function(done) {
         $httpBackend.expectPOST(profileUrl).respond(goodResult);
         gaProfile.create(feature).then(function(profile) {
           expect(profile).to.be.an(Object);
