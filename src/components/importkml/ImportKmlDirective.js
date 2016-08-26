@@ -135,6 +135,7 @@ goog.require('ga_urlutils_service');
 
             // Read the file
             fileReader.readAsText($scope.file);
+            fileReader = null;
           }
           $scope.isDropped = false;
         };
