@@ -114,7 +114,9 @@ goog.require('ga_query_service');
       filter.operator = null;
       filter.value = null;
       gaQuery.getLayerAttributes(filter.layer.bodId).then(function(attrs) {
-        filter.layer.attributes = attrs;
+        if (!filter.layer.attributes) {
+          filter.layer.attributes = attrs;
+        }
         updateAttr(idx, filter);
       });
     };
@@ -351,7 +353,9 @@ goog.require('ga_query_service');
               filter.layer = layer;
               gaQuery.getLayerAttributes(filter.layer.bodId).
                   then(function(attrs) {
-                filter.layer.attributes = attrs;
+                if (!filter.layer.attributes) {
+                  filter.layer.attributes = attrs;
+                }
                 angular.forEach(filter.layer.attributes, function(attr) {
                   if (attr.name == filter.attrName) {
                     filter.attribute = attr;
@@ -398,7 +402,9 @@ goog.require('ga_query_service');
         var layer = $scope.filters[i].layer;
         if (layer) {
           gaQuery.getLayerAttributes(layer.bodId).then(function(attrs) {
-            layer.attributes = attrs;
+            angular.forEach(layer.attributes, function(attr, idx) {
+              attr.label = attrs[idx].label;
+            });
           });
         }
       }
