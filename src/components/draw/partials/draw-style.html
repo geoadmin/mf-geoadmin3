@@ -3,13 +3,14 @@
   <textarea class="form-control" rows="1" ng-model="options.name" ng-disabled="!useTextStyle"></textarea>
 </label>
 
+<div ng-if="useIconStyle || !useTextStyle" class="ga-descr-buttons">
+   <button ng-repeat="t in ::options.linkTypes" class="ga-icon ga-btn fa {{::t.btnClass}}"
+           ng-click="togglePopover($event, t)"
+           data-target=".ga-html-{{::t.label}}"></button>
+</div>
+
 <label ng-if="useIconStyle || !useTextStyle">
   <span translate>{{'modify_description'}}:</span>
-  <div class="ga-descr-buttons">
-    <button  ng-repeat="t in ::options.linkTypes" class="ga-icon ga-btn fa {{::t.btnClass}}"
-             ng-click="togglePopover($event, t)"
-             data-target=".ga-html-{{::t.label}}"></button>
-  </div>
   <textarea class="form-control ga-descr" ng-model="options.description"></textarea>
 </label>
 
