@@ -11,8 +11,8 @@ goog.require('ga_seo_service');
   ]);
 
   module.directive('gaSeo',
-      function($sce, $timeout, $interval, $q, $http, $translate,
-               gaSeoService, gaLayers) {
+      function($sce, $timeout, $q, $http, $translate,
+               gaSeo, gaLayers) {
         return {
           restrict: 'A',
           replace: true,
@@ -40,7 +40,7 @@ goog.require('ga_seo_service');
             };
 
             var permalinkLayers = function() {
-              var layers = gaSeoService.getLayers(),
+              var layers = gaSeo.getLayers(),
                   def = $q.defer();
 
               gaLayers.loadConfig().then(function() {
@@ -153,10 +153,11 @@ goog.require('ga_seo_service');
                                               // they are not relevant for SEO
                                               // (cadastralWbebMap Links)
                     }
-                  }).success(function(html) {
+                  }).then(function(response) {
+                    var html = response.data;
                     scope.featureMetadatas.push($sce.trustAsHtml(html));
                     fDef.resolve();
-                  }).error(function() {
+                  }, function() {
                     fDef.resolve();
                   });
                   return fDef.promise;
@@ -186,7 +187,7 @@ goog.require('ga_seo_service');
 
             var permalinkYXZoom = function() {
               var def = $q.defer(),
-                  xyzoom = gaSeoService.getYXZoom(),
+                  xyzoom = gaSeo.getYXZoom(),
                   bailed = false,
                   BBOX_SIZE = 1000, //1km on each side...likely to be changed
                   MIN_ZOOM = 5, //Minimal zoom to include xy based location info
@@ -217,7 +218,7 @@ goog.require('ga_seo_service');
                     'ch.swisstopo.vec200-names-namedlocation' : 3,
                     'ch.bfs.gebaeude_wohnungs_register': 1
                   },
-                  lTpl = '<a href="' + gaSeoService.getLinkAtStart() +
+                  lTpl = '<a href="' + gaSeo.getLinkAtStart() +
                                  '">{result}</a>',
                   east, north, zoom, bbox;
 
@@ -251,7 +252,8 @@ goog.require('ga_seo_service');
                           }).join(',')
 
                     }
-                  }).success(function(json) {
+                  }).then(function(response) {
+                    var json = response.json;
                     var i, li, result, added = {};
                     if (json.results &&
                         json.results.length > 0) {
@@ -271,7 +273,7 @@ goog.require('ga_seo_service');
                       }
                     }
                     searchDef.resolve();
-                  }).error(function() {
+                  }, function() {
                     searchDef.resolve();
                   });
 
@@ -289,7 +291,8 @@ goog.require('ga_seo_service');
                       tolerance: PIXEL_TOLERANCE,
                       layers: 'all:' + identifyLayers.join(',')
                     }
-                  }).success(function(json) {
+                  }).then(function(response) {
+                    var json = response.data;
                     var i, li, result, prop;
                     if (json.results &&
                         json.results.length > 0) {
@@ -301,7 +304,7 @@ goog.require('ga_seo_service');
                       }
                     }
                     identifyDef.resolve();
-                  }).error(function() {
+                  }, function() {
                     identifyDef.resolve();
                   });
                   $q.all([searchDef.promise, identifyDef.promise])
@@ -337,7 +340,7 @@ goog.require('ga_seo_service');
             };
 
             // Just do something if we are active
-            if (gaSeoService.isActive()) {
+            if (gaSeo.isActive()) {
               //Show popup
               $timeout(function() {
                 scope.showPopup = true;

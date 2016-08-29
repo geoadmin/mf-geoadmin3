@@ -75,7 +75,7 @@ describe('ga_importwms_directive', function() {
 
   describe('a good WMS GetCapabilities is received', function() {
     var $httpBackend;
-    var expectedWmsGetCapAdminUrl = "https://wms.geo.admin.ch/?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0&lang=fr";
+    var expectedWmsGetCapAdminUrl = 'https://wms.geo.admin.ch/?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0&lang=fr';
 
     beforeEach(inject(function($injector, $rootScope) {
       $httpBackend = $injector.get('$httpBackend');
@@ -197,7 +197,7 @@ describe('ga_importwms_directive', function() {
 
   describe('a good WMS GetCapabilities but without the map projection iss received', function() {
     var $httpBackend;
-    var expectedWmsGetCapAdminUrl = "https://wms.geo.admin.ch/?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0&lang=fr";
+    var expectedWmsGetCapAdminUrl = 'https://wms.geo.admin.ch/?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0&lang=fr';
 
     beforeEach(inject(function($injector, $rootScope) {
       $httpBackend = $injector.get('$httpBackend');

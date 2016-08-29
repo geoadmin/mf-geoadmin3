@@ -53,11 +53,11 @@ goog.provide('ga_identify_service');
       if (olGeometry instanceof ol.geom.Point) {
         geometry = olGeometry.getCoordinates().toString();
         geometryType = 'esriGeometryPoint';
-      } else {
+      } else if (olGeometry) {
         geometry = olGeometry.getExtent().toString();
         geometryType = 'esriGeometryEnvelope';
       }
-      // TODO: manage esriGeometryPolyline and esritGeometryPolygon
+      // TODO: manage esriGeometryPolyline and esriGeometryPolygon
       return {
         geometry: geometry,
         geometryType: geometryType,
@@ -77,8 +77,8 @@ goog.provide('ga_identify_service');
 
       var Identify = function() {
         this.get = function(olMap, olLayers, olGeometry, tolerance,
-            returnGeometry, timeout, limit, order) {
-          if (!olMap || !olLayers || !olGeometry) {
+            returnGeometry, timeout, limit, order, offset, where) {
+          if (!olMap || !olLayers) {
             return reject('Missing required parameters');
           }
           var mapParams = getMapParams(olMap, DPI);
@@ -94,6 +94,12 @@ goog.provide('ga_identify_service');
           }
           if (order) {
             othersParams.order = order;
+          }
+          if (offset) {
+            othersParams.offset = offset;
+          }
+          if (where) {
+            othersParams.where = where;
           }
           var params = angular.extend(mapParams, layersParams, geometryParams,
               othersParams);

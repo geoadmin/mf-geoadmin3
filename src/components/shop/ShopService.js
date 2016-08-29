@@ -92,7 +92,6 @@ goog.require('ga_translation_service');
           var url = gaGlobalOptions.shopUrl + '/' + gaLang.get() +
               '/dispatcher?' + getParams(orderType, layerBodId, featureId,
               geometry);
-          //console.log(url);
           winShop = $window.open(url, WIN_SHOP_PREFIX + sessionId);
         };
 
@@ -118,7 +117,6 @@ goog.require('ga_translation_service');
         this.getMapsheetClipperFromBodId = function(layerBodId) {
           return mapsheetClipper[layerBodId];
         };
-
       };
       return new Shop();
     };

@@ -47,8 +47,8 @@ goog.require('ga_permalink_service');
 
       // Currently time is a number representing a year
       // When defined this value is apllied on all timeEnabled layers
-      var time = parseFloat(gaPermalink.getParams().time);
-      if (isNaN(time)) {
+      var time = gaPermalink.getParams().time;
+      if (isNaN(parseFloat(time))) {
         time = undefined;
       }
       var Time = function() {
@@ -96,6 +96,7 @@ goog.require('ga_permalink_service');
                 count++;
               }
             }
+
             if (count > 1) {
               // This function automatically set time value when all timeEnabled
               // layers have/don't have the same time property.
@@ -113,6 +114,9 @@ goog.require('ga_permalink_service');
           if (year != time) {
             var oldTime = time;
             time = year;
+            if (isNaN(parseFloat(time))) {
+              time = undefined;
+            }
             if (time === undefined) {
               gaPermalink.deleteParam('time');
             } else {
@@ -131,6 +135,7 @@ goog.require('ga_permalink_service');
             if (timestamp === 'current') {
               return fullYear;
             }
+
             timestamp = parseInt(timestamp.substr(0, 4));
             if (timestamp <= fullYear) {
               return timestamp;

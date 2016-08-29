@@ -12,14 +12,18 @@ module.exports = function(config) {
   // list of files / patterns to load in the browser
   files: [
   % if mode == 'release':
+    'lib/d3.min.js',
     'lib/Cesium.min.js',
     'lib/ol3cesium.js',
     'lib/build.js',
   % else:
     'lib/jquery.js',
+    'lib/jQuery.XDomainRequest.js',
+    'lib/slip.js',
     'lib/angular.js',
     'lib/angular-translate.js',
     'lib/angular-translate-loader-static-files.js',
+    'lib/d3.js',
     'lib/bootstrap.js',
     'lib/typeahead-0.9.3.js',
     'lib/proj4js-compressed.js',
@@ -27,6 +31,10 @@ module.exports = function(config) {
     'lib/EPSG2056.js',
     'lib/EPSG32631.js',
     'lib/EPSG32632.js',
+    'lib/fastclick.js',
+    'lib/localforage.js',
+    'lib/filesaver.js',
+    'lib/moment-with-customlocales.js',
     'lib/Cesium/Cesium.js',
     '../test/closure-loader-globals.js',
     'lib/ol3cesium-debug.js',

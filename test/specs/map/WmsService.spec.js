@@ -101,7 +101,7 @@ describe('ga_wms_service', function() {
       map = new ol.Map({});
     });
 
-    describe('addWmsToMap', function() {
+    describe('#addWmsToMap()', function() {
 
       it('adds a layer using minimal parameters', function() {
         var params = {
@@ -208,7 +208,7 @@ describe('ga_wms_service', function() {
       });
     });
 
-    describe('getOlLayerFromGetCapLayer', function() {
+    describe('#getOlLayerFromGetCapLayer()', function() {
 
       it('creates a layer with minimal param', function() {
         var options = {
@@ -234,7 +234,7 @@ describe('ga_wms_service', function() {
       });
     });
 
-    describe('getLegend', function() {
+    describe('#getLegend()', function() {
       it('tests with default values', function() {
         var wmsLayer = getExternalWmsLayer({
           LAYERS: 'somelayer'
@@ -255,7 +255,7 @@ describe('ga_wms_service', function() {
           VERSION: '1.1.1'
         });
         var expectedHtml = '<img src="http://foo.ch/wms?' +
-            'request=GetLegendGraphic&amp;layer=somelayer&amp;' +
+            'request=GetLe/gendGraphic&amp;layer=somelayer&amp;' +
             'style=layerstyle&amp;service=WMS&amp;version=1.1.1&amp;' +
             'format=image%2Fpng&amp;sld_version=1.1.0">';
         gaWms.getLegend(wmsLayer).then(function(resp) {

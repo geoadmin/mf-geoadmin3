@@ -28,7 +28,7 @@ describe('ga_help_service', function() {
       $httpBackend.verifyNoOutstandingRequest();
     });
 
-    describe('get', function() {
+    describe('#get()', function() {
 
       it('gets help from id', function(done) {
         $httpBackend.expectJSONP(frUrl).respond({columns: [], rows: []});

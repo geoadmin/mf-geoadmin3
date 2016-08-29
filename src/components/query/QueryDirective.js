@@ -1,22 +1,19 @@
 goog.provide('ga_query_directive');
 
+goog.require('ga_identify_service');
 goog.require('ga_map_service');
 goog.require('ga_query_service');
-goog.require('ga_storage_service');
-goog.require('ga_time_service');
 
 (function() {
 
   var module = angular.module('ga_query_directive', [
     'ga_map_service',
     'ga_query_service',
-    'ga_storage_service',
-    'ga_time_service'
+    'ga_identify_service'
   ]);
 
-  module.controller('GaQueryDirectiveController', function($filter, $rootScope,
-      $scope, $timeout, $translate, gaLayers, gaLayerFilters, gaQuery,
-      gaMapUtils, gaStorage, gaTime) {
+  module.controller('GaQueryDirectiveController', function($rootScope, $scope,
+      $timeout, $translate, gaLayerFilters, gaQuery, gaMapUtils, gaIdentify) {
     var geojson = new ol.format.GeoJSON();
     var stored;
     $scope.queryType = 1; // Filter attributes
@@ -25,12 +22,6 @@ goog.require('ga_time_service');
     $scope.queriesPredef = [];
     $scope.filters = [];
     $scope.featuresByLayer = {};
-
-    var getTimeInstantParam = function(layer) {
-      if (layer.timeEnabled) {
-        return gaTime.get() || gaTime.getYearFromTimestamp(layer.time);
-      }
-    };
 
     var getEmptyFilter = function() {
       return {
@@ -53,16 +44,10 @@ goog.require('ga_time_service');
           return;
         }
         if (!paramsByLayer[filter.layer.bodId]) {
-          var params = {};
-          var timeInstant = getTimeInstantParam(filter.layer);
-          if (timeInstant) {
-            params.timeInstant = timeInstant;
-          }
           paramsByLayer[filter.layer.bodId] = {
             bodId: filter.layer.bodId,
-            params: params
+            params: {}
           };
-
           list.push(paramsByLayer[filter.layer.bodId]);
         }
         var params = paramsByLayer[filter.layer.bodId].params;
@@ -128,7 +113,10 @@ goog.require('ga_time_service');
       filter.attribute = null;
       filter.operator = null;
       filter.value = null;
-      gaQuery.getLayerAttributes($scope, filter.layer).then(function() {
+      gaQuery.getLayerAttributes(filter.layer.bodId).then(function(attrs) {
+        if (!filter.layer.attributes) {
+          filter.layer.attributes = attrs;
+        }
         updateAttr(idx, filter);
       });
     };
@@ -182,7 +170,6 @@ goog.require('ga_time_service');
       var target = $($event.target);
       if (!filter.moreValues) {
         gaQuery.getAttributeValues(
-            $scope,
             filter.layer.bodId,
             filter.attribute.name
         ).then(function(values) {
@@ -206,20 +193,6 @@ goog.require('ga_time_service');
       } else {
         $scope.hideBox();
       }
-    };
-
-    var getGeometryParams = function() {
-      var imgDisplay = $scope.map.getSize().concat([96]).join(',');
-      var mapExtent = $scope.map.getView().calculateExtent(
-          $scope.map.getSize()).join(',');
-      var geom = $scope.geometry.getExtent().join(',');
-      return {
-        geometry: geom,
-        geometryType: 'esriGeometryEnvelope',
-        mapExtent: mapExtent,
-        imageDisplay: imgDisplay,
-        tolerance: 5
-      };
     };
 
     // Search callbacks
@@ -262,38 +235,34 @@ goog.require('ga_time_service');
       }
 
       $scope.loading = true;
-      if ($scope.geometry) {
-        var common = angular.extend({
-          lang: $translate.use(),
-          geometryFormat: 'geojson',
-          offset: offset
-        }, getGeometryParams());
-
-        var layersRequested = $scope.tooltipLayers;
-        if (layerBodId) {
-          layersRequested = [
-            gaMapUtils.getMapOverlayForBodId($scope.map, layerBodId)
-          ];
-        }
-        angular.forEach(layersRequested, function(layer) {
-          var params = {};
-          var timeInstant = getTimeInstantParam(layer);
-          if (timeInstant) {
-            params.timeInstant = timeInstant;
-          }
-          gaQuery.getLayerIdentifyFeatures(
-              $scope,
-              layer.bodId,
-              angular.extend(params, common)
-          ).then(function(layerFeatures) {
-            onSearchSuccess(layerFeatures, layer.bodId, offset);
-          }, function(reason) {
-            resetResults(reason, layer.bodId);
-          });
-        });
-      } else {
+      if (!$scope.geometry) {
         $scope.loading = false;
+        return;
       }
+
+      var layersRequested = $scope.tooltipLayers;
+      if (layerBodId) {
+        layersRequested = [
+          gaMapUtils.getMapOverlayForBodId($scope.map, layerBodId)
+        ];
+      }
+      angular.forEach(layersRequested, function(layer) {
+        gaIdentify.get(
+          $scope.map,
+          [layer],
+          $scope.geometry,
+          5,
+          true,
+          undefined,
+          undefined,
+          undefined,
+          offset
+        ).then(function(response) {
+          onSearchSuccess(response.data.results, layer.bodId, offset);
+        }, function(response) {
+          resetResults(response, layer.bodId);
+        });
+      });
     };
 
     // Search by attributes using feature identify service
@@ -311,38 +280,43 @@ goog.require('ga_time_service');
         return;
       }
 
-      var common = {
-        lang: $translate.use(),
-        geometryFormat: 'geojson',
-        offset: offset
-      };
-
       if ($scope.useBbox) {
         // here $scope.geometry can't be null
         $scope.showBox();
-        angular.extend(common, getGeometryParams());
       }
 
       angular.forEach(params, function(paramsByLayer) {
+
         if (layerBodId && layerBodId != paramsByLayer.bodId) {
           $scope.loading = false;
           return;
         }
-        gaQuery.getLayerIdentifyFeatures(
-            $scope,
-            paramsByLayer.bodId,
-            angular.extend(paramsByLayer.params, common)
-        ).then(function(layerFeatures) {
-          onSearchSuccess(layerFeatures, paramsByLayer.bodId, offset);
-        }, function(reason) {
-          resetResults(reason, paramsByLayer.bodId);
+        var layer = gaMapUtils.getMapOverlayForBodId($scope.map,
+            paramsByLayer.bodId);
+        gaIdentify.get(
+          $scope.map,
+          [layer],
+          $scope.useBbox ? $scope.geometry : undefined,
+          5,
+          true,
+          undefined,
+          undefined,
+          undefined,
+          offset,
+          paramsByLayer.params.where
+        ).then(function(response) {
+          onSearchSuccess(response.data.results, layer.bodId, offset);
+        }, function(response) {
+          resetResults(response, layer.bodId);
         });
       });
     };
 
     // Launch a search according to the active tab
     $scope.search = function(layerBodId, offset) {
-      resetResults('', layerBodId);
+      if (!offset) {
+        resetResults('', layerBodId);
+      }
       if ($scope.queryType == 0) {
         $scope.searchByGeometry(layerBodId, offset);
       } else {
@@ -377,7 +351,11 @@ goog.require('ga_time_service');
             query.label = $translate.instant(query.id);
             angular.forEach(query.filters, function(filter, idx) {
               filter.layer = layer;
-              gaQuery.getLayerAttributes($scope, filter.layer).then(function() {
+              gaQuery.getLayerAttributes(filter.layer.bodId).
+                  then(function(attrs) {
+                if (!filter.layer.attributes) {
+                  filter.layer.attributes = attrs;
+                }
                 angular.forEach(filter.layer.attributes, function(attr) {
                   if (attr.name == filter.attrName) {
                     filter.attribute = attr;
@@ -423,7 +401,11 @@ goog.require('ga_time_service');
       for (var i = 0; i < $scope.filters.length; i++) {
         var layer = $scope.filters[i].layer;
         if (layer) {
-          gaQuery.getLayerAttributes($scope, layer);
+          gaQuery.getLayerAttributes(layer.bodId).then(function(attrs) {
+            angular.forEach(layer.attributes, function(attr, idx) {
+              attr.label = attrs[idx].label;
+            });
+          });
         }
       }
     });
@@ -440,8 +422,8 @@ goog.require('ga_time_service');
     });
   });
 
-  module.directive('gaQuery', function($translate, gaBrowserSniffer,
-      gaLayers, gaQuery, gaStyleFactory, gaMapUtils) {
+  module.directive('gaQuery', function($translate, gaBrowserSniffer, gaQuery,
+      gaStyleFactory, gaMapUtils) {
     var parser = new ol.format.GeoJSON();
     var dragBox;
     var dragBoxStyle = gaStyleFactory.getStyle('selectrectangle');

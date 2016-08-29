@@ -134,7 +134,8 @@ goog.require('ga_previewfeatures_service');
                   hasMoreResults: layerNode.hasMoreResults,
                   offset: layerNode.offset,
                   open: oldNode ? oldNode.open : true,
-                  features: []
+                  features: [],
+                  bodId: layerBodId // used by Query tool
                 };
                 newTree[layerBodId] = newNode;
 

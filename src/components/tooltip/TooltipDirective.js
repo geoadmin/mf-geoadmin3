@@ -3,7 +3,7 @@ goog.provide('ga_tooltip_directive');
 goog.require('ga_browsersniffer_service');
 goog.require('ga_debounce_service');
 goog.require('ga_identify_service');
-goog.require('ga_iframe_com_service');
+goog.require('ga_iframecom_service');
 goog.require('ga_map_service');
 goog.require('ga_popup_service');
 goog.require('ga_previewfeatures_service');
@@ -16,7 +16,7 @@ goog.require('ga_topic_service');
     'ga_browsersniffer_service',
     'ga_debounce_service',
     'ga_identify_service',
-    'ga_iframe_com_service',
+    'ga_iframecom_service',
     'ga_map_service',
     'ga_popup_service',
     'ga_previewfeatures_service',

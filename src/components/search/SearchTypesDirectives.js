@@ -25,29 +25,29 @@ goog.require('ga_urlutils_service');
     return $.map(extent, parseFloat);
   };
 
-  var addOverlay = function(gaOverlay, map, res) {
+  var addOverlay = function(gaMarkerOverlay, map, res) {
     var visible = originToZoomLevel.hasOwnProperty(res.attrs.origin);
     var center = [res.attrs.y, res.attrs.x];
     if (!res.attrs.y || !res.attrs.x) {
       center = ol.proj.transform([res.attrs.lon, res.attrs.lat],
           'EPSG:4326', 'EPSG:21781');
     }
-    gaOverlay.add(map,
+    gaMarkerOverlay.add(map,
                   center,
-                  parseExtent(res.attrs.geom_st_box2d),
-                  visible);
+                  visible,
+                  parseExtent(res.attrs.geom_st_box2d));
 
   };
 
-  var removeOverlay = function(gaOverlay, map) {
-    gaOverlay.remove(map);
+  var removeOverlay = function(gaMarkerOverlay, map) {
+    gaMarkerOverlay.remove(map);
   };
 
   var listenerMoveEnd;
-  var registerMove = function(gaOverlay, gaDebounce, map) {
+  var registerMove = function(gaMarkerOverlay, gaDebounce, map) {
     listenerMoveEnd = map.on('moveend', gaDebounce.debounce(function() {
       var zoom = map.getView().getZoom();
-      gaOverlay.setVisibility(zoom);
+      gaMarkerOverlay.setVisibility(zoom);
     }, 200, false, false));
   };
 

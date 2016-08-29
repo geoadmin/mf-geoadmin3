@@ -3,15 +3,6 @@ beforeEach(function() {
   // The ga module requires the gaGlobalOptions.version property to be
   // defined
   module(function($provide) {
-    var location = {
-      host: 'map.admin.ch',
-      hostname: 'map.geo.admin.ch',
-      href: 'https://map.geo.admin.ch/?lang=en&topic=ech&bgLayer=ch.swisstopo.pixelkarte-farbe&X=207277.79&Y=690852.63&zoom=1',
-      origin: 'https://map.geo.admin.ch',
-      pathname: '/',
-      port: '',
-      protocol: 'https:'
-    };
     var version = '123456';
     var versionSlashed = version + '/';
     var apiUrl = '//api3.geo.admin.ch';
@@ -22,7 +13,8 @@ beforeEach(function() {
     var wmsUrl = '//wms.geo.admin.ch';
     var apacheBasePath = '/';
     var cacheAdd = '/' + version;
-    var pathname = location.pathname.replace(/(index|mobile|embed)\.html$/g, '');
+    var pathname = location.pathname.replace(/(context|index|mobile|embed)\.html$/g, '');
+
 
     $provide.constant('gaGlobalOptions', {
       dev3d: false,
