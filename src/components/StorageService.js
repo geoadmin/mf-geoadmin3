@@ -60,6 +60,7 @@ goog.require('ga_browsersniffer_service');
 
     this.$get = function($window, gaBrowserSniffer) {
       var Storage = function() {
+
         // Initialize the database config, needed when using webSQL to avoid ios
         // prompts when db becomes bigger.
         this.init = function() {
@@ -99,15 +100,13 @@ goog.require('ga_browsersniffer_service');
             return $window.localStorage.getItem(key);
           };
           this.setItem = function(key, data) {
-            return $window.localStorage.setItem(key, data);
+            $window.localStorage.setItem(key, data);
           };
           this.removeItem = function(key) {
-            return $window.localStorage.removeItem(key);
+            $window.localStorage.removeItem(key);
           };
         } else {
-          this.getItem = function() {};
-          this.setItem = function() {};
-          this.removeItem = function() {};
+          this.getItem = this.setItem = this.removeItem = angular.noop;
         }
 
         // Tiles management
@@ -115,16 +114,18 @@ goog.require('ga_browsersniffer_service');
         // now
         this.getTile = function(key, callback) {
           if (!isInitialized) {
-            return callback(null);
+            return callback();
           }
           $window.localforage.getItem(key, function(err, compressedDataURI) {
             callback(err, decompress(compressedDataURI));
           });
         };
+
         this.setTile = function(key, dataURI, callback) {
           this.init();
           $window.localforage.setItem(key, compress(dataURI), callback);
         };
+
         this.clearTiles = function(callback) {
           this.init();
           $window.localforage.clear(callback);
