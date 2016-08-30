@@ -12,7 +12,7 @@ goog.require('ga_print_service');
 
   module.directive('gaPopup',
     function($rootScope, $translate, $window, gaBrowserSniffer,
-        gaPrintService) {
+        gaPrint) {
       var zIndex = 2000;
       var bringUpFront = function(el) {
         zIndex += 1;
@@ -114,7 +114,7 @@ goog.require('ga_print_service');
 
           scope.print = scope.options.print || (function() {
             var contentEl = element.find('.ga-popup-content');
-            gaPrintService.htmlPrintout(contentEl.clone().html());
+            gaPrint.htmlPrintout(contentEl.clone().html());
           });
 
           scope.reduce = function(evt) {
