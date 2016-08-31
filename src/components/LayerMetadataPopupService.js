@@ -47,7 +47,7 @@ goog.require('ga_wms_service');
             destroyOnClose: false,
             content: popupContent,
             result: result,
-            className: 'ga-tooltip-metadata',
+            className: 'ga-tooltip-metadata ga-popup-tablet-full',
             x: 400,
             y: 200,
             showPrint: true

@@ -1,5 +1,6 @@
 goog.provide('ga_kml_service');
 
+goog.require('ga_geomutils_service');
 goog.require('ga_map_service');
 goog.require('ga_measure_service');
 goog.require('ga_networkstatus_service');
@@ -15,7 +16,8 @@ goog.require('ga_urlutils_service');
     'ga_storage_service',
     'ga_styles_service',
     'ga_urlutils_service',
-    'ga_measure_service'
+    'ga_measure_service',
+    'ga_geomutils_service'
   ]);
 
   /**
@@ -23,121 +25,10 @@ goog.require('ga_urlutils_service');
    */
   module.provider('gaKml', function() {
 
-    // Ensure linear rings are closed
-    var closeLinearRing = function(linearRing) {
-      if (linearRing.getFirstCoordinate() != linearRing.getLastCoordinate()) {
-        var coords = linearRing.getCoordinates();
-        coords.push(linearRing.getFirstCoordinate());
-        linearRing.setCoordinates(coords);
-
-      }
-    };
-    var closePolygon = function(polygon) {
-      var coords = [];
-      var linearRings = polygon.getLinearRings();
-      for (var i = 0, ii = linearRings.length; i < ii; i++) {
-        closeLinearRing(linearRings[i]);
-        coords.push(linearRings[i].getCoordinates());
-      }
-      polygon.setCoordinates(coords);
-    };
-    var closeMultiPolygon = function(multiPolygon) {
-      var coords = [];
-      var polygons = multiPolygon.getPolygons();
-      for (var i = 0, ii = polygons.length; i < ii; i++) {
-        closePolygon(polygons[i]);
-        coords.push(polygons[i].getCoordinates());
-      }
-      multiPolygon.setCoordinates(coords);
-    };
-    var closeGeometry = function(geom) {
-      var geometries = [geom];
-      if (geom instanceof ol.geom.GeometryCollection) {
-        geometries = geom.getGeometries();
-      }
-      for (var i = 0, ii = geometries.length; i < ii; i++) {
-        var geometry = geometries[i];
-        if (geometry instanceof ol.geom.MultiPolygon) {
-          closeMultiPolygon(geometry);
-        } else if (geometry instanceof ol.geom.Polygon) {
-          closePolygon(geometry);
-        } else if (geometry instanceof ol.geom.LinearRing) {
-          closeLinearRing(geometry);
-        }
-      }
-      if (geom instanceof ol.geom.GeometryCollection) {
-        geom.setGeometries(geometries);
-      }
-    };
-
-    var shouldRemoveMultiGeom = function(geometry, children) {
-      var coords = [];
-      for (var i = 0, ii = children.length; i < ii; i++) {
-        if (!shouldRemoveGeometry(children[i])) {
-          coords.push(children[i].getCoordinates());
-        }
-      }
-      if (coords.length) {
-        geometry.setCoordinates(coords);
-        return false;
-      }
-      return true;
-    };
-
-    /**
-     * This function tests if all coordinates of a geometry are identical.
-     * Special case , returns true if there is only one coordinate.
-     * Used to test LineStrings and LinearRings.
-     */
-    var uniqueCoords = function(coords) {
-      var unique = true;
-      for (var i = 0, ii = coords.length; i < ii; i++) {
-        var coord = coords[i];
-        var nextCoord = coords[i + 1];
-        if (unique && nextCoord &&
-            (coord[0] != nextCoord[0] ||
-            coord[1] != nextCoord[1] ||
-            coord[2] != nextCoord[2])) {
-          return false;
-        }
-      }
-      return true;
-    };
-
-    var shouldRemoveGeometry = function(geom) {
-      var geometries = [geom];
-      if (geom instanceof ol.geom.GeometryCollection) {
-        geometries = geom.getGeometries();
-      }
-      for (var i = 0, ii = geometries.length; i < ii; i++) {
-        var geometry = geometries[i];
-        var remove = false;
-        if (geometry instanceof ol.geom.MultiPolygon) {
-           remove = shouldRemoveMultiGeom(geometry, geometry.getPolygons());
-        } else if (geometry instanceof ol.geom.MultiLineString) {
-           remove = shouldRemoveMultiGeom(geometry, geometry.getLineStrings());
-        } else if (geometry instanceof ol.geom.Polygon) {
-           remove = shouldRemoveMultiGeom(geometry, geometry.getLinearRings());
-        } else if (geometry instanceof ol.geom.LinearRing ||
-            geometry instanceof ol.geom.LineString) {
-          remove = uniqueCoords(geometry.getCoordinates());
-        }
-        if (remove) {
-          geometries.splice(i, 1);
-          i--;
-        }
-      }
-      if (geometries.length && geom instanceof ol.geom.GeometryCollection) {
-        geom.setGeometries(geometries);
-        return false;
-      }
-      return !geometries.length;
-    };
-
-
     this.$get = function($http, $q, $rootScope, $timeout, $translate,
         gaDefinePropertiesForLayer, gaGlobalOptions, gaMapClick, gaMapUtils,
-        gaNetworkStatus, gaStorage, gaStyleFactory, gaUrlUtils, gaMeasure) {
+        gaNetworkStatus, gaStorage, gaStyleFactory, gaUrlUtils, gaMeasure,
+        gaGeomUtils) {
 
       // Store the parser.
       var kmlFormat;
@@ -202,17 +93,13 @@ goog.require('ga_urlutils_service');
       var sanitizeFeature = function(feature, projection) {
         var geom = feature.getGeometry();
 
-        // Returns true if a geometry has a bad geometry
-        // (ex: only one coordinate for line strings)
-        var remove = shouldRemoveGeometry(geom);
-
         // Remove feature without good geometry.
-        if (!geom || remove) {
+        if (!gaGeomUtils.isValid(geom)) {
           return;
         }
         // Ensure polygons are closed.
         // Reason: print server failed when polygons are not closed.
-        closeGeometry(geom);
+        gaGeomUtils.close(geom);
 
         // Replace empty id by undefined.
         // Reason: If 2 features have their id empty, an assertion error
@@ -224,6 +111,14 @@ goog.require('ga_urlutils_service');
         var styles = feature.getStyleFunction().call(feature);
         var style = styles[0];
 
+        // The canvas draws a stroke width=1 by default if width=0, so we
+        // remove the stroke style in that case.
+        // See https://github.com/geoadmin/mf-geoadmin3/issues/3421
+        var stroke = style.getStroke();
+        if (stroke && stroke.getWidth() == 0) {
+          stroke = undefined;
+        }
+
         // if the feature is a Point and we are offline, we use default kml
         // style.
         // if the feature is a Point and has a name with a text style, we
@@ -234,6 +129,7 @@ goog.require('ga_urlutils_service');
             geom instanceof ol.geom.MultiPoint)) {
           var image = style.getImage();
           var text = null;
+          var fill = style.getFill();
 
           if (gaNetworkStatus.offline) {
             image = gaStyleFactory.getStyle('kml').getImage();
@@ -255,11 +151,13 @@ goog.require('ga_urlutils_service');
                   style.getText().getFill().getColor()),
               scale: style.getText().getScale()
             });
+            fill = undefined;
+            stroke = undefined;
           }
 
           styles = [new ol.style.Style({
-            fill: style.getFill(),
-            stroke: style.getStroke(),
+            fill: fill,
+            stroke: stroke,
             image: image,
             text: text,
             zIndex: style.getZIndex()
@@ -285,7 +183,7 @@ goog.require('ga_urlutils_service');
             geom instanceof ol.geom.GeometryCollection)) {
           styles = [new ol.style.Style({
             fill: style.getFill(),
-            stroke: style.getStroke(),
+            stroke: stroke,
             image: null,
             text: null,
             zIndex: style.getZIndex()

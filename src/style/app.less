@@ -9,6 +9,7 @@
 @import "../components/scaleline/style/scaleline.less";
 @import "../components/attribution/style/attribution.less";
 @import "../components/share/style/share.less";
+@import "../components/share/style/share-embed.less";
 @import "../components/contextpopup/style/contextpopup.less";
 @import "../components/feedback/style/feedback.less";
 @import "../components/topic/style/topic.less";
@@ -27,6 +28,7 @@
 @import "../components/measure/style/measure.less";
 @import "../components/layermanager/style/layermanager.less";
 @import "../components/draw/style/draw.less";
+@import "../components/draw/style/draw-style.less";
 @import "../components/help/style/help.less";
 @import "../components/offline/style/offline.less";
 @import "../components/query/style/query.less";
@@ -76,9 +78,6 @@ html, body {
   padding: 0;
   overflow: hidden;
 
-  > .popover {
-    z-index: 3000;
-  }
 }
 
 // Remove 300ms click delay on IE > 10
@@ -86,6 +85,17 @@ html, body {
 button, a, .ga-bg-layer, .ga-bg-layer-bt {
   touch-action: manipulation;
   -ms-touch-action: manipulation;
+}
+ 
+.has-error {
+  
+  input[type=url] {
+    background-color: #f2dede!important;
+  }
+
+  .ga-message {
+    color: red; 
+  }
 }
 
 .ga-visible-3d {
@@ -98,6 +108,12 @@ button, a, .ga-bg-layer, .ga-bg-layer-bt {
   }
   .ga-hidden-3d {
     display: none !important;
+  }
+}
+
+.ga-draw-modifying {
+  #draw-style-popup:not(.ga-popup-reduced) {
+    display: none!important;
   }
 }
 
@@ -116,9 +132,26 @@ form {
   }
 }
 
-.ga-dragging {
-  cursor: move;
+.ga-pointer {
+  cursor: pointer;
 }
+
+.ga-drag,
+.ga-grab {
+  // Fallback for IE
+  cursor: data-uri('../img/grab.cur'), move;
+  cursor: -webkit-grab;
+  cursor: grab;
+}
+
+.ga-dragging,
+.ga-grabbing {
+  // Fallback for IE
+  cursor: data-uri('../img/grabbing.cur'), move;
+  cursor: -webkit-grabbing;
+  cursor: grabbing;
+}
+
 
 .ga-red-tooltip {
   opacity: 1;
@@ -311,6 +344,14 @@ button.ga-btn, .ol-control button {
     top: unit(-@header-height, px);
   }
 
+  #draw .panel-body {
+
+    @media (max-width: @screen-phone) {
+      padding-top: 0;
+      padding-bottom: 5px;
+    }
+  }
+
   #drawModeHeader {
     top: 0px;
   }
@@ -331,13 +372,6 @@ button.ga-btn, .ol-control button {
     }
     .panel-body {
       max-height: none;
-
-      @media (max-height: 800px) {
-        max-height: none;
-      }
-      @media (max-height: 680px) {
-        max-height: 300px;
-      }
     }
   }
 
@@ -789,7 +823,7 @@ a .ga-icon-separator {
       position: absolute;
       width: 100%;
       height: 100%;
-      z-index: 1100;
+      z-index: 2499;
       top: 0;
       background: #000;
       opacity: 0;
@@ -902,7 +936,7 @@ a .ga-icon-separator {
   }
 
   @media (max-width: @screen-phone) {
-    z-index: 1100;
+    z-index: 2500; /* top of popups but under modal */
     top: 0;
     right: 0;
     width: 0;
@@ -1132,10 +1166,6 @@ a .ga-icon-separator {
   }
 }
 
-.modal-container {
-  z-index: 1250;
-  position: absolute;
-}
 .modal-header {
   .border-top-radius(6px);
   
@@ -1154,49 +1184,18 @@ a .ga-icon-separator {
 }
 
 // ****** POPUP
-#import-wms-popup, #import-kml-popup, #measure-popup, #draw-popup,
-#featuretree-popup {
-  .panel-heading {
-    display: block;
-  }
-  @media (max-width: @screen-tablet) {
-    top: auto!important;
-    height: 190px;
-
-    .ga-popup-content {
-      overflow: auto;
-    }
-  }
-}
-
 #import-wms-popup {
-  max-width: none;
-  max-height: none;
-  display: none;
-  
-  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
-    height: 435px;
-  }
-
-  .ga-popup-content {
-    max-height: inherit;
+  width: 770px;  /* Fix resize from tablet to desktop */
+  max-width: 770px;
+ 
+  @media (max-width: @screen-tablet) {
+    max-width: 480px;
   }
 }
 
-#measure-popup {
-  &.ga-profile-active {
-    right: 0px;
-  }
-  
-  .ga-popup-content {
-    overflow: visible;
-  }
-
-  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
-    .ga-profile-inner {
-      overflow: visible;
-    }
-  }
+#import-kml-popup {
+  width: 420px; /* only IE9 */
+  max-width: 420px;
 }
 
 #featuretree-popup {
@@ -1221,41 +1220,124 @@ a .ga-icon-separator {
   }
 }
 
+#feedback-popup {
+  width: 350px;
+  max-height: none;
 
-.ga-popup-content,
-[ga-context-popup] .popover-content {
+  > .popover-content {
+    max-height: none;
+  }
+}
+
+#profile-popup {
+  .popover-content { 
+    overflow: visible;
+  }
+}
+
+#draw-style-popup {
+  width: 320px;
+  margin: 18px 0 0 -160px;
+  overflow: visible !important;
+  
+  @media (max-width: @screen-phone) {
+    margin: 0;
+  }  
+}
+
+
+// ****** LEGEND
+.ga-tooltip-metadata {
+  > .popover-content {
+    padding: 0px;
+  }
+}
+
+.bod-title {
+  color: red;
+}
+
+.legend-header, .bodsearch-header {
+  background-color: #eee;
+  padding: 8px;
+}
+
+.office-provider {
+  color: red;
+  font-style: italic;
+  margin-bottom: 5px;
+  margin-top: 1px;
+}
+
+.legend-abstract {
+  width: 100%; /* Use by old android browser */
+}
+
+.legend-footer {
+  padding: 8px;
+  .img-container {
+    overflow-x: auto;
+  }
+  .bod-footer {
+    background-color: white;
+  }
+  span {
+    font-weight: bold;
+  }
+  table {
+    font-size: 100%;
+    width: 100%;
+    border: 0;
+  }
+}
+
+// ***** PANEL HEADING
+a.panel-heading {
+  display: block;
+}
+
+// ***** POPOVER and MODAL (ga-popup and bs popover) 
+.popover {
+  z-index: 3000;
+}
+
+.popover-content, .popover-content .btn, .popover-content .form-control {
+  font-size: 12px;
+}
+
+.popover-content {
   a {
     text-decoration: underline;
     color: #069;
   }
 }
 
-[ga-context-popup], [ga-offline-menu], .homescreen, #gaEmbedModal, .ga-draw-modify {
-  .popover-title, .modal-header {
-    position: relative;
-    padding-right: 0px;
+.modal-header, .popover-title {
+  position: relative;
+  padding-right: 0px;
+}
 
-    .fa-remove {
-      position: absolute;
-      top: 0px;
-      right: 0px;
-      width: 38px;
-      height: 100%;
-      opacity: 0.3;
-      font-size: 18px;
+.modal-header, .popover-title, .popover-content {
+  .fa-remove {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width: 38px;
+    height: 100%;
+    font-size: 18px;
+    opacity: 0.3;
 
-      &:hover {
-        opacity: 0.7;
-      }
-
-      &:active {
-       opacity: 1;
-      }
+    &:active {
+      opacity: 1;
     }
   }
 }
 
-// ****** PULLDOWN’S LISTS
+.ga-buttons .fa-remove {
+  position: relative;
+}
+
+// ****** PULLDOWN LISTS
 .panel-subtitle() {
   border-bottom-width: 1px;
   border-bottom-style: solid;
@@ -1341,51 +1423,6 @@ ul.panel-body-wide {
   text-align: left;
 }
 
-// ****** LEGEND
-.ga-tooltip-metadata {
-  .popover-content {
-    padding: 0px;
-  }
-}
-
-.bod-title {
-  color: red;
-}
-
-.legend-header, .bodsearch-header {
-  background-color: #eee;
-  padding: 8px;
-}
-
-.office-provider {
-  color: red;
-  font-style: italic;
-  margin-bottom: 5px;
-  margin-top: 1px;
-}
-
-.legend-abstract {
-  width: 100%; /* Use by old android browser */
-}
-
-.legend-footer {
-  padding: 8px;
-  .img-container {
-    overflow-x: auto;
-  }
-  .bod-footer {
-    background-color: white;
-  }
-  span {
-    font-weight: bold;
-  }
-  table {
-    font-size: 100%;
-    width: 100%;
-    border: 0;
-  }
-}
-
 // ****** HTMLPOPUP
 .htmlpopup-container {
   width: 100%;
@@ -1398,10 +1435,15 @@ ul.panel-body-wide {
   .htmlpopup-header {
     background-color: #E9E9E9;
     padding: 7px;
+    margin-bottom: 7px;
   }
 
   .htmlpopup-content {
-    padding: 7px;
+    padding: 0 7px 7px;
+
+    iframe {
+      border: none;
+    }
 
     table {
       font-size: 11px;
@@ -1535,6 +1577,7 @@ input[type=range] {
   
   input[type=checkbox] {
     cursor: inherit;
+    display: inline;
   }
 }
 
@@ -1719,23 +1762,6 @@ body:not(.embed) {
   }
 }
 
-#feedback-popup {
-  max-height: 480px !important;
-  width: 350px;
-
-  @media (max-width: @screen-tablet) and (min-width: @screen-phone) {
-    bottom: auto;
-  }
-
-  @media (max-width: @screen-phone){
-    width: auto;
-    top: auto !important;
-  }
-
-  .ga-popup-content {
-    max-height: none;
-  }
-}
 
 .embed, .ga-full-screen {
   #buttonGroup {

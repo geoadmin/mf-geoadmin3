@@ -86,7 +86,7 @@ goog.require('ga_help_service');
 
             //Create the popup
             popup = gaPopup.create({
-              className: 'ga-help-popup',
+              className: 'ga-help-popup ga-popup-tablet-full',
               destroyOnClose: false,
               title: 'help_label',
               content: popupContent, //contains data-binding to results

@@ -107,11 +107,11 @@ if __name__ == '__main__':
 
     doTests = {
         'start': runStartTest,
+        'wms': runWmsTest,
         'mobile': runMobileTest,
         'search': runSearchTest,
         'kml': runKmlTest,
         'print': runPrintTest,
-        'wms': runWmsTest,
         'checker': runCheckerTest
     }
 

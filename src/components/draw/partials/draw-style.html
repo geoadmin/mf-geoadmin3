@@ -1,0 +1,136 @@
+<label ng-if="useTextStyle">
+  <span translate>{{'modify_text_label'}}:</span> 
+  <textarea class="form-control" rows="1" ng-model="options.name" ng-disabled="!useTextStyle"></textarea>
+</label>
+
+<div ng-if="useIconStyle || !useTextStyle" class="ga-descr-buttons">
+   <button ng-repeat="t in ::options.linkTypes" class="ga-icon ga-btn fa {{::t.btnClass}}"
+           ng-click="togglePopover($event, t)"
+           data-target=".ga-html-{{::t.label}}"></button>
+</div>
+
+<label ng-if="useIconStyle || !useTextStyle">
+  <span translate>{{'modify_description'}}:</span>
+  <textarea class="form-control ga-descr" ng-model="options.description"></textarea>
+</label>
+
+<button  class="btn btn-default fa fa-trash"
+         ng-if="layer"
+         ng-click="deleteSelectedFeature(layer, feature)"></button>
+
+<button  class="btn btn-default fa fa-paint-brush"
+         ng-if="useColorStyle"
+         ng-click="togglePopover($event)"
+         data-target=".ga-color-style"></button>
+
+<button  class="btn btn-default fa fa-font"
+         ng-if="useTextStyle"
+         ng-click="togglePopover($event)"
+         data-target=".ga-text-style"></button>
+
+<button  class="btn btn-default fa fa-ga-marker"
+         ng-if="useIconStyle"
+         ng-click="togglePopover($event)"
+         data-target=".ga-icon-style"></button>
+
+<div ng-if="useTextStyle" class="ga-popover-content ga-text-style">
+  <label>
+    <span translate>{{'modify_text_size_label'}}:</span> 
+    <select ng-model="options.textSize"
+            ng-options="s.label | translate for s in options.textSizes">
+    </select>
+  </label>
+  <label>
+    <span translate>{{'modify_text_color_label'}}:</span> 
+    <div class="ga-select-box ga-select-colors">
+      <div ng-repeat="c in ::options.colors"
+           ng-class="{'ga-selected': (options.textColor == c)}" 
+           ng-click="options.textColor = c">
+        <div ng-style="{
+          color: c.name,
+          font: options.font,
+          'text-shadow': '-1px -1px 0 ' + c.border + ',' +  
+              '1px -1px 0 ' + c.border + ',' + 
+              '-1px 1px 0 ' + c.border + ',' +
+              '1px 1px 0 ' + c.border
+        }">
+        Aa
+        </div> 
+      </div>
+    </div>
+  </label>
+</div>
+
+<div ng-if="useColorStyle" class="ga-popover-content ga-color-style">
+  <label>
+    <span translate>{{'modify_color_label'}}:</span> 
+    <div class="ga-select-box ga-select-colors">
+      <div ng-repeat="c in ::options.colors"
+           ng-class="{'ga-selected': (options.color == c)}" 
+           ng-click="options.color = c">
+        <div ng-style="::{'background-color': c.name}">
+        </div> 
+      </div>
+    </div>
+  </label>
+</div>
+
+<div ng-if="useIconStyle" class="ga-popover-content ga-icon-style">
+
+  <label>
+    <span translate>{{'modify_icon_size_label'}}:</span> 
+    <select ng-model="options.iconSize"
+            ng-options="s.label | translate for s in options.iconSizes">
+    </select>
+  </label>
+  <label>
+    <span translate>{{'modify_color_label'}}:</span>
+    <div class="ga-select-box ga-select-colors">
+      <div ng-repeat="c in ::options.colors"
+           ng-class="{'ga-selected': (options.iconColor == c)}" 
+           ng-click="options.iconColor = c">
+        <div ng-style="::{'background-color': c.name}">
+        </div> 
+      </div>
+    </div>
+  </label>
+  <label>
+    <span translate>{{'modify_icon_label'}}:</span> 
+    <div class="ga-select-box ga-select-icons" 
+         ng-class="{'ga-select-box-open': gaSelectBoxOpen}"
+         ng-style="{color:options.iconColor.name}">
+      <i tabindex=1 ng-repeat="i in ::options.icons"
+         class="fa fa-maki-{{::i.id}}"
+         ng-click="options.icon = i;$event.preventDefault();"></i>
+      <button class="ga-icon fa fa-caret-down"
+              ng-click="gaSelectBoxOpen=!gaSelectBoxOpen"></button>
+    </div>
+  </label>
+</div>
+<div ga-measure="feature"></div>
+
+<div ng-repeat="t in ::options.linkTypes" class="ga-popover-content ga-html-{{t.label}}">
+  <label ng-if="t.label == 'link'">
+    <span translate>{{'text_to_display'}}:</span>
+    <input type="text" ng-model="t.textToDisplay" class="form-control"/>
+  </label>
+
+  <label class="ga-add-link">
+    <span translate>{{'url_' + t.label}}:</span>
+    <div ng-class="{'has-error': (t.value != '' && (!t.value || !isValidUrl(t.value)))}">
+      <div class="input-group input-group-sm">
+        <input class="form-control" type="url"
+               placeholder="{{'paste_url' | translate}}"
+               ng-model="t.value"></input>
+        <span class="input-group-btn">
+          <button class="btn btn-default"
+                  ng-click="appendToDescr($event, t)"
+                  ng-disabled="!isValidUrl(t.value)"
+                  translate>add</button>
+        </span>
+      </div>
+      <div class="ga-message" translate>drop_invalid_url</div>
+    </div>
+  </label>
+</div>
+

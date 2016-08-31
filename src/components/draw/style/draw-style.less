@@ -1,0 +1,203 @@
+@ga-select-box-padding: 1;
+.ga-item-size(@width, @height, @nbCol, @nbItems, @btWidth, @paddingLeftRight) {
+   /* (@width + 2*margin)*@nbCol + @btWidth + 2*padding */
+   width: unit((@width + 4)*@nbCol + @btWidth + 2*@ga-select-box-padding + 2*@paddingLeftRight, px);
+   
+   /* @height + 2*margin + 2*padding + 2*borderWidth */
+   height: unit(@height + 4 + 2*@ga-select-box-padding + 2, px); 
+      
+   &.ga-select-box-open {
+     height: unit(ceil(@nbItems/@nbCol)*(@height + 4) + 2*@ga-select-box-padding, px);
+   }
+   > * {
+     margin: 2px;
+     width: unit(@width, px);
+     height: unit(@height, px);
+   }
+   button {
+     padding-top: unit(@ga-select-box-padding, px);
+   }
+}
+
+[ga-draw-style] {
+  width: 100%;
+     
+  > label {
+    display: block;
+  }
+  
+  > button {
+    width: 44px;
+    height: 34px;
+    margin-left: 5px; 
+    float: right;
+  }
+  
+  > .popover {
+
+    .popover-title {
+      padding: 0;
+      border: none;
+
+      button {
+        z-index: 10;
+        height: 38px;
+        background-color: white;
+      }
+    }
+
+    .popover-content {
+      position: relative;
+      overflow-y: auto;
+      overflow-x: hidden;
+      max-height: 200px;
+
+      label {
+        margin-right: 5px;
+      }
+
+      > .fa-remove {
+        height: 38px;
+      }
+    }
+  }
+ 
+  /* Hide the content of popover before the first opening */
+  .ga-popover-content {
+    position: absolute;
+    transform: scaleX(0);
+    width: 245px;
+  }
+
+  .popover-content .ga-popover-content {
+    position: relative;
+    transform: scaleX(1);
+  }
+  
+  /* Generic css for custom select box */  
+  .ga-select-box {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid lightgray;
+    border-radius: 2px;
+    padding: unit(@ga-select-box-padding, px);
+    transition: height 0.5s ease;
+             
+    button {
+      position: absolute;
+      top: 0px;
+      right: 0px;
+      .transition-transform(0.5s ease);
+    }
+
+    > :not(button) {
+      display: inline-block;
+      cursor: pointer;
+      margin: 2px;
+          
+      &:hover {
+        background-color: #e9e9e9;
+      }
+
+      &.ga-selected, &.ga-selected:hover {
+        background-color: darkgray;
+        cursor: default;
+      }
+    }
+  }
+
+  .ga-select-box-open {
+    button {
+      .rotate(180deg);
+    }
+  }
+
+  .ga-select-icons {
+    .ga-item-size(36, 36, 5, 114, 38, 0);
+
+    i {
+      padding-top: 2px;
+      font-size: 32px;
+      text-align: center;
+      transition: color .3s ease;
+    }
+  }
+
+  .ga-select-colors {
+    padding-left: 6px;
+    padding-right: 6px;
+    .ga-item-size(24, 24, 8, 8, 2, 6);
+    
+    [style] {
+       width: 20px;
+       height: 20px;
+       margin: 2px;
+       border-radius: 10px; 
+    }
+  }
+
+  .fa-caret-down {
+    color: black;
+  }
+
+  .ga-coord, .ga-distance {
+    margin-top: 15px;
+  }
+  
+  .ga-color-style {
+    padding-top: 10px;
+  }
+  
+  .ga-descr {
+    border-top-right-radius: 0;
+  }
+
+  .ga-descr-buttons{
+    float: right;
+
+    margin: 0;
+    border: 1px solid #ccc;
+    border-bottom: 1px solid white;
+    
+    > button {
+      height: 15px;
+      width: 30px;
+      vertical-align: text-bottom;
+      font-size: 11px!important;
+      margin-top: 3px;
+    }
+
+    > .popover {
+      label {
+        width: 100%;
+      }
+    }
+  }
+  
+  .ga-add-link {
+    select {
+      display: inline-block;
+      width: auto;
+      height: 24px;
+      padding: 2px 0;
+      margin: 0 5px 2px;
+    }
+    
+    input[type=url] {
+      max-width: none;
+    }
+    
+    button {
+      font-weight: bold;
+    }
+
+    .ga-message {
+      display: none;
+    }
+
+    .has-error .ga-message{
+      display: block;
+    }
+  }
+}
+

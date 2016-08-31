@@ -612,6 +612,13 @@ goog.require('ga_time_service');
         var offset = 5 * resolution;
 
         if (center) {
+          var style = 1, $elt = $(elt);
+          if ($elt.text()) {
+             style = 2;
+             if ($elt.hasClass('ga-draw-measure-tmp')) {
+               style = 3;
+             }
+          }
           var encOverlayLayer = {
             'type': 'Vector',
             'styles': {
@@ -629,13 +636,23 @@ goog.require('ga_time_service');
                 'graphicHeight': 27,
                 'graphicXOffset': -48,
                 'graphicYOffset': -27,
-                'label': $(elt).text(),
+                'label': $elt.text(),
                 'labelXOffset': 0,
                 'labelYOffset': 18,
                 'fontColor': '#ffffff',
                 'fontSize': 10,
                 'fontWeight': 'normal'
+              }, '3': { // Style for intermeediate measure tooltip
+                'label': $elt.text(),
+                'labelXOffset': 0,
+                'labelYOffset': 18,
+                'fontColor': '#ffffff',
+                'fontSize': 8,
+                'fontWeight': 'normal',
+                'fillColor': '#ff0000',
+                'strokeColor': '#ff0000'
               }
+
             },
             'styleProperty': '_gx_style',
             'geoJson': {
@@ -643,7 +660,7 @@ goog.require('ga_time_service');
               'features': [{
                 'type': 'Feature',
                 'properties': {
-                  '_gx_style': ($(elt).text() ? 2 : 1)
+                  '_gx_style': style
                 },
                 'geometry': {
                   'type': 'Point',

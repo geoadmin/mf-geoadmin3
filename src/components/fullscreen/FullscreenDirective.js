@@ -16,7 +16,7 @@ goog.require('ga_permalink');
       scope: {
         map: '=gaFullscreenMap'
       },
-      template: "<a href='#' ng-if='fullscreenSupported' " +
+      template: "<a href='#' ng-if='::fullscreenSupported' " +
         "ng-click='click()' translate>full_screen</a>",
       link: function(scope, element, attrs) {
         var fullScreenCssClass = 'ga-full-screen';
