@@ -40,16 +40,21 @@ describe('ga_profile_service', function() {
       {dist: 0.0, alts: {COMB: 429.8}, easting: 592000.0, northing: 221750.0},
       {dist: 211.5, alts: {COMB: 429.7}, easting: 592177.5, northing: 221865.0}
     ];
+    var goodResultDistKm = [
+      {dist: 0.0, alts: {COMB: 0}, easting: 592000.0, northing: 221750.0},
+      {dist: 22211.5, alts: {COMB: 1457}, easting: 592177.5, northing: 221865.0}
+    ];
+
     var feature = new ol.Feature(new ol.geom.LineString(goodCoords));
 
     var goodCoords2 = [[0, 0], [10000, 0], [1000, 1000]];
     var goodResultToFormat = [
       {dist: 0.0, alts: {}, easting: 592000.0, northing: 221750.0},
-      {dist: 22111.5, alts: {COMB: 1457}, easting: 592177.5, northing: 221865.0}
+      {dist: 211.5, alts: {COMB: 1457}, easting: 592177.5, northing: 221865.0}
     ];
     var goodResultFormatted = [
       {dist: 0, alts: {COMB: 0}, easting: 592000, northing: 221750 },
-      {dist: 22.1115, alts: {COMB: 1457}, easting: 592177.5, northing: 221865 }
+      {dist: 211.5, alts: {COMB: 1457}, easting: 592177.5, northing: 221865 }
     ];
     var feature2 = new ol.Feature(new ol.geom.LineString(goodCoords2));
 
@@ -186,10 +191,57 @@ describe('ga_profile_service', function() {
             expect(profile.data).to.eql(goodResultFormatted);
             expect(profile.elevDiff()).to.be(1457);
             expect(profile.twoElevDiff()).to.eql([1457, 0]);
-            expect(profile.slopeDistance()).to.be(1457.1677729184962);
+            expect(profile.slopeDistance()).to.be(1472.2707801216459);
             expect(profile.elPoints()).to.eql([1457, 0]);
-            expect(profile.distance()).to.be(22.1115);
+            expect(profile.distance()).to.be(211.5);
             expect(profile.hikingTime()).to.be(248);
+
+            // Test labels
+            expect(profile.group.select('text.ga-profile-label-x')
+                .text()).to.be('undefined [m]');
+            expect(profile.group.select('text.ga-profile-label-y')
+                .text()).to.be('undefined [m]');
+            expect(profile.group.select('text.ga-profile-elevation-difference')
+                .text()).to.be('1\'457m');
+            expect(profile.group.select('text.ga-profile-elevation-up')
+                .text()).to.be('1\'457m');
+            expect(profile.group.select('text.ga-profile-elevation-down')
+                .text()).to.be('0.00m');
+            expect(profile.group.select('text.ga-profile-poi-up')
+                .text()).to.be('1\'457m');
+            expect(profile.group.select('text.ga-profile-poi-down')
+                .text()).to.be('0.00m');
+            expect(profile.group.select('text.ga-profile-distance')
+                .text()).to.be('211.50m');
+            expect(profile.group.select('text.ga-profile-slopeDist')
+                .text()).to.be('1.47km');
+            expect(profile.group.select('text.ga-profile-hikTime')
+                .text()).to.be('4h 8min');
+
+            done();
+          });
+        });
+        $httpBackend.flush();
+      });
+
+      it('updates an existing profile with distance in KM', function(done) {
+        $httpBackend.whenPOST(profileUrl).respond(goodResult);
+        gaProfile.create(feature).then(function(profile) {
+
+          $httpBackend.expectPOST(profileUrl).respond(goodResultDistKm);
+          gaProfile.update(profile, feature2).then(function(profile) {
+            expect(profile).to.be.an(Object);
+            expect(profile.create).to.be.a(Function);
+            expect(profile.update).to.be.a(Function);
+
+            // Test properties
+            expect(profile.data).to.eql(goodResultDistKm);
+            expect(profile.elevDiff()).to.be(1457);
+            expect(profile.twoElevDiff()).to.eql([1457, 0]);
+            expect(profile.slopeDistance()).to.be(22259.235864018334);
+            expect(profile.elPoints()).to.eql([1457, 0]);
+            expect(profile.distance()).to.be(22211.5);
+            expect(profile.hikingTime()).to.be(390);
 
             // Test labels
             expect(profile.group.select('text.ga-profile-label-x')
@@ -207,17 +259,18 @@ describe('ga_profile_service', function() {
             expect(profile.group.select('text.ga-profile-poi-down')
                 .text()).to.be('0.00m');
             expect(profile.group.select('text.ga-profile-distance')
-                .text()).to.be('22.11m');
+                .text()).to.be('22.21km');
             expect(profile.group.select('text.ga-profile-slopeDist')
-                .text()).to.be('1.45km');
+                .text()).to.be('22.25km');
             expect(profile.group.select('text.ga-profile-hikTime')
-                .text()).to.be('4h 8min');
+                .text()).to.be('6h 30min');
 
             done();
           });
         });
         $httpBackend.flush();
       });
+
     });
 
     describe('d3 is undefined', function() {

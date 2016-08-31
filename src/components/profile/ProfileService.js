@@ -133,7 +133,6 @@ goog.require('ga_urlutils_service');
             var denom = maxX >= 10000 ? 1000 : 1;
             this.unitX = maxX >= 10000 ? ' km' : ' m';
             $.map(data, function(val) {
-              val.dist = val.dist / denom;
               val.alts[elevationModel] = val.alts[elevationModel] || 0;
               return val;
             });
