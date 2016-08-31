@@ -471,15 +471,14 @@ goog.require('ga_styles_service');
 
             // Unregister the change event
             ol.Observable.unByKey(deregFeatureChange);
+
+            // Clear overlays property before deactivating the tool
+            draw.unset('overlays');
             deactivateTool(lastActiveTool);
             scope.$applyAsync();
 
             var featureToAdd = evt.feature;
             var geom = featureToAdd.getGeometry();
-
-            // Clear overlays property.
-            draw.unset('overlays');
-
             // According to #3319, it seems LineString can be created with one
             // point (or with an array of exact same points). If it's the case
             // we ignore it.
