@@ -130,7 +130,6 @@ goog.require('ga_urlutils_service');
         this.formatData = function(data) {
           if (data.length) {
             var maxX = data[data.length - 1].dist;
-            var denom = maxX >= 10000 ? 1000 : 1;
             this.unitX = maxX >= 10000 ? ' km' : ' m';
             $.map(data, function(val) {
               val.alts[elevationModel] = val.alts[elevationModel] || 0;
