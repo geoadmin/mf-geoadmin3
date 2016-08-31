@@ -234,7 +234,8 @@ def upload(bucket_name, base_dir, deploy_target):
                         local_file = os.path.join(file_base_path, file_name)
                         file_base_path = file_base_path.replace('cache', '')
                         if directory == 'prd':
-                            if file_name in root_files:
+                            # Take only files directly in prd/
+                            if file_name in root_files and file_base_path.endswith('prd'):
                                 file_base_path = file_base_path.replace('prd', '')
                             else:
                                 file_base_path = file_base_path.replace('prd', version)
