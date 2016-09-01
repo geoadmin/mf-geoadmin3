@@ -91,11 +91,11 @@ itemscope itemtype="http://schema.org/WebApplication"
     </script>
     <link href="${s3basepath}${versionslashed}style/app.css" rel="stylesheet"/>
   </head>
-  <body class="{{topicId}} {{langId}}" 
+  <body class="{{topicId}} {{langId}}"
         ng-class="{
           'search-focused': globals.searchFocused,
-          'touch': globals.touch, 
-          'webkit': globals.webkit, 
+          'touch': globals.touch,
+          'webkit': globals.webkit,
           'no-webkit': !globals.webkit,
           'no-animation': !globals.animation,
           'offline': globals.offline,
@@ -127,9 +127,9 @@ itemscope itemtype="http://schema.org/WebApplication"
       </script>
     <![endif]-->
 
-    <div ng-cloak class="corner-ribbon 
+    <div ng-cloak class="corner-ribbon
 % if device == 'mobile':
-    top-left    
+    top-left
 % else:
     bottom-left
 % endif
@@ -153,7 +153,7 @@ itemscope itemtype="http://schema.org/WebApplication"
         <div ga-search ga-search-map="map" ga-search-options="options" ga-search-focused="globals.searchFocused" ga-search-ol3d="::ol3d"></div>
   % if device == 'desktop':
         <span ga-help="24,31,25" ga-help-options="{showOnHover:true}"></span>
-  % endif      
+  % endif
       </div>
   % if device == 'desktop':
       <div id="toptools">
@@ -215,15 +215,15 @@ itemscope itemtype="http://schema.org/WebApplication"
         <div id="zoomButtons"></div>
         <div ga-tilt3d ng-if="globals.dev3d"></div>
   % if device != 'embed':
-        <div ga-time-selector-bt ga-time-selector-bt-map="map"></div> 
+        <div ga-time-selector-bt ga-time-selector-bt-map="map"></div>
   % endif
         <div ga-rotate ga-rotate-map="map"></div>
   % if device == 'mobile':
         <div ga-offline-bt></div>
   % endif
       </div>
-      <div ga-swipe 
-           ga-swipe-map="map" 
+      <div ga-swipe
+           ga-swipe-map="map"
            ga-swipe-active="globals.isSwipeActive"
            style="display:none;">
       </div>
@@ -298,9 +298,9 @@ itemscope itemtype="http://schema.org/WebApplication"
 % endif
 
     <div ng-controller="GaTooltipController">
-      <div ga-tooltip 
+      <div ga-tooltip
            ga-tooltip-map="::map"
-           ga-tooltip-ol3d="::ol3d" 
+           ga-tooltip-ol3d="::ol3d"
            ga-tooltip-options="options"
            ga-tooltip-active="!globals.feedbackPopupShown && !globals.isDrawActive">
       </div>
@@ -347,7 +347,7 @@ itemscope itemtype="http://schema.org/WebApplication"
             </div>
           </div>
         </div>  <!-- .panel -->
- 
+
         <!-- Draw -->
         <div class="panel" ng-show="!globals.is3dActive">
           <a id="drawHeading" class="panel-heading accordion-toggle collapsed"
@@ -358,17 +358,17 @@ itemscope itemtype="http://schema.org/WebApplication"
           </a>
           <div id="draw" class="panel-collapse collapse">
             <div class="panel-body" ng-controller="GaDrawController">
-              <div ga-draw 
-                   ga-draw-map="map" 
+              <div ga-draw
+                   ga-draw-map="map"
                    ga-draw-options="options"
                    ga-draw-active="globals.isDrawActive">
               </div>
             </div>
           </div>
         </div> <!-- .panel -->
-        
+
         <!-- Tools -->
-        <div class="panel"> 
+        <div class="panel">
           <a id="toolsHeading" class="panel-heading accordion-toggle collapsed"
              data-toggle="collapse" data-parent="#pulldown-content" href="#tools">
             <i class="fa fa-caret-down"></i>
@@ -433,14 +433,14 @@ itemscope itemtype="http://schema.org/WebApplication"
              ga-collapsible-show="globals.catalogShown">
             <i class="fa fa-caret-down"></i>
             <span>{{topicId | translate}}</span>
-  
+
   % if device == 'desktop':
             <span ga-help="32,37,39" ga-help-options="{showOnHover:true}"></span>
   % endif
 
           </a>
           <div id="catalog" class="collapse" ng-controller="GaCatalogtreeController">
-  
+
   % if device == 'mobile':
             <label class="topic-container">
               <span translate>change_topic</span>
@@ -515,7 +515,7 @@ itemscope itemtype="http://schema.org/WebApplication"
   % endif
         <button id="menu-button" class="btn btn-default"
                 ng-click="globals.pulldownShown=!globals.pulldownShown">
-          <span class="ga-hidden-mobile"> 
+          <span class="ga-hidden-mobile">
             <i class="fa fa-caret-down"></i>
             <span class="ga-hidden-collapsed" translate>close_menu</span>
             <span class="ga-visible-collapsed" translate>open_menu</span>
@@ -645,9 +645,9 @@ itemscope itemtype="http://schema.org/WebApplication"
                 <div class="ga-no-result" translate>no_feature_results</div>
               </div>
               <div ng-show="options.nbFeatures > 0"
-                   ga-featuretree 
+                   ga-featuretree
                    ga-featuretree-map="map"
-                   ga-featuretree-options="options" 
+                   ga-featuretree-options="options"
                    ga-featuretree-active="globals.isFeatureTreeActive">
               </div>
             </div>
@@ -659,7 +659,7 @@ itemscope itemtype="http://schema.org/WebApplication"
   % if device == 'mobile':
     <div ng-if="globals.homescreen" class="popover homescreen"
          ng-class="{
-           'visible': globals.homescreen, 
+           'visible': globals.homescreen,
            'bottom': globals.tablet,
            'top': !globals.tablet,
            'tr': (globals.ios >= 8)
@@ -678,7 +678,7 @@ itemscope itemtype="http://schema.org/WebApplication"
 % endif
 
 % if mode == 'prod':
-  
+
     <script>
       window.CESIUM_BASE_URL="${s3basepath}${versionslashed}lib/Cesium/";
     </script>
@@ -719,7 +719,7 @@ itemscope itemtype="http://schema.org/WebApplication"
     <script src="${s3basepath}lib/filesaver.js"></script>
     <script src="${s3basepath}lib/moment-with-customlocales.js"></script>
     <script src="${s3basepath}lib/Cesium/Cesium.js"></script>
-   
+
 
     <!-- Use Closure to load the application scripts -->
     <script>
@@ -730,7 +730,7 @@ itemscope itemtype="http://schema.org/WebApplication"
          need to load base.js ourselves. We keep Closure's base.js file
          around in case we need to test with ol.js or ol-simple.js. -->
     <!--<script src="${s3basepath}lib/closure/base.js"></script>-->
-    <!-- ol3 and ol3-cesium are built together in debug mode --> 
+    <!-- ol3 and ol3-cesium are built together in debug mode -->
     <script src="${s3basepath}lib/ol3cesium-debug.js"></script>
     <script src="${s3basepath}deps.js"></script>
     <script>
@@ -851,12 +851,12 @@ itemscope itemtype="http://schema.org/WebApplication"
 
         module.config(function(gaLayersProvider, gaGlobalOptions) {
           gaLayersProvider.dfltWmsSubdomains = ['', '0', '1', '2', '3', '4'];
-          gaLayersProvider.dfltWmtsNativeSubdomains = ['5', '6', '7', '8', '9'];
-          gaLayersProvider.dfltWmtsMapProxySubdomains = ['20', '21', '22', '23', '24'];
+          gaLayersProvider.dfltWmtsNativeSubdomains = ['100', '101', '102', '103', '104', '105', '106', '107', '108', '109'];
+          gaLayersProvider.dfltWmtsMapProxySubdomains = staging === 'prod' ? ['100', '101', '102', '103', '104', '105', '106', '107', '108', '109'] : ['20', '21', '22', '23', '24'];
           gaLayersProvider.wmsUrlTemplate = '//wms{s}.geo.admin.ch/';
           gaLayersProvider.wmtsGetTileUrlTemplate = '//wmts{s}.geo.admin.ch/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{y}/{x}.{Format}';
           gaLayersProvider.wmtsMapProxyGetTileUrlTemplate =  gaGlobalOptions.mapproxyUrl + '/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{x}/{y}.{Format}';
-          gaLayersProvider.terrainTileUrlTemplate = '//3d.geo.admin.ch/1.0.0/{Layer}/default/{Time}/4326';
+          gaLayersProvider.terrainTileUrlTemplate = '//terrain100.geo.admin.ch/1.0.0/{Layer}/default/{Time}/4326';
           if (apiOverwrite) {
             gaLayersProvider.layersConfigUrlTemplate = apiUrl + '/rest/services/all/MapServer/layersConfig?lang={Lang}';
           } else {
@@ -893,7 +893,7 @@ itemscope itemtype="http://schema.org/WebApplication"
           gaProfileProvider.profileUrl =
               gaGlobalOptions.apiUrl + '/rest/services/profile.json';
         });
-        
+
         module.config(function(gaQueryProvider, gaGlobalOptions) {
           gaQueryProvider.dpUrl = gaGlobalOptions.resourceUrl +
               'lib/bootstrap-datetimepicker.min.js';
@@ -918,7 +918,7 @@ itemscope itemtype="http://schema.org/WebApplication"
         $(window).bind("orientationchange", function(){
           $('#header').hide();
           setTimeout(function(){
-            $('#header').show(); 
+            $('#header').show();
             // iOS 7 minimal-ui meta tag bug
             window.scrollTo(0, 0);
           }, 0);
