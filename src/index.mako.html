@@ -101,6 +101,7 @@ itemscope itemtype="http://schema.org/WebApplication"
           'offline': globals.offline,
           'online': !globals.offline,
           'embed': globals.embed,
+          'img': globals.img,
           'ga-draw-active': globals.isDrawActive,
           'ga-3d-active': globals.is3dActive
         }">
@@ -139,7 +140,7 @@ itemscope itemtype="http://schema.org/WebApplication"
     <div ng-controller="GaSeoController">
       <div ga-seo ga-seo-options="options" ga-seo-map="map"></div>
     </div>
-% if device != 'embed':
+% if device != 'embed' and device != 'img':
     <div ng-cloak translate-cloak id="header" class="navbar navbar-fixed-top" ng-class="{'host-not-prod': !globals.hostIsProd}">
       <a href="?topic={{topicId}}&lang={{langId}}">
         <div id="logo" class="pull-left ga-logo">
@@ -205,6 +206,37 @@ itemscope itemtype="http://schema.org/WebApplication"
       <div ga-scale-line ga-scale-line-map="map" ng-show="!globals.is3dActive"></div>
   % endif
 
+  % if device == 'img':
+      <form id="img-settings" class="form">
+       <!-- <label>Page size </label> -->
+        <select id="format">
+          <option value="a0">A0 (slow)</option>
+          <option value="a1">A1</option>
+          <option value="a2">A2</option>
+          <option value="a3">A3</option>
+          <option value="a4" selected>A4</option>
+          <option value="a5">A5 (fast)</option>
+        </select>
+      <!-- <label>Resolution </label> -->
+        <select id="resolution">
+          <option value="75">75 dpi (fast)</option>
+          <option value="150">150 dpi</option>
+          <option value="300">300 dpi (slow)</option>
+        </select>
+        <button id="apply-rendering">Apply</button>
+      </form>
+      <!-- search is needed for img page so swisssearch parameter is working
+           even though search is not displayed -->
+      <div id="search-container" ng-controller="GaSearchController">
+        <div ga-search ga-search-map="map" ga-search-options="options" ga-search-ol3d="::ol3d"></div>
+      </div>
+
+      <div ga-scale-line ga-scale-line-map="map" ng-show="!globals.is3dActive"></div>
+  % endif
+
+
+
+% if device != 'img':
       <div id='buttonGroup' ng-cloak translate-cloak>
   % if device != 'embed':
         <div ga-geolocation ga-geolocation-map="::map" ga-geolocation-ol3d="::ol3d"></div>
@@ -226,6 +258,7 @@ itemscope itemtype="http://schema.org/WebApplication"
            ga-background-selector-ol3d="::ol3d">
       </div>
   % endif
+% endif
       <div ga-swipe
            ga-swipe-map="map"
            ga-swipe-active="globals.isSwipeActive"
@@ -253,7 +286,7 @@ itemscope itemtype="http://schema.org/WebApplication"
          ga-attribution-warning-ol3d="::ol3d">
       <span translate>3d_overlay_warning</span>
     </div>
-% if device != 'embed':
+% if device != 'embed' and device != 'img':
     <div ng-cloak translate-cloak id="footer" class="navbar navbar-fixed-bottom">
       <div  class="pull-left" ga-scale-line ga-scale-line-map="::map" ng-show="!globals.is3dActive"></div>
 
@@ -291,7 +324,7 @@ itemscope itemtype="http://schema.org/WebApplication"
 
     <div ga-timestamp-control ga-timestamp-control-map="map"></div>
 
-% if device != 'embed':
+% if device != 'embed' and device != 'img':
     <div ng-controller="GaTimeSelectorController">
       <div ga-time-selector
            ga-time-selector-map="::map"
@@ -313,7 +346,7 @@ itemscope itemtype="http://schema.org/WebApplication"
       </div>
     </div>
 
-% if device != 'embed':
+% if device != 'embed' and device != 'img':
     <div  id="pulldown" ng-cloak translate-cloak
           ng-class="{
             'selection-and-catalog-shown': (globals.catalogShown && globals.selectionShown),
@@ -665,6 +698,8 @@ itemscope itemtype="http://schema.org/WebApplication"
   % endif
 % endif
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.2.61/jspdf.min.js"></script>
+
 % if mode == 'prod':
 
     <script>
@@ -755,7 +790,7 @@ itemscope itemtype="http://schema.org/WebApplication"
         var adminUrlRegexp = new RegExp('${admin_url_regexp}');
         var module = angular.module('geoadmin');
         var cacheAdd = '${version}' != '' ? '/' + '${version}' : '';
-        var pathname = location.pathname.replace(/(index|mobile|embed)\.html$/g, '');
+        var pathname = location.pathname.replace(/(index|mobile|embed|img)\.html$/g, '');
         var s3pathname = '${s3basepath}' == '' ? pathname : '${s3basepath}';
         var prtl = location.protocol;
         // Because s3 is hosted on infra
@@ -931,5 +966,39 @@ itemscope itemtype="http://schema.org/WebApplication"
       })();
 % endif
     </script>
+% if device == 'img':
+    <script>
+    var dims = {
+        a0: [1189, 841],
+        a1: [841, 594],
+        a2: [594, 420],
+        a3: [420, 297],
+        a4: [297, 210],
+        a5: [210, 148]
+      };
+
+      var renderButton = document.getElementById('apply-rendering');
+
+      renderButton.addEventListener('click', function() {
+        var map = angular.element(document.body).scope().map;
+
+        var format = document.getElementById('format').value;
+        var resolution = document.getElementById('resolution').value;
+        var dim = dims[format];
+        var width = Math.round(dim[0] * resolution / 25.4);
+        var height = Math.round(dim[1] * resolution / 25.4);
+        var size = /** @type {ol.Size} */ (map.getSize());
+        var extent = map.getView().calculateExtent(size);
+        var oldRes = map.getView().getResolution();
+
+        map.setSize([width, height]);
+        map.getView().fit(extent, /** @type {ol.Size} */ (map.getSize()));
+        var newRes = map.getView().getResolution();
+        map.render();
+
+      }, false);
+
+    </script>
+% endif
   </body>
 </html>

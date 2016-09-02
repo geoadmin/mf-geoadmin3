@@ -202,7 +202,7 @@ goog.require('ga_styles_service');
         // Often when we use embed map the size of the map is fixed, so we
         // don't need to resize the map for printing (use case: print an
         // embed map in a tooltip.
-        if (!gaBrowserSniffer.embed) {
+        if (!gaBrowserSniffer.embed && !gaBrowserSniffer.img) {
           // IE + Firefox
           // We can't call a map.updateSize() for these browsers(because
           // it's applied after the printing) so we resize

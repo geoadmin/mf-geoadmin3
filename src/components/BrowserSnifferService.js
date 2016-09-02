@@ -54,8 +54,9 @@ goog.require('ga_permalink');
           (('msMaxTouchPoints' in navigator) && navigator.msMaxTouchPoints > 1);
       var mobile = touchDevice && testSize(768);
       var embed = /\/embed\.html$/.test($window.location.pathname);
+      var img = /\/img\.html$/.test($window.location.pathname);
       var p = gaPermalink.getParams();
-      mobile = !embed && ((mobile && p.mobile != 'false') ||
+      mobile = !embed && !img && ((mobile && p.mobile != 'false') ||
           p.mobile == 'true');
 
       if (msie > 9) {
@@ -121,6 +122,7 @@ goog.require('ga_permalink');
         phone: mobile && testSize(480),
         events: eventsKeys,
         embed: embed,
+        img: img,
         isInFrame: ($window.location != $window.parent.location),
         webgl: !(typeof WebGLRenderingContext === 'undefined'),
         animation: (!msie || msie > 9),

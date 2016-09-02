@@ -25,7 +25,8 @@ goog.require('ga_topic_service');
         link: function(scope, elt, attrs) {
           scope.isBackgroundSelectorClosed = true;
           var mobile = gaBrowserSniffer.mobile;
-          scope.desktop = !gaBrowserSniffer.embed && !mobile;
+          scope.desktop = !gaBrowserSniffer.embed && !gaBrowserSniffer.img &&
+                          !mobile;
           scope.backgroundLayers = [];
 
           if (mobile) {

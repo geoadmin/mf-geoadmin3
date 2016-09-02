@@ -256,6 +256,7 @@ goog.require('ga_topic_service');
       animation: gaBrowserSniffer.animation,
       offline: gaNetworkStatus.offline,
       embed: gaBrowserSniffer.embed,
+      img: gaBrowserSniffer.img,
       pulldownShown: !(gaBrowserSniffer.mobile || win.width() <= 1024),
       printShown: false,
       catalogShown: false,

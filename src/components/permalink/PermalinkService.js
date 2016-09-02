@@ -55,6 +55,27 @@ goog.require('ga_urlutils_service');
           var base = b;
           var params = p;
 
+          var getHrefFor = function(p, page) {
+            var pageHtml = page + '.html';
+            var pageRegex = new RegExp(page + '\\.html$');
+            var newParams = angular.extend({}, params);
+            if (angular.isDefined(p)) {
+              angular.extend(newParams, p);
+            }
+            if (angular.isDefined(newParams.mobile)) {
+              delete newParams.mobile;
+            }
+            var basePage = base.replace(/^http:/, 'https:').
+                replace(/(index|mobile)\.html$/, pageHtml);
+            if (!pageRegex.test(basePage)) {
+              if (!/\/$/.test(basePage)) {
+                basePage += '/';
+              }
+              basePage += pageHtml;
+            }
+            return basePage + '?' + gaUrlUtils.toKeyValue(newParams);
+          };
+
           this.getHref = function(p) {
             var newParams = angular.extend({}, params);
             if (angular.isDefined(p)) {
@@ -64,22 +85,11 @@ goog.require('ga_urlutils_service');
           };
 
           this.getEmbedHref = function(p) {
-            var newParams = angular.extend({}, params);
-            if (angular.isDefined(p)) {
-              angular.extend(newParams, p);
-            }
-            if (angular.isDefined(newParams.mobile)) {
-              delete newParams.mobile;
-            }
-            var baseEmbed = base.replace(/^http:/, 'https:').
-                replace(/(index|mobile)\.html$/, 'embed.html');
-            if (!/embed\.html$/.test(baseEmbed)) {
-              if (!/\/$/.test(baseEmbed)) {
-                baseEmbed += '/';
-              }
-              baseEmbed += 'embed.html';
-            }
-            return baseEmbed + '?' + gaUrlUtils.toKeyValue(newParams);
+            return getHrefFor(p, 'embed');
+          };
+
+          this.getImgHref = function(p) {
+            return getHrefFor(p, 'img');
           };
 
           // The main href is the embed permalink but without the name of

@@ -1655,7 +1655,7 @@ input[type=range] {
 @screen-sm-height-step-2: unit((@screen-sm-height-step-1 - @control-btn-size), px);
 @screen-sm-height-step-3: unit((@screen-sm-height-step-1 - @control-btn-size * 2), px);
 
-body:not(.embed) {
+body:not(.embed, .img) {
   /* Map rotated with device heading has its own rotation button */
   .ga-geolocation-northarrow ~ .ga-rotate-enabled {
     display: none;
@@ -1711,17 +1711,57 @@ body:not(.embed) {
 }
 
 
-.embed, .ga-full-screen {
+.embed, .img, .ga-full-screen {
   #buttonGroup {
     top: 0px;
   }
 }
 
-.embed {
+.embed, .img {
 
   #search-container {
     display: none;
   }
+
+  [ga-time-selector] {
+    display: none!important;
+  }
+
+  [ga-scale-line], #copyrightsdata {
+    position: absolute;
+    bottom: 0;
+    z-index: 1000;
+  }
+  
+  #copyrightsdata {
+    max-width: ~"calc(100% - 160px)";
+  }
+  
+  [ga-scale-line] {
+    bottom: 2px;
+    left: 2px;
+    width: auto;
+    height: 15px;
+    margin: 0;
+    font-size: 11px;
+  }  
+  
+  .ol-scale-line-inner {
+    background: rgba(255,255,255,.7);
+  }
+
+}
+
+.img {
+  #img-settings {
+    position: absolute;
+    z-index: 1000;
+    top: 5px;
+    left: 5px;
+  }
+}
+
+.embed {
 
   #bigMapLink {
     position: absolute;
@@ -1791,6 +1831,7 @@ body:not(.embed) {
     }
   }
 }
+
 
 /* Corner ribbons, from http://codepen.io/eode9/pen/twkKm */
 .corner-ribbon{
