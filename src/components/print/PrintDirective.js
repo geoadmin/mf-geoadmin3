@@ -325,7 +325,7 @@ goog.require('ga_time_service');
             } else if (layer.getStyleFunction()) {
               styles = layer.getStyleFunction()(feature);
             } else {
-              styles = ol.style.defaultStyleFunction(feature);
+              styles = ol.style.Style.defaultFunction(feature);
             }
           }
 

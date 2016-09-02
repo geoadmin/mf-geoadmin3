@@ -246,13 +246,13 @@ goog.require('ga_styles_service');
           style: scope.options.selectStyleFunction
         });
         modify.on('modifystart', function(evt) {
-          if (evt.mapBrowserPointerEvent.type != 'singleclick') {
+          if (evt.mapBrowserEvent.type != 'singleclick') {
             body.addClass(cssModify);
             mapDiv.addClass(cssGrabbing);
           }
         });
         modify.on('modifyend', function(evt) {
-          if (evt.mapBrowserPointerEvent.type == 'pointerup') {
+          if (evt.mapBrowserEvent.type == 'pointerup') {
             mapDiv.removeClass(cssGrabbing);
             // Remove the css class after digest cycle to avoid flickering
             $timeout(function() {
@@ -260,7 +260,7 @@ goog.require('ga_styles_service');
             }, 0, false);
             // Move the popup to the new position
             managePopup(evt.features.item(0),
-                evt.mapBrowserPointerEvent.coordinate);
+                evt.mapBrowserEvent.coordinate);
           }
         });
 

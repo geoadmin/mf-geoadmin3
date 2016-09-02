@@ -1,7 +1,7 @@
 /**
  * Cesium - https://github.com/AnalyticalGraphicsInc/cesium
  *
- * Copyright 2011-2015 Cesium Contributors
+ * Copyright 2011-2016 Cesium Contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -610,25 +610,29 @@ define('Core/Math',[
     };
 
     /**
-     * Converts a scalar value in the range [-1.0, 1.0] to a 8-bit 2's complement number.
+     * Converts a scalar value in the range [-1.0, 1.0] to a SNORM in the range [0, rangeMax]
      * @param {Number} value The scalar value in the range [-1.0, 1.0]
-     * @returns {Number} The 8-bit 2's complement number, where 0 maps to -1.0 and 255 maps to 1.0.
+     * @param {Number} [rangeMax=255] The maximum value in the mapped range, 255 by default.
+     * @returns {Number} A SNORM value, where 0 maps to -1.0 and rangeMax maps to 1.0.
      *
      * @see CesiumMath.fromSNorm
      */
-    CesiumMath.toSNorm = function(value) {
-        return Math.round((CesiumMath.clamp(value, -1.0, 1.0) * 0.5 + 0.5) * 255.0);
+    CesiumMath.toSNorm = function(value, rangeMax) {
+        rangeMax = defaultValue(rangeMax, 255);
+        return Math.round((CesiumMath.clamp(value, -1.0, 1.0) * 0.5 + 0.5) * rangeMax);
     };
 
     /**
-     * Converts a SNORM value in the range [0, 255] to a scalar in the range [-1.0, 1.0].
+     * Converts a SNORM value in the range [0, rangeMax] to a scalar in the range [-1.0, 1.0].
      * @param {Number} value SNORM value in the range [0, 255]
+     * @param {Number} [rangeMax=255] The maximum value in the SNORM range, 255 by default.
      * @returns {Number} Scalar in the range [-1.0, 1.0].
      *
      * @see CesiumMath.toSNorm
      */
-    CesiumMath.fromSNorm = function(value) {
-        return CesiumMath.clamp(value, 0.0, 255.0) / 255.0 * 2.0 - 1.0;
+    CesiumMath.fromSNorm = function(value, rangeMax) {
+        rangeMax = defaultValue(rangeMax, 255);
+        return CesiumMath.clamp(value, 0.0, rangeMax) / rangeMax * 2.0 - 1.0;
     };
 
     /**
@@ -1309,6 +1313,8 @@ define('Core/Cartesian3',[
      * @param {Cartesian3} value The value to pack.
      * @param {Number[]} array The array to pack into.
      * @param {Number} [startingIndex=0] The index into the array at which to start packing the elements.
+     *
+     * @returns {Number[]} The array that was packed into
      */
     Cartesian3.pack = function(value, array, startingIndex) {
                 if (!defined(value)) {
@@ -1324,6 +1330,8 @@ define('Core/Cartesian3',[
         array[startingIndex++] = value.x;
         array[startingIndex++] = value.y;
         array[startingIndex] = value.z;
+
+        return array;
     };
 
     /**
@@ -1347,6 +1355,63 @@ define('Core/Cartesian3',[
         result.x = array[startingIndex++];
         result.y = array[startingIndex++];
         result.z = array[startingIndex];
+        return result;
+    };
+
+    /**
+     * Flattens an array of Cartesian3s into an array of components.
+     *
+     * @param {Cartesian3[]} array The array of cartesians to pack.
+     * @param {Number[]} result The array onto which to store the result.
+     * @returns {Number[]} The packed array.
+     */
+    Cartesian3.packArray = function(array, result) {
+                if (!defined(array)) {
+            throw new DeveloperError('array is required');
+        }
+        
+        var length = array.length;
+        if (!defined(result)) {
+            result = new Array(length * 3);
+        } else {
+            result.length = length * 3;
+        }
+
+        for (var i = 0; i < length; ++i) {
+            Cartesian3.pack(array[i], result, i * 3);
+        }
+        return result;
+    };
+
+    /**
+     * Unpacks an array of cartesian components into an array of Cartesian3s.
+     *
+     * @param {Number[]} array The array of components to unpack.
+     * @param {Cartesian3[]} result The array onto which to store the result.
+     * @returns {Cartesian3[]} The unpacked array.
+     */
+    Cartesian3.unpackArray = function(array, result) {
+                if (!defined(array)) {
+            throw new DeveloperError('array is required');
+        }
+        if (array.length < 3) {
+            throw new DeveloperError('array length cannot be less than 3.');
+        }
+        if (array.length % 3 !== 0) {
+            throw new DeveloperError('array length must be a multiple of 3.');
+        }
+        
+        var length = array.length;
+        if (!defined(result)) {
+            result = new Array(length / 3);
+        } else {
+            result.length = length / 3;
+        }
+
+        for (var i = 0; i < length; i += 3) {
+            var index = i / 3;
+            result[index] = Cartesian3.unpack(array, i, result[index]);
+        }
         return result;
     };
 
@@ -1916,9 +1981,9 @@ define('Core/Cartesian3',[
             throw new DeveloperError('latitude is required');
         }
         
-        var lon = CesiumMath.toRadians(longitude);
-        var lat = CesiumMath.toRadians(latitude);
-        return Cartesian3.fromRadians(lon, lat, height, ellipsoid, result);
+        longitude = CesiumMath.toRadians(longitude);
+        latitude = CesiumMath.toRadians(latitude);
+        return Cartesian3.fromRadians(longitude, latitude, height, ellipsoid, result);
     };
 
     var scratchN = new Cartesian3();
@@ -1979,15 +2044,30 @@ define('Core/Cartesian3',[
      */
     Cartesian3.fromDegreesArray = function(coordinates, ellipsoid, result) {
                 if (!defined(coordinates)) {
-            throw new DeveloperError('positions is required.');
+            throw new DeveloperError('coordinates is required.');
+        }
+        if (coordinates.length < 2) {
+            throw new DeveloperError('coordinates length cannot be less than 2.');
+        }
+        if (coordinates.length % 2 !== 0) {
+            throw new DeveloperError('coordinates length must be a multiple of 2.');
         }
         
-        var pos = new Array(coordinates.length);
-        for (var i = 0; i < coordinates.length; i++) {
-            pos[i] = CesiumMath.toRadians(coordinates[i]);
+        var length = coordinates.length;
+        if (!defined(result)) {
+            result = new Array(length / 2);
+        } else {
+            result.length = length / 2;
         }
 
-        return Cartesian3.fromRadiansArray(pos, ellipsoid, result);
+        for (var i = 0; i < length; i += 2) {
+            var longitude = coordinates[i];
+            var latitude = coordinates[i + 1];
+            var index = i / 2;
+            result[index] = Cartesian3.fromDegrees(longitude, latitude, 0, ellipsoid, result[index]);
+        }
+
+        return result;
     };
 
     /**
@@ -2003,26 +2083,27 @@ define('Core/Cartesian3',[
      */
     Cartesian3.fromRadiansArray = function(coordinates, ellipsoid, result) {
                 if (!defined(coordinates)) {
-            throw new DeveloperError('positions is required.');
+            throw new DeveloperError('coordinates is required.');
         }
         if (coordinates.length < 2) {
-            throw new DeveloperError('positions length cannot be less than 2.');
+            throw new DeveloperError('coordinates length cannot be less than 2.');
         }
         if (coordinates.length % 2 !== 0) {
-            throw new DeveloperError('positions length must be a multiple of 2.');
+            throw new DeveloperError('coordinates length must be a multiple of 2.');
         }
         
         var length = coordinates.length;
         if (!defined(result)) {
-            result = new Array(length/2);
+            result = new Array(length / 2);
         } else {
-            result.length = length/2;
+            result.length = length / 2;
         }
 
-        for ( var i = 0; i < length; i+=2) {
-            var lon = coordinates[i];
-            var lat = coordinates[i+1];
-            result[i/2] = Cartesian3.fromRadians(lon, lat, 0, ellipsoid, result[i/2]);
+        for (var i = 0; i < length; i += 2) {
+            var longitude = coordinates[i];
+            var latitude = coordinates[i + 1];
+            var index = i / 2;
+            result[index] = Cartesian3.fromRadians(longitude, latitude, 0, ellipsoid, result[index]);
         }
 
         return result;
@@ -2031,7 +2112,7 @@ define('Core/Cartesian3',[
     /**
      * Returns an array of Cartesian3 positions given an array of longitude, latitude and height values where longitude and latitude are given in degrees.
      *
-     * @param {Number[]} coordinates A list of longitude, latitude and height values. Values alternate [longitude, latitude, height,, longitude, latitude, height...].
+     * @param {Number[]} coordinates A list of longitude, latitude and height values. Values alternate [longitude, latitude, height, longitude, latitude, height...].
      * @param {Ellipsoid} [ellipsoid=Ellipsoid.WGS84] The ellipsoid on which the position lies.
      * @param {Cartesian3[]} [result] An array of Cartesian3 objects to store the result.
      * @returns {Cartesian3[]} The array of positions.
@@ -2041,29 +2122,37 @@ define('Core/Cartesian3',[
      */
     Cartesian3.fromDegreesArrayHeights = function(coordinates, ellipsoid, result) {
                 if (!defined(coordinates)) {
-            throw new DeveloperError('positions is required.');
+            throw new DeveloperError('coordinates is required.');
         }
         if (coordinates.length < 3) {
-            throw new DeveloperError('positions length cannot be less than 3.');
+            throw new DeveloperError('coordinates length cannot be less than 3.');
         }
         if (coordinates.length % 3 !== 0) {
-            throw new DeveloperError('positions length must be a multiple of 3.');
+            throw new DeveloperError('coordinates length must be a multiple of 3.');
         }
         
-        var pos = new Array(coordinates.length);
-        for (var i = 0; i < coordinates.length; i+=3) {
-            pos[i] = CesiumMath.toRadians(coordinates[i]);
-            pos[i+1] = CesiumMath.toRadians(coordinates[i+1]);
-            pos[i+2] = coordinates[i+2];
+        var length = coordinates.length;
+        if (!defined(result)) {
+            result = new Array(length / 3);
+        } else {
+            result.length = length / 3;
         }
 
-        return Cartesian3.fromRadiansArrayHeights(pos, ellipsoid, result);
+        for (var i = 0; i < length; i += 3) {
+            var longitude = coordinates[i];
+            var latitude = coordinates[i + 1];
+            var height = coordinates[i + 2];
+            var index = i / 3;
+            result[index] = Cartesian3.fromDegrees(longitude, latitude, height, ellipsoid, result[index]);
+        }
+
+        return result;
     };
 
     /**
      * Returns an array of Cartesian3 positions given an array of longitude, latitude and height values where longitude and latitude are given in radians.
      *
-     * @param {Number[]} coordinates A list of longitude, latitude and height values. Values alternate [longitude, latitude, height,, longitude, latitude, height...].
+     * @param {Number[]} coordinates A list of longitude, latitude and height values. Values alternate [longitude, latitude, height, longitude, latitude, height...].
      * @param {Ellipsoid} [ellipsoid=Ellipsoid.WGS84] The ellipsoid on which the position lies.
      * @param {Cartesian3[]} [result] An array of Cartesian3 objects to store the result.
      * @returns {Cartesian3[]} The array of positions.
@@ -2073,27 +2162,28 @@ define('Core/Cartesian3',[
      */
     Cartesian3.fromRadiansArrayHeights = function(coordinates, ellipsoid, result) {
                 if (!defined(coordinates)) {
-            throw new DeveloperError('positions is required.');
+            throw new DeveloperError('coordinates is required.');
         }
         if (coordinates.length < 3) {
-            throw new DeveloperError('positions length cannot be less than 3.');
+            throw new DeveloperError('coordinates length cannot be less than 3.');
         }
         if (coordinates.length % 3 !== 0) {
-            throw new DeveloperError('positions length must be a multiple of 3.');
+            throw new DeveloperError('coordinates length must be a multiple of 3.');
         }
         
         var length = coordinates.length;
         if (!defined(result)) {
-            result = new Array(length/3);
+            result = new Array(length / 3);
         } else {
-            result.length = length/3;
+            result.length = length / 3;
         }
 
-        for ( var i = 0; i < length; i+=3) {
-            var lon = coordinates[i];
-            var lat = coordinates[i+1];
-            var alt = coordinates[i+2];
-            result[i/3] = Cartesian3.fromRadians(lon, lat, alt, ellipsoid, result[i/3]);
+        for (var i = 0; i < length; i += 3) {
+            var longitude = coordinates[i];
+            var latitude = coordinates[i + 1];
+            var height = coordinates[i + 2];
+            var index = i / 3;
+            result[index] = Cartesian3.fromRadians(longitude, latitude, height, ellipsoid, result[index]);
         }
 
         return result;
@@ -2885,6 +2975,8 @@ define('Core/Ellipsoid',[
      * @param {Ellipsoid} value The value to pack.
      * @param {Number[]} array The array to pack into.
      * @param {Number} [startingIndex=0] The index into the array at which to start packing the elements.
+     *
+     * @returns {Number[]} The array that was packed into
      */
     Ellipsoid.pack = function(value, array, startingIndex) {
                 if (!defined(value)) {
@@ -2897,6 +2989,8 @@ define('Core/Ellipsoid',[
         startingIndex = defaultValue(startingIndex, 0);
 
         Cartesian3.pack(value._radii, array, startingIndex);
+
+        return array;
     };
 
     /**
@@ -3572,6 +3666,8 @@ define('Core/Matrix3',[
      * @param {Matrix3} value The value to pack.
      * @param {Number[]} array The array to pack into.
      * @param {Number} [startingIndex=0] The index into the array at which to start packing the elements.
+     *
+     * @returns {Number[]} The array that was packed into
      */
     Matrix3.pack = function(value, array, startingIndex) {
                 if (!defined(value)) {
@@ -3593,6 +3689,8 @@ define('Core/Matrix3',[
         array[startingIndex++] = value[6];
         array[startingIndex++] = value[7];
         array[startingIndex++] = value[8];
+
+        return array;
     };
 
     /**
@@ -4434,7 +4532,7 @@ define('Core/Matrix3',[
      * @example
      * // Instead of Cesium.Matrix3.multiply(m, Cesium.Matrix3.fromScale(scale), m);
      * Cesium.Matrix3.multiplyByScale(m, scale, m);
-     * 
+     *
      * @see Matrix3.fromScale
      * @see Matrix3.multiplyByUniformScale
      */
@@ -5140,6 +5238,8 @@ define('Core/Cartesian4',[
      * @param {Cartesian4} value The value to pack.
      * @param {Number[]} array The array to pack into.
      * @param {Number} [startingIndex=0] The index into the array at which to start packing the elements.
+     *
+     * @returns {Number[]} The array that was packed into
      */
     Cartesian4.pack = function(value, array, startingIndex) {
                 if (!defined(value)) {
@@ -5155,6 +5255,8 @@ define('Core/Cartesian4',[
         array[startingIndex++] = value.y;
         array[startingIndex++] = value.z;
         array[startingIndex] = value.w;
+
+        return array;
     };
 
     /**
@@ -5179,6 +5281,57 @@ define('Core/Cartesian4',[
         result.y = array[startingIndex++];
         result.z = array[startingIndex++];
         result.w = array[startingIndex];
+        return result;
+    };
+
+    /**
+     * Flattens an array of Cartesian4s into and array of components.
+     *
+     * @param {Cartesian4[]} array The array of cartesians to pack.
+     * @param {Number[]} result The array onto which to store the result.
+     * @returns {Number[]} The packed array.
+     */
+    Cartesian4.packArray = function(array, result) {
+                if (!defined(array)) {
+            throw new DeveloperError('array is required');
+        }
+        
+        var length = array.length;
+        if (!defined(result)) {
+            result = new Array(length * 4);
+        } else {
+            result.length = length * 4;
+        }
+
+        for (var i = 0; i < length; ++i) {
+            Cartesian4.pack(array[i], result, i * 4);
+        }
+        return result;
+    };
+
+    /**
+     * Unpacks an array of cartesian components into and array of Cartesian4s.
+     *
+     * @param {Number[]} array The array of components to unpack.
+     * @param {Cartesian4[]} result The array onto which to store the result.
+     * @returns {Cartesian4[]} The unpacked array.
+     */
+    Cartesian4.unpackArray = function(array, result) {
+                if (!defined(array)) {
+            throw new DeveloperError('array is required');
+        }
+        
+        var length = array.length;
+        if (!defined(result)) {
+            result = new Array(length / 4);
+        } else {
+            result.length = length / 4;
+        }
+
+        for (var i = 0; i < length; i += 4) {
+            var index = i / 4;
+            result[index] = Cartesian4.unpack(array, i, result[index]);
+        }
         return result;
     };
 
@@ -5917,6 +6070,7 @@ define('Core/Matrix4',[
      * @see Matrix4.computePerspectiveOffCenter
      * @see Matrix4.computeInfinitePerspectiveOffCenter
      * @see Matrix4.computeViewportTransformation
+     * @see Matrix4.computeView
      * @see Matrix2
      * @see Matrix3
      * @see Packable
@@ -5955,6 +6109,8 @@ define('Core/Matrix4',[
      * @param {Matrix4} value The value to pack.
      * @param {Number[]} array The array to pack into.
      * @param {Number} [startingIndex=0] The index into the array at which to start packing the elements.
+     *
+     * @returns {Number[]} The array that was packed into
      */
     Matrix4.pack = function(value, array, startingIndex) {
                 if (!defined(value)) {
@@ -5983,6 +6139,8 @@ define('Core/Matrix4',[
         array[startingIndex++] = value[13];
         array[startingIndex++] = value[14];
         array[startingIndex] = value[15];
+
+        return array;
     };
 
     /**
@@ -6384,7 +6542,7 @@ define('Core/Matrix4',[
     };
 
     var fromCameraF = new Cartesian3();
-    var fromCameraS = new Cartesian3();
+    var fromCameraR = new Cartesian3();
     var fromCameraU = new Cartesian3();
 
     /**
@@ -6399,55 +6557,55 @@ define('Core/Matrix4',[
             throw new DeveloperError('camera is required.');
         }
         
-        var eye = camera.eye;
-        var target = camera.target;
+        var position = camera.position;
+        var direction = camera.direction;
         var up = camera.up;
 
-                if (!defined(eye)) {
-            throw new DeveloperError('camera.eye is required.');
+                if (!defined(position)) {
+            throw new DeveloperError('camera.position is required.');
         }
-        if (!defined(target)) {
-            throw new DeveloperError('camera.target is required.');
+        if (!defined(direction)) {
+            throw new DeveloperError('camera.direction is required.');
         }
         if (!defined(up)) {
             throw new DeveloperError('camera.up is required.');
         }
         
-        Cartesian3.normalize(Cartesian3.subtract(target, eye, fromCameraF), fromCameraF);
-        Cartesian3.normalize(Cartesian3.cross(fromCameraF, up, fromCameraS), fromCameraS);
-        Cartesian3.normalize(Cartesian3.cross(fromCameraS, fromCameraF, fromCameraU), fromCameraU);
+        Cartesian3.normalize(direction, fromCameraF);
+        Cartesian3.normalize(Cartesian3.cross(fromCameraF, up, fromCameraR), fromCameraR);
+        Cartesian3.normalize(Cartesian3.cross(fromCameraR, fromCameraF, fromCameraU), fromCameraU);
 
-        var sX = fromCameraS.x;
-        var sY = fromCameraS.y;
-        var sZ = fromCameraS.z;
+        var sX = fromCameraR.x;
+        var sY = fromCameraR.y;
+        var sZ = fromCameraR.z;
         var fX = fromCameraF.x;
         var fY = fromCameraF.y;
         var fZ = fromCameraF.z;
         var uX = fromCameraU.x;
         var uY = fromCameraU.y;
         var uZ = fromCameraU.z;
-        var eyeX = eye.x;
-        var eyeY = eye.y;
-        var eyeZ = eye.z;
-        var t0 = sX * -eyeX + sY * -eyeY+ sZ * -eyeZ;
-        var t1 = uX * -eyeX + uY * -eyeY+ uZ * -eyeZ;
-        var t2 = fX * eyeX + fY * eyeY + fZ * eyeZ;
+        var positionX = position.x;
+        var positionY = position.y;
+        var positionZ = position.z;
+        var t0 = sX * -positionX + sY * -positionY+ sZ * -positionZ;
+        var t1 = uX * -positionX + uY * -positionY+ uZ * -positionZ;
+        var t2 = fX * positionX + fY * positionY + fZ * positionZ;
 
-        //The code below this comment is an optimized
-        //version of the commented lines.
-        //Rather that create two matrices and then multiply,
-        //we just bake in the multiplcation as part of creation.
-        //var rotation = new Matrix4(
-        //                sX,  sY,  sZ, 0.0,
-        //                uX,  uY,  uZ, 0.0,
-        //               -fX, -fY, -fZ, 0.0,
-        //                0.0,  0.0,  0.0, 1.0);
-        //var translation = new Matrix4(
-        //                1.0, 0.0, 0.0, -eye.x,
-        //                0.0, 1.0, 0.0, -eye.y,
-        //                0.0, 0.0, 1.0, -eye.z,
-        //                0.0, 0.0, 0.0, 1.0);
-        //return rotation.multiply(translation);
+        // The code below this comment is an optimized
+        // version of the commented lines.
+        // Rather that create two matrices and then multiply,
+        // we just bake in the multiplcation as part of creation.
+        // var rotation = new Matrix4(
+        //                 sX,  sY,  sZ, 0.0,
+        //                 uX,  uY,  uZ, 0.0,
+        //                -fX, -fY, -fZ, 0.0,
+        //                 0.0,  0.0,  0.0, 1.0);
+        // var translation = new Matrix4(
+        //                 1.0, 0.0, 0.0, -position.x,
+        //                 0.0, 1.0, 0.0, -position.y,
+        //                 0.0, 0.0, 1.0, -position.z,
+        //                 0.0, 0.0, 0.0, 1.0);
+        // return rotation.multiply(translation);
         if (!defined(result)) {
             return new Matrix4(
                     sX,   sY,  sZ, t0,
@@ -6472,7 +6630,6 @@ define('Core/Matrix4',[
         result[14] = t2;
         result[15] = 1.0;
         return result;
-
     };
 
      /**
@@ -6485,14 +6642,14 @@ define('Core/Matrix4',[
       * @param {Matrix4} result The object in which the result will be stored.
       * @returns {Matrix4} The modified result parameter.
       *
-      * @exception {DeveloperError} fovY must be in [0, PI).
+      * @exception {DeveloperError} fovY must be in (0, PI].
       * @exception {DeveloperError} aspectRatio must be greater than zero.
       * @exception {DeveloperError} near must be greater than zero.
       * @exception {DeveloperError} far must be greater than zero.
       */
     Matrix4.computePerspectiveFieldOfView = function(fovY, aspectRatio, near, far, result) {
                 if (fovY <= 0.0 || fovY > Math.PI) {
-            throw new DeveloperError('fovY must be in [0, PI).');
+            throw new DeveloperError('fovY must be in (0, PI].');
         }
         if (aspectRatio <= 0.0) {
             throw new DeveloperError('aspectRatio must be greater than zero.');
@@ -6777,6 +6934,52 @@ define('Core/Matrix4',[
         result[13] = column3Row1;
         result[14] = column3Row2;
         result[15] = column3Row3;
+        return result;
+    };
+
+    /**
+     * Computes a Matrix4 instance that transforms from world space to view space.
+     *
+     * @param {Cartesian3} position The position of the camera.
+     * @param {Cartesian3} direction The forward direction.
+     * @param {Cartesian3} up The up direction.
+     * @param {Cartesian3} right The right direction.
+     * @param {Matrix4} result The object in which the result will be stored.
+     * @returns {Matrix4} The modified result parameter.
+     */
+    Matrix4.computeView = function(position, direction, up, right, result) {
+                if (!defined(position)) {
+            throw new DeveloperError('position is required');
+        }
+        if (!defined(direction)) {
+            throw new DeveloperError('direction is required');
+        }
+        if (!defined(up)) {
+            throw new DeveloperError('up is required');
+        }
+        if (!defined(right)) {
+            throw new DeveloperError('right is required');
+        }
+        if (!defined(result)) {
+            throw new DeveloperError('result is required');
+        }
+        
+        result[0] = right.x;
+        result[1] = up.x;
+        result[2] = -direction.x;
+        result[3] = 0.0;
+        result[4] = right.y;
+        result[5] = up.y;
+        result[6] = -direction.y;
+        result[7] = 0.0;
+        result[8] = right.z;
+        result[9] = up.z;
+        result[10] = -direction.z;
+        result[11] = 0.0;
+        result[12] = -Cartesian3.dot(right, position);
+        result[13] = -Cartesian3.dot(up, position);
+        result[14] = Cartesian3.dot(direction, position);
+        result[15] = 1.0;
         return result;
     };
 
@@ -7542,7 +7745,7 @@ define('Core/Matrix4',[
      * @example
      * // Instead of Cesium.Matrix4.multiply(m, Cesium.Matrix4.fromUniformScale(scale), m);
      * Cesium.Matrix4.multiplyByUniformScale(m, scale, m);
-     * 
+     *
      * @see Matrix4.fromUniformScale
      * @see Matrix4.multiplyByScale
      */
@@ -7579,7 +7782,7 @@ define('Core/Matrix4',[
      * @example
      * // Instead of Cesium.Matrix4.multiply(m, Cesium.Matrix4.fromScale(scale), m);
      * Cesium.Matrix4.multiplyByScale(m, scale, m);
-     * 
+     *
      * @see Matrix4.fromScale
      * @see Matrix4.multiplyByUniformScale
      */
@@ -8831,6 +9034,8 @@ define('Core/Rectangle',[
      * @param {Rectangle} value The value to pack.
      * @param {Number[]} array The array to pack into.
      * @param {Number} [startingIndex=0] The index into the array at which to start packing the elements.
+     *
+     * @returns {Number[]} The array that was packed into
      */
     Rectangle.pack = function(value, array, startingIndex) {
                 if (!defined(value)) {
@@ -8847,6 +9052,8 @@ define('Core/Rectangle',[
         array[startingIndex++] = value.south;
         array[startingIndex++] = value.east;
         array[startingIndex] = value.north;
+
+        return array;
     };
 
     /**
@@ -8956,6 +9163,61 @@ define('Core/Rectangle',[
 
         for ( var i = 0, len = cartographics.length; i < len; i++) {
             var position = cartographics[i];
+            west = Math.min(west, position.longitude);
+            east = Math.max(east, position.longitude);
+            south = Math.min(south, position.latitude);
+            north = Math.max(north, position.latitude);
+
+            var lonAdjusted = position.longitude >= 0 ?  position.longitude : position.longitude +  CesiumMath.TWO_PI;
+            westOverIDL = Math.min(westOverIDL, lonAdjusted);
+            eastOverIDL = Math.max(eastOverIDL, lonAdjusted);
+        }
+
+        if(east - west > eastOverIDL - westOverIDL) {
+            west = westOverIDL;
+            east = eastOverIDL;
+
+            if (east > CesiumMath.PI) {
+                east = east - CesiumMath.TWO_PI;
+            }
+            if (west > CesiumMath.PI) {
+                west = west - CesiumMath.TWO_PI;
+            }
+        }
+
+        if (!defined(result)) {
+            return new Rectangle(west, south, east, north);
+        }
+
+        result.west = west;
+        result.south = south;
+        result.east = east;
+        result.north = north;
+        return result;
+    };
+
+    /**
+     * Creates the smallest possible Rectangle that encloses all positions in the provided array.
+     *
+     * @param {Cartesian[]} cartesians The list of Cartesian instances.
+     * @param {Ellipsoid} [ellipsoid=Ellipsoid.WGS84] The ellipsoid the cartesians are on.
+     * @param {Rectangle} [result] The object onto which to store the result, or undefined if a new instance should be created.
+     * @returns {Rectangle} The modified result parameter or a new Rectangle instance if none was provided.
+     */
+    Rectangle.fromCartesianArray = function(cartesians, ellipsoid, result) {
+                if (!defined(cartesians)) {
+            throw new DeveloperError('cartesians is required.');
+        }
+        
+        var west = Number.MAX_VALUE;
+        var east = -Number.MAX_VALUE;
+        var westOverIDL = Number.MAX_VALUE;
+        var eastOverIDL = -Number.MAX_VALUE;
+        var south = Number.MAX_VALUE;
+        var north = -Number.MAX_VALUE;
+
+        for ( var i = 0, len = cartesians.length; i < len; i++) {
+            var position = ellipsoid.cartesianToCartographic(cartesians[i]);
             west = Math.min(west, position.longitude);
             east = Math.max(east, position.longitude);
             south = Math.min(south, position.latitude);
@@ -10283,6 +10545,8 @@ define('Core/BoundingSphere',[
      * @param {BoundingSphere} value The value to pack.
      * @param {Number[]} array The array to pack into.
      * @param {Number} [startingIndex=0] The index into the array at which to start packing the elements.
+     *
+     * @returns {Number[]} The array that was packed into
      */
     BoundingSphere.pack = function(value, array, startingIndex) {
                 if (!defined(value)) {
@@ -10300,6 +10564,8 @@ define('Core/BoundingSphere',[
         array[startingIndex++] = center.y;
         array[startingIndex++] = center.z;
         array[startingIndex] = value.radius;
+
+        return array;
     };
 
     /**
@@ -11652,7 +11918,7 @@ define('Core/Color',[
      * @example
      * var cesiumBlue = Cesium.Color.fromCssColorString('#67ADDF');
      * var green = Cesium.Color.fromCssColorString('green');
-     * 
+     *
      * @see {@link http://www.w3.org/TR/css3-color|CSS color values}
      */
     Color.fromCssColorString = function(color, result) {
@@ -11721,6 +11987,8 @@ define('Core/Color',[
      * @param {Color} value The value to pack.
      * @param {Number[]} array The array to pack into.
      * @param {Number} [startingIndex=0] The index into the array at which to start packing the elements.
+     *
+     * @returns {Number[]} The array that was packed into
      */
     Color.pack = function(value, array, startingIndex) {
                 if (!defined(value)) {
@@ -11735,6 +12003,8 @@ define('Core/Color',[
         array[startingIndex++] = value.green;
         array[startingIndex++] = value.blue;
         array[startingIndex] = value.alpha;
+
+        return array;
     };
 
     /**
@@ -11925,7 +12195,7 @@ define('Core/Color',[
      *
      * @example
      * var rgba = Cesium.Color.BLUE.toRgba();
-     * 
+     *
      * @see Color.fromRgba
      */
     Color.prototype.toRgba = function() {
@@ -14177,6 +14447,28 @@ define('Core/ComponentDatatype',[
         UNSIGNED_SHORT : WebGLConstants.UNSIGNED_SHORT,
 
         /**
+         * 32-bit signed int corresponding to <code>INT</code> and the type
+         * of an element in <code>Int32Array</code>.
+         *
+         * @memberOf ComponentDatatype
+         *
+         * @type {Number}
+         * @constant
+         */
+        INT : WebGLConstants.INT,
+
+        /**
+         * 32-bit unsigned int corresponding to <code>UNSIGNED_INT</code> and the type
+         * of an element in <code>Uint32Array</code>.
+         *
+         * @memberOf ComponentDatatype
+         *
+         * @type {Number}
+         * @constant
+         */
+        UNSIGNED_INT : WebGLConstants.UNSIGNED_INT,
+
+        /**
          * 32-bit floating-point corresponding to <code>FLOAT</code> and the type
          * of an element in <code>Float32Array</code>.
          *
@@ -14225,6 +14517,10 @@ define('Core/ComponentDatatype',[
             return Int16Array.BYTES_PER_ELEMENT;
         case ComponentDatatype.UNSIGNED_SHORT:
             return Uint16Array.BYTES_PER_ELEMENT;
+        case ComponentDatatype.INT:
+            return Int32Array.BYTES_PER_ELEMENT;
+        case ComponentDatatype.UNSIGNED_INT:
+            return Uint32Array.BYTES_PER_ELEMENT;
         case ComponentDatatype.FLOAT:
             return Float32Array.BYTES_PER_ELEMENT;
         case ComponentDatatype.DOUBLE:
@@ -14235,7 +14531,7 @@ define('Core/ComponentDatatype',[
     };
 
     /**
-     * Gets the ComponentDatatype for the provided TypedArray instance.
+     * Gets the {@link ComponentDatatype} for the provided TypedArray instance.
      *
      * @param {TypedArray} array The typed array.
      * @returns {ComponentDatatype} The ComponentDatatype for the provided array, or undefined if the array is not a TypedArray.
@@ -14252,6 +14548,12 @@ define('Core/ComponentDatatype',[
         }
         if (array instanceof Uint16Array) {
             return ComponentDatatype.UNSIGNED_SHORT;
+        }
+        if (array instanceof Int32Array) {
+            return ComponentDatatype.INT;
+        }
+        if (array instanceof Uint32Array) {
+            return ComponentDatatype.UNSIGNED_INT;
         }
         if (array instanceof Float32Array) {
             return ComponentDatatype.FLOAT;
@@ -14278,6 +14580,8 @@ define('Core/ComponentDatatype',[
                 componentDatatype === ComponentDatatype.UNSIGNED_BYTE ||
                 componentDatatype === ComponentDatatype.SHORT ||
                 componentDatatype === ComponentDatatype.UNSIGNED_SHORT ||
+                componentDatatype === ComponentDatatype.INT ||
+                componentDatatype === ComponentDatatype.UNSIGNED_INT ||
                 componentDatatype === ComponentDatatype.FLOAT ||
                 componentDatatype === ComponentDatatype.DOUBLE);
     };
@@ -14287,7 +14591,7 @@ define('Core/ComponentDatatype',[
      *
      * @param {ComponentDatatype} componentDatatype The component data type.
      * @param {Number|Array} valuesOrLength The length of the array to create or an array.
-     * @returns {Int8Array|Uint8Array|Int16Array|Uint16Array|Float32Array|Float64Array} A typed array.
+     * @returns {Int8Array|Uint8Array|Int16Array|Uint16Array|Int32Array|Uint32Array|Float32Array|Float64Array} A typed array.
      *
      * @exception {DeveloperError} componentDatatype is not a valid value.
      *
@@ -14312,6 +14616,10 @@ define('Core/ComponentDatatype',[
             return new Int16Array(valuesOrLength);
         case ComponentDatatype.UNSIGNED_SHORT:
             return new Uint16Array(valuesOrLength);
+        case ComponentDatatype.INT:
+            return new Int32Array(valuesOrLength);
+        case ComponentDatatype.UNSIGNED_INT:
+            return new Uint32Array(valuesOrLength);
         case ComponentDatatype.FLOAT:
             return new Float32Array(valuesOrLength);
         case ComponentDatatype.DOUBLE:
@@ -14328,7 +14636,7 @@ define('Core/ComponentDatatype',[
      * @param {ArrayBuffer} buffer The buffer storage to use for the view.
      * @param {Number} [byteOffset] The offset, in bytes, to the first element in the view.
      * @param {Number} [length] The number of elements in the view.
-     * @returns {Int8Array|Uint8Array|Int16Array|Uint16Array|Float32Array|Float64Array} A typed array view of the buffer.
+     * @returns {Int8Array|Uint8Array|Int16Array|Uint16Array|Int32Array|Uint32Array|Float32Array|Float64Array} A typed array view of the buffer.
      *
      * @exception {DeveloperError} componentDatatype is not a valid value.
      */
@@ -14352,12 +14660,47 @@ define('Core/ComponentDatatype',[
             return new Int16Array(buffer, byteOffset, length);
         case ComponentDatatype.UNSIGNED_SHORT:
             return new Uint16Array(buffer, byteOffset, length);
+        case ComponentDatatype.INT:
+            return new Int32Array(buffer, byteOffset, length);
+        case ComponentDatatype.UNSIGNED_INT:
+            return new Uint32Array(buffer, byteOffset, length);
         case ComponentDatatype.FLOAT:
             return new Float32Array(buffer, byteOffset, length);
         case ComponentDatatype.DOUBLE:
             return new Float64Array(buffer, byteOffset, length);
         default:
             throw new DeveloperError('componentDatatype is not a valid value.');
+        }
+    };
+
+    /**
+     * Get the ComponentDatatype from its name.
+     *
+     * @param {String} name The name of the ComponentDatatype.
+     * @returns {ComponentDatatype} The ComponentDatatype.
+     *
+     * @exception {DeveloperError} name is not a valid value.
+     */
+    ComponentDatatype.fromName = function(name) {
+        switch (name) {
+            case 'BYTE':
+                return ComponentDatatype.BYTE;
+            case 'UNSIGNED_BYTE':
+                return ComponentDatatype.UNSIGNED_BYTE;
+            case 'SHORT':
+                return ComponentDatatype.SHORT;
+            case 'UNSIGNED_SHORT':
+                return ComponentDatatype.UNSIGNED_SHORT;
+            case 'INT':
+                return ComponentDatatype.INT;
+            case 'UNSIGNED_INT':
+                return ComponentDatatype.UNSIGNED_INT;
+            case 'FLOAT':
+                return ComponentDatatype.FLOAT;
+            case 'DOUBLE':
+                return ComponentDatatype.DOUBLE;
+            default:
+                throw new DeveloperError('name is not a valid value.');
         }
     };
 
@@ -16313,7 +16656,19 @@ define('Core/IntersectionTests',[
     var scratchTVec = new Cartesian3();
     var scratchQVec = new Cartesian3();
 
-    function rayTriangle(ray, p0, p1, p2, cullBackFaces) {
+    /**
+     * Computes the intersection of a ray and a triangle as a parametric distance along the input ray.
+     * @memberof IntersectionTests
+     *
+     * @param {Ray} ray The ray.
+     * @param {Cartesian3} p0 The first vertex of the triangle.
+     * @param {Cartesian3} p1 The second vertex of the triangle.
+     * @param {Cartesian3} p2 The third vertex of the triangle.
+     * @param {Boolean} [cullBackFaces=false] If <code>true</code>, will only compute an intersection with the front face of the triangle
+     *                  and return undefined for intersections with the back face.
+     * @returns {Number} The intersection as a parametric distance along the ray, or undefined if there is no intersection.
+     */
+    IntersectionTests.rayTriangleParametric  = function(ray, p0, p1, p2, cullBackFaces) {
                 if (!defined(ray)) {
             throw new DeveloperError('ray is required.');
         }
@@ -16387,10 +16742,10 @@ define('Core/IntersectionTests',[
         }
 
         return t;
-    }
+    };
 
     /**
-     * Computes the intersection of a ray and a triangle.
+     * Computes the intersection of a ray and a triangle as a Cartesian3 coordinate.
      * @memberof IntersectionTests
      *
      * @param {Ray} ray The ray.
@@ -16403,7 +16758,7 @@ define('Core/IntersectionTests',[
      * @returns {Cartesian3} The intersection point or undefined if there is no intersections.
      */
     IntersectionTests.rayTriangle = function(ray, p0, p1, p2, cullBackFaces, result) {
-        var t = rayTriangle(ray, p0, p1, p2, cullBackFaces);
+        var t = IntersectionTests.rayTriangleParametric(ray, p0, p1, p2, cullBackFaces);
         if (!defined(t) || t < 0.0) {
             return undefined;
         }
@@ -16445,7 +16800,7 @@ define('Core/IntersectionTests',[
         Cartesian3.subtract(v1, v0, ray.direction);
         Cartesian3.normalize(ray.direction, ray.direction);
 
-        var t = rayTriangle(ray, p0, p1, p2, cullBackFaces);
+        var t = IntersectionTests.rayTriangleParametric(ray, p0, p1, p2, cullBackFaces);
         if (!defined(t) || t < 0.0 || t > Cartesian3.distance(v0, v1)) {
             return undefined;
         }
@@ -17363,11 +17718,13 @@ define('Core/PolylinePipeline',[
         var length = positions.length;
         var ellipsoid = defaultValue(options.ellipsoid, Ellipsoid.WGS84);
         var height = defaultValue(options.height, 0);
+        var hasHeightArray = isArray(height);
 
         if (length < 1) {
             return [];
         } else if (length === 1) {
             var p = ellipsoid.scaleToGeodeticSurface(positions[0], scaleFirst);
+            height = hasHeightArray ? height[0] : height;
             if (height !== 0) {
                 var n = ellipsoid.geodeticSurfaceNormal(p, cartesian);
                 Cartesian3.multiplyByScalar(n, height, n);
@@ -17393,7 +17750,6 @@ define('Core/PolylinePipeline',[
         var arrayLength = (numPoints + 1) * 3;
         var newPositions = new Array(arrayLength);
         var offset = 0;
-        var hasHeightArray = isArray(height);
 
         for (i = 0; i < length - 1; i++) {
             var p0 = positions[i];
@@ -17677,6 +18033,8 @@ define('Core/VertexFormat',[
      * @param {VertexFormat} value The value to pack.
      * @param {Number[]} array The array to pack into.
      * @param {Number} [startingIndex=0] The index into the array at which to start packing the elements.
+     *
+     * @returns {Number[]} The array that was packed into
      */
     VertexFormat.pack = function(value, array, startingIndex) {
                 if (!defined(value)) {
@@ -17694,6 +18052,8 @@ define('Core/VertexFormat',[
         array[startingIndex++] = value.binormal ? 1.0 : 0.0;
         array[startingIndex++] = value.tangent ? 1.0 : 0.0;
         array[startingIndex++] = value.color ? 1.0 : 0.0;
+
+        return array;
     };
 
     /**
@@ -17909,6 +18269,8 @@ define('Core/PolylineGeometry',[
      * @param {PolylineGeometry} value The value to pack.
      * @param {Number[]} array The array to pack into.
      * @param {Number} [startingIndex=0] The index into the array at which to start packing the elements.
+     *
+     * @returns {Number[]} The array that was packed into
      */
     PolylineGeometry.pack = function(value, array, startingIndex) {
                 if (!defined(value)) {
@@ -17948,6 +18310,8 @@ define('Core/PolylineGeometry',[
         array[startingIndex++] = value._colorsPerVertex ? 1.0 : 0.0;
         array[startingIndex++] = value._followSurface ? 1.0 : 0.0;
         array[startingIndex]   = value._granularity;
+
+        return array;
     };
 
     var scratchEllipsoid = Ellipsoid.clone(Ellipsoid.UNIT_SPHERE);
