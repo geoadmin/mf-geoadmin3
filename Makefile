@@ -76,7 +76,8 @@ S3_MF_GEOADMIN3_INFRA = mf-geoadmin3-infra-dublin
 S3_BASE_PATH ?=
 S3_SRC_BASE_PATH ?=
 CLONEDIR = /home/$(USER_NAME)/tmp/branches/${DEPLOY_GIT_BRANCH}
-
+DEEP_CLEAN ?= "false"
+NAMED_BRANCH ?= "true"
 
 ## Python interpreter can't have space in path name
 ## So prepend all python scripts with python cmd
@@ -114,7 +115,7 @@ help:
 	@echo "- clean              Remove generated files"
 	@echo "- cleanall           Remove all the build artefacts"
 	@echo "- deploydev          Deploys current github master to dev. Specify SNAPSHOT=true to create snapshot as well."
-	@echo "- s3deploybranch     Build a branch and deploy it to S3 int (usage: make s3deploybranch DEPLOY_GIT_BRANCH=branch_to_deploy)"
+	@echo "- s3deploybranch     Build a branch and deploy it to S3 int. Defaults to the current branch name."
 	@echo "- s3deployint        Deploys a snapshot specified with SNAPSHOT=xxx to s3 int."
 	@echo "- s3deployprod       Deploys a snapshot specified with SNAPSHOT=xxx to s3 prod."
 	@echo "- s3activateint      Activate a version at the root of a remote bucket. (usage: make s3activateint S3_VERSION_PATH=<branch>/<sha>/<version>)"
@@ -220,16 +221,21 @@ deploydev:
 
 .PHONY: s3deployint
 s3deployint: guard-SNAPSHOT guard-S3_MF_GEOADMIN3_INT .build-artefacts/requirements.timestamp
-	./scripts/deploysnapshot.sh $(SNAPSHOT) int $(DEPLOYCONFIG)
+	./scripts/deploysnapshot.sh $(SNAPSHOT) int $(DEPLOYCONFIG);
 
 .PHONY: s3deployprod
 s3deployprod: guard-SNAPSHOT guard-S3_MF_GEOADMIN3_PROD .build-artefacts/requirements.timestamp
-	./scripts/deploysnapshot.sh $(SNAPSHOT) prod $(DEPLOYCONFIG)
+	./scripts/deploysnapshot.sh $(SNAPSHOT) prod $(DEPLOYCONFIG);
 
 .PHONY: s3deploybranch
-s3deploybranch: guard-CLONEDIR guard-S3_MF_GEOADMIN3_INT guard-DEPLOY_GIT_BRANCH .build-artefacts/requirements.timestamp
-	./scripts/clonebuild.sh ${CLONEDIR} ${DEPLOY_GIT_BRANCH} int || (echo "Cloning and building failed $$?"; exit 1);
-	${PYTHON_CMD} ./scripts/s3manage.py upload ${CLONEDIR}/mf-geoadmin3 int;
+s3deploybranch: guard-S3_MF_GEOADMIN3_INT \
+	              guard-CLONEDIR \
+	              guard-DEPLOY_GIT_BRANCH \
+	              guard-DEEP_CLEAN \
+	              guard-NAMED_BRANCH \
+	              .build-artefacts/requirements.timestamp
+	./scripts/clonebuild.sh ${CLONEDIR} int ${DEPLOY_GIT_BRANCH} ${DEEP_CLEAN} ${NAMED_BRANCH};
+	${PYTHON_CMD} ./scripts/s3manage.py upload ${CLONEDIR}/mf-geoadmin3 int ${NAMED_BRANCH};
 
 .PHONY: s3listint
 s3listint: guard-S3_MF_GEOADMIN3_INT .build-artefacts/requirements.timestamp

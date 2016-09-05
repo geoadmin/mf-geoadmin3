@@ -7,7 +7,6 @@ import sys
 import os
 import json
 import subprocess
-import urllib2
 
 import StringIO
 import gzip
@@ -37,6 +36,7 @@ def usage():
                       You may specify a directory (it defaults to current).
 
                       Example: python scripts/s3manage.py upload <snapshotdir> <deploy_target>
+                                                          <named_branch|optional>
 
             list:     List available <version> in a bucket.
 
@@ -188,10 +188,12 @@ def get_index_version(c):
     return version
 
 
-def create_s3_dir_path(base_dir):
-    git_short_sha = local_git_last_commit(base_dir)[:7]
+def create_s3_dir_path(base_dir, named_branch):
     git_branch = local_git_branch(base_dir)
     version = local_last_version(base_dir).strip()
+    if named_branch:
+        return (git_branch, version)
+    git_short_sha = local_git_last_commit(base_dir)[:7]
     return (os.path.join(git_branch, git_short_sha, version), version)
 
 
@@ -213,8 +215,8 @@ def get_file_mimetype(local_file):
         return 'text/plain'
 
 
-def upload(bucket_name, base_dir, deploy_target):
-    s3_dir_path, version = create_s3_dir_path(base_dir)
+def upload(bucket_name, base_dir, deploy_target, named_branch):
+    s3_dir_path, version = create_s3_dir_path(base_dir, named_branch)
     print('Destionation folder is:')
     print('%s' % s3_dir_path)
     upload_directories = ['prd', 'src']
@@ -255,24 +257,10 @@ def upload(bucket_name, base_dir, deploy_target):
     print('Upload completed at %s%s/index.html' % (url_to_check, s3_dir_path))
 
 
-def get_head_sha(branch):
-    b = branch.replace('/', '')
-    try:
-        resp = urllib2.urlopen(
-            'https://api.github.com/repos/geoadmin/mf-geoadmin3/commits?sha=%s' % b)
-        data = json.load(resp)
-    except urllib2.HTTPError:
-        data = None
-        print('Branch %s not found.' % b)
-    if data:
-        return data[0]['sha']
-
-
 def list_version():
     branches = bucket.meta.client.list_objects(Bucket=bucket.name,
                                                Delimiter='/')
     for b in branches.get('CommonPrefixes'):
-        head_sha = None
         branch = b.get('Prefix')
         if re.search(r'^\D', branch):
             shas = bucket.meta.client.list_objects(Bucket=bucket.name,
@@ -283,21 +271,20 @@ def list_version():
                 for s in shas:
                     sha = s.get('Prefix')
                     nice_sha = sha.replace(branch, '').replace('/', '')
-
-                    if head_sha is None:
-                        head_sha = get_head_sha(branch)
-                        if head_sha:
-                            is_head = 'HEAD' if nice_sha in head_sha else 'NOT HEAD'
-
-                    if head_sha:
-                        print(branch)
-                        print('  {} - {} ({})'.format(nice_sha, is_head, head_sha))
+                    # Full version path to display
+                    if re.match('[0-9a-f]{7}$', nice_sha) is not None:
                         builds = bucket.meta.client.list_objects(Bucket=bucket.name,
                                                                  Prefix=sha,
                                                                  Delimiter='/')
                         for v in builds.get('CommonPrefixes'):
                             build = v.get('Prefix')
-                            print('    ' + build.replace(sha, ''))
+                            print('Full version: %s%s/%s' % (branch,
+                                                             nice_sha,
+                                                             build.replace(sha, '').replace('/', '')))
+                    else:
+                        # Matching a version of the deployed branch
+                        if re.match('[0-9]{10}', nice_sha):
+                            print('Named branch: %s (version: %s)' % (branch.replace('/', ''), nice_sha))
             else:
                 print('Not a official path for branch %s' % branch)
 
@@ -339,15 +326,12 @@ def delete_version(s3_path, bucket_name):
     msg = raw_input('Are you sure you want to delete all files in <%s>?\n' % s3_path)
     if msg.lower() in ('y', 'yes'):
         files = bucket.objects.filter(Prefix=str(s3_path)).all()
-
+        n = 200
         indexes = [{'Key': k.key} for k in files]
-        for n in ('index', 'embed', 'mobile'):
-            src_key_name = '{}.{}.html'.format(n, s3_path)
-            indexes.append({'Key': src_key_name})
-
-        resp = s3client.delete_objects(Bucket=bucket_name, Delete={'Objects': indexes})
-        for v in resp['Deleted']:
-            print(v)
+        for i in xrange(0, len(indexes), n):
+            resp = s3client.delete_objects(Bucket=bucket_name, Delete={'Objects': indexes[i: i + n]})
+            for v in resp['Deleted']:
+                print(v)
     else:
         print('Aborting deletion of <%s>.' % s3_path)
 
@@ -425,8 +409,8 @@ def init_connection(bucket_name, profile_name):
 
 
 def exit_usage(cmd_type):
-    print('Missing one arg for %s command' % cmd_type)
     usage()
+    print('Missing one arg for %s command' % cmd_type)
     sys.exit(1)
 
 
@@ -438,11 +422,11 @@ def parse_arguments(argv):
 
     supported_cmds = ('upload', 'list', 'info', 'activate', 'delete')
     if cmd_type not in supported_cmds:
-        print('Command %s not supported' % cmd_type)
         usage()
+        print('Command %s not supported' % cmd_type)
         sys.exit(1)
 
-    if cmd_type == 'upload' and len(argv) != 4:
+    if cmd_type == 'upload' and len(argv) < 4:
         exit_usage(cmd_type)
     elif cmd_type == 'list' and len(argv) != 3:
         exit_usage(cmd_type)
@@ -453,12 +437,15 @@ def parse_arguments(argv):
     elif cmd_type == 'delete' and len(argv) != 4:
         exit_usage(cmd_type)
 
+    named_branch = None
     base_dir = os.getcwd()
     if cmd_type == 'upload':
         base_dir = os.path.abspath(argv[2])
         if not os.path.isdir(base_dir):
             print('No code found in directory %s' % base_dir)
             sys.exit(1)
+        if len(argv) == 5:
+            named_branch = True if argv[4] == 'true' else False
 
     if cmd_type in ('activate', 'upload', 'info', 'delete'):
         deploy_target = argv[3].lower()
@@ -474,33 +461,39 @@ def parse_arguments(argv):
         s3_path = argv[2]
         if s3_path.endswith('/'):
             s3_path = s3_path[:len(s3_path) - 1]
-        if s3_path.count('/') != 2:
-            print('Bad version definition')
+        # Delete named branch as well
+        if s3_path.count('/') not in (0, 2):
             usage()
+            print('Bad version definition')
+            sys.exit(1)
+        if s3_path.count('/') == 0 and cmd_type in ('activate', 'info'):
+            usage()
+            print('Cmd activate/info not supported for named branches.')
+            print('Please provide a full version path.')
             sys.exit(1)
 
     bucket_name_env = 'S3_MF_GEOADMIN3_%s' % deploy_target.upper()
     bucket_name = os.environ.get(bucket_name_env)
     if bucket_name is None:
-        print('%s env variable is not defined' % bucket_name_env)
         usage()
+        print('%s env variable is not defined' % bucket_name_env)
         sys.exit(1)
     user = os.environ.get('USER')
     profile_name = '{}_aws_admin'.format(user)
 
-    return (cmd_type, deploy_target, base_dir,
+    return (cmd_type, deploy_target, base_dir, named_branch,
             bucket_name, s3_path, profile_name)
 
 
 def main():
     global s3, s3client, bucket
-    cmd_type, deploy_target, base_dir, bucket_name, s3_path, profile_name = \
+    cmd_type, deploy_target, base_dir, named_branch, bucket_name, s3_path, profile_name = \
         parse_arguments(sys.argv)
     s3, s3client, bucket = init_connection(bucket_name, profile_name)
 
     if cmd_type == 'upload':
         print('Uploading %s to s3' % base_dir)
-        upload(bucket_name, base_dir, deploy_target)
+        upload(bucket_name, base_dir, deploy_target, named_branch)
     elif cmd_type == 'list':
         if len(sys.argv) < 2:
             usage()
