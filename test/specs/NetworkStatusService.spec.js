@@ -1,7 +1,7 @@
 describe('ga_networkstatus_service', function() {
 
   describe('httpInterceptor', function() {
-    var httpI, gaDebounce, gaNetowrkStatus, $q, gaWaitCursor, $timeout;
+    var httpI, gaDebounce, gaNetworkStatus, $q, gaWaitCursor, $timeout;
     var url = 'http://dummy.ch';
 
     beforeEach(function() {
