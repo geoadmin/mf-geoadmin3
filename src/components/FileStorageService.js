@@ -81,6 +81,10 @@ goog.provide('ga_filestorage_service');
           return $http['delete'](getServiceUrl(adminId));
         };
 
+        this.getPublicUrl = function(id) {
+          return getPublicUrl(id);
+        };
+
       };
       return new FileStorage();
     };
