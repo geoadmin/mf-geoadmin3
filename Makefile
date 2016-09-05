@@ -84,7 +84,7 @@ CLONEDIR = /home/$(USER_NAME)/tmp/branches/${DEPLOY_GIT_BRANCH}
 PYTHON_VENV=.build-artefacts/python-venv
 PYTHON_CMD=${PYTHON_VENV}/bin/python
 PIP_CMD=${PYTHON_VENV}/bin/pip
-MAKO_CMD=${PYTHON_VENV}/bin/mako-render 
+MAKO_CMD=${PYTHON_VENV}/bin/mako-render
 HTMLMIN_CMD=${PYTHON_VENV}/bin/htmlmin
 GJSLINT_CMD=${PYTHON_VENV}/bin/gjslint
 FLAKE8_CMD=${PYTHON_VENV}/bin/flake8
@@ -188,7 +188,7 @@ autolintpy: ${AUTOPEP8_CMD}
 	${AUTOPEP8_CMD} --in-place --aggressive --aggressive --verbose --max-line-lengt=110 $(PYTHON_FILES)
 
 .PHONY: testdebug
-testdebug: .build-artefacts/app-whitespace.js test/karma-conf-debug.js 
+testdebug: .build-artefacts/app-whitespace.js test/karma-conf-debug.js
 	PHANTOMJS_BIN="node_modules/.bin/phantomjs" ./node_modules/.bin/karma start test/karma-conf-debug.js --single-run;
 	cat .build-artefacts/coverage.txt; echo;
 
@@ -197,7 +197,7 @@ testrelease: prd/lib/build.js test/karma-conf-release.js .build-artefacts/devlib
 	PHANTOMJS_BIN="node_modules/.bin/phantomjs" ./node_modules/.bin/karma start test/karma-conf-release.js --single-run
 
 .PHONY: teste2e
-teste2e: saucelabs 
+teste2e: saucelabs
 
 .PHONY: saucelabs
 saucelabs: guard-SAUCELABS_USER guard-SAUCELABS_KEY .build-artefacts/requirements.timestamp lintpy
@@ -211,7 +211,7 @@ saucelabssingle: guard-SAUCELABS_USER guard-SAUCELABS_KEY .build-artefacts/requi
 apache: apache/app.conf
 
 .PHONY: deploydev
-deploydev: 
+deploydev:
 	@ if test "$(SNAPSHOT)" = "true"; then \
 		./scripts/deploydev.sh -s; \
 	else \
@@ -219,48 +219,48 @@ deploydev:
 	fi
 
 .PHONY: s3deployint
-s3deployint: guard-SNAPSHOT .build-artefacts/requirements.timestamp
+s3deployint: guard-SNAPSHOT guard-S3_MF_GEOADMIN3_INT .build-artefacts/requirements.timestamp
 	./scripts/deploysnapshot.sh $(SNAPSHOT) int $(DEPLOYCONFIG)
 
 .PHONY: s3deployprod
-s3deployprod: guard-SNAPSHOT .build-artefacts/requirements.timestamp
+s3deployprod: guard-SNAPSHOT guard-S3_MF_GEOADMIN3_PROD .build-artefacts/requirements.timestamp
 	./scripts/deploysnapshot.sh $(SNAPSHOT) prod $(DEPLOYCONFIG)
 
 .PHONY: s3deploybranch
-s3deploybranch: guard-CLONEDIR guard-DEPLOY_GIT_BRANCH .build-artefacts/requirements.timestamp
+s3deploybranch: guard-CLONEDIR guard-S3_MF_GEOADMIN3_INT guard-DEPLOY_GIT_BRANCH .build-artefacts/requirements.timestamp
 	./scripts/clonebuild.sh ${CLONEDIR} ${DEPLOY_GIT_BRANCH} int || (echo "Cloning and building failed $$?"; exit 1);
 	${PYTHON_CMD} ./scripts/s3manage.py upload ${CLONEDIR}/mf-geoadmin3 int;
 
 .PHONY: s3listint
-s3listint: .build-artefacts/requirements.timestamp
+s3listint: guard-S3_MF_GEOADMIN3_INT .build-artefacts/requirements.timestamp
 	${PYTHON_CMD} ./scripts/s3manage.py list int;
 
 .PHONY: s3listprod
-s3listprod: .build-artefacts/requirements.timestamp
+s3listprod: guard-S3_MF_GEOADMIN3_PROD .build-artefacts/requirements.timestamp
 	${PYTHON_CMD} ./scripts/s3manage.py list prod;
 
 .PHONY: s3infoint
-s3infoint: guard-S3_VERSION_PATH .build-artefacts/requirements.timestamp
+s3infoint: guard-S3_VERSION_PATH guard-S3_MF_GEOADMIN3_INT .build-artefacts/requirements.timestamp
 	${PYTHON_CMD} ./scripts/s3manage.py info ${S3_VERSION_PATH} int;
 
 .PHONY: s3infoprod
-s3infoprod: guard-S3_VERSION_PATH .build-artefacts/requirements.timestamp
+s3infoprod: guard-S3_VERSION_PATH guard-S3_MF_GEOADMIN3_PROD .build-artefacts/requirements.timestamp
 	${PYTHON_CMD} ./scripts/s3manage.py info ${S3_VERSION_PATH} prod;
 
 .PHONY: s3activateint
-s3activateint: guard-S3_VERSION_PATH .build-artefacts/requirements.timestamp
+s3activateint: guard-S3_VERSION_PATH guard-S3_MF_GEOADMIN3_INT .build-artefacts/requirements.timestamp
 	${PYTHON_CMD} ./scripts/s3manage.py activate ${S3_VERSION_PATH} int;
 
 .PHONY: s3activateprod
-s3activateprod: guard-S3_VERSION_PATH .build-artefacts/requirements.timestamp
+s3activateprod: guard-S3_VERSION_PATH guard-S3_MF_GEOADMIN3_PROD .build-artefacts/requirements.timestamp
 	${PYTHON_CMD} ./scripts/s3manage.py activate ${S3_VERSION_PATH} prod;
 
 .PHONY: s3deleteint
-s3deleteint: guard-S3_VERSION_PATH .build-artefacts/requirements.timestamp
+s3deleteint: guard-S3_VERSION_PATH guard-S3_MF_GEOADMIN3_INT .build-artefacts/requirements.timestamp
 	${PYTHON_CMD} ./scripts/s3manage.py delete ${S3_VERSION_PATH} int;
 
 .PHONY: s3deleteprod
-s3deleteprod: guard-S3_VERSION_PATH .build-artefacts/requirements.timestamp
+s3deleteprod: guard-S3_VERSION_PATH guard-S3_MF_GEOADMIN3_PROD .build-artefacts/requirements.timestamp
 	${PYTHON_CMD} ./scripts/s3manage.py delete ${S3_VERSION_PATH} prod;
 
 .PHONY: ol3cesium
@@ -314,7 +314,7 @@ datepicker: .build-artefacts/datepicker
 	cp .build-artefacts/datepicker/build/js/bootstrap-datetimepicker.min.js src/lib/
 
 .PHONY: polyfill
-polyfill: .build-artefacts/polyfill 
+polyfill: .build-artefacts/polyfill
 	cp $</polyfill.js src/lib/
 	cp $</polyfill.min.js src/lib/
 
@@ -740,11 +740,11 @@ ${PYTHON_VENV}:
 .build-artefacts/ol3-cesium:
 	git clone --recursive https://github.com/openlayers/ol3-cesium.git $@
 
-# No npm module 
+# No npm module
 .build-artefacts/filesaver:
 	git clone https://github.com/eligrey/FileSaver.js.git $@
 
-# No npm module for version 3 
+# No npm module for version 3
 # datepicker needs custom build of moment js with specific locales
 # don't use version 4 the uncompresssed file is twice bigger
 .build-artefacts/datepicker:
