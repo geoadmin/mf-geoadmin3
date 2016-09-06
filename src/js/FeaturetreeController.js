@@ -8,7 +8,7 @@ goog.require('ga_print_service');
   ]);
 
   module.controller('GaFeaturetreeController', function($http, $scope,
-      $timeout, $translate, $window, gaGlobalOptions, gaPrintService) {
+      $timeout, $translate, $window, gaGlobalOptions, gaPrint) {
 
     var featureTreeId = '#featuretree-popup';
     // List of layers using an extendHtmlPoup for the print instead of htmlPopup
@@ -142,7 +142,7 @@ goog.require('ga_print_service');
         }
         body += printLayers[bodId].body;
       }
-      gaPrintService.htmlPrintout(body, head || undefined,
+      gaPrint.htmlPrintout(body, head || undefined,
           (useNewTab) ? function() {} : undefined);
     };
 

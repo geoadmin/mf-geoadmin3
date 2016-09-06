@@ -267,11 +267,13 @@ goog.require('ga_measure_service');
         getStyle: function(type) {
           return styles[type];
         },
+
         getStyleFunction: function(type) {
           return stylesFunction[type] || function(feature, resolution) {
             return styles[type];
           };
         },
+
         getFeatureStyleFunction: function(type) {
           return function(resolution) {
             // In a featureStyleFunction this is the current feature
@@ -290,7 +292,6 @@ goog.require('ga_measure_service');
           });
           return stroke;
         }
-
       };
     };
   });

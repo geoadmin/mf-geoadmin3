@@ -4,17 +4,17 @@ goog.provide('ga_waitcursor_service');
   var module = angular.module('ga_waitcursor_service', []);
 
   module.provider('gaWaitCursor', function() {
-    this.$get = function($document, $rootScope) {
+    this.$get = function($document, $rootScope, $timeout) {
       var timeout = undefined;
       var waitClass = 'ga-wait-cursor';
       var bodyEl = angular.element($document[0].body);
       var processCounter = 0;
 
       var initTimeout = function() {
-          if (timeout) {
-            clearTimeout(timeout);
-          }
-          timeout = undefined;
+        if (timeout) {
+          $timeout.cancel(timeout);
+        }
+        timeout = undefined;
       };
 
       var update = function() {
@@ -22,10 +22,11 @@ goog.provide('ga_waitcursor_service');
         if (processCounter <= 0) {
           processCounter = 0;
           bodyEl.removeClass(waitClass);
+
           // Signals idle state after 4 second.
-          timeout = setTimeout(function() {
+          timeout = $timeout(function() {
             $rootScope.$broadcast('gaIdle');
-          }, 4000);
+          }, 4000, false);
         } else {
           bodyEl.addClass(waitClass);
         }

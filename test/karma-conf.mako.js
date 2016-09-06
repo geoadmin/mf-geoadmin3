@@ -12,11 +12,13 @@ module.exports = function(config) {
   // list of files / patterns to load in the browser
   files: [
   % if mode == 'release':
+    'style/app.css',
     'lib/d3.min.js',
     'lib/Cesium.min.js',
     'lib/ol3cesium.js',
     'lib/build.js',
   % else:
+    'style/app.css',
     'lib/jquery.js',
     'lib/jQuery.XDomainRequest.js',
     'lib/slip.js',

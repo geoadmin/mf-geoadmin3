@@ -9,10 +9,13 @@ goog.require('ga_waitcursor_service');
     'ga_waitcursor_service'
   ]);
 
-  module.factory('httpInterceptor', function($q, gaBrowserSniffer,
-      gaDebounce, gaNetworkStatus, gaWaitCursor) {
-    var checkDebounced = gaDebounce.debounce(gaNetworkStatus.check, 2000, false,
-        false);
+  module.factory('httpInterceptor', function($q, gaDebounce, gaNetworkStatus,
+      gaWaitCursor) {
+
+    var checkDebounced = gaDebounce.debounce(function() {
+      gaNetworkStatus.check();
+    }, 2000, false, false);
+
     return {
       request: function(config) {
         gaWaitCursor.increment();
@@ -66,10 +69,11 @@ goog.require('ga_waitcursor_service');
       }
       var NetworkStatusService = function() {
         var that = this;
-        this.offline = !navigator.onLine;
+        this.offline = !$window.navigator.onLine;
         this.check = function(timeout) {
           if (promise) {
-            $timeout.cancel([promise]);
+            $timeout.cancel(promise);
+            promise = undefined;
           }
           if (timeout) {
             count++;
