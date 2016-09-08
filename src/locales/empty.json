@@ -420,5 +420,9 @@
   "url_link": "",
   "url_image": "",
   "url_video": "",
-  "more_info": ""
+  "more_info": "",
+  "astra": "",
+  "astra_service_link_href": "",
+  "astra_service_link_label": "",
+  "topic_astra_tooltip": ""
 }
