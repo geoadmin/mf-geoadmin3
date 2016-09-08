@@ -14,8 +14,12 @@ goog.require('ga_measure_filter');
 
         // Transform 2111333 in 2'111'333
         this.formatCoordinates = function(coordinates) {
-          return ol.coordinate.toStringXY(coordinates, 0).
-              replace(/\B(?=(\d{3})+(?!\d))/g, "'");
+          var raw = ol.coordinate.toStringXY(coordinates, 0);
+          if (coordinates && coordinates.length === 3) {
+            raw += ', ' + coordinates[2].toFixed(1);
+          }
+
+          return raw.replace(/\B(?=(\d{3})+(?!\d))/g, "'");
         };
 
         this.getLength = function(geom) {
