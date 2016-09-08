@@ -11,7 +11,7 @@ goog.require('ga_print_service');
   ]);
 
   module.controller('GaProfileController', function($scope, $timeout,
-     gaBrowserSniffer, gaGlobalOptions, gaPrintService) {
+     gaBrowserSniffer, gaGlobalOptions, gaPrint) {
 
    $scope.options = {
       xLabel: 'profile_x_label',
@@ -47,7 +47,7 @@ goog.require('ga_print_service');
         printWindow.print();
       };
       $timeout(function() {
-        gaPrintService.htmlPrintout(contentEl.clone().html(), undefined,
+        gaPrint.htmlPrintout(contentEl.clone().html(), undefined,
             onLoad);
       }, 0, false);
     };
