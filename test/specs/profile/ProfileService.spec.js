@@ -37,28 +37,28 @@ describe('ga_profile_service', function() {
     var profileUrl = 'http://api3.geo.admin.ch/rest/services/profile.json';
     var goodCoords = [[0, 0], [1, 0], [1, 1]];
     var goodResult = [
-      {dist: 0.0, alts: {COMB: 429.8}, easting: 592000.0, northing: 221750.0},
-      {dist: 211.5, alts: {COMB: 429.7}, easting: 592177.5, northing: 221865.0}
+      {dist: 0.0, alts: {COMB: 429.8}, easting: 592000.0, northing: 221750.0, domainDist: 0},
+      {dist: 211.5, alts: {COMB: 429.7}, easting: 592177.5, northing: 221865.0, domainDist: 211.5}
     ];
     var goodResultDistKm = [
-      {dist: 0.0, alts: {COMB: 0}, easting: 592000.0, northing: 221750.0},
-      {dist: 22211.5, alts: {COMB: 1457}, easting: 592177.5, northing: 221865.0}
+      {dist: 0.0, alts: {COMB: 0}, easting: 592000.0, northing: 221750.0, domainDist: 0},
+      {dist: 22211.5, alts: {COMB: 1457}, easting: 592177.5, northing: 221865, domainDist: 22.2115}
     ];
 
     var feature = new ol.Feature(new ol.geom.LineString(goodCoords));
 
     var goodCoords2 = [[0, 0], [10000, 0], [1000, 1000]];
     var goodResultToFormat = [
-      {dist: 0.0, alts: {}, easting: 592000.0, northing: 221750.0},
-      {dist: 211.5, alts: {COMB: 1457}, easting: 592177.5, northing: 221865.0}
+      {dist: 0.0, alts: {}, easting: 592000.0, northing: 221750.0, domainDist: 0},
+      {dist: 211.5, alts: {COMB: 1457}, easting: 592177.5, northing: 221865.0, domainDist: 211.5}
     ];
     var goodResultFormatted = [
-      {dist: 0, alts: {COMB: 0}, easting: 592000, northing: 221750 },
-      {dist: 211.5, alts: {COMB: 1457}, easting: 592177.5, northing: 221865 }
+      {dist: 0, alts: {COMB: 0}, easting: 592000, northing: 221750, domainDist: 0},
+      {dist: 211.5, alts: {COMB: 1457}, easting: 592177.5, northing: 221865, domainDist: 211.5}
     ];
     var feature2 = new ol.Feature(new ol.geom.LineString(goodCoords2));
 
-    var emptyData = [{alts: {}, dist: 0}];
+    var emptyData = [{alts: {}, dist: 0, domainDist: 0}];
     emptyData[0].alts['COMB'] = 0;
 
     describe('create', function() {

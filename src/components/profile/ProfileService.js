@@ -34,13 +34,13 @@ goog.require('ga_urlutils_service');
 
   module.provider('gaProfile', function() {
     var d3;
-    var emptyData = [{alts: {}, dist: 0}];
+    var emptyData = [{alts: {}, dist: 0, domainDist: 0}];
     emptyData[0].alts['COMB'] = 0;
 
     // Utils functions
     var createArea = function(domain, height, elevationModel) {
       return d3.svg.area().x(function(d) {
-        return domain.X(d.dist);
+        return domain.X(d.domainDist);
       }).y0(height).y1(function(d) {
         return domain.Y(d.alts[elevationModel]);
       });
@@ -53,9 +53,11 @@ goog.require('ga_urlutils_service');
       };
     };
 
-    var getXYDomains = function(x, y, elevationModel, data) {
+    var getXYDomains = function(width, height, elevationModel, data) {
+      var x = d3.scale.linear().range([0, width]);
+      var y = d3.scale.linear().range([height, 0]);
       x.domain(d3.extent(data, function(d) {
-        return d.dist || 0;
+        return d.domainDist || 0;
       }));
       var yMin = d3.min(data, function(d) {
         return d.alts[elevationModel];
@@ -130,8 +132,10 @@ goog.require('ga_urlutils_service');
         this.formatData = function(data) {
           if (data.length) {
             var maxX = data[data.length - 1].dist;
+            var denom = maxX >= 10000 ? 1000 : 1;
             this.unitX = maxX >= 10000 ? ' km' : ' m';
             $.map(data, function(val) {
+              val.domainDist = val.dist / denom;
               val.alts[elevationModel] = val.alts[elevationModel] || 0;
               return val;
             });
@@ -334,12 +338,10 @@ goog.require('ga_urlutils_service');
 
         this.create = function(data) {
           this.updateProperties(data);
-          var x = d3.scale.linear().range([0, width]);
-          var y = d3.scale.linear().range([height, 0]);
-          this.domain = getXYDomains(x, y, elevationModel, this.data);
-          var axis = createAxis(this.domain);
           this.element = document.createElement('DIV');
           this.element.className = 'ga-profile-inner';
+          this.domain = getXYDomains(width, height, elevationModel, this.data);
+          var axis = createAxis(this.domain);
 
           this.svg = d3.select(this.element).append('svg')
               .attr('width', width + marginHoriz)
@@ -626,11 +628,8 @@ goog.require('ga_urlutils_service');
           if (data) {
             this.updateProperties(data);
           }
-          var x = d3.scale.linear().range([0, width]);
-          var y = d3.scale.linear().range([height, 0]);
 
-          this.domain = getXYDomains(x, y, elevationModel, this.data);
-
+          this.domain = getXYDomains(width, height, elevationModel, this.data);
           var axis = createAxis(this.domain);
           var area = createArea(this.domain, height, elevationModel);
 
