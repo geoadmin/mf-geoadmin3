@@ -27,6 +27,16 @@ describe('ga_measure_service', function() {
     });
 
 
+   describe('#formatCoordinates(coordinates)', function() {
+      it('returns formatted 2D coordinates', function() {
+        expect(gaMeasure.formatCoordinates([2457749.999996144, 1056249.999834365])).to.eql("2'457'750, 1'056'250");
+      });
+
+      it('returns formatted 3D coordinates', function() {
+        expect(gaMeasure.formatCoordinates([2457749.999996144, 1056249.999834365, 451.423])).to.eql("2'457'750, 1'056'250, 451.4");
+      });
+    });
+
    describe('#getLength()', function() {
       it('returns the length of a geometry', function() {
         expect(gaMeasure.getLength(lineString)).to.eql(3000);
