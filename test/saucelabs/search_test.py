@@ -142,7 +142,7 @@ def testSwissSearchParameter(driver, url, inputEl, searchTest, timeout=10):
 
 searchLocationTests = [
     {
-        'searchText': u'Kanalstrasse',
+        'searchText': u'Kanalstrasse bus rar',
         'resultTitle': u'Bus Raron, Kanalstrasse',
         'resultLocation': u'X=128141.00&Y=627443.00&zoom=10'
     },
