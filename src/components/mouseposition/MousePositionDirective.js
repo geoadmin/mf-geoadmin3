@@ -52,6 +52,7 @@ goog.require('ga_throttle_service');
                     Cesium.Math.toDegrees(cartographic.longitude),
                     Cesium.Math.toDegrees(cartographic.latitude)
                   ], 'EPSG:4326', control.getProjection());
+                  coordinate.push(cartographic.height);
 
                   target.innerHTML = formatCoordinate(coordinate);
                 } else {
