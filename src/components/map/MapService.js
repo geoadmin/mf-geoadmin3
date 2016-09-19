@@ -380,7 +380,7 @@ goog.require('ga_urlutils_service');
     this.$get = function($http, $q, $rootScope, $translate, $window,
         gaBrowserSniffer, gaDefinePropertiesForLayer, gaMapUtils,
         gaNetworkStatus, gaStorage, gaTileGrid, gaUrlUtils,
-        gaStylesFromLiterals, gaGlobalOptions, gaPermalink, 
+        gaStylesFromLiterals, gaGlobalOptions, gaPermalink,
         gaLang, gaTime) {
 
       var Layers = function(dfltWmsSubdomains,
@@ -691,14 +691,11 @@ goog.require('ga_urlutils_service');
                 window.minimumRetrievingLevel;
             var maxRetLod = gaMapUtils.getLodFromRes(config3d.minResolution);
             // Set maxLod as undefined deactivate client zoom.
-            var maxLod = (maxRetLod) ? undefined : 17;
+            var maxLod = (maxRetLod) ? undefined : 18;
             if (maxLod && config3d.resolutions) {
               maxLod = gaMapUtils.getLodFromRes(
                   config3d.resolutions[config3d.resolutions.length - 1]);
             }
-
-            var terrainTimestamp = this.getLayerTimestampFromYear(
-                gaGlobalOptions.defaultTerrain, gaTime.get());
             provider = new Cesium.UrlTemplateImageryProvider({
               url: params.url,
               subdomains: params.subdomains,
@@ -712,9 +709,9 @@ goog.require('ga_urlutils_service');
               tileHeight: params.tileSize,
               hasAlphaChannel: (format == 'png'),
               availableLevels: window.imageryAvailableLevels,
-              // Experimental: restrict all rasters to terrain availability
-              metadataUrl: getTerrainTileUrl(
-                  gaGlobalOptions.defaultTerrain, terrainTimestamp) + '/'
+              // Experimental: restrict all rasters from 0 - 17 to terrain
+              // availability and 18 to Swiss bbox
+              metadataUrl: '//3d.geo.admin.ch/imagery/'
             });
           }
           if (provider) {
