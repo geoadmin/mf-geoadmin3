@@ -394,7 +394,7 @@ goog.require('ga_urlutils_service');
           dfltWmtsNativeSubdomains, dfltWmtsMapProxySubdomains,
           wmsUrlTemplate, wmtsGetTileUrlTemplate,
           wmtsMapProxyGetTileUrlTemplate, terrainTileUrlTemplate,
-          layersConfigUrlTemplate, legendUrlTemplate) {
+          layersConfigUrlTemplate, legendUrlTemplate, imageryMetadataUrl) {
         var layers;
 
         // Returns a unique WMS template url (e.g. //wms{s}.geo.admin.ch)
@@ -659,14 +659,11 @@ goog.require('ga_urlutils_service');
                 window.minimumRetrievingLevel;
             var maxRetLod = gaMapUtils.getLodFromRes(config3d.minResolution);
             // Set maxLod as undefined deactivate client zoom.
-            var maxLod = (maxRetLod) ? undefined : 17;
+            var maxLod = (maxRetLod) ? undefined : 18;
             if (maxLod && config3d.resolutions) {
               maxLod = gaMapUtils.getLodFromRes(
                   config3d.resolutions[config3d.resolutions.length - 1]);
             }
-
-            var terrainTimestamp = this.getLayerTimestampFromYear(
-                gaGlobalOptions.defaultTerrain, gaTime.get());
             provider = new Cesium.UrlTemplateImageryProvider({
               url: params.url,
               subdomains: params.subdomains,
@@ -680,9 +677,9 @@ goog.require('ga_urlutils_service');
               tileHeight: params.tileSize,
               hasAlphaChannel: (format == 'png'),
               availableLevels: window.imageryAvailableLevels,
-              // Experimental: restrict all rasters to terrain availability
-              metadataUrl: getTerrainTileUrl(
-                  gaGlobalOptions.defaultTerrain, terrainTimestamp) + '/'
+              // Experimental: restrict all rasters from 0 - 17 to terrain
+              // availability and 18 to Swiss bbox
+              metadataUrl: imageryMetadataUrl
             });
           }
           if (provider) {
@@ -987,11 +984,11 @@ goog.require('ga_urlutils_service');
         };
       };
 
-      return new Layers(this.dfltWmsSubdomains,
-          this.dfltWmtsNativeSubdomains, this.dfltWmtsMapProxySubdomains,
-          this.wmsUrlTemplate, this.wmtsGetTileUrlTemplate,
-          this.wmtsMapProxyGetTileUrlTemplate, this.terrainTileUrlTemplate,
-          this.layersConfigUrlTemplate, this.legendUrlTemplate);
+      return new Layers(this.dfltWmsSubdomains, this.dfltWmtsNativeSubdomains,
+          this.dfltWmtsMapProxySubdomains, this.wmsUrlTemplate,
+          this.wmtsGetTileUrlTemplate, this.wmtsMapProxyGetTileUrlTemplate,
+          this.terrainTileUrlTemplate, this.layersConfigUrlTemplate,
+          this.legendUrlTemplate, this.imageryMetadataUrl);
     };
 
   });

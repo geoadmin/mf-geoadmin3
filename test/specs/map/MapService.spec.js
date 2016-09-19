@@ -809,13 +809,13 @@ describe('ga_map_service', function() {
         expect(params.minimumRetrievingLevel).to.eql(window.minimumRetrievingLevel);
         expect(params.maximumRetrievingLevel).to.eql(window.maximumRetrievingLevel);
         expect(params.minimumLevel).to.eql(undefined);
-        expect(params.maximumLevel).to.eql(17);
+        expect(params.maximumLevel).to.eql(18);
         expect(params.tilingScheme).to.be.an(Cesium.GeographicTilingScheme);
         expect(params.tileWidth).to.eql(256);
         expect(params.tileHeight).to.eql(256);
         expect(params.hasAlphaChannel).to.eql(true);
         expect(params.availableLevels).to.be(window.imagerAvailableLevels);
-        expect(params.metadataUrl).to.eql(expectTerrainUrl('ch.dummy.terrain.3d', '20180101') + '/');
+        expect(params.metadataUrl).to.eql('//3d.geo.admin.ch/imagery/');
         expect(prov.bodId).to.be('wmts3d');
         spy.restore();
       });

@@ -532,10 +532,10 @@ itemscope itemtype="http://schema.org/WebApplication"
 
     <!-- Modal: draw share -->
     <div ng-cloak translate-cloak ga-share-draw></div>
-    
+
     <!-- Modal: embed share -->
     <div ng-cloak translate-cloak ga-share-embed></div>
- 
+
     <!-- Popup: Feedback -->
     <div ga-popup="globals.feedbackPopupShown"
          ga-popup-options="{title:'problem_announcement', help:'70'}"
@@ -588,8 +588,8 @@ itemscope itemtype="http://schema.org/WebApplication"
           <div ng-if="toggle"
                ga-profile="feature"
                ga-profile-map="::map"
-               ga-profile-layer="layer" 
-               ga-profile-options="options"> 
+               ga-profile-layer="layer"
+               ga-profile-options="options">
           </div>
         </div>
       </div>
@@ -857,6 +857,7 @@ itemscope itemtype="http://schema.org/WebApplication"
           gaLayersProvider.wmtsGetTileUrlTemplate = '//wmts{s}.geo.admin.ch/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{y}/{x}.{Format}';
           gaLayersProvider.wmtsMapProxyGetTileUrlTemplate =  gaGlobalOptions.mapproxyUrl + '/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{x}/{y}.{Format}';
           gaLayersProvider.terrainTileUrlTemplate = '//terrain100.geo.admin.ch/1.0.0/{Layer}/default/{Time}/4326';
+          gaLayersProvider.imageryMetadataUrl = '//3d.geo.admin.ch/imagery/';
           if (apiOverwrite) {
             gaLayersProvider.layersConfigUrlTemplate = apiUrl + '/rest/services/all/MapServer/layersConfig?lang={Lang}';
           } else {
