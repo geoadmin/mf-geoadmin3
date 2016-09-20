@@ -700,7 +700,7 @@ goog.require('ga_styles_service');
         // create/update the file on s3
         ////////////////////////////////////
         var save = function(evt) {
-          if (layer.getSource().getFeatures().length == 0) {
+          if (layer && layer.getSource().getFeatures().length == 0) {
             //if no features to save, delete the file
             if (layer.adminId) {
               scope.statusMsgId = '';
