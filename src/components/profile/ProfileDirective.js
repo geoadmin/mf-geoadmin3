@@ -49,7 +49,7 @@ goog.require('ga_profile_service');
             scope.unitX = prof.unitX;
           });
         };
-        var updateDebounced = gaDebounce.debounce(update, 133, false,
+        var updateDebounced = gaDebounce.debounce(update, 1000, false,
             false);
 
         var updateSize = function(size) {
