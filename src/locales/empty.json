@@ -424,5 +424,13 @@
   "astra": "",
   "astra_service_link_href": "",
   "astra_service_link_label": "",
-  "topic_astra_tooltip": ""
+  "topic_astra_tooltip": "",
+  "profile_elevation_difference": "",
+  "profile_elevation_up": "",
+  "profile_elevation_down": "",
+  "profile_poi_up": "",
+  "profile_poi_down": "",
+  "profile_distance": "",
+  "profile_slope_distance": "",
+  "profile_hike_time": ""
 }
