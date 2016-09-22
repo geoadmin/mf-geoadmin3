@@ -26,8 +26,8 @@ goog.require('ga_topic_service');
   ]);
 
   module.directive('gaTooltip',
-      function($timeout, $http, $q, $translate, $sce, gaPopup, gaLayers,
-          gaBrowserSniffer, gaMapClick, gaDebounce, gaPreviewFeatures,
+      function($timeout, $http, $q, $translate, $sce, gaPopup,
+          gaLayers, gaBrowserSniffer, gaMapClick, gaDebounce, gaPreviewFeatures,
           gaMapUtils, gaTime, gaTopic, gaIdentify, gaGlobalOptions,
           gaPermalink, gaIFrameCom, gaUrlUtils, gaLang) {
         var mouseEvts = '';
@@ -469,6 +469,14 @@ goog.require('ga_topic_service');
               }
             };
 
+            var storeFeature = function(layerId, feature) {
+              if (!featuresByLayerId[layerId]) {
+                featuresByLayerId[layerId] = {};
+              }
+              var featureId = feature.getId();
+              featuresByLayerId[layerId][featureId] = feature;
+            };
+
             // Highlight the features found
             var showFeatures = function(foundFeatures, coordinate,
                 nohighlight) {
@@ -485,9 +493,6 @@ goog.require('ga_topic_service');
                 angular.forEach(foundFeatures, function(value) {
                   if (value instanceof ol.Feature) {
                     var layerId = value.get('layerId');
-                    if (!featuresByLayerId[layerId]) {
-                      featuresByLayerId[layerId] = {};
-                    }
                     var feature = new ol.Feature(value.getGeometry());
                     feature.setId(value.getId());
                     feature.set('layerId', layerId);
@@ -496,11 +501,8 @@ goog.require('ga_topic_service');
                       showPopup(value.get('htmlpopup'), value);
                     }
                     // Store the ol feature for highlighting
-                    featuresByLayerId[layerId][feature.getId()] = feature;
+                    storeFeature(layerId, feature);
                   } else {
-                    if (!featuresByLayerId[value.layerBodId]) {
-                      featuresByLayerId[value.layerBodId] = {};
-                    }
                     //draw feature, but only if it should be drawn
                     if (!nohighlight &&
                         gaLayers.getLayer(value.layerBodId) &&
@@ -510,10 +512,7 @@ goog.require('ga_topic_service');
                       for (var i = 0, ii = features.length; i < ii; ++i) {
                         features[i].set('layerId', value.layerBodId);
                         gaPreviewFeatures.add(map, features[i]);
-
-                        // Store the ol feature for highlighting
-                        featuresByLayerId[value.layerBodId][value.id] =
-                            features[i];
+                        storeFeature(value.layerBodId, features[i]);
                       }
                     }
                     var mapSize = map.getSize();
