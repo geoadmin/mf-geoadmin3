@@ -36,7 +36,10 @@ goog.require('ga_throttle_service');
         var map = scope.map;
         var view = map.getView();
         var accuracyFeature = new ol.Feature();
-        var positionFeature = new ol.Feature(new ol.geom.Point([0, 0]));
+        var positionFeature = new ol.Feature({
+          geometry: new ol.geom.Point([0, 0]),
+          label: 'Geolocation' // TODO to be translated
+        });
         var featuresOverlay = gaMapUtils.getFeatureOverlay(
           [accuracyFeature, positionFeature],
           gaStyleFactory.getStyleFunction('geolocation')

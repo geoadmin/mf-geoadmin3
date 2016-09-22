@@ -570,10 +570,12 @@ goog.require('ga_topic_service');
 
             // Create the html popup for a feature then display it.
             var showVectorFeature = function(feature, layer) {
+              var label = layer.label ||
+                  $translate.instant(feature.getProperties().label);
               var htmlpopup =
                 '<div id="{{id}}" class="htmlpopup-container">' +
                   '<div class="htmlpopup-header">' +
-                    '<span>' + layer.label + ' &nbsp;</span>' +
+                    '<span>' + label + ' &nbsp;</span>' +
                     '{{name}}' +
                   '</div>' +
                   '<div class="htmlpopup-content">' +
