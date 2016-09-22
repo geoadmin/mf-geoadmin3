@@ -168,7 +168,7 @@ goog.require('ga_previewfeatures_service');
               scope.$emit('gaUpdateFeatureTree', scope.tree);
             };
 
-            // Selects a feature and displays the htm popup corresponding
+            // Selects a feature and displays the corresponding html popup
             var selectAndTriggerTooltip = function(feature) {
               featureSelected = feature;
               loadGeojson(scope, feature).then(function() {
