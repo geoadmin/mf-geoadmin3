@@ -267,7 +267,9 @@ goog.require('ga_previewfeatures_service');
 
             // When language change
             scope.$on('gaLayersTranslationChange', function(evt, newLayers) {
-              updateTree(scope.tree);
+              if (scope.isActive) {
+                updateTree(scope.tree);
+              }
             });
 
             // When another directive calls for an update
