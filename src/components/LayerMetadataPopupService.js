@@ -14,9 +14,35 @@ goog.require('ga_wms_service');
   ]);
 
   module.provider('gaLayerMetadataPopup', function() {
-    this.$get = function($translate, $rootScope, $sce, gaPopup, gaLayers,
-        gaMapUtils, gaWms) {
+    this.$get = function($translate, $rootScope, $sce, $q, gaPopup, gaLayers,
+        gaMapUtils, gaWms, gaLang) {
       var popupContent = '<div ng-bind-html="options.result.html"></div>';
+
+      // Called to update the content
+      var updateContent = function(popup, layer) {
+        var promise;
+        if (layer.bodId) {
+          promise = gaLayers.getMetaDataOfLayer(layer.bodId);
+        } else if (gaMapUtils.isExternalWmsLayer(layer)) {
+          promise = gaWms.getLegend(layer);
+        }
+        return promise.then(function(resp) {
+          popup.scope.options.result.html = $sce.trustAsHtml(resp.data);
+          popup.scope.options.lang = gaLang.get();
+        }, function() {
+          popup.scope.options.lang = undefined;
+          //FIXME: better error handling
+          alert('Could not retrieve information for ' + layer.id);
+        });
+      };
+
+      var updateContentLang = function(popup, layer, newLang, open) {
+        if ((open || popup.scope.toggle) &&
+            popup.scope.options.lang != newLang) {
+          return updateContent(popup, layer);
+        }
+        return $q.when();
+      };
 
       var LayerMetadataPopup = function() {
         var popups = {};
@@ -24,22 +50,6 @@ goog.require('ga_wms_service');
         var create = function(layer) {
           var result = {html: ''},
               popup;
-
-          // Called to update the content
-          var updateContent = function() {
-            var promise;
-            if (layer.bodId) {
-              promise = gaLayers.getMetaDataOfLayer(layer.bodId);
-            } else if (gaMapUtils.isExternalWmsLayer(layer)) {
-              promise = gaWms.getLegend(layer);
-            }
-            return promise.then(function(resp) {
-              result.html = $sce.trustAsHtml(resp.data);
-            }, function() {
-              //FIXME: better error handling
-              alert('Could not retrieve information for ' + layer.id);
-            });
-          };
 
           //We assume popup does not exist yet
           popup = gaPopup.create({
@@ -55,11 +65,13 @@ goog.require('ga_wms_service');
           popups[layer.id] = popup;
 
           // Open popup only on success
-          updateContent().then(function() {
+          updateContent(popup, layer).then(function() {
             popup.open();
           });
 
-          $rootScope.$on('$translateChangeEnd', updateContent);
+          $rootScope.$on('$translateChangeEnd', function(evt, newLang) {
+            updateContentLang(popup, layer, newLang);
+          });
         };
 
         this.toggle = function(olLayerOrBodId) {
@@ -72,7 +84,10 @@ goog.require('ga_wms_service');
             if (popup.scope.toggle) {
               popup.close();
             } else {
-              popup.open();
+              updateContentLang(popup, layer, gaLang.get(), true)
+                  .then(function() {
+                popup.open();
+              });
             }
           } else {
             create(layer);
