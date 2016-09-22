@@ -98,8 +98,8 @@ goog.require('ga_topic_service');
           var featureFound;
           map.forEachFeatureAtPixel(pixel, function(feature, layer) {
             // vectorLayer is defined when a feature is clicked.
-            // onclick
-            if (layer) {
+            // onclick, geolocation circle is unselectable
+            if (layer && !feature.getProperties().unselectable) {
               if (!vectorLayer || vectorLayer == layer) {
                 if (!featureFound) {
                   featureFound = feature;
