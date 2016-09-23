@@ -29,7 +29,7 @@ goog.require('ga_topic_service');
       function($timeout, $http, $q, $translate, $sce, gaPopup, gaLayers,
           gaBrowserSniffer, gaMapClick, gaDebounce, gaPreviewFeatures,
           gaMapUtils, gaTime, gaTopic, gaIdentify, gaGlobalOptions,
-          gaPermalink, gaIFrameCom, gaUrlUtils) {
+          gaPermalink, gaIFrameCom, gaUrlUtils, gaLang) {
         var mouseEvts = '';
         if (!gaBrowserSniffer.mobile) {
           mouseEvts = 'ng-mouseenter="options.onMouseEnter($event,' +
@@ -431,7 +431,7 @@ goog.require('ga_topic_service');
                     sourceCoord || coordinate,
                     sourceRes || mapRes,
                     sourceProj || mapProj,
-                    {'INFO_FORMAT': 'text/plain'});
+                    {'INFO_FORMAT': 'text/plain', 'LANG': gaLang.get()});
                 if (!is3dActive() && url) {
                   url = gaUrlUtils.proxifyUrl(url);
                   all.push($http.get(url, {
