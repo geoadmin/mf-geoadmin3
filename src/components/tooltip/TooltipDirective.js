@@ -44,7 +44,7 @@ goog.require('ga_topic_service');
             '<div ng-bind-html="html.snippet"></div>' +
             '<div ng-if="::html.showVectorInfos" class="ga-vector-tools">' +
               '<div ga-measure="::html.feature"></div>' +
-              '<div ng-if="::!html.mobile" ' +
+              '<div ng-if="::!html.showProfile" ' +
                    'ga-profile-bt="::html.feature"></div>' +
             '</div>' +
             '<div ga-shop ' +
@@ -699,7 +699,8 @@ goog.require('ga_topic_service');
                 showVectorInfos: (value instanceof ol.Feature),
                 clickGeometry: new ol.geom.Point(scope.clickCoordinate),
                 snippet: $sce.trustAsHtml(html),
-                mobile: gaBrowserSniffer.mobile
+                showProfile: !gaBrowserSniffer.mobile ||
+                    (value instanceof ol.Feature && value.getGeometry())
               });
             };
           }
