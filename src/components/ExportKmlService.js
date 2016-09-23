@@ -52,6 +52,10 @@ goog.require('ga_browsersniffer_service');
             }
             var clone = f.clone();
             clone.setId(f.getId());
+            var description = f.get('description');
+            if (description) {
+              clone.set('description', f.get('description'));
+            }
             clone.getGeometry().transform(projection, 'EPSG:4326');
             var styles;
             // TODO should we test getStyle() too?
