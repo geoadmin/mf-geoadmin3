@@ -84,7 +84,8 @@ goog.require('ga_urlutils_service');
         placement: 'auto right',
         title: $translate.instant('time_select_year') +
             '<button class="ga-icon ga-btn fa fa-remove"></button>',
-        trigger: 'focus'
+        trigger: 'focus',
+        delay: 150 // For IE9 let it time to capture the click event
       }).popover('show');
       element.on('scroll', callback);
       win.on('resize', callback);
