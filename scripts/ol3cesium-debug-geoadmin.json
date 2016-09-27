@@ -1,8 +1,8 @@
 {
-  "exports": ["*"],
   "src": [
-    "../ol3/build/ol.ext/*.js", 
-    "../ol3/src/**/*.js",
-    "src/**/*.js"
-  ]
+    "src/**/*.js",
+    "ol3/src/**/*.js",
+    "ol3/build/ol.ext/*.js"
+  ],
+  "exports": ["*"]
 }

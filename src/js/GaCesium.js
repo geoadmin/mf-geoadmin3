@@ -112,6 +112,9 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions,
     scene.fog.enabled = fogEnabled;
     scene.fog.density = fogDensity;
     scene.fog.screenSpaceErrorFactor = fogSseFactor;
+    scene.screenSpaceCameraController.inertiaSpin = 0.5;
+    scene.screenSpaceCameraController.inertiaTranslate = 0.8;
+    scene.screenSpaceCameraController.inertiaZoom = 0.9;
     enableOl3d(cesiumViewer, enabled);
     return cesiumViewer;
   };
