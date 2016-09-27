@@ -2,6 +2,12 @@
 
   .ga-catalogitem-node {
 
+    button {
+      &:focus {
+        box-shadow: 0 0 3px 0px rgb(77, 144, 254);
+      }
+    }
+
     a {
       color: black;
       display: block;
@@ -60,8 +66,7 @@
       margin: 0;
     }
     input[type=checkbox] {
-      margin-left: .5em;
-      margin-right: .5em;
+      margin-top: .7em;
     }
   }
 
@@ -69,7 +74,7 @@
     margin-top: 0px;
     margin-bottom: 0px;
     padding-left: 0px;
-    
+
     &:not(.ga-catalogitem-selected) label:hover {
       color: #666;
     }
