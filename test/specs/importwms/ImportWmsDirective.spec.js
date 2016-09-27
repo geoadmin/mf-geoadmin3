@@ -8,6 +8,9 @@ describe('ga_importwms_directive', function() {
       $provide.value('gaLang', {
         get: function() {
           return 'somelang';
+        },
+        getNoRm: function() {
+          return 'somelang';
         }
       });
     });

@@ -433,5 +433,7 @@
   "profile_distance": "",
   "profile_slope_distance": "",
   "profile_hike_time": "",
-  "geolocation": ""
+  "geolocation": "",
+  "contextpopup_lv03_url": "",
+  "contextpopup_lv95_url": ""
 }

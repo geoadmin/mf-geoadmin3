@@ -28,7 +28,7 @@ goog.require('ga_translation_service');
 
         //Returns a promise
         this.get = function(id) {
-          var lang = fixLang(gaLang.get());
+          var lang = gaLang.getNoRm();
 
           //get it from fusion tables
           var sql = sqlTmpl
@@ -44,11 +44,6 @@ goog.require('ga_translation_service');
             return response.data;
           });
         };
-
-        //we only support certain languages
-        function fixLang(l) {
-          return (l == 'rm') ? 'de' : l;
-        }
       };
 
       return new Help();
