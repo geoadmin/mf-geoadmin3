@@ -1,5 +1,24 @@
 describe('ga_profile_service', function() {
-  var gaProfile, gaUrlUtils, $rootScope, $httpBackend, gaTimeFormat, $timeout, gaGlobalOptions;
+  var gaProfile, gaUrlUtils, $rootScope, $httpBackend, gaTimeFormat, $timeout, gaGlobalOptions, testTooltips;
+
+  testTooltips = function(profile) {
+    expect(profile.group.select('.ga-profile-elevation-difference title')
+        .length).to.be(1);
+    expect(profile.group.select('.ga-profile-elevation-up title')
+        .length).to.be(1);
+    expect(profile.group.select('.ga-profile-elevation-down title')
+        .length).to.be(1);
+    expect(profile.group.select('.ga-profile-poi-up title')
+        .length).to.be(1);
+    expect(profile.group.select('.ga-profile-poi-down title')
+        .length).to.be(1);
+    expect(profile.group.select('.ga-profile-distance title')
+        .length).to.be(1);
+    expect(profile.group.select('.ga-profile-slopeDist title')
+        .length).to.be(1);
+    expect(profile.group.select('.ga-profile-hikTime title')
+        .length).to.be(1);
+  };
 
   beforeEach(function() {
 
@@ -104,23 +123,24 @@ describe('ga_profile_service', function() {
               .text()).to.be('undefined [m]');
           expect(profile.group.select('text.ga-profile-label-y')
               .text()).to.be('undefined [m]');
-          expect(profile.group.select('text.ga-profile-elevation-difference')
+          expect(profile.group.select('.ga-profile-elevation-difference text.ga-profile-icon-text')
               .text()).to.be('-0.1m');
-          expect(profile.group.select('text.ga-profile-elevation-up')
+          expect(profile.group.select('.ga-profile-elevation-up text.ga-profile-icon-text')
               .text()).to.be('0.00m');
-          expect(profile.group.select('text.ga-profile-elevation-down')
+          expect(profile.group.select('.ga-profile-elevation-down text.ga-profile-icon-text')
               .text()).to.be('0.10m');
-          expect(profile.group.select('text.ga-profile-poi-up')
+          expect(profile.group.select('.ga-profile-poi-up text.ga-profile-icon-text')
               .text()).to.be('429.80m');
-          expect(profile.group.select('text.ga-profile-poi-down')
+          expect(profile.group.select('.ga-profile-poi-down text.ga-profile-icon-text')
               .text()).to.be('429.70m');
-          expect(profile.group.select('text.ga-profile-distance')
+          expect(profile.group.select('.ga-profile-distance text.ga-profile-icon-text')
               .text()).to.be('211.50m');
-          expect(profile.group.select('text.ga-profile-slopeDist')
+          expect(profile.group.select('.ga-profile-slopeDist text.ga-profile-icon-text')
               .text()).to.be('211.50m');
-          expect(profile.group.select('text.ga-profile-hikTime')
+          expect(profile.group.select('.ga-profile-hikTime text.ga-profile-icon-text')
               .text()).to.be('3min');
 
+          testTooltips(profile);
           done();
         });
         $httpBackend.flush();
@@ -201,23 +221,24 @@ describe('ga_profile_service', function() {
                 .text()).to.be('undefined [m]');
             expect(profile.group.select('text.ga-profile-label-y')
                 .text()).to.be('undefined [m]');
-            expect(profile.group.select('text.ga-profile-elevation-difference')
+            expect(profile.group.select('.ga-profile-elevation-difference text.ga-profile-icon-text')
                 .text()).to.be('1\'457m');
-            expect(profile.group.select('text.ga-profile-elevation-up')
+            expect(profile.group.select('.ga-profile-elevation-up text.ga-profile-icon-text')
                 .text()).to.be('1\'457m');
-            expect(profile.group.select('text.ga-profile-elevation-down')
+            expect(profile.group.select('.ga-profile-elevation-down text.ga-profile-icon-text')
                 .text()).to.be('0.00m');
-            expect(profile.group.select('text.ga-profile-poi-up')
+            expect(profile.group.select('.ga-profile-poi-up text.ga-profile-icon-text')
                 .text()).to.be('1\'457m');
-            expect(profile.group.select('text.ga-profile-poi-down')
+            expect(profile.group.select('.ga-profile-poi-down text.ga-profile-icon-text')
                 .text()).to.be('0.00m');
-            expect(profile.group.select('text.ga-profile-distance')
+            expect(profile.group.select('.ga-profile-distance text.ga-profile-icon-text')
                 .text()).to.be('211.50m');
-            expect(profile.group.select('text.ga-profile-slopeDist')
+            expect(profile.group.select('.ga-profile-slopeDist text.ga-profile-icon-text')
                 .text()).to.be('1.47km');
-            expect(profile.group.select('text.ga-profile-hikTime')
+            expect(profile.group.select('.ga-profile-hikTime text.ga-profile-icon-text')
                 .text()).to.be('4h 8min');
 
+            testTooltips(profile);
             done();
           });
         });
@@ -248,23 +269,24 @@ describe('ga_profile_service', function() {
                 .text()).to.be('undefined [km]');
             expect(profile.group.select('text.ga-profile-label-y')
                 .text()).to.be('undefined [m]');
-            expect(profile.group.select('text.ga-profile-elevation-difference')
+            expect(profile.group.select('.ga-profile-elevation-difference text.ga-profile-icon-text')
                 .text()).to.be('1\'457m');
-            expect(profile.group.select('text.ga-profile-elevation-up')
+            expect(profile.group.select('.ga-profile-elevation-up text.ga-profile-icon-text')
                 .text()).to.be('1\'457m');
-            expect(profile.group.select('text.ga-profile-elevation-down')
+            expect(profile.group.select('.ga-profile-elevation-down text.ga-profile-icon-text')
                 .text()).to.be('0.00m');
-            expect(profile.group.select('text.ga-profile-poi-up')
+            expect(profile.group.select('.ga-profile-poi-up text.ga-profile-icon-text')
                 .text()).to.be('1\'457m');
-            expect(profile.group.select('text.ga-profile-poi-down')
+            expect(profile.group.select('.ga-profile-poi-down text.ga-profile-icon-text')
                 .text()).to.be('0.00m');
-            expect(profile.group.select('text.ga-profile-distance')
+            expect(profile.group.select('.ga-profile-distance text.ga-profile-icon-text')
                 .text()).to.be('22.21km');
-            expect(profile.group.select('text.ga-profile-slopeDist')
+            expect(profile.group.select('.ga-profile-slopeDist text.ga-profile-icon-text')
                 .text()).to.be('22.25km');
-            expect(profile.group.select('text.ga-profile-hikTime')
+            expect(profile.group.select('.ga-profile-hikTime text.ga-profile-icon-text')
                 .text()).to.be('6h 30min');
 
+            testTooltips(profile);
             done();
           });
         });

@@ -418,21 +418,21 @@ goog.require('ga_urlutils_service');
           //For having one pixel space below the elevation labels
           var elevLabelY = height + options.margin.bottom - 1;
 
-          //Total Elevation Difference
+          // Total Elevation Difference
           // Using Unicode for the icons inside a normal text element
           // by setting the font-family to 'FontAwesome'
           // http://fortawesome.github.io/Font-Awesome/3.2.1/cheatsheet/
-          //Icon for total elevation diff
-          group.append('text')
+          var g1 = group.append('g')
+              .attr('class', 'ga-profile-elevation-difference');
+          g1.append('title');
+          g1.append('text')
               .attr('class', 'ga-profile-icon')
               .attr('x', 0)
               .attr('y', elevLabelY)
               .attr('text-anchor', 'start')
               .text(' \uf218 ');
-
-          //Number for total elevation diff
-          group.append('text')
-              .attr('class', 'ga-profile-elevation-difference')
+          g1.append('text')
+              .attr('class', 'ga-profile-icon-text')
               .attr('font-size', '0.9em')
               .attr('x', 12)
               .attr('y', elevLabelY)
@@ -440,120 +440,119 @@ goog.require('ga_urlutils_service');
               .text(measureFilter(this.diff,
                     'distance', 'm', 2, true));
 
-          //Icon for elevation up
-          group.append('text')
+          var g2 = group.append('g')
+              .attr('class', 'ga-profile-elevation-up');
+          g2.append('title');
+          g2.append('text')
               .attr('class', 'ga-profile-icon-updown')
               .attr('x', 80)
               .attr('y', elevLabelY + 4)
               .attr('text-anchor', 'start')
               .text(' \uf213 ');
-
-          //Number for elevation Up
-          group.append('text')
-              .attr('class', 'ga-profile-elevation-up')
+          g2.append('text')
+              .attr('class', 'ga-profile-icon-text')
               .attr('font-size', '0.9em')
               .attr('x', 102)
               .attr('y', elevLabelY)
               .style('text-anchor', 'start');
 
-          //Icon for elevation down
-          group.append('text')
+          var g3 = group.append('g')
+              .attr('class', 'ga-profile-elevation-down');
+          g3.append('title');
+          g3.append('text')
               .attr('class', 'ga-profile-icon-updown')
               .attr('x', 160)
               .attr('y', elevLabelY + 4)
               .attr('text-anchor', 'start')
               .text(' \uf212 ');
-
-          //Number for elevation Down
-          group.append('text')
-              .attr('class', 'ga-profile-elevation-down')
+          g3.append('text')
+              .attr('class', 'ga-profile-icon-text')
               .attr('font-size', '0.9em')
               .attr('x', 182)
               .attr('y', elevLabelY)
               .style('text-anchor', 'start');
 
-          //Icon for the highest point
-          group.append('text')
+          var g4 = group.append('g')
+              .attr('class', 'ga-profile-poi-up');
+          g4.append('title');
+          g4.append('text')
               .attr('class', 'ga-profile-icon')
               .attr('x', 240)
               .attr('y', elevLabelY)
               .attr('text-anchor', 'start')
               .text(' \uf217');
-
-          //Number for highest point
-          group.append('text')
-              .attr('class', 'ga-profile-poi-up')
+          g4.append('text')
+              .attr('class', 'ga-profile-icon-text')
               .attr('font-size', '0.9em')
               .attr('x', 258)
               .attr('y', elevLabelY)
               .style('text-anchor', 'start');
 
-          //Icon for the lowest point
-          group.append('text')
+          var g5 = group.append('g')
+              .attr('class', 'ga-profile-poi-down');
+          g5.append('title');
+          g5.append('text')
               .attr('class', 'ga-profile-icon')
               .attr('x', 320)
               .attr('y', elevLabelY)
               .attr('text-anchor', 'start')
               .text(' \uf214');
-
-          //Number for the lowest point
-          group.append('text')
-              .attr('class', 'ga-profile-poi-down')
+          g5.append('text')
+              .attr('class', 'ga-profile-icon-text')
               .attr('font-size', '0.9em')
               .attr('x', 338)
               .attr('y', elevLabelY)
               .style('text-anchor', 'start');
 
-          //Icon for the distance
-          group.append('text')
+          var g6 = group.append('g')
+              .attr('class', 'ga-profile-distance');
+          g6.append('title');
+          g6.append('text')
               .attr('class', 'ga-profile-dist')
               .attr('x', 400)
               .attr('y', elevLabelY + 2)
               .attr('text-anchor', 'start')
               .text(' \uf22e');
-
-          group.append('text')
+          g6.append('text')
               .attr('class', 'ga-profile-dist')
               .attr('x', 415)
               .attr('y', elevLabelY + 2)
               .attr('text-anchor', 'start')
               .text(' \uf220');
-
-          //Number for the distance
-          group.append('text')
-              .attr('class', 'ga-profile-distance')
+          g6.append('text')
+              .attr('class', 'ga-profile-icon-text')
               .attr('font-size', '0.9em')
               .attr('x', 430)
               .attr('y', elevLabelY)
               .style('text-anchor', 'start');
 
-          //Icons for the sum of the slope/surface distances
-          group.append('text')
+          var g7 = group.append('g')
+              .attr('class', 'ga-profile-slopeDist');
+          g7.append('title');
+          g7.append('text')
               .attr('class', 'ga-profile-dist')
               .attr('x', 490)
               .attr('y', elevLabelY + 2)
               .attr('text-anchor', 'start')
               .text(' \uf220');
-
-          //Number for the sum of the slope/surface distances
-          group.append('text')
-              .attr('class', 'ga-profile-slopeDist')
+          g7.append('text')
+              .attr('class', 'ga-profile-icon-text')
               .attr('font-size', '0.9em')
               .attr('x', 505)
               .attr('y', elevLabelY)
               .style('text-anchor', 'start');
 
-          //Icon for the hiking time
-          group.append('text')
+          var g8 = group.append('g')
+              .attr('class', 'ga-profile-hikTime');
+          g8.append('title');
+          g8.append('text')
               .attr('class', 'ga-profile-icon')
               .attr('x', 570)
               .attr('y', elevLabelY + 1)
               .attr('text-anchor', 'start')
               .text(' \uf219');
-
-          //Number for the hiking time
-          group.append('text')
-              .attr('class', 'ga-profile-hikTime')
+          g8.append('text')
+              .attr('class', 'ga-profile-icon-text')
               .attr('font-size', '0.9em')
               .attr('x', 585)
               .attr('y', elevLabelY)
@@ -569,23 +568,54 @@ goog.require('ga_urlutils_service');
           this.group.select('text.ga-profile-label-y')
               .text($translate.instant(options.yLabel) + ' [m]');
 
-          this.group.select('text.ga-profile-elevation-difference')
+          this.group.select('.ga-profile-elevation-difference ' +
+                  'text.ga-profile-icon-text')
               .text(elevationFilter(this.diff));
-          this.group.select('text.ga-profile-elevation-up')
-              .text(elevationFilter(this.twoDiff[0]));
-          this.group.select('text.ga-profile-elevation-down')
-              .text(elevationFilter(this.twoDiff[1]));
-          this.group.select('text.ga-profile-poi-up')
-              .text(elevationFilter(this.elPoi[0]));
-          this.group.select('text.ga-profile-poi-down')
-              .text(elevationFilter(this.elPoi[1]));
-          this.group.select('text.ga-profile-distance')
-              .text(distanceFilter(this.dist));
-          this.group.select('text.ga-profile-slopeDist')
-              .text(distanceFilter(this.slopeDist));
+          this.group.select('.ga-profile-elevation-difference title')
+              .text($translate.instant('profile_elevation_difference'));
 
-          this.group.select('text.ga-profile-hikTime')
+          this.group.select('.ga-profile-elevation-up ' +
+                  'text.ga-profile-icon-text')
+              .text(elevationFilter(this.twoDiff[0]));
+          this.group.select('.ga-profile-elevation-up title')
+              .text($translate.instant('profile_elevation_up'));
+
+          this.group.select('.ga-profile-elevation-down ' +
+                  'text.ga-profile-icon-text')
+              .text(elevationFilter(this.twoDiff[1]));
+          this.group.select('.ga-profile-elevation-down title')
+              .text($translate.instant('profile_elevation_down'));
+
+          this.group.select('.ga-profile-poi-up ' +
+                  'text.ga-profile-icon-text')
+              .text(elevationFilter(this.elPoi[0]));
+          this.group.select('.ga-profile-poi-up title')
+              .text($translate.instant('profile_poi_up'));
+
+          this.group.select('.ga-profile-poi-down ' +
+                  'text.ga-profile-icon-text')
+              .text(elevationFilter(this.elPoi[1]));
+          this.group.select('.ga-profile-poi-down title')
+              .text($translate.instant('profile_poi_down'));
+
+          this.group.select('.ga-profile-distance ' +
+                  'text.ga-profile-icon-text')
+              .text(distanceFilter(this.dist));
+          this.group.select('.ga-profile-distance title')
+              .text($translate.instant('profile_distance'));
+
+          this.group.select('.ga-profile-slopeDist ' +
+                  'text.ga-profile-icon-text')
+              .text(distanceFilter(this.slopeDist));
+          this.group.select('.ga-profile-slopeDist title')
+              .text($translate.instant('profile_slope_distance'));
+
+
+          this.group.select('.ga-profile-hikTime ' +
+                  'text.ga-profile-icon-text')
               .text(gaTimeFormatFilter(this.hikTime));
+          this.group.select('.ga-profile-hikTime title')
+              .text($translate.instant('profile_hike_time'));
         };
 
         this.updateProperties = function(data) {
