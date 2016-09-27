@@ -112,6 +112,7 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions,
     scene.fog.enabled = fogEnabled;
     scene.fog.density = fogDensity;
     scene.fog.screenSpaceErrorFactor = fogSseFactor;
+    scene.screenSpaceCameraController.minimumZoomDistance = 2;
     enableOl3d(cesiumViewer, enabled);
     return cesiumViewer;
   };
@@ -135,10 +136,6 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions,
         }
       });
     }
-    // Set the minimumZoomDistance according to the camera height
-    var minimumZoomDistance = pos.height > 1800 ? 400 : 200;
-    this.screenSpaceCameraController.minimumZoomDistance =
-        gaGlobalOptions.pegman ? 2 : minimumZoomDistance;
   };
 
   var enableOl3d = function(ol3d, enable) {
