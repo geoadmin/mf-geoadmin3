@@ -2,7 +2,7 @@
 
 import sys
 
-from helpers import waitForUrlChange
+from helpers import waitForUrlChange, pageLoadWait
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
@@ -215,14 +215,7 @@ def runSearchTest(driver, target, is_top_browser):
     # swissearch parameter with multiple results
     targetUrl = target + '/?lang=de'
     driver.get(targetUrl)
-    # wait until the page is loaded. We know this when the title contain
-    # (S)chweiz
-    try:
-        WebDriverWait(driver, 10).until(EC.title_contains('chweiz'))
-    except Exception as e:
-        print '-----------'
-        print str(e)
-        raise Exception('Unable to load map.geo.admin page!')
+    pageLoadWait(driver, targetUrl)
 
     # Test interactions with input element, dropdown list, clear btn etc..
     inputSearchEl = driver.find_element_by_class_name(inputClass)

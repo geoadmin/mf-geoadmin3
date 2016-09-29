@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*
 
 import sys
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from helpers import waitForUrlChange
+from helpers import waitForUrlChange, pageLoadWait
 
 QUERYSTRING_OF_AVENCHES = 'X=191917.41&Y=569374.22&zoom=6'
 QUERYSTRING_WHEN_ZOOM_IN = 'zoom=2'
@@ -15,15 +13,7 @@ def runMobileTest(driver, target, is_top_browser):
     target_url = target + '?lang=de'
     driver.get(target_url)
 
-    # wait until the page is loaded. We know this when the title contain
-    # (S)chweiz
-    try:
-        WebDriverWait(driver, 10).until(EC.title_contains('chweiz'))
-    except Exception as e:
-        print '-----------'
-        print str(e)
-        raise Exception("Unable to load map.geo.admin page!")
-
+    pageLoadWait(driver, target_url)
     current_url = driver.current_url
     # Switch to Mobile Version
     driver.find_element_by_link_text("Mobile Version").click()

@@ -12,6 +12,8 @@ from print_test import runPrintTest
 from mobile_test import runMobileTest
 from wms_test import runWmsTest
 from checker_test import runCheckerTest
+from tooltip_test import runTooltipTest
+
 DEFAULT_WAIT_FOUND = 5
 
 
@@ -91,8 +93,8 @@ if __name__ == '__main__':
     ]
 
     config_test_list = {
-        "firefox": ['start', 'mobile', 'search', 'checker', 'wms'],
-        "chrome": ['start', 'mobile', 'search', 'checker', 'wms'],
+        "firefox": ['start', 'mobile', 'search', 'checker', 'wms', 'tooltip'],
+        "chrome": ['start', 'mobile', 'search', 'checker', 'wms', 'tooltip'],
         "internet explorer": ['start'],
         "opera": ['start'],
         "safari": ['start'],
@@ -112,7 +114,8 @@ if __name__ == '__main__':
         'search': runSearchTest,
         'kml': runKmlTest,
         'print': runPrintTest,
-        'checker': runCheckerTest
+        'checker': runCheckerTest,
+        'tooltip': runTooltipTest
     }
 
     if len(tests) > 0 and tests[0] == 'all':
