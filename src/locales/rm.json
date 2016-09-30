@@ -172,6 +172,7 @@
 "geoloc_pos_unavailable": "La posiziun na po betg vegnir fixada. Messadi da sbagl da l'apparat (WiFi, GPS) Controllai la configuraziun.",
 "geoloc_time_out": "n timeout da Voss apparat tar la fixaziun da la posiziun è vegnì cuntanschì. Empruvai per plaschair pli tard.",
 "geoloc_unknown": "Pervia d'in sbagl nunenconuschent n'ha la posiziun betg pudì vegnir fixada cun success. Controllai la configuraziun per la localisaziun, la sfera privata ed il firewall da Voss apparat.",
+"geolocation": "Geolocation",
 "geothermie": "Geotermia (BETA)",
 "geothermie_service_link_href": "http://www.geologieportal.ch/internet/geologieportal/de/home/topics/energy/geothermalenergy/shortdesc.html",
 "geothermie_service_link_label": "Ulteriuras infurmaziuns",

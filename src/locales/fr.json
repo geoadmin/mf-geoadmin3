@@ -172,6 +172,7 @@
 "geoloc_pos_unavailable": "L'acquisition de la position a échoué parce qu'au moins une source interne de positionnement de votre mobile (WiFi, GPS) a retourné une erreur interne.",
 "geoloc_time_out": "La durée maximale d'acquisition de la position a été dépassé avant d'avoir reçu l'information. Réessayez plus tard.",
 "geoloc_unknown": "Désolé, pour une raison inconnue la service de géolocalisation ne fonctionne pas. Vérifiez les paramètres de ce  service, du mode privé et du firewall.",
+"geolocation": "Géolocalisation",
 "geothermie": "Géothermie (BETA)",
 "geothermie_service_link_href": "http://www.geologieportal.ch/internet/geologieportal/fr/home/topics/energy/geothermalenergy/shortdesc.html",
 "geothermie_service_link_label": "Lire la suite",

@@ -44,7 +44,8 @@ goog.require('ga_topic_service');
             '<div ng-bind-html="html.snippet"></div>' +
             '<div ng-if="::html.showVectorInfos" class="ga-vector-tools">' +
               '<div ga-measure="::html.feature"></div>' +
-              '<div ga-profile-bt="::html.feature"></div>' +
+              '<div ng-if="::!html.showProfile" ' +
+                   'ga-profile-bt="::html.feature"></div>' +
             '</div>' +
             '<div ga-shop ' +
                  'ga-shop-map="::html.map" ' +
@@ -97,8 +98,8 @@ goog.require('ga_topic_service');
           var featureFound;
           map.forEachFeatureAtPixel(pixel, function(feature, layer) {
             // vectorLayer is defined when a feature is clicked.
-            // onclick
-            if (layer) {
+            // onclick, geolocation circle is unselectable
+            if (layer && !feature.getProperties().unselectable) {
               if (!vectorLayer || vectorLayer == layer) {
                 if (!featureFound) {
                   featureFound = feature;
@@ -569,10 +570,12 @@ goog.require('ga_topic_service');
 
             // Create the html popup for a feature then display it.
             var showVectorFeature = function(feature, layer) {
+              var label = layer.label ||
+                  $translate.instant(feature.getProperties().label);
               var htmlpopup =
                 '<div id="{{id}}" class="htmlpopup-container">' +
                   '<div class="htmlpopup-header">' +
-                    '<span>' + layer.label + ' &nbsp;</span>' +
+                    '<span>' + label + ' &nbsp;</span>' +
                     '{{name}}' +
                   '</div>' +
                   '<div class="htmlpopup-content">' +
@@ -695,7 +698,9 @@ goog.require('ga_topic_service');
                 feature: value,
                 showVectorInfos: (value instanceof ol.Feature),
                 clickGeometry: new ol.geom.Point(scope.clickCoordinate),
-                snippet: $sce.trustAsHtml(html)
+                snippet: $sce.trustAsHtml(html),
+                showProfile: !gaBrowserSniffer.mobile ||
+                    (value instanceof ol.Feature && value.getGeometry())
               });
             };
           }

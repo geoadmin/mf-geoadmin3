@@ -73,7 +73,10 @@ goog.require('ga_styles_service');
         }
 
         if (queryParams.crosshair !== undefined) {
-          var crosshair = new ol.Feature(new ol.geom.Point(view.getCenter()));
+          var crosshair = new ol.Feature({
+            label: 'link_bowl_crosshair',
+            geometry: new ol.geom.Point(view.getCenter())
+          });
           var style = gaStyleFactory.getStyle(queryParams.crosshair);
           if (!style) {
             style = gaStyleFactory.getStyle('marker');

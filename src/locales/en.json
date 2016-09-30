@@ -172,6 +172,7 @@
 "geoloc_pos_unavailable": "The acquisition of the geolocation failed because at least one internal source of your device of position (Wifi, GPS) returned an internal error.",
 "geoloc_time_out": "The time allowed to acquire the geolocation was reached before the information was obtained.Try later.",
 "geoloc_unknown": "Sorry, for an unknow reason the geolocation service doesn't work. Check your device location, privacy and firewalls settings",
+"geolocation": "Geolocation",
 "geothermie": "Geoth. energy BETA",
 "geothermie_service_link_href": "http://www.geologieportal.ch/internet/geologieportal/en/home/topics/energy/geothermalenergy/shortdesc.html",
 "geothermie_service_link_label": "More information",

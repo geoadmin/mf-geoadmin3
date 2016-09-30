@@ -35,6 +35,7 @@ goog.require('ga_styles_service');
         isAlwaysVisible = visible;
         setVisibility(map.getView().getZoom());
         layer.getSource().addFeature(new ol.Feature({
+          label: 'query_search',
           geometry: new ol.geom.Point(center)
         }));
       }

@@ -432,5 +432,6 @@
   "profile_poi_down": "",
   "profile_distance": "",
   "profile_slope_distance": "",
-  "profile_hike_time": ""
+  "profile_hike_time": "",
+  "geolocation": ""
 }
