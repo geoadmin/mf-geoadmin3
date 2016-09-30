@@ -246,7 +246,6 @@ goog.require('ga_measure_filter');
                 this.removeOverlays(features[i]);
                 features[i].set('overlays', undefined);
               }
-
             }
           }, this);
           layer.getSource().on('removefeature', function(evt) {

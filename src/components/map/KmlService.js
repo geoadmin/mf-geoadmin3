@@ -278,7 +278,8 @@ goog.require('ga_urlutils_service');
 
               // If the layer can contain measure features, we register some
               // events to add/remove correctly the overlays
-              if (gaMapUtils.isStoredKmlLayer(olLayer)) {
+              if (gaMapUtils.isStoredKmlLayer(olLayer) ||
+                  gaMapUtils.isLocalKmlLayer(olLayer)) {
                 if (olLayer.getVisible()) {
                   angular.forEach(olLayer.getSource().getFeatures(),
                       function(feature) {
