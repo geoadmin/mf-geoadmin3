@@ -40,7 +40,7 @@ goog.require('ga_throttle_service');
         });
         var positionFeature = new ol.Feature({
           geometry: new ol.geom.Point([0, 0]),
-          label: 'Geolocation' // TODO to be translated
+          label: $translate.instant('geolocation')
         });
         var featuresOverlay = gaMapUtils.getFeatureOverlay(
           [accuracyFeature, positionFeature],
