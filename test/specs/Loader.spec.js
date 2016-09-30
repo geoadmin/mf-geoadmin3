@@ -76,6 +76,7 @@ beforeEach(function() {
     gaLayersProvider.terrainTileUrlTemplate = '//3d.geo.admin.ch/1.0.0/{Layer}/default/{Time}/4326';
     gaLayersProvider.layersConfigUrlTemplate = 'https://example.com/all?lang={Lang}';
     gaLayersProvider.legendUrlTemplate = 'https://legendservice.com/all/{Layer}?lang={Lang}';
+    gaLayersProvider.imageryMetadataUrl = '//3d.geo.admin.ch/imagery/';
   });
 
   module(function(gaTopicProvider, gaGlobalOptions) {
