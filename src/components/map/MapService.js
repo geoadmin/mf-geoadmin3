@@ -718,9 +718,10 @@ goog.require('ga_urlutils_service');
                 dimensions: {
                   'Time': timestamp
                 },
-                // Temporary until https://github.com/openlayers/ol3/pull/4964
-                // is merged upstream
-                cacheSize: 2048 * 3,
+                // Workaround: Set a cache size of zero when layer is
+                // timeEnabled see:
+                // https://github.com/geoadmin/mf-geoadmin3/issues/3491
+                cacheSize: layer.timeEnabled ? 0 : 2048,
                 projection: gaGlobalOptions.defaultEpsg,
                 requestEncoding: 'REST',
                 tileGrid: gaTileGrid.get(layer.resolutions,
