@@ -38,7 +38,7 @@ goog.require('ga_wms_service');
    */
   module.provider('gaPermalinkLayersManager', function() {
 
-    this.$get = function($rootScope, gaLayers, gaPermalink, $translate, $http,
+    this.$get = function($rootScope, gaLayers, gaPermalink, $translate,
         gaKml, gaMapUtils, gaWms, gaLayerFilters, gaUrlUtils, gaFileStorage,
         gaTopic, gaGlobalOptions, $q, gaTime, $log) {
 
@@ -294,13 +294,15 @@ goog.require('ga_wms_service');
                 'layers | filter:layerFilter', function(layers) {
               if (layers.length == nbLayersToAdd) {
                 deregister2();
-                var hasBg = false;
+                var hasBg = map.getLayers().item(0).background;
                 for (var i = 0, ii = map.getLayers().getLength(); i < ii; i++) {
                   var layer = map.getLayers().item(i);
                   var idx = layerSpecs.indexOf(layer.id);
-                  if (i == 0 && layer.background == true) {
-                    hasBg = true;
+                  if (idx == -1) {
+                    // If the layer is not in the layerSpecs we ignore it
+                    continue;
                   }
+
                   if (hasBg) {
                     idx = idx + 1;
                   }
