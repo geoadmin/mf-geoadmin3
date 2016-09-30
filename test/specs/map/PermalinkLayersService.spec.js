@@ -71,9 +71,9 @@ describe('ga_permalinklayers_service', function() {
   };
 
   describe('gaPermalinkLayersManager', function() {
-    var manager, permalink, gaTopic, params, layersOpacityPermalink,
-        layersVisPermalink, layersTimePermalink, layersPermalink, def,
-        topic, topicLoaded = {
+    var manager, permalink, gaTopic, params, layersOpacityPermalink, gaDefinePropertiesForLayer,
+        layersVisPermalink, layersTimePermalink, layersPermalink, def, $q,
+        topic, $rootScope, topicLoaded = {
           id: 'sometopic',
           backgroundLayers: ['bar'],
           selectedLayers: [],
@@ -94,6 +94,17 @@ describe('ga_permalinklayers_service', function() {
           selectedLayers: [],
           activatedLayers: ['foo3', 'bar3']
         };
+
+    var createManager = function(topicToLoad, layersParam) {
+      layersPermalink = layersParam;
+      inject(function($injector) {
+        manager = $injector.get('gaPermalinkLayersManager');
+      });
+      manager(map);
+      topic = topicToLoad;
+      def.resolve();
+      $rootScope.$digest();
+    };
 
     beforeEach(function() {
       map = new ol.Map({});
@@ -164,24 +175,29 @@ describe('ga_permalinklayers_service', function() {
         });
       });
 
-      inject(function(_gaPermalinkLayersManager_, _gaPermalink_, _gaTopic_, $q) {
+      inject(function($injector) {
+        $q = $injector.get('$q');
         def = $q.defer();
-        manager = _gaPermalinkLayersManager_;
-        permalink = _gaPermalink_;
-        gaTopic = _gaTopic_;
+        permalink = $injector.get('gaPermalink');
+        gaTopic = $injector.get('gaTopic');
+        $rootScope = $injector.get('$rootScope');
+        gaDefinePropertiesForLayer = $injector.get('gaDefinePropertiesForLayer');
       });
 
-      manager(map);
+      layersPermalink = undefined;
+      topic = undefined;
     });
 
     describe('add/remove layers', function() {
-      it('changes permalink', inject(function($rootScope,
-                                              gaDefinePropertiesForLayer) {
+
+      beforeEach(function() {
+        createManager(topicLoaded);
+      });
+
+      it('changes permalink', function() {
         var fooLayer, barLayer, kmlLayer, wmsLayer;
 
         expect(permalink.getParams().layers).to.be(undefined);
-        topic = topicLoaded;
-        def.resolve();
         fooLayer = addLayerToMap('foo');
         $rootScope.$digest();
         expect(permalink.getParams().layers).to.eql('foo');
@@ -210,14 +226,18 @@ describe('ga_permalinklayers_service', function() {
         $rootScope.$digest();
         expect(permalink.getParams().layers).to.be(undefined);
 
-      }));
+      });
     });
 
     describe('add/remove local KML layer', function() {
-      it('changes permalink', inject(function($rootScope, gaDefinePropertiesForLayer) {
+
+      beforeEach(function() {
+        createManager(topicLoaded);
+      });
+
+      it('changes permalink', function() {
         var kmlLayer;
         expect(permalink.getParams().layers).to.be(undefined);
-        def.resolve();
         // Local KML layer (add by dnd) is not added to permalink
         kmlLayer = addLocalKmlLayerToMap();
         gaDefinePropertiesForLayer(kmlLayer);
@@ -226,14 +246,18 @@ describe('ga_permalinklayers_service', function() {
         map.removeLayer(kmlLayer);
         $rootScope.$digest();
         expect(permalink.getParams().layers).to.be(undefined);
-      }));
+      });
     });
 
     describe('add/remove external KML layer', function() {
-      it('changes permalink', inject(function($rootScope, gaDefinePropertiesForLayer) {
+
+      beforeEach(function() {
+        createManager(topicLoaded);
+      });
+
+      it('changes permalink', function() {
         var kmlLayer;
         expect(permalink.getParams().layers).to.be(undefined);
-        def.resolve();
         kmlLayer = addKmlLayerToMap();
         gaDefinePropertiesForLayer(kmlLayer);
         $rootScope.$digest();
@@ -241,11 +265,16 @@ describe('ga_permalinklayers_service', function() {
         map.removeLayer(kmlLayer);
         $rootScope.$digest();
         expect(permalink.getParams().layers).to.be(undefined);
-      }));
+      });
     });
 
     describe('add/remove external WMS layer', function() {
-      it('changes permalink', inject(function($rootScope, gaDefinePropertiesForLayer) {
+
+      beforeEach(function() {
+        createManager(topicLoaded);
+      });
+
+      it('changes permalink', function() {
         var wmsLayer;
         expect(permalink.getParams().layers).to.be(undefined);
         def.resolve();
@@ -256,13 +285,16 @@ describe('ga_permalinklayers_service', function() {
         map.removeLayer(wmsLayer);
         $rootScope.$digest();
         expect(permalink.getParams().layers).to.be(undefined);
-      }));
+      });
     });
 
     describe('change layer opacity', function() {
-      it('changes permalink',
-          inject(function($rootScope, gaDefinePropertiesForLayer) {
-        def.resolve();
+
+      beforeEach(function() {
+        createManager(topicLoaded);
+      });
+
+      it('changes permalink', function() {
         var fooLayer, barLayer;
 
         fooLayer = addLayerToMap('foo');
@@ -290,13 +322,16 @@ describe('ga_permalinklayers_service', function() {
         barLayer.setOpacity('1');
         $rootScope.$digest();
         expect(permalink.getParams().layers_opacity).to.be(undefined);
-      }));
+      });
     });
 
     describe('change layer visibility', function() {
-      it('changes permalink',
-          inject(function($rootScope, gaDefinePropertiesForLayer) {
-        def.resolve();
+
+      beforeEach(function() {
+        createManager(topicLoaded);
+      });
+
+      it('changes permalink', function() {
         var fooLayer, barLayer;
 
         fooLayer = addLayerToMap('foo');
@@ -324,18 +359,14 @@ describe('ga_permalinklayers_service', function() {
         barLayer.visible = true;
         $rootScope.$digest();
         expect(permalink.getParams().layers_visibility).to.be(undefined);
-      }));
+      });
     });
 
     describe('add preselected layers of a topic', function() {
 
-      it('adds layers if no layers parameter', inject(function($rootScope) {
-        // For next test
-        topic = topicLoaded2;
-
+      it('adds layers if no layers parameter', function() {
         expect(permalink.getParams().layers).to.be(undefined);
-        def.resolve();
-        $rootScope.$digest();
+        createManager(topicLoaded2);
         expect(map.getLayers().getLength()).to.be(2);
         expect(permalink.getParams().layers).to.be('bar,foo');
 
@@ -347,16 +378,11 @@ describe('ga_permalinklayers_service', function() {
         $rootScope.$digest();
         expect(permalink.getParams().layers).to.be('bar2,foo2');
 
-        // For next test
-        permalink.deleteParam('layers');
-        topic = topicLoaded;
-        layersPermalink = 'ged';
-      }));
 
-      it('doesn t add layers if the layers parameter is defined', inject(function($rootScope) {
-        expect(permalink.getParams().layers).to.be('ged');
-        def.resolve();
-        $rootScope.$digest();
+      });
+
+      it('doesn t add layers if the layers parameter is defined', function() {
+        createManager(topicLoaded, 'ged');
         expect(map.getLayers().getLength()).to.be(1);
         expect(permalink.getParams().layers).to.be('ged');
 
@@ -366,11 +392,7 @@ describe('ga_permalinklayers_service', function() {
         expect(map.getLayers().getLength()).to.be(2);
         $rootScope.$digest();
         expect(permalink.getParams().layers).to.be('bar,foo');
-
-        // For next test
-        topic = undefined;
-        layersPermalink = undefined;
-      }));
+      });
     });
   });
 });
