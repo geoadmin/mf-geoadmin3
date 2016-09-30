@@ -700,6 +700,10 @@ goog.require('ga_styles_service');
         // create/update the file on s3
         ////////////////////////////////////
         var save = function(evt) {
+          if (!layer {
+            // Do nothing if the layer does not exist
+            return;
+          }
           if (layer.getSource().getFeatures().length == 0) {
             //if no features to save, delete the file
             if (layer.adminId) {
