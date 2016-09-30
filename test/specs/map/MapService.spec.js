@@ -181,6 +181,11 @@ describe('ga_map_service', function() {
         expect(tg.getTileSize()).to.be(512);
         expect(tg.getOrigin()).to.eql(orig);
         expect(tg.getResolutions()).to.eql(res);
+
+        tg = gaTileGrid.get(undefined, undefined, 'wms');
+        expect(tg.getTileSize()).to.be(512);
+        expect(tg.getOrigin()).to.eql(orig);
+        expect(tg.getResolutions()).to.eql(wmsRes);
       });
     });
   });
