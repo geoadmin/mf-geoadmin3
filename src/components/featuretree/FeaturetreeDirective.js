@@ -168,7 +168,7 @@ goog.require('ga_previewfeatures_service');
               scope.$emit('gaUpdateFeatureTree', scope.tree);
             };
 
-            // Selects a feature and displays the htm popup corresponding
+            // Selects a feature and displays the corresponding html popup
             var selectAndTriggerTooltip = function(feature) {
               featureSelected = feature;
               loadGeojson(scope, feature).then(function() {
@@ -267,7 +267,9 @@ goog.require('ga_previewfeatures_service');
 
             // When language change
             scope.$on('gaLayersTranslationChange', function(evt, newLayers) {
-              updateTree(scope.tree);
+              if (scope.isActive) {
+                updateTree(scope.tree);
+              }
             });
 
             // When another directive calls for an update

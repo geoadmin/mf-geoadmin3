@@ -26,8 +26,8 @@ goog.require('ga_topic_service');
   ]);
 
   module.directive('gaTooltip',
-      function($timeout, $http, $q, $translate, $sce, gaPopup, gaLayers,
-          gaBrowserSniffer, gaMapClick, gaDebounce, gaPreviewFeatures,
+      function($timeout, $http, $q, $translate, $sce, $rootScope, gaPopup,
+          gaLayers, gaBrowserSniffer, gaMapClick, gaDebounce, gaPreviewFeatures,
           gaMapUtils, gaTime, gaTopic, gaIdentify, gaGlobalOptions,
           gaPermalink, gaIFrameCom, gaUrlUtils, gaLang) {
         var mouseEvts = '';
@@ -37,7 +37,7 @@ goog.require('ga_topic_service');
               'ng-mouseleave="options.onMouseLeave($event)" ';
         }
         var popupContent =
-          '<div ng-repeat="html in options.htmls" ' +
+          '<div ng-repeat="html in options.htmls track by $index" ' +
                'ng-mouseenter="options.onMouseEnter($event,' +
                    'options.htmls.length)" ' +
                'ng-mouseleave="options.onMouseLeave($event)">' +
@@ -258,16 +258,21 @@ goog.require('ga_topic_service');
               }, 0);
             };
 
-            // Destroy popup and highlight
-            var initTooltip = function() {
-               // Cancel all pending requests
+            var cancelRequests = function() {
+              // Cancel all pending requests
               if (canceler) {
                 canceler.resolve();
               }
               // Create new cancel object
               canceler = $q.defer();
+            };
+
+            // Destroy popup and highlight
+            var initTooltip = function() {
+              cancelRequests();
               // htmls = [] would break the reference in the popup
               htmls.splice(0, htmls.length);
+              featuresByLayerId = {};
               if (popup) {
                 popup.close();
               }
@@ -293,6 +298,25 @@ goog.require('ga_topic_service');
                 showFeatures(data.features, null, data.nohighlight);
                 onCloseCB = data.onCloseCB;
               }, 0);
+            });
+            var reloadHtmlByIndex = function(i) {
+              var feat = htmls[i].feature;
+              if (feat && feat.layerBodId) {
+                getFeaturePopupHtml(feat.layerBodId, feat.id)
+                    .then(function(response) {
+                  htmls[i].snippet = $sce.trustAsHtml(response.data);
+                });
+              }
+            };
+            // TODO handle vector layer toolip
+            $rootScope.$on('$translateChangeEnd', function() {
+              var tmp, feature, layerBodId, featureId;
+              if (scope.isActive && htmls.length) {
+                cancelRequests();
+                for (var i = 0; i < htmls.length; i++) {
+                  reloadHtmlByIndex(i);
+                }
+              }
             });
 
             scope.$on('gaTriggerTooltipInitOrUnreduce', function(event) {
@@ -469,6 +493,33 @@ goog.require('ga_topic_service');
               }
             };
 
+            var getFeaturePopupHtml = function(bodId, featureId, coordinate) {
+              var mapSize = map.getSize();
+              var mapExtent = map.getView().calculateExtent(mapSize);
+              var htmlUrl = scope.options.htmlUrlTemplate
+                            .replace('{Topic}', gaTopic.get().id)
+                            .replace('{Layer}', bodId)
+                            .replace('{Feature}', featureId);
+              return $http.get(htmlUrl, {
+                timeout: canceler.promise,
+                cache: true,
+                params: {
+                  lang: gaLang.get(),
+                  mapExtent: mapExtent.toString(),
+                  coord: (coordinate) ? coordinate.toString() : undefined,
+                  imageDisplay: mapSize.toString() + ',96'
+                }
+              });
+            };
+
+            var storeFeature = function(layerId, feature) {
+              if (!featuresByLayerId[layerId]) {
+                featuresByLayerId[layerId] = {};
+              }
+              var featureId = feature.getId();
+              featuresByLayerId[layerId][featureId] = feature;
+            };
+
             // Highlight the features found
             var showFeatures = function(foundFeatures, coordinate,
                 nohighlight) {
@@ -485,9 +536,6 @@ goog.require('ga_topic_service');
                 angular.forEach(foundFeatures, function(value) {
                   if (value instanceof ol.Feature) {
                     var layerId = value.get('layerId');
-                    if (!featuresByLayerId[layerId]) {
-                      featuresByLayerId[layerId] = {};
-                    }
                     var feature = new ol.Feature(value.getGeometry());
                     feature.setId(value.getId());
                     feature.set('layerId', layerId);
@@ -496,11 +544,8 @@ goog.require('ga_topic_service');
                       showPopup(value.get('htmlpopup'), value);
                     }
                     // Store the ol feature for highlighting
-                    featuresByLayerId[layerId][feature.getId()] = feature;
+                    storeFeature(layerId, feature);
                   } else {
-                    if (!featuresByLayerId[value.layerBodId]) {
-                      featuresByLayerId[value.layerBodId] = {};
-                    }
                     //draw feature, but only if it should be drawn
                     if (!nohighlight &&
                         gaLayers.getLayer(value.layerBodId) &&
@@ -510,28 +555,12 @@ goog.require('ga_topic_service');
                       for (var i = 0, ii = features.length; i < ii; ++i) {
                         features[i].set('layerId', value.layerBodId);
                         gaPreviewFeatures.add(map, features[i]);
-
-                        // Store the ol feature for highlighting
-                        featuresByLayerId[value.layerBodId][value.id] =
-                            features[i];
+                        storeFeature(value.layerBodId, features[i]);
                       }
                     }
-                    var mapSize = map.getSize();
-                    var mapExtent = map.getView().calculateExtent(mapSize);
-                    var htmlUrl = scope.options.htmlUrlTemplate
-                                  .replace('{Topic}', gaTopic.get().id)
-                                  .replace('{Layer}', value.layerBodId)
-                                  .replace('{Feature}', value.featureId);
-                    $http.get(htmlUrl, {
-                      timeout: canceler.promise,
-                      params: {
-                        lang: $translate.use(),
-                        mapExtent: mapExtent.toString(),
-                        coord: (coordinate) ? coordinate.toString() : undefined,
-                        imageDisplay: mapSize.toString() + ',96'
-                      }
-                    }).success(function(html) {
-                      showPopup(html, value);
+                    getFeaturePopupHtml(value.layerBodId, value.featureId,
+                        coordinate).then(function(response) {
+                      showPopup(response.data, value);
                     });
                   }
                 });
@@ -600,7 +629,7 @@ goog.require('ga_topic_service');
                   }
                 });
               }
-              popup.open(3000); //Close after 3 seconds
+              popup.open(3000); // Close after 3 seconds
             };
 
             // Show the popup with all features informations

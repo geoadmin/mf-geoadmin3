@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import time
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 
 def intVersion(ver):
@@ -60,3 +62,13 @@ def bCheckIfLinkIsUpdatedEverywhere(driver, stringExpected):
 
     except AssertionError:
         raise AssertionError(stringExpected + ' has not be found in toptool : ' + current_url)
+
+
+def pageLoadWait(driver, url):
+    driver.get(url)
+    try:
+        WebDriverWait(driver, 10).until(EC.title_contains('chweiz'))
+    except Exception as e:
+        print('Error----------------------------------------------------')
+        print(str(e))
+        raise Exception('Unable to load %s page!' % url)
