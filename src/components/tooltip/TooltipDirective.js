@@ -44,7 +44,7 @@ goog.require('ga_topic_service');
             '<div ng-bind-html="html.snippet"></div>' +
             '<div ng-if="::html.showVectorInfos" class="ga-vector-tools">' +
               '<div ga-measure="::html.feature"></div>' +
-              '<div ng-if="::!html.showProfile" ' +
+              '<div ng-if="::html.showProfile" ' +
                    'ga-profile-bt="::html.feature"></div>' +
             '</div>' +
             '<div ga-shop ' +
