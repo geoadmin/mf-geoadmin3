@@ -1,7 +1,7 @@
 /*!
- * angular-translate - v2.8.1 - 2015-10-01
+ * angular-translate - v2.12.1 - 2016-09-15
  * 
- * Copyright (c) 2015 The angular-translate team, Pascal Precht; Licensed MIT
+ * Copyright (c) 2016 The angular-translate team, Pascal Precht; Licensed MIT
  */
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
@@ -19,6 +19,7 @@
   }
 }(this, function () {
 
+$translateStaticFilesLoader.$inject = ['$q', '$http'];
 angular.module('pascalprecht.translate')
 /**
  * @ngdoc object
@@ -73,8 +74,7 @@ function $translateStaticFilesLoader($q, $http) {
         });
     };
 
-    var deferred = $q.defer(),
-        promises = [],
+    var promises = [],
         length = options.files.length;
 
     for (var i = 0; i < length; i++) {
@@ -85,7 +85,7 @@ function $translateStaticFilesLoader($q, $http) {
       }));
     }
 
-    $q.all(promises)
+    return $q.all(promises)
       .then(function (data) {
         var length = data.length,
             mergedData = {};
@@ -96,15 +96,10 @@ function $translateStaticFilesLoader($q, $http) {
           }
         }
 
-        deferred.resolve(mergedData);
-      }, function (data) {
-        deferred.reject(data);
+        return mergedData;
       });
-
-    return deferred.promise;
   };
 }
-$translateStaticFilesLoader.$inject = ['$q', '$http'];
 
 $translateStaticFilesLoader.displayName = '$translateStaticFilesLoader';
 return 'pascalprecht.translate';
