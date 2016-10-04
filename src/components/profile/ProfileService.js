@@ -110,35 +110,28 @@ goog.require('ga_urlutils_service');
         };
 
         this.findMapCoordinates = function(searchDist) {
-          var currentIdx, previousIdx, currentDist;
-          var i = 0;
-          var j = this.data.length - 1;
-          while (i < j) {
-            currentIdx = (i + j) / 2 | 0;
-            currentDist = this.data[currentIdx].dist;
-            if (currentDist < searchDist) {
-              i = currentIdx + 1;
-            } else if (currentDist > searchDist) {
-              j = currentIdx - 1;
-            } else {
-              return [this.data[currentIdx].easting,
-                  this.data[currentIdx].northing];
-            }
+          var ratio = searchDist / this.data[this.data.length - 1].domainDist;
+          if (ratio < 0) {
+            ratio = 0;
+          } else if (ratio > 1) {
+            ratio = 1;
           }
-          return [this.data[currentIdx].easting,
-              this.data[currentIdx].northing];
+          return this.lineString.getCoordinateAt(ratio);
         };
 
         this.formatData = function(data) {
           if (data.length) {
+            var coords = [];
             var maxX = data[data.length - 1].dist;
             var denom = maxX >= 10000 ? 1000 : 1;
             this.unitX = maxX >= 10000 ? ' km' : ' m';
             $.map(data, function(val) {
+              coords.push([val.easting, val.northing]);
               val.domainDist = val.dist / denom;
               val.alts[elevationModel] = val.alts[elevationModel] || 0;
               return val;
             });
+            this.lineString = new ol.geom.LineString(coords);
           }
           return data;
         };
