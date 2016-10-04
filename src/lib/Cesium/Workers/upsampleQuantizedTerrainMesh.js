@@ -1,7 +1,7 @@
 /**
  * Cesium - https://github.com/AnalyticalGraphicsInc/cesium
  *
- * Copyright 2011-2015 Cesium Contributors
+ * Copyright 2011-2016 Cesium Contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -610,25 +610,29 @@ define('Core/Math',[
     };
 
     /**
-     * Converts a scalar value in the range [-1.0, 1.0] to a 8-bit 2's complement number.
+     * Converts a scalar value in the range [-1.0, 1.0] to a SNORM in the range [0, rangeMax]
      * @param {Number} value The scalar value in the range [-1.0, 1.0]
-     * @returns {Number} The 8-bit 2's complement number, where 0 maps to -1.0 and 255 maps to 1.0.
+     * @param {Number} [rangeMax=255] The maximum value in the mapped range, 255 by default.
+     * @returns {Number} A SNORM value, where 0 maps to -1.0 and rangeMax maps to 1.0.
      *
      * @see CesiumMath.fromSNorm
      */
-    CesiumMath.toSNorm = function(value) {
-        return Math.round((CesiumMath.clamp(value, -1.0, 1.0) * 0.5 + 0.5) * 255.0);
+    CesiumMath.toSNorm = function(value, rangeMax) {
+        rangeMax = defaultValue(rangeMax, 255);
+        return Math.round((CesiumMath.clamp(value, -1.0, 1.0) * 0.5 + 0.5) * rangeMax);
     };
 
     /**
-     * Converts a SNORM value in the range [0, 255] to a scalar in the range [-1.0, 1.0].
+     * Converts a SNORM value in the range [0, rangeMax] to a scalar in the range [-1.0, 1.0].
      * @param {Number} value SNORM value in the range [0, 255]
+     * @param {Number} [rangeMax=255] The maximum value in the SNORM range, 255 by default.
      * @returns {Number} Scalar in the range [-1.0, 1.0].
      *
      * @see CesiumMath.toSNorm
      */
-    CesiumMath.fromSNorm = function(value) {
-        return CesiumMath.clamp(value, 0.0, 255.0) / 255.0 * 2.0 - 1.0;
+    CesiumMath.fromSNorm = function(value, rangeMax) {
+        rangeMax = defaultValue(rangeMax, 255);
+        return CesiumMath.clamp(value, 0.0, rangeMax) / rangeMax * 2.0 - 1.0;
     };
 
     /**
@@ -1283,6 +1287,8 @@ define('Core/Cartesian2',[
      * @param {Cartesian2} value The value to pack.
      * @param {Number[]} array The array to pack into.
      * @param {Number} [startingIndex=0] The index into the array at which to start packing the elements.
+     *
+     * @returns {Number[]} The array that was packed into
      */
     Cartesian2.pack = function(value, array, startingIndex) {
                 if (!defined(value)) {
@@ -1296,6 +1302,8 @@ define('Core/Cartesian2',[
 
         array[startingIndex++] = value.x;
         array[startingIndex] = value.y;
+
+        return array;
     };
 
     /**
@@ -1318,6 +1326,57 @@ define('Core/Cartesian2',[
         }
         result.x = array[startingIndex++];
         result.y = array[startingIndex];
+        return result;
+    };
+
+    /**
+     * Flattens an array of Cartesian2s into and array of components.
+     *
+     * @param {Cartesian2[]} array The array of cartesians to pack.
+     * @param {Number[]} result The array onto which to store the result.
+     * @returns {Number[]} The packed array.
+     */
+    Cartesian2.packArray = function(array, result) {
+                if (!defined(array)) {
+            throw new DeveloperError('array is required');
+        }
+        
+        var length = array.length;
+        if (!defined(result)) {
+            result = new Array(length * 2);
+        } else {
+            result.length = length * 2;
+        }
+
+        for (var i = 0; i < length; ++i) {
+            Cartesian2.pack(array[i], result, i * 2);
+        }
+        return result;
+    };
+
+    /**
+     * Unpacks an array of cartesian components into and array of Cartesian2s.
+     *
+     * @param {Number[]} array The array of components to unpack.
+     * @param {Cartesian2[]} result The array onto which to store the result.
+     * @returns {Cartesian2[]} The unpacked array.
+     */
+    Cartesian2.unpackArray = function(array, result) {
+                if (!defined(array)) {
+            throw new DeveloperError('array is required');
+        }
+        
+        var length = array.length;
+        if (!defined(result)) {
+            result = new Array(length / 2);
+        } else {
+            result.length = length / 2;
+        }
+
+        for (var i = 0; i < length; i += 2) {
+            var index = i / 2;
+            result[index] = Cartesian2.unpack(array, i, result[index]);
+        }
         return result;
     };
 
@@ -2020,6 +2079,8 @@ define('Core/Cartesian3',[
      * @param {Cartesian3} value The value to pack.
      * @param {Number[]} array The array to pack into.
      * @param {Number} [startingIndex=0] The index into the array at which to start packing the elements.
+     *
+     * @returns {Number[]} The array that was packed into
      */
     Cartesian3.pack = function(value, array, startingIndex) {
                 if (!defined(value)) {
@@ -2035,6 +2096,8 @@ define('Core/Cartesian3',[
         array[startingIndex++] = value.x;
         array[startingIndex++] = value.y;
         array[startingIndex] = value.z;
+
+        return array;
     };
 
     /**
@@ -2058,6 +2121,63 @@ define('Core/Cartesian3',[
         result.x = array[startingIndex++];
         result.y = array[startingIndex++];
         result.z = array[startingIndex];
+        return result;
+    };
+
+    /**
+     * Flattens an array of Cartesian3s into an array of components.
+     *
+     * @param {Cartesian3[]} array The array of cartesians to pack.
+     * @param {Number[]} result The array onto which to store the result.
+     * @returns {Number[]} The packed array.
+     */
+    Cartesian3.packArray = function(array, result) {
+                if (!defined(array)) {
+            throw new DeveloperError('array is required');
+        }
+        
+        var length = array.length;
+        if (!defined(result)) {
+            result = new Array(length * 3);
+        } else {
+            result.length = length * 3;
+        }
+
+        for (var i = 0; i < length; ++i) {
+            Cartesian3.pack(array[i], result, i * 3);
+        }
+        return result;
+    };
+
+    /**
+     * Unpacks an array of cartesian components into an array of Cartesian3s.
+     *
+     * @param {Number[]} array The array of components to unpack.
+     * @param {Cartesian3[]} result The array onto which to store the result.
+     * @returns {Cartesian3[]} The unpacked array.
+     */
+    Cartesian3.unpackArray = function(array, result) {
+                if (!defined(array)) {
+            throw new DeveloperError('array is required');
+        }
+        if (array.length < 3) {
+            throw new DeveloperError('array length cannot be less than 3.');
+        }
+        if (array.length % 3 !== 0) {
+            throw new DeveloperError('array length must be a multiple of 3.');
+        }
+        
+        var length = array.length;
+        if (!defined(result)) {
+            result = new Array(length / 3);
+        } else {
+            result.length = length / 3;
+        }
+
+        for (var i = 0; i < length; i += 3) {
+            var index = i / 3;
+            result[index] = Cartesian3.unpack(array, i, result[index]);
+        }
         return result;
     };
 
@@ -2627,9 +2747,9 @@ define('Core/Cartesian3',[
             throw new DeveloperError('latitude is required');
         }
         
-        var lon = CesiumMath.toRadians(longitude);
-        var lat = CesiumMath.toRadians(latitude);
-        return Cartesian3.fromRadians(lon, lat, height, ellipsoid, result);
+        longitude = CesiumMath.toRadians(longitude);
+        latitude = CesiumMath.toRadians(latitude);
+        return Cartesian3.fromRadians(longitude, latitude, height, ellipsoid, result);
     };
 
     var scratchN = new Cartesian3();
@@ -2690,15 +2810,30 @@ define('Core/Cartesian3',[
      */
     Cartesian3.fromDegreesArray = function(coordinates, ellipsoid, result) {
                 if (!defined(coordinates)) {
-            throw new DeveloperError('positions is required.');
+            throw new DeveloperError('coordinates is required.');
+        }
+        if (coordinates.length < 2) {
+            throw new DeveloperError('coordinates length cannot be less than 2.');
+        }
+        if (coordinates.length % 2 !== 0) {
+            throw new DeveloperError('coordinates length must be a multiple of 2.');
         }
         
-        var pos = new Array(coordinates.length);
-        for (var i = 0; i < coordinates.length; i++) {
-            pos[i] = CesiumMath.toRadians(coordinates[i]);
+        var length = coordinates.length;
+        if (!defined(result)) {
+            result = new Array(length / 2);
+        } else {
+            result.length = length / 2;
         }
 
-        return Cartesian3.fromRadiansArray(pos, ellipsoid, result);
+        for (var i = 0; i < length; i += 2) {
+            var longitude = coordinates[i];
+            var latitude = coordinates[i + 1];
+            var index = i / 2;
+            result[index] = Cartesian3.fromDegrees(longitude, latitude, 0, ellipsoid, result[index]);
+        }
+
+        return result;
     };
 
     /**
@@ -2714,26 +2849,27 @@ define('Core/Cartesian3',[
      */
     Cartesian3.fromRadiansArray = function(coordinates, ellipsoid, result) {
                 if (!defined(coordinates)) {
-            throw new DeveloperError('positions is required.');
+            throw new DeveloperError('coordinates is required.');
         }
         if (coordinates.length < 2) {
-            throw new DeveloperError('positions length cannot be less than 2.');
+            throw new DeveloperError('coordinates length cannot be less than 2.');
         }
         if (coordinates.length % 2 !== 0) {
-            throw new DeveloperError('positions length must be a multiple of 2.');
+            throw new DeveloperError('coordinates length must be a multiple of 2.');
         }
         
         var length = coordinates.length;
         if (!defined(result)) {
-            result = new Array(length/2);
+            result = new Array(length / 2);
         } else {
-            result.length = length/2;
+            result.length = length / 2;
         }
 
-        for ( var i = 0; i < length; i+=2) {
-            var lon = coordinates[i];
-            var lat = coordinates[i+1];
-            result[i/2] = Cartesian3.fromRadians(lon, lat, 0, ellipsoid, result[i/2]);
+        for (var i = 0; i < length; i += 2) {
+            var longitude = coordinates[i];
+            var latitude = coordinates[i + 1];
+            var index = i / 2;
+            result[index] = Cartesian3.fromRadians(longitude, latitude, 0, ellipsoid, result[index]);
         }
 
         return result;
@@ -2742,7 +2878,7 @@ define('Core/Cartesian3',[
     /**
      * Returns an array of Cartesian3 positions given an array of longitude, latitude and height values where longitude and latitude are given in degrees.
      *
-     * @param {Number[]} coordinates A list of longitude, latitude and height values. Values alternate [longitude, latitude, height,, longitude, latitude, height...].
+     * @param {Number[]} coordinates A list of longitude, latitude and height values. Values alternate [longitude, latitude, height, longitude, latitude, height...].
      * @param {Ellipsoid} [ellipsoid=Ellipsoid.WGS84] The ellipsoid on which the position lies.
      * @param {Cartesian3[]} [result] An array of Cartesian3 objects to store the result.
      * @returns {Cartesian3[]} The array of positions.
@@ -2752,29 +2888,37 @@ define('Core/Cartesian3',[
      */
     Cartesian3.fromDegreesArrayHeights = function(coordinates, ellipsoid, result) {
                 if (!defined(coordinates)) {
-            throw new DeveloperError('positions is required.');
+            throw new DeveloperError('coordinates is required.');
         }
         if (coordinates.length < 3) {
-            throw new DeveloperError('positions length cannot be less than 3.');
+            throw new DeveloperError('coordinates length cannot be less than 3.');
         }
         if (coordinates.length % 3 !== 0) {
-            throw new DeveloperError('positions length must be a multiple of 3.');
+            throw new DeveloperError('coordinates length must be a multiple of 3.');
         }
         
-        var pos = new Array(coordinates.length);
-        for (var i = 0; i < coordinates.length; i+=3) {
-            pos[i] = CesiumMath.toRadians(coordinates[i]);
-            pos[i+1] = CesiumMath.toRadians(coordinates[i+1]);
-            pos[i+2] = coordinates[i+2];
+        var length = coordinates.length;
+        if (!defined(result)) {
+            result = new Array(length / 3);
+        } else {
+            result.length = length / 3;
         }
 
-        return Cartesian3.fromRadiansArrayHeights(pos, ellipsoid, result);
+        for (var i = 0; i < length; i += 3) {
+            var longitude = coordinates[i];
+            var latitude = coordinates[i + 1];
+            var height = coordinates[i + 2];
+            var index = i / 3;
+            result[index] = Cartesian3.fromDegrees(longitude, latitude, height, ellipsoid, result[index]);
+        }
+
+        return result;
     };
 
     /**
      * Returns an array of Cartesian3 positions given an array of longitude, latitude and height values where longitude and latitude are given in radians.
      *
-     * @param {Number[]} coordinates A list of longitude, latitude and height values. Values alternate [longitude, latitude, height,, longitude, latitude, height...].
+     * @param {Number[]} coordinates A list of longitude, latitude and height values. Values alternate [longitude, latitude, height, longitude, latitude, height...].
      * @param {Ellipsoid} [ellipsoid=Ellipsoid.WGS84] The ellipsoid on which the position lies.
      * @param {Cartesian3[]} [result] An array of Cartesian3 objects to store the result.
      * @returns {Cartesian3[]} The array of positions.
@@ -2784,27 +2928,28 @@ define('Core/Cartesian3',[
      */
     Cartesian3.fromRadiansArrayHeights = function(coordinates, ellipsoid, result) {
                 if (!defined(coordinates)) {
-            throw new DeveloperError('positions is required.');
+            throw new DeveloperError('coordinates is required.');
         }
         if (coordinates.length < 3) {
-            throw new DeveloperError('positions length cannot be less than 3.');
+            throw new DeveloperError('coordinates length cannot be less than 3.');
         }
         if (coordinates.length % 3 !== 0) {
-            throw new DeveloperError('positions length must be a multiple of 3.');
+            throw new DeveloperError('coordinates length must be a multiple of 3.');
         }
         
         var length = coordinates.length;
         if (!defined(result)) {
-            result = new Array(length/3);
+            result = new Array(length / 3);
         } else {
-            result.length = length/3;
+            result.length = length / 3;
         }
 
-        for ( var i = 0; i < length; i+=3) {
-            var lon = coordinates[i];
-            var lat = coordinates[i+1];
-            var alt = coordinates[i+2];
-            result[i/3] = Cartesian3.fromRadians(lon, lat, alt, ellipsoid, result[i/3]);
+        for (var i = 0; i < length; i += 3) {
+            var longitude = coordinates[i];
+            var latitude = coordinates[i + 1];
+            var height = coordinates[i + 2];
+            var index = i / 3;
+            result[index] = Cartesian3.fromRadians(longitude, latitude, height, ellipsoid, result[index]);
         }
 
         return result;
@@ -2893,12 +3038,14 @@ define('Core/Cartesian3',[
 define('Core/AttributeCompression',[
         './Cartesian2',
         './Cartesian3',
+        './defaultValue',
         './defined',
         './DeveloperError',
         './Math'
     ], function(
         Cartesian2,
         Cartesian3,
+        defaultValue,
         defined,
         DeveloperError,
         CesiumMath) {
@@ -2914,21 +3061,22 @@ define('Core/AttributeCompression',[
     var AttributeCompression = {};
 
     /**
-     * Encodes a normalized vector into 2 SNORM values in the range of [0-255] following the 'oct' encoding.
+     * Encodes a normalized vector into 2 SNORM values in the range of [0-rangeMax] following the 'oct' encoding.
      *
-     * Oct encoding is a compact representation of unit length vectors.  The encoding and decoding functions are low cost, and represent the normalized vector within 1 degree of error.
+     * Oct encoding is a compact representation of unit length vectors.
      * The 'oct' encoding is described in "A Survey of Efficient Representations of Independent Unit Vectors",
      * Cigolle et al 2014: {@link http://jcgt.org/published/0003/02/01/}
      *
-     * @param {Cartesian3} vector The normalized vector to be compressed into 2 byte 'oct' encoding.
-     * @param {Cartesian2} result The 2 byte oct-encoded unit length vector.
-     * @returns {Cartesian2} The 2 byte oct-encoded unit length vector.
+     * @param {Cartesian3} vector The normalized vector to be compressed into 2 component 'oct' encoding.
+     * @param {Cartesian2} result The 2 component oct-encoded unit length vector.
+     * @param {Number} rangeMax The maximum value of the SNORM range. The encoded vector is stored in log2(rangeMax+1) bits.
+     * @returns {Cartesian2} The 2 component oct-encoded unit length vector.
      *
      * @exception {DeveloperError} vector must be normalized.
      *
-     * @see AttributeCompression.octDecode
+     * @see AttributeCompression.octDecodeInRange
      */
-    AttributeCompression.octEncode = function(vector, result) {
+    AttributeCompression.octEncodeInRange = function(vector, rangeMax, result) {
                 if (!defined(vector)) {
             throw new DeveloperError('vector is required.');
         }
@@ -2949,10 +3097,26 @@ define('Core/AttributeCompression',[
             result.y = (1.0 - Math.abs(x)) * CesiumMath.signNotZero(y);
         }
 
-        result.x = CesiumMath.toSNorm(result.x);
-        result.y = CesiumMath.toSNorm(result.y);
+        result.x = CesiumMath.toSNorm(result.x, rangeMax);
+        result.y = CesiumMath.toSNorm(result.y, rangeMax);
 
         return result;
+    };
+
+    /**
+     * Encodes a normalized vector into 2 SNORM values in the range of [0-255] following the 'oct' encoding.
+     *
+     * @param {Cartesian3} vector The normalized vector to be compressed into 2 byte 'oct' encoding.
+     * @param {Cartesian2} result The 2 byte oct-encoded unit length vector.
+     * @returns {Cartesian2} The 2 byte oct-encoded unit length vector.
+     * 
+     * @exception {DeveloperError} vector must be normalized.
+     * 
+     * @see AttributeCompression.octEncodeInRange
+     * @see AttributeCompression.octDecode
+     */
+    AttributeCompression.octEncode = function(vector, result) {
+        return AttributeCompression.octEncodeInRange(vector, 255, result);
     };
 
     /**
@@ -2960,23 +3124,24 @@ define('Core/AttributeCompression',[
      *
      * @param {Number} x The x component of the oct-encoded unit length vector.
      * @param {Number} y The y component of the oct-encoded unit length vector.
+     * @param {Number} rangeMax The maximum value of the SNORM range. The encoded vector is stored in log2(rangeMax+1) bits.
      * @param {Cartesian3} result The decoded and normalized vector
      * @returns {Cartesian3} The decoded and normalized vector.
      *
-     * @exception {DeveloperError} x and y must be a signed normalized integer between 0 and 255.
+     * @exception {DeveloperError} x and y must be an unsigned normalized integer between 0 and rangeMax.
      *
-     * @see AttributeCompression.octEncode
+     * @see AttributeCompression.octEncodeInRange
      */
-    AttributeCompression.octDecode = function(x, y, result) {
+    AttributeCompression.octDecodeInRange = function(x, y, rangeMax, result) {
                 if (!defined(result)) {
             throw new DeveloperError('result is required.');
         }
-        if (x < 0 || x > 255 || y < 0 || y > 255) {
-            throw new DeveloperError('x and y must be a signed normalized integer between 0 and 255');
+        if (x < 0 || x > rangeMax || y < 0 || y > rangeMax) {
+            throw new DeveloperError('x and y must be a signed normalized integer between 0 and ' + rangeMax);
         }
         
-        result.x = CesiumMath.fromSNorm(x);
-        result.y = CesiumMath.fromSNorm(y);
+        result.x = CesiumMath.fromSNorm(x, rangeMax);
+        result.y = CesiumMath.fromSNorm(y, rangeMax);
         result.z = 1.0 - (Math.abs(result.x) + Math.abs(result.y));
 
         if (result.z < 0.0)
@@ -2987,6 +3152,22 @@ define('Core/AttributeCompression',[
         }
 
         return Cartesian3.normalize(result, result);
+    };
+
+    /**
+     * Decodes a unit-length vector in 2 byte 'oct' encoding to a normalized 3-component vector.
+     * 
+     * @param {Number} x The x component of the oct-encoded unit length vector.
+     * @param {Number} y The y component of the oct-encoded unit length vector.
+     * @param {Cartesian3} result The decoded and normalized vector.
+     * @returns {Cartesian3} The decoded and normalized vector.
+     * 
+     * @exception {DeveloperError} x and y must be an unsigned normalized integer between 0 and 255.
+     * 
+     * @see AttributeCompression.octDecodeInRange
+     */
+    AttributeCompression.octDecode = function(x, y, result) {
+        return AttributeCompression.octDecodeInRange(x, y, 255, result);
     };
 
     /**
@@ -3857,6 +4038,8 @@ define('Core/Ellipsoid',[
      * @param {Ellipsoid} value The value to pack.
      * @param {Number[]} array The array to pack into.
      * @param {Number} [startingIndex=0] The index into the array at which to start packing the elements.
+     *
+     * @returns {Number[]} The array that was packed into
      */
     Ellipsoid.pack = function(value, array, startingIndex) {
                 if (!defined(value)) {
@@ -3869,6 +4052,8 @@ define('Core/Ellipsoid',[
         startingIndex = defaultValue(startingIndex, 0);
 
         Cartesian3.pack(value._radii, array, startingIndex);
+
+        return array;
     };
 
     /**
@@ -4444,6 +4629,8 @@ define('Core/Matrix3',[
      * @param {Matrix3} value The value to pack.
      * @param {Number[]} array The array to pack into.
      * @param {Number} [startingIndex=0] The index into the array at which to start packing the elements.
+     *
+     * @returns {Number[]} The array that was packed into
      */
     Matrix3.pack = function(value, array, startingIndex) {
                 if (!defined(value)) {
@@ -4465,6 +4652,8 @@ define('Core/Matrix3',[
         array[startingIndex++] = value[6];
         array[startingIndex++] = value[7];
         array[startingIndex++] = value[8];
+
+        return array;
     };
 
     /**
@@ -5306,7 +5495,7 @@ define('Core/Matrix3',[
      * @example
      * // Instead of Cesium.Matrix3.multiply(m, Cesium.Matrix3.fromScale(scale), m);
      * Cesium.Matrix3.multiplyByScale(m, scale, m);
-     * 
+     *
      * @see Matrix3.fromScale
      * @see Matrix3.multiplyByUniformScale
      */
@@ -6012,6 +6201,8 @@ define('Core/Cartesian4',[
      * @param {Cartesian4} value The value to pack.
      * @param {Number[]} array The array to pack into.
      * @param {Number} [startingIndex=0] The index into the array at which to start packing the elements.
+     *
+     * @returns {Number[]} The array that was packed into
      */
     Cartesian4.pack = function(value, array, startingIndex) {
                 if (!defined(value)) {
@@ -6027,6 +6218,8 @@ define('Core/Cartesian4',[
         array[startingIndex++] = value.y;
         array[startingIndex++] = value.z;
         array[startingIndex] = value.w;
+
+        return array;
     };
 
     /**
@@ -6051,6 +6244,57 @@ define('Core/Cartesian4',[
         result.y = array[startingIndex++];
         result.z = array[startingIndex++];
         result.w = array[startingIndex];
+        return result;
+    };
+
+    /**
+     * Flattens an array of Cartesian4s into and array of components.
+     *
+     * @param {Cartesian4[]} array The array of cartesians to pack.
+     * @param {Number[]} result The array onto which to store the result.
+     * @returns {Number[]} The packed array.
+     */
+    Cartesian4.packArray = function(array, result) {
+                if (!defined(array)) {
+            throw new DeveloperError('array is required');
+        }
+        
+        var length = array.length;
+        if (!defined(result)) {
+            result = new Array(length * 4);
+        } else {
+            result.length = length * 4;
+        }
+
+        for (var i = 0; i < length; ++i) {
+            Cartesian4.pack(array[i], result, i * 4);
+        }
+        return result;
+    };
+
+    /**
+     * Unpacks an array of cartesian components into and array of Cartesian4s.
+     *
+     * @param {Number[]} array The array of components to unpack.
+     * @param {Cartesian4[]} result The array onto which to store the result.
+     * @returns {Cartesian4[]} The unpacked array.
+     */
+    Cartesian4.unpackArray = function(array, result) {
+                if (!defined(array)) {
+            throw new DeveloperError('array is required');
+        }
+        
+        var length = array.length;
+        if (!defined(result)) {
+            result = new Array(length / 4);
+        } else {
+            result.length = length / 4;
+        }
+
+        for (var i = 0; i < length; i += 4) {
+            var index = i / 4;
+            result[index] = Cartesian4.unpack(array, i, result[index]);
+        }
         return result;
     };
 
@@ -6789,6 +7033,7 @@ define('Core/Matrix4',[
      * @see Matrix4.computePerspectiveOffCenter
      * @see Matrix4.computeInfinitePerspectiveOffCenter
      * @see Matrix4.computeViewportTransformation
+     * @see Matrix4.computeView
      * @see Matrix2
      * @see Matrix3
      * @see Packable
@@ -6827,6 +7072,8 @@ define('Core/Matrix4',[
      * @param {Matrix4} value The value to pack.
      * @param {Number[]} array The array to pack into.
      * @param {Number} [startingIndex=0] The index into the array at which to start packing the elements.
+     *
+     * @returns {Number[]} The array that was packed into
      */
     Matrix4.pack = function(value, array, startingIndex) {
                 if (!defined(value)) {
@@ -6855,6 +7102,8 @@ define('Core/Matrix4',[
         array[startingIndex++] = value[13];
         array[startingIndex++] = value[14];
         array[startingIndex] = value[15];
+
+        return array;
     };
 
     /**
@@ -7256,7 +7505,7 @@ define('Core/Matrix4',[
     };
 
     var fromCameraF = new Cartesian3();
-    var fromCameraS = new Cartesian3();
+    var fromCameraR = new Cartesian3();
     var fromCameraU = new Cartesian3();
 
     /**
@@ -7271,55 +7520,55 @@ define('Core/Matrix4',[
             throw new DeveloperError('camera is required.');
         }
         
-        var eye = camera.eye;
-        var target = camera.target;
+        var position = camera.position;
+        var direction = camera.direction;
         var up = camera.up;
 
-                if (!defined(eye)) {
-            throw new DeveloperError('camera.eye is required.');
+                if (!defined(position)) {
+            throw new DeveloperError('camera.position is required.');
         }
-        if (!defined(target)) {
-            throw new DeveloperError('camera.target is required.');
+        if (!defined(direction)) {
+            throw new DeveloperError('camera.direction is required.');
         }
         if (!defined(up)) {
             throw new DeveloperError('camera.up is required.');
         }
         
-        Cartesian3.normalize(Cartesian3.subtract(target, eye, fromCameraF), fromCameraF);
-        Cartesian3.normalize(Cartesian3.cross(fromCameraF, up, fromCameraS), fromCameraS);
-        Cartesian3.normalize(Cartesian3.cross(fromCameraS, fromCameraF, fromCameraU), fromCameraU);
+        Cartesian3.normalize(direction, fromCameraF);
+        Cartesian3.normalize(Cartesian3.cross(fromCameraF, up, fromCameraR), fromCameraR);
+        Cartesian3.normalize(Cartesian3.cross(fromCameraR, fromCameraF, fromCameraU), fromCameraU);
 
-        var sX = fromCameraS.x;
-        var sY = fromCameraS.y;
-        var sZ = fromCameraS.z;
+        var sX = fromCameraR.x;
+        var sY = fromCameraR.y;
+        var sZ = fromCameraR.z;
         var fX = fromCameraF.x;
         var fY = fromCameraF.y;
         var fZ = fromCameraF.z;
         var uX = fromCameraU.x;
         var uY = fromCameraU.y;
         var uZ = fromCameraU.z;
-        var eyeX = eye.x;
-        var eyeY = eye.y;
-        var eyeZ = eye.z;
-        var t0 = sX * -eyeX + sY * -eyeY+ sZ * -eyeZ;
-        var t1 = uX * -eyeX + uY * -eyeY+ uZ * -eyeZ;
-        var t2 = fX * eyeX + fY * eyeY + fZ * eyeZ;
+        var positionX = position.x;
+        var positionY = position.y;
+        var positionZ = position.z;
+        var t0 = sX * -positionX + sY * -positionY+ sZ * -positionZ;
+        var t1 = uX * -positionX + uY * -positionY+ uZ * -positionZ;
+        var t2 = fX * positionX + fY * positionY + fZ * positionZ;
 
-        //The code below this comment is an optimized
-        //version of the commented lines.
-        //Rather that create two matrices and then multiply,
-        //we just bake in the multiplcation as part of creation.
-        //var rotation = new Matrix4(
-        //                sX,  sY,  sZ, 0.0,
-        //                uX,  uY,  uZ, 0.0,
-        //               -fX, -fY, -fZ, 0.0,
-        //                0.0,  0.0,  0.0, 1.0);
-        //var translation = new Matrix4(
-        //                1.0, 0.0, 0.0, -eye.x,
-        //                0.0, 1.0, 0.0, -eye.y,
-        //                0.0, 0.0, 1.0, -eye.z,
-        //                0.0, 0.0, 0.0, 1.0);
-        //return rotation.multiply(translation);
+        // The code below this comment is an optimized
+        // version of the commented lines.
+        // Rather that create two matrices and then multiply,
+        // we just bake in the multiplcation as part of creation.
+        // var rotation = new Matrix4(
+        //                 sX,  sY,  sZ, 0.0,
+        //                 uX,  uY,  uZ, 0.0,
+        //                -fX, -fY, -fZ, 0.0,
+        //                 0.0,  0.0,  0.0, 1.0);
+        // var translation = new Matrix4(
+        //                 1.0, 0.0, 0.0, -position.x,
+        //                 0.0, 1.0, 0.0, -position.y,
+        //                 0.0, 0.0, 1.0, -position.z,
+        //                 0.0, 0.0, 0.0, 1.0);
+        // return rotation.multiply(translation);
         if (!defined(result)) {
             return new Matrix4(
                     sX,   sY,  sZ, t0,
@@ -7344,7 +7593,6 @@ define('Core/Matrix4',[
         result[14] = t2;
         result[15] = 1.0;
         return result;
-
     };
 
      /**
@@ -7357,14 +7605,14 @@ define('Core/Matrix4',[
       * @param {Matrix4} result The object in which the result will be stored.
       * @returns {Matrix4} The modified result parameter.
       *
-      * @exception {DeveloperError} fovY must be in [0, PI).
+      * @exception {DeveloperError} fovY must be in (0, PI].
       * @exception {DeveloperError} aspectRatio must be greater than zero.
       * @exception {DeveloperError} near must be greater than zero.
       * @exception {DeveloperError} far must be greater than zero.
       */
     Matrix4.computePerspectiveFieldOfView = function(fovY, aspectRatio, near, far, result) {
                 if (fovY <= 0.0 || fovY > Math.PI) {
-            throw new DeveloperError('fovY must be in [0, PI).');
+            throw new DeveloperError('fovY must be in (0, PI].');
         }
         if (aspectRatio <= 0.0) {
             throw new DeveloperError('aspectRatio must be greater than zero.');
@@ -7649,6 +7897,52 @@ define('Core/Matrix4',[
         result[13] = column3Row1;
         result[14] = column3Row2;
         result[15] = column3Row3;
+        return result;
+    };
+
+    /**
+     * Computes a Matrix4 instance that transforms from world space to view space.
+     *
+     * @param {Cartesian3} position The position of the camera.
+     * @param {Cartesian3} direction The forward direction.
+     * @param {Cartesian3} up The up direction.
+     * @param {Cartesian3} right The right direction.
+     * @param {Matrix4} result The object in which the result will be stored.
+     * @returns {Matrix4} The modified result parameter.
+     */
+    Matrix4.computeView = function(position, direction, up, right, result) {
+                if (!defined(position)) {
+            throw new DeveloperError('position is required');
+        }
+        if (!defined(direction)) {
+            throw new DeveloperError('direction is required');
+        }
+        if (!defined(up)) {
+            throw new DeveloperError('up is required');
+        }
+        if (!defined(right)) {
+            throw new DeveloperError('right is required');
+        }
+        if (!defined(result)) {
+            throw new DeveloperError('result is required');
+        }
+        
+        result[0] = right.x;
+        result[1] = up.x;
+        result[2] = -direction.x;
+        result[3] = 0.0;
+        result[4] = right.y;
+        result[5] = up.y;
+        result[6] = -direction.y;
+        result[7] = 0.0;
+        result[8] = right.z;
+        result[9] = up.z;
+        result[10] = -direction.z;
+        result[11] = 0.0;
+        result[12] = -Cartesian3.dot(right, position);
+        result[13] = -Cartesian3.dot(up, position);
+        result[14] = Cartesian3.dot(direction, position);
+        result[15] = 1.0;
         return result;
     };
 
@@ -8414,7 +8708,7 @@ define('Core/Matrix4',[
      * @example
      * // Instead of Cesium.Matrix4.multiply(m, Cesium.Matrix4.fromUniformScale(scale), m);
      * Cesium.Matrix4.multiplyByUniformScale(m, scale, m);
-     * 
+     *
      * @see Matrix4.fromUniformScale
      * @see Matrix4.multiplyByScale
      */
@@ -8451,7 +8745,7 @@ define('Core/Matrix4',[
      * @example
      * // Instead of Cesium.Matrix4.multiply(m, Cesium.Matrix4.fromScale(scale), m);
      * Cesium.Matrix4.multiplyByScale(m, scale, m);
-     * 
+     *
      * @see Matrix4.fromScale
      * @see Matrix4.multiplyByUniformScale
      */
@@ -9703,6 +9997,8 @@ define('Core/Rectangle',[
      * @param {Rectangle} value The value to pack.
      * @param {Number[]} array The array to pack into.
      * @param {Number} [startingIndex=0] The index into the array at which to start packing the elements.
+     *
+     * @returns {Number[]} The array that was packed into
      */
     Rectangle.pack = function(value, array, startingIndex) {
                 if (!defined(value)) {
@@ -9719,6 +10015,8 @@ define('Core/Rectangle',[
         array[startingIndex++] = value.south;
         array[startingIndex++] = value.east;
         array[startingIndex] = value.north;
+
+        return array;
     };
 
     /**
@@ -9828,6 +10126,61 @@ define('Core/Rectangle',[
 
         for ( var i = 0, len = cartographics.length; i < len; i++) {
             var position = cartographics[i];
+            west = Math.min(west, position.longitude);
+            east = Math.max(east, position.longitude);
+            south = Math.min(south, position.latitude);
+            north = Math.max(north, position.latitude);
+
+            var lonAdjusted = position.longitude >= 0 ?  position.longitude : position.longitude +  CesiumMath.TWO_PI;
+            westOverIDL = Math.min(westOverIDL, lonAdjusted);
+            eastOverIDL = Math.max(eastOverIDL, lonAdjusted);
+        }
+
+        if(east - west > eastOverIDL - westOverIDL) {
+            west = westOverIDL;
+            east = eastOverIDL;
+
+            if (east > CesiumMath.PI) {
+                east = east - CesiumMath.TWO_PI;
+            }
+            if (west > CesiumMath.PI) {
+                west = west - CesiumMath.TWO_PI;
+            }
+        }
+
+        if (!defined(result)) {
+            return new Rectangle(west, south, east, north);
+        }
+
+        result.west = west;
+        result.south = south;
+        result.east = east;
+        result.north = north;
+        return result;
+    };
+
+    /**
+     * Creates the smallest possible Rectangle that encloses all positions in the provided array.
+     *
+     * @param {Cartesian[]} cartesians The list of Cartesian instances.
+     * @param {Ellipsoid} [ellipsoid=Ellipsoid.WGS84] The ellipsoid the cartesians are on.
+     * @param {Rectangle} [result] The object onto which to store the result, or undefined if a new instance should be created.
+     * @returns {Rectangle} The modified result parameter or a new Rectangle instance if none was provided.
+     */
+    Rectangle.fromCartesianArray = function(cartesians, ellipsoid, result) {
+                if (!defined(cartesians)) {
+            throw new DeveloperError('cartesians is required.');
+        }
+        
+        var west = Number.MAX_VALUE;
+        var east = -Number.MAX_VALUE;
+        var westOverIDL = Number.MAX_VALUE;
+        var eastOverIDL = -Number.MAX_VALUE;
+        var south = Number.MAX_VALUE;
+        var north = -Number.MAX_VALUE;
+
+        for ( var i = 0, len = cartesians.length; i < len; i++) {
+            var position = ellipsoid.cartesianToCartographic(cartesians[i]);
             west = Math.min(west, position.longitude);
             east = Math.max(east, position.longitude);
             south = Math.min(south, position.latitude);
@@ -11155,6 +11508,8 @@ define('Core/BoundingSphere',[
      * @param {BoundingSphere} value The value to pack.
      * @param {Number[]} array The array to pack into.
      * @param {Number} [startingIndex=0] The index into the array at which to start packing the elements.
+     *
+     * @returns {Number[]} The array that was packed into
      */
     BoundingSphere.pack = function(value, array, startingIndex) {
                 if (!defined(value)) {
@@ -11172,6 +11527,8 @@ define('Core/BoundingSphere',[
         array[startingIndex++] = center.y;
         array[startingIndex++] = center.z;
         array[startingIndex] = value.radius;
+
+        return array;
     };
 
     /**
@@ -11896,46 +12253,6 @@ define('Core/EllipsoidalOccluder',[
             positionScratch.z = vertices[i + 2] + center.z;
 
             var candidateMagnitude = computeMagnitude(ellipsoid, positionScratch, scaledSpaceDirectionToPoint);
-            resultMagnitude = Math.max(resultMagnitude, candidateMagnitude);
-        }
-
-        return magnitudeToPoint(scaledSpaceDirectionToPoint, resultMagnitude, result);
-    };
-
-    /**
-     * Computes a point that can be used for horizon culling from a list of positions.  If the point is below
-     * the horizon, all of the positions are guaranteed to be below the horizon as well.  The returned point
-     * is expressed in the ellipsoid-scaled space and is suitable for use with
-     * {@link EllipsoidalOccluder#isScaledSpacePointVisible}.
-     *
-     * @param {Cartesian3} directionToPoint The direction that the computed point will lie along.
-     *                     A reasonable direction to use is the direction from the center of the ellipsoid to
-     *                     the center of the bounding sphere computed from the positions.  The direction need not
-     *                     be normalized.
-     * @param {Cartesian3[]} points  The vertices from which to compute the horizon culling point.  The positions
-     *                   must be expressed in a reference frame centered at the ellipsoid and aligned with the
-     *                   ellipsoid's axes.
-     * @param {Cartesian3} [result] The instance on which to store the result instead of allocating a new instance.
-     * @returns {Cartesian3} The computed horizon culling point, expressed in the ellipsoid-scaled space.
-     */
-    EllipsoidalOccluder.prototype.computeHorizonCullingPointFromPoints = function(directionToPoint, points, result) {
-                if (!defined(directionToPoint)) {
-            throw new DeveloperError('directionToPoint is required');
-        }
-        if (!defined(points)) {
-            throw new DeveloperError('points is required');
-        }
-        
-        if (!defined(result)) {
-            result = new Cartesian3();
-        }
-
-        var ellipsoid = this._ellipsoid;
-        var scaledSpaceDirectionToPoint = computeScaledSpaceDirectionToPoint(ellipsoid, directionToPoint);
-        var resultMagnitude = 0.0;
-
-        for (var i = 0, len = points.length; i < len; ++i) {
-            var candidateMagnitude = computeMagnitude(ellipsoid, points[i], scaledSpaceDirectionToPoint);
             resultMagnitude = Math.max(resultMagnitude, candidateMagnitude);
         }
 
@@ -14115,7 +14432,19 @@ define('Core/IntersectionTests',[
     var scratchTVec = new Cartesian3();
     var scratchQVec = new Cartesian3();
 
-    function rayTriangle(ray, p0, p1, p2, cullBackFaces) {
+    /**
+     * Computes the intersection of a ray and a triangle as a parametric distance along the input ray.
+     * @memberof IntersectionTests
+     *
+     * @param {Ray} ray The ray.
+     * @param {Cartesian3} p0 The first vertex of the triangle.
+     * @param {Cartesian3} p1 The second vertex of the triangle.
+     * @param {Cartesian3} p2 The third vertex of the triangle.
+     * @param {Boolean} [cullBackFaces=false] If <code>true</code>, will only compute an intersection with the front face of the triangle
+     *                  and return undefined for intersections with the back face.
+     * @returns {Number} The intersection as a parametric distance along the ray, or undefined if there is no intersection.
+     */
+    IntersectionTests.rayTriangleParametric  = function(ray, p0, p1, p2, cullBackFaces) {
                 if (!defined(ray)) {
             throw new DeveloperError('ray is required.');
         }
@@ -14189,10 +14518,10 @@ define('Core/IntersectionTests',[
         }
 
         return t;
-    }
+    };
 
     /**
-     * Computes the intersection of a ray and a triangle.
+     * Computes the intersection of a ray and a triangle as a Cartesian3 coordinate.
      * @memberof IntersectionTests
      *
      * @param {Ray} ray The ray.
@@ -14205,7 +14534,7 @@ define('Core/IntersectionTests',[
      * @returns {Cartesian3} The intersection point or undefined if there is no intersections.
      */
     IntersectionTests.rayTriangle = function(ray, p0, p1, p2, cullBackFaces, result) {
-        var t = rayTriangle(ray, p0, p1, p2, cullBackFaces);
+        var t = IntersectionTests.rayTriangleParametric(ray, p0, p1, p2, cullBackFaces);
         if (!defined(t) || t < 0.0) {
             return undefined;
         }
@@ -14247,7 +14576,7 @@ define('Core/IntersectionTests',[
         Cartesian3.subtract(v1, v0, ray.direction);
         Cartesian3.normalize(ray.direction, ray.direction);
 
-        var t = rayTriangle(ray, p0, p1, p2, cullBackFaces);
+        var t = IntersectionTests.rayTriangleParametric(ray, p0, p1, p2, cullBackFaces);
         if (!defined(t) || t < 0.0 || t > Cartesian3.distance(v0, v1)) {
             return undefined;
         }
@@ -16530,8 +16859,8 @@ define('Core/JulianDate',[
      * @alias JulianDate
      * @constructor
      *
-     * @param {Number} julianDayNumber The Julian Day Number representing the number of whole days.  Fractional days will also be handled correctly.
-     * @param {Number} secondsOfDay The number of seconds into the current Julian Day Number.  Fractional seconds, negative seconds and seconds greater than a day will be handled correctly.
+     * @param {Number} [julianDayNumber=0.0] The Julian Day Number representing the number of whole days.  Fractional days will also be handled correctly.
+     * @param {Number} [secondsOfDay=0.0] The number of seconds into the current Julian Day Number.  Fractional seconds, negative seconds and seconds greater than a day will be handled correctly.
      * @param {TimeStandard} [timeStandard=TimeStandard.UTC] The time standard in which the first two parameters are defined.
      */
     function JulianDate(julianDayNumber, secondsOfDay, timeStandard) {
@@ -17343,7 +17672,8 @@ define('Core/JulianDate',[
                                new LeapSecond(new JulianDate(2453736, 43233.0, TimeStandard.TAI), 33), // January 1, 2006 00:00:00 UTC
                                new LeapSecond(new JulianDate(2454832, 43234.0, TimeStandard.TAI), 34), // January 1, 2009 00:00:00 UTC
                                new LeapSecond(new JulianDate(2456109, 43235.0, TimeStandard.TAI), 35), // July 1, 2012 00:00:00 UTC
-                               new LeapSecond(new JulianDate(2457204, 43236.0, TimeStandard.TAI), 36)  // July 1, 2015 00:00:00 UTC
+                               new LeapSecond(new JulianDate(2457204, 43236.0, TimeStandard.TAI), 36), // July 1, 2015 00:00:00 UTC
+                               new LeapSecond(new JulianDate(2457754, 43237.0, TimeStandard.TAI), 37)  // January 1, 2017 00:00:00 UTC
                              ];
 
     return JulianDate;
@@ -17545,7 +17875,7 @@ define('Core/loadWithXhr',[
      * }).otherwise(function(error) {
      *     // an error occurred
      * });
-     * 
+     *
      * @see loadArrayBuffer
      * @see loadBlob
      * @see loadJson
@@ -17602,23 +17932,23 @@ define('Core/loadWithXhr',[
         var data = dataUriRegexResult[3];
 
         switch (responseType) {
-        case '':
-        case 'text':
-            return decodeDataUriText(isBase64, data);
-        case 'arraybuffer':
-            return decodeDataUriArrayBuffer(isBase64, data);
-        case 'blob':
-            var buffer = decodeDataUriArrayBuffer(isBase64, data);
-            return new Blob([buffer], {
-                type : mimeType
-            });
-        case 'document':
-            var parser = new DOMParser();
-            return parser.parseFromString(decodeDataUriText(isBase64, data), mimeType);
-        case 'json':
-            return JSON.parse(decodeDataUriText(isBase64, data));
-        default:
-            throw new DeveloperError('Unhandled responseType: ' + responseType);
+            case '':
+            case 'text':
+                return decodeDataUriText(isBase64, data);
+            case 'arraybuffer':
+                return decodeDataUriArrayBuffer(isBase64, data);
+            case 'blob':
+                var buffer = decodeDataUriArrayBuffer(isBase64, data);
+                return new Blob([buffer], {
+                    type : mimeType
+                });
+            case 'document':
+                var parser = new DOMParser();
+                return parser.parseFromString(decodeDataUriText(isBase64, data), mimeType);
+            case 'json':
+                return JSON.parse(decodeDataUriText(isBase64, data));
+            default:
+                throw new DeveloperError('Unhandled responseType: ' + responseType);
         }
     }
 
@@ -17639,7 +17969,7 @@ define('Core/loadWithXhr',[
         xhr.open(method, url, true);
 
         if (defined(headers)) {
-            for ( var key in headers) {
+            for (var key in headers) {
                 if (headers.hasOwnProperty(key)) {
                     xhr.setRequestHeader(key, headers[key]);
                 }
@@ -17651,21 +17981,31 @@ define('Core/loadWithXhr',[
         }
 
         xhr.onload = function() {
-            if (xhr.status >= 200 && xhr.status < 300) {
-                if (defined(xhr.response)) {
-                    deferred.resolve(xhr.response);
-                } else {
-                    // busted old browsers.
-                    if (defined(xhr.responseXML) && xhr.responseXML.hasChildNodes()) {
-                        deferred.resolve(xhr.responseXML);
-                    } else if (defined(xhr.responseText)) {
-                        deferred.resolve(xhr.responseText);
-                    } else {
-                        deferred.reject(new RuntimeError('unknown XMLHttpRequest response type.'));
-                    }
-                }
-            } else {
+            if (xhr.status < 200 || xhr.status >= 300) {
                 deferred.reject(new RequestErrorEvent(xhr.status, xhr.response, xhr.getAllResponseHeaders()));
+                return;
+            }
+
+            var response = xhr.response;
+            var browserResponseType = xhr.responseType;
+
+            //All modern browsers will go into either the first if block or last else block.
+            //Other code paths support older browsers that either do not support the supplied responseType
+            //or do not support the xhr.response property.
+            if (defined(response) && (!defined(responseType) || (browserResponseType === responseType))) {
+                deferred.resolve(response);
+            } else if ((responseType === 'json') && typeof response === 'string') {
+                try {
+                    deferred.resolve(JSON.parse(response));
+                } catch (e) {
+                    deferred.reject(e);
+                }
+            } else if ((browserResponseType === '' || browserResponseType === 'document') && defined(xhr.responseXML) && xhr.responseXML.hasChildNodes()) {
+                deferred.resolve(xhr.responseXML);
+            } else if ((browserResponseType === '' || browserResponseType === 'text') && defined(xhr.responseText)) {
+                deferred.resolve(xhr.responseText);
+            } else {
+                deferred.reject(new RuntimeError('Invalid XMLHttpRequest response type.'));
             }
         };
 
@@ -19728,6 +20068,8 @@ define('Core/Quaternion',[
      * @param {Quaternion} value The value to pack.
      * @param {Number[]} array The array to pack into.
      * @param {Number} [startingIndex=0] The index into the array at which to start packing the elements.
+     *
+     * @returns {Number[]} The array that was packed into
      */
     Quaternion.pack = function(value, array, startingIndex) {
                 if (!defined(value)) {
@@ -19744,6 +20086,8 @@ define('Core/Quaternion',[
         array[startingIndex++] = value.y;
         array[startingIndex++] = value.z;
         array[startingIndex] = value.w;
+
+        return array;
     };
 
     /**
@@ -20373,7 +20717,7 @@ define('Core/Quaternion',[
      * // 2. compute the squad interpolation as above but where the first quaternion is a end point.
      * var s1 = Cesium.Quaternion.computeInnerQuadrangle(quaternions[0], quaternions[1], quaternions[2], new Cesium.Quaternion());
      * var q = Cesium.Quaternion.squad(quaternions[0], quaternions[1], quaternions[0], s1, t, new Cesium.Quaternion());
-     * 
+     *
      * @see Quaternion#computeInnerQuadrangle
      */
     Quaternion.squad = function(q0, q1, s0, s1, t, result) {
@@ -20607,6 +20951,7 @@ define('Core/Transforms',[
         './Cartesian2',
         './Cartesian3',
         './Cartesian4',
+        './Cartographic',
         './defaultValue',
         './defined',
         './DeveloperError',
@@ -20626,6 +20971,7 @@ define('Core/Transforms',[
         Cartesian2,
         Cartesian3,
         Cartesian4,
+        Cartographic,
         defaultValue,
         defined,
         DeveloperError,
@@ -20976,6 +21322,38 @@ define('Core/Transforms',[
         return Matrix4.multiply(result, hprMatrix, result);
     };
 
+    /**
+     * Computes a 4x4 transformation matrix from a reference frame with axes computed from the heading-pitch-roll angles
+     * centered at the provided origin to the provided ellipsoid's fixed reference frame. Heading is the rotation from the local north
+     * direction where a positive angle is increasing eastward. Pitch is the rotation from the local east-north plane. Positive pitch angles
+     * are above the plane. Negative pitch angles are below the plane. Roll is the first rotation applied about the local east axis.
+     *
+     * @param {Cartesian3} origin The center point of the local reference frame.
+     * @param {Number} heading The heading angle in radians.
+     * @param {Number} pitch The pitch angle in radians.
+     * @param {Number} roll The roll angle in radians.
+     * @param {Ellipsoid} [ellipsoid=Ellipsoid.WGS84] The ellipsoid whose fixed frame is used in the transformation.
+     * @param {Matrix4} [result] The object onto which to store the result.
+     * @returns {Matrix4} The modified result parameter or a new Matrix4 instance if none was provided.
+     *
+     * @example
+     * // Get the transform from local heading-pitch-roll at cartographic (0.0, 0.0) to Earth's fixed frame.
+     * var center = Cesium.Cartesian3.fromDegrees(0.0, 0.0);
+     * var heading = -Cesium.Math.PI_OVER_TWO;
+     * var pitch = Cesium.Math.PI_OVER_FOUR;
+     * var roll = 0.0;
+     * var transform = Cesium.Transforms.aircraftHeadingPitchRollToFixedFrame(center, heading, pitch, roll);
+     *
+     * @private
+     */
+    Transforms.aircraftHeadingPitchRollToFixedFrame = function(origin, heading, pitch, roll, ellipsoid, result) {
+        // checks for required parameters happen in the called functions
+        var hprQuaternion = Quaternion.fromHeadingPitchRoll(heading, pitch, roll, scratchHPRQuaternion);
+        var hprMatrix = Matrix4.fromTranslationQuaternionRotationScale(Cartesian3.ZERO, hprQuaternion, scratchScale, scratchHPRMatrix4);
+        result = Transforms.northEastDownToFixedFrame(origin, ellipsoid, result);
+        return Matrix4.multiply(result, hprMatrix, result);
+    };
+
     var scratchENUMatrix4 = new Matrix4();
     var scratchHPRMatrix3 = new Matrix3();
 
@@ -21004,6 +21382,37 @@ define('Core/Transforms',[
     Transforms.headingPitchRollQuaternion = function(origin, heading, pitch, roll, ellipsoid, result) {
         // checks for required parameters happen in the called functions
         var transform = Transforms.headingPitchRollToFixedFrame(origin, heading, pitch, roll, ellipsoid, scratchENUMatrix4);
+        var rotation = Matrix4.getRotation(transform, scratchHPRMatrix3);
+        return Quaternion.fromRotationMatrix(rotation, result);
+    };
+
+    /**
+     * Computes a quaternion from a reference frame with axes computed from the heading-pitch-roll angles
+     * centered at the provided origin. Heading is the rotation from the local north
+     * direction where a positive angle is increasing eastward. Pitch is the rotation from the local east-north plane. Positive pitch angles
+     * are above the plane. Negative pitch angles are below the plane. Roll is the first rotation applied about the local east axis.
+     *
+     * @param {Cartesian3} origin The center point of the local reference frame.
+     * @param {Number} heading The heading angle in radians.
+     * @param {Number} pitch The pitch angle in radians.
+     * @param {Number} roll The roll angle in radians.
+     * @param {Ellipsoid} [ellipsoid=Ellipsoid.WGS84] The ellipsoid whose fixed frame is used in the transformation.
+     * @param {Quaternion} [result] The object onto which to store the result.
+     * @returns {Quaternion} The modified result parameter or a new Quaternion instance if none was provided.
+     *
+     * @example
+     * // Get the quaternion from local heading-pitch-roll at cartographic (0.0, 0.0) to Earth's fixed frame.
+     * var center = Cesium.Cartesian3.fromDegrees(0.0, 0.0);
+     * var heading = -Cesium.Math.PI_OVER_TWO;
+     * var pitch = Cesium.Math.PI_OVER_FOUR;
+     * var roll = 0.0;
+     * var quaternion = Cesium.Transforms.aircraftHeadingPitchRollQuaternion(center, heading, pitch, roll);
+     *
+     * @private
+     */
+    Transforms.aircraftHeadingPitchRollQuaternion = function(origin, heading, pitch, roll, ellipsoid, result) {
+        // checks for required parameters happen in the called functions
+        var transform = Transforms.aircraftHeadingPitchRollToFixedFrame(origin, heading, pitch, roll, ellipsoid, scratchENUMatrix4);
         var rotation = Matrix4.getRotation(transform, scratchHPRMatrix3);
         return Quaternion.fromRotationMatrix(rotation, result);
     };
@@ -21407,6 +21816,79 @@ define('Core/Transforms',[
         return result;
     };
 
+    var scratchCartographic = new Cartographic();
+    var scratchCartesian3Projection = new Cartesian3();
+    var scratchCartesian3 = new Cartesian3();
+    var scratchCartesian4Origin = new Cartesian4();
+    var scratchCartesian4NewOrigin = new Cartesian4();
+    var scratchCartesian4NewXAxis = new Cartesian4();
+    var scratchCartesian4NewYAxis = new Cartesian4();
+    var scratchCartesian4NewZAxis = new Cartesian4();
+    var scratchFromENU = new Matrix4();
+    var scratchToENU = new Matrix4();
+
+    /**
+     * @private
+     */
+    Transforms.basisTo2D = function(projection, matrix, result) {
+                if (!defined(projection)) {
+            throw new DeveloperError('projection is required.');
+        }
+        if (!defined(matrix)) {
+            throw new DeveloperError('matrix is required.');
+        }
+        if (!defined(result)) {
+            throw new DeveloperError('result is required.');
+        }
+        
+        var ellipsoid = projection.ellipsoid;
+
+        var origin = Matrix4.getColumn(matrix, 3, scratchCartesian4Origin);
+        var cartographic = ellipsoid.cartesianToCartographic(origin, scratchCartographic);
+
+        var fromENU = Transforms.eastNorthUpToFixedFrame(origin, ellipsoid, scratchFromENU);
+        var toENU = Matrix4.inverseTransformation(fromENU, scratchToENU);
+
+        var projectedPosition = projection.project(cartographic, scratchCartesian3Projection);
+        var newOrigin = scratchCartesian4NewOrigin;
+        newOrigin.x = projectedPosition.z;
+        newOrigin.y = projectedPosition.x;
+        newOrigin.z = projectedPosition.y;
+        newOrigin.w = 1.0;
+
+        var xAxis = Matrix4.getColumn(matrix, 0, scratchCartesian3);
+        var xScale = Cartesian3.magnitude(xAxis);
+        var newXAxis = Matrix4.multiplyByVector(toENU, xAxis, scratchCartesian4NewXAxis);
+        Cartesian4.fromElements(newXAxis.z, newXAxis.x, newXAxis.y, 0.0, newXAxis);
+
+        var yAxis = Matrix4.getColumn(matrix, 1, scratchCartesian3);
+        var yScale = Cartesian3.magnitude(yAxis);
+        var newYAxis = Matrix4.multiplyByVector(toENU, yAxis, scratchCartesian4NewYAxis);
+        Cartesian4.fromElements(newYAxis.z, newYAxis.x, newYAxis.y, 0.0, newYAxis);
+
+        var zAxis = Matrix4.getColumn(matrix, 2, scratchCartesian3);
+        var zScale = Cartesian3.magnitude(zAxis);
+
+        var newZAxis = scratchCartesian4NewZAxis;
+        Cartesian3.cross(newXAxis, newYAxis, newZAxis);
+        Cartesian3.normalize(newZAxis, newZAxis);
+        Cartesian3.cross(newYAxis, newZAxis, newXAxis);
+        Cartesian3.normalize(newXAxis, newXAxis);
+        Cartesian3.cross(newZAxis, newXAxis, newYAxis);
+        Cartesian3.normalize(newYAxis, newYAxis);
+
+        Cartesian3.multiplyByScalar(newXAxis, xScale, newXAxis);
+        Cartesian3.multiplyByScalar(newYAxis, yScale, newYAxis);
+        Cartesian3.multiplyByScalar(newZAxis, zScale, newZAxis);
+
+        Matrix4.setColumn(result, 0, newXAxis, result);
+        Matrix4.setColumn(result, 1, newYAxis, result);
+        Matrix4.setColumn(result, 2, newZAxis, result);
+        Matrix4.setColumn(result, 3, newOrigin, result);
+
+        return result;
+    };
+
     return Transforms;
 });
 
@@ -21799,7 +22281,7 @@ define('Core/OrientedBoundingBox',[
      * var halfAxes = Cesium.Matrix3.fromScale(new Cesium.Cartesian3(1.0, 3.0, 2.0), new Cesium.Matrix3());
      *
      * var obb = new Cesium.OrientedBoundingBox(center, halfAxes);
-     * 
+     *
      * @see BoundingSphere
      * @see BoundingRectangle
      */
@@ -21823,6 +22305,7 @@ define('Core/OrientedBoundingBox',[
     var scratchCartesian3 = new Cartesian3();
     var scratchCartesian4 = new Cartesian3();
     var scratchCartesian5 = new Cartesian3();
+    var scratchCartesian6 = new Cartesian3();
     var scratchCovarianceResult = new Matrix3();
     var scratchEigenResult = {
         unitary : new Matrix3(),
@@ -21900,26 +22383,41 @@ define('Core/OrientedBoundingBox',[
         covarianceMatrix[8] = ezz;
 
         var eigenDecomposition = Matrix3.computeEigenDecomposition(covarianceMatrix, scratchEigenResult);
-        var rotation = Matrix3.transpose(eigenDecomposition.unitary, result.halfAxes);
+        var rotation = Matrix3.clone(eigenDecomposition.unitary, result.halfAxes);
 
-        p = Cartesian3.subtract(positions[0], meanPoint, scratchCartesian2);
-        var tempPoint = Matrix3.multiplyByVector(rotation, p, scratchCartesian3);
-        var maxPoint = Cartesian3.clone(tempPoint, scratchCartesian4);
-        var minPoint = Cartesian3.clone(tempPoint, scratchCartesian5);
+        var v1 = Matrix3.getColumn(rotation, 0, scratchCartesian4);
+        var v2 = Matrix3.getColumn(rotation, 1, scratchCartesian5);
+        var v3 = Matrix3.getColumn(rotation, 2, scratchCartesian6);
 
-        for (i = 1; i < length; i++) {
-            p = Cartesian3.subtract(positions[i], meanPoint, p);
-            Matrix3.multiplyByVector(rotation, p, tempPoint);
-            Cartesian3.minimumByComponent(minPoint, tempPoint, minPoint);
-            Cartesian3.maximumByComponent(maxPoint, tempPoint, maxPoint);
+        var u1 = -Number.MAX_VALUE;
+        var u2 = -Number.MAX_VALUE;
+        var u3 = -Number.MAX_VALUE;
+        var l1 = Number.MAX_VALUE;
+        var l2 = Number.MAX_VALUE;
+        var l3 = Number.MAX_VALUE;
+
+        for (i = 0; i < length; i++) {
+            p = positions[i];
+            u1 = Math.max(Cartesian3.dot(v1, p), u1);
+            u2 = Math.max(Cartesian3.dot(v2, p), u2);
+            u3 = Math.max(Cartesian3.dot(v3, p), u3);
+
+            l1 = Math.min(Cartesian3.dot(v1, p), l1);
+            l2 = Math.min(Cartesian3.dot(v2, p), l2);
+            l3 = Math.min(Cartesian3.dot(v3, p), l3);
         }
 
-        var center = Cartesian3.add(minPoint, maxPoint, scratchCartesian3);
-        Cartesian3.multiplyByScalar(center, 0.5, center);
-        Matrix3.multiplyByVector(rotation, center, center);
-        Cartesian3.add(meanPoint, center, result.center);
+        v1 = Cartesian3.multiplyByScalar(v1, 0.5 * (l1 + u1), v1);
+        v2 = Cartesian3.multiplyByScalar(v2, 0.5 * (l2 + u2), v2);
+        v3 = Cartesian3.multiplyByScalar(v3, 0.5 * (l3 + u3), v3);
 
-        var scale = Cartesian3.subtract(maxPoint, minPoint, scratchCartesian3);
+        var center = Cartesian3.add(v1, v2, result.center);
+        center = Cartesian3.add(center, v3, center);
+
+        var scale = scratchCartesian3;
+        scale.x = u1 - l1;
+        scale.y = u2 - l2;
+        scale.z = u3 - l3;
         Cartesian3.multiplyByScalar(scale, 0.5, scale);
         Matrix3.multiplyByScale(result.halfAxes, scale, result.halfAxes);
 
@@ -22527,6 +23025,28 @@ define('Core/ComponentDatatype',[
         UNSIGNED_SHORT : WebGLConstants.UNSIGNED_SHORT,
 
         /**
+         * 32-bit signed int corresponding to <code>INT</code> and the type
+         * of an element in <code>Int32Array</code>.
+         *
+         * @memberOf ComponentDatatype
+         *
+         * @type {Number}
+         * @constant
+         */
+        INT : WebGLConstants.INT,
+
+        /**
+         * 32-bit unsigned int corresponding to <code>UNSIGNED_INT</code> and the type
+         * of an element in <code>Uint32Array</code>.
+         *
+         * @memberOf ComponentDatatype
+         *
+         * @type {Number}
+         * @constant
+         */
+        UNSIGNED_INT : WebGLConstants.UNSIGNED_INT,
+
+        /**
          * 32-bit floating-point corresponding to <code>FLOAT</code> and the type
          * of an element in <code>Float32Array</code>.
          *
@@ -22575,6 +23095,10 @@ define('Core/ComponentDatatype',[
             return Int16Array.BYTES_PER_ELEMENT;
         case ComponentDatatype.UNSIGNED_SHORT:
             return Uint16Array.BYTES_PER_ELEMENT;
+        case ComponentDatatype.INT:
+            return Int32Array.BYTES_PER_ELEMENT;
+        case ComponentDatatype.UNSIGNED_INT:
+            return Uint32Array.BYTES_PER_ELEMENT;
         case ComponentDatatype.FLOAT:
             return Float32Array.BYTES_PER_ELEMENT;
         case ComponentDatatype.DOUBLE:
@@ -22585,7 +23109,7 @@ define('Core/ComponentDatatype',[
     };
 
     /**
-     * Gets the ComponentDatatype for the provided TypedArray instance.
+     * Gets the {@link ComponentDatatype} for the provided TypedArray instance.
      *
      * @param {TypedArray} array The typed array.
      * @returns {ComponentDatatype} The ComponentDatatype for the provided array, or undefined if the array is not a TypedArray.
@@ -22602,6 +23126,12 @@ define('Core/ComponentDatatype',[
         }
         if (array instanceof Uint16Array) {
             return ComponentDatatype.UNSIGNED_SHORT;
+        }
+        if (array instanceof Int32Array) {
+            return ComponentDatatype.INT;
+        }
+        if (array instanceof Uint32Array) {
+            return ComponentDatatype.UNSIGNED_INT;
         }
         if (array instanceof Float32Array) {
             return ComponentDatatype.FLOAT;
@@ -22628,6 +23158,8 @@ define('Core/ComponentDatatype',[
                 componentDatatype === ComponentDatatype.UNSIGNED_BYTE ||
                 componentDatatype === ComponentDatatype.SHORT ||
                 componentDatatype === ComponentDatatype.UNSIGNED_SHORT ||
+                componentDatatype === ComponentDatatype.INT ||
+                componentDatatype === ComponentDatatype.UNSIGNED_INT ||
                 componentDatatype === ComponentDatatype.FLOAT ||
                 componentDatatype === ComponentDatatype.DOUBLE);
     };
@@ -22637,7 +23169,7 @@ define('Core/ComponentDatatype',[
      *
      * @param {ComponentDatatype} componentDatatype The component data type.
      * @param {Number|Array} valuesOrLength The length of the array to create or an array.
-     * @returns {Int8Array|Uint8Array|Int16Array|Uint16Array|Float32Array|Float64Array} A typed array.
+     * @returns {Int8Array|Uint8Array|Int16Array|Uint16Array|Int32Array|Uint32Array|Float32Array|Float64Array} A typed array.
      *
      * @exception {DeveloperError} componentDatatype is not a valid value.
      *
@@ -22662,6 +23194,10 @@ define('Core/ComponentDatatype',[
             return new Int16Array(valuesOrLength);
         case ComponentDatatype.UNSIGNED_SHORT:
             return new Uint16Array(valuesOrLength);
+        case ComponentDatatype.INT:
+            return new Int32Array(valuesOrLength);
+        case ComponentDatatype.UNSIGNED_INT:
+            return new Uint32Array(valuesOrLength);
         case ComponentDatatype.FLOAT:
             return new Float32Array(valuesOrLength);
         case ComponentDatatype.DOUBLE:
@@ -22678,7 +23214,7 @@ define('Core/ComponentDatatype',[
      * @param {ArrayBuffer} buffer The buffer storage to use for the view.
      * @param {Number} [byteOffset] The offset, in bytes, to the first element in the view.
      * @param {Number} [length] The number of elements in the view.
-     * @returns {Int8Array|Uint8Array|Int16Array|Uint16Array|Float32Array|Float64Array} A typed array view of the buffer.
+     * @returns {Int8Array|Uint8Array|Int16Array|Uint16Array|Int32Array|Uint32Array|Float32Array|Float64Array} A typed array view of the buffer.
      *
      * @exception {DeveloperError} componentDatatype is not a valid value.
      */
@@ -22702,12 +23238,47 @@ define('Core/ComponentDatatype',[
             return new Int16Array(buffer, byteOffset, length);
         case ComponentDatatype.UNSIGNED_SHORT:
             return new Uint16Array(buffer, byteOffset, length);
+        case ComponentDatatype.INT:
+            return new Int32Array(buffer, byteOffset, length);
+        case ComponentDatatype.UNSIGNED_INT:
+            return new Uint32Array(buffer, byteOffset, length);
         case ComponentDatatype.FLOAT:
             return new Float32Array(buffer, byteOffset, length);
         case ComponentDatatype.DOUBLE:
             return new Float64Array(buffer, byteOffset, length);
         default:
             throw new DeveloperError('componentDatatype is not a valid value.');
+        }
+    };
+
+    /**
+     * Get the ComponentDatatype from its name.
+     *
+     * @param {String} name The name of the ComponentDatatype.
+     * @returns {ComponentDatatype} The ComponentDatatype.
+     *
+     * @exception {DeveloperError} name is not a valid value.
+     */
+    ComponentDatatype.fromName = function(name) {
+        switch (name) {
+            case 'BYTE':
+                return ComponentDatatype.BYTE;
+            case 'UNSIGNED_BYTE':
+                return ComponentDatatype.UNSIGNED_BYTE;
+            case 'SHORT':
+                return ComponentDatatype.SHORT;
+            case 'UNSIGNED_SHORT':
+                return ComponentDatatype.UNSIGNED_SHORT;
+            case 'INT':
+                return ComponentDatatype.INT;
+            case 'UNSIGNED_INT':
+                return ComponentDatatype.UNSIGNED_INT;
+            case 'FLOAT':
+                return ComponentDatatype.FLOAT;
+            case 'DOUBLE':
+                return ComponentDatatype.DOUBLE;
+            default:
+                throw new DeveloperError('name is not a valid value.');
         }
     };
 
