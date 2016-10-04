@@ -115,7 +115,7 @@ goog.require('ga_urlutils_service');
           var j = this.data.length - 1;
           while (i < j) {
             currentIdx = (i + j) / 2 | 0;
-            currentDist = this.data[currentIdx].dist;
+            currentDist = this.data[currentIdx].domainDist;
             if (currentDist < searchDist) {
               i = currentIdx + 1;
             } else if (currentDist > searchDist) {
