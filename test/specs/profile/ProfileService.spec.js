@@ -170,11 +170,29 @@ describe('ga_profile_service', function() {
         $httpBackend.flush();
       });
 
-      it('find map coordinates from a x coord', function(done) {
+      it('find map coordinates from a x coord in m', function(done) {
         var feature = new ol.Feature(new ol.geom.LineString(goodCoords));
         $httpBackend.expectPOST(profileUrl).respond(goodResult);
         gaProfile.create(feature).then(function(profile) {
-          expect(profile.findMapCoordinates(10)).to.eql([592000, 221750]);
+          expect(profile.findMapCoordinates(-1)).to.eql([592000, 221750]);
+          expect(profile.findMapCoordinates(0)).to.eql([592000, 221750]);
+          expect(profile.findMapCoordinates(1)).to.eql([592000.8392434989, 221750.54373522458]);
+          expect(profile.findMapCoordinates(200)).to.eql([592167.8486997637, 221858.74704491728]);
+          expect(profile.findMapCoordinates(212)).to.eql([592177.5, 221865]);
+          done();
+        });
+        $httpBackend.flush();
+      });
+
+      it('find map coordinates from a x coord in km', function(done) {
+        var feature = new ol.Feature(new ol.geom.LineString(goodCoords));
+        $httpBackend.expectPOST(profileUrl).respond(goodResultDistKm);
+        gaProfile.create(feature).then(function(profile) {
+          expect(profile.findMapCoordinates(-1)).to.eql([592000, 221750]);
+          expect(profile.findMapCoordinates(0)).to.eql([592000, 221750]);
+          expect(profile.findMapCoordinates(1)).to.eql([592007.9913558292, 221755.17749814285]);
+          expect(profile.findMapCoordinates(20)).to.eql([592159.8271165837, 221853.54996285707]);
+          expect(profile.findMapCoordinates(23)).to.eql([592177.5, 221865]);
           done();
         });
         $httpBackend.flush();
