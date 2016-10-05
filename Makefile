@@ -306,7 +306,8 @@ ol3cesium: .build-artefacts/ol3-cesium
 	cp dist/ol3cesium.js ../../src/lib/ol3cesium.js; \
 	rm -rf ../../src/lib/Cesium; \
 	cp -r cesium/Build/CesiumUnminified ../../src/lib/Cesium; \
-	cp cesium/Build/Cesium/Cesium.js ../../src/lib/Cesium.min.js;
+	cp cesium/Build/Cesium/Cesium.js ../../src/lib/Cesium.min.js; \
+	cp Cesium.externs.js ../../externs/Cesium.externs.js;
 
 .PHONY: filesaver
 filesaver: .build-artefacts/filesaver
