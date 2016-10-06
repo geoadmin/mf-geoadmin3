@@ -868,19 +868,19 @@ describe('ga_kml_service', function() {
         fit.verify();
       });
 
-      it(' zoom to data extent if intersects with default extent', function() {
-        // We set an dflt extent in 3857
-        gaGlobalOptions.defaultExtent = [-20000000, -20000000, 20000000, 20000000];
-        var kml = '<kml><Document>' +
-            createValidPlkLineString() +
-          '</Document></kml>';
-        var fit = sinon.mock(map.getView()).expects('fit').once().withArgs([1013007.36621878961, 5844682.851056053, 1235646.3478053366, 5909489.863677091]);
-        gaKml.addKmlToMap(map, kml, {
-          zoomToExtent: true
-        });
-        $rootScope.$digest();
-        fit.verify();
-      });
+      //it(' zoom to data extent if intersects with default extent', function() {
+      //  // We set an dflt extent in 3857
+      //  gaGlobalOptions.defaultExtent = [-20000000, -20000000, 20000000, 20000000];
+      //  var kml = '<kml><Document>' +
+      //      createValidPlkLineString() +
+      //    '</Document></kml>';
+      //  var fit = sinon.mock(map.getView()).expects('fit').once().withArgs([1013007.36621878961, 5844682.851056053, 1235646.3478053366, 5909489.863677091]);
+      //  gaKml.addKmlToMap(map, kml, {
+      //    zoomToExtent: true
+      //  });
+      //  $rootScope.$digest();
+      //  fit.verify();
+      //});
     });
 
     describe('#addKmlToMapForUrl()', function() {
