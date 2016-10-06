@@ -12,8 +12,8 @@
   "author": "Swisstopo",
   "readmeFileName": "README.md",
   "dependencies": {
-    "angular": "1.4.12",
-    "angular-translate": "2.8.1",
+    "angular": "1.5.8",
+    "angular-translate": "2.12.1",
     "localforage": "1.2.3",
     "jquery": "2.2.0",
     "jquery-ajax-transport-xdomainrequest": "1.0.4",

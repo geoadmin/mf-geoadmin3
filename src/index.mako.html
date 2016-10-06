@@ -41,14 +41,14 @@ itemscope itemtype="http://schema.org/WebApplication"
     <link rel="apple-touch-icon" sizes="152x152" href="${s3basepath}${versionslashed}img/touch-icon-bund-152x152.png"/>
 
     <!-- Description is translated 'by hand' in the MainController -->
-    <meta name="description" translate translate-attr-content="page_description" content="geo.admin.ch ist die Geoinformationsplattform der Schweizerischen Eidgenossenschaft. // geo.admin.ch est la plateforme de géoinformation de la Confédération suisse."/>
+    <meta name="description" translate-attr="{content: 'page_description'}" content="geo.admin.ch ist die Geoinformationsplattform der Schweizerischen Eidgenossenschaft. // geo.admin.ch est la plateforme de géoinformation de la Confédération suisse."/>
     <meta name="keywords" content="maps Switzerland, map viewer, Confederation, geodata, public platform, geographical information, geoportal, orthophotos, geolocation, geoinformation, Geodaten, Geoinformation, Bund, Plattform, Karte, Kartendienst, Kartenviewer"/>
     <meta name="news_keywords" content="Maps of Switzerland"/>
 
     <!-- Open Graph metas SMO -->
     <meta property="og:site_name" content="geo.admin.ch"/>
     <meta property="og:title" content="Swiss Geoportal"/>
-    <meta property="og:description" translate translate-attr-content="page_description" content="geo.admin.ch ist die Geoinformationsplattform der Schweizerischen Eidgenossenschaft. // geo.admin.ch est la plateforme de géoinformation de la Confédération suisse."/>
+    <meta property="og:description" translate-attr="{content: 'page_description'}" content="geo.admin.ch ist die Geoinformationsplattform der Schweizerischen Eidgenossenschaft. // geo.admin.ch est la plateforme de géoinformation de la Confédération suisse."/>
     <meta property="og:type" content="WebApplication"/>
     <meta property="og:url" content="https://map.geo.admin.ch"/>
     <meta property="og:image" content="https://cms.geo.admin.ch/img/logo_geoportal.png"/>
@@ -271,7 +271,7 @@ itemscope itemtype="http://schema.org/WebApplication"
       <div class="pull-right">
         <a target="_blank"
            translate="{{topicId + '_service_link_label'}}"
-           translate-attr-href="{{topicId + '_service_link_href'}}"></a>
+           translate-attr="{href: topicId + '_service_link_href'}"></a>
       </div>
   % endif
     </div><!-- #footer -->
@@ -505,7 +505,7 @@ itemscope itemtype="http://schema.org/WebApplication"
               </div>
               <hr>
               <p>
-                <a target="_blank" translate translate-attr-href="{{topicId + '_service_link_href'}}" >{{topicId + '_service_link_label'}}</a>
+                <a target="_blank" translate translate-attr="{href: topicId + '_service_link_href'}">{{topicId + '_service_link_label'}}</a>
                 <br>
                 <a target="_blank" href="https://www.geo.admin.ch/{{langId}}/about-swiss-geoportal/impressum.html#copyright" translate>copyright_label</a>
               </p>

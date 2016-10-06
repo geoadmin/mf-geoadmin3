@@ -5,25 +5,21 @@
     <button class="ga-btn fa fa-question-circle"
             ng-if="::options.help"
             ga-help-action="{{::options.help}}"
-            translate
-            translate-attr-title="help_label">
+            translate-attr="{title: 'help_label'}">
     </button>
     <button class="ga-btn fa fa-print"
             ng-if="::options.showPrint"
             ng-click="print()" 
-            translate
-            translate-attr-title="print">
+            translate-attr="{title: 'print'}">
     </button>
     <button class="ga-btn fa fa-minus"
             ng-if="::options.showReduce"
             ng-click="reduce($event)"
-            translate
-            translate-attr-title="reduce_label">
+            translate-attr="{title: 'reduce_label'}">
     </button>
     <button class="ga-btn fa fa-remove"
             ng-click="close($event)"
-            translate
-            translate-attr-title="close"></button>
+            translate-attr="{title: 'close'}"></button>
   </div>
 </div>
 <div class="popover-content ga-popup-content" ng-transclude></div>
