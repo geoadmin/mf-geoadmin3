@@ -59,6 +59,14 @@ goog.require('ga_urlutils_service');
           /<href>https?:\/\/[a-z\d\.\-]*(bgdi|geo.admin)\.ch[a-zA-Z\d\-_\/]*img\/maki\/([a-z]*-24@2x\.png)/g,
           '<href>' + gaGlobalOptions.apiUrl + '/color/255,0,0/$2'
         );
+
+        // Fix #3531: Should be fix with next version of ol >3.18.2
+        // We set a default href otherwise the KML parsing is broken.
+        kml = kml.replace(
+          /<IconStyle><scale>0<\/scale><\/IconStyle>/g,
+          '<IconStyle><Icon><href>https://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href><\/Icon><scale>0</scale></IconStyle>'
+        );
+
         // Load the parser only when needed.
         // WARNING: it's needed to initialize it here for test.
         if (!kmlFormat) {
