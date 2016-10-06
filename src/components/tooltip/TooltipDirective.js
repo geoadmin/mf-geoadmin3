@@ -458,7 +458,10 @@ goog.require('ga_topic_service');
                     sourceProj || mapProj,
                     {'INFO_FORMAT': 'text/plain', 'LANG': gaLang.get()});
                 if (!is3dActive() && url) {
-                  url = gaUrlUtils.proxifyUrl(url);
+
+                  url = gaUrlUtils.isAdminValid(url) &&
+                      gaUrlUtils.isHttps(url) ?
+                      url : gaUrlUtils.proxifyUrl(url);
                   all.push($http.get(url, {
                     timeout: canceler.promise,
                     layer: layerToQuery
