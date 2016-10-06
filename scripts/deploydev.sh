@@ -7,7 +7,7 @@ set -o errexit
 
 # adapt these for emergency deploys coming from branches
 # TODO Change me back!
-GITBRANCH=master
+GITBRANCH=r_161005_hotfixes
 echo "Deploying branch" $GITBRANCH "to dev"
 
 # set some variables
