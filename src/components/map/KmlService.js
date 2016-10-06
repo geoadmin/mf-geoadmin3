@@ -62,6 +62,11 @@ goog.require('ga_urlutils_service');
         // Load the parser only when needed.
         // WARNING: it's needed to initialize it here for test.
         if (!kmlFormat) {
+          // TBD: This hack shouldn't be necessary with the next release of ol3
+          // (> 3.18.2). Needs to be tested to be sure.
+          // Fix #3531
+          ol.format.KML.DEFAULT_IMAGE_STYLE_SRC_ =
+              'https://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png';
           kmlFormat = new ol.format.KML({
             extractStyles: true,
             defaultStyle: [gaStyleFactory.getStyle('kml')]
