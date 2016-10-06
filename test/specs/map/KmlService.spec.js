@@ -742,7 +742,7 @@ describe('ga_kml_service', function() {
         var kml = '<kml><Document>' +
             createValidPlkPoint('measure_bbbb') +
           '</Document></kml>';
-        var isMeasFeat = gaMapUtilsMock.expects('isMeasureFeature').once().returns(true);
+        var isMeasFeat = gaMapUtilsMock.expects('isMeasureFeature').twice().returns(true);
         var getStyle = gaStyleFactoryMock.expects('getFeatureStyleFunction').once()
              .withArgs('measure').returns(new ol.style.Style());
 
@@ -803,7 +803,7 @@ describe('ga_kml_service', function() {
         $rootScope.$digest();
       });
 
-      it('adds Overlays for measure feature', function() {
+      it('adds Overlays for measure feature from a public.geo.admin.ch KML', function() {
         var addOverlays, registerOverlaysEvents, kml = '<kml><Document>' +
             createValidPlkLineString('measure_bbbb') +
           '</Document></kml>';
@@ -811,6 +811,20 @@ describe('ga_kml_service', function() {
         var regOverlays = gaMeasureMock.expects('registerOverlaysEvents').once();
         gaKml.addKmlToMap(map, kml, {
            url: 'http://public.geo.admin.ch/nciusdhfjsbnduvishfjknl'
+        });
+        $rootScope.$digest();
+        addOverlays.verify();
+        regOverlays.verify();
+      });
+
+      it('adds Overlays for measure feature from a local KML', function() {
+        var addOverlays, registerOverlaysEvents, kml = '<kml><Document>' +
+            createValidPlkLineString('measure_bbbb') +
+          '</Document></kml>';
+        var addOverlays = gaMeasureMock.expects('addOverlays').once();
+        var regOverlays = gaMeasureMock.expects('registerOverlaysEvents').once();
+        gaKml.addKmlToMap(map, kml, {
+           url: 'foo/kml.kml'
         });
         $rootScope.$digest();
         addOverlays.verify();
