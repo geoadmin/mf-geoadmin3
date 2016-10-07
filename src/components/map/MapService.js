@@ -559,8 +559,9 @@ goog.require('ga_urlutils_service');
 
               // 3D Tileset
               var params = gaPermalink.getParams();
-              var tileset3d = params['tileset3d'] || 'buildings-v2';
-              var tilesetTs = params['tilesetTs'] || '20160714';
+              var tileset3d = params['tileset3d'] ||
+                              'ch.swisstopo.swisstlm3d.3d';
+              var tilesetTs = params['tilesetTs'] || '20160909';
               response.data[tileset3d] = {
                 type: 'tileset3d',
                 serverLayerName: tileset3d,
@@ -633,7 +634,7 @@ goog.require('ga_urlutils_service');
           if (config3d.type == 'tileset3d') {
             tileset = new Cesium.Cesium3DTileset({
               url: getTileset3DUrl(requestedLayer, timestamp),
-              debugShowStatistics: true,
+              //debugShowStatistics: true,
               maximumNumberOfLoadedTiles: 3
             });
             tileset.bodId = bodId;
