@@ -238,8 +238,11 @@ goog.require('ga_urlutils_service');
               features: sanitizedFeatures,
               useSpatialIndex: !gaMapUtils.isStoredKmlLayer(options.id)
             });
-
-            var sourceExtent = gaMapUtils.getVectorSourceExtent(source);
+            // FIXME
+            // https://github.com/geoadmin/mf-geoadmin3/issues/3536
+            // getVectorSourceExtent has some advert side effects at the
+            // moment, can't tell why at the moment
+            //var sourceExtent = gaMapUtils.getVectorSourceExtent(source);
             var layerOptions = {
               id: options.id,
               adminId: options.adminId,
@@ -249,7 +252,7 @@ goog.require('ga_urlutils_service');
               opacity: options.opacity,
               visible: options.visible,
               source: source,
-              extent: gaMapUtils.intersectWithDefaultExtent(sourceExtent),
+              //extent: gaMapUtils.intersectWithDefaultExtent(sourceExtent),
               attribution: options.attribution
             };
 
