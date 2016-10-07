@@ -118,6 +118,15 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions,
     scene.screenSpaceCameraController.inertiaZoom = 0.9;
     scene.screenSpaceCameraController.minimumZoomDistance = 2;
     enableOl3d(cesiumViewer, enabled);
+    var namestileset = new Cesium.Cesium3DTileset({
+      url: '//vectortiles.dev.bgdi.ch/ch.swisstopo.swissnames3d.3d/20160909/',
+      //debugShowStatistics: true,
+      maximumNumberOfLoadedTiles: 3
+    });
+    namestileset.bodId = 'names';
+
+    scene.primitives.add(namestileset);
+
 
     // Tileset 3D
     var tileset3d = gaPermalink.getParams()['tileset3d'] || 'buildings-v2';
