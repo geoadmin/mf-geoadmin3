@@ -11,8 +11,11 @@ goog.provide('ga_urlutils_service');
 
         // from Angular
         // https://github.com/angular/angular.js/blob/v1.4.8/src/ng/directive/input.js#L15
-        var URL_REGEXP =
-        /^(ftp|http|https):\/\/(?:\w+(?::\w+)?@)?[^\s/]+(?::\d+)?(?:\/[\w#!:.?+=&%@\-/[\]$'()*,;~]*)?$/;
+        var URL_REGEXP = new RegExp('^(ftp|http|https):\\/\\/' +
+                                    '(?:\\w+(?::\\w+)?@)?' +
+                                    '[^\\s/]+(?::\\d+)?' +
+                                    '(?:\\/[\\w#!:.?+=&%@\\- /' +
+                                    '[\\]$\'()*,;~]*)?$');
 
         // Test validity of a URL
         this.isValid = function(url) {

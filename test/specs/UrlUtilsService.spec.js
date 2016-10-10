@@ -23,6 +23,9 @@ describe('ga_urlutils_service', function() {
         expect(gaUrlUtils.isValid('http://admin.ch')).to.be(true);
         expect(gaUrlUtils.isValid('https://admin.ch')).to.be(true);
         expect(gaUrlUtils.isValid('ftp://admin.ch')).to.be(true);
+        expect(gaUrlUtils.isValid('https://admin.ch/?mit space im query')).to.be(true);
+        expect(gaUrlUtils.isValid('https://admin.ch/space in URLtrue?query')).to.be(true);
+        expect(gaUrlUtils.isValid('https://domain admin.ch/space in URLfalse?query')).to.be(false);
       });
     });
 
