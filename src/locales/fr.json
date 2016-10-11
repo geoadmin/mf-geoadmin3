@@ -55,6 +55,8 @@
 "confirm_remove_selected_features": "Voulez-vous vraiment effacer les objets sélectionnés?",
 "connect": "Connecter",
 "contact_us": "Contact",
+"contextpopup_lv03_url": "//www.swisstopo.admin.ch/fr/connaissances-faits/mensuration-geodesie/cadres-de-reference/local/mn03.html",
+"contextpopup_lv95_url": "//www.swisstopo.admin.ch/fr/connaissances-faits/mensuration-geodesie/cadres-de-reference/local/mn95.html",
 "coordinates_label": "Coordonnées (m)",
 "copy_success": "Lien copié !",
 "copy_url": "Copier le lien",

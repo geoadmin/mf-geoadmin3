@@ -1,5 +1,5 @@
 describe('ga_contextpopup_directive', function() {
-  var element, handlers = {}, viewport, map, originalEvt;
+  var element, handlers = {}, viewport, map, originalEvt, $rootScope;
 
   beforeEach(function() {
 
@@ -30,7 +30,8 @@ describe('ga_contextpopup_directive', function() {
         '<div id="map"></div>' +
       '</div>');
 
-    inject(function($rootScope, $compile) {
+    inject(function(_$rootScope_, $compile) {
+      $rootScope = _$rootScope_;
       map = new ol.Map({});
       $rootScope.map = map;
       $rootScope.options = {
@@ -97,6 +98,8 @@ describe('ga_contextpopup_directive', function() {
       var tables = element.find('div.popover-content table');
       var tds = $(tables[0]).find('td');
 
+      expect($(tds[0]).find('a').attr('href')).to.be('contextpopup_lv03_url');
+      expect($(tds[2]).find('a').attr('href')).to.be('contextpopup_lv95_url');
       expect($(tds[1]).text()).to.be('661\'473.0, 188\'192.0');
       expect($(tds[3]).text()).to.be('2\'725\'984.40, 1\'180\'787.40');
       expect($(tds[13]).text()).to.be('das.ist.test');
@@ -106,7 +109,7 @@ describe('ga_contextpopup_directive', function() {
     describe('On device without contextmenu event', function() {
       var mapEvt;
 
-      beforeEach(inject(function($rootScope, $compile, gaBrowserSniffer) {
+      beforeEach(inject(function($compile, gaBrowserSniffer) {
         mapEvt = {
            stopPropagation: function() {},
            preventDefault: function() {},
@@ -137,6 +140,8 @@ describe('ga_contextpopup_directive', function() {
         var tables = element.find('div.popover-content table');
         var tds = $(tables[0]).find('td');
 
+        expect($(tds[0]).find('a').attr('href')).to.be('contextpopup_lv03_url');
+        expect($(tds[2]).find('a').attr('href')).to.be('contextpopup_lv95_url');
         expect($(tds[1]).text()).to.be('661\'473.0, 188\'192.0');
         expect($(tds[3]).text()).to.be('2\'725\'984.40, 1\'180\'787.40');
         expect($(tds[13]).text()).to.be('das.ist.test');

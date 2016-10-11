@@ -518,6 +518,9 @@ describe('ga_map_service', function() {
         $provide.value('gaLang', {
           get: function() {
             return 'somelang';
+          },
+          getNoRm: function() {
+            return 'somelang';
           }
         });
       });

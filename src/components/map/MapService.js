@@ -526,10 +526,7 @@ goog.require('ga_urlutils_service');
               });
 
               // Terrain
-              var lang = gaLang.get();
-              if (lang == 'rm') {
-                lang = 'de';
-              }
+              var lang = gaLang.getNoRm();
               response.data['ch.swisstopo.terrain.3d'] = {
                 type: 'terrain',
                 serverLayerName: 'ch.swisstopo.terrain.3d',

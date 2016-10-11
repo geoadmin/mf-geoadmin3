@@ -63,6 +63,12 @@ goog.require('ga_topic_service');
         this.get = function() {
           return $translate.use() || lang;
         };
+
+        this.getNoRm = function() {
+          var langNoRM = $translate.use() == 'rm' ?
+              gaGlobalOptions.translationFallbackCode : $translate.use();
+          return langNoRM || lang;
+        };
       };
       return new Lang();
     };

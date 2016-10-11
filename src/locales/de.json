@@ -55,6 +55,8 @@
 "confirm_remove_selected_features": "Wollen Sie wirklich alle selektierten Objekte löschen?",
 "connect": "Verbinden",
 "contact_us": "Kontakt",
+"contextpopup_lv03_url": "//www.swisstopo.admin.ch/de/wissen-fakten/geodaesie-vermessung/bezugsrahmen/lokal/lv03.html",
+"contextpopup_lv95_url": "//www.swisstopo.admin.ch/de/wissen-fakten/geodaesie-vermessung/bezugsrahmen/lokal/lv95.html",
 "coordinates_label": "Koordinaten (m)",
 "copy_success": "Link kopiert!",
 "copy_url": "Link kopieren",

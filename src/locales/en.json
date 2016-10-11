@@ -55,6 +55,8 @@
 "confirm_remove_selected_features": "Do you really want to delete the selected features?",
 "connect": "Connect",
 "contact_us": "Contact",
+"contextpopup_lv03_url": "//www.swisstopo.admin.ch/en/knowledge-facts/surveying-geodesy/reference-frames/local/lv03.html",
+"contextpopup_lv95_url": "//www.swisstopo.admin.ch/en/knowledge-facts/surveying-geodesy/reference-frames/local/lv95.html",
 "coordinates_label": "Coordinates (m)",
 "copy_success": "Link copied!",
 "copy_url": "Copy the link",
