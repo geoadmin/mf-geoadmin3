@@ -179,6 +179,30 @@ describe('ga_kml_service', function() {
       });
     });
 
+    describe('#getFormat()', function() {
+
+      it('returns an ol.format.KML object', function() {
+        var getStyle = gaStyleFactoryMock.expects('getStyle').once()
+            .withArgs('kml').returns(dfltStyle);
+        var spy = sinon.spy(ol.format, 'KML');
+        var f = gaKml.getFormat();
+        expect(f).to.be.a(ol.format.KML);
+        getStyle.verify();
+        expect(spy.calledOnce).to.be(true);
+        expect(spy.args[0][0].extractStyles).to.be(true);
+        expect(spy.args[0][0].defaultStyle[0]).to.be(dfltStyle);
+      });
+
+      it('returns the same object on 2nd call', function() {
+        var getStyle = gaStyleFactoryMock.expects('getStyle').once()
+            .withArgs('kml').returns(dfltStyle);
+        var f = gaKml.getFormat();
+        var f2 = gaKml.getFormat();
+        expect(f).to.be(f2);
+        getStyle.verify();
+      });
+    });
+
     describe('#addKmlToMap()', function() {
 
       it('doesn\'t add layer if kml string is not defined', function(done) {

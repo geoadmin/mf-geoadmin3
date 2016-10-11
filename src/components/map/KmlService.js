@@ -33,6 +33,16 @@ goog.require('ga_urlutils_service');
       // Store the parser.
       var kmlFormat;
 
+      // Create the parser/writer KML
+      var setKmlFormat = function() {
+        if (!kmlFormat) {
+          kmlFormat = new ol.format.KML({
+            extractStyles: true,
+            defaultStyle: [gaStyleFactory.getStyle('kml')]
+          });
+        }
+      };
+
       // Read a kml string then return a list of features.
       var readFeatures = function(kml) {
         // Replace all hrefs to prevent errors if image doesn't have
@@ -67,14 +77,8 @@ goog.require('ga_urlutils_service');
           '<IconStyle><Icon><href>https://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href><\/Icon><scale>0</scale></IconStyle>'
         );
 
-        // Load the parser only when needed.
-        // WARNING: it's needed to initialize it here for test.
-        if (!kmlFormat) {
-          kmlFormat = new ol.format.KML({
-            extractStyles: true,
-            defaultStyle: [gaStyleFactory.getStyle('kml')]
-          });
-        }
+        // Create the parser
+        setKmlFormat();
 
         // Manage networkLink tags
         var all = [];
@@ -364,6 +368,12 @@ goog.require('ga_urlutils_service');
             return false;
           }
           return true;
+        };
+
+        // Returns the unique KML format used by the application
+        this.getFormat = function() {
+          setKmlFormat();
+          return kmlFormat;
         };
       };
       return new Kml();

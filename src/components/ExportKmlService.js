@@ -4,6 +4,7 @@ goog.require('ga_browsersniffer_service');
 
   var module = angular.module('ga_exportkml_service', [
     'ga_browsersniffer_service',
+    'ga_kml_service',
     'pascalprecht.translate'
   ]);
 
@@ -13,7 +14,7 @@ goog.require('ga_browsersniffer_service');
    */
   module.provider('gaExportKml', function() {
     this.$get = function($translate, $window, $document, $http,
-        gaBrowserSniffer) {
+        gaBrowserSniffer, gaKml) {
 
       var downloadUrl = this.downloadKmlUrl;
 
@@ -90,7 +91,7 @@ goog.require('ga_browsersniffer_service');
               //force the add of a <Document> node
               exportFeatures.push(new ol.Feature());
             }
-            kmlString = new ol.format.KML().writeFeatures(exportFeatures);
+            kmlString = gaKml.getFormat().writeFeatures(exportFeatures);
             // Remove no image hack
             kmlString = kmlString.
                 replace(/<Icon>\s*<href>noimage<\/href>\s*<\/Icon>/g, '');
