@@ -38,7 +38,8 @@ goog.require('ga_urlutils_service');
         if (!kmlFormat) {
           // TO FIX
           // Hack for #3531: Should be fix with next version of ol >3.18.2
-          // We create an empty format first to create the default style variables.
+          // We create an empty format first to create the default style
+          // variables.
           // https://github.com/openlayers/ol3/blob/master/src/ol/format/kml.js#L143
           ol.format.KML();
 
@@ -241,11 +242,6 @@ goog.require('ga_urlutils_service');
               features: sanitizedFeatures,
               useSpatialIndex: !gaMapUtils.isStoredKmlLayer(options.id)
             });
-            // FIXME
-            // https://github.com/geoadmin/mf-geoadmin3/issues/3536
-            // getVectorSourceExtent has some advert side effects at the
-            // moment, can't tell why at the moment
-            //var sourceExtent = gaMapUtils.getVectorSourceExtent(source);
             var layerOptions = {
               id: options.id,
               adminId: options.adminId,
@@ -290,12 +286,17 @@ goog.require('ga_urlutils_service');
                 olMap.addLayer(olLayer);
               }
 
+              var source = olLayer.getSource();
+              if (source instanceof ol.source.ImageVector) {
+                source = source.getSource();
+              }
+
               // If the layer can contain measure features, we register some
               // events to add/remove correctly the overlays
               if (gaMapUtils.isStoredKmlLayer(olLayer) ||
                   gaMapUtils.isLocalKmlLayer(olLayer)) {
                 if (olLayer.getVisible()) {
-                  angular.forEach(olLayer.getSource().getFeatures(),
+                  angular.forEach(source.getFeatures(),
                       function(feature) {
                     if (gaMapUtils.isMeasureFeature(feature)) {
                       gaMeasure.addOverlays(olMap, olLayer, feature);
@@ -306,9 +307,10 @@ goog.require('ga_urlutils_service');
               }
 
               if (options.zoomToExtent) {
-                var extent = olLayer.getExtent();
-                if (extent) {
-                  olMap.getView().fit(extent, olMap.getSize());
+                var sourceExtent = gaMapUtils.getVectorSourceExtent(source);
+                var ext = gaMapUtils.intersectWithDefaultExtent(sourceExtent);
+                if (ext) {
+                  olMap.getView().fit(ext, olMap.getSize());
                 }
               }
             }
