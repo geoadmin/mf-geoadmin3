@@ -188,9 +188,9 @@ describe('ga_kml_service', function() {
         var f = gaKml.getFormat();
         expect(f).to.be.a(ol.format.KML);
         getStyle.verify();
-        expect(spy.calledOnce).to.be(true);
-        expect(spy.args[0][0].extractStyles).to.be(true);
-        expect(spy.args[0][0].defaultStyle[0]).to.be(dfltStyle);
+        expect(spy.calledTwice).to.be(true);
+        expect(spy.args[1][0].extractStyles).to.be(true);
+        expect(spy.args[1][0].defaultStyle[0]).to.be(dfltStyle);
       });
 
       it('returns the same object on 2nd call', function() {

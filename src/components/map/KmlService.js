@@ -36,6 +36,12 @@ goog.require('ga_urlutils_service');
       // Create the parser/writer KML
       var setKmlFormat = function() {
         if (!kmlFormat) {
+          // TO FIX
+          // Hack for #3531: Should be fix with next version of ol >3.18.2
+          // We create an empty format first to create the default style variables.
+          // https://github.com/openlayers/ol3/blob/master/src/ol/format/kml.js#L143
+          ol.format.KML();
+
           kmlFormat = new ol.format.KML({
             extractStyles: true,
             defaultStyle: [gaStyleFactory.getStyle('kml')]
@@ -68,13 +74,6 @@ goog.require('ga_urlutils_service');
         kml = kml.replace(
           /<href>https?:\/\/[a-z\d\.\-]*(bgdi|geo.admin)\.ch[a-zA-Z\d\-_\/]*img\/maki\/([a-z]*-24@2x\.png)/g,
           '<href>' + gaGlobalOptions.apiUrl + '/color/255,0,0/$2'
-        );
-
-        // Fix #3531: Should be fix with next version of ol >3.18.2
-        // We set a default href otherwise the KML parsing is broken.
-        kml = kml.replace(
-          /<IconStyle><scale>0<\/scale><\/IconStyle>/g,
-          '<IconStyle><Icon><href>https://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href><\/Icon><scale>0</scale></IconStyle>'
         );
 
         // Create the parser
