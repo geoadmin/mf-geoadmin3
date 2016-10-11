@@ -59,20 +59,18 @@ if __name__ == '__main__':
     desired_cap_list = [
         # Chrome
         {'platform': "Windows 7", 'browserName': "chrome",
-            'version': "48.0", 'screenResolution': "1280x1024"},
-        {'platform': "Windows 7", 'browserName': "chrome",
-            'version': "47.0", 'screenResolution': "1280x1024"},
+            'version': "53.0", 'screenResolution': "1280x1024"},
         {'platform': "Windows 8.1", 'browserName': "chrome",
-            'version': "48.0", 'screenResolution': "1280x1024"},
+            'version': "53.0", 'screenResolution': "1280x1024"},
         {'platform': "Windows 10", 'browserName': "chrome",
-            'version': "48.0", 'screenResolution': "1280x1024"},
+            'version': "53.0", 'screenResolution': "1280x1024"},
         # FireFox
         {'platform': "Windows 7", 'browserName': "firefox",
-            'version': "43.0", 'screenResolution': "1280x1024"},
+            'version': "49.0", 'screenResolution': "1280x1024"},
         {'platform': "Windows 8.1", 'browserName': "firefox",
-            'version': "44.0", 'screenResolution': "1280x1024"},
+            'version': "49.0", 'screenResolution': "1280x1024"},
         {'platform': "Windows 10", 'browserName': "firefox",
-            'version': "44.0", 'screenResolution': "1280x1024"},
+            'version': "49.0", 'screenResolution': "1280x1024"},
         # Internet Exeplorer
         {'platform': "Windows 7", 'browserName': "internet explorer",
             'version': "9.0", 'screenResolution': "1280x1024"},
