@@ -48,9 +48,16 @@ describe('ga_search_service', function() {
       expect(getCoordinate(extent, '46° 1\' 25.0\'\' N 7° 1\' 25.0\'\' E')).to.eql([567859.21, 96981.625]);
     });
 
+    it('supports MGRS and USGS grid', function() {
+      expect(getCoordinate(extent, '32TLT8100')).to.eql([600319.427, 199594.862]);
+      expect(getCoordinate(extent, '32TLT 8 0')).to.eql([527326.065, 198141.932]);
+      expect(getCoordinate(extent, '32TLT')).to.eql(undefined);
+    });
+
     it('checks the swiss extent', function() {
       expect(getCoordinate(extent, '1600000 1200000')).to.be(undefined);
       expect(getCoordinate(extent, '10° E 50° N')).to.be(undefined);
+      expect(getCoordinate(extent, '16SGL01948253 ')).to.be(undefined);
     });
 
     it('works only in north east', function() {

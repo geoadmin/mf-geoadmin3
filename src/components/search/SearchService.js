@@ -10,6 +10,7 @@ goog.provide('ga_search_service');
     '[0-9]+\\b)("|\'\'|′′|″)';
   var DMSNorth = '[N]';
   var DMSEast = '[E]';
+  var MGRS = '^3[123]\[\\s\a-z]{3}[\\s\\d]*';
   var regexpDMSN = new RegExp(DMSDegree +
     '(' + DMSMinute + ')?\\s*' +
     '(' + DMSSecond + ')?\\s*' +
@@ -22,12 +23,28 @@ goog.provide('ga_search_service');
   var regexpCoordinate = new RegExp(
     '([\\d\\.\']+)[\\s,]+([\\d\\.\']+)' +
     '([\\s,]+([\\d\\.\']+)[\\s,]+([\\d\\.\']+))?');
+  var regexMGRS = new RegExp(MGRS, 'gi');
+  // Grid zone designation for Switzerland + two 100km letters + two digits
+  // It's a limitiation of proj4 and a sensible default (precision is 10km)
+  var MGRSMinimalPrecision = 7;
 
   module.provider('gaSearchGetCoordinate', function() {
-    this.$get = function() {
+    this.$get = function($window) {
       return function(extent, query) {
         var position;
         var valid = false;
+
+        var matchMGRS = query.match(regexMGRS);
+        if (matchMGRS && matchMGRS.length == 1) {
+          var mgrsStr = matchMGRS[0].split(' ').join('');
+          if ((mgrsStr.length - MGRSMinimalPrecision) % 2 == 0) {
+            var wgs84 = $window.proj4.mgrs.toPoint(matchMGRS[0]);
+            position = ol.proj.transform(wgs84, 'EPSG:4326', 'EPSG:21781');
+            if (ol.extent.containsCoordinate(extent, position)) {
+              valid = true;
+            }
+          }
+        }
 
         var matchDMSN = query.match(regexpDMSN);
         var matchDMSE = query.match(regexpDMSE);
