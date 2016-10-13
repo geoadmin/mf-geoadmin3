@@ -11,7 +11,6 @@ from search_test import runSearchTest
 from print_test import runPrintTest
 from mobile_test import runMobileTest
 from wms_test import runWmsTest
-from checker_test import runCheckerTest
 from tooltip_test import runTooltipTest
 
 DEFAULT_WAIT_FOUND = 5
@@ -60,20 +59,18 @@ if __name__ == '__main__':
     desired_cap_list = [
         # Chrome
         {'platform': "Windows 7", 'browserName': "chrome",
-            'version': "48.0", 'screenResolution': "1280x1024"},
-        {'platform': "Windows 7", 'browserName': "chrome",
-            'version': "47.0", 'screenResolution': "1280x1024"},
+            'version': "53.0", 'screenResolution': "1280x1024"},
         {'platform': "Windows 8.1", 'browserName': "chrome",
-            'version': "48.0", 'screenResolution': "1280x1024"},
+            'version': "53.0", 'screenResolution': "1280x1024"},
         {'platform': "Windows 10", 'browserName': "chrome",
-            'version': "48.0", 'screenResolution': "1280x1024"},
+            'version': "53.0", 'screenResolution': "1280x1024"},
         # FireFox
         {'platform': "Windows 7", 'browserName': "firefox",
-            'version': "43.0", 'screenResolution': "1280x1024"},
+            'version': "49.0", 'screenResolution': "1280x1024"},
         {'platform': "Windows 8.1", 'browserName': "firefox",
-            'version': "44.0", 'screenResolution': "1280x1024"},
+            'version': "49.0", 'screenResolution': "1280x1024"},
         {'platform': "Windows 10", 'browserName': "firefox",
-            'version': "44.0", 'screenResolution': "1280x1024"},
+            'version': "49.0", 'screenResolution': "1280x1024"},
         # Internet Exeplorer
         {'platform': "Windows 7", 'browserName': "internet explorer",
             'version': "9.0", 'screenResolution': "1280x1024"},
@@ -93,12 +90,12 @@ if __name__ == '__main__':
     ]
 
     config_test_list = {
-        "firefox": ['start', 'mobile', 'search', 'checker', 'wms', 'tooltip'],
-        "chrome": ['start', 'mobile', 'search', 'checker', 'wms', 'tooltip'],
+        "firefox": ['start', 'mobile', 'search', 'wms', 'tooltip'],
+        "chrome": ['start', 'mobile', 'search', 'wms', 'tooltip'],
         "internet explorer": ['start'],
         "opera": ['start'],
         "safari": ['start'],
-        "MicrosoftEdge": ['start', 'search', 'checker']
+        "MicrosoftEdge": ['start', 'search']
     }
 
     # okay we will start the script!
@@ -114,7 +111,6 @@ if __name__ == '__main__':
         'search': runSearchTest,
         'kml': runKmlTest,
         'print': runPrintTest,
-        'checker': runCheckerTest,
         'tooltip': runTooltipTest
     }
 

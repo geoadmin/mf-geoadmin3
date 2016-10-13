@@ -33,6 +33,23 @@ goog.require('ga_urlutils_service');
       // Store the parser.
       var kmlFormat;
 
+      // Create the parser/writer KML
+      var setKmlFormat = function() {
+        if (!kmlFormat) {
+          // TO FIX
+          // Hack for #3531: Should be fix with next version of ol >3.18.2
+          // We create an empty format first to create the default style
+          // variables.
+          // https://github.com/openlayers/ol3/blob/master/src/ol/format/kml.js#L143
+          ol.format.KML();
+
+          kmlFormat = new ol.format.KML({
+            extractStyles: true,
+            defaultStyle: [gaStyleFactory.getStyle('kml')]
+          });
+        }
+      };
+
       // Read a kml string then return a list of features.
       var readFeatures = function(kml) {
         // Replace all hrefs to prevent errors if image doesn't have
@@ -60,21 +77,8 @@ goog.require('ga_urlutils_service');
           '<href>' + gaGlobalOptions.apiUrl + '/color/255,0,0/$2'
         );
 
-        // Fix #3531: Should be fix with next version of ol >3.18.2
-        // We set a default href otherwise the KML parsing is broken.
-        kml = kml.replace(
-          /<IconStyle><scale>0<\/scale><\/IconStyle>/g,
-          '<IconStyle><Icon><href>https://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href><\/Icon><scale>0</scale></IconStyle>'
-        );
-
-        // Load the parser only when needed.
-        // WARNING: it's needed to initialize it here for test.
-        if (!kmlFormat) {
-          kmlFormat = new ol.format.KML({
-            extractStyles: true,
-            defaultStyle: [gaStyleFactory.getStyle('kml')]
-          });
-        }
+        // Create the parser
+        setKmlFormat();
 
         // Manage networkLink tags
         var all = [];
@@ -238,11 +242,6 @@ goog.require('ga_urlutils_service');
               features: sanitizedFeatures,
               useSpatialIndex: !gaMapUtils.isStoredKmlLayer(options.id)
             });
-            // FIXME
-            // https://github.com/geoadmin/mf-geoadmin3/issues/3536
-            // getVectorSourceExtent has some advert side effects at the
-            // moment, can't tell why at the moment
-            //var sourceExtent = gaMapUtils.getVectorSourceExtent(source);
             var layerOptions = {
               id: options.id,
               adminId: options.adminId,
@@ -287,12 +286,17 @@ goog.require('ga_urlutils_service');
                 olMap.addLayer(olLayer);
               }
 
+              var source = olLayer.getSource();
+              if (source instanceof ol.source.ImageVector) {
+                source = source.getSource();
+              }
+
               // If the layer can contain measure features, we register some
               // events to add/remove correctly the overlays
               if (gaMapUtils.isStoredKmlLayer(olLayer) ||
                   gaMapUtils.isLocalKmlLayer(olLayer)) {
                 if (olLayer.getVisible()) {
-                  angular.forEach(olLayer.getSource().getFeatures(),
+                  angular.forEach(source.getFeatures(),
                       function(feature) {
                     if (gaMapUtils.isMeasureFeature(feature)) {
                       gaMeasure.addOverlays(olMap, olLayer, feature);
@@ -303,9 +307,10 @@ goog.require('ga_urlutils_service');
               }
 
               if (options.zoomToExtent) {
-                var extent = olLayer.getExtent();
-                if (extent) {
-                  olMap.getView().fit(extent, olMap.getSize());
+                var sourceExtent = gaMapUtils.getVectorSourceExtent(source);
+                var ext = gaMapUtils.intersectWithDefaultExtent(sourceExtent);
+                if (ext) {
+                  olMap.getView().fit(ext, olMap.getSize());
                 }
               }
             }
@@ -364,6 +369,12 @@ goog.require('ga_urlutils_service');
             return false;
           }
           return true;
+        };
+
+        // Returns the unique KML format used by the application
+        this.getFormat = function() {
+          setKmlFormat();
+          return kmlFormat;
         };
       };
       return new Kml();
