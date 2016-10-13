@@ -3,52 +3,59 @@
 module.exports = function(config) {
   config.set({
   // base path, that will be used to resolve files and exclude
-% if mode == 'release':
-  basePath: '../prd',
-% else:
-  basePath: '../src',
-% endif
+  basePath: '../',
 
   // list of files / patterns to load in the browser
   files: [
     {pattern: 'style/font-awesome-4.5.0/font/*', watched: false, included: false, served: true},
     {pattern: 'checker', watched: false, included: false, served: true},
   % if mode == 'release':
-    'style/app.css',
-    'lib/d3.min.js',
-    'lib/Cesium.min.js',
-    'lib/ol3cesium.js',
-    'lib/build.js',
+    'prd/style/app.css',
+    'prd/lib/d3.min.js',
+    'prd/lib/Cesium.min.js',
+    'prd/lib/ol3cesium.js',
+    'prd/lib/build.js',
   % else:
-    'style/app.css',
-    'lib/jquery.js',
-    'lib/jQuery.XDomainRequest.js',
-    'lib/slip.js',
-    'lib/angular.js',
-    'lib/angular-translate.js',
-    'lib/angular-translate-loader-static-files.js',
-    'lib/d3.js',
-    'lib/bootstrap.js',
-    'lib/typeahead-0.9.3.js',
-    'lib/proj4js-compressed.js',
-    'lib/EPSG21781.js',
-    'lib/EPSG2056.js',
-    'lib/EPSG32631.js',
-    'lib/EPSG32632.js',
-    'lib/fastclick.js',
-    'lib/localforage.js',
-    'lib/filesaver.js',
-    'lib/moment-with-customlocales.js',
-    'lib/Cesium/Cesium.js',
-    '../test/closure-loader-globals.js',
-    'lib/ol3cesium-debug.js',
-    '../.build-artefacts/app-whitespace.js',
+    'src/style/app.css',
+    'src/lib/jquery.js',
+    'src/lib/jQuery.XDomainRequest.js',
+    'src/lib/slip.js',
+    'src/lib/angular.js',
+    'src/lib/angular-translate.js',
+    'src/lib/angular-translate-loader-static-files.js',
+    'src/lib/d3.js',
+    'src/lib/bootstrap.js',
+    'src/lib/typeahead.jquery.js',
+    'src/lib/proj4js-compressed.js',
+    'src/lib/EPSG21781.js',
+    'src/lib/EPSG2056.js',
+    'src/lib/EPSG32631.js',
+    'src/lib/EPSG32632.js',
+    'src/lib/fastclick.js',
+    'src/lib/localforage.js',
+    'src/lib/filesaver.js',
+    'src/lib/moment-with-customlocales.js',
+    'src/lib/Cesium/Cesium.js',
+    'test/closure-loader-globals.js',
+    'src/lib/ol3cesium-debug.js',
+    '.build-artefacts/app-whitespace.js',
+    'test/lib/angular-mocks.js',
+    'test/lib/expect.js',
+    'test/lib/sinon.js',
+    'test/specs/Loader.spec.js',
+    'test/specs/**/*.js',
   % endif
-    '../test/lib/angular-mocks.js',
-    '../test/lib/expect.js',
-    '../test/lib/sinon.js',
-    '../test/specs/Loader.spec.js',
-    '../test/specs/**/*.js'
+    'test/lib/angular-mocks.js',
+    'test/lib/expect.js',
+    'test/lib/sinon.js',
+    'test/specs/Loader.spec.js',
+    'test/specs/**/*.js', 
+    {
+      pattern: 'test/data/*.xml',
+      watched: true,
+      served:  true,
+      included: false
+    }
   ],
 
 

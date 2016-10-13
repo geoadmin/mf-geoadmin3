@@ -540,15 +540,16 @@ itemscope itemtype="http://schema.org/WebApplication"
 
   % if device == 'desktop':
     <!-- Popup: Import -->
-    <div ga-popup="globals.importPopupShown"
+    <div ng-if="globals.importPopupShown"
+         ga-popup="globals.importPopupShown"
          ga-popup-options="{title:'import', help:'62'}"
          ga-draggable=".popover-title"
          id="import-popup"
          class="ga-popup-mobile-bottom">
-      <div ng-controller="GaImportController">
+      <div ng-controller="GaImportController">  
         <div ga-import
-             ga-import-map="map"
-             ga-import-options="options">
+             ga-import-map="::map"
+             ga-import-options="::options">
         </div>
       </div>
     </div> <!-- end Import -->
@@ -632,6 +633,15 @@ itemscope itemtype="http://schema.org/WebApplication"
       </div>
     </div><!-- end Feature Tree -->
 
+  % if device == 'desktop':
+    <div ng-controller="GaImportController">  
+      <div ng-if="::supportDnd"
+           ngeo-import-dnd
+           ngeo-import-dnd-options="::options">
+      </div>
+    </div>
+  % endif
+    
   % if device == 'mobile':
     <div ng-if="globals.homescreen" class="popover homescreen"
          ng-class="{
@@ -684,7 +694,7 @@ itemscope itemtype="http://schema.org/WebApplication"
     <script src="${s3basepath}lib/angular-translate-loader-static-files.js"></script>
     <script src="${s3basepath}lib/d3.js"></script>
     <script src="${s3basepath}lib/bootstrap.js"></script>
-    <script src="${s3basepath}lib/typeahead-0.9.3.js"></script>
+    <script src="${s3basepath}lib/typeahead.jquery.js"></script>
     <script src="${s3basepath}lib/proj4js-compressed.js"></script>
     <script src="${s3basepath}lib/EPSG21781.js"></script>
     <script src="${s3basepath}lib/EPSG2056.js"></script>

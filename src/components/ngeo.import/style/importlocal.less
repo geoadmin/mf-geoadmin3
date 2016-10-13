@@ -1,0 +1,29 @@
+[ngeo-import-local] {
+  position: relative;
+  width: 100%;
+
+  input[type=file] {
+    display: none;
+  }
+
+  input[type=text][readonly] {
+    cursor: pointer;
+  }
+ 
+  .ngeo-error {
+    color: red;
+    
+    &:not([ng-hide]) {
+      display: none;
+    }
+  }
+
+  .tabbable-footer {
+    margin: 5px 0 0;
+
+    button {
+      width: 100%;
+    }
+  }
+}
+

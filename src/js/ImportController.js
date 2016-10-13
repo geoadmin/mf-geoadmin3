@@ -1,12 +1,22 @@
 goog.provide('ga_import_controller');
+
+goog.require('ga_file_service');
+goog.require('ga_kml_service');
+
 (function() {
 
-  var module = angular.module('ga_import_controller', []);
+  var module = angular.module('ga_import_controller', [
+    'ga_file_service',
+    'ga_kml_service'
+  ]);
 
-  module.controller('GaImportController', function($scope, gaGlobalOptions) {
+  module.controller('GaImportController', function($scope, $q, $document,
+      $window, $timeout, gaFile, gaKml, gaBrowserSniffer, gaWms, gaUrlUtils,
+      gaLang, gaPreviewLayers, gaMapUtils) {
+
+    $scope.supportDnd = !gaBrowserSniffer.msie || gaBrowserSniffer.msie > 9;
     $scope.options = {
-      defaultGetCapParams: 'SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0',
-      defaultWMSList: [
+      urls: [
         'https://wms.geo.admin.ch/',
         'http://ogc.heig-vd.ch/mapserver/wms',
         'http://owsproxy.lgl-bw.de/owsproxy/ows/WMS_Maps4BW',
@@ -149,5 +159,122 @@ goog.provide('ga_import_controller');
         'http://rips-gdi.lubw.baden-wuerttemberg.de/arcgis/services/wms/UIS_0100000004200001/MapServer/WMSServer'
      ]
     };
+
+    $scope.options.isValidUrl = gaUrlUtils.isValid;
+    $scope.options.getOlLayerFromGetCapLayer = gaWms.getOlLayerFromGetCapLayer;
+    $scope.options.addPreviewLayer = function(map, layer) {
+      gaPreviewLayers.addGetCapWMSLayer(map, layer);
+    };
+    $scope.options.removePreviewLayer = gaPreviewLayers.removeAll;
+    $scope.options.transformExtent = gaMapUtils.intersectWithDefaultExtent;
+
+
+
+    // Transform the url before loading it.
+    $scope.options.transformUrl = function(url) {
+      if (/(wms|service\.svc|osm)/i.test(url)) {
+        // Append WMS GetCapabilities default parameters
+        url = gaUrlUtils.append(url,
+            'SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0');
+
+        // Use lang param only for admin.ch servers
+        if (/admin\.ch/.test(url)) {
+          url = gaUrlUtils.append(url, 'lang=' + gaLang.get());
+        }
+      }
+      return gaUrlUtils.proxifyUrl(url);
+    };
+
+    // Manage data depending on the content
+    // @param data<String> Content of the file.
+    // @param file<Object> Informations of the file (if available).
+    $scope.options.handleFileContent = function(data, file) {
+      var defer = $q.defer();
+      $scope.gpxContent = null;
+      $scope.kmlContent = null;
+      $scope.wmsGetCap = null;
+      $scope.wmtsGetCap = null;
+      file = file || {};
+
+      if (gaFile.isWmsGetCap(data)) {
+        $scope.wmsGetCap = data;
+        defer.resolve({
+          message: 'upload_succeeded'
+        });
+
+        /*$timeout(function() {
+          executeTaMenuHack();
+        }, false);*/
+
+      } else if (gaFile.isKml(data)) {
+
+        gaKml.addKmlToMap($scope.map, data, {
+          url: URL.createObjectURL($scope.file),
+          useImageVector: gaKml.useImageVector(file.size),
+          zoomToExtent: true
+
+        }).then(function() {
+          defer.resolve({
+            message: 'parse_succeeded'
+          });
+
+        }, function(reason) {
+          $window.console.error('KML parsing failed: ', reason);
+          defer.reject({
+            message: 'parse_failed',
+            reason: reason
+          });
+
+        }, function(evt) {
+          defer.notify(evt);
+        });
+
+      } else {
+
+        $window.console.error('Unparseable content: ', data);
+        defer.reject({
+          message: 'parse_failed',
+          reason: 'format_not_supported'
+        });
+      }
+      // WMTS
+      // GPX
+
+      return defer.promise;
+    };
+
+    // Move the typeahead menu list to the body and automatically setting css.
+    /*var executeTaMenuHack = function() {
+      var imp = $document.find('[ngeo-import-online]');
+      // Append the suggestions list to the body
+      var taMenu = imp.find('.tt-dropdown-menu');
+      if (!taMenu.length) {
+        return;
+      }
+      $($document[0].body).append(taMenu);
+      var taElt = imp.find('input[name=url]');
+      var applyCssToMenu = function() {
+        var pos = taElt.offset();
+        var width = taElt.width();
+        taMenu.css({
+          top: pos.top + 30, // + input height
+          left: pos.left,
+          width: width + 30, // + padding
+          zIndex: taElt.parents('div[ga-popup]').css('zIndex')
+        });
+
+      };
+      taElt.on('focus', function() {
+        applyCssToMenu();
+      });
+      // Destroy the mnu if the scope is destroyed
+      imp.isolateScope().$on('$destroy',
+          function() {
+        if (!taMenu.length) {
+          return;
+        }
+        taMenu.remove();
+      });
+    };*/
   });
 })();

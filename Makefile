@@ -382,7 +382,7 @@ prd/lib/build.js: src/lib/polyfill.min.js \
 	    src/lib/slip.min.js \
 	    src/lib/bootstrap.min.js \
 	    src/lib/moment-with-customlocales.min.js \
-	    src/lib/typeahead-0.9.3.min.js \
+	    src/lib/typeahead.jquery.min.js \
 	    src/lib/angular.min.js \
 	    src/lib/proj4js-compressed.js \
 	    src/lib/EPSG21781.js \
@@ -646,12 +646,12 @@ libs:
 	cp -f $(addprefix node_modules/jquery-ajax-transport-xdomainrequest/, jQuery.XDomainRequest.js  jquery.xdomainrequest.min.js) src/lib/;
 	cp -f $(addprefix node_modules/d3/, d3.js d3.min.js) src/lib/;
 	cp -f $(addprefix node_modules/bootstrap/dist/js/, bootstrap.js bootstrap.min.js) src/lib/;
+	cp -f $(addprefix node_modules/corejs-typeahead/dist/, typeahead.jquery.js typeahead.jquery.min.js) src/lib/;
 	cp -f node_modules/slipjs/slip.js src/lib;
 	cp -f node_modules/fastclick/lib/fastclick.js src/lib/;
 	$(call applypatches)
 	$(call compilejs fastclick)
 	$(call compilejs slip)
-	$(call compilejs typeahead-0.9.3)
 
 .build-artefacts/app.js: .build-artefacts/js-files
 	mkdir -p $(dir $@)

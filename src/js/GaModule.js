@@ -53,6 +53,7 @@ goog.require('ga_share_controller');
 goog.require('ga_shop');
 goog.require('ga_stylesfromliterals_service');
 goog.require('ga_swipe');
+goog.require('ga_tabs');
 goog.require('ga_tilt3d');
 goog.require('ga_timeselector');
 goog.require('ga_timeselector_controller');
@@ -100,6 +101,7 @@ goog.require('ga_waitcursor_service');
     'ga_query',
     'ga_print',
     'ga_shop',
+    'ga_tabs',
     'ga_tilt3d',
     'ga_modal_directive',
     'ga_draggable_directive',

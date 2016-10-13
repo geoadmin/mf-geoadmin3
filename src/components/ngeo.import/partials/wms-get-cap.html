@@ -1,0 +1,32 @@
+<div class="ngeo-message">{{limitations}}</div>
+<div class="ngeo-container">
+  <div class="ngeo-header" ng-click="reverse = !reverse">
+    <label translate>title</label>
+    <button class="pull-right fa" ng-class="{
+      'fa-sort-by-alphabet': !reverse,
+      'fa-sort-by-alphabet-alt': reverse
+    }"></button>
+  </div>
+  <div class="ngeo-content">
+    <ul>
+      <li ng-repeat="layer in layers | orderBy:'Title':reverse">
+        <div ngeo-wms-get-cap-item></div>
+      </li>
+    </ul>
+  </div>
+  <div class="modal-backdrop fade in" ng-show="progress > 0 && progress < 100">
+    <div class="progress progress-striped active">
+      <div class="progress-bar" style="width: 100%;"></div>
+    </div>
+  </div>
+</div>
+<div class="ngeo-descr">
+  <label translate>description</label>
+  <textarea  placeholder="{{'description_instructions' | translate}}"
+             class="form-control"
+             readonly>{{getAbstract()}}</textarea>
+  <button type="button" class="btn btn-default btn-sm ngeo-add"
+          ng-disabled="(!options.layerSelected || options.layerSelected.isInvalid)"
+          ng-click="addLayerSelected()" translate>add_layer</button>
+</div>
+

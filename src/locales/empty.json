@@ -49,7 +49,7 @@
   "uploading_file": "",
   "upload_succeeded": "",
   "upload_failed": "",
-  "drop_invalid_url": "",
+  "invalid_url": "",
   "file_is_not_kml": "",
   "file_too_large": "",
   "reading_file": "",

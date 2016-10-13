@@ -1,0 +1,20 @@
+<div class="input-group input-group-sm">
+  <input type="file" name="file"/>
+  <!-- Button use to open the file chooser of the input file -->
+  <input class="form-control" type="text" readonly
+         value="{{(file.name) ? file.name + ', ' + file.size/1000 + ' ko' : ''}}"
+         placeholder="{{'no_file' | translate}}"/>
+  <span class="input-group-btn">
+    <button type="button" class="btn btn-default ngeo-import-browse" translate>browse</button>
+  </span>
+</div>
+<div ng-hide="isValid(file)" class="ngeo-error" translate>file_too_large</div> 
+<div class="tabbable-footer" >
+  <button type="button" class="btn btn-default btn-sm ngeo-load"
+          ng-class="{'btn-danger': loading}"
+          ng-disabled="!isValid(file) || (loading && !fileReader)"
+          ng-click="loading ? cancel() : handleFile()">
+    <span translate>{{userMessage}}</span>
+  </button>
+</div>
+

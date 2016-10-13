@@ -15,6 +15,11 @@
 @import "../components/feedback/style/feedback.less";
 @import "../components/topic/style/topic.less";
 @import "../components/import/style/import.less";
+@import "../components/ngeo.import/style/importonline.less";
+@import "../components/ngeo.import/style/importlocal.less";
+@import "../components/ngeo.import/style/importdnd.less";
+@import "../components/ngeo.import/style/wmsgetcap.less";
+@import "../components/ngeo.import/style/wmsgetcapitem.less";
 @import "../components/popup/style/popup.less";
 @import "../components/profile/style/profile.less";
 @import "../components/catalogtree/style/catalogtree.less";
@@ -39,8 +44,7 @@
 @import "../components/shop/style/shop.less";
 @import "../components/shop/style/shopmsg.less";
 @import "../components/shop/style/shoprectangle.less";
-
-
+@import "../components/tabs/style/tabs.less";
 
 
 @cdbund-margin: 12;
@@ -179,7 +183,7 @@ form {
 }
 
 
-button.ga-btn, .ol-control button {
+button.ga-btn, button.ngeo-btn, .ol-control button {
   position: relative;
 
   i {
@@ -194,7 +198,7 @@ button.ga-btn, .ol-control button {
     color: #fff;
   }
 
-  &.ga-btn-disabled {
+  &.ga-btn-disabled, &.ngeo-btn-disabled {
 
     i {
       color: #545454;
@@ -205,7 +209,7 @@ button.ga-btn, .ol-control button {
     }
   }
 
-  &.ga-btn-active {
+  &.ga-btn-active, &.ngeo-btn-active {
 
     i {
       color: #ed1c24;
@@ -236,11 +240,11 @@ button.ga-btn, .ol-control button {
 
 
 /* This allow the display of not-allowed cursor on hover */
-.btn[disabled], &.ga-btn-disabled {
+.btn[disabled], &.ga-btn-disabled, &.ngeo-btn-disabled {
   pointer-events: auto;
 }
 
-button.ga-icon, &.ga-btn-disabled {
+button.ga-icon, &.ga-btn-disabled, &.ngeo-btn-disabled {
   width: 1.3em;
   margin: 0;
   padding: 0;
@@ -261,9 +265,9 @@ button.ga-icon, &.ga-btn-disabled {
   }
 }
 
-button.ga-btn, .ol-control button {
+button.ga-btn, button.ngeo-btn, .ol-control button {
 
-  &[disabled], &.ga-btn-disabled {
+  &[disabled], &.ga-btn-disabled, &.ngeo-btn-disabled {
     cursor: not-allowed;
   }
 
@@ -280,7 +284,7 @@ button.ga-btn, .ol-control button {
 }
 
 .touch {
-  button.ga-btn, .ol-control button {
+  button.ga-btn, button.ngeo-btn, .ol-control button {
     &:hover {
       opacity: 1;
     }
@@ -413,46 +417,6 @@ select, input[type=text], input[type=email], input[type=search] {
 input[type=text][readonly] {
   cursor: default;
 }
-
-// ***** TABS
-.nav-tabs {
-
-  .active {
-    cursor: default;
-  }
-
-  a {
-    text-decoration: none;
-  }
-}
-
-.nav > li > a {
-  cursor: pointer;
-  padding: 0px 10px;
-  color: white !important;
-  background-color: black;
-
-  &:hover, &:focus {
-    background-color: darkgray;
-  }
-}
-
-.nav-tabs {
-  border: none;
-}
-
-.nav-tabs > li.active > a,
-.nav-tabs > li.active > a:hover,
-.nav-tabs > li.active > a:focus {
-  color: white !important;
-  background-color: red;
-  border: 1px solid transparent;
-}
-
-.tab-content {
-  margin: 5px 0px 0px 0px;
-}
-
 
 // ***** HEADER
 .navbar-fixed-top {
@@ -1141,44 +1105,25 @@ a .ga-icon-separator {
 }
 
 // ****** POPUP
-<<<<<<< HEAD
-#import-wms-popup {
+#import-popup {
   width: 770px;  /* Fix resize from tablet to desktop */
   max-width: 770px;
-=======
-#import-popup, #measure-popup, #draw-popup,
-#featuretree-popup {
-  .panel-heading {
-    display: block;
-  }
-  @media (max-width: @screen-tablet) {
-    top: auto!important;
-    height: 190px;
-
-    .ga-popup-content {
-      overflow: auto;
-    }
-  }
-}
-
-#import-popup {
-  max-width: none;
-  max-height: none;
-  display: none;
+  overflow: visible; /*Only for typeahead*/
   
-  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
-    height: 435px;
+  .popover-content { /*Only for typeahead*/
+    overflow: visible;
   }
->>>>>>> Unification of WMS and KML import tool
-
+  
   @media (max-width: @screen-tablet) {
     max-width: 480px;
   }
-}
 
-#import-kml-popup {
-  width: 420px; /* only IE9 */
-  max-width: 420px;
+  /*Only for typeahead*/
+  @media (max-width: @screen-phone) {
+    .popover-content {
+      overflow: auto;
+    }
+  }
 }
 
 #featuretree-popup {

@@ -1,93 +1,25 @@
-<div class="tabbable"> <!--Only required for left/right tabs-->
+<div ga-tabs>
 
-  <div>
-    <ul class="nav nav-tabs">
-      <li ng-if="!isIE9" ng-class="getTabClass(1)">
-        <a ng-click="activeTab(1)">Local</a>
-      </li>
-      <li ng-class="getTabClass(2)">
-        <a ng-click="activeTab(2)">Online</a>
-      </li>
-    </ul>
+  <!-- Import local sources -->
+  <div ga-tab ga-tab-title="Local" ng-if="::showLocal">
+    <div ngeo-import-local ngeo-import-local-options="::options"></div>
   </div>
 
-  <div class="tab-content">
-
-    <!-- Import local sources, for now just KML-->
-
-    <!-- TO FIX: can't use ng-if here because the HTML content is added after the
-    execution of the "link" function of the directive and so the dynamic
-    js events are not added -->
-    <div ng-hide="isIE9" class="tab-pane" ng-class="getTabClass(1)">
-      <!-- Upload from a basic upload (the input file is hidden by default)-->
-      <div class="input-group input-group-sm">
-        <input type="file" name="file"/>
-        <!-- Button use to open the file chooser of the input file -->
-        <input class="form-control" type="text" 
-            readonly value="{{(file.name) ? file.name + ', ' + file.size/1000 + ' ko' : ''}}"
-            placeholder="{{'no_file' | translate}}"/>
-        <span class="input-group-btn">
-          <button type="button" class="btn btn-default ga-import-kml-browse" translate>browse</button>
-        </span>
-      </div>
-
-      <div class="tabbable-footer" >
-        <button type="button" class="btn btn-default ga-import-kml-load" ng-click="loadKML()" translate>load_kml</button>
-        <!-- TODO: Display information about the uploaded file and the upload process -->
-        <div class="ga-import-kml-result">
-          <div class="ga-import-kml-abort fa fa-remove-sign" ng-click="cancel()"
-            ng-show="(0 < progress && progress < 100)" ></div>{{userMessage}}
-          <div ng-if="!isIE" class="progress progress-striped active"
-            ng-show="(0 < progress && progress < 100)">
-            <!-- TO FIX: issue ie9-10:  https://github.com/angular/angular.js/issues/2186 -->
-            <div class="progress-bar" style="width:100%;"></div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- Import online sources, for now just wms -->
-
-    <div class="tab-pane" ng-class="getTabClass(2)">
-      <form ng-class="{'has-error': error}">
-        <input type="url" name="url" autocomplete="off" placeholder="{{'choose_wms_url' | translate}}"
-          ng-model="fileUrl" required class="form-control"/>
-        <div class="ga-import-open fa fa-collapse"></div>
-        <button type="button" class="btn btn-default ga-import-connect"
-                ng-click="handleFileUrl()" translate>connect</button>
-        <div class="ga-message">{{userMessage}}</div>
-      </form>
-      <div class="ga-import-container">
-        <div class="ga-import-header" ng-click="reverse = !reverse">
-          <label translate>title</label>
-          <button class="pull-right fa" ng-class="{
-            'fa-sort-by-alphabet': !reverse,
-            'fa-sort-by-alphabet-alt': reverse
-          }"></button>
-        </div>
-        <div class="ga-import-content">
-          <ul>
-            <li ng-repeat="layer in layers | orderBy:'Title':reverse">
-              <div ga-import-item></div>
-            </li>
-          </ul>
-        </div>
-        <div class="modal-backdrop fade in" ng-show="progress > 0 && progress < 100">
-          <div class="progress progress-striped active">
-            <div class="progress-bar" style="width: 100%;"></div>
-          </div>
-        </div>
-      </div>
-      <div class="ga-import-descr">
-        <label translate>description</label>
-        <textarea  placeholder="{{'description_instructions' | translate}}" class="form-control" readonly>{{getAbstract()}}</textarea>
-        <button type="button" class="btn btn-default ga-import-add"
-        ng-disabled="(options.layerSelected && options.layerSelected.isInvalid)" ng-click="addLayerSelected()" translate>add_layer</button>
-      </div>
-    </div>
-
-
+  <!-- Import online sources -->
+  <div ga-tab ga-tab-title="Online">
+    <div ngeo-import-online ngeo-import-online-options="::options"></div>
   </div>
+ 
+  <!-- Display WMS GetCapabilities results -->
+  <div ng-if="wmsGetCap"
+       ngeo-wms-get-cap="wmsGetCap"
+       ngeo-wms-get-cap-map="::map"
+       ngeo-wms-get-cap-options="::options"></div>
+
+  <!-- Display WMTS GetCapabilities results -->
+  
+  <!-- Display KML infos -->
+  
+  <!-- Display GPX infos -->
 </div>
 

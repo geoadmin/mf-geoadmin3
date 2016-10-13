@@ -1,0 +1,74 @@
+[ngeo-import-online] {
+  position: relative;
+  width: 100%;
+
+  form {
+    margin: 0;
+    position: relative;
+  }
+ 
+  input[name=url] {
+    padding-right: 20px;
+  }
+ 
+  .ngeo-error {
+    color: red;
+    
+    &:not([ng-hide]) {
+      display: none;
+    }
+  }
+
+  .ng-invalid-url {
+    
+    .ngeo-error {
+      display: block;
+    }
+  }
+
+  .tabbable-footer {
+    margin: 5px 0 0;
+
+    button {
+      width: 100%;
+    }
+  }
+
+  .ngeo-import-open {
+    cursor: pointer;
+    position: absolute;
+    right: 8px;
+    top: .7em;
+    font-size: 14px;
+    z-index: 10;
+  }
+}
+
+.twitter-typeahead {
+  width: 100%;
+   
+  .tt-menu {
+    max-height: 280px;
+    overflow-y: auto;
+    border: 1px solid rgb(204, 204, 204);
+    border-top: none;
+    background-color: white;
+    width: 100%;
+    padding-right: 20px;
+    
+  }
+   
+  .tt-suggestion {
+    margin: 5px 10px;
+  }
+
+  .tt-cursor {
+    background-color: #f0f0f0;
+    cursor: pointer;
+  }
+
+  .tt-highlight {
+    background-color: rgba(255, 128, 0, 0.3);
+  }
+}
+

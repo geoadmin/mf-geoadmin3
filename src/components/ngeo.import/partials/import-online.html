@@ -1,0 +1,17 @@
+<form class="form-group form-group-sm">
+  <input type="url" name="url" autocomplete="off" placeholder="{{'choose_wms_url' | translate}}"
+         ng-model="fileUrl" required class="form-control"/>
+   <div class="ngeo-error" translate>invalid_url</div> 
+   <div class="ngeo-import-open fa fa-collapse"></div>
+</form>
+<div class="tabbable-footer" >
+  <button type="button" class="btn btn-default btn-sm"
+          ng-class="{'btn-danger': canceler}"
+          ng-disabled="!fileUrl || !isValid(fileUrl) || (loading && !canceler)"
+          ng-click="loading ? cancel() : handleFileUrl()"
+          translate>
+    {{userMessage}}
+  </button>
+</div>
+
+
