@@ -34,6 +34,7 @@ goog.require('ga_topic_service');
       defaultProjection.setExtent(gaGlobalOptions.defaultEpsgExtent);
 
       var map = new ol.Map({
+        pixelRatio: 1,
         controls: ol.control.defaults({
           attribution: false,
           rotate: false,
