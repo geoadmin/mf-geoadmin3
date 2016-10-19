@@ -838,6 +838,17 @@ goog.require('ga_time_service');
           displayCoords[3]]);
       var topRight = $scope.map.getCoordinateFromPixel([displayCoords[2],
           displayCoords[1]]);
+      // Always returns an extent [minX, minY, maxX, maxY]
+      if (bottomLeft[0] > topRight[0]) {
+        var tmp = bottomLeft[0];
+        bottomLeft[0] = topRight[0];
+        topRight[0] = tmp;
+      }
+      if (bottomLeft[1] > topRight[1]) {
+        var tmp = bottomLeft[1];
+        bottomLeft[1] = topRight[1];
+        topRight[1] = tmp;
+      }
       return bottomLeft.concat(topRight);
     };
 
