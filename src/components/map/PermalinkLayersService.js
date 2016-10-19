@@ -44,6 +44,7 @@ goog.require('ga_wms_service');
 
       var layersParamValue = gaPermalink.getParams().layers;
       var layersOpacityParamValue = gaPermalink.getParams().layers_opacity;
+      var layersParamsValue = gaPermalink.getParams().layers_params;
       var layersVisibilityParamValue =
           gaPermalink.getParams().layers_visibility;
       var layersTimestampParamValue =
@@ -53,6 +54,8 @@ goog.require('ga_wms_service');
       var layerSpecs = layersParamValue ? layersParamValue.split(',') : [];
       var layerOpacities = layersOpacityParamValue ?
           layersOpacityParamValue.split(',') : [];
+      var layerParams = layersParamsValue ?
+          layersParamsValue.split(',') : [];
       var layerVisibilities = layersVisibilityParamValue ?
           layersVisibilityParamValue.split(',') : [];
       var layerTimestamps = layersTimestampParamValue ?
@@ -183,7 +186,9 @@ goog.require('ga_wms_service');
                       p.layers_visibility ?
                           p.layers_visibility.split(',') : false,
                       p.layers_timestamp ?
-                          p.layers_timestamp.split(',') : undefined
+                          p.layers_timestamp.split(',') : undefined,
+                      p.layers_params ?
+                          p.layers_params.split(',') : undefined
             );
           } else {
             addLayers(topic.selectedLayers.slice(0).reverse());
@@ -195,7 +200,7 @@ goog.require('ga_wms_service');
         };
 
         var addLayers = function(layerSpecs, opacities, visibilities,
-            timestamps) {
+            timestamps, parameters) {
           var nbLayersToAdd = layerSpecs.length;
           angular.forEach(layerSpecs, function(layerSpec, index) {
             var layer;
@@ -207,6 +212,8 @@ goog.require('ga_wms_service');
                 false : true;
             var timestamp = (timestamps && index < timestamps.length &&
                 timestamps != '') ? timestamps[index] : '';
+            var params = (parameters && index < parameters.length) ?
+                gaUrlUtils.parseKeyValue(parameters[index]) : undefined;
             var bodLayer = gaLayers.getLayer(layerSpec);
             if (bodLayer) {
               // BOD layer.
@@ -241,6 +248,9 @@ goog.require('ga_wms_service');
                         gaTime.get());
                   }
                   layer.time = timestamp;
+                }
+                if (params && layer.getSource().updateParams) {
+                  layer.getSource().updateParams(params);
                 }
                 map.addLayer(layer);
               }
@@ -341,7 +351,7 @@ goog.require('ga_wms_service');
           } else {
             // We add layers from 'layers' parameter
             addLayers(layerSpecs, layerOpacities, layerVisibilities,
-                layerTimestamps);
+                layerTimestamps, layerParams);
           }
 
           gaTime.allowStatusUpdate = true;
