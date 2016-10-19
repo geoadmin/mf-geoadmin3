@@ -76,7 +76,7 @@ goog.require('ga_topic_service');
               layersToQuery.vectorLayers.push(l);
             } else if (gaLayers.hasTooltipBodLayer(l)) {
               layersToQuery.bodLayers.push(l);
-            } else if (gaMapUtils.isWMSLayer(l)) {
+            } else if (!gaMapUtils.isBodLayer(l) && gaMapUtils.isWMSLayer(l)) {
               layersToQuery.wmsLayers.push(l);
             }
           });
