@@ -112,7 +112,7 @@ goog.require('ga_file_service');
               scope.fileReader = evt.target;
             }
 
-          }).finally(function() {
+          })['finally'](function() {
              scope.fileReader = null;
              scope.loading = false;
              timeoutP = $timeout(initUserMsg, 10000);

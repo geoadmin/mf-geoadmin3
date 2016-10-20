@@ -147,7 +147,7 @@ goog.require('ga_urlutils_service');
           }, function(err) {
             scope.userMessage = err.message;
 
-          }).finally(function() {
+          })['finally'](function() {
             scope.canceler = null;
             scope.loading = false;
             timeoutP = $timeout(initUserMsg, 10000);
