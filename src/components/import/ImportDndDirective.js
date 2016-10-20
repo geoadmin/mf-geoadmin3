@@ -67,7 +67,7 @@ goog.require('ga_urlutils_service');
                 return scope.handleFileContent(fileContent, {
                   url: text
                 });
-              }).catch(function(err) {
+              })['catch'](function(err) {
                 $window.alert($translate.instant(err.message));
               });
             } else {
