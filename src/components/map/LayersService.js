@@ -316,6 +316,7 @@ goog.require('ga_urlutils_service');
               gaTime.get());
           var requestedLayer = config3d.serverLayerName || bodId;
           var provider = new Cesium.CesiumTerrainProvider({
+            requestVertexNormals: true,
             url: getTerrainUrl(requestedLayer, timestamp),
             availableLevels: gaGlobalOptions.terrainAvailableLevels,
             rectangle: gaMapUtils.extentToRectangle(

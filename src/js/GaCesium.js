@@ -134,6 +134,23 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions,
     scene.screenSpaceCameraController.inertiaZoom = 0.9;
     scene.screenSpaceCameraController.minimumZoomDistance = 2;
 
+    var lightCamera = new Cesium.Camera(scene);
+    lightCamera.setView({
+      orientation: {
+        pitch: Cesium.Math.toRadians(-110)
+      }
+    });
+
+    // shadows
+    scene.shadowMap = new Cesium.ShadowMap({
+      enabled: boolParam('shadows', true),
+      context: scene.context,
+      lightCamera: lightCamera,
+      darkness: floatParam('shadowDarkness', '0.75'),
+      softShadows: boolParam('softShadows', true),
+      maximumDistance: 1000
+    });
+
     enableOl3d(cesiumViewer, enabled);
 
     // Add default 3d layer which ar enot linked to a 2d layer
