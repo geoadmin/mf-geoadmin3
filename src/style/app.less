@@ -823,7 +823,7 @@ a .ga-icon-separator {
       position: absolute;
       width: 100%;
       height: 100%;
-      z-index: 2499;
+      z-index: 1999;
       top: 0;
       background: #000;
       opacity: 0;
@@ -936,7 +936,7 @@ a .ga-icon-separator {
   }
 
   @media (max-width: @screen-phone) {
-    z-index: 2500; /* top of popups but under modal */
+    z-index: 2000; /* under popups and  modal */
     top: 0;
     right: 0;
     width: 0;
@@ -1297,8 +1297,8 @@ a.panel-heading {
 }
 
 // ***** POPOVER and MODAL (ga-popup and bs popover)
-.popover {
-  z-index: 3000;
+.popover:not([ga-popup]) {
+  z-index: 3000; /* on top of menu but under modals */
 }
 
 .popover-content, .popover-content .btn, .popover-content .form-control {

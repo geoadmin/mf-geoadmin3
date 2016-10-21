@@ -11,12 +11,22 @@ goog.require('ga_print_service');
   ]);
 
   module.directive('gaPopup',
-    function($rootScope, $translate, $window, gaBrowserSniffer,
-        gaPrint) {
-      var zIndex = 2000;
+    function($rootScope, $translate, $window, gaBrowserSniffer, gaPrint) {
+      var zIndex;
+      var screenLimit = 0;
+      var screenTabletLimit = 768;
+      var screenMobileLimit = 480;
+
       var bringUpFront = function(el) {
-        zIndex += 1;
-        el.css('z-index', zIndex);
+        // We get the initial z-index css.
+        var currZIndex = parseInt(el.css('z-index'));
+        if (!zIndex) {
+          zIndex = 2500; // same as in popup.less
+          zIndex++;
+        }
+        if (!currZIndex || zIndex > currZIndex) {
+          el.css('z-index', ++zIndex);
+        }
         $rootScope.$emit('gaPopupFocused', el);
       };
       var updatePosition = function(scope, element, pixel) {
@@ -45,6 +55,15 @@ goog.require('ga_print_service');
           // Init css
           element.addClass('popover');
 
+          // Init some utilities variables.
+          var className = element[0].className;
+          if (/ga-popup-tablet/.test(className)) {
+            screenLimit = screenTabletLimit;
+          }
+          if (/ga-popup-mobile/.test(className)) {
+            screenLimit = screenMobileLimit;
+          }
+
           // Initialize the popup properties
           scope.toggle = scope.toggle || false;
           scope.options = scope.optionsFunc() || {title: ''};
@@ -67,8 +86,7 @@ goog.require('ga_print_service');
           }
           // Bring the popup to front on click on it.
           element.find('.popover-content').click(function(evt) {
-            if (!scope.options.isReduced && scope.toggle &&
-                element.css('z-index') != zIndex) {
+            if (!scope.options.isReduced && scope.toggle) {
               bringUpFront(element);
             }
           });
@@ -192,9 +210,8 @@ goog.require('ga_print_service');
             if (scope.options.isReduced) {
               return;
             }
-            var screenSmLimit = 768;
             var winWidth = win.width();
-            if (winWidth > screenSmLimit) {
+            if (winWidth > screenLimit) {
               var winHeight = win.height();
               var popupWidth = element.outerWidth();
               var popupHeight = element.outerHeight();
