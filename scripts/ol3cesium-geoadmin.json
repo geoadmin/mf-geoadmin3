@@ -158,7 +158,6 @@
     ],
     "define": [
       "goog.DEBUG=false",
-      "ol.ENABLE_DOM=false",
       "ol.ENABLE_WEBGL=false"
     ],
     "js": [
