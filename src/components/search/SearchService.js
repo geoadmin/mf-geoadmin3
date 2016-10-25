@@ -87,14 +87,14 @@ goog.provide('ga_search_service');
 
         var match = query.match(regexpCoordinate);
         if (match && !valid) {
-          var left = parseFloat(match[1].replace('\'', ''));
-          var right = parseFloat(match[2].replace('\'', ''));
+          var left = parseFloat(match[1].replace(/\'/g, ''));
+          var right = parseFloat(match[2].replace(/\'/g, ''));
           //Old school entries like '600 000 200 000'
           if (match[3] != null) {
-            left = parseFloat(match[1].replace('\'', '') +
-                              match[2].replace('\'', ''));
-            right = parseFloat(match[4].replace('\'', '') +
-                               match[5].replace('\'', ''));
+            left = parseFloat(match[1].replace(/\'/g, '') +
+                              match[2].replace(/\'/g, ''));
+            right = parseFloat(match[4].replace(/\'/g, '') +
+                               match[5].replace(/\'/g, ''));
           }
 
           position =
