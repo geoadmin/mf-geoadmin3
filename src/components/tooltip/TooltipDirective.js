@@ -704,8 +704,7 @@ goog.require('ga_topic_service');
                 showVectorInfos: (value instanceof ol.Feature),
                 clickGeometry: new ol.geom.Point(scope.clickCoordinate),
                 snippet: $sce.trustAsHtml(html),
-                showProfile: !gaBrowserSniffer.mobile &&
-                    value instanceof ol.Feature && value.getGeometry()
+                showProfile: value instanceof ol.Feature && value.getGeometry()
               });
             };
           }

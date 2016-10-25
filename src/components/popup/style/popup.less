@@ -2,6 +2,7 @@
 @ga-popup-reduced-height: 40px;
 @ga-popup-max-width: 620px;
 
+/* sticked to bottom */
 .ga-bottom-fixed() {
   max-width: none!important;
   width: auto!important;
@@ -16,6 +17,22 @@
     display: none;
   }
 }
+
+/* full screen */
+.ga-full() {
+  top: 2% !important;
+  left: 2% !important;
+  right: 2%;
+  bottom: 2%;
+  width: auto!important;
+  max-height: none;
+  max-width: none;
+  -webkit-overflow-scrolling: touch;
+
+  .popover-content {
+    max-height: none;
+  }
+}
  
 [ga-popup] {
   display: none;
@@ -24,7 +41,7 @@
   max-width: @ga-popup-max-width;
   min-height: 100px;
   max-height: @ga-popup-max-height;
-  z-index: 2000;
+  z-index: 2500; /* on top of the menu but under modals */
 
   .ga-popup-no-info {
     padding: 20px 14px;
@@ -108,6 +125,48 @@
     }
   }
 
+  /* POPUP display at the bottom */
+  &.ga-popup-bottom {
+    .ga-bottom-fixed();
+    bottom: 26px;
+  }
+
+  /* POPUP MOBILE display at the bottom */
+  &.ga-popup-bottom, &.ga-popup-mobile-bottom {
+    @media (max-width: @screen-phone) {
+      .ga-bottom-fixed();
+ 
+      > .popover-content {
+        max-height: 250px;
+      }
+    }
+  }
+
+  /* POPUP MOBILE & TABLET display in full screen (ex: metadata popup) */
+  &.ga-popup-tablet-full {
+
+    /* !important is used to override (and so deactivate) draggable styles
+    applied */
+    @media (max-width: @screen-tablet) {
+      .ga-full();
+    }
+
+    @media (max-width: @screen-phone) {
+      position: absolute;
+      overflow: hidden;
+    }
+  }
+
+  /* POPUP MOBILE display in full screen (ex: feedback popup) */
+  &.ga-popup-mobile-full {
+
+    @media (max-width: @screen-phone) {
+      position: absolute;
+      overflow: hidden;
+      .ga-full();
+    }
+  }
+
   /* REDUCED POPUP */
   /* !important is used to override (and so deactivate) draggable styles
   and specific popups styles */
@@ -154,54 +213,28 @@
       display: none;
     }
 
-    @medi (max-width: @screen-tablet) {
+    .fa-remove {
+      opacity: 0.8;
+    }
+
+    @media (max-width: @screen-tablet) {
       width: 160px!important;
       min-width: 160px!important;
       bottom: unit(@ga-popup-reduced-height + 14, px);
-    }
-  }
- 
-  /* POPUP display at the bottomi */
-  &.ga-popup-bottom {
-    .ga-bottom-fixed();
-    bottom: 26px;
-  }
-  
-  /* POPUP MOBILE display at the bottom */
-  &.ga-popup-bottom, &.ga-popup-mobile-bottom {
-    @media (max-width: @screen-phone) {
-      .ga-bottom-fixed();
-        
-      > .popover-content {
-        max-height: 250px;
-      }
-    }
-  }
- 
-  /* POPUP MOBILE & TABLET display in full screen (ex: metadata popup) */
-  &.ga-popup-tablet-full {
-    
-    /* !important is used to override (and so deactivate) draggable styles
-    applied */
-    @media (max-width: @screen-tablet) {
-      z-index: 1500;
-      top: 2% !important;
-      left: 2% !important;
-      right: 2%;
-      bottom: 2%;
-      width: auto!important;
-      max-height: none;
-      max-width: none;
-      -webkit-overflow-scrolling: touch;
       
-      .popover-content {
-        max-height: none;
-      }
+      /* Override ga-popup-tablet-full css */
+      top: initial!important;
+      left: initial!important;
+      top: auto!important; // for IE
+      left: auto!important; // for IE
     }
 
     @media (max-width: @screen-phone) {
-      position: absolute;
-      overflow: hidden;
+      /* Override ga-popup-mobile-full css */
+      top: initial!important;
+      left: initial!important;
+      top: auto!important; // for IE
+      left: auto!important; // for IE
     }
   }
 }

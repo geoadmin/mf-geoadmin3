@@ -46,5 +46,9 @@
   @media (max-width: @screen-phone) {
     top: 50% !important;
     max-height: none;
+
+    &[style] {
+      z-index: 1800!important; /* under the menu*/
+    }
   }
 }
