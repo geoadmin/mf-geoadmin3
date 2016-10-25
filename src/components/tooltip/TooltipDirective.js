@@ -419,14 +419,19 @@ goog.require('ga_topic_service');
               // Go through all queryable bod layers.
               // Launch identify requests.
               layersToQuery.bodLayers.forEach(function(layerToQuery) {
-                var tol = scope.options.tolerance;
                 var geometry = new ol.geom.Point(coordinate);
                 var returnGeometry = !!gaLayers.getLayerProperty(
                     layerToQuery.bodId, 'highlightable');
-                var shopLayer = gaLayers.getLayerProperty(layerToQuery.bodId,
-                                                          'shop');
-                var limit = shopLayer ? 1 : null;
-                var order = shopLayer ? 'distance' : null;
+                var shopLayer = (gaLayers.getLayerProperty(
+                    layerToQuery.bodId, 'shop') && !gaLayers.getLayerProperty(
+                    layerToQuery.bodId, 'shopMulti'));
+                var shopMultiLayer = gaLayers.getLayerProperty(
+                    layerToQuery.bodId, 'shopMulti');
+
+                var limit = shopMultiLayer ? 10 : null;
+                var order = limit ? 'distance' : null;
+                var tol = shopLayer ? 0 : scope.options.tolerance;
+
                 all.push(gaIdentify.get(map, [layerToQuery], geometry, tol,
                     returnGeometry, canceler.promise, limit, order).then(
                   function(response) {
