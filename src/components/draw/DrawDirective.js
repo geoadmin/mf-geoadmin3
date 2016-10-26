@@ -686,7 +686,8 @@ goog.require('ga_styles_service');
                   onClosePopup);
               scope.$applyAsync();
             }
-          } else {
+          }
+          if (!gaMapUtils.isMeasureFeature(scope.feature)) {
             // Move the popup on the closest coordinate of the click event
             var coord = clickCoord ?
                 geometry.getClosestPoint(clickCoord) :

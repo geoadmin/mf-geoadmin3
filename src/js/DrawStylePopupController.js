@@ -48,12 +48,5 @@ goog.provide('ga_drawstylepopup_controller');
     $scope.$on('destroy', function() {
       off();
     });
-
-    $scope.$on('gaProfileActive', function(evt, feature) {
-      if (feature) {
-        $scope.toggle = false;
-        $scope.options.isReduced = false;
-      }
-    });
   });
 })();

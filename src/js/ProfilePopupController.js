@@ -24,12 +24,5 @@ goog.provide('ga_profilepopup_controller');
         });
       }
     });
-
-    $scope.$on('gaDrawStyleActive', function(evt, feature) {
-      if (feature) {
-        $scope.toggle = false;
-        $scope.options.isReduced = false;
-      }
-    });
   });
 })();
