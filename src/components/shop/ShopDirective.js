@@ -48,12 +48,13 @@ goog.require('ga_price_filter');
         var layerBodId = (scope.feature instanceof ol.Feature) ?
             scope.feature.get('layerId') : scope.feature.layerBodId;
 
+        var layerConfig = gaLayers.getLayer(layerBodId);
+
         // Remove the element if no layerBodId associated
-        if (!layerBodId) {
+        if (!layerConfig) {
           elt.remove();
           return;
         }
-        var layerConfig = gaLayers.getLayer(layerBodId);
 
         // Remove the element if no shop config available
         if (!layerConfig.shop || layerConfig.shop.length == 0) {
