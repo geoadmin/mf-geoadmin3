@@ -70,6 +70,7 @@ define('Core/freezeObject',[
 
     return freezeObject;
 });
+
 /*global define*/
 define('Core/defaultValue',[
         './freezeObject'
@@ -390,6 +391,7 @@ MersenneTwister.prototype.random = function() {
 
 return MersenneTwister;
 });
+
 /*global define*/
 define('Core/Math',[
         '../ThirdParty/mersenne-twister',
@@ -1620,6 +1622,11 @@ define('Core/Cartesian3',[
         result.x = cartesian.x / magnitude;
         result.y = cartesian.y / magnitude;
         result.z = cartesian.z / magnitude;
+
+                if (isNaN(result.x) || isNaN(result.y) || isNaN(result.z)) {
+            throw new DeveloperError('normalized result is not a number');
+        }
+        
         return result;
     };
 
@@ -2723,6 +2730,7 @@ define('Core/defineProperties',[
 
     return defineProperties;
 });
+
 /*global define*/
 define('Core/Ellipsoid',[
         './Cartesian3',
@@ -3483,6 +3491,7 @@ define('Core/Intersect',[
 
     return freezeObject(Intersect);
 });
+
 /*global define*/
 define('Core/Interval',[
         './defaultValue'
@@ -3517,6 +3526,193 @@ define('Core/Interval',[
 });
 
 /*global define*/
+define('Core/HeadingPitchRoll',[
+    './defaultValue',
+    './defined',
+    './DeveloperError',
+    './Math'
+], function(
+    defaultValue,
+    defined,
+    DeveloperError,
+    CesiumMath) {
+    "use strict";
+
+    /**
+     * A rotation expressed as a heading, pitch, and roll. Heading is the rotation about the
+     * negative z axis. Pitch is the rotation about the negative y axis. Roll is the rotation about
+     * the positive x axis.
+     * @alias HeadingPitchRoll
+     * @constructor
+     *
+     * @param {Number} [heading=0.0] The heading component in radians.
+     * @param {Number} [pitch=0.0] The pitch component in radians.
+     * @param {Number} [roll=0.0] The roll component in radians.
+     */
+    function HeadingPitchRoll(heading, pitch, roll) {
+        this.heading = defaultValue(heading, 0.0);
+        this.pitch = defaultValue(pitch, 0.0);
+        this.roll = defaultValue(roll, 0.0);
+    }
+
+    /**
+     * Computes the heading, pitch and roll from a quaternion (see http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles )
+     *
+     * @param {Quaternion} quaternion The quaternion from which to retrieve heading, pitch, and roll, all expressed in radians.
+     * @param {Quaternion} [result] The object in which to store the result. If not provided, a new instance is created and returned.
+     * @returns {HeadingPitchRoll} The modified result parameter or a new HeadingPitchRoll instance if one was not provided.
+     */
+    HeadingPitchRoll.fromQuaternion = function(quaternion, result) {
+                if (!defined(quaternion)) {
+            throw new DeveloperError('quaternion is required');
+        }
+                if (!defined(result)) {
+            result = new HeadingPitchRoll();
+        }
+        var test = 2 * (quaternion.w * quaternion.y - quaternion.z * quaternion.x);
+        var denominatorRoll = 1 - 2 * (quaternion.x * quaternion.x + quaternion.y * quaternion.y);
+        var numeratorRoll = 2 * (quaternion.w * quaternion.x + quaternion.y * quaternion.z);
+        var denominatorHeading = 1 - 2 * (quaternion.y * quaternion.y + quaternion.z * quaternion.z);
+        var numeratorHeading = 2 * (quaternion.w * quaternion.z + quaternion.x * quaternion.y);
+        result.heading = -Math.atan2(numeratorHeading, denominatorHeading);
+        result.roll = Math.atan2(numeratorRoll, denominatorRoll);
+        result.pitch = -Math.asin(test);
+        return result;
+    };
+
+    /**
+     * Returns a new HeadingPitchRoll instance from angles given in degrees.
+     *
+     * @param {Number} heading the heading in degrees
+     * @param {Number} pitch the pitch in degrees
+     * @param {Number} roll the heading in degrees
+     * @param {HeadingPitchRoll} [result] The object in which to store the result. If not provided, a new instance is created and returned.
+     * @returns {HeadingPitchRoll} A new HeadingPitchRoll instance
+     */
+    HeadingPitchRoll.fromDegrees = function(heading, pitch, roll, result) {
+                if (!defined(heading)) {
+            throw new DeveloperError('heading is required');
+        }
+        if (!defined(pitch)) {
+            throw new DeveloperError('pitch is required');
+        }
+        if (!defined(roll)) {
+            throw new DeveloperError('roll is required');
+        }
+                if (!defined(result)) {
+            result = new HeadingPitchRoll();
+        }
+        result.heading = heading * CesiumMath.RADIANS_PER_DEGREE;
+        result.pitch = pitch * CesiumMath.RADIANS_PER_DEGREE;
+        result.roll = roll * CesiumMath.RADIANS_PER_DEGREE;
+        return result;
+    };
+
+    /**
+     * Duplicates a HeadingPitchRoll instance.
+     *
+     * @param {HeadingPitchRoll} headingPitchRoll The HeadingPitchRoll to duplicate.
+     * @param {HeadingPitchRoll} [result] The object onto which to store the result.
+     * @returns {HeadingPitchRoll} The modified result parameter or a new HeadingPitchRoll instance if one was not provided. (Returns undefined if headingPitchRoll is undefined)
+     */
+    HeadingPitchRoll.clone = function(headingPitchRoll, result) {
+        if (!defined(headingPitchRoll)) {
+            return undefined;
+        }
+        if (!defined(result)) {
+            return new HeadingPitchRoll(headingPitchRoll.heading, headingPitchRoll.pitch, headingPitchRoll.roll);
+        }
+        result.heading = headingPitchRoll.heading;
+        result.pitch = headingPitchRoll.pitch;
+        result.roll = headingPitchRoll.roll;
+        return result;
+    };
+
+    /**
+     * Compares the provided HeadingPitchRolls componentwise and returns
+     * <code>true</code> if they are equal, <code>false</code> otherwise.
+     *
+     * @param {HeadingPitchRoll} [left] The first HeadingPitchRoll.
+     * @param {HeadingPitchRoll} [right] The second HeadingPitchRoll.
+     * @returns {Boolean} <code>true</code> if left and right are equal, <code>false</code> otherwise.
+     */
+    HeadingPitchRoll.equals = function(left, right) {
+        return (left === right) ||
+            ((defined(left)) &&
+                (defined(right)) &&
+                (left.heading === right.heading) &&
+                (left.pitch === right.pitch) &&
+                (left.roll === right.roll));
+    };
+
+    /**
+     * Compares the provided HeadingPitchRolls componentwise and returns
+     * <code>true</code> if they pass an absolute or relative tolerance test,
+     * <code>false</code> otherwise.
+     *
+     * @param {HeadingPitchRoll} [left] The first HeadingPitchRoll.
+     * @param {HeadingPitchRoll} [right] The second HeadingPitchRoll.
+     * @param {Number} relativeEpsilon The relative epsilon tolerance to use for equality testing.
+     * @param {Number} [absoluteEpsilon=relativeEpsilon] The absolute epsilon tolerance to use for equality testing.
+     * @returns {Boolean} <code>true</code> if left and right are within the provided epsilon, <code>false</code> otherwise.
+     */
+    HeadingPitchRoll.equalsEpsilon = function(left, right, relativeEpsilon, absoluteEpsilon) {
+        return (left === right) ||
+            (defined(left) &&
+                defined(right) &&
+                CesiumMath.equalsEpsilon(left.heading, right.heading, relativeEpsilon, absoluteEpsilon) &&
+                CesiumMath.equalsEpsilon(left.pitch, right.pitch, relativeEpsilon, absoluteEpsilon) &&
+                CesiumMath.equalsEpsilon(left.roll, right.roll, relativeEpsilon, absoluteEpsilon));
+    };
+
+    /**
+     * Duplicates this HeadingPitchRoll instance.
+     *
+     * @param {HeadingPitchRoll} [result] The object onto which to store the result.
+     * @returns {HeadingPitchRoll} The modified result parameter or a new HeadingPitchRoll instance if one was not provided.
+     */
+    HeadingPitchRoll.prototype.clone = function(result) {
+        return HeadingPitchRoll.clone(this, result);
+    };
+
+    /**
+     * Compares this HeadingPitchRoll against the provided HeadingPitchRoll componentwise and returns
+     * <code>true</code> if they are equal, <code>false</code> otherwise.
+     *
+     * @param {HeadingPitchRoll} [right] The right hand side HeadingPitchRoll.
+     * @returns {Boolean} <code>true</code> if they are equal, <code>false</code> otherwise.
+     */
+    HeadingPitchRoll.prototype.equals = function(right) {
+        return HeadingPitchRoll.equals(this, right);
+    };
+
+    /**
+     * Compares this HeadingPitchRoll against the provided HeadingPitchRoll componentwise and returns
+     * <code>true</code> if they pass an absolute or relative tolerance test,
+     * <code>false</code> otherwise.
+     *
+     * @param {HeadingPitchRoll} [right] The right hand side HeadingPitchRoll.
+     * @param {Number} relativeEpsilon The relative epsilon tolerance to use for equality testing.
+     * @param {Number} [absoluteEpsilon=relativeEpsilon] The absolute epsilon tolerance to use for equality testing.
+     * @returns {Boolean} <code>true</code> if they are within the provided epsilon, <code>false</code> otherwise.
+     */
+    HeadingPitchRoll.prototype.equalsEpsilon = function(right, relativeEpsilon, absoluteEpsilon) {
+        return HeadingPitchRoll.equalsEpsilon(this, right, relativeEpsilon, absoluteEpsilon);
+    };
+
+    /**
+     * Creates a string representing this HeadingPitchRoll in the format '(heading, pitch, roll)' in radians.
+     *
+     * @returns {String} A string representing the provided HeadingPitchRoll in the format '(heading, pitch, roll)'.
+     */
+    HeadingPitchRoll.prototype.toString = function() {
+        return '(' + this.heading + ', ' + this.pitch + ', ' + this.roll + ')';
+    };
+
+    return HeadingPitchRoll;
+});
+
+/*global define*/
 define('Core/Matrix3',[
         './Cartesian3',
         './defaultValue',
@@ -3524,6 +3720,7 @@ define('Core/Matrix3',[
         './defineProperties',
         './DeveloperError',
         './freezeObject',
+        './HeadingPitchRoll',
         './Math'
     ], function(
         Cartesian3,
@@ -3532,6 +3729,7 @@ define('Core/Matrix3',[
         defineProperties,
         DeveloperError,
         freezeObject,
+        HeadingPitchRoll,
         CesiumMath) {
     'use strict';
 
@@ -3799,6 +3997,53 @@ define('Core/Matrix3',[
             return new Matrix3(m00, m01, m02,
                                m10, m11, m12,
                                m20, m21, m22);
+        }
+        result[0] = m00;
+        result[1] = m10;
+        result[2] = m20;
+        result[3] = m01;
+        result[4] = m11;
+        result[5] = m21;
+        result[6] = m02;
+        result[7] = m12;
+        result[8] = m22;
+        return result;
+    };
+
+    /**
+     * Computes a 3x3 rotation matrix from the provided headingPitchRoll. (see http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles )
+     *
+     * @param {HeadingPitchRoll} headingPitchRoll the headingPitchRoll to use.
+     * @param {Matrix3} [result] The object in which the result will be stored, if undefined a new instance will be created.
+     * @returns {Matrix3} The 3x3 rotation matrix from this headingPitchRoll.
+     */
+    Matrix3.fromHeadingPitchRoll = function(headingPitchRoll, result) {
+                if (!defined(headingPitchRoll)) {
+            throw new DeveloperError('headingPitchRoll is required');
+        }
+                var cosTheta = Math.cos(-headingPitchRoll.pitch);
+        var cosPsi = Math.cos(-headingPitchRoll.heading);
+        var cosPhi = Math.cos(headingPitchRoll.roll);
+        var sinTheta = Math.sin(-headingPitchRoll.pitch);
+        var sinPsi = Math.sin(-headingPitchRoll.heading);
+        var sinPhi = Math.sin(headingPitchRoll.roll);
+
+        var m00 = cosTheta * cosPsi;
+        var m01 = -cosPhi * sinPsi + sinPhi * sinTheta * cosPsi;
+        var m02 = sinPhi * sinPsi + cosPhi * sinTheta * cosPsi;
+
+        var m10 = cosTheta * sinPsi;
+        var m11 = cosPhi * cosPsi + sinPhi * sinTheta * sinPsi;
+        var m12 = -sinTheta * cosPhi + cosPhi * sinTheta * sinPsi;
+
+        var m20 = -sinTheta;
+        var m21 = sinPhi * cosTheta;
+        var m22 = cosPhi * cosTheta;
+
+        if (!defined(result)) {
+            return new Matrix3(m00, m01, m02,
+                m10, m11, m12,
+                m20, m21, m22);
         }
         result[0] = m00;
         result[1] = m10;
@@ -5448,6 +5693,11 @@ define('Core/Cartesian4',[
         result.y = cartesian.y / magnitude;
         result.z = cartesian.z / magnitude;
         result.w = cartesian.w / magnitude;
+
+                if (isNaN(result.x) || isNaN(result.y) || isNaN(result.z) || isNaN(result.w)) {
+            throw new DeveloperError('normalized result is not a number');
+        }
+        
         return result;
     };
 
@@ -9031,7 +9281,7 @@ define('Core/Rectangle',[
     };
 
     /**
-     * Creates an rectangle given the boundary longitude and latitude in degrees.
+     * Creates a rectangle given the boundary longitude and latitude in degrees.
      *
      * @param {Number} [west=0.0] The westernmost longitude in degrees in the range [-180.0, 180.0].
      * @param {Number} [south=0.0] The southernmost latitude in degrees in the range [-90.0, 90.0].
@@ -9171,7 +9421,7 @@ define('Core/Rectangle',[
     };
 
     /**
-     * Duplicates an Rectangle.
+     * Duplicates a Rectangle.
      *
      * @param {Rectangle} rectangle The rectangle to clone.
      * @param {Rectangle} [result] The object onto which to store the result, or undefined if a new instance should be created.
@@ -9254,7 +9504,7 @@ define('Core/Rectangle',[
     };
 
     /**
-     * Checks an Rectangle's properties and throws if they are not in valid ranges.
+     * Checks a Rectangle's properties and throws if they are not in valid ranges.
      *
      * @param {Rectangle} rectangle The rectangle to validate
      *
@@ -9306,7 +9556,7 @@ define('Core/Rectangle',[
             };
 
     /**
-     * Computes the southwest corner of an rectangle.
+     * Computes the southwest corner of a rectangle.
      *
      * @param {Rectangle} rectangle The rectangle for which to find the corner
      * @param {Cartographic} [result] The object onto which to store the result.
@@ -9327,7 +9577,7 @@ define('Core/Rectangle',[
     };
 
     /**
-     * Computes the northwest corner of an rectangle.
+     * Computes the northwest corner of a rectangle.
      *
      * @param {Rectangle} rectangle The rectangle for which to find the corner
      * @param {Cartographic} [result] The object onto which to store the result.
@@ -9348,7 +9598,7 @@ define('Core/Rectangle',[
     };
 
     /**
-     * Computes the northeast corner of an rectangle.
+     * Computes the northeast corner of a rectangle.
      *
      * @param {Rectangle} rectangle The rectangle for which to find the corner
      * @param {Cartographic} [result] The object onto which to store the result.
@@ -9369,7 +9619,7 @@ define('Core/Rectangle',[
     };
 
     /**
-     * Computes the southeast corner of an rectangle.
+     * Computes the southeast corner of a rectangle.
      *
      * @param {Rectangle} rectangle The rectangle for which to find the corner
      * @param {Cartographic} [result] The object onto which to store the result.
@@ -9390,7 +9640,7 @@ define('Core/Rectangle',[
     };
 
     /**
-     * Computes the center of an rectangle.
+     * Computes the center of a rectangle.
      *
      * @param {Rectangle} rectangle The rectangle for which to find the center
      * @param {Cartographic} [result] The object onto which to store the result.
@@ -9422,7 +9672,11 @@ define('Core/Rectangle',[
     };
 
     /**
-     * Computes the intersection of two rectangles
+     * Computes the intersection of two rectangles.  This function assumes that the rectangle's coordinates are
+     * latitude and longitude in radians and produces a correct intersection, taking into account the fact that
+     * the same angle can be represented with multiple values as well as the wrapping of longitude at the
+     * anti-meridian.  For a simple intersection that ignores these factors and can be used with projected
+     * coordinates, see {@link Rectangle.simpleIntersection}.
      *
      * @param {Rectangle} rectangle On rectangle to find an intersection
      * @param {Rectangle} otherRectangle Another rectangle to find an intersection
@@ -9472,6 +9726,45 @@ define('Core/Rectangle',[
         if (!defined(result)) {
             return new Rectangle(west, south, east, north);
         }
+        result.west = west;
+        result.south = south;
+        result.east = east;
+        result.north = north;
+        return result;
+    };
+
+    /**
+     * Computes a simple intersection of two rectangles.  Unlike {@link Rectangle.intersection}, this function
+     * does not attempt to put the angular coordinates into a consistent range or to account for crossing the
+     * anti-meridian.  As such, it can be used for rectangles where the coordinates are not simply latitude
+     * and longitude (i.e. projected coordinates).
+     *
+     * @param {Rectangle} rectangle On rectangle to find an intersection
+     * @param {Rectangle} otherRectangle Another rectangle to find an intersection
+     * @param {Rectangle} [result] The object onto which to store the result.
+     * @returns {Rectangle|undefined} The modified result parameter, a new Rectangle instance if none was provided or undefined if there is no intersection.
+     */
+    Rectangle.simpleIntersection = function(rectangle, otherRectangle, result) {
+                if (!defined(rectangle)) {
+            throw new DeveloperError('rectangle is required');
+        }
+        if (!defined(otherRectangle)) {
+            throw new DeveloperError('otherRectangle is required.');
+        }
+        
+        var west = Math.max(rectangle.west, otherRectangle.west);
+        var south = Math.max(rectangle.south, otherRectangle.south);
+        var east = Math.min(rectangle.east, otherRectangle.east);
+        var north = Math.min(rectangle.north, otherRectangle.north);
+
+        if (south >= north || west >= east) {
+            return undefined;
+        }
+
+        if (!defined(result)) {
+            return new Rectangle(west, south, east, north);
+        }
+
         result.west = west;
         result.south = south;
         result.east = east;
@@ -9570,7 +9863,7 @@ define('Core/Rectangle',[
 
     var subsampleLlaScratch = new Cartographic();
     /**
-     * Samples an rectangle so that it includes a list of Cartesian points suitable for passing to
+     * Samples a rectangle so that it includes a list of Cartesian points suitable for passing to
      * {@link BoundingSphere#fromPoints}.  Sampling is necessary to account
      * for rectangles that cover the poles or cross the equator.
      *
@@ -9894,7 +10187,7 @@ define('Core/BoundingSphere',[
     };
 
     /**
-     * Computes a bounding sphere from an rectangle projected in 2D.  The bounding sphere accounts for the
+     * Computes a bounding sphere from a rectangle projected in 2D.  The bounding sphere accounts for the
      * object's minimum and maximum heights over the rectangle.
      *
      * @param {Rectangle} rectangle The rectangle around which to create a bounding sphere.
@@ -9940,7 +10233,7 @@ define('Core/BoundingSphere',[
     var fromRectangle3DScratch = [];
 
     /**
-     * Computes a bounding sphere from an rectangle in 3D. The bounding sphere is created using a subsample of points
+     * Computes a bounding sphere from a rectangle in 3D. The bounding sphere is created using a subsample of points
      * on the ellipsoid and contained in the rectangle. It may not be accurate for all rectangles on all types of ellipsoids.
      *
      * @param {Rectangle} rectangle The valid rectangle used to create a bounding sphere.

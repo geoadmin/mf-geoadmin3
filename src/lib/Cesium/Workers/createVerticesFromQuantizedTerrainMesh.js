@@ -70,6 +70,7 @@ define('Core/freezeObject',[
 
     return freezeObject;
 });
+
 /*global define*/
 define('Core/defaultValue',[
         './freezeObject'
@@ -390,6 +391,7 @@ MersenneTwister.prototype.random = function() {
 
 return MersenneTwister;
 });
+
 /*global define*/
 define('Core/Math',[
         '../ThirdParty/mersenne-twister',
@@ -1583,6 +1585,11 @@ define('Core/Cartesian2',[
 
         result.x = cartesian.x / magnitude;
         result.y = cartesian.y / magnitude;
+
+                if (isNaN(result.x) || isNaN(result.y)) {
+            throw new DeveloperError('normalized result is not a number');
+        }
+        
         return result;
     };
 
@@ -2386,6 +2393,11 @@ define('Core/Cartesian3',[
         result.x = cartesian.x / magnitude;
         result.y = cartesian.y / magnitude;
         result.z = cartesian.z / magnitude;
+
+                if (isNaN(result.x) || isNaN(result.y) || isNaN(result.z)) {
+            throw new DeveloperError('normalized result is not a number');
+        }
+        
         return result;
     };
 
@@ -3395,6 +3407,7 @@ define('Core/Intersect',[
 
     return freezeObject(Intersect);
 });
+
 /*global define*/
 define('Core/AxisAlignedBoundingBox',[
         './Cartesian3',
@@ -4064,6 +4077,7 @@ define('Core/defineProperties',[
 
     return defineProperties;
 });
+
 /*global define*/
 define('Core/Ellipsoid',[
         './Cartesian3',
@@ -4815,6 +4829,193 @@ define('Core/Interval',[
 });
 
 /*global define*/
+define('Core/HeadingPitchRoll',[
+    './defaultValue',
+    './defined',
+    './DeveloperError',
+    './Math'
+], function(
+    defaultValue,
+    defined,
+    DeveloperError,
+    CesiumMath) {
+    "use strict";
+
+    /**
+     * A rotation expressed as a heading, pitch, and roll. Heading is the rotation about the
+     * negative z axis. Pitch is the rotation about the negative y axis. Roll is the rotation about
+     * the positive x axis.
+     * @alias HeadingPitchRoll
+     * @constructor
+     *
+     * @param {Number} [heading=0.0] The heading component in radians.
+     * @param {Number} [pitch=0.0] The pitch component in radians.
+     * @param {Number} [roll=0.0] The roll component in radians.
+     */
+    function HeadingPitchRoll(heading, pitch, roll) {
+        this.heading = defaultValue(heading, 0.0);
+        this.pitch = defaultValue(pitch, 0.0);
+        this.roll = defaultValue(roll, 0.0);
+    }
+
+    /**
+     * Computes the heading, pitch and roll from a quaternion (see http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles )
+     *
+     * @param {Quaternion} quaternion The quaternion from which to retrieve heading, pitch, and roll, all expressed in radians.
+     * @param {Quaternion} [result] The object in which to store the result. If not provided, a new instance is created and returned.
+     * @returns {HeadingPitchRoll} The modified result parameter or a new HeadingPitchRoll instance if one was not provided.
+     */
+    HeadingPitchRoll.fromQuaternion = function(quaternion, result) {
+                if (!defined(quaternion)) {
+            throw new DeveloperError('quaternion is required');
+        }
+                if (!defined(result)) {
+            result = new HeadingPitchRoll();
+        }
+        var test = 2 * (quaternion.w * quaternion.y - quaternion.z * quaternion.x);
+        var denominatorRoll = 1 - 2 * (quaternion.x * quaternion.x + quaternion.y * quaternion.y);
+        var numeratorRoll = 2 * (quaternion.w * quaternion.x + quaternion.y * quaternion.z);
+        var denominatorHeading = 1 - 2 * (quaternion.y * quaternion.y + quaternion.z * quaternion.z);
+        var numeratorHeading = 2 * (quaternion.w * quaternion.z + quaternion.x * quaternion.y);
+        result.heading = -Math.atan2(numeratorHeading, denominatorHeading);
+        result.roll = Math.atan2(numeratorRoll, denominatorRoll);
+        result.pitch = -Math.asin(test);
+        return result;
+    };
+
+    /**
+     * Returns a new HeadingPitchRoll instance from angles given in degrees.
+     *
+     * @param {Number} heading the heading in degrees
+     * @param {Number} pitch the pitch in degrees
+     * @param {Number} roll the heading in degrees
+     * @param {HeadingPitchRoll} [result] The object in which to store the result. If not provided, a new instance is created and returned.
+     * @returns {HeadingPitchRoll} A new HeadingPitchRoll instance
+     */
+    HeadingPitchRoll.fromDegrees = function(heading, pitch, roll, result) {
+                if (!defined(heading)) {
+            throw new DeveloperError('heading is required');
+        }
+        if (!defined(pitch)) {
+            throw new DeveloperError('pitch is required');
+        }
+        if (!defined(roll)) {
+            throw new DeveloperError('roll is required');
+        }
+                if (!defined(result)) {
+            result = new HeadingPitchRoll();
+        }
+        result.heading = heading * CesiumMath.RADIANS_PER_DEGREE;
+        result.pitch = pitch * CesiumMath.RADIANS_PER_DEGREE;
+        result.roll = roll * CesiumMath.RADIANS_PER_DEGREE;
+        return result;
+    };
+
+    /**
+     * Duplicates a HeadingPitchRoll instance.
+     *
+     * @param {HeadingPitchRoll} headingPitchRoll The HeadingPitchRoll to duplicate.
+     * @param {HeadingPitchRoll} [result] The object onto which to store the result.
+     * @returns {HeadingPitchRoll} The modified result parameter or a new HeadingPitchRoll instance if one was not provided. (Returns undefined if headingPitchRoll is undefined)
+     */
+    HeadingPitchRoll.clone = function(headingPitchRoll, result) {
+        if (!defined(headingPitchRoll)) {
+            return undefined;
+        }
+        if (!defined(result)) {
+            return new HeadingPitchRoll(headingPitchRoll.heading, headingPitchRoll.pitch, headingPitchRoll.roll);
+        }
+        result.heading = headingPitchRoll.heading;
+        result.pitch = headingPitchRoll.pitch;
+        result.roll = headingPitchRoll.roll;
+        return result;
+    };
+
+    /**
+     * Compares the provided HeadingPitchRolls componentwise and returns
+     * <code>true</code> if they are equal, <code>false</code> otherwise.
+     *
+     * @param {HeadingPitchRoll} [left] The first HeadingPitchRoll.
+     * @param {HeadingPitchRoll} [right] The second HeadingPitchRoll.
+     * @returns {Boolean} <code>true</code> if left and right are equal, <code>false</code> otherwise.
+     */
+    HeadingPitchRoll.equals = function(left, right) {
+        return (left === right) ||
+            ((defined(left)) &&
+                (defined(right)) &&
+                (left.heading === right.heading) &&
+                (left.pitch === right.pitch) &&
+                (left.roll === right.roll));
+    };
+
+    /**
+     * Compares the provided HeadingPitchRolls componentwise and returns
+     * <code>true</code> if they pass an absolute or relative tolerance test,
+     * <code>false</code> otherwise.
+     *
+     * @param {HeadingPitchRoll} [left] The first HeadingPitchRoll.
+     * @param {HeadingPitchRoll} [right] The second HeadingPitchRoll.
+     * @param {Number} relativeEpsilon The relative epsilon tolerance to use for equality testing.
+     * @param {Number} [absoluteEpsilon=relativeEpsilon] The absolute epsilon tolerance to use for equality testing.
+     * @returns {Boolean} <code>true</code> if left and right are within the provided epsilon, <code>false</code> otherwise.
+     */
+    HeadingPitchRoll.equalsEpsilon = function(left, right, relativeEpsilon, absoluteEpsilon) {
+        return (left === right) ||
+            (defined(left) &&
+                defined(right) &&
+                CesiumMath.equalsEpsilon(left.heading, right.heading, relativeEpsilon, absoluteEpsilon) &&
+                CesiumMath.equalsEpsilon(left.pitch, right.pitch, relativeEpsilon, absoluteEpsilon) &&
+                CesiumMath.equalsEpsilon(left.roll, right.roll, relativeEpsilon, absoluteEpsilon));
+    };
+
+    /**
+     * Duplicates this HeadingPitchRoll instance.
+     *
+     * @param {HeadingPitchRoll} [result] The object onto which to store the result.
+     * @returns {HeadingPitchRoll} The modified result parameter or a new HeadingPitchRoll instance if one was not provided.
+     */
+    HeadingPitchRoll.prototype.clone = function(result) {
+        return HeadingPitchRoll.clone(this, result);
+    };
+
+    /**
+     * Compares this HeadingPitchRoll against the provided HeadingPitchRoll componentwise and returns
+     * <code>true</code> if they are equal, <code>false</code> otherwise.
+     *
+     * @param {HeadingPitchRoll} [right] The right hand side HeadingPitchRoll.
+     * @returns {Boolean} <code>true</code> if they are equal, <code>false</code> otherwise.
+     */
+    HeadingPitchRoll.prototype.equals = function(right) {
+        return HeadingPitchRoll.equals(this, right);
+    };
+
+    /**
+     * Compares this HeadingPitchRoll against the provided HeadingPitchRoll componentwise and returns
+     * <code>true</code> if they pass an absolute or relative tolerance test,
+     * <code>false</code> otherwise.
+     *
+     * @param {HeadingPitchRoll} [right] The right hand side HeadingPitchRoll.
+     * @param {Number} relativeEpsilon The relative epsilon tolerance to use for equality testing.
+     * @param {Number} [absoluteEpsilon=relativeEpsilon] The absolute epsilon tolerance to use for equality testing.
+     * @returns {Boolean} <code>true</code> if they are within the provided epsilon, <code>false</code> otherwise.
+     */
+    HeadingPitchRoll.prototype.equalsEpsilon = function(right, relativeEpsilon, absoluteEpsilon) {
+        return HeadingPitchRoll.equalsEpsilon(this, right, relativeEpsilon, absoluteEpsilon);
+    };
+
+    /**
+     * Creates a string representing this HeadingPitchRoll in the format '(heading, pitch, roll)' in radians.
+     *
+     * @returns {String} A string representing the provided HeadingPitchRoll in the format '(heading, pitch, roll)'.
+     */
+    HeadingPitchRoll.prototype.toString = function() {
+        return '(' + this.heading + ', ' + this.pitch + ', ' + this.roll + ')';
+    };
+
+    return HeadingPitchRoll;
+});
+
+/*global define*/
 define('Core/Matrix3',[
         './Cartesian3',
         './defaultValue',
@@ -4822,6 +5023,7 @@ define('Core/Matrix3',[
         './defineProperties',
         './DeveloperError',
         './freezeObject',
+        './HeadingPitchRoll',
         './Math'
     ], function(
         Cartesian3,
@@ -4830,6 +5032,7 @@ define('Core/Matrix3',[
         defineProperties,
         DeveloperError,
         freezeObject,
+        HeadingPitchRoll,
         CesiumMath) {
     'use strict';
 
@@ -5097,6 +5300,53 @@ define('Core/Matrix3',[
             return new Matrix3(m00, m01, m02,
                                m10, m11, m12,
                                m20, m21, m22);
+        }
+        result[0] = m00;
+        result[1] = m10;
+        result[2] = m20;
+        result[3] = m01;
+        result[4] = m11;
+        result[5] = m21;
+        result[6] = m02;
+        result[7] = m12;
+        result[8] = m22;
+        return result;
+    };
+
+    /**
+     * Computes a 3x3 rotation matrix from the provided headingPitchRoll. (see http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles )
+     *
+     * @param {HeadingPitchRoll} headingPitchRoll the headingPitchRoll to use.
+     * @param {Matrix3} [result] The object in which the result will be stored, if undefined a new instance will be created.
+     * @returns {Matrix3} The 3x3 rotation matrix from this headingPitchRoll.
+     */
+    Matrix3.fromHeadingPitchRoll = function(headingPitchRoll, result) {
+                if (!defined(headingPitchRoll)) {
+            throw new DeveloperError('headingPitchRoll is required');
+        }
+                var cosTheta = Math.cos(-headingPitchRoll.pitch);
+        var cosPsi = Math.cos(-headingPitchRoll.heading);
+        var cosPhi = Math.cos(headingPitchRoll.roll);
+        var sinTheta = Math.sin(-headingPitchRoll.pitch);
+        var sinPsi = Math.sin(-headingPitchRoll.heading);
+        var sinPhi = Math.sin(headingPitchRoll.roll);
+
+        var m00 = cosTheta * cosPsi;
+        var m01 = -cosPhi * sinPsi + sinPhi * sinTheta * cosPsi;
+        var m02 = sinPhi * sinPsi + cosPhi * sinTheta * cosPsi;
+
+        var m10 = cosTheta * sinPsi;
+        var m11 = cosPhi * cosPsi + sinPhi * sinTheta * sinPsi;
+        var m12 = -sinTheta * cosPhi + cosPhi * sinTheta * sinPsi;
+
+        var m20 = -sinTheta;
+        var m21 = sinPhi * cosTheta;
+        var m22 = cosPhi * cosTheta;
+
+        if (!defined(result)) {
+            return new Matrix3(m00, m01, m02,
+                m10, m11, m12,
+                m20, m21, m22);
         }
         result[0] = m00;
         result[1] = m10;
@@ -6746,6 +6996,11 @@ define('Core/Cartesian4',[
         result.y = cartesian.y / magnitude;
         result.z = cartesian.z / magnitude;
         result.w = cartesian.w / magnitude;
+
+                if (isNaN(result.x) || isNaN(result.y) || isNaN(result.z) || isNaN(result.w)) {
+            throw new DeveloperError('normalized result is not a number');
+        }
+        
         return result;
     };
 
@@ -10329,7 +10584,7 @@ define('Core/Rectangle',[
     };
 
     /**
-     * Creates an rectangle given the boundary longitude and latitude in degrees.
+     * Creates a rectangle given the boundary longitude and latitude in degrees.
      *
      * @param {Number} [west=0.0] The westernmost longitude in degrees in the range [-180.0, 180.0].
      * @param {Number} [south=0.0] The southernmost latitude in degrees in the range [-90.0, 90.0].
@@ -10469,7 +10724,7 @@ define('Core/Rectangle',[
     };
 
     /**
-     * Duplicates an Rectangle.
+     * Duplicates a Rectangle.
      *
      * @param {Rectangle} rectangle The rectangle to clone.
      * @param {Rectangle} [result] The object onto which to store the result, or undefined if a new instance should be created.
@@ -10552,7 +10807,7 @@ define('Core/Rectangle',[
     };
 
     /**
-     * Checks an Rectangle's properties and throws if they are not in valid ranges.
+     * Checks a Rectangle's properties and throws if they are not in valid ranges.
      *
      * @param {Rectangle} rectangle The rectangle to validate
      *
@@ -10604,7 +10859,7 @@ define('Core/Rectangle',[
             };
 
     /**
-     * Computes the southwest corner of an rectangle.
+     * Computes the southwest corner of a rectangle.
      *
      * @param {Rectangle} rectangle The rectangle for which to find the corner
      * @param {Cartographic} [result] The object onto which to store the result.
@@ -10625,7 +10880,7 @@ define('Core/Rectangle',[
     };
 
     /**
-     * Computes the northwest corner of an rectangle.
+     * Computes the northwest corner of a rectangle.
      *
      * @param {Rectangle} rectangle The rectangle for which to find the corner
      * @param {Cartographic} [result] The object onto which to store the result.
@@ -10646,7 +10901,7 @@ define('Core/Rectangle',[
     };
 
     /**
-     * Computes the northeast corner of an rectangle.
+     * Computes the northeast corner of a rectangle.
      *
      * @param {Rectangle} rectangle The rectangle for which to find the corner
      * @param {Cartographic} [result] The object onto which to store the result.
@@ -10667,7 +10922,7 @@ define('Core/Rectangle',[
     };
 
     /**
-     * Computes the southeast corner of an rectangle.
+     * Computes the southeast corner of a rectangle.
      *
      * @param {Rectangle} rectangle The rectangle for which to find the corner
      * @param {Cartographic} [result] The object onto which to store the result.
@@ -10688,7 +10943,7 @@ define('Core/Rectangle',[
     };
 
     /**
-     * Computes the center of an rectangle.
+     * Computes the center of a rectangle.
      *
      * @param {Rectangle} rectangle The rectangle for which to find the center
      * @param {Cartographic} [result] The object onto which to store the result.
@@ -10720,7 +10975,11 @@ define('Core/Rectangle',[
     };
 
     /**
-     * Computes the intersection of two rectangles
+     * Computes the intersection of two rectangles.  This function assumes that the rectangle's coordinates are
+     * latitude and longitude in radians and produces a correct intersection, taking into account the fact that
+     * the same angle can be represented with multiple values as well as the wrapping of longitude at the
+     * anti-meridian.  For a simple intersection that ignores these factors and can be used with projected
+     * coordinates, see {@link Rectangle.simpleIntersection}.
      *
      * @param {Rectangle} rectangle On rectangle to find an intersection
      * @param {Rectangle} otherRectangle Another rectangle to find an intersection
@@ -10770,6 +11029,45 @@ define('Core/Rectangle',[
         if (!defined(result)) {
             return new Rectangle(west, south, east, north);
         }
+        result.west = west;
+        result.south = south;
+        result.east = east;
+        result.north = north;
+        return result;
+    };
+
+    /**
+     * Computes a simple intersection of two rectangles.  Unlike {@link Rectangle.intersection}, this function
+     * does not attempt to put the angular coordinates into a consistent range or to account for crossing the
+     * anti-meridian.  As such, it can be used for rectangles where the coordinates are not simply latitude
+     * and longitude (i.e. projected coordinates).
+     *
+     * @param {Rectangle} rectangle On rectangle to find an intersection
+     * @param {Rectangle} otherRectangle Another rectangle to find an intersection
+     * @param {Rectangle} [result] The object onto which to store the result.
+     * @returns {Rectangle|undefined} The modified result parameter, a new Rectangle instance if none was provided or undefined if there is no intersection.
+     */
+    Rectangle.simpleIntersection = function(rectangle, otherRectangle, result) {
+                if (!defined(rectangle)) {
+            throw new DeveloperError('rectangle is required');
+        }
+        if (!defined(otherRectangle)) {
+            throw new DeveloperError('otherRectangle is required.');
+        }
+        
+        var west = Math.max(rectangle.west, otherRectangle.west);
+        var south = Math.max(rectangle.south, otherRectangle.south);
+        var east = Math.min(rectangle.east, otherRectangle.east);
+        var north = Math.min(rectangle.north, otherRectangle.north);
+
+        if (south >= north || west >= east) {
+            return undefined;
+        }
+
+        if (!defined(result)) {
+            return new Rectangle(west, south, east, north);
+        }
+
         result.west = west;
         result.south = south;
         result.east = east;
@@ -10868,7 +11166,7 @@ define('Core/Rectangle',[
 
     var subsampleLlaScratch = new Cartographic();
     /**
-     * Samples an rectangle so that it includes a list of Cartesian points suitable for passing to
+     * Samples a rectangle so that it includes a list of Cartesian points suitable for passing to
      * {@link BoundingSphere#fromPoints}.  Sampling is necessary to account
      * for rectangles that cover the poles or cross the equator.
      *
@@ -11192,7 +11490,7 @@ define('Core/BoundingSphere',[
     };
 
     /**
-     * Computes a bounding sphere from an rectangle projected in 2D.  The bounding sphere accounts for the
+     * Computes a bounding sphere from a rectangle projected in 2D.  The bounding sphere accounts for the
      * object's minimum and maximum heights over the rectangle.
      *
      * @param {Rectangle} rectangle The rectangle around which to create a bounding sphere.
@@ -11238,7 +11536,7 @@ define('Core/BoundingSphere',[
     var fromRectangle3DScratch = [];
 
     /**
-     * Computes a bounding sphere from an rectangle in 3D. The bounding sphere is created using a subsample of points
+     * Computes a bounding sphere from a rectangle in 3D. The bounding sphere is created using a subsample of points
      * on the ellipsoid and contained in the rectangle. It may not be accurate for all rectangles on all types of ellipsoids.
      *
      * @param {Rectangle} rectangle The valid rectangle used to create a bounding sphere.
@@ -13154,6 +13452,7 @@ define('Core/QuadraticRealPolynomial',[
 
     return QuadraticRealPolynomial;
 });
+
 /*global define*/
 define('Core/CubicRealPolynomial',[
         './DeveloperError',
@@ -13390,6 +13689,7 @@ define('Core/CubicRealPolynomial',[
 
     return CubicRealPolynomial;
 });
+
 /*global define*/
 define('Core/QuarticRealPolynomial',[
         './CubicRealPolynomial',
@@ -13714,6 +14014,7 @@ define('Core/QuarticRealPolynomial',[
 
     return QuarticRealPolynomial;
 });
+
 /*global define*/
 define('Core/Ray',[
         './Cartesian3',
@@ -14003,6 +14304,15 @@ define('Core/IntersectionTests',[
         }
         if (!defined(v1)) {
             throw new DeveloperError('v1 is required.');
+        }
+        if (!defined(p0)) {
+            throw new DeveloperError('p0 is required.');
+        }
+        if (!defined(p1)) {
+            throw new DeveloperError('p1 is required.');
+        }
+        if (!defined(p2)) {
+            throw new DeveloperError('p2 is required.');
         }
         
         var ray = scratchLineSegmentTriangleRay;
@@ -14381,9 +14691,11 @@ define('Core/IntersectionTests',[
         var position = ray.origin;
         var direction = ray.direction;
 
-        var normal = ellipsoid.geodeticSurfaceNormal(position, firstAxisScratch);
-        if (Cartesian3.dot(direction, normal) >= 0.0) { // The location provided is the closest point in altitude
-            return position;
+        if (!Cartesian3.equals(position, Cartesian3.ZERO)) {
+            var normal = ellipsoid.geodeticSurfaceNormal(position, firstAxisScratch);
+            if (Cartesian3.dot(direction, normal) >= 0.0) { // The location provided is the closest point in altitude
+                return position;
+            }
         }
 
         var intersects = defined(this.rayEllipsoid(ray, ellipsoid));
@@ -15420,6 +15732,119 @@ define('ThirdParty/when',[],function () {
 	}
 	// Boilerplate for AMD, Node, and browser global
 );
+
+/*global define*/
+define('Core/oneTimeWarning',[
+        './defaultValue',
+        './defined',
+        './DeveloperError'
+    ], function(
+        defaultValue,
+        defined,
+        DeveloperError) {
+    "use strict";
+
+    var warnings = {};
+
+    /**
+     * Logs a one time message to the console.  Use this function instead of
+     * <code>console.log</code> directly since this does not log duplicate messages
+     * unless it is called from multiple workers.
+     *
+     * @exports oneTimeWarning
+     *
+     * @param {String} identifier The unique identifier for this warning.
+     * @param {String} [message=identifier] The message to log to the console.
+     *
+     * @example
+     * for(var i=0;i<foo.length;++i) {
+     *    if (!defined(foo[i].bar)) {
+     *       // Something that can be recovered from but may happen a lot
+     *       oneTimeWarning('foo.bar undefined', 'foo.bar is undefined. Setting to 0.');
+     *       foo[i].bar = 0;
+     *       // ...
+     *    }
+     * }
+     *
+     * @private
+     */
+    function oneTimeWarning(identifier, message) {
+                if (!defined(identifier)) {
+            throw new DeveloperError('identifier is required.');
+        }
+        
+        if (!defined(warnings[identifier])) {
+            warnings[identifier] = true;
+            console.log(defaultValue(message, identifier));
+        }
+    }
+
+    oneTimeWarning.geometryOutlines = 'Entity geometry outlines are unsupported on terrain. Outlines will be disabled. To enable outlines, disable geometry terrain clamping by explicitly setting height to 0.';
+
+    return oneTimeWarning;
+});
+
+/*global define*/
+define('Core/deprecationWarning',[
+        './defined',
+        './DeveloperError',
+        './oneTimeWarning'
+    ], function(
+        defined,
+        DeveloperError,
+        oneTimeWarning) {
+    'use strict';
+    
+    /**
+     * Logs a deprecation message to the console.  Use this function instead of
+     * <code>console.log</code> directly since this does not log duplicate messages
+     * unless it is called from multiple workers.
+     *
+     * @exports deprecationWarning
+     *
+     * @param {String} identifier The unique identifier for this deprecated API.
+     * @param {String} message The message to log to the console.
+     *
+     * @example
+     * // Deprecated function or class
+     * function Foo() {
+     *    deprecationWarning('Foo', 'Foo was deprecated in Cesium 1.01.  It will be removed in 1.03.  Use newFoo instead.');
+     *    // ...
+     * }
+     *
+     * // Deprecated function
+     * Bar.prototype.func = function() {
+     *    deprecationWarning('Bar.func', 'Bar.func() was deprecated in Cesium 1.01.  It will be removed in 1.03.  Use Bar.newFunc() instead.');
+     *    // ...
+     * };
+     *
+     * // Deprecated property
+     * defineProperties(Bar.prototype, {
+     *     prop : {
+     *         get : function() {
+     *             deprecationWarning('Bar.prop', 'Bar.prop was deprecated in Cesium 1.01.  It will be removed in 1.03.  Use Bar.newProp instead.');
+     *             // ...
+     *         },
+     *         set : function(value) {
+     *             deprecationWarning('Bar.prop', 'Bar.prop was deprecated in Cesium 1.01.  It will be removed in 1.03.  Use Bar.newProp instead.');
+     *             // ...
+     *         }
+     *     }
+     * });
+     *
+     * @private
+     */
+    function deprecationWarning(identifier, message) {
+                if (!defined(identifier) || !defined(message)) {
+            throw new DeveloperError('identifier and message are required.');
+        }
+        
+        oneTimeWarning(identifier, message);
+    }
+
+    return deprecationWarning;
+});
+
 /*global define*/
 define('Core/binarySearch',[
         './defined',
@@ -16121,6 +16546,7 @@ define('Core/TimeStandard',[
 
     return freezeObject(TimeStandard);
 });
+
 /*global define*/
 define('Core/JulianDate',[
         '../ThirdParty/sprintf',
@@ -18001,6 +18427,669 @@ define('Core/loadJson',[
 });
 
 /*global define*/
+define('Core/Queue',[
+        '../Core/defineProperties'
+    ], function(
+        defineProperties) {
+    'use strict';
+
+    /**
+     * A queue that can enqueue items at the end, and dequeue items from the front.
+     *
+     * @alias Queue
+     * @constructor
+     */
+    function Queue() {
+        this._array = [];
+        this._offset = 0;
+        this._length = 0;
+    }
+
+    defineProperties(Queue.prototype, {
+        /**
+         * The length of the queue.
+         *
+         * @memberof Queue.prototype
+         *
+         * @type {Number}
+         * @readonly
+         */
+        length : {
+            get : function() {
+                return this._length;
+            }
+        }
+    });
+
+    /**
+     * Enqueues the specified item.
+     *
+     * @param {Object} item The item to enqueue.
+     */
+    Queue.prototype.enqueue = function(item) {
+        this._array.push(item);
+        this._length++;
+    };
+
+    /**
+     * Dequeues an item.  Returns undefined if the queue is empty.
+     *
+     * @returns {Object} The the dequeued item.
+     */
+    Queue.prototype.dequeue = function() {
+        if (this._length === 0) {
+            return undefined;
+        }
+
+        var array = this._array;
+        var offset = this._offset;
+        var item = array[offset];
+        array[offset] = undefined;
+
+        offset++;
+        if ((offset > 10) && (offset * 2 > array.length)) {
+            //compact array
+            this._array = array.slice(offset);
+            offset = 0;
+        }
+
+        this._offset = offset;
+        this._length--;
+
+        return item;
+    };
+
+    /**
+     * Returns the item at the front of the queue.  Returns undefined if the queue is empty.
+     *
+     * @returns {Object} The item at the front of the queue.
+     */
+    Queue.prototype.peek = function() {
+        if (this._length === 0) {
+            return undefined;
+        }
+
+        return this._array[this._offset];
+    };
+
+    /**
+     * Check whether this queue contains the specified item.
+     *
+     * @param {Object} item The item to search for.
+     */
+    Queue.prototype.contains = function(item) {
+        return this._array.indexOf(item) !== -1;
+    };
+
+    /**
+     * Remove all items from the queue.
+     */
+    Queue.prototype.clear = function() {
+        this._array.length = this._offset = this._length = 0;
+    };
+
+    /**
+     * Sort the items in the queue in-place.
+     *
+     * @param {Queue~Comparator} compareFunction A function that defines the sort order.
+     */
+    Queue.prototype.sort = function(compareFunction) {
+        if (this._offset > 0) {
+            //compact array
+            this._array = this._array.slice(this._offset);
+            this._offset = 0;
+        }
+
+        this._array.sort(compareFunction);
+    };
+
+    /**
+     * A function used to compare two items while sorting a queue.
+     * @callback Queue~Comparator
+     *
+     * @param {Object} a An item in the array.
+     * @param {Object} b An item in the array.
+     * @returns {Number} Returns a negative value if <code>a</code> is less than <code>b</code>,
+     *          a positive value if <code>a</code> is greater than <code>b</code>, or
+     *          0 if <code>a</code> is equal to <code>b</code>.
+     *
+     * @example
+     * function compareNumbers(a, b) {
+     *     return a - b;
+     * }
+     */
+
+    return Queue;
+});
+
+/*global define*/
+define('Core/Request',[
+        './defaultValue'
+    ], function(
+        defaultValue) {
+    'use strict';
+
+    /**
+     * Stores information for making a request using {@link RequestScheduler}.
+     *
+     * @exports Request
+     *
+     * @private
+     */
+    function Request(options) {
+        options = defaultValue(options, defaultValue.EMPTY_OBJECT);
+
+        /**
+         * The URL to request.
+         */
+        this.url = options.url;
+
+        /**
+         * Extra parameters to send with the request. For example, HTTP headers or jsonp parameters.
+         */
+        this.parameters = options.parameters;
+
+        /**
+         * The actual function that makes the request.
+         */
+        this.requestFunction = options.requestFunction;
+
+        /**
+         * Type of request. Used for more fine-grained priority sorting.
+         */
+        this.type = options.type;
+
+        /**
+         * Specifies that the request should be deferred until an open slot is available.
+         * A deferred request will always return a promise, which is suitable for data
+         * sources and utility functions.
+         */
+        this.defer = defaultValue(options.defer, false);
+
+        /**
+         * The distance from the camera, used to prioritize requests.
+         */
+        this.distance = defaultValue(options.distance, 0.0);
+
+        // Helper members for RequestScheduler
+
+        /**
+         * A promise for when a deferred request can start.
+         *
+         * @private
+         */
+        this.startPromise = undefined;
+
+        /**
+         * Reference to a {@link RequestScheduler~RequestServer}.
+         *
+         * @private
+         */
+        this.server = options.server;
+    }
+
+    return Request;
+});
+
+/*global define*/
+define('Core/RequestType',[
+        '../Core/freezeObject'
+    ], function(
+        freezeObject) {
+    'use strict';
+
+    /**
+     * @private
+     */
+    var RequestType = {
+        TERRAIN : 0,
+        IMAGERY : 1,
+        TILES3D : 2,
+        OTHER : 3
+    };
+
+    return freezeObject(RequestType);
+});
+
+/*global define*/
+define('Core/RequestScheduler',[
+        '../ThirdParty/Uri',
+        '../ThirdParty/when',
+        './defaultValue',
+        './defined',
+        './defineProperties',
+        './DeveloperError',
+        './Queue',
+        './Request',
+        './RequestType'
+    ], function(
+        Uri,
+        when,
+        defaultValue,
+        defined,
+        defineProperties,
+        DeveloperError,
+        Queue,
+        Request,
+        RequestType) {
+    'use strict';
+
+    function RequestBudget(request) {
+        /**
+         * Total requests allowed this frame.
+         */
+        this.total = 0;
+
+        /**
+         * Total requests used this frame.
+         */
+        this.used = 0;
+
+        /**
+         * Server of the request.
+         */
+        this.server = request.server;
+
+        /**
+         * Type of request. Used for more fine-grained priority sorting.
+         */
+        this.type = request.type;
+    }
+
+    /**
+     * Stores the number of active requests at a particular server. Areas that commonly makes requests may store
+     * a reference to this object in order to quickly determine whether a request can be issued (e.g. Cesium3DTile).
+     */
+    function RequestServer(serverName) {
+        /**
+         * Number of active requests at this server.
+         */
+        this.activeRequests = 0;
+
+        /**
+         * The name of the server.
+         */
+        this.serverName = serverName;
+    }
+
+    RequestServer.prototype.hasAvailableRequests = function() {
+        return RequestScheduler.hasAvailableRequests() && (this.activeRequests < RequestScheduler.maximumRequestsPerServer);
+    };
+
+    RequestServer.prototype.getNumberOfAvailableRequests = function() {
+        return RequestScheduler.maximumRequestsPerServer - this.activeRequests;
+    };
+
+    var activeRequestsByServer = {};
+    var activeRequests = 0;
+    var budgets = [];
+    var leftoverRequests = [];
+    var deferredRequests = new Queue();
+
+    var stats = {
+        numberOfRequestsThisFrame : 0
+    };
+
+    /**
+     * Because browsers throttle the number of parallel requests allowed to each server
+     * and across all servers, this class tracks the number of active requests in progress
+     * and prioritizes incoming requests.
+     *
+     * @exports RequestScheduler
+     *
+     * @see {@link http://wiki.commonjs.org/wiki/Promises/A|CommonJS Promises/A}
+     *
+     * @private
+     */
+    function RequestScheduler() {
+    }
+
+    function distanceSortFunction(a, b) {
+        return a.distance - b.distance;
+    }
+
+    function getBudget(request) {
+        var budget;
+        var length = budgets.length;
+        for (var i = 0; i < length; ++i) {
+            budget = budgets[i];
+            if ((budget.server === request.server) && (budget.type === request.type)) {
+                return budget;
+            }
+        }
+        // Not found, create a new budget
+        budget = new RequestBudget(request);
+        budgets.push(budget);
+        return budget;
+    }
+
+    RequestScheduler.resetBudgets = function() {
+        showStats();
+        clearStats();
+
+        if (!RequestScheduler.prioritize || !RequestScheduler.throttle) {
+            return;
+        }
+
+        // Reset budget totals
+        var length = budgets.length;
+        for (var i = 0; i < length; ++i) {
+            budgets[i].total = 0;
+            budgets[i].used = 0;
+        }
+
+        // Sort all leftover requests by distance
+        var requests = leftoverRequests;
+        requests.sort(distanceSortFunction);
+
+        // Allocate new budgets based on the distances of leftover requests
+        var availableRequests = RequestScheduler.getNumberOfAvailableRequests();
+        var requestsLength = requests.length;
+        for (var j = 0; (j < requestsLength) && (availableRequests > 0); ++j) {
+            var request = requests[j];
+            var budget = getBudget(request);
+            var budgetAvailable = budget.server.getNumberOfAvailableRequests();
+            if (budget.total < budgetAvailable) {
+                ++budget.total;
+                --availableRequests;
+            }
+        }
+
+        requests.length = 0;
+    };
+
+    var pageUri = typeof document !== 'undefined' ? new Uri(document.location.href) : new Uri();
+
+    /**
+     * Get the server name from a given url.
+     *
+     * @param {String} url The url.
+     * @returns {String} The server name.
+     */
+    RequestScheduler.getServerName = function(url) {
+                if (!defined(url)) {
+            throw new DeveloperError('url is required.');
+        }
+        
+        var uri = new Uri(url).resolve(pageUri);
+        uri.normalize();
+        var serverName = uri.authority;
+        if (!/:/.test(serverName)) {
+            serverName = serverName + ':' + (uri.scheme === 'https' ? '443' : '80');
+        }
+        return serverName;
+    };
+
+    /**
+     * Get the request server from a given url.
+     *
+     * @param {String} url The url.
+     * @returns {RequestServer} The request server.
+     */
+    RequestScheduler.getRequestServer = function(url) {
+        var serverName = RequestScheduler.getServerName(url);
+        var server = activeRequestsByServer[serverName];
+        if (!defined(server)) {
+            server = new RequestServer(serverName);
+            activeRequestsByServer[serverName] = server;
+        }
+        return server;
+    };
+
+    /**
+     * Get the number of available slots at the server pointed to by the url.
+     *
+     * @param {String} url The url to check.
+     * @returns {Number} The number of available slots.
+     */
+    RequestScheduler.getNumberOfAvailableRequestsByServer = function(url) {
+        return RequestScheduler.getRequestServer(url).getNumberOfAvailableRequests();
+    };
+
+    /**
+     * Get the number of available slots across all servers.
+     *
+     * @returns {Number} The number of available slots.
+     */
+    RequestScheduler.getNumberOfAvailableRequests = function() {
+        return RequestScheduler.maximumRequests - activeRequests;
+    };
+
+    /**
+     * Checks if there are available slots to make a request at the server pointed to by the url.
+     *
+     * @param {String} [url] The url to check.
+     * @returns {Boolean} Returns true if there are available slots, otherwise false.
+     */
+    RequestScheduler.hasAvailableRequestsByServer = function(url) {
+        return RequestScheduler.getRequestServer(url).hasAvailableRequests();
+    };
+
+    /**
+     * Checks if there are available slots to make a request, considering the total
+     * number of available slots across all servers.
+     *
+     * @param {String} [url] The url to check.
+     * @returns {Boolean} Returns true if there are available slots, otherwise false.
+     */
+    RequestScheduler.hasAvailableRequests = function() {
+        return activeRequests < RequestScheduler.maximumRequests;
+    };
+
+    function requestComplete(request) {
+        --activeRequests;
+        --request.server.activeRequests;
+
+        // Start a deferred request immediately now that a slot is open
+        var deferredRequest = deferredRequests.dequeue();
+        if (defined(deferredRequest)) {
+            deferredRequest.startPromise.resolve(deferredRequest);
+        }
+    }
+
+    function startRequest(request) {
+        ++activeRequests;
+        ++request.server.activeRequests;
+
+        return when(request.requestFunction(request.url, request.parameters), function(result) {
+            requestComplete(request);
+            return result;
+        }).otherwise(function(error) {
+            requestComplete(request);
+            return when.reject(error);
+        });
+    }
+
+    function deferRequest(request) {
+        deferredRequests.enqueue(request);
+        var deferred = when.defer();
+        request.startPromise = deferred;
+        return deferred.promise.then(startRequest);
+    }
+
+    function handleLeftoverRequest(request) {
+        if (RequestScheduler.prioritize) {
+            leftoverRequests.push(request);
+        }
+    }
+
+    /**
+     * A function that will make a request if there are available slots to the server.
+     * Returns undefined immediately if the request would exceed the maximum, allowing
+     * the caller to retry later instead of queueing indefinitely under the browser's control.
+     *
+     * @param {Request} request The request object.
+     *
+     * @returns {Promise.<Object>|undefined} Either undefined, meaning the request would exceed the maximum number of
+     *          parallel requests, or a Promise for the requested data.
+     *
+     * @example
+     * // throttle requests for an image
+     * var url = 'http://madeupserver.example.com/myImage.png';
+     * var requestFunction = function(url) {
+     *   // in this simple example, loadImage could be used directly as requestFunction.
+     *   return Cesium.loadImage(url);
+     * };
+     * var request = new Request({
+     *   url : url,
+     *   requestFunction : requestFunction
+     * });
+     * var promise = Cesium.RequestScheduler.schedule(request);
+     * if (!Cesium.defined(promise)) {
+     *   // too many active requests in progress, try again later.
+     * } else {
+     *   promise.then(function(image) {
+     *     // handle loaded image
+     *   });
+     * }
+     *
+     */
+    RequestScheduler.schedule = function(request) {
+                if (!defined(request)) {
+            throw new DeveloperError('request is required.');
+        }
+        if (!defined(request.url)) {
+            throw new DeveloperError('request.url is required.');
+        }
+        if (!defined(request.requestFunction)) {
+            throw new DeveloperError('request.requestFunction is required.');
+        }
+        
+        ++stats.numberOfRequestsThisFrame;
+
+        if (!RequestScheduler.throttle) {
+            return request.requestFunction(request.url, request.parameters);
+        }
+
+        if (!defined(request.server)) {
+            request.server = RequestScheduler.getRequestServer(request.url);
+        }
+
+        if (!request.server.hasAvailableRequests()) {
+            if (!request.defer) {
+                // No available slots to make the request, return undefined
+                handleLeftoverRequest(request);
+                return undefined;
+            } else {
+                // If no slots are available, the request is deferred until a slot opens up.
+                // Return a promise even if the request can't be completed immediately.
+                return deferRequest(request);
+            }
+        }
+
+        if (RequestScheduler.prioritize && defined(request.type) && !request.defer) {
+            var budget = getBudget(request);
+            if (budget.used >= budget.total) {
+                // Request does not fit in the budget, return undefined
+                handleLeftoverRequest(request);
+                return undefined;
+            }
+            ++budget.used;
+        }
+
+        return startRequest(request);
+    };
+
+    /**
+     * A function that will make a request when an open slot is available. Always returns
+     * a promise, which is suitable for data sources and utility functions.
+     *
+     * @param {String} url The URL to request.
+     * @param {RequestScheduler~RequestFunction} requestFunction The actual function that
+     *        makes the request.
+     * @param {Object} [parameters] Extra parameters to send with the request.
+     * @param {RequestType} [requestType] Type of request. Used for more fine-grained priority sorting.
+     *
+     * @returns {Promise.<Object>} A Promise for the requested data.
+     */
+    RequestScheduler.request = function(url, requestFunction, parameters, requestType) {
+        return RequestScheduler.schedule(new Request({
+            url : url,
+            parameters : parameters,
+            requestFunction : requestFunction,
+            defer : true,
+            type : defaultValue(requestType, RequestType.OTHER)
+        }));
+    };
+
+    function clearStats() {
+        stats.numberOfRequestsThisFrame = 0;
+    }
+
+    function showStats() {
+        if (!RequestScheduler.debugShowStatistics) {
+            return;
+        }
+
+        if (stats.numberOfRequestsThisFrame > 0) {
+            console.log('Number of requests attempted: ' + stats.numberOfRequestsThisFrame);
+        }
+
+        var numberOfActiveRequests = RequestScheduler.maximumRequests - RequestScheduler.getNumberOfAvailableRequests();
+        if (numberOfActiveRequests > 0) {
+            console.log('Number of active requests: ' + numberOfActiveRequests);
+        }
+    }
+
+    /**
+     * Clears the request scheduler before each spec.
+     *
+     * @private
+     */
+    RequestScheduler.clearForSpecs = function() {
+        activeRequestsByServer = {};
+        activeRequests = 0;
+        budgets = [];
+        leftoverRequests = [];
+        deferredRequests = new Queue();
+        stats = {
+            numberOfRequestsThisFrame : 0
+        };
+    };
+
+    /**
+     * Specifies the maximum number of requests that can be simultaneously open to a single server.  If this value is higher than
+     * the number of requests per server actually allowed by the web browser, Cesium's ability to prioritize requests will be adversely
+     * affected.
+     * @type {Number}
+     * @default 6
+     */
+    RequestScheduler.maximumRequestsPerServer = 6;
+
+    /**
+     * Specifies the maximum number of requests that can be simultaneously open for all servers.  If this value is higher than
+     * the number of requests actually allowed by the web browser, Cesium's ability to prioritize requests will be adversely
+     * affected.
+     * @type {Number}
+     * @default 10
+     */
+    RequestScheduler.maximumRequests = 10;
+
+    /**
+     * Specifies if the request scheduler should prioritize incoming requests
+     * @type {Boolean}
+     * @default true
+     */
+    RequestScheduler.prioritize = true;
+
+    /**
+     * Specifies if the request scheduler should throttle incoming requests, or let the browser queue requests under its control.
+     * @type {Boolean}
+     * @default true
+     */
+    RequestScheduler.throttle = true;
+
+    /**
+     * When true, log statistics to the console every frame
+     * @type {Boolean}
+     * @default false
+     */
+    RequestScheduler.debugShowStatistics = false;
+
+    return RequestScheduler;
+});
+
+/*global define*/
 define('Core/EarthOrientationParameters',[
         '../ThirdParty/when',
         './binarySearch',
@@ -18011,6 +19100,7 @@ define('Core/EarthOrientationParameters',[
         './JulianDate',
         './LeapSecond',
         './loadJson',
+        './RequestScheduler',
         './RuntimeError',
         './TimeConstants',
         './TimeStandard'
@@ -18024,6 +19114,7 @@ define('Core/EarthOrientationParameters',[
         JulianDate,
         LeapSecond,
         loadJson,
+        RequestScheduler,
         RuntimeError,
         TimeConstants,
         TimeStandard) {
@@ -18098,7 +19189,7 @@ define('Core/EarthOrientationParameters',[
         } else if (defined(options.url)) {
             // Download EOP data.
             var that = this;
-            this._downloadPromise = when(loadJson(options.url), function(eopData) {
+            this._downloadPromise = when(RequestScheduler.request(options.url, loadJson), function(eopData) {
                 onDataReady(that, eopData);
             }, function() {
                 that._dataError = 'An error occurred while retrieving the EOP data from the URL ' + options.url + '.';
@@ -18442,6 +19533,8 @@ define('Core/joinUrls',[
      * @param {String|Uri} first The base URL.
      * @param {String|Uri} second The URL path to join to the base URL.  If this URL is absolute, it is returned unmodified.
      * @param {Boolean} [appendSlash=true] The boolean determining whether there should be a forward slash between first and second.
+     *
+     * @return {String} The combined url
      * @private
      */
     function joinUrls(first, second, appendSlash) {
@@ -18477,6 +19570,9 @@ define('Core/joinUrls',[
         var baseUri = first;
         if (second.isAbsolute()) {
             baseUri = second;
+            if (second.scheme === 'data') {
+                return second.toString();
+            }
         }
 
         var url = '';
@@ -18683,6 +19779,7 @@ define('Core/Iau2006XysData',[
         './Iau2006XysSample',
         './JulianDate',
         './loadJson',
+        './RequestScheduler',
         './TimeStandard'
     ], function(
         when,
@@ -18692,6 +19789,7 @@ define('Core/Iau2006XysData',[
         Iau2006XysSample,
         JulianDate,
         loadJson,
+        RequestScheduler,
         TimeStandard) {
     'use strict';
 
@@ -18920,7 +20018,7 @@ define('Core/Iau2006XysData',[
             chunkUrl = buildModuleUrl('Assets/IAU2006_XYS/IAU2006_XYS_' + chunkIndex + '.json');
         }
 
-        when(loadJson(chunkUrl), function(chunk) {
+        when(RequestScheduler.request(chunkUrl, loadJson), function(chunk) {
             xysData._chunkDownloadsInProgress[chunkIndex] = false;
 
             var samples = xysData._samples;
@@ -20545,10 +21643,12 @@ define('Core/Transforms',[
         './Cartographic',
         './defaultValue',
         './defined',
+        './deprecationWarning',
         './DeveloperError',
         './EarthOrientationParameters',
         './EarthOrientationParametersSample',
         './Ellipsoid',
+        './HeadingPitchRoll',
         './Iau2006XysData',
         './Iau2006XysSample',
         './JulianDate',
@@ -20565,10 +21665,12 @@ define('Core/Transforms',[
         Cartographic,
         defaultValue,
         defined,
+        deprecationWarning,
         DeveloperError,
         EarthOrientationParameters,
         EarthOrientationParametersSample,
         Ellipsoid,
+        HeadingPitchRoll,
         Iau2006XysData,
         Iau2006XysSample,
         JulianDate,
@@ -20879,6 +21981,101 @@ define('Core/Transforms',[
         return result;
     };
 
+    /**
+    * Computes a 4x4 transformation matrix from a reference frame with an north-west-up axes
+    * centered at the provided origin to the provided ellipsoid's fixed reference frame.
+    * The local axes are defined as:
+    * <ul>
+    * <li>The <code>x</code> axis points in the local north direction.</li>
+    * <li>The <code>y</code> axis points in the local west direction.</li>
+    * <li>The <code>z</code> axis points in the direction of the ellipsoid surface normal which passes through the position.</li>
+    * </ul>
+    *
+    * @param {Cartesian3} origin The center point of the local reference frame.
+    * @param {Ellipsoid} [ellipsoid=Ellipsoid.WGS84] The ellipsoid whose fixed frame is used in the transformation.
+    * @param {Matrix4} [result] The object onto which to store the result.
+    * @returns {Matrix4} The modified result parameter or a new Matrix4 instance if none was provided.
+    *
+    * @example
+    * // Get the transform from local north-West-Up at cartographic (0.0, 0.0) to Earth's fixed frame.
+    * var center = Cesium.Cartesian3.fromDegrees(0.0, 0.0);
+    * var transform = Cesium.Transforms.northWestUpToFixedFrame(center);
+    */
+   Transforms.northWestUpToFixedFrame = function(origin, ellipsoid, result) {
+              if (!defined(origin)) {
+           throw new DeveloperError('origin is required.');
+       }
+       
+       // If x and y are zero, assume origin is at a pole, which is a special case.
+       if (CesiumMath.equalsEpsilon(origin.x, 0.0, CesiumMath.EPSILON14) &&
+           CesiumMath.equalsEpsilon(origin.y, 0.0, CesiumMath.EPSILON14)) {
+           var sign = CesiumMath.sign(origin.z);
+           if (!defined(result)) {
+               return new Matrix4(
+                      -sign, 0.0,  0.0, origin.x,
+                       0.0,  -1.0,  0.0, origin.y,
+                       0.0,  0.0, sign, origin.z,
+                       0.0,  0.0,  0.0, 1.0);
+           }
+           result[0] = -sign;
+           result[1] = 0.0;
+           result[2] = 0.0;
+           result[3] = 0.0;
+           result[4] = 0.0;
+           result[5] = -1.0;
+           result[6] = 0.0;
+           result[7] = 0.0;
+           result[8] = 0.0;
+           result[9] = 0.0;
+           result[10] = sign;
+           result[11] = 0.0;
+           result[12] = origin.x;
+           result[13] = origin.y;
+           result[14] = origin.z;
+           result[15] = 1.0;
+           return result;
+       }
+
+       var normal = eastNorthUpToFixedFrameNormal;//Up
+       var tangent  = eastNorthUpToFixedFrameTangent;//East
+       var bitangent = eastNorthUpToFixedFrameBitangent;//North
+
+       ellipsoid = defaultValue(ellipsoid, Ellipsoid.WGS84);
+       ellipsoid.geodeticSurfaceNormal(origin, normal);
+
+       tangent.x = -origin.y;
+       tangent.y = origin.x;
+       tangent.z = 0.0;
+       Cartesian3.normalize(tangent, tangent);
+
+       Cartesian3.cross(normal, tangent, bitangent);
+
+       if (!defined(result)) {
+           return new Matrix4(
+                   bitangent.x, -tangent.x, normal.x, origin.x,
+                   bitangent.y, -tangent.y, normal.y, origin.y,
+                   bitangent.z, -tangent.z, normal.z, origin.z,
+                   0.0,       0.0,         0.0,      1.0);
+       }
+       result[0] = bitangent.x;
+       result[1] = bitangent.y;
+       result[2] = bitangent.z;
+       result[3] = 0.0;
+       result[4] = -tangent.x;
+       result[5] = -tangent.y;
+       result[6] = -tangent.z;
+       result[7] = 0.0;
+       result[8] = normal.x;
+       result[9] = normal.y;
+       result[10] = normal.z;
+       result[11] = 0.0;
+       result[12] = origin.x;
+       result[13] = origin.y;
+       result[14] = origin.z;
+       result[15] = 1.0;
+       return result;
+};
+
     var scratchHPRQuaternion = new Quaternion();
     var scratchScale = new Cartesian3(1.0, 1.0, 1.0);
     var scratchHPRMatrix4 = new Matrix4();
@@ -20890,9 +22087,7 @@ define('Core/Transforms',[
      * are above the plane. Negative pitch angles are below the plane. Roll is the first rotation applied about the local east axis.
      *
      * @param {Cartesian3} origin The center point of the local reference frame.
-     * @param {Number} heading The heading angle in radians.
-     * @param {Number} pitch The pitch angle in radians.
-     * @param {Number} roll The roll angle in radians.
+     * @param {HeadingPitchRoll} headingPitchRoll The heading, pitch, and roll.
      * @param {Ellipsoid} [ellipsoid=Ellipsoid.WGS84] The ellipsoid whose fixed frame is used in the transformation.
      * @param {Matrix4} [result] The object onto which to store the result.
      * @returns {Matrix4} The modified result parameter or a new Matrix4 instance if none was provided.
@@ -20903,9 +22098,22 @@ define('Core/Transforms',[
      * var heading = -Cesium.Math.PI_OVER_TWO;
      * var pitch = Cesium.Math.PI_OVER_FOUR;
      * var roll = 0.0;
-     * var transform = Cesium.Transforms.headingPitchRollToFixedFrame(center, heading, pitch, roll);
+     * var hpr = new Cesium.HeadingPitchRoll(heading, pitch, roll);
+     * var transform = Cesium.Transforms.headingPitchRollToFixedFrame(center, hpr);
      */
-    Transforms.headingPitchRollToFixedFrame = function(origin, heading, pitch, roll, ellipsoid, result) {
+    Transforms.headingPitchRollToFixedFrame = function(origin, headingPitchRoll, pitch, roll, ellipsoid, result) {
+        var heading;
+        if (typeof headingPitchRoll === 'object') {
+            // Shift arguments using assignments to encourage JIT optimization.
+            ellipsoid = pitch;
+            result = roll;
+            heading = headingPitchRoll.heading;
+            pitch = headingPitchRoll.pitch;
+            roll = headingPitchRoll.roll;
+        } else {
+            deprecationWarning('headingPitchRollToFixedFrame', 'headingPitchRollToFixedFrame with separate heading, pitch, and roll arguments was deprecated in 1.27.  It will be removed in 1.30.  Use a HeadingPitchRoll object.');
+            heading = headingPitchRoll;
+        }
         // checks for required parameters happen in the called functions
         var hprQuaternion = Quaternion.fromHeadingPitchRoll(heading, pitch, roll, scratchHPRQuaternion);
         var hprMatrix = Matrix4.fromTranslationQuaternionRotationScale(Cartesian3.ZERO, hprQuaternion, scratchScale, scratchHPRMatrix4);
@@ -20913,38 +22121,7 @@ define('Core/Transforms',[
         return Matrix4.multiply(result, hprMatrix, result);
     };
 
-    /**
-     * Computes a 4x4 transformation matrix from a reference frame with axes computed from the heading-pitch-roll angles
-     * centered at the provided origin to the provided ellipsoid's fixed reference frame. Heading is the rotation from the local north
-     * direction where a positive angle is increasing eastward. Pitch is the rotation from the local east-north plane. Positive pitch angles
-     * are above the plane. Negative pitch angles are below the plane. Roll is the first rotation applied about the local east axis.
-     *
-     * @param {Cartesian3} origin The center point of the local reference frame.
-     * @param {Number} heading The heading angle in radians.
-     * @param {Number} pitch The pitch angle in radians.
-     * @param {Number} roll The roll angle in radians.
-     * @param {Ellipsoid} [ellipsoid=Ellipsoid.WGS84] The ellipsoid whose fixed frame is used in the transformation.
-     * @param {Matrix4} [result] The object onto which to store the result.
-     * @returns {Matrix4} The modified result parameter or a new Matrix4 instance if none was provided.
-     *
-     * @example
-     * // Get the transform from local heading-pitch-roll at cartographic (0.0, 0.0) to Earth's fixed frame.
-     * var center = Cesium.Cartesian3.fromDegrees(0.0, 0.0);
-     * var heading = -Cesium.Math.PI_OVER_TWO;
-     * var pitch = Cesium.Math.PI_OVER_FOUR;
-     * var roll = 0.0;
-     * var transform = Cesium.Transforms.aircraftHeadingPitchRollToFixedFrame(center, heading, pitch, roll);
-     *
-     * @private
-     */
-    Transforms.aircraftHeadingPitchRollToFixedFrame = function(origin, heading, pitch, roll, ellipsoid, result) {
-        // checks for required parameters happen in the called functions
-        var hprQuaternion = Quaternion.fromHeadingPitchRoll(heading, pitch, roll, scratchHPRQuaternion);
-        var hprMatrix = Matrix4.fromTranslationQuaternionRotationScale(Cartesian3.ZERO, hprQuaternion, scratchScale, scratchHPRMatrix4);
-        result = Transforms.northEastDownToFixedFrame(origin, ellipsoid, result);
-        return Matrix4.multiply(result, hprMatrix, result);
-    };
-
+    var scratchHPR = new HeadingPitchRoll();
     var scratchENUMatrix4 = new Matrix4();
     var scratchHPRMatrix3 = new Matrix3();
 
@@ -20955,9 +22132,7 @@ define('Core/Transforms',[
      * are above the plane. Negative pitch angles are below the plane. Roll is the first rotation applied about the local east axis.
      *
      * @param {Cartesian3} origin The center point of the local reference frame.
-     * @param {Number} heading The heading angle in radians.
-     * @param {Number} pitch The pitch angle in radians.
-     * @param {Number} roll The roll angle in radians.
+     * @param {HeadingPitchRoll} headingPitchRoll The heading, pitch, and roll.
      * @param {Ellipsoid} [ellipsoid=Ellipsoid.WGS84] The ellipsoid whose fixed frame is used in the transformation.
      * @param {Quaternion} [result] The object onto which to store the result.
      * @returns {Quaternion} The modified result parameter or a new Quaternion instance if none was provided.
@@ -20968,46 +22143,28 @@ define('Core/Transforms',[
      * var heading = -Cesium.Math.PI_OVER_TWO;
      * var pitch = Cesium.Math.PI_OVER_FOUR;
      * var roll = 0.0;
-     * var quaternion = Cesium.Transforms.headingPitchRollQuaternion(center, heading, pitch, roll);
+     * var hpr = new HeadingPitchRoll(heading, pitch, roll);
+     * var quaternion = Cesium.Transforms.headingPitchRollQuaternion(center, hpr);
      */
-    Transforms.headingPitchRollQuaternion = function(origin, heading, pitch, roll, ellipsoid, result) {
+    Transforms.headingPitchRollQuaternion = function(origin, headingPitchRoll, pitch, roll, ellipsoid, result) {
+        var hpr;
+        if (typeof headingPitchRoll === 'object') {
+            // Shift arguments using assignment to encourage JIT optimization.
+            hpr = headingPitchRoll;
+            ellipsoid = pitch;
+            result = roll;
+        } else {
+            deprecationWarning('headingPitchRollQuaternion', 'headingPitchRollQuaternion with separate heading, pitch, and roll arguments was deprecated in 1.27.  It will be removed in 1.30.  Use a HeadingPitchRoll object.');
+            scratchHPR.heading = headingPitchRoll;
+            scratchHPR.pitch = pitch;
+            scratchHPR.roll = roll;
+            hpr = scratchHPR;
+        }
         // checks for required parameters happen in the called functions
-        var transform = Transforms.headingPitchRollToFixedFrame(origin, heading, pitch, roll, ellipsoid, scratchENUMatrix4);
+        var transform = Transforms.headingPitchRollToFixedFrame(origin, hpr, ellipsoid, scratchENUMatrix4);
         var rotation = Matrix4.getRotation(transform, scratchHPRMatrix3);
         return Quaternion.fromRotationMatrix(rotation, result);
     };
-
-    /**
-     * Computes a quaternion from a reference frame with axes computed from the heading-pitch-roll angles
-     * centered at the provided origin. Heading is the rotation from the local north
-     * direction where a positive angle is increasing eastward. Pitch is the rotation from the local east-north plane. Positive pitch angles
-     * are above the plane. Negative pitch angles are below the plane. Roll is the first rotation applied about the local east axis.
-     *
-     * @param {Cartesian3} origin The center point of the local reference frame.
-     * @param {Number} heading The heading angle in radians.
-     * @param {Number} pitch The pitch angle in radians.
-     * @param {Number} roll The roll angle in radians.
-     * @param {Ellipsoid} [ellipsoid=Ellipsoid.WGS84] The ellipsoid whose fixed frame is used in the transformation.
-     * @param {Quaternion} [result] The object onto which to store the result.
-     * @returns {Quaternion} The modified result parameter or a new Quaternion instance if none was provided.
-     *
-     * @example
-     * // Get the quaternion from local heading-pitch-roll at cartographic (0.0, 0.0) to Earth's fixed frame.
-     * var center = Cesium.Cartesian3.fromDegrees(0.0, 0.0);
-     * var heading = -Cesium.Math.PI_OVER_TWO;
-     * var pitch = Cesium.Math.PI_OVER_FOUR;
-     * var roll = 0.0;
-     * var quaternion = Cesium.Transforms.aircraftHeadingPitchRollQuaternion(center, heading, pitch, roll);
-     *
-     * @private
-     */
-    Transforms.aircraftHeadingPitchRollQuaternion = function(origin, heading, pitch, roll, ellipsoid, result) {
-        // checks for required parameters happen in the called functions
-        var transform = Transforms.aircraftHeadingPitchRollToFixedFrame(origin, heading, pitch, roll, ellipsoid, scratchENUMatrix4);
-        var rotation = Matrix4.getRotation(transform, scratchHPRMatrix3);
-        return Quaternion.fromRotationMatrix(rotation, result);
-    };
-
 
     var gmstConstant0 = 6 * 3600 + 41 * 60 + 50.54841;
     var gmstConstant1 = 8640184.812866;
@@ -21127,7 +22284,7 @@ define('Core/Transforms',[
      * when(Cesium.Transforms.preloadIcrfFixed(interval), function() {
      *     // the data is now loaded
      * });
-     * 
+     *
      * @see Transforms.computeIcrfToFixedMatrix
      * @see Transforms.computeFixedToIcrfMatrix
      * @see when
@@ -21168,7 +22325,7 @@ define('Core/Transforms',[
      *     camera.lookAtTransform(transform, offset);
      *   }
      * });
-     * 
+     *
      * @see Transforms.preloadIcrfFixed
      */
     Transforms.computeIcrfToFixedMatrix = function(date, result) {
@@ -21214,7 +22371,7 @@ define('Core/Transforms',[
      * if (Cesium.defined(fixedToIcrf)) {
      *     pointInInertial = Cesium.Matrix3.multiplyByVector(fixedToIcrf, pointInFixed, pointInInertial);
      * }
-     * 
+     *
      * @see Transforms.preloadIcrfFixed
      */
     Transforms.computeFixedToIcrfMatrix = function(date, result) {
@@ -22917,6 +24074,7 @@ define('Core/TerrainEncoding',[
         './Cartesian2',
         './Cartesian3',
         './ComponentDatatype',
+        './defaultValue',
         './defined',
         './Math',
         './Matrix3',
@@ -22927,6 +24085,7 @@ define('Core/TerrainEncoding',[
         Cartesian2,
         Cartesian3,
         ComponentDatatype,
+        defaultValue,
         defined,
         CesiumMath,
         Matrix3,
@@ -22954,10 +24113,11 @@ define('Core/TerrainEncoding',[
      * @param {Number} maximumHeight The maximum height.
      * @param {Matrix4} fromENU The east-north-up to fixed frame matrix at the center of the terrain mesh.
      * @param {Boolean} hasVertexNormals If the mesh has vertex normals.
+     * @param {Boolean} [hasWebMercatorT=false] true if the terrain data includes a Web Mercator texture coordinate; otherwise, false.
      *
      * @private
      */
-    function TerrainEncoding(axisAlignedBoundingBox, minimumHeight, maximumHeight, fromENU, hasVertexNormals) {
+    function TerrainEncoding(axisAlignedBoundingBox, minimumHeight, maximumHeight, fromENU, hasVertexNormals, hasWebMercatorT) {
         var quantization;
         var center;
         var toENU;
@@ -23050,9 +24210,15 @@ define('Core/TerrainEncoding',[
          * @type {Boolean}
          */
         this.hasVertexNormals = hasVertexNormals;
+
+        /**
+         * The terrain mesh contains a vertical texture coordinate following the Web Mercator projection.
+         * @type {Boolean}
+         */
+        this.hasWebMercatorT = defaultValue(hasWebMercatorT, false);
     }
 
-    TerrainEncoding.prototype.encode = function(vertexBuffer, bufferIndex, position, uv, height, normalToPack) {
+    TerrainEncoding.prototype.encode = function(vertexBuffer, bufferIndex, position, uv, height, normalToPack, webMercatorT) {
         var u = uv.x;
         var v = uv.y;
 
@@ -23078,6 +24244,12 @@ define('Core/TerrainEncoding',[
             vertexBuffer[bufferIndex++] = compressed0;
             vertexBuffer[bufferIndex++] = compressed1;
             vertexBuffer[bufferIndex++] = compressed2;
+
+            if (this.hasWebMercatorT) {
+                Cartesian2.fromElements(webMercatorT, 0.0, cartesian2Scratch);
+                var compressed3 = AttributeCompression.compressTextureCoordinates(cartesian2Scratch);
+                vertexBuffer[bufferIndex++] = compressed3;
+            }
         } else {
             Cartesian3.subtract(position, this.center, cartesian3Scratch);
 
@@ -23087,6 +24259,10 @@ define('Core/TerrainEncoding',[
             vertexBuffer[bufferIndex++] = height;
             vertexBuffer[bufferIndex++] = u;
             vertexBuffer[bufferIndex++] = v;
+
+            if (this.hasWebMercatorT) {
+                vertexBuffer[bufferIndex++] = webMercatorT;
+            }
         }
 
         if (this.hasVertexNormals) {
@@ -23167,6 +24343,10 @@ define('Core/TerrainEncoding',[
                 vertexStride = 6;
         }
 
+        if (this.hasWebMercatorT) {
+            ++vertexStride;
+        }
+
         if (this.hasVertexNormals) {
             ++vertexStride;
         }
@@ -23179,17 +24359,29 @@ define('Core/TerrainEncoding',[
         textureCoordAndEncodedNormals : 1
     };
     var attributes = {
-        compressed : 0
+        compressed0 : 0,
+        compressed1 : 1
     };
 
     TerrainEncoding.prototype.getAttributes = function(buffer) {
         var datatype = ComponentDatatype.FLOAT;
+        var sizeInBytes = ComponentDatatype.getSizeInBytes(datatype);
+        var stride;
 
         if (this.quantization === TerrainQuantization.NONE) {
-            var sizeInBytes = ComponentDatatype.getSizeInBytes(datatype);
             var position3DAndHeightLength = 4;
-            var numTexCoordComponents = this.hasVertexNormals ? 3 : 2;
-            var stride = (this.hasVertexNormals ? 7 : 6) * sizeInBytes;
+            var numTexCoordComponents = 2;
+
+            if (this.hasWebMercatorT) {
+                ++numTexCoordComponents;
+            }
+
+            if (this.hasVertexNormals) {
+                ++numTexCoordComponents;
+            }
+
+            stride = (position3DAndHeightLength + numTexCoordComponents) * sizeInBytes;
+
             return [{
                 index : attributesNone.position3DAndHeight,
                 vertexBuffer : buffer,
@@ -23207,14 +24399,41 @@ define('Core/TerrainEncoding',[
             }];
         }
 
-        var numComponents = 3;
-        numComponents += this.hasVertexNormals ? 1 : 0;
-        return [{
-            index : attributes.compressed,
-            vertexBuffer : buffer,
-            componentDatatype : datatype,
-            componentsPerAttribute : numComponents
-        }];
+        var numCompressed0 = 3;
+        var numCompressed1 = 0;
+
+        if (this.hasWebMercatorT || this.hasVertexNormals) {
+            ++numCompressed0;
+        }
+
+        if (this.hasWebMercatorT && this.hasVertexNormals) {
+            ++numCompressed1;
+
+            stride = (numCompressed0 + numCompressed1) * sizeInBytes;
+
+            return [{
+                index : attributes.compressed0,
+                vertexBuffer : buffer,
+                componentDatatype : datatype,
+                componentsPerAttribute : numCompressed0,
+                offsetInBytes : 0,
+                strideInBytes : stride
+            }, {
+                index : attributes.compressed1,
+                vertexBuffer : buffer,
+                componentDatatype : datatype,
+                componentsPerAttribute : numCompressed1,
+                offsetInBytes : numCompressed0 * sizeInBytes,
+                strideInBytes : stride
+            }];
+        } else {
+            return [{
+                index : attributes.compressed0,
+                vertexBuffer : buffer,
+                componentDatatype : datatype,
+                componentsPerAttribute : numCompressed0
+            }];
+        }
     };
 
     TerrainEncoding.prototype.getAttributeLocations = function() {
@@ -23238,10 +24457,170 @@ define('Core/TerrainEncoding',[
         result.fromScaledENU = Matrix4.clone(encoding.fromScaledENU);
         result.matrix = Matrix4.clone(encoding.matrix);
         result.hasVertexNormals = encoding.hasVertexNormals;
+        result.hasWebMercatorT = encoding.hasWebMercatorT;
         return result;
     };
 
     return TerrainEncoding;
+});
+
+/*global define*/
+define('Core/WebMercatorProjection',[
+        './Cartesian3',
+        './Cartographic',
+        './defaultValue',
+        './defined',
+        './defineProperties',
+        './DeveloperError',
+        './Ellipsoid',
+        './Math'
+    ], function(
+        Cartesian3,
+        Cartographic,
+        defaultValue,
+        defined,
+        defineProperties,
+        DeveloperError,
+        Ellipsoid,
+        CesiumMath) {
+    'use strict';
+
+    /**
+     * The map projection used by Google Maps, Bing Maps, and most of ArcGIS Online, EPSG:3857.  This
+     * projection use longitude and latitude expressed with the WGS84 and transforms them to Mercator using
+     * the spherical (rather than ellipsoidal) equations.
+     *
+     * @alias WebMercatorProjection
+     * @constructor
+     *
+     * @param {Ellipsoid} [ellipsoid=Ellipsoid.WGS84] The ellipsoid.
+     *
+     * @see GeographicProjection
+     */
+    function WebMercatorProjection(ellipsoid) {
+        this._ellipsoid = defaultValue(ellipsoid, Ellipsoid.WGS84);
+        this._semimajorAxis = this._ellipsoid.maximumRadius;
+        this._oneOverSemimajorAxis = 1.0 / this._semimajorAxis;
+    }
+
+    defineProperties(WebMercatorProjection.prototype, {
+        /**
+         * Gets the {@link Ellipsoid}.
+         *
+         * @memberof WebMercatorProjection.prototype
+         *
+         * @type {Ellipsoid}
+         * @readonly
+         */
+        ellipsoid : {
+            get : function() {
+                return this._ellipsoid;
+            }
+        }
+    });
+
+    /**
+     * Converts a Mercator angle, in the range -PI to PI, to a geodetic latitude
+     * in the range -PI/2 to PI/2.
+     *
+     * @param {Number} mercatorAngle The angle to convert.
+     * @returns {Number} The geodetic latitude in radians.
+     */
+    WebMercatorProjection.mercatorAngleToGeodeticLatitude = function(mercatorAngle) {
+        return CesiumMath.PI_OVER_TWO - (2.0 * Math.atan(Math.exp(-mercatorAngle)));
+    };
+
+    /**
+     * Converts a geodetic latitude in radians, in the range -PI/2 to PI/2, to a Mercator
+     * angle in the range -PI to PI.
+     *
+     * @param {Number} latitude The geodetic latitude in radians.
+     * @returns {Number} The Mercator angle.
+     */
+    WebMercatorProjection.geodeticLatitudeToMercatorAngle = function(latitude) {
+        // Clamp the latitude coordinate to the valid Mercator bounds.
+        if (latitude > WebMercatorProjection.MaximumLatitude) {
+            latitude = WebMercatorProjection.MaximumLatitude;
+        } else if (latitude < -WebMercatorProjection.MaximumLatitude) {
+            latitude = -WebMercatorProjection.MaximumLatitude;
+        }
+        var sinLatitude = Math.sin(latitude);
+        return 0.5 * Math.log((1.0 + sinLatitude) / (1.0 - sinLatitude));
+    };
+
+    /**
+     * The maximum latitude (both North and South) supported by a Web Mercator
+     * (EPSG:3857) projection.  Technically, the Mercator projection is defined
+     * for any latitude up to (but not including) 90 degrees, but it makes sense
+     * to cut it off sooner because it grows exponentially with increasing latitude.
+     * The logic behind this particular cutoff value, which is the one used by
+     * Google Maps, Bing Maps, and Esri, is that it makes the projection
+     * square.  That is, the rectangle is equal in the X and Y directions.
+     *
+     * The constant value is computed by calling:
+     *    WebMercatorProjection.mercatorAngleToGeodeticLatitude(Math.PI)
+     *
+     * @type {Number}
+     */
+    WebMercatorProjection.MaximumLatitude = WebMercatorProjection.mercatorAngleToGeodeticLatitude(Math.PI);
+
+    /**
+     * Converts geodetic ellipsoid coordinates, in radians, to the equivalent Web Mercator
+     * X, Y, Z coordinates expressed in meters and returned in a {@link Cartesian3}.  The height
+     * is copied unmodified to the Z coordinate.
+     *
+     * @param {Cartographic} cartographic The cartographic coordinates in radians.
+     * @param {Cartesian3} [result] The instance to which to copy the result, or undefined if a
+     *        new instance should be created.
+     * @returns {Cartesian3} The equivalent web mercator X, Y, Z coordinates, in meters.
+     */
+    WebMercatorProjection.prototype.project = function(cartographic, result) {
+        var semimajorAxis = this._semimajorAxis;
+        var x = cartographic.longitude * semimajorAxis;
+        var y = WebMercatorProjection.geodeticLatitudeToMercatorAngle(cartographic.latitude) * semimajorAxis;
+        var z = cartographic.height;
+
+        if (!defined(result)) {
+            return new Cartesian3(x, y, z);
+        }
+
+        result.x = x;
+        result.y = y;
+        result.z = z;
+        return result;
+    };
+
+    /**
+     * Converts Web Mercator X, Y coordinates, expressed in meters, to a {@link Cartographic}
+     * containing geodetic ellipsoid coordinates.  The Z coordinate is copied unmodified to the
+     * height.
+     *
+     * @param {Cartesian3} cartesian The web mercator Cartesian position to unrproject with height (z) in meters.
+     * @param {Cartographic} [result] The instance to which to copy the result, or undefined if a
+     *        new instance should be created.
+     * @returns {Cartographic} The equivalent cartographic coordinates.
+     */
+    WebMercatorProjection.prototype.unproject = function(cartesian, result) {
+                if (!defined(cartesian)) {
+            throw new DeveloperError('cartesian is required');
+        }
+        
+        var oneOverEarthSemimajorAxis = this._oneOverSemimajorAxis;
+        var longitude = cartesian.x * oneOverEarthSemimajorAxis;
+        var latitude = WebMercatorProjection.mercatorAngleToGeodeticLatitude(cartesian.y * oneOverEarthSemimajorAxis);
+        var height = cartesian.z;
+
+        if (!defined(result)) {
+            return new Cartographic(longitude, latitude, height);
+        }
+
+        result.longitude = longitude;
+        result.latitude = latitude;
+        result.height = height;
+        return result;
+    };
+
+    return WebMercatorProjection;
 });
 
 /*global define*/
@@ -23422,6 +24801,7 @@ define('Workers/createVerticesFromQuantizedTerrainMesh',[
         '../Core/OrientedBoundingBox',
         '../Core/TerrainEncoding',
         '../Core/Transforms',
+        '../Core/WebMercatorProjection',
         './createTaskProcessorWorker'
     ], function(
         AttributeCompression,
@@ -23439,6 +24819,7 @@ define('Workers/createVerticesFromQuantizedTerrainMesh',[
         OrientedBoundingBox,
         TerrainEncoding,
         Transforms,
+        WebMercatorProjection,
         createTaskProcessorWorker) {
     'use strict';
 
@@ -23459,6 +24840,7 @@ define('Workers/createVerticesFromQuantizedTerrainMesh',[
         var octEncodedNormals = parameters.octEncodedNormals;
         var edgeVertexCount = parameters.westIndices.length + parameters.eastIndices.length +
                               parameters.southIndices.length + parameters.northIndices.length;
+        var includeWebMercatorT = parameters.includeWebMercatorT;
 
         var rectangle = parameters.rectangle;
         var west = rectangle.west;
@@ -23476,6 +24858,13 @@ define('Workers/createVerticesFromQuantizedTerrainMesh',[
         var fromENU = Transforms.eastNorthUpToFixedFrame(center, ellipsoid);
         var toENU = Matrix4.inverseTransformation(fromENU, new Matrix4());
 
+        var southMercatorY;
+        var oneOverMercatorHeight;
+        if (includeWebMercatorT) {
+            southMercatorY = WebMercatorProjection.geodeticLatitudeToMercatorAngle(south);
+            oneOverMercatorHeight = 1.0 / (WebMercatorProjection.geodeticLatitudeToMercatorAngle(north) - southMercatorY);
+        }
+
         var uBuffer = quantizedVertices.subarray(0, quantizedVertexCount);
         var vBuffer = quantizedVertices.subarray(quantizedVertexCount, 2 * quantizedVertexCount);
         var heightBuffer = quantizedVertices.subarray(quantizedVertexCount * 2, 3 * quantizedVertexCount);
@@ -23484,6 +24873,7 @@ define('Workers/createVerticesFromQuantizedTerrainMesh',[
         var uvs = new Array(quantizedVertexCount);
         var heights = new Array(quantizedVertexCount);
         var positions = new Array(quantizedVertexCount);
+        var webMercatorTs = includeWebMercatorT ? new Array(quantizedVertexCount) : [];
 
         var minimum = scratchMinimum;
         minimum.x = Number.POSITIVE_INFINITY;
@@ -23510,6 +24900,10 @@ define('Workers/createVerticesFromQuantizedTerrainMesh',[
             heights[i] = height;
             positions[i] = position;
 
+            if (includeWebMercatorT) {
+                webMercatorTs[i] = (WebMercatorProjection.geodeticLatitudeToMercatorAngle(cartographicScratch.latitude) - southMercatorY) * oneOverMercatorHeight;
+            }
+
             Matrix4.multiplyByPoint(toENU, position, cartesian3Scratch);
 
             Cartesian3.minimumByComponent(cartesian3Scratch, minimum, minimum);
@@ -23530,9 +24924,9 @@ define('Workers/createVerticesFromQuantizedTerrainMesh',[
         hMin = Math.min(hMin, findMinMaxSkirts(parameters.southIndices, parameters.southSkirtHeight, heights, uvs, rectangle, ellipsoid, toENU, minimum, maximum));
         hMin = Math.min(hMin, findMinMaxSkirts(parameters.eastIndices, parameters.eastSkirtHeight, heights, uvs, rectangle, ellipsoid, toENU, minimum, maximum));
         hMin = Math.min(hMin, findMinMaxSkirts(parameters.northIndices, parameters.northSkirtHeight, heights, uvs, rectangle, ellipsoid, toENU, minimum, maximum));
-        
+
         var aaBox = new AxisAlignedBoundingBox(minimum, maximum, center);
-        var encoding = new TerrainEncoding(aaBox, hMin, maximumHeight, fromENU, hasVertexNormals);
+        var encoding = new TerrainEncoding(aaBox, hMin, maximumHeight, fromENU, hasVertexNormals, includeWebMercatorT);
         var vertexStride = encoding.getStride();
         var size = quantizedVertexCount * vertexStride + edgeVertexCount * vertexStride;
         var vertexBuffer = new Float32Array(size);
@@ -23560,7 +24954,7 @@ define('Workers/createVerticesFromQuantizedTerrainMesh',[
                 }
             }
 
-            bufferIndex = encoding.encode(vertexBuffer, bufferIndex, positions[j], uvs[j], heights[j], toPack);
+            bufferIndex = encoding.encode(vertexBuffer, bufferIndex, positions[j], uvs[j], heights[j], toPack, webMercatorTs[j]);
         }
 
         var edgeTriangleCount = Math.max(0, (edgeVertexCount - 4) * 2);
@@ -23571,13 +24965,13 @@ define('Workers/createVerticesFromQuantizedTerrainMesh',[
         // Add skirts.
         var vertexBufferIndex = quantizedVertexCount * vertexStride;
         var indexBufferIndex = parameters.indices.length;
-        indexBufferIndex = addSkirt(vertexBuffer, vertexBufferIndex, indexBuffer, indexBufferIndex, parameters.westIndices, encoding, heights, uvs, octEncodedNormals, ellipsoid, rectangle, parameters.westSkirtHeight, true, exaggeration);
+        indexBufferIndex = addSkirt(vertexBuffer, vertexBufferIndex, indexBuffer, indexBufferIndex, parameters.westIndices, encoding, heights, uvs, octEncodedNormals, ellipsoid, rectangle, parameters.westSkirtHeight, true, exaggeration, southMercatorY, oneOverMercatorHeight);
         vertexBufferIndex += parameters.westIndices.length * vertexStride;
-        indexBufferIndex = addSkirt(vertexBuffer, vertexBufferIndex, indexBuffer, indexBufferIndex, parameters.southIndices, encoding, heights, uvs, octEncodedNormals, ellipsoid, rectangle, parameters.southSkirtHeight, false, exaggeration);
+        indexBufferIndex = addSkirt(vertexBuffer, vertexBufferIndex, indexBuffer, indexBufferIndex, parameters.southIndices, encoding, heights, uvs, octEncodedNormals, ellipsoid, rectangle, parameters.southSkirtHeight, false, exaggeration, southMercatorY, oneOverMercatorHeight);
         vertexBufferIndex += parameters.southIndices.length * vertexStride;
-        indexBufferIndex = addSkirt(vertexBuffer, vertexBufferIndex, indexBuffer, indexBufferIndex, parameters.eastIndices, encoding, heights, uvs, octEncodedNormals, ellipsoid, rectangle, parameters.eastSkirtHeight, false, exaggeration);
+        indexBufferIndex = addSkirt(vertexBuffer, vertexBufferIndex, indexBuffer, indexBufferIndex, parameters.eastIndices, encoding, heights, uvs, octEncodedNormals, ellipsoid, rectangle, parameters.eastSkirtHeight, false, exaggeration, southMercatorY, oneOverMercatorHeight);
         vertexBufferIndex += parameters.eastIndices.length * vertexStride;
-        addSkirt(vertexBuffer, vertexBufferIndex, indexBuffer, indexBufferIndex, parameters.northIndices, encoding, heights, uvs, octEncodedNormals, ellipsoid, rectangle, parameters.northSkirtHeight, true, exaggeration);
+        addSkirt(vertexBuffer, vertexBufferIndex, indexBuffer, indexBufferIndex, parameters.northIndices, encoding, heights, uvs, octEncodedNormals, ellipsoid, rectangle, parameters.northSkirtHeight, true, exaggeration, southMercatorY, oneOverMercatorHeight);
 
         transferableObjects.push(vertexBuffer.buffer, indexBuffer.buffer);
 
@@ -23628,7 +25022,7 @@ define('Workers/createVerticesFromQuantizedTerrainMesh',[
         return hMin;
     }
 
-    function addSkirt(vertexBuffer, vertexBufferIndex, indexBuffer, indexBufferIndex, edgeVertices, encoding, heights, uvs, octEncodedNormals, ellipsoid, rectangle, skirtLength, isWestOrNorthEdge, exaggeration) {
+    function addSkirt(vertexBuffer, vertexBufferIndex, indexBuffer, indexBufferIndex, edgeVertices, encoding, heights, uvs, octEncodedNormals, ellipsoid, rectangle, skirtLength, isWestOrNorthEdge, exaggeration, southMercatorY, oneOverMercatorHeight) {
         var start, end, increment;
         if (isWestOrNorthEdge) {
             start = edgeVertices.length - 1;
@@ -23687,7 +25081,12 @@ define('Workers/createVerticesFromQuantizedTerrainMesh',[
                 }
             }
 
-            vertexBufferIndex = encoding.encode(vertexBuffer, vertexBufferIndex, position, uv, cartographicScratch.height, toPack);
+            var webMercatorT;
+            if (encoding.hasWebMercatorT) {
+                webMercatorT = (WebMercatorProjection.geodeticLatitudeToMercatorAngle(cartographicScratch.latitude) - southMercatorY) * oneOverMercatorHeight;
+            }
+
+            vertexBufferIndex = encoding.encode(vertexBuffer, vertexBufferIndex, position, uv, cartographicScratch.height, toPack, webMercatorT);
 
             if (previousIndex !== -1) {
                 indexBuffer[indexBufferIndex++] = previousIndex;
