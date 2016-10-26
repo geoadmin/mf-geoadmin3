@@ -36,11 +36,11 @@ goog.require('ga_urlutils_service');
       // Create the parser/writer KML
       var setKmlFormat = function() {
         if (!kmlFormat) {
-          // TO FIX
-          // Hack for #3531: Should be fix with next version of ol >3.18.2
-          // We create an empty format first to create the default style
-          // variables.
+          // TO FIX, caused by OL 3.18.2
+          // Hack for #3531: We create an empty format first to create the
+          // default style variables.
           // https://github.com/openlayers/ol3/blob/master/src/ol/format/kml.js#L143
+          // https://github.com/openlayers/ol3/pull/5587
           ol.format.KML();
 
           kmlFormat = new ol.format.KML({
@@ -145,6 +145,14 @@ goog.require('ga_urlutils_service');
 
           if (gaNetworkStatus.offline) {
             image = gaStyleFactory.getStyle('kml').getImage();
+          }
+
+          // TO FIX, caused by OL 3.19.0
+          // OL applies a default scale multiplier to 0.5
+          // https://github.com/openlayers/ol3/blob/master/src/ol/format/kml.js#L622
+          // https://github.com/openlayers/ol3/pull/5745
+          if (image && image.getScale()) {
+            image.setScale(image.getScale() * 2);
           }
 
           // If the feature has name we display it on the map as Google does
