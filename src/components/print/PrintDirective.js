@@ -252,9 +252,11 @@ goog.require('ga_time_service');
             var styles = (params.STYLES !== undefined) ?
                 params.STYLES.split(',') :
                 new Array(layers.length).join(',').split(',');
+            var url = config.wmsUrl || layer.url;
+
             angular.extend(enc, {
               type: 'WMS',
-              baseURL: config.wmsUrl || layer.url,
+              baseURL: url.replace(/^\/\//, 'https://'),
               layers: layers,
               styles: styles,
               format: 'image/' + (config.format || 'png'),
