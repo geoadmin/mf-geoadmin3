@@ -121,7 +121,9 @@ goog.require('ga_urlutils_service');
         }
         geom.transform('EPSG:4326', projection);
         var styles = feature.getStyleFunction().call(feature);
-        var style = styles[0];
+
+        // The use of clone is part of the scale fix line 156
+        var style = styles[0].clone();
 
         // The canvas draws a stroke width=1 by default if width=0, so we
         // remove the stroke style in that case.
@@ -152,7 +154,7 @@ goog.require('ga_urlutils_service');
           // https://github.com/openlayers/ol3/blob/master/src/ol/format/kml.js#L622
           // https://github.com/openlayers/ol3/pull/5745
           if (image && image.getScale()) {
-            image.setScale(image.getScale() * 2);
+            image.setScale(Math.sqrt(image.getScale() * 2));
           }
 
           // If the feature has name we display it on the map as Google does
@@ -171,6 +173,15 @@ goog.require('ga_urlutils_service');
                   style.getText().getFill().getColor()),
               scale: style.getText().getScale()
             });
+
+            // TO FIX, caused by OL 3.19.0
+            // OL changes the formula of scale.
+            // https://github.com/openlayers/ol3/pull/5745/commits/e0d75555c5a110b24fe63e618966ac73993c198c#diff-b3122a19e97ec2c9c92546ce1e5bd101R539
+            // https://github.com/openlayers/ol3/pull/5745
+            if (text && text.getScale()) {
+              text.setScale(Math.sqrt(text.getScale()));
+            }
+
             fill = undefined;
             stroke = undefined;
           }
