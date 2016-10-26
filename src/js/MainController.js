@@ -264,7 +264,8 @@ goog.require('ga_topic_service');
       isDrawActive: false,
       isFeatureTreeActive: false,
       isSwipeActive: false,
-      is3dActive: startWith3D
+      is3dActive: startWith3D,
+      hostIsProd: gaGlobalOptions.hostIsProd
     };
 
     // Deactivate all tools when draw is opening
