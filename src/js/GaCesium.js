@@ -89,10 +89,11 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions,
         time: function() {
           return jDate;
         },
-        createSynchronizers: function(map, scene) {
+        createSynchronizers: function(map, scene, dataSources) {
            return [
              new olcs.GaRasterSynchronizer(map, scene),
-             new olcs.VectorSynchronizer(map, scene)
+             new olcs.GaVectorSynchronizer(map, scene),
+             new olcs.GaKmlSynchronizer(map, scene, dataSources)
            ];
         }
       });
