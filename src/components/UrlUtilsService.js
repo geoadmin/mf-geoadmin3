@@ -111,8 +111,12 @@ goog.provide('ga_urlutils_service');
               kv = keyValue.split('=');
               key = this_.tryDecodeURIComponent(kv[0]);
               if (angular.isDefined(key)) {
-                obj[key] = angular.isDefined(kv[1]) ?
-                    this_.tryDecodeURIComponent(kv[1]) : true;
+                if (kv.length > 1) {
+                  obj[key] = this_.tryDecodeURIComponent(
+                      kv.splice(1, kv.length - 1).join('='));
+                } else {
+                  obj[key] = true;
+                }
               }
             }
           });
