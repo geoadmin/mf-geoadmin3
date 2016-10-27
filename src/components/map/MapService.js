@@ -558,18 +558,33 @@ goog.require('ga_urlutils_service');
               };
 
               // 3D Tileset
+              var tileset3d = [
+                'ch.swisstopo.swisstlm3d.3d',
+                'ch.swisstopo.swissnames3d.3d'
+              ];
+              var tilesetTs = [
+                '20160909',
+                '20160909'
+              ];
+
               var params = gaPermalink.getParams();
-              var tileset3d = params['tileset3d'] ||
-                              'ch.swisstopo.swisstlm3d.3d';
-              var tilesetTs = params['tilesetTs'] || '20160909';
-              response.data[tileset3d] = {
-                type: 'tileset3d',
-                serverLayerName: tileset3d,
-                timestamps: [tilesetTs],
-                attribution: 'swisstopo',
-                attributionUrl: 'https://www.swisstopo.admin.ch/' + lang +
-                    '/home.html'
-              };
+              tileset3d = tileset3d.concat((params['tileset3d'] ||
+                  '').split(','));
+              tilesetTs = tilesetTs.concat((params['tilesetTs'] ||
+                  '').split(','));
+
+              tileset3d.forEach(function(tileset3dId, idx) {
+                if (tileset3dId) {
+                  response.data[tileset3dId] = {
+                    type: 'tileset3d',
+                    serverLayerName: tileset3dId,
+                    timestamps: [tilesetTs[idx]],
+                    attribution: 'swisstopo',
+                    attributionUrl: 'https://www.swisstopo.admin.ch/' + lang +
+                        '/home.html'
+                  };
+                }
+              });
             }
             if (!layers) { // First load
               layers = response.data;
