@@ -23,18 +23,17 @@ goog.inherits(olcs.GaRasterSynchronizer, olcs.RasterSynchronizer);
 olcs.GaRasterSynchronizer.prototype.convertLayerToCesiumImageries =
     function(olLayer, viewProj) {
 
-  /**
-   * @type {Cesium.ImageryProvider}
-   */
-  var provider = null;
-
-  var isLayer = olLayer instanceof ol.layer.Layer;
   if (olLayer instanceof ol.layer.Layer) {
     var source = olLayer.getSource();
     if (source instanceof ol.source.Vector) {
       return null;
     }
   }
+
+  /**
+   * @type {Cesium.ImageryProvider}
+   */
+  var provider = null;
 
   // Read custom, non standard properties
   var factory = olcs.obj(olLayer)['getCesiumImageryProvider'];

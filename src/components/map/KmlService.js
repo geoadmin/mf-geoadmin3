@@ -50,8 +50,8 @@ goog.require('ga_urlutils_service');
         }
       };
 
-      // Read a kml string then return a list of features.
-      var readFeatures = function(kml) {
+      // Sanitize KML changing href links if necessary
+      var sanitizeKml = function(kml) {
         // Replace all hrefs to prevent errors if image doesn't have
         // CORS headers. Exception for *.geo.admin.ch, *.bgdi.ch and google
         // markers icons (only https)
@@ -76,6 +76,12 @@ goog.require('ga_urlutils_service');
           /<href>https?:\/\/[a-z\d\.\-]*(bgdi|geo.admin)\.ch[a-zA-Z\d\-_\/]*img\/maki\/([a-z\-0-9]*-24@2x\.png)/g,
           '<href>' + gaGlobalOptions.apiUrl + '/color/255,0,0/$2'
         );
+
+        return kml;
+      };
+
+      // Read a kml string then return a list of features.
+      var readFeatures = function(kml) {
 
         // Create the parser
         setKmlFormat();
@@ -229,6 +235,9 @@ goog.require('ga_urlutils_service');
             return deferred.promise;
           }
 
+          // Sanitize KML
+          kml = sanitizeKml(kml);
+
           // Read features available in a kml string, then create an ol layer.
           return readFeatures(kml).then(function(features) {
             var sanitizedFeatures = [];
@@ -245,6 +254,7 @@ goog.require('ga_urlutils_service');
               features: sanitizedFeatures,
               useSpatialIndex: !gaMapUtils.isStoredKmlLayer(options.id)
             });
+
             var layerOptions = {
               id: options.id,
               adminId: options.adminId,
@@ -273,6 +283,11 @@ goog.require('ga_urlutils_service');
             }
             gaDefinePropertiesForLayer(olLayer);
             olLayer.useThirdPartyData = true;
+
+            // Save the kml content for 3d parsing
+            olLayer.getSource().setProperties({
+              'kmlString': kml
+            });
 
             return olLayer;
           });

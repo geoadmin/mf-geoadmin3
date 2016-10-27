@@ -89,10 +89,11 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions,
         time: function() {
           return jDate;
         },
-        createSynchronizers: function(map, scene) {
+        createSynchronizers: function(map, scene, dataSources) {
            return [
              new olcs.GaRasterSynchronizer(map, scene),
-             new olcs.VectorSynchronizer(map, scene)
+             new olcs.GaVectorSynchronizer(map, scene),
+             new olcs.GaKmlSynchronizer(map, scene, dataSources)
            ];
         }
       });
@@ -154,7 +155,6 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions,
           });
         }
         if (tileset) {
-          scene.primitives.add(tileset);
           primitives.push(tileset);
         }
       }
@@ -163,9 +163,13 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions,
     $rootScope.$on('gaBgChange', function(evt, bg) {
       var show = !/^voidLayer$/.test(bg.id);
       primitives.forEach(function(prim) {
+        if (!scene.primitives.contains(prim)) {
+          scene.primitives.add(prim);
+        }
         prim.show = show;
       });
     });
+
     return cesiumViewer;
   };
 
