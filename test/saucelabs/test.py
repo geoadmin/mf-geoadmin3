@@ -66,8 +66,6 @@ if __name__ == '__main__':
             'version': "47.0", 'screenResolution': "1280x1024"},
         # Internet Exeplorer
         {'platform': "Windows 7", 'browserName': "internet explorer",
-            'version': "9.0", 'screenResolution': "1280x1024"},
-        {'platform': "Windows 7", 'browserName': "internet explorer",
             'version': "10.0", 'screenResolution': "1280x1024"},
         {'platform': "Windows 7", 'browserName': "internet explorer",
             'version': "11.0", 'screenResolution': "1280x1024"},
