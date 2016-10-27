@@ -226,6 +226,14 @@ goog.require('ga_urlutils_service');
               this.set('getCesiumImageryProvider', val);
             }
           },
+          getCesiumDataSource: {
+            get: function() {
+              return this.get('getCesiumDataSource') || angular.noop;
+            },
+            set: function(val) {
+              this.set('getCesiumDataSource', val);
+            }
+          },
           altitudeMode: {
             get: function() {
               return this.get('altitudeMode');
@@ -630,19 +638,20 @@ goog.require('ga_urlutils_service');
          * Returns an Cesium terrain provider.
          */
         this.getCesiumTerrainProviderById = function(bodId) {
-          var provider;
           var config3d = this.getConfig3d(layers[bodId]);
-          if (config3d.type == 'terrain') {
-            var timestamp = this.getLayerTimestampFromYear(bodId, gaTime.get());
-            var requestedLayer = config3d.serverLayerName || bodId;
-            provider = new Cesium.CesiumTerrainProvider({
-              url: getTerrainTileUrl(requestedLayer, timestamp),
-              availableLevels: window.terrainAvailableLevels,
-              rectangle: gaMapUtils.extentToRectangle(
-                gaGlobalOptions.defaultExtent)
-            });
-            provider.bodId = bodId;
+          if (!/^terrain$/.test(config3d.type)) {
+            return;
           }
+          var timestamp = this.getLayerTimestampFromYear(config3d,
+              gaTime.get());
+          var requestedLayer = config3d.serverLayerName || bodId;
+          var provider = new Cesium.CesiumTerrainProvider({
+            url: getTerrainTileUrl(requestedLayer, timestamp),
+            availableLevels: window.terrainAvailableLevels,
+            rectangle: gaMapUtils.extentToRectangle(
+              gaGlobalOptions.defaultExtent)
+          });
+          provider.bodId = bodId;
           return provider;
         };
 
@@ -650,19 +659,19 @@ goog.require('ga_urlutils_service');
          * Returns an Cesium 3D Tileset.
          */
         this.getCesiumTileset3DById = function(bodId) {
-          var tileset, config = layers[bodId];
-          var config3d = this.getConfig3d(config);
-          var timestamp = this.getLayerTimestampFromYear(bodId, gaTime.get());
-          var requestedLayer = config3d.serverLayerName || bodId;
-          if (config3d.type == 'tileset3d') {
-            tileset = new Cesium.Cesium3DTileset({
-              url: getVectorTilesUrl(requestedLayer, timestamp,
-                  dfltVectorTilesSubdomains),
-              //debugShowStatistics: true,
-              maximumNumberOfLoadedTiles: 3
-            });
-            tileset.bodId = bodId;
+          var config3d = this.getConfig3d(layers[bodId]);
+          if (!/^tileset3d$/.test(config3d.type)) {
+            return;
           }
+          var timestamp = this.getLayerTimestampFromYear(config3d,
+              gaTime.get());
+          var requestedLayer = config3d.serverLayerName || bodId;
+          var tileset = new Cesium.Cesium3DTileset({
+            url: getVectorTilesUrl(requestedLayer, timestamp,
+                dfltVectorTilesSubdomains),
+            maximumNumberOfLoadedTiles: 3
+          });
+          tileset.bodId = bodId;
           return tileset;
         };
 
@@ -670,10 +679,13 @@ goog.require('ga_urlutils_service');
          * Returns an Cesium imagery provider.
          */
         this.getCesiumImageryProviderById = function(bodId) {
-          var provider, params, config = layers[bodId];
-          bodId = config.config3d || bodId;
+          var config = layers[bodId];
           var config3d = this.getConfig3d(config);
-          // Only native tiles have a 3d config
+          if (!/^(wms|wmts|aggregate)$/.test(config3d.type)) {
+            return;
+          }
+          var params;
+          bodId = config.config3d || bodId;
           var timestamp = this.getLayerTimestampFromYear(bodId, gaTime.get());
           var requestedLayer = config3d.wmsLayers || config3d.serverLayerName ||
               bodId;
@@ -738,7 +750,7 @@ goog.require('ga_urlutils_service');
               maxLod = gaMapUtils.getLodFromRes(
                   config3d.resolutions[config3d.resolutions.length - 1]);
             }
-            provider = new Cesium.UrlTemplateImageryProvider({
+            var provider = new Cesium.UrlTemplateImageryProvider({
               url: params.url,
               subdomains: params.subdomains,
               minimumRetrievingLevel: minRetLod,
@@ -755,13 +767,28 @@ goog.require('ga_urlutils_service');
               // availability and 18 to Swiss bbox
               metadataUrl: imageryMetadataUrl
             });
-          }
-          if (provider) {
             provider.bodId = bodId;
+            return provider;
           }
-          return provider;
         };
 
+        /**
+         * Returns a promise of Cesium DataSource.
+         */
+        this.getCesiumDataSourceById = function(bodId, scene) {
+          var config = layers[bodId];
+          bodId = config.config3d;
+          var config3d = this.getConfig3d(config);
+          if (!/^kml$/.test(config3d.type)) {
+            return;
+          }
+          var dsP = Cesium.KmlDataSource.load(config3d.url, {
+            camera: scene.camera,
+            canvas: scene.canvas,
+            proxy: new Cesium.DefaultProxy(gaGlobalOptions.ogcproxyUrl)
+          });
+          return dsP;
+        };
 
         /**
          * Return an ol.layer.Layer object for a layer id.
@@ -932,6 +959,9 @@ goog.require('ga_urlutils_service');
             var that = this;
             olLayer.getCesiumImageryProvider = function() {
               return that.getCesiumImageryProviderById(bodId);
+            };
+            olLayer.getCesiumDataSource = function(scene) {
+              return that.getCesiumDataSourceById(bodId, scene);
             };
           }
 

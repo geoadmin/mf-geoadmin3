@@ -19,7 +19,7 @@ describe('ga_search_service', function() {
     });
 
     it('supports CH1903 coordinate', function(done) {
-      var spy = sinon.spy(gaReframe, 'get95To03')
+      var spy = sinon.spy(gaReframe, 'get95To03');
       getCoordinate(extent, '600000 200000').then(function(position) {
         expect(position).to.eql([600000, 200000]);
         expect(spy.callCount).to.eql(0);
@@ -29,7 +29,7 @@ describe('ga_search_service', function() {
     });
 
     it('separated by comma', function(done) {
-      var spy = sinon.spy(gaReframe, 'get95To03')
+      var spy = sinon.spy(gaReframe, 'get95To03');
       getCoordinate(extent, '600000,200000').then(function(position) {
         expect(position).to.eql([600000, 200000]);
         expect(spy.callCount).to.eql(0);
@@ -39,7 +39,7 @@ describe('ga_search_service', function() {
     });
 
     it('containing apostrphoe CH1903 coordinate', function(done) {
-      var spy = sinon.spy(gaReframe, 'get95To03')
+      var spy = sinon.spy(gaReframe, 'get95To03');
       getCoordinate(extent, '600\'000.12 200\'000.23').then(function(position) {
         expect(position).to.eql([600000.12, 200000.23]);
         expect(spy.callCount).to.eql(0);
@@ -49,7 +49,7 @@ describe('ga_search_service', function() {
     });
 
     it('supports CH1903+ coordinate', function(done) {
-      var spy = sinon.spy(gaReframe, 'get95To03')
+      var spy = sinon.spy(gaReframe, 'get95To03');
       var coordinates = [2600000, 1200000];
       var url = buildUrl(lv95tolv03Url, coordinates);
       $httpBackend.expectGET(url).respond(400);
@@ -63,7 +63,7 @@ describe('ga_search_service', function() {
     });
 
     it('old school CH1903 coordinate', function(done) {
-      var spy = sinon.spy(gaReframe, 'get95To03')
+      var spy = sinon.spy(gaReframe, 'get95To03');
       getCoordinate(extent, '600 123 200 345').then(function(position) {
         expect(position).to.eql([600123, 200345]);
         expect(spy.callCount).to.eql(0);
@@ -73,7 +73,7 @@ describe('ga_search_service', function() {
     });
 
     it('old school CH1903+ coordinate', function(done) {
-      var spy = sinon.spy(gaReframe, 'get95To03')
+      var spy = sinon.spy(gaReframe, 'get95To03');
       var coordinates = [2600987.2, 1200556.5];
       var url = buildUrl(lv95tolv03Url, coordinates);
       $httpBackend.expectGET(url).respond(400);
@@ -87,7 +87,7 @@ describe('ga_search_service', function() {
     });
 
     it('supports latitude and longitude as decimal (lon/lat)', function(done) {
-      var spy = sinon.spy(gaReframe, 'get95To03')
+      var spy = sinon.spy(gaReframe, 'get95To03');
       getCoordinate(extent, '6.96948 46.9712').then(function(position) {
         expect(position).to.eql([564298.937, 202343.701]);
         expect(spy.callCount).to.eql(0);
@@ -97,7 +97,7 @@ describe('ga_search_service', function() {
     });
 
     it('supports latitude and longitude as decimal (lat/lon)', function(done) {
-      var spy = sinon.spy(gaReframe, 'get95To03')
+      var spy = sinon.spy(gaReframe, 'get95To03');
       getCoordinate(extent, '46.9712 6.96948').then(function(position) {
         expect(position).to.eql([564298.937, 202343.701]);
         expect(spy.callCount).to.eql(0);

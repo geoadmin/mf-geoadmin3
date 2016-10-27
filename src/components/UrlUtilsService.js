@@ -11,7 +11,7 @@ goog.provide('ga_urlutils_service');
 
         // from Angular
         // https://github.com/angular/angular.js/blob/v1.4.8/src/ng/directive/input.js#L15
-        var URL_REGEXP = new RegExp('^(ftp|http|https):\\/\\/' +
+        var URL_REGEXP = new RegExp('^(blob:)?(ftp|http|https):\\/\\/' +
                                     '(?:\\w+(?::\\w+)?@)?' +
                                     '[^\\s/]+(?::\\d+)?' +
                                     '(?:\\/[\\w#!:.?+=&%@\\- /' +
@@ -28,6 +28,11 @@ goog.provide('ga_urlutils_service');
                   gaGlobalOptions.adminUrlRegexp.test(url));
         };
 
+        // Test if URL is a blob url
+        this.isBlob = function(url) {
+          return /^blob:/.test(url);
+        };
+
         // Test if URL uses https
         this.isHttps = function(url) {
           return (this.isValid(url) && /^https/.test(url));
@@ -35,6 +40,9 @@ goog.provide('ga_urlutils_service');
 
         // Test if URL represents resource that needs to pass via ogcProxy
         this.needsProxy = function(url) {
+          if (this.isBlob(url)) {
+            return false;
+          }
           return (!this.isHttps(url) ||
                   !this.isAdminValid(url) ||
                   /.*kmz$/.test(url));

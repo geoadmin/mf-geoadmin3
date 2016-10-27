@@ -70,12 +70,14 @@ beforeEach(function() {
     gaLayersProvider.dfltWmsSubdomains = ['', '0', '1', '2', '3', '4'];
     gaLayersProvider.dfltWmtsNativeSubdomains = ['5', '6', '7', '8', '9'];
     gaLayersProvider.dfltWmtsMapProxySubdomains = ['20', '21', '22', '23', '24'];
+    gaLayersProvider.dfltVectorTilesSubdomains = ['100', '101', '102', '103', '104'];
     gaLayersProvider.wmsUrlTemplate = '//wms{s}.geo.admin.ch/';
     gaLayersProvider.wmtsGetTileUrlTemplate = '//wmts{s}.geo.admin.ch/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{y}/{x}.{Format}';
 
     gaLayersProvider.wmtsMapProxyGetTileUrlTemplate = gaGlobalOptions.mapproxyUrl +
         '/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{x}/{y}.{Format}';
     gaLayersProvider.terrainTileUrlTemplate = '//3d.geo.admin.ch/1.0.0/{Layer}/default/{Time}/4326';
+    gaLayersProvider.vectorTilesUrlTemplate = '//vectortiles{s}.geo.admin.ch/{Layer}/{Time}/';
     gaLayersProvider.layersConfigUrlTemplate = 'https://example.com/all?lang={Lang}';
     gaLayersProvider.legendUrlTemplate = 'https://legendservice.com/all/{Layer}?lang={Lang}';
     gaLayersProvider.imageryMetadataUrl = '//3d.geo.admin.ch/imagery/';

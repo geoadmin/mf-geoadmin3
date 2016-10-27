@@ -124,7 +124,6 @@ goog.require('ga_urlutils_service');
             $scope.fileContent = null;
             $scope.userMessage = $translate.instant('reading_file');
             $scope.progress = 0.1;
-
             if (!fileReader) {
               // Initialize the fileReader
               fileReader = new FileReader();
@@ -149,7 +148,7 @@ goog.require('ga_urlutils_service');
             // Add the layer
             gaKml.addKmlToMap($scope.map, $scope.fileContent, {
               url: ($scope.currentTab === 2) ? $scope.fileUrl :
-                  $scope.file.name,
+                  URL.createObjectURL($scope.file),
               useImageVector: gaKml.useImageVector($scope.fileSize),
               zoomToExtent: true
             }).then(function() {

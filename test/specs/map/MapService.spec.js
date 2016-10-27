@@ -492,6 +492,7 @@ describe('ga_map_service', function() {
     var terrainTpl = '//3d.geo.admin.ch/1.0.0/{layer}/default/{time}/4326';
     var wmtsTpl = '//wmts{s}.geo.admin.ch/1.0.0/{layer}/default/{time}/4326/{z}/{y}/{x}.{format}';
     var wmtsMpTpl = window.location.protocol + '//wmts{s}.geo.admin.ch/1.0.0/{layer}/default/{time}/4326/{z}/{x}/{y}.{format}';
+    var vectorTilesTpl = '//vectortiles100.geo.admin.ch/{layer}/{time}/';
     var wmsTpl = '//wms{s}.geo.admin.ch/?layers={layer}&format=image%2F{format}&service=WMS&version=1.3.0&request=GetMap&crs=CRS:84&bbox={westProjected},{southProjected},{eastProjected},{northProjected}&width=512&height=512&styles=';
     var expectWmtsUrl = function(l, t, f) {
       return expectUrl(wmtsTpl, l, t, f);
@@ -504,6 +505,9 @@ describe('ga_map_service', function() {
     };
     var expectWmsUrl = function(l, f) {
       return expectUrl(wmsTpl, l, null, f);
+    };
+    var expectVectorTilesUrl = function(l, t) {
+      return expectUrl(vectorTilesTpl, l, t);
     };
     var expectUrl = function(tpl, l, t, f) {
       return tpl.replace('{layer}', l).replace('{time}', t).replace('{format}', f || 'png');
@@ -706,12 +710,12 @@ describe('ga_map_service', function() {
         $rootScope.$digest();
       });
 
-      it('uses current time', function(done) {
+      it('doesn\'t use crrent time', function(done) {
         gaTime.get = function() {return '2017';};
         gaLayers.loadConfig().then(function(layers) {
           var spy = sinon.spy(gaLayers, 'getLayerTimestampFromYear');
           var prov = gaLayers.getCesiumTerrainProviderById('terrain');
-          expect(spy.calledWith('terrain', '2017')).to.be(true);
+          expect(spy.calledWith(layersConfig.terrain, '2017')).to.be(true);
           done();
         });
         $httpBackend.flush();
@@ -727,6 +731,53 @@ describe('ga_map_service', function() {
         });
         $httpBackend.flush();
         $rootScope.$digest();
+      });
+    });
+
+    describe('#getCesiumTileset3DById' , function() {
+      var layersConfig = {
+        'ch.dummy.wms': {
+          type: 'wms',
+          config3d: 'ch.dummy.tileset.3d',
+          timestamps: [
+            '20170110'
+          ]
+        },
+        'ch.dummy.tileset.3d': {
+          type: 'tileset3d',
+          serverLayerName: 'ch.dummy.tileset.3d',
+          timestamps: [
+            '20170110'
+          ]
+        },
+        'ch.dummy.wms2': {
+          type: 'wms',
+          config3d: 'ch.dummy.badtype.3d',
+        },
+        'ch.dummy.badtype.3d': {
+          type: 'wmts'
+        }
+      };
+
+      beforeEach(function() {
+        $httpBackend.whenGET(expectedUrl).respond(layersConfig);
+        $httpBackend.flush();
+        $rootScope.$digest();
+      });
+
+      it('returns undefined when layer\'s type is not managed', function() {
+        var prov = gaLayers.getCesiumTileset3DById('ch.dummy.wms2');
+        expect(prov).to.eql(undefined);
+      });
+
+      it('returns a Cesium3DTileset object', function() {
+        var spy = sinon.spy(Cesium, 'Cesium3DTileset');
+        var prov = gaLayers.getCesiumTileset3DById('ch.dummy.wms');
+        expect(prov).to.be.an(Cesium.Cesium3DTileset);
+        var params = spy.args[0][0];
+        expect(params.url).to.eql(expectVectorTilesUrl('ch.dummy.tileset.3d', '20170110'));
+        expect(prov.bodId).to.be('ch.dummy.wms');
+        spy.restore();
       });
     });
 
@@ -887,6 +938,51 @@ describe('ga_map_service', function() {
           expect(item).to.be.an(Cesium.UrlTemplateImageryProvider);
         });
         expect(prov.length).to.be(3);
+      });
+    });
+
+    describe('#getCesiumDataSourceById' , function() {
+      var layersConfig = {
+        'ch.dummy.wms': {
+          type: 'wms',
+          config3d: 'ch.dummy.kml.3d',
+        },
+        'ch.dummy.kml.3d': {
+          type: 'kml',
+          url: 'http://foo.kml'
+        },
+        'ch.dummy.wms2': {
+          type: 'wms',
+          config3d: 'ch.dummy.badtype.3d',
+        },
+        'ch.dummy.badtype.3d': {
+          type: 'tileset3d'
+        }
+      };
+
+      beforeEach(function() {
+        $httpBackend.whenGET(expectedUrl).respond(layersConfig);
+        $httpBackend.flush();
+        $rootScope.$digest();
+      });
+
+      it('returns undefined when layer\'s type is not managed', function() {
+        var prov = gaLayers.getCesiumDataSourceById('ch.dummy.wms2');
+        expect(prov).to.eql(undefined);
+      });
+
+      it('loads DataSource with good params', function() {
+        var spy = sinon.stub(Cesium.KmlDataSource, 'load').returns('lala');
+        var scene = {camera: {}, canvas: {}};
+        var res = gaLayers.getCesiumDataSourceById('ch.dummy.wms', scene);
+        expect(res).to.be('lala');
+        expect(spy.callCount).to.be(1);
+        var args = spy.args[0];
+        expect(args[0]).to.be('http://foo.kml');
+        expect(args[1].camera).to.be(scene.camera);
+        expect(args[1].canvas).to.be(scene.canvas);
+        expect(args[1].proxy).to.be.an(Cesium.DefaultProxy);
+        spy.restore();
       });
     });
 

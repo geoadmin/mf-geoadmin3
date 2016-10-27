@@ -26,6 +26,7 @@ describe('ga_urlutils_service', function() {
         expect(gaUrlUtils.isValid('https://admin.ch/?mit space im query')).to.be(true);
         expect(gaUrlUtils.isValid('https://admin.ch/space in URLtrue?query')).to.be(true);
         expect(gaUrlUtils.isValid('https://domain admin.ch/space in URLfalse?query')).to.be(false);
+        expect(gaUrlUtils.isValid('blob:https://myblob.ch/7a910681-938c-4011-8d75-2b64035a40a7')).to.be(true);
       });
     });
 
@@ -46,6 +47,15 @@ describe('ga_urlutils_service', function() {
         expect(gaUrlUtils.isAdminValid('ftp://wms.geo.admin.ch')).to.be(true);
         expect(gaUrlUtils.isAdminValid('https://public.geo.admin.ch')).to.be(true);
         expect(gaUrlUtils.isAdminValid('https://public.dev.bgdi.ch')).to.be(true);
+        expect(gaUrlUtils.isAdminValid('blob:https://myblob.ch/7a910681-938c-4011-8d75-2b64035a40a7')).to.be(false);
+      });
+    });
+
+    describe('#isBlob()', function() {
+      it('verifies blob validity', function() {
+        expect(gaUrlUtils.isBlob('blob:http://public.geo.admin.ch')).to.be(true);
+        expect(gaUrlUtils.isBlob('noblob:http://public.geo.bgdi.ch')).to.be(false);
+        expect(gaUrlUtils.isBlob('http://public.geo.bgdi.ch')).to.be(false);
       });
     });
 
@@ -65,7 +75,6 @@ describe('ga_urlutils_service', function() {
         expect(gaUrlUtils.needsProxy('http://public.geo.admin.ch')).to.be(true);
         expect(gaUrlUtils.needsProxy('https://public.geo.admin.ch/')).to.be(false);
         expect(gaUrlUtils.needsProxy('http://data.geo.admin.ch')).to.be(true);
-
         expect(gaUrlUtils.needsProxy('https://data.geo.admin.ch')).to.be(false);
         expect(gaUrlUtils.needsProxy('https://google.com')).to.be(true);
         expect(gaUrlUtils.needsProxy('https://admin.ch')).to.be(true);
@@ -74,6 +83,7 @@ describe('ga_urlutils_service', function() {
         expect(gaUrlUtils.needsProxy('https://public.geo.admin.ch/test.kml')).to.be(false);
         expect(gaUrlUtils.needsProxy('https://data.geo.admin.ch/test.kml')).to.be(false);
         expect(gaUrlUtils.needsProxy('https://public.geo.admin.ch/test.kmz')).to.be(true);
+        expect(gaUrlUtils.needsProxy('blob:https://myblob.ch/7a910681-938c-4011-8d75-2b64035a40a7')).to.be(false);
       });
     });
 
@@ -81,6 +91,7 @@ describe('ga_urlutils_service', function() {
       it('applies proxy correctly', function() {
         expect(gaUrlUtils.proxifyUrl('http://data.geo.admin.ch')).to.be(window.location.protocol + '//api3.geo.admin.ch/ogcproxy?url=http%3A%2F%2Fdata.geo.admin.ch');
         expect(gaUrlUtils.proxifyUrl('https://data.geo.admin.ch')).to.be('https://data.geo.admin.ch');
+        expect(gaUrlUtils.proxifyUrl('blob:https://myblob.ch/7a910681-938c-4011-8d75-2b64035a40a7')).to.be('blob:https://myblob.ch/7a910681-938c-4011-8d75-2b64035a40a7');
       });
     });
 
@@ -125,6 +136,7 @@ describe('ga_urlutils_service', function() {
         expect(gaUrlUtils.isThirdPartyValid('http://public.bgdi.ch')).to.be(false);
         expect(gaUrlUtils.isThirdPartyValid('http://public.fre.bgdi.ch/dfilghjdfigfdj')).to.be(true);
         expect(gaUrlUtils.isThirdPartyValid('https://wms.geo.admin.ch')).to.be(false);
+        expect(gaUrlUtils.isThirdPartyValid('blob:https://myblob.ch/7a910681-938c-4011-8d75-2b64035a40a7')).to.be(true);
       });
     });
 
@@ -137,6 +149,7 @@ describe('ga_urlutils_service', function() {
         expect(gaUrlUtils.isPublicValid('http://heig.ch')).to.be(false);
         expect(gaUrlUtils.isPublicValid('http://bgdi.ch')).to.be(false);
         expect(gaUrlUtils.isPublicValid('ftp://wms.geo.admin.ch')).to.be(false);
+        expect(gaUrlUtils.isPublicValid('blob:https://mf-geoadmin3.dev.bgdi.ch/7a910681-938c-4011-8d75-2b64035a40a7')).to.be(false);
       });
     });
 
