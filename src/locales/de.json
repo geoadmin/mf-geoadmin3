@@ -373,6 +373,7 @@
 "swisstopo": "swisstopo",
 "swisstopo_service_link_href": "https://www.swisstopo.admin.ch/de/home.html",
 "swisstopo_service_link_label": "Bundesamt für Landestopografie swisstopo",
+"test_host_warning": "TESTSEITE – NICHT TEILEN -  NICHT FÜR PRODUKTIVEN GEBRAUCH<br/>Diese Seites ist für nur für Testzweck und sollte nicht in produktivem Umfeld eingesetzt werden. Es existiert absolut keine Garantie für den Gebrauch.",
 "text_to_display": "Link Beschreibung",
 "time_all": "Alle",
 "time_bt_disabled_tooltip": "Die Darstellung von Zeitständen ist nur mit historisierten Daten möglich. Sie müssen zuerst einen historisierten Datensatz in die Karte laden.",

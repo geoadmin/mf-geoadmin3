@@ -141,7 +141,7 @@ itemscope itemtype="http://schema.org/WebApplication"
       <div ga-seo ga-seo-options="options" ga-seo-map="map"></div>
     </div>
 % if device != 'embed':
-    <div ng-cloak translate-cloak id="header" class="navbar navbar-fixed-top">
+    <div ng-cloak translate-cloak id="header" class="navbar navbar-fixed-top" ng-class="{'host-not-prod': !globals.hostIsProd}">
       <a href="?topic={{topicId}}&lang={{langId}}">
         <div id="logo" class="pull-left ga-logo">
           <i class="fa fa-ga-logo-bund"></i>
@@ -154,6 +154,9 @@ itemscope itemtype="http://schema.org/WebApplication"
   % if device == 'desktop':
         <span ga-help="24,31,25" ga-help-options="{showOnHover:true}"></span>
   % endif
+        <div class="warning-not-prod" ng-if="!globals.hostIsProd">
+          <span translate>test_host_warning</span>
+        </div>
       </div>
   % if device == 'desktop':
       <div id="toptools">
@@ -773,6 +776,10 @@ itemscope itemtype="http://schema.org/WebApplication"
         // Because s3 is hosted on infra
         var supportedEnv = ['dev', 'int', 'prod', 'ci'];
         var staging = '${staging}';
+        var hostIsProd = true;
+        if (/.*\.(dev|int|ci|infra|prod)\.bgdi\.ch$/.test(location.hostname)) {
+          hostIsProd = false;
+        }
 
         // Determines if one is using custom prodUrl (for user env)
         var userEnvRegexp = new RegExp('\/\/.*(\/[a-z]*)');
@@ -834,7 +841,8 @@ itemscope itemtype="http://schema.org/WebApplication"
           defaultEpsgExtent: JSON.parse(${default_epsg_extend}),
           defaultElevationModel: '${default_elevation_model}',
           defaultTerrain: '${default_terrain}',
-          languages: JSON.parse(${languages})
+          languages: JSON.parse(${languages}),
+          hostIsProd: hostIsProd
         });
 
         module.config(function($translateProvider, gaGlobalOptions) {

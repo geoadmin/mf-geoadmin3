@@ -435,5 +435,6 @@
   "profile_hike_time": "",
   "geolocation": "",
   "contextpopup_lv03_url": "",
-  "contextpopup_lv95_url": ""
+  "contextpopup_lv95_url": "",
+  "test_host_warning": ""
 }
