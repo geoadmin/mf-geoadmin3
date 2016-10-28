@@ -73,7 +73,7 @@ goog.require('ga_urlutils_service');
         // Replace all old maki urls image by the color service url
         // Test regex here: https://regex101.com/r/rF2tA1/3
         kml = kml.replace(
-          /<href>https?:\/\/[a-z\d\.\-]*(bgdi|geo.admin)\.ch[a-zA-Z\d\-_\/]*img\/maki\/([a-z]*-24@2x\.png)/g,
+          /<href>https?:\/\/[a-z\d\.\-]*(bgdi|geo.admin)\.ch[a-zA-Z\d\-_\/]*img\/maki\/([a-z\-]*-24@2x\.png)/g,
           '<href>' + gaGlobalOptions.apiUrl + '/color/255,0,0/$2'
         );
 
@@ -153,7 +153,7 @@ goog.require('ga_urlutils_service');
           // OL applies a default scale multiplier to 0.5
           // https://github.com/openlayers/ol3/blob/master/src/ol/format/kml.js#L622
           // https://github.com/openlayers/ol3/pull/5745
-          if (image && image.getScale()) {
+          if (image && image.getScale() && image.getScale() != 1) {
             image.setScale(Math.sqrt(image.getScale() * 2));
           }
 

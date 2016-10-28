@@ -52,6 +52,12 @@ describe('ga_kml_service', function() {
         '<color>7f101112</color>' +
       '</LabelStyle>' +
     '</Style>';
+  var styleLabelScale = '<Style id="styleLabelScale">' +
+      '<LabelStyle>' +
+        '<color>7f101112</color>' +
+        '<scale>0.7</scale>' +
+      '</LabelStyle>' +
+    '</Style>';
   var styleLabelScale0 = '<Style id="styleLabelScale0">' +
       '<LabelStyle>' +
         '<color>7f101112</color>' +
@@ -65,16 +71,20 @@ describe('ga_kml_service', function() {
         '</Icon>' +
       '</IconStyle>' +
     '</Style>';
+  var styleIconScale = '<Style id="styleIconScale">' +
+      '<IconStyle>' +
+        '<scale>0.7</scale>' +
+        '<Icon>' +
+          '\n<href>http://voila.fr/ki.pmg</href>' +
+        '</Icon>' +
+      '</IconStyle>' +
+    '</Style>';
   var styleIconScale0 = '<Style id="styleIconScale0">' +
       '<IconStyle>' +
         '<scale>0</scale>' +
         '<Icon>' +
           '\n<href>http://voila.fr/ki.pmg</href>' +
-          '<scale>0</scale>' +
-
         '</Icon>' +
-        '<scale>0</scale>' +
-
       '</IconStyle>' +
     '</Style>';
 
@@ -394,10 +404,12 @@ describe('ga_kml_service', function() {
 
       it('replaces old maki urls by color service', function(done) {
         var hrefs = [
+          'http://map.geo.admin.ch/1465993254/img/maki/square-stroked-24@2x.png',
+          'http://map.geo.admin.ch/master/3ea0981/1471529293/1471529293/img/maki/triangle-stroked-24@2x.png',
           'http://map.geo.admin.ch/aaa/aA4-aA4_aA61470313709/img/maki/marker-24@2x.png',
           'http://mf-geoadmin3.dev.bgdi.ch/aaa/aA4-aA4_aA6/img/maki/marker-24@2x.png',
           'https://map.geo.admin.ch/1470313709/img/maki/marker-24@2x.png',
-          'https://mf-geoadmin3.dev.bgdi.ch/aaa/aA4-aA4_aA6/img/maki/marker-24@2x.png'
+          'https://mf-geoadmin3.int.bgdi.ch/aaa/aA4-aA4_aA6/img/maki/marker-24@2x.png'
         ];
         var kml = '<kml>';
         hrefs.forEach(function(href) {
@@ -409,8 +421,8 @@ describe('ga_kml_service', function() {
           feats.forEach(function(feat, idx) {
             var src = feat.getStyleFunction().call(feat)[0].getImage().getSrc();
             expect(src.indexOf('/color/255,0,0') != -1).to.be(true);
-            done();
           });
+          done();
         });
         $rootScope.$digest();
       });
@@ -631,6 +643,57 @@ describe('ga_kml_service', function() {
           var style = feat.getStyleFunction().call(feat)[0];
           expect(style.getImage().getFill().getColor()).to.eql(dfltStyle.getImage().getFill().getColor());
           expect(style.getImage().getStroke().getColor()).to.eql(dfltStyle.getImage().getStroke().getColor());
+          expect(style.getImage().getScale()).to.eql(1);
+          done();
+        });
+        $rootScope.$digest();
+      });
+
+      it('uses a correct user\'s style defined', function(done) {
+        // WARNING: <Document> tag is needed to parse styles
+        var kml = '<kml><Document>' +
+            styleIcon +
+            createValidPlkPoint(undefined, '#styleIcon') +
+            styleIconScale +
+            createValidPlkPoint(undefined, '#styleIconScale') +
+            createValidPlkPoint(undefined, '#styleIconScale') +
+          '</Document></kml>';
+        var trsp = [0, 0, 0, 0];
+        var trspStyle = new ol.style.Circle({
+          radius: 1,
+          fill: new ol.style.Fill({color: trsp}),
+          stroke: new ol.style.Stroke({color: trsp})
+        });
+        gaStyleFactoryMock.expects('getStyle').once()
+            .withArgs('kml').returns(dfltStyle);
+        var getStyle = gaStyleFactoryMock.expects('getStyle').never();
+
+        gaKml.addKmlToMap(map, kml).then(function(olLayer) {
+          getStyle.verify();
+          var feat = olLayer.getSource().getFeatures()[0];
+          var style = feat.getStyleFunction().call(feat)[0];
+          expect(style.getImage()).to.be.an(ol.style.Icon);
+          expect(style.getImage().getSrc()).to.eql('https://api3.geo.admin.ch/ogcproxy?url=http://voila.fr/ki.pmg');
+          expect(style.getImage().getScale()).to.eql(1);
+          expect(style.getImage().getRotateWithView()).to.eql(false);
+          expect(style.getImage().getAnchor()).to.eql(null);
+          expect(style.getImage().getOpacity()).to.eql(1);
+          expect(style.getImage().getRotation()).to.eql(0);
+
+          feat = olLayer.getSource().getFeatures()[1];
+          style = feat.getStyleFunction().call(feat)[0];
+          expect(style.getImage()).to.be.an(ol.style.Icon);
+          expect(style.getImage().getSrc()).to.eql('https://api3.geo.admin.ch/ogcproxy?url=http://voila.fr/ki.pmg');
+          expect(style.getImage().getScale()).to.eql(0.8366600265340756);
+          expect(style.getImage().getRotateWithView()).to.eql(false);
+          expect(style.getImage().getAnchor()).to.eql(null);
+          expect(style.getImage().getOpacity()).to.eql(1);
+          expect(style.getImage().getRotation()).to.eql(0);
+
+          /// Test if the style is well cloned
+          feat = olLayer.getSource().getFeatures()[2];
+          style = feat.getStyleFunction().call(feat)[0];
+          expect(style.getImage().getScale()).to.eql(0.8366600265340756);
           done();
         });
         $rootScope.$digest();
@@ -645,6 +708,7 @@ describe('ga_kml_service', function() {
           var feat = olLayer.getSource().getFeatures()[0];
           var style = feat.getStyleFunction().call(feat)[0];
           expect(style.getFill().getColor()).to.eql(dfltStyle.getFill().getColor());
+          expect(style.getStroke().getWidth()).to.eql(dfltStyle.getStroke().getWidth());
           expect(style.getStroke().getColor()).to.eql(dfltStyle.getStroke().getColor());
           done();
         });
@@ -674,6 +738,7 @@ describe('ga_kml_service', function() {
           var feat = olLayer.getSource().getFeatures()[0];
           var style = feat.getStyleFunction().call(feat)[0];
           expect(style.getImage() instanceof ol.style.Circle).to.be(true);
+          expect(style.getImage().getScale()).to.be(1);
           expect(style.getImage().getFill().getColor()).to.eql(dfltStyle.getImage().getFill().getColor());
           done();
         });
@@ -715,6 +780,61 @@ describe('ga_kml_service', function() {
           $rootScope.$digest();
         });
 
+        it('with correct default style', function(done) {
+          // WARNING: <Document> tag is needed to parse styles
+          var kml = '<kml><Document>' +
+              createValidPlkPoint() +
+            '</Document></kml>';
+
+          gaKml.addKmlToMap(map, kml).then(function(olLayer) {
+            var feats = olLayer.getSource().getFeatures();
+            var style = feats[0].getStyleFunction().call(feats[0])[0];
+            var text = style.getText();
+            expect(text.getFont()).to.be('normal 16px Helvetica');
+            expect(text.getText()).to.be('Point');
+            expect(text.getFill().getColor()).to.eql([255, 0, 0, 0.7]);
+            expect(text.getStroke().getColor()).to.eql([255, 255, 255, 1]);
+            expect(text.getScale()).to.be(undefined);
+            done();
+          });
+          $rootScope.$digest();
+        });
+
+        it('with correct user\'s style defined', function(done) {
+          // WARNING: <Document> tag is needed to parse styles
+          var kml = '<kml><Document>' +
+              styleLabel +
+              createValidPlkPoint(undefined, 'styleLabel') +
+              styleLabelScale +
+              createValidPlkPoint(undefined, 'styleLabelScale') +
+              styleLabelScale0 +
+              createValidPlkPoint(undefined, 'styleLabelScale0') +
+            '</Document></kml>';
+
+          gaKml.addKmlToMap(map, kml).then(function(olLayer) {
+            var feats = olLayer.getSource().getFeatures();
+            var style = feats[0].getStyleFunction().call(feats[0])[0];
+            var text = style.getText();
+            expect(text.getFont()).to.be('normal 16px Helvetica');
+            expect(text.getText()).to.be('Point');
+            expect(text.getFill().getColor()).to.eql([18, 17, 16, 0.4980392156862745]);
+            expect(text.getStroke().getColor()).to.eql([255, 255, 255, 1]);
+            expect(text.getScale()).to.be(undefined);
+            style = feats[1].getStyleFunction().call(feats[0])[0];
+            text = style.getText();
+            expect(text.getFont()).to.be('normal 16px Helvetica');
+            expect(text.getText()).to.be('Point');
+            expect(text.getFill().getColor()).to.eql([18, 17, 16, 0.4980392156862745]);
+            expect(text.getStroke().getColor()).to.eql([255, 255, 255, 1]);
+            expect(text.getScale()).to.be(0.8366600265340756);
+            style = feats[2].getStyleFunction().call(feats[0])[0];
+            text = style.getText();
+            expect(text).to.be(null);
+            done();
+          });
+          $rootScope.$digest();
+        });
+
         it('with transparent circle if image\'s scale == 0', function(done) {
           // WARNING: <Document> tag is needed to parse styles
           var kml = '<kml><Document>' +
@@ -739,6 +859,7 @@ describe('ga_kml_service', function() {
             expect(style.getImage() instanceof ol.style.Circle).to.be(true);
             expect(style.getImage().getFill().getColor()).to.eql(trsp);
             expect(style.getImage().getStroke().getColor()).to.eql(trsp);
+            expect(style.getImage().getScale()).to.eql(1);
             done();
           });
           $rootScope.$digest();
@@ -1007,8 +1128,6 @@ describe('ga_kml_service', function() {
         addKmlToMap.verify();
         isValid.verify();
       });
-
-
     });
   });
 });
