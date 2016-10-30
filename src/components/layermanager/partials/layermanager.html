@@ -7,7 +7,7 @@
     <div class="ga-layer-infos ga-grab">
       <button class="ga-icon ga-btn fa fa-remove-sign"
               ng-click="removeLayer(layer)"></button>
-      <label class="ga-checkbox">
+      <label class="ga-checkbox" title="{{layer.label}}">
         <input type="checkbox" ng-model="layer.visible" />
         <span></span>
         {{layer.label}}
