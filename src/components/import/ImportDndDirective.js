@@ -71,7 +71,7 @@ goog.require('ga_urlutils_service');
                 $window.alert($translate.instant(err.message));
               });
             } else {
-              $window.alert($translate.instant('drop_invalid_url') + text);
+              $window.alert($translate.instant('invalid_url') + text);
             }
           }
         });
