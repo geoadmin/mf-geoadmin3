@@ -117,15 +117,40 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions,
     scene.screenSpaceCameraController.inertiaTranslate = 0.8;
     scene.screenSpaceCameraController.inertiaZoom = 0.9;
     scene.screenSpaceCameraController.minimumZoomDistance = 2;
+    
+    // Set good time for lighting
+    var d = new Date();
+    d.setUTCHours(8);
+    var jDate = Cesium.JulianDate.fromDate(d);
     enableOl3d(cesiumViewer, enabled);
 
     // Tileset 3D
     var tileset3d = (gaPermalink.getParams()['tileset3d'] || '').split(',');
-    tileset3d.push('ch.swisstopo.swisstlm3d.3d',
-        'ch.swisstopo.swissnames3d.3d');
+    tileset3d.push('ch.swisstopo.swissnames3d.3d',
+        'ch.swisstopo.swisstlm3d.3d');
     tileset3d.forEach(function(tileset3dId) {
       if (tileset3dId) {
-        scene.primitives.add(gaLayers.getCesiumTileset3DById(tileset3dId));
+        var tileset = gaLayers.getCesiumTileset3DById(tileset3dId);
+        if (/names3d\.3d/.test(tileset3dId)) {
+          /*tileset.style = new Cesium.Cesium3DTileStyle({
+            "show" : "true",
+            "color" : "rgb(100, 255, 190)"
+          });*/
+          /*tileset.style = new Cesium.Cesium3DTileStyle({
+            color: {
+              conditions: [
+                ['${Height} >= 100', 'color("orange", 0.5)'],
+                ['${Height} < 100', 'color("blue")'],
+                ['true', 'color("blue")']
+              ]
+            },
+            show: '${Height} > 0',
+            meta: {
+              description:'"Building id ${id} has height ${Height}."'
+            }
+          });*/
+        }
+        scene.primitives.add(tileset);
       }
     });
     return cesiumViewer;
@@ -159,8 +184,7 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions,
     var transform = Cesium.Matrix4.fromTranslation(bottom);
     if (enable) {
       //Show warning on IE browsers
-      if (gaBrowserSniffer.msie &&
-          gaBrowserSniffer.msie <= 11) {
+      if (gaBrowserSniffer.msie && gaBrowserSniffer.msie <= 11) {
         alert($translate.instant('3d_ie11_alert'));
       }
       // 2d -> 3d transition
