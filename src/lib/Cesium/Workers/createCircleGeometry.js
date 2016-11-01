@@ -5022,10 +5022,10 @@ define('Core/Matrix3',[
 
         var determinant = Matrix3.determinant(matrix);
 
-        if (Math.abs(determinant) <= CesiumMath.EPSILON15) {
+                if (Math.abs(determinant) <= CesiumMath.EPSILON15) {
             throw new DeveloperError('matrix is not invertible');
         }
-
+        
         result[0] = m22 * m33 - m23 * m32;
         result[1] = m23 * m31 - m21 * m33;
         result[2] = m21 * m32 - m22 * m31;
@@ -13281,9 +13281,9 @@ define('Core/ComponentDatatype',[
             return Float32Array.BYTES_PER_ELEMENT;
         case ComponentDatatype.DOUBLE:
             return Float64Array.BYTES_PER_ELEMENT;
-        default:
+                default:
             throw new DeveloperError('componentDatatype is not a valid value.');
-        }
+                }
     };
 
     /**
@@ -13380,9 +13380,9 @@ define('Core/ComponentDatatype',[
             return new Float32Array(valuesOrLength);
         case ComponentDatatype.DOUBLE:
             return new Float64Array(valuesOrLength);
-        default:
+                default:
             throw new DeveloperError('componentDatatype is not a valid value.');
-        }
+                }
     };
 
     /**
@@ -13424,9 +13424,9 @@ define('Core/ComponentDatatype',[
             return new Float32Array(buffer, byteOffset, length);
         case ComponentDatatype.DOUBLE:
             return new Float64Array(buffer, byteOffset, length);
-        default:
+                default:
             throw new DeveloperError('componentDatatype is not a valid value.');
-        }
+                }
     };
 
     /**
@@ -13455,9 +13455,9 @@ define('Core/ComponentDatatype',[
                 return ComponentDatatype.FLOAT;
             case 'DOUBLE':
                 return ComponentDatatype.DOUBLE;
-            default:
+                        default:
                 throw new DeveloperError('name is not a valid value.');
-        }
+                    }
     };
 
     return freezeObject(ComponentDatatype);
@@ -15132,10 +15132,10 @@ define('Core/Geometry',[
 
                 var attribute = geometry.attributes[property];
                 var num = attribute.values.length / attribute.componentsPerAttribute;
-                if ((numberOfVertices !== num) && (numberOfVertices !== -1)) {
+                                if ((numberOfVertices !== num) && (numberOfVertices !== -1)) {
                     throw new DeveloperError('All attribute lists must have the same number of attributes.');
                 }
-                numberOfVertices = num;
+                                numberOfVertices = num;
             }
         }
 
@@ -18342,9 +18342,9 @@ define('Core/GeometryPipeline',[
                 case PrimitiveType.TRIANGLE_FAN:
                     geometry.indices = triangleFanToLines(indices);
                     break;
-                default:
+                                default:
                     throw new DeveloperError('geometry.primitiveType must be TRIANGLES, TRIANGLE_STRIP, or TRIANGLE_FAN.');
-            }
+                            }
 
             geometry.primitiveType = PrimitiveType.LINES;
         }
@@ -18805,10 +18805,10 @@ define('Core/GeometryPipeline',[
             var value = Cartesian3.fromArray(values3D, i, scratchProjectTo2DCartesian3);
 
             var lonLat = ellipsoid.cartesianToCartographic(value, scratchProjectTo2DCartographic);
-            if (!defined(lonLat)) {
+                        if (!defined(lonLat)) {
                 throw new DeveloperError('Could not project point (' + value.x + ', ' + value.y + ', ' + value.z + ') to 2D.');
             }
-
+            
             var projectedLonLat = projection.project(lonLat, scratchProjectTo2DCartesian3);
 
             projectedValues[index++] = projectedLonLat.x;
@@ -22454,20 +22454,20 @@ define('Core/JulianDate',[
         var time = tokens[1];
         var tmp;
         var inLeapYear;
-        if (!defined(date)) {
+                if (!defined(date)) {
             throw new DeveloperError(iso8601ErrorMessage);
         }
 
         var dashCount;
-
+        
         //First match the date against possible regular expressions.
         tokens = date.match(matchCalendarDate);
         if (tokens !== null) {
-            dashCount = date.split('-').length - 1;
+                        dashCount = date.split('-').length - 1;
             if (dashCount > 0 && dashCount !== 2) {
                 throw new DeveloperError(iso8601ErrorMessage);
             }
-            year = +tokens[1];
+                        year = +tokens[1];
             month = +tokens[2];
             day = +tokens[3];
         } else {
@@ -22490,10 +22490,10 @@ define('Core/JulianDate',[
                         inLeapYear = isLeapYear(year);
 
                         //This validation is only applicable for this format.
-                        if (dayOfYear < 1 || (inLeapYear && dayOfYear > 366) || (!inLeapYear && dayOfYear > 365)) {
+                                                if (dayOfYear < 1 || (inLeapYear && dayOfYear > 366) || (!inLeapYear && dayOfYear > 365)) {
                             throw new DeveloperError(iso8601ErrorMessage);
                         }
-                    } else {
+                                            } else {
                         tokens = date.match(matchWeekDate);
                         if (tokens !== null) {
                             //ISO week date to ordinal date from
@@ -22502,19 +22502,19 @@ define('Core/JulianDate',[
                             var weekNumber = +tokens[2];
                             var dayOfWeek = +tokens[3] || 0;
 
-                            dashCount = date.split('-').length - 1;
+                                                        dashCount = date.split('-').length - 1;
                             if (dashCount > 0 &&
                                ((!defined(tokens[3]) && dashCount !== 1) ||
                                (defined(tokens[3]) && dashCount !== 2))) {
                                 throw new DeveloperError(iso8601ErrorMessage);
                             }
-
+                            
                             var january4 = new Date(Date.UTC(year, 0, 4));
                             dayOfYear = (weekNumber * 7) + dayOfWeek - january4.getUTCDay() - 3;
                         } else {
                             //None of our regular expressions succeeded in parsing the date properly.
-                            throw new DeveloperError(iso8601ErrorMessage);
-                        }
+                                                        throw new DeveloperError(iso8601ErrorMessage);
+                                                    }
                     }
                     //Split an ordinal date into month/day.
                     tmp = new Date(Date.UTC(year, 0, 1));
@@ -22527,20 +22527,20 @@ define('Core/JulianDate',[
 
         //Now that we have all of the date components, validate them to make sure nothing is out of range.
         inLeapYear = isLeapYear(year);
-        if (month < 1 || month > 12 || day < 1 || ((month !== 2 || !inLeapYear) && day > daysInMonth[month - 1]) || (inLeapYear && month === 2 && day > daysInLeapFeburary)) {
+                if (month < 1 || month > 12 || day < 1 || ((month !== 2 || !inLeapYear) && day > daysInMonth[month - 1]) || (inLeapYear && month === 2 && day > daysInLeapFeburary)) {
             throw new DeveloperError(iso8601ErrorMessage);
         }
-
+        
         //Not move onto the time string, which is much simpler.
         var offsetIndex;
         if (defined(time)) {
             tokens = time.match(matchHoursMinutesSeconds);
             if (tokens !== null) {
-                dashCount = time.split(':').length - 1;
+                                dashCount = time.split(':').length - 1;
                 if (dashCount > 0 && dashCount !== 2 && dashCount !== 3) {
                     throw new DeveloperError(iso8601ErrorMessage);
                 }
-
+                
                 hour = +tokens[1];
                 minute = +tokens[2];
                 second = +tokens[3];
@@ -22549,11 +22549,11 @@ define('Core/JulianDate',[
             } else {
                 tokens = time.match(matchHoursMinutes);
                 if (tokens !== null) {
-                    dashCount = time.split(':').length - 1;
+                                        dashCount = time.split(':').length - 1;
                     if (dashCount > 2) {
                         throw new DeveloperError(iso8601ErrorMessage);
                     }
-
+                    
                     hour = +tokens[1];
                     minute = +tokens[2];
                     second = +(tokens[3] || 0) * 60.0;
@@ -22565,16 +22565,16 @@ define('Core/JulianDate',[
                         minute = +(tokens[2] || 0) * 60.0;
                         offsetIndex = 3;
                     } else {
-                        throw new DeveloperError(iso8601ErrorMessage);
-                    }
+                                                throw new DeveloperError(iso8601ErrorMessage);
+                                            }
                 }
             }
 
             //Validate that all values are in proper range.  Minutes and hours have special cases at 60 and 24.
-            if (minute >= 60 || second >= 61 || hour > 24 || (hour === 24 && (minute > 0 || second > 0 || millisecond > 0))) {
+                        if (minute >= 60 || second >= 61 || hour > 24 || (hour === 24 && (minute > 0 || second > 0 || millisecond > 0))) {
                 throw new DeveloperError(iso8601ErrorMessage);
             }
-
+            
             //Check the UTC offset value, if no value exists, use local time
             //a Z indicates UTC, + or - are offsets.
             var offset = tokens[offsetIndex];
@@ -23883,8 +23883,8 @@ define('Core/loadWithXhr',[
             case 'json':
                 return JSON.parse(decodeDataUriText(isBase64, data));
             default:
-                throw new DeveloperError('Unhandled responseType: ' + responseType);
-        }
+                                throw new DeveloperError('Unhandled responseType: ' + responseType);
+                        }
     }
 
     // This is broken out into a separate function so that it can be mocked for testing purposes.
@@ -25312,10 +25312,10 @@ define('Core/buildModuleUrl',[
             baseUrlString = getBaseUrlFromCesiumScript();
         }
 
-        if (!defined(baseUrlString)) {
+                if (!defined(baseUrlString)) {
             throw new DeveloperError('Unable to determine Cesium base URL automatically, try defining a global variable called CESIUM_BASE_URL.');
         }
-
+        
         baseUrl = new Uri(getAbsoluteUri(baseUrlString));
 
         return baseUrl;

@@ -5022,10 +5022,10 @@ define('Core/Matrix3',[
 
         var determinant = Matrix3.determinant(matrix);
 
-        if (Math.abs(determinant) <= CesiumMath.EPSILON15) {
+                if (Math.abs(determinant) <= CesiumMath.EPSILON15) {
             throw new DeveloperError('matrix is not invertible');
         }
-
+        
         result[0] = m22 * m33 - m23 * m32;
         result[1] = m23 * m31 - m21 * m33;
         result[2] = m21 * m32 - m22 * m31;
@@ -13281,9 +13281,9 @@ define('Core/ComponentDatatype',[
             return Float32Array.BYTES_PER_ELEMENT;
         case ComponentDatatype.DOUBLE:
             return Float64Array.BYTES_PER_ELEMENT;
-        default:
+                default:
             throw new DeveloperError('componentDatatype is not a valid value.');
-        }
+                }
     };
 
     /**
@@ -13380,9 +13380,9 @@ define('Core/ComponentDatatype',[
             return new Float32Array(valuesOrLength);
         case ComponentDatatype.DOUBLE:
             return new Float64Array(valuesOrLength);
-        default:
+                default:
             throw new DeveloperError('componentDatatype is not a valid value.');
-        }
+                }
     };
 
     /**
@@ -13424,9 +13424,9 @@ define('Core/ComponentDatatype',[
             return new Float32Array(buffer, byteOffset, length);
         case ComponentDatatype.DOUBLE:
             return new Float64Array(buffer, byteOffset, length);
-        default:
+                default:
             throw new DeveloperError('componentDatatype is not a valid value.');
-        }
+                }
     };
 
     /**
@@ -13455,9 +13455,9 @@ define('Core/ComponentDatatype',[
                 return ComponentDatatype.FLOAT;
             case 'DOUBLE':
                 return ComponentDatatype.DOUBLE;
-            default:
+                        default:
                 throw new DeveloperError('name is not a valid value.');
-        }
+                    }
     };
 
     return freezeObject(ComponentDatatype);
@@ -13759,10 +13759,10 @@ define('Core/Geometry',[
 
                 var attribute = geometry.attributes[property];
                 var num = attribute.values.length / attribute.componentsPerAttribute;
-                if ((numberOfVertices !== num) && (numberOfVertices !== -1)) {
+                                if ((numberOfVertices !== num) && (numberOfVertices !== -1)) {
                     throw new DeveloperError('All attribute lists must have the same number of attributes.');
                 }
-                numberOfVertices = num;
+                                numberOfVertices = num;
             }
         }
 
