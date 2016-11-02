@@ -115,7 +115,7 @@ goog.require('ga_file_service');
           })['finally'](function() {
              scope.fileReader = null;
              scope.loading = false;
-             timeoutP = $timeout(initUserMsg, 10000);
+             timeoutP = $timeout(initUserMsg, 5000);
           });
         };
       }

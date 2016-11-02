@@ -42,10 +42,11 @@ goog.require('ga_urlutils_service');
             defer.resolve(evt.target.result);
           };
           fileReader.onerror = function(evt) {
-            $window.console.error('Reading file failed: ', evt.target.error);
+            var err = evt.target.error;
+            $window.console.error('Reading file failed: ', err);
             defer.reject({
-              message: 'read_failed',
-              reason: evt.target.error.code
+              message: err.code == 20 ? 'operation_canceled' : 'read_failed',
+              reason: err.message
             });
           };
           fileReader.onprogress = function(evt) {

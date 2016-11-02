@@ -12,7 +12,7 @@
 <div class="tabbable-footer" >
   <button type="button" class="btn btn-default btn-sm ga-load"
           ng-class="{'btn-danger': loading}"
-          ng-disabled="!file || !isValid(file) || (loading && !fileReader)"
+          ng-disabled="!isValid(file) || (loading && !fileReader)"
           ng-click="loading ? cancel() : handleFile()">
     <span translate>{{userMessage}}</span>
   </button>
