@@ -568,7 +568,6 @@ describe('ga_measure_service', function() {
         });
 
         it('updates overlays on each feature change event', function() {
-          console.log('begin');
           feat.setGeometry(geom);
           gaMeasure.addOverlays(map, layer, feat);
           expect(feat.get('overlays')).to.be.an(ol.Collection);
