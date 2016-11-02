@@ -1,8 +1,11 @@
-<div class="ga-topic-item"
-     ng-repeat="topic in ::topics"
-     ng-click="setActiveTopic(topic)"
-     ng-class="{'ga-topic-active': topic == activeTopic}"
-     data-original-title="{{topic.tooltip | translate}}">
-  <div translate>{{::topic.id}}</div>
-  <div class="ga-topics-sprite ga-topics-sprite-{{::topic.id}}"></div>
+<div class="ga-topic-group" ng-repeat="topicG in ::groupedTopics() | filter:topicPerGroup">
+  <div class="ga-topic-group-wrapper ga-topic-group-wrapper-{{::topicG.topicGroup}}">
+    <div ng-repeat="topic in topics | filter:{topicGroup: topicG.topicGroup}">
+      <div class="ga-topic-item" ng-click="setActiveTopic(topic)"
+         ng-class="{'ga-topic-active': topic == activeTopic}"
+         data-original-title="{{topic.tooltip | translate}}">
+      <div translate>{{::topic.id}}</div>
+      <div class="ga-topics-sprite ga-topics-sprite-{{::topic.id}}"></div>
+    </div>
+  </div>
 </div>
