@@ -74,7 +74,10 @@ describe('ga_realtimelayers_service', function() {
 
       module(function($provide) {
         $provide.value('gaLayers', {
-          loadConfig: function() {}
+          loadConfig: function() {},
+          getLayerProperty: function(bodId, b) {
+            return 'https://data.geo.admin.ch/' + bodId + '/' + bodId + '_' + gaLang.get() + '.json';
+          }
         });
         var lang = 'custom';
         $provide.value('gaLang', {
@@ -83,7 +86,7 @@ describe('ga_realtimelayers_service', function() {
           },
           set: function(l) {
             lang = l;
-            $rootScope.$broadcast('$translateChangeEnd', lang);
+            $rootScope.$broadcast('gaLayersTranslationChange');
           }
         });
 
@@ -195,10 +198,11 @@ describe('ga_realtimelayers_service', function() {
       var layer = map.getLayers().item(0);
       expect(layer.getSource().getFeatures().length).to.be(1);
 
-      // Here we don't test the change of the url because it's done in another
-      // service, we only test if the data are requetsed on language change.
+      var newLang = 'custom2';
+      dataUrl = dataUrl.replace('_custom', '_' + newLang);
       $httpBackend.expectGET(dataUrl).respond(jsonData1);
       gaLang.set('custom2');
+      expect(layer.geojsonUrl).to.equal(dataUrl);
       $httpBackend.flush();
       $rootScope.$digest();
     });

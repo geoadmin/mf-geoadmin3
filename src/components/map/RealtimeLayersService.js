@@ -10,15 +10,15 @@ goog.require('ga_map_service');
 
   module.provider('gaRealtimeLayersManager', function() {
     this.$get = function($rootScope, $http, $timeout, gaLayerFilters,
-        gaMapUtils, gaUrlUtils) {
+        gaMapUtils, gaUrlUtils, gaLayers) {
 
       var timers = [];
       var realTimeLayersId = [];
       var geojsonFormat = new ol.format.GeoJSON();
 
       function setLayerSource(layer) {
-        var fullUrl = gaUrlUtils.proxifyUrl(layer.geojsonUrl);
         var olSource = layer.getSource();
+        var fullUrl = gaUrlUtils.proxifyUrl(layer.geojsonUrl);
         $http.get(fullUrl).then(function(response) {
           var data = response.data;
           olSource.clear();
@@ -78,10 +78,13 @@ goog.require('ga_map_service');
         });
 
         // Update geojson source on language change
-        $rootScope.$on('$translateChangeEnd', function(evt) {
+        // This event is triggered after the layersConfig is loaded
+        $rootScope.$on('gaLayersTranslationChange', function(evt) {
 
           realTimeLayersId.forEach(function(bodId, i) {
             var olLayer = gaMapUtils.getMapLayerForBodId(map, bodId);
+            olLayer.geojsonUrl =
+                gaLayers.getLayerProperty(olLayer.bodId, 'geojsonUrl');
             $timeout.cancel(timers[i]);
             setLayerSource(olLayer);
           });
