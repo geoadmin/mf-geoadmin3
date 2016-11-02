@@ -667,7 +667,7 @@ $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule
 	    --namespace="__ga_template_cache__" \
 	    --output_mode=list > $@
 
-.build-artefacts/lint.timestamp: ${GJSLINT_CMD} $(SRC_JS_FILES)
+.build-artefacts/lint.timestamp: .build-artefacts/requirements.timestamp $(SRC_JS_FILES)
 	${GJSLINT_CMD} -r src/components -r src/js
 	touch $@
 
@@ -683,11 +683,6 @@ ${HTMLMIN_CMD}: ${PYTHON_VENV}
 	${PIP_CMD} install "htmlmin==0.1.6"
 	touch $@
 
-${GJSLINT_CMD}: ${PYTHON_VENV}
-	${PIP_CMD} install \
-	    "https://github.com/google/closure-linter/archive/v2.3.19.tar.gz"
-	touch $@
-
 ${FLAKE8_CMD}: ${PYTHON_VENV}
 	${PIP_CMD} install flake8
 
@@ -701,6 +696,7 @@ ${AUTOPEP8_CMD}: ${PYTHON_VENV}
 ${PYTHON_VENV}:
 	mkdir -p .build-artefacts
 	virtualenv --no-site-packages $@
+	${PIP_CMD} install -U pip
 
 .build-artefacts/last-version::
 	mkdir -p $(dir $@)
