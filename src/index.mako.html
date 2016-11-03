@@ -273,8 +273,8 @@ itemscope itemtype="http://schema.org/WebApplication"
   % if device == 'desktop':
       <div class="pull-right">
         <a target="_blank"
-           translate="{{topicId + '_service_link_label'}}"
-           translate-attr="{href: topicId + '_service_link_href'}"></a>
+           translate="{{topicFallback + '_service_link_label'}}"
+           translate-attr="{href: topicFallback + '_service_link_href'}"></a>
       </div>
   % endif
     </div><!-- #footer -->
@@ -435,7 +435,7 @@ itemscope itemtype="http://schema.org/WebApplication"
              data-toggle="collapse" href="#catalog"
              ga-collapsible-show="globals.catalogShown">
             <i class="fa fa-caret-down"></i>
-            <span>{{topicId | translate}}</span>
+            <span>{{topicFallback | translate}}</span>
 
   % if device == 'desktop':
             <span ga-help="32,37,39" ga-help-options="{showOnHover:true}"></span>
@@ -508,7 +508,7 @@ itemscope itemtype="http://schema.org/WebApplication"
               </div>
               <hr>
               <p>
-                <a target="_blank" translate translate-attr="{href: topicId + '_service_link_href'}">{{topicId + '_service_link_label'}}</a>
+                <a target="_blank" translate translate-attr="{href: topicFallback + '_service_link_href'}">{{topicFallback + '_service_link_label'}}</a>
                 <br>
                 <a target="_blank" href="https://www.geo.admin.ch/{{langId}}/about-swiss-geoportal/impressum.html#copyright" translate>copyright_label</a>
               </p>

@@ -4,9 +4,11 @@ describe('ga_topic_directive', function() {
   beforeEach(function() {
     topics = [{
       id: 'sometopic',
+      topicFallback: 'sometopic',
       topicGroup: 1
     }, {
       id: 'anothertopic',
+      topicFallback: 'anothertopic',
       topicGroup: 2
     }];
 

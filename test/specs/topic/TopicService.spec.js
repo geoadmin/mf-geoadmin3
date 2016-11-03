@@ -4,25 +4,27 @@ describe('ga_topic_service', function() {
     var gaTopic, $httpBackend, $rootScope, gaGlobalOptions, topicPermalink, gaPermalink,
         expectedUrl = 'http://localhost:8081/123456/services',
         topics = [{
-          'langs': 'de,fr,it',
-          'selectedLayers': [],
-          'backgroundLayers': [
+          langs: 'de,fr,it',
+          selectedLayers: [],
+          backgroundLayers: [
             'ch.swisstopo.pixelkarte-farbe',
             'ch.swisstopo.pixelkarte-grau',
             'ch.swisstopo.swissimage'
           ],
-          'id': 'sometopic',
-          'showCatalog': true
+          id: 'sometopic',
+          topicFallback: 'sometopic',
+          showCatalog: true
         }, {
-          'langs': 'de,fr',
-          'selectedLayers': [],
-          'backgroundLayers': [
+          langs: 'de,fr',
+          selectedLayers: [],
+          backgroundLayers: [
             'ch.swisstopo.pixelkarte-grau',
             'ch.swisstopo.pixelkarte-farbe',
             'ch.swisstopo.swissimage'
           ],
-          'id': 'anothertopic',
-          'showCatalog': true
+          id: 'anothertopic',
+          topicFallback: 'anothertopic',
+          showCatalog: true
         }];
 
     beforeEach(function() {

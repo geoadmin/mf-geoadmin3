@@ -503,7 +503,7 @@ goog.require('ga_topic_service');
               var mapSize = map.getSize();
               var mapExtent = map.getView().calculateExtent(mapSize);
               var htmlUrl = scope.options.htmlUrlTemplate
-                            .replace('{Topic}', gaTopic.get().id)
+                            .replace('{Topic}', gaTopic.get().topicFallback)
                             .replace('{Layer}', bodId)
                             .replace('{Feature}', featureId);
               return $http.get(htmlUrl, {

@@ -187,6 +187,7 @@ goog.require('ga_topic_service');
 
     var onTopicChange = function(event, topic) {
       $scope.topicId = topic.id;
+      $scope.topicFallback = topic.topicFallback;
 
       // iOS 7 minimal-ui meta tag bug
       if (gaBrowserSniffer.ios) {
@@ -210,6 +211,7 @@ goog.require('ga_topic_service');
 
     gaTopic.loadConfig().then(function() {
       $scope.topicId = gaTopic.get().id;
+      $scope.topicFallback = gaTopic.get().topicFallback;
 
       if (initWithPrint) {
         $scope.globals.printShown = true;
