@@ -117,7 +117,7 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions,
     scene.screenSpaceCameraController.inertiaTranslate = 0.8;
     scene.screenSpaceCameraController.inertiaZoom = 0.9;
     scene.screenSpaceCameraController.minimumZoomDistance = 2;
-    
+
     // Set good time for lighting
     var d = new Date();
     d.setUTCHours(8);
