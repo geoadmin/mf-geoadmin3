@@ -133,12 +133,12 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions,
         var tileset = gaLayers.getCesiumTileset3DById(tileset3dId);
         if (/names3d\.3d/.test(tileset3dId)) {
           tileset.style = new Cesium.Cesium3DTileStyle({
-            show : true,
+            show: true,
             color: 'rgb(255, 255, 255)',
             outlineColor: 'rgb(0, 0, 0)',
             outlineWidth: 3,
-            labelStyle : 2,
-            font : "'24px arial'"
+            labelStyle: 2,
+            font: "'24px arial'"
 
           });
           /*tileset.style = new Cesium.Cesium3DTileStyle({
