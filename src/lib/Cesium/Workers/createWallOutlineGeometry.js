@@ -25414,7 +25414,6 @@ define('Core/PolylinePipeline',[
 define('Core/WallGeometryLibrary',[
         './Cartographic',
         './defined',
-        './DeveloperError',
         './EllipsoidTangentPlane',
         './Math',
         './PolygonPipeline',
@@ -25423,7 +25422,6 @@ define('Core/WallGeometryLibrary',[
     ], function(
         Cartographic,
         defined,
-        DeveloperError,
         EllipsoidTangentPlane,
         CesiumMath,
         PolygonPipeline,
