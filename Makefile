@@ -671,26 +671,12 @@ $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule
 	${GJSLINT_CMD} -r src/components -r src/js
 	touch $@
 
-${MAKO_CMD}: ${PYTHON_VENV}
-	${PIP_CMD} install "Mako==1.0.0"
-	touch $@
-	@if [ ! -e ${PYTHON_VENV}/local ]; then \
-	    ln -s . ${PYTHON_VENV}/local; \
-	fi
-	cp scripts/cmd.py ${PYTHON_VENV}/local/lib/python2.7/site-packages/mako/cmd.py
-
-${HTMLMIN_CMD}: ${PYTHON_VENV}
-	${PIP_CMD} install "htmlmin==0.1.6"
-	touch $@
-
-${FLAKE8_CMD}: ${PYTHON_VENV}
-	${PIP_CMD} install flake8
-
-${AUTOPEP8_CMD}: ${PYTHON_VENV}
-	${PIP_CMD} install autopep8
-
 .build-artefacts/requirements.timestamp: ${PYTHON_VENV} requirements.txt
 	${PIP_CMD} install -r requirements.txt
+	@if [ ! -e ${PYTHON_VENV}/local ]; then \
+	  ln -s . ${PYTHON_VENV}/local; \
+	fi
+	cp scripts/cmd.py ${PYTHON_VENV}/local/lib/python2.7/site-packages/mako/cmd.py
 	touch $@
 
 ${PYTHON_VENV}:
