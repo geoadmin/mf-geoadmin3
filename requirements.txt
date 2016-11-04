@@ -1,5 +1,9 @@
+autopep8
 boto3>=1.3.1
+flake8
+htmlmin==0.1.6
+Mako==1.0.0
+requests
 sauceclient
 selenium>=2.53.0
-requests
 https://github.com/google/closure-linter/archive/v2.3.19.tar.gz
