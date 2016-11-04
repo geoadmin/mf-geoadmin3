@@ -119,9 +119,9 @@
   }
 
   @-webkit-keyframes play1 {.play1-frames;}
- 
-  @keyframes play1 {.play1-frames;}  
-  
+
+  @keyframes play1 {.play1-frames;}
+
   @-webkit-keyframes play2 {.play2-frames;}
 
   @keyframes play2 {.play2-frames;}
@@ -130,17 +130,27 @@
     width: 640px;
     padding: 0px 4px;
     transition: width 1s ease, height 1s ease;
+    overflow-x: hidden;
 
-    & > div {
-      float: left;
-      margin: 2px;
-      padding: 3px;
-      border: 1px solid transparent;
-      cursor: pointer;
-      width: 154px;
-      text-align: center;
+    .ga-topic-group {
+      width: 640px;
+      overflow-x: scroll;
 
-      &.ga-topic-active, &:hover {
+      .ga-topic-wrapper {
+        display: inline-block;
+      }
+
+      .ga-topic-item {
+        float: left;
+        margin: 2px;
+        padding: 3px;
+        border: 1px solid transparent;
+        cursor: pointer;
+        width: 154px;
+        text-align: center;
+      }
+
+      .ga-topic-active, .ga-topic-item:hover {
         border: 1px solid #c6c6c6;
         background-color: #efefef;
       }
@@ -148,14 +158,20 @@
 
     // Transform to a simple list when screen is really too small
     @media (max-width: 910px), (max-height: @screen-sm-max-height) {
-      width: 160px;
+      width: 175px;
       height: 250px;
       padding: 0px;
       overflow-y: auto;
       overflow-x: hidden;
-      
-      & > div {
-        width: 140px;
+
+      .ga-topic-group {
+        width: 160px;
+        overflow-x: hidden;
+        display: block;
+
+        .ga-topic-group-wrapper {
+          width: auto !important;
+        }
 
         .ga-topics-sprite {
           display: none;

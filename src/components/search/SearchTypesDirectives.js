@@ -450,7 +450,7 @@ goog.require('ga_urlutils_service');
             $scope.select = function(res) {
               unregisterMove();
               loadGeometry(res.attrs.layer, res.attrs.featureId,
-                           gaTopic.get().id,
+                           gaTopic.get().fallbackTopic,
                            $scope.options.featureUrl, function(f) {
                 $rootScope.$broadcast('gaTriggerTooltipRequest', {
                   features: [f],

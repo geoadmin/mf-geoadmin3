@@ -3,9 +3,13 @@ describe('ga_topic_directive', function() {
 
   beforeEach(function() {
     topics = [{
-      id: 'sometopic'
+      id: 'sometopic',
+      topicFallback: 'sometopic',
+      topicGroup: 1
     }, {
-      id: 'anothertopic'
+      id: 'anothertopic',
+      topicFallback: 'anothertopic',
+      topicGroup: 2
     }];
 
     module(function($provide) {
@@ -58,7 +62,11 @@ describe('ga_topic_directive', function() {
 
       it('updates correctly the html on first topic change event', function() {
         var items = element.find('.ga-topic-item');
+        var topicGroup1 = element.find('.ga-topic-group-wrapper-1');
+        var topicGroup2 = element.find('.ga-topic-group-wrapper-2');
         expect(items.length).to.be(2);
+        expect(topicGroup1.length).to.be(1);
+        expect(topicGroup2.length).to.be(1);
         expect($(items[0]).hasClass('ga-topic-active')).to.be(true);
         expect($(items[1]).hasClass('ga-topic-active')).to.be(false);
       });

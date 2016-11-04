@@ -17,6 +17,12 @@ goog.require('ga_topic_service');
           },
           scope: {},
           link: function(scope, element, attrs) {
+            var indexedTopic = [];
+            // Only because IE9 doesn't support flex
+            // We need to use this magic number and an extra wrapper
+            var desktopTopicWidth = 159.5;
+            var baseTopicGrpClsName = 'ga-topic-group-wrapper-';
+            var topicGroupWidths = {};
 
             // Because ng-repeat creates a new scope for each item in the
             // collection we can't use ng-click="activeTopic = topic" in
@@ -32,6 +38,23 @@ goog.require('ga_topic_service');
               }
             });
 
+            scope.groupedTopics = function() {
+              indexedTopic = [];
+              return scope.topics;
+            };
+
+            scope.topicPerGroup = function(topic) {
+              var isNewTopicGroup =
+                  indexedTopic.indexOf(topic.topicGroup) == -1;
+              if (isNewTopicGroup) {
+                indexedTopic.push(topic.topicGroup);
+                topicGroupWidths[baseTopicGrpClsName + topic.topicGroup] = 0;
+              }
+              topicGroupWidths[baseTopicGrpClsName + topic.topicGroup] +=
+                desktopTopicWidth;
+              return isNewTopicGroup;
+            };
+
             gaTopic.loadConfig().then(function() {
               scope.topics = gaTopic.getTopics();
               scope.activeTopic = gaTopic.get();
@@ -39,6 +62,9 @@ goog.require('ga_topic_service');
                 element.find('.ga-topic-item').tooltip({
                   placement: 'bottom'
                 });
+                for (var key in topicGroupWidths) {
+                  element.find('.' + key).css('width', topicGroupWidths[key]);
+                }
               });
               scope.$on('gaTopicChange', function(evt, newTopic) {
                 if (scope.activeTopic != newTopic) {

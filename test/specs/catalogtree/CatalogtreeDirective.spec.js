@@ -43,6 +43,7 @@ describe('ga_catalogtree_directive', function() {
           return {
             id: 'sometopic',
             selectedLayers: ['bar'],
+            topicFallback: 'sometopic',
             langs: [{
               value: 'somelang',
               label: 'somelang'
@@ -90,7 +91,10 @@ describe('ga_catalogtree_directive', function() {
   });*/
 
   it('update the catalog when the topic change', function() {
-    $rootScope.$broadcast('gaTopicChange', {id: 'sometopic2'});
+    $rootScope.$broadcast('gaTopicChange', {
+      id: 'sometopic2',
+      topicFallback: 'sometopic2'
+    });
     $httpBackend.expectGET(expectedUrl1);
     $httpBackend.flush();
   });

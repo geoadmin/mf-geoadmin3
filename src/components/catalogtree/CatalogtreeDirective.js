@@ -108,7 +108,7 @@ goog.require('ga_translation_service');
               }
               var labelsOnly = false;
               var url = scope.options.catalogUrlTemplate
-                  .replace('{Topic}', topic.id);
+                  .replace('{Topic}', topic.topicFallback);
               // If the topic has not changed that means we need to update only
               // labels
               if (lastUrlUsed == url) {

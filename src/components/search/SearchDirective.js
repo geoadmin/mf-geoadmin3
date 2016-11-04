@@ -184,7 +184,7 @@ goog.require('ga_what3words_service');
               url = gaUrlUtils.append(url, tokenized.parameters[i]);
             }
             url = gaUrlUtils.append(url, 'lang=' + gaLang.get());
-            url = url.replace('{Topic}', gaTopic.get().id);
+            url = url.replace('{Topic}', gaTopic.get().topicFallback);
 
             $scope.childoptions.searchUrl = url;
             $scope.childoptions.query = q;
