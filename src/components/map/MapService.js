@@ -450,8 +450,13 @@ goog.require('ga_urlutils_service');
               .replace('{Time}', time);
         };
 
+        var cpt;
         var getTileset3DUrl = function(layer, time) {
+          if (cpt === undefined || cpt > 4) {
+            cpt = 0;
+          }
           return tileset3DUrlTemplate
+              .replace('{s}', ++cpt)
               .replace('{Layer}', layer)
               .replace('{Time}', time);
         };
