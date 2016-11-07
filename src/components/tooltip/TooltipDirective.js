@@ -42,15 +42,15 @@ goog.require('ga_topic_service');
                    'options.htmls.length)" ' +
                'ng-mouseleave="options.onMouseLeave($event)">' +
             '<div ng-bind-html="html.snippet"></div>' +
-            '<div ng-if="::html.showVectorInfos" class="ga-vector-tools">' +
-              '<div ga-measure="::html.feature"></div>' +
-              '<div ng-if="::html.showProfile" ' +
-                   'ga-profile-bt="::html.feature"></div>' +
+            '<div ng-if="html.showVectorInfos" class="ga-vector-tools">' +
+              '<div ga-measure="html.feature"></div>' +
+              '<div ng-if="html.showProfile" ' +
+                   'ga-profile-bt="html.feature"></div>' +
             '</div>' +
             '<div ga-shop ' +
                  'ga-shop-map="::html.map" ' +
-                 'ga-shop-feature="::html.feature" ' +
-                 'ga-shop-clipper-geometry="::html.clickGeometry"></div>' +
+                 'ga-shop-feature="html.feature" ' +
+                 'ga-shop-clipper-geometry="html.clickGeometry"></div>' +
             '<div class="ga-tooltip-separator" ' +
                  'ng-show="!$last"></div>' +
           '</div>';
