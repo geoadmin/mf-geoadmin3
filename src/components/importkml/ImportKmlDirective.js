@@ -14,7 +14,7 @@ goog.require('ga_urlutils_service');
 
   module.controller('GaImportKmlDirectiveController',
       function($scope, $http, $q, $translate, gaBrowserSniffer, gaKml,
-          gaUrlUtils) {
+          gaUrlUtils, $rootScope) {
         var fileReader;
         $scope.isIE9 = (gaBrowserSniffer.msie == 9);
         $scope.isIE = !isNaN(gaBrowserSniffer.msie);
@@ -95,7 +95,7 @@ goog.require('ga_urlutils_service');
           if (gaKml.isValidFileContent(result)) {
             $scope.userMessage = $translate.instant('read_succeeded');
             $scope.fileContent = result;
-            $scope.$digest();
+            $rootScope.$digest();
           } else {
             handleReaderError();
           }
