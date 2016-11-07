@@ -11,6 +11,7 @@
 "add_wms_layer_failed": "Sbagl tar il chargiar de la WMS layer",
 "add_wms_layer_succeeded": "Chargià con success il WMS Layer",
 "appcache_update_available": "Ina nova versiun stat a disposiziun offline. La vulais Vus chargiar giu?",
+"approx_abbr": "ca.",
 "are": "ARE",
 "are_service_link_href": "http://www.are.admin.ch/index.html?lang=de",
 "are_service_link_label": "www.are.admin.ch",

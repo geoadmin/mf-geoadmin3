@@ -11,6 +11,7 @@
 "add_wms_layer_failed": "Errore nel caricamento del layer WMS",
 "add_wms_layer_succeeded": "Layer WMS caricato con successo",
 "appcache_update_available": "È a disposizione un aggiornamento del sito. Desiderate utilizzarlo?",
+"approx_abbr": "ca.",
 "are": "ARE",
 "are_service_link_href": "http://www.are.admin.ch/index.html?lang=it",
 "are_service_link_label": "www.are.admin.ch",

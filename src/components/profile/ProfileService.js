@@ -606,7 +606,8 @@ goog.require('ga_urlutils_service');
 
           this.group.select('.ga-profile-hikTime ' +
                   'text.ga-profile-icon-text')
-              .text(gaTimeFormatFilter(this.hikTime));
+              .text($translate.instant('approx_abbr') + ' ' +
+                  gaTimeFormatFilter(this.hikTime));
           this.group.select('.ga-profile-hikTime title')
               .text($translate.instant('profile_hike_time'));
         };
