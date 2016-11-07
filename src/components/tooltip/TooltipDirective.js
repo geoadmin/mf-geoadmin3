@@ -281,6 +281,9 @@ goog.require('ga_topic_service');
               // Clear the preview features
               gaPreviewFeatures.clear(map);
 
+              // Close the profile popup
+              $rootScope.$broadcast('gaProfileActive');
+
               // Remove the remove layer listener if exist
               if (listenerKey) {
                 ol.Observable.unByKey(listenerKey);
