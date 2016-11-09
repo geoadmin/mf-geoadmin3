@@ -74,7 +74,7 @@
 "draw": "Disegno",
 "draw_annotation": "Testo",
 "draw_back": "Indietro / Finire il disegno",
-"draw_delete": "Delete",
+"draw_delete": "Cancellare",
 "draw_delete_description": "Cancellare tutti gli oggetti",
 "draw_delete_last_point": "Premere DEL per rimuovere l'ultimo punto",
 "draw_delete_selected_features": "Cancellare gli oggetti selezionati",
