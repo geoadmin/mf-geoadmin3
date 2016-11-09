@@ -15,9 +15,7 @@ goog.require('ga_price_filter');
       gaShop, gaIdentify) {
     return {
       restrict: 'A',
-      templateUrl: function(element, attrs) {
-        return 'components/shop/partials/shop.html';
-      },
+      templateUrl: 'components/shop/partials/shop.html',
       scope: {
         map: '=gaShopMap',
         feature: '=gaShopFeature',

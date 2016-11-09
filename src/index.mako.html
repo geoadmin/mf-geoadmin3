@@ -136,7 +136,6 @@ itemscope itemtype="http://schema.org/WebApplication"
     sticky red shadow" ng-show="globals.is3dActive">
       2.5D - ALPHA
     </div>
-
     <div ng-controller="GaSeoController">
       <div ga-seo ga-seo-options="options" ga-seo-map="map"></div>
     </div>
@@ -308,6 +307,9 @@ itemscope itemtype="http://schema.org/WebApplication"
            ga-tooltip-active="!globals.feedbackPopupShown && !globals.isDrawActive">
       </div>
     </div>
+
+    <!-- Display a modal if the page has been open by th shop -->
+    <div ga-shop-msg></div>
 
 % if device != 'embed':
     <div  id="pulldown" ng-cloak translate-cloak
@@ -648,7 +650,7 @@ itemscope itemtype="http://schema.org/WebApplication"
         </div>
       </div>
     </div><!-- end Feature Tree -->
-
+    
   % if device == 'mobile':
     <div ng-if="globals.homescreen" class="popover homescreen"
          ng-class="{

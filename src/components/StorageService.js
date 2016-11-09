@@ -97,7 +97,11 @@ goog.require('ga_browsersniffer_service');
 
         if (localStorageSupport) {
           this.getItem = function(key) {
-            return $window.localStorage.getItem(key);
+            var val = $window.localStorage.getItem(key);
+            if (/^(true|false)$/i.test(val)) {
+              val = /^true$/i.test(val);
+            }
+            return val;
           };
           this.setItem = function(key, data) {
             $window.localStorage.setItem(key, data);

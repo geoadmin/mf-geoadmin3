@@ -115,6 +115,17 @@ describe('ga_storage_service', function() {
         expect(spy.calledWithExactly('key'));
         spy.restore();
       });
+
+      it('returns a boolean if the string value returned is true or false', function() {
+        gaStorage.setItem('key', true);
+        expect(gaStorage.getItem('key')).to.be(true);
+        gaStorage.setItem('key', false);
+        expect(gaStorage.getItem('key')).to.be(false);
+        gaStorage.setItem('key', 'True');
+        expect(gaStorage.getItem('key')).to.be(true);
+        gaStorage.setItem('key', 'foo');
+        expect(gaStorage.getItem('key')).to.be('foo');
+      });
     });
 
     describe('#setItem()', function() {
