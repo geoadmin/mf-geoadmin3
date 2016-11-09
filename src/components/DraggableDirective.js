@@ -51,12 +51,6 @@ goog.require('ga_browsersniffer_service');
         x = element.prop('offsetLeft');
         y = element.prop('offsetTop');
 
-
-        // block default interaction
-        if (!regex.test(evt.target.nodeName)) {
-          evt.preventDefault();
-        }
-
         startX = getMouseEventX(evt) - x;
         startY = getMouseEventY(evt) - y;
         $document.bind(eventKey.move, drag);

@@ -1,0 +1,106 @@
+[ga-import] {
+  position: relative;
+  background-color: white;
+  width: 100%;
+
+  form {
+    margin: 0;
+  }
+
+  input[type=file] {
+    display: none;
+  }
+
+  input[type=text][readonly] {
+    cursor: pointer;
+  }
+ 
+  > div, form {
+    position: relative;
+  }
+ 
+  input[name=url] {
+    padding-right: 20px;
+  }
+ 
+  .ga-error {
+    color: red;
+    
+    &:not([ng-hide]) {
+      display: none;
+    }
+  }
+
+  .ng-invalid-url {
+    
+    .ga-error {
+      display: block;
+    }
+  }
+
+  .ga-load {
+    width: 100%;
+  }
+
+  .tabbable-footer {
+    margin: 5px 0 0;
+  }
+
+  .modal-backdrop {
+    position: absolute;
+    height: 100%;
+
+    .progress {
+      position: relative;
+      top: 50%;
+      margin-top: -20px;
+      left: 50%;
+      margin-left: -100px;
+      width: 200px;
+      height: 20px;
+    }
+  }
+
+  .ga-import-open {
+    cursor: pointer;
+    position: absolute;
+    right: 8px;
+    top: .7em;
+    font-size: 14px;
+    z-index: 10;
+  }
+
+  .ga-message {
+    margin-top: 10px;
+  }
+
+  .ga-getcap-shown {
+  
+  }
+}
+
+.twitter-typeahead[style] {
+  position: static!important;
+  display: inline!important;
+}
+
+.tt-dropdown-menu {
+  height: 280px;
+  overflow-y: auto;
+  border: 1px solid black;
+  background-color: white;
+  width: 100%;
+  padding-right: 20px;
+   
+  p {
+    margin: 5px 10px;
+  }
+}
+
+.tt-is-under-cursor {
+  background-color: #f0f0f0;
+}
+
+.tt-hint {
+  color: #999
+}

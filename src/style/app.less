@@ -14,8 +14,10 @@
 @import "../components/contextpopup/style/contextpopup.less";
 @import "../components/feedback/style/feedback.less";
 @import "../components/topic/style/topic.less";
-@import "../components/importkml/style/importkml.less";
-@import "../components/importwms/style/importwms.less";
+@import "../components/import/style/import.less";
+@import "../components/import/style/importdnd.less";
+@import "../components/import/style/wmsgetcap.less";
+@import "../components/import/style/wmsgetcapitem.less";
 @import "../components/popup/style/popup.less";
 @import "../components/profile/style/profile.less";
 @import "../components/catalogtree/style/catalogtree.less";
@@ -39,8 +41,7 @@
 @import "../components/controls3d/style/controls3d.less";
 @import "../components/shop/style/shop.less";
 @import "../components/shop/style/shop-rectangle.less";
-
-
+@import "../components/tabs/style/tabs.less";
 
 
 @cdbund-margin: 12;
@@ -413,46 +414,6 @@ select, input[type=text], input[type=email], input[type=search] {
 input[type=text][readonly] {
   cursor: default;
 }
-
-// ***** TABS
-.nav-tabs {
-
-  .active {
-    cursor: default;
-  }
-
-  a {
-    text-decoration: none;
-  }
-}
-
-.nav > li > a {
-  cursor: pointer;
-  padding: 0px 10px;
-  color: white !important;
-  background-color: black;
-
-  &:hover, &:focus {
-    background-color: darkgray;
-  }
-}
-
-.nav-tabs {
-  border: none;
-}
-
-.nav-tabs > li.active > a,
-.nav-tabs > li.active > a:hover,
-.nav-tabs > li.active > a:focus {
-  color: white !important;
-  background-color: red;
-  border: 1px solid transparent;
-}
-
-.tab-content {
-  margin: 5px 0px 0px 0px;
-}
-
 
 // ***** HEADER
 .navbar-fixed-top {
@@ -1197,18 +1158,25 @@ a .ga-icon-separator {
 }
 
 // ****** POPUP
-#import-wms-popup {
+#import-popup {
   width: 770px;  /* Fix resize from tablet to desktop */
   max-width: 770px;
-
+  overflow: visible; /*Only for typeahead*/
+  
+  .popover-content { /*Only for typeahead*/
+    overflow: visible;
+  }
+  
   @media (max-width: @screen-tablet) {
     max-width: 480px;
   }
-}
 
-#import-kml-popup {
-  width: 420px; /* only IE9 */
-  max-width: 420px;
+  /*Only for typeahead*/
+  @media (max-width: @screen-phone) {
+    .popover-content {
+      overflow: auto;
+    }
+  }
 }
 
 #featuretree-popup {

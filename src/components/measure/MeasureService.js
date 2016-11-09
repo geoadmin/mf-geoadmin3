@@ -107,84 +107,85 @@ goog.require('ga_measure_filter');
         this.updateOverlays = function(layer, feature) {
           var overlays = feature.get('overlays');
 
-          if (overlays) {
-            var currIdx = 0, geomLine;
-            var geom = geomLine = feature.getGeometry();
+          if (!overlays) {
+            return;
+          }
+          var currIdx = 0, geomLine;
+          var geom = geomLine = feature.getGeometry();
 
-            if (geom instanceof ol.geom.Polygon) {
-              var areaOverlay = overlays.item(currIdx) || this.createOverlay();
-              areaOverlay.getElement().innerHTML = this.getAreaLabel(geom);
-              areaOverlay.getElement().style.opacity = layer.getOpacity();
+          if (geom instanceof ol.geom.Polygon) {
+            var areaOverlay = overlays.item(currIdx) || this.createOverlay();
+            areaOverlay.getElement().innerHTML = this.getAreaLabel(geom);
+            areaOverlay.getElement().style.opacity = layer.getOpacity();
 
-              // We compare first and last coordinates because during drawing
-              // the polygon are not closed correctly.
-              var first = geom.getFirstCoordinate();
-              var last = geom.getLastCoordinate();
-              var pos;
+            // We compare first and last coordinates because during drawing
+            // the polygon are not closed correctly.
+            var first = geom.getFirstCoordinate();
+            var last = geom.getLastCoordinate();
+            var pos;
 
-              if (geom.getArea() && first[0] == last[0] &&
-                  first[1] == last[1]) {
-                pos = geom.getInteriorPoint().getCoordinates();
-              }
-
-              areaOverlay.setPosition(pos);
-
-              geomLine = new ol.geom.LineString(geom.getCoordinates()[0]);
-
-              if (!overlays.item(currIdx)) {
-                overlays.push(areaOverlay);
-              }
-              currIdx++;
+            if (geom.getArea() && first[0] == last[0] &&
+                first[1] == last[1]) {
+              pos = geom.getInteriorPoint().getCoordinates();
             }
 
-            if (geomLine instanceof ol.geom.LineString) {
-              var label = '',
-                  delta = 1,
-                  length = geomLine.getLength();
-              if (this.canShowAzimuthCircle(geomLine)) {
-                label += this.getAzimuthLabel(geomLine) + ' / ';
-              }
-              var distOverlay = overlays.item(currIdx) || this.createOverlay();
-              label += this.getLengthLabel(geomLine);
-              distOverlay.getElement().innerHTML = label;
-              distOverlay.getElement().style.opacity = layer.getOpacity();
+            areaOverlay.setPosition(pos);
 
-              if (length) {
-                distOverlay.setPosition(geomLine.getLastCoordinate());
-              } else {
-                distOverlay.setPosition(undefined);
-              }
+            geomLine = new ol.geom.LineString(geom.getCoordinates()[0]);
+
+            if (!overlays.item(currIdx)) {
+              overlays.push(areaOverlay);
+            }
+            currIdx++;
+          }
+
+          if (geomLine instanceof ol.geom.LineString) {
+            var label = '',
+                delta = 1,
+                length = geomLine.getLength();
+            if (this.canShowAzimuthCircle(geomLine)) {
+              label += this.getAzimuthLabel(geomLine) + ' / ';
+            }
+            var distOverlay = overlays.item(currIdx) || this.createOverlay();
+            label += this.getLengthLabel(geomLine);
+            distOverlay.getElement().innerHTML = label;
+            distOverlay.getElement().style.opacity = layer.getOpacity();
+
+            if (length) {
+              distOverlay.setPosition(geomLine.getLastCoordinate());
+            } else {
+              distOverlay.setPosition(undefined);
+            }
+
+            if (!overlays.item(currIdx)) {
+              overlays.push(distOverlay);
+            }
+
+            currIdx++;
+
+            // Add intermediate tootlip only on line.
+            if (length > 200000) {
+              delta = 100000 / length;
+            } else if (length > 20000) {
+              delta = 10000 / length;
+            } else if (length != 0) {
+              delta = 1000 / length;
+            }
+            for (var i = delta; i < 1; i += delta, currIdx++) {
+              var t = overlays.item(currIdx) ||
+                  this.createOverlay('ga-draw-measure-tmp', false);
+              t.getElement().innerHTML = measureFilter(length * i);
+              t.getElement().style.opacity = layer.getOpacity();
+              t.setPosition(geomLine.getCoordinateAt(i));
 
               if (!overlays.item(currIdx)) {
-                overlays.push(distOverlay);
+                overlays.push(t);
               }
-
-              currIdx++;
-
-              // Add intermediate tootlip only on line.
-              if (length > 200000) {
-                delta = 100000 / length;
-              } else if (length > 20000) {
-                delta = 10000 / length;
-              } else if (length != 0) {
-                delta = 1000 / length;
-              }
-              for (var i = delta; i < 1; i += delta, currIdx++) {
-                var t = overlays.item(currIdx) ||
-                    this.createOverlay('ga-draw-measure-tmp', false);
-                t.getElement().innerHTML = measureFilter(length * i);
-                t.getElement().style.opacity = layer.getOpacity();
-                t.setPosition(geomLine.getCoordinateAt(i));
-
-                if (!overlays.item(currIdx)) {
-                  overlays.push(t);
-                }
-              }
-              if (currIdx < overlays.getLength()) {
-               for (var j = overlays.getLength() - 1; j >= currIdx; j--) {
-                 overlays.pop();
-               }
-              }
+            }
+            if (currIdx < overlays.getLength()) {
+             for (var j = overlays.getLength() - 1; j >= currIdx; j--) {
+               overlays.pop();
+             }
             }
           }
         };
@@ -239,48 +240,52 @@ goog.require('ga_measure_filter');
         // Register events on map, layer and source to manage correctly the
         // display of overlays
         this.registerOverlaysEvents = function(map, layer) {
+          if (!(layer instanceof ol.layer.Vector)) {
+            return;
+          }
           map.getLayers().on('remove', function(evt) {
             if (evt.element === layer) {
-              var features = evt.element.getSource().getFeatures();
-              for (var i = 0; i < features.length; i++) {
-                this.removeOverlays(features[i]);
-                features[i].set('overlays', undefined);
+              var i, features = evt.element.getSource().getFeatures();
+              while (i = features.pop()) {
+                evt.element.getSource().removeFeature(i);
               }
             }
-          }, this);
+          });
           layer.getSource().on('removefeature', function(evt) {
             this.removeOverlays(evt.feature);
             evt.feature.set('overlays', undefined);
           }, this);
-          if (layer.displayInLayerManager) {
-            layer.on('change:visible', function(evt) {
-              var visible = evt.target.getVisible();
-              var features = evt.target.getSource().getFeatures();
-              for (var i = 0; i < features.length; i++) {
-                if (gaMapUtils.isMeasureFeature(features[i])) {
-                  if (visible) {
-                    this.addOverlays(map, evt.target, features[i]);
-                  } else {
-                    this.removeOverlays(features[i]);
-                  }
+
+          if (!layer.displayInLayerManager) {
+            return;
+          }
+
+          layer.on('change:visible', function(evt) {
+            var visible = evt.target.getVisible();
+            var features = evt.target.getSource().getFeatures();
+            for (var i = 0; i < features.length; i++) {
+              if (gaMapUtils.isMeasureFeature(features[i])) {
+                if (visible) {
+                  this.addOverlays(map, evt.target, features[i]);
+                } else {
+                  this.removeOverlays(features[i]);
                 }
               }
-            }, this);
-            layer.on('change:opacity', function(evt) {
-              var visible = evt.target.getVisible();
-              var features = evt.target.getSource().getFeatures();
-              for (var i = 0; i < features.length; i++) {
-                if (gaMapUtils.isMeasureFeature(features[i])) {
-                  var overlays = features[i].get('overlays');
-                  if (overlays) {
-                    overlays.forEach(function(item) {
-                      item.getElement().style.opacity = layer.getOpacity();
-                    });
-                  }
+            }
+          }, this);
+
+          layer.on('change:opacity', function(evt) {
+            evt.target.getSource().getFeatures().forEach(function(feat) {
+              if (gaMapUtils.isMeasureFeature(feat)) {
+                var overlays = feat.get('overlays');
+                if (overlays) {
+                  overlays.forEach(function(item) {
+                    item.getElement().style.opacity = layer.getOpacity();
+                  });
                 }
               }
             });
-          }
+          });
         };
       };
       return new Measure();

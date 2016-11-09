@@ -1,9 +1,17 @@
-goog.provide('ga_importwms_controller');
+goog.provide('ga_import_controller');
+
+goog.require('ga_file_service');
+goog.require('ga_kml_service');
+
 (function() {
 
-  var module = angular.module('ga_importwms_controller', []);
+  var module = angular.module('ga_import_controller', [
+    'ga_file_service',
+    'ga_kml_service'
+  ]);
 
-  module.controller('GaImportWmsController', function($scope, gaGlobalOptions) {
+  module.controller('GaImportController', function($scope, $q, $window, gaFile,
+      gaKml) {
     $scope.options = {
       defaultGetCapParams: 'SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0',
       defaultWMSList: [
@@ -159,6 +167,60 @@ goog.provide('ga_importwms_controller');
         'http://rips-gdi.lubw.baden-wuerttemberg.de/arcgis/services/wms/UIS_0100000001500003/MapServer/WMSServer',
         'http://rips-gdi.lubw.baden-wuerttemberg.de/arcgis/services/wms/UIS_0100000004200001/MapServer/WMSServer'
      ]
+    };
+
+    // Manage data depending on the content
+    // @param data<String> Content of the file.
+    // @param file<Object> Informations of the file (if available).
+    $scope.options.handleFileContent = function(data, file) {
+      var defer = $q.defer();
+      $scope.gpxContent = null;
+      $scope.kmlContent = null;
+      $scope.wmsGetCap = null;
+      $scope.wmtsGetCap = null;
+      file = file || {};
+
+      if (gaFile.isWmsGetCap(data)) {
+        $scope.wmsGetCap = data;
+        defer.resolve({
+          message: 'upload_succeeded'
+        });
+
+      } else if (gaFile.isKml(data)) {
+
+        gaKml.addKmlToMap($scope.map, data, {
+          url: file.name,
+          useImageVector: gaKml.useImageVector(file.size),
+          zoomToExtent: true
+
+        }).then(function() {
+          defer.resolve({
+            message: 'parse_succeeded'
+          });
+
+        }, function(reason) {
+          $window.console.error('KML parsing failed: ', reason);
+          defer.reject({
+            message: 'parse_failed',
+            reason: reason
+          });
+
+        }, function(evt) {
+          defer.notify(evt);
+        });
+
+      } else {
+
+        $window.console.error('Unparseable content: ', data);
+        defer.reject({
+          message: 'parse_failed',
+          reason: 'format_not_supported'
+        });
+      }
+      // WMTS
+      // GPX
+
+      return defer.promise;
     };
   });
 })();
