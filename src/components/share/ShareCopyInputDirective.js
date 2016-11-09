@@ -17,22 +17,23 @@ goog.require('ga_browsersniffer_service');
     return {
       require: '^^gaShareCopyInputGroup',
       restrict: 'A',
-      scope: {
-        onFocus: '&gaShareOnFocus'
-      },
+      scope: {},
       link: function(scope, element, attrs, parentCtrl) {
-        if (!gaBrowserSniffer.mobile) {
-          element.attr('readonly', 'readonly').tooltip({
-            placement: attrs.gaTooltipPlacement || 'bottom',
-            trigger: 'focus',
-            title: function() {
-              return $translate.instant('share_link_tooltip');
-            }
-          }).on('focus', function() {
-            parentCtrl.onBeforeCopy();
-            this.setSelectionRange(0, 9999);
-          });
+
+        if (gaBrowserSniffer.mobile) {
+          return;
         }
+
+        element.attr('readonly', 'readonly').tooltip({
+          placement: attrs.gaTooltipPlacement || 'bottom',
+          trigger: 'focus',
+          title: function() {
+            return $translate.instant('share_link_tooltip');
+          }
+        }).on('focus', function() {
+          parentCtrl.onBeforeCopy();
+          this.setSelectionRange(0, 9999);
+        });
       }
     };
   });
