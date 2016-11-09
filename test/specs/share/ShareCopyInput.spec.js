@@ -1,4 +1,4 @@
-describe.only('ga_sharecopyinput_directive', function() {
+describe('ga_sharecopyinput_directive', function() {
 
   describe('gaShareCopyInput', function() {
     var elt, eltInput, scope, scopeInput, parentScope, $rootScope, compile, ctrl;

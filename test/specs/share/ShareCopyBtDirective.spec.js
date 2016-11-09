@@ -31,7 +31,7 @@ describe('ga_sharecopybt_directive', function() {
     describe('on unsupported browser', function() {
 
       it('removes html elements', function() {
-        expect(eltBt.length).to.be(0);
+        expect(eltBt).to.be(undefined);
       });
     });
 
