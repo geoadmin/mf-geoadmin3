@@ -436,5 +436,6 @@
   "geolocation": "",
   "contextpopup_lv03_url": "",
   "contextpopup_lv95_url": "",
-  "test_host_warning": ""
+  "test_host_warning": "",
+  "approx_abbr": ""
 }

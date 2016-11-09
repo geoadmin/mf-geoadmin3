@@ -42,15 +42,15 @@ goog.require('ga_topic_service');
                    'options.htmls.length)" ' +
                'ng-mouseleave="options.onMouseLeave($event)">' +
             '<div ng-bind-html="html.snippet"></div>' +
-            '<div ng-if="::html.showVectorInfos" class="ga-vector-tools">' +
-              '<div ga-measure="::html.feature"></div>' +
-              '<div ng-if="::html.showProfile" ' +
-                   'ga-profile-bt="::html.feature"></div>' +
+            '<div ng-if="html.showVectorInfos" class="ga-vector-tools">' +
+              '<div ga-measure="html.feature"></div>' +
+              '<div ng-if="html.showProfile" ' +
+                   'ga-profile-bt="html.feature"></div>' +
             '</div>' +
             '<div ga-shop ' +
                  'ga-shop-map="::html.map" ' +
-                 'ga-shop-feature="::html.feature" ' +
-                 'ga-shop-clipper-geometry="::html.clickGeometry"></div>' +
+                 'ga-shop-feature="html.feature" ' +
+                 'ga-shop-clipper-geometry="html.clickGeometry"></div>' +
             '<div class="ga-tooltip-separator" ' +
                  'ng-show="!$last"></div>' +
           '</div>';
@@ -280,6 +280,9 @@ goog.require('ga_topic_service');
 
               // Clear the preview features
               gaPreviewFeatures.clear(map);
+
+              // Close the profile popup
+              $rootScope.$broadcast('gaProfileActive');
 
               // Remove the remove layer listener if exist
               if (listenerKey) {
@@ -704,7 +707,8 @@ goog.require('ga_topic_service');
                 showVectorInfos: (value instanceof ol.Feature),
                 clickGeometry: new ol.geom.Point(scope.clickCoordinate),
                 snippet: $sce.trustAsHtml(html),
-                showProfile: value instanceof ol.Feature && value.getGeometry()
+                showProfile: !gaBrowserSniffer.embed &&
+                    value instanceof ol.Feature && value.getGeometry()
               });
             };
           }

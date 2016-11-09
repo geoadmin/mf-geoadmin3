@@ -17,7 +17,7 @@ goog.provide('ga_sharecopyinputgroup_directive');
       },
       controller: function($scope) {
 
-        this.onBeforeCopy = function(a) {
+        this.onBeforeCopy = function() {
           if ($scope.onBeforeCopy) {
             return $scope.onBeforeCopy({input: $scope.inputToCopy});
           }

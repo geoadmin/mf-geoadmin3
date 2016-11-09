@@ -139,12 +139,12 @@ goog.require('ga_time_service');
         if (resolution <= maxResolution &&
             resolution >= minResolution) {
           if (src instanceof ol.source.WMTS) {
-            encLayer = $scope.encoders.layers['WMTS'].call(this,
-                layer, layerConfig);
+            encLayer = $scope.encoders.layers['WMTS'].call(this, layer,
+                layerConfig);
           } else if (src instanceof ol.source.ImageWMS ||
               src instanceof ol.source.TileWMS) {
-            encLayer = $scope.encoders.layers['WMS'].call(this,
-                layer, layerConfig);
+            encLayer = $scope.encoders.layers['WMS'].call(this, layer,
+                layerConfig);
           } else if (src instanceof ol.source.Vector ||
               src instanceof ol.source.ImageVector) {
             if (src instanceof ol.source.ImageVector) {
@@ -157,11 +157,10 @@ goog.require('ga_time_service');
       }
 
       if ($scope.options.legend && layerConfig.hasLegend) {
-        encLegend = $scope.encoders.legends['ga_urllegend'].call(this,
-            layer, layerConfig);
+        encLegend = $scope.encoders.legends['ga_urllegend'].call(this, layer,
+            layerConfig);
 
-        if (encLegend.classes &&
-            encLegend.classes[0] &&
+        if (encLegend.classes && encLegend.classes[0] &&
             encLegend.classes[0].icon) {
           var legStr = encLegend.classes[0].icon;
           if (legStr.indexOf(pdfLegendString,
@@ -190,8 +189,7 @@ goog.require('ga_time_service');
           var subLayers = layer.getLayers();
           subLayers.forEach(function(subLayer, idx, arr) {
             if (subLayer.visible) {
-              var enc = $scope.encoders.
-                  layers['Layer'].call(this, layer);
+              var enc = $scope.encoders.layers['Layer'].call(this, layer);
               var layerEnc = encodeLayer(subLayer, proj);
               if (layerEnc && layerEnc.layer) {
                 $.extend(enc, layerEnc);
@@ -202,8 +200,7 @@ goog.require('ga_time_service');
           return encs;
         },
         'Vector': function(layer, features) {
-          var enc = $scope.encoders.
-              layers['Layer'].call(this, layer);
+          var enc = $scope.encoders.layers['Layer'].call(this, layer);
           var encStyles = {};
           var encFeatures = [];
           var stylesDict = {};
@@ -245,57 +242,57 @@ goog.require('ga_time_service');
           return enc;
         },
         'WMS': function(layer, config) {
-            var enc = $scope.encoders.
-              layers['Layer'].call(this, layer);
-            var params = layer.getSource().getParams();
-            var layers = params.LAYERS.split(',') || [];
-            var styles = (params.STYLES !== undefined) ?
-                params.STYLES.split(',') :
-                new Array(layers.length).join(',').split(',');
-            var url = config.wmsUrl || layer.url;
+          var enc = $scope.encoders.layers['Layer'].call(this, layer);
+          var params = layer.getSource().getParams();
+          var layers = params.LAYERS.split(',') || [];
+          var styles = (params.STYLES !== undefined) ?
+              params.STYLES.split(',') :
+              new Array(layers.length).join(',').split(',');
+          var url = config.wmsUrl || layer.url;
 
-            angular.extend(enc, {
-              type: 'WMS',
-              baseURL: url.replace(/^\/\//, 'https://'),
-              layers: layers,
-              styles: styles,
-              format: 'image/' + (config.format || 'png'),
-              customParams: {
-                'EXCEPTIONS': 'XML',
-                'TRANSPARENT': 'true',
-                'CRS': 'EPSG:21781',
-                'TIME': params.TIME,
-                'MAP_RESOLUTION': getDpi($scope.layout.name, $scope.dpi)
-              },
-              singleTile: config.singleTile || false
-            });
-            return enc;
-
+          angular.extend(enc, {
+            type: 'WMS',
+            baseURL: url.replace(/^\/\//, 'https://'),
+            layers: layers,
+            styles: styles,
+            format: 'image/' + (config.format || 'png'),
+            customParams: {
+              'EXCEPTIONS': 'XML',
+              'TRANSPARENT': 'true',
+              'CRS': 'EPSG:21781',
+              'TIME': params.TIME,
+              'MAP_RESOLUTION': getDpi($scope.layout.name, $scope.dpi)
+            },
+            singleTile: config.singleTile || false
+          });
+          return enc;
         },
         'WMTS': function(layer, config) {
-            var enc = $scope.encoders.layers['Layer'].
-                call(this, layer);
-            var source = layer.getSource();
-            var tileGrid = source.getTileGrid();
-            if (!config.background && layer.visible && config.timeEnabled) {
-              layersYears.push(layer.time);
+          var enc = $scope.encoders.layers['Layer'].call(this, layer);
+          var source = layer.getSource();
+          var tileGrid = source.getTileGrid();
+          if (!config.background && layer.visible && config.timeEnabled) {
+            if (!layer.time) {
+              return;
             }
-            angular.extend(enc, {
-              type: 'WMTS',
-              baseURL: location.protocol + '//wmts.geo.admin.ch',
-              layer: config.serverLayerName,
-              maxExtent: layer.getExtent(),
-              tileOrigin: tileGrid.getOrigin(),
-              tileSize: [tileGrid.getTileSize(), tileGrid.getTileSize()],
-              resolutions: tileGrid.getResolutions(),
-              zoomOffset: tileGrid.getMinZoom(),
-              version: '1.0.0',
-              requestEncoding: 'REST',
-              formatSuffix: config.format || 'jpeg',
-              style: 'default',
-              dimensions: ['TIME'],
-              params: {'TIME': source.getDimensions().Time},
-              matrixSet: '21781'
+            layersYears.push(layer.time);
+          }
+          angular.extend(enc, {
+            type: 'WMTS',
+            baseURL: location.protocol + '//wmts.geo.admin.ch',
+            layer: config.serverLayerName,
+            maxExtent: layer.getExtent(),
+            tileOrigin: tileGrid.getOrigin(),
+            tileSize: [tileGrid.getTileSize(), tileGrid.getTileSize()],
+            resolutions: tileGrid.getResolutions(),
+            zoomOffset: tileGrid.getMinZoom(),
+            version: '1.0.0',
+            requestEncoding: 'REST',
+            formatSuffix: config.format || 'jpeg',
+            style: 'default',
+            dimensions: ['TIME'],
+            params: {'TIME': source.getDimensions().Time},
+            matrixSet: '21781'
           });
           var multiPagesPrint = false;
           if (config.timestamps) {
@@ -323,7 +320,7 @@ goog.require('ga_time_service');
           // Get the styles of the feature
           if (!styles) {
             if (feature.getStyleFunction()) {
-              styles = feature.getStyleFunction().call(feature);
+              styles = feature.getStyleFunction().ca2ll(feature);
             } else if (layer.getStyleFunction()) {
               styles = layer.getStyleFunction()(feature);
             } else {
@@ -535,10 +532,30 @@ goog.require('ga_time_service');
 
       // Transform layers to literal
       layers.forEach(function(layer) {
-        if (layer.visible && (!layer.timeEnabled ||
-            angular.isDefined(layer.time))) {
+        if (!layer.visible || layer.opacity == 0) {
+          return;
+        }
 
-          // Get all attributions to diaplay
+        // Encode layers
+        var encs;
+        if (layer instanceof ol.layer.Group) {
+          encs = $scope.encoders.layers['Group'].call(this,
+              layer, proj);
+        } else {
+          var enc = encodeLayer(layer, proj);
+          if (enc && enc.layer) {
+            encs = [enc.layer];
+            if (enc.legend) {
+              encLegends = encLegends || [];
+              encLegends.push(enc.legend);
+            }
+          }
+        }
+
+        if (encs && encs.length) {
+          encLayers = encLayers.concat(encs);
+
+          // Add attribution of encoded layers
           var attribution = gaAttribution.getTextFromLayer(layer);
           if (attribution !== undefined) {
             if (layer.useThirdPartyData) {
@@ -547,22 +564,6 @@ goog.require('ga_time_service');
               }
             } else if (attributions.indexOf(attribution) == -1) {
               attributions.push(attribution);
-            }
-          }
-
-          // Encode layers
-          if (layer instanceof ol.layer.Group) {
-            var encs = $scope.encoders.layers['Group'].call(this,
-                layer, proj);
-            encLayers = encLayers.concat(encs);
-          } else {
-            var enc = encodeLayer(layer, proj);
-            if (enc && enc.layer) {
-              encLayers.push(enc.layer);
-              if (enc.legend) {
-                encLegends = encLegends || [];
-                encLegends.push(enc.legend);
-              }
             }
           }
         }

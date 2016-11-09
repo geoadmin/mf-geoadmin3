@@ -11,6 +11,7 @@
 "add_wms_layer_failed": "Erreur au chargement de la couche WMS",
 "add_wms_layer_succeeded": "Couche WMS chargée avec succès",
 "appcache_update_available": "Une mise à jour du site est disponible. Voulez-vous l'utiliser?",
+"approx_abbr": "env.",
 "are": "ARE",
 "are_service_link_href": "http://www.are.admin.ch/index.html?lang=fr",
 "are_service_link_label": "www.are.admin.ch",

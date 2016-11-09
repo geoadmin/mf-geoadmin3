@@ -138,7 +138,7 @@ describe('ga_profile_service', function() {
           expect(profile.group.select('.ga-profile-slopeDist text.ga-profile-icon-text')
               .text()).to.be('211.50m');
           expect(profile.group.select('.ga-profile-hikTime text.ga-profile-icon-text')
-              .text()).to.be('3min');
+              .text()).to.be('approx_abbr 3min');
 
           testTooltips(profile);
           done();
@@ -254,7 +254,7 @@ describe('ga_profile_service', function() {
             expect(profile.group.select('.ga-profile-slopeDist text.ga-profile-icon-text')
                 .text()).to.be('1.47km');
             expect(profile.group.select('.ga-profile-hikTime text.ga-profile-icon-text')
-                .text()).to.be('4h 8min');
+                .text()).to.be('approx_abbr 4h 8min');
 
             testTooltips(profile);
             done();
@@ -302,7 +302,7 @@ describe('ga_profile_service', function() {
             expect(profile.group.select('.ga-profile-slopeDist text.ga-profile-icon-text')
                 .text()).to.be('22.25km');
             expect(profile.group.select('.ga-profile-hikTime text.ga-profile-icon-text')
-                .text()).to.be('6h 30min');
+                .text()).to.be('approx_abbr 6h 30min');
 
             testTooltips(profile);
             done();
