@@ -14,7 +14,7 @@ goog.require('ga_measure_filter');
     return {
       restrict: 'A',
       templateUrl: function(element, attrs) {
-        return 'components/shop/partials/shop-rectangle.html';
+        return 'components/shop/partials/shoprectangle.html';
       },
       scope: {
         map: '=gaShopRectangleMap',

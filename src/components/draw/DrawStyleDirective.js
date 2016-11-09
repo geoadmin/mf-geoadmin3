@@ -200,7 +200,7 @@ goog.require('ga_urlutils_service');
 
     return {
       restrict: 'A',
-      templateUrl: 'components/draw/partials/draw-style.html',
+      templateUrl: 'components/draw/partials/drawstyle.html',
       scope: {
         feature: '=gaDrawStyle',
         layer: '=gaDrawStyleLayer',
