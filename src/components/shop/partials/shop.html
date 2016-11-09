@@ -1,11 +1,11 @@
 <div class="ga-shop-not-available" ng-if="::notAvailable" translate>shop_not_available</div>
 <div class="ga-shop-available" ng-show="::!notAvailable">
+  <label><span translate>shop_choose</span>:</label>
   <select ng-if="::!(orderTypes.length == 1 && orderType == 'mapsheet')"
           ng-model="orderType"
           ng-options="((label | translate) + '' + getClipperFeatureLabel(label)) for label in orderTypes"
           ng-change="onChangeOrderType(orderType)"
           class="form-control">
-    <option value="" translate>{{'shop_choose'}}:</option>
   </select>
 
   <div ng-show="orderType == 'rectangle'"

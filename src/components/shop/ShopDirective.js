@@ -12,7 +12,8 @@ goog.require('ga_price_filter');
   ]);
 
   module.directive('gaShop', function($rootScope, gaLayers, gaMapUtils,
-      gaShop, gaIdentify) {
+      gaShop, gaIdentify, gaPreviewFeatures) {
+    var geojson = new ol.format.GeoJSON();
     return {
       restrict: 'A',
       templateUrl: 'components/shop/partials/shop.html',
@@ -109,15 +110,18 @@ goog.require('ga_price_filter');
               gaShop.getMapsheetClipperFromBodId(layerBodId) :
               gaShop.getClipperFromOrderType(scope.orderType);
 
+          gaPreviewFeatures.clear(scope.map);
+
           if (!scope.clipperFeatures[scope.orderType] && clipper) {
             var layers = [
               gaLayers.getOlLayerById(clipper)
             ];
-            gaIdentify.get(scope.map, layers, scope.clipperGeometry, 1, false,
+            gaIdentify.get(scope.map, layers, scope.clipperGeometry, 1, true,
                 null, 1).then(function(response) {
               var results = response.data.results;
               if (results.length) {
                 scope.clipperFeatures[scope.orderType] = results[0];
+                scope.highlight();
                 scope.updatePrice();
               } else {
                 scope.price = null;
@@ -126,8 +130,17 @@ goog.require('ga_price_filter');
               scope.price = null;
             });
           } else {
+            if (clipper) {
+              scope.highlight();
+            }
+
             scope.updatePrice();
           }
+        };
+        scope.highlight = function() {
+          var gFeat = scope.clipperFeatures[scope.orderType];
+          var feat = geojson.readFeature(gFeat);
+          gaPreviewFeatures.add(scope.map, feat);
         };
 
         scope.updatePrice = function(geometry) {
@@ -154,11 +167,9 @@ goog.require('ga_price_filter');
 
         // Init orderType variables
         scope.orderTypes = layerConfig.shop;
-        scope.orderType = '';
-        if (scope.orderTypes.length == 1) {
-           // papierkarte(mapsheet), swissbuildings3d 2.0(commune)
-           scope.orderType = scope.orderTypes[0];
-           scope.onChangeOrderType(scope.orderType);
+        if (scope.orderTypes.length) {
+          scope.orderType = scope.orderTypes[0];
+          scope.onChangeOrderType(scope.orderType);
         }
 
         // Reset order type if another shop directive has changed one
