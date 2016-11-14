@@ -1,6 +1,6 @@
 // Ol3-Cesium. See https://github.com/openlayers/ol3-cesium/
 // License: https://github.com/openlayers/ol3-cesium/blob/master/LICENSE
-// Version: v1.20-46-g2f42726
+// Version: v1.21-14-g5ab57d2
 
 var CLOSURE_NO_DEPS = true;
 // Copyright 2006 The Closure Library Authors. All Rights Reserved.
@@ -5697,12 +5697,6 @@ ol.MOUSEWHEELZOOM_MAXDELTA = 1;
 
 
 /**
- * @define {number} Mouse wheel timeout duration.
- */
-ol.MOUSEWHEELZOOM_TIMEOUT_DURATION = 80;
-
-
-/**
  * @define {number} Maximum width and/or height extent ratio that determines
  * when the overview map should be zoomed out.
  */
@@ -7505,18 +7499,6 @@ ol.extent.createOrUpdateFromRings = function(rings, opt_extent) {
 
 
 /**
- * Empty an extent in place.
- * @param {ol.Extent} extent Extent.
- * @return {ol.Extent} Extent.
- */
-ol.extent.empty = function(extent) {
-  extent[0] = extent[1] = Infinity;
-  extent[2] = extent[3] = -Infinity;
-  return extent;
-};
-
-
-/**
  * Determine if two extents are equivalent.
  * @param {ol.Extent} extent1 Extent 1.
  * @param {ol.Extent} extent2 Extent 2.
@@ -7919,29 +7901,6 @@ ol.extent.isEmpty = function(extent) {
 
 /**
  * @param {ol.Extent} extent Extent.
- * @return {boolean} Is infinite.
- */
-ol.extent.isInfinite = function(extent) {
-  return extent[0] == -Infinity || extent[1] == -Infinity ||
-      extent[2] == Infinity || extent[3] == Infinity;
-};
-
-
-/**
- * @param {ol.Extent} extent Extent.
- * @param {ol.Coordinate} coordinate Coordinate.
- * @return {ol.Coordinate} Coordinate.
- */
-ol.extent.normalize = function(extent, coordinate) {
-  return [
-    (coordinate[0] - extent[0]) / (extent[2] - extent[0]),
-    (coordinate[1] - extent[1]) / (extent[3] - extent[1])
-  ];
-};
-
-
-/**
- * @param {ol.Extent} extent Extent.
  * @param {ol.Extent=} opt_extent Extent.
  * @return {ol.Extent} Extent.
  */
@@ -8025,19 +7984,6 @@ ol.extent.intersectsSegment = function(extent, start, end) {
 
   }
   return intersects;
-};
-
-
-/**
- * @param {ol.Extent} extent1 Extent 1.
- * @param {ol.Extent} extent2 Extent 2.
- * @return {boolean} Touches.
- */
-ol.extent.touches = function(extent1, extent2) {
-  var intersects = ol.extent.intersects(extent1, extent2);
-  return intersects &&
-      (extent1[0] == extent2[2] || extent1[2] == extent2[0] ||
-       extent1[1] == extent2[3] || extent1[3] == extent2[1]);
 };
 
 
@@ -26094,8 +26040,10 @@ olcs.Camera.prototype.getPosition = function() {
   var carto = Cesium.Ellipsoid.WGS84.cartesianToCartographic(
       this.cam_.position);
 
-  var pos = this.fromLonLat_([ol.math.toDegrees(carto.longitude),
-                              ol.math.toDegrees(carto.latitude)]);
+  var pos = this.fromLonLat_([
+    ol.math.toDegrees(carto.longitude),
+    ol.math.toDegrees(carto.latitude)
+  ]);
   goog.asserts.assert(!goog.isNull(pos));
   return pos;
 };
@@ -27678,11 +27626,12 @@ olcs.FeatureConverter.prototype.olPolygonGeometryToCesium = function(layer, feat
       if (i == 0) {
         hierarchy.positions = positions;
       } else {
-        hierarchy.holes = {
-          // always update Cesium externs before adding a property
+        if (!hierarchy.holes) {
+          hierarchy.holes = [];
+        }
+        hierarchy.holes.push({
           positions: positions
-        };
-        hierarchy = hierarchy.holes;
+        });
       }
     }
 
@@ -31309,7 +31258,6 @@ olcs.VectorSynchronizer.prototype.createSingleLayerCounterparts = function(olLay
 
 goog.provide('olcs.OLCesium');
 
-goog.require('goog.async.AnimationDelay');
 goog.require('olcs.AutoRenderLoop');
 goog.require('olcs.Camera');
 goog.require('olcs.RasterSynchronizer');
@@ -31336,6 +31284,14 @@ olcs.OLCesium = function(options) {
    * @private
    */
   this.map_ = options.map;
+
+  /**
+   * @type {!Function}
+   * @private
+   */
+  this.time_ = options.time || function() {
+    return Cesium.JulianDate.now();
+  };
 
   /**
    * No change of the view projection.
@@ -31505,33 +31461,40 @@ olcs.OLCesium = function(options) {
     }
   }
 
-  this.cesiumRenderingDelay_ = new goog.async.AnimationDelay(function(time) {
-    if (!this.blockCesiumRendering_) {
-      var julianDate = Cesium.JulianDate.now();
-      this.scene_.initializeFrame();
-      this.handleResize_();
-      this.dataSourceDisplay_.update(julianDate);
-
-      // Update tracked entity
-      if (this.entityView_) {
-        var trackedEntity = this.trackedEntity_;
-        var trackedState = this.dataSourceDisplay_.getBoundingSphere(trackedEntity, false, this.boundingSphereScratch_);
-        if (trackedState === Cesium.BoundingSphereState.DONE) {
-          this.boundingSphereScratch_.radius = 1; // a radius of 1 is enough for tracking points
-          this.entityView_.update(julianDate, this.boundingSphereScratch_);
-        }
-      }
-
-      this.scene_.render(julianDate);
-      this.enabled_ && this.camera_.checkCameraChange();
-    }
-    this.cesiumRenderingDelay_.start();
-  }, undefined, this);
+  /**
+   * Time of the last rendered frame, as returned by `performance.now()`.
+   * @type {number}
+   * @private
+   */
+  this.lastFrameTime_ = 0;
 
   /**
+   * The identifier returned by `requestAnimationFrame`.
+   * @type {number|undefined}
+   * @private
+   */
+  this.renderId_ = undefined;
+
+  /**
+   * Target frame rate for the render loop.
+   * @type {number}
+   * @private
+   */
+  this.targetFrameRate_ = Number.POSITIVE_INFINITY;
+
+  /**
+   * If the Cesium render loop is being blocked.
+   * @type {boolean}
    * @private
    */
   this.blockCesiumRendering_ = false;
+
+  /**
+   * If the warmup routine is active.
+   * @type {boolean}
+   * @private
+   */
+  this.warmingUp_ = false;
 
   /**
    * @type {ol.Feature}
@@ -31627,6 +31590,67 @@ Object.defineProperties(olcs.OLCesium.prototype, {
 
 
 /**
+ * Render the Cesium scene.
+ * @private
+ */
+olcs.OLCesium.prototype.render_ = function() {
+  // if a call to `requestAnimationFrame` is pending, cancel it
+  if (this.renderId_ !== undefined) {
+    cancelAnimationFrame(this.renderId_);
+    this.renderId_ = undefined;
+  }
+
+  // only render if Cesium is enabled/warming and rendering hasn't been blocked
+  if ((this.enabled_ || this.warmingUp_) && !this.blockCesiumRendering_) {
+    this.renderId_ = requestAnimationFrame(this.onAnimationFrame_.bind(this));
+  }
+};
+
+
+/**
+ * Callback for `requestAnimationFrame`.
+ * @param {number} frameTime The frame time, from `performance.now()`.
+ * @private
+ */
+olcs.OLCesium.prototype.onAnimationFrame_ = function(frameTime) {
+  this.renderId_ = undefined;
+
+  // check if a frame was rendered within the target frame rate
+  var interval = 1000.0 / this.targetFrameRate_;
+  var delta = frameTime - this.lastFrameTime_;
+  if (delta < interval) {
+    // too soon, don't render yet
+    this.render_();
+    return;
+  }
+
+  // time to render a frame, save the time
+  this.lastFrameTime_ = frameTime;
+
+  var julianDate = this.time_();
+  this.scene_.initializeFrame();
+  this.handleResize_();
+  this.dataSourceDisplay_.update(julianDate);
+
+  // Update tracked entity
+  if (this.entityView_) {
+    var trackedEntity = this.trackedEntity_;
+    var trackedState = this.dataSourceDisplay_.getBoundingSphere(trackedEntity, false, this.boundingSphereScratch_);
+    if (trackedState === Cesium.BoundingSphereState.DONE) {
+      this.boundingSphereScratch_.radius = 1; // a radius of 1 is enough for tracking points
+      this.entityView_.update(julianDate, this.boundingSphereScratch_);
+    }
+  }
+
+  this.scene_.render(julianDate);
+  this.camera_.checkCameraChange();
+
+  // request the next render call after this one completes to ensure the browser doesn't get backed up
+  this.render_();
+};
+
+
+/**
  * @private
  */
 olcs.OLCesium.prototype.updateTrackedEntity_ = function() {
@@ -31649,7 +31673,7 @@ olcs.OLCesium.prototype.updateTrackedEntity_ = function() {
     bs.radius = 1;
   }
   this.entityView_ = new Cesium.EntityView(trackedEntity, scene, scene.mapProjection.ellipsoid);
-  this.entityView_.update(Cesium.JulianDate.now(), bs); // FIXME: have a global management of current time
+  this.entityView_.update(this.time_(), bs);
   this.needTrackedEntityUpdate_ = false;
 };
 
@@ -31776,7 +31800,7 @@ olcs.OLCesium.prototype.setEnabled = function(enable) {
       }
     }
     this.camera_.readFromView();
-    this.cesiumRenderingDelay_.start();
+    this.render_();
   } else {
     if (this.isOverMap_) {
       interactions = this.map_.getInteractions();
@@ -31792,7 +31816,6 @@ olcs.OLCesium.prototype.setEnabled = function(enable) {
     }
 
     this.camera_.updateView();
-    this.cesiumRenderingDelay_.stop();
   }
 };
 
@@ -31817,11 +31840,13 @@ olcs.OLCesium.prototype.warmUp = function(height, timeout) {
     position.height = height;
     csCamera.position = ellipsoid.cartographicToCartesian(position);
   }
-  this.cesiumRenderingDelay_.start();
-  var that = this;
-  setTimeout(
-      function() { !that.enabled_ && that.cesiumRenderingDelay_.stop(); },
-      timeout);
+
+  this.warmingUp_ = true;
+  this.render_();
+
+  setTimeout((function() {
+    this.warmingUp_ = false;
+  }).bind(this), timeout);
 };
 
 
@@ -31831,7 +31856,12 @@ olcs.OLCesium.prototype.warmUp = function(height, timeout) {
  * @api
 */
 olcs.OLCesium.prototype.setBlockCesiumRendering = function(block) {
-  this.blockCesiumRendering_ = block;
+  if (this.blockCesiumRendering_ !== block) {
+    this.blockCesiumRendering_ = block;
+
+    // reset the render loop
+    this.render_();
+  }
 };
 
 
@@ -31882,6 +31912,22 @@ olcs.OLCesium.prototype.setResolutionScale = function(value) {
     if (this.autoRenderLoop_) {
       this.autoRenderLoop_.restartRenderLoop();
     }
+  }
+};
+
+
+/**
+ * Set the target frame rate for the renderer. Set to `Number.POSITIVE_INFINITY`
+ * to render as quickly as possible.
+ * @param {number} value The frame rate, in frames per second.
+ * @api
+ */
+olcs.OLCesium.prototype.setTargetFrameRate = function(value) {
+  if (this.targetFrameRate_ !== value) {
+    this.targetFrameRate_ = value;
+
+    // reset the render loop
+    this.render_();
   }
 };
 
@@ -41893,6 +41939,12 @@ ol.interaction.MouseWheelZoom = function(opt_options) {
 
   /**
    * @private
+   * @type {number}
+   */
+  this.timeout_ = options.timeout !== undefined ? options.timeout : 80;
+
+  /**
+   * @private
    * @type {boolean}
    */
   this.useAnchor_ = options.useAnchor !== undefined ? options.useAnchor : true;
@@ -41964,8 +42016,7 @@ ol.interaction.MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
       this.startTime_ = Date.now();
     }
 
-    var duration = ol.MOUSEWHEELZOOM_TIMEOUT_DURATION;
-    var timeLeft = Math.max(duration - (Date.now() - this.startTime_), 0);
+    var timeLeft = Math.max(this.timeout_ - (Date.now() - this.startTime_), 0);
 
     clearTimeout(this.timeoutId_);
     this.timeoutId_ = setTimeout(
@@ -45358,9 +45409,9 @@ ol.render.canvas.Replay = function(tolerance, maxExtent, resolution, overlaps) {
 
   /**
    * @private
-   * @type {boolean}
+   * @type {ol.Coordinate}
    */
-  this.alignFill_ = false;
+  this.fillOrigin_;
 
   /**
    * @private
@@ -45492,18 +45543,17 @@ ol.render.canvas.Replay.prototype.beginGeometry = function(geometry, feature) {
 /**
  * @private
  * @param {CanvasRenderingContext2D} context Context.
- * @param {ol.Transform} transform Transform.
  * @param {number} rotation Rotation.
  */
-ol.render.canvas.Replay.prototype.fill_ = function(context, transform, rotation) {
-  if (this.alignFill_) {
-    context.translate(transform[4], transform[5]);
+ol.render.canvas.Replay.prototype.fill_ = function(context, rotation) {
+  if (this.fillOrigin_) {
+    var origin = ol.transform.apply(this.renderedTransform_, this.fillOrigin_.slice());
+    context.translate(origin[0], origin[1]);
     context.rotate(rotation);
   }
   context.fill();
-  if (this.alignFill_) {
-    context.rotate(-rotation);
-    context.translate(-transform[4], -transform[5]);
+  if (this.fillOrigin_) {
+    context.setTransform.apply(context, this.resetTransform_);
   }
 };
 
@@ -45573,7 +45623,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         break;
       case ol.render.canvas.Instruction.BEGIN_PATH:
         if (pendingFill > batchSize) {
-          this.fill_(context, transform, viewRotation);
+          this.fill_(context, viewRotation);
           pendingFill = 0;
         }
         if (pendingStroke > batchSize) {
@@ -45750,7 +45800,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         if (batchSize) {
           pendingFill++;
         } else {
-          this.fill_(context, transform, viewRotation);
+          this.fill_(context, viewRotation);
         }
         ++i;
         break;
@@ -45788,10 +45838,10 @@ ol.render.canvas.Replay.prototype.replay_ = function(
             ol.colorlike.isColorLike(instruction[1]),
             '2nd instruction should be a string, ' +
             'CanvasPattern, or CanvasGradient');
-        this.alignFill_ = instruction[2];
+        this.fillOrigin_ = instruction[2];
 
         if (pendingFill) {
-          this.fill_(context, transform, viewRotation);
+          this.fill_(context, viewRotation);
           pendingFill = 0;
         }
 
@@ -45857,7 +45907,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
     }
   }
   if (pendingFill) {
-    this.fill_(context, transform, viewRotation);
+    this.fill_(context, viewRotation);
   }
   if (pendingStroke) {
     context.stroke();
@@ -46630,7 +46680,7 @@ ol.render.canvas.PolygonReplay.prototype.drawCircle = function(circleGeometry, f
     ol.DEBUG && console.assert(state.lineWidth !== undefined,
         'state.lineWidth should be defined');
   }
-  this.setFillStrokeStyles_();
+  this.setFillStrokeStyles_(circleGeometry);
   this.beginGeometry(circleGeometry, feature);
   // always fill the circle for hit detection
   this.hitDetectionInstructions.push(
@@ -46680,7 +46730,7 @@ ol.render.canvas.PolygonReplay.prototype.drawPolygon = function(polygonGeometry,
     ol.DEBUG && console.assert(state.lineWidth !== undefined,
         'state.lineWidth should be defined');
   }
-  this.setFillStrokeStyles_();
+  this.setFillStrokeStyles_(polygonGeometry);
   this.beginGeometry(polygonGeometry, feature);
   // always fill the polygon for hit detection
   this.hitDetectionInstructions.push(
@@ -46715,7 +46765,7 @@ ol.render.canvas.PolygonReplay.prototype.drawMultiPolygon = function(multiPolygo
     ol.DEBUG && console.assert(state.lineWidth !== undefined,
         'state.lineWidth should be defined');
   }
-  this.setFillStrokeStyles_();
+  this.setFillStrokeStyles_(multiPolygonGeometry);
   this.beginGeometry(multiPolygonGeometry, feature);
   // always fill the multi-polygon for hit detection
   this.hitDetectionInstructions.push(
@@ -46830,8 +46880,9 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyle = function(fillStyle
 
 /**
  * @private
+ * @param {ol.geom.Geometry|ol.render.Feature} geometry Geometry.
  */
-ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function() {
+ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function(geometry) {
   var state = this.state_;
   var fillStyle = state.fillStyle;
   var strokeStyle = state.strokeStyle;
@@ -46840,9 +46891,13 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function() {
   var lineJoin = state.lineJoin;
   var lineWidth = state.lineWidth;
   var miterLimit = state.miterLimit;
-  if (fillStyle !== undefined && state.currentFillStyle != fillStyle) {
-    this.instructions.push(
-        [ol.render.canvas.Instruction.SET_FILL_STYLE, fillStyle, typeof fillStyle != 'string']);
+  if (fillStyle !== undefined && (typeof fillStyle !== 'string' || state.currentFillStyle != fillStyle)) {
+    var fillInstruction = [ol.render.canvas.Instruction.SET_FILL_STYLE, fillStyle];
+    if (typeof fillStyle !== 'string') {
+      var fillExtent = geometry.getExtent();
+      fillInstruction.push([fillExtent[0], fillExtent[3]]);
+    }
+    this.instructions.push(fillInstruction);
     state.currentFillStyle = state.fillStyle;
   }
   if (strokeStyle !== undefined) {
@@ -48982,7 +49037,6 @@ goog.require('ol.extent');
 goog.require('ol.render.canvas');
 goog.require('ol.render.Event');
 goog.require('ol.renderer.canvas.Layer');
-goog.require('ol.size');
 
 
 /**
@@ -49186,7 +49240,7 @@ ol.renderer.canvas.TileLayer.prototype.forEachLayerAtPixel = function(
  */
 ol.renderer.canvas.TileLayer.prototype.renderTileImages = function(context, frameState, layerState) {
   var tilesToDraw = this.renderedTiles;
-  if (tilesToDraw.length == 0) {
+  if (tilesToDraw.length === 0) {
     return;
   }
 
@@ -49234,17 +49288,6 @@ ol.renderer.canvas.TileLayer.prototype.renderTileImages = function(context, fram
   var alpha = renderContext.globalAlpha;
   renderContext.globalAlpha = layerState.opacity;
 
-  // Origin of the lowest resolution tile that contains the map center. We will
-  // try to use the same origin for all resolutions for pixel-perfect tile
-  // alignment across resolutions.
-  var lowResTileCoord = tilesToDraw[0].getTileCoord();
-  var minZOrigin = ol.extent.getBottomLeft(tileGrid.getTileCoordExtent(
-      tileGrid.getTileCoordForCoordAndZ(center,
-          lowResTileCoord[0], this.tmpTileCoord_), this.tmpExtent));
-  var maxZ = tilesToDraw[tilesToDraw.length - 1].getTileCoord()[0];
-  var maxZResolution = tileGrid.getResolution(maxZ);
-  var maxZTileSize = ol.size.toSize(tileGrid.getTileSize(maxZ));
-
   var pixelExtents;
   var opaque = source.getOpaque(projection) && layerState.opacity == 1;
   if (!opaque) {
@@ -49287,23 +49330,17 @@ ol.renderer.canvas.TileLayer.prototype.renderTileImages = function(context, fram
   for (var i = 0, ii = tilesToDraw.length; i < ii; ++i) {
     var tile = tilesToDraw[i];
     var tileCoord = tile.getTileCoord();
+    var tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent);
     var currentZ = tileCoord[0];
-    var tileSize = ol.size.toSize(tileGrid.getTileSize(currentZ));
     // Calculate all insert points by tile widths from a common origin to avoid
     // gaps caused by rounding
-    var originTileCoord = tileGrid.getTileCoordForCoordAndZ(minZOrigin, currentZ, this.tmpTileCoord_);
-    var origin = ol.extent.getBottomLeft(tileGrid.getTileCoordExtent(originTileCoord, this.tmpExtent));
-    // Calculate tile width and height by a tile size factor from the highest
-    // resolution tile size to avoid gaps when combining tiles from different
-    // resolutions
-    var resolutionFactor = tileGrid.getResolution(currentZ) / maxZResolution;
-    var tileSizeFactorW = tileSize[0] / maxZTileSize[0] * resolutionFactor;
-    var tileSizeFactorH = tileSize[1] / maxZTileSize[1] * resolutionFactor;
-    var w = Math.round(maxZTileSize[0] / resolution * maxZResolution * pixelRatio * drawScale) * tileSizeFactorW;
-    var h = Math.round(maxZTileSize[1] / resolution * maxZResolution * pixelRatio * drawScale) * tileSizeFactorH;
-    var left = (tileCoord[1] - originTileCoord[1]) * w +
+    var origin = ol.extent.getBottomLeft(tileGrid.getTileCoordExtent(
+        tileGrid.getTileCoordForCoordAndZ(center, currentZ, this.tmpTileCoord_)));
+    var w = Math.round(ol.extent.getWidth(tileExtent) * pixelScale);
+    var h = Math.round(ol.extent.getHeight(tileExtent) * pixelScale);
+    var left = Math.round((tileExtent[0] - origin[0]) * pixelScale / w) * w +
         offsetX + Math.round((origin[0] - center[0]) * pixelScale);
-    var top = (originTileCoord[2] - tileCoord[2] - 1) * h +
+    var top = Math.round((origin[1] - tileExtent[3]) * pixelScale / h) * h +
         offsetY + Math.round((center[1] - origin[1]) * pixelScale);
     if (!opaque) {
       var pixelExtent = [left, top, left + w, top + h];
@@ -81705,7 +81742,11 @@ ol.interaction.Draw = function(options) {
       geometryFunction = function(coordinates, opt_geometry) {
         var geometry = opt_geometry;
         if (geometry) {
-          geometry.setCoordinates(coordinates);
+          if (mode === ol.interaction.Draw.Mode.POLYGON) {
+            geometry.setCoordinates([coordinates[0].concat([coordinates[0][0]])]);
+          } else {
+            geometry.setCoordinates(coordinates);
+          }
         } else {
           geometry = new Constructor(coordinates);
         }
@@ -82170,12 +82211,10 @@ ol.interaction.Draw.prototype.finishDrawing = function() {
     coordinates.pop();
     this.geometryFunction_(coordinates, geometry);
   } else if (this.mode_ === ol.interaction.Draw.Mode.POLYGON) {
-    // When we finish drawing a polygon on the last point,
-    // the last coordinate is duplicated as for LineString
-    // we force the replacement by the first point
+    // remove the redundant last point in ring
     coordinates[0].pop();
-    coordinates[0].push(coordinates[0][0]);
     this.geometryFunction_(coordinates, geometry);
+    coordinates = geometry.getCoordinates();
   }
 
   // cast multi-part geometries
@@ -88338,8 +88377,23 @@ ol.source.TileArcGISRest = function(opt_options) {
    */
   this.tmpExtent_ = ol.extent.createEmpty();
 
+  this.setKey(this.getKeyForParams_());
 };
 ol.inherits(ol.source.TileArcGISRest, ol.source.TileImage);
+
+
+/**
+ * @private
+ * @return {string} The key for the current params.
+ */
+ol.source.TileArcGISRest.prototype.getKeyForParams_ = function() {
+  var i = 0;
+  var res = [];
+  for (var key in this.params_) {
+    res[i++] = key + '-' + this.params_[key];
+  }
+  return res.join('/');
+};
 
 
 /**
@@ -88451,7 +88505,7 @@ ol.source.TileArcGISRest.prototype.fixedTileUrlFunction = function(tileCoord, pi
  */
 ol.source.TileArcGISRest.prototype.updateParams = function(params) {
   ol.obj.assign(this.params_, params);
-  this.changed();
+  this.setKey(this.getKeyForParams_());
 };
 
 goog.provide('ol.source.TileDebug');
@@ -95693,6 +95747,11 @@ goog.exportProperty(
     olcs.OLCesium.prototype,
     'setResolutionScale',
     olcs.OLCesium.prototype.setResolutionScale);
+
+goog.exportProperty(
+    olcs.OLCesium.prototype,
+    'setTargetFrameRate',
+    olcs.OLCesium.prototype.setTargetFrameRate);
 
 goog.exportSymbol(
     'olcs.RasterSynchronizer',

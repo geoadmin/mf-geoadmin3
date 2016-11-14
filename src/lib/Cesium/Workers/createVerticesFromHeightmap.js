@@ -2564,7 +2564,7 @@ define('Core/Cartographic',[
             return undefined;
         }
 
-        var n = Cartesian3.multiplyComponents(cartesian, oneOverRadiiSquared, cartesianToCartographicN);
+        var n = Cartesian3.multiplyComponents(p, oneOverRadiiSquared, cartesianToCartographicN);
         n = Cartesian3.normalize(n, n);
 
         var h = Cartesian3.subtract(cartesian, p, cartesianToCartographicH);
@@ -19596,11 +19596,13 @@ define('Core/FeatureDetection',[
     function isChrome() {
         if (!defined(isChromeResult)) {
             isChromeResult = false;
-
-            var fields = (/ Chrome\/([\.0-9]+)/).exec(theNavigator.userAgent);
-            if (fields !== null) {
-                isChromeResult = true;
-                chromeVersionResult = extractVersion(fields[1]);
+            // Edge contains Chrome in the user agent too
+            if (!isEdge()) {
+                var fields = (/ Chrome\/([\.0-9]+)/).exec(theNavigator.userAgent);
+                if (fields !== null) {
+                    isChromeResult = true;
+                    chromeVersionResult = extractVersion(fields[1]);
+                }
             }
         }
 
@@ -19617,8 +19619,8 @@ define('Core/FeatureDetection',[
         if (!defined(isSafariResult)) {
             isSafariResult = false;
 
-            // Chrome contains Safari in the user agent too
-            if (!isChrome() && (/ Safari\/[\.0-9]+/).test(theNavigator.userAgent)) {
+            // Chrome and Edge contain Safari in the user agent too
+            if (!isChrome() && !isEdge() && (/ Safari\/[\.0-9]+/).test(theNavigator.userAgent)) {
                 var fields = (/ Version\/([\.0-9]+)/).exec(theNavigator.userAgent);
                 if (fields !== null) {
                     isSafariResult = true;
@@ -19681,6 +19683,24 @@ define('Core/FeatureDetection',[
 
     function internetExplorerVersion() {
         return isInternetExplorer() && internetExplorerVersionResult;
+    }
+
+    var isEdgeResult;
+    var edgeVersionResult;
+    function isEdge() {
+        if (!defined(isEdgeResult)) {
+            isEdgeResult = false;
+            var fields = (/ Edge\/([\.0-9]+)/).exec(theNavigator.userAgent);
+            if (fields !== null) {
+                isEdgeResult = true;
+                edgeVersionResult = extractVersion(fields[1]);
+            }
+        }
+        return isEdgeResult;
+    }
+
+    function edgeVersion() {
+        return isEdge() && edgeVersionResult;
     }
 
     var isFirefoxResult;
@@ -19760,6 +19780,8 @@ define('Core/FeatureDetection',[
         webkitVersion : webkitVersion,
         isInternetExplorer : isInternetExplorer,
         internetExplorerVersion : internetExplorerVersion,
+        isEdge : isEdge,
+        edgeVersion : edgeVersion,
         isFirefox : isFirefox,
         firefoxVersion : firefoxVersion,
         isWindows : isWindows,
@@ -24871,7 +24893,7 @@ define('Core/HeightmapTessellator',[
      *                 are provided, they're assumed to be consistent.
      * @param {Boolean} [options.isGeographic=true] True if the heightmap uses a {@link GeographicProjection}, or false if it uses
      *                  a {@link WebMercatorProjection}.
-     * @param {Cartesian3} [options.relativetoCenter=Cartesian3.ZERO] The positions will be computed as <code>Cartesian3.subtract(worldPosition, relativeToCenter)</code>.
+     * @param {Cartesian3} [options.relativeToCenter=Cartesian3.ZERO] The positions will be computed as <code>Cartesian3.subtract(worldPosition, relativeToCenter)</code>.
      * @param {Ellipsoid} [options.ellipsoid=Ellipsoid.WGS84] The ellipsoid to which the heightmap applies.
      * @param {Object} [options.structure] An object describing the structure of the height data.
      * @param {Number} [options.structure.heightScale=1.0] The factor by which to multiply height samples in order to obtain
@@ -24987,7 +25009,9 @@ define('Core/HeightmapTessellator',[
             geographicNorth = rectangle.north;
         }
 
-        var relativeToCenter = defaultValue(options.relativeToCenter, Cartesian3.ZERO);
+        var relativeToCenter = options.relativeToCenter;
+        var hasRelativeToCenter = defined(relativeToCenter);
+        relativeToCenter = hasRelativeToCenter ? relativeToCenter : Cartesian3.ZERO;
         var exaggeration = defaultValue(options.exaggeration, 1.0);
         var includeWebMercatorT = defaultValue(options.includeWebMercatorT, false);
 
@@ -25177,10 +25201,9 @@ define('Core/HeightmapTessellator',[
         }
 
         var occludeePointInScaledSpace;
-        var center = options.relativetoCenter;
-        if (defined(center)) {
+        if (hasRelativeToCenter) {
             var occluder = new EllipsoidalOccluder(ellipsoid);
-            occludeePointInScaledSpace = occluder.computeHorizonCullingPoint(center, positions);
+            occludeePointInScaledSpace = occluder.computeHorizonCullingPoint(relativeToCenter, positions);
         }
 
         var aaBox = new AxisAlignedBoundingBox(minimum, maximum, relativeToCenter);
