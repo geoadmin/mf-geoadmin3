@@ -2564,7 +2564,7 @@ define('Core/Cartographic',[
             return undefined;
         }
 
-        var n = Cartesian3.multiplyComponents(p, oneOverRadiiSquared, cartesianToCartographicN);
+        var n = Cartesian3.multiplyComponents(cartesian, oneOverRadiiSquared, cartesianToCartographicN);
         n = Cartesian3.normalize(n, n);
 
         var h = Cartesian3.subtract(cartesian, p, cartesianToCartographicH);
@@ -11661,13 +11661,11 @@ define('Core/FeatureDetection',[
     function isChrome() {
         if (!defined(isChromeResult)) {
             isChromeResult = false;
-            // Edge contains Chrome in the user agent too
-            if (!isEdge()) {
-                var fields = (/ Chrome\/([\.0-9]+)/).exec(theNavigator.userAgent);
-                if (fields !== null) {
-                    isChromeResult = true;
-                    chromeVersionResult = extractVersion(fields[1]);
-                }
+
+            var fields = (/ Chrome\/([\.0-9]+)/).exec(theNavigator.userAgent);
+            if (fields !== null) {
+                isChromeResult = true;
+                chromeVersionResult = extractVersion(fields[1]);
             }
         }
 
@@ -11684,8 +11682,8 @@ define('Core/FeatureDetection',[
         if (!defined(isSafariResult)) {
             isSafariResult = false;
 
-            // Chrome and Edge contain Safari in the user agent too
-            if (!isChrome() && !isEdge() && (/ Safari\/[\.0-9]+/).test(theNavigator.userAgent)) {
+            // Chrome contains Safari in the user agent too
+            if (!isChrome() && (/ Safari\/[\.0-9]+/).test(theNavigator.userAgent)) {
                 var fields = (/ Version\/([\.0-9]+)/).exec(theNavigator.userAgent);
                 if (fields !== null) {
                     isSafariResult = true;
@@ -11748,24 +11746,6 @@ define('Core/FeatureDetection',[
 
     function internetExplorerVersion() {
         return isInternetExplorer() && internetExplorerVersionResult;
-    }
-
-    var isEdgeResult;
-    var edgeVersionResult;
-    function isEdge() {
-        if (!defined(isEdgeResult)) {
-            isEdgeResult = false;
-            var fields = (/ Edge\/([\.0-9]+)/).exec(theNavigator.userAgent);
-            if (fields !== null) {
-                isEdgeResult = true;
-                edgeVersionResult = extractVersion(fields[1]);
-            }
-        }
-        return isEdgeResult;
-    }
-
-    function edgeVersion() {
-        return isEdge() && edgeVersionResult;
     }
 
     var isFirefoxResult;
@@ -11845,8 +11825,6 @@ define('Core/FeatureDetection',[
         webkitVersion : webkitVersion,
         isInternetExplorer : isInternetExplorer,
         internetExplorerVersion : internetExplorerVersion,
-        isEdge : isEdge,
-        edgeVersion : edgeVersion,
         isFirefox : isFirefox,
         firefoxVersion : firefoxVersion,
         isWindows : isWindows,
@@ -18585,8 +18563,8 @@ define('Core/PolylineGeometry',[
                 if ((!defined(positions)) || (positions.length < 2)) {
             throw new DeveloperError('At least two positions are required.');
         }
-        if (typeof width !== 'number') {
-            throw new DeveloperError('width must be a number');
+        if (width < 1.0) {
+            throw new DeveloperError('width must be greater than or equal to one.');
         }
         if (defined(colors) && ((colorsPerVertex && colors.length < positions.length) || (!colorsPerVertex && colors.length < positions.length - 1))) {
             throw new DeveloperError('colors has an invalid length.');
@@ -18765,11 +18743,9 @@ define('Core/PolylineGeometry',[
         var k;
 
         var positions = arrayRemoveDuplicates(polylineGeometry._positions, Cartesian3.equalsEpsilon);
-        var positionsLength = positions.length;
 
-        // A width of a pixel or less is not a valid geometry, but in order to support external data
-        // that may have errors we treat this as an empty geometry.
-        if (positionsLength < 2 || width <= 0.0) {
+        var positionsLength = positions.length;
+        if (positionsLength < 2) {
             return undefined;
         }
 

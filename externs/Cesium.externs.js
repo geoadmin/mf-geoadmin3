@@ -1000,6 +1000,26 @@ Cesium.Globe.prototype.getHeight = function(cartographic) {};
 Cesium.Globe.prototype.pick = function(ray, scene, opt_result) {};
 
 
+
+/**
+ * @param {Object.<string, *>=} opt_opts
+ * @constructor
+ */
+Cesium.Polygon = function(opt_opts) {};
+
+
+/**
+ * @type {!Array.<!Cesium.Cartesian3>}
+ */
+Cesium.Polygon.prototype.positions;
+
+
+/**
+ * @type {!Cesium.Material} material .
+ */
+Cesium.Polygon.prototype.material;
+
+
 /**
  * Merge of all values
  * @typedef {{
@@ -1017,6 +1037,19 @@ Cesium.optionsMaterialFromTypeAny;
  * @param {Cesium.optionsMaterialFromTypeAny=} opt_uniforms .
  */
 Cesium.Material.fromType = function(type, opt_uniforms) {};
+
+
+
+/**
+ * @type {boolean} .
+ */
+Cesium.Polygon.prototype.show;
+
+
+/**
+ */
+Cesium.Polygon.prototype.update = function() {};
+
 
 
 /**
@@ -1383,11 +1416,19 @@ Cesium.VertexFormat = function(options) {};
  */
 Cesium.PerInstanceColorAppearance.VERTEX_FORMAT;
 
+/**
+ * @typedef {{
+ * positions: !Array.<Cesium.Cartesian3>,
+ * holes: (Cesium.optionsPolygonHoles | undefined)
+ * }}
+ */
+Cesium.optionsPolygonHoles;
+
 
 /**
  * @typedef {{
  * positions: !Array.<Cesium.Cartesian3>,
- * holes: !Array.<Cesium.optionsPolygonHierarchy>
+ * holes: (Cesium.optionsPolygonHoles | undefined)
  * }}
  */
 Cesium.optionsPolygonHierarchy;
@@ -1554,7 +1595,7 @@ Cesium.PrimitiveCollection = function() {};
 
 
 /**
- * @param {!Cesium.PolylineCollection|!Cesium.BillboardCollection|!Cesium.Primitive} poly .
+ * @param {!Cesium.Polygon|!Cesium.PolylineCollection|!Cesium.BillboardCollection|!Cesium.Primitive} poly .
  */
 Cesium.PrimitiveCollection.prototype.add = function(poly) {};
 
@@ -1565,19 +1606,19 @@ Cesium.PrimitiveCollection.prototype.add = function(poly) {};
 Cesium.PrimitiveCollection.prototype.get = function(index) {};
 
 /**
- * @param {!Cesium.PolylineCollection|!Cesium.BillboardCollection|!Cesium.Primitive} poly .
+ * @param {!Cesium.Polygon|!Cesium.PolylineCollection|!Cesium.BillboardCollection|!Cesium.Primitive} poly .
  * @return {boolean}
  */
 Cesium.PrimitiveCollection.prototype.contains = function(poly) {};
 
 /**
- * @param {!Cesium.PolylineCollection|!Cesium.BillboardCollection|!Cesium.PrimitiveCollection} poly .
+ * @param {!Cesium.Polygon|!Cesium.PolylineCollection|!Cesium.BillboardCollection|!Cesium.PrimitiveCollection} poly .
  */
 Cesium.PrimitiveCollection.prototype.raiseToTop = function(poly) {};
 
 
 /**
- * @param {!Cesium.PolylineCollection|!Cesium.BillboardCollection|!Cesium.Primitive} poly .
+ * @param {!Cesium.Polygon|!Cesium.PolylineCollection|!Cesium.BillboardCollection|!Cesium.Primitive} poly .
  */
 Cesium.PrimitiveCollection.prototype.remove = function(poly) {};
 
@@ -2677,19 +2718,11 @@ Cesium.DataSourceCollection.prototype.add = function(dataSource) {};
  * Removes a data source from this collection, if present.
  *
  * @param {Cesium.DataSource} dataSource The data source to remove.
- * @param {boolean} [destroy=false] Whether to destroy the data source in addition to removing it.
- * @return {boolean} true if the data source was in the collection and was removed,
+ * @param {Boolean} [destroy=false] Whether to destroy the data source in addition to removing it.
+ * @return {Boolean} true if the data source was in the collection and was removed,
  *                    false if the data source was not in the collection.
  */
 Cesium.DataSourceCollection.prototype.remove = function(dataSource, destroy) {};
-
-/**
- * Removes all data sources from this collection, if present.
- *
- * @param {boolean} [destroy=false] Whether to destroy the data source in
- * addition to removing it.
- */
-Cesium.DataSourceCollection.prototype.removeAll = function(destroy) {};
 
 
 /**
@@ -2702,7 +2735,7 @@ Cesium.DataSourceDisplay = function(opt_opts) {};
 
 /**
  * @param {Cesium.JulianDate} time The simulation time.
- * @return {boolean} True if all data sources are ready to be displayed, false otherwise.
+ * @return {Boolean} True if all data sources are ready to be displayed, false otherwise.
  */
 Cesium.DataSourceDisplay.prototype.update = function(time) {};
 

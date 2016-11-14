@@ -1,6 +1,6 @@
 // Ol3-Cesium. See https://github.com/openlayers/ol3-cesium/
 // License: https://github.com/openlayers/ol3-cesium/blob/master/LICENSE
-// Version: v1.21-14-g5ab57d2
+// Version: v1.20-46-g2f42726
 
 var CLOSURE_NO_DEPS = true;
 // Copyright 2006 The Closure Library Authors. All Rights Reserved.
@@ -5697,6 +5697,12 @@ ol.MOUSEWHEELZOOM_MAXDELTA = 1;
 
 
 /**
+ * @define {number} Mouse wheel timeout duration.
+ */
+ol.MOUSEWHEELZOOM_TIMEOUT_DURATION = 80;
+
+
+/**
  * @define {number} Maximum width and/or height extent ratio that determines
  * when the overview map should be zoomed out.
  */
@@ -6644,7 +6650,7 @@ ol.AssertionError = function(code) {
 
   /**
    * Error code. The meaning of the code can be found on
-   * {@link https://openlayers.org/en/latest/doc/errors/} (replace `latest` with
+   * {@link https://openlayers.org/en/latest/errors.html} (replace `latest` with
    * the version found in the OpenLayers script's header comment if a version
    * other than the latest is used).
    * @type {number}
@@ -7499,6 +7505,18 @@ ol.extent.createOrUpdateFromRings = function(rings, opt_extent) {
 
 
 /**
+ * Empty an extent in place.
+ * @param {ol.Extent} extent Extent.
+ * @return {ol.Extent} Extent.
+ */
+ol.extent.empty = function(extent) {
+  extent[0] = extent[1] = Infinity;
+  extent[2] = extent[3] = -Infinity;
+  return extent;
+};
+
+
+/**
  * Determine if two extents are equivalent.
  * @param {ol.Extent} extent1 Extent 1.
  * @param {ol.Extent} extent2 Extent 2.
@@ -7901,6 +7919,29 @@ ol.extent.isEmpty = function(extent) {
 
 /**
  * @param {ol.Extent} extent Extent.
+ * @return {boolean} Is infinite.
+ */
+ol.extent.isInfinite = function(extent) {
+  return extent[0] == -Infinity || extent[1] == -Infinity ||
+      extent[2] == Infinity || extent[3] == Infinity;
+};
+
+
+/**
+ * @param {ol.Extent} extent Extent.
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @return {ol.Coordinate} Coordinate.
+ */
+ol.extent.normalize = function(extent, coordinate) {
+  return [
+    (coordinate[0] - extent[0]) / (extent[2] - extent[0]),
+    (coordinate[1] - extent[1]) / (extent[3] - extent[1])
+  ];
+};
+
+
+/**
+ * @param {ol.Extent} extent Extent.
  * @param {ol.Extent=} opt_extent Extent.
  * @return {ol.Extent} Extent.
  */
@@ -7984,6 +8025,19 @@ ol.extent.intersectsSegment = function(extent, start, end) {
 
   }
   return intersects;
+};
+
+
+/**
+ * @param {ol.Extent} extent1 Extent 1.
+ * @param {ol.Extent} extent2 Extent 2.
+ * @return {boolean} Touches.
+ */
+ol.extent.touches = function(extent1, extent2) {
+  var intersects = ol.extent.intersects(extent1, extent2);
+  return intersects &&
+      (extent1[0] == extent2[2] || extent1[2] == extent2[0] ||
+       extent1[1] == extent2[3] || extent1[3] == extent2[1]);
 };
 
 
@@ -26040,10 +26094,8 @@ olcs.Camera.prototype.getPosition = function() {
   var carto = Cesium.Ellipsoid.WGS84.cartesianToCartographic(
       this.cam_.position);
 
-  var pos = this.fromLonLat_([
-    ol.math.toDegrees(carto.longitude),
-    ol.math.toDegrees(carto.latitude)
-  ]);
+  var pos = this.fromLonLat_([ol.math.toDegrees(carto.longitude),
+                              ol.math.toDegrees(carto.latitude)]);
   goog.asserts.assert(!goog.isNull(pos));
   return pos;
 };
@@ -27626,12 +27678,11 @@ olcs.FeatureConverter.prototype.olPolygonGeometryToCesium = function(layer, feat
       if (i == 0) {
         hierarchy.positions = positions;
       } else {
-        if (!hierarchy.holes) {
-          hierarchy.holes = [];
-        }
-        hierarchy.holes.push({
+        hierarchy.holes = {
+          // always update Cesium externs before adding a property
           positions: positions
-        });
+        };
+        hierarchy = hierarchy.holes;
       }
     }
 
@@ -31258,6 +31309,7 @@ olcs.VectorSynchronizer.prototype.createSingleLayerCounterparts = function(olLay
 
 goog.provide('olcs.OLCesium');
 
+goog.require('goog.async.AnimationDelay');
 goog.require('olcs.AutoRenderLoop');
 goog.require('olcs.Camera');
 goog.require('olcs.RasterSynchronizer');
@@ -31284,14 +31336,6 @@ olcs.OLCesium = function(options) {
    * @private
    */
   this.map_ = options.map;
-
-  /**
-   * @type {!Function}
-   * @private
-   */
-  this.time_ = options.time || function() {
-    return Cesium.JulianDate.now();
-  };
 
   /**
    * No change of the view projection.
@@ -31461,40 +31505,33 @@ olcs.OLCesium = function(options) {
     }
   }
 
-  /**
-   * Time of the last rendered frame, as returned by `performance.now()`.
-   * @type {number}
-   * @private
-   */
-  this.lastFrameTime_ = 0;
+  this.cesiumRenderingDelay_ = new goog.async.AnimationDelay(function(time) {
+    if (!this.blockCesiumRendering_) {
+      var julianDate = Cesium.JulianDate.now();
+      this.scene_.initializeFrame();
+      this.handleResize_();
+      this.dataSourceDisplay_.update(julianDate);
+
+      // Update tracked entity
+      if (this.entityView_) {
+        var trackedEntity = this.trackedEntity_;
+        var trackedState = this.dataSourceDisplay_.getBoundingSphere(trackedEntity, false, this.boundingSphereScratch_);
+        if (trackedState === Cesium.BoundingSphereState.DONE) {
+          this.boundingSphereScratch_.radius = 1; // a radius of 1 is enough for tracking points
+          this.entityView_.update(julianDate, this.boundingSphereScratch_);
+        }
+      }
+
+      this.scene_.render(julianDate);
+      this.enabled_ && this.camera_.checkCameraChange();
+    }
+    this.cesiumRenderingDelay_.start();
+  }, undefined, this);
 
   /**
-   * The identifier returned by `requestAnimationFrame`.
-   * @type {number|undefined}
-   * @private
-   */
-  this.renderId_ = undefined;
-
-  /**
-   * Target frame rate for the render loop.
-   * @type {number}
-   * @private
-   */
-  this.targetFrameRate_ = Number.POSITIVE_INFINITY;
-
-  /**
-   * If the Cesium render loop is being blocked.
-   * @type {boolean}
    * @private
    */
   this.blockCesiumRendering_ = false;
-
-  /**
-   * If the warmup routine is active.
-   * @type {boolean}
-   * @private
-   */
-  this.warmingUp_ = false;
 
   /**
    * @type {ol.Feature}
@@ -31590,67 +31627,6 @@ Object.defineProperties(olcs.OLCesium.prototype, {
 
 
 /**
- * Render the Cesium scene.
- * @private
- */
-olcs.OLCesium.prototype.render_ = function() {
-  // if a call to `requestAnimationFrame` is pending, cancel it
-  if (this.renderId_ !== undefined) {
-    cancelAnimationFrame(this.renderId_);
-    this.renderId_ = undefined;
-  }
-
-  // only render if Cesium is enabled/warming and rendering hasn't been blocked
-  if ((this.enabled_ || this.warmingUp_) && !this.blockCesiumRendering_) {
-    this.renderId_ = requestAnimationFrame(this.onAnimationFrame_.bind(this));
-  }
-};
-
-
-/**
- * Callback for `requestAnimationFrame`.
- * @param {number} frameTime The frame time, from `performance.now()`.
- * @private
- */
-olcs.OLCesium.prototype.onAnimationFrame_ = function(frameTime) {
-  this.renderId_ = undefined;
-
-  // check if a frame was rendered within the target frame rate
-  var interval = 1000.0 / this.targetFrameRate_;
-  var delta = frameTime - this.lastFrameTime_;
-  if (delta < interval) {
-    // too soon, don't render yet
-    this.render_();
-    return;
-  }
-
-  // time to render a frame, save the time
-  this.lastFrameTime_ = frameTime;
-
-  var julianDate = this.time_();
-  this.scene_.initializeFrame();
-  this.handleResize_();
-  this.dataSourceDisplay_.update(julianDate);
-
-  // Update tracked entity
-  if (this.entityView_) {
-    var trackedEntity = this.trackedEntity_;
-    var trackedState = this.dataSourceDisplay_.getBoundingSphere(trackedEntity, false, this.boundingSphereScratch_);
-    if (trackedState === Cesium.BoundingSphereState.DONE) {
-      this.boundingSphereScratch_.radius = 1; // a radius of 1 is enough for tracking points
-      this.entityView_.update(julianDate, this.boundingSphereScratch_);
-    }
-  }
-
-  this.scene_.render(julianDate);
-  this.camera_.checkCameraChange();
-
-  // request the next render call after this one completes to ensure the browser doesn't get backed up
-  this.render_();
-};
-
-
-/**
  * @private
  */
 olcs.OLCesium.prototype.updateTrackedEntity_ = function() {
@@ -31673,7 +31649,7 @@ olcs.OLCesium.prototype.updateTrackedEntity_ = function() {
     bs.radius = 1;
   }
   this.entityView_ = new Cesium.EntityView(trackedEntity, scene, scene.mapProjection.ellipsoid);
-  this.entityView_.update(this.time_(), bs);
+  this.entityView_.update(Cesium.JulianDate.now(), bs); // FIXME: have a global management of current time
   this.needTrackedEntityUpdate_ = false;
 };
 
@@ -31800,7 +31776,7 @@ olcs.OLCesium.prototype.setEnabled = function(enable) {
       }
     }
     this.camera_.readFromView();
-    this.render_();
+    this.cesiumRenderingDelay_.start();
   } else {
     if (this.isOverMap_) {
       interactions = this.map_.getInteractions();
@@ -31816,6 +31792,7 @@ olcs.OLCesium.prototype.setEnabled = function(enable) {
     }
 
     this.camera_.updateView();
+    this.cesiumRenderingDelay_.stop();
   }
 };
 
@@ -31840,13 +31817,11 @@ olcs.OLCesium.prototype.warmUp = function(height, timeout) {
     position.height = height;
     csCamera.position = ellipsoid.cartographicToCartesian(position);
   }
-
-  this.warmingUp_ = true;
-  this.render_();
-
-  setTimeout((function() {
-    this.warmingUp_ = false;
-  }).bind(this), timeout);
+  this.cesiumRenderingDelay_.start();
+  var that = this;
+  setTimeout(
+      function() { !that.enabled_ && that.cesiumRenderingDelay_.stop(); },
+      timeout);
 };
 
 
@@ -31856,12 +31831,7 @@ olcs.OLCesium.prototype.warmUp = function(height, timeout) {
  * @api
 */
 olcs.OLCesium.prototype.setBlockCesiumRendering = function(block) {
-  if (this.blockCesiumRendering_ !== block) {
-    this.blockCesiumRendering_ = block;
-
-    // reset the render loop
-    this.render_();
-  }
+  this.blockCesiumRendering_ = block;
 };
 
 
@@ -31912,22 +31882,6 @@ olcs.OLCesium.prototype.setResolutionScale = function(value) {
     if (this.autoRenderLoop_) {
       this.autoRenderLoop_.restartRenderLoop();
     }
-  }
-};
-
-
-/**
- * Set the target frame rate for the renderer. Set to `Number.POSITIVE_INFINITY`
- * to render as quickly as possible.
- * @param {number} value The frame rate, in frames per second.
- * @api
- */
-olcs.OLCesium.prototype.setTargetFrameRate = function(value) {
-  if (this.targetFrameRate_ !== value) {
-    this.targetFrameRate_ = value;
-
-    // reset the render loop
-    this.render_();
   }
 };
 
@@ -32246,12 +32200,8 @@ ol.string.compareVersions = function(v1, v2) {
     var n1 = parseInt(s1[i] || '0', 10);
     var n2 = parseInt(s2[i] || '0', 10);
 
-    if (n1 > n2) {
-      return 1;
-    }
-    if (n2 > n1) {
-      return -1;
-    }
+    if (n1 > n2) return 1;
+    if (n2 > n1) return -1;
   }
 
   return 0;
@@ -32577,69 +32527,6 @@ ol.coordinate.toStringHDMS = function(coordinate, opt_fractionDigits) {
  */
 ol.coordinate.toStringXY = function(coordinate, opt_fractionDigits) {
   return ol.coordinate.format(coordinate, '{x}, {y}', opt_fractionDigits);
-};
-
-goog.provide('ol.easing');
-
-
-/**
- * Start slow and speed up.
- * @param {number} t Input between 0 and 1.
- * @return {number} Output between 0 and 1.
- * @api
- */
-ol.easing.easeIn = function(t) {
-  return Math.pow(t, 3);
-};
-
-
-/**
- * Start fast and slow down.
- * @param {number} t Input between 0 and 1.
- * @return {number} Output between 0 and 1.
- * @api
- */
-ol.easing.easeOut = function(t) {
-  return 1 - ol.easing.easeIn(1 - t);
-};
-
-
-/**
- * Start slow, speed up, and then slow down again.
- * @param {number} t Input between 0 and 1.
- * @return {number} Output between 0 and 1.
- * @api
- */
-ol.easing.inAndOut = function(t) {
-  return 3 * t * t - 2 * t * t * t;
-};
-
-
-/**
- * Maintain a constant speed over time.
- * @param {number} t Input between 0 and 1.
- * @return {number} Output between 0 and 1.
- * @api
- */
-ol.easing.linear = function(t) {
-  return t;
-};
-
-
-/**
- * Start slow, speed up, and at the very end slow down again.  This has the
- * same general behavior as {@link ol.easing.inAndOut}, but the final slowdown
- * is delayed.
- * @param {number} t Input between 0 and 1.
- * @return {number} Output between 0 and 1.
- * @api
- */
-ol.easing.upAndDown = function(t) {
-  if (t < 0.5) {
-    return ol.easing.inAndOut(2 * t);
-  } else {
-    return 1 - ol.easing.inAndOut(2 * (t - 0.5));
-  }
 };
 
 goog.provide('ol.geom.flat.area');
@@ -34846,7 +34733,6 @@ goog.require('ol.RotationConstraint');
 goog.require('ol.array');
 goog.require('ol.asserts');
 goog.require('ol.coordinate');
-goog.require('ol.easing');
 goog.require('ol.extent');
 goog.require('ol.geom.Polygon');
 goog.require('ol.geom.SimpleGeometry');
@@ -34923,20 +34809,6 @@ ol.View = function(opt_options) {
   this.hints_ = [0, 0];
 
   /**
-   * @private
-   * @type {Array.<Array.<ol.ViewAnimation>>}
-   */
-  this.animations_ = [];
-
-  /**
-   * @private
-   * @type {number|undefined}
-   */
-  this.updateAnimationKey_;
-
-  this.updateAnimations_ = this.updateAnimations_.bind(this);
-
-  /**
    * @type {Object.<string, *>}
    */
   var properties = {};
@@ -35006,197 +34878,6 @@ ol.View = function(opt_options) {
 };
 ol.inherits(ol.View, ol.Object);
 
-
-/**
- * Animate the view.  The view's center, zoom (or resolution), and rotation
- * can be animated for smooth transitions between view states.  For example,
- * to animate the view to a new zoom level:
- *
- *     view.animate({zoom: view.getZoom() + 1});
- *
- * By default, the animation lasts one second and uses in-and-out easing.  You
- * can customize this behavior by including `duration` (in milliseconds) and
- * `easing` options (see {@link ol.easing}).
- *
- * To chain together multiple animations, call the method with multiple
- * animation objects.  For example, to first zoom and then pan:
- *
- *     view.animate({zoom: 10}, {center: [0, 0]});
- *
- * If you provide a function as the last argument to the animate method, it
- * will get called at the end of an animation series.  The callback will be
- * called with `true` if the animation series completed on its own or `false`
- * if it was cancelled.
- *
- * Animations are cancelled by user interactions (e.g. dragging the map) or by
- * calling `view.setCenter()`, `view.setResolution()`, or `view.setRotation()`
- * (or another method that calls one of these).
- *
- * @param {...(olx.AnimationOptions|function(boolean))} var_args Animation
- *     options.  Multiple animations can be run in series by passing multiple
- *     options objects.  To run multiple animations in parallel, call the method
- *     multiple times.  An optional callback can be provided as a final
- *     argument.  The callback will be called with a boolean indicating whether
- *     the animation completed without being cancelled.
- * @api
- */
-ol.View.prototype.animate = function(var_args) {
-  var start = Date.now();
-  var center = this.getCenter().slice();
-  var resolution = this.getResolution();
-  var rotation = this.getRotation();
-  var animationCount = arguments.length;
-  var callback;
-  if (animationCount > 1 && typeof arguments[animationCount - 1] === 'function') {
-    callback = arguments[animationCount - 1];
-    --animationCount;
-  }
-  var series = [];
-  for (var i = 0; i < animationCount; ++i) {
-    var options = /** @type olx.AnimationOptions */ (arguments[i]);
-
-    var animation = /** @type {ol.ViewAnimation} */ ({
-      start: start,
-      complete: false,
-      anchor: options.anchor,
-      duration: options.duration || 1000,
-      easing: options.easing || ol.easing.inAndOut
-    });
-
-    if (options.center) {
-      animation.sourceCenter = center;
-      animation.targetCenter = options.center;
-      center = animation.targetCenter;
-    }
-
-    if (options.zoom !== undefined) {
-      animation.sourceResolution = resolution;
-      animation.targetResolution = this.constrainResolution(
-            this.maxResolution_, options.zoom - this.minZoom_, 0);
-      resolution = animation.targetResolution;
-    } else if (options.resolution) {
-      animation.sourceResolution = this.getResolution();
-      animation.targetResolution = options.resolution;
-      resolution = animation.targetResolution;
-    }
-
-    if (options.rotation !== undefined) {
-      animation.sourceRotation = rotation;
-      animation.targetRotation = options.rotation;
-      rotation = animation.targetRotation;
-    }
-
-    animation.callback = callback;
-    start += animation.duration;
-    series.push(animation);
-  }
-  this.animations_.push(series);
-  this.setHint(ol.View.Hint.ANIMATING, 1);
-  this.updateAnimations_();
-};
-
-
-/**
- * Determine if the view is being animated.
- * @return {boolean} The view is being animated.
- */
-ol.View.prototype.getAnimating = function() {
-  return this.getHints()[ol.View.Hint.ANIMATING] > 0;
-};
-
-
-/**
- * Cancel any ongoing animations.
- */
-ol.View.prototype.cancelAnimations = function() {
-  this.setHint(ol.View.Hint.ANIMATING, -this.getHints()[ol.View.Hint.ANIMATING]);
-  for (var i = 0, ii = this.animations_.length; i < ii; ++i) {
-    var series = this.animations_[i];
-    if (series[0].callback) {
-      series[0].callback(false);
-    }
-  }
-  this.animations_.length = 0;
-  this.changed(); // notify that the hint changed
-};
-
-/**
- * Update all animations.
- */
-ol.View.prototype.updateAnimations_ = function() {
-  if (this.updateAnimationKey_ !== undefined) {
-    cancelAnimationFrame(this.updateAnimationKey_);
-    this.updateAnimationKey_ = undefined;
-  }
-  if (!this.getAnimating()) {
-    return;
-  }
-  var now = Date.now();
-  var more = false;
-  for (var i = this.animations_.length - 1; i >= 0; --i) {
-    var series = this.animations_[i];
-    var seriesComplete = true;
-    for (var j = 0, jj = series.length; j < jj; ++j) {
-      var animation = series[j];
-      if (animation.complete) {
-        continue;
-      }
-      var elapsed = now - animation.start;
-      var fraction = elapsed / animation.duration;
-      if (fraction >= 1) {
-        animation.complete = true;
-        fraction = 1;
-      } else {
-        seriesComplete = false;
-      }
-      var progress = animation.easing(fraction);
-      if (animation.sourceCenter) {
-        var x0 = animation.sourceCenter[0];
-        var y0 = animation.sourceCenter[1];
-        var x1 = animation.targetCenter[0];
-        var y1 = animation.targetCenter[1];
-        var x = x0 + progress * (x1 - x0);
-        var y = y0 + progress * (y1 - y0);
-        this.set(ol.View.Property.CENTER, [x, y]);
-      }
-      if (animation.sourceResolution) {
-        var resolution = animation.sourceResolution +
-            progress * (animation.targetResolution - animation.sourceResolution);
-        if (animation.anchor) {
-          this.set(ol.View.Property.CENTER,
-              this.calculateCenterZoom(resolution, animation.anchor));
-        }
-        this.set(ol.View.Property.RESOLUTION, resolution);
-      }
-      if (animation.sourceRotation !== undefined) {
-        var rotation = animation.sourceRotation +
-            progress * (animation.targetRotation - animation.sourceRotation);
-        if (animation.anchor) {
-          this.set(ol.View.Property.CENTER,
-              this.calculateCenterRotate(rotation, animation.anchor));
-        }
-        this.set(ol.View.Property.ROTATION, rotation);
-      }
-      more = true;
-      if (!animation.complete) {
-        break;
-      }
-    }
-    if (seriesComplete) {
-      this.animations_[i] = null;
-      this.setHint(ol.View.Hint.ANIMATING, -1);
-      var callback = series[0].callback;
-      if (callback) {
-        callback(true);
-      }
-    }
-  }
-  // prune completed series
-  this.animations_ = this.animations_.filter(Boolean);
-  if (more && this.updateAnimationKey_ === undefined) {
-    this.updateAnimationKey_ = requestAnimationFrame(this.updateAnimations_);
-  }
-};
 
 /**
  * @param {number} rotation Target rotation.
@@ -35646,9 +35327,6 @@ ol.View.prototype.rotate = function(rotation, opt_anchor) {
  */
 ol.View.prototype.setCenter = function(center) {
   this.set(ol.View.Property.CENTER, center);
-  if (this.getAnimating()) {
-    this.cancelAnimations();
-  }
 };
 
 
@@ -35675,9 +35353,6 @@ ol.View.prototype.setHint = function(hint, delta) {
  */
 ol.View.prototype.setResolution = function(resolution) {
   this.set(ol.View.Property.RESOLUTION, resolution);
-  if (this.getAnimating()) {
-    this.cancelAnimations();
-  }
 };
 
 
@@ -35689,9 +35364,6 @@ ol.View.prototype.setResolution = function(resolution) {
  */
 ol.View.prototype.setRotation = function(rotation) {
   this.set(ol.View.Property.ROTATION, rotation);
-  if (this.getAnimating()) {
-    this.cancelAnimations();
-  }
 };
 
 
@@ -35851,6 +35523,69 @@ goog.exportProperty(ol.View.prototype, 'getResolutionForExtent',
     ol.View.prototype.getResolutionForExtent);
 
 
+goog.provide('ol.easing');
+
+
+/**
+ * Start slow and speed up.
+ * @param {number} t Input between 0 and 1.
+ * @return {number} Output between 0 and 1.
+ * @api
+ */
+ol.easing.easeIn = function(t) {
+  return Math.pow(t, 3);
+};
+
+
+/**
+ * Start fast and slow down.
+ * @param {number} t Input between 0 and 1.
+ * @return {number} Output between 0 and 1.
+ * @api
+ */
+ol.easing.easeOut = function(t) {
+  return 1 - ol.easing.easeIn(1 - t);
+};
+
+
+/**
+ * Start slow, speed up, and then slow down again.
+ * @param {number} t Input between 0 and 1.
+ * @return {number} Output between 0 and 1.
+ * @api
+ */
+ol.easing.inAndOut = function(t) {
+  return 3 * t * t - 2 * t * t * t;
+};
+
+
+/**
+ * Maintain a constant speed over time.
+ * @param {number} t Input between 0 and 1.
+ * @return {number} Output between 0 and 1.
+ * @api
+ */
+ol.easing.linear = function(t) {
+  return t;
+};
+
+
+/**
+ * Start slow, speed up, and at the very end slow down again.  This has the
+ * same general behavior as {@link ol.easing.inAndOut}, but the final slowdown
+ * is delayed.
+ * @param {number} t Input between 0 and 1.
+ * @return {number} Output between 0 and 1.
+ * @api
+ */
+ol.easing.upAndDown = function(t) {
+  if (t < 0.5) {
+    return ol.easing.inAndOut(2 * t);
+  } else {
+    return 1 - ol.easing.inAndOut(2 * (t - 0.5));
+  }
+};
+
 goog.provide('ol.animation');
 
 goog.require('ol');
@@ -35860,7 +35595,6 @@ goog.require('ol.easing');
 
 
 /**
- * Deprecated (use {@link ol.View#animate} instead).
  * Generate an animated transition that will "bounce" the resolution as it
  * approaches the final value.
  * @param {olx.animation.BounceOptions} options Bounce options.
@@ -35868,7 +35602,6 @@ goog.require('ol.easing');
  * @api
  */
 ol.animation.bounce = function(options) {
-  ol.DEBUG && console.warn('ol.animation.bounce() is deprecated.  Use view.animate() instead.');
   var resolution = options.resolution;
   var start = options.start ? options.start : Date.now();
   var duration = options.duration !== undefined ? options.duration : 1000;
@@ -35900,14 +35633,12 @@ ol.animation.bounce = function(options) {
 
 
 /**
- * Deprecated (use {@link ol.View#animate} instead).
  * Generate an animated transition while updating the view center.
  * @param {olx.animation.PanOptions} options Pan options.
  * @return {ol.PreRenderFunction} Pre-render function.
  * @api
  */
 ol.animation.pan = function(options) {
-  ol.DEBUG && console.warn('ol.animation.pan() is deprecated.  Use view.animate() instead.');
   var source = options.source;
   var start = options.start ? options.start : Date.now();
   var sourceX = source[0];
@@ -35943,14 +35674,12 @@ ol.animation.pan = function(options) {
 
 
 /**
- * Deprecated (use {@link ol.View#animate} instead).
  * Generate an animated transition while updating the view rotation.
  * @param {olx.animation.RotateOptions} options Rotate options.
  * @return {ol.PreRenderFunction} Pre-render function.
  * @api
  */
 ol.animation.rotate = function(options) {
-  ol.DEBUG && console.warn('ol.animation.rotate() is deprecated.  Use view.animate() instead.');
   var sourceRotation = options.rotation ? options.rotation : 0;
   var start = options.start ? options.start : Date.now();
   var duration = options.duration !== undefined ? options.duration : 1000;
@@ -35992,14 +35721,12 @@ ol.animation.rotate = function(options) {
 
 
 /**
- * Deprecated (use {@link ol.View#animate} instead).
  * Generate an animated transition while updating the view resolution.
  * @param {olx.animation.ZoomOptions} options Zoom options.
  * @return {ol.PreRenderFunction} Pre-render function.
  * @api
  */
 ol.animation.zoom = function(options) {
-  ol.DEBUG && console.warn('ol.animation.zoom() is deprecated.  Use view.animate() instead.');
   var sourceResolution = options.resolution;
   var start = options.start ? options.start : Date.now();
   var duration = options.duration !== undefined ? options.duration : 1000;
@@ -36941,6 +36668,7 @@ goog.provide('ol.control.Rotate');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol');
+goog.require('ol.animation');
 goog.require('ol.control.Control');
 goog.require('ol.css');
 goog.require('ol.easing');
@@ -37068,14 +36796,13 @@ ol.control.Rotate.prototype.resetNorth_ = function() {
       if (currentRotation > Math.PI) {
         currentRotation -= 2 * Math.PI;
       }
-      view.animate({
-        rotation: 0,
+      map.beforeRender(ol.animation.rotate({
+        rotation: currentRotation,
         duration: this.duration_,
         easing: ol.easing.easeOut
-      });
-    } else {
-      view.setRotation(0);
+      }));
     }
+    view.setRotation(0);
   }
 };
 
@@ -37114,6 +36841,7 @@ goog.provide('ol.control.Zoom');
 goog.require('ol');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
+goog.require('ol.animation');
 goog.require('ol.control.Control');
 goog.require('ol.css');
 goog.require('ol.easing');
@@ -37215,19 +36943,15 @@ ol.control.Zoom.prototype.zoomByDelta_ = function(delta) {
   }
   var currentResolution = view.getResolution();
   if (currentResolution) {
-    var newResolution = view.constrainResolution(currentResolution, delta);
     if (this.duration_ > 0) {
-      if (view.getAnimating()) {
-        view.cancelAnimations();
-      }
-      view.animate({
-        resolution: newResolution,
+      map.beforeRender(ol.animation.zoom({
+        resolution: currentResolution,
         duration: this.duration_,
         easing: ol.easing.easeOut
-      });
-    } else {
-      view.setResolution(newResolution);
+      }));
     }
+    var newResolution = view.constrainResolution(currentResolution, delta);
+    view.setResolution(newResolution);
   }
 };
 
@@ -40253,6 +39977,8 @@ ol.TileQueue.prototype.loadMoreTiles = function(maxTotalLoading, maxNewLoads) {
 
 goog.provide('ol.Kinetic');
 
+goog.require('ol.animation');
+
 
 /**
  * @classdesc
@@ -40357,6 +40083,32 @@ ol.Kinetic.prototype.end = function() {
 
 
 /**
+ * @param {ol.Coordinate} source Source coordinate for the animation.
+ * @return {ol.PreRenderFunction} Pre-render function for kinetic animation.
+ */
+ol.Kinetic.prototype.pan = function(source) {
+  var decay = this.decay_;
+  var initialVelocity = this.initialVelocity_;
+  var velocity = this.minVelocity_ - initialVelocity;
+  var duration = this.getDuration_();
+  var easingFunction = (
+      /**
+       * @param {number} t T.
+       * @return {number} Easing.
+       */
+      function(t) {
+        return initialVelocity * (Math.exp((decay * t) * duration) - 1) /
+            velocity;
+      });
+  return ol.animation.pan({
+    source: source,
+    duration: duration,
+    easing: easingFunction
+  });
+};
+
+
+/**
  * @private
  * @return {number} Duration of animation (milliseconds).
  */
@@ -40386,6 +40138,7 @@ goog.provide('ol.interaction.Interaction');
 
 goog.require('ol');
 goog.require('ol.Object');
+goog.require('ol.animation');
 goog.require('ol.easing');
 
 
@@ -40480,17 +40233,16 @@ ol.interaction.Interaction.prototype.setMap = function(map) {
 ol.interaction.Interaction.pan = function(map, view, delta, opt_duration) {
   var currentCenter = view.getCenter();
   if (currentCenter) {
+    if (opt_duration && opt_duration > 0) {
+      map.beforeRender(ol.animation.pan({
+        source: currentCenter,
+        duration: opt_duration,
+        easing: ol.easing.linear
+      }));
+    }
     var center = view.constrainCenter(
         [currentCenter[0] + delta[0], currentCenter[1] + delta[1]]);
-    if (opt_duration) {
-      view.animate({
-        duration: opt_duration,
-        easing: ol.easing.linear,
-        center: center
-      });
-    } else {
-      view.setCenter(center);
-    }
+    view.setCenter(center);
   }
 };
 
@@ -40520,16 +40272,22 @@ ol.interaction.Interaction.rotateWithoutConstraints = function(map, view, rotati
   if (rotation !== undefined) {
     var currentRotation = view.getRotation();
     var currentCenter = view.getCenter();
-    if (currentRotation !== undefined && currentCenter && opt_duration > 0) {
-      view.animate({
-        rotation: rotation,
-        anchor: opt_anchor,
+    if (currentRotation !== undefined && currentCenter &&
+        opt_duration && opt_duration > 0) {
+      map.beforeRender(ol.animation.rotate({
+        rotation: currentRotation,
         duration: opt_duration,
         easing: ol.easing.easeOut
-      });
-    } else {
-      view.rotate(rotation, opt_anchor);
+      }));
+      if (opt_anchor) {
+        map.beforeRender(ol.animation.pan({
+          source: currentCenter,
+          duration: opt_duration,
+          easing: ol.easing.easeOut
+        }));
+      }
     }
+    view.rotate(rotation, opt_anchor);
   }
 };
 
@@ -40583,20 +40341,26 @@ ol.interaction.Interaction.zoomWithoutConstraints = function(map, view, resoluti
     var currentResolution = view.getResolution();
     var currentCenter = view.getCenter();
     if (currentResolution !== undefined && currentCenter &&
-        resolution !== currentResolution && opt_duration) {
-      view.animate({
-        resolution: resolution,
-        anchor: opt_anchor,
+        resolution !== currentResolution &&
+        opt_duration && opt_duration > 0) {
+      map.beforeRender(ol.animation.zoom({
+        resolution: currentResolution,
         duration: opt_duration,
         easing: ol.easing.easeOut
-      });
-    } else {
+      }));
       if (opt_anchor) {
-        var center = view.calculateCenterZoom(resolution, opt_anchor);
-        view.setCenter(center);
+        map.beforeRender(ol.animation.pan({
+          source: currentCenter,
+          duration: opt_duration,
+          easing: ol.easing.easeOut
+        }));
       }
-      view.setResolution(resolution);
     }
+    if (opt_anchor) {
+      var center = view.calculateCenterZoom(resolution, opt_anchor);
+      view.setCenter(center);
+    }
+    view.setResolution(resolution);
   }
 };
 
@@ -41124,7 +40888,6 @@ goog.provide('ol.interaction.DragPan');
 goog.require('ol');
 goog.require('ol.View');
 goog.require('ol.coordinate');
-goog.require('ol.easing');
 goog.require('ol.events.condition');
 goog.require('ol.functions');
 goog.require('ol.interaction.Pointer');
@@ -41154,6 +40917,12 @@ ol.interaction.DragPan = function(opt_options) {
    * @type {ol.Kinetic|undefined}
    */
   this.kinetic_ = options.kinetic;
+
+  /**
+   * @private
+   * @type {?ol.PreRenderFunction}
+   */
+  this.kineticPreRenderFn_ = null;
 
   /**
    * @type {ol.Pixel}
@@ -41221,16 +40990,15 @@ ol.interaction.DragPan.handleUpEvent_ = function(mapBrowserEvent) {
       var distance = this.kinetic_.getDistance();
       var angle = this.kinetic_.getAngle();
       var center = /** @type {!ol.Coordinate} */ (view.getCenter());
+      this.kineticPreRenderFn_ = this.kinetic_.pan(center);
+      map.beforeRender(this.kineticPreRenderFn_);
       var centerpx = map.getPixelFromCoordinate(center);
       var dest = map.getCoordinateFromPixel([
         centerpx[0] - distance * Math.cos(angle),
         centerpx[1] - distance * Math.sin(angle)
       ]);
-      view.animate({
-        center: view.constrainCenter(dest),
-        duration: 500,
-        easing: ol.easing.easeOut
-      });
+      dest = view.constrainCenter(dest);
+      view.setCenter(dest);
     } else {
       // the view is not updated, force a render
       map.render();
@@ -41258,8 +41026,11 @@ ol.interaction.DragPan.handleDownEvent_ = function(mapBrowserEvent) {
     if (!this.handlingDownUpSequence) {
       view.setHint(ol.View.Hint.INTERACTING, 1);
     }
-    // stop any current animation
-    view.setCenter(mapBrowserEvent.frameState.viewState.center);
+    if (this.kineticPreRenderFn_ &&
+        map.removePreRenderFunction(this.kineticPreRenderFn_)) {
+      view.setCenter(mapBrowserEvent.frameState.viewState.center);
+      this.kineticPreRenderFn_ = null;
+    }
     if (this.kinetic_) {
       this.kinetic_.begin();
     }
@@ -41781,6 +41552,7 @@ ol.inherits(ol.interaction.DragBox.Event, ol.events.Event);
 goog.provide('ol.interaction.DragZoom');
 
 goog.require('ol');
+goog.require('ol.animation');
 goog.require('ol.easing');
 goog.require('ol.events.condition');
 goog.require('ol.extent');
@@ -41854,13 +41626,23 @@ ol.interaction.DragZoom.prototype.onBoxEnd = function() {
   var resolution = view.constrainResolution(
       view.getResolutionForExtent(extent, size));
 
-  view.animate({
-    resolution: resolution,
-    center: ol.extent.getCenter(extent),
+  var currentResolution = /** @type {number} */ (view.getResolution());
+
+  var currentCenter = /** @type {!ol.Coordinate} */ (view.getCenter());
+
+  map.beforeRender(ol.animation.zoom({
+    resolution: currentResolution,
     duration: this.duration_,
     easing: ol.easing.easeOut
-  });
+  }));
+  map.beforeRender(ol.animation.pan({
+    source: currentCenter,
+    duration: this.duration_,
+    easing: ol.easing.easeOut
+  }));
 
+  view.setCenter(ol.extent.getCenter(extent));
+  view.setResolution(resolution);
 };
 
 goog.provide('ol.events.KeyCode');
@@ -42074,7 +41856,6 @@ ol.interaction.KeyboardZoom.handleEvent = function(mapBrowserEvent) {
 goog.provide('ol.interaction.MouseWheelZoom');
 
 goog.require('ol');
-goog.require('ol.easing');
 goog.require('ol.events.EventType');
 goog.require('ol.has');
 goog.require('ol.interaction.Interaction');
@@ -42112,12 +41893,6 @@ ol.interaction.MouseWheelZoom = function(opt_options) {
 
   /**
    * @private
-   * @type {number}
-   */
-  this.timeout_ = options.timeout !== undefined ? options.timeout : 80;
-
-  /**
-   * @private
    * @type {boolean}
    */
   this.useAnchor_ = options.useAnchor !== undefined ? options.useAnchor : true;
@@ -42140,26 +41915,6 @@ ol.interaction.MouseWheelZoom = function(opt_options) {
    */
   this.timeoutId_ = undefined;
 
-  /**
-   * @private
-   * @type {ol.interaction.MouseWheelZoom.Mode|undefined}
-   */
-  this.mode_ = undefined;
-
-  /**
-   * The number of delta values per zoom level
-   * @private
-   * @type {number}
-   */
-  this.trackpadDeltaPerZoom_ = 300;
-
-  /**
-   * The zoom factor by which scroll zooming is allowed to exceed the limits.
-   * @private
-   * @type {number}
-   */
-  this.trackpadZoomBuffer_ = 1.5;
-
 };
 ol.inherits(ol.interaction.MouseWheelZoom, ol.interaction.Interaction);
 
@@ -42168,105 +41923,58 @@ ol.inherits(ol.interaction.MouseWheelZoom, ol.interaction.Interaction);
  * Handles the {@link ol.MapBrowserEvent map browser event} (if it was a
  * mousewheel-event) and eventually zooms the map.
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
- * @return {boolean} Allow event propagation.
+ * @return {boolean} `false` to stop event propagation.
  * @this {ol.interaction.MouseWheelZoom}
  * @api
  */
 ol.interaction.MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
-  var type = mapBrowserEvent.type;
-  if (type !== ol.events.EventType.WHEEL && type !== ol.events.EventType.MOUSEWHEEL) {
-    return true;
-  }
+  var stopEvent = false;
+  if (mapBrowserEvent.type == ol.events.EventType.WHEEL ||
+      mapBrowserEvent.type == ol.events.EventType.MOUSEWHEEL) {
+    var map = mapBrowserEvent.map;
+    var wheelEvent = /** @type {WheelEvent} */ (mapBrowserEvent.originalEvent);
 
-  mapBrowserEvent.preventDefault();
-
-  var map = mapBrowserEvent.map;
-  var wheelEvent = /** @type {WheelEvent} */ (mapBrowserEvent.originalEvent);
-
-  if (this.useAnchor_) {
-    this.lastAnchor_ = mapBrowserEvent.coordinate;
-  }
-
-  // Delta normalisation inspired by
-  // https://github.com/mapbox/mapbox-gl-js/blob/001c7b9/js/ui/handler/scroll_zoom.js
-  var delta;
-  if (mapBrowserEvent.type == ol.events.EventType.WHEEL) {
-    delta = wheelEvent.deltaY;
-    if (ol.has.FIREFOX &&
-        wheelEvent.deltaMode === WheelEvent.DOM_DELTA_PIXEL) {
-      delta /= ol.has.DEVICE_PIXEL_RATIO;
+    if (this.useAnchor_) {
+      this.lastAnchor_ = mapBrowserEvent.coordinate;
     }
-    if (wheelEvent.deltaMode === WheelEvent.DOM_DELTA_LINE) {
-      delta *= 40;
+
+    // Delta normalisation inspired by
+    // https://github.com/mapbox/mapbox-gl-js/blob/001c7b9/js/ui/handler/scroll_zoom.js
+    //TODO There's more good stuff in there for inspiration to improve this interaction.
+    var delta;
+    if (mapBrowserEvent.type == ol.events.EventType.WHEEL) {
+      delta = wheelEvent.deltaY;
+      if (ol.has.FIREFOX &&
+          wheelEvent.deltaMode === WheelEvent.DOM_DELTA_PIXEL) {
+        delta /= ol.has.DEVICE_PIXEL_RATIO;
+      }
+      if (wheelEvent.deltaMode === WheelEvent.DOM_DELTA_LINE) {
+        delta *= 40;
+      }
+    } else if (mapBrowserEvent.type == ol.events.EventType.MOUSEWHEEL) {
+      delta = -wheelEvent.wheelDeltaY;
+      if (ol.has.SAFARI) {
+        delta /= 3;
+      }
     }
-  } else if (mapBrowserEvent.type == ol.events.EventType.MOUSEWHEEL) {
-    delta = -wheelEvent.wheelDeltaY;
-    if (ol.has.SAFARI) {
-      delta /= 3;
+
+    this.delta_ += delta;
+
+    if (this.startTime_ === undefined) {
+      this.startTime_ = Date.now();
     }
+
+    var duration = ol.MOUSEWHEELZOOM_TIMEOUT_DURATION;
+    var timeLeft = Math.max(duration - (Date.now() - this.startTime_), 0);
+
+    clearTimeout(this.timeoutId_);
+    this.timeoutId_ = setTimeout(
+        this.doZoom_.bind(this, map), timeLeft);
+
+    mapBrowserEvent.preventDefault();
+    stopEvent = true;
   }
-
-  if (delta === 0) {
-    return false;
-  }
-
-  var now = Date.now();
-
-  if (this.startTime_ === undefined) {
-    this.startTime_ = now;
-  }
-
-  if (!this.mode_ || now - this.startTime_ > 400) {
-    this.mode_ = Math.abs(delta) < 4 ?
-        ol.interaction.MouseWheelZoom.Mode.TRACKPAD :
-        ol.interaction.MouseWheelZoom.Mode.WHEEL;
-  }
-
-  if (this.mode_ === ol.interaction.MouseWheelZoom.Mode.TRACKPAD) {
-    var view = map.getView();
-    var resolution = view.getResolution() * Math.pow(2, delta / this.trackpadDeltaPerZoom_);
-    var minResolution = view.getMinResolution();
-    var maxResolution = view.getMaxResolution();
-    var rebound = 0;
-    if (resolution < minResolution) {
-      resolution = Math.max(resolution, minResolution / this.trackpadZoomBuffer_);
-      rebound = 1;
-    } else if (resolution > maxResolution) {
-      resolution = Math.min(resolution, maxResolution * this.trackpadZoomBuffer_);
-      rebound = -1;
-    }
-    if (this.lastAnchor_) {
-      var center = view.calculateCenterZoom(resolution, this.lastAnchor_);
-      view.setCenter(center);
-    }
-    view.setResolution(resolution);
-    if (rebound > 0) {
-      view.animate({
-        resolution: minResolution,
-        easing: ol.easing.easeOut,
-        anchor: this.lastAnchor_,
-        duration: 500
-      });
-    } else if (rebound < 0) {
-      view.animate({
-        resolution: maxResolution,
-        easing: ol.easing.easeOut,
-        anchor: this.lastAnchor_,
-        duration: 500
-      });
-    }
-    this.startTime_ = now;
-    return false;
-  }
-
-  this.delta_ += delta;
-
-  var timeLeft = Math.max(this.timeout_ - (now - this.startTime_), 0);
-
-  clearTimeout(this.timeoutId_);
-  this.timeoutId_ = setTimeout(this.handleWheelZoom_.bind(this, map), timeLeft);
-
-  return false;
+  return !stopEvent;
 };
 
 
@@ -42274,16 +41982,15 @@ ol.interaction.MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
  * @private
  * @param {ol.Map} map Map.
  */
-ol.interaction.MouseWheelZoom.prototype.handleWheelZoom_ = function(map) {
-  var view = map.getView();
-  if (view.getAnimating()) {
-    view.cancelAnimations();
-  }
+ol.interaction.MouseWheelZoom.prototype.doZoom_ = function(map) {
   var maxDelta = ol.MOUSEWHEELZOOM_MAXDELTA;
   var delta = ol.math.clamp(this.delta_, -maxDelta, maxDelta);
+
+  var view = map.getView();
+
   ol.interaction.Interaction.zoomByDelta(map, view, -delta, this.lastAnchor_,
       this.duration_);
-  this.mode_ = undefined;
+
   this.delta_ = 0;
   this.lastAnchor_ = null;
   this.startTime_ = undefined;
@@ -42302,15 +42009,6 @@ ol.interaction.MouseWheelZoom.prototype.setMouseAnchor = function(useAnchor) {
   if (!useAnchor) {
     this.lastAnchor_ = null;
   }
-};
-
-
-/**
- * @enum {string}
- */
-ol.interaction.MouseWheelZoom.Mode = {
-  TRACKPAD: 'trackpad',
-  WHEEL: 'wheel'
 };
 
 goog.provide('ol.interaction.PinchRotate');
@@ -45660,9 +45358,9 @@ ol.render.canvas.Replay = function(tolerance, maxExtent, resolution, overlaps) {
 
   /**
    * @private
-   * @type {ol.Coordinate}
+   * @type {boolean}
    */
-  this.fillOrigin_;
+  this.alignFill_ = false;
 
   /**
    * @private
@@ -45794,17 +45492,18 @@ ol.render.canvas.Replay.prototype.beginGeometry = function(geometry, feature) {
 /**
  * @private
  * @param {CanvasRenderingContext2D} context Context.
+ * @param {ol.Transform} transform Transform.
  * @param {number} rotation Rotation.
  */
-ol.render.canvas.Replay.prototype.fill_ = function(context, rotation) {
-  if (this.fillOrigin_) {
-    var origin = ol.transform.apply(this.renderedTransform_, this.fillOrigin_.slice());
-    context.translate(origin[0], origin[1]);
+ol.render.canvas.Replay.prototype.fill_ = function(context, transform, rotation) {
+  if (this.alignFill_) {
+    context.translate(transform[4], transform[5]);
     context.rotate(rotation);
   }
   context.fill();
-  if (this.fillOrigin_) {
-    context.setTransform.apply(context, this.resetTransform_);
+  if (this.alignFill_) {
+    context.rotate(-rotation);
+    context.translate(-transform[4], -transform[5]);
   }
 };
 
@@ -45874,7 +45573,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         break;
       case ol.render.canvas.Instruction.BEGIN_PATH:
         if (pendingFill > batchSize) {
-          this.fill_(context, viewRotation);
+          this.fill_(context, transform, viewRotation);
           pendingFill = 0;
         }
         if (pendingStroke > batchSize) {
@@ -46051,7 +45750,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         if (batchSize) {
           pendingFill++;
         } else {
-          this.fill_(context, viewRotation);
+          this.fill_(context, transform, viewRotation);
         }
         ++i;
         break;
@@ -46089,10 +45788,10 @@ ol.render.canvas.Replay.prototype.replay_ = function(
             ol.colorlike.isColorLike(instruction[1]),
             '2nd instruction should be a string, ' +
             'CanvasPattern, or CanvasGradient');
-        this.fillOrigin_ = instruction[2];
+        this.alignFill_ = instruction[2];
 
         if (pendingFill) {
-          this.fill_(context, viewRotation);
+          this.fill_(context, transform, viewRotation);
           pendingFill = 0;
         }
 
@@ -46158,7 +45857,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
     }
   }
   if (pendingFill) {
-    this.fill_(context, viewRotation);
+    this.fill_(context, transform, viewRotation);
   }
   if (pendingStroke) {
     context.stroke();
@@ -46673,15 +46372,14 @@ ol.render.canvas.LineStringReplay.prototype.setStrokeStyle_ = function() {
       state.currentLineWidth != lineWidth ||
       state.currentMiterLimit != miterLimit) {
     if (state.lastStroke != this.coordinates.length) {
-      this.instructions.push([ol.render.canvas.Instruction.STROKE]);
+      this.instructions.push(
+          [ol.render.canvas.Instruction.STROKE]);
       state.lastStroke = this.coordinates.length;
     }
-    this.instructions.push([
-      ol.render.canvas.Instruction.SET_STROKE_STYLE,
-      strokeStyle, lineWidth, lineCap, lineJoin, miterLimit, lineDash
-    ], [
-      ol.render.canvas.Instruction.BEGIN_PATH
-    ]);
+    this.instructions.push(
+        [ol.render.canvas.Instruction.SET_STROKE_STYLE,
+         strokeStyle, lineWidth, lineCap, lineJoin, miterLimit, lineDash],
+        [ol.render.canvas.Instruction.BEGIN_PATH]);
     state.currentStrokeStyle = strokeStyle;
     state.currentLineCap = lineCap;
     state.currentLineDash = lineDash;
@@ -46705,16 +46403,15 @@ ol.render.canvas.LineStringReplay.prototype.drawLineString = function(lineString
   }
   this.setStrokeStyle_();
   this.beginGeometry(lineStringGeometry, feature);
-  this.hitDetectionInstructions.push([
-    ol.render.canvas.Instruction.SET_STROKE_STYLE,
-    state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
-    state.miterLimit, state.lineDash
-  ], [
-    ol.render.canvas.Instruction.BEGIN_PATH
-  ]);
+  this.hitDetectionInstructions.push(
+      [ol.render.canvas.Instruction.SET_STROKE_STYLE,
+       state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
+       state.miterLimit, state.lineDash],
+      [ol.render.canvas.Instruction.BEGIN_PATH]);
   var flatCoordinates = lineStringGeometry.getFlatCoordinates();
   var stride = lineStringGeometry.getStride();
-  this.drawFlatCoordinates_(flatCoordinates, 0, flatCoordinates.length, stride);
+  this.drawFlatCoordinates_(
+      flatCoordinates, 0, flatCoordinates.length, stride);
   this.hitDetectionInstructions.push([ol.render.canvas.Instruction.STROKE]);
   this.endGeometry(lineStringGeometry, feature);
 };
@@ -46733,13 +46430,11 @@ ol.render.canvas.LineStringReplay.prototype.drawMultiLineString = function(multi
   }
   this.setStrokeStyle_();
   this.beginGeometry(multiLineStringGeometry, feature);
-  this.hitDetectionInstructions.push([
-    ol.render.canvas.Instruction.SET_STROKE_STYLE,
-    state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
-    state.miterLimit, state.lineDash
-  ], [
-    ol.render.canvas.Instruction.BEGIN_PATH
-  ]);
+  this.hitDetectionInstructions.push(
+      [ol.render.canvas.Instruction.SET_STROKE_STYLE,
+       state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
+       state.miterLimit, state.lineDash],
+      [ol.render.canvas.Instruction.BEGIN_PATH]);
   var ends = multiLineStringGeometry.getEnds();
   var flatCoordinates = multiLineStringGeometry.getFlatCoordinates();
   var stride = multiLineStringGeometry.getStride();
@@ -46935,19 +46630,17 @@ ol.render.canvas.PolygonReplay.prototype.drawCircle = function(circleGeometry, f
     ol.DEBUG && console.assert(state.lineWidth !== undefined,
         'state.lineWidth should be defined');
   }
-  this.setFillStrokeStyles_(circleGeometry);
+  this.setFillStrokeStyles_();
   this.beginGeometry(circleGeometry, feature);
   // always fill the circle for hit detection
-  this.hitDetectionInstructions.push([
-    ol.render.canvas.Instruction.SET_FILL_STYLE,
-    ol.color.asString(ol.render.canvas.defaultFillStyle)
-  ]);
+  this.hitDetectionInstructions.push(
+      [ol.render.canvas.Instruction.SET_FILL_STYLE,
+       ol.color.asString(ol.render.canvas.defaultFillStyle)]);
   if (state.strokeStyle !== undefined) {
-    this.hitDetectionInstructions.push([
-      ol.render.canvas.Instruction.SET_STROKE_STYLE,
-      state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
-      state.miterLimit, state.lineDash
-    ]);
+    this.hitDetectionInstructions.push(
+        [ol.render.canvas.Instruction.SET_STROKE_STYLE,
+         state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
+         state.miterLimit, state.lineDash]);
   }
   var flatCoordinates = circleGeometry.getFlatCoordinates();
   var stride = circleGeometry.getStride();
@@ -46987,19 +46680,17 @@ ol.render.canvas.PolygonReplay.prototype.drawPolygon = function(polygonGeometry,
     ol.DEBUG && console.assert(state.lineWidth !== undefined,
         'state.lineWidth should be defined');
   }
-  this.setFillStrokeStyles_(polygonGeometry);
+  this.setFillStrokeStyles_();
   this.beginGeometry(polygonGeometry, feature);
   // always fill the polygon for hit detection
-  this.hitDetectionInstructions.push([
-    ol.render.canvas.Instruction.SET_FILL_STYLE,
-    ol.color.asString(ol.render.canvas.defaultFillStyle)]
-                                    );
+  this.hitDetectionInstructions.push(
+      [ol.render.canvas.Instruction.SET_FILL_STYLE,
+       ol.color.asString(ol.render.canvas.defaultFillStyle)]);
   if (state.strokeStyle !== undefined) {
-    this.hitDetectionInstructions.push([
-      ol.render.canvas.Instruction.SET_STROKE_STYLE,
-      state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
-      state.miterLimit, state.lineDash
-    ]);
+    this.hitDetectionInstructions.push(
+        [ol.render.canvas.Instruction.SET_STROKE_STYLE,
+         state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
+         state.miterLimit, state.lineDash]);
   }
   var ends = polygonGeometry.getEnds();
   var flatCoordinates = polygonGeometry.getOrientedFlatCoordinates();
@@ -47024,19 +46715,17 @@ ol.render.canvas.PolygonReplay.prototype.drawMultiPolygon = function(multiPolygo
     ol.DEBUG && console.assert(state.lineWidth !== undefined,
         'state.lineWidth should be defined');
   }
-  this.setFillStrokeStyles_(multiPolygonGeometry);
+  this.setFillStrokeStyles_();
   this.beginGeometry(multiPolygonGeometry, feature);
   // always fill the multi-polygon for hit detection
-  this.hitDetectionInstructions.push([
-    ol.render.canvas.Instruction.SET_FILL_STYLE,
-    ol.color.asString(ol.render.canvas.defaultFillStyle)
-  ]);
+  this.hitDetectionInstructions.push(
+      [ol.render.canvas.Instruction.SET_FILL_STYLE,
+       ol.color.asString(ol.render.canvas.defaultFillStyle)]);
   if (state.strokeStyle !== undefined) {
-    this.hitDetectionInstructions.push([
-      ol.render.canvas.Instruction.SET_STROKE_STYLE,
-      state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
-      state.miterLimit, state.lineDash
-    ]);
+    this.hitDetectionInstructions.push(
+        [ol.render.canvas.Instruction.SET_STROKE_STYLE,
+         state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
+         state.miterLimit, state.lineDash]);
   }
   var endss = multiPolygonGeometry.getEndss();
   var flatCoordinates = multiPolygonGeometry.getOrientedFlatCoordinates();
@@ -47141,9 +46830,8 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyle = function(fillStyle
 
 /**
  * @private
- * @param {ol.geom.Geometry|ol.render.Feature} geometry Geometry.
  */
-ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function(geometry) {
+ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function() {
   var state = this.state_;
   var fillStyle = state.fillStyle;
   var strokeStyle = state.strokeStyle;
@@ -47152,13 +46840,9 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function(geometr
   var lineJoin = state.lineJoin;
   var lineWidth = state.lineWidth;
   var miterLimit = state.miterLimit;
-  if (fillStyle !== undefined && (typeof fillStyle !== 'string' || state.currentFillStyle != fillStyle)) {
-    var fillInstruction = [ol.render.canvas.Instruction.SET_FILL_STYLE, fillStyle];
-    if (typeof fillStyle !== 'string') {
-      var fillExtent = geometry.getExtent();
-      fillInstruction.push([fillExtent[0], fillExtent[3]]);
-    }
-    this.instructions.push(fillInstruction);
+  if (fillStyle !== undefined && state.currentFillStyle != fillStyle) {
+    this.instructions.push(
+        [ol.render.canvas.Instruction.SET_FILL_STYLE, fillStyle, typeof fillStyle != 'string']);
     state.currentFillStyle = state.fillStyle;
   }
   if (strokeStyle !== undefined) {
@@ -47174,10 +46858,9 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function(geometr
         state.currentLineJoin != lineJoin ||
         state.currentLineWidth != lineWidth ||
         state.currentMiterLimit != miterLimit) {
-      this.instructions.push([
-        ol.render.canvas.Instruction.SET_STROKE_STYLE,
-        strokeStyle, lineWidth, lineCap, lineJoin, miterLimit, lineDash
-      ]);
+      this.instructions.push(
+          [ol.render.canvas.Instruction.SET_STROKE_STYLE,
+           strokeStyle, lineWidth, lineCap, lineJoin, miterLimit, lineDash]);
       state.currentStrokeStyle = strokeStyle;
       state.currentLineCap = lineCap;
       state.currentLineDash = lineDash;
@@ -49299,6 +48982,7 @@ goog.require('ol.extent');
 goog.require('ol.render.canvas');
 goog.require('ol.render.Event');
 goog.require('ol.renderer.canvas.Layer');
+goog.require('ol.size');
 
 
 /**
@@ -49502,7 +49186,7 @@ ol.renderer.canvas.TileLayer.prototype.forEachLayerAtPixel = function(
  */
 ol.renderer.canvas.TileLayer.prototype.renderTileImages = function(context, frameState, layerState) {
   var tilesToDraw = this.renderedTiles;
-  if (tilesToDraw.length === 0) {
+  if (tilesToDraw.length == 0) {
     return;
   }
 
@@ -49550,6 +49234,17 @@ ol.renderer.canvas.TileLayer.prototype.renderTileImages = function(context, fram
   var alpha = renderContext.globalAlpha;
   renderContext.globalAlpha = layerState.opacity;
 
+  // Origin of the lowest resolution tile that contains the map center. We will
+  // try to use the same origin for all resolutions for pixel-perfect tile
+  // alignment across resolutions.
+  var lowResTileCoord = tilesToDraw[0].getTileCoord();
+  var minZOrigin = ol.extent.getBottomLeft(tileGrid.getTileCoordExtent(
+      tileGrid.getTileCoordForCoordAndZ(center,
+          lowResTileCoord[0], this.tmpTileCoord_), this.tmpExtent));
+  var maxZ = tilesToDraw[tilesToDraw.length - 1].getTileCoord()[0];
+  var maxZResolution = tileGrid.getResolution(maxZ);
+  var maxZTileSize = ol.size.toSize(tileGrid.getTileSize(maxZ));
+
   var pixelExtents;
   var opaque = source.getOpaque(projection) && layerState.opacity == 1;
   if (!opaque) {
@@ -49592,17 +49287,23 @@ ol.renderer.canvas.TileLayer.prototype.renderTileImages = function(context, fram
   for (var i = 0, ii = tilesToDraw.length; i < ii; ++i) {
     var tile = tilesToDraw[i];
     var tileCoord = tile.getTileCoord();
-    var tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent);
     var currentZ = tileCoord[0];
+    var tileSize = ol.size.toSize(tileGrid.getTileSize(currentZ));
     // Calculate all insert points by tile widths from a common origin to avoid
     // gaps caused by rounding
-    var origin = ol.extent.getBottomLeft(tileGrid.getTileCoordExtent(
-        tileGrid.getTileCoordForCoordAndZ(center, currentZ, this.tmpTileCoord_)));
-    var w = Math.round(ol.extent.getWidth(tileExtent) * pixelScale);
-    var h = Math.round(ol.extent.getHeight(tileExtent) * pixelScale);
-    var left = Math.round((tileExtent[0] - origin[0]) * pixelScale / w) * w +
+    var originTileCoord = tileGrid.getTileCoordForCoordAndZ(minZOrigin, currentZ, this.tmpTileCoord_);
+    var origin = ol.extent.getBottomLeft(tileGrid.getTileCoordExtent(originTileCoord, this.tmpExtent));
+    // Calculate tile width and height by a tile size factor from the highest
+    // resolution tile size to avoid gaps when combining tiles from different
+    // resolutions
+    var resolutionFactor = tileGrid.getResolution(currentZ) / maxZResolution;
+    var tileSizeFactorW = tileSize[0] / maxZTileSize[0] * resolutionFactor;
+    var tileSizeFactorH = tileSize[1] / maxZTileSize[1] * resolutionFactor;
+    var w = Math.round(maxZTileSize[0] / resolution * maxZResolution * pixelRatio * drawScale) * tileSizeFactorW;
+    var h = Math.round(maxZTileSize[1] / resolution * maxZResolution * pixelRatio * drawScale) * tileSizeFactorH;
+    var left = (tileCoord[1] - originTileCoord[1]) * w +
         offsetX + Math.round((origin[0] - center[0]) * pixelScale);
-    var top = Math.round((origin[1] - tileExtent[3]) * pixelScale / h) * h +
+    var top = (originTileCoord[2] - tileCoord[2] - 1) * h +
         offsetY + Math.round((center[1] - origin[1]) * pixelScale);
     if (!opaque) {
       var pixelExtent = [left, top, left + w, top + h];
@@ -50166,9 +49867,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.renderTileReplays_ = function(
   var alpha = replayContext.globalAlpha;
   replayContext.globalAlpha = layerState.opacity;
 
-  /** @type {Array.<ol.VectorTile>} */
   var tilesToDraw = this.renderedTiles;
-
   var tileGrid = source.getTileGrid();
 
   var currentZ, i, ii, offsetX, offsetY, origin, pixelSpace, replayState;
@@ -50314,9 +50013,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate = functi
   /** @type {Object.<string, boolean>} */
   var features = {};
 
-  /** @type {Array.<ol.VectorTile>} */
   var replayables = this.renderedTiles;
-
   var source = /** @type {ol.source.VectorTile} */ (layer.getSource());
   var tileGrid = source.getTileGrid();
   var found, tileSpaceCoordinate;
@@ -55404,7 +55101,6 @@ ol.Map.prototype.addOverlayInternal_ = function(overlay) {
 
 
 /**
- * Deprecated (use {@link ol.View#animate} instead).
  * Add functions to be called before rendering. This can be used for attaching
  * animations before updating the map's view.  The {@link ol.animation}
  * namespace provides several static methods for creating prerender functions.
@@ -55412,7 +55108,6 @@ ol.Map.prototype.addOverlayInternal_ = function(overlay) {
  * @api
  */
 ol.Map.prototype.beforeRender = function(var_args) {
-  ol.DEBUG && console.warn('map.beforeRender() is deprecated.  Use view.animate() instead.');
   this.render();
   Array.prototype.push.apply(this.preRenderFunctions_, arguments);
 };
@@ -56450,6 +56145,7 @@ goog.provide('ol.Overlay');
 goog.require('ol');
 goog.require('ol.MapEvent');
 goog.require('ol.Object');
+goog.require('ol.animation');
 goog.require('ol.dom');
 goog.require('ol.events');
 goog.require('ol.extent');
@@ -56515,10 +56211,10 @@ ol.Overlay = function(options) {
 
   /**
    * @private
-   * @type {olx.OverlayPanOptions}
+   * @type {olx.animation.PanOptions}
    */
-  this.autoPanAnimation_ = options.autoPanAnimation ||
-      /** @type {olx.OverlayPanOptions} */ ({});
+  this.autoPanAnimation_ = options.autoPanAnimation !== undefined ?
+      options.autoPanAnimation : /** @type {olx.animation.PanOptions} */ ({});
 
   /**
    * @private
@@ -56826,11 +56522,11 @@ ol.Overlay.prototype.panIntoView_ = function() {
         centerPx[1] + delta[1]
       ];
 
-      map.getView().animate({
-        center: map.getCoordinateFromPixel(newCenterPx),
-        duration: this.autoPanAnimation_.duration,
-        easing: this.autoPanAnimation_.easing
-      });
+      if (this.autoPanAnimation_) {
+        this.autoPanAnimation_.source = center;
+        map.beforeRender(ol.animation.pan(this.autoPanAnimation_));
+      }
+      map.getView().setCenter(map.getCoordinateFromPixel(newCenterPx));
     }
   }
 };
@@ -57806,6 +57502,7 @@ goog.provide('ol.control.ZoomSlider');
 
 goog.require('ol');
 goog.require('ol.View');
+goog.require('ol.animation');
 goog.require('ol.control.Control');
 goog.require('ol.css');
 goog.require('ol.easing');
@@ -58034,19 +57731,19 @@ ol.control.ZoomSlider.render = function(mapEvent) {
  * @private
  */
 ol.control.ZoomSlider.prototype.handleContainerClick_ = function(event) {
-  var view = this.getMap().getView();
-
+  var map = this.getMap();
+  var view = map.getView();
+  var currentResolution = view.getResolution();
+  map.beforeRender(ol.animation.zoom({
+    resolution: /** @type {number} */ (currentResolution),
+    duration: this.duration_,
+    easing: ol.easing.easeOut
+  }));
   var relativePosition = this.getRelativePosition_(
       event.offsetX - this.thumbSize_[0] / 2,
       event.offsetY - this.thumbSize_[1] / 2);
-
   var resolution = this.getResolutionForPosition_(relativePosition);
-
-  view.animate({
-    resolution: view.constrainResolution(resolution),
-    duration: this.duration_,
-    easing: ol.easing.easeOut
-  });
+  view.setResolution(view.constrainResolution(resolution));
 };
 
 
@@ -58107,15 +57804,16 @@ ol.control.ZoomSlider.prototype.handleDraggerDrag_ = function(event) {
  */
 ol.control.ZoomSlider.prototype.handleDraggerEnd_ = function(event) {
   if (this.dragging_) {
-    var view = this.getMap().getView();
+    var map = this.getMap();
+    var view = map.getView();
     view.setHint(ol.View.Hint.INTERACTING, -1);
-
-    view.animate({
-      resolution: view.constrainResolution(this.currentResolution_),
+    map.beforeRender(ol.animation.zoom({
+      resolution: /** @type {number} */ (this.currentResolution_),
       duration: this.duration_,
       easing: ol.easing.easeOut
-    });
-
+    }));
+    var resolution = view.constrainResolution(this.currentResolution_);
+    view.setResolution(resolution);
     this.dragging_ = false;
     this.previousX_ = undefined;
     this.previousY_ = undefined;
@@ -59357,6 +59055,7 @@ ol.xml.pushSerializeAndPop = function(object,
 goog.provide('ol.featureloader');
 
 goog.require('ol');
+goog.require('ol.Tile');
 goog.require('ol.format.FormatType');
 goog.require('ol.xml');
 
@@ -59421,6 +59120,35 @@ ol.featureloader.loadFeaturesXhr = function(url, format, success, failure) {
           }
         }.bind(this);
         xhr.send();
+      });
+};
+
+
+/**
+ * Create an XHR feature loader for a `url` and `format`. The feature loader
+ * loads features (with XHR), parses the features, and adds them to the
+ * vector tile.
+ * @param {string|ol.FeatureUrlFunction} url Feature URL service.
+ * @param {ol.format.Feature} format Feature format.
+ * @return {ol.FeatureLoader} The feature loader.
+ * @api
+ */
+ol.featureloader.tile = function(url, format) {
+  return ol.featureloader.loadFeaturesXhr(url, format,
+      /**
+       * @param {Array.<ol.Feature>} features The loaded features.
+       * @param {ol.proj.Projection} dataProjection Data projection.
+       * @this {ol.VectorTile}
+       */
+      function(features, dataProjection) {
+        this.setProjection(dataProjection);
+        this.setFeatures(features);
+      },
+      /**
+       * @this {ol.VectorTile}
+       */
+      function() {
+        this.setState(ol.Tile.State.ERROR);
       });
 };
 
@@ -68830,10 +68558,6 @@ ol.format.KML = function(opt_options) {
 
   ol.format.XMLFeature.call(this);
 
-  if (!ol.format.KML.DEFAULT_STYLE_ARRAY_) {
-    ol.format.KML.createStyleDefaults_();
-  }
-
   /**
    * @inheritDoc
    */
@@ -68844,7 +68568,8 @@ ol.format.KML = function(opt_options) {
    * @type {Array.<ol.style.Style>}
    */
   this.defaultStyle_ = options.defaultStyle ?
-      options.defaultStyle : ol.format.KML.DEFAULT_STYLE_ARRAY_;
+      options.defaultStyle :
+      (ol.format.KML.DEFAULT_STYLE_ARRAY_ || ol.format.KML.createStyleDefaults_());
 
   /**
    * @private
@@ -81980,11 +81705,7 @@ ol.interaction.Draw = function(options) {
       geometryFunction = function(coordinates, opt_geometry) {
         var geometry = opt_geometry;
         if (geometry) {
-          if (mode === ol.interaction.Draw.Mode.POLYGON) {
-            geometry.setCoordinates([coordinates[0].concat([coordinates[0][0]])]);
-          } else {
-            geometry.setCoordinates(coordinates);
-          }
+          geometry.setCoordinates(coordinates);
         } else {
           geometry = new Constructor(coordinates);
         }
@@ -82183,7 +81904,6 @@ ol.interaction.Draw.handleUpEvent_ = function(event) {
   var shouldHandle = this.freehand_ ?
       squaredDistance > this.squaredClickTolerance_ :
       squaredDistance <= this.squaredClickTolerance_;
-  var circleMode = this.mode_ === ol.interaction.Draw.Mode.CIRCLE;
   if (shouldHandle) {
     this.handlePointerMove_(event);
     if (!this.finishCoordinate_) {
@@ -82191,7 +81911,7 @@ ol.interaction.Draw.handleUpEvent_ = function(event) {
       if (this.mode_ === ol.interaction.Draw.Mode.POINT) {
         this.finishDrawing();
       }
-    } else if (this.freehand_ || circleMode) {
+    } else if (this.freehand_ || this.mode_ === ol.interaction.Draw.Mode.CIRCLE) {
       this.finishDrawing();
     } else if (this.atFinish_(event)) {
       if (this.finishCondition_(event)) {
@@ -82201,8 +81921,6 @@ ol.interaction.Draw.handleUpEvent_ = function(event) {
       this.addToDrawing_(event);
     }
     pass = false;
-  } else if (circleMode) {
-    this.finishCoordinate_ = null;
   }
   return pass;
 };
@@ -82452,10 +82170,12 @@ ol.interaction.Draw.prototype.finishDrawing = function() {
     coordinates.pop();
     this.geometryFunction_(coordinates, geometry);
   } else if (this.mode_ === ol.interaction.Draw.Mode.POLYGON) {
-    // remove the redundant last point in ring
+    // When we finish drawing a polygon on the last point,
+    // the last coordinate is duplicated as for LineString
+    // we force the replacement by the first point
     coordinates[0].pop();
+    coordinates[0].push(coordinates[0][0]);
     this.geometryFunction_(coordinates, geometry);
-    coordinates = geometry.getCoordinates();
   }
 
   // cast multi-part geometries
@@ -83890,9 +83610,11 @@ ol.interaction.Modify.prototype.handlePointerAtPixel_ = function(pixel, map) {
         ol.coordinate.squaredDistanceToSegment(pixelCoordinate, b.segment);
   };
 
-  var box = ol.extent.buffer(
-      ol.extent.createOrUpdateFromCoordinate(pixelCoordinate),
-      map.getView().getResolution() * this.pixelTolerance_);
+  var lowerLeft = map.getCoordinateFromPixel(
+      [pixel[0] - this.pixelTolerance_, pixel[1] + this.pixelTolerance_]);
+  var upperRight = map.getCoordinateFromPixel(
+      [pixel[0] + this.pixelTolerance_, pixel[1] - this.pixelTolerance_]);
+  var box = ol.extent.boundingExtent([lowerLeft, upperRight]);
 
   var rBush = this.rBush_;
   var nodes = rBush.getInExtent(box);
@@ -85262,7 +84984,6 @@ ol.interaction.Snap.sortByDistance = function(a, b) {
 goog.provide('ol.interaction.Translate');
 
 goog.require('ol');
-goog.require('ol.Collection');
 goog.require('ol.events.Event');
 goog.require('ol.functions');
 goog.require('ol.array');
@@ -85276,10 +84997,10 @@ goog.require('ol.interaction.Pointer');
  * @constructor
  * @extends {ol.interaction.Pointer}
  * @fires ol.interaction.Translate.Event
- * @param {olx.interaction.TranslateOptions=} opt_options Options.
+ * @param {olx.interaction.TranslateOptions} options Options.
  * @api
  */
-ol.interaction.Translate = function(opt_options) {
+ol.interaction.Translate = function(options) {
   ol.interaction.Pointer.call(this, {
     handleDownEvent: ol.interaction.Translate.handleDownEvent_,
     handleDragEvent: ol.interaction.Translate.handleDragEvent_,
@@ -85287,7 +85008,6 @@ ol.interaction.Translate = function(opt_options) {
     handleUpEvent: ol.interaction.Translate.handleUpEvent_
   });
 
-  var options = opt_options ? opt_options : {};
 
   /**
    * @type {string|undefined}
@@ -85351,12 +85071,9 @@ ol.interaction.Translate.handleDownEvent_ = function(event) {
   if (!this.lastCoordinate_ && this.lastFeature_) {
     this.lastCoordinate_ = event.coordinate;
     ol.interaction.Translate.handleMoveEvent_.call(this, event);
-
-    var features = this.features_ || new ol.Collection([this.lastFeature_]);
-
     this.dispatchEvent(
         new ol.interaction.Translate.Event(
-            ol.interaction.Translate.EventType.TRANSLATESTART, features,
+            ol.interaction.Translate.EventType.TRANSLATESTART, this.features_,
             event.coordinate));
     return true;
   }
@@ -85374,12 +85091,9 @@ ol.interaction.Translate.handleUpEvent_ = function(event) {
   if (this.lastCoordinate_) {
     this.lastCoordinate_ = null;
     ol.interaction.Translate.handleMoveEvent_.call(this, event);
-
-    var features = this.features_ || new ol.Collection([this.lastFeature_]);
-
     this.dispatchEvent(
         new ol.interaction.Translate.Event(
-            ol.interaction.Translate.EventType.TRANSLATEEND, features,
+            ol.interaction.Translate.EventType.TRANSLATEEND, this.features_,
             event.coordinate));
     return true;
   }
@@ -85398,18 +85112,22 @@ ol.interaction.Translate.handleDragEvent_ = function(event) {
     var deltaX = newCoordinate[0] - this.lastCoordinate_[0];
     var deltaY = newCoordinate[1] - this.lastCoordinate_[1];
 
-    var features = this.features_ || new ol.Collection([this.lastFeature_]);
-
-    features.forEach(function(feature) {
-      var geom = feature.getGeometry();
+    if (this.features_) {
+      this.features_.forEach(function(feature) {
+        var geom = feature.getGeometry();
+        geom.translate(deltaX, deltaY);
+        feature.setGeometry(geom);
+      });
+    } else if (this.lastFeature_) {
+      var geom = this.lastFeature_.getGeometry();
       geom.translate(deltaX, deltaY);
-      feature.setGeometry(geom);
-    });
+      this.lastFeature_.setGeometry(geom);
+    }
 
     this.lastCoordinate_ = newCoordinate;
     this.dispatchEvent(
         new ol.interaction.Translate.Event(
-            ol.interaction.Translate.EventType.TRANSLATING, features,
+            ol.interaction.Translate.EventType.TRANSLATING, this.features_,
             newCoordinate));
   }
 };
@@ -85452,13 +85170,19 @@ ol.interaction.Translate.handleMoveEvent_ = function(event) {
  * @private
  */
 ol.interaction.Translate.prototype.featuresAtPixel_ = function(pixel, map) {
-  return map.forEachFeatureAtPixel(pixel,
+  var found = null;
+
+  var intersectingFeature = map.forEachFeatureAtPixel(pixel,
       function(feature) {
-        if (!this.features_ ||
-            ol.array.includes(this.features_.getArray(), feature)) {
-          return feature;
-        }
+        return feature;
       }, this, this.layerFilter_);
+
+  if (this.features_ &&
+      ol.array.includes(this.features_.getArray(), intersectingFeature)) {
+    found = intersectingFeature;
+  }
+
+  return found;
 };
 
 
@@ -85929,12 +85653,6 @@ goog.require('ol.tilegrid');
  */
 ol.source.BingMaps = function(options) {
 
-  /**
-   * @private
-   * @type {boolean}
-   */
-  this.hidpi_ = options.hidpi !== undefined ? options.hidpi : false;
-
   ol.source.TileImage.call(this, {
     cacheSize: options.cacheSize,
     crossOrigin: 'anonymous',
@@ -85943,7 +85661,6 @@ ol.source.BingMaps = function(options) {
     reprojectionErrorThreshold: options.reprojectionErrorThreshold,
     state: ol.source.State.LOADING,
     tileLoadFunction: options.tileLoadFunction,
-    tilePixelRatio: this.hidpi_ ? 2 : 1,
     wrapX: options.wrapX !== undefined ? options.wrapX : true
   });
 
@@ -86050,12 +85767,11 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse = function(response) 
     extent: extent,
     minZoom: resource.zoomMin,
     maxZoom: maxZoom,
-    tileSize: tileSize / this.getTilePixelRatio()
+    tileSize: tileSize
   });
   this.tileGrid = tileGrid;
 
   var culture = this.culture_;
-  var hidpi = this.hidpi_;
   this.tileUrlFunction = ol.TileUrlFunction.createFromTileUrlFunctions(
       resource.imageUrlSubdomains.map(function(subdomain) {
         var quadKeyTileCoord = [0, 0, 0];
@@ -86078,11 +85794,7 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse = function(response) 
               } else {
                 ol.tilecoord.createOrUpdate(tileCoord[0], tileCoord[1],
                     -tileCoord[2] - 1, quadKeyTileCoord);
-                var url = imageUrl;
-                if (hidpi) {
-                  url += '&dpi=d1&device=mobile';
-                }
-                return url.replace('{quadkey}', ol.tilecoord.quadKey(
+                return imageUrl.replace('{quadkey}', ol.tilecoord.quadKey(
                     quadKeyTileCoord));
               }
             });
@@ -88626,23 +88338,8 @@ ol.source.TileArcGISRest = function(opt_options) {
    */
   this.tmpExtent_ = ol.extent.createEmpty();
 
-  this.setKey(this.getKeyForParams_());
 };
 ol.inherits(ol.source.TileArcGISRest, ol.source.TileImage);
-
-
-/**
- * @private
- * @return {string} The key for the current params.
- */
-ol.source.TileArcGISRest.prototype.getKeyForParams_ = function() {
-  var i = 0;
-  var res = [];
-  for (var key in this.params_) {
-    res[i++] = key + '-' + this.params_[key];
-  }
-  return res.join('/');
-};
 
 
 /**
@@ -88754,7 +88451,7 @@ ol.source.TileArcGISRest.prototype.fixedTileUrlFunction = function(tileCoord, pi
  */
 ol.source.TileArcGISRest.prototype.updateParams = function(params) {
   ol.obj.assign(this.params_, params);
-  this.setKey(this.getKeyForParams_());
+  this.changed();
 };
 
 goog.provide('ol.source.TileDebug');
@@ -89919,7 +89616,6 @@ goog.provide('ol.VectorTile');
 goog.require('ol');
 goog.require('ol.Tile');
 goog.require('ol.dom');
-goog.require('ol.featureloader');
 
 
 /**
@@ -90067,25 +89763,6 @@ ol.VectorTile.prototype.load = function() {
 
 
 /**
- * Handler for successful tile load.
- * @param {Array.<ol.Feature>} features The loaded features.
- * @param {ol.proj.Projection} dataProjection Data projection.
- */
-ol.VectorTile.prototype.onLoad_ = function(features, dataProjection) {
-  this.setProjection(dataProjection);
-  this.setFeatures(features);
-};
-
-
-/**
- * Handler for tile load errors.
- */
-ol.VectorTile.prototype.onError_ = function() {
-  this.setState(ol.Tile.State.ERROR);
-};
-
-
-/**
  * @param {Array.<ol.Feature>} features Features.
  * @api
  */
@@ -90123,19 +89800,6 @@ ol.VectorTile.prototype.setLoader = function(loader) {
   this.loader_ = loader;
 };
 
-
-/**
- * Sets the loader for a tile.
- * @param {ol.VectorTile} tile Vector tile.
- * @param {string} url URL.
- */
-ol.VectorTile.defaultLoadFunction = function(tile, url) {
-  var loader = ol.featureloader.loadFeaturesXhr(
-      url, tile.getFormat(), tile.onLoad_.bind(tile), tile.onError_.bind(tile));
-
-  tile.setLoader(loader);
-};
-
 goog.provide('ol.source.VectorTile');
 
 goog.require('ol');
@@ -90143,6 +89807,7 @@ goog.require('ol.Tile');
 goog.require('ol.VectorTile');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
+goog.require('ol.featureloader');
 goog.require('ol.size');
 goog.require('ol.source.UrlTile');
 
@@ -90175,7 +89840,7 @@ ol.source.VectorTile = function(options) {
     state: options.state,
     tileGrid: options.tileGrid,
     tileLoadFunction: options.tileLoadFunction ?
-        options.tileLoadFunction : ol.VectorTile.defaultLoadFunction,
+        options.tileLoadFunction : ol.source.VectorTile.defaultTileLoadFunction,
     tileUrlFunction: options.tileUrlFunction,
     tilePixelRatio: options.tilePixelRatio,
     url: options.url,
@@ -90257,6 +89922,15 @@ ol.source.VectorTile.prototype.getTilePixelRatio = function(opt_pixelRatio) {
 ol.source.VectorTile.prototype.getTilePixelSize = function(z, pixelRatio, projection) {
   var tileSize = ol.size.toSize(this.tileGrid.getTileSize(z));
   return [Math.round(tileSize[0] * pixelRatio), Math.round(tileSize[1] * pixelRatio)];
+};
+
+
+/**
+ * @param {ol.VectorTile} vectorTile Vector tile.
+ * @param {string} url URL.
+ */
+ol.source.VectorTile.defaultTileLoadFunction = function(vectorTile, url) {
+  vectorTile.setLoader(ol.featureloader.tile(url, vectorTile.getFormat()));
 };
 
 goog.provide('ol.source.Zoomify');
@@ -91972,6 +91646,10 @@ goog.exportProperty(
     ol.Feature.prototype.setGeometryName);
 
 goog.exportSymbol(
+    'ol.featureloader.tile',
+    ol.featureloader.tile);
+
+goog.exportSymbol(
     'ol.featureloader.xhr',
     ol.featureloader.xhr);
 
@@ -92533,11 +92211,6 @@ goog.exportProperty(
 goog.exportSymbol(
     'ol.View',
     ol.View);
-
-goog.exportProperty(
-    ol.View.prototype,
-    'animate',
-    ol.View.prototype.animate);
 
 goog.exportProperty(
     ol.View.prototype,
@@ -96020,11 +95693,6 @@ goog.exportProperty(
     olcs.OLCesium.prototype,
     'setResolutionScale',
     olcs.OLCesium.prototype.setResolutionScale);
-
-goog.exportProperty(
-    olcs.OLCesium.prototype,
-    'setTargetFrameRate',
-    olcs.OLCesium.prototype.setTargetFrameRate);
 
 goog.exportSymbol(
     'olcs.RasterSynchronizer',
