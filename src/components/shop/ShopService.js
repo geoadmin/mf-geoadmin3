@@ -37,6 +37,13 @@ goog.require('ga_translation_service');
             'ch.swisstopo.pixelkarte-pk200.metadata'
         //,'ch.swisstopo.digitales-hoehenmodell_25_reliefschattierung': '
       };
+      // Super exception for mapsheet but with featureid
+      var useFeatureId = [
+        'ch.swisstopo.lubis-bildstreifen',
+        'ch.swisstopo.lubis-luftbilder_schwarzweiss',
+        'ch.swisstopo.lubis-luftbilder_infrarot',
+        'ch.swisstopo.lubis-luftbilder_farbe'
+      ];
       var getParams = function(orderType, layerBodId, featureId, geometry) {
         var params = {
           layer: layerBodId
@@ -46,7 +53,11 @@ goog.require('ga_translation_service');
           if (mapsheetClipper[layerBodId]) {
             params.clipper = mapsheetClipper[layerBodId];
           }
-          params.featureid = featureId;
+          if (useFeatureId.indexOf(layerBodId) != -1) {
+            params.featureid = featureId;
+          } else {
+            params.product = featureId;
+          }
         } else if (clipper[orderType]) {
           params.clipper = clipper[orderType];
           params.featureid = featureId;

@@ -2,8 +2,8 @@ describe('ga_shop_service', function() {
 
   describe('gaShop', function() {
     var gaShop, gaGlobalOptions;
-    var mapsheetParams = '?layer=layerBodId&featureid=featureId';
-    var mapsheetWithClipperParamsTpl = '?layer={layerBodId}&clipper={clipper}&featureid=featureId';
+    var mapsheetParams = '?layer=layerBodId&product=featureId';
+    var mapsheetWithClipperParamsTpl = '?layer={layerBodId}&clipper={clipper}&product=featureId';
     var communeParams = '?layer=layerBodId&clipper=ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill&featureid=featureId';
     var districtParams = '?layer=layerBodId&clipper=ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill&featureid=featureId';
     var cantonParams = '?layer=layerBodId&clipper=ch.swisstopo.swissboundaries3d-kanton-flaeche.fill&featureid=featureId';
