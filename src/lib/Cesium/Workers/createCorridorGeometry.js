@@ -2664,7 +2664,7 @@ define('Core/Cartographic',[
             return undefined;
         }
 
-        var n = Cartesian3.multiplyComponents(cartesian, oneOverRadiiSquared, cartesianToCartographicN);
+        var n = Cartesian3.multiplyComponents(p, oneOverRadiiSquared, cartesianToCartographicN);
         n = Cartesian3.normalize(n, n);
 
         var h = Cartesian3.subtract(cartesian, p, cartesianToCartographicH);
@@ -12255,11 +12255,13 @@ define('Core/FeatureDetection',[
     function isChrome() {
         if (!defined(isChromeResult)) {
             isChromeResult = false;
-
-            var fields = (/ Chrome\/([\.0-9]+)/).exec(theNavigator.userAgent);
-            if (fields !== null) {
-                isChromeResult = true;
-                chromeVersionResult = extractVersion(fields[1]);
+            // Edge contains Chrome in the user agent too
+            if (!isEdge()) {
+                var fields = (/ Chrome\/([\.0-9]+)/).exec(theNavigator.userAgent);
+                if (fields !== null) {
+                    isChromeResult = true;
+                    chromeVersionResult = extractVersion(fields[1]);
+                }
             }
         }
 
@@ -12276,8 +12278,8 @@ define('Core/FeatureDetection',[
         if (!defined(isSafariResult)) {
             isSafariResult = false;
 
-            // Chrome contains Safari in the user agent too
-            if (!isChrome() && (/ Safari\/[\.0-9]+/).test(theNavigator.userAgent)) {
+            // Chrome and Edge contain Safari in the user agent too
+            if (!isChrome() && !isEdge() && (/ Safari\/[\.0-9]+/).test(theNavigator.userAgent)) {
                 var fields = (/ Version\/([\.0-9]+)/).exec(theNavigator.userAgent);
                 if (fields !== null) {
                     isSafariResult = true;
@@ -12340,6 +12342,24 @@ define('Core/FeatureDetection',[
 
     function internetExplorerVersion() {
         return isInternetExplorer() && internetExplorerVersionResult;
+    }
+
+    var isEdgeResult;
+    var edgeVersionResult;
+    function isEdge() {
+        if (!defined(isEdgeResult)) {
+            isEdgeResult = false;
+            var fields = (/ Edge\/([\.0-9]+)/).exec(theNavigator.userAgent);
+            if (fields !== null) {
+                isEdgeResult = true;
+                edgeVersionResult = extractVersion(fields[1]);
+            }
+        }
+        return isEdgeResult;
+    }
+
+    function edgeVersion() {
+        return isEdge() && edgeVersionResult;
     }
 
     var isFirefoxResult;
@@ -12419,6 +12439,8 @@ define('Core/FeatureDetection',[
         webkitVersion : webkitVersion,
         isInternetExplorer : isInternetExplorer,
         internetExplorerVersion : internetExplorerVersion,
+        isEdge : isEdge,
+        edgeVersion : edgeVersion,
         isFirefox : isFirefox,
         firefoxVersion : firefoxVersion,
         isWindows : isWindows,
@@ -27283,8 +27305,8 @@ define('Core/CorridorGeometry',[
 
     function computeRectangle(positions, ellipsoid, width, cornerType) {
         var cleanPositions = arrayRemoveDuplicates(positions, Cartesian3.equalsEpsilon);
-        var length = cleanPositions.length - 1;
-        if (length === 0 || width === 0) {
+        var length = cleanPositions.length;
+        if (length < 2 || width <= 0) {
             return new Rectangle();
         }
         var halfWidth = width * 0.5;
@@ -27313,14 +27335,14 @@ define('Core/CorridorGeometry',[
         }
 
         // Compute the rest
-        for (var i = 0; i < length; ++i) {
+        for (var i = 0; i < length-1; ++i) {
             computeOffsetPoints(cleanPositions[i], cleanPositions[i+1], ellipsoid, halfWidth,
                 scratchCartographicMin, scratchCartographicMax);
         }
 
         // Compute ending point
-        var last = cleanPositions[length];
-        Cartesian3.subtract(last, cleanPositions[length-1], scratchCartesianOffset);
+        var last = cleanPositions[length-1];
+        Cartesian3.subtract(last, cleanPositions[length-2], scratchCartesianOffset);
         Cartesian3.normalize(scratchCartesianOffset, scratchCartesianOffset);
         Cartesian3.multiplyByScalar(scratchCartesianOffset, halfWidth, scratchCartesianOffset);
         Cartesian3.add(last, scratchCartesianOffset, scratchCartesianEnds);
