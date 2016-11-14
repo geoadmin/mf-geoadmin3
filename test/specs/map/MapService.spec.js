@@ -692,9 +692,6 @@ describe('ga_map_service', function() {
           var prov = gaLayers.getCesiumTerrainProviderById('terrain');
           expect(prov).to.be.an(Cesium.CesiumTerrainProvider);
           expect(prov._url).to.be(expectTerrainUrl('terrain', '20160101'));
-          var rect = prov._rectangle;
-          expect(rect).to.be.a(Cesium.Rectangle);
-          expect([rect.west, rect.south, rect.east, rect.north]).to.eql([0.08750953387026623, 0.7916115588834566, 0.20031905334970387, 0.8425581080106397]);
           expect(prov._terrainAvailabLeLevels).to.be(window.terrainAvailableLevels);
           expect(prov.bodId).to.be('terrain');
           done();
