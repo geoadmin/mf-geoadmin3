@@ -1,8 +1,22 @@
-<div class="ga-topic-item"
-     ng-repeat="topic in ::topics"
-     ng-click="setActiveTopic(topic)"
-     ng-class="{'ga-topic-active': topic == activeTopic}"
-     data-original-title="{{topic.tooltip | translate}}">
-  <div translate>{{::topic.id}}</div>
-  <div class="ga-topics-sprite ga-topics-sprite-{{::topic.id}}"></div>
+<div class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+         <h4 class="modal-title" translate>choose_theme</h4>
+         <button class="ga-icon ga-btn fa fa-remove" data-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="input-modal-container">
+          <div class="ga-topic-item"
+               ng-repeat="topic in ::topics"
+               ng-click="setActiveTopic(topic)"
+               ng-class="{'ga-topic-active': topic == activeTopic}"
+               data-original-title="{{topic.tooltip | translate}}">
+            <div translate>{{::topic.id}}</div>
+            <div class="ga-topics-sprite ga-topics-sprite-{{::topic.id}}"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

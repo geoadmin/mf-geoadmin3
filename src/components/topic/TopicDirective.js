@@ -11,12 +11,10 @@ goog.require('ga_topic_service');
       function($rootScope, gaTopic) {
         return {
           restrict: 'A',
-          templateUrl: function(element, attrs) {
-            return 'components/topic/partials/topic.' +
-              ((attrs.gaTopicUi == 'select') ? 'select.html' : 'html');
-          },
+          templateUrl: 'components/topic/partials/topic.html',
           scope: {},
           link: function(scope, element, attrs) {
+            var modal = element.find('.modal');
 
             // Because ng-repeat creates a new scope for each item in the
             // collection we can't use ng-click="activeTopic = topic" in
@@ -28,6 +26,7 @@ goog.require('ga_topic_service');
 
             scope.$watch('activeTopic', function(newTopic) {
               if (newTopic && scope.topics) {
+                modal.modal('hide');
                 gaTopic.set(newTopic);
               }
             });
@@ -37,6 +36,7 @@ goog.require('ga_topic_service');
               scope.activeTopic = gaTopic.get();
               scope.$applyAsync(function() {
                 element.find('.ga-topic-item').tooltip({
+                  container: modal,
                   placement: 'bottom'
                 });
               });

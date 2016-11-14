@@ -361,7 +361,7 @@ button.ga-btn, .ol-control button {
     top: unit(@small-header-height, px);
   }
 
-  #pulldown-content .panel-heading, .theme-toggle, #search-container {
+  #pulldown-content .panel-heading, #search-container {
     display: none;
   }
 
@@ -1083,52 +1083,6 @@ a .ga-icon-separator {
   }
 }
 
-.theme-toggle {
-  position: relative;
-  .dropdown-toggle {
-    float: right;
-    margin-right: 5px;
-    height: 40px;
-    line-height: 40px;
-
-    @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
-      height: 44px;
-      line-height: 44px;
-    }
-  }
-  a i {
-    .transition-transform(.2s);
-    display: inline-block;
-    text-decoration: none;
-  }
-  &.open {
-    .fa-chevron-sign-right {
-      .rotate(180deg);
-    }
-  }
-  i.fa-chevron-sign-right {
-    vertical-align: middle;
-    height: 12px;
-  }
-  .dropdown-menu {
-    top: 0;
-    left: 100%;
-    margin: 0;
-    transition: top 1s ease;
-
-    @media (max-width: @screen-phone) {
-      right: 0px;
-      left: auto;
-      top: 40px;
-    }
-
-    // We move the dropdown menu on top
-    @media (min-height: @screen-sm-max-height) and (max-height: 700px) and (min-width: 910px) {
-      top: -155px;
-    }
-  }
-}
-
 // ****** SELECTION
 #selection {
 
@@ -1399,6 +1353,21 @@ ul.panel-body-wide {
   span {
     font-size: 13px;
     font-weight: normal;
+  }
+}
+.theme-toggle {
+  position: relative;
+
+  .topic-modal-toggle {
+    cursor: pointer;
+    float: right;
+    margin-right: 5px;
+    height: 40px;
+    line-height: 40px;
+    @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
+      height: 44px;
+      line-height: 44px;
+    }
   }
 }
 
