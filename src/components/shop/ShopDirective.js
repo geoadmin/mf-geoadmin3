@@ -34,13 +34,9 @@ goog.require('ga_price_filter');
         }
 
         var getFeatureIdToRequest = function() {
-          // If a map number is specified in the properties we use this as
-          // feature's id
+          // Use feature's id for id to resquest
           var feat = scope.clipperFeatures[scope.orderType] || scope.feature;
           var idToRequest = feat.featureId;
-          if (scope.feature.properties && scope.feature.properties.number) {
-            idToRequest = scope.feature.properties.number;
-          }
           return idToRequest;
         };
 
