@@ -2,13 +2,20 @@ describe('ga_shop_service', function() {
 
   describe('gaShop', function() {
     var gaShop, gaGlobalOptions;
-    var mapsheetParams = '?layer=layerBodId&featureid=featureId';
-    var mapsheetWithClipperParamsTpl = '?layer={layerBodId}&clipper={clipper}&featureid=featureId';
+    var mapsheetParams = '?layer=layerBodId&product=featureId';
+    var mapsheetParamsExceptTpl = '?layer={layerBodId}&featureid=featureId';
+    var mapsheetWithClipperParamsTpl = '?layer={layerBodId}&clipper={clipper}&product=featureId';
     var communeParams = '?layer=layerBodId&clipper=ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill&featureid=featureId';
     var districtParams = '?layer=layerBodId&clipper=ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill&featureid=featureId';
     var cantonParams = '?layer=layerBodId&clipper=ch.swisstopo.swissboundaries3d-kanton-flaeche.fill&featureid=featureId';
     var rectangleParams = '?layer=layerBodId&geometry=geometry';
     var wholeParams = '?layer=layerBodId&clipper=layerBodId';
+    var mapsheetExeptions = [
+      'ch.swisstopo.lubis-bildstreifen',
+      'ch.swisstopo.lubis-luftbilder_schwarzweiss',
+      'ch.swisstopo.lubis-luftbilder_infrarot',
+      'ch.swisstopo.lubis-luftbilder_farbe'
+    ];
     var mapsheetClippers = {
       'ch.swisstopo.pixelkarte-farbe-pk25.noscale': 'ch.swisstopo.pixelkarte-pk25.metadata',
       'ch.swisstopo.pixelkarte-farbe-pk50.noscale': 'ch.swisstopo.pixelkarte-pk50.metadata',
@@ -120,6 +127,16 @@ describe('ga_shop_service', function() {
         gaShop.dispatch('mapsheet', 'layerBodId', 'featureId');
         sinon.assert.calledWith(openStub, dispatchUrl + mapsheetParams);
       });
+
+      for (var m in mapsheetExeptions) {
+        it('opens a good mapsheet url of exceptions', function() {
+          gaShop.dispatch('mapsheet', mapsheetExeptions[m], 'featureId');
+          var mapsheetParamsExcept = mapsheetParamsExceptTpl
+            .replace('{layerBodId}', mapsheetExeptions[m])
+          sinon.assert.calledWith(openStub,
+              dispatchUrl + mapsheetParamsExcept);
+        });
+      }
 
       for (var i in mapsheetClippers) {
         it('opens a good mapsheet url with clipper', function() {
