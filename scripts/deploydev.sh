@@ -6,7 +6,6 @@ T="$(date +%s)"
 set -o errexit
 
 # adapt these for emergency deploys coming from branches
-# TODO Change me back!
 GITBRANCH=master
 echo "Deploying branch" $GITBRANCH "to dev"
 
@@ -83,7 +82,7 @@ done
 # create a snapshot
 if [ $CREATE_SNAPSHOT == 'true' ]; then
   mkdir -p $SNAPSHOTDIR/geoadmin/code
-  rsync -rl $DEPLOYDIR $SNAPSHOTDIR/geoadmin/code/geoadmin
+  rsync -rl $DEPLOYDIR $SNAPSHOTDIR/geoadmin/code
   echo "Snapshot of branch $GITBRANCH created at $SNAPSHOTDIR"
   cd $SNAPSHOTDIR/geoadmin/code/geoadmin/
   git describe --tags --abbrev=0 > .build-artefacts/last-release
