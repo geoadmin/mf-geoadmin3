@@ -320,7 +320,7 @@ goog.require('ga_time_service');
           // Get the styles of the feature
           if (!styles) {
             if (feature.getStyleFunction()) {
-              styles = feature.getStyleFunction().ca2ll(feature);
+              styles = feature.getStyleFunction().call(feature);
             } else if (layer.getStyleFunction()) {
               styles = layer.getStyleFunction()(feature);
             } else {
