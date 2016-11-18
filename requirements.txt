@@ -1,7 +1,6 @@
 autopep8==1.2.4
 boto3==1.4.1
 botocore==1.4.70
-closure-linter==2.3.19
 docutils==0.12
 flake8==2.6.2
 futures==3.0.5
