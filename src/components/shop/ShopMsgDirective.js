@@ -17,7 +17,7 @@ goog.require('ga_storage_service');
       link: function(scope, elt) {
         scope.neverShowAgain = gaStorage.getItem(KEY) || false;
 
-        if (/^map-toposhop/.test($window.name) || scope.neverShowAgain) {
+        if (!/^map-toposhop/.test($window.name) || scope.neverShowAgain) {
           elt.remove();
           scope.$destroy();
           return;
