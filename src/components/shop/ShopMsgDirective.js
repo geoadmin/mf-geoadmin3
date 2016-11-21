@@ -25,7 +25,6 @@ goog.require('ga_storage_service');
 
         elt.addClass('modal fade');
         elt.modal().on('hidden.bs.modal', function() {
-          console.log(scope.neverShowAgain);
           gaStorage.setItem(KEY, scope.neverShowAgain);
         });
       }
