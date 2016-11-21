@@ -682,7 +682,7 @@ $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule
 ${PYTHON_VENV}:
 	mkdir -p .build-artefacts
 	virtualenv --no-site-packages $@
-	${PIP_CMD} install -U pip
+	${PIP_CMD} install -U pip setuptools
 
 .build-artefacts/last-version::
 	mkdir -p $(dir $@)
