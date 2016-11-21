@@ -8,6 +8,132 @@
     background: url('../../../img/topics.png');
   }
 
+  .modal {
+    overflow: hidden;
+  }
+
+  .modal-dialog {
+    width: 100%;
+    max-width: 850px;
+
+    .modal-body {
+      max-height: 950px;
+
+      @media (max-height: 1040px) {
+        max-height: 855px;
+      }
+
+      @media (max-height: 970px) {
+        max-height: 760px;
+      }
+
+      @media (max-height: 860px) {
+        max-height: 670px;
+      }
+
+      @media (max-height: 770px) {
+        max-height: 580px;
+      }
+
+      @media (max-height: 680px) {
+        max-height: 485px;
+      }
+
+      @media (max-height: 585px) {
+        max-height: 395px;
+      }
+
+      @media (max-height: 495px) {
+        max-height: 298px;
+      }
+
+      @media (max-height: 405px) {
+        max-height: 210px;
+      }
+
+      @media (max-height: 315px) {
+        max-height: 120px;
+      }
+    }
+
+    @media (max-width: @screen-desktop) {
+      max-width: 692px;
+      top: 40px;
+    }
+
+    @media (max-width: 780px) {
+      max-width: 535px;
+      top: 35px;
+    }
+
+    @media (max-width: 605px) {
+      max-width: 377px;
+      top: 30px;
+    }
+
+    @media (max-width: 400px) {
+      max-width: 205px;
+      top: 20px;
+
+      .modal-body {
+        @media (max-height: 1020px) {
+          max-height: 855px;
+        }
+
+        @media (max-height: 950px) {
+          max-height: 760px;
+        }
+
+        @media (max-height: 840px) {
+          max-height: 670px;
+        }
+
+        @media (max-height: 750px) {
+          max-height: 580px;
+        }
+
+        @media (max-height: 640px) {
+          max-height: 485px;
+        }
+
+        @media (max-height: 545px) {
+          max-height: 395px;
+        }
+
+        @media (max-height: 465px) {
+          max-height: 298px;
+        }
+
+        @media (max-height: 375px) {
+          max-height: 210px;
+        }
+
+        @media (max-height: 285px) {
+          max-height: 120px;
+        }
+      }
+    }
+
+    .input-modal-container {
+      display: inline-block;
+
+      .ga-topic-item {
+        float: left;
+        margin: 2px;
+        padding: 3px;
+        border: 1px solid transparent;
+        width: 154px;
+        cursor: pointer;
+        text-align: center;
+
+        &.ga-topic-active, &:hover {
+          border: 1px solid #c6c6c6;
+          background-color: #efefef;
+        }
+      }
+    }
+  }
+
   .ga-topics-sprite-blw {
     background-position: 0 -420px;
   }
@@ -119,52 +245,10 @@
   }
 
   @-webkit-keyframes play1 {.play1-frames;}
- 
-  @keyframes play1 {.play1-frames;}  
-  
+
+  @keyframes play1 {.play1-frames;}
+
   @-webkit-keyframes play2 {.play2-frames;}
 
   @keyframes play2 {.play2-frames;}
-
-  &:not([ga-topic-ui='select']) {
-    width: 640px;
-    padding: 0px 4px;
-    transition: width 1s ease, height 1s ease;
-
-    & > div {
-      float: left;
-      margin: 2px;
-      padding: 3px;
-      border: 1px solid transparent;
-      cursor: pointer;
-      width: 154px;
-      text-align: center;
-
-      &.ga-topic-active, &:hover {
-        border: 1px solid #c6c6c6;
-        background-color: #efefef;
-      }
-    }
-
-    // Transform to a simple list when screen is really too small
-    @media (max-width: 910px), (max-height: @screen-sm-max-height) {
-      width: 160px;
-      height: 250px;
-      padding: 0px;
-      overflow-y: auto;
-      overflow-x: hidden;
-      
-      & > div {
-        width: 140px;
-
-        .ga-topics-sprite {
-          display: none;
-        }
-      }
-    }
-  }
-
-  &[ga-topic-ui='select'] {
-    width: 100%;
-  }
 }
