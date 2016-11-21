@@ -1109,25 +1109,16 @@ a .ga-icon-separator {
 // ****** MODAL
 .modal {
   overflow: auto;
-  outline: none;
   textarea {
     resize: vertical;
   }
 }
 
-.non-modal {
-  display: none;
-}
-
 .modal-dialog {
-  display: block;
   top: unit(@header-height, px);
-  left: 2%;
-  right: 2%;
   margin: auto;
   max-width: 600px;
   max-height: none;
-  padding: 0px;
 
   @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
     top: unit(@small-header-height, px);
@@ -1135,7 +1126,6 @@ a .ga-icon-separator {
 }
 
 .modal-header {
-  .border-top-radius(6px);
 
   @media (max-width: @screen-phone) {
     padding: 5px 15px;
