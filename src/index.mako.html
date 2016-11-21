@@ -297,6 +297,9 @@ itemscope itemtype="http://schema.org/WebApplication"
            ga-time-selector-options="options">
       </div>
     </div>
+
+    <!-- Display a modal if the page has been open by th shop -->
+    <div ga-shop-msg></div>
 % endif
 
     <div ng-controller="GaTooltipController">
@@ -307,9 +310,6 @@ itemscope itemtype="http://schema.org/WebApplication"
            ga-tooltip-active="!globals.feedbackPopupShown && !globals.isDrawActive">
       </div>
     </div>
-
-    <!-- Display a modal if the page has been open by th shop -->
-    <div ga-shop-msg></div>
 
 % if device != 'embed':
     <div  id="pulldown" ng-cloak translate-cloak
