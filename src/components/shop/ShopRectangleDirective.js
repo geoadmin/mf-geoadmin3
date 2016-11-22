@@ -79,10 +79,10 @@ goog.require('ga_measure_filter');
 
         var updateInputs = function(geom) {
           var extent = geom.getExtent();
-          scope.north = extent[3];
-          scope.south = extent[1];
-          scope.west = extent[0];
-          scope.east = extent[2];
+          scope.north = parseInt(extent[3], 10);
+          scope.south = parseInt(extent[1], 10);
+          scope.west = parseInt(extent[0], 10);
+          scope.east = parseInt(extent[2], 10);
           updatePriceDebounced(extent);
           scope.area = geom.getArea();
         };
