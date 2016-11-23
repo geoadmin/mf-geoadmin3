@@ -40,3 +40,4 @@ self.onmessage = function(event) {
         postMessage({});
     }
 };
+
