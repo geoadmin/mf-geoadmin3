@@ -14,6 +14,7 @@ fi
 
 pwd=$(pwd)
 DEPLOY_TARGET=$2
+DEEP_CLEAN=$3
 RC_FILE=rc_$DEPLOY_TARGET
 SNAPSHOTDIR=/var/www/vhosts/mf-geoadmin3/private/snapshots/$1
 
@@ -25,6 +26,10 @@ VERSION=$(cat .build-artefacts/last-version)
 S3_BASE_PATH=/$DEPLOY_GIT_BRANCH/$SHA/$VERSION
 export S3_SRC_BASE_PATH=$S3_BASE_PATH/src/
 export S3_BASE_PATH=$S3_BASE_PATH/
+
+if [ "$DEEP_CLEAN" = "true" ]; then
+  make cleanall
+fi
 source $RC_FILE && make all
 
 echo -n "Checking service and layersConfig files"

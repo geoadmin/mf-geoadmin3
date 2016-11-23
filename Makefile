@@ -42,7 +42,6 @@ GIT_BRANCH := $(shell if [ -f .build-artefacts/deployed-git-branch ]; then cat .
 GIT_LAST_BRANCH := $(shell if [ -f .build-artefacts/last-git-branch ]; then cat .build-artefacts/last-git-branch 2> /dev/null; else echo 'dummy'; fi)
 BRANCH_TO_DELETE ?=
 DEPLOY_ROOT_DIR := /var/www/vhosts/mf-geoadmin3/private/branch
-DEPLOYCONFIG ?=
 OL3_VERSION ?= 5498f5f7db503bb408f74f2f463a5340910bc29b # v3.19, 21 october 2016
 OL3_CESIUM_VERSION ?= 2f42726ad105cc2408154428a37251413163670f # master, 24 october 2016
 CESIUM_VERSION ?= afe04e31e705aa26bb1fc34c1db014c8eec35743 # camptocamp/c2c_patches, 21 november 2016 (cesium 1.26, 3 october 2016)
@@ -221,11 +220,11 @@ deploydev:
 
 .PHONY: s3deployint
 s3deployint: guard-SNAPSHOT guard-S3_MF_GEOADMIN3_INT .build-artefacts/requirements.timestamp
-	./scripts/deploysnapshot.sh $(SNAPSHOT) int $(DEPLOYCONFIG);
+	./scripts/deploysnapshot.sh $(SNAPSHOT) int $(DEEP_CLEAN);
 
 .PHONY: s3deployprod
 s3deployprod: guard-SNAPSHOT guard-S3_MF_GEOADMIN3_PROD .build-artefacts/requirements.timestamp
-	./scripts/deploysnapshot.sh $(SNAPSHOT) prod $(DEPLOYCONFIG);
+	./scripts/deploysnapshot.sh $(SNAPSHOT) prod $(DEEP_CLEAN);
 
 .PHONY: s3deploybranch
 s3deploybranch: guard-S3_MF_GEOADMIN3_INT \
