@@ -76,6 +76,7 @@ S3_BASE_PATH ?=
 S3_SRC_BASE_PATH ?=
 CLONEDIR = /home/$(USER_NAME)/tmp/branches/${DEPLOY_GIT_BRANCH}
 DEEP_CLEAN ?= "false"
+NEW_VERSION ?= "false"
 NAMED_BRANCH ?= "true"
 
 ## Python interpreter can't have space in path name
@@ -220,11 +221,11 @@ deploydev:
 
 .PHONY: s3deployint
 s3deployint: guard-SNAPSHOT guard-S3_MF_GEOADMIN3_INT .build-artefacts/requirements.timestamp
-	./scripts/deploysnapshot.sh $(SNAPSHOT) int $(DEEP_CLEAN);
+	./scripts/deploysnapshot.sh $(SNAPSHOT) int $(NEW_VERSION);
 
 .PHONY: s3deployprod
 s3deployprod: guard-SNAPSHOT guard-S3_MF_GEOADMIN3_PROD .build-artefacts/requirements.timestamp
-	./scripts/deploysnapshot.sh $(SNAPSHOT) prod $(DEEP_CLEAN);
+	./scripts/deploysnapshot.sh $(SNAPSHOT) prod $(NEW_VERSION);
 
 .PHONY: s3deploybranch
 s3deploybranch: guard-S3_MF_GEOADMIN3_INT \
