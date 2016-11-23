@@ -132,7 +132,7 @@ describe('ga_shop_service', function() {
         it('opens a good mapsheet url of exceptions', function() {
           gaShop.dispatch('mapsheet', mapsheetExeptions[m], 'featureId');
           var mapsheetParamsExcept = mapsheetParamsExceptTpl
-            .replace('{layerBodId}', mapsheetExeptions[m])
+            .replace('{layerBodId}', mapsheetExeptions[m]);
           sinon.assert.calledWith(openStub,
               dispatchUrl + mapsheetParamsExcept);
         });

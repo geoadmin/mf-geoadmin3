@@ -675,6 +675,9 @@ describe('ga_map_service', function() {
 
       beforeEach(function() {
         $httpBackend.whenGET(expectedUrl).respond(layersConfig);
+
+        // Avoid log from Cesium
+        Cesium.TileProviderError.handleError = function() {};
       });
 
       it('returns undefined when layer\'s type is not managed', function(done) {
