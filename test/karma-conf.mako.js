@@ -11,6 +11,7 @@ module.exports = function(config) {
 
   // list of files / patterns to load in the browser
   files: [
+    {pattern: 'style/font-awesome-4.5.0/font/*', watched: false, included: false, served: true},
   % if mode == 'release':
     'style/app.css',
     'lib/d3.min.js',

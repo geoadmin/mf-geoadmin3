@@ -1,5 +1,5 @@
 describe('ga_importwms_directive', function() {
-  var element, scope, map, httpBackend;
+  var element, scope, map, httpBackend, $windowMock;
 
   beforeEach(function() {
 
@@ -17,6 +17,7 @@ describe('ga_importwms_directive', function() {
 
     inject(function($injector, $rootScope, $compile,
         $translate, $httpBackend, gaGlobalOptions) {
+      $windowMock = sinon.mock($injector.get('$window'));
       httpBackend = $httpBackend;
       map = new ol.Map({});
       map.setSize([600, 300]);
@@ -59,6 +60,7 @@ describe('ga_importwms_directive', function() {
   afterEach(function() {
     httpBackend.verifyNoOutstandingExpectation();
     httpBackend.verifyNoOutstandingRequest();
+    $windowMock.restore();
   });
 
   it('verifies html elements', inject(function($rootScope) {
@@ -190,6 +192,7 @@ describe('ga_importwms_directive', function() {
       }));
 
       it('adds a selected layer to the map', inject(function() {
+        $windowMock.expects('alert').withExactArgs('add_wms_layer_succeeded').once();
         scope.toggleLayerSelected(evt, scope.layers[0]);
         scope.addLayerSelected();
         expect(scope.map.getLayers().getLength()).to.be(1);
