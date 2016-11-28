@@ -274,6 +274,46 @@ describe('ga_shop_service', function() {
       });
     });
 
+    describe('#cut()', function() {
+      var $httpBackend, $rootScope;
+      var url;
+      var cutParams = 'layers=all:ch.swisstopo.pixelkarte-farbe-pk25.noscale&geometryType=esriGeometryEnvelope&geometry=1,3,2,1';
+
+      beforeEach(function() {
+        inject(function($injector) {
+          $httpBackend = $injector.get('$httpBackend');
+          $rootScope = $injector.get('$rootScope');
+        });
+        url = gaGlobalOptions.apiUrl + '/rest/services/all/GeometryServer/cut?';
+      });
+
+      afterEach(function() {
+        $httpBackend.verifyNoOutstandingExpectation();
+        $httpBackend.verifyNoOutstandingRequest();
+      });
+
+      it('irejects the promis if no geometry param', function(done) {
+        gaShop.cut().then(null, function() {
+          done();
+        });
+        $rootScope.$digest();
+      });
+
+      it('send a good cut url', function(done) {
+        $httpBackend.expectGET(url + cutParams).respond(200, {
+          'ch.swisstopo.pixelkarte-farbe-pk25.noscale': [{
+            area: '120'
+          }]
+        });
+        gaShop.cut('1,3,2,1').then(function(area) {
+          expect(area).to.eql(120);
+          done();
+        });
+        $rootScope.$digest();
+        $httpBackend.flush();
+      });
+    });
+
     describe('#getClipperFromOrderType()', function() {
 
       it('returns the clipper associated to an orderType', function() {
