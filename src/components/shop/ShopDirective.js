@@ -143,7 +143,7 @@ goog.require('ga_price_filter');
           gaPreviewFeatures.add(scope.map, feat);
         };
 
-        scope.updatePrice = function(geometry) {
+        scope.updatePrice = function(geometry, cutArea) {
           if (scope.orderType == 'rectangle') {
             if (!geometry) {
               geometry = scope.geometry;
@@ -151,7 +151,7 @@ goog.require('ga_price_filter');
               scope.geometry = geometry;
             }
           }
-          if ((scope.orderType == 'rectangle' && geometry) ||
+          if ((scope.orderType == 'rectangle' && geometry && cutArea) ||
               (scope.orderType != 'rectangle' && !geometry)) {
 
             gaShop.getPrice(scope.orderType, layerBodId,
