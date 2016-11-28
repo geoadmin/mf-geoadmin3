@@ -46,6 +46,8 @@ goog.require('ga_measure_filter');
           map.addLayer(layer);
           map.addInteraction(scope.dragBox);
           scope.dragBox.setActive(true);
+          // Reload price.
+          scope.onInputChange();
         };
 
         var deactivate = function() {
@@ -65,7 +67,7 @@ goog.require('ga_measure_filter');
           deactivate();
         });
 
-        scope.onInputChange = function(evt) {
+        scope.onInputChange = function() {
           source.clear();
           var extent = gaMapUtils.intersectWithDefaultExtent([
             scope.west, scope.south, scope.east, scope.north
@@ -83,16 +85,20 @@ goog.require('ga_measure_filter');
           scope.south = parseInt(extent[1], 10);
           scope.west = parseInt(extent[0], 10);
           scope.east = parseInt(extent[2], 10);
-          updatePriceDebounced(extent);
-          scope.area = geom.getArea();
+          scope.onInputChange();
         };
 
         var updateInputsDebounced = gaDebounce.debounce(updateInputs, 300,
             false, true);
         var updatePriceDebounced = gaDebounce.debounce(function(extent) {
-          scope.updatePrice(extent.toString());
+          // Get the area from the cut service
+          gaShop.cut(extent.toString()).then(function(area) {
+            scope.updatePrice(extent.toString(), area);
+            scope.area = area * 1000 * 1000;
+          }, function() {
+            scope.area = null;
+          });
         }, 300, false, false);
-
       }
     };
   });

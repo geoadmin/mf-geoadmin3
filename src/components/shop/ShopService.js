@@ -19,6 +19,8 @@ goog.require('ga_translation_service');
 
     this.$get = function($q, $window, $http, gaBrowserSniffer, gaGlobalOptions,
         gaLang) {
+      var cutUrl = gaGlobalOptions.apiUrl +
+          '/rest/services/all/GeometryServer/cut?';
       var priceUrl = gaGlobalOptions.shopUrl +
           '/shop-server/resources/products/price?';
       var clipper = {
@@ -118,6 +120,25 @@ goog.require('ga_translation_service');
             cache: true
           }).then(function(response) {
             return response.data.productPrice;
+          });
+        };
+
+        this.cut = function(geometry) {
+          if (!geometry) {
+            var defer = $q.defer();
+            defer.reject();
+            return defer.promise;
+          }
+          var layer = 'ch.swisstopo.pixelkarte-farbe-pk25.noscale';
+          var url = cutUrl + 'layers=all:' + layer +
+              '&geometryType=esriGeometryEnvelope&geometry=' + geometry;
+          return $http.get(url, {
+            cache: true
+          }).then(function(response) {
+            var data = response.data[layer];
+            if (data && data.length) {
+              return data[0].area;
+            }
           });
         };
 
