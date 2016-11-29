@@ -9,7 +9,29 @@ describe('ga_stylesfromliterals_service', function() {
       });
     });
 
-    it('supports single type style assignment for a point, line and polygon', function() {
+    it('supports icon style assignment for a point', function() {
+      var singleTypeStyle = {
+        type: 'single',
+        geomType: 'point',
+        vectorOptions: {
+          type: 'icon',
+          src: 'https://data.geo.admin.ch/ch.bfe.bikesharing/images/13.png'
+          /*anchor: [
+            1,
+            1
+          ]*/
+        }
+      };
+      var gaStyle = gaStylesFromLiterals(singleTypeStyle);
+      var olStyle = gaStyle.getFeatureStyle();
+      var olImage = olStyle.getImage();
+      expect(olStyle).to.be.an(ol.style.Style);
+      expect(olImage).to.be.an(ol.style.Icon);
+      expect(olImage.getSrc()).to.be(singleTypeStyle.vectorOptions.src);
+      expect(olImage.getImage(1).crossOrigin).to.be('anonymous');
+    });
+
+    it('supports single type style assignment for a point', function() {
       var singleTypeStyle = {
         type: 'single',
         geomType: 'point',
@@ -29,7 +51,7 @@ describe('ga_stylesfromliterals_service', function() {
       var olStyle = gaStyle.getFeatureStyle();
       var olImage = olStyle.getImage();
       expect(olStyle).to.be.an(ol.style.Style);
-      expect(olImage).to.be.an(ol.style.Image);
+      expect(olImage).to.be.an(ol.style.Circle);
       expect(olImage.getFill()).to.be.an(ol.style.Fill);
       expect(olImage.getFill().getColor()).to.equal('#FFFFFF');
       expect(olImage.getStroke()).to.be.an(ol.style.Stroke);
@@ -38,6 +60,112 @@ describe('ga_stylesfromliterals_service', function() {
       expect(olImage.getRadius()).to.equal(8);
 
       singleTypeStyle = {
+        type: 'single',
+        geomType: 'point',
+        vectorOptions: {
+          type: 'square',
+          radius: 8,
+          fill: {
+            color: '#FFFFFF'
+          },
+          stroke: {
+            color: '#FFFFFF',
+            width: 2
+          }
+        }
+      };
+      gaStyle = gaStylesFromLiterals(singleTypeStyle);
+      olStyle = gaStyle.getFeatureStyle();
+      olImage = olStyle.getImage();
+      expect(olStyle).to.be.an(ol.style.Style);
+      expect(olImage).to.be.an(ol.style.RegularShape);
+      expect(olImage.getPoints()).to.be(4);
+      expect(olImage.getAngle()).to.be(Math.PI / 4);
+      expect(olImage.getRotation()).to.be(0);
+      expect(olImage.getRadius()).to.be(8);
+      expect(olImage.getFill()).to.be.an(ol.style.Fill);
+      expect(olImage.getFill().getColor()).to.equal('#FFFFFF');
+      expect(olImage.getStroke()).to.be.an(ol.style.Stroke);
+      expect(olImage.getStroke().getColor()).to.equal('#FFFFFF');
+      expect(olImage.getStroke().getWidth()).to.equal(2);
+      expect(olImage.getRadius()).to.equal(8);
+
+      singleTypeStyle = {
+        type: 'single',
+        geomType: 'point',
+        vectorOptions: {
+          type: 'triangle',
+          radius: 8,
+          fill: {
+            color: '#FFFFFF'
+          },
+          stroke: {
+            color: '#FFFFFF',
+            width: 2
+          }
+        }
+      };
+      gaStyle = gaStylesFromLiterals(singleTypeStyle);
+      olStyle = gaStyle.getFeatureStyle();
+      olImage = olStyle.getImage();
+      expect(olStyle).to.be.an(ol.style.Style);
+      expect(olImage).to.be.an(ol.style.RegularShape);
+      expect(olImage.getPoints()).to.be(3);
+      expect(olImage.getRotation()).to.be(Math.PI / 4);
+      expect(olImage.getAngle()).to.be(0);
+
+      singleTypeStyle = {
+        type: 'single',
+        geomType: 'point',
+        vectorOptions: {
+          type: 'star',
+          radius: 8,
+          fill: {
+            color: '#FFFFFF'
+          },
+          stroke: {
+            color: '#FFFFFF',
+            width: 2
+          }
+        }
+      };
+      gaStyle = gaStylesFromLiterals(singleTypeStyle);
+      olStyle = gaStyle.getFeatureStyle();
+      olImage = olStyle.getImage();
+      expect(olStyle).to.be.an(ol.style.Style);
+      expect(olImage).to.be.an(ol.style.RegularShape);
+      expect(olImage.getPoints()).to.be(5);
+      expect(olImage.getRotation()).to.be(0);
+      expect(olImage.getAngle()).to.be(0);
+
+
+      singleTypeStyle = {
+        type: 'single',
+        geomType: 'point',
+        vectorOptions: {
+          type: 'cross',
+          radius: 8,
+          fill: {
+            color: '#FFFFFF'
+          },
+          stroke: {
+            color: '#FFFFFF',
+            width: 2
+          }
+        }
+      };
+      gaStyle = gaStylesFromLiterals(singleTypeStyle);
+      olStyle = gaStyle.getFeatureStyle();
+      olImage = olStyle.getImage();
+      expect(olStyle).to.be.an(ol.style.Style);
+      expect(olImage).to.be.an(ol.style.RegularShape);
+      expect(olImage.getPoints()).to.be(4);
+      expect(olImage.getRotation()).to.be(0);
+      expect(olImage.getAngle()).to.be(0);
+    });
+
+    it('supports single type style assignment for a line', function() {
+      var singleTypeStyle = {
         type: 'single',
         geomType: 'line',
         vectorOptions: {
@@ -49,16 +177,18 @@ describe('ga_stylesfromliterals_service', function() {
           }
         }
       };
-      gaStyle = gaStylesFromLiterals(singleTypeStyle);
-      olStyle = gaStyle.getFeatureStyle();
+      var gaStyle = gaStylesFromLiterals(singleTypeStyle);
+      var olStyle = gaStyle.getFeatureStyle();
       expect(olStyle).to.be.an(ol.style.Style);
       expect(olStyle.getStroke()).to.be.an(ol.style.Stroke);
       expect(olStyle.getStroke().getColor()).to.equal('#FF1FF1');
       expect(olStyle.getStroke().getWidth()).to.equal(3);
       expect(olStyle.getStroke().getLineCap()).to.equal('square');
       expect(olStyle.getStroke().getLineJoin()).to.equal('square');
+    });
 
-      singleTypeStyle = {
+    it('supports single type style assignment for a polygon', function() {
+      var singleTypeStyle = {
         type: 'single',
         geomType: 'polygon',
         vectorOptions: {
@@ -71,8 +201,8 @@ describe('ga_stylesfromliterals_service', function() {
           }
         }
       };
-      gaStyle = gaStylesFromLiterals(singleTypeStyle);
-      olStyle = gaStyle.getFeatureStyle();
+      var gaStyle = gaStylesFromLiterals(singleTypeStyle);
+      var olStyle = gaStyle.getFeatureStyle();
       expect(olStyle).to.be.an(ol.style.Style);
       expect(olStyle.getStroke()).to.be.an(ol.style.Stroke);
       expect(olStyle.getStroke().getColor()).to.equal('#GG1GG1');

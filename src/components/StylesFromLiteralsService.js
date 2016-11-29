@@ -69,6 +69,9 @@ goog.provide('ga_stylesfromliterals_service');
           }
           var basicStyles = getOlBasicStyles(style);
           var olImage = angular.extend({}, style, basicStyles);
+          // Necessary for Cesium
+          olImage.crossOrigin = 'anonymous';
+
           delete olImage.label;
           olImage = getOlStyleForPoint(olImage, style.type);
           olStyles.image = olImage;
