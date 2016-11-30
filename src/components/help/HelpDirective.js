@@ -34,9 +34,9 @@ goog.require('ga_help_service');
       link: function(scope, element, attrs) {
         scope.options = scope.optionsFunc();
         if (scope.options && scope.options.showOnHover) {
-          element.parent().on('mouseover', function(evt) {
+          element.parent().on('mouseenter', function(evt) {
             element.css('visibility', 'visible');
-          }).on('mouseout', function(evt) {
+          }).on('mouseleave', function(evt) {
             element.css('visibility', 'hidden');
           });
         } else {

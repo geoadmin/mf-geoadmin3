@@ -731,13 +731,13 @@ itemscope itemtype="http://schema.org/WebApplication"
     </script>
 % endif
 
-% if device == 'mobile':
     <script>
       window.addEventListener('load', function() {
         FastClick.attach(document.body);
       }, false);
     </script>
-% elif device == 'embed':
+
+% if device == 'embed':
     <script>
       window.addEventListener('load', function() {
         if (window.name !== "embed" && window.location == window.parent.location) {
