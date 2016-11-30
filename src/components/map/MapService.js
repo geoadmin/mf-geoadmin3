@@ -662,8 +662,7 @@ goog.require('ga_urlutils_service');
               subdomains: dfltWmsSubdomains
             };
           }
-          var extent = gaMapUtils.intersectWithDefaultExtent(config3d.extent ||
-              ol.proj.get(gaGlobalOptions.defaultEpsg).getExtent());
+          var extent = config3d.extent || gaMapUtils.defaultExtent;
           if (params) {
             var minRetLod = gaMapUtils.getLodFromRes(config3d.maxResolution) ||
                 window.minimumRetrievingLevel;
@@ -707,8 +706,7 @@ goog.require('ga_urlutils_service');
           var olLayer;
           var timestamp = this.getLayerTimestampFromYear(bodId, gaTime.get());
           var crossOrigin = 'anonymous';
-          var extent = gaMapUtils.intersectWithDefaultExtent(layer.extent ||
-              ol.proj.get(gaGlobalOptions.defaultEpsg).getExtent());
+          var extent = layer.extent || gaMapUtils.defaultExtent;
 
           // For some obscure reasons, on iOS, displaying a base 64 image
           // in a tile with an existing crossOrigin attribute generates
@@ -1022,13 +1020,14 @@ goog.require('ga_urlutils_service');
       // Level of detail for the default resolution
       var lodForDfltRes = gaGlobalOptions.defaultLod;
       var dfltResIdx = resolutions.indexOf(gaGlobalOptions.defaultResolution);
-
+      var proj = ol.proj.get(gaGlobalOptions.defaultEpsg);
+      var extent = gaGlobalOptions.defaultExtent || proj.getExtent();
       return {
         Z_PREVIEW_LAYER: 1000,
         Z_PREVIEW_FEATURE: 1100,
         Z_FEATURE_OVERLAY: 2000,
         preload: 6, //Number of upper zoom to preload when offline
-        defaultExtent: gaGlobalOptions.defaultExtent,
+        defaultExtent: extent,
         viewResolutions: resolutions,
         defaultResolution: gaGlobalOptions.defaultResolution,
         getViewResolutionForZoom: function(zoom) {

@@ -62,7 +62,6 @@ goog.require('ga_topic_service');
         view: new ol.View({
           projection: defaultProjection,
           center: ol.extent.getCenter(gaMapUtils.defaultExtent),
-          extent: gaMapUtils.defaultExtent,
           resolution: gaMapUtils.defaultResolution,
           resolutions: gaMapUtils.viewResolutions
         }),
