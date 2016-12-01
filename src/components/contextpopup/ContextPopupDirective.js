@@ -97,16 +97,6 @@ goog.require('ga_what3words_service');
               var coord2056 = ol.proj.transform(coord21781,
                   'EPSG:21781', 'EPSG:2056');
 
-              // recenter on phones
-              if (gaBrowserSniffer.phone) {
-                var pan = ol.animation.pan({
-                  duration: 200,
-                  source: view.getCenter()
-                });
-                map.beforeRender(pan);
-                view.setCenter(coord21781);
-              }
-
               scope.coord21781 = formatCoordinates(coord21781, 1);
               scope.coord4326 = ol.coordinate.format(coord4326, '{y}, {x}', 5);
               var coord4326String = ol.coordinate.toStringHDMS(coord4326, 3).
@@ -165,9 +155,15 @@ goog.require('ga_what3words_service');
 
               updatePopupLinks();
 
-              view.once('change:center', function() {
-                hidePopover();
-              });
+              if (gaBrowserSniffer.phone) {
+                view.animate({
+                  center: coord21781,
+                  duration: 200
+                }, hidePopoverOnNextChange);
+
+              } else {
+                hidePopoverOnNextChange();
+              }
 
               overlay.setPosition(coord21781);
               showPopover();
@@ -227,6 +223,12 @@ goog.require('ga_what3words_service');
               }
               hidePopover();
             };
+
+            function hidePopoverOnNextChange() {
+              view.once('change:center', function() {
+                hidePopover();
+              });
+            }
 
             function showPopover() {
               element.css('display', 'block');
