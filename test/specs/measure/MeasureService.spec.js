@@ -27,7 +27,7 @@ describe('ga_measure_service', function() {
     });
 
 
-   describe('#formatCoordinates(coordinates)', function() {
+    describe('#formatCoordinates(coordinates)', function() {
       it('returns formatted 2D coordinates', function() {
         expect(gaMeasure.formatCoordinates([2457749.999996144, 1056249.999834365])).to.eql("2'457'750, 1'056'250");
       });
@@ -44,7 +44,7 @@ describe('ga_measure_service', function() {
 
     });
 
-   describe('#getLength()', function() {
+    describe('#getLength()', function() {
       it('returns the length of a geometry', function() {
         expect(gaMeasure.getLength(lineString)).to.eql(3000);
         expect(gaMeasure.getLength(linearRing)).to.eql(4000);
@@ -184,12 +184,6 @@ describe('ga_measure_service', function() {
           expect(ovArea.getElement().innerHTML.indexOf('47.25 m')).to.be(0);
           expect(ovArea.getElement().style.opacity).to.eql(1);
           expect(ovArea.getPosition()).to.eql([3.777777777777778, 9]);
-        });
-
-        it('set the position to undefined if the polygon is not closed correctly', function() {
-          feat.setGeometry(polyNotClosed);
-          gaMeasure.updateOverlays(layer, feat);
-          expect(feat.get('overlays').item(0).getPosition()).to.be(undefined);
         });
 
         it('set position to undefined if area is 0', function() {
