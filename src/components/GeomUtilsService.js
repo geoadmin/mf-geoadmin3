@@ -11,7 +11,9 @@ goog.provide('ga_geomutils_service');
 
     // Ensure linear ring is closed
     var closeLinearRing = function(linearRing) {
-      if (linearRing.getFirstCoordinate() != linearRing.getLastCoordinate()) {
+       var first = linearRing.getFirstCoordinate();
+       var last = linearRing.getLastCoordinate();
+       if (first[0] != last[0] || first[1] != last[1] || first[2] != last[2]) {
         var coords = linearRing.getCoordinates();
         coords.push(linearRing.getFirstCoordinate());
         linearRing.setCoordinates(coords);
