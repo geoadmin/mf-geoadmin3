@@ -29,6 +29,13 @@ describe('ga_geomutils_service', function() {
       [0, 1, 0]
     ];
 
+    var closedCoords = [
+      [0, 1, 0],
+      [1, 0, 0],
+      [1, 1, 0],
+      [0, 1, 0]
+    ];
+
     it('leaves unclosable geometry intact', function() {
 
       // Point
@@ -101,7 +108,50 @@ describe('ga_geomutils_service', function() {
       coords = unclosedGeomColl.getGeometries()[1].getCoordinates();
       expect(coords).to.eql([0, 0]);
     });
-  });
+
+    it('doesn\'t close geometry if not necessary', function() {
+
+      // LinearRing
+      var closedLinearRing = new ol.geom.LinearRing(closedCoords);
+      gaGeomUtils.close(closedLinearRing);
+      var coords = closedLinearRing.getCoordinates();
+      var idx = coords[0].length - 1;
+      expect(coords[idx]).not.to.eql(coords[idx - 1]);
+
+      // Polygon
+      var closedPolygon = new ol.geom.Polygon([closedCoords, closedCoords]);
+      gaGeomUtils.close(closedPolygon);
+      coords = closedPolygon.getCoordinates();
+
+      expect(coords[0][idx]).not.to.eql(coords[0][idx - 1]);
+      expect(coords[1][idx]).not.to.eql(coords[1][idx - 1]);
+
+      // MultiPolygon
+      var closedMultiPolygon = new ol.geom.MultiPolygon([
+        [closedCoords, closedCoords],
+        [closedCoords, closedCoords]
+      ]);
+      gaGeomUtils.close(closedMultiPolygon);
+      coords = closedMultiPolygon.getCoordinates();
+      expect(coords[0][0][idx]).not.to.eql(coords[0][0][idx - 1]);
+      expect(coords[0][1][idx]).not.to.eql(coords[0][1][idx - 1]);
+      expect(coords[1][0][idx]).not.to.eql(coords[1][0][idx - 1]);
+      expect(coords[1][1][idx]).not.to.eql(coords[1][1][idx - 1]);
+
+      // GeometryCollection
+      var closedGeomColl = new ol.geom.GeometryCollection([
+        new ol.geom.Polygon([closedCoords, closedCoords]),
+        new ol.geom.Point([0, 0])
+      ]);
+      gaGeomUtils.close(closedGeomColl);
+      coords = closedGeomColl.getGeometries()[0].getCoordinates();
+      expect(coords[0][idx]).not.to.eql(coords[0][idx - 1]);
+      expect(coords[1][idx]).not.to.eql(coords[1][idx - 1]);
+      // we verify the point is still there
+      coords = closedGeomColl.getGeometries()[1].getCoordinates();
+      expect(coords).to.eql([0, 0]);
+    });
+ });
 
   describe('isValid', function() {
     var uniqCoords = [

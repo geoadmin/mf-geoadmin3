@@ -106,6 +106,7 @@ goog.require('ga_measure_filter');
 
         this.updateOverlays = function(layer, feature) {
           var overlays = feature.get('overlays');
+          var isDrawing = feature.get('isDrawing');
 
           if (!overlays) {
             return;
@@ -114,24 +115,32 @@ goog.require('ga_measure_filter');
           var geom = geomLine = feature.getGeometry();
 
           if (geom instanceof ol.geom.Polygon) {
-            var areaOverlay = overlays.item(currIdx) || this.createOverlay();
-            areaOverlay.getElement().innerHTML = this.getAreaLabel(geom);
-            areaOverlay.getElement().style.opacity = layer.getOpacity();
+            var pos, coords = geom.getCoordinates()[0];
+            geomLine = new ol.geom.LineString(coords);
 
-            // We compare first and last coordinates because during drawing
-            // the polygon are not closed correctly.
-            var first = geom.getFirstCoordinate();
-            var last = geom.getLastCoordinate();
-            var pos;
-
-            if (geom.getArea() && first[0] == last[0] &&
-                first[1] == last[1]) {
+            if (geom.getArea()) {
               pos = geom.getInteriorPoint().getCoordinates();
             }
 
-            areaOverlay.setPosition(pos);
+            // When drawing we show the area tooltip only when the user closes
+            // the polygon.
+            if (isDrawing) {
+              var first = coords[0];
+              var last = coords[coords.length - 2];
 
-            geomLine = new ol.geom.LineString(geom.getCoordinates()[0]);
+              if (first[0] != last[0] || first[1] != last[1]) {
+                pos = undefined;
+              }
+
+              // We use the polygon coordinates without the last one.
+              geomLine.setCoordinates(coords.slice(0, -1));
+            }
+
+            // We create the overlay
+            var areaOverlay = overlays.item(currIdx) || this.createOverlay();
+            areaOverlay.getElement().innerHTML = this.getAreaLabel(geom);
+            areaOverlay.getElement().style.opacity = layer.getOpacity();
+            areaOverlay.setPosition(pos);
 
             if (!overlays.item(currIdx)) {
               overlays.push(areaOverlay);
