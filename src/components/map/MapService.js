@@ -573,10 +573,11 @@ goog.require('ga_urlutils_service');
               ];
 
               var params = gaPermalink.getParams();
-              tileset3d = tileset3d.concat((params['tileset3d'] ||
-                  '').split(','));
-              tilesetTs = tilesetTs.concat((params['tilesetTs'] ||
-                  '').split(','));
+              var pTileset3d = params['tileset3d'];
+              var pTilesetTs = params['tilesetTs'];
+
+              tileset3d = pTileset3d ? pTileset3d.split(',') : tileset3d;
+              tilesetTs = pTilesetTs ? pTilesetTs.split(',') : tilesetTs;
 
               tileset3d.forEach(function(tileset3dId, idx) {
                 if (tileset3dId) {

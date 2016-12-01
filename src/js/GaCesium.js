@@ -125,9 +125,16 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions,
     enableOl3d(cesiumViewer, enabled);
 
     // Tileset 3D
-    var tileset3d = (gaPermalink.getParams()['tileset3d'] || '').split(',');
-    tileset3d.push('ch.swisstopo.swissnames3d.3d',
-        'ch.swisstopo.swisstlm3d.3d');
+    var tileset3d = [
+      'ch.swisstopo.swisstlm3d.3d',
+      'ch.swisstopo.swissnames3d.3d'
+    ];
+
+    var params = gaPermalink.getParams();
+    var pTileset3d = params['tileset3d'];
+
+    tileset3d = pTileset3d ? pTileset3d.split(',') : tileset3d;
+
     tileset3d.forEach(function(tileset3dId) {
       if (tileset3dId) {
         var tileset = gaLayers.getCesiumTileset3DById(tileset3dId);
@@ -155,7 +162,9 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions,
             }
           });*/
         }
-        scene.primitives.add(tileset);
+        if (tileset) {
+          scene.primitives.add(tileset);
+        }
       }
     });
     return cesiumViewer;
