@@ -61,7 +61,7 @@ goog.require('ga_styles_service');
         element: tooltipElement,
         offset: [15, 15],
         positioning: 'top-left',
-        stopEvent: false
+        stopEvent: true
       });
       return tooltip;
     };
@@ -289,7 +289,7 @@ goog.require('ga_styles_service');
             // and to remove overlays when necessary
             var source = layer.getSource();
             unSourceEvents = [
-              source.on('addfeature', saveDebounced),
+              source.on('addfeature', save),
               source.on('changefeature', saveDebounced),
               source.on('removefeature', function(evt) {
                 saveDebounced();
@@ -426,19 +426,22 @@ goog.require('ga_styles_service');
             }
 
             deregFeatureChange = evt.feature.on('change', function(evt) {
-
+              evt.target.set('isDrawing', true);
               // Keep the overlays on draw to remove it if the draw mode is
               // deactivated during drawing.
               draw.set('overlays', evt.target.get('overlays') || []);
 
               var geom = evt.target.getGeometry();
               if (geom instanceof ol.geom.Polygon) {
-                var lineCoords = geom.getCoordinates()[0];
+                // The sketched polygon is always closed, so we remove the last
+                // coordinate.
+                var lineCoords = geom.getCoordinates()[0].slice(0, -1);
 
                 if (nbPoint != lineCoords.length) {
                   // A point is added or removed
                   nbPoint = lineCoords.length;
-                } else {
+
+                } else if (lineCoords.length > 1) {
                   var firstPoint = lineCoords[0];
 
                   // We update features and measures
@@ -472,6 +475,9 @@ goog.require('ga_styles_service');
             // Unregister the change event
             ol.Observable.unByKey(deregFeatureChange);
 
+            // Clear feature's property
+            evt.feature.unset('isDrawing');
+
             // Clear overlays property before deactivating the tool
             draw.unset('overlays');
             deactivateTool(lastActiveTool);
@@ -488,15 +494,16 @@ goog.require('ga_styles_service');
             }
 
             if (geom instanceof ol.geom.Polygon && !isFinishOnFirstPoint) {
-              // The sketchFeatureArea is automatically closed by the draw
-              // interaction even if the user has finished drawing on the
-              // last point. So we remove the useless coordinates.
-              var lineCoords = geom.getCoordinates()[0];
-              lineCoords.pop();
+
               if (tool.showMeasure) {
                 // We remove the area tooltip.
                 gaMeasure.removeOverlays(featureToAdd);
               }
+
+              // The sketch feature is automatically closed by the draw
+              // interaction even if the user has finished drawing on the
+              // last point. So we remove the useless coordinates.
+              var lineCoords = geom.getCoordinates()[0].slice(0, -1);
               featureToAdd.setGeometry(new ol.geom.LineString(lineCoords));
             }
 
