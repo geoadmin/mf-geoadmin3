@@ -103,7 +103,6 @@ goog.require('ga_throttle_service');
           var dest = geolocation.getPosition();
           if (dest) {
             if (first) {
-              first = false;
               gaMapUtils.flyTo(map, scope.ol3d, dest,
                   ol.extent.buffer(dest.concat(dest),
                   geolocation.getAccuracy()));
@@ -168,13 +167,11 @@ goog.require('ga_throttle_service');
               } else if (diff < -Math.PI) {
                 currRotation -= 2 * Math.PI;
               }
-
-              map.beforeRender(ol.animation.rotate({
-                rotation: currRotation,
+              map.getView().animate({
+                rotation: heading,
                 duration: 350,
                 easing: ol.easing.linear
-              }));
-              map.getView().setRotation(heading);
+              });
               updateHeadingFeature(0);
             }
           }

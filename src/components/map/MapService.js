@@ -1301,8 +1301,13 @@ goog.require('ga_urlutils_service');
               $rootScope.$digest();
             });
             view.animate({
+              // destRes * 1.2 needed to don't have up an down and up again
+              // in zoom.
+              resolution: Math.max(sourceRes, dist / 1000, destRes * 1.2),
+              duration: duration / 2
+            }, {
               resolution: destRes,
-              duration: duration
+              duration: duration / 2,
             }, function(success) {
               deferZoom.resolve();
               $rootScope.$digest();
