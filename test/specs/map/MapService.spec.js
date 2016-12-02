@@ -1537,10 +1537,7 @@ describe('ga_map_service', function() {
     };
 
     beforeEach(function() {
-      var elt = $('<div style="width: 600px;height: 600px"></div>');
-      $(document.body).append(elt);
       map = new ol.Map({
-        target: elt[0],
         view: new ol.View({
           center: [0, 0],
           resolution: 500
@@ -1921,6 +1918,7 @@ describe('ga_map_service', function() {
 
     describe('#zoomToExtent()', function() {
       it('zoom map to en extent', function(done) {
+        map.setSize([600, 600]);
         map.getView().setCenter([1, 2]);
         map.getView().setZoom(6);
         gaMapUtils.zoomToExtent(map, null, [-40, -40, 40, 40]).then(function() {
@@ -1943,6 +1941,7 @@ describe('ga_map_service', function() {
 
     describe('#flyTo()', function() {
       it('move map to a coordinate ', function(done) {
+        map.setSize([600, 600]);
         map.getView().setCenter([1, 2]);
         map.getView().setResolution(500);
         var dest = [0, 1];
