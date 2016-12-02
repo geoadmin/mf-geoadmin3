@@ -1528,7 +1528,7 @@ describe('ga_map_service', function() {
   });
 
   describe('gaMapUtils', function() {
-    var gaMapUtils;
+    var gaMapUtils, $rootScope, $timeout;
 
     var addLayerToMap = function(bodId) {
       var layer = new ol.layer.Tile();
@@ -1537,8 +1537,18 @@ describe('ga_map_service', function() {
     };
 
     beforeEach(function() {
-      map = new ol.Map({});
+      var elt = $('<div style="width: 600px;height: 600px"></div>');
+      $(document.body).append(elt);
+      map = new ol.Map({
+        target: elt[0],
+        view: new ol.View({
+          center: [0, 0],
+          resolution: 500
+        })
+      });
       inject(function($injector) {
+        $rootScope = $injector.get('$rootScope');
+        $timeout = $injector.get('$timeout');
         gaMapUtils = $injector.get('gaMapUtils');
       });
     });
@@ -1886,11 +1896,61 @@ describe('ga_map_service', function() {
     });
 
     describe('#resetMapToNorth()', function() {
-      it('reset map to north', function() {
+      it('reset map to north', function(done) {
         map.getView().setRotation(90);
         expect(map.getView().getRotation()).to.be(90);
-        gaMapUtils.resetMapToNorth(map);
-        expect(map.getView().getRotation()).to.be(0);
+        gaMapUtils.resetMapToNorth(map).then(function() {
+          expect(map.getView().getRotation()).to.be(0);
+          done();
+        });
+      });
+    });
+
+    describe('#moveTo()', function() {
+      it('move map to a coordinate and a zoom', function(done) {
+        map.getView().setCenter([1, 2]);
+        map.getView().setZoom(6);
+        gaMapUtils.moveTo(map, null, 3, [0, 1]).then(function() {
+          expect(map.getView().getCenter()).to.eql([0, 1]);
+          expect(map.getView().getZoom()).to.eql(3);
+          done();
+        });
+        $rootScope.$digest();
+      });
+    });
+
+    describe('#zoomToExtent()', function() {
+      it('zoom map to en extent', function(done) {
+        map.getView().setCenter([1, 2]);
+        map.getView().setZoom(6);
+        gaMapUtils.zoomToExtent(map, null, [-40, -40, 40, 40]).then(function() {
+          expect(map.getView().calculateExtent(map.getSize())).to.eql([-44.78732126084546, -44.78732126084546, 44.78732126084546, 44.78732126084546]);
+          done();
+        });
+        $rootScope.$digest();
+      });
+    });
+
+    describe('#panTo()', function() {
+      it('pan map to a coordinate', function(done) {
+        map.getView().setCenter([1, 2]);
+        gaMapUtils.panTo(map, null, [0, 1]).then(function() {
+          expect(map.getView().getCenter()).to.eql([0, 1]);
+          done();
+        });
+      });
+    });
+
+    describe('#flyTo()', function() {
+      it('move map to a coordinate ', function(done) {
+        map.getView().setCenter([1, 2]);
+        map.getView().setResolution(500);
+        var dest = [0, 1];
+        gaMapUtils.flyTo(map, null, dest, ol.extent.buffer(dest.concat(dest), 100)).then(function() {
+          expect(map.getView().getCenter()).to.eql([0, 1]);
+          expect(map.getView().calculateExtent(map.getSize())).to.eql([-750, -749, 750, 751]);
+          done();
+        });
       });
     });
 
