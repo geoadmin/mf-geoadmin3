@@ -31,6 +31,7 @@ goog.require('ga_price_filter');
           elt.remove();
           return;
         }
+        var previewFeat;
 
         var getFeatureIdToRequest = function() {
           // Use feature's id for id to resquest
@@ -38,7 +39,6 @@ goog.require('ga_price_filter');
           var idToRequest = feat.featureId;
           return idToRequest;
         };
-
 
         var layerBodId = (scope.feature instanceof ol.Feature) ?
             scope.feature.get('layerId') : scope.feature.layerBodId;
@@ -71,6 +71,13 @@ goog.require('ga_price_filter');
           return;
         }
 
+        // On hover, we highlight the preview feature
+        elt.on('mouseenter', function() {
+          gaPreviewFeatures.highlight(scope.map, previewFeat);
+        }).on('mouseleave', function() {
+          gaPreviewFeatures.clearHighlight(scope.map);
+        });
+
         scope.getClipperFeatureLabel = function(orderType) {
           var feat = scope.clipperFeatures[orderType];
           if (!feat) {
@@ -100,17 +107,20 @@ goog.require('ga_price_filter');
           }
         };
 
-        scope.onChangeOrderType = function(orderType) {
+        scope.onChangeOrderType = function(orderType, silent) {
           scope.orderType = orderType;
-          // Warn all shop directives that the ordertyope has changed.
-          $rootScope.$broadcast('gaShopOrderTypeChange', scope);
 
+          if (!silent) {
+            // Warn all shop directives that the ordertyope has changed.
+            $rootScope.$broadcast('gaShopOrderTypeChange', scope);
+          }
           // We try to find the correct clipper to use
           var clipper = (orderType == 'mapsheet') ?
               gaShop.getMapsheetClipperFromBodId(layerBodId) :
               gaShop.getClipperFromOrderType(scope.orderType);
 
-          gaPreviewFeatures.clear(scope.map);
+          gaPreviewFeatures.remove(scope.map, previewFeat);
+          previewFeat = null;
 
           if (!scope.clipperFeatures[scope.orderType] && clipper) {
             var layers = [
@@ -121,7 +131,7 @@ goog.require('ga_price_filter');
               var results = response.data.results;
               if (results.length) {
                 scope.clipperFeatures[scope.orderType] = results[0];
-                scope.highlight();
+                scope.addPreview();
                 scope.updatePrice();
               } else {
                 scope.price = null;
@@ -131,16 +141,17 @@ goog.require('ga_price_filter');
             });
           } else {
             if (clipper) {
-              scope.highlight();
+              scope.addPreview();
             }
 
             scope.updatePrice();
           }
         };
-        scope.highlight = function() {
+
+        scope.addPreview = function() {
           var gFeat = scope.clipperFeatures[scope.orderType];
-          var feat = geojson.readFeature(gFeat);
-          gaPreviewFeatures.add(scope.map, feat);
+          previewFeat = geojson.readFeature(gFeat);
+          gaPreviewFeatures.add(scope.map, previewFeat);
         };
 
         scope.updatePrice = function(geometry, cutArea) {
@@ -172,10 +183,12 @@ goog.require('ga_price_filter');
           scope.onChangeOrderType(scope.orderType);
         }
 
-        // Reset order type if another shop directive has changed one
+        // Reset order type if another shop directive has activated the
+        // rectangle.
         scope.$on('gaShopOrderTypeChange', function(evt, shopScope) {
-          if (shopScope !== scope && scope.orderTypes.length > 1) {
-            scope.orderType = '';
+          if (shopScope !== scope && scope.orderTypes.length > 1 &&
+              scope.orderType == 'rectangle') {
+            scope.onChangeOrderType(scope.orderTypes[0], true);
           }
         });
       }

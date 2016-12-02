@@ -68,21 +68,21 @@ describe('ga_identify_service', function() {
         };
 
         it('if parameters are not defined', function(done) {
-          gaIdentify.get().catch (function(msg) {
+          gaIdentify.get().catch(function(msg) {
             expectErr(msg, done);
           });
           $rootScope.$digest();
         });
 
         it('if map parameter is not defined', function(done) {
-          gaIdentify.get(null, map.getLayers().getArray(), point).catch (function(msg) {
+          gaIdentify.get(null, map.getLayers().getArray(), point).catch(function(msg) {
             expectErr(msg, done);
           });
           $rootScope.$digest();
         });
 
         it('if layers arr parameter is not defined', function(done) {
-          gaIdentify.get(map, null, point).catch (function(msg) {
+          gaIdentify.get(map, null, point).catch(function(msg) {
             expectErr(msg, done);
           });
           $rootScope.$digest();

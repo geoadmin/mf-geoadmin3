@@ -49,7 +49,7 @@ describe('ga_previewfeatures_service', function() {
       $httpBackend.verifyNoOutstandingRequest();
     });
 
-    describe('add', function() {
+    describe('#add()', function() {
 
       beforeEach(function() {
         var feat = new ol.Feature();
@@ -113,7 +113,39 @@ describe('ga_previewfeatures_service', function() {
       });
     });
 
-    describe('addBodFeatures', function() {
+    describe('#remove()', function() {
+
+      beforeEach(function() {
+        gaPreviewFeatures.clear(map);
+      });
+
+      it('does nothing if the feature is udnefined', function(done) {
+        gaPreviewFeatures.remove(map);
+        done();
+      });
+
+      it('does nothing if the feature does not exist in the source', function(done) {
+        gaPreviewFeatures.remove(map, new ol.Feature());
+        done();
+      });
+
+      it('removes the feature', function() {
+        var feat = new ol.Feature();
+        feat.setId('test');
+        feat.set('layerId', 'somelayer');
+        gaPreviewFeatures.add(map, feat);
+        gaPreviewFeatures.add(map, new ol.Feature());
+        var feats = map.getLayers().item(0).getSource().getFeatures();
+        expect(feats.length).to.be(2);
+        expect(feats[0].getId()).to.be('test');
+        gaPreviewFeatures.remove(map, feat);
+        feats = map.getLayers().item(0).getSource().getFeatures();
+        expect(feats.length).to.be(1);
+        expect(feats[0].getId()).not.to.be('test');
+      });
+    });
+
+    describe('#addBodFeatures()', function() {
 
       it('clear the preview features first', function() {
         var spy = sinon.spy(gaPreviewFeatures, 'clear');
@@ -157,7 +189,7 @@ describe('ga_previewfeatures_service', function() {
       });
     });
 
-    describe('clear', function() {
+    describe('#clear()', function() {
 
       beforeEach(function() {
         var feat = new ol.Feature();
@@ -186,7 +218,7 @@ describe('ga_previewfeatures_service', function() {
       });
     });
 
-    describe('highlight/clearHighlight', function() {
+    describe('#highlight()/#clearHighlight()', function() {
 
       beforeEach(function() {
         var feat = new ol.Feature();
@@ -209,7 +241,7 @@ describe('ga_previewfeatures_service', function() {
       });
     });
 
-    describe('zoom', function() {
+    describe('#zoom()', function() {
       var gaMapUtilsMock, ol3d = {};
 
       beforeEach(function() {

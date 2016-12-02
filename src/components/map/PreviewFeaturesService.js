@@ -97,6 +97,29 @@ goog.require('ga_styles_service');
           updateLayer(map);
         };
 
+        // Remove a feature.
+        this.remove = function(map, feature) {
+          if (!feature) {
+            return;
+          }
+          var found = false;
+          var feats = source.getFeatures();
+          for (var i = 0, ii = feats.length; i < ii; i++) {
+            if (feature === feats[i]) {
+              found = true;
+            }
+            if (found) {
+              break;
+            }
+          }
+          if (!found) {
+            return;
+          }
+          source.removeFeature(feature);
+          updateLayer(map);
+        };
+
+
         // Add features from an array<layerBodId,array<featureIds>>.
         // Param onNextClear is a function to call on the next execution of
         // clear function.

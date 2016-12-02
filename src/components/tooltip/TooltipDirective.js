@@ -680,7 +680,11 @@ goog.require('ga_topic_service');
                           attr('id');
                       if (/#/.test(containerId)) {
                         var split = containerId.split('#');
-                        var feat = featuresByLayerId[split[0]][split[1]];
+                        var featByLayer = featuresByLayerId[split[0]];
+                        if (!featByLayer) {
+                          return;
+                        }
+                        var feat = featByLayer[split[1]];
                         if (feat.getGeometry()) {
                           target.addClass('ga-active');
                           gaPreviewFeatures.highlight(map, feat);
