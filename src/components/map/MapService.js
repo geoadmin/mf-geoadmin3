@@ -1069,7 +1069,7 @@ goog.require('ga_urlutils_service');
    */
   module.provider('gaMapUtils', function() {
     this.$get = function($window, gaGlobalOptions, gaUrlUtils, $q,
-        gaDefinePropertiesForLayer, $http) {
+        gaDefinePropertiesForLayer, $http, $rootScope) {
       var resolutions = gaGlobalOptions.resolutions;
       var lodsForRes = gaGlobalOptions.lods;
       var isExtentEmpty = function(extent) {
@@ -1172,7 +1172,7 @@ goog.require('ga_urlutils_service');
           return layer;
         },
 
-        flyToAnimation: function(ol3d, center, extent, defer) {
+        flyToAnimation: function(ol3d, center, extent) {
           var dest;
           var scene = ol3d.getCesiumScene();
 
@@ -1182,12 +1182,13 @@ goog.require('ga_urlutils_service');
             center = ol.extent.getCenter(extent);
           }
 
-          $http.get(gaGlobalOptions.apiUrl + '/rest/services/height', {
+          return $http.get(gaGlobalOptions.apiUrl + '/rest/services/height', {
             params: {
               easting: center[0],
               northing: center[1]
             }
           }).then(function(response) {
+            var defer = $q.defer();
             var pitch = 50; // In degrees
             // Default camera field of view
             // https://cesiumjs.org/Cesium/Build/Documentation/Camera.html
@@ -1214,57 +1215,59 @@ goog.require('ga_urlutils_service');
               orientation: {
                 pitch: Cesium.Math.toRadians(-pitch)
               },
-              complete: defer.resolve,
-              cancel: defer.resolve
+              complete: function() {
+                defer.resolve();
+                $rootScope.$digest();
+              },
+              cancel: function() {
+                defer.resolve();
+                $rootScope.$digest();
+              }
             });
+            return defer.promise;
           });
         },
 
         moveTo: function(map, ol3d, zoom, center) {
-          var defer = $q.defer();
           if (ol3d && ol3d.getEnabled()) {
-            this.flyToAnimation(ol3d, center, null, defer);
+            return this.flyToAnimation(ol3d, center, null);
           } else {
             var view = map.getView();
             view.setZoom(zoom);
             view.setCenter(center);
-            defer.resolve();
+            return $q.when();
           }
-          return defer.promise;
         },
 
         zoomToExtent: function(map, ol3d, extent) {
-          var defer = $q.defer();
           if (ol3d && ol3d.getEnabled()) {
-            this.flyToAnimation(ol3d, null, extent, defer);
+            return this.flyToAnimation(ol3d, null, extent);
           } else {
             map.getView().fit(extent, map.getSize());
-            defer.resolve();
+            return $q.when();
           }
-          return defer.promise;
         },
 
         // This function differs from moveTo because it adds panning effect in
         // 2d
         panTo: function(map, ol3d, dest) {
-          var defer = $q.defer();
           if (ol3d && ol3d.getEnabled()) {
             return this.moveTo(null, ol3d, null, dest);
           } else {
-            var source = map.getView().getCenter();
+            var defer = $q.defer();
+            var view = map.getView();
+            var source = view.getCenter();
             var dist = Math.sqrt(Math.pow(source[0] - dest[0], 2),
                 Math.pow(source[1] - dest[1], 2));
             var duration = Math.min(Math.sqrt(300 + dist /
-                map.getView().getResolution() * 1000), 3000);
-            var start = +new Date();
-            var pan = ol.animation.pan({
-              duration: duration,
-              source: map.getView().getCenter(),
-              start: start
+                view.getResolution() * 1000), 3000);
+            view.animate({
+              center: dest,
+              duration: 0
+            }, function(success) {
+              defer.resolve();
+              $rootScope.$digest();
             });
-            map.beforeRender(pan);
-            map.getView().setCenter(dest);
-            defer.resolve();
           }
           return defer.promise;
         },
@@ -1272,10 +1275,11 @@ goog.require('ga_urlutils_service');
         // This function differs from zoomToExtent because it adds flying effect
         // in 2d
         flyTo: function(map, ol3d, dest, extent) {
-          var defer = $q.defer();
           if (ol3d && ol3d.getEnabled()) {
             return this.zoomToExtent(null, ol3d, extent);
           } else {
+            var deferPan = $q.defer();
+            var deferZoom = $q.defer();
             var size = map.getSize();
             var source = map.getView().getCenter();
             var sourceRes = map.getView().getResolution();
@@ -1288,30 +1292,23 @@ goog.require('ga_urlutils_service');
               (extent[3] - extent[1]) / size[1]);
             destRes = Math.max(map.getView().constrainResolution(destRes, 0, 0),
                 2.5);
-            var start = +new Date();
-            var pan = ol.animation.pan({
-              duration: duration,
-              source: source,
-              start: start
+            var view = map.getView();
+            view.animate({
+              center: dest,
+              duration: duration
+            }, function() {
+              deferPan.resolve();
+              $rootScope.$digest();
             });
-            var bounce = ol.animation.bounce({
-              duration: duration,
-              resolution: Math.max(sourceRes, dist / 1000,
-                  // needed to don't have up an down and up again in zoom
-                  destRes * 1.2),
-              start: start
+            view.animate({
+              resolution: destRes,
+              duration: duration
+            }, function(success) {
+              deferZoom.resolve();
+              $rootScope.$digest();
             });
-            var zoom = ol.animation.zoom({
-              resolution: sourceRes,
-              duration: duration,
-              start: start
-            });
-            map.beforeRender(pan, zoom, bounce);
-            map.getView().setCenter(dest);
-            map.getView().setResolution(destRes);
-            defer.resolve();
+            return $q.all([deferPan.promise, deferZoom.promise]);
           }
-          return defer.promise;
         },
 
         // Test if a layer is a KML layer added by the ImportKML tool or
@@ -1378,34 +1375,34 @@ goog.require('ga_urlutils_service');
          * Reset map rotation to North
          */
         resetMapToNorth: function(map, ol3d) {
-          var currentRotation, scene;
+          var defer = $q.defer();
           if (ol3d && ol3d.getEnabled()) {
-            scene = ol3d.getCesiumScene();
-            currentRotation = -scene.camera.heading;
-          } else {
-            currentRotation = map.getView().getRotation();
-          }
-          while (currentRotation < -Math.PI) {
-            currentRotation += 2 * Math.PI;
-          }
-          while (currentRotation > Math.PI) {
-            currentRotation -= 2 * Math.PI;
-          }
+            var scene = ol3d.getCesiumScene();
+            var currentRotation = -scene.camera.heading;
 
-          if (scene) {
+            while (currentRotation < -Math.PI) {
+              currentRotation += 2 * Math.PI;
+            }
+
+            while (currentRotation > Math.PI) {
+              currentRotation -= 2 * Math.PI;
+            }
             var bottom = olcs.core.pickBottomPoint(scene);
             if (bottom) {
               olcs.core.setHeadingUsingBottomCenter(scene, currentRotation,
                   bottom);
             }
+            defer.resolve();
           } else {
-            map.beforeRender(ol.animation.rotate({
-              rotation: currentRotation,
-              duration: 1000,
+            map.getView().animate({
+              rotation: 0,
               easing: ol.easing.easeOut
-            }));
-            map.getView().setRotation(0);
+            }, function() {
+              defer.resolve();
+              $rootScope.$digest();
+            });
           }
+          return defer.promise;
         },
 
         intersectWithDefaultExtent: function(extent) {
