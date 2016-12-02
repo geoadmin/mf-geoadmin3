@@ -192,7 +192,7 @@ describe('ga_shop_service', function() {
       });
 
       it('returns a promise', function(done) {
-        gaShop.getPrice().catch (function() {
+        gaShop.getPrice().catch(function() {
           done();
         });
         $rootScope.$digest();
