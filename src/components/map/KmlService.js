@@ -71,9 +71,9 @@ goog.require('ga_urlutils_service');
         );
 
         // Replace all old maki urls image by the color service url
-        // Test regex here: https://regex101.com/r/rF2tA1/3
+        // Test regex here: https://regex101.com/r/rF2tA1/4
         kml = kml.replace(
-          /<href>https?:\/\/[a-z\d\.\-]*(bgdi|geo.admin)\.ch[a-zA-Z\d\-_\/]*img\/maki\/([a-z\-]*-24@2x\.png)/g,
+          /<href>https?:\/\/[a-z\d\.\-]*(bgdi|geo.admin)\.ch[a-zA-Z\d\-_\/]*img\/maki\/([a-z\-0-9]*-24@2x\.png)/g,
           '<href>' + gaGlobalOptions.apiUrl + '/color/255,0,0/$2'
         );
 

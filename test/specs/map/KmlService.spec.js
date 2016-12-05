@@ -419,7 +419,8 @@ describe('ga_kml_service', function() {
           'http://map.geo.admin.ch/aaa/aA4-aA4_aA61470313709/img/maki/marker-24@2x.png',
           'http://mf-geoadmin3.dev.bgdi.ch/aaa/aA4-aA4_aA6/img/maki/marker-24@2x.png',
           'https://map.geo.admin.ch/1470313709/img/maki/marker-24@2x.png',
-          'https://mf-geoadmin3.int.bgdi.ch/aaa/aA4-aA4_aA6/img/maki/marker-24@2x.png'
+          'https://mf-geoadmin3.int.bgdi.ch/aaa/aA4-aA4_aA6/img/maki/marker-24@2x.png',
+          'https://mf-geoadmin3.int.bgdi.ch/aaa/aA4-aA4_aA6/img/maki/marker2-24@2x.png'
         ];
         var kml = '<kml>';
         hrefs.forEach(function(href) {
