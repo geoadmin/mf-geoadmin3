@@ -695,7 +695,7 @@ describe('ga_kml_service', function() {
           style = feat.getStyleFunction().call(feat)[0];
           expect(style.getImage()).to.be.an(ol.style.Icon);
           expect(style.getImage().getSrc()).to.eql('https://api3.geo.admin.ch/ogcproxy?url=http://voila.fr/ki.pmg');
-          expect(style.getImage().getScale()).to.eql(0.8366600265340756);
+          expect(style.getImage().getScale()).to.eql(0.7);
           expect(style.getImage().getRotateWithView()).to.eql(false);
           expect(style.getImage().getAnchor()).to.eql(null);
           expect(style.getImage().getOpacity()).to.eql(1);
@@ -704,7 +704,7 @@ describe('ga_kml_service', function() {
           /// Test if the style is well cloned
           feat = olLayer.getSource().getFeatures()[2];
           style = feat.getStyleFunction().call(feat)[0];
-          expect(style.getImage().getScale()).to.eql(0.8366600265340756);
+          expect(style.getImage().getScale()).to.eql(0.7);
           done();
         });
         $rootScope.$digest();
@@ -837,7 +837,7 @@ describe('ga_kml_service', function() {
             expect(text.getText()).to.be('Point');
             expect(text.getFill().getColor()).to.eql([18, 17, 16, 0.4980392156862745]);
             expect(text.getStroke().getColor()).to.eql([255, 255, 255, 1]);
-            expect(text.getScale()).to.be(0.8366600265340756);
+            expect(text.getScale()).to.be(0.7);
             style = feats[2].getStyleFunction().call(feats[0])[0];
             text = style.getText();
             expect(text).to.be(null);

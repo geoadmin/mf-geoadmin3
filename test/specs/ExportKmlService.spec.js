@@ -38,7 +38,7 @@ describe('ga_exportkml_service', function() {
       '<description>featWithDescr</description>' +
       '<Style>' +
         '<IconStyle>' +
-          '<scale>4</scale>' +
+          '<scale>2</scale>' +
           '<Icon>' +
             '<href>http://featWithImg.png</href>' +
           '</Icon>' +
