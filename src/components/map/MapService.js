@@ -1109,16 +1109,15 @@ goog.require('ga_urlutils_service');
           return layer;
         },
 
-        flyToAnimation: function(ol3d, center, destination, defer) {
-          // In degrees
-          var pitch = 50;
-          // Default camera field of view
-          // https://cesiumjs.org/Cesium/Build/Documentation/Camera.html
-          var cameraFieldOfView = 60;
+        flyToAnimation: function(ol3d, center, extent, defer) {
+          var dest;
           var scene = ol3d.getCesiumScene();
-          var globe = scene.globe;
-          var carto = globe.ellipsoid.cartesianToCartographic(destination);
-          var camera = scene.camera;
+
+          if (extent) {
+            var rect = this.extentToRectangle(extent);
+            dest = scene.camera.getRectangleCameraCoordinates(rect);
+            center = ol.extent.getCenter(extent);
+          }
 
           $http.get(gaGlobalOptions.apiUrl + '/rest/services/height', {
             params: {
@@ -1126,14 +1125,29 @@ goog.require('ga_urlutils_service');
               northing: center[1]
             }
           }).then(function(response) {
-            var height = carto.height - response.data.height;
+            var pitch = 50; // In degrees
+            // Default camera field of view
+            // https://cesiumjs.org/Cesium/Build/Documentation/Camera.html
+            var cameraFieldOfView = 60;
+
+            if (!dest) {
+              pitch = 45; // In degrees
+              var projection = ol3d.getOlMap().getView().getProjection();
+              var deg = ol.proj.transform(center, projection, 'EPSG:4326');
+              dest = Cesium.Cartesian3.fromDegrees(deg[0], deg[1],
+                  parseFloat(response.data.height));
+            }
+
+            var carto = scene.globe.ellipsoid.cartesianToCartographic(dest);
+            var height = carto.height;
             var magnitude = Math.tan(
                 Cesium.Math.toRadians(pitch + cameraFieldOfView / 2)) * height;
             // Approx. direction on x and y (only valid for Swiss extent)
-            destination.x += (7 / 8) * magnitude;
-            destination.y += (1 / 8) * magnitude;
-            camera.flyTo({
-              destination: destination,
+            dest.x += (7 / 8) * magnitude;
+            dest.y += (1 / 8) * magnitude;
+
+            scene.camera.flyTo({
+              destination: dest,
               orientation: {
                 pitch: Cesium.Math.toRadians(-pitch)
               },
@@ -1146,11 +1160,7 @@ goog.require('ga_urlutils_service');
         moveTo: function(map, ol3d, zoom, center) {
           var defer = $q.defer();
           if (ol3d && ol3d.getEnabled()) {
-            var projection = ol3d.getOlMap().getView().getProjection();
-            var deg = ol.proj.transform(center, projection, 'EPSG:4326');
-            var destination = Cesium.Cartesian3.fromDegrees(
-                deg[0], deg[1], 3000);
-            this.flyToAnimation(ol3d, center, destination, defer);
+            this.flyToAnimation(ol3d, center, null, defer);
           } else {
             var view = map.getView();
             view.setZoom(zoom);
@@ -1163,11 +1173,7 @@ goog.require('ga_urlutils_service');
         zoomToExtent: function(map, ol3d, extent) {
           var defer = $q.defer();
           if (ol3d && ol3d.getEnabled()) {
-            var camera = ol3d.getCesiumScene().camera;
-            var rectangle = this.extentToRectangle(extent);
-            var destination = camera.getRectangleCameraCoordinates(rectangle);
-            var center = ol.extent.getCenter(extent);
-            this.flyToAnimation(ol3d, center, destination, defer);
+            this.flyToAnimation(ol3d, null, extent, defer);
           } else {
             map.getView().fit(extent, map.getSize());
             defer.resolve();
