@@ -24,7 +24,7 @@ goog.require('ga_translation_service');
       var priceUrl = gaGlobalOptions.shopUrl +
           '/shop-server/resources/products/price?';
       var clipper = {
-        'tile': 'ch.swisstopo.images-swissimage.metadata',
+        'tile': 'ch.swisstopo.swissimage-product',
         'commune': 'ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill',
         'district': 'ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill',
         'canton': 'ch.swisstopo.swissboundaries3d-kanton-flaeche.fill'
