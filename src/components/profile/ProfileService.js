@@ -417,12 +417,12 @@ goog.require('ga_urlutils_service');
           // http://fortawesome.github.io/Font-Awesome/3.2.1/cheatsheet/
           var g1 = group.append('g')
               .attr('class', 'ga-profile-elevation-difference');
-          g1.append('title');
+         g1.append('title');
           g1.append('text')
-              .attr('class', 'ga-profile-icon')
-              .attr('x', 0)
-              .attr('y', elevLabelY)
-              .attr('text-anchor', 'start')
+             .attr('class', 'ga-profile-icon')
+             .attr('x', 0)
+             .attr('y', elevLabelY)
+             .attr('text-anchor', 'start')
               .text(' \uf218 ');
           g1.append('text')
               .attr('class', 'ga-profile-icon-text')
@@ -431,17 +431,17 @@ goog.require('ga_urlutils_service');
               .attr('y', elevLabelY)
               .style('text-anchor', 'start')
               .text(measureFilter(this.diff,
-                    'distance', 'm', 2, true));
+                    'distance', 'm', 2, true));  
 
           var g2 = group.append('g')
               .attr('class', 'ga-profile-elevation-up');
           g2.append('title');
           g2.append('text')
-              .attr('class', 'ga-profile-icon-updown')
-              .attr('x', 80)
-              .attr('y', elevLabelY + 4)
-              .attr('text-anchor', 'start')
-              .text(' \uf213 ');
+             .attr('class', 'ga-profile-icon-updown')
+             .attr('x', 80)
+             .attr('y', elevLabelY + 4)
+             .attr('text-anchor', 'start')
+             .text(' \uf213 ');
           g2.append('text')
               .attr('class', 'ga-profile-icon-text')
               .attr('font-size', '0.9em')

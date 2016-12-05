@@ -6,7 +6,49 @@
     {{coordinates[1] | measure:'distance':[' m']}}
   </div>
   <div class="ga-profile-tooltip-arrow"></div>
+  </div>
+  <div class="ga-profile-elevation-difference" title="{{'profile_elevation_difference' | translate}}">
+     <div class="fa fa-resize-vertical">
+  </div>
+     <div class="ga-profile-icon-text">{{diff()| measure:'distance':['m']}}</div>
+  </div>
+  <div class="ga-profile-elevation-up" title="{{'profile_elevation_up' | translate}}">
+     <div class="fa fa-ga-elevation-up">
+  </div>
+     <div class="ga-profile-icon-text"> {{twoDiff()[0]| measure:'distance':['m']}}</div>
+ </div>
+  <div class="ga-profile-elevation-down" title="{{'profile_elevation_down' | translate}}">
+    <div class="fa fa-ga-elevation-down">
+  </div>
+     <div class="ga-profile-icon-text"> {{twoDiff()[1]| measure:'distance':['m']}}</div>
 </div>
+  <div class="ga-profile-poi-up" title="{{'profile_poi_up' | translate}}">
+    <div class="fa fa-chevron-up">
+  </div>
+     <div class="ga-profile-icon-text">{{elPoi()[0]| measure:'distance':['m']}}</div>
+</div>
+  <div class="ga-profile-poi-down" title="{{'profile_poi_down' | translate}}">
+    <div class="fa fa-chevron-down">
+  </div>
+     <div class="ga-profile-icon-text">{{elPoi()[1]| measure:'distance':['m']}}</div>
+</div>
+  <div class="ga-profile-distance" title="{{'profile_distance' | translate}}">
+    <div class="fa fa-eye">
+  </div>
+    <div class="fa fa-resize-horizontal"> </div>
+     <div class="ga-profile-icon-text"> {{dist()| measure:'distance':['km']}}</div>
+</div>
+  <div class="ga-profile-slopeDist" title="{{'profile_slope_distance' | translate}}">
+    <div class="fa fa-resize-horizontal">
+  </div>
+     <div class="ga-profile-icon-text"> {{slopeDist()| measure:'distance':['km']}}</div>
+</div>
+  <div class="ga-profile-hikTime" title="{{'profile_hike_time' | translate}}">
+    <div class="fa fa-clock-o">
+  </div>
+      <div class="ga-profile-icon-text">{{hikTime()| measure:'':['']}}</div>
+</div>
+
 <button  class="btn btn-default fa fa-trash"
          ng-if="layer"
          ng-click="deleteSelectedFeature(layer, feature)"></button>
