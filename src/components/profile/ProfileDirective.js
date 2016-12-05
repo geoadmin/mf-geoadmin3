@@ -10,7 +10,7 @@ goog.require('ga_profile_service');
   ]);
 
   module.directive('gaProfile', function($rootScope, $compile, $window,
-      $translate, gaDebounce, gaProfile, gaMapUtils, gaStyleFactory) {
+      $translate, gaDebounce, gaProfile, gaMapUtils, gaStyleFactory, gaTimeFormatFilter) {
     return {
       restrict: 'A',
       templateUrl: 'components/profile/partials/profile.html',
@@ -26,7 +26,44 @@ goog.require('ga_profile_service');
         var tooltipEl = element.find('.ga-profile-tooltip');
         scope.coordinates = [0, 0];
         scope.unitX = '';
+        scope.diff = function() {
+           if (profile) {
+             return profile.elevDiff();
+           } 
+        };
+        
+ 
+        scope.twoDiff = function() {
+           if (profile) {
+             return profile.twoElevDiff();
+           } 
+        };
+        
 
+        scope.elPoi = function() {
+           if (profile) {
+             return profile.elPoints();
+           }
+        };
+
+        scope.dist = function() {
+           if (profile) {
+             return profile.distance();
+           }
+        };
+
+        scope.slopeDist = function() {
+           if (profile) {
+             return profile.slopeDistance();
+           }
+        };
+
+        scope.hikTime = function() {
+           if (profile) {
+             return gaTimeFormatFilter(profile.hikingTime());
+           }
+        };
+ 
         var onCreate = function(newProfile) {
           profile = newProfile;
           var profileEl = angular.element(
@@ -38,17 +75,18 @@ goog.require('ga_profile_service');
           if (previousProfileEl.length > 0) {
             previousProfileEl.replaceWith(profileEl);
           } else {
-            element.append(profileEl);
+            element.prepend(profileEl);
           }
           var areaChartPath = $window.d3.select('.ga-profile-area');
           attachPathListeners(areaChartPath);
         };
-
+         
         var update = function(feature) {
           gaProfile.update(profile, feature).then(function(prof) {
             scope.unitX = prof.unitX;
           });
         };
+
         var updateDebounced = gaDebounce.debounce(update, 1000, false,
             false);
 
