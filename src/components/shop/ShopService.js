@@ -24,7 +24,7 @@ goog.require('ga_translation_service');
       var priceUrl = gaGlobalOptions.shopUrl +
           '/shop-server/resources/products/price?';
       var clipper = {
-        'tile': 'ch.swisstopo.swissimage-product',
+        'tile': 'ch.swisstopo.images-swissimage.metadata',
         'commune': 'ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill',
         'district': 'ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill',
         'canton': 'ch.swisstopo.swissboundaries3d-kanton-flaeche.fill'
@@ -40,6 +40,10 @@ goog.require('ga_translation_service');
             'ch.swisstopo.pixelkarte-pk200.metadata'
         //,'ch.swisstopo.digitales-hoehenmodell_25_reliefschattierung': '
       };
+      var tileLayer = {
+        'ch.swisstopo.images-swissimage.metadata':
+            'ch.swisstopo.swissimage-product'
+      };
       // Super exception for mapsheet but with featureid
       var useFeatureId = [
         'ch.swisstopo.lubis-bildstreifen',
@@ -47,10 +51,17 @@ goog.require('ga_translation_service');
         'ch.swisstopo.lubis-luftbilder_infrarot',
         'ch.swisstopo.lubis-luftbilder_farbe'
       ];
+
       var getParams = function(orderType, layerBodId, featureId, geometry) {
         var params = {
           layer: layerBodId
         };
+        // When one provide the same id to the dispatcher for the clipper and
+        // the layer, the shop assumes the whole dataset is requested.
+        // Therefore, we map the perimeter to a different layer.
+        if (tileLayer[layerBodId]) {
+          params.layer = tileLayer[layerBodId];
+        }
 
         if (orderType == 'mapsheet') {
           if (mapsheetClipper[layerBodId]) {
