@@ -77,7 +77,7 @@ describe('ga_storage_service', function() {
         var arg = spy.firstCall.args[0];
         expect(arg.name).to.be('map.geo.admin.ch');
         expect(arg.storeName).to.be('ga');
-        expect(arg.size).to.be(52428800);
+        expect(arg.size).to.be(52377600);
         expect(arg.version).to.be('1.0');
         expect(arg.description).to.be('Storage for map.geo.admin.ch');
         spy.restore();
