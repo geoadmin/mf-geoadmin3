@@ -119,6 +119,7 @@ goog.require('ga_price_filter');
               gaShop.getMapsheetClipperFromBodId(layerBodId) :
               gaShop.getClipperFromOrderType(scope.orderType);
 
+          gaPreviewFeatures.clearHighlight(scope.map);
           gaPreviewFeatures.remove(scope.map, previewFeat);
           previewFeat = null;
 
