@@ -27,7 +27,7 @@ goog.require('ga_translation_service');
       // When one provide the same id to the dispatcher for the clipper and
       // the layer, the shop assumes the whole dataset is requested.
       // Therefore, we map the perimeter to a different layer.
-      var tileLayer = {
+      var tileLayers = {
         'ch.swisstopo.images-swissimage.metadata':
             'ch.swisstopo.swissimage-product',
         'ch.swisstopo.pixelkarte-pk25.metadata':
@@ -40,7 +40,6 @@ goog.require('ga_translation_service');
             'ch.swisstopo.pixelkarte-farbe-pk200.noscale'
       };
       var clipper = {
-        'tile': tileLayer,
         'commune': 'ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill',
         'district': 'ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill',
         'canton': 'ch.swisstopo.swissboundaries3d-kanton-flaeche.fill'
@@ -53,7 +52,7 @@ goog.require('ga_translation_service');
         'ch.swisstopo.lubis-luftbilder_farbe'
       ];
 
-      var stringIfyParams = function(params) {
+      var stringifyParams = function(params) {
         var paramsStr = '';
         for (var i in params) {
            paramsStr += i + '=' + params[i] + '&';
@@ -62,40 +61,30 @@ goog.require('ga_translation_service');
       };
 
       var getParams = function(orderType, layerBodId, featureId, geometry) {
+        var tileLayer = tileLayers[layerBodId];
         var params = {
-          layer: layerBodId
+          layer: tileLayer || layerBodId
         };
-
-		// Paper maps
+        if (tileLayer) {
+          clipper.tile = layerBodId;
+        }
+        // Paper maps
         if (orderType == 'mapsheet') {
           if (useFeatureId.indexOf(layerBodId) != -1) {
             params.featureid = featureId;
           } else {
             params.product = featureId;
           }
-        // All digital products use-cases below
-        } else if (layerBodId in tileLayer) {
-          if (geometry) {
-            params.geometry = geometry;
-          } else {
-            params.clipper = ['tile', 'whole'].indexOf(orderType) != -1 ? layerBodId :
-                clipper[orderType];
-          }
-          params.layer = tileLayer[layerBodId];
-          if (orderType == 'whole') {
-            return stringIfyParams(params);
-          }
-          params.featureid = featureId;
         } else if (clipper[orderType]) {
           params.clipper = clipper[orderType];
           params.featureid = featureId;
         } else if (orderType == 'whole') {
-          params.clipper = layerBodId;
+          params.clipper = params.layer;
         } else if (geometry) {
           params.geometry = geometry;
         }
 
-        return stringIfyParams(params);
+        return stringifyParams(params);
       };
 
       var Shop = function() {
@@ -165,10 +154,11 @@ goog.require('ga_translation_service');
         };
 
         this.getClipperFromOrderType = function(orderType, layerBodId) {
-          var clipperOrder = clipper[orderType];
-          clipperOrder = typeof(clipperOrder) === 'string' ? clipperOrder :
-              layerBodId;
-          return clipperOrder;
+          var tileLayer = tileLayers[layerBodId];
+          if (tileLayer) {
+            clipper.tile = layerBodId;
+          }
+          return clipper[orderType];
         };
       };
       return new Shop();

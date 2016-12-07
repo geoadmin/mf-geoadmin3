@@ -109,18 +109,18 @@ goog.require('ga_price_filter');
 
         scope.onChangeOrderType = function(orderType, silent) {
           scope.orderType = orderType;
+          scope.price = null;
 
           if (!silent) {
             // Warn all shop directives that the ordertyope has changed.
             $rootScope.$broadcast('gaShopOrderTypeChange', scope);
           }
           // We try to find the correct clipper to use
-          var clipper = gaShop.getClipperFromOrderType(scope.orderType, layerBodId);
-
+          var clipper = gaShop.getClipperFromOrderType(scope.orderType,
+              layerBodId);
           gaPreviewFeatures.clearHighlight(scope.map);
           gaPreviewFeatures.remove(scope.map, previewFeat);
           previewFeat = null;
-
           if (!scope.clipperFeatures[scope.orderType] && clipper) {
             var layers = [
               gaLayers.getOlLayerById(clipper)
@@ -132,17 +132,12 @@ goog.require('ga_price_filter');
                 scope.clipperFeatures[scope.orderType] = results[0];
                 scope.addPreview();
                 scope.updatePrice();
-              } else {
-                scope.price = null;
               }
-            }, function() {
-              scope.price = null;
             });
           } else {
             if (clipper) {
               scope.addPreview();
             }
-
             scope.updatePrice();
           }
         };
@@ -163,7 +158,6 @@ goog.require('ga_price_filter');
           }
           if ((scope.orderType == 'rectangle' && geometry && cutArea) ||
               (scope.orderType != 'rectangle' && !geometry)) {
-
             gaShop.getPrice(scope.orderType, layerBodId,
                 getFeatureIdToRequest(), geometry).then(function(price) {
               scope.price = price;
