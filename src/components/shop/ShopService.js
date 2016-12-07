@@ -53,21 +53,38 @@ goog.require('ga_translation_service');
         'ch.swisstopo.lubis-luftbilder_farbe'
       ];
 
+      var stringIfyParams = function(params) {
+        var paramsStr = '';
+        for (var i in params) {
+           paramsStr += i + '=' + params[i] + '&';
+        }
+        return paramsStr.substring(0, paramsStr.length - 1);
+      };
+
       var getParams = function(orderType, layerBodId, featureId, geometry) {
         var params = {
           layer: layerBodId
         };
 
+		// Paper maps
         if (orderType == 'mapsheet') {
           if (useFeatureId.indexOf(layerBodId) != -1) {
             params.featureid = featureId;
           } else {
             params.product = featureId;
           }
+        // All digital products use-cases below
         } else if (layerBodId in tileLayer) {
+          if (geometry) {
+            params.geometry = geometry;
+          } else {
+            params.clipper = ['tile', 'whole'].indexOf(orderType) != -1 ? layerBodId :
+                clipper[orderType];
+          }
           params.layer = tileLayer[layerBodId];
-          params.clipper = orderType == 'tile' ? layerBodId :
-              clipper[orderType];
+          if (orderType == 'whole') {
+            return stringIfyParams(params);
+          }
           params.featureid = featureId;
         } else if (clipper[orderType]) {
           params.clipper = clipper[orderType];
@@ -78,11 +95,7 @@ goog.require('ga_translation_service');
           params.geometry = geometry;
         }
 
-        var paramsStr = '';
-        for (var i in params) {
-           paramsStr += i + '=' + params[i] + '&';
-        }
-        return paramsStr.substring(0, paramsStr.length - 1);
+        return stringIfyParams(params);
       };
 
       var Shop = function() {
