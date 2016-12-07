@@ -23,26 +23,27 @@ goog.require('ga_translation_service');
           '/rest/services/all/GeometryServer/cut?';
       var priceUrl = gaGlobalOptions.shopUrl +
           '/shop-server/resources/products/price?';
+
+      // When one provide the same id to the dispatcher for the clipper and
+      // the layer, the shop assumes the whole dataset is requested.
+      // Therefore, we map the perimeter to a different layer.
+      var tileLayer = {
+        'ch.swisstopo.images-swissimage.metadata':
+            'ch.swisstopo.swissimage-product',
+        'ch.swisstopo.pixelkarte-pk25.metadata':
+            'ch.swisstopo.pixelkarte-farbe-pk25.noscale',
+        'ch.swisstopo.pixelkarte-pk50.metadata':
+            'ch.swisstopo.pixelkarte-farbe-pk50.noscale',
+        'ch.swisstopo.pixelkarte-pk100.metadata':
+            'ch.swisstopo.pixelkarte-farbe-pk100.noscale',
+        'ch.swisstopo.pixelkarte-pk200.metadata':
+            'ch.swisstopo.pixelkarte-farbe-pk200.noscale'
+      };
       var clipper = {
-        'tile': 'ch.swisstopo.images-swissimage.metadata',
+        'tile': tileLayer,
         'commune': 'ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill',
         'district': 'ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill',
         'canton': 'ch.swisstopo.swissboundaries3d-kanton-flaeche.fill'
-      };
-      var mapsheetClipper = {
-        'ch.swisstopo.pixelkarte-farbe-pk25.noscale':
-            'ch.swisstopo.pixelkarte-pk25.metadata',
-        'ch.swisstopo.pixelkarte-farbe-pk50.noscale':
-            'ch.swisstopo.pixelkarte-pk50.metadata',
-        'ch.swisstopo.pixelkarte-farbe-pk100.noscale':
-            'ch.swisstopo.pixelkarte-pk100.metadata',
-        'ch.swisstopo.pixelkarte-farbe-pk200.noscale':
-            'ch.swisstopo.pixelkarte-pk200.metadata'
-        //,'ch.swisstopo.digitales-hoehenmodell_25_reliefschattierung': '
-      };
-      var tileLayer = {
-        'ch.swisstopo.images-swissimage.metadata':
-            'ch.swisstopo.swissimage-product'
       };
       // Super exception for mapsheet but with featureid
       var useFeatureId = [
@@ -56,22 +57,18 @@ goog.require('ga_translation_service');
         var params = {
           layer: layerBodId
         };
-        // When one provide the same id to the dispatcher for the clipper and
-        // the layer, the shop assumes the whole dataset is requested.
-        // Therefore, we map the perimeter to a different layer.
-        if (tileLayer[layerBodId]) {
-          params.layer = tileLayer[layerBodId];
-        }
 
         if (orderType == 'mapsheet') {
-          if (mapsheetClipper[layerBodId]) {
-            params.clipper = mapsheetClipper[layerBodId];
-          }
           if (useFeatureId.indexOf(layerBodId) != -1) {
             params.featureid = featureId;
           } else {
             params.product = featureId;
           }
+        } else if (layerBodId in tileLayer) {
+          params.layer = tileLayer[layerBodId];
+          params.clipper = orderType == 'tile' ? layerBodId :
+              clipper[orderType];
+          params.featureid = featureId;
         } else if (clipper[orderType]) {
           params.clipper = clipper[orderType];
           params.featureid = featureId;
@@ -154,12 +151,11 @@ goog.require('ga_translation_service');
           });
         };
 
-        this.getClipperFromOrderType = function(orderType) {
-          return clipper[orderType];
-        };
-
-        this.getMapsheetClipperFromBodId = function(layerBodId) {
-          return mapsheetClipper[layerBodId];
+        this.getClipperFromOrderType = function(orderType, layerBodId) {
+          var clipperOrder = clipper[orderType];
+          clipperOrder = typeof(clipperOrder) === 'string' ? clipperOrder :
+              layerBodId;
+          return clipperOrder;
         };
       };
       return new Shop();

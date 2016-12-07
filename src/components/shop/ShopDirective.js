@@ -115,9 +115,7 @@ goog.require('ga_price_filter');
             $rootScope.$broadcast('gaShopOrderTypeChange', scope);
           }
           // We try to find the correct clipper to use
-          var clipper = (orderType == 'mapsheet') ?
-              gaShop.getMapsheetClipperFromBodId(layerBodId) :
-              gaShop.getClipperFromOrderType(scope.orderType);
+          var clipper = gaShop.getClipperFromOrderType(scope.orderType, layerBodId);
 
           gaPreviewFeatures.clearHighlight(scope.map);
           gaPreviewFeatures.remove(scope.map, previewFeat);
