@@ -379,7 +379,7 @@
 "swisstopo_service_link_label": "Federal Office of Topography swisstopo",
 "test_host_warning": "TESTSITE – DO NOT-SHARE -  NOT FOR OPERATIONAL USE<br/>This site is for testing purposes only. It's not meant for operational use and there's no guarantee whatsoever.",
 "text_to_display": "Link description",
-"tile": "Tile",
+"tile": "Sheet",
 "time_all": "All",
 "time_bt_disabled_tooltip": "The representation of data time stamps needs historized data. Please add a historized dataset in order to use this function.",
 "time_bt_enabled_tooltip": "Enable and disable representation of data time stamps.",
