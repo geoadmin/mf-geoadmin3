@@ -379,7 +379,7 @@
 "swisstopo_service_link_label": "Ufficio federale di topografia swisstopo ",
 "test_host_warning": "TESTSITE – DO NOT-SHARE -  NOT FOR OPERATIONAL USE<br/>This site is for testing purposes only. It's not meant for operational use and there's no guarantee whatsoever.",
 "text_to_display": "Descrizione del link",
-"tile": "Tile",
+"tile": "Foglio",
 "time_all": "Tutti",
 "time_bt_disabled_tooltip": "La visualizzazione storica dei dati è possibile solo con i layer storicizzati. Aggiungere un layer storicizzato per utilizzare questa funzione",
 "time_bt_enabled_tooltip": "Questa funzione permette di attivare/disattivare la visualizzazione storica dei dati",

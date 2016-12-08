@@ -379,7 +379,7 @@
 "swisstopo_service_link_label": "Office fédéral de topographie swisstopo",
 "test_host_warning": "TESTSITE – DO NOT-SHARE -  NOT FOR OPERATIONAL USE<br/>This site is for testing purposes only. It's not meant for operational use and there's no guarantee whatsoever.",
 "text_to_display": "Description du lien",
-"tile": "Tuile",
+"tile": "Feuille",
 "time_all": "Tout",
 "time_bt_disabled_tooltip": "La représentation de données historiques n'est possible qu'avec les couches historisées. Veuillez d'abord ajouter une couche historisée sur la carte.",
 "time_bt_enabled_tooltip": "Cette fonction permet d'activer ou désactiver l'outil de représentation historique des données.",
