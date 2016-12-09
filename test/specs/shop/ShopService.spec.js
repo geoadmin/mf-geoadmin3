@@ -300,12 +300,13 @@ describe('ga_shop_service', function() {
       });
 
       it('send a good cut url', function(done) {
-        $httpBackend.expectGET(url + cutParams).respond(200, {
-          'ch.swisstopo.pixelkarte-farbe-pk25.noscale': [{
-            area: '120'
-          }]
-        });
-        gaShop.cut('1,3,2,1').then(function(area) {
+        var layerBodId = 'ch.swisstopo.pixelkarte-farbe-pk25.noscale';
+        var response = {};
+        response[layerBodId] = [{
+          area: '120'
+        }];
+        $httpBackend.expectGET(url + cutParams).respond(200, response);
+        gaShop.cut('1,3,2,1', layerBodId).then(function(area) {
           expect(area).to.eql(120);
           done();
         });
