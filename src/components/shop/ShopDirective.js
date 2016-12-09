@@ -42,6 +42,8 @@ goog.require('ga_price_filter');
 
         var layerBodId = (scope.feature instanceof ol.Feature) ?
             scope.feature.get('layerId') : scope.feature.layerBodId;
+        // For rectangle directive
+        scope.layerBodId = layerBodId;
 
         var layerConfig = gaLayers.getLayer(layerBodId);
 
@@ -95,7 +97,7 @@ goog.require('ga_price_filter');
           return str += ')';
         };
 
-        // {mapsheet,commune,district,canton,rectangle,whole}
+        // {tile,commune,district,canton,rectangle,whole}
         // commune: ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill
         // district: ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill
         // canton: ch.swisstopo.swissboundaries3d-kanton-flaeche.fill

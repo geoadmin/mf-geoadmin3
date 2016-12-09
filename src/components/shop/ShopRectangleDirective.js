@@ -19,6 +19,7 @@ goog.require('ga_measure_filter');
       scope: {
         map: '=gaShopRectangleMap',
         isActive: '=gaShopRectangleActive',
+        layerBodId: '=gaShopRectangleLayerBodId',
         updatePrice: '=gaShopRectangleUpdatePrice'
       },
       link: function(scope, elt, attrs, controller) {
@@ -92,7 +93,7 @@ goog.require('ga_measure_filter');
             false, true);
         var updatePriceDebounced = gaDebounce.debounce(function(extent) {
           // Get the area from the cut service
-          gaShop.cut(extent.toString()).then(function(area) {
+          gaShop.cut(extent.toString(), scope.layerBodId).then(function(area) {
             scope.updatePrice(extent.toString(), area);
             scope.area = area * 1000 * 1000;
           }, function() {

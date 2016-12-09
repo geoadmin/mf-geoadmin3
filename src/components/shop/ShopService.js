@@ -134,13 +134,18 @@ goog.require('ga_translation_service');
           });
         };
 
-        this.cut = function(geometry) {
+        this.cut = function(geometry, layerBodId) {
+          var layer;
           if (!geometry) {
             var defer = $q.defer();
             defer.reject();
             return defer.promise;
           }
-          var layer = 'ch.swisstopo.pixelkarte-farbe-pk25.noscale';
+          if (layerBodId in tileLayers) {
+            layer = tileLayers[layerBodId];
+          } else if (layerBodId) {
+            layer = layerBodId;
+          }
           var url = cutUrl + 'layers=all:' + layer +
               '&geometryType=esriGeometryEnvelope&geometry=' + geometry;
           return $http.get(url, {
