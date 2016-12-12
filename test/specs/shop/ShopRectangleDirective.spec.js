@@ -67,7 +67,9 @@ describe('ga_shoprectangle_directive', function() {
     });
 
     it('activates/deactivates the interaction', function() {
-      expect(scope.map.getLayers().getArray().length).to.be(1);
+      // The layer is a feature overlay so it is not added to the map's layers
+      // collection.
+      expect(scope.map.getLayers().getArray().length).to.be(0);
       expect(scope.map.getInteractions().getArray().length).to.be(1);
       expect(scope.map.getInteractions().item(0)).to.be(scope.dragBox);
       expect(scope.dragBox.getActive()).to.be(true);
