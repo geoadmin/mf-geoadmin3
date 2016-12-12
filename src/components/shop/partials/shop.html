@@ -1,21 +1,21 @@
 <div class="ga-shop-not-available" ng-if="::notAvailable" translate>shop_not_available</div>
 <div class="ga-shop-available" ng-show="::!notAvailable">
-  <label><span translate>shop_choose</span>:</label>
-  <select ng-if="::!(orderTypes.length == 1 && orderType == 'mapsheet')"
-          ng-model="orderType"
-          ng-options="((label | translate) + '' + getClipperFeatureLabel(label)) for label in orderTypes"
-          ng-change="onChangeOrderType(orderType)"
-          class="form-control">
-  </select>
+  <div ng-if="::!(orderTypes.length == 1 && orderType == 'mapsheet')">
+    <label><span translate>shop_choose</span>:</label>
+    <select ng-model="orderType"
+            ng-options="((label | translate) + '' + getClipperFeatureLabel(label)) for label in orderTypes"
+            ng-change="onChangeOrderType(orderType)"
+            class="form-control">
+    </select>
 
-  <div ng-show="orderType == 'rectangle'"
-       ga-shop-rectangle
-       ga-shop-rectangle-map="map"
-       ga-shop-rectangle-active="orderType == 'rectangle'"
-       ga-shop-rectangle-layer-bod-id="layerBodId"
-       ga-shop-rectangle-update-price="updatePrice">
+    <div ng-show="orderType == 'rectangle'"
+         ga-shop-rectangle
+         ga-shop-rectangle-map="map"
+         ga-shop-rectangle-active="orderType == 'rectangle'"
+         ga-shop-rectangle-layer-bod-id="layerBodId"
+         ga-shop-rectangle-update-price="updatePrice">
+    </div>
   </div>
-
   <button class="btn btn-default ga-order-bt"
           ng-click="order()"
           ng-disabled="!orderType || !price">
