@@ -44,7 +44,7 @@ goog.require('ga_measure_filter');
         });
 
         var activate = function() {
-          map.addLayer(layer);
+          layer.setMap(map);
           map.addInteraction(scope.dragBox);
           scope.dragBox.setActive(true);
           // Reload price.
@@ -53,7 +53,7 @@ goog.require('ga_measure_filter');
 
         var deactivate = function() {
           map.removeInteraction(scope.dragBox);
-          map.removeLayer(layer);
+          layer.setMap(null);
         };
 
         scope.$watch('isActive', function(isActive) {
