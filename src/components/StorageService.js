@@ -66,10 +66,14 @@ goog.require('ga_browsersniffer_service');
         this.init = function() {
           if (!isInitialized && $window.localforage &&
               gaBrowserSniffer.mobile) {
+            // iOS 10 manages indexedDB but localforage has a wrong detection.
+            // iOS 10 doesn't accept a webSQL db of 50MB exactly, that's why
+            // 1023 instead of 1024 is specified in size parameter. To remove
+            // when localforage will support indexedDB for iOS 10.
             $window.localforage.config({
               name: 'map.geo.admin.ch',
               storeName: 'ga',
-              size: 50 * 1024 * 1024, // Only use by webSQL
+              size: 50 * 1024 * 1023,
               version: (gaBrowserSniffer.msie) ? 1 : '1.0',
               description: 'Storage for map.geo.admin.ch'
             });
@@ -78,7 +82,7 @@ goog.require('ga_browsersniffer_service');
             // Exceptions:
             // Android default browser -> websql
             // iOS Chrome, Opera -> websql
-            // iOS 7 Safari -> websql
+            // iOS Safari -> websql
             isInitialized = true;
           }
         };

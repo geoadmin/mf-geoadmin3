@@ -138,7 +138,7 @@ goog.require('ga_styles_service');
             if (percentCached <= 95) { // Download failed
               $rootScope.$broadcast('gaOfflineError');
               $window.alert($translate.instant('offline_less_than_95'));
-
+              $window.console.log(errorReport);
             } else { // Download succeed
               gaStorage.setItem(extentKey, extent);
               $rootScope.$broadcast('gaOfflineSuccess', progress);
@@ -183,9 +183,12 @@ goog.require('ga_styles_service');
                   return;
                 }
                 if (err) {
-                  if (err.code == err.QUOTA_ERR) {
+                  // err.QUOTQ_ERR for websql
+                  // DOMException.QUOTA_EXCEEDED_ERR for localstorage
+                  if (err.code == err.QUOTA_ERR ||
+                        err.code == DOMException.QUOTA_EXCEEDED_ERR) {
                     isStorageFull = true;
-                    alert($translate.instant('offline_space_warning'));
+                    $window.alert($translate.instant('offline_space_warning'));
                     nbTilesFailed = nbTilesTotal - nbTilesCached;
                     onDlProgress();
                   } else {
