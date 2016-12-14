@@ -34,6 +34,7 @@ describe('ga_exportkml_service', function() {
 
     // KML Placemark node string
     var plkFeatWithProps = '<Placemark id="featWithId">' +
+      '<ExtendedData><Data name="customProp"><value>featWithCustomProp</value></Data></ExtendedData>' +
       '<name>featureWithText</name>' +
       '<description>featWithDescr</description>' +
       '<Style>' +
