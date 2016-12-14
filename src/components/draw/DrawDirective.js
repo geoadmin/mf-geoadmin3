@@ -789,12 +789,11 @@ goog.require('ga_styles_service');
                 newVertexFeat = feature;
                 hoverNewVertex = true;
               }
-            },
-            this,
-            function(itemLayer) {
-              return layerFilter(itemLayer) ||
-                  (itemLayer.getStyle &&
-                  itemLayer.getStyle() == scope.options.selectStyleFunction);
+            }, {
+              layerFilter: function(itemLayer) {
+                return layerFilter(itemLayer) || (itemLayer.getStyle &&
+                    itemLayer.getStyle() == scope.options.selectStyleFunction);
+              }
             }
           );
           if (selectableFeat) {
