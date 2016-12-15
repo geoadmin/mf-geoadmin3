@@ -14,14 +14,14 @@ fi
 
 pwd=$(pwd)
 DEPLOY_TARGET=$2
-NEW_VERSION=$3
 RC_FILE=rc_$DEPLOY_TARGET
 SNAPSHOTDIR=/var/www/vhosts/mf-geoadmin3/private/snapshots/$1
 
 # Prepare snapshot
 cd $SNAPSHOTDIR/geoadmin/code/geoadmin
-if [ "$NEW_VERSION" = "true" ]; then
+if [ "$KEEP_VERSION" = "false" ]; then
   make .build-artefacts/last-version
+  export KEEP_VERSION='true'
 fi
 
 
