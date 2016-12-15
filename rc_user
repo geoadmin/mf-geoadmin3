@@ -1,10 +1,8 @@
 source rc_dev
 export KEEP_VERSION=false
 export USER_NAME=$(whoami)
-export API_URL=//mf-chsdi3.dev.bgdi.ch
 export APACHE_BASE_PATH=/$USER_NAME
 export E2E_TARGETURL=https://mf-geoadmin3.dev.bgdi.ch/$USER_NAME
-export PRINT_URL=//service-print.dev.bgdi.ch/$USER_NAME
 if [ -f rc_user_$USER_NAME ]; then
   echo 'Sourcing:'
   echo rc_user_$USER_NAME
