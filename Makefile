@@ -38,7 +38,7 @@ DEPLOY_TARGET ?= dev
 LESS_PARAMETERS ?= -ru
 KEEP_VERSION ?= 'false'
 LAST_VERSION := $(shell if [ -f .build-artefacts/last-version ]; then cat .build-artefacts/last-version 2> /dev/null; else echo '-none-'; fi)
-VERSION := $(shell if [ '$(KEEP_VERSION)' = 'true' ] && [ '$(LAST_VERSION)' != '-none-' ]; then echo $(LAST_VERSION); else date '+%y%m%d%H%M'; fi)
+VERSION := $(shell if [ '$(KEEP_VERSION)' = 'true' ] && [ '$(LAST_VERSION)' != '-none-' ]; then echo '$(LAST_VERSION)'; else date '+%y%m%d%H%M'; fi)
 GIT_BRANCH := $(shell if [ -f .build-artefacts/deployed-git-branch ]; then cat .build-artefacts/deployed-git-branch 2> /dev/null; else git rev-parse --symbolic-full-name --abbrev-ref HEAD; fi)
 GIT_LAST_BRANCH := $(shell if [ -f .build-artefacts/last-git-branch ]; then cat .build-artefacts/last-git-branch 2> /dev/null; else echo 'dummy'; fi)
 BRANCH_TO_DELETE ?=
@@ -77,7 +77,6 @@ S3_BASE_PATH ?=
 S3_SRC_BASE_PATH ?=
 CLONEDIR = /home/$(USER_NAME)/tmp/branches/${DEPLOY_GIT_BRANCH}
 DEEP_CLEAN ?= "false"
-NEW_VERSION ?= "false"
 NAMED_BRANCH ?= "true"
 
 ## Python interpreter can't have space in path name
@@ -228,11 +227,11 @@ deploydev:
 
 .PHONY: s3deployint
 s3deployint: guard-SNAPSHOT guard-S3_MF_GEOADMIN3_INT .build-artefacts/requirements.timestamp
-	./scripts/deploysnapshot.sh $(SNAPSHOT) int $(NEW_VERSION);
+	./scripts/deploysnapshot.sh $(SNAPSHOT) int;
 
 .PHONY: s3deployprod
 s3deployprod: guard-SNAPSHOT guard-S3_MF_GEOADMIN3_PROD .build-artefacts/requirements.timestamp
-	./scripts/deploysnapshot.sh $(SNAPSHOT) prod $(NEW_VERSION);
+	./scripts/deploysnapshot.sh $(SNAPSHOT) prod;
 
 .PHONY: s3deploybranch
 s3deploybranch: guard-S3_MF_GEOADMIN3_INT \

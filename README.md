@@ -190,9 +190,9 @@ will create a snapshot and output a snapshot version. (uses Apache)
     make s3deployint SNAPSHOT=123456 (a snapshot version)
 
 
-Use the NEW_VERSION option to generate a new version
+Use the KEEP_VERSION option to generate a new version
 
-    make s3deployint SNAPSHOT=123456 NEW_VERSION=true
+     make s3deployint SNAPSHOT=123456 KEEP_VERSION=false
 
 will deploy the snapshot to AWS S3 in the int bucket. It will output a S3 URL.
 Take the version and use the following command to activate the version.
