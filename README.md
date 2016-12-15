@@ -3,7 +3,7 @@ mf-geoadmin3
 
 next generation map.geo.admin.ch
 
-Jenkins build status: [![Jenkins Build Status](https://jenkins.ci.bgdi.ch/buildStatus/icon?job=geoadmin3)](https://jenkins.prod.bgdi.ch/job/geoadmin3/)
+Jenkins build status: [![Jenkins Build Status](https://jenkins.ci.bgdi.ch/buildStatus/icon?job=MAIN_geoadmin3)](https://jenkins.ci.bgdi.ch/job/MAIN_geoadmin3/)
 
 # Getting started
 
@@ -38,8 +38,8 @@ should source the corresponding `rc` file.
 
 On mf0t, create an Apache configuration file for your environment. Ex:
 
-    $ cat /var/www/vhosts/mf-geoadmin3/conf/00-elemoine.conf
-    Include /home/elemoine/mf-geoadmin3/apache/*.conf
+    $ cat /var/www/vhosts/mf-geoadmin3/conf/ltxxx.conf
+    Include /home/ltxxx/mf-geoadmin3/apache/*.conf
 
 ## Dependencies
 
