@@ -568,7 +568,7 @@ goog.require('ga_urlutils_service');
                 'ch.swisstopo.swissnames3d.3d'
               ];
               var tilesetTs = [
-                '20161121',
+                '20161218',
                 '20160909'
               ];
 
