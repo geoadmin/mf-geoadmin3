@@ -9,8 +9,8 @@ LAST_APACHE_BASE_DIRECTORY := $(shell if [ -f .build-artefacts/last-apache-base-
 APACHE_BASE_PATH ?= /$(shell id -un)
 LAST_APACHE_BASE_PATH := $(shell if [ -f .build-artefacts/last-apache-base-path ]; then cat .build-artefacts/last-apache-base-path 2> /dev/null; else echo '-none-'; fi)
 
-TECH_SUFFIX = .bgdi.ch
 VARNISH_HOSTS ?= (ip-10-220-4-250.eu-west-1.compute.internal)
+TECH_SUFFIX = .bgdi.ch
 API_URL ?= //api3.geo.admin.ch
 API_TECH_URL ?= //mf-chsdi3.
 LAST_API_URL := $(shell if [ -f .build-artefacts/last-api-url ]; then cat .build-artefacts/last-api-url 2> /dev/null; else echo '-none-'; fi)
@@ -29,6 +29,7 @@ LAST_PUBLIC_URL := $(shell if [ -f .build-artefacts/last-public-url ];  then cat
 PRINT_URL ?= //print.geo.admin.ch
 PRINT_TECH_URL ?= //service-print.
 LAST_PRINT_URL := $(shell if [ -f .build-artefacts/last-print-url ]; then cat .build-artefacts/last-print-url 2> /dev/null; else echo '-none-'; fi)
+
 PUBLIC_URL_REGEXP ?= ^https?:\/\/public\..*\.(bgdi|admin)\.ch\/.*
 ADMIN_URL_REGEXP ?= ^(ftp|http|https):\/\/(.*(\.bgdi|\.geo\.admin)\.ch)
 E2E_TARGETURL ?= https://mf-geoadmin3.dev.bgdi.ch
@@ -489,6 +490,7 @@ prd/index.html: src/index.mako.html \
 	    .build-artefacts/last-shop-url \
 	    .build-artefacts/last-wms-url \
 	    .build-artefacts/last-public-url \
+	    .build-artefacts/last-print-url \
 	    .build-artefacts/last-apache-base-path \
 	    .build-artefacts/last-version
 	mkdir -p $(dir $@)
@@ -503,6 +505,7 @@ prd/mobile.html: src/index.mako.html \
 	    .build-artefacts/last-shop-url \
 	    .build-artefacts/last-wms-url \
 	    .build-artefacts/last-public-url \
+	    .build-artefacts/last-print-url \
 	    .build-artefacts/last-apache-base-path \
 	    .build-artefacts/last-version
 	mkdir -p $(dir $@)
@@ -517,6 +520,7 @@ prd/embed.html: src/index.mako.html \
 	    .build-artefacts/last-shop-url \
 	    .build-artefacts/last-wms-url \
 	    .build-artefacts/last-public-url \
+	    .build-artefacts/last-print-url \
 	    .build-artefacts/last-apache-base-path \
 	    .build-artefacts/last-version
 	mkdir -p $(dir $@)
@@ -556,6 +560,7 @@ src/index.html: src/index.mako.html \
 	    .build-artefacts/last-shop-url \
 	    .build-artefacts/last-wms-url \
 	    .build-artefacts/last-public-url \
+	    .build-artefacts/last-print-url \
 	    .build-artefacts/last-apache-base-path
 	$(call buildpage,desktop,,,,$(S3_SRC_BASE_PATH))
 
@@ -566,6 +571,7 @@ src/mobile.html: src/index.mako.html \
 	    .build-artefacts/last-shop-url \
 	    .build-artefacts/last-wms-url \
 	    .build-artefacts/last-public-url \
+	    .build-artefacts/last-print-url \
 	    .build-artefacts/last-apache-base-path
 	$(call buildpage,mobile,,,,$(S3_SRC_BASE_PATH))
 
@@ -576,6 +582,7 @@ src/embed.html: src/index.mako.html \
 	    .build-artefacts/last-shop-url \
 	    .build-artefacts/last-wms-url \
 	    .build-artefacts/last-public-url \
+	    .build-artefacts/last-print-url \
 	    .build-artefacts/last-apache-base-path
 	$(call buildpage,embed,,,,$(S3_SRC_BASE_PATH))
 
@@ -717,6 +724,10 @@ ${PYTHON_VENV}:
 .build-artefacts/last-public-url::
 	mkdir -p $(dir $@)
 	test "$(PUBLIC_URL)" != "$(LAST_PUBLIC_URL)" && echo $(PUBLIC_URL) > .build-artefacts/last-public-url || :
+
+.build-artefacts/last-print-url::
+	mkdir -p $(dir $@)
+	test "$(PRINT_URL)" != "$(LAST_PRINT_URL)" && echo $(PRINT_URL) > .build-artefacts/last-print-url || :
 
 .build-artefacts/last-apache-base-path::
 	mkdir -p $(dir $@)
