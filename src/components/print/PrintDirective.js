@@ -243,12 +243,14 @@ goog.require('ga_time_service');
         },
         'WMS': function(layer, config) {
           var enc = $scope.encoders.layers['Layer'].call(this, layer);
-          var params = layer.getSource().getParams();
+          var source = layer.getSource();
+          var params = source.getParams();
           var layers = params.LAYERS.split(',') || [];
           var styles = (params.STYLES !== undefined) ?
               params.STYLES.split(',') :
               new Array(layers.length).join(',').split(',');
-          var url = config.wmsUrl || layer.url;
+          var url = (source.getUrls && source.getUrls()[0]) ||
+              (source.getUrl && source.getUrl());
 
           angular.extend(enc, {
             type: 'WMS',
