@@ -490,6 +490,7 @@ prd/index.html: src/index.mako.html \
 	    .build-artefacts/last-shop-url \
 	    .build-artefacts/last-wms-url \
 	    .build-artefacts/last-public-url \
+	    .build-artefacts/last-print-url \
 	    .build-artefacts/last-apache-base-path \
 	    .build-artefacts/last-version
 	mkdir -p $(dir $@)
@@ -504,6 +505,7 @@ prd/mobile.html: src/index.mako.html \
 	    .build-artefacts/last-shop-url \
 	    .build-artefacts/last-wms-url \
 	    .build-artefacts/last-public-url \
+	    .build-artefacts/last-print-url \
 	    .build-artefacts/last-apache-base-path \
 	    .build-artefacts/last-version
 	mkdir -p $(dir $@)
@@ -518,6 +520,7 @@ prd/embed.html: src/index.mako.html \
 	    .build-artefacts/last-shop-url \
 	    .build-artefacts/last-wms-url \
 	    .build-artefacts/last-public-url \
+	    .build-artefacts/last-print-url \
 	    .build-artefacts/last-apache-base-path \
 	    .build-artefacts/last-version
 	mkdir -p $(dir $@)
@@ -557,6 +560,7 @@ src/index.html: src/index.mako.html \
 	    .build-artefacts/last-shop-url \
 	    .build-artefacts/last-wms-url \
 	    .build-artefacts/last-public-url \
+	    .build-artefacts/last-print-url \
 	    .build-artefacts/last-apache-base-path
 	$(call buildpage,desktop,,,,$(S3_SRC_BASE_PATH))
 
@@ -567,6 +571,7 @@ src/mobile.html: src/index.mako.html \
 	    .build-artefacts/last-shop-url \
 	    .build-artefacts/last-wms-url \
 	    .build-artefacts/last-public-url \
+	    .build-artefacts/last-print-url \
 	    .build-artefacts/last-apache-base-path
 	$(call buildpage,mobile,,,,$(S3_SRC_BASE_PATH))
 
@@ -577,6 +582,7 @@ src/embed.html: src/index.mako.html \
 	    .build-artefacts/last-shop-url \
 	    .build-artefacts/last-wms-url \
 	    .build-artefacts/last-public-url \
+	    .build-artefacts/last-print-url \
 	    .build-artefacts/last-apache-base-path
 	$(call buildpage,embed,,,,$(S3_SRC_BASE_PATH))
 
@@ -718,6 +724,10 @@ ${PYTHON_VENV}:
 .build-artefacts/last-public-url::
 	mkdir -p $(dir $@)
 	test "$(PUBLIC_URL)" != "$(LAST_PUBLIC_URL)" && echo $(PUBLIC_URL) > .build-artefacts/last-public-url || :
+
+.build-artefacts/last-print-url::
+	mkdir -p $(dir $@)
+	test "$(PRINT_URL)" != "$(LAST_PRINT_URL)" && echo $(PRINT_URL) > .build-artefacts/last-print-url || :
 
 .build-artefacts/last-apache-base-path::
 	mkdir -p $(dir $@)
