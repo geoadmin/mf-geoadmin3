@@ -35,6 +35,13 @@ describe('ga_measure_service', function() {
       it('returns formatted 3D coordinates', function() {
         expect(gaMeasure.formatCoordinates([2457749.999996144, 1056249.999834365, 451.423])).to.eql("2'457'750, 1'056'250, 451.4");
       });
+
+      it('returns correct precision', function() {
+        expect(gaMeasure.formatCoordinates([2457749.999996144, 1056249.999834365], 0)).to.eql("2'457'750, 1'056'250");
+        expect(gaMeasure.formatCoordinates([2457749.899996144, 1056249.899834365], 1)).to.eql("2'457'749.9, 1'056'249.9");
+        expect(gaMeasure.formatCoordinates([2457749.899996144, 1056249.899834365], 3)).to.eql("2'457'749.900, 1'056'249.900");
+      });
+
     });
 
    describe('#getLength()', function() {

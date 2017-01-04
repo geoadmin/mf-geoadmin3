@@ -43,7 +43,8 @@ goog.require('ga_topic_service');
                'ng-mouseleave="options.onMouseLeave($event)">' +
             '<div ng-bind-html="html.snippet"></div>' +
             '<div ng-if="html.showVectorInfos" class="ga-vector-tools">' +
-              '<div ga-measure="html.feature"></div>' +
+              '<div ga-measure="html.feature" ' +
+                    'ga-coordinate-precision="3"></div>' +
               '<div ng-if="html.showProfile" ' +
                    'ga-profile-bt="html.feature"></div>' +
             '</div>' +

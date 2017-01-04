@@ -13,8 +13,8 @@ goog.require('ga_measure_filter');
       var Measure = function() {
 
         // Transform 2111333 in 2'111'333
-        this.formatCoordinates = function(coordinates) {
-          var raw = ol.coordinate.toStringXY(coordinates, 0);
+        this.formatCoordinates = function(coordinates, prec) {
+          var raw = ol.coordinate.toStringXY(coordinates, prec || 0);
           if (coordinates && coordinates.length === 3) {
             raw += ', ' + coordinates[2].toFixed(1);
           }
