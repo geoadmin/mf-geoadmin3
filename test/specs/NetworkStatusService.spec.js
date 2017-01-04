@@ -92,7 +92,7 @@ describe('ga_networkstatus_service', function() {
   });
 
   describe('gaNetworkStatus', function() {
-    var $document, $rootScope, $window, gaBrowserSniffer, gaGlobalOptions,
+    var $document, $rootScope, $window, gaGlobalOptions,
         gaNetworkStatus, $timeout;
     var mock;
 
@@ -108,7 +108,6 @@ describe('ga_networkstatus_service', function() {
         $document = $injector.get('$document');
         $timeout = $injector.get('$timeout');
         $rootScope = $injector.get('$rootScope');
-        gaBrowserSniffer = $injector.get('gaBrowserSniffer');
         gaNetworkStatus = $injector.get('gaNetworkStatus');
         gaGlobalOptions = $injector.get('gaGlobalOptions');
       });
@@ -116,42 +115,10 @@ describe('ga_networkstatus_service', function() {
       mock = sinon.mock($rootScope);
     };
 
-    describe('is not used on desktop', function() {
-      var spy;
-
-      beforeEach(function() {
-
-        module(function($provide) {
-          $provide.value('gaBrowserSniffer', {
-            mobile: false
-          });
-        });
-        spy = sinon.spy($, 'ajax');
-        injectNs();
-      });
-
-      afterEach(function() {
-        spy.restore();
-      });
-
-      it('does nothing', function() {
-        expect(gaNetworkStatus.offline).to.be(false);
-        expect(gaNetworkStatus.check).to.be.a(Function);
-        gaNetworkStatus.check();
-        expect(spy.callCount).to.be(0);
-      });
-    });
-
     describe('when it\'s online at start', function() {
       var spy, spyAjax;
 
       beforeEach(function() {
-
-        module(function($provide) {
-          $provide.value('gaBrowserSniffer', {
-            mobile: true
-          });
-        });
         spyAjax = sinon.spy($, 'ajax');
         injectNs();
         spy = sinon.spy(gaNetworkStatus, 'check');
@@ -203,9 +170,6 @@ describe('ga_networkstatus_service', function() {
             },
             addEventListener: function() {}
           });
-          $provide.value('gaBrowserSniffer', {
-            mobile: true
-          });
         });
         spyAjax = sinon.spy($, 'ajax');
         injectNs();
@@ -232,9 +196,6 @@ describe('ga_networkstatus_service', function() {
               onLine: false
             },
             addEventListener: function() {}
-          });
-          $provide.value('gaBrowserSniffer', {
-            mobile: true
           });
         });
         spyAjax = sinon.spy($, 'ajax');

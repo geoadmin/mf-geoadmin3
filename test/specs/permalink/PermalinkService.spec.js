@@ -7,6 +7,7 @@ describe('ga_permalink_service', function() {
 
       module(function($provide) {
         replaceStateSpy = sinon.spy();
+        $provide.value('gaNetworkStatus', {});
         $provide.value('gaHistory', {
           replaceState: replaceStateSpy
         });
@@ -17,7 +18,8 @@ describe('ga_permalink_service', function() {
             hostname: 'some-hostname',
             pathname: '/some/path',
             search: '?some=key&value=pairs'
-          }
+          },
+          document: window.document
         });
         $provide.value('$sniffer', {
           history: true

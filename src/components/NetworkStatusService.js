@@ -1,11 +1,9 @@
 goog.provide('ga_networkstatus_service');
 
-goog.require('ga_browsersniffer_service');
 goog.require('ga_waitcursor_service');
 (function() {
 
   var module = angular.module('ga_networkstatus_service', [
-    'ga_browsersniffer_service',
     'ga_waitcursor_service'
   ]);
 
@@ -60,13 +58,8 @@ goog.require('ga_waitcursor_service');
     var count = 0;
     var promise;
     this.$get = function($document, $rootScope, $timeout, $window,
-        gaBrowserSniffer, gaGlobalOptions) {
-      if (!gaBrowserSniffer.mobile) {
-        return {
-          offline: false,
-          check: function() {}
-        };
-      }
+        gaGlobalOptions) {
+
       var NetworkStatusService = function() {
         var that = this;
         this.offline = !$window.navigator.onLine;

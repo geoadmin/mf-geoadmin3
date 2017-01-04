@@ -13,6 +13,7 @@ describe('ga_shopmsg__directive', function() {
   beforeEach(function() {
 
     module(function($provide) {
+      $provide.value('gaNetworkStatus', {});
       $provide.value('gaTopic', {});
       $provide.value('gaLang', {});
       $provide.value('$window', {
