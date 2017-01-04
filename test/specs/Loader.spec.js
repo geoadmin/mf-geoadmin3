@@ -104,6 +104,11 @@ beforeEach(function() {
         gaGlobalOptions.apiUrl + '/rest/services/profile.json';
   });
 
+  module(function(gaUrlUtilsProvider, gaGlobalOptions) {
+    gaUrlUtilsProvider.shortenUrl =
+        gaGlobalOptions.apiUrl + '/shorten.json';
+  });
+
   module(function(gaQueryProvider, gaGlobalOptions) {
     gaQueryProvider.dpUrl = gaGlobalOptions.resourceUrl +
         'lib/bootstrap-datetimepicker.min.js';

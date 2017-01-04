@@ -895,6 +895,11 @@ itemscope itemtype="http://schema.org/WebApplication"
               gaGlobalOptions.apiUrl + '/rest/services/profile.json';
         });
 
+        module.config(function(gaUrlUtilsProvider, gaGlobalOptions) {
+          gaUrlUtilsProvider.shortenUrl =
+              gaGlobalOptions.apiUrl + '/shorten.json';
+        });
+
         module.config(function(gaQueryProvider, gaGlobalOptions) {
           gaQueryProvider.dpUrl = gaGlobalOptions.resourceUrl +
               'lib/bootstrap-datetimepicker.min.js';
