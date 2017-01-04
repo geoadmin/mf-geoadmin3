@@ -14,7 +14,6 @@ goog.provide('ga_print_controller');
             encodeURIComponent(printPath),
         legendUrl: gaGlobalOptions.apiUrl + '/static/images/legends/',
         qrcodeUrl: gaGlobalOptions.apiUrl + '/qrcodegenerator?url=',
-        shortenUrl: gaGlobalOptions.apiUrl + '/shorten.json',
         markerUrl: gaGlobalOptions.resourceUrl + 'img/marker.png',
         bubbleUrl: gaGlobalOptions.resourceUrl + 'img/bubble.png',
         heightMargin: $('#header').height(),

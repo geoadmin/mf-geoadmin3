@@ -47,8 +47,9 @@ goog.provide('ga_urlutils_service');
           return url;
         };
 
-        this.shorten = function(url) {
+        this.shorten = function(url, timeout) {
           return $http.get(shortenUrl, {
+            timeout: timeout,
             params: {
               url: url
             }
