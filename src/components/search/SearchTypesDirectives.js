@@ -13,11 +13,10 @@ goog.require('ga_urlutils_service');
 
 (function() {
 
-  var originToZoomLevel = {
-    address: 10,
-    parcel: 10,
-    gazetteer: 10
-  };
+  // We can't put strings in zoomlevel attribute of search results. That's
+  // why we put huge numbers to indicate that we want to use the bbox for
+  // zooming instead of the delivered zoomlevel.
+  var ZOOM_LIMIT = 100;
 
   var parseExtent = function(stringBox2D) {
     var extent = stringBox2D.replace(/(BOX\(|\))/gi, '').replace(',', ' ')
@@ -26,7 +25,7 @@ goog.require('ga_urlutils_service');
   };
 
   var addOverlay = function(gaMarkerOverlay, map, res) {
-    var visible = originToZoomLevel.hasOwnProperty(res.attrs.origin);
+    var visible = /^(address|parcel|gazetteer)$/.test(res.attrs.origin);
     var center = [res.attrs.y, res.attrs.x];
     if (!res.attrs.y || !res.attrs.x) {
       center = ol.proj.transform([res.attrs.lon, res.attrs.lat],
@@ -344,10 +343,10 @@ goog.require('ga_urlutils_service');
 
               }
               var ol3d = $scope.ol3d;
-              if (originToZoomLevel.hasOwnProperty(res.attrs.origin) &&
+              if (res.attrs.zoomlevel < ZOOM_LIMIT &&
                   !isGazetteerPoly) {
                 gaMapUtils.moveTo($scope.map, $scope.ol3d,
-                    originToZoomLevel[res.attrs.origin],
+                    res.attrs.zoomlevel,
                     [res.attrs.y, res.attrs.x]);
               } else {
                 gaMapUtils.zoomToExtent($scope.map, $scope.ol3d, e);
