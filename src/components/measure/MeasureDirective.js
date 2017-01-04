@@ -13,7 +13,8 @@ goog.require('ga_measure_service');
       restrict: 'A',
       templateUrl: 'components/measure/partials/measure.html',
       scope: {
-        feature: '=gaMeasure'
+        feature: '=gaMeasure',
+        precision: '=gaCoordinatePrecision'
       },
       link: function(scope, elt) {
         var deregisterKey;
@@ -27,7 +28,7 @@ goog.require('ga_measure_service');
           if (geom instanceof ol.geom.Point) {
             var coord = ol.proj.transform(geom.getCoordinates(),
                 gaGlobalOptions.defaultEpsg, 'EPSG:2056');
-            scope.coord = gaMeasure.formatCoordinates(coord);
+            scope.coord = gaMeasure.formatCoordinates(coord, scope.precision);
           } else {
             scope.distance = gaMeasure.getLength(geom);
             scope.surface = gaMeasure.getArea(geom);
