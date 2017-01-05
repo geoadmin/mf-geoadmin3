@@ -4,6 +4,7 @@ goog.require('ga_attribution_service');
 goog.require('ga_browsersniffer_service');
 goog.require('ga_printstyle_service');
 goog.require('ga_time_service');
+goog.require('ga_urlutils_service');
 
 (function() {
 
@@ -12,13 +13,14 @@ goog.require('ga_time_service');
     'pascalprecht.translate',
     'ga_printstyle_service',
     'ga_time_service',
-    'ga_attribution_service'
+    'ga_attribution_service',
+    'ga_urlutils_service'
   ]);
 
   module.controller('GaPrintDirectiveController', function($rootScope, $scope,
       $http, $q, $window, $translate, $timeout, gaLayers, gaMapUtils, 
       gaPermalink, gaBrowserSniffer, gaWaitCursor, gaPrintStyle,
-      gaTime, gaAttribution) {
+      gaTime, gaAttribution, gaUrlUtils) {
 
     var pdfLegendsToDownload = [];
     var pdfLegendString = '_big.pdf';
@@ -684,17 +686,11 @@ goog.require('ga_time_service');
       // Get the short link
       var shortLink;
       canceller = $q.defer();
-      var promise = $http.get($scope.options.shortenUrl, {
-        timeout: canceller.promise,
-        params: {
-          url: gaPermalink.getHref()
-        }
-      }).success(function(response) {
-        shortLink = response.shorturl.replace('/shorten', '');
-      });
+      gaUrlUtils.shorten(gaPermalink.getHref(), canceller.promise)
+          .then(function(shortUrl) {
+        shortLink = shortUrl.replace('/shorten', '');
 
-      // Build the complete json then send it to the print server
-      promise.then(function() {
+        // Build the complete json then send it to the print server
         if (!$scope.options.printing) {
           return;
         }

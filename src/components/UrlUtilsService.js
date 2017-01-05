@@ -5,9 +5,9 @@ goog.provide('ga_urlutils_service');
 
   module.provider('gaUrlUtils', function() {
 
-    this.$get = function(gaGlobalOptions) {
+    this.$get = function(gaGlobalOptions, $http, $window) {
 
-      var UrlUtils = function() {
+      var UrlUtils = function(shortenUrl) {
 
         // from Angular
         // https://github.com/angular/angular.js/blob/v1.4.8/src/ng/directive/input.js#L15
@@ -45,6 +45,20 @@ goog.provide('ga_urlutils_service');
             return gaGlobalOptions.ogcproxyUrl + encodeURIComponent(url);
           }
           return url;
+        };
+
+        this.shorten = function(url, timeout) {
+          return $http.get(shortenUrl, {
+            timeout: timeout,
+            params: {
+              url: url
+            }
+          }).then(function(response) {
+            return response.data.shorturl;
+          }, function(reason) {
+            $window.console.error(reason);
+            return url;
+          });
         };
 
         // Test if the URL comes from a third party site
@@ -147,7 +161,7 @@ goog.provide('ga_urlutils_service');
         };
       };
 
-      return new UrlUtils();
+      return new UrlUtils(this.shortenUrl);
     };
   });
 

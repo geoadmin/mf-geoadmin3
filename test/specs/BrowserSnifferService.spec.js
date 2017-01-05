@@ -94,6 +94,7 @@ describe('ga_browsersniffer_service', function() {
 
     beforeEach(function() {
       module(function($provide) {
+        $provide.value('gaNetworkStatus', {});
         $provide.value('$window',
           {
             navigator: {
@@ -103,7 +104,8 @@ describe('ga_browsersniffer_service', function() {
               port: '',
               search: '',
               pathname: ''
-            }
+            },
+            document: window.document
           });
       });
       inject(function($injector) {

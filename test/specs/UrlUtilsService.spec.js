@@ -84,6 +84,40 @@ describe('ga_urlutils_service', function() {
       });
     });
 
+    describe('#shorten()', function() {
+      var $rootScope, $httpBackend;
+      var shortenUrl = 'http://api3.geo.admin.ch/shorten.json?url=foo';
+      beforeEach(inject(function($injector) {
+        $httpBackend = $injector.get('$httpBackend');
+        $rootScope = $injector.get('$rootScope');
+      }));
+
+      afterEach(function() {
+        $httpBackend.verifyNoOutstandingExpectation();
+        $httpBackend.verifyNoOutstandingRequest();
+      });
+
+      it('shorten a url successfully', function(done) {
+        $httpBackend.expectGET(shortenUrl).respond({shorturl: 'shortenfoo'});
+        gaUrlUtils.shorten('foo').then(function(url) {
+          expect(url).to.be('shortenfoo');
+          done();
+        });
+        $httpBackend.flush();
+      });
+
+
+      it('handle service error displaying a log an returning the initial url', function(done) {
+        var errorSpy = sinon.stub(window.console, 'error');
+        $httpBackend.expectGET(shortenUrl).respond(501);
+        gaUrlUtils.shorten('foo').then(function(url) {
+          expect(url).to.be('foo');
+          expect(errorSpy.callCount).to.be(1);
+          done();
+        });
+        $httpBackend.flush();
+      });
+    });
     describe('#isThirdPartyValid()', function() {
       it('verifies third party validity', function() {
         expect(gaUrlUtils.isThirdPartyValid('http://public.geo.admin.ch')).to.be(false);

@@ -13,12 +13,12 @@ goog.require('ga_permalink');
    * This modal window can be opened from aanother component broadcasting a
    * gaShareEmbedActive event on the $rootScope.
    */
-  module.directive('gaShareEmbed', function(gaPermalink) {
+  module.directive('gaShareEmbed', function(gaPermalink, $window) {
     return {
       restrict: 'A',
       scope: {},
       templateUrl: 'components/share/partials/share-embed.html',
-      link: function(scope, element, attrs) {
+      link: function(scope, element) {
         var modal = element.find('.modal');
         scope.iframeSizes = [{
           label: 'small_size',
@@ -55,7 +55,7 @@ goog.require('ga_permalink');
           // The name of this window is used in embed.html to makes a
           // difference between the preview window and an embed page
           // not used in an iFrame.
-          previewWindow = window.open(scope.embedValue, 'embed',
+          previewWindow = $window.open(scope.embedValue, 'embed',
               'width=' + scope.iframeWidth +
               ', height=' + scope.iframeHeight);
         });

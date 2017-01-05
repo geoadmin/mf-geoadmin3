@@ -2,16 +2,19 @@ goog.provide('ga_share_directive');
 
 goog.require('ga_browsersniffer_service');
 goog.require('ga_permalink');
+goog.require('ga_urlutils_service');
+
 (function() {
 
   var module = angular.module('ga_share_directive', [
     'ga_browsersniffer_service',
     'ga_permalink',
+    'ga_urlutils_service',
     'pascalprecht.translate'
   ]);
 
   module.directive('gaShare', function($http, $rootScope, $timeout, $translate,
-      $window, gaPermalink, gaBrowserSniffer) {
+      $window, gaPermalink, gaBrowserSniffer, gaUrlUtils) {
     return {
       restrict: 'A',
       scope: {
@@ -21,7 +24,6 @@ goog.require('ga_permalink');
       templateUrl: 'components/share/partials/share.html',
       link: function(scope, element, attrs) {
         var permalinkInput = $('.ga-share-permalink input');
-        var shortenUrl = scope.options.shortenUrl;
 
         scope.qrcodegeneratorPath = scope.options.qrcodegeneratorPath;
         scope.mobile = gaBrowserSniffer.mobile;
@@ -56,12 +58,8 @@ goog.require('ga_permalink');
         scope.shortenUrl = function() {
           scope.encodedDocumentTitle = encodeURIComponent(
               $translate.instant('page_title'));
-          $http.get(shortenUrl, {
-            params: {
-              url: scope.permalinkValue
-            }
-          }).then(function(response) {
-            scope.permalinkValue = response.data.shorturl;
+          gaUrlUtils.shorten(scope.permalinkValue).then(function(shortUrl) {
+            scope.permalinkValue = shortUrl;
             scope.urlShortened = true;
             scope.$applyAsync(function() {
               // Auto-select the shortened permalink (not on mobiles)

@@ -21,18 +21,26 @@ goog.require('ga_urlutils_service');
       restrict: 'A',
       templateUrl: 'components/share/partials/share-draw.html',
       scope: {},
-      link: function(scope, element, attrs, controller) {
+      link: function(scope, element) {
         var modal = element.find('.modal');
 
         scope.$on('gaShareDrawActive', function(evt, layer) {
           if (!layer.adminId) {
             return;
           }
-          var regex = new RegExp(',{0,1}' +
-              gaUrlUtils.encodeUriQuery(layer.id, true));
-          scope.adminShareUrl = gaPermalink.getHref().replace(regex, '') +
-              '&adminId=' + layer.adminId;
-          scope.userShareUrl = gaPermalink.getHref();
+
+          var regex = ',{0,1}' + gaUrlUtils.encodeUriQuery(layer.id, true);
+          var href = gaPermalink.getHref();
+          var adminHref = href.replace(new RegExp(regex), '') + '&adminId=' +
+              layer.adminId;
+
+          gaUrlUtils.shorten(href).then(function(url) {
+            scope.userShareUrl = url;
+          });
+          gaUrlUtils.shorten(adminHref).then(function(url) {
+            scope.adminShareUrl = url;
+          });
+
           modal.modal('show');
         });
       }
