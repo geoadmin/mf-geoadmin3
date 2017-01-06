@@ -22,7 +22,7 @@ goog.require('ga_topic_service');
    * The application's main controller.
    */
   module.controller('GaMainController', function($rootScope, $scope, $timeout,
-      $translate, $window, $document, $q, gaBrowserSniffer, gaHistory,
+      $translate, $window, $document, $q, gaBrowserSniffer, gaHistory, $compile,
       gaPermalinkFeaturesManager, gaPermalinkLayersManager, gaMapUtils,
       gaRealtimeLayersManager, gaNetworkStatus, gaPermalink, gaStorage,
       gaGlobalOptions, gaBackground, gaTime, gaLayers, gaTopic,
@@ -33,24 +33,26 @@ goog.require('ga_topic_service');
       var defaultProjection = ol.proj.get(gaGlobalOptions.defaultEpsg);
       defaultProjection.setExtent(gaGlobalOptions.defaultEpsgExtent);
 
+      var zoomIn = '<span translate-attr="{title: \'zoom_in\'}">' +
+        '<i class="fa fa-ga-circle-bg"></i>' +
+        '<i class="fa fa-ga-circle"></i>' +
+        '<i class="fa fa-ga-zoom-plus"></i>' +
+      '</span>';
+
+      var zoomOut = '<span translate-attr="{title: \'zoom_out\'}">' +
+        '<i class="fa fa-ga-circle-bg"></i>' +
+        '<i class="fa fa-ga-circle"></i>' +
+        '<i class="fa fa-ga-zoom-minus"></i>' +
+      '</span>';
+
       var map = new ol.Map({
         controls: ol.control.defaults({
           attribution: false,
           rotate: false,
           zoomOptions: {
             target: toolbar,
-            zoomInLabel: $('<span>' +
-                           '<i class="fa fa-ga-circle-bg"></i>' +
-                           '<i class="fa fa-ga-circle"></i>' +
-                           '<i class="fa fa-ga-zoom-plus"></i>' +
-                           '</span>')[0],
-            zoomOutLabel: $('<span>' +
-                            '<i class="fa fa-ga-circle-bg"></i>' +
-                            '<i class="fa fa-ga-circle"></i>' +
-                            '<i class="fa fa-ga-zoom-minus"></i>' +
-                            '</span>')[0],
-            zoomInTipLabel: ' ',
-            zoomOutTipLabel: ' '
+            zoomInLabel: $compile(zoomIn)($scope)[0],
+            zoomOutLabel: $compile(zoomOut)($scope)[0],
           }
         }),
         interactions: ol.interaction.defaults({

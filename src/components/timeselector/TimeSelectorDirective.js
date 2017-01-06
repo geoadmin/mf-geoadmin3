@@ -67,21 +67,6 @@ goog.require('ga_time_service');
           }
         };
 
-        // Show/hide tooltip on desktop
-        if (!gaBrowserSniffer.mobile) {
-          elt.mouseenter(function() {
-            elt.tooltip({
-              placement: 'left',
-              container: 'body',
-              title: function() {
-                return $translate.instant('time_bt_enabled_tooltip');
-              }
-            });
-          }).mouseleave = function() {
-            elt.tooltip('hide');
-          };
-        }
-
         // Activate/deactivate automatically the time selector
         scope.$on('gaTimeChange', updateStatus);
 

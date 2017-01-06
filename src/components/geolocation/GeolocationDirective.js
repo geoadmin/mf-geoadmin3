@@ -30,6 +30,7 @@ goog.require('ga_throttle_service');
         }
         var elts = $([bt[0], element[0]]);
         var naClass = 'ga-geolocation-northarrow';
+        var errorMsgId;
         var unRegKey;
         // This object defines if the user has dragged the map.
         var userTakesControl = false;
@@ -98,6 +99,7 @@ goog.require('ga_throttle_service');
         var first = true;
         var currentAccuracy = 0;
         var locate = function() {
+          errorMsgId = undefined;
           var dest = geolocation.getPosition();
           if (dest) {
             if (first) {
@@ -271,6 +273,7 @@ goog.require('ga_throttle_service');
           }
           alert($translate.instant(msgId));
           $window.console.log(error.message);
+          errorMsgId = msgId;
         });
 
         // View events
@@ -328,6 +331,17 @@ goog.require('ga_throttle_service');
             });
           }
         });
+
+        scope.getBtTitle = function() {
+          if (scope.tracking) {
+            if (maxNumStatus == 2 && btnStatus == 1) {
+              return 'geoloc_start_tracking_heading';
+            }
+            return 'geoloc_stop_tracking';
+          }
+
+          return errorMsgId || 'geoloc_start_tracking';
+        };
 
         // Initialize state of the component
         scope.tracking = (gaPermalink.getParams().geolocation == 'true');
