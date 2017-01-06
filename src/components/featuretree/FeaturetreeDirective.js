@@ -50,10 +50,10 @@ goog.require('ga_previewfeatures_service');
               params: {
                 geometryFormat: 'geojson'
               }
-            }).success(function(data) {
-              feature.geojson = data.feature;
+            }).then(function(response) {
+              feature.geojson = response.data.feature;
               deferred.resolve(true);
-            }).error(function() {
+            }, function() {
               deferred.reject(false);
             });
           } else {

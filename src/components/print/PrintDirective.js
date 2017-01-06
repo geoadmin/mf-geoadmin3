@@ -745,7 +745,8 @@ goog.require('ga_urlutils_service');
             canceller = $q.defer();
             var http = $http.get(url, {
                timeout: canceller.promise
-            }).success(function(data) {
+            }).then(function(response) {
+              var data = response.data;
               if (!$scope.options.printing) {
                 return;
               }
@@ -780,7 +781,7 @@ goog.require('ga_urlutils_service');
               } else {
                 $scope.downloadUrl(data.getURL);
               }
-            }).error(function() {
+            }, function() {
               if ($scope.options.printing == false) {
                 pollErrors = 0;
                 return;
@@ -804,7 +805,8 @@ goog.require('ga_urlutils_service');
         var http = $http.post(printUrl + '?url=' + encodeURIComponent(printUrl),
           spec, {
           timeout: canceller.promise
-        }).success(function(data) {
+        }).then(function(response) {
+          var data = response.data;
           if (movieprint) {
             //start polling process
             var pollUrl = $scope.options.printPath + 'progress?id=' +
@@ -816,7 +818,7 @@ goog.require('ga_urlutils_service');
           } else {
             $scope.downloadUrl(data.getURL);
           }
-        }).error(function() {
+        }, function() {
           $scope.options.printing = false;
         });
       });
@@ -929,7 +931,8 @@ goog.require('ga_urlutils_service');
     $scope.$watch('active', function(newVal, oldVal) {
       if (newVal === true) {
         if (!$scope.printConfigLoaded) {
-          loadPrintConfig().success(function(data) {
+          loadPrintConfig().then(function(response) {
+            var data = response.data;
             $scope.capabilities = data;
             angular.forEach($scope.capabilities.layouts, function(lay) {
               lay.stripped = lay.name.substr(2);

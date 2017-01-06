@@ -114,8 +114,8 @@
             function getData() {
               var template = 'components/profile/example/profile.json';
               var http = $http.get(template);
-              http.success(function(data, status) {
-                $rootScope.$broadcast('gaProfileDataLoaded', data);
+              http.then(function(response) {
+                $rootScope.$broadcast('gaProfileDataLoaded', response.data);
               });
             }
 
@@ -125,8 +125,8 @@
               var template = 'components/profile/example/profile.json';
               var http = $http.get(template);
               var dataRandom = [];
-              http.success(function(data, status) {
-                angular.forEach(data, function(value, key) {
+              http.then(function(response) {
+                angular.forEach(response.data, function(value, key) {
                   value.alts.DTM25 += Math.round(Math.random() * 200);
                   this.push(value);
                 }, dataRandom);
