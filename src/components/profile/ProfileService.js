@@ -396,7 +396,7 @@ goog.require('ga_urlutils_service');
           group.append('text')
               .attr('class', 'ga-profile-label ga-profile-label-x')
               .attr('x', width / 2)
-              .attr('y', height + options.margin.bottom - 16)
+              .attr('y', height + options.margin.bottom - 5)
               .style('text-anchor', 'middle')
               .attr('font-size', '0.95em');
 
@@ -415,144 +415,8 @@ goog.require('ga_urlutils_service');
           // Using Unicode for the icons inside a normal text element
           // by setting the font-family to 'FontAwesome'
           // http://fortawesome.github.io/Font-Awesome/3.2.1/cheatsheet/
-          var g1 = group.append('g')
-              .attr('class', 'ga-profile-elevation-difference');
-         g1.append('title');
-          g1.append('text')
-             .attr('class', 'ga-profile-icon')
-             .attr('x', 0)
-             .attr('y', elevLabelY)
-             .attr('text-anchor', 'start')
-              .text(' \uf218 ');
-          g1.append('text')
-              .attr('class', 'ga-profile-icon-text')
-              .attr('font-size', '0.9em')
-              .attr('x', 12)
-              .attr('y', elevLabelY)
-              .style('text-anchor', 'start')
-              .text(measureFilter(this.diff,
-                    'distance', 'm', 2, true));  
-
-          var g2 = group.append('g')
-              .attr('class', 'ga-profile-elevation-up');
-          g2.append('title');
-          g2.append('text')
-             .attr('class', 'ga-profile-icon-updown')
-             .attr('x', 80)
-             .attr('y', elevLabelY + 4)
-             .attr('text-anchor', 'start')
-             .text(' \uf213 ');
-          g2.append('text')
-              .attr('class', 'ga-profile-icon-text')
-              .attr('font-size', '0.9em')
-              .attr('x', 102)
-              .attr('y', elevLabelY)
-              .style('text-anchor', 'start');
-
-          var g3 = group.append('g')
-              .attr('class', 'ga-profile-elevation-down');
-          g3.append('title');
-          g3.append('text')
-              .attr('class', 'ga-profile-icon-updown')
-              .attr('x', 160)
-              .attr('y', elevLabelY + 4)
-              .attr('text-anchor', 'start')
-              .text(' \uf212 ');
-          g3.append('text')
-              .attr('class', 'ga-profile-icon-text')
-              .attr('font-size', '0.9em')
-              .attr('x', 182)
-              .attr('y', elevLabelY)
-              .style('text-anchor', 'start');
-
-          var g4 = group.append('g')
-              .attr('class', 'ga-profile-poi-up');
-          g4.append('title');
-          g4.append('text')
-              .attr('class', 'ga-profile-icon')
-              .attr('x', 240)
-              .attr('y', elevLabelY)
-              .attr('text-anchor', 'start')
-              .text(' \uf217');
-          g4.append('text')
-              .attr('class', 'ga-profile-icon-text')
-              .attr('font-size', '0.9em')
-              .attr('x', 258)
-              .attr('y', elevLabelY)
-              .style('text-anchor', 'start');
-
-          var g5 = group.append('g')
-              .attr('class', 'ga-profile-poi-down');
-          g5.append('title');
-          g5.append('text')
-              .attr('class', 'ga-profile-icon')
-              .attr('x', 320)
-              .attr('y', elevLabelY)
-              .attr('text-anchor', 'start')
-              .text(' \uf214');
-          g5.append('text')
-              .attr('class', 'ga-profile-icon-text')
-              .attr('font-size', '0.9em')
-              .attr('x', 338)
-              .attr('y', elevLabelY)
-              .style('text-anchor', 'start');
-
-          var g6 = group.append('g')
-              .attr('class', 'ga-profile-distance');
-          g6.append('title');
-          g6.append('text')
-              .attr('class', 'ga-profile-dist')
-              .attr('x', 400)
-              .attr('y', elevLabelY + 2)
-              .attr('text-anchor', 'start')
-              .text(' \uf22e');
-          g6.append('text')
-              .attr('class', 'ga-profile-dist')
-              .attr('x', 415)
-              .attr('y', elevLabelY + 2)
-              .attr('text-anchor', 'start')
-              .text(' \uf220');
-          g6.append('text')
-              .attr('class', 'ga-profile-icon-text')
-              .attr('font-size', '0.9em')
-              .attr('x', 430)
-              .attr('y', elevLabelY)
-              .style('text-anchor', 'start');
-
-          var g7 = group.append('g')
-              .attr('class', 'ga-profile-slopeDist');
-          g7.append('title');
-          g7.append('text')
-              .attr('class', 'ga-profile-dist')
-              .attr('x', 490)
-              .attr('y', elevLabelY + 2)
-              .attr('text-anchor', 'start')
-              .text(' \uf220');
-          g7.append('text')
-              .attr('class', 'ga-profile-icon-text')
-              .attr('font-size', '0.9em')
-              .attr('x', 505)
-              .attr('y', elevLabelY)
-              .style('text-anchor', 'start');
-
-          var g8 = group.append('g')
-              .attr('class', 'ga-profile-hikTime');
-          g8.append('title');
-          g8.append('text')
-              .attr('class', 'ga-profile-icon')
-              .attr('x', 570)
-              .attr('y', elevLabelY + 1)
-              .attr('text-anchor', 'start')
-              .text(' \uf219');
-          g8.append('text')
-              .attr('class', 'ga-profile-icon-text')
-              .attr('font-size', '0.9em')
-              .attr('x', 585)
-              .attr('y', elevLabelY)
-              .style('text-anchor', 'start');
-
-          this.updateLabels();
-        };
+        this.updateLabels();
+       };
 
         this.updateLabels = function() {
           this.group.select('text.ga-profile-label-x')
@@ -606,7 +470,7 @@ goog.require('ga_urlutils_service');
 
           this.group.select('.ga-profile-hikTime ' +
                   'text.ga-profile-icon-text')
-              .text($translate.instant('approx_abbr') + ' ' +
+              .text($translate.instant('approx_abbr') + ' ' + 
                   gaTimeFormatFilter(this.hikTime));
           this.group.select('.ga-profile-hikTime title')
               .text($translate.instant('profile_hike_time'));
@@ -625,7 +489,7 @@ goog.require('ga_urlutils_service');
           //for the sum of the slope/surface distances
           this.slopeDist = this.slopeDistance();
           //for the hiking time
-          this.hikTime = this.hikingTime();
+           this.hikTime = this.hikingTime();
         };
 
         this.update = function(data, size) {
@@ -641,7 +505,7 @@ goog.require('ga_urlutils_service');
             this.group.select('text.ga-profile-label-x')
               .transition().duration(transitionTime)
                 .attr('x', width / 2)
-                .attr('y', height + options.margin.bottom - 18)
+                .attr('y', height + options.margin.bottom - 5)
                 .style('text-anchor', 'middle');
             this.group.select('text.ga-profile-legend')
               .transition().duration(transitionTime)

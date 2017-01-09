@@ -19,7 +19,7 @@ goog.require('ga_print_service');
       margin: {
          top: 6,
          right: 20,
-         bottom: 45,
+         bottom: 30,
          left: 60
       },
       elevationModel: gaGlobalOptions.defaultElevationModel

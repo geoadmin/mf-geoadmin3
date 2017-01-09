@@ -1,3 +1,4 @@
+<div class="ga-profile-graph"></div>
 <div class="ga-profile-tooltip">
   <div class="ga-profile-tooltip-inner">
     <strong translate>{{options.xLabel}}:</strong>
@@ -7,48 +8,51 @@
   </div>
   <div class="ga-profile-tooltip-arrow"></div>
   </div>
-  <div class="ga-profile-elevation-difference" title="{{'profile_elevation_difference' | translate}}">
+  <div class="profile-icons">
+  <div class="wrapper">
+  <div class="ga-profile-elevation-difference" translate-attr="{title: 'profile_elevation_difference'}">
      <div class="fa fa-resize-vertical">
   </div>
-     <div class="ga-profile-icon-text">{{diff()| measure:'distance':['m']}}</div>
+     <div class="ga-profile-icon-text">{{diff()}}</div>
   </div>
-  <div class="ga-profile-elevation-up" title="{{'profile_elevation_up' | translate}}">
+  <div class="ga-profile-elevation-up" translate-attr="{title: 'profile_elevation_up'}">
      <div class="fa fa-ga-elevation-up">
   </div>
-     <div class="ga-profile-icon-text"> {{twoDiff()[0]| measure:'distance':['m']}}</div>
+     <div class="ga-profile-icon-text"> {{twoDiff()}}</div>
  </div>
-  <div class="ga-profile-elevation-down" title="{{'profile_elevation_down' | translate}}">
+  <div class="ga-profile-elevation-down" translate-attr="{title: 'profile_elevation_down'}">
     <div class="fa fa-ga-elevation-down">
   </div>
-     <div class="ga-profile-icon-text"> {{twoDiff()[1]| measure:'distance':['m']}}</div>
+     <div class="ga-profile-icon-text"> {{twoDiff1()}}</div>
 </div>
-  <div class="ga-profile-poi-up" title="{{'profile_poi_up' | translate}}">
-    <div class="fa fa-chevron-up">
+  <div class="ga-profile-poi-up" translate-attr="{title: 'profile_poi_up'}">
+    <div class="fa fa-chevron-up fa-rotate-270">
   </div>
-     <div class="ga-profile-icon-text">{{elPoi()[0]| measure:'distance':['m']}}</div>
+     <div class="ga-profile-icon-text">{{elPoi()}}</div>
 </div>
-  <div class="ga-profile-poi-down" title="{{'profile_poi_down' | translate}}">
+  <div class="ga-profile-poi-down" translate-attr="{title: 'profile_poi_down'}">
     <div class="fa fa-chevron-down">
   </div>
-     <div class="ga-profile-icon-text">{{elPoi()[1]| measure:'distance':['m']}}</div>
+     <div class="ga-profile-icon-text">{{elPoi1()}}</div>
 </div>
-  <div class="ga-profile-distance" title="{{'profile_distance' | translate}}">
+  <div class="ga-profile-distance" translate-attr="{title: 'profile_distance'}">
     <div class="fa fa-eye">
   </div>
     <div class="fa fa-resize-horizontal"> </div>
-     <div class="ga-profile-icon-text"> {{dist()| measure:'distance':['km']}}</div>
+     <div class="ga-profile-icon-text"> {{dist()}}</div>
 </div>
-  <div class="ga-profile-slopeDist" title="{{'profile_slope_distance' | translate}}">
+  <div class="ga-profile-slopeDist" translate-attr="{title: 'profile_slope_distance'}">
     <div class="fa fa-resize-horizontal">
   </div>
-     <div class="ga-profile-icon-text"> {{slopeDist()| measure:'distance':['km']}}</div>
+     <div class="ga-profile-icon-text"> {{slopeDist()}}</div>
 </div>
-  <div class="ga-profile-hikTime" title="{{'profile_hike_time' | translate}}">
+  <div class="ga-profile-hikTime" translate-attr="{title: 'profile_hike_time'}">
     <div class="fa fa-clock-o">
   </div>
-      <div class="ga-profile-icon-text">{{hikTime()| measure:'':['']}}</div>
+      <div class="ga-profile-icon-text"><span translate>approx_abbr</span> {{hikTime()}}</div>
 </div>
-
+</div>
+</div>
 <button  class="btn btn-default fa fa-trash"
          ng-if="layer"
          ng-click="deleteSelectedFeature(layer, feature)"></button>

@@ -2,8 +2,8 @@
   position: relative;
   display: inline-block;
   width: 100%;
-  height: 145px;
-  
+  height: 167px;
+    
   button {
     position: absolute;
     right: 0;
@@ -25,29 +25,21 @@
     font-size: 11px;
   }
 
+  .ga-profile-graph {
+    overflow: hidden;
+    width: 100%;
+    height: 145px;
+  }
+
   .ga-profile-inner {
     overflow: hidden;
     width: 100%;
+    height: 145px;
   }
 
   .ga-profile-svg {
     display: block;
     margin: 0;
-  }
-
-  .ga-profile-icon {
-    font-family: FontAwesome;
-    font-size: 0.9em;
-  }
-
-  .ga-profile-icon-updown {
-    font-family: FontAwesome;
-    font-size: 1.5em;
-  }
-
-  .ga-profile-dist {
-    font-family: FontAwesome;
-    font-size: 1em;
   }
 
   .ga-profile-grid-x,
@@ -105,17 +97,40 @@
     }
   }
    
-  .ga-profile-elevation-difference {
+   .profile-icons {
+    width: auto;
     display: inline-block;
-    color: red; 
+    overflow-x: auto;
+    left: 60px;
+    position: absolute;
+   
+
+    @media only screen and (max-width: 780px){
+      left: 0px; 
+      width: 100%;
+      height: 30px;
+     }
+   }
+
+   .wrapper {
+    position: relative;
+    display: inline-block;
+    width: 700px;
+}
+
+   .wrapper div {
+    float: left;
+}
+
+  .ga-profile-elevation-difference {
+   color: black; 
    
 
     .ga-profile-icon-text { 
-      position: absolute;
-      bottom:-2px;
-      left:72px;
-      font: FontAwesome;
+      position: relative;
       font-size: 0.9em;
+      width: 50px;
+      padding-left: 1px;
      }
 
      .fa {
@@ -123,27 +138,21 @@
      
      }
     
-     .fa-resize-vertical {
-      position: absolute;
-      bottom:0px;
-      left:60px;
-      
-     
-   
+     .fa-resize-vertical::before {
+      position: relative;
+      font-size: 0.9em;  
      }
 }
   
   .ga-profile-elevation-up {
-    display: inline-block;
-    color:red;
+   color: black; 
   
    
    .ga-profile-icon-text {
     position: relative;
-    bottom: 34px;
     font-size: 0.9em;
-    font: FontAwesome;
-    left: 159px;
+    padding-left: 4px;
+    width: 50px;
    }
    
     .fa {
@@ -151,26 +160,22 @@
 
     .fa-ga-elevation-up::before {
      position: relative;
-     left: 137px;
-     bottom:14px;
      font-family: FontAwesome;
      font-size:1.5em; 
-        
-     
+     padding-left: 19px;   
+     bottom: 2px;    
     }
 
 }
 
   .ga-profile-elevation-down {
-    display: inline-block;
-    color: red;
+   color: black;  
 
    .ga-profile-icon-text {
     position: relative;
-    bottom: 34px;
-    left: 194px;
-    font: FontAwesome;
     font-size: 0.9em;
+    padding-left: 4px;
+    width: 50px;
     }
    
    .fa {
@@ -178,23 +183,21 @@
 
    .fa-ga-elevation-down::before {
     position: relative;
-    left: 172px;
-    bottom:14px;
     font-family: FontAwesome;
-    font-size:1.5em;
+    font-size: 1.5em;
+    padding-left: 12px;
+    bottom: 2px;
     }   
   } 
 
  .ga-profile-poi-up {
-   display: inline-block;
-   color:red;
+  color: black;
  
   .ga-profile-icon-text {
     position: relative;
-    bottom: 34px;
-    left: 224px;
-    font: FontAwesome;
     font-size: 0.9em;
+    padding-left: 18px;
+    width: 50px;
     }
 
   .fa {
@@ -202,24 +205,22 @@
 
   .fa-chevron-up::before {
     position: relative;
-    bottom: 20px;
-    left: 206px;
-    font: FontAwesome;
+    font-family: FontAwesome;
     font-size: 0.9em;
+    padding-left: 1px;
+    top: 12px;
     }
 
 }
 
  .ga-profile-poi-down {
-   display: inline-block;
-   color: red;
+  color: black;  
 
   .ga-profile-icon-text {
     position: relative;
-    bottom: 34px;
-    left: 250px;
-    font: FontAwesome;
-    font-size: 0.9em;
+    font-size: 0.9em; 
+    padding-left: 7px;
+    width: 50px;
   }
 
   .fa {
@@ -227,24 +228,21 @@
 
   .fa-chevron-down::before {
     position: relative;
-    bottom: 18px;
-    left: 236px;
-    font: FontAwesome;
+    font-family: FontAwesome;
     font-size: 0.9em;
+    padding-left: 30px;
     }
 
 }
 
   .ga-profile-distance {
-    display: inline-block;
-    color: red;
+   color: black;
 
    .ga-profile-icon-text {
      position: relative;
-     bottom: 34px;
-     left: 296px;
-     font: FontAwesome;
      font-size: 0.9em;
+     padding-left: 5px;
+     width: 50px;
   }
 
    .fa {
@@ -252,31 +250,28 @@
 
    .fa-eye::before {
      position: relative;
-     bottom: 16px;
-     left: 266px;
-     font: FontAwesome;
-     font-size: 0.9em;
+     font-family: FontAwesome;
+     font-size: 1em;
+     padding-left: 20px;
+     top: 2px;
     }
 
   .fa-resize-horizontal::before {
     position: relative;
-    bottom: 16px;
-    left: 266px;
-    font: FontAwesome;
-    font-size: 0.9em;
+    font-size: 1em;
+    left: 3px;
+    top: 2px;
     }
   }
 
   .ga-profile-slopeDist {
-    display: inline-block;
-    color: red;
+   color: black;
 
   .ga-profile-icon-text {
     position: relative;
-    bottom: 34px;
-    left: 308px;
-    font: FontAwesome;
     font-size: 0.9em;
+    padding-left: 3px;
+    width: 50px;
   }
 
   .fa {
@@ -284,36 +279,33 @@
 
   .fa-resize-horizontal::before {
     position: relative;
-    bottom: 16px;
-    left: 294px;
-    font: FontAwesome;
-    font-size: 0.9em;
+    font-family: FontAwesome;
+    font-size: 1em;
+    padding-left: 16px;
+    top: 2px;
    }
  }
 
  .ga-profile-hikTime {
-   display: inline-block;
-   color: red;
-
+  color: black; 
+ 
  .ga-profile-icon-text {
    position: relative;
-   bottom: 34px;
-   left: 324px;
-   font: FontAwesome;
    font-size: 0.9em;
+   padding-left: 3px;
+   width: 100px;
    }
 
   .fa {
    }
   
-  .fa-clock::before {
+  .fa-clock-o::before {
     position: relative;
-    bottom: 16px;
-    left: 316px;
-    font: FontAwesome;
+    font-family: FontAwesome;
     font-size: 0.9em;
+    padding-left: 19px;
     }
    }
 
-} 
+ } 
 
