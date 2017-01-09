@@ -1,23 +1,23 @@
 goog.provide('ga_import_controller');
 
-goog.require('ga_file_service');
 goog.require('ga_kml_service');
+goog.require('ngeo.fileService');
 
 (function() {
 
   var module = angular.module('ga_import_controller', [
-    'ga_file_service',
-    'ga_kml_service'
+    'ga_kml_service',
+    'ngeo.fileService'
   ]);
 
   module.controller('GaImportController', function($scope, $q, $document,
-      $window, $timeout, gaFile, gaKml, gaBrowserSniffer, gaWms, gaUrlUtils,
+      $window, $timeout, ngeoFile, gaKml, gaBrowserSniffer, gaWms, gaUrlUtils,
       gaLang, gaPreviewLayers, gaMapUtils) {
 
     $scope.supportDnd = !gaBrowserSniffer.msie || gaBrowserSniffer.msie > 9;
     $scope.options = {
       urls: [
-        'https://wms.geo.admin.ch/',
+        'https://wms.geo.admin.ch/?lang=',
         'http://ogc.heig-vd.ch/mapserver/wms',
         'http://owsproxy.lgl-bw.de/owsproxy/ows/WMS_Maps4BW',
         'https://www.gis.stadt-zuerich.ch/maps/services/wms/WMS-ZH-STZH-OGD/MapServer/WMSServer',
@@ -196,17 +196,13 @@ goog.require('ga_kml_service');
       $scope.wmtsGetCap = null;
       file = file || {};
 
-      if (gaFile.isWmsGetCap(data)) {
+      if (ngeoFile.isWmsGetCap(data)) {
         $scope.wmsGetCap = data;
         defer.resolve({
           message: 'upload_succeeded'
         });
 
-        /*$timeout(function() {
-          executeTaMenuHack();
-        }, false);*/
-
-      } else if (gaFile.isKml(data)) {
+      } else if (ngeoFile.isKml(data)) {
 
         gaKml.addKmlToMap($scope.map, data, {
           url: URL.createObjectURL($scope.file),

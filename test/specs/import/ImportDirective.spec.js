@@ -50,7 +50,6 @@ describe('ga_import_directive', function() {
   afterEach(function() {
     httpBackend.verifyNoOutstandingExpectation();
     httpBackend.verifyNoOutstandingRequest();
-    $windowMock.restore();
   });
 
   it('creates html elements', function() {
@@ -75,14 +74,14 @@ describe('ga_import_directive', function() {
     $rootScope.$digest();
     expect(elt.find('[ngeo-wms-get-cap]').length).to.be(1);
   });
-  
+
   it('hide first tab on ie9', function() {
     gaBrowserSniffer.msie = 9;
     loadDirective();
     expect(scope.showLocal).to.be(false);
     expect(/ngIf: ::showLocal/.test(elt[0].innerHTML)).to.be(true);
   });
-   
+
   it('hide first tab on ie < 9', function() {
     gaBrowserSniffer.msie = 8;
     loadDirective();

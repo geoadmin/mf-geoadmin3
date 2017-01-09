@@ -148,7 +148,8 @@ describe('ga_realtimelayers_service', function() {
       }, layer.updateDelay);
 
       clock.tick(layer.updateDelay);
-      $timeout.flush();
+      $timeout.flush();$;
+      $httpBackend.flush();
     });
 
     it('broadcasts an empty gaNewLayerTimestamp event on layer remove and deactivate the delay', function(done) {

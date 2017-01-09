@@ -137,7 +137,7 @@ describe('ga_kml_service', function() {
 
   describe('gaKml', function() {
     var map, gaKml, $rootScope, $httpBackend, gaNetworkStatus, gaStorageMock, gaUrlUtilsMock,
-        gaStyleFactoryMock, gaMapUtilsMock, gaMeasureMock, gaGlobalOptions, $windowMock, gaFileMock;
+        gaStyleFactoryMock, gaMapUtilsMock, gaMeasureMock, gaGlobalOptions, $windowMock, ngeoFileMock;
 
     beforeEach(function() {
 
@@ -153,7 +153,7 @@ describe('ga_kml_service', function() {
         gaMeasureMock = sinon.mock($injector.get('gaMeasure'));
         gaStorageMock = sinon.mock($injector.get('gaStorage'));
         $windowMock = sinon.mock($injector.get('$window'));
-        gaFileMock = sinon.mock($injector.get('gaFile'));
+        ngeoFileMock = sinon.mock($injector.get('ngeoFile'));
       });
       map = new ol.Map({});
     });
@@ -1089,8 +1089,7 @@ describe('ga_kml_service', function() {
         $httpBackend.expectGET(encoded);
 
         var addKmlToMap = gaKmlMock.expects('addKmlToMap').never();
-        var isValid = gaFileMock.expects('isKml').once().returns(false);
-
+        var isValid = ngeoFileMock.expects('isKml').once().returns(false);
         gaKml.addKmlToMapForUrl(map, 'https://test.kml');
 
         $httpBackend.flush();
@@ -1103,9 +1102,9 @@ describe('ga_kml_service', function() {
       it('doesn\'t call addKmlToMap if file size is not valid', function() {
         $httpBackend.whenGET(encoded).respond(validKml2);
         $httpBackend.expectGET(encoded);
-
+       
         var addKmlToMap = gaKmlMock.expects('addKmlToMap').never();
-        var isValid = gaFileMock.expects('isValidFileSize').once().returns(false);
+        var isValid = ngeoFileMock.expects('isValidFileSize').once().returns(false);
 
         gaKml.addKmlToMapForUrl(map, 'https://test.kml');
 

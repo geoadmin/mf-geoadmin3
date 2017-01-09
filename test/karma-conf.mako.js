@@ -1,55 +1,59 @@
+
 // Karma configuration
+<%
+  if mode == 'release':
+    basePath = 'prd'
+  else:
+    basePath = 'src'
+%>
+
 
 module.exports = function(config) {
   config.set({
   // base path, that will be used to resolve files and exclude
-  basePath: '../',
+  basePath: '..',
 
   // list of files / patterns to load in the browser
   files: [
-    {pattern: 'style/font-awesome-4.5.0/font/*', watched: false, included: false, served: true},
-    {pattern: 'checker', watched: false, included: false, served: true},
+    {pattern: '${basePath}/style/font-awesome-4.5.0/font/*', watched: false, included: false, served: true},
+    {pattern: '${basePath}/checker', watched: false, included: false, served: true},
   % if mode == 'release':
-    'prd/style/app.css',
-    'prd/lib/d3.min.js',
-    'prd/lib/Cesium.min.js',
-    'prd/lib/ol3cesium.js',
-    'prd/lib/build.js',
+    '${basePath}/style/app.css',
+    '${basePath}/lib/d3.min.js',
+    '${basePath}/lib/Cesium.min.js',
+    '${basePath}/lib/ol3cesium.js',
+    '${basePath}/lib/build.js',
   % else:
-    'src/style/app.css',
-    'src/lib/jquery.js',
-    'src/lib/jQuery.XDomainRequest.js',
-    'src/lib/slip.js',
-    'src/lib/angular.js',
-    'src/lib/angular-translate.js',
-    'src/lib/angular-translate-loader-static-files.js',
-    'src/lib/d3.js',
-    'src/lib/bootstrap.js',
-    'src/lib/typeahead.jquery.js',
-    'src/lib/proj4js-compressed.js',
-    'src/lib/EPSG21781.js',
-    'src/lib/EPSG2056.js',
-    'src/lib/EPSG32631.js',
-    'src/lib/EPSG32632.js',
-    'src/lib/fastclick.js',
-    'src/lib/localforage.js',
-    'src/lib/filesaver.js',
-    'src/lib/moment-with-customlocales.js',
-    'src/lib/Cesium/Cesium.js',
+    '${basePath}/style/app.css',
+    '${basePath}/lib/jquery.js',
+    '${basePath}/lib/jQuery.XDomainRequest.js',
+    '${basePath}/lib/slip.js',
+    '${basePath}/lib/angular.js',
+    '${basePath}/lib/angular-translate.js',
+    '${basePath}/lib/angular-translate-loader-static-files.js',
+    '${basePath}/lib/d3.js',
+    '${basePath}/lib/bootstrap.js',
+    '${basePath}/lib/typeahead.jquery.js',
+    '${basePath}/lib/proj4js-compressed.js',
+    '${basePath}/lib/EPSG21781.js',
+    '${basePath}/lib/EPSG2056.js',
+    '${basePath}/lib/EPSG32631.js',
+    '${basePath}/lib/EPSG32632.js',
+    '${basePath}/lib/fastclick.js',
+    '${basePath}/lib/localforage.js',
+    '${basePath}/lib/filesaver.js',
+    '${basePath}/lib/moment-with-customlocales.js',
+    '${basePath}/lib/Cesium/Cesium.js',
     'test/closure-loader-globals.js',
-    'src/lib/ol3cesium-debug.js',
+    '${basePath}/lib/ol3cesium-debug.js',
     '.build-artefacts/app-whitespace.js',
-    'test/lib/angular-mocks.js',
-    'test/lib/expect.js',
-    'test/lib/sinon.js',
-    'test/specs/Loader.spec.js',
-    'test/specs/**/*.js',
+
   % endif
     'test/lib/angular-mocks.js',
     'test/lib/expect.js',
     'test/lib/sinon.js',
     'test/specs/Loader.spec.js',
-    'test/specs/**/*.js', 
+    'test/specs/**/*.js',
     {
       pattern: 'test/data/*.xml',
       watched: true,
@@ -71,7 +75,7 @@ module.exports = function(config) {
     // tests using ngMock's "module" function.
     //'components/**/*.html': 'html2js'
   % if mode == 'debug':
-    '../.build-artefacts/app-whitespace.js': ['coverage']
+    '.build-artefacts/app-whitespace.js': ['coverage']
   % endif
   },
 
@@ -83,7 +87,7 @@ module.exports = function(config) {
 
 % if mode == 'debug':
   coverageReporter: {
-    dir: '../.build-artefacts',
+    dir: '.build-artefacts',
     includeAllSources: true,
     reporters: [
       { type: 'cobertura', subdir: '.', file: 'coverage.xml' },

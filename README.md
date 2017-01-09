@@ -15,6 +15,10 @@ or when you're using ssh key (see https://help.github.com/articles/generating-ss
 
     $ git clone git@github.com:geoadmin/mf-geoadmin3.git
 
+Checkout submodules:
+
+     $ git submodules update --init
+
 There's no need to create a user specific source file. Simply use the following
 build command:
 

@@ -1,6 +1,5 @@
 goog.provide('ga_kml_service');
 
-goog.require('ga_file_service');
 goog.require('ga_geomutils_service');
 goog.require('ga_map_service');
 goog.require('ga_measure_service');
@@ -8,6 +7,8 @@ goog.require('ga_networkstatus_service');
 goog.require('ga_storage_service');
 goog.require('ga_styles_service');
 goog.require('ga_urlutils_service');
+goog.require('ngeo.fileService');
+
 
 (function() {
 
@@ -19,7 +20,7 @@ goog.require('ga_urlutils_service');
     'ga_urlutils_service',
     'ga_measure_service',
     'ga_geomutils_service',
-    'ga_file_service'
+    'ngeo.fileService'
   ]);
 
   /**
@@ -30,7 +31,7 @@ goog.require('ga_urlutils_service');
     this.$get = function($http, $q, $rootScope, $timeout, $translate,
         gaDefinePropertiesForLayer, gaGlobalOptions, gaMapClick, gaMapUtils,
         gaNetworkStatus, gaStorage, gaStyleFactory, gaUrlUtils, gaMeasure,
-        gaGeomUtils, gaFile) {
+        gaGeomUtils, ngeoFile) {
 
       // Store the parser.
       var kmlFormat;
@@ -355,7 +356,7 @@ goog.require('ga_urlutils_service');
               var data = response.data;
               var fileSize = response.headers('content-length');
 
-              if (gaFile.isKml(data) && gaFile.isValidFileSize(fileSize)) {
+              if (ngeoFile.isKml(data) && ngeoFile.isValidFileSize(fileSize)) {
                 layerOptions.useImageVector = that.useImageVector(fileSize);
                 return that.addKmlToMap(map, data, layerOptions, index);
               }

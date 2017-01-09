@@ -1,8 +1,8 @@
 SHELL = /bin/bash
-SRC_JS_FILES := $(shell find src/components src/js -type f -name '*.js')
+SRC_JS_FILES := $(shell find src/components src/js src/ngeo/src/modules/import -type f -name '*.js')
 SRC_JS_FILES_FOR_COMPILER = $(shell sed -e ':a' -e 'N' -e '$$!ba' -e 's/\n/ --js /g' .build-artefacts/js-files | sed 's/^.*base\.js //')
 SRC_LESS_FILES := $(shell find src -type f -name '*.less')
-SRC_COMPONENTS_PARTIALS_FILES := $(shell find src/components -type f -path '*/partials/*' -name '*.html')
+SRC_COMPONENTS_PARTIALS_FILES := $(shell find src/components src/ngeo/src/modules/import -type f -path '*/partials/*' -name '*.html')
 PYTHON_FILES := $(shell find scripts test/saucelabs -type f -name "*.py" -print)
 APACHE_BASE_DIRECTORY ?= $(CURDIR)
 LAST_APACHE_BASE_DIRECTORY := $(shell if [ -f .build-artefacts/last-apache-base-directory ]; then cat .build-artefacts/last-apache-base-directory 2> /dev/null; else echo '-none-'; fi)
@@ -555,6 +555,7 @@ src/deps.js: $(SRC_JS_FILES) ${PYTHON_VENV}
 	${PYTHON_CMD} node_modules/google-closure-library/closure/bin/build/depswriter.py \
 	    --root_with_prefix="src/components components" \
 	    --root_with_prefix="src/js js" \
+	    --root_with_prefix="src/ngeo ngeo" \
 	    --output_file=$@
 
 src/style/app.css: $(SRC_LESS_FILES)
@@ -597,10 +598,10 @@ src/embed.html: src/index.mako.html \
 	$(call buildpage,embed,,,,$(S3_SRC_BASE_PATH))
 
 src/TemplateCacheModule.js: src/TemplateCacheModule.mako.js \
-	    $(SRC_COMPONENTS_PARTIALS_FILES) \
+	    ${SRC_COMPONENTS_PARTIALS_FILES} \
 	    ${MAKO_CMD}
 	${PYTHON_CMD} ${MAKO_CMD} \
-	    --var "partials=$(subst src/,,$(SRC_COMPONENTS_PARTIALS_FILES))" \
+	    --var "partials=$(shell echo "${SRC_COMPONENTS_PARTIALS_FILES}" | sed 's/^src\///' | sed 's/ src\// /g')" \
 	    --var "basedir=src" $< > $@
 
 apache/app.conf: apache/app.mako-dot-conf \
@@ -669,7 +670,7 @@ libs:
 $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule.js): \
 	    .build-artefacts/annotated/%.js: %.js .build-artefacts/devlibs
 	mkdir -p $(dir $@)
-	${NG_ANNOTATE} -a $< > $@
+	${NG_ANNOTATE} -a $< | sed "/goog\.require('ol.*/d" > $@
 
 .build-artefacts/app-whitespace.js: .build-artefacts/js-files
 	java -jar ${CLOSURE_COMPILER} $(SRC_JS_FILES_FOR_COMPILER) \

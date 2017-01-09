@@ -36,6 +36,7 @@ if [ ! -d mf-geoadmin3 ]; then
   echo "Cloning branch=${DEPLOY_GIT_BRANCH}, into directory=${CLONEDIR}"
   git clone -b ${DEPLOY_GIT_BRANCH}  https://github.com/geoadmin/mf-geoadmin3.git
   cd mf-geoadmin3
+
 else
   cd mf-geoadmin3
   if [ "$DEEP_CLEAN" = "true" ]; then
@@ -45,6 +46,8 @@ else
   fi
   update_and_reset_git_project
 fi
+
+git submodule update --init
 
 if [ "$NAMED_BRANCH" = "true" ]; then
   export KEEP_VERSION="true"
