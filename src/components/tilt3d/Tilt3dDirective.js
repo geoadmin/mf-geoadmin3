@@ -40,6 +40,19 @@ goog.provide('ga_tilt3d_directive');
             // FIXME: error message "browser not supported"
           }
         };
+
+        scope.getBtTitle = function() {
+          if (!scope.supported) {
+            return '3d_render_error';
+          }
+          if (scope.disabled) {
+            return 'tilt3d_disabled';
+          }
+          if (scope.globals.is3dActive) {
+            return 'tilt3d_active';
+          }
+          return 'tilt3d_inactive';
+        };
       }
     };
   });

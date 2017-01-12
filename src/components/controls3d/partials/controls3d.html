@@ -1,25 +1,31 @@
 <div class="ga-tilt" ng-hide="fps.active">
-  <button class="ga-btn ga-indicator" ng-click="resetTilt()">
+  <button class="ga-btn ga-indicator" ng-click="resetTilt()"
+          translate-attr="{title: 'tilt_reset'}">
     <i class="fa fa-ga-circle-bg"></i>
     <i class="fa fa-ga-tilt"></i>
     <i class="fa fa-ga-tilt-indicator"></i>
   </button>
   <button class="ga-btn ga-inc fa fa-ga-left-arrow" ng-click="tilt(+5)"
-          ng-disabled="tiltUpDisabled">
+          ng-disabled="tiltUpDisabled"
+          translate-attr="{title: 'tilt_' + (tiltUpDisabled ? 'up_disabled' : 'up')}">
   </button>
   <button class="ga-btn ga-dec fa fa-ga-right-arrow" ng-click="tilt(-5)"
-          ng-disabled="tiltDownDisabled">
+          ng-disabled="tiltDownDisabled"
+          translate-attr="{title: 'tilt_' + (tiltDownDisabled ? 'down_disabled' : 'down')}">
   </button>
 </div>
 <div class="ga-pegman" ng-show="pegman" ng-class="{'ga-fly-mode': fps.flyMode, 'ga-jet-mode': fps.jetMode}" ng-mousedown="startDraggingPegman()"></div>
 <div class="ga-rotate" ng-hide="fps.active">
-  <button class="ga-btn ga-indicator" ng-click="resetRotation()">
+  <button class="ga-btn ga-indicator" ng-click="resetRotation()"
+          translate-attr="{title: 'rotate_reset'}">
     <i class="fa fa-ga-circle-bg"></i>
     <i class="fa fa-ga-northarrow"></i>
     <i class="fa fa-ga-indicator-northarrow"></i>
   </button>
-  <button class="ga-btn ga-inc fa fa-ga-left-arrow" ng-click="rotate(-15)"></button>
-  <button class="ga-btn ga-dec fa fa-ga-right-arrow" ng-click="rotate(+15)"></button>
+  <button class="ga-btn ga-inc fa fa-ga-left-arrow" ng-click="rotate(-15)"
+          translate-attr="{title: 'rotate_left'}"></button>
+  <button class="ga-btn ga-dec fa fa-ga-right-arrow" ng-click="rotate(+15)"
+          translate-attr="{title: 'rotate_right'}"></button>
 </div>
 <div class="ga-pegman-help" ng-show="fps.active">
   pegman help text here.

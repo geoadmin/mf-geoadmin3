@@ -1,9 +1,10 @@
 <div ng-repeat="layer in backgroundLayers"
      ng-click="activateBackgroundLayer(layer)"
-     class="ga-bg-layer {{getClass(layer)}}">
+     class="ga-bg-layer {{getClass(layer)}}"
+     translate-attr="{title: layer.label}">
   <div ng-if="::desktop" class="ga-bg-layer-text" translate>{{layer.label}}</div>
 </div>
-<div class="ga-bg-layer-bt">
+<div class="ga-bg-layer-bt" translate-attr="{title: 'bg_toggle'}">
   <div ng-if="::desktop" class="ga-bg-layer-bt-text" translate>bg_chooser_label</div>
   <i ng-if="::desktop" class="fa fa-chevron-sign-right"></i>
 </div> 
