@@ -145,8 +145,8 @@ goog.require('ga_what3words_service');
                     northing: coord21781[1],
                     elevation_model: gaGlobalOptions.defaultElevationModel
                   }
-                }).success(function(response) {
-                  scope.altitude = parseFloat(response.height);
+                }).then(function(response) {
+                  scope.altitude = parseFloat(response.data.height);
                 });
 
                 $http.get(lv03tolv95Url, {
@@ -154,8 +154,8 @@ goog.require('ga_what3words_service');
                     easting: coord21781[0],
                     northing: coord21781[1]
                   }
-                }).success(function(response) {
-                  coord2056 = response.coordinates;
+                }).then(function(response) {
+                  coord2056 = response.data.coordinates;
                   scope.coord2056 = formatCoordinates(coord2056, 2);
                 });
 

@@ -181,10 +181,10 @@ goog.require('ga_permalink');
                 }
 
                 scope.showProgress = true;
-                $http(params).success(function(response) {
+                $http(params).then(function() {
                   resetF();
                   scope.success = true;
-                }).error(function(response) {
+                }, function() {
                   resetF();
                   scope.error = true;
                 });

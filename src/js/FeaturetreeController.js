@@ -119,13 +119,13 @@ goog.require('ga_print_service');
             params: {
               lang: lang
             }
-          }).success(function(data, status, headers, config) {
-            printElementLoaded(data, bodId);
-          }).error(function(data, status, headers, config) {
+          }).then(function(response) {
+            printElementLoaded(response.data, bodId);
+          }, function(response) {
             printElementLoaded('<div>' +
                 'There was a problem loading this feature. Layer: ' + bodId +
                 ', feature: ' + layer.features[i].id +
-                ', status: ' + status + '<div>', 'failure');
+                ', status: ' + response.status + '<div>', 'failure');
           });
         }
       }

@@ -220,15 +220,16 @@ goog.require('ga_urlutils_service');
         $http.get(url, {
           cache: true,
           timeout: canceler.promise
-        }).success(function(data) {
+        }).then(function(response) {
+          var data = response.data;
           $scope.results = data.results;
           if (data.fuzzy) {
             $scope.fuzzy = '_fuzzy';
           }
           $scope.options.announceResults($scope.type, data.results.length);
-        }).error(function(data, statuscode) {
+        }, function(response) {
           // If request is canceled, statuscode is 0 and we don't announce it
-          if (statuscode !== 0) {
+          if (response.status !== 0) {
             $scope.options.announceResults($scope.type, 0);
           }
         });
@@ -397,7 +398,8 @@ goog.require('ga_urlutils_service');
               params: {
                  geometryFormat: 'geojson'
               }
-            }).success(function(result) {
+            }).then(function(response) {
+              var result = response.data;
               selectedFeatures[key] = result.feature;
               cb(result.feature);
             });
