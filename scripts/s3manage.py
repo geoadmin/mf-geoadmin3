@@ -225,8 +225,16 @@ def upload(bucket_name, base_dir, deploy_target, named_branch):
                   'robots.txt', 'robots_prod.txt', 'favicon.ico',
                   'checker', 'geoadmin.%s.appcache' % version)
 
+    # exclude some ngeo files
+    ngeo_prefix = '/ngeo'
+    include_ngeo_folders = ['src/modules/import']
+
     for directory in upload_directories:
         for file_path_list in os.walk(os.path.join(base_dir, directory)):
+            file_path = file_path_list[0]
+            print file_path
+            if ngeo_prefix in file_path and len([p for p in include_ngeo_folders if p not in file_path]) > 0:
+                continue
             file_names = file_path_list[2]
             if len(file_names) > 0:
                 for file_name in file_names:
