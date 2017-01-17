@@ -14,7 +14,7 @@ goog.provide('ga_cesium');
  * @constructor
  */
 var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions,
-    gaBrowserSniffer, $q, $translate) {
+    gaBrowserSniffer, $q, $translate, $rootScope) {
   // Url of ol3cesium library
   var ol3CesiumLibUrl = gaGlobalOptions.resourceUrl;
   if (gaGlobalOptions.buildMode === 'prod') {
@@ -133,6 +133,7 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions,
       'ch.swisstopo.swisstlm3d.3d'
     ];
 
+    var primitives = [];
     var params = gaPermalink.getParams();
     var pTileset3d = params['tileset3d'];
 
@@ -167,8 +168,16 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions,
         }
         if (tileset) {
           scene.primitives.add(tileset);
+          primitives.push(tileset);
         }
       }
+    });
+
+    $rootScope.$on('gaBgChange', function(evt, bg) {
+      var show = !/void/.test(bg.id);
+      primitives.forEach(function(prim) {
+        prim.show = show;
+      });
     });
     return cesiumViewer;
   };
