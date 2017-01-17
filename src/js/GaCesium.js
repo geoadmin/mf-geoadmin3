@@ -10,6 +10,7 @@ goog.provide('ga_cesium');
  * @param {Object} gaBrowserSniffer
  * @param {Object} $q
  * @param {Object} $translate
+ * @param {Object} $rootScope
  *
  * @constructor
  */
