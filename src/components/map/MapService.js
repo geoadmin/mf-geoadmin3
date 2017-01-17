@@ -390,12 +390,12 @@ goog.require('ga_urlutils_service');
         gaStylesFromLiterals, gaGlobalOptions, gaPermalink,
         gaLang, gaTime) {
 
-      var Layers = function(dfltWmsSubdomains,
-          dfltWmtsNativeSubdomains, dfltWmtsMapProxySubdomains,
+      var Layers = function(dfltWmsSubdomains, dfltWmtsNativeSubdomains,
+          dfltWmtsMapProxySubdomains, dfltVectorTilesSubdomains,
           wmsUrlTemplate, wmtsGetTileUrlTemplate,
           wmtsMapProxyGetTileUrlTemplate, terrainTileUrlTemplate,
-          tileset3DUrlTemplate, layersConfigUrlTemplate, legendUrlTemplate,
-          imageryMetadataUrl) {
+          vectorTilesUrlTemplate, layersConfigUrlTemplate,
+          legendUrlTemplate, imageryMetadataUrl) {
         var layers;
 
         // Returns a unique WMS template url (e.g. //wms{s}.geo.admin.ch)
@@ -451,12 +451,12 @@ goog.require('ga_urlutils_service');
         };
 
         var cpt;
-        var getTileset3DUrl = function(layer, time) {
-          if (cpt === undefined || cpt > 4) {
+        var getVectorTilesUrl = function(layer, time, subdomains) {
+          if (cpt === undefined || cpt >= subdomains.length) {
             cpt = 0;
           }
-          return tileset3DUrlTemplate
-              .replace('{s}', ++cpt)
+          return vectorTilesUrlTemplate
+              .replace('{s}', subdomains[++cpt])
               .replace('{Layer}', layer)
               .replace('{Time}', time);
         };
@@ -654,7 +654,8 @@ goog.require('ga_urlutils_service');
           var requestedLayer = config3d.serverLayerName || bodId;
           if (config3d.type == 'tileset3d') {
             tileset = new Cesium.Cesium3DTileset({
-              url: getTileset3DUrl(requestedLayer, timestamp),
+              url: getVectorTilesUrl(requestedLayer, timestamp,
+                  dfltVectorTilesSubdomains),
               //debugShowStatistics: true,
               maximumNumberOfLoadedTiles: 3
             });
@@ -1054,14 +1055,13 @@ goog.require('ga_urlutils_service');
         };
       };
 
-      return new Layers(this.dfltWmsSubdomains,
-          this.dfltWmtsNativeSubdomains, this.dfltWmtsMapProxySubdomains,
+      return new Layers(this.dfltWmsSubdomains, this.dfltWmtsNativeSubdomains,
+          this.dfltWmtsMapProxySubdomains, this.dfltVectorTilesSubdomains,
           this.wmsUrlTemplate, this.wmtsGetTileUrlTemplate,
           this.wmtsMapProxyGetTileUrlTemplate, this.terrainTileUrlTemplate,
-          this.tileset3DUrlTemplate, this.layersConfigUrlTemplate,
+          this.vectorTilesUrlTemplate, this.layersConfigUrlTemplate,
           this.legendUrlTemplate, this.imageryMetadataUrl);
     };
-
   });
 
   /**
