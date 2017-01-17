@@ -44,7 +44,7 @@ goog.provide('ga_importwms_controller');
         'http://www.sogis1.so.ch/cgi-bin/sogis/sogis_strassenkarte.wms',
         'http://www.sogis1.so.ch/cgi-bin/sogis/sogis_dtm_dom.wms',
         'http://www.sogis1.so.ch/wms/wms_lidar',
-        'http://wms.vd.ch/public/services/VD_WMS/Mapserver/Wmsserver',
+        'http://wms.vd.ch/public/services/wmsVD/Mapserver/Wmsserver',
         'https://wms.geo.bs.ch/wmsBS',
         'http://vogis.cnv.at/mapserver/mapserv?map=i_flaechenwidmung_v_wms.map',
         'http://vogis.cnv.at/mapserver/mapserv?map=i_luftbilder_r_wms.map',
