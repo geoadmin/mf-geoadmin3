@@ -1,5 +1,6 @@
 SHELL = /bin/bash
 SRC_JS_FILES := $(shell find src/components src/js src/ngeo/src/modules/import -type f -name '*.js')
+SRC_ES6_FILES := $(shell find src/ngeo/src/modules/import -type f -name '*.js')
 SRC_JS_FILES_FOR_COMPILER = $(shell sed -e ':a' -e 'N' -e '$$!ba' -e 's/\n/ --js /g' .build-artefacts/js-files | sed 's/^.*base\.js //')
 SRC_LESS_FILES := $(shell find src -type f -name '*.less')
 SRC_COMPONENTS_PARTIALS_FILES := $(shell find src/components src/ngeo/src/modules/import -type f -path '*/partials/*' -name '*.html')
@@ -101,6 +102,7 @@ LESSC=${NODE_BIN}/lessc
 KARMA=${NODE_BIN}/karma
 PHANTOMJS=${NODE_BIN}/phantomjs
 NG_ANNOTATE=${NODE_BIN}/ng-annotate
+BABEL=${NODE_BIN}/babel
 
 .PHONY: help
 help:
@@ -671,6 +673,9 @@ $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule
 	    .build-artefacts/annotated/%.js: %.js .build-artefacts/devlibs
 	mkdir -p $(dir $@)
 	${NG_ANNOTATE} -a $< | sed "/goog\.require('ol.*/d" > $@
+
+$(SRC_ES6_FILES): .build-artefacts/devlibs
+	${BABEL} $@ --out-file $@
 
 .build-artefacts/app-whitespace.js: .build-artefacts/js-files
 	java -jar ${CLOSURE_COMPILER} $(SRC_JS_FILES_FOR_COMPILER) \
