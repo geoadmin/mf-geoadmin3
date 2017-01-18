@@ -67,7 +67,7 @@ goog.require('ga_urlutils_service');
     // Create the popover
     var popover, content, container, callback;
     var win = $($window);
-    var createPopover = function(target, element, scope) {
+    var createPopover = function(bt, element) {
 
       // Lazy load
       if (!container) {
@@ -76,16 +76,18 @@ goog.require('ga_urlutils_service');
           destroyPopover(element);
         };
       }
-
-      popover = $(target).popover({
+      popover = bt.popover({
         container: container,
         content: content,
         html: true,
         placement: 'auto right',
         title: $translate.instant('time_select_year') +
             '<button class="ga-icon ga-btn fa fa-remove"></button>',
-        trigger: 'focus',
-        delay: 150 // For IE9 let it time to capture the click event
+        trigger: 'manual'
+      }).one('shown.bs.popover', function(evt) {
+        container.find('.fa-remove').one('click', function() {
+          destroyPopover(element);
+        });
       }).popover('show');
       element.on('scroll', callback);
       win.on('resize', callback);
@@ -200,24 +202,22 @@ goog.require('ga_urlutils_service');
         };
 
         // On mobile we use a classic select box, on desktop a popover
+        scope.displayTimestamps = angular.noop;
         if (!scope.mobile) {
           // Simulate a select box with a popover
           scope.displayTimestamps = function(evt, layer) {
-            if (popover && popover[0] === evt.target) {
-              destroyPopover(element);
-            } else {
-              destroyPopover(element);
+            destroyPopover(element);
+            var bt = $(evt.target);
+            if (!bt.data('bs.popover')) {
               scope.tmpLayer = layer;
               // We use timeout otherwise the popover is bad centered.
               $timeout(function() {
-                createPopover(evt.target, element, scope);
+                createPopover(bt, element, scope);
               }, 100, false);
             }
             evt.preventDefault();
             evt.stopPropagation();
           };
-        } else {
-          scope.displayTimestamps = function() {};
         }
 
         scope.isDefaultValue = function(timestamp) {
