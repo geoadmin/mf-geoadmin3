@@ -13,7 +13,7 @@
         {{layer.label}}
       </label>
       <div class="ga-layer-time" ng-if="layer.timeEnabled">
-        <button class="ga-btn badge" tabindex="1"
+        <button class="ga-btn badge"
                 ng-class="isDefaultValue(layer.time)"
                 ng-click="displayTimestamps($event, layer)">{{layer.time | gaTimeLabel:layer}}
         </button>
@@ -25,8 +25,6 @@
       </div>
       <button class="ga-icon ga-btn fa fa-user"
               ng-click="showWarning(layer)"></button>
-      <!--button ng-if="isBodLayer(layer)" class="ga-icon ga-btn icon-info-sign"
-              ng-click="displayLayerMetadata($event, layer)"></button-->
       <button class="ga-icon fa fa-gear"></button>
     </div><!--ga-layer-infos-->
     <div class="ga-layer-tools">
