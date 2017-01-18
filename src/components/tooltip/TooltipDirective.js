@@ -389,7 +389,7 @@ goog.require('ga_topic_service');
               }
               // Use by the ga-shop directive
               scope.clickCoordinate = coordinate;
-              var pointerShown = (map.getTarget().style.cursor == 'pointer');
+              var pointerShown = $(map.getTarget()).css('cursor') == 'pointer';
               var mapRes = map.getView().getResolution();
               var mapProj = map.getView().getProjection();
               var pixel = map.getPixelFromCoordinate(coordinate);
