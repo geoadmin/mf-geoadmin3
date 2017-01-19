@@ -83,20 +83,12 @@ goog.require('ga_urlutils_service');
         placement: 'auto right',
         title: $translate.instant('time_select_year') +
             '<button class="ga-icon ga-btn fa fa-remove"></button>',
-        trigger: 'focus',
-        delay: 150 // For IE9 let it time to capture the click event
-      });
-
-      // Fix for #3472
-      if (gaBrowserSniffer.msie) {
-        popover.one('shown.bs.popover', function(evt) {
-          container.find('.popover-content').scroll(function() {
-            bt.focus();
-          });
+        trigger: 'manual'
+      }).one('shown.bs.popover', function(evt) {
+        container.find('.fa-remove').one('click', function() {
+          destroyPopover(element);
         });
-      }
-
-      popover.popover('show');
+      }).popover('show');
       element.on('scroll', callback);
       win.on('resize', callback);
     };
