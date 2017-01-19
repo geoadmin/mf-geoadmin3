@@ -977,7 +977,7 @@ goog.require('ga_urlutils_service');
           var layer = angular.isString(configOrBodId) ?
               this.getLayer(configOrBodId) : configOrBodId;
           if (!layer.timeEnabled) {
-            // a WMTS/Terrain layer has at least one timestamp
+            // a WMTS/Terrain/Tileset3D layer has at least one timestamp
             return (layer.type == 'wmts' || layer.type == 'terrain' ||
                 layer.type == 'tileset3d') ? layer.timestamps[0] : undefined;
           }
@@ -1233,21 +1233,19 @@ goog.require('ga_urlutils_service');
         moveTo: function(map, ol3d, zoom, center) {
           if (ol3d && ol3d.getEnabled()) {
             return this.flyToAnimation(ol3d, center, null);
-          } else {
-            var view = map.getView();
-            view.setZoom(zoom);
-            view.setCenter(center);
-            return $q.when();
           }
+          var view = map.getView();
+          view.setZoom(zoom);
+          view.setCenter(center);
+          return $q.when();
         },
 
         zoomToExtent: function(map, ol3d, extent) {
           if (ol3d && ol3d.getEnabled()) {
             return this.flyToAnimation(ol3d, null, extent);
-          } else {
-            map.getView().fit(extent, map.getSize());
-            return $q.when();
           }
+          map.getView().fit(extent, map.getSize());
+          return $q.when();
         },
 
         // This function differs from moveTo because it adds panning effect in
@@ -1255,22 +1253,21 @@ goog.require('ga_urlutils_service');
         panTo: function(map, ol3d, dest) {
           if (ol3d && ol3d.getEnabled()) {
             return this.moveTo(null, ol3d, null, dest);
-          } else {
-            var defer = $q.defer();
-            var view = map.getView();
-            var source = view.getCenter();
-            var dist = Math.sqrt(Math.pow(source[0] - dest[0], 2),
-                Math.pow(source[1] - dest[1], 2));
-            var duration = Math.min(Math.sqrt(300 + dist /
-                view.getResolution() * 1000), 3000);
-            view.animate({
-              center: dest,
-              duration: 0
-            }, function(success) {
-              defer.resolve();
-              $rootScope.$digest();
-            });
           }
+          var defer = $q.defer();
+          var view = map.getView();
+          var source = view.getCenter();
+          var dist = Math.sqrt(Math.pow(source[0] - dest[0], 2),
+              Math.pow(source[1] - dest[1], 2));
+          var duration = Math.min(Math.sqrt(300 + dist /
+              view.getResolution() * 1000), 3000);
+          view.animate({
+            center: dest,
+            duration: 0
+          }, function(success) {
+            defer.resolve();
+            $rootScope.$digest();
+          });
           return defer.promise;
         },
 
@@ -1279,43 +1276,42 @@ goog.require('ga_urlutils_service');
         flyTo: function(map, ol3d, dest, extent) {
           if (ol3d && ol3d.getEnabled()) {
             return this.zoomToExtent(null, ol3d, extent);
-          } else {
-            var deferPan = $q.defer();
-            var deferZoom = $q.defer();
-            var size = map.getSize();
-            var source = map.getView().getCenter();
-            var sourceRes = map.getView().getResolution();
-            var dist = Math.sqrt(Math.pow(source[0] - dest[0], 2),
-                Math.pow(source[1] - dest[1], 2));
-            var duration = Math.min(Math.sqrt(300 + dist / sourceRes * 1000),
-                3000);
-            var destRes = Math.max(
-              (extent[2] - extent[0]) / size[0],
-              (extent[3] - extent[1]) / size[1]);
-            destRes = Math.max(map.getView().constrainResolution(destRes, 0, 0),
-                2.5);
-            var view = map.getView();
-            view.animate({
-              center: dest,
-              duration: duration
-            }, function() {
-              deferPan.resolve();
-              $rootScope.$digest();
-            });
-            view.animate({
-              // destRes * 1.2 needed to don't have up an down and up again
-              // in zoom.
-              resolution: Math.max(sourceRes, dist / 1000, destRes * 1.2),
-              duration: duration / 2
-            }, {
-              resolution: destRes,
-              duration: duration / 2,
-            }, function(success) {
-              deferZoom.resolve();
-              $rootScope.$digest();
-            });
-            return $q.all([deferPan.promise, deferZoom.promise]);
           }
+          var deferPan = $q.defer();
+          var deferZoom = $q.defer();
+          var size = map.getSize();
+          var source = map.getView().getCenter();
+          var sourceRes = map.getView().getResolution();
+          var dist = Math.sqrt(Math.pow(source[0] - dest[0], 2),
+              Math.pow(source[1] - dest[1], 2));
+          var duration = Math.min(Math.sqrt(300 + dist / sourceRes * 1000),
+              3000);
+          var destRes = Math.max(
+            (extent[2] - extent[0]) / size[0],
+            (extent[3] - extent[1]) / size[1]);
+          destRes = Math.max(map.getView().constrainResolution(destRes, 0, 0),
+              2.5);
+          var view = map.getView();
+          view.animate({
+            center: dest,
+            duration: duration
+          }, function() {
+            deferPan.resolve();
+            $rootScope.$digest();
+          });
+          view.animate({
+            // destRes * 1.2 needed to don't have up an down and up again
+            // in zoom.
+            resolution: Math.max(sourceRes, dist / 1000, destRes * 1.2),
+            duration: duration / 2
+          }, {
+            resolution: destRes,
+            duration: duration / 2,
+          }, function(success) {
+            deferZoom.resolve();
+            $rootScope.$digest();
+          });
+          return $q.all([deferPan.promise, deferZoom.promise]);
         },
 
         // Test if a layer is a KML layer added by the ImportKML tool or
