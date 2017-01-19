@@ -629,4 +629,10 @@
 .fa-link:before {
   content: "\f235";
 }
+.fa-map-o:before {
+  content: "\f236";
+}
+.fa-ga-3d-full:before {
+  content: "\f237";
+}
 
