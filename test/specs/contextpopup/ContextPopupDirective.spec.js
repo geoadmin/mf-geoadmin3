@@ -1,5 +1,5 @@
 describe('ga_contextpopup_directive', function() {
-  var element, handlers = {}, viewport, map, originalEvt, $rootScope;
+  var element, handlers = {}, viewport, map, originalEvt, $rootScope, gaReframe;
 
   beforeEach(function() {
 
@@ -30,12 +30,12 @@ describe('ga_contextpopup_directive', function() {
         '<div id="map"></div>' +
       '</div>');
 
-    inject(function(_$rootScope_, $compile) {
+    inject(function(_$rootScope_, _gaReframe_, $compile) {
       $rootScope = _$rootScope_;
+      gaReframe = _gaReframe_;
       map = new ol.Map({});
       $rootScope.map = map;
       $rootScope.options = {
-        lv03tolv95Url: '//api.example.com/reframe/lv03tolv95',
         heightUrl: '//api.geo.admin.ch/height',
         qrcodeUrl: '//api.geo.admin.ch/qrcodegenerator'
       };
@@ -89,6 +89,7 @@ describe('ga_contextpopup_directive', function() {
     });
 
     it('correctly handles map contextmenu events', function() {
+      var spy = sinon.spy(gaReframe, 'get03To95');
       var evt = $.Event('contextmenu');
       evt.coordinate = [661473, 188192];
       evt.pixel = [25, 50];
@@ -98,6 +99,7 @@ describe('ga_contextpopup_directive', function() {
       var tables = element.find('div.popover-content table');
       var tds = $(tables[0]).find('td');
 
+      expect(spy.callCount).to.eql(1);
       expect($(tds[0]).find('a').attr('href')).to.be('contextpopup_lv03_url');
       expect($(tds[2]).find('a').attr('href')).to.be('contextpopup_lv95_url');
       expect($(tds[1]).text()).to.be('661\'473.0, 188\'192.0');
@@ -129,6 +131,7 @@ describe('ga_contextpopup_directive', function() {
         $httpBackend.expectGET(expectedHeightUrl);
         $httpBackend.expectGET(expectedReframeUrl);
         $httpBackend.expectGET(expectedw3wUrl);
+        var spy = sinon.spy(gaReframe, 'get03To95');
         handlers.pointerdown(mapEvt);
 
         $timeout.flush();
@@ -140,6 +143,7 @@ describe('ga_contextpopup_directive', function() {
         var tables = element.find('div.popover-content table');
         var tds = $(tables[0]).find('td');
 
+        expect(spy.callCount).to.eql(1);
         expect($(tds[0]).find('a').attr('href')).to.be('contextpopup_lv03_url');
         expect($(tds[2]).find('a').attr('href')).to.be('contextpopup_lv95_url');
         expect($(tds[1]).text()).to.be('661\'473.0, 188\'192.0');
@@ -152,12 +156,14 @@ describe('ga_contextpopup_directive', function() {
 
         // Make sure there aren't any timouts left (this might
         // compenstate for a bug in angular.mock or angular in general)
+        var spy = sinon.spy(gaReframe, 'get03To95');
         $timeout.flush();
         handlers.pointerdown(mapEvt);
         handlers.pointerup(mapEvt);
         $timeout.verifyNoPendingTasks();
 
         var popover = element.find('.popover');
+        expect(spy.callCount).to.eql(0);
         expect(popover.css('display')).to.be('');
       });
 
@@ -165,6 +171,7 @@ describe('ga_contextpopup_directive', function() {
 
         // Make sure there aren't any timouts left (this might
         // compenstate for a bug in angular.mock or angular in general)
+        var spy = sinon.spy(gaReframe, 'get03To95');
         $timeout.flush();
         handlers.pointerdown(mapEvt);
         handlers.pointermove({
@@ -173,6 +180,7 @@ describe('ga_contextpopup_directive', function() {
         $timeout.verifyNoPendingTasks();
 
         var popover = element.find('.popover');
+        expect(spy.callCount).to.eql(0);
         expect(popover.css('display')).to.be('');
       });
     });

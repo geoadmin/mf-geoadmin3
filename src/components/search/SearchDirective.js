@@ -153,17 +153,18 @@ goog.require('ga_what3words_service');
             return;
           }
           // Coordinate?
-          var position = gaSearchGetCoordinate(
-              $scope.map.getView().getProjection().getExtent(), q);
+          var extent = $scope.map.getView().getProjection().getExtent();
+          gaSearchGetCoordinate(extent, q).then(function(position) {
+            if (position) {
+              gaMapUtils.moveTo($scope.map, $scope.ol3d, 8, position);
+              gaMarkerOverlay.add($scope.map, position, true);
+            }
+          });
 
           // w3w word?
           var w3w = gaWhat3Words.getCoordinate(q);
 
-          if (position) {
-            gaMapUtils.moveTo($scope.map, $scope.ol3d, 8, position);
-            gaMarkerOverlay.add($scope.map, position, true);
-          //TODO: canceling requests that might be out there...
-          } else if (w3w) {
+          if (w3w) {
             w3w.then(function(response) {
               var res = response.data;
               if (res && res.geometry && res.geometry.lng && res.geometry.lat) {

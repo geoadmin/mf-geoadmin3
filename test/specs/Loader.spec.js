@@ -35,6 +35,8 @@ beforeEach(function() {
       ogcproxyUrl: location.protocol + apiUrl + '/ogcproxy?url=',
       wmsUrl: location.protocol + wmsUrl,
       w3wUrl: 'dummy.test.url.com',
+      lv03tolv95Url: '//api.example.com/reframe/lv03tolv95',
+      lv95tolv03Url: '//api.example.com/reframe/lv95tolv03',
       w3wApiKey: 'testkey',
       whitelist: [
         'https://' + window.location.host + '/**'
