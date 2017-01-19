@@ -151,21 +151,7 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions,
             outlineWidth: 3,
             labelStyle: 2,
             font: "'24px arial'"
-
           });
-          /*tileset.style = new Cesium.Cesium3DTileStyle({
-            color: {
-              conditions: [
-                ['${Height} >= 100', 'color("orange", 0.5)'],
-                ['${Height} < 100', 'color("blue")'],
-                ['true', 'color("blue")']
-              ]
-            },
-            show: '${Height} > 0',
-            meta: {
-              description:'"Building id ${id} has height ${Height}."'
-            }
-          });*/
         }
         if (tileset) {
           scene.primitives.add(tileset);
@@ -175,7 +161,7 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions,
     });
 
     $rootScope.$on('gaBgChange', function(evt, bg) {
-      var show = !/void/.test(bg.id);
+      var show = !/^voidLayer$/.test(bg.id);
       primitives.forEach(function(prim) {
         prim.show = show;
       });
