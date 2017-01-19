@@ -52,7 +52,8 @@ goog.require('ga_seo_service');
                     var locdef = $q.defer();
                     gaLayers.getMetaDataOfLayer(layerId)
                         .then(function(response) {
-                          scope.layerMetadatas.push($sce.trustAsHtml(response.data));
+                          scope.layerMetadatas.push($sce.trustAsHtml(
+                              response.data));
                           locdef.resolve();
                         }, function() {
                           locdef.resolve();
