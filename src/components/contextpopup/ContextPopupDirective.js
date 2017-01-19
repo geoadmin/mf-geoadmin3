@@ -2,12 +2,14 @@ goog.provide('ga_contextpopup_directive');
 
 goog.require('ga_networkstatus_service');
 goog.require('ga_permalink');
+goog.require('ga_reframe_service');
 goog.require('ga_what3words_service');
 (function() {
 
   var module = angular.module('ga_contextpopup_directive', [
     'ga_networkstatus_service',
     'ga_permalink',
+    'ga_reframe_service',
     'ga_what3words_service',
     'pascalprecht.translate'
   ]);
@@ -15,7 +17,7 @@ goog.require('ga_what3words_service');
   module.directive('gaContextPopup',
       function($rootScope, $http, $translate, $q, $timeout, $window,
           gaBrowserSniffer, gaNetworkStatus, gaPermalink, gaGlobalOptions,
-          gaLang, gaWhat3Words) {
+          gaLang, gaWhat3Words, gaReframe) {
         return {
           restrict: 'A',
           replace: true,
@@ -28,7 +30,6 @@ goog.require('ga_what3words_service');
           link: function(scope, element, attrs) {
             var heightUrl = scope.options.heightUrl;
             var qrcodeUrl = scope.options.qrcodeUrl;
-            var lv03tolv95Url = scope.options.lv03tolv95Url;
 
             // The popup content is updated (a) on contextmenu events,
             // and (b) when the permalink is updated.
@@ -149,13 +150,8 @@ goog.require('ga_what3words_service');
                   scope.altitude = parseFloat(response.data.height);
                 });
 
-                $http.get(lv03tolv95Url, {
-                  params: {
-                    easting: coord21781[0],
-                    northing: coord21781[1]
-                  }
-                }).then(function(response) {
-                  coord2056 = response.data.coordinates;
+                gaReframe.get03To95(coord21781).then(function(coords) {
+                  coord2056 = coords;
                   scope.coord2056 = formatCoordinates(coord2056, 2);
                 });
 

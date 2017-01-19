@@ -2,68 +2,232 @@ describe('ga_search_service', function() {
 
   describe('gaSearchGetcoordinate', function() {
     var extent = [420000, 30000, 900000, 350000];
-    var getCoordinate;
+    var $rootScope, $httpBackend, lv95tolv03Url, getCoordinate, gaReframe;
+
+    var buildUrl = function(baseUrl, coords) {
+      return baseUrl + '?easting=' + coords[0] + '&northing=' + coords[1];
+    };
 
     beforeEach(function() {
-      inject(function($injector) {
+      inject(function($injector, gaGlobalOptions) {
         getCoordinate = $injector.get('gaSearchGetCoordinate');
+        gaReframe = $injector.get('gaReframe');
+        $rootScope = $injector.get('$rootScope');
+        $httpBackend = $injector.get('$httpBackend');
+        lv95tolv03Url = gaGlobalOptions.lv95tolv03Url;
       });
     });
 
-    it('supports CH1903 coordinate', function() {
-      expect(getCoordinate(extent, '600000 200000')).to.eql([600000, 200000]);
+    it('supports CH1903 coordinate', function(done) {
+      var spy = sinon.spy(gaReframe, 'get95To03')
+      getCoordinate(extent, '600000 200000').then(function(position) {
+        expect(position).to.eql([600000, 200000]);
+        expect(spy.callCount).to.eql(0);
+        done();
+      });
+      $rootScope.$digest();
     });
 
-    it('separated by comma', function() {
-      expect(getCoordinate(extent, '600000,200000')).to.eql([600000, 200000]);
+    it('separated by comma', function(done) {
+      var spy = sinon.spy(gaReframe, 'get95To03')
+      getCoordinate(extent, '600000,200000').then(function(position) {
+        expect(position).to.eql([600000, 200000]);
+        expect(spy.callCount).to.eql(0);
+        done();
+      });
+      $rootScope.$digest();
     });
 
-    it('containing apostrphoe CH1903 coordinate', function() {
-      expect(getCoordinate(extent, '600\'000.12 200\'000.23')).to.eql([600000.12, 200000.23]);
+    it('containing apostrphoe CH1903 coordinate', function(done) {
+      var spy = sinon.spy(gaReframe, 'get95To03')
+      getCoordinate(extent, '600\'000.12 200\'000.23').then(function(position) {
+        expect(position).to.eql([600000.12, 200000.23]);
+        expect(spy.callCount).to.eql(0);
+        done();
+      });
+      $rootScope.$digest();
     });
 
-    it('supports CH1903+ coordinate', function() {
-      expect(getCoordinate(extent, '2600000 1200000')).to.eql([600000, 200000]);
+    it('supports CH1903+ coordinate', function(done) {
+      var spy = sinon.spy(gaReframe, 'get95To03')
+      var coordinates = [2600000, 1200000];
+      var url = buildUrl(lv95tolv03Url, coordinates);
+      $httpBackend.expectGET(url).respond(400);
+      getCoordinate(extent, '2600000 1200000').then(function(position) {
+        expect(position).to.eql([600000, 200000]);
+        expect(spy.callCount).to.eql(1);
+        done();
+      });
+      $httpBackend.flush();
+      $rootScope.$digest();
     });
 
-    it('old school CH1903 coordinate', function() {
-      expect(getCoordinate(extent, '600 123 200 345')).to.eql([600123, 200345]);
+    it('old school CH1903 coordinate', function(done) {
+      var spy = sinon.spy(gaReframe, 'get95To03')
+      getCoordinate(extent, '600 123 200 345').then(function(position) {
+        expect(position).to.eql([600123, 200345]);
+        expect(spy.callCount).to.eql(0);
+        done();
+      });
+      $rootScope.$digest();
     });
 
-    it('old school CH1903+ coordinate', function() {
-      expect(getCoordinate(extent, '2600 987.2 1200 556.5')).to.eql([600987.2, 200556.5]);
+    it('old school CH1903+ coordinate', function(done) {
+      var spy = sinon.spy(gaReframe, 'get95To03')
+      var coordinates = [2600987.2, 1200556.5];
+      var url = buildUrl(lv95tolv03Url, coordinates);
+      $httpBackend.expectGET(url).respond(400);
+      getCoordinate(extent, '2600 987.2 1200 556.5').then(function(position) {
+        expect(position).to.eql([600987.2, 200556.5]);
+        expect(spy.callCount).to.eql(1);
+        done();
+      });
+      $httpBackend.flush();
+      $rootScope.$digest();
     });
 
-    it('supports latitude and longitude as decimal', function() {
-      expect(getCoordinate(extent, '6.96948 46.9712')).to.eql([564298.937, 202343.701]);
-      expect(getCoordinate(extent, '46.9712 6.96948')).to.eql([564298.937, 202343.701]);
+    it('supports latitude and longitude as decimal (lon/lat)', function(done) {
+      var spy = sinon.spy(gaReframe, 'get95To03')
+      getCoordinate(extent, '6.96948 46.9712').then(function(position) {
+        expect(position).to.eql([564298.937, 202343.701]);
+        expect(spy.callCount).to.eql(0);
+        done();
+      });
+      $rootScope.$digest();
     });
 
-    it('supports latitude and longitude as DMS', function() {
-      expect(getCoordinate(extent, '7° E 46° N')).to.eql([566016.05, 94366.859]);
-      expect(getCoordinate(extent, '7° 1\' E 46° N')).to.eql([567307.273, 94359.756]);
-      expect(getCoordinate(extent, '7° 1\' 25.0\'\' E 46° N')).to.eql([567845.283, 94356.877]);
-      expect(getCoordinate(extent, '7° 1\' 25.0\'\' E 46° 1\' N')).to.eql([567855.114, 96209.641]);
-      expect(getCoordinate(extent, '7° 1\' 25.0\'\' E 46° 1\' 25.0\'\' N')).to.eql([567859.21, 96981.625]);
-      expect(getCoordinate(extent, '46° 1\' 25.0\'\' N 7° 1\' 25.0\'\' E')).to.eql([567859.21, 96981.625]);
+    it('supports latitude and longitude as decimal (lat/lon)', function(done) {
+      var spy = sinon.spy(gaReframe, 'get95To03')
+      getCoordinate(extent, '46.9712 6.96948').then(function(position) {
+        expect(position).to.eql([564298.937, 202343.701]);
+        expect(spy.callCount).to.eql(0);
+        done();
+      });
+      $rootScope.$digest();
     });
 
-    it('supports MGRS and USGS grid', function() {
-      expect(getCoordinate(extent, '32TLT8100')).to.eql([600319.427, 199594.862]);
-      expect(getCoordinate(extent, '32TLT 8 0')).to.eql([527326.065, 198141.932]);
-      expect(getCoordinate(extent, '32TLT')).to.eql(undefined);
+    it('supports latitude and longitude as DMS (test D,D)', function(done) {
+      getCoordinate(extent, '7° E 46° N').then(function(position) {
+        expect(position).to.eql([566016.05, 94366.859]);
+        done();
+      });
+      $rootScope.$digest();
     });
 
-    it('checks the swiss extent', function() {
-      expect(getCoordinate(extent, '1600000 1200000')).to.be(undefined);
-      expect(getCoordinate(extent, '10° E 50° N')).to.be(undefined);
-      expect(getCoordinate(extent, '16SGL01948253 ')).to.be(undefined);
+    it('supports latitude and longitude as DMS (test DM,D)', function(done) {
+      getCoordinate(extent, '7° 1\' E 46° N').then(function(position) {
+        expect(position).to.eql([567307.273, 94359.756]);
+        done();
+      });
+      $rootScope.$digest();
     });
 
-    it('works only in north east', function() {
-      expect(getCoordinate(extent, '10° W 50° N')).to.be(undefined);
-      expect(getCoordinate(extent, '10° W 50° S')).to.be(undefined);
-      expect(getCoordinate(extent, '10° E 50° S')).to.be(undefined);
+    it('supports latitude and longitude as DMS (test DMS,D)', function(done) {
+      getCoordinate(extent, '7° 1\' 25.0\'\' E 46° N').then(function(position) {
+        expect(position).to.eql([567845.283, 94356.877]);
+        done();
+      });
+      $rootScope.$digest();
+    });
+
+    it('supports latitude and longitude as DMS (test DMS,DM)', function(done) {
+      getCoordinate(extent, '7° 1\' 25.0\'\' E 46° 1\' N').then(function(position) {
+        expect(position).to.eql([567855.114, 96209.641]);
+        done();
+      });
+      $rootScope.$digest();
+    });
+
+    it('supports latitude and longitude as DMS (test DMS,DM)', function(done) {
+      getCoordinate(extent, '7° 1\' 25.0\'\' E 46° 1\' 25.0\'\' N').then(function(position) {
+        expect(position).to.eql([567859.21, 96981.625]);
+        done();
+      });
+      $rootScope.$digest();
+    });
+
+    it('supports latitude and longitude as DMS (test DMS,DMS)', function(done) {
+      getCoordinate(extent, '46° 1\' 25.0\'\' N 7° 1\' 25.0\'\' E').then(function(position) {
+        expect(position).to.eql([567859.21, 96981.625]);
+        done();
+      });
+      $rootScope.$digest();
+    });
+
+    it('supports MGRS and USGS grid 32TLT8100', function(done) {
+      getCoordinate(extent, '32TLT8100').then(function(position) {
+        expect(position).to.eql([600319.427, 199594.862]);
+        done();
+      });
+      $rootScope.$digest();
+    });
+
+    it('supports MGRS and USGS grid 32TLT 8 0', function(done) {
+      getCoordinate(extent, '32TLT 8 0').then(function(position) {
+        expect(position).to.eql([527326.065, 198141.932]);
+        done();
+      });
+      $rootScope.$digest();
+    });
+
+    it('supports MGRS and USGS grid 32TLT', function(done) {
+      getCoordinate(extent, '32TLT').then(function(position) {
+        expect(position).to.be(undefined);
+        done();
+      });
+      $rootScope.$digest();
+    });
+
+    it('checks the swiss extent LV95', function(done) {
+      var coordinates = [1600000, 1200000];
+      var url = buildUrl(lv95tolv03Url, coordinates);
+      $httpBackend.expectGET(url).respond(400);
+      getCoordinate(extent, '1600000 1200000').then(function(position) {
+        expect(position).to.be(undefined);
+        done();
+      });
+      $httpBackend.flush();
+      $rootScope.$digest();
+    });
+
+    it('checks the swiss extent WGS84 DMS', function(done) {
+      getCoordinate(extent, '10° E 50° N').then(function(position) {
+        expect(position).to.be(undefined);
+        done();
+      });
+      $rootScope.$digest();
+    });
+
+    it('checks the swiss extent MGRS', function(done) {
+      getCoordinate(extent, '16SGL01948253 ').then(function(position) {
+        expect(position).to.be(undefined);
+        done();
+      });
+      $rootScope.$digest();
+    });
+
+    it('works only in north east (test north west)', function(done) {
+      getCoordinate(extent, '10° W 50° N').then(function(position) {
+        expect(position).to.be(undefined);
+        done();
+      });
+      $rootScope.$digest();
+    });
+
+    it('works only in north east (test south west)', function(done) {
+      getCoordinate(extent, '10° W 50° S').then(function(position) {
+        expect(position).to.be(undefined);
+        done();
+      });
+      $rootScope.$digest();
+    });
+
+    it('works only in north east (test south east)', function(done) {
+      getCoordinate(extent, '10° E 50° S').then(function(position) {
+        expect(position).to.be(undefined);
+        done();
+      });
+      $rootScope.$digest();
     });
   });
 

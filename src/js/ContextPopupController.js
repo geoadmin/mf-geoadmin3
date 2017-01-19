@@ -7,8 +7,7 @@ goog.provide('ga_contextpopup_controller');
       function($scope, gaGlobalOptions) {
         $scope.options = {
           heightUrl: gaGlobalOptions.apiUrl + '/rest/services/height',
-          qrcodeUrl: gaGlobalOptions.apiUrl + '/qrcodegenerator',
-          lv03tolv95Url: 'https://geodesy.geo.admin.ch/reframe/lv03tolv95'
+          qrcodeUrl: gaGlobalOptions.apiUrl + '/qrcodegenerator'
         };
 
       });
