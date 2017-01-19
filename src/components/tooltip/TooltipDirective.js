@@ -86,8 +86,11 @@ goog.require('ga_topic_service');
 
         // Test if a feature is queryable.
         var isFeatureQueryable = function(feature) {
+          if (!feature) {
+            return false;
+          }
           var geom = feature.getGeometry();
-          return feature && feature.get('name') || feature.get('description') ||
+          return feature.get('name') || feature.get('description') ||
               !(geom instanceof ol.geom.MultiPoint ||
               geom instanceof ol.geom.MultiLineString ||
               geom instanceof ol.geom.MultiPolygon ||
