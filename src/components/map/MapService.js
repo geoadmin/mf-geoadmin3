@@ -716,7 +716,7 @@ goog.require('ga_urlutils_service');
                     '{eastProjected},{northProjected}',
               width: tileSize,
               height: tileSize,
-              styles: 'default'
+              styles: ''
             };
             if (timestamp) {
               wmsParams.time = timestamp;
