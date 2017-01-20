@@ -456,7 +456,7 @@ goog.require('ga_urlutils_service');
             cpt = 0;
           }
           return vectorTilesUrlTemplate
-              .replace('{s}', subdomains[++cpt])
+              .replace('{s}', subdomains[cpt++])
               .replace('{Layer}', layer)
               .replace('{Time}', time);
         };
