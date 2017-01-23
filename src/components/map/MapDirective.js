@@ -123,8 +123,8 @@ goog.require('ga_styles_service');
             var position, heading, pitch;
             if (isFinite(params.lon) && isFinite(params.lat) &&
                 isFinite(params.elevation)) {
-              var lon = params.lon;
-              var lat = params.lat;
+              var lon = parseFloat(params.lon);
+              var lat = parseFloat(params.lat);
               var elevation = parseFloat(params.elevation);
               position = Cesium.Cartesian3.fromDegrees(lon, lat, elevation);
             }
