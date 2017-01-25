@@ -114,7 +114,7 @@ goog.require('ga_topic_service');
 
       var cesium = new GaCesium($scope.map, gaPermalink, gaLayers,
                                 gaGlobalOptions, gaBrowserSniffer, $q,
-                                $translate, $rootScope);
+                                $translate, $rootScope, gaBackground);
       cesium.loaded().then(function(ol3d) {
         $scope.ol3d = ol3d;
         if (!$scope.ol3d) {
