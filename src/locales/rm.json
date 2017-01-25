@@ -278,6 +278,7 @@
 "offline_less_than_95": "Problem: la charta na pudeva betg vegnir memorisada cumplet. Per plaschair empruvais anc ina giada.",
 "offline_modal_title": "Charta offline",
 "offline_no_cacheable_layers": "I n'èn vegnidas tschernidas naginas chartas per arcunar.",
+"offline_save": "Arcurnar charta",
 "offline_save_new_data": "Memorisar la nova charta",
 "offline_save_warning": "Chargiar e memorisar la charta d'ina grondezza da ~50MB?",
 "offline_show": "Zeige Offline Menu",
