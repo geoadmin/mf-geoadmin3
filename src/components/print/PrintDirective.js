@@ -355,7 +355,8 @@ goog.require('ga_urlutils_service');
           // Handle ol.style.RegularShape by converting points to polygons
           var image = styleToEncode.getImage();
           if (geometry instanceof ol.geom.Point &&
-              image instanceof ol.style.RegularShape) {
+              image instanceof ol.style.RegularShape &&
+              !(image instanceof ol.style.Circle)) {
             var scale = parseFloat($scope.scale.value);
             var resolution = scale / UNITS_RATIO / POINTS_PER_INCH;
             geometry = gaPrintStyle.olPointToPolygon(
