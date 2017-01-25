@@ -11,11 +11,12 @@ goog.provide('ga_cesium');
  * @param {Object} $q
  * @param {Object} $translate
  * @param {Object} $rootScope
+ * @param {Object} gaBackground
  *
  * @constructor
  */
 var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions,
-    gaBrowserSniffer, $q, $translate, $rootScope) {
+    gaBrowserSniffer, $q, $translate, $rootScope, gaBackground) {
   // Url of ol3cesium library
   var ol3CesiumLibUrl = gaGlobalOptions.resourceUrl;
   if (gaGlobalOptions.buildMode === 'prod') {
@@ -160,17 +161,24 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions,
       }
     });
 
+    // show/hide/add tilesets when needed
+    manageTilesets(primitives, scene, gaBackground.get());
+
     $rootScope.$on('gaBgChange', function(evt, bg) {
-      var show = !/^voidLayer$/.test(bg.id);
-      primitives.forEach(function(prim) {
-        if (!scene.primitives.contains(prim)) {
-          scene.primitives.add(prim);
-        }
-        prim.show = show;
-      });
+      manageTilesets(primitives, scene, bg);
     });
 
     return cesiumViewer;
+  };
+
+  var manageTilesets = function(primitives, scene, bg) {
+    var show = !/^voidLayer$/.test(bg.id);
+    primitives.forEach(function(prim) {
+      if (!scene.primitives.contains(prim)) {
+        scene.primitives.add(prim);
+      }
+      prim.show = show;
+    });
   };
 
   var limitCamera = function() {
