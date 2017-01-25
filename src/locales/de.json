@@ -278,6 +278,7 @@
 "offline_less_than_95": "Problem: Karte konnte nicht komplett gespeichert werden. Bitte versuchen Sie es noch einmal.",
 "offline_modal_title": "Offline Karte",
 "offline_no_cacheable_layers": "Es wurden keine Karten zum speichern ausgewählt.",
+"offline_save": "Karte Speichern",
 "offline_save_new_data": "Neue Karte speichern ",
 "offline_save_warning": "- ~50MB Kartenmaterial wird heruntergeladen werden (bis Massstab 1:25'000) - Sperren Sie nicht ihr Gerät und verlassen Sie nicht die Seite während des Abspeicherns. \\\"Private\\\" mode des Browsers muss deaktiviert sein.",
 "offline_show": "Zeige Offline Menu",

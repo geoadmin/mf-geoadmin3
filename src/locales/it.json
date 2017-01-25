@@ -278,6 +278,7 @@
 "offline_less_than_95": "Problema: la carta non è stata scaricata. Si prega di riprovare.",
 "offline_modal_title": "Mappa offline",
 "offline_no_cacheable_layers": "Nessuna carta da salvare.",
+"offline_save": "Salvare la mappa",
 "offline_save_new_data": "Salvare una nuova mappa",
 "offline_save_warning": "- Saranno scaricati ~50MB di carte (fino alla scala 1:25000) - Non bloccare il dispositivo e non abbandonare questa pagina durante il download. Disattivare la modalità \\\"privata\\\"",
 "offline_show": "Mostra il menu offline",

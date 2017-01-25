@@ -246,6 +246,7 @@
   "topic_vu_tooltip": "",
   "vu_service_link_label": "",
   "vu_service_link_href": "",
+  "offline_save": "",
   "offline_show": "",
   "offline_toggle": "",
   "abort": "",
