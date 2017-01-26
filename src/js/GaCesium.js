@@ -172,7 +172,7 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions,
   };
 
   var manageTilesets = function(primitives, scene, bg) {
-    var show = !/^voidLayer$/.test(bg.id);
+    var show = !bg || !/^voidLayer$/.test(bg.id);
     primitives.forEach(function(prim) {
       if (!scene.primitives.contains(prim)) {
         scene.primitives.add(prim);
