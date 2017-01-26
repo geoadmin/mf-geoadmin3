@@ -396,6 +396,7 @@ goog.require('ga_topic_service');
               var mapRes = map.getView().getResolution();
               var mapProj = map.getView().getProjection();
               var pixel = map.getPixelFromCoordinate(coordinate);
+              var all = []; // List of promises launched
               var layersToQuery = getLayersToQuery(map);
 
               // When 3d is Active we use the cesium native function to get the
@@ -407,6 +408,7 @@ goog.require('ga_topic_service');
                    var prim = pickedObjects[i].primitive;
                    if (isFeatureQueryable(prim.olFeature)) {
                      showVectorFeature(prim.olFeature, prim.olLayer);
+                     all.push($q.when(1));
                      break;
                    }
                 }
@@ -417,23 +419,19 @@ goog.require('ga_topic_service');
                   var feature = findVectorFeature(map, pixel, layerToQuery);
                   if (feature) {
                     showVectorFeature(feature, layerToQuery);
+                    all.push($q.when(1));
                   }
                 });
               }
 
-              var all = []; // List of promises launched
-
               // Go through all queryable bod layers.
               // Launch identify requests.
               layersToQuery.bodLayers.forEach(function(layerToQuery) {
+                var config = gaLayers.getLayer(layerToQuery.bodId);
                 var geometry = new ol.geom.Point(coordinate);
-                var returnGeometry = !!gaLayers.getLayerProperty(
-                    layerToQuery.bodId, 'highlightable');
-                var shopLayer = (gaLayers.getLayerProperty(
-                    layerToQuery.bodId, 'shop') && !gaLayers.getLayerProperty(
-                    layerToQuery.bodId, 'shopMulti'));
-                var shopMultiLayer = gaLayers.getLayerProperty(
-                    layerToQuery.bodId, 'shopMulti');
+                var returnGeometry = !!config.highlightable;
+                var shopLayer = config.shop && !config.shopMulti;
+                var shopMultiLayer = config.shopMulti;
 
                 var limit = shopMultiLayer ? 10 : null;
                 var order = limit ? 'distance' : null;
