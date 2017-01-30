@@ -467,10 +467,9 @@ goog.require('ga_urlutils_service');
           this.group.select('.ga-profile-slopeDist title')
               .text($translate.instant('profile_slope_distance'));
 
-
           this.group.select('.ga-profile-hikTime ' +
                   'text.ga-profile-icon-text')
-              .text($translate.instant('approx_abbr') + ' ' + 
+              .text($translate.instant('approx_abbr') + ' ' +
                   gaTimeFormatFilter(this.hikTime));
           this.group.select('.ga-profile-hikTime title')
               .text($translate.instant('profile_hike_time'));
