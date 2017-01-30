@@ -10,7 +10,8 @@ goog.require('ga_profile_service');
   ]);
 
   module.directive('gaProfile', function($rootScope, $compile, $window,
-      $translate, gaDebounce, gaProfile, gaMapUtils, gaStyleFactory, measureFilter, gaTimeFormatFilter) {
+      $translate, gaDebounce, gaProfile, gaMapUtils, gaStyleFactory,
+       measureFilter, gaTimeFormatFilter) {
     return {
       restrict: 'A',
       templateUrl: 'components/profile/partials/profile.html',
@@ -30,43 +31,49 @@ goog.require('ga_profile_service');
         scope.diff = function() {
            if (profile) {
              return measureFilter(profile.elevDiff(), 'distance', 'm', 2, true);
-           } 
+           }
         };
-        
+
         scope.twoDiff = function() {
            if (profile) {
-             return measureFilter(profile.twoElevDiff()[0], 'distance', 'm', 2, true);
-           } 
+             return measureFilter(profile.twoElevDiff()[0],
+               'distance', 'm', 2, true);
+           }
         };
-       
+
          scope.twoDiff1 = function() {
              if (profile) {
-               return measureFilter(profile.twoElevDiff()[1], 'distance', 'm', 2, true);
+               return measureFilter(profile.twoElevDiff()[1],
+                 'distance', 'm', 2, true);
              }
           };
 
-     
+
         scope.elPoi = function() {
            if (profile) {
-             return measureFilter(profile.elPoints()[0], 'distance', 'm', 2, true);
+             return measureFilter(profile.elPoints()[0],
+               'distance', 'm', 2, true);
            }
         };
-        
+
         scope.elPoi1 = function() {
            if (profile) {
-             return measureFilter(profile.elPoints()[1], 'distance', 'm', 2, true);
+             return measureFilter(profile.elPoints()[1],
+               'distance', 'm', 2, true);
            }
         };
 
         scope.dist = function() {
            if (profile) {
-             return measureFilter(profile.distance(), 'distance', ['km', 'm'], 2, true);
+             return measureFilter(profile.distance(),
+               'distance', ['km', 'm'], 2, true);
            }
         };
 
         scope.slopeDist = function() {
            if (profile) {
-             return measureFilter(profile.slopeDistance(), 'distance', ['km', 'm'], 2, true);
+             return measureFilter(profile.slopeDistance(),
+               'distance', ['km', 'm'], 2, true);
            }
         };
 
@@ -75,7 +82,7 @@ goog.require('ga_profile_service');
              return gaTimeFormatFilter(profile.hikingTime());
            }
         };
- 
+
         var onCreate = function(newProfile) {
           profile = newProfile;
           var profileEl = angular.element(
@@ -92,7 +99,7 @@ goog.require('ga_profile_service');
           var areaChartPath = $window.d3.select('.ga-profile-area');
           attachPathListeners(areaChartPath);
         };
-         
+
         var update = function(feature) {
           gaProfile.update(profile, feature).then(function(prof) {
             scope.unitX = prof.unitX;
