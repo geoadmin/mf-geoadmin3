@@ -66,7 +66,8 @@ describe('ga_query_service', function() {
     });
 
     it('set DateTimePicker librairy url', function() {
-      expect(gaQuery.dpUrl).to.be('http://localhost:8081/123456/lib/bootstrap-datetimepicker.min.js');
+      var url = window.location.origin + '/123456/lib/bootstrap-datetimepicker.min.js';
+      expect(gaQuery.dpUrl).to.be(url);
     });
 
     describe('getPredefQueries', function() {
