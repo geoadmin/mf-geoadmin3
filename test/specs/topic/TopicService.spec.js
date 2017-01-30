@@ -2,7 +2,7 @@ describe('ga_topic_service', function() {
 
   describe('gaTopic', function() {
     var gaTopic, $httpBackend, $rootScope, gaGlobalOptions, topicPermalink, gaPermalink,
-        expectedUrl = 'http://localhost:8081/123456/services',
+        expectedUrl = window.location.origin + '/123456/services',
         topics = [{
           'langs': 'de,fr,it',
           'selectedLayers': [],

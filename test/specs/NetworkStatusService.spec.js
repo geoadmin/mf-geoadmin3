@@ -210,7 +210,7 @@ describe('ga_networkstatus_service', function() {
         gaNetworkStatus.check();
         var arg = spyAjax.args[0][0];
         expect(arg.method).to.be('GET');
-        expect(arg.url).to.be('http://localhost:8081/checker');
+        expect(arg.url).to.be(window.location.origin + '/checker');
         expect(arg.timeout).to.be(1000);
         expect(arg.success).to.be.a(Function);
         expect(arg.error).to.be.a(Function);
