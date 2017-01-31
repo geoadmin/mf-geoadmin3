@@ -17,6 +17,9 @@ LAST_API_URL := $(shell if [ -f .build-artefacts/last-api-url ]; then cat .build
 MAPPROXY_URL ?= //wmts{s}.geo.admin.ch
 MAPPROXY_TECH_URL ?= //wmts{s}.
 LAST_MAPPROXY_URL := $(shell if [ -f .build-artefacts/last-mapproxy-url ]; then cat .build-artefacts/last-mapproxy-url 2> /dev/null; else echo '-none-'; fi)
+VECTORTILES_URL ?= //vectortiles{s}.geo.admin.ch
+VECTORTILES_TECH_URL ?= //vectortiles{s}.
+LAST_VECTORTILES_URL := $(shell if [ -f .build-artefacts/last-vectortiles-url ]; then cat .build-artefacts/last-vectortiles-url 2> /dev/null; else echo '-none-'; fi)
 WMS_URL ?= //wms.geo.admin.ch
 WMS_TECH_URL ?= //wms-bgdi.
 LAST_WMS_URL := $(shell if [ -f .build-artefacts/last-wms-url ]; then cat .build-artefacts/last-wms-url 2> /dev/null; else echo '-none-'; fi)
@@ -142,6 +145,7 @@ help:
 	@echo "- API_URL Service URL         (build with: $(LAST_API_URL), current value: $(API_URL))"
 	@echo "- PRINT_URL Print service URL (build with: $(LAST_PRINT_URL), current value: $(PRINT_URL))"
 	@echo "- MAPPROXY_URL Service URL    (build with: $(LAST_MAPPROXY_URL), current value: $(MAPPROXY_URL))"
+	@echo "- VECTORTILES_URL Service URL (build with: $(LAST_VECTORTILES_URL), current value: $(VECTORTILES_URL))"
 	@echo "- SHOP_URL Service URL        (build with: $(LAST_SHOP_URL), current value: $(SHOP_URL))"
 	@echo "- WMS_URL Service URL         (build with  $(LAST_WMS_URL), current value: $(WMS_URL))"
 	@echo "- APACHE_BASE_PATH Base path  (build with: $(LAST_APACHE_BASE_PATH), current value: $(APACHE_BASE_PATH))"
@@ -445,6 +449,8 @@ define buildpage
 		--var "print_tech_url=$(PRINT_TECH_URL)" \
 		--var "mapproxy_url=$(MAPPROXY_URL)" \
 		--var "mapproxy_tech_url=$(MAPPROXY_TECH_URL)" \
+		--var "vectortiles_url=$(VECTORTILES_URL)" \
+		--var "vectortiles_tech_url=$(VECTORTILES_TECH_URL)" \
 		--var "public_url=$(PUBLIC_URL)" \
 		--var "public_tech_url=$(PUBLIC_TECH_URL)" \
 		--var "shop_url=$(SHOP_URL)" \
@@ -486,6 +492,7 @@ prd/index.html: src/index.mako.html \
 	    ${HTMLMIN_CMD} \
 	    .build-artefacts/last-api-url \
 	    .build-artefacts/last-mapproxy-url \
+	    .build-artefacts/last-vectortiles-url \
 	    .build-artefacts/last-shop-url \
 	    .build-artefacts/last-wms-url \
 	    .build-artefacts/last-public-url \
@@ -501,6 +508,7 @@ prd/mobile.html: src/index.mako.html \
 	    ${HTMLMIN_CMD} \
 	    .build-artefacts/last-api-url \
 	    .build-artefacts/last-mapproxy-url \
+	    .build-artefacts/last-vectortiles-url \
 	    .build-artefacts/last-shop-url \
 	    .build-artefacts/last-wms-url \
 	    .build-artefacts/last-public-url \
@@ -556,6 +564,7 @@ src/index.html: src/index.mako.html \
 	    ${MAKO_CMD} \
 	    .build-artefacts/last-api-url \
 	    .build-artefacts/last-mapproxy-url \
+	    .build-artefacts/last-vectortiles-url \
 	    .build-artefacts/last-shop-url \
 	    .build-artefacts/last-wms-url \
 	    .build-artefacts/last-public-url \
@@ -567,6 +576,7 @@ src/mobile.html: src/index.mako.html \
 	    ${MAKO_CMD} \
 	    .build-artefacts/last-api-url \
 	    .build-artefacts/last-mapproxy-url \
+	    .build-artefacts/last-vectortiles-url \
 	    .build-artefacts/last-shop-url \
 	    .build-artefacts/last-wms-url \
 	    .build-artefacts/last-public-url \
@@ -578,6 +588,7 @@ src/embed.html: src/index.mako.html \
 	    ${MAKO_CMD} \
 	    .build-artefacts/last-api-url \
 	    .build-artefacts/last-mapproxy-url \
+	    .build-artefacts/last-vectortiles-url \
 	    .build-artefacts/last-shop-url \
 	    .build-artefacts/last-wms-url \
 	    .build-artefacts/last-public-url \
@@ -711,6 +722,10 @@ ${PYTHON_VENV}:
 .build-artefacts/last-mapproxy-url::
 	mkdir -p $(dir $@)
 	test "$(MAPPROXY_URL)" != "$(LAST_MAPPROXY_URL)" && echo $(MAPPROXY_URL) > .build-artefacts/last-mapproxy-url || :
+
+.build-artefacts/last-vectortiles-url::
+	mkdir -p $(dir $@)
+	test "$(VECTORTILES_URL)" != "$(LAST_VECTORTILES_URL)" && echo $(VECTORTILES_URL) > .build-artefacts/last-vectortiles-url || :
 
 .build-artefacts/last-shop-url::
 	mkdir -p $(dir $@)
