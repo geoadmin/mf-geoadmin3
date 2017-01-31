@@ -792,6 +792,7 @@ itemscope itemtype="http://schema.org/WebApplication"
         var defaultApiUrl = prtl + '${api_url}';
         var apiUrl = setBackend(defaultApiUrl, prtl + '${api_tech_url}', 'api_url');
         var mapproxyUrl = setBackend(prtl + '${mapproxy_url}', prtl + '${mapproxy_tech_url}', 'mapproxy_url');
+        var vectorTilesUrl = setBackend(prtl + '${vectortiles_url}', prtl + '${vectortiles_tech_url}', 'vectortiles_url');
         var wmsUrl = setBackend(prtl + '${wms_url}',  prtl + '${wms_tech_url}', 'wms_url');
         var shopUrl = setBackend(prtl + '${shop_url}', prtl + '${shop_tech_url}', 'shop_url');
         var publicUrl = setBackend(prtl + '${public_url}', prtl + '${public_tech_url}', 'public_url');
@@ -808,6 +809,7 @@ itemscope itemtype="http://schema.org/WebApplication"
           apiUrl: apiUrl,
           printUrl: printUrl,
           mapproxyUrl: mapproxyUrl,
+          vectorTilesUrl: vectorTilesUrl,
           shopUrl: shopUrl,
           publicUrl: publicUrl,
           publicUrlRegexp: new RegExp('${public_url_regexp}'),
@@ -855,12 +857,12 @@ itemscope itemtype="http://schema.org/WebApplication"
           gaLayersProvider.dfltWmsSubdomains = ['', '0', '1', '2', '3', '4'];
           gaLayersProvider.dfltWmtsNativeSubdomains = ['100', '101', '102', '103', '104', '105', '106', '107', '108', '109'];
           gaLayersProvider.dfltWmtsMapProxySubdomains = staging === 'prod' ? ['100', '101', '102', '103', '104', '105', '106', '107', '108', '109'] : ['20', '21', '22', '23', '24'];
-          gaLayersProvider.dfltVectorTilesSubdomains = ['100', '101', '102', '103', '104'];
+          gaLayersProvider.dfltVectorTilesSubdomains = staging === 'prod' ? ['100', '101', '102', '103', '104'] : ['', '0', '1', '2', '3', '4'];
           gaLayersProvider.wmsUrlTemplate = '//wms{s}.geo.admin.ch/';
           gaLayersProvider.wmtsGetTileUrlTemplate = '//wmts{s}.geo.admin.ch/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{y}/{x}.{Format}';
           gaLayersProvider.wmtsMapProxyGetTileUrlTemplate =  gaGlobalOptions.mapproxyUrl + '/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{x}/{y}.{Format}';
           gaLayersProvider.terrainTileUrlTemplate = '//terrain100.geo.admin.ch/1.0.0/{Layer}/default/{Time}/4326';
-          gaLayersProvider.vectorTilesUrlTemplate = '//vectortiles{s}.geo.admin.ch/{Layer}/{Time}/';
+          gaLayersProvider.vectorTilesUrlTemplate = gaGlobalOptions.vectorTilesUrl + '/{Layer}/{Time}/';
           gaLayersProvider.imageryMetadataUrl = '//3d.geo.admin.ch/imagery/';
           if (apiOverwrite) {
             gaLayersProvider.layersConfigUrlTemplate = apiUrl + '/rest/services/all/MapServer/layersConfig?lang={Lang}';
