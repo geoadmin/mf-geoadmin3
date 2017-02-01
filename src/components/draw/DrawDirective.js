@@ -335,7 +335,7 @@ goog.require('ga_styles_service');
             unWatch.pop()();
           }
 
-          wasNotOnMap = (map.getLayers().getArray().indexOf(layer) == -1);
+          wasNotOnMap = map.getLayers().getArray().indexOf(layer) == -1;
           // Re-add the layer if it's not already on map.
           if (wasNotOnMap) {
             map.addLayer(layer);
