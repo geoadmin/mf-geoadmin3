@@ -1,6 +1,6 @@
 // Ol3-Cesium. See https://github.com/openlayers/ol3-cesium/
 // License: https://github.com/openlayers/ol3-cesium/blob/master/LICENSE
-// Version: v1.23-3-gfc863aa
+// Version: v1.23-5-g40ab703
 
 var CLOSURE_NO_DEPS = true;
 // Copyright 2006 The Closure Library Authors. All Rights Reserved.
@@ -27648,21 +27648,37 @@ olcs.FeatureConverter.prototype.olLineStringGeometryToCesium = function(layer, f
     material: this.olStyleToCesium(feature, olStyle, true)
   });
 
-  // Handle both color and width
-  var outlineGeometry = new Cesium.PolylineGeometry({
+  var geometryOptions = {
     // always update Cesium externs before adding a property
     positions: positions,
     width: this.extractLineWidthFromOlStyle(olStyle),
     vertexFormat: appearance.vertexFormat
-  });
+  };
 
-  var outlinePrimitive = new Cesium.Primitive({
-    // always update Cesium externs before adding a property
-    geometryInstances: new Cesium.GeometryInstance({
-      geometry: outlineGeometry
-    }),
-    appearance: appearance
-  });
+  var outlinePrimitive;
+  var heightReference = this.getHeightReference(layer, feature, olGeometry);
+
+  if (heightReference == Cesium.HeightReference.CLAMP_TO_GROUND) {
+    var color = this.extractColorFromOlStyle(olStyle, true);
+    outlinePrimitive = new Cesium.GroundPrimitive({
+      // always update Cesium externs before adding a property
+      geometryInstances: new Cesium.GeometryInstance({
+        geometry: new Cesium.CorridorGeometry(geometryOptions),
+        attributes : {
+          color : Cesium.ColorGeometryInstanceAttribute.fromColor(color)
+        }
+      })
+    });
+  } else {
+    outlinePrimitive = new Cesium.Primitive({
+      // always update Cesium externs before adding a property
+      geometryInstances: new Cesium.GeometryInstance({
+        geometry: new Cesium.PolylineGeometry(geometryOptions)
+      }),
+      appearance: appearance
+    });
+  }
+
   this.setReferenceForPicking(layer, feature, outlinePrimitive);
 
   return this.addTextStyle(layer, feature, olGeometry, olStyle,
@@ -32451,7 +32467,8 @@ goog.inherits(olcs.GaVectorSynchronizer, olcs.VectorSynchronizer);
  */
 olcs.GaVectorSynchronizer.prototype.createSingleLayerCounterparts =
     function(olLayer) {
-  if (olLayer.get('type') === 'KML' && !/:\/\/public\./.test(olLayer.get('url'))) {
+  if (olLayer.get('type') === 'KML' && olLayer.get('url') &&
+      !/:\/\/public\./.test(olLayer.get('url'))) {
     return null;
   }
   return goog.base(this, 'createSingleLayerCounterparts', olLayer);

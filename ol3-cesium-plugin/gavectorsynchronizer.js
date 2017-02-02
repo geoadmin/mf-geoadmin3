@@ -23,7 +23,8 @@ goog.inherits(olcs.GaVectorSynchronizer, olcs.VectorSynchronizer);
  */
 olcs.GaVectorSynchronizer.prototype.createSingleLayerCounterparts =
     function(olLayer) {
-  if (olLayer.get('type') === 'KML' && !/:\/\/public\./.test(olLayer.get('url'))) {
+  if (olLayer.get('type') === 'KML' && olLayer.get('url') &&
+      !/:\/\/public\./.test(olLayer.get('url'))) {
     return null;
   }
   return goog.base(this, 'createSingleLayerCounterparts', olLayer);
