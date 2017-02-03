@@ -415,7 +415,7 @@ goog.require('ga_urlutils_service');
           // Using Unicode for the icons inside a normal text element
           // by setting the font-family to 'FontAwesome'
           // http://fortawesome.github.io/Font-Awesome/3.2.1/cheatsheet/
-        this.updateLabels();
+         this.updateLabels();
        };
 
         this.updateLabels = function() {
@@ -488,7 +488,7 @@ goog.require('ga_urlutils_service');
           //for the sum of the slope/surface distances
           this.slopeDist = this.slopeDistance();
           //for the hiking time
-           this.hikTime = this.hikingTime();
+          this.hikTime = this.hikingTime();
         };
 
         this.update = function(data, size) {
