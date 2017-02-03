@@ -753,7 +753,7 @@ goog.require('ga_urlutils_service');
             var provider = new Cesium.UrlTemplateImageryProvider({
               url: params.url,
               subdomains: params.subdomains,
-              minimumRetrievingLevel: minRetLod,
+              minimumLevel: minRetLod,
               maximumRetrievingLevel: maxRetLod,
               // This property active client zoom for next levels.
               maximumLevel: maxLod,
