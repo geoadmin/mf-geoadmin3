@@ -3,7 +3,7 @@ goog.provide('gettext');
 (function() {
 
   /**
-   * This module is only use to provide translations to ngeo module.
+   * This module is only used to provide translations to ngeo module.
    */
   var module = angular.module('gettext', []);
 

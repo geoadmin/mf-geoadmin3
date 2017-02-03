@@ -1102,7 +1102,7 @@ describe('ga_kml_service', function() {
       it('doesn\'t call addKmlToMap if file size is not valid', function() {
         $httpBackend.whenGET(encoded).respond(validKml2);
         $httpBackend.expectGET(encoded);
-       
+
         var addKmlToMap = gaKmlMock.expects('addKmlToMap').never();
         var isValid = ngeoFileMock.expects('isValidFileSize').once().returns(false);
 
