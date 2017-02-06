@@ -103,6 +103,7 @@ goog.require('ga_throttle_service');
           var dest = geolocation.getPosition();
           if (dest) {
             if (first) {
+              first = false;
               gaMapUtils.flyTo(map, scope.ol3d, dest,
                   ol.extent.buffer(dest.concat(dest),
                   geolocation.getAccuracy()));
