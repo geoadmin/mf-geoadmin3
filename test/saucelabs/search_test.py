@@ -174,7 +174,7 @@ searchLocationTests = [
     {
         'searchText': u'bern',
         'resultTitle': u'Bern (BE)',
-        'resultLocation': u'X=200393.28&Y=596671.16&zoom=5'
+        'resultLocation': u'X=200393.28&Y=596671.10&zoom=5'
     }
 ]
 
