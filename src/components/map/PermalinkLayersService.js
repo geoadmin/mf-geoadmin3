@@ -334,12 +334,12 @@ goog.require('ga_wms_service');
                 gaKml.addKmlToMapForUrl(map, url, {
                   adminId: adminId
                 });
-                gaPermalink.deleteParam('adminId');
               } catch (e) {
                 // Adding KML layer failed, native alert, log message?
                 $log.error(e.message);
               }
             });
+            gaPermalink.deleteParam('adminId');
           }
         };
 
