@@ -277,11 +277,28 @@ goog.require('ga_styles_service');
           layer = layer || createDefaultLayer(map, useTemporaryLayer);
           if (!useTemporaryLayer) {
 
+            // On load, we choose to allow modification:
+            //   - on the KML loaded via an adminId
+            //   or
+            //   - on the last KML loaded from public.XXX.XXX.ch
+            //   or
+            //   - on the empty default layer
+            // In all case if an adminId property is set to the current draw
+            // layer, we don't change it anymore.
             if (!layer.adminId) {
               // If there is a layer loaded from public.admin.ch, we use it for
               // modification.
               map.getLayers().forEach(function(item) {
                 if (gaMapUtils.isStoredKmlLayer(item)) {
+
+                  // We remove the empty draw layer added on opening of draw
+                  // directive before the good kml (loaded from KmlService)
+                  // was loaded.
+                  if (!gaMapUtils.isStoredKmlLayer(layer) &&
+                      map.getLayers().getArray().indexOf(layer) != -1) {
+                    map.removeLayer(layer);
+                  }
+
                   layer = item;
                 }
               });
@@ -345,9 +362,7 @@ goog.require('ga_styles_service');
           // DnD ...) and the currentlayer has no features, we define a
           // new layer.
           unLayerAdd = map.getLayers().on('add', function(evt) {
-            if (gaMapUtils.isStoredKmlLayer(evt.element) &&
-                layer.getSource().getFeatures().length == 0 &&
-                !useTemporaryLayer) {
+            if (gaMapUtils.isStoredKmlLayer(evt.element)) {
               defineLayerToModify();
             }
           });

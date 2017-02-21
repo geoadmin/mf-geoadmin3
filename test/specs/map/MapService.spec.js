@@ -863,9 +863,8 @@ describe('ga_map_service', function() {
         var params = spy.args[0][0];
         expect(params.url).to.eql(expectWmtsUrl('serverlayername3d', '20160201'));
         expect(params.subdomains).to.eql(['5', '6', '7', '8', '9']);
-        expect(params.minimumRetrievingLevel).to.eql(window.minimumRetrievingLevel);
+        expect(params.minimumLevel).to.eql(window.minimumLevel);
         expect(params.maximumRetrievingLevel).to.eql(window.maximumRetrievingLevel);
-        expect(params.minimumLevel).to.eql(undefined);
         expect(params.maximumLevel).to.eql(18);
         expect(params.tilingScheme).to.be.an(Cesium.GeographicTilingScheme);
         expect(params.tileWidth).to.eql(256);
@@ -886,7 +885,7 @@ describe('ga_map_service', function() {
         // instead.
         var params = spy.args[0][0];
         expect(params.url).to.eql(expectWmtsUrl('serverlayername3d', '20160201', 'jpeg'));
-        expect(params.minimumRetrievingLevel).to.eql(9);
+        expect(params.minimumLevel).to.eql(9);
         expect(params.maximumRetrievingLevel).to.eql(17);
         expect(params.maximumLevel).to.eql(undefined);
         expect(params.hasAlphaChannel).to.eql(false);
