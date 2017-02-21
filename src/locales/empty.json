@@ -461,5 +461,9 @@
   "tilt_up": "",
   "tilt_down": "",
   "tilt_up_disabled": "",
-  "tilt_down_disabled": ""
+  "tilt_down_disabled": "",
+  "geodesy": "",
+  "geodesy_service_link_href": "",
+  "geodesy_service_link_label": "",
+  "topic_geodesy_tooltip": ""
 }
