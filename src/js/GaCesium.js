@@ -133,7 +133,8 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions,
 
     // Tileset 3D
     var tileset3d = [
-      'ch.swisstopo.swisstlm3d.3d'
+      'ch.swisstopo.swisstlm3d.3d',
+      'ch.swisstopo.swissnames3d.3d'
     ];
 
     var primitives = [];
@@ -152,7 +153,11 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions,
             outlineColor: 'rgb(0, 0, 0)',
             outlineWidth: 3,
             labelStyle: 2,
-            font: "'24px arial'"
+            font: "'24px arial'",
+            scaleByDistanceNearRange: 1000.0,
+            scaleByDistanceNearValue: 2.0,
+            scaleByDistanceFarRange: 10000.0,
+            scaleByDistanceFarValue: 0.4
           });
         }
         if (tileset) {

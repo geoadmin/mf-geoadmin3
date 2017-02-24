@@ -579,7 +579,7 @@ goog.require('ga_urlutils_service');
               var tilesetTs = [
                 '20161217',
                 '20161121',
-                '20160909'
+                '20170223'
               ];
 
               var params = gaPermalink.getParams();
@@ -659,6 +659,7 @@ goog.require('ga_urlutils_service');
          * Returns an Cesium 3D Tileset.
          */
         this.getCesiumTileset3DById = function(bodId) {
+          var params = gaPermalink.getParams();
           var config3d = this.getConfig3d(layers[bodId]);
           if (!/^tileset3d$/.test(config3d.type)) {
             return;
@@ -666,11 +667,25 @@ goog.require('ga_urlutils_service');
           var timestamp = this.getLayerTimestampFromYear(config3d,
               gaTime.get());
           var requestedLayer = config3d.serverLayerName || bodId;
-          var tileset = new Cesium.Cesium3DTileset({
-            url: getVectorTilesUrl(requestedLayer, timestamp,
-                dfltVectorTilesSubdomains),
-            maximumNumberOfLoadedTiles: 3
-          });
+
+          var tileset;
+          if (/names3d\.3d/.test(requestedLayer)) {
+            tileset = new Cesium.Cesium3DTileset({
+              url: getVectorTilesUrl(requestedLayer, timestamp,
+                  dfltVectorTilesSubdomains),
+              maximumNumberOfLoadedTiles: 3,
+              distanceDisplayCondition: {
+                near: params['near'] ? params['near'] : 0.0,
+                far: params['far'] ? params['far'] : 15000.0,
+              }
+            });
+          } else {
+            tileset = new Cesium.Cesium3DTileset({
+              url: getVectorTilesUrl(requestedLayer, timestamp,
+                  dfltVectorTilesSubdomains),
+              maximumNumberOfLoadedTiles: 3
+            });
+          }
           tileset.bodId = bodId;
           return tileset;
         };
