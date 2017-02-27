@@ -6,7 +6,7 @@ goog.provide('ga_stylesfromliterals_service');
 
   module.provider('gaStylesFromLiterals', function() {
 
-    this.$get = function() {
+    this.$get = function($window) {
 
       function getOlStyleForPoint(options, shape) {
         if (shape === 'circle') {
@@ -121,6 +121,8 @@ goog.provide('ga_stylesfromliterals_service');
 
         this.defaultVal = 'defaultVal';
 
+        this.defaultStyle = new ol.style.Style();
+
         this.styles = {
           point: {},
           line: {},
@@ -211,6 +213,13 @@ goog.provide('ga_stylesfromliterals_service');
         return olStyle;
       };
 
+      olStyleForPropertyValue.prototype.alertDebug_ = function(value, id) {
+        value = value === '' ? '<empty string>' : value;
+        $window.alert('Feature ID: ' + id + '. No matching style found ' +
+            'for key ' + this.key + ' and value ' + value + '.');
+        return this.defaultStyle;
+      };
+
       olStyleForPropertyValue.prototype.getFeatureStyle = function(feature,
           resolution) {
         if (this.type === 'single') {
@@ -229,6 +238,9 @@ goog.provide('ga_stylesfromliterals_service');
           value = value !== undefined ? value : this.defaultVal;
           var geomType = getGeomTypeFromGeometry(feature.getGeometry());
           var olStyles = this.styles[geomType][value];
+          if (!olStyles) {
+            return this.alertDebug_(value, feature.getId());
+          }
           var res = this.getOlStyleForResolution_(olStyles, resolution);
           var labelProperty = res.labelProperty;
           if (labelProperty) {
@@ -241,6 +253,9 @@ goog.provide('ga_stylesfromliterals_service');
           var value = properties[this.key];
           var geomType = getGeomTypeFromGeometry(feature.getGeometry());
           var olStyles = this.findOlStyleInRange_(value, geomType);
+          if (!olStyles) {
+            return this.alertDebug_(value, feature.getId());
+          }
           var res = this.getOlStyleForResolution_(olStyles, resolution);
           var labelProperty = res.labelProperty;
           if (labelProperty) {
