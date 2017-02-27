@@ -747,6 +747,23 @@ describe('ga_stylesfromliterals_service', function() {
       expect(olImage.getStroke()).to.be.an(ol.style.Stroke);
       expect(olImage.getStroke().getColor()).to.equal('#F55555');
       expect(olImage.getStroke().getWidth()).to.equal(2);
+
+      olFeature = geoJsonFormat.readFeature(
+        '{"type": "Feature",' +
+          '"geometry": {' +
+            '"coordinates": [' +
+              '11000,' +
+              '21000' +
+            '],' +
+            '"type": "Point"' +
+          '},' +
+          '"properties": {' +
+            '"foo": 1000' +
+          '}}'
+      );
+      olStyle = gaStyle.getFeatureStyle(olFeature);
+      olImage = olStyle.getImage();
+      expect(olStyle.getImage()).to.equal(null);
     });
 
     it('supports range type style assignment resolution dependent', function() {
@@ -856,6 +873,23 @@ describe('ga_stylesfromliterals_service', function() {
       expect(olImage.getStroke()).to.be.an(ol.style.Stroke);
       expect(olImage.getStroke().getColor()).to.equal('#F55555');
       expect(olImage.getStroke().getWidth()).to.equal(2);
+
+      olFeature = geoJsonFormat.readFeature(
+        '{"type": "Feature",' +
+          '"geometry": {' +
+            '"coordinates": [' +
+              '11000,' +
+              '21000' +
+            '],' +
+            '"type": "Point"' +
+          '},' +
+          '"properties": {' +
+            '"foo": 1000' +
+          '}}'
+      );
+      olStyle = gaStyle.getFeatureStyle(olFeature);
+      olImage = olStyle.getImage();
+      expect(olStyle.getImage()).to.equal(null);
     });
   });
 });
