@@ -227,6 +227,12 @@ goog.require('ga_urlutils_service');
               .replace(/{{textToDisplay}}/, linkType.textToDisplay || '');
           // Close the popover then focus the textarea
           $('.ga-descr-buttons').next('textarea').click().focus();
+          // Clear input field
+          element.find('.ga-add-link input').val('');
+          var linkDesc = element.find('.ga-html-link input');
+          if (linkDesc) {
+            linkDesc.val('');
+          }
         };
 
         scope.isValidUrl = function(url) {
