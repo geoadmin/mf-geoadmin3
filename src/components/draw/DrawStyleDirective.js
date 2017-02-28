@@ -198,6 +198,14 @@ goog.require('ga_urlutils_service');
       }
     };
 
+    var youtubeRegExp =
+      new RegExp('^http(s)?:\/\/www.youtube.com\/watch\\?v=([A-Za-z0-9_]+)$');
+
+    var embedYoutubeLink = function(url) {
+      var videoId = youtubeRegExp.exec(url)[2];
+      return 'https://youtube.com/embed/' + videoId;
+    };
+
     return {
       restrict: 'A',
       templateUrl: 'components/draw/partials/drawstyle.html',
@@ -212,8 +220,10 @@ goog.require('ga_urlutils_service');
         }
 
         scope.appendToDescr = function($event, linkType) {
+          var linkVal = youtubeRegExp.test(linkType.value) ?
+              embedYoutubeLink(linkType.value) : linkType.value;
           scope.options.description += linkType.tpl
-              .replace(/{{url}}/g, linkType.value)
+              .replace(/{{url}}/g, linkVal)
               .replace(/{{textToDisplay}}/, linkType.textToDisplay || '');
           // Close the popover then focus the textarea
           $('.ga-descr-buttons').next('textarea').click().focus();
