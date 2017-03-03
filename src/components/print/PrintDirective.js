@@ -331,8 +331,28 @@ goog.require('ga_urlutils_service');
               styles = ol.style.Style.defaultFunction(feature);
             }
           }
-
+          // Removing feature with invalid geometries
           var geometry = feature.getGeometry();
+          var polygons = [];
+          if (geometry.getType() == 'MultiPolygon') {
+            polygons = geometry.getPolygons();
+          }
+          if (geometry.getType() == 'Polygon') {
+            polygons[0] = geometry;
+          }
+          for (var ii = 0, max = polygons.length; ii < max; ii++) {
+            var polygon = polygons[ii];
+            var coordinates = polygon.getCoordinates();
+            for (var jj = 0, max = coordinates.length; jj < max; jj++) {
+              var ring = coordinates[jj];
+              if (ring.length < 4) {
+                return {
+                  encFeatures: [],
+                  encStyles: []
+                };
+              }
+            }
+          }
           var styleToEncode;
           if (styles && styles.length > 0) {
             styleToEncode = styles[0];
