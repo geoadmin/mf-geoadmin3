@@ -21,6 +21,15 @@ goog.provide('ga_geomutils_service');
       }
     };
 
+    // Ensure valid linear ring
+    var isValidLinearRing = function(linearRing) {
+      var coords = linearRing.getCoordinates();
+      if (coords.length <= 3) {
+         return false;
+      }
+      return true;
+    };
+
     // Ensure polygon is closed
     var closePolygon = function(polygon) {
       var coords = [];
@@ -100,8 +109,10 @@ goog.provide('ga_geomutils_service');
             } else if (geometry instanceof ol.geom.Polygon) {
                isValid = isValidMultiGeom(this, geometry,
                    geometry.getLinearRings());
-            } else if (geometry instanceof ol.geom.LinearRing ||
-                geometry instanceof ol.geom.LineString) {
+            } else if (geometry instanceof ol.geom.LinearRing) {
+              isValid = isValidLinearRing(geometry) &&
+                !this.hasUniqueCoord(geometry.getCoordinates());
+            } else if (geometry instanceof ol.geom.LineString) {
               isValid = !this.hasUniqueCoord(geometry.getCoordinates());
             }
             if (!isValid) {
