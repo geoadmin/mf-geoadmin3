@@ -36,7 +36,7 @@ describe('ga_importwms_directive', function() {
            'http://ogc.heig-vd.ch/mapserver/wms?',
            'http://www.wms.stadt-zuerich.ch/WMS-ZH-STZH-OGD/MapServer/WMSServer?',
            'http://wms.geo.gl.ch/?',
-           'http://mapserver1.gr.ch/wms/admineinteilung?'
+           'https://map.geo.gr.ch/wms/admineinteilung?'
         ]
       };
       $injector.get('$controller')('GaImportWmsDirectiveController', {'$scope': scope});
