@@ -348,7 +348,7 @@ goog.require('ga_urlutils_service');
             return this.addKmlToMap(map, null, layerOptions, index);
           } else {
             return gaUrlUtils.proxifyUrl(url).then(function(proxyUrl) {
-              $http.get(gaUrlUtils.proxifyUrl(proxyUrl), {
+              return $http.get(proxyUrl, {
                 cache: true
               }).then(function(response) {
                 var data = response.data;
