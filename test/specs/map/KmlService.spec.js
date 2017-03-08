@@ -1061,7 +1061,7 @@ describe('ga_kml_service', function() {
 
       beforeEach(function() {
         gaKmlMock = sinon.mock(gaKml);
-        url = 'https://test.kml';
+        url = 'http://test.kml';
         encoded = gaGlobalOptions.ogcproxyUrl + encodeURIComponent(url);
       });
 
@@ -1079,7 +1079,6 @@ describe('ga_kml_service', function() {
           url: url,
           useImageVector: true
         });
-
         gaKml.addKmlToMapForUrl(map, url);
 
         $httpBackend.flush();
@@ -1102,7 +1101,7 @@ describe('ga_kml_service', function() {
 
         var addKmlToMap = gaKmlMock.expects('addKmlToMap').once();
 
-        gaKml.addKmlToMapForUrl(map, 'https://test.kml');
+        gaKml.addKmlToMapForUrl(map, 'http://test.kml');
 
         $httpBackend.flush();
         $rootScope.$digest();
@@ -1116,7 +1115,7 @@ describe('ga_kml_service', function() {
         var addKmlToMap = gaKmlMock.expects('addKmlToMap').never();
         var isValid = gaKmlMock.expects('isValidFileContent').once().returns(false);
 
-        gaKml.addKmlToMapForUrl(map, 'https://test.kml');
+        gaKml.addKmlToMapForUrl(map, 'http://test.kml');
 
         $httpBackend.flush();
         $rootScope.$digest();
@@ -1132,7 +1131,7 @@ describe('ga_kml_service', function() {
         var addKmlToMap = gaKmlMock.expects('addKmlToMap').never();
         var isValid = gaKmlMock.expects('isValidFileSize').once().returns(false);
 
-        gaKml.addKmlToMapForUrl(map, 'https://test.kml');
+        gaKml.addKmlToMapForUrl(map, 'http://test.kml');
 
         $httpBackend.flush();
         $rootScope.$digest();
