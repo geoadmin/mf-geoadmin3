@@ -61,6 +61,13 @@ goog.provide('ga_urlutils_service');
           return deferred.promise;
         };
 
+        this.proxifyUrlInstant = function(url) {
+          if (this.needsProxy(url)) {
+            return gaGlobalOptions.ogcproxyUrl + encodeURIComponent(url);
+          }
+          return url;
+        };
+
         this.proxifyUrl = function(url) {
           var deferred = $q.defer();
           if (!this.isBlob(url) && this.isHttps(url) &&
@@ -73,11 +80,8 @@ goog.provide('ga_urlutils_service');
                     gaGlobalOptions.ogcproxyUrl + encodeURIComponent(url));
               }
             });
-          } else if (this.needsProxy(url)) {
-            deferred.resolve(
-                gaGlobalOptions.ogcproxyUrl + encodeURIComponent(url));
           } else {
-            deferred.resolve(url);
+            deferred.resolve(this.proxifyUrlInstant(url));
           }
           return deferred.promise;
         };

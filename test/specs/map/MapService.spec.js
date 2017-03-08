@@ -1026,7 +1026,7 @@ describe('ga_map_service', function() {
           minResolution: 0.5,
           maxResolution: 100,
           opacity: 0.35,
-          geojsonUrl: 'https://my.json',
+          geojsonUrl: 'http://my.json',
           styleUrl: '//mystyle.json'
         }
       };
@@ -1140,7 +1140,7 @@ describe('ga_map_service', function() {
 
         it('returns a GeoJSON layer', function() {
           $httpBackend.expectGET('http://mystyle.json').respond({});
-          $httpBackend.expectGET(gaGlobalOptions.ogcproxyUrl + 'https%3A%2F%2Fmy.json').respond({
+          $httpBackend.expectGET(gaGlobalOptions.ogcproxyUrl + 'http%3A%2F%2Fmy.json').respond({
             'features': [{
               'type': 'Feature',
               'geometry': {

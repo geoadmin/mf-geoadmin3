@@ -87,6 +87,17 @@ describe('ga_urlutils_service', function() {
       });
     });
 
+    describe('#proxifyUrlInstant()', function() {
+      it('applies proxy correctly', function() {
+        expect(gaUrlUtils.proxifyUrlInstant('http://data.geo.admin.ch')).to.be(
+            window.location.protocol + '//api3.geo.admin.ch/ogcproxy?url=http%3A%2F%2Fdata.geo.admin.ch');
+        expect(gaUrlUtils.proxifyUrlInstant('https://data.geo.admin.ch')).to.be(
+            'https://data.geo.admin.ch');
+        expect(gaUrlUtils.proxifyUrlInstant('blob:https://myblob.ch/7a910681-938c-4011-8d75-2b64035a40a7')).to.be(
+            'blob:https://myblob.ch/7a910681-938c-4011-8d75-2b64035a40a7');
+      });
+    });
+
     describe('#proxifyUrl()', function() {
       var $rootScope, $httpBackend;
       beforeEach(inject(function($injector) {
