@@ -51,24 +51,26 @@ goog.require('ga_urlutils_service');
             $scope.canceler = $q.defer();
 
             // Angularjs doesn't handle onprogress event
-            $http.get(gaUrlUtils.proxifyUrl($scope.fileUrl), {
-              cache: true,
-              timeout: $scope.canceler.promise
-            }).then(function(response) {
-              var data = response.data;
-              var fileSize = response.headers('content-length');
-              if (gaKml.isValidFileContent(data) &&
-                  gaKml.isValidFileSize(fileSize)) {
-                $scope.userMessage = $translate.instant('upload_succeeded');
-                $scope.fileContent = data;
-                $scope.fileSize = fileSize;
-              } else {
+            gaUrlUtils.proxifyUrl($scope.fileUrl).then(function(url) {
+              $http.get(url, {
+                cache: true,
+                timeout: $scope.canceler.promise
+              }).then(function(response) {
+                var data = response.data;
+                var fileSize = response.headers('content-length');
+                if (gaKml.isValidFileContent(data) &&
+                    gaKml.isValidFileSize(fileSize)) {
+                  $scope.userMessage = $translate.instant('upload_succeeded');
+                  $scope.fileContent = data;
+                  $scope.fileSize = fileSize;
+                } else {
+                  $scope.userMessage = $translate.instant('upload_failed');
+                  $scope.progress = 0;
+                }
+              }, function() {
                 $scope.userMessage = $translate.instant('upload_failed');
                 $scope.progress = 0;
-              }
-            }, function() {
-              $scope.userMessage = $translate.instant('upload_failed');
-              $scope.progress = 0;
+              });
             });
           }
           $scope.isDropped = false;

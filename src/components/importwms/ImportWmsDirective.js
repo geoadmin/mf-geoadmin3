@@ -43,23 +43,24 @@ goog.require('ga_wms_service');
               // Kill the current uploading
               $scope.cancel();
 
-              var proxyUrl = gaUrlUtils.proxifyUrl(url);
               $scope.error = false;
               $scope.userMessage = $translate.instant('uploading_file');
               $scope.progress = 0.1;
               $scope.canceler = $q.defer();
 
-              // Angularjs doesn't handle onprogress event
-              $http.get(proxyUrl, {
-                timeout: $scope.canceler.promise
-              }).then(function(response) {
-                $scope.userMessage = $translate.instant('upload_succeeded');
-                $scope.displayFileContent(response.data);
-              }, function() {
-                $scope.error = true;
-                $scope.userMessage = $translate.instant('upload_failed');
-                $scope.progress = 0;
-                $scope.layers = [];
+              gaUrlUtils.proxifyUrl(url).then(function(proxyUrl) {
+                // Angularjs doesn't handle onprogress event
+                $http.get(proxyUrl, {
+                  timeout: $scope.canceler.promise
+                }).then(function(response) {
+                  $scope.userMessage = $translate.instant('upload_succeeded');
+                  $scope.displayFileContent(response.data);
+                }, function() {
+                  $scope.error = true;
+                  $scope.userMessage = $translate.instant('upload_failed');
+                  $scope.progress = 0;
+                  $scope.layers = [];
+                });
               });
             } else {
               $scope.error = true;

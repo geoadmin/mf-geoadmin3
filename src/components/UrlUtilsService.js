@@ -5,7 +5,7 @@ goog.provide('ga_urlutils_service');
 
   module.provider('gaUrlUtils', function() {
 
-    this.$get = function(gaGlobalOptions, $http, $window) {
+    this.$get = function(gaGlobalOptions, $http, $q, $window) {
 
       var UrlUtils = function(shortenUrl) {
 
@@ -48,11 +48,38 @@ goog.provide('ga_urlutils_service');
                   /.*kmz$/.test(url));
         };
 
+        // Test using a head request if the remote resource enables CORS
+        this.isCorsEnabled = function(url) {
+          var deferred = $q.defer();
+          $http.head(url, { timeout: 2500 }).then(function(response) {
+            // If the head request responded successfully it means that CORS
+            // is enabled
+            deferred.resolve(true);
+          }, function() {
+            deferred.resolve(false);
+          });
+          return deferred.promise;
+        };
+
         this.proxifyUrl = function(url) {
-          if (this.needsProxy(url)) {
-            return gaGlobalOptions.ogcproxyUrl + encodeURIComponent(url);
+          var deferred = $q.defer();
+          if (!this.isBlob(url) && this.isHttps(url) &&
+              !this.isAdminValid(url) && !/.*kmz$/.test(url)) {
+            this.isCorsEnabled(url).then(function(enabled) {
+              if (enabled) {
+                deferred.resolve(url);
+              } else {
+                deferred.resolve(
+                    gaGlobalOptions.ogcproxyUrl + encodeURIComponent(url));
+              }
+            });
+          } else if (this.needsProxy(url)) {
+            deferred.resolve(
+                gaGlobalOptions.ogcproxyUrl + encodeURIComponent(url));
+          } else {
+            deferred.resolve(url);
           }
-          return url;
+          return deferred.promise;
         };
 
         this.shorten = function(url, timeout) {

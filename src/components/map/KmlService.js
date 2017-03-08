@@ -347,19 +347,21 @@ goog.require('ga_urlutils_service');
           if (gaNetworkStatus.offline) {
             return this.addKmlToMap(map, null, layerOptions, index);
           } else {
-            return $http.get(gaUrlUtils.proxifyUrl(url), {
-              cache: true
-            }).then(function(response) {
-              var data = response.data;
-              var fileSize = response.headers('content-length');
-              if (that.isValidFileContent(data) &&
-                  that.isValidFileSize(fileSize)) {
-                layerOptions.useImageVector = that.useImageVector(fileSize);
-                return that.addKmlToMap(map, data, layerOptions, index);
-              }
-            }, function() {
-              // Try to get offline data if exist
-              return that.addKmlToMap(map, null, layerOptions, index);
+            return gaUrlUtils.proxifyUrl(url).then(function(proxyUrl) {
+              $http.get(gaUrlUtils.proxifyUrl(proxyUrl), {
+                cache: true
+              }).then(function(response) {
+                var data = response.data;
+                var fileSize = response.headers('content-length');
+                if (that.isValidFileContent(data) &&
+                    that.isValidFileSize(fileSize)) {
+                  layerOptions.useImageVector = that.useImageVector(fileSize);
+                  return that.addKmlToMap(map, data, layerOptions, index);
+                }
+              }, function() {
+                // Try to get offline data if exist
+                return that.addKmlToMap(map, null, layerOptions, index);
+              });
             });
           }
         };
