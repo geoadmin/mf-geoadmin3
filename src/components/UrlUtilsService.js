@@ -5,7 +5,7 @@ goog.provide('ga_urlutils_service');
 
   module.provider('gaUrlUtils', function() {
 
-    this.$get = function(gaGlobalOptions, $http, $window) {
+    this.$get = function(gaGlobalOptions, $http, $q, $window) {
 
       var UrlUtils = function(shortenUrl) {
 
@@ -38,7 +38,7 @@ goog.provide('ga_urlutils_service');
           return (this.isValid(url) && /^https/.test(url));
         };
 
-        // Test if URL represents resource that needs to pass via ogcProxy
+        // Test if URL represents resource that needs to pass via proxy
         this.needsProxy = function(url) {
           if (this.isBlob(url)) {
             return false;
@@ -48,11 +48,56 @@ goog.provide('ga_urlutils_service');
                   /.*kmz$/.test(url));
         };
 
-        this.proxifyUrl = function(url) {
+        // Test using a head request if the remote resource enables CORS
+        this.isCorsEnabled = function(url) {
+          return $http.head(url, { timeout: 1500 });
+        };
+
+        this.buildProxyUrl = function(url) {
+          if (!this.isValid(url)) {
+            return url;
+          }
+          var parts = /^(http|https)(:\/\/)(.+)/.exec(url);
+          var protocol = parts[1];
+          var resource = parts[3];
+          // proxy is RESTFful, <service>/<protocol>/<resource>
+          return gaGlobalOptions.proxyUrl + protocol + '/' +
+              encodeURIComponent(resource);
+        };
+
+        this.proxifyUrlInstant = function(url) {
           if (this.needsProxy(url)) {
-            return gaGlobalOptions.ogcproxyUrl + encodeURIComponent(url);
+            return this.buildProxyUrl(url);
           }
           return url;
+        };
+
+        this.getCesiumProxy = function() {
+          var that = this;
+          return {
+            getURL: function(resource) {
+              if (that.needsProxy(resource)) {
+                return that.buildProxyUrl(resource);
+              }
+              return resource;
+            }
+          };
+        };
+
+        this.proxifyUrl = function(url) {
+          var that = this;
+          var deferred = $q.defer();
+          if (!this.isBlob(url) && this.isHttps(url) &&
+              !this.isAdminValid(url) && !/.*kmz$/.test(url)) {
+            this.isCorsEnabled(url).then(function(enabled) {
+              deferred.resolve(url);
+            }, function() {
+              deferred.resolve(that.buildProxyUrl(url));
+            });
+          } else {
+            deferred.resolve(this.proxifyUrlInstant(url));
+          }
+          return deferred.promise;
         };
 
         this.shorten = function(url, timeout) {

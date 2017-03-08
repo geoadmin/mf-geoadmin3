@@ -468,8 +468,10 @@ goog.require('ga_styles_service');
             // if the layer is a KML
             if (gaMapUtils.isKmlLayer(layer) &&
                 /^https?:\/\//.test(layer.url)) {
-              $http.get(gaUrlUtils.proxifyUrl(layer.url)).then(function(resp) {
-                gaStorage.setItem(layer.id, resp.data);
+              gaUrlUtils.proxifyUrl(layer.url).then(function(url) {
+                $http.get(url).then(function(resp) {
+                  gaStorage.setItem(layer.id, resp.data);
+                });
               });
               layersBg.push(false);
               continue;

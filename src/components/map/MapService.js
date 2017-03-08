@@ -779,7 +779,7 @@ goog.require('ga_urlutils_service');
           var dsP = Cesium.KmlDataSource.load(config3d.url, {
             camera: scene.camera,
             canvas: scene.canvas,
-            proxy: new Cesium.DefaultProxy(gaGlobalOptions.ogcproxyUrl)
+            proxy: gaUrlUtils.getCesiumProxy()
           });
           return dsP;
         };
@@ -915,13 +915,14 @@ goog.require('ga_urlutils_service');
               extent: extent
             });
             var setLayerSource = function() {
-              var fullUrl = gaUrlUtils.proxifyUrl(layer.geojsonUrl);
               var geojsonFormat = new ol.format.GeoJSON();
-              $http.get(fullUrl).then(function(response) {
-                olSource.clear();
-                olSource.addFeatures(
-                  geojsonFormat.readFeatures(response.data)
-                );
+              gaUrlUtils.proxifyUrl(layer.geojsonUrl).then(function(proxyUrl) {
+                $http.get(proxyUrl).then(function(response) {
+                  olSource.clear();
+                  olSource.addFeatures(
+                    geojsonFormat.readFeatures(response.data)
+                  );
+                });
               });
             };
 

@@ -18,20 +18,21 @@ goog.require('ga_map_service');
 
       function setLayerSource(layer) {
         var olSource = layer.getSource();
-        var fullUrl = gaUrlUtils.proxifyUrl(layer.geojsonUrl);
-        $http.get(fullUrl).then(function(response) {
-          var data = response.data;
-          olSource.clear();
-          olSource.addFeatures(
-            geojsonFormat.readFeatures(data)
-          );
-          if (!layer.preview) {
-            var layerIdIndex = realTimeLayersId.indexOf(layer.bodId);
-            timers[layerIdIndex] = setLayerUpdateInterval(layer);
-            if (data.timestamp) {
-              $rootScope.$broadcast('gaNewLayerTimestamp', data.timestamp);
+        gaUrlUtils.proxifyUrl(layer.geojsonUrl).then(function(proxyUrl) {
+          $http.get(proxyUrl).then(function(response) {
+            var data = response.data;
+            olSource.clear();
+            olSource.addFeatures(
+              geojsonFormat.readFeatures(data)
+            );
+            if (!layer.preview) {
+              var layerIdIndex = realTimeLayersId.indexOf(layer.bodId);
+              timers[layerIdIndex] = setLayerUpdateInterval(layer);
+              if (data.timestamp) {
+                $rootScope.$broadcast('gaNewLayerTimestamp', data.timestamp);
+              }
             }
-          }
+          });
         });
       }
 

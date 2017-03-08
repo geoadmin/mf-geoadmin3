@@ -84,9 +84,11 @@ describe('ga_wms_service', function() {
       expect(prov.rectangle.north).to.be(0.8425581080106397);
 
       if (options.useThirdPartyData) {
-        expect(prov.proxy.getURL('a')).to.be(gaGlobalOptions.ogcproxyUrl + 'a');
+        expect(prov.proxy.getURL('http://wms.ch')).to.be(
+            gaGlobalOptions.proxyUrl + 'http/wms.ch');
       } else {
-        expect(prov.proxy).to.be(undefined);
+        expect(prov.proxy.getURL('https://wms.geo.admin.ch')).to.be(
+            'https://wms.geo.admin.ch');
       }
       expect(prov.tilingScheme).to.be.an(Cesium.GeographicTilingScheme);
       expect(prov.hasAlphaChannel).to.be(true);

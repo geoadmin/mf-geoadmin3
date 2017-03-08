@@ -8,7 +8,7 @@
 # Version ${version}
 
 CACHE:
-${s3basepath}${version}/lib/build.js	
+${s3basepath}${version}/lib/build.js
 ${s3basepath}${version}/style/app.css
 ${s3basepath}${version}/style/font-awesome-4.5.0/font/fontawesome-webfont.woff
 ${s3basepath}${version}/services

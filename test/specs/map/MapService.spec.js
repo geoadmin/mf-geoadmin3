@@ -980,7 +980,7 @@ describe('ga_map_service', function() {
         expect(args[0]).to.be('http://foo.kml');
         expect(args[1].camera).to.be(scene.camera);
         expect(args[1].canvas).to.be(scene.canvas);
-        expect(args[1].proxy).to.be.an(Cesium.DefaultProxy);
+        expect(args[1].proxy.getURL('http://foo.kml')).to.be('http://proxy.geo.admin.ch/http/foo.kml');
         spy.restore();
       });
     });
@@ -1026,7 +1026,7 @@ describe('ga_map_service', function() {
           minResolution: 0.5,
           maxResolution: 100,
           opacity: 0.35,
-          geojsonUrl: 'https://my.json',
+          geojsonUrl: 'http://my.json',
           styleUrl: '//mystyle.json'
         }
       };
@@ -1140,7 +1140,7 @@ describe('ga_map_service', function() {
 
         it('returns a GeoJSON layer', function() {
           $httpBackend.expectGET('http://mystyle.json').respond({});
-          $httpBackend.expectGET(gaGlobalOptions.ogcproxyUrl + 'https%3A%2F%2Fmy.json').respond({
+          $httpBackend.expectGET(gaGlobalOptions.proxyUrl + 'http/my.json').respond({
             'features': [{
               'type': 'Feature',
               'geometry': {
