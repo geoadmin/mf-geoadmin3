@@ -8,4 +8,5 @@ export VECTORTILES_URL=//vectortiles{s}.dev.bgdi.ch
 export WMS_URL=//wms-bgdi.dev.bgdi.ch
 export SHOP_URL=//shop-bgdi.dev.bgdi.ch
 export PUBLIC_URL=//public.dev.bgdi.ch
-export PRINT_URL=//service-print.dev.ch
+export PRINT_URL=//service-print.dev.bgdi.ch
+export PROXY_URL=//service-proxy.dev.bgdi.ch

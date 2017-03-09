@@ -1140,7 +1140,7 @@ describe('ga_map_service', function() {
 
         it('returns a GeoJSON layer', function() {
           $httpBackend.expectGET('http://mystyle.json').respond({});
-          $httpBackend.expectGET(gaGlobalOptions.ogcproxyUrl + 'http%3A%2F%2Fmy.json').respond({
+          $httpBackend.expectGET(gaGlobalOptions.proxyUrl + 'http/my.json').respond({
             'features': [{
               'type': 'Feature',
               'geometry': {

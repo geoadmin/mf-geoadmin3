@@ -84,7 +84,8 @@ describe('ga_wms_service', function() {
       expect(prov.rectangle.north).to.be(0.8425581080106397);
 
       if (options.useThirdPartyData) {
-        expect(prov.proxy.getURL('a')).to.be(gaGlobalOptions.ogcproxyUrl + 'a');
+        expect(prov.proxy.getURL('http://wms.ch')).to.be(
+            gaGlobalOptions.proxyUrl + 'http/wms.ch');
       } else {
         expect(prov.proxy).to.be(undefined);
       }

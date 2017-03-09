@@ -785,7 +785,7 @@ goog.require('ga_urlutils_service');
           var dsP = Cesium.KmlDataSource.load(config3d.url, {
             camera: scene.camera,
             canvas: scene.canvas,
-            proxy: new Cesium.DefaultProxy(gaGlobalOptions.ogcproxyUrl)
+            proxy: new Cesium.DefaultProxy(gaGlobalOptions.proxyUrl + 'http/')
           });
           return dsP;
         };

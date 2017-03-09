@@ -67,7 +67,7 @@ describe('ga_kml_service', function() {
   var styleIcon = '<Style id="styleIcon">' +
       '<IconStyle>' +
         '<Icon>' +
-          '\n<href>http://voila.fr/ki.pmg</href>' +
+          '\n<href>http://voila.fr/ki.png</href>' +
         '</Icon>' +
       '</IconStyle>' +
     '</Style>';
@@ -75,7 +75,7 @@ describe('ga_kml_service', function() {
       '<IconStyle>' +
         '<scale>0.7</scale>' +
         '<Icon>' +
-          '\n<href>http://voila.fr/ki.pmg</href>' +
+          '\n<href>http://voila.fr/ki.png</href>' +
         '</Icon>' +
       '</IconStyle>' +
     '</Style>';
@@ -83,7 +83,7 @@ describe('ga_kml_service', function() {
       '<IconStyle>' +
         '<scale>0</scale>' +
         '<Icon>' +
-          '\n<href>http://voila.fr/ki.pmg</href>' +
+          '\n<href>http://voila.fr/ki.png</href>' +
         '</Icon>' +
       '</IconStyle>' +
     '</Style>';
@@ -301,7 +301,7 @@ describe('ga_kml_service', function() {
         $rootScope.$digest();
       });
 
-      it('uses ogcproxy for all hrefs (except google (only png) and geo.admin images))', function(done) {
+      it('uses proxy for all hrefs (except google (only png) and geo.admin images))', function(done) {
         var hrefs = [
           'http://amoinughudhfoihnkvpodf.com/aA.aA-aA_aA1.png',
           'https://amoinughudhfoihnkvpodf.com/aA.aA-aA_aA1.png',
@@ -323,14 +323,14 @@ describe('ga_kml_service', function() {
           var feats = olLayer.getSource().getFeatures();
           feats.forEach(function(feat, idx) {
             var src = feat.getStyleFunction().call(feat)[0].getImage().getSrc();
-            expect(src.indexOf('/ogcproxy?url=') != -1).to.be(true);
+            expect(src.indexOf('https://proxy.geo.admin.ch') != -1).to.be(true);
             done();
           });
         });
         $rootScope.$digest();
       });
 
-      it('doesn\'t use ogcproxy for google (only png) and geo.admin images))', function(done) {
+      it('doesn\'t use proxy for google (only png) and geo.admin images', function(done) {
         var hrefs = [
           'http://public.geo.admin.ch/aA.aA-aA_aA1.png',
           'https://public.geo.admin.ch/aA.aA-aA_aA1.png',
@@ -353,7 +353,7 @@ describe('ga_kml_service', function() {
           var feats = olLayer.getSource().getFeatures();
           feats.forEach(function(feat, idx) {
             var src = feat.getStyleFunction().call(feat)[0].getImage().getSrc();
-            expect(src.indexOf('/ogcproxy?url=') != -1).to.be(false);
+            expect(src.indexOf(gaGlobalOptions.proxyUrl) != -1).to.be(false);
             done();
           });
         });
@@ -685,7 +685,7 @@ describe('ga_kml_service', function() {
           var feat = olLayer.getSource().getFeatures()[0];
           var style = feat.getStyleFunction().call(feat)[0];
           expect(style.getImage()).to.be.an(ol.style.Icon);
-          expect(style.getImage().getSrc()).to.eql('https://api3.geo.admin.ch/ogcproxy?url=http://voila.fr/ki.pmg');
+          expect(style.getImage().getSrc()).to.eql('https://proxy.geo.admin.ch/http/voila.fr/ki.png');
           expect(style.getImage().getScale()).to.eql(1);
           expect(style.getImage().getRotateWithView()).to.eql(false);
           expect(style.getImage().getAnchor()).to.eql(null);
@@ -695,7 +695,7 @@ describe('ga_kml_service', function() {
           feat = olLayer.getSource().getFeatures()[1];
           style = feat.getStyleFunction().call(feat)[0];
           expect(style.getImage()).to.be.an(ol.style.Icon);
-          expect(style.getImage().getSrc()).to.eql('https://api3.geo.admin.ch/ogcproxy?url=http://voila.fr/ki.pmg');
+          expect(style.getImage().getSrc()).to.eql('https://proxy.geo.admin.ch/http/voila.fr/ki.png');
           expect(style.getImage().getScale()).to.eql(0.7);
           expect(style.getImage().getRotateWithView()).to.eql(false);
           expect(style.getImage().getAnchor()).to.eql(null);
@@ -1057,12 +1057,14 @@ describe('ga_kml_service', function() {
     });
 
     describe('#addKmlToMapForUrl()', function() {
-      var gaKmlMock, url, encoded;
+      var gaKmlMock, url, prtl, encoded;
 
       beforeEach(function() {
+        prtl = 'http';
         gaKmlMock = sinon.mock(gaKml);
-        url = 'http://test.kml';
-        encoded = gaGlobalOptions.ogcproxyUrl + encodeURIComponent(url);
+        url = 'test.kml';
+        encoded = gaGlobalOptions.proxyUrl + prtl + '/' +
+            encodeURIComponent(url);
       });
 
       afterEach(function() {
@@ -1076,10 +1078,10 @@ describe('ga_kml_service', function() {
 
         var useImgVec = gaKmlMock.expects('useImageVector').once().returns(true);
         var addKmlToMap = gaKmlMock.expects('addKmlToMap').once().withArgs(map, validKml2, {
-          url: url,
+          url: prtl + '://' + url,
           useImageVector: true
         });
-        gaKml.addKmlToMapForUrl(map, url);
+        gaKml.addKmlToMapForUrl(map, prtl + '://' + url);
 
         $httpBackend.flush();
         $rootScope.$digest();

@@ -8,6 +8,7 @@ beforeEach(function() {
     var apiUrl = '//api3.geo.admin.ch';
     var publicUrl = '//public.geo.admin.ch';
     var printUrl = '//print.geo.admin.ch';
+    var proxyUrl = '//proxy.geo.admin.ch';
     var mapproxyUrl = '//wmts{s}.geo.admin.ch';
     var shopUrl = '//shop.bgdi.ch';
     var wmsUrl = '//wms.geo.admin.ch';
@@ -32,7 +33,7 @@ beforeEach(function() {
       cachedApiUrl: location.protocol + apiUrl + cacheAdd,
       cachedPrintUrl: location.protocol + printUrl + cacheAdd,
       resourceUrl: location.origin + pathname + versionSlashed,
-      ogcproxyUrl: location.protocol + apiUrl + '/ogcproxy?url=',
+      proxyUrl: location.protocol + proxyUrl + '/',
       wmsUrl: location.protocol + wmsUrl,
       w3wUrl: 'dummy.test.url.com',
       lv03tolv95Url: '//api.example.com/reframe/lv03tolv95',
