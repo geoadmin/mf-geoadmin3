@@ -5930,7 +5930,6 @@ define('Core/Matrix4',[
         './defaultValue',
         './defined',
         './defineProperties',
-        './DeveloperError',
         './freezeObject',
         './Math',
         './Matrix3',
@@ -5942,7 +5941,6 @@ define('Core/Matrix4',[
         defaultValue,
         defined,
         defineProperties,
-        DeveloperError,
         freezeObject,
         CesiumMath,
         Matrix3,
@@ -8453,7 +8451,6 @@ define('Core/Rectangle',[
         './defaultValue',
         './defined',
         './defineProperties',
-        './DeveloperError',
         './Ellipsoid',
         './freezeObject',
         './Math'
@@ -8463,7 +8460,6 @@ define('Core/Rectangle',[
         defaultValue,
         defined,
         defineProperties,
-        DeveloperError,
         Ellipsoid,
         freezeObject,
         CesiumMath) {
@@ -12309,7 +12305,6 @@ define('Core/Quaternion',[
         './defaultValue',
         './defined',
         './deprecationWarning',
-        './DeveloperError',
         './FeatureDetection',
         './freezeObject',
         './HeadingPitchRoll',
@@ -12321,7 +12316,6 @@ define('Core/Quaternion',[
         defaultValue,
         defined,
         deprecationWarning,
-        DeveloperError,
         FeatureDetection,
         freezeObject,
         HeadingPitchRoll,
@@ -14634,7 +14628,6 @@ define('Core/CircleOutlineGeometry',[
         './Check',
         './defaultValue',
         './defined',
-        './DeveloperError',
         './EllipseOutlineGeometry',
         './Ellipsoid'
     ], function(
@@ -14642,7 +14635,6 @@ define('Core/CircleOutlineGeometry',[
         Check,
         defaultValue,
         defined,
-        DeveloperError,
         EllipseOutlineGeometry,
         Ellipsoid) {
     'use strict';

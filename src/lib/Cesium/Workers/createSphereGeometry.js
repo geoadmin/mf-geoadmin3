@@ -5930,7 +5930,6 @@ define('Core/Matrix4',[
         './defaultValue',
         './defined',
         './defineProperties',
-        './DeveloperError',
         './freezeObject',
         './Math',
         './Matrix3',
@@ -5942,7 +5941,6 @@ define('Core/Matrix4',[
         defaultValue,
         defined,
         defineProperties,
-        DeveloperError,
         freezeObject,
         CesiumMath,
         Matrix3,
@@ -8453,7 +8451,6 @@ define('Core/Rectangle',[
         './defaultValue',
         './defined',
         './defineProperties',
-        './DeveloperError',
         './Ellipsoid',
         './freezeObject',
         './Math'
@@ -8463,7 +8460,6 @@ define('Core/Rectangle',[
         defaultValue,
         defined,
         defineProperties,
-        DeveloperError,
         Ellipsoid,
         freezeObject,
         CesiumMath) {
@@ -14109,7 +14105,6 @@ define('Core/SphereGeometry',[
         './Check',
         './defaultValue',
         './defined',
-        './DeveloperError',
         './EllipsoidGeometry',
         './VertexFormat'
     ], function(
@@ -14117,7 +14112,6 @@ define('Core/SphereGeometry',[
         Check,
         defaultValue,
         defined,
-        DeveloperError,
         EllipsoidGeometry,
         VertexFormat) {
     'use strict';
