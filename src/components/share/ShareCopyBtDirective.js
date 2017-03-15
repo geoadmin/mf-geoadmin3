@@ -25,6 +25,7 @@ goog.provide('ga_sharecopybt_directive');
 
         // Use clipboard API to copy URL in OS clipboard
         element.on('click', function() {
+          $window.getSelection().removeAllRanges();
           parentCtrl.onBeforeCopy();
           var inputToCopy = parentCtrl.getInputToCopy();
           var t = doc.createTextNode(inputToCopy.val());
