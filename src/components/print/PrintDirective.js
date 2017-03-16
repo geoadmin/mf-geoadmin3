@@ -331,7 +331,6 @@ goog.require('ga_urlutils_service');
               styles = ol.style.Style.defaultFunction(feature);
             }
           }
-
           var geometry = feature.getGeometry();
           var styleToEncode;
           if (styles && styles.length > 0) {

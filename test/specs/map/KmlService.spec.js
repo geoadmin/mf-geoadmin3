@@ -583,8 +583,9 @@ describe('ga_kml_service', function() {
         $rootScope.$digest();
       });
 
-      it('don\'t remove geometries with good coordinates, at least 2 (#3334)', function(done) {
-        var uniqCoords = '<coordinates>1,0,0 2,0,0</coordinates>';
+      // Note: a 2 points LinearRing is not a valid geometry
+      it('don\'t remove geometries with good coordinates, at least 4 (#3334)', function(done) {
+        var uniqCoords = '<coordinates>1,0,0 2,0,0 2,2,0 1,0,0</coordinates>';
         var linearRing = '<LinearRing>' + uniqCoords + '</LinearRing>';
         var polygon = '<Polygon>' +
             '<outerBoundaryIs>' + linearRing + '</outerBoundaryIs>' +
