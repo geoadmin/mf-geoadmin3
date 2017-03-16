@@ -15,7 +15,7 @@ goog.require('ga_styles_service');
     'ga_styles_service'
   ]);
 
-  module.directive('gaCesiumInspector', function($rootScope, gaPermalink) {
+  module.directive('gaCesiumInspector', function(gaPermalink) {
     return {
       restrict: 'A',
       scope: {
@@ -40,7 +40,7 @@ goog.require('ga_styles_service');
     };
   });
 
-  module.directive('gaMap', function($window, $rootScope, $timeout, gaPermalink,
+  module.directive('gaMap', function($window, $timeout, gaPermalink,
       gaStyleFactory, gaBrowserSniffer, gaLayers, gaDebounce, gaOffline,
       gaMapUtils) {
     return {
@@ -234,9 +234,14 @@ goog.require('ga_styles_service');
               }
             });
           }
+        } else {
+          // #3722: On mobile we need to update size of the map on iframe load.
+          $($window).on('DOMContentLoaded', function() {
+            map.updateSize();
+          });
         }
 
-        $rootScope.$on('gaNetworkStatusChange', function(evt, offline) {
+        scope.$on('gaNetworkStatusChange', function(evt, offline) {
           gaOffline.refreshLayers(map.getLayers().getArray(), offline);
           if (offline) {
             gaOffline.showExtent(map);
@@ -280,6 +285,7 @@ goog.require('ga_styles_service');
           // (ex: using the time selector toggle)
           for (var i = 0, ii = olLayers.length; i < ii; i++) {
             var olLayer = olLayers[i];
+
             // We update only time enabled bod layers
             if (olLayer.bodId && olLayer.timeEnabled && olLayer.visible) {
               var layerTimeStr =
