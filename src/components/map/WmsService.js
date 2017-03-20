@@ -41,7 +41,7 @@ goog.require('ga_urlutils_service');
                 '{northProjected},{eastProjected}',
           width: '256',
           height: '256',
-          styles: params.STYLES || 'default',
+          styles: params.STYLES || '',
           transparent: 'true'
         };
 
