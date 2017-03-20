@@ -1,11 +1,12 @@
 describe('ga_stylesfromliterals_service', function() {
 
   describe('gaStylesFromLiterals', function() {
-    var gaStylesFromLiterals;
+    var gaStylesFromLiterals, $window;
 
     beforeEach(function() {
       inject(function($injector) {
         gaStylesFromLiterals = $injector.get('gaStylesFromLiterals');
+        $window = $injector.get('$window');
       });
     });
 
@@ -761,9 +762,12 @@ describe('ga_stylesfromliterals_service', function() {
             '"foo": 1000' +
           '}}'
       );
+      var stub = sinon.stub($window, 'alert');
       olStyle = gaStyle.getFeatureStyle(olFeature);
       olImage = olStyle.getImage();
       expect(olStyle.getImage()).to.equal(null);
+      expect(stub.calledWithExactly('Feature ID: undefined. No matching style found for key foo and value 1000.')).to.be(true);
+      stub.restore();
     });
 
     it('supports range type style assignment resolution dependent', function() {
@@ -887,9 +891,12 @@ describe('ga_stylesfromliterals_service', function() {
             '"foo": 1000' +
           '}}'
       );
+      var stub = sinon.stub($window, 'alert');
       olStyle = gaStyle.getFeatureStyle(olFeature);
       olImage = olStyle.getImage();
       expect(olStyle.getImage()).to.equal(null);
+      expect(stub.calledWithExactly('Feature ID: undefined. No matching style found for key foo and value 1000.')).to.be(true);
+      stub.restore();
     });
   });
 });
