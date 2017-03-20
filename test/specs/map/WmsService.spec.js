@@ -46,7 +46,7 @@ describe('ga_wms_service', function() {
       // Tests WMS params
       options.VERSION = options.VERSION || '1.3.0';
       options.FORMAT = options.FORMAT || 'image%2Fpng';
-      options.STYLES = options.STYLES || 'default';
+      options.STYLES = options.STYLES || '';
 
       var params = source.getParams();
       expect(params.LAYERS).to.be(options.LAYERS);
