@@ -708,15 +708,40 @@ describe('ga_measure_service', function() {
         expect(stubRm.called).to.be(false);
       });
 
-      it('removes overlays attached to features when the layer is removed', function() {
-        map.addLayer(layer);
-        gaMeasure.registerOverlaysEvents(map, layer);
-        map.removeLayer(layer);
-        expect(stubRm.calledTwice).to.be(true);
-        expect(stubRm.args[0][0]).to.be(feat2);
-        expect(stubRm.args[1][0]).to.be(feat1);
-        expect(feat1.get('overlays')).to.be(undefined);
-        expect(feat2.get('overlays')).to.be(undefined);
+      describe('add/removes overlays when the layer is added/removed', function() {
+
+        it('does nothing when the layer is not displayed in layers manager', function() {
+          map.addLayer(layer);
+          gaMeasure.registerOverlaysEvents(map, layer);
+          layer.setVisible(false);
+          expect(stubRm.called).to.be(false);
+        });
+
+        it('does nothing if features are not measure features', function() {
+          layer.displayInLayerManager = true;
+          map.addLayer(layer);
+          gaMeasure.registerOverlaysEvents(map, layer);
+          layer.setVisible(false);
+          expect(stubRm.called).to.be(false);
+        });
+
+        it('works', function() {
+          layer.displayInLayerManager = true;
+          layer.getSource().addFeatures([featMeas1, featMeas2]);
+          map.addLayer(layer);
+          gaMeasure.registerOverlaysEvents(map, layer);
+          expect(stubRm.called).to.be(false);
+
+          map.getLayers().pop();
+          expect(stubRm.calledTwice).to.be(true);
+          expect(stubRm.args[0][0]).to.be(featMeas1);
+          expect(stubRm.args[1][0]).to.be(featMeas2);
+
+          map.getLayers().insertAt(0, layer);
+          expect(stubAdd.calledTwice).to.be(true);
+          expect(stubAdd.getCall(0).calledWithExactly(map, layer, featMeas1)).to.be(true);
+          expect(stubAdd.getCall(1).calledWithExactly(map, layer, featMeas2)).to.be(true);
+        });
       });
 
       describe('add/removes overlays on visibility changes', function() {

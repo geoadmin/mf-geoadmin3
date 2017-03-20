@@ -246,20 +246,38 @@ goog.require('ga_measure_filter');
           return false;
         };
 
+        // Add/remove overlays attached to a layer
+        this.toggleLayerOverlays = function(map, olLayer, visible) {
+          var features = olLayer.getSource().getFeatures();
+          for (var i = 0; i < features.length; i++) {
+            if (gaMapUtils.isMeasureFeature(features[i])) {
+              if (visible) {
+                this.addOverlays(map, olLayer, features[i]);
+              } else {
+                this.removeOverlays(features[i]);
+              }
+            }
+          }
+        };
+
         // Register events on map, layer and source to manage correctly the
         // display of overlays
         this.registerOverlaysEvents = function(map, layer) {
           if (!(layer instanceof ol.layer.Vector)) {
             return;
           }
+
           map.getLayers().on('remove', function(evt) {
             if (evt.element === layer) {
-              var i, features = evt.element.getSource().getFeatures();
-              while (i = features.pop()) {
-                evt.element.getSource().removeFeature(i);
-              }
+              this.toggleLayerOverlays(map, evt.element, false);
             }
-          });
+          }, this);
+          map.getLayers().on('add', function(evt) {
+            if (evt.element === layer) {
+              this.toggleLayerOverlays(map, evt.element, true);
+            }
+          }, this);
+
           layer.getSource().on('removefeature', function(evt) {
             this.removeOverlays(evt.feature);
             evt.feature.set('overlays', undefined);
@@ -270,17 +288,7 @@ goog.require('ga_measure_filter');
           }
 
           layer.on('change:visible', function(evt) {
-            var visible = evt.target.getVisible();
-            var features = evt.target.getSource().getFeatures();
-            for (var i = 0; i < features.length; i++) {
-              if (gaMapUtils.isMeasureFeature(features[i])) {
-                if (visible) {
-                  this.addOverlays(map, evt.target, features[i]);
-                } else {
-                  this.removeOverlays(features[i]);
-                }
-              }
-            }
+            this.toggleLayerOverlays(map, evt.target, evt.target.getVisible());
           }, this);
 
           layer.on('change:opacity', function(evt) {
