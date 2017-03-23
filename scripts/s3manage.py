@@ -159,7 +159,7 @@ def _save_to_s3(in_data, dest, mimetype, bucket_name, compress=True, cached=True
         compressed = True
 
     if cached is False:
-        cache_control = 'no-cache'
+        cache_control = 'max-age=0, must-revalidate, s-maxage=60'
 
     extra_args['ACL'] = 'public-read'
     extra_args['ContentType'] = mimetype
@@ -459,7 +459,7 @@ def parse_arguments(argv):
     elif cmd_type in ('list'):
         deploy_target = argv[2].lower()
 
-    if deploy_target not in ('int', 'prod'):
+    if deploy_target not in ('infra', 'int', 'prod'):
         print('%s is not a valid deploy target' % deploy_target)
         sys.exit(1)
 
