@@ -1,5 +1,5 @@
-describe('ga_topic_directive', function() {
-  var element, $rootScope, $compile, $q, topics, def;
+describe.only('ga_topic_directive', function() {
+  var element, $rootScope, $compile, $translate, $translateProvider, $q, topics, def;
 
   beforeEach(function() {
     topics = [{
@@ -23,12 +23,24 @@ describe('ga_topic_directive', function() {
         this.set = function(newTopic) {
           topic = newTopic;
         };
+        this.sort = function(topics) {
+          return topics;
+        };
       })());
+
     });
 
-    inject(function(_$rootScope_, _$compile_, $q) {
-      $rootScope = _$rootScope_;
-      $compile = _$compile_;
+    module(function($translateProvider) {
+      $translateProvider.translations('en',
+          {'anothertopic': 'Zombie', 'sometopic': 'Alien'})
+    });
+
+    inject(function($injector) {
+      $httpBackend = $injector.get('$httpBackend');
+      $compile = $injector.get('$compile');
+      $rootScope = $injector.get('$rootScope');
+      $translate = $injector.get('$translate');
+      $q = $injector.get('$q');
       def = $q.defer();
     });
 
@@ -56,11 +68,24 @@ describe('ga_topic_directive', function() {
         $rootScope.$digest();
       });
 
+      it('reorders correctly the html on lang change event', function() {
+        var items = element.find('.ga-topic-item');
+        expect(items.length).to.be(2);
+        expect($(items[0]).text()).to.be('anothertopic');
+        expect($(items[1]).text()).to.be('sometopic');
+        $translate.use('en');
+        $rootScope.$broadcast('translateChangeEnd', {language: 'en'});
+        $rootScope.$digest();
+        items = element.find('.ga-topic-item');
+        expect($(items[0]).text()).to.be('Alien');
+        expect($(items[1]).text()).to.be('Zombie');
+      });
+
       it('updates correctly the html on first topic change event', function() {
         var items = element.find('.ga-topic-item');
         expect(items.length).to.be(2);
-        expect($(items[0]).hasClass('ga-topic-active')).to.be(true);
-        expect($(items[1]).hasClass('ga-topic-active')).to.be(false);
+        expect($(items[0]).hasClass('ga-topic-active')).to.be(false);
+        expect($(items[1]).hasClass('ga-topic-active')).to.be(true);
       });
 
       it('updates correctly the html on multiple topic change event', function() {
@@ -68,13 +93,13 @@ describe('ga_topic_directive', function() {
         $rootScope.$digest();
         var items = element.find('.ga-topic-item');
         expect(items.length).to.be(2);
-        expect($(items[1]).hasClass('ga-topic-active')).to.be(true);
+        expect($(items[0]).hasClass('ga-topic-active')).to.be(true);
 
         $rootScope.$broadcast('gaTopicChange', topics[0]);
         $rootScope.$digest();
         var items = element.find('.ga-topic-item');
         expect(items.length).to.be(2);
-        expect($(items[0]).hasClass('ga-topic-active')).to.be(true);
+        expect($(items[1]).hasClass('ga-topic-active')).to.be(true);
       });
 
       it('changes topic on click', function() {

@@ -8,12 +8,12 @@
       <div class="modal-body">
         <div class="input-modal-container">
           <div class="ga-topic-item"
-               ng-repeat="topic in ::topics"
+               ng-repeat="topic in topics | orderBy:['groupId', 'name']"
                ng-click="setActiveTopic(topic)"
                ng-class="{'ga-topic-active': topic == activeTopic}"
                data-original-title="{{topic.tooltip | translate}}">
-            <div translate>{{::topic.id}}</div>
-            <div class="ga-topics-sprite ga-topics-sprite-{{::topic.id}}"></div>
+            <div>{{topic.name}}</div>
+            <div class="ga-topics-sprite ga-topics-sprite-{{topic.id}}"></div>
           </div>
         </div>
       </div>
