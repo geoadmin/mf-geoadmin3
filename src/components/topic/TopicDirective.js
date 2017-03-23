@@ -8,13 +8,20 @@ goog.require('ga_topic_service');
   ]);
 
   module.directive('gaTopic',
-      function($rootScope, gaTopic) {
+      function($rootScope, $translate, $q, gaTopic) {
         return {
           restrict: 'A',
           templateUrl: 'components/topic/partials/topic.html',
           scope: {},
           link: function(scope, element, attrs) {
             var modal = element.find('.modal');
+
+            var translateTopics = function(topics) {
+              for (var i = 0; i < topics.length; i++) {
+                topics[i].name = $translate.instant(topics[i].id);
+              }
+              return topics;
+            };
 
             // Because ng-repeat creates a new scope for each item in the
             // collection we can't use ng-click="activeTopic = topic" in
@@ -31,8 +38,13 @@ goog.require('ga_topic_service');
               }
             });
 
-            gaTopic.loadConfig().then(function() {
-              scope.topics = gaTopic.getTopics();
+            $rootScope.$on('$translateChangeEnd', function() {
+              scope.topics = translateTopics(gaTopic.getTopics());
+            });
+
+            $q.all([$translate.onReady, gaTopic.loadConfig()]).then(
+                function() {
+              scope.topics = translateTopics(gaTopic.getTopics());
               scope.activeTopic = gaTopic.get();
               scope.$applyAsync(function() {
                 element.find('.ga-topic-item').tooltip({

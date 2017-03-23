@@ -4,7 +4,6 @@ describe('ga_topic_service', function() {
     var gaTopic, $httpBackend, $rootScope, gaGlobalOptions, topicPermalink, gaPermalink,
         expectedUrl = window.location.origin + '/123456/services',
         topics = [{
-          'langs': 'de,fr,it',
           'selectedLayers': [],
           'backgroundLayers': [
             'ch.swisstopo.pixelkarte-farbe',
@@ -12,9 +11,9 @@ describe('ga_topic_service', function() {
             'ch.swisstopo.swissimage'
           ],
           'id': 'sometopic',
-          'showCatalog': true
+          'showCatalog': true,
+          'groupId': 1
         }, {
-          'langs': 'de,fr',
           'selectedLayers': [],
           'backgroundLayers': [
             'ch.swisstopo.pixelkarte-grau',
@@ -22,7 +21,17 @@ describe('ga_topic_service', function() {
             'ch.swisstopo.swissimage'
           ],
           'id': 'anothertopic',
-          'showCatalog': true
+          'showCatalog': true,
+          'groupId': 2
+        }, {
+          'selectedLayers': [],
+          'backgroundLayers': [
+            'ch.swisstopo.pixelkarte-grau',
+            'ch.swisstopo.pixelkarte-farbe'
+          ],
+          'id': 'anewtopic',
+          'showCatalog': true,
+          'groupId': 1
         }];
 
     beforeEach(function() {
@@ -69,7 +78,7 @@ describe('ga_topic_service', function() {
 
       it('has loaded topics', function() {
         gaTopic.loadConfig().then(function() {
-          expect(gaTopic.getTopics().length).to.be(2);
+          expect(gaTopic.getTopics().length).to.be(3);
         });
       });
 
