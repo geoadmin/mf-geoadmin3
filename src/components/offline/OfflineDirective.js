@@ -252,13 +252,13 @@ goog.require('ga_networkstatus_service');
         });
 
         scope.$on('gaOfflineProgress', function(evt, progress) {
-          scope.$apply(function() {
+          scope.$applyAsync(function() {
             scope.percent = progress;
           });
         });
 
         scope.$on('gaOfflineSuccess', function(evt) {
-          scope.$apply(function() {
+          scope.$applyAsync(function() {
             scope.toggleDataExtent();
             gaOffline.hideSelector();
           });
@@ -270,7 +270,7 @@ goog.require('ga_networkstatus_service');
         });
 
         scope.$on('gaOfflineAbort', function(evt) {
-          scope.$apply();
+          scope.$applyAsync();
         });
 
       }

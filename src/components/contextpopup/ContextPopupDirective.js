@@ -128,7 +128,7 @@ goog.require('ga_what3words_service');
               // We use a conservative approach and call $apply ourselves
               // here, but we instead could also let $evalSync trigger a
               // digest cycle for us.
-              scope.$apply(function() {
+              scope.$applyAsync(function() {
 
                 $http.get(heightUrl, {
                   params: {

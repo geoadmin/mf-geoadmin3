@@ -1,5 +1,5 @@
 describe('ga_shareembed_directive', function() {
-  var elt, modal, parentScope, scope, $rootScope, $compile, gaPermalink, $window;
+  var elt, modal, parentScope, scope, $rootScope, $compile, gaPermalink, $window, $timeout;
 
   var loadDirective = function() {
     parentScope = $rootScope.$new();
@@ -16,6 +16,7 @@ var $sce;
       $rootScope = $injector.get('$rootScope');
       $window = $injector.get('$window');
       $sce = $injector.get('$sce');
+      $timeout = $injector.get('$timeout');
       gaPermalink = $injector.get('gaPermalink');
     });
   });
@@ -104,14 +105,14 @@ var $sce;
     $rootScope.$digest();
     expect(width.val()).to.be('100');
     width.blur();
+    $timeout.flush();
     expect(scope.iframeWidth).to.be(200);
-
     scope.iframeHeight = 100;
     $rootScope.$digest();
     expect(height.val()).to.be('100');
     height.blur();
+    $timeout.flush();
     expect(scope.iframeHeight).to.be(200);
-
   });
 });
 

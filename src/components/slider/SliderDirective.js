@@ -572,7 +572,7 @@ goog.require('ga_debounce_service');
                     var offsetLeft = getMouseOffsetLeft(event, element) -
                          halfWidth(minPtr);
                     scope[refLow] = getValueFromOffset(offsetLeft);
-                    return scope.$apply();
+                    return scope.$applyAsync();
                   }));
 
                   var input = element.find('.ga-slider-value1 input');
@@ -586,7 +586,7 @@ goog.require('ga_debounce_service');
                     // RE3: if the user leave the input without having set
                     // a good value, we set the last good value saved.
                     if (scope.lastGoodValue) {
-                      scope.$apply(function() {
+                      scope.$applyAsync(function() {
                         scope[refLow] = scope.lastGoodValue;
                       });
                     }
@@ -670,7 +670,7 @@ goog.require('ga_debounce_service');
             };
 
             var applyDebounced = gaDebounce.debounce(function() {
-              scope.$apply();
+              scope.$applyAsync();
             }, 200, false, false);
 
 

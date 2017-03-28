@@ -1249,11 +1249,11 @@ goog.require('ga_urlutils_service');
               },
               complete: function() {
                 defer.resolve();
-                $rootScope.$digest();
+                $rootScope.$applyAsync();
               },
               cancel: function() {
                 defer.resolve();
-                $rootScope.$digest();
+                $rootScope.$applyAsync();
               }
             });
             return defer.promise;
@@ -1296,7 +1296,7 @@ goog.require('ga_urlutils_service');
             duration: 0
           }, function(success) {
             defer.resolve();
-            $rootScope.$digest();
+            $rootScope.$applyAsync();
           });
           return defer.promise;
         },
@@ -1327,7 +1327,7 @@ goog.require('ga_urlutils_service');
             duration: duration
           }, function() {
             deferPan.resolve();
-            $rootScope.$digest();
+            $rootScope.$applyAsync();
           });
           view.animate({
             // destRes * 1.2 needed to don't have up an down and up again
@@ -1339,7 +1339,7 @@ goog.require('ga_urlutils_service');
             duration: duration / 2,
           }, function(success) {
             deferZoom.resolve();
-            $rootScope.$digest();
+            $rootScope.$applyAsync();
           });
           return $q.all([deferPan.promise, deferZoom.promise]);
         },
@@ -1432,7 +1432,7 @@ goog.require('ga_urlutils_service');
               easing: ol.easing.easeOut
             }, function() {
               defer.resolve();
-              $rootScope.$digest();
+              $rootScope.$applyAsync();
             });
           }
           return defer.promise;

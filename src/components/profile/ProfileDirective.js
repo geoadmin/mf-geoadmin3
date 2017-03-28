@@ -214,7 +214,7 @@ goog.require('ga_profile_service');
                 left: positionX + 'px',
                 top: positionY + 'px'
               });
-              scope.$apply(function() {
+              scope.$applyAsync(function() {
                 scope.coordinates = [xCoord, yCoord];
               });
               var coordsMap = profile.findMapCoordinates(xCoord);

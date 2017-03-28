@@ -249,7 +249,7 @@ goog.require('ga_throttle_service');
         });
 
         geolocation.on('error', function(error) {
-          scope.$apply(function() {
+          scope.$applyAsync(function() {
             scope.tracking = false;
           });
           bt.addClass('ga-btn-disabled');
@@ -324,7 +324,7 @@ goog.require('ga_throttle_service');
 
           // Trigger a digest cycle only if tracking value has changed
           if (tracking != scope.tracking) {
-            scope.$apply(function() {
+            scope.$applyAsync(function() {
               scope.tracking = tracking;
             });
           }
