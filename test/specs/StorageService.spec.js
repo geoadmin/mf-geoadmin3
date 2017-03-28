@@ -126,6 +126,15 @@ describe('ga_storage_service', function() {
         gaStorage.setItem('key', 'foo');
         expect(gaStorage.getItem('key')).to.be('foo');
       });
+
+      it('returns a string even if the value is a boolean', function() {
+        var spy = sinon.spy($window.localStorage, 'getItem');
+        gaStorage.setItem('key', 'true');
+        expect(gaStorage.getItem('key', String)).to.eql(new String(true));
+        expect(spy.calledWithExactly('key'));
+        spy.restore();
+      });
+
     });
 
     describe('#setItem()', function() {
