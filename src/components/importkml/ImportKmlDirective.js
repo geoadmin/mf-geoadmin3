@@ -220,7 +220,7 @@ goog.require('ga_urlutils_service');
               elt.find('input[type=file]').bind('change', function(evt) {
                 if (evt.target.files && evt.target.files.length > 0) {
                   scope.clearUserOutput();
-                  scope.$apply(function() {
+                  scope.$applyAsync(function() {
                     scope.files = evt.target.files;
                   });
                 }
@@ -286,7 +286,7 @@ goog.require('ga_urlutils_service');
                 var files = evt.originalEvent.dataTransfer.files;
 
                 if (files && files.length > 0) {
-                  scope.$apply(function() {
+                  scope.$applyAsync(function() {
                     scope.isDropped = true;
                     scope.files = files;
                     scope.currentTab = 1;
@@ -299,7 +299,7 @@ goog.require('ga_urlutils_service');
                       .getData('text/plain');
 
                   if (gaUrlUtils.isValid(text)) {
-                    scope.$apply(function() {
+                    scope.$applyAsync(function() {
                       scope.isDropped = true;
                       scope.fileUrl = text;
                       scope.currentTab = 2;

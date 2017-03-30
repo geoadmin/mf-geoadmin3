@@ -65,7 +65,7 @@ goog.require('ga_permalink');
         modal.find('.form-inline input').blur(function() {
           if (scope.iframeWidth < minSize ||
               scope.iframeHeight < minSize) {
-            scope.$apply(function() {
+            scope.$applyAsync(function() {
               if (scope.iframeWidth < minSize) {
                 scope.iframeWidth = minSize;
               } else if (scope.iframeHeight < minSize) {

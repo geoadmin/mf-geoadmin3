@@ -123,11 +123,11 @@ goog.require('ga_permalink');
               elFileInpt.bind('change', function(evt) {
                 var file = (evt.srcElement || evt.target).files[0];
                 if (validateSize(file.size) && validateFormat(file.name)) {
-                  scope.$apply(function() {
+                  scope.$applyAsync(function() {
                     scope.file = file;
                   });
                 } else {
-                  scope.$apply(function() {
+                  scope.$applyAsync(function() {
                     scope.file = null;
                   });
                 }

@@ -465,7 +465,7 @@ goog.require('ga_query_service');
 
             if (scope.tooltipLayers.length == 0) {
               scope.isActive = true;
-              scope.$apply();
+              scope.$applyAsync();
             } else {
               if (scope.isActive && scope.queryType == 1 &&
                   scope.filters[0].value) {

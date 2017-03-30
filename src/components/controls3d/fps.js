@@ -273,7 +273,7 @@ FPS.prototype.onMouseMove_ = function(event) {
  */
 FPS.prototype.onKey_ = function(event) {
   if (this.active_) {
-    this.scope_.$apply(function() {
+    this.scope_.$applyAsync(function() {
       var pressed = event.type == 'keydown';
       this.buttons_.shift = event.shiftKey;
       if (event.keyCode == 65 || event.keyCode == 37) {

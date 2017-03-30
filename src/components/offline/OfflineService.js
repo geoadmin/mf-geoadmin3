@@ -358,7 +358,7 @@ goog.require('ga_styles_service');
           var layersIds = gaStorage.getItem(layersKey).split(',');
           var opacity = gaStorage.getItem(opacityKey).split(',');
           var timestamp = gaStorage.getItem(timestampKey).split(',');
-          var bg = gaStorage.getItem(bgKey).split(',');
+          var bg = gaStorage.getItem(bgKey, String).split(',');
 
           for (var i = 0, ii = layersIds.length; i < ii; i++) {
             var bodLayer = gaLayers.getLayer(layersIds[i]);
