@@ -1,4 +1,4 @@
-describe.only('ga_topic_directive', function() {
+describe('ga_topic_directive', function() {
   var element, $rootScope, $compile, $translate, $translateProvider, $q, topics, def;
 
   beforeEach(function() {
@@ -22,9 +22,6 @@ describe.only('ga_topic_directive', function() {
         };
         this.set = function(newTopic) {
           topic = newTopic;
-        };
-        this.sort = function(topics) {
-          return topics;
         };
       })());
 
