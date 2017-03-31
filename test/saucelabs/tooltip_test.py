@@ -45,13 +45,13 @@ def runTooltipTest(driver, target, is_top_browser):
         assert u'Perimeter' in htmlContainerEl.text, htmlContainerEl.text
 
         # Change language to fr
-        fr = driver.find_element_by_css_selector('#%s div div :nth-child(1)' % topToolsId)
+        fr = driver.find_element_by_css_selector('#%s div div :nth-child(2)' % topToolsId)
         action = ActionChains(driver)
         action.move_to_element(fr)
         action.click()
         action.perform()
         wait.until(
-            EC.text_to_be_present_in_element((By.CLASS_NAME, htmlHeaderCss), u'limites'))
+            EC.text_to_be_present_in_element((By.CSS_SELECTOR, 'div.%s > span' % htmlHeaderCss), u'limites'))
         htmlContainerEl = driver.find_element_by_css_selector('.%s' % htmlContainerCss)
         assert u'Numéro OFS' in htmlContainerEl.text, htmlContainerEl.text
         assert u'Nom' in htmlContainerEl.text, htmlContainerEl.text
