@@ -14,36 +14,45 @@ goog.provide('ga_reframe_service');
       var lv95tolv03Url = gaGlobalOptions.lv95tolv03Url;
 
       var Reframe = function() {
-        this.get03To95 = function(coordinates) {
+        this.get03To95 = function(coordinates, timeout) {
           var defer = $q.defer();
           $http.get(lv03tolv95Url, {
             params: {
               easting: coordinates[0],
               northing: coordinates[1]
-            }
+            },
+            timeout: timeout
           }).then(function(response) {
             defer.resolve(response.data.coordinates);
-          }, function() {
-            // Use proj4js on error
-            defer.resolve(ol.proj.transform(coordinates,
-                'EPSG:21781', 'EPSG:2056'));
+          }, function(response) {
+            if (response.status == -1) { // cancel
+              defer.reject();
+            } else {
+              defer.resolve(ol.proj.transform(coordinates,
+                  'EPSG:21781', 'EPSG:2056'));
+            }
           });
           return defer.promise;
         };
 
-        this.get95To03 = function(coordinates) {
+        this.get95To03 = function(coordinates, timeout) {
           var defer = $q.defer();
           $http.get(lv95tolv03Url, {
             params: {
               easting: coordinates[0],
               northing: coordinates[1]
-            }
+            },
+            timeout: timeout
           }).then(function(response) {
             defer.resolve(response.data.coordinates);
-          }, function() {
-            // Use proj4js on error
-            defer.resolve(ol.proj.transform(coordinates,
-                'EPSG:2056', 'EPSG:21781'));
+          }, function(response) {
+            if (response.status == -1) { // cancel
+              defer.reject();
+            } else {
+              // Use proj4js on error
+              defer.resolve(ol.proj.transform(coordinates,
+                  'EPSG:2056', 'EPSG:21781'));
+            }
           });
           return defer.promise;
         };
