@@ -72,8 +72,7 @@ goog.require('ga_permalink');
           move: 'mousemove',
           end: 'mouseup',
           over: 'mouseover',
-          out: 'mouseout',
-          menu: 'contextmenu'
+          out: 'mouseout'
         },
         touch: {
           start: 'touchstart',
@@ -85,16 +84,14 @@ goog.require('ga_permalink');
           move: 'MSPointerMove',
           end: 'MSPointerUp',
           over: 'MSPointerOver',
-          out: 'MSPointerOut',
-          menu: 'contextmenu'
+          out: 'MSPointerOut'
         },
         pointer: {
           start: 'pointerdown',
           move: 'pointermove',
           end: 'pointerup',
           over: 'pointerover',
-          out: 'pointerout',
-          menu: 'contextmenu'
+          out: 'pointerout'
         }
       };
 

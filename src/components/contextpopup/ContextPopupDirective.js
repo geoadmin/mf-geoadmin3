@@ -1,12 +1,15 @@
 goog.provide('ga_contextpopup_directive');
 
+goog.require('ga_event_service');
 goog.require('ga_networkstatus_service');
 goog.require('ga_permalink');
 goog.require('ga_reframe_service');
 goog.require('ga_what3words_service');
+
 (function() {
 
   var module = angular.module('ga_contextpopup_directive', [
+    'ga_event_service',
     'ga_networkstatus_service',
     'ga_permalink',
     'ga_reframe_service',
@@ -15,9 +18,9 @@ goog.require('ga_what3words_service');
   ]);
 
   module.directive('gaContextPopup',
-      function($rootScope, $http, $translate, $q, $timeout, $window,
-          gaBrowserSniffer, gaNetworkStatus, gaPermalink, gaGlobalOptions,
-          gaLang, gaWhat3Words, gaReframe) {
+      function($http, $q, $timeout, $window, $rootScope, gaBrowserSniffer,
+          gaNetworkStatus, gaPermalink, gaGlobalOptions, gaLang, gaWhat3Words,
+          gaReframe, gaEvent) {
         return {
           restrict: 'A',
           replace: true,
@@ -30,15 +33,12 @@ goog.require('ga_what3words_service');
           link: function(scope, element, attrs) {
             var heightUrl = scope.options.heightUrl;
             var qrcodeUrl = scope.options.qrcodeUrl;
-
-            // The popup content is updated (a) on contextmenu events,
-            // and (b) when the permalink is updated.
-
+            var startPixel, holdPromise, isPopoverShown;
+            var reframeCanceler = $q.defer();
+            var heightCanceler = $q.defer();
             var map = scope.map;
             var view = map.getView();
-
             var coord21781, coord4326;
-            var popoverShown = false;
 
             var overlay = new ol.Overlay({
               element: element[0],
@@ -68,7 +68,20 @@ goog.require('ga_what3words_service');
               gaWhat3Words.getWords(coord4326[1],
                                     coord4326[0]).then(function(res) {
                 scope.w3w = res;
+              }, function(response) {
+                if (response.status != -1) { // Error
+                  scope.w3w = '-';
+                }
               });
+            };
+
+            var cancelRequests = function() {
+              // Cancel last requests
+              heightCanceler.resolve();
+              reframeCanceler.resolve();
+              heightCanceler = $q.defer();
+              reframeCanceler = $q.defer();
+              gaWhat3Words.cancel();
             };
 
             var handler = function(event) {
@@ -135,18 +148,23 @@ goog.require('ga_what3words_service');
                     easting: coord21781[0],
                     northing: coord21781[1],
                     elevation_model: gaGlobalOptions.defaultElevationModel
-                  }
+                  },
+                  timeout: heightCanceler.promise
                 }).then(function(response) {
                   scope.altitude = parseFloat(response.data.height);
+                }, function(response) {
+                  if (response.status != -1) { // Error
+                    scope.altitude = '-';
+                  }
                 });
 
-                gaReframe.get03To95(coord21781).then(function(coords) {
+                gaReframe.get03To95(coord21781,
+                    reframeCanceler.promise).then(function(coords) {
                   coord2056 = coords;
                   scope.coord2056 = formatCoordinates(coord2056, 2);
                 });
 
                 updateW3W();
-
               });
 
               updatePopupLinks();
@@ -162,21 +180,35 @@ goog.require('ga_what3words_service');
               }
 
               overlay.setPosition(coord21781);
-              showPopover();
+              element.show();
+              // We use a boolean instead of  jquery .is(':visible') selector
+              // because that doesn't work with phantomJS.
+              isPopoverShown = true;
             };
 
 
-            if (!gaBrowserSniffer.mobile && gaBrowserSniffer.events.menu) {
-              $(map.getViewport()).on(gaBrowserSniffer.events.menu, handler);
-              element.on(gaBrowserSniffer.events.menu, 'a', function(e) {
+            if ('oncontextmenu' in $window) {
+              $(map.getViewport()).on('contextmenu', function(event) {
+                if (!isPopoverShown) {
+                  $timeout.cancel(holdPromise);
+                  startPixel = undefined;
+                  handler(event);
+                }
+              });
+              element.on('contextmenu', 'a', function(e) {
                 e.stopPropagation();
               });
+            }
 
-            } else {
+            // IE manage contextmenu event also with touch so no need to add
+            // pointers events too.
+            if (!gaBrowserSniffer.msie) {
               // On touch devices and browsers others than ie10, display the
               // context popup after a long press (300ms)
-              var startPixel, holdPromise;
               map.on('pointerdown', function(event) {
+                if (gaEvent.isMouse(event)) {
+                  return;
+                }
                 $timeout.cancel(holdPromise);
                 startPixel = event.pixel;
                 holdPromise = $timeout(function() {
@@ -184,10 +216,16 @@ goog.require('ga_what3words_service');
                 }, 300, false);
               });
               map.on('pointerup', function(event) {
+                if (gaEvent.isMouse(event)) {
+                  return;
+                }
                 $timeout.cancel(holdPromise);
                 startPixel = undefined;
               });
               map.on('pointermove', function(event) {
+                if (gaEvent.isMouse(event)) {
+                  return;
+                }
                 if (startPixel) {
                   var pixel = event.pixel;
                   var deltaX = Math.abs(startPixel[0] - pixel[0]);
@@ -201,14 +239,14 @@ goog.require('ga_what3words_service');
             }
 
             $rootScope.$on('$translateChangeEnd', function() {
-              if (popoverShown) {
+              if (isPopoverShown) {
                 updateW3W();
               }
             });
 
             // Listen to permalink change events from the scope.
             scope.$on('gaPermalinkChange', function(event) {
-              if (angular.isDefined(coord21781) && popoverShown) {
+              if (angular.isDefined(coord21781) && isPopoverShown) {
                 updatePopupLinks();
               }
             });
@@ -217,23 +255,13 @@ goog.require('ga_what3words_service');
               if (evt) {
                 evt.stopPropagation();
               }
-              hidePopover();
+              cancelRequests();
+              element.hide();
+              isPopoverShown = false;
             };
 
             function hidePopoverOnNextChange() {
-              view.once('change:center', function() {
-                hidePopover();
-              });
-            }
-
-            function showPopover() {
-              element.css('display', 'block');
-              popoverShown = true;
-            }
-
-            function hidePopover() {
-              element.css('display', 'none');
-              popoverShown = false;
+              view.once('change:center', scope.hidePopover);
             }
 
             function updatePopupLinks() {
@@ -241,16 +269,13 @@ goog.require('ga_what3words_service');
                 X: Math.round(coord21781[1], 1),
                 Y: Math.round(coord21781[0], 1)
               };
-
-              var contextPermalink = gaPermalink.getHref(p);
-              scope.contextPermalink = contextPermalink;
-
+              scope.contextPermalink = gaPermalink.getHref(p);
               scope.crosshairPermalink = gaPermalink.getHref(
                   angular.extend({crosshair: 'marker'}, p));
 
               if (!gaBrowserSniffer.mobile) {
                 scope.qrcodeUrl = qrcodeUrl + '?url=' +
-                    escape(contextPermalink);
+                    escape(scope.contextPermalink);
               }
             }
           }
