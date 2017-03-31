@@ -23,6 +23,7 @@ def getMsgText(driver):
 
 def runWmsTest(driver, target, is_top_browser):
     print "Start Wms tests"
+    inputEl = "#import-wms-popup [name=\"url\"]"
     driver.get(target)
     # We maximize our window to be sure to be in full resolution
     driver.maximize_window()
@@ -32,14 +33,15 @@ def runWmsTest(driver, target, is_top_browser):
     # Click on "WMS Import"
     driver.find_element_by_link_text("WMS Import").click()
     # Write URL of the chosen WMS
-    driver.find_element_by_css_selector("#import-wms-popup [name=\"url\"]").send_keys(
+    driver.find_element_by_css_selector(inputEl).send_keys(
         "https://wms.geo.admin.ch/")
+    driver.execute_script("$('%s').trigger('change')" % inputEl)
     # Click on "Verbinden"
     driver.find_element_by_xpath(
         "//*[@id='import-wms-popup']//button[contains(text(),'Verbinden')]").click()
     for i in range(DEFAULT_WAIT_LOADING):
         try:
-            if re.search(r"^Parsing[\s\S]*$", getMsgText(driver)):
+            if re.search(r"^Datei wird[\s\S]*$", getMsgText(driver)):
                 break
         except:
             pass
