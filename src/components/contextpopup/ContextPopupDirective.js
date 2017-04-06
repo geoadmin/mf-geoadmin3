@@ -33,7 +33,7 @@ goog.require('ga_what3words_service');
           link: function(scope, element, attrs) {
             var heightUrl = scope.options.heightUrl;
             var qrcodeUrl = scope.options.qrcodeUrl;
-            var startPixel, holdPromise, isPopoverShown;
+            var startPixel, holdPromise, isPopoverShown = false;
             var reframeCanceler = $q.defer();
             var heightCanceler = $q.defer();
             var map = scope.map;
