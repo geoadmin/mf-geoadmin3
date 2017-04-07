@@ -1,5 +1,6 @@
 goog.provide('ga_map_service');
 
+goog.require('ga_event_service');
 goog.require('ga_measure_service');
 goog.require('ga_networkstatus_service');
 goog.require('ga_stylesfromliterals_service');
@@ -9,6 +10,7 @@ goog.require('ga_urlutils_service');
 (function() {
 
   var module = angular.module('ga_map_service', [
+    'ga_event_service',
     'ga_networkstatus_service',
     'ga_storage_service',
     'ga_stylesfromliterals_service',
@@ -286,12 +288,10 @@ goog.require('ga_urlutils_service');
    *   "click" behavior to avoid conflict with long touch event.
    */
   module.provider('gaMapClick', function() {
-    this.$get = function($timeout, gaBrowserSniffer) {
+    this.$get = function($timeout, gaBrowserSniffer, gaEvent) {
       return {
         listen: function(map, onClick) {
           var down = null;
-          var moving = false;
-          var timeoutPromise = null;
           var touchstartTime;
           var callback = function(evt) {
             // if a draw or a select interaction is active, do
@@ -314,6 +314,10 @@ goog.require('ga_urlutils_service');
           };
 
           var touchstartListener = function(evt) {
+            if (gaEvent.isMouse(evt)) {
+              return;
+            }
+
             // This test only needed for IE10, to fix conflict between click
             // and contextmenu events on desktop
             if (!isMouseRightAction(evt)) {
@@ -323,65 +327,55 @@ goog.require('ga_urlutils_service');
           };
 
           var touchmoveListener = function(evt) {
-            // Fix ie10 on windows surface : when you tap the tablet, it
-            // triggers multiple pointermove events between pointerdown and
-            // pointerup with the exact same coordinates of the pointerdown
-            // event. to avoid a 'false' touchmove event to be dispatched,
-            // we test if the pointer effectively moved.
-            if (down && (!gaBrowserSniffer.msie ||
-                evt.clientX != down.clientX ||
-                evt.clientY != down.clientY)) {
-              moving = true;
+            if (gaEvent.isMouse(evt)) {
+              return;
             }
-          };
 
-          var touchendListener = function(evt) {
-            var now = (new Date()).getTime();
-            if (now - touchstartTime < 300) {
-              if (down && !moving) {
-                if (timeoutPromise) {
-                  $timeout.cancel(timeoutPromise);
-                  timeoutPromise = null;
-                } else {
-                  var clickEvent = down;
-                  timeoutPromise = $timeout(function() {
-                    callback(clickEvent);
-                    timeoutPromise = null;
-                  }, 350, false);
-                }
-              }
-              moving = false;
+            // We authorize a move of 5 pixels max for touch device.
+            if (down &&
+                (evt.clientX < down.clientX - 5 ||
+                evt.clientX > down.clientX + 5 ||
+                evt.clientY < down.clientY - 5 ||
+                evt.clientY > down.clientY + 5)) {
               down = null;
             }
           };
 
-          if (!gaBrowserSniffer.touchDevice) {
-            var deregKey = map.on('singleclick', callback);
-            return function() {
-              ol.Observable.unByKey(deregKey);
-            };
-
-          } else {
-            // We can't register 'singleclick' map event on touch devices
-            // to avoid a conflict between the long press event used for context
-            // popup
-            var viewport = $(map.getViewport());
-            var touchEvents = ['touchstart', 'touchmove', 'touchend'];
-            if (gaBrowserSniffer.msie == 10) {
-              touchEvents = ['MSPointerDown', 'MSPointerMove', 'MSPointerUp'];
-            } else if (gaBrowserSniffer.msie >= 11) {
-              touchEvents = ['pointerdown', 'pointermove', 'pointerup'];
+          var touchendListener = function(evt) {
+            if (gaEvent.isMouse(evt)) {
+              return;
             }
 
-            viewport.on(touchEvents[0], touchstartListener);
-            viewport.on(touchEvents[1], touchmoveListener);
-            viewport.on(touchEvents[2], touchendListener);
-            return function() {
-              viewport.unbind(touchEvents[0], touchstartListener);
-              viewport.unbind(touchEvents[1], touchmoveListener);
-              viewport.unbind(touchEvents[2], touchendListener);
-            };
+            if (down && (new Date()).getTime() - touchstartTime < 300) {
+              callback(down);
+            }
+            down = null;
+          };
+
+          var deregKey = map.on('singleclick', function(evt) {
+            // We active singleclick only on mouse event to avoid confilct with
+            // contextpopup.
+            if (gaEvent.isMouse(evt)) {
+              callback(evt);
+            }
+          });
+
+          var touchEvents;
+          if (gaBrowserSniffer.events.start != 'mousedown') {
+            touchEvents = gaBrowserSniffer.events;
+            var viewport = $(map.getViewport());
+            viewport.on(touchEvents.start, touchstartListener);
+            viewport.on(touchEvents.move, touchmoveListener);
+            viewport.on(touchEvents.end, touchendListener);
           }
+          return function() {
+            ol.Observable.unByKey(deregKey);
+            if (touchEvents) {
+              viewport.unbind(touchEvents.start, touchstartListener);
+              viewport.unbind(touchEvents.move, touchmoveListener);
+              viewport.unbind(touchEvents.end, touchendListener);
+            }
+          };
         }
       };
     };
