@@ -11,3 +11,4 @@ export SHOP_URL=//shop.swisstopo.admin.ch
 export PUBLIC_URL=//public.geo.admin.ch
 export PRINT_URL=//print.geo.admin.ch
 export PROXY_URL=//service-proxy.prod.bgdi.ch
+export PROXY_API_KEY=sBdYplnEBT8PIFvKODfTW6MrM9FwJcYt7DdU8h7F

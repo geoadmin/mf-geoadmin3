@@ -32,9 +32,10 @@ LAST_PUBLIC_URL := $(shell if [ -f .build-artefacts/last-public-url ];  then cat
 PRINT_URL ?= //print.geo.admin.ch
 PRINT_TECH_URL ?= //service-print.
 LAST_PRINT_URL := $(shell if [ -f .build-artefacts/last-print-url ]; then cat .build-artefacts/last-print-url 2> /dev/null; else echo '-none-'; fi)
-PROXY_URL ?= //pondvarz5b.execute-api.eu-west-1.amazonaws.com/prod
-LAST_PROXY_URL ?= $(shell if [ -f .build-artefacts/last-proxy-ulr ]; then cat .build-artefacts/last-proxy-url 2> /dev/null; else echo '-none-'; fi)
-
+PROXY_URL ?= //service-proxy.prod.bgdi.ch
+LAST_PROXY_URL ?= $(shell if [ -f .build-artefacts/last-proxy-url ]; then cat .build-artefacts/last-proxy-url 2> /dev/null; else echo '-none-'; fi)
+PROXY_API_KEY ?=NO_KEY
+LAST_PROXY_API_KEY ?= $(shell if [ -f .build-artefacts/last-proxy-api-key ]; then cat .build-artefacts/last-proxy-api-key 2> /dev/null; else echo '-none-'; fi)
 PUBLIC_URL_REGEXP ?= ^https?:\/\/public\..*\.(bgdi|admin)\.ch\/.*
 ADMIN_URL_REGEXP ?= ^(ftp|http|https):\/\/(.*(\.bgdi|\.geo\.admin)\.ch)
 E2E_TARGETURL ?= https://mf-geoadmin3.dev.bgdi.ch
@@ -150,6 +151,8 @@ help:
 	@echo "- VECTORTILES_URL Service URL (build with: $(LAST_VECTORTILES_URL), current value: $(VECTORTILES_URL))"
 	@echo "- SHOP_URL Service URL        (build with: $(LAST_SHOP_URL), current value: $(SHOP_URL))"
 	@echo "- WMS_URL Service URL         (build with  $(LAST_WMS_URL), current value: $(WMS_URL))"
+	@echo "- PROXY_URL Proxy URL         (build with  $(LAST_PROXY_URL), current value: $(PROXY_URL))"
+	@echo "- PROXY_API_KEY               (build with  $(LAST_PROXY_API_KEY), current value: $(PROXY_API_KEY))"
 	@echo "- APACHE_BASE_PATH Base path  (build with: $(LAST_APACHE_BASE_PATH), current value: $(APACHE_BASE_PATH))"
 	@echo "- APACHE_BASE_DIRECTORY       (build with: $(LAST_APACHE_BASE_DIRECTORY), current value: $(APACHE_BASE_DIRECTORY))"
 	@echo "- SNAPSHOT                    (current value: $(SNAPSHOT))"
@@ -447,6 +450,7 @@ define buildpage
 		--var "print_url=$(PRINT_URL)" \
 		--var "print_tech_url=$(PRINT_TECH_URL)" \
 		--var "proxy_url=$(PROXY_URL)" \
+		--var "proxy_api_key=$(PROXY_API_KEY)" \
 		--var "mapproxy_url=$(MAPPROXY_URL)" \
 		--var "mapproxy_tech_url=$(MAPPROXY_TECH_URL)" \
 		--var "vectortiles_url=$(VECTORTILES_URL)" \

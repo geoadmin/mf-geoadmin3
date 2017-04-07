@@ -357,7 +357,8 @@ goog.require('ga_urlutils_service');
           } else {
             return gaUrlUtils.proxifyUrl(url).then(function(proxyUrl) {
               return $http.get(proxyUrl, {
-                cache: true
+                cache: true,
+                headers: {'x-api-key': gaGlobalOptions.proxyApiKey}
               }).then(function(response) {
                 var data = response.data;
                 var fileSize = response.headers('content-length');
