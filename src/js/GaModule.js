@@ -26,9 +26,11 @@ goog.require('ga_identify_service');
 goog.require('ga_importkml');
 goog.require('ga_importwms');
 goog.require('ga_importwms_controller');
+goog.require('ga_layer_retry_service');
 goog.require('ga_layermanager');
 goog.require('ga_main_controller');
 goog.require('ga_map');
+goog.require('ga_map_service');
 goog.require('ga_measure');
 goog.require('ga_modal_directive');
 goog.require('ga_mouseposition');
@@ -75,7 +77,9 @@ goog.require('ga_waitcursor_service');
     'ga_importkml',
     'ga_importwms',
     'ga_help',
+    'ga_layer_retry_service',
     'ga_map',
+    'ga_map_service',
     'ga_mouseposition',
     'ga_offline',
     'ga_popup',
