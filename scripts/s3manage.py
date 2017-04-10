@@ -241,14 +241,14 @@ def upload(bucket_name, base_dir, deploy_target, named_branch):
                     if len([p for p in exclude_filename_patterns if p in file_name]) == 0:
                         is_chsdi_cache = bool(file_base_path.endswith('cache'))
                         local_file = os.path.join(file_base_path, file_name)
-                        file_base_path = file_base_path.replace('cache', '')
+                        relative_file_path = file_base_path.replace('cache', '')
                         if directory == 'prd':
                             # Take only files directly in prd/
-                            if file_name in root_files and file_base_path.endswith('prd'):
-                                file_base_path = file_base_path.replace('prd', '')
+                            if file_name in root_files and relative_file_path.endswith('prd'):
+                                relative_file_path = relative_file_path.replace('prd', '')
                             else:
-                                file_base_path = file_base_path.replace('prd', version)
-                        relative_file_path = file_base_path.replace(base_dir + '/', '')
+                                relative_file_path = relative_file_path.replace('prd', version)
+                        relative_file_path = relative_file_path.replace(base_dir + '/', '')
                         remote_file = os.path.join(s3_dir_path, relative_file_path, file_name)
                         # Don't cache some files
                         cached = is_cached(file_name)
