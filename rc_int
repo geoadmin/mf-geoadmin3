@@ -10,5 +10,5 @@ export WMS_URL=//wms-bgdi.int.bgdi.ch
 export SHOP_URL=//shop-bgdi.int.bgdi.ch
 export PUBLIC_URL=//public.int.bgdi.ch
 export PRINT_URL=//service-print.int.bgdi.ch
-export PROXY_URL=//service-proxy.int.bgdi.ch
+export PROXY_URL=//nl1klo3swe.execute-api.eu-west-1.amazonaws.com/int
 export PROXY_API_KEY=sBdYplnEBT8PIFvKODfTW6MrM9FwJcYt7DdU8h7F
