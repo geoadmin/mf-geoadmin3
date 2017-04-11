@@ -400,6 +400,7 @@ prd/lib/build.js: src/lib/polyfill.min.js \
 	    src/lib/moment-with-customlocales.min.js \
 	    src/lib/typeahead.jquery.min.js \
 	    src/lib/angular.min.js \
+	    src/lib/angular-sanitize.min.js \
 	    src/lib/proj4js-compressed.js \
 	    src/lib/EPSG21781.js \
 	    src/lib/EPSG2056.js \
@@ -656,6 +657,7 @@ test/lib/angular-mocks.js test/lib/expect.js test/lib/sinon.js externs/angular.j
 libs:
 	npm install --only prod;
 	cp -f $(addprefix node_modules/angular/, angular.js angular.min.js) src/lib/;
+	cp -f $(addprefix node_modules/angular-sanitize/, angular-sanitize.js angular-sanitize.min.js) src/lib/;
 	cp -f $(addprefix node_modules/angular-translate/dist/, angular-translate.js angular-translate.min.js) src/lib/;
 	cp -f $(addprefix node_modules/angular-translate/dist/angular-translate-loader-static-files/, angular-translate-loader-static-files.js angular-translate-loader-static-files.min.js) src/lib/;
 	cp -f $(addprefix node_modules/localforage/dist/, localforage.js localforage.min.js) src/lib/;

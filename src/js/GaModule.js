@@ -68,6 +68,7 @@ goog.require('ga_waitcursor_service');
 
 
   var module = angular.module('geoadmin', [
+    'ngSanitize',
     'ga_controls3d',
     'ga_attribution',
     'ga_catalogtree',

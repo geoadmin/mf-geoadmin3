@@ -29,6 +29,7 @@ module.exports = function(config) {
     '${basePath}/lib/jQuery.XDomainRequest.js',
     '${basePath}/lib/slip.js',
     '${basePath}/lib/angular.js',
+    '${basePath}/lib/angular-sanitize.js',
     '${basePath}/lib/angular-translate.js',
     '${basePath}/lib/angular-translate-loader-static-files.js',
     '${basePath}/lib/d3.js',
@@ -47,7 +48,6 @@ module.exports = function(config) {
     'test/closure-loader-globals.js',
     '${basePath}/lib/ol3cesium-debug.js',
     '.build-artefacts/app-whitespace.js',
-
   % endif
     'test/lib/angular-mocks.js',
     'test/lib/expect.js',
