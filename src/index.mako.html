@@ -190,11 +190,6 @@ itemscope itemtype="http://schema.org/WebApplication"
 % endif
     <div id="loader"></div>
     <div tabindex="1" ga-map ga-map-map="map" ga-map-ol3d="::ol3d">
-      <div ng-cloak translate-cloak
-           ga-attribution
-           ga-attribution-map="::map"
-           ga-attribution-ol3d="::ol3d">
-      </div>
   % if device == 'embed':
       <a ng-cloak translate-cloak id="bigMapLink" target="_blank" href="{{toMainHref}}">
         <div>
@@ -224,10 +219,22 @@ itemscope itemtype="http://schema.org/WebApplication"
         <div ga-offline-bt></div>
   % endif
       </div>
+  % if device != 'embed':
+      <div ng-cloak translate-cloak
+           ga-background-selector
+           ga-background-selector-map="::map"
+           ga-background-selector-ol3d="::ol3d">
+      </div>
+  % endif
       <div ga-swipe
            ga-swipe-map="map"
            ga-swipe-active="globals.isSwipeActive"
            style="display:none;">
+      </div>
+      <div ng-cloak translate-cloak
+           ga-attribution
+           ga-attribution-map="::map"
+           ga-attribution-ol3d="::ol3d">
       </div>
     </div> <!-- #map -->
 % if device != 'mobile':
@@ -247,11 +254,6 @@ itemscope itemtype="http://schema.org/WebApplication"
       <span translate>3d_overlay_warning</span>
     </div>
 % if device != 'embed':
-    <div ng-cloak translate-cloak
-         ga-background-selector
-         ga-background-selector-map="::map"
-         ga-background-selector-ol3d="::ol3d">
-    </div>
     <div ng-cloak translate-cloak id="footer" class="navbar navbar-fixed-bottom">
       <div  class="pull-left" ga-scale-line ga-scale-line-map="::map" ng-show="!globals.is3dActive"></div>
 
