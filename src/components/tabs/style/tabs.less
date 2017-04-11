@@ -1,0 +1,40 @@
+[ga-tabs] {
+  
+  .nav-tabs {
+
+    .active {
+      cursor: default;
+    }
+
+    a {
+      text-decoration: none;
+    }
+  }
+
+  .nav > li > a {
+    cursor: pointer;
+    padding: 0px 10px;
+    color: white !important;
+    background-color: black;
+
+    &:hover, &:focus {
+      background-color: darkgray;
+    }
+  }
+
+  .nav-tabs {
+    border: none;
+  }
+
+  .nav-tabs > li.active > a,
+  .nav-tabs > li.active > a:hover,
+  .nav-tabs > li.active > a:focus {
+    color: white !important;
+    background-color: red;
+    border: 1px solid transparent;
+  }
+
+  .tab-content {
+    margin: 5px 0px 0px 0px;
+  }
+}

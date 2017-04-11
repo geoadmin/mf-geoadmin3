@@ -7,6 +7,8 @@ goog.require('ga_networkstatus_service');
 goog.require('ga_storage_service');
 goog.require('ga_styles_service');
 goog.require('ga_urlutils_service');
+goog.require('ngeo.fileService');
+
 
 (function() {
 
@@ -17,7 +19,8 @@ goog.require('ga_urlutils_service');
     'ga_styles_service',
     'ga_urlutils_service',
     'ga_measure_service',
-    'ga_geomutils_service'
+    'ga_geomutils_service',
+    'ngeo.fileService'
   ]);
 
   /**
@@ -28,7 +31,7 @@ goog.require('ga_urlutils_service');
     this.$get = function($http, $q, $rootScope, $timeout, $translate,
         gaDefinePropertiesForLayer, gaGlobalOptions, gaMapClick, gaMapUtils,
         gaNetworkStatus, gaStorage, gaStyleFactory, gaUrlUtils, gaMeasure,
-        gaGeomUtils) {
+        gaGeomUtils, ngeoFile) {
 
       // Store the parser.
       var kmlFormat;
@@ -352,8 +355,8 @@ goog.require('ga_urlutils_service');
             }).then(function(response) {
               var data = response.data;
               var fileSize = response.headers('content-length');
-              if (that.isValidFileContent(data) &&
-                  that.isValidFileSize(fileSize)) {
+
+              if (ngeoFile.isKml(data) && ngeoFile.isValidFileSize(fileSize)) {
                 layerOptions.useImageVector = that.useImageVector(fileSize);
                 return that.addKmlToMap(map, data, layerOptions, index);
               }
@@ -369,24 +372,6 @@ goog.require('ga_urlutils_service');
         // file size but it could be another condition.
         this.useImageVector = function(fileSize) {
           return (!!fileSize && parseInt(fileSize) >= 1000000); // < 1mo
-        };
-
-        // Test the validity of the file size
-        this.isValidFileSize = function(fileSize) {
-          if (fileSize > 20000000) { // 20 Mo
-            alert($translate.instant('file_too_large') + ' (max. 20 MB)');
-            return false;
-          }
-          return true;
-        };
-
-        // Test the validity of the file content
-        this.isValidFileContent = function(fileContent) {
-          if (!/<kml/.test(fileContent) || !/<\/kml>/.test(fileContent)) {
-            alert($translate.instant('file_is_not_kml'));
-            return false;
-          }
-          return true;
         };
 
         // Returns the unique KML format used by the application

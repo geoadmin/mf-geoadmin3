@@ -1,0 +1,25 @@
+<div ga-tabs>
+
+  <!-- Import local sources -->
+  <div ga-tab ga-tab-title="Local" ng-if="::showLocal">
+    <div ngeo-import-local ngeo-import-local-options="::options"></div>
+  </div>
+
+  <!-- Import online sources -->
+  <div ga-tab ga-tab-title="Online">
+    <div ngeo-import-online ngeo-import-online-options="::options"></div>
+  </div>
+ 
+  <!-- Display WMS GetCapabilities results -->
+  <div ng-if="wmsGetCap"
+       ngeo-wms-get-cap="wmsGetCap"
+       ngeo-wms-get-cap-map="::map"
+       ngeo-wms-get-cap-options="::options"></div>
+
+  <!-- Display WMTS GetCapabilities results -->
+  
+  <!-- Display KML infos -->
+  
+  <!-- Display GPX infos -->
+</div>
+

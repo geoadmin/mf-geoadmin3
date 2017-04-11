@@ -80,6 +80,11 @@ describe('ga_background_service', function() {
       map = new ol.Map({});
     });
 
+    afterEach(function() {
+      gaPermalinkMock.restore();
+      $rootScopeMock.restore();
+    });
+
     describe('#init()', function() {
 
       describe('using a basic topic' , function() {

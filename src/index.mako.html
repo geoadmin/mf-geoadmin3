@@ -382,20 +382,12 @@ itemscope itemtype="http://schema.org/WebApplication"
           <div id="tools" class="collapse">
             <div class="panel-body panel-body-wide panel-cursor">
               <ul>
-                <li><!-- Import WMS -->
-                  <a href="" ng-click="globals.importWmsPopupShown = !globals.importWmsPopupShown"
-                     data-original-title="{{'wmsimport_tooltip' | translate}}"
+                <li><!-- Import -->
+                  <a href="" ng-click="globals.importPopupShown = !globals.importPopupShown"
+                     data-original-title="{{'import_tooltip' | translate}}"
                      class="ga-custom-tooltip" data-placement="bottom"
                      accesskey="w">
-                    <span ng-class="{'selected': globals.importWmsPopupShown}" translate>import_wms</span>
-                  </a>
-                </li>
-                <li><!-- Import KML -->
-                  <a href=""  ng-click="globals.importKmlPopupShown = !globals.importKmlPopupShown"
-                     data-original-title="{{'kmlimport_tooltip' | translate}}"
-                     class="ga-custom-tooltip" data-placement="bottom"
-                     accesskey="k">
-                    <span ng-class="{'selected': globals.importKmlPopupShown}" translate>import_kml</span>
+                    <span ng-class="{'selected': globals.importPopupShown}" translate>import</span>
                   </a>
                 </li>
                 <li ng-show="!globals.is3dActive"><!-- Compare -->
@@ -547,30 +539,20 @@ itemscope itemtype="http://schema.org/WebApplication"
     </div> <!-- end Feedback -->
 
   % if device == 'desktop':
-    <!-- Popup: Import WMS -->
-    <div ga-popup="globals.importWmsPopupShown"
-         ga-popup-options="{title:'import_wms', help:'62'}"
+    <!-- Popup: Import -->
+    <div ng-if="globals.importPopupShown"
+         ga-popup="globals.importPopupShown"
+         ga-popup-options="{title:'import', help:'62'}"
          ga-draggable=".popover-title"
-         id="import-wms-popup"
+         id="import-popup"
          class="ga-popup-mobile-bottom">
-      <div ng-controller="GaImportWmsController">
-        <div ga-import-wms
-             ga-import-wms-map="map"
-             ga-import-wms-options="options">
+      <div ng-controller="GaImportController">  
+        <div ga-import
+             ga-import-map="::map"
+             ga-import-options="::options">
         </div>
       </div>
-    </div> <!-- end Import WMS -->
-
-    <!-- Popup: Import KML -->
-    <div ga-popup="globals.importKmlPopupShown"
-         ga-popup-options="{title:'import_kml', help:'63'}"
-         ga-draggable=".popover-title"
-         id="import-kml-popup"
-         class="ga-popup-mobile-bottom">
-      <div ga-import-kml
-           ga-import-kml-map="map">
-      </div>
-    </div><!-- end Import KML -->
+    </div> <!-- end Import -->
   % endif
 
     <!-- Popup: Profile -->
@@ -651,6 +633,15 @@ itemscope itemtype="http://schema.org/WebApplication"
       </div>
     </div><!-- end Feature Tree -->
 
+  % if device == 'desktop':
+    <div ng-controller="GaImportController">  
+      <div ng-if="::supportDnd"
+           ngeo-import-dnd
+           ngeo-import-dnd-options="::options">
+      </div>
+    </div>
+  % endif
+    
   % if device == 'mobile':
     <div ng-if="globals.homescreen" class="popover homescreen"
          ng-class="{
@@ -703,7 +694,7 @@ itemscope itemtype="http://schema.org/WebApplication"
     <script src="${s3basepath}lib/angular-translate-loader-static-files.js"></script>
     <script src="${s3basepath}lib/d3.js"></script>
     <script src="${s3basepath}lib/bootstrap.js"></script>
-    <script src="${s3basepath}lib/typeahead-0.9.3.js"></script>
+    <script src="${s3basepath}lib/typeahead.jquery.js"></script>
     <script src="${s3basepath}lib/proj4js-compressed.js"></script>
     <script src="${s3basepath}lib/EPSG21781.js"></script>
     <script src="${s3basepath}lib/EPSG2056.js"></script>
@@ -798,7 +789,7 @@ itemscope itemtype="http://schema.org/WebApplication"
         var publicUrl = setBackend(prtl + '${public_url}', prtl + '${public_tech_url}', 'public_url');
         var printUrl = setBackend(prtl + '${print_url}', prtl + '${print_tech_url}', 'print_url');
         var apiOverwrite = !!(getParam('api_url') || env);
-
+        ngeo.baseModuleTemplateUrl = 'ngeo/src/modules';
         module.constant('gaGlobalOptions', {
           //dev3d to be removed once 3d goes live
           dev3d: true,

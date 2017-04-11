@@ -225,23 +225,30 @@ def upload(bucket_name, base_dir, deploy_target, named_branch):
                   'robots.txt', 'robots_prod.txt', 'favicon.ico',
                   'checker', 'geoadmin.%s.appcache' % version)
 
+    # include some ngeo files
+    ngeo_prefix = '/ngeo'
+    include_ngeo_folders = ['src/modules/import']
+
     for directory in upload_directories:
         for file_path_list in os.walk(os.path.join(base_dir, directory)):
             file_names = file_path_list[2]
             if len(file_names) > 0:
+                file_base_path = file_path_list[0]
+                if ngeo_prefix in file_base_path and len([p for p in include_ngeo_folders
+                                                         if p not in file_base_path]) > 0:
+                    continue
                 for file_name in file_names:
-                    file_base_path = file_path_list[0]
                     if len([p for p in exclude_filename_patterns if p in file_name]) == 0:
                         is_chsdi_cache = bool(file_base_path.endswith('cache'))
                         local_file = os.path.join(file_base_path, file_name)
-                        file_base_path = file_base_path.replace('cache', '')
+                        relative_file_path = file_base_path.replace('cache', '')
                         if directory == 'prd':
                             # Take only files directly in prd/
-                            if file_name in root_files and file_base_path.endswith('prd'):
-                                file_base_path = file_base_path.replace('prd', '')
+                            if file_name in root_files and relative_file_path.endswith('prd'):
+                                relative_file_path = relative_file_path.replace('prd', '')
                             else:
-                                file_base_path = file_base_path.replace('prd', version)
-                        relative_file_path = file_base_path.replace(base_dir + '/', '')
+                                relative_file_path = relative_file_path.replace('prd', version)
+                        relative_file_path = relative_file_path.replace(base_dir + '/', '')
                         remote_file = os.path.join(s3_dir_path, relative_file_path, file_name)
                         # Don't cache some files
                         cached = is_cached(file_name)

@@ -1,8 +1,14 @@
 SHELL = /bin/bash
+
+# Auto initialization of submodules
+INIT := ${shell git submodule update --init}
+
+NGEO_MODULES := src/ngeo/src/modules/import 
 SRC_JS_FILES := $(shell find src/components src/js -type f -name '*.js')
+SRC_ES6_FILES := $(shell find ${NGEO_MODULES} -type f -name '*.js')
 SRC_JS_FILES_FOR_COMPILER = $(shell sed -e ':a' -e 'N' -e '$$!ba' -e 's/\n/ --js /g' .build-artefacts/js-files | sed 's/^.*base\.js //')
 SRC_LESS_FILES := $(shell find src -type f -name '*.less')
-SRC_COMPONENTS_PARTIALS_FILES := $(shell find src/components -type f -path '*/partials/*' -name '*.html')
+SRC_COMPONENTS_PARTIALS_FILES := $(shell find src/components ${NGEO_MODULES} -type f -path '*/partials/*' -name '*.html')
 PYTHON_FILES := $(shell find scripts test/saucelabs -type f -name "*.py" -print)
 APACHE_BASE_DIRECTORY ?= $(CURDIR)
 LAST_APACHE_BASE_DIRECTORY := $(shell if [ -f .build-artefacts/last-apache-base-directory ]; then cat .build-artefacts/last-apache-base-directory 2> /dev/null; else echo '-none-'; fi)
@@ -49,6 +55,7 @@ DEPLOY_ROOT_DIR := /var/www/vhosts/mf-geoadmin3/private/branch
 OL3_VERSION ?= v3.20.1 # v3.20.1, 21 december 2016
 OL3_CESIUM_VERSION ?= 40ab703bb7f91f1b93b421412819b83942983616 # master, 3 february 2017
 CESIUM_VERSION ?= 3dddac53f24811a4e11989fc21cd9e7d39459a82 # camptocamp/c2c_patches_vector_tiles_labels, 18 january 2017
+NGEO_VERSION ?= 3ecccd0c805ccf29dc8fe406dd4309bd292d50c8 # master, 16 january 2017
 DEFAULT_TOPIC_ID ?= ech
 TRANSLATION_FALLBACK_CODE ?= de
 LANGUAGES ?= '[\"de\", \"fr\", \"it\", \"en\", \"rm\"]'
@@ -101,6 +108,7 @@ LESSC=${NODE_BIN}/lessc
 KARMA=${NODE_BIN}/karma
 PHANTOMJS=${NODE_BIN}/phantomjs
 NG_ANNOTATE=${NODE_BIN}/ng-annotate
+BABEL=${NODE_BIN}/babel
 
 .PHONY: help
 help:
@@ -136,6 +144,7 @@ help:
 	@echo "- s3deleteint        Delete a project version in a remote int bucket. (usage: make s3deleteint S3_VERSION_PATH=<branch> or <branch>/<sha>/<version>)"
 	@echo "- s3deleteprod       Delete a project version in a remote prod bucket. (usage: make s3deleteprod S3_VERSION_PATH=<branch> or <branch>/<sha>/<version>)"
 	@echo "- ol3cesium          Update ol3cesium.js, ol3cesium-debug.js, Cesium.min.js and Cesium folder"
+	@echo "- ngeo               Update ngeo submodule with the version specified in Makefile"
 	@echo "- libs               Update js librairies used in index.html, see npm packages defined in section 'dependencies' of package.json"
 	@echo "- translate          Generate the translation files (requires db user pwd in ~/.pgpass: dbServer:dbPort:*:dbUser:dbUserPwd)"
 	@echo "- help               Display this help"
@@ -320,6 +329,13 @@ ol3cesium: .build-artefacts/ol3-cesium
 	cp cesium/Build/Cesium/Cesium.js ../../src/lib/Cesium.min.js; \
 	cp Cesium.externs.js ../../externs/Cesium.externs.js;
 
+.PHONY: ngeo
+ngeo:
+	cd src/ngeo; \
+	git fetch origin; \
+	git checkout ${NGEO_VERSION}; \
+	git show
+
 .PHONY: filesaver
 filesaver: .build-artefacts/filesaver
 	cp .build-artefacts/filesaver/FileSaver.js src/lib/filesaver.js
@@ -382,7 +398,7 @@ prd/lib/build.js: src/lib/polyfill.min.js \
 	    src/lib/slip.min.js \
 	    src/lib/bootstrap.min.js \
 	    src/lib/moment-with-customlocales.min.js \
-	    src/lib/typeahead-0.9.3.min.js \
+	    src/lib/typeahead.jquery.min.js \
 	    src/lib/angular.min.js \
 	    src/lib/proj4js-compressed.js \
 	    src/lib/EPSG21781.js \
@@ -555,6 +571,7 @@ src/deps.js: $(SRC_JS_FILES) ${PYTHON_VENV}
 	${PYTHON_CMD} node_modules/google-closure-library/closure/bin/build/depswriter.py \
 	    --root_with_prefix="src/components components" \
 	    --root_with_prefix="src/js js" \
+	    --root_with_prefix="src/ngeo ngeo" \
 	    --output_file=$@
 
 src/style/app.css: $(SRC_LESS_FILES)
@@ -597,10 +614,10 @@ src/embed.html: src/index.mako.html \
 	$(call buildpage,embed,,,,$(S3_SRC_BASE_PATH))
 
 src/TemplateCacheModule.js: src/TemplateCacheModule.mako.js \
-	    $(SRC_COMPONENTS_PARTIALS_FILES) \
+	    ${SRC_COMPONENTS_PARTIALS_FILES} \
 	    ${MAKO_CMD}
 	${PYTHON_CMD} ${MAKO_CMD} \
-	    --var "partials=$(subst src/,,$(SRC_COMPONENTS_PARTIALS_FILES))" \
+	    --var "partials=$(shell echo "${SRC_COMPONENTS_PARTIALS_FILES}" | sed 's/^src\///' | sed 's/ src\// /g')" \
 	    --var "basedir=src" $< > $@
 
 apache/app.conf: apache/app.mako-dot-conf \
@@ -646,12 +663,12 @@ libs:
 	cp -f $(addprefix node_modules/jquery-ajax-transport-xdomainrequest/, jQuery.XDomainRequest.js  jquery.xdomainrequest.min.js) src/lib/;
 	cp -f $(addprefix node_modules/d3/, d3.js d3.min.js) src/lib/;
 	cp -f $(addprefix node_modules/bootstrap/dist/js/, bootstrap.js bootstrap.min.js) src/lib/;
+	cp -f $(addprefix node_modules/corejs-typeahead/dist/, typeahead.jquery.js typeahead.jquery.min.js) src/lib/;
 	cp -f node_modules/slipjs/slip.js src/lib;
 	cp -f node_modules/fastclick/lib/fastclick.js src/lib/;
 	$(call applypatches)
 	$(call compilejs fastclick)
 	$(call compilejs slip)
-	$(call compilejs typeahead-0.9.3)
 
 .build-artefacts/app.js: .build-artefacts/js-files
 	mkdir -p $(dir $@)
@@ -671,6 +688,13 @@ $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule
 	mkdir -p $(dir $@)
 	${NG_ANNOTATE} -a $< > $@
 
+$(addprefix .build-artefacts/annotated/, $(SRC_ES6_FILES)): \
+	    .build-artefacts/annotated/%.js: %.js .build-artefacts/devlibs
+	mkdir -p $(dir $@)
+	${BABEL} $< --out-file tmp
+	${NG_ANNOTATE} -a tmp | sed "/goog\.require('ol.*/d" > $@
+	rm -f tmp
+
 .build-artefacts/app-whitespace.js: .build-artefacts/js-files
 	java -jar ${CLOSURE_COMPILER} $(SRC_JS_FILES_FOR_COMPILER) \
 	    --compilation_level WHITESPACE_ONLY \
@@ -681,6 +705,7 @@ $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule
 # add lib/closure as a root. When compiling we remove base.js from the js files
 # passed to the Closure compiler.
 .build-artefacts/js-files: $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule.js) \
+	    $(addprefix .build-artefacts/annotated/, $(SRC_ES6_FILES)) \
 	    ${PYTHON_VENV} \
 	    node_modules/google-closure-library
 	${PYTHON_CMD} node_modules/google-closure-library/closure/bin/build/closurebuilder.py \
