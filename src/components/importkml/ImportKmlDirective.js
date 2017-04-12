@@ -14,7 +14,7 @@ goog.require('ga_urlutils_service');
 
   module.controller('GaImportKmlDirectiveController',
       function($scope, $http, $q, $translate, gaBrowserSniffer, gaKml,
-          gaUrlUtils, $rootScope) {
+          gaUrlUtils, gaGlobalOptions, $rootScope) {
         var fileReader;
         $scope.isIE9 = (gaBrowserSniffer.msie == 9);
         $scope.isIE = !isNaN(gaBrowserSniffer.msie);
@@ -53,6 +53,9 @@ goog.require('ga_urlutils_service');
             // Angularjs doesn't handle onprogress event
             gaUrlUtils.proxifyUrl($scope.fileUrl).then(function(url) {
               $http.get(url, {
+                headers: {
+                  'x-api-key': gaGlobalOptions.proxyApiKey,
+                },
                 cache: true,
                 timeout: $scope.canceler.promise
               }).then(function(response) {
