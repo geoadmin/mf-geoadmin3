@@ -351,7 +351,7 @@ olcesium: .build-artefacts/ol-cesium
 	( cd cesium; if [ -f "Build/CesiumUnminified/Cesium.js" ] ; then echo 'Skipping Cesium debug build'; else node_modules/.bin/gulp generateStubs combine; fi ); \
 	npm install; \
 	node build/generate-exports.js dist/exports.js; \
-	node build/build.js build/olcesium-debug.json dist/olcesium-debug.js; \
+	node build/build.js ../../scripts/olcesium-debug-geoadmin.json dist/olcesium-debug.js; \
 	node build/build.js ../../scripts/olcesium-geoadmin.json dist/olcesium.js; \
 	cp dist/olcesium-debug.js ../../src/lib/; \
 	cp dist/olcesium.js ../../src/lib/olcesium.js; \

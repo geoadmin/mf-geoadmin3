@@ -1,4 +1,6 @@
 goog.provide('olcs.GaRasterSynchronizer');
+goog.require('ol');
+goog.require('olcs.util');
 goog.require('olcs.RasterSynchronizer');
 
 
@@ -12,9 +14,9 @@ goog.require('olcs.RasterSynchronizer');
  * @api
  */
 olcs.GaRasterSynchronizer = function(map, scene) {
-  goog.base(this, map, scene);
+  olcs.RasterSynchronizer.call(this, map, scene);
 };
-goog.inherits(olcs.GaRasterSynchronizer, olcs.RasterSynchronizer);
+ol.inherits(olcs.GaRasterSynchronizer, olcs.RasterSynchronizer);
 
 
 /**
@@ -36,7 +38,7 @@ olcs.GaRasterSynchronizer.prototype.convertLayerToCesiumImageries =
   var provider = null;
 
   // Read custom, non standard properties
-  var factory = olcs.obj(olLayer)['getCesiumImageryProvider'];
+  var factory = olcs.util.obj(olLayer)['getCesiumImageryProvider'];
   if (!factory) {
     // root layer group
     return null;

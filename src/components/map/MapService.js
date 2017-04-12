@@ -1268,7 +1268,9 @@ goog.require('ga_urlutils_service');
           if (ol3d && ol3d.getEnabled()) {
             return this.flyToAnimation(ol3d, null, extent);
           }
-          map.getView().fit(extent, map.getSize());
+          map.getView().fit(extent, {
+            size: map.getSize()
+          });
           return $q.when();
         },
 

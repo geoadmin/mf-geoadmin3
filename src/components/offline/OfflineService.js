@@ -353,7 +353,9 @@ goog.require('ga_styles_service');
               parseInt(extent[1], 10),
               parseInt(extent[2], 10),
               parseInt(extent[3], 10)
-            ], map.getSize());
+            ], {
+              size: map.getSize()
+            });
           }
           var layersIds = gaStorage.getItem(layersKey).split(',');
           var opacity = gaStorage.getItem(opacityKey).split(',');

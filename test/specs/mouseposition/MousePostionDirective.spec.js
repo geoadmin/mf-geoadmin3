@@ -8,8 +8,7 @@ describe('ga_mouseposition_directive', function() {
   beforeEach(inject(function($injector, $rootScope, $compile) {
     map = new ol.Map({});
     map.setSize([600, 300]);
-    map.getView().fit([-20000000, -20000000, 20000000, 20000000],
-        map.getSize());
+    map.getView().fit([-20000000, -20000000, 20000000, 20000000]);
 
     element = angular.element('<div id="mouseposition" ' +
         'ng-controller="GaMousePositionController">' +

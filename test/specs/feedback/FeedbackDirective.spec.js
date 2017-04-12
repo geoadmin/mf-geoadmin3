@@ -42,8 +42,7 @@ describe('ga_feedback_directive', function() {
     inject(function($injector, gaUrlUtils) {
       map = new ol.Map({});
       map.setSize([600, 300]);
-      map.getView().fit([-20000000, -20000000, 20000000, 20000000],
-          map.getSize());
+      map.getView().fit([-20000000, -20000000, 20000000, 20000000]);
       gaPermalink = $injector.get('gaPermalink');
       $httpBackend = $injector.get('$httpBackend');
       $rootScope = $injector.get('$rootScope');

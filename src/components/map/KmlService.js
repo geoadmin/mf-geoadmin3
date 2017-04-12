@@ -331,7 +331,9 @@ goog.require('ngeo.fileService');
                 var sourceExtent = gaMapUtils.getVectorSourceExtent(source);
                 var ext = gaMapUtils.intersectWithDefaultExtent(sourceExtent);
                 if (ext) {
-                  olMap.getView().fit(ext, olMap.getSize());
+                  olMap.getView().fit(ext, {
+                    size: olMap.getSize()
+                  });
                 }
               }
             }
