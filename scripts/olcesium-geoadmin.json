@@ -18,10 +18,6 @@
     "ol.Overlay#*",
     "ol.View",
     "ol.View#*",
-    "ol.animation.bounce",
-    "ol.animation.pan",
-    "ol.animation.rotate",
-    "ol.animation.zoom",
     "ol.color.asArray",
     "ol.color.asString",
     "ol.control.MousePosition",
@@ -138,22 +134,22 @@
   ],
   "src": [
     "src/**/*.js",
-    "ol3/src/**/*.js",
-    "ol3/build/ol.ext/*.js"
+    "ol/src/**/*.js",
+    "ol/build/ol.ext/*.js"
   ],
   "compile": {
     "externs": [
       "externs/olcsx.js",
-      "ol3/externs/oli.js",
-      "ol3/externs/olx.js",
-      "ol3/externs/cartodb.js",
-      "ol3/externs/proj4js.js",
-      "ol3/externs/tilejson.js",
-      "ol3/externs/topojson.js",
-      "ol3/externs/esrijson.js",
-      "ol3/externs/geojson.js",
-      "ol3/externs/bingmaps.js",
-      "ol3/externs/closure-compiler.js",
+      "ol/externs/oli.js",
+      "ol/externs/olx.js",
+      "ol/externs/cartodb.js",
+      "ol/externs/proj4js.js",
+      "ol/externs/tilejson.js",
+      "ol/externs/topojson.js",
+      "ol/externs/esrijson.js",
+      "ol/externs/geojson.js",
+      "ol/externs/bingmaps.js",
+      "ol/externs/closure-compiler.js",
       "Cesium.externs.js"
     ],
     "define": [
@@ -166,7 +162,6 @@
       "*"
     ],
     "jscomp_off": [
-      "useOfGoogBase",
       "lintChecks",
       "analyzerChecks"
     ],
@@ -174,13 +169,13 @@
       "api", "observable"
     ],
     "compilation_level": "ADVANCED_OPTIMIZATIONS",
-    "language_in": "ECMASCRIPT5_STRICT",
+    "language_in": "ECMASCRIPT6_STRICT",
     "language_out": "ECMASCRIPT5_STRICT",
     "warning_level": "VERBOSE",
     "generate_exports": true,
     "output_wrapper": "(function(){%output%}).call(window);",
     "use_types_for_optimization": true,
-    "create_source_map": "dist/ol3cesium.js.map",
+    "create_source_map": "dist/olcesium.js.map",
     "source_map_format": "V3"
   }
 }

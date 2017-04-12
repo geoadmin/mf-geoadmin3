@@ -10,7 +10,7 @@ goog.require('ga_browsersniffer_service');
 
   /**
    * This service can be used to export a kml file based on some
-   * features on an ol3 map
+   * features on an ol map
    */
   module.provider('gaExportKml', function() {
     this.$get = function($translate, $window, $document, $http,

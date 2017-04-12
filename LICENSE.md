@@ -39,4 +39,4 @@ Portions of mf-geoadmin3 are based on works by others. A non-extensive list:
 
 [AngularJS Source Code](https://github.com/angular/angular.js/blob/master/LICENSE)
 
-[OpenLayers 3 Source Code](https://github.com/openlayers/ol3/blob/master/LICENSE.md)
+[OpenLayers Source Code](https://github.com/openlayers/openlayers/blob/master/LICENSE.md)

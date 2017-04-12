@@ -714,12 +714,12 @@ itemscope itemtype="http://schema.org/WebApplication"
       window.CLOSURE_NO_DEPS = true;
     </script>
 
-    <!-- ol3cesium-debug.js includes Closure's base.js code, so we don't
+    <!-- olcesium-debug.js includes Closure's base.js code, so we don't
          need to load base.js ourselves. We keep Closure's base.js file
          around in case we need to test with ol.js or ol-simple.js. -->
     <!--<script src="${s3basepath}lib/closure/base.js"></script>-->
-    <!-- ol3 and ol3-cesium are built together in debug mode -->
-    <script src="${s3basepath}lib/ol3cesium-debug.js"></script>
+    <!-- ol and ol-cesium are built together in debug mode -->
+    <script src="${s3basepath}lib/olcesium-debug.js"></script>
     <script src="${s3basepath}deps.js"></script>
     <script>
       goog.require('geoadmin');
