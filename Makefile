@@ -238,6 +238,10 @@ deploydev:
 		./scripts/deploydev.sh; \
 	fi
 
+.PHONY: s3deployinfra
+s3deployinfra: guard-SNAPSHOT guard-S3_MF_GEOADMIN3_INFRA .build-artefacts/requirements.timestamp
+	./scripts/deploysnapshot.sh $(SNAPSHOT) infra;
+
 .PHONY: s3deployint
 s3deployint: guard-SNAPSHOT guard-S3_MF_GEOADMIN3_INT .build-artefacts/requirements.timestamp
 	./scripts/deploysnapshot.sh $(SNAPSHOT) int;
@@ -256,6 +260,21 @@ s3deploybranch: guard-S3_MF_GEOADMIN3_INT \
 	./scripts/clonebuild.sh ${CLONEDIR} int ${DEPLOY_GIT_BRANCH} ${DEEP_CLEAN} ${NAMED_BRANCH};
 	${PYTHON_CMD} ./scripts/s3manage.py upload ${CLONEDIR}/mf-geoadmin3 int ${NAMED_BRANCH};
 
+.PHONY: s3deploybranchinfra
+s3deploybranchinfra: guard-S3_MF_GEOADMIN3_INFRA \
+	              guard-CLONEDIR \
+	              guard-DEPLOY_GIT_BRANCH \
+	              guard-DEEP_CLEAN \
+	              guard-NAMED_BRANCH \
+	              .build-artefacts/requirements.timestamp
+	./scripts/clonebuild.sh ${CLONEDIR} infra ${DEPLOY_GIT_BRANCH} ${DEEP_CLEAN} ${NAMED_BRANCH};
+	${PYTHON_CMD} ./scripts/s3manage.py upload ${CLONEDIR}/mf-geoadmin3 infra ${NAMED_BRANCH};
+
+
+.PHONY: s3listinfra
+s3listinfra: guard-S3_MF_GEOADMIN3_INFRA .build-artefacts/requirements.timestamp
+	${PYTHON_CMD} ./scripts/s3manage.py list infra;
+
 .PHONY: s3listint
 s3listint: guard-S3_MF_GEOADMIN3_INT .build-artefacts/requirements.timestamp
 	${PYTHON_CMD} ./scripts/s3manage.py list int;
@@ -263,6 +282,10 @@ s3listint: guard-S3_MF_GEOADMIN3_INT .build-artefacts/requirements.timestamp
 .PHONY: s3listprod
 s3listprod: guard-S3_MF_GEOADMIN3_PROD .build-artefacts/requirements.timestamp
 	${PYTHON_CMD} ./scripts/s3manage.py list prod;
+
+.PHONY: s3infoinfra
+s3infoinfra: guard-S3_VERSION_PATH guard-S3_MF_GEOADMIN3_INFRA .build-artefacts/requirements.timestamp
+	${PYTHON_CMD} ./scripts/s3manage.py info ${S3_VERSION_PATH} infra;
 
 .PHONY: s3infoint
 s3infoint: guard-S3_VERSION_PATH guard-S3_MF_GEOADMIN3_INT .build-artefacts/requirements.timestamp
@@ -272,6 +295,10 @@ s3infoint: guard-S3_VERSION_PATH guard-S3_MF_GEOADMIN3_INT .build-artefacts/requ
 s3infoprod: guard-S3_VERSION_PATH guard-S3_MF_GEOADMIN3_PROD .build-artefacts/requirements.timestamp
 	${PYTHON_CMD} ./scripts/s3manage.py info ${S3_VERSION_PATH} prod;
 
+.PHONY: s3activateinfra
+s3activateinfra: guard-S3_VERSION_PATH guard-S3_MF_GEOADMIN3_INFRA .build-artefacts/requirements.timestamp
+	${PYTHON_CMD} ./scripts/s3manage.py activate ${S3_VERSION_PATH} infra;
+
 .PHONY: s3activateint
 s3activateint: guard-S3_VERSION_PATH guard-S3_MF_GEOADMIN3_INT .build-artefacts/requirements.timestamp
 	${PYTHON_CMD} ./scripts/s3manage.py activate ${S3_VERSION_PATH} int;
@@ -279,6 +306,10 @@ s3activateint: guard-S3_VERSION_PATH guard-S3_MF_GEOADMIN3_INT .build-artefacts/
 .PHONY: s3activateprod
 s3activateprod: guard-S3_VERSION_PATH guard-S3_MF_GEOADMIN3_PROD .build-artefacts/requirements.timestamp
 	${PYTHON_CMD} ./scripts/s3manage.py activate ${S3_VERSION_PATH} prod;
+
+.PHONY: s3deleteinfra
+s3deleteinfra: guard-S3_VERSION_PATH guard-S3_MF_GEOADMIN3_INFRA .build-artefacts/requirements.timestamp
+	${PYTHON_CMD} ./scripts/s3manage.py delete ${S3_VERSION_PATH} infra;
 
 .PHONY: s3deleteint
 s3deleteint: guard-S3_VERSION_PATH guard-S3_MF_GEOADMIN3_INT .build-artefacts/requirements.timestamp
