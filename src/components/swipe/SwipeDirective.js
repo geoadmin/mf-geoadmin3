@@ -151,7 +151,7 @@ goog.require('ga_map_service');
 
             // ol.layer.Group doesn't trigger XXXcompose events so we handle
             // events on each sublayers.
-            // see bug: https://github.com/openlayers/ol3/issues/1362
+            // see bug: https://github.com/openlayers/openlayers/issues/1362
             if (scope.layer instanceof ol.layer.Group) {
               scope.layer.getLayers().forEach(function(olLayer, idx, arr) {
                 layerListenerKeys = layerListenerKeys.concat([

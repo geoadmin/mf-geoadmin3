@@ -17,12 +17,12 @@ goog.provide('ga_cesium');
  */
 var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions,
     gaBrowserSniffer, $q, $translate, $rootScope, gaBackground) {
-  // Url of ol3cesium library
-  var ol3CesiumLibUrl = gaGlobalOptions.resourceUrl;
+  // Url of olcesium library
+  var olCesiumLibUrl = gaGlobalOptions.resourceUrl;
   if (gaGlobalOptions.buildMode === 'prod') {
-    ol3CesiumLibUrl += 'lib/Cesium.min.js';
+    olCesiumLibUrl += 'lib/Cesium.min.js';
   } else {
-    ol3CesiumLibUrl += 'lib/Cesium/Cesium.js';
+    olCesiumLibUrl += 'lib/Cesium/Cesium.js';
   }
   var cesiumLoaded = $q.defer();
   var cesiumClients = $q.defer();
@@ -248,7 +248,7 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions,
       toActivate = activate;
       if (!window.Cesium) {
         loading = true;
-        $.getScript(ol3CesiumLibUrl, function() {
+        $.getScript(olCesiumLibUrl, function() {
           cesiumLoaded.resolve(toActivate);
           loading = false;
         });

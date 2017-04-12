@@ -21,7 +21,7 @@ module.exports = function(config) {
     '${basePath}/style/app.css',
     '${basePath}/lib/d3.min.js',
     '${basePath}/lib/Cesium.min.js',
-    '${basePath}/lib/ol3cesium.js',
+    '${basePath}/lib/olcesium.js',
     '${basePath}/lib/build.js',
   % else:
     '${basePath}/style/app.css',
@@ -45,7 +45,7 @@ module.exports = function(config) {
     '${basePath}/lib/moment-with-customlocales.js',
     '${basePath}/lib/Cesium/Cesium.js',
     'test/closure-loader-globals.js',
-    '${basePath}/lib/ol3cesium-debug.js',
+    '${basePath}/lib/olcesium-debug.js',
     '.build-artefacts/app-whitespace.js',
 
   % endif

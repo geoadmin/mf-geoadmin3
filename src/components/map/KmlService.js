@@ -42,8 +42,8 @@ goog.require('ngeo.fileService');
           // TO FIX, caused by OL 3.18.2
           // Hack for #3531: We create an empty format first to create the
           // default style variables.
-          // https://github.com/openlayers/ol3/blob/master/src/ol/format/kml.js#L143
-          // https://github.com/openlayers/ol3/pull/5587
+          // https://github.com/openlayers/openlayers/blob/master/src/ol/format/kml.js#L143
+          // https://github.com/openlayers/openlayers/pull/5587
           ol.format.KML();
 
           kmlFormat = new ol.format.KML({
@@ -58,7 +58,7 @@ goog.require('ngeo.fileService');
         // Replace all hrefs to prevent errors if image doesn't have
         // CORS headers. Exception for *.geo.admin.ch, *.bgdi.ch and google
         // markers icons (only https)
-        // to keep the OL3 magic for anchor origin.
+        // to keep the OL magic for anchor origin.
         // Test regex here: http://regex101.com/r/tF3vM0/9
         // List of google icons: http://www.lass.it/Web/viewer.aspx?id=4
         kml = kml.replace(
