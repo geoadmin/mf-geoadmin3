@@ -1,4 +1,5 @@
 goog.provide('olcs.GaVectorSynchronizer');
+goog.require('ol');
 goog.require('olcs.VectorSynchronizer');
 
 
@@ -13,9 +14,9 @@ goog.require('olcs.VectorSynchronizer');
  * @struct
  */
 olcs.GaVectorSynchronizer = function(map, scene, opt_converter) {
-  goog.base(this, map, scene, opt_converter);
+  olcs.VectorSynchronizer.call(this, map, scene, opt_converter);
 };
-goog.inherits(olcs.GaVectorSynchronizer, olcs.VectorSynchronizer);
+ol.inherits(olcs.GaVectorSynchronizer, olcs.VectorSynchronizer);
 
 
 /**
@@ -27,5 +28,5 @@ olcs.GaVectorSynchronizer.prototype.createSingleLayerCounterparts =
       !/:\/\/public\./.test(olLayer.get('url'))) {
     return null;
   }
-  return goog.base(this, 'createSingleLayerCounterparts', olLayer);
+  return olcs.VectorSynchronizer.prototype.createSingleLayerCounterparts.call(this, olLayer);
 };

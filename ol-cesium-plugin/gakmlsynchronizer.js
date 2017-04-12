@@ -1,4 +1,6 @@
 goog.provide('olcs.GaKmlSynchronizer');
+goog.require('ol');
+goog.require('olcs.util');
 goog.require('olcs.AbstractSynchronizer');
 
 
@@ -19,9 +21,9 @@ olcs.GaKmlSynchronizer = function(map, scene, dataSources) {
    */
   this.dataSources_ = dataSources;
 
-  goog.base(this, map, scene);
+  olcs.AbstractSynchronizer.call(this, map, scene);
 };
-goog.inherits(olcs.GaKmlSynchronizer, olcs.AbstractSynchronizer);
+ol.inherits(olcs.GaKmlSynchronizer, olcs.AbstractSynchronizer);
 
 
 /**
@@ -31,7 +33,7 @@ olcs.GaKmlSynchronizer.prototype.createSingleLayerCounterparts =
     function(olLayer) {
 
   var dsP;
-  var factory = olcs.obj(olLayer)['getCesiumDataSource'];
+  var factory = olcs.util.obj(olLayer)['getCesiumDataSource'];
 
   if (factory) {
     dsP = factory(this.scene);
@@ -39,7 +41,7 @@ olcs.GaKmlSynchronizer.prototype.createSingleLayerCounterparts =
 
   if (!dsP) {
     /** @type {string} */
-    var url = olcs.obj(olLayer)['url'];
+    var url = olcs.util.obj(olLayer)['url'];
 
     if (!(olLayer instanceof ol.layer.Layer) || olLayer.get('type') != 'KML' ||
         !url || /:\/\/public\./.test(url)) {
@@ -50,7 +52,7 @@ olcs.GaKmlSynchronizer.prototype.createSingleLayerCounterparts =
     var loadParam = url;
 
     /** @type {string} */
-    var kml = olcs.obj(olLayer.getSource()).get('kmlString');
+    var kml = olcs.util.obj(olLayer.getSource()).get('kmlString');
     if (kml) {
       loadParam = (new DOMParser()).parseFromString(kml, 'text/xml');
     }

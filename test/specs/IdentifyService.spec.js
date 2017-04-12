@@ -48,7 +48,7 @@ describe('ga_identify_service', function() {
 
       map = new ol.Map({});
       map.setSize([600, 300]);
-      map.getView().fit([-20000000, -20000000, 20000000, 20000000], map.getSize());
+      map.getView().fit([-20000000, -20000000, 20000000, 20000000]);
       map.addLayer(getBodLayer('mybodid'));
       point = new ol.geom.Point([0, 0]);
     });
