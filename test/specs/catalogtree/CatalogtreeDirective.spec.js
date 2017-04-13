@@ -2,8 +2,8 @@ describe('ga_catalogtree_directive', function() {
 
   var element, map, $httpBackend, $rootScope;
 
-  var expectedUrl = 'http://catalogservice.com/catalog/sometopic?lang=somelang';
-  var expectedUrl1 = 'http://catalogservice.com/catalog/sometopic2?lang=somelang';
+  var expectedUrl = 'http://catalogservice.com/catalog/sometopic?lang=en';
+  var expectedUrl1 = 'http://catalogservice.com/catalog/sometopic2?lang=en';
   var expectedUrl2 = 'http://catalogservice.com/catalog/sometopic?lang=somelang2';
   var response = {
     results: {
@@ -42,11 +42,7 @@ describe('ga_catalogtree_directive', function() {
         get: function() {
           return {
             id: 'sometopic',
-            selectedLayers: ['bar'],
-            langs: [{
-              value: 'somelang',
-              label: 'somelang'
-            }]
+            selectedLayers: ['bar']
           };
         }
       });
@@ -84,10 +80,10 @@ describe('ga_catalogtree_directive', function() {
     $httpBackend.verifyNoOutstandingRequest();
   });
 
-  /*it('do nothing if it a same topic', function() {
+  it('do nothing if it a same topic', function() {
     $rootScope.$broadcast('gaTopicChange', {id: 'sometopic'});
-    $httpBackend.flush();
-  });*/
+    $httpBackend.verifyNoOutstandingRequest();
+  });
 
   it('update the catalog when the topic change', function() {
     $rootScope.$broadcast('gaTopicChange', {id: 'sometopic2'});

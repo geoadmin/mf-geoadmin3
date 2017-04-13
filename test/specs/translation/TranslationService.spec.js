@@ -103,7 +103,7 @@ describe('ga_translation_service', function() {
         cpt = 0;
       });
 
-      it('defines a language in the permalink (topic not yet loaded)', function() {
+      it('defines a language in the permalink', function() {
         expect(gaLang.get()).to.be(langPermalink);
         var expectedUrl = 'locales/' + langPermalink + '.json';
         $httpBackend.expectGET(expectedUrl);
@@ -114,7 +114,7 @@ describe('ga_translation_service', function() {
         langPermalink = 'langnotexisting';
       });
 
-      it('defines a wrong language in the permlink then load the default language (topic not yet loaded)', function() {
+      it('defines a wrong language in the permlink then load the default language', function() {
         expect(gaLang.get()).to.be(gaGlobalOptions.translationFallbackCode);
         $httpBackend.expectGET('locales/' + gaGlobalOptions.translationFallbackCode + '.json');
         $httpBackend.flush();
@@ -124,19 +124,6 @@ describe('ga_translation_service', function() {
 
         // We set a lang not available in the topic
         langPermalink = 'rm';
-      });
-
-      it('switches to default language if the current one is not allowed by the topic', function() {
-        expect(gaLang.get()).to.be(langPermalink);
-        $httpBackend.expectGET('locales/' + langPermalink + '.json');
-        $httpBackend.flush();
-        expect(gaPermalink.getParams().lang).to.be(langPermalink);
-        topics = topicsLoaded;
-        $rootScope.$broadcast('gaTopicChange', topicsLoaded[0]);
-        $httpBackend.expectGET('locales/' + gaGlobalOptions.translationFallbackCode + '.json');
-        $httpBackend.flush();
-        expect(gaPermalink.getParams().lang).to.be(gaGlobalOptions.translationFallbackCode);
-        expect(cpt).to.be(2);
       });
 
       it('sets a language', function() {
