@@ -29,7 +29,7 @@ describe('ga_topic_directive', function() {
 
     module(function($translateProvider) {
       $translateProvider.translations('en',
-          {'anothertopic': 'Zombie', 'sometopic': 'Alien'})
+          {'anothertopic': 'Zombie', 'sometopic': 'Alien'});
     });
 
     inject(function($injector) {
