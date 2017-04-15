@@ -1,0 +1,608 @@
+{
+    "tileInfo": {
+        "origin": {
+            "y": 350000, 
+            "x": 420000, 
+            "spatialReference": {
+                "wkid": 21781
+            }
+        }, 
+        "rows": 256, 
+        "format": "PNG,JPEG", 
+        "lods": [
+            {
+                "height": 1, 
+                "width": 1, 
+                "scale": 14285750.5715, 
+                "resolution": 4000, 
+                "level": 0
+            }, 
+            {
+                "height": 1, 
+                "width": 1, 
+                "scale": 13392891.160800001, 
+                "resolution": 3750, 
+                "level": 1
+            }, 
+            {
+                "height": 1, 
+                "width": 1, 
+                "scale": 12500031.7501, 
+                "resolution": 3500, 
+                "level": 2
+            }, 
+            {
+                "height": 1, 
+                "width": 1, 
+                "scale": 11607172.339299999, 
+                "resolution": 3250, 
+                "level": 3
+            }, 
+            {
+                "height": 1, 
+                "width": 1, 
+                "scale": 10714312.9286, 
+                "resolution": 3000, 
+                "level": 4
+            }, 
+            {
+                "height": 1, 
+                "width": 1, 
+                "scale": 9821453.5179099999, 
+                "resolution": 2750, 
+                "level": 5
+            }, 
+            {
+                "height": 1, 
+                "width": 1, 
+                "scale": 8928594.1071899999, 
+                "resolution": 2500, 
+                "level": 6
+            }, 
+            {
+                "height": 1, 
+                "width": 1, 
+                "scale": 8035734.6964699998, 
+                "resolution": 2250, 
+                "level": 7
+            }, 
+            {
+                "height": 1, 
+                "width": 1, 
+                "scale": 7142875.2857499998, 
+                "resolution": 2000, 
+                "level": 8
+            }, 
+            {
+                "height": 1, 
+                "width": 2, 
+                "scale": 6250015.8750299998, 
+                "resolution": 1750, 
+                "level": 9
+            }, 
+            {
+                "height": 1, 
+                "width": 2, 
+                "scale": 5357156.4643099997, 
+                "resolution": 1500, 
+                "level": 10
+            }, 
+            {
+                "height": 1, 
+                "width": 2, 
+                "scale": 4464297.0535899997, 
+                "resolution": 1250, 
+                "level": 11
+            }, 
+            {
+                "height": 2, 
+                "width": 2, 
+                "scale": 3571437.6428800002, 
+                "resolution": 1000, 
+                "level": 12
+            }, 
+            {
+                "height": 2, 
+                "width": 3, 
+                "scale": 2678578.2321600001, 
+                "resolution": 750, 
+                "level": 13
+            }, 
+            {
+                "height": 2, 
+                "width": 3, 
+                "scale": 2321434.4678699998, 
+                "resolution": 650, 
+                "level": 14
+            }, 
+            {
+                "height": 3, 
+                "width": 4, 
+                "scale": 1785718.8214400001, 
+                "resolution": 500, 
+                "level": 15
+            }, 
+            {
+                "height": 5, 
+                "width": 8, 
+                "scale": 892859.41071900004, 
+                "resolution": 250, 
+                "level": 16
+            }, 
+            {
+                "height": 13, 
+                "width": 19, 
+                "scale": 357143.76428800001, 
+                "resolution": 100, 
+                "level": 17
+            }, 
+            {
+                "height": 25, 
+                "width": 38, 
+                "scale": 178571.882144, 
+                "resolution": 50, 
+                "level": 18
+            }, 
+            {
+                "height": 63, 
+                "width": 94, 
+                "scale": 71428.752857500003, 
+                "resolution": 20, 
+                "level": 19
+            }, 
+            {
+                "height": 125, 
+                "width": 188, 
+                "scale": 35714.376428800002, 
+                "resolution": 10, 
+                "level": 20
+            }, 
+            {
+                "height": 250, 
+                "width": 375, 
+                "scale": 17857.188214400001, 
+                "resolution": 5, 
+                "level": 21
+            }, 
+            {
+                "height": 500, 
+                "width": 750, 
+                "scale": 8928.5941071899997, 
+                "resolution": 2.5, 
+                "level": 22
+            }, 
+            {
+                "height": 625, 
+                "width": 938, 
+                "scale": 7142.8752857500003, 
+                "resolution": 2, 
+                "level": 23
+            }, 
+            {
+                "height": 834, 
+                "width": 1250, 
+                "scale": 5357.15646431, 
+                "resolution": 1.5, 
+                "level": 24
+            }, 
+            {
+                "height": 1250, 
+                "width": 1875, 
+                "scale": 3571.4376428800001, 
+                "resolution": 1, 
+                "level": 25
+            }, 
+            {
+                "height": 2500, 
+                "width": 3750, 
+                "scale": 1785.7188214400001, 
+                "resolution": 0.5, 
+                "level": 26
+            },
+                "height": 5000,
+                "width": 7500,
+                "scale": 892.857,
+                "resolution": 0.25,
+                "level": 27
+            }
+        ], 
+        "spatialReference": {
+            "wkid": 21781
+        }, 
+        "cols": 256, 
+        "dpi": 96, 
+        "compressionQuality": ""
+    }, 
+    "description": "Configuration for the map (topic) geoadmin", 
+    "initialExtent": {
+        "xmin": 458000, 
+        "ymin": 76375, 
+        "ymax": 289125, 
+        "xmax": 862500, 
+        "spatialReference": {
+            "wkid": 21781
+        }
+    }, 
+    "fullExtent": {
+        "xmin": 42000, 
+        "ymin": 30000, 
+        "ymax": 350000, 
+        "xmax": 900000, 
+        "spatialReference": {
+            "wkid": 21781
+        }
+    }, 
+    "copyrightText": "Data geoadmin", 
+    "layers": [
+        [
+            {
+                "idGeoCat": "2987a492-a097-46f3-b162-abc1b3115f85", 
+                "name": "Karte farbig", 
+                "idBod": "ch.swisstopo.pixelkarte-farbe", 
+                "attributes": {
+                    "backgroundLayer": true,
+                    "layerType": "wmts",
+                    "format": "image/jpeg",
+                    "timestamps": ['20130213','20120809','20111206','20111027','20110401'],
+                    "opacity": 1,
+                    "queryable": false,
+                    "minScale": null,
+                    "maxScale": null,
+                    "tileMatrixSet": 26, 
+                    "wmsUrlResource": "http://wms.swisstopo.admin.ch", 
+                    "inspireUpperAbstract": "", 
+                    "bundCollectionNumber": "Landeskarte 1:25000", 
+                    "urlDetails": "http://www.swisstopo.admin.ch/internet/swisstopo/de/home/products/maps/national/25.html", 
+                    "abstract": "Landeskarte 1:1 Mio. bis 1:25'000 (farbig): Die Landeskarte 1:25'000 ist eine topografische Karte der Schweiz mit sehr detaillierter Verkehrs-, Siedlungs-, Gel\u00e4nde- und Vegetationsdarstellung. Die Landeskarte 1:1 Milllion eine kleinmassst\u00e4bige topografische \u00dcbersichtskarte von Mitteleuropa.", 
+                    "inspireAbstract": null, 
+                    "dataOwner": "Bundesamt f\u00fcr Landestopografie swisstopo", 
+                    "wmsContactAbbreviation": "swisstopo", 
+                    "downloadUrl": "http://www.swisstopo.admin.ch/internet/swisstopo/de/home/products/maps/national/digital.html", 
+                    "maps": "wms-swisstopowms,api-notfree,mf-chsdi,swissmaponline", 
+                    "wmsContactName": "Bundesamt f\u00fcr Landestopografie swisstopo", 
+                    "dataStatus": "20130213", 
+                    "bundCollection": "42.1", 
+                    "inspireUpperName": "", 
+                    "inspireName": null, 
+                    "urlApplication": "http://map.geodataviewer.admin.ch"
+                }, 
+                "fullName": "Landeskarte 1:1 Mio. bis 1:25'000 (farbig)", 
+                "subLayerId": null, 
+                "id": 100038, 
+                "parentLayerId": null
+            }, 
+            {
+                "idGeoCat": "2987a492-a097-46f3-b162-abc1b3115f85", 
+                "name": "Karte SW", 
+                "idBod": "ch.swisstopo.pixelkarte-grau", 
+                "attributes": {
+                    "backgroundLayer": true,
+                    "layerType": "wmts",
+                    "format": "image/jpeg",
+                    "timestamps": ['20130213','20120809','20111206','20111027','20110401'],
+                    "opacity": 1,
+                    "queryable": false,
+                    "minScale": null,
+                    "maxScale": null,
+                    "tileMatrixSet": 26,
+                    "wmsUrlResource": "http://wms.swisstopo.admin.ch", 
+                    "inspireUpperAbstract": "", 
+                    "bundCollectionNumber": "Landeskarte 1:25000", 
+                    "urlDetails": "http://www.swisstopo.admin.ch/internet/swisstopo/de/home/products/maps/national/25.html", 
+                    "abstract": "Landeskarte 1:1 Mio. bis 1:25'000 (grau): Die Landeskarte 1:25'000 ist eine topografische Karte der Schweiz mit sehr detaillierter Verkehrs-, Siedlungs-, Gel\u00e4nde- und Vegetationsdarstellung. Die Landeskarte 1:1 Milllion eine kleinmassst\u00e4bige topografische \u00dcbersichtskarte von Mitteleuropa.", 
+                    "inspireAbstract": null, 
+                    "dataOwner": "Bundesamt f\u00fcr Landestopografie swisstopo", 
+                    "wmsContactAbbreviation": "swisstopo", 
+                    "downloadUrl": "http://www.swisstopo.admin.ch/internet/swisstopo/de/home/products/maps/national/digital.html", 
+                    "maps": "wms-swisstopowms,api-notfree,mf-chsdi,swissmaponline", 
+                    "wmsContactName": "Bundesamt f\u00fcr Landestopografie swisstopo", 
+                    "dataStatus": "20130213", 
+                    "bundCollection": "42.1", 
+                    "inspireUpperName": "", 
+                    "inspireName": null, 
+                    "urlApplication": "http://map.geodataviewer.admin.ch"
+                }, 
+                "fullName": "Landeskarte 1:1 Mio. bis 1:25'000 (grau)", 
+                "subLayerId": null, 
+                "id": 100040, 
+                "parentLayerId": null
+            }, 
+            {
+                "idGeoCat": "1964cc81-5298-460f-9228-41120315bea8", 
+                "name": "swissALTI3D Reliefschattierung", 
+                "idBod": "ch.swisstopo.swissalti3d-reliefschattierung", 
+                "attributes": {
+                    "backgroundLayer": false,
+                    "layerType": "wmts",
+                    "format": "image/png",
+                    "timestamps": ['20130101'],
+                    "opacity": 1,
+                    "queryable": false,
+                    "minScale": null,
+                    "maxScale": null,
+                    "tileMatrixSet": 26,
+                    "wmsUrlResource": "http://wms.swisstopo.admin.ch", 
+                    "inspireUpperAbstract": "Oberfl\u00e4chendarstellung", 
+                    "bundCollectionNumber": "swissALTI3D", 
+                    "urlDetails": "http://www.swisstopo.admin.ch/internet/swisstopo/de/home/products/height/swissALTI3D.html", 
+                    "abstract": "Die Reliefschattierung ist ein Derivat aus dem digitalen H\u00f6henmodell swissALTI3D. Es erlaubt die Visualisierung des Reliefs der Schweiz und des F\u00fcrstentums Liechtenstein. Die Reliefschattierung ist ein digitales Schummerungsbild bei einem berechneten Lichteinfall von Azimuth 315\u00b0 (Nord-West) und einem Winkel von 45\u00b0.", 
+                    "inspireAbstract": "Digitale H\u00f6henmodelle f\u00fcr Land-, Eis- und Meeresfl\u00e4chen.", 
+                    "dataOwner": "Bundesamt f\u00fcr Landestopografie swisstopo", 
+                    "wmsContactAbbreviation": "swisstopo", 
+                    "downloadUrl": "http://www.toposhop.admin.ch/de/shop/products/height/alti3D_1", 
+                    "maps": "api-notfree,mf-chsdi,swissmaponline,mf-geoadmin,wms-bgdi,mf-blw,mf-funksender", 
+                    "wmsContactName": "Bundesamt f\u00fcr Landestopografie swisstopo", 
+                    "dataStatus": "2000-2010", 
+                    "bundCollection": "41.6", 
+                    "inspireUpperName": "Oberfl\u00e4chendarstellung", 
+                    "inspireName": "H\u00f6he", 
+                    "urlApplication": "http://map.geodataviewer.admin.ch"
+                }, 
+                "fullName": "swissALTI3D Reliefschattierung", 
+                "subLayerId": null, 
+                "id": 820, 
+                "parentLayerId": null
+            }, 
+            {
+                "idGeoCat": "4d4544b1-d57b-4ccc-b69d-582198286692", 
+                "name": "Vereinfachte 3D-Geb\u00e4ude", 
+                "idBod": "ch.swisstopo.swissbuildings3d", 
+                "attributes": {
+                    "backgroundLayer": false,
+                    "layerType": "wmts",
+                    "format": "image/png",
+                    "timestamps": ['19980101'],
+                    "opacity": 1,
+                    "queryable": false,
+                    "minScale": null,
+                    "maxScale": null,
+                    "tileMatrixSet": 26,
+                    "wmsUrlResource": null, 
+                    "inspireUpperAbstract": "Infrastruktur und Kommunikation", 
+                    "bundCollectionNumber": "swissBUILDINGS3D", 
+                    "urlDetails": "http://www.swisstopo.admin.ch/internet/swisstopo/en/home/products/landscape/swissBUILDINGS3D.html", 
+                    "abstract": "swissBUILDINGS3D 1.0 ist ein 3D Geb\u00e4udedatensatz \u00fcber die Schweiz und das F\u00fcrstentum Liechtenstein (FL), welcher sich f\u00fcr vielf\u00e4ltige Modellierungen und Visualisierungen eignet. Der Datensatz wurde auf denDatengrundlagen von VECTOR25 Geb\u00e4udegrundrissen und Waldfl\u00e4chen generiert. Die Geb\u00e4udeh\u00f6hen und Lageh\u00f6hen basieren auf dem Digitalen Oberfl\u00e4chenmodell (DOM) respektive des davon abgeleiteten Digitalen Terrainmodell der Amtlichen Vermessung (DTM-AV). Die Geb\u00e4udeh\u00f6he (Height) wurde pro Geb\u00e4udegrundriss aus den entsprechenden Laserscanning Punkten berechnet. swissBUILDINGS3D beschreibt Geb\u00e4udevolumenk\u00f6rper ohne Dachform und entspricht einem einfachen 3D-Stadtmodell. 3D-Stadtmodelle werden in unterschiedlichen Detaillierungsgraden repr\u00e4sentiert. Gem\u00e4ss CityGML Standard werden f\u00fcnf aufeinander aufbauende Detaillierungsgrade (Levels of Detail, LOD) definiert. swissBUILDINGS3D entspricht LOD 1. Dieser Detaillierungsgrad beschreibt ein einfaches Stadtmodell, bei dem die Geometrien der H\u00e4user durch prismatische Extrusionsk\u00f6rper (Kl\u00f6tzchen) beschrieben sind. Dachformen werden nicht ber\u00fccksichtigt. Der Datensatz wird nicht nachgef\u00fchrt.", 
+                    "inspireAbstract": "Geografischer Standort von Geb\u00e4uden.", 
+                    "dataOwner": "Bundesamt f\u00fcr Landestopografie swisstopo", 
+                    "wmsContactAbbreviation": null, 
+                    "downloadUrl": "http://toposhop1t.lt.admin.ch/de/shop/products/landscape/build3D_1", 
+                    "maps": "api-notfree,mf-chsdi,swissmaponline,mf-geoadmin,wms-bgdi", 
+                    "wmsContactName": null, 
+                    "dataStatus": "1998-2006", 
+                    "bundCollection": "38.19", 
+                    "inspireUpperName": "Infrastruktur und Kommunikation ", 
+                    "inspireName": "Geb\u00e4ude", 
+                    "urlApplication": null
+                }, 
+                "fullName": "swissBUILDINGS3D", 
+                "subLayerId": null, 
+                "id": 100036, 
+                "parentLayerId": null
+            }, 
+            {
+                "idGeoCat": "db5a52b4-0f5f-4998-a9a8-dd9539f93809", 
+                "name": "SWISSIMAGE", 
+                "idBod": "ch.swisstopo.swissimage", 
+                "attributes": {
+                    "backgroundLayer": true,
+                    "layerType": "wmts",
+                    "format": "image/jpeg",
+                    "timestamps": ['20130422','20120809','20120225','20110914','20110228'],
+                    "opacity": 1,
+                    "queryable": false,
+                    "minScale": null,
+                    "maxScale": null,
+                    "tileMatrixSet": 27,
+                    "wmsUrlResource": null,
+                    "wmsUrlResource": "http://wms.swisstopo.admin.ch", 
+                    "inspireUpperAbstract": "Oberfl\u00e4chendarstellung", 
+                    "bundCollectionNumber": "SWISSIMAGE", 
+                    "urlDetails": "http://www.swisstopo.admin.ch/internet/swisstopo/de/home/products/images/ortho/swissimage.html", 
+                    "abstract": "Das Orthofotomosaik SWISSIMAGE ist eine Zusammensetzung digitaler Farbluftbilder. Ein Orthofoto ist ein Luftbild bei dem Neigungseinfl\u00fcsse der Kamera und des Gel\u00e4ndes korrigiert wurden. So wird das Orthofotomosaik SWISSIMAGE in einem einheitlichen Ma\u00dfstab und einer einheitlichen Radiometrie \u00fcber die Gesamtheit der Schweiz dargestellt.", 
+                    "inspireAbstract": "Georeferenzierte Bilddaten der Erdoberfl\u00e4che von satelliten- oder luftfahrzeuggest\u00fctzten Sensoren.", 
+                    "dataOwner": "Bundesamt f\u00fcr Landestopografie swisstopo", 
+                    "wmsContactAbbreviation": "swisstopo", 
+                    "downloadUrl": "http://www.toposhop.admin.ch/de/shop/products/images/ortho/swissimage/index", 
+                    "maps": "wms-swisstopowms,api-notfree,mf-chsdi,swissmaponline,mf-geoadmin", 
+                    "wmsContactName": "Bundesamt f\u00fcr Landestopografie swisstopo", 
+                    "dataStatus": "20120809", 
+                    "bundCollection": "35.1", 
+                    "inspireUpperName": "Oberfl\u00e4chendarstellung", 
+                    "inspireName": "Orthofotografie", 
+                    "urlApplication": "http://map.geodataviewer.admin.ch/"
+                }, 
+                "fullName": "SWISSIMAGE", 
+                "subLayerId": null, 
+                "id": 100046, 
+                "defaultVisibility": true, 
+                "parentLayerId": null
+            }, 
+            {
+                "idGeoCat": "73856ca2-f21d-4cc9-90f6-f3e8375555df", 
+                "name": "Topo. Landschaftsmodell", 
+                "idBod": "ch.swisstopo.swisstlm3d-karte", 
+                "attributes": {
+                    "backgroundLayer": true,
+                    "layerType": "wmts",
+                    "format": "image/png",
+                    "timestamps": ['20120401'],
+                    "opacity": 1,
+                    "queryable": false,
+                    "minScale": null,
+                    "maxScale": null,
+                    "tileMatrixSet": 26,
+                    "wmsUrlResource": "http://wms.swisstopo.admin.ch", 
+                    "inspireUpperAbstract": "", 
+                    "bundCollectionNumber": "swissTLM3D", 
+                    "urlDetails": "http://www.swisstopo.admin.ch/internet/swisstopo/de/home/products/landscape/swissTLM3D.html", 
+                    "abstract": "swissTLM3D ist das grossmassst\u00e4bliche Topografische Landschaftsmodell der Schweiz. Es umfasst die nat\u00fcrlichen und k\u00fcnstlichen Objekte wie auch die Namendaten in vektorieller Form. Mit einer hohen Genauigkeit und dem Einbezug der dritten Dimension ist swissTLM3D der genaueste und umfassendste 3D-Vektordatensatz der Schweiz.", 
+                    "inspireAbstract": null, 
+                    "dataOwner": "Bundesamt f\u00fcr Landestopografie swisstopo", 
+                    "wmsContactAbbreviation": "swisstopo", 
+                    "downloadUrl": "http://www.toposhop.admin.ch/de/shop/products/landscape/tlm3D_1", 
+                    "maps": "api-notfree,mf-chsdi,swissmaponline,mf-geoadmin,wms-bgdi", 
+                    "wmsContactName": "Bundesamt f\u00fcr Landestopografie swisstopo", 
+                    "dataStatus": "20120401", 
+                    "bundCollection": "38.1", 
+                    "inspireUpperName": "", 
+                    "inspireName": null, 
+                    "urlApplication": null
+                }, 
+                "fullName": "swissTLM3D", 
+                "subLayerId": null, 
+                "id": 613, 
+                "parentLayerId": null
+            }, 
+            {
+                "idGeoCat": "f22843ce-ee17-43b3-adc8-ad7015043984", 
+                "name": "Gew\u00e4ssernetz VECTOR200", 
+                "idBod": "ch.swisstopo.vec200-hydrography", 
+                "attributes": {
+                    "backgroundLayer": false,
+                    "layerType": "wmts",
+                    "format": "image/png",
+                    "timestamps": ['20130101'],
+                    "opacity": 1,
+                    "queryable": true,
+                    "minScale": null,
+                    "maxScale": null,
+                    "tileMatrixSet": 26,
+                    "wmsUrlResource": "http://wms.swisstopo.admin.ch", 
+                    "inspireUpperAbstract": "Oberfl\u00e4chendarstellung", 
+                    "bundCollectionNumber": "VECTOR200 \"Hydrography\"", 
+                    "urlDetails": "http://www.swisstopo.admin.ch/internet/swisstopo/de/home/products/landscape/vector200.html\n", 
+                    "abstract": "Der Topic Hydrography beschreibt die verschiedenen Elemente der Gew\u00e4sser. Er besteht aus 5 Feature Classes und einer Tabelle. Die Linien von \"FlowingWater\" und \"StagnantWater\" und die Punkte von \"GWK_FW_Node\" sind durch eine so genannte Kanten-Knoten Struktur topologisch miteinander verkn\u00fcpft. Kanten (Linien) sind durch Knoten (Punkte) miteinander verbunden. Jede Kante hat somit genau zwei Knoten an den Endpunkten. Kanten und Knoten bauen zusammen ein geometrisches Netzwerk. In Zusammenarbeit mit dem Bundesamt f\u00fcr Umwelt (BAFU) wurden die Knoten und Kanten auf dem Gebiet der Schweiz gem\u00e4ss GEWISS (Gew\u00e4sserinformationssystem der Schweiz) strukturiert und adressiert. Zu diesem Zweck wurden die so genannten GEWISS-Attribute eingef\u00fchrt In diesem Topic ist eine Feature Class mit Informationen \u00fcber Wasserf\u00e4lle, Schleusen und weitere Objekte integriert.", 
+                    "inspireAbstract": "Elemente des Gew\u00e4ssernetzes, einschlie\u00dflich Meeresgebieten und allen sonstigen Wasserk\u00f6rpern und hiermit verbundenen Teilsystemen, darunter Einzugsgebiete und Teileinzugsgebiete.", 
+                    "dataOwner": "Bundesamt f\u00fcr Landestopografie swisstopo", 
+                    "wmsContactAbbreviation": "swisstopo", 
+                    "downloadUrl": "http://www.toposhop.admin.ch/de/shop/products/landscape/vectorWizardEntryPoint?wizardMap=VECTOR200", 
+                    "maps": "api-notfree,mf-chsdi,swissmaponline,mf-geoadmin,wms-bgdi", 
+                    "wmsContactName": "Bundesamt f\u00fcr Landestopografie swisstopo", 
+                    "dataStatus": "2013", 
+                    "bundCollection": "38.13", 
+                    "inspireUpperName": "Oberfl\u00e4chendarstellung", 
+                    "inspireName": "Gew\u00e4ssernetz", 
+                    "urlApplication": "http://map.geodataviewer.admin.ch"
+                }, 
+                "fullName": "VECTOR200 Hydrography", 
+                "subLayerId": null, 
+                "id": 100034, 
+                "parentLayerId": null
+            },
+            {
+                "idGeoCat": "56553efe-4a2c-449d-93ba-cf7edd518d56",
+                "name": "Gebäude- und Wohnungsregister",
+                "idBod": "ch.bfs.gebaeude_wohnungs_register",
+                "attributes": {
+                    "backgroundLayer": false,
+                    "layerType": "aggregate",
+                    "format": null,
+                    "timestamps": null,
+                    "opacity": 1,
+                    "queryable": true,
+                    "minScale": null,
+                    "maxScale": null,
+                    "tileMatrixSet": null,
+                    "wmsUrlResource": "http://wms.geo.admin.ch/?REQUEST=GetCapabilities&SERVICE=WMS&VERSION=1.0.0",
+                    "inspireUpperAbstract": "Infrastruktur und Kommunikation - Basisdaten",
+                    "bundCollectionNumber": "Eidg. Gebäude- und Wohnungsregister GWR",
+                    "urlDetails": "http://www.housing-stat.admin.ch",
+                    "abstract": "Das eidgenössische Gebäude- und Wohnungsregister (GWR) enthält die wichtigsten Grunddaten zu Gebäude und Wohnungen. Es wird für Statistik-, Forschungs- und Planungszwecke genutzt und dient den Kantonen und Gemeinden für den Vollzug von gesetzlichen Aufgaben. Die Nachführung erfolgt in Koordination mit der Bau- und Wohnbaustatistik. Jedes Gebäude und jede Wohnung verfügt über eine schweizweit eindeutige und einmalige Identifikationsnummer (EGID bzw. EWID) sowie über eine geokodierte, nach der SNV-Norm 612040 standardisierte Adresse. Parzellennummern, Gebäudenummern und metrische Gebäudekoordinaten erlauben eine exakte geografische Lokalisierung der Gebäude.",
+                    "inspireAbstract": "Lokalisierung von Grundstücken anhand von Adressdaten, in der Regel Straßenname, Hausnummer und Postleitzahl. - Geografischer Standort von Gebäuden.",
+                    "dataOwner": "Bundesamt für Statistik",
+                    "wmsContactAbbreviation": "swisstopo",
+                    "downloadUrl": "http://www.housing-stat.admin.ch",
+                    "maps": "api-free,mf-chsdi,swissmaponline,mf-geoadmin,wms-bgdi,mf-kgs",
+                    "wmsContactName": "Bundesamt für Landestopografie swisstopo",
+                    "dataStatus": "bgdi_created",
+                    "bundCollection": "9.1",
+                    "inspireUpperName": "Infrastruktur und Kommunikation - Basisdaten",
+                    "inspireName": "Adressen - Gebäude",
+                    "urlApplication": "http://map.housing-stat.ch"
+                },
+                "fullName": "Eidg. Gebäude- und Wohnungsregister GWR",
+                "subLayerId": ['ch.bfs.gebaeude_wohnungs_register_wmts','ch.bfs.gebaeude_wohnungs_register_wms'],
+                "id": 100006,
+                "parentLayerId": null
+            },
+            {
+                "idGeoCat": "56553efe-4a2c-449d-93ba-cf7edd518d56",
+                "name": "Gebäude- und Wohnungsregister",
+                "idBod": "ch.bfs.gebaeude_wohnungs_register_wmts",
+                "attributes": {
+                    "backgroundLayer": false,
+                    "layerType": "wmts",
+                    "format": "image/png",
+                    "timestamps": ['20130212'],
+                    "opacity": 1,
+                    "queryable": false,
+                    "minScale": null,
+                    "maxScale": 25001,
+                    "tileMatrixSet": 21,
+                    "wmsUrlResource": "http://wms.geo.admin.ch/?REQUEST=GetCapabilities&SERVICE=WMS&VERSION=1.0.0",
+                    "inspireUpperAbstract": "Infrastruktur und Kommunikation - Basisdaten",
+                    "bundCollectionNumber": "Eidg. Gebäude- und Wohnungsregister GWR",
+                    "urlDetails": "http://www.housing-stat.admin.ch",
+                    "abstract": "Das eidgenössische Gebäude- und Wohnungsregister (GWR) enthält die wichtigsten Grunddaten zu Gebäude und Wohnungen. Es wird für Statistik-, Forschungs- und Planungszwecke genutzt und dient den Kantonen und Gemeinden für den Vollzug von gesetzlichen Aufgaben. Die Nachführung erfolgt in Koordination mit der Bau- und Wohnbaustatistik. Jedes Gebäude und jede Wohnung verfügt über eine schweizweit eindeutige und einmalige Identifikationsnummer (EGID bzw. EWID) sowie über eine geokodierte, nach der SNV-Norm 612040 standardisierte Adresse. Parzellennummern, Gebäudenummern und metrische Gebäudekoordinaten erlauben eine exakte geografische Lokalisierung der Gebäude.",
+                    "inspireAbstract": "Lokalisierung von Grundstücken anhand von Adressdaten, in der Regel Straßenname, Hausnummer und Postleitzahl. - Geografischer Standort von Gebäuden.",
+                    "dataOwner": "Bundesamt für Statistik",
+                    "wmsContactAbbreviation": "swisstopo",
+                    "downloadUrl": "http://www.housing-stat.admin.ch",
+                    "maps": "api-free,mf-chsdi,swissmaponline,mf-geoadmin,wms-bgdi,mf-kgs",
+                    "wmsContactName": "Bundesamt für Landestopografie swisstopo",
+                    "dataStatus": "bgdi_created",
+                    "bundCollection": "9.1",
+                    "inspireUpperName": "Infrastruktur und Kommunikation - Basisdaten",
+                    "inspireName": "Adressen - Gebäude",
+                    "urlApplication": "http://map.housing-stat.ch"
+                },
+                "fullName": "Eidg. Gebäude- und Wohnungsregister GWR",
+                "subLayerId": null,
+                "id": 100007,
+                "parentLayerId": "ch.bfs.gebaeude_wohnungs_register"
+            },
+            {
+                "idGeoCat": "56553efe-4a2c-449d-93ba-cf7edd518d56",
+                "name": "Gebäude- und Wohnungsregister",
+                "idBod": "ch.bfs.gebaeude_wohnungs_register_wms",
+                "attributes": {
+                    "backgroundLayer": false,
+                    "layerType": "wms",
+                    "format": "image/png",
+                    "timestamps": null,
+                    "opacity": 1,
+                    "queryable": false,
+                    "minScale": 25001,
+                    "maxScale": 1,
+                    "tileMatrixSet": null,
+                    "wmsUrlResource": "http://wms.geo.admin.ch/?REQUEST=GetCapabilities&SERVICE=WMS&VERSION=1.0.0",
+                    "inspireUpperAbstract": "Infrastruktur und Kommunikation - Basisdaten",
+                    "bundCollectionNumber": "Eidg. Gebäude- und Wohnungsregister GWR",
+                    "urlDetails": "http://www.housing-stat.admin.ch",
+                    "abstract": "Das eidgenössische Gebäude- und Wohnungsregister (GWR) enthält die wichtigsten Grunddaten zu Gebäude und Wohnungen. Es wird für Statistik-, Forschungs- und Planungszwecke genutzt und dient den Kantonen und Gemeinden für den Vollzug von gesetzlichen Aufgaben. Die Nachführung erfolgt in Koordination mit der Bau- und Wohnbaustatistik. Jedes Gebäude und jede Wohnung verfügt über eine schweizweit eindeutige und einmalige Identifikationsnummer (EGID bzw. EWID) sowie über eine geokodierte, nach der SNV-Norm 612040 standardisierte Adresse. Parzellennummern, Gebäudenummern und metrische Gebäudekoordinaten erlauben eine exakte geografische Lokalisierung der Gebäude.",
+                    "inspireAbstract": "Lokalisierung von Grundstücken anhand von Adressdaten, in der Regel Straßenname, Hausnummer und Postleitzahl. - Geografischer Standort von Gebäuden.",
+                    "dataOwner": "Bundesamt für Statistik",
+                    "wmsContactAbbreviation": "swisstopo",
+                    "downloadUrl": "http://www.housing-stat.admin.ch",
+                    "maps": "api-free,mf-chsdi,swissmaponline,mf-geoadmin,wms-bgdi,mf-kgs",
+                    "wmsContactName": "Bundesamt für Landestopografie swisstopo",
+                    "dataStatus": "bgdi_created",
+                    "bundCollection": "9.1",
+                    "inspireUpperName": "Infrastruktur und Kommunikation - Basisdaten",
+                    "inspireName": "Adressen - Gebäude",
+                    "urlApplication": "http://map.housing-stat.ch"
+                },
+                "fullName": "Eidg. Gebäude- und Wohnungsregister GWR",
+                "subLayerId": null,
+                "id": 100008,
+                "parentLayerId": "ch.bfs.gebaeude_wohnungs_register"
+            }
+        ]
+    ], 
+    "capabilities": "Map", 
+    "spatialReference": {
+        "wkid": 21781
+    }, 
+    "mapName": "geoadmin", 
+    "units": "esriMeters" 
+}
