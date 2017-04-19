@@ -197,7 +197,9 @@ def create_s3_dir_path(base_dir, named_branch):
     return (os.path.join(git_branch, git_short_sha, version), version)
 
 
-def is_cached(file_name):
+def is_cached(file_name, named_branch):
+    if named_branch:
+        return False
     # 1 exception
     if file_name == 'services':
         return True
@@ -251,7 +253,7 @@ def upload(bucket_name, base_dir, deploy_target, named_branch):
                         relative_file_path = relative_file_path.replace(base_dir + '/', '')
                         remote_file = os.path.join(s3_dir_path, relative_file_path, file_name)
                         # Don't cache some files
-                        cached = is_cached(file_name)
+                        cached = is_cached(file_name, named_branch)
                         mimetype = get_file_mimetype(local_file)
                         save_to_s3(local_file, remote_file, bucket_name, cached=cached, mimetype=mimetype)
                         # Also upload chsdi metadata file to src folder if available
