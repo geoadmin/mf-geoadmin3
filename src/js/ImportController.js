@@ -172,7 +172,7 @@ goog.require('ngeo.fileService');
 
     // Transform the url before loading it.
     $scope.options.transformUrl = function(url) {
-      if (/(wms|service\.svc|osm)/i.test(url)) {
+      if (/(wms|service\.svc|osm|ows)/i.test(url)) {
         // Append WMS GetCapabilities default parameters
         url = gaUrlUtils.append(url,
             'SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0');
