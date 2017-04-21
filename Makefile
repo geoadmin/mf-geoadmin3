@@ -3,7 +3,7 @@ SHELL = /bin/bash
 # Auto initialization of submodules
 INIT := ${shell git submodule update --init}
 
-NGEO_MODULES := src/ngeo/src/modules/import 
+NGEO_MODULES := src/ngeo/src/modules/import
 SRC_JS_FILES := $(shell find src/components src/js -type f -name '*.js')
 SRC_ES6_FILES := $(shell find ${NGEO_MODULES} -type f -name '*.js')
 SRC_JS_FILES_FOR_COMPILER = $(shell sed -e ':a' -e 'N' -e '$$!ba' -e 's/\n/ --js /g' .build-artefacts/js-files | sed 's/^.*base\.js //')
