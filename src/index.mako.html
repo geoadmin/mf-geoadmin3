@@ -548,7 +548,7 @@ itemscope itemtype="http://schema.org/WebApplication"
          ga-draggable=".popover-title"
          id="import-popup"
          class="ga-popup-mobile-bottom">
-      <div ng-controller="GaImportController">  
+      <div ng-controller="GaImportController">
         <div ga-import
              ga-import-map="::map"
              ga-import-options="::options">
@@ -636,14 +636,14 @@ itemscope itemtype="http://schema.org/WebApplication"
     </div><!-- end Feature Tree -->
 
   % if device == 'desktop':
-    <div ng-controller="GaImportController">  
+    <div ng-controller="GaImportController">
       <div ng-if="::supportDnd"
            ngeo-import-dnd
            ngeo-import-dnd-options="::options">
       </div>
     </div>
   % endif
-    
+
   % if device == 'mobile':
     <div ng-if="globals.homescreen" class="popover homescreen"
          ng-class="{

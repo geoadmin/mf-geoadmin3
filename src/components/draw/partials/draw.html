@@ -2,7 +2,7 @@
   <button ng-repeat="tool in options.tools"
           ng-click="toggleTool($event, tool)"
           ng-class="{
-              'btn-default': !options[tool.activeKey], 
+              'btn-default': !options[tool.activeKey],
               'btn-danger': options[tool.activeKey]
           }"
           class="btn">
