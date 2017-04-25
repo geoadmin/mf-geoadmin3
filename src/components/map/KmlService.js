@@ -296,7 +296,7 @@ goog.require('ngeo.fileService');
             gaDefinePropertiesForLayer(olLayer);
             olLayer.useThirdPartyData = true;
 
-            // Save the kml content for 3d parsing
+            // Save the kml content for for offline and 3d parsing
             olLayer.getSource().setProperties({
               'kmlString': kml
             });
