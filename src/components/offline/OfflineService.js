@@ -83,7 +83,7 @@ goog.require('ga_styles_service');
           }
         } else if (gaMapUtils.isKmlLayer(layer)) {
           if (layer instanceof ol.layer.Image) {
-            alert($translate.instant('offline_kml_too_big') + ': ' +
+            $window.alert($translate.instant('offline_kml_too_big') + ': ' +
                 layer.label);
           } else {
             return true;
@@ -416,7 +416,7 @@ goog.require('ga_styles_service');
             gaStorage.removeItem(bgKey);
             $rootScope.$broadcast('gaOfflineAbort');
           }, function() {
-            alert($translate.instant('offline_clear_db_error'));
+            $window.alert($translate.instant('offline_clear_db_error'));
           });
         };
 
@@ -425,11 +425,11 @@ goog.require('ga_styles_service');
           // Get the cacheable layers
           var layers = getCacheableLayers(map.getLayers().getArray(), true);
           if (layers.length == 0) {
-            alert($translate.instant('offline_no_cacheable_layers'));
+            $window.alert($translate.instant('offline_no_cacheable_layers'));
             return;
           }
 
-          if (!confirm($translate.instant('offline_save_warning'))) {
+          if (!$window.confirm($translate.instant('offline_save_warning'))) {
             return;
           }
 
@@ -461,13 +461,8 @@ goog.require('ga_styles_service');
             layersTimestamp.push(time);
 
             // if the layer is a KML
-            if (gaMapUtils.isKmlLayer(layer) &&
-                /^https?:\/\//.test(layer.url)) {
-              gaUrlUtils.proxifyUrl(layer.url).then(function(url) {
-                $http.get(url).then(function(resp) {
-                  gaStorage.setItem(layer.id, resp.data);
-                });
-              });
+            if (gaMapUtils.isKmlLayer(layer)) {
+              gaStorage.setItem(layer.id, layer.getSource().get('kmlString'));
               layersBg.push(false);
               continue;
             }
@@ -532,18 +527,18 @@ goog.require('ga_styles_service');
             }
           }
 
+          // Nothing to save or only KML layers
+          if (queue.length == 0) {
+            $window.alert($translate.instant('offline_no_cacheable_layers'));
+            this.abort();
+            return;
+          }
+
           // We store layers informations.
           gaStorage.setItem(layersKey, layersIds.join(','));
           gaStorage.setItem(opacityKey, layersOpacity.join(','));
           gaStorage.setItem(timestampKey, layersTimestamp.join(','));
           gaStorage.setItem(bgKey, layersBg.join(','));
-
-          // Nothing to save or only KML layers
-          if (queue.length == 0) {
-            alert($translate.instant('offline_no_cacheable_layers'));
-            this.abort();
-            return;
-          }
 
           // On mobile we simulate synchronous tile downloading, because when
           // saving multilayers and/or layers with big size tile, browser is
