@@ -1,7 +1,7 @@
 /**
  * Cesium - https://github.com/AnalyticalGraphicsInc/cesium
  *
- * Copyright 2011-2016 Cesium Contributors
+ * Copyright 2011-2017 Cesium Contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -128,8 +128,8 @@ define('Core/DeveloperError',[
 
 /*global define*/
 define('Core/Check',[
-    './defined',
-    './DeveloperError'
+        './defined',
+        './DeveloperError'
     ], function(
         defined,
         DeveloperError) {
@@ -147,72 +147,35 @@ define('Core/Check',[
      */
     Check.typeOf = {};
 
-    /**
-     * Contains functions for checking numeric conditions such as minimum and maximum values
-     */
-    Check.numeric = {};
-
     function getUndefinedErrorMessage(name) {
-        return name + ' was required but undefined.';
+        return name + ' is required, actual value was undefined';
     }
 
     function getFailedTypeErrorMessage(actual, expected, name) {
-        return 'Expected ' + name + ' to be typeof ' + expected + ', got ' + actual;
+        return 'Expected ' + name + ' to be typeof ' + expected + ', actual typeof was ' + actual;
     }
 
     /**
      * Throws if test is not defined
      *
-     * @param {*} test The value that is to be checked
      * @param {String} name The name of the variable being tested
+     * @param {*} test The value that is to be checked
      * @exception {DeveloperError} test must be defined
      */
-    Check.defined = function (test, name) {
+    Check.defined = function (name, test) {
         if (!defined(test)) {
             throw new DeveloperError(getUndefinedErrorMessage(name));
         }
     };
 
     /**
-     * Throws if test is greater than maximum
-     *
-     * @param {Number} test The value to test
-     * @param {Number} maximum The maximum allowed value
-     * @exception {DeveloperError} test must not be greater than maximum
-     * @exception {DeveloperError} Both test and maximum must be typeof 'number'
-     */
-    Check.numeric.maximum = function (test, maximum) {
-        Check.typeOf.number(test);
-        Check.typeOf.number(maximum);
-        if (test > maximum) {
-            throw new DeveloperError('Expected ' + test + ' to be at most ' + maximum);
-        }
-    };
-
-    /**
-     * Throws if test is less than minimum
-     *
-     * @param {Number} test The value to test
-     * @param {Number} minimum The minimum allowed value
-     * @exception {DeveloperError} test must not be less than mininum
-     * @exception {DeveloperError} Both test and maximum must be typeof 'number'
-     */
-    Check.numeric.minimum = function (test, minimum) {
-        Check.typeOf.number(test);
-        Check.typeOf.number(minimum);
-        if (test < minimum) {
-            throw new DeveloperError('Expected ' + test + ' to be at least ' + minimum);
-        }
-    };
-
-    /**
      * Throws if test is not typeof 'function'
      *
-     * @param {*} test The value to test
      * @param {String} name The name of the variable being tested
+     * @param {*} test The value to test
      * @exception {DeveloperError} test must be typeof 'function'
      */
-    Check.typeOf.func = function (test, name) {
+    Check.typeOf.func = function (name, test) {
         if (typeof test !== 'function') {
             throw new DeveloperError(getFailedTypeErrorMessage(typeof test, 'function', name));
         }
@@ -221,11 +184,11 @@ define('Core/Check',[
     /**
      * Throws if test is not typeof 'string'
      *
-     * @param {*} test The value to test
      * @param {String} name The name of the variable being tested
+     * @param {*} test The value to test
      * @exception {DeveloperError} test must be typeof 'string'
      */
-    Check.typeOf.string = function (test, name) {
+    Check.typeOf.string = function (name, test) {
         if (typeof test !== 'string') {
             throw new DeveloperError(getFailedTypeErrorMessage(typeof test, 'string', name));
         }
@@ -234,24 +197,84 @@ define('Core/Check',[
     /**
      * Throws if test is not typeof 'number'
      *
-     * @param {*} test The value to test
      * @param {String} name The name of the variable being tested
+     * @param {*} test The value to test
      * @exception {DeveloperError} test must be typeof 'number'
      */
-    Check.typeOf.number = function (test, name) {
+    Check.typeOf.number = function (name, test) {
         if (typeof test !== 'number') {
             throw new DeveloperError(getFailedTypeErrorMessage(typeof test, 'number', name));
         }
     };
 
     /**
+     * Throws if test is not typeof 'number' and less than limit
+     *
+     * @param {String} name The name of the variable being tested
+     * @param {*} test The value to test
+     * @param {Number} limit The limit value to compare against
+     * @exception {DeveloperError} test must be typeof 'number' and less than limit
+     */
+    Check.typeOf.number.lessThan = function (name, test, limit) {
+        Check.typeOf.number(name, test);
+        if (test >= limit) {
+            throw new DeveloperError('Expected ' + name + ' to be less than ' + limit + ', actual value was ' + test);
+        }
+    };
+
+    /**
+     * Throws if test is not typeof 'number' and less than or equal to limit
+     *
+     * @param {String} name The name of the variable being tested
+     * @param {*} test The value to test
+     * @param {Number} limit The limit value to compare against
+     * @exception {DeveloperError} test must be typeof 'number' and less than or equal to limit
+     */
+    Check.typeOf.number.lessThanOrEquals = function (name, test, limit) {
+        Check.typeOf.number(name, test);
+        if (test > limit) {
+            throw new DeveloperError('Expected ' + name + ' to be less than or equal to ' + limit + ', actual value was ' + test);
+        }
+    };
+
+    /**
+     * Throws if test is not typeof 'number' and greater than limit
+     *
+     * @param {String} name The name of the variable being tested
+     * @param {*} test The value to test
+     * @param {Number} limit The limit value to compare against
+     * @exception {DeveloperError} test must be typeof 'number' and greater than limit
+     */
+    Check.typeOf.number.greaterThan = function (name, test, limit) {
+        Check.typeOf.number(name, test);
+        if (test <= limit) {
+            throw new DeveloperError('Expected ' + name + ' to be greater than ' + limit + ', actual value was ' + test);
+        }
+    };
+
+    /**
+     * Throws if test is not typeof 'number' and greater than or equal to limit
+     *
+     * @param {String} name The name of the variable being tested
+     * @param {*} test The value to test
+     * @param {Number} limit The limit value to compare against
+     * @exception {DeveloperError} test must be typeof 'number' and greater than or equal to limit
+     */
+    Check.typeOf.number.greaterThanOrEquals = function (name, test, limit) {
+        Check.typeOf.number(name, test);
+        if (test < limit) {
+            throw new DeveloperError('Expected ' + name + ' to be greater than or equal to' + limit + ', actual value was ' + test);
+        }
+    };
+
+    /**
      * Throws if test is not typeof 'object'
      *
-     * @param {*} test The value to test
      * @param {String} name The name of the variable being tested
+     * @param {*} test The value to test
      * @exception {DeveloperError} test must be typeof 'object'
      */
-    Check.typeOf.object = function (test, name) {
+    Check.typeOf.object = function (name, test) {
         if (typeof test !== 'object') {
             throw new DeveloperError(getFailedTypeErrorMessage(typeof test, 'object', name));
         }
@@ -260,11 +283,11 @@ define('Core/Check',[
     /**
      * Throws if test is not typeof 'boolean'
      *
-     * @param {*} test The value to test
      * @param {String} name The name of the variable being tested
+     * @param {*} test The value to test
      * @exception {DeveloperError} test must be typeof 'boolean'
      */
-    Check.typeOf.bool = function (test, name) {
+    Check.typeOf.bool = function (name, test) {
         if (typeof test !== 'boolean') {
             throw new DeveloperError(getFailedTypeErrorMessage(typeof test, 'boolean', name));
         }
@@ -1401,7 +1424,7 @@ define('Core/Cartesian3',[
      * @returns {Cartesian3} The modified result parameter or a new Cartesian3 instance if one was not provided.
      */
     Cartesian3.fromSpherical = function(spherical, result) {
-                Check.typeOf.object(spherical, 'spherical');
+                Check.typeOf.object('spherical', spherical);
         
         if (!defined(result)) {
             result = new Cartesian3();
@@ -1485,8 +1508,8 @@ define('Core/Cartesian3',[
      * @returns {Number[]} The array that was packed into
      */
     Cartesian3.pack = function(value, array, startingIndex) {
-                Check.typeOf.object(value, 'value');
-        Check.defined(array, 'array');
+                Check.typeOf.object('value', value);
+        Check.defined('array', array);
         
         startingIndex = defaultValue(startingIndex, 0);
 
@@ -1506,7 +1529,7 @@ define('Core/Cartesian3',[
      * @returns {Cartesian3} The modified result parameter or a new Cartesian3 instance if one was not provided.
      */
     Cartesian3.unpack = function(array, startingIndex, result) {
-                Check.defined(array, 'array');
+                Check.defined('array', array);
         
         startingIndex = defaultValue(startingIndex, 0);
 
@@ -1527,7 +1550,7 @@ define('Core/Cartesian3',[
      * @returns {Number[]} The packed array.
      */
     Cartesian3.packArray = function(array, result) {
-                Check.defined(array, 'array');
+                Check.defined('array', array);
         
         var length = array.length;
         if (!defined(result)) {
@@ -1550,8 +1573,8 @@ define('Core/Cartesian3',[
      * @returns {Cartesian3[]} The unpacked array.
      */
     Cartesian3.unpackArray = function(array, result) {
-                Check.defined(array, 'array');
-        Check.numeric.minimum(array.length, 3);
+                Check.defined('array', array);
+        Check.typeOf.number.greaterThanOrEquals('array.length', array.length, 3);
         if (array.length % 3 !== 0) {
             throw new DeveloperError('array length must be a multiple of 3.');
         }
@@ -1597,7 +1620,7 @@ define('Core/Cartesian3',[
      * @returns {Number} The value of the maximum component.
      */
     Cartesian3.maximumComponent = function(cartesian) {
-                Check.typeOf.object(cartesian, 'cartesian');
+                Check.typeOf.object('cartesian', cartesian);
         
         return Math.max(cartesian.x, cartesian.y, cartesian.z);
     };
@@ -1609,7 +1632,7 @@ define('Core/Cartesian3',[
      * @returns {Number} The value of the minimum component.
      */
     Cartesian3.minimumComponent = function(cartesian) {
-                Check.typeOf.object(cartesian, 'cartesian');
+                Check.typeOf.object('cartesian', cartesian);
         
         return Math.min(cartesian.x, cartesian.y, cartesian.z);
     };
@@ -1623,9 +1646,9 @@ define('Core/Cartesian3',[
      * @returns {Cartesian3} A cartesian with the minimum components.
      */
     Cartesian3.minimumByComponent = function(first, second, result) {
-                Check.typeOf.object(first, 'first');
-        Check.typeOf.object(second, 'second');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('first', first);
+        Check.typeOf.object('second', second);
+        Check.typeOf.object('result', result);
         
         result.x = Math.min(first.x, second.x);
         result.y = Math.min(first.y, second.y);
@@ -1643,9 +1666,9 @@ define('Core/Cartesian3',[
      * @returns {Cartesian3} A cartesian with the maximum components.
      */
     Cartesian3.maximumByComponent = function(first, second, result) {
-                Check.typeOf.object(first, 'first');
-        Check.typeOf.object(second, 'second');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('first', first);
+        Check.typeOf.object('second', second);
+        Check.typeOf.object('result', result);
         
         result.x = Math.max(first.x, second.x);
         result.y = Math.max(first.y, second.y);
@@ -1660,7 +1683,7 @@ define('Core/Cartesian3',[
      * @returns {Number} The squared magnitude.
      */
     Cartesian3.magnitudeSquared = function(cartesian) {
-                Check.typeOf.object(cartesian, 'cartesian');
+                Check.typeOf.object('cartesian', cartesian);
         
         return cartesian.x * cartesian.x + cartesian.y * cartesian.y + cartesian.z * cartesian.z;
     };
@@ -1689,8 +1712,8 @@ define('Core/Cartesian3',[
      * var d = Cesium.Cartesian3.distance(new Cesium.Cartesian3(1.0, 0.0, 0.0), new Cesium.Cartesian3(2.0, 0.0, 0.0));
      */
     Cartesian3.distance = function(left, right) {
-                Check.typeOf.object(left, 'left');
-        Check.typeOf.object(right, 'right');
+                Check.typeOf.object('left', left);
+        Check.typeOf.object('right', right);
         
         Cartesian3.subtract(left, right, distanceScratch);
         return Cartesian3.magnitude(distanceScratch);
@@ -1709,8 +1732,8 @@ define('Core/Cartesian3',[
      * var d = Cesium.Cartesian3.distanceSquared(new Cesium.Cartesian3(1.0, 0.0, 0.0), new Cesium.Cartesian3(3.0, 0.0, 0.0));
      */
     Cartesian3.distanceSquared = function(left, right) {
-                Check.typeOf.object(left, 'left');
-        Check.typeOf.object(right, 'right');
+                Check.typeOf.object('left', left);
+        Check.typeOf.object('right', right);
         
         Cartesian3.subtract(left, right, distanceScratch);
         return Cartesian3.magnitudeSquared(distanceScratch);
@@ -1724,8 +1747,8 @@ define('Core/Cartesian3',[
      * @returns {Cartesian3} The modified result parameter.
      */
     Cartesian3.normalize = function(cartesian, result) {
-                Check.typeOf.object(cartesian, 'cartesian');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('cartesian', cartesian);
+        Check.typeOf.object('result', result);
         
         var magnitude = Cartesian3.magnitude(cartesian);
 
@@ -1748,8 +1771,8 @@ define('Core/Cartesian3',[
      * @returns {Number} The dot product.
      */
     Cartesian3.dot = function(left, right) {
-                Check.typeOf.object(left, 'left');
-        Check.typeOf.object(right, 'right');
+                Check.typeOf.object('left', left);
+        Check.typeOf.object('right', right);
         
         return left.x * right.x + left.y * right.y + left.z * right.z;
     };
@@ -1763,9 +1786,9 @@ define('Core/Cartesian3',[
      * @returns {Cartesian3} The modified result parameter.
      */
     Cartesian3.multiplyComponents = function(left, right, result) {
-                Check.typeOf.object(left, 'left');
-        Check.typeOf.object(right, 'right');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('left', left);
+        Check.typeOf.object('right', right);
+        Check.typeOf.object('result', result);
         
         result.x = left.x * right.x;
         result.y = left.y * right.y;
@@ -1807,9 +1830,9 @@ define('Core/Cartesian3',[
      * @returns {Cartesian3} The modified result parameter.
      */
     Cartesian3.add = function(left, right, result) {
-                Check.typeOf.object(left, 'left');
-        Check.typeOf.object(right, 'right');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('left', left);
+        Check.typeOf.object('right', right);
+        Check.typeOf.object('result', result);
         
         result.x = left.x + right.x;
         result.y = left.y + right.y;
@@ -1826,9 +1849,9 @@ define('Core/Cartesian3',[
      * @returns {Cartesian3} The modified result parameter.
      */
     Cartesian3.subtract = function(left, right, result) {
-                Check.typeOf.object(left, 'left');
-        Check.typeOf.object(right, 'right');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('left', left);
+        Check.typeOf.object('right', right);
+        Check.typeOf.object('result', result);
         
         result.x = left.x - right.x;
         result.y = left.y - right.y;
@@ -1845,9 +1868,9 @@ define('Core/Cartesian3',[
      * @returns {Cartesian3} The modified result parameter.
      */
     Cartesian3.multiplyByScalar = function(cartesian, scalar, result) {
-                Check.typeOf.object(cartesian, 'cartesian');
-        Check.typeOf.number(scalar, 'scalar');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('cartesian', cartesian);
+        Check.typeOf.number('scalar', scalar);
+        Check.typeOf.object('result', result);
         
         result.x = cartesian.x * scalar;
         result.y = cartesian.y * scalar;
@@ -1864,9 +1887,9 @@ define('Core/Cartesian3',[
      * @returns {Cartesian3} The modified result parameter.
      */
     Cartesian3.divideByScalar = function(cartesian, scalar, result) {
-                Check.typeOf.object(cartesian, 'cartesian');
-        Check.typeOf.number(scalar, 'scalar');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('cartesian', cartesian);
+        Check.typeOf.number('scalar', scalar);
+        Check.typeOf.object('result', result);
         
         result.x = cartesian.x / scalar;
         result.y = cartesian.y / scalar;
@@ -1882,8 +1905,8 @@ define('Core/Cartesian3',[
      * @returns {Cartesian3} The modified result parameter.
      */
     Cartesian3.negate = function(cartesian, result) {
-                Check.typeOf.object(cartesian, 'cartesian');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('cartesian', cartesian);
+        Check.typeOf.object('result', result);
         
         result.x = -cartesian.x;
         result.y = -cartesian.y;
@@ -1899,8 +1922,8 @@ define('Core/Cartesian3',[
      * @returns {Cartesian3} The modified result parameter.
      */
     Cartesian3.abs = function(cartesian, result) {
-                Check.typeOf.object(cartesian, 'cartesian');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('cartesian', cartesian);
+        Check.typeOf.object('result', result);
         
         result.x = Math.abs(cartesian.x);
         result.y = Math.abs(cartesian.y);
@@ -1919,10 +1942,10 @@ define('Core/Cartesian3',[
      * @returns {Cartesian3} The modified result parameter.
      */
     Cartesian3.lerp = function(start, end, t, result) {
-                Check.typeOf.object(start, 'start');
-        Check.typeOf.object(end, 'end');
-        Check.typeOf.number(t, 't');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('start', start);
+        Check.typeOf.object('end', end);
+        Check.typeOf.number('t', t);
+        Check.typeOf.object('result', result);
         
         Cartesian3.multiplyByScalar(end, t, lerpScratch);
         result = Cartesian3.multiplyByScalar(start, 1.0 - t, result);
@@ -1939,8 +1962,8 @@ define('Core/Cartesian3',[
      * @returns {Number} The angle between the Cartesians.
      */
     Cartesian3.angleBetween = function(left, right) {
-                Check.typeOf.object(left, 'left');
-        Check.typeOf.object(right, 'right');
+                Check.typeOf.object('left', left);
+        Check.typeOf.object('right', right);
         
         Cartesian3.normalize(left, angleBetweenScratch);
         Cartesian3.normalize(right, angleBetweenScratch2);
@@ -1958,8 +1981,8 @@ define('Core/Cartesian3',[
      * @returns {Cartesian3} The most orthogonal axis.
      */
     Cartesian3.mostOrthogonalAxis = function(cartesian, result) {
-                Check.typeOf.object(cartesian, 'cartesian');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('cartesian', cartesian);
+        Check.typeOf.object('result', result);
         
         var f = Cartesian3.normalize(cartesian, mostOrthogonalAxisScratch);
         Cartesian3.abs(f, f);
@@ -2036,9 +2059,9 @@ define('Core/Cartesian3',[
      * @returns {Cartesian3} The cross product.
      */
     Cartesian3.cross = function(left, right, result) {
-                Check.typeOf.object(left, 'left');
-        Check.typeOf.object(right, 'right');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('left', left);
+        Check.typeOf.object('right', right);
+        Check.typeOf.object('result', result);
         
         var leftX = left.x;
         var leftY = left.y;
@@ -2071,8 +2094,8 @@ define('Core/Cartesian3',[
      * var position = Cesium.Cartesian3.fromDegrees(-115.0, 37.0);
      */
     Cartesian3.fromDegrees = function(longitude, latitude, height, ellipsoid, result) {
-                Check.typeOf.number(longitude, 'longitude');
-        Check.typeOf.number(latitude, 'latitude');
+                Check.typeOf.number('longitude', longitude);
+        Check.typeOf.number('latitude', latitude);
         
         longitude = CesiumMath.toRadians(longitude);
         latitude = CesiumMath.toRadians(latitude);
@@ -2097,8 +2120,8 @@ define('Core/Cartesian3',[
      * var position = Cesium.Cartesian3.fromRadians(-2.007, 0.645);
      */
     Cartesian3.fromRadians = function(longitude, latitude, height, ellipsoid, result) {
-                Check.typeOf.number(longitude, 'longitude');
-        Check.typeOf.number(latitude, 'latitude');
+                Check.typeOf.number('longitude', longitude);
+        Check.typeOf.number('latitude', latitude);
         
         height = defaultValue(height, 0.0);
         var radiiSquared = defined(ellipsoid) ? ellipsoid.radiiSquared : wgs84RadiiSquared;
@@ -2132,7 +2155,7 @@ define('Core/Cartesian3',[
      * var positions = Cesium.Cartesian3.fromDegreesArray([-115.0, 37.0, -107.0, 33.0]);
      */
     Cartesian3.fromDegreesArray = function(coordinates, ellipsoid, result) {
-                Check.defined(coordinates, 'coordinates');
+                Check.defined('coordinates', coordinates);
         if (coordinates.length < 2 || coordinates.length % 2 !== 0) {
             throw new DeveloperError('the number of coordinates must be a multiple of 2 and at least 2');
         }
@@ -2166,7 +2189,7 @@ define('Core/Cartesian3',[
      * var positions = Cesium.Cartesian3.fromRadiansArray([-2.007, 0.645, -1.867, .575]);
      */
     Cartesian3.fromRadiansArray = function(coordinates, ellipsoid, result) {
-                Check.defined(coordinates, 'coordinates');
+                Check.defined('coordinates', coordinates);
         if (coordinates.length < 2 || coordinates.length % 2 !== 0) {
             throw new DeveloperError('the number of coordinates must be a multiple of 2 and at least 2');
         }
@@ -2200,7 +2223,7 @@ define('Core/Cartesian3',[
      * var positions = Cesium.Cartesian3.fromDegreesArrayHeights([-115.0, 37.0, 100000.0, -107.0, 33.0, 150000.0]);
      */
     Cartesian3.fromDegreesArrayHeights = function(coordinates, ellipsoid, result) {
-                Check.defined(coordinates, 'coordinates');
+                Check.defined('coordinates', coordinates);
         if (coordinates.length < 3 || coordinates.length % 3 !== 0) {
             throw new DeveloperError('the number of coordinates must be a multiple of 3 and at least 3');
         }
@@ -2235,7 +2258,7 @@ define('Core/Cartesian3',[
      * var positions = Cesium.Cartesian3.fromRadiansArrayHeights([-2.007, 0.645, 100000.0, -1.867, .575, 150000.0]);
      */
     Cartesian3.fromRadiansArrayHeights = function(coordinates, ellipsoid, result) {
-                Check.defined(coordinates, 'coordinates');
+                Check.defined('coordinates', coordinates);
         if (coordinates.length < 3 || coordinates.length % 3 !== 0) {
             throw new DeveloperError('the number of coordinates must be a multiple of 3 and at least 3');
         }
@@ -3433,7 +3456,6 @@ define('Core/Rectangle',[
         './defaultValue',
         './defined',
         './defineProperties',
-        './DeveloperError',
         './Ellipsoid',
         './freezeObject',
         './Math'
@@ -3443,7 +3465,6 @@ define('Core/Rectangle',[
         defaultValue,
         defined,
         defineProperties,
-        DeveloperError,
         Ellipsoid,
         freezeObject,
         CesiumMath) {
@@ -3536,8 +3557,8 @@ define('Core/Rectangle',[
      * @returns {Number[]} The array that was packed into
      */
     Rectangle.pack = function(value, array, startingIndex) {
-                Check.typeOf.object(value, 'value');
-        Check.defined(array, 'array');
+                Check.typeOf.object('value', value);
+        Check.defined('array', array);
         
         startingIndex = defaultValue(startingIndex, 0);
 
@@ -3558,7 +3579,7 @@ define('Core/Rectangle',[
      * @returns {Rectangle} The modified result parameter or a new Rectangle instance if one was not provided.
      */
     Rectangle.unpack = function(array, startingIndex, result) {
-                Check.defined(array, 'array');
+                Check.defined('array', array);
         
         startingIndex = defaultValue(startingIndex, 0);
 
@@ -3579,7 +3600,7 @@ define('Core/Rectangle',[
      * @returns {Number} The width.
      */
     Rectangle.computeWidth = function(rectangle) {
-                Check.typeOf.object(rectangle, 'rectangle');
+                Check.typeOf.object('rectangle', rectangle);
                 var east = rectangle.east;
         var west = rectangle.west;
         if (east < west) {
@@ -3594,7 +3615,7 @@ define('Core/Rectangle',[
      * @returns {Number} The height.
      */
     Rectangle.computeHeight = function(rectangle) {
-                Check.typeOf.object(rectangle, 'rectangle');
+                Check.typeOf.object('rectangle', rectangle);
                 return rectangle.north - rectangle.south;
     };
 
@@ -3630,6 +3651,32 @@ define('Core/Rectangle',[
     };
 
     /**
+     * Creates an rectangle given the boundary longitude and latitude in radians.
+     *
+     * @param {Number} [west=0.0] The westernmost longitude in radians in the range [-Math.PI, Math.PI].
+     * @param {Number} [south=0.0] The southernmost latitude in radians in the range [-Math.PI/2, Math.PI/2].
+     * @param {Number} [east=0.0] The easternmost longitude in radians in the range [-Math.PI, Math.PI].
+     * @param {Number} [north=0.0] The northernmost latitude in radians in the range [-Math.PI/2, Math.PI/2].
+     * @param {Rectangle} [result] The object onto which to store the result, or undefined if a new instance should be created.
+     * @returns {Rectangle} The modified result parameter or a new Rectangle instance if none was provided.
+     *
+     * @example
+     * var rectangle = Cesium.Rectangle.fromRadians(0.0, Math.PI/4, Math.PI/8, 3*Math.PI/4);
+     */
+    Rectangle.fromRadians = function(west, south, east, north, result) {
+        if (!defined(result)) {
+            return new Rectangle(west, south, east, north);
+        }
+
+        result.west = defaultValue(west, 0.0);
+        result.south = defaultValue(south, 0.0);
+        result.east = defaultValue(east, 0.0);
+        result.north = defaultValue(north, 0.0);
+
+        return result;
+    };
+
+    /**
      * Creates the smallest possible Rectangle that encloses all positions in the provided array.
      *
      * @param {Cartographic[]} cartographics The list of Cartographic instances.
@@ -3637,7 +3684,7 @@ define('Core/Rectangle',[
      * @returns {Rectangle} The modified result parameter or a new Rectangle instance if none was provided.
      */
     Rectangle.fromCartographicArray = function(cartographics, result) {
-                Check.defined(cartographics, 'cartographics');
+                Check.defined('cartographics', cartographics);
         
         var west = Number.MAX_VALUE;
         var east = -Number.MAX_VALUE;
@@ -3690,7 +3737,7 @@ define('Core/Rectangle',[
      * @returns {Rectangle} The modified result parameter or a new Rectangle instance if none was provided.
      */
     Rectangle.fromCartesianArray = function(cartesians, ellipsoid, result) {
-                Check.defined(cartesians, 'cartesians');
+                Check.defined('cartesians', cartesians);
         
         var west = Number.MAX_VALUE;
         var east = -Number.MAX_VALUE;
@@ -3806,7 +3853,7 @@ define('Core/Rectangle',[
      * @returns {Boolean} <code>true</code> if the Rectangles are within the provided epsilon, <code>false</code> otherwise.
      */
     Rectangle.prototype.equalsEpsilon = function(other, epsilon) {
-                Check.typeOf.number(epsilon, 'epsilon');
+                Check.typeOf.number('epsilon', epsilon);
         
         return defined(other) &&
                (Math.abs(this.west - other.west) <= epsilon) &&
@@ -3826,27 +3873,23 @@ define('Core/Rectangle',[
      * @exception {DeveloperError} <code>west</code> must be in the interval [<code>-Pi</code>, <code>Pi</code>].
      */
     Rectangle.validate = function(rectangle) {
-                Check.typeOf.object(rectangle, 'rectangle');
+                Check.typeOf.object('rectangle', rectangle);
 
         var north = rectangle.north;
-        Check.typeOf.number(north, 'north');
-        Check.numeric.minimum(north, -CesiumMath.PI_OVER_TWO);
-        Check.numeric.maximum(north, CesiumMath.PI_OVER_TWO);
+        Check.typeOf.number.greaterThanOrEquals('north', north, -CesiumMath.PI_OVER_TWO);
+        Check.typeOf.number.lessThanOrEquals('north', north, CesiumMath.PI_OVER_TWO);
 
         var south = rectangle.south;
-        Check.typeOf.number(south, 'south');
-        Check.numeric.minimum(south, -CesiumMath.PI_OVER_TWO);
-        Check.numeric.maximum(south, CesiumMath.PI_OVER_TWO);
+        Check.typeOf.number.greaterThanOrEquals('south', south, -CesiumMath.PI_OVER_TWO);
+        Check.typeOf.number.lessThanOrEquals('south', south, CesiumMath.PI_OVER_TWO);
 
         var west = rectangle.west;
-        Check.typeOf.number(west, 'west');
-        Check.numeric.minimum(west, -Math.PI);
-        Check.numeric.maximum(west, Math.PI);
+        Check.typeOf.number.greaterThanOrEquals('west', west, -Math.PI);
+        Check.typeOf.number.lessThanOrEquals('west', west, Math.PI);
 
         var east = rectangle.east;
-        Check.typeOf.number(east, 'east');
-        Check.numeric.minimum(east, -Math.PI);
-        Check.numeric.maximum(east, Math.PI);
+        Check.typeOf.number.greaterThanOrEquals('east', east, -Math.PI);
+        Check.typeOf.number.lessThanOrEquals('east', east, Math.PI);
             };
 
     /**
@@ -3857,7 +3900,7 @@ define('Core/Rectangle',[
      * @returns {Cartographic} The modified result parameter or a new Cartographic instance if none was provided.
      */
     Rectangle.southwest = function(rectangle, result) {
-                Check.typeOf.object(rectangle, 'rectangle');
+                Check.typeOf.object('rectangle', rectangle);
         
         if (!defined(result)) {
             return new Cartographic(rectangle.west, rectangle.south);
@@ -3876,7 +3919,7 @@ define('Core/Rectangle',[
      * @returns {Cartographic} The modified result parameter or a new Cartographic instance if none was provided.
      */
     Rectangle.northwest = function(rectangle, result) {
-                Check.typeOf.object(rectangle, 'rectangle');
+                Check.typeOf.object('rectangle', rectangle);
         
         if (!defined(result)) {
             return new Cartographic(rectangle.west, rectangle.north);
@@ -3895,7 +3938,7 @@ define('Core/Rectangle',[
      * @returns {Cartographic} The modified result parameter or a new Cartographic instance if none was provided.
      */
     Rectangle.northeast = function(rectangle, result) {
-                Check.typeOf.object(rectangle, 'rectangle');
+                Check.typeOf.object('rectangle', rectangle);
         
         if (!defined(result)) {
             return new Cartographic(rectangle.east, rectangle.north);
@@ -3914,7 +3957,7 @@ define('Core/Rectangle',[
      * @returns {Cartographic} The modified result parameter or a new Cartographic instance if none was provided.
      */
     Rectangle.southeast = function(rectangle, result) {
-                Check.typeOf.object(rectangle, 'rectangle');
+                Check.typeOf.object('rectangle', rectangle);
         
         if (!defined(result)) {
             return new Cartographic(rectangle.east, rectangle.south);
@@ -3933,7 +3976,7 @@ define('Core/Rectangle',[
      * @returns {Cartographic} The modified result parameter or a new Cartographic instance if none was provided.
      */
     Rectangle.center = function(rectangle, result) {
-                Check.typeOf.object(rectangle, 'rectangle');
+                Check.typeOf.object('rectangle', rectangle);
         
         var east = rectangle.east;
         var west = rectangle.west;
@@ -3968,8 +4011,8 @@ define('Core/Rectangle',[
      * @returns {Rectangle|undefined} The modified result parameter, a new Rectangle instance if none was provided or undefined if there is no intersection.
      */
     Rectangle.intersection = function(rectangle, otherRectangle, result) {
-                Check.typeOf.object(rectangle, 'rectangle');
-        Check.typeOf.object(otherRectangle, 'otherRectangle');
+                Check.typeOf.object('rectangle', rectangle);
+        Check.typeOf.object('otherRectangle', otherRectangle);
         
         var rectangleEast = rectangle.east;
         var rectangleWest = rectangle.west;
@@ -4025,8 +4068,8 @@ define('Core/Rectangle',[
      * @returns {Rectangle|undefined} The modified result parameter, a new Rectangle instance if none was provided or undefined if there is no intersection.
      */
     Rectangle.simpleIntersection = function(rectangle, otherRectangle, result) {
-                Check.typeOf.object(rectangle, 'rectangle');
-        Check.typeOf.object(otherRectangle, 'otherRectangle');
+                Check.typeOf.object('rectangle', rectangle);
+        Check.typeOf.object('otherRectangle', otherRectangle);
         
         var west = Math.max(rectangle.west, otherRectangle.west);
         var south = Math.max(rectangle.south, otherRectangle.south);
@@ -4057,8 +4100,8 @@ define('Core/Rectangle',[
      * @returns {Rectangle} The modified result parameter or a new Rectangle instance if none was provided.
      */
     Rectangle.union = function(rectangle, otherRectangle, result) {
-                Check.typeOf.object(rectangle, 'rectangle');
-        Check.typeOf.object(otherRectangle, 'otherRectangle');
+                Check.typeOf.object('rectangle', rectangle);
+        Check.typeOf.object('otherRectangle', otherRectangle);
         
         if (!defined(result)) {
             result = new Rectangle();
@@ -4102,8 +4145,8 @@ define('Core/Rectangle',[
      * @returns {Rectangle} The modified result parameter or a new Rectangle instance if one was not provided.
      */
     Rectangle.expand = function(rectangle, cartographic, result) {
-                Check.typeOf.object(rectangle, 'rectangle');
-        Check.typeOf.object(cartographic, 'cartographic');
+                Check.typeOf.object('rectangle', rectangle);
+        Check.typeOf.object('cartographic', cartographic);
         
         if (!defined(result)) {
             result = new Rectangle();
@@ -4125,8 +4168,8 @@ define('Core/Rectangle',[
      * @returns {Boolean} true if the provided cartographic is inside the rectangle, false otherwise.
      */
     Rectangle.contains = function(rectangle, cartographic) {
-                Check.typeOf.object(rectangle, 'rectangle');
-        Check.typeOf.object(cartographic, 'cartographic');
+                Check.typeOf.object('rectangle', rectangle);
+        Check.typeOf.object('cartographic', cartographic);
         
         var longitude = cartographic.longitude;
         var latitude = cartographic.latitude;
@@ -4159,7 +4202,7 @@ define('Core/Rectangle',[
      * @returns {Cartesian3[]} The modified result parameter or a new Array of Cartesians instances if none was provided.
      */
     Rectangle.subsample = function(rectangle, ellipsoid, surfaceHeight, result) {
-                Check.typeOf.object(rectangle, 'rectangle');
+                Check.typeOf.object('rectangle', rectangle);
         
         ellipsoid = defaultValue(ellipsoid, Ellipsoid.WGS84);
         surfaceHeight = defaultValue(surfaceHeight, 0.0);
@@ -4503,8 +4546,8 @@ define('Core/Matrix3',[
      * @returns {Number[]} The array that was packed into
      */
     Matrix3.pack = function(value, array, startingIndex) {
-                Check.typeOf.object(value, 'value');
-        Check.defined(array, 'array');
+                Check.typeOf.object('value', value);
+        Check.defined('array', array);
         
         startingIndex = defaultValue(startingIndex, 0);
 
@@ -4530,7 +4573,7 @@ define('Core/Matrix3',[
      * @returns {Matrix3} The modified result parameter or a new Matrix3 instance if one was not provided.
      */
     Matrix3.unpack = function(array, startingIndex, result) {
-                Check.defined(array, 'array');
+                Check.defined('array', array);
         
         startingIndex = defaultValue(startingIndex, 0);
 
@@ -4600,7 +4643,7 @@ define('Core/Matrix3',[
      * var m2 = Cesium.Matrix3.fromArray(v2, 2);
      */
     Matrix3.fromArray = function(array, startingIndex, result) {
-                Check.defined(array, 'array');
+                Check.defined('array', array);
         
         startingIndex = defaultValue(startingIndex, 0);
 
@@ -4628,7 +4671,7 @@ define('Core/Matrix3',[
      * @returns {Matrix3} The modified result parameter, or a new Matrix3 instance if one was not provided.
      */
     Matrix3.fromColumnMajorArray = function(values, result) {
-                Check.defined(values, 'values');
+                Check.defined('values', values);
         
         return Matrix3.clone(values, result);
     };
@@ -4642,7 +4685,7 @@ define('Core/Matrix3',[
      * @returns {Matrix3} The modified result parameter, or a new Matrix3 instance if one was not provided.
      */
     Matrix3.fromRowMajorArray = function(values, result) {
-                Check.defined(values, 'values');
+                Check.defined('values', values);
         
         if (!defined(result)) {
             return new Matrix3(values[0], values[1], values[2],
@@ -4669,7 +4712,7 @@ define('Core/Matrix3',[
      * @returns {Matrix3} The 3x3 rotation matrix from this quaternion.
      */
     Matrix3.fromQuaternion = function(quaternion, result) {
-                Check.typeOf.object(quaternion, 'quaternion');
+                Check.typeOf.object('quaternion', quaternion);
         
         var x2 = quaternion.x * quaternion.x;
         var xy = quaternion.x * quaternion.y;
@@ -4719,7 +4762,7 @@ define('Core/Matrix3',[
      * @returns {Matrix3} The 3x3 rotation matrix from this headingPitchRoll.
      */
     Matrix3.fromHeadingPitchRoll = function(headingPitchRoll, result) {
-                Check.typeOf.object(headingPitchRoll, 'headingPitchRoll');
+                Check.typeOf.object('headingPitchRoll', headingPitchRoll);
         
         var cosTheta = Math.cos(-headingPitchRoll.pitch);
         var cosPsi = Math.cos(-headingPitchRoll.heading);
@@ -4772,7 +4815,7 @@ define('Core/Matrix3',[
      * var m = Cesium.Matrix3.fromScale(new Cesium.Cartesian3(7.0, 8.0, 9.0));
      */
     Matrix3.fromScale = function(scale, result) {
-                Check.typeOf.object(scale, 'scale');
+                Check.typeOf.object('scale', scale);
         
         if (!defined(result)) {
             return new Matrix3(
@@ -4808,7 +4851,7 @@ define('Core/Matrix3',[
      * var m = Cesium.Matrix3.fromUniformScale(2.0);
      */
     Matrix3.fromUniformScale = function(scale, result) {
-                Check.typeOf.number(scale, 'scale');
+                Check.typeOf.number('scale', scale);
         
         if (!defined(result)) {
             return new Matrix3(
@@ -4844,7 +4887,7 @@ define('Core/Matrix3',[
      * var m = Cesium.Matrix3.fromCrossProduct(new Cesium.Cartesian3(7.0, 8.0, 9.0));
      */
     Matrix3.fromCrossProduct = function(vector, result) {
-                Check.typeOf.object(vector, 'vector');
+                Check.typeOf.object('vector', vector);
         
         if (!defined(result)) {
             return new Matrix3(
@@ -4879,7 +4922,7 @@ define('Core/Matrix3',[
      * var rotated = Cesium.Matrix3.multiplyByVector(m, p, new Cesium.Cartesian3());
      */
     Matrix3.fromRotationX = function(angle, result) {
-                Check.typeOf.number(angle, 'angle');
+                Check.typeOf.number('angle', angle);
         
         var cosAngle = Math.cos(angle);
         var sinAngle = Math.sin(angle);
@@ -4918,7 +4961,7 @@ define('Core/Matrix3',[
      * var rotated = Cesium.Matrix3.multiplyByVector(m, p, new Cesium.Cartesian3());
      */
     Matrix3.fromRotationY = function(angle, result) {
-                Check.typeOf.number(angle, 'angle');
+                Check.typeOf.number('angle', angle);
         
         var cosAngle = Math.cos(angle);
         var sinAngle = Math.sin(angle);
@@ -4957,7 +5000,7 @@ define('Core/Matrix3',[
      * var rotated = Cesium.Matrix3.multiplyByVector(m, p, new Cesium.Cartesian3());
      */
     Matrix3.fromRotationZ = function(angle, result) {
-                Check.typeOf.number(angle, 'angle');
+                Check.typeOf.number('angle', angle);
         
         var cosAngle = Math.cos(angle);
         var sinAngle = Math.sin(angle);
@@ -4991,7 +5034,7 @@ define('Core/Matrix3',[
      * @returns {Number[]} The modified Array parameter or a new Array instance if one was not provided.
      */
     Matrix3.toArray = function(matrix, result) {
-                Check.typeOf.object(matrix, 'matrix');
+                Check.typeOf.object('matrix', matrix);
         
         if (!defined(result)) {
             return [matrix[0], matrix[1], matrix[2], matrix[3], matrix[4], matrix[5], matrix[6], matrix[7], matrix[8]];
@@ -5025,12 +5068,10 @@ define('Core/Matrix3',[
      * myMatrix[column1Row0Index] = 10.0;
      */
     Matrix3.getElementIndex = function(column, row) {
-                Check.typeOf.number(column, 'column');
-        Check.typeOf.number(row, 'row');
-        Check.numeric.minimum(row, 0);
-        Check.numeric.maximum(row, 2);
-        Check.numeric.minimum(column, 0);
-        Check.numeric.maximum(column, 2);
+                Check.typeOf.number.greaterThanOrEquals('row', row, 0);
+        Check.typeOf.number.lessThanOrEquals('row', row, 2);
+        Check.typeOf.number.greaterThanOrEquals('column', column, 0);
+        Check.typeOf.number.lessThanOrEquals('column', column, 2);
         
         return column * 3 + row;
     };
@@ -5046,11 +5087,10 @@ define('Core/Matrix3',[
      * @exception {DeveloperError} index must be 0, 1, or 2.
      */
     Matrix3.getColumn = function(matrix, index, result) {
-                Check.typeOf.object(matrix, 'matrix');
-        Check.typeOf.number(index, 'index');
-        Check.numeric.minimum(index, 0);
-        Check.numeric.maximum(index, 2);
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('matrix', matrix);
+        Check.typeOf.number.greaterThanOrEquals('index', index, 0);
+        Check.typeOf.number.lessThanOrEquals('index', index, 2);
+        Check.typeOf.object('result', result);
         
         var startIndex = index * 3;
         var x = matrix[startIndex];
@@ -5075,12 +5115,11 @@ define('Core/Matrix3',[
      * @exception {DeveloperError} index must be 0, 1, or 2.
      */
     Matrix3.setColumn = function(matrix, index, cartesian, result) {
-                Check.typeOf.object(matrix, 'matrix');
-        Check.typeOf.number(index, 'index');
-        Check.numeric.minimum(index, 0);
-        Check.numeric.maximum(index, 2);
-        Check.typeOf.object(cartesian, 'cartesian');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('matrix', matrix);
+        Check.typeOf.number.greaterThanOrEquals('index', index, 0);
+        Check.typeOf.number.lessThanOrEquals('index', index, 2);
+        Check.typeOf.object('cartesian', cartesian);
+        Check.typeOf.object('result', result);
         
         result = Matrix3.clone(matrix, result);
         var startIndex = index * 3;
@@ -5101,11 +5140,10 @@ define('Core/Matrix3',[
      * @exception {DeveloperError} index must be 0, 1, or 2.
      */
     Matrix3.getRow = function(matrix, index, result) {
-                Check.typeOf.object(matrix, 'matrix');
-        Check.typeOf.number(index, 'index');
-        Check.numeric.minimum(index, 0);
-        Check.numeric.maximum(index, 2);
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('matrix', matrix);
+        Check.typeOf.number.greaterThanOrEquals('index', index, 0);
+        Check.typeOf.number.lessThanOrEquals('index', index, 2);
+        Check.typeOf.object('result', result);
         
         var x = matrix[index];
         var y = matrix[index + 3];
@@ -5129,12 +5167,11 @@ define('Core/Matrix3',[
      * @exception {DeveloperError} index must be 0, 1, or 2.
      */
     Matrix3.setRow = function(matrix, index, cartesian, result) {
-                Check.typeOf.object(matrix, 'matrix');
-        Check.typeOf.number(index, 'index');
-        Check.numeric.minimum(index, 0);
-        Check.numeric.maximum(index, 2);
-        Check.typeOf.object(cartesian, 'cartesian');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('matrix', matrix);
+        Check.typeOf.number.greaterThanOrEquals('index', index, 0);
+        Check.typeOf.number.lessThanOrEquals('index', index, 2);
+        Check.typeOf.object('cartesian', cartesian);
+        Check.typeOf.object('result', result);
         
         result = Matrix3.clone(matrix, result);
         result[index] = cartesian.x;
@@ -5153,8 +5190,8 @@ define('Core/Matrix3',[
      * @returns {Cartesian3} The modified result parameter.
      */
     Matrix3.getScale = function(matrix, result) {
-                Check.typeOf.object(matrix, 'matrix');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('matrix', matrix);
+        Check.typeOf.object('result', result);
         
         result.x = Cartesian3.magnitude(Cartesian3.fromElements(matrix[0], matrix[1], matrix[2], scratchColumn));
         result.y = Cartesian3.magnitude(Cartesian3.fromElements(matrix[3], matrix[4], matrix[5], scratchColumn));
@@ -5185,9 +5222,9 @@ define('Core/Matrix3',[
      * @returns {Matrix3} The modified result parameter.
      */
     Matrix3.multiply = function(left, right, result) {
-                Check.typeOf.object(left, 'left');
-        Check.typeOf.object(right, 'right');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('left', left);
+        Check.typeOf.object('right', right);
+        Check.typeOf.object('result', result);
         
         var column0Row0 = left[0] * right[0] + left[3] * right[1] + left[6] * right[2];
         var column0Row1 = left[1] * right[0] + left[4] * right[1] + left[7] * right[2];
@@ -5222,9 +5259,9 @@ define('Core/Matrix3',[
      * @returns {Matrix3} The modified result parameter.
      */
     Matrix3.add = function(left, right, result) {
-                Check.typeOf.object(left, 'left');
-        Check.typeOf.object(right, 'right');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('left', left);
+        Check.typeOf.object('right', right);
+        Check.typeOf.object('result', result);
         
         result[0] = left[0] + right[0];
         result[1] = left[1] + right[1];
@@ -5247,9 +5284,9 @@ define('Core/Matrix3',[
      * @returns {Matrix3} The modified result parameter.
      */
     Matrix3.subtract = function(left, right, result) {
-                Check.typeOf.object(left, 'left');
-        Check.typeOf.object(right, 'right');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('left', left);
+        Check.typeOf.object('right', right);
+        Check.typeOf.object('result', result);
         
         result[0] = left[0] - right[0];
         result[1] = left[1] - right[1];
@@ -5272,9 +5309,9 @@ define('Core/Matrix3',[
      * @returns {Cartesian3} The modified result parameter.
      */
     Matrix3.multiplyByVector = function(matrix, cartesian, result) {
-                Check.typeOf.object(matrix, 'matrix');
-        Check.typeOf.object(cartesian, 'cartesian');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('matrix', matrix);
+        Check.typeOf.object('cartesian', cartesian);
+        Check.typeOf.object('result', result);
         
         var vX = cartesian.x;
         var vY = cartesian.y;
@@ -5299,9 +5336,9 @@ define('Core/Matrix3',[
      * @returns {Matrix3} The modified result parameter.
      */
     Matrix3.multiplyByScalar = function(matrix, scalar, result) {
-                Check.typeOf.object(matrix, 'matrix');
-        Check.typeOf.number(scalar, 'scalar');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('matrix', matrix);
+        Check.typeOf.number('scalar', scalar);
+        Check.typeOf.object('result', result);
         
         result[0] = matrix[0] * scalar;
         result[1] = matrix[1] * scalar;
@@ -5332,9 +5369,9 @@ define('Core/Matrix3',[
      * @see Matrix3.multiplyByUniformScale
      */
     Matrix3.multiplyByScale = function(matrix, scale, result) {
-                Check.typeOf.object(matrix, 'matrix');
-        Check.typeOf.object(scale, 'scale');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('matrix', matrix);
+        Check.typeOf.object('scale', scale);
+        Check.typeOf.object('result', result);
         
         result[0] = matrix[0] * scale.x;
         result[1] = matrix[1] * scale.x;
@@ -5356,8 +5393,8 @@ define('Core/Matrix3',[
      * @returns {Matrix3} The modified result parameter.
      */
     Matrix3.negate = function(matrix, result) {
-                Check.typeOf.object(matrix, 'matrix');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('matrix', matrix);
+        Check.typeOf.object('result', result);
         
         result[0] = -matrix[0];
         result[1] = -matrix[1];
@@ -5379,8 +5416,8 @@ define('Core/Matrix3',[
      * @returns {Matrix3} The modified result parameter.
      */
     Matrix3.transpose = function(matrix, result) {
-                Check.typeOf.object(matrix, 'matrix');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('matrix', matrix);
+        Check.typeOf.object('result', result);
         
         var column0Row0 = matrix[0];
         var column0Row1 = matrix[3];
@@ -5520,7 +5557,7 @@ define('Core/Matrix3',[
      * var c = Cesium.Cartesian3.multiplyByScalar(v, lambda, new Cesium.Cartesian3());        // equal to Cesium.Matrix3.multiplyByVector(a, v)
      */
     Matrix3.computeEigenDecomposition = function(matrix, result) {
-                Check.typeOf.object(matrix, 'matrix');
+                Check.typeOf.object('matrix', matrix);
         
         // This routine was created based upon Matrix Computations, 3rd ed., by Golub and Van Loan,
         // section 8.4.3 The Classical Jacobi Algorithm
@@ -5564,8 +5601,8 @@ define('Core/Matrix3',[
      * @returns {Matrix3} The modified result parameter.
      */
     Matrix3.abs = function(matrix, result) {
-                Check.typeOf.object(matrix, 'matrix');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('matrix', matrix);
+        Check.typeOf.object('result', result);
         
         result[0] = Math.abs(matrix[0]);
         result[1] = Math.abs(matrix[1]);
@@ -5587,7 +5624,7 @@ define('Core/Matrix3',[
      * @returns {Number} The value of the determinant of the matrix.
      */
     Matrix3.determinant = function(matrix) {
-                Check.typeOf.object(matrix, 'matrix');
+                Check.typeOf.object('matrix', matrix);
         
         var m11 = matrix[0];
         var m21 = matrix[3];
@@ -5612,8 +5649,8 @@ define('Core/Matrix3',[
      * @exception {DeveloperError} matrix is not invertible.
      */
     Matrix3.inverse = function(matrix, result) {
-                Check.typeOf.object(matrix, 'matrix');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('matrix', matrix);
+        Check.typeOf.object('result', result);
         
         var m11 = matrix[0];
         var m21 = matrix[1];
@@ -5679,7 +5716,7 @@ define('Core/Matrix3',[
      * @returns {Boolean} <code>true</code> if left and right are within the provided epsilon, <code>false</code> otherwise.
      */
     Matrix3.equalsEpsilon = function(left, right, epsilon) {
-                Check.typeOf.number(epsilon, 'epsilon');
+                Check.typeOf.number('epsilon', epsilon);
         
         return (left === right) ||
                 (defined(left) &&
@@ -5957,7 +5994,7 @@ define('Core/Cartesian4',[
      * @returns {Cartesian4} The modified result parameter or a new Cartesian4 instance if one was not provided.
      */
     Cartesian4.fromColor = function(color, result) {
-                Check.typeOf.object(color, 'color');
+                Check.typeOf.object('color', color);
                 if (!defined(result)) {
             return new Cartesian4(color.red, color.green, color.blue, color.alpha);
         }
@@ -6009,8 +6046,8 @@ define('Core/Cartesian4',[
      * @returns {Number[]} The array that was packed into
      */
     Cartesian4.pack = function(value, array, startingIndex) {
-                Check.typeOf.object(value, 'value');
-        Check.defined(array, 'array');
+                Check.typeOf.object('value', value);
+        Check.defined('array', array);
         
         startingIndex = defaultValue(startingIndex, 0);
 
@@ -6031,7 +6068,7 @@ define('Core/Cartesian4',[
      * @returns {Cartesian4}  The modified result parameter or a new Cartesian4 instance if one was not provided.
      */
     Cartesian4.unpack = function(array, startingIndex, result) {
-                Check.defined(array, 'array');
+                Check.defined('array', array);
         
         startingIndex = defaultValue(startingIndex, 0);
 
@@ -6053,7 +6090,7 @@ define('Core/Cartesian4',[
      * @returns {Number[]} The packed array.
      */
     Cartesian4.packArray = function(array, result) {
-                Check.defined(array, 'array');
+                Check.defined('array', array);
         
         var length = array.length;
         if (!defined(result)) {
@@ -6076,7 +6113,7 @@ define('Core/Cartesian4',[
      * @returns {Cartesian4[]} The unpacked array.
      */
     Cartesian4.unpackArray = function(array, result) {
-                Check.defined(array, 'array');
+                Check.defined('array', array);
         
         var length = array.length;
         if (!defined(result)) {
@@ -6119,7 +6156,7 @@ define('Core/Cartesian4',[
      * @returns {Number} The value of the maximum component.
      */
     Cartesian4.maximumComponent = function(cartesian) {
-                Check.typeOf.object(cartesian, 'cartesian');
+                Check.typeOf.object('cartesian', cartesian);
         
         return Math.max(cartesian.x, cartesian.y, cartesian.z, cartesian.w);
     };
@@ -6131,7 +6168,7 @@ define('Core/Cartesian4',[
      * @returns {Number} The value of the minimum component.
      */
     Cartesian4.minimumComponent = function(cartesian) {
-                Check.typeOf.object(cartesian, 'cartesian');
+                Check.typeOf.object('cartesian', cartesian);
         
         return Math.min(cartesian.x, cartesian.y, cartesian.z, cartesian.w);
     };
@@ -6145,9 +6182,9 @@ define('Core/Cartesian4',[
      * @returns {Cartesian4} A cartesian with the minimum components.
      */
     Cartesian4.minimumByComponent = function(first, second, result) {
-                Check.typeOf.object(first, 'first');
-        Check.typeOf.object(second, 'second');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('first', first);
+        Check.typeOf.object('second', second);
+        Check.typeOf.object('result', result);
         
         result.x = Math.min(first.x, second.x);
         result.y = Math.min(first.y, second.y);
@@ -6166,9 +6203,9 @@ define('Core/Cartesian4',[
      * @returns {Cartesian4} A cartesian with the maximum components.
      */
     Cartesian4.maximumByComponent = function(first, second, result) {
-                Check.typeOf.object(first, 'first');
-        Check.typeOf.object(second, 'second');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('first', first);
+        Check.typeOf.object('second', second);
+        Check.typeOf.object('result', result);
         
         result.x = Math.max(first.x, second.x);
         result.y = Math.max(first.y, second.y);
@@ -6185,7 +6222,7 @@ define('Core/Cartesian4',[
      * @returns {Number} The squared magnitude.
      */
     Cartesian4.magnitudeSquared = function(cartesian) {
-                Check.typeOf.object(cartesian, 'cartesian');
+                Check.typeOf.object('cartesian', cartesian);
         
         return cartesian.x * cartesian.x + cartesian.y * cartesian.y + cartesian.z * cartesian.z + cartesian.w * cartesian.w;
     };
@@ -6216,8 +6253,8 @@ define('Core/Cartesian4',[
      *   new Cesium.Cartesian4(2.0, 0.0, 0.0, 0.0));
      */
     Cartesian4.distance = function(left, right) {
-                Check.typeOf.object(left, 'left');
-        Check.typeOf.object(right, 'right');
+                Check.typeOf.object('left', left);
+        Check.typeOf.object('right', right);
         
         Cartesian4.subtract(left, right, distanceScratch);
         return Cartesian4.magnitude(distanceScratch);
@@ -6238,8 +6275,8 @@ define('Core/Cartesian4',[
      *   new Cesium.Cartesian4(3.0, 0.0, 0.0, 0.0));
      */
     Cartesian4.distanceSquared = function(left, right) {
-                Check.typeOf.object(left, 'left');
-        Check.typeOf.object(right, 'right');
+                Check.typeOf.object('left', left);
+        Check.typeOf.object('right', right);
         
         Cartesian4.subtract(left, right, distanceScratch);
         return Cartesian4.magnitudeSquared(distanceScratch);
@@ -6253,8 +6290,8 @@ define('Core/Cartesian4',[
      * @returns {Cartesian4} The modified result parameter.
      */
     Cartesian4.normalize = function(cartesian, result) {
-                Check.typeOf.object(cartesian, 'cartesian');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('cartesian', cartesian);
+        Check.typeOf.object('result', result);
         
         var magnitude = Cartesian4.magnitude(cartesian);
 
@@ -6278,8 +6315,8 @@ define('Core/Cartesian4',[
      * @returns {Number} The dot product.
      */
     Cartesian4.dot = function(left, right) {
-                Check.typeOf.object(left, 'left');
-        Check.typeOf.object(right, 'right');
+                Check.typeOf.object('left', left);
+        Check.typeOf.object('right', right);
         
         return left.x * right.x + left.y * right.y + left.z * right.z + left.w * right.w;
     };
@@ -6293,9 +6330,9 @@ define('Core/Cartesian4',[
      * @returns {Cartesian4} The modified result parameter.
      */
     Cartesian4.multiplyComponents = function(left, right, result) {
-                Check.typeOf.object(left, 'left');
-        Check.typeOf.object(right, 'right');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('left', left);
+        Check.typeOf.object('right', right);
+        Check.typeOf.object('result', result);
         
         result.x = left.x * right.x;
         result.y = left.y * right.y;
@@ -6313,9 +6350,9 @@ define('Core/Cartesian4',[
      * @returns {Cartesian4} The modified result parameter.
      */
     Cartesian4.divideComponents = function(left, right, result) {
-                Check.typeOf.object(left, 'left');
-        Check.typeOf.object(right, 'right');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('left', left);
+        Check.typeOf.object('right', right);
+        Check.typeOf.object('result', result);
         
         result.x = left.x / right.x;
         result.y = left.y / right.y;
@@ -6333,9 +6370,9 @@ define('Core/Cartesian4',[
      * @returns {Cartesian4} The modified result parameter.
      */
     Cartesian4.add = function(left, right, result) {
-                Check.typeOf.object(left, 'left');
-        Check.typeOf.object(right, 'right');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('left', left);
+        Check.typeOf.object('right', right);
+        Check.typeOf.object('result', result);
         
         result.x = left.x + right.x;
         result.y = left.y + right.y;
@@ -6353,9 +6390,9 @@ define('Core/Cartesian4',[
      * @returns {Cartesian4} The modified result parameter.
      */
     Cartesian4.subtract = function(left, right, result) {
-                Check.typeOf.object(left, 'left');
-        Check.typeOf.object(right, 'right');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('left', left);
+        Check.typeOf.object('right', right);
+        Check.typeOf.object('result', result);
         
         result.x = left.x - right.x;
         result.y = left.y - right.y;
@@ -6373,9 +6410,9 @@ define('Core/Cartesian4',[
      * @returns {Cartesian4} The modified result parameter.
      */
     Cartesian4.multiplyByScalar = function(cartesian, scalar, result) {
-                Check.typeOf.object(cartesian, 'cartesian');
-        Check.typeOf.number(scalar, 'scalar');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('cartesian', cartesian);
+        Check.typeOf.number('scalar', scalar);
+        Check.typeOf.object('result', result);
         
         result.x = cartesian.x * scalar;
         result.y = cartesian.y * scalar;
@@ -6393,9 +6430,9 @@ define('Core/Cartesian4',[
      * @returns {Cartesian4} The modified result parameter.
      */
     Cartesian4.divideByScalar = function(cartesian, scalar, result) {
-                Check.typeOf.object(cartesian, 'cartesian');
-        Check.typeOf.number(scalar, 'scalar');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('cartesian', cartesian);
+        Check.typeOf.number('scalar', scalar);
+        Check.typeOf.object('result', result);
         
         result.x = cartesian.x / scalar;
         result.y = cartesian.y / scalar;
@@ -6412,8 +6449,8 @@ define('Core/Cartesian4',[
      * @returns {Cartesian4} The modified result parameter.
      */
     Cartesian4.negate = function(cartesian, result) {
-                Check.typeOf.object(cartesian, 'cartesian');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('cartesian', cartesian);
+        Check.typeOf.object('result', result);
         
         result.x = -cartesian.x;
         result.y = -cartesian.y;
@@ -6430,8 +6467,8 @@ define('Core/Cartesian4',[
      * @returns {Cartesian4} The modified result parameter.
      */
     Cartesian4.abs = function(cartesian, result) {
-                Check.typeOf.object(cartesian, 'cartesian');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('cartesian', cartesian);
+        Check.typeOf.object('result', result);
         
         result.x = Math.abs(cartesian.x);
         result.y = Math.abs(cartesian.y);
@@ -6451,10 +6488,10 @@ define('Core/Cartesian4',[
      * @returns {Cartesian4} The modified result parameter.
      */
     Cartesian4.lerp = function(start, end, t, result) {
-                Check.typeOf.object(start, 'start');
-        Check.typeOf.object(end, 'end');
-        Check.typeOf.number(t, 't');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('start', start);
+        Check.typeOf.object('end', end);
+        Check.typeOf.number('t', t);
+        Check.typeOf.object('result', result);
         
         Cartesian4.multiplyByScalar(end, t, lerpScratch);
         result = Cartesian4.multiplyByScalar(start, 1.0 - t, result);
@@ -6470,8 +6507,8 @@ define('Core/Cartesian4',[
      * @returns {Cartesian4} The most orthogonal axis.
      */
     Cartesian4.mostOrthogonalAxis = function(cartesian, result) {
-                Check.typeOf.object(cartesian, 'cartesian');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('cartesian', cartesian);
+        Check.typeOf.object('result', result);
         
         var f = Cartesian4.normalize(cartesian, mostOrthogonalAxisScratch);
         Cartesian4.abs(f, f);
@@ -6720,7 +6757,6 @@ define('Core/Matrix4',[
         './defaultValue',
         './defined',
         './defineProperties',
-        './DeveloperError',
         './freezeObject',
         './Math',
         './Matrix3',
@@ -6732,7 +6768,6 @@ define('Core/Matrix4',[
         defaultValue,
         defined,
         defineProperties,
-        DeveloperError,
         freezeObject,
         CesiumMath,
         Matrix3,
@@ -6819,8 +6854,8 @@ define('Core/Matrix4',[
      * @returns {Number[]} The array that was packed into
      */
     Matrix4.pack = function(value, array, startingIndex) {
-                Check.typeOf.object(value, 'value');
-        Check.defined(array, 'array');
+                Check.typeOf.object('value', value);
+        Check.defined('array', array);
         
         startingIndex = defaultValue(startingIndex, 0);
 
@@ -6853,7 +6888,7 @@ define('Core/Matrix4',[
      * @returns {Matrix4} The modified result parameter or a new Matrix4 instance if one was not provided.
      */
     Matrix4.unpack = function(array, startingIndex, result) {
-                Check.defined(array, 'array');
+                Check.defined('array', array);
         
         startingIndex = defaultValue(startingIndex, 0);
 
@@ -6949,7 +6984,7 @@ define('Core/Matrix4',[
      * @returns {Matrix4} The modified result parameter, or a new Matrix4 instance if one was not provided.
      */
     Matrix4.fromColumnMajorArray = function(values, result) {
-                Check.defined(values, 'values');
+                Check.defined('values', values);
         
         return Matrix4.clone(values, result);
     };
@@ -6963,7 +6998,7 @@ define('Core/Matrix4',[
      * @returns {Matrix4} The modified result parameter, or a new Matrix4 instance if one was not provided.
      */
     Matrix4.fromRowMajorArray = function(values, result) {
-                Check.defined(values, 'values');
+                Check.defined('values', values);
         
         if (!defined(result)) {
             return new Matrix4(values[0], values[1], values[2], values[3],
@@ -7000,7 +7035,7 @@ define('Core/Matrix4',[
      * @returns {Matrix4} The modified result parameter, or a new Matrix4 instance if one was not provided.
      */
     Matrix4.fromRotationTranslation = function(rotation, translation, result) {
-                Check.typeOf.object(rotation, 'rotation');
+                Check.typeOf.object('rotation', rotation);
         
         translation = defaultValue(translation, Cartesian3.ZERO);
 
@@ -7048,9 +7083,9 @@ define('Core/Matrix4',[
      *   result);
      */
     Matrix4.fromTranslationQuaternionRotationScale = function(translation, rotation, scale, result) {
-                Check.typeOf.object(translation, 'translation');
-        Check.typeOf.object(rotation, 'rotation');
-        Check.typeOf.object(scale, 'scale');
+                Check.typeOf.object('translation', translation);
+        Check.typeOf.object('rotation', rotation);
+        Check.typeOf.object('scale', scale);
         
         if (!defined(result)) {
             result = new Matrix4();
@@ -7111,7 +7146,7 @@ define('Core/Matrix4',[
      * @returns {Matrix4} The modified result parameter, or a new Matrix4 instance if one was not provided.
      */
     Matrix4.fromTranslationRotationScale = function(translationRotationScale, result) {
-                Check.typeOf.object(translationRotationScale, 'translationRotationScale');
+                Check.typeOf.object('translationRotationScale', translationRotationScale);
         
         return Matrix4.fromTranslationQuaternionRotationScale(translationRotationScale.translation, translationRotationScale.rotation, translationRotationScale.scale, result);
     };
@@ -7126,7 +7161,7 @@ define('Core/Matrix4',[
      * @see Matrix4.multiplyByTranslation
      */
     Matrix4.fromTranslation = function(translation, result) {
-                Check.typeOf.object(translation, 'translation');
+                Check.typeOf.object('translation', translation);
         
         return Matrix4.fromRotationTranslation(Matrix3.IDENTITY, translation, result);
     };
@@ -7147,7 +7182,7 @@ define('Core/Matrix4',[
      * var m = Cesium.Matrix4.fromScale(new Cesium.Cartesian3(7.0, 8.0, 9.0));
      */
     Matrix4.fromScale = function(scale, result) {
-                Check.typeOf.object(scale, 'scale');
+                Check.typeOf.object('scale', scale);
         
         if (!defined(result)) {
             return new Matrix4(
@@ -7192,7 +7227,7 @@ define('Core/Matrix4',[
      * var m = Cesium.Matrix4.fromUniformScale(2.0);
      */
     Matrix4.fromUniformScale = function(scale, result) {
-                Check.typeOf.number(scale, 'scale');
+                Check.typeOf.number('scale', scale);
         
         if (!defined(result)) {
             return new Matrix4(scale, 0.0,   0.0,   0.0,
@@ -7232,15 +7267,15 @@ define('Core/Matrix4',[
      * @returns {Matrix4} The modified result parameter, or a new Matrix4 instance if one was not provided.
      */
     Matrix4.fromCamera = function(camera, result) {
-                Check.typeOf.object(camera, 'camera');
+                Check.typeOf.object('camera', camera);
         
         var position = camera.position;
         var direction = camera.direction;
         var up = camera.up;
 
-                Check.typeOf.object(position, 'camera.position');
-        Check.typeOf.object(direction, 'camera.direction');
-        Check.typeOf.object(up, 'camera.up');
+                Check.typeOf.object('camera.position', position);
+        Check.typeOf.object('camera.direction', direction);
+        Check.typeOf.object('camera.up', up);
         
         Cartesian3.normalize(direction, fromCameraF);
         Cartesian3.normalize(Cartesian3.cross(fromCameraF, up, fromCameraR), fromCameraR);
@@ -7319,19 +7354,11 @@ define('Core/Matrix4',[
       * @exception {DeveloperError} far must be greater than zero.
       */
     Matrix4.computePerspectiveFieldOfView = function(fovY, aspectRatio, near, far, result) {
-                if (fovY <= 0.0 || fovY > Math.PI) {
-            throw new DeveloperError('fovY must be in (0, PI].');
-        }
-        if (aspectRatio <= 0.0) {
-            throw new DeveloperError('aspectRatio must be greater than zero.');
-        }
-        if (near <= 0.0) {
-            throw new DeveloperError('near must be greater than zero.');
-        }
-        if (far <= 0.0) {
-            throw new DeveloperError('far must be greater than zero.');
-        }
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.number.greaterThan('fovY', fovY, 0.0);
+        Check.typeOf.number.lessThan('fovY', fovY, Math.PI);
+        Check.typeOf.number.greaterThan('near', near, 0.0);
+        Check.typeOf.number.greaterThan('far', far, 0.0);
+        Check.typeOf.object('result', result);
         
         var bottom = Math.tan(fovY * 0.5);
 
@@ -7372,13 +7399,13 @@ define('Core/Matrix4',[
     * @returns {Matrix4} The modified result parameter.
     */
     Matrix4.computeOrthographicOffCenter = function(left, right, bottom, top, near, far, result) {
-                Check.typeOf.number(left, 'left');
-        Check.typeOf.number(right, 'right');
-        Check.typeOf.number(bottom, 'bottom');
-        Check.typeOf.number(top, 'top');
-        Check.typeOf.number(near, 'near');
-        Check.typeOf.number(far, 'far');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.number('left', left);
+        Check.typeOf.number('right', right);
+        Check.typeOf.number('bottom', bottom);
+        Check.typeOf.number('top', top);
+        Check.typeOf.number('near', near);
+        Check.typeOf.number('far', far);
+        Check.typeOf.object('result', result);
         
         var a = 1.0 / (right - left);
         var b = 1.0 / (top - bottom);
@@ -7423,13 +7450,13 @@ define('Core/Matrix4',[
      * @returns {Matrix4} The modified result parameter.
      */
     Matrix4.computePerspectiveOffCenter = function(left, right, bottom, top, near, far, result) {
-                Check.typeOf.number(left, 'left');
-        Check.typeOf.number(right, 'right');
-        Check.typeOf.number(bottom, 'bottom');
-        Check.typeOf.number(top, 'top');
-        Check.typeOf.number(near, 'near');
-        Check.typeOf.number(far, 'far');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.number('left', left);
+        Check.typeOf.number('right', right);
+        Check.typeOf.number('bottom', bottom);
+        Check.typeOf.number('top', top);
+        Check.typeOf.number('near', near);
+        Check.typeOf.number('far', far);
+        Check.typeOf.object('result', result);
         
         var column0Row0 = 2.0 * near / (right - left);
         var column1Row1 = 2.0 * near / (top - bottom);
@@ -7470,12 +7497,12 @@ define('Core/Matrix4',[
      * @returns {Matrix4} The modified result parameter.
      */
     Matrix4.computeInfinitePerspectiveOffCenter = function(left, right, bottom, top, near, result) {
-                Check.typeOf.number(left, 'left');
-        Check.typeOf.number(right, 'right');
-        Check.typeOf.number(bottom, 'bottom');
-        Check.typeOf.number(top, 'top');
-        Check.typeOf.number(near, 'near');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.number('left', left);
+        Check.typeOf.number('right', right);
+        Check.typeOf.number('bottom', bottom);
+        Check.typeOf.number('top', top);
+        Check.typeOf.number('near', near);
+        Check.typeOf.object('result', result);
         
         var column0Row0 = 2.0 * near / (right - left);
         var column1Row1 = 2.0 * near / (top - bottom);
@@ -7523,7 +7550,7 @@ define('Core/Matrix4',[
      * }, 0.0, 1.0, new Cesium.Matrix4());
      */
     Matrix4.computeViewportTransformation = function(viewport, nearDepthRange, farDepthRange, result) {
-                Check.typeOf.object(result, 'result');
+                Check.typeOf.object('result', result);
         
         viewport = defaultValue(viewport, defaultValue.EMPTY_OBJECT);
         var x = defaultValue(viewport.x, 0.0);
@@ -7575,11 +7602,11 @@ define('Core/Matrix4',[
      * @returns {Matrix4} The modified result parameter.
      */
     Matrix4.computeView = function(position, direction, up, right, result) {
-                Check.typeOf.object(position, 'position');
-        Check.typeOf.object(direction, 'direction');
-        Check.typeOf.object(up, 'up');
-        Check.typeOf.object(right, 'right');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('position', position);
+        Check.typeOf.object('direction', direction);
+        Check.typeOf.object('up', up);
+        Check.typeOf.object('right', right);
+        Check.typeOf.object('result', result);
         
         result[0] = right.x;
         result[1] = up.x;
@@ -7620,7 +7647,7 @@ define('Core/Matrix4',[
      * //creates a = [10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0, 21.0, 22.0, 23.0, 24.0, 25.0]
      */
     Matrix4.toArray = function(matrix, result) {
-                Check.typeOf.object(matrix, 'matrix');
+                Check.typeOf.object('matrix', matrix);
         
         if (!defined(result)) {
             return [matrix[0], matrix[1], matrix[2], matrix[3],
@@ -7664,13 +7691,11 @@ define('Core/Matrix4',[
      * myMatrix[column1Row0Index] = 10.0;
      */
     Matrix4.getElementIndex = function(column, row) {
-                Check.typeOf.number(row, 'row');
-        Check.numeric.minimum(row, 0);
-        Check.numeric.maximum(row, 3);
+                Check.typeOf.number.greaterThanOrEquals('row', row, 0);
+        Check.typeOf.number.lessThanOrEquals('row', row, 3);
 
-        Check.typeOf.number(column, 'column');
-        Check.numeric.minimum(column, 0);
-        Check.numeric.maximum(column, 3);
+        Check.typeOf.number.greaterThanOrEquals('column', column, 0);
+        Check.typeOf.number.lessThanOrEquals('column', column, 3);
         
         return column * 4 + row;
     };
@@ -7703,13 +7728,12 @@ define('Core/Matrix4',[
      * // a.x = 12.0; a.y = 16.0; a.z = 20.0; a.w = 24.0;
      */
     Matrix4.getColumn = function(matrix, index, result) {
-                Check.typeOf.object(matrix, 'matrix');
+                Check.typeOf.object('matrix', matrix);
 
-        Check.typeOf.number(index, 'index');
-        Check.numeric.minimum(index, 0);
-        Check.numeric.maximum(index, 3);
+        Check.typeOf.number.greaterThanOrEquals('index', index, 0);
+        Check.typeOf.number.lessThanOrEquals('index', index, 3);
 
-        Check.typeOf.object(result, 'result');
+        Check.typeOf.object('result', result);
         
         var startIndex = index * 4;
         var x = matrix[startIndex];
@@ -7751,14 +7775,13 @@ define('Core/Matrix4',[
      * //     [22.0, 23.0, 96.0, 25.0]
      */
     Matrix4.setColumn = function(matrix, index, cartesian, result) {
-                Check.typeOf.object(matrix, 'matrix');
+                Check.typeOf.object('matrix', matrix);
 
-        Check.typeOf.number(index, 'index');
-        Check.numeric.minimum(index, 0);
-        Check.numeric.maximum(index, 3);
+        Check.typeOf.number.greaterThanOrEquals('index', index, 0);
+        Check.typeOf.number.lessThanOrEquals('index', index, 3);
 
-        Check.typeOf.object(cartesian, 'cartesian');
-        Check.typeOf.object(result, 'result');
+        Check.typeOf.object('cartesian', cartesian);
+        Check.typeOf.object('result', result);
         
         result = Matrix4.clone(matrix, result);
         var startIndex = index * 4;
@@ -7779,9 +7802,9 @@ define('Core/Matrix4',[
      * @returns {Matrix4} The modified result parameter.
      */
     Matrix4.setTranslation = function(matrix, translation, result) {
-                Check.typeOf.object(matrix, 'matrix');
-        Check.typeOf.object(translation, 'translation');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('matrix', matrix);
+        Check.typeOf.object('translation', translation);
+        Check.typeOf.object('result', result);
         
         result[0] = matrix[0];
         result[1] = matrix[1];
@@ -7834,13 +7857,12 @@ define('Core/Matrix4',[
      * // a.x = 18.0; a.y = 19.0; a.z = 20.0; a.w = 21.0;
      */
     Matrix4.getRow = function(matrix, index, result) {
-                Check.typeOf.object(matrix, 'matrix');
+                Check.typeOf.object('matrix', matrix);
 
-        Check.typeOf.number(index, 'index');
-        Check.numeric.minimum(index, 0);
-        Check.numeric.maximum(index, 3);
+        Check.typeOf.number.greaterThanOrEquals('index', index, 0);
+        Check.typeOf.number.lessThanOrEquals('index', index, 3);
 
-        Check.typeOf.object(result, 'result');
+        Check.typeOf.object('result', result);
         
         var x = matrix[index];
         var y = matrix[index + 4];
@@ -7881,14 +7903,13 @@ define('Core/Matrix4',[
      * //     [22.0, 23.0, 24.0, 25.0]
      */
     Matrix4.setRow = function(matrix, index, cartesian, result) {
-                Check.typeOf.object(matrix, 'matrix');
+                Check.typeOf.object('matrix', matrix);
 
-        Check.typeOf.number(index, 'index');
-        Check.numeric.minimum(index, 0);
-        Check.numeric.maximum(index, 3);
+        Check.typeOf.number.greaterThanOrEquals('index', index, 0);
+        Check.typeOf.number.lessThanOrEquals('index', index, 3);
 
-        Check.typeOf.object(cartesian, 'cartesian');
-        Check.typeOf.object(result, 'result');
+        Check.typeOf.object('cartesian', cartesian);
+        Check.typeOf.object('result', result);
         
         result = Matrix4.clone(matrix, result);
         result[index] = cartesian.x;
@@ -7908,8 +7929,8 @@ define('Core/Matrix4',[
      * @returns {Cartesian3} The modified result parameter
      */
     Matrix4.getScale = function(matrix, result) {
-                Check.typeOf.object(matrix, 'matrix');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('matrix', matrix);
+        Check.typeOf.object('result', result);
         
         result.x = Cartesian3.magnitude(Cartesian3.fromElements(matrix[0], matrix[1], matrix[2], scratchColumn));
         result.y = Cartesian3.magnitude(Cartesian3.fromElements(matrix[4], matrix[5], matrix[6], scratchColumn));
@@ -7941,9 +7962,9 @@ define('Core/Matrix4',[
      * @returns {Matrix4} The modified result parameter.
      */
     Matrix4.multiply = function(left, right, result) {
-                Check.typeOf.object(left, 'left');
-        Check.typeOf.object(right, 'right');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('left', left);
+        Check.typeOf.object('right', right);
+        Check.typeOf.object('result', result);
         
         var left0 = left[0];
         var left1 = left[1];
@@ -8027,9 +8048,9 @@ define('Core/Matrix4',[
      * @returns {Matrix4} The modified result parameter.
      */
     Matrix4.add = function(left, right, result) {
-                Check.typeOf.object(left, 'left');
-        Check.typeOf.object(right, 'right');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('left', left);
+        Check.typeOf.object('right', right);
+        Check.typeOf.object('result', result);
         
         result[0] = left[0] + right[0];
         result[1] = left[1] + right[1];
@@ -8059,9 +8080,9 @@ define('Core/Matrix4',[
      * @returns {Matrix4} The modified result parameter.
      */
     Matrix4.subtract = function(left, right, result) {
-                Check.typeOf.object(left, 'left');
-        Check.typeOf.object(right, 'right');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('left', left);
+        Check.typeOf.object('right', right);
+        Check.typeOf.object('result', result);
         
         result[0] = left[0] - right[0];
         result[1] = left[1] - right[1];
@@ -8102,9 +8123,9 @@ define('Core/Matrix4',[
      * var m3 = Cesium.Matrix4.multiplyTransformation(m1, m2, new Cesium.Matrix4());
      */
     Matrix4.multiplyTransformation = function(left, right, result) {
-                Check.typeOf.object(left, 'left');
-        Check.typeOf.object(right, 'right');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('left', left);
+        Check.typeOf.object('right', right);
+        Check.typeOf.object('result', result);
         
         var left0 = left[0];
         var left1 = left[1];
@@ -8182,9 +8203,9 @@ define('Core/Matrix4',[
      * Cesium.Matrix4.multiplyByMatrix3(m, rotation, m);
      */
     Matrix4.multiplyByMatrix3 = function(matrix, rotation, result) {
-                Check.typeOf.object(matrix, 'matrix');
-        Check.typeOf.object(rotation, 'rotation');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('matrix', matrix);
+        Check.typeOf.object('rotation', rotation);
+        Check.typeOf.object('result', result);
         
         var left0 = matrix[0];
         var left1 = matrix[1];
@@ -8252,9 +8273,9 @@ define('Core/Matrix4',[
      * Cesium.Matrix4.multiplyByTranslation(m, position, m);
      */
     Matrix4.multiplyByTranslation = function(matrix, translation, result) {
-                Check.typeOf.object(matrix, 'matrix');
-        Check.typeOf.object(translation, 'translation');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('matrix', matrix);
+        Check.typeOf.object('translation', translation);
+        Check.typeOf.object('result', result);
         
         var x = translation.x;
         var y = translation.y;
@@ -8306,9 +8327,9 @@ define('Core/Matrix4',[
      * @see Matrix4.multiplyByScale
      */
     Matrix4.multiplyByUniformScale = function(matrix, scale, result) {
-                Check.typeOf.object(matrix, 'matrix');
-        Check.typeOf.number(scale, 'scale');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('matrix', matrix);
+        Check.typeOf.number('scale', scale);
+        Check.typeOf.object('result', result);
         
         uniformScaleScratch.x = scale;
         uniformScaleScratch.y = scale;
@@ -8337,9 +8358,9 @@ define('Core/Matrix4',[
      * @see Matrix4.multiplyByUniformScale
      */
     Matrix4.multiplyByScale = function(matrix, scale, result) {
-                Check.typeOf.object(matrix, 'matrix');
-        Check.typeOf.object(scale, 'scale');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('matrix', matrix);
+        Check.typeOf.object('scale', scale);
+        Check.typeOf.object('result', result);
         
         var scaleX = scale.x;
         var scaleY = scale.y;
@@ -8378,9 +8399,9 @@ define('Core/Matrix4',[
      * @returns {Cartesian4} The modified result parameter.
      */
     Matrix4.multiplyByVector = function(matrix, cartesian, result) {
-                Check.typeOf.object(matrix, 'matrix');
-        Check.typeOf.object(cartesian, 'cartesian');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('matrix', matrix);
+        Check.typeOf.object('cartesian', cartesian);
+        Check.typeOf.object('result', result);
         
         var vX = cartesian.x;
         var vY = cartesian.y;
@@ -8416,9 +8437,9 @@ define('Core/Matrix4',[
      * //   Cesium.Matrix4.multiplyByVector(matrix, new Cesium.Cartesian4(p.x, p.y, p.z, 0.0), result);
      */
     Matrix4.multiplyByPointAsVector = function(matrix, cartesian, result) {
-                Check.typeOf.object(matrix, 'matrix');
-        Check.typeOf.object(cartesian, 'cartesian');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('matrix', matrix);
+        Check.typeOf.object('cartesian', cartesian);
+        Check.typeOf.object('result', result);
         
         var vX = cartesian.x;
         var vY = cartesian.y;
@@ -8448,9 +8469,9 @@ define('Core/Matrix4',[
      * var result = Cesium.Matrix4.multiplyByPoint(matrix, p, new Cesium.Cartesian3());
      */
     Matrix4.multiplyByPoint = function(matrix, cartesian, result) {
-                Check.typeOf.object(matrix, 'matrix');
-        Check.typeOf.object(cartesian, 'cartesian');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('matrix', matrix);
+        Check.typeOf.object('cartesian', cartesian);
+        Check.typeOf.object('result', result);
         
         var vX = cartesian.x;
         var vY = cartesian.y;
@@ -8490,9 +8511,9 @@ define('Core/Matrix4',[
      * //     [-44.0, -46.0, -48.0, -50.0]
      */
     Matrix4.multiplyByScalar = function(matrix, scalar, result) {
-                Check.typeOf.object(matrix, 'matrix');
-        Check.typeOf.number(scalar, 'scalar');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('matrix', matrix);
+        Check.typeOf.number('scalar', scalar);
+        Check.typeOf.object('result', result);
         
         result[0] = matrix[0] * scalar;
         result[1] = matrix[1] * scalar;
@@ -8536,8 +8557,8 @@ define('Core/Matrix4',[
      * //     [-22.0, -23.0, -24.0, -25.0]
      */
     Matrix4.negate = function(matrix, result) {
-                Check.typeOf.object(matrix, 'matrix');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('matrix', matrix);
+        Check.typeOf.object('result', result);
         
         result[0] = -matrix[0];
         result[1] = -matrix[1];
@@ -8581,8 +8602,8 @@ define('Core/Matrix4',[
      * //     [13.0, 17.0, 21.0, 25.0]
      */
     Matrix4.transpose = function(matrix, result) {
-                Check.typeOf.object(matrix, 'matrix');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('matrix', matrix);
+        Check.typeOf.object('result', result);
         
         var matrix1 = matrix[1];
         var matrix2 = matrix[2];
@@ -8618,8 +8639,8 @@ define('Core/Matrix4',[
      * @returns {Matrix4} The modified result parameter.
      */
     Matrix4.abs = function(matrix, result) {
-                Check.typeOf.object(matrix, 'matrix');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('matrix', matrix);
+        Check.typeOf.object('result', result);
         
         result[0] = Math.abs(matrix[0]);
         result[1] = Math.abs(matrix[1]);
@@ -8733,7 +8754,7 @@ define('Core/Matrix4',[
      * //Prints "Difference between both the matrices is not less than 0.1" on the console
      */
     Matrix4.equalsEpsilon = function(left, right, epsilon) {
-                Check.typeOf.number(epsilon, 'epsilon');
+                Check.typeOf.number('epsilon', epsilon);
         
         return (left === right) ||
                 (defined(left) &&
@@ -8764,8 +8785,8 @@ define('Core/Matrix4',[
      * @returns {Cartesian3} The modified result parameter.
      */
     Matrix4.getTranslation = function(matrix, result) {
-                Check.typeOf.object(matrix, 'matrix');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('matrix', matrix);
+        Check.typeOf.object('result', result);
         
         result.x = matrix[12];
         result.y = matrix[13];
@@ -8796,8 +8817,8 @@ define('Core/Matrix4',[
      * //     [12.0, 16.0, 20.0]
      */
     Matrix4.getRotation = function(matrix, result) {
-                Check.typeOf.object(matrix, 'matrix');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('matrix', matrix);
+        Check.typeOf.object('result', result);
         
         result[0] = matrix[0];
         result[1] = matrix[1];
@@ -8829,8 +8850,8 @@ define('Core/Matrix4',[
       * @exception {RuntimeError} matrix is not invertible because its determinate is zero.
       */
     Matrix4.inverse = function(matrix, result) {
-                Check.typeOf.object(matrix, 'matrix');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('matrix', matrix);
+        Check.typeOf.object('result', result);
         
         // Special case for a zero scale matrix that can occur, for example,
         // when a model's node has a [0, 0, 0] scale.
@@ -8968,8 +8989,8 @@ define('Core/Matrix4',[
      * @returns {Matrix4} The modified result parameter.
      */
     Matrix4.inverseTransformation = function(matrix, result) {
-                Check.typeOf.object(matrix, 'matrix');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('matrix', matrix);
+        Check.typeOf.object('result', result);
         
         //This function is an optimized version of the below 4 lines.
         //var rT = Matrix3.transpose(Matrix4.getRotation(matrix));
@@ -9599,7 +9620,7 @@ define('Core/BoundingSphere',[
 
         stride = defaultValue(stride, 3);
 
-                Check.numeric.minimum(stride, 3);
+                Check.typeOf.number.greaterThanOrEquals('stride', stride, 3);
         
         var currentPos = fromPointsCurrentPos;
         currentPos.x = positions[0] + center.x;
@@ -9903,8 +9924,8 @@ define('Core/BoundingSphere',[
      * var sphere = Cesium.BoundingSphere.fromCornerPoints(new Cesium.Cartesian3(-0.5, -0.5, -0.5), new Cesium.Cartesian3(0.5, 0.5, 0.5));
      */
     BoundingSphere.fromCornerPoints = function(corner, oppositeCorner, result) {
-                Check.typeOf.object(corner, 'corner');
-        Check.typeOf.object(oppositeCorner, 'oppositeCorner');
+                Check.typeOf.object('corner', corner);
+        Check.typeOf.object('oppositeCorner', oppositeCorner);
         
         if (!defined(result)) {
             result = new BoundingSphere();
@@ -9928,7 +9949,7 @@ define('Core/BoundingSphere',[
      * var boundingSphere = Cesium.BoundingSphere.fromEllipsoid(ellipsoid);
      */
     BoundingSphere.fromEllipsoid = function(ellipsoid, result) {
-                Check.typeOf.object(ellipsoid, 'ellipsoid');
+                Check.typeOf.object('ellipsoid', ellipsoid);
         
         if (!defined(result)) {
             result = new BoundingSphere();
@@ -10054,8 +10075,8 @@ define('Core/BoundingSphere',[
      * @returns {Number[]} The array that was packed into
      */
     BoundingSphere.pack = function(value, array, startingIndex) {
-                Check.typeOf.object(value, 'value');
-        Check.defined(array, 'array');
+                Check.typeOf.object('value', value);
+        Check.defined('array', array);
         
         startingIndex = defaultValue(startingIndex, 0);
 
@@ -10077,7 +10098,7 @@ define('Core/BoundingSphere',[
      * @returns {BoundingSphere} The modified result parameter or a new BoundingSphere instance if one was not provided.
      */
     BoundingSphere.unpack = function(array, startingIndex, result) {
-                Check.defined(array, 'array');
+                Check.defined('array', array);
         
         startingIndex = defaultValue(startingIndex, 0);
 
@@ -10104,8 +10125,8 @@ define('Core/BoundingSphere',[
      * @returns {BoundingSphere} The modified result parameter or a new BoundingSphere instance if none was provided.
      */
     BoundingSphere.union = function(left, right, result) {
-                Check.typeOf.object(left, 'left');
-        Check.typeOf.object(right, 'right');
+                Check.typeOf.object('left', left);
+        Check.typeOf.object('right', right);
         
         if (!defined(result)) {
             result = new BoundingSphere();
@@ -10154,8 +10175,8 @@ define('Core/BoundingSphere',[
      * @returns {BoundingSphere} The modified result parameter or a new BoundingSphere instance if none was provided.
      */
     BoundingSphere.expand = function(sphere, point, result) {
-                Check.typeOf.object(sphere, 'sphere');
-        Check.typeOf.object(point, 'point');
+                Check.typeOf.object('sphere', sphere);
+        Check.typeOf.object('point', point);
         
         result = BoundingSphere.clone(sphere, result);
 
@@ -10178,8 +10199,8 @@ define('Core/BoundingSphere',[
      *                      intersects the plane.
      */
     BoundingSphere.intersectPlane = function(sphere, plane) {
-                Check.typeOf.object(sphere, 'sphere');
-        Check.typeOf.object(plane, 'plane');
+                Check.typeOf.object('sphere', sphere);
+        Check.typeOf.object('plane', plane);
         
         var center = sphere.center;
         var radius = sphere.radius;
@@ -10205,8 +10226,8 @@ define('Core/BoundingSphere',[
      * @returns {BoundingSphere} The modified result parameter or a new BoundingSphere instance if none was provided.
      */
     BoundingSphere.transform = function(sphere, transform, result) {
-                Check.typeOf.object(sphere, 'sphere');
-        Check.typeOf.object(transform, 'transform');
+                Check.typeOf.object('sphere', sphere);
+        Check.typeOf.object('transform', transform);
         
         if (!defined(result)) {
             result = new BoundingSphere();
@@ -10234,8 +10255,8 @@ define('Core/BoundingSphere',[
      * });
      */
     BoundingSphere.distanceSquaredTo = function(sphere, cartesian) {
-                Check.typeOf.object(sphere, 'sphere');
-        Check.typeOf.object(cartesian, 'cartesian');
+                Check.typeOf.object('sphere', sphere);
+        Check.typeOf.object('cartesian', cartesian);
         
         var diff = Cartesian3.subtract(sphere.center, cartesian, distanceSquaredToScratch);
         return Cartesian3.magnitudeSquared(diff) - sphere.radius * sphere.radius;
@@ -10257,8 +10278,8 @@ define('Core/BoundingSphere',[
      * var newBoundingSphere = Cesium.BoundingSphere.transformWithoutScale(boundingSphere, modelMatrix);
      */
     BoundingSphere.transformWithoutScale = function(sphere, transform, result) {
-                Check.typeOf.object(sphere, 'sphere');
-        Check.typeOf.object(transform, 'transform');
+                Check.typeOf.object('sphere', sphere);
+        Check.typeOf.object('transform', transform);
         
         if (!defined(result)) {
             result = new BoundingSphere();
@@ -10285,9 +10306,9 @@ define('Core/BoundingSphere',[
      * @returns {Interval} The nearest and farthest distances on the bounding sphere from position in direction.
      */
     BoundingSphere.computePlaneDistances = function(sphere, position, direction, result) {
-                Check.typeOf.object(sphere, 'sphere');
-        Check.typeOf.object(position, 'position');
-        Check.typeOf.object(direction, 'direction');
+                Check.typeOf.object('sphere', sphere);
+        Check.typeOf.object('position', position);
+        Check.typeOf.object('direction', direction);
         
         if (!defined(result)) {
             result = new Interval();
@@ -10322,7 +10343,7 @@ define('Core/BoundingSphere',[
      * @returns {BoundingSphere} The modified result parameter or a new BoundingSphere instance if none was provided.
      */
     BoundingSphere.projectTo2D = function(sphere, projection, result) {
-                Check.typeOf.object(sphere, 'sphere');
+                Check.typeOf.object('sphere', sphere);
         
         projection = defaultValue(projection, projectTo2DProjection);
 
@@ -10417,8 +10438,8 @@ define('Core/BoundingSphere',[
      * @returns {Boolean} <code>true</code> if the sphere is not visible; otherwise <code>false</code>.
      */
     BoundingSphere.isOccluded = function(sphere, occluder) {
-                Check.typeOf.object(sphere, 'sphere');
-        Check.typeOf.object(occluder, 'occluder');
+                Check.typeOf.object('sphere', sphere);
+        Check.typeOf.object('occluder', occluder);
                 return !occluder.isBoundingSphereVisible(sphere);
     };
 
@@ -10638,8 +10659,8 @@ define('Core/Cartesian2',[
      * @returns {Number[]} The array that was packed into
      */
     Cartesian2.pack = function(value, array, startingIndex) {
-                Check.typeOf.object(value, 'value');
-        Check.defined(array, 'array');
+                Check.typeOf.object('value', value);
+        Check.defined('array', array);
         
         startingIndex = defaultValue(startingIndex, 0);
 
@@ -10658,7 +10679,7 @@ define('Core/Cartesian2',[
      * @returns {Cartesian2} The modified result parameter or a new Cartesian2 instance if one was not provided.
      */
     Cartesian2.unpack = function(array, startingIndex, result) {
-                Check.defined(array, 'array');
+                Check.defined('array', array);
         
         startingIndex = defaultValue(startingIndex, 0);
 
@@ -10678,7 +10699,7 @@ define('Core/Cartesian2',[
      * @returns {Number[]} The packed array.
      */
     Cartesian2.packArray = function(array, result) {
-                Check.defined(array, 'array');
+                Check.defined('array', array);
         
         var length = array.length;
         if (!defined(result)) {
@@ -10701,7 +10722,7 @@ define('Core/Cartesian2',[
      * @returns {Cartesian2[]} The unpacked array.
      */
     Cartesian2.unpackArray = function(array, result) {
-                Check.defined(array, 'array');
+                Check.defined('array', array);
         
         var length = array.length;
         if (!defined(result)) {
@@ -10744,7 +10765,7 @@ define('Core/Cartesian2',[
      * @returns {Number} The value of the maximum component.
      */
     Cartesian2.maximumComponent = function(cartesian) {
-                Check.typeOf.object(cartesian, 'cartesian');
+                Check.typeOf.object('cartesian', cartesian);
         
         return Math.max(cartesian.x, cartesian.y);
     };
@@ -10756,7 +10777,7 @@ define('Core/Cartesian2',[
      * @returns {Number} The value of the minimum component.
      */
     Cartesian2.minimumComponent = function(cartesian) {
-                Check.typeOf.object(cartesian, 'cartesian');
+                Check.typeOf.object('cartesian', cartesian);
         
         return Math.min(cartesian.x, cartesian.y);
     };
@@ -10770,9 +10791,9 @@ define('Core/Cartesian2',[
      * @returns {Cartesian2} A cartesian with the minimum components.
      */
     Cartesian2.minimumByComponent = function(first, second, result) {
-                Check.typeOf.object(first, 'first');
-        Check.typeOf.object(second, 'second');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('first', first);
+        Check.typeOf.object('second', second);
+        Check.typeOf.object('result', result);
         
 
         result.x = Math.min(first.x, second.x);
@@ -10790,9 +10811,9 @@ define('Core/Cartesian2',[
      * @returns {Cartesian2} A cartesian with the maximum components.
      */
     Cartesian2.maximumByComponent = function(first, second, result) {
-                Check.typeOf.object(first, 'first');
-        Check.typeOf.object(second, 'second');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('first', first);
+        Check.typeOf.object('second', second);
+        Check.typeOf.object('result', result);
         
         result.x = Math.max(first.x, second.x);
         result.y = Math.max(first.y, second.y);
@@ -10806,7 +10827,7 @@ define('Core/Cartesian2',[
      * @returns {Number} The squared magnitude.
      */
     Cartesian2.magnitudeSquared = function(cartesian) {
-                Check.typeOf.object(cartesian, 'cartesian');
+                Check.typeOf.object('cartesian', cartesian);
         
         return cartesian.x * cartesian.x + cartesian.y * cartesian.y;
     };
@@ -10872,8 +10893,8 @@ define('Core/Cartesian2',[
      * @returns {Cartesian2} The modified result parameter.
      */
     Cartesian2.normalize = function(cartesian, result) {
-                Check.typeOf.object(cartesian, 'cartesian');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('cartesian', cartesian);
+        Check.typeOf.object('result', result);
         
         var magnitude = Cartesian2.magnitude(cartesian);
 
@@ -10895,8 +10916,8 @@ define('Core/Cartesian2',[
      * @returns {Number} The dot product.
      */
     Cartesian2.dot = function(left, right) {
-                Check.typeOf.object(left, 'left');
-        Check.typeOf.object(right, 'right');
+                Check.typeOf.object('left', left);
+        Check.typeOf.object('right', right);
         
         return left.x * right.x + left.y * right.y;
     };
@@ -10910,9 +10931,9 @@ define('Core/Cartesian2',[
      * @returns {Cartesian2} The modified result parameter.
      */
     Cartesian2.multiplyComponents = function(left, right, result) {
-                Check.typeOf.object(left, 'left');
-        Check.typeOf.object(right, 'right');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('left', left);
+        Check.typeOf.object('right', right);
+        Check.typeOf.object('result', result);
         
         result.x = left.x * right.x;
         result.y = left.y * right.y;
@@ -10928,9 +10949,9 @@ define('Core/Cartesian2',[
      * @returns {Cartesian2} The modified result parameter.
      */
     Cartesian2.divideComponents = function(left, right, result) {
-                Check.typeOf.object(left, 'left');
-        Check.typeOf.object(right, 'right');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('left', left);
+        Check.typeOf.object('right', right);
+        Check.typeOf.object('result', result);
         
         result.x = left.x / right.x;
         result.y = left.y / right.y;
@@ -10946,9 +10967,9 @@ define('Core/Cartesian2',[
      * @returns {Cartesian2} The modified result parameter.
      */
     Cartesian2.add = function(left, right, result) {
-                Check.typeOf.object(left, 'left');
-        Check.typeOf.object(right, 'right');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('left', left);
+        Check.typeOf.object('right', right);
+        Check.typeOf.object('result', result);
         
         result.x = left.x + right.x;
         result.y = left.y + right.y;
@@ -10964,9 +10985,9 @@ define('Core/Cartesian2',[
      * @returns {Cartesian2} The modified result parameter.
      */
     Cartesian2.subtract = function(left, right, result) {
-                Check.typeOf.object(left, 'left');
-        Check.typeOf.object(right, 'right');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('left', left);
+        Check.typeOf.object('right', right);
+        Check.typeOf.object('result', result);
         
         result.x = left.x - right.x;
         result.y = left.y - right.y;
@@ -10982,9 +11003,9 @@ define('Core/Cartesian2',[
      * @returns {Cartesian2} The modified result parameter.
      */
     Cartesian2.multiplyByScalar = function(cartesian, scalar, result) {
-                Check.typeOf.object(cartesian, 'cartesian');
-        Check.typeOf.number(scalar, 'scalar');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('cartesian', cartesian);
+        Check.typeOf.number('scalar', scalar);
+        Check.typeOf.object('result', result);
         
         result.x = cartesian.x * scalar;
         result.y = cartesian.y * scalar;
@@ -11000,9 +11021,9 @@ define('Core/Cartesian2',[
      * @returns {Cartesian2} The modified result parameter.
      */
     Cartesian2.divideByScalar = function(cartesian, scalar, result) {
-                Check.typeOf.object(cartesian, 'cartesian');
-        Check.typeOf.number(scalar, 'scalar');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('cartesian', cartesian);
+        Check.typeOf.number('scalar', scalar);
+        Check.typeOf.object('result', result);
         
         result.x = cartesian.x / scalar;
         result.y = cartesian.y / scalar;
@@ -11017,8 +11038,8 @@ define('Core/Cartesian2',[
      * @returns {Cartesian2} The modified result parameter.
      */
     Cartesian2.negate = function(cartesian, result) {
-                Check.typeOf.object(cartesian, 'cartesian');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('cartesian', cartesian);
+        Check.typeOf.object('result', result);
         
         result.x = -cartesian.x;
         result.y = -cartesian.y;
@@ -11033,8 +11054,8 @@ define('Core/Cartesian2',[
      * @returns {Cartesian2} The modified result parameter.
      */
     Cartesian2.abs = function(cartesian, result) {
-                Check.typeOf.object(cartesian, 'cartesian');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('cartesian', cartesian);
+        Check.typeOf.object('result', result);
         
         result.x = Math.abs(cartesian.x);
         result.y = Math.abs(cartesian.y);
@@ -11052,10 +11073,10 @@ define('Core/Cartesian2',[
      * @returns {Cartesian2} The modified result parameter.
      */
     Cartesian2.lerp = function(start, end, t, result) {
-                Check.typeOf.object(start, 'start');
-        Check.typeOf.object(end, 'end');
-        Check.typeOf.number(t, 't');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('start', start);
+        Check.typeOf.object('end', end);
+        Check.typeOf.number('t', t);
+        Check.typeOf.object('result', result);
         
         Cartesian2.multiplyByScalar(end, t, lerpScratch);
         result = Cartesian2.multiplyByScalar(start, 1.0 - t, result);
@@ -11072,8 +11093,8 @@ define('Core/Cartesian2',[
      * @returns {Number} The angle between the Cartesians.
      */
     Cartesian2.angleBetween = function(left, right) {
-                Check.typeOf.object(left, 'left');
-        Check.typeOf.object(right, 'right');
+                Check.typeOf.object('left', left);
+        Check.typeOf.object('right', right);
         
         Cartesian2.normalize(left, angleBetweenScratch);
         Cartesian2.normalize(right, angleBetweenScratch2);
@@ -11089,8 +11110,8 @@ define('Core/Cartesian2',[
      * @returns {Cartesian2} The most orthogonal axis.
      */
     Cartesian2.mostOrthogonalAxis = function(cartesian, result) {
-                Check.typeOf.object(cartesian, 'cartesian');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('cartesian', cartesian);
+        Check.typeOf.object('result', result);
         
         var f = Cartesian2.normalize(cartesian, mostOrthogonalAxisScratch);
         Cartesian2.abs(f, f);
@@ -12343,7 +12364,10 @@ define('Core/WebGLConstants',[
         COMPRESSED_SRGB8_ALPHA8_ETC2_EAC : 0x9279,
         TEXTURE_IMMUTABLE_FORMAT : 0x912F,
         MAX_ELEMENT_INDEX : 0x8D6B,
-        TEXTURE_IMMUTABLE_LEVELS : 0x82DF
+        TEXTURE_IMMUTABLE_LEVELS : 0x82DF,
+
+        // Extensions
+        MAX_TEXTURE_MAX_ANISOTROPY_EXT : 0x84FF
     };
 
     return freezeObject(WebGLConstants);
@@ -12873,7 +12897,7 @@ define('Core/Geometry',[
          *    <li><code>position</code> - 3D vertex position.  64-bit floating-point (for precision).  3 components per attribute.  See {@link VertexFormat#position}.</li>
          *    <li><code>normal</code> - Normal (normalized), commonly used for lighting.  32-bit floating-point.  3 components per attribute.  See {@link VertexFormat#normal}.</li>
          *    <li><code>st</code> - 2D texture coordinate.  32-bit floating-point.  2 components per attribute.  See {@link VertexFormat#st}.</li>
-         *    <li><code>binormal</code> - Binormal (normalized), used for tangent-space effects like bump mapping.  32-bit floating-point.  3 components per attribute.  See {@link VertexFormat#binormal}.</li>
+         *    <li><code>bitangent</code> - Bitangent (normalized), used for tangent-space effects like bump mapping.  32-bit floating-point.  3 components per attribute.  See {@link VertexFormat#bitangent}.</li>
          *    <li><code>tangent</code> - Tangent (normalized), used for tangent-space effects like bump mapping.  32-bit floating-point.  3 components per attribute.  See {@link VertexFormat#tangent}.</li>
          * </ul>
          * </p>
@@ -12902,7 +12926,7 @@ define('Core/Geometry',[
          *   componentsPerAttribute : 3,
          *   values : new Float32Array(0)
          * });
-         * 
+         *
          * @see GeometryAttribute
          * @see VertexFormat
          */
@@ -13183,7 +13207,7 @@ define('Core/GeometryAttributes',[
         this.st = options.st;
 
         /**
-         * The binormal attribute (normalized), which is used for tangent-space effects like bump mapping.
+         * The bitangent attribute (normalized), which is used for tangent-space effects like bump mapping.
          * <p>
          * 32-bit floating-point.  3 components per attribute.
          * </p>
@@ -13192,7 +13216,7 @@ define('Core/GeometryAttributes',[
          *
          * @default undefined
          */
-        this.binormal = options.binormal;
+        this.bitangent = options.bitangent;
 
         /**
          * The tangent attribute (normalized), which is used for tangent-space effects like bump mapping.
@@ -16358,7 +16382,7 @@ define('Core/GeometryPipeline',[
     /**
      * Creates a new {@link Geometry} with <code>LINES</code> representing the provided
      * attribute (<code>attributeName</code>) for the provided geometry.  This is used to
-     * visualize vector attributes like normals, binormals, and tangents.
+     * visualize vector attributes like normals, tangents, and bitangents.
      *
      * @param {Geometry} geometry The <code>Geometry</code> instance with the attribute.
      * @param {String} [attributeName='normal'] The name of the attribute.
@@ -16368,7 +16392,7 @@ define('Core/GeometryPipeline',[
      * @exception {DeveloperError} geometry.attributes must have an attribute with the same name as the attributeName parameter.
      *
      * @example
-     * var geometry = Cesium.GeometryPipeline.createLineSegmentsForVectors(instance.geometry, 'binormal', 100000.0);
+     * var geometry = Cesium.GeometryPipeline.createLineSegmentsForVectors(instance.geometry, 'bitangent', 100000.0);
      */
     GeometryPipeline.createLineSegmentsForVectors = function(geometry, attributeName, length) {
         attributeName = defaultValue(attributeName, 'normal');
@@ -16460,8 +16484,8 @@ define('Core/GeometryPipeline',[
             // From VertexFormat
             'normal',
             'st',
-            'binormal',
             'tangent',
+            'bitangent',
 
             // For shadow volumes
             'extrudeDirection',
@@ -16506,7 +16530,7 @@ define('Core/GeometryPipeline',[
      *
      * @example
      * geometry = Cesium.GeometryPipeline.reorderForPreVertexCache(geometry);
-     * 
+     *
      * @see GeometryPipeline.reorderForPostVertexCache
      */
     GeometryPipeline.reorderForPreVertexCache = function(geometry) {
@@ -16591,7 +16615,7 @@ define('Core/GeometryPipeline',[
      *
      * @example
      * geometry = Cesium.GeometryPipeline.reorderForPostVertexCache(geometry);
-     * 
+     *
      * @see GeometryPipeline.reorderForPreVertexCache
      * @see {@link http://gfx.cs.princ0eton.edu/pubs/Sander_2007_%3ETR/tipsy.pdf|Fast Triangle Reordering for Vertex Locality and Reduced Overdraw}
      * by Sander, Nehab, and Barczak
@@ -16943,7 +16967,7 @@ define('Core/GeometryPipeline',[
      * Transforms a geometry instance to world coordinates.  This changes
      * the instance's <code>modelMatrix</code> to {@link Matrix4.IDENTITY} and transforms the
      * following attributes if they are present: <code>position</code>, <code>normal</code>,
-     * <code>binormal</code>, and <code>tangent</code>.
+     * <code>tangent</code>, and <code>bitangent</code>.
      *
      * @param {GeometryInstance} instance The geometry instance to modify.
      * @returns {GeometryInstance} The modified <code>instance</code> argument, with its attributes transforms to world coordinates.
@@ -16971,16 +16995,16 @@ define('Core/GeometryPipeline',[
         transformPoint(modelMatrix, attributes.nextPosition);
 
         if ((defined(attributes.normal)) ||
-            (defined(attributes.binormal)) ||
-            (defined(attributes.tangent))) {
+            (defined(attributes.tangent)) ||
+            (defined(attributes.bitangent))) {
 
             Matrix4.inverse(modelMatrix, inverseTranspose);
             Matrix4.transpose(inverseTranspose, inverseTranspose);
             Matrix4.getRotation(inverseTranspose, normalMatrix);
 
             transformVector(normalMatrix, attributes.normal);
-            transformVector(normalMatrix, attributes.binormal);
             transformVector(normalMatrix, attributes.tangent);
+            transformVector(normalMatrix, attributes.bitangent);
         }
 
         var boundingSphere = instance.geometry.boundingSphere;
@@ -17170,7 +17194,7 @@ define('Core/GeometryPipeline',[
      * <p>
      * This is used by {@link Primitive} to efficiently render a large amount of static data.
      * </p>
-     * 
+     *
      * @private
      *
      * @param {GeometryInstance[]} [instances] The array of {@link GeometryInstance} objects whose geometry will be combined.
@@ -17186,7 +17210,7 @@ define('Core/GeometryPipeline',[
      *   Cesium.GeometryPipeline.transformToWorldCoordinates(instances[i]);
      * }
      * var geometries = Cesium.GeometryPipeline.combineInstances(instances);
-     * 
+     *
      * @see GeometryPipeline.transformToWorldCoordinates
      */
     GeometryPipeline.combineInstances = function(instances) {
@@ -17332,20 +17356,28 @@ define('Core/GeometryPipeline',[
         for (i = 0; i < numVertices; i++) {
             var i3 = i * 3;
             vertexNormalData = normalsPerVertex[i];
+            Cartesian3.clone(Cartesian3.ZERO, normal);
             if (vertexNormalData.count > 0) {
-                Cartesian3.clone(Cartesian3.ZERO, normal);
                 for (j = 0; j < vertexNormalData.count; j++) {
                     Cartesian3.add(normal, normalsPerTriangle[normalIndices[vertexNormalData.indexOffset + j]], normal);
                 }
-                Cartesian3.normalize(normal, normal);
-                normalValues[i3] = normal.x;
-                normalValues[i3 + 1] = normal.y;
-                normalValues[i3 + 2] = normal.z;
-            } else {
-                normalValues[i3] = 0.0;
-                normalValues[i3 + 1] = 0.0;
-                normalValues[i3 + 2] = 1.0;
+
+                // We can run into an issue where a vertex is used with 2 primitives that have opposite winding order.
+                if (Cartesian3.equalsEpsilon(Cartesian3.ZERO, normal, CesiumMath.EPSILON10)) {
+                    Cartesian3.clone(normalsPerTriangle[normalIndices[vertexNormalData.indexOffset]], normal);
+                }
             }
+
+            // We end up with a zero vector probably because of a degenerate triangle
+            if (Cartesian3.equalsEpsilon(Cartesian3.ZERO, normal, CesiumMath.EPSILON10)) {
+                // Default to (0,0,1)
+                normal.z = 1.0;
+            }
+
+            Cartesian3.normalize(normal, normal);
+            normalValues[i3] = normal.x;
+            normalValues[i3 + 1] = normal.y;
+            normalValues[i3 + 2] = normal.z;
         }
 
         geometry.attributes.normal = new GeometryAttribute({
@@ -17362,8 +17394,8 @@ define('Core/GeometryPipeline',[
     var tScratch = new Cartesian3();
 
     /**
-     * Computes per-vertex binormals and tangents for a geometry containing <code>TRIANGLES</code>.
-     * The result is new <code>binormal</code> and <code>tangent</code> attributes added to the geometry.
+     * Computes per-vertex tangents and bitangents for a geometry containing <code>TRIANGLES</code>.
+     * The result is new <code>tangent</code> and <code>bitangent</code> attributes added to the geometry.
      * This assumes a counter-clockwise winding order.
      * <p>
      * Based on <a href="http://www.terathon.com/code/tangent.html">Computing Tangent Space Basis Vectors
@@ -17371,15 +17403,15 @@ define('Core/GeometryPipeline',[
      * </p>
      *
      * @param {Geometry} geometry The geometry to modify.
-     * @returns {Geometry} The modified <code>geometry</code> argument with the computed <code>binormal</code> and <code>tangent</code> attributes.
+     * @returns {Geometry} The modified <code>geometry</code> argument with the computed <code>tangent</code> and <code>bitangent</code> attributes.
      *
      * @exception {DeveloperError} geometry.indices length must be greater than 0 and be a multiple of 3.
      * @exception {DeveloperError} geometry.primitiveType must be {@link PrimitiveType.TRIANGLES}.
      *
      * @example
-     * Cesium.GeometryPipeline.computeBinormalAndTangent(geometry);
+     * Cesium.GeometryPipeline.computeTangentAndBiTangent(geometry);
      */
-    GeometryPipeline.computeBinormalAndTangent = function(geometry) {
+    GeometryPipeline.computeTangentAndBitangent = function(geometry) {
                 if (!defined(geometry)) {
             throw new DeveloperError('geometry is required.');
         }
@@ -17459,8 +17491,8 @@ define('Core/GeometryPipeline',[
             tan1[i23 + 2] += sdirz;
         }
 
-        var binormalValues = new Float32Array(numVertices * 3);
         var tangentValues = new Float32Array(numVertices * 3);
+        var bitangentValues = new Float32Array(numVertices * 3);
 
         for (i = 0; i < numVertices; i++) {
             i03 = i * 3;
@@ -17479,9 +17511,9 @@ define('Core/GeometryPipeline',[
 
             Cartesian3.normalize(Cartesian3.cross(n, t, t), t);
 
-            binormalValues[i03] = t.x;
-            binormalValues[i13] = t.y;
-            binormalValues[i23] = t.z;
+            bitangentValues[i03] = t.x;
+            bitangentValues[i13] = t.y;
+            bitangentValues[i23] = t.z;
         }
 
         geometry.attributes.tangent = new GeometryAttribute({
@@ -17490,10 +17522,10 @@ define('Core/GeometryPipeline',[
             values : tangentValues
         });
 
-        geometry.attributes.binormal = new GeometryAttribute({
+        geometry.attributes.bitangent = new GeometryAttribute({
             componentDatatype : ComponentDatatype.FLOAT,
             componentsPerAttribute : 3,
-            values : binormalValues
+            values : bitangentValues
         });
 
         return geometry;
@@ -17558,15 +17590,15 @@ define('Core/GeometryPipeline',[
         }
 
         var tangentAttribute = geometry.attributes.tangent;
-        var binormalAttribute = geometry.attributes.binormal;
+        var bitangentAttribute = geometry.attributes.bitangent;
 
         var hasTangent = defined(tangentAttribute);
-        var hasBinormal = defined(binormalAttribute);
+        var hasBitangent = defined(bitangentAttribute);
 
         var normals;
         var st;
         var tangents;
-        var binormals;
+        var bitangents;
 
         if (hasNormal) {
             normals = normalAttribute.values;
@@ -17577,8 +17609,8 @@ define('Core/GeometryPipeline',[
         if (hasTangent) {
             tangents = tangentAttribute.values;
         }
-        if (hasBinormal) {
-            binormals = binormalAttribute.values;
+        if (hasBitangent) {
+            bitangents = bitangentAttribute.values;
         }
 
         var length = hasNormal ? normals.length : st.length;
@@ -17587,7 +17619,7 @@ define('Core/GeometryPipeline',[
 
         var compressedLength = numVertices;
         var numCompressedComponents = hasSt && hasNormal ? 2.0 : 1.0;
-        numCompressedComponents += hasTangent || hasBinormal ? 1.0 : 0.0;
+        numCompressedComponents += hasTangent || hasBitangent ? 1.0 : 0.0;
         compressedLength *= numCompressedComponents;
 
         var compressedAttributes = new Float32Array(compressedLength);
@@ -17600,10 +17632,10 @@ define('Core/GeometryPipeline',[
             }
 
             var index = i * 3.0;
-            if (hasNormal && defined(tangents) && defined(binormals)) {
+            if (hasNormal && defined(tangents) && defined(bitangents)) {
                 Cartesian3.fromArray(normals, index, toEncode1);
                 Cartesian3.fromArray(tangents, index, toEncode2);
-                Cartesian3.fromArray(binormals, index, toEncode3);
+                Cartesian3.fromArray(bitangents, index, toEncode3);
 
                 AttributeCompression.octPack(toEncode1, toEncode2, toEncode3, scratchCartesian2);
                 compressedAttributes[normalIndex++] = scratchCartesian2.x;
@@ -17619,8 +17651,8 @@ define('Core/GeometryPipeline',[
                     compressedAttributes[normalIndex++] = AttributeCompression.octEncodeFloat(toEncode1);
                 }
 
-                if (hasBinormal) {
-                    Cartesian3.fromArray(binormals, index, toEncode1);
+                if (hasBitangent) {
+                    Cartesian3.fromArray(bitangents, index, toEncode1);
                     compressedAttributes[normalIndex++] = AttributeCompression.octEncodeFloat(toEncode1);
                 }
             }
@@ -17638,11 +17670,11 @@ define('Core/GeometryPipeline',[
         if (hasSt) {
             delete geometry.attributes.st;
         }
+        if (hasBitangent) {
+            delete geometry.attributes.bitangent;
+        }
         if (hasTangent) {
             delete geometry.attributes.tangent;
-        }
-        if (hasBinormal) {
-            delete geometry.attributes.binormal;
         }
 
         return geometry;
@@ -18059,8 +18091,8 @@ define('Core/GeometryPipeline',[
     var s1Scratch = new Cartesian2();
     var s2Scratch = new Cartesian2();
 
-    function computeTriangleAttributes(i0, i1, i2, point, positions, normals, binormals, tangents, texCoords, extrudeDirections, currentAttributes, insertedIndex) {
-        if (!defined(normals) && !defined(binormals) && !defined(tangents) && !defined(texCoords) && !defined(extrudeDirections)) {
+    function computeTriangleAttributes(i0, i1, i2, point, positions, normals, tangents, bitangents, texCoords, extrudeDirections, currentAttributes, insertedIndex) {
+        if (!defined(normals) && !defined(tangents) && !defined(bitangents) && !defined(texCoords) && !defined(extrudeDirections)) {
             return;
         }
 
@@ -18108,22 +18140,6 @@ define('Core/GeometryPipeline',[
             Cartesian3.pack(direction, currentAttributes.extrudeDirection.values, insertedIndex * 3);
         }
 
-        if (defined(binormals)) {
-            var b0 = Cartesian3.fromArray(binormals, i0 * 3, p0Scratch);
-            var b1 = Cartesian3.fromArray(binormals, i1 * 3, p1Scratch);
-            var b2 = Cartesian3.fromArray(binormals, i2 * 3, p2Scratch);
-
-            Cartesian3.multiplyByScalar(b0, coords.x, b0);
-            Cartesian3.multiplyByScalar(b1, coords.y, b1);
-            Cartesian3.multiplyByScalar(b2, coords.z, b2);
-
-            var binormal = Cartesian3.add(b0, b1, b0);
-            Cartesian3.add(binormal, b2, binormal);
-            Cartesian3.normalize(binormal, binormal);
-
-            Cartesian3.pack(binormal, currentAttributes.binormal.values, insertedIndex * 3);
-        }
-
         if (defined(tangents)) {
             var t0 = Cartesian3.fromArray(tangents, i0 * 3, p0Scratch);
             var t1 = Cartesian3.fromArray(tangents, i1 * 3, p1Scratch);
@@ -18138,6 +18154,22 @@ define('Core/GeometryPipeline',[
             Cartesian3.normalize(tangent, tangent);
 
             Cartesian3.pack(tangent, currentAttributes.tangent.values, insertedIndex * 3);
+        }
+
+        if (defined(bitangents)) {
+            var b0 = Cartesian3.fromArray(bitangents, i0 * 3, p0Scratch);
+            var b1 = Cartesian3.fromArray(bitangents, i1 * 3, p1Scratch);
+            var b2 = Cartesian3.fromArray(bitangents, i2 * 3, p2Scratch);
+
+            Cartesian3.multiplyByScalar(b0, coords.x, b0);
+            Cartesian3.multiplyByScalar(b1, coords.y, b1);
+            Cartesian3.multiplyByScalar(b2, coords.z, b2);
+
+            var bitangent = Cartesian3.add(b0, b1, b0);
+            Cartesian3.add(bitangent, b2, bitangent);
+            Cartesian3.normalize(bitangent, bitangent);
+
+            Cartesian3.pack(bitangent, currentAttributes.bitangent.values, insertedIndex * 3);
         }
 
         if (defined(texCoords)) {
@@ -18184,7 +18216,7 @@ define('Core/GeometryPipeline',[
         var attributes = geometry.attributes;
         var positions = attributes.position.values;
         var normals = (defined(attributes.normal)) ? attributes.normal.values : undefined;
-        var binormals = (defined(attributes.binormal)) ? attributes.binormal.values : undefined;
+        var bitangents = (defined(attributes.bitangent)) ? attributes.bitangent.values : undefined;
         var tangents = (defined(attributes.tangent)) ? attributes.tangent.values : undefined;
         var texCoords = (defined(attributes.st)) ? attributes.st.values : undefined;
         var extrudeDirections = (defined(attributes.extrudeDirection)) ? attributes.extrudeDirection.values : undefined;
@@ -18241,7 +18273,7 @@ define('Core/GeometryPipeline',[
                     }
 
                     insertedIndex = insertSplitPoint(currentAttributes, currentIndices, currentIndexMap, indices, resultIndex < 3 ? i + resultIndex : -1, point);
-                    computeTriangleAttributes(i0, i1, i2, point, positions, normals, binormals, tangents, texCoords, extrudeDirections, currentAttributes, insertedIndex);
+                    computeTriangleAttributes(i0, i1, i2, point, positions, normals, tangents, bitangents, texCoords, extrudeDirections, currentAttributes, insertedIndex);
                 }
             } else {
                 if (defined(result)) {
@@ -18261,13 +18293,13 @@ define('Core/GeometryPipeline',[
                 }
 
                 insertedIndex = insertSplitPoint(currentAttributes, currentIndices, currentIndexMap, indices, i, p0);
-                computeTriangleAttributes(i0, i1, i2, p0, positions, normals, binormals, tangents, texCoords, extrudeDirections, currentAttributes, insertedIndex);
+                computeTriangleAttributes(i0, i1, i2, p0, positions, normals, tangents, bitangents, texCoords, extrudeDirections, currentAttributes, insertedIndex);
 
                 insertedIndex = insertSplitPoint(currentAttributes, currentIndices, currentIndexMap, indices, i + 1, p1);
-                computeTriangleAttributes(i0, i1, i2, p1, positions, normals, binormals, tangents, texCoords, extrudeDirections, currentAttributes, insertedIndex);
+                computeTriangleAttributes(i0, i1, i2, p1, positions, normals, tangents, bitangents, texCoords, extrudeDirections, currentAttributes, insertedIndex);
 
                 insertedIndex = insertSplitPoint(currentAttributes, currentIndices, currentIndexMap, indices, i + 2, p2);
-                computeTriangleAttributes(i0, i1, i2, p2, positions, normals, binormals, tangents, texCoords, extrudeDirections, currentAttributes, insertedIndex);
+                computeTriangleAttributes(i0, i1, i2, p2, positions, normals, tangents, bitangents, texCoords, extrudeDirections, currentAttributes, insertedIndex);
             }
         }
 
@@ -18693,848 +18725,6 @@ define('Core/GeometryPipeline',[
     };
 
     return GeometryPipeline;
-});
-
-/*global define*/
-define('Core/Matrix2',[
-        './Cartesian2',
-        './Check',
-        './defaultValue',
-        './defined',
-        './defineProperties',
-        './DeveloperError',
-        './freezeObject'
-    ], function(
-        Cartesian2,
-        Check,
-        defaultValue,
-        defined,
-        defineProperties,
-        DeveloperError,
-        freezeObject) {
-    'use strict';
-
-    /**
-     * A 2x2 matrix, indexable as a column-major order array.
-     * Constructor parameters are in row-major order for code readability.
-     * @alias Matrix2
-     * @constructor
-     *
-     * @param {Number} [column0Row0=0.0] The value for column 0, row 0.
-     * @param {Number} [column1Row0=0.0] The value for column 1, row 0.
-     * @param {Number} [column0Row1=0.0] The value for column 0, row 1.
-     * @param {Number} [column1Row1=0.0] The value for column 1, row 1.
-     *
-     * @see Matrix2.fromColumnMajorArray
-     * @see Matrix2.fromRowMajorArray
-     * @see Matrix2.fromScale
-     * @see Matrix2.fromUniformScale
-     * @see Matrix3
-     * @see Matrix4
-     */
-    function Matrix2(column0Row0, column1Row0, column0Row1, column1Row1) {
-        this[0] = defaultValue(column0Row0, 0.0);
-        this[1] = defaultValue(column0Row1, 0.0);
-        this[2] = defaultValue(column1Row0, 0.0);
-        this[3] = defaultValue(column1Row1, 0.0);
-    }
-
-    /**
-     * The number of elements used to pack the object into an array.
-     * @type {Number}
-     */
-    Matrix2.packedLength = 4;
-
-    /**
-     * Stores the provided instance into the provided array.
-     *
-     * @param {Matrix2} value The value to pack.
-     * @param {Number[]} array The array to pack into.
-     * @param {Number} [startingIndex=0] The index into the array at which to start packing the elements.
-     *
-     * @returns {Number[]} The array that was packed into
-     */
-    Matrix2.pack = function(value, array, startingIndex) {
-                Check.typeOf.object(value, 'value');
-        Check.defined(array, 'array');
-        
-        startingIndex = defaultValue(startingIndex, 0);
-
-        array[startingIndex++] = value[0];
-        array[startingIndex++] = value[1];
-        array[startingIndex++] = value[2];
-        array[startingIndex++] = value[3];
-
-        return array;
-    };
-
-    /**
-     * Retrieves an instance from a packed array.
-     *
-     * @param {Number[]} array The packed array.
-     * @param {Number} [startingIndex=0] The starting index of the element to be unpacked.
-     * @param {Matrix2} [result] The object into which to store the result.
-     * @returns {Matrix2} The modified result parameter or a new Matrix2 instance if one was not provided.
-     */
-    Matrix2.unpack = function(array, startingIndex, result) {
-                Check.defined(array, 'array');
-        
-        startingIndex = defaultValue(startingIndex, 0);
-
-        if (!defined(result)) {
-            result = new Matrix2();
-        }
-
-        result[0] = array[startingIndex++];
-        result[1] = array[startingIndex++];
-        result[2] = array[startingIndex++];
-        result[3] = array[startingIndex++];
-        return result;
-    };
-
-    /**
-     * Duplicates a Matrix2 instance.
-     *
-     * @param {Matrix2} matrix The matrix to duplicate.
-     * @param {Matrix2} [result] The object onto which to store the result.
-     * @returns {Matrix2} The modified result parameter or a new Matrix2 instance if one was not provided. (Returns undefined if matrix is undefined)
-     */
-    Matrix2.clone = function(matrix, result) {
-        if (!defined(matrix)) {
-            return undefined;
-        }
-        if (!defined(result)) {
-            return new Matrix2(matrix[0], matrix[2],
-                               matrix[1], matrix[3]);
-        }
-        result[0] = matrix[0];
-        result[1] = matrix[1];
-        result[2] = matrix[2];
-        result[3] = matrix[3];
-        return result;
-    };
-
-    /**
-     * Creates a Matrix2 from 4 consecutive elements in an array.
-     *
-     * @param {Number[]} array The array whose 4 consecutive elements correspond to the positions of the matrix.  Assumes column-major order.
-     * @param {Number} [startingIndex=0] The offset into the array of the first element, which corresponds to first column first row position in the matrix.
-     * @param {Matrix2} [result] The object onto which to store the result.
-     * @returns {Matrix2} The modified result parameter or a new Matrix2 instance if one was not provided.
-     *
-     * @example
-     * // Create the Matrix2:
-     * // [1.0, 2.0]
-     * // [1.0, 2.0]
-     *
-     * var v = [1.0, 1.0, 2.0, 2.0];
-     * var m = Cesium.Matrix2.fromArray(v);
-     *
-     * // Create same Matrix2 with using an offset into an array
-     * var v2 = [0.0, 0.0, 1.0, 1.0, 2.0, 2.0];
-     * var m2 = Cesium.Matrix2.fromArray(v2, 2);
-     */
-    Matrix2.fromArray = function(array, startingIndex, result) {
-                Check.defined(array, 'array');
-        
-        startingIndex = defaultValue(startingIndex, 0);
-
-        if (!defined(result)) {
-            result = new Matrix2();
-        }
-
-        result[0] = array[startingIndex];
-        result[1] = array[startingIndex + 1];
-        result[2] = array[startingIndex + 2];
-        result[3] = array[startingIndex + 3];
-        return result;
-    };
-
-    /**
-     * Creates a Matrix2 instance from a column-major order array.
-     *
-     * @param {Number[]} values The column-major order array.
-     * @param {Matrix2} [result] The object in which the result will be stored, if undefined a new instance will be created.
-     * @returns {Matrix2} The modified result parameter, or a new Matrix2 instance if one was not provided.
-     */
-    Matrix2.fromColumnMajorArray = function(values, result) {
-                Check.defined(values, 'values');
-        
-        return Matrix2.clone(values, result);
-    };
-
-    /**
-     * Creates a Matrix2 instance from a row-major order array.
-     * The resulting matrix will be in column-major order.
-     *
-     * @param {Number[]} values The row-major order array.
-     * @param {Matrix2} [result] The object in which the result will be stored, if undefined a new instance will be created.
-     * @returns {Matrix2} The modified result parameter, or a new Matrix2 instance if one was not provided.
-     */
-    Matrix2.fromRowMajorArray = function(values, result) {
-                Check.defined(values, 'values');
-        
-        if (!defined(result)) {
-            return new Matrix2(values[0], values[1],
-                               values[2], values[3]);
-        }
-        result[0] = values[0];
-        result[1] = values[2];
-        result[2] = values[1];
-        result[3] = values[3];
-        return result;
-    };
-
-    /**
-     * Computes a Matrix2 instance representing a non-uniform scale.
-     *
-     * @param {Cartesian2} scale The x and y scale factors.
-     * @param {Matrix2} [result] The object in which the result will be stored, if undefined a new instance will be created.
-     * @returns {Matrix2} The modified result parameter, or a new Matrix2 instance if one was not provided.
-     *
-     * @example
-     * // Creates
-     * //   [7.0, 0.0]
-     * //   [0.0, 8.0]
-     * var m = Cesium.Matrix2.fromScale(new Cesium.Cartesian2(7.0, 8.0));
-     */
-    Matrix2.fromScale = function(scale, result) {
-                Check.typeOf.object(scale, 'scale');
-        
-        if (!defined(result)) {
-            return new Matrix2(
-                scale.x, 0.0,
-                0.0,     scale.y);
-        }
-
-        result[0] = scale.x;
-        result[1] = 0.0;
-        result[2] = 0.0;
-        result[3] = scale.y;
-        return result;
-    };
-
-    /**
-     * Computes a Matrix2 instance representing a uniform scale.
-     *
-     * @param {Number} scale The uniform scale factor.
-     * @param {Matrix2} [result] The object in which the result will be stored, if undefined a new instance will be created.
-     * @returns {Matrix2} The modified result parameter, or a new Matrix2 instance if one was not provided.
-     *
-     * @example
-     * // Creates
-     * //   [2.0, 0.0]
-     * //   [0.0, 2.0]
-     * var m = Cesium.Matrix2.fromUniformScale(2.0);
-     */
-    Matrix2.fromUniformScale = function(scale, result) {
-                Check.typeOf.number(scale, 'scale');
-        
-        if (!defined(result)) {
-            return new Matrix2(
-                scale, 0.0,
-                0.0,   scale);
-        }
-
-        result[0] = scale;
-        result[1] = 0.0;
-        result[2] = 0.0;
-        result[3] = scale;
-        return result;
-    };
-
-    /**
-     * Creates a rotation matrix.
-     *
-     * @param {Number} angle The angle, in radians, of the rotation.  Positive angles are counterclockwise.
-     * @param {Matrix2} [result] The object in which the result will be stored, if undefined a new instance will be created.
-     * @returns {Matrix2} The modified result parameter, or a new Matrix2 instance if one was not provided.
-     *
-     * @example
-     * // Rotate a point 45 degrees counterclockwise.
-     * var p = new Cesium.Cartesian2(5, 6);
-     * var m = Cesium.Matrix2.fromRotation(Cesium.Math.toRadians(45.0));
-     * var rotated = Cesium.Matrix2.multiplyByVector(m, p, new Cesium.Cartesian2());
-     */
-    Matrix2.fromRotation = function(angle, result) {
-                Check.typeOf.number(angle, 'angle');
-        
-        var cosAngle = Math.cos(angle);
-        var sinAngle = Math.sin(angle);
-
-        if (!defined(result)) {
-            return new Matrix2(
-                cosAngle, -sinAngle,
-                sinAngle, cosAngle);
-        }
-        result[0] = cosAngle;
-        result[1] = sinAngle;
-        result[2] = -sinAngle;
-        result[3] = cosAngle;
-        return result;
-    };
-
-    /**
-     * Creates an Array from the provided Matrix2 instance.
-     * The array will be in column-major order.
-     *
-     * @param {Matrix2} matrix The matrix to use..
-     * @param {Number[]} [result] The Array onto which to store the result.
-     * @returns {Number[]} The modified Array parameter or a new Array instance if one was not provided.
-     */
-    Matrix2.toArray = function(matrix, result) {
-                Check.typeOf.object(matrix, 'matrix');
-        
-        if (!defined(result)) {
-            return [matrix[0], matrix[1], matrix[2], matrix[3]];
-        }
-        result[0] = matrix[0];
-        result[1] = matrix[1];
-        result[2] = matrix[2];
-        result[3] = matrix[3];
-        return result;
-    };
-
-    /**
-     * Computes the array index of the element at the provided row and column.
-     *
-     * @param {Number} row The zero-based index of the row.
-     * @param {Number} column The zero-based index of the column.
-     * @returns {Number} The index of the element at the provided row and column.
-     *
-     * @exception {DeveloperError} row must be 0 or 1.
-     * @exception {DeveloperError} column must be 0 or 1.
-     *
-     * @example
-     * var myMatrix = new Cesium.Matrix2();
-     * var column1Row0Index = Cesium.Matrix2.getElementIndex(1, 0);
-     * var column1Row0 = myMatrix[column1Row0Index]
-     * myMatrix[column1Row0Index] = 10.0;
-     */
-    Matrix2.getElementIndex = function(column, row) {
-                Check.typeOf.number(row, 'row');
-        Check.numeric.minimum(row, 0);
-        Check.numeric.maximum(row, 1);
-
-        Check.typeOf.number(column, 'column');
-        Check.numeric.minimum(column, 0);
-        Check.numeric.maximum(column, 1);
-        
-        return column * 2 + row;
-    };
-
-    /**
-     * Retrieves a copy of the matrix column at the provided index as a Cartesian2 instance.
-     *
-     * @param {Matrix2} matrix The matrix to use.
-     * @param {Number} index The zero-based index of the column to retrieve.
-     * @param {Cartesian2} result The object onto which to store the result.
-     * @returns {Cartesian2} The modified result parameter.
-     *
-     * @exception {DeveloperError} index must be 0 or 1.
-     */
-    Matrix2.getColumn = function(matrix, index, result) {
-                Check.typeOf.object(matrix, 'matrix');
-
-        Check.typeOf.number(index, 'index');
-        Check.numeric.minimum(index, 0);
-        Check.numeric.maximum(index, 1);
-
-        Check.typeOf.object(result, 'result');
-        
-        var startIndex = index * 2;
-        var x = matrix[startIndex];
-        var y = matrix[startIndex + 1];
-
-        result.x = x;
-        result.y = y;
-        return result;
-    };
-
-    /**
-     * Computes a new matrix that replaces the specified column in the provided matrix with the provided Cartesian2 instance.
-     *
-     * @param {Matrix2} matrix The matrix to use.
-     * @param {Number} index The zero-based index of the column to set.
-     * @param {Cartesian2} cartesian The Cartesian whose values will be assigned to the specified column.
-     * @param {Cartesian2} result The object onto which to store the result.
-     * @returns {Matrix2} The modified result parameter.
-     *
-     * @exception {DeveloperError} index must be 0 or 1.
-     */
-    Matrix2.setColumn = function(matrix, index, cartesian, result) {
-                Check.typeOf.object(matrix, 'matrix');
-
-        Check.typeOf.number(index, 'index');
-        Check.numeric.minimum(index, 0);
-        Check.numeric.maximum(index, 1);
-
-        Check.typeOf.object(cartesian, 'cartesian');
-        Check.typeOf.object(result, 'result');
-        
-        result = Matrix2.clone(matrix, result);
-        var startIndex = index * 2;
-        result[startIndex] = cartesian.x;
-        result[startIndex + 1] = cartesian.y;
-        return result;
-    };
-
-    /**
-     * Retrieves a copy of the matrix row at the provided index as a Cartesian2 instance.
-     *
-     * @param {Matrix2} matrix The matrix to use.
-     * @param {Number} index The zero-based index of the row to retrieve.
-     * @param {Cartesian2} result The object onto which to store the result.
-     * @returns {Cartesian2} The modified result parameter.
-     *
-     * @exception {DeveloperError} index must be 0 or 1.
-     */
-    Matrix2.getRow = function(matrix, index, result) {
-                Check.typeOf.object(matrix, 'matrix');
-
-        Check.typeOf.number(index, 'index');
-        Check.numeric.minimum(index, 0);
-        Check.numeric.maximum(index, 1);
-
-        Check.typeOf.object(result, 'result');
-        
-        var x = matrix[index];
-        var y = matrix[index + 2];
-
-        result.x = x;
-        result.y = y;
-        return result;
-    };
-
-    /**
-     * Computes a new matrix that replaces the specified row in the provided matrix with the provided Cartesian2 instance.
-     *
-     * @param {Matrix2} matrix The matrix to use.
-     * @param {Number} index The zero-based index of the row to set.
-     * @param {Cartesian2} cartesian The Cartesian whose values will be assigned to the specified row.
-     * @param {Matrix2} result The object onto which to store the result.
-     * @returns {Matrix2} The modified result parameter.
-     *
-     * @exception {DeveloperError} index must be 0 or 1.
-     */
-    Matrix2.setRow = function(matrix, index, cartesian, result) {
-                Check.typeOf.object(matrix, 'matrix');
-
-        Check.typeOf.number(index, 'index');
-        Check.numeric.minimum(index, 0);
-        Check.numeric.maximum(index, 1);
-
-        Check.typeOf.object(cartesian, 'cartesian');
-        Check.typeOf.object(result, 'result');
-        
-        result = Matrix2.clone(matrix, result);
-        result[index] = cartesian.x;
-        result[index + 2] = cartesian.y;
-        return result;
-    };
-
-    var scratchColumn = new Cartesian2();
-
-    /**
-     * Extracts the non-uniform scale assuming the matrix is an affine transformation.
-     *
-     * @param {Matrix2} matrix The matrix.
-     * @param {Cartesian2} result The object onto which to store the result.
-     * @returns {Cartesian2} The modified result parameter.
-     */
-    Matrix2.getScale = function(matrix, result) {
-                Check.typeOf.object(matrix, 'matrix');
-        Check.typeOf.object(result, 'result');
-        
-        result.x = Cartesian2.magnitude(Cartesian2.fromElements(matrix[0], matrix[1], scratchColumn));
-        result.y = Cartesian2.magnitude(Cartesian2.fromElements(matrix[2], matrix[3], scratchColumn));
-        return result;
-    };
-
-    var scratchScale = new Cartesian2();
-
-    /**
-     * Computes the maximum scale assuming the matrix is an affine transformation.
-     * The maximum scale is the maximum length of the column vectors.
-     *
-     * @param {Matrix2} matrix The matrix.
-     * @returns {Number} The maximum scale.
-     */
-    Matrix2.getMaximumScale = function(matrix) {
-        Matrix2.getScale(matrix, scratchScale);
-        return Cartesian2.maximumComponent(scratchScale);
-    };
-
-    /**
-     * Computes the product of two matrices.
-     *
-     * @param {Matrix2} left The first matrix.
-     * @param {Matrix2} right The second matrix.
-     * @param {Matrix2} result The object onto which to store the result.
-     * @returns {Matrix2} The modified result parameter.
-     */
-    Matrix2.multiply = function(left, right, result) {
-                Check.typeOf.object(left, 'left');
-        Check.typeOf.object(right, 'right');
-        Check.typeOf.object(result, 'result');
-        
-        var column0Row0 = left[0] * right[0] + left[2] * right[1];
-        var column1Row0 = left[0] * right[2] + left[2] * right[3];
-        var column0Row1 = left[1] * right[0] + left[3] * right[1];
-        var column1Row1 = left[1] * right[2] + left[3] * right[3];
-
-        result[0] = column0Row0;
-        result[1] = column0Row1;
-        result[2] = column1Row0;
-        result[3] = column1Row1;
-        return result;
-    };
-
-    /**
-     * Computes the sum of two matrices.
-     *
-     * @param {Matrix2} left The first matrix.
-     * @param {Matrix2} right The second matrix.
-     * @param {Matrix2} result The object onto which to store the result.
-     * @returns {Matrix2} The modified result parameter.
-     */
-    Matrix2.add = function(left, right, result) {
-                Check.typeOf.object(left, 'left');
-        Check.typeOf.object(right, 'right');
-        Check.typeOf.object(result, 'result');
-        
-        result[0] = left[0] + right[0];
-        result[1] = left[1] + right[1];
-        result[2] = left[2] + right[2];
-        result[3] = left[3] + right[3];
-        return result;
-    };
-
-    /**
-     * Computes the difference of two matrices.
-     *
-     * @param {Matrix2} left The first matrix.
-     * @param {Matrix2} right The second matrix.
-     * @param {Matrix2} result The object onto which to store the result.
-     * @returns {Matrix2} The modified result parameter.
-     */
-    Matrix2.subtract = function(left, right, result) {
-                Check.typeOf.object(left, 'left');
-        Check.typeOf.object(right, 'right');
-        Check.typeOf.object(result, 'result');
-        
-        result[0] = left[0] - right[0];
-        result[1] = left[1] - right[1];
-        result[2] = left[2] - right[2];
-        result[3] = left[3] - right[3];
-        return result;
-    };
-
-    /**
-     * Computes the product of a matrix and a column vector.
-     *
-     * @param {Matrix2} matrix The matrix.
-     * @param {Cartesian2} cartesian The column.
-     * @param {Cartesian2} result The object onto which to store the result.
-     * @returns {Cartesian2} The modified result parameter.
-     */
-    Matrix2.multiplyByVector = function(matrix, cartesian, result) {
-                Check.typeOf.object(matrix, 'matrix');
-        Check.typeOf.object(cartesian, 'cartesian');
-        Check.typeOf.object(result, 'result');
-        
-        var x = matrix[0] * cartesian.x + matrix[2] * cartesian.y;
-        var y = matrix[1] * cartesian.x + matrix[3] * cartesian.y;
-
-        result.x = x;
-        result.y = y;
-        return result;
-    };
-
-    /**
-     * Computes the product of a matrix and a scalar.
-     *
-     * @param {Matrix2} matrix The matrix.
-     * @param {Number} scalar The number to multiply by.
-     * @param {Matrix2} result The object onto which to store the result.
-     * @returns {Matrix2} The modified result parameter.
-     */
-    Matrix2.multiplyByScalar = function(matrix, scalar, result) {
-                Check.typeOf.object(matrix, 'matrix');
-        Check.typeOf.number(scalar, 'scalar');
-        Check.typeOf.object(result, 'result');
-        
-        result[0] = matrix[0] * scalar;
-        result[1] = matrix[1] * scalar;
-        result[2] = matrix[2] * scalar;
-        result[3] = matrix[3] * scalar;
-        return result;
-    };
-
-    /**
-     * Computes the product of a matrix times a (non-uniform) scale, as if the scale were a scale matrix.
-     *
-     * @param {Matrix2} matrix The matrix on the left-hand side.
-     * @param {Cartesian2} scale The non-uniform scale on the right-hand side.
-     * @param {Matrix2} result The object onto which to store the result.
-     * @returns {Matrix2} The modified result parameter.
-     *
-     *
-     * @example
-     * // Instead of Cesium.Matrix2.multiply(m, Cesium.Matrix2.fromScale(scale), m);
-     * Cesium.Matrix2.multiplyByScale(m, scale, m);
-     *
-     * @see Matrix2.fromScale
-     * @see Matrix2.multiplyByUniformScale
-     */
-    Matrix2.multiplyByScale = function(matrix, scale, result) {
-                Check.typeOf.object(matrix, 'matrix');
-        Check.typeOf.object(scale, 'scale');
-        Check.typeOf.object(result, 'result');
-        
-        result[0] = matrix[0] * scale.x;
-        result[1] = matrix[1] * scale.x;
-        result[2] = matrix[2] * scale.y;
-        result[3] = matrix[3] * scale.y;
-        return result;
-    };
-
-    /**
-     * Creates a negated copy of the provided matrix.
-     *
-     * @param {Matrix2} matrix The matrix to negate.
-     * @param {Matrix2} result The object onto which to store the result.
-     * @returns {Matrix2} The modified result parameter.
-     */
-    Matrix2.negate = function(matrix, result) {
-                Check.typeOf.object(matrix, 'matrix');
-        Check.typeOf.object(result, 'result');
-        
-        result[0] = -matrix[0];
-        result[1] = -matrix[1];
-        result[2] = -matrix[2];
-        result[3] = -matrix[3];
-        return result;
-    };
-
-    /**
-     * Computes the transpose of the provided matrix.
-     *
-     * @param {Matrix2} matrix The matrix to transpose.
-     * @param {Matrix2} result The object onto which to store the result.
-     * @returns {Matrix2} The modified result parameter.
-     */
-    Matrix2.transpose = function(matrix, result) {
-                Check.typeOf.object(matrix, 'matrix');
-        Check.typeOf.object(result, 'result');
-        
-        var column0Row0 = matrix[0];
-        var column0Row1 = matrix[2];
-        var column1Row0 = matrix[1];
-        var column1Row1 = matrix[3];
-
-        result[0] = column0Row0;
-        result[1] = column0Row1;
-        result[2] = column1Row0;
-        result[3] = column1Row1;
-        return result;
-    };
-
-    /**
-     * Computes a matrix, which contains the absolute (unsigned) values of the provided matrix's elements.
-     *
-     * @param {Matrix2} matrix The matrix with signed elements.
-     * @param {Matrix2} result The object onto which to store the result.
-     * @returns {Matrix2} The modified result parameter.
-     */
-    Matrix2.abs = function(matrix, result) {
-                Check.typeOf.object(matrix, 'matrix');
-        Check.typeOf.object(result, 'result');
-        
-        result[0] = Math.abs(matrix[0]);
-        result[1] = Math.abs(matrix[1]);
-        result[2] = Math.abs(matrix[2]);
-        result[3] = Math.abs(matrix[3]);
-
-        return result;
-    };
-
-    /**
-     * Compares the provided matrices componentwise and returns
-     * <code>true</code> if they are equal, <code>false</code> otherwise.
-     *
-     * @param {Matrix2} [left] The first matrix.
-     * @param {Matrix2} [right] The second matrix.
-     * @returns {Boolean} <code>true</code> if left and right are equal, <code>false</code> otherwise.
-     */
-    Matrix2.equals = function(left, right) {
-        return (left === right) ||
-               (defined(left) &&
-                defined(right) &&
-                left[0] === right[0] &&
-                left[1] === right[1] &&
-                left[2] === right[2] &&
-                left[3] === right[3]);
-    };
-
-    /**
-     * @private
-     */
-    Matrix2.equalsArray = function(matrix, array, offset) {
-        return matrix[0] === array[offset] &&
-               matrix[1] === array[offset + 1] &&
-               matrix[2] === array[offset + 2] &&
-               matrix[3] === array[offset + 3];
-    };
-
-    /**
-     * Compares the provided matrices componentwise and returns
-     * <code>true</code> if they are within the provided epsilon,
-     * <code>false</code> otherwise.
-     *
-     * @param {Matrix2} [left] The first matrix.
-     * @param {Matrix2} [right] The second matrix.
-     * @param {Number} epsilon The epsilon to use for equality testing.
-     * @returns {Boolean} <code>true</code> if left and right are within the provided epsilon, <code>false</code> otherwise.
-     */
-    Matrix2.equalsEpsilon = function(left, right, epsilon) {
-                Check.typeOf.number(epsilon, 'epsilon');
-        
-        return (left === right) ||
-                (defined(left) &&
-                defined(right) &&
-                Math.abs(left[0] - right[0]) <= epsilon &&
-                Math.abs(left[1] - right[1]) <= epsilon &&
-                Math.abs(left[2] - right[2]) <= epsilon &&
-                Math.abs(left[3] - right[3]) <= epsilon);
-    };
-
-    /**
-     * An immutable Matrix2 instance initialized to the identity matrix.
-     *
-     * @type {Matrix2}
-     * @constant
-     */
-    Matrix2.IDENTITY = freezeObject(new Matrix2(1.0, 0.0,
-                                                0.0, 1.0));
-
-    /**
-     * An immutable Matrix2 instance initialized to the zero matrix.
-     *
-     * @type {Matrix2}
-     * @constant
-     */
-    Matrix2.ZERO = freezeObject(new Matrix2(0.0, 0.0,
-                                            0.0, 0.0));
-
-    /**
-     * The index into Matrix2 for column 0, row 0.
-     *
-     * @type {Number}
-     * @constant
-     *
-     * @example
-     * var matrix = new Cesium.Matrix2();
-     * matrix[Cesium.Matrix2.COLUMN0ROW0] = 5.0; // set column 0, row 0 to 5.0
-     */
-    Matrix2.COLUMN0ROW0 = 0;
-
-    /**
-     * The index into Matrix2 for column 0, row 1.
-     *
-     * @type {Number}
-     * @constant
-     *
-     * @example
-     * var matrix = new Cesium.Matrix2();
-     * matrix[Cesium.Matrix2.COLUMN0ROW1] = 5.0; // set column 0, row 1 to 5.0
-     */
-    Matrix2.COLUMN0ROW1 = 1;
-
-    /**
-     * The index into Matrix2 for column 1, row 0.
-     *
-     * @type {Number}
-     * @constant
-     *
-     * @example
-     * var matrix = new Cesium.Matrix2();
-     * matrix[Cesium.Matrix2.COLUMN1ROW0] = 5.0; // set column 1, row 0 to 5.0
-     */
-    Matrix2.COLUMN1ROW0 = 2;
-
-    /**
-     * The index into Matrix2 for column 1, row 1.
-     *
-     * @type {Number}
-     * @constant
-     *
-     * @example
-     * var matrix = new Cesium.Matrix2();
-     * matrix[Cesium.Matrix2.COLUMN1ROW1] = 5.0; // set column 1, row 1 to 5.0
-     */
-    Matrix2.COLUMN1ROW1 = 3;
-
-    defineProperties(Matrix2.prototype, {
-        /**
-         * Gets the number of items in the collection.
-         * @memberof Matrix2.prototype
-         *
-         * @type {Number}
-         */
-        length : {
-            get : function() {
-                return Matrix2.packedLength;
-            }
-        }
-    });
-
-    /**
-     * Duplicates the provided Matrix2 instance.
-     *
-     * @param {Matrix2} [result] The object onto which to store the result.
-     * @returns {Matrix2} The modified result parameter or a new Matrix2 instance if one was not provided.
-     */
-    Matrix2.prototype.clone = function(result) {
-        return Matrix2.clone(this, result);
-    };
-
-    /**
-     * Compares this matrix to the provided matrix componentwise and returns
-     * <code>true</code> if they are equal, <code>false</code> otherwise.
-     *
-     * @param {Matrix2} [right] The right hand side matrix.
-     * @returns {Boolean} <code>true</code> if they are equal, <code>false</code> otherwise.
-     */
-    Matrix2.prototype.equals = function(right) {
-        return Matrix2.equals(this, right);
-    };
-
-    /**
-     * Compares this matrix to the provided matrix componentwise and returns
-     * <code>true</code> if they are within the provided epsilon,
-     * <code>false</code> otherwise.
-     *
-     * @param {Matrix2} [right] The right hand side matrix.
-     * @param {Number} epsilon The epsilon to use for equality testing.
-     * @returns {Boolean} <code>true</code> if they are within the provided epsilon, <code>false</code> otherwise.
-     */
-    Matrix2.prototype.equalsEpsilon = function(right, epsilon) {
-        return Matrix2.equalsEpsilon(this, right, epsilon);
-    };
-
-    /**
-     * Creates a string representing this Matrix with each row being
-     * on a separate line and in the format '(column0, column1)'.
-     *
-     * @returns {String} A string representing the provided Matrix with each row being on a separate line and in the format '(column0, column1)'.
-     */
-    Matrix2.prototype.toString = function() {
-        return '(' + this[0] + ', ' + this[2] + ')\n' +
-               '(' + this[1] + ', ' + this[3] + ')';
-    };
-
-    return Matrix2;
 });
 
 /*global define*/
@@ -20518,14 +19708,314 @@ define('Core/PolygonPipeline',[
 });
 
 /*global define*/
+define('Core/oneTimeWarning',[
+        './defaultValue',
+        './defined',
+        './DeveloperError'
+    ], function(
+        defaultValue,
+        defined,
+        DeveloperError) {
+    "use strict";
+
+    var warnings = {};
+
+    /**
+     * Logs a one time message to the console.  Use this function instead of
+     * <code>console.log</code> directly since this does not log duplicate messages
+     * unless it is called from multiple workers.
+     *
+     * @exports oneTimeWarning
+     *
+     * @param {String} identifier The unique identifier for this warning.
+     * @param {String} [message=identifier] The message to log to the console.
+     *
+     * @example
+     * for(var i=0;i<foo.length;++i) {
+     *    if (!defined(foo[i].bar)) {
+     *       // Something that can be recovered from but may happen a lot
+     *       oneTimeWarning('foo.bar undefined', 'foo.bar is undefined. Setting to 0.');
+     *       foo[i].bar = 0;
+     *       // ...
+     *    }
+     * }
+     *
+     * @private
+     */
+    function oneTimeWarning(identifier, message) {
+                if (!defined(identifier)) {
+            throw new DeveloperError('identifier is required.');
+        }
+        
+        if (!defined(warnings[identifier])) {
+            warnings[identifier] = true;
+            console.warn(defaultValue(message, identifier));
+        }
+    }
+
+    oneTimeWarning.geometryOutlines = 'Entity geometry outlines are unsupported on terrain. Outlines will be disabled. To enable outlines, disable geometry terrain clamping by explicitly setting height to 0.';
+
+    return oneTimeWarning;
+});
+
+/*global define*/
+define('Core/deprecationWarning',[
+        './defined',
+        './DeveloperError',
+        './oneTimeWarning'
+    ], function(
+        defined,
+        DeveloperError,
+        oneTimeWarning) {
+    'use strict';
+    
+    /**
+     * Logs a deprecation message to the console.  Use this function instead of
+     * <code>console.log</code> directly since this does not log duplicate messages
+     * unless it is called from multiple workers.
+     *
+     * @exports deprecationWarning
+     *
+     * @param {String} identifier The unique identifier for this deprecated API.
+     * @param {String} message The message to log to the console.
+     *
+     * @example
+     * // Deprecated function or class
+     * function Foo() {
+     *    deprecationWarning('Foo', 'Foo was deprecated in Cesium 1.01.  It will be removed in 1.03.  Use newFoo instead.');
+     *    // ...
+     * }
+     *
+     * // Deprecated function
+     * Bar.prototype.func = function() {
+     *    deprecationWarning('Bar.func', 'Bar.func() was deprecated in Cesium 1.01.  It will be removed in 1.03.  Use Bar.newFunc() instead.');
+     *    // ...
+     * };
+     *
+     * // Deprecated property
+     * defineProperties(Bar.prototype, {
+     *     prop : {
+     *         get : function() {
+     *             deprecationWarning('Bar.prop', 'Bar.prop was deprecated in Cesium 1.01.  It will be removed in 1.03.  Use Bar.newProp instead.');
+     *             // ...
+     *         },
+     *         set : function(value) {
+     *             deprecationWarning('Bar.prop', 'Bar.prop was deprecated in Cesium 1.01.  It will be removed in 1.03.  Use Bar.newProp instead.');
+     *             // ...
+     *         }
+     *     }
+     * });
+     *
+     * @private
+     */
+    function deprecationWarning(identifier, message) {
+                if (!defined(identifier) || !defined(message)) {
+            throw new DeveloperError('identifier and message are required.');
+        }
+        
+        oneTimeWarning(identifier, message);
+    }
+
+    return deprecationWarning;
+});
+
+/*global define*/
+define('Core/HeadingPitchRoll',[
+        './defaultValue',
+        './defined',
+        './DeveloperError',
+        './Math'
+    ], function(
+        defaultValue,
+        defined,
+        DeveloperError,
+        CesiumMath) {
+    "use strict";
+
+    /**
+     * A rotation expressed as a heading, pitch, and roll. Heading is the rotation about the
+     * negative z axis. Pitch is the rotation about the negative y axis. Roll is the rotation about
+     * the positive x axis.
+     * @alias HeadingPitchRoll
+     * @constructor
+     *
+     * @param {Number} [heading=0.0] The heading component in radians.
+     * @param {Number} [pitch=0.0] The pitch component in radians.
+     * @param {Number} [roll=0.0] The roll component in radians.
+     */
+    function HeadingPitchRoll(heading, pitch, roll) {
+        this.heading = defaultValue(heading, 0.0);
+        this.pitch = defaultValue(pitch, 0.0);
+        this.roll = defaultValue(roll, 0.0);
+    }
+
+    /**
+     * Computes the heading, pitch and roll from a quaternion (see http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles )
+     *
+     * @param {Quaternion} quaternion The quaternion from which to retrieve heading, pitch, and roll, all expressed in radians.
+     * @param {Quaternion} [result] The object in which to store the result. If not provided, a new instance is created and returned.
+     * @returns {HeadingPitchRoll} The modified result parameter or a new HeadingPitchRoll instance if one was not provided.
+     */
+    HeadingPitchRoll.fromQuaternion = function(quaternion, result) {
+                if (!defined(quaternion)) {
+            throw new DeveloperError('quaternion is required');
+        }
+                if (!defined(result)) {
+            result = new HeadingPitchRoll();
+        }
+        var test = 2 * (quaternion.w * quaternion.y - quaternion.z * quaternion.x);
+        var denominatorRoll = 1 - 2 * (quaternion.x * quaternion.x + quaternion.y * quaternion.y);
+        var numeratorRoll = 2 * (quaternion.w * quaternion.x + quaternion.y * quaternion.z);
+        var denominatorHeading = 1 - 2 * (quaternion.y * quaternion.y + quaternion.z * quaternion.z);
+        var numeratorHeading = 2 * (quaternion.w * quaternion.z + quaternion.x * quaternion.y);
+        result.heading = -Math.atan2(numeratorHeading, denominatorHeading);
+        result.roll = Math.atan2(numeratorRoll, denominatorRoll);
+        result.pitch = -Math.asin(test);
+        return result;
+    };
+
+    /**
+     * Returns a new HeadingPitchRoll instance from angles given in degrees.
+     *
+     * @param {Number} heading the heading in degrees
+     * @param {Number} pitch the pitch in degrees
+     * @param {Number} roll the heading in degrees
+     * @param {HeadingPitchRoll} [result] The object in which to store the result. If not provided, a new instance is created and returned.
+     * @returns {HeadingPitchRoll} A new HeadingPitchRoll instance
+     */
+    HeadingPitchRoll.fromDegrees = function(heading, pitch, roll, result) {
+                if (!defined(heading)) {
+            throw new DeveloperError('heading is required');
+        }
+        if (!defined(pitch)) {
+            throw new DeveloperError('pitch is required');
+        }
+        if (!defined(roll)) {
+            throw new DeveloperError('roll is required');
+        }
+                if (!defined(result)) {
+            result = new HeadingPitchRoll();
+        }
+        result.heading = heading * CesiumMath.RADIANS_PER_DEGREE;
+        result.pitch = pitch * CesiumMath.RADIANS_PER_DEGREE;
+        result.roll = roll * CesiumMath.RADIANS_PER_DEGREE;
+        return result;
+    };
+
+    /**
+     * Duplicates a HeadingPitchRoll instance.
+     *
+     * @param {HeadingPitchRoll} headingPitchRoll The HeadingPitchRoll to duplicate.
+     * @param {HeadingPitchRoll} [result] The object onto which to store the result.
+     * @returns {HeadingPitchRoll} The modified result parameter or a new HeadingPitchRoll instance if one was not provided. (Returns undefined if headingPitchRoll is undefined)
+     */
+    HeadingPitchRoll.clone = function(headingPitchRoll, result) {
+        if (!defined(headingPitchRoll)) {
+            return undefined;
+        }
+        if (!defined(result)) {
+            return new HeadingPitchRoll(headingPitchRoll.heading, headingPitchRoll.pitch, headingPitchRoll.roll);
+        }
+        result.heading = headingPitchRoll.heading;
+        result.pitch = headingPitchRoll.pitch;
+        result.roll = headingPitchRoll.roll;
+        return result;
+    };
+
+    /**
+     * Compares the provided HeadingPitchRolls componentwise and returns
+     * <code>true</code> if they are equal, <code>false</code> otherwise.
+     *
+     * @param {HeadingPitchRoll} [left] The first HeadingPitchRoll.
+     * @param {HeadingPitchRoll} [right] The second HeadingPitchRoll.
+     * @returns {Boolean} <code>true</code> if left and right are equal, <code>false</code> otherwise.
+     */
+    HeadingPitchRoll.equals = function(left, right) {
+        return (left === right) ||
+            ((defined(left)) &&
+                (defined(right)) &&
+                (left.heading === right.heading) &&
+                (left.pitch === right.pitch) &&
+                (left.roll === right.roll));
+    };
+
+    /**
+     * Compares the provided HeadingPitchRolls componentwise and returns
+     * <code>true</code> if they pass an absolute or relative tolerance test,
+     * <code>false</code> otherwise.
+     *
+     * @param {HeadingPitchRoll} [left] The first HeadingPitchRoll.
+     * @param {HeadingPitchRoll} [right] The second HeadingPitchRoll.
+     * @param {Number} relativeEpsilon The relative epsilon tolerance to use for equality testing.
+     * @param {Number} [absoluteEpsilon=relativeEpsilon] The absolute epsilon tolerance to use for equality testing.
+     * @returns {Boolean} <code>true</code> if left and right are within the provided epsilon, <code>false</code> otherwise.
+     */
+    HeadingPitchRoll.equalsEpsilon = function(left, right, relativeEpsilon, absoluteEpsilon) {
+        return (left === right) ||
+            (defined(left) &&
+                defined(right) &&
+                CesiumMath.equalsEpsilon(left.heading, right.heading, relativeEpsilon, absoluteEpsilon) &&
+                CesiumMath.equalsEpsilon(left.pitch, right.pitch, relativeEpsilon, absoluteEpsilon) &&
+                CesiumMath.equalsEpsilon(left.roll, right.roll, relativeEpsilon, absoluteEpsilon));
+    };
+
+    /**
+     * Duplicates this HeadingPitchRoll instance.
+     *
+     * @param {HeadingPitchRoll} [result] The object onto which to store the result.
+     * @returns {HeadingPitchRoll} The modified result parameter or a new HeadingPitchRoll instance if one was not provided.
+     */
+    HeadingPitchRoll.prototype.clone = function(result) {
+        return HeadingPitchRoll.clone(this, result);
+    };
+
+    /**
+     * Compares this HeadingPitchRoll against the provided HeadingPitchRoll componentwise and returns
+     * <code>true</code> if they are equal, <code>false</code> otherwise.
+     *
+     * @param {HeadingPitchRoll} [right] The right hand side HeadingPitchRoll.
+     * @returns {Boolean} <code>true</code> if they are equal, <code>false</code> otherwise.
+     */
+    HeadingPitchRoll.prototype.equals = function(right) {
+        return HeadingPitchRoll.equals(this, right);
+    };
+
+    /**
+     * Compares this HeadingPitchRoll against the provided HeadingPitchRoll componentwise and returns
+     * <code>true</code> if they pass an absolute or relative tolerance test,
+     * <code>false</code> otherwise.
+     *
+     * @param {HeadingPitchRoll} [right] The right hand side HeadingPitchRoll.
+     * @param {Number} relativeEpsilon The relative epsilon tolerance to use for equality testing.
+     * @param {Number} [absoluteEpsilon=relativeEpsilon] The absolute epsilon tolerance to use for equality testing.
+     * @returns {Boolean} <code>true</code> if they are within the provided epsilon, <code>false</code> otherwise.
+     */
+    HeadingPitchRoll.prototype.equalsEpsilon = function(right, relativeEpsilon, absoluteEpsilon) {
+        return HeadingPitchRoll.equalsEpsilon(this, right, relativeEpsilon, absoluteEpsilon);
+    };
+
+    /**
+     * Creates a string representing this HeadingPitchRoll in the format '(heading, pitch, roll)' in radians.
+     *
+     * @returns {String} A string representing the provided HeadingPitchRoll in the format '(heading, pitch, roll)'.
+     */
+    HeadingPitchRoll.prototype.toString = function() {
+        return '(' + this.heading + ', ' + this.pitch + ', ' + this.roll + ')';
+    };
+
+    return HeadingPitchRoll;
+});
+
+/*global define*/
 define('Core/Quaternion',[
         './Cartesian3',
         './Check',
         './defaultValue',
         './defined',
-        './DeveloperError',
+        './deprecationWarning',
         './FeatureDetection',
         './freezeObject',
+        './HeadingPitchRoll',
         './Math',
         './Matrix3'
     ], function(
@@ -20533,9 +20023,10 @@ define('Core/Quaternion',[
         Check,
         defaultValue,
         defined,
-        DeveloperError,
+        deprecationWarning,
         FeatureDetection,
         freezeObject,
+        HeadingPitchRoll,
         CesiumMath,
         Matrix3) {
     'use strict';
@@ -20593,8 +20084,8 @@ define('Core/Quaternion',[
      * @returns {Quaternion} The modified result parameter or a new Quaternion instance if one was not provided.
      */
     Quaternion.fromAxisAngle = function(axis, angle, result) {
-                Check.typeOf.object(axis, 'axis');
-        Check.typeOf.number(angle, 'angle');
+                Check.typeOf.object('axis', axis);
+        Check.typeOf.number('angle', angle);
         
         var halfAngle = angle / 2.0;
         var s = Math.sin(halfAngle);
@@ -20626,7 +20117,7 @@ define('Core/Quaternion',[
      * @see Matrix3.fromQuaternion
      */
     Quaternion.fromRotationMatrix = function(matrix, result) {
-                Check.typeOf.object(matrix, 'matrix');
+                Check.typeOf.object('matrix', matrix);
         
         var root;
         var x;
@@ -20687,6 +20178,9 @@ define('Core/Quaternion',[
     };
 
     var scratchHPRQuaternion = new Quaternion();
+    var scratchHeadingQuaternion = new Quaternion();
+    var scratchPitchQuaternion = new Quaternion();
+    var scratchRollQuaternion = new Quaternion();
 
     /**
      * Computes a rotation from the given heading, pitch and roll angles. Heading is the rotation about the
@@ -20699,16 +20193,27 @@ define('Core/Quaternion',[
      * @param {Quaternion} [result] The object onto which to store the result.
      * @returns {Quaternion} The modified result parameter or a new Quaternion instance if none was provided.
      */
-    Quaternion.fromHeadingPitchRoll = function(heading, pitch, roll, result) {
-                Check.typeOf.number(heading, 'heading');
-        Check.typeOf.number(pitch, 'pitch');
-        Check.typeOf.number(roll, 'roll');
-        
-        var rollQuaternion = Quaternion.fromAxisAngle(Cartesian3.UNIT_X, roll, scratchHPRQuaternion);
-        var pitchQuaternion = Quaternion.fromAxisAngle(Cartesian3.UNIT_Y, -pitch, result);
-        result = Quaternion.multiply(pitchQuaternion, rollQuaternion, pitchQuaternion);
-        var headingQuaternion = Quaternion.fromAxisAngle(Cartesian3.UNIT_Z, -heading, scratchHPRQuaternion);
-        return Quaternion.multiply(headingQuaternion, result, result);
+    Quaternion.fromHeadingPitchRoll = function(headingOrHeadingPitchRoll, pitchOrResult, roll, result) {
+                if (headingOrHeadingPitchRoll instanceof HeadingPitchRoll) {
+            Check.typeOf.object('headingPitchRoll', headingOrHeadingPitchRoll);
+        } else {
+            Check.typeOf.number(headingOrHeadingPitchRoll, 'heading');
+            Check.typeOf.number(pitchOrResult, 'pitch');
+            Check.typeOf.number(roll, 'roll');
+        }
+                var hpr;
+        if (headingOrHeadingPitchRoll instanceof HeadingPitchRoll) {
+            hpr = headingOrHeadingPitchRoll;
+            result = pitchOrResult;
+        } else {
+            deprecationWarning('Quaternion.fromHeadingPitchRoll(heading, pitch, roll,result)', 'The method was deprecated in Cesium 1.32 and will be removed in version 1.33. ' + 'Use Quaternion.fromHeadingPitchRoll(hpr,result) where hpr is a HeadingPitchRoll');
+            hpr = new HeadingPitchRoll(headingOrHeadingPitchRoll, pitchOrResult, roll);
+        }
+        scratchRollQuaternion = Quaternion.fromAxisAngle(Cartesian3.UNIT_X, hpr.roll, scratchHPRQuaternion);
+        scratchPitchQuaternion = Quaternion.fromAxisAngle(Cartesian3.UNIT_Y, -hpr.pitch, result);
+        result = Quaternion.multiply(scratchPitchQuaternion, scratchRollQuaternion, scratchPitchQuaternion);
+        scratchHeadingQuaternion = Quaternion.fromAxisAngle(Cartesian3.UNIT_Z, -hpr.heading, scratchHPRQuaternion);
+        return Quaternion.multiply(scratchHeadingQuaternion, result, result);
     };
 
     var sampledQuaternionAxis = new Cartesian3();
@@ -20733,8 +20238,8 @@ define('Core/Quaternion',[
      * @returns {Number[]} The array that was packed into
      */
     Quaternion.pack = function(value, array, startingIndex) {
-                Check.typeOf.object(value, 'value');
-        Check.defined(array, 'array');
+                Check.typeOf.object('value', value);
+        Check.defined('array', array);
         
         startingIndex = defaultValue(startingIndex, 0);
 
@@ -20755,7 +20260,7 @@ define('Core/Quaternion',[
      * @returns {Quaternion} The modified result parameter or a new Quaternion instance if one was not provided.
      */
     Quaternion.unpack = function(array, startingIndex, result) {
-                Check.defined(array, 'array');
+                Check.defined('array', array);
         
         startingIndex = defaultValue(startingIndex, 0);
 
@@ -20864,8 +20369,8 @@ define('Core/Quaternion',[
      * @returns {Quaternion} The modified result parameter.
      */
     Quaternion.conjugate = function(quaternion, result) {
-                Check.typeOf.object(quaternion, 'quaternion');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('quaternion', quaternion);
+        Check.typeOf.object('result', result);
         
         result.x = -quaternion.x;
         result.y = -quaternion.y;
@@ -20881,7 +20386,7 @@ define('Core/Quaternion',[
      * @returns {Number} The magnitude squared.
      */
     Quaternion.magnitudeSquared = function(quaternion) {
-                Check.typeOf.object(quaternion, 'quaternion');
+                Check.typeOf.object('quaternion', quaternion);
         
         return quaternion.x * quaternion.x + quaternion.y * quaternion.y + quaternion.z * quaternion.z + quaternion.w * quaternion.w;
     };
@@ -20904,7 +20409,7 @@ define('Core/Quaternion',[
      * @returns {Quaternion} The modified result parameter.
      */
     Quaternion.normalize = function(quaternion, result) {
-                Check.typeOf.object(result, 'result');
+                Check.typeOf.object('result', result);
         
         var inverseMagnitude = 1.0 / Quaternion.magnitude(quaternion);
         var x = quaternion.x * inverseMagnitude;
@@ -20927,7 +20432,7 @@ define('Core/Quaternion',[
      * @returns {Quaternion} The modified result parameter.
      */
     Quaternion.inverse = function(quaternion, result) {
-                Check.typeOf.object(result, 'result');
+                Check.typeOf.object('result', result);
         
         var magnitudeSquared = Quaternion.magnitudeSquared(quaternion);
         result = Quaternion.conjugate(quaternion, result);
@@ -20943,9 +20448,9 @@ define('Core/Quaternion',[
      * @returns {Quaternion} The modified result parameter.
      */
     Quaternion.add = function(left, right, result) {
-                Check.typeOf.object(left, 'left');
-        Check.typeOf.object(right, 'right');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('left', left);
+        Check.typeOf.object('right', right);
+        Check.typeOf.object('result', result);
         
         result.x = left.x + right.x;
         result.y = left.y + right.y;
@@ -20963,9 +20468,9 @@ define('Core/Quaternion',[
      * @returns {Quaternion} The modified result parameter.
      */
     Quaternion.subtract = function(left, right, result) {
-                Check.typeOf.object(left, 'left');
-        Check.typeOf.object(right, 'right');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('left', left);
+        Check.typeOf.object('right', right);
+        Check.typeOf.object('result', result);
         
         result.x = left.x - right.x;
         result.y = left.y - right.y;
@@ -20982,8 +20487,8 @@ define('Core/Quaternion',[
      * @returns {Quaternion} The modified result parameter.
      */
     Quaternion.negate = function(quaternion, result) {
-                Check.typeOf.object(quaternion, 'quaternion');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('quaternion', quaternion);
+        Check.typeOf.object('result', result);
         
         result.x = -quaternion.x;
         result.y = -quaternion.y;
@@ -21000,8 +20505,8 @@ define('Core/Quaternion',[
      * @returns {Number} The dot product.
      */
     Quaternion.dot = function(left, right) {
-                Check.typeOf.object(left, 'left');
-        Check.typeOf.object(right, 'right');
+                Check.typeOf.object('left', left);
+        Check.typeOf.object('right', right);
         
         return left.x * right.x + left.y * right.y + left.z * right.z + left.w * right.w;
     };
@@ -21015,9 +20520,9 @@ define('Core/Quaternion',[
      * @returns {Quaternion} The modified result parameter.
      */
     Quaternion.multiply = function(left, right, result) {
-                Check.typeOf.object(left, 'left');
-        Check.typeOf.object(right, 'right');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('left', left);
+        Check.typeOf.object('right', right);
+        Check.typeOf.object('result', result);
         
         var leftX = left.x;
         var leftY = left.y;
@@ -21050,9 +20555,9 @@ define('Core/Quaternion',[
      * @returns {Quaternion} The modified result parameter.
      */
     Quaternion.multiplyByScalar = function(quaternion, scalar, result) {
-                Check.typeOf.object(quaternion, 'quaternion');
-        Check.typeOf.number(scalar, 'scalar');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('quaternion', quaternion);
+        Check.typeOf.number('scalar', scalar);
+        Check.typeOf.object('result', result);
         
         result.x = quaternion.x * scalar;
         result.y = quaternion.y * scalar;
@@ -21070,9 +20575,9 @@ define('Core/Quaternion',[
      * @returns {Quaternion} The modified result parameter.
      */
     Quaternion.divideByScalar = function(quaternion, scalar, result) {
-                Check.typeOf.object(quaternion, 'quaternion');
-        Check.typeOf.number(scalar, 'scalar');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('quaternion', quaternion);
+        Check.typeOf.number('scalar', scalar);
+        Check.typeOf.object('result', result);
         
         result.x = quaternion.x / scalar;
         result.y = quaternion.y / scalar;
@@ -21089,8 +20594,8 @@ define('Core/Quaternion',[
      * @returns {Cartesian3} The modified result parameter.
      */
     Quaternion.computeAxis = function(quaternion, result) {
-                Check.typeOf.object(quaternion, 'quaternion');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('quaternion', quaternion);
+        Check.typeOf.object('result', result);
         
         var w = quaternion.w;
         if (Math.abs(w - 1.0) < CesiumMath.EPSILON6) {
@@ -21113,7 +20618,7 @@ define('Core/Quaternion',[
      * @returns {Number} The angle of rotation.
      */
     Quaternion.computeAngle = function(quaternion) {
-                Check.typeOf.object(quaternion, 'quaternion');
+                Check.typeOf.object('quaternion', quaternion);
         
         if (Math.abs(quaternion.w - 1.0) < CesiumMath.EPSILON6) {
             return 0.0;
@@ -21132,10 +20637,10 @@ define('Core/Quaternion',[
      * @returns {Quaternion} The modified result parameter.
      */
     Quaternion.lerp = function(start, end, t, result) {
-                Check.typeOf.object(start, 'start');
-        Check.typeOf.object(end, 'end');
-        Check.typeOf.number(t, 't');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('start', start);
+        Check.typeOf.object('end', end);
+        Check.typeOf.number('t', t);
+        Check.typeOf.object('result', result);
         
         lerpScratch = Quaternion.multiplyByScalar(end, t, lerpScratch);
         result = Quaternion.multiplyByScalar(start, 1.0 - t, result);
@@ -21157,10 +20662,10 @@ define('Core/Quaternion',[
      * @see Quaternion#fastSlerp
      */
     Quaternion.slerp = function(start, end, t, result) {
-                Check.typeOf.object(start, 'start');
-        Check.typeOf.object(end, 'end');
-        Check.typeOf.number(t, 't');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('start', start);
+        Check.typeOf.object('end', end);
+        Check.typeOf.number('t', t);
+        Check.typeOf.object('result', result);
         
         var dot = Quaternion.dot(start, end);
 
@@ -21193,8 +20698,8 @@ define('Core/Quaternion',[
      * @returns {Cartesian3} The modified result parameter.
      */
     Quaternion.log = function(quaternion, result) {
-                Check.typeOf.object(quaternion, 'quaternion');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('quaternion', quaternion);
+        Check.typeOf.object('result', result);
         
         var theta = CesiumMath.acosClamped(quaternion.w);
         var thetaOverSinTheta = 0.0;
@@ -21214,8 +20719,8 @@ define('Core/Quaternion',[
      * @returns {Quaternion} The modified result parameter.
      */
     Quaternion.exp = function(cartesian, result) {
-                Check.typeOf.object(cartesian, 'cartesian');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('cartesian', cartesian);
+        Check.typeOf.object('result', result);
         
         var theta = Cartesian3.magnitude(cartesian);
         var sinThetaOverTheta = 0.0;
@@ -21250,10 +20755,10 @@ define('Core/Quaternion',[
      * @see Quaternion#squad
      */
     Quaternion.computeInnerQuadrangle = function(q0, q1, q2, result) {
-                Check.typeOf.object(q0, 'q0');
-        Check.typeOf.object(q1, 'q1');
-        Check.typeOf.object(q2, 'q2');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('q0', q0);
+        Check.typeOf.object('q1', q1);
+        Check.typeOf.object('q2', q2);
+        Check.typeOf.object('result', result);
         
         var qInv = Quaternion.conjugate(q1, squadScratchQuaternion0);
         Quaternion.multiply(qInv, q2, squadScratchQuaternion1);
@@ -21295,12 +20800,12 @@ define('Core/Quaternion',[
      * @see Quaternion#computeInnerQuadrangle
      */
     Quaternion.squad = function(q0, q1, s0, s1, t, result) {
-                Check.typeOf.object(q0, 'q0');
-        Check.typeOf.object(q1, 'q1');
-        Check.typeOf.object(s0, 's0');
-        Check.typeOf.object(s1, 's1');
-        Check.typeOf.number(t, 't');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('q0', q0);
+        Check.typeOf.object('q1', q1);
+        Check.typeOf.object('s0', s0);
+        Check.typeOf.object('s1', s1);
+        Check.typeOf.number('t', t);
+        Check.typeOf.object('result', result);
         
         var slerp0 = Quaternion.slerp(q0, q1, t, squadScratchQuaternion0);
         var slerp1 = Quaternion.slerp(s0, s1, t, squadScratchQuaternion1);
@@ -21337,10 +20842,10 @@ define('Core/Quaternion',[
      * @see Quaternion#slerp
      */
     Quaternion.fastSlerp = function(start, end, t, result) {
-                Check.typeOf.object(start, 'start');
-        Check.typeOf.object(end, 'end');
-        Check.typeOf.number(t, 't');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('start', start);
+        Check.typeOf.object('end', end);
+        Check.typeOf.number('t', t);
+        Check.typeOf.object('result', result);
         
         var x = Quaternion.dot(start, end);
 
@@ -21389,12 +20894,12 @@ define('Core/Quaternion',[
      * @see Quaternion#squad
      */
     Quaternion.fastSquad = function(q0, q1, s0, s1, t, result) {
-                Check.typeOf.object(q0, 'q0');
-        Check.typeOf.object(q1, 'q1');
-        Check.typeOf.object(s0, 's0');
-        Check.typeOf.object(s1, 's1');
-        Check.typeOf.number(t, 't');
-        Check.typeOf.object(result, 'result');
+                Check.typeOf.object('q0', q0);
+        Check.typeOf.object('q1', q1);
+        Check.typeOf.object('s0', s0);
+        Check.typeOf.object('s1', s1);
+        Check.typeOf.number('t', t);
+        Check.typeOf.object('result', result);
         
         var slerp0 = Quaternion.fastSlerp(q0, q1, t, squadScratchQuaternion0);
         var slerp1 = Quaternion.fastSlerp(s0, s1, t, squadScratchQuaternion1);
@@ -21430,7 +20935,7 @@ define('Core/Quaternion',[
      * @returns {Boolean} <code>true</code> if left and right are within the provided epsilon, <code>false</code> otherwise.
      */
     Quaternion.equalsEpsilon = function(left, right, epsilon) {
-                Check.typeOf.number(epsilon, 'epsilon');
+                Check.typeOf.number('epsilon', epsilon);
         
         return (left === right) ||
                ((defined(left)) &&
@@ -21501,6 +21006,840 @@ define('Core/Quaternion',[
     };
 
     return Quaternion;
+});
+
+/*global define*/
+define('Core/Matrix2',[
+        './Cartesian2',
+        './Check',
+        './defaultValue',
+        './defined',
+        './defineProperties',
+        './freezeObject'
+    ], function(
+        Cartesian2,
+        Check,
+        defaultValue,
+        defined,
+        defineProperties,
+        freezeObject) {
+    'use strict';
+
+    /**
+     * A 2x2 matrix, indexable as a column-major order array.
+     * Constructor parameters are in row-major order for code readability.
+     * @alias Matrix2
+     * @constructor
+     *
+     * @param {Number} [column0Row0=0.0] The value for column 0, row 0.
+     * @param {Number} [column1Row0=0.0] The value for column 1, row 0.
+     * @param {Number} [column0Row1=0.0] The value for column 0, row 1.
+     * @param {Number} [column1Row1=0.0] The value for column 1, row 1.
+     *
+     * @see Matrix2.fromColumnMajorArray
+     * @see Matrix2.fromRowMajorArray
+     * @see Matrix2.fromScale
+     * @see Matrix2.fromUniformScale
+     * @see Matrix3
+     * @see Matrix4
+     */
+    function Matrix2(column0Row0, column1Row0, column0Row1, column1Row1) {
+        this[0] = defaultValue(column0Row0, 0.0);
+        this[1] = defaultValue(column0Row1, 0.0);
+        this[2] = defaultValue(column1Row0, 0.0);
+        this[3] = defaultValue(column1Row1, 0.0);
+    }
+
+    /**
+     * The number of elements used to pack the object into an array.
+     * @type {Number}
+     */
+    Matrix2.packedLength = 4;
+
+    /**
+     * Stores the provided instance into the provided array.
+     *
+     * @param {Matrix2} value The value to pack.
+     * @param {Number[]} array The array to pack into.
+     * @param {Number} [startingIndex=0] The index into the array at which to start packing the elements.
+     *
+     * @returns {Number[]} The array that was packed into
+     */
+    Matrix2.pack = function(value, array, startingIndex) {
+                Check.typeOf.object('value', value);
+        Check.defined('array', array);
+        
+        startingIndex = defaultValue(startingIndex, 0);
+
+        array[startingIndex++] = value[0];
+        array[startingIndex++] = value[1];
+        array[startingIndex++] = value[2];
+        array[startingIndex++] = value[3];
+
+        return array;
+    };
+
+    /**
+     * Retrieves an instance from a packed array.
+     *
+     * @param {Number[]} array The packed array.
+     * @param {Number} [startingIndex=0] The starting index of the element to be unpacked.
+     * @param {Matrix2} [result] The object into which to store the result.
+     * @returns {Matrix2} The modified result parameter or a new Matrix2 instance if one was not provided.
+     */
+    Matrix2.unpack = function(array, startingIndex, result) {
+                Check.defined('array', array);
+        
+        startingIndex = defaultValue(startingIndex, 0);
+
+        if (!defined(result)) {
+            result = new Matrix2();
+        }
+
+        result[0] = array[startingIndex++];
+        result[1] = array[startingIndex++];
+        result[2] = array[startingIndex++];
+        result[3] = array[startingIndex++];
+        return result;
+    };
+
+    /**
+     * Duplicates a Matrix2 instance.
+     *
+     * @param {Matrix2} matrix The matrix to duplicate.
+     * @param {Matrix2} [result] The object onto which to store the result.
+     * @returns {Matrix2} The modified result parameter or a new Matrix2 instance if one was not provided. (Returns undefined if matrix is undefined)
+     */
+    Matrix2.clone = function(matrix, result) {
+        if (!defined(matrix)) {
+            return undefined;
+        }
+        if (!defined(result)) {
+            return new Matrix2(matrix[0], matrix[2],
+                               matrix[1], matrix[3]);
+        }
+        result[0] = matrix[0];
+        result[1] = matrix[1];
+        result[2] = matrix[2];
+        result[3] = matrix[3];
+        return result;
+    };
+
+    /**
+     * Creates a Matrix2 from 4 consecutive elements in an array.
+     *
+     * @param {Number[]} array The array whose 4 consecutive elements correspond to the positions of the matrix.  Assumes column-major order.
+     * @param {Number} [startingIndex=0] The offset into the array of the first element, which corresponds to first column first row position in the matrix.
+     * @param {Matrix2} [result] The object onto which to store the result.
+     * @returns {Matrix2} The modified result parameter or a new Matrix2 instance if one was not provided.
+     *
+     * @example
+     * // Create the Matrix2:
+     * // [1.0, 2.0]
+     * // [1.0, 2.0]
+     *
+     * var v = [1.0, 1.0, 2.0, 2.0];
+     * var m = Cesium.Matrix2.fromArray(v);
+     *
+     * // Create same Matrix2 with using an offset into an array
+     * var v2 = [0.0, 0.0, 1.0, 1.0, 2.0, 2.0];
+     * var m2 = Cesium.Matrix2.fromArray(v2, 2);
+     */
+    Matrix2.fromArray = function(array, startingIndex, result) {
+                Check.defined('array', array);
+        
+        startingIndex = defaultValue(startingIndex, 0);
+
+        if (!defined(result)) {
+            result = new Matrix2();
+        }
+
+        result[0] = array[startingIndex];
+        result[1] = array[startingIndex + 1];
+        result[2] = array[startingIndex + 2];
+        result[3] = array[startingIndex + 3];
+        return result;
+    };
+
+    /**
+     * Creates a Matrix2 instance from a column-major order array.
+     *
+     * @param {Number[]} values The column-major order array.
+     * @param {Matrix2} [result] The object in which the result will be stored, if undefined a new instance will be created.
+     * @returns {Matrix2} The modified result parameter, or a new Matrix2 instance if one was not provided.
+     */
+    Matrix2.fromColumnMajorArray = function(values, result) {
+                Check.defined('values', values);
+        
+        return Matrix2.clone(values, result);
+    };
+
+    /**
+     * Creates a Matrix2 instance from a row-major order array.
+     * The resulting matrix will be in column-major order.
+     *
+     * @param {Number[]} values The row-major order array.
+     * @param {Matrix2} [result] The object in which the result will be stored, if undefined a new instance will be created.
+     * @returns {Matrix2} The modified result parameter, or a new Matrix2 instance if one was not provided.
+     */
+    Matrix2.fromRowMajorArray = function(values, result) {
+                Check.defined('values', values);
+        
+        if (!defined(result)) {
+            return new Matrix2(values[0], values[1],
+                               values[2], values[3]);
+        }
+        result[0] = values[0];
+        result[1] = values[2];
+        result[2] = values[1];
+        result[3] = values[3];
+        return result;
+    };
+
+    /**
+     * Computes a Matrix2 instance representing a non-uniform scale.
+     *
+     * @param {Cartesian2} scale The x and y scale factors.
+     * @param {Matrix2} [result] The object in which the result will be stored, if undefined a new instance will be created.
+     * @returns {Matrix2} The modified result parameter, or a new Matrix2 instance if one was not provided.
+     *
+     * @example
+     * // Creates
+     * //   [7.0, 0.0]
+     * //   [0.0, 8.0]
+     * var m = Cesium.Matrix2.fromScale(new Cesium.Cartesian2(7.0, 8.0));
+     */
+    Matrix2.fromScale = function(scale, result) {
+                Check.typeOf.object('scale', scale);
+        
+        if (!defined(result)) {
+            return new Matrix2(
+                scale.x, 0.0,
+                0.0,     scale.y);
+        }
+
+        result[0] = scale.x;
+        result[1] = 0.0;
+        result[2] = 0.0;
+        result[3] = scale.y;
+        return result;
+    };
+
+    /**
+     * Computes a Matrix2 instance representing a uniform scale.
+     *
+     * @param {Number} scale The uniform scale factor.
+     * @param {Matrix2} [result] The object in which the result will be stored, if undefined a new instance will be created.
+     * @returns {Matrix2} The modified result parameter, or a new Matrix2 instance if one was not provided.
+     *
+     * @example
+     * // Creates
+     * //   [2.0, 0.0]
+     * //   [0.0, 2.0]
+     * var m = Cesium.Matrix2.fromUniformScale(2.0);
+     */
+    Matrix2.fromUniformScale = function(scale, result) {
+                Check.typeOf.number('scale', scale);
+        
+        if (!defined(result)) {
+            return new Matrix2(
+                scale, 0.0,
+                0.0,   scale);
+        }
+
+        result[0] = scale;
+        result[1] = 0.0;
+        result[2] = 0.0;
+        result[3] = scale;
+        return result;
+    };
+
+    /**
+     * Creates a rotation matrix.
+     *
+     * @param {Number} angle The angle, in radians, of the rotation.  Positive angles are counterclockwise.
+     * @param {Matrix2} [result] The object in which the result will be stored, if undefined a new instance will be created.
+     * @returns {Matrix2} The modified result parameter, or a new Matrix2 instance if one was not provided.
+     *
+     * @example
+     * // Rotate a point 45 degrees counterclockwise.
+     * var p = new Cesium.Cartesian2(5, 6);
+     * var m = Cesium.Matrix2.fromRotation(Cesium.Math.toRadians(45.0));
+     * var rotated = Cesium.Matrix2.multiplyByVector(m, p, new Cesium.Cartesian2());
+     */
+    Matrix2.fromRotation = function(angle, result) {
+                Check.typeOf.number('angle', angle);
+        
+        var cosAngle = Math.cos(angle);
+        var sinAngle = Math.sin(angle);
+
+        if (!defined(result)) {
+            return new Matrix2(
+                cosAngle, -sinAngle,
+                sinAngle, cosAngle);
+        }
+        result[0] = cosAngle;
+        result[1] = sinAngle;
+        result[2] = -sinAngle;
+        result[3] = cosAngle;
+        return result;
+    };
+
+    /**
+     * Creates an Array from the provided Matrix2 instance.
+     * The array will be in column-major order.
+     *
+     * @param {Matrix2} matrix The matrix to use..
+     * @param {Number[]} [result] The Array onto which to store the result.
+     * @returns {Number[]} The modified Array parameter or a new Array instance if one was not provided.
+     */
+    Matrix2.toArray = function(matrix, result) {
+                Check.typeOf.object('matrix', matrix);
+        
+        if (!defined(result)) {
+            return [matrix[0], matrix[1], matrix[2], matrix[3]];
+        }
+        result[0] = matrix[0];
+        result[1] = matrix[1];
+        result[2] = matrix[2];
+        result[3] = matrix[3];
+        return result;
+    };
+
+    /**
+     * Computes the array index of the element at the provided row and column.
+     *
+     * @param {Number} row The zero-based index of the row.
+     * @param {Number} column The zero-based index of the column.
+     * @returns {Number} The index of the element at the provided row and column.
+     *
+     * @exception {DeveloperError} row must be 0 or 1.
+     * @exception {DeveloperError} column must be 0 or 1.
+     *
+     * @example
+     * var myMatrix = new Cesium.Matrix2();
+     * var column1Row0Index = Cesium.Matrix2.getElementIndex(1, 0);
+     * var column1Row0 = myMatrix[column1Row0Index]
+     * myMatrix[column1Row0Index] = 10.0;
+     */
+    Matrix2.getElementIndex = function(column, row) {
+                Check.typeOf.number.greaterThanOrEquals('row', row, 0);
+        Check.typeOf.number.lessThanOrEquals('row', row, 1);
+
+        Check.typeOf.number.greaterThanOrEquals('column', column, 0);
+        Check.typeOf.number.lessThanOrEquals('column', column, 1);
+        
+        return column * 2 + row;
+    };
+
+    /**
+     * Retrieves a copy of the matrix column at the provided index as a Cartesian2 instance.
+     *
+     * @param {Matrix2} matrix The matrix to use.
+     * @param {Number} index The zero-based index of the column to retrieve.
+     * @param {Cartesian2} result The object onto which to store the result.
+     * @returns {Cartesian2} The modified result parameter.
+     *
+     * @exception {DeveloperError} index must be 0 or 1.
+     */
+    Matrix2.getColumn = function(matrix, index, result) {
+                Check.typeOf.object('matrix', matrix);
+
+        Check.typeOf.number.greaterThanOrEquals('index', index, 0);
+        Check.typeOf.number.lessThanOrEquals('index', index, 1);
+
+        Check.typeOf.object('result', result);
+        
+        var startIndex = index * 2;
+        var x = matrix[startIndex];
+        var y = matrix[startIndex + 1];
+
+        result.x = x;
+        result.y = y;
+        return result;
+    };
+
+    /**
+     * Computes a new matrix that replaces the specified column in the provided matrix with the provided Cartesian2 instance.
+     *
+     * @param {Matrix2} matrix The matrix to use.
+     * @param {Number} index The zero-based index of the column to set.
+     * @param {Cartesian2} cartesian The Cartesian whose values will be assigned to the specified column.
+     * @param {Cartesian2} result The object onto which to store the result.
+     * @returns {Matrix2} The modified result parameter.
+     *
+     * @exception {DeveloperError} index must be 0 or 1.
+     */
+    Matrix2.setColumn = function(matrix, index, cartesian, result) {
+                Check.typeOf.object('matrix', matrix);
+
+        Check.typeOf.number.greaterThanOrEquals('index', index, 0);
+        Check.typeOf.number.lessThanOrEquals('index', index, 1);
+
+        Check.typeOf.object('cartesian', cartesian);
+        Check.typeOf.object('result', result);
+        
+        result = Matrix2.clone(matrix, result);
+        var startIndex = index * 2;
+        result[startIndex] = cartesian.x;
+        result[startIndex + 1] = cartesian.y;
+        return result;
+    };
+
+    /**
+     * Retrieves a copy of the matrix row at the provided index as a Cartesian2 instance.
+     *
+     * @param {Matrix2} matrix The matrix to use.
+     * @param {Number} index The zero-based index of the row to retrieve.
+     * @param {Cartesian2} result The object onto which to store the result.
+     * @returns {Cartesian2} The modified result parameter.
+     *
+     * @exception {DeveloperError} index must be 0 or 1.
+     */
+    Matrix2.getRow = function(matrix, index, result) {
+                Check.typeOf.object('matrix', matrix);
+
+        Check.typeOf.number.greaterThanOrEquals('index', index, 0);
+        Check.typeOf.number.lessThanOrEquals('index', index, 1);
+
+        Check.typeOf.object('result', result);
+        
+        var x = matrix[index];
+        var y = matrix[index + 2];
+
+        result.x = x;
+        result.y = y;
+        return result;
+    };
+
+    /**
+     * Computes a new matrix that replaces the specified row in the provided matrix with the provided Cartesian2 instance.
+     *
+     * @param {Matrix2} matrix The matrix to use.
+     * @param {Number} index The zero-based index of the row to set.
+     * @param {Cartesian2} cartesian The Cartesian whose values will be assigned to the specified row.
+     * @param {Matrix2} result The object onto which to store the result.
+     * @returns {Matrix2} The modified result parameter.
+     *
+     * @exception {DeveloperError} index must be 0 or 1.
+     */
+    Matrix2.setRow = function(matrix, index, cartesian, result) {
+                Check.typeOf.object('matrix', matrix);
+
+        Check.typeOf.number.greaterThanOrEquals('index', index, 0);
+        Check.typeOf.number.lessThanOrEquals('index', index, 1);
+
+        Check.typeOf.object('cartesian', cartesian);
+        Check.typeOf.object('result', result);
+        
+        result = Matrix2.clone(matrix, result);
+        result[index] = cartesian.x;
+        result[index + 2] = cartesian.y;
+        return result;
+    };
+
+    var scratchColumn = new Cartesian2();
+
+    /**
+     * Extracts the non-uniform scale assuming the matrix is an affine transformation.
+     *
+     * @param {Matrix2} matrix The matrix.
+     * @param {Cartesian2} result The object onto which to store the result.
+     * @returns {Cartesian2} The modified result parameter.
+     */
+    Matrix2.getScale = function(matrix, result) {
+                Check.typeOf.object('matrix', matrix);
+        Check.typeOf.object('result', result);
+        
+        result.x = Cartesian2.magnitude(Cartesian2.fromElements(matrix[0], matrix[1], scratchColumn));
+        result.y = Cartesian2.magnitude(Cartesian2.fromElements(matrix[2], matrix[3], scratchColumn));
+        return result;
+    };
+
+    var scratchScale = new Cartesian2();
+
+    /**
+     * Computes the maximum scale assuming the matrix is an affine transformation.
+     * The maximum scale is the maximum length of the column vectors.
+     *
+     * @param {Matrix2} matrix The matrix.
+     * @returns {Number} The maximum scale.
+     */
+    Matrix2.getMaximumScale = function(matrix) {
+        Matrix2.getScale(matrix, scratchScale);
+        return Cartesian2.maximumComponent(scratchScale);
+    };
+
+    /**
+     * Computes the product of two matrices.
+     *
+     * @param {Matrix2} left The first matrix.
+     * @param {Matrix2} right The second matrix.
+     * @param {Matrix2} result The object onto which to store the result.
+     * @returns {Matrix2} The modified result parameter.
+     */
+    Matrix2.multiply = function(left, right, result) {
+                Check.typeOf.object('left', left);
+        Check.typeOf.object('right', right);
+        Check.typeOf.object('result', result);
+        
+        var column0Row0 = left[0] * right[0] + left[2] * right[1];
+        var column1Row0 = left[0] * right[2] + left[2] * right[3];
+        var column0Row1 = left[1] * right[0] + left[3] * right[1];
+        var column1Row1 = left[1] * right[2] + left[3] * right[3];
+
+        result[0] = column0Row0;
+        result[1] = column0Row1;
+        result[2] = column1Row0;
+        result[3] = column1Row1;
+        return result;
+    };
+
+    /**
+     * Computes the sum of two matrices.
+     *
+     * @param {Matrix2} left The first matrix.
+     * @param {Matrix2} right The second matrix.
+     * @param {Matrix2} result The object onto which to store the result.
+     * @returns {Matrix2} The modified result parameter.
+     */
+    Matrix2.add = function(left, right, result) {
+                Check.typeOf.object('left', left);
+        Check.typeOf.object('right', right);
+        Check.typeOf.object('result', result);
+        
+        result[0] = left[0] + right[0];
+        result[1] = left[1] + right[1];
+        result[2] = left[2] + right[2];
+        result[3] = left[3] + right[3];
+        return result;
+    };
+
+    /**
+     * Computes the difference of two matrices.
+     *
+     * @param {Matrix2} left The first matrix.
+     * @param {Matrix2} right The second matrix.
+     * @param {Matrix2} result The object onto which to store the result.
+     * @returns {Matrix2} The modified result parameter.
+     */
+    Matrix2.subtract = function(left, right, result) {
+                Check.typeOf.object('left', left);
+        Check.typeOf.object('right', right);
+        Check.typeOf.object('result', result);
+        
+        result[0] = left[0] - right[0];
+        result[1] = left[1] - right[1];
+        result[2] = left[2] - right[2];
+        result[3] = left[3] - right[3];
+        return result;
+    };
+
+    /**
+     * Computes the product of a matrix and a column vector.
+     *
+     * @param {Matrix2} matrix The matrix.
+     * @param {Cartesian2} cartesian The column.
+     * @param {Cartesian2} result The object onto which to store the result.
+     * @returns {Cartesian2} The modified result parameter.
+     */
+    Matrix2.multiplyByVector = function(matrix, cartesian, result) {
+                Check.typeOf.object('matrix', matrix);
+        Check.typeOf.object('cartesian', cartesian);
+        Check.typeOf.object('result', result);
+        
+        var x = matrix[0] * cartesian.x + matrix[2] * cartesian.y;
+        var y = matrix[1] * cartesian.x + matrix[3] * cartesian.y;
+
+        result.x = x;
+        result.y = y;
+        return result;
+    };
+
+    /**
+     * Computes the product of a matrix and a scalar.
+     *
+     * @param {Matrix2} matrix The matrix.
+     * @param {Number} scalar The number to multiply by.
+     * @param {Matrix2} result The object onto which to store the result.
+     * @returns {Matrix2} The modified result parameter.
+     */
+    Matrix2.multiplyByScalar = function(matrix, scalar, result) {
+                Check.typeOf.object('matrix', matrix);
+        Check.typeOf.number('scalar', scalar);
+        Check.typeOf.object('result', result);
+        
+        result[0] = matrix[0] * scalar;
+        result[1] = matrix[1] * scalar;
+        result[2] = matrix[2] * scalar;
+        result[3] = matrix[3] * scalar;
+        return result;
+    };
+
+    /**
+     * Computes the product of a matrix times a (non-uniform) scale, as if the scale were a scale matrix.
+     *
+     * @param {Matrix2} matrix The matrix on the left-hand side.
+     * @param {Cartesian2} scale The non-uniform scale on the right-hand side.
+     * @param {Matrix2} result The object onto which to store the result.
+     * @returns {Matrix2} The modified result parameter.
+     *
+     *
+     * @example
+     * // Instead of Cesium.Matrix2.multiply(m, Cesium.Matrix2.fromScale(scale), m);
+     * Cesium.Matrix2.multiplyByScale(m, scale, m);
+     *
+     * @see Matrix2.fromScale
+     * @see Matrix2.multiplyByUniformScale
+     */
+    Matrix2.multiplyByScale = function(matrix, scale, result) {
+                Check.typeOf.object('matrix', matrix);
+        Check.typeOf.object('scale', scale);
+        Check.typeOf.object('result', result);
+        
+        result[0] = matrix[0] * scale.x;
+        result[1] = matrix[1] * scale.x;
+        result[2] = matrix[2] * scale.y;
+        result[3] = matrix[3] * scale.y;
+        return result;
+    };
+
+    /**
+     * Creates a negated copy of the provided matrix.
+     *
+     * @param {Matrix2} matrix The matrix to negate.
+     * @param {Matrix2} result The object onto which to store the result.
+     * @returns {Matrix2} The modified result parameter.
+     */
+    Matrix2.negate = function(matrix, result) {
+                Check.typeOf.object('matrix', matrix);
+        Check.typeOf.object('result', result);
+        
+        result[0] = -matrix[0];
+        result[1] = -matrix[1];
+        result[2] = -matrix[2];
+        result[3] = -matrix[3];
+        return result;
+    };
+
+    /**
+     * Computes the transpose of the provided matrix.
+     *
+     * @param {Matrix2} matrix The matrix to transpose.
+     * @param {Matrix2} result The object onto which to store the result.
+     * @returns {Matrix2} The modified result parameter.
+     */
+    Matrix2.transpose = function(matrix, result) {
+                Check.typeOf.object('matrix', matrix);
+        Check.typeOf.object('result', result);
+        
+        var column0Row0 = matrix[0];
+        var column0Row1 = matrix[2];
+        var column1Row0 = matrix[1];
+        var column1Row1 = matrix[3];
+
+        result[0] = column0Row0;
+        result[1] = column0Row1;
+        result[2] = column1Row0;
+        result[3] = column1Row1;
+        return result;
+    };
+
+    /**
+     * Computes a matrix, which contains the absolute (unsigned) values of the provided matrix's elements.
+     *
+     * @param {Matrix2} matrix The matrix with signed elements.
+     * @param {Matrix2} result The object onto which to store the result.
+     * @returns {Matrix2} The modified result parameter.
+     */
+    Matrix2.abs = function(matrix, result) {
+                Check.typeOf.object('matrix', matrix);
+        Check.typeOf.object('result', result);
+        
+        result[0] = Math.abs(matrix[0]);
+        result[1] = Math.abs(matrix[1]);
+        result[2] = Math.abs(matrix[2]);
+        result[3] = Math.abs(matrix[3]);
+
+        return result;
+    };
+
+    /**
+     * Compares the provided matrices componentwise and returns
+     * <code>true</code> if they are equal, <code>false</code> otherwise.
+     *
+     * @param {Matrix2} [left] The first matrix.
+     * @param {Matrix2} [right] The second matrix.
+     * @returns {Boolean} <code>true</code> if left and right are equal, <code>false</code> otherwise.
+     */
+    Matrix2.equals = function(left, right) {
+        return (left === right) ||
+               (defined(left) &&
+                defined(right) &&
+                left[0] === right[0] &&
+                left[1] === right[1] &&
+                left[2] === right[2] &&
+                left[3] === right[3]);
+    };
+
+    /**
+     * @private
+     */
+    Matrix2.equalsArray = function(matrix, array, offset) {
+        return matrix[0] === array[offset] &&
+               matrix[1] === array[offset + 1] &&
+               matrix[2] === array[offset + 2] &&
+               matrix[3] === array[offset + 3];
+    };
+
+    /**
+     * Compares the provided matrices componentwise and returns
+     * <code>true</code> if they are within the provided epsilon,
+     * <code>false</code> otherwise.
+     *
+     * @param {Matrix2} [left] The first matrix.
+     * @param {Matrix2} [right] The second matrix.
+     * @param {Number} epsilon The epsilon to use for equality testing.
+     * @returns {Boolean} <code>true</code> if left and right are within the provided epsilon, <code>false</code> otherwise.
+     */
+    Matrix2.equalsEpsilon = function(left, right, epsilon) {
+                Check.typeOf.number('epsilon', epsilon);
+        
+        return (left === right) ||
+                (defined(left) &&
+                defined(right) &&
+                Math.abs(left[0] - right[0]) <= epsilon &&
+                Math.abs(left[1] - right[1]) <= epsilon &&
+                Math.abs(left[2] - right[2]) <= epsilon &&
+                Math.abs(left[3] - right[3]) <= epsilon);
+    };
+
+    /**
+     * An immutable Matrix2 instance initialized to the identity matrix.
+     *
+     * @type {Matrix2}
+     * @constant
+     */
+    Matrix2.IDENTITY = freezeObject(new Matrix2(1.0, 0.0,
+                                                0.0, 1.0));
+
+    /**
+     * An immutable Matrix2 instance initialized to the zero matrix.
+     *
+     * @type {Matrix2}
+     * @constant
+     */
+    Matrix2.ZERO = freezeObject(new Matrix2(0.0, 0.0,
+                                            0.0, 0.0));
+
+    /**
+     * The index into Matrix2 for column 0, row 0.
+     *
+     * @type {Number}
+     * @constant
+     *
+     * @example
+     * var matrix = new Cesium.Matrix2();
+     * matrix[Cesium.Matrix2.COLUMN0ROW0] = 5.0; // set column 0, row 0 to 5.0
+     */
+    Matrix2.COLUMN0ROW0 = 0;
+
+    /**
+     * The index into Matrix2 for column 0, row 1.
+     *
+     * @type {Number}
+     * @constant
+     *
+     * @example
+     * var matrix = new Cesium.Matrix2();
+     * matrix[Cesium.Matrix2.COLUMN0ROW1] = 5.0; // set column 0, row 1 to 5.0
+     */
+    Matrix2.COLUMN0ROW1 = 1;
+
+    /**
+     * The index into Matrix2 for column 1, row 0.
+     *
+     * @type {Number}
+     * @constant
+     *
+     * @example
+     * var matrix = new Cesium.Matrix2();
+     * matrix[Cesium.Matrix2.COLUMN1ROW0] = 5.0; // set column 1, row 0 to 5.0
+     */
+    Matrix2.COLUMN1ROW0 = 2;
+
+    /**
+     * The index into Matrix2 for column 1, row 1.
+     *
+     * @type {Number}
+     * @constant
+     *
+     * @example
+     * var matrix = new Cesium.Matrix2();
+     * matrix[Cesium.Matrix2.COLUMN1ROW1] = 5.0; // set column 1, row 1 to 5.0
+     */
+    Matrix2.COLUMN1ROW1 = 3;
+
+    defineProperties(Matrix2.prototype, {
+        /**
+         * Gets the number of items in the collection.
+         * @memberof Matrix2.prototype
+         *
+         * @type {Number}
+         */
+        length : {
+            get : function() {
+                return Matrix2.packedLength;
+            }
+        }
+    });
+
+    /**
+     * Duplicates the provided Matrix2 instance.
+     *
+     * @param {Matrix2} [result] The object onto which to store the result.
+     * @returns {Matrix2} The modified result parameter or a new Matrix2 instance if one was not provided.
+     */
+    Matrix2.prototype.clone = function(result) {
+        return Matrix2.clone(this, result);
+    };
+
+    /**
+     * Compares this matrix to the provided matrix componentwise and returns
+     * <code>true</code> if they are equal, <code>false</code> otherwise.
+     *
+     * @param {Matrix2} [right] The right hand side matrix.
+     * @returns {Boolean} <code>true</code> if they are equal, <code>false</code> otherwise.
+     */
+    Matrix2.prototype.equals = function(right) {
+        return Matrix2.equals(this, right);
+    };
+
+    /**
+     * Compares this matrix to the provided matrix componentwise and returns
+     * <code>true</code> if they are within the provided epsilon,
+     * <code>false</code> otherwise.
+     *
+     * @param {Matrix2} [right] The right hand side matrix.
+     * @param {Number} epsilon The epsilon to use for equality testing.
+     * @returns {Boolean} <code>true</code> if they are within the provided epsilon, <code>false</code> otherwise.
+     */
+    Matrix2.prototype.equalsEpsilon = function(right, epsilon) {
+        return Matrix2.equalsEpsilon(this, right, epsilon);
+    };
+
+    /**
+     * Creates a string representing this Matrix with each row being
+     * on a separate line and in the format '(column0, column1)'.
+     *
+     * @returns {String} A string representing the provided Matrix with each row being on a separate line and in the format '(column0, column1)'.
+     */
+    Matrix2.prototype.toString = function() {
+        return '(' + this[0] + ', ' + this[2] + ')\n' +
+               '(' + this[1] + ', ' + this[3] + ')';
+    };
+
+    return Matrix2;
 });
 
 /*global define*/
@@ -21809,7 +22148,7 @@ define('Core/VertexFormat',[
         this.st = defaultValue(options.st, false);
 
         /**
-         * When <code>true</code>, the vertex has a binormal attribute (normalized), which is used for tangent-space effects like bump mapping.
+         * When <code>true</code>, the vertex has a bitangent attribute (normalized), which is used for tangent-space effects like bump mapping.
          * <p>
          * 32-bit floating-point.  3 components per attribute.
          * </p>
@@ -21818,7 +22157,7 @@ define('Core/VertexFormat',[
          *
          * @default false
          */
-        this.binormal = defaultValue(options.binormal, false);
+        this.bitangent = defaultValue(options.bitangent, false);
 
         /**
          * When <code>true</code>, the vertex has a tangent attribute (normalized), which is used for tangent-space effects like bump mapping.
@@ -21920,7 +22259,7 @@ define('Core/VertexFormat',[
     }));
 
     /**
-     * An immutable vertex format with well-known attributes: position, normal, st, binormal, and tangent.
+     * An immutable vertex format with well-known attributes: position, normal, st, tangent, and bitangent.
      *
      * @type {VertexFormat}
      * @constant
@@ -21928,15 +22267,15 @@ define('Core/VertexFormat',[
      * @see VertexFormat#position
      * @see VertexFormat#normal
      * @see VertexFormat#st
-     * @see VertexFormat#binormal
      * @see VertexFormat#tangent
+     * @see VertexFormat#bitangent
      */
     VertexFormat.ALL = freezeObject(new VertexFormat({
         position : true,
         normal : true,
         st : true,
-        binormal : true,
-        tangent  : true
+        tangent  : true,
+        bitangent : true
     }));
 
     /**
@@ -21981,8 +22320,8 @@ define('Core/VertexFormat',[
         array[startingIndex++] = value.position ? 1.0 : 0.0;
         array[startingIndex++] = value.normal ? 1.0 : 0.0;
         array[startingIndex++] = value.st ? 1.0 : 0.0;
-        array[startingIndex++] = value.binormal ? 1.0 : 0.0;
         array[startingIndex++] = value.tangent ? 1.0 : 0.0;
+        array[startingIndex++] = value.bitangent ? 1.0 : 0.0;
         array[startingIndex++] = value.color ? 1.0 : 0.0;
 
         return array;
@@ -22007,12 +22346,12 @@ define('Core/VertexFormat',[
             result = new VertexFormat();
         }
 
-        result.position = array[startingIndex++] === 1.0;
-        result.normal   = array[startingIndex++] === 1.0;
-        result.st       = array[startingIndex++] === 1.0;
-        result.binormal = array[startingIndex++] === 1.0;
-        result.tangent  = array[startingIndex++] === 1.0;
-        result.color    = array[startingIndex++] === 1.0;
+        result.position  = array[startingIndex++] === 1.0;
+        result.normal    = array[startingIndex++] === 1.0;
+        result.st        = array[startingIndex++] === 1.0;
+        result.tangent   = array[startingIndex++] === 1.0;
+        result.bitangent = array[startingIndex++] === 1.0;
+        result.color     = array[startingIndex++] === 1.0;
         return result;
     };
 
@@ -22034,8 +22373,8 @@ define('Core/VertexFormat',[
         result.position = vertexFormat.position;
         result.normal = vertexFormat.normal;
         result.st = vertexFormat.st;
-        result.binormal = vertexFormat.binormal;
         result.tangent = vertexFormat.tangent;
+        result.bitangent = vertexFormat.bitangent;
         result.color = vertexFormat.color;
         return result;
     };
@@ -22045,63 +22384,63 @@ define('Core/VertexFormat',[
 
 /*global define*/
 define('Core/RectangleGeometry',[
-        './BoundingSphere',
-        './Cartesian2',
-        './Cartesian3',
-        './Cartographic',
-        './ComponentDatatype',
-        './defaultValue',
-        './defined',
-        './defineProperties',
-        './DeveloperError',
-        './Ellipsoid',
-        './Geometry',
-        './GeometryAttribute',
-        './GeometryAttributes',
-        './GeometryInstance',
-        './GeometryPipeline',
-        './IndexDatatype',
-        './Math',
-        './Matrix2',
-        './Matrix3',
-        './PolygonPipeline',
-        './PrimitiveType',
-        './Quaternion',
-        './Rectangle',
-        './RectangleGeometryLibrary',
-        './VertexFormat'
-    ], function(
-        BoundingSphere,
-        Cartesian2,
-        Cartesian3,
-        Cartographic,
-        ComponentDatatype,
-        defaultValue,
-        defined,
-        defineProperties,
-        DeveloperError,
-        Ellipsoid,
-        Geometry,
-        GeometryAttribute,
-        GeometryAttributes,
-        GeometryInstance,
-        GeometryPipeline,
-        IndexDatatype,
-        CesiumMath,
-        Matrix2,
-        Matrix3,
-        PolygonPipeline,
-        PrimitiveType,
-        Quaternion,
-        Rectangle,
-        RectangleGeometryLibrary,
-        VertexFormat) {
+    './BoundingSphere',
+    './Cartesian2',
+    './Cartesian3',
+    './Cartographic',
+    './Check',
+    './ComponentDatatype',
+    './defaultValue',
+    './defined',
+    './defineProperties',
+    './DeveloperError',
+    './Ellipsoid',
+    './Geometry',
+    './GeometryAttribute',
+    './GeometryAttributes',
+    './GeometryInstance',
+    './GeometryPipeline',
+    './IndexDatatype',
+    './Math',
+    './Matrix3',
+    './PolygonPipeline',
+    './PrimitiveType',
+    './Quaternion',
+    './Rectangle',
+    './RectangleGeometryLibrary',
+    './VertexFormat'
+], function(
+    BoundingSphere,
+    Cartesian2,
+    Cartesian3,
+    Cartographic,
+    Check,
+    ComponentDatatype,
+    defaultValue,
+    defined,
+    defineProperties,
+    DeveloperError,
+    Ellipsoid,
+    Geometry,
+    GeometryAttribute,
+    GeometryAttributes,
+    GeometryInstance,
+    GeometryPipeline,
+    IndexDatatype,
+    CesiumMath,
+    Matrix3,
+    PolygonPipeline,
+    PrimitiveType,
+    Quaternion,
+    Rectangle,
+    RectangleGeometryLibrary,
+    VertexFormat) {
     'use strict';
 
     var positionScratch = new Cartesian3();
     var normalScratch = new Cartesian3();
     var tangentScratch = new Cartesian3();
-    var binormalScratch = new Cartesian3();
+    var bitangentScratch = new Cartesian3();
     var rectangleScratch = new Rectangle();
     var stScratch = new Cartesian2();
     var bottomBoundingSphere = new BoundingSphere();
@@ -22132,11 +22471,11 @@ define('Core/RectangleGeometry',[
                 values : attributes.tangents
             });
         }
-        if (vertexFormat.binormal) {
-            geo.attributes.binormal = new GeometryAttribute({
+        if (vertexFormat.bitangent) {
+            geo.attributes.bitangent = new GeometryAttribute({
                 componentDatatype : ComponentDatatype.FLOAT,
                 componentsPerAttribute : 3,
-                values : attributes.binormals
+                values : attributes.bitangents
             });
         }
         return geo;
@@ -22147,26 +22486,26 @@ define('Core/RectangleGeometry',[
 
         var normals = (vertexFormat.normal) ? new Float32Array(length) : undefined;
         var tangents = (vertexFormat.tangent) ? new Float32Array(length) : undefined;
-        var binormals = (vertexFormat.binormal) ? new Float32Array(length) : undefined;
+        var bitangents = (vertexFormat.bitangent) ? new Float32Array(length) : undefined;
 
         var attrIndex = 0;
-        var binormal = binormalScratch;
+        var bitangent = bitangentScratch;
         var tangent = tangentScratch;
         var normal = normalScratch;
-        for (var i = 0; i < length; i += 3) {
-            var p = Cartesian3.fromArray(positions, i, positionScratch);
-            var attrIndex1 = attrIndex + 1;
-            var attrIndex2 = attrIndex + 2;
+        if (vertexFormat.normal || vertexFormat.tangent || vertexFormat.bitangent) {
+            for (var i = 0; i < length; i += 3) {
+                var p = Cartesian3.fromArray(positions, i, positionScratch);
+                var attrIndex1 = attrIndex + 1;
+                var attrIndex2 = attrIndex + 2;
 
-            if (vertexFormat.normal || vertexFormat.tangent || vertexFormat.binormal) {
                 normal = ellipsoid.geodeticSurfaceNormal(p, normal);
-                if (vertexFormat.tangent || vertexFormat.binormal) {
+                if (vertexFormat.tangent || vertexFormat.bitangent) {
                     Cartesian3.cross(Cartesian3.UNIT_Z, normal, tangent);
                     Matrix3.multiplyByVector(tangentRotationMatrix, tangent, tangent);
                     Cartesian3.normalize(tangent, tangent);
 
-                    if (vertexFormat.binormal) {
-                        Cartesian3.normalize(Cartesian3.cross(normal, tangent, binormal), binormal);
+                    if (vertexFormat.bitangent) {
+                        Cartesian3.normalize(Cartesian3.cross(normal, tangent, bitangent), bitangent);
                     }
                 }
 
@@ -22180,43 +22519,43 @@ define('Core/RectangleGeometry',[
                     tangents[attrIndex1] = tangent.y;
                     tangents[attrIndex2] = tangent.z;
                 }
-                if (vertexFormat.binormal) {
-                    binormals[attrIndex] = binormal.x;
-                    binormals[attrIndex1] = binormal.y;
-                    binormals[attrIndex2] = binormal.z;
+                if (vertexFormat.bitangent) {
+                    bitangents[attrIndex] = bitangent.x;
+                    bitangents[attrIndex1] = bitangent.y;
+                    bitangents[attrIndex2] = bitangent.z;
                 }
+                attrIndex += 3;
             }
-            attrIndex += 3;
         }
         return createAttributes(vertexFormat, {
             positions : positions,
             normals : normals,
             tangents : tangents,
-            binormals : binormals
+            bitangents : bitangents
         });
     }
 
     var v1Scratch = new Cartesian3();
     var v2Scratch = new Cartesian3();
+
     function calculateAttributesWall(positions, vertexFormat, ellipsoid) {
         var length = positions.length;
 
         var normals = (vertexFormat.normal) ? new Float32Array(length) : undefined;
         var tangents = (vertexFormat.tangent) ? new Float32Array(length) : undefined;
-        var binormals = (vertexFormat.binormal) ? new Float32Array(length) : undefined;
+        var bitangents = (vertexFormat.bitangent) ? new Float32Array(length) : undefined;
 
         var normalIndex = 0;
         var tangentIndex = 0;
-        var binormalIndex = 0;
+        var bitangentIndex = 0;
         var recomputeNormal = true;
 
-        var binormal = binormalScratch;
+        var bitangent = bitangentScratch;
         var tangent = tangentScratch;
         var normal = normalScratch;
-        for (var i = 0; i < length; i += 6) {
-            var p = Cartesian3.fromArray(positions, i, positionScratch);
-
-            if (vertexFormat.normal || vertexFormat.tangent || vertexFormat.binormal) {
+        if (vertexFormat.normal || vertexFormat.tangent || vertexFormat.bitangent) {
+            for (var i = 0; i < length; i += 6) {
+                var p = Cartesian3.fromArray(positions, i, positionScratch);
                 var p1 = Cartesian3.fromArray(positions, (i + 6) % length, v1Scratch);
                 if (recomputeNormal) {
                     var p2 = Cartesian3.fromArray(positions, (i + 3) % length, v2Scratch);
@@ -22230,10 +22569,10 @@ define('Core/RectangleGeometry',[
                     recomputeNormal = true;
                 }
 
-                if (vertexFormat.tangent || vertexFormat.binormal) {
-                    binormal = ellipsoid.geodeticSurfaceNormal(p, binormal);
+                if (vertexFormat.tangent || vertexFormat.bitangent) {
+                    bitangent = ellipsoid.geodeticSurfaceNormal(p, bitangent);
                     if (vertexFormat.tangent) {
-                        tangent = Cartesian3.normalize(Cartesian3.cross(binormal, normal, tangent), tangent);
+                        tangent = Cartesian3.normalize(Cartesian3.cross(bitangent, normal, tangent), tangent);
                     }
                 }
 
@@ -22255,13 +22594,13 @@ define('Core/RectangleGeometry',[
                     tangents[tangentIndex++] = tangent.z;
                 }
 
-                if (vertexFormat.binormal) {
-                    binormals[binormalIndex++] = binormal.x;
-                    binormals[binormalIndex++] = binormal.y;
-                    binormals[binormalIndex++] = binormal.z;
-                    binormals[binormalIndex++] = binormal.x;
-                    binormals[binormalIndex++] = binormal.y;
-                    binormals[binormalIndex++] = binormal.z;
+                if (vertexFormat.bitangent) {
+                    bitangents[bitangentIndex++] = bitangent.x;
+                    bitangents[bitangentIndex++] = bitangent.y;
+                    bitangents[bitangentIndex++] = bitangent.z;
+                    bitangents[bitangentIndex++] = bitangent.x;
+                    bitangents[bitangentIndex++] = bitangent.y;
+                    bitangents[bitangentIndex++] = bitangent.z;
                 }
             }
         }
@@ -22270,7 +22609,7 @@ define('Core/RectangleGeometry',[
             positions : positions,
             normals : normals,
             tangents : tangents,
-            binormals : binormals
+            bitangents : bitangents
         });
     }
 
@@ -22376,6 +22715,7 @@ define('Core/RectangleGeometry',[
     }
 
     var scratchVertexFormat = new VertexFormat();
+
     function constructExtrudedRectangle(options) {
         var shadowVolume = options.shadowVolume;
         var vertexFormat = options.vertexFormat;
@@ -22401,7 +22741,7 @@ define('Core/RectangleGeometry',[
         var topPositions = PolygonPipeline.scaleToGeodeticHeight(topBottomGeo.attributes.position.values, maxHeight, ellipsoid, false);
         topPositions = new Float64Array(topPositions);
         var length = topPositions.length;
-        var newLength = length*2;
+        var newLength = length * 2;
         var positions = new Float64Array(newLength);
         positions.set(topPositions);
         var bottomPositions = PolygonPipeline.scaleToGeodeticHeight(topBottomGeo.attributes.position.values, minHeight, ellipsoid);
@@ -22410,14 +22750,14 @@ define('Core/RectangleGeometry',[
 
         var normals = (vertexFormat.normal) ? new Float32Array(newLength) : undefined;
         var tangents = (vertexFormat.tangent) ? new Float32Array(newLength) : undefined;
-        var binormals = (vertexFormat.binormal) ? new Float32Array(newLength) : undefined;
-        var textures = (vertexFormat.st) ? new Float32Array(newLength/3*2) : undefined;
+        var bitangents = (vertexFormat.bitangent) ? new Float32Array(newLength) : undefined;
+        var textures = (vertexFormat.st) ? new Float32Array(newLength / 3 * 2) : undefined;
         var topSt;
         var topNormals;
         if (vertexFormat.normal) {
             topNormals = topBottomGeo.attributes.normal.values;
             normals.set(topNormals);
-            for (i = 0; i < length; i ++) {
+            for (i = 0; i < length; i++) {
                 topNormals[i] = -topNormals[i];
             }
             normals.set(topNormals, length);
@@ -22429,7 +22769,7 @@ define('Core/RectangleGeometry',[
                 topBottomGeo.attributes.normal = undefined;
             }
             var extrudeNormals = new Float32Array(newLength);
-            for (i = 0; i < length; i ++) {
+            for (i = 0; i < length; i++) {
                 topNormals[i] = -topNormals[i];
             }
             extrudeNormals.set(topNormals, length); //only get normals for bottom layer that's going to be pushed down
@@ -22443,29 +22783,29 @@ define('Core/RectangleGeometry',[
         if (vertexFormat.tangent) {
             var topTangents = topBottomGeo.attributes.tangent.values;
             tangents.set(topTangents);
-            for (i = 0; i < length; i ++) {
+            for (i = 0; i < length; i++) {
                 topTangents[i] = -topTangents[i];
             }
             tangents.set(topTangents, length);
             topBottomGeo.attributes.tangent.values = tangents;
         }
-        if (vertexFormat.binormal) {
-            var topBinormals = topBottomGeo.attributes.binormal.values;
-            binormals.set(topBinormals);
-            binormals.set(topBinormals, length);
-            topBottomGeo.attributes.binormal.values = binormals;
+        if (vertexFormat.bitangent) {
+            var topBitangents = topBottomGeo.attributes.bitangent.values;
+            bitangents.set(topBitangents);
+            bitangents.set(topBitangents, length);
+            topBottomGeo.attributes.bitangent.values = bitangents;
         }
         if (vertexFormat.st) {
             topSt = topBottomGeo.attributes.st.values;
             textures.set(topSt);
-            textures.set(topSt, length/3*2);
+            textures.set(topSt, length / 3 * 2);
             topBottomGeo.attributes.st.values = textures;
         }
 
         var indices = topBottomGeo.indices;
         var indicesLength = indices.length;
         var posLength = length / 3;
-        var newIndices = IndexDatatype.createTypedArray(newLength/3, indicesLength*2);
+        var newIndices = IndexDatatype.createTypedArray(newLength / 3, indicesLength * 2);
         newIndices.set(indices);
         for (i = 0; i < indicesLength; i += 3) {
             newIndices[i + indicesLength] = indices[i + 2] + posLength;
@@ -22486,12 +22826,12 @@ define('Core/RectangleGeometry',[
         var extrudeNormalIndex = 0;
         var area = width * height;
         var threeI;
-        for (i = 0; i < area; i+=width) {
+        for (i = 0; i < area; i += width) {
             threeI = i * 3;
             wallPositions = addWallPositions(wallPositions, posIndex, threeI, topPositions, bottomPositions);
             posIndex += 6;
             if (vertexFormat.st) {
-                wallTextures = addWallTextureCoordinates(wallTextures, stIndex, i*2, topSt);
+                wallTextures = addWallTextureCoordinates(wallTextures, stIndex, i * 2, topSt);
                 stIndex += 4;
             }
             if (shadowVolume) {
@@ -22502,12 +22842,12 @@ define('Core/RectangleGeometry',[
             }
         }
 
-        for (i = area-width; i < area; i++) {
+        for (i = area - width; i < area; i++) {
             threeI = i * 3;
             wallPositions = addWallPositions(wallPositions, posIndex, threeI, topPositions, bottomPositions);
             posIndex += 6;
             if (vertexFormat.st) {
-                wallTextures = addWallTextureCoordinates(wallTextures, stIndex, i*2, topSt);
+                wallTextures = addWallTextureCoordinates(wallTextures, stIndex, i * 2, topSt);
                 stIndex += 4;
             }
             if (shadowVolume) {
@@ -22518,12 +22858,12 @@ define('Core/RectangleGeometry',[
             }
         }
 
-        for (i = area-1; i > 0; i-=width) {
+        for (i = area - 1; i > 0; i -= width) {
             threeI = i * 3;
             wallPositions = addWallPositions(wallPositions, posIndex, threeI, topPositions, bottomPositions);
             posIndex += 6;
             if (vertexFormat.st) {
-                wallTextures = addWallTextureCoordinates(wallTextures, stIndex, i*2, topSt);
+                wallTextures = addWallTextureCoordinates(wallTextures, stIndex, i * 2, topSt);
                 stIndex += 4;
             }
             if (shadowVolume) {
@@ -22534,12 +22874,12 @@ define('Core/RectangleGeometry',[
             }
         }
 
-        for (i = width-1; i >= 0; i--) {
+        for (i = width - 1; i >= 0; i--) {
             threeI = i * 3;
             wallPositions = addWallPositions(wallPositions, posIndex, threeI, topPositions, bottomPositions);
             posIndex += 6;
             if (vertexFormat.st) {
-                wallTextures = addWallTextureCoordinates(wallTextures, stIndex, i*2, topSt);
+                wallTextures = addWallTextureCoordinates(wallTextures, stIndex, i * 2, topSt);
                 stIndex += 4;
             }
             if (shadowVolume) {
@@ -22575,7 +22915,7 @@ define('Core/RectangleGeometry',[
         var upperRight;
         length = wallPositions.length / 3;
         var index = 0;
-        for (i = 0; i < length - 1; i+=2) {
+        for (i = 0; i < length - 1; i += 2) {
             upperLeft = i;
             upperRight = (upperLeft + 2) % length;
             var p1 = Cartesian3.fromArray(wallPositions, upperLeft * 3, v1Scratch);
@@ -22691,12 +23031,10 @@ define('Core/RectangleGeometry',[
 
         var rectangle = options.rectangle;
 
-                if (!defined(rectangle)) {
-            throw new DeveloperError('rectangle is required.');
-        }
+                Check.typeOf.object('rectangle', rectangle);
         Rectangle.validate(rectangle);
         if (rectangle.north < rectangle.south) {
-            throw new DeveloperError('options.rectangle.north must be greater than options.rectangle.south');
+            throw new DeveloperError('options.rectangle.north must be greater than or equal to options.rectangle.south');
         }
         
         var rotation = defaultValue(options.rotation, 0.0);
@@ -22732,13 +23070,8 @@ define('Core/RectangleGeometry',[
      * @returns {Number[]} The array that was packed into
      */
     RectangleGeometry.pack = function(value, array, startingIndex) {
-                if (!defined(value)) {
-            throw new DeveloperError('value is required');
-        }
-
-        if (!defined(array)) {
-            throw new DeveloperError('array is required');
-        }
+                Check.typeOf.object('value', value);
+        Check.defined('array', array);
         
         startingIndex = defaultValue(startingIndex, 0);
 
@@ -22781,7 +23114,7 @@ define('Core/RectangleGeometry',[
         extrudedHeight : undefined,
         closeTop : undefined,
         closeBottom : undefined,
-        shadowVolume: undefined
+        shadowVolume : undefined
     };
 
     /**
@@ -22793,9 +23126,7 @@ define('Core/RectangleGeometry',[
      * @returns {RectangleGeometry} The modified result parameter or a new RectangleGeometry instance if one was not provided.
      */
     RectangleGeometry.unpack = function(array, startingIndex, result) {
-                if (!defined(array)) {
-            throw new DeveloperError('array is required');
-        }
+                Check.defined('array', array);
         
         startingIndex = defaultValue(startingIndex, 0);
 
@@ -22947,7 +23278,7 @@ define('Core/RectangleGeometry',[
             closeTop : true,
             closeBottom : true,
             vertexFormat : VertexFormat.POSITION_ONLY,
-            shadowVolume: true
+            shadowVolume : true
         });
     };
 
