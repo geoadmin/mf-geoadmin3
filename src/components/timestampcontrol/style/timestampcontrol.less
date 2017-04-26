@@ -1,21 +1,32 @@
-.ga-timestamp-control-wrapper {
-  text-align: center;
-  margin-left: 50%;
-  margin-right: 50%;
+[ga-timestamp-control] {
+  & > div {
+    position: absolute;
+    bottom: 30px;
+    left: 0;
+    right: 0;
+    margin: auto;
+    width: 100px;
+    text-align: center;
+    font-size: 10px;
+    color: darkred;
+    display: inline-block;
+    background-color: white;
+    font-weight: bold;
+    padding: 3px 5px;
+    border-radius: 3px;
+  }
 }
 
-.ga-timestamp-control {
-  position: absolute;
-  bottom: 30px;
-  font-size: 10px;
-  color: darkred;
-  display: inline-block;
-  background-color: white;
-  font-weight: bold;
-  padding: 5px;
-  border-radius: 3px;
+.ga-3d-active [ga-timestamp-control] {
+  & > div {
+    @media (max-width: @screen-tablet) {
+      bottom: 0px;
+    }
+  }
 }
 
-.embed .ga-timestamp-control {
-  bottom: 22px;
+.embed [ga-timestamp-control] {
+  & > div {
+    bottom: 22px;
+  }
 }
