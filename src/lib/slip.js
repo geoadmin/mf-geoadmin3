@@ -12,25 +12,32 @@
             Fired before first swipe movement starts.
             If you execute event.preventDefault() then element will not move at all.
 
+        • slip:cancelswipe
+            Fired after the user has started to swipe, but lets go without actually swiping left or right.
+
+        • slip:animateswipe
+            Fired while swiping, before the user has let go of the element.
+            event.detail.x contains the amount of movement in the x direction.
+            If you execute event.preventDefault() then the element will not move to this position.
+            This can be useful for saturating the amount of swipe, or preventing movement in one direction, but allowing it in the other.
+
         • slip:reorder
-            Element has been dropped in new location. event.detail contains the location:
+            Element has been dropped in new location. event.detail contains the following:
                 • insertBefore: DOM node before which element has been dropped (null is the end of the list). Use with node.insertBefore().
                 • spliceIndex: Index of element before which current element has been dropped, not counting the element iself.
                                For use with Array.splice() if the list is reflecting objects in some array.
+                • originalIndex: The original index of the element before it was reordered.
 
         • slip:beforereorder
             When reordering movement starts.
             Element being reordered gets class `slip-reordering`.
-            If you execute event.preventDefault() then element will not move at all.
+            If you execute event.preventDefault() then the element will not move at all.
 
         • slip:beforewait
             If you execute event.preventDefault() then reordering will begin immediately, blocking ability to scroll the page.
 
         • slip:tap
-            When element was tapped without being swiped/reordered.
-
-        • slip:cancelswipe
-            Fired when the user stops dragging and the element returns to its original position.
+            When element was tapped without being swiped/reordered. You can check `event.target` to limit that behavior to drag handles.
 
 
     Usage:
@@ -174,8 +181,8 @@ window['Slip'] = (function(){
         var transform = node.style[transformJSPropertyName];
         if (transform) {
             return {
-                value:transform,
-                original:transform,
+                value: transform,
+                original: transform,
             };
         }
 
@@ -236,13 +243,13 @@ window['Slip'] = (function(){
 
             undecided: function undecidedStateInit() {
                 this.target.height = this.target.node.offsetHeight;
-                this.target.node.style.willChange = transformCSSPropertyName;
+                //this.target.node.style.willChange = transformCSSPropertyName;
                 this.target.node.style[transitionJSPropertyName] = '';
 
                 if (!this.dispatch(this.target.originalTarget, 'beforewait')) {
-                  if (this.dispatch(this.target.originalTarget, 'beforereorder')) {
-                    this.setState(this.states.reorder);
-                  }
+                    if (this.dispatch(this.target.originalTarget, 'beforereorder')) {
+                        this.setState(this.states.reorder);
+                    }
                 } else {
                     var holdTimer = setTimeout(function(){
                         var move = this.getAbsoluteMovement();
@@ -296,9 +303,9 @@ window['Slip'] = (function(){
 
                 var originalIndex = findIndex(this.target, this.container.childNodes);
 
-                container.className += ' slip-swiping-container';
+                container.classList.add('slip-swiping-container');
                 function removeClass() {
-                    container.className = container.className.replace(/(?:^| )slip-swiping-container/,'');
+                    container.classList.remove('slip-swiping-container');
                 }
 
                 this.target.height = this.target.node.offsetHeight;
@@ -318,7 +325,6 @@ window['Slip'] = (function(){
                             }.bind(this));
                         } else {
                             this.animateToZero(removeClass);
-                            this.dispatch(this.target.node, 'cancelswipe');
                         }
                     },
 
@@ -326,9 +332,12 @@ window['Slip'] = (function(){
                         var move = this.getTotalMovement();
 
                         if (Math.abs(move.y) < this.target.height+20) {
-                            this.target.node.style[transformJSPropertyName] = 'translate(' + move.x + 'px,0) ' + hwLayerMagicStyle + this.target.baseTransform.value;
+                            if (this.dispatch(this.target.node, 'animateswipe', {x: move.x, originalIndex: originalIndex})) {
+                                this.target.node.style[transformJSPropertyName] = 'translate(' + move.x + 'px,0) ' + hwLayerMagicStyle + this.target.baseTransform.value;
+                            }
                             return false;
                         } else {
+                            this.dispatch(this.target.node, 'cancelswipe');
                             this.setState(this.states.idle);
                         }
                     },
@@ -350,6 +359,8 @@ window['Slip'] = (function(){
                             if (this.dispatch(this.target.node, 'swipe', {direction: move.directionX, originalIndex: originalIndex})) {
                                 swipeSuccess = true; // can't animate here, leaveState overrides anim
                             }
+                        } else {
+                            this.dispatch(this.target.node, 'cancelswipe');
                         }
                         this.setState(this.states.idle);
                         return !swiped;
@@ -380,7 +391,7 @@ window['Slip'] = (function(){
                     });
                 }
 
-                this.target.node.className += ' slip-reordering';
+                this.target.node.classList.add('slip-reordering');
                 this.target.node.style.zIndex = '99999';
                 this.target.node.style[userSelectJSPropertyName] = 'none';
                 if (compositorDoesNotOrderLayers) {
@@ -388,8 +399,10 @@ window['Slip'] = (function(){
                     this.container.style.webkitTransformStyle = 'preserve-3d';
                 }
 
-                function setPosition() {
+                function onMove() {
                     /*jshint validthis:true */
+
+                    this.updateScrolling();
 
                     if (mouseOutsideTimer) {
                         // don't care where the mouse is as long as it moves
@@ -414,7 +427,7 @@ window['Slip'] = (function(){
                     return false;
                 }
 
-                setPosition.call(this);
+                onMove.call(this);
 
                 return {
                     leaveState: function() {
@@ -428,7 +441,7 @@ window['Slip'] = (function(){
                             this.container.focus();
                         }
 
-                        this.target.node.className = this.target.node.className.replace(/(?:^| )slip-reordering/,'');
+                        this.target.node.classList.remove('slip-reordering');
                         this.target.node.style[userSelectJSPropertyName] = '';
 
                         this.animateToZero(function(target){
@@ -440,7 +453,7 @@ window['Slip'] = (function(){
                         });
                     },
 
-                    onMove: setPosition,
+                    onMove: onMove,
 
                     onLeave: function() {
                         // don't let element get stuck if mouse left the window
@@ -454,21 +467,29 @@ window['Slip'] = (function(){
 
                     onEnd: function() {
                         var move = this.getTotalMovement();
+                        var i, spliceIndex;
                         if (move.y < 0) {
-                            for(var i=0; i < otherNodes.length; i++) {
+                            for (i=0; i < otherNodes.length; i++) {
                                 if (otherNodes[i].pos > move.y) {
-                                    this.dispatch(this.target.node, 'reorder', {spliceIndex:i, insertBefore:otherNodes[i].node, originalIndex: originalIndex});
                                     break;
                                 }
                             }
+                            spliceIndex = i;
                         } else {
-                            for(var i=otherNodes.length-1; i >= 0; i--) {
+                            for (i=otherNodes.length-1; i >= 0; i--) {
                                 if (otherNodes[i].pos < move.y) {
-                                    this.dispatch(this.target.node, 'reorder', {spliceIndex:i+1, insertBefore:otherNodes[i+1] ? otherNodes[i+1].node : null, originalIndex: originalIndex});
                                     break;
                                 }
                             }
+                            spliceIndex = i+1;
                         }
+
+                        this.dispatch(this.target.node, 'reorder', {
+                            spliceIndex: spliceIndex,
+                            originalIndex: originalIndex,
+                            insertBefore: otherNodes[spliceIndex] ? otherNodes[spliceIndex].node : null,
+                        });
+
                         this.setState(this.states.idle);
                         return false;
                     },
@@ -524,6 +545,14 @@ window['Slip'] = (function(){
 
             document.removeEventListener("selectionchange", this.onSelection, false);
 
+            if (false !== accessibility.container.tabIndex) {
+                this.container.removeAttribute('tabIndex');
+            }
+            if (accessibility.container.ariaRole) {
+                this.container.removeAttribute('aria-role');
+            }
+            this.unSetChildNodesAriaRoles();
+
             globalInstances--;
             if (!globalInstances && attachedBodyHandlerHack) {
                 attachedBodyHandlerHack = false;
@@ -570,6 +599,18 @@ window['Slip'] = (function(){
             }
         },
 
+        unSetChildNodesAriaRoles: function() {
+            var nodes = this.container.childNodes;
+            for(var i=0; i < nodes.length; i++) {
+                if (nodes[i].nodeType != 1) continue;
+                if (accessibility.items.ariaRole) {
+                    nodes[i].removeAttribute('aria-role');
+                }
+                if (false !== accessibility.items.tabIndex) {
+                    nodes[i].removeAttribute('tabIndex');
+                }
+            }
+        },
         onSelection: function(e) {
             var isRelated = e.target === document || this.findTargetNode(e);
             var iOS = /(iPhone|iPad|iPod)/i.test(navigator.userAgent) && !/(Android|Windows)/i.test(navigator.userAgent);
@@ -645,7 +686,7 @@ window['Slip'] = (function(){
 
             this.startAtPosition({
                 x: e.touches[0].clientX,
-                y: e.touches[0].clientY - window.scrollY,
+                y: e.touches[0].clientY,
                 time: e.timeStamp,
             });
         },
@@ -659,15 +700,19 @@ window['Slip'] = (function(){
 
             //check for a scrollable parent
             var scrollContainer = targetNode.parentNode;
-            while (scrollContainer){
-              if (scrollContainer.scrollHeight > scrollContainer.clientHeight && window.getComputedStyle(scrollContainer)['overflow-y'] != 'visible') break;
-              else scrollContainer = scrollContainer.parentNode;
+            while (scrollContainer) {
+                if (scrollContainer == document.body) break;
+                if (scrollContainer.scrollHeight > scrollContainer.clientHeight && window.getComputedStyle(scrollContainer)['overflow-y'] != 'visible') break;
+                scrollContainer = scrollContainer.parentNode;
             }
+            scrollContainer = scrollContainer || document.body;
 
             this.target = {
                 originalTarget: e.target,
                 node: targetNode,
                 scrollContainer: scrollContainer,
+                origScrollTop: scrollContainer.scrollTop,
+                origScrollHeight: scrollContainer.scrollHeight,
                 baseTransform: getTransform(targetNode),
             };
             return true;
@@ -683,26 +728,6 @@ window['Slip'] = (function(){
                 return;
             }
             this.latestPosition = pos;
-
-            var triggerOffset = 40,
-                offset = 0;
-
-            var scrollable = this.target.scrollContainer || document.body,
-                containerRect = scrollable.getBoundingClientRect(),
-                targetRect = this.target.node.getBoundingClientRect(),
-                bottomOffset = Math.min(containerRect.bottom, window.innerHeight) - targetRect.bottom,
-                topOffset = targetRect.top - Math.max(containerRect.top, 0);
-
-            if (bottomOffset < triggerOffset){
-              offset = triggerOffset - bottomOffset;
-            }
-            else if (topOffset < triggerOffset){
-              offset = topOffset - triggerOffset;
-            }
-
-            var prevScrollTop = scrollable.scrollTop;
-            scrollable.scrollTop += offset;
-            if (prevScrollTop != scrollable.scrollTop) this.startPosition.y += prevScrollTop-scrollable.scrollTop;
 
             if (this.state.onMove) {
                 if (this.state.onMove.call(this) === false) {
@@ -727,7 +752,7 @@ window['Slip'] = (function(){
         onTouchMove: function(e) {
             this.updatePosition(e, {
                 x: e.touches[0].clientX,
-                y: e.touches[0].clientY - window.scrollY,
+                y: e.touches[0].clientY,
                 time: e.timeStamp,
             });
 
@@ -752,20 +777,44 @@ window['Slip'] = (function(){
         },
 
         getTotalMovement: function() {
+            var scrollOffset = this.target.scrollContainer.scrollTop - this.target.origScrollTop;
             return {
-                x:this.latestPosition.x - this.startPosition.x,
-                y:this.latestPosition.y - this.startPosition.y,
+                x: this.latestPosition.x - this.startPosition.x,
+                y: this.latestPosition.y - this.startPosition.y + scrollOffset,
+                time: this.latestPosition.time - this.startPosition.time,
             };
         },
 
         getAbsoluteMovement: function() {
+            var move = this.getTotalMovement();
             return {
-                x: Math.abs(this.latestPosition.x - this.startPosition.x),
-                y: Math.abs(this.latestPosition.y - this.startPosition.y),
-                time:this.latestPosition.time - this.startPosition.time,
-                directionX:this.latestPosition.x - this.startPosition.x < 0 ? 'left' : 'right',
-                directionY:this.latestPosition.y - this.startPosition.y < 0 ? 'up' : 'down',
+                x: Math.abs(move.x),
+                y: Math.abs(move.y),
+                time: move.time,
+                directionX: move.x < 0 ? 'left' : 'right',
+                directionY: move.y < 0 ? 'up' : 'down',
             };
+        },
+
+        updateScrolling: function() {
+            var triggerOffset = 40,
+                offset = 0;
+
+            var scrollable = this.target.scrollContainer,
+                containerRect = scrollable.getBoundingClientRect(),
+                targetRect = this.target.node.getBoundingClientRect(),
+                bottomOffset = Math.min(containerRect.bottom, window.innerHeight) - targetRect.bottom,
+                topOffset = targetRect.top - Math.max(containerRect.top, 0),
+                maxScrollTop = this.target.origScrollHeight - Math.min(scrollable.clientHeight, window.innerHeight);
+
+            if (bottomOffset < triggerOffset) {
+              offset = Math.min(triggerOffset, triggerOffset - bottomOffset);
+            }
+            else if (topOffset < triggerOffset) {
+              offset = Math.max(-triggerOffset, topOffset - triggerOffset);
+            }
+
+            scrollable.scrollTop = Math.max(0, Math.min(maxScrollTop, scrollable.scrollTop + offset));
         },
 
         dispatch: function(targetNode, eventName, detail) {
@@ -831,7 +880,7 @@ window['Slip'] = (function(){
                                 o.node.style[transitionJSPropertyName] = '';
                                 o.node.style[transformJSPropertyName] = o.baseTransform.original;
                             });
-                        },101);
+                        }, 101);
                     }, 1);
                 }
             }.bind(this), 101);
