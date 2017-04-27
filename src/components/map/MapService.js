@@ -113,7 +113,7 @@ goog.require('ga_urlutils_service');
           },
           invertedOpacity: {
             get: function() {
-              return (Math.round((1 - this.getOpacity()) * 100) / 100) + '';
+              return Math.round((1 - this.getOpacity()) * 100) / 100;
             },
             set: function(val) {
               this.setOpacity(1 - val);

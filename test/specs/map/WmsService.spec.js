@@ -23,7 +23,7 @@ describe('ga_wms_service', function() {
       expect(layer.id).to.be(options.id || 'WMS||' + options.label + '||' + options.url + '||' + options.LAYERS);
       expect(layer.url).to.be(options.url);
       expect(layer.type).to.be('WMS');
-      expect(layer.invertedOpacity).to.be(options.invertedOpacity || '0');
+      expect(layer.invertedOpacity).to.be(options.invertedOpacity || 0);
       expect(layer.visible).to.be(angular.isDefined(options.visible) ? options.visible : true);
       expect(layer.get('attribution')).to.be(options.attribution);
       expect(layer.getExtent()).to.be(options.extent);
@@ -147,7 +147,7 @@ describe('ga_wms_service', function() {
         expectProperties(layer, {
           id: 'WMS||' + options.label + '||' + options.url + '||' + params.LAYERS + '||' + params.VERSION,
           url: options.url,
-          invertedOpacity: '0.5',
+          invertedOpacity: 0.5,
           visible: options.visible,
           attribution: options.attribution,
           extent: options.extent,

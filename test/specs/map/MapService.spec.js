@@ -320,14 +320,14 @@ describe('ga_map_service', function() {
 
       expect(layer.getOpacity()).to.be.a('number');
       expect(layer.getOpacity()).to.be(1);
-      expect(layer[prop]).to.be.a('string');
-      expect(layer[prop]).to.be('0');
+      expect(layer[prop]).to.be.a('number');
+      expect(layer[prop]).to.be(0);
 
       layer.setOpacity(0.2);
-      expect(layer[prop]).to.be.a('string');
-      expect(layer[prop]).to.be('0.8');
+      expect(layer[prop]).to.be.a('number');
+      expect(layer[prop]).to.be(0.8);
 
-      layer.invertedOpacity = '0.3';
+      layer.invertedOpacity = 0.3;
       expect(layer.getOpacity()).to.be.a('number');
       expect(layer.getOpacity()).to.be(0.7);
     });
