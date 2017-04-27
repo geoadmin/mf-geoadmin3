@@ -40,7 +40,8 @@ beforeEach(function() {
       lv95tolv03Url: '//api.example.com/reframe/lv95tolv03',
       w3wApiKey: 'testkey',
       whitelist: [
-        'https://' + window.location.host + '/**'
+        'https://' + window.location.host + '/**',
+        'https://www.googleapis.com/**'
       ],
       defaultTopicId: 'sometopic',
       translationFallbackCode: 'somelang',
