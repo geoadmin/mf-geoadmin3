@@ -484,8 +484,8 @@ goog.require('ga_urlutils_service');
         // storage if they exist otherwise try to load the tiles normally.
         var tileLoadFunction = function(imageTile, src) {
           if (gaBrowserSniffer.mobile) {
-            gaStorage.getTile(gaMapUtils.getTileKey(src), function(err,
-                content) {
+            gaStorage.getTile(gaMapUtils.getTileKey(src)).then(
+                function(content) {
               if (content && $window.URL && $window.atob) {
                 try {
                   var blob = gaMapUtils.dataURIToBlob(content);

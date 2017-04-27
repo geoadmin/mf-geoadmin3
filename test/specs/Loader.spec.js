@@ -125,7 +125,7 @@ beforeEach(function() {
     whitelist = whitelist.concat(gaGlobalOptions.whitelist);
     $sceDelegateProvider.resourceUrlWhitelist(whitelist);
   });
-  
+
   // Void display of "Possibly unhandled rejection:" message
   module(function($qProvider) {
     $qProvider.errorOnUnhandledRejections(false);
