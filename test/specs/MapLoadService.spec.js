@@ -36,8 +36,8 @@ describe('ga_mapload_service', function() {
         $rootScope = $injector.get('$rootScope');
       });
 
-      spyInfo = sinon.spy($window.console, 'info');
-      spyLog = sinon.spy($window.console, 'log');
+      spyInfo = sinon.stub($window.console, 'info');
+      spyLog = sinon.stub($window.console, 'log');
 
 
       map = new ol.Map({});
@@ -46,8 +46,8 @@ describe('ga_mapload_service', function() {
     });
 
     afterEach(function() {
-      $window.console.info.restore();
-      $window.console.log.restore();
+      spyInfo.restore();
+      spyLog.restore();
     });
 
 
