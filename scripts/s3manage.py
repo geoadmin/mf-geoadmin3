@@ -159,7 +159,7 @@ def _save_to_s3(in_data, dest, mimetype, bucket_name, compress=True, cached=True
         compressed = True
 
     if cached is False:
-        cache_control = 'max-age=0, must-revalidate, s-maxage=60'
+        cache_control = 'max-age=0, must-revalidate, s-maxage=900'
 
     extra_args['ACL'] = 'public-read'
     extra_args['ContentType'] = mimetype
