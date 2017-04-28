@@ -329,6 +329,117 @@ describe('ga_browsersniffer_service', function() {
         });
       });
     });
+
+    describe('detect http 2', function() {
+
+      it('IE browsers not supported', function() {
+        win.navigator.userAgent = 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/7.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; .NET4.0C; .NET4.0E; InfoPath.3)';
+        snif = injector.get('gaBrowserSniffer');
+        expect(snif.h2).to.be.eql(false);
+
+        win.navigator.userAgent = 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; WOW64; Trident/7.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; .NET4.0C; .NET4.0E; InfoPath.3)';
+ snif = injector.get('gaBrowserSniffer');
+        expect(snif.h2).to.be.eql(false);
+
+        win.navigator.userAgent = 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; .NET4.0C; .NET4.0E; InfoPath.3; rv:11.0) like Gecko';
+        snif = injector.get('gaBrowserSniffer');
+        expect(snif.h2).to.be.eql(false);
+
+        win.navigator.userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.10240';
+        snif = injector.get('gaBrowserSniffer');
+        expect(snif.h2).to.be.eql(false);
+
+
+      });
+      
+      it('Chrome browsers with no loadTimes', function() {
+        
+        // standard chrome doesn't support
+        win.navigator.userAgent = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.111 Safari/537.36';
+        snif = injector.get('gaBrowserSniffer');
+        expect(snif.h2).to.be.eql(false);
+      });
+      
+      it('Chrome browsers with loadTime without h2', function() {
+        win.navigator.userAgent = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.111 Safari/537.36';
+
+        win.chrome = {
+          loadTimes: function() {
+            return {
+              connectionInfo: 'http/1.0'
+            };
+          }
+        };
+        snif = injector.get('gaBrowserSniffer');
+        expect(snif.h2).to.be.eql(false);
+        
+      });
+      
+      it('Chrome browsers with loadTime without h2', function() {
+        win.navigator.userAgent = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.111 Safari/537.36';
+        //Detecting h2
+        win.chrome = {
+          loadTimes: function() {
+            return {
+              connectionInfo: 'h2'
+            };
+          }
+        };
+        snif = injector.get('gaBrowserSniffer');
+        expect(snif.h2).to.be.eql(true);
+
+      });
+
+      it('Firefox without support', function() {
+        win.navigator.userAgent = 'Mozilla/5.0 (Windows NT 6.3; WOW64; rv:36.0) Gecko/20100101 Firefox/36.0';
+        snif = injector.get('gaBrowserSniffer');
+        expect(snif.h2).to.be.eql(false);
+      });
+
+      it('Firefox with http1 only', function() {
+        win.navigator.userAgent = 'Mozilla/5.0 (Windows NT 6.3; WOW64; rv:36.0) Gecko/20100101 Firefox/36.0';
+        win.performance = {
+          getEntriesByType: function() {
+            return [{nextHopProtocol: 'http/1.0'}];
+          }
+        };
+        snif = injector.get('gaBrowserSniffer');
+        expect(snif.h2).to.be.eql(false);
+      });
+
+      it('Firefox with http2', function() {
+        win.navigator.userAgent = 'Mozilla/5.0 (Windows NT 6.3; WOW64; rv:36.0) Gecko/20100101 Firefox/36.0';
+        win.performance = {
+          getEntriesByType: function() {
+            return [{nextHopProtocol: 'h2'}];
+          }
+        };
+        snif = injector.get('gaBrowserSniffer');
+        expect(snif.h2).to.be.eql(true);
+      });
+
+      it('Generic browser with http1', function() {
+        win.performance = {
+          timing: {
+            nextHopProtocol: 'http/1.0'
+          }
+        };
+        snif = injector.get('gaBrowserSniffer');
+        expect(snif.h2).to.be.eql(false);
+      });
+
+      it('Generic browser with h2', function() {
+        win.performance = {
+          timing: {
+            nextHopProtocol: 'h2'
+          }
+        };
+        snif = injector.get('gaBrowserSniffer');
+        expect(snif.h2).to.be.eql(true);
+      });
+
+
+
+    });
   });
 });
-
