@@ -400,6 +400,13 @@ goog.require('ga_urlutils_service');
         gaStylesFromLiterals, gaGlobalOptions, gaPermalink,
         gaLang, gaTime) {
 
+      var h2 = function(domainsArray) {
+        if (gaBrowserSniffer.h2) {
+          return domainsArray.slice(1, 2);
+        }
+        return domainsArray;
+      };
+
       var Layers = function(dfltWmsSubdomains, dfltWmtsNativeSubdomains,
           dfltWmtsMapProxySubdomains, dfltVectorTilesSubdomains,
           wmsUrlTemplate, wmtsGetTileUrlTemplate,
@@ -670,7 +677,7 @@ goog.require('ga_urlutils_service');
           var requestedLayer = config3d.serverLayerName || bodId;
           var tileset = new Cesium.Cesium3DTileset({
             url: getVectorTilesUrl(requestedLayer, timestamp,
-                dfltVectorTilesSubdomains),
+                h2(dfltVectorTilesSubdomains)),
             maximumNumberOfLoadedTiles: 3
           });
           tileset.bodId = bodId;
@@ -714,8 +721,8 @@ goog.require('ga_urlutils_service');
               url: getWmtsGetTileTpl(requestedLayer, timestamp,
                   '4326', format, hasNativeTiles),
               tileSize: 256,
-              subdomains: hasNativeTiles ? dfltWmtsNativeSubdomains :
-                  dfltWmtsMapProxySubdomains
+              subdomains: hasNativeTiles ? h2(dfltWmtsNativeSubdomains) :
+                  h2(dfltWmtsMapProxySubdomains)
             };
           } else if (config3d.type == 'wms') {
             var tileSize = 512;
@@ -833,7 +840,7 @@ goog.require('ga_urlutils_service');
                 tileGrid: gaTileGrid.get(layer.resolutions,
                     layer.minResolution),
                 tileLoadFunction: tileLoadFunction,
-                urls: getImageryUrls(wmtsTplUrl, dfltWmtsNativeSubdomains),
+                urls: getImageryUrls(wmtsTplUrl, h2(dfltWmtsNativeSubdomains)),
                 crossOrigin: crossOrigin
               });
             }
