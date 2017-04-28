@@ -8,7 +8,7 @@
       <div class="modal-body">
         <div class="input-modal-container">
           <div class="ga-topic-item"
-               ng-repeat="topic in topics | orderBy:['groupId', 'name']"
+               ng-repeat="topic in topics | orderBy:null:null:localeSensitiveComparator"
                ng-click="setActiveTopic(topic)"
                ng-class="{'ga-topic-active': topic == activeTopic}"
                data-original-title="{{topic.tooltip | translate}}">

@@ -6,6 +6,8 @@ describe('ga_topic_directive', function() {
       id: 'sometopic'
     }, {
       id: 'anothertopic'
+    }, {
+      id: 'finaltopic'
     }];
 
     module(function($provide) {
@@ -29,7 +31,7 @@ describe('ga_topic_directive', function() {
 
     module(function($translateProvider) {
       $translateProvider.translations('en',
-          {'anothertopic': 'Zombie', 'sometopic': 'Alien'});
+          {'anothertopic': 'Zombie', 'sometopic': 'Alien', 'finaltopic': 'Énergie'});
     });
 
     inject(function($injector) {
@@ -67,41 +69,44 @@ describe('ga_topic_directive', function() {
 
       it('reorders correctly the html on lang change event', function() {
         var items = element.find('.ga-topic-item');
-        expect(items.length).to.be(2);
+        expect(items.length).to.be(3);
         expect($(items[0]).text()).to.be('anothertopic');
-        expect($(items[1]).text()).to.be('sometopic');
+        expect($(items[1]).text()).to.be('finaltopic');
+        expect($(items[2]).text()).to.be('sometopic');
         $translate.use('en');
         $rootScope.$broadcast('translateChangeEnd', {language: 'en'});
         $rootScope.$digest();
         items = element.find('.ga-topic-item');
         expect($(items[0]).text()).to.be('Alien');
-        expect($(items[1]).text()).to.be('Zombie');
+        expect($(items[1]).text()).to.be('Énergie');
+        expect($(items[2]).text()).to.be('Zombie');
       });
 
       it('updates correctly the html on first topic change event', function() {
         var items = element.find('.ga-topic-item');
-        expect(items.length).to.be(2);
+        expect(items.length).to.be(3);
         expect($(items[0]).hasClass('ga-topic-active')).to.be(false);
-        expect($(items[1]).hasClass('ga-topic-active')).to.be(true);
+        expect($(items[1]).hasClass('ga-topic-active')).to.be(false);
+        expect($(items[2]).hasClass('ga-topic-active')).to.be(true);
       });
 
       it('updates correctly the html on multiple topic change event', function() {
         $rootScope.$broadcast('gaTopicChange', topics[1]);
         $rootScope.$digest();
         var items = element.find('.ga-topic-item');
-        expect(items.length).to.be(2);
+        expect(items.length).to.be(3);
         expect($(items[0]).hasClass('ga-topic-active')).to.be(true);
 
         $rootScope.$broadcast('gaTopicChange', topics[0]);
         $rootScope.$digest();
         var items = element.find('.ga-topic-item');
-        expect(items.length).to.be(2);
-        expect($(items[1]).hasClass('ga-topic-active')).to.be(true);
+        expect(items.length).to.be(3);
+        expect($(items[2]).hasClass('ga-topic-active')).to.be(true);
       });
 
       it('changes topic on click', function() {
         var items = element.find('.ga-topic-item');
-        expect(items.length).to.be(2);
+        expect(items.length).to.be(3);
         var item0 = $(items[0]);
         var item1 = $(items[1]);
         item1.click();
