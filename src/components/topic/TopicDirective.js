@@ -31,6 +31,21 @@ goog.require('ga_topic_service');
               scope.activeTopic = newTopic;
             };
 
+            scope.localeSensitiveComparator = function(o1, o2) {
+              var v1 = o1.value;
+              var v2 = o2.value;
+              var groupId1 = v1.groupId;
+              var groupId2 = v2.groupId;
+              if (groupId1 != groupId2 && typeof(groupId1) == 'number' &&
+                  typeof(groupId2) == 'number') {
+                return groupId1 < groupId2 ? -1 : 1;
+              }
+              var name1 = v1.name;
+              var name2 = v2.name;
+              // Compare strings alphabetically, taking locale into account
+              return name1.localeCompare(name2);
+            };
+
             scope.$watch('activeTopic', function(newTopic) {
               if (newTopic && scope.topics) {
                 modal.modal('hide');
