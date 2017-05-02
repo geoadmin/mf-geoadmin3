@@ -63,8 +63,16 @@ goog.require('ngeo.fileService');
         // List of google icons: http://www.lass.it/Web/viewer.aspx?id=4
         kml = kml.replace(
           /<href>http(?!(s:\/\/maps\.(google|gstatic)\.com[a-zA-Z\d\.\-\/_]*\.png|s?:\/\/[a-z\d\.\-]*(bgdi|geo.admin)\.ch))/g,
-          '<href>' + gaGlobalOptions.ogcproxyUrl + 'http'
+          '<href>' + gaGlobalOptions.proxyUrl + 'http'
         );
+        // We still need to convert <href>https://proxy.admin.ch/https:// to
+        // <href>https://proxy.admin.ch/https/
+        kml = kml.replace(
+          new RegExp('<href>' + gaGlobalOptions.proxyUrl + 'http://', 'g'),
+          '<href>' + gaGlobalOptions.proxyUrl + 'http/')
+            .replace(
+          new RegExp('<href>' + gaGlobalOptions.proxyUrl + 'https://', 'g'),
+          '<href>' + gaGlobalOptions.proxyUrl + 'https/');
 
         // Replace all http hrefs from *.geo.admin.ch or *.bgdi.ch by https
         // Test regex here: http://regex101.com/r/fY7wB3/5
@@ -352,19 +360,21 @@ goog.require('ngeo.fileService');
           if (gaNetworkStatus.offline) {
             return this.addKmlToMap(map, null, layerOptions, index);
           } else {
-            return $http.get(gaUrlUtils.proxifyUrl(url), {
-              cache: true
-            }).then(function(response) {
-              var data = response.data;
-              var fileSize = response.headers('content-length');
-
-              if (ngeoFile.isKml(data) && ngeoFile.isValidFileSize(fileSize)) {
-                layerOptions.useImageVector = that.useImageVector(fileSize);
-                return that.addKmlToMap(map, data, layerOptions, index);
-              }
-            }, function() {
-              // Try to get offline data if exist
-              return that.addKmlToMap(map, null, layerOptions, index);
+            return gaUrlUtils.proxifyUrl(url).then(function(proxyUrl) {
+              return $http.get(proxyUrl, {
+                cache: true
+              }).then(function(response) {
+                var data = response.data;
+                var fileSize = response.headers('content-length');
+                if (ngeoFile.isKml(data) &&
+                    ngeoFile.isValidFileSize(fileSize)) {
+                  layerOptions.useImageVector = that.useImageVector(fileSize);
+                  return that.addKmlToMap(map, data, layerOptions, index);
+                }
+              }, function() {
+                // Try to get offline data if exist
+                return that.addKmlToMap(map, null, layerOptions, index);
+              });
             });
           }
         };

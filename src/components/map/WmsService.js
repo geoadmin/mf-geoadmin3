@@ -22,14 +22,6 @@ goog.require('ga_urlutils_service');
 
       var getCesiumImageryProvider = function(layer) {
         var params = layer.getSource().getParams();
-        var proxy;
-        if (!gaUrlUtils.isAdminValid(layer.url)) {
-          proxy = {
-            getURL: function(resource) {
-               return gaUrlUtils.proxifyUrl(resource);
-            }
-          };
-        }
         var wmsParams = {
           layers: params.LAYERS,
           format: params.FORMAT || 'image/png',
@@ -57,7 +49,7 @@ goog.require('ga_urlutils_service');
           minimumRetrievingLevel: window.minimumRetrievingLevel,
           url: gaUrlUtils.append(layer.url, gaUrlUtils.toKeyValue(wmsParams)),
           rectangle: gaMapUtils.extentToRectangle(extent),
-          proxy: proxy,
+          proxy: gaUrlUtils.getCesiumProxy(),
           tilingScheme: new Cesium.GeographicTilingScheme(),
           hasAlphaChannel: true,
           availableLevels: window.imageryAvailableLevels

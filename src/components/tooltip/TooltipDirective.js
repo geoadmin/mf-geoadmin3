@@ -468,22 +468,23 @@ goog.require('ga_topic_service');
                     sourceProj || mapProj,
                     {'INFO_FORMAT': 'text/plain', 'LANG': gaLang.get()});
                 if (!is3dActive() && url) {
-                  url = gaUrlUtils.proxifyUrl(url);
-                  all.push($http.get(url, {
-                    timeout: canceler.promise,
-                    layer: layerToQuery
-                  }).then(function(response) {
-                    var text = response.data;
-                    if (/(Server Error|ServiceException)/.test(text)) {
-                      return 0;
-                    }
-                    var feat = new ol.Feature({
-                      geometry: null,
-                      description: '<pre>' + text + '</pre>'
-                    });
-                    showVectorFeature(feat, response.config.layer);
-                    return 1;
-                  }));
+                  gaUrlUtils.proxifyUrl(url).then(function(proxyUrl) {
+                    all.push($http.get(proxyUrl, {
+                      timeout: canceler.promise,
+                      layer: layerToQuery
+                    }).then(function(response) {
+                      var text = response.data;
+                      if (/(Server Error|ServiceException)/.test(text)) {
+                        return 0;
+                      }
+                      var feat = new ol.Feature({
+                        geometry: null,
+                        description: '<pre>' + text + '</pre>'
+                      });
+                      showVectorFeature(feat, response.config.layer);
+                      return 1;
+                    }));
+                  });
                 }
               });
 

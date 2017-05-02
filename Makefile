@@ -38,6 +38,8 @@ LAST_PUBLIC_URL := $(shell if [ -f .build-artefacts/last-public-url ];  then cat
 PRINT_URL ?= //print.geo.admin.ch
 PRINT_TECH_URL ?= //service-print.
 LAST_PRINT_URL := $(shell if [ -f .build-artefacts/last-print-url ]; then cat .build-artefacts/last-print-url 2> /dev/null; else echo '-none-'; fi)
+PROXY_URL ?= //service-proxy.prod.bgdi.ch
+LAST_PROXY_URL ?= $(shell if [ -f .build-artefacts/last-proxy-ulr ]; then cat .build-artefacts/last-proxy-url 2> /dev/null; else echo '-none-'; fi)
 
 PUBLIC_URL_REGEXP ?= ^https?:\/\/public\..*\.(bgdi|admin)\.ch\/.*
 ADMIN_URL_REGEXP ?= ^(ftp|http|https):\/\/(.*(\.bgdi|\.geo\.admin)\.ch)
@@ -52,10 +54,10 @@ GIT_BRANCH := $(shell if [ -f .build-artefacts/deployed-git-branch ]; then cat .
 GIT_LAST_BRANCH := $(shell if [ -f .build-artefacts/last-git-branch ]; then cat .build-artefacts/last-git-branch 2> /dev/null; else echo 'dummy'; fi)
 BRANCH_TO_DELETE ?=
 DEPLOY_ROOT_DIR := /var/www/vhosts/mf-geoadmin3/private/branch
-OL_VERSION ?= v4.1.0 # v4.1.0, 14 april 2017
-OL_CESIUM_VERSION ?= v1.26 # v1.26, 4 april 2017
-CESIUM_VERSION ?= a2c421d39ac3f43b047681049dd517f489747a72 # camptocamp/c2c_patches_vector_tiles_labels, 20 april 2017
-NGEO_VERSION ?= 3ecccd0c805ccf29dc8fe406dd4309bd292d50c8 # master, 16 january 2017
+OL_VERSION ?= v4.1.0 # v4.1.0, April 14 2017
+OL_CESIUM_VERSION ?= v1.26 # # v1.26, April 4 2017
+CESIUM_VERSION ?= a2c421d39ac3f43b047681049dd517f489747a72 # camptocamp/c2c_patches_vector_tiles_labels, April 20 2017
+NGEO_VERSION ?= 4f3430b4d27bb0a7e2f0c7356fbcca8f134991e5 # master, April 27 2017
 DEFAULT_TOPIC_ID ?= ech
 TRANSLATION_FALLBACK_CODE ?= de
 LANGUAGES ?= '[\"de\", \"fr\", \"it\", \"en\", \"rm\"]'
@@ -460,10 +462,7 @@ prd/geoadmin.appcache: src/geoadmin.mako.appcache \
 	    --var "deploy_target=$(DEPLOY_TARGET)" \
 	    --var "apache_base_path=$(APACHE_BASE_PATH)" \
 	    --var "languages=$(LANGUAGES)" \
-	    --var "api_url=$(API_URL)" \
-	    --var "print_url=$(PRINT_URL)" \
-	    --var "s3basepath=$(S3_BASE_PATH)" \
-	    --var "public_url=$(PUBLIC_URL)" $< > $@
+	    --var "s3basepath=$(S3_BASE_PATH)" $< > $@
 	mv $@ prd/geoadmin.$(VERSION).appcache
 
 prd/cache/: .build-artefacts/last-version \
@@ -494,6 +493,7 @@ define buildpage
 		--var "api_tech_url=$(API_TECH_URL)" \
 		--var "print_url=$(PRINT_URL)" \
 		--var "print_tech_url=$(PRINT_TECH_URL)" \
+		--var "proxy_url=$(PROXY_URL)" \
 		--var "mapproxy_url=$(MAPPROXY_URL)" \
 		--var "mapproxy_tech_url=$(MAPPROXY_TECH_URL)" \
 		--var "vectortiles_url=$(VECTORTILES_URL)" \
@@ -544,6 +544,7 @@ prd/index.html: src/index.mako.html \
 	    .build-artefacts/last-wms-url \
 	    .build-artefacts/last-public-url \
 	    .build-artefacts/last-print-url \
+	    .build-artefacts/last-proxy-url \
 	    .build-artefacts/last-apache-base-path \
 	    .build-artefacts/last-version
 	mkdir -p $(dir $@)
@@ -560,6 +561,7 @@ prd/mobile.html: src/index.mako.html \
 	    .build-artefacts/last-wms-url \
 	    .build-artefacts/last-public-url \
 	    .build-artefacts/last-print-url \
+	    .build-artefacts/last-proxy-url \
 	    .build-artefacts/last-apache-base-path \
 	    .build-artefacts/last-version
 	mkdir -p $(dir $@)
@@ -575,6 +577,7 @@ prd/embed.html: src/index.mako.html \
 	    .build-artefacts/last-wms-url \
 	    .build-artefacts/last-public-url \
 	    .build-artefacts/last-print-url \
+	    .build-artefacts/last-proxy-url \
 	    .build-artefacts/last-apache-base-path \
 	    .build-artefacts/last-version
 	mkdir -p $(dir $@)
@@ -617,6 +620,7 @@ src/index.html: src/index.mako.html \
 	    .build-artefacts/last-wms-url \
 	    .build-artefacts/last-public-url \
 	    .build-artefacts/last-print-url \
+	    .build-artefacts/last-proxy-url \
 	    .build-artefacts/last-apache-base-path
 	$(call buildpage,desktop,,,,$(S3_SRC_BASE_PATH))
 
@@ -629,6 +633,7 @@ src/mobile.html: src/index.mako.html \
 	    .build-artefacts/last-wms-url \
 	    .build-artefacts/last-public-url \
 	    .build-artefacts/last-print-url \
+	    .build-artefacts/last-proxy-url \
 	    .build-artefacts/last-apache-base-path
 	$(call buildpage,mobile,,,,$(S3_SRC_BASE_PATH))
 
@@ -641,6 +646,7 @@ src/embed.html: src/index.mako.html \
 	    .build-artefacts/last-wms-url \
 	    .build-artefacts/last-public-url \
 	    .build-artefacts/last-print-url \
+	    .build-artefacts/last-proxy-url \
 	    .build-artefacts/last-apache-base-path
 	$(call buildpage,embed,,,,$(S3_SRC_BASE_PATH))
 
@@ -653,16 +659,14 @@ src/TemplateCacheModule.js: src/TemplateCacheModule.mako.js \
 
 apache/app.conf: apache/app.mako-dot-conf \
 	    ${MAKO_CMD} \
-	    .build-artefacts/last-api-url \
 	    .build-artefacts/last-apache-base-path \
 	    .build-artefacts/last-apache-base-directory \
+	    .build-artefacts/last-api-url \
 	    .build-artefacts/last-version
 	${PYTHON_CMD} ${MAKO_CMD} \
 	    --var "apache_base_path=$(APACHE_BASE_PATH)" \
-	    --var "api_url=$(API_URL)" \
-	    --var "print_url=$(PRINT_URL)" \
-	    --var "public_url=$(PUBLIC_URL)" \
 	    --var "apache_base_directory=$(APACHE_BASE_DIRECTORY)" \
+	    --var "api_url=$(API_URL)" \
 	    --var "version=$(VERSION)" $< > $@
 
 test/karma-conf-debug.js: test/karma-conf.mako.js ${MAKO_CMD}
@@ -799,6 +803,10 @@ ${PYTHON_VENV}:
 	mkdir -p $(dir $@)
 	test "$(PRINT_URL)" != "$(LAST_PRINT_URL)" && echo $(PRINT_URL) > .build-artefacts/last-print-url || :
 
+.build-artefacts/last-proxy-url::
+	mkdir -p $(dir $@)
+	test "$(PROXY_URL)" != "$(LAST_PROXY_URL)" && echo $(PROXY_URL) > .build-artefacts/last-proxy-url || :
+
 .build-artefacts/last-apache-base-path::
 	mkdir -p $(dir $@)
 	test "$(APACHE_BASE_PATH)" != "$(LAST_APACHE_BASE_PATH)" && \
@@ -855,3 +863,5 @@ clean:
 	rm -f src/mobile.html
 	rm -f src/embed.html
 	rm -rf prd
+	rm -rf src/ngeo
+	git submodule update --init
