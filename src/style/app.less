@@ -1,6 +1,7 @@
 @import "ga_bootstrap.less";
 @import "font-awesome-4.5.0/less/font-awesome.less";
 @import "bootstrap-datetimepicker.less";
+@import "window.less";
 @import "../components/map/style/map.less";
 @import "../components/map/style/cesiuminspector.less";
 @import "../components/geolocation/style/geolocation.less";
@@ -53,7 +54,12 @@
 @small-header-height: 50;
 @bt-bottom: 51;
 @bt-bottom-sm: 26;
-@screen-sm-max-height: 600px;
+
+@screen-xs-height: 480px;
+@screen-s-height: 600px;
+@screen-m-height: 800px;
+@screen-sm-max-height: @screen-s-height;
+
 @tooltip-bg: #999;
 @pulldown-width: 320;
 @control-btn-size: 44;
@@ -492,7 +498,7 @@ input[type=text][readonly] {
   margin-top: 12px;
   z-index: 10; /* Put search on top of the form */
 
-  @media (max-width: 992px) {
+  @media (max-width: @screen-desktop) {
     margin-top: 27px;
   }
 
@@ -501,7 +507,7 @@ input[type=text][readonly] {
     padding-left: 10px;
     height: 30px;
 
-    @media (min-width: 992px) and (min-height:600px) {
+    @media (min-width: @screen-desktop) and (min-height: @screen-sm-max-height) {
       top: 21px;
     }
   }
@@ -852,23 +858,21 @@ a .ga-icon-separator {
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     font-size: 12px;
-    @media (max-height: 800px) {
+
+    @media (max-height: @screen-m-height) {
       max-height: 300px;
     }
-    @media (max-height: 680px) {
-      max-height: 200px;
+
+    @media (max-height: @screen-s-height) {
+      max-height: 95px;
     }
-    @media (max-height: 550px) {
-      max-height: 150px;
-    }
-    @media (max-height: 480px) {
-      max-height: 100px;
-    }
+
     @media (max-width: @screen-phone) {
       background-color: rgba(255,255,255,0.9);
       font-size: 14px;
       max-height: none;
     }
+
     .panel-body {
       padding: 0;
     }
@@ -877,9 +881,9 @@ a .ga-icon-separator {
   &.selection-and-catalog-shown {
     .panel-body {
       max-height: 250px;
-      @media (max-height: 800px) {
+      @media (max-height: @screen-m-height) {
         max-height: 150px;
-    }
+      }
       @media (max-width: @screen-phone) {
         max-height: none;
       }
@@ -908,7 +912,7 @@ a .ga-icon-separator {
   .translate3d(0, -100%, 0);
   -ms-transform: translateY(-100%); /* IE 9*/
 
-  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
+  @media (max-width: @screen-tablet), (max-height: @screen-s-height) {
     top: unit(@small-header-height, px);
   }
 
@@ -950,7 +954,7 @@ a .ga-icon-separator {
       vertical-align: middle;
     }
 
-    @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
+    @media (max-width: @screen-tablet), (max-height: @screen-s-height) {
       padding: 12px 10px 12px 0;
     }
   }
@@ -1083,7 +1087,7 @@ a .ga-icon-separator {
   max-width: 600px;
   max-height: none;
 
-  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
+  @media (max-width: @screen-tablet), (max-height: @screen-s-height) {
     top: unit(@small-header-height, px);
   }
 }

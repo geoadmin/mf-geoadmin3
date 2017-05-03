@@ -2,16 +2,18 @@ goog.provide('ga_drawstyle_directive');
 
 goog.require('ga_styles_service');
 goog.require('ga_urlutils_service');
+goog.require('ga_window_service');
 
 (function() {
 
   var module = angular.module('ga_drawstyle_directive', [
     'ga_styles_service',
-    'ga_urlutils_service'
+    'ga_urlutils_service',
+    'ga_window_service'
   ]);
 
   module.directive('gaDrawStyle', function($document, $window, $translate,
-      gaGlobalOptions, gaStyleFactory, gaUrlUtils) {
+      gaGlobalOptions, gaStyleFactory, gaUrlUtils, gaWindow) {
 
     // Find the corresponding style
     var findIcon = function(olIcon, icons) {
@@ -301,7 +303,7 @@ goog.require('ga_urlutils_service');
             bt.popover({
               html: true,
               placement: function() {
-                return win.width() < 480 ? 'top' : 'auto right';
+                return gaWindow.isWidth('xs') ? 'top' : 'auto right';
               },
               content: content,
               title: title,

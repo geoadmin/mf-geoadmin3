@@ -1,4 +1,4 @@
-describe('ga_what3words', function() {
+describe('ga_what3words_service', function() {
 
   describe('gaWhat3Words', function() {
     var gaWhat3Words;

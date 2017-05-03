@@ -7,6 +7,7 @@ goog.require('ga_map_load_service');
 goog.require('ga_networkstatus_service');
 goog.require('ga_storage_service');
 goog.require('ga_topic_service');
+goog.require('ga_window_service');
 
 (function() {
 
@@ -17,7 +18,8 @@ goog.require('ga_topic_service');
     'ga_networkstatus_service',
     'ga_storage_service',
     'ga_background_service',
-    'ga_topic_service'
+    'ga_topic_service',
+    'ga_window_service'
   ]);
 
   /**
@@ -28,7 +30,7 @@ goog.require('ga_topic_service');
       gaPermalinkFeaturesManager, gaPermalinkLayersManager, gaMapUtils,
       gaRealtimeLayersManager, gaNetworkStatus, gaPermalink, gaStorage,
       gaGlobalOptions, gaBackground, gaTime, gaLayers, gaTopic,
-      gaOpaqueLayersManager, gaMapLoad) {
+      gaOpaqueLayersManager, gaMapLoad, gaWindow) {
 
     var createMap = function() {
       var toolbar = $('#zoomButtons')[0];
@@ -72,23 +74,11 @@ goog.require('ga_topic_service');
         logo: false
       });
 
-      var dragClass = 'ga-dragging';
-      var viewport = $(map.getViewport());
-      map.on('dragstart', function() {
-        viewport.addClass(dragClass);
-      });
-      map.on('dragend', function() {
-        viewport.removeClass(dragClass);
-      });
-
       return map;
     };
 
     // Determines if the window has a height <= 550
-    var win = $($window), screenPhone = 480, screenSmMaxHeight = 550;
-    var isWindowTooSmall = function() {
-      return win.height() <= screenSmMaxHeight;
-    };
+    var win = $($window);
     var dismiss = 'none';
 
     // The main controller creates the OpenLayers map object. The map object
@@ -293,11 +283,10 @@ goog.require('ga_topic_service');
         $scope.globals.isShareActive = false;
       }
     });
-    // Deactivate share tool when pulldown is closeddraw is opening
+    // Activate share tool when menu is opening.
     $scope.$watch('globals.pulldownShown', function(active) {
       if (active && !$scope.globals.isDrawActive &&
-          !$scope.globals.isShareActive &&
-          win.width() <= screenPhone) {
+          !$scope.globals.isShareActive && gaWindow.isWidth('xs')) {
         $scope.globals.isShareActive = true;
       }
     });
@@ -319,12 +308,10 @@ goog.require('ga_topic_service');
       });
     }, 2000);
 
-    // Try to manage the menu correctly when height is too small,
-    // only on desktop.
+    // Manage exit of draw mode (only desktop)
     if (!gaBrowserSniffer.mobile) {
 
-
-      // Exit Draw mode when pressing ESC or BAckspace button
+      // Exit Draw mode when pressing ESC or Backspace button
       $document.keydown(function(evt) {
         if (evt.which == 8) {
           if (!/^(input|textarea)$/i.test(evt.target.tagName)) {
@@ -358,61 +345,71 @@ goog.require('ga_topic_service');
           $scope.$digest();
         }
       };
-
-      win.on('resize', function() {
-        if (isWindowTooSmall()) {
-          if ($scope.globals.catalogShown) {
-            $scope.$applyAsync(function() {
-              $scope.globals.catalogShown = false;
-            });
-          }
-        }
-        // Open share panel by default on phone
-        if ($scope.globals.pulldownShown && !$scope.globals.isShareActive &&
-            !$scope.globals.isDrawActive &&
-            win.width() <= screenPhone) {
-          $scope.$applyAsync(function() {
-            $scope.globals.isShareActive = true;
-          });
-        }
-      });
-
-      // Hide a panel clicking on its heading
-      var hidePanel = function(id) {
-        if ($('#' + id).hasClass('in')) {
-          $('#' + id + 'Heading').click();
-        }
-      };
-
-      var hideAccordionPanels = function() {
-        hidePanel('share');
-        hidePanel('print');
-        hidePanel('tools');
-      };
-
-      $('#catalog').on('shown.bs.collapse', function() {
-        // Close accordion
-        hideAccordionPanels();
-
-        if (isWindowTooSmall()) {
-          // Close selection
-          hidePanel('selection');
-        }
-      });
-
-      $('#selection').on('shown.bs.collapse', function() {
-        // Close accordion
-        hideAccordionPanels();
-
-        if (isWindowTooSmall()) {
-          // Close catalog
-          hidePanel('catalog');
-        }
-      });
-
     }
 
-    // An new appcache file is available.
+    // Management of panels display (only on screen bigger than 480px)
+    win.on('resize', function() {
+      if (gaWindow.isWidth('xs')) {
+        return;
+      }
+
+      // Hide catalog panel if height is too small
+      if (gaWindow.isHeight('<=m')) {
+        if ($scope.globals.catalogShown) {
+          $scope.$applyAsync(function() {
+            $scope.globals.catalogShown = false;
+          });
+        }
+      }
+      // Open share panel by default on phone
+      if ($scope.globals.pulldownShown && !$scope.globals.isShareActive &&
+          !$scope.globals.isDrawActive && gaWindow.isWidth('xs')) {
+        $scope.$applyAsync(function() {
+          $scope.globals.isShareActive = true;
+        });
+      }
+    });
+
+    // Hide a panel clicking on its heading
+    var hidePanel = function(id) {
+      if ($('#' + id).hasClass('in')) {
+        $('#' + id + 'Heading').click();
+      }
+    };
+
+    var hideAccordionPanels = function() {
+      hidePanel('share');
+      hidePanel('print');
+      hidePanel('tools');
+    };
+
+    $('#catalog').on('shown.bs.collapse', function() {
+      if (gaWindow.isWidth('xs')) {
+        return;
+      }
+      // Close accordion
+      hideAccordionPanels();
+
+      if (gaWindow.isHeight('<=s')) {
+        // Close selection
+        hidePanel('selection');
+      }
+    });
+
+    $('#selection').on('shown.bs.collapse', function() {
+      if (gaWindow.isWidth('xs')) {
+        return;
+      }
+      // Close accordion
+      hideAccordionPanels();
+
+      if (gaWindow.isHeight('<=s')) {
+        // Close catalog
+        hidePanel('catalog');
+      }
+    });
+
+    // Load new appcache file if available.
     if ($window.applicationCache) {
       $window.applicationCache.addEventListener('obsolete', function(e) {
         // setTimeout is needed for correct appcache update on Firefox
@@ -421,7 +418,6 @@ goog.require('ga_topic_service');
         });
       });
     }
-
   });
 })();
 

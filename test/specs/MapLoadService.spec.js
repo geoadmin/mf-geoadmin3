@@ -67,7 +67,7 @@ describe('ga_mapload_service', function() {
         expect(spyLog.callCount).to.be(1);
       });
     });
-    
+
     describe('all', function() {
 
       it('waits for last loaded tile until all messages are displayed', function() {
@@ -90,7 +90,7 @@ describe('ga_mapload_service', function() {
         expect(spyLog.callCount).to.be(1);
       });
     });
-    
+
     describe('2 layers', function() {
 
       it('waits for all layers loaded', function() {

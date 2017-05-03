@@ -2,20 +2,21 @@ goog.provide('ga_popup_directive');
 
 goog.require('ga_browsersniffer_service');
 goog.require('ga_print_service');
+goog.require('ga_window_service');
 (function() {
 
   var module = angular.module('ga_popup_directive', [
     'ga_browsersniffer_service',
     'ga_print_service',
-    'pascalprecht.translate'
+    'pascalprecht.translate',
+    'ga_window_service'
   ]);
 
   module.directive('gaPopup',
-    function($rootScope, $translate, $window, gaBrowserSniffer, gaPrint) {
+    function($rootScope, $translate, $window, gaBrowserSniffer, gaPrint,
+        gaWindow) {
       var zIndex;
-      var screenLimit = 0;
-      var screenTabletLimit = 768;
-      var screenMobileLimit = 480;
+      var screenLimit = 'xs';
 
       var bringUpFront = function(el) {
         // We get the initial z-index css.
@@ -58,10 +59,10 @@ goog.require('ga_print_service');
           // Init some utilities variables.
           var className = element[0].className;
           if (/ga-popup-tablet/.test(className)) {
-            screenLimit = screenTabletLimit;
+            screenLimit = 's';
           }
           if (/ga-popup-mobile/.test(className)) {
-            screenLimit = screenMobileLimit;
+            screenLimit = 'xs';
           }
 
           // Initialize the popup properties
@@ -210,8 +211,8 @@ goog.require('ga_print_service');
             if (scope.options.isReduced) {
               return;
             }
-            var winWidth = win.width();
-            if (winWidth > screenLimit) {
+            if (gaWindow.isWidth('>' + screenLimit)) {
+              var winWidth = win.width();
               var winHeight = win.height();
               var popupWidth = element.outerWidth();
               var popupHeight = element.outerHeight();

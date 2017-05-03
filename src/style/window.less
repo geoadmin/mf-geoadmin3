@@ -1,0 +1,59 @@
+/* These CSSs are used by the gaWindow service to determine the size of the window. */
+.ga-window {
+  
+  > div {
+    display: none;
+  }
+  
+  &.ga-window-width {
+
+    @media (max-width: @screen-phone) {
+      .ga-visible-xs {
+        display: block;
+      }
+    }
+
+    @media (min-width: (@screen-phone + 1)) and (max-width: @screen-tablet) {
+      .ga-visible-s {
+        display: block;
+      }
+    }
+    
+    @media (min-width: (@screen-tablet + 1)) and (max-width: @screen-desktop) {
+      .ga-visible-m {
+        display: block;
+      }
+    }
+   
+    @media (min-width: (@screen-desktop + 1)) {
+      .ga-visible-l {
+        display: block;
+      }
+    }
+  }
+
+  &.ga-window-height {
+    
+    @media (max-height: @screen-xs-height) {
+      .ga-visible-xs {
+        display: block;
+      }
+    }
+    
+    @media (min-height: (@screen-xs-height + 1)) and (max-height: @screen-s-height) {
+      .ga-visible-s {
+        display: block;
+      }
+    }
+    @media (min-height: (@screen-s-height + 1)) and (max-height: @screen-m-height) {
+      .ga-visible-m {
+        display: block;
+      }
+    }
+   @media (min-height: (@screen-m-height + 1)) {
+      .ga-visible-l {
+        display: block;
+      }
+    }
+  }
+}
