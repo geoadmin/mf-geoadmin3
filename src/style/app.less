@@ -58,7 +58,6 @@
 @screen-xs-height: 480px;
 @screen-s-height: 600px;
 @screen-m-height: 800px;
-@screen-sm-max-height: @screen-s-height;
 
 @tooltip-bg: #999;
 @pulldown-width: 320;
@@ -265,7 +264,7 @@ button.ga-icon, &.ga-btn-disabled, &.ngeo-btn-disabled {
     opacity: 1;
   }
 
-  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
+  @media (max-width: @screen-tablet), (max-height: @screen-s-height) {
     font-size: 2.2em;
     width: 1em;
   }
@@ -466,7 +465,7 @@ input[type=text][readonly] {
   line-height: unit(@header-height - 5, px);
   font-weight: normal;
 
-  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
+  @media (max-width: @screen-tablet), (max-height: @screen-s-height) {
      line-height: unit(@small-header-height - 5, px);
   }
 }
@@ -476,7 +475,7 @@ input[type=text][readonly] {
   height: unit(@header-height, px);
   background-color: rgba(255, 255, 255, 0.9);
 
-  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
+  @media (max-width: @screen-tablet), (max-height: @screen-s-height) {
     height: unit(@small-header-height, px);
     background: #fff;
   }
@@ -507,12 +506,12 @@ input[type=text][readonly] {
     padding-left: 10px;
     height: 30px;
 
-    @media (min-width: @screen-desktop) and (min-height: @screen-sm-max-height) {
+    @media (min-width: @screen-desktop) and (min-height: @screen-s-height) {
       top: 21px;
     }
   }
 
-  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
+  @media (max-width: @screen-tablet), (max-height: @screen-s-height) {
     margin-top: 0;
     width: 260px;
     top: .7em;
@@ -566,7 +565,7 @@ input[type=text][readonly] {
   height: unit(@header-height, px);
   background: white no-repeat left center;
 
-  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
+  @media (max-width: @screen-tablet), (max-height: @screen-s-height) {
     width: 44px;
     height: unit(@small-header-height, px);
   }
@@ -618,7 +617,7 @@ input[type=text][readonly] {
 #logo {
   display: inline-block;
 
-  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
+  @media (max-width: @screen-tablet), (max-height: @screen-s-height) {
 
     .fa-ga-logo-bund {
       font-size: 21px;
@@ -1329,7 +1328,7 @@ ul.panel-body-wide {
     margin-right: 5px;
     height: 40px;
     line-height: 40px;
-    @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
+    @media (max-width: @screen-tablet), (max-height: @screen-s-height) {
       height: 44px;
       line-height: 44px;
     }
@@ -1623,7 +1622,7 @@ input[type=range] {
     bottom: unit(@bt-bottom-sm, px);
   }
 
-  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
+  @media (max-width: @screen-tablet), (max-height: @screen-s-height) {
     top: unit(@small-header-height, px);
   }
 
@@ -1828,7 +1827,7 @@ body:not(.embed) {
   left: -50px;
   .rotate(-45deg);
 
-  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
+  @media (max-width: @screen-tablet), (max-height: @screen-s-height) {
     top: 108px;
   }
 
