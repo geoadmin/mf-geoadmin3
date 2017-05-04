@@ -11,6 +11,13 @@
   },
   "author": "Swisstopo",
   "readmeFileName": "README.md",
+  "//": "http://browserl.ist/?q=IE+9%2C+IE+10%2C+Android+%3E%3D+4%2C+%3E+0.5%25+in+CH",
+  "browserslist": [
+    "IE 9",
+    "IE 10",
+    "Android >= 4",
+    "> 0.5% in CH"
+  ],
   "dependencies": {
     "angular": "1.6.4",
     "angular-translate": "2.15.1",
@@ -24,6 +31,7 @@
   },
   "devDependencies": {
     "angular-mocks": "1.6.4",
+    "autoprefixer": "6.7.7",
     "babel-cli": "^6.24.1",
     "babel-preset-env": "^1.4.0",
     "bootstrap": "3.3.7",
@@ -39,6 +47,7 @@
     "less-plugin-clean-css": "~1.5.1",
     "mocha": "3.3.0",
     "ng-annotate": "1.2.1",
+    "postcss-cli": "3.2.0",
     "phantomjs-prebuilt": "2.1.14",
     "sinon": "2.1.0"
   }
