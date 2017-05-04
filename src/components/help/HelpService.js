@@ -20,8 +20,7 @@ goog.require('ga_translation_service');
     this.$get = function($http, gaLang) {
 
       var Help = function() {
-        var url = 'https://www.googleapis.com/fusiontables/v1/query?' +
-                  'callback=JSON_CALLBACK';
+        var url = 'https://www.googleapis.com/fusiontables/v1/query';
         var apiKey = 'AIzaSyDT7wmEx97gAG5OnPwKyz2PnCx3yT4j7C0';
         var sqlTmpl = 'select * from 1Tx2VSM1WHZfDXzf8rweRLG1kd23AA4aw8xnZ_3c' +
                       ' where col0={id} and col5=\'{lang}\'';

@@ -58,7 +58,7 @@ goog.require('ga_browsersniffer_service');
     };
     var isInitialized = false;
 
-    this.$get = function($window, gaBrowserSniffer) {
+    this.$get = function($window, gaBrowserSniffer, $q) {
       var Storage = function() {
 
         // Initialize the database config, needed when using webSQL to avoid ios
@@ -118,25 +118,24 @@ goog.require('ga_browsersniffer_service');
         }
 
         // Tiles management
-        // TODO: localforage can use promise but it doesn't seem to work for
-        // now
-        this.getTile = function(key, callback) {
+        this.getTile = function(key) {
           if (!isInitialized) {
-            return callback();
+            return $q.when();
           }
-          $window.localforage.getItem(key, function(err, compressedDataURI) {
-            callback(err, decompress(compressedDataURI));
+          return $window.localforage.getItem(key).then(
+              function(compressedDataURI) {
+            return decompress(compressedDataURI);
           });
         };
 
-        this.setTile = function(key, dataURI, callback) {
+        this.setTile = function(key, dataURI) {
           this.init();
-          $window.localforage.setItem(key, compress(dataURI), callback);
+          return $window.localforage.setItem(key, compress(dataURI));
         };
 
-        this.clearTiles = function(callback) {
+        this.clearTiles = function() {
           this.init();
-          $window.localforage.clear(callback);
+          return $window.localforage.clear();
         };
       };
       return new Storage();

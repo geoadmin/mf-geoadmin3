@@ -41,7 +41,8 @@ beforeEach(function() {
       lv95tolv03Url: '//api.example.com/reframe/lv95tolv03',
       w3wApiKey: 'testkey',
       whitelist: [
-        'https://' + window.location.host + '/**'
+        'https://' + window.location.host + '/**',
+        'https://www.googleapis.com/**'
       ],
       defaultTopicId: 'sometopic',
       translationFallbackCode: 'somelang',
@@ -124,5 +125,10 @@ beforeEach(function() {
     var whitelist = $sceDelegateProvider.resourceUrlWhitelist();
     whitelist = whitelist.concat(gaGlobalOptions.whitelist);
     $sceDelegateProvider.resourceUrlWhitelist(whitelist);
+  });
+
+  // Void display of "Possibly unhandled rejection:" message
+  module(function($qProvider) {
+    $qProvider.errorOnUnhandledRejections(false);
   });
 });

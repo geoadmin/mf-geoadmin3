@@ -2,9 +2,9 @@ describe('ga_help_service', function() {
 
   describe('gaHelp', function() {
     var gaHelp, $httpBackend, gaLang, $rootScope;
-    var url = 'https://www.googleapis.com/fusiontables/v1/query?callback=JSON_CALLBACK&key=AIzaSyDT7wmEx97gAG5OnPwKyz2PnCx3yT4j7C0&sql=select+*+from+1Tx2VSM1WHZfDXzf8rweRLG1kd23AA4aw8xnZ_3c+where+col0%3D31+and+col5%3D';
-    var frUrl = url + '\'fr\'';
-    var deUrl = url + '\'de\'';
+    var url = 'https://www.googleapis.com/fusiontables/v1/query?key=AIzaSyDT7wmEx97gAG5OnPwKyz2PnCx3yT4j7C0&sql=select+*+from+1Tx2VSM1WHZfDXzf8rweRLG1kd23AA4aw8xnZ_3c+where+col0%3D31+and+col5%3D{lang}&callback=JSON_CALLBACK';
+    var frUrl = url.replace('{lang}', '\'fr\'');
+    var deUrl = url.replace('{lang}', '\'de\'');
 
     beforeEach(function() {
       module(function($provide) {
