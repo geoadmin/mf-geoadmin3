@@ -1,6 +1,6 @@
 // Ol-Cesium. See https://github.com/openlayers/ol-cesium/
 // License: https://github.com/openlayers/ol-cesium/blob/master/LICENSE
-// Version: v1.26
+// Version: v1.27
 
 'use strict';var COMPILED = false;
 var goog = goog || {};
@@ -20,7 +20,7 @@ goog.exportPath_ = function(name, opt_object, opt_objectToExportTo) {
     if (!parts.length && goog.isDef(opt_object)) {
       cur[part] = opt_object;
     } else {
-      if (cur[part] && Object.prototype.hasOwnProperty.call(cur, part)) {
+      if (cur[part] && cur[part] !== Object.prototype[part]) {
         cur = cur[part];
       } else {
         cur = cur[part] = {};
@@ -267,6 +267,7 @@ if (goog.DEPENDENCIES_ENABLED) {
     }
   };
   goog.IS_OLD_IE_ = !!(!goog.global.atob && goog.global.document && goog.global.document.all);
+  goog.oldIeWaiting_ = false;
   goog.importProcessedScript_ = function(src, isModule, needsTranspile) {
     var bootstrap = 'goog.retrieveAndExec_("' + src + '", ' + isModule + ", " + needsTranspile + ");";
     goog.importScript_("", bootstrap);
@@ -289,6 +290,7 @@ if (goog.DEPENDENCIES_ENABLED) {
         goog.maybeProcessDeferredPath_(path);
       }
     }
+    goog.oldIeWaiting_ = false;
   };
   goog.maybeProcessDeferredDep_ = function(name) {
     if (goog.isDeferredModule_(name) && goog.allDepsAreAvailable_(name)) {
@@ -358,6 +360,7 @@ if (goog.DEPENDENCIES_ENABLED) {
             goog.writeScriptSrcNode_(src);
           }
         } else {
+          goog.oldIeWaiting_ = true;
           var state = " onreadystatechange='goog.onScriptLoad_(this, " + ++goog.lastNonModuleScriptIndex_ + ")' ";
           doc.write('<script type="text/javascript" src="' + src + '"' + state + "></" + "script>");
         }
@@ -370,7 +373,7 @@ if (goog.DEPENDENCIES_ENABLED) {
     }
   };
   goog.protectScriptTag_ = function(str) {
-    return str.replace(/<\/(SCRIPT)/ig, "\\x3c\\$1");
+    return str.replace(/<\/(SCRIPT)/ig, "\\x3c/$1");
   };
   goog.needsTranspile_ = function(lang) {
     if (goog.TRANSPILE == "always") {
@@ -512,11 +515,11 @@ goog.loadModule = function(moduleDef) {
     goog.moduleLoaderState_ = previousState;
   }
 };
-goog.loadModuleFromSource_ = function() {
+goog.loadModuleFromSource_ = (function() {
   var exports = {};
   eval(arguments[0]);
   return exports;
-};
+});
 goog.normalizePath_ = function(path) {
   var components = path.split("/");
   var i = 0;
@@ -533,6 +536,7 @@ goog.normalizePath_ = function(path) {
   }
   return components.join("/");
 };
+goog.global.CLOSURE_LOAD_FILE_SYNC;
 goog.loadFileSync_ = function(src) {
   if (goog.global.CLOSURE_LOAD_FILE_SYNC) {
     return goog.global.CLOSURE_LOAD_FILE_SYNC(src);
@@ -565,7 +569,7 @@ goog.retrieveAndExec_ = function(src, isModule, needsTranspile) {
       scriptText += "\n//# sourceURL=" + src;
     }
     var isOldIE = goog.IS_OLD_IE_;
-    if (isOldIE) {
+    if (isOldIE && goog.oldIeWaiting_) {
       goog.dependencies_.deferred[originalPath] = scriptText;
       goog.queuedModules_.push(originalPath);
     } else {
@@ -777,6 +781,7 @@ goog.globalEval = function(script) {
 goog.evalWorksForGlobals_ = null;
 goog.cssNameMapping_;
 goog.cssNameMappingStyle_;
+goog.global.CLOSURE_CSS_NAME_MAP_FN;
 goog.getCssName = function(className, opt_modifier) {
   if (String(className).charAt(0) == ".") {
     throw new Error('className passed in goog.getCssName must not start with ".".' + " You passed: " + className);
@@ -974,10 +979,16 @@ goog.createRequiresTranspilation_ = function() {
       return false;
     }
   }
+  var userAgent = goog.global.navigator && goog.global.navigator.userAgent ? goog.global.navigator.userAgent : "";
   addNewerLanguageTranspilationCheck("es5", function() {
     return evalCheck("[1,].length==1");
   });
   addNewerLanguageTranspilationCheck("es6", function() {
+    var re = /Edge\/(\d+)(\.\d)*/i;
+    var edgeUserAgent = userAgent.match(re);
+    if (edgeUserAgent && Number(edgeUserAgent[1]) < 15) {
+      return false;
+    }
     var es6fullTest = "class X{constructor(){if(new.target!=String)throw 1;this.x=42}}" + "let q=Reflect.construct(X,[],String);if(q.x!=42||!(q instanceof " + "String))throw 1;for(const a of[2,3]){if(a==2)continue;function " + "f(z={a}){let a=0;return z.a}{function f(){return 0;}}return f()" + "==3}";
     return evalCheck('(()=>{"use strict";' + es6fullTest + "})()");
   });
@@ -15612,6 +15623,7 @@ ol.control.Control.prototype.setTarget = function(target) {
 };
 goog.provide("ol.css");
 ol.css.CLASS_HIDDEN = "ol-hidden";
+ol.css.CLASS_SELECTABLE = "ol-selectable";
 ol.css.CLASS_UNSELECTABLE = "ol-unselectable";
 ol.css.CLASS_UNSUPPORTED = "ol-unsupported";
 ol.css.CLASS_CONTROL = "ol-control";
@@ -20786,6 +20798,7 @@ goog.require("ol");
 goog.require("ol.MapEventType");
 goog.require("ol.Object");
 goog.require("ol.OverlayPositioning");
+goog.require("ol.css");
 goog.require("ol.dom");
 goog.require("ol.events");
 goog.require("ol.extent");
@@ -20795,7 +20808,7 @@ ol.Overlay = function(options) {
   this.insertFirst_ = options.insertFirst !== undefined ? options.insertFirst : true;
   this.stopEvent_ = options.stopEvent !== undefined ? options.stopEvent : true;
   this.element_ = document.createElement("DIV");
-  this.element_.className = "ol-overlay-container";
+  this.element_.className = "ol-overlay-container " + ol.css.CLASS_SELECTABLE;
   this.element_.style.position = "absolute";
   this.autoPan = options.autoPan !== undefined ? options.autoPan : false;
   this.autoPanAnimation_ = options.autoPanAnimation || ({});
@@ -24771,6 +24784,7 @@ goog.require("ol.extent");
 goog.require("ol.format.Feature");
 goog.require("ol.format.GMLBase");
 goog.require("ol.format.XSD");
+goog.require("ol.geom.Geometry");
 goog.require("ol.obj");
 goog.require("ol.proj");
 goog.require("ol.xml");
@@ -33472,11 +33486,13 @@ ol.interaction.TranslateEventType = {TRANSLATESTART:"translatestart", TRANSLATIN
 goog.provide("ol.interaction.Translate");
 goog.require("ol");
 goog.require("ol.Collection");
+goog.require("ol.Object");
 goog.require("ol.events");
 goog.require("ol.events.Event");
 goog.require("ol.functions");
 goog.require("ol.array");
 goog.require("ol.interaction.Pointer");
+goog.require("ol.interaction.Property");
 goog.require("ol.interaction.TranslateEventType");
 ol.interaction.Translate = function(opt_options) {
   ol.interaction.Pointer.call(this, {handleDownEvent:ol.interaction.Translate.handleDownEvent_, handleDragEvent:ol.interaction.Translate.handleDragEvent_, handleMoveEvent:ol.interaction.Translate.handleMoveEvent_, handleUpEvent:ol.interaction.Translate.handleUpEvent_});
