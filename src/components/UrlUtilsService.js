@@ -9,6 +9,15 @@ goog.provide('ga_urlutils_service');
 
       var UrlUtils = function(shortenUrl) {
 
+        // Ugly hack because print can't work with most CF distributions. So
+        // we tap s3 backend directly
+        var CF_TO_NONCF = [
+         ['map.geo.admin.ch',
+          's3-eu-west-1.amazonaws.com/mf-geoadmin3-prod-dublin'],
+         ['mf-geoadmin3.int.bgdi.ch',
+          's3-eu-west-1.amazonaws.com/mf-geoadmin3-int-dublin']
+        ];
+
         // from Angular
         // https://github.com/angular/angular.js/blob/v1.4.8/src/ng/directive/input.js#L15
         var URL_REGEXP = new RegExp('^(blob:)?(ftp|http|https):\\/\\/' +
@@ -133,6 +142,19 @@ goog.provide('ga_urlutils_service');
 
         this.getHostname = function(str) {
           return decodeURIComponent(str).match(/:\/\/(.[^/]+)/)[1].toString();
+        };
+
+        // If it's cloudfron URL, replace it with non-CF one
+        this.nonCloudFrontUrl = function(url) {
+          if (this.isValid(url)) {
+            var hostName = this.getHostname(url);
+            for (var i = 0; i < CF_TO_NONCF.length; i++) {
+              if (hostName == CF_TO_NONCF[i][0]) {
+                return url.replace(CF_TO_NONCF[i][0], CF_TO_NONCF[i][1]);
+              }
+            }
+          }
+          return url;
         };
 
         this.append = function(url, paramString) {
