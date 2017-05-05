@@ -111,6 +111,7 @@ KARMA=${NODE_BIN}/karma
 PHANTOMJS=${NODE_BIN}/phantomjs
 NG_ANNOTATE=${NODE_BIN}/ng-annotate
 BABEL=${NODE_BIN}/babel
+POSTCSS=${NODE_BIN}/postcss
 
 .PHONY: help
 help:
@@ -451,6 +452,7 @@ prd/lib/build.js: src/lib/polyfill.min.js \
 prd/style/app.css: $(SRC_LESS_FILES)
 	mkdir -p $(dir $@)
 	${LESSC} $(LESS_PARAMETERS) --clean-css src/style/app.less $@
+	${POSTCSS} $@ --use autoprefixer --replace --no-map
 
 prd/geoadmin.appcache: src/geoadmin.mako.appcache \
 			${MAKO_CMD} \
@@ -610,6 +612,7 @@ src/deps.js: $(SRC_JS_FILES) ${PYTHON_VENV}
 
 src/style/app.css: $(SRC_LESS_FILES)
 	${LESSC} $(LESS_PARAMETERS) src/style/app.less $@
+	${POSTCSS} $@ --use autoprefixer --replace --no-map
 
 src/index.html: src/index.mako.html \
 	    ${MAKO_CMD} \

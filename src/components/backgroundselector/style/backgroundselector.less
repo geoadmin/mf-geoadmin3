@@ -1,5 +1,5 @@
 [ga-background-selector] {
-  .user-select(none);
+  user-select: none;
 
   .ga-bg-layer-bt, .ga-bg-layer, .ga-bg-layer-bt-close {
     bottom: unit(@bt-bottom, px);
@@ -9,7 +9,7 @@
     background: #fff data-uri('bg-layersx2.jpg') no-repeat 0 center;
     background-size: 275px 58px;
     border: 3px solid;
-    .transition-transform(~".5s,  bottom .5s, width .5s");
+    transition: transform .5s,  bottom .5s, width .5s;
 
     @media (max-width: @screen-tablet) {
       bottom: unit(@bt-bottom-sm, px);
@@ -93,22 +93,22 @@
     &.ga-open {
 
       .ga-swissimage {
-        .translate3d(0, -49px, 0);
+        transform: translate3d(0, -49px, 0);
         -ms-transform: translateY(-49px); /* IE 9*/
       }
 
       .ga-pixelkarte-farbe {
-        .translate3d(0, -98px, 0);
+        transform: translate3d(0, -98px, 0);
         -ms-transform: translateY(-98px); /* IE 9*/
       }
 
       .ga-pixelkarte-grau {
-        .translate3d(0, -147px, 0);
+        transform: translate3d(0, -147px, 0);
         -ms-transform: translateY(-147px); /* IE 9*/
       }
 
       .ga-voidLayer {
-        .translate3d(0, -196px, 0);
+        transform: translate3d(0, -196px, 0);
         -ms-transform: translateY(-196px); /* IE 9*/
       }
     }
@@ -153,22 +153,22 @@
       }
 
       .ga-swissimage {
-        .translate3d(-25px, 0 , 0);
+        transform: translate3d(-25px, 0 , 0);
         -ms-transform: translateX(-25px); /* IE 9*/
       }
 
       .ga-pixelkarte-farbe {
-        .translate3d(-126px, 0 , 0);
+        transform: translate3d(-126px, 0 , 0);
         -ms-transform: translateX(-126px); /* IE 9*/
       }
 
       .ga-pixelkarte-grau {
-        .translate3d(-227px, 0 , 0);
+        transform: translate3d(-227px, 0 , 0);
         -ms-transform: translateX(-227px); /* IE 9*/
       }
 
       .ga-voidLayer {
-        .translate3d(-328px, 0 , 0);
+        transform: translate3d(-328px, 0 , 0);
          -ms-transform: translateX(-328px); /* IE 9*/
       }
     }
