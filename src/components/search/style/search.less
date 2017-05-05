@@ -22,7 +22,7 @@
   .ga-search-title {
     font-weight: bold;
   } 
-  @media (max-width: 992px), (max-height: @screen-sm-max-height) {
+  @media (max-width: @screen-desktop), (max-height: @screen-s-height) {
     .ga-search-title {
       display: none;
     }
@@ -50,16 +50,26 @@
   .ga-search-1 {
     .ga-search-results {
       max-height: 415px;
-      @media (max-height: 550px) {
+
+      @media (max-height: @screen-s-height) {
         max-height: 325px;
+      }
+
+      @media (max-height: @screen-xs-height) {
+        max-height: 218px;
       }
     }
   }
   .ga-search-2 {
     .ga-search-results {
       max-height: 190px;
-      @media (max-height: 550px) {
+
+      @media (max-height: @screen-s-height) {
         max-height: 150px;
+      }
+
+      @media (max-height: @screen-xs-height) {
+        max-height: 94px;
       }
     }
   }
@@ -85,7 +95,7 @@
       padding: 3px 20px;
       font-size: 11px;
 
-      @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
+      @media (max-width: @screen-tablet), (max-height: @screen-s-height) {
         padding: 6px 10px;
         font-size: 13px;
       }
@@ -130,7 +140,7 @@
     background-color: #E9E9E9;
     font-size: 14px;
 
-    @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
+    @media (max-width: @screen-tablet), (max-height: @screen-s-height) {
       padding: 5px 5px;
     }
   }
@@ -153,7 +163,7 @@
   .fa-remove-sign {
     right: 0;
     
-    @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
+    @media (max-width: @screen-tablet), (max-height: @screen-s-height) {
       font-size: 24px;
     }
   }

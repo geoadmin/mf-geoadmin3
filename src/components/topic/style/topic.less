@@ -14,104 +14,42 @@
 
   .modal-dialog {
     width: 100%;
+    height: ~"calc(100% - 178px)";
     max-width: 850px;
+    max-height: 660px;
+
+    .modal-content {
+      height: 100%;
+    }
 
     .modal-body {
-      max-height: 950px;
+      height: ~"calc(100% - 58px)";
+      overflow-x: hidden;
 
-      @media (max-height: 1040px) {
-        max-height: 855px;
-      }
-
-      @media (max-height: 970px) {
-        max-height: 760px;
-      }
-
-      @media (max-height: 860px) {
-        max-height: 670px;
-      }
-
-      @media (max-height: 770px) {
-        max-height: 580px;
-      }
-
-      @media (max-height: 680px) {
-        max-height: 485px;
-      }
-
-      @media (max-height: 585px) {
-        max-height: 395px;
-      }
-
-      @media (max-height: 495px) {
-        max-height: 298px;
-      }
-
-      @media (max-height: 405px) {
-        max-height: 210px;
-      }
-
-      @media (max-height: 315px) {
-        max-height: 120px;
+      @media (max-width: @screen-phone) {
+        max-height: none !important;
       }
     }
 
     @media (max-width: @screen-desktop) {
       max-width: 692px;
-      top: 40px;
     }
 
-    @media (max-width: 780px) {
+    @media (max-width: @screen-tablet) {
       max-width: 535px;
-      top: 35px;
+      top: 50px;
     }
 
     @media (max-width: 605px) {
       max-width: 377px;
-      top: 30px;
     }
 
-    @media (max-width: 400px) {
+    @media (max-width: @screen-phone) {
       max-width: 205px;
-      top: 20px;
+    }
 
-      .modal-body {
-        @media (max-height: 1020px) {
-          max-height: 855px;
-        }
-
-        @media (max-height: 950px) {
-          max-height: 760px;
-        }
-
-        @media (max-height: 840px) {
-          max-height: 670px;
-        }
-
-        @media (max-height: 750px) {
-          max-height: 580px;
-        }
-
-        @media (max-height: 640px) {
-          max-height: 485px;
-        }
-
-        @media (max-height: 545px) {
-          max-height: 395px;
-        }
-
-        @media (max-height: 465px) {
-          max-height: 298px;
-        }
-
-        @media (max-height: 375px) {
-          max-height: 210px;
-        }
-
-        @media (max-height: 285px) {
-          max-height: 120px;
-        }
-      }
+    @media (max-width: @screen-tablet), (max-height: @screen-s-height) {
+      height: ~"calc(100% - 100px)";
     }
 
     .input-modal-container {
