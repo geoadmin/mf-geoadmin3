@@ -65,14 +65,6 @@ goog.require('ngeo.fileService');
           /<href>http(?!(s:\/\/maps\.(google|gstatic)\.com[a-zA-Z\d\.\-\/_]*\.png|s?:\/\/[a-z\d\.\-]*(bgdi|geo.admin)\.ch))/g,
           '<href>' + gaGlobalOptions.proxyUrl + 'http'
         );
-        // We still need to convert <href>https://proxy.admin.ch/https:// to
-        // <href>https://proxy.admin.ch/https/
-        kml = kml.replace(
-          new RegExp('<href>' + gaGlobalOptions.proxyUrl + 'http://', 'g'),
-          '<href>' + gaGlobalOptions.proxyUrl + 'http/')
-            .replace(
-          new RegExp('<href>' + gaGlobalOptions.proxyUrl + 'https://', 'g'),
-          '<href>' + gaGlobalOptions.proxyUrl + 'https/');
 
         // Replace all http hrefs from *.geo.admin.ch or *.bgdi.ch by https
         // Test regex here: http://regex101.com/r/fY7wB3/5

@@ -91,7 +91,7 @@ describe('ga_urlutils_service', function() {
     describe('#proxifyUrlInstant()', function() {
       it('applies proxy correctly', function() {
         expect(gaUrlUtils.proxifyUrlInstant('http://data.geo.admin.ch')).to.be(
-            gaGlobalOptions.proxyUrl + 'http/data.geo.admin.ch');
+            gaGlobalOptions.proxyUrl + 'http%3A%2F%2Fdata.geo.admin.ch');
         expect(gaUrlUtils.proxifyUrlInstant('https://data.geo.admin.ch')).to.be(
             'https://data.geo.admin.ch');
         expect(gaUrlUtils.proxifyUrlInstant('blob:https://myblob.ch/7a910681-938c-4011-8d75-2b64035a40a7')).to.be(
@@ -103,7 +103,7 @@ describe('ga_urlutils_service', function() {
       it('applies proxy correctly', function() {
         var cProxy = gaUrlUtils.getCesiumProxy();
         expect(cProxy.getURL('http://dummyresource.com')).to.be(
-            gaGlobalOptions.proxyUrl + 'http/dummyresource.com');
+            gaGlobalOptions.proxyUrl + 'http%3A%2F%2Fdummyresource.com');
         cProxy = gaUrlUtils.getCesiumProxy();
         expect(cProxy.getURL('https://data.geo.admin.ch')).to.be(
             'https://data.geo.admin.ch');
@@ -119,7 +119,7 @@ describe('ga_urlutils_service', function() {
 
       it('applies a proxy correctly on http://data.geo.admin.ch', function(done) {
         gaUrlUtils.proxifyUrl('http://data.geo.admin.ch').then(function(url) {
-          expect(url).to.be(gaGlobalOptions.proxyUrl + 'http/data.geo.admin.ch');
+          expect(url).to.be(gaGlobalOptions.proxyUrl + 'http%3A%2F%2Fdata.geo.admin.ch');
           done();
         });
         $rootScope.$digest();
@@ -127,7 +127,7 @@ describe('ga_urlutils_service', function() {
 
       it('applies a proxy correctly on http://ineedaproxybadly.ch', function(done) {
         gaUrlUtils.proxifyUrl('http://ineedaproxybadly.ch').then(function(url) {
-          expect(url).to.be(gaGlobalOptions.proxyUrl + 'http/ineedaproxybadly.ch');
+          expect(url).to.be(gaGlobalOptions.proxyUrl + 'http%3A%2F%2Fineedaproxybadly.ch');
           done();
         });
         $rootScope.$digest();
