@@ -7,6 +7,7 @@ goog.require('ga_iframecom_service');
 goog.require('ga_map_service');
 goog.require('ga_popup_service');
 goog.require('ga_previewfeatures_service');
+goog.require('ga_sanitize_service');
 goog.require('ga_time_service');
 goog.require('ga_topic_service');
 
@@ -20,6 +21,7 @@ goog.require('ga_topic_service');
     'ga_map_service',
     'ga_popup_service',
     'ga_previewfeatures_service',
+    'ga_sanitize_service',
     'ga_time_service',
     'ga_topic_service',
     'pascalprecht.translate'
@@ -29,7 +31,7 @@ goog.require('ga_topic_service');
       function($timeout, $http, $q, $translate, $sce, $rootScope, gaPopup,
           gaLayers, gaBrowserSniffer, gaMapClick, gaDebounce, gaPreviewFeatures,
           gaMapUtils, gaTime, gaTopic, gaIdentify, gaGlobalOptions,
-          gaPermalink, gaIFrameCom, gaUrlUtils, gaLang) {
+          gaPermalink, gaIFrameCom, gaUrlUtils, gaLang, gaSanitize) {
         var mouseEvts = '';
         if (!gaBrowserSniffer.mobile) {
           mouseEvts = 'ng-mouseenter="options.onMouseEnter($event,' +
@@ -552,8 +554,9 @@ goog.require('ga_topic_service');
                     feature.setId(value.getId());
                     feature.set('layerId', layerId);
                     gaPreviewFeatures.add(map, feature);
+
                     if (value.get('htmlpopup')) {
-                      showPopup(value.get('htmlpopup'), value);
+                      showPopup(gaSanitize.html(value.get('htmlpopup')), value);
                     }
                     // Store the ol feature for highlighting
                     storeFeature(layerId, feature);
