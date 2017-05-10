@@ -73,6 +73,9 @@ goog.require('ga_map_service');
         };
 
         scope.$watchCollection('layers | filter:layerFilter', function(layers) {
+          if (!layersFiltered && !layers.length) {
+            return;
+          }
           layersFiltered = layers;
           updateDebounced(element, layers);
         });
@@ -102,8 +105,7 @@ goog.require('ga_map_service');
   /**
    * ga-attribution-warning displays a warning about the data in 2.5d.
    */
-  module.directive('gaAttributionWarning', function($translate, $window,
-      gaBrowserSniffer, gaAttribution, $rootScope, gaDebounce) {
+  module.directive('gaAttributionWarning', function(gaDebounce) {
 
     var update = function(element, layers) {
       element.toggle(!!(layers && layers.length));
@@ -116,6 +118,7 @@ goog.require('ga_map_service');
         ol3d: '=gaAttributionWarningOl3d'
       },
       link: function(scope, element, attrs) {
+        element.hide();
         var layersFiltered = [], dereg = [];
         scope.layerFilter = function(layer) {
           return !layer.background && (layer.preview ||

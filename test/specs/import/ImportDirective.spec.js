@@ -1,33 +1,45 @@
 describe('ga_import_directive', function() {
-  var elt, scope, parentScope, map, httpBackend, $rootScope, $compile;
+  var elt, scope, parentScope, map, $httpBackend, $rootScope, $compile, $timeout, gaBrowserSniffer;
 
   var loadDirective = function() {
     parentScope = $rootScope.$new();
     var tpl = '<div ga-import ga-import-map="map" ga-import-options="options"></div>';
     elt = $compile(tpl)(parentScope);
     $rootScope.$digest();
+    $timeout.flush();
     scope = elt.scope();
+  };
+
+  var provideServices = function($provide) {
+    $provide.value('gaLayers', {});
+    $provide.value('gaTopic', {});
+    $provide.value('gaLang', {
+      get: function() {
+        return 'somelang';
+      },
+      getNoRm: function() {
+        return 'somelang';
+      }
+    });
+  };
+
+  var injectServices = function($injector) {
+    $compile = $injector.get('$compile');
+    $rootScope = $injector.get('$rootScope');
+    $window = $injector.get('$window');
+    $timeout = $injector.get('$timeout');
+    $httpBackend = $injector.get('$httpBackend');
+    gaBrowserSniffer = $injector.get('gaBrowserSniffer');
   };
 
   beforeEach(function() {
 
     module(function($provide) {
-      $provide.value('gaTopic', {});
-      $provide.value('gaLang', {
-        get: function() {
-          return 'somelang';
-        },
-        getNoRm: function() {
-          return 'somelang';
-        }
-      });
+      provideServices($provide);
     });
 
     inject(function($injector) {
-      httpBackend = $injector.get('$httpBackend');
-      $rootScope = $injector.get('$rootScope');
-      $compile = $injector.get('$compile');
-      gaBrowserSniffer = $injector.get('gaBrowserSniffer');
+      injectServices($injector);
     });
 
     map = new ol.Map({});
@@ -48,8 +60,9 @@ describe('ga_import_directive', function() {
   });
 
   afterEach(function() {
-    httpBackend.verifyNoOutstandingExpectation();
-    httpBackend.verifyNoOutstandingRequest();
+    $httpBackend.verifyNoOutstandingExpectation();
+    $httpBackend.verifyNoOutstandingRequest();
+    $timeout.verifyNoPendingTasks();
   });
 
   it('creates html elements', function() {
@@ -72,6 +85,7 @@ describe('ga_import_directive', function() {
     loadDirective();
     scope.wmsGetCap = '<WMS_Capabilities version="1.3.0"></WMS_Capabilities>';
     $rootScope.$digest();
+    $timeout.flush();
     expect(elt.find('[ngeo-wms-get-cap]').length).to.be(1);
   });
 

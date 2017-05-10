@@ -150,6 +150,7 @@ goog.require('ga_styles_service');
 
       // Tile saving error
       var onTileError = function(tileUrl, msg) {
+
         if (isStorageFull) {
           return;
         }
@@ -535,10 +536,10 @@ goog.require('ga_styles_service');
           }
 
           // We store layers informations.
-          gaStorage.setItem(layersKey, layersIds.join(','));
-          gaStorage.setItem(opacityKey, layersOpacity.join(','));
-          gaStorage.setItem(timestampKey, layersTimestamp.join(','));
-          gaStorage.setItem(bgKey, layersBg.join(','));
+          gaStorage.setItem(layersKey, layersIds.join());
+          gaStorage.setItem(opacityKey, layersOpacity.join());
+          gaStorage.setItem(timestampKey, layersTimestamp.join());
+          gaStorage.setItem(bgKey, layersBg.join());
 
           // On mobile we simulate synchronous tile downloading, because when
           // saving multilayers and/or layers with big size tile, browser is

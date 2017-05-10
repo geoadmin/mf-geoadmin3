@@ -2,7 +2,7 @@ describe('ga_offline_service', function() {
 
   describe('gaOffline', function() {
     var map;
-    var gaOffline, gaStorageMock, gaLayersMock, $window, gaTileGrid, gaMapUtils, gaMapUtilsMock, gaGlobalOptions, $q, $timeout, $rootScope, gaOfflineMock;
+    var gaOffline, gaStorageMock, gaLayersMock, $window, gaTileGrid, gaMapUtils, gaMapUtilsMock, gaGlobalOptions, $q, $timeout, $rootScope, gaOfflineMock, $httpBackend;
     var extentKey = 'ga-offline-extent';
     var layersKey = 'ga-offline-layers';
     var opacityKey = 'ga-offline-layers-opacity';
@@ -20,8 +20,25 @@ describe('ga_offline_service', function() {
       timestamps: ['20121231', '18641231']
     };
 
+    var provideServices = function($provide) {
+      $provide.value('gaTopic', {});
+      $provide.value('gaLayers', {
+        loadConfig: function() {
+          return $q.when({});
+        },
+        getLayer: angular.noop,
+        getLayerProperty: angular.noop
+      });
+    };
+
     beforeEach(function() {
+
+      module(function($provide) {
+        provideServices($provide);
+      });
+
       inject(function($injector) {
+        $q = $injector.get('$q');
         $window = $injector.get('$window');
         gaOffline = $injector.get('gaOffline');
         gaOfflineMock = sinon.mock(gaOffline);
@@ -31,9 +48,9 @@ describe('ga_offline_service', function() {
         gaMapUtilsMock = sinon.mock(gaMapUtils);
         gaTileGrid = $injector.get('gaTileGrid');
         gaGlobalOptions = $injector.get('gaGlobalOptions');
-        $q = $injector.get('$q');
         $timeout = $injector.get('$timeout');
         $rootScope = $injector.get('$rootScope');
+        $httpBackend = $injector.get('$httpBackend');
       });
       var defaultProjection = ol.proj.get(gaGlobalOptions.defaultEpsg);
       defaultProjection.setExtent(gaGlobalOptions.defaultEpsgExtent);
@@ -48,6 +65,12 @@ describe('ga_offline_service', function() {
       });
     });
 
+    afterEach(function() {
+      $httpBackend.verifyNoOutstandingExpectation();
+      $httpBackend.verifyNoOutstandingRequest();
+      $timeout.verifyNoPendingTasks();
+    });
+
     describe('#hasData()', function() {
 
       it('detects data', function() {
@@ -55,6 +78,7 @@ describe('ga_offline_service', function() {
         var has = gaOffline.hasData();
         getItem.verify();
         expect(has).to.equal(true);
+        $timeout.flush();
       });
 
       it('doesn\'t detect data', function() {
@@ -62,6 +86,7 @@ describe('ga_offline_service', function() {
         var has = gaOffline.hasData();
         getItem.verify();
         expect(has).to.equal(false);
+        $timeout.flush();
       });
     });
 
@@ -73,6 +98,7 @@ describe('ga_offline_service', function() {
         var obs = gaOffline.isDataObsolete();
         getTs.verify();
         expect(obs).to.be(false);
+        $timeout.flush();
       });
 
       it('returns false if there is data but ' + timestampKey + 'is not set (old offline version)', function() {
@@ -82,6 +108,7 @@ describe('ga_offline_service', function() {
        getExt.verify();
        getTs.verify();
        expect(obs).to.be(true);
+       $timeout.flush();
       });
 
       describe('#isDataObsolete()', function() {
@@ -112,6 +139,7 @@ describe('ga_offline_service', function() {
           verif.forEach(function(item) {
             item.verify();
           });
+          $timeout.flush();
         });
 
         it('doesn\'t contains an obsolete layer', function() {
@@ -123,6 +151,7 @@ describe('ga_offline_service', function() {
           verif.forEach(function(item) {
             item.verify();
           });
+          $timeout.flush();
         });
       });
     });
@@ -148,6 +177,7 @@ describe('ga_offline_service', function() {
           v.verify();
         });
         expect(spy.calledOnce).to.be(true);
+        $timeout.flush();
       });
 
       it('fails to clear the storage', function() {
@@ -164,6 +194,7 @@ describe('ga_offline_service', function() {
         });
         expect(stubAlert.calledOnce).to.be(true);
         stubAlert.restore();
+        $timeout.flush();
       });
     });
 
@@ -224,6 +255,7 @@ describe('ga_offline_service', function() {
           gaOffline.save(map);
           expect(stub.calledOnce).to.be(true);
           stub.restore();
+          $timeout.flush();
         });
 
         it('if all layers are hidden', function() {
@@ -232,6 +264,7 @@ describe('ga_offline_service', function() {
           gaOffline.save(map);
           expect(stub.calledOnce).to.be(true);
           stub.restore();
+          $timeout.flush();
         });
 
         it('if a KML is too big to be saved', function() {
@@ -240,7 +273,8 @@ describe('ga_offline_service', function() {
           gaOffline.save(map);
           expect(stub.callCount).to.be(2);
           stub.restore();
-        });
+          $timeout.flush();
+         });
 
         it('if only KMLs are saved', function() {
           var stub = sinon.stub($window, 'confirm').returns(true);
@@ -257,6 +291,7 @@ describe('ga_offline_service', function() {
           stubAlert.restore();
           expect(stubAbort.calledOnce).to.be(true);
           stubAbort.restore();
+          $timeout.flush();
         });
       });
 
@@ -266,9 +301,10 @@ describe('ga_offline_service', function() {
         gaOffline.save(map);
         expect(stub.calledOnce).to.be(true);
         stub.restore();
+        $timeout.flush();
       });
 
-      it('saves 2 bod tiled layers, one which is a bg', function() {
+      it('saves 2 bod tiled layers, one which is a bg', function(done) {
         var stub = sinon.stub($window, 'confirm').returns(true);
         var stubAlert = sinon.stub($window, 'alert');
         var spy = sinon.spy($rootScope, '$broadcast');
@@ -282,26 +318,25 @@ describe('ga_offline_service', function() {
           gaStorageMock.expects('setItem').once().withArgs(opacityKey, '0.6,0.8'),
           gaStorageMock.expects('setItem').once().withArgs(timestampKey, '20180909,2016'),
           gaStorageMock.expects('setItem').once().withArgs(bgKey, ',true'),
-          gaStorageMock.expects('clearTiles').once().returns($q.when()),
+          gaStorageMock.expects('clearTiles').once().returns($q.when(done())),
           gaStorageMock.expects('setItem').once().withArgs(extentKey, [655000, 185000, 665000, 195000])
         ];
 
         var server = sinon.fakeServer.create();
         server.respondImmediately = true;
         addCacheableTiledLayerToMap('bodId', true, '0.4');
-        addCacheableTiledLayerToMap('id', true, '0.2', '2016');
+        addCacheableTiledLayerToMap('id', true, '0.2', '2016', true);
+        //try {
         gaOffline.save(map);
-
         // Launch requests
         $rootScope.$digest();
-        $timeout.flush(5000);
+        $timeout.flush();
         server.restore();
-
         expect(stub.calledOnce).to.be(true);
         stub.restore();
         expect(stubAlert.calledOnce).to.be(true);
         stubAlert.restore();
-        expect(spy.withArgs('gaOfflineProgress').callCount).to.be(101);
+        expect(spy.withArgs('gaOfflineProgress').callCount).to.be.greaterThan(90); // 90 to be sure we avoid timing issue it could 100 or 101 for example
         expect(spy.withArgs('gaOfflineSuccess').callCount).to.be(1);
         spy.restore();
         verif.forEach(function(v) {
@@ -357,6 +392,7 @@ describe('ga_offline_service', function() {
     describe('#calculateExtentToSave()', function() {
       it('returns a buffer of 5000 m', function() {
         expect(gaOffline.calculateExtentToSave([0, 0])).to.eql([-5000, -5000, 5000, 5000]);
+        $timeout.flush();
       });
     });
 
@@ -375,6 +411,7 @@ describe('ga_offline_service', function() {
 
         gaOffline.toggleSelector();
         expect(gaOffline.isSelectorActive()).to.be(false);
+        $timeout.flush();
       });
     });
 
@@ -393,6 +430,7 @@ describe('ga_offline_service', function() {
 
         gaOffline.toggleMenu();
         expect(gaOffline.isMenuActive()).to.be(false);
+        $timeout.flush();
       });
     });
   });

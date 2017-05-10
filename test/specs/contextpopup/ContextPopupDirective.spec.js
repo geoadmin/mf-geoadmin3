@@ -1,5 +1,5 @@
 describe('ga_contextpopup_directive', function() {
-  var elt, parentScope, handlers = {}, map, $rootScope, gaReframe, $window, $compile, $httpBackend, $timeout, gaWhat3Words, $q, gaPermalink;
+  var elt, parentScope, handlers = {}, map, $rootScope, gaReframe, $window, $compile, $httpBackend, $timeout, gaWhat3Words, $q, gaPermalink, gaEvent;
   var expectedHeightUrl = '//api.geo.admin.ch/height?easting=661473&elevation_model=COMB&northing=188192';
   var expectedReframeUrl = '//api.example.com/reframe/lv03tolv95?easting=661473&northing=188192';
   var expectedw3wUrl = 'dummy.test.url.com/v2/reverse?coords=46.84203157398991,8.244528382656728&key=testkey&lang=de';
@@ -14,45 +14,57 @@ describe('ga_contextpopup_directive', function() {
     scope = elt.isolateScope();
   };
 
+  var provideServices = function($provide) {
+    // block loading of layersConfig
+    $provide.value('gaLayers', {});
+
+    $provide.value('gaBrowserSniffer', {
+      msie: false,
+      mobile: false,
+      phone: false,
+    });
+
+    $provide.value('gaNetworkStatus', {
+      offline: true
+    });
+
+    $provide.value('gaLang', {
+      get: function() {
+        return 'de';
+      }
+    });
+
+    $provide.value('gaPermalink', {
+      getHref: function(p) {
+        if (p.crosshair) {
+          return crosshairPermalink;
+        }
+        return contextPermalink;
+      }
+    });
+  };
+
+  var injectServices = function($injector) {
+    $compile = $injector.get('$compile');
+    $rootScope = $injector.get('$rootScope');
+    $window = $injector.get('$window');
+    $timeout = $injector.get('$timeout');
+    $httpBackend = $injector.get('$httpBackend');
+    $q = $injector.get('$q');
+    gaPermalink = $injector.get('gaPermalink');
+    gaReframe = $injector.get('gaReframe');
+    gaWhat3Words = $injector.get('gaWhat3Words');
+    gaEvent = $injector.get('gaEvent');
+  };
+
   beforeEach(function() {
 
     module(function($provide) {
-      $provide.value('gaBrowserSniffer', {
-        msie: false,
-        mobile: false,
-        phone: false,
-      });
-
-      $provide.value('gaNetworkStatus', {
-        offline: true
-      });
-
-      $provide.value('gaLang', {
-        get: function() {
-          return 'de';
-        }
-      });
-
-      $provide.value('gaPermalink', {
-        getHref: function(p) {
-          if (p.crosshair) {
-            return crosshairPermalink;
-          }
-          return contextPermalink;
-        }
-      });
+      provideServices($provide);
     });
 
     inject(function($injector) {
-      $rootScope = $injector.get('$rootScope');
-      $window = $injector.get('$window');
-      $compile = $injector.get('$compile');
-      $timeout = $injector.get('$timeout');
-      $httpBackend = $injector.get('$httpBackend');
-      $q = $injector.get('$q');
-      gaPermalink = $injector.get('gaPermalink');
-      gaReframe = $injector.get('gaReframe');
-      gaWhat3Words = $injector.get('gaWhat3Words');
+      injectServices($injector);
     });
 
     $(document.body).append('<div id="map"></div>');
@@ -78,6 +90,7 @@ describe('ga_contextpopup_directive', function() {
     $('#map').remove();
     $httpBackend.verifyNoOutstandingExpectation();
     $httpBackend.verifyNoOutstandingRequest();
+    $timeout.verifyNoPendingTasks();
   });
 
   describe('on all browser', function() {
@@ -102,6 +115,7 @@ describe('ga_contextpopup_directive', function() {
       touchEvt2 = $.extend({type: 'touchend'}, mapEvt2);
 
       loadDirective();
+      $timeout.flush();
     }));
 
     it('creates <table> and <td>\'s', function() {
@@ -120,6 +134,7 @@ describe('ga_contextpopup_directive', function() {
       handlers.pointerdown(touchEvt);
       $(map.getViewport()).trigger(evt);
       $httpBackend.flush();
+      $timeout.flush();
 
       expect(spy.callCount).to.eql(1);
       expect(spy2.callCount).to.eql(1);
@@ -147,6 +162,7 @@ describe('ga_contextpopup_directive', function() {
       handlers.pointerdown(touchEvt);
       $timeout.flush();
       $httpBackend.flush();
+      $timeout.flush();
 
       expect(elt.css('display')).to.be('block');
 
@@ -182,7 +198,6 @@ describe('ga_contextpopup_directive', function() {
     it('doesn\'t display informations on long mouse press', function() {
       var spy = sinon.spy(gaReframe, 'get03To95');
       handlers.pointerdown(mouseEvt);
-      $timeout.flush();
       expect(spy.callCount).to.eql(0);
       expect(elt.css('display')).to.be('none');
     });
@@ -232,10 +247,12 @@ describe('ga_contextpopup_directive', function() {
       evt.pixel = [25, 50];
       $(map.getViewport()).trigger(evt);
       $httpBackend.flush();
+      $timeout.flush();
       expect(spy.callCount).to.eql(1);
 
       $rootScope.$broadcast('$translateChangeEnd');
       $rootScope.$digest();
+      $timeout.flush();
       expect(spy.callCount).to.eql(2);
     });
 
@@ -246,7 +263,7 @@ describe('ga_contextpopup_directive', function() {
       $(map.getViewport()).trigger(evt);
       $httpBackend.flush();
       $rootScope.$digest();
-
+      $timeout.flush();
       var spy = sinon.spy(gaPermalink, 'getHref');
       scope.$broadcast('gaPermalinkChange');
       expect(spy.callCount).to.eql(2);
