@@ -69,9 +69,7 @@ goog.provide('ga_urlutils_service');
           var parts = /^(http|https)(:\/\/)(.+)/.exec(url);
           var protocol = parts[1];
           var resource = parts[3];
-          // proxy is RESTFful, <service>/<protocol>/<resource>
-          return gaGlobalOptions.proxyUrl + protocol + '/' +
-              encodeURIComponent(resource);
+          return gaGlobalOptions.proxyUrl + encodeURIComponent(url);
         };
 
         this.proxifyUrlInstant = function(url) {
