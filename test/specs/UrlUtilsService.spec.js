@@ -1,10 +1,11 @@
 describe('ga_urlutils_service', function() {
 
   describe('gaUrlUtils', function() {
-    var gaUrlUtils, gaGlobalOptions;
+    var gaUrlUtils, gaGlobalOptions, $timeout;
 
     beforeEach(function() {
       inject(function($injector) {
+        $timeout = $injector.get('$timeout');
         gaUrlUtils = $injector.get('gaUrlUtils');
         gaGlobalOptions = $injector.get('gaGlobalOptions');
       });
@@ -170,6 +171,7 @@ describe('ga_urlutils_service', function() {
       afterEach(function() {
         $httpBackend.verifyNoOutstandingExpectation();
         $httpBackend.verifyNoOutstandingRequest();
+        $timeout.verifyNoPendingTasks();
       });
 
       it('shorten a url successfully', function(done) {
@@ -179,6 +181,7 @@ describe('ga_urlutils_service', function() {
           done();
         });
         $httpBackend.flush();
+        $timeout.flush();
       });
 
 
@@ -190,8 +193,10 @@ describe('ga_urlutils_service', function() {
           expect(errorSpy.callCount).to.be(1);
           done();
           errorSpy.restore();
+          $timeout.flush();
         });
         $httpBackend.flush();
+        $timeout.flush();
       });
     });
     describe('#isThirdPartyValid()', function() {
