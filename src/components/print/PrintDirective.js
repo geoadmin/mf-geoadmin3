@@ -630,7 +630,8 @@ goog.require('ga_urlutils_service');
             'type': 'Vector',
             'styles': {
               '1': { // Style for marker position
-                'externalGraphic': $scope.options.markerUrl,
+                'externalGraphic':
+                  gaUrlUtils.nonCloudFrontUrl($scope.options.markerUrl),
                 'graphicWidth': 20,
                 'graphicHeight': 30,
                 // the icon is not perfectly centered in the image

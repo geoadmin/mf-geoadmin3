@@ -218,6 +218,21 @@ describe('ga_urlutils_service', function() {
       });
     });
 
+
+    describe('#nonCloudFrontUrl()', function() {
+      it('verifies cloudfront url transformation valid', function() {
+        expect(gaUrlUtils.nonCloudFrontUrl('http://public.geo.admin.ch')).to.be('http://public.geo.admin.ch');
+        expect(gaUrlUtils.nonCloudFrontUrl('http://map.geo.admin.ch')).to.be('http://s3-eu-west-1.amazonaws.com/mf-geoadmin3-prod-dublin');
+        expect(gaUrlUtils.nonCloudFrontUrl('http://map.geo.admin.ch/')).to.be('http://s3-eu-west-1.amazonaws.com/mf-geoadmin3-prod-dublin/');
+        expect(gaUrlUtils.nonCloudFrontUrl('http://map.geo.admin.ch/asd')).to.be('http://s3-eu-west-1.amazonaws.com/mf-geoadmin3-prod-dublin/asd');
+        expect(gaUrlUtils.nonCloudFrontUrl('https://map.geo.admin.ch/asd')).to.be('https://s3-eu-west-1.amazonaws.com/mf-geoadmin3-prod-dublin/asd');
+        expect(gaUrlUtils.nonCloudFrontUrl('map.geo.admin.ch')).to.be('map.geo.admin.ch');
+        expect(gaUrlUtils.nonCloudFrontUrl('https://mf-geoadmin3.int.bgdi.ch/asd')).to.be('https://s3-eu-west-1.amazonaws.com/mf-geoadmin3-int-dublin/asd');
+      });
+    });
+
+
+
     describe('#append()', function() {
       it('appends parameter string', function() {
         var url = 'http://wms.admin.ch';
