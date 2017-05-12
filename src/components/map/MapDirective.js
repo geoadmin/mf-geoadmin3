@@ -286,10 +286,14 @@ goog.require('ga_styles_service');
           for (var i = 0, ii = olLayers.length; i < ii; i++) {
             var olLayer = olLayers[i];
 
-            // We update only time enabled bod layers
-            if (olLayer.bodId && olLayer.timeEnabled && olLayer.visible) {
+            // We update only time enabled bod layers and external WMTS layers.
+            var supportTimeSelector = olLayer.bodId ||
+                gaMapUtils.isExternalWmtsLayer(olLayer.id);
+            if (supportTimeSelector &&
+                olLayer.timeEnabled &&
+                olLayer.visible) {
               var layerTimeStr =
-                  gaLayers.getLayerTimestampFromYear(olLayer.bodId, time);
+                  gaLayers.getLayerTimestampFromYear(olLayer, time);
               if (switchTimeActive) {
                 // We save the current value after a global activation.
                 // (ex: using the time selector toggle)
