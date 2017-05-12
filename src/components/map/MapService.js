@@ -1385,6 +1385,19 @@ goog.require('ga_urlutils_service');
               this.isWMSLayer(olLayerOrId));
         },
 
+        // Test if a layer is an external WMTS layer added by the ImportWMTS
+        // tool or permalink
+        isExternalWmtsLayer: function(olLayerOrId) {
+          if (!olLayerOrId) {
+            return false;
+          } else if (angular.isString(olLayerOrId)) {
+            return /^WMTS\|\|/.test(olLayerOrId) &&
+                olLayerOrId.split('||').length === 4;
+          } else {
+            return olLayerOrId.type === 'WMTS';
+          }
+        },
+
         // Test if a feature is a measure
         isMeasureFeature: function(olFeature) {
           var regex = /^measure/;

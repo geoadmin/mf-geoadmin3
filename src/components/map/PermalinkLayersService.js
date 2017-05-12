@@ -40,7 +40,7 @@ goog.require('ga_wms_service');
 
     this.$get = function($rootScope, gaLayers, gaPermalink, $translate,
         gaKml, gaMapUtils, gaWms, gaLayerFilters, gaUrlUtils, gaFileStorage,
-        gaTopic, gaGlobalOptions, $q, gaTime, $log) {
+        gaTopic, gaGlobalOptions, $q, gaTime, $log, $http, gaWmts) {
 
       var layersParamValue = gaPermalink.getParams().layers;
       var layersOpacityParamValue = gaPermalink.getParams().layers_opacity;
@@ -295,6 +295,26 @@ goog.require('ga_wms_service');
                 // Adding external WMS layer failed, native alert, log message?
                 $log.error(e.message);
               }
+            } else if (gaMapUtils.isExternalWmtsLayer(layerSpec)) {
+              var infos = layerSpec.split('||');
+              $http.get(infos[3]).then(function(response) {
+                var data = response.data;
+                try {
+                  var getCapabilities =
+                      new ol.format.WMTSCapabilities().read(data);
+                  var layerConfig = gaWmts.getLayerConfigFromIdentifier(
+                      getCapabilities, infos[1]);
+                  layerConfig.dimensions = gaWmts.importDimensions(infos[2]);
+                    gaWmts.addWmtsToMap(map, layerConfig, index + 1);
+                } catch (e) {
+                  // Adding external WMTS layer failed
+                  console.error('Loading of external WMTS layer ' + layerSpec +
+                          ' failed. ' + e);
+                }
+              }, function() {
+                console.error('Loading of external WMTS layer ' + layerSpec +
+                        ' failed. Failed to get capabilities from server.');
+              });
             }
           });
 
