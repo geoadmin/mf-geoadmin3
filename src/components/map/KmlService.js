@@ -93,10 +93,13 @@ goog.require('ngeo.fileService');
       };
 
       // Read a kml string then return a list of features.
-      var readFeatures = function(kml) {
+      var readFeatures = function(kml, projection) {
 
         // Create the parser
         setKmlFormat();
+
+        // Sanitize KML
+        kml = sanitizeKml(kml);
 
         // Manage networkLink tags
         var all = [];
@@ -106,7 +109,8 @@ goog.require('ngeo.fileService');
           angular.forEach(networkLinks, function(networkLink) {
             if (gaUrlUtils.isValid(networkLink.href)) {
               all.push($http.get(networkLink.href).then(function(response) {
-                return readFeatures(response.data).then(function(newFeatures) {
+                return readFeatures(response.data,
+                                    projection).then(function(newFeatures) {
                   features = features.concat(newFeatures);
                 });
               }));
@@ -115,7 +119,14 @@ goog.require('ngeo.fileService');
         }
 
         return $q.all(all).then(function() {
-          return features;
+          var sanitizedFeatures = [];
+          for (var i = 0, ii = features.length; i < ii; i++) {
+            var feat = sanitizeFeature(features[i], projection);
+            if (feat) {
+              sanitizedFeatures.push(feat);
+            }
+          }
+          return sanitizedFeatures;
         });
       };
 
@@ -247,23 +258,13 @@ goog.require('ngeo.fileService');
             return deferred.promise;
           }
 
-          // Sanitize KML
-          kml = sanitizeKml(kml);
-
-          // Read features available in a kml string, then create an ol layer.
-          return readFeatures(kml).then(function(features) {
-            var sanitizedFeatures = [];
-            for (var i = 0, ii = features.length; i < ii; i++) {
-              var feat = sanitizeFeature(features[i], options.projection);
-              if (feat) {
-                sanitizedFeatures.push(feat);
-              }
-            }
+         // Read features available in a kml string, then create an ol layer.
+          return readFeatures(kml, options.projection).then(function(features) {
 
             // #2820: we set useSpatialIndex to false for KML created with draw
             // tool
             var source = new ol.source.Vector({
-              features: sanitizedFeatures,
+              features: features,
               useSpatialIndex: !gaMapUtils.isStoredKmlLayer(options.id)
             });
 
@@ -295,10 +296,11 @@ goog.require('ngeo.fileService');
             }
             gaDefinePropertiesForLayer(olLayer);
             olLayer.useThirdPartyData = true;
+            olLayer.updateDelay = options.updateDelay;
 
             // Save the kml content for for offline and 3d parsing
             olLayer.getSource().setProperties({
-              'kmlString': kml
+              'kmlString': sanitizeKml(kml)
             });
 
             return olLayer;
@@ -348,6 +350,11 @@ goog.require('ngeo.fileService');
             }
             return olLayer;
           });
+        };
+
+        // Returns a promis
+        this.readFeatures = function(kmlString, projection) {
+          return readFeatures(kmlString, projection);
         };
 
         this.addKmlToMap = function(map, kmlString, layerOptions, index) {

@@ -261,11 +261,16 @@ goog.require('ga_wmts_service');
 
               // KML layer
               var url = layerSpec.replace('KML||', '');
+              var delay = params ? parseInt(params['updateDelay']) : NaN;
+              if (!isNaN(delay)) {
+                delay = (delay < 3) ? 3 : delay;
+              }
               try {
                 gaKml.addKmlToMapForUrl(map, url,
                   {
                     opacity: opacity || 1,
-                    visible: visible
+                    visible: visible,
+                    updateDelay: isNaN(delay) ? undefined : delay * 1000
                   },
                   index + 1);
                 mustReorder = true;
