@@ -85,7 +85,7 @@ describe('ga_wms_service', function() {
 
       if (options.useThirdPartyData) {
         expect(prov.proxy.getURL('http://wms.ch')).to.be(
-            gaGlobalOptions.proxyUrl + 'http%3A%2F%2Fwms.ch');
+            gaGlobalOptions.proxyUrl + 'http/wms.ch');
       } else {
         expect(prov.proxy.getURL('https://wms.geo.admin.ch')).to.be(
             'https://wms.geo.admin.ch');

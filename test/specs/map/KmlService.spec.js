@@ -660,7 +660,7 @@ describe('ga_kml_service', function() {
           var feat = olLayer.getSource().getFeatures()[0];
           var style = feat.getStyleFunction().call(feat)[0];
           expect(style.getImage()).to.be.an(ol.style.Icon);
-          expect(style.getImage().getSrc()).to.eql('https://proxy.geo.admin.ch/http://voila.fr/ki.png');
+          expect(style.getImage().getSrc()).to.eql('https://proxy.geo.admin.ch/http/voila.fr/ki.png');
           expect(style.getImage().getScale()).to.eql(1);
           expect(style.getImage().getRotateWithView()).to.eql(false);
           expect(style.getImage().getAnchor()).to.eql(null);
@@ -670,7 +670,7 @@ describe('ga_kml_service', function() {
           feat = olLayer.getSource().getFeatures()[1];
           style = feat.getStyleFunction().call(feat)[0];
           expect(style.getImage()).to.be.an(ol.style.Icon);
-          expect(style.getImage().getSrc()).to.eql('https://proxy.geo.admin.ch/http://voila.fr/ki.png');
+          expect(style.getImage().getSrc()).to.eql('https://proxy.geo.admin.ch/http/voila.fr/ki.png');
           expect(style.getImage().getScale()).to.eql(0.7);
           expect(style.getImage().getRotateWithView()).to.eql(false);
           expect(style.getImage().getAnchor()).to.eql(null);
@@ -1038,7 +1038,7 @@ describe('ga_kml_service', function() {
         prtl = 'http';
         gaKmlMock = sinon.mock(gaKml);
         url = 'test.kml';
-        encoded = gaGlobalOptions.proxyUrl + prtl + '%3A%2F%2F' +
+        encoded = gaGlobalOptions.proxyUrl + prtl + '/' +
             encodeURIComponent(url);
       });
 
