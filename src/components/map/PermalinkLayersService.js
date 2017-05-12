@@ -297,7 +297,8 @@ goog.require('ga_wms_service');
               }
             } else if (gaMapUtils.isExternalWmtsLayer(layerSpec)) {
               var infos = layerSpec.split('||');
-              $http.get(infos[3]).then(function(response) {
+              $http.get(gaUrlUtils.buildProxyUrl(infos[3]))
+                  .then(function(response) {
                 var data = response.data;
                 try {
                   var getCapabilities =
