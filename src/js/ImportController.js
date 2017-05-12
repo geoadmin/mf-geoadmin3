@@ -18,14 +18,7 @@ goog.require('ngeo.fileService');
     $scope.options = {
       urls: [
         'http://www.basemap.at/wmts/1.0.0/WMTSCapabilities.xml',
-        'http://www.gis.stadt-zuerich.ch/wmts/wmts-zh-stzh-ogd.xml',
         'http://cidportal.jrc.ec.europa.eu/copernicus/services/tile/wmts/1.0.0/WMTSCapabilities.xml',
-        'https://maps.zg.ch/basisplan_sw_tiled_lv03/ExtendedCapabilities.xml',
-        'https://maps.zg.ch/basisplan_farbig_tiled_lv03/ExtendedCapabilities.xml',
-        'https://maps.zg.ch/WMTS_LUFTBILD2016_LV03/service.svc/get?request=GetCapabilities&service=WMTS',
-        'https://maps.zg.ch/luftbild2011_tiled_lv03/ExtendedCapabilities.xml',
-        'https://maps.zg.ch/luftbildplus_tiled_lv03/ExtendedCapabilities.xml',
-        'https://maps.zg.ch/ortsplan_tiled_lv03/ExtendedCapabilities.xml',
         'https://wms.geo.admin.ch/?lang=',
         'http://ogc.heig-vd.ch/mapserver/wms',
         'http://owsproxy.lgl-bw.de/owsproxy/ows/WMS_Maps4BW',
