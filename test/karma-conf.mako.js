@@ -52,6 +52,7 @@ module.exports = function(config) {
     'test/lib/angular-mocks.js',
     'test/lib/expect.js',
     'test/lib/sinon.js',
+    'test/lib/jscomp.js',
     'test/specs/Loader.spec.js',
     'test/specs/**/*.js',
     {
