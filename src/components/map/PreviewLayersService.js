@@ -17,7 +17,7 @@ goog.require('ga_wms_service');
     // We store all review layers we add
     var olPreviewLayers = {};
 
-    this.$get = function(gaLayers, gaWms, gaTime, gaMapUtils) {
+    this.$get = function(gaLayers, gaWms, gaTime, gaMapUtils, gaWmts) {
       var olPreviewLayer;
 
       var PreviewLayers = function() {
@@ -52,7 +52,7 @@ goog.require('ga_wms_service');
           return olPreviewLayer;
         };
 
-        this.addGetCapWMSLayer = function(map, getCapLayer) {
+        this.addGetCapLayer = function(map, getCapLayer) {
           // Remove all preview layers
           this.removeAll(map);
 
@@ -60,7 +60,11 @@ goog.require('ga_wms_service');
           var olPreviewLayer = olPreviewLayers[getCapLayer.id];
 
           if (!olPreviewLayer) {
-            olPreviewLayer = gaWms.getOlLayerFromGetCapLayer(getCapLayer);
+            if (getCapLayer.wmsUrl) {
+              olPreviewLayer = gaWms.getOlLayerFromGetCapLayer(getCapLayer);
+            } else if (getCapLayer.capabilitiesUrl) {
+              olPreviewLayer = gaWmts.getOlLayerFromGetCapLayer(getCapLayer);
+            }
           }
 
           // Something failed, layer doesn't exist

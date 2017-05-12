@@ -12,11 +12,20 @@ goog.require('ngeo.fileService');
 
   module.controller('GaImportController', function($scope, $q, $document,
       $window, $timeout, ngeoFile, gaKml, gaBrowserSniffer, gaWms, gaUrlUtils,
-      gaLang, gaPreviewLayers, gaMapUtils) {
+      gaLang, gaPreviewLayers, gaMapUtils, gaWmts) {
 
     $scope.supportDnd = !gaBrowserSniffer.msie || gaBrowserSniffer.msie > 9;
     $scope.options = {
       urls: [
+        'http://www.basemap.at/wmts/1.0.0/WMTSCapabilities.xml',
+        'http://www.gis.stadt-zuerich.ch/wmts/wmts-zh-stzh-ogd.xml',
+        'http://cidportal.jrc.ec.europa.eu/copernicus/services/tile/wmts/1.0.0/WMTSCapabilities.xml',
+        'https://maps.zg.ch/basisplan_sw_tiled_lv03/ExtendedCapabilities.xml',
+        'https://maps.zg.ch/basisplan_farbig_tiled_lv03/ExtendedCapabilities.xml',
+        'https://maps.zg.ch/WMTS_LUFTBILD2016_LV03/service.svc/get?request=GetCapabilities&service=WMTS',
+        'https://maps.zg.ch/luftbild2011_tiled_lv03/ExtendedCapabilities.xml',
+        'https://maps.zg.ch/luftbildplus_tiled_lv03/ExtendedCapabilities.xml',
+        'https://maps.zg.ch/ortsplan_tiled_lv03/ExtendedCapabilities.xml',
         'https://wms.geo.admin.ch/?lang=',
         'http://ogc.heig-vd.ch/mapserver/wms',
         'http://owsproxy.lgl-bw.de/owsproxy/ows/WMS_Maps4BW',
@@ -161,9 +170,15 @@ goog.require('ngeo.fileService');
     };
 
     $scope.options.isValidUrl = gaUrlUtils.isValid;
-    $scope.options.getOlLayerFromGetCapLayer = gaWms.getOlLayerFromGetCapLayer;
+    $scope.options.getOlLayerFromGetCapLayer = function(layer) {
+      if (layer.wmsUrl) {
+        return gaWms.getOlLayerFromGetCapLayer(layer);
+      } else if (layer.capabilitiesUrl) {
+        return gaWmts.getOlLayerFromGetCapLayer(layer);
+      }
+    };
     $scope.options.addPreviewLayer = function(map, layer) {
-      gaPreviewLayers.addGetCapWMSLayer(map, layer);
+      gaPreviewLayers.addGetCapLayer(map, layer);
     };
     $scope.options.removePreviewLayer = gaPreviewLayers.removeAll;
     $scope.options.transformExtent = gaMapUtils.intersectWithDefaultExtent;
@@ -225,6 +240,11 @@ goog.require('ngeo.fileService');
           defer.notify(evt);
         });
 
+      } else if (ngeoFile.isWmtsGetCap(data)) {
+        $scope.wmtsGetCap = data;
+        defer.resolve({
+          message: 'upload_succeeded'
+        });
       } else {
 
         $window.console.error('Unparseable content: ', data);
@@ -233,7 +253,6 @@ goog.require('ngeo.fileService');
           reason: 'format_not_supported'
         });
       }
-      // WMTS
       // GPX
 
       return defer.promise;
