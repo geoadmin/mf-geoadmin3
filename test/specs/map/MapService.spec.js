@@ -1986,7 +1986,7 @@ describe('ga_map_service', function() {
         expect(gaMapUtils.isExternalWmtsLayer('WMS||aa')).to.eql(false);
         expect(gaMapUtils.isExternalWmtsLayer('WMS||aa||aa')).to.eql(false);
         expect(gaMapUtils.isExternalWmtsLayer('WMS||aa||aa||aa')).to.eql(false);
-        expect(gaMapUtils.isExternalWmtsLayer('WMTS||aa||aa||aa')).to.eql(true);
+        expect(gaMapUtils.isExternalWmtsLayer('WMTS||aa||aa')).to.eql(true);
         expect(gaMapUtils.isExternalWmtsLayer('KML||test/local/foo.kml')).to.eql(false);
         expect(gaMapUtils.isExternalWmtsLayer('KML||http://test:com/foo.kml')).to.eql(false);
 

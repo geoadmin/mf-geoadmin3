@@ -18,25 +18,6 @@ goog.require('ga_urlutils_service');
         gaGlobalOptions) {
       var Wmts = function() {
 
-        var formatDimensions = function(dimensions) {
-          var exportedDimensions = [];
-          Object.keys(dimensions).forEach(function(key) {
-            exportedDimensions.push(key + ':' + dimensions[key]);
-          });
-
-          return exportedDimensions.join(';');
-        };
-
-        var getDimensions = function(getCapLayer) {
-          var dimensions = {};
-          if (getCapLayer.Dimension && getCapLayer.Dimension.length > 0 &&
-              getCapLayer.Dimension[0].Identifier) {
-            dimensions[getCapLayer.Dimension[0].Identifier] =
-                getCapLayer.Dimension[0].Default;
-          }
-          return dimensions;
-        };
-
         var getTimestamps = function(getCapLayer) {
           if (getCapLayer.Dimension) {
             // Enable time selector if layer has multiple values for the time
@@ -111,10 +92,8 @@ goog.require('ga_urlutils_service');
           } else {
             extent = gaGlobalOptions.defaultExtent;
           }
-          var dimensions = getDimensions(getCapLayer);
           var layer = new ol.layer.Tile({
             id: 'WMTS||' + getCapLayer.Identifier + '||' +
-              formatDimensions(dimensions) + '||' +
               getCapLayer.capabilitiesUrl,
             source: source,
             extent: gaMapUtils.intersectWithDefaultExtent(extent),
@@ -142,19 +121,6 @@ goog.require('ga_urlutils_service');
             map.addLayer(olLayer);
           }
           return olLayer;
-        };
-
-        this.importDimensions = function(formatedDimensions) {
-          var linkDimensions = formatedDimensions.split(';');
-          if (linkDimensions.length > 0) {
-            var dimensions = {};
-            linkDimensions.forEach(function(dimension) {
-              var keyValue = dimension.split(':');
-              dimensions[keyValue[0]] = keyValue[1];
-            });
-
-            return dimensions;
-          }
         };
       };
       return new Wmts();

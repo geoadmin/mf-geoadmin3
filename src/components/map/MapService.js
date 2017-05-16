@@ -1401,7 +1401,7 @@ goog.require('ga_urlutils_service');
             return false;
           } else if (angular.isString(olLayerOrId)) {
             return /^WMTS\|\|/.test(olLayerOrId) &&
-                olLayerOrId.split('||').length === 4;
+                olLayerOrId.split('||').length === 3;
           } else {
             return olLayerOrId.type === 'WMTS';
           }

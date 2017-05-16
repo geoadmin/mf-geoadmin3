@@ -299,7 +299,7 @@ goog.require('ga_wmts_service');
               }
             } else if (gaMapUtils.isExternalWmtsLayer(layerSpec)) {
               var infos = layerSpec.split('||');
-              $http.get(gaUrlUtils.buildProxyUrl(infos[3]))
+              $http.get(gaUrlUtils.buildProxyUrl(infos[2]))
                   .then(function(response) {
                 var data = response.data;
                 try {
@@ -307,7 +307,6 @@ goog.require('ga_wmts_service');
                       new ol.format.WMTSCapabilities().read(data);
                   var layerConfig = gaWmts.getLayerConfigFromIdentifier(
                       getCapabilities, infos[1]);
-                  layerConfig.dimensions = gaWmts.importDimensions(infos[2]);
                   gaWmts.addWmtsToMap(map, layerConfig, index + 1);
                 } catch (e) {
                   // Adding external WMTS layer failed
