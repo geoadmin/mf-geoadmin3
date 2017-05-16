@@ -1,6 +1,7 @@
 goog.provide('ga_import_controller');
 
 goog.require('ga_kml_service');
+goog.require('ga_wmts_service');
 goog.require('ngeo.fileService');
 
 (function() {

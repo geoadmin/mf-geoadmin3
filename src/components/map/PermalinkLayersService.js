@@ -8,6 +8,7 @@ goog.require('ga_time_service');
 goog.require('ga_topic_service');
 goog.require('ga_urlutils_service');
 goog.require('ga_wms_service');
+goog.require('ga_wmts_service');
 
 (function() {
 
@@ -20,7 +21,8 @@ goog.require('ga_wms_service');
     'ga_time_service',
     'ga_topic_service',
     'ga_urlutils_service',
-    'ga_wms_service'
+    'ga_wms_service',
+    'ga_wmts_service'
   ]);
 
   /**
