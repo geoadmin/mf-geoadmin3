@@ -110,6 +110,7 @@ goog.require('ga_urlutils_service');
           layer.attributions = options.attributions;
           layer.timestamps = options.timestamps;
           layer.timeEnabled = layer.timestamps ? layer.timestamps.length > 1 : false;
+          layer.time = options.timestamp;
 
           return layer;
         };

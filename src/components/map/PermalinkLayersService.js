@@ -307,6 +307,7 @@ goog.require('ga_wmts_service');
                       new ol.format.WMTSCapabilities().read(data);
                   var layerConfig = gaWmts.getLayerConfigFromIdentifier(
                       getCapabilities, infos[1]);
+                  layerConfig.timestamp = timestamp;
                   gaWmts.addWmtsToMap(map, layerConfig, index + 1);
                 } catch (e) {
                   // Adding external WMTS layer failed
