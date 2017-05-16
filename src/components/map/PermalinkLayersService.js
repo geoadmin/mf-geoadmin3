@@ -308,7 +308,7 @@ goog.require('ga_wmts_service');
                   var layerConfig = gaWmts.getLayerConfigFromIdentifier(
                       getCapabilities, infos[1]);
                   layerConfig.dimensions = gaWmts.importDimensions(infos[2]);
-                    gaWmts.addWmtsToMap(map, layerConfig, index + 1);
+                  gaWmts.addWmtsToMap(map, layerConfig, index + 1);
                 } catch (e) {
                   // Adding external WMTS layer failed
                   console.error('Loading of external WMTS layer ' + layerSpec +
