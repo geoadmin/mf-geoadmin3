@@ -38,11 +38,6 @@ goog.require('ga_urlutils_service');
         };
 
         var completeWmtsConfig = function(getCapLayer) {
-          var dimensions = getDimensions(getCapLayer);
-          getCapLayer.id = 'WMTS||' + getCapLayer.Identifier + '||' +
-              formatDimensions(dimensions) + '||' +
-              getCapLayer.capabilitiesUrl;
-
           if (getCapLayer.Dimension) {
             // Enable time selector if layer has multiple values for the time
             // dimension if the layers has dimensions.
@@ -118,8 +113,11 @@ goog.require('ga_urlutils_service');
           } else {
             extent = gaGlobalOptions.defaultExtent;
           }
+          var dimensions = getDimensions(getCapLayer);
           var layer = new ol.layer.Tile({
-            id: getCapLayer.id,
+            id: 'WMTS||' + getCapLayer.Identifier + '||' +
+              formatDimensions(dimensions) + '||' +
+              getCapLayer.capabilitiesUrl,
             source: source,
             extent: gaMapUtils.intersectWithDefaultExtent(extent),
             preload: gaMapUtils.preload,
