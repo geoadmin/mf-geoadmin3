@@ -247,19 +247,10 @@ goog.require('ga_time_service');
               var year = scope.options.years[i];
               year.available = false;
               olLayers.forEach(function(olLayer, opt) {
-                if (year.available ||
-                    (!olLayer.bodId &&
-                     !gaMapUtils.isExternalWmtsLayer(olLayer.id))) {
+                if (olLayer.timeEnabled) {
                   return;
                 }
-                var timestamps;
-                if (gaMapUtils.isExternalWmtsLayer(olLayer.id)) {
-                  timestamps = olLayer.timestamps;
-                } else {
-                  timestamps = gaLayers.getLayerProperty(olLayer.bodId,
-                    'timestamps');
-                }
-                timestamps = timestamps || [];
+                var timestamps = olLayer.timestamps || [];
                 for (var i = 0, length = timestamps.length; i < length; i++) {
                   var yearTimestamp = gaTime.getYearFromTimestamp(
                       timestamps[i]);
