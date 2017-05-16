@@ -49,7 +49,8 @@ goog.require('ga_urlutils_service');
           };
           getCapLayer.sourceConfig = ol.source.WMTS.optionsFromCapabilities(
               getCapabilities, layerOptions);
-          getCapLayer.attribution = getCapabilities.ServiceProvider.ProviderName;
+          getCapLayer.attribution =
+              getCapabilities.ServiceProvider.ProviderName;
           getCapLayer['attributionUrl'] =
               getCapabilities.ServiceProvider.ProviderSite;
           getCapLayer['capabilitiesUrl'] = getCapabilities.OperationsMetadata
@@ -109,7 +110,8 @@ goog.require('ga_urlutils_service');
           layer.url = options.attributionUrl;
           layer.attributions = options.attributions;
           layer.timestamps = options.timestamps;
-          layer.timeEnabled = layer.timestamps ? layer.timestamps.length > 1 : false;
+          layer.timeEnabled = layer.timestamps ?
+              layer.timestamps.length > 1 : false;
           layer.time = options.timestamp;
 
           return layer;
