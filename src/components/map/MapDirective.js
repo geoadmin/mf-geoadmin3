@@ -287,10 +287,7 @@ goog.require('ga_styles_service');
             var olLayer = olLayers[i];
 
             // We update only time enabled bod layers and external WMTS layers.
-            var supportTimeSelector = olLayer.bodId ||
-                gaMapUtils.isExternalWmtsLayer(olLayer.id);
-            if (supportTimeSelector &&
-                olLayer.timeEnabled &&
+            if (olLayer.timeEnabled &&
                 olLayer.visible) {
               var layerTimeStr =
                   gaLayers.getLayerTimestampFromYear(olLayer, time);
