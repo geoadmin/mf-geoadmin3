@@ -33,7 +33,7 @@ goog.require('ga_urlutils_service');
           return undefined;
         };
 
-        var getLayerConfig = function(getCapabilities, layer) {
+        var getLayerConfig = function(getCapabilities, getCapLayer) {
           var requestEncoding = getCapabilities.OperationsMetadata
               .GetTile
               .DCP
@@ -44,22 +44,30 @@ goog.require('ga_urlutils_service');
               .Value[0];
 
           var layerOptions = {
-            layer: layer.Identifier,
+            layer: getCapLayer.Identifier,
             requestEncoding: requestEncoding
           };
-          layer.sourceConfig = ol.source.WMTS.optionsFromCapabilities(
+          getCapLayer.sourceConfig = ol.source.WMTS.optionsFromCapabilities(
               getCapabilities, layerOptions);
-          layer.attribution = getCapabilities.ServiceProvider.ProviderName;
-          layer['attributionUrl'] =
+          getCapLayer.attribution = getCapabilities.ServiceProvider.ProviderName;
+          getCapLayer['attributionUrl'] =
               getCapabilities.ServiceProvider.ProviderSite;
-          layer['capabilitiesUrl'] = getCapabilities.OperationsMetadata
+          getCapLayer['capabilitiesUrl'] = getCapabilities.OperationsMetadata
               .GetCapabilities
               .DCP
               .HTTP
               .Get[0]
               .href;
 
-          return layer;
+          return {
+            attributions: getCapLayer.attributions,
+            attributionUrl: getCapLayer.attributionUrl,
+            capabilitiesUrl: getCapLayer.capabilitiesUrl,
+            label: getCapLayer.Title,
+            layer: getCapLayer.Identifier,
+            timestamps: getTimestamps(getCapLayer),
+            sourceConfig: getCapLayer.sourceConfig,
+          };
         };
 
         this.getLayerConfigFromIdentifier = function(getCapabilities,
@@ -77,14 +85,8 @@ goog.require('ga_urlutils_service');
         };
 
         // Create an ol WMTS layer from GetCapabilities informations
-        this.getOlLayerFromGetCapLayer = function(getCapLayer) {
-          getCapLayer.sourceConfig.attributions = [
-            '<a href="' +
-                getCapLayer.attributionUrl +
-                '" target="new">' +
-                getCapLayer.attribution + '</a>'
-          ];
-          var source = new ol.source.WMTS(getCapLayer.sourceConfig);
+        var createWmtsLayer = function(options) {
+          var source = new ol.source.WMTS(options.sourceConfig);
           var projection = source.getProjection();
           var extent;
           if (projection) {
@@ -93,28 +95,48 @@ goog.require('ga_urlutils_service');
             extent = gaGlobalOptions.defaultExtent;
           }
           var layer = new ol.layer.Tile({
-            id: 'WMTS||' + getCapLayer.Identifier + '||' +
-              getCapLayer.capabilitiesUrl,
+            id: 'WMTS||' + options.layer + '||' +
+              options.capabilitiesUrl,
             source: source,
             extent: gaMapUtils.intersectWithDefaultExtent(extent),
             preload: gaMapUtils.preload,
-            attribution: getCapLayer.sourceConfig.attribution
+            attribution: options.sourceConfig.attribution
           });
           gaDefinePropertiesForLayer(layer);
           layer.useThirdPartyData =
-              gaUrlUtils.isThirdPartyValid(getCapLayer.sourceConfig.urls[0]);
-          layer.label = getCapLayer.Title;
-          layer.url = getCapLayer.attributionUrl;
-          layer.attributions = getCapLayer.attributions;
-          layer.timestamps = getTimestamps(getCapLayer);
+              gaUrlUtils.isThirdPartyValid(options.sourceConfig.urls[0]);
+          layer.label = options.label;
+          layer.url = options.attributionUrl;
+          layer.attributions = options.attributions;
+          layer.timestamps = options.timestamps;
           layer.timeEnabled = layer.timestamps ? layer.timestamps.length > 1 : false;
 
           return layer;
         };
 
+        this.getOlLayerFromGetCapLayer = function(getCapLayer) {
+          var options = {
+            attributions: getCapLayer.attributions,
+            attributionUrl: getCapLayer.attributionUrl,
+            capabilitiesUrl: getCapLayer.capabilitiesUrl,
+            label: getCapLayer.Title,
+            layer: getCapLayer.Identifier,
+            timestamps: getTimestamps(getCapLayer),
+            sourceConfig: getCapLayer.sourceConfig,
+          };
+          options.sourceConfig.attributions = [
+            '<a href="' +
+                getCapLayer.attributionUrl +
+                '" target="new">' +
+                getCapLayer.attribution + '</a>'
+          ];
+
+          return createWmtsLayer(options);
+        };
+
         // Create a WMTS layer and add it to the map
         this.addWmtsToMap = function(map, layerOptions, index) {
-          var olLayer = this.getOlLayerFromGetCapLayer(layerOptions);
+          var olLayer = createWmtsLayer(layerOptions);
           if (index) {
             map.getLayers().insertAt(index, olLayer);
           } else {
