@@ -37,19 +37,19 @@ goog.require('ga_urlutils_service');
           return dimensions;
         };
 
-        var completeWmtsConfig = function(getCapLayer) {
+        var getTimestamps = function(getCapLayer) {
           if (getCapLayer.Dimension) {
             // Enable time selector if layer has multiple values for the time
             // dimension if the layers has dimensions.
             for (var i = 0; i < getCapLayer.Dimension.length; i++) {
               var dimension = getCapLayer.Dimension[i];
               if (dimension.Identifier === 'Time') {
-                getCapLayer.timeEnabled = dimension.Value.length > 1;
-                getCapLayer.timestamps = dimension.Value;
-                break;
+                return dimension.Value;
               }
             }
           }
+
+          return undefined;
         };
 
         var getLayerConfig = function(getCapabilities, layer) {
@@ -77,7 +77,6 @@ goog.require('ga_urlutils_service');
               .HTTP
               .Get[0]
               .href;
-          completeWmtsConfig(layer);
 
           return layer;
         };
@@ -105,7 +104,6 @@ goog.require('ga_urlutils_service');
                 getCapLayer.attribution + '</a>'
           ];
           var source = new ol.source.WMTS(getCapLayer.sourceConfig);
-          completeWmtsConfig(getCapLayer);
           var projection = source.getProjection();
           var extent;
           if (projection) {
@@ -129,8 +127,8 @@ goog.require('ga_urlutils_service');
           layer.label = getCapLayer.Title;
           layer.url = getCapLayer.attributionUrl;
           layer.attributions = getCapLayer.attributions;
-          layer.timeEnabled = getCapLayer.timeEnabled;
-          layer.timestamps = getCapLayer.timestamps;
+          layer.timestamps = getTimestamps(getCapLayer);
+          layer.timeEnabled = layer.timestamps ? layer.timestamps.length > 1 : false;
 
           return layer;
         };
