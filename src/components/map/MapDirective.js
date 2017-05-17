@@ -286,9 +286,7 @@ goog.require('ga_styles_service');
           for (var i = 0, ii = olLayers.length; i < ii; i++) {
             var olLayer = olLayers[i];
 
-            // We update only time enabled bod layers and external WMTS layers.
-            if (olLayer.timeEnabled &&
-                olLayer.visible) {
+            if (olLayer.timeEnabled && olLayer.visible) {
               var layerTimeStr =
                   gaLayers.getLayerTimestampFromYear(olLayer, time);
               if (switchTimeActive) {

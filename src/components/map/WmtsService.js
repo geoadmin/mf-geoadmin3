@@ -61,8 +61,6 @@ goog.require('ga_urlutils_service');
               .href;
 
           return {
-            attributions: getCapLayer.attributions,
-            attributionUrl: getCapLayer.attributionUrl,
             capabilitiesUrl: getCapLayer.capabilitiesUrl,
             label: getCapLayer.Title,
             layer: getCapLayer.Identifier,
@@ -96,22 +94,18 @@ goog.require('ga_urlutils_service');
             extent = gaGlobalOptions.defaultExtent;
           }
           var layer = new ol.layer.Tile({
-            id: 'WMTS||' + options.layer + '||' +
-              options.capabilitiesUrl,
+            id: 'WMTS||' + options.layer + '||' + options.capabilitiesUrl,
             source: source,
             extent: gaMapUtils.intersectWithDefaultExtent(extent),
-            preload: gaMapUtils.preload,
-            attribution: options.sourceConfig.attribution
+            preload: gaMapUtils.preload
           });
           gaDefinePropertiesForLayer(layer);
           layer.useThirdPartyData =
               gaUrlUtils.isThirdPartyValid(options.sourceConfig.urls[0]);
           layer.label = options.label;
-          layer.url = options.attributionUrl;
-          layer.attributions = options.attributions;
+          layer.url = options.capabilitiesUrl;
           layer.timestamps = options.timestamps;
-          layer.timeEnabled = layer.timestamps ?
-              layer.timestamps.length > 1 : false;
+          layer.timeEnabled = (layer.timestamps && layer.timestamps.length > 1);
           layer.time = options.timestamp;
 
           return layer;
@@ -119,8 +113,6 @@ goog.require('ga_urlutils_service');
 
         this.getOlLayerFromGetCapLayer = function(getCapLayer) {
           var options = {
-            attributions: getCapLayer.attributions,
-            attributionUrl: getCapLayer.attributionUrl,
             capabilitiesUrl: getCapLayer.capabilitiesUrl,
             label: getCapLayer.Title,
             layer: getCapLayer.Identifier,
