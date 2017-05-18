@@ -191,6 +191,7 @@ goog.require('ngeo.fileService');
           url = gaUrlUtils.append(url, 'lang=' + gaLang.get());
         }
       }
+      $scope.getCapUrl = url;
       return gaUrlUtils.proxifyUrl(url);
     };
 

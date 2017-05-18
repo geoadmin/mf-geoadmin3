@@ -9,7 +9,7 @@
   <div ga-tab ga-tab-title="Online">
     <div ngeo-import-online ngeo-import-online-options="::options"></div>
   </div>
- 
+
   <!-- Display WMS GetCapabilities results -->
   <div ng-if="wmsGetCap"
        ngeo-wms-get-cap="wmsGetCap"
@@ -20,10 +20,11 @@
   <div ng-if="wmtsGetCap"
        ngeo-wmts-get-cap="wmtsGetCap"
        ngeo-wmts-get-cap-map="::map"
+       ngeo-wmts-get-cap-url="::getCapUrl"
        ngeo-wmts-get-cap-options="::options"></div>
-  
+
   <!-- Display KML infos -->
-  
+
   <!-- Display GPX infos -->
 </div>
 
