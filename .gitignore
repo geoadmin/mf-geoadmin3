@@ -2,6 +2,7 @@
 /externs/angular.js
 /externs/jquery.js
 /src/deps.js
+/src/jscomp.js
 /src/style/app.css
 /src/index.html
 /src/mobile.html
