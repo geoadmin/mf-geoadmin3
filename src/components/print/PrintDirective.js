@@ -639,7 +639,8 @@ goog.require('ga_urlutils_service');
                 'graphicXOffset': -12,
                 'graphicYOffset': -30
               }, '2': { // Style for measure tooltip
-                'externalGraphic': $scope.options.bubbleUrl,
+                'externalGraphic':
+                  gaUrlUtils.nonCloudFrontUrl($scope.options.bubbleUrl),
                 'graphicWidth': 97,
                 'graphicHeight': 27,
                 'graphicXOffset': -48,
