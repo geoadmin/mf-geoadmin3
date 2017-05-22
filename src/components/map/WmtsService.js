@@ -16,6 +16,21 @@ goog.require('ga_urlutils_service');
   module.provider('gaWmts', function() {
     this.$get = function(gaDefinePropertiesForLayer, gaMapUtils, gaUrlUtils,
         gaGlobalOptions) {
+
+      var getCesiumImageryProvider = function(layer) {
+        var extent = gaGlobalOptions.defaultExtent;
+        return new Cesium.UrlTemplateImageryProvider({
+          minimumRetrievingLevel: window.minimumRetrievingLevel,
+          url: layer.url,
+          rectangle: gaMapUtils.extentToRectangle(extent),
+          proxy: gaUrlUtils.getCesiumProxy(),
+          tilingScheme: new Cesium.GeographicTilingScheme(),
+          hasAlphaChannel: true,
+          availableLevels: window.imageryAvailableLevels
+        });
+
+      };
+
       var Wmts = function() {
 
         var getTimestamps = function(getCapLayer) {
@@ -107,6 +122,9 @@ goog.require('ga_urlutils_service');
           layer.timestamps = options.timestamps;
           layer.timeEnabled = (layer.timestamps && layer.timestamps.length > 1);
           layer.time = options.time;
+          layer.getCesiumImageryProvider = function() {
+            return getCesiumImageryProvider(layer);
+          };
 
           return layer;
         };
