@@ -151,13 +151,6 @@ goog.provide('ga_urlutils_service');
             for (var i = 0; i < CF_TO_NONCF.length; i++) {
               if (hostName == CF_TO_NONCF[i][0]) {
                 return url.replace(CF_TO_NONCF[i][0], CF_TO_NONCF[i][1]);
-              } else {
-                var reg = new RegExp(['^(http|https):\/\/service-proxy.',
-                    '(dev|int|prod).bgdi.ch\/(http|https)\/(.*)'].join(''));
-                var parts = reg.exec(url);
-                if (parts && parts.length == 5) {
-                  return parts[3] + '://' + parts[4];
-                }
               }
             }
           }
