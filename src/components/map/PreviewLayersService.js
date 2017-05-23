@@ -59,7 +59,8 @@ goog.require('ga_wmts_service');
           this.removeAll(map);
 
           // Search or create the preview layer
-          var olPreviewLayer = olPreviewLayers[getCapLayer.id];
+          var olPreviewLayer =
+              olPreviewLayers[getCapLayer.id || getCapLayer.Identifier];
 
           if (!olPreviewLayer) {
             if (getCapLayer.wmsUrl) {
