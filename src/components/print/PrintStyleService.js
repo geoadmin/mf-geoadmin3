@@ -1,18 +1,13 @@
 goog.provide('ga_printstyle_service');
-
-goog.require('ga_urlutils_service');
-
 (function() {
 
-  var module = angular.module('ga_printstyle_service', [
-    'ga_urlutils_service'
-  ])
+  var module = angular.module('ga_printstyle_service', [])
       .provider('gaPrintStyle', gaPrintStyle);
 
   function gaPrintStyle() {
-    this.$get = function(gaUrlUtils) {
+    this.$get = function() {
       return {
-        olStyleToPrintLiteral: getolStyleToPrintLiteral(gaUrlUtils),
+        olStyleToPrintLiteral: olStyleToPrintLiteral,
         olPointToPolygon: olPointToPolygon,
         olCircleToPolygon: olCircleToPolygon
       };
@@ -95,159 +90,154 @@ goog.require('ga_urlutils_service');
     return new ol.geom.Polygon([points]);
   }
 
-  function getolStyleToPrintLiteral(gaUrlUtils) {
-    return olStyleToPrintLiteral;
-    // Transform a ol.style.Style to a print literal object
-    function olStyleToPrintLiteral(style, dpi) {
-      /**
-       * ol.style.Style properties:
-       *
-       *  fill: ol.style.Fill :
-       *    fill: String
-       *  image: ol.style.Image:
-       *    anchor: array[2]
-       *    rotation
-       *    size: array[2]
-       *    src: String
-       *  stroke: ol.style.Stroke:
-       *    color: String
-       *    lineCap
-       *    lineDash
-       *    lineJoin
-       *    miterLimit
-       *    width: Number
-       *  text
-       *  zIndex
-       */
+  // Transform a ol.style.Style to a print literal object
+  function olStyleToPrintLiteral(style, dpi) {
+    /**
+     * ol.style.Style properties:
+     *
+     *  fill: ol.style.Fill :
+     *    fill: String
+     *  image: ol.style.Image:
+     *    anchor: array[2]
+     *    rotation
+     *    size: array[2]
+     *    src: String
+     *  stroke: ol.style.Stroke:
+     *    color: String
+     *    lineCap
+     *    lineDash
+     *    lineJoin
+     *    miterLimit
+     *    width: Number
+     *  text
+     *  zIndex
+     */
 
-      /**
-       * Print server properties:
-       *
-       * fillColor
-       * fillOpacity
-       * strokeColor
-       * strokeOpacity
-       * strokeWidth
-       * strokeLinecap
-       * strokeLinejoin
-       * strokeDashstyle
-       * pointRadius
-       * label
-       * fontFamily
-       * fontSize
-       * fontWeight
-       * fontColor
-       * labelAlign
-       * labelXOffset
-       * labelYOffset
-       * labelOutlineColor
-       * labelOutlineWidth
-       * graphicHeight
-       * graphicOpacity
-       * graphicWidth
-       * graphicXOffset
-       * graphicYOffset
-       * zIndex
-       */
-      if (!style || !(style instanceof ol.style.Style) || !dpi) {
-        return;
-      }
-      var literal = {
-        zIndex: style.getZIndex()
-      };
-      var fill = style.getFill();
-      var stroke = style.getStroke();
-      var textStyle = style.getText();
-      var imageStyle = style.getImage();
-
-      if (imageStyle) {
-        var size, anchor, scale = imageStyle.getScale();
-        literal.rotation = imageStyle.getRotation();
-
-        if (imageStyle instanceof ol.style.Icon) {
-          size = imageStyle.getSize();
-          anchor = imageStyle.getAnchor();
-          literal.externalGraphic =
-            gaUrlUtils.nonCloudFrontUrl(imageStyle.getSrc());
-          literal.fillOpacity = 1;
-        } else if (imageStyle instanceof ol.style.Circle ||
-            imageStyle instanceof ol.style.RegularShape) {
-          fill = imageStyle.getFill();
-          stroke = imageStyle.getStroke();
-          var radius = imageStyle.getRadius();
-          var width = adjustDist(2 * radius, dpi);
-          if (stroke) {
-            width += adjustDist(stroke.getWidth() + 1, dpi);
-          }
-          size = [width, width];
-          anchor = [width / 2, width / 2];
-          literal.pointRadius = radius;
-        }
-
-        if (size) {
-          // Print server doesn't handle correctly 0 values for the size
-          literal.graphicWidth = adjustDist((size[0] * scale || 0.1), dpi);
-          literal.graphicHeight = adjustDist((size[1] * scale || 0.1), dpi);
-        }
-        if (anchor) {
-          literal.graphicXOffset = adjustDist(-anchor[0] * scale, dpi);
-          literal.graphicYOffset = adjustDist(-anchor[1] * scale, dpi);
-        }
-
-      }
-
-      if (fill) {
-        var color = ol.color.asArray(fill.getColor());
-        literal.fillColor = toHexa(color);
-        literal.fillOpacity = color[3];
-      } else if (!literal.fillOpacity) {
-        literal.fillOpacity = 0; // No fill
-      }
-
-      if (stroke) {
-        var color = ol.color.asArray(stroke.getColor());
-        literal.strokeWidth = adjustDist(stroke.getWidth(), dpi);
-        literal.strokeColor = toHexa(color);
-        literal.strokeOpacity = color[3];
-        literal.strokeLinecap = stroke.getLineCap() || 'round';
-        literal.strokeLinejoin = stroke.getLineJoin() || 'round';
-
-        if (stroke.getLineDash()) {
-          literal.strokeDashstyle = 'dash';
-        }
-        // TO FIX: Not managed by the print server
-        // literal.strokeMiterlimit = stroke.getMiterLimit();
-      } else {
-        literal.strokeOpacity = 0; // No Stroke
-      }
-
-      if (textStyle && textStyle.getText()) {
-        literal.label = textStyle.getText();
-        literal.labelAlign = textStyle.getTextAlign();
-
-        if (textStyle.getFill()) {
-          var fillColor = ol.color.asArray(textStyle.getFill().getColor());
-          literal.fontColor = toHexa(fillColor);
-        }
-
-        if (textStyle.getFont()) {
-          var fontValues = textStyle.getFont().split(' ');
-          // Fonts managed by print server: COURIER, HELVETICA, TIMES_ROMAN
-          literal.fontFamily = fontValues[2].toUpperCase();
-          literal.fontSize = parseInt(fontValues[1]);
-          literal.fontWeight = fontValues[0];
-        }
-
-        /* TO FIX: Not managed by the print server
-        if (textStyle.getStroke()) {
-          var strokeColor = ol.color.asArray(textStyle.getStroke().getColor());
-          literal.labelOutlineColor = toHexa(strokeColor);
-          literal.labelOutlineWidth = textStyle.getStroke().getWidth();
-        }*/
-      }
-
-      return literal;
+    /**
+     * Print server properties:
+     *
+     * fillColor
+     * fillOpacity
+     * strokeColor
+     * strokeOpacity
+     * strokeWidth
+     * strokeLinecap
+     * strokeLinejoin
+     * strokeDashstyle
+     * pointRadius
+     * label
+     * fontFamily
+     * fontSize
+     * fontWeight
+     * fontColor
+     * labelAlign
+     * labelXOffset
+     * labelYOffset
+     * labelOutlineColor
+     * labelOutlineWidth
+     * graphicHeight
+     * graphicOpacity
+     * graphicWidth
+     * graphicXOffset
+     * graphicYOffset
+     * zIndex
+     */
+    if (!style || !(style instanceof ol.style.Style) || !dpi) {
+      return;
+    }
+    var literal = {
+      zIndex: style.getZIndex()
     };
+    var fill = style.getFill();
+    var stroke = style.getStroke();
+    var textStyle = style.getText();
+    var imageStyle = style.getImage();
 
+    if (imageStyle) {
+      var size, anchor, scale = imageStyle.getScale();
+      literal.rotation = imageStyle.getRotation();
+
+      if (imageStyle instanceof ol.style.Icon) {
+        size = imageStyle.getSize();
+        anchor = imageStyle.getAnchor();
+        literal.externalGraphic = imageStyle.getSrc();
+        literal.fillOpacity = 1;
+      } else if (imageStyle instanceof ol.style.Circle ||
+          imageStyle instanceof ol.style.RegularShape) {
+        fill = imageStyle.getFill();
+        stroke = imageStyle.getStroke();
+        var radius = imageStyle.getRadius();
+        var width = adjustDist(2 * radius, dpi);
+        if (stroke) {
+          width += adjustDist(stroke.getWidth() + 1, dpi);
+        }
+        size = [width, width];
+        anchor = [width / 2, width / 2];
+        literal.pointRadius = radius;
+      }
+
+      if (size) {
+        // Print server doesn't handle correctly 0 values for the size
+        literal.graphicWidth = adjustDist((size[0] * scale || 0.1), dpi);
+        literal.graphicHeight = adjustDist((size[1] * scale || 0.1), dpi);
+      }
+      if (anchor) {
+        literal.graphicXOffset = adjustDist(-anchor[0] * scale, dpi);
+        literal.graphicYOffset = adjustDist(-anchor[1] * scale, dpi);
+      }
+
+    }
+
+    if (fill) {
+      var color = ol.color.asArray(fill.getColor());
+      literal.fillColor = toHexa(color);
+      literal.fillOpacity = color[3];
+    } else if (!literal.fillOpacity) {
+      literal.fillOpacity = 0; // No fill
+    }
+
+    if (stroke) {
+      var color = ol.color.asArray(stroke.getColor());
+      literal.strokeWidth = adjustDist(stroke.getWidth(), dpi);
+      literal.strokeColor = toHexa(color);
+      literal.strokeOpacity = color[3];
+      literal.strokeLinecap = stroke.getLineCap() || 'round';
+      literal.strokeLinejoin = stroke.getLineJoin() || 'round';
+
+      if (stroke.getLineDash()) {
+        literal.strokeDashstyle = 'dash';
+      }
+      // TO FIX: Not managed by the print server
+      // literal.strokeMiterlimit = stroke.getMiterLimit();
+    } else {
+      literal.strokeOpacity = 0; // No Stroke
+    }
+
+    if (textStyle && textStyle.getText()) {
+      literal.label = textStyle.getText();
+      literal.labelAlign = textStyle.getTextAlign();
+
+      if (textStyle.getFill()) {
+        var fillColor = ol.color.asArray(textStyle.getFill().getColor());
+        literal.fontColor = toHexa(fillColor);
+      }
+
+      if (textStyle.getFont()) {
+        var fontValues = textStyle.getFont().split(' ');
+        // Fonts managed by print server: COURIER, HELVETICA, TIMES_ROMAN
+        literal.fontFamily = fontValues[2].toUpperCase();
+        literal.fontSize = parseInt(fontValues[1]);
+        literal.fontWeight = fontValues[0];
+      }
+
+      /* TO FIX: Not managed by the print server
+      if (textStyle.getStroke()) {
+        var strokeColor = ol.color.asArray(textStyle.getStroke().getColor());
+        literal.labelOutlineColor = toHexa(strokeColor);
+        literal.labelOutlineWidth = textStyle.getStroke().getWidth();
+      }*/
+    }
+
+    return literal;
   };
 })();
