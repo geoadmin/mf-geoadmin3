@@ -610,15 +610,6 @@ src/deps.js: $(SRC_JS_FILES) ${PYTHON_VENV}
 	    --root_with_prefix="src/ngeo ngeo" \
 	    --output_file=$@
 
-src/jscomp.js:
-	# Create and compile an empty file to get the $jscomp runtime that is required to run debug mode
-	mkdir -p .build-artefacts
-	touch .build-artefacts/empty.js
-	java -jar ${CLOSURE_COMPILER} --force_inject_library=es6_runtime \
-	    --compilation_level SIMPLE \
-	    --js .build-artefacts/empty.js > $@
-
-
 src/style/app.css: $(SRC_LESS_FILES)
 	${LESSC} $(LESS_PARAMETERS) src/style/app.less $@
 	${POSTCSS} $@ --use autoprefixer --replace --no-map
@@ -695,7 +686,7 @@ test/lib/angular-mocks.js test/lib/expect.js test/lib/sinon.js externs/angular.j
 	cp -f node_modules/google-closure-compiler/contrib/externs/angular-1.4.js externs/angular.js;
 	cp -f node_modules/google-closure-compiler/contrib/externs/jquery-1.9.js externs/jquery.js;
 
-.build-artefacts/devlibs: test/lib/angular-mocks.js test/lib/expect.js test/lib/sinon.js externs/angular.js externs/jquery.js src/jscomp.js
+.build-artefacts/devlibs: test/lib/angular-mocks.js test/lib/expect.js test/lib/sinon.js externs/angular.js externs/jquery.js
 	mkdir -p $(dir $@)
 	touch $@
 
@@ -869,7 +860,6 @@ clean:
 	rm -f externs/jquery.js
 	rm -f test/lib/*.js
 	rm -f src/deps.js
-	rm -f src/jscomp.js
 	rm -f src/style/app.css
 	rm -f src/TemplateCacheModule.js
 	rm -f src/index.html

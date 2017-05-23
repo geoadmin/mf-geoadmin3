@@ -1,4 +1,3 @@
-
 // Karma configuration
 <%
   if mode == 'release':
@@ -17,6 +16,8 @@ module.exports = function(config) {
   files: [
     {pattern: '${basePath}/style/font-awesome-4.5.0/font/*', watched: false, included: false, served: true},
     {pattern: '${basePath}/checker', watched: false, included: false, served: true},
+    'test/lib/expect.js',
+    'test/lib/sinon.js',
   % if mode == 'release':
     '${basePath}/style/app.css',
     '${basePath}/lib/d3.min.js',
@@ -47,12 +48,8 @@ module.exports = function(config) {
     'test/closure-loader-globals.js',
     '${basePath}/lib/olcesium-debug.js',
     '.build-artefacts/app-whitespace.js',
-
   % endif
     'test/lib/angular-mocks.js',
-    'test/lib/expect.js',
-    'test/lib/sinon.js',
-    'src/jscomp.js',
     'test/specs/Loader.spec.js',
     'test/specs/**/*.js',
     {
