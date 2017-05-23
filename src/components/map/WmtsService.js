@@ -44,8 +44,6 @@ goog.require('ga_urlutils_service');
               }
             }
           }
-
-          return undefined;
         };
 
         var getLayerConfig = function(getCapabilities, getCapLayer) {
