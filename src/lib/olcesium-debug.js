@@ -15458,6 +15458,70 @@ olcs.OLCesium.prototype.throwOnUnitializedMap_ = function() {
     throw new Error("The OpenLayers map is not properly initialized: " + center + " / " + view.getResolution());
   }
 };
+goog.provide("ol.GaImageTile");
+goog.require("ol");
+goog.require("ol.Tile");
+goog.require("ol.dom");
+goog.require("ol.events");
+goog.require("ol.events.EventType");
+ol.GaImageTile = function(tileCoord, state, src, crossOrigin, tileLoadFunction) {
+  ol.Tile.call(this, tileCoord, state);
+  this.src_ = src;
+  this.image_ = new Image;
+  if (crossOrigin !== null) {
+    this.image_.crossOrigin = crossOrigin;
+  }
+  this.imageListenerKeys_ = null;
+  this.tileLoadFunction_ = tileLoadFunction;
+};
+ol.inherits(ol.GaImageTile, ol.Tile);
+ol.GaImageTile.prototype.disposeInternal = function() {
+  if (this.state == ol.TileState.LOADING) {
+    this.unlistenImage_();
+  }
+  if (this.interimTile) {
+    this.interimTile.dispose();
+  }
+  this.state = ol.TileState.ABORT;
+  this.changed();
+  ol.Tile.prototype.disposeInternal.call(this);
+};
+ol.GaImageTile.prototype.getImage = function() {
+  return this.image_;
+};
+ol.GaImageTile.prototype.getKey = function() {
+  return this.src_;
+};
+ol.GaImageTile.prototype.handleImageError_ = function() {
+  var ctx = ol.dom.createCanvasContext2D(1, 1);
+  ctx.fillStyle = "rgba(0,0,0,0)";
+  ctx.fillRect(0, 0, 1, 1);
+  this.image_ = ctx.canvas;
+  this.state = ol.TileState.LOADED;
+  this.unlistenImage_();
+  this.changed();
+};
+ol.GaImageTile.prototype.handleImageLoad_ = function() {
+  if (this.image_.naturalWidth && this.image_.naturalHeight) {
+    this.state = ol.TileState.LOADED;
+  } else {
+    this.state = ol.TileState.EMPTY;
+  }
+  this.unlistenImage_();
+  this.changed();
+};
+ol.GaImageTile.prototype.load = function() {
+  if (this.state == ol.TileState.IDLE || this.state == ol.TileState.ERROR) {
+    this.state = ol.TileState.LOADING;
+    this.changed();
+    this.imageListenerKeys_ = [ol.events.listenOnce(this.image_, ol.events.EventType.ERROR, this.handleImageError_, this), ol.events.listenOnce(this.image_, ol.events.EventType.LOAD, this.handleImageLoad_, this)];
+    this.tileLoadFunction_(this, this.src_);
+  }
+};
+ol.GaImageTile.prototype.unlistenImage_ = function() {
+  this.imageListenerKeys_.forEach(ol.events.unlistenByKey);
+  this.imageListenerKeys_ = null;
+};
 goog.provide("olcs.GaKmlSynchronizer");
 goog.require("ol");
 goog.require("olcs.util");
@@ -37041,6 +37105,7 @@ goog.require("ol.Attribution");
 goog.require("ol.Collection");
 goog.require("ol.DeviceOrientation");
 goog.require("ol.Feature");
+goog.require("ol.GaImageTile");
 goog.require("ol.Geolocation");
 goog.require("ol.Graticule");
 goog.require("ol.Image");
@@ -38167,6 +38232,8 @@ goog.exportProperty(olcs.OLCesium.prototype, "setResolutionScale", olcs.OLCesium
 goog.exportProperty(olcs.OLCesium.prototype, "setTargetFrameRate", olcs.OLCesium.prototype.setTargetFrameRate);
 goog.exportSymbol("olcs.RasterSynchronizer", olcs.RasterSynchronizer);
 goog.exportSymbol("olcs.VectorSynchronizer", olcs.VectorSynchronizer);
+goog.exportSymbol("ol.GaImageTile", ol.GaImageTile);
+goog.exportProperty(ol.GaImageTile.prototype, "getImage", ol.GaImageTile.prototype.getImage);
 goog.exportSymbol("olcs.GaKmlSynchronizer", olcs.GaKmlSynchronizer);
 goog.exportSymbol("olcs.GaRasterSynchronizer", olcs.GaRasterSynchronizer);
 goog.exportSymbol("olcs.GaVectorSynchronizer", olcs.GaVectorSynchronizer);
@@ -39940,6 +40007,8 @@ goog.exportProperty(ol.control.ZoomToExtent.prototype, "getRevision", ol.control
 goog.exportProperty(ol.control.ZoomToExtent.prototype, "on", ol.control.ZoomToExtent.prototype.on);
 goog.exportProperty(ol.control.ZoomToExtent.prototype, "once", ol.control.ZoomToExtent.prototype.once);
 goog.exportProperty(ol.control.ZoomToExtent.prototype, "un", ol.control.ZoomToExtent.prototype.un);
+goog.exportProperty(ol.GaImageTile.prototype, "getTileCoord", ol.GaImageTile.prototype.getTileCoord);
+goog.exportProperty(ol.GaImageTile.prototype, "load", ol.GaImageTile.prototype.load);
 goog.exportProperty(olcs.GaKmlSynchronizer.prototype, "synchronize", olcs.GaKmlSynchronizer.prototype.synchronize);
 ol.AtlasBlock;
 ol.AtlasInfo;

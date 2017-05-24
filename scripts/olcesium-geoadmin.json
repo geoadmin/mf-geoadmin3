@@ -7,6 +7,8 @@
     "ol.DeviceOrientation#*",
     "ol.Feature",
     "ol.Feature#*",
+    "ol.GaImageTile",
+    "ol.GaImageTile#*",
     "ol.Geolocation",
     "ol.Geolocation#*",
     "ol.ImageTile#getImage",
