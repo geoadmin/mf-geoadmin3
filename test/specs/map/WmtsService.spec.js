@@ -50,7 +50,7 @@ describe('ga_wmts_service', function() {
 
       var prov = layer.getCesiumImageryProvider();
       expect(prov).to.be.an(Cesium.UrlTemplateImageryProvider);
-      var url = options.capabilitiesUrl;
+      var url = options.url;
       expect(prov.url).to.be(url);
       expect(prov.minimumRetrievingLevel).to.be(window.minimumRetrievingLevel);
       expect(prov.rectangle).to.be.an(Cesium.Rectangle);
@@ -86,6 +86,7 @@ describe('ga_wmts_service', function() {
         var options = {
           label: 'WMTS layer',
           sourceConfig: {
+            matrixSet: 4326,
             urls: [url]
           },
           layer: 'ch.wmts.layer',
@@ -112,6 +113,7 @@ describe('ga_wmts_service', function() {
         var options = {
           label: 'WMTS layer',
           sourceConfig: {
+            matrixSet: 4326,
             urls: [url]
           },
           layer: 'ch.wmts.layer',
@@ -145,6 +147,7 @@ describe('ga_wmts_service', function() {
         var getCap = {
           Title: 'WMTS layer',
           sourceConfig: {
+            matrixSet: 4326,
             urls: [url]
           },
           Identifier: 'ch.wmts.layer',

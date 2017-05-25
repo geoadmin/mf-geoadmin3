@@ -18,17 +18,27 @@ goog.require('ga_urlutils_service');
         gaGlobalOptions) {
 
       var getCesiumImageryProvider = function(layer) {
-        var extent = gaGlobalOptions.defaultExtent;
+        // Display in 3d only layers with a matrixSet compatible
+        if (!/4326/g.test(layer.getSource().getMatrixSet())) {
+          return;
+        }
+        var source = layer.getSource();
+        var tpl = source.getUrls()[0]
+            .replace('{Style}', source.getStyle())
+            .replace('{Time}', layer.time)
+            .replace('{TileMatrixSet}', '4326')
+            .replace('{TileMatrix}', '{z}')
+            .replace('{TileCol}', '{x}')
+            .replace('{TileRow}', '{y}');
         return new Cesium.UrlTemplateImageryProvider({
           minimumRetrievingLevel: window.minimumRetrievingLevel,
-          url: layer.url,
-          rectangle: gaMapUtils.extentToRectangle(extent),
+          url: tpl,
+          rectangle: gaMapUtils.extentToRectangle(layer.getExtent()),
           proxy: gaUrlUtils.getCesiumProxy(),
           tilingScheme: new Cesium.GeographicTilingScheme(),
           hasAlphaChannel: true,
           availableLevels: window.imageryAvailableLevels
         });
-
       };
 
       var Wmts = function() {
