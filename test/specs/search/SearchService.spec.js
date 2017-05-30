@@ -163,8 +163,8 @@ describe('ga_search_service', function() {
     });
 
     it('supports MGRS and USGS grid 32TLT 8 0', function(done) {
-      getCoordinate(extent, '32TLT 8 0').then(function(position) {
-        expect(position).to.eql([527326.065, 198141.932]);
+      getCoordinate(extent, '32TLT 81 00').then(function(position) {
+        expect(position).to.eql([600319.427, 199594.862]);
         done();
       });
       $rootScope.$digest();
