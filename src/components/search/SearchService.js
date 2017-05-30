@@ -47,7 +47,7 @@ goog.require('ga_reframe_service');
         if (matchMGRS && matchMGRS.length == 1) {
           var mgrsStr = matchMGRS[0].split(' ').join('');
           if ((mgrsStr.length - MGRSMinimalPrecision) % 2 == 0) {
-            var wgs84 = $window.proj4.mgrs.toPoint(matchMGRS[0]);
+            var wgs84 = $window.proj4.mgrs.toPoint(mgrsStr);
             position = ol.proj.transform(wgs84, 'EPSG:4326', 'EPSG:21781');
             if (ol.extent.containsCoordinate(extent, position)) {
               return $q.when(roundCoordinates(position));
