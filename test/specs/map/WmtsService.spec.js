@@ -167,5 +167,68 @@ describe('ga_wmts_service', function() {
         });
       });
     });
+
+    describe('#getLayerOptionsFromIdentifier()', function() {
+      var getCapabilities;
+      var identifier = 'ch.are.alpenkonvention';
+      var originalProj;
+
+      before(function(done) {
+        $.get('base/test/data/wmts-basic.xml', function(response) {
+          getCapabilities = new ol.format.WMTSCapabilities().read(response);
+          done();
+        });
+      });
+
+      before(function() {
+        originalProj = ol.proj;
+        // By default, ol.proj is not a constructor in tests, but we need it
+        // to be. So we fix it here.
+        ol.proj = function() {
+          return {
+            getCode: sinon.stub(),
+            getExtent:sinon.stub()
+          };
+        };
+        Object.keys(originalProj).forEach(function(key) {
+          ol.proj[key] = originalProj[key];
+        });
+        ol.proj.transformExtent = function() {
+          return [];
+        };
+      });
+
+      after(function() {
+        ol.proj = originalProj;
+      })
+
+      it('returns undefined if the content is empty', function() {
+        var getCap = {};
+
+        var options = gaWmts.getLayerOptionsFromIdentifier(getCap, identifier);
+
+        expect(options).to.be(undefined);
+      });
+
+      it('returns undefined if there is no layers', function() {
+        var getCap = {
+          Contents: {
+            Layer: []
+          }
+        };
+
+        var options = gaWmts.getLayerOptionsFromIdentifier(getCap, identifier);
+
+        expect(options).to.be(undefined);
+      });
+
+      it('returns options for the proper layer', function() {
+        var options = gaWmts.getLayerOptionsFromIdentifier(getCapabilities, identifier);
+
+        expect(options.capabilitiesUrl).to.be('https://wmts.geo.admin.ch/1.0.0/WMTSCapabilities.xml');
+        expect(options.label).to.be('Convention des Alpes');
+        expect(options.layer).to.be(identifier);
+      });
+    });
   });
 });
