@@ -301,22 +301,22 @@ goog.require('ga_wmts_service');
               var infos = layerSpec.split('||');
               $http.get(gaUrlUtils.buildProxyUrl(infos[2]))
                   .then(function(response) {
-                var data = response.data;
                 try {
-                  var getCapabilities =
-                      new ol.format.WMTSCapabilities().read(data);
-                  var layerConfig = gaWmts.getLayerConfigFromIdentifier(
-                      getCapabilities, infos[1]);
-                  layerConfig.time = timestamp;
-                  gaWmts.addWmtsToMap(map, layerConfig, index + 1);
+                  var data = response.data;
+                  var getCap = new ol.format.WMTSCapabilities().read(data);
+                  var layerOptions = gaWmts.getLayerOptionsFromIdentifier(
+                      infos[1], getCap);
+                  layerOptions.time = timestamp;
+                  gaWmts.addWmtsToMap(map, layerOptions, index + 1);
                 } catch (e) {
                   // Adding external WMTS layer failed
-                  console.error('Loading of external WMTS layer ' + layerSpec +
-                          ' failed. ' + e);
+                  $log.error('Loading of external WMTS layer ' + layerSpec +
+                      ' failed. ' + e.message);
                 }
-              }, function() {
-                console.error('Loading of external WMTS layer ' + layerSpec +
-                        ' failed. Failed to get capabilities from server.');
+              }, function(reason) {
+                $log.error('Loading of external WMTS layer ' + layerSpec +
+                    ' failed. Failed to get capabilities from server.' +
+                    'Reason : ' + reason);
               });
             }
           });
@@ -324,7 +324,7 @@ goog.require('ga_wmts_service');
           // When an async layer is added we must reorder correctly the layers.
           if (mustReorder) {
             var deregister2 = scope.$watchCollection(
-                'layers | filter:layerFilter', function(layers) {
+                'layers | filter : layerFilter', function(layers) {
               if (layers.length == nbLayersToAdd) {
                 deregister2();
                 var hasBg = map.getLayers().item(0).background;

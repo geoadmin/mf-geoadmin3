@@ -113,7 +113,7 @@ describe('ga_map_service', function() {
   };
 
   var addExternalWmtsLayerToMap = function() {
-    var source = new ol.source.TileImage  ({
+    var source = new ol.source.TileImage({
       url: 'http://foo.ch/wmts'
     });
     var layer = new ol.layer.Image({
