@@ -73,7 +73,7 @@ describe('ngeo.wmtsGetCapDirective', function() {
     });
   });
 
-  describe('loads a invalid WMTS GetCapabilities', function() {
+  describe('loads an invalid WMTS GetCapabilities', function() {
     var spy;
 
     beforeEach(function() {
