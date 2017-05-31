@@ -112,7 +112,33 @@ describe('ga_map_service', function() {
     return layer;
   };
 
+  var addExternalWmtsLayerToMap = function() {
+    var source = new ol.source.TileImage({
+      url: 'http://foo.ch/wmts'
+    });
+    var layer = new ol.layer.Image({
+      id: 'WMTS||The wms layer||http://foo.ch/wms||ch.wms.name',
+      url: 'http://foo.ch/wmts',
+      type: 'WMTS',
+      label: 'The wmts layer',
+      opacity: 0.4,
+      visible: false,
+      source: source
+    });
+    layer.displayInLayerManager = true;
+    map.addLayer(layer);
+    return layer;
+  };
+
   var addBodWmsToMap = function(bodId) {
+    var layer = new ol.layer.Image();
+    layer.bodId = bodId;
+    layer.displayInLayerManager = true;
+    map.addLayer(layer);
+    return layer;
+  };
+
+  var addBodWmtsToMap = function(bodId) {
     var layer = new ol.layer.Image();
     layer.bodId = bodId;
     layer.displayInLayerManager = true;
@@ -1946,6 +1972,46 @@ describe('ga_map_service', function() {
         layer = addBodWmsToMap('bodwms');
         gaDefinePropertiesForLayer(layer);
         expect(gaMapUtils.isExternalWmsLayer(layer)).to.eql(false);
+      }));
+    });
+
+    describe('#isExternalWmtsLayer()', function() {
+      it('tests if the WMTS comes from a source outside the bund', inject(function(gaDefinePropertiesForLayer) {
+        expect(gaMapUtils.isExternalWmtsLayer(undefined)).to.eql(false);
+        expect(gaMapUtils.isExternalWmtsLayer(null)).to.eql(false);
+        expect(gaMapUtils.isExternalWmtsLayer('')).to.eql(false);
+
+        // with a layer id
+        expect(gaMapUtils.isExternalWmtsLayer('ch.bod.layer')).to.eql(false);
+        expect(gaMapUtils.isExternalWmtsLayer('WMS||aa')).to.eql(false);
+        expect(gaMapUtils.isExternalWmtsLayer('WMS||aa||aa')).to.eql(false);
+        expect(gaMapUtils.isExternalWmtsLayer('WMS||aa||aa||aa')).to.eql(false);
+        expect(gaMapUtils.isExternalWmtsLayer('WMTS||aa||aa')).to.eql(true);
+        expect(gaMapUtils.isExternalWmtsLayer('KML||test/local/foo.kml')).to.eql(false);
+        expect(gaMapUtils.isExternalWmtsLayer('KML||http://test:com/foo.kml')).to.eql(false);
+
+        // with an ol.layer
+        var layer = addLayerToMap();
+        gaDefinePropertiesForLayer(layer);
+        expect(gaMapUtils.isExternalWmtsLayer(layer)).to.eql(false);
+        layer = addLayerGroupToMap();
+        gaDefinePropertiesForLayer(layer);
+        expect(gaMapUtils.isStoredKmlLayer(layer)).to.eql(false);
+        layer = addExternalWmtsLayerToMap();
+        gaDefinePropertiesForLayer(layer);
+        expect(gaMapUtils.isExternalWmtsLayer(layer)).to.eql(true);
+        layer = addKmlLayerToMap();
+        gaDefinePropertiesForLayer(layer);
+        expect(gaMapUtils.isExternalWmtsLayer(layer)).to.eql(false);
+        layer = addLocalKmlLayerToMap();
+        gaDefinePropertiesForLayer(layer);
+        expect(gaMapUtils.isExternalWmtsLayer(layer)).to.eql(false);
+        layer = addStoredKmlLayerToMap();
+        gaDefinePropertiesForLayer(layer);
+        expect(gaMapUtils.isExternalWmtsLayer(layer)).to.eql(false);
+        layer = addBodWmtsToMap('bodwmtss');
+        gaDefinePropertiesForLayer(layer);
+        expect(gaMapUtils.isExternalWmtsLayer(layer)).to.eql(false);
       }));
     });
 

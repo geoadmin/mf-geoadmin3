@@ -37,15 +37,16 @@ describe('ngeo.fileService', function() {
       });
     });
 
-    /*describe('#isWmtsGetCap()', function() {
-      it('tests if the content fo file is a WMS GetCapabilties', function() {
-        expect(gaKml.isValidFileContent('<html></html>')).to.be(false);
-        expect(gaKml.isValidFileContent('<kml></kml>')).to.be(true);
-        expect(gaKml.isValidFileContent(undefined)).to.be(false);
-        expect(gaKml.isValidFileContent(null)).to.be(false);
-        expect(gaKml.isValidFileContent(212334)).to.be(false);
+    describe('#isWmtsGetCap()', function() {
+      it('tests if the content fo file is a WMTS GetCapabilties', function() {
+        expect(ngeoFile.isWmtsGetCap('<Capabilities schemaLocation="wmtsGetCapabilities_response.xsd"></Capabilities>')).to.be(true);
+        expect(ngeoFile.isWmtsGetCap('<Capabilities></Capabilities>')).to.be(false);
+        expect(ngeoFile.isWmtsGetCap('<kml></kml>')).to.be(false);
+        expect(ngeoFile.isWmtsGetCap(undefined)).to.be(false);
+        expect(ngeoFile.isWmtsGetCap(null)).to.be(false);
+        expect(ngeoFile.isWmtsGetCap(212334)).to.be(false);
       });
-    });*/
+    });
 
     describe('#isKml()', function() {
       it('tests if the content of a file is a KML', function() {

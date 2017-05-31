@@ -1,6 +1,7 @@
 goog.provide('ga_import_controller');
 
 goog.require('ga_kml_service');
+goog.require('ga_wmts_service');
 goog.require('ngeo.fileService');
 
 (function() {
@@ -12,7 +13,7 @@ goog.require('ngeo.fileService');
 
   module.controller('GaImportController', function($scope, $q, $document,
       $window, $timeout, ngeoFile, gaKml, gaBrowserSniffer, gaWms, gaUrlUtils,
-      gaLang, gaPreviewLayers, gaMapUtils) {
+      gaLang, gaPreviewLayers, gaMapUtils, gaWmts) {
 
     $scope.supportDnd = !gaBrowserSniffer.msie || gaBrowserSniffer.msie > 9;
     $scope.options = {
@@ -156,14 +157,23 @@ goog.require('ngeo.fileService');
         'http://rips-gdi.lubw.baden-wuerttemberg.de/arcgis/services/wms/UIS_0100000013600001/MapServer/WMSServer',
         'http://rips-gdi.lubw.baden-wuerttemberg.de/arcgis/services/wms/UIS_0100000013100001/MapServer/WMSServer',
         'http://rips-gdi.lubw.baden-wuerttemberg.de/arcgis/services/wms/UIS_0100000001500003/MapServer/WMSServer',
-        'http://rips-gdi.lubw.baden-wuerttemberg.de/arcgis/services/wms/UIS_0100000004200001/MapServer/WMSServer'
+        'http://rips-gdi.lubw.baden-wuerttemberg.de/arcgis/services/wms/UIS_0100000004200001/MapServer/WMSServer',
+        // WMTS servers
+        'http://www.basemap.at/wmts/1.0.0/WMTSCapabilities.xml',
+        'http://cidportal.jrc.ec.europa.eu/copernicus/services/tile/wmts/1.0.0/WMTSCapabilities.xml',
      ]
     };
 
     $scope.options.isValidUrl = gaUrlUtils.isValid;
-    $scope.options.getOlLayerFromGetCapLayer = gaWms.getOlLayerFromGetCapLayer;
+    $scope.options.getOlLayerFromGetCapLayer = function(layer) {
+      if (layer.wmsUrl) {
+        return gaWms.getOlLayerFromGetCapLayer(layer);
+      } else if (layer.capabilitiesUrl) {
+        return gaWmts.getOlLayerFromGetCapLayer(layer);
+      }
+    };
     $scope.options.addPreviewLayer = function(map, layer) {
-      gaPreviewLayers.addGetCapWMSLayer(map, layer);
+      gaPreviewLayers.addGetCapLayer(map, layer);
     };
     $scope.options.removePreviewLayer = gaPreviewLayers.removeAll;
     $scope.options.transformExtent = gaMapUtils.intersectWithDefaultExtent;
@@ -182,6 +192,7 @@ goog.require('ngeo.fileService');
           url = gaUrlUtils.append(url, 'lang=' + gaLang.get());
         }
       }
+      $scope.getCapUrl = url;
       return gaUrlUtils.proxifyUrl(url);
     };
 
@@ -225,6 +236,11 @@ goog.require('ngeo.fileService');
           defer.notify(evt);
         });
 
+      } else if (ngeoFile.isWmtsGetCap(data)) {
+        $scope.wmtsGetCap = data;
+        defer.resolve({
+          message: 'upload_succeeded'
+        });
       } else {
 
         $window.console.error('Unparseable content: ', data);
@@ -233,7 +249,6 @@ goog.require('ngeo.fileService');
           reason: 'format_not_supported'
         });
       }
-      // WMTS
       // GPX
 
       return defer.promise;

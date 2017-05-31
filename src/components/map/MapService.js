@@ -175,6 +175,14 @@ goog.require('ga_urlutils_service');
               this.set('timeEnabled', val);
             }
           },
+          timeBehaviour: {
+            get: function() {
+              return this.get('timeBehaviour');
+            },
+            set: function(val) {
+              this.set('timeBehaviour', val);
+            }
+          },
           timestamps: {
             get: function() {
               return this.get('timestamps');
@@ -948,6 +956,7 @@ goog.require('ga_urlutils_service');
             olLayer.label = layer.label;
             olLayer.type = layer.type;
             olLayer.timeEnabled = layer.timeEnabled;
+            olLayer.timeBehaviour = layer.timeBehaviour;
             olLayer.timestamps = layer.timestamps;
             olLayer.geojsonUrl = layer.geojsonUrl;
             olLayer.updateDelay = layer.updateDelay;
@@ -1383,6 +1392,19 @@ goog.require('ga_urlutils_service');
           }
           return !!(olLayerOrId && !olLayerOrId.bodId &&
               this.isWMSLayer(olLayerOrId));
+        },
+
+        // Test if a layer is an external WMTS layer added by the ImportWMTS
+        // tool or permalink
+        isExternalWmtsLayer: function(olLayerOrId) {
+          if (!olLayerOrId) {
+            return false;
+          } else if (angular.isString(olLayerOrId)) {
+            return /^WMTS\|\|/.test(olLayerOrId) &&
+                olLayerOrId.split('||').length === 3;
+          } else {
+            return olLayerOrId.type === 'WMTS';
+          }
         },
 
         // Test if a feature is a measure

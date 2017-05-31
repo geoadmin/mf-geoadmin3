@@ -8,6 +8,7 @@ goog.require('ga_time_service');
 goog.require('ga_topic_service');
 goog.require('ga_urlutils_service');
 goog.require('ga_wms_service');
+goog.require('ga_wmts_service');
 
 (function() {
 
@@ -20,7 +21,8 @@ goog.require('ga_wms_service');
     'ga_time_service',
     'ga_topic_service',
     'ga_urlutils_service',
-    'ga_wms_service'
+    'ga_wms_service',
+    'ga_wmts_service'
   ]);
 
   /**
@@ -40,7 +42,7 @@ goog.require('ga_wms_service');
 
     this.$get = function($rootScope, gaLayers, gaPermalink, $translate,
         gaKml, gaMapUtils, gaWms, gaLayerFilters, gaUrlUtils, gaFileStorage,
-        gaTopic, gaGlobalOptions, $q, gaTime, $log) {
+        gaTopic, gaGlobalOptions, $q, gaTime, $log, $http, gaWmts) {
 
       var layersParamValue = gaPermalink.getParams().layers;
       var layersOpacityParamValue = gaPermalink.getParams().layers_opacity;
@@ -295,13 +297,34 @@ goog.require('ga_wms_service');
                 // Adding external WMS layer failed, native alert, log message?
                 $log.error(e.message);
               }
+            } else if (gaMapUtils.isExternalWmtsLayer(layerSpec)) {
+              var infos = layerSpec.split('||');
+              $http.get(gaUrlUtils.buildProxyUrl(infos[2]))
+                  .then(function(response) {
+                try {
+                  var data = response.data;
+                  var getCap = new ol.format.WMTSCapabilities().read(data);
+                  var layerOptions = gaWmts.getLayerOptionsFromIdentifier(
+                      infos[1], getCap);
+                  layerOptions.time = timestamp;
+                  gaWmts.addWmtsToMap(map, layerOptions, index + 1);
+                } catch (e) {
+                  // Adding external WMTS layer failed
+                  $log.error('Loading of external WMTS layer ' + layerSpec +
+                      ' failed. ' + e.message);
+                }
+              }, function(reason) {
+                $log.error('Loading of external WMTS layer ' + layerSpec +
+                    ' failed. Failed to get capabilities from server.' +
+                    'Reason : ' + reason);
+              });
             }
           });
 
           // When an async layer is added we must reorder correctly the layers.
           if (mustReorder) {
             var deregister2 = scope.$watchCollection(
-                'layers | filter:layerFilter', function(layers) {
+                'layers | filter : layerFilter', function(layers) {
               if (layers.length == nbLayersToAdd) {
                 deregister2();
                 var hasBg = map.getLayers().item(0).background;
