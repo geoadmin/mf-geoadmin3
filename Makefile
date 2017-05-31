@@ -212,12 +212,12 @@ autolintpy: ${AUTOPEP8_CMD}
 
 .PHONY: testdebug
 testdebug: .build-artefacts/app-whitespace.js test/karma-conf-debug.js
-	PHANTOMJS_BIN="${PHANTOMJS}" ${KARMA} start test/karma-conf-debug.js --single-run;
+	PHANTOMJS_BIN="${PHANTOMJS}" ${KARMA} start test/karma-conf-debug.js;
 	cat .build-artefacts/coverage.txt; echo;
 
 .PHONY: testrelease
 testrelease: prd/lib/build.js test/karma-conf-release.js .build-artefacts/devlibs
-	PHANTOMJS_BIN="${PHANTOMJS}" ${KARMA} start test/karma-conf-release.js --single-run
+	PHANTOMJS_BIN="${PHANTOMJS}" ${KARMA} start test/karma-conf-release.js;
 
 .PHONY: teste2e
 teste2e: saucelabs
