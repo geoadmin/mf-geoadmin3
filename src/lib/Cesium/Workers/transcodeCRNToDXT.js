@@ -815,10 +815,72 @@ define('Core/WebGLConstants',[
 });
 
 /*global define*/
+define('Renderer/PixelDatatype',[
+        '../Core/freezeObject',
+        '../Core/WebGLConstants'
+    ], function(
+        freezeObject,
+        WebGLConstants) {
+    'use strict';
+
+    /**
+     * @private
+     */
+    var PixelDatatype = {
+        UNSIGNED_BYTE : WebGLConstants.UNSIGNED_BYTE,
+        UNSIGNED_SHORT : WebGLConstants.UNSIGNED_SHORT,
+        UNSIGNED_INT : WebGLConstants.UNSIGNED_INT,
+        FLOAT : WebGLConstants.FLOAT,
+        UNSIGNED_INT_24_8 : WebGLConstants.UNSIGNED_INT_24_8,
+        UNSIGNED_SHORT_4_4_4_4 : WebGLConstants.UNSIGNED_SHORT_4_4_4_4,
+        UNSIGNED_SHORT_5_5_5_1 : WebGLConstants.UNSIGNED_SHORT_5_5_5_1,
+        UNSIGNED_SHORT_5_6_5 : WebGLConstants.UNSIGNED_SHORT_5_6_5,
+
+        isPacked : function(pixelDatatype) {
+            return pixelDatatype === PixelDatatype.UNSIGNED_INT_24_8 ||
+                   pixelDatatype === PixelDatatype.UNSIGNED_SHORT_4_4_4_4 ||
+                   pixelDatatype === PixelDatatype.UNSIGNED_SHORT_5_5_5_1 ||
+                   pixelDatatype === PixelDatatype.UNSIGNED_SHORT_5_6_5;
+        },
+
+        sizeInBytes : function(pixelDatatype) {
+            switch (pixelDatatype) {
+                case PixelDatatype.UNSIGNED_BYTE:
+                    return 1;
+                case PixelDatatype.UNSIGNED_SHORT:
+                case PixelDatatype.UNSIGNED_SHORT_4_4_4_4:
+                case PixelDatatype.UNSIGNED_SHORT_5_5_5_1:
+                case PixelDatatype.UNSIGNED_SHORT_5_6_5:
+                    return 2;
+                case PixelDatatype.UNSIGNED_INT:
+                case PixelDatatype.FLOAT:
+                case PixelDatatype.UNSIGNED_INT_24_8:
+                    return 4;
+            }
+        },
+
+        validate : function(pixelDatatype) {
+            return ((pixelDatatype === PixelDatatype.UNSIGNED_BYTE) ||
+                    (pixelDatatype === PixelDatatype.UNSIGNED_SHORT) ||
+                    (pixelDatatype === PixelDatatype.UNSIGNED_INT) ||
+                    (pixelDatatype === PixelDatatype.FLOAT) ||
+                    (pixelDatatype === PixelDatatype.UNSIGNED_INT_24_8) ||
+                    (pixelDatatype === PixelDatatype.UNSIGNED_SHORT_4_4_4_4) ||
+                    (pixelDatatype === PixelDatatype.UNSIGNED_SHORT_5_5_5_1) ||
+                    (pixelDatatype === PixelDatatype.UNSIGNED_SHORT_5_6_5));
+        }
+    };
+
+    return freezeObject(PixelDatatype);
+});
+
+/*global define*/
 define('Core/PixelFormat',[
+        '../Renderer/PixelDatatype',
         './freezeObject',
         './WebGLConstants'
     ], function(
+        PixelDatatype,
         freezeObject,
         WebGLConstants) {
     'use strict';
@@ -960,6 +1022,26 @@ define('Core/PixelFormat',[
         /**
          * @private
          */
+        componentsLength : function(pixelFormat) {
+            switch (pixelFormat) {
+                // Many GPUs store RGB as RGBA internally
+                // https://devtalk.nvidia.com/default/topic/699479/general-graphics-programming/rgb-auto-converted-to-rgba/post/4142379/#4142379
+                case PixelFormat.RGB:
+                case PixelFormat.RGBA:
+                    return 4;
+                case PixelFormat.LUMINANCE_ALPHA:
+                    return 2;
+                case PixelFormat.ALPHA:
+                case PixelFormat.LUMINANCE:
+                    return 1;
+                default:
+                    return 1;
+            }
+        },
+
+        /**
+         * @private
+         */
         validate : function(pixelFormat) {
             return pixelFormat === PixelFormat.DEPTH_COMPONENT ||
                    pixelFormat === PixelFormat.DEPTH_STENCIL ||
@@ -1043,7 +1125,7 @@ define('Core/PixelFormat',[
         /**
          * @private
          */
-        compressedTextureSize : function(pixelFormat, width, height) {
+        compressedTextureSizeInBytes : function(pixelFormat, width, height) {
             switch (pixelFormat) {
                 case PixelFormat.RGB_DXT1:
                 case PixelFormat.RGBA_DXT1:
@@ -1065,6 +1147,17 @@ define('Core/PixelFormat',[
                 default:
                     return 0;
             }
+        },
+
+        /**
+         * @private
+         */
+        textureSizeInBytes : function(pixelFormat, pixelDatatype, width, height) {
+            var componentsLength = PixelFormat.componentsLength(pixelFormat);
+            if (PixelDatatype.isPacked(pixelDatatype)) {
+                componentsLength = 1;
+            }
+            return componentsLength * PixelDatatype.sizeInBytes(pixelDatatype) * width * height;
         }
     };
 
@@ -1510,7 +1603,7 @@ define('Workers/transcodeCRNToDXT',[
         var dstSize = 0;
         var i;
         for (i = 0; i < levels; ++i) {
-            dstSize += PixelFormat.compressedTextureSize(format, width >> i, height >> i);
+            dstSize += PixelFormat.compressedTextureSizeInBytes(format, width >> i, height >> i);
         }
 
         // Allocate enough space on the emscripten heap to hold the decoded DXT data
@@ -1533,7 +1626,7 @@ define('Workers/transcodeCRNToDXT',[
 
         // Mipmaps are unsupported, so copy the level 0 texture
         // When mipmaps are supported, a copy will still be necessary as dxtData is a view on the heap.
-        var length = PixelFormat.compressedTextureSize(format, width, height);
+        var length = PixelFormat.compressedTextureSizeInBytes(format, width, height);
         var level0DXTData = new Uint8Array(length);
         level0DXTData.set(dxtData, 0);
 

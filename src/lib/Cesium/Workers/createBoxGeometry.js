@@ -1805,15 +1805,9 @@ define('Core/Cartesian3',[
      * @returns {Cartesian3} The modified result parameter.
      */
     Cartesian3.divideComponents = function(left, right, result) {
-                if (!defined(left)) {
-            throw new DeveloperError('left is required');
-        }
-        if (!defined(right)) {
-            throw new DeveloperError('right is required');
-        }
-        if (!defined(result)) {
-            throw new DeveloperError('result is required');
-        }
+                Check.typeOf.object('left', left);
+        Check.typeOf.object('right', right);
+        Check.typeOf.object('result', result);
         
         result.x = left.x / right.x;
         result.y = left.y / right.y;
@@ -2498,17 +2492,17 @@ define('Core/scaleToGeodeticSurface',[
 /*global define*/
 define('Core/Cartographic',[
         './Cartesian3',
+        './Check',
         './defaultValue',
         './defined',
-        './DeveloperError',
         './freezeObject',
         './Math',
         './scaleToGeodeticSurface'
     ], function(
         Cartesian3,
+        Check,
         defaultValue,
         defined,
-        DeveloperError,
         freezeObject,
         CesiumMath,
         scaleToGeodeticSurface) {
@@ -2559,12 +2553,8 @@ define('Core/Cartographic',[
      * @returns {Cartographic} The modified result parameter or a new Cartographic instance if one was not provided.
      */
     Cartographic.fromRadians = function(longitude, latitude, height, result) {
-                if (!defined(longitude)) {
-            throw new DeveloperError('longitude is required.');
-        }
-        if (!defined(latitude)) {
-            throw new DeveloperError('latitude is required.');
-        }
+                Check.typeOf.number('longitude', longitude);
+        Check.typeOf.number('latitude', latitude);
         
         height = defaultValue(height, 0.0);
 
@@ -2590,12 +2580,8 @@ define('Core/Cartographic',[
      * @returns {Cartographic} The modified result parameter or a new Cartographic instance if one was not provided.
      */
     Cartographic.fromDegrees = function(longitude, latitude, height, result) {
-                if (!defined(longitude)) {
-            throw new DeveloperError('longitude is required.');
-        }
-        if (!defined(latitude)) {
-            throw new DeveloperError('latitude is required.');
-        }
+                Check.typeOf.number('longitude', longitude);
+        Check.typeOf.number('latitude', latitude);
                 longitude = CesiumMath.toRadians(longitude);
         latitude = CesiumMath.toRadians(latitude);
 
@@ -2696,9 +2682,7 @@ define('Core/Cartographic',[
      * @returns {Boolean} <code>true</code> if left and right are within the provided epsilon, <code>false</code> otherwise.
      */
     Cartographic.equalsEpsilon = function(left, right, epsilon) {
-                if (typeof epsilon !== 'number') {
-            throw new DeveloperError('epsilon is required and must be a number.');
-        }
+                Check.typeOf.number('epsilon', epsilon);
         
         return (left === right) ||
                ((defined(left)) &&
@@ -3950,7 +3934,7 @@ define('Core/Matrix3',[
 
         var m10 = cosTheta * sinPsi;
         var m11 = cosPhi * cosPsi + sinPhi * sinTheta * sinPsi;
-        var m12 = -sinTheta * cosPhi + cosPhi * sinTheta * sinPsi;
+        var m12 = -sinPhi * cosPsi + cosPhi * sinTheta * sinPsi;
 
         var m20 = -sinTheta;
         var m21 = sinPhi * cosTheta;
@@ -8646,7 +8630,7 @@ define('Core/Rectangle',[
     };
 
     /**
-     * Creates an rectangle given the boundary longitude and latitude in radians.
+     * Creates a rectangle given the boundary longitude and latitude in radians.
      *
      * @param {Number} [west=0.0] The westernmost longitude in radians in the range [-Math.PI, Math.PI].
      * @param {Number} [south=0.0] The southernmost latitude in radians in the range [-Math.PI/2, Math.PI/2].
@@ -9494,7 +9478,7 @@ define('Core/BoundingSphere',[
     var fromRectangle2DNortheast = new Cartographic();
 
     /**
-     * Computes a bounding sphere from an rectangle projected in 2D.
+     * Computes a bounding sphere from a rectangle projected in 2D.
      *
      * @param {Rectangle} rectangle The rectangle around which to create a bounding sphere.
      * @param {Object} [projection=GeographicProjection] The projection used to project the rectangle into 2D.
@@ -10019,6 +10003,8 @@ define('Core/BoundingSphere',[
      * @returns {BoundingSphere} The modified result parameter or a new BoundingSphere instance if none was provided.
      */
     BoundingSphere.fromOrientedBoundingBox = function(orientedBoundingBox, result) {
+                Check.defined('orientedBoundingBox', orientedBoundingBox);
+        
         if (!defined(result)) {
             result = new BoundingSphere();
         }
@@ -10028,12 +10014,11 @@ define('Core/BoundingSphere',[
         var v = Matrix3.getColumn(halfAxes, 1, fromOrientedBoundingBoxScratchV);
         var w = Matrix3.getColumn(halfAxes, 2, fromOrientedBoundingBoxScratchW);
 
-        var uHalf = Cartesian3.magnitude(u);
-        var vHalf = Cartesian3.magnitude(v);
-        var wHalf = Cartesian3.magnitude(w);
+        Cartesian3.add(u, v, u);
+        Cartesian3.add(u, w, u);
 
         result.center = Cartesian3.clone(orientedBoundingBox.center, result.center);
-        result.radius = Math.max(uHalf, vHalf, wHalf);
+        result.radius = Cartesian3.magnitude(u);
 
         return result;
     };
@@ -12856,10 +12841,10 @@ define('Core/VertexFormat',[
 define('Core/BoxGeometry',[
         './BoundingSphere',
         './Cartesian3',
+        './Check',
         './ComponentDatatype',
         './defaultValue',
         './defined',
-        './DeveloperError',
         './Geometry',
         './GeometryAttribute',
         './GeometryAttributes',
@@ -12868,10 +12853,10 @@ define('Core/BoxGeometry',[
     ], function(
         BoundingSphere,
         Cartesian3,
+        Check,
         ComponentDatatype,
         defaultValue,
         defined,
-        DeveloperError,
         Geometry,
         GeometryAttribute,
         GeometryAttributes,
@@ -12912,12 +12897,8 @@ define('Core/BoxGeometry',[
         var min = options.minimum;
         var max = options.maximum;
 
-                if (!defined(min)) {
-            throw new DeveloperError('options.minimum is required.');
-        }
-        if (!defined(max)) {
-            throw new DeveloperError('options.maximum is required');
-        }
+                Check.typeOf.object('min', min);
+        Check.typeOf.object('max', max);
         
         var vertexFormat = defaultValue(options.vertexFormat, VertexFormat.DEFAULT);
 
@@ -12951,12 +12932,10 @@ define('Core/BoxGeometry',[
         options = defaultValue(options, defaultValue.EMPTY_OBJECT);
         var dimensions = options.dimensions;
 
-                if (!defined(dimensions)) {
-            throw new DeveloperError('options.dimensions is required.');
-        }
-        if (dimensions.x < 0 || dimensions.y < 0 || dimensions.z < 0) {
-            throw new DeveloperError('All dimensions components must be greater than or equal to zero.');
-        }
+                Check.typeOf.object('dimensions', dimensions);
+        Check.typeOf.number.greaterThanOrEquals('dimensions.x', dimensions.x, 0);
+        Check.typeOf.number.greaterThanOrEquals('dimensions.y', dimensions.y, 0);
+        Check.typeOf.number.greaterThanOrEquals('dimensions.z', dimensions.z, 0);
         
         var corner = Cartesian3.multiplyByScalar(dimensions, 0.5, new Cartesian3());
 
@@ -12988,9 +12967,7 @@ define('Core/BoxGeometry',[
      * @see BoxGeometry.createGeometry
      */
     BoxGeometry.fromAxisAlignedBoundingBox = function (boundingBox) {
-                if (!defined(boundingBox)) {
-            throw new DeveloperError('boundingBox is required.');
-        }
+                Check.typeOf.object('boundingBox', boundingBox);
         
         return new BoxGeometry({
             minimum : boundingBox.minimum,
@@ -13014,12 +12991,8 @@ define('Core/BoxGeometry',[
      * @returns {Number[]} The array that was packed into
      */
     BoxGeometry.pack = function(value, array, startingIndex) {
-                if (!defined(value)) {
-            throw new DeveloperError('value is required');
-        }
-        if (!defined(array)) {
-            throw new DeveloperError('array is required');
-        }
+                Check.typeOf.object('value', value);
+        Check.defined('array', array);
         
         startingIndex = defaultValue(startingIndex, 0);
 
@@ -13048,9 +13021,7 @@ define('Core/BoxGeometry',[
      * @returns {BoxGeometry} The modified result parameter or a new BoxGeometry instance if one was not provided.
      */
     BoxGeometry.unpack = function(array, startingIndex, result) {
-                if (!defined(array)) {
-            throw new DeveloperError('array is required');
-        }
+                Check.defined('array', array);
         
         startingIndex = defaultValue(startingIndex, 0);
 
