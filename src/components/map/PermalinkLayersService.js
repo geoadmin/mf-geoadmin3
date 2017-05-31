@@ -306,6 +306,9 @@ goog.require('ga_wmts_service');
                   var getCap = new ol.format.WMTSCapabilities().read(data);
                   var layerOptions = gaWmts.getLayerOptionsFromIdentifier(
                       getCap, infos[1]);
+                  // Override the url found in the xml file which is often a
+                  // wrong url.
+                  layerOptions.capabilitiesUrl = infos[2];
                   layerOptions.time = timestamp;
                   gaWmts.addWmtsToMap(map, layerOptions, index + 1);
                 } catch (e) {
