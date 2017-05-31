@@ -207,7 +207,7 @@ goog.require('ga_time_service');
           scope.$watch('isActive', function(active, old) {
             // On the first call old and active are false both but we don't want
             // to apply the year
-            if (active !== old || scope.years.length !== scope.options.years) {
+            if (active !== old) {
               scope.years = active ? scope.options.years : [];
               applyNewYear((active ? scope.currentYear : undefined));
               elt.toggle(active && !scope.is3dActive);
@@ -247,7 +247,7 @@ goog.require('ga_time_service');
               var year = scope.options.years[i];
               year.available = false;
               olLayers.forEach(function(olLayer, opt) {
-                if (olLayer.timeEnabled) {
+                if (year.available || !olLayer.timeEnabled) {
                   return;
                 }
                 var timestamps = olLayer.timestamps || [];

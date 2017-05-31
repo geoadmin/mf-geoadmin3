@@ -187,7 +187,7 @@ describe('ga_wmts_service', function() {
         ol.proj = function() {
           return {
             getCode: sinon.stub(),
-            getExtent:sinon.stub()
+            getExtent: sinon.stub()
           };
         };
         Object.keys(originalProj).forEach(function(key) {
@@ -200,7 +200,7 @@ describe('ga_wmts_service', function() {
 
       after(function() {
         ol.proj = originalProj;
-      })
+      });
 
       it('returns undefined if the content is empty', function() {
         var getCap = {};
