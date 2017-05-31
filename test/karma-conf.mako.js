@@ -107,7 +107,6 @@ module.exports = function(config) {
   reporters: ['coverage', 'progress'],
 % endif
 
-
   // web server port
   port: 8081,
 
@@ -122,11 +121,15 @@ module.exports = function(config) {
 
   // level of logging
   // possible values: LOG_DISABLE || LOG_ERROR || LOG_WARN || LOG_INFO || LOG_DEBUG
+% if mode == 'release':
+  logLevel: config.LOG_INFO,
+% else:
   logLevel: config.LOG_DEBUG,
+% endif
 
 
   // enable / disable watching file and executing tests whenever any file changes
-  autoWatch: true,
+  autoWatch: false,
 
 
   // Start these browsers, currently available:
@@ -155,7 +158,7 @@ module.exports = function(config) {
 
   // Continuous Integration mode
   // if true, it capture browsers, run tests and exit
-  singleRun: false,
+  singleRun: true,
   browserConsoleLogOptions: {
     level: 'log',
     format: '%b %T: %m',
