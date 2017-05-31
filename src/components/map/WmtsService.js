@@ -129,7 +129,7 @@ goog.require('ga_urlutils_service');
               .Get[0]
               .href;
           getCapLayer.extent = getLayerExtentFromGetCap(getCapLayer,
-              new ol.proj(gaGlobalOptions.defaultEpsg));
+              ol.proj.get(gaGlobalOptions.defaultEpsg));
         }
 
         var options = {
