@@ -18,8 +18,6 @@ goog.require('ngeo.fileService');
     $scope.supportDnd = !gaBrowserSniffer.msie || gaBrowserSniffer.msie > 9;
     $scope.options = {
       urls: [
-        'http://www.basemap.at/wmts/1.0.0/WMTSCapabilities.xml',
-        'http://cidportal.jrc.ec.europa.eu/copernicus/services/tile/wmts/1.0.0/WMTSCapabilities.xml',
         'https://wms.geo.admin.ch/?lang=',
         'http://ogc.heig-vd.ch/mapserver/wms',
         'http://owsproxy.lgl-bw.de/owsproxy/ows/WMS_Maps4BW',
@@ -159,7 +157,10 @@ goog.require('ngeo.fileService');
         'http://rips-gdi.lubw.baden-wuerttemberg.de/arcgis/services/wms/UIS_0100000013600001/MapServer/WMSServer',
         'http://rips-gdi.lubw.baden-wuerttemberg.de/arcgis/services/wms/UIS_0100000013100001/MapServer/WMSServer',
         'http://rips-gdi.lubw.baden-wuerttemberg.de/arcgis/services/wms/UIS_0100000001500003/MapServer/WMSServer',
-        'http://rips-gdi.lubw.baden-wuerttemberg.de/arcgis/services/wms/UIS_0100000004200001/MapServer/WMSServer'
+        'http://rips-gdi.lubw.baden-wuerttemberg.de/arcgis/services/wms/UIS_0100000004200001/MapServer/WMSServer',
+        // WMTS servers
+        'http://www.basemap.at/wmts/1.0.0/WMTSCapabilities.xml',
+        'http://cidportal.jrc.ec.europa.eu/copernicus/services/tile/wmts/1.0.0/WMTSCapabilities.xml',
      ]
     };
 

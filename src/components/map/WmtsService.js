@@ -153,13 +153,17 @@ goog.require('ga_urlutils_service');
 
         this.getLayerOptionsFromIdentifier = function(getCapabilities,
             identifier) {
+          var options;
+
           if (getCapabilities.Contents && getCapabilities.Contents.Layer) {
             getCapabilities.Contents.Layer.forEach(function(layer) {
               if (layer.Identifier === identifier) {
-                return getLayerOptions(layer, getCapabilities);
+                options = getLayerOptions(layer, getCapabilities);
               }
             });
           }
+
+          return options;
         };
 
         this.getOlLayerFromGetCapLayer = function(getCapLayer) {
