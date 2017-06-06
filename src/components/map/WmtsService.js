@@ -118,10 +118,15 @@ goog.require('ga_urlutils_service');
           };
           getCapLayer.sourceConfig = ol.source.WMTS.optionsFromCapabilities(
               getCapabilities, layerOptions);
-          getCapLayer.attribution =
-              getCapabilities.ServiceProvider.ProviderName;
-          getCapLayer.attributionUrl =
-              getCapabilities.ServiceProvider.ProviderSite;
+          if (getCapabilities.ServiceProvider) {
+            getCapLayer.attribution =
+                getCapabilities.ServiceProvider.ProviderName;
+            getCapLayer.attributionUrl =
+                getCapabilities.ServiceProvider.ProviderSite;
+          } else {
+            getCapLayer.attribution = '';
+            getCapLayer.attributionUrl = '';
+          }
           getCapLayer.capabilitiesUrl = getCapabilities.OperationsMetadata
               .GetCapabilities
               .DCP
