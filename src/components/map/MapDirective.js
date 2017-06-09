@@ -22,7 +22,7 @@ goog.require('ga_styles_service');
         ol3d: '=gaCesiumInspectorOl3d'
       },
       link: function(scope, element, attrs) {
-        if (!angular.isDefined(gaPermalink.getParams().debug)) {
+        if (!gaPermalink.getParams().debug) {
           element[0].style['display'] = 'none';
           return;
         }
@@ -31,9 +31,6 @@ goog.require('ga_styles_service');
           if (ol3d && !inspector) {
             var scene = ol3d.getCesiumScene();
             inspector = new Cesium.CesiumInspector(element[0], scene);
-            scene.postRender.addEventListener(function() {
-              inspector.viewModel.update();
-            });
           }
         });
       }
