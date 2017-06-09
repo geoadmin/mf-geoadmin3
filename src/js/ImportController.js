@@ -1,6 +1,11 @@
 goog.provide('ga_import_controller');
 
+goog.require('ga_browsersniffer_service');
 goog.require('ga_kml_service');
+goog.require('ga_map_service');
+goog.require('ga_previewlayers_service');
+goog.require('ga_translation_service');
+goog.require('ga_urlutils_service');
 goog.require('ga_wmts_service');
 goog.require('ngeo.fileService');
 
@@ -8,7 +13,12 @@ goog.require('ngeo.fileService');
 
   var module = angular.module('ga_import_controller', [
     'ga_kml_service',
-    'ngeo.fileService'
+    'ngeo.fileService',
+    'ga_browsersniffer_service',
+    'ga_map_service',
+    'ga_urlutils_service',
+    'ga_previewlayers_service',
+    'ga_translation_service'
   ]);
 
   module.controller('GaImportController', function($scope, $q, $document,
@@ -187,7 +197,8 @@ goog.require('ngeo.fileService');
     // Transform the url before loading it.
     $scope.options.transformUrl = function(url) {
       // If the url has no file extension, try to load a WMS GetCapabilities.
-      if (!/\..+$/i.test(url)) {
+      if (!/\.(kml|kmz|xml|txt)/i.test(url) &&
+          !/\w+\/\w+\.[a-zA-Z]+$/i.test(url)) {
         // Append WMS GetCapabilities default parameters
         url = gaUrlUtils.append(url, /wmts/i.test(url) ?
             'SERVICE=WMTS&REQUEST=GetCapabilities&VERSION=1.0.0' :
@@ -208,8 +219,6 @@ goog.require('ngeo.fileService');
     // @param file<Object> Informations of the file (if available).
     $scope.options.handleFileContent = function(data, file) {
       var defer = $q.defer();
-      $scope.gpxContent = null;
-      $scope.kmlContent = null;
       $scope.wmsGetCap = null;
       $scope.wmtsGetCap = null;
       file = file || {};
@@ -249,14 +258,12 @@ goog.require('ngeo.fileService');
           message: 'upload_succeeded'
         });
       } else {
-
         $window.console.error('Unparseable content: ', data);
         defer.reject({
           message: 'parse_failed',
           reason: 'format_not_supported'
         });
       }
-      // GPX
 
       return defer.promise;
     };
