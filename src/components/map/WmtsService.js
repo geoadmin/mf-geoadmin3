@@ -118,16 +118,22 @@ goog.require('ga_urlutils_service');
           };
           getCapLayer.sourceConfig = ol.source.WMTS.optionsFromCapabilities(
               getCapabilities, layerOptions);
-          getCapLayer.attribution =
-              getCapabilities.ServiceProvider.ProviderName;
-          getCapLayer.attributionUrl =
-              getCapabilities.ServiceProvider.ProviderSite;
           getCapLayer.capabilitiesUrl = getCapabilities.OperationsMetadata
               .GetCapabilities
               .DCP
               .HTTP
               .Get[0]
               .href;
+          if (getCapabilities.ServiceProvider) {
+            getCapLayer.attribution =
+                getCapabilities.ServiceProvider.ProviderName;
+            getCapLayer.attributionUrl =
+                getCapabilities.ServiceProvider.ProviderSite;
+          } else {
+            getCapLayer.attribution =
+                gaUrlUtils.getHostname(getCapLayer.capabilitiesUrl);
+            getCapLayer.attributionUrl = getCapLayer.capabilitiesUrl;
+          }
           getCapLayer.extent = getLayerExtentFromGetCap(getCapLayer,
               ol.proj.get(gaGlobalOptions.defaultEpsg));
         }
