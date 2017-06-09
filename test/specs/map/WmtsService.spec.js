@@ -168,6 +168,30 @@ describe('ga_wmts_service', function() {
       });
     });
 
+    describe('#getGetCapabilitiesServiceProvider()', function() {
+      var getCapabilities;
+      var identifier = 'tiled95_Uebersichtsplan1978';
+
+      before(function(done) {
+        $.get('base/test/data/simple-wmts.xml', function(response) {
+          getCapabilities = new ol.format.WMTSCapabilities().read(response);
+          done();
+        });
+      });
+
+      it('returns options for the proper layer', function() {
+        // We need to set the extent of the projection
+        var defaultProjection = ol.proj.get(gaGlobalOptions.defaultEpsg);
+        defaultProjection.setExtent(gaGlobalOptions.defaultEpsgExtent);
+
+        var options = gaWmts.getLayerOptionsFromIdentifier(getCapabilities, identifier);
+        expect(options.capabilitiesUrl).to.be('http://www.gis.stadt-zuerich.ch/' +
+          'maps/rest/services/tiled95/Uebersichtsplan1978/MapServer/WMTS/1.0.0/WMTSCapabilities.xml');
+        expect(options.label).to.be('tiled95_Uebersichtsplan1978');
+        expect(options.sourceConfig.attributions[0]).to.contain('www.gis.stadt-zuerich.ch');
+        expect(options.layer).to.be(identifier);
+      });
+    });
     describe('#getLayerOptionsFromIdentifier()', function() {
       var getCapabilities;
       var identifier = 'ch.are.alpenkonvention';
