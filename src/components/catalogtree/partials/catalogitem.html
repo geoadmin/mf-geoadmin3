@@ -1,6 +1,6 @@
-<div class="ga-catalogitem-template" ng-switch="item.children">
+<div class="ga-catalogitem-template" ng-switch="!!item.children">
 
-  <div ng-switch-when="undefined" class="ga-catalogitem-leaf ga-catalogitem-entry"
+  <div ng-switch-when="false" class="ga-catalogitem-leaf ga-catalogitem-entry"
        ng-class="{'ga-catalogitem-selected': item.selectedOpen}">
     <label title="{{item.label}}" class="ga-truncate-text ga-checkbox">
       <input type="checkbox" ng-model="item.active" ng-model-options="{getterSetter: true}"/>
