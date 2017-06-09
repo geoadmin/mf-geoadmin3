@@ -368,8 +368,12 @@ goog.require('ga_urlutils_service');
             feature = new ol.Feature(geometry);
           }
 
-          // Encode a feature if it intersects with the extent
-          if (geometry.intersectsExtent(getPrintRectangleCoords())) {
+          // Encode a feature if it intersects with the extent and
+          // if the map is not rotated
+          var rotation = $scope.map.getView().getRotation();
+
+          if (geometry.intersectsExtent(getPrintRectangleCoords()) ||
+            rotation != 0.0) {
             var encFeature = format.writeFeatureObject(feature);
             if (!encFeature.properties) {
               encFeature.properties = {};
