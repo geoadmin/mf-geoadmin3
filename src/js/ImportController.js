@@ -189,7 +189,8 @@ goog.require('ngeo.fileService');
       // If the url has no file extension, try to load a WMS GetCapabilities.
       if (!/\..+$/i.test(url)) {
         // Append WMS GetCapabilities default parameters
-        url = gaUrlUtils.append(url,
+        url = gaUrlUtils.append(url, /wmts/i.test(url) ?
+            'SERVICE=WMTS&REQUEST=GetCapabilities&VERSION=1.0.0' :
             'SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0');
 
         // Use lang param only for admin.ch servers
