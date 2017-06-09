@@ -251,7 +251,8 @@ goog.require('ga_wmts_service');
                   }
                   layer.time = timestamp;
                 }
-                if (params && layer.getSource().updateParams) {
+                if (params && layer.getSource &&
+                    layer.getSource().updateParams) {
                   layer.getSource().updateParams(params);
                 }
                 map.addLayer(layer);
@@ -261,7 +262,7 @@ goog.require('ga_wmts_service');
 
               // KML layer
               var url = layerSpec.replace('KML||', '');
-              var delay = params ? parseInt(params['updateDelay']) : NaN;
+              var delay = params ? parseInt(params.updateDelay) : NaN;
               if (!isNaN(delay)) {
                 delay = (delay < 3) ? 3 : delay;
               }

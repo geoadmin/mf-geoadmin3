@@ -109,8 +109,8 @@ goog.require('ngeo.fileService');
           angular.forEach(networkLinks, function(networkLink) {
             if (gaUrlUtils.isValid(networkLink.href)) {
               all.push($http.get(networkLink.href).then(function(response) {
-                return readFeatures(response.data,
-                                    projection).then(function(newFeatures) {
+                return readFeatures(response.data, projection).then(
+                    function(newFeatures) {
                   features = features.concat(newFeatures);
                 });
               }));
