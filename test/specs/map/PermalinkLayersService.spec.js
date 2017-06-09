@@ -102,11 +102,12 @@ describe('ga_permalinklayers_service', function() {
           activatedLayers: ['foo3', 'bar3']
         };
 
-    var createManager = function(topicToLoad, layersParam, opacityParam, visParam, timeParam) {
+    var createManager = function(topicToLoad, layersParam, opacityParam, visParam, timeParam, paramsParam) {
       layersPermalink = layersParam || layersPermalink;
       layersOpacityPermalink = opacityParam || layersOpacityPermalink;
       layersVisPermalink = visParam || layersVisPermalink;
       layersTimePermalink = timeParam || layersTimePermalink;
+      layersParamsPermalink = paramsParam || layersParamsPermalink;
 
       inject(function($injector) {
         manager = $injector.get('gaPermalinkLayersManager');
@@ -169,6 +170,7 @@ describe('ga_permalinklayers_service', function() {
               layers_opacity: layersOpacityPermalink,
               layers_visibility: layersVisPermalink,
               layers_timestamp: layersTimePermalink,
+              layers_params: layersParamsPermalink,
               mobile: false
             };
             return params;
@@ -178,6 +180,7 @@ describe('ga_permalinklayers_service', function() {
             layersOpacityPermalink = params.layers_opacity || layersOpacityPermalink;
             layersVisPermalink = params.layers_visibility || layersVisPermalink;
             layersTimePermalink = params.layers_timestamp || layersTimePermalink;
+            layersParamsPermalink = params.layers_params || layersParamsPermalink;
           },
           deleteParam: function(param) {
             if (param == 'layers') {
@@ -188,6 +191,8 @@ describe('ga_permalinklayers_service', function() {
               layersVisPermalink = undefined;
             } else if (param == 'layers_timestamp') {
               layersTimePermalink = undefined;
+            } else if (param == 'layers_params') {
+              layersParamsPermalink = undefined;
             }
             delete params[param];
           }
@@ -213,6 +218,7 @@ describe('ga_permalinklayers_service', function() {
       layersOpacityPermalink = undefined;
       layersVisPermalink = undefined;
       layersTimePermalink = undefined;
+      layersParamsPermalink = undefined;
       topic = undefined;
     });
 
@@ -228,11 +234,12 @@ describe('ga_permalinklayers_service', function() {
 
       it('an external KML layer', function() {
         var id = 'KML||http://foo.ch/bar.kml';
-        createManager(topicLoaded, id, '0.3', 'false');
+        createManager(topicLoaded, id, '0.3', 'false', undefined, 'updateDelay=3');
         expect(map.getLayers().getLength()).to.be(1);
         expect(permalink.getParams().layers).to.be(id);
         expect(permalink.getParams().layers_opacity).to.be('0.3');
         expect(permalink.getParams().layers_visibility).to.be('false');
+        expect(permalink.getParams().layers_params).to.be('updateDelay=3');
       });
 
       it('an external WMS layer', function() {

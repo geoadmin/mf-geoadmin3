@@ -10,28 +10,48 @@ goog.require('ga_map_service');
 
   module.provider('gaRealtimeLayersManager', function() {
     this.$get = function($rootScope, $http, $timeout, gaLayerFilters,
-        gaMapUtils, gaUrlUtils, gaLayers) {
+        gaMapUtils, gaUrlUtils, gaLayers, gaKml) {
 
       var timers = [];
+      var map;
       var realTimeLayersId = [];
       var geojsonFormat = new ol.format.GeoJSON();
 
+      var handleTimer = function(layer, data) {
+        if (!layer.preview) {
+          var layerIdIndex = realTimeLayersId.indexOf(layer.bodId);
+          timers[layerIdIndex] = setLayerUpdateInterval(layer);
+          if (data && data.timestamp) {
+            $rootScope.$broadcast('gaNewLayerTimestamp', data.timestamp);
+          }
+        }
+      };
+
       function setLayerSource(layer) {
         var olSource = layer.getSource();
-        gaUrlUtils.proxifyUrl(layer.geojsonUrl).then(function(proxyUrl) {
+        var kml = (layer.type == 'KML');
+        var url = !kml ? layer.geojsonUrl : layer.url;
+        gaUrlUtils.proxifyUrl(url).then(function(proxyUrl) {
           $http.get(proxyUrl).then(function(response) {
             var data = response.data;
-            olSource.clear();
-            olSource.addFeatures(
-              geojsonFormat.readFeatures(data)
-            );
-            if (!layer.preview) {
-              var layerIdIndex = realTimeLayersId.indexOf(layer.bodId);
-              timers[layerIdIndex] = setLayerUpdateInterval(layer);
-              if (data.timestamp) {
-                $rootScope.$broadcast('gaNewLayerTimestamp', data.timestamp);
-              }
+            if (kml) {
+              gaKml.readFeatures(data,
+                      map.getView().getProjection()).then(function(features) {
+                olSource.clear();
+                olSource.addFeatures(features);
+                olSource.setProperties({
+                  'kmlString': data
+                });
+              });
+            } else {
+              olSource.clear();
+              olSource.addFeatures(
+                geojsonFormat.readFeatures(data)
+              );
             }
+            handleTimer(layer, data);
+          }, function() {
+            handleTimer(layer);
           });
         });
       }
@@ -44,7 +64,8 @@ goog.require('ga_map_service');
         }, layer.updateDelay);
       }
 
-      return function(map) {
+      return function(inMap) {
+        map = inMap;
         var scope = $rootScope.$new();
         scope.layers = map.getLayers().getArray();
         scope.layerFilter = gaLayerFilters.realtime;
@@ -54,10 +75,10 @@ goog.require('ga_map_service');
 
           // Layer Removed
           oldLayers.forEach(function(oldLayer) {
-            var bodId = oldLayer.bodId;
-            var oldLayerIdIndex = realTimeLayersId.indexOf(bodId);
+            var realTimeId = oldLayer.bodId || oldLayer.id;
+            var oldLayerIdIndex = realTimeLayersId.indexOf(realTimeId);
             if (oldLayerIdIndex != -1 &&
-                !gaMapUtils.getMapLayerForBodId(map, bodId)) {
+                !gaMapUtils.getMapLayerForBodId(map, realTimeId)) {
               realTimeLayersId.splice(oldLayerIdIndex, 1);
               $timeout.cancel(timers.splice(oldLayerIdIndex, 1)[0]);
               if (realTimeLayersId.length == 0) {
@@ -68,10 +89,10 @@ goog.require('ga_map_service');
 
           // Layer Added
           newLayers.forEach(function(newLayer) {
-            var bodId = newLayer.bodId;
-            if (realTimeLayersId.indexOf(bodId) == -1) {
+            var realTimeId = newLayer.bodId || newLayer.id;
+            if (realTimeLayersId.indexOf(realTimeId) == -1) {
               if (!newLayer.preview) {
-                realTimeLayersId.push(bodId);
+                realTimeLayersId.push(realTimeId);
               }
               setLayerSource(newLayer);
             }
@@ -84,10 +105,12 @@ goog.require('ga_map_service');
 
           realTimeLayersId.forEach(function(bodId, i) {
             var olLayer = gaMapUtils.getMapLayerForBodId(map, bodId);
-            olLayer.geojsonUrl =
-                gaLayers.getLayerProperty(olLayer.bodId, 'geojsonUrl');
-            $timeout.cancel(timers[i]);
-            setLayerSource(olLayer);
+            if (olLayer) {
+              olLayer.geojsonUrl =
+                  gaLayers.getLayerProperty(olLayer.bodId, 'geojsonUrl');
+              $timeout.cancel(timers[i]);
+              setLayerSource(olLayer);
+            }
           });
         });
       };
