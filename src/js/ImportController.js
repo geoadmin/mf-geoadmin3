@@ -138,6 +138,10 @@ goog.require('ngeo.fileService');
         'http://webdienste.zugmap.ch/Zonenplan_WMS/service.svc/get',
         'http://service.lisag.ch/wms',
         'http://wms.geoportal.ch:8080/geoserver/AVAI/wms',
+        'https://geodienste.ch/db/av/deu',
+        'https://geodienste.ch/db/av/fra',
+        'https://geodienste.ch/db/av_jahresstand/deu',
+        'https://geodienste.ch/db/av_jahresstand/fra',
          // non-SwissProjected test urls
         'http://wms.ga.admin.ch/1GE',
         'http://wms.ga.admin.ch/LG_DE_Geologie_und_Tektonik/wms',
@@ -182,7 +186,8 @@ goog.require('ngeo.fileService');
 
     // Transform the url before loading it.
     $scope.options.transformUrl = function(url) {
-      if (/(wms|service\.svc|osm|ows)/i.test(url)) {
+      // If the url has no file extension, try to load a WMS GetCapabilities.
+      if (!/\..+$/i.test(url)) {
         // Append WMS GetCapabilities default parameters
         url = gaUrlUtils.append(url,
             'SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0');
@@ -192,6 +197,7 @@ goog.require('ngeo.fileService');
           url = gaUrlUtils.append(url, 'lang=' + gaLang.get());
         }
       }
+      // Save the good url for the import component.
       $scope.getCapUrl = url;
       return gaUrlUtils.proxifyUrl(url);
     };
@@ -253,39 +259,5 @@ goog.require('ngeo.fileService');
 
       return defer.promise;
     };
-
-    // Move the typeahead menu list to the body and automatically setting css.
-    /*var executeTaMenuHack = function() {
-      var imp = $document.find('[ngeo-import-online]');
-      // Append the suggestions list to the body
-      var taMenu = imp.find('.tt-dropdown-menu');
-      if (!taMenu.length) {
-        return;
-      }
-      $($document[0].body).append(taMenu);
-      var taElt = imp.find('input[name=url]');
-      var applyCssToMenu = function() {
-        var pos = taElt.offset();
-        var width = taElt.width();
-        taMenu.css({
-          top: pos.top + 30, // + input height
-          left: pos.left,
-          width: width + 30, // + padding
-          zIndex: taElt.parents('div[ga-popup]').css('zIndex')
-        });
-
-      };
-      taElt.on('focus', function() {
-        applyCssToMenu();
-      });
-      // Destroy the mnu if the scope is destroyed
-      imp.isolateScope().$on('$destroy',
-          function() {
-        if (!taMenu.length) {
-          return;
-        }
-        taMenu.remove();
-      });
-    };*/
   });
 })();
