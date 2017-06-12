@@ -180,7 +180,7 @@ describe('ga_printstyle_service', function() {
           }),
           image: new ol.style.Icon({
             scale: 0.4,
-            rotation: 34,
+            rotation: 0.593412, // In radians
             size: [15, 16],
             anchor: [0.6, 0.7],
             src: 'http://test.png'
@@ -189,7 +189,7 @@ describe('ga_printstyle_service', function() {
         var literal = gaPrintStyle.olStyleToPrintLiteral(allStyle, 96);
         expect(literal).to.eql({
           zIndex: 3,
-          rotation: 34,
+          rotation: 34.00000311241721,
           externalGraphic: 'http://test.png',
           fillOpacity: 0.1,
           graphicWidth: 5.625,

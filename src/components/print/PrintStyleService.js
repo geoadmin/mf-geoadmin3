@@ -162,7 +162,7 @@ goog.require('ga_urlutils_service');
 
       if (imageStyle) {
         var size, anchor, scale = imageStyle.getScale();
-        literal.rotation = imageStyle.getRotation();
+        literal.rotation = (imageStyle.getRotation() || 0) * 180.0 / Math.PI;
 
         if (imageStyle instanceof ol.style.Icon) {
           size = imageStyle.getSize();
