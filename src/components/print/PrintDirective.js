@@ -370,10 +370,8 @@ goog.require('ga_urlutils_service');
 
           // Encode a feature if it intersects with the extent and
           // if the map is not rotated
-          var rotation = $scope.map.getView().getRotation();
 
-          if (geometry.intersectsExtent(getPrintRectangleCoords()) ||
-            rotation != 0.0) {
+          if (geometry.intersectsExtent(getPrintRectangleCoords())) {
             var encFeature = format.writeFeatureObject(feature);
             if (!encFeature.properties) {
               encFeature.properties = {};
@@ -847,18 +845,17 @@ goog.require('ga_urlutils_service');
           displayCoords[3]]);
       var topRight = $scope.map.getCoordinateFromPixel([displayCoords[2],
           displayCoords[1]]);
+      //
+      var topLeft = $scope.map.getCoordinateFromPixel([displayCoords[0],
+          displayCoords[1]]);
+      var bottomRight = $scope.map.getCoordinateFromPixel([displayCoords[2],
+          displayCoords[3]]);
+
       // Always returns an extent [minX, minY, maxX, maxY]
-      if (bottomLeft[0] > topRight[0]) {
-        var tmp = bottomLeft[0];
-        bottomLeft[0] = topRight[0];
-        topRight[0] = tmp;
-      }
-      if (bottomLeft[1] > topRight[1]) {
-        var tmp = bottomLeft[1];
-        bottomLeft[1] = topRight[1];
-        topRight[1] = tmp;
-      }
-      return bottomLeft.concat(topRight);
+      var printPoly = new ol.geom.Polygon([[bottomLeft, topLeft, topRight,
+          bottomRight, bottomLeft]]);
+
+      return printPoly.getExtent();
     };
 
     var getPrintRectangleCenterCoord = function() {
