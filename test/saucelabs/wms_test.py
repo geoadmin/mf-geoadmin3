@@ -27,7 +27,8 @@ def runWmsTest(driver, target, is_top_browser):
     # Write URL of the chosen WMS
     input = elt.find_element_by_css_selector("[ngeo-import-online] input[name=\"url\"]")
     input.send_keys(WMS_URL)
-    # Active blur event (needed for chrome to close the suggestions list)
+    # Active blur event (first tab autocomplete the url, 2nd tab close the suggestions list)
+    input.send_keys(Keys.TAB)
     input.send_keys(Keys.TAB)
     # Watch button text
     bt = elt.find_element_by_css_selector("[ngeo-import-online] button")
