@@ -845,7 +845,6 @@ goog.require('ga_urlutils_service');
           displayCoords[3]]);
       var topRight = $scope.map.getCoordinateFromPixel([displayCoords[2],
           displayCoords[1]]);
-      //
       var topLeft = $scope.map.getCoordinateFromPixel([displayCoords[0],
           displayCoords[1]]);
       var bottomRight = $scope.map.getCoordinateFromPixel([displayCoords[2],
