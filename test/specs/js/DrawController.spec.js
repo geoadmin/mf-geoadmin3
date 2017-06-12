@@ -53,7 +53,7 @@ describe('ga_draw_controller', function() {
         });
         expect(opt.selectStyleFunction).to.be.a(Function);
       });
- 
+
       it('set scope values on gaPopupFocusChange event', function() {
         expect(scope.options.hasPopupFocus).to.be(undefined);
         $rootScope.$broadcast('gaPopupFocusChange', true);
