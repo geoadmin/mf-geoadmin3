@@ -48,11 +48,11 @@ describe('ga_drawstyle_controller', function() {
         expect(scope.feature).to.be(undefined);
         expect(scope.layer).to.be(undefined);
       });
-      
+
       it('set scope values on gaDrawStyleActive event', function() {
         $rootScope.$broadcast('gaDrawStyleActive', 'feat', 'layer', 'pixel');
         expect(scope.feature).to.be('feat');
-        expect(scope.layer).to.be('layer'); 
+        expect(scope.layer).to.be('layer');
       });
     });
   });

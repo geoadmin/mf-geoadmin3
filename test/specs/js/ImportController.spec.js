@@ -2,7 +2,7 @@ describe('ga_import_controller', function() {
 
   describe('GaImportController', function() {
 
-    var scope, parentScope, $compile, $rootScope, $window, $q, $document, $timeout, $httpBackend,
+    var scope, parentScope, $compile, $rootScope, $httpBackend, $window, $q, $document, $timeout, $httpBackend,
         ngeoFile, gaKml, gaBrowserSniffer, gaWms, gaUrlUtils, gaLang, gaPreviewLayers,
         gaMapUtils, gaWmts, map;
 
@@ -20,6 +20,7 @@ describe('ga_import_controller', function() {
       $compile = $injector.get('$compile');
       $rootScope = $injector.get('$rootScope');
       $window = $injector.get('$window');
+      $httpBackend = $injector.get('$httpBackend');
       $document = $injector.get('$document');
       $timeout = $injector.get('$timeout');
       ngeoFile = $injector.get('ngeoFile');
@@ -35,6 +36,12 @@ describe('ga_import_controller', function() {
 
     beforeEach(function() {
       map = new ol.Map({});
+    });
+
+    afterEach(function() {
+      $httpBackend.verifyNoOutstandingExpectation();
+      $httpBackend.verifyNoOutstandingRequest();
+      $timeout.verifyNoPendingTasks();
     });
 
     describe('on ie 9', function() {

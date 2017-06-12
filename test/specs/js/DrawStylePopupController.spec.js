@@ -36,9 +36,9 @@ describe('ga_drawstylepopup_controller', function() {
         expect(opt.y).to.be(undefined);
         expect(scope.toggle).to.be(undefined);
       });
-      
+
       it('set scope values on gaDrawStyleActive event', function() {
-        $rootScope.$broadcast('gaDrawStyleActive', 'feat', 'layer', [1,1]);
+        $rootScope.$broadcast('gaDrawStyleActive', 'feat', 'layer', [1, 1]);
         expect(scope.toggle).to.be(true);
         expect(scope.options.isReduced).to.be(false);
         expect(scope.options.x).to.be(1);
