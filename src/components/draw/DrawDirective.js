@@ -801,8 +801,17 @@ goog.require('ga_styles_service');
                 selectableFeat = feature;
                 hoverSelectableFeature = true;
               } else if (select.getFeatures().getLength() > 0) {
-                newVertexFeat = feature;
-                hoverNewVertex = true;
+                if (selectableFeat &&
+                    select.getFeatures().item(0).getId() == feature.getId()) {
+                  // In case a vertex is snapped on a selected feature we give
+                  // priority to the feature selected.
+                  selectableFeat = feature;
+                }
+                if (!feature.getId()) {
+                  // Sketch feature have no id.
+                  newVertexFeat = feature;
+                  hoverNewVertex = true;
+                }
               }
             }, {
               layerFilter: function(itemLayer) {
