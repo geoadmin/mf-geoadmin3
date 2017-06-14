@@ -173,7 +173,6 @@ goog.require('ngeo.fileService');
         'http://rips-gdi.lubw.baden-wuerttemberg.de/arcgis/services/wms/UIS_0100000001500003/MapServer/WMSServer',
         'http://rips-gdi.lubw.baden-wuerttemberg.de/arcgis/services/wms/UIS_0100000004200001/MapServer/WMSServer',
         // WMTS servers
-        'https://ows.asitvd.ch/wmts/1.0.0/WMTSCapabilities.xml',
         'http://www.basemap.at/wmts/1.0.0/WMTSCapabilities.xml',
         'http://cidportal.jrc.ec.europa.eu/copernicus/services/tile/wmts/1.0.0/WMTSCapabilities.xml'
      ]
