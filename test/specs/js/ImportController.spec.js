@@ -41,6 +41,13 @@ describe('ga_import_controller', function() {
     afterEach(function() {
       $httpBackend.verifyNoOutstandingExpectation();
       $httpBackend.verifyNoOutstandingRequest();
+      // be sure to flush all timeout, in particular the one from cursor
+      // service.
+      try {
+        $timeout.verifyNoPendingTasks();
+      } catch(e) {
+        $timeout.flush();
+      }
       $timeout.verifyNoPendingTasks();
     });
 
