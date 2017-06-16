@@ -272,42 +272,39 @@ goog.require('ga_urlutils_service');
           return enc;
         },
 
+        'matrixIds': function(tilegrid, extent) {
+          var matrixIds = [];
+          var ids = tilegrid.getMatrixIds();
+          var resolutions = tilegrid.getResolutions();
+          var defaultExtent = gaMapUtils.defaultExtent;
+          angular.forEach(resolutions, function(value, key) {
+            var resolution = parseFloat(value);
+            var z = tilegrid.getZForResolution(resolution);
+            var tileSize = tilegrid.getTileSize(z);
+            var topLeftCorner = tilegrid.getOrigin(z);
+            var minX = topLeftCorner[0];
+            var maxY = topLeftCorner[1];
+            var maxX = extent[2] || defaultExtent[2];
+            var minY = extent[1] || defaultExtent[1];
+            var topLeftTile = tilegrid
+                .getTileCoordForCoordAndZ([minX, maxY], z);
+            var bottomRightTile = tilegrid
+                .getTileCoordForCoordAndZ([maxX, minY], z);
+            var tileWidth = 1 + bottomRightTile[1] - topLeftTile[1];
+            var tileHeight = 1 + topLeftTile[2] - bottomRightTile[2];
+            var matrix = {
+              identifier: ids[key],
+              resolution: resolution,
+              topLeftCorner: tilegrid.getOrigin(z),
+              tileSize: [tileSize, tileSize],
+              matrixSize: [tileWidth, tileHeight]
+            };
+            this.push(matrix);
 
-          'matrixIds': function(tilegrid) {
-              var matrixIds = [];
-              var ids = tilegrid.getMatrixIds();
-              var resolutions = tilegrid.getResolutions();
-              angular.forEach(resolutions, function(value, key) {
-                  var resolution = parseFloat(value);
-                  var z = tilegrid.getZForResolution(resolution);
-                  var tileSize = tilegrid.getTileSize(z);
-                  var topLeftCorner = tilegrid.getOrigin(z);
-                  var minX = topLeftCorner[0];
-                  var maxY = topLeftCorner[1];
-                  var maxX = 900000;
-                  var minY = 50000;
-                  var topLeftTile = tilegrid
-                    .getTileCoordForCoordAndZ([minX, maxY], z);
-                  var bottomRightTile = tilegrid
-                      .getTileCoordForCoordAndZ([maxX, minY], z);
-                  var tileWidth = 1 + bottomRightTile[1] - topLeftTile[1];
-                  var tileHeight = 1 + topLeftTile[2] - bottomRightTile[2];
-                  //var tileGridSize =  tilegrid.getTileSize(z);
-                  //var tileWidth = tileGridSize[0];
-                  //var tileHeight = tileGridSize[1];
-                  var matrix = {
-                      identifier: ids[key],
-                      resolution: resolution,
-                      topLeftCorner: tilegrid.getOrigin(z),
-                      tileSize: [tileSize, tileSize],
-                      matrixSize: [tileWidth, tileHeight]
-                  };
-                    this.push(matrix);
+          }, matrixIds);
 
-              }, matrixIds);
-
-              return matrixIds;
-         },
+          return matrixIds;
+        },
         // Dimensions
         'dimensions': function(dimensions) {
           var params = {};
@@ -319,65 +316,102 @@ goog.require('ga_urlutils_service');
           return params;
         },
 
-        // config is not defined for external WMTS
         'WMTS': function(layer, config) {
+
+          // config is not defined for external WMTS
+          // For internal WMTS layer, we use the simplified
+          // mapfish print protocol, and the standard for
+          // external WMTS layers.
+          // See http://www.mapfish.org/doc/print/protocol.html#wmts
+
+          var isExternalWmts = angular.equals(config, {});
+
           var enc = $scope.encoders.layers['Layer'].call(this, layer);
           var source = layer.getSource();
           var tileGrid = source.getTileGrid();
-          var matrixIds = $scope.encoders.layers['matrixIds']
-            .call(this, tileGrid);
+
           var requestEncoding = source.getRequestEncoding() || 'REST';
-          var wmts_dimensions = $scope.encoders.layers['dimensions']
-            .call(this, source.getDimensions());
-          if (!config.background && layer.visible && config.timeEnabled) {
-            if (!layer.time) {
-              return;
+
+          if (!isExternalWmts) {
+            if (!config.background && layer.visible && config.timeEnabled) {
+              if (!layer.time) {
+                return;
+              }
+              layersYears.push(layer.time);
             }
-            layersYears.push(layer.time);
-          }
-          var baseUrl = source.getUrls()[0];
-          if (baseUrl.indexOf('//') == 0) {
-                  baseUrl = 'http:' + baseUrl;
-          }
-          if (requestEncoding == 'REST') {
 
-            baseUrl = baseUrl
-              .replace(/\{Time\}/i, '{TIME}')
-              .replace(/\{/g, '%7B')
-              .replace(/\}/g, '%7D')
-              .replace(/wmts\d{1,3}\.geo\.admin\.ch/, 'wmts.geo.admin.ch');
-          }
-
-          angular.extend(enc, {
-            type: 'WMTS',
-            baseURL: baseUrl, //  || location.protocol + '//wmts.geo.admin.ch',
-            layer: config.serverLayerName || source.getLayer(),
-            maxExtent: layer.getExtent(),
-            //tileOrigin: tileGrid.getOrigin(0),
-            //tileSize: tileGrid.getTileSize(),
-            //resolutions: tileGrid.getResolutions(),
-            zoomOffset: tileGrid.getMinZoom(),
-            version: source.getVersion() || '1.0.0',
-            requestEncoding: requestEncoding,
-            formatSuffix: config.format ||
-                source.getFormat().replace('image/', ''),
-            style: source.getStyle() || 'default',
-            dimensions: Object.keys(wmts_dimensions), //['TIME'],
-            params: wmts_dimensions, //{'TIME': source.getDimensions().Time},
-            matrixSet: source.getMatrixSet() || '21781',
-            matrixIds: matrixIds
-          });
-          var multiPagesPrint = false;
-          if (config.timestamps) {
-            multiPagesPrint = !config.timestamps.some(function(ts) {
-              return ts == '99991231';
+            angular.extend(enc, {
+              type: 'WMTS',
+              baseURL: location.protocol + '//wmts.geo.admin.ch',
+              layer: config.serverLayerName,
+              maxExtent: layer.getExtent(),
+              tileOrigin: tileGrid.getOrigin(),
+              tileSize: [tileGrid.getTileSize(), tileGrid.getTileSize()],
+              resolutions: tileGrid.getResolutions(),
+              zoomOffset: tileGrid.getMinZoom(),
+              version: '1.0.0',
+              requestEncoding: 'REST',
+              formatSuffix: config.format || 'jpeg',
+              style: 'default',
+              dimensions: ['TIME'],
+              params: {'TIME': source.getDimensions().Time},
+              matrixSet: '21781'
             });
-          }
-          // printing time series
-          if (config.timeEnabled && gaTime.get() == undefined &&
-              multiPagesPrint) {
-            enc['timestamps'] = config.timestamps;
-          }
+
+            var multiPagesPrint = false;
+            if (config.timestamps) {
+              multiPagesPrint = !config.timestamps.some(function(ts) {
+                return ts == '99991231';
+              });
+            }
+            // printing time series
+            if (config.timeEnabled && gaTime.get() == undefined &&
+                multiPagesPrint) {
+              enc['timestamps'] = config.timestamps;
+            }
+
+
+          } else {
+          // use the full monty WMTS definition fo external source
+
+            var extent = layer.getExtent();
+
+             var matrixIds = $scope.encoders.layers['matrixIds']
+                .call(this, tileGrid, extent);
+
+            var wmts_dimensions = $scope.encoders.layers['dimensions']
+                .call(this, source.getDimensions());
+
+            // resourceURL for RESTful, service endpoint for KVP
+            var url = source.getUrls()[0];
+            var baseUrl = url.replace(/^\/\//, 'https://');
+
+            if (requestEncoding == 'REST') {
+              baseUrl = baseUrl
+                .replace(/\{Time\}/i, '{TIME}')
+                .replace(/\{/g, '%7B')
+                .replace(/\}/g, '%7D')
+                .replace(/wmts\d{1,3}\.geo\.admin\.ch/, 'wmts.geo.admin.ch');
+            }
+
+            angular.extend(enc, {
+              type: 'WMTS',
+              baseURL: baseUrl,
+              layer: config.serverLayerName || source.getLayer(),
+              maxExtent: layer.getExtent(),
+              zoomOffset: tileGrid.getMinZoom(),
+              version: source.getVersion() || '1.0.0',
+              requestEncoding: requestEncoding,
+              formatSuffix: config.format ||
+                  source.getFormat().replace('image/', ''),
+              style: source.getStyle() || 'default',
+              dimensions: Object.keys(wmts_dimensions),
+              params: wmts_dimensions,
+              matrixSet: source.getMatrixSet() || '21781',
+              matrixIds: matrixIds
+            });
+           }
+
 
           return enc;
         }
