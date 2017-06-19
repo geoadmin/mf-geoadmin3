@@ -100,7 +100,6 @@ describe('ga_import_controller', function() {
 
       it('set scope values', function() {
         expect(scope.supportDnd).to.be(true);
-        expect(scope.options.urls.length).to.be(145);
         expect(scope.options.urls[0]).to.be('https://wms.geo.admin.ch/?lang=');
         expect(scope.options.isValidUrl).to.be(gaUrlUtils.isValid);
         expect(scope.options.getOlLayerFromGetCapLayer).to.be.a(Function);
