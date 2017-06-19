@@ -343,9 +343,28 @@ goog.require('ga_measure_service');
         return styles;
       };
 
+      var labelsStyleFunction = function(feature, resolution) {
+        var style = new ol.style.Style({
+          zIndex: 100,
+          text: new ol.style.Text({
+            text: feature.get('name'),
+            textAlign: 'center',
+            textBaseline: 'alphabetic',
+            font: '12px arial',
+            fill: new ol.style.Fill(),
+            stroke: new ol.style.Stroke({
+              color: 'white',
+              width: 3
+            })
+          })
+        });
+        return [style];
+      };
+
       var stylesFunction = {
         'geolocation': geolocationStyleFunction,
-        'measure': measureStyleFunction
+        'measure': measureStyleFunction,
+        'labels': labelsStyleFunction
       };
 
       return {

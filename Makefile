@@ -578,7 +578,9 @@ prd/lib/: src/lib/d3.min.js \
 	    src/lib/IE9Fixes.js \
 	    src/lib/jquery.xdomainrequest.min.js \
 	    src/lib/Cesium.min.js \
-	    src/lib/olcesium.js
+	    src/lib/olcesium.js \
+	    src/lib/olms.js
+
 	mkdir -p $@
 	cp -rf  $^ $@
 
@@ -607,6 +609,7 @@ prd/lib/build.js: src/lib/polyfill.min.js \
 	    src/lib/EPSG32631.js \
 	    src/lib/EPSG32632.js \
 	    src/lib/olcesium.js \
+	    src/lib/olms.js \
 	    src/lib/angular-translate.min.js \
 	    src/lib/angular-translate-loader-static-files.min.js \
 	    src/lib/fastclick.min.js \
@@ -848,6 +851,7 @@ libs:
 	    --jscomp_error checkVars \
 	    --externs externs/ol.js \
 	    --externs externs/olcesium.js \
+	    --externs externs/olms.js \
 	    --externs externs/Cesium.externs.js \
 	    --externs externs/slip.js \
 	    --externs externs/angular.js \
