@@ -128,7 +128,7 @@ describe('ga_background_service', function() {
         it('initializes the list of background layers', function(done) {
           gaBg.init(map).then(function() {
             var bgs = gaBg.getBackgrounds();
-            expect(bgs.length).to.equal(3);
+            expect(bgs.length).to.equal(4);
             expect(bgs[0].id).to.equal('bg2');
             expect(bgs[0].label).to.equal('label');
             expect(bgs[1].id).to.equal('bg1');
@@ -223,17 +223,17 @@ describe('ga_background_service', function() {
           gaBg.init(map).then(function() {
             var layers = map.getLayers();
             expect(gaBg.get().id).to.equal('bg1');
-            expect(gaBg.getBackgrounds().length).to.equal(3);
+            expect(gaBg.getBackgrounds().length).to.equal(4);
             expect(layers.getLength()).to.equal(1);
 
             $rootScope.$broadcast('gaTopicChange', topic2);
             expect(gaBg.get().id).to.equal('bg3');
-            expect(gaBg.getBackgrounds().length).to.equal(4);
+            expect(gaBg.getBackgrounds().length).to.equal(5);
             expect(layers.getLength()).to.equal(1);
 
             $rootScope.$broadcast('gaTopicChange', topicVoidLayer);
             expect(gaBg.get().id).to.equal('voidLayer');
-            expect(gaBg.getBackgrounds().length).to.equal(4);
+            expect(gaBg.getBackgrounds().length).to.equal(5);
             expect(layers.getLength()).to.equal(0);
 
             done();

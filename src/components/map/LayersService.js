@@ -274,6 +274,57 @@ goog.require('ga_urlutils_service');
                   response.data[data.config3d].config2d = l;
                 }
               }
+
+              // VectorTile
+              var tk = '?access_token=pk.eyJ1IjoidmliMmQiLCJhIjoiY2l5eTlqcG' +
+                  'toMDAwZzJ3cG56emF6YmRoOCJ9.lP3KfJVHrUHp7DXIQrZYMw';
+              var vts = [{
+                serverLayerName: 'SWISSNAMES-LV03-mbtiles',
+                styleUrl: 'https://api.mapbox.com/styles/v1/vib2d/' +
+                    'cj168d2g500482rqm988ycycc' + tk,
+                styleSource: 'composite',
+                tilePixelRatio: 4,
+                tileSize: 1024
+              }, {
+                serverLayerName: 'SLBM-LV03-mbtiles',
+                // styleUrl: 'https://api.mapbox.com/styles/v1/vib2d/' +
+                //    'cj2btdr0d00532ro5ix21uls4' + tk,
+                styleUrl: 'https://tileserver.dev.bgdi.ch/styles/' +
+                    'superlightbasemap.json',
+                styleSource: 'lightbasemap',
+                tilePixelRatio: 4,
+                tileSize: 1024
+              }];
+              vts.forEach(function(vt, idx) {
+                response.data[vt.serverLayerName] = {
+                  type: 'vectortile',
+                  serverLayerName: vt.serverLayerName,
+                  url: 'https://tileserver.dev.bgdi.ch/data/' +
+                      vt.serverLayerName + '/{z}/{x}/{y}.pbf',
+                  styleUrl: vt.styleUrl,
+                  styleSource: vt.styleSource,
+                  tilePixelRatio: vt.tilePixelRatio,
+                  tileSize: vt.tileSize
+                };
+              });
+
+              // LBM with relief
+              var relief = 'ch.swisstopo.swissalti3d-reliefschattierung';
+              if (response.data[relief]) {
+                response.data[relief + '-custom'] = response.data[relief];
+                response.data[relief + '-custom'].opacity = 0.1;
+                response.data['lbm'] = {
+                  background: true,
+                  serverLayerName: 'lbm',
+                  label: 'light map',
+                  subLayersIds: [
+                    relief + '-custom',
+                    'SLBM-LV03-mbtiles'
+                  ],
+                  type: 'aggregate'
+                };
+              }
+
             }
 
             if (!layers) { // First load
@@ -639,7 +690,38 @@ goog.require('ga_urlutils_service');
                     return olStyleForVector;
                   });
                 });
+          } else if (config.type === 'vectortile') {
+            olLayer = new ol.layer.VectorTile({
+              source: new ol.source.VectorTile({
+                format: new ol.format.MVT(),
+                tileGrid: ol.tilegrid.createXYZ({
+                  tileSize: config.tileSize || 4096
+                }),
+                tilePixelRatio: config.tilePixelRatio || 16,
+                url: config.url || getVectorTilesUrl(config.serverLayerName,
+                    timestamp, vectorTilesSubdomains)
+              })
+            });
+            if (config.styleUrl) {
+              $http.get(config.styleUrl, {
+                cache: true
+              }).then(function(response) {
+                var data = response.data;
+                // Sprit url are not managed correctly by olms
+                data.sprite = null;
+                data.layers.forEach(function(l) {
+                  if (l['source-layer'] === 'swissnames') {
+                    l['source-layer'] = 'swissnames-lv03';
+                  }
+                  if (l['source-layer'] === 'superlightbasemap-layer') {
+                    l['source-layer'] = 'superlightbasemap-lv03-layer';
+                  }
+                });
+                olms.applyStyle(olLayer, data, config.styleSource);
+              });
+            }
           }
+
           if (angular.isDefined(olLayer)) {
             gaDefinePropertiesForLayer(olLayer);
             olLayer.bodId = bodId;
