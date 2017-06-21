@@ -397,13 +397,12 @@ goog.require('ga_urlutils_service');
             angular.extend(enc, {
               type: 'WMTS',
               baseURL: baseUrl,
-              layer: config.serverLayerName || source.getLayer(),
+              layer: source.getLayer(),
               maxExtent: layer.getExtent(),
               zoomOffset: tileGrid.getMinZoom(),
               version: source.getVersion() || '1.0.0',
               requestEncoding: requestEncoding,
-              formatSuffix: config.format ||
-                  source.getFormat().replace('image/', ''),
+              formatSuffix: source.getFormat().replace('image/', ''),
               style: source.getStyle() || 'default',
               dimensions: Object.keys(wmts_dimensions),
               params: wmts_dimensions,
