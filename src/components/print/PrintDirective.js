@@ -546,6 +546,12 @@ goog.require('ga_urlutils_service');
                     getPrintRectangleCoords())) {
           return;
         }
+        // layer not having the same projection as the map, won't be printed
+        // TODO: issue a warning for the user
+        if (layer.getSource().getProjection().getCode() !=
+            view.getProjection().getCode()) {
+          return;
+        }
 
         // Encode layers
         var encs;
