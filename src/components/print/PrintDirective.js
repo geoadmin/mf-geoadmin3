@@ -541,6 +541,11 @@ goog.require('ga_urlutils_service');
         if (!layer.visible || layer.opacity == 0) {
           return;
         }
+        // Only print layer which have an extent intersecting the print extent
+        if (!ol.extent.intersects(layer.getExtent() || [],
+                    getPrintRectangleCoords())) {
+          return;
+        }
 
         // Encode layers
         var encs;
