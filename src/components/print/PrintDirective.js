@@ -329,90 +329,80 @@ goog.require('ga_urlutils_service');
           var enc = $scope.encoders.layers['Layer'].call(this, layer);
           var source = layer.getSource();
           var tileGrid = source.getTileGrid();
+          var extent = layer.getExtent();
 
           var requestEncoding = source.getRequestEncoding() || 'REST';
 
-          if (!isExternalWmts) {
-            if (!config.background && layer.visible && config.timeEnabled) {
-              if (!layer.time) {
-                return;
-              }
-              layersYears.push(layer.time);
+          if (!config.background && layer.visible && config.timeEnabled) {
+            if (!layer.time) {
+              return;
             }
+            layersYears.push(layer.time);
+          }
 
-            angular.extend(enc, {
-              type: 'WMTS',
-              baseURL: location.protocol + '//wmts.geo.admin.ch',
-              layer: config.serverLayerName,
-              maxExtent: layer.getExtent(),
-              tileOrigin: tileGrid.getOrigin(),
-              tileSize: [tileGrid.getTileSize(), tileGrid.getTileSize()],
-              resolutions: tileGrid.getResolutions(),
-              zoomOffset: tileGrid.getMinZoom(),
-              version: '1.0.0',
-              requestEncoding: 'REST',
-              formatSuffix: config.format || 'jpeg',
-              style: 'default',
-              dimensions: ['TIME'],
-              params: {'TIME': source.getDimensions().Time},
-              matrixSet: '21781'
-            });
+          // resourceURL for RESTful, service endpoint for KVP
+          var url = source.getUrls()[0];
+          var baseUrl = url.replace(/^\/\//, 'https://');
 
-            var multiPagesPrint = false;
-            if (config.timestamps) {
-              multiPagesPrint = !config.timestamps.some(function(ts) {
-                return ts == '99991231';
-              });
-            }
-            // printing time series
-            if (config.timeEnabled && gaTime.get() == undefined &&
-                multiPagesPrint) {
-              enc['timestamps'] = config.timestamps;
-            }
+          if (requestEncoding == 'REST') {
+            baseUrl = baseUrl
+              .replace(/\{Time\}/i, '{TIME}')
+              .replace(/\{/g, '%7B')
+              .replace(/\}/g, '%7D')
+              .replace(/wmts\d{1,3}\.geo\.admin\.ch/, 'wmts.geo.admin.ch');
+          }
 
+          var wmts_dimensions = $scope.encoders.layers['dimensions']
+              .call(this, source.getDimensions());
+          // common config
+          angular.extend(enc, {
+            type: 'WMTS',
+            layer: source.getLayer(),
+            version: source.getVersion() || '1.0.0',
+            requestEncoding: requestEncoding,
+            formatSuffix: source.getFormat().replace('image/', ''),
+            style: source.getStyle() || 'default',
+            dimensions: Object.keys(wmts_dimensions),
+            params: wmts_dimensions,
+            matrixSet: source.getMatrixSet() || '21781'
+          });
 
-          } else {
+        if (!isExternalWmts) {
+
+          angular.extend(enc, {
+            baseURL: baseUrl.slice(0, baseUrl.indexOf('/1.0.0')),
+            zoomOffset: tileGrid.getMinZoom(),
+            tileOrigin: tileGrid.getOrigin(),
+            tileSize: [tileGrid.getTileSize(), tileGrid.getTileSize()],
+            resolutions: tileGrid.getResolutions(),
+            maxExtent: extent
+           });
+
+        } else {
           // use the full monty WMTS definition fo external source
+          var matrixIds = $scope.encoders.layers['matrixIds']
+              .call(this, tileGrid, extent);
 
-            var extent = layer.getExtent();
+          angular.extend(enc, {
+            layer: source.getLayer(),
+            baseURL: baseUrl,
+            matrixIds: matrixIds
+          });
+        }
 
-             var matrixIds = $scope.encoders.layers['matrixIds']
-                .call(this, tileGrid, extent);
+        var multiPagesPrint = false;
+          if (config.timestamps) {
+            multiPagesPrint = !config.timestamps.some(function(ts) {
+              return ts == '99991231';
+          });
+        }
+        // printing time series
+        if (config.timeEnabled && gaTime.get() == undefined &&
+             multiPagesPrint) {
+           enc['timestamps'] = config.timestamps;
+        }
 
-            var wmts_dimensions = $scope.encoders.layers['dimensions']
-                .call(this, source.getDimensions());
-
-            // resourceURL for RESTful, service endpoint for KVP
-            var url = source.getUrls()[0];
-            var baseUrl = url.replace(/^\/\//, 'https://');
-
-            if (requestEncoding == 'REST') {
-              baseUrl = baseUrl
-                .replace(/\{Time\}/i, '{TIME}')
-                .replace(/\{/g, '%7B')
-                .replace(/\}/g, '%7D')
-                .replace(/wmts\d{1,3}\.geo\.admin\.ch/, 'wmts.geo.admin.ch');
-            }
-
-            angular.extend(enc, {
-              type: 'WMTS',
-              baseURL: baseUrl,
-              layer: source.getLayer(),
-              maxExtent: layer.getExtent(),
-              zoomOffset: tileGrid.getMinZoom(),
-              version: source.getVersion() || '1.0.0',
-              requestEncoding: requestEncoding,
-              formatSuffix: source.getFormat().replace('image/', ''),
-              style: source.getStyle() || 'default',
-              dimensions: Object.keys(wmts_dimensions),
-              params: wmts_dimensions,
-              matrixSet: source.getMatrixSet() || '21781',
-              matrixIds: matrixIds
-            });
-           }
-
-
-          return enc;
+        return enc;
         }
       },
       'features': {
