@@ -541,6 +541,17 @@ goog.require('ga_urlutils_service');
         if (!layer.visible || layer.opacity == 0) {
           return;
         }
+        // Only print layer which have an extent intersecting the print extent
+        if (!ol.extent.intersects(layer.getExtent() || [],
+            getPrintRectangleCoords())) {
+          return;
+        }
+        // layer not having the same projection as the map, won't be printed
+        // TODO: issue a warning for the user
+        if (layer.getSource().getProjection().getCode() !=
+            view.getProjection().getCode()) {
+          return;
+        }
 
         // Encode layers
         var encs;
