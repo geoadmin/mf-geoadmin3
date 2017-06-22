@@ -543,7 +543,7 @@ goog.require('ga_urlutils_service');
         }
         // Only print layer which have an extent intersecting the print extent
         if (!ol.extent.intersects(layer.getExtent() || [],
-                    getPrintRectangleCoords())) {
+            getPrintRectangleCoords())) {
           return;
         }
         // layer not having the same projection as the map, won't be printed
