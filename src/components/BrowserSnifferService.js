@@ -108,6 +108,30 @@ goog.require('ga_permalink');
         isBlobSupported = !!new Blob;
       } catch (e) {
       }
+
+      // detect http2 support
+      var h2 = false;
+      // Firefox
+      // https://developer.mozilla.org/en-US/docs/Web/API/PerformanceResourceTiming/nextHopProtocol
+      if (!msie && /Firefox/.test(ua) && $window.performance &&
+          $window.performance.getEntriesByType) {
+        var perf = $window.performance.getEntriesByType('resource');
+        if (perf[0] && perf[0].nextHopProtocol == 'h2') {
+          h2 = true;
+        }
+      // Chrome
+      // http://stackoverflow.com/questions/36041204/detect-connection-protocol-http-2-spdy-from-javascript
+      } else if (chrome && $window.chrome && $window.chrome.loadTimes) {
+        if ($window.chrome.loadTimes().connectionInfo == 'h2') {
+          h2 = true;
+        }
+      // Generic
+      // http://stackoverflow.com/questions/36041204/detect-connection-protocol-http-2-spdy-from-javascript
+      } else if ($window.performance && $window.performance.timing) {
+        if ($window.performance.timing.nextHopProtocol == 'h2') {
+          h2 = true;
+        }
+      }
       return {
         msie: msie, // false or ie version number
         webkit: webkit,
@@ -124,7 +148,8 @@ goog.require('ga_permalink');
         isInFrame: ($window.location != $window.parent.location),
         webgl: !(typeof WebGLRenderingContext === 'undefined'),
         animation: (!msie || msie > 9),
-        blob: isBlobSupported
+        blob: isBlobSupported,
+        h2: h2
       };
     };
   });
