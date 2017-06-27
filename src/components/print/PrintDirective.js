@@ -640,10 +640,11 @@ goog.require('ga_urlutils_service');
         }
         // layer not having the same projection as the map, won't be printed
         // TODO: issue a warning for the user
-        if (!(layer instanceof ol.layer.Group) &&
-            layer.getSource().getProjection().getCode() !=
-            view.getProjection().getCode()) {
-          return;
+        if (layer.getSource && layer.getSource().getProjection()) {
+            var proj = layer.getSource().getProjection().getCode();
+            if (proj == null || proj != view.getProjection().getCode()) {
+                return;
+            }
         }
 
         // Encode layers
