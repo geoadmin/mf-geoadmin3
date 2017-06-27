@@ -634,13 +634,14 @@ goog.require('ga_urlutils_service');
           return;
         }
         // Only print layer which have an extent intersecting the print extent
-        if (!ol.extent.intersects(layer.getExtent() || [],
+        if (!ol.extent.intersects(layer.getExtent() || gaMapUtils.defaultExtent,
             getPrintRectangleCoords())) {
           return;
         }
         // layer not having the same projection as the map, won't be printed
         // TODO: issue a warning for the user
-        if (layer.getSource().getProjection().getCode() !=
+        if (!(layer instanceof ol.layer.Group) &&
+            layer.getSource().getProjection().getCode() !=
             view.getProjection().getCode()) {
           return;
         }
