@@ -835,6 +835,8 @@ goog.require('ga_urlutils_service');
                 // timeEnabled see:
                 // https://github.com/geoadmin/mf-geoadmin3/issues/3491
                 cacheSize: layer.timeEnabled ? 0 : 2048,
+                layer: layer.serverLayerName,
+                format: layer.format,
                 projection: gaGlobalOptions.defaultEpsg,
                 requestEncoding: 'REST',
                 tileGrid: gaTileGrid.get(layer.resolutions,
