@@ -1,12 +1,12 @@
-describe('ga_drawstylepopup_controller', function() {
+describe('ga_profilepopup_controller', function() {7;
 
-  describe('GaDrawStylePopupController', function() {
+  describe('GaProfilePopupController', function() {
 
     var scope, parentScope, $compile, $rootScope, $timeout, $httpBackend;
 
     var loadController = function() {
       parentScope = $rootScope.$new();
-      var tpl = '<div ng-controller="GaDrawStylePopupController"></div>';
+      var tpl = '<div ng-controller="GaProfilePopupController"></div>';
       elt = $compile(tpl)(parentScope);
       $rootScope.$digest();
       scope = elt.scope();
@@ -17,8 +17,6 @@ describe('ga_drawstylepopup_controller', function() {
       $rootScope = $injector.get('$rootScope');
       $timeout = $injector.get('$timeout');
       $httpBackend = $injector.get('$httpBackend');
-      $translate = $injector.get('$translate');
-      gaStyleFactory = $injector.get('gaStyleFactory');
     };
 
     afterEach(function() {
@@ -31,7 +29,7 @@ describe('ga_drawstylepopup_controller', function() {
       }
     });
 
-    describe('using default options', function() {
+    describe('on modern browser', function() {
 
       beforeEach(function() {
         inject(function($injector) {
@@ -40,21 +38,33 @@ describe('ga_drawstylepopup_controller', function() {
         loadController();
       });
 
-      it('set scope values', function() {
-        var opt = scope.options;
-        expect(opt.title).to.be('draw_popup_title_feature');
-        expect(opt.isReduced).to.be(undefined);
-        expect(opt.x).to.be(undefined);
-        expect(opt.y).to.be(undefined);
-        expect(scope.toggle).to.be(undefined);
+      afterEach(function() {
+        $timeout.flush();
       });
 
-      it('set scope values on gaDrawStyleActive event', function() {
-        $rootScope.$broadcast('gaDrawStyleActive', 'feat', 'layer', [1, 1]);
+      it('set scope values', function() {
+        expect(scope.options.title).to.be('draw_popup_title_measure');
+        expect(scope.options.position).to.be('fixed');
+      });
+
+      it('set scope values on gaProfileActive event', function() {
+        var feat = {};
+        var layer = {};
+        var spy = sinon.spy(function() {});
+        expect(scope.toggle).to.be(undefined);
+        expect(scope.options.isReduced).to.be(undefined);
+
+        $rootScope.$broadcast('gaProfileActive', feat, layer, spy);
         expect(scope.toggle).to.be(true);
         expect(scope.options.isReduced).to.be(false);
-        expect(scope.options.x).to.be(1);
-        expect(scope.options.y).to.be(1);
+        expect(spy.callCount).to.be(0);
+        $rootScope.$digest();
+
+        // Calls callback when popup is closing
+        scope.toggle = false;
+        $rootScope.$digest();
+        expect(spy.callCount).to.be(1);
+        expect(spy.getCall(0).args[0]).to.be(feat);
       });
     });
   });

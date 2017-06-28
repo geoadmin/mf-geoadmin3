@@ -40,7 +40,6 @@ goog.require('ga_print_service');
           hasMoreResults = (hasMoreResults || layer.hasMoreResults);
           nbFeatures += layer.features.length;
         }
-
       });
       $scope.options.nbFeatures = nbFeatures;
       $scope.options.featuresShown = show;
@@ -156,7 +155,6 @@ goog.require('ga_print_service');
         $scope.globals.isFeatureTreeActive = false;
       }
       evt.stopPropagation();
-
     });
 
     $scope.$on('gaGetMoreFeatureTree', function(evt, layer) {
@@ -164,6 +162,5 @@ goog.require('ga_print_service');
           $scope.options.max);
       evt.stopPropagation();
     });
-
   });
 })();

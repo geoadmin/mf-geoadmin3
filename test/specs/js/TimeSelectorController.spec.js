@@ -1,12 +1,13 @@
-describe('ga_contextpopup_controller', function() {
+describe('ga_timeselector_controller', function() {
 
-  describe('GaContextPopupController', function() {
+  describe('GaTimeSelectorController', function() {
 
-    var scope, parentScope, $compile, $rootScope, $timeout, $httpBackend, gaGlobalOptions;
+    var scope, parentScope, $compile, $rootScope, $timeout, $httpBackend,
+        gaGlobalOptions;
 
     var loadController = function() {
       parentScope = $rootScope.$new();
-      var tpl = '<div ng-controller="GaContextPopupController"></div>';
+      var tpl = '<div ng-controller="GaTimeSelectorController"></div>';
       elt = $compile(tpl)(parentScope);
       $rootScope.$digest();
       scope = elt.scope();
@@ -25,6 +26,7 @@ describe('ga_contextpopup_controller', function() {
         injectServices($injector);
       });
       loadController();
+      $timeout.flush();
     });
 
     afterEach(function() {
@@ -38,9 +40,17 @@ describe('ga_contextpopup_controller', function() {
     });
 
     it('set scope values', function() {
-      expect(scope.options.heightUrl).to.be('http://api3.geo.admin.ch/rest/services/height');
-      expect(scope.options.qrcodeUrl).to.be('http://api3.geo.admin.ch/qrcodegenerator');
+      expect(scope.options.minYear).to.be(1844);
+      expect(scope.options.maxYear).to.be((new Date()).getFullYear());
+      expect(scope.options.currentYear).to.be(-1);
+      expect(scope.options.years).to.be.an(Array);
+      expect(scope.options.years.length).to.be(scope.options.maxYear - scope.options.minYear + 1);
+      scope.options.years.forEach(function(y) {
+        expect(y.value).to.be.a('number');
+        expect(y.available).to.be(false);
+        expect(y.minor).to.be.a('boolean');
+        expect(y.major).to.be.a('boolean');
+      });
     });
   });
 });
-

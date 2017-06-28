@@ -351,15 +351,15 @@ describe('ga_browsersniffer_service', function() {
 
 
       });
-      
+
       it('Chrome browsers with no loadTimes', function() {
-        
+
         // standard chrome doesn't support
         win.navigator.userAgent = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.111 Safari/537.36';
         snif = injector.get('gaBrowserSniffer');
         expect(snif.h2).to.be.eql(false);
       });
-      
+
       it('Chrome browsers with loadTime without h2', function() {
         win.navigator.userAgent = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.111 Safari/537.36';
 
@@ -372,9 +372,9 @@ describe('ga_browsersniffer_service', function() {
         };
         snif = injector.get('gaBrowserSniffer');
         expect(snif.h2).to.be.eql(false);
-        
+
       });
-      
+
       it('Chrome browsers with loadTime without h2', function() {
         win.navigator.userAgent = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.111 Safari/537.36';
         //Detecting h2

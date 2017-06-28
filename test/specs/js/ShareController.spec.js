@@ -1,12 +1,13 @@
-describe('ga_contextpopup_controller', function() {
+describe('ga_share_controller', function() {
 
-  describe('GaContextPopupController', function() {
+  describe('GaShareController', function() {
 
-    var scope, parentScope, $compile, $rootScope, $timeout, $httpBackend, gaGlobalOptions;
+    var scope, parentScope, $compile, $rootScope, $timeout, $httpBackend,
+        gaGlobalOptions;
 
     var loadController = function() {
       parentScope = $rootScope.$new();
-      var tpl = '<div ng-controller="GaContextPopupController"></div>';
+      var tpl = '<div ng-controller="GaShareController"></div>';
       elt = $compile(tpl)(parentScope);
       $rootScope.$digest();
       scope = elt.scope();
@@ -25,6 +26,7 @@ describe('ga_contextpopup_controller', function() {
         injectServices($injector);
       });
       loadController();
+      $timeout.flush();
     });
 
     afterEach(function() {
@@ -38,9 +40,7 @@ describe('ga_contextpopup_controller', function() {
     });
 
     it('set scope values', function() {
-      expect(scope.options.heightUrl).to.be('http://api3.geo.admin.ch/rest/services/height');
-      expect(scope.options.qrcodeUrl).to.be('http://api3.geo.admin.ch/qrcodegenerator');
+      expect(scope.options.qrcodegeneratorPath).to.be(gaGlobalOptions.apiUrl + '/qrcodegenerator');
     });
   });
 });
-

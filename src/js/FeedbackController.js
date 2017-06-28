@@ -3,8 +3,7 @@ goog.provide('ga_feedback_controller');
 
   var module = angular.module('ga_feedback_controller', []);
 
-  module.controller('GaFeedbackController', function($scope, $timeout,
-      gaGlobalOptions) {
+  module.controller('GaFeedbackController', function($scope, gaGlobalOptions) {
 
     $scope.options = {
       useTemporaryLayer: true,

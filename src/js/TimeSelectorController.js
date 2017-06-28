@@ -32,6 +32,6 @@ goog.provide('ga_timeselector_controller');
       }
       $scope.options.years.push(year);
     }
-});
+  });
 })();
 
