@@ -16,7 +16,7 @@ python-dateutil==2.6.0
 python-gflags==3.1.0
 requests==2.11.1
 s3transfer==0.1.9
-sauceclient==0.2.1
-selenium==3.3.1
+sauceclient==1.0.0
+selenium==3.4.3
 six==1.10.0
 https://github.com/google/closure-linter/archive/v2.3.19.tar.gz
