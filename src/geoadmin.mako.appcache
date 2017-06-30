@@ -13,11 +13,7 @@ ${s3basepath}${version}/style/app.css
 ${s3basepath}${version}/style/font-awesome-4.5.0/font/fontawesome-webfont.woff
 ${s3basepath}${version}/services
 % for lang in languages:
-% if s3basepath == '':
-${s3basepath}${version}/layersConfig?lang=${lang}
-% else:
 ${s3basepath}${version}/layersConfig.${lang}.json
-% endif
 ${s3basepath}${version}/locales/${lang}.json
 % endfor
 ${s3basepath}${version}/img/geolocation_heading_marker.png
