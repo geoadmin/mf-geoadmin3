@@ -159,6 +159,7 @@ goog.require('ngeo.fileService');
         'http://osm.omniscale.net/proxy/service',
         'https://ows.terrestris.de/osm/service',
         'https://ows.terrestris.de/osm-gray/service',
+        'https://owsproxy.lgl-bw.de/owsproxy/ows/WMS_Maps4BW?request=GetCapabilities&service=WMS&Version=1.3.0',
         'http://rips-gdi.lubw.baden-wuerttemberg.de/arcgis/services/wms/UIS_0100000017900001/MapServer/WMSServer',
         'http://rips-gdi.lubw.baden-wuerttemberg.de/arcgis/services/wms/UIS_0100000017400001/MapServer/WMSServer',
         'http://rips-gdi.lubw.baden-wuerttemberg.de/arcgis/services/wms/UIS_0100000016900001/MapServer/WMSServer',
