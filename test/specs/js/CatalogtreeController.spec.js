@@ -2,7 +2,8 @@ describe('ga_catalogtree_controller', function() {
 
   describe('GaCatalogtreeController', function() {
 
-    var scope, parentScope, $compile, $rootScope, gaGlobalOptions;
+    var scope, parentScope, $compile, $rootScope, $timeout, $httpBackend,
+        gaGlobalOptions;
 
     var loadController = function() {
       parentScope = $rootScope.$new();
@@ -15,6 +16,8 @@ describe('ga_catalogtree_controller', function() {
     var injectServices = function($injector) {
       $compile = $injector.get('$compile');
       $rootScope = $injector.get('$rootScope');
+      $timeout = $injector.get('$timeout');
+      $httpBackend = $injector.get('$httpBackend');
       gaGlobalOptions = $injector.get('gaGlobalOptions');
     };
 
@@ -23,6 +26,16 @@ describe('ga_catalogtree_controller', function() {
         injectServices($injector);
       });
       loadController();
+    });
+
+     afterEach(function() {
+      $httpBackend.verifyNoOutstandingExpectation();
+      $httpBackend.verifyNoOutstandingRequest();
+      try {
+        $timeout.verifyNoPendingTasks();
+      } catch (e) {
+        $timeout.flush();
+      }
     });
 
     it('set scope values', function() {

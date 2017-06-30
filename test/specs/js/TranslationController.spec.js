@@ -1,12 +1,12 @@
-describe('ga_contextpopup_controller', function() {
+describe('ga_translation_controller', function() {7;
 
-  describe('GaContextPopupController', function() {
+  describe('GaTranslationController', function() {
 
     var scope, parentScope, $compile, $rootScope, $timeout, $httpBackend, gaGlobalOptions;
 
     var loadController = function() {
       parentScope = $rootScope.$new();
-      var tpl = '<div ng-controller="GaContextPopupController"></div>';
+      var tpl = '<div ng-controller="GaTranslationController"></div>';
       elt = $compile(tpl)(parentScope);
       $rootScope.$digest();
       scope = elt.scope();
@@ -24,8 +24,10 @@ describe('ga_contextpopup_controller', function() {
       inject(function($injector) {
         injectServices($injector);
       });
+      gaBrowserSniffer.touchDevice = false;
       loadController();
     });
+
 
     afterEach(function() {
       $httpBackend.verifyNoOutstandingExpectation();
@@ -38,8 +40,7 @@ describe('ga_contextpopup_controller', function() {
     });
 
     it('set scope values', function() {
-      expect(scope.options.heightUrl).to.be('http://api3.geo.admin.ch/rest/services/height');
-      expect(scope.options.qrcodeUrl).to.be('http://api3.geo.admin.ch/qrcodegenerator');
+      expect(scope.options.langs).to.be(gaGlobalOptions.languages);
     });
   });
 });

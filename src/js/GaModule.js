@@ -41,7 +41,6 @@ goog.require('ga_profile');
 goog.require('ga_profile_controller');
 goog.require('ga_profilepopup_controller');
 goog.require('ga_query');
-goog.require('ga_query_controller');
 goog.require('ga_rotate');
 goog.require('ga_scaleline');
 goog.require('ga_search');
@@ -129,8 +128,6 @@ goog.require('ga_waitcursor_service');
     'ga_featuretree_controller',
     'ga_draw_controller',
     'ga_drawstyle_controller',
-    'ga_drawstylepopup_controller',
-    'ga_query_controller'
+    'ga_drawstylepopup_controller'
   ]);
-
 })();

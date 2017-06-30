@@ -2,7 +2,8 @@ describe('ga_draw_controller', function() {
 
   describe('GaDrawController', function() {
 
-    var scope, parentScope, $compile, $rootScope, $translate, gaGlobalOptions, gaStyleFactory;
+    var scope, parentScope, $compile, $rootScope, $timeout, $httpBackend, $translate,
+        gaGlobalOptions, gaStyleFactory;
 
     var loadController = function() {
       parentScope = $rootScope.$new();
@@ -16,9 +17,21 @@ describe('ga_draw_controller', function() {
       $compile = $injector.get('$compile');
       $rootScope = $injector.get('$rootScope');
       $translate = $injector.get('$translate');
+      $timeout = $injector.get('$timeout');
+      $httpBackend = $injector.get('$httpBackend');
       gaGlobalOptions = $injector.get('gaGlobalOptions');
       gaStyleFactory = $injector.get('gaStyleFactory');
     };
+
+    afterEach(function() {
+      $httpBackend.verifyNoOutstandingExpectation();
+      $httpBackend.verifyNoOutstandingRequest();
+      try {
+        $timeout.verifyNoPendingTasks();
+      } catch (e) {
+        $timeout.flush();
+      }
+    });
 
     describe('using default options', function() {
       beforeEach(function() {
