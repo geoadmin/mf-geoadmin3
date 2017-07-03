@@ -62,7 +62,7 @@ goog.require('ga_map_service');
           if (eventKey.over) {
             // Hide layer label on mouse over/out events
             elt.on(eventKey.over, function(evt) {
-               if (!isDragging) {
+              if (!isDragging) {
                 layerLabelElt.show();
               }
             }).on(eventKey.out, function(evt) {

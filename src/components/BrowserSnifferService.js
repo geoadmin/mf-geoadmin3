@@ -44,11 +44,6 @@ goog.require('ga_permalink');
         return m && (m('(max-width: ' + size + 'px)').matches ||
             m('(max-height: ' + size + 'px)').matches);
       };
-      var useTouchEvents = ('ontouchstart' in $window);
-      var usePointerEvents = ('PointerEvent' in $window);
-      var useMSPointerEvents = !('PointerEvent' in $window) &&
-          ('MSPointerEvent' in $window);
-      var navigator = $window.navigator;
       var mobile = /\/mobile\.html$/.test($window.location.pathname);
       var embed = /\/embed\.html$/.test($window.location.pathname);
       var p = gaPermalink.getParams();
@@ -63,18 +58,14 @@ goog.require('ga_permalink');
         });
       }
 
+      // Detect which events to use for draggable directive (swipe, popup).
       var events = {
-        mouse: {
-          start: 'mousedown',
-          move: 'mousemove',
-          end: 'mouseup',
+        touch: {
+          start: 'touchstart mousedown',
+          move: 'touchmove mousemove',
+          end: 'touchend mouseup',
           over: 'mouseover',
           out: 'mouseout'
-        },
-        touch: {
-          start: 'touchstart',
-          move: 'touchmove',
-          end: 'touchend'
         },
         msPointer: {
           start: 'MSPointerDown',
@@ -92,21 +83,21 @@ goog.require('ga_permalink');
         }
       };
 
-      var eventsKeys = events.mouse;
-      if (usePointerEvents) {
+      var eventsKeys = events.touch;
+      if ('PointerEvent' in $window) {
         eventsKeys = events.pointer;
-      } else if (useMSPointerEvents) {
+      } else if ('MSPointerEvent' in $window) {
         eventsKeys = events.msPointer;
-      } else if (useTouchEvents) {
-        eventsKeys = events.touch;
       }
+
+      // Detect Blob support
       var isBlobSupported = false;
       try {
         isBlobSupported = !!new Blob;
       } catch (e) {
       }
 
-      // detect http2 support
+      // Detect http2 support
       var h2 = false;
       // Firefox
       // https://developer.mozilla.org/en-US/docs/Web/API/PerformanceResourceTiming/nextHopProtocol
@@ -129,6 +120,7 @@ goog.require('ga_permalink');
           h2 = true;
         }
       }
+
       return {
         msie: msie, // false or ie version number
         webkit: webkit,

@@ -62,25 +62,25 @@ describe('ga_main_controller', function() {
         });
       });
 
-      it('set scope values', function() {
+      it.only('set scope values', function() {
         loadController();
         expect(scope.map).to.be.an(ol.Map);
         expect(scope.host.url).to.be($window.location.host);
         expect(scope.toMainHref).to.be(gaPermalink.getMainHref());
-        expect(scope.deviceSwitcherHref).to.be(gaPermalink.getHref({mobile: false}));
+        expect(scope.deviceSwitcherHref).to.be(gaPermalink.getHref({mobile: 'true'}));
         var g = scope.globals;
         expect(g.dev3d).to.be(false);
         expect(g.pegman).to.be(false);
-        expect(g.searchFocused).to.be(false);
+        expect(g.searchFocused).to.be(true);
         expect(g.homescreen).to.be(false);
-        expect(g.tablet).to.be(true);
+        expect(g.tablet).to.be(false);
         expect(g.phone).to.be(false);
         expect(g.webkit).to.be(true);
         expect(g.ios).to.be(false);
         expect(g.animation).to.be(true);
         expect(g.offline).to.be(false);
         expect(g.embed).to.be(false);
-        expect(g.pulldownShown).to.be(false);
+        expect(g.pulldownShown).to.be(true);
         expect(g.printShown).to.be(false);
         expect(g.catalogShown).to.be(false);
         expect(g.selectionShown).to.be(false);
