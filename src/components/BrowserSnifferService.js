@@ -130,7 +130,6 @@ goog.require('ga_permalink');
         ios: ios, // false or iOS version number
         iosChrome: iosChrome,
         mobile: mobile,
-        phone: mobile && testSize(480),
         events: eventsKeys,
         embed: embed,
         isInFrame: ($window.location != $window.parent.location),

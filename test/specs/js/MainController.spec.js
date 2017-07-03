@@ -62,7 +62,7 @@ describe('ga_main_controller', function() {
         });
       });
 
-      it.only('set scope values', function() {
+      it('set scope values', function() {
         loadController();
         expect(scope.map).to.be.an(ol.Map);
         expect(scope.host.url).to.be($window.location.host);
@@ -73,8 +73,6 @@ describe('ga_main_controller', function() {
         expect(g.pegman).to.be(false);
         expect(g.searchFocused).to.be(true);
         expect(g.homescreen).to.be(false);
-        expect(g.tablet).to.be(false);
-        expect(g.phone).to.be(false);
         expect(g.webkit).to.be(true);
         expect(g.ios).to.be(false);
         expect(g.animation).to.be(true);

@@ -5,6 +5,7 @@ goog.require('ga_networkstatus_service');
 goog.require('ga_permalink');
 goog.require('ga_reframe_service');
 goog.require('ga_what3words_service');
+goog.require('ga_window_service');
 
 (function() {
 
@@ -13,6 +14,7 @@ goog.require('ga_what3words_service');
     'ga_networkstatus_service',
     'ga_permalink',
     'ga_reframe_service',
+    'ga_window_service',
     'ga_what3words_service',
     'pascalprecht.translate'
   ]);
@@ -20,7 +22,7 @@ goog.require('ga_what3words_service');
   module.directive('gaContextPopup',
       function($http, $q, $timeout, $window, $rootScope, gaBrowserSniffer,
           gaNetworkStatus, gaPermalink, gaGlobalOptions, gaLang, gaWhat3Words,
-          gaReframe, gaEvent) {
+          gaReframe, gaEvent, gaWindow) {
         return {
           restrict: 'A',
           replace: true,
@@ -169,7 +171,7 @@ goog.require('ga_what3words_service');
 
               updatePopupLinks();
 
-              if (gaBrowserSniffer.phone) {
+              if (gaWindow.isWidth('xs') || gaWindow.isHeight('xs')) {
                 view.animate({
                   center: coord21781,
                   duration: 200
