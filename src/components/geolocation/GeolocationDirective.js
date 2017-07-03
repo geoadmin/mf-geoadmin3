@@ -13,7 +13,7 @@ goog.require('ga_throttle_service');
     'ga_throttle_service'
   ]);
 
-  module.directive('gaGeolocation', function($parse, $window, $translate,
+  module.directive('gaGeolocation', function($window, $translate,
       gaBrowserSniffer, gaPermalink, gaStyleFactory, gaThrottle, gaMapUtils) {
     return {
       restrict: 'A',
@@ -47,6 +47,7 @@ goog.require('ga_throttle_service');
           [accuracyFeature, positionFeature],
           gaStyleFactory.getStyleFunction('geolocation')
         );
+        var deviceOrientation = new ol.DeviceOrientation();
         var geolocation = new ol.Geolocation({
           projection: view.getProjection(),
           trackingOptions: {
@@ -56,12 +57,6 @@ goog.require('ga_throttle_service');
           }
         });
         var maxNumStatus = 1;
-        var deviceOrientation;
-        if (gaBrowserSniffer.touchDevice && ol.has.DEVICE_ORIENTATION) {
-          maxNumStatus = 2;
-          deviceOrientation = new ol.DeviceOrientation();
-        }
-
 
         // Listen 2d/3d switch mode.
         var unreg3dSwitch;
@@ -88,9 +83,7 @@ goog.require('ga_throttle_service');
             map.removeLayer(featuresOverlay);
           }
           geolocation.setTracking(tracking);
-          if (deviceOrientation) {
-            deviceOrientation.setTracking(tracking);
-          }
+          deviceOrientation.setTracking(tracking);
         });
 
         // Animation
@@ -203,42 +196,43 @@ goog.require('ga_throttle_service');
         };
 
         var updateHeadingFeature = function(forceRotation) {
-          if (deviceOrientation) {
-            var rotation = forceRotation || headingFromDevices();
-            if (angular.isDefined(rotation)) {
-              positionFeature.set('rotation', rotation);
-            }
+          var rotation = forceRotation || headingFromDevices();
+          if (angular.isDefined(rotation)) {
+            positionFeature.set('rotation', rotation);
           }
         };
 
-        if (deviceOrientation) {
-          // Orientation control events
-          var currHeading = 0;
-          var headngUpdateWhenMapRotate = gaThrottle.throttle(headingUpdate,
-              300);
-          var headngUpdateWhenIconRotate = gaThrottle.throttle(headingUpdate,
-              50);
+        // Orientation control events
+        var currHeading = 0;
+        var headngUpdateWhenMapRotate = gaThrottle.throttle(headingUpdate, 300);
+        var headngUpdateWhenIconRotate = gaThrottle.throttle(headingUpdate, 50);
 
-          deviceOrientation.on('change:heading', function(event) {
-            var heading = headingFromDevices();
+        deviceOrientation.on('change:heading', function(event) {
+          var heading = headingFromDevices();
 
-            // The icon rotate
-            if (btnStatus == 1 || (btnStatus == 2 && userTakesControl)) {
-              headngUpdateWhenIconRotate();
+          // The icon rotate
+          if (btnStatus == 1 || (btnStatus == 2 && userTakesControl)) {
+            headngUpdateWhenIconRotate();
 
-            // The map rotate
-            } else if (heading < currHeading - 0.001 ||
-                currHeading + 0.001 < heading) {
-              currHeading = heading;
-              headngUpdateWhenMapRotate();
-            }
-          });
-        }
+          // The map rotate
+          } else if (heading < currHeading - 0.001 ||
+              currHeading + 0.001 < heading) {
+            currHeading = heading;
+            headngUpdateWhenMapRotate();
+          }
+        });
+
+        deviceOrientation.once('change:heading', function(event) {
+          // The change heading event is triggered only if the device really
+          // manage orientation (real mobile).
+          maxNumStatus = 2;
+        });
 
         // Geolocation control events
         geolocation.on('change:position', function(evt) {
           bt.removeClass('ga-btn-disabled');
           locate();
+
           updatePositionFeature();
           updateAccuracyFeature();
           updateHeadingFeature();
@@ -269,8 +263,7 @@ goog.require('ga_throttle_service');
               msgId = 'geoloc_unknown';
               break;
           }
-          alert($translate.instant(msgId));
-          $window.console.log(error.message);
+          $window.alert($translate.instant(msgId));
           errorMsgId = msgId;
         });
 
