@@ -3,10 +3,9 @@ goog.provide('ga_tooltip_controller');
 
   var module = angular.module('ga_tooltip_controller', []);
 
-  module.controller('GaTooltipController', function($scope, gaGlobalOptions,
-      gaBrowserSniffer) {
+  module.controller('GaTooltipController', function($scope, gaGlobalOptions) {
     $scope.options = {
-      tolerance: gaBrowserSniffer.touchDevice ? 20 : 10,
+      tolerance: 15,
       htmlUrlTemplate: gaGlobalOptions.cachedApiUrl +
           '/rest/services/{Topic}/MapServer/{Layer}/{Feature}/htmlPopup'
     };
