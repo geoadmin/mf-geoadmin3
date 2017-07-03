@@ -116,40 +116,30 @@ goog.require('ga_browsersniffer_service');
           var filename = 'map.geo.admin.ch_KML_' + now + '.kml';
           var charset = $document.characterSet || 'UTF-8';
           var type = 'application/vnd.google-earth.kml+xml;charset=' + charset;
-
-          if (!this.canSave()) {
-            $window.alert($translate.instant('export_kml_notsupported'));
-          } else {
-            var kmlString = this.create(layer, projection);
-            if (kmlString) {
-              if (useDownloadService()) {
-                $http.post(downloadUrl, {
-                  kml: kmlString,
-                  filename: filename
-                }).then(function(response) {
-                  var data = response.data;
-                  if (gaBrowserSniffer.msie == 9) {
-                    $window.open(data.url);
-                  } else {
-                    $window.location = data.url;
-                  }
-                });
-              } else {
-                var blob = new Blob([kmlString],
-                                    {type: type});
-                saveAs(blob, filename);
-              }
+          var kmlString = this.create(layer, projection);
+          if (kmlString) {
+            if (useDownloadService()) {
+              $http.post(downloadUrl, {
+                kml: kmlString,
+                filename: filename
+              }).then(function(response) {
+                var data = response.data;
+                if (gaBrowserSniffer.msie == 9) {
+                  $window.open(data.url);
+                } else {
+                  $window.location = data.url;
+                }
+              });
+            } else {
+              var blob = new Blob([kmlString],
+                                  {type: type});
+              saveAs(blob, filename);
             }
           }
-        };
-
-        this.canSave = function() {
-          return !gaBrowserSniffer.mobile;
         };
       };
 
       return new ExportKml();
-
     };
   });
 })();
