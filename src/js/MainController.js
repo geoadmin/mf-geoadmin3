@@ -246,7 +246,6 @@ goog.require('ga_window_service');
       homescreen: false,
       tablet: gaBrowserSniffer.mobile && !gaBrowserSniffer.phone,
       phone: gaBrowserSniffer.phone,
-      touch: gaBrowserSniffer.touchDevice,
       webkit: gaBrowserSniffer.webkit,
       ios: gaBrowserSniffer.ios,
       animation: gaBrowserSniffer.animation,

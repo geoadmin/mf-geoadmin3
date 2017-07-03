@@ -75,7 +75,6 @@ describe('ga_main_controller', function() {
         expect(g.homescreen).to.be(false);
         expect(g.tablet).to.be(true);
         expect(g.phone).to.be(false);
-        expect(g.touch).to.be(true);
         expect(g.webkit).to.be(true);
         expect(g.ios).to.be(false);
         expect(g.animation).to.be(true);

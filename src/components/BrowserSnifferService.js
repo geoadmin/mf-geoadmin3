@@ -49,10 +49,7 @@ goog.require('ga_permalink');
       var useMSPointerEvents = !('PointerEvent' in $window) &&
           ('MSPointerEvent' in $window);
       var navigator = $window.navigator;
-      var touchDevice = useTouchEvents ||
-          (('maxTouchPoints' in navigator) && navigator.maxTouchPoints > 1) ||
-          (('msMaxTouchPoints' in navigator) && navigator.msMaxTouchPoints > 1);
-      var mobile = touchDevice && testSize(768);
+      var mobile = /\/mobile\.html$/.test($window.location.pathname);
       var embed = /\/embed\.html$/.test($window.location.pathname);
       var p = gaPermalink.getParams();
       mobile = !embed && ((mobile && p.mobile != 'false') ||
@@ -140,7 +137,6 @@ goog.require('ga_permalink');
         chrome: chrome, // false or chrome version number
         ios: ios, // false or iOS version number
         iosChrome: iosChrome,
-        touchDevice: touchDevice,
         mobile: mobile,
         phone: mobile && testSize(480),
         events: eventsKeys,
