@@ -254,3 +254,22 @@ Add `shop_url=//theNameOfAShopServer`
 Add `mapproxy_url=//theNameOfAMapProxyServer`
 
 Add `public_url=//theNameOfAPublicServer`
+
+# Exmaples of usage
+National : 
+- Norwegian Institute of Bioecomic Research : <b> Geoportal forest of Norway</b>: http://kartbeta.skogoglandskap.no/kilden  
+
+- Geoportal <b> Luxembourg</b>  is a clone of our first version: http://map.geoportail.lu/ 
+
+Regional :
+
+- Geoportal <b> Bavaria</b>  : http://servus.bayern.de/bayernatlas2  
+
+- Geoportal <b> Jura-Bernoise</b> https://map.geojb.ch<https://map.geojb.ch/>  
+
+- Geoportal <b> Trento</b> https://webgis.provincia.tn.it/wgt/
+
+- Geoportal <b> Piemont</b> http://www.geoportale.piemonte.it/geocatalogorp/?sezione=mappa
+
+- Geoportal of <b> Thurgau</b> https://map.geo.tg.ch/
+
