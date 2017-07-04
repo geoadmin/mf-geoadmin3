@@ -48,10 +48,6 @@ goog.require('ga_window_service');
             });
             map.addOverlay(overlay);
 
-            scope.showQR = function() {
-              return !gaBrowserSniffer.mobile && !gaNetworkStatus.offline;
-            };
-
             var formatCoordinates = function(coord, prec, ignoreThousand) {
               var fCoord = ol.coordinate.toStringXY(coord, prec);
               if (!ignoreThousand) {
@@ -275,7 +271,9 @@ goog.require('ga_window_service');
               scope.crosshairPermalink = gaPermalink.getHref(
                   angular.extend({crosshair: 'marker'}, p));
 
-              if (!gaBrowserSniffer.mobile) {
+              scope.qrcodeUrl = null;
+              if (!gaNetworkStatus.offline && gaWindow.isWidth('>=s') &&
+                  gaWindow.isHeight('>s')) {
                 scope.qrcodeUrl = qrcodeUrl + '?url=' +
                     escape(scope.contextPermalink);
               }
