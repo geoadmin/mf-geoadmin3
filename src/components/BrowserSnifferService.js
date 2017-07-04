@@ -27,7 +27,6 @@ goog.require('ga_permalink');
       if (ios) {
         ios = +((/\((iPhone|iPad|iPod).+OS (\d{1,2})_/.exec(ua) || [])[2]);
       }
-      var mac = !msie && /\(Mac/.test(ua);
       var webkit = !msie && /WebKit/.test(ua);
       var opera = !msie && /(OPiOS|OPR)\//.test(ua);
       var chrome = !msie && !opera && /(CriOS|Chrome)\//.test(ua);
@@ -110,7 +109,6 @@ goog.require('ga_permalink');
       return {
         msie: msie, // false or ie version number
         webkit: webkit,
-        mac: mac,
         safari: safari,
         chrome: chrome,
         ios: ios, // false or iOS version number

@@ -9,19 +9,16 @@ describe('ga_browsersniffer_service', function() {
 
     // Expect OS
     var expectNotApple = function() {
-      expect(snif.mac).to.not.be.ok();
       expect(snif.ios).to.not.be.ok();
       expect(snif.animation).to.be.ok();
     };
 
     var expectMac = function() {
-      expect(snif.mac).to.be.ok();
       expect(snif.ios).to.not.be.ok();
       expect(snif.msie).to.not.be.ok();
     };
 
     var expectIOS = function(version) {
-      expect(snif.mac).to.not.be.ok();
       expect(snif.ios).to.equal(version);
       expect(snif.msie).to.not.be.ok();
     };
@@ -39,7 +36,6 @@ describe('ga_browsersniffer_service', function() {
 
     // Expect browser
     var expectIE = function(version) {
-      expect(snif.mac).to.not.be.ok();
       expect(snif.ios).to.not.be.ok();
       expect(snif.webkit).to.not.be.ok();
       expect(snif.msie).to.equal(version);
@@ -71,7 +67,6 @@ describe('ga_browsersniffer_service', function() {
     };
 
     var expectIOSChrome = function() {
-      expect(snif.mac).to.not.be.ok();
       expect(snif.ios).to.be.ok();
       expect(snif.webkit).to.be.ok();
       expect(snif.msie).to.not.be.ok();
