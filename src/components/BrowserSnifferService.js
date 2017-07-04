@@ -30,7 +30,6 @@ goog.require('ga_permalink');
       var webkit = !msie && /WebKit/.test(ua);
       var opera = !msie && /(OPiOS|OPR)\//.test(ua);
       var chrome = !msie && !opera && /(CriOS|Chrome)\//.test(ua);
-      var iosChrome = ios && chrome;
       var safari = !msie && !opera && !chrome && /Safari/.test(ua);
       var mobile = /\/mobile\.html$/.test($window.location.pathname);
       var embed = /\/embed\.html$/.test($window.location.pathname);
@@ -110,13 +109,12 @@ goog.require('ga_permalink');
         msie: msie, // false or ie version number
         webkit: webkit,
         safari: safari,
-        chrome: chrome,
+        chrome: chrome, // Only for test purpose
         ios: ios, // false or iOS version number
-        iosChrome: iosChrome,
         mobile: mobile,
         events: eventsKeys,
         embed: embed,
-        isInFrame: ($window.location != $window.parent.location),
+        iframe: ($window.location != $window.parent.location),
         webgl: !(typeof WebGLRenderingContext === 'undefined'),
         animation: (!msie || msie > 9),
         blob: isBlobSupported,

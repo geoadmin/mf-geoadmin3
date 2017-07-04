@@ -40,7 +40,6 @@ describe('ga_browsersniffer_service', function() {
       expect(snif.webkit).to.not.be.ok();
       expect(snif.msie).to.equal(version);
       expect(snif.safari).to.not.be.ok();
-      expect(snif.iosChrome).to.not.be.ok();
       expect(snif.chrome).to.not.be.ok();
 
       if (version == 9) {
@@ -53,7 +52,6 @@ describe('ga_browsersniffer_service', function() {
     var expectOperaOrFF = function(version) {
       expect(snif.msie).to.not.be.ok();
       expect(snif.safari).to.not.be.ok();
-      expect(snif.iosChrome).to.not.be.ok();
       expect(snif.chrome).to.not.be.ok();
       expect(snif.animation).to.be.ok();
     };
@@ -61,18 +59,7 @@ describe('ga_browsersniffer_service', function() {
     var expectSafari = function() {
       expect(snif.webkit).to.be.ok();
       expect(snif.msie).to.not.be.ok();
-      expect(snif.iosChrome).to.not.be.ok();
       expect(snif.chrome).to.not.be.ok();
-      expect(snif.animation).to.be.ok();
-    };
-
-    var expectIOSChrome = function() {
-      expect(snif.ios).to.be.ok();
-      expect(snif.webkit).to.be.ok();
-      expect(snif.msie).to.not.be.ok();
-      expect(snif.safari).to.not.be.ok();
-      expect(snif.iosChrome).to.be.ok();
-      expect(snif.chrome).to.be.ok();
       expect(snif.animation).to.be.ok();
     };
 
@@ -81,7 +68,6 @@ describe('ga_browsersniffer_service', function() {
       expect(snif.webkit).to.be.ok();
       expect(snif.msie).to.not.be.ok();
       expect(snif.safari).to.not.be.ok();
-      expect(snif.iosChrome).to.not.be.ok();
       expect(snif.chrome).to.be.ok();
       expect(snif.animation).to.be.ok();
     };
@@ -255,7 +241,6 @@ describe('ga_browsersniffer_service', function() {
           snif = injector.get('gaBrowserSniffer');
           expectIOS(8);
           expectWebkit();
-          expectIOSChrome();
         });
       });
 

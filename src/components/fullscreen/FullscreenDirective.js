@@ -32,7 +32,7 @@ goog.require('ga_permalink');
             // http://connect.microsoft.com/IE/feedback/details/814527/
             // ie11-iframes-body-offsetwidth-incorrect-when-iframe-is-in
             // -full-screen-mode
-            !(gaBrowserSniffer.msie == 11 && gaBrowserSniffer.isInFrame) &&
+            !(gaBrowserSniffer.msie == 11 && gaBrowserSniffer.iframe) &&
             (target.requestFullScreen ||
             target.mozRequestFullScreen ||
             target.webkitRequestFullScreen ||
