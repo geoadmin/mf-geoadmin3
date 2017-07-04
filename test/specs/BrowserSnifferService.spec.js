@@ -70,24 +70,24 @@ describe('ga_browsersniffer_service', function() {
       expect(snif.animation).to.be.ok();
     };
 
-    var expectIOSChrome = function(version) {
+    var expectIOSChrome = function() {
       expect(snif.mac).to.not.be.ok();
       expect(snif.ios).to.be.ok();
       expect(snif.webkit).to.be.ok();
       expect(snif.msie).to.not.be.ok();
       expect(snif.safari).to.not.be.ok();
       expect(snif.iosChrome).to.be.ok();
-      expect(snif.chrome).to.equal(version);
+      expect(snif.chrome).to.be.ok();
       expect(snif.animation).to.be.ok();
     };
 
-    var expectChrome = function(version) {
+    var expectChrome = function() {
       expect(snif.ios).to.not.be.ok();
       expect(snif.webkit).to.be.ok();
       expect(snif.msie).to.not.be.ok();
       expect(snif.safari).to.not.be.ok();
       expect(snif.iosChrome).to.not.be.ok();
-      expect(snif.chrome).to.equal(version);
+      expect(snif.chrome).to.be.ok();
       expect(snif.animation).to.be.ok();
     };
 
@@ -236,7 +236,7 @@ describe('ga_browsersniffer_service', function() {
           snif = injector.get('gaBrowserSniffer');
           expectNotApple();
           expectWebkit();
-          expectChrome(40);
+          expectChrome();
         });
 
         it('40.0.2214.91 on win 8.1 desktop', function() {
@@ -244,7 +244,7 @@ describe('ga_browsersniffer_service', function() {
           snif = injector.get('gaBrowserSniffer');
           expectNotApple();
           expectWebkit();
-          expectChrome(40);
+          expectChrome();
         });
 
         it('40.0.2214.115 on mac osx 10.10.2', function() {
@@ -252,7 +252,7 @@ describe('ga_browsersniffer_service', function() {
           snif = injector.get('gaBrowserSniffer');
           expectMac();
           expectWebkit();
-          expectChrome(40);
+          expectChrome();
         });
 
         it('40.0.2214.73 on min-iPad iOS 8.1.3', function() {
@@ -260,7 +260,7 @@ describe('ga_browsersniffer_service', function() {
           snif = injector.get('gaBrowserSniffer');
           expectIOS(8);
           expectWebkit();
-          expectIOSChrome(40);
+          expectIOSChrome();
         });
       });
 

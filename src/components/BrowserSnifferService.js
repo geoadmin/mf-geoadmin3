@@ -32,12 +32,6 @@ goog.require('ga_permalink');
       var opera = !msie && /(OPiOS|OPR)\//.test(ua);
       var chrome = !msie && !opera && /(CriOS|Chrome)\//.test(ua);
       var iosChrome = ios && chrome;
-      if (chrome) {
-        var m = ua.match(/(CriOS|Chrome)\/(\d+)\./);
-        if (m && m.length > 2) {
-          chrome = parseInt(m[2], 10);
-        }
-      }
       var safari = !msie && !opera && !chrome && /Safari/.test(ua);
       var mobile = /\/mobile\.html$/.test($window.location.pathname);
       var embed = /\/embed\.html$/.test($window.location.pathname);
@@ -118,7 +112,7 @@ goog.require('ga_permalink');
         webkit: webkit,
         mac: mac,
         safari: safari,
-        chrome: chrome, // false or chrome version number
+        chrome: chrome,
         ios: ios, // false or iOS version number
         iosChrome: iosChrome,
         mobile: mobile,
