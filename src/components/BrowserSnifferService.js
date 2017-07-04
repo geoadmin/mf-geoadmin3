@@ -39,16 +39,8 @@ goog.require('ga_permalink');
         }
       }
       var safari = !msie && !opera && !chrome && /Safari/.test(ua);
-      var testSize = function(size) {
-        var m = $window.matchMedia;
-        return m && (m('(max-width: ' + size + 'px)').matches ||
-            m('(max-height: ' + size + 'px)').matches);
-      };
       var mobile = /\/mobile\.html$/.test($window.location.pathname);
       var embed = /\/embed\.html$/.test($window.location.pathname);
-      var p = gaPermalink.getParams();
-      mobile = !embed && ((mobile && p.mobile != 'false') ||
-          p.mobile == 'true');
 
       if (msie > 9) {
         // IE10/IE11 don’t fire `input` event. Angular rely on it.
