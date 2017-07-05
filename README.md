@@ -255,7 +255,7 @@ Add `mapproxy_url=//theNameOfAMapProxyServer`
 
 Add `public_url=//theNameOfAPublicServer`
 
-# Exmaples of usage
+# Examples of usage
 National : 
 - Norwegian Institute of Bioecomic Research : <b> Geoportal forest of Norway</b>: http://kartbeta.skogoglandskap.no/kilden  
 
