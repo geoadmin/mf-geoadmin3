@@ -62,7 +62,6 @@ DEFAULT_TOPIC_ID ?= ech
 TRANSLATION_FALLBACK_CODE ?= de
 LANGUAGES ?= '[\"de\", \"fr\", \"it\", \"en\", \"rm\"]'
 LANGS ?= de fr it rm en
-HTMLFILES ?= index mobile embed
 TRANSLATE_GSPREAD_KEYS ?= 1F3R46w4PODfsbJq7jd79sapy3B7TXhQcYM7SEaccOA0
 TRANSLATE_CSV_FILES ?= "https://docs.google.com/spreadsheets/d/1F3R46w4PODfsbJq7jd79sapy3B7TXhQcYM7SEaccOA0/export?format=csv&gid=0"
 TRANSLATE_EMPTY_JSON ?= src/locales/empty.json
@@ -187,6 +186,7 @@ release: .build-artefacts/devlibs \
 	prd/index.html \
 	prd/mobile.html \
 	prd/embed.html \
+	prd/404.html \
 	prd/img/ \
 	prd/style/font-awesome-4.5.0/font/ \
 	prd/locales/ \
@@ -197,7 +197,7 @@ release: .build-artefacts/devlibs \
 	prd/robots_prod.txt
 
 .PHONY: debug
-debug: .build-artefacts/devlibs src/deps.js src/style/app.css src/index.html src/mobile.html src/embed.html
+debug: .build-artefacts/devlibs src/deps.js src/style/app.css src/index.html src/mobile.html src/embed.html src/404.html
 
 .PHONY: lint
 lint: .build-artefacts/devlibs .build-artefacts/lint.timestamp
@@ -585,6 +585,10 @@ prd/embed.html: src/index.mako.html \
 	mkdir -p $(dir $@)
 	$(call buildpage,embed,prod,$(VERSION),$(VERSION)/,$(S3_BASE_PATH))
 	${PYTHON_CMD} ${HTMLMIN_CMD} --remove-comments --keep-optional-attribute-quotes $@ $@
+
+prd/404.html: src/404.html
+	mkdir -p $(dir $@)
+	${PYTHON_CMD} ${HTMLMIN_CMD} --remove-comments --keep-optional-attribute-quotes $< $@
 
 prd/img/: src/img/*
 	mkdir -p $@

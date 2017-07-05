@@ -223,7 +223,7 @@ def upload(bucket_name, base_dir, deploy_target, named_branch):
     print('%s' % s3_dir_path)
     upload_directories = ['prd', 'src']
     exclude_filename_patterns = ['.less', '.gitignore', '.mako.']
-    root_files = ('index.html', 'mobile.html', 'embed.html',
+    root_files = ('index.html', 'mobile.html', 'embed.html', '404.html',
                   'robots.txt', 'robots_prod.txt', 'favicon.ico',
                   'checker', 'geoadmin.%s.appcache' % version)
 
@@ -359,7 +359,7 @@ def activate_version(s3_path, bucket_name, deploy_target):
     msg = raw_input('Are you sure you want to activate version <%s>?\n' % s3_path)
     if msg.lower() in ('y', 'yes'):
         # Prod files
-        for n in ('index', 'embed', 'mobile'):
+        for n in ('index', 'embed', 'mobile', '404'):
             src_key_name = '{}/{}.html'.format(s3_path, n)
             print('{} --> {}.html'.format(src_key_name, n))
             s3client.copy_object(
