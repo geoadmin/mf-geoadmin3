@@ -233,12 +233,6 @@ describe('ga_urlutils_service', function() {
         expect(gaUrlUtils.nonCloudFrontUrl('https://map.geo.admin.ch/asd')).to.be('https://s3-eu-west-1.amazonaws.com/mf-geoadmin3-prod-dublin/asd');
         expect(gaUrlUtils.nonCloudFrontUrl('map.geo.admin.ch')).to.be('map.geo.admin.ch');
         expect(gaUrlUtils.nonCloudFrontUrl('https://mf-geoadmin3.int.bgdi.ch/asd')).to.be('https://s3-eu-west-1.amazonaws.com/mf-geoadmin3-int-dublin/asd');
-        expect(gaUrlUtils.nonCloudFrontUrl('https://service-proxy.dev.bgdi.ch/http/dummy/somepath/myimage.png')).to.be('http://dummy/somepath/myimage.png');
-        expect(gaUrlUtils.nonCloudFrontUrl('https://service-proxy.dev.bgdi.ch/https/dummy/somepath/myimage.png')).to.be('https://dummy/somepath/myimage.png');
-        expect(gaUrlUtils.nonCloudFrontUrl('https://service-proxy.int.bgdi.ch/http/dummy/somepath/myimage.png')).to.be('http://dummy/somepath/myimage.png');
-        expect(gaUrlUtils.nonCloudFrontUrl('https://service-proxy.int.bgdi.ch/https/dummy/somepath/myimage.png')).to.be('https://dummy/somepath/myimage.png');
-        expect(gaUrlUtils.nonCloudFrontUrl('https://service-proxy.prod.bgdi.ch/http/dummy/somepath/myimage.png')).to.be('http://dummy/somepath/myimage.png');
-        expect(gaUrlUtils.nonCloudFrontUrl('https://service-proxy.prod.bgdi.ch/https/dummy/somepath/myimage.png')).to.be('https://dummy/somepath/myimage.png');
       });
     });
 
