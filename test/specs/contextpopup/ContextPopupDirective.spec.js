@@ -154,6 +154,33 @@ describe('ga_contextpopup_directive', function() {
       expect($(tds[17]).find('a').attr('href')).to.be(crosshairPermalink);
     });
 
+    it('reopens popup on 2nd contextmenu event', function() {
+      var spy = sinon.spy(gaReframe, 'get03To95');
+      var spy2 = sinon.spy(gaWhat3Words, 'getWords');
+      var spy3 = sinon.spy(scope, 'hidePopover');
+      var evt = $.Event('contextmenu');
+      evt.coordinate = [661473, 188192];
+      evt.pixel = [25, 50];
+      $(map.getViewport()).trigger(evt);
+      $httpBackend.flush();
+      $timeout.flush();
+
+      expect(spy.callCount).to.eql(1);
+      expect(spy2.callCount).to.eql(1);
+      expect(spy3.callCount).to.eql(0);
+
+      evt = $.Event('contextmenu');
+      evt.coordinate = [661473, 188192];
+      evt.pixel = [25, 50];
+      $(map.getViewport()).trigger(evt);
+      $httpBackend.flush();
+      $timeout.flush();
+
+      expect(spy.callCount).to.eql(2);
+      expect(spy2.callCount).to.eql(2);
+      expect(spy3.callCount).to.eql(1);
+    });
+
     it('displays informations on long touch press', function() {
       var spy = sinon.spy(gaReframe, 'get03To95');
       var spy2 = sinon.spy(gaWhat3Words, 'getWords');

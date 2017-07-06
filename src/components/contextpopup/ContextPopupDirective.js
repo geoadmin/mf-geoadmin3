@@ -187,11 +187,12 @@ goog.require('ga_window_service');
 
             if ('oncontextmenu' in $window) {
               $(map.getViewport()).on('contextmenu', function(event) {
-                if (!isPopoverShown) {
-                  $timeout.cancel(holdPromise);
-                  startPixel = undefined;
-                  handler(event);
+                if (isPopoverShown) {
+                  scope.hidePopover();
                 }
+                $timeout.cancel(holdPromise);
+                startPixel = undefined;
+                handler(event);
               });
               element.on('contextmenu', 'a', function(e) {
                 e.stopPropagation();
