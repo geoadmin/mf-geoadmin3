@@ -168,7 +168,7 @@ goog.require('ga_urlutils_service');
           size = imageStyle.getSize();
           anchor = imageStyle.getAnchor();
           literal.externalGraphic =
-            gaUrlUtils.nonCloudFrontUrl(imageStyle.getSrc());
+            gaUrlUtils.unProxifyUrl(imageStyle.getSrc());
           literal.fillOpacity = 1;
         } else if (imageStyle instanceof ol.style.Circle ||
             imageStyle instanceof ol.style.RegularShape) {

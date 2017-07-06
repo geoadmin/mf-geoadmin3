@@ -738,7 +738,7 @@ goog.require('ga_urlutils_service');
             'styles': {
               '1': { // Style for marker position
                 'externalGraphic':
-                  gaUrlUtils.nonCloudFrontUrl($scope.options.markerUrl),
+                  gaUrlUtils.unProxifyUrl($scope.options.markerUrl),
                 'graphicWidth': 20,
                 'graphicHeight': 30,
                 // the icon is not perfectly centered in the image
@@ -747,7 +747,7 @@ goog.require('ga_urlutils_service');
                 'graphicYOffset': -30
               }, '2': { // Style for measure tooltip
                 'externalGraphic':
-                  gaUrlUtils.nonCloudFrontUrl($scope.options.bubbleUrl),
+                  gaUrlUtils.unProxifyUrl($scope.options.bubbleUrl),
                 'graphicWidth': 97,
                 'graphicHeight': 27,
                 'graphicXOffset': -48,
