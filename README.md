@@ -265,7 +265,7 @@ Regional :
 
 - Geoportal <b> Bavaria</b>  : http://servus.bayern.de/bayernatlas2  
 
-- Geoportal <b> Jura-Bernoise</b> https://map.geojb.ch<https://map.geojb.ch/>  
+- Geoportal <b> Jura-Bernois</b> https://map.geojb.ch  
 
 - Geoportal <b> Trento</b> https://webgis.provincia.tn.it/wgt/
 
