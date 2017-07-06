@@ -79,7 +79,6 @@ goog.require('ga_window_service');
 
     // Determines if the window has a height <= 550
     var win = $($window);
-    var dismiss = 'none';
 
     // The main controller creates the OpenLayers map object. The map object
     // is central, as most directives/components need a reference to it.
@@ -244,9 +243,6 @@ goog.require('ga_window_service');
       pegman: gaGlobalOptions.pegman,
       searchFocused: !gaBrowserSniffer.mobile,
       homescreen: false,
-      tablet: gaBrowserSniffer.mobile && !gaBrowserSniffer.phone,
-      phone: gaBrowserSniffer.phone,
-      touch: gaBrowserSniffer.touchDevice,
       webkit: gaBrowserSniffer.webkit,
       ios: gaBrowserSniffer.ios,
       animation: gaBrowserSniffer.animation,
@@ -263,6 +259,12 @@ goog.require('ga_window_service');
       isSwipeActive: false,
       is3dActive: startWith3D,
       hostIsProd: gaGlobalOptions.hostIsProd
+    };
+
+    $scope.hidePulldownOnXSmallScreen = function() {
+      if (gaWindow.isWidth('xs')) {
+        $scope.globals.pulldownShown = false;
+      }
     };
 
     // Deactivate all tools when draw is opening
@@ -295,18 +297,19 @@ goog.require('ga_window_service');
       $scope.globals.offline = offline;
     });
 
-    $timeout(function() {
-      $scope.globals.homescreen = gaBrowserSniffer.ios &&
-        !gaBrowserSniffer.iosChrome &&
-        !(gaStorage.getItem('homescreen') == dismiss) &&
-        !$window.navigator.standalone;
-      $scope.$watch('globals.homescreen', function(newVal) {
-        if (newVal == true) {
-          return;
-        }
-        gaStorage.setItem('homescreen', dismiss);
-      });
-    }, 2000);
+    // Only iOS Safari
+    if (!$window.navigator.standalone && gaBrowserSniffer.ios &&
+        gaBrowserSniffer.safari && !gaStorage.getItem('homescreen')) {
+      $timeout(function() {
+        $scope.globals.homescreen = true;
+        $scope.globals.tablet = gaWindow.isWidth('s');
+        $scope.$watch('globals.homescreen', function(newVal) {
+          if (newVal == false) {
+            gaStorage.setItem('homescreen', 'none');
+          }
+        });
+      }, 2000);
+    }
 
     // Manage exit of draw mode (only desktop)
     if (!gaBrowserSniffer.mobile) {

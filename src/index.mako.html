@@ -94,9 +94,7 @@ itemscope itemtype="http://schema.org/WebApplication"
   <body class="{{topicId}} {{langId}}"
         ng-class="{
           'search-focused': globals.searchFocused,
-          'touch': globals.touch,
           'webkit': globals.webkit,
-          'no-webkit': !globals.webkit,
           'no-animation': !globals.animation,
           'offline': globals.offline,
           'online': !globals.offline,
@@ -455,11 +453,7 @@ itemscope itemtype="http://schema.org/WebApplication"
           <div id="selection" class="collapse">
             <div class="panel-body panel-body-wide" ga-layermanager ga-layermanager-map="map">
             </div>
-            <div class="ga-more-layers"
-  % if device == 'mobile':
-                 ng-click="globals.pulldownShown = !globals.phone"
-  % endif
-            >
+            <div class="ga-more-layers" ng-click="hidePulldownOnXSmallScreen()">
               <a href="" ga-help-highlight=".ga-search-input-container input" translate>
                 help_search_data_link
               </a>
@@ -644,7 +638,6 @@ itemscope itemtype="http://schema.org/WebApplication"
     </div>
   % endif
 
-  % if device == 'mobile':
     <div ng-if="globals.homescreen" class="popover homescreen"
          ng-class="{
            'visible': globals.homescreen,
@@ -662,7 +655,6 @@ itemscope itemtype="http://schema.org/WebApplication"
         <span translate>homescreen_content</span>
       </div>
     </div>
-  % endif
 % endif
 
 % if mode == 'prod':

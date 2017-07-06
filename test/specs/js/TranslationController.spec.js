@@ -24,7 +24,6 @@ describe('ga_translation_controller', function() {7;
       inject(function($injector) {
         injectServices($injector);
       });
-      gaBrowserSniffer.touchDevice = false;
       loadController();
     });
 

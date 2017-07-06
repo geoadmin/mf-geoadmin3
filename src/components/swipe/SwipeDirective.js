@@ -60,9 +60,9 @@ goog.require('ga_map_service');
           var eventKey = gaBrowserSniffer.events;
 
           if (eventKey.over) {
-            // Hide laye label on mouse over/out events
+            // Hide layer label on mouse over/out events
             elt.on(eventKey.over, function(evt) {
-               if (!isDragging) {
+              if (!isDragging) {
                 layerLabelElt.show();
               }
             }).on(eventKey.out, function(evt) {

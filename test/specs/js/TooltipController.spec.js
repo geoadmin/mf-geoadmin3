@@ -2,7 +2,7 @@ describe('ga_tooltip_controller', function() {7;
 
   describe('GaTooltipController', function() {
 
-    var scope, parentScope, $compile, $rootScope, $timeout, $httpBackend, gaBrowserSniffer, gaGlobalOptions;
+    var scope, parentScope, $compile, $rootScope, $timeout, $httpBackend, gaGlobalOptions, gaWindow;
 
     var loadController = function() {
       parentScope = $rootScope.$new();
@@ -17,7 +17,7 @@ describe('ga_tooltip_controller', function() {7;
       $rootScope = $injector.get('$rootScope');
       $timeout = $injector.get('$timeout');
       $httpBackend = $injector.get('$httpBackend');
-      gaBrowserSniffer = $injector.get('gaBrowserSniffer');
+      gaWindow = $injector.get('gaWindow');
       gaGlobalOptions = $injector.get('gaGlobalOptions');
     };
 
@@ -31,13 +31,12 @@ describe('ga_tooltip_controller', function() {7;
       }
     });
 
-    describe('on non-touch device', function() {
+    describe('on normal device', function() {
 
       beforeEach(function() {
         inject(function($injector) {
           injectServices($injector);
         });
-        gaBrowserSniffer.touchDevice = false;
         loadController();
       });
 
@@ -47,18 +46,19 @@ describe('ga_tooltip_controller', function() {7;
       });
     });
 
-    describe('on touch device', function() {
+    describe('on small device', function() {
 
       beforeEach(function() {
         inject(function($injector) {
           injectServices($injector);
         });
-        gaBrowserSniffer.touchDevice = true;
+        sinon.stub(gaWindow, 'isWidth').withArgs('<=s').returns(true);
         loadController();
       });
 
       it('set scope values', function() {
         expect(scope.options.tolerance).to.be(20);
+        expect(scope.options.htmlUrlTemplate).to.be(gaGlobalOptions.cachedApiUrl + '/rest/services/{Topic}/MapServer/{Layer}/{Feature}/htmlPopup');
       });
     });
   });

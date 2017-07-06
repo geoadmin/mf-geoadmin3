@@ -5,6 +5,7 @@ goog.require('ga_networkstatus_service');
 goog.require('ga_permalink');
 goog.require('ga_reframe_service');
 goog.require('ga_what3words_service');
+goog.require('ga_window_service');
 
 (function() {
 
@@ -13,6 +14,7 @@ goog.require('ga_what3words_service');
     'ga_networkstatus_service',
     'ga_permalink',
     'ga_reframe_service',
+    'ga_window_service',
     'ga_what3words_service',
     'pascalprecht.translate'
   ]);
@@ -20,7 +22,7 @@ goog.require('ga_what3words_service');
   module.directive('gaContextPopup',
       function($http, $q, $timeout, $window, $rootScope, gaBrowserSniffer,
           gaNetworkStatus, gaPermalink, gaGlobalOptions, gaLang, gaWhat3Words,
-          gaReframe, gaEvent) {
+          gaReframe, gaEvent, gaWindow) {
         return {
           restrict: 'A',
           replace: true,
@@ -45,10 +47,6 @@ goog.require('ga_what3words_service');
               stopEvent: true
             });
             map.addOverlay(overlay);
-
-            scope.showQR = function() {
-              return !gaBrowserSniffer.mobile && !gaNetworkStatus.offline;
-            };
 
             var formatCoordinates = function(coord, prec, ignoreThousand) {
               var fCoord = ol.coordinate.toStringXY(coord, prec);
@@ -169,7 +167,7 @@ goog.require('ga_what3words_service');
 
               updatePopupLinks();
 
-              if (gaBrowserSniffer.phone) {
+              if (gaWindow.isWidth('xs') || gaWindow.isHeight('xs')) {
                 view.animate({
                   center: coord21781,
                   duration: 200
@@ -189,11 +187,12 @@ goog.require('ga_what3words_service');
 
             if ('oncontextmenu' in $window) {
               $(map.getViewport()).on('contextmenu', function(event) {
-                if (!isPopoverShown) {
-                  $timeout.cancel(holdPromise);
-                  startPixel = undefined;
-                  handler(event);
+                if (isPopoverShown) {
+                  scope.hidePopover();
                 }
+                $timeout.cancel(holdPromise);
+                startPixel = undefined;
+                handler(event);
               });
               element.on('contextmenu', 'a', function(e) {
                 e.stopPropagation();
@@ -273,7 +272,9 @@ goog.require('ga_what3words_service');
               scope.crosshairPermalink = gaPermalink.getHref(
                   angular.extend({crosshair: 'marker'}, p));
 
-              if (!gaBrowserSniffer.mobile) {
+              scope.qrcodeUrl = null;
+              if (!gaNetworkStatus.offline && gaWindow.isWidth('>=s') &&
+                  gaWindow.isHeight('>s')) {
                 scope.qrcodeUrl = qrcodeUrl + '?url=' +
                     escape(scope.contextPermalink);
               }

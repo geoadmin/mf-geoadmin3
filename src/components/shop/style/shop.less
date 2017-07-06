@@ -3,8 +3,8 @@
   border-top: #e9e9e9 1px solid;
   padding: 5px;
 
-  @media (max-width: @screen-phone) {
-    option[value="string:rectangle"] {
+  @media (max-width: @screen-phone), (max-height: @screen-s-height) {
+    [ga-shop-rectangle], option[value="string:rectangle"] {
       display: none;
     }
   }
@@ -25,11 +25,5 @@
     text-align: right;
     line-height: 3.5em;
     color: red;
-  }
-}
-
-.touch {
-  [ga-shop-rectangle], option[value="string:rectangle"] {
-    display: none;
   }
 }

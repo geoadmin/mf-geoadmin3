@@ -198,7 +198,7 @@ goog.require('ga_measure_service');
 
       var geolocationStyleFunction = function(feature, res) {
         var rotation = feature.get('rotation');
-        if (angular.isDefined(rotation)) {
+        if (rotation) {
           headingStyle.getImage().setRotation(rotation);
           return [headingStyle];
         }

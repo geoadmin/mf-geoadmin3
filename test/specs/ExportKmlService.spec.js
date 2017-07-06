@@ -158,20 +158,10 @@ describe('ga_exportkml_service', function() {
 
     describe('#createAndDownload()', function() {
 
-      it('returns nothing', function() {
-        var layer = createVectorLayer([featWithProps]);
-        var canSave = gaExportKmlMock.expects('canSave').once().returns(false);
-        var alret = $windowMock.expects('alert').once().withArgs('export_kml_notsupported');
-        gaExportKml.createAndDownload(layer, 'EPSG:3857');
-        canSave.verify();
-        alret.verify();
-      });
-
       describe('using download service', function() {
         var dlUrl, fileName, fileUrl, open;
 
         var expectations = function() {
-          var canSave = gaExportKmlMock.expects('canSave').once().returns(true);
 
           $httpBackend.whenPOST(dlUrl).respond({'url': fileUrl});
           $httpBackend.expectPOST(dlUrl, {
@@ -183,7 +173,6 @@ describe('ga_exportkml_service', function() {
           gaExportKml.createAndDownload(layer, 'EPSG:3857');
 
           $httpBackend.flush();
-          canSave.verify();
           open.verify();
         };
 
@@ -235,23 +224,12 @@ describe('ga_exportkml_service', function() {
         gaBrowserSniffer.safari = false;
         gaBrowserSniffer.blob = true;
         var fileName = 'map.geo.admin.ch_KML_.kml';
-        var canSave = gaExportKmlMock.expects('canSave').once().returns(true);
         var spySaveAs = sinon.spy($window, 'saveAs');
 
         var layer = createVectorLayer([featWithProps]);
         gaExportKml.createAndDownload(layer, 'EPSG:3857');
 
-        canSave.verify();
         expect(spySaveAs.calledOnce).to.be.ok();
-      });
-    });
-
-    describe('#cansave()', function() {
-      it('tests if we can save the kml', function() {
-        gaBrowserSniffer.mobile = false;
-        expect(gaExportKml.canSave()).to.be(true);
-        gaBrowserSniffer.mobile = true;
-        expect(gaExportKml.canSave()).to.be(false);
       });
     });
   });
