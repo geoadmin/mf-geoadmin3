@@ -263,7 +263,7 @@ National :
 
 Regional :
 
-- Geoportal <b> Bavaria</b>  : http://servus.bayern.de/bayernatlas2  
+- Geoportal <b> Bayern</b>  : https://geoportal.bayern.de/bayernatlas/  
 
 - Geoportal <b> Jura-Bernois</b> https://map.geojb.ch  
 
