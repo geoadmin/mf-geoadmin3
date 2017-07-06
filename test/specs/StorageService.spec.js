@@ -35,7 +35,7 @@ describe('ga_storage_service', function() {
       });
     });
 
-    describe('on moderne browsers', function() {
+    describe('on modern browsers', function() {
 
       beforeEach(function() {
         injectSt();

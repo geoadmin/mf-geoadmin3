@@ -1,6 +1,7 @@
 goog.provide('ga_layermanager_directive');
 
 goog.require('ga_attribution_service');
+goog.require('ga_event_service');
 goog.require('ga_layermetadatapopup_service');
 goog.require('ga_map_service');
 goog.require('ga_urlutils_service');
@@ -12,7 +13,8 @@ goog.require('ga_urlutils_service');
     'ga_layermetadatapopup_service',
     'ga_map_service',
     'ga_attribution_service',
-    'ga_urlutils_service'
+    'ga_urlutils_service',
+    'ga_event_service'
   ]);
 
   /**
@@ -48,7 +50,7 @@ goog.require('ga_urlutils_service');
   module.directive('gaLayermanager', function($compile, $timeout,
       $rootScope, $translate, $window, gaBrowserSniffer, gaLayerFilters,
       gaLayerMetadataPopup, gaLayers, gaAttribution, gaUrlUtils,
-      gaMapUtils) {
+      gaMapUtils, gaEvent) {
 
     // Timestamps list template
     var tpl =
@@ -314,22 +316,40 @@ goog.require('ga_urlutils_service');
           });
         });
 
-        if (!scope.mobile) {
-          // Display the third party data tooltip
-          element.tooltip({
-            selector: '.fa-user',
-            container: 'body',
-            placement: 'right',
-            title: function(elm) {
-              return $translate.instant('external_data_tooltip');
-            },
-            template:
-              '<div class="tooltip ga-red-tooltip">' +
-                '<div class="tooltip-arrow"></div>' +
-                '<div class="tooltip-inner"></div>' +
-              '</div>'
-          });
-        }
+        // Display the third party data tooltip, only on mouse events
+        var tooltipOptions = {
+          trigger: 'manual',
+          selector: '.fa-user',
+          container: 'body',
+          placement: 'right',
+          title: function(elm) {
+            return $translate.instant('external_data_tooltip');
+          },
+          template:
+            '<div class="tooltip ga-red-tooltip">' +
+              '<div class="tooltip-arrow"></div>' +
+              '<div class="tooltip-inner"></div>' +
+            '</div>'
+        };
+        var cancelMouseEvts = false;
+        element.on('touchstart mouseover', tooltipOptions.selector,
+            function(evt) {
+          if (!gaEvent.isMouse(evt) || cancelMouseEvts) {
+            cancelMouseEvts = true;
+            return;
+          }
+          var link = $(evt.target);
+          if (!link.data('bs.tooltip')) {
+            link.tooltip(tooltipOptions);
+          }
+          link.tooltip('show');
+        }).on('mouseout', tooltipOptions.selector, function(evt) {
+          if (!gaEvent.isMouse(evt)) {
+            return;
+          }
+          $(evt.target).tooltip('hide');
+          cancelMouseEvts = false;
+        });
 
         // Change layers label when topic changes
         scope.$on('gaLayersTranslationChange', function(evt) {
