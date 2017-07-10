@@ -23,7 +23,7 @@ goog.require('ga_styles_service');
       },
       link: function(scope, element, attrs) {
         if (!gaPermalink.getParams().debug) {
-          element[0].style['display'] = 'none';
+          element.remove();
           return;
         }
         var inspector;
@@ -31,6 +31,34 @@ goog.require('ga_styles_service');
           if (ol3d && !inspector) {
             var scene = ol3d.getCesiumScene();
             inspector = new Cesium.CesiumInspector(element[0], scene);
+
+            // Hide the menu
+            element.find('.cesium-cesiumInspector-button').click();
+          }
+        });
+      }
+    };
+  });
+
+  module.directive('gaCesium3dTilesInspector', function(gaPermalink) {
+    return {
+      restrict: 'A',
+      scope: {
+        ol3d: '=gaCesium3dTilesInspectorOl3d'
+      },
+      link: function(scope, element, attrs) {
+        if (!gaPermalink.getParams().debug) {
+          element.remove();
+          return;
+        }
+        var inspector;
+        scope.$watch('::ol3d', function(ol3d) {
+          if (ol3d && !inspector) {
+            var scene = ol3d.getCesiumScene();
+            inspector = new Cesium.Cesium3DTilesInspector(element[0], scene);
+
+            // Hide the menu
+            element.find('.cesium-cesiumInspector-button').click();
           }
         });
       }
