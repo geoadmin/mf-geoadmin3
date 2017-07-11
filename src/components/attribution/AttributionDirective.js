@@ -37,25 +37,16 @@ goog.require('ga_map_service');
               '<div class="tooltip-inner"></div>' +
             '</div>'
         };
-        var cancelMouseEvts = false;
-        element.on('touchstart mouseover', tooltipOptions.selector,
-            function(evt) {
-          if (!gaEvent.isMouse(evt) || cancelMouseEvts) {
-            cancelMouseEvts = true;
-            return;
-          }
+
+        gaEvent.onMouseOverOut(element, function(evt) {
           var link = $(evt.target);
           if (!link.data('bs.tooltip')) {
             link.tooltip(tooltipOptions);
           }
           link.tooltip('show');
-        }).on('mouseout', tooltipOptions.selector, function(evt) {
-          if (!gaEvent.isMouse(evt)) {
-            return;
-          }
+        }, function(evt) {
           $(evt.target).tooltip('hide');
-          cancelMouseEvts = false;
-        });
+        }, tooltipOptions.selector);
 
         // Display the third party data alert msg
         element.on('click', '.ga-warning-tooltip', function(evt) {

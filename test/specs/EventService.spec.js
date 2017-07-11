@@ -46,6 +46,42 @@ describe('ga_event_service', function() {
         });
       });
     });
+
+    describe('#onMouseOverOut()', function() {
+      var elt, spyOver, spyOut;
+
+      beforeEach(function() {
+        elt = $('<div></div>');
+        spyOver = sinon.spy(function() {});
+        spyOut = sinon.spy(function() {});
+      });
+
+      it('calls mouseover callback on mouse event', function() {
+        gaEvent.onMouseOverOut(elt, spyOver, spyOut);
+
+        elt.trigger('mouseover');
+        expect(spyOver.callCount).to.be(1);
+        expect(spyOut.callCount).to.be(0);
+
+        elt.trigger('mouseout');
+        expect(spyOver.callCount).to.be(1);
+        expect(spyOut.callCount).to.be(1);
+      });
+
+      it('doesn\'t call mouseover callback on touch event', function() {
+        gaEvent.onMouseOverOut(elt, spyOver, spyOut);
+
+        elt.trigger('touchstart');
+        elt.trigger('mouseover');
+        expect(spyOver.callCount).to.be(0);
+        expect(spyOut.callCount).to.be(0);
+
+        elt.trigger('mouseout');
+        expect(spyOver.callCount).to.be(0);
+        expect(spyOut.callCount).to.be(1);
+      });
+
+    });
   });
 });
 

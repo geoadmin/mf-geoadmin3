@@ -331,25 +331,16 @@ goog.require('ga_urlutils_service');
               '<div class="tooltip-inner"></div>' +
             '</div>'
         };
-        var cancelMouseEvts = false;
-        element.on('touchstart mouseover', tooltipOptions.selector,
-            function(evt) {
-          if (!gaEvent.isMouse(evt) || cancelMouseEvts) {
-            cancelMouseEvts = true;
-            return;
-          }
+
+        gaEvent.onMouseOverOut(element, function(evt) {
           var link = $(evt.target);
           if (!link.data('bs.tooltip')) {
             link.tooltip(tooltipOptions);
           }
           link.tooltip('show');
-        }).on('mouseout', tooltipOptions.selector, function(evt) {
-          if (!gaEvent.isMouse(evt)) {
-            return;
-          }
+        }, function(evt) {
           $(evt.target).tooltip('hide');
-          cancelMouseEvts = false;
-        });
+        }, tooltipOptions.selector);
 
         // Change layers label when topic changes
         scope.$on('gaLayersTranslationChange', function(evt) {

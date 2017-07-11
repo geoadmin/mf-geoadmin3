@@ -14,6 +14,25 @@ goog.provide('ga_event_service');
           var evt = event.originalEvent || event;
           return MOUSE_REGEX.test(evt.pointerType || evt.type);
         };
+
+        // Ensure actions on mouseover/out are only triggered by a mouse
+        this.onMouseOverOut = function(elt, onMouseOver, onMouseOut, selector) {
+          var that = this;
+          var cancelMouseEvts = false;
+          elt.on('touchstart mouseover', selector, function(evt) {
+            if (!that.isMouse(evt) || cancelMouseEvts) {
+              cancelMouseEvts = true;
+              return;
+            }
+            onMouseOver(evt);
+          }).on('mouseout', selector, function(evt) {
+            if (!that.isMouse(evt)) {
+              return;
+            }
+            onMouseOut(evt);
+            cancelMouseEvts = false;
+          });
+        };
       };
 
       return new EventManager();

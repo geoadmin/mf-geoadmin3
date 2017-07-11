@@ -111,19 +111,10 @@ goog.require('ga_previewlayers_service');
 
               // Leaf
               } else {
-                var cancelMouseEvents = false;
-                iEl.on('touchstart mouseover', function(evt) {
-                  if (!gaEvent.isMouse(evt) || cancelMouseEvents) {
-                    cancelMouseEvents = true;
-                    return;
-                  }
+                gaEvent.onMouseOverOut(iEl, function(evt) {
                   addPreviewLayer(scope.map, scope.item);
-                }).on('mouseout', function(evt) {
-                  if (!gaEvent.isMouse(evt)) {
-                    return;
-                  }
+                }, function(evt) {
                   removePreviewLayer(scope.map);
-                  cancelMouseEvents = false;
                 });
               }
               compiledContent(scope, function(clone, scope) {
