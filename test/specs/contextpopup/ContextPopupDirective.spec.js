@@ -5,10 +5,29 @@ describe('ga_contextpopup_directive', function() {
   var expectedw3wUrl = 'dummy.test.url.com/v2/reverse?coords=46.84203157398991,8.244528382656728&key=testkey&lang=de';
   var contextPermalink = 'http://test.com?X=188192&Y=661473';
   var crosshairPermalink = 'http://test.com?crosshair=marker&X=188192&Y=661473';
+  var mapEvt = {
+    stopPropagation: function() {},
+    preventDefault: function() {},
+    pixel: [25, 50],
+    coordinate: [661473, 188192]
+  };
+  var mapEvt2 = {
+    stopPropagation: function() {},
+    preventDefault: function() {},
+    pixel: [30, 60],
+    coordinate: [661673, 198192]
+  };
+  var mouseEvt = $.extend({type: 'mousedown'}, mapEvt);
+  var mouseEvt2 = $.extend({type: 'mouseup'}, mapEvt2);
+  var touchEvt = $.extend({type: 'touchstart'}, mapEvt);
+  var touchEvt2 = $.extend({type: 'touchend'}, mapEvt2);
 
-  var loadDirective = function() {
+  var loadDirective = function(isActive) {
     parentScope = $rootScope.$new();
-    var tpl = '<div ga-context-popup ga-context-popup-map="map" ga-context-popup-options="options"></div>';
+    parentScope.isActive = angular.isDefined(isActive) ? isActive : true;
+    var tpl = '<div ga-context-popup ga-context-popup-map="map" ' +
+                   'ga-context-popup-options="options" ' +
+                   'ga-context-popup-active="isActive"></div>';
     elt = $compile(tpl)(parentScope);
     $rootScope.$digest();
     scope = elt.isolateScope();
@@ -94,27 +113,8 @@ describe('ga_contextpopup_directive', function() {
   });
 
   describe('on all browser', function() {
-    var mapEvt, mapEvt2, mouseEvt, mouseEvt2, touchEvt, touchEvt2;
-
-    beforeEach(inject(function($injector) {
-      mapEvt = {
-         stopPropagation: function() {},
-         preventDefault: function() {},
-         pixel: [25, 50],
-         coordinate: [661473, 188192]
-      };
-      mapEvt2 = {
-        stopPropagation: function() {},
-        preventDefault: function() {},
-        pixel: [30, 60],
-        coordinate: [661673, 198192]
-      };
-      mouseEvt = $.extend({type: 'mousedown'}, mapEvt),
-      mouseEvt2 = $.extend({type: 'mouseup'}, mapEvt2),
-      touchEvt = $.extend({type: 'touchstart'}, mapEvt),
-      touchEvt2 = $.extend({type: 'touchend'}, mapEvt2);
-
-      loadDirective();
+       beforeEach(inject(function($injector) {
+        loadDirective();
       $timeout.flush();
     }));
 
@@ -294,6 +294,27 @@ describe('ga_contextpopup_directive', function() {
       var spy = sinon.spy(gaPermalink, 'getHref');
       scope.$broadcast('gaPermalinkChange');
       expect(spy.callCount).to.eql(2);
+    });
+  });
+
+  describe('when isActive = false', function() {
+
+    beforeEach(inject(function($injector) {
+      loadDirective(false);
+      $timeout.flush();
+    }));
+
+    it('doesn\'t display informations on events', function() {
+      var spy = sinon.spy(gaReframe, 'get03To95');
+      var spy2 = sinon.spy(gaWhat3Words, 'getWords');
+      var evt = $.Event('contextmenu');
+      evt.coordinate = [661473, 188192];
+      evt.pixel = [25, 50];
+      handlers.pointerdown(touchEvt);
+      $(map.getViewport()).trigger(evt);
+      expect(spy.callCount).to.eql(0);
+      expect(spy2.callCount).to.eql(0);
+      $timeout.flush();
     });
   });
 });
