@@ -241,14 +241,14 @@ goog.require('ga_window_service');
     $scope.globals = {
       dev3d: gaGlobalOptions.dev3d,
       pegman: gaGlobalOptions.pegman,
-      searchFocused: !gaBrowserSniffer.mobile,
+      searchFocused: false,
       homescreen: false,
       webkit: gaBrowserSniffer.webkit,
       ios: gaBrowserSniffer.ios,
       animation: gaBrowserSniffer.animation,
       offline: gaNetworkStatus.offline,
       embed: gaBrowserSniffer.embed,
-      pulldownShown: !(gaBrowserSniffer.mobile || win.width() <= 1024),
+      pulldownShown: false,
       printShown: false,
       catalogShown: false,
       selectionShown: false,
@@ -261,6 +261,14 @@ goog.require('ga_window_service');
       hostIsProd: gaGlobalOptions.hostIsProd
     };
 
+    // gaWindow is efficient only after the dom is ready
+    $document.ready(function() {
+       $scope.$applyAsync(function() {
+         $scope.globals.searchFocused = gaWindow.isWidth('>xs');
+         $scope.globals.pulldownShown = gaWindow.isWidth('>s') && gaWindow.isHeight('>s');
+       });
+    });
+    
     $scope.hidePulldownOnXSmallScreen = function() {
       if (gaWindow.isWidth('xs')) {
         $scope.globals.pulldownShown = false;
@@ -311,44 +319,41 @@ goog.require('ga_window_service');
       }, 2000);
     }
 
-    // Manage exit of draw mode (only desktop)
-    if (!gaBrowserSniffer.mobile) {
+    // Manage exit of draw mode
+    // Exit Draw mode when pressing ESC or Backspace button
+    $document.keydown(function(evt) {
+      if (evt.which == 8) {
+        if (!/^(input|textarea)$/i.test(evt.target.tagName)) {
+          evt.preventDefault();
+        } else {
+          return;
+        }
+      }
+      if ((evt.which == 8 || evt.which == 27) &&
+          $scope.globals.isDrawActive) {
+        $scope.globals.isDrawActive = false;
+        $scope.$digest();
+      }
+    });
 
-      // Exit Draw mode when pressing ESC or Backspace button
-      $document.keydown(function(evt) {
-        if (evt.which == 8) {
-          if (!/^(input|textarea)$/i.test(evt.target.tagName)) {
-            evt.preventDefault();
-          } else {
-            return;
-          }
-        }
-        if ((evt.which == 8 || evt.which == 27) &&
-            $scope.globals.isDrawActive) {
-          $scope.globals.isDrawActive = false;
-          $scope.$digest();
-        }
-      });
+    // Browser back button management
+    $scope.$watch('globals.isDrawActive', function(isActive) {
+      if (isActive && gaHistory) {
+        gaHistory.replaceState({
+          isDrawActive: false
+        }, '', gaPermalink.getHref());
 
-      // Browser back button management
-      $scope.$watch('globals.isDrawActive', function(isActive) {
-        if (isActive && gaHistory) {
-          gaHistory.replaceState({
-            isDrawActive: false
-          }, '', gaPermalink.getHref());
-
-          gaHistory.pushState(null, '', gaPermalink.getHref());
-        }
-      });
-      $window.onpopstate = function(evt) {
-        // When we go to full screen evt.state is null
-        if (evt.state && evt.state.isDrawActive === false) {
-          $scope.globals.isDrawActive = false;
-          gaPermalink.refresh();
-          $scope.$digest();
-        }
-      };
-    }
+        gaHistory.pushState(null, '', gaPermalink.getHref());
+      }
+    });
+    $window.onpopstate = function(evt) {
+      // When we go to full screen evt.state is null
+      if (evt.state && evt.state.isDrawActive === false) {
+        $scope.globals.isDrawActive = false;
+        gaPermalink.refresh();
+        $scope.$digest();
+      }
+    };
 
     // Management of panels display (only on screen bigger than 480px)
     win.on('resize', function() {
