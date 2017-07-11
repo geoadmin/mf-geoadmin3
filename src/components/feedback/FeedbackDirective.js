@@ -3,12 +3,15 @@ goog.provide('ga_feedback_directive');
 goog.require('ga_browsersniffer_service');
 goog.require('ga_exportkml_service');
 goog.require('ga_permalink');
+goog.require('ga_window_service');
+
 (function() {
 
   var module = angular.module('ga_feedback_directive', [
     'ga_browsersniffer_service',
     'ga_exportkml_service',
     'ga_permalink',
+    'ga_window_service',
     'pascalprecht.translate'
   ]);
 
@@ -21,7 +24,7 @@ goog.require('ga_permalink');
    */
   module.directive('gaFeedback',
       function($http, $translate, gaPermalink, gaBrowserSniffer, gaExportKml,
-               gaGlobalOptions) {
+            gaGlobalOptions, gaWindow) {
           return {
             restrict: 'A',
             replace: true,
@@ -85,8 +88,7 @@ goog.require('ga_permalink');
               var elFileInpt = element.find('input[type=file]');
               scope.isIE9 = (gaBrowserSniffer.msie == 9);
               // msie is either false or a number
-              scope.isIE = gaBrowserSniffer.msie ? true : false;
-              scope.isMobile = gaBrowserSniffer.mobile;
+              scope.isIE = !!gaBrowserSniffer.msie;
               scope.showProgress = false;
               scope.success = false;
               scope.error = false;
@@ -148,7 +150,10 @@ goog.require('ga_permalink');
                 scope.form = true;
                 scope.error = false;
                 scope.success = false;
-                scope.showDraw = active;
+
+                // Active draw only on big screen
+                scope.showDraw = gaWindow.isWidth('>s') &&
+                    gaWindow.isHeight('>s');
                 if (drawingLayer) {
                   drawingLayer.getSource().clear();
                 }
