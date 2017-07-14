@@ -1,5 +1,5 @@
 describe('ga_translation_directive', function() {
-  var element, scope, parentScope, $rootScope, $compile, $gaBrowserSniffer,
+  var element, scope, parentScope, $rootScope, $compile,
       lang = 'rm',
       langs = ['de', 'fr', 'it', 'rm', 'en'];
 
@@ -23,15 +23,11 @@ describe('ga_translation_directive', function() {
         }
       });
       $provide.value('gaTopic', {});
-      $provide.value('gaBrowserSniffer', {
-        mobile: false
-      });
     });
 
     inject(function($injector) {
       $rootScope = $injector.get('$rootScope');
       $compile = $injector.get('$compile');
-      gaBrowserSniffer = $injector.get('gaBrowserSniffer');
     });
   });
 
@@ -99,7 +95,6 @@ describe('ga_translation_directive', function() {
   describe('uses select box template (mobile)', function() {
 
     beforeEach(function() {
-      gaBrowserSniffer.mobile = true;
       loadDirective();
     });
 
@@ -113,7 +108,6 @@ describe('ga_translation_directive', function() {
 
     beforeEach(function() {
       lang = 'rm';
-      gaBrowserSniffer.mobile = true;
       $rootScope.options = {
         langs: langs
       };

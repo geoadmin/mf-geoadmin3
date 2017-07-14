@@ -7,16 +7,14 @@ goog.require('ga_translation_service');
     'ga_translation_service'
   ]);
 
-  module.directive('gaTranslationSelector', function($rootScope,
-      gaBrowserSniffer, gaLang) {
+  module.directive('gaTranslationSelector', function($rootScope, gaLang) {
     return {
       restrict: 'A',
       scope: {
         options: '=gaTranslationSelectorOptions'
       },
       templateUrl: function() {
-        return 'components/translation/partials/translation' +
-            ((gaBrowserSniffer.mobile) ? 'mobile' : 'desktop') + '.html';
+        return 'components/translation/partials/translation.html';
       },
       link: function(scope, element, attrs) {
         scope.lang = gaLang.get();

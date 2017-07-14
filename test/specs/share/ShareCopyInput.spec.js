@@ -29,23 +29,7 @@ describe('ga_sharecopyinput_directive', function() {
       $rootScope.onBeforeCopy = function() {return 'a';};
     });
 
-    describe('on mobile', function() {
-
-      beforeEach(function() {
-        gaBrowserSniffer.mobile = true;
-        loadDirective();
-      });
-
-      it('doesn\'t add tootltip', function() {
-        expect(eltInput.data('bs-tooltip')).to.be(undefined);
-      });
-    });
-
     describe('on other devices', function() {
-
-      beforeEach(function() {
-        gaBrowserSniffer.mobile = false;
-      });
 
       it('verifies html elements', function() {
         loadDirective();
