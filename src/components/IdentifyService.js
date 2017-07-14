@@ -87,7 +87,8 @@ goog.provide('ga_identify_service');
           var othersParams = {
             tolerance: tolerance || 0,
             returnGeometry: !!returnGeometry,
-            lang: gaLang.get()
+            lang: gaLang.get(),
+            sr: '2056'
           };
           if (limit) {
             othersParams.limit = limit;

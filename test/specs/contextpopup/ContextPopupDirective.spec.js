@@ -1,21 +1,21 @@
 describe('ga_contextpopup_directive', function() {
   var elt, parentScope, handlers = {}, map, $rootScope, gaReframe, $window, $compile, $httpBackend, $timeout, gaWhat3Words, $q, gaPermalink, gaEvent;
-  var expectedHeightUrl = '//api.geo.admin.ch/height?easting=661473&elevation_model=COMB&northing=188192';
-  var expectedReframeUrl = '//api.example.com/reframe/lv03tolv95?easting=661473&northing=188192';
+  var expectedHeightUrl = '//api.geo.admin.ch/height?easting=2661473&elevation_model=COMB&northing=1188192';
+  var expectedReframeUrl = '//api.example.com/reframe/lv95tolv03?easting=2661473&northing=1188192';
   var expectedw3wUrl = 'dummy.test.url.com/v2/reverse?coords=46.84203157398991,8.244528382656728&key=testkey&lang=de';
-  var contextPermalink = 'http://test.com?X=188192&Y=661473';
-  var crosshairPermalink = 'http://test.com?crosshair=marker&X=188192&Y=661473';
+  var contextPermalink = 'http://test.com?N=1188192&E=2661473';
+  var crosshairPermalink = 'http://test.com?crosshair=marker&N=1188192&E=2661473';
   var mapEvt = {
     stopPropagation: function() {},
     preventDefault: function() {},
     pixel: [25, 50],
-    coordinate: [661473, 188192]
+    coordinate: [2661473, 1188192]
   };
   var mapEvt2 = {
     stopPropagation: function() {},
     preventDefault: function() {},
     pixel: [30, 60],
-    coordinate: [661673, 198192]
+    coordinate: [2661673, 1198192]
   };
   var mouseEvt = $.extend({type: 'mousedown'}, mapEvt);
   var mouseEvt2 = $.extend({type: 'mouseup'}, mapEvt2);
@@ -101,7 +101,7 @@ describe('ga_contextpopup_directive', function() {
     };
 
     $httpBackend.when('GET', expectedHeightUrl).respond({height: '1233'});
-    $httpBackend.when('GET', expectedReframeUrl).respond({coordinates: [2725984.4037894635, 1180787.4007025931]});
+    $httpBackend.when('GET', expectedReframeUrl).respond({coordinates: [725984.4037894635, 180787.4007025931]});
     $httpBackend.when('GET', expectedw3wUrl).respond({words: 'das.ist.test'});
   });
 
@@ -113,8 +113,8 @@ describe('ga_contextpopup_directive', function() {
   });
 
   describe('on all browser', function() {
-       beforeEach(inject(function($injector) {
-        loadDirective();
+    beforeEach(inject(function($injector) {
+      loadDirective();
       $timeout.flush();
     }));
 
@@ -126,10 +126,10 @@ describe('ga_contextpopup_directive', function() {
     });
 
     it('displays information on contextmenu events', function() {
-      var spy = sinon.spy(gaReframe, 'get03To95');
+      var spy = sinon.spy(gaReframe, 'get95To03');
       var spy2 = sinon.spy(gaWhat3Words, 'getWords');
       var evt = $.Event('contextmenu');
-      evt.coordinate = [661473, 188192];
+      evt.coordinate = [2661473, 1188192];
       evt.pixel = [25, 50];
       handlers.pointerdown(touchEvt);
       $(map.getViewport()).trigger(evt);
@@ -155,11 +155,11 @@ describe('ga_contextpopup_directive', function() {
     });
 
     it('reopens popup on 2nd contextmenu event', function() {
-      var spy = sinon.spy(gaReframe, 'get03To95');
+      var spy = sinon.spy(gaReframe, 'get95To03');
       var spy2 = sinon.spy(gaWhat3Words, 'getWords');
       var spy3 = sinon.spy(scope, 'hidePopover');
       var evt = $.Event('contextmenu');
-      evt.coordinate = [661473, 188192];
+      evt.coordinate = [2661473, 1188192];
       evt.pixel = [25, 50];
       $(map.getViewport()).trigger(evt);
       $httpBackend.flush();
@@ -170,7 +170,7 @@ describe('ga_contextpopup_directive', function() {
       expect(spy3.callCount).to.eql(0);
 
       evt = $.Event('contextmenu');
-      evt.coordinate = [661473, 188192];
+      evt.coordinate = [2661473, 1188192];
       evt.pixel = [25, 50];
       $(map.getViewport()).trigger(evt);
       $httpBackend.flush();
@@ -182,7 +182,7 @@ describe('ga_contextpopup_directive', function() {
     });
 
     it('displays informations on long touch press', function() {
-      var spy = sinon.spy(gaReframe, 'get03To95');
+      var spy = sinon.spy(gaReframe, 'get95To03');
       var spy2 = sinon.spy(gaWhat3Words, 'getWords');
       var spyStop = sinon.spy(touchEvt, 'stopPropagation');
       var spyPrev = sinon.spy(touchEvt, 'preventDefault');
@@ -214,7 +214,7 @@ describe('ga_contextpopup_directive', function() {
     });
 
     it('doesn\'t display informations on long touch press if ctrlKey is pressed', function() {
-      var spy = sinon.spy(gaReframe, 'get03To95');
+      var spy = sinon.spy(gaReframe, 'get95To03');
       var ctrlEvt = $.extend({ctrlKey: true}, touchEvt);
       handlers.pointerdown(ctrlEvt);
       $timeout.flush();
@@ -223,14 +223,14 @@ describe('ga_contextpopup_directive', function() {
     });
 
     it('doesn\'t display informations on long mouse press', function() {
-      var spy = sinon.spy(gaReframe, 'get03To95');
+      var spy = sinon.spy(gaReframe, 'get95To03');
       handlers.pointerdown(mouseEvt);
       expect(spy.callCount).to.eql(0);
       expect(elt.css('display')).to.be('none');
     });
 
     it('doesn\'t display information if pointerup event happens before 300ms', function() {
-      var spy = sinon.spy(gaReframe, 'get03To95');
+      var spy = sinon.spy(gaReframe, 'get95To03');
 
       // Touch
       handlers.pointerdown(touchEvt);
@@ -248,7 +248,7 @@ describe('ga_contextpopup_directive', function() {
     });
 
     it('doesn\'t display information if pointermove event happens before 300ms', function() {
-      var spy = sinon.spy(gaReframe, 'get03To95');
+      var spy = sinon.spy(gaReframe, 'get95To03');
 
       // Touch
       handlers.pointerdown(touchEvt);
@@ -270,7 +270,7 @@ describe('ga_contextpopup_directive', function() {
     it('updates w3w text on $translateChangeEnd event', function() {
       var spy = sinon.stub(gaWhat3Words, 'getWords').returns($q.when('das.ist.test'));
       var evt = $.Event('contextmenu');
-      evt.coordinate = [661473, 188192];
+      evt.coordinate = [2661473, 1188192];
       evt.pixel = [25, 50];
       $(map.getViewport()).trigger(evt);
       $httpBackend.flush();
@@ -285,7 +285,7 @@ describe('ga_contextpopup_directive', function() {
 
     it('updates permalinks on gaPermalinkChange event', function() {
       var evt = $.Event('contextmenu');
-      evt.coordinate = [661473, 188192];
+      evt.coordinate = [2661473, 1188192];
       evt.pixel = [25, 50];
       $(map.getViewport()).trigger(evt);
       $httpBackend.flush();

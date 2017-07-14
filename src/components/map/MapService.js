@@ -20,7 +20,7 @@ goog.require('ga_urlutils_service');
   ]);
 
   module.provider('gaTileGrid', function() {
-    var origin = [420000, 350000];
+    var origin = [2420000, 1350000];
 
     function getDefaultResolutions() {
         return [4000, 3750, 3500, 3250, 3000, 2750, 2500, 2250,

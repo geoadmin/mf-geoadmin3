@@ -40,7 +40,7 @@ goog.require('ga_window_service');
             var heightCanceler = $q.defer();
             var map = scope.map;
             var view = map.getView();
-            var coord21781, coord4326;
+            var coord2056, coord4326;
 
             var overlay = new ol.Overlay({
               element: element[0],
@@ -101,13 +101,13 @@ goog.require('ga_window_service');
               var pixel = (event.originalEvent) ?
                   map.getEventPixel(event.originalEvent) :
                   event.pixel;
-              coord21781 = (event.originalEvent) ?
+              coord2056 = (event.originalEvent) ?
                   map.getEventCoordinate(event.originalEvent) :
                   event.coordinate;
-              coord4326 = ol.proj.transform(coord21781,
-                  'EPSG:21781', 'EPSG:4326');
-              var coord2056 = ol.proj.transform(coord21781,
-                  'EPSG:21781', 'EPSG:2056');
+              coord4326 = ol.proj.transform(coord2056,
+                  'EPSG:2056', 'EPSG:4326');
+              var coord21781 = ol.proj.transform(coord2056,
+                  'EPSG:2056', 'EPSG:21781');
 
               scope.coord21781 = formatCoordinates(coord21781, 1);
               scope.coord4326 = ol.coordinate.format(coord4326, '{y}, {x}', 5);
@@ -124,7 +124,7 @@ goog.require('ga_window_service');
                     'EPSG:4326', 'EPSG:32632');
                 scope.coordutm = coordinatesFormatUTM(utm_32t, '(zone 32T)');
               } else {
-                return '-';
+                scope.coordutm = '-';
               }
 
               coord4326['lon'] = coord4326[0];
@@ -143,9 +143,10 @@ goog.require('ga_window_service');
 
                 $http.get(heightUrl, {
                   params: {
-                    easting: coord21781[0],
-                    northing: coord21781[1],
-                    elevation_model: gaGlobalOptions.defaultElevationModel
+                    easting: coord2056[0],
+                    northing: coord2056[1],
+                    elevation_model: gaGlobalOptions.defaultElevationModel,
+                    sr: '2056'
                   },
                   timeout: heightCanceler.promise
                 }).then(function(response) {
@@ -156,10 +157,10 @@ goog.require('ga_window_service');
                   }
                 });
 
-                gaReframe.get03To95(coord21781,
+                gaReframe.get95To03(coord2056,
                     reframeCanceler.promise).then(function(coords) {
-                  coord2056 = coords;
-                  scope.coord2056 = formatCoordinates(coord2056, 2);
+                  coord21781 = coords;
+                  scope.coord21781 = formatCoordinates(coord21781, 2);
                 });
 
                 updateW3W();
@@ -169,7 +170,7 @@ goog.require('ga_window_service');
 
               if (gaWindow.isWidth('xs') || gaWindow.isHeight('xs')) {
                 view.animate({
-                  center: coord21781,
+                  center: coord2056,
                   duration: 200
                 }, hidePopoverOnNextChange);
 
@@ -177,7 +178,7 @@ goog.require('ga_window_service');
                 hidePopoverOnNextChange();
               }
 
-              overlay.setPosition(coord21781);
+              overlay.setPosition(coord2056);
               element.show();
               // We use a boolean instead of  jquery .is(':visible') selector
               // because that doesn't work with phantomJS.
@@ -245,7 +246,7 @@ goog.require('ga_window_service');
 
             // Listen to permalink change events from the scope.
             scope.$on('gaPermalinkChange', function(event) {
-              if (angular.isDefined(coord21781) && isPopoverShown) {
+              if (angular.isDefined(coord2056) && isPopoverShown) {
                 updatePopupLinks();
               }
             });
@@ -265,8 +266,8 @@ goog.require('ga_window_service');
 
             function updatePopupLinks() {
               var p = {
-                X: Math.round(coord21781[1], 1),
-                Y: Math.round(coord21781[0], 1)
+                E: Math.round(coord2056[0], 1),
+                N: Math.round(coord2056[1], 1)
               };
               scope.contextPermalink = gaPermalink.getHref(p);
               scope.crosshairPermalink = gaPermalink.getHref(
