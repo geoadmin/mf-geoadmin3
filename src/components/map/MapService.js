@@ -493,27 +493,23 @@ goog.require('ga_urlutils_service');
         // The tile load function which loads tiles from local
         // storage if they exist otherwise try to load the tiles normally.
         var tileLoadFunction = function(imageTile, src) {
-          if (gaBrowserSniffer.mobile) {
-            gaStorage.getTile(gaMapUtils.getTileKey(src)).then(
-                function(content) {
-              if (content && $window.URL && $window.atob) {
-                try {
-                  var blob = gaMapUtils.dataURIToBlob(content);
-                  imageTile.getImage().addEventListener('load', revokeBlob);
-                  imageTile.getImage().src = $window.URL.createObjectURL(blob);
-                } catch (e) {
-                  // INVALID_CHAR_ERROR on ie and ios(only jpeg), it's an
-                  // encoding problem.
-                  // TODO: fix it
-                  imageTile.getImage().src = content;
-                }
-              } else {
-                imageTile.getImage().src = (content) ? content : src;
+          gaStorage.getTile(gaMapUtils.getTileKey(src)).then(
+              function(content) {
+            if (content && $window.URL && $window.atob) {
+              try {
+                var blob = gaMapUtils.dataURIToBlob(content);
+                imageTile.getImage().addEventListener('load', revokeBlob);
+                imageTile.getImage().src = $window.URL.createObjectURL(blob);
+              } catch (e) {
+                // INVALID_CHAR_ERROR on ie and ios(only jpeg), it's an
+                // encoding problem.
+                // TODO: fix it
+                imageTile.getImage().src = content;
               }
-            });
-          } else {
-            imageTile.getImage().src = src;
-          }
+            } else {
+              imageTile.getImage().src = (content) ? content : src;
+            }
+          });
         };
 
         // Load layers config
