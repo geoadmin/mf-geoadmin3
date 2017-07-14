@@ -17,9 +17,9 @@
                 ng-class="isDefaultValue(layer.time)"
                 ng-click="displayTimestamps($event, layer)">{{layer.time | gaTimeLabel:layer}}
         </button>
-        <select ng-if="mobile"
-                ng-model="layer.time"
-                ng-options="(i | gaTimeLabel:layer) for i in layer.timestamps">
+        <select ng-model="layer.time"
+                ng-options="(i | gaTimeLabel:layer) for i in layer.timestamps"
+                class="visible-xs-block">
           <option ng-if="layer.type == 'wms'" value="" translate>time_all</option>
         </select>
       </div>
@@ -34,7 +34,7 @@
                 ng-model="layer.invertedOpacity"
                 ng-mouseenter="disableDragAndDrop()"
                 ng-mouseleave="enableDragAndDrop()"/>
-        <select ng-if="!useRange"  ng-model="layer.invertedOpacity" ng-options="i.key as i.value for i in opacityValues">
+        <select ng-if="!useRange" ng-model="layer.invertedOpacity" ng-options="i.key as i.value for i in opacityValues">
         </select>
       </label>
       <div class="ga-layer-ordering">
