@@ -80,7 +80,41 @@ describe('ga_event_service', function() {
         expect(spyOver.callCount).to.be(0);
         expect(spyOut.callCount).to.be(1);
       });
+    });
 
+    describe('#onMouseEnterLeave()', function() {
+      var elt, spyOver, spyOut;
+
+      beforeEach(function() {
+        elt = $('<div></div>');
+        spyOver = sinon.spy(function() {});
+        spyOut = sinon.spy(function() {});
+      });
+
+      it('calls mouseenter callback on mouse event', function() {
+        gaEvent.onMouseOverOut(elt, spyOver, spyOut);
+
+        elt.trigger('mouseenter');
+        expect(spyOver.callCount).to.be(1);
+        expect(spyOut.callCount).to.be(0);
+
+        elt.trigger('mouseleave');
+        expect(spyOver.callCount).to.be(1);
+        expect(spyOut.callCount).to.be(1);
+      });
+
+      it('doesn\'t call mouseenter callback on touch event', function() {
+        gaEvent.onMouseOverOut(elt, spyOver, spyOut);
+
+        elt.trigger('touchstart');
+        elt.trigger('mouseenter');
+        expect(spyOver.callCount).to.be(0);
+        expect(spyOut.callCount).to.be(0);
+
+        elt.trigger('mouseleave');
+        expect(spyOver.callCount).to.be(0);
+        expect(spyOut.callCount).to.be(1);
+      });
     });
   });
 });

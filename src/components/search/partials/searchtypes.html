@@ -1,22 +1,8 @@
 <div class="ga-search-results-container ng-hide" ng-hide="!results.length">
   <div class="ga-search-results-header" translate="{{type + '_results_header' + fuzzy}}"></div>
   <div class="ga-search-results">
-    <div class="ga-search-result" tabindex="{{tabstart + i}}"
-         ng-repeat="(i, res) in results"
-         ng-keydown="keydown($event, res)"
-         ng-focus="preview(res)"
-         ng-blur="out()"
-         ng-click="click(res)"
-         ng-mouseenter="preview(res)"
-         ng-mouseleave="out()">
-      <div class="ga-search-item"
-           ng-bind-html="prepareLabel(res.attrs)"
-           title="{{cleanLabel(res.attrs)}}">
-      </div>
-      <button class="ga-btn ga-icon fa fa-info-sign"
-         ng-if="type === 'layers'"
-         ng-click="getLegend($event, res.attrs.layer)">
-      </button>
+    <div ng-repeat="res in results" ga-search-item="res"  class="ga-search-result"
+         tabindex="{{tabstart + $index}}" >
     </div>
   </div>
 </div>

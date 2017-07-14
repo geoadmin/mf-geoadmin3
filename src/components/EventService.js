@@ -8,6 +8,25 @@ goog.provide('ga_event_service');
     this.$get = function() {
       var MOUSE_REGEX = /mouse/;
 
+      // Ensure actions on mouseover/out are only triggered by a mouse
+      var addMouseOnlyEvents = function(mngr, elt, eventsIn, eventsOut,
+          callbackIn, callbackOut, selector) {
+        var cancelMouseEvts = false;
+        elt.on(eventsIn, selector, function(evt) {
+          if (!mngr.isMouse(evt) || cancelMouseEvts) {
+            cancelMouseEvts = true;
+            return;
+          }
+          callbackIn(evt);
+        }).on(eventsOut, selector, function(evt) {
+          if (!mngr.isMouse(evt)) {
+            return;
+          }
+          callbackOut(evt);
+          cancelMouseEvts = false;
+        });
+      };
+
       var EventManager = function() {
 
         this.isMouse = function(event) {
@@ -17,21 +36,15 @@ goog.provide('ga_event_service');
 
         // Ensure actions on mouseover/out are only triggered by a mouse
         this.onMouseOverOut = function(elt, onMouseOver, onMouseOut, selector) {
-          var that = this;
-          var cancelMouseEvts = false;
-          elt.on('touchstart mouseover', selector, function(evt) {
-            if (!that.isMouse(evt) || cancelMouseEvts) {
-              cancelMouseEvts = true;
-              return;
-            }
-            onMouseOver(evt);
-          }).on('mouseout', selector, function(evt) {
-            if (!that.isMouse(evt)) {
-              return;
-            }
-            onMouseOut(evt);
-            cancelMouseEvts = false;
-          });
+          addMouseOnlyEvents(this, elt, 'touchstart mouseover', 'mouseout',
+              onMouseOver, onMouseOut, selector);
+        };
+
+        // Ensure actions on mouseover/out are only triggered by a mouse
+        this.onMouseEnterLeave = function(elt, onMouseEnter, onMouseLeave,
+            selector) {
+          addMouseOnlyEvents(this, elt, 'touchstart mouseenter', 'mouseleave',
+              onMouseEnter, onMouseLeave, selector);
         };
       };
 

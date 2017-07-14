@@ -1,0 +1,8 @@
+<div class="ga-search-item"
+     ng-bind-html="prepareLabel(res.attrs)"
+     title="{{cleanLabel(res.attrs)}}">
+</div>
+<button class="ga-btn ga-icon fa fa-info-sign"
+        ng-if="type === 'layers'"
+        ng-click="getLegend($event, res.attrs.layer)">
+</button>
