@@ -25,38 +25,38 @@ goog.require('ga_urlutils_service');
         gaLayers, gaTime, gaLang, gaPrintStyle, gaMapUtils,
         gaUrlUtils) {
       return {
-          encodeLegend: getEncodeLegend(gaLang),
-          encodeMatrixIds: getMatrixIds(gaMapUtils),
-          encodeBase: encodeBase,
-          encodeGroup: getEncodeGroup(gaLayers, gaPrintStyle,
-              gaTime, gaMapUtils),
-          encodeWMS: encodeWMS,
-          encodeDimensions: encodeDimensions,
-          encodeWMTS: getEncodeWMTS(gaTime, gaMapUtils),
-          encodeFeatures: getEncodeFeatures(gaPrintStyle),
-          encodeVector: getEncodeVector(gaPrintStyle),
-          encodeLayer: getEncodeLayer(gaLayers, gaPrintStyle,
-              gaTime, gaMapUtils),
-          encodeOverlay: getEncodeOverlay(gaUrlUtils),
-          encodeGraticule: encodeGraticule
+        encodeLegend: getEncodeLegend(gaLang),
+        encodeMatrixIds: getMatrixIds(gaMapUtils),
+        encodeBase: encodeBase,
+        encodeGroup: getEncodeGroup(gaLayers, gaPrintStyle,
+            gaTime, gaMapUtils),
+        encodeWMS: encodeWMS,
+        encodeDimensions: encodeDimensions,
+        encodeWMTS: getEncodeWMTS(gaTime, gaMapUtils),
+        encodeFeatures: getEncodeFeatures(gaPrintStyle),
+        encodeVector: getEncodeVector(gaPrintStyle),
+        encodeLayer: getEncodeLayer(gaLayers, gaPrintStyle,
+            gaTime, gaMapUtils),
+        encodeOverlay: getEncodeOverlay(gaUrlUtils),
+        encodeGraticule: encodeGraticule
       };
     };
   };
 
   function encodeGraticule(dpi) {
-      return {
-          'baseURL': 'https://wms.geo.admin.ch/',
-          'opacity': 1,
-          'singleTile': true,
-          'type': 'WMS',
-          'layers': ['org.epsg.grid_2056'],
-          'format': 'image/png',
-          'styles': [''],
-          'customParams': {
-            'TRANSPARENT': true,
-            'MAP_RESOLUTION': dpi
-          }
-      };
+    return {
+      'baseURL': 'https://wms.geo.admin.ch/',
+      'opacity': 1,
+      'singleTile': true,
+      'type': 'WMS',
+      'layers': ['org.epsg.grid_2056'],
+      'format': 'image/png',
+      'styles': [''],
+      'customParams': {
+        'TRANSPARENT': true,
+        'MAP_RESOLUTION': dpi
+      }
+    };
   };
 
   function getEncodeOverlay(gaUrlUtils) {
@@ -64,40 +64,41 @@ goog.require('ga_urlutils_service');
 
     function encodeOverlay(overlay, resolution, options) {
 
-        var encOverlayLayer;
+      var encOverlayLayer;
 
-        var elt = overlay.getElement();
-        // We print only overlay added by the MarkerOverlayService
-        // or by crosshair permalink
-        if ($(elt).hasClass('popover')) {
-          return;
-        }
-        var center = overlay.getPosition();
-        var offset = 5 * resolution;
+      var elt = overlay.getElement();
+      // We print only overlay added by the MarkerOverlayService
+      // or by crosshair permalink
+      if ($(elt).hasClass('popover')) {
+        return;
+      }
+      var center = overlay.getPosition();
+      var offset = 5 * resolution;
 
-        if (center) {
-          var style = 1, $elt = $(elt);
-          if ($elt.text()) {
-             style = 2;
-             if ($elt.hasClass('ga-draw-measure-tmp')) {
-               style = 3;
-             }
+      if (center) {
+        var style = 1, $elt = $(elt);
+        if ($elt.text()) {
+          style = 2;
+          if ($elt.hasClass('ga-draw-measure-tmp')) {
+            style = 3;
           }
-          encOverlayLayer = {
-            'type': 'Vector',
-            'styles': {
-              '1': { // Style for marker position
-                'externalGraphic':
-                  gaUrlUtils.nonCloudFrontUrl(options.markerUrl),
+        }
+        encOverlayLayer = {
+          'type': 'Vector',
+          'styles': {
+            '1': { // Style for marker position
+              'externalGraphic':
+                gaUrlUtils.nonCloudFrontUrl(options.markerUrl),
                 'graphicWidth': 20,
                 'graphicHeight': 30,
                 // the icon is not perfectly centered in the image
                 // these values must be the same in map.less
                 'graphicXOffset': -12,
                 'graphicYOffset': -30
-              }, '2': { // Style for measure tooltip
-                'externalGraphic':
-                  gaUrlUtils.nonCloudFrontUrl(options.bubbleUrl),
+            },
+            '2': { // Style for measure tooltip
+              'externalGraphic':
+                gaUrlUtils.nonCloudFrontUrl(options.bubbleUrl),
                 'graphicWidth': 97,
                 'graphicHeight': 27,
                 'graphicXOffset': -48,
@@ -108,38 +109,37 @@ goog.require('ga_urlutils_service');
                 'fontColor': '#ffffff',
                 'fontSize': 10,
                 'fontWeight': 'normal'
-              }, '3': { // Style for intermeediate measure tooltip
-                'label': $elt.text(),
-                'labelXOffset': 0,
-                'labelYOffset': 18,
-                'fontColor': '#ffffff',
-                'fontSize': 8,
-                'fontWeight': 'normal',
-                'fillColor': '#ff0000',
-                'strokeColor': '#ff0000'
+            },
+            '3': { // Style for intermeediate measure tooltip
+              'label': $elt.text(),
+              'labelXOffset': 0,
+              'labelYOffset': 18,
+              'fontColor': '#ffffff',
+              'fontSize': 8,
+              'fontWeight': 'normal',
+              'fillColor': '#ff0000',
+              'strokeColor': '#ff0000'
+            }
+          },
+          'styleProperty': '_gx_style',
+          'geoJson': {
+            'type': 'FeatureCollection',
+            'features': [{
+              'type': 'Feature',
+              'properties': {
+                '_gx_style': style
+              },
+              'geometry': {
+                'type': 'Point',
+                'coordinates': [center[0], center[1], 0]
               }
-
-            },
-            'styleProperty': '_gx_style',
-            'geoJson': {
-              'type': 'FeatureCollection',
-              'features': [{
-                'type': 'Feature',
-                'properties': {
-                  '_gx_style': style
-                },
-                'geometry': {
-                  'type': 'Point',
-                  'coordinates': [center[0], center[1], 0]
-                }
-              }]
-            },
-            'name': 'drawing',
-            'opacity': 1
-          };
-
-        }
-        return encOverlayLayer;
+            }]
+          },
+          'name': 'drawing',
+          'opacity': 1
+        };
+      }
+      return encOverlayLayer;
     }
   };
 
@@ -191,8 +191,8 @@ goog.require('ga_urlutils_service');
             encLayer = encodeWMTS(layer, layerConfig);
           } else if (src instanceof ol.source.ImageWMS ||
               src instanceof ol.source.TileWMS) {
-                encLayer = encodeWMS(layer,
-                    layerConfig, dpi);
+            encLayer = encodeWMS(layer,
+                layerConfig, dpi);
           } else if (src instanceof ol.source.Vector ||
               src instanceof ol.source.ImageVector) {
             if (src instanceof ol.source.ImageVector) {
@@ -468,19 +468,19 @@ goog.require('ga_urlutils_service');
      }
 
      var multiPagesPrint = false;
-       if (config.timestamps) {
-         multiPagesPrint = !config.timestamps.some(function(ts) {
-           return ts == '99991231';
+     if (config.timestamps) {
+       multiPagesPrint = !config.timestamps.some(function(ts) {
+         return ts == '99991231';
        });
      }
      // printing time series
      if (config.timeEnabled && gaTime.get() == undefined &&
           multiPagesPrint) {
-        enc['timestamps'] = config.timestamps;
+       enc['timestamps'] = config.timestamps;
      }
 
      return enc;
-     }
+    }
   };
 
   function encodeWMS(layer, config, dpi) {

@@ -263,12 +263,12 @@ goog.require('ga_urlutils_service');
                 $scope.options);
 
           if (!layerConfig.background && layerConfig.visible &&
-                layerConfig.timeEnabled) {
-              if (!layer.time) {
-                return;
-              }
-              layersYears.push(layer.time);
+              layerConfig.timeEnabled) {
+            if (!layer.time) {
+              return;
             }
+            layersYears.push(layer.time);
+          }
 
           if (encLegend.classes && encLegend.classes[0] &&
               encLegend.classes[0].icon) {
@@ -277,8 +277,8 @@ goog.require('ga_urlutils_service');
                 legStr.length - pdfLegendString.length) !== -1) {
               pdfLegendsToDownload.push(legStr);
               encLegend = undefined;
+              }
             }
-          }
           }
           enc.legend = encLegend;
 
