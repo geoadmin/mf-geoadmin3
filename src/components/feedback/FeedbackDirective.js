@@ -149,7 +149,7 @@ goog.require('ga_window_service');
           scope.success = false;
 
           // Active draw only on big screen
-          scope.showDraw = gaWindow.isWidth('>s') &&
+          scope.showDraw = active && gaWindow.isWidth('>s') &&
               gaWindow.isHeight('>s');
           if (drawingLayer) {
             drawingLayer.getSource().clear();
