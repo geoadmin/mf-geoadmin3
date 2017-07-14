@@ -265,10 +265,11 @@ goog.require('ga_window_service');
     $document.ready(function() {
        $scope.$applyAsync(function() {
          $scope.globals.searchFocused = gaWindow.isWidth('>xs');
-         $scope.globals.pulldownShown = gaWindow.isWidth('>s') && gaWindow.isHeight('>s');
+         $scope.globals.pulldownShown = gaWindow.isWidth('>s') &&
+             gaWindow.isHeight('>s');
        });
     });
-    
+
     $scope.hidePulldownOnXSmallScreen = function() {
       if (gaWindow.isWidth('xs')) {
         $scope.globals.pulldownShown = false;
