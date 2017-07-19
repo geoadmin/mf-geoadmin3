@@ -265,6 +265,11 @@ describe('ga_printlayer_service', function() {
       }
 
       var source = new ol.source.ImageWMS(options);
+      var proj = new ol.proj.Projection({
+        code: 'EPSG:21781',
+        units: 'm',
+        extent: extent 
+      });
 
       var layer = new ol.layer.Image({
         id: options.id,
@@ -278,7 +283,7 @@ describe('ga_printlayer_service', function() {
 
       it('returns an encoded WMS layer', function() {
 
-        var wmsLayer = gaPrintLayer.encodeWMS(layer, {})
+        var wmsLayer = gaPrintLayer.encodeWMS(layer, proj, {})
 
         expect(wmsLayer).to.eql({
           "opacity": 1,

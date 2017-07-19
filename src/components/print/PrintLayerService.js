@@ -147,7 +147,7 @@ goog.require('ga_urlutils_service');
 
     return encodeGroup;
 
-    function encodeGroup(layer, proj, scaleDenom, printRectangeCoords,
+    function encodeGroup(layer, viewProj, scaleDenom, printRectangeCoords,
       resolution, dpi) {
       var encs = [];
         var subLayers = layer.getLayers();
@@ -157,7 +157,7 @@ goog.require('ga_urlutils_service');
             var enc = encodeBase(layer);
             var encodeLayer = getEncodeLayer(gaLayers, gaPrintStyle,
                 gaTime, gaMapUtils);
-            var layerEnc = encodeLayer(subLayer, proj, scaleDenom,
+            var layerEnc = encodeLayer(subLayer, viewProj, scaleDenom,
                 printRectangeCoords, resolution, dpi);
             if (layerEnc && layerEnc.layer) {
               $.extend(enc, layerEnc);
@@ -172,7 +172,7 @@ goog.require('ga_urlutils_service');
   function getEncodeLayer(gaLayers, gaPrintStyle, gaTime, gaMapUtils) {
     return encodeLayer;
 
-    function encodeLayer(layer, proj, scaleDenom, printRectangeCoords,
+    function encodeLayer(layer, viewProj, scaleDenom, printRectangeCoords,
         resolution, dpi) {
 
       var encLayer, encLegend;
@@ -191,7 +191,7 @@ goog.require('ga_urlutils_service');
             encLayer = encodeWMTS(layer, layerConfig);
           } else if (src instanceof ol.source.ImageWMS ||
               src instanceof ol.source.TileWMS) {
-            encLayer = encodeWMS(layer,
+            encLayer = encodeWMS(layer, viewProj,
                 layerConfig, dpi);
           } else if (src instanceof ol.source.Vector ||
               src instanceof ol.source.ImageVector) {
@@ -483,7 +483,7 @@ goog.require('ga_urlutils_service');
     }
   };
 
-  function encodeWMS(layer, config, dpi) {
+  function encodeWMS(layer, viewProj, config, dpi) {
     dpi = dpi || 150;
     var enc = encodeBase(layer);
     var source = layer.getSource();
@@ -494,11 +494,13 @@ goog.require('ga_urlutils_service');
         new Array(layers.length).join(',').split(',');
     var url = (source.getUrls && source.getUrls()[0]) ||
         (source.getUrl && source.getUrl());
+    var epsg_code = (source.getProjection() &&
+        source.getProjection().getCode()) || viewProj.getCode();
 
     var customParams = {
         'EXCEPTIONS': 'XML',
         'TRANSPARENT': 'true',
-        'CRS': source.getProjection().getCode(),
+        'CRS': epsg_code,
         'MAP_RESOLUTION': dpi
       };
     if (params.TIME) {

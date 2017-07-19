@@ -238,21 +238,24 @@ goog.require('ga_urlutils_service');
           return;
         }
         // layer not having the same projection as the map, won't be printed
+        // layer without explicit projection are assumed default
         // TODO: issue a warning for the user
         if (layer.getSource && layer.getSource().getProjection()) {
-            var proj = layer.getSource().getProjection().getCode();
-            if (proj == null || proj != view.getProjection().getCode()) {
+            var layerProj = layer.getSource().getProjection().getCode();
+            if (layerProj == null) {
+              layerProj = proj.getCode();
+              layer.getSource().setProjection(layerProj);
+            }
+            if (layerProj != view.getProjection().getCode()) {
                 return;
             }
         }
-
         // Encode layers
         var encs, encLegend;
         if (layer instanceof ol.layer.Group) {
           encs = gaPrintLayer.encodeGroup(layer, proj, scaleDenom,
               printRectangeCoords, resolution, dpi);
         } else {
-          //var enc = encodeLayer(layer, proj);
           var layerConfig = gaLayers.getLayer(layer.bodId) || {};
           var legendToPrint = $scope.options.legend && layerConfig.hasLegend;
           var enc = gaPrintLayer.encodeLayer(layer, proj, scaleDenom,
