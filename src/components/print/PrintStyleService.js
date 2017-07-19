@@ -6,8 +6,7 @@ goog.require('ga_urlutils_service');
 
   var module = angular.module('ga_printstyle_service', [
     'ga_urlutils_service'
-  ])
-      .provider('gaPrintStyle', gaPrintStyle);
+  ]).provider('gaPrintStyle', gaPrintStyle);
 
   function gaPrintStyle() {
     this.$get = function(gaUrlUtils) {
