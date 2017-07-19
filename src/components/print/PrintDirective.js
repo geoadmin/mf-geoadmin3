@@ -639,14 +639,18 @@ goog.require('ga_urlutils_service');
           return;
         }
         // layer not having the same projection as the map, won't be printed
+        // layer without explicit projection are assumed default
         // TODO: issue a warning for the user
         if (layer.getSource && layer.getSource().getProjection()) {
-            var proj = layer.getSource().getProjection().getCode();
-            if (proj == null || proj != view.getProjection().getCode()) {
+            var layerProj = layer.getSource().getProjection().getCode();
+            if (layerProj == null) {
+              layerProj = proj.getCode();
+              layer.getSource().setProjection(layerProj);
+            }
+            if (layerProj != view.getProjection().getCode()) {
                 return;
             }
         }
-
         // Encode layers
         var encs;
         if (layer instanceof ol.layer.Group) {
@@ -654,6 +658,38 @@ goog.require('ga_urlutils_service');
               layer, proj);
         } else {
           var enc = encodeLayer(layer, proj);
+          /* TODO: do we need this
+           *
+          var layerConfig = gaLayers.getLayer(layer.bodId) || {};
+          var legendToPrint = $scope.options.legend && layerConfig.hasLegend;
+          var enc = gaPrintLayer.encodeLayer(layer, proj, scaleDenom,
+              printRectangeCoords, resolution, dpi);
+
+          if ($scope.options.legend && layerConfig.hasLegend) {
+            encLegend = gaPrintLayer.encodeLegend(layer, layerConfig,
+                $scope.options);
+
+          if (!layerConfig.background && layerConfig.visible &&
+              layerConfig.timeEnabled) {
+            if (!layer.time) {
+              return;
+            }
+            layersYears.push(layer.time);
+          }
+
+          if (encLegend.classes && encLegend.classes[0] &&
+              encLegend.classes[0].icon) {
+            var legStr = encLegend.classes[0].icon;
+            if (legStr.indexOf(pdfLegendString,
+                legStr.length - pdfLegendString.length) !== -1) {
+              pdfLegendsToDownload.push(legStr);
+              encLegend = undefined;
+              }
+            }
+          }
+          enc.legend = encLegend;
+          */
+
           if (enc && enc.layer) {
             encs = [enc.layer];
             if (enc.legend) {
