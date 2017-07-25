@@ -64,11 +64,6 @@ if __name__ == '__main__':
         # FF 48+ driver is bugged
         {'platform': "Windows 10", 'browserName': "firefox",
             'version': "47.0", 'screenResolution': "1280x1024"},
-        # Internet Exeplorer
-        {'platform': "Windows 7", 'browserName': "internet explorer",
-            'version': "10.0", 'screenResolution': "1280x1024"},
-        {'platform': "Windows 7", 'browserName': "internet explorer",
-            'version': "11.0", 'screenResolution': "1280x1024"},
         # Edge
         {'platform': "Windows 10", 'browserName': "MicrosoftEdge",
             'version': "13.10586", 'screenResolution': "1280x1024"},
@@ -83,7 +78,6 @@ if __name__ == '__main__':
     config_test_list = {
         "firefox": ['start', 'mobile', 'search', 'wms', 'tooltip'],
         "chrome": ['start', 'mobile', 'search', 'wms', 'tooltip'],
-        "internet explorer": ['start'],
         "opera": ['start'],
         "safari": ['start'],
         "MicrosoftEdge": ['start', 'search']
