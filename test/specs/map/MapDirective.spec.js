@@ -220,12 +220,14 @@ describe('ga_map_directive', function() {
         map.getView().setCenter([800, 900]);
         map.getView().setZoom(10);
         $timeout.flush();
-        expect(spy.callCount).to.be(5);
+        expect(spy.callCount).to.be(7);
         expect(spy.getCall(0).args[0]).to.be('lon');
         expect(spy.getCall(1).args[0]).to.be('lat');
         expect(spy.getCall(2).args[0]).to.be('elevation');
         expect(spy.getCall(3).args[0]).to.be('heading');
         expect(spy.getCall(4).args[0]).to.be('pitch');
+        expect(spy.getCall(5).args[0]).to.be('X');
+        expect(spy.getCall(6).args[0]).to.be('Y');
         expect(spy2.callCount).to.be(1);
         var arg = spy2.getCall(0).args[0];
         expect(arg.E).to.be('800.00');

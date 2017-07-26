@@ -140,6 +140,8 @@ goog.require('ga_styles_service');
               var e = center[0].toFixed(2);
               var n = center[1].toFixed(2);
               gaPermalink.updateParams({E: e, N: n, zoom: zoom});
+              gaPermalink.deleteParam('X');
+              gaPermalink.deleteParam('Y');
             }
           }
         };
