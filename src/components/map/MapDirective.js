@@ -80,14 +80,17 @@ goog.require('ga_styles_service');
 
         // set view states based on URL query string
         var queryParams = gaPermalink.getParams();
-        if ((queryParams.Y !== undefined && queryParams.X !== undefined) ||
-            (queryParams.E !== undefined && queryParams.N !== undefined)) {
-          var easting = parseFloat(queryParams.Y.replace(/,/g, '.'));
-          var northing = parseFloat(queryParams.X.replace(/,/g, '.'));
-          if (queryParams.E !== undefined && queryParams.N !== undefined) {
-            easting = parseFloat(queryParams.E.replace(/,/g, '.'));
-            northing = parseFloat(queryParams.N.replace(/,/g, '.'));
+       if ((queryParams.E && queryParams.N) || (queryParams.X && queryParams.Y)) {
+          var easting = queryParams.Y;
+          var northing = queryParams.X;
+          if (queryParams.E && queryParams.N) {
+            easting = queryParams.E;
+            northing = queryParams.N;
           }
+
+          easting = parseFloat(easting.replace(/,/g, '.'));
+          northing = parseFloat(northing.replace(/,/g, '.'));
+
           if (isFinite(easting) && isFinite(northing)) {
             var position = [easting, northing];
             if (ol.extent.containsCoordinate(
