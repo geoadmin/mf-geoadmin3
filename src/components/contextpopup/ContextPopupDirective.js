@@ -40,8 +40,8 @@ goog.require('ga_window_service');
             var heightCanceler = $q.defer();
             var map = scope.map;
             var view = map.getView();
-            var coord2056, coord4326;
-
+            var clickCoord, coord4326;
+            var proj = map.getView().getProjection();
             var overlay = new ol.Overlay({
               element: element[0],
               stopEvent: true
@@ -63,8 +63,8 @@ goog.require('ga_window_service');
             };
 
             var updateW3W = function() {
-              gaWhat3Words.getWords(coord4326[1],
-                                    coord4326[0]).then(function(res) {
+              gaWhat3Words.getWords(coord4326[1], coord4326[0]).then(
+                  function(res) {
                 scope.w3w = res;
               }, function(response) {
                 if (response.status != -1) { // Error
@@ -101,20 +101,19 @@ goog.require('ga_window_service');
               var pixel = (event.originalEvent) ?
                   map.getEventPixel(event.originalEvent) :
                   event.pixel;
-              coord2056 = (event.originalEvent) ?
+              clickCoord = (event.originalEvent) ?
                   map.getEventCoordinate(event.originalEvent) :
                   event.coordinate;
-              coord4326 = ol.proj.transform(coord2056,
-                  'EPSG:2056', 'EPSG:4326');
-              var coord21781 = ol.proj.transform(coord2056,
-                  'EPSG:2056', 'EPSG:21781');
+              coord4326 = ol.proj.transform(clickCoord, proj, 'EPSG:4326');
+              var coord21781 = ol.proj.transform(clickCoord, proj,
+                  'EPSG:21781');
 
-              scope.coord21781 = formatCoordinates(coord21781, 1);
+              scope.coord21781 = formatCoordinates(coord21781, 2);
               scope.coord4326 = ol.coordinate.format(coord4326, '{y}, {x}', 5);
               var coord4326String = ol.coordinate.toStringHDMS(coord4326, 3).
                                    replace(/ /g, '');
               scope.coordiso4326 = coord4326String.replace(/N/g, 'N ');
-              scope.coord2056 = formatCoordinates(coord2056, 2) + ' *';
+              scope.coord2056 = formatCoordinates(clickCoord, 1);
               if (coord4326[0] < 6 && coord4326[0] >= 0) {
                 var utm_31t = ol.proj.transform(coord4326,
                     'EPSG:4326', 'EPSG:32631');
@@ -143,10 +142,10 @@ goog.require('ga_window_service');
 
                 $http.get(heightUrl, {
                   params: {
-                    easting: coord2056[0],
-                    northing: coord2056[1],
+                    easting: clickCoord[0],
+                    northing: clickCoord[1],
                     elevation_model: gaGlobalOptions.defaultElevationModel,
-                    sr: '2056'
+                    sr: proj.getCode().split(':')[1]
                   },
                   timeout: heightCanceler.promise
                 }).then(function(response) {
@@ -157,10 +156,13 @@ goog.require('ga_window_service');
                   }
                 });
 
-                gaReframe.get95To03(coord2056,
-                    reframeCanceler.promise).then(function(coords) {
-                  coord21781 = coords;
-                  scope.coord21781 = formatCoordinates(coord21781, 2);
+                gaReframe.get95To03(clickCoord, reframeCanceler.promise).then(
+                    function(coords) {
+                  scope.coord21781 = formatCoordinates(coords, 2);
+                }, function() {
+                  var coords = ol.proj.transform(clickCoord, proj,
+                      'EPSG:21781');
+                  scope.coord21781 = formatCoordinates(coords, 2);
                 });
 
                 updateW3W();
@@ -170,7 +172,7 @@ goog.require('ga_window_service');
 
               if (gaWindow.isWidth('xs') || gaWindow.isHeight('xs')) {
                 view.animate({
-                  center: coord2056,
+                  center: clickCoord,
                   duration: 200
                 }, hidePopoverOnNextChange);
 
@@ -178,7 +180,7 @@ goog.require('ga_window_service');
                 hidePopoverOnNextChange();
               }
 
-              overlay.setPosition(coord2056);
+              overlay.setPosition(clickCoord);
               element.show();
               // We use a boolean instead of  jquery .is(':visible') selector
               // because that doesn't work with phantomJS.
@@ -246,7 +248,7 @@ goog.require('ga_window_service');
 
             // Listen to permalink change events from the scope.
             scope.$on('gaPermalinkChange', function(event) {
-              if (angular.isDefined(coord2056) && isPopoverShown) {
+              if (angular.isDefined(clickCoord) && isPopoverShown) {
                 updatePopupLinks();
               }
             });
@@ -266,8 +268,8 @@ goog.require('ga_window_service');
 
             function updatePopupLinks() {
               var p = {
-                E: Math.round(coord2056[0], 1),
-                N: Math.round(coord2056[1], 1)
+                E: Math.round(clickCoord[0], 1),
+                N: Math.round(clickCoord[1], 1)
               };
               scope.contextPermalink = gaPermalink.getHref(p);
               scope.crosshairPermalink = gaPermalink.getHref(

@@ -80,7 +80,8 @@ goog.require('ga_styles_service');
 
         // set view states based on URL query string
         var queryParams = gaPermalink.getParams();
-       if ((queryParams.E && queryParams.N) || (queryParams.X && queryParams.Y)) {
+       if ((queryParams.E && queryParams.N) ||
+           (queryParams.X && queryParams.Y)) {
           var easting = queryParams.X;
           var northing = queryParams.Y;
           if (queryParams.E && queryParams.N) {

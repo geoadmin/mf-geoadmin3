@@ -1,8 +1,6 @@
-/*
-
 describe('ga_contextpopup_directive', function() {
   var elt, parentScope, handlers = {}, map, $rootScope, gaReframe, $window, $compile, $httpBackend, $timeout, gaWhat3Words, $q, gaPermalink, gaEvent;
-  var expectedHeightUrl = '//api.geo.admin.ch/height?easting=2661473&elevation_model=COMB&northing=1188192';
+  var expectedHeightUrl = '//api.geo.admin.ch/height?easting=2661473&elevation_model=COMB&northing=1188192&sr=2056';
   var expectedReframeUrl = '//api.example.com/reframe/lv95tolv03?easting=2661473&northing=1188192';
   var expectedw3wUrl = 'dummy.test.url.com/v2/reverse?coords=46.84203157398991,8.244528382656728&key=testkey&lang=de';
   var contextPermalink = 'http://test.com?N=1188192&E=2661473';
@@ -46,6 +44,7 @@ describe('ga_contextpopup_directive', function() {
     });
 
     $provide.value('gaNetworkStatus', {
+      check: angular.noop,
       offline: true
     });
 
@@ -89,7 +88,12 @@ describe('ga_contextpopup_directive', function() {
     });
 
     $(document.body).append('<div id="map"></div>');
-    map = new ol.Map({target: 'map'});
+    map = new ol.Map({
+      target: 'map',
+      view: new ol.View({
+        projection: ol.proj.get('EPSG:2056')
+      })
+    });
     map.on = function(eventType, handler) {
       handlers[eventType] = handler;
     };
@@ -143,11 +147,11 @@ describe('ga_contextpopup_directive', function() {
 
       var tables = elt.find('div.popover-content table');
       var tds = $(tables[0]).find('td');
-      expect($(tds[0]).find('a').attr('href')).to.be('contextpopup_lv03_url');
+      expect($(tds[0]).find('a').attr('href')).to.be('contextpopup_lv95_url');
       expect($(tds[1]).find('a').attr('href')).to.be(contextPermalink);
-      expect($(tds[1]).text()).to.be('661\'473.0, 188\'192.0');
-      expect($(tds[2]).find('a').attr('href')).to.be('contextpopup_lv95_url');
-      expect($(tds[3]).text()).to.be('2\'725\'984.40, 1\'180\'787.40');
+      expect($(tds[1]).text()).to.be('2\'661\'473.0, 1\'188\'192.0');
+      expect($(tds[2]).find('a').attr('href')).to.be('contextpopup_lv03_url');
+      expect($(tds[3]).text()).to.be('725\'984.40, 180\'787.40');
       expect($(tds[5]).text()).to.be('46.84203, 8.24453');
       expect($(tds[9]).text()).to.be('442\'396, 5\'187\'887 (zone 32T)');
       expect($(tds[11]).text()).to.be('32TMS 42396 87887 ');
@@ -202,11 +206,11 @@ describe('ga_contextpopup_directive', function() {
 
       var tables = elt.find('div.popover-content table');
       var tds = $(tables[0]).find('td');
-      expect($(tds[0]).find('a').attr('href')).to.be('contextpopup_lv03_url');
+      expect($(tds[0]).find('a').attr('href')).to.be('contextpopup_lv95_url');
       expect($(tds[1]).find('a').attr('href')).to.be(contextPermalink);
-      expect($(tds[1]).text()).to.be('661\'473.0, 188\'192.0');
-      expect($(tds[2]).find('a').attr('href')).to.be('contextpopup_lv95_url');
-      expect($(tds[3]).text()).to.be('2\'725\'984.40, 1\'180\'787.40');
+      expect($(tds[1]).text()).to.be('2\'661\'473.0, 1\'188\'192.0');
+      expect($(tds[2]).find('a').attr('href')).to.be('contextpopup_lv03_url');
+      expect($(tds[3]).text()).to.be('725\'984.40, 180\'787.40');
       expect($(tds[5]).text()).to.be('46.84203, 8.24453');
       expect($(tds[9]).text()).to.be('442\'396, 5\'187\'887 (zone 32T)');
       expect($(tds[11]).text()).to.be('32TMS 42396 87887 ');
@@ -321,4 +325,3 @@ describe('ga_contextpopup_directive', function() {
   });
 });
 
-*/
