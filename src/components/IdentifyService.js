@@ -17,7 +17,8 @@ goog.provide('ga_identify_service');
       var mapSize = olMap.getSize();
       return {
         imageDisplay: mapSize.concat([dpi]).toString(),
-        mapExtent: olMap.getView().calculateExtent(mapSize).toString()
+        mapExtent: olMap.getView().calculateExtent(mapSize).toString(),
+        sr: olMap.getView().getProjection().getCode().split(':')[1]
       };
     };
 
@@ -87,8 +88,7 @@ goog.provide('ga_identify_service');
           var othersParams = {
             tolerance: tolerance || 0,
             returnGeometry: !!returnGeometry,
-            lang: gaLang.get(),
-            sr: '2056'
+            lang: gaLang.get()
           };
           if (limit) {
             othersParams.limit = limit;
@@ -108,7 +108,7 @@ goog.provide('ga_identify_service');
           return $http.get(url, {
             timeout: timeo.promise || timeo,
             params: params,
-            cache: true
+            cache: false
           });
         };
       };
