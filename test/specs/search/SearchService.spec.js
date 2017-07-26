@@ -1,106 +1,146 @@
 describe('ga_search_service', function() {
-/*
+
   describe('gaSearchGetcoordinate', function() {
     var extent = [2420000, 1030000, 2900000, 1350000];
-    var $rootScope, $httpBackend, lv03tolv95Url, getCoordinate, gaReframe;
-
-    var buildUrl = function(baseUrl, coords) {
-      return baseUrl + '?easting=' + coords[0] + '&northing=' + coords[1];
-    };
+    var $timeout, $rootScope, $httpBackend, $q, $window, getCoordinate, gaReframe;
 
     beforeEach(function() {
       inject(function($injector, gaGlobalOptions) {
+        $rootScope = $injector.get('$rootScope');
+        $timeout = $injector.get('$timeout');
+        $httpBackend = $injector.get('$httpBackend');
+        $window = $injector.get('$window');
         getCoordinate = $injector.get('gaSearchGetCoordinate');
         gaReframe = $injector.get('gaReframe');
-        $rootScope = $injector.get('$rootScope');
-        $httpBackend = $injector.get('$httpBackend');
-        lv03tolv95Url = gaGlobalOptions.lv03tolv95Url;
       });
     });
 
-    it('supports CH1903 coordinate', function(done) {
-      var spy = sinon.spy(gaReframe, 'get95To03');
-      getCoordinate(extent, '600000 200000').then(function(position) {
-        expect(position).to.eql([600000, 200000]);
-        expect(spy.callCount).to.eql(0);
-        done();
-      });
-      $rootScope.$digest();
+    afterEach(function() {
+      $httpBackend.verifyNoOutstandingExpectation();
+      $httpBackend.verifyNoOutstandingRequest();
+      $timeout.flush();
     });
 
-    it('separated by comma', function(done) {
-      var spy = sinon.spy(gaReframe, 'get95To03');
-      getCoordinate(extent, '600000,200000').then(function(position) {
-        expect(position).to.eql([600000, 200000]);
-        expect(spy.callCount).to.eql(0);
-        done();
+    describe('supports EPSG:2056 coordinate', function() {
+      var coord2056 = [2600123.12, 1200345];
+      var spy;
+
+      beforeEach(function() {
+        spy = sinon.spy(gaReframe, 'get03To95');
       });
-      $rootScope.$digest();
+
+      it('without separator', function(done) {
+        getCoordinate(extent, '2600123.12 1200345').then(function(position) {
+          expect(position).to.eql(coord2056);
+          expect(spy.callCount).to.eql(0);
+          done();
+        });
+        $rootScope.$digest();
+      });
+
+      it('separated by comma', function(done) {
+        getCoordinate(extent, '2600123.12,1200345').then(function(position) {
+          expect(position).to.eql(coord2056);
+          expect(spy.callCount).to.eql(0);
+          done();
+        });
+        $rootScope.$digest();
+      });
+
+      it('separated by apostrophe', function(done) {
+        getCoordinate(extent, '2\'600\'123.12 1\'200\'345').then(function(position) {
+          expect(position).to.eql(coord2056);
+          expect(spy.callCount).to.eql(0);
+          done();
+        });
+        $rootScope.$digest();
+      });
+
+      it('separated by spaces', function(done) {
+        getCoordinate(extent, '2600 123.12 1200 345').then(function(position) {
+          expect(position).to.eql(coord2056);
+          expect(spy.callCount).to.eql(0);
+          done();
+        });
+        $rootScope.$digest();
+      });
+
+      it('returns undefined if outside EPSG:2056 extent', function(done) {
+        getCoordinate(extent, '600000 20000').then(function(position) {
+          expect(position).to.be(undefined);
+          done();
+        });
+        $rootScope.$digest();
+      });
     });
 
-    it('containing apostrphoe CH1903 coordinate', function(done) {
-      var spy = sinon.spy(gaReframe, 'get95To03');
-      getCoordinate(extent, '600\'000.12 200\'000.23').then(function(position) {
-        expect(position).to.eql([600000.12, 200000.23]);
-        expect(spy.callCount).to.eql(0);
-        done();
-      });
-      $rootScope.$digest();
-    });
+    describe('supports EPSG:21781 coordinate', function() {
+      var coord21781 = [600123.12, 200345];
+      var coord2056 = [2600123.12, 1200345];
+      var spy;
 
-    it('supports CH1903+ coordinate', function(done) {
-      var spy = sinon.spy(gaReframe, 'get95To03');
-      var coordinates = [2600000, 1200000];
-      var url = buildUrl(lv95tolv03Url, coordinates);
-      $httpBackend.expectGET(url).respond(400);
-      getCoordinate(extent, '2600000 1200000').then(function(position) {
-        expect(position).to.eql([600000, 200000]);
-        expect(spy.callCount).to.eql(1);
-        done();
+      beforeEach(function() {
+        spy = sinon.stub(gaReframe, 'get03To95').withArgs(coord21781).resolves(coord2056);
       });
-      $httpBackend.flush();
-      $rootScope.$digest();
-    });
 
-    it('old school CH1903 coordinate', function(done) {
-      var spy = sinon.spy(gaReframe, 'get95To03');
-      getCoordinate(extent, '600 123 200 345').then(function(position) {
-        expect(position).to.eql([600123, 200345]);
-        expect(spy.callCount).to.eql(0);
-        done();
+      it('without separator', function(done) {
+        getCoordinate(extent, '600123.12 200345').then(function(position) {
+          expect(position).to.eql(coord2056);
+          expect(spy.callCount).to.eql(1);
+          done();
+        });
+        $rootScope.$digest();
       });
-      $rootScope.$digest();
-    });
 
-    it('old school CH1903+ coordinate', function(done) {
-      var spy = sinon.spy(gaReframe, 'get95To03');
-      var coordinates = [2600987.2, 1200556.5];
-      var url = buildUrl(lv95tolv03Url, coordinates);
-      $httpBackend.expectGET(url).respond(400);
-      getCoordinate(extent, '2600 987.2 1200 556.5').then(function(position) {
-        expect(position).to.eql([600987.2, 200556.5]);
-        expect(spy.callCount).to.eql(1);
-        done();
+      it('separated by comma', function(done) {
+        getCoordinate(extent, '600123.12,200345').then(function(position) {
+          expect(position).to.eql(coord2056);
+          expect(spy.callCount).to.eql(1);
+          done();
+        });
+        $rootScope.$digest();
       });
-      $httpBackend.flush();
-      $rootScope.$digest();
+
+      it('separated by apostrophe', function(done) {
+        getCoordinate(extent, '600\'123.12 200\'345').then(function(position) {
+          expect(position).to.eql(coord2056);
+          expect(spy.callCount).to.eql(1);
+          done();
+        });
+        $rootScope.$digest();
+      });
+
+      it('separated by spaces', function(done) {
+        getCoordinate(extent, '600 123.12 200 345').then(function(position) {
+          expect(position).to.eql(coord2056);
+          expect(spy.callCount).to.eql(1);
+          done();
+        });
+        $rootScope.$digest();
+      });
+
+      it('returns undefined if outside EPSG:2056 extent', function(done) {
+        gaReframe.get03To95.restore();
+        spy = sinon.stub(gaReframe, 'get03To95').withArgs([600000, 20000]).resolves([2600000, 1020000]);
+        getCoordinate(extent, '600000 20000').then(function(position) {
+          expect(position).to.be(undefined);
+          done();
+        });
+        $rootScope.$digest();
+      });
     });
 
     it('supports latitude and longitude as decimal (lon/lat)', function(done) {
-      var spy = sinon.spy(gaReframe, 'get95To03');
       getCoordinate(extent, '6.96948 46.9712').then(function(position) {
-        expect(position).to.eql([564298.937, 202343.701]);
-        expect(spy.callCount).to.eql(0);
+        expect(position).to.eql([2564298.937, 1202343.701]);
         done();
       });
       $rootScope.$digest();
     });
 
     it('supports latitude and longitude as decimal (lat/lon)', function(done) {
-      var spy = sinon.spy(gaReframe, 'get95To03');
       getCoordinate(extent, '46.9712 6.96948').then(function(position) {
-        expect(position).to.eql([564298.937, 202343.701]);
-        expect(spy.callCount).to.eql(0);
+        expect(position).to.eql([2564298.937, 1202343.701]);
         done();
       });
       $rootScope.$digest();
@@ -108,7 +148,7 @@ describe('ga_search_service', function() {
 
     it('supports latitude and longitude as DMS (test D,D)', function(done) {
       getCoordinate(extent, '7° E 46° N').then(function(position) {
-        expect(position).to.eql([566016.05, 94366.859]);
+        expect(position).to.eql([2566016.05, 1094366.859]);
         done();
       });
       $rootScope.$digest();
@@ -116,7 +156,7 @@ describe('ga_search_service', function() {
 
     it('supports latitude and longitude as DMS (test DM,D)', function(done) {
       getCoordinate(extent, '7° 1\' E 46° N').then(function(position) {
-        expect(position).to.eql([567307.273, 94359.756]);
+        expect(position).to.eql([2567307.273, 1094359.756]);
         done();
       });
       $rootScope.$digest();
@@ -124,7 +164,7 @@ describe('ga_search_service', function() {
 
     it('supports latitude and longitude as DMS (test DMS,D)', function(done) {
       getCoordinate(extent, '7° 1\' 25.0\'\' E 46° N').then(function(position) {
-        expect(position).to.eql([567845.283, 94356.877]);
+        expect(position).to.eql([2567845.283, 1094356.877]);
         done();
       });
       $rootScope.$digest();
@@ -132,7 +172,7 @@ describe('ga_search_service', function() {
 
     it('supports latitude and longitude as DMS (test DMS,DM)', function(done) {
       getCoordinate(extent, '7° 1\' 25.0\'\' E 46° 1\' N').then(function(position) {
-        expect(position).to.eql([567855.114, 96209.641]);
+        expect(position).to.eql([2567855.114, 1096209.641]);
         done();
       });
       $rootScope.$digest();
@@ -140,7 +180,7 @@ describe('ga_search_service', function() {
 
     it('supports latitude and longitude as DMS (test DMS,DM)', function(done) {
       getCoordinate(extent, '7° 1\' 25.0\'\' E 46° 1\' 25.0\'\' N').then(function(position) {
-        expect(position).to.eql([567859.21, 96981.625]);
+        expect(position).to.eql([2567859.21, 1096981.625]);
         done();
       });
       $rootScope.$digest();
@@ -148,7 +188,7 @@ describe('ga_search_service', function() {
 
     it('supports latitude and longitude as DMS (test DMS,DMS)', function(done) {
       getCoordinate(extent, '46° 1\' 25.0\'\' N 7° 1\' 25.0\'\' E').then(function(position) {
-        expect(position).to.eql([567859.21, 96981.625]);
+        expect(position).to.eql([2567859.21, 1096981.625]);
         done();
       });
       $rootScope.$digest();
@@ -156,7 +196,7 @@ describe('ga_search_service', function() {
 
     it('supports MGRS and USGS grid 32TLT8100', function(done) {
       getCoordinate(extent, '32TLT8100').then(function(position) {
-        expect(position).to.eql([600319.427, 199594.862]);
+        expect(position).to.eql([2600319.427, 1199594.862]);
         done();
       });
       $rootScope.$digest();
@@ -164,7 +204,7 @@ describe('ga_search_service', function() {
 
     it('supports MGRS and USGS grid 32TLT 8 0', function(done) {
       getCoordinate(extent, '32TLT 81 00').then(function(position) {
-        expect(position).to.eql([600319.427, 199594.862]);
+        expect(position).to.eql([2600319.427, 1199594.862]);
         done();
       });
       $rootScope.$digest();
@@ -175,18 +215,6 @@ describe('ga_search_service', function() {
         expect(position).to.be(undefined);
         done();
       });
-      $rootScope.$digest();
-    });
-
-    it('checks the swiss extent LV95', function(done) {
-      var coordinates = [1600000, 1200000];
-      var url = buildUrl(lv95tolv03Url, coordinates);
-      $httpBackend.expectGET(url).respond(400);
-      getCoordinate(extent, '1600000 1200000').then(function(position) {
-        expect(position).to.be(undefined);
-        done();
-      });
-      $httpBackend.flush();
       $rootScope.$digest();
     });
 
@@ -230,7 +258,7 @@ describe('ga_search_service', function() {
       $rootScope.$digest();
     });
   });
-*/
+
   describe('gaSearchLabels', function() {
     var labelsService;
 
