@@ -105,10 +105,6 @@ goog.require('ga_window_service');
                   map.getEventCoordinate(event.originalEvent) :
                   event.coordinate;
               coord4326 = ol.proj.transform(clickCoord, proj, 'EPSG:4326');
-              var coord21781 = ol.proj.transform(clickCoord, proj,
-                  'EPSG:21781');
-
-              scope.coord21781 = formatCoordinates(coord21781, 2);
               scope.coord4326 = ol.coordinate.format(coord4326, '{y}, {x}', 5);
               var coord4326String = ol.coordinate.toStringHDMS(coord4326, 3).
                                    replace(/ /g, '');

@@ -31,7 +31,7 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions,
 
   // the maxium extent in EPSG:4326 and radians
   var extent4326 = ol.proj.transformExtent(gaGlobalOptions.defaultExtent,
-      'EPSG:21781', 'EPSG:4326');
+      map.getView().getProjection(), 'EPSG:4326');
   extent4326 = extent4326.map(function(angle) {
     return angle * Math.PI / 180;
   });
