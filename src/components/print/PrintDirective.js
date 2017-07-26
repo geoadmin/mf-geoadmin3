@@ -261,25 +261,21 @@ goog.require('ga_urlutils_service');
           var enc = gaPrintLayer.encodeLayer(layer, proj, scaleDenom,
               printRectangeCoords, resolution, dpi);
 
+          if (layerConfig.timeEnabled && layer.visible && layer.time) {
+            layersYears.push(layer.time);
+          }
+
           if ($scope.options.legend && layerConfig.hasLegend) {
             encLegend = gaPrintLayer.encodeLegend(layer, layerConfig,
                 $scope.options);
 
-          if (!layerConfig.background && layerConfig.visible &&
-              layerConfig.timeEnabled) {
-            if (!layer.time) {
-              return;
-            }
-            layersYears.push(layer.time);
-          }
-
-          if (encLegend.classes && encLegend.classes[0] &&
-              encLegend.classes[0].icon) {
-            var legStr = encLegend.classes[0].icon;
-            if (legStr.indexOf(pdfLegendString,
-                legStr.length - pdfLegendString.length) !== -1) {
-              pdfLegendsToDownload.push(legStr);
-              encLegend = undefined;
+            if (encLegend.classes && encLegend.classes[0] &&
+                encLegend.classes[0].icon) {
+              var legStr = encLegend.classes[0].icon;
+              if (legStr.indexOf(pdfLegendString,
+                  legStr.length - pdfLegendString.length) !== -1) {
+                pdfLegendsToDownload.push(legStr);
+                encLegend = undefined;
               }
             }
           }
@@ -310,6 +306,7 @@ goog.require('ga_urlutils_service');
           }
         }
       });
+
       if (layersYears) {
         var years = layersYears.reduce(function(a, b) {
           if (a.indexOf(b) < 0) {
