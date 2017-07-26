@@ -246,7 +246,7 @@ goog.require('ga_urlutils_service');
               layerProj = proj.getCode();
               layer.getSource().setProjection(layerProj);
             }
-            if (layerProj != view.getProjection().getCode()) {
+            if (layerProj != proj.getCode()) {
                 return;
             }
         }

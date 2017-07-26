@@ -11,19 +11,14 @@ goog.require('ga_urlutils_service');
     'ga_urlutils_service',
     'ga_printstyle_service',
     'pascalprecht.translate'
-  ]).provider('gaPrintLayer', gaPrintLayer);
+  ]);
 
-  var pdfLegendString = '_big.pdf';
-  var POINTS_PER_INCH = 72; //PostScript points 1/72"
-  var MM_PER_INCHES = 25.4;
-  var UNITS_RATIO = 39.37; // inches per meter
-  var styleId = 0;
-  var format = new ol.format.GeoJSON();
+  module.provider('gaPrintLayer', function gaPrintLayer() {
 
-  function gaPrintLayer() {
     this.$get = function($document, $translate, gaGlobalOptions,
         gaLayers, gaTime, gaLang, gaPrintStyle, gaMapUtils,
         gaUrlUtils) {
+
       return {
         encodeLegend: getEncodeLegend(gaLang),
         encodeMatrixIds: getMatrixIds(gaMapUtils),
@@ -41,7 +36,14 @@ goog.require('ga_urlutils_service');
         encodeGraticule: encodeGraticule
       };
     };
-  };
+  });
+
+  var pdfLegendString = '_big.pdf';
+  var POINTS_PER_INCH = 72; //PostScript points 1/72"
+  var MM_PER_INCHES = 25.4;
+  var UNITS_RATIO = 39.37; // inches per meter
+  var styleId = 0;
+  var format = new ol.format.GeoJSON();
 
   function encodeGraticule(dpi) {
     return {
@@ -89,26 +91,26 @@ goog.require('ga_urlutils_service');
             '1': { // Style for marker position
               'externalGraphic':
                 gaUrlUtils.nonCloudFrontUrl(options.markerUrl),
-                'graphicWidth': 20,
-                'graphicHeight': 30,
-                // the icon is not perfectly centered in the image
-                // these values must be the same in map.less
-                'graphicXOffset': -12,
-                'graphicYOffset': -30
+              'graphicWidth': 20,
+              'graphicHeight': 30,
+              // the icon is not perfectly centered in the image
+              // these values must be the same in map.less
+              'graphicXOffset': -12,
+              'graphicYOffset': -30
             },
             '2': { // Style for measure tooltip
               'externalGraphic':
                 gaUrlUtils.nonCloudFrontUrl(options.bubbleUrl),
-                'graphicWidth': 97,
-                'graphicHeight': 27,
-                'graphicXOffset': -48,
-                'graphicYOffset': -27,
-                'label': $elt.text(),
-                'labelXOffset': 0,
-                'labelYOffset': 18,
-                'fontColor': '#ffffff',
-                'fontSize': 10,
-                'fontWeight': 'normal'
+              'graphicWidth': 97,
+              'graphicHeight': 27,
+              'graphicXOffset': -48,
+              'graphicYOffset': -27,
+              'label': $elt.text(),
+              'labelXOffset': 0,
+              'labelYOffset': 18,
+              'fontColor': '#ffffff',
+              'fontSize': 10,
+              'fontWeight': 'normal'
             },
             '3': { // Style for intermeediate measure tooltip
               'label': $elt.text(),
@@ -207,10 +209,13 @@ goog.require('ga_urlutils_service');
           }
         }
       } else {
-          console.error('Trying to encode a group with the layer encoder!');
+        console.error('Trying to encode a group with the layer encoder!');
       }
 
-     return {layer: encLayer, legend: encLegend};
+      return {
+        layer: encLayer,
+        legend: encLegend
+      };
     }
   };
 
@@ -409,12 +414,10 @@ goog.require('ga_urlutils_service');
       // TODO: simplified protocol is only valid for LV03 layers!
 
       var isExternalWmts = angular.equals(config, {});
-
       var enc = encodeBase(layer);
       var source = layer.getSource();
       var tileGrid = source.getTileGrid();
       var extent = layer.getExtent();
-
       var requestEncoding = source.getRequestEncoding() || 'REST';
 
       // resourceURL for RESTful, service endpoint for KVP
@@ -429,7 +432,7 @@ goog.require('ga_urlutils_service');
           .replace(/wmts\d{1,3}\.geo\.admin\.ch/, 'wmts.geo.admin.ch');
       }
 
-      var wmts_dimensions = encodeDimensions(source.getDimensions());
+      var wmtsDimensions = encodeDimensions(source.getDimensions());
       // common config
       angular.extend(enc, {
         type: 'WMTS',
@@ -438,8 +441,8 @@ goog.require('ga_urlutils_service');
         requestEncoding: requestEncoding,
         formatSuffix: source.getFormat().replace('image/', ''),
         style: source.getStyle() || 'default',
-        dimensions: Object.keys(wmts_dimensions),
-        params: wmts_dimensions,
+        dimensions: Object.keys(wmtsDimensions),
+        params: wmtsDimensions,
         matrixSet: source.getMatrixSet() || '21781'
       });
 
@@ -494,13 +497,13 @@ goog.require('ga_urlutils_service');
         new Array(layers.length).join(',').split(',');
     var url = (source.getUrls && source.getUrls()[0]) ||
         (source.getUrl && source.getUrl());
-    var epsg_code = (source.getProjection() &&
+    var epsgCode = (source.getProjection() &&
         source.getProjection().getCode()) || viewProj.getCode();
 
     var customParams = {
         'EXCEPTIONS': 'XML',
         'TRANSPARENT': 'true',
-        'CRS': epsg_code,
+        'CRS': epsgCode,
         'MAP_RESOLUTION': dpi
       };
     if (params.TIME) {
