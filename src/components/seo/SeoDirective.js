@@ -139,7 +139,7 @@ goog.require('ga_seo_service');
                   unregister;
 
               unregister = scope.$on('gaPermalinkFeaturesAdd', function(evt,
-                                                                        data) {
+                  data) {
                 var promises = [];
 
                 var getFeatureHtml = function(featureId, bodId) {
