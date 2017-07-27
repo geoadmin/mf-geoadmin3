@@ -331,15 +331,26 @@ goog.require('ga_urlutils_service');
       // FIXME this is a temporary solution
       var overlays = $scope.map.getOverlays();
 
+      // On OL, overlays which stop events are displayed on top of overlays
+      // which don't. So we need to do the same for the print to keep order of
+      // display.
+      var ovStop = [];
+      var ov = [];
       overlays.forEach(function(overlay) {
         var encOverlayLayer = gaPrintLayer.encodeOverlay(overlay,
             resolution, $scope.options);
 
         if (encOverlayLayer) {
-            encLayers.push(encOverlayLayer);
+          var container = $(overlay.getElement()).parent().parent();
+          if (container.hasClass('ol-overlaycontainer-stopevent')) {
+            ovStop.push(encOverlayLayer);
+          } else {
+            ov.push(encOverlayLayer);
+          }
         }
       });
-
+      encLayers = encLayers.concat(ov);
+      encLayers = encLayers.concat(ovStop);
 
       // Get the short link
       var shortLink;

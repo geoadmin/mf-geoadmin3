@@ -13,7 +13,7 @@ goog.require('ga_urlutils_service');
     'pascalprecht.translate'
   ]);
 
-  module.provider('gaPrintLayer', function gaPrintLayer() {
+  module.provider('gaPrintLayer', function() {
 
     this.$get = function($document, $translate, gaGlobalOptions,
         gaLayers, gaTime, gaLang, gaPrintStyle, gaMapUtils,
@@ -40,7 +40,6 @@ goog.require('ga_urlutils_service');
 
   var pdfLegendString = '_big.pdf';
   var POINTS_PER_INCH = 72; //PostScript points 1/72"
-  var MM_PER_INCHES = 25.4;
   var UNITS_RATIO = 39.37; // inches per meter
   var styleId = 0;
   var format = new ol.format.GeoJSON();
@@ -113,7 +112,7 @@ goog.require('ga_urlutils_service');
             '3': { // Style for intermeediate measure tooltip
               'label': $elt.text(),
               'labelXOffset': 0,
-              'labelYOffset': 18,
+              'labelYOffset': 10,
               'fontColor': '#ffffff',
               'fontSize': 8,
               'fontWeight': 'normal',
