@@ -82,8 +82,8 @@ goog.require('ga_styles_service');
         var queryParams = gaPermalink.getParams();
        if ((queryParams.E && queryParams.N) ||
            (queryParams.X && queryParams.Y)) {
-          var easting = queryParams.X;
-          var northing = queryParams.Y;
+          var easting = queryParams.Y;
+          var northing = queryParams.X;
           if (queryParams.E && queryParams.N) {
             easting = queryParams.E;
             northing = queryParams.N;

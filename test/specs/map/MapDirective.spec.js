@@ -85,8 +85,8 @@ describe('ga_map_directive', function() {
       it('centers on X and Y params', function() {
         var center = [10000, 25000];
         var stub = sinon.stub(gaPermalink, 'getParams').returns({
-          X: center[0] + '',
-          Y: center[1] + ''
+          X: center[1] + '',
+          Y: center[0] + ''
         });
         loadDirective(map);
         expect(map.getView().getCenter()).to.eql(center);
@@ -97,8 +97,8 @@ describe('ga_map_directive', function() {
         var stub = sinon.stub(gaPermalink, 'getParams').returns({
           E: center[0] + '',
           N: center[1] + '',
-          X: (center[0] + 2000) + '',
-          Y: (center[1] + 3000) + ''
+          X: (center[1] + 2000) + '',
+          Y: (center[0] + 3000) + ''
         });
         loadDirective(map);
         expect(map.getView().getCenter()).to.eql(center);
@@ -117,8 +117,8 @@ describe('ga_map_directive', function() {
       it('transforms X and Y coords from lv03 to lv95 if necessary', function() {
         var center = [425000, 350000];
         var stub = sinon.stub(gaPermalink, 'getParams').returns({
-          X: center[0] + '',
-          Y: center[1] + ''
+          X: center[1] + '',
+          Y: center[0] + ''
         });
         loadDirective(map);
         expect(map.getView().getCenter()).to.eql([2424999.9999959273, 1349999.9998646392]);
