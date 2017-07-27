@@ -97,7 +97,7 @@ goog.require('ga_styles_service');
             if (ol.extent.containsCoordinate(
                 [420000, 30000, 900000, 350000], position)) {
               position = ol.proj.transform([easting, northing],
-                'EPSG:21781', 'EPSG:2056');
+                'EPSG:21781', view.getProjection().getCode());
             }
             view.setCenter(position);
           }

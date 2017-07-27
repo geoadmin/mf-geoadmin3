@@ -108,7 +108,7 @@ goog.provide('ga_identify_service');
           return $http.get(url, {
             timeout: timeo.promise || timeo,
             params: params,
-            cache: false
+            cache: true
           });
         };
       };

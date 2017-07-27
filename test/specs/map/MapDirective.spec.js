@@ -32,6 +32,7 @@ describe('ga_map_directive', function() {
     map = new ol.Map({
       layers: [],
       view: new ol.View({
+        projection: ol.proj.get('EPSG:2056'),
         center: [0, 0],
         zoom: 1
       })
