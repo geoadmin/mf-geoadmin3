@@ -21,7 +21,6 @@
  * See https://github.com/AnalyticalGraphicsInc/cesium/blob/master/LICENSE.md for full licensing details.
  */
 (function () {
-/*global define*/
 define('Core/defined',[],function() {
     'use strict';
 
@@ -45,7 +44,6 @@ define('Core/defined',[],function() {
     return defined;
 });
 
-/*global define*/
 define('Core/DeveloperError',[
         './defined'
     ], function(
@@ -126,7 +124,6 @@ define('Core/DeveloperError',[
     return DeveloperError;
 });
 
-/*global define*/
 define('Core/Check',[
         './defined',
         './DeveloperError'
@@ -293,10 +290,26 @@ define('Core/Check',[
         }
     };
 
+    /**
+     * Throws if test1 and test2 is not typeof 'number' and not equal in value
+     *
+     * @param {String} name1 The name of the first variable being tested
+     * @param {String} name2 The name of the second variable being tested against
+     * @param {*} test1 The value to test
+     * @param {*} test2 The value to test against
+     * @exception {DeveloperError} test1 and test2 should be type of 'number' and be equal in value
+     */
+    Check.typeOf.number.equals = function (name1, name2, test1, test2) {
+        Check.typeOf.number(name1, test1);
+        Check.typeOf.number(name2, test2);
+        if (test1 !== test2) {
+            throw new DeveloperError(name1 + ' must be equal to ' + name2 + ', the actual values are ' + test1 + ' and ' + test2);
+        }
+    };
+
     return Check;
 });
 
-/*global define*/
 define('Core/RuntimeError',[
         './defined'
     ], function(
@@ -369,15 +382,14 @@ define('Core/RuntimeError',[
     return RuntimeError;
 });
 
-/*global define*/
 define('Core/decodeGoogleEarthEnterpriseData',[
-    './Check',
-    './defined',
-    './RuntimeError'
-], function(
-    Check,
-    defined,
-    RuntimeError) {
+        './Check',
+        './defined',
+        './RuntimeError'
+    ], function(
+        Check,
+        defined,
+        RuntimeError) {
     'use strict';
 
     var compressedMagic = 0x7468dead;
@@ -461,7 +473,6 @@ define('Core/decodeGoogleEarthEnterpriseData',[
     return decodeGoogleEarthEnterpriseData;
 });
 
-/*global define*/
 define('Core/isBitSet',[], function() {
     'use strict';
 
@@ -475,13 +486,12 @@ define('Core/isBitSet',[], function() {
     return isBitSet;
 });
 
-/*global define*/
 define('Core/GoogleEarthEnterpriseTileInformation',[
-    './defined',
-    './isBitSet'
-], function(
-    defined,
-    isBitSet) {
+        './defined',
+        './isBitSet'
+    ], function(
+        defined,
+        isBitSet) {
     'use strict';
 
     // Bitmask for checking tile properties
@@ -605,229 +615,6 @@ define('Core/GoogleEarthEnterpriseTileInformation',[
     };
 
     return GoogleEarthEnterpriseTileInformation;
-});
-
-/*global define*/
-define('Core/freezeObject',[
-        './defined'
-    ], function(
-        defined) {
-    'use strict';
-
-    /**
-     * Freezes an object, using Object.freeze if available, otherwise returns
-     * the object unchanged.  This function should be used in setup code to prevent
-     * errors from completely halting JavaScript execution in legacy browsers.
-     *
-     * @private
-     *
-     * @exports freezeObject
-     */
-    var freezeObject = Object.freeze;
-    if (!defined(freezeObject)) {
-        freezeObject = function(o) {
-            return o;
-        };
-    }
-
-    return freezeObject;
-});
-
-/*global define*/
-define('Core/defaultValue',[
-        './freezeObject'
-    ], function(
-        freezeObject) {
-    'use strict';
-
-    /**
-     * Returns the first parameter if not undefined, otherwise the second parameter.
-     * Useful for setting a default value for a parameter.
-     *
-     * @exports defaultValue
-     *
-     * @param {*} a
-     * @param {*} b
-     * @returns {*} Returns the first parameter if not undefined, otherwise the second parameter.
-     *
-     * @example
-     * param = Cesium.defaultValue(param, 'default');
-     */
-    function defaultValue(a, b) {
-        if (a !== undefined) {
-            return a;
-        }
-        return b;
-    }
-
-    /**
-     * A frozen empty object that can be used as the default value for options passed as
-     * an object literal.
-     */
-    defaultValue.EMPTY_OBJECT = freezeObject({});
-
-    return defaultValue;
-});
-
-/*global define*/
-define('Core/formatError',[
-        './defined'
-    ], function(
-        defined) {
-    'use strict';
-
-    /**
-     * Formats an error object into a String.  If available, uses name, message, and stack
-     * properties, otherwise, falls back on toString().
-     *
-     * @exports formatError
-     *
-     * @param {Object} object The item to find in the array.
-     * @returns {String} A string containing the formatted error.
-     */
-    function formatError(object) {
-        var result;
-
-        var name = object.name;
-        var message = object.message;
-        if (defined(name) && defined(message)) {
-            result = name + ': ' + message;
-        } else {
-            result = object.toString();
-        }
-
-        var stack = object.stack;
-        if (defined(stack)) {
-            result += '\n' + stack;
-        }
-
-        return result;
-    }
-
-    return formatError;
-});
-
-/*global define*/
-define('Workers/createTaskProcessorWorker',[
-        '../Core/defaultValue',
-        '../Core/defined',
-        '../Core/formatError'
-    ], function(
-        defaultValue,
-        defined,
-        formatError) {
-    'use strict';
-
-    /**
-     * Creates an adapter function to allow a calculation function to operate as a Web Worker,
-     * paired with TaskProcessor, to receive tasks and return results.
-     *
-     * @exports createTaskProcessorWorker
-     *
-     * @param {createTaskProcessorWorker~WorkerFunction} workerFunction The calculation function,
-     *        which takes parameters and returns a result.
-     * @returns {createTaskProcessorWorker~TaskProcessorWorkerFunction} A function that adapts the
-     *          calculation function to work as a Web Worker onmessage listener with TaskProcessor.
-     *
-     *
-     * @example
-     * function doCalculation(parameters, transferableObjects) {
-     *   // calculate some result using the inputs in parameters
-     *   return result;
-     * }
-     *
-     * return Cesium.createTaskProcessorWorker(doCalculation);
-     * // the resulting function is compatible with TaskProcessor
-     * 
-     * @see TaskProcessor
-     * @see {@link http://www.w3.org/TR/workers/|Web Workers}
-     * @see {@link http://www.w3.org/TR/html5/common-dom-interfaces.html#transferable-objects|Transferable objects}
-     */
-    function createTaskProcessorWorker(workerFunction) {
-        var postMessage;
-        var transferableObjects = [];
-        var responseMessage = {
-            id : undefined,
-            result : undefined,
-            error : undefined
-        };
-
-        return function(event) {
-            /*global self*/
-            var data = event.data;
-
-            transferableObjects.length = 0;
-            responseMessage.id = data.id;
-            responseMessage.error = undefined;
-            responseMessage.result = undefined;
-
-            try {
-                responseMessage.result = workerFunction(data.parameters, transferableObjects);
-            } catch (e) {
-                if (e instanceof Error) {
-                    // Errors can't be posted in a message, copy the properties
-                    responseMessage.error = {
-                        name : e.name,
-                        message : e.message,
-                        stack : e.stack
-                    };
-                } else {
-                    responseMessage.error = e;
-                }
-            }
-
-            if (!defined(postMessage)) {
-                postMessage = defaultValue(self.webkitPostMessage, self.postMessage);
-            }
-
-            if (!data.canTransferArrayBuffer) {
-                transferableObjects.length = 0;
-            }
-
-            try {
-                postMessage(responseMessage, transferableObjects);
-            } catch (e) {
-                // something went wrong trying to post the message, post a simpler
-                // error that we can be sure will be cloneable
-                responseMessage.result = undefined;
-                responseMessage.error = 'postMessage failed with error: ' + formatError(e) + '\n  with responseMessage: ' + JSON.stringify(responseMessage);
-                postMessage(responseMessage);
-            }
-        };
-    }
-
-    /**
-     * A function that performs a calculation in a Web Worker.
-     * @callback createTaskProcessorWorker~WorkerFunction
-     *
-     * @param {Object} parameters Parameters to the calculation.
-     * @param {Array} transferableObjects An array that should be filled with references to objects inside
-     *        the result that should be transferred back to the main document instead of copied.
-     * @returns {Object} The result of the calculation.
-     *
-     * @example
-     * function calculate(parameters, transferableObjects) {
-     *   // perform whatever calculation is necessary.
-     *   var typedArray = new Float32Array(0);
-     *
-     *   // typed arrays are transferable
-     *   transferableObjects.push(typedArray)
-     *
-     *   return {
-     *      typedArray : typedArray
-     *   };
-     * }
-     */
-
-    /**
-     * A Web Worker message event handler function that handles the interaction with TaskProcessor,
-     * specifically, task ID management and posting a response message containing the result.
-     * @callback createTaskProcessorWorker~TaskProcessorWorkerFunction
-     *
-     * @param {Object} event The onmessage event object.
-     */
-
-    return createTaskProcessorWorker;
 });
 
 /* pako 1.0.4 nodeca/pako */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define('ThirdParty/pako_inflate',[],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.pako = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
@@ -3956,19 +3743,237 @@ define('Workers/createTaskProcessorWorker',[
 },{"./utils/common":1,"./utils/strings":2,"./zlib/constants":4,"./zlib/gzheader":6,"./zlib/inflate":8,"./zlib/messages":10,"./zlib/zstream":11}]},{},[])("/lib/inflate.js")
 });
 
-/*global define*/
+define('Core/freezeObject',[
+        './defined'
+    ], function(
+        defined) {
+    'use strict';
+
+    /**
+     * Freezes an object, using Object.freeze if available, otherwise returns
+     * the object unchanged.  This function should be used in setup code to prevent
+     * errors from completely halting JavaScript execution in legacy browsers.
+     *
+     * @private
+     *
+     * @exports freezeObject
+     */
+    var freezeObject = Object.freeze;
+    if (!defined(freezeObject)) {
+        freezeObject = function(o) {
+            return o;
+        };
+    }
+
+    return freezeObject;
+});
+
+define('Core/defaultValue',[
+        './freezeObject'
+    ], function(
+        freezeObject) {
+    'use strict';
+
+    /**
+     * Returns the first parameter if not undefined, otherwise the second parameter.
+     * Useful for setting a default value for a parameter.
+     *
+     * @exports defaultValue
+     *
+     * @param {*} a
+     * @param {*} b
+     * @returns {*} Returns the first parameter if not undefined, otherwise the second parameter.
+     *
+     * @example
+     * param = Cesium.defaultValue(param, 'default');
+     */
+    function defaultValue(a, b) {
+        if (a !== undefined && a !== null) {
+            return a;
+        }
+        return b;
+    }
+
+    /**
+     * A frozen empty object that can be used as the default value for options passed as
+     * an object literal.
+     */
+    defaultValue.EMPTY_OBJECT = freezeObject({});
+
+    return defaultValue;
+});
+
+define('Core/formatError',[
+        './defined'
+    ], function(
+        defined) {
+    'use strict';
+
+    /**
+     * Formats an error object into a String.  If available, uses name, message, and stack
+     * properties, otherwise, falls back on toString().
+     *
+     * @exports formatError
+     *
+     * @param {Object} object The item to find in the array.
+     * @returns {String} A string containing the formatted error.
+     */
+    function formatError(object) {
+        var result;
+
+        var name = object.name;
+        var message = object.message;
+        if (defined(name) && defined(message)) {
+            result = name + ': ' + message;
+        } else {
+            result = object.toString();
+        }
+
+        var stack = object.stack;
+        if (defined(stack)) {
+            result += '\n' + stack;
+        }
+
+        return result;
+    }
+
+    return formatError;
+});
+
+define('Workers/createTaskProcessorWorker',[
+        '../Core/defaultValue',
+        '../Core/defined',
+        '../Core/formatError'
+    ], function(
+        defaultValue,
+        defined,
+        formatError) {
+    'use strict';
+
+    /**
+     * Creates an adapter function to allow a calculation function to operate as a Web Worker,
+     * paired with TaskProcessor, to receive tasks and return results.
+     *
+     * @exports createTaskProcessorWorker
+     *
+     * @param {createTaskProcessorWorker~WorkerFunction} workerFunction The calculation function,
+     *        which takes parameters and returns a result.
+     * @returns {createTaskProcessorWorker~TaskProcessorWorkerFunction} A function that adapts the
+     *          calculation function to work as a Web Worker onmessage listener with TaskProcessor.
+     *
+     *
+     * @example
+     * function doCalculation(parameters, transferableObjects) {
+     *   // calculate some result using the inputs in parameters
+     *   return result;
+     * }
+     *
+     * return Cesium.createTaskProcessorWorker(doCalculation);
+     * // the resulting function is compatible with TaskProcessor
+     *
+     * @see TaskProcessor
+     * @see {@link http://www.w3.org/TR/workers/|Web Workers}
+     * @see {@link http://www.w3.org/TR/html5/common-dom-interfaces.html#transferable-objects|Transferable objects}
+     */
+    function createTaskProcessorWorker(workerFunction) {
+        var postMessage;
+        var transferableObjects = [];
+        var responseMessage = {
+            id : undefined,
+            result : undefined,
+            error : undefined
+        };
+
+        return function(event) {
+            /*global self*/
+            var data = event.data;
+
+            transferableObjects.length = 0;
+            responseMessage.id = data.id;
+            responseMessage.error = undefined;
+            responseMessage.result = undefined;
+
+            try {
+                responseMessage.result = workerFunction(data.parameters, transferableObjects);
+            } catch (e) {
+                if (e instanceof Error) {
+                    // Errors can't be posted in a message, copy the properties
+                    responseMessage.error = {
+                        name : e.name,
+                        message : e.message,
+                        stack : e.stack
+                    };
+                } else {
+                    responseMessage.error = e;
+                }
+            }
+
+            if (!defined(postMessage)) {
+                postMessage = defaultValue(self.webkitPostMessage, self.postMessage);
+            }
+
+            if (!data.canTransferArrayBuffer) {
+                transferableObjects.length = 0;
+            }
+
+            try {
+                postMessage(responseMessage, transferableObjects);
+            } catch (e) {
+                // something went wrong trying to post the message, post a simpler
+                // error that we can be sure will be cloneable
+                responseMessage.result = undefined;
+                responseMessage.error = 'postMessage failed with error: ' + formatError(e) + '\n  with responseMessage: ' + JSON.stringify(responseMessage);
+                postMessage(responseMessage);
+            }
+        };
+    }
+
+    /**
+     * A function that performs a calculation in a Web Worker.
+     * @callback createTaskProcessorWorker~WorkerFunction
+     *
+     * @param {Object} parameters Parameters to the calculation.
+     * @param {Array} transferableObjects An array that should be filled with references to objects inside
+     *        the result that should be transferred back to the main document instead of copied.
+     * @returns {Object} The result of the calculation.
+     *
+     * @example
+     * function calculate(parameters, transferableObjects) {
+     *   // perform whatever calculation is necessary.
+     *   var typedArray = new Float32Array(0);
+     *
+     *   // typed arrays are transferable
+     *   transferableObjects.push(typedArray)
+     *
+     *   return {
+     *      typedArray : typedArray
+     *   };
+     * }
+     */
+
+    /**
+     * A Web Worker message event handler function that handles the interaction with TaskProcessor,
+     * specifically, task ID management and posting a response message containing the result.
+     * @callback createTaskProcessorWorker~TaskProcessorWorkerFunction
+     *
+     * @param {Object} event The onmessage event object.
+     */
+
+    return createTaskProcessorWorker;
+});
+
 define('Workers/decodeGoogleEarthEnterprisePacket',[
-    '../Core/decodeGoogleEarthEnterpriseData',
-    '../Core/RuntimeError',
-    '../Core/GoogleEarthEnterpriseTileInformation',
-    './createTaskProcessorWorker',
-    '../ThirdParty/pako_inflate'
-], function(
-    decodeGoogleEarthEnterpriseData,
-    RuntimeError,
-    GoogleEarthEnterpriseTileInformation,
-    createTaskProcessorWorker,
-    pako) {
+        '../Core/decodeGoogleEarthEnterpriseData',
+        '../Core/GoogleEarthEnterpriseTileInformation',
+        '../Core/RuntimeError',
+        '../ThirdParty/pako_inflate',
+        './createTaskProcessorWorker'
+    ], function(
+        decodeGoogleEarthEnterpriseData,
+        GoogleEarthEnterpriseTileInformation,
+        RuntimeError,
+        pako,
+        createTaskProcessorWorker) {
     'use strict';
 
     // Datatype sizes
