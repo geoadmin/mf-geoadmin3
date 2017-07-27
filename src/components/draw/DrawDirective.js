@@ -61,7 +61,8 @@ goog.require('ga_styles_service');
         element: tooltipElement,
         offset: [15, 15],
         positioning: 'top-left',
-        stopEvent: true
+        stopEvent: true,
+        insertFirst: false
       });
       return tooltip;
     };

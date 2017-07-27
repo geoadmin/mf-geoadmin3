@@ -98,6 +98,7 @@ goog.require('ga_measure_filter');
             element: tooltipElement,
             offset: [0, -7],
             positioning: 'bottom-center',
+            insertFirst: false,
             stopEvent: angular.isDefined(stopEvent) ?
                 stopEvent : true // for copy/paste
           });
