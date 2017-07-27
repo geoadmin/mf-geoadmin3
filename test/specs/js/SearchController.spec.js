@@ -5,8 +5,9 @@ describe('ga_search_controller', function() {
     var scope, parentScope, $compile, $rootScope, $timeout, $httpBackend,
         gaGlobalOptions;
 
-    var loadController = function() {
+    var loadController = function(map) {
       parentScope = $rootScope.$new();
+      parentScope.map = map;
       var tpl = '<div ng-controller="GaSearchController"></div>';
       elt = $compile(tpl)(parentScope);
       $rootScope.$digest();
@@ -25,9 +26,7 @@ describe('ga_search_controller', function() {
       inject(function($injector) {
         injectServices($injector);
       });
-      loadController();
-      $timeout.flush();
-    });
+         });
 
     afterEach(function() {
       $httpBackend.verifyNoOutstandingExpectation();
@@ -40,9 +39,20 @@ describe('ga_search_controller', function() {
     });
 
     it('set scope values', function() {
+      loadController();
+      $timeout.flush();
+
       var opt = scope.options;
       expect(opt.searchUrl).to.be(gaGlobalOptions.cachedApiUrl + '/rest/services/{Topic}/SearchServer?');
       expect(opt.featureUrl).to.be(gaGlobalOptions.cachedApiUrl + '/rest/services/{Topic}/MapServer/{Layer}/{Feature}');
+    });
+
+    it('set scope values if map is defined', function() {
+      loadController(new ol.Map({}));
+      $timeout.flush();
+
+      var opt = scope.options;
+      expect(opt.searchUrl).to.be(gaGlobalOptions.cachedApiUrl + '/rest/services/{Topic}/SearchServer?sr=3857&');
     });
   });
 });
