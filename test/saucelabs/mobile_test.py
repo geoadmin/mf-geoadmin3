@@ -3,7 +3,7 @@
 import sys
 from helpers import waitForUrlChange, pageLoadWait
 
-QUERYSTRING_OF_AVENCHES = 'X=191917.41&Y=569374.22&zoom=6'
+QUERYSTRING_OF_AVENCHES = 'E=2569374.16&N=1191917.60&zoom=6'
 QUERYSTRING_WHEN_ZOOM_IN = 'zoom=2'
 DEFAULT_WAIT = 6
 
