@@ -8,18 +8,23 @@ goog.provide('ga_event_service');
     this.$get = function() {
       var MOUSE_REGEX = /mouse/;
 
+      var isMouse = function(evt) {
+        var evt = evt.originalEvent || evt;
+        return MOUSE_REGEX.test(evt.pointerType || evt.type);
+      };
+
       // Ensure actions on mouseover/out are only triggered by a mouse
-      var addMouseOnlyEvents = function(mngr, elt, eventsIn, eventsOut,
+      var addMouseOnlyEvents = function(elt, eventsIn, eventsOut,
           callbackIn, callbackOut, selector) {
         var cancelMouseEvts = false;
         elt.on(eventsIn, selector, function(evt) {
-          if (!mngr.isMouse(evt) || cancelMouseEvts) {
+          if (!isMouse(evt) || cancelMouseEvts) {
             cancelMouseEvts = true;
             return;
           }
           callbackIn(evt);
         }).on(eventsOut, selector, function(evt) {
-          if (!mngr.isMouse(evt)) {
+          if (!isMouse(evt)) {
             return;
           }
           callbackOut(evt);
@@ -29,21 +34,20 @@ goog.provide('ga_event_service');
 
       var EventManager = function() {
 
-        this.isMouse = function(event) {
-          var evt = event.originalEvent || event;
-          return MOUSE_REGEX.test(evt.pointerType || evt.type);
+        this.isMouse = function(evt) {
+          return isMouse(evt);
         };
 
         // Ensure actions on mouseover/out are only triggered by a mouse
         this.onMouseOverOut = function(elt, onMouseOver, onMouseOut, selector) {
-          addMouseOnlyEvents(this, elt, 'touchstart mouseover', 'mouseout',
+          addMouseOnlyEvents(elt, 'touchstart mouseover', 'mouseout',
               onMouseOver, onMouseOut, selector);
         };
 
         // Ensure actions on mouseover/out are only triggered by a mouse
         this.onMouseEnterLeave = function(elt, onMouseEnter, onMouseLeave,
             selector) {
-          addMouseOnlyEvents(this, elt, 'touchstart mouseenter', 'mouseleave',
+          addMouseOnlyEvents(elt, 'touchstart mouseenter', 'mouseleave',
               onMouseEnter, onMouseLeave, selector);
         };
       };
