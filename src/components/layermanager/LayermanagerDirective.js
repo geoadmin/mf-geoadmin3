@@ -204,8 +204,6 @@ goog.require('ga_window_service');
           list.addEventListener('slip:beforeswipe', slipBeforeSwipeCallback);
         };
 
-        // On mobile we use a classic select box, on desktop a popover
-        scope.displayTimestamps = angular.noop;
         // Simulate a select box with a popover
         scope.displayTimestamps = function(evt, layer) {
           destroyPopover(element);
