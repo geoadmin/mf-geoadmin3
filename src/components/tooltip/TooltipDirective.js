@@ -2,6 +2,7 @@ goog.provide('ga_tooltip_directive');
 
 goog.require('ga_browsersniffer_service');
 goog.require('ga_debounce_service');
+goog.require('ga_event_service');
 goog.require('ga_identify_service');
 goog.require('ga_iframecom_service');
 goog.require('ga_map_service');
@@ -10,12 +11,14 @@ goog.require('ga_previewfeatures_service');
 goog.require('ga_sanitize_service');
 goog.require('ga_time_service');
 goog.require('ga_topic_service');
+goog.require('ga_window_service');
 
 (function() {
 
   var module = angular.module('ga_tooltip_directive', [
     'ga_browsersniffer_service',
     'ga_debounce_service',
+    'ga_event_service',
     'ga_identify_service',
     'ga_iframecom_service',
     'ga_map_service',
@@ -24,6 +27,7 @@ goog.require('ga_topic_service');
     'ga_sanitize_service',
     'ga_time_service',
     'ga_topic_service',
+    'ga_window_service',
     'pascalprecht.translate'
   ]);
 
@@ -31,7 +35,8 @@ goog.require('ga_topic_service');
       function($timeout, $http, $q, $translate, $sce, $rootScope, gaPopup,
           gaLayers, gaBrowserSniffer, gaMapClick, gaDebounce, gaPreviewFeatures,
           gaMapUtils, gaTime, gaTopic, gaIdentify, gaGlobalOptions,
-          gaPermalink, gaIFrameCom, gaUrlUtils, gaLang, gaSanitize) {
+          gaPermalink, gaIFrameCom, gaUrlUtils, gaLang, gaSanitize, gaEvent,
+          gaWindow) {
         var mouseEvts = '';
         if (!gaBrowserSniffer.mobile) {
           mouseEvts = 'ng-mouseenter="options.onMouseEnter($event,' +
@@ -171,12 +176,12 @@ goog.require('ga_topic_service');
             });
           };
           var deregMapClick = gaMapClick.listen(map, onMapClick);
-          var deregPointerMove;
-          if (!gaBrowserSniffer.mobile) {
-            deregPointerMove = map.on('pointermove', function(evt) {
-              updateCursorStyleDebounced(map, evt.pixel);
-            });
-          }
+          var deregPointerMove = map.on('pointermove', function(evt) {
+            if (!gaEvent.isMouse(evt)) {
+              return;
+            }
+            updateCursorStyleDebounced(map, evt.pixel);
+          });
           deregMapEvents = function() {
             deregMapClick();
             ol.Observable.unByKey(deregPointerMove);
@@ -661,7 +666,7 @@ goog.require('ga_topic_service');
 
                 //always reposition element when newly opened
                 var x;
-                if (!gaBrowserSniffer.mobile) {
+                if (gaWindow.isWidth('>s')) {
                   x = function(element) {
                     return map.getSize()[0] -
                         parseFloat(element.css('max-width')) - 58;

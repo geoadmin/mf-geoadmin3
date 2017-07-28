@@ -29,8 +29,14 @@ describe('ga_attribution_directive', function() {
   var layerUnvalid = new ol.layer.Layer({});
   layerBg.visible = true;
 
+  // Third party layer layer
+  var layerThirdParty = new ol.layer.Layer({});
+  layerThirdParty.visible = true;
+  layerThirdParty.displayInLayerManager = true;
+  layerThirdParty.url = 'http://foo.ch/admin/wms';
+
   describe('gaAttribution', function() {
-    var elt, scope, parentScope, $compile, $rootScope, $window, gaBrowserSniffer, gaAttribution, gaDebounce, map, ol3d, $timeout, $httpBackend;
+    var elt, scope, parentScope, $compile, $rootScope, $window, gaAttribution, gaDebounce, map, ol3d, $timeout, $httpBackend;
 
     var loadDirective = function(map, ol3d) {
       parentScope = $rootScope.$new();
@@ -53,7 +59,6 @@ describe('ga_attribution_directive', function() {
       $window = $injector.get('$window');
       $timeout = $injector.get('$timeout');
       $httpBackend = $injector.get('$httpBackend');
-      gaBrowserSniffer = $injector.get('gaBrowserSniffer');
       gaAttribution = $injector.get('gaAttribution');
       gaDebounce = $injector.get('gaDebounce');
     };
@@ -84,19 +89,17 @@ describe('ga_attribution_directive', function() {
       $timeout.verifyNoPendingTasks();
     });
 
-    describe('on desktop', function() {
+    describe('on modern browsers', function() {
 
       beforeEach(function() {
         inject(function($injector) {
           injectServices($injector);
         });
-        gaBrowserSniffer.mobile = false;
       });
 
       it('verifies html elements', function() {
         loadDirective(map);
         expect(elt.html()).to.be('');
-        expect(elt.data('bs.tooltip')).to.be.an(Object);
         $timeout.flush();
       });
 
@@ -108,7 +111,7 @@ describe('ga_attribution_directive', function() {
         $timeout.flush();
       });
 
-      [layerBg, layerPrev, layerMngr].forEach(function(layer) {
+      [layerBg, layerPrev, layerMngr, layerThirdParty].forEach(function(layer) {
         it('updates content when a good layer is added', function() {
           loadDirective(map);
           sinon.stub(gaAttribution, 'getTextFromLayer').returns('foo');
@@ -128,6 +131,82 @@ describe('ga_attribution_directive', function() {
           $timeout.flush();
           expect(elt.html()).to.be('');
         });
+      });
+
+      it('adds third party warning tooltip', function() {
+        loadDirective(map);
+        map.addLayer(layerThirdParty);
+        $rootScope.$digest();
+        $timeout.flush();
+        var w = elt.find('.ga-warning-tooltip');
+        expect(w.length).to.be(1);
+        expect(w.data('bs.tooltip')).to.be(undefined);
+
+        w.trigger('mouseover');
+        expect(w.data('bs.tooltip')).to.be.an(Object);
+      });
+
+      it('show/hide third party warning tooltip on mouse events', function() {
+        loadDirective(map);
+        map.addLayer(layerThirdParty);
+        $rootScope.$digest();
+        $timeout.flush();
+        var isShown, isHidden, w = elt.find('.ga-warning-tooltip');
+        w.on('show.bs.tooltip', function() {
+          isShown = true;
+        });
+        w.on('hide.bs.tooltip', function() {
+          isShown = false;
+        });
+        expect(w.length).to.be(1);
+        expect(w.data('bs.tooltip')).to.be(undefined);
+        expect(isShown).to.be(undefined);
+
+        w.trigger('mouseover');
+        expect(w.data('bs.tooltip')).to.be.an(Object);
+        expect(isShown).to.be(true);
+
+        w.trigger('mouseout');
+        expect(w.data('bs.tooltip')).to.be.an(Object);
+        expect(isShown).to.be(false);
+      });
+
+      it('doesn\'t show third party warning tooltip on touch events', function() {
+        loadDirective(map);
+        map.addLayer(layerThirdParty);
+        $rootScope.$digest();
+        $timeout.flush();
+        var isShown, isHidden, w = elt.find('.ga-warning-tooltip');
+        w.on('show.bs.tooltip', function() {
+          isShown = true;
+        });
+        w.on('hide.bs.tooltip', function() {
+          isShown = false;
+        });
+        expect(w.length).to.be(1);
+        expect(w.data('bs.tooltip')).to.be(undefined);
+        expect(isShown).to.be(undefined);
+
+        w.trigger('touchstart');
+        w.trigger('mouseover');
+        expect(w.data('bs.tooltip')).to.be(undefined);
+        expect(isShown).to.be(undefined);
+
+        w.trigger('mouseout');
+        expect(w.data('bs.tooltip')).to.be(undefined);
+        expect(isShown).to.be(undefined);
+      });
+
+      it('opens alert message on click', function() {
+        loadDirective(map);
+        map.addLayer(layerThirdParty);
+        $rootScope.$digest();
+        $timeout.flush();
+        var spy = sinon.stub($window, 'alert').withArgs('external_data_warning').returns({});
+        var w = elt.find('.ga-warning-tooltip');
+        w.trigger('click');
+        expect(spy.callCount).to.be(1);
+        $window.alert.restore();
       });
 
       it('updates content on language change', function() {
@@ -165,22 +244,6 @@ describe('ga_attribution_directive', function() {
         $timeout.flush();
         expect(elt.html()).to.be('copyright_data<p>bar3denabled</p>');
         $timeout.verifyNoPendingTasks();
-      });
-    });
-
-    describe('on mobile', function() {
-
-      beforeEach(function() {
-        inject(function($injector) {
-          injectServices($injector);
-        });
-        gaBrowserSniffer.mobile = true;
-      });
-
-      it('doesn\'t load tooltips', function() {
-        loadDirective(map);
-        expect(elt.data('bs.tooltip')).to.be(undefined);
-        $timeout.flush();
       });
     });
   });

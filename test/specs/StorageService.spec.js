@@ -35,42 +35,13 @@ describe('ga_storage_service', function() {
       });
     });
 
-    describe('on desktop', function() {
+    describe('on modern browsers', function() {
+
       beforeEach(function() {
-
-        module(function($provide) {
-          $provide.value('gaBrowserSniffer', {
-            mobile: false
-          });
-        });
-
         injectSt();
       });
 
       describe('#init()', function() {
-
-        it('doesn\'t inititalize', function() {
-          var spy = sinon.spy($window.localforage, 'config');
-          gaStorage.init();
-          expect(spy.called).to.be(false);
-          spy.restore();
-        });
-      });
-    });
-
-   describe('on mobile', function() {
-
-      beforeEach(function() {
-        module(function($provide) {
-          $provide.value('gaBrowserSniffer', {
-            mobile: true
-          });
-        });
-
-        injectSt();
-      });
-
-     describe('#init()', function() {
 
         it('initializes localforage db', function() {
           var spy = sinon.spy($window.localforage, 'config');

@@ -1,9 +1,11 @@
 goog.provide('ga_layermanager_directive');
 
 goog.require('ga_attribution_service');
+goog.require('ga_event_service');
 goog.require('ga_layermetadatapopup_service');
 goog.require('ga_map_service');
 goog.require('ga_urlutils_service');
+goog.require('ga_window_service');
 
 (function() {
 
@@ -12,7 +14,9 @@ goog.require('ga_urlutils_service');
     'ga_layermetadatapopup_service',
     'ga_map_service',
     'ga_attribution_service',
-    'ga_urlutils_service'
+    'ga_urlutils_service',
+    'ga_event_service',
+    'ga_window_service'
   ]);
 
   /**
@@ -48,7 +52,7 @@ goog.require('ga_urlutils_service');
   module.directive('gaLayermanager', function($compile, $timeout,
       $rootScope, $translate, $window, gaBrowserSniffer, gaLayerFilters,
       gaLayerMetadataPopup, gaLayers, gaAttribution, gaUrlUtils,
-      gaMapUtils) {
+      gaMapUtils, gaEvent, gaWindow) {
 
     // Timestamps list template
     var tpl =
@@ -111,7 +115,6 @@ goog.require('ga_urlutils_service');
       },
       link: function(scope, element, attrs) {
         var map = scope.map;
-        scope.mobile = gaBrowserSniffer.mobile;
 
         // Compile the time popover template
         content = $compile(tpl)(scope);
@@ -201,24 +204,20 @@ goog.require('ga_urlutils_service');
           list.addEventListener('slip:beforeswipe', slipBeforeSwipeCallback);
         };
 
-        // On mobile we use a classic select box, on desktop a popover
-        scope.displayTimestamps = angular.noop;
-        if (!scope.mobile) {
-          // Simulate a select box with a popover
-          scope.displayTimestamps = function(evt, layer) {
-            destroyPopover(element);
-            var bt = $(evt.target);
-            if (!bt.data('bs.popover')) {
-              scope.tmpLayer = layer;
-              // We use timeout otherwise the popover is bad centered.
-              $timeout(function() {
-                createPopover(bt, element, scope);
-              }, 100, false);
-            }
-            evt.preventDefault();
-            evt.stopPropagation();
-          };
-        }
+        // Simulate a select box with a popover
+        scope.displayTimestamps = function(evt, layer) {
+          destroyPopover(element);
+          var bt = $(evt.target);
+          if (!bt.data('bs.popover')) {
+            scope.tmpLayer = layer;
+            // We use timeout otherwise the popover is bad centered.
+            $timeout(function() {
+              createPopover(bt, element, scope);
+            }, 100, false);
+          }
+          evt.preventDefault();
+          evt.stopPropagation();
+        };
 
         scope.isDefaultValue = function(timestamp) {
           if (timestamp && timestamp.length) {
@@ -284,8 +283,8 @@ goog.require('ga_urlutils_service');
           destroyPopover(element);
         };
 
-        scope.useRange = (!gaBrowserSniffer.mobile && (!gaBrowserSniffer.msie ||
-            gaBrowserSniffer.msie > 9));
+        scope.useRange = gaWindow.isWidth('>s') && (!gaBrowserSniffer.msie ||
+            gaBrowserSniffer.msie > 9);
 
         if (!scope.useRange) {
           scope.opacityValues = [
@@ -314,22 +313,31 @@ goog.require('ga_urlutils_service');
           });
         });
 
-        if (!scope.mobile) {
-          // Display the third party data tooltip
-          element.tooltip({
-            selector: '.fa-user',
-            container: 'body',
-            placement: 'right',
-            title: function(elm) {
-              return $translate.instant('external_data_tooltip');
-            },
-            template:
-              '<div class="tooltip ga-red-tooltip">' +
-                '<div class="tooltip-arrow"></div>' +
-                '<div class="tooltip-inner"></div>' +
-              '</div>'
-          });
-        }
+        // Display the third party data tooltip, only on mouse events
+        var tooltipOptions = {
+          trigger: 'manual',
+          selector: '.fa-user',
+          container: 'body',
+          placement: 'right',
+          title: function(elm) {
+            return $translate.instant('external_data_tooltip');
+          },
+          template:
+            '<div class="tooltip ga-red-tooltip">' +
+              '<div class="tooltip-arrow"></div>' +
+              '<div class="tooltip-inner"></div>' +
+            '</div>'
+        };
+
+        gaEvent.onMouseOverOut(element, function(evt) {
+          var link = $(evt.target);
+          if (!link.data('bs.tooltip')) {
+            link.tooltip(tooltipOptions);
+          }
+          link.tooltip('show');
+        }, function(evt) {
+          $(evt.target).tooltip('hide');
+        }, tooltipOptions.selector);
 
         // Change layers label when topic changes
         scope.$on('gaLayersTranslationChange', function(evt) {

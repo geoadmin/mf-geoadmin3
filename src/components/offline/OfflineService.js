@@ -3,13 +3,15 @@ goog.provide('ga_offline_service');
 goog.require('ga_background_service');
 goog.require('ga_storage_service');
 goog.require('ga_styles_service');
+goog.require('ga_window_service');
 (function() {
 
   var module = angular.module('ga_offline_service', [
     'ga_debounce_service',
     'ga_storage_service',
     'ga_styles_service',
-    'ga_background_service'
+    'ga_background_service',
+    'ga_window_service'
   ]);
 
   /**
@@ -65,7 +67,7 @@ goog.require('ga_styles_service');
 
     this.$get = function($http, $rootScope, $timeout, $translate, $window,
         gaBrowserSniffer, gaGlobalOptions, gaLayers, gaMapUtils,
-        gaStorage, gaStyleFactory, gaUrlUtils, gaBackground) {
+        gaStorage, gaStyleFactory, gaUrlUtils, gaBackground, gaWindow) {
 
       // Defines if a layer is cacheable at a specific data zoom level.
       var isCacheableLayer = function(layer, z) {
@@ -545,7 +547,7 @@ goog.require('ga_styles_service');
           // saving multilayers and/or layers with big size tile, browser is
           // crashing (mem or cpu).
           // TODO: Try using webworkers?
-          var pool = gaBrowserSniffer.mobile ? 1 : 50;
+          var pool = gaWindow.isWidth('<l') ? 1 : 50;
 
           // We can't use xmlhttp2.onloadend event because it's doesn't work on
           // android browser
@@ -635,13 +637,11 @@ goog.require('ga_styles_service');
       };
 
       var off = new Offline();
-      if (gaBrowserSniffer.mobile) {
-        gaLayers.loadConfig().then(function() {
-          if (off.isDataObsolete()) {
-            alert($translate.instant('offline_cache_obsolete'));
-          }
-        });
-      }
+      gaLayers.loadConfig().then(function() {
+        if (off.isDataObsolete()) {
+          alert($translate.instant('offline_cache_obsolete'));
+        }
+      });
       return off;
     };
   });

@@ -55,7 +55,11 @@
     background-color: rgba(0, 0, 0, 0.7);
   }
 
-  &.ga-bg-mobile {
+  @media (max-width: @screen-tablet) {
+
+    .ga-bg-layer-text, .ga-bg-layer-bt-text, .fa-chevron-sign-right {
+      display: none;
+    }
 
     .ga-bg-layer-bt, .ga-bg-layer {
       left: unit(@control-btns-right, px);
@@ -114,7 +118,7 @@
     }
   }
 
-  &.ga-bg-desktop {
+  @media (min-width: (@screen-tablet + 1)) {
     
     .fa-chevron-sign-right {
       line-height: 64px;

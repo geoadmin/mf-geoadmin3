@@ -1,20 +1,20 @@
 goog.provide('ga_share_directive');
 
-goog.require('ga_browsersniffer_service');
 goog.require('ga_permalink');
 goog.require('ga_urlutils_service');
+goog.require('ga_window_service');
 
 (function() {
 
   var module = angular.module('ga_share_directive', [
-    'ga_browsersniffer_service',
     'ga_permalink',
     'ga_urlutils_service',
+    'ga_window_service',
     'pascalprecht.translate'
   ]);
 
   module.directive('gaShare', function($http, $rootScope, $timeout, $translate,
-      $window, gaPermalink, gaBrowserSniffer, gaUrlUtils) {
+      $window, gaPermalink, gaUrlUtils, gaWindow) {
     return {
       restrict: 'A',
       scope: {
@@ -26,14 +26,11 @@ goog.require('ga_urlutils_service');
         var permalinkInput = $('.ga-share-permalink input');
 
         scope.qrcodegeneratorPath = scope.options.qrcodegeneratorPath;
-        scope.mobile = gaBrowserSniffer.mobile;
         scope.showMore = false;
 
-        if (!gaBrowserSniffer.mobile) {
-          $('.ga-share-icon').tooltip({
-            placement: 'bottom'
-          });
-        }
+        $('.ga-share-icon').tooltip({
+          placement: 'bottom'
+        });
 
         // Store in the scope the permalink value which is bound to
         // the input field
@@ -63,7 +60,7 @@ goog.require('ga_urlutils_service');
             scope.urlShortened = true;
             scope.$applyAsync(function() {
               // Auto-select the shortened permalink (not on mobiles)
-              if (!gaBrowserSniffer.mobile) {
+              if (gaWindow.isWidth('>s')) {
                 permalinkInput.focus();
               }
             });

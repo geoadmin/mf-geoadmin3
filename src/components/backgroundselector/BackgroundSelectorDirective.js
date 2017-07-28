@@ -1,19 +1,15 @@
 goog.provide('ga_backgroundselector_directive');
 
 goog.require('ga_background_service');
-goog.require('ga_map');
-goog.require('ga_permalink');
-goog.require('ga_topic_service');
 
 (function() {
 
   var module = angular.module('ga_backgroundselector_directive', [
-    'ga_map',
     'ga_background_service'
   ]);
 
   module.directive('gaBackgroundSelector',
-    function(gaBrowserSniffer, gaBackground) {
+    function(gaBackground) {
       return {
         restrict: 'A',
         templateUrl:
@@ -24,15 +20,7 @@ goog.require('ga_topic_service');
         },
         link: function(scope, elt, attrs) {
           scope.isBackgroundSelectorClosed = true;
-          var mobile = gaBrowserSniffer.mobile;
-          scope.desktop = !gaBrowserSniffer.embed && !mobile;
           scope.backgroundLayers = [];
-
-          if (mobile) {
-            elt.addClass('ga-bg-mobile');
-          } else if (scope.desktop) {
-            elt.addClass('ga-bg-desktop');
-          }
 
           scope.$watch('currentLayer', function(newVal, oldVal) {
             if (oldVal !== newVal) {

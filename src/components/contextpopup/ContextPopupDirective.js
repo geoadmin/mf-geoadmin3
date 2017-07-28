@@ -30,7 +30,7 @@ goog.require('ga_window_service');
           scope: {
             map: '=gaContextPopupMap',
             options: '=gaContextPopupOptions',
-            is3dActive: '=gaContextPopupIs3d'
+            isActive: '=gaContextPopupActive'
           },
           link: function(scope, element, attrs) {
             var heightUrl = scope.options.heightUrl;
@@ -83,7 +83,7 @@ goog.require('ga_window_service');
             };
 
             var handler = function(event) {
-              if (scope.is3dActive) {
+              if (!scope.isActive) {
                 return;
               }
               event.stopPropagation();

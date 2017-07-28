@@ -1,6 +1,5 @@
 goog.provide('ga_search_type_directives');
 
-goog.require('ga_browsersniffer_service');
 goog.require('ga_debounce_service');
 goog.require('ga_layermetadatapopup_service');
 goog.require('ga_map_service');
@@ -162,7 +161,6 @@ goog.require('ga_urlutils_service');
   };
 
   var module = angular.module('ga_search_type_directives', [
-    'ga_browsersniffer_service',
     'ga_debounce_service',
     'ga_layermetadatapopup_service',
     'ga_map_service',
@@ -189,7 +187,7 @@ goog.require('ga_urlutils_service');
 
   module.controller('GaSearchTypesController',
     function($scope, $http, $q, $sce, gaUrlUtils, gaSearchLabels,
-             gaBrowserSniffer, gaMarkerOverlay, gaDebounce) {
+             gaMarkerOverlay, gaDebounce) {
 
       // This value is used to block blur/mouseleave event, when a value
       // is selected. See #2284. It's reinitialized when a new search is
@@ -275,16 +273,10 @@ goog.require('ga_urlutils_service');
       };
 
       $scope.preview = function(res) {
-        if (gaBrowserSniffer.mobile) {
-          return;
-        }
         addOverlay(gaMarkerOverlay, $scope.map, res);
       };
 
       $scope.removePreview = function() {
-        if (gaBrowserSniffer.mobile) {
-          return;
-        }
         removeOverlay(gaMarkerOverlay, $scope.map);
       };
 
@@ -313,8 +305,8 @@ goog.require('ga_urlutils_service');
   );
 
   module.directive('gaSearchLocations',
-      function($http, $q, $sce, $translate, gaUrlUtils, gaBrowserSniffer,
-               gaMarkerOverlay, gaSearchLabels, gaMapUtils, gaDebounce) {
+      function($http, $q, $sce, $translate, gaUrlUtils, gaMarkerOverlay,
+               gaSearchLabels, gaMapUtils, gaDebounce) {
         return {
           restrict: 'A',
           templateUrl: 'components/search/partials/searchtypes.html',
@@ -384,7 +376,7 @@ goog.require('ga_urlutils_service');
 
   module.directive('gaSearchFeatures',
       function($rootScope, $http, $q, $sce, $timeout, gaUrlUtils,
-               gaLayerFilters, gaSearchLabels, gaLayers, gaBrowserSniffer,
+               gaLayerFilters, gaSearchLabels, gaLayers, 
                gaMarkerOverlay, gaPreviewFeatures, gaTopic) {
 
         var selectedFeatures = {};
@@ -501,8 +493,8 @@ goog.require('ga_urlutils_service');
       });
 
   module.directive('gaSearchLayers',
-      function($http, $q, $sce, gaUrlUtils, gaSearchLabels, gaBrowserSniffer,
-               gaPreviewLayers, gaMapUtils, gaLayers, gaLayerMetadataPopup) {
+      function($http, $q, $sce, gaUrlUtils, gaSearchLabels, gaPreviewLayers,
+          gaMapUtils, gaLayers, gaLayerMetadataPopup) {
         return {
           restrict: 'A',
           templateUrl: 'components/search/partials/searchtypes.html',
@@ -516,9 +508,6 @@ goog.require('ga_urlutils_service');
             $scope.tabstart = tabStarts[2];
 
             $scope.preview = function(res) {
-              if (gaBrowserSniffer.mobile) {
-                return;
-              }
               var layer = gaMapUtils.getMapOverlayForBodId($scope.map,
                                                            res.attrs.layer);
 

@@ -1,21 +1,21 @@
 goog.provide('ga_attribution_directive');
 
 goog.require('ga_attribution_service');
-goog.require('ga_browsersniffer_service');
 goog.require('ga_debounce_service');
+goog.require('ga_event_service');
 goog.require('ga_map_service');
 
 (function() {
 
   var module = angular.module('ga_attribution_directive', [
     'ga_attribution_service',
-    'ga_browsersniffer_service',
+    'ga_event_service',
     'ga_map_service',
     'ga_debounce_service'
   ]);
 
   module.directive('gaAttribution', function($translate, $window,
-      gaBrowserSniffer, gaAttribution, $rootScope, gaDebounce) {
+      gaAttribution, $rootScope, gaDebounce, gaEvent) {
     return {
       restrict: 'A',
       scope: {
@@ -24,23 +24,37 @@ goog.require('ga_map_service');
       },
       link: function(scope, element, attrs) {
 
+        // Display the third party data tooltip, only on mouse events
+        var tooltipOptions = {
+          trigger: 'manual',
+          selector: '.ga-warning-tooltip',
+          title: function() {
+            return $translate.instant('external_data_tooltip');
+          },
+          template:
+            '<div class="tooltip ga-red-tooltip" role="tooltip">' +
+              '<div class="tooltip-arrow"></div>' +
+              '<div class="tooltip-inner"></div>' +
+            '</div>'
+        };
+
+        gaEvent.onMouseOverOut(element, function(evt) {
+          var link = $(evt.target);
+          if (!link.data('bs.tooltip')) {
+            link.tooltip(tooltipOptions);
+          }
+          link.tooltip('show');
+        }, function(evt) {
+          $(evt.target).tooltip('hide');
+        }, tooltipOptions.selector);
+
+        // Display the third party data alert msg
         element.on('click', '.ga-warning-tooltip', function(evt) {
           $window.alert($translate.instant('external_data_warning').
               replace('--URL--', $(evt.target).text()));
+          $(evt.target).tooltip('hide');
         });
 
-        if (!gaBrowserSniffer.mobile) {
-          // Display third party data tooltip
-          element.tooltip({
-            selector: '.ga-warning-tooltip',
-            title: function() {
-              return $translate.instant('external_data_tooltip');
-            },
-            template: '<div class="tooltip ga-red-tooltip" role="tooltip">' +
-                '<div class="tooltip-arrow"></div><div class="tooltip-inner">' +
-                '</div></div>'
-          });
-        }
         var update = function(element, layers) {
           var attrs = {}, list = [], is3dActive = scope.is3dActive();
           if (is3dActive) {

@@ -30,8 +30,13 @@ goog.require('ga_window_service');
         }
         $rootScope.$emit('gaPopupFocused', el);
       };
+
+      var isScreenBiggerThanS = function() {
+        return gaWindow.isWidth('>s') && gaWindow.isHeight('>s');
+      };
+
       var updatePosition = function(scope, element, pixel) {
-        if (!gaBrowserSniffer.mobile && scope.options.x && scope.options.y) {
+        if (isScreenBiggerThanS() && scope.options.x && scope.options.y) {
           pixel = pixel || [];
           element.css({
             left: pixel[0] || scope.options.x,
@@ -71,18 +76,15 @@ goog.require('ga_window_service');
           scope.options.isReduced = false;
 
           // Per default hide the print function
-          if (!angular.isDefined(scope.options.showPrint) ||
-              gaBrowserSniffer.mobile) {
+          if (!angular.isDefined(scope.options.showPrint)) {
             scope.options.showPrint = false;
           }
           // Per default, no help button shown
-          if (!angular.isDefined(scope.options.help) ||
-              gaBrowserSniffer.mobile) {
+          if (!angular.isDefined(scope.options.help)) {
             scope.options.help = false;
           }
           // Per default show the reduce function
-          if (!angular.isDefined(scope.options.showReduce) ||
-              gaBrowserSniffer.mobile) {
+          if (!angular.isDefined(scope.options.showReduce)) {
             scope.options.showReduce = true;
           }
           // Bring the popup to front on click on it.
@@ -93,7 +95,7 @@ goog.require('ga_window_service');
           });
 
           // Set default x and y values on non mobile device if not defined
-          if (!gaBrowserSniffer.mobile && !scope.options.position) {
+          if (isScreenBiggerThanS() && !scope.options.position) {
             if (angular.isFunction(scope.options.x)) {
               scope.options.x = scope.options.x(element);
             }

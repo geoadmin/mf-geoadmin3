@@ -1,7 +1,7 @@
 goog.provide('ga_catalogitem_directive');
 
-goog.require('ga_browsersniffer_service');
 goog.require('ga_catalogtree_directive');
+goog.require('ga_event_service');
 goog.require('ga_layermetadatapopup_service');
 goog.require('ga_map_service');
 goog.require('ga_previewlayers_service');
@@ -9,19 +9,19 @@ goog.require('ga_previewlayers_service');
 (function() {
 
   var module = angular.module('ga_catalogitem_directive', [
-    'ga_browsersniffer_service',
     'ga_catalogtree_directive',
     'ga_layermetadatapopup_service',
     'ga_map_service',
-    'ga_previewlayers_service'
+    'ga_previewlayers_service',
+    'ga_event_service'
   ]);
 
   /**
    * See examples on how it can be used
    */
   module.directive('gaCatalogitem',
-      function($compile, gaMapUtils, gaLayerMetadataPopup, gaBrowserSniffer,
-          gaPreviewLayers, gaLayers) {
+      function($compile, gaMapUtils, gaLayerMetadataPopup,
+          gaPreviewLayers, gaLayers, gaEvent) {
 
         var addBodLayer = function(map, layerBodId) {
           if (gaLayers.getLayer(layerBodId)) {
@@ -110,10 +110,10 @@ goog.require('ga_previewlayers_service');
                 });
 
               // Leaf
-              } else if (!gaBrowserSniffer.mobile) {
-                iEl.on('mouseenter', function(evt) {
+              } else {
+                gaEvent.onMouseOverOut(iEl, function(evt) {
                   addPreviewLayer(scope.map, scope.item);
-                }).on('mouseleave', function(evt) {
+                }, function(evt) {
                   removePreviewLayer(scope.map);
                 });
               }

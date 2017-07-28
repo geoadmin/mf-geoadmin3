@@ -64,8 +64,7 @@ goog.require('ga_browsersniffer_service');
         // Initialize the database config, needed when using webSQL to avoid ios
         // prompts when db becomes bigger.
         this.init = function() {
-          if (!isInitialized && $window.localforage &&
-              gaBrowserSniffer.mobile) {
+          if (!isInitialized && $window.localforage) {
             // iOS 10 manages indexedDB but localforage has a wrong detection.
             // iOS 10 doesn't accept a webSQL db of 50MB exactly, that's why
             // 1023 instead of 1024 is specified in size parameter. To remove

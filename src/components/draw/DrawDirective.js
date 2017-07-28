@@ -1,5 +1,6 @@
 goog.provide('ga_draw_directive');
 
+goog.require('ga_event_service');
 goog.require('ga_exportkml_service');
 goog.require('ga_filestorage_service');
 goog.require('ga_geomutils_service');
@@ -11,6 +12,7 @@ goog.require('ga_styles_service');
 
   var module = angular.module('ga_draw_directive', [
     'ga_exportkml_service',
+    'ga_event_service',
     'ga_filestorage_service',
     'ga_geomutils_service',
     'ga_map_service',
@@ -32,7 +34,7 @@ goog.require('ga_styles_service');
   module.directive('gaDraw', function($translate, $rootScope, $timeout,
       gaBrowserSniffer, gaDefinePropertiesForLayer, gaDebounce, gaFileStorage,
       gaLayerFilters, gaExportKml, gaMapUtils, $document, gaMeasure,
-      gaStyleFactory, gaGeomUtils) {
+      gaStyleFactory, gaGeomUtils, gaEvent) {
 
     var createDefaultLayer = function(map, useTemporaryLayer) {
       // #2820: we set useSpatialIndex to false to allow display of azimuth
@@ -177,17 +179,20 @@ goog.require('ga_styles_service');
         select.on('change:active', function(evt) {
           var active = evt.target.get(evt.key);
           if (active) {
-            if (!gaBrowserSniffer.mobile) {
-              deregPointerEvts = map.on([
-                'pointerdown',
-                'pointerup',
-                'pointermove'
-              ], function(evt) {
-                helpTooltip.setPosition(evt.coordinate);
-                updateCursorAndTooltipsDebounced(evt);
-              });
-              mapDiv.on('mouseout', hideHelpTooltip);
-            }
+            deregPointerEvts = map.on([
+              'pointerdown',
+              'pointerup',
+              'pointermove'
+            ], function(evt) {
+              if (!gaEvent.isMouse(evt)) {
+                hideHelpTooltip();
+                return;
+              }
+              helpTooltip.setPosition(evt.coordinate);
+              updateCursorAndTooltipsDebounced(evt);
+            });
+            mapDiv.on('mouseout', hideHelpTooltip);
+
             // Delete keyboard button
             $document.keyup(scope.deleteSelectedFeature);
           } else {
@@ -317,7 +322,13 @@ goog.require('ga_styles_service');
                 unselectFeature(evt.feature);
               })
             ];
-
+          } else {
+            unSourceEvents = [
+              layer.getSource().on('removefeature', function(evt) {
+                // Used when the feature is removed outside the draw directive.
+                unselectFeature(evt.feature);
+              })
+            ];
           }
 
           // Attach the snap interaction to the new layer's source
@@ -374,12 +385,10 @@ goog.require('ga_styles_service');
           });
 
           // Create temporary help overlays
-          if (!gaBrowserSniffer.mobile) {
-            if (!helpTooltip) {
-              helpTooltip = createHelpTooltip();
-            }
-            map.addOverlay(helpTooltip);
+          if (!helpTooltip) {
+            helpTooltip = createHelpTooltip();
           }
+          map.addOverlay(helpTooltip);
 
           select.setActive(true);
         };
@@ -430,11 +439,13 @@ goog.require('ga_styles_service');
 
           updateHelpTooltip(helpTooltip, tool.id, false);
 
-          if (!gaBrowserSniffer.mobile) {
-            unDrawEvts.push(map.on('pointermove', function(evt) {
-              helpTooltip.setPosition(evt.coordinate);
-            }));
-          }
+          unDrawEvts.push(map.on('pointermove', function(evt) {
+            if (!gaEvent.isMouse(evt)) {
+              hideHelpTooltip();
+              return;
+            }
+            helpTooltip.setPosition(evt.coordinate);
+          }));
 
           draw = new ol.interaction.Draw(tool.drawOptions);
           var isFinishOnFirstPoint;
@@ -444,9 +455,7 @@ goog.require('ga_styles_service');
             updateHelpTooltip(helpTooltip, tool.id, true, false,
                 isFinishOnFirstPoint, isSnapOnLastPoint);
 
-            if (!gaBrowserSniffer.mobile) {
-              $document.keyup(draw, removeLastPoint);
-            }
+            $document.keyup(draw, removeLastPoint);
 
             // Add temporary measure tooltips
             if (tool.showMeasure) {
