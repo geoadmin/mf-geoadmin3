@@ -321,7 +321,13 @@ goog.require('ga_styles_service');
                 unselectFeature(evt.feature);
               })
             ];
-
+          } else {
+            unSourceEvents = [
+              layer.getSource().on('removefeature', function(evt) {
+                // Used when the feature is removed outside the draw directive.
+                unselectFeature(evt.feature);
+              })
+            ];
           }
 
           // Attach the snap interaction to the new layer's source
