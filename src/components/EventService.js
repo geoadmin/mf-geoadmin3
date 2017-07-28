@@ -9,7 +9,7 @@ goog.provide('ga_event_service');
       var MOUSE_REGEX = /mouse/;
 
       var isMouse = function(evt) {
-        var evt = evt.originalEvent || evt;
+        evt = evt.originalEvent || evt;
         return MOUSE_REGEX.test(evt.pointerType || evt.type);
       };
 
