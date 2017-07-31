@@ -205,17 +205,17 @@ goog.require('ga_time_service');
             }, function(active) {
               scope.stop();
               scope.is3dActive = active;
-              elt.toggle(scope.isActive && !scope.is3dActive);
+              elt.toggle(scope.isActive);
             });
 
             // Activate/deactivate the component
             scope.$watch('isActive', function(active, old) {
-            // On the first call old and active are false both but we don't want
-            // to apply the year
+              // On the first call old and active are false both but we don't
+              // want to apply the year
               if (active !== old) {
                 scope.years = active ? scope.options.years : [];
                 applyNewYear((active ? scope.currentYear : undefined));
-                elt.toggle(active && !scope.is3dActive);
+                elt.toggle(active);
               }
             });
 

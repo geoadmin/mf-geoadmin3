@@ -59,20 +59,22 @@ describe('ga_layers_service', function() {
       'ch.bfe.sachplan-geologie-tiefenlager': {},
       'ch.vbs.patrouilledesglaciers-z_rennen': {}
     };
-    var terrainTpl = '//3d.geo.admin.ch/1.0.0/{layer}/default/{time}/4326';
-    var wmtsLV03Tpl = '//wmts{s}.geo.admin.ch/1.0.0/{layer}/default/{time}/4326/{z}/{y}/{x}.{format}';
-    var wmtsTpl = '//wmts{s}.geo.admin.ch/1.0.0/{layer}/default/{time}/4326/{z}/{x}/{y}.{format}';
-    var todProdTpl = '//tod{s}.prod.bgdi.ch/1.0.0/{layer}/default/{time}/4326/{z}/{x}/{y}.{format}';
-    var vectorTilesTpl = '//vectortiles100.geo.admin.ch/{layer}/{time}/';
+    var terrainTpl = '//3d.geo.admin.ch/1.0.0/{layer}/default/{Time}/4326';
+    var wmtsLV03Tpl = '//wmts{s}.geo.admin.ch/1.0.0/{layer}/default/{Time}/4326/{z}/{y}/{x}.{format}';
+    var wmtsTpl = '//wmts{s}.geo.admin.ch/1.0.0/{layer}/default/{Time}/4326/{z}/{x}/{y}.{format}';
+    var todProdTpl = '//tod{s}.prod.bgdi.ch/1.0.0/{layer}/default/{Time}/4326/{z}/{x}/{y}.{format}';
+    var vectorTilesTpl = '//vectortiles100.geo.admin.ch/{layer}/{Time}/';
     var wmsTpl = '//wms{s}.geo.admin.ch/?layers={layer}&format=image%2F{format}&service=WMS&version=1.3.0&request=GetMap&crs=CRS:84&bbox={westProjected},{southProjected},{eastProjected},{northProjected}&width=512&height=512&styles=';
-    var expectWmtsUrl = function(l, t, f, epsg) {
+    var wmsTplTime = wmsTpl + '&time={Time}';
+
+    var expectWmtsUrl = function(l, f, epsg) {
       if (epsg === '21781') {
-        return expectUrl(wmtsLV03Tpl, l, t, f);
+        return expectUrl(wmtsLV03Tpl, l, undefined, f);
       } else {
         if (epsg === '4326' && l === 'ch.swisstopo.swissimage-product') {
-          return expectUrl(todProdTpl, l, t, f);
+          return expectUrl(todProdTpl, l, undefined, f);
         } else {
-          return expectUrl(wmtsTpl, l, t, f);
+          return expectUrl(wmtsTpl, l, undefined, f);
         }
       }
     };
@@ -80,13 +82,20 @@ describe('ga_layers_service', function() {
       return expectUrl(terrainTpl, l, t, f);
     };
     var expectWmsUrl = function(l, f) {
-      return expectUrl(wmsTpl, l, null, f);
+      return expectUrl(wmsTpl, l, undefined, f);
+    };
+    var expectWmsTimeUrl = function(l, f) {
+      return expectUrl(wmsTplTime, l, undefined, f);
     };
     var expectVectorTilesUrl = function(l, t) {
       return expectUrl(vectorTilesTpl, l, t);
     };
     var expectUrl = function(tpl, l, t, f) {
-      return tpl.replace('{layer}', l).replace('{time}', t).replace('{format}', f || 'png');
+      var tmp = tpl;
+      if (angular.isDefined(t)) {
+        tmp = tpl.replace('{Time}', t);
+      }
+      return tmp.replace('{layer}', l).replace('{format}', f || 'png');
     };
 
     beforeEach(function() {
@@ -411,6 +420,11 @@ describe('ga_layers_service', function() {
           type: 'wms',
           wmsLayers: 'wmsLayers'
         },
+        wmsTime: {
+          type: 'wms',
+          wmsLayers: 'wmsLayers',
+          timeEnabled: true
+        },
         custom: {
           type: 'wmts',
           config3d: 'wmts3dcustom'
@@ -455,13 +469,13 @@ describe('ga_layers_service', function() {
 
       it('returns a CesiumImageryProvider from wmts config', function() {
         var spy = sinon.spy(Cesium, 'UrlTemplateImageryProvider');
-        var prov = gaLayers.getCesiumImageryProviderById('wmts');
+        var prov = gaLayers.getCesiumImageryProviderById('wmts', {time: '20160201'});
         expect(prov).to.be.an(Cesium.UrlTemplateImageryProvider);
         // Properties of Cesium object are set in a promise and I don 't
         // succeed to test it so we test the params we send to the constructor
         // instead.
         var params = spy.args[0][0];
-        expect(params.url).to.eql(expectWmtsUrl('serverlayername3d', '20160201', 'png', '4326'));
+        expect(params.url).to.eql(expectWmtsUrl('serverlayername3d', 'png', '4326'));
         expect(params.subdomains).to.eql(['5', '6', '7', '8', '9']);
         expect(params.minimumLevel).to.eql(gaGlobalOptions.minimumLevel);
         expect(params.maximumRetrievingLevel).to.eql(gaGlobalOptions.maximumRetrievingLevel);
@@ -472,42 +486,45 @@ describe('ga_layers_service', function() {
         expect(params.hasAlphaChannel).to.eql(true);
         expect(params.availableLevels).to.be(gaGlobalOptions.imageryAvailableLevels);
         expect(params.metadataUrl).to.eql(gaGlobalOptions.imageryMetadataUrl);
+        expect(params.customTags.Time()).to.be('20160201');
         expect(prov.bodId).to.be('wmts3d');
         spy.restore();
       });
 
       it('returns a CesiumImageryProvider from a wmts with custom value', function() {
         var spy = sinon.spy(Cesium, 'UrlTemplateImageryProvider');
-        var prov = gaLayers.getCesiumImageryProviderById('custom');
+        var prov = gaLayers.getCesiumImageryProviderById('custom', {time: '20160201'});
         expect(prov).to.be.an(Cesium.UrlTemplateImageryProvider);
         // Properties of Cesium object are set in a promise and I don 't
         // succeed to test it so we test the params we send to the constructor
         // instead.
         var params = spy.args[0][0];
-        expect(params.url).to.eql(expectWmtsUrl('serverlayername3d', '20160201', 'jpeg', '4326'));
+        expect(params.url).to.eql(expectWmtsUrl('serverlayername3d', 'jpeg', '4326'));
         expect(params.minimumLevel).to.eql(9);
         expect(params.maximumRetrievingLevel).to.eql(17);
         expect(params.maximumLevel).to.eql(undefined);
         expect(params.hasAlphaChannel).to.eql(false);
+        expect(params.customTags.Time()).to.be('20160201');
         expect(prov.bodId).to.be('wmts3dcustom');
         spy.restore();
       });
 
       it('returns a CesiumImageryProvider form a wmts with the good url for swissimage product in 3d', function() {
         var spy = sinon.spy(Cesium, 'UrlTemplateImageryProvider');
-        var prov = gaLayers.getCesiumImageryProviderById('ch.swisstopo.swissimage-product');
+        var prov = gaLayers.getCesiumImageryProviderById('ch.swisstopo.swissimage-product', {time: 'current'});
         expect(prov).to.be.an(Cesium.UrlTemplateImageryProvider);
         // Properties of Cesium object are set in a promise and I don 't
         // succeed to test it so we test the params we send to the constructor
         // instead.
         var params = spy.args[0][0];
-        expect(params.url).to.eql(expectWmtsUrl('ch.swisstopo.swissimage-product', 'current', 'jpeg', '4326'));
+        expect(params.url).to.eql(expectWmtsUrl('ch.swisstopo.swissimage-product', 'jpeg', '4326'));
+        expect(params.customTags.Time()).to.be('current');
         spy.restore();
       });
 
       it('returns a CesiumImageryProvider from a wms config', function() {
         var spy = sinon.spy(Cesium, 'UrlTemplateImageryProvider');
-        var prov = gaLayers.getCesiumImageryProviderById('wms');
+        var prov = gaLayers.getCesiumImageryProviderById('wms', {});
         expect(prov).to.be.an(Cesium.UrlTemplateImageryProvider);
         // Properties of Cesium object are set in a promise and I don 't
         // succeed to test it so we test the params we send to the constructor
@@ -517,7 +534,25 @@ describe('ga_layers_service', function() {
         expect(params.subdomains).to.eql(['', '0', '1', '2', '3', '4']);
         expect(params.tileWidth).to.eql(512);
         expect(params.tileHeight).to.eql(512);
+        expect(params.customTags.Time()).to.be('');
         expect(prov.bodId).to.be('wms');
+        spy.restore();
+      });
+
+      it('returns a CesiumImageryProvider from a time enabled wms config', function() {
+        var spy = sinon.spy(Cesium, 'UrlTemplateImageryProvider');
+        var prov = gaLayers.getCesiumImageryProviderById('wmsTime', {});
+        expect(prov).to.be.an(Cesium.UrlTemplateImageryProvider);
+        // Properties of Cesium object are set in a promise and I don 't
+        // succeed to test it so we test the params we send to the constructor
+        // instead.
+        var params = spy.args[0][0];
+        expect(params.url).to.eql(expectWmsTimeUrl('wmsLayers'));
+        expect(params.subdomains).to.eql(['', '0', '1', '2', '3', '4']);
+        expect(params.tileWidth).to.eql(512);
+        expect(params.tileHeight).to.eql(512);
+        expect(params.customTags.Time()).to.be('');
+        expect(prov.bodId).to.be('wmsTime');
         spy.restore();
       });
 
