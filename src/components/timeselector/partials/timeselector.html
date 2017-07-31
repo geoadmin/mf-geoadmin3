@@ -1,17 +1,17 @@
 <div ga-slider 
-   floor="{{options.minYear}}" 
-   ceiling="{{options.maxYear}}"
-   ng-model="currentYear"
-   ga-data="years"
-   ga-redraw="isActive && !is3dActive"
-   ga-keyboard-events="isActive && !is3dActive"
-   ga-magnetize="true"
-   ga-input-text="true"
-   ga-unfit-to-bar="true">
+     floor="{{options.minYear}}" 
+     ceiling="{{options.maxYear}}"
+     ng-model="currentYear"
+     ga-data="years"
+     ga-redraw="isActive"
+     ga-keyboard-events="isActive && !is3dActive"
+     ga-magnetize="true"
+     ga-input-text="true"
+     ga-unfit-to-bar="true">
 </div>
 <select ng-model="currentYear"
         ng-options="year.value as year.value for year in availableYears">
   <option value="" disabled translate>time_select_year</option>
 </select>
-<button class="btn btn-default fa fa-play" ng-hide="isPlaying" ng-click="play()"></button>
-<button class="btn btn-danger fa fa-stop" ng-show="isPlaying" ng-click="stop()"></button>
+<button class="btn btn-default fa fa-play" ng-hide="is3dActive || isPlaying" ng-click="play()"></button>
+<button class="btn btn-danger fa fa-stop" ng-show="!is3dActive && isPlaying" ng-click="stop()"></button>
