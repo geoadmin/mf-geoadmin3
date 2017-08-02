@@ -10,7 +10,9 @@ goog.provide('ga_event_service');
 
       var isMouse = function(evt) {
         evt = evt.originalEvent || evt;
-        return MOUSE_REGEX.test(evt.pointerType || evt.type);
+        var type = evt.pointerType || evt.type;
+        // IE 10 return an integer as type.
+        return MOUSE_REGEX.test(type) || type === 4;
       };
 
       // Ensure actions on mouseover/out are only triggered by a mouse

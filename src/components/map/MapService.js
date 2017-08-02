@@ -296,11 +296,10 @@ goog.require('ga_urlutils_service');
    *   "click" behavior to avoid conflict with long touch event.
    */
   module.provider('gaMapClick', function() {
-    this.$get = function($timeout, gaBrowserSniffer, gaEvent) {
+    this.$get = function(gaEvent) {
       return {
         listen: function(map, onClick) {
-          var down = null;
-          var touchstartTime;
+          var touchstartTime = 0;
           var callback = function(evt) {
             // if a draw or a select interaction is active, do
             // nothing.
@@ -317,67 +316,23 @@ goog.require('ga_urlutils_service');
             }
           };
 
-          var isMouseRightAction = function(evt) {
-            return (evt.button === 2 || evt.which === 3);
-          };
-
-          var touchstartListener = function(evt) {
-            if (gaEvent.isMouse(evt)) {
-              return;
-            }
-
-            // This test only needed for IE10, to fix conflict between click
-            // and contextmenu events on desktop
-            if (!isMouseRightAction(evt)) {
+          var deregKeys = [
+            map.on('singleclick', function(evt) {
+              if (gaEvent.isMouse(evt) ||
+                  ((new Date()).getTime() - touchstartTime < 400)) {
+                callback(evt);
+              }
+            }),
+            map.on('pointerdown', function(evt) {
+              if (gaEvent.isMouse(evt)) {
+                return;
+              }
               touchstartTime = (new Date()).getTime();
-              down = evt;
-            }
-          };
+            })
+          ];
 
-          var touchmoveListener = function(evt) {
-            if (gaEvent.isMouse(evt)) {
-              return;
-            }
-
-            // We authorize a move of 5 pixels max for touch device.
-            if (down &&
-                (evt.clientX < down.clientX - 5 ||
-                evt.clientX > down.clientX + 5 ||
-                evt.clientY < down.clientY - 5 ||
-                evt.clientY > down.clientY + 5)) {
-              down = null;
-            }
-          };
-
-          var touchendListener = function(evt) {
-            if (gaEvent.isMouse(evt)) {
-              return;
-            }
-
-            if (down && (new Date()).getTime() - touchstartTime < 300) {
-              callback(down);
-            }
-            down = null;
-          };
-
-          var deregKey = map.on('singleclick', function(evt) {
-            // We active singleclick only on mouse event to avoid conflict with
-            // contextpopup.
-            if (gaEvent.isMouse(evt)) {
-              callback(evt);
-            }
-          });
-
-          var touchEvents = gaBrowserSniffer.events;
-          var viewport = $(map.getViewport());
-          viewport.on(touchEvents.start, touchstartListener);
-          viewport.on(touchEvents.move, touchmoveListener);
-          viewport.on(touchEvents.end, touchendListener);
           return function() {
-            ol.Observable.unByKey(deregKey);
-            viewport.unbind(touchEvents.start, touchstartListener);
-            viewport.unbind(touchEvents.move, touchmoveListener);
-            viewport.unbind(touchEvents.end, touchendListener);
+            ol.Observable.unByKey(deregKeys);
           };
         }
       };

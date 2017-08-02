@@ -14,13 +14,16 @@ describe('ga_event_service', function() {
       // Native events mock
       var mouseEvts = [
         $.Event('mousedown'),
-        $.Event('pointerdown', {pointerType: 'mouse'})
+        $.Event('pointerdown', {pointerType: 'mouse'}),
+        $.Event('pointerdown', {pointerType: 4})
       ];
 
       var notMouseEvts = [
         $.Event('touchstart'),
         $.Event('pointerdown', {pointerType: 'pen'}),
-        $.Event('pointerdown', {pointerType: 'touch'})
+        $.Event('pointerdown', {pointerType: 'touch'}),
+        $.Event('pointerdown', {pointerType: 2}),
+        $.Event('pointerdown', {pointerType: 3})
       ];
 
       // Jquery/ol events mock (with originalEvent stored)

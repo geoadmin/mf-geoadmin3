@@ -35,7 +35,7 @@ goog.require('ga_window_service');
           link: function(scope, element, attrs) {
             var heightUrl = scope.options.heightUrl;
             var qrcodeUrl = scope.options.qrcodeUrl;
-            var startPixel, holdPromise, isPopoverShown = false;
+            var holdPromise, isPopoverShown = false;
             var reframeCanceler = $q.defer();
             var heightCanceler = $q.defer();
             var map = scope.map;
@@ -191,7 +191,6 @@ goog.require('ga_window_service');
                   scope.hidePopover();
                 }
                 $timeout.cancel(holdPromise);
-                startPixel = undefined;
                 handler(event);
               });
               element.on('contextmenu', 'a', function(e) {
@@ -209,7 +208,6 @@ goog.require('ga_window_service');
                   return;
                 }
                 $timeout.cancel(holdPromise);
-                startPixel = event.pixel;
                 holdPromise = $timeout(function() {
                   handler(event);
                 }, 300, false);
@@ -219,20 +217,13 @@ goog.require('ga_window_service');
                   return;
                 }
                 $timeout.cancel(holdPromise);
-                startPixel = undefined;
               });
               map.on('pointermove', function(event) {
                 if (gaEvent.isMouse(event)) {
                   return;
                 }
-                if (startPixel) {
-                  var pixel = event.pixel;
-                  var deltaX = Math.abs(startPixel[0] - pixel[0]);
-                  var deltaY = Math.abs(startPixel[1] - pixel[1]);
-                  if (deltaX + deltaY > 6) {
-                    $timeout.cancel(holdPromise);
-                    startPixel = undefined;
-                  }
+                if (event.dragging) {
+                  $timeout.cancel(holdPromise);
                 }
               });
             }
