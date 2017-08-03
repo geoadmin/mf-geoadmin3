@@ -1,0 +1,44 @@
+{
+  extends: "eslint-config-standard",
+  rules: {
+    eqeqeq: ["off"],
+    indent: [ "error", 2, { 
+      CallExpression: {"arguments": 2},
+      FunctionDeclaration: {"body": 1, "parameters": 2},
+      FunctionExpression: {"body": 1, "parameters": 2},
+      MemberExpression: 2
+    }],
+    max-len: ["error", {
+      code: 80,
+      ignoreUrls: true,
+      ignoreRegExpLiterals: true
+    }],
+    one-var: ["off"],
+    operator-linebreak: ["error", "after"],
+    padded-blocks: ["off"],
+    semi: ["off"],
+    space-before-function-paren: ["error", {
+      anonymous: "never",
+      named: "always",
+      asyncArrow: "never"
+    }]
+  },
+  globals:  {
+    $: true,
+    angular: true,
+    Blob: true,
+    Cesium: true,
+    DOMException: true,
+    Element: true,
+    FileReader: true,
+    FormData: true,
+    FPS: true,
+    goog: true,
+    ol: true,
+    olcs: true,
+    Slip: true,
+    WebKitBlobBuilder: true,
+    window: true,
+    XMLHttpRequest: true
+  }
+}
