@@ -31,10 +31,10 @@ goog.require('ga_debounce_service');
     'ga_debounce_service'
   ]);
 
-  var MODULE_NAME, SLIDER_TAG, angularize, bindHtml, gap,
-  halfWidth, hide, inputEvents, offset, offsetLeft,
-  pixelize, qualifiedDirectiveDefinition, roundStep, show,
-  sliderDirective, width;
+  var angularize, bindHtml, gap,
+    halfWidth, hide, inputEvents, offset, offsetLeft,
+    pixelize, roundStep, show,
+    width;
 
   angularize = function(element) {
     return angular.element(element);
@@ -93,7 +93,7 @@ goog.require('ga_debounce_service');
     }
     remainder = (value - floor) % step;
     steppedValue = remainder > (step / 2) ? value + step - remainder :
-        value - remainder;
+      value - remainder;
     decimals = Math.pow(10, precision);
     roundedValue = steppedValue * decimals / decimals;
     return parseFloat(roundedValue.toFixed(precision));
@@ -139,7 +139,6 @@ goog.require('ga_debounce_service');
     return value;
   };
 
-
   // RE3: Get the closest value from a data list
   var magnetize = function(value, list) {
     if (list && list.length > 0) {
@@ -149,7 +148,7 @@ goog.require('ga_debounce_service');
         if (elt.available) {
           var gap = elt.value - value;
           minGap = (!minGap || (Math.abs(gap) < Math.abs(minGap))) ?
-              gap : minGap;
+            gap : minGap;
           if (elt.value === value) {
             break;
           }
@@ -162,7 +161,6 @@ goog.require('ga_debounce_service');
     }
     return value;
   };
-
 
   inputEvents = {
     mouse: {
@@ -212,7 +210,7 @@ goog.require('ga_debounce_service');
         ngModelLow: '=?',
         ngModelHigh: '=?',
         translate2: '&',
-        dataList: '=?gaData', //RE3: Contains all the possible values
+        dataList: '=?gaData', // RE3: Contains all the possible values
         redraw: '=?gaRedraw', // RE3: Force the redraw of the slider
         useKeyboardEvents: '=?gaKeyboardEvents', // RE3: Add keyboard events
         useMagnetize: '=?gaMagnetize', // RE3: Allow only available values
@@ -222,9 +220,9 @@ goog.require('ga_debounce_service');
       },
       templateUrl: 'components/slider/partials/slider.html',
       compile: function(element, attributes) {
-        var ceilBub, cmbBub, e, flrBub, fullBar, highBub, lowBub, maxPtr,
-            minPtr, range, refHigh, refLow, selBar, selBub, watchables,
-            _i, _len, _ref = [];
+        var ceilBub, cmbBub, flrBub, fullBar, highBub, lowBub, maxPtr,
+          minPtr, range, refHigh, refLow, selBar, selBub, watchables,
+          _ref = [];
 
         if (attributes.translate2) {
           attributes.$set('translate2', '' + attributes.translate2 + '(value)');
@@ -235,10 +233,16 @@ goog.require('ga_debounce_service');
           _ref.push(angularize(elt));
         });
 
-        fullBar = _ref[0], selBar = _ref[1], minPtr = _ref[2],
-            maxPtr = _ref[3], selBub = _ref[4], flrBub = _ref[5],
-            ceilBub = _ref[6], lowBub = _ref[7], highBub = _ref[8],
-            cmbBub = _ref[9];
+        fullBar = _ref[0];
+        selBar = _ref[1];
+        minPtr = _ref[2];
+        maxPtr = _ref[3];
+        selBub = _ref[4];
+        flrBub = _ref[5];
+        ceilBub = _ref[6];
+        lowBub = _ref[7];
+        highBub = _ref[8];
+        cmbBub = _ref[9];
 
         // Defines elements attributes depending on the type of the slider
         // (basic or not)
@@ -281,22 +285,22 @@ goog.require('ga_debounce_service');
         return {
           post: function(scope, element, attributes, ngModel) {
             var barWidth, boundToInputs, dimensions, maxOffset, maxValue,
-            minOffset, minValue, offsetRange, pointerHalfWidth,
-            updateDOM, valueRange, w, _j, _len1;
+              minOffset, minValue, offsetRange, pointerHalfWidth,
+              updateDOM, valueRange, w, _j, _len1;
 
             // RE3: Defines useMagnetize property
             scope.useMagnetize = (scope.dataList) ? scope.useMagnetize : false;
 
             // RE3: Add a function to valid a value
             scope.isValid = function(value) {
-               return (value && value <= scope.ceiling && value >= scope.floor);
+              return (value && value <= scope.ceiling && value >= scope.floor);
             };
 
             // RE3: Trigger when input value changes
             scope.onInputChange = function() {
               var value = parseFloat(scope[refLow]);
               if (scope.useMagnetize && scope.isValid(value)) {
-                 scope[refLow] = magnetize(value, scope.dataList);
+                scope[refLow] = magnetize(value, scope.dataList);
               }
             };
 
@@ -320,12 +324,12 @@ goog.require('ga_debounce_service');
                 maxValue = valueRange = offsetRange = void 0;
 
             dimensions = function() {
-              var value, _j, _len1, _ref2, _ref3;
+              var value, _j, _len1;
 
-              if ((_ref2 = scope.precision) == null) {
+              if (scope.precision == null) {
                 scope.precision = 0;
               }
-              if ((_ref3 = scope.step) == null) {
+              if (scope.step == null) {
                 scope.step = 1;
               }
               for (_j = 0, _len1 = watchables.length; _j < _len1; _j++) {
@@ -346,21 +350,22 @@ goog.require('ga_debounce_service');
 
               // Before RE3: maxOffset = barWidth - width(minPtr);
               maxOffset = (scope.unfitToBar) ? barWidth - pointerHalfWidth :
-                  barWidth - width(minPtr);
+                barWidth - width(minPtr);
 
               minValue = parseFloat(attributes.floor);
               maxValue = parseFloat(attributes.ceiling);
               valueRange = maxValue - minValue;
 
               // Before RE3: offsetRange = maxOffset - minOffset;
-              return offsetRange = (scope.unfitToBar) ? barWidth :
-                  maxOffset - minOffset;
+              offsetRange = (scope.unfitToBar) ? barWidth :
+                maxOffset - minOffset;
+              return offsetRange;
             };
             updateDOM = function() {
               var adjustBubbles, bindToInputEvents,
-                  fitToBar, percentOffset,
-                  percentToOffset, percentToOffsetInt, percentValue,
-                  setBindings, setPointers;
+                fitToBar, percentOffset,
+                percentToOffset, percentToOffsetInt, percentValue,
+                setBindings, setPointers;
 
               dimensions();
 
@@ -387,7 +392,7 @@ goog.require('ga_debounce_service');
 
               // RE3 add
               percentToOffsetInt = function(percent) {
-                 return percent * offsetRange / 100;
+                return percent * offsetRange / 100;
               };
 
               percentToOffset = function(percent) {
@@ -405,8 +410,8 @@ goog.require('ga_debounce_service');
 
                 // Before RE3: offset(minPtr, percentToOffset(newLowValue)
                 offset(minPtr, (scope.unfitToBar) ? pixelize(
-                     percentToOffsetInt(newLowValue) - halfWidth(minPtr)) :
-                     percentToOffset(newLowValue));
+                    percentToOffsetInt(newLowValue) - halfWidth(minPtr)) :
+                  percentToOffset(newLowValue));
 
                 offset(lowBub, pixelize(offsetLeft(minPtr) -
                     (halfWidth(lowBub)) + pointerHalfWidth));
@@ -417,7 +422,7 @@ goog.require('ga_debounce_service');
                   // Before RE3: offset(maxPtr, percentToOffset(newHighValue)
                   offset(maxPtr, (scope.unfitToBar) ? pixelize(
                       percentToOffsetInt(newHighValue) - halfWidth(maxPtr)) :
-                      percentToOffset(newHighValue));
+                    percentToOffset(newHighValue));
 
                   offset(highBub, pixelize(offsetLeft(maxPtr) -
                       (halfWidth(highBub)) + pointerHalfWidth));
@@ -489,7 +494,7 @@ goog.require('ga_debounce_service');
               };
               bindToInputEvents = function(pointer, ref, events) {
                 var onEnd, onMove, onStart, lastMouseOffsetLeft,
-                    lastPointerOffsetLeft;
+                  lastPointerOffsetLeft;
 
                 onEnd = function() {
                   pointer.removeClass('ga-slider-active');
@@ -621,14 +626,14 @@ goog.require('ga_debounce_service');
             for (_j = 0, _len1 = watchables.length; _j < _len1; _j++) {
               w = watchables[_j];
               scope.$watch(w, function(newValue, oldValue, scope) {
-                 // RE3: Add test of validty of the value watched
-                 if (scope.isValid(newValue)) {
-                   scope.lastGoodValue = undefined;
-                   newValue = parseFloat(newValue);
-                   updateDOM();
-                 } else if (!scope.lastGoodValue) {
-                   scope.lastGoodValue = oldValue;
-                 }
+                // RE3: Add test of validty of the value watched
+                if (scope.isValid(newValue)) {
+                  scope.lastGoodValue = undefined;
+                  newValue = parseFloat(newValue);
+                  updateDOM();
+                } else if (!scope.lastGoodValue) {
+                  scope.lastGoodValue = oldValue;
+                }
               });
             }
 
@@ -672,7 +677,6 @@ goog.require('ga_debounce_service');
             var applyDebounced = gaDebounce.debounce(function() {
               scope.$applyAsync();
             }, 200, false, false);
-
 
             return $window.addEventListener('resize', updateDOM);
           }

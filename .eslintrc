@@ -17,11 +17,7 @@
     operator-linebreak: ["error", "after"],
     padded-blocks: ["off"],
     semi: ["off"],
-    space-before-function-paren: ["error", {
-      anonymous: "never",
-      named: "always",
-      asyncArrow: "never"
-    }]
+    space-before-function-paren: ["error", "never"]
   },
   globals:  {
     $: true,

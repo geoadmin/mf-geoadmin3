@@ -11,7 +11,7 @@ goog.require('ga_profile_service');
 
   module.directive('gaProfile', function($rootScope, $compile, $window,
       $translate, gaDebounce, gaProfile, gaMapUtils, gaStyleFactory,
-       measureFilter, gaTimeFormatFilter) {
+      measureFilter, gaTimeFormatFilter) {
     return {
       restrict: 'A',
       templateUrl: 'components/profile/partials/profile.html',
@@ -29,58 +29,57 @@ goog.require('ga_profile_service');
         scope.coordinates = [0, 0];
         scope.unitX = '';
         scope.diff = function() {
-           if (profile) {
-             return measureFilter(profile.elevDiff(), 'distance', 'm', 2, true);
-           }
+          if (profile) {
+            return measureFilter(profile.elevDiff(), 'distance', 'm', 2, true);
+          }
         };
 
         scope.twoDiff = function() {
-           if (profile) {
-             return measureFilter(profile.twoElevDiff()[0],
-               'distance', 'm', 2, true);
-           }
+          if (profile) {
+            return measureFilter(profile.twoElevDiff()[0],
+                'distance', 'm', 2, true);
+          }
         };
 
-         scope.twoDiff1 = function() {
-             if (profile) {
-               return measureFilter(profile.twoElevDiff()[1],
-                 'distance', 'm', 2, true);
-             }
-          };
-
+        scope.twoDiff1 = function() {
+          if (profile) {
+            return measureFilter(profile.twoElevDiff()[1],
+                'distance', 'm', 2, true);
+          }
+        };
 
         scope.elPoi = function() {
-           if (profile) {
-             return measureFilter(profile.elPoints()[0],
-               'distance', 'm', 2, true);
-           }
+          if (profile) {
+            return measureFilter(profile.elPoints()[0],
+                'distance', 'm', 2, true);
+          }
         };
 
         scope.elPoi1 = function() {
-           if (profile) {
-             return measureFilter(profile.elPoints()[1],
-               'distance', 'm', 2, true);
-           }
+          if (profile) {
+            return measureFilter(profile.elPoints()[1],
+                'distance', 'm', 2, true);
+          }
         };
 
         scope.dist = function() {
-           if (profile) {
-             return measureFilter(profile.distance(),
-               'distance', ['km', 'm'], 2, true);
-           }
+          if (profile) {
+            return measureFilter(profile.distance(),
+                'distance', ['km', 'm'], 2, true);
+          }
         };
 
         scope.slopeDist = function() {
-           if (profile) {
-             return measureFilter(profile.slopeDistance(),
-               'distance', ['km', 'm'], 2, true);
-           }
+          if (profile) {
+            return measureFilter(profile.slopeDistance(),
+                'distance', ['km', 'm'], 2, true);
+          }
         };
 
         scope.hikTime = function() {
-           if (profile) {
-             return gaTimeFormatFilter(profile.hikingTime());
-           }
+          if (profile) {
+            return gaTimeFormatFilter(profile.hikingTime());
+          }
         };
 
         var onCreate = function(newProfile) {
@@ -127,16 +126,16 @@ goog.require('ga_profile_service');
         // Create or update the profile
         var reload = function(feature) {
           if (!profile) {
-             // we use applyAsync to wait the profile element to be
-             // displayed
-             scope.$applyAsync(function() {
-               options.width = containerEl.width();
-               options.height = containerEl.height();
-               gaProfile.create(feature, options).then(onCreate);
-             });
-           } else {
-             updateDebounced(feature);
-           }
+            // we use applyAsync to wait the profile element to be
+            // displayed
+            scope.$applyAsync(function() {
+              options.width = containerEl.width();
+              options.height = containerEl.height();
+              gaProfile.create(feature, options).then(onCreate);
+            });
+          } else {
+            updateDebounced(feature);
+          }
         };
 
         var useFeature = function(newFeature) {
@@ -153,7 +152,6 @@ goog.require('ga_profile_service');
         };
         scope.$watch('feature', useFeature);
 
-
         var dereg = [
           $rootScope.$on('$translateChangeEnd', function() {
             if (angular.isDefined(profile)) {
@@ -168,10 +166,11 @@ goog.require('ga_profile_service');
         });
 
         scope.deleteSelectedFeature = function(layer, feature) {
+          var str = $translate.instant('confirm_remove_all_features');
           if (layer.getSource().getFeatures().length == 1 &&
-            confirm($translate.instant('confirm_remove_all_features'))) {
+            $window.confirm(str)) {
             layer.getSource().clear();
-          } else if (confirm($translate.instant(
+          } else if ($window.confirm($translate.instant(
               'confirm_remove_selected_features'))) {
             layer.getSource().removeFeature(feature);
           }
@@ -194,7 +193,7 @@ goog.require('ga_profile_service');
               var start = x;
               var end = pos.x;
               var accuracy = 5;
-              //TODO use binary search instead
+              // TODO use binary search instead
               for (var i = start; i > end; i += accuracy) {
                 pos = this.getPointAtLength(i);
                 if (pos.x >= x) {
@@ -250,7 +249,7 @@ goog.require('ga_profile_service');
           // Creates the additional overlay to display azimuth circle
           var pos = new ol.geom.Point([0, 0]);
           var overlay = gaMapUtils.getFeatureOverlay([new ol.Feature(pos)],
-               gaStyleFactory.getStyle('redCircle'));
+              gaStyleFactory.getStyle('redCircle'));
 
           var activateMapPosition = function(coords) {
             overlay.setMap(scope.map);

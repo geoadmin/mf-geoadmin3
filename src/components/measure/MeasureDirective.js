@@ -32,7 +32,7 @@ goog.require('ga_measure_service');
           } else {
             scope.distance = gaMeasure.getLength(geom);
             scope.surface = gaMeasure.getArea(geom);
-            //scope.azimuth = gaMeasure.getAzimuth(geom);
+            // scope.azimuth = gaMeasure.getAzimuth(geom);
           }
         };
         var useFeature = function(newFeature) {

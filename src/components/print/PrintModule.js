@@ -7,7 +7,6 @@ goog.require('ga_printstyle_service');
 
   angular.module('ga_print', [
     'ga_print_directive',
-    'ga_printlayer_service',
+    'ga_printlayer_service'
   ]);
 })();
-

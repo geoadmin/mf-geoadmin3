@@ -104,9 +104,9 @@ goog.provide('ga_urlutils_service');
         // Remove proxy from the URL
         this.unProxifyUrl = function(url) {
           if (this.isValid(url)) {
-            var reg = new RegExp(['^(http|https):\/\/(service-proxy.',
-                '(dev|int|prod).bgdi.ch|proxy.geo.admin.ch)',
-                '\/(http|https)\/(.*)'].join(''));
+            var reg = new RegExp(['^(http|https)://(service-proxy.',
+              '(dev|int|prod).bgdi.ch|proxy.geo.admin.ch)',
+              '/(http|https)/(.*)'].join(''));
             var parts = reg.exec(url);
             if (parts && parts.length == 6) {
               return parts[4] + '://' + parts[5];
@@ -141,7 +141,7 @@ goog.provide('ga_urlutils_service');
 
         this.transformIfAgnostic = function(url) {
           if (/^\/\//.test(url)) {
-            url = location.protocol + url;
+            url = $window.location.protocol + url;
           }
           return url;
         };
@@ -154,7 +154,7 @@ goog.provide('ga_urlutils_service');
           if (paramString) {
             var parts = (url + ' ').split(/[?&]/);
             url += (parts.pop() === ' ' ? paramString :
-                (parts.length > 0 ? '&' + paramString : '?' + paramString));
+              (parts.length > 0 ? '&' + paramString : '?' + paramString));
           }
           return url;
         };
@@ -174,14 +174,14 @@ goog.provide('ga_urlutils_service');
         // stolen from Angular
         // https://github.com/angular/angular.js/blob/master/src/Angular.js
         this.encodeUriQuery = function(val, pctEncodeSpaces) {
-          return encodeURIComponent(val).
-              replace(/%40/gi, '@').
-              replace(/%3A/gi, ':').
-              replace(/%24/g, '$').
-              replace(/%2C/gi, ',').
-              replace(/%7B/gi, '{').
-              replace(/%7D/gi, '}').
-              replace(/%20/g, (pctEncodeSpaces ? '%20' : '+'));
+          return encodeURIComponent(val)
+              .replace(/%40/gi, '@')
+              .replace(/%3A/gi, ':')
+              .replace(/%24/g, '$')
+              .replace(/%2C/gi, ',')
+              .replace(/%7B/gi, '{')
+              .replace(/%7D/gi, '}')
+              .replace(/%20/g, (pctEncodeSpaces ? '%20' : '+'));
         };
 
         // stolen from Angular

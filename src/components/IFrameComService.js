@@ -7,8 +7,8 @@ goog.provide('ga_iframecom_service');
 
     this.$get = function($window) {
 
-      //Feature detection from
-      //https://github.com/Automattic/wpcom-proxy-request/pull/6
+      // Feature detection from
+      // https://github.com/Automattic/wpcom-proxy-request/pull/6
       var stringsOnly = false;
       try {
         $window.postMessage({

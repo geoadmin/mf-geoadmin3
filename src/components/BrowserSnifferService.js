@@ -11,8 +11,8 @@ goog.require('ga_permalink');
     // holds major version number for IE or NaN for real browsers
     this.$get = function($window, gaPermalink) {
       var ua = $window.navigator.userAgent;
-      //For IE, we are using angular approach
-      //https://github.com/angular/angular.js/blob/e415e916e85040fe62c801092be698ab06c1d11c/src/Angular.js#L157
+      // For IE, we are using angular approach
+      // https://github.com/angular/angular.js/blob/e415e916e85040fe62c801092be698ab06c1d11c/src/Angular.js#L157
       var msie = +((/msie (\d+)/.exec(ua.toLowerCase()) || [])[1]);
       if (isNaN(msie)) {
         msie = +((/trident\/.*; rv:(\d+)/.exec(ua.toLowerCase()) || [])[1]);
@@ -77,7 +77,7 @@ goog.require('ga_permalink');
       // Detect Blob support
       var isBlobSupported = false;
       try {
-        isBlobSupported = !!new Blob;
+        isBlobSupported = !!new Blob();
       } catch (e) {
       }
 

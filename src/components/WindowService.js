@@ -27,7 +27,7 @@ goog.provide('ga_window_service');
         // 601px to 800px
         'm': $('<div class="ga-visible-m"></div>'),
         // 801px to Infinity
-        'l': $('<div class="ga-visible-l"></div>'),
+        'l': $('<div class="ga-visible-l"></div>')
       };
 
       var width = new ResponsiveToolkit('width', breakpointsWidth,
@@ -84,7 +84,7 @@ goog.provide('ga_window_service');
       // Used operator
       var operator = str.charAt(0);
       // Include breakpoint equal to alias?
-      var orEqual = (str.charAt(1) == '=') ? true : false;
+      var orEqual = (str.charAt(1) == '=');
 
       /**
        * Index at which breakpoint name starts.
@@ -151,8 +151,8 @@ goog.provide('ga_window_service');
          * Which makes: start = 0, end = 1
          */
         if (expression.operator == '<') {
-            start = 0;
-            end = expression.orEqual ? ++pos : pos;
+          start = 0;
+          end = expression.orEqual ? ++pos : pos;
         }
         /**
          * Parsing viewport.is('>=sm') we interate from breakpoint 'sm' and end
@@ -164,8 +164,8 @@ goog.provide('ga_window_service');
          * Which makes: start = 2, end = undefined
          */
         if (expression.operator == '>') {
-            start = expression.orEqual ? pos : ++pos;
-            end = undefined;
+          start = expression.orEqual ? pos : ++pos;
+          end = undefined;
         }
 
         var acceptedBreakpoints = breakpointList.slice(start, end);

@@ -34,7 +34,7 @@ goog.require('ga_styles_service');
   module.directive('gaDraw', function($translate, $rootScope, $timeout,
       gaBrowserSniffer, gaDefinePropertiesForLayer, gaDebounce, gaFileStorage,
       gaLayerFilters, gaExportKml, gaMapUtils, $document, gaMeasure,
-      gaStyleFactory, gaGeomUtils, gaEvent) {
+      gaStyleFactory, gaGeomUtils, gaEvent, $window) {
 
     var createDefaultLayer = function(map, useTemporaryLayer) {
       // #2820: we set useSpatialIndex to false to allow display of azimuth
@@ -141,12 +141,11 @@ goog.require('ga_styles_service');
         }
         var layer, draw, lastActiveTool, snap;
         var unDblClick, unLayerAdd, unLayerRemove, unSourceEvents = [],
-            deregPointerEvts = [], deregFeatureChange, unLayerVisible,
-            unWatch = [], unDrawEvts = [];
+          deregPointerEvts = [], deregFeatureChange, unLayerVisible,
+          unWatch = [], unDrawEvts = [];
         var useTemporaryLayer = scope.options.useTemporaryLayer || false;
         var helpTooltip;
         var map = scope.map;
-        var viewport = $(map.getViewport());
         var body = $($document[0].body);
         var cssModify = 'ga-draw-modifying';
         var cssPointer = 'ga-pointer';
@@ -157,7 +156,7 @@ goog.require('ga_styles_service');
 
         // Filters functions
         var layerFilter = function(itemLayer) {
-         return (itemLayer === layer);
+          return (itemLayer === layer);
         };
         var featureFilter = function(itemFeature, itemLayer) {
           // Filter out unmanaged layers
@@ -211,7 +210,7 @@ goog.require('ga_styles_service');
           }
         });
         select.getFeatures().on('add', function(evt) {
-           // Apply the select style
+          // Apply the select style
           var styles = scope.options.selectStyleFunction(evt.element);
           evt.element.setStyle(styles);
           // Show the popup
@@ -392,7 +391,6 @@ goog.require('ga_styles_service');
 
           select.setActive(true);
         };
-
 
         // Deactivate the component: remove layer and interactions.
         var deactivate = function(evt) {
@@ -589,7 +587,6 @@ goog.require('ga_styles_service');
           }
         });
 
-
         // Deactivate tools if another draw directive actives one
         scope.$on('gaDrawToolActive', function(evt, drawScope) {
           if (drawScope !== scope && lastActiveTool &&
@@ -598,10 +595,9 @@ goog.require('ga_styles_service');
           }
         });
 
-
-        ///////////////////////////////////
+        /// ////////////////////////////////
         // Tools managment
-        ///////////////////////////////////
+        /// ////////////////////////////////
         var activateTool = function(tool) {
           layer.visible = true;
 
@@ -651,10 +647,9 @@ goog.require('ga_styles_service');
           return !!lastActiveTool;
         };
 
-
-        ///////////////////////////////////
+        /// ////////////////////////////////
         // More... button functions
-        ///////////////////////////////////
+        /// ////////////////////////////////
         scope.exportKml = function(evt) {
           if (evt.currentTarget.attributes.disabled) {
             return;
@@ -669,8 +664,8 @@ goog.require('ga_styles_service');
               length > 0) {
             if (layer.getSource().getFeatures().length == length) {
               scope.deleteAllFeatures(evt);
-              return;
-            } else if (confirm($translate.instant(
+
+            } else if ($window.confirm($translate.instant(
                 'confirm_remove_selected_features'))) {
               var feats = select.getFeatures().getArray();
               for (var i = length - 1; i >= 0; i--) {
@@ -685,7 +680,8 @@ goog.require('ga_styles_service');
               evt.currentTarget.attributes.disabled) {
             return;
           }
-          if (confirm($translate.instant('confirm_remove_all_features'))) {
+          var str = $translate.instant('confirm_remove_all_features');
+          if ($window.confirm(str)) {
             layer.getSource().clear();
           }
         };
@@ -694,10 +690,9 @@ goog.require('ga_styles_service');
           return (layer) ? layer.getSource().getFeatures().length > 0 : false;
         };
 
-
-        ////////////////////////////////////
+        /// /////////////////////////////////
         // Show share modal
-        ////////////////////////////////////
+        /// /////////////////////////////////
         scope.canShare = function() {
           return layer && layer.adminId;
         };
@@ -708,10 +703,9 @@ goog.require('ga_styles_service');
           $rootScope.$broadcast('gaShareDrawActive', layer);
         };
 
-
-        ////////////////////////////////////
+        /// /////////////////////////////////
         // Popup management
-        ////////////////////////////////////
+        /// /////////////////////////////////
         var managePopup = function(feature, clickCoord) {
           scope.feature = feature;
           if (!scope.feature) {
@@ -734,8 +728,8 @@ goog.require('ga_styles_service');
           if (!gaMapUtils.isMeasureFeature(scope.feature)) {
             // Move the popup on the closest coordinate of the click event
             var coord = clickCoord ?
-                geometry.getClosestPoint(clickCoord) :
-                geometry.getLastCoordinate();
+              geometry.getClosestPoint(clickCoord) :
+              geometry.getLastCoordinate();
             var pixel = map.getPixelFromCoordinate(coord);
 
             $rootScope.$broadcast('gaDrawStyleActive', scope.feature, layer,
@@ -744,10 +738,9 @@ goog.require('ga_styles_service');
           }
         };
 
-
-        ////////////////////////////////////
+        /// /////////////////////////////////
         // create/update the file on s3
-        ////////////////////////////////////
+        /// /////////////////////////////////
         var save = function(evt) {
           if (!layer) {
             // Do nothing if the layer does not exist
@@ -772,7 +765,6 @@ goog.require('ga_styles_service');
         };
         var saveDebounced = gaDebounce.debounce(save, 2000, false, false);
 
-
         var dereg = $rootScope.$on('$translateChangeEnd', function() {
           if (layer) {
             layer.label = $translate.instant('draw_layer_label');
@@ -785,10 +777,9 @@ goog.require('ga_styles_service');
           dereg();
         });
 
-
-        ////////////////////////////////////
+        /// /////////////////////////////////
         // Utils functions
-        ////////////////////////////////////
+        /// /////////////////////////////////
         // Change cursor style on mouse move, only on desktop
         var updateCursorAndTooltips = function(evt) {
           if (mapDiv.hasClass(cssGrabbing)) {
@@ -803,32 +794,32 @@ goog.require('ga_styles_service');
 
           // Try to find a selectable feature
           map.forEachFeatureAtPixel(
-            evt.pixel,
-            function(feature, layer) {
-              if (layer && !selectableFeat) {
+              evt.pixel,
+              function(feature, layer) {
+                if (layer && !selectableFeat) {
                 // The selected feature is the first we caught with an array as
                 // style property.
-                selectableFeat = feature;
-                hoverSelectableFeature = true;
-              } else if (select.getFeatures().getLength() > 0) {
-                if (selectableFeat &&
+                  selectableFeat = feature;
+                  hoverSelectableFeature = true;
+                } else if (select.getFeatures().getLength() > 0) {
+                  if (selectableFeat &&
                     select.getFeatures().item(0).getId() == feature.getId()) {
                   // In case a vertex is snapped on a selected feature we give
                   // priority to the feature selected.
-                  selectableFeat = feature;
-                }
-                if (!feature.getId()) {
+                    selectableFeat = feature;
+                  }
+                  if (!feature.getId()) {
                   // Sketch feature have no id.
-                  newVertexFeat = feature;
-                  hoverNewVertex = true;
+                    newVertexFeat = feature;
+                    hoverNewVertex = true;
+                  }
+                }
+              }, {
+                layerFilter: function(itemLayer) {
+                  return layerFilter(itemLayer) || (itemLayer.getStyle &&
+                    itemLayer.getStyle() == scope.options.selectStyleFunction);
                 }
               }
-            }, {
-              layerFilter: function(itemLayer) {
-                return layerFilter(itemLayer) || (itemLayer.getStyle &&
-                    itemLayer.getStyle() == scope.options.selectStyleFunction);
-              }
-            }
           );
           if (selectableFeat) {
             // Get the type of the feature

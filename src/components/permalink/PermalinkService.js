@@ -51,84 +51,84 @@ goog.require('ga_urlutils_service');
   module.provider('gaPermalink', function() {
     this.$get = function($window, $rootScope, gaHistory, gaUrlUtils) {
 
-        var Permalink = function(b, p) {
-          var base = b;
-          var params = p;
+      var Permalink = function(b, p) {
+        var base = b;
+        var params = p;
 
-          this.getHref = function(p) {
-            var newParams = angular.extend({}, params);
-            if (angular.isDefined(p)) {
-              angular.extend(newParams, p);
-            }
-            return base + '?' + gaUrlUtils.toKeyValue(newParams);
-          };
-
-          this.getEmbedHref = function(p) {
-            var newParams = angular.extend({}, params);
-            if (angular.isDefined(p)) {
-              angular.extend(newParams, p);
-            }
-            if (angular.isDefined(newParams.mobile)) {
-              delete newParams.mobile;
-            }
-            var baseEmbed = base.replace(/^http:/, 'https:').
-                replace(/(index|mobile)\.html$/, 'embed.html');
-            if (!/embed\.html$/.test(baseEmbed)) {
-              if (!/\/$/.test(baseEmbed)) {
-                baseEmbed += '/';
-              }
-              baseEmbed += 'embed.html';
-            }
-            return baseEmbed + '?' + gaUrlUtils.toKeyValue(newParams);
-          };
-
-          // The main href is the embed permalink but without the name of
-          // the html page.
-          this.getMainHref = function(p) {
-            return this.getEmbedHref(p).replace(/\/embed\.html\?/, '/?');
-          };
-
-          this.getParams = function() {
-            return params;
-          };
-
-          this.updateParams = function(p) {
-            angular.extend(params, p);
-          };
-
-          this.deleteParam = function(key) {
-             delete params[key];
-          };
-
-          this.refresh = function() {
-             gaHistory.replaceState(null, '', this.getHref());
-          };
+        this.getHref = function(p) {
+          var newParams = angular.extend({}, params);
+          if (angular.isDefined(p)) {
+            angular.extend(newParams, p);
+          }
+          return base + '?' + gaUrlUtils.toKeyValue(newParams);
         };
 
-        var loc = $window.location;
-        var port = loc.port;
-        var protocol = loc.protocol;
+        this.getEmbedHref = function(p) {
+          var newParams = angular.extend({}, params);
+          if (angular.isDefined(p)) {
+            angular.extend(newParams, p);
+          }
+          if (angular.isDefined(newParams.mobile)) {
+            delete newParams.mobile;
+          }
+          var baseEmbed = base.replace(/^http:/, 'https:')
+              .replace(/(index|mobile)\.html$/, 'embed.html');
+          if (!/embed\.html$/.test(baseEmbed)) {
+            if (!/\/$/.test(baseEmbed)) {
+              baseEmbed += '/';
+            }
+            baseEmbed += 'embed.html';
+          }
+          return baseEmbed + '?' + gaUrlUtils.toKeyValue(newParams);
+        };
 
-        var base = protocol + '//' + loc.hostname +
+        // The main href is the embed permalink but without the name of
+        // the html page.
+        this.getMainHref = function(p) {
+          return this.getEmbedHref(p).replace(/\/embed\.html\?/, '/?');
+        };
+
+        this.getParams = function() {
+          return params;
+        };
+
+        this.updateParams = function(p) {
+          angular.extend(params, p);
+        };
+
+        this.deleteParam = function(key) {
+          delete params[key];
+        };
+
+        this.refresh = function() {
+          gaHistory.replaceState(null, '', this.getHref());
+        };
+      };
+
+      var loc = $window.location;
+      var port = loc.port;
+      var protocol = loc.protocol;
+
+      var base = protocol + '//' + loc.hostname +
             (port !== '' ? ':' + port : '') +
             loc.pathname;
 
-        var permalink = new Permalink(
-            base, gaUrlUtils.parseKeyValue(loc.search.substring(1)));
+      var permalink = new Permalink(
+          base, gaUrlUtils.parseKeyValue(loc.search.substring(1)));
 
-        var lastHref = loc.href;
-        $rootScope.$watch(function() {
-          var newHref = permalink.getHref();
-          if (lastHref !== newHref) {
-            $rootScope.$evalAsync(function() {
-              lastHref = newHref;
-              gaHistory.replaceState(null, '', newHref);
-              $rootScope.$broadcast('gaPermalinkChange');
-            });
-          }
-        });
+      var lastHref = loc.href;
+      $rootScope.$watch(function() {
+        var newHref = permalink.getHref();
+        if (lastHref !== newHref) {
+          $rootScope.$evalAsync(function() {
+            lastHref = newHref;
+            gaHistory.replaceState(null, '', newHref);
+            $rootScope.$broadcast('gaPermalinkChange');
+          });
+        }
+      });
 
-        return permalink;
-      };
+      return permalink;
+    };
   });
 })();

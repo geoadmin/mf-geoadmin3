@@ -14,8 +14,6 @@ goog.require('ga_query_service');
 
   module.controller('GaQueryDirectiveController', function($rootScope, $scope,
       $timeout, $translate, gaLayerFilters, gaQuery, gaMapUtils, gaIdentify) {
-    var geojson = new ol.format.GeoJSON();
-    var stored;
     $scope.queryType = 1; // Filter attributes
     $scope.queryableLayers = [];
     $scope.tooltipLayers = [];
@@ -108,7 +106,6 @@ goog.require('ga_query_service');
     };
 
     // Load attributes of the selected layer in the select box
-    var lastFilterAttr; // Use to refresh labels on language change
     $scope.onChangeLayer = function(idx, filter) {
       filter.attribute = null;
       filter.operator = null;
@@ -166,7 +163,7 @@ goog.require('ga_query_service');
     };
 
     // Get all valuse for an attribute (only min/max for date and number)
-    $scope.toggleAttributeValues = function($event, idx,  filter) {
+    $scope.toggleAttributeValues = function($event, idx, filter) {
       var target = $($event.target);
       if (!filter.moreValues) {
         gaQuery.getAttributeValues(
@@ -248,15 +245,15 @@ goog.require('ga_query_service');
       }
       angular.forEach(layersRequested, function(layer) {
         gaIdentify.get(
-          $scope.map,
-          [layer],
-          $scope.geometry,
-          5,
-          true,
-          undefined,
-          undefined,
-          undefined,
-          offset
+            $scope.map,
+            [layer],
+            $scope.geometry,
+            5,
+            true,
+            undefined,
+            undefined,
+            undefined,
+            offset
         ).then(function(response) {
           onSearchSuccess(response.data.results, layer.bodId, offset);
         }, function(response) {
@@ -294,16 +291,16 @@ goog.require('ga_query_service');
         var layer = gaMapUtils.getMapOverlayForBodId($scope.map,
             paramsByLayer.bodId);
         gaIdentify.get(
-          $scope.map,
-          [layer],
-          $scope.useBbox ? $scope.geometry : undefined,
-          5,
-          true,
-          undefined,
-          undefined,
-          undefined,
-          offset,
-          paramsByLayer.params.where
+            $scope.map,
+            [layer],
+            $scope.useBbox ? $scope.geometry : undefined,
+            5,
+            true,
+            undefined,
+            undefined,
+            undefined,
+            offset,
+            paramsByLayer.params.where
         ).then(function(response) {
           onSearchSuccess(response.data.results, layer.bodId, offset);
         }, function(response) {
@@ -324,77 +321,76 @@ goog.require('ga_query_service');
       }
     };
 
-
     // Watcher/listener
     $scope.layers = $scope.map.getLayers().getArray();
     $scope.tooltipFilter = gaLayerFilters.potentialTooltip;
     $scope.$watchCollection('layers | filter:tooltipFilter',
         function(layers) {
-      $scope.tooltipLayers = layers;
-      if ($scope.isActive) {
-        $scope.search();
-      }
-    });
+          $scope.tooltipLayers = layers;
+          if ($scope.isActive) {
+            $scope.search();
+          }
+        });
 
     $scope.queryableFilter = gaLayerFilters.queryable;
     $scope.$watchCollection('layers | filter:queryableFilter',
         function(layers) {
-      $scope.queryableLayers = layers;
+          $scope.queryableLayers = layers;
 
-      // Load new list of predefines queries and queryable attributes
-      var predef = [];
-      angular.forEach($scope.queryableLayers, function(layer) {
-        var queries = gaQuery.getPredefQueries(layer.bodId);
-        if (queries) {
-          angular.forEach(queries, function(query, idx) {
-            query.layer = layer;
-            query.label = $translate.instant(query.id);
-            angular.forEach(query.filters, function(filter, idx) {
-              filter.layer = layer;
-              gaQuery.getLayerAttributes(filter.layer.bodId).
-                  then(function(attrs) {
-                if (!filter.layer.attributes) {
-                  filter.layer.attributes = attrs;
-                }
-                angular.forEach(filter.layer.attributes, function(attr) {
-                  if (attr.name == filter.attrName) {
-                    filter.attribute = attr;
-                  }
+          // Load new list of predefines queries and queryable attributes
+          var predef = [];
+          angular.forEach($scope.queryableLayers, function(layer) {
+            var queries = gaQuery.getPredefQueries(layer.bodId);
+            if (queries) {
+              angular.forEach(queries, function(query, idx) {
+                query.layer = layer;
+                query.label = $translate.instant(query.id);
+                angular.forEach(query.filters, function(filter, idx) {
+                  filter.layer = layer;
+                  gaQuery.getLayerAttributes(filter.layer.bodId)
+                      .then(function(attrs) {
+                        if (!filter.layer.attributes) {
+                          filter.layer.attributes = attrs;
+                        }
+                        filter.layer.attributes.forEach(function(attr) {
+                          if (attr.name == filter.attrName) {
+                            filter.attribute = attr;
+                          }
+                        });
+                      });
                 });
-              });
-            });
 
-            // Apply a predefined query if exist
-            if ($scope.queryPredef &&
+                // Apply a predefined query if exist
+                if ($scope.queryPredef &&
                 $scope.queryPredef.id == query.id &&
                 $scope.queryPredef.layer == layer) {
-              $scope.applyQueryPredef($scope.queryPredef);
+                  $scope.applyQueryPredef($scope.queryPredef);
+                }
+              });
+              predef = predef.concat(queries);
             }
           });
-          predef = predef.concat(queries);
-        }
-      });
-      $scope.queriesPredef = predef;
+          $scope.queriesPredef = predef;
 
-      // Clear the query using a removed/hidden layer
-      for (var i = 0; i < $scope.filters.length; i++) {
-        if ($scope.filters[i].layer) {
-          var exist = false;
-          angular.forEach(layers, function(layer) {
-            if (layer.id == $scope.filters[i].layer.id) {
-              exist = true;
+          // Clear the query using a removed/hidden layer
+          for (var i = 0; i < $scope.filters.length; i++) {
+            if ($scope.filters[i].layer) {
+              var exist = false;
+              angular.forEach(layers, function(layer) {
+                if (layer.id == $scope.filters[i].layer.id) {
+                  exist = true;
+                }
+              });
+              if (!exist) {
+                $scope.filters[i] = getEmptyFilter();
+              }
             }
-          });
-          if (!exist) {
-            $scope.filters[i] = getEmptyFilter();
           }
-        }
-      }
 
-      if ($scope.isActive) {
-        $scope.search();
-      }
-    });
+          if ($scope.isActive) {
+            $scope.search();
+          }
+        });
 
     $rootScope.$on('$translateChangeEnd', function(evt) {
       // Update attributes translations
@@ -424,7 +420,6 @@ goog.require('ga_query_service');
 
   module.directive('gaQuery', function($translate, gaBrowserSniffer, gaQuery,
       gaStyleFactory, gaMapUtils) {
-    var parser = new ol.format.GeoJSON();
     var dragBox;
     var dragBoxStyle = gaStyleFactory.getStyle('selectrectangle');
     var boxFeature = new ol.Feature();
@@ -445,9 +440,9 @@ goog.require('ga_query_service');
         if (!dragBox) {
           dragBox = new ol.interaction.DragBox({
             condition: function(evt) {
-              //MacEnvironments don't get here because the event is not
-              //recognized as mouseEvent on Mac by the google closure.
-              //We have to use the apple key on those devices
+              // MacEnvironments don't get here because the event is not
+              // recognized as mouseEvent on Mac by the google closure.
+              // We have to use the apple key on those devices
               return evt.originalEvent.ctrlKey || evt.originalEvent.metaKey;
             },
             style: dragBoxStyle
@@ -528,7 +523,6 @@ goog.require('ga_query_service');
           }
         };
 
-        var firstLoad = true;
         scope.$watch('isActive', function(newVal, oldVal) {
           if (newVal != oldVal) {
             if (newVal) {
@@ -564,4 +558,3 @@ goog.require('ga_query_service');
     };
   });
 })();
-

@@ -23,13 +23,13 @@ goog.require('ga_urlutils_service');
     var origin = [420000, 350000];
 
     function getDefaultResolutions() {
-        return [4000, 3750, 3500, 3250, 3000, 2750, 2500, 2250,
-                2000, 1750, 1500, 1250, 1000, 750, 650, 500, 250,
-                100, 50, 20, 10, 5, 2.5, 2, 1.5, 1, 0.5];
+      return [4000, 3750, 3500, 3250, 3000, 2750, 2500, 2250,
+        2000, 1750, 1500, 1250, 1000, 750, 650, 500, 250,
+        100, 50, 20, 10, 5, 2.5, 2, 1.5, 1, 0.5];
     }
 
     function getWmsResolutions() {
-        return getDefaultResolutions().concat([0.25, 0.1]);
+      return getDefaultResolutions().concat([0.25, 0.1]);
     }
 
     function createTileGrid(resolutions, type) {
@@ -41,9 +41,9 @@ goog.require('ga_urlutils_service');
         });
       }
       return new ol.tilegrid.WMTS({
-          matrixIds: $.map(resolutions, function(r, i) { return i + ''; }),
-          origin: origin,
-          resolutions: resolutions
+        matrixIds: $.map(resolutions, function(r, i) { return i + ''; }),
+        origin: origin,
+        resolutions: resolutions
       });
     }
 
@@ -52,7 +52,7 @@ goog.require('ga_urlutils_service');
         get: function(resolutions, minResolution, type) {
           if (!resolutions) {
             resolutions = (type == 'wms') ? getWmsResolutions() :
-                getDefaultResolutions();
+              getDefaultResolutions();
           }
           if (minResolution) { // we remove useless resolutions
             for (var i = 0, ii = resolutions.length; i < ii; i++) {
@@ -309,7 +309,7 @@ goog.require('ga_urlutils_service');
             arr.slice().reverse().forEach(function(item) {
               if (!cancel && (item instanceof ol.interaction.Select ||
                   item instanceof ol.interaction.Draw) && item.getActive()) {
-               cancel = true;
+                cancel = true;
               }
             });
             if (!cancel) {
@@ -442,9 +442,9 @@ goog.require('ga_urlutils_service');
             format, useNativeTpl) {
           var tpl;
           if (useNativeTpl) {
-              tpl = wmtsGetTileUrlTemplate;
+            tpl = wmtsGetTileUrlTemplate;
           } else {
-              tpl = wmtsMapProxyGetTileUrlTemplate;
+            tpl = wmtsMapProxyGetTileUrlTemplate;
           }
           var url = tpl.replace('{Layer}', layer).replace('{Format}', format);
           if (time) {
@@ -493,8 +493,7 @@ goog.require('ga_urlutils_service');
         // The tile load function which loads tiles from local
         // storage if they exist otherwise try to load the tiles normally.
         var tileLoadFunction = function(imageTile, src) {
-          gaStorage.getTile(gaMapUtils.getTileKey(src)).then(
-              function(content) {
+          var onSuccess = function(content) {
             if (content && $window.URL && $window.atob) {
               try {
                 var blob = gaMapUtils.dataURIToBlob(content);
@@ -507,9 +506,10 @@ goog.require('ga_urlutils_service');
                 imageTile.getImage().src = content;
               }
             } else {
-              imageTile.getImage().src = (content) ? content : src;
+              imageTile.getImage().src = (content) || src;
             }
-          });
+          };
+          gaStorage.getTile(gaMapUtils.getTileKey(src)).then(onSuccess);
         };
 
         // Load layers config
@@ -649,7 +649,7 @@ goog.require('ga_urlutils_service');
             url: getTerrainTileUrl(requestedLayer, timestamp),
             availableLevels: window.terrainAvailableLevels,
             rectangle: gaMapUtils.extentToRectangle(
-              gaGlobalOptions.defaultExtent)
+                gaGlobalOptions.defaultExtent)
           });
           provider.bodId = bodId;
           return provider;
@@ -692,7 +692,7 @@ goog.require('ga_urlutils_service');
           var format = config3d.format || 'png';
           // pngjpeg not supported by Cesium (zeitreihen)
           if (format == 'pngjpeg') {
-              format = 'jpeg';
+            format = 'jpeg';
           }
           if (config3d.type == 'aggregate') {
             var providers = [];
@@ -713,7 +713,7 @@ goog.require('ga_urlutils_service');
                   '4326', format, hasNativeTiles),
               tileSize: 256,
               subdomains: hasNativeTiles ? h2(dfltWmtsNativeSubdomains) :
-                  h2(dfltWmtsMapProxySubdomains)
+                h2(dfltWmtsMapProxySubdomains)
             };
           } else if (config3d.type == 'wms') {
             var tileSize = 512;
@@ -839,7 +839,7 @@ goog.require('ga_urlutils_service');
             }
             olLayer = new ol.layer.Tile({
               minResolution: gaNetworkStatus.offline ? null :
-                  layer.minResolution,
+                layer.minResolution,
               maxResolution: layer.maxResolution,
               opacity: layer.opacity || 1,
               source: olSource,
@@ -928,14 +928,14 @@ goog.require('ga_urlutils_service');
                 $http.get(proxyUrl).then(function(response) {
                   olSource.clear();
                   olSource.addFeatures(
-                    geojsonFormat.readFeatures(response.data)
+                      geojsonFormat.readFeatures(response.data)
                   );
                 });
               });
             };
 
             // IE doesn't understand agnostic URLs
-            $http.get(location.protocol + layer.styleUrl, {
+            $http.get($window.location.protocol + layer.styleUrl, {
               cache: true
             }).then(function(response) {
               var olStyleForVector = gaStylesFromLiterals(response.data);
@@ -1009,7 +1009,7 @@ goog.require('ga_urlutils_service');
          */
         this.getLayerTimestampFromYear = function(configOrBodId, yearStr) {
           var layer = angular.isString(configOrBodId) ?
-              this.getLayer(configOrBodId) : configOrBodId;
+            this.getLayer(configOrBodId) : configOrBodId;
           if (!layer.timeEnabled) {
             // a WMTS/Terrain/Tileset3D layer has at least one timestamp
             return (layer.type == 'wmts' || layer.type == 'terrain' ||
@@ -1021,18 +1021,18 @@ goog.require('ga_urlutils_service');
           }
           if (!angular.isDefined(yearStr)) {
             var timeBehaviour = layer.timeBehaviour;
-            //check if specific 4/6/8 digit timestamp is specified
+            // check if specific 4/6/8 digit timestamp is specified
             if (/^\d{4}$|^\d{6}$|^\d{8}$/.test(timeBehaviour)) {
-                yearStr = timeBehaviour.substr(0, 4);
+              yearStr = timeBehaviour.substr(0, 4);
             } else if (timeBehaviour !== 'all' && timestamps.length) {
-                yearStr = timestamps[0];
+              yearStr = timestamps[0];
             }
           }
 
           for (var i = 0, ii = timestamps.length; i < ii; i++) {
             var ts = timestamps[i];
-            //Strange if statement here because yearStr can either be
-            //full timestamp string or year-only string...
+            // Strange if statement here because yearStr can either be
+            // full timestamp string or year-only string...
             if (yearStr === ts ||
                 parseInt(yearStr) === parseInt(ts.substr(0, 4))) {
               return ts;
@@ -1110,22 +1110,20 @@ goog.require('ga_urlutils_service');
       var lodsForRes = gaGlobalOptions.lods;
       var isExtentEmpty = function(extent) {
         for (var i = 0, ii = extent.length; i < ii; i++) {
-           if (!extent[i]) {
-             return true;
-           }
+          if (!extent[i]) {
+            return true;
+          }
         }
         return extent[0] >= extent[2] || extent[1] >= extent[3];
       };
       // Level of detail for the default resolution
-      var lodForDfltRes = gaGlobalOptions.defaultLod;
-      var dfltResIdx = resolutions.indexOf(gaGlobalOptions.defaultResolution);
       var proj = ol.proj.get(gaGlobalOptions.defaultEpsg);
       var extent = gaGlobalOptions.defaultExtent || proj.getExtent();
       return {
         Z_PREVIEW_LAYER: 1000,
         Z_PREVIEW_FEATURE: 1100,
         Z_FEATURE_OVERLAY: 2000,
-        preload: 6, //Number of upper zoom to preload when offline
+        preload: 6, // Number of upper zoom to preload when offline
         defaultExtent: extent,
         viewResolutions: resolutions,
         defaultResolution: gaGlobalOptions.defaultResolution,
@@ -1292,11 +1290,12 @@ goog.require('ga_urlutils_service');
           }
           var defer = $q.defer();
           var view = map.getView();
-          var source = view.getCenter();
-          var dist = Math.sqrt(Math.pow(source[0] - dest[0], 2),
-              Math.pow(source[1] - dest[1], 2));
-          var duration = Math.min(Math.sqrt(300 + dist /
-              view.getResolution() * 1000), 3000);
+          // TODO: use or not the duration?
+          // var source = view.getCenter();
+          // var dist = Math.sqrt(Math.pow(source[0] - dest[0], 2),
+          //    Math.pow(source[1] - dest[1], 2));
+          // var duration = Math.min(Math.sqrt(300 + dist /
+          //    view.getResolution() * 1000), 3000);
           view.animate({
             center: dest,
             duration: 0
@@ -1323,8 +1322,8 @@ goog.require('ga_urlutils_service');
           var duration = Math.min(Math.sqrt(300 + dist / sourceRes * 1000),
               3000);
           var destRes = Math.max(
-            (extent[2] - extent[0]) / size[0],
-            (extent[3] - extent[1]) / size[1]);
+              (extent[2] - extent[0]) / size[0],
+              (extent[3] - extent[1]) / size[1]);
           destRes = Math.max(map.getView().constrainResolution(destRes, 0, 0),
               2.5);
           var view = map.getView();
@@ -1342,7 +1341,7 @@ goog.require('ga_urlutils_service');
             duration: duration / 2
           }, {
             resolution: destRes,
-            duration: duration / 2,
+            duration: duration / 2
           }, function(success) {
             deferZoom.resolve();
             $rootScope.$applyAsync();
@@ -1377,7 +1376,7 @@ goog.require('ga_urlutils_service');
           }
           // If the parameter is not a string we try to get the url property.
           var url = (!angular.isString(olLayerOrId)) ? olLayerOrId.url :
-              olLayerOrId.replace('KML||', '');
+            olLayerOrId.replace('KML||', '');
           return this.isKmlLayer(olLayerOrId) &&
                   gaUrlUtils.isPublicValid(url);
         },
@@ -1613,9 +1612,9 @@ goog.require('ga_urlutils_service');
                  layer.visible &&
                  layer.bodId &&
                  gaLayers.getLayerProperty(layer.bodId,
-                                           'queryableAttributes') &&
+                     'queryableAttributes') &&
                  gaLayers.getLayerProperty(layer.bodId,
-                                           'queryableAttributes').length);
+                     'queryableAttributes').length);
         },
         /**
          * Keep only background layers

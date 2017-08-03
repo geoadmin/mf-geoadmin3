@@ -144,7 +144,7 @@ goog.require('ga_urlutils_service');
           layer: getCapLayer.Identifier,
           timestamps: getTimestamps(getCapLayer),
           extent: getCapLayer.extent,
-          sourceConfig: getCapLayer.sourceConfig,
+          sourceConfig: getCapLayer.sourceConfig
         };
 
         options.sourceConfig.attributions = [

@@ -41,7 +41,7 @@ goog.require('ga_price_filter');
         };
 
         var layerBodId = (scope.feature instanceof ol.Feature) ?
-            scope.feature.get('layerId') : scope.feature.layerBodId;
+          scope.feature.get('layerId') : scope.feature.layerBodId;
         // For rectangle directive
         scope.layerBodId = layerBodId;
 
@@ -94,7 +94,8 @@ goog.require('ga_price_filter');
           } else if (feat.attributes) {
             str += feat.attributes.label;
           }
-          return str += ')';
+          str += ')';
+          return str;
         };
 
         // {tile,commune,district,canton,rectangle,whole}
@@ -132,7 +133,7 @@ goog.require('ga_price_filter');
               var results = response.data.results;
               if (results.length) {
                 var res = results[0];
-                //Might contain several results, try to match via id/layerid
+                // Might contain several results, try to match via id/layerid
                 if (results.length > 1) {
                   for (var i = 0; i < results.length; i++) {
                     res = results[i];

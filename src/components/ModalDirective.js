@@ -42,7 +42,7 @@ goog.provide('ga_modal_directive');
         var setter = $parse(attrs.gaModalShow).assign;
         if (setter) {
           element.on('hide.bs.modal show.bs.modal', function(e) {
-            setter(scope, e.type == 'show' ? true : false);
+            setter(scope, e.type == 'show');
             scope.$applyAsync();
           });
         }

@@ -31,8 +31,8 @@ goog.require('ga_browsersniffer_service');
       element.css({position: 'absolute'});
 
       var dragZone = (attr['gaDraggable'] != '') ?
-          element.find(attr['gaDraggable']) :
-          element;
+        element.find(attr['gaDraggable']) :
+        element;
 
       if (!dragZone || dragZone.length == 0) {
         dragZone = element;
@@ -46,7 +46,6 @@ goog.require('ga_browsersniffer_service');
         if (!dragZone.hasClass('ga-draggable-zone')) {
           return;
         }
-        var elt = $(evt.target);
 
         x = element.prop('offsetLeft');
         y = element.prop('offsetTop');
@@ -94,7 +93,6 @@ goog.require('ga_browsersniffer_service');
         }
       }
 
-
       /* Utils */
 
       // Ensure the x coordinate has a valid value
@@ -136,7 +134,7 @@ goog.require('ga_browsersniffer_service');
           event = event.originalEvent;
         }
         return angular.isNumber(event.clientX) ? event.clientX :
-            event.touches[0].clientX;
+          event.touches[0].clientX;
       };
 
       // RE3: Get the Y coordinate of a mouse or touch event
@@ -145,7 +143,7 @@ goog.require('ga_browsersniffer_service');
           event = event.originalEvent;
         }
         return angular.isNumber(event.clientY) ? event.clientY :
-            event.touches[0].clientY;
+          event.touches[0].clientY;
       };
 
     }

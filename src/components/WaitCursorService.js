@@ -5,7 +5,7 @@ goog.provide('ga_waitcursor_service');
 
   module.provider('gaWaitCursor', function() {
     this.$get = function($document, $rootScope, $timeout) {
-      var timeout = undefined;
+      var timeout;
       var waitClass = 'ga-wait-cursor';
       var bodyEl = angular.element($document[0].body);
       var processCounter = 0;

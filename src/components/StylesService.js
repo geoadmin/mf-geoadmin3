@@ -9,12 +9,12 @@ goog.require('ga_measure_service');
 
   module.provider('gaStyleFactory', function() {
     var DEFAULT_FONT = 'normal 16px Helvetica',
-        ZPOLYGON = 10,
-        ZLINE = 20,
-        ZICON = 30,
-        ZTEXT = 40,
-        ZSELECT = 50,
-        ZSKETCH = 60;
+      ZPOLYGON = 10,
+      ZLINE = 20,
+      ZICON = 30,
+      ZTEXT = 40,
+      ZSELECT = 50,
+      ZSKETCH = 60;
 
     var selectStroke = new ol.style.Stroke({
       color: [255, 128, 0, 1],
@@ -218,7 +218,7 @@ goog.require('ga_measure_service');
           lineDash: [8]
         });
         var zIndex = (feature.getGeometry() instanceof ol.geom.LineString) ?
-            ZLINE : ZPOLYGON;
+          ZLINE : ZPOLYGON;
         var styles = [
           new ol.style.Style({
             fill: new ol.style.Fill({
@@ -278,9 +278,9 @@ goog.require('ga_measure_service');
           return function(resolution) {
             // In a featureStyleFunction this is the current feature
             return stylesFunction[type](this, resolution) ||
-                function(feature, resolution) {
-              return styles[type];
-            }(this, resolution);
+                (function(feature, resolution) {
+                  return styles[type];
+                }(this, resolution));
           };
         },
 

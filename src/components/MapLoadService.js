@@ -8,7 +8,7 @@ goog.require('ga_map_service');
     'ga_map_service'
   ]);
 
- /**
+  /**
    * This service can be used to inspect loading of the map.
    * It times the loading of the map and emits messages about
    * it
@@ -77,13 +77,13 @@ goog.require('ga_map_service');
           src = layer.getSource();
           if (src instanceof ol.source.WMTS ||
               src instanceof ol.source.TileWMS) {
-              start = 'tileloadstart';
-              error = 'tileloaderror';
-              end = 'tileloadend';
+            start = 'tileloadstart';
+            error = 'tileloaderror';
+            end = 'tileloadend';
           } else if (src instanceof ol.source.ImageWMS) {
-              start = 'imageloadstart';
-              error = 'imageloaderror';
-              end = 'imageloadend';
+            start = 'imageloadstart';
+            error = 'imageloaderror';
+            end = 'imageloadend';
           }
           if (start) {
             src.on(start, addLoading);
@@ -113,11 +113,11 @@ goog.require('ga_map_service');
                    gaLayerFilters.background(l);
           };
 
-          //React on adding/removing layers
+          // React on adding/removing layers
           scope.$watchCollection('maploadLayers | filter:maploadFilter',
-                                 function(layers) {
-            createLayerProgress(layers);
-          });
+              function(layers) {
+                createLayerProgress(layers);
+              });
 
         };
       };
@@ -127,4 +127,3 @@ goog.require('ga_map_service');
     };
   });
 })();
-

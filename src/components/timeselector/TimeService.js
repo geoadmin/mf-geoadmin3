@@ -68,12 +68,12 @@ goog.require('ga_permalink_service');
               that.updateStatus(evt.target.getArray());
               propDeregKey[olLayer.id] = olLayer.on('propertychange',
                   function(evtProp) {
-                if (evtProp.key == 'visible' || (evtProp.key == 'time' &&
+                    if (evtProp.key == 'visible' || (evtProp.key == 'time' &&
                     angular.isString(evtProp.target.time) &&
                     parseInt(evtProp.target.time.substr(0, 4)) != time)) {
-                  that.updateStatus(evt.target.getArray());
-                }
-              });
+                      that.updateStatus(evt.target.getArray());
+                    }
+                  });
             }
           });
           map.getLayers().on('remove', function(evt) {

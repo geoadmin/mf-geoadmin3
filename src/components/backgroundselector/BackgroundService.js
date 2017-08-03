@@ -84,19 +84,19 @@ goog.require('ga_permalink');
           var that = this;
           // Initialize the service when topics and layers config are
           // loaded
-          bgsP = $q.all([gaTopic.loadConfig(), gaLayers.loadConfig()]).
-              then(function() {
-            updateDefaultBgOrder(gaTopic.get().backgroundLayers);
-            var initBg = getBgById(gaPermalink.getParams().bgLayer);
-            if (!initBg) {
-              initBg = getBgByTopic(gaTopic.get());
-            }
-            that.set(map, initBg);
-            $rootScope.$on('gaTopicChange', function(evt, newTopic) {
-              updateDefaultBgOrder(newTopic.backgroundLayers);
-              that.set(map, getBgByTopic(newTopic));
-            });
-          });
+          bgsP = $q.all([gaTopic.loadConfig(), gaLayers.loadConfig()])
+              .then(function() {
+                updateDefaultBgOrder(gaTopic.get().backgroundLayers);
+                var initBg = getBgById(gaPermalink.getParams().bgLayer);
+                if (!initBg) {
+                  initBg = getBgByTopic(gaTopic.get());
+                }
+                that.set(map, initBg);
+                $rootScope.$on('gaTopicChange', function(evt, newTopic) {
+                  updateDefaultBgOrder(newTopic.backgroundLayers);
+                  that.set(map, getBgByTopic(newTopic));
+                });
+              });
 
           return bgsP;
         };
@@ -133,7 +133,7 @@ goog.require('ga_permalink');
                 }
               }
               broadcast();
-             }
+            }
           }
         };
 

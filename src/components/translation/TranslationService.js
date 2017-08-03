@@ -50,7 +50,7 @@ goog.require('ga_permalink_service');
 
         this.getNoRm = function() {
           return $translate.use() == 'rm' ?
-              gaGlobalOptions.translationFallbackCode : this.get();
+            gaGlobalOptions.translationFallbackCode : this.get();
         };
       };
       return new Lang();

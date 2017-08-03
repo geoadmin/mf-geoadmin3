@@ -11,9 +11,9 @@ goog.provide('ga_geomutils_service');
 
     // Ensure linear ring is closed
     var closeLinearRing = function(linearRing) {
-       var first = linearRing.getFirstCoordinate();
-       var last = linearRing.getLastCoordinate();
-       if (first[0] != last[0] || first[1] != last[1] || first[2] != last[2]) {
+      var first = linearRing.getFirstCoordinate();
+      var last = linearRing.getLastCoordinate();
+      if (first[0] != last[0] || first[1] != last[1] || first[2] != last[2]) {
         var coords = linearRing.getCoordinates();
         coords.push(linearRing.getFirstCoordinate());
         linearRing.setCoordinates(coords);
@@ -25,7 +25,7 @@ goog.provide('ga_geomutils_service');
     var isValidLinearRing = function(linearRing) {
       var coords = linearRing.getCoordinates();
       if (coords.length <= 3) {
-         return false;
+        return false;
       }
       return true;
     };
@@ -71,7 +71,6 @@ goog.provide('ga_geomutils_service');
 
       var GeomUtils = function() {
 
-
         /**
          * Detects if an array of coords contains unique value
          */
@@ -101,14 +100,14 @@ goog.provide('ga_geomutils_service');
             var geometry = geometries[i];
             var isValid = true;
             if (geometry instanceof ol.geom.MultiPolygon) {
-               isValid = isValidMultiGeom(this, geometry,
-                   geometry.getPolygons());
+              isValid = isValidMultiGeom(this, geometry,
+                  geometry.getPolygons());
             } else if (geometry instanceof ol.geom.MultiLineString) {
-               isValid = isValidMultiGeom(this, geometry,
-                   geometry.getLineStrings());
+              isValid = isValidMultiGeom(this, geometry,
+                  geometry.getLineStrings());
             } else if (geometry instanceof ol.geom.Polygon) {
-               isValid = isValidMultiGeom(this, geometry,
-                   geometry.getLinearRings());
+              isValid = isValidMultiGeom(this, geometry,
+                  geometry.getLinearRings());
             } else if (geometry instanceof ol.geom.LinearRing) {
               isValid = isValidLinearRing(geometry) &&
                 !this.hasUniqueCoord(geometry.getCoordinates());

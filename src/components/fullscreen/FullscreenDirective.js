@@ -4,7 +4,6 @@ goog.require('ga_browsersniffer_service');
 goog.require('ga_permalink');
 (function() {
 
-
   var module = angular.module('ga_fullscreen_directive', [
     'ga_browsersniffer_service',
     'ga_permalink'
@@ -28,11 +27,11 @@ goog.require('ga_permalink');
         //  ccc?key=0AvgmqEgDEiu5dGtqVEUySnBvNkxiYlAtbks1eDFibkE#gid=0
         var target = document.documentElement;
         scope.fullscreenSupported = (
-            // IE 11 bug when the page is inside an iframe:
-            // http://connect.microsoft.com/IE/feedback/details/814527/
-            // ie11-iframes-body-offsetwidth-incorrect-when-iframe-is-in
-            // -full-screen-mode
-            !(gaBrowserSniffer.msie == 11 && gaBrowserSniffer.iframe) &&
+          // IE 11 bug when the page is inside an iframe:
+          // http://connect.microsoft.com/IE/feedback/details/814527/
+          // ie11-iframes-body-offsetwidth-incorrect-when-iframe-is-in
+          // -full-screen-mode
+          !(gaBrowserSniffer.msie == 11 && gaBrowserSniffer.iframe) &&
             (target.requestFullScreen ||
             target.mozRequestFullScreen ||
             target.webkitRequestFullScreen ||
@@ -48,7 +47,7 @@ goog.require('ga_permalink');
             // Element.ALLOW_KEYBOARD_INPUT allow keyboard input in fullscreen
             // mode, but that doesn't work for Safari
             target.webkitRequestFullScreen((gaBrowserSniffer.safari ?
-                0 : Element.ALLOW_KEYBOARD_INPUT));
+              0 : Element.ALLOW_KEYBOARD_INPUT));
           } else if (target.msRequestFullscreen) {
             target.msRequestFullscreen();
           }

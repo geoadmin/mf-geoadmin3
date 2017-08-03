@@ -73,7 +73,6 @@ goog.provide('ga_filestorage_service');
           });
         };
 
-
         // Delete the file in s3. Only if an adminId is specified
         this.del = function(adminId) {
           return $http['delete'](getServiceUrl(adminId));
@@ -84,4 +83,3 @@ goog.provide('ga_filestorage_service');
     };
   });
 })();
-

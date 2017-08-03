@@ -9,7 +9,7 @@ goog.provide('ga_measure_filter');
     // Transform 12.00 to 12
     var cleanAfterComma = function(measure) {
       if (parseInt(measure) == measure) {
-          measure = parseInt(measure);
+        measure = parseInt(measure);
       }
       return measure;
     };
@@ -25,22 +25,22 @@ goog.provide('ga_measure_filter');
         units = [units];
       }
       // Type could be: volume, area or distance
-      var factor = 1000;
+      var factor = 1000, km, m;
       floatInMeter = floatInMeter || 0;
       var measure = floatInMeter.toFixed(precision || 2);
 
       switch (type) {
-        case 'volume': units = units || [' km&sup3', ' m&sup3'];
-                       factor = Math.pow(factor, 3);
-                       break;
-        case 'area': units = units || [' km&sup2', ' m&sup2'];
-                     factor = Math.pow(factor, 2);
-                     break;
-        case 'angle': units = units || ['&deg'];
-                      break;
-        case 'distance':
-        default: units = units || [' km', ' m'];
-                 break;
+      case 'volume': units = units || [' km&sup3', ' m&sup3'];
+        factor = Math.pow(factor, 3);
+        break;
+      case 'area': units = units || [' km&sup2', ' m&sup2'];
+        factor = Math.pow(factor, 2);
+        break;
+      case 'angle': units = units || ['&deg'];
+        break;
+      case 'distance':
+      default: units = units || [' km', ' m'];
+        break;
       }
 
       // Having only one unit means we don't want to transform the measure.
@@ -53,9 +53,9 @@ goog.provide('ga_measure_filter');
             minus = '-';
           }
           if (measure >= factor) {
-            var km = parseInt(measure / factor);
-            var m = Math.round(measure - km * factor);
-            var sep; //the separator
+            km = parseInt(measure / factor);
+            m = Math.round(measure - km * factor);
+            var sep; // the separator
             if (m >= 100) {
               sep = '\'';
             } else if (m >= 10) {
@@ -72,12 +72,12 @@ goog.provide('ga_measure_filter');
         }
       }
 
-      var km = Math.floor(measure / factor);
+      km = Math.floor(measure / factor);
       if (km <= 0) {
         return cleanAfterComma(measure) + units[1];
       }
       var str = '' + km;
-      var m = Math.floor(Math.floor(measure) % factor * 100 / factor);
+      m = Math.floor(Math.floor(measure) % factor * 100 / factor);
 
       if (m > 0) {
         str += '.';

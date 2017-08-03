@@ -58,12 +58,11 @@ goog.provide('ga_query_service');
           ((attr.values.length >= 5) ? ' ...' : '');
     };
 
-
     this.$get = function($http, $log, $q, gaLang, $window,
-                         gaGlobalOptions) {
+        gaGlobalOptions) {
       var msUrl = gaGlobalOptions.apiUrl + '/rest/services/all/MapServer/';
-      var twoWeeksAgo = $window.moment().subtract(2, 'weeks').
-          format('YYYY-MM-DD');
+      var twoWeeksAgo = $window.moment().subtract(2, 'weeks')
+          .format('YYYY-MM-DD');
 
       // List of predefined queries by layer
       var predefQueriesByLayer = {
@@ -104,7 +103,7 @@ goog.provide('ga_query_service');
       function Query() {
 
         this.getPredefQueries = function(bodId) {
-           return predefQueriesByLayer[bodId];
+          return predefQueriesByLayer[bodId];
         };
 
         // Use ESRI layer service
@@ -188,4 +187,3 @@ goog.provide('ga_query_service');
     };
   });
 })();
-

@@ -119,7 +119,6 @@ goog.require('ga_styles_service');
           updateLayer(map);
         };
 
-
         // Add features from an array<layerBodId,array<featureIds>>.
         // Param onNextClear is a function to call on the next execution of
         // clear function.
@@ -181,7 +180,7 @@ goog.require('ga_styles_service');
         // extent.
         this.zoom = function(map, ol3d, feature) {
           var extent = getMinimalExtent((feature) ?
-              feature.getGeometry().getExtent() : source.getExtent());
+            feature.getGeometry().getExtent() : source.getExtent());
           gaMapUtils.zoomToExtent(map, ol3d, extent);
         };
       };

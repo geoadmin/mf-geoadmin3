@@ -21,7 +21,7 @@ goog.require('ga_permalink_service');
     this.$get = function(gaPermalink) {
       var isActive = gaPermalink.getParams()._escaped_fragment_ !== undefined;
       var layersAtStart = gaPermalink.getParams().layers ?
-                          gaPermalink.getParams().layers.split(',') : [];
+        gaPermalink.getParams().layers.split(',') : [];
 
       var yxzoom = {
         Y: gaPermalink.getParams().Y,
@@ -29,12 +29,12 @@ goog.require('ga_permalink_service');
         zoom: gaPermalink.getParams().zoom
       };
 
-     // We remove the _escaped_fragment_ parameter in order to not have it
+      // We remove the _escaped_fragment_ parameter in order to not have it
       // anywhere in the page as part of the permalink inside the page.
       // State is available through the isActive function.
       gaPermalink.deleteParam('_escaped_fragment_');
 
-      //has to come after _escaped_fragment_ parameter is removed
+      // has to come after _escaped_fragment_ parameter is removed
       var linkAtStart = gaPermalink.getHref();
 
       var SeoService = function() {

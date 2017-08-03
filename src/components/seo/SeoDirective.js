@@ -12,7 +12,7 @@ goog.require('ga_seo_service');
 
   module.directive('gaSeo',
       function($sce, $timeout, $q, $http, $translate,
-               gaSeo, gaLayers) {
+          gaSeo, gaLayers) {
         return {
           restrict: 'A',
           replace: true,
@@ -23,7 +23,7 @@ goog.require('ga_seo_service');
           },
           link: function(scope, element, attrs) {
             var MIN_WAIT = 300,
-                currentTopic;
+              currentTopic;
 
             scope.triggerPageEnd = false;
             scope.showPopup = false;
@@ -41,7 +41,7 @@ goog.require('ga_seo_service');
 
             var permalinkLayers = function() {
               var layers = gaSeo.getLayers(),
-                  def = $q.defer();
+                def = $q.defer();
 
               gaLayers.loadConfig().then(function() {
 
@@ -67,13 +67,12 @@ goog.require('ga_seo_service');
                   return $q.all(promises);
                 };
 
-
                 var promises = [];
 
-                //We wait at least MIN_WAIT after layers-config is loaded
+                // We wait at least MIN_WAIT after layers-config is loaded
                 promises.push(getWaitPromise(MIN_WAIT));
 
-                //Display layer metadata
+                // Display layer metadata
                 if (layers.length > 0) {
                   promises.push(insertLayerMetadata(layers));
                 }
@@ -88,7 +87,7 @@ goog.require('ga_seo_service');
 
             var onCatalogChange = function() {
               var def = $q.defer(),
-                  unregister;
+                unregister;
 
               unregister = scope.$on('gaCatalogChange', function() {
                 getWaitPromise(MIN_WAIT).then(function() {
@@ -102,12 +101,12 @@ goog.require('ga_seo_service');
 
             var swissSearchParameter = function() {
               var def = $q.defer(),
-                  active = false,
-                  uregAct, uregDone;
+                active = false,
+                uregAct, uregDone;
 
               uregAct = scope.$on('gaSwisssearchActivated', function() {
-                 active = true;
-                 uregAct();
+                active = true;
+                uregAct();
               });
 
               uregDone = scope.$on('gaSwisssearchDone', function() {
@@ -136,23 +135,23 @@ goog.require('ga_seo_service');
 
             var permalinkFeatures = function() {
               var def = $q.defer(),
-                  unregister;
+                unregister;
 
               unregister = scope.$on('gaPermalinkFeaturesAdd', function(evt,
-                                                                        data) {
+                  data) {
                 var promises = [];
 
                 var getFeatureHtml = function(featureId, bodId) {
                   var fDef = $q.defer();
                   var htmlUrl = scope.options.htmlUrlTemplate
-                                .replace('{Topic}', currentTopic)
-                                .replace('{Layer}', bodId)
-                                .replace('{Feature}', featureId);
+                      .replace('{Topic}', currentTopic)
+                      .replace('{Layer}', bodId)
+                      .replace('{Feature}', featureId);
                   $http.get(htmlUrl, {
                     params: {
                       lang: $translate.use() // Left out other parameters as
-                                              // they are not relevant for SEO
-                                              // (cadastralWbebMap Links)
+                      // they are not relevant for SEO
+                      // (cadastralWbebMap Links)
                     }
                   }).then(function(response) {
                     var html = response.data;
@@ -169,13 +168,13 @@ goog.require('ga_seo_service');
                   def.resolve();
                 } else {
                   angular.forEach(data.featureIdsByBodId,
-                                  function(featureIds, bodId) {
-                    Array.prototype.push.apply(promises, $.map(featureIds,
-                        function(featureId) {
-                          return getFeatureHtml(featureId, bodId);
-                        }
-                    ));
-                  });
+                      function(featureIds, bodId) {
+                        Array.prototype.push.apply(promises, $.map(featureIds,
+                            function(featureId) {
+                              return getFeatureHtml(featureId, bodId);
+                            }
+                        ));
+                      });
                   $q.all(promises).then(function() {
                     def.resolve();
                   });
@@ -188,40 +187,40 @@ goog.require('ga_seo_service');
 
             var permalinkYXZoom = function() {
               var def = $q.defer(),
-                  xyzoom = gaSeo.getYXZoom(),
-                  bailed = false,
-                  BBOX_SIZE = 1000, //1km on each side...likely to be changed
-                  MIN_ZOOM = 5, //Minimal zoom to include xy based location info
-                  PIXEL_TOLERANCE = 10, //Used for identify service
-                  //polygon like layers (better suited for identify)
-                  identifyLayers = [
-                    'ch.swisstopo-vd.ortschaftenverzeichnis_plz',
-                    'ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill',
-                    'ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill',
-                    'ch.swisstopo.swissboundaries3d-kanton-flaeche.fill'
-                  ],
-                  //Match layer with property to be inserted
-                  layersProperties = {
-                    'ch.swisstopo-vd.ortschaftenverzeichnis_plz': 'plz',
-                    'ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill':
+                xyzoom = gaSeo.getYXZoom(),
+                bailed = false,
+                BBOX_SIZE = 1000, // 1km on each side...likely to be changed
+                MIN_ZOOM = 5, // Minimal zoom to include xy based location info
+                PIXEL_TOLERANCE = 10, // Used for identify service
+                // polygon like layers (better suited for identify)
+                identifyLayers = [
+                  'ch.swisstopo-vd.ortschaftenverzeichnis_plz',
+                  'ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill',
+                  'ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill',
+                  'ch.swisstopo.swissboundaries3d-kanton-flaeche.fill'
+                ],
+                // Match layer with property to be inserted
+                layersProperties = {
+                  'ch.swisstopo-vd.ortschaftenverzeichnis_plz': 'plz',
+                  'ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill':
                         'gemname',
-                    'ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill':
+                  'ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill':
                         'name',
-                    'ch.swisstopo.swissboundaries3d-kanton-flaeche.fill': 'name'
-                  },
-                  //point like searchable layers (better suited for search)
-                  searchLayers = [
-                    'ch.swisstopo.vec200-names-namedlocation',
-                    'ch.bfs.gebaeude_wohnungs_register'
-                  ],
-                  //for searchlayers, we specify how many results we want
-                  layersMaxResults = {
-                    'ch.swisstopo.vec200-names-namedlocation' : 3,
-                    'ch.bfs.gebaeude_wohnungs_register': 1
-                  },
-                  lTpl = '<a href="' + gaSeo.getLinkAtStart() +
+                  'ch.swisstopo.swissboundaries3d-kanton-flaeche.fill': 'name'
+                },
+                // point like searchable layers (better suited for search)
+                searchLayers = [
+                  'ch.swisstopo.vec200-names-namedlocation',
+                  'ch.bfs.gebaeude_wohnungs_register'
+                ],
+                // for searchlayers, we specify how many results we want
+                layersMaxResults = {
+                  'ch.swisstopo.vec200-names-namedlocation': 3,
+                  'ch.bfs.gebaeude_wohnungs_register': 1
+                },
+                lTpl = '<a href="' + gaSeo.getLinkAtStart() +
                                  '">{result}</a>',
-                  east, north, zoom, bbox;
+                east, north, zoom, bbox;
 
               if (xyzoom.Y !== undefined &&
                   xyzoom.X !== undefined &&
@@ -235,9 +234,9 @@ goog.require('ga_seo_service');
                     zoom >= MIN_ZOOM) {
                   var searchDef = $q.defer();
                   var identifyDef = $q.defer();
-                 //for now, we simply get the extent and include everything
-                  //in future, we determine with extent and zoom which layers to
-                  //actually query...
+                  // for now, we simply get the extent and include everything
+                  // in future, we determine with extent and zoom which layers
+                  // to actually query...
                   bbox = (east - BBOX_SIZE).toString() + ',' +
                          (north - BBOX_SIZE).toString() + ',' +
                          (east + BBOX_SIZE).toString() + ',' +
@@ -249,8 +248,8 @@ goog.require('ga_seo_service');
                       type: 'features',
                       features: searchLayers.join(','),
                       timeEnabled: $.map(searchLayers, function(layer) {
-                            return 'false';
-                          }).join(',')
+                        return 'false';
+                      }).join(',')
 
                     }
                   }).then(function(response) {
@@ -258,7 +257,7 @@ goog.require('ga_seo_service');
                     var i, li, result, added = {};
                     if (json.results &&
                         json.results.length > 0) {
-                      //todo: apply bbox filter? (as in feature tree...)
+                      // todo: apply bbox filter? (as in feature tree...)
                       for (i = 0, li = json.results.length; i < li; i++) {
                         result = json.results[i];
                         if (!added[result.attrs.layer]) {
@@ -309,9 +308,9 @@ goog.require('ga_seo_service');
                     identifyDef.resolve();
                   });
                   $q.all([searchDef.promise, identifyDef.promise])
-                  .then(function() {
-                    def.resolve();
-                  });
+                      .then(function() {
+                        def.resolve();
+                      });
                 } else {
                   bailed = true;
                 }
@@ -342,7 +341,7 @@ goog.require('ga_seo_service');
 
             // Just do something if we are active
             if (gaSeo.isActive()) {
-              //Show popup
+              // Show popup
               $timeout(function() {
                 scope.showPopup = true;
               }, 0);
@@ -350,12 +349,12 @@ goog.require('ga_seo_service');
               injectSnapshotData().then(function() {
                 scope.triggerPageEnd = true;
               });
-           }
+            }
 
-           scope.$on('gaTopicChange', function(event, topic) {
-             currentTopic = topic.id;
-           });
-         }
-       };
+            scope.$on('gaTopicChange', function(event, topic) {
+              currentTopic = topic.id;
+            });
+          }
+        };
       });
 })();

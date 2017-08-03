@@ -37,12 +37,6 @@ goog.require('ga_window_service');
           gaMapUtils, gaTime, gaTopic, gaIdentify, gaGlobalOptions,
           gaPermalink, gaIFrameCom, gaUrlUtils, gaLang, gaSanitize, gaEvent,
           gaWindow) {
-        var mouseEvts = '';
-        if (!gaBrowserSniffer.mobile) {
-          mouseEvts = 'ng-mouseenter="options.onMouseEnter($event,' +
-              'options.htmls.length)" ' +
-              'ng-mouseleave="options.onMouseLeave($event)" ';
-        }
         var popupContent =
           '<div ng-repeat="html in options.htmls track by $index" ' +
                'ng-mouseenter="options.onMouseEnter($event,' +
@@ -62,11 +56,6 @@ goog.require('ga_window_service');
             '<div class="ga-tooltip-separator" ' +
                  'ng-show="!$last"></div>' +
           '</div>';
-
-        var getOlParentLayer = function(olLayer) {
-          var parentLayerBodId = gaLayers.getBodParentLayerId(olLayer);
-          return gaLayers.getOlLayerById(parentLayerBodId) || olLayer;
-        };
 
         // Get all the queryable layers
         var getLayersToQuery = function(map) {
@@ -131,13 +120,13 @@ goog.require('ga_window_service');
           }
           if (!gaBrowserSniffer.msie || gaBrowserSniffer.msie > 10) {
             hasQueryableLayer = map.forEachLayerAtPixel(pixel,
-              function() {
-                return true;
-              },
-              undefined,
-              function(layer) {
-                return gaLayers.hasTooltipBodLayer(layer);
-              });
+                function() {
+                  return true;
+                },
+                undefined,
+                function(layer) {
+                  return gaLayers.hasTooltipBodLayer(layer);
+                });
           }
           if (!hasQueryableLayer) {
             feature = findVectorFeature(map, pixel);
@@ -149,7 +138,7 @@ goog.require('ga_window_service');
           }
         };
         var updateCursorStyleDebounced = gaDebounce.debounce(
-                updateCursorStyle, 10, false, false);
+            updateCursorStyle, 10, false, false);
 
         // Register click/touch/mousemove events on map
         var deregMapEvents = angular.noop;
@@ -160,8 +149,8 @@ goog.require('ga_window_service');
           var map = scope.map;
           var onMapClick = function(evt) {
             var coordinate = (evt.originalEvent) ?
-                map.getEventCoordinate(evt.originalEvent) :
-                evt.coordinate;
+              map.getEventCoordinate(evt.originalEvent) :
+              evt.coordinate;
 
             // A digest cycle is necessary for $http requests to be
             // actually sent out. Angular-1.2.0rc2 changed the $evalSync
@@ -224,7 +213,6 @@ goog.require('ga_window_service');
             ms = new Date();
           }, Cesium.ScreenSpaceEventType.PINCH_END);
 
-
           deregGlobeEvents = function() {
             if (!handler.isDestroyed()) {
               handler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
@@ -245,15 +233,13 @@ goog.require('ga_window_service');
           },
           link: function(scope, element, attrs) {
             var htmls = [],
-                featuresByLayerId = {},
-                onCloseCB = angular.noop,
-                map = scope.map,
-                popup,
-                canceler,
-                vector,
-                vectorSource,
-                listenerKey,
-                parser = new ol.format.GeoJSON();
+              featuresByLayerId = {},
+              onCloseCB = angular.noop,
+              map = scope.map,
+              popup,
+              canceler,
+              listenerKey,
+              parser = new ol.format.GeoJSON();
 
             var is3dActive = function() {
               return scope.ol3d && scope.ol3d.getEnabled();
@@ -319,13 +305,12 @@ goog.require('ga_window_service');
               if (feat && feat.layerBodId) {
                 getFeaturePopupHtml(feat.layerBodId, feat.id)
                     .then(function(response) {
-                  htmls[i].snippet = $sce.trustAsHtml(response.data);
-                });
+                      htmls[i].snippet = $sce.trustAsHtml(response.data);
+                    });
               }
             };
             // TODO handle vector layer toolip
             $rootScope.$on('$translateChangeEnd', function() {
-              var tmp, feature, layerBodId, featureId;
               if (scope.isActive && htmls.length) {
                 cancelRequests();
                 for (var i = 0; i < htmls.length; i++) {
@@ -394,7 +379,7 @@ goog.require('ga_window_service');
               initTooltip();
               if (!coordinate ||
                  !ol.extent.containsCoordinate(gaMapUtils.defaultExtent,
-                 coordinate)) {
+                     coordinate)) {
                 return;
               }
               // Use by the ga-shop directive
@@ -409,15 +394,15 @@ goog.require('ga_window_service');
               // When 3d is Active we use the cesium native function to get the
               // first queryable feature.
               if (is3dActive()) {
-                var pickedObjects = scope.ol3d.getCesiumScene().
-                    drillPick(position3d);
+                var pickedObjects = scope.ol3d.getCesiumScene()
+                    .drillPick(position3d);
                 for (var i = 0, ii = pickedObjects.length; i < ii; i++) {
-                   var prim = pickedObjects[i].primitive;
-                   if (isFeatureQueryable(prim.olFeature)) {
-                     showVectorFeature(prim.olFeature, prim.olLayer);
-                     all.push($q.when(1));
-                     break;
-                   }
+                  var prim = pickedObjects[i].primitive;
+                  if (isFeatureQueryable(prim.olFeature)) {
+                    showVectorFeature(prim.olFeature, prim.olLayer);
+                    all.push($q.when(1));
+                    break;
+                  }
                 }
               } else {
                 // Go through queryable vector layers
@@ -446,10 +431,10 @@ goog.require('ga_window_service');
 
                 all.push(gaIdentify.get(map, [layerToQuery], geometry, tol,
                     returnGeometry, canceler.promise, limit, order).then(
-                  function(response) {
-                    showFeatures(response.data.results, coordinate);
-                    return response.data.results.length;
-                }));
+                    function(response) {
+                      showFeatures(response.data.results, coordinate);
+                      return response.data.results.length;
+                    }));
               });
 
               // Go through queryable wms layers
@@ -462,7 +447,7 @@ goog.require('ga_window_service');
                 }
                 var source = layerToQuery.getSource();
                 var sourceCoord, sourceRes,
-                    sourceProj = source.getProjection();
+                  sourceProj = source.getProjection();
                 if (sourceProj) { // auto reprojection
                   sourceRes = ol.reproj.calculateSourceResolution(sourceProj,
                       mapProj, coordinate, mapRes);
@@ -516,9 +501,9 @@ goog.require('ga_window_service');
               var mapSize = map.getSize();
               var mapExtent = map.getView().calculateExtent(mapSize);
               var htmlUrl = scope.options.htmlUrlTemplate
-                            .replace('{Topic}', gaTopic.get().id)
-                            .replace('{Layer}', bodId)
-                            .replace('{Feature}', featureId);
+                  .replace('{Topic}', gaTopic.get().id)
+                  .replace('{Layer}', bodId)
+                  .replace('{Feature}', featureId);
               return $http.get(htmlUrl, {
                 timeout: canceler.promise,
                 cache: true,
@@ -546,11 +531,11 @@ goog.require('ga_window_service');
                 // Remove the tooltip, if a layer is removed, we don't care
                 // which layer. It worked like that in RE2.
                 listenerKey = map.getLayers().on('remove',
-                  function(evt) {
-                    if (evt.element.displayInLayerManager) {
-                      initTooltip();
+                    function(evt) {
+                      if (evt.element.displayInLayerManager) {
+                        initTooltip();
+                      }
                     }
-                  }
                 );
                 angular.forEach(foundFeatures, function(value) {
                   if (value instanceof ol.Feature) {
@@ -566,11 +551,11 @@ goog.require('ga_window_service');
                     // Store the ol feature for highlighting
                     storeFeature(layerId, feature);
                   } else {
-                    //draw feature, but only if it should be drawn
+                    // draw feature, but only if it should be drawn
                     if (!nohighlight &&
                         gaLayers.getLayer(value.layerBodId) &&
                         gaLayers.getLayerProperty(value.layerBodId,
-                                                  'highlightable')) {
+                            'highlightable')) {
                       var features = parser.readFeatures(value);
                       for (var i = 0, ii = features.length; i < ii; ++i) {
                         features[i].set('layerId', value.layerBodId);
@@ -605,10 +590,10 @@ goog.require('ga_window_service');
               var featureId = feature.getId();
               var layerId = feature.get('layerId') || layer.id;
               var id = layerId + '#' + featureId;
-              htmlpopup = htmlpopup.
-                  replace('{{id}}', id).
-                  replace('{{descr}}', feature.get('description') || '').
-                  replace('{{name}}', (name) ? '(' + name + ')' : '');
+              htmlpopup = htmlpopup
+                  .replace('{{id}}', id)
+                  .replace('{{descr}}', feature.get('description') || '')
+                  .replace('{{name}}', (name) ? '(' + name + ')' : '');
               feature.set('htmlpopup', htmlpopup);
               if (!isFeatureQueryable(feature)) {
                 feature.set('htmlpopup', undefined);
@@ -631,8 +616,8 @@ goog.require('ga_window_service');
               // We leave the old code to not break existing clients
               // Once they have adapted to new implementation, we
               // can remove the code below
-              if (top != window) {
-               if (featureId && layerId) {
+              if (window.top != window) {
+                if (featureId && layerId) {
                   window.parent.postMessage(id, '*');
                 }
               }
@@ -664,7 +649,7 @@ goog.require('ga_window_service');
               // Show popup on first result
               if (htmls.length === 0) {
 
-                //always reposition element when newly opened
+                // always reposition element when newly opened
                 var x;
                 if (gaWindow.isWidth('>s')) {
                   x = function(element) {
@@ -687,8 +672,8 @@ goog.require('ga_window_service');
                     onMouseEnter: function(evt, nbTooltips) {
                       if (nbTooltips == 1) return;
                       var target = $(evt.currentTarget);
-                      var containerId = target.find('.htmlpopup-container').
-                          attr('id');
+                      var containerId = target.find('.htmlpopup-container')
+                          .attr('id');
                       if (/#/.test(containerId)) {
                         var split = containerId.split('#');
                         var featByLayer = featuresByLayerId[split[0]];

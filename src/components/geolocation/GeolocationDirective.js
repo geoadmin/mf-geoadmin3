@@ -44,8 +44,8 @@ goog.require('ga_throttle_service');
           label: $translate.instant('geolocation')
         });
         var featuresOverlay = gaMapUtils.getFeatureOverlay(
-          [accuracyFeature, positionFeature],
-          gaStyleFactory.getStyleFunction('geolocation')
+            [accuracyFeature, positionFeature],
+            gaStyleFactory.getStyleFunction('geolocation')
         );
         var deviceOrientation = new ol.DeviceOrientation();
         var geolocation = new ol.Geolocation({
@@ -62,7 +62,7 @@ goog.require('ga_throttle_service');
         var unreg3dSwitch;
         var register3dSwitch = function() {
           return scope.$watch(function() {
-              return scope.ol3d && scope.ol3d.getEnabled();
+            return scope.ol3d && scope.ol3d.getEnabled();
           }, function(active) {
             userTakesControl = false;
             locate();
@@ -90,7 +90,6 @@ goog.require('ga_throttle_service');
         // used to having a zoom animation when we click on the button,
         // but not when we are tracking the position.
         var first = true;
-        var currentAccuracy = 0;
         var locate = function() {
           errorMsgId = undefined;
           var dest = geolocation.getPosition();
@@ -99,7 +98,7 @@ goog.require('ga_throttle_service');
               first = false;
               gaMapUtils.flyTo(map, scope.ol3d, dest,
                   ol.extent.buffer(dest.concat(dest),
-                  geolocation.getAccuracy()));
+                      geolocation.getAccuracy()));
             } else if (!userTakesControl) {
               gaMapUtils.panTo(map, scope.ol3d, dest);
             }
@@ -117,24 +116,24 @@ goog.require('ga_throttle_service');
             }
           }
           switch (orientation) {
-            case -90:
-              hdg = hdg - (Math.PI / 2);
-              break;
+          case -90:
+            hdg = hdg - (Math.PI / 2);
+            break;
 
-            case 180:
-              hdg = hdg + Math.PI;
-              break;
+          case 180:
+            hdg = hdg + Math.PI;
+            break;
 
-            case 90:
-              hdg = hdg + (Math.PI / 2);
-              break;
+          case 90:
+            hdg = hdg + (Math.PI / 2);
+            break;
 
-            case 270:
-              hdg = hdg - (Math.PI / 2);
-              break;
+          case 270:
+            hdg = hdg - (Math.PI / 2);
+            break;
 
-            default:
-              hdg = hdg;
+          default:
+            break;
           }
           return hdg;
         };
@@ -250,18 +249,18 @@ goog.require('ga_throttle_service');
           elts.removeClass(naClass);
           var msgId;
           switch (error.code) {
-            case error.PERMISSION_DENIED:
-              msgId = 'geoloc_permission_denied';
-              break;
-            case error.POSITION_UNAVAILABLE:
-              msgId = 'geoloc_pos_unavailable';
-              break;
-            case error.TIMEOUT:
-              msgId = 'geoloc_time_out';
-              break;
-            case error.UNKNOWN_ERROR:
-              msgId = 'geoloc_unknown';
-              break;
+          case error.PERMISSION_DENIED:
+            msgId = 'geoloc_permission_denied';
+            break;
+          case error.POSITION_UNAVAILABLE:
+            msgId = 'geoloc_pos_unavailable';
+            break;
+          case error.TIMEOUT:
+            msgId = 'geoloc_time_out';
+            break;
+          case error.UNKNOWN_ERROR:
+            msgId = 'geoloc_unknown';
+            break;
           }
           $window.alert($translate.instant(msgId));
           errorMsgId = msgId;
@@ -272,7 +271,6 @@ goog.require('ga_throttle_service');
           userTakesControl = true;
         };
         map.on('pointerdrag', updateUserTakesControl);
-
 
         // Button events
         bt.on('click', function(e) {

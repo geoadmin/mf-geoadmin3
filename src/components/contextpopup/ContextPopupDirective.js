@@ -57,14 +57,14 @@ goog.require('ga_window_service');
             };
 
             var coordinatesFormatUTM = function(coordinates, zone) {
-              var coord = ol.coordinate.toStringXY(coordinates, 0).
-                  replace(/\B(?=(\d{3})+(?!\d))/g, "'");
+              var coord = ol.coordinate.toStringXY(coordinates, 0)
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, "'");
               return coord + ' ' + zone;
             };
 
             var updateW3W = function() {
               gaWhat3Words.getWords(coord4326[1],
-                                    coord4326[0]).then(function(res) {
+                  coord4326[0]).then(function(res) {
                 scope.w3w = res;
               }, function(response) {
                 if (response.status != -1) { // Error
@@ -89,21 +89,18 @@ goog.require('ga_window_service');
               event.stopPropagation();
               event.preventDefault();
 
-              //On Mac, left-click with ctrlKey also fires
-              //the 'contextmenu' event. But this conflicts
-              //with selectByRectangle feature (in featuretree
-              //directive). So we bail out here if
-              //ctrlKey is pressed
+              // On Mac, left-click with ctrlKey also fires
+              // the 'contextmenu' event. But this conflicts
+              // with selectByRectangle feature (in featuretree
+              // directive). So we bail out here if
+              // ctrlKey is pressed
               if (event.ctrlKey) {
                 return;
               }
 
-              var pixel = (event.originalEvent) ?
-                  map.getEventPixel(event.originalEvent) :
-                  event.pixel;
               coord21781 = (event.originalEvent) ?
-                  map.getEventCoordinate(event.originalEvent) :
-                  event.coordinate;
+                map.getEventCoordinate(event.originalEvent) :
+                event.coordinate;
               coord4326 = ol.proj.transform(coord21781,
                   'EPSG:21781', 'EPSG:4326');
               var coord2056 = ol.proj.transform(coord21781,
@@ -111,26 +108,26 @@ goog.require('ga_window_service');
 
               scope.coord21781 = formatCoordinates(coord21781, 1);
               scope.coord4326 = ol.coordinate.format(coord4326, '{y}, {x}', 5);
-              var coord4326String = ol.coordinate.toStringHDMS(coord4326, 3).
-                                   replace(/ /g, '');
+              var coord4326String = ol.coordinate.toStringHDMS(coord4326, 3)
+                  .replace(/ /g, '');
               scope.coordiso4326 = coord4326String.replace(/N/g, 'N ');
               scope.coord2056 = formatCoordinates(coord2056, 2) + ' *';
               if (coord4326[0] < 6 && coord4326[0] >= 0) {
-                var utm_31t = ol.proj.transform(coord4326,
+                var utm31t = ol.proj.transform(coord4326,
                     'EPSG:4326', 'EPSG:32631');
-                scope.coordutm = coordinatesFormatUTM(utm_31t, '(zone 31T)');
+                scope.coordutm = coordinatesFormatUTM(utm31t, '(zone 31T)');
               } else if (coord4326[0] < 12 && coord4326[0] >= 6) {
-                var utm_32t = ol.proj.transform(coord4326,
+                var utm32t = ol.proj.transform(coord4326,
                     'EPSG:4326', 'EPSG:32632');
-                scope.coordutm = coordinatesFormatUTM(utm_32t, '(zone 32T)');
+                scope.coordutm = coordinatesFormatUTM(utm32t, '(zone 32T)');
               } else {
                 return '-';
               }
 
               coord4326['lon'] = coord4326[0];
               coord4326['lat'] = coord4326[1];
-              scope.coordmgrs = $window.proj4.mgrs.forward(coord4326).
-                  replace(/(.{5})/g, '$1 ');
+              scope.coordmgrs = $window.proj4.mgrs.forward(coord4326)
+                  .replace(/(.{5})/g, '$1 ');
 
               // A digest cycle is necessary for $http requests to be
               // actually sent out. Angular-1.2.0rc2 changed the $evalSync
@@ -183,7 +180,6 @@ goog.require('ga_window_service');
               // because that doesn't work with phantomJS.
               isPopoverShown = true;
             };
-
 
             if ('oncontextmenu' in $window) {
               $(map.getViewport()).on('contextmenu', function(event) {

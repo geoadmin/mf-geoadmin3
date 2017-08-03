@@ -19,7 +19,7 @@ goog.require('ga_urlutils_service');
 
   var parseExtent = function(stringBox2D) {
     var extent = stringBox2D.replace(/(BOX\(|\))/gi, '').replace(',', ' ')
-                 .split(' ');
+        .split(' ');
     return $.map(extent, parseFloat);
   };
 
@@ -31,9 +31,9 @@ goog.require('ga_urlutils_service');
           'EPSG:4326', 'EPSG:21781');
     }
     gaMarkerOverlay.add(map,
-                  center,
-                  visible,
-                  parseExtent(res.attrs.geom_st_box2d));
+        center,
+        visible,
+        parseExtent(res.attrs.geom_st_box2d));
 
   };
 
@@ -95,7 +95,7 @@ goog.require('ga_urlutils_service');
   };
 
   var focusToElement = function(next, step, evt) {
-    var newEl = undefined;
+    var newEl;
     if (next) {
       newEl = $(evt.target).nextAll('.ga-search-result').first();
     } else {
@@ -122,11 +122,11 @@ goog.require('ga_urlutils_service');
   var focusToCategory = function(next, evt) {
     var el = $(evt.target);
     if (el.length && el[0] && el[0].attributes && el[0].attributes.tabindex) {
-      var jumpGroup;
+      var jumpGroup, newEl;
       if (next) {
         jumpGroup = nextTabGroup(el[0].attributes.tabindex.value);
         while (jumpGroup) {
-          var newEl = $('[tabindex=' + jumpGroup + ']');
+          newEl = $('[tabindex=' + jumpGroup + ']');
           if (elExists(newEl)) {
             focusElement(newEl, evt);
             break;
@@ -136,10 +136,10 @@ goog.require('ga_urlutils_service');
       } else {
         jumpGroup = prevTabGroup(el[0].attributes.tabindex.value);
         while (jumpGroup) {
-          var newEl = $('[tabindex=' + jumpGroup + ']');
+          newEl = $('[tabindex=' + jumpGroup + ']');
           if (elExists(newEl)) {
             var existingEl = newEl;
-            //Go to last element of category
+            // Go to last element of category
             while (elExists(newEl)) {
               existingEl = newEl;
               jumpGroup += 1;
@@ -150,8 +150,8 @@ goog.require('ga_urlutils_service');
           }
           jumpGroup = prevTabGroup(jumpGroup);
         }
-        //Nothing found, so jump back to input (ignore bad design...)
-        var newEl = $('.ga-search-input');
+        // Nothing found, so jump back to input (ignore bad design...)
+        newEl = $('.ga-search-input');
         if (newEl.length === 1 &&
             newEl[0].className.indexOf('ga-search-input') > -1) {
           focusElement(newEl, evt);
@@ -186,127 +186,127 @@ goog.require('ga_urlutils_service');
    */
 
   module.controller('GaSearchTypesController',
-    function($scope, $http, $q, $sce, gaUrlUtils, gaSearchLabels,
-             gaMarkerOverlay, gaDebounce) {
+      function($scope, $http, $q, $sce, gaUrlUtils, gaSearchLabels,
+          gaMarkerOverlay, gaDebounce) {
 
       // This value is used to block blur/mouseleave event, when a value
       // is selected. See #2284. It's reinitialized when a new search is
       // triggered.
-      var blockEvent = false;
-      var canceler;
+        var blockEvent = false;
+        var canceler;
 
-      var cancel = function() {
-        $scope.results = [];
-        $scope.fuzzy = '';
-        if (canceler !== undefined) {
-          canceler.resolve();
-          canceler = undefined;
-        }
-      };
-
-      var triggerSearch = gaDebounce.debounce(function() {
-        if (!$scope.doSearch()) {
-          $scope.options.announceResults($scope.type, 0);
-          return;
-        }
-
-        canceler = $q.defer();
-
-        var url = gaUrlUtils.append($scope.options.searchUrl,
-                                    'type=' + $scope.type);
-        url = $scope.typeSpecificUrl(url);
-        $http.get(url, {
-          cache: true,
-          timeout: canceler.promise
-        }).then(function(response) {
-          var data = response.data;
-          $scope.results = data.results;
-          if (data.fuzzy) {
-            $scope.fuzzy = '_fuzzy';
+        var cancel = function() {
+          $scope.results = [];
+          $scope.fuzzy = '';
+          if (canceler !== undefined) {
+            canceler.resolve();
+            canceler = undefined;
           }
-          $scope.options.announceResults($scope.type, data.results.length);
-        }, function(response) {
-          // If request is canceled, statuscode is 0 and we don't announce it
-          if (response.status !== 0) {
+        };
+
+        var triggerSearch = gaDebounce.debounce(function() {
+          if (!$scope.doSearch()) {
             $scope.options.announceResults($scope.type, 0);
+            return;
           }
-        });
-      }, 133, false, false);
-      // 133 filters out 'stuck key' events while staying responsive
 
-      $scope.doSearch = function() {
-        return true;
-      };
+          canceler = $q.defer();
 
-      $scope.typeSpecificUrl = function(url) {
-        return url;
-      };
+          var url = gaUrlUtils.append($scope.options.searchUrl,
+              'type=' + $scope.type);
+          url = $scope.typeSpecificUrl(url);
+          $http.get(url, {
+            cache: true,
+            timeout: canceler.promise
+          }).then(function(response) {
+            var data = response.data;
+            $scope.results = data.results;
+            if (data.fuzzy) {
+              $scope.fuzzy = '_fuzzy';
+            }
+            $scope.options.announceResults($scope.type, data.results.length);
+          }, function(response) {
+          // If request is canceled, statuscode is 0 and we don't announce it
+            if (response.status !== 0) {
+              $scope.options.announceResults($scope.type, 0);
+            }
+          });
+        }, 133, false, false);
+        // 133 filters out 'stuck key' events while staying responsive
 
-      $scope.keydown = function(evt, res) {
-        if (evt.keyCode == 13) {
-          //Enter key
+        $scope.doSearch = function() {
+          return true;
+        };
+
+        $scope.typeSpecificUrl = function(url) {
+          return url;
+        };
+
+        $scope.keydown = function(evt, res) {
+          if (evt.keyCode == 13) {
+          // Enter key
+            $scope.removePreview();
+            blockEvent = true;
+            $scope.select(res);
+          } else if (evt.keyCode == 9) {
+          // Tab key
+            focusToCategory(!evt.shiftKey, evt);
+          } else if (evt.keyCode == 40 || evt.keyCode == 34) {
+          // Down Arrow or PageDown key
+            focusToElement(true, evt.keyCode == 40 ? 1 : 5, evt);
+          } else if (evt.keyCode == 38 || evt.keyCode == 33) {
+          // Up Arrow or PageUp key
+            focusToElement(false, evt.keyCode == 38 ? 1 : 5, evt);
+          }
+        };
+
+        $scope.click = function(res) {
           $scope.removePreview();
           blockEvent = true;
           $scope.select(res);
-        } else if (evt.keyCode == 9) {
-          //Tab key
-          focusToCategory(!evt.shiftKey, evt);
-        } else if (evt.keyCode == 40 || evt.keyCode == 34) {
-          //Down Arrow or PageDown key
-          focusToElement(true, evt.keyCode == 40 ? 1 : 5, evt);
-        } else if (evt.keyCode == 38 || evt.keyCode == 33) {
-          //Up Arrow or PageUp key
-          focusToElement(false, evt.keyCode == 38 ? 1 : 5, evt);
-        }
-      };
+        };
 
-      $scope.click = function(res) {
-        $scope.removePreview();
-        blockEvent = true;
-        $scope.select(res);
-      };
+        $scope.out = function(evt) {
+          if (!blockEvent) {
+            $scope.removePreview();
+          }
+        };
 
-      $scope.out = function(evt) {
-        if (!blockEvent) {
-          $scope.removePreview();
-        }
-      };
+        $scope.preview = function(res) {
+          addOverlay(gaMarkerOverlay, $scope.map, res);
+        };
 
-      $scope.preview = function(res) {
-        addOverlay(gaMarkerOverlay, $scope.map, res);
-      };
+        $scope.removePreview = function() {
+          removeOverlay(gaMarkerOverlay, $scope.map);
+        };
 
-      $scope.removePreview = function() {
-        removeOverlay(gaMarkerOverlay, $scope.map);
-      };
+        $scope.prepareLabel = function(attrs) {
+          var h = gaSearchLabels.highlight(attrs.label, $scope.options.query);
+          return $sce.trustAsHtml(h);
+        };
 
-      $scope.prepareLabel = function(attrs) {
-        var h = gaSearchLabels.highlight(attrs.label, $scope.options.query);
-        return $sce.trustAsHtml(h);
-      };
+        $scope.cleanLabel = function(attrs) {
+          return gaSearchLabels.cleanLabel(attrs.label);
+        };
 
-      $scope.cleanLabel = function(attrs) {
-        return gaSearchLabels.cleanLabel(attrs.label);
-      };
+        $scope.fuzzy = '';
 
-      $scope.fuzzy = '';
-
-      $scope.$watch('options.searchUrl', function() {
+        $scope.$watch('options.searchUrl', function() {
         // cancel old requests
-        cancel();
-        if ($scope.options.query != '') {
-          blockEvent = false;
-          triggerSearch();
-        } else {
-          unregisterMove();
-        }
-      });
-    }
+          cancel();
+          if ($scope.options.query != '') {
+            blockEvent = false;
+            triggerSearch();
+          } else {
+            unregisterMove();
+          }
+        });
+      }
   );
 
   module.directive('gaSearchLocations',
       function($http, $q, $sce, $translate, gaUrlUtils, gaMarkerOverlay,
-               gaSearchLabels, gaMapUtils, gaDebounce) {
+          gaSearchLabels, gaMapUtils, gaDebounce) {
         return {
           restrict: 'A',
           templateUrl: 'components/search/partials/searchtypes.html',
@@ -329,13 +329,12 @@ goog.require('ga_urlutils_service');
               var isGazetteerPoly = false;
               var e = parseExtent(res.attrs.geom_st_box2d);
               unregisterMove();
-              //Gazetteer results that are not points zoom to full bbox extent
+              // Gazetteer results that are not points zoom to full bbox extent
               if (res.attrs.origin == 'gazetteer') {
                 isGazetteerPoly = (Math.abs(e[0] - e[2]) > 100 &&
                                    Math.abs(e[1] - e[3]) > 100);
 
               }
-              var ol3d = $scope.ol3d;
               if (res.attrs.zoomlevel < ZOOM_LIMIT &&
                   !isGazetteerPoly) {
                 gaMapUtils.moveTo($scope.map, $scope.ol3d,
@@ -353,7 +352,7 @@ goog.require('ga_urlutils_service');
 
             $scope.prepareLabel = function(attrs) {
               var l = gaSearchLabels.highlight(attrs.label,
-                                                 $scope.options.query);
+                  $scope.options.query);
               if (attrs.origin == 'zipcode') {
                 l = '<span>' + $translate.instant('plz') + ' ' + l +
                     '</span>';
@@ -376,8 +375,8 @@ goog.require('ga_urlutils_service');
 
   module.directive('gaSearchFeatures',
       function($rootScope, $http, $q, $sce, $timeout, gaUrlUtils,
-               gaLayerFilters, gaSearchLabels, gaLayers, 
-               gaMarkerOverlay, gaPreviewFeatures, gaTopic) {
+          gaLayerFilters, gaSearchLabels, gaLayers,
+          gaMarkerOverlay, gaPreviewFeatures, gaTopic) {
 
         var selectedFeatures = {};
         var loadGeometry = function(layerId, featureId, topic, urlbase, cb) {
@@ -388,7 +387,7 @@ goog.require('ga_urlutils_service');
                 .replace('{Feature}', featureId);
             $http.get(featureUrl, {
               params: {
-                 geometryFormat: 'geojson'
+                geometryFormat: 'geojson'
               }
             }).then(function(response) {
               var result = response.data;
@@ -433,32 +432,32 @@ goog.require('ga_urlutils_service');
               };
               url = gaUrlUtils.append(url, 'bbox=' + bbox($scope.map));
               url = gaUrlUtils.append(url,
-                                      'features=' + searchableLayers.join(','));
+                  'features=' + searchableLayers.join(','));
               url = gaUrlUtils.append(url,
-                                      'timeEnabled=' + timeEnabled.join(','));
+                  'timeEnabled=' + timeEnabled.join(','));
               return gaUrlUtils.append(url,
-                                      'timeStamps=' + timeStamps.join(','));
+                  'timeStamps=' + timeStamps.join(','));
             };
 
             $scope.select = function(res) {
               unregisterMove();
               loadGeometry(res.attrs.layer, res.attrs.featureId,
-                           gaTopic.get().id,
-                           $scope.options.featureUrl, function(f) {
-                $rootScope.$broadcast('gaTriggerTooltipRequest', {
-                  features: [f],
-                  onCloseCB: angular.noop
-                });
-                var feature = geojsonParser.readFeature(f);
-                gaPreviewFeatures.zoom($scope.map, $scope.ol3d, feature);
-              });
+                  gaTopic.get().id,
+                  $scope.options.featureUrl, function(f) {
+                    $rootScope.$broadcast('gaTriggerTooltipRequest', {
+                      features: [f],
+                      onCloseCB: angular.noop
+                    });
+                    var feature = geojsonParser.readFeature(f);
+                    gaPreviewFeatures.zoom($scope.map, $scope.ol3d, feature);
+                  });
               $scope.options.valueSelected(
                   gaSearchLabels.cleanLabel(res.attrs.label));
             };
 
             $scope.prepareLabel = function(attrs) {
               var l = gaSearchLabels.highlight(attrs.label,
-                                                 $scope.options.query);
+                  $scope.options.query);
               if (attrs.origin == 'feature') {
                 l = '<b>' +
                     gaLayers.getLayerProperty(attrs.layer, 'label') +
@@ -467,26 +466,26 @@ goog.require('ga_urlutils_service');
               return $sce.trustAsHtml(l);
             };
 
-
             $scope.layers = $scope.map.getLayers().getArray();
             $scope.searchableLayersFilter = gaLayerFilters.searchable;
 
             $scope.$watchCollection('layers | filter:searchableLayersFilter',
                 function(layers) {
-              //TODO: this isn't updated when layers param (like 'time') changes
-              searchableLayers = [];
-              timeEnabled = [];
-              timeStamps = [];
-              angular.forEach(layers, function(layer) {
-                var ts = '';
-                if (layer.time && layer.time.substr(0, 4) != '9999') {
-                  ts = layer.time.substr(0, 4);
-                }
-                searchableLayers.push(layer.bodId);
-                timeEnabled.push(layer.timeEnabled);
-                timeStamps.push(ts);
-              });
-            });
+                  // TODO: this isn't updated when layers param (like 'time')
+                  // changes
+                  searchableLayers = [];
+                  timeEnabled = [];
+                  timeStamps = [];
+                  angular.forEach(layers, function(layer) {
+                    var ts = '';
+                    if (layer.time && layer.time.substr(0, 4) != '9999') {
+                      ts = layer.time.substr(0, 4);
+                    }
+                    searchableLayers.push(layer.bodId);
+                    timeEnabled.push(layer.timeEnabled);
+                    timeStamps.push(ts);
+                  });
+                });
 
           }
         };
@@ -509,7 +508,7 @@ goog.require('ga_urlutils_service');
 
             $scope.preview = function(res) {
               var layer = gaMapUtils.getMapOverlayForBodId($scope.map,
-                                                           res.attrs.layer);
+                  res.attrs.layer);
 
               // Don't add preview layer if the layer is already on the map
               if (!layer || !layer.visible) {
@@ -524,7 +523,7 @@ goog.require('ga_urlutils_service');
             $scope.select = function(res) {
               unregisterMove();
               var l = gaMapUtils.getMapOverlayForBodId($scope.map,
-                                                       res.attrs.layer);
+                  res.attrs.layer);
               if (!angular.isDefined(l)) {
                 var olLayer = gaLayers.getOlLayerById(res.attrs.layer);
                 $scope.map.addLayer(olLayer);

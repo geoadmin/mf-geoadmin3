@@ -15,7 +15,7 @@ goog.require('ga_wms_service');
 
   module.provider('gaLayerMetadataPopup', function() {
     this.$get = function($translate, $rootScope, $sce, $q, gaPopup, gaLayers,
-        gaMapUtils, gaWms, gaLang) {
+        gaMapUtils, gaWms, gaLang, $window) {
       var popupContent = '<div ng-bind-html="options.result.html"></div>';
 
       // Called to update the content
@@ -31,8 +31,8 @@ goog.require('ga_wms_service');
           popup.scope.options.lang = gaLang.get();
         }, function() {
           popup.scope.options.lang = undefined;
-          //FIXME: better error handling
-          alert('Could not retrieve information for ' + layer.id);
+          // FIXME: better error handling
+          $window.alert('Could not retrieve information for ' + layer.id);
         });
       };
 
@@ -49,9 +49,9 @@ goog.require('ga_wms_service');
 
         var create = function(layer) {
           var result = {html: ''},
-              popup;
+            popup;
 
-          //We assume popup does not exist yet
+          // We assume popup does not exist yet
           popup = gaPopup.create({
             title: $translate.instant('metadata_window_title'),
             destroyOnClose: false,
@@ -86,8 +86,8 @@ goog.require('ga_wms_service');
             } else {
               updateContentLang(popup, layer, gaLang.get(), true)
                   .then(function() {
-                popup.open();
-              });
+                    popup.open();
+                  });
             }
           } else {
             create(layer);

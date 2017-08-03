@@ -9,4 +9,3 @@ goog.require('ga_offline_service');
     'ga_offline_service'
   ]);
 })();
-

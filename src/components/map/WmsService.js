@@ -140,15 +140,15 @@ goog.require('ga_urlutils_service');
           var params = layer.getSource().getParams();
           var html = '<img alt="No legend available" src="' +
               gaUrlUtils.append(layer.url, gaUrlUtils.toKeyValue({
-            request: 'GetLegendGraphic',
-            layer: params.LAYERS,
-            style: params.STYLES || 'default',
-            service: 'WMS',
-            version: params.VERSION || '1.3.0',
-            format: 'image/png',
-            sld_version: '1.1.0',
-            lang: gaLang.get()
-          })) + '"></img>';
+                request: 'GetLegendGraphic',
+                layer: params.LAYERS,
+                style: params.STYLES || 'default',
+                service: 'WMS',
+                version: params.VERSION || '1.3.0',
+                format: 'image/png',
+                sld_version: '1.1.0',
+                lang: gaLang.get()
+              })) + '"></img>';
           defer.resolve({data: html});
           return defer.promise;
         };

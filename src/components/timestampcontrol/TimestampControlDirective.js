@@ -33,7 +33,7 @@ goog.require('ga_map_service');
                 time = scope.timestamp;
                 scope.timestamp = '';
               }
-        });
+            });
       }
     };
   });
