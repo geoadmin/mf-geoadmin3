@@ -128,10 +128,21 @@ goog.require('ga_price_filter');
               gaLayers.getOlLayerById(clipper)
             ];
             gaIdentify.get(scope.map, layers, scope.clipperGeometry, 1, true,
-                null, 1).then(function(response) {
+                null).then(function(response) {
               var results = response.data.results;
               if (results.length) {
-                scope.clipperFeatures[scope.orderType] = results[0];
+                var res = results[0];
+                //Might contain several results, try to match via id/layerid
+                if (results.length > 1) {
+                  for (var i = 0; i < results.length; i++) {
+                    res = results[i];
+                    if (scope.feature.featureId === res.featureId &&
+                        scope.feature.layerBodId === res.layerBodId) {
+                      break;
+                    }
+                  }
+                }
+                scope.clipperFeatures[scope.orderType] = res;
                 scope.addPreview();
                 scope.updatePrice();
               }
