@@ -30,6 +30,7 @@
     "corejs-typeahead": "v1.1.1"
   },
   "devDependencies": {
+    "caniuse-db": "1.0.30000708",
     "angular-mocks": "1.6.4",
     "autoprefixer": "6.7.7",
     "babel-cli": "^6.24.1",
