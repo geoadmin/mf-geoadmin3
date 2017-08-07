@@ -224,9 +224,9 @@ goog.require('ga_window_service');
         scope.appendToDescr = function($event, linkType) {
           var linkVal = youtubeRegExp.test(linkType.value) ?
             embedYoutubeLink(linkType.value) : linkType.value;
-          scope.options.description += linkType.tpl
-              .replace(/{{url}}/g, linkVal)
-              .replace(/{{textToDisplay}}/, linkType.textToDisplay || '');
+          scope.options.description += linkType.tpl.
+              replace(/{{url}}/g, linkVal).
+              replace(/{{textToDisplay}}/, linkType.textToDisplay || '');
           // Close the popover then focus the textarea
           $('.ga-descr-buttons').next('textarea').click().focus();
           // Clear input field
@@ -321,8 +321,8 @@ goog.require('ga_window_service');
               element.on('scroll', closePopover);
               $document.on('click', closePopover);
               win.on('resize', closePopover);
-              $(evt.currentTarget).next('.popover').find('input,select')
-                  .first().focus();
+              $(evt.currentTarget).next('.popover').find('input,select').
+                  first().focus();
             }).on('hide.bs.popover', function() {
               element.off('scroll', closePopover);
               $document.off('click', closePopover);

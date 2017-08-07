@@ -30,9 +30,9 @@ goog.require('ga_translation_service');
           var lang = gaLang.getNoRm();
 
           // get it from fusion tables
-          var sql = sqlTmpl
-              .replace('{id}', id)
-              .replace('{lang}', lang);
+          var sql = sqlTmpl.
+              replace('{id}', id).
+              replace('{lang}', lang);
           return $http.jsonp(url, {
             cache: true,
             params: {

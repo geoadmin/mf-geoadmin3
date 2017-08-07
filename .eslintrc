@@ -2,10 +2,19 @@
   extends: "eslint-config-standard",
   rules: {
     eqeqeq: ["off"],
+    dot-location: ["error", "object"],
     indent: [ "error", 2, { 
-      CallExpression: {"arguments": 2},
-      FunctionDeclaration: {"body": 1, "parameters": 2},
-      FunctionExpression: {"body": 1, "parameters": 2},
+      CallExpression: {
+        arguments: 2
+      },
+      FunctionDeclaration: {
+        body: 1,
+        parameters: 2
+      },
+      FunctionExpression: {
+        body: 1,
+        parameters: 2
+      },
       MemberExpression: 2
     }],
     max-len: ["error", {

@@ -234,8 +234,8 @@ goog.require('ga_urlutils_service');
 
       angular.forEach(features, function(feature) {
         var geotype = feature.getGeometry().getType();
-        if (/^(Polygon|MultiPolygon|Circle|GeometryCollection)$/
-            .test(geotype)) {
+        if (/^(Polygon|MultiPolygon|Circle|GeometryCollection)$/.
+            test(geotype)) {
           polygons.push(feature);
         } else if (/^(LineString|MultiLineString)$/.test(geotype)) {
           lines.push(feature);
@@ -405,11 +405,11 @@ goog.require('ga_urlutils_service');
       var baseUrl = url.replace(/^\/\//, 'https://');
 
       if (requestEncoding == 'REST') {
-        baseUrl = baseUrl
-            .replace(/\{Time\}/i, '{TIME}')
-            .replace(/\{/g, '%7B')
-            .replace(/\}/g, '%7D')
-            .replace(/wmts\d{1,3}\.geo\.admin\.ch/, 'wmts.geo.admin.ch');
+        baseUrl = baseUrl.
+            replace(/\{Time\}/i, '{TIME}').
+            replace(/\{/g, '%7B').
+            replace(/\}/g, '%7D').
+            replace(/wmts\d{1,3}\.geo\.admin\.ch/, 'wmts.geo.admin.ch');
       }
 
       var wmtsDimensions = encodeDimensions(source.getDimensions());
@@ -527,10 +527,10 @@ goog.require('ga_urlutils_service');
         var maxY = topLeftCorner[1];
         var maxX = extent[2] || defaultExtent[2];
         var minY = extent[1] || defaultExtent[1];
-        var topLeftTile = tilegrid
-            .getTileCoordForCoordAndZ([minX, maxY], z);
-        var bottomRightTile = tilegrid
-            .getTileCoordForCoordAndZ([maxX, minY], z);
+        var topLeftTile = tilegrid.
+            getTileCoordForCoordAndZ([minX, maxY], z);
+        var bottomRightTile = tilegrid.
+            getTileCoordForCoordAndZ([maxX, minY], z);
         var tileWidth = 1 + bottomRightTile[1] - topLeftTile[1];
         var tileHeight = 1 + topLeftTile[2] - bottomRightTile[2];
 

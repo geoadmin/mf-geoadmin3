@@ -347,8 +347,8 @@ goog.require('ga_query_service');
                 query.label = $translate.instant(query.id);
                 angular.forEach(query.filters, function(filter, idx) {
                   filter.layer = layer;
-                  gaQuery.getLayerAttributes(filter.layer.bodId)
-                      .then(function(attrs) {
+                  gaQuery.getLayerAttributes(filter.layer.bodId).
+                      then(function(attrs) {
                         if (!filter.layer.attributes) {
                           filter.layer.attributes = attrs;
                         }

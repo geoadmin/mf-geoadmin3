@@ -269,8 +269,8 @@ goog.require('ga_window_service');
         scope.showWarning = function(layer) {
           var url = gaUrlUtils.isValid(layer.url) ?
             gaUrlUtils.getHostname(layer.url) : layer.url;
-          $window.alert($translate.instant('external_data_warning')
-              .replace('--URL--', url));
+          $window.alert($translate.instant('external_data_warning').
+              replace('--URL--', url));
         };
 
         scope.displayLayerMetadata = function(evt, layer) {

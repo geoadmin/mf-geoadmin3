@@ -336,77 +336,77 @@ goog.require('ga_urlutils_service');
           this.domain = getXYDomains(width, height, elevationModel, this.data);
           var axis = createAxis(this.domain);
 
-          this.svg = d3.select(this.element).append('svg')
-              .attr('width', width + marginHoriz)
-              .attr('height', height + marginVert)
-              .attr('class', 'ga-profile-svg');
+          this.svg = d3.select(this.element).append('svg').
+              attr('width', width + marginHoriz).
+              attr('height', height + marginVert).
+              attr('class', 'ga-profile-svg');
 
-          var group = this.svg
-              .append('g')
-              .attr('class', 'ga-profile-group')
-              .attr('transform', 'translate(' + options.margin.left +
+          var group = this.svg.
+              append('g').
+              attr('class', 'ga-profile-group').
+              attr('transform', 'translate(' + options.margin.left +
                   ', ' + options.margin.top + ')');
 
           var area = createArea(this.domain, height, elevationModel);
 
-          group.append('g')
-              .attr('class', 'x axis')
-              .attr('transform', 'translate(0, ' + height + ')')
-              .call(axis.X);
+          group.append('g').
+              attr('class', 'x axis').
+              attr('transform', 'translate(0, ' + height + ')').
+              call(axis.X);
 
-          group.append('g')
-              .attr('class', 'y axis')
-              .call(axis.Y)
-              .append('text')
-              .attr('transform', 'rotate(-90)')
-              .attr('y', 6)
-              .attr('dy', '.71em')
-              .style('text-anchor', 'end');
+          group.append('g').
+              attr('class', 'y axis').
+              call(axis.Y).
+              append('text').
+              attr('transform', 'rotate(-90)').
+              attr('y', 6).
+              attr('dy', '.71em').
+              style('text-anchor', 'end');
 
-          group.append('g')
-              .attr('class', 'ga-profile-grid-x')
-              .attr('transform', 'translate(0, ' + height + ')')
-              .call(axis.X
-                  .tickSize(-height, 0, 0)
-                  .tickFormat('')
+          group.append('g').
+              attr('class', 'ga-profile-grid-x').
+              attr('transform', 'translate(0, ' + height + ')').
+              call(axis.X.
+                  tickSize(-height, 0, 0).
+                  tickFormat('')
               );
 
-          group.append('g')
-              .attr('class', 'ga-profile-grid-y')
-              .call(axis.Y
-                  .tickSize(-width, 0, 0)
-                  .tickFormat('')
+          group.append('g').
+              attr('class', 'ga-profile-grid-y').
+              call(axis.Y.
+                  tickSize(-width, 0, 0).
+                  tickFormat('')
               );
 
-          group.append('path')
-              .datum(this.data)
-              .attr('class', 'ga-profile-area')
-              .attr('d', area);
+          group.append('path').
+              datum(this.data).
+              attr('class', 'ga-profile-area').
+              attr('d', area);
 
           this.group = group;
 
-          group.append('text')
-              .attr('class', 'ga-profile-legend')
-              .attr('x', width - 118)
-              .attr('y', 11)
-              .attr('width', 100)
-              .attr('height', 30)
-              .text('swissALTI3D/DHM25');
+          group.append('text').
+              attr('class', 'ga-profile-legend').
+              attr('x', width - 118).
+              attr('y', 11).
+              attr('width', 100).
+              attr('height', 30).
+              text('swissALTI3D/DHM25');
 
-          group.append('text')
-              .attr('class', 'ga-profile-label ga-profile-label-x')
-              .attr('x', width / 2)
-              .attr('y', height + options.margin.bottom - 5)
-              .style('text-anchor', 'middle')
-              .attr('font-size', '0.95em');
+          group.append('text').
+              attr('class', 'ga-profile-label ga-profile-label-x').
+              attr('x', width / 2).
+              attr('y', height + options.margin.bottom - 5).
+              style('text-anchor', 'middle').
+              attr('font-size', '0.95em');
 
-          group.append('text')
-              .attr('class', 'ga-profile-label ga-profile-label-y')
-              .attr('transform', 'rotate(-90)')
-              .attr('y', 0 - options.margin.left)
-              .attr('x', 0 - height / 2 - 30)
-              .attr('dy', '1em')
-              .attr('font-size', '0.95em');
+          group.append('text').
+              attr('class', 'ga-profile-label ga-profile-label-y').
+              attr('transform', 'rotate(-90)').
+              attr('y', 0 - options.margin.left).
+              attr('x', 0 - height / 2 - 30).
+              attr('dy', '1em').
+              attr('font-size', '0.95em');
 
           // Total Elevation Difference
           // Using Unicode for the icons inside a normal text element
@@ -416,60 +416,60 @@ goog.require('ga_urlutils_service');
         };
 
         this.updateLabels = function() {
-          this.group.select('text.ga-profile-label-x')
-              .text($translate.instant(options.xLabel) + ' [' +
+          this.group.select('text.ga-profile-label-x').
+              text($translate.instant(options.xLabel) + ' [' +
                   $translate.instant(this.unitX) + ']');
-          this.group.select('text.ga-profile-label-y')
-              .text($translate.instant(options.yLabel) + ' [m]');
+          this.group.select('text.ga-profile-label-y').
+              text($translate.instant(options.yLabel) + ' [m]');
 
           this.group.select('.ga-profile-elevation-difference ' +
-                  'text.ga-profile-icon-text')
-              .text(elevationFilter(this.diff));
-          this.group.select('.ga-profile-elevation-difference title')
-              .text($translate.instant('profile_elevation_difference'));
+                  'text.ga-profile-icon-text').
+              text(elevationFilter(this.diff));
+          this.group.select('.ga-profile-elevation-difference title').
+              text($translate.instant('profile_elevation_difference'));
 
           this.group.select('.ga-profile-elevation-up ' +
-                  'text.ga-profile-icon-text')
-              .text(elevationFilter(this.twoDiff[0]));
-          this.group.select('.ga-profile-elevation-up title')
-              .text($translate.instant('profile_elevation_up'));
+                  'text.ga-profile-icon-text').
+              text(elevationFilter(this.twoDiff[0]));
+          this.group.select('.ga-profile-elevation-up title').
+              text($translate.instant('profile_elevation_up'));
 
           this.group.select('.ga-profile-elevation-down ' +
-                  'text.ga-profile-icon-text')
-              .text(elevationFilter(this.twoDiff[1]));
-          this.group.select('.ga-profile-elevation-down title')
-              .text($translate.instant('profile_elevation_down'));
+                  'text.ga-profile-icon-text').
+              text(elevationFilter(this.twoDiff[1]));
+          this.group.select('.ga-profile-elevation-down title').
+              text($translate.instant('profile_elevation_down'));
 
           this.group.select('.ga-profile-poi-up ' +
-                  'text.ga-profile-icon-text')
-              .text(elevationFilter(this.elPoi[0]));
-          this.group.select('.ga-profile-poi-up title')
-              .text($translate.instant('profile_poi_up'));
+                  'text.ga-profile-icon-text').
+              text(elevationFilter(this.elPoi[0]));
+          this.group.select('.ga-profile-poi-up title').
+              text($translate.instant('profile_poi_up'));
 
           this.group.select('.ga-profile-poi-down ' +
-                  'text.ga-profile-icon-text')
-              .text(elevationFilter(this.elPoi[1]));
-          this.group.select('.ga-profile-poi-down title')
-              .text($translate.instant('profile_poi_down'));
+                  'text.ga-profile-icon-text').
+              text(elevationFilter(this.elPoi[1]));
+          this.group.select('.ga-profile-poi-down title').
+              text($translate.instant('profile_poi_down'));
 
           this.group.select('.ga-profile-distance ' +
-                  'text.ga-profile-icon-text')
-              .text(distanceFilter(this.dist));
-          this.group.select('.ga-profile-distance title')
-              .text($translate.instant('profile_distance'));
+                  'text.ga-profile-icon-text').
+              text(distanceFilter(this.dist));
+          this.group.select('.ga-profile-distance title').
+              text($translate.instant('profile_distance'));
 
           this.group.select('.ga-profile-slopeDist ' +
-                  'text.ga-profile-icon-text')
-              .text(distanceFilter(this.slopeDist));
-          this.group.select('.ga-profile-slopeDist title')
-              .text($translate.instant('profile_slope_distance'));
+                  'text.ga-profile-icon-text').
+              text(distanceFilter(this.slopeDist));
+          this.group.select('.ga-profile-slopeDist title').
+              text($translate.instant('profile_slope_distance'));
 
           this.group.select('.ga-profile-hikTime ' +
-                  'text.ga-profile-icon-text')
-              .text($translate.instant('approx_abbr') + ' ' +
+                  'text.ga-profile-icon-text').
+              text($translate.instant('approx_abbr') + ' ' +
                   gaTimeFormatFilter(this.hikTime));
-          this.group.select('.ga-profile-hikTime title')
-              .text($translate.instant('profile_hike_time'));
+          this.group.select('.ga-profile-hikTime title').
+              text($translate.instant('profile_hike_time'));
         };
 
         this.updateProperties = function(data) {
@@ -494,20 +494,20 @@ goog.require('ga_urlutils_service');
             transitionTime = 250;
             width = size[0] - marginHoriz;
             height = size[1] - marginVert;
-            this.svg.transition().duration(transitionTime)
-                .attr('width', width + marginHoriz)
-                .attr('height', height + marginVert)
-                .attr('class', 'ga-profile-svg');
-            this.group.select('text.ga-profile-label-x')
-                .transition().duration(transitionTime)
-                .attr('x', width / 2)
-                .attr('y', height + options.margin.bottom - 5)
-                .style('text-anchor', 'middle');
-            this.group.select('text.ga-profile-legend')
-                .transition().duration(transitionTime)
-                .attr('x', width - 118)
-                .attr('y', 11)
-                .text('swissALTI3D/DHM25');
+            this.svg.transition().duration(transitionTime).
+                attr('width', width + marginHoriz).
+                attr('height', height + marginVert).
+                attr('class', 'ga-profile-svg');
+            this.group.select('text.ga-profile-label-x').
+                transition().duration(transitionTime).
+                attr('x', width / 2).
+                attr('y', height + options.margin.bottom - 5).
+                style('text-anchor', 'middle');
+            this.group.select('text.ga-profile-legend').
+                transition().duration(transitionTime).
+                attr('x', width - 118).
+                attr('y', 11).
+                text('swissALTI3D/DHM25');
           }
           if (data) {
             this.updateProperties(data);
@@ -517,27 +517,27 @@ goog.require('ga_urlutils_service');
           var axis = createAxis(this.domain);
           var area = createArea(this.domain, height, elevationModel);
 
-          this.group.select('.ga-profile-area').datum(this.data)
-              .transition().duration(transitionTime)
-              .attr('class', 'ga-profile-area')
-              .attr('d', area);
-          this.group.select('g.x')
-              .transition().duration(transitionTime)
-              .call(axis.X);
-          this.group.select('g.y')
-              .transition().duration(transitionTime)
-              .call(axis.Y);
-          this.group.select('g.ga-profile-grid-x')
-              .transition().duration(transitionTime)
-              .call(axis.X
-                  .tickSize(-height, 0, 0)
-                  .tickFormat('')
+          this.group.select('.ga-profile-area').datum(this.data).
+              transition().duration(transitionTime).
+              attr('class', 'ga-profile-area').
+              attr('d', area);
+          this.group.select('g.x').
+              transition().duration(transitionTime).
+              call(axis.X);
+          this.group.select('g.y').
+              transition().duration(transitionTime).
+              call(axis.Y);
+          this.group.select('g.ga-profile-grid-x').
+              transition().duration(transitionTime).
+              call(axis.X.
+                  tickSize(-height, 0, 0).
+                  tickFormat('')
               );
-          this.group.select('g.ga-profile-grid-y')
-              .transition().duration(transitionTime)
-              .call(axis.Y
-                  .tickSize(-width, 0, 0)
-                  .tickFormat('')
+          this.group.select('g.ga-profile-grid-y').
+              transition().duration(transitionTime).
+              call(axis.Y.
+                  tickSize(-width, 0, 0).
+                  tickFormat('')
               );
           this.updateLabels();
         };

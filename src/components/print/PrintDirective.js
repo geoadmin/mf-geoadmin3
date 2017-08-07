@@ -341,8 +341,8 @@ goog.require('ga_urlutils_service');
       // Get the short link
       var shortLink;
       canceller = $q.defer();
-      gaUrlUtils.shorten(gaPermalink.getHref(), canceller.promise)
-          .then(function(shortUrl) {
+      gaUrlUtils.shorten(gaPermalink.getHref(), canceller.promise).
+          then(function(shortUrl) {
             shortLink = shortUrl.replace('/shorten', '');
 
             // Build the complete json then send it to the print server

@@ -18,8 +18,8 @@ goog.require('ga_urlutils_service');
   var ZOOM_LIMIT = 100;
 
   var parseExtent = function(stringBox2D) {
-    var extent = stringBox2D.replace(/(BOX\(|\))/gi, '').replace(',', ' ')
-        .split(' ');
+    var extent = stringBox2D.replace(/(BOX\(|\))/gi, '').replace(',', ' ').
+        split(' ');
     return $.map(extent, parseFloat);
   };
 
@@ -382,9 +382,9 @@ goog.require('ga_urlutils_service');
         var loadGeometry = function(layerId, featureId, topic, urlbase, cb) {
           var key = layerId + featureId;
           if (!selectedFeatures.hasOwnProperty(key)) {
-            var featureUrl = urlbase.replace('{Topic}', topic)
-                .replace('{Layer}', layerId)
-                .replace('{Feature}', featureId);
+            var featureUrl = urlbase.replace('{Topic}', topic).
+                replace('{Layer}', layerId).
+                replace('{Feature}', featureId);
             $http.get(featureUrl, {
               params: {
                 geometryFormat: 'geojson'

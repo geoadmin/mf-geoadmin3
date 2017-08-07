@@ -112,10 +112,10 @@ goog.require('ga_window_service');
           };
 
           // Trigger the hidden input[type=file] onclick event
-          element.find('button.ga-feedback-browse-button')
-              .click(triggerInputFileClick);
-          element.find('input[type=text][readonly]')
-              .click(triggerInputFileClick);
+          element.find('button.ga-feedback-browse-button').
+              click(triggerInputFileClick);
+          element.find('input[type=text][readonly]').
+              click(triggerInputFileClick);
         }
         scope.file = null;
 

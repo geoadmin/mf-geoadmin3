@@ -50,8 +50,8 @@ goog.require('ga_seo_service');
 
                   var getMetadata = function(layerId) {
                     var locdef = $q.defer();
-                    gaLayers.getMetaDataOfLayer(layerId)
-                        .then(function(response) {
+                    gaLayers.getMetaDataOfLayer(layerId).
+                        then(function(response) {
                           scope.layerMetadatas.push($sce.trustAsHtml(
                               response.data));
                           locdef.resolve();
@@ -143,10 +143,10 @@ goog.require('ga_seo_service');
 
                 var getFeatureHtml = function(featureId, bodId) {
                   var fDef = $q.defer();
-                  var htmlUrl = scope.options.htmlUrlTemplate
-                      .replace('{Topic}', currentTopic)
-                      .replace('{Layer}', bodId)
-                      .replace('{Feature}', featureId);
+                  var htmlUrl = scope.options.htmlUrlTemplate.
+                      replace('{Topic}', currentTopic).
+                      replace('{Layer}', bodId).
+                      replace('{Feature}', featureId);
                   $http.get(htmlUrl, {
                     params: {
                       lang: $translate.use() // Left out other parameters as
@@ -307,8 +307,8 @@ goog.require('ga_seo_service');
                   }, function() {
                     identifyDef.resolve();
                   });
-                  $q.all([searchDef.promise, identifyDef.promise])
-                      .then(function() {
+                  $q.all([searchDef.promise, identifyDef.promise]).
+                      then(function() {
                         def.resolve();
                       });
                 } else {

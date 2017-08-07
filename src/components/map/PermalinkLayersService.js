@@ -303,8 +303,8 @@ goog.require('ga_wmts_service');
               }
             } else if (gaMapUtils.isExternalWmtsLayer(layerSpec)) {
               infos = layerSpec.split('||');
-              $http.get(gaUrlUtils.buildProxyUrl(infos[2]))
-                  .then(function(response) {
+              $http.get(gaUrlUtils.buildProxyUrl(infos[2])).
+                  then(function(response) {
                     try {
                       var data = response.data;
                       var getCap = new ol.format.WMTSCapabilities().read(data);

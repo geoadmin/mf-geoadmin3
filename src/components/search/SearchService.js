@@ -60,33 +60,33 @@ goog.require('ga_reframe_service');
         var matchDMSE = query.match(regexpDMSE);
         if (matchDMSN && matchDMSN.length == 1 &&
             matchDMSE && matchDMSE.length == 1) {
-          var northing = parseFloat(matchDMSN[0]
-              .match(regexpDMSDegree)[0]
-              .replace('°', '').replace('º', ''));
-          var easting = parseFloat(matchDMSE[0]
-              .match(regexpDMSDegree)[0]
-              .replace('°', '').replace('º', ''));
+          var northing = parseFloat(matchDMSN[0].
+              match(regexpDMSDegree)[0].
+              replace('°', '').replace('º', ''));
+          var easting = parseFloat(matchDMSE[0].
+              match(regexpDMSDegree)[0].
+              replace('°', '').replace('º', ''));
           var minuteN = matchDMSN[0].match(DMSMinute) ?
             matchDMSN[0].match(DMSMinute)[0] : '0';
           northing = northing +
-            parseFloat(minuteN.replace('\'', '')
-                .replace('′', '')) / 60;
+            parseFloat(minuteN.replace('\'', '').
+                replace('′', '')) / 60;
           var minuteE = matchDMSE[0].match(DMSMinute) ?
             matchDMSE[0].match(DMSMinute)[0] : '0';
           easting = easting +
-            parseFloat(minuteE.replace('\'', '')
-                .replace('′', '')) / 60;
+            parseFloat(minuteE.replace('\'', '').
+                replace('′', '')) / 60;
           var secondN =
             matchDMSN[0].match(DMSSecond) ?
               matchDMSN[0].match(DMSSecond)[0] : '0';
-          northing = northing + parseFloat(secondN.replace('"', '')
-              .replace('\'\'', '').replace('′′', '')
-              .replace('″', '')) / 3600;
+          northing = northing + parseFloat(secondN.replace('"', '').
+              replace('\'\'', '').replace('′′', '').
+              replace('″', '')) / 3600;
           var secondE = matchDMSE[0].match(DMSSecond) ?
             matchDMSE[0].match(DMSSecond)[0] : '0';
-          easting = easting + parseFloat(secondE.replace('"', '')
-              .replace('\'\'', '').replace('′′', '')
-              .replace('″', '')) / 3600;
+          easting = easting + parseFloat(secondE.replace('"', '').
+              replace('\'\'', '').replace('′′', '').
+              replace('″', '')) / 3600;
           position = ol.proj.transform([easting, northing],
               'EPSG:4326', 'EPSG:21781');
           if (ol.extent.containsCoordinate(

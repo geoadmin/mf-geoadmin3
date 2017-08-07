@@ -23,13 +23,13 @@ goog.require('ga_urlutils_service');
           return;
         }
         var source = layer.getSource();
-        var tpl = source.getUrls()[0]
-            .replace('{Style}', source.getStyle())
-            .replace('{Time}', layer.time)
-            .replace('{TileMatrixSet}', '4326')
-            .replace('{TileMatrix}', '{z}')
-            .replace('{TileCol}', '{x}')
-            .replace('{TileRow}', '{y}');
+        var tpl = source.getUrls()[0].
+            replace('{Style}', source.getStyle()).
+            replace('{Time}', layer.time).
+            replace('{TileMatrixSet}', '4326').
+            replace('{TileMatrix}', '{z}').
+            replace('{TileCol}', '{x}').
+            replace('{TileRow}', '{y}');
         return new Cesium.UrlTemplateImageryProvider({
           minimumRetrievingLevel: window.minimumRetrievingLevel,
           url: tpl,
@@ -103,14 +103,14 @@ goog.require('ga_urlutils_service');
 
       var getLayerOptions = function(getCapLayer, getCapabilities) {
         if (getCapabilities) {
-          var requestEncoding = getCapabilities.OperationsMetadata
-              .GetTile
-              .DCP
-              .HTTP
-              .Get[0]
-              .Constraint[0]
-              .AllowedValues
-              .Value[0];
+          var requestEncoding = getCapabilities.OperationsMetadata.
+              GetTile.
+              DCP.
+              HTTP.
+              Get[0].
+              Constraint[0].
+              AllowedValues.
+              Value[0];
 
           var layerOptions = {
             layer: getCapLayer.Identifier,
@@ -118,12 +118,12 @@ goog.require('ga_urlutils_service');
           };
           getCapLayer.sourceConfig = ol.source.WMTS.optionsFromCapabilities(
               getCapabilities, layerOptions);
-          getCapLayer.capabilitiesUrl = getCapabilities.OperationsMetadata
-              .GetCapabilities
-              .DCP
-              .HTTP
-              .Get[0]
-              .href;
+          getCapLayer.capabilitiesUrl = getCapabilities.OperationsMetadata.
+              GetCapabilities.
+              DCP.
+              HTTP.
+              Get[0].
+              href;
           if (getCapabilities.ServiceProvider) {
             getCapLayer.attribution =
                 getCapabilities.ServiceProvider.ProviderName;

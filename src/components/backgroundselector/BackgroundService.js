@@ -84,8 +84,8 @@ goog.require('ga_permalink');
           var that = this;
           // Initialize the service when topics and layers config are
           // loaded
-          bgsP = $q.all([gaTopic.loadConfig(), gaLayers.loadConfig()])
-              .then(function() {
+          bgsP = $q.all([gaTopic.loadConfig(), gaLayers.loadConfig()]).
+              then(function() {
                 updateDefaultBgOrder(gaTopic.get().backgroundLayers);
                 var initBg = getBgById(gaPermalink.getParams().bgLayer);
                 if (!initBg) {

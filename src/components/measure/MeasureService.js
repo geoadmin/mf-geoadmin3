@@ -43,8 +43,8 @@ goog.require('ga_measure_filter');
 
         this.getArea = function(geom, calculateLineStringArea) {
           if (calculateLineStringArea && geom instanceof ol.geom.LineString) {
-            return Math.abs(new ol.geom.Polygon([geom.getCoordinates()])
-                .getArea());
+            return Math.abs(new ol.geom.Polygon([geom.getCoordinates()]).
+                getArea());
           } else if (geom instanceof ol.geom.LinearRing ||
               geom instanceof ol.geom.Polygon) {
             return Math.abs(geom.getArea());

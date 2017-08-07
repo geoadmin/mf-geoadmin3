@@ -303,8 +303,8 @@ goog.require('ga_window_service');
             var reloadHtmlByIndex = function(i) {
               var feat = htmls[i].feature;
               if (feat && feat.layerBodId) {
-                getFeaturePopupHtml(feat.layerBodId, feat.id)
-                    .then(function(response) {
+                getFeaturePopupHtml(feat.layerBodId, feat.id).
+                    then(function(response) {
                       htmls[i].snippet = $sce.trustAsHtml(response.data);
                     });
               }
@@ -394,8 +394,8 @@ goog.require('ga_window_service');
               // When 3d is Active we use the cesium native function to get the
               // first queryable feature.
               if (is3dActive()) {
-                var pickedObjects = scope.ol3d.getCesiumScene()
-                    .drillPick(position3d);
+                var pickedObjects = scope.ol3d.getCesiumScene().
+                    drillPick(position3d);
                 for (var i = 0, ii = pickedObjects.length; i < ii; i++) {
                   var prim = pickedObjects[i].primitive;
                   if (isFeatureQueryable(prim.olFeature)) {
@@ -500,10 +500,10 @@ goog.require('ga_window_service');
             var getFeaturePopupHtml = function(bodId, featureId, coordinate) {
               var mapSize = map.getSize();
               var mapExtent = map.getView().calculateExtent(mapSize);
-              var htmlUrl = scope.options.htmlUrlTemplate
-                  .replace('{Topic}', gaTopic.get().id)
-                  .replace('{Layer}', bodId)
-                  .replace('{Feature}', featureId);
+              var htmlUrl = scope.options.htmlUrlTemplate.
+                  replace('{Topic}', gaTopic.get().id).
+                  replace('{Layer}', bodId).
+                  replace('{Feature}', featureId);
               return $http.get(htmlUrl, {
                 timeout: canceler.promise,
                 cache: true,
@@ -590,10 +590,10 @@ goog.require('ga_window_service');
               var featureId = feature.getId();
               var layerId = feature.get('layerId') || layer.id;
               var id = layerId + '#' + featureId;
-              htmlpopup = htmlpopup
-                  .replace('{{id}}', id)
-                  .replace('{{descr}}', feature.get('description') || '')
-                  .replace('{{name}}', (name) ? '(' + name + ')' : '');
+              htmlpopup = htmlpopup.
+                  replace('{{id}}', id).
+                  replace('{{descr}}', feature.get('description') || '').
+                  replace('{{name}}', (name) ? '(' + name + ')' : '');
               feature.set('htmlpopup', htmlpopup);
               if (!isFeatureQueryable(feature)) {
                 feature.set('htmlpopup', undefined);
@@ -672,8 +672,8 @@ goog.require('ga_window_service');
                     onMouseEnter: function(evt, nbTooltips) {
                       if (nbTooltips == 1) return;
                       var target = $(evt.currentTarget);
-                      var containerId = target.find('.htmlpopup-container')
-                          .attr('id');
+                      var containerId = target.find('.htmlpopup-container').
+                          attr('id');
                       if (/#/.test(containerId)) {
                         var split = containerId.split('#');
                         var featByLayer = featuresByLayerId[split[0]];

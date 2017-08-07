@@ -50,8 +50,8 @@ goog.require('ga_map_service');
 
         // Display the third party data alert msg
         element.on('click', '.ga-warning-tooltip', function(evt) {
-          $window.alert($translate.instant('external_data_warning')
-              .replace('--URL--', $(evt.target).text()));
+          $window.alert($translate.instant('external_data_warning').
+              replace('--URL--', $(evt.target).text()));
           $(evt.target).tooltip('hide');
         });
 

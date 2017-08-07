@@ -57,8 +57,8 @@ goog.require('ga_window_service');
             };
 
             var coordinatesFormatUTM = function(coordinates, zone) {
-              var coord = ol.coordinate.toStringXY(coordinates, 0)
-                  .replace(/\B(?=(\d{3})+(?!\d))/g, "'");
+              var coord = ol.coordinate.toStringXY(coordinates, 0).
+                  replace(/\B(?=(\d{3})+(?!\d))/g, "'");
               return coord + ' ' + zone;
             };
 
@@ -108,8 +108,8 @@ goog.require('ga_window_service');
 
               scope.coord21781 = formatCoordinates(coord21781, 1);
               scope.coord4326 = ol.coordinate.format(coord4326, '{y}, {x}', 5);
-              var coord4326String = ol.coordinate.toStringHDMS(coord4326, 3)
-                  .replace(/ /g, '');
+              var coord4326String = ol.coordinate.toStringHDMS(coord4326, 3).
+                  replace(/ /g, '');
               scope.coordiso4326 = coord4326String.replace(/N/g, 'N ');
               scope.coord2056 = formatCoordinates(coord2056, 2) + ' *';
               if (coord4326[0] < 6 && coord4326[0] >= 0) {
@@ -126,8 +126,8 @@ goog.require('ga_window_service');
 
               coord4326['lon'] = coord4326[0];
               coord4326['lat'] = coord4326[1];
-              scope.coordmgrs = $window.proj4.mgrs.forward(coord4326)
-                  .replace(/(.{5})/g, '$1 ');
+              scope.coordmgrs = $window.proj4.mgrs.forward(coord4326).
+                  replace(/(.{5})/g, '$1 ');
 
               // A digest cycle is necessary for $http requests to be
               // actually sent out. Angular-1.2.0rc2 changed the $evalSync

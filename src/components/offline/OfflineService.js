@@ -172,8 +172,8 @@ goog.require('ga_window_service');
         // FileReader is strictly used to transform a blob to a base64 string
         var fileReader = new FileReader();
         fileReader.onload = function(evt) {
-          gaStorage.setTile(gaMapUtils.getTileKey(tileUrl), evt.target.result)
-              .then(function() {
+          gaStorage.setTile(gaMapUtils.getTileKey(tileUrl), evt.target.result).
+              then(function() {
                 onTileSuccess(blob.size);
               }, function(err) {
                 if (isStorageFull) {

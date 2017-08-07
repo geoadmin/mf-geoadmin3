@@ -457,9 +457,9 @@ goog.require('ga_urlutils_service');
         };
 
         var getTerrainTileUrl = function(layer, time) {
-          return terrainTileUrlTemplate
-              .replace('{Layer}', layer)
-              .replace('{Time}', time);
+          return terrainTileUrlTemplate.
+              replace('{Layer}', layer).
+              replace('{Time}', time);
         };
 
         var cpt;
@@ -467,21 +467,21 @@ goog.require('ga_urlutils_service');
           if (cpt === undefined || cpt >= subdomains.length) {
             cpt = 0;
           }
-          return vectorTilesUrlTemplate
-              .replace('{s}', subdomains[cpt++])
-              .replace('{Layer}', layer)
-              .replace('{Time}', time);
+          return vectorTilesUrlTemplate.
+              replace('{s}', subdomains[cpt++]).
+              replace('{Layer}', layer).
+              replace('{Time}', time);
         };
 
         var getLayersConfigUrl = function(lang) {
-          return layersConfigUrlTemplate
-              .replace('{Lang}', lang);
+          return layersConfigUrlTemplate.
+              replace('{Lang}', lang);
         };
 
         var getMetaDataUrl = function(layer, lang) {
-          return legendUrlTemplate
-              .replace('{Layer}', layer)
-              .replace('{Lang}', lang);
+          return legendUrlTemplate.
+              replace('{Layer}', layer).
+              replace('{Lang}', lang);
         };
 
         // Function to remove the blob url from memory.
@@ -814,10 +814,10 @@ goog.require('ga_urlutils_service');
           if (layer.type == 'wmts') {
             if (!olSource) {
               var wmtsTplUrl = getWmtsGetTileTpl(layer.serverLayerName, null,
-                  '21781', layer.format, true)
-                  .replace('{z}', '{TileMatrix}')
-                  .replace('{x}', '{TileCol}')
-                  .replace('{y}', '{TileRow}');
+                  '21781', layer.format, true).
+                  replace('{z}', '{TileMatrix}').
+                  replace('{x}', '{TileCol}').
+                  replace('{y}', '{TileRow}');
               olSource = layer.olSource = new ol.source.WMTS({
                 dimensions: {
                   'Time': timestamp

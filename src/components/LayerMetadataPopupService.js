@@ -84,8 +84,8 @@ goog.require('ga_wms_service');
             if (popup.scope.toggle) {
               popup.close();
             } else {
-              updateContentLang(popup, layer, gaLang.get(), true)
-                  .then(function() {
+              updateContentLang(popup, layer, gaLang.get(), true).
+                  then(function() {
                     popup.open();
                   });
             }

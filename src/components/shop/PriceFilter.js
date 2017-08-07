@@ -2,8 +2,8 @@ goog.provide('ga_price_filter');
 
 (function() {
 
-  angular.module('ga_price_filter', [])
-      .filter('price', priceFilter);
+  angular.module('ga_price_filter', []).
+      filter('price', priceFilter);
 
   function priceFilter() {
     return function(input) {
