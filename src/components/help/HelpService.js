@@ -8,7 +8,7 @@ goog.require('ga_translation_service');
     'ga_translation_service'
   ]);
 
- /**
+  /**
    * The gaHelp service.
    *
    * The service provides the following functionality:
@@ -25,14 +25,14 @@ goog.require('ga_translation_service');
         var sqlTmpl = 'select * from 1Tx2VSM1WHZfDXzf8rweRLG1kd23AA4aw8xnZ_3c' +
                       ' where col0={id} and col5=\'{lang}\'';
 
-        //Returns a promise
+        // Returns a promise
         this.get = function(id) {
           var lang = gaLang.getNoRm();
 
-          //get it from fusion tables
-          var sql = sqlTmpl
-                    .replace('{id}', id)
-                    .replace('{lang}', lang);
+          // get it from fusion tables
+          var sql = sqlTmpl.
+              replace('{id}', id).
+              replace('{lang}', lang);
           return $http.jsonp(url, {
             cache: true,
             params: {
@@ -49,4 +49,3 @@ goog.require('ga_translation_service');
     };
   });
 })();
-

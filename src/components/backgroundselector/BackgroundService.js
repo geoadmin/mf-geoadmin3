@@ -86,17 +86,17 @@ goog.require('ga_permalink');
           // loaded
           bgsP = $q.all([gaTopic.loadConfig(), gaLayers.loadConfig()]).
               then(function() {
-            updateDefaultBgOrder(gaTopic.get().backgroundLayers);
-            var initBg = getBgById(gaPermalink.getParams().bgLayer);
-            if (!initBg) {
-              initBg = getBgByTopic(gaTopic.get());
-            }
-            that.set(map, initBg);
-            $rootScope.$on('gaTopicChange', function(evt, newTopic) {
-              updateDefaultBgOrder(newTopic.backgroundLayers);
-              that.set(map, getBgByTopic(newTopic));
-            });
-          });
+                updateDefaultBgOrder(gaTopic.get().backgroundLayers);
+                var initBg = getBgById(gaPermalink.getParams().bgLayer);
+                if (!initBg) {
+                  initBg = getBgByTopic(gaTopic.get());
+                }
+                that.set(map, initBg);
+                $rootScope.$on('gaTopicChange', function(evt, newTopic) {
+                  updateDefaultBgOrder(newTopic.backgroundLayers);
+                  that.set(map, getBgByTopic(newTopic));
+                });
+              });
 
           return bgsP;
         };
@@ -133,7 +133,7 @@ goog.require('ga_permalink');
                 }
               }
               broadcast();
-             }
+            }
           }
         };
 

@@ -75,4 +75,3 @@ goog.provide('ga_what3words_service');
     };
   });
 })();
-

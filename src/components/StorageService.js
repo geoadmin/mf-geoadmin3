@@ -99,12 +99,12 @@ goog.require('ga_browsersniffer_service');
         }
 
         if (localStorageSupport) {
-          this.getItem = function(key, type) {
+          this.getItem = function(key, Type) {
             var val = $window.localStorage.getItem(key);
             if (/^(true|false)$/i.test(val)) {
               val = /^true$/i.test(val);
             }
-            return type ? new type(val) : val;
+            return Type ? new Type(val) : val;
           };
           this.setItem = function(key, data) {
             $window.localStorage.setItem(key, data);
@@ -123,8 +123,8 @@ goog.require('ga_browsersniffer_service');
           }
           return $window.localforage.getItem(key).then(
               function(compressedDataURI) {
-            return decompress(compressedDataURI);
-          });
+                return decompress(compressedDataURI);
+              });
         };
 
         this.setTile = function(key, dataURI) {
@@ -141,4 +141,3 @@ goog.require('ga_browsersniffer_service');
     };
   });
 })();
-

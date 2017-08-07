@@ -43,27 +43,21 @@ goog.require('ga_window_service');
     var isDownloading;
     var isStorageFull;
     var nbTilesCached;
-    var nbTilesEmpty;
     var nbTilesFailed;
     var nbTilesTotal;
     var requests;
-    var sizeCached;
-    var startTime;
     var errorReport;
 
     var initDownloadStatus = function() {
       isDownloading = false;
       isStorageFull = false;
       nbTilesCached = 0;
-      nbTilesEmpty = 0;
       nbTilesFailed = 0;
       nbTilesTotal = 0;
       requests = [];
-      sizeCached = 0;
       errorReport = '';
     };
     initDownloadStatus();
-
 
     this.$get = function($http, $rootScope, $timeout, $translate, $window,
         gaBrowserSniffer, gaGlobalOptions, gaLayers, gaMapUtils,
@@ -95,7 +89,6 @@ goog.require('ga_window_service');
         }
         return false;
       };
-
 
       // Get cacheable layers of a map.
       var getCacheableLayers = function(layers, onlyVisible) {
@@ -166,7 +159,6 @@ goog.require('ga_window_service');
         if (isStorageFull) {
           return;
         }
-        sizeCached += size;
         nbTilesCached++;
         onDlProgress();
       };
@@ -180,25 +172,25 @@ goog.require('ga_window_service');
         // FileReader is strictly used to transform a blob to a base64 string
         var fileReader = new FileReader();
         fileReader.onload = function(evt) {
-          gaStorage.setTile(gaMapUtils.getTileKey(tileUrl), evt.target.result)
-              .then(function() {
-            onTileSuccess(blob.size);
-          }, function(err) {
-            if (isStorageFull) {
-              return;
-            }
-            // err.QUOTQ_ERR for websql
-            // DOMException.QUOTA_EXCEEDED_ERR for localstorage
-            if (err.code == err.QUOTA_ERR ||
+          gaStorage.setTile(gaMapUtils.getTileKey(tileUrl), evt.target.result).
+              then(function() {
+                onTileSuccess(blob.size);
+              }, function(err) {
+                if (isStorageFull) {
+                  return;
+                }
+                // err.QUOTQ_ERR for websql
+                // DOMException.QUOTA_EXCEEDED_ERR for localstorage
+                if (err.code == err.QUOTA_ERR ||
                 err.code == DOMException.QUOTA_EXCEEDED_ERR) {
-              isStorageFull = true;
-              $window.alert($translate.instant('offline_space_warning'));
-              nbTilesFailed = nbTilesTotal - nbTilesCached;
-              onDlProgress();
-            } else {
-              onTileError(tileUrl, 'Write db failed, code:' + err.code);
-            }
-          });
+                  isStorageFull = true;
+                  $window.alert($translate.instant('offline_space_warning'));
+                  nbTilesFailed = nbTilesTotal - nbTilesCached;
+                  onDlProgress();
+                } else {
+                  onTileError(tileUrl, 'Write db failed, code:' + err.code);
+                }
+              });
         };
         fileReader.onerror = function(evt) {
           onTileError(tileUrl, 'File read failed');
@@ -245,15 +237,15 @@ goog.require('ga_window_service');
               continue;
             }
             if (layer instanceof ol.layer.Group) {
-             var hasCachedLayer = false;
-             layer.getLayers().forEach(function(item) {
-               if (!hasCachedLayer && layersIds &&
+              var hasCachedLayer = false;
+              layer.getLayers().forEach(function(item) {
+                if (!hasCachedLayer && layersIds &&
                    layersIds.indexOf(item.id) != -1) {
-                 hasCachedLayer = true;
-               }
-             });
-             this.refreshLayers(layer.getLayers().getArray(), useClientZoom,
-                 force || hasCachedLayer);
+                  hasCachedLayer = true;
+                }
+              });
+              this.refreshLayers(layer.getLayers().getArray(), useClientZoom,
+                  force || hasCachedLayer);
             } else if (force || (layersIds &&
                 layersIds.indexOf(layer.id) != -1)) {
               var source = layer.getSource();
@@ -313,7 +305,6 @@ goog.require('ga_window_service');
           isMenuActive = !isMenuActive;
         };
 
-
         // Extent saved stuff
         var isExtentActive = false;
         this.isExtentActive = function() {
@@ -328,7 +319,7 @@ goog.require('ga_window_service');
               [extent[0], extent[3]],
               [extent[2], extent[3]],
               [extent[2], extent[1]]
-              ]]);
+            ]]);
             featureOverlay.setMap(map);
             isExtentActive = true;
           }
@@ -475,8 +466,8 @@ goog.require('ga_window_service');
             var parentLayerId = gaLayers.getLayerProperty(layer.bodId,
                 'parentLayerId');
             var isBgLayer = (parentLayerId) ?
-                gaMapUtils.getMapLayerForBodId(map, parentLayerId).background :
-                layer.background;
+              gaMapUtils.getMapLayerForBodId(map, parentLayerId).background :
+              layer.background;
             layersBg.push(isBgLayer);
             var source = layer.getSource();
             var tileGrid = source.getTileGrid();
@@ -493,9 +484,8 @@ goog.require('ga_window_service');
                 continue;
               }
 
-
               var tileExtent = (isBgLayer && zoom >= 0 && zoom <= 2) ?
-                  gaMapUtils.defaultExtent : extent;
+                gaMapUtils.defaultExtent : extent;
               var tileRange = tileGrid.getTileRangeForExtentAndZ(tileExtent, z);
               var centerTileCoord = [
                 z,
@@ -506,7 +496,7 @@ goog.require('ga_window_service');
               var queueByZ = [];
               for (var x = tileRange.getMinX(); x <= tileRange.getMaxX(); x++) {
                 for (var y = tileRange.getMinY(); y <= tileRange.getMaxY();
-                    y++) {
+                  y++) {
                   var tileCoord = [z, x, y];
                   var tile = {
                     magnitude: getMagnitude(tileCoord, centerTileCoord),
@@ -567,7 +557,6 @@ goog.require('ga_window_service');
           // Start downloading tiles.
           isDownloading = true;
           nbTilesTotal = queue.length;
-          startTime = (new Date()).getTime();
           var cursor = 0;
           var runNextRequests = function() {
             var requestsLoaded = 0;
@@ -587,7 +576,6 @@ goog.require('ga_window_service');
               xhr.onload = function(e) {
                 var response = e.target.response;
                 if (!response || response.byteLength === 0) { // Tile empty
-                  nbTilesEmpty++;
                   onTileSuccess(0);
                 } else {
                   readResponse(e.target.tileUrl, response,
@@ -639,11 +627,10 @@ goog.require('ga_window_service');
       var off = new Offline();
       gaLayers.loadConfig().then(function() {
         if (off.isDataObsolete()) {
-          alert($translate.instant('offline_cache_obsolete'));
+          $window.alert($translate.instant('offline_cache_obsolete'));
         }
       });
       return off;
     };
   });
 })();
-

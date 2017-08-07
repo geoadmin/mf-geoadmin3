@@ -73,7 +73,7 @@ goog.require('ga_window_service');
           if (!scope.showMore) {
             $timeout(function() {
               // When we open the show more panel we scroll the parent
-              //div then we put the focus on the input text
+              // div then we put the focus on the input text
               element.parent().scrollTop(140);
               if (!iframeInput) {
                 iframeInput = $('.ga-share-embed input');

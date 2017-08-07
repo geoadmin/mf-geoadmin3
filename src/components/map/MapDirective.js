@@ -88,7 +88,7 @@ goog.require('ga_styles_service');
             if (ol.extent.containsCoordinate(
                 [2420000, 1030000, 2900000, 1350000], position)) {
               position = ol.proj.transform([easting, northing],
-                'EPSG:2056', 'EPSG:21781');
+                  'EPSG:2056', 'EPSG:21781');
             }
             view.setCenter(position);
           }
@@ -188,7 +188,7 @@ goog.require('ga_styles_service');
             var dereg = [];
             var setRealPosition = function(itemOrEvt) {
               var item = (itemOrEvt instanceof ol.Overlay) ? itemOrEvt :
-                  itemOrEvt.element;
+                itemOrEvt.element;
               item.set('realPosition', item.getPosition());
               item.setPosition();
               dereg.push(item.on('change:position', function(evt) {
@@ -211,7 +211,7 @@ goog.require('ga_styles_service');
               } else {
                 // Show the overlays
                 dereg.forEach(function(key) {
-                   ol.Observable.unByKey(key);
+                  ol.Observable.unByKey(key);
                 });
                 dereg = [];
                 map.getOverlays().forEach(function(item) {
@@ -255,7 +255,7 @@ goog.require('ga_styles_service');
               } else { // onafterprint
                 // We use a timeout to be sure the map is resize after
                 // printing
-                $timeout(function() {map.updateSize();}, 500);
+                $timeout(function() { map.updateSize(); }, 500);
               }
             });
           }
@@ -279,7 +279,7 @@ goog.require('ga_styles_service');
         scope.$on('gaTimeChange', function(evt, time, oldTime) {
           var switchTimeActive = (!oldTime && time);
           var switchTimeDeactive = (oldTime && !time);
-          var olLayers = scope.map.getLayers().getArray();
+          var olLayer, olLayers = scope.map.getLayers().getArray();
           var singleModif = false;
 
           // Detection the time change has been triggered by a layer's
@@ -287,7 +287,7 @@ goog.require('ga_styles_service');
           // (ex: using layermanager)
           if (switchTimeDeactive) {
             for (var i = 0, ii = olLayers.length; i < ii; i++) {
-              var olLayer = olLayers[i];
+              olLayer = olLayers[i];
               // We update only time enabled bod layers
               if (olLayer.bodId && olLayer.timeEnabled &&
                   angular.isDefined(olLayer.time) &&
@@ -308,8 +308,8 @@ goog.require('ga_styles_service');
 
           // In case the user has done a global modification.
           // (ex: using the time selector toggle)
-          for (var i = 0, ii = olLayers.length; i < ii; i++) {
-            var olLayer = olLayers[i];
+          for (var j = 0, jj = olLayers.length; j < jj; j++) {
+            olLayer = olLayers[j];
 
             if (olLayer.timeEnabled && olLayer.visible) {
               var layerTimeStr =
@@ -332,4 +332,3 @@ goog.require('ga_styles_service');
     };
   });
 })();
-

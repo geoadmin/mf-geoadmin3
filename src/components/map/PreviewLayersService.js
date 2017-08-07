@@ -20,7 +20,6 @@ goog.require('ga_wmts_service');
     var olPreviewLayers = {};
 
     this.$get = function(gaLayers, gaWms, gaTime, gaMapUtils, gaWmts) {
-      var olPreviewLayer;
 
       var PreviewLayers = function() {
 

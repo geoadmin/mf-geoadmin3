@@ -13,57 +13,57 @@ goog.provide('ga_placeholder_directive');
    *  otherwise the poly-fill is used
    */
   module.directive('placeholder',
-    function($timeout) {
+      function($timeout) {
 
-    if ('placeholder' in document.createElement('input') &&
+        if ('placeholder' in document.createElement('input') &&
         'placeholder' in document.createElement('textarea')) {
-      return {};
-    }
-
-    return {
-      link: function(scope, elm, attrs) {
-        if (attrs.type === 'password') {
-          return;
+          return {};
         }
 
-        var isPlaceHolderDisplayed = true;
+        return {
+          link: function(scope, elm, attrs) {
+            if (attrs.type === 'password') {
+              return;
+            }
 
-        var displayPlaceholder = function(elt) {
-            elt.val(elt.attr('placeholder'));
-            elt.css('color', 'darkgray');
-            isPlaceHolderDisplayed = true;
+            var isPlaceHolderDisplayed = true;
+
+            var displayPlaceholder = function(elt) {
+              elt.val(elt.attr('placeholder'));
+              elt.css('color', 'darkgray');
+              isPlaceHolderDisplayed = true;
+            };
+
+            var hidePlaceholder = function(elt) {
+              elt.val('');
+              elt.css('color', 'inherit');
+              isPlaceHolderDisplayed = false;
+            };
+
+            elm.focus(function(evt) {
+              var elt = $(evt.target);
+              if (isPlaceHolderDisplayed) {
+                hidePlaceholder(elt);
+              }
+            }).blur(function(evt) {
+              var elt = $(evt.target);
+              if (elt.val() == '') {
+                displayPlaceholder(elt);
+              }
+            }).change(function(evt) {
+              var elt = $(evt.target);
+              if (elt.val() != elt.attr('placeholder')) {
+                elt.css('color', 'inherit');
+                isPlaceHolderDisplayed = false;
+              }
+            });
+
+            attrs.$observe('placeholder', function() {
+              if (isPlaceHolderDisplayed) {
+                displayPlaceholder(elm);
+              }
+            });
+          }
         };
-
-        var hidePlaceholder = function(elt) {
-            elt.val('');
-            elt.css('color', 'inherit');
-            isPlaceHolderDisplayed = false;
-        };
-
-        elm.focus(function(evt) {
-          var elt = $(evt.target);
-          if (isPlaceHolderDisplayed) {
-            hidePlaceholder(elt);
-          }
-        }).blur(function(evt) {
-          var elt = $(evt.target);
-          if (elt.val() == '') {
-            displayPlaceholder(elt);
-          }
-        }).change(function(evt) {
-          var elt = $(evt.target);
-          if (elt.val() != elt.attr('placeholder')) {
-            elt.css('color', 'inherit');
-            isPlaceHolderDisplayed = false;
-          }
-        });
-
-        attrs.$observe('placeholder', function() {
-          if (isPlaceHolderDisplayed) {
-            displayPlaceholder(elm);
-          }
-        });
-      }
-    };
-  });
+      });
 })();

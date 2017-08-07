@@ -15,7 +15,6 @@ goog.require('ga_window_service');
     'pascalprecht.translate'
   ]);
 
-
   /**
    * This directive displays a form for displaying and submitting feedback.
    *
@@ -23,7 +22,7 @@ goog.require('ga_window_service');
    * "response" scope property to "success" or "error".
    */
   module.directive('gaFeedback', function($http, $translate, gaPermalink,
-      gaBrowserSniffer, gaExportKml, gaGlobalOptions, gaWindow) {
+      gaBrowserSniffer, gaExportKml, gaGlobalOptions, gaWindow, $window) {
     return {
       restrict: 'A',
       replace: true,
@@ -36,7 +35,8 @@ goog.require('ga_window_service');
       link: function(scope, element, attrs) {
         function validateSize(fileSize) {
           if (fileSize > 10000000) { // 10 Mo
-            alert($translate.instant('file_too_large') + ' (max. 10 MB)');
+            $window.alert($translate.instant('file_too_large') +
+                ' (max. 10 MB)');
             return false;
           }
           return true;
@@ -46,7 +46,7 @@ goog.require('ga_window_service');
           if (/(pdf|zip|png|jpeg|jpg|kml|kmz|gpx)$/gi.test(fileName)) {
             return true;
           } else {
-            alert($translate.instant('feedback_unsupported_format'));
+            $window.alert($translate.instant('feedback_unsupported_format'));
             return false;
           }
         }
@@ -157,7 +157,6 @@ goog.require('ga_window_service');
         });
 
         scope.submit = function() {
-          var contentType;
           var formData = createFormData();
           var params = {
             method: method,
@@ -172,7 +171,6 @@ goog.require('ga_window_service');
             scope.file = null;
             scope.feedback = '';
           };
-
 
           if (!scope.isIE || gaBrowserSniffer.msie > 9) {
             params.transformRequest = angular.identity;

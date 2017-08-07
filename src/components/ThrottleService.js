@@ -10,7 +10,7 @@ goog.provide('ga_throttle_service');
           var timeout, lastExec = 0;
           return function() {
             var context = this, args = arguments,
-                elapsed = +new Date() - lastExec;
+              elapsed = +new Date() - lastExec;
             var exec = function() {
               lastExec = +new Date();
               func.apply(context, args);

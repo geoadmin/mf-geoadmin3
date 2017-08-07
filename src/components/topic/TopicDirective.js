@@ -36,8 +36,8 @@ goog.require('ga_topic_service');
               var v2 = o2.value;
               var groupId1 = v1.groupId;
               var groupId2 = v2.groupId;
-              if (groupId1 != groupId2 && typeof(groupId1) == 'number' &&
-                  typeof(groupId2) == 'number') {
+              if (groupId1 != groupId2 && typeof (groupId1) == 'number' &&
+                  typeof (groupId2) == 'number') {
                 return groupId1 < groupId2 ? -1 : 1;
               }
               var name1 = v1.name;
@@ -59,20 +59,20 @@ goog.require('ga_topic_service');
 
             $q.all([$translate.onReady, gaTopic.loadConfig()]).then(
                 function() {
-              scope.topics = translateTopics(gaTopic.getTopics());
-              scope.activeTopic = gaTopic.get();
-              scope.$applyAsync(function() {
-                element.find('.ga-topic-item').tooltip({
-                  container: modal,
-                  placement: 'bottom'
+                  scope.topics = translateTopics(gaTopic.getTopics());
+                  scope.activeTopic = gaTopic.get();
+                  scope.$applyAsync(function() {
+                    element.find('.ga-topic-item').tooltip({
+                      container: modal,
+                      placement: 'bottom'
+                    });
+                  });
+                  scope.$on('gaTopicChange', function(evt, newTopic) {
+                    if (scope.activeTopic != newTopic) {
+                      scope.activeTopic = newTopic;
+                    }
+                  });
                 });
-              });
-              scope.$on('gaTopicChange', function(evt, newTopic) {
-                if (scope.activeTopic != newTopic) {
-                  scope.activeTopic = newTopic;
-                }
-              });
-            });
           }
         };
       });

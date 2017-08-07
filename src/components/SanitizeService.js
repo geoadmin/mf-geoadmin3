@@ -9,8 +9,7 @@ goog.provide('ga_sanitize_service');
       // https://regex101.com/r/81tipL/1/
       var attrRegex = /(\s+on\w*=("[^"]+"|'[^']+'))/img;
       // https://regex101.com/r/U5ccHi/2
-      var tagRegex =
-          /(<|&lt;)script[^(>|&gt;)]*?(>|&gt;)(.|\s)*?(<|&lt;)\/script(>|&gt;)/img;
+      var tagRegex = /(<|&lt;)script[^(>|&gt;)]*?(>|&gt;)(.|\s)*?(<|&lt;)\/script(>|&gt;)/img;
 
       var Sanitize = function() {
 
@@ -23,4 +22,3 @@ goog.provide('ga_sanitize_service');
     };
   });
 })();
-

@@ -98,5 +98,4 @@ goog.provide('ga_collapsible_directive');
     };
   });
 
-
 })();

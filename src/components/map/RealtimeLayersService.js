@@ -36,7 +36,7 @@ goog.require('ga_map_service');
             var data = response.data;
             if (kml) {
               gaKml.readFeatures(data,
-                      map.getView().getProjection()).then(function(features) {
+                  map.getView().getProjection()).then(function(features) {
                 olSource.clear();
                 olSource.addFeatures(features);
                 olSource.setProperties({
@@ -46,7 +46,7 @@ goog.require('ga_map_service');
             } else {
               olSource.clear();
               olSource.addFeatures(
-                geojsonFormat.readFeatures(data)
+                  geojsonFormat.readFeatures(data)
               );
             }
             handleTimer(layer, data);
@@ -73,31 +73,31 @@ goog.require('ga_map_service');
         scope.$watchCollection('layers | filter:layerFilter',
             function(newLayers, oldLayers) {
 
-          // Layer Removed
-          oldLayers.forEach(function(oldLayer) {
-            var realTimeId = oldLayer.bodId || oldLayer.id;
-            var oldLayerIdIndex = realTimeLayersId.indexOf(realTimeId);
-            if (oldLayerIdIndex != -1 &&
+              // Layer Removed
+              oldLayers.forEach(function(oldLayer) {
+                var realTimeId = oldLayer.bodId || oldLayer.id;
+                var oldLayerIdIndex = realTimeLayersId.indexOf(realTimeId);
+                if (oldLayerIdIndex != -1 &&
                 !gaMapUtils.getMapLayerForBodId(map, realTimeId)) {
-              realTimeLayersId.splice(oldLayerIdIndex, 1);
-              $timeout.cancel(timers.splice(oldLayerIdIndex, 1)[0]);
-              if (realTimeLayersId.length == 0) {
-                $rootScope.$broadcast('gaNewLayerTimestamp', '');
-              }
-            }
-          });
+                  realTimeLayersId.splice(oldLayerIdIndex, 1);
+                  $timeout.cancel(timers.splice(oldLayerIdIndex, 1)[0]);
+                  if (realTimeLayersId.length == 0) {
+                    $rootScope.$broadcast('gaNewLayerTimestamp', '');
+                  }
+                }
+              });
 
-          // Layer Added
-          newLayers.forEach(function(newLayer) {
-            var realTimeId = newLayer.bodId || newLayer.id;
-            if (realTimeLayersId.indexOf(realTimeId) == -1) {
-              if (!newLayer.preview) {
-                realTimeLayersId.push(realTimeId);
-              }
-              setLayerSource(newLayer);
-            }
-          });
-        });
+              // Layer Added
+              newLayers.forEach(function(newLayer) {
+                var realTimeId = newLayer.bodId || newLayer.id;
+                if (realTimeLayersId.indexOf(realTimeId) == -1) {
+                  if (!newLayer.preview) {
+                    realTimeLayersId.push(realTimeId);
+                  }
+                  setLayerSource(newLayer);
+                }
+              });
+            });
 
         // Update geojson source on language change
         // This event is triggered after the layersConfig is loaded

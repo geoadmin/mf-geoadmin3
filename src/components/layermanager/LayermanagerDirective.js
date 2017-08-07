@@ -39,7 +39,7 @@ goog.require('ga_window_service');
       //      1978  ==> '1978'
       if (!input) {
         return (layer.getSource() instanceof ol.source.WMTS) ? '-' :
-            $translate.instant('time_all');
+          $translate.instant('time_all');
       }
       var yearNum = input;
       if (angular.isString(input)) {
@@ -268,9 +268,9 @@ goog.require('ga_window_service');
 
         scope.showWarning = function(layer) {
           var url = gaUrlUtils.isValid(layer.url) ?
-              gaUrlUtils.getHostname(layer.url) : layer.url;
-          $window.alert($translate.instant('external_data_warning')
-              .replace('--URL--', url));
+            gaUrlUtils.getHostname(layer.url) : layer.url;
+          $window.alert($translate.instant('external_data_warning').
+              replace('--URL--', url));
         };
 
         scope.displayLayerMetadata = function(evt, layer) {
@@ -288,17 +288,17 @@ goog.require('ga_window_service');
 
         if (!scope.useRange) {
           scope.opacityValues = [
-            { key: 1 , value: '100%'},
-            { key: 0.95 , value: '95%' }, { key: 0.9 , value: '90%' },
-            { key: 0.85 , value: '85%' }, { key: 0.8 , value: '80%' },
-            { key: 0.75 , value: '75%' }, { key: 0.7 , value: '70%' },
-            { key: 0.65 , value: '65%' }, { key: 0.6 , value: '60%' },
-            { key: 0.55 , value: '55%' }, { key: 0.5 , value: '50%' },
-            { key: 0.45 , value: '45%' }, { key: 0.4 , value: '40%' },
-            { key: 0.35 , value: '35%' }, { key: 0.3 , value: '30%' },
-            { key: 0.25 , value: '25%' }, { key: 0.2 , value: '20%' },
-            { key: 0.15 , value: '15%' }, { key: 0.1 , value: '10%' },
-            { key: 0.05 , value: '5%' }, { key: 0 , value: '0%' }
+            { key: 1, value: '100%' },
+            { key: 0.95, value: '95%' }, { key: 0.9, value: '90%' },
+            { key: 0.85, value: '85%' }, { key: 0.8, value: '80%' },
+            { key: 0.75, value: '75%' }, { key: 0.7, value: '70%' },
+            { key: 0.65, value: '65%' }, { key: 0.6, value: '60%' },
+            { key: 0.55, value: '55%' }, { key: 0.5, value: '50%' },
+            { key: 0.45, value: '45%' }, { key: 0.4, value: '40%' },
+            { key: 0.35, value: '35%' }, { key: 0.3, value: '30%' },
+            { key: 0.25, value: '25%' }, { key: 0.2, value: '20%' },
+            { key: 0.15, value: '15%' }, { key: 0.1, value: '10%' },
+            { key: 0.05, value: '5%' }, { key: 0, value: '0%' }
           ];
         }
 
@@ -351,4 +351,3 @@ goog.require('ga_window_service');
     };
   });
 })();
-

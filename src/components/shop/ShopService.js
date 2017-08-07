@@ -55,7 +55,7 @@ goog.require('ga_translation_service');
       var stringifyParams = function(params) {
         var paramsStr = '';
         for (var i in params) {
-           paramsStr += i + '=' + params[i] + '&';
+          paramsStr += i + '=' + params[i] + '&';
         }
         return paramsStr.substring(0, paramsStr.length - 1);
       };
@@ -115,7 +115,7 @@ goog.require('ga_translation_service');
           sessionId = sessionId || new Date();
           var url = gaGlobalOptions.shopUrl + '/' + gaLang.get() +
               '/dispatcher?' + getParams(orderType, layerBodId, featureId,
-              geometry);
+                geometry);
           winShop = $window.open(url, WIN_SHOP_PREFIX + sessionId);
         };
 

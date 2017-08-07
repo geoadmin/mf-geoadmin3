@@ -15,4 +15,3 @@ goog.provide('ga_import_directive');
     };
   });
 })();
-

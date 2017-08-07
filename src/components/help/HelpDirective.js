@@ -47,7 +47,7 @@ goog.require('ga_help_service');
   });
 
   module.directive('gaHelpAction', function($rootScope, $sce, gaHelp,
-      gaPopup) {
+      gaPopup, $window) {
     var popupContent = '<div class="ga-help-content" ' +
                             'ng-repeat="res in options.results">' +
                          '<h2 ng-bind-html="res[0]"></h2>' +
@@ -84,12 +84,12 @@ goog.require('ga_help_service');
           } else if (helpIds) {
             var ids = helpIds.split(',');
 
-            //Create the popup
+            // Create the popup
             popup = gaPopup.create({
               className: 'ga-help-popup ga-popup-tablet-full',
               destroyOnClose: false,
               title: 'help_label',
-              content: popupContent, //contains data-binding to results
+              content: popupContent, // contains data-binding to results
               results: results,
               showPrint: true,
               onCloseCallback: function() {
@@ -99,8 +99,8 @@ goog.require('ga_help_service');
 
             var updateContent = function(doOpen) {
               var resCount = 0,
-                  len = ids.length,
-                  i;
+                len = ids.length,
+                i;
 
               var resultReceived = function() {
                 if (resCount === 0 &&
@@ -121,20 +121,20 @@ goog.require('ga_help_service');
                   resultReceived();
                 }, function() {
                   resultReceived();
-                  //FIXME: better error handling
+                  // FIXME: better error handling
                   var msg = 'No help found for id ' + ids[i];
-                  alert(msg);
+                  $window.alert(msg);
                 });
               }
             };
 
             updateContent(true);
 
-            //react on language change
+            // react on language change
             $rootScope.$on('$translateChangeEnd', function() {
-              //Remove old content _without destroying the array_
-              //The below is used because it's fastest and is
-              //best supported across browsers
+              // Remove old content _without destroying the array_
+              // The below is used because it's fastest and is
+              // best supported across browsers
               while (results.length > 0) {
                 results.pop();
               }
@@ -158,12 +158,12 @@ goog.require('ga_help_service');
       restrict: 'A',
       link: function(scope, element, attrs) {
         var target,
-            win = $($window),
-            container = $document.find('.ga-help-hl-container');
+          win = $($window),
+          container = $document.find('.ga-help-hl-container');
 
         if (!container.length) {
           container = $(
-            '<div class="ga-help-hl-container">' +
+              '<div class="ga-help-hl-container">' +
               '<div class="ga-help-hl"></div>' +
             '</div>');
           $(document.body).append(container);
@@ -187,9 +187,6 @@ goog.require('ga_help_service');
           $timeout(function() {
             target.focus();
           }, 160, false);
-        };
-        var hidePopover = function(evt) {
-          target.popover('hide');
         };
 
         element.click(function(evt) {
@@ -228,4 +225,3 @@ goog.require('ga_help_service');
     };
   });
 })();
-

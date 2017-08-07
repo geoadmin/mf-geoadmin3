@@ -98,7 +98,6 @@ PYTHON_CMD=${PYTHON_VENV}/bin/python
 PIP_CMD=${PYTHON_VENV}/bin/pip
 MAKO_CMD=${PYTHON_VENV}/bin/mako-render
 HTMLMIN_CMD=${PYTHON_VENV}/bin/htmlmin
-GJSLINT_CMD=${PYTHON_VENV}/bin/gjslint
 FLAKE8_CMD=${PYTHON_VENV}/bin/flake8
 AUTOPEP8_CMD=${PYTHON_VENV}/bin/autopep8
 CLOSURE_COMPILER=node_modules/google-closure-compiler/compiler.jar
@@ -758,7 +757,7 @@ $(addprefix .build-artefacts/annotated/, $(SRC_ES6_FILES)): \
 	    --output_mode=list > $@
 
 .build-artefacts/lint.timestamp: .build-artefacts/requirements.timestamp $(SRC_JS_FILES)
-	${GJSLINT_CMD} -r src/components -r src/js
+	${NODE_BIN}/eslint src/components/ --fix
 	touch $@
 
 .build-artefacts/requirements.timestamp: ${PYTHON_VENV} requirements.txt

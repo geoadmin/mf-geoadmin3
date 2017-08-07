@@ -11,63 +11,63 @@ goog.require('ga_networkstatus_service');
   ]);
 
   module.controller('GaOfflineDirectiveController',
-    function($scope, $timeout, $translate, gaBrowserSniffer, gaOffline,
-        gaNetworkStatus) {
-      $scope.isIE9 = (gaBrowserSniffer.msie == 9);
+      function($scope, $timeout, $translate, gaBrowserSniffer, gaOffline,
+          gaNetworkStatus, $window) {
+        $scope.isIE9 = (gaBrowserSniffer.msie == 9);
 
-      // Initialize scope variables
-      $scope.offline = gaNetworkStatus.offline;
+        // Initialize scope variables
+        $scope.offline = gaNetworkStatus.offline;
 
-      // gaOffline values watchers
-      $scope.$watch(gaOffline.hasData, function(val) {
-        $scope.hasOfflineData = val;
-      });
+        // gaOffline values watchers
+        $scope.$watch(gaOffline.hasData, function(val) {
+          $scope.hasOfflineData = val;
+        });
 
-      $scope.$watch(gaOffline.isDownloading, function(val) {
-        $scope.isDownloading = val;
-      });
+        $scope.$watch(gaOffline.isDownloading, function(val) {
+          $scope.isDownloading = val;
+        });
 
-      $scope.$watch(gaOffline.isSelectorActive, function(val) {
-        $scope.isOfflineSelectorActive = val;
-      });
+        $scope.$watch(gaOffline.isSelectorActive, function(val) {
+          $scope.isOfflineSelectorActive = val;
+        });
 
-      $scope.$watch(gaOffline.isMenuActive, function(val) {
-        $scope.isOfflineMenuActive = val;
-      });
+        $scope.$watch(gaOffline.isMenuActive, function(val) {
+          $scope.isOfflineMenuActive = val;
+        });
 
-      // Offline data management
-      $scope.save = function() {
+        // Offline data management
+        $scope.save = function() {
         // Use $timeout fixes iOS8 homescreen bug(#1744).
-        $timeout(function() {
-          gaOffline.save($scope.map);
-        }, 0, false);
-      };
+          $timeout(function() {
+            gaOffline.save($scope.map);
+          }, 0, false);
+        };
 
-      $scope.abort = function() {
+        $scope.abort = function() {
         // Use $timeout fixes iOS8 homescreen bug(#1744).
-        $timeout(function() {
-          if (confirm($translate.instant('offline_abort_warning'))) {
-            gaOffline.abort();
-            gaOffline.hideExtent();
-          }
-        }, 0, false);
-      };
+          $timeout(function() {
+            if ($window.confirm($translate.instant('offline_abort_warning'))) {
+              gaOffline.abort();
+              gaOffline.hideExtent();
+            }
+          }, 0, false);
+        };
 
-      $scope.toggleDataExtent = function() {
-        gaOffline.toggleExtent($scope.map);
-      };
+        $scope.toggleDataExtent = function() {
+          gaOffline.toggleExtent($scope.map);
+        };
 
-      // Listeners
-      $scope.$on('gaNetworkStatusChange', function(evt, val) {
-        $scope.offline = val;
-        if ($scope.offline) {
-          if ($scope.isDownloading) {
-            gaOffline.abort($scope);
+        // Listeners
+        $scope.$on('gaNetworkStatusChange', function(evt, val) {
+          $scope.offline = val;
+          if ($scope.offline) {
+            if ($scope.isDownloading) {
+              gaOffline.abort($scope);
+            }
+            gaOffline.hideSelector();
           }
-          gaOffline.hideSelector();
-        }
-      });
-    }
+        });
+      }
   );
 
   module.directive('gaOfflineBt', function(gaOffline) {
@@ -223,17 +223,17 @@ goog.require('ga_networkstatus_service');
           var extent = gaOffline.calculateExtentToSave(
               scope.map.getView().getCenter());
           var topLeft = scope.map.getPixelFromCoordinate([extent[0],
-              extent[3]]);
+            extent[3]]);
           var topRight = scope.map.getPixelFromCoordinate([extent[0],
-              extent[1]]);
+            extent[1]]);
           var bottomRight = scope.map.getPixelFromCoordinate([extent[2],
-              extent[1]]);
+            extent[1]]);
           var bottomLeft = scope.map.getPixelFromCoordinate([extent[2],
-              extent[3]]);
+            extent[3]]);
           rectangle = [topLeft, topRight, bottomRight, bottomLeft];
           for (var i = 0; i < 4; i++) {
-             rectangle[i][0] *= ol.has.DEVICE_PIXEL_RATIO;
-             rectangle[i][1] *= ol.has.DEVICE_PIXEL_RATIO;
+            rectangle[i][0] *= ol.has.DEVICE_PIXEL_RATIO;
+            rectangle[i][1] *= ol.has.DEVICE_PIXEL_RATIO;
           }
         };
 
@@ -277,6 +277,4 @@ goog.require('ga_networkstatus_service');
     };
   });
 
-
 })();
-

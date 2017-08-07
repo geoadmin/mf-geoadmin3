@@ -52,16 +52,15 @@ goog.require('ga_wmts_service');
       var layersTimestampParamValue =
           gaPermalink.getParams().layers_timestamp;
 
-
       var layerSpecs = layersParamValue ? layersParamValue.split(',') : [];
       var layerOpacities = layersOpacityParamValue ?
-          layersOpacityParamValue.split(',') : [];
+        layersOpacityParamValue.split(',') : [];
       var layerParams = layersParamsValue ?
-          layersParamsValue.split(',') : [];
+        layersParamsValue.split(',') : [];
       var layerVisibilities = layersVisibilityParamValue ?
-          layersVisibilityParamValue.split(',') : [];
+        layersVisibilityParamValue.split(',') : [];
       var layerTimestamps = layersTimestampParamValue ?
-          layersTimestampParamValue.split(',') : [];
+        layersTimestampParamValue.split(',') : [];
 
       function updateLayersParam(layers) {
         if (layers.length) {
@@ -136,39 +135,39 @@ goog.require('ga_wmts_service');
         scope.$watchCollection('layers | filter:layerFilter',
             function(layers) {
 
-          updateLayersParam(layers);
+              updateLayersParam(layers);
 
-          // deregister the listeners we have on each layer and register
-          // new ones for the new set of layers.
-          angular.forEach(deregFns, function(deregFn) { deregFn(); });
-          deregFns.length = 0;
+              // deregister the listeners we have on each layer and register
+              // new ones for the new set of layers.
+              angular.forEach(deregFns, function(deregFn) { deregFn(); });
+              deregFns.length = 0;
 
-          angular.forEach(layers, function(layer) {
-            if (gaMapUtils.isStoredKmlLayer(layer)) {
-              deregFns.push(scope.$watch(function() {
-                return layer.id;
-              }, function() {
-                updateLayersParam(layers);
-              }));
-            }
-            deregFns.push(scope.$watch(function() {
-              return layer.getOpacity();
-            }, function() {
-              updateLayersOpacityParam(layers);
-            }));
-            deregFns.push(scope.$watch(function() {
-              return layer.visible;
-            }, function() {
-              updateLayersVisibilityParam(layers);
-            }));
-            deregFns.push(scope.$watch(function() {
-              return layer.time;
-            }, function() {
-              updateLayersTimestampsParam(layers);
-            }));
+              angular.forEach(layers, function(layer) {
+                if (gaMapUtils.isStoredKmlLayer(layer)) {
+                  deregFns.push(scope.$watch(function() {
+                    return layer.id;
+                  }, function() {
+                    updateLayersParam(layers);
+                  }));
+                }
+                deregFns.push(scope.$watch(function() {
+                  return layer.getOpacity();
+                }, function() {
+                  updateLayersOpacityParam(layers);
+                }));
+                deregFns.push(scope.$watch(function() {
+                  return layer.visible;
+                }, function() {
+                  updateLayersVisibilityParam(layers);
+                }));
+                deregFns.push(scope.$watch(function() {
+                  return layer.time;
+                }, function() {
+                  updateLayersTimestampsParam(layers);
+                }));
 
-          });
-        });
+              });
+            });
       };
       return function(map) {
         var scope = $rootScope.$new();
@@ -183,14 +182,14 @@ goog.require('ga_wmts_service');
           if (topic.plConfig) {
             var p = gaUrlUtils.parseKeyValue(topic.plConfig);
             addLayers(p.layers ? p.layers.split(',') : [],
-                      p.layers_opacity ?
-                          p.layers_opacity.split(',') : undefined,
-                      p.layers_visibility ?
-                          p.layers_visibility.split(',') : false,
-                      p.layers_timestamp ?
-                          p.layers_timestamp.split(',') : undefined,
-                      p.layers_params ?
-                          p.layers_params.split(',') : undefined
+                p.layers_opacity ?
+                  p.layers_opacity.split(',') : undefined,
+                p.layers_visibility ?
+                  p.layers_visibility.split(',') : false,
+                p.layers_timestamp ?
+                  p.layers_timestamp.split(',') : undefined,
+                p.layers_params ?
+                  p.layers_params.split(',') : undefined
             );
           } else {
             addLayers(topic.selectedLayers.slice(0).reverse());
@@ -205,17 +204,16 @@ goog.require('ga_wmts_service');
             timestamps, parameters) {
           var nbLayersToAdd = layerSpecs.length;
           angular.forEach(layerSpecs, function(layerSpec, index) {
-            var layer;
+            var layer, infos;
             var opacity = (opacities && index < opacities.length) ?
-                opacities[index] : undefined;
-            var visible = (visibilities === false ||
+              opacities[index] : undefined;
+            var visible = !((visibilities === false ||
                 (angular.isArray(visibilities) &&
-                visibilities[index] == 'false')) ?
-                false : true;
+                visibilities[index] == 'false')));
             var timestamp = (timestamps && index < timestamps.length &&
                 timestamps != '') ? timestamps[index] : '';
             var params = (parameters && index < parameters.length) ?
-                gaUrlUtils.parseKeyValue(parameters[index]) : undefined;
+              gaUrlUtils.parseKeyValue(parameters[index]) : undefined;
             var bodLayer = gaLayers.getLayer(layerSpec);
             if (bodLayer) {
               // BOD layer.
@@ -268,12 +266,12 @@ goog.require('ga_wmts_service');
               }
               try {
                 gaKml.addKmlToMapForUrl(map, url,
-                  {
-                    opacity: opacity || 1,
-                    visible: visible,
-                    updateDelay: isNaN(delay) ? undefined : delay * 1000
-                  },
-                  index + 1);
+                    {
+                      opacity: opacity || 1,
+                      visible: visible,
+                      updateDelay: isNaN(delay) ? undefined : delay * 1000
+                    },
+                    index + 1);
                 mustReorder = true;
               } catch (e) {
                 // Adding KML layer failed, native alert, log message?
@@ -283,50 +281,50 @@ goog.require('ga_wmts_service');
             } else if (gaMapUtils.isExternalWmsLayer(layerSpec)) {
 
               // External WMS layer
-              var infos = layerSpec.split('||');
+              infos = layerSpec.split('||');
               try {
                 gaWms.addWmsToMap(map,
-                  {
-                    LAYERS: infos[3],
-                    VERSION: infos[4]
-                  },
-                  {
-                    url: infos[2],
-                    label: infos[1],
-                    opacity: opacity || 1,
-                    visible: visible,
-                    extent: gaGlobalOptions.defaultExtent,
-                    useReprojection: (infos[5] === 'true')
-                  },
-                  index + 1);
+                    {
+                      LAYERS: infos[3],
+                      VERSION: infos[4]
+                    },
+                    {
+                      url: infos[2],
+                      label: infos[1],
+                      opacity: opacity || 1,
+                      visible: visible,
+                      extent: gaGlobalOptions.defaultExtent,
+                      useReprojection: (infos[5] === 'true')
+                    },
+                    index + 1);
               } catch (e) {
                 // Adding external WMS layer failed, native alert, log message?
                 $log.error(e.message);
               }
             } else if (gaMapUtils.isExternalWmtsLayer(layerSpec)) {
-              var infos = layerSpec.split('||');
-              $http.get(gaUrlUtils.buildProxyUrl(infos[2]))
-                  .then(function(response) {
-                try {
-                  var data = response.data;
-                  var getCap = new ol.format.WMTSCapabilities().read(data);
-                  var layerOptions = gaWmts.getLayerOptionsFromIdentifier(
-                      getCap, infos[1]);
-                  // Override the url found in the xml file which is often a
-                  // wrong url.
-                  layerOptions.capabilitiesUrl = infos[2];
-                  layerOptions.time = timestamp;
-                  gaWmts.addWmtsToMap(map, layerOptions, index + 1);
-                } catch (e) {
-                  // Adding external WMTS layer failed
-                  $log.error('Loading of external WMTS layer ' + layerSpec +
+              infos = layerSpec.split('||');
+              $http.get(gaUrlUtils.buildProxyUrl(infos[2])).
+                  then(function(response) {
+                    try {
+                      var data = response.data;
+                      var getCap = new ol.format.WMTSCapabilities().read(data);
+                      var layerOptions = gaWmts.getLayerOptionsFromIdentifier(
+                          getCap, infos[1]);
+                      // Override the url found in the xml file which is often a
+                      // wrong url.
+                      layerOptions.capabilitiesUrl = infos[2];
+                      layerOptions.time = timestamp;
+                      gaWmts.addWmtsToMap(map, layerOptions, index + 1);
+                    } catch (e) {
+                      // Adding external WMTS layer failed
+                      $log.error('Loading of external WMTS layer ' + layerSpec +
                       ' failed. ' + e.message);
-                }
-              }, function(reason) {
-                $log.error('Loading of external WMTS layer ' + layerSpec +
+                    }
+                  }, function(reason) {
+                    $log.error('Loading of external WMTS layer ' + layerSpec +
                     ' failed. Failed to get capabilities from server.' +
                     'Reason : ' + reason);
-              });
+                  });
             }
           });
 
@@ -334,28 +332,29 @@ goog.require('ga_wmts_service');
           if (mustReorder) {
             var deregister2 = scope.$watchCollection(
                 'layers | filter : layerFilter', function(layers) {
-              if (layers.length == nbLayersToAdd) {
-                deregister2();
-                var hasBg = map.getLayers().item(0).background;
-                for (var i = 0, ii = map.getLayers().getLength(); i < ii; i++) {
-                  var layer = map.getLayers().item(i);
-                  var idx = layerSpecs.indexOf(layer.id);
-                  if (idx == -1) {
-                    // If the layer is not in the layerSpecs we ignore it
-                    continue;
-                  }
+                  if (layers.length == nbLayersToAdd) {
+                    deregister2();
+                    var hasBg = map.getLayers().item(0).background;
+                    var ii = map.getLayers().getLength();
+                    for (var i = 0; i < ii; i++) {
+                      var layer = map.getLayers().item(i);
+                      var idx = layerSpecs.indexOf(layer.id);
+                      if (idx == -1) {
+                        // If the layer is not in the layerSpecs we ignore it
+                        continue;
+                      }
 
-                  if (hasBg) {
-                    idx = idx + 1;
+                      if (hasBg) {
+                        idx = idx + 1;
+                      }
+                      if (i != idx) {
+                        map.getLayers().remove(layer);
+                        map.getLayers().insertAt(idx, layer);
+                        i = (i < idx) ? i : idx;
+                      }
+                    }
                   }
-                  if (i != idx) {
-                    map.getLayers().remove(layer);
-                    map.getLayers().insertAt(idx, layer);
-                    i = (i < idx) ? i : idx;
-                  }
-                }
-              }
-            });
+                });
           }
 
           // Add a modifiable KML layer

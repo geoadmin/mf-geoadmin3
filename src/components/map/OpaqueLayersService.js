@@ -20,7 +20,7 @@ goog.require('ga_map_service');
 
       var unreg = function() {
         var key;
-        while (key = unregKeys.pop()) {
+        while ((key = unregKeys.pop())) {
           ol.Observable.unByKey(key);
         }
       };

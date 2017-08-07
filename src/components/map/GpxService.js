@@ -1,4 +1,4 @@
-goog.provide('ga_kml_service');
+goog.provide('ga_gpx_service');
 
 goog.require('ga_geomutils_service');
 goog.require('ga_map_service');
@@ -11,7 +11,7 @@ goog.require('ngeo.fileService');
 
 (function() {
 
-  var module = angular.module('ga_kml_service', [
+  var module = angular.module('ga_gpx_service', [
     'pascalprecht.translate',
     'ga_networkstatus_service',
     'ga_storage_service',
@@ -23,9 +23,9 @@ goog.require('ngeo.fileService');
   ]);
 
   /**
-   * Manage KML layers
+   * Manage GPX layers
    */
-  module.provider('gaKml', function() {
+  module.provider('gaGpx', function() {
 
     this.$get = function($http, $q, $rootScope, $timeout, $translate,
         gaDefinePropertiesForLayer, gaGlobalOptions, gaMapClick, gaMapUtils,
@@ -33,100 +33,45 @@ goog.require('ngeo.fileService');
         gaGeomUtils, ngeoFile) {
 
       // Store the parser.
-      var kmlFormat;
+      var format;
 
-      // Create the parser/writer KML
-      var setKmlFormat = function() {
-        if (!kmlFormat) {
-          // TO FIX, caused by OL 3.18.2
-          // Hack for #3531: We create an empty format first to create the
-          // default style variables.
-          // https://github.com/openlayers/openlayers/blob/master/src/ol/format/kml.js#L143
-          // https://github.com/openlayers/openlayers/pull/5587
-          ol.format.KML();
-
-          kmlFormat = new ol.format.KML({
-            extractStyles: true,
-            defaultStyle: [gaStyleFactory.getStyle('kml')]
+      // Create the parser/writer
+      var setFormat = function() {
+        if (!format) {
+          format = new ol.format.GPX({
+            readExtensions: false
           });
         }
       };
 
-      // Sanitize KML changing href links if necessary
-      var sanitizeKml = function(kml) {
-        // Replace all hrefs to prevent errors if image doesn't have
-        // CORS headers. Exception for *.geo.admin.ch, *.bgdi.ch and google
-        // markers icons (only https)
-        // to keep the OL magic for anchor origin.
-        // Test regex here: http://regex101.com/r/tF3vM0/9
-        // List of google icons: http://www.lass.it/Web/viewer.aspx?id=4
-        kml = kml.replace(
-            /<href>http(?!(s:\/\/maps\.(google|gstatic)\.com[a-zA-Z\d.\-/_]*\.png|s?:\/\/[a-z\d.-]*(bgdi|geo.admin)\.ch))/g,
-            '<href>' + gaGlobalOptions.proxyUrl + 'http'
-        );
-
-        // We still need to convert <href>https://proxy.admin.ch/https:// to
-        // <href>https://proxy.admin.ch/https/
-        kml = kml.replace(
-            new RegExp('<href>' + gaGlobalOptions.proxyUrl + 'http://', 'g'),
-            '<href>' + gaGlobalOptions.proxyUrl + 'http/').
-            replace(
-                new RegExp('<href>' + gaGlobalOptions.proxyUrl + 'https://', 'g'),
-                '<href>' + gaGlobalOptions.proxyUrl + 'https/');
-
-        // Replace all http hrefs from *.geo.admin.ch or *.bgdi.ch by https
-        // Test regex here: http://regex101.com/r/fY7wB3/5
-        kml = kml.replace(
-            /<href>http(?=s{0}:\/\/[a-z\d.-]*(bgdi|admin)\.ch)/g,
-            '<href>https'
-        );
-
-        // Replace all old maki urls image by the color service url
-        // Test regex here: https://regex101.com/r/rF2tA1/4
-        kml = kml.replace(
-            /<href>https?:\/\/[a-z\d.-]*(bgdi|geo.admin)\.ch[a-zA-Z\d\-_/]*img\/maki\/([a-z\-0-9]*-24@2x\.png)/g,
-            '<href>' + gaGlobalOptions.apiUrl + '/color/255,0,0/$2'
-        );
-
-        return kml;
+      // Sanitize GPX changing href links if necessary
+      var sanitizeXml = function(xml) {
+        return xml;
       };
 
-      // Read a kml string then return a list of features.
-      var readFeatures = function(kml, projection) {
+      // Read a gpx string then return a list of features.
+      var readFeatures = function(xml, projection) {
 
         // Create the parser
-        setKmlFormat();
+        setFormat();
 
-        // Sanitize KML
-        kml = sanitizeKml(kml);
+        // Sanitize GPX
+        xml = sanitizeXml(xml);
 
-        // Manage networkLink tags
-        var all = [];
-        var features = kmlFormat.readFeatures(kml);
-        var networkLinks = kmlFormat.readNetworkLinks(kml);
-        if (networkLinks.length) {
-          angular.forEach(networkLinks, function(networkLink) {
-            if (gaUrlUtils.isValid(networkLink.href)) {
-              all.push($http.get(networkLink.href).then(function(response) {
-                return readFeatures(response.data, projection).then(
-                    function(newFeatures) {
-                      features = features.concat(newFeatures);
-                    });
-              }));
-            }
-          });
-        }
+        // Read features
+        var features = format.readFeatures(xml);
 
-        return $q.all(all).then(function() {
-          var sanitizedFeatures = [];
-          for (var i = 0, ii = features.length; i < ii; i++) {
-            var feat = sanitizeFeature(features[i], projection);
-            if (feat) {
-              sanitizedFeatures.push(feat);
-            }
+        // Sanitize features
+        var dfltStyle = gaStyleFactory.getStyle('kml');
+        var sanitizedFeatures = [];
+        for (var i = 0, ii = features.length; i < ii; i++) {
+          features[i].setStyle([dfltStyle]);
+          var feat = sanitizeFeature(features[i], projection);
+          if (feat) {
+            sanitizedFeatures.push(feat);
           }
-          return sanitizedFeatures;
-        });
+        }
+        return $q.when(sanitizedFeatures);
       };
 
       // Sanitize the feature's properties (id, geometry, style).
@@ -161,7 +106,7 @@ goog.require('ngeo.fileService');
           stroke = undefined;
         }
 
-        // if the feature is a Point and we are offline, we use default kml
+        // if the feature is a Point and we are offline, we use default gpx
         // style.
         // if the feature is a Point and has a name with a text style, we
         // create a correct text style.
@@ -236,43 +181,40 @@ goog.require('ngeo.fileService');
         return feature;
       };
 
-      var Kml = function() {
+      var Gpx = function() {
 
-        // Create a vector layer from a kml string.
-        var createKmlLayer = function(kml, options) {
+        // Create a vector layer from a xml string.
+        var createLayer = function(xml, options) {
           options = options || {};
-          options.id = 'KML||' + options.url;
+          options.id = 'GPX||' + options.url;
 
-          // Update data stored for offline or use it if kml is null
+          // Update data stored for offline or use it if xml is null
           var offlineData = gaStorage.getItem(options.id);
           if (offlineData) {
-            if (kml) {
-              gaStorage.setItem(options.id, kml);
+            if (xml) {
+              gaStorage.setItem(options.id, xml);
             } else {
-              kml = offlineData;
+              xml = offlineData;
             }
-          } else if (!kml) {
+          } else if (!xml) {
             var deferred = $q.defer();
-            deferred.reject('No KML data found');
+            deferred.reject('No GPX data found');
             return deferred.promise;
           }
 
-          // Read features available in a kml string, then create an ol layer.
-          return readFeatures(kml, options.projection).then(function(features) {
+          // Read features available in a xml string, then create an ol layer.
+          return readFeatures(xml, options.projection).then(function(features) {
 
-            // #2820: we set useSpatialIndex to false for KML created with draw
-            // tool
             var source = new ol.source.Vector({
-              features: features,
-              useSpatialIndex: !gaMapUtils.isStoredKmlLayer(options.id)
+              features: features
             });
 
             var layerOptions = {
               id: options.id,
               adminId: options.adminId,
               url: options.url,
-              type: 'KML',
-              label: options.label || kmlFormat.readName(kml) || 'KML',
+              type: 'GPX',
+              label: options.label || 'GPX',
               opacity: options.opacity,
               visible: options.visible,
               source: source,
@@ -297,9 +239,9 @@ goog.require('ngeo.fileService');
             olLayer.useThirdPartyData = true;
             olLayer.updateDelay = options.updateDelay;
 
-            // Save the kml content for for offline and 3d parsing
+            // Save the xml content for for offline and 3d parsing
             olLayer.getSource().setProperties({
-              'kmlString': sanitizeKml(kml)
+              'gpxString': sanitizeXml(xml)
             });
 
             return olLayer;
@@ -307,9 +249,9 @@ goog.require('ngeo.fileService');
         };
 
         // Add an ol layer to the map
-        var addKmlLayer = function(olMap, kmlString, options, index) {
+        var addLayer = function(olMap, xmlString, options, index) {
           options.projection = olMap.getView().getProjection();
-          return createKmlLayer(kmlString, options).then(function(olLayer) {
+          return createLayer(xmlString, options).then(function(olLayer) {
             if (olLayer) {
               if (index) {
                 olMap.getLayers().insertAt(index, olLayer);
@@ -324,8 +266,7 @@ goog.require('ngeo.fileService');
 
               // If the layer can contain measure features, we register some
               // events to add/remove correctly the overlays
-              if (gaMapUtils.isStoredKmlLayer(olLayer) ||
-                  gaMapUtils.isLocalKmlLayer(olLayer)) {
+              if (gaMapUtils.isLocalGpxLayer(olLayer)) {
                 if (olLayer.getVisible()) {
                   angular.forEach(source.getFeatures(),
                       function(feature) {
@@ -352,20 +293,20 @@ goog.require('ngeo.fileService');
         };
 
         // Returns a promis
-        this.readFeatures = function(kmlString, projection) {
-          return readFeatures(kmlString, projection);
+        this.readFeatures = function(xmlString, projection) {
+          return readFeatures(xmlString, projection);
         };
 
-        this.addKmlToMap = function(map, kmlString, layerOptions, index) {
-          return addKmlLayer(map, kmlString, layerOptions || {}, index);
+        this.addToMap = function(map, xmlString, layerOptions, index) {
+          return addLayer(map, xmlString, layerOptions || {}, index);
         };
 
-        this.addKmlToMapForUrl = function(map, url, layerOptions, index) {
+        this.addToMapForUrl = function(map, url, layerOptions, index) {
           var that = this;
           layerOptions = layerOptions || {};
           layerOptions.url = url;
           if (gaNetworkStatus.offline) {
-            return this.addKmlToMap(map, null, layerOptions, index);
+            return this.addToMap(map, null, layerOptions, index);
           } else {
             return gaUrlUtils.proxifyUrl(url).then(function(proxyUrl) {
               return $http.get(proxyUrl, {
@@ -373,14 +314,14 @@ goog.require('ngeo.fileService');
               }).then(function(response) {
                 var data = response.data;
                 var fileSize = response.headers('content-length');
-                if (ngeoFile.isKml(data) &&
+                if (ngeoFile.isGpx(data) &&
                     ngeoFile.isValidFileSize(fileSize)) {
                   layerOptions.useImageVector = that.useImageVector(fileSize);
-                  return that.addKmlToMap(map, data, layerOptions, index);
+                  return that.addToMap(map, data, layerOptions, index);
                 }
               }, function() {
                 // Try to get offline data if exist
-                return that.addKmlToMap(map, null, layerOptions, index);
+                return that.addToMap(map, null, layerOptions, index);
               });
             });
           }
@@ -393,13 +334,13 @@ goog.require('ngeo.fileService');
           return (!!fileSize && parseInt(fileSize) >= 1000000); // < 1mo
         };
 
-        // Returns the unique KML format used by the application
+        // Returns the unique format used by the application
         this.getFormat = function() {
-          setKmlFormat();
-          return kmlFormat;
+          setFormat();
+          return format;
         };
       };
-      return new Kml();
+      return new Gpx();
     };
   });
 })();

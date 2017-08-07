@@ -4,7 +4,7 @@ goog.require('ga_urlutils_service');
 
 (function() {
 
-  var module = angular.module('ga_printstyle_service', [
+  angular.module('ga_printstyle_service', [
     'ga_urlutils_service'
   ]).provider('gaPrintStyle', gaPrintStyle);
 
@@ -75,8 +75,7 @@ goog.require('ga_urlutils_service');
     sides = sides || 4;
 
     // First point always at top
-    var xO = 0,
-        yO = resolution * radius * 0.8;
+    var xO = 0, yO = resolution * radius * 0.8;
 
     // Rotate around origin counter-clock wise
     var points = [];
@@ -95,9 +94,8 @@ goog.require('ga_urlutils_service');
   }
 
   function getolStyleToPrintLiteral(gaUrlUtils) {
-    return olStyleToPrintLiteral;
     // Transform a ol.style.Style to a print literal object
-    function olStyleToPrintLiteral(style, dpi) {
+    return function(style, dpi) {
       /**
        * ol.style.Style properties:
        *
@@ -158,6 +156,7 @@ goog.require('ga_urlutils_service');
       var stroke = style.getStroke();
       var textStyle = style.getText();
       var imageStyle = style.getImage();
+      var color;
 
       if (imageStyle) {
         var size, anchor, scale = imageStyle.getScale();
@@ -196,7 +195,7 @@ goog.require('ga_urlutils_service');
       }
 
       if (fill) {
-        var color = ol.color.asArray(fill.getColor());
+        color = ol.color.asArray(fill.getColor());
         literal.fillColor = toHexa(color);
         literal.fillOpacity = color[3];
       } else if (!literal.fillOpacity) {
@@ -204,7 +203,7 @@ goog.require('ga_urlutils_service');
       }
 
       if (stroke) {
-        var color = ol.color.asArray(stroke.getColor());
+        color = ol.color.asArray(stroke.getColor());
         literal.strokeWidth = adjustDist(stroke.getWidth(), dpi);
         literal.strokeColor = toHexa(color);
         literal.strokeOpacity = color[3];
@@ -242,11 +241,10 @@ goog.require('ga_urlutils_service');
           var strokeColor = ol.color.asArray(textStyle.getStroke().getColor());
           literal.labelOutlineColor = toHexa(strokeColor);
           literal.labelOutlineWidth = textStyle.getStroke().getWidth();
-        }*/
+        } */
       }
 
       return literal;
     };
-
   };
 })();

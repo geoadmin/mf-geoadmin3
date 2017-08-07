@@ -65,7 +65,7 @@ goog.require('ga_previewlayers_service');
 
             $scope.item.active = function(activate) {
               var layer = getOlLayer($scope.map, $scope.item);
-              //setter called
+              // setter called
               if (arguments.length) {
                 if (layer) {
                   layer.visible = activate;
@@ -78,7 +78,7 @@ goog.require('ga_previewlayers_service');
                     addBodLayer($scope.map, $scope.item.layerBodId);
                   }
                 }
-              } else { //getter called
+              } else { // getter called
                 return $scope.item.selectedOpen && layer && layer.visible;
               }
             };

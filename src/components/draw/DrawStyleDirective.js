@@ -201,7 +201,7 @@ goog.require('ga_window_service');
     };
 
     var youtubeRegExp =
-      new RegExp('^http(s)?:\/\/www.youtube.com\/watch\\?v=([A-Za-z0-9_]+)$');
+      new RegExp('^http(s)?://www.youtube.com/watch\\?v=([A-Za-z0-9_]+)$');
 
     var embedYoutubeLink = function(url) {
       var videoId = youtubeRegExp.exec(url)[2];
@@ -223,10 +223,10 @@ goog.require('ga_window_service');
 
         scope.appendToDescr = function($event, linkType) {
           var linkVal = youtubeRegExp.test(linkType.value) ?
-              embedYoutubeLink(linkType.value) : linkType.value;
-          scope.options.description += linkType.tpl
-              .replace(/{{url}}/g, linkVal)
-              .replace(/{{textToDisplay}}/, linkType.textToDisplay || '');
+            embedYoutubeLink(linkType.value) : linkType.value;
+          scope.options.description += linkType.tpl.
+              replace(/{{url}}/g, linkVal).
+              replace(/{{textToDisplay}}/, linkType.textToDisplay || '');
           // Close the popover then focus the textarea
           $('.ga-descr-buttons').next('textarea').click().focus();
           // Clear input field
@@ -242,11 +242,12 @@ goog.require('ga_window_service');
         };
 
         scope.deleteSelectedFeature = function(layer, feature) {
+          var str = $translate.instant('confirm_remove_all_features');
           if (layer.getSource().getFeatures().length == 1 &&
-              confirm($translate.instant('confirm_remove_all_features'))) {
+              $window.confirm(str)) {
             layer.getSource().clear();
             scope.feature = undefined;
-          } else if (confirm($translate.instant(
+          } else if ($window.confirm($translate.instant(
               'confirm_remove_selected_features'))) {
             layer.getSource().removeFeature(feature);
             scope.feature = undefined;
@@ -320,8 +321,8 @@ goog.require('ga_window_service');
               element.on('scroll', closePopover);
               $document.on('click', closePopover);
               win.on('resize', closePopover);
-              $(evt.currentTarget).next('.popover').find('input,select')
-                  .first().focus();
+              $(evt.currentTarget).next('.popover').find('input,select').
+                  first().focus();
             }).on('hide.bs.popover', function() {
               element.off('scroll', closePopover);
               $document.off('click', closePopover);

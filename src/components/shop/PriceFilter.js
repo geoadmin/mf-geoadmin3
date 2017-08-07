@@ -2,8 +2,8 @@ goog.provide('ga_price_filter');
 
 (function() {
 
-  angular.module('ga_price_filter', [])
-      .filter('price', priceFilter);
+  angular.module('ga_price_filter', []).
+      filter('price', priceFilter);
 
   function priceFilter() {
     return function(input) {
@@ -18,10 +18,10 @@ goog.provide('ga_price_filter');
         return input;
       }
 
-      //what happens if negative?
-      //if(input<0){
+      // what happens if negative?
+      // if(input<0){
       //
-      //}
+      // }
 
       var filteredPriceRp;
       var filteredPriceFr = input.toString().slice(0,
@@ -31,8 +31,7 @@ goog.provide('ga_price_filter');
       }
       if (input >= 10) {
         filteredPriceRp = input.toString().slice(-2);
-      }
-      else {
+      } else {
         filteredPriceRp = '0' + input.toString().slice(-2);
       }
       if (filteredPriceRp === '00') {

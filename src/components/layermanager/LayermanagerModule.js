@@ -8,4 +8,3 @@ goog.require('ga_layermanager_directive');
   ]);
 
 })();
-

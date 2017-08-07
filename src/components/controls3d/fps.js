@@ -1,7 +1,5 @@
 goog.provide('fps');
 
-
-
 /**
  * @param {!Cesium.Scene} scene
  * @param {!Angular.Scope} scope
@@ -115,7 +113,6 @@ function FPS(scene, scope) {
       this.onPointerLockChange_.bind(this));
 }
 
-
 Object.defineProperties(FPS.prototype, {
   active: {
     get: function() {
@@ -133,7 +130,6 @@ Object.defineProperties(FPS.prototype, {
     }
   }
 });
-
 
 /**
  * Set the mode.
@@ -159,14 +155,12 @@ FPS.prototype.setFlyMode = function(flyMode) {
   }
 };
 
-
 /**
  * @return {boolean}
  */
 FPS.prototype.getPointerLock = function() {
   return !!(document.pointerLockElement || document.mozPointerLockElement);
 };
-
 
 /**
  * @private
@@ -192,15 +186,14 @@ FPS.prototype.enableInputs_ = function(enable) {
   controller.enableLook = enable;
 };
 
-
 /**
  * @param {boolean} active
- * @param {?Cesium.Cartesian3} opt_position
+ * @param {?Cesium.Cartesian3} optPosition
  */
-FPS.prototype.setActive = function(active, opt_position) {
+FPS.prototype.setActive = function(active, optPosition) {
   var positionCarto;
-  if (opt_position) {
-    positionCarto = this.ellipsoid_.cartesianToCartographic(opt_position);
+  if (optPosition) {
+    positionCarto = this.ellipsoid_.cartesianToCartographic(optPosition);
   } else {
     positionCarto = this.camera_.positionCartographic;
   }
@@ -247,7 +240,6 @@ FPS.prototype.setActive = function(active, opt_position) {
   }
 };
 
-
 /**
  * Handle mouse move event.
  * @param {Event} event
@@ -264,7 +256,6 @@ FPS.prototype.onMouseMove_ = function(event) {
     }
   }
 };
-
 
 /**
  * Handle key event.
@@ -299,7 +290,6 @@ FPS.prototype.onKey_ = function(event) {
   }
 };
 
-
 /**
  * Handle pointer lock change event.
  * @param {Event} event
@@ -310,7 +300,6 @@ FPS.prototype.onPointerLockChange_ = function(event) {
     this.setActive(false);
   }
 };
-
 
 /**
  * Tick.
@@ -326,7 +315,6 @@ FPS.prototype.tick_ = function(scene, time) {
     this.manTick_(delta);
   }
 };
-
 
 /**
  * Tick.
@@ -344,27 +332,25 @@ FPS.prototype.getTimeDifference_ = function() {
   return delta;
 };
 
-
 /**
  * Clamp a point above terrain
  * @param {!Cesium.Cartesian3} gpos
  * @param {number} minHeight
- * @param {number=} opt_maxHeight
+ * @param {number=} optMaxHeight
  * @return {!Cesium.Cartesian3}
  * @private
  */
-FPS.prototype.clampAboveTerrain_ = function(gpos, minHeight, opt_maxHeight) {
+FPS.prototype.clampAboveTerrain_ = function(gpos, minHeight, optMaxHeight) {
   var lla = this.ellipsoid_.cartesianToCartographic(gpos);
   var groundAlt = Cesium.defaultValue(this.scene_.globe.getHeight(lla), 0.0);
   if (lla.height - groundAlt < minHeight) {
     lla.height = groundAlt + minHeight;
   }
-  if (opt_maxHeight && (lla.height - groundAlt > opt_maxHeight)) {
-    lla.height = groundAlt + opt_maxHeight;
+  if (optMaxHeight && (lla.height - groundAlt > optMaxHeight)) {
+    lla.height = groundAlt + optMaxHeight;
   }
   return this.ellipsoid_.cartographicToCartesian(lla);
 };
-
 
 /**
  * Tick.
@@ -414,7 +400,6 @@ FPS.prototype.flyModeTick_ = function(delta) {
     }
   });
 };
-
 
 /**
  * Tick.

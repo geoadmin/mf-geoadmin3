@@ -100,7 +100,7 @@ goog.require('ga_measure_filter');
             positioning: 'bottom-center',
             insertFirst: false,
             stopEvent: angular.isDefined(stopEvent) ?
-                stopEvent : true // for copy/paste
+              stopEvent : true // for copy/paste
           });
           return tooltip;
         };
@@ -151,8 +151,8 @@ goog.require('ga_measure_filter');
 
           if (geomLine instanceof ol.geom.LineString) {
             var label = '',
-                delta = 1,
-                length = geomLine.getLength();
+              delta = 1,
+              length = geomLine.getLength();
             if (this.canShowAzimuthCircle(geomLine)) {
               label += this.getAzimuthLabel(geomLine) + ' / ';
             }
@@ -193,9 +193,9 @@ goog.require('ga_measure_filter');
               }
             }
             if (currIdx < overlays.getLength()) {
-             for (var j = overlays.getLength() - 1; j >= currIdx; j--) {
-               overlays.pop();
-             }
+              for (var j = overlays.getLength() - 1; j >= currIdx; j--) {
+                overlays.pop();
+              }
             }
           }
         };

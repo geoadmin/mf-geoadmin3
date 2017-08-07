@@ -43,21 +43,21 @@ goog.require('ga_previewfeatures_service');
           var deferred = $q.defer();
           if (!feature.geojson) {
             $http.get(
-              scope.options.msUrl + '/' + feature.layerBodId + '/' +
+                scope.options.msUrl + '/' + feature.layerBodId + '/' +
                    feature.id, {
-              cache: true,
-              timeout: canceler.promise,
-              params: {
-                geometryFormat: 'geojson'
-              }
-            }).then(function(response) {
+                  cache: true,
+                  timeout: canceler.promise,
+                  params: {
+                    geometryFormat: 'geojson'
+                  }
+                }).then(function(response) {
               feature.geojson = response.data.feature;
               deferred.resolve(true);
             }, function() {
               deferred.reject(false);
             });
           } else {
-           deferred.resolve(true);
+            deferred.resolve(true);
           }
           return deferred.promise;
         };
@@ -141,9 +141,9 @@ goog.require('ga_previewfeatures_service');
 
                 for (var i = 0, ii = layerNode.features.length; i < ii; i++) {
                   var feature = layerNode.features[i];
-                  //look if feature exists already. We do this
-                  //to avoid loading the same feature again and
-                  //to preserve state (selected)
+                  // look if feature exists already. We do this
+                  // to avoid loading the same feature again and
+                  // to preserve state (selected)
                   if (oldNode) {
                     for (var j = 0, jj = oldNode.features.length; j < jj; j++) {
                       var oldFeature = oldNode.features[j];
@@ -232,11 +232,11 @@ goog.require('ga_previewfeatures_service');
             };
 
             scope.onKeyDown = function(evt, feature) {
-              //arrow up key
+              // arrow up key
               if (evt.keyCode == 38) {
                 $(evt.target).prev().focus();
                 evt.preventDefault();
-              //arrow down key
+              // arrow down key
               } else if (evt.keyCode == 40) {
                 $(evt.target).next().focus();
                 evt.preventDefault();
@@ -253,7 +253,6 @@ goog.require('ga_previewfeatures_service');
               evt.stopPropagation();
               scope.$emit('gaGetMoreFeatureTree', layer);
             };
-
 
             // Watchers and scope events
             scope.$watch('isActive', function(newVal, oldVal) {
@@ -282,4 +281,3 @@ goog.require('ga_previewfeatures_service');
       }
   );
 })();
-

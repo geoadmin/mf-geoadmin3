@@ -115,8 +115,7 @@ goog.provide('ga_stylesfromliterals_service');
         return value.maxResolution || Infinity;
       }
 
-
-      var olStyleForPropertyValue = function(properties) {
+      var OlStyleForPropertyValue = function(properties) {
         this.singleStyle = null;
 
         this.defaultVal = 'defaultVal';
@@ -134,8 +133,8 @@ goog.provide('ga_stylesfromliterals_service');
         this.initialize_(properties);
       };
 
-      olStyleForPropertyValue.prototype.initialize_ = function(properties) {
-        var styleSpec;
+      OlStyleForPropertyValue.prototype.initialize_ = function(properties) {
+        var i, styleSpec;
         if (this.type === 'unique' || this.type === 'range') {
           this.key = properties.property;
         }
@@ -147,7 +146,7 @@ goog.provide('ga_stylesfromliterals_service');
           };
         } else if (this.type === 'unique') {
           var values = properties.values;
-          for (var i = 0; i < values.length; i++) {
+          for (i = 0; i < values.length; i++) {
             var value = values[i];
             styleSpec = {
               olStyle: getOlStyleFromLiterals(value),
@@ -159,7 +158,7 @@ goog.provide('ga_stylesfromliterals_service');
           }
         } else if (this.type === 'range') {
           var ranges = properties.ranges;
-          for (var i = 0; i < ranges.length; i++) {
+          for (i = 0; i < ranges.length; i++) {
             var range = ranges[i];
             styleSpec = {
               olStyle: getOlStyleFromLiterals(range),
@@ -173,7 +172,7 @@ goog.provide('ga_stylesfromliterals_service');
         }
       };
 
-      olStyleForPropertyValue.prototype.pushOrInitialize_ = function(
+      OlStyleForPropertyValue.prototype.pushOrInitialize_ = function(
           geomType, key, styleSpec) {
         // Happens when styling is only resolution dependent (unique type only)
         if (key === undefined) {
@@ -186,7 +185,7 @@ goog.provide('ga_stylesfromliterals_service');
         }
       };
 
-      olStyleForPropertyValue.prototype.findOlStyleInRange_ = function(value,
+      OlStyleForPropertyValue.prototype.findOlStyleInRange_ = function(value,
           geomType) {
         var olStyle, range;
         for (range in this.styles[geomType]) {
@@ -200,10 +199,10 @@ goog.provide('ga_stylesfromliterals_service');
         return olStyle;
       };
 
-      olStyleForPropertyValue.prototype.getOlStyleForResolution_ = function(
+      OlStyleForPropertyValue.prototype.getOlStyleForResolution_ = function(
           olStyles, resolution) {
-        var i, ii, olStyle;
-        for (i = 0, ii = olStyles.length; i < ii; i++) {
+        var olStyle;
+        for (var i = 0, ii = olStyles.length; i < ii; i++) {
           olStyle = olStyles[i];
           if (olStyle.minResolution <= resolution &&
               olStyle.maxResolution > resolution) {
@@ -213,53 +212,51 @@ goog.provide('ga_stylesfromliterals_service');
         return olStyle;
       };
 
-      olStyleForPropertyValue.prototype.alertDebug_ = function(value, id) {
+      OlStyleForPropertyValue.prototype.alertDebug_ = function(value, id) {
         value = value === '' ? '<empty string>' : value;
         $window.alert('Feature ID: ' + id + '. No matching style found ' +
             'for key ' + this.key + ' and value ' + value + '.');
         return this.defaultStyle;
       };
 
-      olStyleForPropertyValue.prototype.getFeatureStyle = function(feature,
+      OlStyleForPropertyValue.prototype.getFeatureStyle = function(feature,
           resolution) {
+        var properties, value, geomType, olStyles, res, labelProperty, text;
         if (this.type === 'single') {
-          var labelProperty = this.singleStyle.labelProperty;
+          labelProperty = this.singleStyle.labelProperty;
           if (labelProperty) {
-            var properties = feature.getProperties();
-            var text = properties[labelProperty];
-            var olText = this.singleStyle.olStyle.getText();
+            properties = feature.getProperties();
+            text = properties[labelProperty];
             this.singleStyle.olStyle.getText().setText(text);
           }
           return this.singleStyle.olStyle;
         } else if (this.type === 'unique') {
-          var properties = feature.getProperties();
+          properties = feature.getProperties();
           // A value can be 0
-          var value = properties[this.key];
+          value = properties[this.key];
           value = value !== undefined ? value : this.defaultVal;
-          var geomType = getGeomTypeFromGeometry(feature.getGeometry());
-          var olStyles = this.styles[geomType][value];
+          geomType = getGeomTypeFromGeometry(feature.getGeometry());
+          olStyles = this.styles[geomType][value];
           if (!olStyles) {
             return this.alertDebug_(value, feature.getId());
           }
-          var res = this.getOlStyleForResolution_(olStyles, resolution);
-          var labelProperty = res.labelProperty;
-          if (labelProperty) {
-            var text = properties[labelProperty];
+          res = this.getOlStyleForResolution_(olStyles, resolution);
+          if (res.labelProperty) {
+            text = properties[res.labelProperty];
             res.olStyle.getText().setText(text);
           }
           return res.olStyle;
         } else if (this.type === 'range') {
-          var properties = feature.getProperties();
-          var value = properties[this.key];
-          var geomType = getGeomTypeFromGeometry(feature.getGeometry());
-          var olStyles = this.findOlStyleInRange_(value, geomType);
+          properties = feature.getProperties();
+          value = properties[this.key];
+          geomType = getGeomTypeFromGeometry(feature.getGeometry());
+          olStyles = this.findOlStyleInRange_(value, geomType);
           if (!olStyles) {
             return this.alertDebug_(value, feature.getId());
           }
-          var res = this.getOlStyleForResolution_(olStyles, resolution);
-          var labelProperty = res.labelProperty;
-          if (labelProperty) {
-            var text = properties[labelProperty];
+          res = this.getOlStyleForResolution_(olStyles, resolution);
+          if (res.labelProperty) {
+            text = properties[res.labelProperty];
             res.olStyle.getText().setText(text);
           }
           return res.olStyle;
@@ -267,7 +264,7 @@ goog.provide('ga_stylesfromliterals_service');
       };
 
       return function(properties) {
-        return new olStyleForPropertyValue(properties);
+        return new OlStyleForPropertyValue(properties);
       };
     };
   });

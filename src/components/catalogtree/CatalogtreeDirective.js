@@ -84,8 +84,8 @@ goog.require('ga_translation_service');
             //   and marks them selected in the catalog
             var handleTree = function(newTree, oldTree) {
               var i, layer, bodId,
-                  layers = scope.layers,
-                  leaves = {};
+                layers = scope.layers,
+                leaves = {};
 
               visitTree(newTree, function(leaf) {
                 leaf.selectedOpen = false;
@@ -107,8 +107,8 @@ goog.require('ga_translation_service');
                 return;
               }
               var labelsOnly = false;
-              var url = scope.options.catalogUrlTemplate
-                  .replace('{Topic}', topic.id);
+              var url = scope.options.catalogUrlTemplate.
+                  replace('{Topic}', topic.id);
               // If the topic has not changed that means we need to update only
               // labels
               if (lastUrlUsed == url) {
@@ -148,7 +148,7 @@ goog.require('ga_translation_service');
                   scope.openIds.length = 0;
                   gaPermalink.deleteParam('catalogNodes');
                 }
-                //update Tree
+                // update Tree
                 if (labelsOnly) {
                   if (angular.isDefined(oldTree)) {
                     retainTreeState(newTree, oldTree);
@@ -173,18 +173,18 @@ goog.require('ga_translation_service');
             scope.layerFilter = gaLayerFilters.selected;
             scope.$watchCollection('layers | filter:layerFilter',
                 function(layers) {
-              var layerBodIds;
-              if (angular.isDefined(scope.root)) {
-                layerBodIds = [];
-                angular.forEach(layers, function(layer) {
-                  var bodId = layer.bodId;
-                  if (angular.isDefined(bodId)) {
-                    layerBodIds.push(bodId);
+                  var layerBodIds;
+                  if (angular.isDefined(scope.root)) {
+                    layerBodIds = [];
+                    angular.forEach(layers, function(layer) {
+                      var bodId = layer.bodId;
+                      if (angular.isDefined(bodId)) {
+                        layerBodIds.push(bodId);
+                      }
+                    });
+                    updateSelectionInTree(scope.root, layerBodIds);
                   }
                 });
-                updateSelectionInTree(scope.root, layerBodIds);
-              }
-            });
 
             // Initializer the component if possible
             updateCatalogTree(gaTopic.get(), gaLang.get());
@@ -228,4 +228,3 @@ goog.require('ga_translation_service');
       }
   );
 })();
-
