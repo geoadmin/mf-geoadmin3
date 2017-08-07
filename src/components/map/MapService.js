@@ -1290,12 +1290,6 @@ goog.require('ga_urlutils_service');
           }
           var defer = $q.defer();
           var view = map.getView();
-          // TODO: use or not the duration?
-          // var source = view.getCenter();
-          // var dist = Math.sqrt(Math.pow(source[0] - dest[0], 2),
-          //    Math.pow(source[1] - dest[1], 2));
-          // var duration = Math.min(Math.sqrt(300 + dist /
-          //    view.getResolution() * 1000), 3000);
           view.animate({
             center: dest,
             duration: 0
