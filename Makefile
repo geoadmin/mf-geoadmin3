@@ -201,12 +201,10 @@ debug: .build-artefacts/devlibs src/deps.js src/style/app.css src/index.html src
 .PHONY: lint
 lint: .build-artefacts/devlibs
 	${NODE_BIN}/eslint $(SRC_JS_FILES) --fix
-	touch $@
 
 .PHONY: linttest
 linttest: .build-artefacts/devlibs
 	${NODE_BIN}/eslint test/specs/ --fix
-	touch $@
 
 .PHONY: lintpy
 lintpy: ${FLAKE8_CMD}
