@@ -199,15 +199,15 @@ release: .build-artefacts/devlibs \
 debug: .build-artefacts/devlibs src/deps.js src/style/app.css src/index.html src/mobile.html src/embed.html src/404.html
 
 .PHONY: lint
-lint: .build-artefacts/devlibs
+lint: .build-artefacts/devlibs .build-artefacts/requirements.timestamp $(SRC_JS_FILES)
 	${NODE_BIN}/eslint $(SRC_JS_FILES) --fix
 
 .PHONY: linttest
-linttest: .build-artefacts/devlibs
+linttest: .build-artefacts/devlibs .build-artefacts/requirements.timestamp
 	${NODE_BIN}/eslint test/specs/ --fix
 
 .PHONY: lintpy
-lintpy: ${FLAKE8_CMD}
+lintpy: .build-artefacts/requirements.timestamp ${FLAKE8_CMD}
 	${AUTOPEP8_CMD} --in-place --aggressive --aggressive --verbose --max-line-lengt=110 $(PYTHON_FILES)
 
 .PHONY: testdebug
