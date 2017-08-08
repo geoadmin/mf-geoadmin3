@@ -23,7 +23,7 @@ describe('ga_previewlayers_service', function() {
             return '20161231';
           },
           isBodLayer: function(olLayer) {
-           return !!(olLayer.bodId);
+            return !!(olLayer.bodId);
           }
         });
 
@@ -87,7 +87,7 @@ describe('ga_previewlayers_service', function() {
         var layer = layers.item(0);
         expect(layer.time).to.be('20161231');
 
-        gaTime.get = function() { return '2017';};
+        gaTime.get = function() { return '2017'; };
         gaPreviewLayers.addBodLayer(map, 'some');
         expect(layer.time).to.be('20171231');
       });

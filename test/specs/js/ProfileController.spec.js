@@ -1,9 +1,10 @@
-describe('ga_profile_controller', function() {7;
+describe('ga_profile_controller', function() {
+  7;
 
   describe('GaProfileController', function() {
 
     var scope, parentScope, $compile, $rootScope, $timeout, $httpBackend,
-        gaBrowserSniffer, gaGlobalOptions, gaPrint;
+      gaBrowserSniffer, gaGlobalOptions, gaPrint;
 
     var loadController = function() {
       parentScope = $rootScope.$new();
@@ -69,4 +70,3 @@ describe('ga_profile_controller', function() {7;
     });
   });
 });
-

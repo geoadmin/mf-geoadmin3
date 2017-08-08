@@ -6,14 +6,14 @@ describe('ga_networkstatus_service', function() {
 
     beforeEach(function() {
       inject(function($injector) {
-         httpI = $injector.get('httpInterceptor');
-         gaDebounce = $injector.get('gaDebounce');
-         gaNetworkStatus = $injector.get('gaNetworkStatus');
-         $q = $injector.get('$q');
-         gaWaitCursor = $injector.get('gaWaitCursor');
-         $http = $injector.get('$http');
-         $httpBackend = $injector.get('$httpBackend');
-         $timeout = $injector.get('$timeout');
+        httpI = $injector.get('httpInterceptor');
+        gaDebounce = $injector.get('gaDebounce');
+        gaNetworkStatus = $injector.get('gaNetworkStatus');
+        $q = $injector.get('$q');
+        gaWaitCursor = $injector.get('gaWaitCursor');
+        $http = $injector.get('$http');
+        $httpBackend = $injector.get('$httpBackend');
+        $timeout = $injector.get('$timeout');
       });
     });
 
@@ -93,14 +93,13 @@ describe('ga_networkstatus_service', function() {
 
   describe('gaNetworkStatus', function() {
     var $document, $rootScope, $window, gaGlobalOptions,
-        gaNetworkStatus, $timeout;
+      gaNetworkStatus, $timeout;
     var mock;
 
     var expectStatusChange = function(offline) {
       mock.expects('$broadcast').withExactArgs('gaNetworkStatusChange', offline);
       mock.expects('$digest').once();
     };
-
 
     var injectNs = function() {
       inject(function($injector) {

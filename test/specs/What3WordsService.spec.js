@@ -36,7 +36,6 @@ describe('ga_what3words_service', function() {
 
       });
 
-
     });
     describe('send requests', function() {
 

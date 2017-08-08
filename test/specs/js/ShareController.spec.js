@@ -3,7 +3,7 @@ describe('ga_share_controller', function() {
   describe('GaShareController', function() {
 
     var scope, parentScope, $compile, $rootScope, $timeout, $httpBackend,
-        gaGlobalOptions;
+      gaGlobalOptions;
 
     var loadController = function() {
       parentScope = $rootScope.$new();

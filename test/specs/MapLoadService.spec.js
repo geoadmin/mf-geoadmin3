@@ -39,7 +39,6 @@ describe('ga_mapload_service', function() {
       spyInfo = sinon.stub($window.console, 'info');
       spyLog = sinon.stub($window.console, 'log');
 
-
       map = new ol.Map({});
       $rootScope.map = map;
 
@@ -49,7 +48,6 @@ describe('ga_mapload_service', function() {
       spyInfo.restore();
       spyLog.restore();
     });
-
 
     describe('#init()', function() {
 
@@ -121,7 +119,6 @@ describe('ga_mapload_service', function() {
         expect(spyInfo.callCount).to.be(2);
         expect(spyLog.callCount).to.be(2);
       });
-
 
     });
   });

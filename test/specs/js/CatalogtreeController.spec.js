@@ -3,7 +3,7 @@ describe('ga_catalogtree_controller', function() {
   describe('GaCatalogtreeController', function() {
 
     var scope, parentScope, $compile, $rootScope, $timeout, $httpBackend,
-        gaGlobalOptions;
+      gaGlobalOptions;
 
     var loadController = function() {
       parentScope = $rootScope.$new();
@@ -28,7 +28,7 @@ describe('ga_catalogtree_controller', function() {
       loadController();
     });
 
-     afterEach(function() {
+    afterEach(function() {
       $httpBackend.verifyNoOutstandingExpectation();
       $httpBackend.verifyNoOutstandingRequest();
       try {
@@ -43,4 +43,3 @@ describe('ga_catalogtree_controller', function() {
     });
   });
 });
-

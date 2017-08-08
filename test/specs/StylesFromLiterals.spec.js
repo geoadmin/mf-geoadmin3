@@ -17,10 +17,10 @@ describe('ga_stylesfromliterals_service', function() {
         vectorOptions: {
           type: 'icon',
           src: 'https://data.geo.admin.ch/ch.bfe.bikesharing/images/13.png'
-          /*anchor: [
+          /* anchor: [
             1,
             1
-          ]*/
+          ] */
         }
       };
       var gaStyle = gaStylesFromLiterals(singleTypeStyle);
@@ -139,7 +139,6 @@ describe('ga_stylesfromliterals_service', function() {
       expect(olImage.getRotation()).to.be(0);
       expect(olImage.getAngle()).to.be(0);
 
-
       singleTypeStyle = {
         type: 'single',
         geomType: 'point',
@@ -248,7 +247,7 @@ describe('ga_stylesfromliterals_service', function() {
       };
       var geoJsonFormat = new ol.format.GeoJSON();
       var olFeature = geoJsonFormat.readFeature(
-        '{"type": "Feature",' +
+          '{"type": "Feature",' +
           '"geometry": {' +
             '"coordinates": [' +
               '10000,' +
@@ -335,7 +334,7 @@ describe('ga_stylesfromliterals_service', function() {
       };
       var geoJsonFormat = new ol.format.GeoJSON();
       var olFeature = geoJsonFormat.readFeature(
-        '{"type": "Feature",' +
+          '{"type": "Feature",' +
           '"geometry": {' +
             '"coordinates": [' +
               '10000,' +
@@ -362,7 +361,7 @@ describe('ga_stylesfromliterals_service', function() {
       expect(olImage.getFill().getColor()).to.equal('#FF2222');
 
       olFeature = geoJsonFormat.readFeature(
-        '{"type": "Feature",' +
+          '{"type": "Feature",' +
           '"geometry": {' +
             '"coordinates": [' +
               '[10000,' +
@@ -434,7 +433,7 @@ describe('ga_stylesfromliterals_service', function() {
       var gaStyle = gaStylesFromLiterals(uniqueTypeStyle);
       var geoJsonFormat = new ol.format.GeoJSON();
       var olFeature = geoJsonFormat.readFeature(
-        '{"type": "Feature",' +
+          '{"type": "Feature",' +
           '"geometry": {' +
             '"coordinates": [' +
               '10000,' +
@@ -456,7 +455,7 @@ describe('ga_stylesfromliterals_service', function() {
       expect(olImage.getStroke().getWidth()).to.equal(3);
 
       olFeature = geoJsonFormat.readFeature(
-        '{"type": "Feature",' +
+          '{"type": "Feature",' +
           '"geometry": {' +
             '"coordinates": [' +
               '15000,' +
@@ -535,7 +534,7 @@ describe('ga_stylesfromliterals_service', function() {
       var gaStyle = gaStylesFromLiterals(uniqueTypeStyleWithRes);
       var geoJsonFormat = new ol.format.GeoJSON();
       var olFeature = geoJsonFormat.readFeature(
-        '{"type": "Feature",' +
+          '{"type": "Feature",' +
           '"geometry": {' +
             '"coordinates": [' +
               '10000,' +
@@ -575,7 +574,7 @@ describe('ga_stylesfromliterals_service', function() {
       expect(olImage.getStroke().getWidth()).to.equal(1);
 
       olFeature = geoJsonFormat.readFeature(
-        '{"type": "Feature",' +
+          '{"type": "Feature",' +
           '"geometry": {' +
             '"coordinates": [' +
               '10000,' +
@@ -684,7 +683,7 @@ describe('ga_stylesfromliterals_service', function() {
       var gaStyle = gaStylesFromLiterals(rangeTypeStyle);
       var geoJsonFormat = new ol.format.GeoJSON();
       var olFeature = geoJsonFormat.readFeature(
-        '{"type": "Feature",' +
+          '{"type": "Feature",' +
           '"geometry": {' +
             '"coordinates": [' +
               '10000,' +
@@ -706,7 +705,7 @@ describe('ga_stylesfromliterals_service', function() {
       expect(olImage.getStroke().getWidth()).to.equal(3);
 
       olFeature = geoJsonFormat.readFeature(
-        '{"type": "Feature",' +
+          '{"type": "Feature",' +
           '"geometry": {' +
             '"coordinates": [' +
               '15000,' +
@@ -728,7 +727,7 @@ describe('ga_stylesfromliterals_service', function() {
       expect(olImage.getStroke().getWidth()).to.equal(2);
 
       olFeature = geoJsonFormat.readFeature(
-        '{"type": "Feature",' +
+          '{"type": "Feature",' +
           '"geometry": {' +
             '"coordinates": [' +
               '11000,' +
@@ -750,7 +749,7 @@ describe('ga_stylesfromliterals_service', function() {
       expect(olImage.getStroke().getWidth()).to.equal(2);
 
       olFeature = geoJsonFormat.readFeature(
-        '{"type": "Feature",' +
+          '{"type": "Feature",' +
           '"geometry": {' +
             '"coordinates": [' +
               '11000,' +
@@ -826,7 +825,7 @@ describe('ga_stylesfromliterals_service', function() {
       var gaStyle = gaStylesFromLiterals(rangeTypeStyle);
       var geoJsonFormat = new ol.format.GeoJSON();
       var olFeature = geoJsonFormat.readFeature(
-        '{"type": "Feature",' +
+          '{"type": "Feature",' +
           '"geometry": {' +
             '"coordinates": [' +
               '10000,' +
@@ -857,7 +856,7 @@ describe('ga_stylesfromliterals_service', function() {
       expect(olImage.getStroke().getWidth()).to.equal(1);
 
       olFeature = geoJsonFormat.readFeature(
-        '{"type": "Feature",' +
+          '{"type": "Feature",' +
           '"geometry": {' +
             '"coordinates": [' +
               '15000,' +
@@ -879,7 +878,7 @@ describe('ga_stylesfromliterals_service', function() {
       expect(olImage.getStroke().getWidth()).to.equal(2);
 
       olFeature = geoJsonFormat.readFeature(
-        '{"type": "Feature",' +
+          '{"type": "Feature",' +
           '"geometry": {' +
             '"coordinates": [' +
               '11000,' +

@@ -5,7 +5,7 @@ describe('ga_share_directive', function() {
   beforeEach(function() {
 
     element = angular.element(
-      '<div ga-share ga-share-options="options"></div>');
+        '<div ga-share ga-share-options="options"></div>');
 
     inject(function($rootScope, $compile) {
       $rootScope.options = {
@@ -22,9 +22,8 @@ describe('ga_share_directive', function() {
   });
 
   it('creates 5 <i>', function() {
-      var icon = element.find('.ga-share-icons i');
-      expect(icon.length).to.be(5);
+    var icon = element.find('.ga-share-icons i');
+    expect(icon.length).to.be(5);
   });
 
- });
-
+});

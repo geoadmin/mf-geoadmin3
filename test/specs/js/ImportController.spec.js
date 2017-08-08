@@ -3,8 +3,8 @@ describe('ga_import_controller', function() {
   describe('GaImportController', function() {
 
     var scope, parentScope, $compile, $rootScope, $httpBackend, $window, $q, $document, $timeout, $httpBackend,
-        ngeoFile, gaKml, gaBrowserSniffer, gaWms, gaUrlUtils, gaLang, gaPreviewLayers,
-        gaMapUtils, gaWmts, map;
+      ngeoFile, gaKml, gaBrowserSniffer, gaWms, gaUrlUtils, gaLang, gaPreviewLayers,
+      gaMapUtils, gaWmts, map;
 
     var loadController = function(map) {
       parentScope = $rootScope.$new();
@@ -59,7 +59,6 @@ describe('ga_import_controller', function() {
         gaBrowserSniffer.msie = 9;
       });
 
-
       it('set scope values', function() {
         loadController(map);
         expect(scope.supportDnd).to.be(false);
@@ -75,7 +74,6 @@ describe('ga_import_controller', function() {
         });
         gaBrowserSniffer.msie = 10;
       });
-
 
       it('set scope values', function() {
         loadController(map);
@@ -168,7 +166,6 @@ describe('ga_import_controller', function() {
           });
         });
 
-
         it('returns a WMTS GetCapabiltiies url', function() {
           var urls = [
             'https://wmts.ch',
@@ -192,7 +189,7 @@ describe('ga_import_controller', function() {
             'https://foo.txt',
             'https://foo.xml',
             'https://foo.ch/serv.php?file=lal.kml&parameter=custom',
-            'https://wmts.ch/wms/foo.ext',
+            'https://wmts.ch/wms/foo.ext'
           ];
           var spy = sinon.spy(gaUrlUtils, 'proxifyUrl');
           urls.forEach(function(url) {
@@ -310,4 +307,3 @@ describe('ga_import_controller', function() {
     });
   });
 });
-

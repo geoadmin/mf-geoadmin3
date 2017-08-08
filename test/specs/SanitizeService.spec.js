@@ -13,7 +13,6 @@ describe('ga_sanitize_service', function() {
     var htmlEncodedWithScriptTags = '&lt;div&gt;&lt;script&gt; ' +
         'alert(document.cookie) &lt;/script&gt;&lt;p&gt;&lt;/p&gt;&lt;/div&gt;';
 
-
     beforeEach(function() {
       inject(function($injector) {
         gaSanitize = $injector.get('gaSanitize');

@@ -3,7 +3,7 @@ describe('ga_drawstyle_controller', function() {
   describe('GaDrawStyleController', function() {
 
     var scope, parentScope, $compile, $rootScope, $translate, $timeout, $httpBackend,
-        gaStyleFactory;
+      gaStyleFactory;
 
     var loadController = function() {
       parentScope = $rootScope.$new();
@@ -70,4 +70,3 @@ describe('ga_drawstyle_controller', function() {
     });
   });
 });
-

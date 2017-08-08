@@ -102,38 +102,38 @@ describe('ga_offline_service', function() {
       });
 
       it('returns false if there is data but ' + timestampKey + 'is not set (old offline version)', function() {
-       var getExt = gaStorageMock.expects('getItem').once().withArgs(extentKey).returns('655000,185000,665000,195000');
-       var getTs = gaStorageMock.expects('getItem').once().withArgs(timestampKey).returns(undefined);
-       var obs = gaOffline.isDataObsolete();
-       getExt.verify();
-       getTs.verify();
-       expect(obs).to.be(true);
-       $timeout.flush();
+        var getExt = gaStorageMock.expects('getItem').once().withArgs(extentKey).returns('655000,185000,665000,195000');
+        var getTs = gaStorageMock.expects('getItem').once().withArgs(timestampKey).returns(undefined);
+        var obs = gaOffline.isDataObsolete();
+        getExt.verify();
+        getTs.verify();
+        expect(obs).to.be(true);
+        $timeout.flush();
       });
 
       describe('#isDataObsolete()', function() {
         var verif;
         beforeEach(function() {
           verif = [
-            gaStorageMock.expects('getItem').once().withArgs(extentKey)
-                .returns('655000,185000,665000,195000'),
-            gaStorageMock.expects('getItem').once().withArgs(layersKey)
-                .returns('layerBodCurrent,layerNoBod,layerBod,layerBodTimeEnabled'),
-            gaLayersMock.expects('getLayer').once().withArgs('layerBodCurrent')
-                .returns(layerBodCurrConfig),
-            gaLayersMock.expects('getLayer').once().withArgs('layerNoBod')
-                .returns(undefined),
-            gaLayersMock.expects('getLayer').once().withArgs('layerBod')
-                .returns(layerBodConfig),
-            gaLayersMock.expects('getLayer').once().withArgs('layerBodTimeEnabled')
-                .returns(layerBodTimeEnabledConfig)
+            gaStorageMock.expects('getItem').once().withArgs(extentKey).
+                returns('655000,185000,665000,195000'),
+            gaStorageMock.expects('getItem').once().withArgs(layersKey).
+                returns('layerBodCurrent,layerNoBod,layerBod,layerBodTimeEnabled'),
+            gaLayersMock.expects('getLayer').once().withArgs('layerBodCurrent').
+                returns(layerBodCurrConfig),
+            gaLayersMock.expects('getLayer').once().withArgs('layerNoBod').
+                returns(undefined),
+            gaLayersMock.expects('getLayer').once().withArgs('layerBod').
+                returns(layerBodConfig),
+            gaLayersMock.expects('getLayer').once().withArgs('layerBodTimeEnabled').
+                returns(layerBodTimeEnabledConfig)
           ];
         });
 
         it('contains an obsolete layer', function() {
           verif = verif.concat([
-            gaStorageMock.expects('getItem').once().withArgs(timestampKey)
-                .returns('current,,20121231,18641231')
+            gaStorageMock.expects('getItem').once().withArgs(timestampKey).
+                returns('current,,20121231,18641231')
           ]);
           expect(gaOffline.isDataObsolete()).to.be(true);
           verif.forEach(function(item) {
@@ -144,8 +144,8 @@ describe('ga_offline_service', function() {
 
         it('doesn\'t contains an obsolete layer', function() {
           verif = verif.concat([
-            gaStorageMock.expects('getItem').once().withArgs(timestampKey)
-                .returns('current,,20141231,18641231')
+            gaStorageMock.expects('getItem').once().withArgs(timestampKey).
+                returns('current,,20141231,18641231')
           ]);
           expect(gaOffline.isDataObsolete()).to.be(false);
           verif.forEach(function(item) {
@@ -169,7 +169,7 @@ describe('ga_offline_service', function() {
           gaStorageMock.expects('removeItem').once().withArgs(layersKey),
           gaStorageMock.expects('removeItem').once().withArgs(opacityKey),
           gaStorageMock.expects('removeItem').once().withArgs(timestampKey),
-          gaStorageMock.expects('removeItem').once().withArgs(bgKey),
+          gaStorageMock.expects('removeItem').once().withArgs(bgKey)
         ];
         gaOffline.abort();
         $rootScope.$digest();
@@ -185,7 +185,7 @@ describe('ga_offline_service', function() {
         var defer = $q.defer();
         defer.reject();
         var verif = [
-          gaStorageMock.expects('clearTiles').once().returns(defer.promise),
+          gaStorageMock.expects('clearTiles').once().returns(defer.promise)
         ];
         gaOffline.abort();
         $rootScope.$digest();
@@ -214,7 +214,7 @@ describe('ga_offline_service', function() {
         layer.invertedOpacity = 1 - opacity;
         layer.timestamps = [
           '20180909',
-          '19550101',
+          '19550101'
         ];
         layer.time = time;
         map.addLayer(layer);
@@ -274,7 +274,7 @@ describe('ga_offline_service', function() {
           expect(stub.callCount).to.be(2);
           stub.restore();
           $timeout.flush();
-         });
+        });
 
         it('if only KMLs are saved', function() {
           var stub = sinon.stub($window, 'confirm').returns(true);
@@ -326,7 +326,7 @@ describe('ga_offline_service', function() {
         server.respondImmediately = true;
         addCacheableTiledLayerToMap('bodId', true, '0.4');
         addCacheableTiledLayerToMap('id', true, '0.2', '2016', true);
-        //try {
+        // try {
         gaOffline.save(map);
         // Launch requests
         $rootScope.$digest();

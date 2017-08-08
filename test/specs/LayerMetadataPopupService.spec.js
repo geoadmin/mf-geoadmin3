@@ -2,10 +2,10 @@ describe('ga_layermetadatapopup_service', function() {
 
   describe('gaLayerMetadataPopup', function() {
     var gaLayerMetadataPopup,
-        gaLang, gaLayers, $http,
-        $httpBackend, $q,
-        $rootScope,
-        $translate;
+      gaLang, gaLayers, $http,
+      $httpBackend, $q,
+      $rootScope,
+      $translate;
 
     var getBodLayer = function(bodId) {
       var layer = new ol.layer.Tile();
@@ -29,7 +29,7 @@ describe('ga_layermetadatapopup_service', function() {
     };
 
     var getMetaDataUrl = function(bodId) {
-       return 'http://legendservice.com/all/' + bodId + '?lang=' + gaLang.get();
+      return 'http://legendservice.com/all/' + bodId + '?lang=' + gaLang.get();
     };
 
     var getWmsHtmlLegend = function(olLayer) {
@@ -39,7 +39,7 @@ describe('ga_layermetadatapopup_service', function() {
 
     beforeEach(function() {
       module(function($provide) {
-        $provide.value('gaLang', new (function() {
+        $provide.value('gaLang', new function() {
           var lang = 'somelang';
           this.get = function() {
             return lang;
@@ -48,22 +48,22 @@ describe('ga_layermetadatapopup_service', function() {
             lang = newLang;
             $translate.use(newLang);
           };
-        })());
-        $provide.value('gaLayers', new (function() {
+        }());
+        $provide.value('gaLayers', new function() {
           this.getMetaDataOfLayer = function(bodId) {
             return $http.get(getMetaDataUrl(bodId));
           };
           this.getOlLayerById = function(bodId) {
             return getBodLayer(bodId);
           };
-        })());
-        $provide.value('gaWms', new (function() {
+        }());
+        $provide.value('gaWms', new function() {
           this.getLegend = function(olLayer) {
             var defer = $q.defer();
             defer.resolve({data: getWmsHtmlLegend(olLayer)});
             return defer.promise;
           };
-        })());
+        }());
       });
 
       inject(function($injector) {

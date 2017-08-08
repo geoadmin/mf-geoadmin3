@@ -21,14 +21,14 @@ describe('ga_shop_service', function() {
       'ch.swisstopo.pixelkarte-pk25.metadata': 'ch.swisstopo.pixelkarte-farbe-pk25.noscale',
       'ch.swisstopo.pixelkarte-pk50.metadata': 'ch.swisstopo.pixelkarte-farbe-pk50.noscale',
       'ch.swisstopo.pixelkarte-pk100.metadata': 'ch.swisstopo.pixelkarte-farbe-pk100.noscale',
-      'ch.swisstopo.pixelkarte-pk200.metadata': 'ch.swisstopo.pixelkarte-farbe-pk200.noscale',
+      'ch.swisstopo.pixelkarte-pk200.metadata': 'ch.swisstopo.pixelkarte-farbe-pk200.noscale'
     };
     var bodIds = [
       'ch.swisstopo.pixelkarte-farbe-pk25.noscale',
       'ch.swisstopo.pixelkarte-farbe-pk50.noscale',
       'ch.swisstopo.pixelkarte-farbe-pk100.noscale',
       'ch.swisstopo.pixelkarte-farbe-pk200.noscale'
-      //,'ch.swisstopo.digitales-hoehenmodell_25_reliefschattierung': '
+      //, 'ch.swisstopo.digitales-hoehenmodell_25_reliefschattierung': '
     ];
     var clipper = {
       'commune': 'ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill',
@@ -80,7 +80,6 @@ describe('ga_shop_service', function() {
         clock.restore();
       });
 
-
       it('do nothing if orderType or layerBodId are not defined', function() {
         gaShop.dispatch();
         sinon.assert.notCalled(openStub);
@@ -131,8 +130,8 @@ describe('ga_shop_service', function() {
       for (var m in mapsheetExeptions) {
         it('opens a good mapsheet url of exceptions', function() {
           gaShop.dispatch('mapsheet', mapsheetExeptions[m], 'featureId');
-          var mapsheetParamsExcept = mapsheetParamsExceptTpl
-            .replace('{layerBodId}', mapsheetExeptions[m]);
+          var mapsheetParamsExcept = mapsheetParamsExceptTpl.
+              replace('{layerBodId}', mapsheetExeptions[m]);
           sinon.assert.calledWith(openStub,
               dispatchUrl + mapsheetParamsExcept);
         });
@@ -141,9 +140,9 @@ describe('ga_shop_service', function() {
       for (var i in tileLayers) {
         it('opens a good tile url with clipper', function() {
           gaShop.dispatch('tile', i, 'featureId');
-          var withClipperParams = tileWithClipperParamsTpl
-            .replace('{layerBodId}', tileLayers[i])
-            .replace('{clipper}', i);
+          var withClipperParams = tileWithClipperParamsTpl.
+              replace('{layerBodId}', tileLayers[i]).
+              replace('{clipper}', i);
           sinon.assert.calledWith(openStub, dispatchUrl + withClipperParams);
         });
       }
@@ -210,9 +209,9 @@ describe('ga_shop_service', function() {
 
       for (var i in tileLayers) {
         it('send a good tile with clipper url', function(done) {
-          var withClipperParams = tileWithClipperParamsTpl
-              .replace('{layerBodId}', tileLayers[i])
-              .replace('{clipper}', i);
+          var withClipperParams = tileWithClipperParamsTpl.
+              replace('{layerBodId}', tileLayers[i]).
+              replace('{clipper}', i);
           $httpBackend.expectGET(priceUrl + withClipperParams).respond(200, {productPrice: 30});
           gaShop.getPrice('tile', i, 'featureId').then(function(price) {
             expect(price).to.eql(30);

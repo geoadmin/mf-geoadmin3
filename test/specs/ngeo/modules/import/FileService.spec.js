@@ -3,7 +3,6 @@ describe('ngeo.fileService', function() {
   describe('ngeoFile', function() {
     var $httpBackend, ngeoFile, $windowMock, $q, gaUrlUtils;
 
-
     beforeEach(function() {
       inject(function($injector) {
         ngeoFile = $injector.get('ngeoFile');
@@ -58,7 +57,7 @@ describe('ngeo.fileService', function() {
       });
     });
 
-    /*describe('#isGpx()', function() {
+    /* describe('#isGpx()', function() {
       it('tests if the content fo file is a WMS GetCapabilties', function() {
         expect(gaKml.isValidFileContent('<html></html>')).to.be(false);
         expect(gaKml.isValidFileContent('<kml></kml>')).to.be(true);
@@ -66,7 +65,7 @@ describe('ngeo.fileService', function() {
         expect(gaKml.isValidFileContent(null)).to.be(false);
         expect(gaKml.isValidFileContent(212334)).to.be(false);
       });
-    });*/
+    }); */
 
     describe('#read()', function() {
       it('reads a file and extract the contentas string', function() {

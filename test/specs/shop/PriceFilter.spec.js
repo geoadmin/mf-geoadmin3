@@ -19,7 +19,6 @@ describe('ga_price_filter', function() {
     expect(result).to.eql('CHF 14.-');
   });
 
-
   it('should show rp if full not full number', function() {
     // Arrange.
     var price = 1499, result;

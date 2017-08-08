@@ -44,7 +44,7 @@ describe('ga_map_directive', function() {
         $httpBackend = $injector.get('$httpBackend');
         gaLayers = $injector.get('gaLayers');
         gaOffline = $injector.get('gaOffline');
-       });
+      });
 
       map = new ol.Map({
         layers: []

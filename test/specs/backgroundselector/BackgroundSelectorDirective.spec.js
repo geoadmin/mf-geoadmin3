@@ -22,12 +22,12 @@ describe('ga_backgroundselector_directive', function() {
           getLayerProperty: function(id, propertyName) {
             if (propertyName === 'label') {
               switch (id) {
-                case 'ch.swisstopo.swissimage':
-                  return 'bg_luftbild';
-                case 'ch.swisstopo.pixelkarte-farbe':
-                  return 'bg_pixel_color';
-                case 'ch.swisstopo.pixelkarte-grau':
-                  return 'bg_pixel_grey';
+              case 'ch.swisstopo.swissimage':
+                return 'bg_luftbild';
+              case 'ch.swisstopo.pixelkarte-farbe':
+                return 'bg_pixel_color';
+              case 'ch.swisstopo.pixelkarte-grau':
+                return 'bg_pixel_grey';
               }
             }
           }
@@ -120,12 +120,12 @@ describe('ga_backgroundselector_directive', function() {
           getLayerProperty: function(id, propertyName) {
             if (propertyName === 'label') {
               switch (id) {
-                case 'ch.swisstopo.swissimage':
-                  return 'bg_luftbild';
-                case 'ch.swisstopo.pixelkarte-farbe':
-                  return 'bg_pixel_color';
-                case 'ch.swisstopo.pixelkarte-grau':
-                  return 'bg_pixel_grey';
+              case 'ch.swisstopo.swissimage':
+                return 'bg_luftbild';
+              case 'ch.swisstopo.pixelkarte-farbe':
+                return 'bg_pixel_color';
+              case 'ch.swisstopo.pixelkarte-grau':
+                return 'bg_pixel_grey';
               }
             }
           }

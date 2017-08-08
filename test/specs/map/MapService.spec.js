@@ -150,11 +150,11 @@ describe('ga_map_service', function() {
     var gaTileGrid;
     var orig = [420000, 350000];
     var dfltRes = [4000, 3750, 3500, 3250, 3000, 2750, 2500, 2250,
-        2000, 1750, 1500, 1250, 1000, 750, 650, 500, 250, 100, 50, 20, 10, 5,
-        2.5, 2, 1.5, 1, 0.5];
+      2000, 1750, 1500, 1250, 1000, 750, 650, 500, 250, 100, 50, 20, 10, 5,
+      2.5, 2, 1.5, 1, 0.5];
     var wmsRes = dfltRes.concat([0.25, 0.1]);
     var getMatrixIds = function(res) {
-      return $.map(res, function(r, i) { return i + '';});
+      return $.map(res, function(r, i) { return i + ''; });
     };
 
     describe('#get()', function() {
@@ -652,7 +652,7 @@ describe('ga_map_service', function() {
     describe('#getConfig3d()', function() {
       var layersConfig = {
         foo: {
-        'config3d': 'foo3d'
+          'config3d': 'foo3d'
         },
         foo3d: {},
         fooNo3d: {}
@@ -683,7 +683,7 @@ describe('ga_map_service', function() {
       });
     });
 
-    describe('#getCesiumTerrainProviderById()' , function() {
+    describe('#getCesiumTerrainProviderById()', function() {
       var layersConfig = {
         terrain: {
           type: 'terrain',
@@ -737,7 +737,7 @@ describe('ga_map_service', function() {
       });
 
       it('doesn\'t use crrent time', function(done) {
-        gaTime.get = function() {return '2017';};
+        gaTime.get = function() { return '2017'; };
         gaLayers.loadConfig().then(function(layers) {
           var spy = sinon.spy(gaLayers, 'getLayerTimestampFromYear');
           var prov = gaLayers.getCesiumTerrainProviderById('terrain');
@@ -760,7 +760,7 @@ describe('ga_map_service', function() {
       });
     });
 
-    describe('#getCesiumTileset3DById' , function() {
+    describe('#getCesiumTileset3DById', function() {
       var layersConfig = {
         'ch.dummy.wms': {
           type: 'wms',
@@ -778,7 +778,7 @@ describe('ga_map_service', function() {
         },
         'ch.dummy.wms2': {
           type: 'wms',
-          config3d: 'ch.dummy.badtype.3d',
+          config3d: 'ch.dummy.badtype.3d'
         },
         'ch.dummy.badtype.3d': {
           type: 'wmts'
@@ -807,7 +807,7 @@ describe('ga_map_service', function() {
       });
     });
 
-    describe('#getCesiumImageryProviderById()' , function() {
+    describe('#getCesiumImageryProviderById()', function() {
       var layersConfig = {
         'ch.dummy.terrain.3d': {
           type: 'terrain',
@@ -966,11 +966,11 @@ describe('ga_map_service', function() {
       });
     });
 
-    describe('#getCesiumDataSourceById' , function() {
+    describe('#getCesiumDataSourceById', function() {
       var layersConfig = {
         'ch.dummy.wms': {
           type: 'wms',
-          config3d: 'ch.dummy.kml.3d',
+          config3d: 'ch.dummy.kml.3d'
         },
         'ch.dummy.kml.3d': {
           type: 'kml',
@@ -978,7 +978,7 @@ describe('ga_map_service', function() {
         },
         'ch.dummy.wms2': {
           type: 'wms',
-          config3d: 'ch.dummy.badtype.3d',
+          config3d: 'ch.dummy.badtype.3d'
         },
         'ch.dummy.badtype.3d': {
           type: 'tileset3d'
@@ -1358,10 +1358,10 @@ describe('ga_map_service', function() {
       });
 
       it('returns a boolean', function() {
-       var layer = new ol.layer.Layer({});
-       expect(gaLayers.isBodLayer(layer)).to.be(false);
-       layer.bodId = 'foo';
-       expect(gaLayers.isBodLayer(layer)).to.be(true);
+        var layer = new ol.layer.Layer({});
+        expect(gaLayers.isBodLayer(layer)).to.be(false);
+        layer.bodId = 'foo';
+        expect(gaLayers.isBodLayer(layer)).to.be(true);
       });
     });
 
@@ -1373,10 +1373,10 @@ describe('ga_map_service', function() {
       });
 
       it('returns parent layer id if it exists', function() {
-       var layer = new ol.layer.Layer({});
-       expect(gaLayers.getBodParentLayerId(layer)).to.be(undefined);
-       layer.bodId = 'foo';
-       expect(gaLayers.getBodParentLayerId(layer)).to.be('bar');
+        var layer = new ol.layer.Layer({});
+        expect(gaLayers.getBodParentLayerId(layer)).to.be(undefined);
+        layer.bodId = 'foo';
+        expect(gaLayers.getBodParentLayerId(layer)).to.be('bar');
       });
     });
 
@@ -1678,7 +1678,7 @@ describe('ga_map_service', function() {
       expect(gaMapUtils.preload).to.eql(6);
       expect(gaMapUtils.defaultExtent).to.eql([420000, 30000, 900000, 350000]);
       expect(gaMapUtils.viewResolutions).to.eql([650.0, 500.0, 250.0, 100.0, 50.0, 20.0, 10.0, 5.0,
-          2.5, 2.0, 1.0, 0.5, 0.25, 0.1]);
+        2.5, 2.0, 1.0, 0.5, 0.25, 0.1]);
       expect(gaMapUtils.defaultResolution).to.eql(500);
     });
 
@@ -1726,31 +1726,31 @@ describe('ga_map_service', function() {
 
     describe('#getMapLayerForBodId()', function() {
       it('gets the olLayer if it\'s on the map', inject(function(gaDefinePropertiesForLayer) {
-         var foundLayer;
-         var nonBodLayer = addLayerToMap();
-         gaDefinePropertiesForLayer(nonBodLayer);
-         foundLayer = gaMapUtils.getMapLayerForBodId(map, 'ch.bod.layer');
-         expect(foundLayer).to.eql(undefined);
+        var foundLayer;
+        var nonBodLayer = addLayerToMap();
+        gaDefinePropertiesForLayer(nonBodLayer);
+        foundLayer = gaMapUtils.getMapLayerForBodId(map, 'ch.bod.layer');
+        expect(foundLayer).to.eql(undefined);
 
-         var prevLayer = addLayerToMap();
-         gaDefinePropertiesForLayer(prevLayer);
-         prevLayer.bodId = 'ch.bod.layer';
-         prevLayer.preview = true;
-         foundLayer = gaMapUtils.getMapLayerForBodId(map, 'ch.bod.layer');
-         expect(foundLayer).to.eql(undefined);
+        var prevLayer = addLayerToMap();
+        gaDefinePropertiesForLayer(prevLayer);
+        prevLayer.bodId = 'ch.bod.layer';
+        prevLayer.preview = true;
+        foundLayer = gaMapUtils.getMapLayerForBodId(map, 'ch.bod.layer');
+        expect(foundLayer).to.eql(undefined);
 
-         var bgLayer = addLayerToMap();
-         gaDefinePropertiesForLayer(bgLayer);
-         bgLayer.bodId = 'ch.bod.layer';
-         bgLayer.background = true;
-         foundLayer = gaMapUtils.getMapLayerForBodId(map, 'ch.bod.layer');
-         expect(foundLayer).to.eql(bgLayer);
+        var bgLayer = addLayerToMap();
+        gaDefinePropertiesForLayer(bgLayer);
+        bgLayer.bodId = 'ch.bod.layer';
+        bgLayer.background = true;
+        foundLayer = gaMapUtils.getMapLayerForBodId(map, 'ch.bod.layer');
+        expect(foundLayer).to.eql(bgLayer);
 
-         var bodLayer = addLayerToMap();
-         gaDefinePropertiesForLayer(bodLayer);
-         bodLayer.bodId = 'ch.bod.layer';
-         foundLayer = gaMapUtils.getMapLayerForBodId(map, 'ch.bod.layer');
-         expect(foundLayer).to.eql(bodLayer);
+        var bodLayer = addLayerToMap();
+        gaDefinePropertiesForLayer(bodLayer);
+        bodLayer.bodId = 'ch.bod.layer';
+        foundLayer = gaMapUtils.getMapLayerForBodId(map, 'ch.bod.layer');
+        expect(foundLayer).to.eql(bodLayer);
       }));
     });
 
@@ -1784,7 +1784,6 @@ describe('ga_map_service', function() {
       }));
     });
 
-
     describe('#isWMSLayer()', function() {
       it('tests if the layer uses WMS data', inject(function(gaDefinePropertiesForLayer) {
         expect(gaMapUtils.isWMSLayer(undefined)).to.eql(false);
@@ -1805,7 +1804,6 @@ describe('ga_map_service', function() {
         expect(gaMapUtils.isWMSLayer(layer)).to.eql(true);
       }));
     });
-
 
     describe('#isVectorLayer()', function() {
       it('tests if the layer uses vector data', inject(function(gaDefinePropertiesForLayer) {
@@ -1828,7 +1826,6 @@ describe('ga_map_service', function() {
         expect(gaMapUtils.isVectorLayer(layer)).to.eql(true);
       }));
     });
-
 
     describe('#isKmlLayer()', function() {
       it('tests if the layer is a KML layer', inject(function(gaDefinePropertiesForLayer) {
@@ -1864,7 +1861,6 @@ describe('ga_map_service', function() {
         expect(gaMapUtils.isKmlLayer(layer)).to.eql(true);
       }));
     });
-
 
     describe('#isLocalKmlLayer()', function() {
       it('tests if the KML used was stored locally', inject(function(gaDefinePropertiesForLayer) {
@@ -2063,7 +2059,7 @@ describe('ga_map_service', function() {
           done();
         });
       });
-    });*/
+    }); */
 
     describe('#moveTo()', function() {
       it('move map to a coordinate and a zoom', function(done) {
@@ -2115,7 +2111,7 @@ describe('ga_map_service', function() {
           done();
         });
       });
-    });*/
+    }); */
 
     describe('#intersectWithDefaultExtent()', function() {
       var dflt = [420000, 30000, 900000, 350000];

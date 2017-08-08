@@ -94,183 +94,181 @@ describe('ga_time_service', function() {
       });
     });
 
-
     describe('#init()', function() {
-       var map;
+      var map;
 
-       var getLayer = function() {
-         var layer = new ol.layer.Tile();
-         return layer;
-       };
+      var getLayer = function() {
+        var layer = new ol.layer.Tile();
+        return layer;
+      };
 
-       var getTimePreviewLayer = function() {
-         var layer = new ol.layer.Tile();
-         gaDefine(layer);
-         layer.timeEnabled = true;
-         layer.preview = true;
-         layer.time = '1988';
-         return layer;
-       };
+      var getTimePreviewLayer = function() {
+        var layer = new ol.layer.Tile();
+        gaDefine(layer);
+        layer.timeEnabled = true;
+        layer.preview = true;
+        layer.time = '1988';
+        return layer;
+      };
 
-       var getTimeLayer = function(id, time) {
-         var layer = new ol.layer.Tile();
-         gaDefine(layer);
-         layer.timeEnabled = true;
-         layer.id = id;
-         layer.time = '1987';
-         return layer;
-       };
+      var getTimeLayer = function(id, time) {
+        var layer = new ol.layer.Tile();
+        gaDefine(layer);
+        layer.timeEnabled = true;
+        layer.id = id;
+        layer.time = '1987';
+        return layer;
+      };
 
+      beforeEach(function() {
+        injectTime();
+        map = new ol.Map({});
+      });
 
-       beforeEach(function() {
-         injectTime();
-         map = new ol.Map({});
-       });
+      it('updates status on add/remove of a timeEnabled layer', function() {
+        var spy = sinon.spy(gaTime, 'updateStatus');
+        gaTime.init(map);
+        var l = getTimeLayer();
 
-       it('updates status on add/remove of a timeEnabled layer', function() {
-         var spy = sinon.spy(gaTime, 'updateStatus');
-         gaTime.init(map);
-         var l = getTimeLayer();
+        map.addLayer(l);
+        expect(spy.callCount).to.be(1);
+        expect(spy.calledWith([l])).to.be(true);
+        spy.reset();
 
-         map.addLayer(l);
-         expect(spy.callCount).to.be(1);
-         expect(spy.calledWith([l])).to.be(true);
-         spy.reset();
+        map.removeLayer(l);
+        expect(spy.callCount).to.be(1);
+        expect(spy.calledWith([])).to.be(true);
+        spy.reset();
+      });
 
-         map.removeLayer(l);
-         expect(spy.callCount).to.be(1);
-         expect(spy.calledWith([])).to.be(true);
-         spy.reset();
-       });
+      it('doesn\'t update status on add/remove of a preview or non-timeEnabled layer', function() {
+        var spy = sinon.spy(gaTime, 'updateStatus');
+        gaTime.init(map);
 
-       it('doesn\'t update status on add/remove of a preview or non-timeEnabled layer', function() {
-         var spy = sinon.spy(gaTime, 'updateStatus');
-         gaTime.init(map);
+        var l = getLayer();
+        var l1 = getTimePreviewLayer();
+        map.addLayer(l);
+        map.addLayer(l1);
+        expect(spy.callCount).to.be(0);
 
-         var l = getLayer();
-         var l1 = getTimePreviewLayer();
-         map.addLayer(l);
-         map.addLayer(l1);
-         expect(spy.callCount).to.be(0);
+        map.removeLayer(l);
+        map.removeLayer(l1);
+        expect(spy.callCount).to.be(0);
+      });
 
-         map.removeLayer(l);
-         map.removeLayer(l1);
-         expect(spy.callCount).to.be(0);
-       });
+      it('updates status on property change (time and visible)', function() {
+        var spy = sinon.spy(gaTime, 'updateStatus');
+        gaTime.init(map);
 
-       it('updates status on property change (time and visible)', function() {
-         var spy = sinon.spy(gaTime, 'updateStatus');
-         gaTime.init(map);
+        var l = getTimeLayer('id');
+        var l1 = getTimeLayer('id1');
 
-         var l = getTimeLayer('id');
-         var l1 = getTimeLayer('id1');
+        map.addLayer(l);
+        map.addLayer(l1);
+        expect(spy.callCount).to.be(2);
+        expect(spy.calledWith([l, l1])).to.be(true);
+        spy.reset();
 
-         map.addLayer(l);
-         map.addLayer(l1);
-         expect(spy.callCount).to.be(2);
-         expect(spy.calledWith([l, l1])).to.be(true);
-         spy.reset();
+        l.visible = false;
+        expect(spy.callCount).to.be(1);
+        expect(spy.calledWith([l, l1])).to.be(true);
+        spy.reset();
 
-         l.visible = false;
-         expect(spy.callCount).to.be(1);
-         expect(spy.calledWith([l, l1])).to.be(true);
-         spy.reset();
+        l1.time = '1876';
+        expect(spy.callCount).to.be(1);
+        expect(spy.calledWith([l, l1])).to.be(true);
+        spy.reset();
+      });
 
-         l1.time = '1876';
-         expect(spy.callCount).to.be(1);
-         expect(spy.calledWith([l, l1])).to.be(true);
-         spy.reset();
-       });
+      it('doesn\'t update status on property change', function() {
+        var spy = sinon.spy(gaTime, 'updateStatus');
+        gaTime.init(map);
+        var l = getTimeLayer('id');
+        var l1 = getTimeLayer('id1');
 
-       it('doesn\'t update status on property change', function() {
-         var spy = sinon.spy(gaTime, 'updateStatus');
-         gaTime.init(map);
-         var l = getTimeLayer('id');
-         var l1 = getTimeLayer('id1');
+        map.addLayer(l);
+        map.addLayer(l1);
+        expect(spy.callCount).to.be(2);
+        expect(spy.calledWith([l, l1])).to.be(true);
+        spy.reset();
 
-         map.addLayer(l);
-         map.addLayer(l1);
-         expect(spy.callCount).to.be(2);
-         expect(spy.calledWith([l, l1])).to.be(true);
-         spy.reset();
+        // same value
+        l.time = '1987';
+        expect(spy.callCount).to.be(0);
+        spy.reset();
 
-         // same value
-         l.time = '1987';
-         expect(spy.callCount).to.be(0);
-         spy.reset();
+        // same value
+        l.visible = true;
+        expect(spy.callCount).to.be(0);
+        spy.reset();
 
-         // same value
-         l.visible = true;
-         expect(spy.callCount).to.be(0);
-         spy.reset();
+        // time must be a string
+        l.time = 1989;
+        expect(spy.callCount).to.be(0);
+        spy.reset();
 
-         // time must be a string
-         l.time = 1989;
-         expect(spy.callCount).to.be(0);
-         spy.reset();
+        // after the layer is removing
+        map.removeLayer(l);
+        spy.reset();
 
-         // after the layer is removing
-         map.removeLayer(l);
-         spy.reset();
-
-         l.time = '1991';
-         expect(spy.callCount).to.be(0);
-         spy.reset();
-       });
+        l.time = '1991';
+        expect(spy.callCount).to.be(0);
+        spy.reset();
+      });
     });
 
     describe('#updateStatus()', function() {
-       var map;
+      var map;
 
-       var getTimeLayer = function(id, time) {
-         var layer = new ol.layer.Tile();
-         gaDefine(layer);
-         layer.id = id;
-         layer.time = time || '1987';
-         layer.timeEnabled = true;
-         return layer;
-       };
+      var getTimeLayer = function(id, time) {
+        var layer = new ol.layer.Tile();
+        gaDefine(layer);
+        layer.id = id;
+        layer.time = time || '1987';
+        layer.timeEnabled = true;
+        return layer;
+      };
 
-       beforeEach(function() {
-         injectTime();
-         map = new ol.Map({});
-       });
+      beforeEach(function() {
+        injectTime();
+        map = new ol.Map({});
+      });
 
-       it('is not allowed to update status', function() {
-         expect(gaTime.allowStatusUpdate).to.be(false);
-       });
+      it('is not allowed to update status', function() {
+        expect(gaTime.allowStatusUpdate).to.be(false);
+      });
 
-       it('set time depending on all layers\'s time', function() {
-         gaTime.allowStatusUpdate = true;
-         var l = getTimeLayer();
-         var l1 = getTimeLayer('id', '1988');
+      it('set time depending on all layers\'s time', function() {
+        gaTime.allowStatusUpdate = true;
+        var l = getTimeLayer();
+        var l1 = getTimeLayer('id', '1988');
 
-         gaTime.updateStatus([]);
-         expect(gaTime.get()).to.be(undefined);
+        gaTime.updateStatus([]);
+        expect(gaTime.get()).to.be(undefined);
 
-         // not enough layers
-         gaTime.updateStatus([l]);
-         expect(gaTime.get()).to.be(undefined);
+        // not enough layers
+        gaTime.updateStatus([l]);
+        expect(gaTime.get()).to.be(undefined);
 
-         // All layers have the same time
-         gaTime.updateStatus([l, l]);
-         expect(gaTime.get()).to.be('1987');
+        // All layers have the same time
+        gaTime.updateStatus([l, l]);
+        expect(gaTime.get()).to.be('1987');
 
-         // A layer has a different time
-         gaTime.updateStatus([l, l1, l]);
-         expect(gaTime.get()).to.be(undefined);
+        // A layer has a different time
+        gaTime.updateStatus([l, l1, l]);
+        expect(gaTime.get()).to.be(undefined);
 
-         // All visible layers have the same time
-         l1.visible = false;
-         gaTime.updateStatus([l, l1, l]);
-         expect(gaTime.get()).to.be('1987');
+        // All visible layers have the same time
+        l1.visible = false;
+        gaTime.updateStatus([l, l1, l]);
+        expect(gaTime.get()).to.be('1987');
 
-         // A layer's time is greater than the current year
-         l1.visible = true;
-         l1.time = '99993112';
-         gaTime.updateStatus([l, l1, l]);
-         expect(gaTime.get()).to.be(undefined);
-       });
+        // A layer's time is greater than the current year
+        l1.visible = true;
+        l1.time = '99993112';
+        gaTime.updateStatus([l, l1, l]);
+        expect(gaTime.get()).to.be(undefined);
+      });
     });
   });
 });

@@ -2,22 +2,22 @@ describe('ga_profile_service', function() {
   var gaProfile, gaUrlUtils, $rootScope, $httpBackend, gaTimeFormat, $timeout, gaGlobalOptions, testTooltips;
 
   testTooltips = function(profile) {
-    expect(profile.group.select('.ga-profile-elevation-difference title')
-        .length).to.be(1);
-    expect(profile.group.select('.ga-profile-elevation-up title')
-        .length).to.be(1);
-    expect(profile.group.select('.ga-profile-elevation-down title')
-        .length).to.be(1);
-    expect(profile.group.select('.ga-profile-poi-up title')
-        .length).to.be(1);
-    expect(profile.group.select('.ga-profile-poi-down title')
-        .length).to.be(1);
-    expect(profile.group.select('.ga-profile-distance title')
-        .length).to.be(1);
-    expect(profile.group.select('.ga-profile-slopeDist title')
-        .length).to.be(1);
-    expect(profile.group.select('.ga-profile-hikTime title')
-        .length).to.be(1);
+    expect(profile.group.select('.ga-profile-elevation-difference title').
+        length).to.be(1);
+    expect(profile.group.select('.ga-profile-elevation-up title').
+        length).to.be(1);
+    expect(profile.group.select('.ga-profile-elevation-down title').
+        length).to.be(1);
+    expect(profile.group.select('.ga-profile-poi-up title').
+        length).to.be(1);
+    expect(profile.group.select('.ga-profile-poi-down title').
+        length).to.be(1);
+    expect(profile.group.select('.ga-profile-distance title').
+        length).to.be(1);
+    expect(profile.group.select('.ga-profile-slopeDist title').
+        length).to.be(1);
+    expect(profile.group.select('.ga-profile-hikTime title').
+        length).to.be(1);
   };
 
   beforeEach(function() {
@@ -139,10 +139,10 @@ describe('ga_profile_service', function() {
           xLabel: 'axeX',
           yLabel: 'axeY'
         }).then(function(profile) {
-          expect(profile.group.select('text.ga-profile-label-x')
-              .text()).to.be('axeX [m]');
-          expect(profile.group.select('text.ga-profile-label-y')
-              .text()).to.be('axeY [m]');
+          expect(profile.group.select('text.ga-profile-label-x').
+              text()).to.be('axeX [m]');
+          expect(profile.group.select('text.ga-profile-label-y').
+              text()).to.be('axeY [m]');
           done();
         });
         $httpBackend.flush();

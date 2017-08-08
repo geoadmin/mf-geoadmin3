@@ -54,4 +54,3 @@ describe('ga_popup_service', function() {
     expect(popup.element).to.be(null);
   });
 });
-

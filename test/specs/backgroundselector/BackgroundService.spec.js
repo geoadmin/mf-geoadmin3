@@ -2,7 +2,7 @@ describe('ga_background_service', function() {
 
   describe('gaBackground', function() {
     var gaBg, gaPermalink, gaTopic, deferGaLayers, deferGaTopic, map, $rootScope,
-        gaPermalinkMock, $rootScopeMock;
+      gaPermalinkMock, $rootScopeMock;
     var topic1 = {
       'defaultBackground': 'bg1',
       'backgroundLayers': [
@@ -87,7 +87,7 @@ describe('ga_background_service', function() {
 
     describe('#init()', function() {
 
-      describe('using a basic topic' , function() {
+      describe('using a basic topic', function() {
 
         beforeEach(function() {
           gaTopic.get = function() {
@@ -243,7 +243,7 @@ describe('ga_background_service', function() {
         });
       });
 
-      describe('using a topic with plConfig' , function() {
+      describe('using a topic with plConfig', function() {
 
         beforeEach(function() {
           gaTopic.get = function() {

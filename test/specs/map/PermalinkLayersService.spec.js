@@ -79,28 +79,28 @@ describe('ga_permalinklayers_service', function() {
 
   describe('gaPermalinkLayersManager', function() {
     var manager, permalink, gaTopic, params, layersOpacityPermalink,
-        layersVisPermalink, layersTimePermalink, layersPermalink, def, $q, gaKml,
-        topic, $rootScope, topicLoaded = {
-          id: 'sometopic',
-          backgroundLayers: ['bar'],
-          selectedLayers: [],
-          activatedLayers: []
-        }, topicLoaded2 = {
-          id: 'sometopic2',
-          backgroundLayers: ['bar2'],
-          selectedLayers: ['foo', 'bar'],
-          activatedLayers: []
-        }, topicLoaded3 = {
-          id: 'sometopic3',
-          backgroundLayers: ['bar3'],
-          selectedLayers: ['foo2', 'bar2'],
-          activatedLayers: []
-        }, topicLoaded4 = {
-          id: 'sometopic4',
-          backgroundLayers: ['bar4'],
-          selectedLayers: [],
-          activatedLayers: ['foo3', 'bar3']
-        };
+      layersVisPermalink, layersTimePermalink, layersPermalink, def, $q, gaKml,
+      topic, $rootScope, topicLoaded = {
+        id: 'sometopic',
+        backgroundLayers: ['bar'],
+        selectedLayers: [],
+        activatedLayers: []
+      }, topicLoaded2 = {
+        id: 'sometopic2',
+        backgroundLayers: ['bar2'],
+        selectedLayers: ['foo', 'bar'],
+        activatedLayers: []
+      }, topicLoaded3 = {
+        id: 'sometopic3',
+        backgroundLayers: ['bar3'],
+        selectedLayers: ['foo2', 'bar2'],
+        activatedLayers: []
+      }, topicLoaded4 = {
+        id: 'sometopic4',
+        backgroundLayers: ['bar4'],
+        selectedLayers: [],
+        activatedLayers: ['foo3', 'bar3']
+      };
 
     var createManager = function(topicToLoad, layersParam, opacityParam, visParam, timeParam, paramsParam) {
       layersPermalink = layersParam || layersPermalink;
@@ -439,7 +439,6 @@ describe('ga_permalinklayers_service', function() {
         expect(map.getLayers().getLength()).to.be(2);
         $rootScope.$digest();
         expect(permalink.getParams().layers).to.be('bar2,foo2');
-
 
       });
 

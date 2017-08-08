@@ -28,8 +28,8 @@ describe('ga_exportkml_service', function() {
 
     var featWithNoImageHack = new ol.Feature(pointGeom);
     featWithNoImageHack.setStyle([new ol.style.Style({
-        text: new ol.style.Text({text: 'featureWithText'}),
-        image: new ol.style.Circle()
+      text: new ol.style.Text({text: 'featureWithText'}),
+      image: new ol.style.Circle()
     })]);
 
     // KML Placemark node string
@@ -196,16 +196,16 @@ describe('ga_exportkml_service', function() {
         });
 
         // TODO: How to avoid page reload
-        /*it('on Safari', function() {
+        /* it('on Safari', function() {
           gaBrowserSniffer.msie = false;
           gaBrowserSniffer.safari = true;
           gaBrowserSniffer.blob = true;
           open = $windowMock.expects('open').never();
           open = $windowMock.expects('location').once().returns({});
           expectations();
-        });*/
+        }); */
 
-        /*it('on browser where Blob is not supported', function() {
+        /* it('on browser where Blob is not supported', function() {
           gaBrowserSniffer.msie = false;
           gaBrowserSniffer.safari = false;
           gaBrowserSniffer.blob = false;
@@ -215,7 +215,7 @@ describe('ga_exportkml_service', function() {
           };
           open = $windowMock.expects('open').never();
           expectations();
-         });*/
+         }); */
       });
 
       // TODO: Test Blob creation

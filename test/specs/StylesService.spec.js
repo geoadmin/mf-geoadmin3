@@ -74,7 +74,7 @@ describe('ga_styles_service', function() {
     describe('#getTextStroke()', function() {
 
       it('gets a black text\'s stroke color', function() {
-        var black = [0 , 0 , 0 , 1];
+        var black = [0, 0, 0, 1];
         var stroke = gaStyle.getTextStroke([25, 160, 25]);
         expect(stroke.getColor()).to.eql(black);
         expect(stroke.getWidth()).to.eql(3);
@@ -85,7 +85,7 @@ describe('ga_styles_service', function() {
       });
 
       it('gets a black text\'s stroke color', function() {
-        var white = [255 , 255 , 255 , 1];
+        var white = [255, 255, 255, 1];
         var stroke = gaStyle.getTextStroke([160, 25, 160]);
         expect(stroke.getColor()).to.eql(white);
         expect(stroke.getWidth()).to.eql(3);

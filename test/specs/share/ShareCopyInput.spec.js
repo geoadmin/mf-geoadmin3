@@ -26,7 +26,7 @@ describe('ga_sharecopyinput_directive', function() {
         gaBrowserSniffer = $injector.get('gaBrowserSniffer');
       });
 
-      $rootScope.onBeforeCopy = function() {return 'a';};
+      $rootScope.onBeforeCopy = function() { return 'a'; };
     });
 
     describe('on other devices', function() {
@@ -52,13 +52,12 @@ describe('ga_sharecopyinput_directive', function() {
       });
 
       // TO FIX: Focus tests doesn't work on Phantomjs
-      /*it('selects content on focus', function() {
+      /* it('selects content on focus', function() {
         loadDirective();
         var spySel = sinon.spy(eltInput[0], 'setSelectionRange');
         eltInput.focus();
         expect(spySel.calledWith(0, 9999)).to.be(true);
-      });*/
+      }); */
     });
   });
 });
-

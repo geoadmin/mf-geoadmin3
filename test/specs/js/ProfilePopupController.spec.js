@@ -1,4 +1,5 @@
-describe('ga_profilepopup_controller', function() {7;
+describe('ga_profilepopup_controller', function() {
+  7;
 
   describe('GaProfilePopupController', function() {
 
@@ -69,4 +70,3 @@ describe('ga_profilepopup_controller', function() {7;
     });
   });
 });
-

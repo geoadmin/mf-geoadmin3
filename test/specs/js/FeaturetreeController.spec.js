@@ -3,7 +3,7 @@ describe('ga_featuretree_controller', function() {
   describe('GaFeaturetreeController', function() {
 
     var scope, parentScope, $compile, $rootScope, $window, $q, $timeout, $httpBackend,
-        gaPrint, gaGlobalOptions;
+      gaPrint, gaGlobalOptions;
 
     var loadController = function() {
       parentScope = $rootScope.$new();
@@ -94,4 +94,3 @@ describe('ga_featuretree_controller', function() {
     });
   });
 });
-

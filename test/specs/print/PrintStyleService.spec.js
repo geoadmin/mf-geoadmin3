@@ -213,18 +213,18 @@ describe('ga_printstyle_service', function() {
       });
 
       it('transforms correctly a color with an hexa value of one letter(#3322)', function() {
-         var style = new ol.style.Style({
-            fill: new ol.style.Fill({
-              color: [12, 0, 1, 0.2]
-            })
-          });
-          var literal = gaPrintStyle.olStyleToPrintLiteral(style, 96);
-          expect(literal).to.eql({
-            zIndex: undefined,
-            fillColor: '#0c0001',
-            fillOpacity: 0.2,
-            strokeOpacity: 0
-          });
+        var style = new ol.style.Style({
+          fill: new ol.style.Fill({
+            color: [12, 0, 1, 0.2]
+          })
+        });
+        var literal = gaPrintStyle.olStyleToPrintLiteral(style, 96);
+        expect(literal).to.eql({
+          zIndex: undefined,
+          fillColor: '#0c0001',
+          fillOpacity: 0.2,
+          strokeOpacity: 0
+        });
       });
 
       describe('transforms correctly a image style', function() {

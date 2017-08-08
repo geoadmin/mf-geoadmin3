@@ -37,7 +37,7 @@ describe('ga_window_service', function() {
           '<=l', 'l', '>=l'
         ].forEach(function(alias) {
           it('returns true for alias \'' + alias + '\'', function() {
-             expect(gaWindow.isWidth(alias)).to.be(true);
+            expect(gaWindow.isWidth(alias)).to.be(true);
           });
         });
 
@@ -48,7 +48,7 @@ describe('ga_window_service', function() {
           '<l', '>l'
         ].forEach(function(alias) {
           it('returns false for alias \'' + alias + '\'', function() {
-             expect(gaWindow.isWidth(alias)).to.be(false);
+            expect(gaWindow.isWidth(alias)).to.be(false);
           });
         });
       });
@@ -64,7 +64,7 @@ describe('ga_window_service', function() {
           '<l', '<=l'
         ].forEach(function(alias) {
           it('returns true for alias \'' + alias + '\'', function() {
-             expect(gaWindow.isHeight(alias)).to.be(true);
+            expect(gaWindow.isHeight(alias)).to.be(true);
           });
         });
 
@@ -75,7 +75,7 @@ describe('ga_window_service', function() {
           'l', '>=l', '>l'
         ].forEach(function(alias) {
           it('returns false for alias \'' + alias + '\'', function() {
-             expect(gaWindow.isHeight(alias)).to.be(false);
+            expect(gaWindow.isHeight(alias)).to.be(false);
           });
         });
       });

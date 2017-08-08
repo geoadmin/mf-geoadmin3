@@ -47,7 +47,7 @@ describe('ga_realtimelayers_service', function() {
     };
     var addRealtimeLayerToMap = function(bodId) {
       var layer = new ol.layer.Vector({
-         source: new ol.source.Vector()
+        source: new ol.source.Vector()
       });
       gaDefinePropertiesForLayer(layer);
       layer.bodId = bodId;
@@ -59,7 +59,7 @@ describe('ga_realtimelayers_service', function() {
 
     var addPreviewRealtimeLayerToMap = function(bodId) {
       var layer = new ol.layer.Vector({
-         source: new ol.source.Vector()
+        source: new ol.source.Vector()
       });
       gaDefinePropertiesForLayer(layer);
       layer.bodId = bodId;
@@ -148,7 +148,7 @@ describe('ga_realtimelayers_service', function() {
       }, layer.updateDelay);
 
       clock.tick(layer.updateDelay);
-      $timeout.flush();$;
+      $timeout.flush(); $;
       $httpBackend.flush();
     });
 

@@ -21,8 +21,8 @@ describe('ga_layermanager_directive', function() {
 
   describe('gaLayermanager', function() {
     var elt, scope, parentScope, $compile, $rootScope, $timeout, $window, gaBrowserSniffer,
-        gaLayerFilters, gaLayerMetadataPopup, gaLayers, gaAttribution, gaUrlUtils, gaMapUtils,
-        gaEvent, map, $httpBackend;
+      gaLayerFilters, gaLayerMetadataPopup, gaLayers, gaAttribution, gaUrlUtils, gaMapUtils,
+      gaEvent, map, $httpBackend;
 
     var loadDirective = function(map) {
       parentScope = $rootScope.$new();

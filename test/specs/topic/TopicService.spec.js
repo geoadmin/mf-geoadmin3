@@ -2,37 +2,37 @@ describe('ga_topic_service', function() {
 
   describe('gaTopic', function() {
     var gaTopic, $httpBackend, $rootScope, gaGlobalOptions, topicPermalink, gaPermalink,
-        expectedUrl = window.location.origin + '/123456/services',
-        topics = [{
-          'selectedLayers': [],
-          'backgroundLayers': [
-            'ch.swisstopo.pixelkarte-farbe',
-            'ch.swisstopo.pixelkarte-grau',
-            'ch.swisstopo.swissimage'
-          ],
-          'id': 'sometopic',
-          'showCatalog': true,
-          'groupId': 1
-        }, {
-          'selectedLayers': [],
-          'backgroundLayers': [
-            'ch.swisstopo.pixelkarte-grau',
-            'ch.swisstopo.pixelkarte-farbe',
-            'ch.swisstopo.swissimage'
-          ],
-          'id': 'anothertopic',
-          'showCatalog': true,
-          'groupId': 2
-        }, {
-          'selectedLayers': [],
-          'backgroundLayers': [
-            'ch.swisstopo.pixelkarte-grau',
-            'ch.swisstopo.pixelkarte-farbe'
-          ],
-          'id': 'anewtopic',
-          'showCatalog': true,
-          'groupId': 1
-        }];
+      expectedUrl = window.location.origin + '/123456/services',
+      topics = [{
+        'selectedLayers': [],
+        'backgroundLayers': [
+          'ch.swisstopo.pixelkarte-farbe',
+          'ch.swisstopo.pixelkarte-grau',
+          'ch.swisstopo.swissimage'
+        ],
+        'id': 'sometopic',
+        'showCatalog': true,
+        'groupId': 1
+      }, {
+        'selectedLayers': [],
+        'backgroundLayers': [
+          'ch.swisstopo.pixelkarte-grau',
+          'ch.swisstopo.pixelkarte-farbe',
+          'ch.swisstopo.swissimage'
+        ],
+        'id': 'anothertopic',
+        'showCatalog': true,
+        'groupId': 2
+      }, {
+        'selectedLayers': [],
+        'backgroundLayers': [
+          'ch.swisstopo.pixelkarte-grau',
+          'ch.swisstopo.pixelkarte-farbe'
+        ],
+        'id': 'anewtopic',
+        'showCatalog': true,
+        'groupId': 1
+      }];
 
     beforeEach(function() {
       module(function($provide) {

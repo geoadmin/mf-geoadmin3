@@ -2,20 +2,20 @@ describe('ga_filestorage_service', function() {
 
   describe('gaFileStorage', function() {
     var gaFileStorage, $httpBackend,
-        adminId = 'aaaaaaaaaaaaaaaaaaaaa', // length must > 20
-        fileId = 'fffffffffffffffffffff', // length must > 20
-        fileContent = '<kml></kml>',
-        fileInfo = {
-          adminId: adminId,
-          fileId: fileId,
-          fileUrl: 'http://public.geo.admin.ch/' + fileId
-        },
-        fileInfoHttps = {
-          adminId: adminId,
-          fileId: fileId,
-          fileUrl: 'https://public.geo.admin.ch/' + fileId
-        },
-        serviceUrl, publicUrl;
+      adminId = 'aaaaaaaaaaaaaaaaaaaaa', // length must > 20
+      fileId = 'fffffffffffffffffffff', // length must > 20
+      fileContent = '<kml></kml>',
+      fileInfo = {
+        adminId: adminId,
+        fileId: fileId,
+        fileUrl: 'http://public.geo.admin.ch/' + fileId
+      },
+      fileInfoHttps = {
+        adminId: adminId,
+        fileId: fileId,
+        fileUrl: 'https://public.geo.admin.ch/' + fileId
+      },
+      serviceUrl, publicUrl;
 
     beforeEach(function() {
       inject(function($injector, gaGlobalOptions) {
@@ -39,7 +39,6 @@ describe('ga_filestorage_service', function() {
         expect(res).to.equal(fileId);
       }));
     });
-
 
     describe('#get()', function() {
       it('gets a file', function() {
@@ -67,7 +66,6 @@ describe('ga_filestorage_service', function() {
         $httpBackend.flush();
       }));
     });
-
 
     describe('#del()', function() {
       it('deletes a file', inject(function($timeout) {

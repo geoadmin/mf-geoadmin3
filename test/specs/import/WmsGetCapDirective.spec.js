@@ -33,7 +33,6 @@ describe('ngeo.wmsGetCapDirective', function() {
       });
     });
 
-
     inject(function($injector) {
       $rootScope = $injector.get('$rootScope');
       $compile = $injector.get('$compile');
@@ -98,6 +97,6 @@ describe('ngeo.wmsGetCapDirective', function() {
   });
 
   // TODO
-  /*describe('loads a WMS GetCapabilities with invalid layers', function() {
-  });*/
+  /* describe('loads a WMS GetCapabilities with invalid layers', function() {
+  }); */
 });
