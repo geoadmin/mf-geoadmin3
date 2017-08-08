@@ -37,7 +37,7 @@ goog.require('ga_previewfeatures_service');
                 Array.prototype.push.apply(featureIdsByBodId[bodId],
                     featureIds);
                 if (!gaMapUtils.getMapOverlayForBodId(map, bodId) &&
-                    layerSpecs.indexOf(bodId) == -1) {
+                    layerSpecs.indexOf(bodId) === -1) {
                   map.addLayer(gaLayers.getOlLayerById(bodId));
                 }
               }
@@ -62,7 +62,7 @@ goog.require('ga_previewfeatures_service');
             var featuresShown = gaPreviewFeatures.addBodFeatures(map,
                 featureIdsByBodId, removeParamsFromPL);
 
-            if (queryParams.showTooltip == 'true') {
+            if (queryParams.showTooltip === 'true') {
               featuresShown.then(function(features) {
                 $rootScope.$broadcast('gaTriggerTooltipRequest', {
                   features: features,
@@ -81,7 +81,7 @@ goog.require('ga_previewfeatures_service');
                 featureIdsCount -= featureIdsByBodId[layerBodId].length;
                 gaPermalink.deleteParam(layerBodId);
               }
-              if (featureIdsCount == 0 && listenerKey) {
+              if (featureIdsCount === 0 && listenerKey) {
                 // Unlisten the remove event when there is no more features
                 // (from permalink) displayed.
                 ol.Observable.unByKey(listenerKey);

@@ -30,7 +30,7 @@ goog.require('ga_window_service');
     var findSize = function(olStyle, sizes, dflt) {
       var scale = olStyle.getScale();
       for (var i = 0; i < sizes.length; i++) {
-        if (scale == sizes[i].scale) {
+        if (scale === sizes[i].scale) {
           return sizes[i];
         }
       }
@@ -44,7 +44,7 @@ goog.require('ga_window_service');
       var rgb = url.match(colorReg);
       if (rgb) {
         for (var i = 0; i < colors.length; i++) {
-          if (colors[i].fill.toString() == rgb[1].toString()) {
+          if (colors[i].fill.toString() === rgb[1].toString()) {
             return colors[i];
           }
         }
@@ -56,7 +56,7 @@ goog.require('ga_window_service');
     var findColor = function(olColor, colors) {
       var rgb = ol.color.asString(olColor.slice(0, 3));
       for (var i = 0; i < colors.length; i++) {
-        if (rgb == ol.color.asString(colors[i].fill)) {
+        if (rgb === ol.color.asString(colors[i].fill)) {
           return colors[i];
         }
       }
@@ -243,7 +243,7 @@ goog.require('ga_window_service');
 
         scope.deleteSelectedFeature = function(layer, feature) {
           var str = $translate.instant('confirm_remove_all_features');
-          if (layer.getSource().getFeatures().length == 1 &&
+          if (layer.getSource().getFeatures().length === 1 &&
               $window.confirm(str)) {
             layer.getSource().clear();
             scope.feature = undefined;

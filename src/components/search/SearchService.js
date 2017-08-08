@@ -44,9 +44,9 @@ goog.require('ga_reframe_service');
 
         // Parse MGRS notation
         var matchMGRS = query.match(regexMGRS);
-        if (matchMGRS && matchMGRS.length == 1) {
+        if (matchMGRS && matchMGRS.length === 1) {
           var mgrsStr = matchMGRS[0].split(' ').join('');
-          if ((mgrsStr.length - MGRSMinimalPrecision) % 2 == 0) {
+          if ((mgrsStr.length - MGRSMinimalPrecision) % 2 === 0) {
             var wgs84 = $window.proj4.mgrs.toPoint(mgrsStr);
             position = ol.proj.transform(wgs84, 'EPSG:4326', 'EPSG:21781');
             if (ol.extent.containsCoordinate(extent, position)) {
@@ -58,8 +58,8 @@ goog.require('ga_reframe_service');
         // Parse degree EPSG:4326 notation
         var matchDMSN = query.match(regexpDMSN);
         var matchDMSE = query.match(regexpDMSE);
-        if (matchDMSN && matchDMSN.length == 1 &&
-            matchDMSE && matchDMSE.length == 1) {
+        if (matchDMSN && matchDMSN.length === 1 &&
+            matchDMSE && matchDMSE.length === 1) {
           var northing = parseFloat(matchDMSN[0].
               match(regexpDMSDegree)[0].
               replace('°', '').replace('º', ''));

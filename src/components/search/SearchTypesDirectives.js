@@ -243,20 +243,20 @@ goog.require('ga_urlutils_service');
         };
 
         $scope.keydown = function(evt, res) {
-          if (evt.keyCode == 13) {
+          if (evt.keyCode === 13) {
           // Enter key
             $scope.removePreview();
             blockEvent = true;
             $scope.select(res);
-          } else if (evt.keyCode == 9) {
+          } else if (evt.keyCode === 9) {
           // Tab key
             focusToCategory(!evt.shiftKey, evt);
-          } else if (evt.keyCode == 40 || evt.keyCode == 34) {
+          } else if (evt.keyCode === 40 || evt.keyCode === 34) {
           // Down Arrow or PageDown key
-            focusToElement(true, evt.keyCode == 40 ? 1 : 5, evt);
-          } else if (evt.keyCode == 38 || evt.keyCode == 33) {
+            focusToElement(true, evt.keyCode === 40 ? 1 : 5, evt);
+          } else if (evt.keyCode === 38 || evt.keyCode === 33) {
           // Up Arrow or PageUp key
-            focusToElement(false, evt.keyCode == 38 ? 1 : 5, evt);
+            focusToElement(false, evt.keyCode === 38 ? 1 : 5, evt);
           }
         };
 
@@ -294,7 +294,7 @@ goog.require('ga_urlutils_service');
         $scope.$watch('options.searchUrl', function() {
         // cancel old requests
           cancel();
-          if ($scope.options.query != '') {
+          if ($scope.options.query !== '') {
             blockEvent = false;
             triggerSearch();
           } else {
@@ -330,7 +330,7 @@ goog.require('ga_urlutils_service');
               var e = parseExtent(res.attrs.geom_st_box2d);
               unregisterMove();
               // Gazetteer results that are not points zoom to full bbox extent
-              if (res.attrs.origin == 'gazetteer') {
+              if (res.attrs.origin === 'gazetteer') {
                 isGazetteerPoly = (Math.abs(e[0] - e[2]) > 100 &&
                                    Math.abs(e[1] - e[3]) > 100);
 
@@ -353,16 +353,16 @@ goog.require('ga_urlutils_service');
             $scope.prepareLabel = function(attrs) {
               var l = gaSearchLabels.highlight(attrs.label,
                   $scope.options.query);
-              if (attrs.origin == 'zipcode') {
+              if (attrs.origin === 'zipcode') {
                 l = '<span>' + $translate.instant('plz') + ' ' + l +
                     '</span>';
-              } else if (attrs.origin == 'kantone') {
+              } else if (attrs.origin === 'kantone') {
                 l = '<span>' + $translate.instant('ct') + ' ' + l +
                     '</span>';
-              } else if (attrs.origin == 'district') {
+              } else if (attrs.origin === 'district') {
                 l = '<span>' + $translate.instant('district') + ' ' + l +
                     '</span>';
-              } else if (attrs.origin == 'parcel') {
+              } else if (attrs.origin === 'parcel') {
                 l += ' <span>' + $translate.instant('parcel') + ' ' +
                      '</span>';
               }
@@ -458,7 +458,7 @@ goog.require('ga_urlutils_service');
             $scope.prepareLabel = function(attrs) {
               var l = gaSearchLabels.highlight(attrs.label,
                   $scope.options.query);
-              if (attrs.origin == 'feature') {
+              if (attrs.origin === 'feature') {
                 l = '<b>' +
                     gaLayers.getLayerProperty(attrs.layer, 'label') +
                     '</b><br>' + l;
@@ -478,7 +478,7 @@ goog.require('ga_urlutils_service');
                   timeStamps = [];
                   angular.forEach(layers, function(layer) {
                     var ts = '';
-                    if (layer.time && layer.time.substr(0, 4) != '9999') {
+                    if (layer.time && layer.time.substr(0, 4) !== '9999') {
                       ts = layer.time.substr(0, 4);
                     }
                     searchableLayers.push(layer.bodId);

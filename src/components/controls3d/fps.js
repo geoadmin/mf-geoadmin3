@@ -265,24 +265,24 @@ FPS.prototype.onMouseMove_ = function(event) {
 FPS.prototype.onKey_ = function(event) {
   if (this.active_) {
     this.scope_.$applyAsync(function() {
-      var pressed = event.type == 'keydown';
+      var pressed = event.type === 'keydown';
       this.buttons_.shift = event.shiftKey;
-      if (event.keyCode == 65 || event.keyCode == 37) {
+      if (event.keyCode === 65 || event.keyCode === 37) {
         // A or Left.
         this.buttons_.left = pressed;
-      } else if (event.keyCode == 68 || event.keyCode == 39) {
+      } else if (event.keyCode === 68 || event.keyCode === 39) {
         // D or Right.
         this.buttons_.right = pressed;
-      } else if (event.keyCode == 87 || event.keyCode == 38) {
+      } else if (event.keyCode === 87 || event.keyCode === 38) {
         // W or Up.
         this.buttons_.forward = pressed;
-      } else if (event.keyCode == 83 || event.keyCode == 40) {
+      } else if (event.keyCode === 83 || event.keyCode === 40) {
         // S or Down.
         this.buttons_.backward = pressed;
-      } else if (pressed && event.keyCode == 70) {
+      } else if (pressed && event.keyCode === 70) {
         // F
         this.setFlyMode(!this.flyMode_);
-      } else if (pressed && event.keyCode == 27) {
+      } else if (pressed && event.keyCode === 27) {
         // esc
         this.setActive(false);
       }

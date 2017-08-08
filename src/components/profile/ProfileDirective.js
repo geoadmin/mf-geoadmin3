@@ -167,7 +167,7 @@ goog.require('ga_profile_service');
 
         scope.deleteSelectedFeature = function(layer, feature) {
           var str = $translate.instant('confirm_remove_all_features');
-          if (layer.getSource().getFeatures().length == 1 &&
+          if (layer.getSource().getFeatures().length === 1 &&
             $window.confirm(str)) {
             layer.getSource().clear();
           } else if ($window.confirm($translate.instant(

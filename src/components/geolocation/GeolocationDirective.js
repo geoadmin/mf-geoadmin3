@@ -144,13 +144,13 @@ goog.require('ga_throttle_service');
           if (angular.isDefined(heading)) {
 
             // The icon rotate
-            if (btnStatus == 1 ||
-                (btnStatus == 2 && userTakesControl)) {
+            if (btnStatus === 1 ||
+                (btnStatus === 2 && userTakesControl)) {
               updateHeadingFeature();
               map.render();
 
             // The map rotate
-            } else if (btnStatus == 2 && !userTakesControl) {
+            } else if (btnStatus === 2 && !userTakesControl) {
               heading = -heading;
               var currRotation = view.getRotation();
               var diff = heading - currRotation;
@@ -210,7 +210,7 @@ goog.require('ga_throttle_service');
           var heading = headingFromDevices();
 
           // The icon rotate
-          if (btnStatus == 1 || (btnStatus == 2 && userTakesControl)) {
+          if (btnStatus === 1 || (btnStatus === 2 && userTakesControl)) {
             headngUpdateWhenIconRotate();
 
           // The map rotate
@@ -290,13 +290,13 @@ goog.require('ga_throttle_service');
           }
 
           // Apply the new state
-          if (btnStatus == 0) {
+          if (btnStatus === 0) {
             tracking = false;
             gaMapUtils.resetMapToNorth(map, scope.ol3d);
             elts.removeClass(naClass);
-          } else if (btnStatus == 1) {
+          } else if (btnStatus === 1) {
             tracking = true;
-          } else if (btnStatus == 2) {
+          } else if (btnStatus === 2) {
             tracking = true;
             elts.addClass(naClass);
 
@@ -309,12 +309,12 @@ goog.require('ga_throttle_service');
                 '-ms-transform': rotateString,
                 '-webkit-transform': rotateString
               });
-              bt.toggleClass('ga-rotate-enabled', !(rotation == 0));
+              bt.toggleClass('ga-rotate-enabled', !(rotation === 0));
             });
           }
 
           // Trigger a digest cycle only if tracking value has changed
-          if (tracking != scope.tracking) {
+          if (tracking !== scope.tracking) {
             scope.$applyAsync(function() {
               scope.tracking = tracking;
             });
@@ -323,7 +323,7 @@ goog.require('ga_throttle_service');
 
         scope.getBtTitle = function() {
           if (scope.tracking) {
-            if (maxNumStatus == 2 && btnStatus == 1) {
+            if (maxNumStatus === 2 && btnStatus === 1) {
               return 'geoloc_start_tracking_heading';
             }
             return 'geoloc_stop_tracking';
@@ -333,7 +333,7 @@ goog.require('ga_throttle_service');
         };
 
         // Initialize state of the component
-        scope.tracking = (gaPermalink.getParams().geolocation == 'true');
+        scope.tracking = (gaPermalink.getParams().geolocation === 'true');
         // Always remove it from PL
         gaPermalink.deleteParam('geolocation');
         var btnStatus = (scope.tracking) ? 1 : 0;

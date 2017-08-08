@@ -8,7 +8,7 @@ goog.provide('ga_measure_filter');
 
     // Transform 12.00 to 12
     var cleanAfterComma = function(measure) {
-      if (parseInt(measure) == measure) {
+      if (parseInt(measure) === measure) {
         measure = parseInt(measure);
       }
       return measure;
@@ -44,7 +44,7 @@ goog.provide('ga_measure_filter');
       }
 
       // Having only one unit means we don't want to transform the measure.
-      if (units.length == 1) {
+      if (units.length === 1) {
         if (thousandSeparator) {
         // Number formatting: we add 1000 indicator (eg. 20'000)
           var minus = '';

@@ -31,7 +31,7 @@ goog.require('ga_permalink');
           // http://connect.microsoft.com/IE/feedback/details/814527/
           // ie11-iframes-body-offsetwidth-incorrect-when-iframe-is-in
           // -full-screen-mode
-          !(gaBrowserSniffer.msie == 11 && gaBrowserSniffer.iframe) &&
+          !(gaBrowserSniffer.msie === 11 && gaBrowserSniffer.iframe) &&
             (target.requestFullScreen ||
             target.mozRequestFullScreen ||
             target.webkitRequestFullScreen ||
@@ -83,7 +83,7 @@ goog.require('ga_permalink');
           // Catch F11 event to provide an HTML5 fullscreen instead of
           // default one
           $(document).on('keydown', function(event) {
-            if (event.which == 122) {
+            if (event.which === 122) {
               event.preventDefault();
               scope.click(); // From fullscreen API
             }

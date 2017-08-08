@@ -583,7 +583,7 @@ goog.require('ga_debounce_service');
                   var input = element.find('.ga-slider-value1 input');
                   _results.push(input.bind('keydown', function(event) {
                     // RE3: Stop propagation of arrows key event
-                    if (event.which == 37 || event.which == 39) {
+                    if (event.which === 37 || event.which === 39) {
                       event.stopPropagation();
                     }
                   }));
@@ -608,7 +608,7 @@ goog.require('ga_debounce_service');
               // current data selected when the data is available
               if (!range && scope.dataList) {
                 var arr = $.grep(scope.dataList, function(e) {
-                  return (e.value == scope[refLow] && e.available);
+                  return (e.value === scope[refLow] && e.available);
                 });
 
                 if (arr.length === 1) {
@@ -659,12 +659,12 @@ goog.require('ga_debounce_service');
             // RE3: Handle arrows left and right key
             var onKeyboardEvent = function(event) {
               var value = scope.ngModel;
-              if (event.which == 39) {
+              if (event.which === 39) {
                 scope.ngModel = Math.max(previousValue(value,
                     scope.dataList), scope.floor);
                 event.preventDefault();
                 event.stopPropagation();
-              } else if (event.which == 37) {
+              } else if (event.which === 37) {
                 scope.ngModel = Math.min(nextValue(value, scope.dataList),
                     scope.ceiling);
                 event.preventDefault();

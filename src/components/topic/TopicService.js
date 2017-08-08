@@ -44,7 +44,7 @@ goog.require('ga_permalink');
                 var lv = p.layers_visibility ?
                   p.layers_visibility.split(',') : [];
                 for (var i = 0; i < ls.length; i++) {
-                  if (i < lv.length && lv[i] != 'false') {
+                  if (i < lv.length && lv[i] !== 'false') {
                     value.selectedLayers.push(ls[i]);
                   } else {
                     value.activatedLayers.push(ls[i]);
@@ -63,7 +63,7 @@ goog.require('ga_permalink');
 
       var getTopicById = function(id, useFallbackTopic) {
         for (var i = 0, ii = topics.length; i < ii; i++) {
-          if (topics[i].id == id) {
+          if (topics[i].id === id) {
             return topics[i];
           }
         }
@@ -80,7 +80,7 @@ goog.require('ga_permalink');
       };
 
       var broadcast = function() {
-        if (gaPermalink.getParams().topic != topic.id) {
+        if (gaPermalink.getParams().topic !== topic.id) {
           gaPermalink.updateParams({topic: topic.id});
         }
         $rootScope.$broadcast('gaTopicChange', topic);
@@ -109,7 +109,7 @@ goog.require('ga_permalink');
         };
 
         this.setById = function(newTopicId, force) {
-          if (force || !topic || newTopicId != topic.id) {
+          if (force || !topic || newTopicId !== topic.id) {
             var newTopic = getTopicById(newTopicId, false);
             if (newTopic) {
               topic = newTopic;

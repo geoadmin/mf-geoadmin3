@@ -29,7 +29,7 @@ goog.require('ga_translation_service');
           gaLang.set(newLang);
         });
         $rootScope.$on('$translateChangeEnd', function(event, newLang) {
-          if (scope.lang != newLang.language) {
+          if (scope.lang !== newLang.language) {
             scope.lang = newLang.language;
           }
         });

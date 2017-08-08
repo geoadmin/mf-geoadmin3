@@ -60,7 +60,7 @@ goog.provide('ga_window_service');
      * Returns true if current breakpoint matches passed alias
      */
     this.is = function(str) {
-      if (str.charAt(0) == '<' || str.charAt(0) == '>') {
+      if (str.charAt(0) === '<' || str.charAt(0) === '>') {
         return _isMatchingExpression(str, this.breakpoints);
       }
       return this.breakpoints[str] && this.breakpoints[str].is(':visible');
@@ -84,7 +84,7 @@ goog.provide('ga_window_service');
       // Used operator
       var operator = str.charAt(0);
       // Include breakpoint equal to alias?
-      var orEqual = (str.charAt(1) == '=');
+      var orEqual = (str.charAt(1) === '=');
 
       /**
        * Index at which breakpoint name starts.
@@ -150,7 +150,7 @@ goog.provide('ga_window_service');
          * end at 'sm' breakpoint, one before 'md'.
          * Which makes: start = 0, end = 1
          */
-        if (expression.operator == '<') {
+        if (expression.operator === '<') {
           start = 0;
           end = expression.orEqual ? ++pos : pos;
         }
@@ -163,7 +163,7 @@ goog.provide('ga_window_service');
          * the end of breakpoint list.
          * Which makes: start = 2, end = undefined
          */
-        if (expression.operator == '>') {
+        if (expression.operator === '>') {
           start = expression.orEqual ? pos : ++pos;
           end = undefined;
         }

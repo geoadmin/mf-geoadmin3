@@ -84,7 +84,7 @@ goog.require('ga_window_service');
         var method = 'POST';
         var feedbackUrl = scope.options.feedbackUrl;
         var elFileInpt = element.find('input[type=file]');
-        scope.isIE9 = (gaBrowserSniffer.msie == 9);
+        scope.isIE9 = (gaBrowserSniffer.msie === 9);
         // msie is either false or a number
         scope.isIE = !!gaBrowserSniffer.msie;
         scope.showProgress = false;

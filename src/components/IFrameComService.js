@@ -27,7 +27,7 @@ goog.provide('ga_iframecom_service');
             targetOrigin = '*';
           }
 
-          if ($window.top != $window) {
+          if ($window.top !== $window) {
             var msg = {
               type: type,
               payload: payload

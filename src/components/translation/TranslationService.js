@@ -24,7 +24,7 @@ goog.require('ga_permalink_service');
 
       // Load translations via $translate service
       var loadTranslations = function(newLang) {
-        if (newLang != $translate.use()) {
+        if (newLang !== $translate.use()) {
           lang = newLang;
           $translate.use(lang).then(function() {
             $rootScope.$broadcast('gettextLanguageChanged');
@@ -49,7 +49,7 @@ goog.require('ga_permalink_service');
         };
 
         this.getNoRm = function() {
-          return $translate.use() == 'rm' ?
+          return $translate.use() === 'rm' ?
             gaGlobalOptions.translationFallbackCode : this.get();
         };
       };

@@ -129,7 +129,7 @@ goog.require('ga_measure_filter');
               var first = coords[0];
               var last = coords[coords.length - 2];
 
-              if (first[0] != last[0] || first[1] != last[1]) {
+              if (first[0] !== last[0] || first[1] !== last[1]) {
                 pos = undefined;
               }
 
@@ -178,7 +178,7 @@ goog.require('ga_measure_filter');
               delta = 100000 / length;
             } else if (length > 20000) {
               delta = 10000 / length;
-            } else if (length != 0) {
+            } else if (length !== 0) {
               delta = 1000 / length;
             }
             for (var i = delta; i < 1; i += delta, currIdx++) {
@@ -238,9 +238,9 @@ goog.require('ga_measure_filter');
         this.canShowAzimuthCircle = function(geom) {
           if (geom instanceof ol.geom.LineString) {
             var coords = geom.getCoordinates();
-            if (coords.length == 2 ||
-                (coords.length == 3 && coords[1][0] == coords[2][0] &&
-                coords[1][1] == coords[2][1])) {
+            if (coords.length === 2 ||
+                (coords.length === 3 && coords[1][0] === coords[2][0] &&
+                coords[1][1] === coords[2][1])) {
               return true;
             }
           }

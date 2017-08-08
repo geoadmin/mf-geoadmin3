@@ -25,7 +25,7 @@ goog.require('ga_map_service');
             '-ms-transform': rotateString,
             '-webkit-transform': rotateString
           });
-          element.toggleClass('ga-rotate-enabled', !(rotation == 0));
+          element.toggleClass('ga-rotate-enabled', !(rotation === 0));
         };
 
         // Button is rotated according to map rotation

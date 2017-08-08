@@ -307,7 +307,7 @@ goog.require('ga_window_service');
           var li = $(this).closest('li');
           li.toggleClass('ga-layer-folded');
           $(this).closest('ul').find('li').each(function(i, el) {
-            if (el != li[0]) {
+            if (el !== li[0]) {
               $(el).addClass('ga-layer-folded');
             }
           });

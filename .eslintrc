@@ -1,7 +1,6 @@
 {
   extends: "eslint-config-standard",
   rules: {
-    eqeqeq: ["off"],
     dot-location: ["error", "object"],
     indent: [ "error", 2, { 
       CallExpression: {

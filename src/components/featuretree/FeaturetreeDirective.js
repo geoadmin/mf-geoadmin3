@@ -154,7 +154,7 @@ goog.require('ga_previewfeatures_service');
                     }
                   }
 
-                  feature.geojson = (feature.type == 'Feature' &&
+                  feature.geojson = (feature.type === 'Feature' &&
                       feature.geometry) ? feature : null;
                   feature.label = getTranslatedLabel(feature.properties);
                   newNode.features.push(feature);
@@ -233,11 +233,11 @@ goog.require('ga_previewfeatures_service');
 
             scope.onKeyDown = function(evt, feature) {
               // arrow up key
-              if (evt.keyCode == 38) {
+              if (evt.keyCode === 38) {
                 $(evt.target).prev().focus();
                 evt.preventDefault();
               // arrow down key
-              } else if (evt.keyCode == 40) {
+              } else if (evt.keyCode === 40) {
                 $(evt.target).next().focus();
                 evt.preventDefault();
               }
@@ -257,7 +257,7 @@ goog.require('ga_previewfeatures_service');
             // Watchers and scope events
             scope.$watch('isActive', function(newVal, oldVal) {
               cancel(scope);
-              if (newVal != oldVal) {
+              if (newVal !== oldVal) {
                 if (!newVal) {
                   deactivate(scope);
                 }

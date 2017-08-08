@@ -211,7 +211,7 @@ goog.require('ga_urlutils_service');
             for (var i = 1; i < this.data.length; i++) {
               // for (data.length - 1) line segments the time is calculated
               var distance = (this.data[i].dist - this.data[i - 1].dist) || 0;
-              if (distance != 0) {
+              if (distance !== 0) {
                 var dH = (this.data[i].alts[elevationModel] -
                     this.data[i - 1].alts[elevationModel]) || 0;
 

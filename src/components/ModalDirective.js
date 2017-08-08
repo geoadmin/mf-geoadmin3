@@ -8,8 +8,8 @@ goog.provide('ga_modal_directive');
   function toBoolean(value) {
     if (value && value.length !== 0) {
       var v = (value + '').toLowerCase();
-      value = !(v == 'f' || v == '0' || v == 'false' || v == 'no' ||
-          v == 'n' || v == '[]');
+      value = !(v === 'f' || v === '0' || v === 'false' || v === 'no' ||
+          v === 'n' || v === '[]');
     } else {
       value = false;
     }
@@ -34,7 +34,7 @@ goog.provide('ga_modal_directive');
       restrict: 'A',
       link: function(scope, element, attrs) {
         scope.$watch(attrs.gaModalShow, function(newVal, oldVal) {
-          if (newVal != oldVal) {
+          if (newVal !== oldVal) {
             var method = toBoolean(newVal + '') ? 'show' : 'hide';
             element.modal(method);
           }
@@ -42,7 +42,7 @@ goog.provide('ga_modal_directive');
         var setter = $parse(attrs.gaModalShow).assign;
         if (setter) {
           element.on('hide.bs.modal show.bs.modal', function(e) {
-            setter(scope, e.type == 'show');
+            setter(scope, e.type === 'show');
             scope.$applyAsync();
           });
         }

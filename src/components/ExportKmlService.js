@@ -33,7 +33,7 @@ goog.require('ga_browsersniffer_service');
       };
 
       var useDownloadService = function() {
-        if (gaBrowserSniffer.msie == 9 ||
+        if (gaBrowserSniffer.msie === 9 ||
             gaBrowserSniffer.safari ||
             !gaBrowserSniffer.blob) {
           return true;
@@ -87,7 +87,7 @@ goog.require('ga_browsersniffer_service');
           });
 
           if (exportFeatures.length > 0) {
-            if (exportFeatures.length == 1) {
+            if (exportFeatures.length === 1) {
               // force the add of a <Document> node
               exportFeatures.push(new ol.Feature());
             }
@@ -124,7 +124,7 @@ goog.require('ga_browsersniffer_service');
                 filename: filename
               }).then(function(response) {
                 var data = response.data;
-                if (gaBrowserSniffer.msie == 9) {
+                if (gaBrowserSniffer.msie === 9) {
                   $window.open(data.url);
                 } else {
                   $window.location = data.url;

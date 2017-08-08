@@ -22,7 +22,7 @@ goog.require('ga_map_service');
       var mapStartTime;
 
       var updateMapLoading = function() {
-        if (layersPending == layersDone) {
+        if (layersPending === layersDone) {
           var seconds = (new Date() - mapStartTime) / 1000;
           mapStartTime = undefined;
           $window.console.info('Map loaded in ' + seconds + 's');
@@ -30,7 +30,7 @@ goog.require('ga_map_service');
       };
 
       var addLayerPending = function() {
-        if (mapStartTime == undefined) {
+        if (mapStartTime === undefined) {
           $window.console.info('Start loading map.');
           mapStartTime = new Date();
         }
@@ -49,7 +49,7 @@ goog.require('ga_map_service');
         var loaded = 0;
 
         var update = function() {
-          if (loading == loaded) {
+          if (loading === loaded) {
             var seconds = (new Date() - startTime) / 1000;
             startTime = undefined;
             $window.console.log('Layer ' + layer.id +
@@ -59,7 +59,7 @@ goog.require('ga_map_service');
         };
 
         var addLoading = function() {
-          if (startTime == undefined) {
+          if (startTime === undefined) {
             startTime = new Date();
             addLayerPending();
           }
@@ -98,7 +98,7 @@ goog.require('ga_map_service');
 
         var createLayerProgress = function(layers) {
           angular.forEach(layers, function(layer) {
-            if (layer.type == 'aggregate') {
+            if (layer.type === 'aggregate') {
               createLayerProgress(layer.getLayers());
             } else if (!progs[layer.id]) {
               progs[layer.id] = new LayerProgress(layer);

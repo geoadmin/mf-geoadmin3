@@ -291,7 +291,7 @@ goog.require('ga_styles_service');
               // We update only time enabled bod layers
               if (olLayer.bodId && olLayer.timeEnabled &&
                   angular.isDefined(olLayer.time) &&
-                  olLayer.time.substr(0, 4) != oldTime) {
+                  olLayer.time.substr(0, 4) !== oldTime) {
                 singleModif = true;
                 break;
               }

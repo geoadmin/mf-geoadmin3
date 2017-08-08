@@ -16,7 +16,8 @@ goog.require('ga_map_service');
 
   var isElementEditable = function(element) {
     var tagName = element.tagName;
-    return tagName == 'INPUT' || tagName == 'SELECT' || tagName == 'TEXTAREA';
+    return tagName === 'INPUT' || tagName === 'SELECT' ||
+        tagName === 'TEXTAREA';
   };
 
   var module = angular.module('ga_controls3d_directive', [
@@ -63,10 +64,10 @@ goog.require('ga_map_service');
           var moveAmount = 200;
           var zoomAmount = 400;
           var lowPitch = camera.pitch < Cesium.Math.toRadians(-30);
-          if (event.keyCode == 43) {
+          if (event.keyCode === 43) {
             // + key
             camera.moveForward(zoomAmount);
-          } else if (event.keyCode == 45) {
+          } else if (event.keyCode === 45) {
             // - key
             camera.moveBackward(zoomAmount);
           }
@@ -74,14 +75,14 @@ goog.require('ga_map_service');
           if (scope.fps.active) {
             return;
           }
-          if (event.keyCode == 37) {
+          if (event.keyCode === 37) {
             // left key
             if (lowPitch && !event.shiftKey) {
               camera.moveLeft(moveAmount);
             } else {
               scope.rotate(-5);
             }
-          } else if (event.keyCode == 39) {
+          } else if (event.keyCode === 39) {
             // right key
             if (lowPitch && !event.shiftKey) {
               camera.moveRight(moveAmount);
@@ -90,10 +91,10 @@ goog.require('ga_map_service');
             }
           }
           if (event.shiftKey) {
-            if (event.keyCode == 38) {
+            if (event.keyCode === 38) {
               // up key
               scope.tilt(+15);
-            } else if (event.keyCode == 40) {
+            } else if (event.keyCode === 40) {
               // down key
               scope.tilt(-15);
             }
@@ -106,10 +107,10 @@ goog.require('ga_map_service');
           var backward = new Cesium.Cartesian3();
           Cesium.Cartesian3.cross(up, camera.right, backward);
 
-          if (event.keyCode == 38) {
+          if (event.keyCode === 38) {
             // up key
             camera.move(backward, moveAmount);
-          } else if (event.keyCode == 40) {
+          } else if (event.keyCode === 40) {
             // down key
             camera.move(backward, -moveAmount);
           }

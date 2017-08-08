@@ -29,7 +29,7 @@ goog.require('ga_map_service');
 
       function setLayerSource(layer) {
         var olSource = layer.getSource();
-        var kml = (layer.type == 'KML');
+        var kml = (layer.type === 'KML');
         var url = !kml ? layer.geojsonUrl : layer.url;
         gaUrlUtils.proxifyUrl(url).then(function(proxyUrl) {
           $http.get(proxyUrl).then(function(response) {
@@ -77,11 +77,11 @@ goog.require('ga_map_service');
               oldLayers.forEach(function(oldLayer) {
                 var realTimeId = oldLayer.bodId || oldLayer.id;
                 var oldLayerIdIndex = realTimeLayersId.indexOf(realTimeId);
-                if (oldLayerIdIndex != -1 &&
-                !gaMapUtils.getMapLayerForBodId(map, realTimeId)) {
+                if (oldLayerIdIndex !== -1 &&
+                    !gaMapUtils.getMapLayerForBodId(map, realTimeId)) {
                   realTimeLayersId.splice(oldLayerIdIndex, 1);
                   $timeout.cancel(timers.splice(oldLayerIdIndex, 1)[0]);
-                  if (realTimeLayersId.length == 0) {
+                  if (!realTimeLayersId.length) {
                     $rootScope.$broadcast('gaNewLayerTimestamp', '');
                   }
                 }
@@ -90,7 +90,7 @@ goog.require('ga_map_service');
               // Layer Added
               newLayers.forEach(function(newLayer) {
                 var realTimeId = newLayer.bodId || newLayer.id;
-                if (realTimeLayersId.indexOf(realTimeId) == -1) {
+                if (realTimeLayersId.indexOf(realTimeId) === -1) {
                   if (!newLayer.preview) {
                     realTimeLayersId.push(realTimeId);
                   }

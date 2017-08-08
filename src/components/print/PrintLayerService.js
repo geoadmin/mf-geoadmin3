@@ -404,7 +404,7 @@ goog.require('ga_urlutils_service');
       var url = source.getUrls()[0];
       var baseUrl = url.replace(/^\/\//, 'https://');
 
-      if (requestEncoding == 'REST') {
+      if (requestEncoding === 'REST') {
         baseUrl = baseUrl.
             replace(/\{Time\}/i, '{TIME}').
             replace(/\{/g, '%7B').
@@ -453,11 +453,11 @@ goog.require('ga_urlutils_service');
       var multiPagesPrint = false;
       if (config.timestamps) {
         multiPagesPrint = !config.timestamps.some(function(ts) {
-          return ts == '99991231';
+          return ts === '99991231';
         });
       }
       // printing time series
-      if (config.timeEnabled && gaTime.get() == undefined &&
+      if (config.timeEnabled && gaTime.get() === undefined &&
           multiPagesPrint) {
         enc['timestamps'] = config.timestamps;
       }
@@ -553,7 +553,7 @@ goog.require('ga_urlutils_service');
     return function(layer, config, options) {
 
       var format = '.png';
-      if (options.pdfLegendList.indexOf(layer.bodId) != -1) {
+      if (options.pdfLegendList.indexOf(layer.bodId) !== -1) {
         format = pdfLegendString;
       }
 

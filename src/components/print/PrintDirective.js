@@ -144,7 +144,7 @@ goog.require('ga_urlutils_service');
 
     $scope.downloadUrl = function(url) {
       $scope.options.printsuccess = true;
-      if (gaBrowserSniffer.msie == 9) {
+      if (gaBrowserSniffer.msie === 9) {
         $window.open(url);
       } else {
         $window.location = url;
@@ -216,7 +216,7 @@ goog.require('ga_urlutils_service');
       // Transform layers to literal
       layers.forEach(function(layer) {
 
-        if (!layer.visible || layer.opacity == 0) {
+        if (!layer.visible || layer.opacity === 0) {
           return;
         }
         // Only print layer which have an extent intersecting the print extent
@@ -229,11 +229,11 @@ goog.require('ga_urlutils_service');
         // TODO: issue a warning for the user
         if (layer.getSource && layer.getSource().getProjection()) {
           var layerProj = layer.getSource().getProjection().getCode();
-          if (layerProj == null) {
+          if (!layerProj) {
             layerProj = proj.getCode();
             layer.getSource().setProjection(layerProj);
           }
-          if (layerProj != proj.getCode()) {
+          if (layerProj !== proj.getCode()) {
             return;
           }
         }
@@ -281,12 +281,12 @@ goog.require('ga_urlutils_service');
 
           // Add attribution of encoded layers
           var attribution = gaAttribution.getTextFromLayer(layer);
-          if (attribution !== undefined) {
+          if (attribution) {
             if (layer.useThirdPartyData) {
-              if (thirdPartyAttributions.indexOf(attribution) == -1) {
+              if (thirdPartyAttributions.indexOf(attribution) === -1) {
                 thirdPartyAttributions.push(attribution);
               }
-            } else if (attributions.indexOf(attribution) == -1) {
+            } else if (attributions.indexOf(attribution) === -1) {
               attributions.push(attribution);
             }
           }
@@ -437,7 +437,7 @@ goog.require('ga_urlutils_service');
                     $scope.downloadUrl(data.getURL);
                   }
                 }, function() {
-                  if ($scope.options.printing == false) {
+                  if ($scope.options.printing === false) {
                     pollErrors = 0;
                     return;
                   }
@@ -576,10 +576,10 @@ goog.require('ga_urlutils_service');
 
     $scope.layers = $scope.map.getLayers().getArray();
     $scope.layerFilter = function(layer) {
-      return layer.bodId == 'ch.swisstopo.zeitreihen' && layer.visible;
+      return layer.bodId === 'ch.swisstopo.zeitreihen' && layer.visible;
     };
     $scope.$watchCollection('layers | filter:layerFilter', function(lrs) {
-      $scope.options.multiprint = (lrs.length == 1);
+      $scope.options.multiprint = (lrs.length === 1);
     });
 
     $scope.$watch('active', function(newVal, oldVal) {
