@@ -27,22 +27,22 @@
     semi: ["off"],
     space-before-function-paren: ["error", "never"]
   },
+  env: {
+    browser: true,
+    jquery: true,
+    mocha: true
+  },
   globals:  {
-    $: true,
     angular: true,
-    Blob: true,
     Cesium: true,
-    DOMException: true,
-    Element: true,
-    FileReader: true,
-    FormData: true,
+    expect: true,
     FPS: true,
     goog: true,
+    inject: true,
     ol: true,
     olcs: true,
+    sinon: true,
     Slip: true,
-    WebKitBlobBuilder: true,
-    window: true,
-    XMLHttpRequest: true
+    WebKitBlobBuilder: true
   }
 }
