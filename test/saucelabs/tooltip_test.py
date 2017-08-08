@@ -8,10 +8,10 @@ from selenium.webdriver.common.action_chains import ActionChains
 
 
 tooltipTests = [
-  {
-    'permalink': '?topic=ech&lang=de&bgLayer=ch.swisstopo.pixelkarte-farbe&X=183500.00&'
-                 'Y=699500.00&zoom=2&layers=ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill'
-  }
+    {
+        'permalink': '?topic=ech&lang=de&bgLayer=ch.swisstopo.pixelkarte-farbe&X=183500.00&'
+        'Y=699500.00&zoom=2&layers=ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill'
+    }
 ]
 
 
