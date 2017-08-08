@@ -171,7 +171,8 @@ goog.require('ga_time_service');
 
             // Activate/deactivate automatically the time selector
             scope.$on('gaTimeChange', function(evt, time) {
-              if (angular.isDefined(time) && scope.currentYear !== time) {
+              if (angular.isDefined(time) &&
+                  scope.currentYear !== parseFloat(time)) {
                 scope.currentYear = time;
               }
               updateStatus();

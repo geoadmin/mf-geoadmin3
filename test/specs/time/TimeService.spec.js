@@ -23,8 +23,8 @@ describe('ga_time_service', function() {
       });
 
       it('gets the time from permalink', function() {
-        injectTime(1989);
-        expect(gaTime.get()).to.be(1989);
+        injectTime('1989');
+        expect(gaTime.get()).to.be('1989');
       });
 
       it('gets a NaN time from permalink', function() {
@@ -44,9 +44,14 @@ describe('ga_time_service', function() {
         expect(gaTime.get()).to.be(undefined);
       });
 
-      it('set time as string', function() {
+      it('set time as integer', function() {
         gaTime.set(1989);
-        expect(gaTime.get()).to.be(1989);
+        expect(gaTime.get()).to.be('1989');
+      });
+
+      it('set time as string', function() {
+        gaTime.set('1989');
+        expect(gaTime.get()).to.be('1989');
       });
 
       it('set time', function() {
@@ -249,7 +254,7 @@ describe('ga_time_service', function() {
 
          // All layers have the same time
          gaTime.updateStatus([l, l]);
-         expect(gaTime.get()).to.be(1987);
+         expect(gaTime.get()).to.be('1987');
 
          // A layer has a different time
          gaTime.updateStatus([l, l1, l]);
@@ -258,7 +263,7 @@ describe('ga_time_service', function() {
          // All visible layers have the same time
          l1.visible = false;
          gaTime.updateStatus([l, l1, l]);
-         expect(gaTime.get()).to.be(1987);
+         expect(gaTime.get()).to.be('1987');
 
          // A layer's time is greater than the current year
          l1.visible = true;
