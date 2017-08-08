@@ -12,4 +12,3 @@ goog.provide('ga_search_controller');
     };
   });
 })();
-

@@ -37,6 +37,7 @@
     Cesium: true,
     expect: true,
     FPS: true,
+    GaCesium: true,
     goog: true,
     inject: true,
     ol: true,

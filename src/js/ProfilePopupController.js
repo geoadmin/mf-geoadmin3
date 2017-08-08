@@ -17,7 +17,7 @@ goog.provide('ga_profilepopup_controller');
       if (callback) {
         // Remove the feature correctly (without digest cycle error)
         var unreg = $scope.$watch('toggle', function(newValue, oldValue) {
-          if (oldValue && !newValue) { //The popup is closing
+          if (oldValue && !newValue) { // The popup is closing
             callback(feature);
             unreg();
           }

@@ -25,7 +25,7 @@ goog.provide('ga_drawstylepopup_controller');
         onClose) {
       $scope.toggle = !!(feature);
       // If the selected feature has changed, we force the popup to unreduce
-      if (lastFeature != feature) {
+      if (lastFeature !== feature) {
         $scope.options.isReduced = false;
       }
       lastFeature = feature;
@@ -37,7 +37,7 @@ goog.provide('ga_drawstylepopup_controller');
         off();
         // Unselect the feature correctly (without digest cycle error)
         deregister.push($scope.$watch('toggle', function(newValue, oldValue) {
-          if (oldValue && !newValue) { //The popup is closing
+          if (oldValue && !newValue) { // The popup is closing
             onClose(feature);
             off();
           }

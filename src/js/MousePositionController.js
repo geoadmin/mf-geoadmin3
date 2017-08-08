@@ -41,13 +41,13 @@ goog.require('ga_measure_service');
       label: 'UTM',
       format: function(coordinates) {
         if (coordinates[0] < 6 && coordinates[0] >= 0) {
-          var utm_31t = ol.proj.transform(coordinates, 'EPSG:4326',
+          var utm31t = ol.proj.transform(coordinates, 'EPSG:4326',
               'EPSG:32631');
-          return coordinatesFormatUTM(utm_31t, '(zone 31T)');
+          return coordinatesFormatUTM(utm31t, '(zone 31T)');
         } else if (coordinates[0] < 12 && coordinates[0] >= 6) {
-          var utm_32t = ol.proj.transform(coordinates, 'EPSG:4326',
+          var utm32t = ol.proj.transform(coordinates, 'EPSG:4326',
               'EPSG:32632');
-          return coordinatesFormatUTM(utm_32t, '(zone 32T)');
+          return coordinatesFormatUTM(utm32t, '(zone 32T)');
         } else {
           return '-';
         }

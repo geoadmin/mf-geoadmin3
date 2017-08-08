@@ -11,16 +11,16 @@ goog.require('ga_print_service');
   ]);
 
   module.controller('GaProfileController', function($scope, $timeout,
-     gaBrowserSniffer, gaGlobalOptions, gaPrint) {
+      gaBrowserSniffer, gaGlobalOptions, gaPrint) {
 
-   $scope.options = {
+    $scope.options = {
       xLabel: 'profile_x_label',
       yLabel: 'profile_y_label',
       margin: {
-         top: 6,
-         right: 20,
-         bottom: 30,
-         left: 60
+        top: 6,
+        right: 20,
+        bottom: 30,
+        left: 60
       },
       elevationModel: gaGlobalOptions.defaultElevationModel
     };
@@ -58,4 +58,3 @@ goog.require('ga_print_service');
     });
   });
 })();
-
