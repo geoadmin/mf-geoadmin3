@@ -8,7 +8,8 @@ goog.provide('ga_measure_filter');
 
     // Transform 12.00 to 12
     var cleanAfterComma = function(measure) {
-      if (parseInt(measure) === measure) {
+      // eslint-disable-next-line eqeqeq
+      if (parseInt(measure) == measure) {
         measure = parseInt(measure);
       }
       return measure;
