@@ -50,6 +50,7 @@ goog.require('ga_window_service');
       '</span>';
 
       var map = new ol.Map({
+        moveTolerance: 5,
         controls: ol.control.defaults({
           attribution: false,
           rotate: false,

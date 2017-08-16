@@ -15,7 +15,8 @@ describe('ga_contextpopup_directive', function() {
     stopPropagation: function() {},
     preventDefault: function() {},
     pixel: [30, 60],
-    coordinate: [661673, 198192]
+    coordinate: [661673, 198192],
+    dragging: true // simulate move event
   };
   var mouseEvt = $.extend({type: 'mousedown'}, mapEvt);
   var mouseEvt2 = $.extend({type: 'mouseup'}, mapEvt2);
