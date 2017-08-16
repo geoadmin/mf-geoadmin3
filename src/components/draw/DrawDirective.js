@@ -51,7 +51,6 @@ goog.require('ga_styles_service');
       }
       gaMeasure.registerOverlaysEvents(map, dfltLayer);
       dfltLayer.label = $translate.instant('draw_layer_label');
-      dfltLayer.type = 'KML';
       return dfltLayer;
     };
 

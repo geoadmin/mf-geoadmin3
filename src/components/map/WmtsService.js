@@ -56,7 +56,6 @@ goog.require('ga_urlutils_service');
         layer.label = options.label;
         layer.url = options.capabilitiesUrl;
         layer.timestamps = options.timestamps;
-        layer.type = 'WMTS';
         layer.timeEnabled = (layer.timestamps && layer.timestamps.length > 1);
         if (options.time) {
           layer.time = options.time;

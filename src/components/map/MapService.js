@@ -159,14 +159,6 @@ goog.require('ga_urlutils_service');
               this.set('url', val);
             }
           },
-          type: {
-            get: function() {
-              return this.get('type');
-            },
-            set: function(val) {
-              this.set('type', val);
-            }
-          },
           timeEnabled: {
             get: function() {
               return this.get('timeEnabled');
@@ -749,11 +741,11 @@ goog.require('ga_urlutils_service');
          * Return an ol.layer.Layer object for a layer id.
          */
         this.getOlLayerById = function(bodId) {
-          var layer = layers[bodId];
+          var config = layers[bodId];
           var olLayer;
           var timestamp = this.getLayerTimestampFromYear(bodId, gaTime.get());
           var crossOrigin = 'anonymous';
-          var extent = layer.extent || gaMapUtils.defaultExtent;
+          var extent = config.extent || gaMapUtils.defaultExtent;
 
           // For some obscure reasons, on iOS, displaying a base 64 image
           // in a tile with an existing crossOrigin attribute generates
@@ -765,28 +757,28 @@ goog.require('ga_urlutils_service');
           }
 
           // We allow duplication of source for time enabled layers
-          var olSource = (layer.timeEnabled) ? null : layer.olSource;
-          if (layer.type === 'wmts') {
+          var olSource = (config.timeEnabled) ? null : config.olSource;
+          if (config.type === 'wmts') {
             if (!olSource) {
-              var wmtsTplUrl = getWmtsGetTileTpl(layer.serverLayerName, null,
-                  '21781', layer.format, true).
+              var wmtsTplUrl = getWmtsGetTileTpl(config.serverLayerName, null,
+                  '21781', config.format, true).
                   replace('{z}', '{TileMatrix}').
                   replace('{x}', '{TileCol}').
                   replace('{y}', '{TileRow}');
-              olSource = layer.olSource = new ol.source.WMTS({
+              olSource = config.olSource = new ol.source.WMTS({
                 dimensions: {
                   'Time': timestamp
                 },
                 // Workaround: Set a cache size of zero when layer is
                 // timeEnabled see:
                 // https://github.com/geoadmin/mf-geoadmin3/issues/3491
-                cacheSize: layer.timeEnabled ? 0 : 2048,
-                layer: layer.serverLayerName,
-                format: layer.format,
+                cacheSize: config.timeEnabled ? 0 : 2048,
+                layer: config.serverLayerName,
+                format: config.format,
                 projection: gaGlobalOptions.defaultEpsg,
                 requestEncoding: 'REST',
-                tileGrid: gaTileGrid.get(layer.resolutions,
-                    layer.minResolution),
+                tileGrid: gaTileGrid.get(config.resolutions,
+                    config.minResolution),
                 tileLoadFunction: tileLoadFunction,
                 urls: getImageryUrls(wmtsTplUrl, h2(dfltWmtsNativeSubdomains)),
                 crossOrigin: crossOrigin
@@ -794,26 +786,26 @@ goog.require('ga_urlutils_service');
             }
             olLayer = new ol.layer.Tile({
               minResolution: gaNetworkStatus.offline ? null :
-                layer.minResolution,
-              maxResolution: layer.maxResolution,
-              opacity: layer.opacity || 1,
+                config.minResolution,
+              maxResolution: config.maxResolution,
+              opacity: config.opacity || 1,
               source: olSource,
               extent: extent,
               preload: gaNetworkStatus.offline ? gaMapUtils.preload : 0,
               useInterimTilesOnError: gaNetworkStatus.offline
             });
-          } else if (layer.type === 'wms') {
+          } else if (config.type === 'wms') {
             var wmsParams = {
-              LAYERS: layer.wmsLayers,
-              FORMAT: 'image/' + layer.format,
+              LAYERS: config.wmsLayers,
+              FORMAT: 'image/' + config.format,
               LANG: gaLang.get()
             };
             if (timestamp) {
               wmsParams['TIME'] = timestamp;
             }
-            if (layer.singleTile === true) {
+            if (config.singleTile === true) {
               if (!olSource) {
-                olSource = layer.olSource = new ol.source.ImageWMS({
+                olSource = config.olSource = new ol.source.ImageWMS({
                   url: getImageryUrls(getWmsTpl(gaGlobalOptions.wmsUrl))[0],
                   params: wmsParams,
                   crossOrigin: crossOrigin,
@@ -821,65 +813,65 @@ goog.require('ga_urlutils_service');
                 });
               }
               olLayer = new ol.layer.Image({
-                minResolution: layer.minResolution,
-                maxResolution: layer.maxResolution,
-                opacity: layer.opacity || 1,
+                minResolution: config.minResolution,
+                maxResolution: config.maxResolution,
+                opacity: config.opacity || 1,
                 source: olSource,
                 extent: extent
               });
             } else {
               if (!olSource) {
                 var subdomains = dfltWmsSubdomains;
-                olSource = layer.olSource = new ol.source.TileWMS({
+                olSource = config.olSource = new ol.source.TileWMS({
                   urls: getImageryUrls(
                       getWmsTpl(gaGlobalOptions.wmsUrl), subdomains),
                   // Temporary until https://github.com/openlayers/ol3/pull/4964
                   // is merged upstream
                   cacheSize: 2048 * 3,
                   params: wmsParams,
-                  gutter: layer.gutter || 0,
+                  gutter: config.gutter || 0,
                   crossOrigin: crossOrigin,
-                  tileGrid: gaTileGrid.get(layer.resolutions,
-                      layer.minResolution, 'wms'),
+                  tileGrid: gaTileGrid.get(config.resolutions,
+                      config.minResolution, config.type),
                   tileLoadFunction: tileLoadFunction,
                   wrapX: false
                 });
               }
               olLayer = new ol.layer.Tile({
-                minResolution: layer.minResolution,
-                maxResolution: layer.maxResolution,
-                opacity: layer.opacity || 1,
+                minResolution: config.minResolution,
+                maxResolution: config.maxResolution,
+                opacity: config.opacity || 1,
                 source: olSource,
                 extent: extent,
                 preload: gaNetworkStatus.offline ? gaMapUtils.preload : 0,
                 useInterimTilesOnError: gaNetworkStatus.offline
               });
             }
-          } else if (layer.type === 'aggregate') {
-            var subLayersIds = layer.subLayersIds;
+          } else if (config.type === 'aggregate') {
+            var subLayersIds = config.subLayersIds;
             var i, len = subLayersIds.length;
             var subLayers = new Array(len);
             for (i = 0; i < len; i++) {
               subLayers[i] = this.getOlLayerById(subLayersIds[i]);
             }
             olLayer = new ol.layer.Group({
-              minResolution: layer.minResolution,
-              maxResolution: layer.maxResolution,
-              opacity: layer.opacity || 1,
+              minResolution: config.minResolution,
+              maxResolution: config.maxResolution,
+              opacity: config.opacity || 1,
               layers: subLayers
             });
-          } else if (layer.type === 'geojson') {
+          } else if (config.type === 'geojson') {
             // cannot request resources over https in S3
             olSource = new ol.source.Vector();
             olLayer = new ol.layer.Vector({
-              minResolution: layer.minResolution,
-              maxResolution: layer.maxResolution,
+              minResolution: config.minResolution,
+              maxResolution: config.maxResolution,
               source: olSource,
               extent: extent
             });
             var setLayerSource = function() {
               var geojsonFormat = new ol.format.GeoJSON();
-              gaUrlUtils.proxifyUrl(layer.geojsonUrl).then(function(proxyUrl) {
+              gaUrlUtils.proxifyUrl(config.geojsonUrl).then(function(proxyUrl) {
                 $http.get(proxyUrl).then(function(response) {
                   olSource.clear();
                   olSource.addFeatures(
@@ -890,7 +882,7 @@ goog.require('ga_urlutils_service');
             };
 
             // IE doesn't understand agnostic URLs
-            $http.get($window.location.protocol + layer.styleUrl, {
+            $http.get($window.location.protocol + config.styleUrl, {
               cache: true
             }).then(function(response) {
               var olStyleForVector = gaStylesFromLiterals(response.data);
@@ -901,20 +893,19 @@ goog.require('ga_urlutils_service');
             });
             // TODO: Handle error
 
-            if (!layer.updateDelay) {
+            if (!config.updateDelay) {
               setLayerSource();
             }
           }
           if (angular.isDefined(olLayer)) {
             gaDefinePropertiesForLayer(olLayer);
             olLayer.bodId = bodId;
-            olLayer.label = layer.label;
-            olLayer.type = layer.type;
-            olLayer.timeEnabled = layer.timeEnabled;
-            olLayer.timeBehaviour = layer.timeBehaviour;
-            olLayer.timestamps = layer.timestamps;
-            olLayer.geojsonUrl = layer.geojsonUrl;
-            olLayer.updateDelay = layer.updateDelay;
+            olLayer.label = config.label;
+            olLayer.timeEnabled = config.timeEnabled;
+            olLayer.timeBehaviour = config.timeBehaviour;
+            olLayer.timestamps = config.timestamps;
+            olLayer.geojsonUrl = config.geojsonUrl;
+            olLayer.updateDelay = config.updateDelay;
             var that = this;
             olLayer.getCesiumImageryProvider = function() {
               return that.getCesiumImageryProviderById(bodId);
@@ -963,19 +954,19 @@ goog.require('ga_urlutils_service');
          * found.
          */
         this.getLayerTimestampFromYear = function(configOrBodId, yearStr) {
-          var layer = angular.isString(configOrBodId) ?
+          var config = angular.isString(configOrBodId) ?
             this.getLayer(configOrBodId) : configOrBodId;
-          if (!layer.timeEnabled) {
+          if (!config.timeEnabled) {
             // a WMTS/Terrain/Tileset3D layer has at least one timestamp
-            return (layer.type === 'wmts' || layer.type === 'terrain' ||
-                layer.type === 'tileset3d') ? layer.timestamps[0] : undefined;
+            return (config.type === 'wmts' || config.type === 'terrain' ||
+                config.type === 'tileset3d') ? config.timestamps[0] : undefined;
           }
-          var timestamps = layer.timestamps || [];
+          var timestamps = config.timestamps || [];
           if (angular.isNumber(yearStr)) {
             yearStr = '' + yearStr;
           }
           if (!angular.isDefined(yearStr)) {
-            var timeBehaviour = layer.timeBehaviour;
+            var timeBehaviour = config.timeBehaviour;
             // check if specific 4/6/8 digit timestamp is specified
             if (/^\d{4}$|^\d{6}$|^\d{8}$/.test(timeBehaviour)) {
               yearStr = timeBehaviour.substr(0, 4);
@@ -1305,10 +1296,13 @@ goog.require('ga_urlutils_service');
           if (!olLayerOrId) {
             return false;
           }
+          if (olLayerOrId instanceof ol.layer.Layer) {
+            olLayerOrId = olLayerOrId.id;
+          }
           if (angular.isString(olLayerOrId)) {
             return /^KML\|\|/.test(olLayerOrId);
           }
-          return olLayerOrId.type === 'KML';
+          return false;
         },
 
         // Test if a layer is a KML layer added by dnd
@@ -1347,12 +1341,15 @@ goog.require('ga_urlutils_service');
         isExternalWmtsLayer: function(olLayerOrId) {
           if (!olLayerOrId) {
             return false;
-          } else if (angular.isString(olLayerOrId)) {
+          }
+          if (olLayerOrId instanceof ol.layer.Layer) {
+            olLayerOrId = olLayerOrId.id;
+          }
+          if (angular.isString(olLayerOrId)) {
             return /^WMTS\|\|/.test(olLayerOrId) &&
                 olLayerOrId.split('||').length === 3;
-          } else {
-            return olLayerOrId.type === 'WMTS';
           }
+          return false;
         },
 
         // Test if a feature is a measure
