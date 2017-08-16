@@ -10,7 +10,6 @@ beforeEach(function() {
     var publicUrl = '//public.geo.admin.ch';
     var printUrl = '//print.geo.admin.ch';
     var proxyUrl = '//proxy.geo.admin.ch';
-    var mapproxyUrl = '//wmts{s}.geo.admin.ch';
     var shopUrl = '//shop.bgdi.ch';
     var wmsUrl = '//wms.geo.admin.ch';
     var apacheBasePath = '/';
@@ -26,7 +25,6 @@ beforeEach(function() {
       mapUrl: location.origin + apacheBasePath,
       apiUrl: location.protocol + apiUrl,
       printUrl: location.protocol + printUrl,
-      mapproxyUrl: location.protocol + mapproxyUrl,
       shopUrl: location.protocol + shopUrl,
       publicUrl: location.protocol + publicUrl,
       publicUrlRegexp: /^https?:\/\/public\..*\.(bgdi|admin)\.ch\/.*/,
@@ -71,14 +69,11 @@ beforeEach(function() {
 
   module(function(gaLayersProvider, gaGlobalOptions) {
     gaLayersProvider.dfltWmsSubdomains = ['', '0', '1', '2', '3', '4'];
-    gaLayersProvider.dfltWmtsNativeSubdomains = ['5', '6', '7', '8', '9'];
-    gaLayersProvider.dfltWmtsMapProxySubdomains = ['20', '21', '22', '23', '24'];
+    gaLayersProvider.dfltWmtsSubdomains = ['5', '6', '7', '8', '9'];
     gaLayersProvider.dfltVectorTilesSubdomains = ['100', '101', '102', '103', '104'];
     gaLayersProvider.wmsUrlTemplate = '//wms{s}.geo.admin.ch/';
-    gaLayersProvider.wmtsGetTileUrlTemplate = '//wmts{s}.geo.admin.ch/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{y}/{x}.{Format}';
+    gaLayersProvider.wmtsGetTileUrlTemplate = '//wmts{s}.geo.admin.ch/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{x}/{y}.{Format}';
 
-    gaLayersProvider.wmtsMapProxyGetTileUrlTemplate = gaGlobalOptions.mapproxyUrl +
-        '/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{x}/{y}.{Format}';
     gaLayersProvider.terrainTileUrlTemplate = '//3d.geo.admin.ch/1.0.0/{Layer}/default/{Time}/4326';
     gaLayersProvider.vectorTilesUrlTemplate = '//vectortiles{s}.geo.admin.ch/{Layer}/{Time}/';
     gaLayersProvider.layersConfigUrlTemplate = 'https://example.com/all?lang={Lang}';
