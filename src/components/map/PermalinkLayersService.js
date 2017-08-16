@@ -209,9 +209,9 @@ goog.require('ga_wmts_service');
               opacities[index] : undefined;
             var visible = !((visibilities === false ||
                 (angular.isArray(visibilities) &&
-                visibilities[index] == 'false')));
+                visibilities[index] === 'false')));
             var timestamp = (timestamps && index < timestamps.length &&
-                timestamps != '') ? timestamps[index] : '';
+                timestamps !== '') ? timestamps[index] : '';
             var params = (parameters && index < parameters.length) ?
               gaUrlUtils.parseKeyValue(parameters[index]) : undefined;
             var bodLayer = gaLayers.getLayer(layerSpec);
@@ -332,14 +332,14 @@ goog.require('ga_wmts_service');
           if (mustReorder) {
             var deregister2 = scope.$watchCollection(
                 'layers | filter : layerFilter', function(layers) {
-                  if (layers.length == nbLayersToAdd) {
+                  if (layers.length === nbLayersToAdd) {
                     deregister2();
                     var hasBg = map.getLayers().item(0).background;
                     var ii = map.getLayers().getLength();
                     for (var i = 0; i < ii; i++) {
                       var layer = map.getLayers().item(i);
                       var idx = layerSpecs.indexOf(layer.id);
-                      if (idx == -1) {
+                      if (idx === -1) {
                         // If the layer is not in the layerSpecs we ignore it
                         continue;
                       }
@@ -347,7 +347,7 @@ goog.require('ga_wmts_service');
                       if (hasBg) {
                         idx = idx + 1;
                       }
-                      if (i != idx) {
+                      if (i !== idx) {
                         map.getLayers().remove(layer);
                         map.getLayers().insertAt(idx, layer);
                         i = (i < idx) ? i : idx;

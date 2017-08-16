@@ -3,7 +3,7 @@ describe('ga_feedback_controller', function() {
   describe('GaFeedbackController', function() {
 
     var scope, parentScope, $compile, $rootScope, $httpBackend, $timeout,
-        gaGlobalOptions;
+      gaGlobalOptions;
 
     var loadController = function() {
       parentScope = $rootScope.$new();
@@ -47,4 +47,3 @@ describe('ga_feedback_controller', function() {
     });
   });
 });
-

@@ -118,4 +118,3 @@ describe('ga_event_service', function() {
     });
   });
 });
-

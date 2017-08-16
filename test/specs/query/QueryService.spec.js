@@ -1,6 +1,6 @@
 describe('ga_query_service', function() {
 
- describe('gaQuery', function() {
+  describe('gaQuery', function() {
     var gaQuery, gaGlobalOptions, $httpBackend, $rootScope, gaLang, $window, $q;
     var twoWeeksAgo = window.moment().subtract(2, 'weeks').
         format('YYYY-MM-DD');
@@ -122,10 +122,9 @@ describe('ga_query_service', function() {
       attrInfos.TIMESTAMP = attrInfos['TIMESTAMP WITHOUT TIME ZONE'] =
           attrInfos.DATE;
 
-
       var numericTypes = ['NUMERIC', 'BIGINTEGER', 'SMALLINTEGER', 'INTEGER',
-          'BIGINT', 'SMALLINT', 'INT', 'DOUBLE', 'DOUBLE PRECISION', 'FLOAT',
-          'DECIMAL', 'INTERVAL'];
+        'BIGINT', 'SMALLINT', 'INT', 'DOUBLE', 'DOUBLE PRECISION', 'FLOAT',
+        'DECIMAL', 'INTERVAL'];
       var stringTypes = ['STRING', 'TEXT', 'UNICODE', 'UNICODETEXT', 'ENUM'];
       var dateTypes = ['DATE', 'TIMESTAMP WITHOUT TIME ZONE', 'TIMESTAMP'];
       var otherTypes = ['BOOLEAN', 'TIME', 'DATETIME'];
@@ -250,7 +249,6 @@ describe('ga_query_service', function() {
         $httpBackend.flush();
       });
     });
-
 
     describe('getAttributeValues', function() {
       var url = 'http://api3.geo.admin.ch/rest/services/all/MapServer/somelayer/attributes/someattr';

@@ -100,7 +100,7 @@ goog.require('ga_window_service');
             // vectorLayer is defined when a feature is clicked.
             // onclick, geolocation circle is unselectable
             if (layer && !feature.getProperties().unselectable) {
-              if (!vectorLayer || vectorLayer == layer) {
+              if (!vectorLayer || vectorLayer === layer) {
                 if (!featureFound) {
                   featureFound = feature;
                 }
@@ -181,7 +181,7 @@ goog.require('ga_window_service');
         // Register leftclick event on globe
         var deregGlobeEvents = angular.noop;
         var registerGlobeEvents = function(scope, onClick) {
-          if (deregGlobeEvents != angular.noop) {
+          if (deregGlobeEvents !== angular.noop) {
             return;
           }
           var ms = 0;
@@ -384,7 +384,7 @@ goog.require('ga_window_service');
               }
               // Use by the ga-shop directive
               scope.clickCoordinate = coordinate;
-              var pointerShown = $(map.getTarget()).css('cursor') == 'pointer';
+              var pointerShown = $(map.getTarget()).css('cursor') === 'pointer';
               var mapRes = map.getView().getResolution();
               var mapProj = map.getView().getProjection();
               var pixel = map.getPixelFromCoordinate(coordinate);
@@ -490,7 +490,7 @@ goog.require('ga_window_service');
                   var sum = nbResults.reduce(function(a, b) {
                     return a + b;
                   });
-                  if (sum == 0 && pointerShown) {
+                  if (sum === 0 && pointerShown) {
                     showNoInfo();
                   }
                 });
@@ -602,7 +602,7 @@ goog.require('ga_window_service');
               showFeatures([feature]);
 
               // Iframe communication from inside out
-              if (layer.get('type') == 'KML') {
+              if (layer.get('type') === 'KML') {
                 layerId = layer.label;
                 if (name && name.length) {
                   featureId = name;
@@ -616,7 +616,7 @@ goog.require('ga_window_service');
               // We leave the old code to not break existing clients
               // Once they have adapted to new implementation, we
               // can remove the code below
-              if (window.top != window) {
+              if (window.top !== window) {
                 if (featureId && layerId) {
                   window.parent.postMessage(id, '*');
                 }
@@ -641,8 +641,8 @@ goog.require('ga_window_service');
 
             // Show the popup with all features informations
             var showPopup = function(html, value) {
-              // Don't show popup when notooltip paramter is active
-              if (gaPermalink.getParams().notooltip == 'true') {
+              // Don't show popup when notooltip parameter is active
+              if (gaPermalink.getParams().notooltip === 'true') {
                 return;
               }
 
@@ -670,7 +670,7 @@ goog.require('ga_window_service');
                       destroyPopup();
                     },
                     onMouseEnter: function(evt, nbTooltips) {
-                      if (nbTooltips == 1) return;
+                      if (nbTooltips === 1) return;
                       var target = $(evt.currentTarget);
                       var containerId = target.find('.htmlpopup-container').
                           attr('id');

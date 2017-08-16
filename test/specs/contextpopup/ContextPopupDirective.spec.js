@@ -40,7 +40,7 @@ describe('ga_contextpopup_directive', function() {
     $provide.value('gaBrowserSniffer', {
       msie: false,
       mobile: false,
-      phone: false,
+      phone: false
     });
 
     $provide.value('gaNetworkStatus', {
@@ -113,8 +113,8 @@ describe('ga_contextpopup_directive', function() {
   });
 
   describe('on all browser', function() {
-       beforeEach(inject(function($injector) {
-        loadDirective();
+    beforeEach(inject(function($injector) {
+      loadDirective();
       $timeout.flush();
     }));
 

@@ -1,9 +1,9 @@
 describe('ga_mouseposition_directive', function() {
 
   var map,
-      element,
-      controller,
-      scope;
+    element,
+    controller,
+    scope;
 
   beforeEach(inject(function($injector, $rootScope, $compile) {
     map = new ol.Map({});

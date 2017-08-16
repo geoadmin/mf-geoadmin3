@@ -15,6 +15,7 @@ goog.provide('ga_cesium');
  *
  * @constructor
  */
+// eslint-disable-next-line no-unused-vars
 var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions,
     gaBrowserSniffer, $q, $translate, $rootScope, gaBackground) {
   // Url of olcesium library
@@ -26,7 +27,7 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions,
   }
   var cesiumLoaded = $q.defer();
   var cesiumClients = $q.defer();
-  var ol3d = undefined;
+  var ol3d;
   var rotateOnEnable = true;
 
   // the maxium extent in EPSG:4326 and radians
@@ -50,7 +51,7 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions,
     var params = gaPermalink.getParams();
     var value = params[name];
     if (value !== undefined) {
-      return value == 'true' || value == '1';
+      return value === 'true' || value === '1';
     }
     return defaultValue;
   };
@@ -91,11 +92,11 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions,
           return jDate;
         },
         createSynchronizers: function(map, scene, dataSources) {
-           return [
-             new olcs.GaRasterSynchronizer(map, scene),
-             new olcs.GaVectorSynchronizer(map, scene),
-             new olcs.GaKmlSynchronizer(map, scene, dataSources)
-           ];
+          return [
+            new olcs.GaRasterSynchronizer(map, scene),
+            new olcs.GaVectorSynchronizer(map, scene),
+            new olcs.GaKmlSynchronizer(map, scene, dataSources)
+          ];
         }
       });
       if (boolParam('autorender', true)) {
@@ -204,17 +205,17 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions,
 
   var enableOl3d = function(ol3d, enable) {
     var scene = ol3d.getCesiumScene();
-    var camera = scene.camera;
+    var angle, camera = scene.camera;
     var bottom = olcs.core.pickBottomPoint(scene);
     var transform = Cesium.Matrix4.fromTranslation(bottom);
     if (enable) {
-      //Show warning on IE browsers
+      // Show warning on IE browsers
       if (gaBrowserSniffer.msie && gaBrowserSniffer.msie <= 11) {
         alert($translate.instant('3d_ie11_alert'));
       }
       // 2d -> 3d transition
       ol3d.setEnabled(true);
-      var angle = Cesium.Math.toRadians(50);
+      angle = Cesium.Math.toRadians(50);
       // This guard is used because the rotation is in conflict
       // with the permalink driven initilisation of the view in
       // the map directive. It's ... clumsy.
@@ -224,7 +225,7 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions,
       rotateOnEnable = true;
     } else {
       // 3d -> 2d transition
-      var angle = olcs.core.computeAngleToZenith(scene, bottom);
+      angle = olcs.core.computeAngleToZenith(scene, bottom);
       olcs.core.rotateAroundAxis(camera, -angle, camera.right, transform, {
         callback: function() {
           ol3d.setEnabled(false);
@@ -241,7 +242,7 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions,
 
   // Load the cesium libary and initialize the viewer
   var loading = false;
-  var loadCesiumLib = function() {
+  var loadCesiumLib = (function() {
     var toActivate = false;
     return function(activate) {
       // Check if cesium library is already loaded
@@ -252,25 +253,24 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions,
           cesiumLoaded.resolve(toActivate);
           loading = false;
         });
-      }
-      else if (!loading) {
+      } else if (!loading) {
         cesiumLoaded.resolve(activate);
       }
     }
-  }();
+  }());
 
   // We need the Cesium lib and the Layers config to create
   // the 3D viewer
-  $q.all([cesiumLoaded.promise, gaLayers.loadConfig()])
-      .then(function(resolutions) {
+  $q.all([cesiumLoaded.promise, gaLayers.loadConfig()]).
+      then(function(resolutions) {
         ol3d = initCesiumViewer(map, resolutions[0]);
         cesiumClients.resolve(ol3d);
-  });
+      });
 
   this.enable = function(activate) {
     if (!ol3d && !loading) {
       loadCesiumLib(activate);
-    } else if (ol3d && ol3d.getEnabled() != activate) {
+    } else if (ol3d && ol3d.getEnabled() !== activate) {
       enableOl3d(ol3d, activate);
     }
   };
@@ -307,34 +307,34 @@ var SSECorrector = function(gaPermalink) {
  * @param {Cesium.FrameState} frameState
  */
 SSECorrector.prototype.newFrameState = function(frameState) {
-    this.cameraHeight = frameState.camera.positionCartographic.height;
+  this.cameraHeight = frameState.camera.positionCartographic.height;
 
-    if (this.pickglobe && !this.noheight &&
+  if (this.pickglobe && !this.noheight &&
         (!this.maxHeight || this.cameraHeight < this.maxheight)) {
-      var scene = frameState.camera._scene;
-      var canvas = scene.canvas;
-      var pixelHeight = this.pickposition * canvas.clientHeight;
-      var pixel = new Cesium.Cartesian2(canvas.clientWidth / 2, pixelHeight);
-      this.cameraHeight = undefined;
-      var target = olcs.core.pickOnTerrainOrEllipsoid(scene, pixel);
-      if (target) {
-        var position = frameState.camera.position;
-        var distance = Cesium.Cartesian3.distance(position, target);
-        this.cameraHeight = Math.max(this.cameraHeight || 0, distance);
-      }
+    var scene = frameState.camera._scene;
+    var canvas = scene.canvas;
+    var pixelHeight = this.pickposition * canvas.clientHeight;
+    var pixel = new Cesium.Cartesian2(canvas.clientWidth / 2, pixelHeight);
+    this.cameraHeight = undefined;
+    var target = olcs.core.pickOnTerrainOrEllipsoid(scene, pixel);
+    if (target) {
+      var position = frameState.camera.position;
+      var distance = Cesium.Cartesian3.distance(position, target);
+      this.cameraHeight = Math.max(this.cameraHeight || 0, distance);
     }
+  }
 
-    this.min = this.mindist;
-    this.max = this.maxdist;
-    if (!this.noheight && this.cameraHeight) {
-      this.min = Math.min(this.mindist, this.mincamfactor * this.cameraHeight);
-      this.max = Math.max(this.maxdist, this.maxcamfactor * this.cameraHeight);
-    }
+  this.min = this.mindist;
+  this.max = this.maxdist;
+  if (!this.noheight && this.cameraHeight) {
+    this.min = Math.min(this.mindist, this.mincamfactor * this.cameraHeight);
+    this.max = Math.max(this.maxdist, this.maxcamfactor * this.cameraHeight);
+  }
 
-    // 1 = a * min + b
-    // maxerrorfactor = a * max + b
-    this.a = (1 - this.maxerrorfactor) / (this.min - this.max);
-    this.b = 1 - this.a * this.min;
+  // 1 = a * min + b
+  // maxerrorfactor = a * max + b
+  this.a = (1 - this.maxerrorfactor) / (this.min - this.max);
+  this.b = 1 - this.a * this.min;
 };
 
 /**
@@ -348,22 +348,22 @@ SSECorrector.prototype.newFrameState = function(frameState) {
  * @return {number} lower screen space error after correction
  */
 SSECorrector.prototype.correct = function(frameState, tile, distance,
-  original) {
-    if (!this.shouldCut ||
+    original) {
+  if (!this.shouldCut ||
         (this.maxheight && this.cameraHeight &&
           (this.cameraHeight > this.maxheight)) ||
         (this.allowtilelevels && (tile._level <= this.allowtilelevels))) {
-      return original;
-    }
+    return original;
+  }
 
-    if (distance < this.max) {
-      if (distance < this.min || this.min === this.max) {
-        return original;
-      } else {
-        var linearFactor = this.a * distance + this.b;
-        return linearFactor * original;
-      }
+  if (distance < this.max) {
+    if (distance < this.min || this.min === this.max) {
+      return original;
     } else {
-      return this.maxerrorfactor * original;
+      var linearFactor = this.a * distance + this.b;
+      return linearFactor * original;
     }
+  } else {
+    return this.maxerrorfactor * original;
+  }
 };

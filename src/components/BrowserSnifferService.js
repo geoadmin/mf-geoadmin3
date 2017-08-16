@@ -88,19 +88,19 @@ goog.require('ga_permalink');
       if (!msie && /Firefox/.test(ua) && $window.performance &&
           $window.performance.getEntriesByType) {
         var perf = $window.performance.getEntriesByType('resource');
-        if (perf[0] && perf[0].nextHopProtocol == 'h2') {
+        if (perf[0] && perf[0].nextHopProtocol === 'h2') {
           h2 = true;
         }
       // Chrome
       // http://stackoverflow.com/questions/36041204/detect-connection-protocol-http-2-spdy-from-javascript
       } else if (chrome && $window.chrome && $window.chrome.loadTimes) {
-        if ($window.chrome.loadTimes().connectionInfo == 'h2') {
+        if ($window.chrome.loadTimes().connectionInfo === 'h2') {
           h2 = true;
         }
       // Generic
       // http://stackoverflow.com/questions/36041204/detect-connection-protocol-http-2-spdy-from-javascript
       } else if ($window.performance && $window.performance.timing) {
-        if ($window.performance.timing.nextHopProtocol == 'h2') {
+        if ($window.performance.timing.nextHopProtocol === 'h2') {
           h2 = true;
         }
       }
@@ -114,7 +114,7 @@ goog.require('ga_permalink');
         mobile: mobile,
         events: eventsKeys,
         embed: embed,
-        iframe: ($window.location != $window.parent.location),
+        iframe: ($window.location !== $window.parent.location),
         webgl: !(typeof WebGLRenderingContext === 'undefined'),
         animation: (!msie || msie > 9),
         blob: isBlobSupported,

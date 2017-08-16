@@ -47,7 +47,7 @@ goog.require('ga_map_service');
                 'change:opacity'
               ], updateHiddenState);
 
-              if (!hide && layer.visible && layer.invertedOpacity == '0') {
+              if (!hide && layer.visible && !layer.invertedOpacity) {
                 hide = true;
               }
             }

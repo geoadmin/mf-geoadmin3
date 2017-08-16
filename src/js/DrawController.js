@@ -13,7 +13,7 @@ goog.require('ga_styles_service');
       gaGlobalOptions, gaStyleFactory) {
 
     $scope.$on('gaPopupFocusChange', function(evt, isFocus) {
-       $scope.options.hasPopupFocus = isFocus;
+      $scope.options.hasPopupFocus = isFocus;
     });
 
     // Defines static styles
@@ -34,7 +34,7 @@ goog.require('ga_styles_service');
     $scope.options.color = red;
     $scope.options.textColor = red;
     $scope.options.textSize = {label: 'small_size', scale: 1};
-    $scope.options.icon = {id: 'marker'},
+    $scope.options.icon = {id: 'marker'};
     $scope.options.iconColor = red;
     $scope.options.iconSize = {label: 'big_size', value: [48, 48], scale: 1};
     $scope.options.font = gaStyleFactory.FONT;
@@ -60,7 +60,6 @@ goog.require('ga_styles_service');
       return styles;
     };
 
-
     // Draw a text
     var annotationDrawStyleFunc = function(feature, resolution) {
       var color = $scope.options.textColor;
@@ -68,13 +67,13 @@ goog.require('ga_styles_service');
         $scope.options.name = $translate.instant('draw_new_text');
       }
       var text = new ol.style.Text({
-          font: $scope.options.font,
-          text: $scope.options.name,
-          fill: new ol.style.Fill({
-            color: color.fill.concat([1])
-          }),
-          stroke: gaStyleFactory.getTextStroke(color.fill),
-          scale: $scope.options.textSize.scale
+        font: $scope.options.font,
+        text: $scope.options.name,
+        fill: new ol.style.Fill({
+          color: color.fill.concat([1])
+        }),
+        stroke: gaStyleFactory.getTextStroke(color.fill),
+        scale: $scope.options.textSize.scale
       });
       feature.set('name', $scope.options.name);
 
@@ -106,7 +105,6 @@ goog.require('ga_styles_service');
     };
 
     var measureDrawStyleFunc = gaStyleFactory.getStyleFunction('measure');
-
 
     var generateDrawStyleFunc = function(styleFunction) {
       // ol.interaction.Draw generates automatically a sketchLine when
@@ -165,12 +163,12 @@ goog.require('ga_styles_service');
           })
         }),
         geometry: function(feature) {
-          var geom = feature.getGeometry();
+          var coordinates, geom = feature.getGeometry();
           if (geom instanceof ol.geom.LineString) {
-            var coordinates = feature.getGeometry().getCoordinates();
+            coordinates = feature.getGeometry().getCoordinates();
             return new ol.geom.MultiPoint(coordinates);
           } else if (geom instanceof ol.geom.Polygon) {
-            var coordinates = feature.getGeometry().getCoordinates()[0];
+            coordinates = feature.getGeometry().getCoordinates()[0];
             return new ol.geom.MultiPoint(coordinates);
           } else {
             return feature.getGeometry();

@@ -56,7 +56,7 @@ describe('ga_catalogtree_directive', function() {
     });
 
     element = angular.element(
-      '<div>' +
+        '<div>' +
         '<div ga-catalogtree ga-catalogtree-options="options" ' +
             'ga-catalogtree-map="map">' +
         '</div>' +

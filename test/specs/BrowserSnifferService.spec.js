@@ -23,7 +23,6 @@ describe('ga_browsersniffer_service', function() {
       expect(snif.msie).to.not.be.ok();
     };
 
-
     // Expect JS engine
     var expectWebkit = function() {
       expect(snif.webkit).to.be.ok();
@@ -72,22 +71,21 @@ describe('ga_browsersniffer_service', function() {
       expect(snif.animation).to.be.ok();
     };
 
-
     beforeEach(function() {
       module(function($provide) {
         $provide.value('gaNetworkStatus', {});
         $provide.value('$window',
-          {
-            navigator: {
-              userAgent: 'ie11'
-            },
-            location: {
-              port: '',
-              search: '',
-              pathname: ''
-            },
-            document: window.document
-          });
+            {
+              navigator: {
+                userAgent: 'ie11'
+              },
+              location: {
+                port: '',
+                search: '',
+                pathname: ''
+              },
+              document: window.document
+            });
       });
       inject(function($injector) {
         win = $injector.get('$window');
@@ -318,7 +316,7 @@ describe('ga_browsersniffer_service', function() {
         expect(snif.h2).to.be.eql(false);
 
         win.navigator.userAgent = 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; WOW64; Trident/7.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; .NET4.0C; .NET4.0E; InfoPath.3)';
- snif = injector.get('gaBrowserSniffer');
+        snif = injector.get('gaBrowserSniffer');
         expect(snif.h2).to.be.eql(false);
 
         win.navigator.userAgent = 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; .NET4.0C; .NET4.0E; InfoPath.3; rv:11.0) like Gecko';
@@ -328,7 +326,6 @@ describe('ga_browsersniffer_service', function() {
         win.navigator.userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.10240';
         snif = injector.get('gaBrowserSniffer');
         expect(snif.h2).to.be.eql(false);
-
 
       });
 
@@ -357,7 +354,7 @@ describe('ga_browsersniffer_service', function() {
 
       it('Chrome browsers with loadTime without h2', function() {
         win.navigator.userAgent = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.111 Safari/537.36';
-        //Detecting h2
+        // Detecting h2
         win.chrome = {
           loadTimes: function() {
             return {
@@ -417,8 +414,6 @@ describe('ga_browsersniffer_service', function() {
         snif = injector.get('gaBrowserSniffer');
         expect(snif.h2).to.be.eql(true);
       });
-
-
 
     });
   });

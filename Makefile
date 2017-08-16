@@ -121,9 +121,9 @@ help:
 	@echo "- all                Build the app with current environment"
 	@echo "- release            Build app for release (/prd)"
 	@echo "- debug              Build app for debug (/src)"
-	@echo "- lint               Run the linter"
+	@echo "- lint               Run the linter on src/components ans arc/js folders"
+	@echo "- linttest           Run the linter on test/specs folder"
 	@echo "- lintpy             Run the linter for the python files"
-	@echo "- autolintpy         Run the auto-corrector for python files"
 	@echo "- testdebug          Run the JavaScript tests in debug mode"
 	@echo "- testrelease        Run the JavaScript tests in release mode"
 	@echo "- teste2e            Run saucelabs tests"
@@ -199,14 +199,15 @@ release: .build-artefacts/devlibs \
 debug: .build-artefacts/devlibs src/deps.js src/style/app.css src/index.html src/mobile.html src/embed.html src/404.html
 
 .PHONY: lint
-lint: .build-artefacts/devlibs .build-artefacts/lint.timestamp
+lint: .build-artefacts/devlibs .build-artefacts/requirements.timestamp $(SRC_JS_FILES)
+	${NODE_BIN}/eslint $(SRC_JS_FILES) --fix
+
+.PHONY: linttest
+linttest: .build-artefacts/devlibs .build-artefacts/requirements.timestamp
+	${NODE_BIN}/eslint test/specs/ --fix
 
 .PHONY: lintpy
-lintpy: ${FLAKE8_CMD}
-	${FLAKE8_CMD} --max-line-length=110 $(PYTHON_FILES)
-
-.PHONY: autolintpy
-autolintpy: ${AUTOPEP8_CMD}
+lintpy: .build-artefacts/requirements.timestamp ${FLAKE8_CMD}
 	${AUTOPEP8_CMD} --in-place --aggressive --aggressive --verbose --max-line-lengt=110 $(PYTHON_FILES)
 
 .PHONY: testdebug
@@ -755,10 +756,6 @@ $(addprefix .build-artefacts/annotated/, $(SRC_ES6_FILES)): \
 	    --namespace="geoadmin" \
 	    --namespace="__ga_template_cache__" \
 	    --output_mode=list > $@
-
-.build-artefacts/lint.timestamp: .build-artefacts/requirements.timestamp $(SRC_JS_FILES)
-	${NODE_BIN}/eslint src/components/ --fix
-	touch $@
 
 .build-artefacts/requirements.timestamp: ${PYTHON_VENV} requirements.txt
 	${PIP_CMD} install -r requirements.txt

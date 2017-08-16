@@ -1,5 +1,5 @@
 describe('ngeo.wmtsGetCapDirective', function() {
-    var elt, scope, parentScope, map, $rootScope, $compile, $translate, gaWmts, $window, $httpBackend;
+  var elt, scope, parentScope, map, $rootScope, $compile, $translate, gaWmts, $window, $httpBackend;
 
   var loadDirective = function() {
     parentScope = $rootScope.$new();
@@ -32,7 +32,6 @@ describe('ngeo.wmtsGetCapDirective', function() {
         }
       });
     });
-
 
     inject(function($injector) {
       $rootScope = $injector.get('$rootScope');

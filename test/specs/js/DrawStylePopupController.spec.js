@@ -59,4 +59,3 @@ describe('ga_drawstylepopup_controller', function() {
     });
   });
 });
-

@@ -25,7 +25,7 @@ describe('ga_sharecopybt_directive', function() {
         $timeout = $injector.get('$timeout');
       });
 
-      $rootScope.onBeforeCopy = function() {return 'a';};
+      $rootScope.onBeforeCopy = function() { return 'a'; };
     });
 
     describe('on unsupported browser', function() {
@@ -74,4 +74,3 @@ describe('ga_sharecopybt_directive', function() {
     });
   });
 });
-

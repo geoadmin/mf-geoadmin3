@@ -1,7 +1,7 @@
 describe('ga_feedback_directive', function() {
 
   var map, elt, scope, parentScope, options, gaPermalink, $httpBackend, $rootScope,
-      $compile, gaUrlUtils, $timeout, gaExportKml, gaGlobalOptions;
+    $compile, gaUrlUtils, $timeout, gaExportKml, gaGlobalOptions;
 
   var loadDirective = function(map, options) {
     parentScope = $rootScope.$new();
@@ -115,4 +115,3 @@ describe('ga_feedback_directive', function() {
     });
   });
 });
-

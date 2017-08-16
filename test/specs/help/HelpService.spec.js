@@ -59,7 +59,7 @@ describe('ga_help_service', function() {
       });
 
       it('gets help in de when lang is rm', function(done) {
-        gaLang.getNoRm = function() {return 'de';};
+        gaLang.getNoRm = function() { return 'de'; };
         $httpBackend.expectJSONP(deUrl).respond({columns: [], rows: []});
         gaHelp.get('31').then(function() {
           done();

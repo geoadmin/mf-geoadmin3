@@ -137,7 +137,7 @@ describe('ga_kml_service', function() {
 
   describe('gaKml', function() {
     var map, gaKml, $rootScope, $httpBackend, gaNetworkStatus, gaStorageMock, gaUrlUtilsMock,
-        gaStyleFactoryMock, gaMapUtilsMock, gaMeasureMock, gaGlobalOptions, $windowMock, ngeoFileMock;
+      gaStyleFactoryMock, gaMapUtilsMock, gaMeasureMock, gaGlobalOptions, $windowMock, ngeoFileMock;
 
     beforeEach(function() {
 
@@ -177,8 +177,8 @@ describe('ga_kml_service', function() {
     describe('#getFormat()', function() {
 
       it('returns an ol.format.KML object', function() {
-        var getStyle = gaStyleFactoryMock.expects('getStyle').once()
-            .withArgs('kml').returns(dfltStyle);
+        var getStyle = gaStyleFactoryMock.expects('getStyle').once().
+            withArgs('kml').returns(dfltStyle);
         var spy = sinon.spy(ol.format, 'KML');
         var f = gaKml.getFormat();
         expect(f).to.be.a(ol.format.KML);
@@ -189,8 +189,8 @@ describe('ga_kml_service', function() {
       });
 
       it('returns the same object on 2nd call', function() {
-        var getStyle = gaStyleFactoryMock.expects('getStyle').once()
-            .withArgs('kml').returns(dfltStyle);
+        var getStyle = gaStyleFactoryMock.expects('getStyle').once().
+            withArgs('kml').returns(dfltStyle);
         var f = gaKml.getFormat();
         var f2 = gaKml.getFormat();
         expect(f).to.be(f2);
@@ -248,10 +248,10 @@ describe('ga_kml_service', function() {
       });
 
       it('updates offline data', function(done) {
-        var getItem = gaStorageMock.expects('getItem').once()
-            .withArgs('KML||offdataexist').returns(validKml2);
-        var setItem = gaStorageMock.expects('setItem').once()
-            .withArgs('KML||offdataexist', validKml);
+        var getItem = gaStorageMock.expects('getItem').once().
+            withArgs('KML||offdataexist').returns(validKml2);
+        var setItem = gaStorageMock.expects('setItem').once().
+            withArgs('KML||offdataexist', validKml);
 
         gaKml.addKmlToMap(map, validKml, {url: 'offdataexist'}).then(function(olLayer) {
           getItem.verify();
@@ -262,10 +262,10 @@ describe('ga_kml_service', function() {
       });
 
       it('uses offline data', function(done) {
-        var getItem = gaStorageMock.expects('getItem').once()
-            .withArgs('KML||offdataexist').returns(validKml2);
-        var setItem = gaStorageMock.expects('setItem').never()
-            .withArgs('KML||offdataexist', validKml);
+        var getItem = gaStorageMock.expects('getItem').once().
+            withArgs('KML||offdataexist').returns(validKml2);
+        var setItem = gaStorageMock.expects('setItem').never().
+            withArgs('KML||offdataexist', validKml);
 
         gaKml.addKmlToMap(map, undefined, {url: 'offdataexist'}).then(function(olLayer) {
           getItem.verify();
@@ -473,7 +473,6 @@ describe('ga_kml_service', function() {
             unclosedPolygon + '<Point><coordinates>0,0,0</coordinates></Point>' +
          '</MultiGeometry>';
 
-
         var kml = '<kml>' +
             '<Placemark>' + unclosedLinearRing + '</Placemark>' +
             '<Placemark>' + unclosedPolygon + '</Placemark>' +
@@ -526,15 +525,13 @@ describe('ga_kml_service', function() {
         var multiLine = '<MultiGeometry>' +
             line + line +
          '</MultiGeometry>';
-         var lineWithOneCoord = '<LineString>0,0,0</LineString>';
-
+        var lineWithOneCoord = '<LineString>0,0,0</LineString>';
 
         // a heterogenous MultiGeometry creates a GeometryCollection feature
         var geomColl = '<MultiGeometry>' +
             polygon + '<Point><coordinates>0,0,0</coordinates></Point>' +
             line +
          '</MultiGeometry>';
-
 
         var kml = '<kml>' +
             '<Placemark>' + linearRing + '</Placemark>' +
@@ -573,8 +570,7 @@ describe('ga_kml_service', function() {
         var multiLine = '<MultiGeometry>' +
             line + line +
          '</MultiGeometry>';
-         var lineWithOneCoord = '<LineString>0,0,0</LineString>';
-
+        var lineWithOneCoord = '<LineString>0,0,0</LineString>';
 
         // a heterogenous MultiGeometry creates a GeometryCollection feature
         var geomColl = '<MultiGeometry>' +
@@ -582,7 +578,6 @@ describe('ga_kml_service', function() {
             '<Point><coordinates>0,0,0</coordinates></Point>' +
             line +
          '</MultiGeometry>';
-
 
         var kml = '<kml>' +
             '<Placemark>' + linearRing + '</Placemark>' +
@@ -622,8 +617,8 @@ describe('ga_kml_service', function() {
 
       it('uses default point style', function(done) {
         var kml = '<kml>' + createValidPlkPoint() + '</kml>';
-        var getStyle = gaStyleFactoryMock.expects('getStyle').once()
-            .withArgs('kml').returns(dfltStyle);
+        var getStyle = gaStyleFactoryMock.expects('getStyle').once().
+            withArgs('kml').returns(dfltStyle);
         gaKml.addKmlToMap(map, kml).then(function(olLayer) {
           getStyle.verify();
           var feat = olLayer.getSource().getFeatures()[0];
@@ -651,8 +646,8 @@ describe('ga_kml_service', function() {
           fill: new ol.style.Fill({color: trsp}),
           stroke: new ol.style.Stroke({color: trsp})
         });
-        gaStyleFactoryMock.expects('getStyle').once()
-            .withArgs('kml').returns(dfltStyle);
+        gaStyleFactoryMock.expects('getStyle').once().
+            withArgs('kml').returns(dfltStyle);
         var getStyle = gaStyleFactoryMock.expects('getStyle').never();
 
         gaKml.addKmlToMap(map, kml).then(function(olLayer) {
@@ -688,8 +683,8 @@ describe('ga_kml_service', function() {
 
       it('uses default line style', function(done) {
         var kml = '<kml>' + createValidPlkLineString() + '</kml>';
-        var getStyle = gaStyleFactoryMock.expects('getStyle').once()
-            .withArgs('kml').returns(dfltStyle);
+        var getStyle = gaStyleFactoryMock.expects('getStyle').once().
+            withArgs('kml').returns(dfltStyle);
         gaKml.addKmlToMap(map, kml).then(function(olLayer) {
           getStyle.verify();
           var feat = olLayer.getSource().getFeatures()[0];
@@ -718,8 +713,8 @@ describe('ga_kml_service', function() {
 
       it('applies default image style if offline', function(done) {
         var kml = '<kml>' + createPlacemarkWithHref('http://test.vh/test.png') + '</kml>';
-        var getStyle = gaStyleFactoryMock.expects('getStyle').twice()
-            .withArgs('kml').returns(dfltStyle);
+        var getStyle = gaStyleFactoryMock.expects('getStyle').twice().
+            withArgs('kml').returns(dfltStyle);
         gaNetworkStatus.offline = true;
         gaKml.addKmlToMap(map, kml).then(function(olLayer) {
           var feat = olLayer.getSource().getFeatures()[0];
@@ -834,10 +829,10 @@ describe('ga_kml_service', function() {
             fill: new ol.style.Fill({color: trsp}),
             stroke: new ol.style.Stroke({color: trsp})
           });
-          gaStyleFactoryMock.expects('getStyle').once()
-              .withArgs('kml').returns(dfltStyle);
-          var getStyle = gaStyleFactoryMock.expects('getStyle').once()
-              .withArgs('transparentCircle').returns(trspStyle);
+          gaStyleFactoryMock.expects('getStyle').once().
+              withArgs('kml').returns(dfltStyle);
+          var getStyle = gaStyleFactoryMock.expects('getStyle').once().
+              withArgs('transparentCircle').returns(trspStyle);
 
           gaKml.addKmlToMap(map, kml).then(function(olLayer) {
             getStyle.verify();
@@ -875,17 +870,17 @@ describe('ga_kml_service', function() {
             createValidPlkPoint('measure_bbbb') +
           '</Document></kml>';
         var isMeasFeat = gaMapUtilsMock.expects('isMeasureFeature').twice().returns(true);
-        var getStyle = gaStyleFactoryMock.expects('getFeatureStyleFunction').once()
-             .withArgs('measure').returns(new ol.style.Style());
+        var getStyle = gaStyleFactoryMock.expects('getFeatureStyleFunction').once().
+            withArgs('measure').returns(new ol.style.Style());
 
-         gaKml.addKmlToMap(map, kml).then(function(olLayer) {
-           isMeasFeat.verify();
-           getStyle.verify();
-           var feats = olLayer.getSource().getFeatures();
-           expect(feats[0].get('type')).to.be('measure');
-           done();
-         });
-         $rootScope.$digest();
+        gaKml.addKmlToMap(map, kml).then(function(olLayer) {
+          isMeasFeat.verify();
+          getStyle.verify();
+          var feats = olLayer.getSource().getFeatures();
+          expect(feats[0].get('type')).to.be('measure');
+          done();
+        });
+        $rootScope.$digest();
       });
 
       // TODO: tests more geometry types
@@ -942,7 +937,7 @@ describe('ga_kml_service', function() {
         var addOverlays = gaMeasureMock.expects('addOverlays').once();
         var regOverlays = gaMeasureMock.expects('registerOverlaysEvents').once();
         gaKml.addKmlToMap(map, kml, {
-           url: 'http://public.geo.admin.ch/nciusdhfjsbnduvishfjknl'
+          url: 'http://public.geo.admin.ch/nciusdhfjsbnduvishfjknl'
         });
         $rootScope.$digest();
         addOverlays.verify();
@@ -956,7 +951,7 @@ describe('ga_kml_service', function() {
         var addOverlays = gaMeasureMock.expects('addOverlays').once();
         var regOverlays = gaMeasureMock.expects('registerOverlaysEvents').once();
         gaKml.addKmlToMap(map, kml, {
-           url: 'foo/kml.kml'
+          url: 'foo/kml.kml'
         });
         $rootScope.$digest();
         addOverlays.verify();
@@ -970,8 +965,8 @@ describe('ga_kml_service', function() {
         var addOverlays = gaMeasureMock.expects('addOverlays').never();
         var regOverlays = gaMeasureMock.expects('registerOverlaysEvents').once();
         gaKml.addKmlToMap(map, kml, {
-           visible: false,
-           url: 'http://public.geo.admin.ch/nciusdhfjsbnduvishfjknl'
+          visible: false,
+          url: 'http://public.geo.admin.ch/nciusdhfjsbnduvishfjknl'
         });
         $rootScope.$digest();
         addOverlays.verify();

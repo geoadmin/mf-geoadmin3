@@ -1,6 +1,5 @@
 goog.provide('geoadmin');
 
-
 goog.require('ga_attribution');
 goog.require('ga_backgroundselector');
 goog.require('ga_catalogtree');
@@ -65,8 +64,7 @@ goog.require('ga_translation_controller');
 goog.require('ga_waitcursor_service');
 (function() {
 
-
-  var module = angular.module('geoadmin', [
+  angular.module('geoadmin', [
     'ga_controls3d',
     'ga_attribution',
     'ga_catalogtree',

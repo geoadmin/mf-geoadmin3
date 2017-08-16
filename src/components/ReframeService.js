@@ -25,7 +25,7 @@ goog.provide('ga_reframe_service');
           }).then(function(response) {
             defer.resolve(response.data.coordinates);
           }, function(response) {
-            if (response.status == -1) { // cancel
+            if (response.status === -1) { // cancel
               defer.reject();
             } else {
               defer.resolve(ol.proj.transform(coordinates,
@@ -46,7 +46,7 @@ goog.provide('ga_reframe_service');
           }).then(function(response) {
             defer.resolve(response.data.coordinates);
           }, function(response) {
-            if (response.status == -1) { // cancel
+            if (response.status === -1) { // cancel
               defer.reject();
             } else {
               // Use proj4js on error

@@ -3,7 +3,7 @@ describe('ga_search_controller', function() {
   describe('GaSearchController', function() {
 
     var scope, parentScope, $compile, $rootScope, $timeout, $httpBackend,
-        gaGlobalOptions;
+      gaGlobalOptions;
 
     var loadController = function() {
       parentScope = $rootScope.$new();

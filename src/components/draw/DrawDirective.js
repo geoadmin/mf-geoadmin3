@@ -77,7 +77,7 @@ goog.require('ga_styles_service');
       }
       var helpMsgId = 'draw_start_';
       if (drawStarted) {
-        if (type != 'marker' && type != 'annotation') {
+        if (type !== 'marker' && type !== 'annotation') {
           helpMsgId = 'draw_next_';
         }
         if (onLastPoint) {
@@ -121,7 +121,7 @@ goog.require('ga_styles_service');
 
     // Remove last point when drawing a feature
     var removeLastPoint = function(evt) {
-      if (evt.data && evt.which == 46 &&
+      if (evt.data && evt.which === 46 &&
           !/^(input|textarea)$/i.test(evt.target.nodeName)) {
         evt.data.removeLastPoint();
       }
@@ -229,7 +229,7 @@ goog.require('ga_styles_service');
         var unselectFeature = function(feature) {
           var selected = select.getFeatures().getArray();
           for (var i = 0, ii = selected.length; i < ii; i++) {
-            if (selected[i] == feature) {
+            if (selected[i] === feature) {
               select.getFeatures().remove(feature);
               break;
             }
@@ -251,13 +251,13 @@ goog.require('ga_styles_service');
           style: scope.options.selectStyleFunction
         });
         modify.on('modifystart', function(evt) {
-          if (evt.mapBrowserEvent.type != 'singleclick') {
+          if (evt.mapBrowserEvent.type !== 'singleclick') {
             body.addClass(cssModify);
             mapDiv.addClass(cssGrabbing);
           }
         });
         modify.on('modifyend', function(evt) {
-          if (evt.mapBrowserEvent.type == 'pointerup') {
+          if (evt.mapBrowserEvent.type === 'pointerup') {
             mapDiv.removeClass(cssGrabbing);
             // Remove the css class after digest cycle to avoid flickering
             $timeout(function() {
@@ -300,7 +300,7 @@ goog.require('ga_styles_service');
                   // directive before the good kml (loaded from KmlService)
                   // was loaded.
                   if (!gaMapUtils.isStoredKmlLayer(layer) &&
-                      map.getLayers().getArray().indexOf(layer) != -1) {
+                      map.getLayers().getArray().indexOf(layer) !== -1) {
                     map.removeLayer(layer);
                   }
 
@@ -363,7 +363,7 @@ goog.require('ga_styles_service');
             unWatch.pop()();
           }
 
-          wasNotOnMap = map.getLayers().getArray().indexOf(layer) == -1;
+          wasNotOnMap = map.getLayers().getArray().indexOf(layer) === -1;
           // Re-add the layer if it's not already on map.
           if (wasNotOnMap) {
             map.addLayer(layer);
@@ -417,7 +417,7 @@ goog.require('ga_styles_service');
           // Remove the layer if no features added and if the layer was not on
           // map before activation of the draw tool.
           if (wasNotOnMap && (layer && (useTemporaryLayer ||
-              layer.getSource().getFeatures().length == 0))) {
+              !layer.getSource().getFeatures().length))) {
             map.removeLayer(layer);
           }
           map.removeInteraction(select);
@@ -472,7 +472,7 @@ goog.require('ga_styles_service');
                 // coordinate.
                 var lineCoords = geom.getCoordinates()[0].slice(0, -1);
 
-                if (nbPoint != lineCoords.length) {
+                if (nbPoint !== lineCoords.length) {
                   // A point is added or removed
                   nbPoint = lineCoords.length;
 
@@ -483,8 +483,8 @@ goog.require('ga_styles_service');
                   var lastPoint = lineCoords[lineCoords.length - 1];
                   var lastPoint2 = lineCoords[lineCoords.length - 2];
 
-                  var isSnapOnFirstPoint = (lastPoint[0] == firstPoint[0] &&
-                      lastPoint[1] == firstPoint[1]);
+                  var isSnapOnFirstPoint = (lastPoint[0] === firstPoint[0] &&
+                      lastPoint[1] === firstPoint[1]);
 
                   // When the last change event is triggered the polygon is
                   // closed so isSnapOnFirstPoint is true. We need to know
@@ -493,8 +493,8 @@ goog.require('ga_styles_service');
                   isFinishOnFirstPoint = (!isSnapOnLastPoint &&
                       isSnapOnFirstPoint);
 
-                  isSnapOnLastPoint = (lastPoint[0] == lastPoint2[0] &&
-                      lastPoint[1] == lastPoint2[1]);
+                  isSnapOnLastPoint = (lastPoint[0] === lastPoint2[0] &&
+                      lastPoint[1] === lastPoint2[1]);
                 }
                 updateHelpTooltip(helpTooltip, tool.id, true,
                     (tool.drawOptions.minPoints < lineCoords.length),
@@ -601,7 +601,7 @@ goog.require('ga_styles_service');
         var activateTool = function(tool) {
           layer.visible = true;
 
-          if (map.getLayers().getArray().indexOf(layer) == -1) {
+          if (map.getLayers().getArray().indexOf(layer) === -1) {
             map.addLayer(layer);
           }
 
@@ -609,7 +609,7 @@ goog.require('ga_styles_service');
           lastActiveTool = tool;
           var tools = scope.options.tools;
           for (var i = 0, ii = tools.length; i < ii; i++) {
-            scope.options[tools[i].activeKey] = (tools[i].id == tool.id);
+            scope.options[tools[i].activeKey] = (tools[i].id === tool.id);
           }
           activateDrawInteraction(lastActiveTool);
 
@@ -659,10 +659,10 @@ goog.require('ga_styles_service');
         };
         scope.deleteSelectedFeature = function(evt) {
           var length = select.getFeatures().getLength();
-          if ((!evt || (evt.which == 46 &&
+          if ((!evt || (evt.which === 46 &&
               !/^(input|textarea)$/i.test(evt.target.nodeName))) &&
               length > 0) {
-            if (layer.getSource().getFeatures().length == length) {
+            if (layer.getSource().getFeatures().length === length) {
               scope.deleteAllFeatures(evt);
 
             } else if ($window.confirm($translate.instant(
@@ -756,7 +756,7 @@ goog.require('ga_styles_service');
             scope.statusMsgId = 'draw_file_saved';
 
             // If a file has been created we set the correct id to the layer
-            if (data.adminId && data.adminId != layer.adminId) {
+            if (data.adminId && data.adminId !== layer.adminId) {
               layer.adminId = data.adminId;
               layer.url = data.fileUrl;
               layer.id = 'KML||' + layer.url;
@@ -803,7 +803,7 @@ goog.require('ga_styles_service');
                   hoverSelectableFeature = true;
                 } else if (select.getFeatures().getLength() > 0) {
                   if (selectableFeat &&
-                    select.getFeatures().item(0).getId() == feature.getId()) {
+                    select.getFeatures().item(0).getId() === feature.getId()) {
                   // In case a vertex is snapped on a selected feature we give
                   // priority to the feature selected.
                     selectableFeat = feature;
@@ -817,7 +817,7 @@ goog.require('ga_styles_service');
               }, {
                 layerFilter: function(itemLayer) {
                   return layerFilter(itemLayer) || (itemLayer.getStyle &&
-                    itemLayer.getStyle() == scope.options.selectStyleFunction);
+                    itemLayer.getStyle() === scope.options.selectStyleFunction);
                 }
               }
           );
@@ -835,8 +835,8 @@ goog.require('ga_styles_service');
                 if (geom) {
                   var coord = newVertexFeat.getGeometry().getCoordinates();
                   var closestPt = geom.getClosestPoint(coord);
-                  hoverVertex = (coord[0] == closestPt[0] &&
-                      coord[1] == closestPt[1]);
+                  hoverVertex = (coord[0] === closestPt[0] &&
+                      coord[1] === closestPt[1]);
                 }
               }
             }

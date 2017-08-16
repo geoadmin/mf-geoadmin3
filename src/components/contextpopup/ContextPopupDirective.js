@@ -67,7 +67,7 @@ goog.require('ga_window_service');
                   coord4326[0]).then(function(res) {
                 scope.w3w = res;
               }, function(response) {
-                if (response.status != -1) { // Error
+                if (response.status !== -1) { // Error
                   scope.w3w = '-';
                 }
               });
@@ -148,7 +148,7 @@ goog.require('ga_window_service');
                 }).then(function(response) {
                   scope.altitude = parseFloat(response.data.height);
                 }, function(response) {
-                  if (response.status != -1) { // Error
+                  if (response.status !== -1) { // Error
                     scope.altitude = '-';
                   }
                 });

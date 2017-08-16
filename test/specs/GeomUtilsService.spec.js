@@ -151,7 +151,7 @@ describe('ga_geomutils_service', function() {
       coords = closedGeomColl.getGeometries()[1].getCoordinates();
       expect(coords).to.eql([0, 0]);
     });
- });
+  });
 
   describe('isValid', function() {
     var uniqCoords = [

@@ -35,16 +35,16 @@ describe('ga_permalink_service', function() {
     it('correctly initializes', function() {
       expect(permalink.getParams()).to.eql({some: 'key', value: 'pairs'});
       expect(permalink.getHref()).to.be(
-        'https://some-hostname:443/some/path?some=key&value=pairs');
+          'https://some-hostname:443/some/path?some=key&value=pairs');
     });
 
-   describe('#updateParams()', function() {
+    describe('#updateParams()', function() {
       it('correctly updates params', function() {
         permalink.updateParams({some: 'other key', even: 'more'});
         expect(permalink.getParams()).to.eql(
-          {some: 'other key', value: 'pairs', even: 'more'});
+            {some: 'other key', value: 'pairs', even: 'more'});
         expect(permalink.getHref()).to.be(
-          'https://some-hostname:443/some/path?some=other%20key' +
+            'https://some-hostname:443/some/path?some=other%20key' +
           '&value=pairs&even=more');
       });
 
@@ -56,7 +56,7 @@ describe('ga_permalink_service', function() {
         });
         expect(replaceStateSpy.calledOnce).to.be.ok();
         expect(replaceStateSpy.args[0][2]).to.be(
-          'https://some-hostname:443/some/path?some=key&value=foo');
+            'https://some-hostname:443/some/path?some=key&value=foo');
       });
     });
 

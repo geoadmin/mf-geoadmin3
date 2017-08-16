@@ -11,7 +11,7 @@ describe('ga_topic_directive', function() {
     }];
 
     module(function($provide) {
-      $provide.value('gaTopic', new (function() {
+      $provide.value('gaTopic', new function() {
         var topic = topics[0];
         this.loadConfig = function() {
           return def.promise;
@@ -25,7 +25,7 @@ describe('ga_topic_directive', function() {
         this.set = function(newTopic) {
           topic = newTopic;
         };
-      })());
+      }());
 
     });
 
@@ -42,7 +42,6 @@ describe('ga_topic_directive', function() {
       $q = $injector.get('$q');
       def = $q.defer();
     });
-
 
   });
 
@@ -116,4 +115,3 @@ describe('ga_topic_directive', function() {
     });
   });
 });
-

@@ -10,7 +10,7 @@ goog.provide('ga_tabs_directive');
     this.addTab = function(tab) {
       $scope.tabs.push(tab);
 
-      if ($scope.tabs.length == 1) {
+      if ($scope.tabs.length === 1) {
         tab.active = true;
       }
     };

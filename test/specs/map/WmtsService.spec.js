@@ -1,6 +1,6 @@
 describe('ga_wmts_service', function() {
-    describe('gaWmts', function() {
-      var gaWmts, map, gaGlobalOptions;
+  describe('gaWmts', function() {
+    var gaWmts, map, gaGlobalOptions;
 
     var getExternalWmtsLayer = function(options) {
       var source = new ol.source.WMTS(options.sourceConfig);
@@ -32,7 +32,6 @@ describe('ga_wmts_service', function() {
       expect(layer.useThirdPartyData).to.be(!!options.useThirdPartyData);
       expect(layer.label).to.be(options.label);
       expect(layer.getCesiumImageryProvider).to.be.a(Function);
-
 
       // Tests source's properties
       var source = layer.getSource();

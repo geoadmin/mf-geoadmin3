@@ -38,7 +38,7 @@ goog.require('ga_wms_service');
 
       var updateContentLang = function(popup, layer, newLang, open) {
         if ((open || popup.scope.toggle) &&
-            popup.scope.options.lang != newLang) {
+            popup.scope.options.lang !== newLang) {
           return updateContent(popup, layer);
         }
         return $q.when();

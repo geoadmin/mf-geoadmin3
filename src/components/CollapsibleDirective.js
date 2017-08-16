@@ -5,7 +5,7 @@ goog.provide('ga_collapsible_directive');
 
   module.directive('gaCollapsibleShow', function() {
     var toggleElt = function(element, show) {
-      if (angular.isDefined(show) && show == element.hasClass('collapsed')) {
+      if (angular.isDefined(show) && show === element.hasClass('collapsed')) {
         element.trigger('click');
       }
     };

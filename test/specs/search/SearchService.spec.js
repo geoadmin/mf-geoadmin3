@@ -330,7 +330,6 @@ describe('ga_search_service', function() {
     });
   });
 
-
   describe('gaSearchTokenAnalyser', function() {
 
     var tokenAnalyser;
@@ -357,8 +356,8 @@ describe('ga_search_service', function() {
       });
 
       it('Incomplete Token', function() {
-        //A complete toke is of the form 'token: value'
-        //Multiple spaces between colon and value are allowed
+        // A complete toke is of the form 'token: value'
+        // Multiple spaces between colon and value are allowed
         res = tokenAnalyser.run('dummy limit:  ');
         expect(res.query).to.eql('dummy limit:  ');
         expect(res.parameters.length).to.eql(0);

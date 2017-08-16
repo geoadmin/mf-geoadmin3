@@ -2,29 +2,29 @@ describe('ga_translation_service', function() {
 
   describe('gaLang', function() {
     var gaLang, $httpBackend, $rootScope, gaGlobalOptions, langPermalink, gaPermalink,
-        navLang = (window.navigator.userLanguage || window.navigator.language).split('-')[0],
-        topics = [], cpt = 0,
-        topicsLoaded = [{
-          'langs': 'somelang,de,fr,it',
-          'selectedLayers': [],
-          'backgroundLayers': [
-            'ch.swisstopo.pixelkarte-farbe',
-            'ch.swisstopo.pixelkarte-grau',
-            'ch.swisstopo.swissimage'
-          ],
-          'id': 'sometopic',
-          'showCatalog': true
-        }, {
-          'langs': 'somelang,de,fr',
-          'selectedLayers': [],
-          'backgroundLayers': [
-            'ch.swisstopo.pixelkarte-grau',
-            'ch.swisstopo.pixelkarte-farbe',
-            'ch.swisstopo.swissimage'
-          ],
-          'id': 'anothertopic',
-          'showCatalog': true
-        }];
+      navLang = (window.navigator.userLanguage || window.navigator.language).split('-')[0],
+      topics = [], cpt = 0,
+      topicsLoaded = [{
+        'langs': 'somelang,de,fr,it',
+        'selectedLayers': [],
+        'backgroundLayers': [
+          'ch.swisstopo.pixelkarte-farbe',
+          'ch.swisstopo.pixelkarte-grau',
+          'ch.swisstopo.swissimage'
+        ],
+        'id': 'sometopic',
+        'showCatalog': true
+      }, {
+        'langs': 'somelang,de,fr',
+        'selectedLayers': [],
+        'backgroundLayers': [
+          'ch.swisstopo.pixelkarte-grau',
+          'ch.swisstopo.pixelkarte-farbe',
+          'ch.swisstopo.swissimage'
+        ],
+        'id': 'anothertopic',
+        'showCatalog': true
+      }];
 
     beforeEach(function() {
       // We redefine the $translateProvider

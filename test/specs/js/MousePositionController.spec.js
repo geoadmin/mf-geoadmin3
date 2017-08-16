@@ -3,7 +3,7 @@ describe('ga_mouseposition_controller', function() {
   describe('GaMousePositionController', function() {
 
     var scope, parentScope, $compile, $rootScope, $window, $q, $document, $timeout, $httpBackend,
-        $translate, gaMeasure;
+      $translate, gaMeasure;
 
     var loadController = function() {
       parentScope = $rootScope.$new();

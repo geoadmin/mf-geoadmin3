@@ -1,4 +1,5 @@
-describe('ga_translation_controller', function() {7;
+describe('ga_translation_controller', function() {
+  7;
 
   describe('GaTranslationController', function() {
 
@@ -27,7 +28,6 @@ describe('ga_translation_controller', function() {7;
       loadController();
     });
 
-
     afterEach(function() {
       $httpBackend.verifyNoOutstandingExpectation();
       $httpBackend.verifyNoOutstandingRequest();
@@ -43,4 +43,3 @@ describe('ga_translation_controller', function() {7;
     });
   });
 });
-

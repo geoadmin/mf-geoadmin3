@@ -13,7 +13,7 @@ goog.require('ga_print_service');
     var featureTreeId = '#featuretree-popup';
     // List of layers using an extendHtmlPoup for the print instead of htmlPopup
     var extended = {
-      'ch.bazl.luftfahrthindernis' : true
+      'ch.bazl.luftfahrthindernis': true
     };
 
     $scope.options = {
@@ -47,8 +47,6 @@ goog.require('ga_print_service');
       $scope.$broadcast('gaNewFeatureTree', featuresByLayer);
     });
 
-
-
     // Print popup stuff
     var featureTree, winPrint, useNewTab;
     $scope.printInProgress = false;
@@ -56,7 +54,7 @@ goog.require('ga_print_service');
     $scope.print = function() {
 
       var printElementsTotal = $scope.options.nbFeatures;
-      if (printElementsTotal == 0) {
+      if (printElementsTotal === 0) {
         return;
       }
 
@@ -99,7 +97,7 @@ goog.require('ga_print_service');
         printElementsLoaded++;
         $scope.printProgressPercentage = Math.round(printElementsLoaded /
             printElementsTotal * 100);
-        if (printElementsTotal == printElementsLoaded &&
+        if (printElementsTotal === printElementsLoaded &&
             $scope.printInProgress) {
           printFinished(printLayers);
         }

@@ -94,4 +94,3 @@ describe('ga_sharedraw_directive', function() {
     });
   });
 });
-

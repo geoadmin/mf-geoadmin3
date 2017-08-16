@@ -17,7 +17,6 @@ beforeEach(function() {
     var cacheAdd = '/' + version;
     var pathname = location.pathname.replace(/(context|index|mobile|embed)\.html$/g, '');
 
-
     $provide.constant('gaGlobalOptions', {
       dev3d: false,
       buildMode: 'prod',
@@ -50,7 +49,7 @@ beforeEach(function() {
       defaultResolution: 500.0,
       defaultLod: 7,
       resolutions: [650.0, 500.0, 250.0, 100.0, 50.0, 20.0, 10.0, 5.0,
-          2.5, 2.0, 1.0, 0.5, 0.25, 0.1],
+        2.5, 2.0, 1.0, 0.5, 0.25, 0.1],
       lods: [6, 7, 8, 9, 10, 11, 12, 13, 14, 14, 16, 17, 18, 18],
       defaultEpsg: 'EPSG:21781',
       defaultEpsgExtent: [420000, 30000, 900000, 350000],

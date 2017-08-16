@@ -120,12 +120,12 @@ goog.require('ga_window_service');
           var percent = parseInt(nbTiles * 100 / nbTilesTotal, 10);
 
           // Trigger event only when needed
-          if (percent != progress) {
+          if (percent !== progress) {
             progress = percent;
             $rootScope.$broadcast('gaOfflineProgress', progress);
           }
           // Download finished
-          if (nbTilesCached + nbTilesFailed == nbTilesTotal) {
+          if (nbTilesCached + nbTilesFailed === nbTilesTotal) {
             isDownloading = false;
             var percentCached = parseInt(nbTilesCached * 100 / nbTilesTotal,
                 10);
@@ -181,8 +181,8 @@ goog.require('ga_window_service');
                 }
                 // err.QUOTQ_ERR for websql
                 // DOMException.QUOTA_EXCEEDED_ERR for localstorage
-                if (err.code == err.QUOTA_ERR ||
-                err.code == DOMException.QUOTA_EXCEEDED_ERR) {
+                if (err.code === err.QUOTA_ERR ||
+                    err.code === DOMException.QUOTA_EXCEEDED_ERR) {
                   isStorageFull = true;
                   $window.alert($translate.instant('offline_space_warning'));
                   nbTilesFailed = nbTilesTotal - nbTilesCached;
@@ -218,7 +218,7 @@ goog.require('ga_window_service');
             gaStorage.getItem(layersKey).split(',').forEach(function(id, idx) {
               var layer = gaLayers.getLayer(id);
               if (layer && !layer.timeEnabled &&
-                  layer.timestamps[0] != ts[idx]) {
+                  layer.timestamps[0] !== ts[idx]) {
                 isObsolete = true;
               }
             });
@@ -240,14 +240,14 @@ goog.require('ga_window_service');
               var hasCachedLayer = false;
               layer.getLayers().forEach(function(item) {
                 if (!hasCachedLayer && layersIds &&
-                   layersIds.indexOf(item.id) != -1) {
+                   layersIds.indexOf(item.id) !== -1) {
                   hasCachedLayer = true;
                 }
               });
               this.refreshLayers(layer.getLayers().getArray(), useClientZoom,
                   force || hasCachedLayer);
             } else if (force || (layersIds &&
-                layersIds.indexOf(layer.id) != -1)) {
+                layersIds.indexOf(layer.id) !== -1)) {
               var source = layer.getSource();
               // Clear the internal tile cache of ol
               // TODO: Ideally we should flush the cache for the tile range
@@ -418,7 +418,7 @@ goog.require('ga_window_service');
 
           // Get the cacheable layers
           var layers = getCacheableLayers(map.getLayers().getArray(), true);
-          if (layers.length == 0) {
+          if (!layers.length) {
             $window.alert($translate.instant('offline_no_cacheable_layers'));
             return;
           }
@@ -480,7 +480,7 @@ goog.require('ga_window_service');
             for (var zoom = 0; zoom <= maxZoom; zoom++) {
               var z = zoom + 14; // data zoom level
               if (!isCacheableLayer(layer, z) || (!isBgLayer && (zoom < 4 ||
-                zoom % 2 != 0))) {
+                zoom % 2 !== 0))) {
                 continue;
               }
 
@@ -521,7 +521,7 @@ goog.require('ga_window_service');
           }
 
           // Nothing to save or only KML layers
-          if (queue.length == 0) {
+          if (!queue.length) {
             $window.alert($translate.instant('offline_no_cacheable_layers'));
             this.abort();
             return;
@@ -542,7 +542,7 @@ goog.require('ga_window_service');
           // We can't use xmlhttp2.onloadend event because it's doesn't work on
           // android browser
           var onLoadEnd = function(nbLoaded, nbTotal) {
-            if (!isStorageFull && nbLoaded == pool) {
+            if (!isStorageFull && nbLoaded === pool) {
               // $timeout service with an interval doesn't work on android
               // browser.
               if (gaBrowserSniffer.ios && nbTotal % 200 === 0) {

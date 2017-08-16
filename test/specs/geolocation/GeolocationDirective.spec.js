@@ -29,8 +29,8 @@ describe('ga_geolocation_directive', function() {
       gaPermalink = $injector.get('gaPermalink');
       gaThrottle = $injector.get('gaThrottle');
       gaStyleFactory = $injector.get('gaStyleFactory');
-     gaMapUtils = $injector.get('gaMapUtils');
-     gaThrottle = $injector.get('gaThrottle');
+      gaMapUtils = $injector.get('gaMapUtils');
+      gaThrottle = $injector.get('gaThrottle');
     };
 
     beforeEach(function() {
@@ -105,4 +105,3 @@ describe('ga_geolocation_directive', function() {
     });
   });
 });
-

@@ -80,7 +80,7 @@ goog.require('ga_permalink');
           var iframe = modal.find('iframe')[0];
           if (iframe) {
             var href = iframe.contentWindow.location.href;
-            if (scope.embedValue != href) {
+            if (scope.embedValue !== href) {
               scope.embedValue = href;
               scope.$digest();
             }

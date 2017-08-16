@@ -54,7 +54,7 @@ goog.require('ga_price_filter');
         }
 
         // Remove the element if no shop config available
-        if (!layerConfig.shop || layerConfig.shop.length == 0) {
+        if (!layerConfig.shop || !layerConfig.shop.length) {
           elt.remove();
           return;
         }
@@ -86,7 +86,7 @@ goog.require('ga_price_filter');
             return;
           }
           var str = ' (';
-          if (orderType == 'mapsheet') {
+          if (orderType === 'mapsheet') {
             str += feat.featureId + ' ';
           }
           if (feat.properties) {
@@ -163,15 +163,15 @@ goog.require('ga_price_filter');
         };
 
         scope.updatePrice = function(geometry, cutArea) {
-          if (scope.orderType == 'rectangle') {
+          if (scope.orderType === 'rectangle') {
             if (!geometry) {
               geometry = scope.geometry;
             } else {
               scope.geometry = geometry;
             }
           }
-          if ((scope.orderType == 'rectangle' && geometry && cutArea) ||
-              (scope.orderType != 'rectangle' && !geometry)) {
+          if ((scope.orderType === 'rectangle' && geometry && cutArea) ||
+              (scope.orderType !== 'rectangle' && !geometry)) {
             gaShop.getPrice(scope.orderType, layerBodId,
                 getFeatureIdToRequest(), geometry).then(function(price) {
               scope.price = price;
@@ -194,7 +194,7 @@ goog.require('ga_price_filter');
         // rectangle.
         scope.$on('gaShopOrderTypeChange', function(evt, shopScope) {
           if (shopScope !== scope && scope.orderTypes.length > 1 &&
-              scope.orderType == 'rectangle') {
+              scope.orderType === 'rectangle') {
             scope.onChangeOrderType(scope.orderTypes[0], true);
           }
         });

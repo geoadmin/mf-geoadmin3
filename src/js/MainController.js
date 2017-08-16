@@ -56,7 +56,7 @@ goog.require('ga_window_service');
           zoomOptions: {
             target: toolbar,
             zoomInLabel: $compile(zoomIn)($scope)[0],
-            zoomOutLabel: $compile(zoomOut)($scope)[0],
+            zoomOutLabel: $compile(zoomOut)($scope)[0]
           }
         }),
         interactions: ol.interaction.defaults({
@@ -84,7 +84,7 @@ goog.require('ga_window_service');
     // is central, as most directives/components need a reference to it.
     $scope.map = createMap();
     // Only active if debug=true is specified
-    if (gaPermalink.getParams().debug == 'true') {
+    if (gaPermalink.getParams().debug === 'true') {
       gaMapLoad.init($scope);
     }
 
@@ -104,12 +104,12 @@ goog.require('ga_window_service');
         $window.console.error(error.stack);
         // Avoid the alert comes twice
         $scope.ol3d.getCesiumScene().renderError.removeEventListener(
-           onRenderError);
+            onRenderError);
       };
 
       var cesium = new GaCesium($scope.map, gaPermalink, gaLayers,
-                                gaGlobalOptions, gaBrowserSniffer, $q,
-                                $translate, $rootScope, gaBackground);
+          gaGlobalOptions, gaBrowserSniffer, $q,
+          $translate, $rootScope, gaBackground);
       cesium.loaded().then(function(ol3d) {
         $scope.ol3d = ol3d;
         if (!$scope.ol3d) {
@@ -126,7 +126,7 @@ goog.require('ga_window_service');
       }
 
       $scope.map.on('change:target', function(event) {
-        if (!!$scope.map.getTargetElement()) {
+        if ($scope.map.getTargetElement()) {
 
           $scope.$watch('globals.is3dActive', function(active) {
             if (active || $scope.ol3d) {
@@ -263,11 +263,11 @@ goog.require('ga_window_service');
 
     // gaWindow is efficient only after the dom is ready
     $document.ready(function() {
-       $scope.$applyAsync(function() {
-         $scope.globals.searchFocused = gaWindow.isWidth('>xs');
-         $scope.globals.pulldownShown = gaWindow.isWidth('>s') &&
+      $scope.$applyAsync(function() {
+        $scope.globals.searchFocused = gaWindow.isWidth('>xs');
+        $scope.globals.pulldownShown = gaWindow.isWidth('>s') &&
              gaWindow.isHeight('>s');
-       });
+      });
     });
 
     $scope.hidePulldownOnXSmallScreen = function() {
@@ -313,7 +313,7 @@ goog.require('ga_window_service');
         $scope.globals.homescreen = true;
         $scope.globals.tablet = gaWindow.isWidth('s');
         $scope.$watch('globals.homescreen', function(newVal) {
-          if (newVal == false) {
+          if (newVal === false) {
             gaStorage.setItem('homescreen', 'none');
           }
         });
@@ -323,14 +323,14 @@ goog.require('ga_window_service');
     // Manage exit of draw mode
     // Exit Draw mode when pressing ESC or Backspace button
     $document.keydown(function(evt) {
-      if (evt.which == 8) {
+      if (evt.which === 8) {
         if (!/^(input|textarea)$/i.test(evt.target.tagName)) {
           evt.preventDefault();
         } else {
           return;
         }
       }
-      if ((evt.which == 8 || evt.which == 27) &&
+      if ((evt.which === 8 || evt.which === 27) &&
           $scope.globals.isDrawActive) {
         $scope.globals.isDrawActive = false;
         $scope.$digest();
@@ -429,4 +429,3 @@ goog.require('ga_window_service');
     }
   });
 })();
-

@@ -13,7 +13,8 @@ goog.provide('ga_geomutils_service');
     var closeLinearRing = function(linearRing) {
       var first = linearRing.getFirstCoordinate();
       var last = linearRing.getLastCoordinate();
-      if (first[0] != last[0] || first[1] != last[1] || first[2] != last[2]) {
+      if (first[0] !== last[0] || first[1] !== last[1] ||
+          first[2] !== last[2]) {
         var coords = linearRing.getCoordinates();
         coords.push(linearRing.getFirstCoordinate());
         linearRing.setCoordinates(coords);
@@ -79,9 +80,9 @@ goog.provide('ga_geomutils_service');
             var coord = coords[i];
             var nextCoord = coords[i + 1];
             if (nextCoord &&
-                (coord[0] != nextCoord[0] ||
-                coord[1] != nextCoord[1] ||
-                coord[2] != nextCoord[2])) {
+                (coord[0] !== nextCoord[0] ||
+                coord[1] !== nextCoord[1] ||
+                coord[2] !== nextCoord[2])) {
               return false;
             }
           }

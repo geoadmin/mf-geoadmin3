@@ -184,7 +184,6 @@ describe('ga_urlutils_service', function() {
         $timeout.flush();
       });
 
-
       it('handle service error displaying a log an returning the initial url', function(done) {
         var errorSpy = sinon.stub(window.console, 'error');
         $httpBackend.expectGET(shortenUrl).respond(501);
@@ -223,7 +222,6 @@ describe('ga_urlutils_service', function() {
       });
     });
 
-
     describe('#unProxifyUrl()', function() {
       it('verifies unproxify url transformation valid', function() {
         expect(gaUrlUtils.unProxifyUrl('https://service-proxy.dev.bgdi.ch/http/dummy/somepath/myimage.png')).to.be('http://dummy/somepath/myimage.png');
@@ -236,8 +234,6 @@ describe('ga_urlutils_service', function() {
         expect(gaUrlUtils.unProxifyUrl('https://proxy.geo.admin.ch/https/dummy/somepath/myimage.png')).to.be('https://dummy/somepath/myimage.png');
       });
     });
-
-
 
     describe('#append()', function() {
       it('appends parameter string', function() {

@@ -26,7 +26,6 @@ describe('ga_measure_service', function() {
       point = new ol.geom.Point([0, 0]);
     });
 
-
     describe('#formatCoordinates(coordinates)', function() {
       it('returns formatted 2D coordinates', function() {
         expect(gaMeasure.formatCoordinates([2457749.999996144, 1056249.999834365])).to.eql("2'457'750, 1'056'250");
@@ -188,7 +187,7 @@ describe('ga_measure_service', function() {
 
         it('set position to undefined if area is 0', function() {
           var coords = [[[0, 1000], [1, 1000], [2, 1000], [3, 1000],
-              [0, 1000]]];
+            [0, 1000]]];
           feat.setGeometry(new ol.geom.Polygon(coords));
           gaMeasure.updateOverlays(layer, feat);
           var ovs = feat.get('overlays');
@@ -241,7 +240,7 @@ describe('ga_measure_service', function() {
           featLine.setGeometry(new ol.geom.LineString(coords));
           featPoly.setGeometry(new ol.geom.Polygon([coordsClosed]));
 
-          //Line
+          // Line
           gaMeasure.updateOverlays(layer, featLine);
           var ovs = featLine.get('overlays');
           expect(ovs).to.be.an(ol.Collection);
@@ -273,7 +272,7 @@ describe('ga_measure_service', function() {
           featLine.setGeometry(new ol.geom.LineString(coords));
           featPoly.setGeometry(new ol.geom.Polygon([coordsClosed]));
 
-          //Line
+          // Line
           gaMeasure.updateOverlays(layer, featLine);
           var ovs = featLine.get('overlays');
           expect(ovs).to.be.an(ol.Collection);
@@ -298,7 +297,7 @@ describe('ga_measure_service', function() {
         });
 
         it('displays overlays every km', function() {
-          //Line
+          // Line
           var coords = [
             [0, 1000],
             [999, 1000],
@@ -324,7 +323,6 @@ describe('ga_measure_service', function() {
           expect(ov.getElement().innerHTML).to.be('2 km');
           expect(ov.getPosition()).to.eql([2000, 1000]);
 
-
           // Polygon
           var coordsClosed = coords.concat([[1, 1000], [0, 1000]]);
           featPoly.setGeometry(new ol.geom.Polygon([coordsClosed]));
@@ -348,7 +346,7 @@ describe('ga_measure_service', function() {
         });
 
         it('displays overlays every 10km (length >= 20km)', function() {
-          //Line
+          // Line
           var coords = [
             [0, 1000],
             [999, 1000],
@@ -374,7 +372,6 @@ describe('ga_measure_service', function() {
           expect(ov.getElement().innerHTML).to.be('20 km');
           expect(ov.getPosition()).to.eql([20000, 1000]);
 
-
           // Polygon
           var coordsClosed = coords.concat([[1, 1000], [0, 1000]]);
           featPoly.setGeometry(new ol.geom.Polygon([coordsClosed]));
@@ -398,7 +395,7 @@ describe('ga_measure_service', function() {
         });
 
         it('displays overlays every 100km (length >= 200km)', function() {
-          //Line
+          // Line
           var coords = [
             [0, 1000],
             [999, 1000],
@@ -424,7 +421,6 @@ describe('ga_measure_service', function() {
           expect(ov.getElement().innerHTML).to.be('200 km');
           expect(ov.getPosition()).to.eql([200000, 1000]);
 
-
           // Polygon
           var coordsClosed = coords.concat([[1, 1000], [0, 1000]]);
           featPoly.setGeometry(new ol.geom.Polygon([coordsClosed]));
@@ -448,7 +444,7 @@ describe('ga_measure_service', function() {
         });
 
         it('uses the default opacity of the layer', function() {
-          //Line
+          // Line
           var coords = [
             [0, 1000],
             [999, 1000],
@@ -460,7 +456,6 @@ describe('ga_measure_service', function() {
           var ovs = featLine.get('overlays').forEach(function(ov) {
             expect(ov.getElement().style.opacity).to.eql(1);
           });
-
 
           // Polygon
           var coordsClosed = coords.concat([[1, 1000], [0, 1000]]);
@@ -475,7 +470,7 @@ describe('ga_measure_service', function() {
         it('uses the opacity of the layer', function() {
           layer.setOpacity(0.2);
 
-          //Line
+          // Line
           var coords = [
             [0, 1000],
             [999, 1000],
@@ -487,7 +482,6 @@ describe('ga_measure_service', function() {
           var ovs = featLine.get('overlays').forEach(function(ov) {
             expect(ov.getElement().style.opacity).to.eql(0.2);
           });
-
 
           // Polygon
           var coordsClosed = coords.concat([[1, 1000], [0, 1000]]);
@@ -504,7 +498,7 @@ describe('ga_measure_service', function() {
     describe('#addOverlays()', function() {
       var c = [0, 0];
       var stubUp, stubAdd, stubRm, map = new ol.Map({}), layer = new ol.layer.Layer({}),
-          feat = new ol.Feature();
+        feat = new ol.Feature();
       var goodGeoms = [
         new ol.geom.LineString([c]),
         new ol.geom.Polygon([[c, c]])
@@ -578,16 +572,16 @@ describe('ga_measure_service', function() {
           // TOFIX: Change
           // The updateOverlays method is well called on change event but the
           // stub doesn't see it.
-          //feat.setGeometry(new ol.geom.LineString([[0, 0]]));
-          //expect(stubUp.callCount).to.be(2);
-          //expect(stubUp.getCall(1).calledWithExactly(layer, feat)).to.be(true);
+          // feat.setGeometry(new ol.geom.LineString([[0, 0]]));
+          // expect(stubUp.callCount).to.be(2);
+          // expect(stubUp.getCall(1).calledWithExactly(layer, feat)).to.be(true);
         });
       });
     });
 
     describe('#removeOverlays()', function() {
       var spy, feat1 = new ol.Feature(),
-          feat2 = new ol.Feature();
+        feat2 = new ol.Feature();
 
       beforeEach(function() {
         ovs = new ol.Collection();
@@ -611,7 +605,7 @@ describe('ga_measure_service', function() {
     });
 
     describe('#canShowAzimuthCircle()', function() {
-      var c = [3 , 3];
+      var c = [3, 3];
 
       describe('returns false', function() {
 
@@ -657,21 +651,20 @@ describe('ga_measure_service', function() {
 
     describe('#registerOverlaysEvents()', function() {
       var map, layer, stubRm, stubAdd,
-          elt = document.createElement('div'),
-          eltOv1 = document.createElement('div'),
-          eltOv2 = document.createElement('div'),
-          ov1 = new ol.Overlay({element: eltOv1}),
-          ov2 = new ol.Overlay({element: eltOv2}),
-          feat1 = new ol.Feature(),
-          feat2 = new ol.Feature(),
-          featMeas1 = new ol.Feature({id: 'measure_1'}),
-          featMeas2 = new ol.Feature({id: 'measure_2'});
+        elt = document.createElement('div'),
+        eltOv1 = document.createElement('div'),
+        eltOv2 = document.createElement('div'),
+        ov1 = new ol.Overlay({element: eltOv1}),
+        ov2 = new ol.Overlay({element: eltOv2}),
+        feat1 = new ol.Feature(),
+        feat2 = new ol.Feature(),
+        featMeas1 = new ol.Feature({id: 'measure_1'}),
+        featMeas2 = new ol.Feature({id: 'measure_2'});
 
       feat1.set('overlays', 'lala');
       feat2.set('overlays', 'lala');
       featMeas1.setId('measure_1');
       featMeas2.set('type', 'measure');
-
 
       var layerImg = new ol.layer.Image({
         source: new ol.source.ImageVector({
@@ -690,7 +683,6 @@ describe('ga_measure_service', function() {
         document.body.appendChild(elt);
         document.body.appendChild(eltOv1);
         document.body.appendChild(eltOv2);
-
 
         map = new ol.Map({target: elt});
       });

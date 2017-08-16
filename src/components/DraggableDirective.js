@@ -30,11 +30,11 @@ goog.require('ga_browsersniffer_service');
       element.addClass('ga-draggable');
       element.css({position: 'absolute'});
 
-      var dragZone = (attr['gaDraggable'] != '') ?
+      var dragZone = (attr['gaDraggable'] !== '') ?
         element.find(attr['gaDraggable']) :
         element;
 
-      if (!dragZone || dragZone.length == 0) {
+      if (!dragZone || !dragZone.length) {
         dragZone = element;
       }
 

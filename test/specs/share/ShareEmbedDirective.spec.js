@@ -9,7 +9,7 @@ describe('ga_shareembed_directive', function() {
     scope = elt.isolateScope();
     modal = elt.find('.modal');
   };
-var $sce;
+  var $sce;
   beforeEach(function() {
     inject(function($injector) {
       $compile = $injector.get('$compile');
@@ -115,4 +115,3 @@ var $sce;
     expect(scope.iframeHeight).to.be(200);
   });
 });
-

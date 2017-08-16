@@ -12,17 +12,17 @@ describe('ga_waitcursor_service', function() {
     });
 
     it('increments on ajaxSend event', function() {
-       var spy = sinon.spy(gaWait, 'increment');
-       $document[0].dispatchEvent(new Event('ajaxSend'));
-       expect(spy.calledOnce).to.be(true);
-       spy.restore();
+      var spy = sinon.spy(gaWait, 'increment');
+      $document[0].dispatchEvent(new Event('ajaxSend'));
+      expect(spy.calledOnce).to.be(true);
+      spy.restore();
     });
 
     it('decrements on ajaxComplete event', function() {
-       var spy = sinon.spy(gaWait, 'decrement');
-       $document[0].dispatchEvent(new Event('ajaxComplete'));
-       expect(spy.calledOnce).to.be(true);
-       spy.restore();
+      var spy = sinon.spy(gaWait, 'decrement');
+      $document[0].dispatchEvent(new Event('ajaxComplete'));
+      expect(spy.calledOnce).to.be(true);
+      spy.restore();
     });
 
     describe('#increment()', function() {

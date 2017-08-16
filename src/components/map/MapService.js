@@ -51,7 +51,7 @@ goog.require('ga_urlutils_service');
       return {
         get: function(resolutions, minResolution, type) {
           if (!resolutions) {
-            resolutions = (type == 'wms') ? getWmsResolutions() :
+            resolutions = (type === 'wms') ? getWmsResolutions() :
               getDefaultResolutions();
           }
           if (minResolution) { // we remove useless resolutions
@@ -93,7 +93,7 @@ goog.require('ga_urlutils_service');
               // apply the value only if it has changed
               // otherwise the change:visible event is triggered when it's
               // useless
-              if (vis != this.getVisible()) {
+              if (vis !== this.getVisible()) {
                 this.setVisible(vis);
               }
             }
@@ -206,7 +206,7 @@ goog.require('ga_urlutils_service');
               return undefined;
             },
             set: function(val) {
-              if (this.time == val) {
+              if (this.time === val) {
                 // This 'if' avoid triggering a useless layer's 'propertychange'
                 // event.
                 return;
@@ -515,7 +515,7 @@ goog.require('ga_urlutils_service');
         // Load layers config
         var lastLangUsed;
         var loadLayersConfig = function(lang) {
-          if (lastLangUsed == lang) {
+          if (lastLangUsed === lang) {
             return;
           }
           lastLangUsed = lang;
@@ -691,10 +691,10 @@ goog.require('ga_urlutils_service');
               bodId;
           var format = config3d.format || 'png';
           // pngjpeg not supported by Cesium (zeitreihen)
-          if (format == 'pngjpeg') {
+          if (format === 'pngjpeg') {
             format = 'jpeg';
           }
-          if (config3d.type == 'aggregate') {
+          if (config3d.type === 'aggregate') {
             var providers = [];
             config3d.subLayersIds.forEach(function(item) {
               var subProvider = this.getCesiumImageryProviderById(item);
@@ -706,7 +706,7 @@ goog.require('ga_urlutils_service');
             }, this);
             return providers;
           }
-          if (config3d.type == 'wmts') {
+          if (config3d.type === 'wmts') {
             var hasNativeTiles = !!config.config3d;
             params = {
               url: getWmtsGetTileTpl(requestedLayer, timestamp,
@@ -715,7 +715,7 @@ goog.require('ga_urlutils_service');
               subdomains: hasNativeTiles ? h2(dfltWmtsNativeSubdomains) :
                 h2(dfltWmtsMapProxySubdomains)
             };
-          } else if (config3d.type == 'wms') {
+          } else if (config3d.type === 'wms') {
             var tileSize = 512;
             var wmsParams = {
               layers: requestedLayer,
@@ -761,7 +761,7 @@ goog.require('ga_urlutils_service');
               tilingScheme: new Cesium.GeographicTilingScheme(),
               tileWidth: params.tileSize,
               tileHeight: params.tileSize,
-              hasAlphaChannel: (format == 'png'),
+              hasAlphaChannel: (format === 'png'),
               availableLevels: window.imageryAvailableLevels,
               // Experimental: restrict all rasters from 0 - 17 to terrain
               // availability and 18 to Swiss bbox
@@ -811,7 +811,7 @@ goog.require('ga_urlutils_service');
 
           // We allow duplication of source for time enabled layers
           var olSource = (layer.timeEnabled) ? null : layer.olSource;
-          if (layer.type == 'wmts') {
+          if (layer.type === 'wmts') {
             if (!olSource) {
               var wmtsTplUrl = getWmtsGetTileTpl(layer.serverLayerName, null,
                   '21781', layer.format, true).
@@ -847,7 +847,7 @@ goog.require('ga_urlutils_service');
               preload: gaNetworkStatus.offline ? gaMapUtils.preload : 0,
               useInterimTilesOnError: gaNetworkStatus.offline
             });
-          } else if (layer.type == 'wms') {
+          } else if (layer.type === 'wms') {
             var wmsParams = {
               LAYERS: layer.wmsLayers,
               FORMAT: 'image/' + layer.format,
@@ -900,7 +900,7 @@ goog.require('ga_urlutils_service');
                 useInterimTilesOnError: gaNetworkStatus.offline
               });
             }
-          } else if (layer.type == 'aggregate') {
+          } else if (layer.type === 'aggregate') {
             var subLayersIds = layer.subLayersIds;
             var i, len = subLayersIds.length;
             var subLayers = new Array(len);
@@ -913,7 +913,7 @@ goog.require('ga_urlutils_service');
               opacity: layer.opacity || 1,
               layers: subLayers
             });
-          } else if (layer.type == 'geojson') {
+          } else if (layer.type === 'geojson') {
             // cannot request resources over https in S3
             olSource = new ol.source.Vector();
             olLayer = new ol.layer.Vector({
@@ -1012,8 +1012,8 @@ goog.require('ga_urlutils_service');
             this.getLayer(configOrBodId) : configOrBodId;
           if (!layer.timeEnabled) {
             // a WMTS/Terrain/Tileset3D layer has at least one timestamp
-            return (layer.type == 'wmts' || layer.type == 'terrain' ||
-                layer.type == 'tileset3d') ? layer.timestamps[0] : undefined;
+            return (layer.type === 'wmts' || layer.type === 'terrain' ||
+                layer.type === 'tileset3d') ? layer.timestamps[0] : undefined;
           }
           var timestamps = layer.timestamps || [];
           if (angular.isNumber(yearStr)) {
@@ -1184,7 +1184,7 @@ goog.require('ga_urlutils_service');
         getMapLayerForBodId: function(map, bodId) {
           var layer;
           map.getLayers().forEach(function(l) {
-            if (l.bodId == bodId && !l.preview) {
+            if (l.bodId === bodId && !l.preview) {
               layer = l;
             }
           });
@@ -1199,7 +1199,7 @@ goog.require('ga_urlutils_service');
         getMapOverlayForBodId: function(map, bodId) {
           var layer;
           map.getLayers().forEach(function(l) {
-            if (l.bodId == bodId && !l.background && !l.preview) {
+            if (l.bodId === bodId && !l.background && !l.preview) {
               layer = l;
             }
           });
@@ -1353,7 +1353,7 @@ goog.require('ga_urlutils_service');
           if (angular.isString(olLayerOrId)) {
             return /^KML\|\|/.test(olLayerOrId);
           }
-          return olLayerOrId.type == 'KML';
+          return olLayerOrId.type === 'KML';
         },
 
         // Test if a layer is a KML layer added by dnd
@@ -1410,7 +1410,7 @@ goog.require('ga_urlutils_service');
         moveLayerOnTop: function(map, olLayer) {
           var olLayers = map.getLayers().getArray();
           var idx = olLayers.indexOf(olLayer);
-          if (idx != -1 && idx !== olLayers.length - 1) {
+          if (idx !== -1 && idx !== olLayers.length - 1) {
             map.removeLayer(olLayer);
             map.addLayer(olLayer);
           }
@@ -1488,7 +1488,7 @@ goog.require('ga_urlutils_service');
             return;
           }
           var idx = resolutions.indexOf(res);
-          if (idx != -1) {
+          if (idx !== -1) {
             return lodsForRes[idx];
           }
           // TODO: Implement the calculation of the closest level of detail

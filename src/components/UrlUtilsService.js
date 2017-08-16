@@ -108,7 +108,7 @@ goog.provide('ga_urlutils_service');
               '(dev|int|prod).bgdi.ch|proxy.geo.admin.ch)',
               '/(http|https)/(.*)'].join(''));
             var parts = reg.exec(url);
-            if (parts && parts.length == 6) {
+            if (parts && parts.length === 6) {
               return parts[4] + '://' + parts[5];
             }
           }

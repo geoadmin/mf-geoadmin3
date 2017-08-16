@@ -65,7 +65,7 @@ goog.require('ga_styles_service');
         var features = source.getFeatures();
         for (var i = 0, ii = features.length; i < ii; i++) {
           var layerId = features[i].get('layerId');
-          if (angular.isDefined(layerId) && layerId == layer.id) {
+          if (angular.isDefined(layerId) && layerId === layer.id) {
             source.removeFeature(features[i]);
           }
         }
@@ -73,10 +73,10 @@ goog.require('ga_styles_service');
 
       // Add/remove/move to top the vector layer.
       var updateLayer = function(map) {
-        if (source.getFeatures().length == 0) {
+        if (!source.getFeatures().length) {
           ol.Observable.unByKey(listenerKeyRemove);
           map.removeLayer(vector);
-        } else if (map.getLayers().getArray().indexOf(vector) == -1) {
+        } else if (map.getLayers().getArray().indexOf(vector) === -1) {
           map.addLayer(vector);
 
           // Add event for automatically removing the features when the

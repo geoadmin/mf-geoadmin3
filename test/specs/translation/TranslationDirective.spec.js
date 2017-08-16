@@ -1,7 +1,7 @@
 describe('ga_translation_directive', function() {
   var element, scope, parentScope, $rootScope, $compile,
-      lang = 'rm',
-      langs = ['de', 'fr', 'it', 'rm', 'en'];
+    lang = 'rm',
+    langs = ['de', 'fr', 'it', 'rm', 'en'];
 
   var loadDirective = function() {
     parentScope = $rootScope.$new();
@@ -19,7 +19,7 @@ describe('ga_translation_directive', function() {
         },
         set: function(newLang) {
           lang = (langs.indexOf(newLang) != -1) ?
-              newLang : 'de';
+            newLang : 'de';
         }
       });
       $provide.value('gaTopic', {});
@@ -100,7 +100,7 @@ describe('ga_translation_directive', function() {
 
     it('displays nothing if no langs defined', function() {
       var items = element.find('select option');
-      expect(items.length).to.be(1); //empty option
+      expect(items.length).to.be(1); // empty option
     });
   });
 
@@ -135,4 +135,3 @@ describe('ga_translation_directive', function() {
     });
   });
 });
-

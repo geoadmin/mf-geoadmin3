@@ -3,7 +3,7 @@ describe('ga_print_controller', function() {
   describe('GaPrintController', function() {
 
     var scope, parentScope, $compile, $rootScope, $timeout, $httpBackend,
-        gaGlobalOptions;
+      gaGlobalOptions;
 
     var loadController = function() {
       parentScope = $rootScope.$new();

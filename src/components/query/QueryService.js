@@ -139,9 +139,9 @@ goog.provide('ga_query_service');
                 inputTitle: attrValuesToString(field),
                 operators: type.operators,
                 transformToLiteral: function(value) {
-                  if (angular.isDefined(value) && this.inputType != 'number' &&
-                      this.inputType != 'checkbox') {
-                    if (this.inputType == 'text') {
+                  if (angular.isDefined(value) && this.inputType !== 'number' &&
+                      this.inputType !== 'checkbox') {
+                    if (this.inputType === 'text') {
                       return '\'%' + value + '%\'';
                     }
                     return '\'' + value + '\'';

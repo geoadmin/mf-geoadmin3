@@ -29,7 +29,7 @@ goog.require('ga_background_service');
             });
 
             scope.activateBackgroundLayer = function(bgLayer) {
-              if (scope.currentLayer != bgLayer) {
+              if (scope.currentLayer !== bgLayer) {
                 var ol3dEnabled = scope.ol3d && scope.ol3d.getEnabled();
                 if (!(bgLayer.disable3d && ol3dEnabled)) {
                   scope.currentLayer = bgLayer;
@@ -45,7 +45,7 @@ goog.require('ga_background_service');
             scope.getClass = function(layer) {
               if (layer) {
                 var selected = (scope.currentLayer &&
-                  layer.id == scope.currentLayer.id);
+                  layer.id === scope.currentLayer.id);
                 var splitLayer = layer.id.split('.');
                 return (selected ? 'ga-bg-highlight ' : '') +
                 'ga-' + splitLayer[splitLayer.length - 1] +
@@ -60,7 +60,7 @@ goog.require('ga_background_service');
               scope.currentLayer = gaBackground.get();
             });
             scope.$on('gaBgChange', function(evt, newBg) {
-              if (!scope.currentLayer || newBg.id != scope.currentLayer.id) {
+              if (!scope.currentLayer || newBg.id !== scope.currentLayer.id) {
                 scope.currentLayer = newBg;
               }
             });

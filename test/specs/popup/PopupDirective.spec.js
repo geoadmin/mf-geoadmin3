@@ -75,11 +75,11 @@ describe('ga_popup_directive', function() {
 
     element.find('.ga-popup-content').click();
     var zIndex = parseInt(element.css('z-index'));
-    //click on same element does not change z-index
+    // click on same element does not change z-index
     element.find('.ga-popup-content').click();
     var zIndex2 = parseInt(element.css('z-index'));
     expect(zIndex2 == zIndex).to.be(true);
-    //clicking on other popup changes z-index
+    // clicking on other popup changes z-index
     element2.find('.ga-popup-content').click();
     var newZIndex = parseInt(element2.css('z-index'));
     expect(newZIndex > zIndex).to.be(true);
@@ -93,4 +93,3 @@ describe('ga_popup_directive', function() {
     expect(element.find('.ga-popup-title').html()).to.be('Title popup');
   }));
 });
-

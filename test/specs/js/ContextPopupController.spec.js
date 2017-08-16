@@ -43,4 +43,3 @@ describe('ga_contextpopup_controller', function() {
     });
   });
 });
-

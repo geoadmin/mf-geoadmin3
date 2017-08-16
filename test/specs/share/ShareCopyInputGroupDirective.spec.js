@@ -22,7 +22,7 @@ describe('ga_sharecopyinputgroup_directive', function() {
         $compile = $injector.get('$compile');
       });
 
-      $rootScope.onBeforeCopy = function() {return 'a';};
+      $rootScope.onBeforeCopy = function() { return 'a'; };
       loadDirective();
     });
 
@@ -40,4 +40,3 @@ describe('ga_sharecopyinputgroup_directive', function() {
     });
   });
 });
-

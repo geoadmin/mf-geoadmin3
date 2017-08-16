@@ -3,7 +3,7 @@ describe('ga_timeselector_controller', function() {
   describe('GaTimeSelectorController', function() {
 
     var scope, parentScope, $compile, $rootScope, $timeout, $httpBackend,
-        gaGlobalOptions;
+      gaGlobalOptions;
 
     var loadController = function() {
       parentScope = $rootScope.$new();

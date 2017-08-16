@@ -17,7 +17,7 @@ goog.require('ga_permalink_service');
     // Test if all visible and timeEnabled layers have the same time
     // property value.
     var hasLayersSameTime = function(olLayers) {
-      if (olLayers.length == 0) {
+      if (!olLayers.length) {
         return false;
       }
       var year;
@@ -35,7 +35,7 @@ goog.require('ga_permalink_service');
           return false;
         }
 
-        if (year != parseInt(olLayers[i].time.substr(0, 4))) {
+        if (year !== parseInt(olLayers[i].time.substr(0, 4))) {
           return false;
         }
       }
@@ -45,7 +45,7 @@ goog.require('ga_permalink_service');
     this.$get = function($rootScope, gaPermalink) {
       var propDeregKey = {};
 
-      // Currently time is a number representing a year
+      // Currently time is a string representing a year
       // When defined this value is apllied on all timeEnabled layers
       var time = gaPermalink.getParams().time;
       if (isNaN(parseFloat(time))) {
@@ -68,9 +68,9 @@ goog.require('ga_permalink_service');
               that.updateStatus(evt.target.getArray());
               propDeregKey[olLayer.id] = olLayer.on('propertychange',
                   function(evtProp) {
-                    if (evtProp.key == 'visible' || (evtProp.key == 'time' &&
-                    angular.isString(evtProp.target.time) &&
-                    parseInt(evtProp.target.time.substr(0, 4)) != time)) {
+                    if (evtProp.key === 'visible' || (evtProp.key === 'time' &&
+                        angular.isString(evtProp.target.time) &&
+                        evtProp.target.time.substr(0, 4) !== time)) {
                       that.updateStatus(evt.target.getArray());
                     }
                   });
@@ -111,12 +111,11 @@ goog.require('ga_permalink_service');
         };
 
         this.set = function(year) {
-          if (year != time) {
+          if (year !== time) {
             var oldTime = time;
-            time = year;
-            if (isNaN(parseFloat(time))) {
-              time = undefined;
-            }
+            time = isNaN(parseFloat(year)) ?
+              undefined :
+              year + '';
             if (time === undefined) {
               gaPermalink.deleteParam('time');
             } else {

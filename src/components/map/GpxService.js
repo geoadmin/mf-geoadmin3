@@ -102,7 +102,7 @@ goog.require('ngeo.fileService');
         // remove the stroke style in that case.
         // See https://github.com/geoadmin/mf-geoadmin3/issues/3421
         var stroke = style.getStroke();
-        if (stroke && stroke.getWidth() == 0) {
+        if (stroke && stroke.getWidth() === 0) {
           stroke = undefined;
         }
 
@@ -124,9 +124,9 @@ goog.require('ngeo.fileService');
 
           // If the feature has name we display it on the map as Google does
           if (feature.get('name') && style.getText() &&
-              style.getText().getScale() != 0) {
+              style.getText().getScale() !== 0) {
 
-            if (image && image.getScale() == 0) {
+            if (image && image.getScale() === 0) {
               // transparentCircle is used to allow selection
               image = gaStyleFactory.getStyle('transparentCircle');
             }
@@ -156,7 +156,7 @@ goog.require('ngeo.fileService');
         // Get the type of the feature (creates by drawing tools)
         if (feature.getId()) {
           var split = feature.getId().split('_');
-          if (split.length == 2) {
+          if (split.length === 2) {
             feature.set('type', split[0]);
           }
         }

@@ -69,8 +69,8 @@ goog.require('ga_translation_service');
           clipper.tile = layerBodId;
         }
         // Paper maps
-        if (orderType == 'mapsheet') {
-          if (useFeatureId.indexOf(layerBodId) != -1) {
+        if (orderType === 'mapsheet') {
+          if (useFeatureId.indexOf(layerBodId) !== -1) {
             params.featureid = featureId;
           } else {
             params.product = featureId;
@@ -78,7 +78,7 @@ goog.require('ga_translation_service');
         } else if (clipper[orderType]) {
           params.clipper = clipper[orderType];
           params.featureid = featureId;
-        } else if (orderType == 'whole') {
+        } else if (orderType === 'whole') {
           params.clipper = params.layer;
         } else if (geometry) {
           params.geometry = geometry;

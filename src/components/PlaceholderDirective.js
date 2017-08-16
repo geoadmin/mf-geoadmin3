@@ -47,12 +47,12 @@ goog.provide('ga_placeholder_directive');
               }
             }).blur(function(evt) {
               var elt = $(evt.target);
-              if (elt.val() == '') {
+              if (elt.val() === '') {
                 displayPlaceholder(elt);
               }
             }).change(function(evt) {
               var elt = $(evt.target);
-              if (elt.val() != elt.attr('placeholder')) {
+              if (elt.val() !== elt.attr('placeholder')) {
                 elt.css('color', 'inherit');
                 isPlaceHolderDisplayed = false;
               }

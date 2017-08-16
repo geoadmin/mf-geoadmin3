@@ -13,7 +13,7 @@ goog.require('ga_networkstatus_service');
   module.controller('GaOfflineDirectiveController',
       function($scope, $timeout, $translate, gaBrowserSniffer, gaOffline,
           gaNetworkStatus, $window) {
-        $scope.isIE9 = (gaBrowserSniffer.msie == 9);
+        $scope.isIE9 = (gaBrowserSniffer.msie === 9);
 
         // Initialize scope variables
         $scope.offline = gaNetworkStatus.offline;

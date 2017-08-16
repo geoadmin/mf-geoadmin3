@@ -1,6 +1,6 @@
 describe('ga_shoprectangle_directive', function() {
   var elt, scope, parentScope, $compile, $rootScope, $timeout, gaDebounce,
-      gaMapUtils, gaShop, $q;
+    gaMapUtils, gaShop, $q;
 
   var loadDirective = function(active) {
     parentScope = $rootScope.$new();

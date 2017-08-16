@@ -3,7 +3,7 @@ describe('ga_marker_overlay_service', function() {
   describe('gaMarkerOverlay', function() {
     var gaStyleFactory, gaMapUtils, gaMarkerOverlay, map;
     var pt = [0, 1];
-    var extentPoint = [0, 1 , 0, 1];
+    var extentPoint = [0, 1, 0, 1];
     var extent = [0, 1, 2, 3];
 
     beforeEach(function() {
@@ -88,7 +88,6 @@ describe('ga_marker_overlay_service', function() {
         expect(layer.getVisible()).to.be(true);
         gaMarkerOverlay.setVisibility(7);
         expect(layer.getVisible()).to.be(true);
-
 
         // data with big extent
         gaMarkerOverlay.add(map, pt, false, extent);

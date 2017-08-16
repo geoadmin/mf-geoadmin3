@@ -30,7 +30,7 @@ goog.provide('ga_print_controller');
         'ch.swisstopo.geologie-eiszeit-lgm-raster',
         'ch.swisstopo.geologie-geologische_karte',
         'ch.swisstopo.geologie-hydrogeologische_karte-grundwasservorkommen',
-        'ch.swisstopo.geologie-hydrogeologische_karte-grundwasservulnerabilitaet',
+        'ch.swisstopo.geologie-hydrogeologische_karte-grundwasservulnerabilitaet', // eslint-disable-line max-len
         'ch.swisstopo.geologie-tektonische_karte',
         'ch.kantone.cadastralwebmap-farbe',
         'ch.swisstopo.pixelkarte-farbe-pk1000.noscale',

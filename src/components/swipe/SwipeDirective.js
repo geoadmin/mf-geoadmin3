@@ -140,7 +140,7 @@ goog.require('ga_map_service');
                 scope.map.render();
               }
 
-              if (!scope.isActive || olLayers.length == 0) {
+              if (!scope.isActive || !olLayers.length) {
                 elt.hide();
                 updatePermalink();
                 return;

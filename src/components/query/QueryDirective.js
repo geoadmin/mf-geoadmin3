@@ -226,7 +226,7 @@ goog.require('ga_query_service');
     $scope.searchByGeometry = function(layerBodId, offset) {
       $scope.queryType = 0;
 
-      if ($scope.tooltipLayers.length == 0) {
+      if (!$scope.tooltipLayers.length) {
         resetResults();
         return;
       }
@@ -268,7 +268,7 @@ goog.require('ga_query_service');
       $scope.loading = true;
 
       var params = getParamsByLayer($scope.filters);
-      if (params.length == 0) {
+      if (!params.length) {
         if ($scope.useBbox) {
           $scope.searchByGeometry();
         } else {
@@ -284,7 +284,7 @@ goog.require('ga_query_service');
 
       angular.forEach(params, function(paramsByLayer) {
 
-        if (layerBodId && layerBodId != paramsByLayer.bodId) {
+        if (layerBodId && layerBodId !== paramsByLayer.bodId) {
           $scope.loading = false;
           return;
         }
@@ -314,7 +314,7 @@ goog.require('ga_query_service');
       if (!offset) {
         resetResults('', layerBodId);
       }
-      if ($scope.queryType == 0) {
+      if ($scope.queryType === 0) {
         $scope.searchByGeometry(layerBodId, offset);
       } else {
         $scope.searchByAttributes(layerBodId, offset);
@@ -353,7 +353,7 @@ goog.require('ga_query_service');
                           filter.layer.attributes = attrs;
                         }
                         filter.layer.attributes.forEach(function(attr) {
-                          if (attr.name == filter.attrName) {
+                          if (attr.name === filter.attrName) {
                             filter.attribute = attr;
                           }
                         });
@@ -362,8 +362,8 @@ goog.require('ga_query_service');
 
                 // Apply a predefined query if exist
                 if ($scope.queryPredef &&
-                $scope.queryPredef.id == query.id &&
-                $scope.queryPredef.layer == layer) {
+                $scope.queryPredef.id === query.id &&
+                $scope.queryPredef.layer === layer) {
                   $scope.applyQueryPredef($scope.queryPredef);
                 }
               });
@@ -377,7 +377,7 @@ goog.require('ga_query_service');
             if ($scope.filters[i].layer) {
               var exist = false;
               angular.forEach(layers, function(layer) {
-                if (layer.id == $scope.filters[i].layer.id) {
+                if (layer.id === $scope.filters[i].layer.id) {
                   exist = true;
                 }
               });
@@ -457,11 +457,11 @@ goog.require('ga_query_service');
             scope.geometry = boxFeature.getGeometry();
             scope.useBbox = true;
 
-            if (scope.tooltipLayers.length == 0) {
+            if (!scope.tooltipLayers.length) {
               scope.isActive = true;
               scope.$applyAsync();
             } else {
-              if (scope.isActive && scope.queryType == 1 &&
+              if (scope.isActive && scope.queryType === 1 &&
                   scope.filters[0].value) {
                 scope.searchByAttributes();
               } else {
@@ -489,7 +489,7 @@ goog.require('ga_query_service');
             });
           }
 
-          if (scope.queryType == 0) {
+          if (scope.queryType === 0) {
             scope.showBox();
             scope.useBbox = true;
           }
@@ -514,7 +514,7 @@ goog.require('ga_query_service');
             input.val(filter.value);
             input.change();
           }
-          if (filter.attribute && filter.attribute.inputType == 'date') {
+          if (filter.attribute && filter.attribute.inputType === 'date') {
             input.datetimepicker({
               pickDate: true,
               pickTime: false,
@@ -524,7 +524,7 @@ goog.require('ga_query_service');
         };
 
         scope.$watch('isActive', function(newVal, oldVal) {
-          if (newVal != oldVal) {
+          if (newVal !== oldVal) {
             if (newVal) {
               activate();
             } else {
@@ -534,8 +534,8 @@ goog.require('ga_query_service');
         });
 
         scope.$watch('queryType', function(newVal, oldVal) {
-          if (newVal != oldVal) {
-            if (newVal == 0) {
+          if (newVal !== oldVal) {
+            if (newVal === 0) {
               scope.showBox();
               scope.queryPredef = null;
               scope.applyQueryPredef(null);
@@ -549,7 +549,7 @@ goog.require('ga_query_service');
         scope.$on('gaTimeChange', function(event, newYear) {
           if (newYear !== currentYear) {
             currentYear = newYear;
-            if (scope.queryType == 0) {
+            if (scope.queryType === 0) {
               scope.search();
             }
           }

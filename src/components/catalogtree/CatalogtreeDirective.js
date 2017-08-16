@@ -111,11 +111,11 @@ goog.require('ga_translation_service');
                   replace('{Topic}', topic.id);
               // If the topic has not changed that means we need to update only
               // labels
-              if (lastUrlUsed == url) {
+              if (lastUrlUsed === url) {
                 labelsOnly = true;
                 // We forbid the send of 2 identical requests (needed for IE9);
                 // See http://github.com/geoadmin/mf-geoadmin3/issues/2531/
-                if (lastLangUsed == lang) {
+                if (lastLangUsed === lang) {
                   return;
                 }
               }

@@ -158,8 +158,8 @@ goog.require('ga_window_service');
             scope.$watch('toggle', function(newVal, oldVal) {
             // in some case newVal is equal to oldVal when it shouldn't,
             // so we make  a test if the popup is displayed or not
-              if (newVal != oldVal ||
-              (newVal != (element.css('display') == 'block'))) {
+              if (newVal !== oldVal ||
+                  (newVal !== (element.css('display') === 'block'))) {
 
                 if (scope.options.isReduced) {
                   scope.options.isReduced = false;
@@ -182,7 +182,7 @@ goog.require('ga_window_service');
             });
 
             scope.$watch('options.isReduced', function(newVal, oldVal) {
-              if (newVal != oldVal) {
+              if (newVal !== oldVal) {
                 element.toggleClass('ga-popup-reduced',
                     scope.options.isReduced);
                 // Deactivate draggable directive
@@ -204,8 +204,8 @@ goog.require('ga_window_service');
             });
 
             scope.$on('gaPopupFocused', function(evt, el) {
-              var isFocused = (el == element);
-              if (scope.hasFocus != isFocused) {
+              var isFocused = (el === element);
+              if (scope.hasFocus !== isFocused) {
                 scope.$broadcast('gaPopupFocusChange', isFocused);
                 scope.hasFocus = isFocused;
               }

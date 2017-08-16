@@ -38,7 +38,7 @@ goog.require('ga_permalink');
       };
       var getBgById = function(id) {
         for (var i = 0, ii = bgs.length; i < ii; i++) {
-          if (bgs[i].id == id) {
+          if (bgs[i].id === id) {
             return bgs[i];
           }
         }
@@ -54,7 +54,7 @@ goog.require('ga_permalink');
       };
 
       var broadcast = function() {
-        if (gaPermalink.getParams().bgLayer != bg.id) {
+        if (gaPermalink.getParams().bgLayer !== bg.id) {
           gaPermalink.updateParams({bgLayer: bg.id});
         }
         $rootScope.$broadcast('gaBgChange', bg);
@@ -112,12 +112,12 @@ goog.require('ga_permalink');
         };
 
         this.setById = function(map, newBgId) {
-          if (map && (!bg || newBgId != bg.id)) {
+          if (map && (!bg || newBgId !== bg.id)) {
             var newBg = getBgById(newBgId);
             if (newBg) {
               bg = newBg;
               var layers = map.getLayers();
-              if (bg.id == 'voidLayer') {
+              if (bg.id === 'voidLayer') {
                 if (layers.getLength() > 0 &&
                     layers.item(0).background === true) {
                   layers.removeAt(0);

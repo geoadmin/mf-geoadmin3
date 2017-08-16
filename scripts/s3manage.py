@@ -237,7 +237,7 @@ def upload(bucket_name, base_dir, deploy_target, named_branch):
             if len(file_names) > 0:
                 file_base_path = file_path_list[0]
                 if ngeo_prefix in file_base_path and len([p for p in include_ngeo_folders
-                                                         if p not in file_base_path]) > 0:
+                                                          if p not in file_base_path]) > 0:
                     continue
                 for file_name in file_names:
                     if len([p for p in exclude_filename_patterns if p in file_name]) == 0:

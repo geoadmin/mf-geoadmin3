@@ -35,7 +35,6 @@ describe('ga_wms_service', function() {
       expect(layer.label).to.be(options.label);
       expect(layer.getCesiumImageryProvider).to.be.a(Function);
 
-
       // Tests source's properties
       var source = layer.getSource();
       expect(source).to.be.an(ol.source.ImageWMS);

@@ -9,13 +9,13 @@ goog.provide('ga_timeselector_controller');
       minYear: 1844,
       maxYear: (new Date()).getFullYear(),
       currentYear: -1, // User selected year
-      years: [] //List of all possible years 1845 -> current year
+      years: [] // List of all possible years 1845 -> current year
     };
 
     // Fill the years array. This array will be used to configure the
     // display of the slider (minor and major divisions ...)
     for (var i = $scope.options.minYear, ii = $scope.options.maxYear; i <= ii;
-        i++) {
+      i++) {
       var year = {
         value: i,
         available: false,
@@ -34,4 +34,3 @@ goog.provide('ga_timeselector_controller');
     }
   });
 })();
-

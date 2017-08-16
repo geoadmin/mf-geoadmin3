@@ -3,10 +3,10 @@ describe('ga_main_controller', function() {
   describe('GaMainController', function() {
 
     var scope, parentScope, $compile, $rootScope, $window, $q, $document, $timeout, $httpBackend,
-        $translate, gaBrowserSniffer, gaHistory, gaPermalinkFeaturesManager, gaPermalinkLayersManager,
-        gaMapUtils, gaRealtimeLayersManager, gaNetworkStatus, gaPermalink, gaStorage,
-        gaGlobalOptions, gaBackground, gaTime, gaLayers, gaTopic, gaOpaqueLayersManager,
-        gaMapLoad, gaWindow;
+      $translate, gaBrowserSniffer, gaHistory, gaPermalinkFeaturesManager, gaPermalinkLayersManager,
+      gaMapUtils, gaRealtimeLayersManager, gaNetworkStatus, gaPermalink, gaStorage,
+      gaGlobalOptions, gaBackground, gaTime, gaLayers, gaTopic, gaOpaqueLayersManager,
+      gaMapLoad, gaWindow;
 
     var loadController = function() {
       parentScope = $rootScope.$new();
@@ -105,14 +105,14 @@ describe('ga_main_controller', function() {
         var spies = [
           sinon.spy(gaTime, 'init'),
           sinon.spy(gaBackground, 'init')
-          //sinon.spy(gaPermalinkLayersManager),
-          //sinon.spy(gaPermalinkFeaturesManager),
-          //sinon.spy(gaRealtimeLayersManager)
+          // sinon.spy(gaPermalinkLayersManager),
+          // sinon.spy(gaPermalinkFeaturesManager),
+          // sinon.spy(gaRealtimeLayersManager)
         ];
 
-        //var spyOp = sinon.spy(gaOpaqueLayersManager).withArgs(scope);
+        // var spyOp = sinon.spy(gaOpaqueLayersManager).withArgs(scope);
         loadController();
-        //expect(spyOp.callCount).to.be(1);
+        // expect(spyOp.callCount).to.be(1);
         spies.forEach(function(spy, idx) {
           expect(spy.callCount).to.be(1);
           expect(spy.getCall(0).args[0]).to.be(scope.map);
@@ -121,4 +121,3 @@ describe('ga_main_controller', function() {
     });
   });
 });
-

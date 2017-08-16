@@ -37,7 +37,7 @@ goog.require('ga_urlutils_service');
           transparent: 'true'
         };
 
-        if (wmsParams.version == '1.1.1') {
+        if (wmsParams.version === '1.1.1') {
           wmsParams.srs = wmsParams.crs;
           delete wmsParams.crs;
           wmsParams.bbox = '{westProjected},{southProjected},' +

@@ -151,7 +151,7 @@ goog.require('ngeo.fileService');
         'https://geodienste.ch/db/av/fra',
         'https://geodienste.ch/db/av_jahresstand/deu',
         'https://geodienste.ch/db/av_jahresstand/fra',
-         // non-SwissProjected test urls
+        // non-SwissProjected test urls
         'http://wms.ga.admin.ch/1GE',
         'http://wms.ga.admin.ch/LG_DE_Geologie_und_Tektonik/wms',
         'http://discomap.eea.europa.eu/arcgis/services/Land/CLC2000_Dyna_WM/MapServer/WMSServer',
@@ -184,7 +184,7 @@ goog.require('ngeo.fileService');
         'https://services.arcgisonline.com/arcgis/rest/services/Reference/World_Transportation/MapServer/WMTS/1.0.0/WMTSCapabilities.xml',
         'https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Base/MapServer/WMTS/1.0.0/WMTSCapabilities.xml',
         'https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/WMTS/1.0.0/WMTSCapabilities.xml'
-     ]
+      ]
     };
 
     $scope.options.isValidUrl = gaUrlUtils.isValid;
@@ -201,8 +201,6 @@ goog.require('ngeo.fileService');
     $scope.options.removePreviewLayer = gaPreviewLayers.removeAll;
     $scope.options.transformExtent = gaMapUtils.intersectWithDefaultExtent;
 
-
-
     // Transform the url before loading it.
     $scope.options.transformUrl = function(url) {
       // If the url has no file extension, try to load a WMS GetCapabilities.
@@ -210,8 +208,8 @@ goog.require('ngeo.fileService');
           !/\w+\/\w+\.[a-zA-Z]+$/i.test(url)) {
         // Append WMS GetCapabilities default parameters
         url = gaUrlUtils.append(url, /wmts/i.test(url) ?
-            'SERVICE=WMTS&REQUEST=GetCapabilities&VERSION=1.0.0' :
-            'SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0');
+          'SERVICE=WMTS&REQUEST=GetCapabilities&VERSION=1.0.0' :
+          'SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0');
 
         // Use lang param only for admin.ch servers
         if (/admin\.ch/.test(url)) {

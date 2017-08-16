@@ -27,9 +27,9 @@ describe('ga_print_service', function() {
 
       module(function($provide) {
         $provide.value('$window', {
-          open: function() {return winPrint;},
+          open: function() { return winPrint; },
           alert: function() {}
-         });
+        });
       });
 
       inject(function($injector) {
@@ -71,7 +71,7 @@ describe('ga_print_service', function() {
         mockDoc.expects('write').once().withExactArgs(getHtml(completeHtml));
         mockDoc.expects('close').once().withExactArgs();
 
-        gaPrint.htmlPrintout('<div>my body</div>', '<meta></met<><script src="print.js"></script><link href="print.css">', function() {$window.isOnPrintLoad = true});
+        gaPrint.htmlPrintout('<div>my body</div>', '<meta></met<><script src="print.js"></script><link href="print.css">', function() { $window.isOnPrintLoad = true });
 
         mockWinPrint.verify();
         mockDoc.verify();

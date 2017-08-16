@@ -48,7 +48,7 @@ describe('ga_printlayer_service', function() {
 
         var encLegend = gaPrintLayer.encodeLegend(lyr, config, options);
         expect(encLegend.classes[0].icon).to.eql(
-           options.legendUrl + 'ch.swisstopo.swisstlm3d-wanderwege_fr.png'
+            options.legendUrl + 'ch.swisstopo.swisstlm3d-wanderwege_fr.png'
         );
         stub.restore();
       });
@@ -56,13 +56,13 @@ describe('ga_printlayer_service', function() {
 
     describe('#encodeDimensions()', function() {
 
-       var geometry = new ol.geom.Point(center);
-       var feature = new ol.Feature({
-         name: 'dummy',
-         geometry: geometry
-       });
-       var source = new ol.source.Vector({});
-       source.addFeature(feature);
+      var geometry = new ol.geom.Point(center);
+      var feature = new ol.Feature({
+        name: 'dummy',
+        geometry: geometry
+      });
+      var source = new ol.source.Vector({});
+      source.addFeature(feature);
 
       var vector = new ol.layer.Vector({
         source: source
@@ -70,9 +70,8 @@ describe('ga_printlayer_service', function() {
 
       it('returns an encoded features', function() {
 
-
         var encFeatures = gaPrintLayer.encodeFeatures(vector, feature, false, 20000,
-           extent, 150);
+            extent, 150);
 
         expect(encFeatures.encFeatures[0].geometry.coordinates).to.eql(center);
 
@@ -97,7 +96,6 @@ describe('ga_printlayer_service', function() {
     });
 
     describe('#encodeWMTS()', function() {
-
 
       var config = {
         'attribution': 'swisstopo',
@@ -124,7 +122,7 @@ describe('ga_printlayer_service', function() {
         origin: [420000, 350000],
         tileSize: 256,
         matrixIds: matrixIds,
-        resolutions: resolutions,
+        resolutions: resolutions
       };
 
       var tileGrid = new ol.tilegrid.WMTS(options);
@@ -179,7 +177,7 @@ describe('ga_printlayer_service', function() {
         tileSize: 512,
         matrixIds: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
         resolutions: [66.14596562525627, 33.07298281262813, 16.933367200065604, 8.466683600032802, 4.233341800016401,
-            2.1166709000082005, 1.0583354500041002, 0.5291677250020501, 0.26458386250102506, 0.13229193125051253]
+          2.1166709000082005, 1.0583354500041002, 0.5291677250020501, 0.26458386250102506, 0.13229193125051253]
       };
       var tileGrid = new ol.tilegrid.WMTS(options);
       var source = new ol.source.WMTS({
@@ -207,7 +205,7 @@ describe('ga_printlayer_service', function() {
 
       var lyr = new ol.layer.Tile();
       var lyr = new ol.layer.Vector({
-         source: new ol.source.Vector()
+        source: new ol.source.Vector()
       });
 
       it('returns an encoded base layer', function() {
@@ -323,7 +321,7 @@ describe('ga_printlayer_service', function() {
           [222023, 225707],
           [444046, 451412]
         ],
-        resolutions: [66.14596562525627, 33.07298281262813, 16.933367200065604, 8.466683600032802, 4.233341800016401, 2.1166709000082005, 1.0583354500041002, 0.5291677250020501, 0.26458386250102506, 0.13229193125051253],
+        resolutions: [66.14596562525627, 33.07298281262813, 16.933367200065604, 8.466683600032802, 4.233341800016401, 2.1166709000082005, 1.0583354500041002, 0.5291677250020501, 0.26458386250102506, 0.13229193125051253]
       };
 
       var tileGrid = new ol.tilegrid.WMTS(options);

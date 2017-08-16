@@ -39,7 +39,7 @@ goog.require('ga_time_service');
         // Deactivate user form submission with Enter key
         elt.keypress(function(evt) {
           var charCode = evt.charCode || evt.keyCode;
-          if (charCode == 13) { // Enter key's keycode
+          if (charCode === 13) { // Enter key's keycode
             return false;
           }
         });
@@ -47,13 +47,13 @@ goog.require('ga_time_service');
         // Update the status of the directive
         var timeEnabledLayers = [];
         var updateStatus = function() {
-          if (timeEnabledLayers.length == 0) {
+          if (!timeEnabledLayers.length) {
             scope.isActive = false;
           } else {
             scope.isActive = !!(gaTime.get());
           }
           elt.toggleClass('ga-time-selector-enabled',
-              (timeEnabledLayers.length != 0));
+              !!timeEnabledLayers.length);
         };
 
         // Toggle the state of the component between active and enable
@@ -121,7 +121,7 @@ goog.require('ga_time_service');
 
                     // if we have reached the end of the list restart from the
                     // beginning
-                    if (value == elt.value && list.length > 1) {
+                    if (value === elt.value && list.length > 1) {
                       value = list[0].value;
                     }
                     break;
@@ -133,7 +133,7 @@ goog.require('ga_time_service');
 
             var applyNextYear = function() {
               var nextYear = nextValue(scope.currentYear, scope.availableYears);
-              if (nextYear != scope.currentYear) {
+              if (nextYear !== scope.currentYear) {
                 scope.currentYear = nextYear;
                 promise = $timeout(applyNextYear, 1000);
               } else {
@@ -157,7 +157,7 @@ goog.require('ga_time_service');
             // Update the status of the directive
             var timeEnabledLayers = [];
             var updateStatus = function() {
-              if (timeEnabledLayers.length == 0) {
+              if (!timeEnabledLayers.length) {
                 scope.isActive = false;
                 return;
               }
@@ -171,7 +171,8 @@ goog.require('ga_time_service');
 
             // Activate/deactivate automatically the time selector
             scope.$on('gaTimeChange', function(evt, time) {
-              if (angular.isDefined(time) && scope.currentYear != time) {
+              if (angular.isDefined(time) &&
+                  scope.currentYear !== parseFloat(time)) {
                 scope.currentYear = time;
               }
               updateStatus();
@@ -254,7 +255,7 @@ goog.require('ga_time_service');
                   for (var i = 0, length = timestamps.length; i < length; i++) {
                     var yearTimestamp = gaTime.getYearFromTimestamp(
                         timestamps[i]);
-                    if (year.value == yearTimestamp) {
+                    if (year.value === yearTimestamp) {
                       year.available = true;
                       scope.availableYears.push(year);
                       if (year.value === scope.currentYear) {

@@ -95,7 +95,7 @@ goog.require('ga_what3words_service');
           if (swisssearchActive) {
           // If we end up here because swisssearch cause a single click, we
           // remove the swisssearch parameter on move/zoom.
-            if (restat.totalResults() == 1) {
+            if (restat.totalResults() === 1) {
               keepSearchParam = true;
               var uReg = $scope.map.getView().on('propertychange', function() {
                 gaPermalink.deleteParam('swisssearch');
@@ -210,7 +210,7 @@ goog.require('ga_what3words_service');
             startQuery($scope.query);
           }
           $scope.$watch('query', function(newVal, oldVal) {
-            if (newVal != oldVal) {
+            if (newVal !== oldVal) {
               startQuery(newVal);
             }
           });
@@ -229,7 +229,7 @@ goog.require('ga_what3words_service');
                 $scope.query = searchParam;
                 // Remove swisssearch parameter when query text changes
                 var unregWatch = $scope.$watch('query', function(newval) {
-                  if (newval != searchParam && !keepSearchParam) {
+                  if (newval !== searchParam && !keepSearchParam) {
                     swisssearchActive = false;
                     $rootScope.$broadcast('gaSwisssearchDone');
                     gaPermalink.deleteParam('swisssearch');
@@ -262,13 +262,14 @@ goog.require('ga_what3words_service');
 
             $scope.keydown = function(evt) {
               // Enter key
-              if (evt.keyCode == 13) {
+              if (evt.keyCode === 13) {
                 if (evt.target && evt.target.blur) {
                   evt.target.blur();
                 }
               }
               // Down Arrow, Tab Or PageDown
-              if (evt.keyCode == 9 || evt.keyCode == 40 || evt.keyCode == 34) {
+              if (evt.keyCode === 9 || evt.keyCode === 40 ||
+                  evt.keyCode === 34) {
                 // focus to first result
                 var firstRes = $(element).find('.ga-search-result').first();
                 if (firstRes.length === 1 &&

@@ -1,4 +1,5 @@
-describe('ga_tooltip_controller', function() {7;
+describe('ga_tooltip_controller', function() {
+  7;
 
   describe('GaTooltipController', function() {
 
@@ -63,4 +64,3 @@ describe('ga_tooltip_controller', function() {7;
     });
   });
 });
-
