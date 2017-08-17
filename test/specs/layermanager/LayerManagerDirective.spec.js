@@ -20,9 +20,9 @@ describe('ga_layermanager_directive', function() {
   layerThirdParty.url = 'http://foo.ch/admin/wms';
 
   describe('gaLayermanager', function() {
-    var elt, scope, parentScope, $compile, $rootScope, $timeout, $window, gaBrowserSniffer,
-      gaLayerFilters, gaLayerMetadataPopup, gaLayers, gaAttribution, gaUrlUtils, gaMapUtils,
-      gaEvent, map, $httpBackend;
+    var elt, scope, parentScope, $compile, $rootScope, $timeout, $window,
+      gaBrowserSniffer, gaLayerFilters, gaLayerMetadataPopup, gaLayers,
+      gaAttribution, gaUrlUtils, gaMapUtils, gaEvent, map, $httpBackend;
 
     var loadDirective = function(map) {
       parentScope = $rootScope.$new();
@@ -103,8 +103,8 @@ describe('ga_layermanager_directive', function() {
         expect(scope.showWarning).to.be.a(Function);
         expect(scope.displayLayerMetadata).to.be.a(Function);
         expect(scope.setLayerTime).to.be.a(Function);
-        expect(scope.useRange).to.be(true);
-        expect(scope.opacityValues).to.be(undefined);
+        expect(scope.useRange).to.be.a(Function);
+        expect(scope.opacityValues).to.be.an(Array);
       });
 
       [layerMngr, layerThirdParty].forEach(function(layer) {
@@ -141,7 +141,7 @@ describe('ga_layermanager_directive', function() {
         loadDirective(map);
         map.addLayer(layerThirdParty);
         $rootScope.$digest();
-        var isShown, isHidden, w = elt.find('.fa-user');
+        var isShown, w = elt.find('.fa-user');
         w.on('show.bs.tooltip', function() {
           isShown = true;
         });
@@ -165,7 +165,7 @@ describe('ga_layermanager_directive', function() {
         loadDirective(map);
         map.addLayer(layerThirdParty);
         $rootScope.$digest();
-        var isShown, isHidden, w = elt.find('.fa-user');
+        var isShown, w = elt.find('.fa-user');
         w.on('show.bs.tooltip', function() {
           isShown = true;
         });
