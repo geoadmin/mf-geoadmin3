@@ -64,7 +64,7 @@ goog.require('ga_translation_controller');
 goog.require('ga_waitcursor_service');
 (function() {
 
-  angular.module('geoadmin', [
+  var module = angular.module('geoadmin', [
     'ga_controls3d',
     'ga_attribution',
     'ga_catalogtree',
@@ -128,4 +128,94 @@ goog.require('ga_waitcursor_service');
     'ga_drawstyle_controller',
     'ga_drawstylepopup_controller'
   ]);
+
+  module.config(function($translateProvider, gaGlobalOptions) {
+    $translateProvider.useStaticFilesLoader({
+      prefix: gaGlobalOptions.resourceUrl + 'locales/',
+      suffix: '.json'
+    });
+    $translateProvider.cloakClassName('ng-cloak');
+    // TODO: Use $sanitize instead in the future
+    // see http://angular-translate.github.io/docs/#/guide/19_security
+    $translateProvider.useSanitizeValueStrategy(null);
+  });
+
+  module.config(function(gaLayersProvider, gaGlobalOptions) {
+    gaLayersProvider.dfltWmsSubdomains = ['', '0', '1', '2', '3', '4'];
+    gaLayersProvider.dfltWmtsNativeSubdomains = ['100', '101', '102', '103',
+      '104', '105', '106', '107', '108', '109'];
+    gaLayersProvider.dfltWmtsMapProxySubdomains =
+      gaGlobalOptions.staging === 'prod' ?
+        ['100', '101', '102', '103', '104', '105', '106', '107', '108', '109'] :
+        ['20', '21', '22', '23', '24'];
+    gaLayersProvider.dfltVectorTilesSubdomains =
+      gaGlobalOptions.staging === 'prod' ?
+        ['100', '101', '102', '103', '104'] :
+        ['', '0', '1', '2', '3', '4'];
+    gaLayersProvider.wmsUrlTemplate = '//wms{s}.geo.admin.ch/';
+    gaLayersProvider.wmtsGetTileUrlTemplate = '//wmts{s}.geo.admin.ch/1.0.0/' +
+        '{Layer}/default/{Time}/{TileMatrixSet}/{z}/{y}/{x}.{Format}';
+    gaLayersProvider.wmtsMapProxyGetTileUrlTemplate =
+        gaGlobalOptions.mapproxyUrl +
+        '/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{x}/{y}.{Format}';
+    gaLayersProvider.terrainTileUrlTemplate =
+        '//terrain100.geo.admin.ch/1.0.0/{Layer}/default/{Time}/4326';
+    gaLayersProvider.vectorTilesUrlTemplate = gaGlobalOptions.vectorTilesUrl +
+        '/{Layer}/{Time}/';
+    gaLayersProvider.imageryMetadataUrl = '//3d.geo.admin.ch/imagery/';
+    if (gaGlobalOptions.apiOverwrite) {
+      gaLayersProvider.layersConfigUrlTemplate = gaGlobalOptions.apiUrl +
+          '/rest/services/all/MapServer/layersConfig?lang={Lang}';
+    } else {
+      gaLayersProvider.layersConfigUrlTemplate = gaGlobalOptions.resourceUrl +
+          'layersConfig.{Lang}.json';
+    }
+    gaLayersProvider.legendUrlTemplate = gaGlobalOptions.apiUrl +
+        '/rest/services/all/MapServer/{Layer}/legend?lang={Lang}';
+  });
+  module.config(function(gaTopicProvider, gaGlobalOptions) {
+    if (gaGlobalOptions.apiOverwrite) {
+      gaTopicProvider.topicsUrl = gaGlobalOptions.apiUrl + '/rest/services';
+    } else {
+      gaTopicProvider.topicsUrl = gaGlobalOptions.resourceUrl + 'services';
+    }
+  });
+
+  module.config(function(gaExportKmlProvider, gaGlobalOptions) {
+    gaExportKmlProvider.downloadKmlUrl =
+        gaGlobalOptions.apiUrl + '/downloadkml';
+  });
+
+  module.config(function(gaFileStorageProvider, gaGlobalOptions) {
+    gaFileStorageProvider.fileStorageUrl = gaGlobalOptions.apiUrl + '/files';
+    gaFileStorageProvider.publicUrl = gaGlobalOptions.publicUrl;
+  });
+
+  module.config(function(gaPreviewFeaturesProvider, gaGlobalOptions) {
+    gaPreviewFeaturesProvider.url = gaGlobalOptions.cachedApiUrl +
+        '/rest/services/all/MapServer/';
+  });
+
+  module.config(function(gaProfileProvider, gaGlobalOptions) {
+    gaProfileProvider.d3libUrl = gaGlobalOptions.resourceUrl +
+        'lib/d3.min.js';
+    gaProfileProvider.profileUrl = gaGlobalOptions.apiUrl +
+        '/rest/services/profile.json';
+  });
+
+  module.config(function(gaUrlUtilsProvider, gaGlobalOptions) {
+    gaUrlUtilsProvider.shortenUrl = gaGlobalOptions.apiUrl +
+        '/shorten.json';
+  });
+
+  module.config(function(gaQueryProvider, gaGlobalOptions) {
+    gaQueryProvider.dpUrl = gaGlobalOptions.resourceUrl +
+        'lib/bootstrap-datetimepicker.min.js';
+  });
+
+  module.config(function($sceDelegateProvider, gaGlobalOptions) {
+    var whitelist = $sceDelegateProvider.resourceUrlWhitelist();
+    whitelist = whitelist.concat(gaGlobalOptions.whitelist);
+    $sceDelegateProvider.resourceUrlWhitelist(whitelist);
+  });
 })();

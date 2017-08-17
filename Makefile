@@ -97,7 +97,6 @@ PYTHON_VENV=.build-artefacts/python-venv
 PYTHON_CMD=${PYTHON_VENV}/bin/python
 PIP_CMD=${PYTHON_VENV}/bin/pip
 MAKO_CMD=${PYTHON_VENV}/bin/mako-render
-HTMLMIN_CMD=${PYTHON_VENV}/bin/htmlmin
 FLAKE8_CMD=${PYTHON_VENV}/bin/flake8
 AUTOPEP8_CMD=${PYTHON_VENV}/bin/autopep8
 CLOSURE_COMPILER=node_modules/google-closure-compiler/compiler.jar
@@ -110,6 +109,8 @@ PHANTOMJS=${NODE_BIN}/phantomjs
 NG_ANNOTATE=${NODE_BIN}/ng-annotate
 BABEL=${NODE_BIN}/babel
 POSTCSS=${NODE_BIN}/postcss
+HTMLMIN_CMD=${NODE_BIN}/html-minifier --minify-css --minify-js --collapse-whitespace --process-conditional-comments --remove-comments --custom-attr-collapse /ng-class/ -o
+
 
 .PHONY: help
 help:
@@ -538,7 +539,6 @@ endef
 
 prd/index.html: src/index.mako.html \
 	    ${MAKO_CMD} \
-	    ${HTMLMIN_CMD} \
 	    .build-artefacts/last-api-url \
 	    .build-artefacts/last-mapproxy-url \
 	    .build-artefacts/last-vectortiles-url \
@@ -551,11 +551,10 @@ prd/index.html: src/index.mako.html \
 	    .build-artefacts/last-version
 	mkdir -p $(dir $@)
 	$(call buildpage,desktop,prod,$(VERSION),$(VERSION)/,$(S3_BASE_PATH))
-	${PYTHON_CMD} ${HTMLMIN_CMD} --remove-comments --keep-optional-attribute-quotes $@ $@
+	${HTMLMIN_CMD} $@ $@
 
 prd/mobile.html: src/index.mako.html \
 	    ${MAKO_CMD} \
-	    ${HTMLMIN_CMD} \
 	    .build-artefacts/last-api-url \
 	    .build-artefacts/last-mapproxy-url \
 	    .build-artefacts/last-vectortiles-url \
@@ -568,11 +567,10 @@ prd/mobile.html: src/index.mako.html \
 	    .build-artefacts/last-version
 	mkdir -p $(dir $@)
 	$(call buildpage,mobile,prod,$(VERSION),$(VERSION)/,$(S3_BASE_PATH))
-	${PYTHON_CMD} ${HTMLMIN_CMD} --remove-comments --keep-optional-attribute-quotes $@ $@
+	${HTMLMIN_CMD} $@ $@
 
 prd/embed.html: src/index.mako.html \
 	    ${MAKO_CMD} \
-	    ${HTMLMIN_CMD} \
 	    .build-artefacts/last-api-url \
 	    .build-artefacts/last-mapproxy-url \
 	    .build-artefacts/last-shop-url \
@@ -584,11 +582,11 @@ prd/embed.html: src/index.mako.html \
 	    .build-artefacts/last-version
 	mkdir -p $(dir $@)
 	$(call buildpage,embed,prod,$(VERSION),$(VERSION)/,$(S3_BASE_PATH))
-	${PYTHON_CMD} ${HTMLMIN_CMD} --remove-comments --keep-optional-attribute-quotes $@ $@
+	${HTMLMIN_CMD} $@ $@
 
 prd/404.html: src/404.html
 	mkdir -p $(dir $@)
-	${PYTHON_CMD} ${HTMLMIN_CMD} --remove-comments --keep-optional-attribute-quotes $< $@
+	${HTMLMIN_CMD} $@ $@
 
 prd/img/: src/img/*
 	mkdir -p $@
