@@ -586,7 +586,7 @@ prd/embed.html: src/index.mako.html \
 
 prd/404.html: src/404.html
 	mkdir -p $(dir $@)
-	${HTMLMIN_CMD} $@ $@
+	${HTMLMIN_CMD} $< $@
 
 prd/img/: src/img/*
 	mkdir -p $@
