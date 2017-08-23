@@ -1,16 +1,17 @@
 goog.provide('ga_realtimelayers_service');
 
-goog.require('ga_map_service');
+goog.require('ga_vector_service');
 
 (function() {
 
   var module = angular.module('ga_realtimelayers_service', [
-    'ga_map_service'
+    'ga_map_service',
+    'ga_vector_service'
   ]);
 
   module.provider('gaRealtimeLayersManager', function() {
     this.$get = function($rootScope, $http, $timeout, gaLayerFilters,
-        gaMapUtils, gaUrlUtils, gaLayers, gaKml) {
+        gaMapUtils, gaUrlUtils, gaLayers, gaVector) {
 
       var timers = [];
       var map;
@@ -29,18 +30,19 @@ goog.require('ga_map_service');
 
       function setLayerSource(layer) {
         var olSource = layer.getSource();
-        var kml = gaMapUtils.isKmlLayer(layer);
-        var url = !kml ? layer.geojsonUrl : layer.url;
+        var vec = gaMapUtils.isKmlLayer(layer) ||
+            gaMapUtils.isGpxLayer(layer);
+        var url = !vec ? layer.geojsonUrl : layer.url;
         gaUrlUtils.proxifyUrl(url).then(function(proxyUrl) {
           $http.get(proxyUrl).then(function(response) {
             var data = response.data;
-            if (kml) {
-              gaKml.readFeatures(data, map.getView().getProjection()).
+            if (vec) {
+              gaVector.readFeatures(data, map.getView().getProjection()).
                   then(function(features) {
                     olSource.clear();
                     olSource.addFeatures(features);
                     olSource.setProperties({
-                      'kmlString': data
+                      'rawData': data
                     });
                   });
             } else {

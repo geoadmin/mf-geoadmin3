@@ -1,29 +1,29 @@
 goog.provide('ga_import_controller');
 
 goog.require('ga_browsersniffer_service');
-goog.require('ga_kml_service');
 goog.require('ga_map_service');
 goog.require('ga_previewlayers_service');
 goog.require('ga_translation_service');
 goog.require('ga_urlutils_service');
+goog.require('ga_vector_service');
 goog.require('ga_wmts_service');
 goog.require('ngeo.fileService');
 
 (function() {
 
   var module = angular.module('ga_import_controller', [
-    'ga_kml_service',
     'ngeo.fileService',
     'ga_browsersniffer_service',
     'ga_map_service',
     'ga_urlutils_service',
     'ga_previewlayers_service',
-    'ga_translation_service'
+    'ga_translation_service',
+    'ga_vector_service'
   ]);
 
   module.controller('GaImportController', function($scope, $q, $document,
-      $window, $timeout, ngeoFile, gaKml, gaBrowserSniffer, gaWms, gaUrlUtils,
-      gaLang, gaPreviewLayers, gaMapUtils, gaWmts) {
+      $window, $timeout, ngeoFile, gaBrowserSniffer, gaWms, gaUrlUtils,
+      gaLang, gaPreviewLayers, gaMapUtils, gaWmts, gaVector) {
 
     $scope.supportDnd = !gaBrowserSniffer.msie || gaBrowserSniffer.msie > 9;
     $scope.options = {
@@ -238,11 +238,11 @@ goog.require('ngeo.fileService');
           message: 'upload_succeeded'
         });
 
-      } else if (ngeoFile.isKml(data)) {
+      } else if (ngeoFile.isGpx(data) || ngeoFile.isKml(data)) {
 
-        gaKml.addKmlToMap($scope.map, data, {
+        gaVector.addToMap($scope.map, data, {
           url: file.url || URL.createObjectURL(file),
-          useImageVector: gaKml.useImageVector(file.size),
+          useImageVector: gaVector.useImageVector(file.size),
           zoomToExtent: true
 
         }).then(function() {
@@ -251,7 +251,7 @@ goog.require('ngeo.fileService');
           });
 
         }, function(reason) {
-          $window.console.error('KML parsing failed: ', reason);
+          $window.console.error('Vector data parsing failed: ', reason);
           defer.reject({
             message: 'parse_failed',
             reason: reason

@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 describe('ga_map_directive', function() {
   var map, elt, scope, parentScope;
   var $httpBackend, $compile, $window, $q, $rootScope, gaBrowserSniffer, gaLayers, gaOffline;

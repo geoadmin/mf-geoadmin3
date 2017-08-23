@@ -3,7 +3,7 @@ describe('ga_import_controller', function() {
   describe('GaImportController', function() {
 
     var scope, parentScope, $compile, $rootScope, $httpBackend, $window, $q, $document, $timeout, $httpBackend,
-      ngeoFile, gaKml, gaBrowserSniffer, gaWms, gaUrlUtils, gaLang, gaPreviewLayers,
+      ngeoFile, gaVector, gaBrowserSniffer, gaWms, gaUrlUtils, gaLang, gaPreviewLayers,
       gaMapUtils, gaWmts, map;
 
     var loadController = function(map) {
@@ -24,7 +24,7 @@ describe('ga_import_controller', function() {
       $document = $injector.get('$document');
       $timeout = $injector.get('$timeout');
       ngeoFile = $injector.get('ngeoFile');
-      gaKml = $injector.get('gaKml');
+      gaVector = $injector.get('gaVector');
       gaBrowserSniffer = $injector.get('gaBrowserSniffer');
       gaWms = $injector.get('gaWms');
       gaUrlUtils = $injector.get('gaUrlUtils');
@@ -227,77 +227,87 @@ describe('ga_import_controller', function() {
           }, 'text');
         });
 
-        describe('detects a KML content', function(done) {
-
-          it('then parsing succeeds', function(done) {
-            scope.options.handleFileContent('<kml></kml>').then(function(resp) {
-              expect(scope.wmtsGetCap).to.be(null);
-              expect(scope.wmsGetCap).to.be(null);
-              expect(resp.message).to.be('parse_succeeded');
-              done();
+        describe('detects a vector (KML/GPX) content', function() {
+          [
+            '<kml></kml>',
+            '<gpx></gpx>'
+          ].forEach(function(data) {
+            it('then parsing succeeds using data ' + data, function(done) {
+              scope.options.handleFileContent(data).then(function(resp) {
+                expect(scope.wmtsGetCap).to.be(null);
+                expect(scope.wmsGetCap).to.be(null);
+                expect(resp.message).to.be('parse_succeeded');
+                done();
+              });
+              $rootScope.$digest();
             });
-            $rootScope.$digest();
+
+            it('and use file (Object) parameter using data ' + data, function(done) {
+              var file = {
+                url: 'foo.txt',
+                size: 20000001
+              };
+              var spy = sinon.spy(gaVector, 'addToMap');
+              scope.options.handleFileContent(data, file).then(function(resp) {
+                expect(spy.args[0][2].url).to.be(file.url);
+                expect(spy.args[0][2].useImageVector).to.be(true);
+                expect(spy.args[0][2].zoomToExtent).to.be(true);
+                done();
+              });
+              $rootScope.$digest();
+            });
+
+            it('and use file (File) parameter using data ' + data, function(done) {
+              // Simulate a File object
+              var file = {
+                size: 10
+              };
+              var spy = sinon.spy(gaVector, 'addToMap');
+              var spy2 = sinon.spy(URL, 'createObjectURL');
+              scope.options.handleFileContent(data, file).then(function(resp) {
+                expect(spy2.calledOnce).to.be(true);
+                expect(spy2.args[0][0]).to.be(file);
+                expect(spy.args[0][2].useImageVector).to.be(false);
+                expect(spy.args[0][2].zoomToExtent).to.be(true);
+                spy2.restore();
+                done();
+              });
+              $rootScope.$digest();
+            });
           });
 
-          it('then parsing fails', function(done) {
-            var defer = $q.defer();
-            var stub = sinon.stub($window.console, 'error');
-            var stub2 = sinon.stub(gaKml, 'addKmlToMap').returns(defer.promise);
-            scope.options.handleFileContent('<kml>ba>dtag></kml>').then(angular.noop, function(resp) {
-              expect(resp.message).to.be('parse_failed');
-              expect(resp.reason).to.be('reason');
-              expect(stub.args[0][0]).to.be('KML parsing failed: ');
-              expect(stub.args[0][1]).to.be(resp.reason);
-              stub.restore();
-              stub2.restore();
-              done();
+          [
+            '<kml>ba>dtag></kml>',
+            '<gpx>ba>dtag></gpx>'
+          ].forEach(function(data) {
+            it('then parsing fails using data ' + data, function(done) {
+              var defer = $q.defer();
+              var stub = sinon.stub($window.console, 'error');
+              var stub2 = sinon.stub(gaVector, 'addToMap').returns(defer.promise);
+              scope.options.handleFileContent(data).then(angular.noop, function(resp) {
+                expect(resp.message).to.be('parse_failed');
+                expect(resp.reason).to.be('reason');
+                expect(stub.args[0][0]).to.be('Vector data parsing failed: ');
+                expect(stub.args[0][1]).to.be(resp.reason);
+                stub.restore();
+                stub2.restore();
+                done();
+              });
+              defer.reject('reason');
+              $rootScope.$digest();
             });
-            defer.reject('reason');
-            $rootScope.$digest();
-          });
-
-          it('and use file (Object) parameter', function(done) {
-            var file = {
-              url: 'foo.kml',
-              size: 20000001
-            };
-            var spy = sinon.spy(gaKml, 'addKmlToMap');
-            scope.options.handleFileContent('<kml></kml>', file).then(function(resp) {
-              expect(spy.args[0][2].url).to.be(file.url);
-              expect(spy.args[0][2].useImageVector).to.be(true);
-              expect(spy.args[0][2].zoomToExtent).to.be(true);
-              done();
-            });
-            $rootScope.$digest();
-          });
-
-          it('and use file (File) parameter', function(done) {
-            // Simulate a File object
-            var file = {
-              size: 10
-            };
-            var spy = sinon.spy(gaKml, 'addKmlToMap');
-            var spy2 = sinon.spy(URL, 'createObjectURL');
-            scope.options.handleFileContent('<kml></kml>', file).then(function(resp) {
-              expect(spy2.calledOnce).to.be(true);
-              expect(spy2.args[0][0]).to.be(file);
-              expect(spy.args[0][2].useImageVector).to.be(false);
-              expect(spy.args[0][2].zoomToExtent).to.be(true);
-              done();
-            });
-            $rootScope.$digest();
           });
         });
 
         it('detects nothing', function(done) {
           var stub = sinon.stub($window.console, 'error');
-          scope.options.handleFileContent('<gpx></gpx>').then(angular.noop, function(resp) {
+          scope.options.handleFileContent('<sdsd/dssd<</gpx>').then(angular.noop, function(resp) {
             expect(scope.wmtsGetCap).to.be(null);
             expect(scope.wmsGetCap).to.be(null);
             expect(resp.message).to.be('parse_failed');
             expect(resp.reason).to.be('format_not_supported');
             expect(stub.args[0][0]).to.be('Unparseable content: ');
-            expect(stub.args[0][1]).to.be('<gpx></gpx>');
+            expect(stub.args[0][1]).to.be('<sdsd/dssd<</gpx>');
             stub.restore();
             done();
           });

@@ -56,7 +56,7 @@ olcs.GaKmlSynchronizer.prototype.createSingleLayerCounterparts =
     var loadParam = url;
 
     /** @type {string} */
-    var kml = olcs.util.obj(olLayer.getSource()).get('kmlString');
+    var kml = olcs.util.obj(olLayer.getSource()).get('rawData');
     if (kml) {
       loadParam = (new DOMParser()).parseFromString(kml, 'text/xml');
     }

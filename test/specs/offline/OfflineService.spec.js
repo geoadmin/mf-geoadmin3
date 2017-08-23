@@ -230,7 +230,7 @@ describe('ga_offline_service', function() {
         return layer;
       };
 
-      var addKmlLayerToMap = function(id, kmlString) {
+      var addKmlLayerToMap = function(id, rawData) {
         var layer = new ol.layer.Vector({
           opacity: 0.1,
           visible: true,
@@ -241,7 +241,7 @@ describe('ga_offline_service', function() {
         layer.id = 'KML||' + id;
         layer.invertedOpacity = 1 - layer.getOpacity();
         layer.getSource().setProperties({
-          'kmlString': kmlString
+          'rawData': rawData
         });
         map.addLayer(layer);
         return layer;
