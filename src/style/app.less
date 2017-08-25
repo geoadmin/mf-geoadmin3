@@ -1618,7 +1618,12 @@ body.webkit .ga-checkbox {
   }
 
   [ga-offline-bt] {
-    .bt-bottom-mixin();
+    position: absolute;
+    bottom: 68px;
+
+    @media (max-width: @screen-tablet) {
+      bottom: 0px;
+    }
   }
 
   #zoomButtons {
