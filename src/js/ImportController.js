@@ -30,7 +30,7 @@ goog.require('ngeo.fileService');
       urls: [
         'https://wms.geo.admin.ch/?lang=',
         'http://owsproxy.lgl-bw.de/owsproxy/ows/WMS_Maps4BW',
-        'https://www.ogd.stadt-zuerich.ch/wms/WMS-ZH-STZH-OGD?',
+        'https://www.ogd.stadt-zuerich.ch/wms/WMS-ZH-STZH-OGD',
         'https://wms.geo.gl.ch/',
         'https://ge.ch/sitgags1/services/VECTOR/SITG_OPENDATA_02/MapServer/WMSServer',
         'https://ge.ch/sitgags1/services/VECTOR/SITG_OPENDATA_03/MapServer/WMSServer',
