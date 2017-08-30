@@ -478,7 +478,8 @@ goog.require('ga_urlutils_service');
                   timeStamps = [];
                   angular.forEach(layers, function(layer) {
                     var ts = '';
-                    if (layer.time && layer.time.substr(0, 4) !== '9999') {
+                    if (layer.time && layer.time.substr(0, 4) !== '9999' &&
+                        layer.timeEnabled) {
                       ts = layer.time.substr(0, 4);
                     }
                     searchableLayers.push(layer.bodId);
