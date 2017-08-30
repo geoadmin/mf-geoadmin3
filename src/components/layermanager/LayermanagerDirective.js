@@ -57,7 +57,7 @@ goog.require('ga_window_service');
     // Timestamps list template
     var tpl =
       '<div class="ga-layer-timestamps">' +
-        '<div tabindex="1" ng-if="tmpLayer.type == \'wms\'" ' +
+        '<div tabindex="1" ng-if="tmpLayer.timeBehaviour == \'all\'" ' +
              'ng-class="{badge: !tmpLayer.time}" ' +
              'ng-click="setLayerTime(tmpLayer)" ' +
              'translate>time_all</div> ' +

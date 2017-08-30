@@ -41,9 +41,13 @@ olcs.GaKmlSynchronizer.prototype.createSingleLayerCounterparts =
 
   if (!dsP) {
     /** @type {string} */
+    var id = olcs.util.obj(olLayer)['id'];
+
+    /** @type {string} */
     var url = olcs.util.obj(olLayer)['url'];
 
-    if (!(olLayer instanceof ol.layer.Layer) || olLayer.get('type') != 'KML' ||
+    if (!(olLayer instanceof ol.layer.Layer) ||
+        !id || !/^KML/.test(id) ||
         !url || /:\/\/public\./.test(url)) {
       return null;
     }

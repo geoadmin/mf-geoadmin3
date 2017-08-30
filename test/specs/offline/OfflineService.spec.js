@@ -225,7 +225,7 @@ describe('ga_offline_service', function() {
         var layer = new ol.layer.Image({
           visible: true
         });
-        layer.type = 'KML';
+        layer.id = 'KML||';
         map.addLayer(layer);
         return layer;
       };
@@ -238,8 +238,7 @@ describe('ga_offline_service', function() {
             features: []
           })
         });
-        layer.id = id;
-        layer.type = 'KML';
+        layer.id = 'KML||' + id;
         layer.invertedOpacity = 1 - layer.getOpacity();
         layer.getSource().setProperties({
           'kmlString': kmlString
@@ -354,10 +353,10 @@ describe('ga_offline_service', function() {
         var kmlContent2 = '<kml><Folder><Placemark></Placemark></Folder></kml>';
 
         var verif = [
-          gaStorageMock.expects('setItem').once().withArgs('kmlId1', kmlContent1),
-          gaStorageMock.expects('setItem').once().withArgs('kmlId2', kmlContent2),
+          gaStorageMock.expects('setItem').once().withArgs('KML||kmlId1', kmlContent1),
+          gaStorageMock.expects('setItem').once().withArgs('KML||kmlId2', kmlContent2),
           gaLayersMock.expects('getLayerProperty').once().withArgs('bodId', 'parentLayerId').returns(undefined),
-          gaStorageMock.expects('setItem').once().withArgs(layersKey, 'bodId,kmlId1,kmlId2'),
+          gaStorageMock.expects('setItem').once().withArgs(layersKey, 'bodId,KML||kmlId1,KML||kmlId2'),
           gaStorageMock.expects('setItem').once().withArgs(opacityKey, '0.6,0.9,0.9'),
           gaStorageMock.expects('setItem').once().withArgs(timestampKey, '20180909,,'),
           gaStorageMock.expects('setItem').once().withArgs(bgKey, ',false,false'),

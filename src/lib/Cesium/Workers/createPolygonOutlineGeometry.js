@@ -21,7 +21,6 @@
  * See https://github.com/AnalyticalGraphicsInc/cesium/blob/master/LICENSE.md for full licensing details.
  */
 (function () {
-/*global define*/
 define('Core/defined',[],function() {
     'use strict';
 
@@ -45,7 +44,6 @@ define('Core/defined',[],function() {
     return defined;
 });
 
-/*global define*/
 define('Core/DeveloperError',[
         './defined'
     ], function(
@@ -126,7 +124,6 @@ define('Core/DeveloperError',[
     return DeveloperError;
 });
 
-/*global define*/
 define('Core/Check',[
         './defined',
         './DeveloperError'
@@ -293,10 +290,26 @@ define('Core/Check',[
         }
     };
 
+    /**
+     * Throws if test1 and test2 is not typeof 'number' and not equal in value
+     *
+     * @param {String} name1 The name of the first variable being tested
+     * @param {String} name2 The name of the second variable being tested against
+     * @param {*} test1 The value to test
+     * @param {*} test2 The value to test against
+     * @exception {DeveloperError} test1 and test2 should be type of 'number' and be equal in value
+     */
+    Check.typeOf.number.equals = function (name1, name2, test1, test2) {
+        Check.typeOf.number(name1, test1);
+        Check.typeOf.number(name2, test2);
+        if (test1 !== test2) {
+            throw new DeveloperError(name1 + ' must be equal to ' + name2 + ', the actual values are ' + test1 + ' and ' + test2);
+        }
+    };
+
     return Check;
 });
 
-/*global define*/
 define('Core/freezeObject',[
         './defined'
     ], function(
@@ -322,7 +335,6 @@ define('Core/freezeObject',[
     return freezeObject;
 });
 
-/*global define*/
 define('Core/defaultValue',[
         './freezeObject'
     ], function(
@@ -343,7 +355,7 @@ define('Core/defaultValue',[
      * param = Cesium.defaultValue(param, 'default');
      */
     function defaultValue(a, b) {
-        if (a !== undefined) {
+        if (a !== undefined && a !== null) {
             return a;
         }
         return b;
@@ -562,7 +574,6 @@ MersenneTwister.prototype.random = function() {
 return MersenneTwister;
 });
 
-/*global define*/
 define('Core/Math',[
         '../ThirdParty/mersenne-twister',
         './defaultValue',
@@ -1276,7 +1287,7 @@ define('Core/Math',[
     };
 
     /**
-     * Generates a random number in the range of [0.0, 1.0)
+     * Generates a random floating point number in the range of [0.0, 1.0)
      * using a Mersenne twister.
      *
      * @returns {Number} A random number in the range of [0.0, 1.0).
@@ -1288,8 +1299,20 @@ define('Core/Math',[
         return randomNumberGenerator.random();
     };
 
+
     /**
-     * Computes <code>Math.acos(value)</acode>, but first clamps <code>value</code> to the range [-1.0, 1.0]
+     * Generates a random number between two numbers.
+     *
+     * @param {Number} min The minimum value.
+     * @param {Number} max The maximum value.
+     * @returns {Number} A random number between the min and max.
+     */
+    CesiumMath.randomBetween = function(min, max) {
+        return CesiumMath.nextRandomNumber() * (max - min) + min;
+    };
+
+    /**
+     * Computes <code>Math.acos(value)</code>, but first clamps <code>value</code> to the range [-1.0, 1.0]
      * so that the function will never return NaN.
      *
      * @param {Number} value The value for which to compute acos.
@@ -1304,7 +1327,7 @@ define('Core/Math',[
     };
 
     /**
-     * Computes <code>Math.asin(value)</acode>, but first clamps <code>value</code> to the range [-1.0, 1.0]
+     * Computes <code>Math.asin(value)</code>, but first clamps <code>value</code> to the range [-1.0, 1.0]
      * so that the function will never return NaN.
      *
      * @param {Number} value The value for which to compute asin.
@@ -1363,14 +1386,13 @@ define('Core/Math',[
     return CesiumMath;
 });
 
-/*global define*/
 define('Core/Cartesian3',[
-    './Check',
-    './defaultValue',
-    './defined',
-    './DeveloperError',
-    './freezeObject',
-    './Math'
+        './Check',
+        './defaultValue',
+        './defined',
+        './DeveloperError',
+        './freezeObject',
+        './Math'
     ], function(
         Check,
         defaultValue,
@@ -1987,12 +2009,10 @@ define('Core/Cartesian3',[
             } else {
                 result = Cartesian3.clone(Cartesian3.UNIT_Z, result);
             }
+        } else if (f.y <= f.z) {
+            result = Cartesian3.clone(Cartesian3.UNIT_Y, result);
         } else {
-            if (f.y <= f.z) {
-                result = Cartesian3.clone(Cartesian3.UNIT_Y, result);
-            } else {
-                result = Cartesian3.clone(Cartesian3.UNIT_Z, result);
-            }
+            result = Cartesian3.clone(Cartesian3.UNIT_Z, result);
         }
 
         return result;
@@ -2354,7 +2374,6 @@ define('Core/Cartesian3',[
     return Cartesian3;
 });
 
-/*global define*/
 define('Core/scaleToGeodeticSurface',[
         './Cartesian3',
         './defined',
@@ -2489,7 +2508,6 @@ define('Core/scaleToGeodeticSurface',[
     return scaleToGeodeticSurface;
 });
 
-/*global define*/
 define('Core/Cartographic',[
         './Cartesian3',
         './Check',
@@ -2746,7 +2764,6 @@ define('Core/Cartographic',[
     return Cartographic;
 });
 
-/*global define*/
 define('Core/defineProperties',[
         './defined'
     ], function(
@@ -2781,10 +2798,10 @@ define('Core/defineProperties',[
     return defineProperties;
 });
 
-/*global define*/
 define('Core/Ellipsoid',[
         './Cartesian3',
         './Cartographic',
+        './Check',
         './defaultValue',
         './defined',
         './defineProperties',
@@ -2795,6 +2812,7 @@ define('Core/Ellipsoid',[
     ], function(
         Cartesian3,
         Cartographic,
+        Check,
         defaultValue,
         defined,
         defineProperties,
@@ -2809,9 +2827,9 @@ define('Core/Ellipsoid',[
         y = defaultValue(y, 0.0);
         z = defaultValue(z, 0.0);
 
-                if (x < 0.0 || y < 0.0 || z < 0.0) {
-            throw new DeveloperError('All radii components must be greater than or equal to zero.');
-        }
+                Check.typeOf.number.greaterThanOrEquals('x', x, 0.0);
+        Check.typeOf.number.greaterThanOrEquals('y', y, 0.0);
+        Check.typeOf.number.greaterThanOrEquals('z', z, 0.0);
         
         ellipsoid._radii = new Cartesian3(x, y, z);
 
@@ -2838,7 +2856,7 @@ define('Core/Ellipsoid',[
         ellipsoid._centerToleranceSquared = CesiumMath.EPSILON1;
 
         if (ellipsoid._radiiSquared.z !== 0) {
-            ellipsoid._sqauredXOverSquaredZ = ellipsoid._radiiSquared.x / ellipsoid._radiiSquared.z;
+            ellipsoid._squaredXOverSquaredZ = ellipsoid._radiiSquared.x / ellipsoid._radiiSquared.z;
         }
     }
 
@@ -2871,7 +2889,7 @@ define('Core/Ellipsoid',[
         this._minimumRadius = undefined;
         this._maximumRadius = undefined;
         this._centerToleranceSquared = undefined;
-        this._sqauredXOverSquaredZ = undefined;
+        this._squaredXOverSquaredZ = undefined;
 
         initialize(this, x, y, z);
     }
@@ -3063,12 +3081,8 @@ define('Core/Ellipsoid',[
      * @returns {Number[]} The array that was packed into
      */
     Ellipsoid.pack = function(value, array, startingIndex) {
-                if (!defined(value)) {
-            throw new DeveloperError('value is required');
-        }
-        if (!defined(array)) {
-            throw new DeveloperError('array is required');
-        }
+                Check.typeOf.object('value', value);
+        Check.defined('array', array);
         
         startingIndex = defaultValue(startingIndex, 0);
 
@@ -3086,9 +3100,7 @@ define('Core/Ellipsoid',[
      * @returns {Ellipsoid} The modified result parameter or a new Ellipsoid instance if one was not provided.
      */
     Ellipsoid.unpack = function(array, startingIndex, result) {
-                if (!defined(array)) {
-            throw new DeveloperError('array is required');
-        }
+                Check.defined('array', array);
         
         startingIndex = defaultValue(startingIndex, 0);
 
@@ -3114,9 +3126,7 @@ define('Core/Ellipsoid',[
      * @returns {Cartesian3} The modified result parameter or a new Cartesian3 instance if none was provided.
      */
     Ellipsoid.prototype.geodeticSurfaceNormalCartographic = function(cartographic, result) {
-                if (!defined(cartographic)) {
-            throw new DeveloperError('cartographic is required.');
-        }
+                Check.typeOf.object('cartographic', cartographic);
         
         var longitude = cartographic.longitude;
         var latitude = cartographic.latitude;
@@ -3196,9 +3206,7 @@ define('Core/Ellipsoid',[
      * var cartesianPositions = Cesium.Ellipsoid.WGS84.cartographicArrayToCartesianArray(positions);
      */
     Ellipsoid.prototype.cartographicArrayToCartesianArray = function(cartographics, result) {
-                if (!defined(cartographics)) {
-            throw new DeveloperError('cartographics is required.');
-        }
+                Check.defined('cartographics', cartographics);
         
         var length = cartographics.length;
         if (!defined(result)) {
@@ -3268,9 +3276,7 @@ define('Core/Ellipsoid',[
      * var cartographicPositions = Cesium.Ellipsoid.WGS84.cartesianArrayToCartographicArray(positions);
      */
     Ellipsoid.prototype.cartesianArrayToCartographicArray = function(cartesians, result) {
-                if (!defined(cartesians)) {
-            throw new DeveloperError('cartesians is required.');
-        }
+                Check.defined('cartesians', cartesians);
         
         var length = cartesians.length;
         if (!defined(result)) {
@@ -3306,9 +3312,7 @@ define('Core/Ellipsoid',[
      * @returns {Cartesian3} The modified result parameter or a new Cartesian3 instance if none was provided.
      */
     Ellipsoid.prototype.scaleToGeocentricSurface = function(cartesian, result) {
-                if (!defined(cartesian)) {
-            throw new DeveloperError('cartesian is required.');
-        }
+                Check.typeOf.object('cartesian', cartesian);
         
         if (!defined(result)) {
             result = new Cartesian3();
@@ -3392,28 +3396,26 @@ define('Core/Ellipsoid',[
      *                                In earth case, with common earth datums, there is no need for this buffer since the intersection point is always (relatively) very close to the center.
      *                                In WGS84 datum, intersection point is at max z = +-42841.31151331382 (0.673% of z-axis).
      *                                Intersection point could be outside the ellipsoid if the ratio of MajorAxis / AxisOfRotation is bigger than the square root of 2
-     * @param {Cartesian} [result] The cartesian to which to copy the result, or undefined to create and
+     * @param {Cartesian3} [result] The cartesian to which to copy the result, or undefined to create and
      *        return a new instance.
-     * @returns {Cartesian | undefined} the intersection point if it's inside the ellipsoid, undefined otherwise
+     * @returns {Cartesian3 | undefined} the intersection point if it's inside the ellipsoid, undefined otherwise
      *
      * @exception {DeveloperError} position is required.
      * @exception {DeveloperError} Ellipsoid must be an ellipsoid of revolution (radii.x == radii.y).
      * @exception {DeveloperError} Ellipsoid.radii.z must be greater than 0.
      */
     Ellipsoid.prototype.getSurfaceNormalIntersectionWithZAxis = function(position, buffer, result) {
-                if (!defined(position)) {
-            throw new DeveloperError('position is required.');
-        }
+                Check.typeOf.object('position', position);
+
         if (!CesiumMath.equalsEpsilon(this._radii.x, this._radii.y, CesiumMath.EPSILON15)) {
             throw new DeveloperError('Ellipsoid must be an ellipsoid of revolution (radii.x == radii.y)');
         }
-        if (this._radii.z === 0) {
-            throw new DeveloperError('Ellipsoid.radii.z must be greater than 0');
-        }
+
+        Check.typeOf.number.greaterThan('Ellipsoid.radii.z', this._radii.z, 0);
         
         buffer = defaultValue(buffer, 0.0);
 
-        var sqauredXOverSquaredZ = this._sqauredXOverSquaredZ;
+        var squaredXOverSquaredZ = this._squaredXOverSquaredZ;
 
         if (!defined(result)) {
             result = new Cartesian3();
@@ -3421,7 +3423,7 @@ define('Core/Ellipsoid',[
 
         result.x = 0.0;
         result.y = 0.0;
-        result.z = position.z * (1 - sqauredXOverSquaredZ);
+        result.z = position.z * (1 - squaredXOverSquaredZ);
 
         if (Math.abs(result.z) >= this._radii.z - buffer) {
             return undefined;
@@ -3433,7 +3435,6 @@ define('Core/Ellipsoid',[
     return Ellipsoid;
 });
 
-/*global define*/
 define('Core/arrayRemoveDuplicates',[
         './Check',
         './defaultValue',
@@ -3531,7 +3532,6 @@ define('Core/arrayRemoveDuplicates',[
     return arrayRemoveDuplicates;
 });
 
-/*global define*/
 define('Core/GeographicProjection',[
         './Cartesian3',
         './Cartographic',
@@ -3649,7 +3649,6 @@ define('Core/GeographicProjection',[
     return GeographicProjection;
 });
 
-/*global define*/
 define('Core/Intersect',[
         './freezeObject'
     ], function(
@@ -3693,7 +3692,6 @@ define('Core/Intersect',[
     return freezeObject(Intersect);
 });
 
-/*global define*/
 define('Core/Interval',[
         './defaultValue'
     ], function(
@@ -3726,7 +3724,6 @@ define('Core/Interval',[
     return Interval;
 });
 
-/*global define*/
 define('Core/Matrix3',[
         './Cartesian3',
         './Check',
@@ -5157,7 +5154,6 @@ define('Core/Matrix3',[
     return Matrix3;
 });
 
-/*global define*/
 define('Core/Cartesian4',[
         './Check',
         './defaultValue',
@@ -5931,7 +5927,6 @@ define('Core/Cartesian4',[
     return Cartesian4;
 });
 
-/*global define*/
 define('Core/RuntimeError',[
         './defined'
     ], function(
@@ -6004,7 +5999,6 @@ define('Core/RuntimeError',[
     return RuntimeError;
 });
 
-/*global define*/
 define('Core/Matrix4',[
         './Cartesian3',
         './Cartesian4',
@@ -8526,7 +8520,6 @@ define('Core/Matrix4',[
     return Matrix4;
 });
 
-/*global define*/
 define('Core/Rectangle',[
         './Cartographic',
         './Check',
@@ -8808,14 +8801,15 @@ define('Core/Rectangle',[
     /**
      * Creates the smallest possible Rectangle that encloses all positions in the provided array.
      *
-     * @param {Cartesian[]} cartesians The list of Cartesian instances.
+     * @param {Cartesian3[]} cartesians The list of Cartesian instances.
      * @param {Ellipsoid} [ellipsoid=Ellipsoid.WGS84] The ellipsoid the cartesians are on.
      * @param {Rectangle} [result] The object onto which to store the result, or undefined if a new instance should be created.
      * @returns {Rectangle} The modified result parameter or a new Rectangle instance if none was provided.
      */
     Rectangle.fromCartesianArray = function(cartesians, ellipsoid, result) {
                 Check.defined('cartesians', cartesians);
-        
+                ellipsoid = defaultValue(ellipsoid, Ellipsoid.WGS84);
+
         var west = Number.MAX_VALUE;
         var east = -Number.MAX_VALUE;
         var westOverIDL = Number.MAX_VALUE;
@@ -9353,7 +9347,6 @@ define('Core/Rectangle',[
     return Rectangle;
 });
 
-/*global define*/
 define('Core/BoundingSphere',[
         './Cartesian3',
         './Cartographic',
@@ -9456,7 +9449,8 @@ define('Core/BoundingSphere',[
         var zMax = Cartesian3.clone(currentPos, fromPointsZMax);
 
         var numPositions = positions.length;
-        for (var i = 1; i < numPositions; i++) {
+        var i;
+        for (i = 1; i < numPositions; i++) {
             Cartesian3.clone(positions[i], currentPos);
 
             var x = currentPos.x;
@@ -9718,7 +9712,8 @@ define('Core/BoundingSphere',[
         var zMax = Cartesian3.clone(currentPos, fromPointsZMax);
 
         var numElements = positions.length;
-        for (var i = 0; i < numElements; i += stride) {
+        var i;
+        for (i = 0; i < numElements; i += stride) {
             var x = positions[i] + center.x;
             var y = positions[i + 1] + center.y;
             var z = positions[i + 2] + center.z;
@@ -9875,7 +9870,8 @@ define('Core/BoundingSphere',[
         var zMax = Cartesian3.clone(currentPos, fromPointsZMax);
 
         var numElements = positionsHigh.length;
-        for (var i = 0; i < numElements; i += 3) {
+        var i;
+        for (i = 0; i < numElements; i += 3) {
             var x = positionsHigh[i] + positionsLow[i];
             var y = positionsHigh[i + 1] + positionsLow[i + 1];
             var z = positionsHigh[i + 2] + positionsLow[i + 2];
@@ -10072,7 +10068,8 @@ define('Core/BoundingSphere',[
         }
 
         var positions = [];
-        for (var i = 0; i < length; i++) {
+        var i;
+        for (i = 0; i < length; i++) {
             positions.push(boundingSpheres[i].center);
         }
 
@@ -10621,7 +10618,6 @@ define('Core/BoundingSphere',[
     return BoundingSphere;
 });
 
-/*global define*/
 define('Core/Fullscreen',[
         './defined',
         './defineProperties'
@@ -10877,7 +10873,6 @@ define('Core/Fullscreen',[
     return Fullscreen;
 });
 
-/*global define*/
 define('Core/FeatureDetection',[
         './defaultValue',
         './defined',
@@ -11140,7 +11135,6 @@ define('Core/FeatureDetection',[
     return FeatureDetection;
 });
 
-/*global define*/
 define('Core/WebGLConstants',[
         './freezeObject'
     ], function(
@@ -11755,7 +11749,6 @@ define('Core/WebGLConstants',[
     return freezeObject(WebGLConstants);
 });
 
-/*global define*/
 define('Core/ComponentDatatype',[
         './defaultValue',
         './defined',
@@ -12082,7 +12075,6 @@ define('Core/ComponentDatatype',[
     return freezeObject(ComponentDatatype);
 });
 
-/*global define*/
 define('Core/AxisAlignedBoundingBox',[
         './Cartesian3',
         './Check',
@@ -12311,7 +12303,6 @@ define('Core/AxisAlignedBoundingBox',[
     return AxisAlignedBoundingBox;
 });
 
-/*global define*/
 define('Core/Cartesian2',[
         './Check',
         './defaultValue',
@@ -13010,7 +13001,6 @@ define('Core/Cartesian2',[
     return Cartesian2;
 });
 
-/*global define*/
 define('Core/QuadraticRealPolynomial',[
         './DeveloperError',
         './Math'
@@ -13146,7 +13136,6 @@ define('Core/QuadraticRealPolynomial',[
     return QuadraticRealPolynomial;
 });
 
-/*global define*/
 define('Core/CubicRealPolynomial',[
         './DeveloperError',
         './QuadraticRealPolynomial'
@@ -13383,7 +13372,6 @@ define('Core/CubicRealPolynomial',[
     return CubicRealPolynomial;
 });
 
-/*global define*/
 define('Core/QuarticRealPolynomial',[
         './CubicRealPolynomial',
         './DeveloperError',
@@ -13614,9 +13602,8 @@ define('Core/QuarticRealPolynomial',[
                         return [roots1[0], roots2[0], roots2[1], roots1[1]];
                     } else if (roots1[0] > roots2[0] && roots1[0] < roots2[1]) {
                         return [roots2[0], roots1[0], roots2[1], roots1[1]];
-                    } else {
-                        return [roots1[0], roots2[0], roots1[1], roots2[1]];
                     }
+                    return [roots1[0], roots2[0], roots1[1], roots2[1]];
                 }
                 return roots1;
             }
@@ -13708,7 +13695,6 @@ define('Core/QuarticRealPolynomial',[
     return QuarticRealPolynomial;
 });
 
-/*global define*/
 define('Core/Ray',[
         './Cartesian3',
         './defaultValue',
@@ -13782,7 +13768,6 @@ define('Core/Ray',[
     return Ray;
 });
 
-/*global define*/
 define('Core/IntersectionTests',[
         './Cartesian3',
         './Cartographic',
@@ -14221,11 +14206,10 @@ define('Core/IntersectionTests',[
                     start : root1,
                     stop : root0
                 };
-            } else {
-                // qw2 == product.  Repeated roots (2 intersections).
-                var root = Math.sqrt(difference / w2);
-                return new Interval(root, root);
             }
+            // qw2 == product.  Repeated roots (2 intersections).
+            var root = Math.sqrt(difference / w2);
+            return new Interval(root, root);
         } else if (q2 < 1.0) {
             // Inside ellipsoid (2 intersections).
             difference = q2 - 1.0; // Negatively valued.
@@ -14235,17 +14219,16 @@ define('Core/IntersectionTests',[
             discriminant = qw * qw - product;
             temp = -qw + Math.sqrt(discriminant); // Positively valued.
             return new Interval(0.0, temp / w2);
-        } else {
-            // q2 == 1.0. On ellipsoid.
-            if (qw < 0.0) {
-                // Looking inward.
-                w2 = Cartesian3.magnitudeSquared(w);
-                return new Interval(0.0, -qw / w2);
-            }
-
-            // qw >= 0.0.  Looking outward or tangent.
-            return undefined;
         }
+        // q2 == 1.0. On ellipsoid.
+        if (qw < 0.0) {
+            // Looking inward.
+            w2 = Cartesian3.magnitudeSquared(w);
+            return new Interval(0.0, -qw / w2);
+        }
+
+        // qw >= 0.0.  Looking outward or tangent.
+        return undefined;
     };
 
     function addWithCancellationCheck(left, right, tolerance) {
@@ -14675,19 +14658,18 @@ define('Core/IntersectionTests',[
     return IntersectionTests;
 });
 
-/*global define*/
 define('Core/Plane',[
         './Cartesian3',
         './defined',
         './DeveloperError',
-        './Math',
-        './freezeObject'
+        './freezeObject',
+        './Math'
     ], function(
         Cartesian3,
         defined,
         DeveloperError,
-        CesiumMath,
-        freezeObject) {
+        freezeObject,
+        CesiumMath) {
     'use strict';
 
     /**
@@ -14806,11 +14788,10 @@ define('Core/Plane',[
         
         if (!defined(result)) {
             return new Plane(normal, distance);
-        } else {
-            Cartesian3.clone(normal, result.normal);
-            result.distance = distance;
-            return result;
         }
+        Cartesian3.clone(normal, result.normal);
+        result.distance = distance;
+        return result;
     };
 
     /**
@@ -15611,119 +15592,6 @@ define('ThirdParty/when',[],function () {
 	// Boilerplate for AMD, Node, and browser global
 );
 
-/*global define*/
-define('Core/oneTimeWarning',[
-        './defaultValue',
-        './defined',
-        './DeveloperError'
-    ], function(
-        defaultValue,
-        defined,
-        DeveloperError) {
-    "use strict";
-
-    var warnings = {};
-
-    /**
-     * Logs a one time message to the console.  Use this function instead of
-     * <code>console.log</code> directly since this does not log duplicate messages
-     * unless it is called from multiple workers.
-     *
-     * @exports oneTimeWarning
-     *
-     * @param {String} identifier The unique identifier for this warning.
-     * @param {String} [message=identifier] The message to log to the console.
-     *
-     * @example
-     * for(var i=0;i<foo.length;++i) {
-     *    if (!defined(foo[i].bar)) {
-     *       // Something that can be recovered from but may happen a lot
-     *       oneTimeWarning('foo.bar undefined', 'foo.bar is undefined. Setting to 0.');
-     *       foo[i].bar = 0;
-     *       // ...
-     *    }
-     * }
-     *
-     * @private
-     */
-    function oneTimeWarning(identifier, message) {
-                if (!defined(identifier)) {
-            throw new DeveloperError('identifier is required.');
-        }
-        
-        if (!defined(warnings[identifier])) {
-            warnings[identifier] = true;
-            console.warn(defaultValue(message, identifier));
-        }
-    }
-
-    oneTimeWarning.geometryOutlines = 'Entity geometry outlines are unsupported on terrain. Outlines will be disabled. To enable outlines, disable geometry terrain clamping by explicitly setting height to 0.';
-
-    return oneTimeWarning;
-});
-
-/*global define*/
-define('Core/deprecationWarning',[
-        './defined',
-        './DeveloperError',
-        './oneTimeWarning'
-    ], function(
-        defined,
-        DeveloperError,
-        oneTimeWarning) {
-    'use strict';
-    
-    /**
-     * Logs a deprecation message to the console.  Use this function instead of
-     * <code>console.log</code> directly since this does not log duplicate messages
-     * unless it is called from multiple workers.
-     *
-     * @exports deprecationWarning
-     *
-     * @param {String} identifier The unique identifier for this deprecated API.
-     * @param {String} message The message to log to the console.
-     *
-     * @example
-     * // Deprecated function or class
-     * function Foo() {
-     *    deprecationWarning('Foo', 'Foo was deprecated in Cesium 1.01.  It will be removed in 1.03.  Use newFoo instead.');
-     *    // ...
-     * }
-     *
-     * // Deprecated function
-     * Bar.prototype.func = function() {
-     *    deprecationWarning('Bar.func', 'Bar.func() was deprecated in Cesium 1.01.  It will be removed in 1.03.  Use Bar.newFunc() instead.');
-     *    // ...
-     * };
-     *
-     * // Deprecated property
-     * defineProperties(Bar.prototype, {
-     *     prop : {
-     *         get : function() {
-     *             deprecationWarning('Bar.prop', 'Bar.prop was deprecated in Cesium 1.01.  It will be removed in 1.03.  Use Bar.newProp instead.');
-     *             // ...
-     *         },
-     *         set : function(value) {
-     *             deprecationWarning('Bar.prop', 'Bar.prop was deprecated in Cesium 1.01.  It will be removed in 1.03.  Use Bar.newProp instead.');
-     *             // ...
-     *         }
-     *     }
-     * });
-     *
-     * @private
-     */
-    function deprecationWarning(identifier, message) {
-                if (!defined(identifier) || !defined(message)) {
-            throw new DeveloperError('identifier and message are required.');
-        }
-        
-        oneTimeWarning(identifier, message);
-    }
-
-    return deprecationWarning;
-});
-
-/*global define*/
 define('Core/binarySearch',[
         './Check',
         './defined'
@@ -15799,7 +15667,6 @@ define('Core/binarySearch',[
     return binarySearch;
 });
 
-/*global define*/
 define('Core/EarthOrientationParametersSample',[],function() {
     'use strict';
 
@@ -15979,7 +15846,6 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 */
 
-/*global define*/
 define('ThirdParty/sprintf',[],function() {
 
 function sprintf () {
@@ -16173,7 +16039,6 @@ function sprintf () {
 return sprintf;
 });
 
-/*global define*/
 define('Core/GregorianDate',[],function() {
     'use strict';
 
@@ -16231,7 +16096,6 @@ define('Core/GregorianDate',[],function() {
     return GregorianDate;
 });
 
-/*global define*/
 define('Core/isLeapYear',[
         './DeveloperError'
     ], function(
@@ -16260,7 +16124,6 @@ define('Core/isLeapYear',[
     return isLeapYear;
 });
 
-/*global define*/
 define('Core/LeapSecond',[],function() {
     'use strict';
 
@@ -16291,7 +16154,6 @@ define('Core/LeapSecond',[],function() {
     return LeapSecond;
 });
 
-/*global define*/
 define('Core/TimeConstants',[
         './freezeObject'
     ], function(
@@ -16384,7 +16246,6 @@ define('Core/TimeConstants',[
     return freezeObject(TimeConstants);
 });
 
-/*global define*/
 define('Core/TimeStandard',[
         './freezeObject'
     ], function(
@@ -16406,12 +16267,17 @@ define('Core/TimeStandard',[
          * <code>UTC = TAI - deltaT</code> where <code>deltaT</code> is the number of leap
          * seconds which have been introduced as of the time in TAI.
          *
+         * @type {Number}
+         * @constant
          */
         UTC : 0,
 
         /**
          * Represents the International Atomic Time (TAI) time standard.
          * TAI is the principal time standard to which the other time standards are related.
+         *
+         * @type {Number}
+         * @constant
          */
         TAI : 1
     };
@@ -16419,7 +16285,6 @@ define('Core/TimeStandard',[
     return freezeObject(TimeStandard);
 });
 
-/*global define*/
 define('Core/JulianDate',[
         '../ThirdParty/sprintf',
         './binarySearch',
@@ -16624,6 +16489,29 @@ define('Core/JulianDate',[
     }
 
     /**
+     * Creates a new instance from a GregorianDate.
+     *
+     * @param {GregorianDate} date A GregorianDate.
+     * @param {JulianDate} [result] An existing instance to use for the result.
+     * @returns {JulianDate} The modified result parameter or a new instance if none was provided.
+     *
+     * @exception {DeveloperError} date must be a valid GregorianDate.
+     */
+    JulianDate.fromGregorianDate = function(date, result) {
+                if (!(date instanceof GregorianDate)) {
+            throw new DeveloperError('date must be a valid GregorianDate.');
+        }
+        
+        var components = computeJulianDateComponents(date.year, date.month, date.day, date.hour, date.minute, date.second, date.millisecond);
+        if (!defined(result)) {
+            return new JulianDate(components[0], components[1], TimeStandard.UTC);
+        }
+        setComponents(components[0], components[1], result);
+        convertUtcToTai(result);
+        return result;
+    };
+
+    /**
      * Creates a new instance from a JavaScript Date.
      *
      * @param {Date} date A JavaScript Date.
@@ -16758,7 +16646,8 @@ define('Core/JulianDate',[
             throw new DeveloperError(iso8601ErrorMessage);
         }
         
-        //Not move onto the time string, which is much simpler.
+        //Now move onto the time string, which is much simpler.
+        //If no time is specified, it is considered the beginning of the day, UTC to match Javascript's implementation.
         var offsetIndex;
         if (defined(time)) {
             tokens = time.match(matchHoursMinutesSeconds);
@@ -16822,9 +16711,6 @@ define('Core/JulianDate',[
                 minute = minute + new Date(Date.UTC(year, month - 1, day, hour, minute)).getTimezoneOffset();
                 break;
             }
-        } else {
-            //If no time is specified, it is considered the beginning of the day, local time.
-            minute = minute + new Date(year, month - 1, day).getTimezoneOffset();
         }
 
         //ISO8601 denotes a leap second by any time having a seconds component of 60 seconds.
@@ -17025,23 +16911,23 @@ define('Core/JulianDate',[
             throw new DeveloperError('julianDate is required.');
         }
         
-        var gDate = JulianDate.toGregorianDate(julianDate, gDate);
+        var gDate = JulianDate.toGregorianDate(julianDate, gregorianDateScratch);
         var millisecondStr;
 
         if (!defined(precision) && gDate.millisecond !== 0) {
             //Forces milliseconds into a number with at least 3 digits to whatever the default toString() precision is.
             millisecondStr = (gDate.millisecond * 0.01).toString().replace('.', '');
-            return sprintf("%04d-%02d-%02dT%02d:%02d:%02d.%sZ", gDate.year, gDate.month, gDate.day, gDate.hour, gDate.minute, gDate.second, millisecondStr);
+            return sprintf('%04d-%02d-%02dT%02d:%02d:%02d.%sZ', gDate.year, gDate.month, gDate.day, gDate.hour, gDate.minute, gDate.second, millisecondStr);
         }
 
         //Precision is either 0 or milliseconds is 0 with undefined precision, in either case, leave off milliseconds entirely
         if (!defined(precision) || precision === 0) {
-            return sprintf("%04d-%02d-%02dT%02d:%02d:%02dZ", gDate.year, gDate.month, gDate.day, gDate.hour, gDate.minute, gDate.second);
+            return sprintf('%04d-%02d-%02dT%02d:%02d:%02dZ', gDate.year, gDate.month, gDate.day, gDate.hour, gDate.minute, gDate.second);
         }
 
         //Forces milliseconds into a number with at least 3 digits to whatever the specified precision is.
         millisecondStr = (gDate.millisecond * 0.01).toFixed(precision).replace('.', '').slice(0, precision);
-        return sprintf("%04d-%02d-%02dT%02d:%02d:%02d.%sZ", gDate.year, gDate.month, gDate.day, gDate.hour, gDate.minute, gDate.second, millisecondStr);
+        return sprintf('%04d-%02d-%02dT%02d:%02d:%02d.%sZ', gDate.year, gDate.month, gDate.day, gDate.hour, gDate.minute, gDate.second, millisecondStr);
     };
 
     /**
@@ -17411,7 +17297,6 @@ define('Core/JulianDate',[
     return JulianDate;
 });
 
-/*global define*/
 define('Core/clone',[
         './defaultValue'
     ], function(
@@ -17451,7 +17336,402 @@ define('Core/clone',[
     return clone;
 });
 
-/*global define*/
+define('Core/oneTimeWarning',[
+        './defaultValue',
+        './defined',
+        './DeveloperError'
+    ], function(
+        defaultValue,
+        defined,
+        DeveloperError) {
+    'use strict';
+
+    var warnings = {};
+
+    /**
+     * Logs a one time message to the console.  Use this function instead of
+     * <code>console.log</code> directly since this does not log duplicate messages
+     * unless it is called from multiple workers.
+     *
+     * @exports oneTimeWarning
+     *
+     * @param {String} identifier The unique identifier for this warning.
+     * @param {String} [message=identifier] The message to log to the console.
+     *
+     * @example
+     * for(var i=0;i<foo.length;++i) {
+     *    if (!defined(foo[i].bar)) {
+     *       // Something that can be recovered from but may happen a lot
+     *       oneTimeWarning('foo.bar undefined', 'foo.bar is undefined. Setting to 0.');
+     *       foo[i].bar = 0;
+     *       // ...
+     *    }
+     * }
+     *
+     * @private
+     */
+    function oneTimeWarning(identifier, message) {
+                if (!defined(identifier)) {
+            throw new DeveloperError('identifier is required.');
+        }
+        
+        if (!defined(warnings[identifier])) {
+            warnings[identifier] = true;
+            console.warn(defaultValue(message, identifier));
+        }
+    }
+
+    oneTimeWarning.geometryOutlines = 'Entity geometry outlines are unsupported on terrain. Outlines will be disabled. To enable outlines, disable geometry terrain clamping by explicitly setting height to 0.';
+
+    return oneTimeWarning;
+});
+
+define('Core/deprecationWarning',[
+        './defined',
+        './DeveloperError',
+        './oneTimeWarning'
+    ], function(
+        defined,
+        DeveloperError,
+        oneTimeWarning) {
+    'use strict';
+
+    /**
+     * Logs a deprecation message to the console.  Use this function instead of
+     * <code>console.log</code> directly since this does not log duplicate messages
+     * unless it is called from multiple workers.
+     *
+     * @exports deprecationWarning
+     *
+     * @param {String} identifier The unique identifier for this deprecated API.
+     * @param {String} message The message to log to the console.
+     *
+     * @example
+     * // Deprecated function or class
+     * function Foo() {
+     *    deprecationWarning('Foo', 'Foo was deprecated in Cesium 1.01.  It will be removed in 1.03.  Use newFoo instead.');
+     *    // ...
+     * }
+     *
+     * // Deprecated function
+     * Bar.prototype.func = function() {
+     *    deprecationWarning('Bar.func', 'Bar.func() was deprecated in Cesium 1.01.  It will be removed in 1.03.  Use Bar.newFunc() instead.');
+     *    // ...
+     * };
+     *
+     * // Deprecated property
+     * defineProperties(Bar.prototype, {
+     *     prop : {
+     *         get : function() {
+     *             deprecationWarning('Bar.prop', 'Bar.prop was deprecated in Cesium 1.01.  It will be removed in 1.03.  Use Bar.newProp instead.');
+     *             // ...
+     *         },
+     *         set : function(value) {
+     *             deprecationWarning('Bar.prop', 'Bar.prop was deprecated in Cesium 1.01.  It will be removed in 1.03.  Use Bar.newProp instead.');
+     *             // ...
+     *         }
+     *     }
+     * });
+     *
+     * @private
+     */
+    function deprecationWarning(identifier, message) {
+                if (!defined(identifier) || !defined(message)) {
+            throw new DeveloperError('identifier and message are required.');
+        }
+        
+        oneTimeWarning(identifier, message);
+    }
+
+    return deprecationWarning;
+});
+
+define('Core/RequestState',[
+        '../Core/freezeObject'
+    ], function(
+        freezeObject) {
+    'use strict';
+
+    /**
+     * State of the request.
+     *
+     * @exports RequestState
+     */
+    var RequestState = {
+        /**
+         * Initial unissued state.
+         *
+         * @type Number
+         * @constant
+         */
+        UNISSUED : 0,
+
+        /**
+         * Issued but not yet active. Will become active when open slots are available.
+         *
+         * @type Number
+         * @constant
+         */
+        ISSUED : 1,
+
+        /**
+         * Actual http request has been sent.
+         *
+         * @type Number
+         * @constant
+         */
+        ACTIVE : 2,
+
+        /**
+         * Request completed successfully.
+         *
+         * @type Number
+         * @constant
+         */
+        RECEIVED : 3,
+
+        /**
+         * Request was cancelled, either explicitly or automatically because of low priority.
+         *
+         * @type Number
+         * @constant
+         */
+        CANCELLED : 4,
+
+        /**
+         * Request failed.
+         *
+         * @type Number
+         * @constant
+         */
+        FAILED : 5
+    };
+
+    return freezeObject(RequestState);
+});
+
+define('Core/RequestType',[
+        '../Core/freezeObject'
+    ], function(
+        freezeObject) {
+    'use strict';
+
+    /**
+     * An enum identifying the type of request. Used for finer grained logging and priority sorting.
+     *
+     * @exports RequestType
+     */
+    var RequestType = {
+        /**
+         * Terrain request.
+         *
+         * @type Number
+         * @constant
+         */
+        TERRAIN : 0,
+
+        /**
+         * Imagery request.
+         *
+         * @type Number
+         * @constant
+         */
+        IMAGERY : 1,
+
+        /**
+         * 3D Tiles request.
+         *
+         * @type Number
+         * @constant
+         */
+        TILES3D : 2,
+
+        /**
+         * Other request.
+         *
+         * @type Number
+         * @constant
+         */
+        OTHER : 3
+    };
+
+    return freezeObject(RequestType);
+});
+
+define('Core/Request',[
+        './defaultValue',
+        './defined',
+        './defineProperties',
+        './RequestState',
+        './RequestType'
+    ], function(
+        defaultValue,
+        defined,
+        defineProperties,
+        RequestState,
+        RequestType) {
+    'use strict';
+
+    /**
+     * Stores information for making a request. In general this does not need to be constructed directly.
+     *
+     * @alias Request
+     * @constructor
+     *
+     * @param {Object} [options] An object with the following properties:
+     * @param {Boolean} [options.url] The url to request.
+     * @param {Request~RequestCallback} [options.requestFunction] The function that makes the actual data request.
+     * @param {Request~CancelCallback} [options.cancelFunction] The function that is called when the request is cancelled.
+     * @param {Request~PriorityCallback} [options.priorityFunction] The function that is called to update the request's priority, which occurs once per frame.
+     * @param {Number} [options.priority=0.0] The initial priority of the request.
+     * @param {Boolean} [options.throttle=false] Whether to throttle and prioritize the request. If false, the request will be sent immediately. If true, the request will be throttled and sent based on priority.
+     * @param {Boolean} [options.throttleByServer=false] Whether to throttle the request by server.
+     * @param {RequestType} [options.type=RequestType.OTHER] The type of request.
+     */
+    function Request(options) {
+        options = defaultValue(options, defaultValue.EMPTY_OBJECT);
+
+        var throttleByServer = defaultValue(options.throttleByServer, false);
+        var throttle = throttleByServer || defaultValue(options.throttle, false);
+
+        /**
+         * The URL to request.
+         *
+         * @type {String}
+         */
+        this.url = options.url;
+
+        /**
+         * The function that makes the actual data request.
+         *
+         * @type {Request~RequestCallback}
+         */
+        this.requestFunction = options.requestFunction;
+
+        /**
+         * The function that is called when the request is cancelled.
+         *
+         * @type {Request~CancelCallback}
+         */
+        this.cancelFunction = options.cancelFunction;
+
+        /**
+         * The function that is called to update the request's priority, which occurs once per frame.
+         *
+         * @type {Request~PriorityCallback}
+         */
+        this.priorityFunction = options.priorityFunction;
+
+        /**
+         * Priority is a unit-less value where lower values represent higher priority.
+         * For world-based objects, this is usually the distance from the camera.
+         * A request that does not have a priority function defaults to a priority of 0.
+         *
+         * If priorityFunction is defined, this value is updated every frame with the result of that call.
+         *
+         * @type {Number}
+         * @default 0.0
+         */
+        this.priority = defaultValue(options.priority, 0.0);
+
+        /**
+         * Whether to throttle and prioritize the request. If false, the request will be sent immediately. If true, the
+         * request will be throttled and sent based on priority.
+         *
+         * @type {Boolean}
+         * @readonly
+         *
+         * @default false
+         */
+        this.throttle = throttle;
+
+        /**
+         * Whether to throttle the request by server. Browsers typically support about 6-8 parallel connections
+         * for HTTP/1 servers, and an unlimited amount of connections for HTTP/2 servers. Setting this value
+         * to <code>true</code> is preferable for requests going through HTTP/1 servers.
+         *
+         * @type {Boolean}
+         * @readonly
+         *
+         * @default false
+         */
+        this.throttleByServer = throttleByServer;
+
+        /**
+         * Type of request.
+         *
+         * @type {RequestType}
+         * @readonly
+         *
+         * @default RequestType.OTHER
+         */
+        this.type = defaultValue(options.type, RequestType.OTHER);
+
+        /**
+         * A key used to identify the server that a request is going to. It is derived from the url's authority and scheme.
+         *
+         * @type {String}
+         *
+         * @private
+         */
+        this.serverKey = undefined;
+
+        /**
+         * The current state of the request.
+         *
+         * @type {RequestState}
+         * @readonly
+         */
+        this.state = RequestState.UNISSUED;
+
+        /**
+         * The requests's deferred promise.
+         *
+         * @type {Object}
+         *
+         * @private
+         */
+        this.deferred = undefined;
+
+        /**
+         * Whether the request was explicitly cancelled.
+         *
+         * @type {Boolean}
+         *
+         * @private
+         */
+        this.cancelled = false;
+    }
+
+    /**
+     * Mark the request as cancelled.
+     *
+     * @private
+     */
+    Request.prototype.cancel = function() {
+        this.cancelled = true;
+    };
+
+    /**
+     * The function that makes the actual data request.
+     * @callback Request~RequestCallback
+     * @returns {Promise} A promise for the requested data.
+     */
+
+    /**
+     * The function that is called when the request is cancelled.
+     * @callback Request~CancelCallback
+     */
+
+    /**
+     * The function that is called to update the request's priority, which occurs once per frame.
+     * @callback Request~PriorityCallback
+     * @returns {Number} The updated priority value.
+     */
+
+    return Request;
+});
+
 define('Core/parseResponseHeaders',[], function() {
     'use strict';
 
@@ -17465,7 +17745,7 @@ define('Core/parseResponseHeaders',[], function() {
      *                 described here: http://www.w3.org/TR/XMLHttpRequest/#the-getallresponseheaders()-method
      * @returns {Object} A dictionary of key/value pairs, where each key is the name of a header and the corresponding value
      *                   is that header's value.
-     * 
+     *
      * @private
      */
     function parseResponseHeaders(headerString) {
@@ -17495,7 +17775,6 @@ define('Core/parseResponseHeaders',[], function() {
     return parseResponseHeaders;
 });
 
-/*global define*/
 define('Core/RequestErrorEvent',[
         './defined',
         './parseResponseHeaders'
@@ -17586,7 +17865,6 @@ define('Core/RequestErrorEvent',[
  *   limitations under the License.
  *
  */
-/*global define*/
 define('ThirdParty/Uri',[],function() {
 
 	/**
@@ -17839,7 +18117,709 @@ define('ThirdParty/Uri',[],function() {
 return URI;
 });
 
-/*global define*/
+define('Core/Heap',[
+        './Check',
+        './defaultValue',
+        './defined',
+        './defineProperties'
+    ], function(
+        Check,
+        defaultValue,
+        defined,
+        defineProperties) {
+    'use strict';
+
+    /**
+     * Array implementation of a heap.
+     *
+     * @alias Heap
+     * @constructor
+     * @private
+     *
+     * @param {Object} options Object with the following properties:
+     * @param {Heap~ComparatorCallback} options.comparator The comparator to use for the heap. If comparator(a, b) is less than 0, sort a to a lower index than b, otherwise sort to a higher index.
+     */
+    function Heap(options) {
+                Check.typeOf.object('options', options);
+        Check.defined('options.comparator', options.comparator);
+        
+        this._comparator = options.comparator;
+        this._array = [];
+        this._length = 0;
+        this._maximumLength = undefined;
+    }
+
+    defineProperties(Heap.prototype, {
+        /**
+         * Gets the length of the heap.
+         *
+         * @memberof Heap.prototype
+         *
+         * @type {Number}
+         * @readonly
+         */
+        length : {
+            get : function() {
+                return this._length;
+            }
+        },
+
+        /**
+         * Gets the internal array.
+         *
+         * @memberof Heap.prototype
+         *
+         * @type {Array}
+         * @readonly
+         */
+        internalArray : {
+            get : function() {
+                return this._array;
+            }
+        },
+
+        /**
+         * Gets and sets the maximum length of the heap.
+         *
+         * @memberof Heap.prototype
+         *
+         * @type {Number}
+         */
+        maximumLength : {
+            get : function() {
+                return this._maximumLength;
+            },
+            set : function(value) {
+                this._maximumLength = value;
+                if (this._length > value && value > 0) {
+                    this._length = value;
+                    this._array.length = value;
+                }
+            }
+        },
+
+        /**
+         * The comparator to use for the heap. If comparator(a, b) is less than 0, sort a to a lower index than b, otherwise sort to a higher index.
+         *
+         * @memberof Heap.prototype
+         *
+         * @type {Heap~ComparatorCallback}
+         */
+        comparator : {
+            get : function() {
+                return this._comparator;
+            }
+        }
+    });
+
+    function swap(array, a, b) {
+        var temp = array[a];
+        array[a] = array[b];
+        array[b] = temp;
+    }
+
+    /**
+     * Resizes the internal array of the heap.
+     *
+     * @param {Number} [length] The length to resize internal array to. Defaults to the current length of the heap.
+     */
+    Heap.prototype.reserve = function(length) {
+        length = defaultValue(length, this._length);
+        this._array.length = length;
+    };
+
+    /**
+     * Update the heap so that index and all descendants satisfy the heap property.
+     *
+     * @param {Number} [index=0] The starting index to heapify from.
+     */
+    Heap.prototype.heapify = function(index) {
+        index = defaultValue(index, 0);
+        var length = this._length;
+        var comparator = this._comparator;
+        var array = this._array;
+        var candidate = -1;
+        var inserting = true;
+
+        while (inserting) {
+            var right = 2 * (index + 1);
+            var left = right - 1;
+
+            if (left < length && comparator(array[left], array[index]) < 0) {
+                candidate = left;
+            } else {
+                candidate = index;
+            }
+
+            if (right < length && comparator(array[right], array[candidate]) < 0) {
+                candidate = right;
+            }
+            if (candidate !== index) {
+                swap(array, candidate, index);
+                index = candidate;
+            } else {
+                inserting = false;
+            }
+        }
+    };
+
+    /**
+     * Resort the heap.
+     */
+    Heap.prototype.resort = function() {
+        var length = this._length;
+        for (var i = Math.ceil(length / 2); i >= 0; --i) {
+            this.heapify(i);
+        }
+    };
+
+    /**
+     * Insert an element into the heap. If the length would grow greater than maximumLength
+     * of the heap, extra elements are removed.
+     *
+     * @param {*} element The element to insert
+     *
+     * @return {*} The element that was removed from the heap if the heap is at full capacity.
+     */
+    Heap.prototype.insert = function(element) {
+                Check.defined('element', element);
+        
+        var array = this._array;
+        var comparator = this._comparator;
+        var maximumLength = this._maximumLength;
+
+        var index = this._length++;
+        if (index < array.length) {
+            array[index] = element;
+        } else {
+            array.push(element);
+        }
+
+        while (index !== 0) {
+            var parent = Math.floor((index - 1) / 2);
+            if (comparator(array[index], array[parent]) < 0) {
+                swap(array, index, parent);
+                index = parent;
+            } else {
+                break;
+            }
+        }
+
+        var removedElement;
+
+        if (defined(maximumLength) && (this._length > maximumLength)) {
+            removedElement = array[maximumLength];
+            this._length = maximumLength;
+        }
+
+        return removedElement;
+    };
+
+    /**
+     * Remove the element specified by index from the heap and return it.
+     *
+     * @param {Number} [index=0] The index to remove.
+     * @returns {*} The specified element of the heap.
+     */
+    Heap.prototype.pop = function(index) {
+        index = defaultValue(index, 0);
+        if (this._length === 0) {
+            return undefined;
+        }
+                Check.typeOf.number.lessThan('index', index, this._length);
+        
+        var array = this._array;
+        var root = array[index];
+        swap(array, index, --this._length);
+        this.heapify(index);
+        return root;
+    };
+
+    /**
+     * The comparator to use for the heap.
+     * @callback Heap~ComparatorCallback
+     * @param {*} a An element in the heap.
+     * @param {*} b An element in the heap.
+     * @returns {Number} If the result of the comparison is less than 0, sort a to a lower index than b, otherwise sort to a higher index.
+     */
+
+    return Heap;
+});
+
+define('Core/isBlobUri',[
+        './Check'
+    ], function(
+        Check) {
+    'use strict';
+
+    var blobUriRegex = /^blob:/i;
+
+    /**
+     * Determines if the specified uri is a blob uri.
+     *
+     * @exports isBlobUri
+     *
+     * @param {String} uri The uri to test.
+     * @returns {Boolean} true when the uri is a blob uri; otherwise, false.
+     *
+     * @private
+     */
+    function isBlobUri(uri) {
+                Check.typeOf.string('uri', uri);
+        
+        return blobUriRegex.test(uri);
+    }
+
+    return isBlobUri;
+});
+
+define('Core/isDataUri',[
+        './Check'
+    ], function(
+        Check) {
+    'use strict';
+
+    var dataUriRegex = /^data:/i;
+
+    /**
+     * Determines if the specified uri is a data uri.
+     *
+     * @exports isDataUri
+     *
+     * @param {String} uri The uri to test.
+     * @returns {Boolean} true when the uri is a data uri; otherwise, false.
+     *
+     * @private
+     */
+    function isDataUri(uri) {
+                Check.typeOf.string('uri', uri);
+        
+        return dataUriRegex.test(uri);
+    }
+
+    return isDataUri;
+});
+
+define('Core/RequestScheduler',[
+        '../ThirdParty/Uri',
+        '../ThirdParty/when',
+        './Check',
+        './clone',
+        './defined',
+        './defineProperties',
+        './Heap',
+        './isBlobUri',
+        './isDataUri',
+        './RequestState'
+    ], function(
+        Uri,
+        when,
+        Check,
+        clone,
+        defined,
+        defineProperties,
+        Heap,
+        isBlobUri,
+        isDataUri,
+        RequestState) {
+    'use strict';
+
+    function sortRequests(a, b) {
+        return a.priority - b.priority;
+    }
+
+    var statistics = {
+        numberOfAttemptedRequests : 0,
+        numberOfActiveRequests : 0,
+        numberOfCancelledRequests : 0,
+        numberOfCancelledActiveRequests : 0,
+        numberOfFailedRequests : 0,
+        numberOfActiveRequestsEver : 0
+    };
+
+    var priorityHeapLength = 20;
+    var requestHeap = new Heap({
+        comparator : sortRequests
+    });
+    requestHeap.maximumLength = priorityHeapLength;
+    requestHeap.reserve(priorityHeapLength);
+
+    var activeRequests = [];
+    var numberOfActiveRequestsByServer = {};
+
+    var pageUri = typeof document !== 'undefined' ? new Uri(document.location.href) : new Uri();
+
+    /**
+     * Tracks the number of active requests and prioritizes incoming requests.
+     *
+     * @exports RequestScheduler
+     *
+     * @private
+     */
+    function RequestScheduler() {
+    }
+
+    /**
+     * The maximum number of simultaneous active requests. Un-throttled requests do not observe this limit.
+     * @type {Number}
+     * @default 50
+     */
+    RequestScheduler.maximumRequests = 50;
+
+    /**
+     * The maximum number of simultaneous active requests per server. Un-throttled requests do not observe this limit.
+     * @type {Number}
+     * @default 6
+     */
+    RequestScheduler.maximumRequestsPerServer = 6;
+
+    /**
+     * Specifies if the request scheduler should throttle incoming requests, or let the browser queue requests under its control.
+     * @type {Boolean}
+     * @default true
+     */
+    RequestScheduler.throttleRequests = true;
+
+    /**
+     * When true, log statistics to the console every frame
+     * @type {Boolean}
+     * @default false
+     */
+    RequestScheduler.debugShowStatistics = false;
+
+    defineProperties(RequestScheduler, {
+        /**
+         * Returns the statistics used by the request scheduler.
+         *
+         * @memberof RequestScheduler
+         *
+         * @type Object
+         * @readonly
+         */
+        statistics : {
+            get : function() {
+                return statistics;
+            }
+        },
+
+        /**
+         * The maximum size of the priority heap. This limits the number of requests that are sorted by priority. Only applies to requests that are not yet active.
+         *
+         * @memberof RequestScheduler
+         *
+         * @type {Number}
+         * @default 20
+         */
+        priorityHeapLength : {
+            get : function() {
+                return priorityHeapLength;
+            },
+            set : function(value) {
+                // If the new length shrinks the heap, need to cancel some of the requests.
+                // Since this value is not intended to be tweaked regularly it is fine to just cancel the high priority requests.
+                if (value < priorityHeapLength) {
+                    while (requestHeap.length > value) {
+                        var request = requestHeap.pop();
+                        cancelRequest(request);
+                    }
+                }
+                priorityHeapLength = value;
+                requestHeap.maximumLength = value;
+                requestHeap.reserve(value);
+            }
+        }
+    });
+
+    function updatePriority(request) {
+        if (defined(request.priorityFunction)) {
+            request.priority = request.priorityFunction();
+        }
+    }
+
+    function serverHasOpenSlots(serverKey) {
+        return numberOfActiveRequestsByServer[serverKey] < RequestScheduler.maximumRequestsPerServer;
+    }
+
+    function issueRequest(request) {
+        if (request.state === RequestState.UNISSUED) {
+            request.state = RequestState.ISSUED;
+            request.deferred = when.defer();
+        }
+        return request.deferred.promise;
+    }
+
+    function getRequestReceivedFunction(request) {
+        return function(results) {
+            if (request.state === RequestState.CANCELLED) {
+                // If the data request comes back but the request is cancelled, ignore it.
+                return;
+            }
+            --statistics.numberOfActiveRequests;
+            --numberOfActiveRequestsByServer[request.serverKey];
+            request.state = RequestState.RECEIVED;
+            request.deferred.resolve(results);
+        };
+    }
+
+    function getRequestFailedFunction(request) {
+        return function(error) {
+            if (request.state === RequestState.CANCELLED) {
+                // If the data request comes back but the request is cancelled, ignore it.
+                return;
+            }
+            ++statistics.numberOfFailedRequests;
+            --statistics.numberOfActiveRequests;
+            --numberOfActiveRequestsByServer[request.serverKey];
+            request.state = RequestState.FAILED;
+            request.deferred.reject(error);
+        };
+    }
+
+    function startRequest(request) {
+        var promise = issueRequest(request);
+        request.state = RequestState.ACTIVE;
+        activeRequests.push(request);
+        ++statistics.numberOfActiveRequests;
+        ++statistics.numberOfActiveRequestsEver;
+        ++numberOfActiveRequestsByServer[request.serverKey];
+        request.requestFunction().then(getRequestReceivedFunction(request)).otherwise(getRequestFailedFunction(request));
+        return promise;
+    }
+
+    function cancelRequest(request) {
+        var active = request.state === RequestState.ACTIVE;
+        request.state = RequestState.CANCELLED;
+        ++statistics.numberOfCancelledRequests;
+        request.deferred.reject();
+
+        if (active) {
+            --statistics.numberOfActiveRequests;
+            --numberOfActiveRequestsByServer[request.serverKey];
+            ++statistics.numberOfCancelledActiveRequests;
+        }
+
+        if (defined(request.cancelFunction)) {
+            request.cancelFunction();
+        }
+    }
+
+    /**
+     * Sort requests by priority and start requests.
+     */
+    RequestScheduler.update = function() {
+        var i;
+        var request;
+
+        // Loop over all active requests. Cancelled, failed, or received requests are removed from the array to make room for new requests.
+        var removeCount = 0;
+        var activeLength = activeRequests.length;
+        for (i = 0; i < activeLength; ++i) {
+            request = activeRequests[i];
+            if (request.cancelled) {
+                // Request was explicitly cancelled
+                cancelRequest(request);
+            }
+            if (request.state !== RequestState.ACTIVE) {
+                // Request is no longer active, remove from array
+                ++removeCount;
+                continue;
+            }
+            if (removeCount > 0) {
+                // Shift back to fill in vacated slots from completed requests
+                activeRequests[i - removeCount] = request;
+            }
+        }
+        activeRequests.length -= removeCount;
+
+        // Update priority of issued requests and resort the heap
+        var issuedRequests = requestHeap.internalArray;
+        var issuedLength = requestHeap.length;
+        for (i = 0; i < issuedLength; ++i) {
+            updatePriority(issuedRequests[i]);
+        }
+        requestHeap.resort();
+
+        // Get the number of open slots and fill with the highest priority requests.
+        // Un-throttled requests are automatically added to activeRequests, so activeRequests.length may exceed maximumRequests
+        var openSlots = Math.max(RequestScheduler.maximumRequests - activeRequests.length, 0);
+        var filledSlots = 0;
+        while (filledSlots < openSlots && requestHeap.length > 0) {
+            // Loop until all open slots are filled or the heap becomes empty
+            request = requestHeap.pop();
+            if (request.cancelled) {
+                // Request was explicitly cancelled
+                cancelRequest(request);
+                continue;
+            }
+
+            if (request.throttleByServer && !serverHasOpenSlots(request.serverKey)) {
+                // Open slots are available, but the request is throttled by its server. Cancel and try again later.
+                cancelRequest(request);
+                continue;
+            }
+
+            startRequest(request);
+            ++filledSlots;
+        }
+
+        updateStatistics();
+    };
+
+    /**
+     * Get the server key from a given url.
+     *
+     * @param {String} url The url.
+     * @returns {String} The server key.
+     */
+    RequestScheduler.getServerKey = function(url) {
+                Check.typeOf.string('url', url);
+        
+        var uri = new Uri(url).resolve(pageUri);
+        uri.normalize();
+        var serverKey = uri.authority;
+        if (!/:/.test(serverKey)) {
+            // If the authority does not contain a port number, add port 443 for https or port 80 for http
+            serverKey = serverKey + ':' + (uri.scheme === 'https' ? '443' : '80');
+        }
+
+        var length = numberOfActiveRequestsByServer[serverKey];
+        if (!defined(length)) {
+            numberOfActiveRequestsByServer[serverKey] = 0;
+        }
+
+        return serverKey;
+    };
+
+    /**
+     * Issue a request. If request.throttle is false, the request is sent immediately. Otherwise the request will be
+     * queued and sorted by priority before being sent.
+     *
+     * @param {Request} request The request object.
+     *
+     * @returns {Promise|undefined} A Promise for the requested data, or undefined if this request does not have high enough priority to be issued.
+     */
+    RequestScheduler.request = function(request) {
+                Check.typeOf.object('request', request);
+        Check.typeOf.string('request.url', request.url);
+        Check.typeOf.func('request.requestFunction', request.requestFunction);
+        
+        if (isDataUri(request.url) || isBlobUri(request.url)) {
+            request.state = RequestState.RECEIVED;
+            return request.requestFunction();
+        }
+
+        ++statistics.numberOfAttemptedRequests;
+
+        if (!defined(request.serverKey)) {
+            request.serverKey = RequestScheduler.getServerKey(request.url);
+        }
+
+        if (!RequestScheduler.throttleRequests || !request.throttle) {
+            return startRequest(request);
+        }
+
+        if (activeRequests.length >= RequestScheduler.maximumRequests) {
+            // Active requests are saturated. Try again later.
+            return undefined;
+        }
+
+        if (request.throttleByServer && !serverHasOpenSlots(request.serverKey)) {
+            // Server is saturated. Try again later.
+            return undefined;
+        }
+
+        // Insert into the priority heap and see if a request was bumped off. If this request is the lowest
+        // priority it will be returned.
+        updatePriority(request);
+        var removedRequest = requestHeap.insert(request);
+
+        if (defined(removedRequest)) {
+            if (removedRequest === request) {
+                // Request does not have high enough priority to be issued
+                return undefined;
+            }
+            // A previously issued request has been bumped off the priority heap, so cancel it
+            cancelRequest(removedRequest);
+        }
+
+        return issueRequest(request);
+    };
+
+    function clearStatistics() {
+        statistics.numberOfAttemptedRequests = 0;
+        statistics.numberOfCancelledRequests = 0;
+        statistics.numberOfCancelledActiveRequests = 0;
+    }
+
+    function updateStatistics() {
+        if (!RequestScheduler.debugShowStatistics) {
+            return;
+        }
+
+        if (statistics.numberOfAttemptedRequests > 0) {
+            console.log('Number of attempted requests: ' + statistics.numberOfAttemptedRequests);
+        }
+        if (statistics.numberOfActiveRequests > 0) {
+            console.log('Number of active requests: ' + statistics.numberOfActiveRequests);
+        }
+        if (statistics.numberOfCancelledRequests > 0) {
+            console.log('Number of cancelled requests: ' + statistics.numberOfCancelledRequests);
+        }
+        if (statistics.numberOfCancelledActiveRequests > 0) {
+            console.log('Number of cancelled active requests: ' + statistics.numberOfCancelledActiveRequests);
+        }
+        if (statistics.numberOfFailedRequests > 0) {
+            console.log('Number of failed requests: ' + statistics.numberOfFailedRequests);
+        }
+
+        clearStatistics();
+    }
+
+    /**
+     * For testing only. Clears any requests that may not have completed from previous tests.
+     *
+     * @private
+     */
+    RequestScheduler.clearForSpecs = function() {
+        while (requestHeap.length > 0) {
+            var request = requestHeap.pop();
+            cancelRequest(request);
+        }
+        var length = activeRequests.length;
+        for (var i = 0; i < length; ++i) {
+            cancelRequest(activeRequests[i]);
+        }
+        activeRequests.length = 0;
+        numberOfActiveRequestsByServer = {};
+
+        // Clear stats
+        statistics.numberOfAttemptedRequests = 0;
+        statistics.numberOfActiveRequests = 0;
+        statistics.numberOfCancelledRequests = 0;
+        statistics.numberOfCancelledActiveRequests = 0;
+        statistics.numberOfFailedRequests = 0;
+        statistics.numberOfActiveRequestsEver = 0;
+    };
+
+    /**
+     * For testing only.
+     *
+     * @private
+     */
+    RequestScheduler.numberOfActiveRequestsByServer = function(serverKey) {
+        return numberOfActiveRequestsByServer[serverKey];
+    };
+
+    /**
+     * For testing only.
+     *
+     * @private
+     */
+    RequestScheduler.requestHeap = requestHeap;
+
+    return RequestScheduler;
+});
+
 define('Core/TrustedServers',[
         '../ThirdParty/Uri',
         './defined',
@@ -17849,7 +18829,7 @@ define('Core/TrustedServers',[
         defined,
         DeveloperError) {
     'use strict';
-    
+
     /**
      * A singleton that contains all of the servers that are trusted. Credentials will be sent with
      * any requests to these servers.
@@ -17984,25 +18964,32 @@ define('Core/TrustedServers',[
     TrustedServers.clear = function() {
         _servers = {};
     };
-    
+
     return TrustedServers;
 });
 
-/*global define*/
 define('Core/loadWithXhr',[
         '../ThirdParty/when',
+        './Check',
         './defaultValue',
         './defined',
+        './deprecationWarning',
         './DeveloperError',
+        './Request',
         './RequestErrorEvent',
+        './RequestScheduler',
         './RuntimeError',
         './TrustedServers'
     ], function(
         when,
+        Check,
         defaultValue,
         defined,
+        deprecationWarning,
         DeveloperError,
+        Request,
         RequestErrorEvent,
+        RequestScheduler,
         RuntimeError,
         TrustedServers) {
     'use strict';
@@ -18016,13 +19003,14 @@ define('Core/loadWithXhr',[
      * @exports loadWithXhr
      *
      * @param {Object} options Object with the following properties:
-     * @param {String|Promise.<String>} options.url The URL of the data, or a promise for the URL.
+     * @param {String} options.url The URL of the data.
      * @param {String} [options.responseType] The type of response.  This controls the type of item returned.
      * @param {String} [options.method='GET'] The HTTP method to use.
      * @param {String} [options.data] The data to send with the request, if any.
      * @param {Object} [options.headers] HTTP headers to send with the request, if any.
      * @param {String} [options.overrideMimeType] Overrides the MIME type returned by the server.
-     * @returns {Promise.<Object>} a promise that will resolve to the requested data when loaded.
+     * @param {Request} [options.request] The request object.
+     * @returns {Promise.<Object>|undefined} a promise that will resolve to the requested data when loaded. Returns undefined if <code>request.throttle</code> is true and the request does not have high enough priority.
      *
      *
      * @example
@@ -18046,23 +19034,44 @@ define('Core/loadWithXhr',[
     function loadWithXhr(options) {
         options = defaultValue(options, defaultValue.EMPTY_OBJECT);
 
-                if (!defined(options.url)) {
-            throw new DeveloperError('options.url is required.');
-        }
+                Check.defined('options.url', options.url);
         
+        var url = options.url;
+
+        if (typeof url !== 'string') {
+            // Returning a promise here is okay because it is unlikely that anyone using the deprecated functionality is also
+            // providing a Request object marked as throttled.
+            deprecationWarning('url promise', 'options.url as a Promise is deprecated and will be removed in Cesium 1.37');
+            return url.then(function(url) {
+                return makeRequest(options, url);
+            });
+        }
+
+        return makeRequest(options);
+    }
+
+    function makeRequest(options, url) {
         var responseType = options.responseType;
         var method = defaultValue(options.method, 'GET');
         var data = options.data;
         var headers = options.headers;
         var overrideMimeType = options.overrideMimeType;
+        url = defaultValue(url, options.url);
 
-        return when(options.url, function(url) {
+        var request = defined(options.request) ? options.request : new Request();
+        request.url = url;
+        request.requestFunction = function() {
             var deferred = when.defer();
-
-            loadWithXhr.load(url, responseType, method, data, headers, deferred, overrideMimeType);
-
+            var xhr = loadWithXhr.load(url, responseType, method, data, headers, deferred, overrideMimeType);
+            if (defined(xhr) && defined(xhr.abort)) {
+                request.cancelFunction = function() {
+                    xhr.abort();
+                };
+            }
             return deferred.promise;
-        });
+        };
+
+        return RequestScheduler.request(request);
     }
 
     var dataUriRegex = /^data:(.*?)(;base64)?,(.*)$/;
@@ -18178,6 +19187,8 @@ define('Core/loadWithXhr',[
         };
 
         xhr.send(data);
+
+        return xhr;
     };
 
     loadWithXhr.defaultLoad = loadWithXhr.load;
@@ -18185,7 +19196,6 @@ define('Core/loadWithXhr',[
     return loadWithXhr;
 });
 
-/*global define*/
 define('Core/loadText',[
         './loadWithXhr'
     ], function(
@@ -18200,9 +19210,10 @@ define('Core/loadText',[
      *
      * @exports loadText
      *
-     * @param {String|Promise.<String>} url The URL to request, or a promise for the URL.
+     * @param {String} url The URL to request.
      * @param {Object} [headers] HTTP headers to send with the request.
-     * @returns {Promise.<String>} a promise that will resolve to the requested data when loaded.
+     * @param {Request} [request] The request object. Intended for internal use only.
+     * @returns {Promise.<String>|undefined} a promise that will resolve to the requested data when loaded. Returns undefined if <code>request.throttle</code> is true and the request does not have high enough priority.
      *
      *
      * @example
@@ -18214,22 +19225,22 @@ define('Core/loadText',[
      * }).otherwise(function(error) {
      *     // an error occurred
      * });
-     * 
+     *
      * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest|XMLHttpRequest}
      * @see {@link http://www.w3.org/TR/cors/|Cross-Origin Resource Sharing}
      * @see {@link http://wiki.commonjs.org/wiki/Promises/A|CommonJS Promises/A}
      */
-    function loadText(url, headers) {
+    function loadText(url, headers, request) {
         return loadWithXhr({
             url : url,
-            headers : headers
+            headers : headers,
+            request : request
         });
     }
 
     return loadText;
 });
 
-/*global define*/
 define('Core/loadJson',[
         './clone',
         './defined',
@@ -18257,11 +19268,12 @@ define('Core/loadJson',[
      *
      * @exports loadJson
      *
-     * @param {String|Promise.<String>} url The URL to request, or a promise for the URL.
+     * @param {String} url The URL to request.
      * @param {Object} [headers] HTTP headers to send with the request.
      * 'Accept: application/json,&#42;&#47;&#42;;q=0.01' is added to the request headers automatically
      * if not specified.
-     * @returns {Promise.<Object>} a promise that will resolve to the requested data when loaded.
+     * @param {Request} [request] The request object. Intended for internal use only.
+     * @returns {Promise.<Object>|undefined} a promise that will resolve to the requested data when loaded. Returns undefined if <code>request.throttle</code> is true and the request does not have high enough priority.
      *
      *
      * @example
@@ -18270,12 +19282,12 @@ define('Core/loadJson',[
      * }).otherwise(function(error) {
      *     // an error occurred
      * });
-     * 
+     *
      * @see loadText
      * @see {@link http://www.w3.org/TR/cors/|Cross-Origin Resource Sharing}
      * @see {@link http://wiki.commonjs.org/wiki/Promises/A|CommonJS Promises/A}
      */
-    function loadJson(url, headers) {
+    function loadJson(url, headers, request) {
                 if (!defined(url)) {
             throw new DeveloperError('url is required.');
         }
@@ -18288,7 +19300,12 @@ define('Core/loadJson',[
             headers.Accept = defaultHeaders.Accept;
         }
 
-        return loadText(url, headers).then(function(value) {
+        var textPromise = loadText(url, headers, request);
+        if (!defined(textPromise)) {
+            return undefined;
+        }
+
+        return textPromise.then(function(value) {
             return JSON.parse(value);
         });
     }
@@ -18296,699 +19313,6 @@ define('Core/loadJson',[
     return loadJson;
 });
 
-/*global define*/
-define('Core/isDataUri',[
-        './defined'
-    ], function(
-        defined) {
-    'use strict';
-
-    var dataUriRegex = /^data:/i;
-
-    /**
-     * Determines if the specified uri is a data uri.
-     *
-     * @exports isDataUri
-     *
-     * @param {String} uri The uri to test.
-     * @returns {Boolean} true when the uri is a data uri; otherwise, false.
-     *
-     * @private
-     */
-    function isDataUri(uri) {
-        if (defined(uri)) {
-            return dataUriRegex.test(uri);
-        }
-
-        return false;
-    }
-
-    return isDataUri;
-});
-
-/*global define*/
-define('Core/Queue',[
-        './defineProperties'
-    ], function(
-        defineProperties) {
-    'use strict';
-
-    /**
-     * A queue that can enqueue items at the end, and dequeue items from the front.
-     *
-     * @alias Queue
-     * @constructor
-     */
-    function Queue() {
-        this._array = [];
-        this._offset = 0;
-        this._length = 0;
-    }
-
-    defineProperties(Queue.prototype, {
-        /**
-         * The length of the queue.
-         *
-         * @memberof Queue.prototype
-         *
-         * @type {Number}
-         * @readonly
-         */
-        length : {
-            get : function() {
-                return this._length;
-            }
-        }
-    });
-
-    /**
-     * Enqueues the specified item.
-     *
-     * @param {Object} item The item to enqueue.
-     */
-    Queue.prototype.enqueue = function(item) {
-        this._array.push(item);
-        this._length++;
-    };
-
-    /**
-     * Dequeues an item.  Returns undefined if the queue is empty.
-     *
-     * @returns {Object} The the dequeued item.
-     */
-    Queue.prototype.dequeue = function() {
-        if (this._length === 0) {
-            return undefined;
-        }
-
-        var array = this._array;
-        var offset = this._offset;
-        var item = array[offset];
-        array[offset] = undefined;
-
-        offset++;
-        if ((offset > 10) && (offset * 2 > array.length)) {
-            //compact array
-            this._array = array.slice(offset);
-            offset = 0;
-        }
-
-        this._offset = offset;
-        this._length--;
-
-        return item;
-    };
-
-    /**
-     * Returns the item at the front of the queue.  Returns undefined if the queue is empty.
-     *
-     * @returns {Object} The item at the front of the queue.
-     */
-    Queue.prototype.peek = function() {
-        if (this._length === 0) {
-            return undefined;
-        }
-
-        return this._array[this._offset];
-    };
-
-    /**
-     * Check whether this queue contains the specified item.
-     *
-     * @param {Object} item The item to search for.
-     */
-    Queue.prototype.contains = function(item) {
-        return this._array.indexOf(item) !== -1;
-    };
-
-    /**
-     * Remove all items from the queue.
-     */
-    Queue.prototype.clear = function() {
-        this._array.length = this._offset = this._length = 0;
-    };
-
-    /**
-     * Sort the items in the queue in-place.
-     *
-     * @param {Queue~Comparator} compareFunction A function that defines the sort order.
-     */
-    Queue.prototype.sort = function(compareFunction) {
-        if (this._offset > 0) {
-            //compact array
-            this._array = this._array.slice(this._offset);
-            this._offset = 0;
-        }
-
-        this._array.sort(compareFunction);
-    };
-
-    /**
-     * A function used to compare two items while sorting a queue.
-     * @callback Queue~Comparator
-     *
-     * @param {Object} a An item in the array.
-     * @param {Object} b An item in the array.
-     * @returns {Number} Returns a negative value if <code>a</code> is less than <code>b</code>,
-     *          a positive value if <code>a</code> is greater than <code>b</code>, or
-     *          0 if <code>a</code> is equal to <code>b</code>.
-     *
-     * @example
-     * function compareNumbers(a, b) {
-     *     return a - b;
-     * }
-     */
-
-    return Queue;
-});
-
-/*global define*/
-define('Core/Request',[
-        './defaultValue'
-    ], function(
-        defaultValue) {
-    'use strict';
-
-    /**
-     * Stores information for making a request using {@link RequestScheduler}.
-     *
-     * @exports Request
-     *
-     * @private
-     */
-    function Request(options) {
-        options = defaultValue(options, defaultValue.EMPTY_OBJECT);
-
-        /**
-         * The URL to request.
-         */
-        this.url = options.url;
-
-        /**
-         * Extra parameters to send with the request. For example, HTTP headers or jsonp parameters.
-         */
-        this.parameters = options.parameters;
-
-        /**
-         * The actual function that makes the request.
-         */
-        this.requestFunction = options.requestFunction;
-
-        /**
-         * Type of request. Used for more fine-grained priority sorting.
-         */
-        this.type = options.type;
-
-        /**
-         * Specifies that the request should be deferred until an open slot is available.
-         * A deferred request will always return a promise, which is suitable for data
-         * sources and utility functions.
-         */
-        this.defer = defaultValue(options.defer, false);
-
-        /**
-         * The distance from the camera, used to prioritize requests.
-         */
-        this.distance = defaultValue(options.distance, 0.0);
-
-        // Helper members for RequestScheduler
-
-        /**
-         * A promise for when a deferred request can start.
-         *
-         * @private
-         */
-        this.startPromise = undefined;
-
-        /**
-         * Reference to a {@link RequestScheduler~RequestServer}.
-         *
-         * @private
-         */
-        this.server = options.server;
-    }
-
-    return Request;
-});
-
-/*global define*/
-define('Core/RequestType',[
-        '../Core/freezeObject'
-    ], function(
-        freezeObject) {
-    'use strict';
-
-    /**
-     * @private
-     */
-    var RequestType = {
-        TERRAIN : 0,
-        IMAGERY : 1,
-        TILES3D : 2,
-        OTHER : 3
-    };
-
-    return freezeObject(RequestType);
-});
-
-/*global define*/
-define('Core/RequestScheduler',[
-        '../ThirdParty/Uri',
-        '../ThirdParty/when',
-        './defaultValue',
-        './defined',
-        './DeveloperError',
-        './isDataUri',
-        './Queue',
-        './Request',
-        './RequestType'
-    ], function(
-        Uri,
-        when,
-        defaultValue,
-        defined,
-        DeveloperError,
-        isDataUri,
-        Queue,
-        Request,
-        RequestType) {
-    'use strict';
-
-    function RequestBudget(request) {
-        /**
-         * Total requests allowed this frame.
-         */
-        this.total = 0;
-
-        /**
-         * Total requests used this frame.
-         */
-        this.used = 0;
-
-        /**
-         * Server of the request.
-         */
-        this.server = request.server;
-
-        /**
-         * Type of request. Used for more fine-grained priority sorting.
-         */
-        this.type = request.type;
-    }
-
-    /**
-     * Stores the number of active requests at a particular server. Areas that commonly makes requests may store
-     * a reference to this object in order to quickly determine whether a request can be issued (e.g. Cesium3DTile).
-     */
-    function RequestServer(serverName) {
-        /**
-         * Number of active requests at this server.
-         */
-        this.activeRequests = 0;
-
-        /**
-         * The name of the server.
-         */
-        this.serverName = serverName;
-    }
-
-    RequestServer.prototype.hasAvailableRequests = function() {
-        return RequestScheduler.hasAvailableRequests() && (this.activeRequests < RequestScheduler.maximumRequestsPerServer);
-    };
-
-    RequestServer.prototype.getNumberOfAvailableRequests = function() {
-        return RequestScheduler.maximumRequestsPerServer - this.activeRequests;
-    };
-
-    var activeRequestsByServer = {};
-    var activeRequests = 0;
-    var budgets = [];
-    var leftoverRequests = [];
-    var deferredRequests = new Queue();
-
-    var stats = {
-        numberOfRequestsThisFrame : 0
-    };
-
-    /**
-     * Because browsers throttle the number of parallel requests allowed to each server
-     * and across all servers, this class tracks the number of active requests in progress
-     * and prioritizes incoming requests.
-     *
-     * @exports RequestScheduler
-     *
-     * @see {@link http://wiki.commonjs.org/wiki/Promises/A|CommonJS Promises/A}
-     *
-     * @private
-     */
-    function RequestScheduler() {
-    }
-
-    function distanceSortFunction(a, b) {
-        return a.distance - b.distance;
-    }
-
-    function getBudget(request) {
-        var budget;
-        var length = budgets.length;
-        for (var i = 0; i < length; ++i) {
-            budget = budgets[i];
-            if ((budget.server === request.server) && (budget.type === request.type)) {
-                return budget;
-            }
-        }
-        // Not found, create a new budget
-        budget = new RequestBudget(request);
-        budgets.push(budget);
-        return budget;
-    }
-
-    RequestScheduler.resetBudgets = function() {
-        showStats();
-        clearStats();
-
-        if (!RequestScheduler.prioritize || !RequestScheduler.throttle) {
-            return;
-        }
-
-        // Reset budget totals
-        var length = budgets.length;
-        for (var i = 0; i < length; ++i) {
-            budgets[i].total = 0;
-            budgets[i].used = 0;
-        }
-
-        // Sort all leftover requests by distance
-        var requests = leftoverRequests;
-        requests.sort(distanceSortFunction);
-
-        // Allocate new budgets based on the distances of leftover requests
-        var availableRequests = RequestScheduler.getNumberOfAvailableRequests();
-        var requestsLength = requests.length;
-        for (var j = 0; (j < requestsLength) && (availableRequests > 0); ++j) {
-            var request = requests[j];
-            var budget = getBudget(request);
-            var budgetAvailable = budget.server.getNumberOfAvailableRequests();
-            if (budget.total < budgetAvailable) {
-                ++budget.total;
-                --availableRequests;
-            }
-        }
-
-        requests.length = 0;
-    };
-
-    var pageUri = typeof document !== 'undefined' ? new Uri(document.location.href) : new Uri();
-
-    /**
-     * Get the server name from a given url.
-     *
-     * @param {String} url The url.
-     * @returns {String} The server name.
-     */
-    RequestScheduler.getServerName = function(url) {
-                if (!defined(url)) {
-            throw new DeveloperError('url is required.');
-        }
-        
-        var uri = new Uri(url).resolve(pageUri);
-        uri.normalize();
-        var serverName = uri.authority;
-        if (!/:/.test(serverName)) {
-            serverName = serverName + ':' + (uri.scheme === 'https' ? '443' : '80');
-        }
-        return serverName;
-    };
-
-    /**
-     * Get the request server from a given url.
-     *
-     * @param {String} url The url.
-     * @returns {RequestServer} The request server.
-     */
-    RequestScheduler.getRequestServer = function(url) {
-        var serverName = RequestScheduler.getServerName(url);
-        var server = activeRequestsByServer[serverName];
-        if (!defined(server)) {
-            server = new RequestServer(serverName);
-            activeRequestsByServer[serverName] = server;
-        }
-        return server;
-    };
-
-    /**
-     * Get the number of available slots at the server pointed to by the url.
-     *
-     * @param {String} url The url to check.
-     * @returns {Number} The number of available slots.
-     */
-    RequestScheduler.getNumberOfAvailableRequestsByServer = function(url) {
-        return RequestScheduler.getRequestServer(url).getNumberOfAvailableRequests();
-    };
-
-    /**
-     * Get the number of available slots across all servers.
-     *
-     * @returns {Number} The number of available slots.
-     */
-    RequestScheduler.getNumberOfAvailableRequests = function() {
-        return RequestScheduler.maximumRequests - activeRequests;
-    };
-
-    /**
-     * Checks if there are available slots to make a request at the server pointed to by the url.
-     *
-     * @param {String} [url] The url to check.
-     * @returns {Boolean} Returns true if there are available slots, otherwise false.
-     */
-    RequestScheduler.hasAvailableRequestsByServer = function(url) {
-        return RequestScheduler.getRequestServer(url).hasAvailableRequests();
-    };
-
-    /**
-     * Checks if there are available slots to make a request, considering the total
-     * number of available slots across all servers.
-     *
-     * @returns {Boolean} Returns true if there are available slots, otherwise false.
-     */
-    RequestScheduler.hasAvailableRequests = function() {
-        return activeRequests < RequestScheduler.maximumRequests;
-    };
-
-    function requestComplete(request) {
-        --activeRequests;
-        --request.server.activeRequests;
-
-        // Start a deferred request immediately now that a slot is open
-        var deferredRequest = deferredRequests.dequeue();
-        if (defined(deferredRequest)) {
-            deferredRequest.startPromise.resolve(deferredRequest);
-        }
-    }
-
-    function startRequest(request) {
-        ++activeRequests;
-        ++request.server.activeRequests;
-
-        return when(request.requestFunction(request.url, request.parameters), function(result) {
-            requestComplete(request);
-            return result;
-        }).otherwise(function(error) {
-            requestComplete(request);
-            return when.reject(error);
-        });
-    }
-
-    function deferRequest(request) {
-        deferredRequests.enqueue(request);
-        var deferred = when.defer();
-        request.startPromise = deferred;
-        return deferred.promise.then(startRequest);
-    }
-
-    function handleLeftoverRequest(request) {
-        if (RequestScheduler.prioritize) {
-            leftoverRequests.push(request);
-        }
-    }
-
-    /**
-     * A function that will make a request if there are available slots to the server.
-     * Returns undefined immediately if the request would exceed the maximum, allowing
-     * the caller to retry later instead of queueing indefinitely under the browser's control.
-     *
-     * @param {Request} request The request object.
-     *
-     * @returns {Promise.<Object>|undefined} Either undefined, meaning the request would exceed the maximum number of
-     *          parallel requests, or a Promise for the requested data.
-     *
-     * @example
-     * // throttle requests for an image
-     * var url = 'http://madeupserver.example.com/myImage.png';
-     * var requestFunction = function(url) {
-     *   // in this simple example, loadImage could be used directly as requestFunction.
-     *   return Cesium.loadImage(url);
-     * };
-     * var request = new Request({
-     *   url : url,
-     *   requestFunction : requestFunction
-     * });
-     * var promise = Cesium.RequestScheduler.schedule(request);
-     * if (!Cesium.defined(promise)) {
-     *   // too many active requests in progress, try again later.
-     * } else {
-     *   promise.then(function(image) {
-     *     // handle loaded image
-     *   });
-     * }
-     *
-     */
-    RequestScheduler.schedule = function(request) {
-                if (!defined(request)) {
-            throw new DeveloperError('request is required.');
-        }
-        if (!defined(request.url)) {
-            throw new DeveloperError('request.url is required.');
-        }
-        if (!defined(request.requestFunction)) {
-            throw new DeveloperError('request.requestFunction is required.');
-        }
-        
-        ++stats.numberOfRequestsThisFrame;
-
-        if (!RequestScheduler.throttle || isDataUri(request.url)) {
-            return request.requestFunction(request.url, request.parameters);
-        }
-
-        if (!defined(request.server)) {
-            request.server = RequestScheduler.getRequestServer(request.url);
-        }
-
-        if (!request.server.hasAvailableRequests()) {
-            if (!request.defer) {
-                // No available slots to make the request, return undefined
-                handleLeftoverRequest(request);
-                return undefined;
-            } else {
-                // If no slots are available, the request is deferred until a slot opens up.
-                // Return a promise even if the request can't be completed immediately.
-                return deferRequest(request);
-            }
-        }
-
-        if (RequestScheduler.prioritize && defined(request.type) && !request.defer) {
-            var budget = getBudget(request);
-            if (budget.used >= budget.total) {
-                // Request does not fit in the budget, return undefined
-                handleLeftoverRequest(request);
-                return undefined;
-            }
-            ++budget.used;
-        }
-
-        return startRequest(request);
-    };
-
-    /**
-     * A function that will make a request when an open slot is available. Always returns
-     * a promise, which is suitable for data sources and utility functions.
-     *
-     * @param {String} url The URL to request.
-     * @param {RequestScheduler~RequestFunction} requestFunction The actual function that
-     *        makes the request.
-     * @param {Object} [parameters] Extra parameters to send with the request.
-     * @param {RequestType} [requestType] Type of request. Used for more fine-grained priority sorting.
-     *
-     * @returns {Promise.<Object>} A Promise for the requested data.
-     */
-    RequestScheduler.request = function(url, requestFunction, parameters, requestType) {
-        return RequestScheduler.schedule(new Request({
-            url : url,
-            parameters : parameters,
-            requestFunction : requestFunction,
-            defer : true,
-            type : defaultValue(requestType, RequestType.OTHER)
-        }));
-    };
-
-    function clearStats() {
-        stats.numberOfRequestsThisFrame = 0;
-    }
-
-    function showStats() {
-        if (!RequestScheduler.debugShowStatistics) {
-            return;
-        }
-
-        if (stats.numberOfRequestsThisFrame > 0) {
-            console.log('Number of requests attempted: ' + stats.numberOfRequestsThisFrame);
-        }
-
-        var numberOfActiveRequests = RequestScheduler.maximumRequests - RequestScheduler.getNumberOfAvailableRequests();
-        if (numberOfActiveRequests > 0) {
-            console.log('Number of active requests: ' + numberOfActiveRequests);
-        }
-    }
-
-    /**
-     * Clears the request scheduler before each spec.
-     *
-     * @private
-     */
-    RequestScheduler.clearForSpecs = function() {
-        activeRequestsByServer = {};
-        activeRequests = 0;
-        budgets = [];
-        leftoverRequests = [];
-        deferredRequests = new Queue();
-        stats = {
-            numberOfRequestsThisFrame : 0
-        };
-    };
-
-    /**
-     * Specifies the maximum number of requests that can be simultaneously open to a single server.  If this value is higher than
-     * the number of requests per server actually allowed by the web browser, Cesium's ability to prioritize requests will be adversely
-     * affected.
-     * @type {Number}
-     * @default 6
-     */
-    RequestScheduler.maximumRequestsPerServer = 6;
-
-    /**
-     * Specifies the maximum number of requests that can be simultaneously open for all servers.  If this value is higher than
-     * the number of requests actually allowed by the web browser, Cesium's ability to prioritize requests will be adversely
-     * affected.
-     * @type {Number}
-     * @default 10
-     */
-    RequestScheduler.maximumRequests = 10;
-
-    /**
-     * Specifies if the request scheduler should prioritize incoming requests
-     * @type {Boolean}
-     * @default true
-     */
-    RequestScheduler.prioritize = true;
-
-    /**
-     * Specifies if the request scheduler should throttle incoming requests, or let the browser queue requests under its control.
-     * @type {Boolean}
-     * @default true
-     */
-    RequestScheduler.throttle = true;
-
-    /**
-     * When true, log statistics to the console every frame
-     * @type {Boolean}
-     * @default false
-     */
-    RequestScheduler.debugShowStatistics = false;
-
-    return RequestScheduler;
-});
-
-/*global define*/
 define('Core/EarthOrientationParameters',[
         '../ThirdParty/when',
         './binarySearch',
@@ -18999,7 +19323,6 @@ define('Core/EarthOrientationParameters',[
         './JulianDate',
         './LeapSecond',
         './loadJson',
-        './RequestScheduler',
         './RuntimeError',
         './TimeConstants',
         './TimeStandard'
@@ -19013,7 +19336,6 @@ define('Core/EarthOrientationParameters',[
         JulianDate,
         LeapSecond,
         loadJson,
-        RequestScheduler,
         RuntimeError,
         TimeConstants,
         TimeStandard) {
@@ -19088,7 +19410,7 @@ define('Core/EarthOrientationParameters',[
         } else if (defined(options.url)) {
             // Download EOP data.
             var that = this;
-            this._downloadPromise = when(RequestScheduler.request(options.url, loadJson), function(eopData) {
+            this._downloadPromise = when(loadJson(options.url), function(eopData) {
                 onDataReady(that, eopData);
             }, function() {
                 that._dataError = 'An error occurred while retrieving the EOP data from the URL ' + options.url + '.';
@@ -19374,7 +19696,6 @@ define('Core/EarthOrientationParameters',[
     return EarthOrientationParameters;
 });
 
-/*global define*/
 define('Core/getAbsoluteUri',[
         '../ThirdParty/Uri',
         './defaultValue',
@@ -19412,7 +19733,6 @@ define('Core/getAbsoluteUri',[
     return getAbsoluteUri;
 });
 
-/*global define*/
 define('Core/joinUrls',[
         '../ThirdParty/Uri',
         './defaultValue',
@@ -19529,7 +19849,6 @@ define('Core/joinUrls',[
     return joinUrls;
 });
 
-/*global define*/
 define('Core/buildModuleUrl',[
         '../ThirdParty/Uri',
         './defined',
@@ -19637,7 +19956,6 @@ define('Core/buildModuleUrl',[
     return buildModuleUrl;
 });
 
-/*global define*/
 define('Core/Iau2006XysSample',[],function() {
     'use strict';
 
@@ -19676,7 +19994,6 @@ define('Core/Iau2006XysSample',[],function() {
     return Iau2006XysSample;
 });
 
-/*global define*/
 define('Core/Iau2006XysData',[
         '../ThirdParty/when',
         './buildModuleUrl',
@@ -19685,7 +20002,6 @@ define('Core/Iau2006XysData',[
         './Iau2006XysSample',
         './JulianDate',
         './loadJson',
-        './RequestScheduler',
         './TimeStandard'
     ], function(
         when,
@@ -19695,7 +20011,6 @@ define('Core/Iau2006XysData',[
         Iau2006XysSample,
         JulianDate,
         loadJson,
-        RequestScheduler,
         TimeStandard) {
     'use strict';
 
@@ -19924,7 +20239,7 @@ define('Core/Iau2006XysData',[
             chunkUrl = buildModuleUrl('Assets/IAU2006_XYS/IAU2006_XYS_' + chunkIndex + '.json');
         }
 
-        when(RequestScheduler.request(chunkUrl, loadJson), function(chunk) {
+        when(loadJson(chunkUrl), function(chunk) {
             xysData._chunkDownloadsInProgress[chunkIndex] = false;
 
             var samples = xysData._samples;
@@ -19944,7 +20259,6 @@ define('Core/Iau2006XysData',[
     return Iau2006XysData;
 });
 
-/*global define*/
 define('Core/HeadingPitchRoll',[
         './defaultValue',
         './defined',
@@ -19955,7 +20269,7 @@ define('Core/HeadingPitchRoll',[
         defined,
         DeveloperError,
         CesiumMath) {
-    "use strict";
+    'use strict';
 
     /**
      * A rotation expressed as a heading, pitch, and roll. Heading is the rotation about the
@@ -20131,13 +20445,11 @@ define('Core/HeadingPitchRoll',[
     return HeadingPitchRoll;
 });
 
-/*global define*/
 define('Core/Quaternion',[
         './Cartesian3',
         './Check',
         './defaultValue',
         './defined',
-        './deprecationWarning',
         './FeatureDetection',
         './freezeObject',
         './HeadingPitchRoll',
@@ -20148,7 +20460,6 @@ define('Core/Quaternion',[
         Check,
         defaultValue,
         defined,
-        deprecationWarning,
         FeatureDetection,
         freezeObject,
         HeadingPitchRoll,
@@ -20316,26 +20627,13 @@ define('Core/Quaternion',[
      * @param {Quaternion} [result] The object onto which to store the result.
      * @returns {Quaternion} The modified result parameter or a new Quaternion instance if none was provided.
      */
-    Quaternion.fromHeadingPitchRoll = function(headingOrHeadingPitchRoll, pitchOrResult, roll, result) {
-                if (headingOrHeadingPitchRoll instanceof HeadingPitchRoll) {
-            Check.typeOf.object('headingPitchRoll', headingOrHeadingPitchRoll);
-        } else {
-            Check.typeOf.number('heading', headingOrHeadingPitchRoll);
-            Check.typeOf.number('pitch', pitchOrResult);
-            Check.typeOf.number('roll', roll);
-        }
-                var hpr;
-        if (headingOrHeadingPitchRoll instanceof HeadingPitchRoll) {
-            hpr = headingOrHeadingPitchRoll;
-            result = pitchOrResult;
-        } else {
-            deprecationWarning('Quaternion.fromHeadingPitchRoll(heading, pitch, roll,result)', 'The method was deprecated in Cesium 1.32 and will be removed in version 1.33. ' + 'Use Quaternion.fromHeadingPitchRoll(hpr,result) where hpr is a HeadingPitchRoll');
-            hpr = new HeadingPitchRoll(headingOrHeadingPitchRoll, pitchOrResult, roll);
-        }
-        scratchRollQuaternion = Quaternion.fromAxisAngle(Cartesian3.UNIT_X, hpr.roll, scratchHPRQuaternion);
-        scratchPitchQuaternion = Quaternion.fromAxisAngle(Cartesian3.UNIT_Y, -hpr.pitch, result);
+    Quaternion.fromHeadingPitchRoll = function(headingPitchRoll, result) {
+                Check.typeOf.object('headingPitchRoll', headingPitchRoll);
+        
+        scratchRollQuaternion = Quaternion.fromAxisAngle(Cartesian3.UNIT_X, headingPitchRoll.roll, scratchHPRQuaternion);
+        scratchPitchQuaternion = Quaternion.fromAxisAngle(Cartesian3.UNIT_Y, -headingPitchRoll.pitch, result);
         result = Quaternion.multiply(scratchPitchQuaternion, scratchRollQuaternion, scratchPitchQuaternion);
-        scratchHeadingQuaternion = Quaternion.fromAxisAngle(Cartesian3.UNIT_Z, -hpr.heading, scratchHPRQuaternion);
+        scratchHeadingQuaternion = Quaternion.fromAxisAngle(Cartesian3.UNIT_Z, -headingPitchRoll.heading, scratchHPRQuaternion);
         return Quaternion.multiply(scratchHeadingQuaternion, result, result);
     };
 
@@ -21131,7 +21429,6 @@ define('Core/Quaternion',[
     return Quaternion;
 });
 
-/*global define*/
 define('Core/Transforms',[
         '../ThirdParty/when',
         './Cartesian2',
@@ -21141,7 +21438,6 @@ define('Core/Transforms',[
         './Check',
         './defaultValue',
         './defined',
-        './deprecationWarning',
         './DeveloperError',
         './EarthOrientationParameters',
         './EarthOrientationParametersSample',
@@ -21163,7 +21459,6 @@ define('Core/Transforms',[
         Check,
         defaultValue,
         defined,
-        deprecationWarning,
         DeveloperError,
         EarthOrientationParameters,
         EarthOrientationParametersSample,
@@ -21354,6 +21649,7 @@ define('Core/Transforms',[
      * <li>The <code>z</code> axis points in the direction of the ellipsoid surface normal which passes through the position.</li>
      * </ul>
      *
+     * @function
      * @param {Cartesian3} origin The center point of the local reference frame.
      * @param {Ellipsoid} [ellipsoid=Ellipsoid.WGS84] The ellipsoid whose fixed frame is used in the transformation.
      * @param {Matrix4} [result] The object onto which to store the result.
@@ -21376,6 +21672,7 @@ define('Core/Transforms',[
      * <li>The <code>z</code> axis points in the opposite direction of the ellipsoid surface normal which passes through the position.</li>
      * </ul>
      *
+     * @function
      * @param {Cartesian3} origin The center point of the local reference frame.
      * @param {Ellipsoid} [ellipsoid=Ellipsoid.WGS84] The ellipsoid whose fixed frame is used in the transformation.
      * @param {Matrix4} [result] The object onto which to store the result.
@@ -21398,6 +21695,7 @@ define('Core/Transforms',[
      * <li>The <code>z</code> axis points in the local east direction.</li>
      * </ul>
      *
+     * @function
      * @param {Cartesian3} origin The center point of the local reference frame.
      * @param {Ellipsoid} [ellipsoid=Ellipsoid.WGS84] The ellipsoid whose fixed frame is used in the transformation.
      * @param {Matrix4} [result] The object onto which to store the result.
@@ -21411,26 +21709,27 @@ define('Core/Transforms',[
     Transforms.northUpEastToFixedFrame = Transforms.localFrameToFixedFrameGenerator('north','up');
 
     /**
-    * Computes a 4x4 transformation matrix from a reference frame with an north-west-up axes
-    * centered at the provided origin to the provided ellipsoid's fixed reference frame.
-    * The local axes are defined as:
-    * <ul>
-    * <li>The <code>x</code> axis points in the local north direction.</li>
-    * <li>The <code>y</code> axis points in the local west direction.</li>
-    * <li>The <code>z</code> axis points in the direction of the ellipsoid surface normal which passes through the position.</li>
-    * </ul>
-    *
-    * @param {Cartesian3} origin The center point of the local reference frame.
-    * @param {Ellipsoid} [ellipsoid=Ellipsoid.WGS84] The ellipsoid whose fixed frame is used in the transformation.
-    * @param {Matrix4} [result] The object onto which to store the result.
-    * @returns {Matrix4} The modified result parameter or a new Matrix4 instance if none was provided.
-    *
-    * @example
-    * // Get the transform from local north-West-Up at cartographic (0.0, 0.0) to Earth's fixed frame.
-    * var center = Cesium.Cartesian3.fromDegrees(0.0, 0.0);
-    * var transform = Cesium.Transforms.northWestUpToFixedFrame(center);
-    */
-   Transforms.northWestUpToFixedFrame = Transforms.localFrameToFixedFrameGenerator('north','west');
+     * Computes a 4x4 transformation matrix from a reference frame with an north-west-up axes
+     * centered at the provided origin to the provided ellipsoid's fixed reference frame.
+     * The local axes are defined as:
+     * <ul>
+     * <li>The <code>x</code> axis points in the local north direction.</li>
+     * <li>The <code>y</code> axis points in the local west direction.</li>
+     * <li>The <code>z</code> axis points in the direction of the ellipsoid surface normal which passes through the position.</li>
+     * </ul>
+     *
+     * @function
+     * @param {Cartesian3} origin The center point of the local reference frame.
+     * @param {Ellipsoid} [ellipsoid=Ellipsoid.WGS84] The ellipsoid whose fixed frame is used in the transformation.
+     * @param {Matrix4} [result] The object onto which to store the result.
+     * @returns {Matrix4} The modified result parameter or a new Matrix4 instance if none was provided.
+     *
+      * @example
+     * // Get the transform from local north-West-Up at cartographic (0.0, 0.0) to Earth's fixed frame.
+     * var center = Cesium.Cartesian3.fromDegrees(0.0, 0.0);
+     * var transform = Cesium.Transforms.northWestUpToFixedFrame(center);
+     */
+    Transforms.northWestUpToFixedFrame = Transforms.localFrameToFixedFrameGenerator('north','west');
 
     var scratchHPRQuaternion = new Quaternion();
     var scratchScale = new Cartesian3(1.0, 1.0, 1.0);
@@ -21445,7 +21744,7 @@ define('Core/Transforms',[
      * @param {Cartesian3} origin The center point of the local reference frame.
      * @param {HeadingPitchRoll} headingPitchRoll The heading, pitch, and roll.
      * @param {Ellipsoid} [ellipsoid=Ellipsoid.WGS84] The ellipsoid whose fixed frame is used in the transformation.
-     * @param {Transforms~LocalFrameToFixedFrame} [fixedFrameTransformOrResult=Transforms.eastNorthUpToFixedFrame] A 4x4 transformation
+     * @param {Transforms~LocalFrameToFixedFrame} [fixedFrameTransform=Transforms.eastNorthUpToFixedFrame] A 4x4 transformation
      *  matrix from a reference frame to the provided ellipsoid's fixed reference frame
      * @param {Matrix4} [result] The object onto which to store the result.
      * @returns {Matrix4} The modified result parameter or a new Matrix4 instance if none was provided.
@@ -21459,19 +21758,13 @@ define('Core/Transforms',[
      * var hpr = new Cesium.HeadingPitchRoll(heading, pitch, roll);
      * var transform = Cesium.Transforms.headingPitchRollToFixedFrame(center, hpr);
      */
-    Transforms.headingPitchRollToFixedFrame = function(origin, headingPitchRoll, ellipsoid, fixedFrameTransformOrResult, result) {
+    Transforms.headingPitchRollToFixedFrame = function(origin, headingPitchRoll, ellipsoid, fixedFrameTransform, result) {
                 Check.typeOf.object( 'HeadingPitchRoll', headingPitchRoll);
         
-        // checks for required parameters happen in the called functions
-        if(fixedFrameTransformOrResult instanceof Matrix4){
-            result = fixedFrameTransformOrResult;
-            fixedFrameTransformOrResult = undefined;
-            deprecationWarning('Transforms.headingPitchRollToFixedFrame(origin, headingPitchRoll, ellipsoid, result)', 'The method was deprecated in Cesium 1.31 and will be removed in version 1.33. Transforms.headingPitchRollToFixedFrame(origin, headingPitchRoll, ellipsoid, fixedFrameTransform, result) where fixedFrameTransform is a a 4x4 transformation matrix (see Transforms.localFrameToFixedFrameGenerator)');
-        }
-        fixedFrameTransformOrResult = defaultValue(fixedFrameTransformOrResult,Transforms.eastNorthUpToFixedFrame);
+        fixedFrameTransform = defaultValue(fixedFrameTransform, Transforms.eastNorthUpToFixedFrame);
         var hprQuaternion = Quaternion.fromHeadingPitchRoll(headingPitchRoll, scratchHPRQuaternion);
         var hprMatrix = Matrix4.fromTranslationQuaternionRotationScale(Cartesian3.ZERO, hprQuaternion, scratchScale, scratchHPRMatrix4);
-        result = fixedFrameTransformOrResult(origin, ellipsoid, result);
+        result = fixedFrameTransform(origin, ellipsoid, result);
         return Matrix4.multiply(result, hprMatrix, result);
     };
 
@@ -21487,7 +21780,7 @@ define('Core/Transforms',[
      * @param {Cartesian3} origin The center point of the local reference frame.
      * @param {HeadingPitchRoll} headingPitchRoll The heading, pitch, and roll.
      * @param {Ellipsoid} [ellipsoid=Ellipsoid.WGS84] The ellipsoid whose fixed frame is used in the transformation.
-     * @param {Transforms~LocalFrameToFixedFrame} [fixedFrameTransformOrResult=Transforms.eastNorthUpToFixedFrame] A 4x4 transformation
+     * @param {Transforms~LocalFrameToFixedFrame} [fixedFrameTransform=Transforms.eastNorthUpToFixedFrame] A 4x4 transformation
      *  matrix from a reference frame to the provided ellipsoid's fixed reference frame
      * @param {Quaternion} [result] The object onto which to store the result.
      * @returns {Quaternion} The modified result parameter or a new Quaternion instance if none was provided.
@@ -21501,14 +21794,10 @@ define('Core/Transforms',[
      * var hpr = new HeadingPitchRoll(heading, pitch, roll);
      * var quaternion = Cesium.Transforms.headingPitchRollQuaternion(center, hpr);
      */
-    Transforms.headingPitchRollQuaternion = function(origin, headingPitchRoll, ellipsoid, fixedFrameTransformOrResult, result) {
+    Transforms.headingPitchRollQuaternion = function(origin, headingPitchRoll, ellipsoid, fixedFrameTransform, result) {
                 Check.typeOf.object( 'HeadingPitchRoll', headingPitchRoll);
-                if (fixedFrameTransformOrResult instanceof Quaternion) {
-            result = fixedFrameTransformOrResult;
-            fixedFrameTransformOrResult = undefined;
-            deprecationWarning('Transforms.headingPitchRollQuaternion(origin, headingPitchRoll, ellipsoid, result)', 'The method was deprecated in Cesium 1.31 and will be removed in version 1.33. Transforms.headingPitchRollQuaternion(origin, headingPitchRoll, ellipsoid, fixedFrameTransform, result) where fixedFrameTransform is a a 4x4 transformation matrix (see Transforms.localFrameToFixedFrameGenerator)');
-        }
-        var transform = Transforms.headingPitchRollToFixedFrame(origin, headingPitchRoll, ellipsoid,fixedFrameTransformOrResult, scratchENUMatrix4);
+        
+        var transform = Transforms.headingPitchRollToFixedFrame(origin, headingPitchRoll, ellipsoid, fixedFrameTransform, scratchENUMatrix4);
         var rotation = Matrix4.getRotation(transform, scratchHPRMatrix3);
         return Quaternion.fromRotationMatrix(rotation, result);
     };
@@ -21991,7 +22280,6 @@ define('Core/Transforms',[
     return Transforms;
 });
 
-/*global define*/
 define('Core/EllipsoidTangentPlane',[
         './AxisAlignedBoundingBox',
         './Cartesian2',
@@ -22325,7 +22613,6 @@ define('Core/EllipsoidTangentPlane',[
     return EllipsoidTangentPlane;
 });
 
-/*global define*/
 define('Core/GeometryType',[
         './freezeObject'
     ], function(
@@ -22345,7 +22632,6 @@ define('Core/GeometryType',[
     return freezeObject(GeometryType);
 });
 
-/*global define*/
 define('Core/PrimitiveType',[
         './freezeObject',
         './WebGLConstants'
@@ -22437,14 +22723,15 @@ define('Core/PrimitiveType',[
     return freezeObject(PrimitiveType);
 });
 
-/*global define*/
 define('Core/Geometry',[
+        './Check',
         './defaultValue',
         './defined',
         './DeveloperError',
         './GeometryType',
         './PrimitiveType'
     ], function(
+        Check,
         defaultValue,
         defined,
         DeveloperError,
@@ -22505,9 +22792,7 @@ define('Core/Geometry',[
     function Geometry(options) {
         options = defaultValue(options, defaultValue.EMPTY_OBJECT);
 
-                if (!defined(options.attributes)) {
-            throw new DeveloperError('options.attributes is required.');
-        }
+                Check.typeOf.object('options.attributes', options.attributes);
         
         /**
          * Attributes, which make up the geometry's vertices.  Each property in this object corresponds to a
@@ -22609,9 +22894,7 @@ define('Core/Geometry',[
      * var numVertices = Cesium.Geometry.computeNumberOfVertices(geometry);
      */
     Geometry.computeNumberOfVertices = function(geometry) {
-                if (!defined(geometry)) {
-            throw new DeveloperError('geometry is required.');
-        }
+                Check.typeOf.object('geometry', geometry);
         
         var numberOfVertices = -1;
         for ( var property in geometry.attributes) {
@@ -22634,7 +22917,6 @@ define('Core/Geometry',[
     return Geometry;
 });
 
-/*global define*/
 define('Core/GeometryAttribute',[
         './defaultValue',
         './defined',
@@ -22677,7 +22959,7 @@ define('Core/GeometryAttribute',[
      *   },
      *   primitiveType : Cesium.PrimitiveType.LINE_LOOP
      * });
-     * 
+     *
      * @see Geometry
      */
     function GeometryAttribute(options) {
@@ -22775,7 +23057,6 @@ define('Core/GeometryAttribute',[
     return GeometryAttribute;
 });
 
-/*global define*/
 define('Core/GeometryAttributes',[
         './defaultValue'
     ], function(
@@ -22871,7 +23152,6 @@ define('Core/GeometryAttributes',[
     return GeometryAttributes;
 });
 
-/*global define*/
 define('Core/GeometryInstance',[
         './defaultValue',
         './defined',
@@ -22926,7 +23206,7 @@ define('Core/GeometryInstance',[
      *   },
      *   id : 'top'
      * });
-     * 
+     *
      * @see Geometry
      */
     function GeometryInstance(options) {
@@ -22999,7 +23279,6 @@ define('Core/GeometryInstance',[
     return GeometryInstance;
 });
 
-/*global define*/
 define('Core/AttributeCompression',[
         './Cartesian2',
         './Cartesian3',
@@ -23263,10 +23542,41 @@ define('Core/AttributeCompression',[
         return result;
     };
 
+    function zigZagDecode(value) {
+        return (value >> 1) ^ (-(value & 1));
+    }
+
+    AttributeCompression.zigZagDeltaDecode = function(uBuffer, vBuffer, heightBuffer) {
+                if (!defined(uBuffer)) {
+            throw new DeveloperError('uBuffer is required.');
+        }
+        if (!defined(vBuffer)) {
+            throw new DeveloperError('vBuffer is required.');
+        }
+        
+        var count = uBuffer.length;
+
+        var u = 0;
+        var v = 0;
+        var height = 0;
+
+        for (var i = 0; i < count; ++i) {
+            u += zigZagDecode(uBuffer[i]);
+            v += zigZagDecode(vBuffer[i]);
+
+            uBuffer[i] = u;
+            vBuffer[i] = v;
+
+            if (defined(heightBuffer)) {
+                height += zigZagDecode(heightBuffer[i]);
+                heightBuffer[i] = height;
+            }
+        }
+    };
+
     return AttributeCompression;
 });
 
-/*global define*/
 define('Core/barycentricCoordinates',[
         './Cartesian2',
         './Cartesian3',
@@ -23276,7 +23586,7 @@ define('Core/barycentricCoordinates',[
         Cartesian2,
         Cartesian3,
         Check,
-        defined ) {
+        defined) {
     'use strict';
 
     var scratchCartesian1 = new Cartesian3();
@@ -23350,15 +23660,14 @@ define('Core/barycentricCoordinates',[
     return barycentricCoordinates;
 });
 
-/*global define*/
 define('Core/EncodedCartesian3',[
         './Cartesian3',
-        './defined',
-        './DeveloperError'
+        './Check',
+        './defined'
     ], function(
         Cartesian3,
-        defined,
-        DeveloperError) {
+        Check,
+        defined) {
     'use strict';
 
     /**
@@ -23409,9 +23718,7 @@ define('Core/EncodedCartesian3',[
      * var splitValue = Cesium.EncodedCartesian3.encode(value);
      */
     EncodedCartesian3.encode = function(value, result) {
-                if (!defined(value)) {
-            throw new DeveloperError('value is required');
-        }
+                Check.typeOf.number('value', value);
         
         if (!defined(result)) {
             result = {
@@ -23455,9 +23762,7 @@ define('Core/EncodedCartesian3',[
      * var encoded = Cesium.EncodedCartesian3.fromCartesian(cart);
      */
     EncodedCartesian3.fromCartesian = function(cartesian, result) {
-                if (!defined(cartesian)) {
-            throw new DeveloperError('cartesian is required');
-        }
+                Check.typeOf.object('cartesian', cartesian);
         
         if (!defined(result)) {
             result = new EncodedCartesian3();
@@ -23509,15 +23814,9 @@ define('Core/EncodedCartesian3',[
      * }
      */
     EncodedCartesian3.writeElements = function(cartesian, cartesianArray, index) {
-                if (!defined(cartesian)) {
-            throw new DeveloperError('cartesian is required');
-        }
-        if (!defined(cartesianArray)) {
-            throw new DeveloperError('cartesianArray is required');
-        }
-        if (typeof index !== 'number' || index < 0) {
-            throw new DeveloperError('index must be a number greater than or equal to 0.');
-        }
+                Check.defined('cartesianArray', cartesianArray);
+        Check.typeOf.number('index', index);
+        Check.typeOf.number.greaterThanOrEquals('index', index, 0);
         
         EncodedCartesian3.fromCartesian(cartesian, encodedP);
         var high = encodedP.high;
@@ -23534,7 +23833,6 @@ define('Core/EncodedCartesian3',[
     return EncodedCartesian3;
 });
 
-/*global define*/
 define('Core/IndexDatatype',[
         './defined',
         './DeveloperError',
@@ -23680,7 +23978,6 @@ define('Core/IndexDatatype',[
     return freezeObject(IndexDatatype);
 });
 
-/*global define*/
 define('Core/Tipsify',[
         './defaultValue',
         './defined',
@@ -23893,7 +24190,8 @@ define('Core/Tipsify',[
 
         // Vertices
         var vertices = [];
-        for ( var i = 0; i < maximumIndexPlusOne; i++) {
+        var i;
+        for (i = 0; i < maximumIndexPlusOne; i++) {
             vertices[i] = {
                 numLiveTriangles : 0,
                 timeStamp : 0,
@@ -23973,7 +24271,6 @@ define('Core/Tipsify',[
     return Tipsify;
 });
 
-/*global define*/
 define('Core/GeometryPipeline',[
         './AttributeCompression',
         './barycentricCoordinates',
@@ -24349,8 +24646,8 @@ define('Core/GeometryPipeline',[
                     while (intoElementsIn < numVertices) {
                         var temp = indexCrossReferenceOldToNew[intoElementsIn];
                         if (temp !== -1) {
-                            for (i = 0; i < numComponents; i++) {
-                                elementsOut[numComponents * temp + i] = elementsIn[numComponents * intoElementsIn + i];
+                            for (var j = 0; j < numComponents; j++) {
+                                elementsOut[numComponents * temp + j] = elementsIn[numComponents * intoElementsIn + j];
                             }
                         }
                         ++intoElementsIn;
@@ -25049,8 +25346,8 @@ define('Core/GeometryPipeline',[
         var normalsPerVertex = new Array(numVertices);
         var normalsPerTriangle = new Array(numIndices / 3);
         var normalIndices = new Array(numIndices);
-
-        for ( var i = 0; i < numVertices; i++) {
+        var i;
+        for ( i = 0; i < numVertices; i++) {
             normalsPerVertex[i] = {
                 indexOffset : 0,
                 count : 0,
@@ -25208,7 +25505,8 @@ define('Core/GeometryPipeline',[
         var numIndices = indices.length;
         var tan1 = new Array(numVertices * 3);
 
-        for ( var i = 0; i < tan1.length; i++) {
+        var i;
+        for ( i = 0; i < tan1.length; i++) {
             tan1[i] = 0;
         }
 
@@ -26489,7 +26787,6 @@ define('Core/GeometryPipeline',[
     return GeometryPipeline;
 });
 
-/*global define*/
 define('ThirdParty/earcut-2.1.1',[], function() {
     'use strict';
 
@@ -27137,7 +27434,6 @@ earcut.flatten = function (data) {
 return earcut;
 });
 
-/*global define*/
 define('Core/WindingOrder',[
         './freezeObject',
         './WebGLConstants'
@@ -27180,15 +27476,14 @@ define('Core/WindingOrder',[
     return freezeObject(WindingOrder);
 });
 
-/*global define*/
 define('Core/PolygonPipeline',[
         '../ThirdParty/earcut-2.1.1',
         './Cartesian2',
         './Cartesian3',
+        './Check',
         './ComponentDatatype',
         './defaultValue',
         './defined',
-        './DeveloperError',
         './Ellipsoid',
         './Geometry',
         './GeometryAttribute',
@@ -27199,10 +27494,10 @@ define('Core/PolygonPipeline',[
         earcut,
         Cartesian2,
         Cartesian3,
+        Check,
         ComponentDatatype,
         defaultValue,
         defined,
-        DeveloperError,
         Ellipsoid,
         Geometry,
         GeometryAttribute,
@@ -27223,12 +27518,8 @@ define('Core/PolygonPipeline',[
      * @exception {DeveloperError} At least three positions are required.
      */
     PolygonPipeline.computeArea2D = function(positions) {
-                if (!defined(positions)) {
-            throw new DeveloperError('positions is required.');
-        }
-        if (positions.length < 3) {
-            throw new DeveloperError('At least three positions are required.');
-        }
+                Check.defined('positions', positions);
+        Check.typeOf.number.greaterThanOrEquals('positions.length', positions.length, 3);
         
         var length = positions.length;
         var area = 0.0;
@@ -27261,9 +27552,7 @@ define('Core/PolygonPipeline',[
      * @returns {Number[]} Index array representing triangles that fill the polygon
      */
     PolygonPipeline.triangulate = function(positions, holes) {
-                if (!defined(positions)) {
-            throw new DeveloperError('positions is required.');
-        }
+                Check.defined('positions', positions);
         
         var flattenedPositions = Cartesian2.packArray(positions);
         return earcut(flattenedPositions, holes, 2);
@@ -27292,24 +27581,12 @@ define('Core/PolygonPipeline',[
     PolygonPipeline.computeSubdivision = function(ellipsoid, positions, indices, granularity) {
         granularity = defaultValue(granularity, CesiumMath.RADIANS_PER_DEGREE);
 
-                if (!defined(ellipsoid)) {
-            throw new DeveloperError('ellipsoid is required.');
-        }
-        if (!defined(positions)) {
-            throw new DeveloperError('positions is required.');
-        }
-        if (!defined(indices)) {
-            throw new DeveloperError('indices is required.');
-        }
-        if (indices.length < 3) {
-            throw new DeveloperError('At least three indices are required.');
-        }
-        if (indices.length % 3 !== 0) {
-            throw new DeveloperError('The number of indices must be divisable by three.');
-        }
-        if (granularity <= 0.0) {
-            throw new DeveloperError('granularity must be greater than zero.');
-        }
+                Check.typeOf.object('ellipsoid', ellipsoid);
+        Check.defined('positions', positions);
+        Check.defined('indices', indices);
+        Check.typeOf.number.greaterThanOrEquals('indices.length', indices.length, 3);
+        Check.typeOf.number.equals('indices.length % 3', '0', indices.length % 3, 0);
+        Check.typeOf.number.greaterThan('granularity', granularity, 0.0);
         
         // triangles that need (or might need) to be subdivided.
         var triangles = indices.slice(0);
@@ -27469,7 +27746,141 @@ define('Core/PolygonPipeline',[
     return PolygonPipeline;
 });
 
-/*global define*/
+define('Core/Queue',[
+        './defineProperties'
+    ], function(
+        defineProperties) {
+    'use strict';
+
+    /**
+     * A queue that can enqueue items at the end, and dequeue items from the front.
+     *
+     * @alias Queue
+     * @constructor
+     */
+    function Queue() {
+        this._array = [];
+        this._offset = 0;
+        this._length = 0;
+    }
+
+    defineProperties(Queue.prototype, {
+        /**
+         * The length of the queue.
+         *
+         * @memberof Queue.prototype
+         *
+         * @type {Number}
+         * @readonly
+         */
+        length : {
+            get : function() {
+                return this._length;
+            }
+        }
+    });
+
+    /**
+     * Enqueues the specified item.
+     *
+     * @param {Object} item The item to enqueue.
+     */
+    Queue.prototype.enqueue = function(item) {
+        this._array.push(item);
+        this._length++;
+    };
+
+    /**
+     * Dequeues an item.  Returns undefined if the queue is empty.
+     *
+     * @returns {Object} The the dequeued item.
+     */
+    Queue.prototype.dequeue = function() {
+        if (this._length === 0) {
+            return undefined;
+        }
+
+        var array = this._array;
+        var offset = this._offset;
+        var item = array[offset];
+        array[offset] = undefined;
+
+        offset++;
+        if ((offset > 10) && (offset * 2 > array.length)) {
+            //compact array
+            this._array = array.slice(offset);
+            offset = 0;
+        }
+
+        this._offset = offset;
+        this._length--;
+
+        return item;
+    };
+
+    /**
+     * Returns the item at the front of the queue.  Returns undefined if the queue is empty.
+     *
+     * @returns {Object} The item at the front of the queue.
+     */
+    Queue.prototype.peek = function() {
+        if (this._length === 0) {
+            return undefined;
+        }
+
+        return this._array[this._offset];
+    };
+
+    /**
+     * Check whether this queue contains the specified item.
+     *
+     * @param {Object} item The item to search for.
+     */
+    Queue.prototype.contains = function(item) {
+        return this._array.indexOf(item) !== -1;
+    };
+
+    /**
+     * Remove all items from the queue.
+     */
+    Queue.prototype.clear = function() {
+        this._array.length = this._offset = this._length = 0;
+    };
+
+    /**
+     * Sort the items in the queue in-place.
+     *
+     * @param {Queue~Comparator} compareFunction A function that defines the sort order.
+     */
+    Queue.prototype.sort = function(compareFunction) {
+        if (this._offset > 0) {
+            //compact array
+            this._array = this._array.slice(this._offset);
+            this._offset = 0;
+        }
+
+        this._array.sort(compareFunction);
+    };
+
+    /**
+     * A function used to compare two items while sorting a queue.
+     * @callback Queue~Comparator
+     *
+     * @param {Object} a An item in the array.
+     * @param {Object} b An item in the array.
+     * @returns {Number} Returns a negative value if <code>a</code> is less than <code>b</code>,
+     *          a positive value if <code>a</code> is greater than <code>b</code>, or
+     *          0 if <code>a</code> is equal to <code>b</code>.
+     *
+     * @example
+     * function compareNumbers(a, b) {
+     *     return a - b;
+     * }
+     */
+
+    return Queue;
+});
+
 define('Core/PolygonGeometryLibrary',[
         './arrayRemoveDuplicates',
         './Cartesian3',
@@ -27919,7 +28330,6 @@ define('Core/PolygonGeometryLibrary',[
     return PolygonGeometryLibrary;
 });
 
-/*global define*/
 define('Core/PolygonOutlineGeometry',[
         './arrayRemoveDuplicates',
         './BoundingSphere',
@@ -28457,7 +28867,6 @@ define('Core/PolygonOutlineGeometry',[
     return PolygonOutlineGeometry;
 });
 
-/*global define*/
 define('Workers/createPolygonOutlineGeometry',[
         '../Core/defined',
         '../Core/Ellipsoid',

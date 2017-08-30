@@ -11,7 +11,6 @@ describe('ga_wms_service', function() {
       });
       layer.id = 'WMS||The wms layer||http://foo.ch/wms||' + name;
       layer.displayInLayerManager = true;
-      layer.type = 'WMS';
       layer.url = 'http://foo.ch/wms';
       return layer;
     };
@@ -22,7 +21,7 @@ describe('ga_wms_service', function() {
       expect(layer).to.be.an(ol.layer.Image);
       expect(layer.id).to.be(options.id || 'WMS||' + options.label + '||' + options.url + '||' + options.LAYERS);
       expect(layer.url).to.be(options.url);
-      expect(layer.type).to.be('WMS');
+      expect(layer.type).to.be('IMAGE');
       expect(layer.invertedOpacity).to.be(options.invertedOpacity || 0);
       expect(layer.visible).to.be(angular.isDefined(options.visible) ? options.visible : true);
       expect(layer.get('attribution')).to.be(options.attribution);

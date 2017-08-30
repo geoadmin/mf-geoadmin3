@@ -20,7 +20,7 @@
         <select ng-model="layer.time"
                 ng-options="(i | gaTimeLabel:layer) for i in layer.timestamps"
                 class="visible-xs-block">
-          <option ng-if="layer.type == 'wms'" value="" translate>time_all</option>
+          <option ng-if="layer.timeBehaviour == 'all'" value="" translate>time_all</option>
         </select>
       </div>
       <button class="ga-icon ga-btn fa fa-user"

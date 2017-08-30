@@ -98,7 +98,7 @@ goog.require('ga_map_service');
 
         var createLayerProgress = function(layers) {
           angular.forEach(layers, function(layer) {
-            if (layer.type === 'aggregate') {
+            if (layer instanceof ol.layer.Group) {
               createLayerProgress(layer.getLayers());
             } else if (!progs[layer.id]) {
               progs[layer.id] = new LayerProgress(layer);

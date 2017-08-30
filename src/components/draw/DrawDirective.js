@@ -51,7 +51,6 @@ goog.require('ga_styles_service');
       }
       gaMeasure.registerOverlaysEvents(map, dfltLayer);
       dfltLayer.label = $translate.instant('draw_layer_label');
-      dfltLayer.type = 'KML';
       return dfltLayer;
     };
 
@@ -248,7 +247,11 @@ goog.require('ga_styles_service');
         // Activate/deactivate the select interaction is enough.
         var modify = new ol.interaction.Modify({
           features: select.getFeatures(),
-          style: scope.options.selectStyleFunction
+          style: scope.options.selectStyleFunction,
+          deleteCondition: function(event) {
+            return ol.events.condition.noModifierKeys(event) &&
+                ol.events.condition.singleClick(event);
+          }
         });
         modify.on('modifystart', function(evt) {
           if (evt.mapBrowserEvent.type !== 'singleclick') {

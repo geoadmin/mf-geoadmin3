@@ -90,7 +90,6 @@ goog.require('ga_urlutils_service');
           var layer = new ol.layer.Image({
             id: options.id,
             url: options.url,
-            type: 'WMS',
             opacity: options.opacity,
             visible: options.visible,
             attribution: options.attribution,

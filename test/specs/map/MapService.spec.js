@@ -117,7 +117,7 @@ describe('ga_map_service', function() {
       url: 'http://foo.ch/wmts'
     });
     var layer = new ol.layer.Image({
-      id: 'WMTS||The wms layer||http://foo.ch/wms||ch.wms.name',
+      id: 'WMTS||The wmts layer||http://foo.ch/wmts.xml',
       url: 'http://foo.ch/wmts',
       type: 'WMTS',
       label: 'The wmts layer',
@@ -242,8 +242,8 @@ describe('ga_map_service', function() {
         'bodId',
         'label',
         'url',
-        'type',
         'altitudeMode',
+        'timeBehaviour',
         'timeEnabled',
         'timestamps',
         'altitudeMode'
@@ -1065,7 +1065,7 @@ describe('ga_map_service', function() {
         var layer = layersConfig[bodId];
         var props = [
           'label',
-          'type',
+          'timeBehaviour',
           'timeEnabled',
           'timestamps',
           'geojsonUrl',
@@ -1992,7 +1992,7 @@ describe('ga_map_service', function() {
         expect(gaMapUtils.isExternalWmtsLayer(layer)).to.eql(false);
         layer = addLayerGroupToMap();
         gaDefinePropertiesForLayer(layer);
-        expect(gaMapUtils.isStoredKmlLayer(layer)).to.eql(false);
+        expect(gaMapUtils.isExternalWmtsLayer(layer)).to.eql(false);
         layer = addExternalWmtsLayerToMap();
         gaDefinePropertiesForLayer(layer);
         expect(gaMapUtils.isExternalWmtsLayer(layer)).to.eql(true);

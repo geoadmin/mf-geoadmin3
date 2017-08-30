@@ -29,20 +29,20 @@ goog.require('ga_map_service');
 
       function setLayerSource(layer) {
         var olSource = layer.getSource();
-        var kml = (layer.type === 'KML');
+        var kml = gaMapUtils.isKmlLayer(layer);
         var url = !kml ? layer.geojsonUrl : layer.url;
         gaUrlUtils.proxifyUrl(url).then(function(proxyUrl) {
           $http.get(proxyUrl).then(function(response) {
             var data = response.data;
             if (kml) {
-              gaKml.readFeatures(data,
-                  map.getView().getProjection()).then(function(features) {
-                olSource.clear();
-                olSource.addFeatures(features);
-                olSource.setProperties({
-                  'kmlString': data
-                });
-              });
+              gaKml.readFeatures(data, map.getView().getProjection()).
+                  then(function(features) {
+                    olSource.clear();
+                    olSource.addFeatures(features);
+                    olSource.setProperties({
+                      'kmlString': data
+                    });
+                  });
             } else {
               olSource.clear();
               olSource.addFeatures(
