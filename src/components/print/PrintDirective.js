@@ -397,8 +397,13 @@ goog.require('ga_urlutils_service');
                 if (!$scope.options.printing) {
                   return;
                 }
+                var noCacheUrl = url;
+                if (gaBrowserSniffer.msie === 9) {
+                  // #3937: Avoid caching of the request by IE9
+                  noCacheUrl += '&' + (new Date()).getTime();
+                }
                 canceller = $q.defer();
-                $http.get(url, {
+                $http.get(noCacheUrl, {
                   timeout: canceller.promise
                 }).then(function(response) {
                   var data = response.data;
