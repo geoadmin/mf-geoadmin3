@@ -32,6 +32,8 @@
     "ol.coordinate.toStringXY",
     "ol.easing.easeOut",
     "ol.easing.linear",
+    "ol.events.condition.noModifierKeys",
+    "ol.events.condition.singleClick",
     "ol.extent.buffer",
     "ol.extent.containsCoordinate",
     "ol.extent.containsXY",
