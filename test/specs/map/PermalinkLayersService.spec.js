@@ -137,6 +137,7 @@ describe('ga_permalinklayers_service', function() {
           getOlLayerById: function(bodId) {
             var layer = new ol.layer.Tile();
             layer.bodId = bodId;
+            layer.id = bodId;
             layer.displayInLayerManager = true;
             return layer;
           }

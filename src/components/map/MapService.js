@@ -1519,7 +1519,7 @@ goog.require('ga_urlutils_service');
           return layer.displayInLayerManager && layer.visible;
         },
         permalinked: function(layer) {
-          return layer.displayInLayerManager &&
+          return layer.displayInLayerManager && !!layer.id &&
                  !gaMapUtils.isLocalKmlLayer(layer);
         },
         /**

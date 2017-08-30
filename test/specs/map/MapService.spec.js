@@ -1458,12 +1458,14 @@ describe('ga_map_service', function() {
 
     describe('#permalinked()', function() {
 
-      it('keeps layers displayed in layer manager', function() {
+      it('keeps layers displayed in layer manager and an id', function() {
         var layer = new ol.layer.Vector();
         gaDefinePropertiesForLayer(layer);
         layer.displayInLayerManager = false;
         expect(gaLayerFilters.permalinked(layer)).to.be(false);
         layer.displayInLayerManager = true;
+        expect(gaLayerFilters.permalinked(layer)).to.be(false);
+        layer.id = 'foo';
         expect(gaLayerFilters.permalinked(layer)).to.be(true);
       });
 
