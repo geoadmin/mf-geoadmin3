@@ -150,6 +150,7 @@ goog.require('ga_featureload_service');
           var that = this;
           getFeatures(map, featureIdsByBodId).then(function(results) {
             var features = [];
+            //if (gaLayers.getLayer(bodId)['type'] === 'geojson') {
             angular.forEach(results, function(result) {
               // for geojson
               if (result instanceof ol.Feature) {
