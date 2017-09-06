@@ -353,6 +353,7 @@ goog.require('ga_urlutils_service');
           dfltWmtsMapProxySubdomains, dfltVectorTilesSubdomains,
           wmsUrlTemplate, wmtsGetTileUrlTemplate,
           wmtsMapProxyGetTileUrlTemplate, terrainTileUrlTemplate,
+          wmtsToDUrlTemplate, dfltToDSubdomains,
           vectorTilesUrlTemplate, layersConfigUrlTemplate,
           legendUrlTemplate, imageryMetadataUrl) {
         var layers;
@@ -385,10 +386,24 @@ goog.require('ga_urlutils_service');
           return urls;
         };
 
+        var todLayers = [
+          'ch.swisstopo.swisstlm3d-karte-farbe.3d',
+          'ch.swisstopo.swisstlm3d-wanderwege'
+        ];
+
+        var useToD = function(layer, tileMatrixSet) {
+          if (tileMatrixSet !== '4326') {
+            return false;
+          }
+          return (todLayers.indexOf(layer) !== -1);
+        }
+
         var getWmtsGetTileTpl = function(layer, time, tileMatrixSet,
             format, useNativeTpl) {
           var tpl;
-          if (useNativeTpl) {
+          if (useToD(layer, tileMatrixSet)) {
+            tpl = wmtsToDUrlTemplate;
+          } else if (useNativeTpl) {
             tpl = wmtsGetTileUrlTemplate;
           } else {
             tpl = wmtsMapProxyGetTileUrlTemplate;
@@ -659,8 +674,10 @@ goog.require('ga_urlutils_service');
               url: getWmtsGetTileTpl(requestedLayer, timestamp,
                   '4326', format, hasNativeTiles),
               tileSize: 256,
-              subdomains: hasNativeTiles ? h2(dfltWmtsNativeSubdomains) :
-                h2(dfltWmtsMapProxySubdomains)
+              subdomains: useToD(requestedLayer, '4326') ?
+                h2(dfltToDSubdomains) :
+                hasNativeTiles ? h2(dfltWmtsNativeSubdomains) :
+                  h2(dfltWmtsMapProxySubdomains)
             };
           } else if (config3d.type === 'wms') {
             var tileSize = 512;
@@ -1041,6 +1058,7 @@ goog.require('ga_urlutils_service');
           this.dfltWmtsMapProxySubdomains, this.dfltVectorTilesSubdomains,
           this.wmsUrlTemplate, this.wmtsGetTileUrlTemplate,
           this.wmtsMapProxyGetTileUrlTemplate, this.terrainTileUrlTemplate,
+          this.wmtsToDUrlTemplate, this.dfltToDSubdomains,
           this.vectorTilesUrlTemplate, this.layersConfigUrlTemplate,
           this.legendUrlTemplate, this.imageryMetadataUrl);
     };

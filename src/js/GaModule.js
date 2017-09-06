@@ -158,6 +158,9 @@ goog.require('ga_waitcursor_service');
     gaLayersProvider.wmtsMapProxyGetTileUrlTemplate =
         gaGlobalOptions.mapproxyUrl +
         '/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{x}/{y}.{Format}';
+    gaLayersProvider.wmtsToDUrlTemplate = '//tod{s}.prod.bgdi.ch/' +
+        '1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{x}/{y}.{Format}';
+    gaLayersProvider.dfltToDSubdomains = ['100', '101', '102', '103', '104'];
     gaLayersProvider.terrainTileUrlTemplate =
         '//terrain100.geo.admin.ch/1.0.0/{Layer}/default/{Time}/4326';
     gaLayersProvider.vectorTilesUrlTemplate = gaGlobalOptions.vectorTilesUrl +
