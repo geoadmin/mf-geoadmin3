@@ -1593,7 +1593,22 @@ goog.require('ga_urlutils_service');
          */
         realtime: function(layer) {
           return layer.updateDelay != null;
+        },
+
+        /*
+         *  only geojson layers which contain features
+         */
+        geojson: function(layer) {
+          return (layer.bodId &&
+              gaLayers.getLayerProperty(layer.bodId, 'type') === 'geojson');
+        },
+        /* 
+        * only not empty layers
+        */ 
+        notempty: function(layer) {
+          return (gaLayers.getSource().getFeatures().length != 0);
         }
+
       };
     };
   });

@@ -1,6 +1,7 @@
 goog.provide('ga_map');
 
 goog.require('ga_kml_service');
+goog.require('ga_featureload_service');
 goog.require('ga_map_directive');
 goog.require('ga_map_service');
 goog.require('ga_opaquelayers_service');
@@ -15,6 +16,7 @@ goog.require('ga_wmts_service');
 (function() {
   angular.module('ga_map', [
     'ga_kml_service',
+    'ga_featureload_service',
     'ga_map_directive',
     'ga_map_service',
     'ga_opaquelayers_service',

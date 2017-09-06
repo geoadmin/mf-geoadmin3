@@ -539,17 +539,21 @@ goog.require('ga_window_service');
                 );
                 angular.forEach(foundFeatures, function(value) {
                   if (value instanceof ol.Feature) {
-                    var layerId = value.get('layerId');
-                    var feature = new ol.Feature(value.getGeometry());
-                    feature.setId(value.getId());
-                    feature.set('layerId', layerId);
-                    gaPreviewFeatures.add(map, feature);
+                    if (!nohighlight) {
+                      var layerId = value.get('layerId');
+                      var feature = new ol.Feature(value.getGeometry());
+                      feature.setId(value.getId());
+                      feature.set('layerId', layerId);
+                      gaPreviewFeatures.add(map, feature);
+                      // Store the ol feature for highlighting
+                      storeFeature(layerId, feature);
+                    }
 
                     if (value.get('htmlpopup')) {
                       showPopup(gaSanitize.html(value.get('htmlpopup')), value);
+                    } else if (value.getProperties()['description']) {
+                      showPopup(gaSanitize.html(value.getProperties()['description']), value);
                     }
-                    // Store the ol feature for highlighting
-                    storeFeature(layerId, feature);
                   } else {
                     // draw feature, but only if it should be drawn
                     if (!nohighlight &&

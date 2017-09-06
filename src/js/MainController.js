@@ -2,6 +2,7 @@ goog.provide('ga_main_controller');
 
 goog.require('ga_background_service');
 goog.require('ga_cesium');
+goog.require('ga_featureload_service');
 goog.require('ga_map');
 goog.require('ga_map_load_service');
 goog.require('ga_networkstatus_service');
@@ -13,6 +14,7 @@ goog.require('ga_window_service');
 
   var module = angular.module('ga_main_controller', [
     'pascalprecht.translate',
+    'ga_featureload_service',
     'ga_map',
     'ga_map_load_service',
     'ga_networkstatus_service',
@@ -30,7 +32,7 @@ goog.require('ga_window_service');
       gaPermalinkFeaturesManager, gaPermalinkLayersManager, gaMapUtils,
       gaRealtimeLayersManager, gaNetworkStatus, gaPermalink, gaStorage,
       gaGlobalOptions, gaBackground, gaTime, gaLayers, gaTopic,
-      gaOpaqueLayersManager, gaMapLoad, gaWindow) {
+      gaOpaqueLayersManager, gaMapLoad, gaWindow, gaFeatureLoadManager) {
 
     var createMap = function() {
       var toolbar = $('#zoomButtons')[0];
@@ -162,6 +164,8 @@ goog.require('ga_window_service');
     gaPermalinkFeaturesManager($scope.map);
 
     gaRealtimeLayersManager($scope.map);
+
+    gaFeatureLoadManager.init($scope.map);
 
     // Optimize performance by hiding non-visible layers
     gaOpaqueLayersManager($scope);
