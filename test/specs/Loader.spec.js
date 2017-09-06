@@ -71,13 +71,16 @@ beforeEach(function() {
   module(function(gaLayersProvider, gaGlobalOptions) {
     gaLayersProvider.dfltWmsSubdomains = ['', '0', '1', '2', '3', '4'];
     gaLayersProvider.dfltWmtsNativeSubdomains = ['5', '6', '7', '8', '9'];
+    gaLayersProvider.dfltToDSubdomains = ['100', '101'];
     gaLayersProvider.dfltWmtsMapProxySubdomains = ['20', '21', '22', '23', '24'];
     gaLayersProvider.dfltVectorTilesSubdomains = ['100', '101', '102', '103', '104'];
     gaLayersProvider.wmsUrlTemplate = '//wms{s}.geo.admin.ch/';
     gaLayersProvider.wmtsGetTileUrlTemplate = '//wmts{s}.geo.admin.ch/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{y}/{x}.{Format}';
-
+    gaLayersProvider.wmtsToDUrlTemplate = '//tod{s}.bgdi.ch//1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{x}/{y}.{Format}';
     gaLayersProvider.wmtsMapProxyGetTileUrlTemplate = gaGlobalOptions.mapproxyUrl +
         '/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{x}/{y}.{Format}';
+
+      // https://regex101.com/r/U5ccHi/3
     gaLayersProvider.terrainTileUrlTemplate = '//3d.geo.admin.ch/1.0.0/{Layer}/default/{Time}/4326';
     gaLayersProvider.vectorTilesUrlTemplate = '//vectortiles{s}.geo.admin.ch/{Layer}/{Time}/';
     gaLayersProvider.layersConfigUrlTemplate = 'https://example.com/all?lang={Lang}';
