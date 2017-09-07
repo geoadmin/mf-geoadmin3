@@ -24,6 +24,7 @@ goog.require('ga_styles_service');
       var FeatureLoadManager = function() {
         var map;
 
+        // watches layers for changes, returns loaded features in promises. 
         var createWatcher = function(bodId) {
           scope.layers = map.getLayers().getArray();
           scope.layerFilter = gaLayerFilters.geojson;
