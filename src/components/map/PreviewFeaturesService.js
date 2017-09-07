@@ -51,14 +51,11 @@ goog.require('ga_featureload_service');
             promises.push(featurePromise.promise);
             loadPromise.promise.then(function(featureCollection) {
               angular.forEach(featureIds, function(featureId) {
-                window.console.log(featureCollection);
-                angular.forEach(featureCollection, function(f){
-                  if(f.getId() == featureId){
+                angular.forEach(featureCollection, function(f) {
+                  if (f.getId() == featureId) {
                     featurePromise.resolve(f)
                   }
                 });
-                //var feature = olLayer.getSource().getFeatureById(featureId);
-                //featurePromise.resolve(feature);
               });
             }, function() {
               featurePromise.reject();
@@ -153,17 +150,18 @@ goog.require('ga_featureload_service');
           var that = this;
           getFeatures(map, featureIdsByBodId).then(function(results) {
             var features = [];
-            //if (gaLayers.getLayer(bodId)['type'] === 'geojson') {
             angular.forEach(results, function(result) {
-              if(result instanceof ol.Feature){
+              // for geojson
+              if (result instanceof ol.Feature) {
                 features.push(result);
-                that.add(map,result.clone());
-              }else{
-              result.data.feature.properties.layerId =
+                that.add(map, result.clone());
+              // for wms
+              } else {
+                result.data.feature.properties.layerId =
                   result.data.feature.layerBodId;
-              features.push(result.data.feature);
-              that.add(map, geojson.readFeature(result.data.feature));
-            }
+                features.push(result.data.feature);
+                that.add(map, geojson.readFeature(result.data.feature));
+              }
             });
             that.zoom(map);
             defer.resolve(features);
