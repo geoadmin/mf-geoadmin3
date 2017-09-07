@@ -145,7 +145,7 @@ help:
 	@echo "- s3infoprod         Get version info on remote prod bucket. (usage only: make s3infoprod S3_VERSION_PATH=<branch>/<sha>/<version>)"
 	@echo "- s3deleteint        Delete a project version in a remote int bucket. (usage: make s3deleteint S3_VERSION_PATH=<branch> or <branch>/<sha>/<version>)"
 	@echo "- s3deleteprod       Delete a project version in a remote prod bucket. (usage: make s3deleteprod S3_VERSION_PATH=<branch> or <branch>/<sha>/<version>)"
-	@echo "- olcesium           Update olcesium.js, olcesium-debug.js, Cesium.min.js and Cesium folder"
+	@echo "- olcesium           Update olcesium.js, olcesium-debug.js, Cesium.min.js and Cesium folder. Needs Node js version >= 6."
 	@echo "- ngeo               Update ngeo submodule with the version specified in Makefile"
 	@echo "- libs               Update js librairies used in index.html, see npm packages defined in section 'dependencies' of package.json"
 	@echo "- translate          Generate the translation files (requires db user pwd in ~/.pgpass: dbServer:dbPort:*:dbUser:dbUserPwd)"
