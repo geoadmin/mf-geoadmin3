@@ -1,7 +1,7 @@
 describe('ga_previewfeatures_service', function() {
 
   describe('gaPreviewFeatures', function() {
-    var gaPreviewFeatures, map, $q, $httpBackend, gaMapUtils, gaStyleFactory;
+    var gaPreviewFeatures, map, $q, $httpBackend, gaMapUtils, gaStyleFactory, gaLayersMock;
 
     var tpl = window.location.protocol + '//api3.geo.admin.ch/123456/rest/services/all/MapServer/{{layerId}}/{{featId}}?geometryFormat=geojson';
     var expectGET = function(featIdsByBodId) {
@@ -30,6 +30,10 @@ describe('ga_previewfeatures_service', function() {
       });
     };
 
+    var layerBodType = {
+      type: 'wmts'
+    };
+
     beforeEach(function() {
 
       inject(function($injector) {
@@ -38,6 +42,7 @@ describe('ga_previewfeatures_service', function() {
         $httpBackend = $injector.get('$httpBackend');
         gaMapUtils = $injector.get('gaMapUtils');
         gaStyleFactory = $injector.get('gaStyleFactory');
+        gaLayersMock = sinon.mock($injector.get('gaLayers'));
       });
 
       map = new ol.Map({});
@@ -155,6 +160,8 @@ describe('ga_previewfeatures_service', function() {
       });
 
       it('loads then adds new features from their ids', function(done) {
+        var mock = gaLayersMock.expects('getLayer').withArgs('somelayer').returns(layerBodType);
+        var mock1 = gaLayersMock.expects('getLayer').withArgs('somelayer2').returns(layerBodType);
         var ids = {
           'somelayer': ['id1', 'id2'],
           'somelayer2': ['id1', 'id2']
@@ -170,12 +177,9 @@ describe('ga_previewfeatures_service', function() {
           expect(layer).to.be.an(ol.layer.Vector);
           expect(layer.getSource().getFeatures().length).to.be(4);
           expect(spy.calledWith(map)).to.be(true);
-
-          // verify the request are stored in angular cache
-          gaPreviewFeatures.addBodFeatures(map, ids).then(function(feats) {
-            done();
-          });
-        });
+        }).then(done, done);
+        mock.verify();
+        mock1.verify();
         $httpBackend.flush();
       });
 
