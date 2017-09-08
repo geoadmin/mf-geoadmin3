@@ -43,7 +43,6 @@ goog.require('ga_featureload_service');
         var promises = [];
         angular.forEach(featureIdsByBodId, function(featureIds, bodId) {
           if (gaLayers.getLayer(bodId)['type'] === 'geojson') {
-            var olLayer = gaLayers.getOlLayerById(bodId);
             // call watcher in FeatureLoadService
             // to verify if features are loaded (getFeatures().length!=0)
             var loadPromise = gaFeatureLoadManager.getLoadPromise(bodId)
@@ -52,7 +51,7 @@ goog.require('ga_featureload_service');
             loadPromise.promise.then(function(featureCollection) {
               angular.forEach(featureIds, function(featureId) {
                 angular.forEach(featureCollection, function(f) {
-                  if (f.getId() == featureId) {
+                  if (f.getId() === featureId) {
                     featurePromise.resolve(f)
                   }
                 });

@@ -24,16 +24,17 @@ goog.require('ga_styles_service');
       var FeatureLoadManager = function() {
         var map;
 
-        // watches layers for changes, returns loaded features in promises. 
+        // watches layers for changes, returns loaded features in promises.
         var createWatcher = function(bodId) {
           scope.layers = map.getLayers().getArray();
           scope.layerFilter = gaLayerFilters.geojson;
           scope.$watchCollection('layers | filter:layerFilter',
               function(layers) {
+                var layerFeatures;
                 angular.forEach(layers, function(flayer) {
                   flayer.getSource().on('addfeature', function(event) {
-                    layer_features = flayer.getSource().getFeatures();
-                    promises[flayer.bodId].resolve(layer_features);
+                    layerFeatures = flayer.getSource().getFeatures();
+                    promises[flayer.bodId].resolve(layerFeatures);
                   })
                 });
               });
