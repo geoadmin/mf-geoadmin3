@@ -17,12 +17,12 @@ goog.require('ga_map_service');
       var realTimeLayersId = [];
       var geojsonFormat = new ol.format.GeoJSON();
 
-      var handleTimer = function(layer, data) {
+      var handleTimer = function(layer) {
         if (!layer.preview) {
           var layerIdIndex = realTimeLayersId.indexOf(layer.bodId);
           timers[layerIdIndex] = setLayerUpdateInterval(layer);
-          if (data && data.timestamp) {
-            $rootScope.$broadcast('gaNewLayerTimestamp', data.timestamp);
+          if (layer.timestamps && layer.timestamps[0]) {
+            $rootScope.$broadcast('gaNewLayerTimestamp', layer.timestamps[0]);
           }
         }
       };
@@ -48,8 +48,9 @@ goog.require('ga_map_service');
               olSource.addFeatures(
                   geojsonFormat.readFeatures(data)
               );
+              layer.timestamps = [data.timestamp];
             }
-            handleTimer(layer, data);
+            handleTimer(layer);
           }, function() {
             handleTimer(layer);
           });
@@ -90,11 +91,14 @@ goog.require('ga_map_service');
               // Layer Added
               newLayers.forEach(function(newLayer) {
                 var realTimeId = newLayer.bodId || newLayer.id;
-                if (realTimeLayersId.indexOf(realTimeId) === -1) {
-                  if (!newLayer.preview) {
-                    realTimeLayersId.push(realTimeId);
+                if (realTimeLayersId.indexOf(realTimeId) === -1 &&
+                    !newLayer.preview) {
+                  realTimeLayersId.push(realTimeId);
+                  if (newLayer.bodId) {
+                    gaLayers.getLayerPromise(newLayer.bodId).then(function () {
+                      handleTimer(newLayer);
+                    });
                   }
-                  setLayerSource(newLayer);
                 }
               });
             });

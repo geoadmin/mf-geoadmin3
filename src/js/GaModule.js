@@ -14,7 +14,6 @@ goog.require('ga_draw');
 goog.require('ga_draw_controller');
 goog.require('ga_drawstyle_controller');
 goog.require('ga_drawstylepopup_controller');
-goog.require('ga_featureload_service');
 goog.require('ga_featuretree');
 goog.require('ga_featuretree_controller');
 goog.require('ga_feedback');

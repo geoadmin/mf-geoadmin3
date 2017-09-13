@@ -2,14 +2,12 @@ goog.provide('ga_previewfeatures_service');
 
 goog.require('ga_map_service');
 goog.require('ga_styles_service');
-goog.require('ga_featureload_service');
 
 (function() {
 
   var module = angular.module('ga_previewfeatures_service', [
     'ga_map_service',
-    'ga_styles_service',
-    'ga_featureload_service'
+    'ga_styles_service'
   ]);
 
   /**
@@ -20,7 +18,7 @@ goog.require('ga_featureload_service');
   module.provider('gaPreviewFeatures', function() {
 
     this.$get = function($q, $http, gaDefinePropertiesForLayer, gaStyleFactory,
-        gaMapUtils, gaLayers, gaFeatureLoadManager) {
+        gaMapUtils, gaLayers) {
       var MINIMAL_EXTENT_SIZE = 1965;
       var highlightedFeature, onClear, listenerKeyRemove;
       var url = this.url;
@@ -39,20 +37,18 @@ goog.require('ga_featureload_service');
       vector.setZIndex(gaMapUtils.Z_PREVIEW_FEATURE);
 
       // TO DO: May be this method should be elsewher?
-      var getFeatures = function(map, featureIdsByBodId) {
+      var getFeatures = function(featureIdsByBodId) {
         var promises = [];
         angular.forEach(featureIdsByBodId, function(featureIds, bodId) {
           if (gaLayers.getLayer(bodId)['type'] === 'geojson') {
-            // call watcher in FeatureLoadService
-            // to verify if features are loaded (getFeatures().length!=0)
-            var loadPromise = gaFeatureLoadManager.getLoadPromise(bodId)
+            var loadPromise = gaLayers.getLayerPromise(bodId);
             var featurePromise = $q.defer();
             promises.push(featurePromise.promise);
-            loadPromise.promise.then(function(featureCollection) {
+            loadPromise.then(function(featureCollection) {
               angular.forEach(featureIds, function(featureId) {
                 angular.forEach(featureCollection, function(f) {
                   if (f.getId() === featureId) {
-                    featurePromise.resolve(f)
+                    featurePromise.resolve(f);
                   }
                 });
               });
@@ -140,14 +136,14 @@ goog.require('ga_featureload_service');
           updateLayer(map);
         };
 
-        // Add fatures from an array<layerBodId,array<featureIds>>.
+        // Add features from an array<layerBodId,array<featureIds>>.
         // Param onNextClear is a function to call on the next execution of
         // clear function.
         this.addBodFeatures = function(map, featureIdsByBodId, onNextClear) {
           var defer = $q.defer();
           this.clear(map);
           var that = this;
-          getFeatures(map, featureIdsByBodId).then(function(results) {
+          getFeatures(featureIdsByBodId).then(function(results) {
             var features = [];
             angular.forEach(results, function(result) {
               // for geojson

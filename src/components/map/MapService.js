@@ -349,6 +349,8 @@ goog.require('ga_urlutils_service');
         return domainsArray;
       };
 
+      var geojsonPromises = {}
+
       var Layers = function(dfltWmsSubdomains, dfltWmtsNativeSubdomains,
           dfltWmtsMapProxySubdomains, dfltVectorTilesSubdomains,
           wmsUrlTemplate, wmtsGetTileUrlTemplate,
@@ -890,14 +892,20 @@ goog.require('ga_urlutils_service');
             });
             var setLayerSource = function() {
               var geojsonFormat = new ol.format.GeoJSON();
-              gaUrlUtils.proxifyUrl(config.geojsonUrl).then(function(proxyUrl) {
-                $http.get(proxyUrl).then(function(response) {
-                  olSource.clear();
-                  olSource.addFeatures(
-                      geojsonFormat.readFeatures(response.data)
-                  );
-                });
-              });
+              geojsonPromises[bodId] = gaUrlUtils.proxifyUrl(config.geojsonUrl).
+                  then(function(proxyUrl) {
+                    return $http.get(proxyUrl).then(function(response) {
+                      var data = response.data;
+                      olSource.clear();
+                      olSource.addFeatures(
+                          geojsonFormat.readFeatures(data)
+                      );
+                      if (data.timestamp) {
+                        olLayer.timestamps = [data.timestamp];
+                      }
+                      return olSource.getFeatures();
+                    });
+                  });
             };
 
             // IE doesn't understand agnostic URLs
@@ -912,9 +920,9 @@ goog.require('ga_urlutils_service');
             });
             // TODO: Handle error
 
-            if (!config.updateDelay) {
-              setLayerSource();
-            }
+            // if (!config.updateDelay) {
+            setLayerSource();
+            // }
           }
           if (angular.isDefined(olLayer)) {
             gaDefinePropertiesForLayer(olLayer);
@@ -933,9 +941,13 @@ goog.require('ga_urlutils_service');
               return that.getCesiumDataSourceById(bodId, scene);
             };
           }
-
           return olLayer;
         };
+
+        // Returns promise of layer with its features when layers are added.
+        this.getLayerPromise = function(bodId) {
+          return geojsonPromises[bodId];
+        }
 
         /**
          * Returns layers definition for given bodId. Returns
