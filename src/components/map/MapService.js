@@ -388,7 +388,7 @@ goog.require('ga_urlutils_service');
 
         var todLayers = [
           'ch.swisstopo.swisstlm3d-karte-farbe.3d',
-          'ch.swisstopo.swisstlm3d-wanderwege'
+          'ch.swisstopo.swisstlm3d-karte-grau.3d'
         ];
 
         var useToD = function(layer, tileMatrixSet) {
