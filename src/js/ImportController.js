@@ -155,6 +155,8 @@ goog.require('ngeo.fileService');
         'http://wms.ga.admin.ch/1GE',
         'http://wms.ga.admin.ch/LG_DE_Geologie_und_Tektonik/wms',
         'http://discomap.eea.europa.eu/arcgis/services/Land/CLC2000_Dyna_WM/MapServer/WMSServer',
+        'https://image.discomap.eea.europa.eu/arcgis/services/GioLandPublic/DEM/MapServer/WMSServer?',
+        'https://image.discomap.eea.europa.eu/arcgis/services/Elevation/Hillshade/MapServer/WMSServer?',
         'http://eumetview.eumetsat.int/geoserver/wms',
         'http://osm.omniscale.net/proxy/service',
         'https://ows.terrestris.de/osm/service',
