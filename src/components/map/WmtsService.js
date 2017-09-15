@@ -48,7 +48,10 @@ goog.require('ga_urlutils_service');
           id: 'WMTS||' + options.layer + '||' + options.capabilitiesUrl,
           source: source,
           extent: gaMapUtils.intersectWithDefaultExtent(options.extent),
-          preload: gaMapUtils.preload
+          preload: gaMapUtils.preload,
+          opacity: options.opacity,
+          visible: options.visible,
+          attribution: options.attribution
         });
         gaDefinePropertiesForLayer(layer);
         layer.useThirdPartyData =
