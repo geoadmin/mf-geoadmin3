@@ -95,7 +95,7 @@ goog.require('ga_map_service');
                     !newLayer.preview) {
                   realTimeLayersId.push(realTimeId);
                   if (newLayer.bodId) {
-                    gaLayers.getLayerPromise(newLayer.bodId).then(function () {
+                    gaLayers.getLayerPromise(newLayer.bodId).then(function() {
                       handleTimer(newLayer);
                     });
                   }
