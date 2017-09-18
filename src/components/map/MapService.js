@@ -919,10 +919,7 @@ goog.require('ga_urlutils_service');
               });
             });
             // TODO: Handle error
-
-            // if (!config.updateDelay) {
             setLayerSource();
-            // }
           }
           if (angular.isDefined(olLayer)) {
             gaDefinePropertiesForLayer(olLayer);

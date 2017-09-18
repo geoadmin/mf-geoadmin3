@@ -16,8 +16,6 @@ goog.require('ga_previewfeatures_service');
     this.$get = function($rootScope, gaPermalink, gaLayers, gaPreviewFeatures,
         gaMapUtils) {
       var queryParams = gaPermalink.getParams();
-      // var layersParamValue = queryParams.layers;
-      // var layerSpecs = layersParamValue ? layersParamValue.split(',') : [];
 
       return function(map) {
         gaLayers.loadConfig().then(function() {

@@ -40,7 +40,7 @@ goog.require('ga_styles_service');
       var getFeatures = function(featureIdsByBodId) {
         var promises = [];
         angular.forEach(featureIdsByBodId, function(featureIds, bodId) {
-          if (gaLayers.getLayer(bodId)['type'] === 'geojson') {
+          if (gaLayers.getLayerProperty(bodId, 'type') === 'geojson') {
             var loadPromise = gaLayers.getLayerPromise(bodId);
             var featurePromise = $q.defer();
             promises.push(featurePromise.promise);
@@ -146,11 +146,11 @@ goog.require('ga_styles_service');
           getFeatures(featureIdsByBodId).then(function(results) {
             var features = [];
             angular.forEach(results, function(result) {
-              // for geojson
+              // for geojson-layers
               if (result instanceof ol.Feature) {
                 features.push(result);
                 that.add(map, result.clone());
-              // for wms
+              // for wmts/wms-layers
               } else {
                 result.data.feature.properties.layerId =
                   result.data.feature.layerBodId;

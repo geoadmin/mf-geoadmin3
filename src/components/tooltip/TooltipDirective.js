@@ -548,13 +548,11 @@ goog.require('ga_window_service');
                       // Store the ol feature for highlighting
                       storeFeature(layerId, feature);
                     }
-
                     if (value.get('htmlpopup')) {
                       showPopup(gaSanitize.html(value.get('htmlpopup')), value);
                     } else if (value.getProperties()['description']) {
-                      showPopup(
-                          gaSanitize.html(
-                              value.getProperties()['description']), value);
+                      showPopup(gaSanitize.html(
+                          value.getProperties()['description']), value);
                     }
                   } else {
                     // draw feature, but only if it should be drawn
