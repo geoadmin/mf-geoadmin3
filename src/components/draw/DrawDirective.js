@@ -554,6 +554,7 @@ goog.require('ga_styles_service');
               featureToAdd.set('type', lastActiveTool.id);
             }
             featureToAdd.getGeometry().set('altitudeMode', 'clampToGround');
+            featureToAdd.getGeometry().set('tessellate', '1');
 
             // Set the definitive style of the feature
             featureToAdd.setStyle(tool.style(featureToAdd));

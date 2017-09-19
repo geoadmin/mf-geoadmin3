@@ -1,9 +1,13 @@
+/* eslint-disable max-len */
 describe('ga_exportkml_service', function() {
 
   describe('gaExportKml', function() {
-    var $translate, $window, $document, $httpBackend, gaBrowserSniffer, gaExportKml, gaDefineLayerProperties, gaGlobalOptions, $rootScope, clock;
+    var $window, $httpBackend, gaBrowserSniffer, gaExportKml, gaDefineLayerProperties, gaGlobalOptions, clock;
     var $windowMock, gaExportKmlMock;
     var pointGeom = new ol.geom.Point([-10000000, 10000000]);
+    var pointGeomWithProps = new ol.geom.Point([-10000000, 10000000]);
+    pointGeomWithProps.set('altitudeMode', 'clampToGround');
+    pointGeomWithProps.set('tessellate', '1');
     var completeStyle = new ol.style.Style({
       fill: new ol.style.Fill({color: [128, 64, 32, 0.2]}),
       stroke: new ol.style.Stroke({color: [129, 65, 33, 0.4], width: 3}),
@@ -25,6 +29,11 @@ describe('ga_exportkml_service', function() {
     var featWithProps = new ol.Feature(dfltProps);
     featWithProps.setId('featWithId');
     featWithProps.setStyle([completeStyle]);
+
+    var featWithGeomProps = new ol.Feature(pointGeomWithProps);
+    featWithGeomProps.setStyle([new ol.style.Style({
+      stroke: new ol.style.Stroke({color: '#ff0000'})
+    })]);
 
     var featWithNoImageHack = new ol.Feature(pointGeom);
     featWithNoImageHack.setStyle([new ol.style.Style({
@@ -75,6 +84,15 @@ describe('ga_exportkml_service', function() {
       '</Point>' +
     '</Placemark>';
 
+    var plkFeatWithGeomProps = '<Placemark>' +
+      '<Style><LineStyle><color>ff0000ff</color></LineStyle></Style>' +
+      '<Point>' +
+        '<tessellate>1</tessellate>' +
+        '<altitudeMode>clampToGround</altitudeMode>' +
+        '<coordinates>-89.83152841195214,66.44602771314118</coordinates>' +
+      '</Point>' +
+    '</Placemark>';
+
     // Create a KML string from a list of KML placemarks
     var getKml = function(plks) {
       var kml = '<kml xmlns="http://www.opengis.net/kml/2.2" ' +
@@ -108,15 +126,12 @@ describe('ga_exportkml_service', function() {
     beforeEach(function() {
 
       inject(function($injector) {
-        $translate = $injector.get('$translate');
         $window = $injector.get('$window');
-        $document = $injector.get('$document');
         $httpBackend = $injector.get('$httpBackend');
         gaBrowserSniffer = $injector.get('gaBrowserSniffer');
         gaExportKml = $injector.get('gaExportKml');
         gaDefineLayerProperties = $injector.get('gaDefinePropertiesForLayer');
         gaGlobalOptions = $injector.get('gaGlobalOptions');
-        $rootScope = $injector.get('$rootScope');
         $windowMock = sinon.mock($window);
         gaExportKmlMock = sinon.mock(gaExportKml);
       });
@@ -153,6 +168,12 @@ describe('ga_exportkml_service', function() {
         var layer = createVectorLayer([featWithNoStyle], true);
         var kml = gaExportKml.create(layer, 'EPSG:3857');
         expect(kml).to.be(getKml([plkFeatWithProps]));
+      });
+
+      it('creates a KML using geometry\'s properties', function() {
+        var layer = createVectorLayer([featWithGeomProps], true);
+        var kml = gaExportKml.create(layer, 'EPSG:3857');
+        expect(kml).to.be(getKml([plkFeatWithGeomProps]));
       });
     });
 
@@ -218,18 +239,19 @@ describe('ga_exportkml_service', function() {
          }); */
       });
 
-      // TODO: Test Blob creation
       it('using Blob and saveAs', function() {
         $window.saveAs = function() {};
         gaBrowserSniffer.safari = false;
         gaBrowserSniffer.blob = true;
-        var fileName = 'map.geo.admin.ch_KML_.kml';
         var spySaveAs = sinon.spy($window, 'saveAs');
-
+        var t = 1454281200000; // new Date().getTime()
+        var clock = sinon.useFakeTimers(t);
         var layer = createVectorLayer([featWithProps]);
         gaExportKml.createAndDownload(layer, 'EPSG:3857');
-
         expect(spySaveAs.calledOnce).to.be.ok();
+        expect(spySaveAs.args[0][1]).to.be('map.geo.admin.ch_KML_20160201000000.kml');
+        expect(spySaveAs.args[0][0]).to.be.a(Blob);
+        clock.restore();
       });
     });
   });
