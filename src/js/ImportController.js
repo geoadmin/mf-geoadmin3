@@ -174,7 +174,7 @@ goog.require('ngeo.fileService');
         'http://rips-gdi.lubw.baden-wuerttemberg.de/arcgis/services/wms/UIS_0100000001500003/MapServer/WMSServer',
         'http://rips-gdi.lubw.baden-wuerttemberg.de/arcgis/services/wms/UIS_0100000004200001/MapServer/WMSServer',
         // WMTS servers
-        'http://www.gis.stadt-zuerich.ch/wmts/wmts-zh-stzh-ogd.xml',
+        'https://www.gis.stadt-zuerich.ch/wmts/wmts-zh-stzh-ogd.xml',
         'http://www.basemap.at/wmts/1.0.0/WMTSCapabilities.xml',
         'https://wxs.ign.fr/bvl2gp6za3srtz6yblo9fx8o/wmts?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetCapabilities',
         'http://cidportal.jrc.ec.europa.eu/copernicus/services/tile/wmts/1.0.0/WMTSCapabilities.xml',
