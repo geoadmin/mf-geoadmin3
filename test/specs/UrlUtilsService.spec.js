@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 describe('ga_urlutils_service', function() {
 
   describe('gaUrlUtils', function() {
@@ -161,17 +162,20 @@ describe('ga_urlutils_service', function() {
     });
 
     describe('#shorten()', function() {
-      var $rootScope, $httpBackend;
+      var $httpBackend;
       var shortenUrl = 'http://api3.geo.admin.ch/shorten.json?url=foo';
       beforeEach(inject(function($injector) {
         $httpBackend = $injector.get('$httpBackend');
-        $rootScope = $injector.get('$rootScope');
       }));
 
       afterEach(function() {
         $httpBackend.verifyNoOutstandingExpectation();
         $httpBackend.verifyNoOutstandingRequest();
-        $timeout.verifyNoPendingTasks();
+        try {
+          $timeout.verifyNoPendingTasks();
+        } catch (e) {
+          $timeout.flush();
+        }
       });
 
       it('shorten a url successfully', function(done) {
