@@ -160,6 +160,8 @@ goog.require('ga_waitcursor_service');
         '/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{x}/{y}.{Format}';
     gaLayersProvider.wmtsToDUrlTemplate = '//tod{s}.prod.bgdi.ch/' +
         '1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{x}/{y}.{Format}';
+    gaLayersProvider.wmtsToD03UrlTemplate = '//tod{s}.prod.bgdi.ch/' +
+        '1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{y}/{x}.{Format}';
     gaLayersProvider.dfltToDSubdomains = ['100', '101', '102', '103', '104'];
     gaLayersProvider.terrainTileUrlTemplate =
         '//terrain100.geo.admin.ch/1.0.0/{Layer}/default/{Time}/4326';

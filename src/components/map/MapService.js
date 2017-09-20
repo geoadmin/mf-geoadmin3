@@ -353,7 +353,7 @@ goog.require('ga_urlutils_service');
           dfltWmtsMapProxySubdomains, dfltVectorTilesSubdomains,
           wmsUrlTemplate, wmtsGetTileUrlTemplate,
           wmtsMapProxyGetTileUrlTemplate, terrainTileUrlTemplate,
-          wmtsToDUrlTemplate, dfltToDSubdomains,
+          wmtsToDUrlTemplate, wmtsToD03UrlTemplate, dfltToDSubdomains,
           vectorTilesUrlTemplate, layersConfigUrlTemplate,
           legendUrlTemplate, imageryMetadataUrl) {
         var layers;
@@ -393,18 +393,33 @@ goog.require('ga_urlutils_service');
           'ch.bav.haltestellen-oev'
         ];
 
+        var tod03Layers = [
+          'ch.swisstopo.pixelkarte-grau',
+          'ch.swisstopo.swisstlm3d-wanderwege',
+          'ch.bav.haltestellen-oev',
+          'ch.swisstopo.geologie-geotechnik-gk200',
+          'ch.swisstopo.geologie-generalkarte-ggk200',
+          'ch.swisstopo.geologie-gravimetrischer_atlas'
+        ];
+
         var useToD = function(layer, tileMatrixSet) {
-          if (tileMatrixSet !== '4326') {
-            return false;
+          if (tileMatrixSet === '4326') {
+            return (todLayers.indexOf(layer) !== -1);
+          } else if (tileMatrixSet === '21781') {
+            return (tod03Layers.indexOf(layer) !== -1);
           }
-          return (todLayers.indexOf(layer) !== -1);
+          return false;
         }
 
         var getWmtsGetTileTpl = function(layer, time, tileMatrixSet,
             format, useNativeTpl) {
           var tpl;
           if (useToD(layer, tileMatrixSet)) {
-            tpl = wmtsToDUrlTemplate;
+            if (tileMatrixSet === '21781') {
+              tpl = wmtsToD03UrlTemplate;
+            } else {
+              tpl = wmtsToDUrlTemplate;
+            }
           } else if (useNativeTpl) {
             tpl = wmtsGetTileUrlTemplate;
           } else {
@@ -799,7 +814,10 @@ goog.require('ga_urlutils_service');
                 tileGrid: gaTileGrid.get(config.resolutions,
                     config.minResolution),
                 tileLoadFunction: tileLoadFunction,
-                urls: getImageryUrls(wmtsTplUrl, h2(dfltWmtsNativeSubdomains)),
+                urls: getImageryUrls(wmtsTplUrl,
+                    useToD(config.serverLayerName, '21781') ?
+                      h2(dfltToDSubdomains) :
+                      h2(dfltWmtsNativeSubdomains)),
                 crossOrigin: crossOrigin
               });
             }
@@ -1060,7 +1078,8 @@ goog.require('ga_urlutils_service');
           this.dfltWmtsMapProxySubdomains, this.dfltVectorTilesSubdomains,
           this.wmsUrlTemplate, this.wmtsGetTileUrlTemplate,
           this.wmtsMapProxyGetTileUrlTemplate, this.terrainTileUrlTemplate,
-          this.wmtsToDUrlTemplate, this.dfltToDSubdomains,
+          this.wmtsToDUrlTemplate, this.wmtsToD03UrlTemplate,
+          this.dfltToDSubdomains,
           this.vectorTilesUrlTemplate, this.layersConfigUrlTemplate,
           this.legendUrlTemplate, this.imageryMetadataUrl);
     };
