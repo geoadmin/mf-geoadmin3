@@ -1,5 +1,6 @@
+/* eslint-disable max-len */
 describe('ga_permalinklayers_service', function() {
-  var map, gaDefinePropertiesForLayer;
+  var map, gaDefinePropertiesForLayer, $httpBackend;
 
   var addLayerToMap = function(bodId, opacity, visible, time) {
     var layer = new ol.layer.Tile({
@@ -77,9 +78,25 @@ describe('ga_permalinklayers_service', function() {
     return layer;
   };
 
+  var addExternalWmtsLayerToMap = function(opacity, visible) {
+    var source = new ol.source.WMTS({});
+    var layer = new ol.layer.Tile({
+      id: 'WMTS||ch.wmts.name||http://foo.ch/wmts/getcap.xml',
+      url: 'http://foo.ch/wmts/getcap.xml',
+      label: 'The wmts layer',
+      opacity: opacity || 0.4,
+      visible: visible || false,
+      source: source
+    });
+    layer.displayInLayerManager = true;
+    gaDefinePropertiesForLayer(layer);
+    map.addLayer(layer);
+    return layer;
+  };
+
   describe('gaPermalinkLayersManager', function() {
-    var manager, permalink, gaTopic, params, layersOpacityPermalink,
-      layersVisPermalink, layersTimePermalink, layersPermalink, def, $q, gaKml,
+    var manager, permalink, params, layersOpacityPermalink, layersParamsPermalink,
+      layersVisPermalink, layersTimePermalink, layersPermalink, def, $q,
       topic, $rootScope, topicLoaded = {
         id: 'sometopic',
         backgroundLayers: ['bar'],
@@ -95,11 +112,6 @@ describe('ga_permalinklayers_service', function() {
         backgroundLayers: ['bar3'],
         selectedLayers: ['foo2', 'bar2'],
         activatedLayers: []
-      }, topicLoaded4 = {
-        id: 'sometopic4',
-        backgroundLayers: ['bar4'],
-        selectedLayers: [],
-        activatedLayers: ['foo3', 'bar3']
       };
 
     var createManager = function(topicToLoad, layersParam, opacityParam, visParam, timeParam, paramsParam) {
@@ -127,10 +139,10 @@ describe('ga_permalinklayers_service', function() {
             return def.promise;
           },
           getLayer: function(id) {
-            return /^(KML|WMS)/.test(id) ? null : {};
+            return /^(KML|WMS|WMTS)/.test(id) ? null : {};
           },
           getLayerProperty: function(key) {
-            if (key == 'background') {
+            if (key === 'background') {
               return false;
             }
           },
@@ -164,6 +176,15 @@ describe('ga_permalinklayers_service', function() {
           }
         });
 
+        $provide.value('gaWmts', {
+          addWmtsToMap: function(map, options, idx) {
+            addExternalWmtsLayerToMap(options.opacity, options.visible);
+          },
+          getLayerOptionsFromIdentifier: function() {
+            return {};
+          }
+        });
+
         $provide.value('gaPermalink', {
           getParams: function() {
             params = {
@@ -184,15 +205,15 @@ describe('ga_permalinklayers_service', function() {
             layersParamsPermalink = params.layers_params || layersParamsPermalink;
           },
           deleteParam: function(param) {
-            if (param == 'layers') {
+            if (param === 'layers') {
               layersPermalink = undefined;
-            } else if (param == 'layers_opacity') {
+            } else if (param === 'layers_opacity') {
               layersOpacityPermalink = undefined;
-            } else if (param == 'layers_visibility') {
+            } else if (param === 'layers_visibility') {
               layersVisPermalink = undefined;
-            } else if (param == 'layers_timestamp') {
+            } else if (param === 'layers_timestamp') {
               layersTimePermalink = undefined;
-            } else if (param == 'layers_params') {
+            } else if (param === 'layers_params') {
               layersParamsPermalink = undefined;
             }
             delete params[param];
@@ -207,9 +228,8 @@ describe('ga_permalinklayers_service', function() {
 
       inject(function($injector) {
         $q = $injector.get('$q');
+        $httpBackend = $injector.get('$httpBackend');
         permalink = $injector.get('gaPermalink');
-        gaTopic = $injector.get('gaTopic');
-        gaKml = $injector.get('gaKml');
         $rootScope = $injector.get('$rootScope');
         gaDefinePropertiesForLayer = $injector.get('gaDefinePropertiesForLayer');
       });
@@ -252,13 +272,33 @@ describe('ga_permalinklayers_service', function() {
         expect(permalink.getParams().layers_visibility).to.be('false');
       });
 
-      it('every layer types in once', function() {
-        var id = 'KML||http://foo.ch/bar.kml,foo,WMS||The wms layer||http://foo.ch/wms||ch.wms.name';
-        createManager(topicLoaded, id, '0.1,0.2,0.3', 'true,false,true', ',2,3');
-        expect(map.getLayers().getLength()).to.be(3);
-        $rootScope.$digest();
-        expect(permalink.getParams().layers_opacity).to.be('0.1,0.2,0.3');
-        expect(permalink.getParams().layers_visibility).to.be('true,false,true');
+      it('an external WMTS layer', function(done) {
+        var id = 'WMTS||ch.wmts.name||http://foo.ch/wmts/getcap.xml';
+        $.get('base/test/data/wmts-basic.xml', function(response) {
+          var str = (new XMLSerializer()).serializeToString(response);
+          $httpBackend.expectGET('http://proxy.geo.admin.ch/http/foo.ch%2Fwmts%2Fgetcap.xml').respond(str);
+          createManager(topicLoaded, id, '1', 'false');
+          $httpBackend.flush();
+          expect(map.getLayers().getLength()).to.be(1);
+          expect(permalink.getParams().layers).to.be(id);
+          expect(permalink.getParams().layers_opacity).to.be(undefined);
+          expect(permalink.getParams().layers_visibility).to.be('false');
+          done();
+        });
+      });
+
+      it('every layer types in once', function(done) {
+        var id = 'KML||http://foo.ch/bar.kml,foo,WMS||The wms layer||http://foo.ch/wms||ch.wms.name,WMTS||ch.wmts.name||http://foo.ch/wmts/getcap.xml';
+        $.get('base/test/data/wmts-basic.xml', function(response) {
+          var str = (new XMLSerializer()).serializeToString(response);
+          $httpBackend.expectGET('http://proxy.geo.admin.ch/http/foo.ch%2Fwmts%2Fgetcap.xml').respond(str);
+          createManager(topicLoaded, id, '0.1,0.2,0.3,0.4', 'true,false,true,false', ',2,3,4');
+          $httpBackend.flush();
+          expect(map.getLayers().getLength()).to.be(4);
+          expect(permalink.getParams().layers_opacity).to.be('0.1,0.2,0.3,0.4');
+          expect(permalink.getParams().layers_visibility).to.be('true,false,true,false');
+          done();
+        });
       });
     });
 
@@ -269,7 +309,7 @@ describe('ga_permalinklayers_service', function() {
       });
 
       it('changes permalink', function() {
-        var fooLayer, barLayer, kmlLayer, wmsLayer;
+        var fooLayer, barLayer, kmlLayer, wmsLayer, wmtsLayer;
 
         expect(permalink.getParams().layers).to.be(undefined);
         fooLayer = addLayerToMap('foo');
@@ -288,6 +328,11 @@ describe('ga_permalinklayers_service', function() {
         $rootScope.$digest();
         expect(permalink.getParams().layers).to.eql('foo,bar,KML||http://foo.ch/bar.kml,WMS||The wms layer||http://foo.ch/wms||ch.wms.name');
 
+        wmtsLayer = addExternalWmtsLayerToMap();
+        $rootScope.$digest();
+        expect(permalink.getParams().layers).to.eql('foo,bar,KML||http://foo.ch/bar.kml,WMS||The wms layer||http://foo.ch/wms||ch.wms.name,WMTS||ch.wmts.name||http://foo.ch/wmts/getcap.xml');
+
+        map.removeLayer(wmtsLayer);
         map.removeLayer(wmsLayer);
         map.removeLayer(kmlLayer);
         map.removeLayer(fooLayer);

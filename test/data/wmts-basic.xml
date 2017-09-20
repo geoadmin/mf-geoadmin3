@@ -79,6 +79,31 @@
     </ows:OperationsMetadata>
     <Contents>
         <Layer>
+            <ows:Title>Test layer</ows:Title>
+            <ows:Abstract>Périmètre de la Convention alpine en Suisse. La Convention alpine est un traité de droit international conclu par huit Etats alpins (Allemagne, Autriche, France, Italie, Liechtenstein, Monaco, Suisse, Slovénie) et l'Union européenne. L'accord vise à assurer la préservation et la protection des Alpes à travers une politique plurisectorielle, globale et durable.</ows:Abstract>
+            <ows:WGS84BoundingBox>
+                <ows:LowerCorner>5.140242 45.398181</ows:LowerCorner>
+                <ows:UpperCorner>11.47757 48.230651</ows:UpperCorner>
+            </ows:WGS84BoundingBox>
+            <ows:Identifier>ch.wmts.name</ows:Identifier>
+            <ows:Metadata xlink:href="http://www.geocat.ch/geonetwork/srv/deu/metadata.show?uuid=8698bf0b-fceb-4f0f-989b-111e7c4af0a4"/>
+            <Style>
+                <ows:Title>Convention des Alpes</ows:Title>
+                <ows:Identifier>ch.iwmts.name</ows:Identifier>
+                <LegendURL format="image/png" xlink:href="https://api3.geo.admin.ch/static/images/legends/ch.are.alpenkonvention_fr.png"/>
+            </Style>
+            <Format>image/png</Format>
+            <Dimension>
+                <ows:Identifier>Time</ows:Identifier>
+                <Default>20090101</Default>
+                <Value>20090101</Value>
+            </Dimension>
+            <TileMatrixSetLink>
+                    <TileMatrixSet>21781_24</TileMatrixSet>
+            </TileMatrixSetLink>
+                <ResourceURL format="image/png" resourceType="tile" template="https://wmts.geo.admin.ch/1.0.0/ch.are.alpenkonvention/default/{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.png"/>
+        </Layer>
+        <Layer>
             <ows:Title>Convention des Alpes</ows:Title>
             <ows:Abstract>Périmètre de la Convention alpine en Suisse. La Convention alpine est un traité de droit international conclu par huit Etats alpins (Allemagne, Autriche, France, Italie, Liechtenstein, Monaco, Suisse, Slovénie) et l'Union européenne. L'accord vise à assurer la préservation et la protection des Alpes à travers une politique plurisectorielle, globale et durable.</ows:Abstract>
             <ows:WGS84BoundingBox>

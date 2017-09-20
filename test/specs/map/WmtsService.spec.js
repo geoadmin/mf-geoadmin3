@@ -1,18 +1,7 @@
+/* eslint-disable max-len */
 describe('ga_wmts_service', function() {
   describe('gaWmts', function() {
     var gaWmts, map, gaGlobalOptions;
-
-    var getExternalWmtsLayer = function(options) {
-      var source = new ol.source.WMTS(options.sourceConfig);
-      var layer = new ol.layer.Tile({
-        source: source,
-        id: 'WMTS||The WMTS layer||https://foo.ch/wmts'
-      });
-
-      layer.displayInLayerManager = true;
-      layer.url = 'https://foo.ch/wmts';
-      return layer;
-    };
 
     var expectProperties = function(layer, options) {
       // Test Layer's properties
@@ -38,14 +27,6 @@ describe('ga_wmts_service', function() {
       expect(source.urls[0]).to.be(options.url);
 
       // Tests Cesium provider
-      var srsStr = '', crsStr = '&crs=EPSG:4326';
-      options.bbox = '{southProjected},{westProjected},{northProjected},{eastProjected}';
-      if (options.VERSION == '1.1.1') {
-        options.bbox = '{westProjected},{southProjected},{eastProjected},{northProjected}';
-        srsStr = '&srs=EPSG:4326';
-        crsStr = '';
-      }
-
       var prov = layer.getCesiumImageryProvider();
       expect(prov).to.be.an(Cesium.UrlTemplateImageryProvider);
       var url = options.url;
@@ -78,18 +59,19 @@ describe('ga_wmts_service', function() {
     });
 
     describe('#addWmtsToMap()', function() {
+      var url = 'https://foo.ch';
+      var minimalOptions = {
+        label: 'WMTS layer',
+        sourceConfig: {
+          matrixSet: 4326,
+          urls: [url]
+        },
+        layer: 'ch.wmts.layer',
+        capabilitiesUrl: 'https://foo.ch/Capabilities.xml'
+      };
 
       it('adds a layer using minimal parameters', function() {
-        var url = 'https://foo.ch';
-        var options = {
-          label: 'WMTS layer',
-          sourceConfig: {
-            matrixSet: 4326,
-            urls: [url]
-          },
-          layer: 'ch.wmts.layer',
-          capabilitiesUrl: 'https://foo.ch/Capabilities.xml'
-        };
+        var options = minimalOptions;
         gaWmts.addWmtsToMap(map, options);
         expect(map.getLayers().getLength()).to.be(1);
 
@@ -98,6 +80,27 @@ describe('ga_wmts_service', function() {
           url: url,
           label: 'WMTS layer',
           visible: true,
+          opacity: 1,
+          useThirdPartyData: true,
+          layer: options.layer,
+          capabilitiesUrl: options.capabilitiesUrl,
+          projection: undefined
+        });
+      });
+
+      it('adds a layer using custom parameters', function() {
+        var options = minimalOptions;
+        options.opacity = '0.2';
+        options.visible = false;
+        gaWmts.addWmtsToMap(map, options);
+        expect(map.getLayers().getLength()).to.be(1);
+
+        var layer = map.getLayers().item(0);
+        expectProperties(layer, {
+          url: url,
+          label: 'WMTS layer',
+          visible: false,
+          invertedOpacity: 0.8,
           useThirdPartyData: true,
           layer: options.layer,
           capabilitiesUrl: options.capabilitiesUrl,

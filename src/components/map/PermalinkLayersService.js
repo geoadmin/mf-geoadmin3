@@ -312,6 +312,8 @@ goog.require('ga_wmts_service');
                           getCap, infos[1]);
                       // Override the url found in the xml file which is often a
                       // wrong url.
+                      layerOptions.opacity = opacity || 1;
+                      layerOptions.visible = visible;
                       layerOptions.capabilitiesUrl = infos[2];
                       layerOptions.time = timestamp;
                       gaWmts.addWmtsToMap(map, layerOptions, index + 1);

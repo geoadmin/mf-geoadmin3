@@ -55,14 +55,14 @@ describe('ngeo.wmtsGetCapDirective', function() {
     });
 
     it('creates html elements', function() {
-      expect(elt.find('[ngeo-wmts-get-cap-item]').length).to.be(2);
+      expect(elt.find('[ngeo-wmts-get-cap-item]').length).to.be(3);
       expect(elt.find('.fa-sort-by-alphabet').length).to.be(1);
       expect(elt.find('.ngeo-add').length).to.be(1);
     });
 
     it('has good scope values', function() {
       expect(scope.map).to.be(map);
-      expect(scope.layers.length).to.be(2);
+      expect(scope.layers.length).to.be(3);
       expect(scope.limitations).to.be(undefined);
       expect(scope.userMsg).to.be(undefined);
       expect(scope.options.layerSelected).to.be(null);

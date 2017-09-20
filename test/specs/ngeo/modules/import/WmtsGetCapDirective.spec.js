@@ -1,5 +1,6 @@
+/* eslint-disable max-len */
 describe('ngeo.wmtsGetCapDirective', function() {
-  var elt, scope, parentScope, map, $rootScope, $compile, $translate, gaWmts, $window, $httpBackend;
+  var elt, scope, parentScope, map, $rootScope, $compile, $window;
 
   var loadDirective = function() {
     parentScope = $rootScope.$new();
@@ -36,9 +37,7 @@ describe('ngeo.wmtsGetCapDirective', function() {
     inject(function($injector) {
       $rootScope = $injector.get('$rootScope');
       $compile = $injector.get('$compile');
-      $translate = $injector.get('$translate');
       $window = $injector.get('$window');
-      gaWmts = $injector.get('gaWmts');
     });
 
     map = new ol.Map({});
@@ -55,14 +54,14 @@ describe('ngeo.wmtsGetCapDirective', function() {
     });
 
     it('creates html elements', function() {
-      expect(elt.find('[ngeo-wmts-get-cap-item]').length).to.be(2);
+      expect(elt.find('[ngeo-wmts-get-cap-item]').length).to.be(3);
       expect(elt.find('.fa-sort-by-alphabet').length).to.be(1);
       expect(elt.find('.ngeo-add').length).to.be(1);
     });
 
     it('has good scope values', function() {
       expect(scope.map).to.be(map);
-      expect(scope.layers.length).to.be(2);
+      expect(scope.layers.length).to.be(3);
       expect(scope.limitations).to.be(undefined);
       expect(scope.userMsg).to.be(undefined);
       expect(scope.options.layerSelected).to.be(null);
