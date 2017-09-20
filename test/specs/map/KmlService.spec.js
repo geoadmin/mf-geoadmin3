@@ -440,6 +440,13 @@ describe('ga_kml_service', function() {
           isNotValid.verify();
           var feats = olLayer.getSource().getFeatures();
           expect(feats.length).to.be(4);
+
+          // Verify coordinates are not reprojected twice
+          var projectedCoord = [1013007.3662187896, 5909489.863677091, 0];
+          expect(feats[0].getGeometry().getCoordinates()).to.eql(projectedCoord);
+          expect(feats[1].getGeometry().getCoordinates()).to.eql(projectedCoord);
+          expect(feats[2].getGeometry().getCoordinates()).to.eql(projectedCoord);
+          expect(feats[3].getGeometry().getCoordinates()).to.eql(projectedCoord);
           done();
         });
         $httpBackend.flush();

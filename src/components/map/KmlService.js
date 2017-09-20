@@ -102,29 +102,31 @@ goog.require('ngeo.fileService');
 
         // Manage networkLink tags
         var all = [];
+        var sanitizedFeatures = [];
         var features = kmlFormat.readFeatures(kml);
         var networkLinks = kmlFormat.readNetworkLinks(kml);
+
         if (networkLinks.length) {
           angular.forEach(networkLinks, function(networkLink) {
             if (gaUrlUtils.isValid(networkLink.href)) {
               all.push($http.get(networkLink.href).then(function(response) {
-                return readFeatures(response.data, projection).then(
-                    function(newFeatures) {
-                      features = features.concat(newFeatures);
-                    });
+                return readFeatures(response.data, projection);
               }));
             }
           });
         }
 
-        return $q.all(all).then(function() {
-          var sanitizedFeatures = [];
-          for (var i = 0, ii = features.length; i < ii; i++) {
-            var feat = sanitizeFeature(features[i], projection);
-            if (feat) {
-              sanitizedFeatures.push(feat);
-            }
+        for (var i = 0, ii = features.length; i < ii; i++) {
+          var feat = sanitizeFeature(features[i], projection);
+          if (feat) {
+            sanitizedFeatures.push(feat);
           }
+        }
+
+        return $q.all(all).then(function(featByPromise) {
+          featByPromise.forEach(function(newFeatures) {
+            sanitizedFeatures = sanitizedFeatures.concat(newFeatures);
+          });
           return sanitizedFeatures;
         });
       };
