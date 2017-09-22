@@ -189,35 +189,40 @@ describe('ga_wmts_service', function() {
         expect(options).to.be(undefined);
       });
 
-      it('returns options for the proper layer', function(done) {
-        $.get('base/test/data/wmts-basic.xml', function(response) {
-          var getCapabilities = new ol.format.WMTSCapabilities().read(response);
-          var identifier = 'ch.are.alpenkonvention';
-          // We need to set the extent of the projection
-          var defaultProjection = ol.proj.get(gaGlobalOptions.defaultEpsg);
-          defaultProjection.setExtent(gaGlobalOptions.defaultEpsgExtent);
+      var mtsGetCap = [
+        'base/test/data/wmts-basic.xml',
+        'base/test/data/wmts-basic-without-operationsmd.xml'
+      ].forEach(function(getCapUrl) {
+        it('returns options for the proper layer with ' + getCapUrl, function(done) {
+          $.get(getCapUrl, function(response) {
+            var getCapabilities = new ol.format.WMTSCapabilities().read(response);
+            var identifier = 'ch.are.alpenkonvention';
+            // We need to set the extent of the projection
+            var defaultProjection = ol.proj.get(gaGlobalOptions.defaultEpsg);
+            defaultProjection.setExtent(gaGlobalOptions.defaultEpsgExtent);
 
-          var options = gaWmts.getLayerOptionsFromIdentifier(getCapabilities, identifier);
-          expect(options.capabilitiesUrl).to.be('https://wmts.geo.admin.ch/1.0.0/WMTSCapabilities.xml');
-          expect(options.label).to.be('Convention des Alpes');
-          expect(options.layer).to.be(identifier); done();
-          done();
+            var options = gaWmts.getLayerOptionsFromIdentifier(getCapabilities, identifier, getCapUrl);
+            expect(options.capabilitiesUrl).to.be(getCapUrl);
+            expect(options.label).to.be('Convention des Alpes');
+            expect(options.layer).to.be(identifier);
+            done();
+          });
         });
       });
 
-      it('set good attributions if serviceProvider is not int the GetCap', function(done) {
-        $.get('base/test/data/simple-wmts.xml', function(response) {
+      it('set good attributions if serviceProvider is not in the GetCap', function(done) {
+        var getCapUrl = 'base/test/data/simple-wmts.xml';
+        $.get(getCapUrl, function(response) {
           var identifier = 'tiled95_Uebersichtsplan1978';
           var getCapabilities = new ol.format.WMTSCapabilities().read(response);
           // We need to set the extent of the projection
           var defaultProjection = ol.proj.get(gaGlobalOptions.defaultEpsg);
           defaultProjection.setExtent(gaGlobalOptions.defaultEpsgExtent);
 
-          var options = gaWmts.getLayerOptionsFromIdentifier(getCapabilities, identifier);
-          expect(options.capabilitiesUrl).to.be('http://www.gis.stadt-zuerich.ch/' +
-            'maps/rest/services/tiled95/Uebersichtsplan1978/MapServer/WMTS/1.0.0/WMTSCapabilities.xml');
+          var options = gaWmts.getLayerOptionsFromIdentifier(getCapabilities, identifier, 'http://test.ch/' + getCapUrl);
+          expect(options.capabilitiesUrl).to.be('http://test.ch/' + getCapUrl);
           expect(options.label).to.be('tiled95_Uebersichtsplan1978');
-          expect(options.sourceConfig.attributions[0]).to.contain('www.gis.stadt-zuerich.ch');
+          expect(options.sourceConfig.attributions[0]).to.contain('test.ch');
           expect(options.layer).to.be(identifier);
           done();
         });
