@@ -19,7 +19,7 @@ goog.require('ga_map_service');
 
       var handleTimer = function(layer) {
         if (!layer.preview) {
-          var layerIdIndex = realTimeLayersId.indexOf(layer.bodId);
+          var layerIdIndex = realTimeLayersId.indexOf(layer.id);
           timers[layerIdIndex] = setLayerUpdateInterval(layer);
           if (layer.timestamps && layer.timestamps[0]) {
             $rootScope.$broadcast('gaNewLayerTimestamp', layer.timestamps[0]);
@@ -98,6 +98,8 @@ goog.require('ga_map_service');
                     gaLayers.getLayerPromise(newLayer.bodId).then(function() {
                       handleTimer(newLayer);
                     });
+                  } else {
+                    handleTimer(newLayer);
                   }
                 }
               });
