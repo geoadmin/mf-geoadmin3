@@ -387,9 +387,19 @@ goog.require('ga_urlutils_service');
         };
 
         var todLayers = [
+          'ch.swisstopo.swisstlm3d-karte-farbe.3d',
+          'ch.swisstopo.swissimage-product',
+          'ch.swisstopo.swisstlm3d-wanderwege',
+          'ch.bav.haltestellen-oev'
         ];
 
         var tod03Layers = [
+          'ch.swisstopo.pixelkarte-grau',
+          'ch.swisstopo.swisstlm3d-wanderwege',
+          'ch.bav.haltestellen-oev',
+          'ch.swisstopo.geologie-geotechnik-gk200',
+          'ch.swisstopo.geologie-generalkarte-ggk200',
+          'ch.swisstopo.geologie-gravimetrischer_atlas'
         ];
 
         var useToD = function(layer, tileMatrixSet) {
