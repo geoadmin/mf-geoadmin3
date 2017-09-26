@@ -43,22 +43,32 @@ describe('ga_waitcursor_service', function() {
       });
 
       it('broadcasts gaIdle after 4 seconds', inject(function($timeout) {
+        var clock = sinon.useFakeTimers();
         var spy = sinon.spy($rootScope, '$broadcast');
         var spy2 = sinon.spy($timeout, 'cancel');
         gaWait.increment();
         gaWait.decrement();
 
+        clock.tick(3000);
         $timeout.flush(3000);
         expect(spy.callCount).to.be(0);
+        expect(spy2.callCount).to.be(0);
         gaWait.increment();
         gaWait.decrement();
-        expect(spy2.callCount).to.be(1);
-        spy2.restore();
 
+        clock.tick(2000);
+        $timeout.flush(2000);
+        expect(spy.callCount).to.be(0);
+        expect(spy2.callCount).to.be(1);
+
+        clock.tick(4000);
         $timeout.flush(4000);
         expect(spy.callCount).to.be(1);
         expect(spy.calledWithExactly('gaIdle')).to.be(true);
+        expect(spy2.callCount).to.be(1);
         spy.restore();
+        spy2.restore();
+        clock.restore();
       }));
     });
   });
