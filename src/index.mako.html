@@ -224,25 +224,24 @@ itemscope itemtype="http://schema.org/WebApplication"
            ga-attribution-ol3d="::ol3d">
       </div>
     </div> <!-- #map -->
-% if device != 'mobile':
-    <div ng-cloak ng-show="globals.is3dActive"
-         ga-cesium-inspector
-         ga-cesium-inspector-ol3d="::ol3d"></div>
-    <div ng-cloak ng-show="globals.is3dActive"
-         ga-cesium-3d-tiles-inspector
-         ga-cesium-3d-tiles-inspector-ol3d="::ol3d"></div>
-% endif
-% if device == 'mobile':
-    <div ga-offline-selector
-         ga-offline-selector-map="::map">
-    </div>
-% endif
 
-    <div ga-controls3d ga-controls3d-ol3d="::ol3d" ng-if="ol3d" ng-show="globals.is3dActive" ga-controls3d-pegman="globals.pegman"></div>
-    <div ga-attribution-warning
-         ga-attribution-warning-ol3d="::ol3d">
-      <span translate>3d_overlay_warning</span>
+    <!-- 3d buutons and inspectors -->
+    <div ng-cloak ng-if="globals.is3dActive">
+      <div ga-cesium-inspector
+           ga-cesium-inspector-ol3d="::ol3d"></div>
+      <div ga-cesium-3d-tiles-inspector
+           ga-cesium-3d-tiles-inspector-ol3d="::ol3d"></div>
+      <div ga-controls3d
+           ga-controls3d-ol3d="::ol3d"
+           ga-controls3d-pegman="globals.pegman"></div>
+      <div ga-attribution-warning
+           ga-attribution-warning-ol3d="::ol3d">
+        <span translate>3d_overlay_warning</span>
+      </div>
     </div>
+  % if device == 'mobile':
+    <div ng-cloak ga-offline-selector ga-offline-selector-map="::map"></div>
+  % endif
 % if device != 'embed':
     <div ng-cloak translate-cloak id="footer" class="navbar navbar-fixed-bottom">
       <div  class="pull-left" ga-scale-line ga-scale-line-map="::map" ng-show="!globals.is3dActive"></div>
@@ -496,12 +495,10 @@ itemscope itemtype="http://schema.org/WebApplication"
         </button>
       </div> <!-- #pulldown-content -->
     </div> <!-- #pulldown -->
-
   % if device == 'mobile':
     <!-- Modal: offline menu -->
     <div ng-cloak translate-cloak ga-offline-menu ga-offline-menu-map="map"></div>
   % endif
-
     <!-- Modal: topics selection -->
     <div id="topicSelector" ng-cloak translate-cloak ga-topic></div>
 
