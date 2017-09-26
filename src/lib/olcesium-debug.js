@@ -5813,7 +5813,7 @@ ol.inherits(ol.ImageTile, ol.Tile);
 ol.ImageTile.prototype.disposeInternal = function() {
   if (this.state == ol.TileState.LOADING) {
     this.unlistenImage_();
-    this.image_.src = ol.ImageTile.blankImage.toDataURL("image/png");
+    this.image_.src = ol.ImageTile.blankImageUrl;
   }
   if (this.interimTile) {
     this.interimTile.dispose();
@@ -5831,7 +5831,7 @@ ol.ImageTile.prototype.getKey = function() {
 ol.ImageTile.prototype.handleImageError_ = function() {
   this.state = ol.TileState.ERROR;
   this.unlistenImage_();
-  this.image_ = ol.ImageTile.blankImage;
+  this.image_.src = ol.ImageTile.blankImageUrl;
   this.changed();
 };
 ol.ImageTile.prototype.handleImageLoad_ = function() {
@@ -5855,19 +5855,23 @@ ol.ImageTile.prototype.unlistenImage_ = function() {
   this.imageListenerKeys_.forEach(ol.events.unlistenByKey);
   this.imageListenerKeys_ = null;
 };
-ol.ImageTile.blankImage = function() {
+ol.ImageTile.blankImageUrl = function() {
   var ctx = ol.dom.createCanvasContext2D(1, 1);
   ctx.fillStyle = "rgba(0,0,0,0)";
   ctx.fillRect(0, 0, 1, 1);
-  return ctx.canvas;
+  return ctx.canvas.toDataURL("image/png");
 }();
 goog.provide("ol.structs.LRUCache");
 goog.require("ol.asserts");
-ol.structs.LRUCache = function() {
+ol.structs.LRUCache = function(opt_highWaterMark) {
+  this.highWaterMark = opt_highWaterMark !== undefined ? opt_highWaterMark : 2048;
   this.count_ = 0;
   this.entries_ = {};
   this.oldest_ = null;
   this.newest_ = null;
+};
+ol.structs.LRUCache.prototype.canExpireCache = function() {
+  return this.getCount() > this.highWaterMark;
 };
 ol.structs.LRUCache.prototype.clear = function() {
   this.count_ = 0;
@@ -5965,13 +5969,9 @@ goog.provide("ol.TileCache");
 goog.require("ol");
 goog.require("ol.structs.LRUCache");
 ol.TileCache = function(opt_highWaterMark) {
-  ol.structs.LRUCache.call(this);
-  this.highWaterMark = opt_highWaterMark !== undefined ? opt_highWaterMark : 2048;
+  ol.structs.LRUCache.call(this, opt_highWaterMark);
 };
 ol.inherits(ol.TileCache, ol.structs.LRUCache);
-ol.TileCache.prototype.canExpireCache = function() {
-  return this.getCount() > this.highWaterMark;
-};
 ol.TileCache.prototype.expireCache = function(usedTiles) {
   var tile, zKey;
   while (this.canExpireCache()) {
@@ -6785,6 +6785,20 @@ ol.tilegrid.TileGrid = function(options) {
   ol.asserts.assert(ol.array.isSorted(this.resolutions_, function(a, b) {
     return b - a;
   }, true), 17);
+  var zoomFactor;
+  if (!options.origins) {
+    for (var i = 0, ii = this.resolutions_.length - 1; i < ii; ++i) {
+      if (!zoomFactor) {
+        zoomFactor = this.resolutions_[i] / this.resolutions_[i + 1];
+      } else {
+        if (this.resolutions_[i] / this.resolutions_[i + 1] !== zoomFactor) {
+          zoomFactor = undefined;
+          break;
+        }
+      }
+    }
+  }
+  this.zoomFactor_ = zoomFactor;
   this.maxZoom = this.resolutions_.length - 1;
   this.origin_ = options.origin !== undefined ? options.origin : null;
   this.origins_ = null;
@@ -6828,10 +6842,24 @@ ol.tilegrid.TileGrid.prototype.forEachTileCoord = function(extent, zoom, callbac
   }
 };
 ol.tilegrid.TileGrid.prototype.forEachTileCoordParentTileRange = function(tileCoord, callback, opt_this, opt_tileRange, opt_extent) {
-  var tileCoordExtent = this.getTileCoordExtent(tileCoord, opt_extent);
+  var tileRange, x, y;
+  var tileCoordExtent = null;
   var z = tileCoord[0] - 1;
+  if (this.zoomFactor_ === 2) {
+    x = tileCoord[1];
+    y = tileCoord[2];
+  } else {
+    tileCoordExtent = this.getTileCoordExtent(tileCoord, opt_extent);
+  }
   while (z >= this.minZoom) {
-    if (callback.call(opt_this, z, this.getTileRangeForExtentAndZ(tileCoordExtent, z, opt_tileRange))) {
+    if (this.zoomFactor_ === 2) {
+      x = Math.floor(x / 2);
+      y = Math.floor(y / 2);
+      tileRange = ol.TileRange.createOrUpdate(x, x, y, y, opt_tileRange);
+    } else {
+      tileRange = this.getTileRangeForExtentAndZ(tileCoordExtent, z, opt_tileRange);
+    }
+    if (callback.call(opt_this, z, tileRange)) {
       return true;
     }
     --z;
@@ -6862,11 +6890,15 @@ ol.tilegrid.TileGrid.prototype.getResolutions = function() {
 };
 ol.tilegrid.TileGrid.prototype.getTileCoordChildTileRange = function(tileCoord, opt_tileRange, opt_extent) {
   if (tileCoord[0] < this.maxZoom) {
+    if (this.zoomFactor_ === 2) {
+      var minX = tileCoord[1] * 2;
+      var minY = tileCoord[2] * 2;
+      return ol.TileRange.createOrUpdate(minX, minX + 1, minY, minY + 1, opt_tileRange);
+    }
     var tileCoordExtent = this.getTileCoordExtent(tileCoord, opt_extent);
     return this.getTileRangeForExtentAndZ(tileCoordExtent, tileCoord[0] + 1, opt_tileRange);
-  } else {
-    return null;
   }
+  return null;
 };
 ol.tilegrid.TileGrid.prototype.getTileRangeExtent = function(z, tileRange, opt_extent) {
   var origin = this.getOrigin(z);
@@ -6878,17 +6910,13 @@ ol.tilegrid.TileGrid.prototype.getTileRangeExtent = function(z, tileRange, opt_e
   var maxY = origin[1] + (tileRange.maxY + 1) * tileSize[1] * resolution;
   return ol.extent.createOrUpdate(minX, minY, maxX, maxY, opt_extent);
 };
-ol.tilegrid.TileGrid.prototype.getTileRangeForExtentAndResolution = function(extent, resolution, opt_tileRange) {
+ol.tilegrid.TileGrid.prototype.getTileRangeForExtentAndZ = function(extent, z, opt_tileRange) {
   var tileCoord = ol.tilegrid.TileGrid.tmpTileCoord_;
-  this.getTileCoordForXYAndResolution_(extent[0], extent[1], resolution, false, tileCoord);
+  this.getTileCoordForXYAndZ_(extent[0], extent[1], z, false, tileCoord);
   var minX = tileCoord[1];
   var minY = tileCoord[2];
-  this.getTileCoordForXYAndResolution_(extent[2], extent[3], resolution, true, tileCoord);
+  this.getTileCoordForXYAndZ_(extent[2], extent[3], z, true, tileCoord);
   return ol.TileRange.createOrUpdate(minX, tileCoord[1], minY, tileCoord[2], opt_tileRange);
-};
-ol.tilegrid.TileGrid.prototype.getTileRangeForExtentAndZ = function(extent, z, opt_tileRange) {
-  var resolution = this.getResolution(z);
-  return this.getTileRangeForExtentAndResolution(extent, resolution, opt_tileRange);
 };
 ol.tilegrid.TileGrid.prototype.getTileCoordCenter = function(tileCoord) {
   var origin = this.getOrigin(tileCoord[0]);
@@ -6929,9 +6957,27 @@ ol.tilegrid.TileGrid.prototype.getTileCoordForXYAndResolution_ = function(x, y, 
   }
   return ol.tilecoord.createOrUpdate(z, tileCoordX, tileCoordY, opt_tileCoord);
 };
-ol.tilegrid.TileGrid.prototype.getTileCoordForCoordAndZ = function(coordinate, z, opt_tileCoord) {
+ol.tilegrid.TileGrid.prototype.getTileCoordForXYAndZ_ = function(x, y, z, reverseIntersectionPolicy, opt_tileCoord) {
+  var origin = this.getOrigin(z);
   var resolution = this.getResolution(z);
-  return this.getTileCoordForXYAndResolution_(coordinate[0], coordinate[1], resolution, false, opt_tileCoord);
+  var tileSize = ol.size.toSize(this.getTileSize(z), this.tmpSize_);
+  var adjustX = reverseIntersectionPolicy ? 0.5 : 0;
+  var adjustY = reverseIntersectionPolicy ? 0 : 0.5;
+  var xFromOrigin = Math.floor((x - origin[0]) / resolution + adjustX);
+  var yFromOrigin = Math.floor((y - origin[1]) / resolution + adjustY);
+  var tileCoordX = xFromOrigin / tileSize[0];
+  var tileCoordY = yFromOrigin / tileSize[1];
+  if (reverseIntersectionPolicy) {
+    tileCoordX = Math.ceil(tileCoordX) - 1;
+    tileCoordY = Math.ceil(tileCoordY) - 1;
+  } else {
+    tileCoordX = Math.floor(tileCoordX);
+    tileCoordY = Math.floor(tileCoordY);
+  }
+  return ol.tilecoord.createOrUpdate(z, tileCoordX, tileCoordY, opt_tileCoord);
+};
+ol.tilegrid.TileGrid.prototype.getTileCoordForCoordAndZ = function(coordinate, z, opt_tileCoord) {
+  return this.getTileCoordForXYAndZ_(coordinate[0], coordinate[1], z, false, opt_tileCoord);
 };
 ol.tilegrid.TileGrid.prototype.getTileCoordResolution = function(tileCoord) {
   return this.resolutions_[tileCoord[0]];
@@ -7294,6 +7340,7 @@ ol.source.UrlTile = function(options) {
   if (options.tileUrlFunction) {
     this.setTileUrlFunction(options.tileUrlFunction);
   }
+  this.tileLoadingKeys_ = {};
 };
 ol.inherits(ol.source.UrlTile, ol.source.Tile);
 ol.source.UrlTile.prototype.fixedTileUrlFunction;
@@ -7308,17 +7355,20 @@ ol.source.UrlTile.prototype.getUrls = function() {
 };
 ol.source.UrlTile.prototype.handleTileChange = function(event) {
   var tile = event.target;
-  switch(tile.getState()) {
-    case ol.TileState.LOADING:
-      this.dispatchEvent(new ol.source.Tile.Event(ol.source.TileEventType.TILELOADSTART, tile));
-      break;
-    case ol.TileState.LOADED:
-      this.dispatchEvent(new ol.source.Tile.Event(ol.source.TileEventType.TILELOADEND, tile));
-      break;
-    case ol.TileState.ERROR:
-      this.dispatchEvent(new ol.source.Tile.Event(ol.source.TileEventType.TILELOADERROR, tile));
-      break;
-    default:
+  var uid = ol.getUid(tile);
+  var tileState = tile.getState();
+  var type;
+  if (tileState == ol.TileState.LOADING) {
+    this.tileLoadingKeys_[uid] = true;
+    type = ol.source.TileEventType.TILELOADSTART;
+  } else {
+    if (uid in this.tileLoadingKeys_) {
+      delete this.tileLoadingKeys_[uid];
+      type = tileState == ol.TileState.ERROR ? ol.source.TileEventType.TILELOADERROR : tileState == ol.TileState.LOADED || tileState == ol.TileState.ABORT ? ol.source.TileEventType.TILELOADEND : undefined;
+    }
+  }
+  if (type != undefined) {
+    this.dispatchEvent(new ol.source.Tile.Event(type, tile));
   }
 };
 ol.source.UrlTile.prototype.setTileLoadFunction = function(tileLoadFunction) {
@@ -8180,66 +8230,6 @@ ol.functions.TRUE = function() {
 ol.functions.FALSE = function() {
   return false;
 };
-goog.provide("ol.geom.Geometry");
-goog.require("ol");
-goog.require("ol.Object");
-goog.require("ol.extent");
-goog.require("ol.functions");
-goog.require("ol.proj");
-ol.geom.Geometry = function() {
-  ol.Object.call(this);
-  this.extent_ = ol.extent.createEmpty();
-  this.extentRevision_ = -1;
-  this.simplifiedGeometryCache = {};
-  this.simplifiedGeometryMaxMinSquaredTolerance = 0;
-  this.simplifiedGeometryRevision = 0;
-};
-ol.inherits(ol.geom.Geometry, ol.Object);
-ol.geom.Geometry.prototype.clone = function() {
-};
-ol.geom.Geometry.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDistance) {
-};
-ol.geom.Geometry.prototype.getClosestPoint = function(point, opt_closestPoint) {
-  var closestPoint = opt_closestPoint ? opt_closestPoint : [NaN, NaN];
-  this.closestPointXY(point[0], point[1], closestPoint, Infinity);
-  return closestPoint;
-};
-ol.geom.Geometry.prototype.intersectsCoordinate = function(coordinate) {
-  return this.containsXY(coordinate[0], coordinate[1]);
-};
-ol.geom.Geometry.prototype.computeExtent = function(extent) {
-};
-ol.geom.Geometry.prototype.containsXY = ol.functions.FALSE;
-ol.geom.Geometry.prototype.getExtent = function(opt_extent) {
-  if (this.extentRevision_ != this.getRevision()) {
-    this.extent_ = this.computeExtent(this.extent_);
-    this.extentRevision_ = this.getRevision();
-  }
-  return ol.extent.returnOrUpdate(this.extent_, opt_extent);
-};
-ol.geom.Geometry.prototype.rotate = function(angle, anchor) {
-};
-ol.geom.Geometry.prototype.scale = function(sx, opt_sy, opt_anchor) {
-};
-ol.geom.Geometry.prototype.simplify = function(tolerance) {
-  return this.getSimplifiedGeometry(tolerance * tolerance);
-};
-ol.geom.Geometry.prototype.getSimplifiedGeometry = function(squaredTolerance) {
-};
-ol.geom.Geometry.prototype.getType = function() {
-};
-ol.geom.Geometry.prototype.applyTransform = function(transformFn) {
-};
-ol.geom.Geometry.prototype.intersectsExtent = function(extent) {
-};
-ol.geom.Geometry.prototype.translate = function(deltaX, deltaY) {
-};
-ol.geom.Geometry.prototype.transform = function(source, destination) {
-  this.applyTransform(ol.proj.getTransform(source, destination));
-  return this;
-};
-goog.provide("ol.geom.GeometryLayout");
-ol.geom.GeometryLayout = {XY:"XY", XYZ:"XYZ", XYM:"XYM", XYZM:"XYZM"};
 goog.provide("ol.geom.flat.transform");
 ol.geom.flat.transform.transform2D = function(flatCoordinates, offset, end, stride, transform, opt_dest) {
   var dest = opt_dest ? opt_dest : [];
@@ -8312,6 +8302,176 @@ ol.geom.flat.transform.translate = function(flatCoordinates, offset, end, stride
   }
   return dest;
 };
+goog.provide("ol.transform");
+goog.require("ol.asserts");
+ol.transform.tmp_ = new Array(6);
+ol.transform.create = function() {
+  return [1, 0, 0, 1, 0, 0];
+};
+ol.transform.reset = function(transform) {
+  return ol.transform.set(transform, 1, 0, 0, 1, 0, 0);
+};
+ol.transform.multiply = function(transform1, transform2) {
+  var a1 = transform1[0];
+  var b1 = transform1[1];
+  var c1 = transform1[2];
+  var d1 = transform1[3];
+  var e1 = transform1[4];
+  var f1 = transform1[5];
+  var a2 = transform2[0];
+  var b2 = transform2[1];
+  var c2 = transform2[2];
+  var d2 = transform2[3];
+  var e2 = transform2[4];
+  var f2 = transform2[5];
+  transform1[0] = a1 * a2 + c1 * b2;
+  transform1[1] = b1 * a2 + d1 * b2;
+  transform1[2] = a1 * c2 + c1 * d2;
+  transform1[3] = b1 * c2 + d1 * d2;
+  transform1[4] = a1 * e2 + c1 * f2 + e1;
+  transform1[5] = b1 * e2 + d1 * f2 + f1;
+  return transform1;
+};
+ol.transform.set = function(transform, a, b, c, d, e, f) {
+  transform[0] = a;
+  transform[1] = b;
+  transform[2] = c;
+  transform[3] = d;
+  transform[4] = e;
+  transform[5] = f;
+  return transform;
+};
+ol.transform.setFromArray = function(transform1, transform2) {
+  transform1[0] = transform2[0];
+  transform1[1] = transform2[1];
+  transform1[2] = transform2[2];
+  transform1[3] = transform2[3];
+  transform1[4] = transform2[4];
+  transform1[5] = transform2[5];
+  return transform1;
+};
+ol.transform.apply = function(transform, coordinate) {
+  var x = coordinate[0], y = coordinate[1];
+  coordinate[0] = transform[0] * x + transform[2] * y + transform[4];
+  coordinate[1] = transform[1] * x + transform[3] * y + transform[5];
+  return coordinate;
+};
+ol.transform.rotate = function(transform, angle) {
+  var cos = Math.cos(angle);
+  var sin = Math.sin(angle);
+  return ol.transform.multiply(transform, ol.transform.set(ol.transform.tmp_, cos, sin, -sin, cos, 0, 0));
+};
+ol.transform.scale = function(transform, x, y) {
+  return ol.transform.multiply(transform, ol.transform.set(ol.transform.tmp_, x, 0, 0, y, 0, 0));
+};
+ol.transform.translate = function(transform, dx, dy) {
+  return ol.transform.multiply(transform, ol.transform.set(ol.transform.tmp_, 1, 0, 0, 1, dx, dy));
+};
+ol.transform.compose = function(transform, dx1, dy1, sx, sy, angle, dx2, dy2) {
+  var sin = Math.sin(angle);
+  var cos = Math.cos(angle);
+  transform[0] = sx * cos;
+  transform[1] = sy * sin;
+  transform[2] = -sx * sin;
+  transform[3] = sy * cos;
+  transform[4] = dx2 * sx * cos - dy2 * sx * sin + dx1;
+  transform[5] = dx2 * sy * sin + dy2 * sy * cos + dy1;
+  return transform;
+};
+ol.transform.invert = function(transform) {
+  var det = ol.transform.determinant(transform);
+  ol.asserts.assert(det !== 0, 32);
+  var a = transform[0];
+  var b = transform[1];
+  var c = transform[2];
+  var d = transform[3];
+  var e = transform[4];
+  var f = transform[5];
+  transform[0] = d / det;
+  transform[1] = -b / det;
+  transform[2] = -c / det;
+  transform[3] = a / det;
+  transform[4] = (c * f - d * e) / det;
+  transform[5] = -(a * f - b * e) / det;
+  return transform;
+};
+ol.transform.determinant = function(mat) {
+  return mat[0] * mat[3] - mat[1] * mat[2];
+};
+goog.provide("ol.geom.Geometry");
+goog.require("ol");
+goog.require("ol.Object");
+goog.require("ol.extent");
+goog.require("ol.functions");
+goog.require("ol.geom.flat.transform");
+goog.require("ol.proj");
+goog.require("ol.proj.Units");
+goog.require("ol.transform");
+ol.geom.Geometry = function() {
+  ol.Object.call(this);
+  this.extent_ = ol.extent.createEmpty();
+  this.extentRevision_ = -1;
+  this.simplifiedGeometryCache = {};
+  this.simplifiedGeometryMaxMinSquaredTolerance = 0;
+  this.simplifiedGeometryRevision = 0;
+  this.tmpTransform_ = ol.transform.create();
+};
+ol.inherits(ol.geom.Geometry, ol.Object);
+ol.geom.Geometry.prototype.clone = function() {
+};
+ol.geom.Geometry.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDistance) {
+};
+ol.geom.Geometry.prototype.getClosestPoint = function(point, opt_closestPoint) {
+  var closestPoint = opt_closestPoint ? opt_closestPoint : [NaN, NaN];
+  this.closestPointXY(point[0], point[1], closestPoint, Infinity);
+  return closestPoint;
+};
+ol.geom.Geometry.prototype.intersectsCoordinate = function(coordinate) {
+  return this.containsXY(coordinate[0], coordinate[1]);
+};
+ol.geom.Geometry.prototype.computeExtent = function(extent) {
+};
+ol.geom.Geometry.prototype.containsXY = ol.functions.FALSE;
+ol.geom.Geometry.prototype.getExtent = function(opt_extent) {
+  if (this.extentRevision_ != this.getRevision()) {
+    this.extent_ = this.computeExtent(this.extent_);
+    this.extentRevision_ = this.getRevision();
+  }
+  return ol.extent.returnOrUpdate(this.extent_, opt_extent);
+};
+ol.geom.Geometry.prototype.rotate = function(angle, anchor) {
+};
+ol.geom.Geometry.prototype.scale = function(sx, opt_sy, opt_anchor) {
+};
+ol.geom.Geometry.prototype.simplify = function(tolerance) {
+  return this.getSimplifiedGeometry(tolerance * tolerance);
+};
+ol.geom.Geometry.prototype.getSimplifiedGeometry = function(squaredTolerance) {
+};
+ol.geom.Geometry.prototype.getType = function() {
+};
+ol.geom.Geometry.prototype.applyTransform = function(transformFn) {
+};
+ol.geom.Geometry.prototype.intersectsExtent = function(extent) {
+};
+ol.geom.Geometry.prototype.translate = function(deltaX, deltaY) {
+};
+ol.geom.Geometry.prototype.transform = function(source, destination) {
+  var tmpTransform = this.tmpTransform_;
+  source = ol.proj.get(source);
+  var transformFn = source.getUnits() == ol.proj.Units.TILE_PIXELS ? function(inCoordinates, outCoordinates, stride) {
+    var pixelExtent = source.getExtent();
+    var projectedExtent = source.getWorldExtent();
+    var scale = ol.extent.getHeight(projectedExtent) / ol.extent.getHeight(pixelExtent);
+    ol.transform.compose(tmpTransform, projectedExtent[0], projectedExtent[3], scale, -scale, 0, 0, 0);
+    ol.geom.flat.transform.transform2D(inCoordinates, 0, inCoordinates.length, stride, tmpTransform, outCoordinates);
+    return ol.proj.getTransform(source, destination)(inCoordinates, outCoordinates, stride);
+  } : ol.proj.getTransform(source, destination);
+  this.applyTransform(transformFn);
+  return this;
+};
+goog.provide("ol.geom.GeometryLayout");
+ol.geom.GeometryLayout = {XY:"XY", XYZ:"XYZ", XYM:"XYM", XYZM:"XYZM"};
 goog.provide("ol.geom.SimpleGeometry");
 goog.require("ol");
 goog.require("ol.functions");
@@ -9318,59 +9478,56 @@ ol.colorlike.isColorLike = function(color) {
   return typeof color === "string" || color instanceof CanvasPattern || color instanceof CanvasGradient;
 };
 goog.provide("ol.webgl");
-goog.require("ol");
-if (ol.ENABLE_WEBGL) {
-  ol.webgl.ONE = 1;
-  ol.webgl.SRC_ALPHA = 770;
-  ol.webgl.COLOR_ATTACHMENT0 = 36064;
-  ol.webgl.COLOR_BUFFER_BIT = 16384;
-  ol.webgl.TRIANGLES = 4;
-  ol.webgl.TRIANGLE_STRIP = 5;
-  ol.webgl.ONE_MINUS_SRC_ALPHA = 771;
-  ol.webgl.ARRAY_BUFFER = 34962;
-  ol.webgl.ELEMENT_ARRAY_BUFFER = 34963;
-  ol.webgl.STREAM_DRAW = 35040;
-  ol.webgl.STATIC_DRAW = 35044;
-  ol.webgl.DYNAMIC_DRAW = 35048;
-  ol.webgl.CULL_FACE = 2884;
-  ol.webgl.BLEND = 3042;
-  ol.webgl.STENCIL_TEST = 2960;
-  ol.webgl.DEPTH_TEST = 2929;
-  ol.webgl.SCISSOR_TEST = 3089;
-  ol.webgl.UNSIGNED_BYTE = 5121;
-  ol.webgl.UNSIGNED_SHORT = 5123;
-  ol.webgl.UNSIGNED_INT = 5125;
-  ol.webgl.FLOAT = 5126;
-  ol.webgl.RGBA = 6408;
-  ol.webgl.FRAGMENT_SHADER = 35632;
-  ol.webgl.VERTEX_SHADER = 35633;
-  ol.webgl.LINK_STATUS = 35714;
-  ol.webgl.LINEAR = 9729;
-  ol.webgl.TEXTURE_MAG_FILTER = 10240;
-  ol.webgl.TEXTURE_MIN_FILTER = 10241;
-  ol.webgl.TEXTURE_WRAP_S = 10242;
-  ol.webgl.TEXTURE_WRAP_T = 10243;
-  ol.webgl.TEXTURE_2D = 3553;
-  ol.webgl.TEXTURE0 = 33984;
-  ol.webgl.CLAMP_TO_EDGE = 33071;
-  ol.webgl.COMPILE_STATUS = 35713;
-  ol.webgl.FRAMEBUFFER = 36160;
-  ol.webgl.CONTEXT_IDS_ = ["experimental-webgl", "webgl", "webkit-3d", "moz-webgl"];
-  ol.webgl.getContext = function(canvas, opt_attributes) {
-    var context, i, ii = ol.webgl.CONTEXT_IDS_.length;
-    for (i = 0; i < ii; ++i) {
-      try {
-        context = canvas.getContext(ol.webgl.CONTEXT_IDS_[i], opt_attributes);
-        if (context) {
-          return context;
-        }
-      } catch (e) {
+ol.webgl.ONE = 1;
+ol.webgl.SRC_ALPHA = 770;
+ol.webgl.COLOR_ATTACHMENT0 = 36064;
+ol.webgl.COLOR_BUFFER_BIT = 16384;
+ol.webgl.TRIANGLES = 4;
+ol.webgl.TRIANGLE_STRIP = 5;
+ol.webgl.ONE_MINUS_SRC_ALPHA = 771;
+ol.webgl.ARRAY_BUFFER = 34962;
+ol.webgl.ELEMENT_ARRAY_BUFFER = 34963;
+ol.webgl.STREAM_DRAW = 35040;
+ol.webgl.STATIC_DRAW = 35044;
+ol.webgl.DYNAMIC_DRAW = 35048;
+ol.webgl.CULL_FACE = 2884;
+ol.webgl.BLEND = 3042;
+ol.webgl.STENCIL_TEST = 2960;
+ol.webgl.DEPTH_TEST = 2929;
+ol.webgl.SCISSOR_TEST = 3089;
+ol.webgl.UNSIGNED_BYTE = 5121;
+ol.webgl.UNSIGNED_SHORT = 5123;
+ol.webgl.UNSIGNED_INT = 5125;
+ol.webgl.FLOAT = 5126;
+ol.webgl.RGBA = 6408;
+ol.webgl.FRAGMENT_SHADER = 35632;
+ol.webgl.VERTEX_SHADER = 35633;
+ol.webgl.LINK_STATUS = 35714;
+ol.webgl.LINEAR = 9729;
+ol.webgl.TEXTURE_MAG_FILTER = 10240;
+ol.webgl.TEXTURE_MIN_FILTER = 10241;
+ol.webgl.TEXTURE_WRAP_S = 10242;
+ol.webgl.TEXTURE_WRAP_T = 10243;
+ol.webgl.TEXTURE_2D = 3553;
+ol.webgl.TEXTURE0 = 33984;
+ol.webgl.CLAMP_TO_EDGE = 33071;
+ol.webgl.COMPILE_STATUS = 35713;
+ol.webgl.FRAMEBUFFER = 36160;
+ol.webgl.CONTEXT_IDS_ = ["experimental-webgl", "webgl", "webkit-3d", "moz-webgl"];
+ol.webgl.getContext = function(canvas, opt_attributes) {
+  var context, i, ii = ol.webgl.CONTEXT_IDS_.length;
+  for (i = 0; i < ii; ++i) {
+    try {
+      context = canvas.getContext(ol.webgl.CONTEXT_IDS_[i], opt_attributes);
+      if (context) {
+        return context;
       }
+    } catch (e) {
     }
-    return null;
-  };
-}
-;goog.provide("ol.has");
+  }
+  return null;
+};
+goog.provide("ol.has");
 goog.require("ol");
 goog.require("ol.webgl");
 var ua = typeof navigator !== "undefined" ? navigator.userAgent.toLowerCase() : "";
@@ -13495,102 +13652,6 @@ ol.plugins.registerMultiple = function(type, plugins) {
 };
 goog.provide("ol.renderer.Type");
 ol.renderer.Type = {CANVAS:"canvas", WEBGL:"webgl"};
-goog.provide("ol.transform");
-goog.require("ol.asserts");
-ol.transform.tmp_ = new Array(6);
-ol.transform.create = function() {
-  return [1, 0, 0, 1, 0, 0];
-};
-ol.transform.reset = function(transform) {
-  return ol.transform.set(transform, 1, 0, 0, 1, 0, 0);
-};
-ol.transform.multiply = function(transform1, transform2) {
-  var a1 = transform1[0];
-  var b1 = transform1[1];
-  var c1 = transform1[2];
-  var d1 = transform1[3];
-  var e1 = transform1[4];
-  var f1 = transform1[5];
-  var a2 = transform2[0];
-  var b2 = transform2[1];
-  var c2 = transform2[2];
-  var d2 = transform2[3];
-  var e2 = transform2[4];
-  var f2 = transform2[5];
-  transform1[0] = a1 * a2 + c1 * b2;
-  transform1[1] = b1 * a2 + d1 * b2;
-  transform1[2] = a1 * c2 + c1 * d2;
-  transform1[3] = b1 * c2 + d1 * d2;
-  transform1[4] = a1 * e2 + c1 * f2 + e1;
-  transform1[5] = b1 * e2 + d1 * f2 + f1;
-  return transform1;
-};
-ol.transform.set = function(transform, a, b, c, d, e, f) {
-  transform[0] = a;
-  transform[1] = b;
-  transform[2] = c;
-  transform[3] = d;
-  transform[4] = e;
-  transform[5] = f;
-  return transform;
-};
-ol.transform.setFromArray = function(transform1, transform2) {
-  transform1[0] = transform2[0];
-  transform1[1] = transform2[1];
-  transform1[2] = transform2[2];
-  transform1[3] = transform2[3];
-  transform1[4] = transform2[4];
-  transform1[5] = transform2[5];
-  return transform1;
-};
-ol.transform.apply = function(transform, coordinate) {
-  var x = coordinate[0], y = coordinate[1];
-  coordinate[0] = transform[0] * x + transform[2] * y + transform[4];
-  coordinate[1] = transform[1] * x + transform[3] * y + transform[5];
-  return coordinate;
-};
-ol.transform.rotate = function(transform, angle) {
-  var cos = Math.cos(angle);
-  var sin = Math.sin(angle);
-  return ol.transform.multiply(transform, ol.transform.set(ol.transform.tmp_, cos, sin, -sin, cos, 0, 0));
-};
-ol.transform.scale = function(transform, x, y) {
-  return ol.transform.multiply(transform, ol.transform.set(ol.transform.tmp_, x, 0, 0, y, 0, 0));
-};
-ol.transform.translate = function(transform, dx, dy) {
-  return ol.transform.multiply(transform, ol.transform.set(ol.transform.tmp_, 1, 0, 0, 1, dx, dy));
-};
-ol.transform.compose = function(transform, dx1, dy1, sx, sy, angle, dx2, dy2) {
-  var sin = Math.sin(angle);
-  var cos = Math.cos(angle);
-  transform[0] = sx * cos;
-  transform[1] = sy * sin;
-  transform[2] = -sx * sin;
-  transform[3] = sy * cos;
-  transform[4] = dx2 * sx * cos - dy2 * sx * sin + dx1;
-  transform[5] = dx2 * sy * sin + dy2 * sy * cos + dy1;
-  return transform;
-};
-ol.transform.invert = function(transform) {
-  var det = ol.transform.determinant(transform);
-  ol.asserts.assert(det !== 0, 32);
-  var a = transform[0];
-  var b = transform[1];
-  var c = transform[2];
-  var d = transform[3];
-  var e = transform[4];
-  var f = transform[5];
-  transform[0] = d / det;
-  transform[1] = -b / det;
-  transform[2] = -c / det;
-  transform[3] = a / det;
-  transform[4] = (c * f - d * e) / det;
-  transform[5] = -(a * f - b * e) / det;
-  return transform;
-};
-ol.transform.determinant = function(mat) {
-  return mat[0] * mat[3] - mat[1] * mat[2];
-};
 goog.provide("ol.PluggableMap");
 goog.require("ol");
 goog.require("ol.Collection");
@@ -14891,14 +14952,15 @@ ol.interaction.Pointer.prototype.isPointerDraggingEvent_ = function(mapBrowserEv
 ol.interaction.Pointer.prototype.updateTrackedPointers_ = function(mapBrowserEvent) {
   if (this.isPointerDraggingEvent_(mapBrowserEvent)) {
     var event = mapBrowserEvent.pointerEvent;
+    var id = event.pointerId.toString();
     if (mapBrowserEvent.type == ol.MapBrowserEventType.POINTERUP) {
-      delete this.trackedPointers_[event.pointerId];
+      delete this.trackedPointers_[id];
     } else {
       if (mapBrowserEvent.type == ol.MapBrowserEventType.POINTERDOWN) {
-        this.trackedPointers_[event.pointerId] = event;
+        this.trackedPointers_[id] = event;
       } else {
-        if (event.pointerId in this.trackedPointers_) {
-          this.trackedPointers_[event.pointerId] = event;
+        if (id in this.trackedPointers_) {
+          this.trackedPointers_[id] = event;
         }
       }
     }
@@ -15709,7 +15771,7 @@ ol.render.VectorContext.prototype.drawPoint = function(pointGeometry, feature) {
 };
 ol.render.VectorContext.prototype.drawPolygon = function(polygonGeometry, feature) {
 };
-ol.render.VectorContext.prototype.drawText = function(flatCoordinates, offset, end, stride, geometry, feature) {
+ol.render.VectorContext.prototype.drawText = function(geometry, feature) {
 };
 ol.render.VectorContext.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {
 };
@@ -16117,17 +16179,18 @@ ol.render.canvas.Immediate.prototype.setContextStrokeState_ = function(strokeSta
 ol.render.canvas.Immediate.prototype.setContextTextState_ = function(textState) {
   var context = this.context_;
   var contextTextState = this.contextTextState_;
+  var textAlign = textState.textAlign ? textState.textAlign : ol.render.canvas.defaultTextAlign;
   if (!contextTextState) {
     context.font = textState.font;
-    context.textAlign = textState.textAlign;
+    context.textAlign = textAlign;
     context.textBaseline = textState.textBaseline;
-    this.contextTextState_ = {font:textState.font, textAlign:textState.textAlign, textBaseline:textState.textBaseline};
+    this.contextTextState_ = {font:textState.font, textAlign:textAlign, textBaseline:textState.textBaseline};
   } else {
     if (contextTextState.font != textState.font) {
       contextTextState.font = context.font = textState.font;
     }
-    if (contextTextState.textAlign != textState.textAlign) {
-      contextTextState.textAlign = context.textAlign = textState.textAlign;
+    if (contextTextState.textAlign != textAlign) {
+      contextTextState.textAlign = textAlign;
     }
     if (contextTextState.textBaseline != textState.textBaseline) {
       contextTextState.textBaseline = context.textBaseline = textState.textBaseline;
@@ -16579,7 +16642,7 @@ ol.renderer.canvas.ImageLayer.prototype.prepareFrame = function(frameState, laye
     ol.transform.compose(this.coordinateToCanvasPixelTransform, pixelRatio * size[0] / 2 - transform[4], pixelRatio * size[1] / 2 - transform[5], pixelRatio / viewResolution, -pixelRatio / viewResolution, 0, -viewCenter[0], -viewCenter[1]);
     this.updateAttributions(frameState.attributions, image.getAttributions());
     this.updateLogos(frameState, imageSource);
-    this.renderedResolution = viewResolution * pixelRatio / imagePixelRatio;
+    this.renderedResolution = imageResolution * pixelRatio / imagePixelRatio;
   }
   return !!this.image_;
 };
@@ -16962,7 +17025,7 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(frameState, layer
   if (ol.extent.isEmpty(extent)) {
     return false;
   }
-  var tileRange = tileGrid.getTileRangeForExtentAndResolution(extent, tileResolution);
+  var tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
   var imageExtent = tileGrid.getTileRangeExtent(z, tileRange);
   var tilePixelRatio = tileSource.getTilePixelRatio(pixelRatio);
   var tilesToDrawByZ = {};
@@ -17084,8 +17147,79 @@ ol.render.ReplayGroup.prototype.getReplay = function(zIndex, replayType) {
 };
 ol.render.ReplayGroup.prototype.isEmpty = function() {
 };
+goog.provide("ol.geom.flat.length");
+ol.geom.flat.length.lineString = function(flatCoordinates, offset, end, stride) {
+  var x1 = flatCoordinates[offset];
+  var y1 = flatCoordinates[offset + 1];
+  var length = 0;
+  var i;
+  for (i = offset + stride; i < end; i += stride) {
+    var x2 = flatCoordinates[i];
+    var y2 = flatCoordinates[i + 1];
+    length += Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+    x1 = x2;
+    y1 = y2;
+  }
+  return length;
+};
+ol.geom.flat.length.linearRing = function(flatCoordinates, offset, end, stride) {
+  var perimeter = ol.geom.flat.length.lineString(flatCoordinates, offset, end, stride);
+  var dx = flatCoordinates[end - stride] - flatCoordinates[offset];
+  var dy = flatCoordinates[end - stride + 1] - flatCoordinates[offset + 1];
+  perimeter += Math.sqrt(dx * dx + dy * dy);
+  return perimeter;
+};
+goog.provide("ol.geom.flat.textpath");
+goog.require("ol.math");
+ol.geom.flat.textpath.lineString = function(flatCoordinates, offset, end, stride, text, measure, startM, maxAngle, opt_result) {
+  var result = opt_result ? opt_result : [];
+  var reverse = flatCoordinates[offset] > flatCoordinates[end - stride];
+  var numChars = text.length;
+  var x1 = flatCoordinates[offset];
+  var y1 = flatCoordinates[offset + 1];
+  offset += stride;
+  var x2 = flatCoordinates[offset];
+  var y2 = flatCoordinates[offset + 1];
+  var segmentM = 0;
+  var segmentLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+  var index, previousAngle;
+  for (var i = 0; i < numChars; ++i) {
+    index = reverse ? numChars - i - 1 : i;
+    var char = text[index];
+    var charLength = measure(char);
+    var charM = startM + charLength / 2;
+    while (offset < end - stride && segmentM + segmentLength < charM) {
+      x1 = x2;
+      y1 = y2;
+      offset += stride;
+      x2 = flatCoordinates[offset];
+      y2 = flatCoordinates[offset + 1];
+      segmentM += segmentLength;
+      segmentLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+    }
+    var segmentPos = charM - segmentM;
+    var angle = Math.atan2(y2 - y1, x2 - x1);
+    if (reverse) {
+      angle += angle > 0 ? -Math.PI : Math.PI;
+    }
+    if (previousAngle !== undefined) {
+      var delta = angle - previousAngle;
+      delta += delta > Math.PI ? -2 * Math.PI : delta < -Math.PI ? 2 * Math.PI : 0;
+      if (Math.abs(delta) > maxAngle) {
+        return null;
+      }
+    }
+    previousAngle = angle;
+    var interpolate = segmentPos / segmentLength;
+    var x = ol.math.lerp(x1, x2, interpolate);
+    var y = ol.math.lerp(y1, y2, interpolate);
+    result[index] = [x, y, angle];
+    startM += charLength;
+  }
+  return result;
+};
 goog.provide("ol.render.canvas.Instruction");
-ol.render.canvas.Instruction = {BEGIN_GEOMETRY:0, BEGIN_PATH:1, CIRCLE:2, CLOSE_PATH:3, CUSTOM:4, DRAW_IMAGE:5, DRAW_TEXT:6, END_GEOMETRY:7, FILL:8, MOVE_TO_LINE_TO:9, SET_FILL_STYLE:10, SET_STROKE_STYLE:11, SET_TEXT_STYLE:12, STROKE:13};
+ol.render.canvas.Instruction = {BEGIN_GEOMETRY:0, BEGIN_PATH:1, CIRCLE:2, CLOSE_PATH:3, CUSTOM:4, DRAW_CHARS:5, DRAW_IMAGE:6, END_GEOMETRY:7, FILL:8, MOVE_TO_LINE_TO:9, SET_FILL_STYLE:10, SET_STROKE_STYLE:11, STROKE:12};
 goog.provide("ol.render.canvas.Replay");
 goog.require("ol");
 goog.require("ol.array");
@@ -17093,17 +17227,20 @@ goog.require("ol.extent");
 goog.require("ol.extent.Relationship");
 goog.require("ol.geom.GeometryType");
 goog.require("ol.geom.flat.inflate");
+goog.require("ol.geom.flat.length");
+goog.require("ol.geom.flat.textpath");
 goog.require("ol.geom.flat.transform");
 goog.require("ol.has");
 goog.require("ol.obj");
 goog.require("ol.render.VectorContext");
 goog.require("ol.render.canvas.Instruction");
 goog.require("ol.transform");
-ol.render.canvas.Replay = function(tolerance, maxExtent, resolution, overlaps) {
+ol.render.canvas.Replay = function(tolerance, maxExtent, resolution, pixelRatio, overlaps) {
   ol.render.VectorContext.call(this);
   this.tolerance = tolerance;
   this.maxExtent = maxExtent;
   this.overlaps = overlaps;
+  this.pixelRatio = pixelRatio;
   this.maxLineWidth = 0;
   this.resolution = resolution;
   this.fillOrigin_;
@@ -17117,8 +17254,45 @@ ol.render.canvas.Replay = function(tolerance, maxExtent, resolution, overlaps) {
   this.pixelCoordinates_ = null;
   this.tmpLocalTransform_ = ol.transform.create();
   this.resetTransform_ = ol.transform.create();
+  this.chars_ = [];
 };
 ol.inherits(ol.render.canvas.Replay, ol.render.VectorContext);
+ol.render.canvas.Replay.prototype.replayImage_ = function(context, x, y, image, anchorX, anchorY, height, opacity, originX, originY, rotation, scale, snapToPixel, width) {
+  var localTransform = this.tmpLocalTransform_;
+  anchorX *= scale;
+  anchorY *= scale;
+  x -= anchorX;
+  y -= anchorY;
+  if (snapToPixel) {
+    x = Math.round(x);
+    y = Math.round(y);
+  }
+  if (rotation !== 0) {
+    var centerX = x + anchorX;
+    var centerY = y + anchorY;
+    ol.transform.compose(localTransform, centerX, centerY, 1, 1, rotation, -centerX, -centerY);
+    context.setTransform.apply(context, localTransform);
+  }
+  var alpha = context.globalAlpha;
+  if (opacity != 1) {
+    context.globalAlpha = alpha * opacity;
+  }
+  var w = width + originX > image.width ? image.width - originX : width;
+  var h = height + originY > image.height ? image.height - originY : height;
+  context.drawImage(image, originX, originY, w, h, x, y, w * scale, h * scale);
+  if (opacity != 1) {
+    context.globalAlpha = alpha;
+  }
+  if (rotation !== 0) {
+    context.setTransform.apply(context, this.resetTransform_);
+  }
+};
+ol.render.canvas.Replay.prototype.applyPixelRatio = function(dashArray) {
+  var pixelRatio = this.pixelRatio;
+  return pixelRatio == 1 ? dashArray : dashArray.map(function(dash) {
+    return dash * pixelRatio;
+  });
+};
 ol.render.canvas.Replay.prototype.appendFlatCoordinates = function(flatCoordinates, offset, end, stride, closed, skipFirst) {
   var myEnd = this.coordinates.length;
   var extent = this.getBufferedMaxExtent();
@@ -17228,7 +17402,7 @@ ol.render.canvas.Replay.prototype.fill_ = function(context, rotation) {
     context.setTransform.apply(context, this.resetTransform_);
   }
 };
-ol.render.canvas.Replay.prototype.replay_ = function(context, pixelRatio, transform, viewRotation, skippedFeaturesHash, instructions, featureCallback, opt_hitExtent) {
+ol.render.canvas.Replay.prototype.replay_ = function(context, transform, viewRotation, skippedFeaturesHash, instructions, featureCallback, opt_hitExtent) {
   var pixelCoordinates;
   if (this.pixelCoordinates_ && ol.array.equals(transform, this.renderedTransform_)) {
     pixelCoordinates = this.pixelCoordinates_;
@@ -17244,18 +17418,16 @@ ol.render.canvas.Replay.prototype.replay_ = function(context, pixelRatio, transf
   var ii = instructions.length;
   var d = 0;
   var dd;
-  var localTransform = this.tmpLocalTransform_;
-  var resetTransform = this.resetTransform_;
-  var prevX, prevY, roundX, roundY;
+  var anchorX, anchorY, prevX, prevY, roundX, roundY;
   var pendingFill = 0;
   var pendingStroke = 0;
   var coordinateCache = this.coordinateCache_;
-  var state = {context:context, pixelRatio:pixelRatio, resolution:this.resolution, rotation:viewRotation};
+  var state = {context:context, pixelRatio:this.pixelRatio, resolution:this.resolution, rotation:viewRotation};
   var batchSize = this.instructions != instructions || this.overlaps ? 0 : 200;
   while (i < ii) {
     var instruction = instructions[i];
     var type = instruction[0];
-    var feature, fill, stroke, text, x, y;
+    var feature, x, y;
     switch(type) {
       case ol.render.canvas.Instruction.BEGIN_GEOMETRY:
         feature = instruction[1];
@@ -17327,8 +17499,8 @@ ol.render.canvas.Replay.prototype.replay_ = function(context, pixelRatio, transf
         d = instruction[1];
         dd = instruction[2];
         var image = instruction[3];
-        var anchorX = instruction[4] * pixelRatio;
-        var anchorY = instruction[5] * pixelRatio;
+        anchorX = instruction[4];
+        anchorY = instruction[5];
         var height = instruction[6];
         var opacity = instruction[7];
         var originX = instruction[8];
@@ -17342,77 +17514,37 @@ ol.render.canvas.Replay.prototype.replay_ = function(context, pixelRatio, transf
           rotation += viewRotation;
         }
         for (; d < dd; d += 2) {
-          x = pixelCoordinates[d] - anchorX;
-          y = pixelCoordinates[d + 1] - anchorY;
-          if (snapToPixel) {
-            x = Math.round(x);
-            y = Math.round(y);
-          }
-          if (scale != 1 || rotation !== 0) {
-            var centerX = x + anchorX;
-            var centerY = y + anchorY;
-            ol.transform.compose(localTransform, centerX, centerY, scale, scale, rotation, -centerX, -centerY);
-            context.setTransform.apply(context, localTransform);
-          }
-          var alpha = context.globalAlpha;
-          if (opacity != 1) {
-            context.globalAlpha = alpha * opacity;
-          }
-          var w = width + originX > image.width ? image.width - originX : width;
-          var h = height + originY > image.height ? image.height - originY : height;
-          context.drawImage(image, originX, originY, w, h, x, y, w * pixelRatio, h * pixelRatio);
-          if (opacity != 1) {
-            context.globalAlpha = alpha;
-          }
-          if (scale != 1 || rotation !== 0) {
-            context.setTransform.apply(context, resetTransform);
-          }
+          this.replayImage_(context, pixelCoordinates[d], pixelCoordinates[d + 1], image, anchorX, anchorY, height, opacity, originX, originY, rotation, scale, snapToPixel, width);
         }
         ++i;
         break;
-      case ol.render.canvas.Instruction.DRAW_TEXT:
-        d = instruction[1];
-        dd = instruction[2];
-        text = instruction[3];
-        var offsetX = instruction[4] * pixelRatio;
-        var offsetY = instruction[5] * pixelRatio;
-        rotation = instruction[6];
-        scale = instruction[7] * pixelRatio;
-        fill = instruction[8];
-        stroke = instruction[9];
-        rotateWithView = instruction[10];
-        if (rotateWithView) {
-          rotation += viewRotation;
-        }
-        for (; d < dd; d += 2) {
-          x = pixelCoordinates[d] + offsetX;
-          y = pixelCoordinates[d + 1] + offsetY;
-          if (scale != 1 || rotation !== 0) {
-            ol.transform.compose(localTransform, x, y, scale, scale, rotation, -x, -y);
-            context.setTransform.apply(context, localTransform);
-          }
-          var lines = text.split("\n");
-          var numLines = lines.length;
-          var fontSize, lineY;
-          if (numLines > 1) {
-            fontSize = Math.round(context.measureText("M").width * 1.5);
-            lineY = y - (numLines - 1) / 2 * fontSize;
-          } else {
-            fontSize = 0;
-            lineY = y;
-          }
-          for (var lineIndex = 0; lineIndex < numLines; lineIndex++) {
-            var line = lines[lineIndex];
-            if (stroke) {
-              context.strokeText(line, x, lineY);
+      case ol.render.canvas.Instruction.DRAW_CHARS:
+        var begin = instruction[1];
+        var end = instruction[2];
+        var images = instruction[3];
+        var baseline = instruction[4];
+        var exceedLength = instruction[5];
+        var maxAngle = instruction[6];
+        var measure = instruction[7];
+        var offsetY = instruction[8];
+        var text = instruction[9];
+        var align = instruction[10];
+        var textScale = instruction[11];
+        var pathLength = ol.geom.flat.length.lineString(pixelCoordinates, begin, end, 2);
+        var textLength = measure(text);
+        if (exceedLength || textLength <= pathLength) {
+          var startM = (pathLength - textLength) * align;
+          var chars = ol.geom.flat.textpath.lineString(pixelCoordinates, begin, end, 2, text, measure, startM, maxAngle, this.chars_);
+          var numChars = text.length;
+          if (chars) {
+            var fillHeight = images[images.length - 1].height;
+            for (var c = 0, cc = images.length; c < cc; ++c) {
+              var char = chars[c % numChars];
+              var label = images[c];
+              anchorX = label.width / 2;
+              anchorY = baseline * label.height + (0.5 - baseline) * (label.height - fillHeight) - offsetY;
+              this.replayImage_(context, char[0], char[1], label, anchorX, anchorY, label.height, 1, 0, 0, char[2], textScale, false, label.width);
             }
-            if (fill) {
-              context.fillText(line, x, lineY);
-            }
-            lineY = lineY + fontSize;
-          }
-          if (scale != 1 || rotation !== 0) {
-            context.setTransform.apply(context, resetTransform);
           }
         }
         ++i;
@@ -17474,39 +17606,19 @@ ol.render.canvas.Replay.prototype.replay_ = function(context, pixelRatio, transf
         ++i;
         break;
       case ol.render.canvas.Instruction.SET_STROKE_STYLE:
-        var usePixelRatio = instruction[8] !== undefined ? instruction[8] : true;
-        var renderedPixelRatio = instruction[9];
-        var lineWidth = instruction[2];
         if (pendingStroke) {
           context.stroke();
           pendingStroke = 0;
         }
         context.strokeStyle = instruction[1];
-        context.lineWidth = usePixelRatio ? lineWidth * pixelRatio : lineWidth;
+        context.lineWidth = instruction[2];
         context.lineCap = instruction[3];
         context.lineJoin = instruction[4];
         context.miterLimit = instruction[5];
         if (ol.has.CANVAS_LINE_DASH) {
-          var lineDash = instruction[6];
-          var lineDashOffset = instruction[7];
-          if (usePixelRatio && pixelRatio !== renderedPixelRatio) {
-            lineDash = lineDash.map(function(dash) {
-              return dash * pixelRatio / renderedPixelRatio;
-            });
-            lineDashOffset *= pixelRatio / renderedPixelRatio;
-            instruction[6] = lineDash;
-            instruction[7] = lineDashOffset;
-            instruction[9] = pixelRatio;
-          }
-          context.lineDashOffset = lineDashOffset;
-          context.setLineDash(lineDash);
+          context.lineDashOffset = instruction[7];
+          context.setLineDash(instruction[6]);
         }
-        ++i;
-        break;
-      case ol.render.canvas.Instruction.SET_TEXT_STYLE:
-        context.font = instruction[1];
-        context.textAlign = instruction[2];
-        context.textBaseline = instruction[3];
         ++i;
         break;
       case ol.render.canvas.Instruction.STROKE:
@@ -17530,13 +17642,13 @@ ol.render.canvas.Replay.prototype.replay_ = function(context, pixelRatio, transf
   }
   return undefined;
 };
-ol.render.canvas.Replay.prototype.replay = function(context, pixelRatio, transform, viewRotation, skippedFeaturesHash) {
+ol.render.canvas.Replay.prototype.replay = function(context, transform, viewRotation, skippedFeaturesHash) {
   var instructions = this.instructions;
-  this.replay_(context, pixelRatio, transform, viewRotation, skippedFeaturesHash, instructions, undefined, undefined);
+  this.replay_(context, transform, viewRotation, skippedFeaturesHash, instructions, undefined, undefined);
 };
 ol.render.canvas.Replay.prototype.replayHitDetection = function(context, transform, viewRotation, skippedFeaturesHash, opt_featureCallback, opt_hitExtent) {
   var instructions = this.hitDetectionInstructions;
-  return this.replay_(context, 1, transform, viewRotation, skippedFeaturesHash, instructions, opt_featureCallback, opt_hitExtent);
+  return this.replay_(context, transform, viewRotation, skippedFeaturesHash, instructions, opt_featureCallback, opt_hitExtent);
 };
 ol.render.canvas.Replay.prototype.reverseHitDetectionInstructions = function() {
   var hitDetectionInstructions = this.hitDetectionInstructions;
@@ -17577,8 +17689,8 @@ goog.provide("ol.render.canvas.ImageReplay");
 goog.require("ol");
 goog.require("ol.render.canvas.Instruction");
 goog.require("ol.render.canvas.Replay");
-ol.render.canvas.ImageReplay = function(tolerance, maxExtent, resolution, overlaps) {
-  ol.render.canvas.Replay.call(this, tolerance, maxExtent, resolution, overlaps);
+ol.render.canvas.ImageReplay = function(tolerance, maxExtent, resolution, pixelRatio, overlaps) {
+  ol.render.canvas.Replay.call(this, tolerance, maxExtent, resolution, pixelRatio, overlaps);
   this.hitDetectionImage_ = null;
   this.image_ = null;
   this.anchorX_ = undefined;
@@ -17606,7 +17718,7 @@ ol.render.canvas.ImageReplay.prototype.drawPoint = function(pointGeometry, featu
   var stride = pointGeometry.getStride();
   var myBegin = this.coordinates.length;
   var myEnd = this.drawCoordinates_(flatCoordinates, 0, flatCoordinates.length, stride);
-  this.instructions.push([ol.render.canvas.Instruction.DRAW_IMAGE, myBegin, myEnd, this.image_, this.anchorX_, this.anchorY_, this.height_, this.opacity_, this.originX_, this.originY_, this.rotateWithView_, this.rotation_, this.scale_, this.snapToPixel_, this.width_]);
+  this.instructions.push([ol.render.canvas.Instruction.DRAW_IMAGE, myBegin, myEnd, this.image_, this.anchorX_, this.anchorY_, this.height_, this.opacity_, this.originX_, this.originY_, this.rotateWithView_, this.rotation_, this.scale_ * this.pixelRatio, this.snapToPixel_, this.width_]);
   this.hitDetectionInstructions.push([ol.render.canvas.Instruction.DRAW_IMAGE, myBegin, myEnd, this.hitDetectionImage_, this.anchorX_, this.anchorY_, this.height_, this.opacity_, this.originX_, this.originY_, this.rotateWithView_, this.rotation_, this.scale_, this.snapToPixel_, this.width_]);
   this.endGeometry(pointGeometry, feature);
 };
@@ -17619,8 +17731,8 @@ ol.render.canvas.ImageReplay.prototype.drawMultiPoint = function(multiPointGeome
   var stride = multiPointGeometry.getStride();
   var myBegin = this.coordinates.length;
   var myEnd = this.drawCoordinates_(flatCoordinates, 0, flatCoordinates.length, stride);
-  this.instructions.push([ol.render.canvas.Instruction.DRAW_IMAGE, myBegin, myEnd, this.image_, this.anchorX_, this.anchorY_, this.height_, this.opacity_, this.originX_, this.originY_, this.rotateWithView_, this.rotation_, this.scale_, this.snapToPixel_, this.width_]);
-  this.hitDetectionInstructions.push([ol.render.canvas.Instruction.DRAW_IMAGE, myBegin, myEnd, this.hitDetectionImage_, this.anchorX_, this.anchorY_, this.height_, this.opacity_, this.originX_, this.originY_, this.rotateWithView_, this.rotation_, this.scale_, this.snapToPixel_, this.width_]);
+  this.instructions.push([ol.render.canvas.Instruction.DRAW_IMAGE, myBegin, myEnd, this.image_, this.anchorX_, this.anchorY_, this.height_, undefined, this.opacity_, this.originX_, this.originY_, this.rotateWithView_, this.rotation_, this.scale_, this.snapToPixel_, this.width_]);
+  this.hitDetectionInstructions.push([ol.render.canvas.Instruction.DRAW_IMAGE, myBegin, myEnd, this.hitDetectionImage_, this.anchorX_, this.anchorY_, this.height_, undefined, this.opacity_, this.originX_, this.originY_, this.rotateWithView_, this.rotation_, this.scale_, this.snapToPixel_, this.width_]);
   this.endGeometry(multiPointGeometry, feature);
 };
 ol.render.canvas.ImageReplay.prototype.finish = function() {
@@ -17667,8 +17779,8 @@ goog.require("ol.extent");
 goog.require("ol.render.canvas");
 goog.require("ol.render.canvas.Instruction");
 goog.require("ol.render.canvas.Replay");
-ol.render.canvas.LineStringReplay = function(tolerance, maxExtent, resolution, overlaps) {
-  ol.render.canvas.Replay.call(this, tolerance, maxExtent, resolution, overlaps);
+ol.render.canvas.LineStringReplay = function(tolerance, maxExtent, resolution, pixelRatio, overlaps) {
+  ol.render.canvas.Replay.call(this, tolerance, maxExtent, resolution, pixelRatio, overlaps);
   this.bufferedMaxExtent_ = null;
   this.state_ = {currentStrokeStyle:undefined, currentLineCap:undefined, currentLineDash:null, currentLineDashOffset:undefined, currentLineJoin:undefined, currentLineWidth:undefined, currentMiterLimit:undefined, lastStroke:undefined, strokeStyle:undefined, lineCap:undefined, lineDash:null, lineDashOffset:undefined, lineJoin:undefined, lineWidth:undefined, miterLimit:undefined};
 };
@@ -17706,7 +17818,7 @@ ol.render.canvas.LineStringReplay.prototype.setStrokeStyle_ = function() {
       state.lastStroke = this.coordinates.length;
     }
     state.lastStroke = 0;
-    this.instructions.push([ol.render.canvas.Instruction.SET_STROKE_STYLE, strokeStyle, lineWidth, lineCap, lineJoin, miterLimit, lineDash, lineDashOffset, true, 1], [ol.render.canvas.Instruction.BEGIN_PATH]);
+    this.instructions.push([ol.render.canvas.Instruction.SET_STROKE_STYLE, strokeStyle, lineWidth * this.pixelRatio, lineCap, lineJoin, miterLimit, this.applyPixelRatio(lineDash), lineDashOffset * this.pixelRatio], [ol.render.canvas.Instruction.BEGIN_PATH]);
     state.currentStrokeStyle = strokeStyle;
     state.currentLineCap = lineCap;
     state.currentLineDash = lineDash;
@@ -17725,7 +17837,7 @@ ol.render.canvas.LineStringReplay.prototype.drawLineString = function(lineString
   }
   this.setStrokeStyle_();
   this.beginGeometry(lineStringGeometry, feature);
-  this.hitDetectionInstructions.push([ol.render.canvas.Instruction.SET_STROKE_STYLE, state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin, state.miterLimit, state.lineDash, state.lineDashOffset, true, 1], [ol.render.canvas.Instruction.BEGIN_PATH]);
+  this.hitDetectionInstructions.push([ol.render.canvas.Instruction.SET_STROKE_STYLE, state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin, state.miterLimit, state.lineDash, state.lineDashOffset], [ol.render.canvas.Instruction.BEGIN_PATH]);
   var flatCoordinates = lineStringGeometry.getFlatCoordinates();
   var stride = lineStringGeometry.getStride();
   this.drawFlatCoordinates_(flatCoordinates, 0, flatCoordinates.length, stride);
@@ -17741,7 +17853,7 @@ ol.render.canvas.LineStringReplay.prototype.drawMultiLineString = function(multi
   }
   this.setStrokeStyle_();
   this.beginGeometry(multiLineStringGeometry, feature);
-  this.hitDetectionInstructions.push([ol.render.canvas.Instruction.SET_STROKE_STYLE, state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin, state.miterLimit, state.lineDash, state.lineDashOffset, true, 1], [ol.render.canvas.Instruction.BEGIN_PATH]);
+  this.hitDetectionInstructions.push([ol.render.canvas.Instruction.SET_STROKE_STYLE, state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin, state.miterLimit, state.lineDash, state.lineDashOffset], [ol.render.canvas.Instruction.BEGIN_PATH]);
   var ends = multiLineStringGeometry.getEnds();
   var flatCoordinates = multiLineStringGeometry.getFlatCoordinates();
   var stride = multiLineStringGeometry.getStride();
@@ -17791,8 +17903,8 @@ goog.require("ol.geom.flat.simplify");
 goog.require("ol.render.canvas");
 goog.require("ol.render.canvas.Instruction");
 goog.require("ol.render.canvas.Replay");
-ol.render.canvas.PolygonReplay = function(tolerance, maxExtent, resolution, overlaps) {
-  ol.render.canvas.Replay.call(this, tolerance, maxExtent, resolution, overlaps);
+ol.render.canvas.PolygonReplay = function(tolerance, maxExtent, resolution, pixelRatio, overlaps) {
+  ol.render.canvas.Replay.call(this, tolerance, maxExtent, resolution, pixelRatio, overlaps);
   this.bufferedMaxExtent_ = null;
   this.state_ = {currentFillStyle:undefined, currentStrokeStyle:undefined, currentLineCap:undefined, currentLineDash:null, currentLineDashOffset:undefined, currentLineJoin:undefined, currentLineWidth:undefined, currentMiterLimit:undefined, fillStyle:undefined, strokeStyle:undefined, lineCap:undefined, lineDash:null, lineDashOffset:undefined, lineJoin:undefined, lineWidth:undefined, miterLimit:undefined};
 };
@@ -17842,7 +17954,7 @@ ol.render.canvas.PolygonReplay.prototype.drawCircle = function(circleGeometry, f
   this.beginGeometry(circleGeometry, feature);
   this.hitDetectionInstructions.push([ol.render.canvas.Instruction.SET_FILL_STYLE, ol.color.asString(ol.render.canvas.defaultFillStyle)]);
   if (state.strokeStyle !== undefined) {
-    this.hitDetectionInstructions.push([ol.render.canvas.Instruction.SET_STROKE_STYLE, state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin, state.miterLimit, state.lineDash, state.lineDashOffset, true, 1]);
+    this.hitDetectionInstructions.push([ol.render.canvas.Instruction.SET_STROKE_STYLE, state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin, state.miterLimit, state.lineDash, state.lineDashOffset]);
   }
   var flatCoordinates = circleGeometry.getFlatCoordinates();
   var stride = circleGeometry.getStride();
@@ -17870,7 +17982,7 @@ ol.render.canvas.PolygonReplay.prototype.drawPolygon = function(polygonGeometry,
   this.beginGeometry(polygonGeometry, feature);
   this.hitDetectionInstructions.push([ol.render.canvas.Instruction.SET_FILL_STYLE, ol.color.asString(ol.render.canvas.defaultFillStyle)]);
   if (state.strokeStyle !== undefined) {
-    this.hitDetectionInstructions.push([ol.render.canvas.Instruction.SET_STROKE_STYLE, state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin, state.miterLimit, state.lineDash, state.lineDashOffset, true, 1]);
+    this.hitDetectionInstructions.push([ol.render.canvas.Instruction.SET_STROKE_STYLE, state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin, state.miterLimit, state.lineDash, state.lineDashOffset]);
   }
   var ends = polygonGeometry.getEnds();
   var flatCoordinates = polygonGeometry.getOrientedFlatCoordinates();
@@ -17889,7 +18001,7 @@ ol.render.canvas.PolygonReplay.prototype.drawMultiPolygon = function(multiPolygo
   this.beginGeometry(multiPolygonGeometry, feature);
   this.hitDetectionInstructions.push([ol.render.canvas.Instruction.SET_FILL_STYLE, ol.color.asString(ol.render.canvas.defaultFillStyle)]);
   if (state.strokeStyle !== undefined) {
-    this.hitDetectionInstructions.push([ol.render.canvas.Instruction.SET_STROKE_STYLE, state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin, state.miterLimit, state.lineDash, state.lineDashOffset, true, 1]);
+    this.hitDetectionInstructions.push([ol.render.canvas.Instruction.SET_STROKE_STYLE, state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin, state.miterLimit, state.lineDash, state.lineDashOffset]);
   }
   var endss = multiPolygonGeometry.getEndss();
   var flatCoordinates = multiPolygonGeometry.getOrientedFlatCoordinates();
@@ -17981,7 +18093,7 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function(geometr
   }
   if (strokeStyle !== undefined) {
     if (state.currentStrokeStyle != strokeStyle || state.currentLineCap != lineCap || !ol.array.equals(state.currentLineDash, lineDash) || state.currentLineDashOffset != lineDashOffset || state.currentLineJoin != lineJoin || state.currentLineWidth != lineWidth || state.currentMiterLimit != miterLimit) {
-      this.instructions.push([ol.render.canvas.Instruction.SET_STROKE_STYLE, strokeStyle, lineWidth, lineCap, lineJoin, miterLimit, lineDash, lineDashOffset, true, 1]);
+      this.instructions.push([ol.render.canvas.Instruction.SET_STROKE_STYLE, strokeStyle, lineWidth * this.pixelRatio, lineCap, lineJoin, miterLimit, this.applyPixelRatio(lineDash), lineDashOffset * this.pixelRatio]);
       state.currentStrokeStyle = strokeStyle;
       state.currentLineCap = lineCap;
       state.currentLineDash = lineDash;
@@ -17992,17 +18104,79 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function(geometr
     }
   }
 };
+goog.provide("ol.geom.flat.straightchunk");
+ol.geom.flat.straightchunk.lineString = function(maxAngle, flatCoordinates, offset, end, stride) {
+  var chunkStart = offset;
+  var chunkEnd = offset;
+  var chunkM = 0;
+  var m = 0;
+  var start = offset;
+  var acos, i, m12, m23, x1, y1, x12, y12, x23, y23;
+  for (i = offset; i < end; i += stride) {
+    var x2 = flatCoordinates[i];
+    var y2 = flatCoordinates[i + 1];
+    if (x1 !== undefined) {
+      x23 = x2 - x1;
+      y23 = y2 - y1;
+      m23 = Math.sqrt(x23 * x23 + y23 * y23);
+      if (x12 !== undefined) {
+        m += m12;
+        acos = Math.acos((x12 * x23 + y12 * y23) / (m12 * m23));
+        if (acos > maxAngle) {
+          if (m > chunkM) {
+            chunkM = m;
+            chunkStart = start;
+            chunkEnd = i;
+          }
+          m = 0;
+          start = i - stride;
+        }
+      }
+      m12 = m23;
+      x12 = x23;
+      y12 = y23;
+    }
+    x1 = x2;
+    y1 = y2;
+  }
+  m += m23;
+  return m > chunkM ? [start, i] : [chunkStart, chunkEnd];
+};
+goog.provide("ol.render.ReplayType");
+ol.render.ReplayType = {CIRCLE:"Circle", DEFAULT:"Default", IMAGE:"Image", LINE_STRING:"LineString", POLYGON:"Polygon", TEXT:"Text"};
+goog.provide("ol.render.replay");
+goog.require("ol.render.ReplayType");
+ol.render.replay.ORDER = [ol.render.ReplayType.POLYGON, ol.render.ReplayType.CIRCLE, ol.render.ReplayType.LINE_STRING, ol.render.ReplayType.IMAGE, ol.render.ReplayType.TEXT, ol.render.ReplayType.DEFAULT];
+ol.render.replay.TEXT_ALIGN = {};
+ol.render.replay.TEXT_ALIGN["left"] = 0;
+ol.render.replay.TEXT_ALIGN["end"] = 0;
+ol.render.replay.TEXT_ALIGN["center"] = 0.5;
+ol.render.replay.TEXT_ALIGN["right"] = 1;
+ol.render.replay.TEXT_ALIGN["start"] = 1;
+ol.render.replay.TEXT_ALIGN["top"] = 0;
+ol.render.replay.TEXT_ALIGN["middle"] = 0.5;
+ol.render.replay.TEXT_ALIGN["hanging"] = 0.2;
+ol.render.replay.TEXT_ALIGN["alphabetic"] = 0.8;
+ol.render.replay.TEXT_ALIGN["ideographic"] = 0.8;
+ol.render.replay.TEXT_ALIGN["bottom"] = 1;
+goog.provide("ol.style.TextPlacement");
+ol.style.TextPlacement = {POINT:"point", LINE:"line"};
 goog.provide("ol.render.canvas.TextReplay");
 goog.require("ol");
 goog.require("ol.colorlike");
+goog.require("ol.dom");
+goog.require("ol.geom.flat.straightchunk");
+goog.require("ol.geom.GeometryType");
+goog.require("ol.has");
 goog.require("ol.render.canvas");
 goog.require("ol.render.canvas.Instruction");
 goog.require("ol.render.canvas.Replay");
-ol.render.canvas.TextReplay = function(tolerance, maxExtent, resolution, overlaps) {
-  ol.render.canvas.Replay.call(this, tolerance, maxExtent, resolution, overlaps);
-  this.replayFillState_ = null;
-  this.replayStrokeState_ = null;
-  this.replayTextState_ = null;
+goog.require("ol.render.replay");
+goog.require("ol.structs.LRUCache");
+goog.require("ol.style.TextPlacement");
+ol.render.canvas.TextReplay = function(tolerance, maxExtent, resolution, pixelRatio, overlaps) {
+  ol.render.canvas.Replay.call(this, tolerance, maxExtent, resolution, pixelRatio, overlaps);
+  this.labels_ = null;
   this.text_ = "";
   this.textOffsetX_ = 0;
   this.textOffsetY_ = 0;
@@ -18012,99 +18186,254 @@ ol.render.canvas.TextReplay = function(tolerance, maxExtent, resolution, overlap
   this.textFillState_ = null;
   this.textStrokeState_ = null;
   this.textState_ = null;
+  this.textKey_ = "";
+  this.fillKey_ = "";
+  this.strokeKey_ = "";
+  while (ol.render.canvas.TextReplay.labelCache_.canExpireCache()) {
+    ol.render.canvas.TextReplay.labelCache_.pop();
+  }
 };
 ol.inherits(ol.render.canvas.TextReplay, ol.render.canvas.Replay);
-ol.render.canvas.TextReplay.prototype.drawText = function(flatCoordinates, offset, end, stride, geometry, feature) {
-  if (this.text_ === "" || !this.textState_ || !this.textFillState_ && !this.textStrokeState_) {
+ol.render.canvas.TextReplay.labelCache_ = new ol.structs.LRUCache;
+ol.render.canvas.TextReplay.measureTextHeight = function() {
+  var textContainer;
+  return function(font, lines, widths) {
+    if (!textContainer) {
+      textContainer = document.createElement("span");
+      textContainer.textContent = "M";
+      textContainer.style.visibility = "hidden";
+      textContainer.style.whiteSpace = "nowrap";
+    }
+    textContainer.style.font = font;
+    document.body.appendChild(textContainer);
+    var height = textContainer.offsetHeight;
+    document.body.removeChild(textContainer);
+    return height;
+  };
+}();
+ol.render.canvas.TextReplay.getTextWidth = function(context, pixelRatio, text) {
+  var width = this[text];
+  if (!width) {
+    this[text] = width = context.measureText(text).width;
+  }
+  return width * pixelRatio;
+};
+ol.render.canvas.TextReplay.measureTextWidths = function() {
+  var context;
+  return function(font, lines, widths) {
+    if (!context) {
+      context = ol.dom.createCanvasContext2D(1, 1);
+    }
+    context.font = font;
+    var numLines = lines.length;
+    var width = 0;
+    var currentWidth, i;
+    for (i = 0; i < numLines; ++i) {
+      currentWidth = context.measureText(lines[i]).width;
+      width = Math.max(width, currentWidth);
+      widths.push(currentWidth);
+    }
+    return width;
+  };
+}();
+ol.render.canvas.TextReplay.prototype.drawText = function(geometry, feature) {
+  var fillState = this.textFillState_;
+  var strokeState = this.textStrokeState_;
+  var textState = this.textState_;
+  if (this.text_ === "" || !textState || !fillState && !strokeState) {
     return;
   }
-  if (this.textFillState_) {
-    this.setReplayFillState_(this.textFillState_);
-  }
-  if (this.textStrokeState_) {
-    this.setReplayStrokeState_(this.textStrokeState_);
-  }
-  this.setReplayTextState_(this.textState_);
   this.beginGeometry(geometry, feature);
-  var myBegin = this.coordinates.length;
-  var myEnd = this.appendFlatCoordinates(flatCoordinates, offset, end, stride, false, false);
-  var fill = !!this.textFillState_;
-  var stroke = !!this.textStrokeState_;
-  var drawTextInstruction = [ol.render.canvas.Instruction.DRAW_TEXT, myBegin, myEnd, this.text_, this.textOffsetX_, this.textOffsetY_, this.textRotation_, this.textScale_, fill, stroke, this.textRotateWithView_];
-  this.instructions.push(drawTextInstruction);
-  this.hitDetectionInstructions.push(drawTextInstruction);
+  var begin = this.coordinates.length;
+  var geometryType = geometry.getType();
+  var flatCoordinates = null;
+  var end = 2;
+  var stride = 2;
+  if (this.textState_.placement === ol.style.TextPlacement.LINE) {
+    var ends;
+    flatCoordinates = geometry.getFlatCoordinates();
+    stride = geometry.getStride();
+    if (geometryType == ol.geom.GeometryType.LINE_STRING) {
+      ends = [flatCoordinates.length];
+    } else {
+      if (geometryType == ol.geom.GeometryType.MULTI_LINE_STRING) {
+        ends = geometry.getEnds();
+      } else {
+        if (geometryType == ol.geom.GeometryType.POLYGON) {
+          ends = geometry.getEnds().slice(0, 1);
+        } else {
+          if (geometryType == ol.geom.GeometryType.MULTI_POLYGON) {
+            var endss = geometry.getEndss();
+            ends = [];
+            for (var i = 0, ii = endss.length; i < ii; ++i) {
+              ends.push(endss[i][0]);
+            }
+          }
+        }
+      }
+    }
+    var textAlign = textState.textAlign;
+    var flatOffset = 0;
+    var flatEnd;
+    for (var o = 0, oo = ends.length; o < oo; ++o) {
+      if (textAlign == undefined) {
+        var range = ol.geom.flat.straightchunk.lineString(textState.maxAngle, flatCoordinates, flatOffset, ends[o], stride);
+        flatOffset = range[0];
+        flatEnd = range[1];
+      } else {
+        flatEnd = ends[o];
+      }
+      end = this.appendFlatCoordinates(flatCoordinates, flatOffset, flatEnd, stride, false, false);
+      flatOffset = ends[o];
+      this.drawChars_(begin, end);
+      begin = end;
+    }
+  } else {
+    switch(geometryType) {
+      case ol.geom.GeometryType.POINT:
+      case ol.geom.GeometryType.MULTI_POINT:
+        flatCoordinates = geometry.getFlatCoordinates();
+        end = flatCoordinates.length;
+        break;
+      case ol.geom.GeometryType.LINE_STRING:
+        flatCoordinates = geometry.getFlatMidpoint();
+        break;
+      case ol.geom.GeometryType.CIRCLE:
+        flatCoordinates = geometry.getCenter();
+        break;
+      case ol.geom.GeometryType.MULTI_LINE_STRING:
+        flatCoordinates = geometry.getFlatMidpoints();
+        end = flatCoordinates.length;
+        break;
+      case ol.geom.GeometryType.POLYGON:
+        flatCoordinates = geometry.getFlatInteriorPoint();
+        break;
+      case ol.geom.GeometryType.MULTI_POLYGON:
+        flatCoordinates = geometry.getFlatInteriorPoints();
+        end = flatCoordinates.length;
+        break;
+      default:
+    }
+    end = this.appendFlatCoordinates(flatCoordinates, 0, end, stride, false, false);
+    this.drawTextImage_(begin, end);
+  }
   this.endGeometry(geometry, feature);
 };
-ol.render.canvas.TextReplay.prototype.setReplayFillState_ = function(fillState) {
-  var replayFillState = this.replayFillState_;
-  if (replayFillState && replayFillState.fillStyle == fillState.fillStyle) {
-    return;
+ol.render.canvas.TextReplay.prototype.getImage_ = function(text, fill, stroke) {
+  var label;
+  var key = (stroke ? this.strokeKey_ : "") + this.textKey_ + text + (fill ? this.fillKey_ : "");
+  var lines = text.split("\n");
+  var numLines = lines.length;
+  if (!ol.render.canvas.TextReplay.labelCache_.containsKey(key)) {
+    var strokeState = this.textStrokeState_;
+    var fillState = this.textFillState_;
+    var textState = this.textState_;
+    var pixelRatio = this.pixelRatio;
+    var align = ol.render.replay.TEXT_ALIGN[textState.textAlign || ol.render.canvas.defaultTextAlign];
+    var strokeWidth = stroke && strokeState.lineWidth ? strokeState.lineWidth : 0;
+    var widths = [];
+    var width = ol.render.canvas.TextReplay.measureTextWidths(textState.font, lines, widths);
+    var lineHeight = ol.render.canvas.TextReplay.measureTextHeight(textState.font);
+    var height = lineHeight * numLines;
+    var renderWidth = width + 2 * strokeWidth;
+    var context = ol.dom.createCanvasContext2D(Math.ceil(renderWidth * pixelRatio), Math.ceil((height + 2 * strokeWidth) * pixelRatio));
+    label = context.canvas;
+    ol.render.canvas.TextReplay.labelCache_.set(key, label);
+    context.scale(pixelRatio, pixelRatio);
+    context.font = textState.font;
+    if (stroke) {
+      context.strokeStyle = strokeState.strokeStyle;
+      context.lineWidth = strokeState.lineWidth;
+      context.lineCap = strokeState.lineCap;
+      context.lineJoin = strokeState.lineJoin;
+      context.miterLimit = strokeState.miterLimit;
+      if (ol.has.CANVAS_LINE_DASH) {
+        context.setLineDash(strokeState.lineDash);
+        context.lineDashOffset = strokeState.lineDashOffset;
+      }
+    }
+    if (fill) {
+      context.fillStyle = fillState.fillStyle;
+    }
+    context.textBaseline = "top";
+    context.textAlign = "center";
+    var leftRight = 0.5 - align;
+    var x = align * label.width / pixelRatio + leftRight * 2 * strokeWidth;
+    var i;
+    if (stroke) {
+      for (i = 0; i < numLines; ++i) {
+        context.strokeText(lines[i], x + leftRight * widths[i], strokeWidth + i * lineHeight);
+      }
+    }
+    if (fill) {
+      for (i = 0; i < numLines; ++i) {
+        context.fillText(lines[i], x + leftRight * widths[i], strokeWidth + i * lineHeight);
+      }
+    }
   }
-  var setFillStyleInstruction = [ol.render.canvas.Instruction.SET_FILL_STYLE, fillState.fillStyle];
-  this.instructions.push(setFillStyleInstruction);
-  this.hitDetectionInstructions.push(setFillStyleInstruction);
-  if (!replayFillState) {
-    this.replayFillState_ = {fillStyle:fillState.fillStyle};
-  } else {
-    replayFillState.fillStyle = fillState.fillStyle;
-  }
+  return ol.render.canvas.TextReplay.labelCache_.get(key);
 };
-ol.render.canvas.TextReplay.prototype.setReplayStrokeState_ = function(strokeState) {
-  var replayStrokeState = this.replayStrokeState_;
-  if (replayStrokeState && replayStrokeState.lineCap == strokeState.lineCap && replayStrokeState.lineDash == strokeState.lineDash && replayStrokeState.lineDashOffset == strokeState.lineDashOffset && replayStrokeState.lineJoin == strokeState.lineJoin && replayStrokeState.lineWidth == strokeState.lineWidth && replayStrokeState.miterLimit == strokeState.miterLimit && replayStrokeState.strokeStyle == strokeState.strokeStyle) {
-    return;
-  }
-  var setStrokeStyleInstruction = [ol.render.canvas.Instruction.SET_STROKE_STYLE, strokeState.strokeStyle, strokeState.lineWidth, strokeState.lineCap, strokeState.lineJoin, strokeState.miterLimit, strokeState.lineDash, strokeState.lineDashOffset, false, 1];
-  this.instructions.push(setStrokeStyleInstruction);
-  this.hitDetectionInstructions.push(setStrokeStyleInstruction);
-  if (!replayStrokeState) {
-    this.replayStrokeState_ = {lineCap:strokeState.lineCap, lineDash:strokeState.lineDash, lineDashOffset:strokeState.lineDashOffset, lineJoin:strokeState.lineJoin, lineWidth:strokeState.lineWidth, miterLimit:strokeState.miterLimit, strokeStyle:strokeState.strokeStyle};
-  } else {
-    replayStrokeState.lineCap = strokeState.lineCap;
-    replayStrokeState.lineDash = strokeState.lineDash;
-    replayStrokeState.lineDashOffset = strokeState.lineDashOffset;
-    replayStrokeState.lineJoin = strokeState.lineJoin;
-    replayStrokeState.lineWidth = strokeState.lineWidth;
-    replayStrokeState.miterLimit = strokeState.miterLimit;
-    replayStrokeState.strokeStyle = strokeState.strokeStyle;
-  }
+ol.render.canvas.TextReplay.prototype.drawTextImage_ = function(begin, end) {
+  var textState = this.textState_;
+  var strokeState = this.textStrokeState_;
+  var pixelRatio = this.pixelRatio;
+  var align = ol.render.replay.TEXT_ALIGN[textState.textAlign || ol.render.canvas.defaultTextAlign];
+  var baseline = ol.render.replay.TEXT_ALIGN[textState.textBaseline];
+  var strokeWidth = strokeState && strokeState.lineWidth ? strokeState.lineWidth : 0;
+  var label = this.getImage_(this.text_, !!this.textFillState_, !!this.textStrokeState_);
+  var anchorX = align * label.width / pixelRatio + 2 * (0.5 - align) * strokeWidth;
+  var anchorY = baseline * label.height / pixelRatio + 2 * (0.5 - baseline) * strokeWidth;
+  this.instructions.push([ol.render.canvas.Instruction.DRAW_IMAGE, begin, end, label, (anchorX - this.textOffsetX_) * pixelRatio, (anchorY - this.textOffsetY_) * pixelRatio, label.height, 1, 0, 0, this.textRotateWithView_, this.textRotation_, this.textScale_, true, label.width]);
+  this.hitDetectionInstructions.push([ol.render.canvas.Instruction.DRAW_IMAGE, begin, end, label, (anchorX - this.textOffsetX_) * pixelRatio, (anchorY - this.textOffsetY_) * pixelRatio, label.height, 1, 0, 0, this.textRotateWithView_, this.textRotation_, this.textScale_ / pixelRatio, true, label.width]);
 };
-ol.render.canvas.TextReplay.prototype.setReplayTextState_ = function(textState) {
-  var replayTextState = this.replayTextState_;
-  if (replayTextState && replayTextState.font == textState.font && replayTextState.textAlign == textState.textAlign && replayTextState.textBaseline == textState.textBaseline) {
-    return;
+ol.render.canvas.TextReplay.prototype.drawChars_ = function(begin, end) {
+  var pixelRatio = this.pixelRatio;
+  var strokeState = this.textStrokeState_;
+  var fill = !!this.textFillState_;
+  var stroke = !!strokeState;
+  var textState = this.textState_;
+  var baseline = ol.render.replay.TEXT_ALIGN[textState.textBaseline];
+  var labels = [];
+  var text = this.text_;
+  var numChars = this.text_.length;
+  var i;
+  if (stroke) {
+    for (i = 0; i < numChars; ++i) {
+      labels.push(this.getImage_(text.charAt(i), false, stroke));
+    }
   }
-  var setTextStyleInstruction = [ol.render.canvas.Instruction.SET_TEXT_STYLE, textState.font, textState.textAlign, textState.textBaseline];
-  this.instructions.push(setTextStyleInstruction);
-  this.hitDetectionInstructions.push(setTextStyleInstruction);
-  if (!replayTextState) {
-    this.replayTextState_ = {font:textState.font, textAlign:textState.textAlign, textBaseline:textState.textBaseline};
-  } else {
-    replayTextState.font = textState.font;
-    replayTextState.textAlign = textState.textAlign;
-    replayTextState.textBaseline = textState.textBaseline;
+  if (fill) {
+    for (i = 0; i < numChars; ++i) {
+      labels.push(this.getImage_(text.charAt(i), fill, false));
+    }
   }
+  var context = labels[0].getContext("2d");
+  var offsetY = this.textOffsetY_ * pixelRatio;
+  var align = ol.render.replay.TEXT_ALIGN[textState.textAlign || ol.render.canvas.defaultTextAlign];
+  var widths = {};
+  this.instructions.push([ol.render.canvas.Instruction.DRAW_CHARS, begin, end, labels, baseline, textState.exceedLength, textState.maxAngle, ol.render.canvas.TextReplay.getTextWidth.bind(widths, context, pixelRatio), offsetY, this.text_, align, this.textScale_]);
+  this.hitDetectionInstructions.push([ol.render.canvas.Instruction.DRAW_CHARS, begin, end, labels, baseline, textState.exceedLength, textState.maxAngle, ol.render.canvas.TextReplay.getTextWidth.bind(widths, context, 1), offsetY, this.text_, align, this.textScale_ / pixelRatio]);
 };
 ol.render.canvas.TextReplay.prototype.setTextStyle = function(textStyle) {
+  var textState, fillState, strokeState;
   if (!textStyle) {
     this.text_ = "";
   } else {
     var textFillStyle = textStyle.getFill();
     if (!textFillStyle) {
-      this.textFillState_ = null;
+      fillState = this.textFillState_ = null;
     } else {
       var textFillStyleColor = textFillStyle.getColor();
       var fillStyle = ol.colorlike.asColorLike(textFillStyleColor ? textFillStyleColor : ol.render.canvas.defaultFillStyle);
-      if (!this.textFillState_) {
-        this.textFillState_ = {fillStyle:fillStyle};
-      } else {
-        var textFillState = this.textFillState_;
-        textFillState.fillStyle = fillStyle;
+      fillState = this.textFillState_;
+      if (!fillState) {
+        fillState = this.textFillState_ = {};
       }
+      fillState.fillStyle = fillStyle;
     }
     var textStrokeStyle = textStyle.getStroke();
     if (!textStrokeStyle) {
-      this.textStrokeState_ = null;
+      strokeState = this.textStrokeState_ = null;
     } else {
       var textStrokeStyleColor = textStrokeStyle.getColor();
       var textStrokeStyleLineCap = textStrokeStyle.getLineCap();
@@ -18120,18 +18449,17 @@ ol.render.canvas.TextReplay.prototype.setTextStyle = function(textStyle) {
       var lineWidth = textStrokeStyleWidth !== undefined ? textStrokeStyleWidth : ol.render.canvas.defaultLineWidth;
       var miterLimit = textStrokeStyleMiterLimit !== undefined ? textStrokeStyleMiterLimit : ol.render.canvas.defaultMiterLimit;
       var strokeStyle = ol.colorlike.asColorLike(textStrokeStyleColor ? textStrokeStyleColor : ol.render.canvas.defaultStrokeStyle);
-      if (!this.textStrokeState_) {
-        this.textStrokeState_ = {lineCap:lineCap, lineDash:lineDash, lineDashOffset:lineDashOffset, lineJoin:lineJoin, lineWidth:lineWidth, miterLimit:miterLimit, strokeStyle:strokeStyle};
-      } else {
-        var textStrokeState = this.textStrokeState_;
-        textStrokeState.lineCap = lineCap;
-        textStrokeState.lineDash = lineDash;
-        textStrokeState.lineDashOffset = lineDashOffset;
-        textStrokeState.lineJoin = lineJoin;
-        textStrokeState.lineWidth = lineWidth;
-        textStrokeState.miterLimit = miterLimit;
-        textStrokeState.strokeStyle = strokeStyle;
+      strokeState = this.textStrokeState_;
+      if (!strokeState) {
+        strokeState = this.textStrokeState_ = {};
       }
+      strokeState.lineCap = lineCap;
+      strokeState.lineDash = lineDash;
+      strokeState.lineDashOffset = lineDashOffset;
+      strokeState.lineJoin = lineJoin;
+      strokeState.lineWidth = lineWidth;
+      strokeState.miterLimit = miterLimit;
+      strokeState.strokeStyle = strokeStyle;
     }
     var textFont = textStyle.getFont();
     var textOffsetX = textStyle.getOffsetX();
@@ -18143,29 +18471,29 @@ ol.render.canvas.TextReplay.prototype.setTextStyle = function(textStyle) {
     var textTextAlign = textStyle.getTextAlign();
     var textTextBaseline = textStyle.getTextBaseline();
     var font = textFont !== undefined ? textFont : ol.render.canvas.defaultFont;
-    var textAlign = textTextAlign !== undefined ? textTextAlign : ol.render.canvas.defaultTextAlign;
+    var textAlign = textTextAlign;
     var textBaseline = textTextBaseline !== undefined ? textTextBaseline : ol.render.canvas.defaultTextBaseline;
-    if (!this.textState_) {
-      this.textState_ = {font:font, textAlign:textAlign, textBaseline:textBaseline};
-    } else {
-      var textState = this.textState_;
-      textState.font = font;
-      textState.textAlign = textAlign;
-      textState.textBaseline = textBaseline;
+    textState = this.textState_;
+    if (!textState) {
+      textState = this.textState_ = {};
     }
+    textState.exceedLength = textStyle.getExceedLength();
+    textState.font = font;
+    textState.maxAngle = textStyle.getMaxAngle();
+    textState.placement = textStyle.getPlacement();
+    textState.textAlign = textAlign;
+    textState.textBaseline = textBaseline;
     this.text_ = textText !== undefined ? textText : "";
     this.textOffsetX_ = textOffsetX !== undefined ? textOffsetX : 0;
     this.textOffsetY_ = textOffsetY !== undefined ? textOffsetY : 0;
     this.textRotateWithView_ = textRotateWithView !== undefined ? textRotateWithView : false;
     this.textRotation_ = textRotation !== undefined ? textRotation : 0;
     this.textScale_ = textScale !== undefined ? textScale : 1;
+    this.strokeKey_ = strokeState ? (typeof strokeState.strokeStyle == "string" ? strokeState.strokeStyle : ol.getUid(strokeState.strokeStyle)) + strokeState.lineCap + strokeState.lineDashOffset + "|" + strokeState.lineWidth + strokeState.lineJoin + strokeState.miterLimit + "[" + strokeState.lineDash.join() + "]" : "";
+    this.textKey_ = textState.font + textState.textAlign;
+    this.fillKey_ = fillState ? typeof fillState.fillStyle == "string" ? fillState.fillStyle : "|" + ol.getUid(fillState.fillStyle) : "";
   }
 };
-goog.provide("ol.render.ReplayType");
-ol.render.ReplayType = {CIRCLE:"Circle", DEFAULT:"Default", IMAGE:"Image", LINE_STRING:"LineString", POLYGON:"Polygon", TEXT:"Text"};
-goog.provide("ol.render.replay");
-goog.require("ol.render.ReplayType");
-ol.render.replay.ORDER = [ol.render.ReplayType.POLYGON, ol.render.ReplayType.CIRCLE, ol.render.ReplayType.LINE_STRING, ol.render.ReplayType.IMAGE, ol.render.ReplayType.TEXT, ol.render.ReplayType.DEFAULT];
 goog.provide("ol.render.canvas.ReplayGroup");
 goog.require("ol");
 goog.require("ol.array");
@@ -18181,11 +18509,12 @@ goog.require("ol.render.canvas.PolygonReplay");
 goog.require("ol.render.canvas.TextReplay");
 goog.require("ol.render.replay");
 goog.require("ol.transform");
-ol.render.canvas.ReplayGroup = function(tolerance, maxExtent, resolution, overlaps, opt_renderBuffer) {
+ol.render.canvas.ReplayGroup = function(tolerance, maxExtent, resolution, pixelRatio, overlaps, opt_renderBuffer) {
   ol.render.ReplayGroup.call(this);
   this.tolerance_ = tolerance;
   this.maxExtent_ = maxExtent;
   this.overlaps_ = overlaps;
+  this.pixelRatio_ = pixelRatio;
   this.resolution_ = resolution;
   this.renderBuffer_ = opt_renderBuffer;
   this.replaysByZIndex_ = {};
@@ -18318,7 +18647,7 @@ ol.render.canvas.ReplayGroup.prototype.getReplay = function(zIndex, replayType) 
   var replay = replays[replayType];
   if (replay === undefined) {
     var Constructor = ol.render.canvas.ReplayGroup.BATCH_CONSTRUCTORS_[replayType];
-    replay = new Constructor(this.tolerance_, this.maxExtent_, this.resolution_, this.overlaps_);
+    replay = new Constructor(this.tolerance_, this.maxExtent_, this.resolution_, this.pixelRatio_, this.overlaps_);
     replays[replayType] = replay;
   }
   return replay;
@@ -18326,7 +18655,7 @@ ol.render.canvas.ReplayGroup.prototype.getReplay = function(zIndex, replayType) 
 ol.render.canvas.ReplayGroup.prototype.isEmpty = function() {
   return ol.obj.isEmpty(this.replaysByZIndex_);
 };
-ol.render.canvas.ReplayGroup.prototype.replay = function(context, pixelRatio, transform, viewRotation, skippedFeaturesHash, opt_replayTypes) {
+ol.render.canvas.ReplayGroup.prototype.replay = function(context, transform, viewRotation, skippedFeaturesHash, opt_replayTypes) {
   var zs = Object.keys(this.replaysByZIndex_).map(Number);
   zs.sort(ol.array.numberSafeCompareFunction);
   var flatClipCoords = this.getClipCoords(transform);
@@ -18344,7 +18673,7 @@ ol.render.canvas.ReplayGroup.prototype.replay = function(context, pixelRatio, tr
     for (j = 0, jj = replayTypes.length; j < jj; ++j) {
       replay = replays[replayTypes[j]];
       if (replay !== undefined) {
-        replay.replay(context, pixelRatio, transform, viewRotation, skippedFeaturesHash);
+        replay.replay(context, transform, viewRotation, skippedFeaturesHash);
       }
     }
   }
@@ -18398,7 +18727,7 @@ ol.renderer.vector.renderCircleGeometry_ = function(replayGroup, geometry, style
   if (textStyle) {
     var textReplay = replayGroup.getReplay(style.getZIndex(), ol.render.ReplayType.TEXT);
     textReplay.setTextStyle(textStyle);
-    textReplay.drawText(geometry.getCenter(), 0, 2, 2, geometry, feature);
+    textReplay.drawText(geometry, feature);
   }
 };
 ol.renderer.vector.renderFeature = function(replayGroup, feature, style, squaredTolerance, listener, thisArg) {
@@ -18465,7 +18794,7 @@ ol.renderer.vector.renderLineStringGeometry_ = function(replayGroup, geometry, s
   if (textStyle) {
     var textReplay = replayGroup.getReplay(style.getZIndex(), ol.render.ReplayType.TEXT);
     textReplay.setTextStyle(textStyle);
-    textReplay.drawText(geometry.getFlatMidpoint(), 0, 2, 2, geometry, feature);
+    textReplay.drawText(geometry, feature);
   }
 };
 ol.renderer.vector.renderMultiLineStringGeometry_ = function(replayGroup, geometry, style, feature) {
@@ -18479,8 +18808,7 @@ ol.renderer.vector.renderMultiLineStringGeometry_ = function(replayGroup, geomet
   if (textStyle) {
     var textReplay = replayGroup.getReplay(style.getZIndex(), ol.render.ReplayType.TEXT);
     textReplay.setTextStyle(textStyle);
-    var flatMidpointCoordinates = geometry.getFlatMidpoints();
-    textReplay.drawText(flatMidpointCoordinates, 0, flatMidpointCoordinates.length, 2, geometry, feature);
+    textReplay.drawText(geometry, feature);
   }
 };
 ol.renderer.vector.renderMultiPolygonGeometry_ = function(replayGroup, geometry, style, feature) {
@@ -18495,8 +18823,7 @@ ol.renderer.vector.renderMultiPolygonGeometry_ = function(replayGroup, geometry,
   if (textStyle) {
     var textReplay = replayGroup.getReplay(style.getZIndex(), ol.render.ReplayType.TEXT);
     textReplay.setTextStyle(textStyle);
-    var flatInteriorPointCoordinates = geometry.getFlatInteriorPoints();
-    textReplay.drawText(flatInteriorPointCoordinates, 0, flatInteriorPointCoordinates.length, 2, geometry, feature);
+    textReplay.drawText(geometry, feature);
   }
 };
 ol.renderer.vector.renderPointGeometry_ = function(replayGroup, geometry, style, feature) {
@@ -18513,7 +18840,7 @@ ol.renderer.vector.renderPointGeometry_ = function(replayGroup, geometry, style,
   if (textStyle) {
     var textReplay = replayGroup.getReplay(style.getZIndex(), ol.render.ReplayType.TEXT);
     textReplay.setTextStyle(textStyle);
-    textReplay.drawText(geometry.getFlatCoordinates(), 0, 2, 2, geometry, feature);
+    textReplay.drawText(geometry, feature);
   }
 };
 ol.renderer.vector.renderMultiPointGeometry_ = function(replayGroup, geometry, style, feature) {
@@ -18530,8 +18857,7 @@ ol.renderer.vector.renderMultiPointGeometry_ = function(replayGroup, geometry, s
   if (textStyle) {
     var textReplay = replayGroup.getReplay(style.getZIndex(), ol.render.ReplayType.TEXT);
     textReplay.setTextStyle(textStyle);
-    var flatCoordinates = geometry.getFlatCoordinates();
-    textReplay.drawText(flatCoordinates, 0, flatCoordinates.length, geometry.getStride(), geometry, feature);
+    textReplay.drawText(geometry, feature);
   }
 };
 ol.renderer.vector.renderPolygonGeometry_ = function(replayGroup, geometry, style, feature) {
@@ -18546,7 +18872,7 @@ ol.renderer.vector.renderPolygonGeometry_ = function(replayGroup, geometry, styl
   if (textStyle) {
     var textReplay = replayGroup.getReplay(style.getZIndex(), ol.render.ReplayType.TEXT);
     textReplay.setTextStyle(textStyle);
-    textReplay.drawText(geometry.getFlatInteriorPoint(), 0, 2, 2, geometry, feature);
+    textReplay.drawText(geometry, feature);
   }
 };
 ol.renderer.vector.GEOMETRY_RENDERERS_ = {"Point":ol.renderer.vector.renderPointGeometry_, "LineString":ol.renderer.vector.renderLineStringGeometry_, "Polygon":ol.renderer.vector.renderPolygonGeometry_, "MultiPoint":ol.renderer.vector.renderMultiPointGeometry_, "MultiLineString":ol.renderer.vector.renderMultiLineStringGeometry_, "MultiPolygon":ol.renderer.vector.renderMultiPolygonGeometry_, "GeometryCollection":ol.renderer.vector.renderGeometryCollectionGeometry_, "Circle":ol.renderer.vector.renderCircleGeometry_};
@@ -18628,7 +18954,7 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame = function(frameState, lay
     var width = frameState.size[0] * pixelRatio;
     var height = frameState.size[1] * pixelRatio;
     ol.render.canvas.rotateAtOffset(replayContext, -rotation, width / 2, height / 2);
-    replayGroup.replay(replayContext, pixelRatio, transform, rotation, skippedFeatureUids);
+    replayGroup.replay(replayContext, transform, rotation, skippedFeatureUids);
     if (vectorSource.getWrapX() && projection.canWrapX() && !ol.extent.containsExtent(projectionExtent, extent)) {
       var startX = extent[0];
       var worldWidth = ol.extent.getWidth(projectionExtent);
@@ -18638,7 +18964,7 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame = function(frameState, lay
         --world;
         offsetX = worldWidth * world;
         transform = this.getTransform(frameState, offsetX);
-        replayGroup.replay(replayContext, pixelRatio, transform, rotation, skippedFeatureUids);
+        replayGroup.replay(replayContext, transform, rotation, skippedFeatureUids);
         startX += worldWidth;
       }
       world = 0;
@@ -18647,7 +18973,7 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame = function(frameState, lay
         ++world;
         offsetX = worldWidth * world;
         transform = this.getTransform(frameState, offsetX);
-        replayGroup.replay(replayContext, pixelRatio, transform, rotation, skippedFeatureUids);
+        replayGroup.replay(replayContext, transform, rotation, skippedFeatureUids);
         startX -= worldWidth;
       }
       transform = this.getTransform(frameState, 0);
@@ -18732,7 +19058,7 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame = function(frameState, lay
   }
   this.replayGroup_ = null;
   this.dirty_ = false;
-  var replayGroup = new ol.render.canvas.ReplayGroup(ol.renderer.vector.getTolerance(resolution, pixelRatio), extent, resolution, vectorSource.getOverlaps(), vectorLayer.getRenderBuffer());
+  var replayGroup = new ol.render.canvas.ReplayGroup(ol.renderer.vector.getTolerance(resolution, pixelRatio), extent, resolution, pixelRatio, vectorSource.getOverlaps(), vectorLayer.getRenderBuffer());
   vectorSource.loadFeatures(extent, resolution, projection);
   var renderFeature = function(feature) {
     var styles;
@@ -18802,7 +19128,6 @@ goog.require("ol.render.replay");
 goog.require("ol.renderer.Type");
 goog.require("ol.renderer.canvas.TileLayer");
 goog.require("ol.renderer.vector");
-goog.require("ol.size");
 goog.require("ol.transform");
 ol.renderer.canvas.VectorTileLayer = function(layer) {
   this.context = null;
@@ -18857,28 +19182,18 @@ ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup_ = function(tile,
     if (sourceTile.getState() == ol.TileState.ERROR) {
       continue;
     }
-    replayState.dirty = false;
     var sourceTileCoord = sourceTile.tileCoord;
-    var tileProjection = sourceTile.getProjection();
-    var sourceTileResolution = sourceTileGrid.getResolution(sourceTile.tileCoord[0]);
     var sourceTileExtent = sourceTileGrid.getTileCoordExtent(sourceTileCoord);
     var sharedExtent = ol.extent.getIntersection(tileExtent, sourceTileExtent);
-    var extent, reproject, tileResolution;
-    if (tileProjection.getUnits() == ol.proj.Units.TILE_PIXELS) {
-      var tilePixelRatio = tileResolution = this.getTilePixelRatio_(source, sourceTile);
-      var transform = ol.transform.compose(this.tmpTransform_, 0, 0, 1 / sourceTileResolution * tilePixelRatio, -1 / sourceTileResolution * tilePixelRatio, 0, -sourceTileExtent[0], -sourceTileExtent[3]);
-      extent = ol.transform.apply(transform, [sharedExtent[0], sharedExtent[3]]).concat(ol.transform.apply(transform, [sharedExtent[2], sharedExtent[1]]));
-    } else {
-      tileResolution = resolution;
-      extent = sharedExtent;
-      if (!ol.proj.equivalent(projection, tileProjection)) {
-        reproject = true;
-        sourceTile.setProjection(projection);
-      }
+    var tileProjection = sourceTile.getProjection();
+    var reproject = false;
+    if (!ol.proj.equivalent(projection, tileProjection)) {
+      reproject = true;
+      sourceTile.setProjection(projection);
     }
     replayState.dirty = false;
-    var replayGroup = new ol.render.canvas.ReplayGroup(0, extent, tileResolution, source.getOverlaps(), layer.getRenderBuffer());
-    var squaredTolerance = ol.renderer.vector.getSquaredTolerance(tileResolution, pixelRatio);
+    var replayGroup = new ol.render.canvas.ReplayGroup(0, sharedExtent, resolution, pixelRatio, source.getOverlaps(), layer.getRenderBuffer());
+    var squaredTolerance = ol.renderer.vector.getSquaredTolerance(resolution, pixelRatio);
     var renderFeature = function(feature) {
       var styles;
       var styleFunction = feature.getStyleFunction();
@@ -18891,9 +19206,6 @@ ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup_ = function(tile,
         }
       }
       if (styles) {
-        if (!Array.isArray(styles)) {
-          styles = [styles];
-        }
         var dirty = this.renderFeature(feature, squaredTolerance, styles, replayGroup);
         this.dirty_ = this.dirty_ || dirty;
         replayState.dirty = replayState.dirty || dirty;
@@ -18907,6 +19219,10 @@ ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup_ = function(tile,
     for (var i = 0, ii = features.length; i < ii; ++i) {
       feature = features[i];
       if (reproject) {
+        if (tileProjection.getUnits() == ol.proj.Units.TILE_PIXELS) {
+          tileProjection.setWorldExtent(sourceTileExtent);
+          tileProjection.setExtent(sourceTile.getExtent());
+        }
         feature.getGeometry().transform(tileProjection, projection);
       }
       renderFeature.call(this, feature);
@@ -18934,10 +19250,9 @@ ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate = functi
   var renderedTiles = this.renderedTiles;
   var source = layer.getSource();
   var tileGrid = source.getTileGridForProjection(frameState.viewState.projection);
-  var sourceTileGrid = source.getTileGrid();
-  var bufferedExtent, found, tileSpaceCoordinate;
-  var i, ii, origin, replayGroup;
-  var tile, tileCoord, tileExtent, tilePixelRatio, tileRenderResolution;
+  var bufferedExtent, found;
+  var i, ii, replayGroup;
+  var tile, tileCoord, tileExtent;
   for (i = 0, ii = renderedTiles.length; i < ii; ++i) {
     tile = renderedTiles[i];
     tileCoord = tile.tileCoord;
@@ -18951,21 +19266,8 @@ ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate = functi
       if (sourceTile.getState() == ol.TileState.ERROR) {
         continue;
       }
-      if (sourceTile.getProjection().getUnits() === ol.proj.Units.TILE_PIXELS) {
-        var sourceTileCoord = sourceTile.tileCoord;
-        var sourceTileExtent = sourceTileGrid.getTileCoordExtent(sourceTileCoord, this.tmpExtent);
-        origin = ol.extent.getTopLeft(sourceTileExtent);
-        tilePixelRatio = this.getTilePixelRatio_(source, sourceTile);
-        var sourceTileResolution = sourceTileGrid.getResolution(sourceTileCoord[0]);
-        tileRenderResolution = sourceTileResolution / tilePixelRatio;
-        tileSpaceCoordinate = [(coordinate[0] - origin[0]) / tileRenderResolution, (origin[1] - coordinate[1]) / tileRenderResolution];
-        var upscaling = tileGrid.getResolution(tileCoord[0]) / sourceTileResolution;
-        resolution = tilePixelRatio * upscaling;
-      } else {
-        tileSpaceCoordinate = coordinate;
-      }
       replayGroup = sourceTile.getReplayGroup(layer, tile.tileCoord.toString());
-      found = found || replayGroup.forEachFeatureAtCoordinate(tileSpaceCoordinate, resolution, rotation, hitTolerance, {}, function(feature) {
+      found = found || replayGroup.forEachFeatureAtCoordinate(coordinate, resolution, rotation, hitTolerance, {}, function(feature) {
         var key = ol.getUid(feature).toString();
         if (!(key in features)) {
           features[key] = true;
@@ -18977,28 +19279,21 @@ ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate = functi
   return found;
 };
 ol.renderer.canvas.VectorTileLayer.prototype.getReplayTransform_ = function(tile, frameState) {
-  if (tile.getProjection().getUnits() == ol.proj.Units.TILE_PIXELS) {
-    var layer = this.getLayer();
-    var source = layer.getSource();
-    var tileGrid = source.getTileGrid();
-    var tileCoord = tile.tileCoord;
-    var tileResolution = tileGrid.getResolution(tileCoord[0]) / this.getTilePixelRatio_(source, tile);
-    var viewState = frameState.viewState;
-    var pixelRatio = frameState.pixelRatio;
-    var renderResolution = viewState.resolution / pixelRatio;
-    var tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent);
-    var center = viewState.center;
-    var origin = ol.extent.getTopLeft(tileExtent);
-    var size = frameState.size;
-    var offsetX = Math.round(pixelRatio * size[0] / 2);
-    var offsetY = Math.round(pixelRatio * size[1] / 2);
-    return ol.transform.compose(this.tmpTransform_, offsetX, offsetY, tileResolution / renderResolution, tileResolution / renderResolution, viewState.rotation, (origin[0] - center[0]) / tileResolution, (center[1] - origin[1]) / tileResolution);
-  } else {
-    return this.getTransform(frameState, 0);
-  }
-};
-ol.renderer.canvas.VectorTileLayer.prototype.getTilePixelRatio_ = function(source, tile) {
-  return ol.extent.getWidth(tile.getExtent()) / ol.size.toSize(source.getTileGrid().getTileSize(tile.tileCoord[0]))[0];
+  var layer = this.getLayer();
+  var source = layer.getSource();
+  var tileGrid = source.getTileGrid();
+  var tileCoord = tile.tileCoord;
+  var tileResolution = tileGrid.getResolution(tileCoord[0]);
+  var viewState = frameState.viewState;
+  var pixelRatio = frameState.pixelRatio;
+  var renderResolution = viewState.resolution / pixelRatio;
+  var tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent);
+  var center = viewState.center;
+  var origin = ol.extent.getTopLeft(tileExtent);
+  var size = frameState.size;
+  var offsetX = Math.round(pixelRatio * size[0] / 2);
+  var offsetY = Math.round(pixelRatio * size[1] / 2);
+  return ol.transform.compose(this.tmpTransform_, offsetX, offsetY, tileResolution / renderResolution, tileResolution / renderResolution, viewState.rotation, (origin[0] - center[0]) / tileResolution, (center[1] - origin[1]) / tileResolution);
 };
 ol.renderer.canvas.VectorTileLayer.prototype.handleStyleImageChange_ = function(event) {
   this.renderIfReadyAndVisible();
@@ -19014,7 +19309,6 @@ ol.renderer.canvas.VectorTileLayer.prototype.postCompose = function(context, fra
   var offsetX = Math.round(pixelRatio * size[0] / 2);
   var offsetY = Math.round(pixelRatio * size[1] / 2);
   var tiles = this.renderedTiles;
-  var sourceTileGrid = source.getTileGrid();
   var tileGrid = source.getTileGridForProjection(frameState.viewState.projection);
   var clips = [];
   var zs = [];
@@ -19030,15 +19324,12 @@ ol.renderer.canvas.VectorTileLayer.prototype.postCompose = function(context, fra
       if (sourceTile.getState() == ol.TileState.ERROR) {
         continue;
       }
-      var tilePixelRatio = this.getTilePixelRatio_(source, sourceTile);
       var replayGroup = sourceTile.getReplayGroup(layer, tileCoord.toString());
       if (renderMode != ol.layer.VectorTileRenderType.VECTOR && !replayGroup.hasReplays(replays)) {
         continue;
       }
       var currentZ = sourceTile.tileCoord[0];
-      var sourceResolution = sourceTileGrid.getResolution(currentZ);
-      var transform = this.getReplayTransform_(sourceTile, frameState);
-      ol.transform.translate(transform, worldOffset * tilePixelRatio / sourceResolution, 0);
+      var transform = this.getTransform(frameState, worldOffset);
       var currentClip = replayGroup.getClipCoords(transform);
       context.save();
       context.globalAlpha = layerState.opacity;
@@ -19058,7 +19349,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.postCompose = function(context, fra
           context.clip();
         }
       }
-      replayGroup.replay(context, pixelRatio, transform, rotation, {}, replays);
+      replayGroup.replay(context, transform, rotation, {}, replays);
       context.restore();
       clips.push(currentClip);
       zs.push(currentZ);
@@ -19091,7 +19382,6 @@ ol.renderer.canvas.VectorTileLayer.prototype.renderTileImage_ = function(tile, f
     var z = tileCoord[0];
     var pixelRatio = frameState.pixelRatio;
     var source = layer.getSource();
-    var sourceTileGrid = source.getTileGrid();
     var tileGrid = source.getTileGridForProjection(frameState.viewState.projection);
     var resolution = tileGrid.getResolution(z);
     var context = tile.getContext(layer);
@@ -19104,24 +19394,12 @@ ol.renderer.canvas.VectorTileLayer.prototype.renderTileImage_ = function(tile, f
       if (sourceTile.getState() == ol.TileState.ERROR) {
         continue;
       }
-      var tilePixelRatio = this.getTilePixelRatio_(source, sourceTile);
-      var sourceTileCoord = sourceTile.tileCoord;
       var pixelScale = pixelRatio / resolution;
       var transform = ol.transform.reset(this.tmpTransform_);
-      if (sourceTile.getProjection().getUnits() == ol.proj.Units.TILE_PIXELS) {
-        var sourceTileExtent = sourceTileGrid.getTileCoordExtent(sourceTileCoord, this.tmpExtent);
-        var sourceResolution = sourceTileGrid.getResolution(sourceTileCoord[0]);
-        var renderPixelRatio = pixelRatio / tilePixelRatio * sourceResolution / resolution;
-        ol.transform.scale(transform, renderPixelRatio, renderPixelRatio);
-        var offsetX = (sourceTileExtent[0] - tileExtent[0]) / sourceResolution * tilePixelRatio;
-        var offsetY = (tileExtent[3] - sourceTileExtent[3]) / sourceResolution * tilePixelRatio;
-        ol.transform.translate(transform, Math.round(offsetX), Math.round(offsetY));
-      } else {
-        ol.transform.scale(transform, pixelScale, -pixelScale);
-        ol.transform.translate(transform, -tileExtent[0], -tileExtent[3]);
-      }
+      ol.transform.scale(transform, pixelScale, -pixelScale);
+      ol.transform.translate(transform, -tileExtent[0], -tileExtent[3]);
       var replayGroup = sourceTile.getReplayGroup(layer, tile.tileCoord.toString());
-      replayGroup.replay(context, pixelRatio, transform, 0, {}, replays, true);
+      replayGroup.replay(context, transform, 0, {}, replays, true);
     }
   }
 };
@@ -19588,7 +19866,7 @@ ol.Overlay.prototype.updateRenderedPosition = function(pixel, mapSize) {
     if (this.rendered_.left_ !== "") {
       this.rendered_.left_ = style.left = "";
     }
-    var right = mapSize[0] - pixel[0] - offsetX + "px";
+    var right = Math.round(mapSize[0] - pixel[0] - offsetX) + "px";
     if (this.rendered_.right_ != right) {
       this.rendered_.right_ = style.right = right;
     }
@@ -19599,7 +19877,7 @@ ol.Overlay.prototype.updateRenderedPosition = function(pixel, mapSize) {
     if (positioning == ol.OverlayPositioning.BOTTOM_CENTER || positioning == ol.OverlayPositioning.CENTER_CENTER || positioning == ol.OverlayPositioning.TOP_CENTER) {
       offsetX -= this.element_.offsetWidth / 2;
     }
-    var left = pixel[0] + offsetX + "px";
+    var left = Math.round(pixel[0] + offsetX) + "px";
     if (this.rendered_.left_ != left) {
       this.rendered_.left_ = style.left = left;
     }
@@ -19608,7 +19886,7 @@ ol.Overlay.prototype.updateRenderedPosition = function(pixel, mapSize) {
     if (this.rendered_.top_ !== "") {
       this.rendered_.top_ = style.top = "";
     }
-    var bottom = mapSize[1] - pixel[1] - offsetY + "px";
+    var bottom = Math.round(mapSize[1] - pixel[1] - offsetY) + "px";
     if (this.rendered_.bottom_ != bottom) {
       this.rendered_.bottom_ = style.bottom = bottom;
     }
@@ -19619,7 +19897,7 @@ ol.Overlay.prototype.updateRenderedPosition = function(pixel, mapSize) {
     if (positioning == ol.OverlayPositioning.CENTER_LEFT || positioning == ol.OverlayPositioning.CENTER_CENTER || positioning == ol.OverlayPositioning.CENTER_RIGHT) {
       offsetY -= this.element_.offsetHeight / 2;
     }
-    var top = pixel[1] + offsetY + "px";
+    var top = Math.round(pixel[1] + offsetY) + "px";
     if (this.rendered_.top_ != top) {
       this.rendered_.top_ = style.top = top;
     }
@@ -20926,28 +21204,6 @@ ol.geom.flat.interpolate.lineStringsCoordinateAtM = function(flatCoordinates, of
     offset = end;
   }
   return null;
-};
-goog.provide("ol.geom.flat.length");
-ol.geom.flat.length.lineString = function(flatCoordinates, offset, end, stride) {
-  var x1 = flatCoordinates[offset];
-  var y1 = flatCoordinates[offset + 1];
-  var length = 0;
-  var i;
-  for (i = offset + stride; i < end; i += stride) {
-    var x2 = flatCoordinates[i];
-    var y2 = flatCoordinates[i + 1];
-    length += Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
-    x1 = x2;
-    y1 = y2;
-  }
-  return length;
-};
-ol.geom.flat.length.linearRing = function(flatCoordinates, offset, end, stride) {
-  var perimeter = ol.geom.flat.length.lineString(flatCoordinates, offset, end, stride);
-  var dx = flatCoordinates[end - stride] - flatCoordinates[offset];
-  var dy = flatCoordinates[end - stride + 1] - flatCoordinates[offset + 1];
-  perimeter += Math.sqrt(dx * dx + dy * dy);
-  return perimeter;
 };
 goog.provide("ol.geom.LineString");
 goog.require("ol");
@@ -22692,6 +22948,7 @@ ol.format.GMLBase.prototype.readFeaturesInternal = function(node, objectStack) {
 ol.format.GMLBase.prototype.readGeometryElement = function(node, objectStack) {
   var context = objectStack[0];
   context["srsName"] = node.firstElementChild.getAttribute("srsName");
+  context["srsDimension"] = node.firstElementChild.getAttribute("srsDimension");
   var geometry = ol.xml.pushParseAndPop(null, this.GEOMETRY_PARSERS_, node, objectStack, this);
   if (geometry) {
     return ol.format.Feature.transformWithOptions(geometry, false, context);
@@ -23065,7 +23322,7 @@ ol.format.GML3.prototype.readFlatPosList_ = function(node, objectStack) {
   var s = ol.xml.getAllTextContent(node, false).replace(/^\s*|\s*$/g, "");
   var context = objectStack[0];
   var containerSrs = context["srsName"];
-  var containerDimension = node.parentNode.getAttribute("srsDimension");
+  var contextDimension = context["srsDimension"];
   var axisOrientation = "enu";
   if (containerSrs) {
     var proj = ol.proj.get(containerSrs);
@@ -23079,8 +23336,12 @@ ol.format.GML3.prototype.readFlatPosList_ = function(node, objectStack) {
     if (node.getAttribute("dimension")) {
       dim = ol.format.XSD.readNonNegativeIntegerString(node.getAttribute("dimension"));
     } else {
-      if (containerDimension) {
-        dim = ol.format.XSD.readNonNegativeIntegerString(containerDimension);
+      if (node.parentNode.getAttribute("srsDimension")) {
+        dim = ol.format.XSD.readNonNegativeIntegerString(node.parentNode.getAttribute("srsDimension"));
+      } else {
+        if (contextDimension) {
+          dim = ol.format.XSD.readNonNegativeIntegerString(contextDimension);
+        }
       }
     }
   }
@@ -23114,6 +23375,8 @@ ol.format.GML3.prototype.SEGMENTS_PARSERS_ = {"http://www.opengis.net/gml":{"Lin
 ol.format.GML3.prototype.writePos_ = function(node, value, objectStack) {
   var context = objectStack[objectStack.length - 1];
   var hasZ = context["hasZ"];
+  var srsDimension = hasZ ? 3 : 2;
+  node.setAttribute("srsDimension", srsDimension);
   var srsName = context["srsName"];
   var axisOrientation = "enu";
   if (srsName) {
@@ -23147,6 +23410,8 @@ ol.format.GML3.prototype.getCoords_ = function(point, opt_srsName, opt_hasZ) {
 ol.format.GML3.prototype.writePosList_ = function(node, value, objectStack) {
   var context = objectStack[objectStack.length - 1];
   var hasZ = context["hasZ"];
+  var srsDimension = hasZ ? 3 : 2;
+  node.setAttribute("srsDimension", srsDimension);
   var srsName = context["srsName"];
   var points = value.getCoordinates();
   var len = points.length;
@@ -24449,21 +24714,8 @@ ol.style.Icon = function(opt_options) {
 };
 ol.inherits(ol.style.Icon, ol.style.Image);
 ol.style.Icon.prototype.clone = function() {
-  var oldImage = this.getImage(1);
-  var newImage;
-  if (this.iconImage_.getImageState() === ol.ImageState.LOADED) {
-    if (oldImage.tagName.toUpperCase() === "IMG") {
-      newImage = oldImage.cloneNode(true);
-    } else {
-      newImage = document.createElement("canvas");
-      var context = newImage.getContext("2d");
-      newImage.width = oldImage.width;
-      newImage.height = oldImage.height;
-      context.drawImage(oldImage, 0, 0);
-    }
-  }
-  return new ol.style.Icon({anchor:this.anchor_.slice(), anchorOrigin:this.anchorOrigin_, anchorXUnits:this.anchorXUnits_, anchorYUnits:this.anchorYUnits_, crossOrigin:this.crossOrigin_, color:this.color_ && this.color_.slice ? this.color_.slice() : this.color_ || undefined, img:newImage ? newImage : undefined, imgSize:newImage ? this.iconImage_.getSize().slice() : undefined, src:newImage ? undefined : this.getSrc(), offset:this.offset_.slice(), offsetOrigin:this.offsetOrigin_, size:this.size_ !== 
-  null ? this.size_.slice() : undefined, opacity:this.getOpacity(), scale:this.getScale(), snapToPixel:this.getSnapToPixel(), rotation:this.getRotation(), rotateWithView:this.getRotateWithView()});
+  return new ol.style.Icon({anchor:this.anchor_.slice(), anchorOrigin:this.anchorOrigin_, anchorXUnits:this.anchorXUnits_, anchorYUnits:this.anchorYUnits_, crossOrigin:this.crossOrigin_, color:this.color_ && this.color_.slice ? this.color_.slice() : this.color_ || undefined, src:this.getSrc(), offset:this.offset_.slice(), offsetOrigin:this.offsetOrigin_, size:this.size_ !== null ? this.size_.slice() : undefined, opacity:this.getOpacity(), scale:this.getScale(), snapToPixel:this.getSnapToPixel(), 
+  rotation:this.getRotation(), rotateWithView:this.getRotateWithView()});
 };
 ol.style.Icon.prototype.getAnchor = function() {
   if (this.normalizedAnchor_) {
@@ -24557,6 +24809,7 @@ ol.style.Icon.prototype.unlistenImageChange = function(listener, thisArg) {
 };
 goog.provide("ol.style.Text");
 goog.require("ol.style.Fill");
+goog.require("ol.style.TextPlacement");
 ol.style.Text = function(opt_options) {
   var options = opt_options || {};
   this.font_ = options.font;
@@ -24567,16 +24820,28 @@ ol.style.Text = function(opt_options) {
   this.textAlign_ = options.textAlign;
   this.textBaseline_ = options.textBaseline;
   this.fill_ = options.fill !== undefined ? options.fill : new ol.style.Fill({color:ol.style.Text.DEFAULT_FILL_COLOR_});
+  this.maxAngle_ = options.maxAngle !== undefined ? options.maxAngle : Math.PI / 4;
+  this.placement_ = options.placement !== undefined ? options.placement : ol.style.TextPlacement.POINT;
+  this.exceedLength_ = options.exceedLength !== undefined ? options.exceedLength : false;
   this.stroke_ = options.stroke !== undefined ? options.stroke : null;
   this.offsetX_ = options.offsetX !== undefined ? options.offsetX : 0;
   this.offsetY_ = options.offsetY !== undefined ? options.offsetY : 0;
 };
 ol.style.Text.DEFAULT_FILL_COLOR_ = "#333";
 ol.style.Text.prototype.clone = function() {
-  return new ol.style.Text({font:this.getFont(), rotation:this.getRotation(), rotateWithView:this.getRotateWithView(), scale:this.getScale(), text:this.getText(), textAlign:this.getTextAlign(), textBaseline:this.getTextBaseline(), fill:this.getFill() ? this.getFill().clone() : undefined, stroke:this.getStroke() ? this.getStroke().clone() : undefined, offsetX:this.getOffsetX(), offsetY:this.getOffsetY()});
+  return new ol.style.Text({font:this.getFont(), placement:this.getPlacement(), maxAngle:this.getMaxAngle(), exceedLength:this.getExceedLength(), rotation:this.getRotation(), rotateWithView:this.getRotateWithView(), scale:this.getScale(), text:this.getText(), textAlign:this.getTextAlign(), textBaseline:this.getTextBaseline(), fill:this.getFill() ? this.getFill().clone() : undefined, stroke:this.getStroke() ? this.getStroke().clone() : undefined, offsetX:this.getOffsetX(), offsetY:this.getOffsetY()});
+};
+ol.style.Text.prototype.getExceedLength = function() {
+  return this.exceedLength_;
 };
 ol.style.Text.prototype.getFont = function() {
   return this.font_;
+};
+ol.style.Text.prototype.getMaxAngle = function() {
+  return this.maxAngle_;
+};
+ol.style.Text.prototype.getPlacement = function() {
+  return this.placement_;
 };
 ol.style.Text.prototype.getOffsetX = function() {
   return this.offsetX_;
@@ -24608,14 +24873,23 @@ ol.style.Text.prototype.getTextAlign = function() {
 ol.style.Text.prototype.getTextBaseline = function() {
   return this.textBaseline_;
 };
+ol.style.Text.prototype.setExceedLength = function(exceedLength) {
+  this.exceedLength_ = exceedLength;
+};
 ol.style.Text.prototype.setFont = function(font) {
   this.font_ = font;
+};
+ol.style.Text.prototype.setMaxAngle = function(maxAngle) {
+  this.maxAngle_ = maxAngle;
 };
 ol.style.Text.prototype.setOffsetX = function(offsetX) {
   this.offsetX_ = offsetX;
 };
 ol.style.Text.prototype.setOffsetY = function(offsetY) {
   this.offsetY_ = offsetY;
+};
+ol.style.Text.prototype.setPlacement = function(placement) {
+  this.placement_ = placement;
 };
 ol.style.Text.prototype.setFill = function(fill) {
   this.fill_ = fill;
@@ -24814,8 +25088,12 @@ ol.format.KML.readFlatCoordinates_ = function(node) {
 };
 ol.format.KML.readURI_ = function(node) {
   var s = ol.xml.getAllTextContent(node, false).trim();
-  if (node.baseURI && node.baseURI !== "about:blank") {
-    var url = new URL(s, node.baseURI);
+  var baseURI = node.baseURI;
+  if (!baseURI || baseURI == "about:blank") {
+    baseURI = window.location.href;
+  }
+  if (baseURI) {
+    var url = new URL(s, baseURI);
     return url.href;
   } else {
     return s;
@@ -25345,8 +25623,12 @@ ol.format.KML.prototype.readSharedStyle_ = function(node, objectStack) {
     var style = ol.format.KML.readStyle_(node, objectStack);
     if (style) {
       var styleUri;
-      if (node.baseURI && node.baseURI !== "about:blank") {
-        var url = new URL("#" + id, node.baseURI);
+      var baseURI = node.baseURI;
+      if (!baseURI || baseURI == "about:blank") {
+        baseURI = window.location.href;
+      }
+      if (baseURI) {
+        var url = new URL("#" + id, baseURI);
         styleUri = url.href;
       } else {
         styleUri = "#" + id;
@@ -25365,8 +25647,12 @@ ol.format.KML.prototype.readSharedStyleMap_ = function(node, objectStack) {
     return;
   }
   var styleUri;
-  if (node.baseURI && node.baseURI !== "about:blank") {
-    var url = new URL("#" + id, node.baseURI);
+  var baseURI = node.baseURI;
+  if (!baseURI || baseURI == "about:blank") {
+    baseURI = window.location.href;
+  }
+  if (baseURI) {
+    var url = new URL("#" + id, baseURI);
     styleUri = url.href;
   } else {
     styleUri = "#" + id;
@@ -25982,6 +26268,7 @@ ol.ext.PBF = function() {
       buffer[offset + i - d] |= s * 128;
     };
     var ieee754 = {read:read, write:write};
+    "use strict";
     var pbf = Pbf;
     function Pbf(buf) {
       this.buf = ArrayBuffer.isView && ArrayBuffer.isView(buf) ? buf : new Uint8Array(buf || 0);
@@ -26593,385 +26880,12 @@ ol.ext.PBF = function() {
   })(this.PBF = this.PBF || {});
 }).call(ol.ext);
 ol.ext.PBF = ol.ext.PBF.default;
-goog.provide("ol.ext.vectortile.VectorTile");
-ol.ext.vectortile.VectorTile = function() {
-};
-(function() {
-  (function(exports) {
-    var pointGeometry = Point;
-    function Point(x, y) {
-      this.x = x;
-      this.y = y;
-    }
-    Point.prototype = {clone:function() {
-      return new Point(this.x, this.y);
-    }, add:function(p) {
-      return this.clone()._add(p);
-    }, sub:function(p) {
-      return this.clone()._sub(p);
-    }, multByPoint:function(p) {
-      return this.clone()._multByPoint(p);
-    }, divByPoint:function(p) {
-      return this.clone()._divByPoint(p);
-    }, mult:function(k) {
-      return this.clone()._mult(k);
-    }, div:function(k) {
-      return this.clone()._div(k);
-    }, rotate:function(a) {
-      return this.clone()._rotate(a);
-    }, rotateAround:function(a, p) {
-      return this.clone()._rotateAround(a, p);
-    }, matMult:function(m) {
-      return this.clone()._matMult(m);
-    }, unit:function() {
-      return this.clone()._unit();
-    }, perp:function() {
-      return this.clone()._perp();
-    }, round:function() {
-      return this.clone()._round();
-    }, mag:function() {
-      return Math.sqrt(this.x * this.x + this.y * this.y);
-    }, equals:function(other) {
-      return this.x === other.x && this.y === other.y;
-    }, dist:function(p) {
-      return Math.sqrt(this.distSqr(p));
-    }, distSqr:function(p) {
-      var dx = p.x - this.x, dy = p.y - this.y;
-      return dx * dx + dy * dy;
-    }, angle:function() {
-      return Math.atan2(this.y, this.x);
-    }, angleTo:function(b) {
-      return Math.atan2(this.y - b.y, this.x - b.x);
-    }, angleWith:function(b) {
-      return this.angleWithSep(b.x, b.y);
-    }, angleWithSep:function(x, y) {
-      return Math.atan2(this.x * y - this.y * x, this.x * x + this.y * y);
-    }, _matMult:function(m) {
-      var x = m[0] * this.x + m[1] * this.y, y = m[2] * this.x + m[3] * this.y;
-      this.x = x;
-      this.y = y;
-      return this;
-    }, _add:function(p) {
-      this.x += p.x;
-      this.y += p.y;
-      return this;
-    }, _sub:function(p) {
-      this.x -= p.x;
-      this.y -= p.y;
-      return this;
-    }, _mult:function(k) {
-      this.x *= k;
-      this.y *= k;
-      return this;
-    }, _div:function(k) {
-      this.x /= k;
-      this.y /= k;
-      return this;
-    }, _multByPoint:function(p) {
-      this.x *= p.x;
-      this.y *= p.y;
-      return this;
-    }, _divByPoint:function(p) {
-      this.x /= p.x;
-      this.y /= p.y;
-      return this;
-    }, _unit:function() {
-      this._div(this.mag());
-      return this;
-    }, _perp:function() {
-      var y = this.y;
-      this.y = this.x;
-      this.x = -y;
-      return this;
-    }, _rotate:function(angle) {
-      var cos = Math.cos(angle), sin = Math.sin(angle), x = cos * this.x - sin * this.y, y = sin * this.x + cos * this.y;
-      this.x = x;
-      this.y = y;
-      return this;
-    }, _rotateAround:function(angle, p) {
-      var cos = Math.cos(angle), sin = Math.sin(angle), x = p.x + cos * (this.x - p.x) - sin * (this.y - p.y), y = p.y + sin * (this.x - p.x) + cos * (this.y - p.y);
-      this.x = x;
-      this.y = y;
-      return this;
-    }, _round:function() {
-      this.x = Math.round(this.x);
-      this.y = Math.round(this.y);
-      return this;
-    }};
-    Point.convert = function(a) {
-      if (a instanceof Point) {
-        return a;
-      }
-      if (Array.isArray(a)) {
-        return new Point(a[0], a[1]);
-      }
-      return a;
-    };
-    var vectortilefeature = VectorTileFeature$1;
-    function VectorTileFeature$1(pbf, end, extent, keys, values) {
-      this.properties = {};
-      this.extent = extent;
-      this.type = 0;
-      this._pbf = pbf;
-      this._geometry = -1;
-      this._keys = keys;
-      this._values = values;
-      pbf.readFields(readFeature, this, end);
-    }
-    function readFeature(tag, feature, pbf) {
-      if (tag == 1) {
-        feature.id = pbf.readVarint();
-      } else {
-        if (tag == 2) {
-          readTag(pbf, feature);
-        } else {
-          if (tag == 3) {
-            feature.type = pbf.readVarint();
-          } else {
-            if (tag == 4) {
-              feature._geometry = pbf.pos;
-            }
-          }
-        }
-      }
-    }
-    function readTag(pbf, feature) {
-      var end = pbf.readVarint() + pbf.pos;
-      while (pbf.pos < end) {
-        var key = feature._keys[pbf.readVarint()], value = feature._values[pbf.readVarint()];
-        feature.properties[key] = value;
-      }
-    }
-    VectorTileFeature$1.types = ["Unknown", "Point", "LineString", "Polygon"];
-    VectorTileFeature$1.prototype.loadGeometry = function() {
-      var pbf = this._pbf;
-      pbf.pos = this._geometry;
-      var end = pbf.readVarint() + pbf.pos, cmd = 1, length = 0, x = 0, y = 0, lines = [], line;
-      while (pbf.pos < end) {
-        if (!length) {
-          var cmdLen = pbf.readVarint();
-          cmd = cmdLen & 7;
-          length = cmdLen >> 3;
-        }
-        length--;
-        if (cmd === 1 || cmd === 2) {
-          x += pbf.readSVarint();
-          y += pbf.readSVarint();
-          if (cmd === 1) {
-            if (line) {
-              lines.push(line);
-            }
-            line = [];
-          }
-          line.push(new pointGeometry(x, y));
-        } else {
-          if (cmd === 7) {
-            if (line) {
-              line.push(line[0].clone());
-            }
-          } else {
-            throw new Error("unknown command " + cmd);
-          }
-        }
-      }
-      if (line) {
-        lines.push(line);
-      }
-      return lines;
-    };
-    VectorTileFeature$1.prototype.bbox = function() {
-      var pbf = this._pbf;
-      pbf.pos = this._geometry;
-      var end = pbf.readVarint() + pbf.pos, cmd = 1, length = 0, x = 0, y = 0, x1 = Infinity, x2 = -Infinity, y1 = Infinity, y2 = -Infinity;
-      while (pbf.pos < end) {
-        if (!length) {
-          var cmdLen = pbf.readVarint();
-          cmd = cmdLen & 7;
-          length = cmdLen >> 3;
-        }
-        length--;
-        if (cmd === 1 || cmd === 2) {
-          x += pbf.readSVarint();
-          y += pbf.readSVarint();
-          if (x < x1) {
-            x1 = x;
-          }
-          if (x > x2) {
-            x2 = x;
-          }
-          if (y < y1) {
-            y1 = y;
-          }
-          if (y > y2) {
-            y2 = y;
-          }
-        } else {
-          if (cmd !== 7) {
-            throw new Error("unknown command " + cmd);
-          }
-        }
-      }
-      return [x1, y1, x2, y2];
-    };
-    VectorTileFeature$1.prototype.toGeoJSON = function(x, y, z) {
-      var size = this.extent * Math.pow(2, z), x0 = this.extent * x, y0 = this.extent * y, coords = this.loadGeometry(), type = VectorTileFeature$1.types[this.type], i, j;
-      function project(line) {
-        for (var j = 0; j < line.length; j++) {
-          var p = line[j], y2 = 180 - (p.y + y0) * 360 / size;
-          line[j] = [(p.x + x0) * 360 / size - 180, 360 / Math.PI * Math.atan(Math.exp(y2 * Math.PI / 180)) - 90];
-        }
-      }
-      switch(this.type) {
-        case 1:
-          var points = [];
-          for (i = 0; i < coords.length; i++) {
-            points[i] = coords[i][0];
-          }
-          coords = points;
-          project(coords);
-          break;
-        case 2:
-          for (i = 0; i < coords.length; i++) {
-            project(coords[i]);
-          }
-          break;
-        case 3:
-          coords = classifyRings(coords);
-          for (i = 0; i < coords.length; i++) {
-            for (j = 0; j < coords[i].length; j++) {
-              project(coords[i][j]);
-            }
-          }
-          break;
-      }
-      if (coords.length === 1) {
-        coords = coords[0];
-      } else {
-        type = "Multi" + type;
-      }
-      var result = {type:"Feature", geometry:{type:type, coordinates:coords}, properties:this.properties};
-      if ("id" in this) {
-        result.id = this.id;
-      }
-      return result;
-    };
-    function classifyRings(rings) {
-      var len = rings.length;
-      if (len <= 1) {
-        return [rings];
-      }
-      var polygons = [], polygon, ccw;
-      for (var i = 0; i < len; i++) {
-        var area = signedArea(rings[i]);
-        if (area === 0) {
-          continue;
-        }
-        if (ccw === undefined) {
-          ccw = area < 0;
-        }
-        if (ccw === area < 0) {
-          if (polygon) {
-            polygons.push(polygon);
-          }
-          polygon = [rings[i]];
-        } else {
-          polygon.push(rings[i]);
-        }
-      }
-      if (polygon) {
-        polygons.push(polygon);
-      }
-      return polygons;
-    }
-    function signedArea(ring) {
-      var sum = 0;
-      for (var i = 0, len = ring.length, j = len - 1, p1, p2; i < len; j = i++) {
-        p1 = ring[i];
-        p2 = ring[j];
-        sum += (p2.x - p1.x) * (p1.y + p2.y);
-      }
-      return sum;
-    }
-    var vectortilelayer = VectorTileLayer$1;
-    function VectorTileLayer$1(pbf, end) {
-      this.version = 1;
-      this.name = null;
-      this.extent = 4096;
-      this.length = 0;
-      this._pbf = pbf;
-      this._keys = [];
-      this._values = [];
-      this._features = [];
-      pbf.readFields(readLayer, this, end);
-      this.length = this._features.length;
-    }
-    function readLayer(tag, layer, pbf) {
-      if (tag === 15) {
-        layer.version = pbf.readVarint();
-      } else {
-        if (tag === 1) {
-          layer.name = pbf.readString();
-        } else {
-          if (tag === 5) {
-            layer.extent = pbf.readVarint();
-          } else {
-            if (tag === 2) {
-              layer._features.push(pbf.pos);
-            } else {
-              if (tag === 3) {
-                layer._keys.push(pbf.readString());
-              } else {
-                if (tag === 4) {
-                  layer._values.push(readValueMessage(pbf));
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-    function readValueMessage(pbf) {
-      var value = null, end = pbf.readVarint() + pbf.pos;
-      while (pbf.pos < end) {
-        var tag = pbf.readVarint() >> 3;
-        value = tag === 1 ? pbf.readString() : tag === 2 ? pbf.readFloat() : tag === 3 ? pbf.readDouble() : tag === 4 ? pbf.readVarint64() : tag === 5 ? pbf.readVarint() : tag === 6 ? pbf.readSVarint() : tag === 7 ? pbf.readBoolean() : null;
-      }
-      return value;
-    }
-    VectorTileLayer$1.prototype.feature = function(i) {
-      if (i < 0 || i >= this._features.length) {
-        throw new Error("feature index out of bounds");
-      }
-      this._pbf.pos = this._features[i];
-      var end = this._pbf.readVarint() + this._pbf.pos;
-      return new vectortilefeature(this._pbf, end, this.extent, this._keys, this._values);
-    };
-    var vectortile = VectorTile$1;
-    function VectorTile$1(pbf, end) {
-      this.layers = pbf.readFields(readTile, {}, end);
-    }
-    function readTile(tag, layers, pbf) {
-      if (tag === 3) {
-        var layer = new vectortilelayer(pbf, pbf.readVarint() + pbf.pos);
-        if (layer.length) {
-          layers[layer.name] = layer;
-        }
-      }
-    }
-    var VectorTile = vectortile;
-    var VectorTileFeature = vectortilefeature;
-    var VectorTileLayer = vectortilelayer;
-    var vectorTile = {VectorTile:VectorTile, VectorTileFeature:VectorTileFeature, VectorTileLayer:VectorTileLayer};
-    exports["default"] = vectorTile;
-    exports.VectorTile = VectorTile;
-    exports.VectorTileFeature = VectorTileFeature;
-    exports.VectorTileLayer = VectorTileLayer;
-  })(this.vectortile = this.vectortile || {});
-}).call(ol.ext);
 goog.provide("ol.render.Feature");
 goog.require("ol");
 goog.require("ol.extent");
 goog.require("ol.geom.GeometryType");
+goog.require("ol.geom.flat.transform");
+goog.require("ol.transform");
 ol.render.Feature = function(type, flatCoordinates, ends, properties, id) {
   this.extent_;
   this.id_ = id;
@@ -26979,11 +26893,12 @@ ol.render.Feature = function(type, flatCoordinates, ends, properties, id) {
   this.flatCoordinates_ = flatCoordinates;
   this.ends_ = ends;
   this.properties_ = properties;
+  this.tmpTransform_ = ol.transform.create();
 };
 ol.render.Feature.prototype.get = function(key) {
   return this.properties_[key];
 };
-ol.render.Feature.prototype.getEnds = function() {
+ol.render.Feature.prototype.getEnds = ol.render.Feature.prototype.getEndss = function() {
   return this.ends_;
 };
 ol.render.Feature.prototype.getExtent = function() {
@@ -27013,10 +26928,18 @@ ol.render.Feature.prototype.getStyleFunction = ol.nullFunction;
 ol.render.Feature.prototype.getType = function() {
   return this.type_;
 };
+ol.render.Feature.prototype.transform = function(source, destination) {
+  var pixelExtent = source.getExtent();
+  var projectedExtent = source.getWorldExtent();
+  var scale = ol.extent.getHeight(projectedExtent) / ol.extent.getHeight(pixelExtent);
+  var transform = this.tmpTransform_;
+  ol.transform.compose(transform, projectedExtent[0], projectedExtent[3], scale, -scale, 0, 0, 0);
+  ol.geom.flat.transform.transform2D(this.flatCoordinates_, 0, this.flatCoordinates_.length, 2, transform, this.flatCoordinates_);
+};
 goog.provide("ol.format.MVT");
 goog.require("ol");
+goog.require("ol.asserts");
 goog.require("ol.ext.PBF");
-goog.require("ol.ext.vectortile.VectorTile");
 goog.require("ol.format.Feature");
 goog.require("ol.format.FormatType");
 goog.require("ol.geom.GeometryLayout");
@@ -27024,15 +26947,17 @@ goog.require("ol.geom.GeometryType");
 goog.require("ol.geom.LineString");
 goog.require("ol.geom.MultiLineString");
 goog.require("ol.geom.MultiPoint");
+goog.require("ol.geom.MultiPolygon");
 goog.require("ol.geom.Point");
 goog.require("ol.geom.Polygon");
+goog.require("ol.geom.flat.orient");
 goog.require("ol.proj.Projection");
 goog.require("ol.proj.Units");
 goog.require("ol.render.Feature");
 ol.format.MVT = function(opt_options) {
   ol.format.Feature.call(this);
   var options = opt_options ? opt_options : {};
-  this.defaultDataProjection = new ol.proj.Projection({code:"", units:ol.proj.Units.TILE_PIXELS});
+  this.defaultDataProjection = new ol.proj.Projection({code:"EPSG:3857", units:ol.proj.Units.TILE_PIXELS});
   this.featureClass_ = options.featureClass ? options.featureClass : ol.render.Feature;
   this.geometryName_ = options.geometryName;
   this.layerName_ = options.layerName ? options.layerName : "layer";
@@ -27040,76 +26965,206 @@ ol.format.MVT = function(opt_options) {
   this.extent_ = null;
 };
 ol.inherits(ol.format.MVT, ol.format.Feature);
-ol.format.MVT.prototype.getLastExtent = function() {
-  return this.extent_;
-};
-ol.format.MVT.prototype.getType = function() {
-  return ol.format.FormatType.ARRAY_BUFFER;
-};
-ol.format.MVT.prototype.readFeature_ = function(rawFeature, layer, opt_options) {
-  var feature = new this.featureClass_;
-  var id = rawFeature.id;
-  var values = rawFeature.properties;
-  values[this.layerName_] = layer;
-  if (this.geometryName_) {
-    feature.setGeometryName(this.geometryName_);
+ol.format.MVT.pbfReaders_ = {layers:function(tag, layers, pbf) {
+  if (tag === 3) {
+    var layer = {keys:[], values:[], features:[]};
+    var end = pbf.readVarint() + pbf.pos;
+    pbf.readFields(ol.format.MVT.pbfReaders_.layer, layer, end);
+    layer.length = layer.features.length;
+    if (layer.length) {
+      layers[layer.name] = layer;
+    }
   }
-  var geometry = ol.format.Feature.transformWithOptions(ol.format.MVT.readGeometry_(rawFeature), false, this.adaptOptions(opt_options));
-  feature.setGeometry(geometry);
-  feature.setId(id);
-  feature.setProperties(values);
+}, layer:function(tag, layer, pbf) {
+  if (tag === 15) {
+    layer.version = pbf.readVarint();
+  } else {
+    if (tag === 1) {
+      layer.name = pbf.readString();
+    } else {
+      if (tag === 5) {
+        layer.extent = pbf.readVarint();
+      } else {
+        if (tag === 2) {
+          layer.features.push(pbf.pos);
+        } else {
+          if (tag === 3) {
+            layer.keys.push(pbf.readString());
+          } else {
+            if (tag === 4) {
+              var value = null;
+              var end = pbf.readVarint() + pbf.pos;
+              while (pbf.pos < end) {
+                tag = pbf.readVarint() >> 3;
+                value = tag === 1 ? pbf.readString() : tag === 2 ? pbf.readFloat() : tag === 3 ? pbf.readDouble() : tag === 4 ? pbf.readVarint64() : tag === 5 ? pbf.readVarint() : tag === 6 ? pbf.readSVarint() : tag === 7 ? pbf.readBoolean() : null;
+              }
+              layer.values.push(value);
+            }
+          }
+        }
+      }
+    }
+  }
+}, feature:function(tag, feature, pbf) {
+  if (tag == 1) {
+    feature.id = pbf.readVarint();
+  } else {
+    if (tag == 2) {
+      var end = pbf.readVarint() + pbf.pos;
+      while (pbf.pos < end) {
+        var key = feature.layer.keys[pbf.readVarint()];
+        var value = feature.layer.values[pbf.readVarint()];
+        feature.properties[key] = value;
+      }
+    } else {
+      if (tag == 3) {
+        feature.type = pbf.readVarint();
+      } else {
+        if (tag == 4) {
+          feature.geometry = pbf.pos;
+        }
+      }
+    }
+  }
+}};
+ol.format.MVT.readRawFeature_ = function(pbf, layer, i) {
+  pbf.pos = layer.features[i];
+  var end = pbf.readVarint() + pbf.pos;
+  var feature = {layer:layer, type:0, properties:{}};
+  pbf.readFields(ol.format.MVT.pbfReaders_.feature, feature, end);
   return feature;
 };
-ol.format.MVT.prototype.readRenderFeature_ = function(rawFeature, layer) {
-  var coords = rawFeature.loadGeometry();
-  var ends = [];
-  var flatCoordinates = [];
-  ol.format.MVT.calculateFlatCoordinates_(coords, flatCoordinates, ends);
-  var type = rawFeature.type;
+ol.format.MVT.readRawGeometry_ = function(pbf, feature, flatCoordinates, ends) {
+  pbf.pos = feature.geometry;
+  var end = pbf.readVarint() + pbf.pos;
+  var cmd = 1;
+  var length = 0;
+  var x = 0;
+  var y = 0;
+  var coordsLen = 0;
+  var currentEnd = 0;
+  while (pbf.pos < end) {
+    if (!length) {
+      var cmdLen = pbf.readVarint();
+      cmd = cmdLen & 7;
+      length = cmdLen >> 3;
+    }
+    length--;
+    if (cmd === 1 || cmd === 2) {
+      x += pbf.readSVarint();
+      y += pbf.readSVarint();
+      if (cmd === 1) {
+        if (coordsLen > currentEnd) {
+          ends.push(coordsLen);
+          currentEnd = coordsLen;
+        }
+      }
+      flatCoordinates.push(x, y);
+      coordsLen += 2;
+    } else {
+      if (cmd === 7) {
+        if (coordsLen > currentEnd) {
+          flatCoordinates.push(flatCoordinates[currentEnd], flatCoordinates[currentEnd + 1]);
+          coordsLen += 2;
+        }
+      } else {
+        ol.asserts.assert(false, 59);
+      }
+    }
+  }
+  if (coordsLen > currentEnd) {
+    ends.push(coordsLen);
+    currentEnd = coordsLen;
+  }
+};
+ol.format.MVT.getGeometryType_ = function(type, numEnds) {
   var geometryType;
   if (type === 1) {
-    geometryType = coords.length === 1 ? ol.geom.GeometryType.POINT : ol.geom.GeometryType.MULTI_POINT;
+    geometryType = numEnds === 1 ? ol.geom.GeometryType.POINT : ol.geom.GeometryType.MULTI_POINT;
   } else {
     if (type === 2) {
-      if (coords.length === 1) {
-        geometryType = ol.geom.GeometryType.LINE_STRING;
-      } else {
-        geometryType = ol.geom.GeometryType.MULTI_LINE_STRING;
-      }
+      geometryType = numEnds === 1 ? ol.geom.GeometryType.LINE_STRING : ol.geom.GeometryType.MULTI_LINE_STRING;
     } else {
       if (type === 3) {
         geometryType = ol.geom.GeometryType.POLYGON;
       }
     }
   }
-  var values = rawFeature.properties;
-  values[this.layerName_] = layer;
+  return geometryType;
+};
+ol.format.MVT.prototype.createFeature_ = function(pbf, rawFeature, opt_options) {
+  var type = rawFeature.type;
+  if (type === 0) {
+    return null;
+  }
+  var feature;
   var id = rawFeature.id;
-  return new this.featureClass_(geometryType, flatCoordinates, ends, values, id);
+  var values = rawFeature.properties;
+  values[this.layerName_] = rawFeature.layer.name;
+  var flatCoordinates = [];
+  var ends = [];
+  ol.format.MVT.readRawGeometry_(pbf, rawFeature, flatCoordinates, ends);
+  var geometryType = ol.format.MVT.getGeometryType_(type, ends.length);
+  if (this.featureClass_ === ol.render.Feature) {
+    feature = new this.featureClass_(geometryType, flatCoordinates, ends, values, id);
+  } else {
+    var geom;
+    if (geometryType == ol.geom.GeometryType.POLYGON) {
+      var endss = [];
+      var offset = 0;
+      var prevEndIndex = 0;
+      for (var i = 0, ii = ends.length; i < ii; ++i) {
+        var end = ends[i];
+        if (!ol.geom.flat.orient.linearRingIsClockwise(flatCoordinates, offset, end, 2)) {
+          endss.push(ends.slice(prevEndIndex, i));
+          prevEndIndex = i;
+        }
+        offset = end;
+      }
+      if (endss.length > 1) {
+        ends = endss;
+        geom = new ol.geom.MultiPolygon(null);
+      } else {
+        geom = new ol.geom.Polygon(null);
+      }
+    } else {
+      geom = geometryType === ol.geom.GeometryType.POINT ? new ol.geom.Point(null) : geometryType === ol.geom.GeometryType.LINE_STRING ? new ol.geom.LineString(null) : geometryType === ol.geom.GeometryType.POLYGON ? new ol.geom.Polygon(null) : geometryType === ol.geom.GeometryType.MULTI_POINT ? new ol.geom.MultiPoint(null) : geometryType === ol.geom.GeometryType.MULTI_LINE_STRING ? new ol.geom.MultiLineString(null) : null;
+    }
+    geom.setFlatCoordinates(ol.geom.GeometryLayout.XY, flatCoordinates, ends);
+    feature = new this.featureClass_;
+    if (this.geometryName_) {
+      feature.setGeometryName(this.geometryName_);
+    }
+    var geometry = ol.format.Feature.transformWithOptions(geom, false, this.adaptOptions(opt_options));
+    feature.setGeometry(geometry);
+    feature.setId(id);
+    feature.setProperties(values);
+  }
+  return feature;
+};
+ol.format.MVT.prototype.getLastExtent = function() {
+  return this.extent_;
+};
+ol.format.MVT.prototype.getType = function() {
+  return ol.format.FormatType.ARRAY_BUFFER;
 };
 ol.format.MVT.prototype.readFeatures = function(source, opt_options) {
   var layers = this.layers_;
   var pbf = new ol.ext.PBF(source);
-  var tile = new ol.ext.vectortile.VectorTile(pbf);
+  var pbfLayers = pbf.readFields(ol.format.MVT.pbfReaders_.layers, {});
   var features = [];
-  var featureClass = this.featureClass_;
-  var layer, feature;
-  for (var name in tile.layers) {
+  var pbfLayer;
+  for (var name in pbfLayers) {
     if (layers && layers.indexOf(name) == -1) {
       continue;
     }
-    layer = tile.layers[name];
+    pbfLayer = pbfLayers[name];
     var rawFeature;
-    for (var i = 0, ii = layer.length; i < ii; ++i) {
-      rawFeature = layer.feature(i);
-      if (featureClass === ol.render.Feature) {
-        feature = this.readRenderFeature_(rawFeature, name);
-      } else {
-        feature = this.readFeature_(rawFeature, name, opt_options);
-      }
-      features.push(feature);
+    for (var i = 0, ii = pbfLayer.length; i < ii; ++i) {
+      rawFeature = ol.format.MVT.readRawFeature_(pbf, pbfLayer, i);
+      features.push(this.createFeature_(pbf, rawFeature));
     }
-    this.extent_ = layer ? [0, 0, layer.extent, layer.extent] : null;
+    this.extent_ = pbfLayer ? [0, 0, pbfLayer.extent, pbfLayer.extent] : null;
   }
   return features;
 };
@@ -27118,47 +27173,6 @@ ol.format.MVT.prototype.readProjection = function(source) {
 };
 ol.format.MVT.prototype.setLayers = function(layers) {
   this.layers_ = layers;
-};
-ol.format.MVT.calculateFlatCoordinates_ = function(coords, flatCoordinates, ends) {
-  var end = 0;
-  for (var i = 0, ii = coords.length; i < ii; ++i) {
-    var line = coords[i];
-    var j, jj;
-    for (j = 0, jj = line.length; j < jj; ++j) {
-      var coord = line[j];
-      flatCoordinates.push(coord.x, coord.y);
-    }
-    end += 2 * j;
-    ends.push(end);
-  }
-};
-ol.format.MVT.readGeometry_ = function(rawFeature) {
-  var type = rawFeature.type;
-  if (type === 0) {
-    return null;
-  }
-  var coords = rawFeature.loadGeometry();
-  var ends = [];
-  var flatCoordinates = [];
-  ol.format.MVT.calculateFlatCoordinates_(coords, flatCoordinates, ends);
-  var geom;
-  if (type === 1) {
-    geom = coords.length === 1 ? new ol.geom.Point(null) : new ol.geom.MultiPoint(null);
-  } else {
-    if (type === 2) {
-      if (coords.length === 1) {
-        geom = new ol.geom.LineString(null);
-      } else {
-        geom = new ol.geom.MultiLineString(null);
-      }
-    } else {
-      if (type === 3) {
-        geom = new ol.geom.Polygon(null);
-      }
-    }
-  }
-  geom.setFlatCoordinates(ol.geom.GeometryLayout.XY, flatCoordinates, ends);
-  return geom;
 };
 ol.format.MVT.prototype.readFeature = function() {
 };
@@ -27205,28 +27219,10 @@ ol.format.OSMXML.readNode_ = function(node, objectStack) {
   }
 };
 ol.format.OSMXML.readWay_ = function(node, objectStack) {
-  var options = objectStack[0];
   var id = node.getAttribute("id");
-  var values = ol.xml.pushParseAndPop({ndrefs:[], tags:{}}, ol.format.OSMXML.WAY_PARSERS_, node, objectStack);
+  var values = ol.xml.pushParseAndPop({id:id, ndrefs:[], tags:{}}, ol.format.OSMXML.WAY_PARSERS_, node, objectStack);
   var state = objectStack[objectStack.length - 1];
-  var flatCoordinates = [];
-  for (var i = 0, ii = values.ndrefs.length; i < ii; i++) {
-    var point = state.nodes[values.ndrefs[i]];
-    ol.array.extend(flatCoordinates, point);
-  }
-  var geometry;
-  if (values.ndrefs[0] == values.ndrefs[values.ndrefs.length - 1]) {
-    geometry = new ol.geom.Polygon(null);
-    geometry.setFlatCoordinates(ol.geom.GeometryLayout.XY, flatCoordinates, [flatCoordinates.length]);
-  } else {
-    geometry = new ol.geom.LineString(null);
-    geometry.setFlatCoordinates(ol.geom.GeometryLayout.XY, flatCoordinates);
-  }
-  ol.format.Feature.transformWithOptions(geometry, false, options);
-  var feature = new ol.Feature(geometry);
-  feature.setId(id);
-  feature.setProperties(values.tags);
-  state.features.push(feature);
+  state.ways.push(values);
 };
 ol.format.OSMXML.readNd_ = function(node, objectStack) {
   var values = objectStack[objectStack.length - 1];
@@ -27244,7 +27240,28 @@ ol.format.OSMXML.prototype.readFeatures;
 ol.format.OSMXML.prototype.readFeaturesFromNode = function(node, opt_options) {
   var options = this.getReadOptions(node, opt_options);
   if (node.localName == "osm") {
-    var state = ol.xml.pushParseAndPop({nodes:{}, features:[]}, ol.format.OSMXML.PARSERS_, node, [options]);
+    var state = ol.xml.pushParseAndPop({nodes:{}, ways:[], features:[]}, ol.format.OSMXML.PARSERS_, node, [options]);
+    for (var j = 0; j < state.ways.length; j++) {
+      var values = state.ways[j];
+      var flatCoordinates = [];
+      for (var i = 0, ii = values.ndrefs.length; i < ii; i++) {
+        var point = state.nodes[values.ndrefs[i]];
+        ol.array.extend(flatCoordinates, point);
+      }
+      var geometry;
+      if (values.ndrefs[0] == values.ndrefs[values.ndrefs.length - 1]) {
+        geometry = new ol.geom.Polygon(null);
+        geometry.setFlatCoordinates(ol.geom.GeometryLayout.XY, flatCoordinates, [flatCoordinates.length]);
+      } else {
+        geometry = new ol.geom.LineString(null);
+        geometry.setFlatCoordinates(ol.geom.GeometryLayout.XY, flatCoordinates);
+      }
+      ol.format.Feature.transformWithOptions(geometry, false, options);
+      var feature = new ol.Feature(geometry);
+      feature.setId(values.id);
+      feature.setProperties(values.tags);
+      state.features.push(feature);
+    }
     if (state.features) {
       return state.features;
     }
@@ -27934,6 +27951,7 @@ ol.format.WFS.writeUpdate_ = function(node, feature, objectStack) {
   var featurePrefix = context["featurePrefix"];
   var featureNS = context["featureNS"];
   var typeName = ol.format.WFS.getTypeName_(featurePrefix, featureType);
+  var geometryName = feature.getGeometryName();
   node.setAttribute("typeName", typeName);
   ol.xml.setAttributeNS(node, ol.format.WFS.XMLNS, "xmlns:" + featurePrefix, featureNS);
   var fid = feature.getId();
@@ -27943,7 +27961,11 @@ ol.format.WFS.writeUpdate_ = function(node, feature, objectStack) {
     for (var i = 0, ii = keys.length; i < ii; i++) {
       var value = feature.get(keys[i]);
       if (value !== undefined) {
-        values.push({name:keys[i], value:value});
+        var name = keys[i];
+        if (value instanceof ol.geom.Geometry) {
+          name = geometryName;
+        }
+        values.push({name:name, value:value});
       }
     }
     ol.xml.pushSerializeAndPop({"gmlVersion":context["gmlVersion"], node:node, "hasZ":context["hasZ"], "srsName":context["srsName"]}, ol.format.WFS.TRANSACTION_SERIALIZERS_, ol.xml.makeSimpleNodeFactory("Property"), values, objectStack);
@@ -29708,7 +29730,7 @@ ol.ImageBase.prototype.getAttributions = function() {
 ol.ImageBase.prototype.getExtent = function() {
   return this.extent;
 };
-ol.ImageBase.prototype.getImage = function(opt_context) {
+ol.ImageBase.prototype.getImage = function() {
 };
 ol.ImageBase.prototype.getPixelRatio = function() {
   return this.pixelRatio_;
@@ -29728,7 +29750,6 @@ goog.require("ol.ImageState");
 goog.require("ol.events");
 goog.require("ol.events.EventType");
 goog.require("ol.extent");
-goog.require("ol.obj");
 ol.Image = function(extent, resolution, pixelRatio, attributions, src, crossOrigin, imageLoadFunction) {
   ol.ImageBase.call(this, extent, resolution, pixelRatio, ol.ImageState.IDLE, attributions);
   this.src_ = src;
@@ -29736,30 +29757,13 @@ ol.Image = function(extent, resolution, pixelRatio, attributions, src, crossOrig
   if (crossOrigin !== null) {
     this.image_.crossOrigin = crossOrigin;
   }
-  this.imageByContext_ = {};
   this.imageListenerKeys_ = null;
   this.state = ol.ImageState.IDLE;
   this.imageLoadFunction_ = imageLoadFunction;
 };
 ol.inherits(ol.Image, ol.ImageBase);
-ol.Image.prototype.getImage = function(opt_context) {
-  if (opt_context !== undefined) {
-    var image;
-    var key = ol.getUid(opt_context);
-    if (key in this.imageByContext_) {
-      return this.imageByContext_[key];
-    } else {
-      if (ol.obj.isEmpty(this.imageByContext_)) {
-        image = this.image_;
-      } else {
-        image = this.image_.cloneNode(false);
-      }
-    }
-    this.imageByContext_[key] = image;
-    return image;
-  } else {
-    return this.image_;
-  }
+ol.Image.prototype.getImage = function() {
+  return this.image_;
 };
 ol.Image.prototype.handleImageError_ = function() {
   this.state = ol.ImageState.ERROR;
@@ -29820,7 +29824,7 @@ ol.ImageCanvas.prototype.load = function() {
     this.loader_(this.handleLoad_.bind(this));
   }
 };
-ol.ImageCanvas.prototype.getImage = function(opt_context) {
+ol.ImageCanvas.prototype.getImage = function() {
   return this.canvas_;
 };
 goog.provide("ol.interaction.DragAndDrop");
@@ -30080,6 +30084,7 @@ ol.ext.rbush = function() {
     function defaultCompare(a, b) {
       return a < b ? -1 : a > b ? 1 : 0;
     }
+    "use strict";
     var rbush_1 = rbush;
     function rbush(maxEntries, format) {
       if (!(this instanceof rbush)) {
@@ -30953,6 +30958,9 @@ ol.source.Vector.prototype.removeFromIdIndex_ = function(feature) {
     }
   }
   return removed;
+};
+ol.source.Vector.prototype.setLoader = function(loader) {
+  this.loader_ = loader;
 };
 ol.source.Vector.Event = function(type, opt_feature) {
   ol.events.Event.call(this, type);
@@ -33108,82 +33116,63 @@ ol.layer.VectorTile.prototype.setUseInterimTilesOnError = function(useInterimTil
 };
 ol.layer.VectorTile.prototype.getSource;
 goog.provide("ol.webgl.Shader");
-goog.require("ol");
 goog.require("ol.functions");
-if (ol.ENABLE_WEBGL) {
-  ol.webgl.Shader = function(source) {
-    this.source_ = source;
-  };
-  ol.webgl.Shader.prototype.getType = function() {
-  };
-  ol.webgl.Shader.prototype.getSource = function() {
-    return this.source_;
-  };
-  ol.webgl.Shader.prototype.isAnimated = ol.functions.FALSE;
-}
-;goog.provide("ol.webgl.Fragment");
+ol.webgl.Shader = function(source) {
+  this.source_ = source;
+};
+ol.webgl.Shader.prototype.getType = function() {
+};
+ol.webgl.Shader.prototype.getSource = function() {
+  return this.source_;
+};
+ol.webgl.Shader.prototype.isAnimated = ol.functions.FALSE;
+goog.provide("ol.webgl.Fragment");
 goog.require("ol");
 goog.require("ol.webgl");
 goog.require("ol.webgl.Shader");
-if (ol.ENABLE_WEBGL) {
-  ol.webgl.Fragment = function(source) {
-    ol.webgl.Shader.call(this, source);
-  };
-  ol.inherits(ol.webgl.Fragment, ol.webgl.Shader);
-  ol.webgl.Fragment.prototype.getType = function() {
-    return ol.webgl.FRAGMENT_SHADER;
-  };
-}
-;goog.provide("ol.webgl.Vertex");
+ol.webgl.Fragment = function(source) {
+  ol.webgl.Shader.call(this, source);
+};
+ol.inherits(ol.webgl.Fragment, ol.webgl.Shader);
+ol.webgl.Fragment.prototype.getType = function() {
+  return ol.webgl.FRAGMENT_SHADER;
+};
+goog.provide("ol.webgl.Vertex");
 goog.require("ol");
 goog.require("ol.webgl");
 goog.require("ol.webgl.Shader");
-if (ol.ENABLE_WEBGL) {
-  ol.webgl.Vertex = function(source) {
-    ol.webgl.Shader.call(this, source);
-  };
-  ol.inherits(ol.webgl.Vertex, ol.webgl.Shader);
-  ol.webgl.Vertex.prototype.getType = function() {
-    return ol.webgl.VERTEX_SHADER;
-  };
-}
-;goog.provide("ol.render.webgl.circlereplay.defaultshader");
+ol.webgl.Vertex = function(source) {
+  ol.webgl.Shader.call(this, source);
+};
+ol.inherits(ol.webgl.Vertex, ol.webgl.Shader);
+ol.webgl.Vertex.prototype.getType = function() {
+  return ol.webgl.VERTEX_SHADER;
+};
+goog.provide("ol.render.webgl.circlereplay.defaultshader");
 goog.require("ol");
 goog.require("ol.webgl.Fragment");
 goog.require("ol.webgl.Vertex");
-if (ol.ENABLE_WEBGL) {
-  ol.render.webgl.circlereplay.defaultshader.Fragment = function() {
-    ol.webgl.Fragment.call(this, ol.render.webgl.circlereplay.defaultshader.Fragment.SOURCE);
-  };
-  ol.inherits(ol.render.webgl.circlereplay.defaultshader.Fragment, ol.webgl.Fragment);
-  ol.render.webgl.circlereplay.defaultshader.Fragment.DEBUG_SOURCE = "precision mediump float;\nvarying vec2 v_center;\nvarying vec2 v_offset;\nvarying float v_halfWidth;\nvarying float v_pixelRatio;\n\n\n\nuniform float u_opacity;\nuniform vec4 u_fillColor;\nuniform vec4 u_strokeColor;\nuniform vec2 u_size;\n\nvoid main(void) {\n  vec2 windowCenter = vec2((v_center.x + 1.0) / 2.0 * u_size.x * v_pixelRatio,\n      (v_center.y + 1.0) / 2.0 * u_size.y * v_pixelRatio);\n  vec2 windowOffset = vec2((v_offset.x + 1.0) / 2.0 * u_size.x * v_pixelRatio,\n      (v_offset.y + 1.0) / 2.0 * u_size.y * v_pixelRatio);\n  float radius = length(windowCenter - windowOffset);\n  float dist = length(windowCenter - gl_FragCoord.xy);\n  if (dist > radius + v_halfWidth) {\n    if (u_strokeColor.a == 0.0) {\n      gl_FragColor = u_fillColor;\n    } else {\n      gl_FragColor = u_strokeColor;\n    }\n    gl_FragColor.a = gl_FragColor.a - (dist - (radius + v_halfWidth));\n  } else if (u_fillColor.a == 0.0) {\n    // Hooray, no fill, just stroke. We can use real antialiasing.\n    gl_FragColor = u_strokeColor;\n    if (dist < radius - v_halfWidth) {\n      gl_FragColor.a = gl_FragColor.a - (radius - v_halfWidth - dist);\n    }\n  } else {\n    gl_FragColor = u_fillColor;\n    float strokeDist = radius - v_halfWidth;\n    float antialias = 2.0 * v_pixelRatio;\n    if (dist > strokeDist) {\n      gl_FragColor = u_strokeColor;\n    } else if (dist >= strokeDist - antialias) {\n      float step = smoothstep(strokeDist - antialias, strokeDist, dist);\n      gl_FragColor = mix(u_fillColor, u_strokeColor, step);\n    }\n  }\n  gl_FragColor.a = gl_FragColor.a * u_opacity;\n  if (gl_FragColor.a <= 0.0) {\n    discard;\n  }\n}\n";
-  ol.render.webgl.circlereplay.defaultshader.Fragment.OPTIMIZED_SOURCE = "precision mediump float;varying vec2 a;varying vec2 b;varying float c;varying float d;uniform float m;uniform vec4 n;uniform vec4 o;uniform vec2 p;void main(void){vec2 windowCenter=vec2((a.x+1.0)/2.0*p.x*d,(a.y+1.0)/2.0*p.y*d);vec2 windowOffset=vec2((b.x+1.0)/2.0*p.x*d,(b.y+1.0)/2.0*p.y*d);float radius=length(windowCenter-windowOffset);float dist=length(windowCenter-gl_FragCoord.xy);if(dist>radius+c){if(o.a==0.0){gl_FragColor=n;}else{gl_FragColor=o;}gl_FragColor.a=gl_FragColor.a-(dist-(radius+c));}else if(n.a==0.0){gl_FragColor=o;if(dist<radius-c){gl_FragColor.a=gl_FragColor.a-(radius-c-dist);}} else{gl_FragColor=n;float strokeDist=radius-c;float antialias=2.0*d;if(dist>strokeDist){gl_FragColor=o;}else if(dist>=strokeDist-antialias){float step=smoothstep(strokeDist-antialias,strokeDist,dist);gl_FragColor=mix(n,o,step);}} gl_FragColor.a=gl_FragColor.a*m;if(gl_FragColor.a<=0.0){discard;}}";
-  ol.render.webgl.circlereplay.defaultshader.Fragment.SOURCE = ol.DEBUG_WEBGL ? ol.render.webgl.circlereplay.defaultshader.Fragment.DEBUG_SOURCE : ol.render.webgl.circlereplay.defaultshader.Fragment.OPTIMIZED_SOURCE;
-  ol.render.webgl.circlereplay.defaultshader.fragment = new ol.render.webgl.circlereplay.defaultshader.Fragment;
-  ol.render.webgl.circlereplay.defaultshader.Vertex = function() {
-    ol.webgl.Vertex.call(this, ol.render.webgl.circlereplay.defaultshader.Vertex.SOURCE);
-  };
-  ol.inherits(ol.render.webgl.circlereplay.defaultshader.Vertex, ol.webgl.Vertex);
-  ol.render.webgl.circlereplay.defaultshader.Vertex.DEBUG_SOURCE = "varying vec2 v_center;\nvarying vec2 v_offset;\nvarying float v_halfWidth;\nvarying float v_pixelRatio;\n\n\nattribute vec2 a_position;\nattribute float a_instruction;\nattribute float a_radius;\n\nuniform mat4 u_projectionMatrix;\nuniform mat4 u_offsetScaleMatrix;\nuniform mat4 u_offsetRotateMatrix;\nuniform float u_lineWidth;\nuniform float u_pixelRatio;\n\nvoid main(void) {\n  mat4 offsetMatrix = u_offsetScaleMatrix * u_offsetRotateMatrix;\n  v_center = vec4(u_projectionMatrix * vec4(a_position, 0.0, 1.0)).xy;\n  v_pixelRatio = u_pixelRatio;\n  float lineWidth = u_lineWidth * u_pixelRatio;\n  v_halfWidth = lineWidth / 2.0;\n  if (lineWidth == 0.0) {\n    lineWidth = 2.0 * u_pixelRatio;\n  }\n  vec2 offset;\n  // Radius with anitaliasing (roughly).\n  float radius = a_radius + 3.0 * u_pixelRatio;\n  // Until we get gl_VertexID in WebGL, we store an instruction.\n  if (a_instruction == 0.0) {\n    // Offsetting the edges of the triangle by lineWidth / 2 is necessary, however\n    // we should also leave some space for the antialiasing, thus we offset by lineWidth.\n    offset = vec2(-1.0, 1.0);\n  } else if (a_instruction == 1.0) {\n    offset = vec2(-1.0, -1.0);\n  } else if (a_instruction == 2.0) {\n    offset = vec2(1.0, -1.0);\n  } else {\n    offset = vec2(1.0, 1.0);\n  }\n\n  gl_Position = u_projectionMatrix * vec4(a_position + offset * radius, 0.0, 1.0) +\n      offsetMatrix * vec4(offset * lineWidth, 0.0, 0.0);\n  v_offset = vec4(u_projectionMatrix * vec4(a_position.x + a_radius, a_position.y,\n      0.0, 1.0)).xy;\n\n  if (distance(v_center, v_offset) > 20000.0) {\n    gl_Position = vec4(v_center, 0.0, 1.0);\n  }\n}\n\n\n";
-  ol.render.webgl.circlereplay.defaultshader.Vertex.OPTIMIZED_SOURCE = "varying vec2 a;varying vec2 b;varying float c;varying float d;attribute vec2 e;attribute float f;attribute float g;uniform mat4 h;uniform mat4 i;uniform mat4 j;uniform float k;uniform float l;void main(void){mat4 offsetMatrix=i*j;a=vec4(h*vec4(e,0.0,1.0)).xy;d=l;float lineWidth=k*l;c=lineWidth/2.0;if(lineWidth==0.0){lineWidth=2.0*l;}vec2 offset;float radius=g+3.0*l;if(f==0.0){offset=vec2(-1.0,1.0);}else if(f==1.0){offset=vec2(-1.0,-1.0);}else if(f==2.0){offset=vec2(1.0,-1.0);}else{offset=vec2(1.0,1.0);}gl_Position=h*vec4(e+offset*radius,0.0,1.0)+offsetMatrix*vec4(offset*lineWidth,0.0,0.0);b=vec4(h*vec4(e.x+g,e.y,0.0,1.0)).xy;if(distance(a,b)>20000.0){gl_Position=vec4(a,0.0,1.0);}}";
-  ol.render.webgl.circlereplay.defaultshader.Vertex.SOURCE = ol.DEBUG_WEBGL ? ol.render.webgl.circlereplay.defaultshader.Vertex.DEBUG_SOURCE : ol.render.webgl.circlereplay.defaultshader.Vertex.OPTIMIZED_SOURCE;
-  ol.render.webgl.circlereplay.defaultshader.vertex = new ol.render.webgl.circlereplay.defaultshader.Vertex;
-  ol.render.webgl.circlereplay.defaultshader.Locations = function(gl, program) {
-    this.u_fillColor = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_fillColor" : "n");
-    this.u_lineWidth = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_lineWidth" : "k");
-    this.u_offsetRotateMatrix = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_offsetRotateMatrix" : "j");
-    this.u_offsetScaleMatrix = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_offsetScaleMatrix" : "i");
-    this.u_opacity = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_opacity" : "m");
-    this.u_pixelRatio = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_pixelRatio" : "l");
-    this.u_projectionMatrix = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_projectionMatrix" : "h");
-    this.u_size = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_size" : "p");
-    this.u_strokeColor = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_strokeColor" : "o");
-    this.a_instruction = gl.getAttribLocation(program, ol.DEBUG_WEBGL ? "a_instruction" : "f");
-    this.a_position = gl.getAttribLocation(program, ol.DEBUG_WEBGL ? "a_position" : "e");
-    this.a_radius = gl.getAttribLocation(program, ol.DEBUG_WEBGL ? "a_radius" : "g");
-  };
-}
-;goog.provide("ol.vec.Mat4");
+ol.render.webgl.circlereplay.defaultshader.fragment = new ol.webgl.Fragment(ol.DEBUG_WEBGL ? "precision mediump float;\nvarying vec2 v_center;\nvarying vec2 v_offset;\nvarying float v_halfWidth;\nvarying float v_pixelRatio;\n\n\n\nuniform float u_opacity;\nuniform vec4 u_fillColor;\nuniform vec4 u_strokeColor;\nuniform vec2 u_size;\n\nvoid main(void) {\n  vec2 windowCenter = vec2((v_center.x + 1.0) / 2.0 * u_size.x * v_pixelRatio,\n      (v_center.y + 1.0) / 2.0 * u_size.y * v_pixelRatio);\n  vec2 windowOffset = vec2((v_offset.x + 1.0) / 2.0 * u_size.x * v_pixelRatio,\n      (v_offset.y + 1.0) / 2.0 * u_size.y * v_pixelRatio);\n  float radius = length(windowCenter - windowOffset);\n  float dist = length(windowCenter - gl_FragCoord.xy);\n  if (dist > radius + v_halfWidth) {\n    if (u_strokeColor.a == 0.0) {\n      gl_FragColor = u_fillColor;\n    } else {\n      gl_FragColor = u_strokeColor;\n    }\n    gl_FragColor.a = gl_FragColor.a - (dist - (radius + v_halfWidth));\n  } else if (u_fillColor.a == 0.0) {\n    // Hooray, no fill, just stroke. We can use real antialiasing.\n    gl_FragColor = u_strokeColor;\n    if (dist < radius - v_halfWidth) {\n      gl_FragColor.a = gl_FragColor.a - (radius - v_halfWidth - dist);\n    }\n  } else {\n    gl_FragColor = u_fillColor;\n    float strokeDist = radius - v_halfWidth;\n    float antialias = 2.0 * v_pixelRatio;\n    if (dist > strokeDist) {\n      gl_FragColor = u_strokeColor;\n    } else if (dist >= strokeDist - antialias) {\n      float step = smoothstep(strokeDist - antialias, strokeDist, dist);\n      gl_FragColor = mix(u_fillColor, u_strokeColor, step);\n    }\n  }\n  gl_FragColor.a = gl_FragColor.a * u_opacity;\n  if (gl_FragColor.a <= 0.0) {\n    discard;\n  }\n}\n" : 
+"precision mediump float;varying vec2 a;varying vec2 b;varying float c;varying float d;uniform float m;uniform vec4 n;uniform vec4 o;uniform vec2 p;void main(void){vec2 windowCenter=vec2((a.x+1.0)/2.0*p.x*d,(a.y+1.0)/2.0*p.y*d);vec2 windowOffset=vec2((b.x+1.0)/2.0*p.x*d,(b.y+1.0)/2.0*p.y*d);float radius=length(windowCenter-windowOffset);float dist=length(windowCenter-gl_FragCoord.xy);if(dist>radius+c){if(o.a==0.0){gl_FragColor=n;}else{gl_FragColor=o;}gl_FragColor.a=gl_FragColor.a-(dist-(radius+c));}else if(n.a==0.0){gl_FragColor=o;if(dist<radius-c){gl_FragColor.a=gl_FragColor.a-(radius-c-dist);}} else{gl_FragColor=n;float strokeDist=radius-c;float antialias=2.0*d;if(dist>strokeDist){gl_FragColor=o;}else if(dist>=strokeDist-antialias){float step=smoothstep(strokeDist-antialias,strokeDist,dist);gl_FragColor=mix(n,o,step);}} gl_FragColor.a=gl_FragColor.a*m;if(gl_FragColor.a<=0.0){discard;}}");
+ol.render.webgl.circlereplay.defaultshader.vertex = new ol.webgl.Vertex(ol.DEBUG_WEBGL ? "varying vec2 v_center;\nvarying vec2 v_offset;\nvarying float v_halfWidth;\nvarying float v_pixelRatio;\n\n\nattribute vec2 a_position;\nattribute float a_instruction;\nattribute float a_radius;\n\nuniform mat4 u_projectionMatrix;\nuniform mat4 u_offsetScaleMatrix;\nuniform mat4 u_offsetRotateMatrix;\nuniform float u_lineWidth;\nuniform float u_pixelRatio;\n\nvoid main(void) {\n  mat4 offsetMatrix = u_offsetScaleMatrix * u_offsetRotateMatrix;\n  v_center = vec4(u_projectionMatrix * vec4(a_position, 0.0, 1.0)).xy;\n  v_pixelRatio = u_pixelRatio;\n  float lineWidth = u_lineWidth * u_pixelRatio;\n  v_halfWidth = lineWidth / 2.0;\n  if (lineWidth == 0.0) {\n    lineWidth = 2.0 * u_pixelRatio;\n  }\n  vec2 offset;\n  // Radius with anitaliasing (roughly).\n  float radius = a_radius + 3.0 * u_pixelRatio;\n  // Until we get gl_VertexID in WebGL, we store an instruction.\n  if (a_instruction == 0.0) {\n    // Offsetting the edges of the triangle by lineWidth / 2 is necessary, however\n    // we should also leave some space for the antialiasing, thus we offset by lineWidth.\n    offset = vec2(-1.0, 1.0);\n  } else if (a_instruction == 1.0) {\n    offset = vec2(-1.0, -1.0);\n  } else if (a_instruction == 2.0) {\n    offset = vec2(1.0, -1.0);\n  } else {\n    offset = vec2(1.0, 1.0);\n  }\n\n  gl_Position = u_projectionMatrix * vec4(a_position + offset * radius, 0.0, 1.0) +\n      offsetMatrix * vec4(offset * lineWidth, 0.0, 0.0);\n  v_offset = vec4(u_projectionMatrix * vec4(a_position.x + a_radius, a_position.y,\n      0.0, 1.0)).xy;\n\n  if (distance(v_center, v_offset) > 20000.0) {\n    gl_Position = vec4(v_center, 0.0, 1.0);\n  }\n}\n\n\n" : 
+"varying vec2 a;varying vec2 b;varying float c;varying float d;attribute vec2 e;attribute float f;attribute float g;uniform mat4 h;uniform mat4 i;uniform mat4 j;uniform float k;uniform float l;void main(void){mat4 offsetMatrix=i*j;a=vec4(h*vec4(e,0.0,1.0)).xy;d=l;float lineWidth=k*l;c=lineWidth/2.0;if(lineWidth==0.0){lineWidth=2.0*l;}vec2 offset;float radius=g+3.0*l;//Until we get gl_VertexID in WebGL,we store an instruction.if(f==0.0){//Offsetting the edges of the triangle by lineWidth/2 is necessary,however//we should also leave some space for the antialiasing,thus we offset by lineWidth.offset=vec2(-1.0,1.0);}else if(f==1.0){offset=vec2(-1.0,-1.0);}else if(f==2.0){offset=vec2(1.0,-1.0);}else{offset=vec2(1.0,1.0);}gl_Position=h*vec4(e+offset*radius,0.0,1.0)+offsetMatrix*vec4(offset*lineWidth,0.0,0.0);b=vec4(h*vec4(e.x+g,e.y,0.0,1.0)).xy;if(distance(a,b)>20000.0){gl_Position=vec4(a,0.0,1.0);}}");
+goog.provide("ol.render.webgl.circlereplay.defaultshader.Locations");
+goog.require("ol");
+ol.render.webgl.circlereplay.defaultshader.Locations = function(gl, program) {
+  this.u_projectionMatrix = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_projectionMatrix" : "h");
+  this.u_offsetScaleMatrix = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_offsetScaleMatrix" : "i");
+  this.u_offsetRotateMatrix = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_offsetRotateMatrix" : "j");
+  this.u_lineWidth = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_lineWidth" : "k");
+  this.u_pixelRatio = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_pixelRatio" : "l");
+  this.u_opacity = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_opacity" : "m");
+  this.u_fillColor = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_fillColor" : "n");
+  this.u_strokeColor = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_strokeColor" : "o");
+  this.u_size = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_size" : "p");
+  this.a_position = gl.getAttribLocation(program, ol.DEBUG_WEBGL ? "a_position" : "e");
+  this.a_instruction = gl.getAttribLocation(program, ol.DEBUG_WEBGL ? "a_instruction" : "f");
+  this.a_radius = gl.getAttribLocation(program, ol.DEBUG_WEBGL ? "a_radius" : "g");
+};
+goog.provide("ol.vec.Mat4");
 ol.vec.Mat4.create = function() {
   return [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
 };
@@ -33203,155 +33192,147 @@ goog.require("ol.render.VectorContext");
 goog.require("ol.transform");
 goog.require("ol.vec.Mat4");
 goog.require("ol.webgl");
-if (ol.ENABLE_WEBGL) {
-  ol.render.webgl.Replay = function(tolerance, maxExtent) {
-    ol.render.VectorContext.call(this);
-    this.tolerance = tolerance;
-    this.maxExtent = maxExtent;
-    this.origin = ol.extent.getCenter(maxExtent);
-    this.projectionMatrix_ = ol.transform.create();
-    this.offsetRotateMatrix_ = ol.transform.create();
-    this.offsetScaleMatrix_ = ol.transform.create();
-    this.tmpMat4_ = ol.vec.Mat4.create();
-    this.indices = [];
-    this.indicesBuffer = null;
-    this.startIndices = [];
-    this.startIndicesFeature = [];
-    this.vertices = [];
-    this.verticesBuffer = null;
-    this.lineStringReplay = undefined;
-  };
-  ol.inherits(ol.render.webgl.Replay, ol.render.VectorContext);
-  ol.render.webgl.Replay.prototype.getDeleteResourcesFunction = function(context) {
-  };
-  ol.render.webgl.Replay.prototype.finish = function(context) {
-  };
-  ol.render.webgl.Replay.prototype.setUpProgram = function(gl, context, size, pixelRatio) {
-  };
-  ol.render.webgl.Replay.prototype.shutDownProgram = function(gl, locations) {
-  };
-  ol.render.webgl.Replay.prototype.drawReplay = function(gl, context, skippedFeaturesHash, hitDetection) {
-  };
-  ol.render.webgl.Replay.prototype.drawHitDetectionReplayOneByOne = function(gl, context, skippedFeaturesHash, featureCallback, opt_hitExtent) {
-  };
-  ol.render.webgl.Replay.prototype.drawHitDetectionReplay = function(gl, context, skippedFeaturesHash, featureCallback, oneByOne, opt_hitExtent) {
-    if (!oneByOne) {
-      return this.drawHitDetectionReplayAll(gl, context, skippedFeaturesHash, featureCallback);
-    } else {
-      return this.drawHitDetectionReplayOneByOne(gl, context, skippedFeaturesHash, featureCallback, opt_hitExtent);
-    }
-  };
-  ol.render.webgl.Replay.prototype.drawHitDetectionReplayAll = function(gl, context, skippedFeaturesHash, featureCallback) {
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-    this.drawReplay(gl, context, skippedFeaturesHash, true);
-    var result = featureCallback(null);
-    if (result) {
-      return result;
-    } else {
-      return undefined;
-    }
-  };
-  ol.render.webgl.Replay.prototype.replay = function(context, center, resolution, rotation, size, pixelRatio, opacity, skippedFeaturesHash, featureCallback, oneByOne, opt_hitExtent) {
-    var gl = context.getGL();
-    var tmpStencil, tmpStencilFunc, tmpStencilMaskVal, tmpStencilRef, tmpStencilMask, tmpStencilOpFail, tmpStencilOpPass, tmpStencilOpZFail;
-    if (this.lineStringReplay) {
-      tmpStencil = gl.isEnabled(gl.STENCIL_TEST);
-      tmpStencilFunc = gl.getParameter(gl.STENCIL_FUNC);
-      tmpStencilMaskVal = gl.getParameter(gl.STENCIL_VALUE_MASK);
-      tmpStencilRef = gl.getParameter(gl.STENCIL_REF);
-      tmpStencilMask = gl.getParameter(gl.STENCIL_WRITEMASK);
-      tmpStencilOpFail = gl.getParameter(gl.STENCIL_FAIL);
-      tmpStencilOpPass = gl.getParameter(gl.STENCIL_PASS_DEPTH_PASS);
-      tmpStencilOpZFail = gl.getParameter(gl.STENCIL_PASS_DEPTH_FAIL);
-      gl.enable(gl.STENCIL_TEST);
-      gl.clear(gl.STENCIL_BUFFER_BIT);
-      gl.stencilMask(255);
-      gl.stencilFunc(gl.ALWAYS, 1, 255);
-      gl.stencilOp(gl.KEEP, gl.KEEP, gl.REPLACE);
-      this.lineStringReplay.replay(context, center, resolution, rotation, size, pixelRatio, opacity, skippedFeaturesHash, featureCallback, oneByOne, opt_hitExtent);
-      gl.stencilMask(0);
-      gl.stencilFunc(gl.NOTEQUAL, 1, 255);
-    }
-    context.bindBuffer(ol.webgl.ARRAY_BUFFER, this.verticesBuffer);
-    context.bindBuffer(ol.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer);
-    var locations = this.setUpProgram(gl, context, size, pixelRatio);
-    var projectionMatrix = ol.transform.reset(this.projectionMatrix_);
-    ol.transform.scale(projectionMatrix, 2 / (resolution * size[0]), 2 / (resolution * size[1]));
-    ol.transform.rotate(projectionMatrix, -rotation);
-    ol.transform.translate(projectionMatrix, -(center[0] - this.origin[0]), -(center[1] - this.origin[1]));
-    var offsetScaleMatrix = ol.transform.reset(this.offsetScaleMatrix_);
-    ol.transform.scale(offsetScaleMatrix, 2 / size[0], 2 / size[1]);
-    var offsetRotateMatrix = ol.transform.reset(this.offsetRotateMatrix_);
-    if (rotation !== 0) {
-      ol.transform.rotate(offsetRotateMatrix, -rotation);
-    }
-    gl.uniformMatrix4fv(locations.u_projectionMatrix, false, ol.vec.Mat4.fromTransform(this.tmpMat4_, projectionMatrix));
-    gl.uniformMatrix4fv(locations.u_offsetScaleMatrix, false, ol.vec.Mat4.fromTransform(this.tmpMat4_, offsetScaleMatrix));
-    gl.uniformMatrix4fv(locations.u_offsetRotateMatrix, false, ol.vec.Mat4.fromTransform(this.tmpMat4_, offsetRotateMatrix));
-    gl.uniform1f(locations.u_opacity, opacity);
-    var result;
-    if (featureCallback === undefined) {
-      this.drawReplay(gl, context, skippedFeaturesHash, false);
-    } else {
-      result = this.drawHitDetectionReplay(gl, context, skippedFeaturesHash, featureCallback, oneByOne, opt_hitExtent);
-    }
-    this.shutDownProgram(gl, locations);
-    if (this.lineStringReplay) {
-      if (!tmpStencil) {
-        gl.disable(gl.STENCIL_TEST);
-      }
-      gl.clear(gl.STENCIL_BUFFER_BIT);
-      gl.stencilFunc(tmpStencilFunc, tmpStencilRef, tmpStencilMaskVal);
-      gl.stencilMask(tmpStencilMask);
-      gl.stencilOp(tmpStencilOpFail, tmpStencilOpZFail, tmpStencilOpPass);
-    }
+ol.render.webgl.Replay = function(tolerance, maxExtent) {
+  ol.render.VectorContext.call(this);
+  this.tolerance = tolerance;
+  this.maxExtent = maxExtent;
+  this.origin = ol.extent.getCenter(maxExtent);
+  this.projectionMatrix_ = ol.transform.create();
+  this.offsetRotateMatrix_ = ol.transform.create();
+  this.offsetScaleMatrix_ = ol.transform.create();
+  this.tmpMat4_ = ol.vec.Mat4.create();
+  this.indices = [];
+  this.indicesBuffer = null;
+  this.startIndices = [];
+  this.startIndicesFeature = [];
+  this.vertices = [];
+  this.verticesBuffer = null;
+  this.lineStringReplay = undefined;
+};
+ol.inherits(ol.render.webgl.Replay, ol.render.VectorContext);
+ol.render.webgl.Replay.prototype.getDeleteResourcesFunction = function(context) {
+};
+ol.render.webgl.Replay.prototype.finish = function(context) {
+};
+ol.render.webgl.Replay.prototype.setUpProgram = function(gl, context, size, pixelRatio) {
+};
+ol.render.webgl.Replay.prototype.shutDownProgram = function(gl, locations) {
+};
+ol.render.webgl.Replay.prototype.drawReplay = function(gl, context, skippedFeaturesHash, hitDetection) {
+};
+ol.render.webgl.Replay.prototype.drawHitDetectionReplayOneByOne = function(gl, context, skippedFeaturesHash, featureCallback, opt_hitExtent) {
+};
+ol.render.webgl.Replay.prototype.drawHitDetectionReplay = function(gl, context, skippedFeaturesHash, featureCallback, oneByOne, opt_hitExtent) {
+  if (!oneByOne) {
+    return this.drawHitDetectionReplayAll(gl, context, skippedFeaturesHash, featureCallback);
+  } else {
+    return this.drawHitDetectionReplayOneByOne(gl, context, skippedFeaturesHash, featureCallback, opt_hitExtent);
+  }
+};
+ol.render.webgl.Replay.prototype.drawHitDetectionReplayAll = function(gl, context, skippedFeaturesHash, featureCallback) {
+  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  this.drawReplay(gl, context, skippedFeaturesHash, true);
+  var result = featureCallback(null);
+  if (result) {
     return result;
-  };
-  ol.render.webgl.Replay.prototype.drawElements = function(gl, context, start, end) {
-    var elementType = context.hasOESElementIndexUint ? ol.webgl.UNSIGNED_INT : ol.webgl.UNSIGNED_SHORT;
-    var elementSize = context.hasOESElementIndexUint ? 4 : 2;
-    var numItems = end - start;
-    var offsetInBytes = start * elementSize;
-    gl.drawElements(ol.webgl.TRIANGLES, numItems, elementType, offsetInBytes);
-  };
-}
-;goog.provide("ol.render.webgl");
-goog.require("ol");
-if (ol.ENABLE_WEBGL) {
-  ol.render.webgl.defaultFont = "10px sans-serif";
-  ol.render.webgl.defaultFillStyle = [0.0, 0.0, 0.0, 1.0];
-  ol.render.webgl.defaultLineCap = "round";
-  ol.render.webgl.defaultLineDash = [];
-  ol.render.webgl.defaultLineDashOffset = 0;
-  ol.render.webgl.defaultLineJoin = "round";
-  ol.render.webgl.defaultMiterLimit = 10;
-  ol.render.webgl.defaultStrokeStyle = [0.0, 0.0, 0.0, 1.0];
-  ol.render.webgl.defaultTextAlign = 0.5;
-  ol.render.webgl.defaultTextBaseline = 0.5;
-  ol.render.webgl.defaultLineWidth = 1;
-  ol.render.webgl.triangleIsCounterClockwise = function(x1, y1, x2, y2, x3, y3) {
-    var area = (x2 - x1) * (y3 - y1) - (x3 - x1) * (y2 - y1);
-    return area <= ol.render.webgl.EPSILON && area >= -ol.render.webgl.EPSILON ? undefined : area > 0;
-  };
-  ol.render.webgl.EPSILON = Number.EPSILON || 2.220446049250313e-16;
-}
-;goog.provide("ol.webgl.Buffer");
-goog.require("ol");
+  } else {
+    return undefined;
+  }
+};
+ol.render.webgl.Replay.prototype.replay = function(context, center, resolution, rotation, size, pixelRatio, opacity, skippedFeaturesHash, featureCallback, oneByOne, opt_hitExtent) {
+  var gl = context.getGL();
+  var tmpStencil, tmpStencilFunc, tmpStencilMaskVal, tmpStencilRef, tmpStencilMask, tmpStencilOpFail, tmpStencilOpPass, tmpStencilOpZFail;
+  if (this.lineStringReplay) {
+    tmpStencil = gl.isEnabled(gl.STENCIL_TEST);
+    tmpStencilFunc = gl.getParameter(gl.STENCIL_FUNC);
+    tmpStencilMaskVal = gl.getParameter(gl.STENCIL_VALUE_MASK);
+    tmpStencilRef = gl.getParameter(gl.STENCIL_REF);
+    tmpStencilMask = gl.getParameter(gl.STENCIL_WRITEMASK);
+    tmpStencilOpFail = gl.getParameter(gl.STENCIL_FAIL);
+    tmpStencilOpPass = gl.getParameter(gl.STENCIL_PASS_DEPTH_PASS);
+    tmpStencilOpZFail = gl.getParameter(gl.STENCIL_PASS_DEPTH_FAIL);
+    gl.enable(gl.STENCIL_TEST);
+    gl.clear(gl.STENCIL_BUFFER_BIT);
+    gl.stencilMask(255);
+    gl.stencilFunc(gl.ALWAYS, 1, 255);
+    gl.stencilOp(gl.KEEP, gl.KEEP, gl.REPLACE);
+    this.lineStringReplay.replay(context, center, resolution, rotation, size, pixelRatio, opacity, skippedFeaturesHash, featureCallback, oneByOne, opt_hitExtent);
+    gl.stencilMask(0);
+    gl.stencilFunc(gl.NOTEQUAL, 1, 255);
+  }
+  context.bindBuffer(ol.webgl.ARRAY_BUFFER, this.verticesBuffer);
+  context.bindBuffer(ol.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer);
+  var locations = this.setUpProgram(gl, context, size, pixelRatio);
+  var projectionMatrix = ol.transform.reset(this.projectionMatrix_);
+  ol.transform.scale(projectionMatrix, 2 / (resolution * size[0]), 2 / (resolution * size[1]));
+  ol.transform.rotate(projectionMatrix, -rotation);
+  ol.transform.translate(projectionMatrix, -(center[0] - this.origin[0]), -(center[1] - this.origin[1]));
+  var offsetScaleMatrix = ol.transform.reset(this.offsetScaleMatrix_);
+  ol.transform.scale(offsetScaleMatrix, 2 / size[0], 2 / size[1]);
+  var offsetRotateMatrix = ol.transform.reset(this.offsetRotateMatrix_);
+  if (rotation !== 0) {
+    ol.transform.rotate(offsetRotateMatrix, -rotation);
+  }
+  gl.uniformMatrix4fv(locations.u_projectionMatrix, false, ol.vec.Mat4.fromTransform(this.tmpMat4_, projectionMatrix));
+  gl.uniformMatrix4fv(locations.u_offsetScaleMatrix, false, ol.vec.Mat4.fromTransform(this.tmpMat4_, offsetScaleMatrix));
+  gl.uniformMatrix4fv(locations.u_offsetRotateMatrix, false, ol.vec.Mat4.fromTransform(this.tmpMat4_, offsetRotateMatrix));
+  gl.uniform1f(locations.u_opacity, opacity);
+  var result;
+  if (featureCallback === undefined) {
+    this.drawReplay(gl, context, skippedFeaturesHash, false);
+  } else {
+    result = this.drawHitDetectionReplay(gl, context, skippedFeaturesHash, featureCallback, oneByOne, opt_hitExtent);
+  }
+  this.shutDownProgram(gl, locations);
+  if (this.lineStringReplay) {
+    if (!tmpStencil) {
+      gl.disable(gl.STENCIL_TEST);
+    }
+    gl.clear(gl.STENCIL_BUFFER_BIT);
+    gl.stencilFunc(tmpStencilFunc, tmpStencilRef, tmpStencilMaskVal);
+    gl.stencilMask(tmpStencilMask);
+    gl.stencilOp(tmpStencilOpFail, tmpStencilOpZFail, tmpStencilOpPass);
+  }
+  return result;
+};
+ol.render.webgl.Replay.prototype.drawElements = function(gl, context, start, end) {
+  var elementType = context.hasOESElementIndexUint ? ol.webgl.UNSIGNED_INT : ol.webgl.UNSIGNED_SHORT;
+  var elementSize = context.hasOESElementIndexUint ? 4 : 2;
+  var numItems = end - start;
+  var offsetInBytes = start * elementSize;
+  gl.drawElements(ol.webgl.TRIANGLES, numItems, elementType, offsetInBytes);
+};
+goog.provide("ol.render.webgl");
+ol.render.webgl.defaultFont = "10px sans-serif";
+ol.render.webgl.defaultFillStyle = [0.0, 0.0, 0.0, 1.0];
+ol.render.webgl.defaultLineCap = "round";
+ol.render.webgl.defaultLineDash = [];
+ol.render.webgl.defaultLineDashOffset = 0;
+ol.render.webgl.defaultLineJoin = "round";
+ol.render.webgl.defaultMiterLimit = 10;
+ol.render.webgl.defaultStrokeStyle = [0.0, 0.0, 0.0, 1.0];
+ol.render.webgl.defaultTextAlign = 0.5;
+ol.render.webgl.defaultTextBaseline = 0.5;
+ol.render.webgl.defaultLineWidth = 1;
+ol.render.webgl.triangleIsCounterClockwise = function(x1, y1, x2, y2, x3, y3) {
+  var area = (x2 - x1) * (y3 - y1) - (x3 - x1) * (y2 - y1);
+  return area <= ol.render.webgl.EPSILON && area >= -ol.render.webgl.EPSILON ? undefined : area > 0;
+};
+ol.render.webgl.EPSILON = Number.EPSILON || 2.220446049250313e-16;
+goog.provide("ol.webgl.Buffer");
 goog.require("ol.webgl");
-if (ol.ENABLE_WEBGL) {
-  ol.webgl.Buffer = function(opt_arr, opt_usage) {
-    this.arr_ = opt_arr !== undefined ? opt_arr : [];
-    this.usage_ = opt_usage !== undefined ? opt_usage : ol.webgl.Buffer.Usage_.STATIC_DRAW;
-  };
-  ol.webgl.Buffer.prototype.getArray = function() {
-    return this.arr_;
-  };
-  ol.webgl.Buffer.prototype.getUsage = function() {
-    return this.usage_;
-  };
-  ol.webgl.Buffer.Usage_ = {STATIC_DRAW:ol.webgl.STATIC_DRAW, STREAM_DRAW:ol.webgl.STREAM_DRAW, DYNAMIC_DRAW:ol.webgl.DYNAMIC_DRAW};
-}
-;goog.provide("ol.render.webgl.CircleReplay");
+ol.webgl.Buffer = function(opt_arr, opt_usage) {
+  this.arr_ = opt_arr !== undefined ? opt_arr : [];
+  this.usage_ = opt_usage !== undefined ? opt_usage : ol.webgl.Buffer.Usage_.STATIC_DRAW;
+};
+ol.webgl.Buffer.prototype.getArray = function() {
+  return this.arr_;
+};
+ol.webgl.Buffer.prototype.getUsage = function() {
+  return this.usage_;
+};
+ol.webgl.Buffer.Usage_ = {STATIC_DRAW:ol.webgl.STATIC_DRAW, STREAM_DRAW:ol.webgl.STREAM_DRAW, DYNAMIC_DRAW:ol.webgl.DYNAMIC_DRAW};
+goog.provide("ol.render.webgl.CircleReplay");
 goog.require("ol");
 goog.require("ol.array");
 goog.require("ol.color");
@@ -33359,275 +33340,261 @@ goog.require("ol.extent");
 goog.require("ol.obj");
 goog.require("ol.geom.flat.transform");
 goog.require("ol.render.webgl.circlereplay.defaultshader");
+goog.require("ol.render.webgl.circlereplay.defaultshader.Locations");
 goog.require("ol.render.webgl.Replay");
 goog.require("ol.render.webgl");
 goog.require("ol.webgl");
 goog.require("ol.webgl.Buffer");
-if (ol.ENABLE_WEBGL) {
-  ol.render.webgl.CircleReplay = function(tolerance, maxExtent) {
-    ol.render.webgl.Replay.call(this, tolerance, maxExtent);
-    this.defaultLocations_ = null;
-    this.styles_ = [];
-    this.styleIndices_ = [];
-    this.radius_ = 0;
-    this.state_ = {fillColor:null, strokeColor:null, lineDash:null, lineDashOffset:undefined, lineWidth:undefined, changed:false};
-  };
-  ol.inherits(ol.render.webgl.CircleReplay, ol.render.webgl.Replay);
-  ol.render.webgl.CircleReplay.prototype.drawCoordinates_ = function(flatCoordinates, offset, end, stride) {
-    var numVertices = this.vertices.length;
-    var numIndices = this.indices.length;
-    var n = numVertices / 4;
-    var i, ii;
-    for (i = offset, ii = end; i < ii; i += stride) {
-      this.vertices[numVertices++] = flatCoordinates[i];
-      this.vertices[numVertices++] = flatCoordinates[i + 1];
-      this.vertices[numVertices++] = 0;
-      this.vertices[numVertices++] = this.radius_;
-      this.vertices[numVertices++] = flatCoordinates[i];
-      this.vertices[numVertices++] = flatCoordinates[i + 1];
-      this.vertices[numVertices++] = 1;
-      this.vertices[numVertices++] = this.radius_;
-      this.vertices[numVertices++] = flatCoordinates[i];
-      this.vertices[numVertices++] = flatCoordinates[i + 1];
-      this.vertices[numVertices++] = 2;
-      this.vertices[numVertices++] = this.radius_;
-      this.vertices[numVertices++] = flatCoordinates[i];
-      this.vertices[numVertices++] = flatCoordinates[i + 1];
-      this.vertices[numVertices++] = 3;
-      this.vertices[numVertices++] = this.radius_;
-      this.indices[numIndices++] = n;
-      this.indices[numIndices++] = n + 1;
-      this.indices[numIndices++] = n + 2;
-      this.indices[numIndices++] = n + 2;
-      this.indices[numIndices++] = n + 3;
-      this.indices[numIndices++] = n;
-      n += 4;
+ol.render.webgl.CircleReplay = function(tolerance, maxExtent) {
+  ol.render.webgl.Replay.call(this, tolerance, maxExtent);
+  this.defaultLocations_ = null;
+  this.styles_ = [];
+  this.styleIndices_ = [];
+  this.radius_ = 0;
+  this.state_ = {fillColor:null, strokeColor:null, lineDash:null, lineDashOffset:undefined, lineWidth:undefined, changed:false};
+};
+ol.inherits(ol.render.webgl.CircleReplay, ol.render.webgl.Replay);
+ol.render.webgl.CircleReplay.prototype.drawCoordinates_ = function(flatCoordinates, offset, end, stride) {
+  var numVertices = this.vertices.length;
+  var numIndices = this.indices.length;
+  var n = numVertices / 4;
+  var i, ii;
+  for (i = offset, ii = end; i < ii; i += stride) {
+    this.vertices[numVertices++] = flatCoordinates[i];
+    this.vertices[numVertices++] = flatCoordinates[i + 1];
+    this.vertices[numVertices++] = 0;
+    this.vertices[numVertices++] = this.radius_;
+    this.vertices[numVertices++] = flatCoordinates[i];
+    this.vertices[numVertices++] = flatCoordinates[i + 1];
+    this.vertices[numVertices++] = 1;
+    this.vertices[numVertices++] = this.radius_;
+    this.vertices[numVertices++] = flatCoordinates[i];
+    this.vertices[numVertices++] = flatCoordinates[i + 1];
+    this.vertices[numVertices++] = 2;
+    this.vertices[numVertices++] = this.radius_;
+    this.vertices[numVertices++] = flatCoordinates[i];
+    this.vertices[numVertices++] = flatCoordinates[i + 1];
+    this.vertices[numVertices++] = 3;
+    this.vertices[numVertices++] = this.radius_;
+    this.indices[numIndices++] = n;
+    this.indices[numIndices++] = n + 1;
+    this.indices[numIndices++] = n + 2;
+    this.indices[numIndices++] = n + 2;
+    this.indices[numIndices++] = n + 3;
+    this.indices[numIndices++] = n;
+    n += 4;
+  }
+};
+ol.render.webgl.CircleReplay.prototype.drawCircle = function(circleGeometry, feature) {
+  var radius = circleGeometry.getRadius();
+  var stride = circleGeometry.getStride();
+  if (radius) {
+    this.startIndices.push(this.indices.length);
+    this.startIndicesFeature.push(feature);
+    if (this.state_.changed) {
+      this.styleIndices_.push(this.indices.length);
+      this.state_.changed = false;
     }
-  };
-  ol.render.webgl.CircleReplay.prototype.drawCircle = function(circleGeometry, feature) {
-    var radius = circleGeometry.getRadius();
-    var stride = circleGeometry.getStride();
-    if (radius) {
-      this.startIndices.push(this.indices.length);
-      this.startIndicesFeature.push(feature);
-      if (this.state_.changed) {
-        this.styleIndices_.push(this.indices.length);
+    this.radius_ = radius;
+    var flatCoordinates = circleGeometry.getFlatCoordinates();
+    flatCoordinates = ol.geom.flat.transform.translate(flatCoordinates, 0, 2, stride, -this.origin[0], -this.origin[1]);
+    this.drawCoordinates_(flatCoordinates, 0, 2, stride);
+  } else {
+    if (this.state_.changed) {
+      this.styles_.pop();
+      if (this.styles_.length) {
+        var lastState = this.styles_[this.styles_.length - 1];
+        this.state_.fillColor = lastState[0];
+        this.state_.strokeColor = lastState[1];
+        this.state_.lineWidth = lastState[2];
         this.state_.changed = false;
       }
-      this.radius_ = radius;
-      var flatCoordinates = circleGeometry.getFlatCoordinates();
-      flatCoordinates = ol.geom.flat.transform.translate(flatCoordinates, 0, 2, stride, -this.origin[0], -this.origin[1]);
-      this.drawCoordinates_(flatCoordinates, 0, 2, stride);
-    } else {
-      if (this.state_.changed) {
-        this.styles_.pop();
-        if (this.styles_.length) {
-          var lastState = this.styles_[this.styles_.length - 1];
-          this.state_.fillColor = lastState[0];
-          this.state_.strokeColor = lastState[1];
-          this.state_.lineWidth = lastState[2];
-          this.state_.changed = false;
-        }
-      }
     }
+  }
+};
+ol.render.webgl.CircleReplay.prototype.finish = function(context) {
+  this.verticesBuffer = new ol.webgl.Buffer(this.vertices);
+  this.indicesBuffer = new ol.webgl.Buffer(this.indices);
+  this.startIndices.push(this.indices.length);
+  if (this.styleIndices_.length === 0 && this.styles_.length > 0) {
+    this.styles_ = [];
+  }
+  this.vertices = null;
+  this.indices = null;
+};
+ol.render.webgl.CircleReplay.prototype.getDeleteResourcesFunction = function(context) {
+  var verticesBuffer = this.verticesBuffer;
+  var indicesBuffer = this.indicesBuffer;
+  return function() {
+    context.deleteBuffer(verticesBuffer);
+    context.deleteBuffer(indicesBuffer);
   };
-  ol.render.webgl.CircleReplay.prototype.finish = function(context) {
-    this.verticesBuffer = new ol.webgl.Buffer(this.vertices);
-    this.indicesBuffer = new ol.webgl.Buffer(this.indices);
-    this.startIndices.push(this.indices.length);
-    if (this.styleIndices_.length === 0 && this.styles_.length > 0) {
-      this.styles_ = [];
-    }
-    this.vertices = null;
-    this.indices = null;
-  };
-  ol.render.webgl.CircleReplay.prototype.getDeleteResourcesFunction = function(context) {
-    var verticesBuffer = this.verticesBuffer;
-    var indicesBuffer = this.indicesBuffer;
-    return function() {
-      context.deleteBuffer(verticesBuffer);
-      context.deleteBuffer(indicesBuffer);
-    };
-  };
-  ol.render.webgl.CircleReplay.prototype.setUpProgram = function(gl, context, size, pixelRatio) {
-    var fragmentShader, vertexShader;
-    fragmentShader = ol.render.webgl.circlereplay.defaultshader.fragment;
-    vertexShader = ol.render.webgl.circlereplay.defaultshader.vertex;
-    var program = context.getProgram(fragmentShader, vertexShader);
-    var locations;
-    if (!this.defaultLocations_) {
-      locations = new ol.render.webgl.circlereplay.defaultshader.Locations(gl, program);
-      this.defaultLocations_ = locations;
-    } else {
-      locations = this.defaultLocations_;
-    }
-    context.useProgram(program);
-    gl.enableVertexAttribArray(locations.a_position);
-    gl.vertexAttribPointer(locations.a_position, 2, ol.webgl.FLOAT, false, 16, 0);
-    gl.enableVertexAttribArray(locations.a_instruction);
-    gl.vertexAttribPointer(locations.a_instruction, 1, ol.webgl.FLOAT, false, 16, 8);
-    gl.enableVertexAttribArray(locations.a_radius);
-    gl.vertexAttribPointer(locations.a_radius, 1, ol.webgl.FLOAT, false, 16, 12);
-    gl.uniform2fv(locations.u_size, size);
-    gl.uniform1f(locations.u_pixelRatio, pixelRatio);
-    return locations;
-  };
-  ol.render.webgl.CircleReplay.prototype.shutDownProgram = function(gl, locations) {
-    gl.disableVertexAttribArray(locations.a_position);
-    gl.disableVertexAttribArray(locations.a_instruction);
-    gl.disableVertexAttribArray(locations.a_radius);
-  };
-  ol.render.webgl.CircleReplay.prototype.drawReplay = function(gl, context, skippedFeaturesHash, hitDetection) {
-    if (!ol.obj.isEmpty(skippedFeaturesHash)) {
-      this.drawReplaySkipping_(gl, context, skippedFeaturesHash);
-    } else {
-      var i, start, end, nextStyle;
-      end = this.startIndices[this.startIndices.length - 1];
-      for (i = this.styleIndices_.length - 1; i >= 0; --i) {
-        start = this.styleIndices_[i];
-        nextStyle = this.styles_[i];
-        this.setFillStyle_(gl, nextStyle[0]);
-        this.setStrokeStyle_(gl, nextStyle[1], nextStyle[2]);
-        this.drawElements(gl, context, start, end);
-        end = start;
-      }
-    }
-  };
-  ol.render.webgl.CircleReplay.prototype.drawHitDetectionReplayOneByOne = function(gl, context, skippedFeaturesHash, featureCallback, opt_hitExtent) {
-    var i, start, end, nextStyle, groupStart, feature, featureUid, featureIndex;
-    featureIndex = this.startIndices.length - 2;
-    end = this.startIndices[featureIndex + 1];
+};
+ol.render.webgl.CircleReplay.prototype.setUpProgram = function(gl, context, size, pixelRatio) {
+  var fragmentShader, vertexShader;
+  fragmentShader = ol.render.webgl.circlereplay.defaultshader.fragment;
+  vertexShader = ol.render.webgl.circlereplay.defaultshader.vertex;
+  var program = context.getProgram(fragmentShader, vertexShader);
+  var locations;
+  if (!this.defaultLocations_) {
+    locations = new ol.render.webgl.circlereplay.defaultshader.Locations(gl, program);
+    this.defaultLocations_ = locations;
+  } else {
+    locations = this.defaultLocations_;
+  }
+  context.useProgram(program);
+  gl.enableVertexAttribArray(locations.a_position);
+  gl.vertexAttribPointer(locations.a_position, 2, ol.webgl.FLOAT, false, 16, 0);
+  gl.enableVertexAttribArray(locations.a_instruction);
+  gl.vertexAttribPointer(locations.a_instruction, 1, ol.webgl.FLOAT, false, 16, 8);
+  gl.enableVertexAttribArray(locations.a_radius);
+  gl.vertexAttribPointer(locations.a_radius, 1, ol.webgl.FLOAT, false, 16, 12);
+  gl.uniform2fv(locations.u_size, size);
+  gl.uniform1f(locations.u_pixelRatio, pixelRatio);
+  return locations;
+};
+ol.render.webgl.CircleReplay.prototype.shutDownProgram = function(gl, locations) {
+  gl.disableVertexAttribArray(locations.a_position);
+  gl.disableVertexAttribArray(locations.a_instruction);
+  gl.disableVertexAttribArray(locations.a_radius);
+};
+ol.render.webgl.CircleReplay.prototype.drawReplay = function(gl, context, skippedFeaturesHash, hitDetection) {
+  if (!ol.obj.isEmpty(skippedFeaturesHash)) {
+    this.drawReplaySkipping_(gl, context, skippedFeaturesHash);
+  } else {
+    var i, start, end, nextStyle;
+    end = this.startIndices[this.startIndices.length - 1];
     for (i = this.styleIndices_.length - 1; i >= 0; --i) {
+      start = this.styleIndices_[i];
       nextStyle = this.styles_[i];
       this.setFillStyle_(gl, nextStyle[0]);
       this.setStrokeStyle_(gl, nextStyle[1], nextStyle[2]);
-      groupStart = this.styleIndices_[i];
-      while (featureIndex >= 0 && this.startIndices[featureIndex] >= groupStart) {
-        start = this.startIndices[featureIndex];
-        feature = this.startIndicesFeature[featureIndex];
-        featureUid = ol.getUid(feature).toString();
-        if (skippedFeaturesHash[featureUid] === undefined && feature.getGeometry() && (opt_hitExtent === undefined || ol.extent.intersects(opt_hitExtent, feature.getGeometry().getExtent()))) {
-          gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+      this.drawElements(gl, context, start, end);
+      end = start;
+    }
+  }
+};
+ol.render.webgl.CircleReplay.prototype.drawHitDetectionReplayOneByOne = function(gl, context, skippedFeaturesHash, featureCallback, opt_hitExtent) {
+  var i, start, end, nextStyle, groupStart, feature, featureUid, featureIndex;
+  featureIndex = this.startIndices.length - 2;
+  end = this.startIndices[featureIndex + 1];
+  for (i = this.styleIndices_.length - 1; i >= 0; --i) {
+    nextStyle = this.styles_[i];
+    this.setFillStyle_(gl, nextStyle[0]);
+    this.setStrokeStyle_(gl, nextStyle[1], nextStyle[2]);
+    groupStart = this.styleIndices_[i];
+    while (featureIndex >= 0 && this.startIndices[featureIndex] >= groupStart) {
+      start = this.startIndices[featureIndex];
+      feature = this.startIndicesFeature[featureIndex];
+      featureUid = ol.getUid(feature).toString();
+      if (skippedFeaturesHash[featureUid] === undefined && feature.getGeometry() && (opt_hitExtent === undefined || ol.extent.intersects(opt_hitExtent, feature.getGeometry().getExtent()))) {
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        this.drawElements(gl, context, start, end);
+        var result = featureCallback(feature);
+        if (result) {
+          return result;
+        }
+      }
+      featureIndex--;
+      end = start;
+    }
+  }
+  return undefined;
+};
+ol.render.webgl.CircleReplay.prototype.drawReplaySkipping_ = function(gl, context, skippedFeaturesHash) {
+  var i, start, end, nextStyle, groupStart, feature, featureUid, featureIndex, featureStart;
+  featureIndex = this.startIndices.length - 2;
+  end = start = this.startIndices[featureIndex + 1];
+  for (i = this.styleIndices_.length - 1; i >= 0; --i) {
+    nextStyle = this.styles_[i];
+    this.setFillStyle_(gl, nextStyle[0]);
+    this.setStrokeStyle_(gl, nextStyle[1], nextStyle[2]);
+    groupStart = this.styleIndices_[i];
+    while (featureIndex >= 0 && this.startIndices[featureIndex] >= groupStart) {
+      featureStart = this.startIndices[featureIndex];
+      feature = this.startIndicesFeature[featureIndex];
+      featureUid = ol.getUid(feature).toString();
+      if (skippedFeaturesHash[featureUid]) {
+        if (start !== end) {
           this.drawElements(gl, context, start, end);
-          var result = featureCallback(feature);
-          if (result) {
-            return result;
-          }
         }
-        featureIndex--;
-        end = start;
+        end = featureStart;
       }
+      featureIndex--;
+      start = featureStart;
     }
-    return undefined;
-  };
-  ol.render.webgl.CircleReplay.prototype.drawReplaySkipping_ = function(gl, context, skippedFeaturesHash) {
-    var i, start, end, nextStyle, groupStart, feature, featureUid, featureIndex, featureStart;
-    featureIndex = this.startIndices.length - 2;
-    end = start = this.startIndices[featureIndex + 1];
-    for (i = this.styleIndices_.length - 1; i >= 0; --i) {
-      nextStyle = this.styles_[i];
-      this.setFillStyle_(gl, nextStyle[0]);
-      this.setStrokeStyle_(gl, nextStyle[1], nextStyle[2]);
-      groupStart = this.styleIndices_[i];
-      while (featureIndex >= 0 && this.startIndices[featureIndex] >= groupStart) {
-        featureStart = this.startIndices[featureIndex];
-        feature = this.startIndicesFeature[featureIndex];
-        featureUid = ol.getUid(feature).toString();
-        if (skippedFeaturesHash[featureUid]) {
-          if (start !== end) {
-            this.drawElements(gl, context, start, end);
-          }
-          end = featureStart;
-        }
-        featureIndex--;
-        start = featureStart;
-      }
-      if (start !== end) {
-        this.drawElements(gl, context, start, end);
-      }
-      start = end = groupStart;
+    if (start !== end) {
+      this.drawElements(gl, context, start, end);
     }
-  };
-  ol.render.webgl.CircleReplay.prototype.setFillStyle_ = function(gl, color) {
-    gl.uniform4fv(this.defaultLocations_.u_fillColor, color);
-  };
-  ol.render.webgl.CircleReplay.prototype.setStrokeStyle_ = function(gl, color, lineWidth) {
-    gl.uniform4fv(this.defaultLocations_.u_strokeColor, color);
-    gl.uniform1f(this.defaultLocations_.u_lineWidth, lineWidth);
-  };
-  ol.render.webgl.CircleReplay.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {
-    var strokeStyleColor, strokeStyleWidth;
-    if (strokeStyle) {
-      var strokeStyleLineDash = strokeStyle.getLineDash();
-      this.state_.lineDash = strokeStyleLineDash ? strokeStyleLineDash : ol.render.webgl.defaultLineDash;
-      var strokeStyleLineDashOffset = strokeStyle.getLineDashOffset();
-      this.state_.lineDashOffset = strokeStyleLineDashOffset ? strokeStyleLineDashOffset : ol.render.webgl.defaultLineDashOffset;
-      strokeStyleColor = strokeStyle.getColor();
-      if (!(strokeStyleColor instanceof CanvasGradient) && !(strokeStyleColor instanceof CanvasPattern)) {
-        strokeStyleColor = ol.color.asArray(strokeStyleColor).map(function(c, i) {
-          return i != 3 ? c / 255 : c;
-        }) || ol.render.webgl.defaultStrokeStyle;
-      } else {
-        strokeStyleColor = ol.render.webgl.defaultStrokeStyle;
-      }
-      strokeStyleWidth = strokeStyle.getWidth();
-      strokeStyleWidth = strokeStyleWidth !== undefined ? strokeStyleWidth : ol.render.webgl.defaultLineWidth;
-    } else {
-      strokeStyleColor = [0, 0, 0, 0];
-      strokeStyleWidth = 0;
-    }
-    var fillStyleColor = fillStyle ? fillStyle.getColor() : [0, 0, 0, 0];
-    if (!(fillStyleColor instanceof CanvasGradient) && !(fillStyleColor instanceof CanvasPattern)) {
-      fillStyleColor = ol.color.asArray(fillStyleColor).map(function(c, i) {
+    start = end = groupStart;
+  }
+};
+ol.render.webgl.CircleReplay.prototype.setFillStyle_ = function(gl, color) {
+  gl.uniform4fv(this.defaultLocations_.u_fillColor, color);
+};
+ol.render.webgl.CircleReplay.prototype.setStrokeStyle_ = function(gl, color, lineWidth) {
+  gl.uniform4fv(this.defaultLocations_.u_strokeColor, color);
+  gl.uniform1f(this.defaultLocations_.u_lineWidth, lineWidth);
+};
+ol.render.webgl.CircleReplay.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {
+  var strokeStyleColor, strokeStyleWidth;
+  if (strokeStyle) {
+    var strokeStyleLineDash = strokeStyle.getLineDash();
+    this.state_.lineDash = strokeStyleLineDash ? strokeStyleLineDash : ol.render.webgl.defaultLineDash;
+    var strokeStyleLineDashOffset = strokeStyle.getLineDashOffset();
+    this.state_.lineDashOffset = strokeStyleLineDashOffset ? strokeStyleLineDashOffset : ol.render.webgl.defaultLineDashOffset;
+    strokeStyleColor = strokeStyle.getColor();
+    if (!(strokeStyleColor instanceof CanvasGradient) && !(strokeStyleColor instanceof CanvasPattern)) {
+      strokeStyleColor = ol.color.asArray(strokeStyleColor).map(function(c, i) {
         return i != 3 ? c / 255 : c;
-      }) || ol.render.webgl.defaultFillStyle;
+      }) || ol.render.webgl.defaultStrokeStyle;
     } else {
-      fillStyleColor = ol.render.webgl.defaultFillStyle;
+      strokeStyleColor = ol.render.webgl.defaultStrokeStyle;
     }
-    if (!this.state_.strokeColor || !ol.array.equals(this.state_.strokeColor, strokeStyleColor) || !this.state_.fillColor || !ol.array.equals(this.state_.fillColor, fillStyleColor) || this.state_.lineWidth !== strokeStyleWidth) {
-      this.state_.changed = true;
-      this.state_.fillColor = fillStyleColor;
-      this.state_.strokeColor = strokeStyleColor;
-      this.state_.lineWidth = strokeStyleWidth;
-      this.styles_.push([fillStyleColor, strokeStyleColor, strokeStyleWidth]);
-    }
-  };
-}
-;goog.provide("ol.render.webgl.texturereplay.defaultshader");
+    strokeStyleWidth = strokeStyle.getWidth();
+    strokeStyleWidth = strokeStyleWidth !== undefined ? strokeStyleWidth : ol.render.webgl.defaultLineWidth;
+  } else {
+    strokeStyleColor = [0, 0, 0, 0];
+    strokeStyleWidth = 0;
+  }
+  var fillStyleColor = fillStyle ? fillStyle.getColor() : [0, 0, 0, 0];
+  if (!(fillStyleColor instanceof CanvasGradient) && !(fillStyleColor instanceof CanvasPattern)) {
+    fillStyleColor = ol.color.asArray(fillStyleColor).map(function(c, i) {
+      return i != 3 ? c / 255 : c;
+    }) || ol.render.webgl.defaultFillStyle;
+  } else {
+    fillStyleColor = ol.render.webgl.defaultFillStyle;
+  }
+  if (!this.state_.strokeColor || !ol.array.equals(this.state_.strokeColor, strokeStyleColor) || !this.state_.fillColor || !ol.array.equals(this.state_.fillColor, fillStyleColor) || this.state_.lineWidth !== strokeStyleWidth) {
+    this.state_.changed = true;
+    this.state_.fillColor = fillStyleColor;
+    this.state_.strokeColor = strokeStyleColor;
+    this.state_.lineWidth = strokeStyleWidth;
+    this.styles_.push([fillStyleColor, strokeStyleColor, strokeStyleWidth]);
+  }
+};
+goog.provide("ol.render.webgl.texturereplay.defaultshader");
 goog.require("ol");
 goog.require("ol.webgl.Fragment");
 goog.require("ol.webgl.Vertex");
-if (ol.ENABLE_WEBGL) {
-  ol.render.webgl.texturereplay.defaultshader.Fragment = function() {
-    ol.webgl.Fragment.call(this, ol.render.webgl.texturereplay.defaultshader.Fragment.SOURCE);
-  };
-  ol.inherits(ol.render.webgl.texturereplay.defaultshader.Fragment, ol.webgl.Fragment);
-  ol.render.webgl.texturereplay.defaultshader.Fragment.DEBUG_SOURCE = "precision mediump float;\nvarying vec2 v_texCoord;\nvarying float v_opacity;\n\nuniform float u_opacity;\nuniform sampler2D u_image;\n\nvoid main(void) {\n  vec4 texColor = texture2D(u_image, v_texCoord);\n  gl_FragColor.rgb = texColor.rgb;\n  float alpha = texColor.a * v_opacity * u_opacity;\n  if (alpha == 0.0) {\n    discard;\n  }\n  gl_FragColor.a = alpha;\n}\n";
-  ol.render.webgl.texturereplay.defaultshader.Fragment.OPTIMIZED_SOURCE = "precision mediump float;varying vec2 a;varying float b;uniform float k;uniform sampler2D l;void main(void){vec4 texColor=texture2D(l,a);gl_FragColor.rgb=texColor.rgb;float alpha=texColor.a*b*k;if(alpha==0.0){discard;}gl_FragColor.a=alpha;}";
-  ol.render.webgl.texturereplay.defaultshader.Fragment.SOURCE = ol.DEBUG_WEBGL ? ol.render.webgl.texturereplay.defaultshader.Fragment.DEBUG_SOURCE : ol.render.webgl.texturereplay.defaultshader.Fragment.OPTIMIZED_SOURCE;
-  ol.render.webgl.texturereplay.defaultshader.fragment = new ol.render.webgl.texturereplay.defaultshader.Fragment;
-  ol.render.webgl.texturereplay.defaultshader.Vertex = function() {
-    ol.webgl.Vertex.call(this, ol.render.webgl.texturereplay.defaultshader.Vertex.SOURCE);
-  };
-  ol.inherits(ol.render.webgl.texturereplay.defaultshader.Vertex, ol.webgl.Vertex);
-  ol.render.webgl.texturereplay.defaultshader.Vertex.DEBUG_SOURCE = "varying vec2 v_texCoord;\nvarying float v_opacity;\n\nattribute vec2 a_position;\nattribute vec2 a_texCoord;\nattribute vec2 a_offsets;\nattribute float a_opacity;\nattribute float a_rotateWithView;\n\nuniform mat4 u_projectionMatrix;\nuniform mat4 u_offsetScaleMatrix;\nuniform mat4 u_offsetRotateMatrix;\n\nvoid main(void) {\n  mat4 offsetMatrix = u_offsetScaleMatrix;\n  if (a_rotateWithView == 1.0) {\n    offsetMatrix = u_offsetScaleMatrix * u_offsetRotateMatrix;\n  }\n  vec4 offsets = offsetMatrix * vec4(a_offsets, 0.0, 0.0);\n  gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0) + offsets;\n  v_texCoord = a_texCoord;\n  v_opacity = a_opacity;\n}\n\n\n";
-  ol.render.webgl.texturereplay.defaultshader.Vertex.OPTIMIZED_SOURCE = "varying vec2 a;varying float b;attribute vec2 c;attribute vec2 d;attribute vec2 e;attribute float f;attribute float g;uniform mat4 h;uniform mat4 i;uniform mat4 j;void main(void){mat4 offsetMatrix=i;if(g==1.0){offsetMatrix=i*j;}vec4 offsets=offsetMatrix*vec4(e,0.0,0.0);gl_Position=h*vec4(c,0.0,1.0)+offsets;a=d;b=f;}";
-  ol.render.webgl.texturereplay.defaultshader.Vertex.SOURCE = ol.DEBUG_WEBGL ? ol.render.webgl.texturereplay.defaultshader.Vertex.DEBUG_SOURCE : ol.render.webgl.texturereplay.defaultshader.Vertex.OPTIMIZED_SOURCE;
-  ol.render.webgl.texturereplay.defaultshader.vertex = new ol.render.webgl.texturereplay.defaultshader.Vertex;
-  ol.render.webgl.texturereplay.defaultshader.Locations = function(gl, program) {
-    this.u_image = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_image" : "l");
-    this.u_offsetRotateMatrix = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_offsetRotateMatrix" : "j");
-    this.u_offsetScaleMatrix = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_offsetScaleMatrix" : "i");
-    this.u_opacity = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_opacity" : "k");
-    this.u_projectionMatrix = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_projectionMatrix" : "h");
-    this.a_offsets = gl.getAttribLocation(program, ol.DEBUG_WEBGL ? "a_offsets" : "e");
-    this.a_opacity = gl.getAttribLocation(program, ol.DEBUG_WEBGL ? "a_opacity" : "f");
-    this.a_position = gl.getAttribLocation(program, ol.DEBUG_WEBGL ? "a_position" : "c");
-    this.a_rotateWithView = gl.getAttribLocation(program, ol.DEBUG_WEBGL ? "a_rotateWithView" : "g");
-    this.a_texCoord = gl.getAttribLocation(program, ol.DEBUG_WEBGL ? "a_texCoord" : "d");
-  };
-}
-;goog.provide("ol.webgl.ContextEventType");
+ol.render.webgl.texturereplay.defaultshader.fragment = new ol.webgl.Fragment(ol.DEBUG_WEBGL ? "precision mediump float;\nvarying vec2 v_texCoord;\nvarying float v_opacity;\n\nuniform float u_opacity;\nuniform sampler2D u_image;\n\nvoid main(void) {\n  vec4 texColor = texture2D(u_image, v_texCoord);\n  gl_FragColor.rgb = texColor.rgb;\n  float alpha = texColor.a * v_opacity * u_opacity;\n  if (alpha == 0.0) {\n    discard;\n  }\n  gl_FragColor.a = alpha;\n}\n" : "precision mediump float;varying vec2 a;varying float b;uniform float k;uniform sampler2D l;void main(void){vec4 texColor=texture2D(l,a);gl_FragColor.rgb=texColor.rgb;float alpha=texColor.a*b*k;if(alpha==0.0){discard;}gl_FragColor.a=alpha;}");
+ol.render.webgl.texturereplay.defaultshader.vertex = new ol.webgl.Vertex(ol.DEBUG_WEBGL ? "varying vec2 v_texCoord;\nvarying float v_opacity;\n\nattribute vec2 a_position;\nattribute vec2 a_texCoord;\nattribute vec2 a_offsets;\nattribute float a_opacity;\nattribute float a_rotateWithView;\n\nuniform mat4 u_projectionMatrix;\nuniform mat4 u_offsetScaleMatrix;\nuniform mat4 u_offsetRotateMatrix;\n\nvoid main(void) {\n  mat4 offsetMatrix = u_offsetScaleMatrix;\n  if (a_rotateWithView == 1.0) {\n    offsetMatrix = u_offsetScaleMatrix * u_offsetRotateMatrix;\n  }\n  vec4 offsets = offsetMatrix * vec4(a_offsets, 0.0, 0.0);\n  gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0) + offsets;\n  v_texCoord = a_texCoord;\n  v_opacity = a_opacity;\n}\n\n\n" : 
+"varying vec2 a;varying float b;attribute vec2 c;attribute vec2 d;attribute vec2 e;attribute float f;attribute float g;uniform mat4 h;uniform mat4 i;uniform mat4 j;void main(void){mat4 offsetMatrix=i;if(g==1.0){offsetMatrix=i*j;}vec4 offsets=offsetMatrix*vec4(e,0.0,0.0);gl_Position=h*vec4(c,0.0,1.0)+offsets;a=d;b=f;}");
+goog.provide("ol.render.webgl.texturereplay.defaultshader.Locations");
+goog.require("ol");
+ol.render.webgl.texturereplay.defaultshader.Locations = function(gl, program) {
+  this.u_projectionMatrix = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_projectionMatrix" : "h");
+  this.u_offsetScaleMatrix = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_offsetScaleMatrix" : "i");
+  this.u_offsetRotateMatrix = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_offsetRotateMatrix" : "j");
+  this.u_opacity = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_opacity" : "k");
+  this.u_image = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_image" : "l");
+  this.a_position = gl.getAttribLocation(program, ol.DEBUG_WEBGL ? "a_position" : "c");
+  this.a_texCoord = gl.getAttribLocation(program, ol.DEBUG_WEBGL ? "a_texCoord" : "d");
+  this.a_offsets = gl.getAttribLocation(program, ol.DEBUG_WEBGL ? "a_offsets" : "e");
+  this.a_opacity = gl.getAttribLocation(program, ol.DEBUG_WEBGL ? "a_opacity" : "f");
+  this.a_rotateWithView = gl.getAttribLocation(program, ol.DEBUG_WEBGL ? "a_rotateWithView" : "g");
+};
+goog.provide("ol.webgl.ContextEventType");
 ol.webgl.ContextEventType = {LOST:"webglcontextlost", RESTORED:"webglcontextrestored"};
 goog.provide("ol.webgl.Context");
 goog.require("ol");
@@ -33637,556 +33604,539 @@ goog.require("ol.events");
 goog.require("ol.obj");
 goog.require("ol.webgl");
 goog.require("ol.webgl.ContextEventType");
-if (ol.ENABLE_WEBGL) {
-  ol.webgl.Context = function(canvas, gl) {
-    this.canvas_ = canvas;
-    this.gl_ = gl;
-    this.bufferCache_ = {};
-    this.shaderCache_ = {};
-    this.programCache_ = {};
-    this.currentProgram_ = null;
-    this.hitDetectionFramebuffer_ = null;
-    this.hitDetectionTexture_ = null;
-    this.hitDetectionRenderbuffer_ = null;
-    this.hasOESElementIndexUint = ol.array.includes(ol.WEBGL_EXTENSIONS, "OES_element_index_uint");
-    if (this.hasOESElementIndexUint) {
-      gl.getExtension("OES_element_index_uint");
-    }
-    ol.events.listen(this.canvas_, ol.webgl.ContextEventType.LOST, this.handleWebGLContextLost, this);
-    ol.events.listen(this.canvas_, ol.webgl.ContextEventType.RESTORED, this.handleWebGLContextRestored, this);
-  };
-  ol.inherits(ol.webgl.Context, ol.Disposable);
-  ol.webgl.Context.prototype.bindBuffer = function(target, buf) {
-    var gl = this.getGL();
-    var arr = buf.getArray();
-    var bufferKey = String(ol.getUid(buf));
-    if (bufferKey in this.bufferCache_) {
-      var bufferCacheEntry = this.bufferCache_[bufferKey];
-      gl.bindBuffer(target, bufferCacheEntry.buffer);
-    } else {
-      var buffer = gl.createBuffer();
-      gl.bindBuffer(target, buffer);
-      var arrayBuffer;
-      if (target == ol.webgl.ARRAY_BUFFER) {
-        arrayBuffer = new Float32Array(arr);
-      } else {
-        if (target == ol.webgl.ELEMENT_ARRAY_BUFFER) {
-          arrayBuffer = this.hasOESElementIndexUint ? new Uint32Array(arr) : new Uint16Array(arr);
-        }
-      }
-      gl.bufferData(target, arrayBuffer, buf.getUsage());
-      this.bufferCache_[bufferKey] = {buf:buf, buffer:buffer};
-    }
-  };
-  ol.webgl.Context.prototype.deleteBuffer = function(buf) {
-    var gl = this.getGL();
-    var bufferKey = String(ol.getUid(buf));
+ol.webgl.Context = function(canvas, gl) {
+  this.canvas_ = canvas;
+  this.gl_ = gl;
+  this.bufferCache_ = {};
+  this.shaderCache_ = {};
+  this.programCache_ = {};
+  this.currentProgram_ = null;
+  this.hitDetectionFramebuffer_ = null;
+  this.hitDetectionTexture_ = null;
+  this.hitDetectionRenderbuffer_ = null;
+  this.hasOESElementIndexUint = ol.array.includes(ol.WEBGL_EXTENSIONS, "OES_element_index_uint");
+  if (this.hasOESElementIndexUint) {
+    gl.getExtension("OES_element_index_uint");
+  }
+  ol.events.listen(this.canvas_, ol.webgl.ContextEventType.LOST, this.handleWebGLContextLost, this);
+  ol.events.listen(this.canvas_, ol.webgl.ContextEventType.RESTORED, this.handleWebGLContextRestored, this);
+};
+ol.inherits(ol.webgl.Context, ol.Disposable);
+ol.webgl.Context.prototype.bindBuffer = function(target, buf) {
+  var gl = this.getGL();
+  var arr = buf.getArray();
+  var bufferKey = String(ol.getUid(buf));
+  if (bufferKey in this.bufferCache_) {
     var bufferCacheEntry = this.bufferCache_[bufferKey];
-    if (!gl.isContextLost()) {
-      gl.deleteBuffer(bufferCacheEntry.buffer);
+    gl.bindBuffer(target, bufferCacheEntry.buffer);
+  } else {
+    var buffer = gl.createBuffer();
+    gl.bindBuffer(target, buffer);
+    var arrayBuffer;
+    if (target == ol.webgl.ARRAY_BUFFER) {
+      arrayBuffer = new Float32Array(arr);
+    } else {
+      if (target == ol.webgl.ELEMENT_ARRAY_BUFFER) {
+        arrayBuffer = this.hasOESElementIndexUint ? new Uint32Array(arr) : new Uint16Array(arr);
+      }
     }
-    delete this.bufferCache_[bufferKey];
-  };
-  ol.webgl.Context.prototype.disposeInternal = function() {
-    ol.events.unlistenAll(this.canvas_);
+    gl.bufferData(target, arrayBuffer, buf.getUsage());
+    this.bufferCache_[bufferKey] = {buf:buf, buffer:buffer};
+  }
+};
+ol.webgl.Context.prototype.deleteBuffer = function(buf) {
+  var gl = this.getGL();
+  var bufferKey = String(ol.getUid(buf));
+  var bufferCacheEntry = this.bufferCache_[bufferKey];
+  if (!gl.isContextLost()) {
+    gl.deleteBuffer(bufferCacheEntry.buffer);
+  }
+  delete this.bufferCache_[bufferKey];
+};
+ol.webgl.Context.prototype.disposeInternal = function() {
+  ol.events.unlistenAll(this.canvas_);
+  var gl = this.getGL();
+  if (!gl.isContextLost()) {
+    var key;
+    for (key in this.bufferCache_) {
+      gl.deleteBuffer(this.bufferCache_[key].buffer);
+    }
+    for (key in this.programCache_) {
+      gl.deleteProgram(this.programCache_[key]);
+    }
+    for (key in this.shaderCache_) {
+      gl.deleteShader(this.shaderCache_[key]);
+    }
+    gl.deleteFramebuffer(this.hitDetectionFramebuffer_);
+    gl.deleteRenderbuffer(this.hitDetectionRenderbuffer_);
+    gl.deleteTexture(this.hitDetectionTexture_);
+  }
+};
+ol.webgl.Context.prototype.getCanvas = function() {
+  return this.canvas_;
+};
+ol.webgl.Context.prototype.getGL = function() {
+  return this.gl_;
+};
+ol.webgl.Context.prototype.getHitDetectionFramebuffer = function() {
+  if (!this.hitDetectionFramebuffer_) {
+    this.initHitDetectionFramebuffer_();
+  }
+  return this.hitDetectionFramebuffer_;
+};
+ol.webgl.Context.prototype.getShader = function(shaderObject) {
+  var shaderKey = String(ol.getUid(shaderObject));
+  if (shaderKey in this.shaderCache_) {
+    return this.shaderCache_[shaderKey];
+  } else {
     var gl = this.getGL();
-    if (!gl.isContextLost()) {
-      var key;
-      for (key in this.bufferCache_) {
-        gl.deleteBuffer(this.bufferCache_[key].buffer);
-      }
-      for (key in this.programCache_) {
-        gl.deleteProgram(this.programCache_[key]);
-      }
-      for (key in this.shaderCache_) {
-        gl.deleteShader(this.shaderCache_[key]);
-      }
-      gl.deleteFramebuffer(this.hitDetectionFramebuffer_);
-      gl.deleteRenderbuffer(this.hitDetectionRenderbuffer_);
-      gl.deleteTexture(this.hitDetectionTexture_);
-    }
-  };
-  ol.webgl.Context.prototype.getCanvas = function() {
-    return this.canvas_;
-  };
-  ol.webgl.Context.prototype.getGL = function() {
-    return this.gl_;
-  };
-  ol.webgl.Context.prototype.getHitDetectionFramebuffer = function() {
-    if (!this.hitDetectionFramebuffer_) {
-      this.initHitDetectionFramebuffer_();
-    }
-    return this.hitDetectionFramebuffer_;
-  };
-  ol.webgl.Context.prototype.getShader = function(shaderObject) {
-    var shaderKey = String(ol.getUid(shaderObject));
-    if (shaderKey in this.shaderCache_) {
-      return this.shaderCache_[shaderKey];
-    } else {
-      var gl = this.getGL();
-      var shader = gl.createShader(shaderObject.getType());
-      gl.shaderSource(shader, shaderObject.getSource());
-      gl.compileShader(shader);
-      this.shaderCache_[shaderKey] = shader;
-      return shader;
-    }
-  };
-  ol.webgl.Context.prototype.getProgram = function(fragmentShaderObject, vertexShaderObject) {
-    var programKey = ol.getUid(fragmentShaderObject) + "/" + ol.getUid(vertexShaderObject);
-    if (programKey in this.programCache_) {
-      return this.programCache_[programKey];
-    } else {
-      var gl = this.getGL();
-      var program = gl.createProgram();
-      gl.attachShader(program, this.getShader(fragmentShaderObject));
-      gl.attachShader(program, this.getShader(vertexShaderObject));
-      gl.linkProgram(program);
-      this.programCache_[programKey] = program;
-      return program;
-    }
-  };
-  ol.webgl.Context.prototype.handleWebGLContextLost = function() {
-    ol.obj.clear(this.bufferCache_);
-    ol.obj.clear(this.shaderCache_);
-    ol.obj.clear(this.programCache_);
-    this.currentProgram_ = null;
-    this.hitDetectionFramebuffer_ = null;
-    this.hitDetectionTexture_ = null;
-    this.hitDetectionRenderbuffer_ = null;
-  };
-  ol.webgl.Context.prototype.handleWebGLContextRestored = function() {
-  };
-  ol.webgl.Context.prototype.initHitDetectionFramebuffer_ = function() {
-    var gl = this.gl_;
-    var framebuffer = gl.createFramebuffer();
-    gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
-    var texture = ol.webgl.Context.createEmptyTexture(gl, 1, 1);
-    var renderbuffer = gl.createRenderbuffer();
-    gl.bindRenderbuffer(gl.RENDERBUFFER, renderbuffer);
-    gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, 1, 1);
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
-    gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, renderbuffer);
-    gl.bindTexture(gl.TEXTURE_2D, null);
-    gl.bindRenderbuffer(gl.RENDERBUFFER, null);
-    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-    this.hitDetectionFramebuffer_ = framebuffer;
-    this.hitDetectionTexture_ = texture;
-    this.hitDetectionRenderbuffer_ = renderbuffer;
-  };
-  ol.webgl.Context.prototype.useProgram = function(program) {
-    if (program == this.currentProgram_) {
-      return false;
-    } else {
-      var gl = this.getGL();
-      gl.useProgram(program);
-      this.currentProgram_ = program;
-      return true;
-    }
-  };
-  ol.webgl.Context.createTexture_ = function(gl, opt_wrapS, opt_wrapT) {
-    var texture = gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_2D, texture);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-    if (opt_wrapS !== undefined) {
-      gl.texParameteri(ol.webgl.TEXTURE_2D, ol.webgl.TEXTURE_WRAP_S, opt_wrapS);
-    }
-    if (opt_wrapT !== undefined) {
-      gl.texParameteri(ol.webgl.TEXTURE_2D, ol.webgl.TEXTURE_WRAP_T, opt_wrapT);
-    }
-    return texture;
-  };
-  ol.webgl.Context.createEmptyTexture = function(gl, width, height, opt_wrapS, opt_wrapT) {
-    var texture = ol.webgl.Context.createTexture_(gl, opt_wrapS, opt_wrapT);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-    return texture;
-  };
-  ol.webgl.Context.createTexture = function(gl, image, opt_wrapS, opt_wrapT) {
-    var texture = ol.webgl.Context.createTexture_(gl, opt_wrapS, opt_wrapT);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
-    return texture;
-  };
-}
-;goog.provide("ol.render.webgl.TextureReplay");
+    var shader = gl.createShader(shaderObject.getType());
+    gl.shaderSource(shader, shaderObject.getSource());
+    gl.compileShader(shader);
+    this.shaderCache_[shaderKey] = shader;
+    return shader;
+  }
+};
+ol.webgl.Context.prototype.getProgram = function(fragmentShaderObject, vertexShaderObject) {
+  var programKey = ol.getUid(fragmentShaderObject) + "/" + ol.getUid(vertexShaderObject);
+  if (programKey in this.programCache_) {
+    return this.programCache_[programKey];
+  } else {
+    var gl = this.getGL();
+    var program = gl.createProgram();
+    gl.attachShader(program, this.getShader(fragmentShaderObject));
+    gl.attachShader(program, this.getShader(vertexShaderObject));
+    gl.linkProgram(program);
+    this.programCache_[programKey] = program;
+    return program;
+  }
+};
+ol.webgl.Context.prototype.handleWebGLContextLost = function() {
+  ol.obj.clear(this.bufferCache_);
+  ol.obj.clear(this.shaderCache_);
+  ol.obj.clear(this.programCache_);
+  this.currentProgram_ = null;
+  this.hitDetectionFramebuffer_ = null;
+  this.hitDetectionTexture_ = null;
+  this.hitDetectionRenderbuffer_ = null;
+};
+ol.webgl.Context.prototype.handleWebGLContextRestored = function() {
+};
+ol.webgl.Context.prototype.initHitDetectionFramebuffer_ = function() {
+  var gl = this.gl_;
+  var framebuffer = gl.createFramebuffer();
+  gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
+  var texture = ol.webgl.Context.createEmptyTexture(gl, 1, 1);
+  var renderbuffer = gl.createRenderbuffer();
+  gl.bindRenderbuffer(gl.RENDERBUFFER, renderbuffer);
+  gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, 1, 1);
+  gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
+  gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, renderbuffer);
+  gl.bindTexture(gl.TEXTURE_2D, null);
+  gl.bindRenderbuffer(gl.RENDERBUFFER, null);
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  this.hitDetectionFramebuffer_ = framebuffer;
+  this.hitDetectionTexture_ = texture;
+  this.hitDetectionRenderbuffer_ = renderbuffer;
+};
+ol.webgl.Context.prototype.useProgram = function(program) {
+  if (program == this.currentProgram_) {
+    return false;
+  } else {
+    var gl = this.getGL();
+    gl.useProgram(program);
+    this.currentProgram_ = program;
+    return true;
+  }
+};
+ol.webgl.Context.createTexture_ = function(gl, opt_wrapS, opt_wrapT) {
+  var texture = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, texture);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+  if (opt_wrapS !== undefined) {
+    gl.texParameteri(ol.webgl.TEXTURE_2D, ol.webgl.TEXTURE_WRAP_S, opt_wrapS);
+  }
+  if (opt_wrapT !== undefined) {
+    gl.texParameteri(ol.webgl.TEXTURE_2D, ol.webgl.TEXTURE_WRAP_T, opt_wrapT);
+  }
+  return texture;
+};
+ol.webgl.Context.createEmptyTexture = function(gl, width, height, opt_wrapS, opt_wrapT) {
+  var texture = ol.webgl.Context.createTexture_(gl, opt_wrapS, opt_wrapT);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+  return texture;
+};
+ol.webgl.Context.createTexture = function(gl, image, opt_wrapS, opt_wrapT) {
+  var texture = ol.webgl.Context.createTexture_(gl, opt_wrapS, opt_wrapT);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+  return texture;
+};
+goog.provide("ol.render.webgl.TextureReplay");
 goog.require("ol");
 goog.require("ol.extent");
 goog.require("ol.obj");
 goog.require("ol.render.webgl.texturereplay.defaultshader");
+goog.require("ol.render.webgl.texturereplay.defaultshader.Locations");
 goog.require("ol.render.webgl.Replay");
 goog.require("ol.webgl");
 goog.require("ol.webgl.Context");
-if (ol.ENABLE_WEBGL) {
-  ol.render.webgl.TextureReplay = function(tolerance, maxExtent) {
-    ol.render.webgl.Replay.call(this, tolerance, maxExtent);
-    this.anchorX = undefined;
-    this.anchorY = undefined;
-    this.groupIndices = [];
-    this.hitDetectionGroupIndices = [];
-    this.height = undefined;
-    this.imageHeight = undefined;
-    this.imageWidth = undefined;
-    this.defaultLocations = null;
-    this.opacity = undefined;
-    this.originX = undefined;
-    this.originY = undefined;
-    this.rotateWithView = undefined;
-    this.rotation = undefined;
-    this.scale = undefined;
-    this.width = undefined;
-  };
-  ol.inherits(ol.render.webgl.TextureReplay, ol.render.webgl.Replay);
-  ol.render.webgl.TextureReplay.prototype.getDeleteResourcesFunction = function(context) {
-    var verticesBuffer = this.verticesBuffer;
-    var indicesBuffer = this.indicesBuffer;
-    var textures = this.getTextures(true);
-    var gl = context.getGL();
-    return function() {
-      if (!gl.isContextLost()) {
-        var i, ii;
-        for (i = 0, ii = textures.length; i < ii; ++i) {
-          gl.deleteTexture(textures[i]);
-        }
+ol.render.webgl.TextureReplay = function(tolerance, maxExtent) {
+  ol.render.webgl.Replay.call(this, tolerance, maxExtent);
+  this.anchorX = undefined;
+  this.anchorY = undefined;
+  this.groupIndices = [];
+  this.hitDetectionGroupIndices = [];
+  this.height = undefined;
+  this.imageHeight = undefined;
+  this.imageWidth = undefined;
+  this.defaultLocations = null;
+  this.opacity = undefined;
+  this.originX = undefined;
+  this.originY = undefined;
+  this.rotateWithView = undefined;
+  this.rotation = undefined;
+  this.scale = undefined;
+  this.width = undefined;
+};
+ol.inherits(ol.render.webgl.TextureReplay, ol.render.webgl.Replay);
+ol.render.webgl.TextureReplay.prototype.getDeleteResourcesFunction = function(context) {
+  var verticesBuffer = this.verticesBuffer;
+  var indicesBuffer = this.indicesBuffer;
+  var textures = this.getTextures(true);
+  var gl = context.getGL();
+  return function() {
+    if (!gl.isContextLost()) {
+      var i, ii;
+      for (i = 0, ii = textures.length; i < ii; ++i) {
+        gl.deleteTexture(textures[i]);
       }
-      context.deleteBuffer(verticesBuffer);
-      context.deleteBuffer(indicesBuffer);
-    };
-  };
-  ol.render.webgl.TextureReplay.prototype.drawCoordinates = function(flatCoordinates, offset, end, stride) {
-    var anchorX = this.anchorX;
-    var anchorY = this.anchorY;
-    var height = this.height;
-    var imageHeight = this.imageHeight;
-    var imageWidth = this.imageWidth;
-    var opacity = this.opacity;
-    var originX = this.originX;
-    var originY = this.originY;
-    var rotateWithView = this.rotateWithView ? 1.0 : 0.0;
-    var rotation = -this.rotation;
-    var scale = this.scale;
-    var width = this.width;
-    var cos = Math.cos(rotation);
-    var sin = Math.sin(rotation);
-    var numIndices = this.indices.length;
-    var numVertices = this.vertices.length;
-    var i, n, offsetX, offsetY, x, y;
-    for (i = offset; i < end; i += stride) {
-      x = flatCoordinates[i] - this.origin[0];
-      y = flatCoordinates[i + 1] - this.origin[1];
-      n = numVertices / 8;
-      offsetX = -scale * anchorX;
-      offsetY = -scale * (height - anchorY);
-      this.vertices[numVertices++] = x;
-      this.vertices[numVertices++] = y;
-      this.vertices[numVertices++] = offsetX * cos - offsetY * sin;
-      this.vertices[numVertices++] = offsetX * sin + offsetY * cos;
-      this.vertices[numVertices++] = originX / imageWidth;
-      this.vertices[numVertices++] = (originY + height) / imageHeight;
-      this.vertices[numVertices++] = opacity;
-      this.vertices[numVertices++] = rotateWithView;
-      offsetX = scale * (width - anchorX);
-      offsetY = -scale * (height - anchorY);
-      this.vertices[numVertices++] = x;
-      this.vertices[numVertices++] = y;
-      this.vertices[numVertices++] = offsetX * cos - offsetY * sin;
-      this.vertices[numVertices++] = offsetX * sin + offsetY * cos;
-      this.vertices[numVertices++] = (originX + width) / imageWidth;
-      this.vertices[numVertices++] = (originY + height) / imageHeight;
-      this.vertices[numVertices++] = opacity;
-      this.vertices[numVertices++] = rotateWithView;
-      offsetX = scale * (width - anchorX);
-      offsetY = scale * anchorY;
-      this.vertices[numVertices++] = x;
-      this.vertices[numVertices++] = y;
-      this.vertices[numVertices++] = offsetX * cos - offsetY * sin;
-      this.vertices[numVertices++] = offsetX * sin + offsetY * cos;
-      this.vertices[numVertices++] = (originX + width) / imageWidth;
-      this.vertices[numVertices++] = originY / imageHeight;
-      this.vertices[numVertices++] = opacity;
-      this.vertices[numVertices++] = rotateWithView;
-      offsetX = -scale * anchorX;
-      offsetY = scale * anchorY;
-      this.vertices[numVertices++] = x;
-      this.vertices[numVertices++] = y;
-      this.vertices[numVertices++] = offsetX * cos - offsetY * sin;
-      this.vertices[numVertices++] = offsetX * sin + offsetY * cos;
-      this.vertices[numVertices++] = originX / imageWidth;
-      this.vertices[numVertices++] = originY / imageHeight;
-      this.vertices[numVertices++] = opacity;
-      this.vertices[numVertices++] = rotateWithView;
-      this.indices[numIndices++] = n;
-      this.indices[numIndices++] = n + 1;
-      this.indices[numIndices++] = n + 2;
-      this.indices[numIndices++] = n;
-      this.indices[numIndices++] = n + 2;
-      this.indices[numIndices++] = n + 3;
     }
-    return numVertices;
+    context.deleteBuffer(verticesBuffer);
+    context.deleteBuffer(indicesBuffer);
   };
-  ol.render.webgl.TextureReplay.prototype.createTextures = function(textures, images, texturePerImage, gl) {
-    var texture, image, uid, i;
-    var ii = images.length;
-    for (i = 0; i < ii; ++i) {
-      image = images[i];
-      uid = ol.getUid(image).toString();
-      if (uid in texturePerImage) {
-        texture = texturePerImage[uid];
-      } else {
-        texture = ol.webgl.Context.createTexture(gl, image, ol.webgl.CLAMP_TO_EDGE, ol.webgl.CLAMP_TO_EDGE);
-        texturePerImage[uid] = texture;
-      }
-      textures[i] = texture;
-    }
-  };
-  ol.render.webgl.TextureReplay.prototype.setUpProgram = function(gl, context, size, pixelRatio) {
-    var fragmentShader = ol.render.webgl.texturereplay.defaultshader.fragment;
-    var vertexShader = ol.render.webgl.texturereplay.defaultshader.vertex;
-    var program = context.getProgram(fragmentShader, vertexShader);
-    var locations;
-    if (!this.defaultLocations) {
-      locations = new ol.render.webgl.texturereplay.defaultshader.Locations(gl, program);
-      this.defaultLocations = locations;
+};
+ol.render.webgl.TextureReplay.prototype.drawCoordinates = function(flatCoordinates, offset, end, stride) {
+  var anchorX = this.anchorX;
+  var anchorY = this.anchorY;
+  var height = this.height;
+  var imageHeight = this.imageHeight;
+  var imageWidth = this.imageWidth;
+  var opacity = this.opacity;
+  var originX = this.originX;
+  var originY = this.originY;
+  var rotateWithView = this.rotateWithView ? 1.0 : 0.0;
+  var rotation = -this.rotation;
+  var scale = this.scale;
+  var width = this.width;
+  var cos = Math.cos(rotation);
+  var sin = Math.sin(rotation);
+  var numIndices = this.indices.length;
+  var numVertices = this.vertices.length;
+  var i, n, offsetX, offsetY, x, y;
+  for (i = offset; i < end; i += stride) {
+    x = flatCoordinates[i] - this.origin[0];
+    y = flatCoordinates[i + 1] - this.origin[1];
+    n = numVertices / 8;
+    offsetX = -scale * anchorX;
+    offsetY = -scale * (height - anchorY);
+    this.vertices[numVertices++] = x;
+    this.vertices[numVertices++] = y;
+    this.vertices[numVertices++] = offsetX * cos - offsetY * sin;
+    this.vertices[numVertices++] = offsetX * sin + offsetY * cos;
+    this.vertices[numVertices++] = originX / imageWidth;
+    this.vertices[numVertices++] = (originY + height) / imageHeight;
+    this.vertices[numVertices++] = opacity;
+    this.vertices[numVertices++] = rotateWithView;
+    offsetX = scale * (width - anchorX);
+    offsetY = -scale * (height - anchorY);
+    this.vertices[numVertices++] = x;
+    this.vertices[numVertices++] = y;
+    this.vertices[numVertices++] = offsetX * cos - offsetY * sin;
+    this.vertices[numVertices++] = offsetX * sin + offsetY * cos;
+    this.vertices[numVertices++] = (originX + width) / imageWidth;
+    this.vertices[numVertices++] = (originY + height) / imageHeight;
+    this.vertices[numVertices++] = opacity;
+    this.vertices[numVertices++] = rotateWithView;
+    offsetX = scale * (width - anchorX);
+    offsetY = scale * anchorY;
+    this.vertices[numVertices++] = x;
+    this.vertices[numVertices++] = y;
+    this.vertices[numVertices++] = offsetX * cos - offsetY * sin;
+    this.vertices[numVertices++] = offsetX * sin + offsetY * cos;
+    this.vertices[numVertices++] = (originX + width) / imageWidth;
+    this.vertices[numVertices++] = originY / imageHeight;
+    this.vertices[numVertices++] = opacity;
+    this.vertices[numVertices++] = rotateWithView;
+    offsetX = -scale * anchorX;
+    offsetY = scale * anchorY;
+    this.vertices[numVertices++] = x;
+    this.vertices[numVertices++] = y;
+    this.vertices[numVertices++] = offsetX * cos - offsetY * sin;
+    this.vertices[numVertices++] = offsetX * sin + offsetY * cos;
+    this.vertices[numVertices++] = originX / imageWidth;
+    this.vertices[numVertices++] = originY / imageHeight;
+    this.vertices[numVertices++] = opacity;
+    this.vertices[numVertices++] = rotateWithView;
+    this.indices[numIndices++] = n;
+    this.indices[numIndices++] = n + 1;
+    this.indices[numIndices++] = n + 2;
+    this.indices[numIndices++] = n;
+    this.indices[numIndices++] = n + 2;
+    this.indices[numIndices++] = n + 3;
+  }
+  return numVertices;
+};
+ol.render.webgl.TextureReplay.prototype.createTextures = function(textures, images, texturePerImage, gl) {
+  var texture, image, uid, i;
+  var ii = images.length;
+  for (i = 0; i < ii; ++i) {
+    image = images[i];
+    uid = ol.getUid(image).toString();
+    if (uid in texturePerImage) {
+      texture = texturePerImage[uid];
     } else {
-      locations = this.defaultLocations;
+      texture = ol.webgl.Context.createTexture(gl, image, ol.webgl.CLAMP_TO_EDGE, ol.webgl.CLAMP_TO_EDGE);
+      texturePerImage[uid] = texture;
     }
-    context.useProgram(program);
-    gl.enableVertexAttribArray(locations.a_position);
-    gl.vertexAttribPointer(locations.a_position, 2, ol.webgl.FLOAT, false, 32, 0);
-    gl.enableVertexAttribArray(locations.a_offsets);
-    gl.vertexAttribPointer(locations.a_offsets, 2, ol.webgl.FLOAT, false, 32, 8);
-    gl.enableVertexAttribArray(locations.a_texCoord);
-    gl.vertexAttribPointer(locations.a_texCoord, 2, ol.webgl.FLOAT, false, 32, 16);
-    gl.enableVertexAttribArray(locations.a_opacity);
-    gl.vertexAttribPointer(locations.a_opacity, 1, ol.webgl.FLOAT, false, 32, 24);
-    gl.enableVertexAttribArray(locations.a_rotateWithView);
-    gl.vertexAttribPointer(locations.a_rotateWithView, 1, ol.webgl.FLOAT, false, 32, 28);
-    return locations;
-  };
-  ol.render.webgl.TextureReplay.prototype.shutDownProgram = function(gl, locations) {
-    gl.disableVertexAttribArray(locations.a_position);
-    gl.disableVertexAttribArray(locations.a_offsets);
-    gl.disableVertexAttribArray(locations.a_texCoord);
-    gl.disableVertexAttribArray(locations.a_opacity);
-    gl.disableVertexAttribArray(locations.a_rotateWithView);
-  };
-  ol.render.webgl.TextureReplay.prototype.drawReplay = function(gl, context, skippedFeaturesHash, hitDetection) {
-    var textures = hitDetection ? this.getHitDetectionTextures() : this.getTextures();
-    var groupIndices = hitDetection ? this.hitDetectionGroupIndices : this.groupIndices;
-    if (!ol.obj.isEmpty(skippedFeaturesHash)) {
-      this.drawReplaySkipping(gl, context, skippedFeaturesHash, textures, groupIndices);
-    } else {
-      var i, ii, start;
-      for (i = 0, ii = textures.length, start = 0; i < ii; ++i) {
-        gl.bindTexture(ol.webgl.TEXTURE_2D, textures[i]);
-        var end = groupIndices[i];
-        this.drawElements(gl, context, start, end);
-        start = end;
-      }
-    }
-  };
-  ol.render.webgl.TextureReplay.prototype.drawReplaySkipping = function(gl, context, skippedFeaturesHash, textures, groupIndices) {
-    var featureIndex = 0;
-    var i, ii;
-    for (i = 0, ii = textures.length; i < ii; ++i) {
+    textures[i] = texture;
+  }
+};
+ol.render.webgl.TextureReplay.prototype.setUpProgram = function(gl, context, size, pixelRatio) {
+  var fragmentShader = ol.render.webgl.texturereplay.defaultshader.fragment;
+  var vertexShader = ol.render.webgl.texturereplay.defaultshader.vertex;
+  var program = context.getProgram(fragmentShader, vertexShader);
+  var locations;
+  if (!this.defaultLocations) {
+    locations = new ol.render.webgl.texturereplay.defaultshader.Locations(gl, program);
+    this.defaultLocations = locations;
+  } else {
+    locations = this.defaultLocations;
+  }
+  context.useProgram(program);
+  gl.enableVertexAttribArray(locations.a_position);
+  gl.vertexAttribPointer(locations.a_position, 2, ol.webgl.FLOAT, false, 32, 0);
+  gl.enableVertexAttribArray(locations.a_offsets);
+  gl.vertexAttribPointer(locations.a_offsets, 2, ol.webgl.FLOAT, false, 32, 8);
+  gl.enableVertexAttribArray(locations.a_texCoord);
+  gl.vertexAttribPointer(locations.a_texCoord, 2, ol.webgl.FLOAT, false, 32, 16);
+  gl.enableVertexAttribArray(locations.a_opacity);
+  gl.vertexAttribPointer(locations.a_opacity, 1, ol.webgl.FLOAT, false, 32, 24);
+  gl.enableVertexAttribArray(locations.a_rotateWithView);
+  gl.vertexAttribPointer(locations.a_rotateWithView, 1, ol.webgl.FLOAT, false, 32, 28);
+  return locations;
+};
+ol.render.webgl.TextureReplay.prototype.shutDownProgram = function(gl, locations) {
+  gl.disableVertexAttribArray(locations.a_position);
+  gl.disableVertexAttribArray(locations.a_offsets);
+  gl.disableVertexAttribArray(locations.a_texCoord);
+  gl.disableVertexAttribArray(locations.a_opacity);
+  gl.disableVertexAttribArray(locations.a_rotateWithView);
+};
+ol.render.webgl.TextureReplay.prototype.drawReplay = function(gl, context, skippedFeaturesHash, hitDetection) {
+  var textures = hitDetection ? this.getHitDetectionTextures() : this.getTextures();
+  var groupIndices = hitDetection ? this.hitDetectionGroupIndices : this.groupIndices;
+  if (!ol.obj.isEmpty(skippedFeaturesHash)) {
+    this.drawReplaySkipping(gl, context, skippedFeaturesHash, textures, groupIndices);
+  } else {
+    var i, ii, start;
+    for (i = 0, ii = textures.length, start = 0; i < ii; ++i) {
       gl.bindTexture(ol.webgl.TEXTURE_2D, textures[i]);
-      var groupStart = i > 0 ? groupIndices[i - 1] : 0;
-      var groupEnd = groupIndices[i];
-      var start = groupStart;
-      var end = groupStart;
-      while (featureIndex < this.startIndices.length && this.startIndices[featureIndex] <= groupEnd) {
-        var feature = this.startIndicesFeature[featureIndex];
-        var featureUid = ol.getUid(feature).toString();
-        if (skippedFeaturesHash[featureUid] !== undefined) {
-          if (start !== end) {
-            this.drawElements(gl, context, start, end);
-          }
-          start = featureIndex === this.startIndices.length - 1 ? groupEnd : this.startIndices[featureIndex + 1];
-          end = start;
-        } else {
-          end = featureIndex === this.startIndices.length - 1 ? groupEnd : this.startIndices[featureIndex + 1];
-        }
-        featureIndex++;
-      }
-      if (start !== end) {
-        this.drawElements(gl, context, start, end);
-      }
+      var end = groupIndices[i];
+      this.drawElements(gl, context, start, end);
+      start = end;
     }
-  };
-  ol.render.webgl.TextureReplay.prototype.drawHitDetectionReplayOneByOne = function(gl, context, skippedFeaturesHash, featureCallback, opt_hitExtent) {
-    var i, groupStart, start, end, feature, featureUid;
-    var featureIndex = this.startIndices.length - 1;
-    var hitDetectionTextures = this.getHitDetectionTextures();
-    for (i = hitDetectionTextures.length - 1; i >= 0; --i) {
-      gl.bindTexture(ol.webgl.TEXTURE_2D, hitDetectionTextures[i]);
-      groupStart = i > 0 ? this.hitDetectionGroupIndices[i - 1] : 0;
-      end = this.hitDetectionGroupIndices[i];
-      while (featureIndex >= 0 && this.startIndices[featureIndex] >= groupStart) {
-        start = this.startIndices[featureIndex];
-        feature = this.startIndicesFeature[featureIndex];
-        featureUid = ol.getUid(feature).toString();
-        if (skippedFeaturesHash[featureUid] === undefined && feature.getGeometry() && (opt_hitExtent === undefined || ol.extent.intersects(opt_hitExtent, feature.getGeometry().getExtent()))) {
-          gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  }
+};
+ol.render.webgl.TextureReplay.prototype.drawReplaySkipping = function(gl, context, skippedFeaturesHash, textures, groupIndices) {
+  var featureIndex = 0;
+  var i, ii;
+  for (i = 0, ii = textures.length; i < ii; ++i) {
+    gl.bindTexture(ol.webgl.TEXTURE_2D, textures[i]);
+    var groupStart = i > 0 ? groupIndices[i - 1] : 0;
+    var groupEnd = groupIndices[i];
+    var start = groupStart;
+    var end = groupStart;
+    while (featureIndex < this.startIndices.length && this.startIndices[featureIndex] <= groupEnd) {
+      var feature = this.startIndicesFeature[featureIndex];
+      var featureUid = ol.getUid(feature).toString();
+      if (skippedFeaturesHash[featureUid] !== undefined) {
+        if (start !== end) {
           this.drawElements(gl, context, start, end);
-          var result = featureCallback(feature);
-          if (result) {
-            return result;
-          }
         }
+        start = featureIndex === this.startIndices.length - 1 ? groupEnd : this.startIndices[featureIndex + 1];
         end = start;
-        featureIndex--;
+      } else {
+        end = featureIndex === this.startIndices.length - 1 ? groupEnd : this.startIndices[featureIndex + 1];
       }
+      featureIndex++;
     }
-    return undefined;
-  };
-  ol.render.webgl.TextureReplay.prototype.finish = function(context) {
-    this.anchorX = undefined;
-    this.anchorY = undefined;
-    this.height = undefined;
-    this.imageHeight = undefined;
-    this.imageWidth = undefined;
-    this.indices = null;
-    this.opacity = undefined;
-    this.originX = undefined;
-    this.originY = undefined;
-    this.rotateWithView = undefined;
-    this.rotation = undefined;
-    this.scale = undefined;
-    this.vertices = null;
-    this.width = undefined;
-  };
-  ol.render.webgl.TextureReplay.prototype.getTextures = function(opt_all) {
-  };
-  ol.render.webgl.TextureReplay.prototype.getHitDetectionTextures = function() {
-  };
-}
-;goog.provide("ol.render.webgl.ImageReplay");
+    if (start !== end) {
+      this.drawElements(gl, context, start, end);
+    }
+  }
+};
+ol.render.webgl.TextureReplay.prototype.drawHitDetectionReplayOneByOne = function(gl, context, skippedFeaturesHash, featureCallback, opt_hitExtent) {
+  var i, groupStart, start, end, feature, featureUid;
+  var featureIndex = this.startIndices.length - 1;
+  var hitDetectionTextures = this.getHitDetectionTextures();
+  for (i = hitDetectionTextures.length - 1; i >= 0; --i) {
+    gl.bindTexture(ol.webgl.TEXTURE_2D, hitDetectionTextures[i]);
+    groupStart = i > 0 ? this.hitDetectionGroupIndices[i - 1] : 0;
+    end = this.hitDetectionGroupIndices[i];
+    while (featureIndex >= 0 && this.startIndices[featureIndex] >= groupStart) {
+      start = this.startIndices[featureIndex];
+      feature = this.startIndicesFeature[featureIndex];
+      featureUid = ol.getUid(feature).toString();
+      if (skippedFeaturesHash[featureUid] === undefined && feature.getGeometry() && (opt_hitExtent === undefined || ol.extent.intersects(opt_hitExtent, feature.getGeometry().getExtent()))) {
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        this.drawElements(gl, context, start, end);
+        var result = featureCallback(feature);
+        if (result) {
+          return result;
+        }
+      }
+      end = start;
+      featureIndex--;
+    }
+  }
+  return undefined;
+};
+ol.render.webgl.TextureReplay.prototype.finish = function(context) {
+  this.anchorX = undefined;
+  this.anchorY = undefined;
+  this.height = undefined;
+  this.imageHeight = undefined;
+  this.imageWidth = undefined;
+  this.indices = null;
+  this.opacity = undefined;
+  this.originX = undefined;
+  this.originY = undefined;
+  this.rotateWithView = undefined;
+  this.rotation = undefined;
+  this.scale = undefined;
+  this.vertices = null;
+  this.width = undefined;
+};
+ol.render.webgl.TextureReplay.prototype.getTextures = function(opt_all) {
+};
+ol.render.webgl.TextureReplay.prototype.getHitDetectionTextures = function() {
+};
+goog.provide("ol.render.webgl.ImageReplay");
 goog.require("ol");
 goog.require("ol.render.webgl.TextureReplay");
 goog.require("ol.webgl.Buffer");
-if (ol.ENABLE_WEBGL) {
-  ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
-    ol.render.webgl.TextureReplay.call(this, tolerance, maxExtent);
-    this.images_ = [];
-    this.hitDetectionImages_ = [];
-    this.textures_ = [];
-    this.hitDetectionTextures_ = [];
-  };
-  ol.inherits(ol.render.webgl.ImageReplay, ol.render.webgl.TextureReplay);
-  ol.render.webgl.ImageReplay.prototype.drawMultiPoint = function(multiPointGeometry, feature) {
-    this.startIndices.push(this.indices.length);
-    this.startIndicesFeature.push(feature);
-    var flatCoordinates = multiPointGeometry.getFlatCoordinates();
-    var stride = multiPointGeometry.getStride();
-    this.drawCoordinates(flatCoordinates, 0, flatCoordinates.length, stride);
-  };
-  ol.render.webgl.ImageReplay.prototype.drawPoint = function(pointGeometry, feature) {
-    this.startIndices.push(this.indices.length);
-    this.startIndicesFeature.push(feature);
-    var flatCoordinates = pointGeometry.getFlatCoordinates();
-    var stride = pointGeometry.getStride();
-    this.drawCoordinates(flatCoordinates, 0, flatCoordinates.length, stride);
-  };
-  ol.render.webgl.ImageReplay.prototype.finish = function(context) {
-    var gl = context.getGL();
-    this.groupIndices.push(this.indices.length);
-    this.hitDetectionGroupIndices.push(this.indices.length);
-    this.verticesBuffer = new ol.webgl.Buffer(this.vertices);
-    var indices = this.indices;
-    this.indicesBuffer = new ol.webgl.Buffer(indices);
-    var texturePerImage = {};
-    this.createTextures(this.textures_, this.images_, texturePerImage, gl);
-    this.createTextures(this.hitDetectionTextures_, this.hitDetectionImages_, texturePerImage, gl);
-    this.images_ = null;
-    this.hitDetectionImages_ = null;
-    ol.render.webgl.TextureReplay.prototype.finish.call(this, context);
-  };
-  ol.render.webgl.ImageReplay.prototype.setImageStyle = function(imageStyle) {
-    var anchor = imageStyle.getAnchor();
-    var image = imageStyle.getImage(1);
-    var imageSize = imageStyle.getImageSize();
-    var hitDetectionImage = imageStyle.getHitDetectionImage(1);
-    var opacity = imageStyle.getOpacity();
-    var origin = imageStyle.getOrigin();
-    var rotateWithView = imageStyle.getRotateWithView();
-    var rotation = imageStyle.getRotation();
-    var size = imageStyle.getSize();
-    var scale = imageStyle.getScale();
-    var currentImage;
-    if (this.images_.length === 0) {
+ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
+  ol.render.webgl.TextureReplay.call(this, tolerance, maxExtent);
+  this.images_ = [];
+  this.hitDetectionImages_ = [];
+  this.textures_ = [];
+  this.hitDetectionTextures_ = [];
+};
+ol.inherits(ol.render.webgl.ImageReplay, ol.render.webgl.TextureReplay);
+ol.render.webgl.ImageReplay.prototype.drawMultiPoint = function(multiPointGeometry, feature) {
+  this.startIndices.push(this.indices.length);
+  this.startIndicesFeature.push(feature);
+  var flatCoordinates = multiPointGeometry.getFlatCoordinates();
+  var stride = multiPointGeometry.getStride();
+  this.drawCoordinates(flatCoordinates, 0, flatCoordinates.length, stride);
+};
+ol.render.webgl.ImageReplay.prototype.drawPoint = function(pointGeometry, feature) {
+  this.startIndices.push(this.indices.length);
+  this.startIndicesFeature.push(feature);
+  var flatCoordinates = pointGeometry.getFlatCoordinates();
+  var stride = pointGeometry.getStride();
+  this.drawCoordinates(flatCoordinates, 0, flatCoordinates.length, stride);
+};
+ol.render.webgl.ImageReplay.prototype.finish = function(context) {
+  var gl = context.getGL();
+  this.groupIndices.push(this.indices.length);
+  this.hitDetectionGroupIndices.push(this.indices.length);
+  this.verticesBuffer = new ol.webgl.Buffer(this.vertices);
+  var indices = this.indices;
+  this.indicesBuffer = new ol.webgl.Buffer(indices);
+  var texturePerImage = {};
+  this.createTextures(this.textures_, this.images_, texturePerImage, gl);
+  this.createTextures(this.hitDetectionTextures_, this.hitDetectionImages_, texturePerImage, gl);
+  this.images_ = null;
+  this.hitDetectionImages_ = null;
+  ol.render.webgl.TextureReplay.prototype.finish.call(this, context);
+};
+ol.render.webgl.ImageReplay.prototype.setImageStyle = function(imageStyle) {
+  var anchor = imageStyle.getAnchor();
+  var image = imageStyle.getImage(1);
+  var imageSize = imageStyle.getImageSize();
+  var hitDetectionImage = imageStyle.getHitDetectionImage(1);
+  var opacity = imageStyle.getOpacity();
+  var origin = imageStyle.getOrigin();
+  var rotateWithView = imageStyle.getRotateWithView();
+  var rotation = imageStyle.getRotation();
+  var size = imageStyle.getSize();
+  var scale = imageStyle.getScale();
+  var currentImage;
+  if (this.images_.length === 0) {
+    this.images_.push(image);
+  } else {
+    currentImage = this.images_[this.images_.length - 1];
+    if (ol.getUid(currentImage) != ol.getUid(image)) {
+      this.groupIndices.push(this.indices.length);
       this.images_.push(image);
-    } else {
-      currentImage = this.images_[this.images_.length - 1];
-      if (ol.getUid(currentImage) != ol.getUid(image)) {
-        this.groupIndices.push(this.indices.length);
-        this.images_.push(image);
-      }
     }
-    if (this.hitDetectionImages_.length === 0) {
+  }
+  if (this.hitDetectionImages_.length === 0) {
+    this.hitDetectionImages_.push(hitDetectionImage);
+  } else {
+    currentImage = this.hitDetectionImages_[this.hitDetectionImages_.length - 1];
+    if (ol.getUid(currentImage) != ol.getUid(hitDetectionImage)) {
+      this.hitDetectionGroupIndices.push(this.indices.length);
       this.hitDetectionImages_.push(hitDetectionImage);
-    } else {
-      currentImage = this.hitDetectionImages_[this.hitDetectionImages_.length - 1];
-      if (ol.getUid(currentImage) != ol.getUid(hitDetectionImage)) {
-        this.hitDetectionGroupIndices.push(this.indices.length);
-        this.hitDetectionImages_.push(hitDetectionImage);
-      }
     }
-    this.anchorX = anchor[0];
-    this.anchorY = anchor[1];
-    this.height = size[1];
-    this.imageHeight = imageSize[1];
-    this.imageWidth = imageSize[0];
-    this.opacity = opacity;
-    this.originX = origin[0];
-    this.originY = origin[1];
-    this.rotation = rotation;
-    this.rotateWithView = rotateWithView;
-    this.scale = scale;
-    this.width = size[0];
-  };
-  ol.render.webgl.ImageReplay.prototype.getTextures = function(opt_all) {
-    return opt_all ? this.textures_.concat(this.hitDetectionTextures_) : this.textures_;
-  };
-  ol.render.webgl.ImageReplay.prototype.getHitDetectionTextures = function() {
-    return this.hitDetectionTextures_;
-  };
-}
-;goog.provide("ol.render.webgl.linestringreplay.defaultshader");
+  }
+  this.anchorX = anchor[0];
+  this.anchorY = anchor[1];
+  this.height = size[1];
+  this.imageHeight = imageSize[1];
+  this.imageWidth = imageSize[0];
+  this.opacity = opacity;
+  this.originX = origin[0];
+  this.originY = origin[1];
+  this.rotation = rotation;
+  this.rotateWithView = rotateWithView;
+  this.scale = scale;
+  this.width = size[0];
+};
+ol.render.webgl.ImageReplay.prototype.getTextures = function(opt_all) {
+  return opt_all ? this.textures_.concat(this.hitDetectionTextures_) : this.textures_;
+};
+ol.render.webgl.ImageReplay.prototype.getHitDetectionTextures = function() {
+  return this.hitDetectionTextures_;
+};
+goog.provide("ol.render.webgl.linestringreplay.defaultshader");
 goog.require("ol");
 goog.require("ol.webgl.Fragment");
 goog.require("ol.webgl.Vertex");
-if (ol.ENABLE_WEBGL) {
-  ol.render.webgl.linestringreplay.defaultshader.Fragment = function() {
-    ol.webgl.Fragment.call(this, ol.render.webgl.linestringreplay.defaultshader.Fragment.SOURCE);
-  };
-  ol.inherits(ol.render.webgl.linestringreplay.defaultshader.Fragment, ol.webgl.Fragment);
-  ol.render.webgl.linestringreplay.defaultshader.Fragment.DEBUG_SOURCE = "precision mediump float;\nvarying float v_round;\nvarying vec2 v_roundVertex;\nvarying float v_halfWidth;\n\n\n\nuniform float u_opacity;\nuniform vec4 u_color;\nuniform vec2 u_size;\nuniform float u_pixelRatio;\n\nvoid main(void) {\n  if (v_round > 0.0) {\n    vec2 windowCoords = vec2((v_roundVertex.x + 1.0) / 2.0 * u_size.x * u_pixelRatio,\n        (v_roundVertex.y + 1.0) / 2.0 * u_size.y * u_pixelRatio);\n    if (length(windowCoords - gl_FragCoord.xy) > v_halfWidth * u_pixelRatio) {\n      discard;\n    }\n  }\n  gl_FragColor = u_color;\n  float alpha = u_color.a * u_opacity;\n  if (alpha == 0.0) {\n    discard;\n  }\n  gl_FragColor.a = alpha;\n}\n";
-  ol.render.webgl.linestringreplay.defaultshader.Fragment.OPTIMIZED_SOURCE = "precision mediump float;varying float a;varying vec2 b;varying float c;uniform float m;uniform vec4 n;uniform vec2 o;uniform float p;void main(void){if(a>0.0){vec2 windowCoords=vec2((b.x+1.0)/2.0*o.x*p,(b.y+1.0)/2.0*o.y*p);if(length(windowCoords-gl_FragCoord.xy)>c*p){discard;}} gl_FragColor=n;float alpha=n.a*m;if(alpha==0.0){discard;}gl_FragColor.a=alpha;}";
-  ol.render.webgl.linestringreplay.defaultshader.Fragment.SOURCE = ol.DEBUG_WEBGL ? ol.render.webgl.linestringreplay.defaultshader.Fragment.DEBUG_SOURCE : ol.render.webgl.linestringreplay.defaultshader.Fragment.OPTIMIZED_SOURCE;
-  ol.render.webgl.linestringreplay.defaultshader.fragment = new ol.render.webgl.linestringreplay.defaultshader.Fragment;
-  ol.render.webgl.linestringreplay.defaultshader.Vertex = function() {
-    ol.webgl.Vertex.call(this, ol.render.webgl.linestringreplay.defaultshader.Vertex.SOURCE);
-  };
-  ol.inherits(ol.render.webgl.linestringreplay.defaultshader.Vertex, ol.webgl.Vertex);
-  ol.render.webgl.linestringreplay.defaultshader.Vertex.DEBUG_SOURCE = "varying float v_round;\nvarying vec2 v_roundVertex;\nvarying float v_halfWidth;\n\n\nattribute vec2 a_lastPos;\nattribute vec2 a_position;\nattribute vec2 a_nextPos;\nattribute float a_direction;\n\nuniform mat4 u_projectionMatrix;\nuniform mat4 u_offsetScaleMatrix;\nuniform mat4 u_offsetRotateMatrix;\nuniform float u_lineWidth;\nuniform float u_miterLimit;\n\nbool nearlyEquals(in float value, in float ref) {\n  float epsilon = 0.000000000001;\n  return value >= ref - epsilon && value <= ref + epsilon;\n}\n\nvoid alongNormal(out vec2 offset, in vec2 nextP, in float turnDir, in float direction) {\n  vec2 dirVect = nextP - a_position;\n  vec2 normal = normalize(vec2(-turnDir * dirVect.y, turnDir * dirVect.x));\n  offset = u_lineWidth / 2.0 * normal * direction;\n}\n\nvoid miterUp(out vec2 offset, out float round, in bool isRound, in float direction) {\n  float halfWidth = u_lineWidth / 2.0;\n  vec2 tangent = normalize(normalize(a_nextPos - a_position) + normalize(a_position - a_lastPos));\n  vec2 normal = vec2(-tangent.y, tangent.x);\n  vec2 dirVect = a_nextPos - a_position;\n  vec2 tmpNormal = normalize(vec2(-dirVect.y, dirVect.x));\n  float miterLength = abs(halfWidth / dot(normal, tmpNormal));\n  offset = normal * direction * miterLength;\n  round = 0.0;\n  if (isRound) {\n    round = 1.0;\n  } else if (miterLength > u_miterLimit + u_lineWidth) {\n    offset = halfWidth * tmpNormal * direction;\n  }\n}\n\nbool miterDown(out vec2 offset, in vec4 projPos, in mat4 offsetMatrix, in float direction) {\n  bool degenerate = false;\n  vec2 tangent = normalize(normalize(a_nextPos - a_position) + normalize(a_position - a_lastPos));\n  vec2 normal = vec2(-tangent.y, tangent.x);\n  vec2 dirVect = a_lastPos - a_position;\n  vec2 tmpNormal = normalize(vec2(-dirVect.y, dirVect.x));\n  vec2 longOffset, shortOffset, longVertex;\n  vec4 shortProjVertex;\n  float halfWidth = u_lineWidth / 2.0;\n  if (length(a_nextPos - a_position) > length(a_lastPos - a_position)) {\n    longOffset = tmpNormal * direction * halfWidth;\n    shortOffset = normalize(vec2(dirVect.y, -dirVect.x)) * direction * halfWidth;\n    longVertex = a_nextPos;\n    shortProjVertex = u_projectionMatrix * vec4(a_lastPos, 0.0, 1.0);\n  } else {\n    shortOffset = tmpNormal * direction * halfWidth;\n    longOffset = normalize(vec2(dirVect.y, -dirVect.x)) * direction * halfWidth;\n    longVertex = a_lastPos;\n    shortProjVertex = u_projectionMatrix * vec4(a_nextPos, 0.0, 1.0);\n  }\n  //Intersection algorithm based on theory by Paul Bourke (http://paulbourke.net/geometry/pointlineplane/).\n  vec4 p1 = u_projectionMatrix * vec4(longVertex, 0.0, 1.0) + offsetMatrix * vec4(longOffset, 0.0, 0.0);\n  vec4 p2 = projPos + offsetMatrix * vec4(longOffset, 0.0, 0.0);\n  vec4 p3 = shortProjVertex + offsetMatrix * vec4(-shortOffset, 0.0, 0.0);\n  vec4 p4 = shortProjVertex + offsetMatrix * vec4(shortOffset, 0.0, 0.0);\n  float denom = (p4.y - p3.y) * (p2.x - p1.x) - (p4.x - p3.x) * (p2.y - p1.y);\n  float firstU = ((p4.x - p3.x) * (p1.y - p3.y) - (p4.y - p3.y) * (p1.x - p3.x)) / denom;\n  float secondU = ((p2.x - p1.x) * (p1.y - p3.y) - (p2.y - p1.y) * (p1.x - p3.x)) / denom;\n  float epsilon = 0.000000000001;\n  if (firstU > epsilon && firstU < 1.0 - epsilon && secondU > epsilon && secondU < 1.0 - epsilon) {\n    shortProjVertex.x = p1.x + firstU * (p2.x - p1.x);\n    shortProjVertex.y = p1.y + firstU * (p2.y - p1.y);\n    offset = shortProjVertex.xy;\n    degenerate = true;\n  } else {\n    float miterLength = abs(halfWidth / dot(normal, tmpNormal));\n    offset = normal * direction * miterLength;\n  }\n  return degenerate;\n}\n\nvoid squareCap(out vec2 offset, out float round, in bool isRound, in vec2 nextP,\n    in float turnDir, in float direction) {\n  round = 0.0;\n  vec2 dirVect = a_position - nextP;\n  vec2 firstNormal = normalize(dirVect);\n  vec2 secondNormal = vec2(turnDir * firstNormal.y * direction, -turnDir * firstNormal.x * direction);\n  vec2 hypotenuse = normalize(firstNormal - secondNormal);\n  vec2 normal = vec2(turnDir * hypotenuse.y * direction, -turnDir * hypotenuse.x * direction);\n  float length = sqrt(v_halfWidth * v_halfWidth * 2.0);\n  offset = normal * length;\n  if (isRound) {\n    round = 1.0;\n  }\n}\n\nvoid main(void) {\n  bool degenerate = false;\n  float direction = float(sign(a_direction));\n  mat4 offsetMatrix = u_offsetScaleMatrix * u_offsetRotateMatrix;\n  vec2 offset;\n  vec4 projPos = u_projectionMatrix * vec4(a_position, 0.0, 1.0);\n  bool round = nearlyEquals(mod(a_direction, 2.0), 0.0);\n\n  v_round = 0.0;\n  v_halfWidth = u_lineWidth / 2.0;\n  v_roundVertex = projPos.xy;\n\n  if (nearlyEquals(mod(a_direction, 3.0), 0.0) || nearlyEquals(mod(a_direction, 17.0), 0.0)) {\n    alongNormal(offset, a_nextPos, 1.0, direction);\n  } else if (nearlyEquals(mod(a_direction, 5.0), 0.0) || nearlyEquals(mod(a_direction, 13.0), 0.0)) {\n    alongNormal(offset, a_lastPos, -1.0, direction);\n  } else if (nearlyEquals(mod(a_direction, 23.0), 0.0)) {\n    miterUp(offset, v_round, round, direction);\n  } else if (nearlyEquals(mod(a_direction, 19.0), 0.0)) {\n    degenerate = miterDown(offset, projPos, offsetMatrix, direction);\n  } else if (nearlyEquals(mod(a_direction, 7.0), 0.0)) {\n    squareCap(offset, v_round, round, a_nextPos, 1.0, direction);\n  } else if (nearlyEquals(mod(a_direction, 11.0), 0.0)) {\n    squareCap(offset, v_round, round, a_lastPos, -1.0, direction);\n  }\n  if (!degenerate) {\n    vec4 offsets = offsetMatrix * vec4(offset, 0.0, 0.0);\n    gl_Position = projPos + offsets;\n  } else {\n    gl_Position = vec4(offset, 0.0, 1.0);\n  }\n}\n\n\n";
-  ol.render.webgl.linestringreplay.defaultshader.Vertex.OPTIMIZED_SOURCE = "varying float a;varying vec2 b;varying float c;attribute vec2 d;attribute vec2 e;attribute vec2 f;attribute float g;uniform mat4 h;uniform mat4 i;uniform mat4 j;uniform float k;uniform float l;bool nearlyEquals(in float value,in float ref){float epsilon=0.000000000001;return value>=ref-epsilon&&value<=ref+epsilon;}void alongNormal(out vec2 offset,in vec2 nextP,in float turnDir,in float direction){vec2 dirVect=nextP-e;vec2 normal=normalize(vec2(-turnDir*dirVect.y,turnDir*dirVect.x));offset=k/2.0*normal*direction;}void miterUp(out vec2 offset,out float round,in bool isRound,in float direction){float halfWidth=k/2.0;vec2 tangent=normalize(normalize(f-e)+normalize(e-d));vec2 normal=vec2(-tangent.y,tangent.x);vec2 dirVect=f-e;vec2 tmpNormal=normalize(vec2(-dirVect.y,dirVect.x));float miterLength=abs(halfWidth/dot(normal,tmpNormal));offset=normal*direction*miterLength;round=0.0;if(isRound){round=1.0;}else if(miterLength>l+k){offset=halfWidth*tmpNormal*direction;}} bool miterDown(out vec2 offset,in vec4 projPos,in mat4 offsetMatrix,in float direction){bool degenerate=false;vec2 tangent=normalize(normalize(f-e)+normalize(e-d));vec2 normal=vec2(-tangent.y,tangent.x);vec2 dirVect=d-e;vec2 tmpNormal=normalize(vec2(-dirVect.y,dirVect.x));vec2 longOffset,shortOffset,longVertex;vec4 shortProjVertex;float halfWidth=k/2.0;if(length(f-e)>length(d-e)){longOffset=tmpNormal*direction*halfWidth;shortOffset=normalize(vec2(dirVect.y,-dirVect.x))*direction*halfWidth;longVertex=f;shortProjVertex=h*vec4(d,0.0,1.0);}else{shortOffset=tmpNormal*direction*halfWidth;longOffset=normalize(vec2(dirVect.y,-dirVect.x))*direction*halfWidth;longVertex=d;shortProjVertex=h*vec4(f,0.0,1.0);}vec4 p1=h*vec4(longVertex,0.0,1.0)+offsetMatrix*vec4(longOffset,0.0,0.0);vec4 p2=projPos+offsetMatrix*vec4(longOffset,0.0,0.0);vec4 p3=shortProjVertex+offsetMatrix*vec4(-shortOffset,0.0,0.0);vec4 p4=shortProjVertex+offsetMatrix*vec4(shortOffset,0.0,0.0);float denom=(p4.y-p3.y)*(p2.x-p1.x)-(p4.x-p3.x)*(p2.y-p1.y);float firstU=((p4.x-p3.x)*(p1.y-p3.y)-(p4.y-p3.y)*(p1.x-p3.x))/denom;float secondU=((p2.x-p1.x)*(p1.y-p3.y)-(p2.y-p1.y)*(p1.x-p3.x))/denom;float epsilon=0.000000000001;if(firstU>epsilon&&firstU<1.0-epsilon&&secondU>epsilon&&secondU<1.0-epsilon){shortProjVertex.x=p1.x+firstU*(p2.x-p1.x);shortProjVertex.y=p1.y+firstU*(p2.y-p1.y);offset=shortProjVertex.xy;degenerate=true;}else{float miterLength=abs(halfWidth/dot(normal,tmpNormal));offset=normal*direction*miterLength;}return degenerate;}void squareCap(out vec2 offset,out float round,in bool isRound,in vec2 nextP,in float turnDir,in float direction){round=0.0;vec2 dirVect=e-nextP;vec2 firstNormal=normalize(dirVect);vec2 secondNormal=vec2(turnDir*firstNormal.y*direction,-turnDir*firstNormal.x*direction);vec2 hypotenuse=normalize(firstNormal-secondNormal);vec2 normal=vec2(turnDir*hypotenuse.y*direction,-turnDir*hypotenuse.x*direction);float length=sqrt(c*c*2.0);offset=normal*length;if(isRound){round=1.0;}} void main(void){bool degenerate=false;float direction=float(sign(g));mat4 offsetMatrix=i*j;vec2 offset;vec4 projPos=h*vec4(e,0.0,1.0);bool round=nearlyEquals(mod(g,2.0),0.0);a=0.0;c=k/2.0;b=projPos.xy;if(nearlyEquals(mod(g,3.0),0.0)||nearlyEquals(mod(g,17.0),0.0)){alongNormal(offset,f,1.0,direction);}else if(nearlyEquals(mod(g,5.0),0.0)||nearlyEquals(mod(g,13.0),0.0)){alongNormal(offset,d,-1.0,direction);}else if(nearlyEquals(mod(g,23.0),0.0)){miterUp(offset,a,round,direction);}else if(nearlyEquals(mod(g,19.0),0.0)){degenerate=miterDown(offset,projPos,offsetMatrix,direction);}else if(nearlyEquals(mod(g,7.0),0.0)){squareCap(offset,a,round,f,1.0,direction);}else if(nearlyEquals(mod(g,11.0),0.0)){squareCap(offset,a,round,d,-1.0,direction);}if(!degenerate){vec4 offsets=offsetMatrix*vec4(offset,0.0,0.0);gl_Position=projPos+offsets;}else{gl_Position=vec4(offset,0.0,1.0);}}";
-  ol.render.webgl.linestringreplay.defaultshader.Vertex.SOURCE = ol.DEBUG_WEBGL ? ol.render.webgl.linestringreplay.defaultshader.Vertex.DEBUG_SOURCE : ol.render.webgl.linestringreplay.defaultshader.Vertex.OPTIMIZED_SOURCE;
-  ol.render.webgl.linestringreplay.defaultshader.vertex = new ol.render.webgl.linestringreplay.defaultshader.Vertex;
-  ol.render.webgl.linestringreplay.defaultshader.Locations = function(gl, program) {
-    this.u_color = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_color" : "n");
-    this.u_lineWidth = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_lineWidth" : "k");
-    this.u_miterLimit = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_miterLimit" : "l");
-    this.u_offsetRotateMatrix = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_offsetRotateMatrix" : "j");
-    this.u_offsetScaleMatrix = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_offsetScaleMatrix" : "i");
-    this.u_opacity = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_opacity" : "m");
-    this.u_pixelRatio = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_pixelRatio" : "p");
-    this.u_projectionMatrix = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_projectionMatrix" : "h");
-    this.u_size = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_size" : "o");
-    this.a_direction = gl.getAttribLocation(program, ol.DEBUG_WEBGL ? "a_direction" : "g");
-    this.a_lastPos = gl.getAttribLocation(program, ol.DEBUG_WEBGL ? "a_lastPos" : "d");
-    this.a_nextPos = gl.getAttribLocation(program, ol.DEBUG_WEBGL ? "a_nextPos" : "f");
-    this.a_position = gl.getAttribLocation(program, ol.DEBUG_WEBGL ? "a_position" : "e");
-  };
-}
-;goog.provide("ol.render.webgl.LineStringReplay");
+ol.render.webgl.linestringreplay.defaultshader.fragment = new ol.webgl.Fragment(ol.DEBUG_WEBGL ? "precision mediump float;\nvarying float v_round;\nvarying vec2 v_roundVertex;\nvarying float v_halfWidth;\n\n\n\nuniform float u_opacity;\nuniform vec4 u_color;\nuniform vec2 u_size;\nuniform float u_pixelRatio;\n\nvoid main(void) {\n  if (v_round > 0.0) {\n    vec2 windowCoords = vec2((v_roundVertex.x + 1.0) / 2.0 * u_size.x * u_pixelRatio,\n        (v_roundVertex.y + 1.0) / 2.0 * u_size.y * u_pixelRatio);\n    if (length(windowCoords - gl_FragCoord.xy) > v_halfWidth * u_pixelRatio) {\n      discard;\n    }\n  }\n  gl_FragColor = u_color;\n  float alpha = u_color.a * u_opacity;\n  if (alpha == 0.0) {\n    discard;\n  }\n  gl_FragColor.a = alpha;\n}\n" : 
+"precision mediump float;varying float a;varying vec2 aVertex;varying float c;uniform float m;uniform vec4 n;uniform vec2 o;uniform float p;void main(void){if(a>0.0){vec2 windowCoords=vec2((aVertex.x+1.0)/2.0*o.x*p,(aVertex.y+1.0)/2.0*o.y*p);if(length(windowCoords-gl_FragCoord.xy)>c*p){discard;}} gl_FragColor=n;float alpha=n.a*m;if(alpha==0.0){discard;}gl_FragColor.a=alpha;}");
+ol.render.webgl.linestringreplay.defaultshader.vertex = new ol.webgl.Vertex(ol.DEBUG_WEBGL ? "varying float v_round;\nvarying vec2 v_roundVertex;\nvarying float v_halfWidth;\n\n\nattribute vec2 a_lastPos;\nattribute vec2 a_position;\nattribute vec2 a_nextPos;\nattribute float a_direction;\n\nuniform mat4 u_projectionMatrix;\nuniform mat4 u_offsetScaleMatrix;\nuniform mat4 u_offsetRotateMatrix;\nuniform float u_lineWidth;\nuniform float u_miterLimit;\n\nbool nearlyEquals(in float value, in float ref) {\n  float epsilon = 0.000000000001;\n  return value >= ref - epsilon && value <= ref + epsilon;\n}\n\nvoid alongNormal(out vec2 offset, in vec2 nextP, in float turnDir, in float direction) {\n  vec2 dirVect = nextP - a_position;\n  vec2 normal = normalize(vec2(-turnDir * dirVect.y, turnDir * dirVect.x));\n  offset = u_lineWidth / 2.0 * normal * direction;\n}\n\nvoid miterUp(out vec2 offset, out float round, in bool isRound, in float direction) {\n  float halfWidth = u_lineWidth / 2.0;\n  vec2 tangent = normalize(normalize(a_nextPos - a_position) + normalize(a_position - a_lastPos));\n  vec2 normal = vec2(-tangent.y, tangent.x);\n  vec2 dirVect = a_nextPos - a_position;\n  vec2 tmpNormal = normalize(vec2(-dirVect.y, dirVect.x));\n  float miterLength = abs(halfWidth / dot(normal, tmpNormal));\n  offset = normal * direction * miterLength;\n  round = 0.0;\n  if (isRound) {\n    round = 1.0;\n  } else if (miterLength > u_miterLimit + u_lineWidth) {\n    offset = halfWidth * tmpNormal * direction;\n  }\n}\n\nbool miterDown(out vec2 offset, in vec4 projPos, in mat4 offsetMatrix, in float direction) {\n  bool degenerate = false;\n  vec2 tangent = normalize(normalize(a_nextPos - a_position) + normalize(a_position - a_lastPos));\n  vec2 normal = vec2(-tangent.y, tangent.x);\n  vec2 dirVect = a_lastPos - a_position;\n  vec2 tmpNormal = normalize(vec2(-dirVect.y, dirVect.x));\n  vec2 longOffset, shortOffset, longVertex;\n  vec4 shortProjVertex;\n  float halfWidth = u_lineWidth / 2.0;\n  if (length(a_nextPos - a_position) > length(a_lastPos - a_position)) {\n    longOffset = tmpNormal * direction * halfWidth;\n    shortOffset = normalize(vec2(dirVect.y, -dirVect.x)) * direction * halfWidth;\n    longVertex = a_nextPos;\n    shortProjVertex = u_projectionMatrix * vec4(a_lastPos, 0.0, 1.0);\n  } else {\n    shortOffset = tmpNormal * direction * halfWidth;\n    longOffset = normalize(vec2(dirVect.y, -dirVect.x)) * direction * halfWidth;\n    longVertex = a_lastPos;\n    shortProjVertex = u_projectionMatrix * vec4(a_nextPos, 0.0, 1.0);\n  }\n  //Intersection algorithm based on theory by Paul Bourke (http://paulbourke.net/geometry/pointlineplane/).\n  vec4 p1 = u_projectionMatrix * vec4(longVertex, 0.0, 1.0) + offsetMatrix * vec4(longOffset, 0.0, 0.0);\n  vec4 p2 = projPos + offsetMatrix * vec4(longOffset, 0.0, 0.0);\n  vec4 p3 = shortProjVertex + offsetMatrix * vec4(-shortOffset, 0.0, 0.0);\n  vec4 p4 = shortProjVertex + offsetMatrix * vec4(shortOffset, 0.0, 0.0);\n  float denom = (p4.y - p3.y) * (p2.x - p1.x) - (p4.x - p3.x) * (p2.y - p1.y);\n  float firstU = ((p4.x - p3.x) * (p1.y - p3.y) - (p4.y - p3.y) * (p1.x - p3.x)) / denom;\n  float secondU = ((p2.x - p1.x) * (p1.y - p3.y) - (p2.y - p1.y) * (p1.x - p3.x)) / denom;\n  float epsilon = 0.000000000001;\n  if (firstU > epsilon && firstU < 1.0 - epsilon && secondU > epsilon && secondU < 1.0 - epsilon) {\n    shortProjVertex.x = p1.x + firstU * (p2.x - p1.x);\n    shortProjVertex.y = p1.y + firstU * (p2.y - p1.y);\n    offset = shortProjVertex.xy;\n    degenerate = true;\n  } else {\n    float miterLength = abs(halfWidth / dot(normal, tmpNormal));\n    offset = normal * direction * miterLength;\n  }\n  return degenerate;\n}\n\nvoid squareCap(out vec2 offset, out float round, in bool isRound, in vec2 nextP,\n    in float turnDir, in float direction) {\n  round = 0.0;\n  vec2 dirVect = a_position - nextP;\n  vec2 firstNormal = normalize(dirVect);\n  vec2 secondNormal = vec2(turnDir * firstNormal.y * direction, -turnDir * firstNormal.x * direction);\n  vec2 hypotenuse = normalize(firstNormal - secondNormal);\n  vec2 normal = vec2(turnDir * hypotenuse.y * direction, -turnDir * hypotenuse.x * direction);\n  float length = sqrt(v_halfWidth * v_halfWidth * 2.0);\n  offset = normal * length;\n  if (isRound) {\n    round = 1.0;\n  }\n}\n\nvoid main(void) {\n  bool degenerate = false;\n  float direction = float(sign(a_direction));\n  mat4 offsetMatrix = u_offsetScaleMatrix * u_offsetRotateMatrix;\n  vec2 offset;\n  vec4 projPos = u_projectionMatrix * vec4(a_position, 0.0, 1.0);\n  bool round = nearlyEquals(mod(a_direction, 2.0), 0.0);\n\n  v_round = 0.0;\n  v_halfWidth = u_lineWidth / 2.0;\n  v_roundVertex = projPos.xy;\n\n  if (nearlyEquals(mod(a_direction, 3.0), 0.0) || nearlyEquals(mod(a_direction, 17.0), 0.0)) {\n    alongNormal(offset, a_nextPos, 1.0, direction);\n  } else if (nearlyEquals(mod(a_direction, 5.0), 0.0) || nearlyEquals(mod(a_direction, 13.0), 0.0)) {\n    alongNormal(offset, a_lastPos, -1.0, direction);\n  } else if (nearlyEquals(mod(a_direction, 23.0), 0.0)) {\n    miterUp(offset, v_round, round, direction);\n  } else if (nearlyEquals(mod(a_direction, 19.0), 0.0)) {\n    degenerate = miterDown(offset, projPos, offsetMatrix, direction);\n  } else if (nearlyEquals(mod(a_direction, 7.0), 0.0)) {\n    squareCap(offset, v_round, round, a_nextPos, 1.0, direction);\n  } else if (nearlyEquals(mod(a_direction, 11.0), 0.0)) {\n    squareCap(offset, v_round, round, a_lastPos, -1.0, direction);\n  }\n  if (!degenerate) {\n    vec4 offsets = offsetMatrix * vec4(offset, 0.0, 0.0);\n    gl_Position = projPos + offsets;\n  } else {\n    gl_Position = vec4(offset, 0.0, 1.0);\n  }\n}\n\n\n" : 
+"varying float a;varying vec2 aVertex;varying float c;attribute vec2 d;attribute vec2 e;attribute vec2 f;attribute float g;uniform mat4 h;uniform mat4 i;uniform mat4 j;uniform float k;uniform float l;bool nearlyEquals(in float value,in float ref){float epsilon=0.000000000001;return value>=ref-epsilon&&value<=ref+epsilon;}void alongNormal(out vec2 offset,in vec2 nextP,in float turnDir,in float direction){vec2 dirVect=nextP-e;vec2 normal=normalize(vec2(-turnDir*dirVect.y,turnDir*dirVect.x));offset=k/2.0*normal*direction;}void miterUp(out vec2 offset,out float round,in bool isRound,in float direction){float halfWidth=k/2.0;vec2 tangent=normalize(normalize(f-e)+normalize(e-d));vec2 normal=vec2(-tangent.y,tangent.x);vec2 dirVect=f-e;vec2 tmpNormal=normalize(vec2(-dirVect.y,dirVect.x));float miterLength=abs(halfWidth/dot(normal,tmpNormal));offset=normal*direction*miterLength;round=0.0;if(isRound){round=1.0;}else if(miterLength>l+k){offset=halfWidth*tmpNormal*direction;}} bool miterDown(out vec2 offset,in vec4 projPos,in mat4 offsetMatrix,in float direction){bool degenerate=false;vec2 tangent=normalize(normalize(f-e)+normalize(e-d));vec2 normal=vec2(-tangent.y,tangent.x);vec2 dirVect=d-e;vec2 tmpNormal=normalize(vec2(-dirVect.y,dirVect.x));vec2 longOffset,shortOffset,longVertex;vec4 shortProjVertex;float halfWidth=k/2.0;if(length(f-e)>length(d-e)){longOffset=tmpNormal*direction*halfWidth;shortOffset=normalize(vec2(dirVect.y,-dirVect.x))*direction*halfWidth;longVertex=f;shortProjVertex=h*vec4(d,0.0,1.0);}else{shortOffset=tmpNormal*direction*halfWidth;longOffset=normalize(vec2(dirVect.y,-dirVect.x))*direction*halfWidth;longVertex=d;shortProjVertex=h*vec4(f,0.0,1.0);}vec4 p1=h*vec4(longVertex,0.0,1.0)+offsetMatrix*vec4(longOffset,0.0,0.0);vec4 p2=projPos+offsetMatrix*vec4(longOffset,0.0,0.0);vec4 p3=shortProjVertex+offsetMatrix*vec4(-shortOffset,0.0,0.0);vec4 p4=shortProjVertex+offsetMatrix*vec4(shortOffset,0.0,0.0);float denom=(p4.y-p3.y)*(p2.x-p1.x)-(p4.x-p3.x)*(p2.y-p1.y);float firstU=((p4.x-p3.x)*(p1.y-p3.y)-(p4.y-p3.y)*(p1.x-p3.x))/denom;float secondU=((p2.x-p1.x)*(p1.y-p3.y)-(p2.y-p1.y)*(p1.x-p3.x))/denom;float epsilon=0.000000000001;if(firstU>epsilon&&firstU<1.0-epsilon&&secondU>epsilon&&secondU<1.0-epsilon){shortProjVertex.x=p1.x+firstU*(p2.x-p1.x);shortProjVertex.y=p1.y+firstU*(p2.y-p1.y);offset=shortProjVertex.xy;degenerate=true;}else{float miterLength=abs(halfWidth/dot(normal,tmpNormal));offset=normal*direction*miterLength;}return degenerate;}void squareCap(out vec2 offset,out float round,in bool isRound,in vec2 nextP,in float turnDir,in float direction){round=0.0;vec2 dirVect=e-nextP;vec2 firstNormal=normalize(dirVect);vec2 secondNormal=vec2(turnDir*firstNormal.y*direction,-turnDir*firstNormal.x*direction);vec2 hypotenuse=normalize(firstNormal-secondNormal);vec2 normal=vec2(turnDir*hypotenuse.y*direction,-turnDir*hypotenuse.x*direction);float length=sqrt(c*c*2.0);offset=normal*length;if(isRound){round=1.0;}} void main(void){bool degenerate=false;float direction=float(sign(g));mat4 offsetMatrix=i*j;vec2 offset;vec4 projPos=h*vec4(e,0.0,1.0);bool round=nearlyEquals(mod(g,2.0),0.0);a=0.0;c=k/2.0;aVertex=projPos.xy;if(nearlyEquals(mod(g,3.0),0.0)||nearlyEquals(mod(g,17.0),0.0)){alongNormal(offset,f,1.0,direction);}else if(nearlyEquals(mod(g,5.0),0.0)||nearlyEquals(mod(g,13.0),0.0)){alongNormal(offset,d,-1.0,direction);}else if(nearlyEquals(mod(g,23.0),0.0)){miterUp(offset,a,round,direction);}else if(nearlyEquals(mod(g,19.0),0.0)){degenerate=miterDown(offset,projPos,offsetMatrix,direction);}else if(nearlyEquals(mod(g,7.0),0.0)){squareCap(offset,a,round,f,1.0,direction);}else if(nearlyEquals(mod(g,11.0),0.0)){squareCap(offset,a,round,d,-1.0,direction);}if(!degenerate){vec4 offsets=offsetMatrix*vec4(offset,0.0,0.0);gl_Position=projPos+offsets;}else{gl_Position=vec4(offset,0.0,1.0);}}");
+goog.provide("ol.render.webgl.linestringreplay.defaultshader.Locations");
+goog.require("ol");
+ol.render.webgl.linestringreplay.defaultshader.Locations = function(gl, program) {
+  this.u_projectionMatrix = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_projectionMatrix" : "h");
+  this.u_offsetScaleMatrix = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_offsetScaleMatrix" : "i");
+  this.u_offsetRotateMatrix = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_offsetRotateMatrix" : "j");
+  this.u_lineWidth = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_lineWidth" : "k");
+  this.u_miterLimit = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_miterLimit" : "l");
+  this.u_opacity = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_opacity" : "m");
+  this.u_color = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_color" : "n");
+  this.u_size = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_size" : "o");
+  this.u_pixelRatio = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_pixelRatio" : "p");
+  this.a_lastPos = gl.getAttribLocation(program, ol.DEBUG_WEBGL ? "a_lastPos" : "d");
+  this.a_position = gl.getAttribLocation(program, ol.DEBUG_WEBGL ? "a_position" : "e");
+  this.a_nextPos = gl.getAttribLocation(program, ol.DEBUG_WEBGL ? "a_nextPos" : "f");
+  this.a_direction = gl.getAttribLocation(program, ol.DEBUG_WEBGL ? "a_direction" : "g");
+};
+goog.provide("ol.render.webgl.LineStringReplay");
 goog.require("ol");
 goog.require("ol.array");
 goog.require("ol.color");
@@ -34198,44 +34148,74 @@ goog.require("ol.obj");
 goog.require("ol.render.webgl");
 goog.require("ol.render.webgl.Replay");
 goog.require("ol.render.webgl.linestringreplay.defaultshader");
+goog.require("ol.render.webgl.linestringreplay.defaultshader.Locations");
 goog.require("ol.webgl");
 goog.require("ol.webgl.Buffer");
-if (ol.ENABLE_WEBGL) {
-  ol.render.webgl.LineStringReplay = function(tolerance, maxExtent) {
-    ol.render.webgl.Replay.call(this, tolerance, maxExtent);
-    this.defaultLocations_ = null;
-    this.styles_ = [];
-    this.styleIndices_ = [];
-    this.state_ = {strokeColor:null, lineCap:undefined, lineDash:null, lineDashOffset:undefined, lineJoin:undefined, lineWidth:undefined, miterLimit:undefined, changed:false};
-  };
-  ol.inherits(ol.render.webgl.LineStringReplay, ol.render.webgl.Replay);
-  ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoordinates, offset, end, stride) {
-    var i, ii;
-    var numVertices = this.vertices.length;
-    var numIndices = this.indices.length;
-    var lineJoin = this.state_.lineJoin === "bevel" ? 0 : this.state_.lineJoin === "miter" ? 1 : 2;
-    var lineCap = this.state_.lineCap === "butt" ? 0 : this.state_.lineCap === "square" ? 1 : 2;
-    var closed = ol.geom.flat.topology.lineStringIsClosed(flatCoordinates, offset, end, stride);
-    var startCoords, sign, n;
-    var lastIndex = numIndices;
-    var lastSign = 1;
-    var p0, p1, p2;
-    for (i = offset, ii = end; i < ii; i += stride) {
-      n = numVertices / 7;
-      p0 = p1;
-      p1 = p2 || [flatCoordinates[i], flatCoordinates[i + 1]];
-      if (i === offset) {
-        p2 = [flatCoordinates[i + stride], flatCoordinates[i + stride + 1]];
-        if (end - offset === stride * 2 && ol.array.equals(p1, p2)) {
-          break;
+ol.render.webgl.LineStringReplay = function(tolerance, maxExtent) {
+  ol.render.webgl.Replay.call(this, tolerance, maxExtent);
+  this.defaultLocations_ = null;
+  this.styles_ = [];
+  this.styleIndices_ = [];
+  this.state_ = {strokeColor:null, lineCap:undefined, lineDash:null, lineDashOffset:undefined, lineJoin:undefined, lineWidth:undefined, miterLimit:undefined, changed:false};
+};
+ol.inherits(ol.render.webgl.LineStringReplay, ol.render.webgl.Replay);
+ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoordinates, offset, end, stride) {
+  var i, ii;
+  var numVertices = this.vertices.length;
+  var numIndices = this.indices.length;
+  var lineJoin = this.state_.lineJoin === "bevel" ? 0 : this.state_.lineJoin === "miter" ? 1 : 2;
+  var lineCap = this.state_.lineCap === "butt" ? 0 : this.state_.lineCap === "square" ? 1 : 2;
+  var closed = ol.geom.flat.topology.lineStringIsClosed(flatCoordinates, offset, end, stride);
+  var startCoords, sign, n;
+  var lastIndex = numIndices;
+  var lastSign = 1;
+  var p0, p1, p2;
+  for (i = offset, ii = end; i < ii; i += stride) {
+    n = numVertices / 7;
+    p0 = p1;
+    p1 = p2 || [flatCoordinates[i], flatCoordinates[i + 1]];
+    if (i === offset) {
+      p2 = [flatCoordinates[i + stride], flatCoordinates[i + stride + 1]];
+      if (end - offset === stride * 2 && ol.array.equals(p1, p2)) {
+        break;
+      }
+      if (closed) {
+        p0 = [flatCoordinates[end - stride * 2], flatCoordinates[end - stride * 2 + 1]];
+        startCoords = p2;
+      } else {
+        if (lineCap) {
+          numVertices = this.addVertices_([0, 0], p1, p2, lastSign * ol.render.webgl.LineStringReplay.Instruction_.BEGIN_LINE_CAP * lineCap, numVertices);
+          numVertices = this.addVertices_([0, 0], p1, p2, -lastSign * ol.render.webgl.LineStringReplay.Instruction_.BEGIN_LINE_CAP * lineCap, numVertices);
+          this.indices[numIndices++] = n + 2;
+          this.indices[numIndices++] = n;
+          this.indices[numIndices++] = n + 1;
+          this.indices[numIndices++] = n + 1;
+          this.indices[numIndices++] = n + 3;
+          this.indices[numIndices++] = n + 2;
         }
+        numVertices = this.addVertices_([0, 0], p1, p2, lastSign * ol.render.webgl.LineStringReplay.Instruction_.BEGIN_LINE * (lineCap || 1), numVertices);
+        numVertices = this.addVertices_([0, 0], p1, p2, -lastSign * ol.render.webgl.LineStringReplay.Instruction_.BEGIN_LINE * (lineCap || 1), numVertices);
+        lastIndex = numVertices / 7 - 1;
+        continue;
+      }
+    } else {
+      if (i === end - stride) {
         if (closed) {
-          p0 = [flatCoordinates[end - stride * 2], flatCoordinates[end - stride * 2 + 1]];
-          startCoords = p2;
+          p2 = startCoords;
+          break;
         } else {
+          p0 = p0 || [0, 0];
+          numVertices = this.addVertices_(p0, p1, [0, 0], lastSign * ol.render.webgl.LineStringReplay.Instruction_.END_LINE * (lineCap || 1), numVertices);
+          numVertices = this.addVertices_(p0, p1, [0, 0], -lastSign * ol.render.webgl.LineStringReplay.Instruction_.END_LINE * (lineCap || 1), numVertices);
+          this.indices[numIndices++] = n;
+          this.indices[numIndices++] = lastIndex - 1;
+          this.indices[numIndices++] = lastIndex;
+          this.indices[numIndices++] = lastIndex;
+          this.indices[numIndices++] = n + 1;
+          this.indices[numIndices++] = n;
           if (lineCap) {
-            numVertices = this.addVertices_([0, 0], p1, p2, lastSign * ol.render.webgl.LineStringReplay.Instruction_.BEGIN_LINE_CAP * lineCap, numVertices);
-            numVertices = this.addVertices_([0, 0], p1, p2, -lastSign * ol.render.webgl.LineStringReplay.Instruction_.BEGIN_LINE_CAP * lineCap, numVertices);
+            numVertices = this.addVertices_(p0, p1, [0, 0], lastSign * ol.render.webgl.LineStringReplay.Instruction_.END_LINE_CAP * lineCap, numVertices);
+            numVertices = this.addVertices_(p0, p1, [0, 0], -lastSign * ol.render.webgl.LineStringReplay.Instruction_.END_LINE_CAP * lineCap, numVertices);
             this.indices[numIndices++] = n + 2;
             this.indices[numIndices++] = n;
             this.indices[numIndices++] = n + 1;
@@ -34243,369 +34223,324 @@ if (ol.ENABLE_WEBGL) {
             this.indices[numIndices++] = n + 3;
             this.indices[numIndices++] = n + 2;
           }
-          numVertices = this.addVertices_([0, 0], p1, p2, lastSign * ol.render.webgl.LineStringReplay.Instruction_.BEGIN_LINE * (lineCap || 1), numVertices);
-          numVertices = this.addVertices_([0, 0], p1, p2, -lastSign * ol.render.webgl.LineStringReplay.Instruction_.BEGIN_LINE * (lineCap || 1), numVertices);
-          lastIndex = numVertices / 7 - 1;
-          continue;
+          break;
         }
       } else {
-        if (i === end - stride) {
-          if (closed) {
-            p2 = startCoords;
-            break;
-          } else {
-            p0 = p0 || [0, 0];
-            numVertices = this.addVertices_(p0, p1, [0, 0], lastSign * ol.render.webgl.LineStringReplay.Instruction_.END_LINE * (lineCap || 1), numVertices);
-            numVertices = this.addVertices_(p0, p1, [0, 0], -lastSign * ol.render.webgl.LineStringReplay.Instruction_.END_LINE * (lineCap || 1), numVertices);
-            this.indices[numIndices++] = n;
-            this.indices[numIndices++] = lastIndex - 1;
-            this.indices[numIndices++] = lastIndex;
-            this.indices[numIndices++] = lastIndex;
-            this.indices[numIndices++] = n + 1;
-            this.indices[numIndices++] = n;
-            if (lineCap) {
-              numVertices = this.addVertices_(p0, p1, [0, 0], lastSign * ol.render.webgl.LineStringReplay.Instruction_.END_LINE_CAP * lineCap, numVertices);
-              numVertices = this.addVertices_(p0, p1, [0, 0], -lastSign * ol.render.webgl.LineStringReplay.Instruction_.END_LINE_CAP * lineCap, numVertices);
-              this.indices[numIndices++] = n + 2;
-              this.indices[numIndices++] = n;
-              this.indices[numIndices++] = n + 1;
-              this.indices[numIndices++] = n + 1;
-              this.indices[numIndices++] = n + 3;
-              this.indices[numIndices++] = n + 2;
-            }
-            break;
-          }
-        } else {
-          p2 = [flatCoordinates[i + stride], flatCoordinates[i + stride + 1]];
-        }
-      }
-      sign = ol.render.webgl.triangleIsCounterClockwise(p0[0], p0[1], p1[0], p1[1], p2[0], p2[1]) ? -1 : 1;
-      numVertices = this.addVertices_(p0, p1, p2, sign * ol.render.webgl.LineStringReplay.Instruction_.BEVEL_FIRST * (lineJoin || 1), numVertices);
-      numVertices = this.addVertices_(p0, p1, p2, sign * ol.render.webgl.LineStringReplay.Instruction_.BEVEL_SECOND * (lineJoin || 1), numVertices);
-      numVertices = this.addVertices_(p0, p1, p2, -sign * ol.render.webgl.LineStringReplay.Instruction_.MITER_BOTTOM * (lineJoin || 1), numVertices);
-      if (i > offset) {
-        this.indices[numIndices++] = n;
-        this.indices[numIndices++] = lastIndex - 1;
-        this.indices[numIndices++] = lastIndex;
-        this.indices[numIndices++] = n + 2;
-        this.indices[numIndices++] = n;
-        this.indices[numIndices++] = lastSign * sign > 0 ? lastIndex : lastIndex - 1;
-      }
-      this.indices[numIndices++] = n;
-      this.indices[numIndices++] = n + 2;
-      this.indices[numIndices++] = n + 1;
-      lastIndex = n + 2;
-      lastSign = sign;
-      if (lineJoin) {
-        numVertices = this.addVertices_(p0, p1, p2, sign * ol.render.webgl.LineStringReplay.Instruction_.MITER_TOP * lineJoin, numVertices);
-        this.indices[numIndices++] = n + 1;
-        this.indices[numIndices++] = n + 3;
-        this.indices[numIndices++] = n;
+        p2 = [flatCoordinates[i + stride], flatCoordinates[i + stride + 1]];
       }
     }
-    if (closed) {
-      n = n || numVertices / 7;
-      sign = ol.geom.flat.orient.linearRingIsClockwise([p0[0], p0[1], p1[0], p1[1], p2[0], p2[1]], 0, 6, 2) ? 1 : -1;
-      numVertices = this.addVertices_(p0, p1, p2, sign * ol.render.webgl.LineStringReplay.Instruction_.BEVEL_FIRST * (lineJoin || 1), numVertices);
-      numVertices = this.addVertices_(p0, p1, p2, -sign * ol.render.webgl.LineStringReplay.Instruction_.MITER_BOTTOM * (lineJoin || 1), numVertices);
+    sign = ol.render.webgl.triangleIsCounterClockwise(p0[0], p0[1], p1[0], p1[1], p2[0], p2[1]) ? -1 : 1;
+    numVertices = this.addVertices_(p0, p1, p2, sign * ol.render.webgl.LineStringReplay.Instruction_.BEVEL_FIRST * (lineJoin || 1), numVertices);
+    numVertices = this.addVertices_(p0, p1, p2, sign * ol.render.webgl.LineStringReplay.Instruction_.BEVEL_SECOND * (lineJoin || 1), numVertices);
+    numVertices = this.addVertices_(p0, p1, p2, -sign * ol.render.webgl.LineStringReplay.Instruction_.MITER_BOTTOM * (lineJoin || 1), numVertices);
+    if (i > offset) {
       this.indices[numIndices++] = n;
       this.indices[numIndices++] = lastIndex - 1;
       this.indices[numIndices++] = lastIndex;
-      this.indices[numIndices++] = n + 1;
+      this.indices[numIndices++] = n + 2;
       this.indices[numIndices++] = n;
       this.indices[numIndices++] = lastSign * sign > 0 ? lastIndex : lastIndex - 1;
     }
-  };
-  ol.render.webgl.LineStringReplay.prototype.addVertices_ = function(p0, p1, p2, product, numVertices) {
-    this.vertices[numVertices++] = p0[0];
-    this.vertices[numVertices++] = p0[1];
-    this.vertices[numVertices++] = p1[0];
-    this.vertices[numVertices++] = p1[1];
-    this.vertices[numVertices++] = p2[0];
-    this.vertices[numVertices++] = p2[1];
-    this.vertices[numVertices++] = product;
-    return numVertices;
-  };
-  ol.render.webgl.LineStringReplay.prototype.isValid_ = function(flatCoordinates, offset, end, stride) {
-    var range = end - offset;
-    if (range < stride * 2) {
-      return false;
-    } else {
-      if (range === stride * 2) {
-        var firstP = [flatCoordinates[offset], flatCoordinates[offset + 1]];
-        var lastP = [flatCoordinates[offset + stride], flatCoordinates[offset + stride + 1]];
-        return !ol.array.equals(firstP, lastP);
-      }
+    this.indices[numIndices++] = n;
+    this.indices[numIndices++] = n + 2;
+    this.indices[numIndices++] = n + 1;
+    lastIndex = n + 2;
+    lastSign = sign;
+    if (lineJoin) {
+      numVertices = this.addVertices_(p0, p1, p2, sign * ol.render.webgl.LineStringReplay.Instruction_.MITER_TOP * lineJoin, numVertices);
+      this.indices[numIndices++] = n + 1;
+      this.indices[numIndices++] = n + 3;
+      this.indices[numIndices++] = n;
     }
-    return true;
-  };
-  ol.render.webgl.LineStringReplay.prototype.drawLineString = function(lineStringGeometry, feature) {
-    var flatCoordinates = lineStringGeometry.getFlatCoordinates();
-    var stride = lineStringGeometry.getStride();
-    if (this.isValid_(flatCoordinates, 0, flatCoordinates.length, stride)) {
-      flatCoordinates = ol.geom.flat.transform.translate(flatCoordinates, 0, flatCoordinates.length, stride, -this.origin[0], -this.origin[1]);
-      if (this.state_.changed) {
-        this.styleIndices_.push(this.indices.length);
-        this.state_.changed = false;
-      }
-      this.startIndices.push(this.indices.length);
-      this.startIndicesFeature.push(feature);
-      this.drawCoordinates_(flatCoordinates, 0, flatCoordinates.length, stride);
+  }
+  if (closed) {
+    n = n || numVertices / 7;
+    sign = ol.geom.flat.orient.linearRingIsClockwise([p0[0], p0[1], p1[0], p1[1], p2[0], p2[1]], 0, 6, 2) ? 1 : -1;
+    numVertices = this.addVertices_(p0, p1, p2, sign * ol.render.webgl.LineStringReplay.Instruction_.BEVEL_FIRST * (lineJoin || 1), numVertices);
+    numVertices = this.addVertices_(p0, p1, p2, -sign * ol.render.webgl.LineStringReplay.Instruction_.MITER_BOTTOM * (lineJoin || 1), numVertices);
+    this.indices[numIndices++] = n;
+    this.indices[numIndices++] = lastIndex - 1;
+    this.indices[numIndices++] = lastIndex;
+    this.indices[numIndices++] = n + 1;
+    this.indices[numIndices++] = n;
+    this.indices[numIndices++] = lastSign * sign > 0 ? lastIndex : lastIndex - 1;
+  }
+};
+ol.render.webgl.LineStringReplay.prototype.addVertices_ = function(p0, p1, p2, product, numVertices) {
+  this.vertices[numVertices++] = p0[0];
+  this.vertices[numVertices++] = p0[1];
+  this.vertices[numVertices++] = p1[0];
+  this.vertices[numVertices++] = p1[1];
+  this.vertices[numVertices++] = p2[0];
+  this.vertices[numVertices++] = p2[1];
+  this.vertices[numVertices++] = product;
+  return numVertices;
+};
+ol.render.webgl.LineStringReplay.prototype.isValid_ = function(flatCoordinates, offset, end, stride) {
+  var range = end - offset;
+  if (range < stride * 2) {
+    return false;
+  } else {
+    if (range === stride * 2) {
+      var firstP = [flatCoordinates[offset], flatCoordinates[offset + 1]];
+      var lastP = [flatCoordinates[offset + stride], flatCoordinates[offset + stride + 1]];
+      return !ol.array.equals(firstP, lastP);
     }
-  };
-  ol.render.webgl.LineStringReplay.prototype.drawMultiLineString = function(multiLineStringGeometry, feature) {
-    var indexCount = this.indices.length;
-    var ends = multiLineStringGeometry.getEnds();
-    ends.unshift(0);
-    var flatCoordinates = multiLineStringGeometry.getFlatCoordinates();
-    var stride = multiLineStringGeometry.getStride();
-    var i, ii;
-    if (ends.length > 1) {
-      for (i = 1, ii = ends.length; i < ii; ++i) {
-        if (this.isValid_(flatCoordinates, ends[i - 1], ends[i], stride)) {
-          var lineString = ol.geom.flat.transform.translate(flatCoordinates, ends[i - 1], ends[i], stride, -this.origin[0], -this.origin[1]);
-          this.drawCoordinates_(lineString, 0, lineString.length, stride);
-        }
-      }
-    }
-    if (this.indices.length > indexCount) {
-      this.startIndices.push(indexCount);
-      this.startIndicesFeature.push(feature);
-      if (this.state_.changed) {
-        this.styleIndices_.push(indexCount);
-        this.state_.changed = false;
-      }
-    }
-  };
-  ol.render.webgl.LineStringReplay.prototype.drawPolygonCoordinates = function(flatCoordinates, holeFlatCoordinates, stride) {
-    if (!ol.geom.flat.topology.lineStringIsClosed(flatCoordinates, 0, flatCoordinates.length, stride)) {
-      flatCoordinates.push(flatCoordinates[0]);
-      flatCoordinates.push(flatCoordinates[1]);
-    }
-    this.drawCoordinates_(flatCoordinates, 0, flatCoordinates.length, stride);
-    if (holeFlatCoordinates.length) {
-      var i, ii;
-      for (i = 0, ii = holeFlatCoordinates.length; i < ii; ++i) {
-        if (!ol.geom.flat.topology.lineStringIsClosed(holeFlatCoordinates[i], 0, holeFlatCoordinates[i].length, stride)) {
-          holeFlatCoordinates[i].push(holeFlatCoordinates[i][0]);
-          holeFlatCoordinates[i].push(holeFlatCoordinates[i][1]);
-        }
-        this.drawCoordinates_(holeFlatCoordinates[i], 0, holeFlatCoordinates[i].length, stride);
-      }
-    }
-  };
-  ol.render.webgl.LineStringReplay.prototype.setPolygonStyle = function(feature, opt_index) {
-    var index = opt_index === undefined ? this.indices.length : opt_index;
-    this.startIndices.push(index);
-    this.startIndicesFeature.push(feature);
+  }
+  return true;
+};
+ol.render.webgl.LineStringReplay.prototype.drawLineString = function(lineStringGeometry, feature) {
+  var flatCoordinates = lineStringGeometry.getFlatCoordinates();
+  var stride = lineStringGeometry.getStride();
+  if (this.isValid_(flatCoordinates, 0, flatCoordinates.length, stride)) {
+    flatCoordinates = ol.geom.flat.transform.translate(flatCoordinates, 0, flatCoordinates.length, stride, -this.origin[0], -this.origin[1]);
     if (this.state_.changed) {
-      this.styleIndices_.push(index);
+      this.styleIndices_.push(this.indices.length);
       this.state_.changed = false;
     }
-  };
-  ol.render.webgl.LineStringReplay.prototype.getCurrentIndex = function() {
-    return this.indices.length;
-  };
-  ol.render.webgl.LineStringReplay.prototype.finish = function(context) {
-    this.verticesBuffer = new ol.webgl.Buffer(this.vertices);
-    this.indicesBuffer = new ol.webgl.Buffer(this.indices);
     this.startIndices.push(this.indices.length);
-    if (this.styleIndices_.length === 0 && this.styles_.length > 0) {
-      this.styles_ = [];
-    }
-    this.vertices = null;
-    this.indices = null;
-  };
-  ol.render.webgl.LineStringReplay.prototype.getDeleteResourcesFunction = function(context) {
-    var verticesBuffer = this.verticesBuffer;
-    var indicesBuffer = this.indicesBuffer;
-    return function() {
-      context.deleteBuffer(verticesBuffer);
-      context.deleteBuffer(indicesBuffer);
-    };
-  };
-  ol.render.webgl.LineStringReplay.prototype.setUpProgram = function(gl, context, size, pixelRatio) {
-    var fragmentShader, vertexShader;
-    fragmentShader = ol.render.webgl.linestringreplay.defaultshader.fragment;
-    vertexShader = ol.render.webgl.linestringreplay.defaultshader.vertex;
-    var program = context.getProgram(fragmentShader, vertexShader);
-    var locations;
-    if (!this.defaultLocations_) {
-      locations = new ol.render.webgl.linestringreplay.defaultshader.Locations(gl, program);
-      this.defaultLocations_ = locations;
-    } else {
-      locations = this.defaultLocations_;
-    }
-    context.useProgram(program);
-    gl.enableVertexAttribArray(locations.a_lastPos);
-    gl.vertexAttribPointer(locations.a_lastPos, 2, ol.webgl.FLOAT, false, 28, 0);
-    gl.enableVertexAttribArray(locations.a_position);
-    gl.vertexAttribPointer(locations.a_position, 2, ol.webgl.FLOAT, false, 28, 8);
-    gl.enableVertexAttribArray(locations.a_nextPos);
-    gl.vertexAttribPointer(locations.a_nextPos, 2, ol.webgl.FLOAT, false, 28, 16);
-    gl.enableVertexAttribArray(locations.a_direction);
-    gl.vertexAttribPointer(locations.a_direction, 1, ol.webgl.FLOAT, false, 28, 24);
-    gl.uniform2fv(locations.u_size, size);
-    gl.uniform1f(locations.u_pixelRatio, pixelRatio);
-    return locations;
-  };
-  ol.render.webgl.LineStringReplay.prototype.shutDownProgram = function(gl, locations) {
-    gl.disableVertexAttribArray(locations.a_lastPos);
-    gl.disableVertexAttribArray(locations.a_position);
-    gl.disableVertexAttribArray(locations.a_nextPos);
-    gl.disableVertexAttribArray(locations.a_direction);
-  };
-  ol.render.webgl.LineStringReplay.prototype.drawReplay = function(gl, context, skippedFeaturesHash, hitDetection) {
-    var tmpDepthFunc = gl.getParameter(gl.DEPTH_FUNC);
-    var tmpDepthMask = gl.getParameter(gl.DEPTH_WRITEMASK);
-    if (!hitDetection) {
-      gl.enable(gl.DEPTH_TEST);
-      gl.depthMask(true);
-      gl.depthFunc(gl.NOTEQUAL);
-    }
-    if (!ol.obj.isEmpty(skippedFeaturesHash)) {
-      this.drawReplaySkipping_(gl, context, skippedFeaturesHash);
-    } else {
-      var i, start, end, nextStyle;
-      end = this.startIndices[this.startIndices.length - 1];
-      for (i = this.styleIndices_.length - 1; i >= 0; --i) {
-        start = this.styleIndices_[i];
-        nextStyle = this.styles_[i];
-        this.setStrokeStyle_(gl, nextStyle[0], nextStyle[1], nextStyle[2]);
-        this.drawElements(gl, context, start, end);
-        gl.clear(gl.DEPTH_BUFFER_BIT);
-        end = start;
+    this.startIndicesFeature.push(feature);
+    this.drawCoordinates_(flatCoordinates, 0, flatCoordinates.length, stride);
+  }
+};
+ol.render.webgl.LineStringReplay.prototype.drawMultiLineString = function(multiLineStringGeometry, feature) {
+  var indexCount = this.indices.length;
+  var ends = multiLineStringGeometry.getEnds();
+  ends.unshift(0);
+  var flatCoordinates = multiLineStringGeometry.getFlatCoordinates();
+  var stride = multiLineStringGeometry.getStride();
+  var i, ii;
+  if (ends.length > 1) {
+    for (i = 1, ii = ends.length; i < ii; ++i) {
+      if (this.isValid_(flatCoordinates, ends[i - 1], ends[i], stride)) {
+        var lineString = ol.geom.flat.transform.translate(flatCoordinates, ends[i - 1], ends[i], stride, -this.origin[0], -this.origin[1]);
+        this.drawCoordinates_(lineString, 0, lineString.length, stride);
       }
     }
-    if (!hitDetection) {
-      gl.disable(gl.DEPTH_TEST);
+  }
+  if (this.indices.length > indexCount) {
+    this.startIndices.push(indexCount);
+    this.startIndicesFeature.push(feature);
+    if (this.state_.changed) {
+      this.styleIndices_.push(indexCount);
+      this.state_.changed = false;
+    }
+  }
+};
+ol.render.webgl.LineStringReplay.prototype.drawPolygonCoordinates = function(flatCoordinates, holeFlatCoordinates, stride) {
+  if (!ol.geom.flat.topology.lineStringIsClosed(flatCoordinates, 0, flatCoordinates.length, stride)) {
+    flatCoordinates.push(flatCoordinates[0]);
+    flatCoordinates.push(flatCoordinates[1]);
+  }
+  this.drawCoordinates_(flatCoordinates, 0, flatCoordinates.length, stride);
+  if (holeFlatCoordinates.length) {
+    var i, ii;
+    for (i = 0, ii = holeFlatCoordinates.length; i < ii; ++i) {
+      if (!ol.geom.flat.topology.lineStringIsClosed(holeFlatCoordinates[i], 0, holeFlatCoordinates[i].length, stride)) {
+        holeFlatCoordinates[i].push(holeFlatCoordinates[i][0]);
+        holeFlatCoordinates[i].push(holeFlatCoordinates[i][1]);
+      }
+      this.drawCoordinates_(holeFlatCoordinates[i], 0, holeFlatCoordinates[i].length, stride);
+    }
+  }
+};
+ol.render.webgl.LineStringReplay.prototype.setPolygonStyle = function(feature, opt_index) {
+  var index = opt_index === undefined ? this.indices.length : opt_index;
+  this.startIndices.push(index);
+  this.startIndicesFeature.push(feature);
+  if (this.state_.changed) {
+    this.styleIndices_.push(index);
+    this.state_.changed = false;
+  }
+};
+ol.render.webgl.LineStringReplay.prototype.getCurrentIndex = function() {
+  return this.indices.length;
+};
+ol.render.webgl.LineStringReplay.prototype.finish = function(context) {
+  this.verticesBuffer = new ol.webgl.Buffer(this.vertices);
+  this.indicesBuffer = new ol.webgl.Buffer(this.indices);
+  this.startIndices.push(this.indices.length);
+  if (this.styleIndices_.length === 0 && this.styles_.length > 0) {
+    this.styles_ = [];
+  }
+  this.vertices = null;
+  this.indices = null;
+};
+ol.render.webgl.LineStringReplay.prototype.getDeleteResourcesFunction = function(context) {
+  var verticesBuffer = this.verticesBuffer;
+  var indicesBuffer = this.indicesBuffer;
+  return function() {
+    context.deleteBuffer(verticesBuffer);
+    context.deleteBuffer(indicesBuffer);
+  };
+};
+ol.render.webgl.LineStringReplay.prototype.setUpProgram = function(gl, context, size, pixelRatio) {
+  var fragmentShader, vertexShader;
+  fragmentShader = ol.render.webgl.linestringreplay.defaultshader.fragment;
+  vertexShader = ol.render.webgl.linestringreplay.defaultshader.vertex;
+  var program = context.getProgram(fragmentShader, vertexShader);
+  var locations;
+  if (!this.defaultLocations_) {
+    locations = new ol.render.webgl.linestringreplay.defaultshader.Locations(gl, program);
+    this.defaultLocations_ = locations;
+  } else {
+    locations = this.defaultLocations_;
+  }
+  context.useProgram(program);
+  gl.enableVertexAttribArray(locations.a_lastPos);
+  gl.vertexAttribPointer(locations.a_lastPos, 2, ol.webgl.FLOAT, false, 28, 0);
+  gl.enableVertexAttribArray(locations.a_position);
+  gl.vertexAttribPointer(locations.a_position, 2, ol.webgl.FLOAT, false, 28, 8);
+  gl.enableVertexAttribArray(locations.a_nextPos);
+  gl.vertexAttribPointer(locations.a_nextPos, 2, ol.webgl.FLOAT, false, 28, 16);
+  gl.enableVertexAttribArray(locations.a_direction);
+  gl.vertexAttribPointer(locations.a_direction, 1, ol.webgl.FLOAT, false, 28, 24);
+  gl.uniform2fv(locations.u_size, size);
+  gl.uniform1f(locations.u_pixelRatio, pixelRatio);
+  return locations;
+};
+ol.render.webgl.LineStringReplay.prototype.shutDownProgram = function(gl, locations) {
+  gl.disableVertexAttribArray(locations.a_lastPos);
+  gl.disableVertexAttribArray(locations.a_position);
+  gl.disableVertexAttribArray(locations.a_nextPos);
+  gl.disableVertexAttribArray(locations.a_direction);
+};
+ol.render.webgl.LineStringReplay.prototype.drawReplay = function(gl, context, skippedFeaturesHash, hitDetection) {
+  var tmpDepthFunc = gl.getParameter(gl.DEPTH_FUNC);
+  var tmpDepthMask = gl.getParameter(gl.DEPTH_WRITEMASK);
+  if (!hitDetection) {
+    gl.enable(gl.DEPTH_TEST);
+    gl.depthMask(true);
+    gl.depthFunc(gl.NOTEQUAL);
+  }
+  if (!ol.obj.isEmpty(skippedFeaturesHash)) {
+    this.drawReplaySkipping_(gl, context, skippedFeaturesHash);
+  } else {
+    var i, start, end, nextStyle;
+    end = this.startIndices[this.startIndices.length - 1];
+    for (i = this.styleIndices_.length - 1; i >= 0; --i) {
+      start = this.styleIndices_[i];
+      nextStyle = this.styles_[i];
+      this.setStrokeStyle_(gl, nextStyle[0], nextStyle[1], nextStyle[2]);
+      this.drawElements(gl, context, start, end);
       gl.clear(gl.DEPTH_BUFFER_BIT);
-      gl.depthMask(tmpDepthMask);
-      gl.depthFunc(tmpDepthFunc);
+      end = start;
     }
-  };
-  ol.render.webgl.LineStringReplay.prototype.drawReplaySkipping_ = function(gl, context, skippedFeaturesHash) {
-    var i, start, end, nextStyle, groupStart, feature, featureUid, featureIndex, featureStart;
-    featureIndex = this.startIndices.length - 2;
-    end = start = this.startIndices[featureIndex + 1];
-    for (i = this.styleIndices_.length - 1; i >= 0; --i) {
-      nextStyle = this.styles_[i];
-      this.setStrokeStyle_(gl, nextStyle[0], nextStyle[1], nextStyle[2]);
-      groupStart = this.styleIndices_[i];
-      while (featureIndex >= 0 && this.startIndices[featureIndex] >= groupStart) {
-        featureStart = this.startIndices[featureIndex];
-        feature = this.startIndicesFeature[featureIndex];
-        featureUid = ol.getUid(feature).toString();
-        if (skippedFeaturesHash[featureUid]) {
-          if (start !== end) {
-            this.drawElements(gl, context, start, end);
-            gl.clear(gl.DEPTH_BUFFER_BIT);
-          }
-          end = featureStart;
-        }
-        featureIndex--;
-        start = featureStart;
-      }
-      if (start !== end) {
-        this.drawElements(gl, context, start, end);
-        gl.clear(gl.DEPTH_BUFFER_BIT);
-      }
-      start = end = groupStart;
-    }
-  };
-  ol.render.webgl.LineStringReplay.prototype.drawHitDetectionReplayOneByOne = function(gl, context, skippedFeaturesHash, featureCallback, opt_hitExtent) {
-    var i, start, end, nextStyle, groupStart, feature, featureUid, featureIndex;
-    featureIndex = this.startIndices.length - 2;
-    end = this.startIndices[featureIndex + 1];
-    for (i = this.styleIndices_.length - 1; i >= 0; --i) {
-      nextStyle = this.styles_[i];
-      this.setStrokeStyle_(gl, nextStyle[0], nextStyle[1], nextStyle[2]);
-      groupStart = this.styleIndices_[i];
-      while (featureIndex >= 0 && this.startIndices[featureIndex] >= groupStart) {
-        start = this.startIndices[featureIndex];
-        feature = this.startIndicesFeature[featureIndex];
-        featureUid = ol.getUid(feature).toString();
-        if (skippedFeaturesHash[featureUid] === undefined && feature.getGeometry() && (opt_hitExtent === undefined || ol.extent.intersects(opt_hitExtent, feature.getGeometry().getExtent()))) {
-          gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  }
+  if (!hitDetection) {
+    gl.disable(gl.DEPTH_TEST);
+    gl.clear(gl.DEPTH_BUFFER_BIT);
+    gl.depthMask(tmpDepthMask);
+    gl.depthFunc(tmpDepthFunc);
+  }
+};
+ol.render.webgl.LineStringReplay.prototype.drawReplaySkipping_ = function(gl, context, skippedFeaturesHash) {
+  var i, start, end, nextStyle, groupStart, feature, featureUid, featureIndex, featureStart;
+  featureIndex = this.startIndices.length - 2;
+  end = start = this.startIndices[featureIndex + 1];
+  for (i = this.styleIndices_.length - 1; i >= 0; --i) {
+    nextStyle = this.styles_[i];
+    this.setStrokeStyle_(gl, nextStyle[0], nextStyle[1], nextStyle[2]);
+    groupStart = this.styleIndices_[i];
+    while (featureIndex >= 0 && this.startIndices[featureIndex] >= groupStart) {
+      featureStart = this.startIndices[featureIndex];
+      feature = this.startIndicesFeature[featureIndex];
+      featureUid = ol.getUid(feature).toString();
+      if (skippedFeaturesHash[featureUid]) {
+        if (start !== end) {
           this.drawElements(gl, context, start, end);
-          var result = featureCallback(feature);
-          if (result) {
-            return result;
-          }
+          gl.clear(gl.DEPTH_BUFFER_BIT);
         }
-        featureIndex--;
-        end = start;
+        end = featureStart;
       }
+      featureIndex--;
+      start = featureStart;
     }
-    return undefined;
-  };
-  ol.render.webgl.LineStringReplay.prototype.setStrokeStyle_ = function(gl, color, lineWidth, miterLimit) {
-    gl.uniform4fv(this.defaultLocations_.u_color, color);
-    gl.uniform1f(this.defaultLocations_.u_lineWidth, lineWidth);
-    gl.uniform1f(this.defaultLocations_.u_miterLimit, miterLimit);
-  };
-  ol.render.webgl.LineStringReplay.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {
-    var strokeStyleLineCap = strokeStyle.getLineCap();
-    this.state_.lineCap = strokeStyleLineCap !== undefined ? strokeStyleLineCap : ol.render.webgl.defaultLineCap;
-    var strokeStyleLineDash = strokeStyle.getLineDash();
-    this.state_.lineDash = strokeStyleLineDash ? strokeStyleLineDash : ol.render.webgl.defaultLineDash;
-    var strokeStyleLineDashOffset = strokeStyle.getLineDashOffset();
-    this.state_.lineDashOffset = strokeStyleLineDashOffset ? strokeStyleLineDashOffset : ol.render.webgl.defaultLineDashOffset;
-    var strokeStyleLineJoin = strokeStyle.getLineJoin();
-    this.state_.lineJoin = strokeStyleLineJoin !== undefined ? strokeStyleLineJoin : ol.render.webgl.defaultLineJoin;
-    var strokeStyleColor = strokeStyle.getColor();
-    if (!(strokeStyleColor instanceof CanvasGradient) && !(strokeStyleColor instanceof CanvasPattern)) {
-      strokeStyleColor = ol.color.asArray(strokeStyleColor).map(function(c, i) {
-        return i != 3 ? c / 255 : c;
-      }) || ol.render.webgl.defaultStrokeStyle;
-    } else {
-      strokeStyleColor = ol.render.webgl.defaultStrokeStyle;
+    if (start !== end) {
+      this.drawElements(gl, context, start, end);
+      gl.clear(gl.DEPTH_BUFFER_BIT);
     }
-    var strokeStyleWidth = strokeStyle.getWidth();
-    strokeStyleWidth = strokeStyleWidth !== undefined ? strokeStyleWidth : ol.render.webgl.defaultLineWidth;
-    var strokeStyleMiterLimit = strokeStyle.getMiterLimit();
-    strokeStyleMiterLimit = strokeStyleMiterLimit !== undefined ? strokeStyleMiterLimit : ol.render.webgl.defaultMiterLimit;
-    if (!this.state_.strokeColor || !ol.array.equals(this.state_.strokeColor, strokeStyleColor) || this.state_.lineWidth !== strokeStyleWidth || this.state_.miterLimit !== strokeStyleMiterLimit) {
-      this.state_.changed = true;
-      this.state_.strokeColor = strokeStyleColor;
-      this.state_.lineWidth = strokeStyleWidth;
-      this.state_.miterLimit = strokeStyleMiterLimit;
-      this.styles_.push([strokeStyleColor, strokeStyleWidth, strokeStyleMiterLimit]);
+    start = end = groupStart;
+  }
+};
+ol.render.webgl.LineStringReplay.prototype.drawHitDetectionReplayOneByOne = function(gl, context, skippedFeaturesHash, featureCallback, opt_hitExtent) {
+  var i, start, end, nextStyle, groupStart, feature, featureUid, featureIndex;
+  featureIndex = this.startIndices.length - 2;
+  end = this.startIndices[featureIndex + 1];
+  for (i = this.styleIndices_.length - 1; i >= 0; --i) {
+    nextStyle = this.styles_[i];
+    this.setStrokeStyle_(gl, nextStyle[0], nextStyle[1], nextStyle[2]);
+    groupStart = this.styleIndices_[i];
+    while (featureIndex >= 0 && this.startIndices[featureIndex] >= groupStart) {
+      start = this.startIndices[featureIndex];
+      feature = this.startIndicesFeature[featureIndex];
+      featureUid = ol.getUid(feature).toString();
+      if (skippedFeaturesHash[featureUid] === undefined && feature.getGeometry() && (opt_hitExtent === undefined || ol.extent.intersects(opt_hitExtent, feature.getGeometry().getExtent()))) {
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        this.drawElements(gl, context, start, end);
+        var result = featureCallback(feature);
+        if (result) {
+          return result;
+        }
+      }
+      featureIndex--;
+      end = start;
     }
-  };
-  ol.render.webgl.LineStringReplay.Instruction_ = {ROUND:2, BEGIN_LINE:3, END_LINE:5, BEGIN_LINE_CAP:7, END_LINE_CAP:11, BEVEL_FIRST:13, BEVEL_SECOND:17, MITER_BOTTOM:19, MITER_TOP:23};
-}
-;goog.provide("ol.render.webgl.polygonreplay.defaultshader");
+  }
+  return undefined;
+};
+ol.render.webgl.LineStringReplay.prototype.setStrokeStyle_ = function(gl, color, lineWidth, miterLimit) {
+  gl.uniform4fv(this.defaultLocations_.u_color, color);
+  gl.uniform1f(this.defaultLocations_.u_lineWidth, lineWidth);
+  gl.uniform1f(this.defaultLocations_.u_miterLimit, miterLimit);
+};
+ol.render.webgl.LineStringReplay.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {
+  var strokeStyleLineCap = strokeStyle.getLineCap();
+  this.state_.lineCap = strokeStyleLineCap !== undefined ? strokeStyleLineCap : ol.render.webgl.defaultLineCap;
+  var strokeStyleLineDash = strokeStyle.getLineDash();
+  this.state_.lineDash = strokeStyleLineDash ? strokeStyleLineDash : ol.render.webgl.defaultLineDash;
+  var strokeStyleLineDashOffset = strokeStyle.getLineDashOffset();
+  this.state_.lineDashOffset = strokeStyleLineDashOffset ? strokeStyleLineDashOffset : ol.render.webgl.defaultLineDashOffset;
+  var strokeStyleLineJoin = strokeStyle.getLineJoin();
+  this.state_.lineJoin = strokeStyleLineJoin !== undefined ? strokeStyleLineJoin : ol.render.webgl.defaultLineJoin;
+  var strokeStyleColor = strokeStyle.getColor();
+  if (!(strokeStyleColor instanceof CanvasGradient) && !(strokeStyleColor instanceof CanvasPattern)) {
+    strokeStyleColor = ol.color.asArray(strokeStyleColor).map(function(c, i) {
+      return i != 3 ? c / 255 : c;
+    }) || ol.render.webgl.defaultStrokeStyle;
+  } else {
+    strokeStyleColor = ol.render.webgl.defaultStrokeStyle;
+  }
+  var strokeStyleWidth = strokeStyle.getWidth();
+  strokeStyleWidth = strokeStyleWidth !== undefined ? strokeStyleWidth : ol.render.webgl.defaultLineWidth;
+  var strokeStyleMiterLimit = strokeStyle.getMiterLimit();
+  strokeStyleMiterLimit = strokeStyleMiterLimit !== undefined ? strokeStyleMiterLimit : ol.render.webgl.defaultMiterLimit;
+  if (!this.state_.strokeColor || !ol.array.equals(this.state_.strokeColor, strokeStyleColor) || this.state_.lineWidth !== strokeStyleWidth || this.state_.miterLimit !== strokeStyleMiterLimit) {
+    this.state_.changed = true;
+    this.state_.strokeColor = strokeStyleColor;
+    this.state_.lineWidth = strokeStyleWidth;
+    this.state_.miterLimit = strokeStyleMiterLimit;
+    this.styles_.push([strokeStyleColor, strokeStyleWidth, strokeStyleMiterLimit]);
+  }
+};
+ol.render.webgl.LineStringReplay.Instruction_ = {ROUND:2, BEGIN_LINE:3, END_LINE:5, BEGIN_LINE_CAP:7, END_LINE_CAP:11, BEVEL_FIRST:13, BEVEL_SECOND:17, MITER_BOTTOM:19, MITER_TOP:23};
+goog.provide("ol.render.webgl.polygonreplay.defaultshader");
 goog.require("ol");
 goog.require("ol.webgl.Fragment");
 goog.require("ol.webgl.Vertex");
-if (ol.ENABLE_WEBGL) {
-  ol.render.webgl.polygonreplay.defaultshader.Fragment = function() {
-    ol.webgl.Fragment.call(this, ol.render.webgl.polygonreplay.defaultshader.Fragment.SOURCE);
-  };
-  ol.inherits(ol.render.webgl.polygonreplay.defaultshader.Fragment, ol.webgl.Fragment);
-  ol.render.webgl.polygonreplay.defaultshader.Fragment.DEBUG_SOURCE = "precision mediump float;\n\n\n\nuniform vec4 u_color;\nuniform float u_opacity;\n\nvoid main(void) {\n  gl_FragColor = u_color;\n  float alpha = u_color.a * u_opacity;\n  if (alpha == 0.0) {\n    discard;\n  }\n  gl_FragColor.a = alpha;\n}\n";
-  ol.render.webgl.polygonreplay.defaultshader.Fragment.OPTIMIZED_SOURCE = "precision mediump float;uniform vec4 e;uniform float f;void main(void){gl_FragColor=e;float alpha=e.a*f;if(alpha==0.0){discard;}gl_FragColor.a=alpha;}";
-  ol.render.webgl.polygonreplay.defaultshader.Fragment.SOURCE = ol.DEBUG_WEBGL ? ol.render.webgl.polygonreplay.defaultshader.Fragment.DEBUG_SOURCE : ol.render.webgl.polygonreplay.defaultshader.Fragment.OPTIMIZED_SOURCE;
-  ol.render.webgl.polygonreplay.defaultshader.fragment = new ol.render.webgl.polygonreplay.defaultshader.Fragment;
-  ol.render.webgl.polygonreplay.defaultshader.Vertex = function() {
-    ol.webgl.Vertex.call(this, ol.render.webgl.polygonreplay.defaultshader.Vertex.SOURCE);
-  };
-  ol.inherits(ol.render.webgl.polygonreplay.defaultshader.Vertex, ol.webgl.Vertex);
-  ol.render.webgl.polygonreplay.defaultshader.Vertex.DEBUG_SOURCE = "\n\nattribute vec2 a_position;\n\nuniform mat4 u_projectionMatrix;\nuniform mat4 u_offsetScaleMatrix;\nuniform mat4 u_offsetRotateMatrix;\n\nvoid main(void) {\n  gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0);\n}\n\n\n";
-  ol.render.webgl.polygonreplay.defaultshader.Vertex.OPTIMIZED_SOURCE = "attribute vec2 a;uniform mat4 b;uniform mat4 c;uniform mat4 d;void main(void){gl_Position=b*vec4(a,0.0,1.0);}";
-  ol.render.webgl.polygonreplay.defaultshader.Vertex.SOURCE = ol.DEBUG_WEBGL ? ol.render.webgl.polygonreplay.defaultshader.Vertex.DEBUG_SOURCE : ol.render.webgl.polygonreplay.defaultshader.Vertex.OPTIMIZED_SOURCE;
-  ol.render.webgl.polygonreplay.defaultshader.vertex = new ol.render.webgl.polygonreplay.defaultshader.Vertex;
-  ol.render.webgl.polygonreplay.defaultshader.Locations = function(gl, program) {
-    this.u_color = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_color" : "e");
-    this.u_offsetRotateMatrix = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_offsetRotateMatrix" : "d");
-    this.u_offsetScaleMatrix = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_offsetScaleMatrix" : "c");
-    this.u_opacity = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_opacity" : "f");
-    this.u_projectionMatrix = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_projectionMatrix" : "b");
-    this.a_position = gl.getAttribLocation(program, ol.DEBUG_WEBGL ? "a_position" : "a");
-  };
-}
-;goog.provide("ol.structs.LinkedList");
+ol.render.webgl.polygonreplay.defaultshader.fragment = new ol.webgl.Fragment(ol.DEBUG_WEBGL ? "precision mediump float;\n\n\n\nuniform vec4 u_color;\nuniform float u_opacity;\n\nvoid main(void) {\n  gl_FragColor = u_color;\n  float alpha = u_color.a * u_opacity;\n  if (alpha == 0.0) {\n    discard;\n  }\n  gl_FragColor.a = alpha;\n}\n" : "precision mediump float;uniform vec4 e;uniform float f;void main(void){gl_FragColor=e;float alpha=e.a*f;if(alpha==0.0){discard;}gl_FragColor.a=alpha;}");
+ol.render.webgl.polygonreplay.defaultshader.vertex = new ol.webgl.Vertex(ol.DEBUG_WEBGL ? "\n\nattribute vec2 a_position;\n\nuniform mat4 u_projectionMatrix;\nuniform mat4 u_offsetScaleMatrix;\nuniform mat4 u_offsetRotateMatrix;\n\nvoid main(void) {\n  gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0);\n}\n\n\n" : "attribute vec2 a;uniform mat4 b;uniform mat4 c;uniform mat4 d;void main(void){gl_Position=b*vec4(a,0.0,1.0);}");
+goog.provide("ol.render.webgl.polygonreplay.defaultshader.Locations");
+goog.require("ol");
+ol.render.webgl.polygonreplay.defaultshader.Locations = function(gl, program) {
+  this.u_projectionMatrix = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_projectionMatrix" : "b");
+  this.u_offsetScaleMatrix = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_offsetScaleMatrix" : "c");
+  this.u_offsetRotateMatrix = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_offsetRotateMatrix" : "d");
+  this.u_color = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_color" : "e");
+  this.u_opacity = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_opacity" : "f");
+  this.a_position = gl.getAttribLocation(program, ol.DEBUG_WEBGL ? "a_position" : "a");
+};
+goog.provide("ol.structs.LinkedList");
 ol.structs.LinkedList = function(opt_circular) {
   this.first_ = undefined;
   this.last_ = undefined;
@@ -34752,6 +34687,7 @@ goog.require("ol.geom.flat.contains");
 goog.require("ol.geom.flat.orient");
 goog.require("ol.geom.flat.transform");
 goog.require("ol.render.webgl.polygonreplay.defaultshader");
+goog.require("ol.render.webgl.polygonreplay.defaultshader.Locations");
 goog.require("ol.render.webgl.LineStringReplay");
 goog.require("ol.render.webgl.Replay");
 goog.require("ol.render.webgl");
@@ -34760,662 +34696,660 @@ goog.require("ol.structs.LinkedList");
 goog.require("ol.structs.RBush");
 goog.require("ol.webgl");
 goog.require("ol.webgl.Buffer");
-if (ol.ENABLE_WEBGL) {
-  ol.render.webgl.PolygonReplay = function(tolerance, maxExtent) {
-    ol.render.webgl.Replay.call(this, tolerance, maxExtent);
-    this.lineStringReplay = new ol.render.webgl.LineStringReplay(tolerance, maxExtent);
-    this.defaultLocations_ = null;
-    this.styles_ = [];
-    this.styleIndices_ = [];
-    this.state_ = {fillColor:null, changed:false};
-  };
-  ol.inherits(ol.render.webgl.PolygonReplay, ol.render.webgl.Replay);
-  ol.render.webgl.PolygonReplay.prototype.drawCoordinates_ = function(flatCoordinates, holeFlatCoordinates, stride) {
-    var outerRing = new ol.structs.LinkedList;
-    var rtree = new ol.structs.RBush;
-    this.processFlatCoordinates_(flatCoordinates, stride, outerRing, rtree, true);
-    var maxCoords = this.getMaxCoords_(outerRing);
-    if (holeFlatCoordinates.length) {
-      var i, ii;
-      var holeLists = [];
-      for (i = 0, ii = holeFlatCoordinates.length; i < ii; ++i) {
-        var holeList = {list:new ol.structs.LinkedList, maxCoords:undefined, rtree:new ol.structs.RBush};
-        holeLists.push(holeList);
-        this.processFlatCoordinates_(holeFlatCoordinates[i], stride, holeList.list, holeList.rtree, false);
-        this.classifyPoints_(holeList.list, holeList.rtree, true);
-        holeList.maxCoords = this.getMaxCoords_(holeList.list);
-      }
-      holeLists.sort(function(a, b) {
-        return b.maxCoords[0] === a.maxCoords[0] ? a.maxCoords[1] - b.maxCoords[1] : b.maxCoords[0] - a.maxCoords[0];
-      });
-      for (i = 0; i < holeLists.length; ++i) {
-        var currList = holeLists[i].list;
-        var start = currList.firstItem();
-        var currItem = start;
-        var intersection;
-        do {
-          if (this.getIntersections_(currItem, rtree).length) {
-            intersection = true;
-            break;
-          }
-          currItem = currList.nextItem();
-        } while (start !== currItem);
-        if (!intersection) {
-          if (this.bridgeHole_(currList, holeLists[i].maxCoords[0], outerRing, maxCoords[0], rtree)) {
-            rtree.concat(holeLists[i].rtree);
-            this.classifyPoints_(outerRing, rtree, false);
-          }
-        }
-      }
-    } else {
-      this.classifyPoints_(outerRing, rtree, false);
-    }
-    this.triangulate_(outerRing, rtree);
-  };
-  ol.render.webgl.PolygonReplay.prototype.processFlatCoordinates_ = function(flatCoordinates, stride, list, rtree, clockwise) {
-    var isClockwise = ol.geom.flat.orient.linearRingIsClockwise(flatCoordinates, 0, flatCoordinates.length, stride);
+ol.render.webgl.PolygonReplay = function(tolerance, maxExtent) {
+  ol.render.webgl.Replay.call(this, tolerance, maxExtent);
+  this.lineStringReplay = new ol.render.webgl.LineStringReplay(tolerance, maxExtent);
+  this.defaultLocations_ = null;
+  this.styles_ = [];
+  this.styleIndices_ = [];
+  this.state_ = {fillColor:null, changed:false};
+};
+ol.inherits(ol.render.webgl.PolygonReplay, ol.render.webgl.Replay);
+ol.render.webgl.PolygonReplay.prototype.drawCoordinates_ = function(flatCoordinates, holeFlatCoordinates, stride) {
+  var outerRing = new ol.structs.LinkedList;
+  var rtree = new ol.structs.RBush;
+  this.processFlatCoordinates_(flatCoordinates, stride, outerRing, rtree, true);
+  var maxCoords = this.getMaxCoords_(outerRing);
+  if (holeFlatCoordinates.length) {
     var i, ii;
-    var n = this.vertices.length / 2;
-    var start;
-    var p0;
-    var p1;
-    var extents = [];
-    var segments = [];
-    if (clockwise === isClockwise) {
-      start = this.createPoint_(flatCoordinates[0], flatCoordinates[1], n++);
-      p0 = start;
-      for (i = stride, ii = flatCoordinates.length; i < ii; i += stride) {
-        p1 = this.createPoint_(flatCoordinates[i], flatCoordinates[i + 1], n++);
-        segments.push(this.insertItem_(p0, p1, list));
-        extents.push([Math.min(p0.x, p1.x), Math.min(p0.y, p1.y), Math.max(p0.x, p1.x), Math.max(p0.y, p1.y)]);
-        p0 = p1;
-      }
-      segments.push(this.insertItem_(p1, start, list));
-      extents.push([Math.min(p0.x, p1.x), Math.min(p0.y, p1.y), Math.max(p0.x, p1.x), Math.max(p0.y, p1.y)]);
-    } else {
-      var end = flatCoordinates.length - stride;
-      start = this.createPoint_(flatCoordinates[end], flatCoordinates[end + 1], n++);
-      p0 = start;
-      for (i = end - stride, ii = 0; i >= ii; i -= stride) {
-        p1 = this.createPoint_(flatCoordinates[i], flatCoordinates[i + 1], n++);
-        segments.push(this.insertItem_(p0, p1, list));
-        extents.push([Math.min(p0.x, p1.x), Math.min(p0.y, p1.y), Math.max(p0.x, p1.x), Math.max(p0.y, p1.y)]);
-        p0 = p1;
-      }
-      segments.push(this.insertItem_(p1, start, list));
-      extents.push([Math.min(p0.x, p1.x), Math.min(p0.y, p1.y), Math.max(p0.x, p1.x), Math.max(p0.y, p1.y)]);
+    var holeLists = [];
+    for (i = 0, ii = holeFlatCoordinates.length; i < ii; ++i) {
+      var holeList = {list:new ol.structs.LinkedList, maxCoords:undefined, rtree:new ol.structs.RBush};
+      holeLists.push(holeList);
+      this.processFlatCoordinates_(holeFlatCoordinates[i], stride, holeList.list, holeList.rtree, false);
+      this.classifyPoints_(holeList.list, holeList.rtree, true);
+      holeList.maxCoords = this.getMaxCoords_(holeList.list);
     }
-    rtree.load(extents, segments);
-  };
-  ol.render.webgl.PolygonReplay.prototype.getMaxCoords_ = function(list) {
-    var start = list.firstItem();
-    var seg = start;
-    var maxCoords = [seg.p0.x, seg.p0.y];
-    do {
-      seg = list.nextItem();
-      if (seg.p0.x > maxCoords[0]) {
-        maxCoords = [seg.p0.x, seg.p0.y];
-      }
-    } while (seg !== start);
-    return maxCoords;
-  };
-  ol.render.webgl.PolygonReplay.prototype.classifyPoints_ = function(list, rtree, ccw) {
-    var start = list.firstItem();
-    var s0 = start;
-    var s1 = list.nextItem();
-    var pointsReclassified = false;
-    do {
-      var reflex = ccw ? ol.render.webgl.triangleIsCounterClockwise(s1.p1.x, s1.p1.y, s0.p1.x, s0.p1.y, s0.p0.x, s0.p0.y) : ol.render.webgl.triangleIsCounterClockwise(s0.p0.x, s0.p0.y, s0.p1.x, s0.p1.y, s1.p1.x, s1.p1.y);
-      if (reflex === undefined) {
-        this.removeItem_(s0, s1, list, rtree);
-        pointsReclassified = true;
-        if (s1 === start) {
-          start = list.getNextItem();
-        }
-        s1 = s0;
-        list.prevItem();
-      } else {
-        if (s0.p1.reflex !== reflex) {
-          s0.p1.reflex = reflex;
-          pointsReclassified = true;
-        }
-      }
-      s0 = s1;
-      s1 = list.nextItem();
-    } while (s0 !== start);
-    return pointsReclassified;
-  };
-  ol.render.webgl.PolygonReplay.prototype.bridgeHole_ = function(hole, holeMaxX, list, listMaxX, rtree) {
-    var seg = hole.firstItem();
-    while (seg.p1.x !== holeMaxX) {
-      seg = hole.nextItem();
-    }
-    var p1 = seg.p1;
-    var p2 = {x:listMaxX, y:p1.y, i:-1};
-    var minDist = Infinity;
-    var i, ii, bestPoint;
-    var p5;
-    var intersectingSegments = this.getIntersections_({p0:p1, p1:p2}, rtree, true);
-    for (i = 0, ii = intersectingSegments.length; i < ii; ++i) {
-      var currSeg = intersectingSegments[i];
-      var intersection = this.calculateIntersection_(p1, p2, currSeg.p0, currSeg.p1, true);
-      var dist = Math.abs(p1.x - intersection[0]);
-      if (dist < minDist && ol.render.webgl.triangleIsCounterClockwise(p1.x, p1.y, currSeg.p0.x, currSeg.p0.y, currSeg.p1.x, currSeg.p1.y) !== undefined) {
-        minDist = dist;
-        p5 = {x:intersection[0], y:intersection[1], i:-1};
-        seg = currSeg;
-      }
-    }
-    if (minDist === Infinity) {
-      return false;
-    }
-    bestPoint = seg.p1;
-    if (minDist > 0) {
-      var pointsInTriangle = this.getPointsInTriangle_(p1, p5, seg.p1, rtree);
-      if (pointsInTriangle.length) {
-        var theta = Infinity;
-        for (i = 0, ii = pointsInTriangle.length; i < ii; ++i) {
-          var currPoint = pointsInTriangle[i];
-          var currTheta = Math.atan2(p1.y - currPoint.y, p2.x - currPoint.x);
-          if (currTheta < theta || currTheta === theta && currPoint.x < bestPoint.x) {
-            theta = currTheta;
-            bestPoint = currPoint;
-          }
-        }
-      }
-    }
-    seg = list.firstItem();
-    while (seg.p1.x !== bestPoint.x || seg.p1.y !== bestPoint.y) {
-      seg = list.nextItem();
-    }
-    var p0Bridge = {x:p1.x, y:p1.y, i:p1.i, reflex:undefined};
-    var p1Bridge = {x:seg.p1.x, y:seg.p1.y, i:seg.p1.i, reflex:undefined};
-    hole.getNextItem().p0 = p0Bridge;
-    this.insertItem_(p1, seg.p1, hole, rtree);
-    this.insertItem_(p1Bridge, p0Bridge, hole, rtree);
-    seg.p1 = p1Bridge;
-    hole.setFirstItem();
-    list.concat(hole);
-    return true;
-  };
-  ol.render.webgl.PolygonReplay.prototype.triangulate_ = function(list, rtree) {
-    var ccw = false;
-    var simple = this.isSimple_(list, rtree);
-    while (list.getLength() > 3) {
-      if (simple) {
-        if (!this.clipEars_(list, rtree, simple, ccw)) {
-          if (!this.classifyPoints_(list, rtree, ccw)) {
-            if (!this.resolveSelfIntersections_(list, rtree, true)) {
-              break;
-            }
-          }
-        }
-      } else {
-        if (!this.clipEars_(list, rtree, simple, ccw)) {
-          if (!this.classifyPoints_(list, rtree, ccw)) {
-            if (!this.resolveSelfIntersections_(list, rtree)) {
-              simple = this.isSimple_(list, rtree);
-              if (!simple) {
-                this.splitPolygon_(list, rtree);
-                break;
-              } else {
-                ccw = !this.isClockwise_(list);
-                this.classifyPoints_(list, rtree, ccw);
-              }
-            }
-          }
-        }
-      }
-    }
-    if (list.getLength() === 3) {
-      var numIndices = this.indices.length;
-      this.indices[numIndices++] = list.getPrevItem().p0.i;
-      this.indices[numIndices++] = list.getCurrItem().p0.i;
-      this.indices[numIndices++] = list.getNextItem().p0.i;
-    }
-  };
-  ol.render.webgl.PolygonReplay.prototype.clipEars_ = function(list, rtree, simple, ccw) {
-    var numIndices = this.indices.length;
-    var start = list.firstItem();
-    var s0 = list.getPrevItem();
-    var s1 = start;
-    var s2 = list.nextItem();
-    var s3 = list.getNextItem();
-    var p0, p1, p2;
-    var processedEars = false;
-    do {
-      p0 = s1.p0;
-      p1 = s1.p1;
-      p2 = s2.p1;
-      if (p1.reflex === false) {
-        var variableCriterion;
-        if (simple) {
-          variableCriterion = this.getPointsInTriangle_(p0, p1, p2, rtree, true).length === 0;
-        } else {
-          variableCriterion = ccw ? this.diagonalIsInside_(s3.p1, p2, p1, p0, s0.p0) : this.diagonalIsInside_(s0.p0, p0, p1, p2, s3.p1);
-        }
-        if ((simple || this.getIntersections_({p0:p0, p1:p2}, rtree).length === 0) && variableCriterion) {
-          if (simple || p0.reflex === false || p2.reflex === false || ol.geom.flat.orient.linearRingIsClockwise([s0.p0.x, s0.p0.y, p0.x, p0.y, p1.x, p1.y, p2.x, p2.y, s3.p1.x, s3.p1.y], 0, 10, 2) === !ccw) {
-            this.indices[numIndices++] = p0.i;
-            this.indices[numIndices++] = p1.i;
-            this.indices[numIndices++] = p2.i;
-            this.removeItem_(s1, s2, list, rtree);
-            if (s2 === start) {
-              start = s3;
-            }
-            processedEars = true;
-          }
-        }
-      }
-      s0 = list.getPrevItem();
-      s1 = list.getCurrItem();
-      s2 = list.nextItem();
-      s3 = list.getNextItem();
-    } while (s1 !== start && list.getLength() > 3);
-    return processedEars;
-  };
-  ol.render.webgl.PolygonReplay.prototype.resolveSelfIntersections_ = function(list, rtree, opt_touch) {
-    var start = list.firstItem();
-    list.nextItem();
-    var s0 = start;
-    var s1 = list.nextItem();
-    var resolvedIntersections = false;
-    do {
-      var intersection = this.calculateIntersection_(s0.p0, s0.p1, s1.p0, s1.p1, opt_touch);
-      if (intersection) {
-        var breakCond = false;
-        var numVertices = this.vertices.length;
-        var numIndices = this.indices.length;
-        var n = numVertices / 2;
-        var seg = list.prevItem();
-        list.removeItem();
-        rtree.remove(seg);
-        breakCond = seg === start;
-        var p;
-        if (opt_touch) {
-          if (intersection[0] === s0.p0.x && intersection[1] === s0.p0.y) {
-            list.prevItem();
-            p = s0.p0;
-            s1.p0 = p;
-            rtree.remove(s0);
-            breakCond = breakCond || s0 === start;
-          } else {
-            p = s1.p1;
-            s0.p1 = p;
-            rtree.remove(s1);
-            breakCond = breakCond || s1 === start;
-          }
-          list.removeItem();
-        } else {
-          p = this.createPoint_(intersection[0], intersection[1], n);
-          s0.p1 = p;
-          s1.p0 = p;
-          rtree.update([Math.min(s0.p0.x, s0.p1.x), Math.min(s0.p0.y, s0.p1.y), Math.max(s0.p0.x, s0.p1.x), Math.max(s0.p0.y, s0.p1.y)], s0);
-          rtree.update([Math.min(s1.p0.x, s1.p1.x), Math.min(s1.p0.y, s1.p1.y), Math.max(s1.p0.x, s1.p1.x), Math.max(s1.p0.y, s1.p1.y)], s1);
-        }
-        this.indices[numIndices++] = seg.p0.i;
-        this.indices[numIndices++] = seg.p1.i;
-        this.indices[numIndices++] = p.i;
-        resolvedIntersections = true;
-        if (breakCond) {
+    holeLists.sort(function(a, b) {
+      return b.maxCoords[0] === a.maxCoords[0] ? a.maxCoords[1] - b.maxCoords[1] : b.maxCoords[0] - a.maxCoords[0];
+    });
+    for (i = 0; i < holeLists.length; ++i) {
+      var currList = holeLists[i].list;
+      var start = currList.firstItem();
+      var currItem = start;
+      var intersection;
+      do {
+        if (this.getIntersections_(currItem, rtree).length) {
+          intersection = true;
           break;
         }
-      }
-      s0 = list.getPrevItem();
-      s1 = list.nextItem();
-    } while (s0 !== start);
-    return resolvedIntersections;
-  };
-  ol.render.webgl.PolygonReplay.prototype.isSimple_ = function(list, rtree) {
-    var start = list.firstItem();
-    var seg = start;
-    do {
-      if (this.getIntersections_(seg, rtree).length) {
-        return false;
-      }
-      seg = list.nextItem();
-    } while (seg !== start);
-    return true;
-  };
-  ol.render.webgl.PolygonReplay.prototype.isClockwise_ = function(list) {
-    var length = list.getLength() * 2;
-    var flatCoordinates = new Array(length);
-    var start = list.firstItem();
-    var seg = start;
-    var i = 0;
-    do {
-      flatCoordinates[i++] = seg.p0.x;
-      flatCoordinates[i++] = seg.p0.y;
-      seg = list.nextItem();
-    } while (seg !== start);
-    return ol.geom.flat.orient.linearRingIsClockwise(flatCoordinates, 0, length, 2);
-  };
-  ol.render.webgl.PolygonReplay.prototype.splitPolygon_ = function(list, rtree) {
-    var start = list.firstItem();
-    var s0 = start;
-    do {
-      var intersections = this.getIntersections_(s0, rtree);
-      if (intersections.length) {
-        var s1 = intersections[0];
-        var n = this.vertices.length / 2;
-        var intersection = this.calculateIntersection_(s0.p0, s0.p1, s1.p0, s1.p1);
-        var p = this.createPoint_(intersection[0], intersection[1], n);
-        var newPolygon = new ol.structs.LinkedList;
-        var newRtree = new ol.structs.RBush;
-        this.insertItem_(p, s0.p1, newPolygon, newRtree);
-        s0.p1 = p;
-        rtree.update([Math.min(s0.p0.x, p.x), Math.min(s0.p0.y, p.y), Math.max(s0.p0.x, p.x), Math.max(s0.p0.y, p.y)], s0);
-        var currItem = list.nextItem();
-        while (currItem !== s1) {
-          this.insertItem_(currItem.p0, currItem.p1, newPolygon, newRtree);
-          rtree.remove(currItem);
-          list.removeItem();
-          currItem = list.getCurrItem();
+        currItem = currList.nextItem();
+      } while (start !== currItem);
+      if (!intersection) {
+        if (this.bridgeHole_(currList, holeLists[i].maxCoords[0], outerRing, maxCoords[0], rtree)) {
+          rtree.concat(holeLists[i].rtree);
+          this.classifyPoints_(outerRing, rtree, false);
         }
-        this.insertItem_(s1.p0, p, newPolygon, newRtree);
-        s1.p0 = p;
-        rtree.update([Math.min(s1.p1.x, p.x), Math.min(s1.p1.y, p.y), Math.max(s1.p1.x, p.x), Math.max(s1.p1.y, p.y)], s1);
-        this.classifyPoints_(list, rtree, false);
-        this.triangulate_(list, rtree);
-        this.classifyPoints_(newPolygon, newRtree, false);
-        this.triangulate_(newPolygon, newRtree);
-        break;
       }
-      s0 = list.nextItem();
-    } while (s0 !== start);
-  };
-  ol.render.webgl.PolygonReplay.prototype.createPoint_ = function(x, y, i) {
-    var numVertices = this.vertices.length;
-    this.vertices[numVertices++] = x;
-    this.vertices[numVertices++] = y;
-    var p = {x:x, y:y, i:i, reflex:undefined};
-    return p;
-  };
-  ol.render.webgl.PolygonReplay.prototype.insertItem_ = function(p0, p1, list, opt_rtree) {
-    var seg = {p0:p0, p1:p1};
-    list.insertItem(seg);
-    if (opt_rtree) {
-      opt_rtree.insert([Math.min(p0.x, p1.x), Math.min(p0.y, p1.y), Math.max(p0.x, p1.x), Math.max(p0.y, p1.y)], seg);
     }
-    return seg;
-  };
-  ol.render.webgl.PolygonReplay.prototype.removeItem_ = function(s0, s1, list, rtree) {
-    if (list.getCurrItem() === s1) {
-      list.removeItem();
-      s0.p1 = s1.p1;
-      rtree.remove(s1);
-      rtree.update([Math.min(s0.p0.x, s0.p1.x), Math.min(s0.p0.y, s0.p1.y), Math.max(s0.p0.x, s0.p1.x), Math.max(s0.p0.y, s0.p1.y)], s0);
+  } else {
+    this.classifyPoints_(outerRing, rtree, false);
+  }
+  this.triangulate_(outerRing, rtree);
+};
+ol.render.webgl.PolygonReplay.prototype.processFlatCoordinates_ = function(flatCoordinates, stride, list, rtree, clockwise) {
+  var isClockwise = ol.geom.flat.orient.linearRingIsClockwise(flatCoordinates, 0, flatCoordinates.length, stride);
+  var i, ii;
+  var n = this.vertices.length / 2;
+  var start;
+  var p0;
+  var p1;
+  var extents = [];
+  var segments = [];
+  if (clockwise === isClockwise) {
+    start = this.createPoint_(flatCoordinates[0], flatCoordinates[1], n++);
+    p0 = start;
+    for (i = stride, ii = flatCoordinates.length; i < ii; i += stride) {
+      p1 = this.createPoint_(flatCoordinates[i], flatCoordinates[i + 1], n++);
+      segments.push(this.insertItem_(p0, p1, list));
+      extents.push([Math.min(p0.x, p1.x), Math.min(p0.y, p1.y), Math.max(p0.x, p1.x), Math.max(p0.y, p1.y)]);
+      p0 = p1;
     }
-  };
-  ol.render.webgl.PolygonReplay.prototype.getPointsInTriangle_ = function(p0, p1, p2, rtree, opt_reflex) {
-    var i, ii, j, p;
-    var result = [];
-    var segmentsInExtent = rtree.getInExtent([Math.min(p0.x, p1.x, p2.x), Math.min(p0.y, p1.y, p2.y), Math.max(p0.x, p1.x, p2.x), Math.max(p0.y, p1.y, p2.y)]);
-    for (i = 0, ii = segmentsInExtent.length; i < ii; ++i) {
-      for (j in segmentsInExtent[i]) {
-        p = segmentsInExtent[i][j];
-        if (typeof p === "object" && (!opt_reflex || p.reflex)) {
-          if ((p.x !== p0.x || p.y !== p0.y) && (p.x !== p1.x || p.y !== p1.y) && (p.x !== p2.x || p.y !== p2.y) && result.indexOf(p) === -1 && ol.geom.flat.contains.linearRingContainsXY([p0.x, p0.y, p1.x, p1.y, p2.x, p2.y], 0, 6, 2, p.x, p.y)) {
-            result.push(p);
+    segments.push(this.insertItem_(p1, start, list));
+    extents.push([Math.min(p0.x, p1.x), Math.min(p0.y, p1.y), Math.max(p0.x, p1.x), Math.max(p0.y, p1.y)]);
+  } else {
+    var end = flatCoordinates.length - stride;
+    start = this.createPoint_(flatCoordinates[end], flatCoordinates[end + 1], n++);
+    p0 = start;
+    for (i = end - stride, ii = 0; i >= ii; i -= stride) {
+      p1 = this.createPoint_(flatCoordinates[i], flatCoordinates[i + 1], n++);
+      segments.push(this.insertItem_(p0, p1, list));
+      extents.push([Math.min(p0.x, p1.x), Math.min(p0.y, p1.y), Math.max(p0.x, p1.x), Math.max(p0.y, p1.y)]);
+      p0 = p1;
+    }
+    segments.push(this.insertItem_(p1, start, list));
+    extents.push([Math.min(p0.x, p1.x), Math.min(p0.y, p1.y), Math.max(p0.x, p1.x), Math.max(p0.y, p1.y)]);
+  }
+  rtree.load(extents, segments);
+};
+ol.render.webgl.PolygonReplay.prototype.getMaxCoords_ = function(list) {
+  var start = list.firstItem();
+  var seg = start;
+  var maxCoords = [seg.p0.x, seg.p0.y];
+  do {
+    seg = list.nextItem();
+    if (seg.p0.x > maxCoords[0]) {
+      maxCoords = [seg.p0.x, seg.p0.y];
+    }
+  } while (seg !== start);
+  return maxCoords;
+};
+ol.render.webgl.PolygonReplay.prototype.classifyPoints_ = function(list, rtree, ccw) {
+  var start = list.firstItem();
+  var s0 = start;
+  var s1 = list.nextItem();
+  var pointsReclassified = false;
+  do {
+    var reflex = ccw ? ol.render.webgl.triangleIsCounterClockwise(s1.p1.x, s1.p1.y, s0.p1.x, s0.p1.y, s0.p0.x, s0.p0.y) : ol.render.webgl.triangleIsCounterClockwise(s0.p0.x, s0.p0.y, s0.p1.x, s0.p1.y, s1.p1.x, s1.p1.y);
+    if (reflex === undefined) {
+      this.removeItem_(s0, s1, list, rtree);
+      pointsReclassified = true;
+      if (s1 === start) {
+        start = list.getNextItem();
+      }
+      s1 = s0;
+      list.prevItem();
+    } else {
+      if (s0.p1.reflex !== reflex) {
+        s0.p1.reflex = reflex;
+        pointsReclassified = true;
+      }
+    }
+    s0 = s1;
+    s1 = list.nextItem();
+  } while (s0 !== start);
+  return pointsReclassified;
+};
+ol.render.webgl.PolygonReplay.prototype.bridgeHole_ = function(hole, holeMaxX, list, listMaxX, rtree) {
+  var seg = hole.firstItem();
+  while (seg.p1.x !== holeMaxX) {
+    seg = hole.nextItem();
+  }
+  var p1 = seg.p1;
+  var p2 = {x:listMaxX, y:p1.y, i:-1};
+  var minDist = Infinity;
+  var i, ii, bestPoint;
+  var p5;
+  var intersectingSegments = this.getIntersections_({p0:p1, p1:p2}, rtree, true);
+  for (i = 0, ii = intersectingSegments.length; i < ii; ++i) {
+    var currSeg = intersectingSegments[i];
+    var intersection = this.calculateIntersection_(p1, p2, currSeg.p0, currSeg.p1, true);
+    var dist = Math.abs(p1.x - intersection[0]);
+    if (dist < minDist && ol.render.webgl.triangleIsCounterClockwise(p1.x, p1.y, currSeg.p0.x, currSeg.p0.y, currSeg.p1.x, currSeg.p1.y) !== undefined) {
+      minDist = dist;
+      p5 = {x:intersection[0], y:intersection[1], i:-1};
+      seg = currSeg;
+    }
+  }
+  if (minDist === Infinity) {
+    return false;
+  }
+  bestPoint = seg.p1;
+  if (minDist > 0) {
+    var pointsInTriangle = this.getPointsInTriangle_(p1, p5, seg.p1, rtree);
+    if (pointsInTriangle.length) {
+      var theta = Infinity;
+      for (i = 0, ii = pointsInTriangle.length; i < ii; ++i) {
+        var currPoint = pointsInTriangle[i];
+        var currTheta = Math.atan2(p1.y - currPoint.y, p2.x - currPoint.x);
+        if (currTheta < theta || currTheta === theta && currPoint.x < bestPoint.x) {
+          theta = currTheta;
+          bestPoint = currPoint;
+        }
+      }
+    }
+  }
+  seg = list.firstItem();
+  while (seg.p1.x !== bestPoint.x || seg.p1.y !== bestPoint.y) {
+    seg = list.nextItem();
+  }
+  var p0Bridge = {x:p1.x, y:p1.y, i:p1.i, reflex:undefined};
+  var p1Bridge = {x:seg.p1.x, y:seg.p1.y, i:seg.p1.i, reflex:undefined};
+  hole.getNextItem().p0 = p0Bridge;
+  this.insertItem_(p1, seg.p1, hole, rtree);
+  this.insertItem_(p1Bridge, p0Bridge, hole, rtree);
+  seg.p1 = p1Bridge;
+  hole.setFirstItem();
+  list.concat(hole);
+  return true;
+};
+ol.render.webgl.PolygonReplay.prototype.triangulate_ = function(list, rtree) {
+  var ccw = false;
+  var simple = this.isSimple_(list, rtree);
+  while (list.getLength() > 3) {
+    if (simple) {
+      if (!this.clipEars_(list, rtree, simple, ccw)) {
+        if (!this.classifyPoints_(list, rtree, ccw)) {
+          if (!this.resolveSelfIntersections_(list, rtree, true)) {
+            break;
           }
         }
       }
-    }
-    return result;
-  };
-  ol.render.webgl.PolygonReplay.prototype.getIntersections_ = function(segment, rtree, opt_touch) {
-    var p0 = segment.p0;
-    var p1 = segment.p1;
-    var segmentsInExtent = rtree.getInExtent([Math.min(p0.x, p1.x), Math.min(p0.y, p1.y), Math.max(p0.x, p1.x), Math.max(p0.y, p1.y)]);
-    var result = [];
-    var i, ii;
-    for (i = 0, ii = segmentsInExtent.length; i < ii; ++i) {
-      var currSeg = segmentsInExtent[i];
-      if (segment !== currSeg && (opt_touch || currSeg.p0 !== p1 || currSeg.p1 !== p0) && this.calculateIntersection_(p0, p1, currSeg.p0, currSeg.p1, opt_touch)) {
-        result.push(currSeg);
-      }
-    }
-    return result;
-  };
-  ol.render.webgl.PolygonReplay.prototype.calculateIntersection_ = function(p0, p1, p2, p3, opt_touch) {
-    var denom = (p3.y - p2.y) * (p1.x - p0.x) - (p3.x - p2.x) * (p1.y - p0.y);
-    if (denom !== 0) {
-      var ua = ((p3.x - p2.x) * (p0.y - p2.y) - (p3.y - p2.y) * (p0.x - p2.x)) / denom;
-      var ub = ((p1.x - p0.x) * (p0.y - p2.y) - (p1.y - p0.y) * (p0.x - p2.x)) / denom;
-      if (!opt_touch && ua > ol.render.webgl.EPSILON && ua < 1 - ol.render.webgl.EPSILON && ub > ol.render.webgl.EPSILON && ub < 1 - ol.render.webgl.EPSILON || opt_touch && ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1) {
-        return [p0.x + ua * (p1.x - p0.x), p0.y + ua * (p1.y - p0.y)];
-      }
-    }
-    return undefined;
-  };
-  ol.render.webgl.PolygonReplay.prototype.diagonalIsInside_ = function(p0, p1, p2, p3, p4) {
-    if (p1.reflex === undefined || p3.reflex === undefined) {
-      return false;
-    }
-    var p1IsLeftOf = (p2.x - p3.x) * (p1.y - p3.y) > (p2.y - p3.y) * (p1.x - p3.x);
-    var p1IsRightOf = (p4.x - p3.x) * (p1.y - p3.y) < (p4.y - p3.y) * (p1.x - p3.x);
-    var p3IsLeftOf = (p0.x - p1.x) * (p3.y - p1.y) > (p0.y - p1.y) * (p3.x - p1.x);
-    var p3IsRightOf = (p2.x - p1.x) * (p3.y - p1.y) < (p2.y - p1.y) * (p3.x - p1.x);
-    var p1InCone = p3.reflex ? p1IsRightOf || p1IsLeftOf : p1IsRightOf && p1IsLeftOf;
-    var p3InCone = p1.reflex ? p3IsRightOf || p3IsLeftOf : p3IsRightOf && p3IsLeftOf;
-    return p1InCone && p3InCone;
-  };
-  ol.render.webgl.PolygonReplay.prototype.drawMultiPolygon = function(multiPolygonGeometry, feature) {
-    var endss = multiPolygonGeometry.getEndss();
-    var stride = multiPolygonGeometry.getStride();
-    var currIndex = this.indices.length;
-    var currLineIndex = this.lineStringReplay.getCurrentIndex();
-    var flatCoordinates = multiPolygonGeometry.getFlatCoordinates();
-    var i, ii, j, jj;
-    var start = 0;
-    for (i = 0, ii = endss.length; i < ii; ++i) {
-      var ends = endss[i];
-      if (ends.length > 0) {
-        var outerRing = ol.geom.flat.transform.translate(flatCoordinates, start, ends[0], stride, -this.origin[0], -this.origin[1]);
-        if (outerRing.length) {
-          var holes = [];
-          var holeFlatCoords;
-          for (j = 1, jj = ends.length; j < jj; ++j) {
-            if (ends[j] !== ends[j - 1]) {
-              holeFlatCoords = ol.geom.flat.transform.translate(flatCoordinates, ends[j - 1], ends[j], stride, -this.origin[0], -this.origin[1]);
-              holes.push(holeFlatCoords);
+    } else {
+      if (!this.clipEars_(list, rtree, simple, ccw)) {
+        if (!this.classifyPoints_(list, rtree, ccw)) {
+          if (!this.resolveSelfIntersections_(list, rtree)) {
+            simple = this.isSimple_(list, rtree);
+            if (!simple) {
+              this.splitPolygon_(list, rtree);
+              break;
+            } else {
+              ccw = !this.isClockwise_(list);
+              this.classifyPoints_(list, rtree, ccw);
             }
           }
-          this.lineStringReplay.drawPolygonCoordinates(outerRing, holes, stride);
-          this.drawCoordinates_(outerRing, holes, stride);
         }
       }
-      start = ends[ends.length - 1];
     }
-    if (this.indices.length > currIndex) {
-      this.startIndices.push(currIndex);
-      this.startIndicesFeature.push(feature);
-      if (this.state_.changed) {
-        this.styleIndices_.push(currIndex);
-        this.state_.changed = false;
+  }
+  if (list.getLength() === 3) {
+    var numIndices = this.indices.length;
+    this.indices[numIndices++] = list.getPrevItem().p0.i;
+    this.indices[numIndices++] = list.getCurrItem().p0.i;
+    this.indices[numIndices++] = list.getNextItem().p0.i;
+  }
+};
+ol.render.webgl.PolygonReplay.prototype.clipEars_ = function(list, rtree, simple, ccw) {
+  var numIndices = this.indices.length;
+  var start = list.firstItem();
+  var s0 = list.getPrevItem();
+  var s1 = start;
+  var s2 = list.nextItem();
+  var s3 = list.getNextItem();
+  var p0, p1, p2;
+  var processedEars = false;
+  do {
+    p0 = s1.p0;
+    p1 = s1.p1;
+    p2 = s2.p1;
+    if (p1.reflex === false) {
+      var variableCriterion;
+      if (simple) {
+        variableCriterion = this.getPointsInTriangle_(p0, p1, p2, rtree, true).length === 0;
+      } else {
+        variableCriterion = ccw ? this.diagonalIsInside_(s3.p1, p2, p1, p0, s0.p0) : this.diagonalIsInside_(s0.p0, p0, p1, p2, s3.p1);
+      }
+      if ((simple || this.getIntersections_({p0:p0, p1:p2}, rtree).length === 0) && variableCriterion) {
+        if (simple || p0.reflex === false || p2.reflex === false || ol.geom.flat.orient.linearRingIsClockwise([s0.p0.x, s0.p0.y, p0.x, p0.y, p1.x, p1.y, p2.x, p2.y, s3.p1.x, s3.p1.y], 0, 10, 2) === !ccw) {
+          this.indices[numIndices++] = p0.i;
+          this.indices[numIndices++] = p1.i;
+          this.indices[numIndices++] = p2.i;
+          this.removeItem_(s1, s2, list, rtree);
+          if (s2 === start) {
+            start = s3;
+          }
+          processedEars = true;
+        }
       }
     }
-    if (this.lineStringReplay.getCurrentIndex() > currLineIndex) {
-      this.lineStringReplay.setPolygonStyle(feature, currLineIndex);
+    s0 = list.getPrevItem();
+    s1 = list.getCurrItem();
+    s2 = list.nextItem();
+    s3 = list.getNextItem();
+  } while (s1 !== start && list.getLength() > 3);
+  return processedEars;
+};
+ol.render.webgl.PolygonReplay.prototype.resolveSelfIntersections_ = function(list, rtree, opt_touch) {
+  var start = list.firstItem();
+  list.nextItem();
+  var s0 = start;
+  var s1 = list.nextItem();
+  var resolvedIntersections = false;
+  do {
+    var intersection = this.calculateIntersection_(s0.p0, s0.p1, s1.p0, s1.p1, opt_touch);
+    if (intersection) {
+      var breakCond = false;
+      var numVertices = this.vertices.length;
+      var numIndices = this.indices.length;
+      var n = numVertices / 2;
+      var seg = list.prevItem();
+      list.removeItem();
+      rtree.remove(seg);
+      breakCond = seg === start;
+      var p;
+      if (opt_touch) {
+        if (intersection[0] === s0.p0.x && intersection[1] === s0.p0.y) {
+          list.prevItem();
+          p = s0.p0;
+          s1.p0 = p;
+          rtree.remove(s0);
+          breakCond = breakCond || s0 === start;
+        } else {
+          p = s1.p1;
+          s0.p1 = p;
+          rtree.remove(s1);
+          breakCond = breakCond || s1 === start;
+        }
+        list.removeItem();
+      } else {
+        p = this.createPoint_(intersection[0], intersection[1], n);
+        s0.p1 = p;
+        s1.p0 = p;
+        rtree.update([Math.min(s0.p0.x, s0.p1.x), Math.min(s0.p0.y, s0.p1.y), Math.max(s0.p0.x, s0.p1.x), Math.max(s0.p0.y, s0.p1.y)], s0);
+        rtree.update([Math.min(s1.p0.x, s1.p1.x), Math.min(s1.p0.y, s1.p1.y), Math.max(s1.p0.x, s1.p1.x), Math.max(s1.p0.y, s1.p1.y)], s1);
+      }
+      this.indices[numIndices++] = seg.p0.i;
+      this.indices[numIndices++] = seg.p1.i;
+      this.indices[numIndices++] = p.i;
+      resolvedIntersections = true;
+      if (breakCond) {
+        break;
+      }
     }
-  };
-  ol.render.webgl.PolygonReplay.prototype.drawPolygon = function(polygonGeometry, feature) {
-    var ends = polygonGeometry.getEnds();
-    var stride = polygonGeometry.getStride();
+    s0 = list.getPrevItem();
+    s1 = list.nextItem();
+  } while (s0 !== start);
+  return resolvedIntersections;
+};
+ol.render.webgl.PolygonReplay.prototype.isSimple_ = function(list, rtree) {
+  var start = list.firstItem();
+  var seg = start;
+  do {
+    if (this.getIntersections_(seg, rtree).length) {
+      return false;
+    }
+    seg = list.nextItem();
+  } while (seg !== start);
+  return true;
+};
+ol.render.webgl.PolygonReplay.prototype.isClockwise_ = function(list) {
+  var length = list.getLength() * 2;
+  var flatCoordinates = new Array(length);
+  var start = list.firstItem();
+  var seg = start;
+  var i = 0;
+  do {
+    flatCoordinates[i++] = seg.p0.x;
+    flatCoordinates[i++] = seg.p0.y;
+    seg = list.nextItem();
+  } while (seg !== start);
+  return ol.geom.flat.orient.linearRingIsClockwise(flatCoordinates, 0, length, 2);
+};
+ol.render.webgl.PolygonReplay.prototype.splitPolygon_ = function(list, rtree) {
+  var start = list.firstItem();
+  var s0 = start;
+  do {
+    var intersections = this.getIntersections_(s0, rtree);
+    if (intersections.length) {
+      var s1 = intersections[0];
+      var n = this.vertices.length / 2;
+      var intersection = this.calculateIntersection_(s0.p0, s0.p1, s1.p0, s1.p1);
+      var p = this.createPoint_(intersection[0], intersection[1], n);
+      var newPolygon = new ol.structs.LinkedList;
+      var newRtree = new ol.structs.RBush;
+      this.insertItem_(p, s0.p1, newPolygon, newRtree);
+      s0.p1 = p;
+      rtree.update([Math.min(s0.p0.x, p.x), Math.min(s0.p0.y, p.y), Math.max(s0.p0.x, p.x), Math.max(s0.p0.y, p.y)], s0);
+      var currItem = list.nextItem();
+      while (currItem !== s1) {
+        this.insertItem_(currItem.p0, currItem.p1, newPolygon, newRtree);
+        rtree.remove(currItem);
+        list.removeItem();
+        currItem = list.getCurrItem();
+      }
+      this.insertItem_(s1.p0, p, newPolygon, newRtree);
+      s1.p0 = p;
+      rtree.update([Math.min(s1.p1.x, p.x), Math.min(s1.p1.y, p.y), Math.max(s1.p1.x, p.x), Math.max(s1.p1.y, p.y)], s1);
+      this.classifyPoints_(list, rtree, false);
+      this.triangulate_(list, rtree);
+      this.classifyPoints_(newPolygon, newRtree, false);
+      this.triangulate_(newPolygon, newRtree);
+      break;
+    }
+    s0 = list.nextItem();
+  } while (s0 !== start);
+};
+ol.render.webgl.PolygonReplay.prototype.createPoint_ = function(x, y, i) {
+  var numVertices = this.vertices.length;
+  this.vertices[numVertices++] = x;
+  this.vertices[numVertices++] = y;
+  var p = {x:x, y:y, i:i, reflex:undefined};
+  return p;
+};
+ol.render.webgl.PolygonReplay.prototype.insertItem_ = function(p0, p1, list, opt_rtree) {
+  var seg = {p0:p0, p1:p1};
+  list.insertItem(seg);
+  if (opt_rtree) {
+    opt_rtree.insert([Math.min(p0.x, p1.x), Math.min(p0.y, p1.y), Math.max(p0.x, p1.x), Math.max(p0.y, p1.y)], seg);
+  }
+  return seg;
+};
+ol.render.webgl.PolygonReplay.prototype.removeItem_ = function(s0, s1, list, rtree) {
+  if (list.getCurrItem() === s1) {
+    list.removeItem();
+    s0.p1 = s1.p1;
+    rtree.remove(s1);
+    rtree.update([Math.min(s0.p0.x, s0.p1.x), Math.min(s0.p0.y, s0.p1.y), Math.max(s0.p0.x, s0.p1.x), Math.max(s0.p0.y, s0.p1.y)], s0);
+  }
+};
+ol.render.webgl.PolygonReplay.prototype.getPointsInTriangle_ = function(p0, p1, p2, rtree, opt_reflex) {
+  var i, ii, j, p;
+  var result = [];
+  var segmentsInExtent = rtree.getInExtent([Math.min(p0.x, p1.x, p2.x), Math.min(p0.y, p1.y, p2.y), Math.max(p0.x, p1.x, p2.x), Math.max(p0.y, p1.y, p2.y)]);
+  for (i = 0, ii = segmentsInExtent.length; i < ii; ++i) {
+    for (j in segmentsInExtent[i]) {
+      p = segmentsInExtent[i][j];
+      if (typeof p === "object" && (!opt_reflex || p.reflex)) {
+        if ((p.x !== p0.x || p.y !== p0.y) && (p.x !== p1.x || p.y !== p1.y) && (p.x !== p2.x || p.y !== p2.y) && result.indexOf(p) === -1 && ol.geom.flat.contains.linearRingContainsXY([p0.x, p0.y, p1.x, p1.y, p2.x, p2.y], 0, 6, 2, p.x, p.y)) {
+          result.push(p);
+        }
+      }
+    }
+  }
+  return result;
+};
+ol.render.webgl.PolygonReplay.prototype.getIntersections_ = function(segment, rtree, opt_touch) {
+  var p0 = segment.p0;
+  var p1 = segment.p1;
+  var segmentsInExtent = rtree.getInExtent([Math.min(p0.x, p1.x), Math.min(p0.y, p1.y), Math.max(p0.x, p1.x), Math.max(p0.y, p1.y)]);
+  var result = [];
+  var i, ii;
+  for (i = 0, ii = segmentsInExtent.length; i < ii; ++i) {
+    var currSeg = segmentsInExtent[i];
+    if (segment !== currSeg && (opt_touch || currSeg.p0 !== p1 || currSeg.p1 !== p0) && this.calculateIntersection_(p0, p1, currSeg.p0, currSeg.p1, opt_touch)) {
+      result.push(currSeg);
+    }
+  }
+  return result;
+};
+ol.render.webgl.PolygonReplay.prototype.calculateIntersection_ = function(p0, p1, p2, p3, opt_touch) {
+  var denom = (p3.y - p2.y) * (p1.x - p0.x) - (p3.x - p2.x) * (p1.y - p0.y);
+  if (denom !== 0) {
+    var ua = ((p3.x - p2.x) * (p0.y - p2.y) - (p3.y - p2.y) * (p0.x - p2.x)) / denom;
+    var ub = ((p1.x - p0.x) * (p0.y - p2.y) - (p1.y - p0.y) * (p0.x - p2.x)) / denom;
+    if (!opt_touch && ua > ol.render.webgl.EPSILON && ua < 1 - ol.render.webgl.EPSILON && ub > ol.render.webgl.EPSILON && ub < 1 - ol.render.webgl.EPSILON || opt_touch && ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1) {
+      return [p0.x + ua * (p1.x - p0.x), p0.y + ua * (p1.y - p0.y)];
+    }
+  }
+  return undefined;
+};
+ol.render.webgl.PolygonReplay.prototype.diagonalIsInside_ = function(p0, p1, p2, p3, p4) {
+  if (p1.reflex === undefined || p3.reflex === undefined) {
+    return false;
+  }
+  var p1IsLeftOf = (p2.x - p3.x) * (p1.y - p3.y) > (p2.y - p3.y) * (p1.x - p3.x);
+  var p1IsRightOf = (p4.x - p3.x) * (p1.y - p3.y) < (p4.y - p3.y) * (p1.x - p3.x);
+  var p3IsLeftOf = (p0.x - p1.x) * (p3.y - p1.y) > (p0.y - p1.y) * (p3.x - p1.x);
+  var p3IsRightOf = (p2.x - p1.x) * (p3.y - p1.y) < (p2.y - p1.y) * (p3.x - p1.x);
+  var p1InCone = p3.reflex ? p1IsRightOf || p1IsLeftOf : p1IsRightOf && p1IsLeftOf;
+  var p3InCone = p1.reflex ? p3IsRightOf || p3IsLeftOf : p3IsRightOf && p3IsLeftOf;
+  return p1InCone && p3InCone;
+};
+ol.render.webgl.PolygonReplay.prototype.drawMultiPolygon = function(multiPolygonGeometry, feature) {
+  var endss = multiPolygonGeometry.getEndss();
+  var stride = multiPolygonGeometry.getStride();
+  var currIndex = this.indices.length;
+  var currLineIndex = this.lineStringReplay.getCurrentIndex();
+  var flatCoordinates = multiPolygonGeometry.getFlatCoordinates();
+  var i, ii, j, jj;
+  var start = 0;
+  for (i = 0, ii = endss.length; i < ii; ++i) {
+    var ends = endss[i];
     if (ends.length > 0) {
-      var flatCoordinates = polygonGeometry.getFlatCoordinates().map(Number);
-      var outerRing = ol.geom.flat.transform.translate(flatCoordinates, 0, ends[0], stride, -this.origin[0], -this.origin[1]);
+      var outerRing = ol.geom.flat.transform.translate(flatCoordinates, start, ends[0], stride, -this.origin[0], -this.origin[1]);
       if (outerRing.length) {
         var holes = [];
-        var i, ii, holeFlatCoords;
-        for (i = 1, ii = ends.length; i < ii; ++i) {
-          if (ends[i] !== ends[i - 1]) {
-            holeFlatCoords = ol.geom.flat.transform.translate(flatCoordinates, ends[i - 1], ends[i], stride, -this.origin[0], -this.origin[1]);
+        var holeFlatCoords;
+        for (j = 1, jj = ends.length; j < jj; ++j) {
+          if (ends[j] !== ends[j - 1]) {
+            holeFlatCoords = ol.geom.flat.transform.translate(flatCoordinates, ends[j - 1], ends[j], stride, -this.origin[0], -this.origin[1]);
             holes.push(holeFlatCoords);
           }
         }
-        this.startIndices.push(this.indices.length);
-        this.startIndicesFeature.push(feature);
-        if (this.state_.changed) {
-          this.styleIndices_.push(this.indices.length);
-          this.state_.changed = false;
-        }
-        this.lineStringReplay.setPolygonStyle(feature);
         this.lineStringReplay.drawPolygonCoordinates(outerRing, holes, stride);
         this.drawCoordinates_(outerRing, holes, stride);
       }
     }
-  };
-  ol.render.webgl.PolygonReplay.prototype.finish = function(context) {
-    this.verticesBuffer = new ol.webgl.Buffer(this.vertices);
-    this.indicesBuffer = new ol.webgl.Buffer(this.indices);
-    this.startIndices.push(this.indices.length);
-    this.lineStringReplay.finish(context);
-    if (this.styleIndices_.length === 0 && this.styles_.length > 0) {
-      this.styles_ = [];
+    start = ends[ends.length - 1];
+  }
+  if (this.indices.length > currIndex) {
+    this.startIndices.push(currIndex);
+    this.startIndicesFeature.push(feature);
+    if (this.state_.changed) {
+      this.styleIndices_.push(currIndex);
+      this.state_.changed = false;
     }
-    this.vertices = null;
-    this.indices = null;
-  };
-  ol.render.webgl.PolygonReplay.prototype.getDeleteResourcesFunction = function(context) {
-    var verticesBuffer = this.verticesBuffer;
-    var indicesBuffer = this.indicesBuffer;
-    var lineDeleter = this.lineStringReplay.getDeleteResourcesFunction(context);
-    return function() {
-      context.deleteBuffer(verticesBuffer);
-      context.deleteBuffer(indicesBuffer);
-      lineDeleter();
-    };
-  };
-  ol.render.webgl.PolygonReplay.prototype.setUpProgram = function(gl, context, size, pixelRatio) {
-    var fragmentShader, vertexShader;
-    fragmentShader = ol.render.webgl.polygonreplay.defaultshader.fragment;
-    vertexShader = ol.render.webgl.polygonreplay.defaultshader.vertex;
-    var program = context.getProgram(fragmentShader, vertexShader);
-    var locations;
-    if (!this.defaultLocations_) {
-      locations = new ol.render.webgl.polygonreplay.defaultshader.Locations(gl, program);
-      this.defaultLocations_ = locations;
-    } else {
-      locations = this.defaultLocations_;
-    }
-    context.useProgram(program);
-    gl.enableVertexAttribArray(locations.a_position);
-    gl.vertexAttribPointer(locations.a_position, 2, ol.webgl.FLOAT, false, 8, 0);
-    return locations;
-  };
-  ol.render.webgl.PolygonReplay.prototype.shutDownProgram = function(gl, locations) {
-    gl.disableVertexAttribArray(locations.a_position);
-  };
-  ol.render.webgl.PolygonReplay.prototype.drawReplay = function(gl, context, skippedFeaturesHash, hitDetection) {
-    var tmpDepthFunc = gl.getParameter(gl.DEPTH_FUNC);
-    var tmpDepthMask = gl.getParameter(gl.DEPTH_WRITEMASK);
-    if (!hitDetection) {
-      gl.enable(gl.DEPTH_TEST);
-      gl.depthMask(true);
-      gl.depthFunc(gl.NOTEQUAL);
-    }
-    if (!ol.obj.isEmpty(skippedFeaturesHash)) {
-      this.drawReplaySkipping_(gl, context, skippedFeaturesHash);
-    } else {
-      var i, start, end, nextStyle;
-      end = this.startIndices[this.startIndices.length - 1];
-      for (i = this.styleIndices_.length - 1; i >= 0; --i) {
-        start = this.styleIndices_[i];
-        nextStyle = this.styles_[i];
-        this.setFillStyle_(gl, nextStyle);
-        this.drawElements(gl, context, start, end);
-        end = start;
+  }
+  if (this.lineStringReplay.getCurrentIndex() > currLineIndex) {
+    this.lineStringReplay.setPolygonStyle(feature, currLineIndex);
+  }
+};
+ol.render.webgl.PolygonReplay.prototype.drawPolygon = function(polygonGeometry, feature) {
+  var ends = polygonGeometry.getEnds();
+  var stride = polygonGeometry.getStride();
+  if (ends.length > 0) {
+    var flatCoordinates = polygonGeometry.getFlatCoordinates().map(Number);
+    var outerRing = ol.geom.flat.transform.translate(flatCoordinates, 0, ends[0], stride, -this.origin[0], -this.origin[1]);
+    if (outerRing.length) {
+      var holes = [];
+      var i, ii, holeFlatCoords;
+      for (i = 1, ii = ends.length; i < ii; ++i) {
+        if (ends[i] !== ends[i - 1]) {
+          holeFlatCoords = ol.geom.flat.transform.translate(flatCoordinates, ends[i - 1], ends[i], stride, -this.origin[0], -this.origin[1]);
+          holes.push(holeFlatCoords);
+        }
       }
+      this.startIndices.push(this.indices.length);
+      this.startIndicesFeature.push(feature);
+      if (this.state_.changed) {
+        this.styleIndices_.push(this.indices.length);
+        this.state_.changed = false;
+      }
+      this.lineStringReplay.setPolygonStyle(feature);
+      this.lineStringReplay.drawPolygonCoordinates(outerRing, holes, stride);
+      this.drawCoordinates_(outerRing, holes, stride);
     }
-    if (!hitDetection) {
-      gl.disable(gl.DEPTH_TEST);
-      gl.clear(gl.DEPTH_BUFFER_BIT);
-      gl.depthMask(tmpDepthMask);
-      gl.depthFunc(tmpDepthFunc);
-    }
+  }
+};
+ol.render.webgl.PolygonReplay.prototype.finish = function(context) {
+  this.verticesBuffer = new ol.webgl.Buffer(this.vertices);
+  this.indicesBuffer = new ol.webgl.Buffer(this.indices);
+  this.startIndices.push(this.indices.length);
+  this.lineStringReplay.finish(context);
+  if (this.styleIndices_.length === 0 && this.styles_.length > 0) {
+    this.styles_ = [];
+  }
+  this.vertices = null;
+  this.indices = null;
+};
+ol.render.webgl.PolygonReplay.prototype.getDeleteResourcesFunction = function(context) {
+  var verticesBuffer = this.verticesBuffer;
+  var indicesBuffer = this.indicesBuffer;
+  var lineDeleter = this.lineStringReplay.getDeleteResourcesFunction(context);
+  return function() {
+    context.deleteBuffer(verticesBuffer);
+    context.deleteBuffer(indicesBuffer);
+    lineDeleter();
   };
-  ol.render.webgl.PolygonReplay.prototype.drawHitDetectionReplayOneByOne = function(gl, context, skippedFeaturesHash, featureCallback, opt_hitExtent) {
-    var i, start, end, nextStyle, groupStart, feature, featureUid, featureIndex;
-    featureIndex = this.startIndices.length - 2;
-    end = this.startIndices[featureIndex + 1];
+};
+ol.render.webgl.PolygonReplay.prototype.setUpProgram = function(gl, context, size, pixelRatio) {
+  var fragmentShader, vertexShader;
+  fragmentShader = ol.render.webgl.polygonreplay.defaultshader.fragment;
+  vertexShader = ol.render.webgl.polygonreplay.defaultshader.vertex;
+  var program = context.getProgram(fragmentShader, vertexShader);
+  var locations;
+  if (!this.defaultLocations_) {
+    locations = new ol.render.webgl.polygonreplay.defaultshader.Locations(gl, program);
+    this.defaultLocations_ = locations;
+  } else {
+    locations = this.defaultLocations_;
+  }
+  context.useProgram(program);
+  gl.enableVertexAttribArray(locations.a_position);
+  gl.vertexAttribPointer(locations.a_position, 2, ol.webgl.FLOAT, false, 8, 0);
+  return locations;
+};
+ol.render.webgl.PolygonReplay.prototype.shutDownProgram = function(gl, locations) {
+  gl.disableVertexAttribArray(locations.a_position);
+};
+ol.render.webgl.PolygonReplay.prototype.drawReplay = function(gl, context, skippedFeaturesHash, hitDetection) {
+  var tmpDepthFunc = gl.getParameter(gl.DEPTH_FUNC);
+  var tmpDepthMask = gl.getParameter(gl.DEPTH_WRITEMASK);
+  if (!hitDetection) {
+    gl.enable(gl.DEPTH_TEST);
+    gl.depthMask(true);
+    gl.depthFunc(gl.NOTEQUAL);
+  }
+  if (!ol.obj.isEmpty(skippedFeaturesHash)) {
+    this.drawReplaySkipping_(gl, context, skippedFeaturesHash);
+  } else {
+    var i, start, end, nextStyle;
+    end = this.startIndices[this.startIndices.length - 1];
     for (i = this.styleIndices_.length - 1; i >= 0; --i) {
+      start = this.styleIndices_[i];
       nextStyle = this.styles_[i];
       this.setFillStyle_(gl, nextStyle);
-      groupStart = this.styleIndices_[i];
-      while (featureIndex >= 0 && this.startIndices[featureIndex] >= groupStart) {
-        start = this.startIndices[featureIndex];
-        feature = this.startIndicesFeature[featureIndex];
-        featureUid = ol.getUid(feature).toString();
-        if (skippedFeaturesHash[featureUid] === undefined && feature.getGeometry() && (opt_hitExtent === undefined || ol.extent.intersects(opt_hitExtent, feature.getGeometry().getExtent()))) {
-          gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+      this.drawElements(gl, context, start, end);
+      end = start;
+    }
+  }
+  if (!hitDetection) {
+    gl.disable(gl.DEPTH_TEST);
+    gl.clear(gl.DEPTH_BUFFER_BIT);
+    gl.depthMask(tmpDepthMask);
+    gl.depthFunc(tmpDepthFunc);
+  }
+};
+ol.render.webgl.PolygonReplay.prototype.drawHitDetectionReplayOneByOne = function(gl, context, skippedFeaturesHash, featureCallback, opt_hitExtent) {
+  var i, start, end, nextStyle, groupStart, feature, featureUid, featureIndex;
+  featureIndex = this.startIndices.length - 2;
+  end = this.startIndices[featureIndex + 1];
+  for (i = this.styleIndices_.length - 1; i >= 0; --i) {
+    nextStyle = this.styles_[i];
+    this.setFillStyle_(gl, nextStyle);
+    groupStart = this.styleIndices_[i];
+    while (featureIndex >= 0 && this.startIndices[featureIndex] >= groupStart) {
+      start = this.startIndices[featureIndex];
+      feature = this.startIndicesFeature[featureIndex];
+      featureUid = ol.getUid(feature).toString();
+      if (skippedFeaturesHash[featureUid] === undefined && feature.getGeometry() && (opt_hitExtent === undefined || ol.extent.intersects(opt_hitExtent, feature.getGeometry().getExtent()))) {
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        this.drawElements(gl, context, start, end);
+        var result = featureCallback(feature);
+        if (result) {
+          return result;
+        }
+      }
+      featureIndex--;
+      end = start;
+    }
+  }
+  return undefined;
+};
+ol.render.webgl.PolygonReplay.prototype.drawReplaySkipping_ = function(gl, context, skippedFeaturesHash) {
+  var i, start, end, nextStyle, groupStart, feature, featureUid, featureIndex, featureStart;
+  featureIndex = this.startIndices.length - 2;
+  end = start = this.startIndices[featureIndex + 1];
+  for (i = this.styleIndices_.length - 1; i >= 0; --i) {
+    nextStyle = this.styles_[i];
+    this.setFillStyle_(gl, nextStyle);
+    groupStart = this.styleIndices_[i];
+    while (featureIndex >= 0 && this.startIndices[featureIndex] >= groupStart) {
+      featureStart = this.startIndices[featureIndex];
+      feature = this.startIndicesFeature[featureIndex];
+      featureUid = ol.getUid(feature).toString();
+      if (skippedFeaturesHash[featureUid]) {
+        if (start !== end) {
           this.drawElements(gl, context, start, end);
-          var result = featureCallback(feature);
-          if (result) {
-            return result;
-          }
+          gl.clear(gl.DEPTH_BUFFER_BIT);
         }
-        featureIndex--;
-        end = start;
+        end = featureStart;
       }
+      featureIndex--;
+      start = featureStart;
     }
-    return undefined;
-  };
-  ol.render.webgl.PolygonReplay.prototype.drawReplaySkipping_ = function(gl, context, skippedFeaturesHash) {
-    var i, start, end, nextStyle, groupStart, feature, featureUid, featureIndex, featureStart;
-    featureIndex = this.startIndices.length - 2;
-    end = start = this.startIndices[featureIndex + 1];
-    for (i = this.styleIndices_.length - 1; i >= 0; --i) {
-      nextStyle = this.styles_[i];
-      this.setFillStyle_(gl, nextStyle);
-      groupStart = this.styleIndices_[i];
-      while (featureIndex >= 0 && this.startIndices[featureIndex] >= groupStart) {
-        featureStart = this.startIndices[featureIndex];
-        feature = this.startIndicesFeature[featureIndex];
-        featureUid = ol.getUid(feature).toString();
-        if (skippedFeaturesHash[featureUid]) {
-          if (start !== end) {
-            this.drawElements(gl, context, start, end);
-            gl.clear(gl.DEPTH_BUFFER_BIT);
-          }
-          end = featureStart;
-        }
-        featureIndex--;
-        start = featureStart;
-      }
-      if (start !== end) {
-        this.drawElements(gl, context, start, end);
-        gl.clear(gl.DEPTH_BUFFER_BIT);
-      }
-      start = end = groupStart;
+    if (start !== end) {
+      this.drawElements(gl, context, start, end);
+      gl.clear(gl.DEPTH_BUFFER_BIT);
     }
-  };
-  ol.render.webgl.PolygonReplay.prototype.setFillStyle_ = function(gl, color) {
-    gl.uniform4fv(this.defaultLocations_.u_color, color);
-  };
-  ol.render.webgl.PolygonReplay.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {
-    var fillStyleColor = fillStyle ? fillStyle.getColor() : [0, 0, 0, 0];
-    if (!(fillStyleColor instanceof CanvasGradient) && !(fillStyleColor instanceof CanvasPattern)) {
-      fillStyleColor = ol.color.asArray(fillStyleColor).map(function(c, i) {
-        return i != 3 ? c / 255 : c;
-      }) || ol.render.webgl.defaultFillStyle;
-    } else {
-      fillStyleColor = ol.render.webgl.defaultFillStyle;
-    }
-    if (!this.state_.fillColor || !ol.array.equals(fillStyleColor, this.state_.fillColor)) {
-      this.state_.fillColor = fillStyleColor;
-      this.state_.changed = true;
-      this.styles_.push(fillStyleColor);
-    }
-    if (strokeStyle) {
-      this.lineStringReplay.setFillStrokeStyle(null, strokeStyle);
-    } else {
-      var nullStrokeStyle = new ol.style.Stroke({color:[0, 0, 0, 0], lineWidth:0});
-      this.lineStringReplay.setFillStrokeStyle(null, nullStrokeStyle);
-    }
-  };
-}
-;goog.provide("ol.style.Atlas");
+    start = end = groupStart;
+  }
+};
+ol.render.webgl.PolygonReplay.prototype.setFillStyle_ = function(gl, color) {
+  gl.uniform4fv(this.defaultLocations_.u_color, color);
+};
+ol.render.webgl.PolygonReplay.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {
+  var fillStyleColor = fillStyle ? fillStyle.getColor() : [0, 0, 0, 0];
+  if (!(fillStyleColor instanceof CanvasGradient) && !(fillStyleColor instanceof CanvasPattern)) {
+    fillStyleColor = ol.color.asArray(fillStyleColor).map(function(c, i) {
+      return i != 3 ? c / 255 : c;
+    }) || ol.render.webgl.defaultFillStyle;
+  } else {
+    fillStyleColor = ol.render.webgl.defaultFillStyle;
+  }
+  if (!this.state_.fillColor || !ol.array.equals(fillStyleColor, this.state_.fillColor)) {
+    this.state_.fillColor = fillStyleColor;
+    this.state_.changed = true;
+    this.styles_.push(fillStyleColor);
+  }
+  if (strokeStyle) {
+    this.lineStringReplay.setFillStrokeStyle(null, strokeStyle);
+  } else {
+    var nullStrokeStyle = new ol.style.Stroke({color:[0, 0, 0, 0], lineWidth:0});
+    this.lineStringReplay.setFillStrokeStyle(null, nullStrokeStyle);
+  }
+};
+goog.provide("ol.style.Atlas");
 goog.require("ol.dom");
 ol.style.Atlas = function(size, space) {
   this.space_ = space;
@@ -35542,233 +35476,262 @@ goog.provide("ol.render.webgl.TextReplay");
 goog.require("ol");
 goog.require("ol.colorlike");
 goog.require("ol.dom");
+goog.require("ol.geom.GeometryType");
 goog.require("ol.has");
+goog.require("ol.render.replay");
 goog.require("ol.render.webgl");
 goog.require("ol.render.webgl.TextureReplay");
 goog.require("ol.style.AtlasManager");
 goog.require("ol.webgl.Buffer");
-if (ol.ENABLE_WEBGL) {
-  ol.render.webgl.TextReplay = function(tolerance, maxExtent) {
-    ol.render.webgl.TextureReplay.call(this, tolerance, maxExtent);
-    this.images_ = [];
-    this.textures_ = [];
-    this.measureCanvas_ = ol.dom.createCanvasContext2D(0, 0).canvas;
-    this.state_ = {strokeColor:null, lineCap:undefined, lineDash:null, lineDashOffset:undefined, lineJoin:undefined, lineWidth:0, miterLimit:undefined, fillColor:null, font:undefined, scale:undefined};
-    this.text_ = "";
-    this.textAlign_ = undefined;
-    this.textBaseline_ = undefined;
-    this.offsetX_ = undefined;
-    this.offsetY_ = undefined;
-    this.atlases_ = {};
-    this.currAtlas_ = undefined;
-    this.scale = 1;
-    this.opacity = 1;
-  };
-  ol.inherits(ol.render.webgl.TextReplay, ol.render.webgl.TextureReplay);
-  ol.render.webgl.TextReplay.prototype.drawText = function(flatCoordinates, offset, end, stride, geometry, feature) {
-    if (this.text_) {
-      this.startIndices.push(this.indices.length);
-      this.startIndicesFeature.push(feature);
-      var glyphAtlas = this.currAtlas_;
-      var lines = this.text_.split("\n");
-      var textSize = this.getTextSize_(lines);
-      var i, ii, j, jj, currX, currY, charArr, charInfo;
-      var anchorX = Math.round(textSize[0] * this.textAlign_ - this.offsetX_);
-      var anchorY = Math.round(textSize[1] * this.textBaseline_ - this.offsetY_);
-      var lineWidth = this.state_.lineWidth / 2 * this.state_.scale;
-      for (i = 0, ii = lines.length; i < ii; ++i) {
-        currX = 0;
-        currY = glyphAtlas.height * i;
-        charArr = lines[i].split("");
-        for (j = 0, jj = charArr.length; j < jj; ++j) {
-          charInfo = glyphAtlas.atlas.getInfo(charArr[j]);
-          if (charInfo) {
-            var image = charInfo.image;
-            this.anchorX = anchorX - currX;
-            this.anchorY = anchorY - currY;
-            this.originX = j === 0 ? charInfo.offsetX - lineWidth : charInfo.offsetX;
-            this.originY = charInfo.offsetY;
-            this.height = glyphAtlas.height;
-            this.width = j === 0 || j === charArr.length - 1 ? glyphAtlas.width[charArr[j]] + lineWidth : glyphAtlas.width[charArr[j]];
-            this.imageHeight = image.height;
-            this.imageWidth = image.width;
-            var currentImage;
-            if (this.images_.length === 0) {
-              this.images_.push(image);
-            } else {
-              currentImage = this.images_[this.images_.length - 1];
-              if (ol.getUid(currentImage) != ol.getUid(image)) {
-                this.groupIndices.push(this.indices.length);
-                this.images_.push(image);
-              }
-            }
-            this.drawText_(flatCoordinates, offset, end, stride);
-          }
-          currX += this.width;
-        }
-      }
+ol.render.webgl.TextReplay = function(tolerance, maxExtent) {
+  ol.render.webgl.TextureReplay.call(this, tolerance, maxExtent);
+  this.images_ = [];
+  this.textures_ = [];
+  this.measureCanvas_ = ol.dom.createCanvasContext2D(0, 0).canvas;
+  this.state_ = {strokeColor:null, lineCap:undefined, lineDash:null, lineDashOffset:undefined, lineJoin:undefined, lineWidth:0, miterLimit:undefined, fillColor:null, font:undefined, scale:undefined};
+  this.text_ = "";
+  this.textAlign_ = undefined;
+  this.textBaseline_ = undefined;
+  this.offsetX_ = undefined;
+  this.offsetY_ = undefined;
+  this.atlases_ = {};
+  this.currAtlas_ = undefined;
+  this.scale = 1;
+  this.opacity = 1;
+};
+ol.inherits(ol.render.webgl.TextReplay, ol.render.webgl.TextureReplay);
+ol.render.webgl.TextReplay.prototype.drawText = function(geometry, feature) {
+  if (this.text_) {
+    var flatCoordinates = null;
+    var offset = 0;
+    var end = 2;
+    var stride = 2;
+    switch(geometry.getType()) {
+      case ol.geom.GeometryType.POINT:
+      case ol.geom.GeometryType.MULTI_POINT:
+        flatCoordinates = geometry.getFlatCoordinates();
+        end = flatCoordinates.length;
+        stride = geometry.getStride();
+        break;
+      case ol.geom.GeometryType.CIRCLE:
+        flatCoordinates = geometry.getCenter();
+        break;
+      case ol.geom.GeometryType.LINE_STRING:
+        flatCoordinates = geometry.getFlatMidpoint();
+        break;
+      case ol.geom.GeometryType.MULTI_LINE_STRING:
+        flatCoordinates = geometry.getFlatMidpoints();
+        end = flatCoordinates.length;
+        break;
+      case ol.geom.GeometryType.POLYGON:
+        flatCoordinates = geometry.getFlatInteriorPoint();
+        break;
+      case ol.geom.GeometryType.MULTI_POLYGON:
+        flatCoordinates = geometry.getFlatInteriorPoints();
+        end = flatCoordinates.length;
+        break;
+      default:
     }
-  };
-  ol.render.webgl.TextReplay.prototype.getTextSize_ = function(lines) {
-    var self = this;
+    this.startIndices.push(this.indices.length);
+    this.startIndicesFeature.push(feature);
     var glyphAtlas = this.currAtlas_;
-    var textHeight = lines.length * glyphAtlas.height;
-    var textWidth = lines.map(function(str) {
-      var sum = 0;
-      var i, ii;
-      for (i = 0, ii = str.length; i < ii; ++i) {
-        var curr = str[i];
-        if (!glyphAtlas.width[curr]) {
-          self.addCharToAtlas_(curr);
+    var lines = this.text_.split("\n");
+    var textSize = this.getTextSize_(lines);
+    var i, ii, j, jj, currX, currY, charArr, charInfo;
+    var anchorX = Math.round(textSize[0] * this.textAlign_ - this.offsetX_);
+    var anchorY = Math.round(textSize[1] * this.textBaseline_ - this.offsetY_);
+    var lineWidth = this.state_.lineWidth / 2 * this.state_.scale;
+    for (i = 0, ii = lines.length; i < ii; ++i) {
+      currX = 0;
+      currY = glyphAtlas.height * i;
+      charArr = lines[i].split("");
+      for (j = 0, jj = charArr.length; j < jj; ++j) {
+        charInfo = glyphAtlas.atlas.getInfo(charArr[j]);
+        if (charInfo) {
+          var image = charInfo.image;
+          this.anchorX = anchorX - currX;
+          this.anchorY = anchorY - currY;
+          this.originX = j === 0 ? charInfo.offsetX - lineWidth : charInfo.offsetX;
+          this.originY = charInfo.offsetY;
+          this.height = glyphAtlas.height;
+          this.width = j === 0 || j === charArr.length - 1 ? glyphAtlas.width[charArr[j]] + lineWidth : glyphAtlas.width[charArr[j]];
+          this.imageHeight = image.height;
+          this.imageWidth = image.width;
+          var currentImage;
+          if (this.images_.length === 0) {
+            this.images_.push(image);
+          } else {
+            currentImage = this.images_[this.images_.length - 1];
+            if (ol.getUid(currentImage) != ol.getUid(image)) {
+              this.groupIndices.push(this.indices.length);
+              this.images_.push(image);
+            }
+          }
+          this.drawText_(flatCoordinates, offset, end, stride);
         }
-        sum += glyphAtlas.width[curr] ? glyphAtlas.width[curr] : 0;
+        currX += this.width;
       }
-      return sum;
-    }).reduce(function(max, curr) {
-      return Math.max(max, curr);
-    });
-    return [textWidth, textHeight];
-  };
-  ol.render.webgl.TextReplay.prototype.drawText_ = function(flatCoordinates, offset, end, stride) {
+    }
+  }
+};
+ol.render.webgl.TextReplay.prototype.getTextSize_ = function(lines) {
+  var self = this;
+  var glyphAtlas = this.currAtlas_;
+  var textHeight = lines.length * glyphAtlas.height;
+  var textWidth = lines.map(function(str) {
+    var sum = 0;
     var i, ii;
-    for (i = offset, ii = end; i < ii; i += stride) {
-      this.drawCoordinates(flatCoordinates, offset, end, stride);
-    }
-  };
-  ol.render.webgl.TextReplay.prototype.addCharToAtlas_ = function(char) {
-    if (char.length === 1) {
-      var glyphAtlas = this.currAtlas_;
-      var state = this.state_;
-      var mCtx = this.measureCanvas_.getContext("2d");
-      mCtx.font = state.font;
-      var width = Math.ceil(mCtx.measureText(char).width * state.scale);
-      var info = glyphAtlas.atlas.add(char, width, glyphAtlas.height, function(ctx, x, y) {
-        ctx.font = state.font;
-        ctx.fillStyle = state.fillColor;
-        ctx.strokeStyle = state.strokeColor;
-        ctx.lineWidth = state.lineWidth;
-        ctx.lineCap = state.lineCap;
-        ctx.lineJoin = state.lineJoin;
-        ctx.miterLimit = state.miterLimit;
-        ctx.textAlign = "left";
-        ctx.textBaseline = "top";
-        if (ol.has.CANVAS_LINE_DASH && state.lineDash) {
-          ctx.setLineDash(state.lineDash);
-          ctx.lineDashOffset = state.lineDashOffset;
-        }
-        if (state.scale !== 1) {
-          ctx.setTransform(state.scale, 0, 0, state.scale, 0, 0);
-        }
-        if (state.strokeColor) {
-          ctx.strokeText(char, x, y);
-        }
-        if (state.fillColor) {
-          ctx.fillText(char, x, y);
-        }
-      });
-      if (info) {
-        glyphAtlas.width[char] = width;
+    for (i = 0, ii = str.length; i < ii; ++i) {
+      var curr = str[i];
+      if (!glyphAtlas.width[curr]) {
+        self.addCharToAtlas_(curr);
       }
+      sum += glyphAtlas.width[curr] ? glyphAtlas.width[curr] : 0;
     }
-  };
-  ol.render.webgl.TextReplay.prototype.finish = function(context) {
-    var gl = context.getGL();
-    this.groupIndices.push(this.indices.length);
-    this.hitDetectionGroupIndices = this.groupIndices;
-    this.verticesBuffer = new ol.webgl.Buffer(this.vertices);
-    this.indicesBuffer = new ol.webgl.Buffer(this.indices);
-    var texturePerImage = {};
-    this.createTextures(this.textures_, this.images_, texturePerImage, gl);
-    this.state_ = {strokeColor:null, lineCap:undefined, lineDash:null, lineDashOffset:undefined, lineJoin:undefined, lineWidth:0, miterLimit:undefined, fillColor:null, font:undefined, scale:undefined};
-    this.text_ = "";
-    this.textAlign_ = undefined;
-    this.textBaseline_ = undefined;
-    this.offsetX_ = undefined;
-    this.offsetY_ = undefined;
-    this.images_ = null;
-    this.atlases_ = {};
-    this.currAtlas_ = undefined;
-    ol.render.webgl.TextureReplay.prototype.finish.call(this, context);
-  };
-  ol.render.webgl.TextReplay.prototype.setTextStyle = function(textStyle) {
+    return sum;
+  }).reduce(function(max, curr) {
+    return Math.max(max, curr);
+  });
+  return [textWidth, textHeight];
+};
+ol.render.webgl.TextReplay.prototype.drawText_ = function(flatCoordinates, offset, end, stride) {
+  var i, ii;
+  for (i = offset, ii = end; i < ii; i += stride) {
+    this.drawCoordinates(flatCoordinates, offset, end, stride);
+  }
+};
+ol.render.webgl.TextReplay.prototype.addCharToAtlas_ = function(char) {
+  if (char.length === 1) {
+    var glyphAtlas = this.currAtlas_;
     var state = this.state_;
-    var textFillStyle = textStyle.getFill();
-    var textStrokeStyle = textStyle.getStroke();
-    if (!textStyle || !textStyle.getText() || !textFillStyle && !textStrokeStyle) {
-      this.text_ = "";
+    var mCtx = this.measureCanvas_.getContext("2d");
+    mCtx.font = state.font;
+    var width = Math.ceil(mCtx.measureText(char).width * state.scale);
+    var info = glyphAtlas.atlas.add(char, width, glyphAtlas.height, function(ctx, x, y) {
+      ctx.font = state.font;
+      ctx.fillStyle = state.fillColor;
+      ctx.strokeStyle = state.strokeColor;
+      ctx.lineWidth = state.lineWidth;
+      ctx.lineCap = state.lineCap;
+      ctx.lineJoin = state.lineJoin;
+      ctx.miterLimit = state.miterLimit;
+      ctx.textAlign = "left";
+      ctx.textBaseline = "top";
+      if (ol.has.CANVAS_LINE_DASH && state.lineDash) {
+        ctx.setLineDash(state.lineDash);
+        ctx.lineDashOffset = state.lineDashOffset;
+      }
+      if (state.scale !== 1) {
+        ctx.setTransform(state.scale, 0, 0, state.scale, 0, 0);
+      }
+      if (state.strokeColor) {
+        ctx.strokeText(char, x, y);
+      }
+      if (state.fillColor) {
+        ctx.fillText(char, x, y);
+      }
+    });
+    if (info) {
+      glyphAtlas.width[char] = width;
+    }
+  }
+};
+ol.render.webgl.TextReplay.prototype.finish = function(context) {
+  var gl = context.getGL();
+  this.groupIndices.push(this.indices.length);
+  this.hitDetectionGroupIndices = this.groupIndices;
+  this.verticesBuffer = new ol.webgl.Buffer(this.vertices);
+  this.indicesBuffer = new ol.webgl.Buffer(this.indices);
+  var texturePerImage = {};
+  this.createTextures(this.textures_, this.images_, texturePerImage, gl);
+  this.state_ = {strokeColor:null, lineCap:undefined, lineDash:null, lineDashOffset:undefined, lineJoin:undefined, lineWidth:0, miterLimit:undefined, fillColor:null, font:undefined, scale:undefined};
+  this.text_ = "";
+  this.textAlign_ = undefined;
+  this.textBaseline_ = undefined;
+  this.offsetX_ = undefined;
+  this.offsetY_ = undefined;
+  this.images_ = null;
+  this.atlases_ = {};
+  this.currAtlas_ = undefined;
+  ol.render.webgl.TextureReplay.prototype.finish.call(this, context);
+};
+ol.render.webgl.TextReplay.prototype.setTextStyle = function(textStyle) {
+  var state = this.state_;
+  var textFillStyle = textStyle.getFill();
+  var textStrokeStyle = textStyle.getStroke();
+  if (!textStyle || !textStyle.getText() || !textFillStyle && !textStrokeStyle) {
+    this.text_ = "";
+  } else {
+    if (!textFillStyle) {
+      state.fillColor = null;
     } else {
-      if (!textFillStyle) {
-        state.fillColor = null;
+      var textFillStyleColor = textFillStyle.getColor();
+      state.fillColor = ol.colorlike.asColorLike(textFillStyleColor ? textFillStyleColor : ol.render.webgl.defaultFillStyle);
+    }
+    if (!textStrokeStyle) {
+      state.strokeColor = null;
+      state.lineWidth = 0;
+    } else {
+      var textStrokeStyleColor = textStrokeStyle.getColor();
+      state.strokeColor = ol.colorlike.asColorLike(textStrokeStyleColor ? textStrokeStyleColor : ol.render.webgl.defaultStrokeStyle);
+      state.lineWidth = textStrokeStyle.getWidth() || ol.render.webgl.defaultLineWidth;
+      state.lineCap = textStrokeStyle.getLineCap() || ol.render.webgl.defaultLineCap;
+      state.lineDashOffset = textStrokeStyle.getLineDashOffset() || ol.render.webgl.defaultLineDashOffset;
+      state.lineJoin = textStrokeStyle.getLineJoin() || ol.render.webgl.defaultLineJoin;
+      state.miterLimit = textStrokeStyle.getMiterLimit() || ol.render.webgl.defaultMiterLimit;
+      var lineDash = textStrokeStyle.getLineDash();
+      state.lineDash = lineDash ? lineDash.slice() : ol.render.webgl.defaultLineDash;
+    }
+    state.font = textStyle.getFont() || ol.render.webgl.defaultFont;
+    state.scale = textStyle.getScale() || 1;
+    this.text_ = textStyle.getText();
+    var textAlign = ol.render.replay.TEXT_ALIGN[textStyle.getTextAlign()];
+    var textBaseline = ol.render.replay.TEXT_ALIGN[textStyle.getTextBaseline()];
+    this.textAlign_ = textAlign === undefined ? ol.render.webgl.defaultTextAlign : textAlign;
+    this.textBaseline_ = textBaseline === undefined ? ol.render.webgl.defaultTextBaseline : textBaseline;
+    this.offsetX_ = textStyle.getOffsetX() || 0;
+    this.offsetY_ = textStyle.getOffsetY() || 0;
+    this.rotateWithView = !!textStyle.getRotateWithView();
+    this.rotation = textStyle.getRotation() || 0;
+    this.currAtlas_ = this.getAtlas_(state);
+  }
+};
+ol.render.webgl.TextReplay.prototype.getAtlas_ = function(state) {
+  var params = [];
+  var i;
+  for (i in state) {
+    if (state[i] || state[i] === 0) {
+      if (Array.isArray(state[i])) {
+        params = params.concat(state[i]);
       } else {
-        var textFillStyleColor = textFillStyle.getColor();
-        state.fillColor = ol.colorlike.asColorLike(textFillStyleColor ? textFillStyleColor : ol.render.webgl.defaultFillStyle);
-      }
-      if (!textStrokeStyle) {
-        state.strokeColor = null;
-        state.lineWidth = 0;
-      } else {
-        var textStrokeStyleColor = textStrokeStyle.getColor();
-        state.strokeColor = ol.colorlike.asColorLike(textStrokeStyleColor ? textStrokeStyleColor : ol.render.webgl.defaultStrokeStyle);
-        state.lineWidth = textStrokeStyle.getWidth() || ol.render.webgl.defaultLineWidth;
-        state.lineCap = textStrokeStyle.getLineCap() || ol.render.webgl.defaultLineCap;
-        state.lineDashOffset = textStrokeStyle.getLineDashOffset() || ol.render.webgl.defaultLineDashOffset;
-        state.lineJoin = textStrokeStyle.getLineJoin() || ol.render.webgl.defaultLineJoin;
-        state.miterLimit = textStrokeStyle.getMiterLimit() || ol.render.webgl.defaultMiterLimit;
-        var lineDash = textStrokeStyle.getLineDash();
-        state.lineDash = lineDash ? lineDash.slice() : ol.render.webgl.defaultLineDash;
-      }
-      state.font = textStyle.getFont() || ol.render.webgl.defaultFont;
-      state.scale = textStyle.getScale() || 1;
-      this.text_ = textStyle.getText();
-      var textAlign = ol.render.webgl.TextReplay.Align_[textStyle.getTextAlign()];
-      var textBaseline = ol.render.webgl.TextReplay.Align_[textStyle.getTextBaseline()];
-      this.textAlign_ = textAlign === undefined ? ol.render.webgl.defaultTextAlign : textAlign;
-      this.textBaseline_ = textBaseline === undefined ? ol.render.webgl.defaultTextBaseline : textBaseline;
-      this.offsetX_ = textStyle.getOffsetX() || 0;
-      this.offsetY_ = textStyle.getOffsetY() || 0;
-      this.rotateWithView = !!textStyle.getRotateWithView();
-      this.rotation = textStyle.getRotation() || 0;
-      this.currAtlas_ = this.getAtlas_(state);
-    }
-  };
-  ol.render.webgl.TextReplay.prototype.getAtlas_ = function(state) {
-    var params = [];
-    var i;
-    for (i in state) {
-      if (state[i] || state[i] === 0) {
-        if (Array.isArray(state[i])) {
-          params = params.concat(state[i]);
-        } else {
-          params.push(state[i]);
-        }
+        params.push(state[i]);
       }
     }
-    var hash = this.calculateHash_(params);
-    if (!this.atlases_[hash]) {
-      var mCtx = this.measureCanvas_.getContext("2d");
-      mCtx.font = state.font;
-      var height = Math.ceil((mCtx.measureText("M").width * 1.5 + state.lineWidth / 2) * state.scale);
-      this.atlases_[hash] = {atlas:new ol.style.AtlasManager({space:state.lineWidth + 1}), width:{}, height:height};
-    }
-    return this.atlases_[hash];
-  };
-  ol.render.webgl.TextReplay.prototype.calculateHash_ = function(params) {
-    var i, ii;
-    var hash = "";
-    for (i = 0, ii = params.length; i < ii; ++i) {
-      hash += params[i];
-    }
-    return hash;
-  };
-  ol.render.webgl.TextReplay.prototype.getTextures = function(opt_all) {
-    return this.textures_;
-  };
-  ol.render.webgl.TextReplay.prototype.getHitDetectionTextures = function() {
-    return this.textures_;
-  };
-  ol.render.webgl.TextReplay.Align_ = {left:0, end:0, center:0.5, right:1, start:1, top:0, middle:0.5, hanging:0.2, alphabetic:0.8, ideographic:0.8, bottom:1};
-}
-;goog.provide("ol.render.webgl.ReplayGroup");
+  }
+  var hash = this.calculateHash_(params);
+  if (!this.atlases_[hash]) {
+    var mCtx = this.measureCanvas_.getContext("2d");
+    mCtx.font = state.font;
+    var height = Math.ceil((mCtx.measureText("M").width * 1.5 + state.lineWidth / 2) * state.scale);
+    this.atlases_[hash] = {atlas:new ol.style.AtlasManager({space:state.lineWidth + 1}), width:{}, height:height};
+  }
+  return this.atlases_[hash];
+};
+ol.render.webgl.TextReplay.prototype.calculateHash_ = function(params) {
+  var i, ii;
+  var hash = "";
+  for (i = 0, ii = params.length; i < ii; ++i) {
+    hash += params[i];
+  }
+  return hash;
+};
+ol.render.webgl.TextReplay.prototype.getTextures = function(opt_all) {
+  return this.textures_;
+};
+ol.render.webgl.TextReplay.prototype.getHitDetectionTextures = function() {
+  return this.textures_;
+};
+goog.provide("ol.render.webgl.ReplayGroup");
 goog.require("ol");
 goog.require("ol.array");
 goog.require("ol.extent");
@@ -35780,491 +35743,464 @@ goog.require("ol.render.webgl.ImageReplay");
 goog.require("ol.render.webgl.LineStringReplay");
 goog.require("ol.render.webgl.PolygonReplay");
 goog.require("ol.render.webgl.TextReplay");
-if (ol.ENABLE_WEBGL) {
-  ol.render.webgl.ReplayGroup = function(tolerance, maxExtent, opt_renderBuffer) {
-    ol.render.ReplayGroup.call(this);
-    this.maxExtent_ = maxExtent;
-    this.tolerance_ = tolerance;
-    this.renderBuffer_ = opt_renderBuffer;
-    this.replaysByZIndex_ = {};
+ol.render.webgl.ReplayGroup = function(tolerance, maxExtent, opt_renderBuffer) {
+  ol.render.ReplayGroup.call(this);
+  this.maxExtent_ = maxExtent;
+  this.tolerance_ = tolerance;
+  this.renderBuffer_ = opt_renderBuffer;
+  this.replaysByZIndex_ = {};
+};
+ol.inherits(ol.render.webgl.ReplayGroup, ol.render.ReplayGroup);
+ol.render.webgl.ReplayGroup.prototype.getDeleteResourcesFunction = function(context) {
+  var functions = [];
+  var zKey;
+  for (zKey in this.replaysByZIndex_) {
+    var replays = this.replaysByZIndex_[zKey];
+    var replayKey;
+    for (replayKey in replays) {
+      functions.push(replays[replayKey].getDeleteResourcesFunction(context));
+    }
+  }
+  return function() {
+    var length = functions.length;
+    var result;
+    for (var i = 0; i < length; i++) {
+      result = functions[i].apply(this, arguments);
+    }
+    return result;
   };
-  ol.inherits(ol.render.webgl.ReplayGroup, ol.render.ReplayGroup);
-  ol.render.webgl.ReplayGroup.prototype.getDeleteResourcesFunction = function(context) {
-    var functions = [];
-    var zKey;
-    for (zKey in this.replaysByZIndex_) {
-      var replays = this.replaysByZIndex_[zKey];
-      var replayKey;
-      for (replayKey in replays) {
-        functions.push(replays[replayKey].getDeleteResourcesFunction(context));
+};
+ol.render.webgl.ReplayGroup.prototype.finish = function(context) {
+  var zKey;
+  for (zKey in this.replaysByZIndex_) {
+    var replays = this.replaysByZIndex_[zKey];
+    var replayKey;
+    for (replayKey in replays) {
+      replays[replayKey].finish(context);
+    }
+  }
+};
+ol.render.webgl.ReplayGroup.prototype.getReplay = function(zIndex, replayType) {
+  var zIndexKey = zIndex !== undefined ? zIndex.toString() : "0";
+  var replays = this.replaysByZIndex_[zIndexKey];
+  if (replays === undefined) {
+    replays = {};
+    this.replaysByZIndex_[zIndexKey] = replays;
+  }
+  var replay = replays[replayType];
+  if (replay === undefined) {
+    var Constructor = ol.render.webgl.ReplayGroup.BATCH_CONSTRUCTORS_[replayType];
+    replay = new Constructor(this.tolerance_, this.maxExtent_);
+    replays[replayType] = replay;
+  }
+  return replay;
+};
+ol.render.webgl.ReplayGroup.prototype.isEmpty = function() {
+  return ol.obj.isEmpty(this.replaysByZIndex_);
+};
+ol.render.webgl.ReplayGroup.prototype.replay = function(context, center, resolution, rotation, size, pixelRatio, opacity, skippedFeaturesHash) {
+  var zs = Object.keys(this.replaysByZIndex_).map(Number);
+  zs.sort(ol.array.numberSafeCompareFunction);
+  var i, ii, j, jj, replays, replay;
+  for (i = 0, ii = zs.length; i < ii; ++i) {
+    replays = this.replaysByZIndex_[zs[i].toString()];
+    for (j = 0, jj = ol.render.replay.ORDER.length; j < jj; ++j) {
+      replay = replays[ol.render.replay.ORDER[j]];
+      if (replay !== undefined) {
+        replay.replay(context, center, resolution, rotation, size, pixelRatio, opacity, skippedFeaturesHash, undefined, false);
       }
     }
-    return function() {
-      var length = functions.length;
-      var result;
-      for (var i = 0; i < length; i++) {
-        result = functions[i].apply(this, arguments);
-      }
-      return result;
-    };
-  };
-  ol.render.webgl.ReplayGroup.prototype.finish = function(context) {
-    var zKey;
-    for (zKey in this.replaysByZIndex_) {
-      var replays = this.replaysByZIndex_[zKey];
-      var replayKey;
-      for (replayKey in replays) {
-        replays[replayKey].finish(context);
-      }
-    }
-  };
-  ol.render.webgl.ReplayGroup.prototype.getReplay = function(zIndex, replayType) {
-    var zIndexKey = zIndex !== undefined ? zIndex.toString() : "0";
-    var replays = this.replaysByZIndex_[zIndexKey];
-    if (replays === undefined) {
-      replays = {};
-      this.replaysByZIndex_[zIndexKey] = replays;
-    }
-    var replay = replays[replayType];
-    if (replay === undefined) {
-      var Constructor = ol.render.webgl.ReplayGroup.BATCH_CONSTRUCTORS_[replayType];
-      replay = new Constructor(this.tolerance_, this.maxExtent_);
-      replays[replayType] = replay;
-    }
-    return replay;
-  };
-  ol.render.webgl.ReplayGroup.prototype.isEmpty = function() {
-    return ol.obj.isEmpty(this.replaysByZIndex_);
-  };
-  ol.render.webgl.ReplayGroup.prototype.replay = function(context, center, resolution, rotation, size, pixelRatio, opacity, skippedFeaturesHash) {
-    var zs = Object.keys(this.replaysByZIndex_).map(Number);
-    zs.sort(ol.array.numberSafeCompareFunction);
-    var i, ii, j, jj, replays, replay;
-    for (i = 0, ii = zs.length; i < ii; ++i) {
-      replays = this.replaysByZIndex_[zs[i].toString()];
-      for (j = 0, jj = ol.render.replay.ORDER.length; j < jj; ++j) {
-        replay = replays[ol.render.replay.ORDER[j]];
-        if (replay !== undefined) {
-          replay.replay(context, center, resolution, rotation, size, pixelRatio, opacity, skippedFeaturesHash, undefined, false);
-        }
-      }
-    }
-  };
-  ol.render.webgl.ReplayGroup.prototype.replayHitDetection_ = function(context, center, resolution, rotation, size, pixelRatio, opacity, skippedFeaturesHash, featureCallback, oneByOne, opt_hitExtent) {
-    var zs = Object.keys(this.replaysByZIndex_).map(Number);
-    zs.sort(function(a, b) {
-      return b - a;
-    });
-    var i, ii, j, replays, replay, result;
-    for (i = 0, ii = zs.length; i < ii; ++i) {
-      replays = this.replaysByZIndex_[zs[i].toString()];
-      for (j = ol.render.replay.ORDER.length - 1; j >= 0; --j) {
-        replay = replays[ol.render.replay.ORDER[j]];
-        if (replay !== undefined) {
-          result = replay.replay(context, center, resolution, rotation, size, pixelRatio, opacity, skippedFeaturesHash, featureCallback, oneByOne, opt_hitExtent);
-          if (result) {
-            return result;
-          }
-        }
-      }
-    }
-    return undefined;
-  };
-  ol.render.webgl.ReplayGroup.prototype.forEachFeatureAtCoordinate = function(coordinate, context, center, resolution, rotation, size, pixelRatio, opacity, skippedFeaturesHash, callback) {
-    var gl = context.getGL();
-    gl.bindFramebuffer(gl.FRAMEBUFFER, context.getHitDetectionFramebuffer());
-    var hitExtent;
-    if (this.renderBuffer_ !== undefined) {
-      hitExtent = ol.extent.buffer(ol.extent.createOrUpdateFromCoordinate(coordinate), resolution * this.renderBuffer_);
-    }
-    return this.replayHitDetection_(context, coordinate, resolution, rotation, ol.render.webgl.ReplayGroup.HIT_DETECTION_SIZE_, pixelRatio, opacity, skippedFeaturesHash, function(feature) {
-      var imageData = new Uint8Array(4);
-      gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, imageData);
-      if (imageData[3] > 0) {
-        var result = callback(feature);
+  }
+};
+ol.render.webgl.ReplayGroup.prototype.replayHitDetection_ = function(context, center, resolution, rotation, size, pixelRatio, opacity, skippedFeaturesHash, featureCallback, oneByOne, opt_hitExtent) {
+  var zs = Object.keys(this.replaysByZIndex_).map(Number);
+  zs.sort(function(a, b) {
+    return b - a;
+  });
+  var i, ii, j, replays, replay, result;
+  for (i = 0, ii = zs.length; i < ii; ++i) {
+    replays = this.replaysByZIndex_[zs[i].toString()];
+    for (j = ol.render.replay.ORDER.length - 1; j >= 0; --j) {
+      replay = replays[ol.render.replay.ORDER[j]];
+      if (replay !== undefined) {
+        result = replay.replay(context, center, resolution, rotation, size, pixelRatio, opacity, skippedFeaturesHash, featureCallback, oneByOne, opt_hitExtent);
         if (result) {
           return result;
         }
       }
-    }, true, hitExtent);
-  };
-  ol.render.webgl.ReplayGroup.prototype.hasFeatureAtCoordinate = function(coordinate, context, center, resolution, rotation, size, pixelRatio, opacity, skippedFeaturesHash) {
-    var gl = context.getGL();
-    gl.bindFramebuffer(gl.FRAMEBUFFER, context.getHitDetectionFramebuffer());
-    var hasFeature = this.replayHitDetection_(context, coordinate, resolution, rotation, ol.render.webgl.ReplayGroup.HIT_DETECTION_SIZE_, pixelRatio, opacity, skippedFeaturesHash, function(feature) {
-      var imageData = new Uint8Array(4);
-      gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, imageData);
-      return imageData[3] > 0;
-    }, false);
-    return hasFeature !== undefined;
-  };
-  ol.render.webgl.ReplayGroup.HIT_DETECTION_SIZE_ = [1, 1];
-  ol.render.webgl.ReplayGroup.BATCH_CONSTRUCTORS_ = {"Circle":ol.render.webgl.CircleReplay, "Image":ol.render.webgl.ImageReplay, "LineString":ol.render.webgl.LineStringReplay, "Polygon":ol.render.webgl.PolygonReplay, "Text":ol.render.webgl.TextReplay};
-}
-;goog.provide("ol.render.webgl.Immediate");
+    }
+  }
+  return undefined;
+};
+ol.render.webgl.ReplayGroup.prototype.forEachFeatureAtCoordinate = function(coordinate, context, center, resolution, rotation, size, pixelRatio, opacity, skippedFeaturesHash, callback) {
+  var gl = context.getGL();
+  gl.bindFramebuffer(gl.FRAMEBUFFER, context.getHitDetectionFramebuffer());
+  var hitExtent;
+  if (this.renderBuffer_ !== undefined) {
+    hitExtent = ol.extent.buffer(ol.extent.createOrUpdateFromCoordinate(coordinate), resolution * this.renderBuffer_);
+  }
+  return this.replayHitDetection_(context, coordinate, resolution, rotation, ol.render.webgl.ReplayGroup.HIT_DETECTION_SIZE_, pixelRatio, opacity, skippedFeaturesHash, function(feature) {
+    var imageData = new Uint8Array(4);
+    gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, imageData);
+    if (imageData[3] > 0) {
+      var result = callback(feature);
+      if (result) {
+        return result;
+      }
+    }
+  }, true, hitExtent);
+};
+ol.render.webgl.ReplayGroup.prototype.hasFeatureAtCoordinate = function(coordinate, context, center, resolution, rotation, size, pixelRatio, opacity, skippedFeaturesHash) {
+  var gl = context.getGL();
+  gl.bindFramebuffer(gl.FRAMEBUFFER, context.getHitDetectionFramebuffer());
+  var hasFeature = this.replayHitDetection_(context, coordinate, resolution, rotation, ol.render.webgl.ReplayGroup.HIT_DETECTION_SIZE_, pixelRatio, opacity, skippedFeaturesHash, function(feature) {
+    var imageData = new Uint8Array(4);
+    gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, imageData);
+    return imageData[3] > 0;
+  }, false);
+  return hasFeature !== undefined;
+};
+ol.render.webgl.ReplayGroup.HIT_DETECTION_SIZE_ = [1, 1];
+ol.render.webgl.ReplayGroup.BATCH_CONSTRUCTORS_ = {"Circle":ol.render.webgl.CircleReplay, "Image":ol.render.webgl.ImageReplay, "LineString":ol.render.webgl.LineStringReplay, "Polygon":ol.render.webgl.PolygonReplay, "Text":ol.render.webgl.TextReplay};
+goog.provide("ol.render.webgl.Immediate");
 goog.require("ol");
 goog.require("ol.extent");
 goog.require("ol.geom.GeometryType");
 goog.require("ol.render.ReplayType");
 goog.require("ol.render.VectorContext");
 goog.require("ol.render.webgl.ReplayGroup");
-if (ol.ENABLE_WEBGL) {
-  ol.render.webgl.Immediate = function(context, center, resolution, rotation, size, extent, pixelRatio) {
-    ol.render.VectorContext.call(this);
-    this.context_ = context;
-    this.center_ = center;
-    this.extent_ = extent;
-    this.pixelRatio_ = pixelRatio;
-    this.size_ = size;
-    this.rotation_ = rotation;
-    this.resolution_ = resolution;
-    this.imageStyle_ = null;
-    this.fillStyle_ = null;
-    this.strokeStyle_ = null;
-    this.textStyle_ = null;
-  };
-  ol.inherits(ol.render.webgl.Immediate, ol.render.VectorContext);
-  ol.render.webgl.Immediate.prototype.drawText_ = function(replayGroup, flatCoordinates, offset, end, stride) {
-    var context = this.context_;
-    var replay = replayGroup.getReplay(0, ol.render.ReplayType.TEXT);
-    replay.setTextStyle(this.textStyle_);
-    replay.drawText(flatCoordinates, offset, end, stride, null, null);
-    replay.finish(context);
-    var opacity = 1;
-    var skippedFeatures = {};
-    var featureCallback;
-    var oneByOne = false;
-    replay.replay(this.context_, this.center_, this.resolution_, this.rotation_, this.size_, this.pixelRatio_, opacity, skippedFeatures, featureCallback, oneByOne);
-    replay.getDeleteResourcesFunction(context)();
-  };
-  ol.render.webgl.Immediate.prototype.setStyle = function(style) {
-    this.setFillStrokeStyle(style.getFill(), style.getStroke());
-    this.setImageStyle(style.getImage());
-    this.setTextStyle(style.getText());
-  };
-  ol.render.webgl.Immediate.prototype.drawGeometry = function(geometry) {
-    var type = geometry.getType();
-    switch(type) {
-      case ol.geom.GeometryType.POINT:
-        this.drawPoint(geometry, null);
-        break;
-      case ol.geom.GeometryType.LINE_STRING:
-        this.drawLineString(geometry, null);
-        break;
-      case ol.geom.GeometryType.POLYGON:
-        this.drawPolygon(geometry, null);
-        break;
-      case ol.geom.GeometryType.MULTI_POINT:
-        this.drawMultiPoint(geometry, null);
-        break;
-      case ol.geom.GeometryType.MULTI_LINE_STRING:
-        this.drawMultiLineString(geometry, null);
-        break;
-      case ol.geom.GeometryType.MULTI_POLYGON:
-        this.drawMultiPolygon(geometry, null);
-        break;
-      case ol.geom.GeometryType.GEOMETRY_COLLECTION:
-        this.drawGeometryCollection(geometry, null);
-        break;
-      case ol.geom.GeometryType.CIRCLE:
-        this.drawCircle(geometry, null);
-        break;
-      default:
-    }
-  };
-  ol.render.webgl.Immediate.prototype.drawFeature = function(feature, style) {
-    var geometry = style.getGeometryFunction()(feature);
-    if (!geometry || !ol.extent.intersects(this.extent_, geometry.getExtent())) {
-      return;
-    }
-    this.setStyle(style);
-    this.drawGeometry(geometry);
-  };
-  ol.render.webgl.Immediate.prototype.drawGeometryCollection = function(geometry, data) {
-    var geometries = geometry.getGeometriesArray();
-    var i, ii;
-    for (i = 0, ii = geometries.length; i < ii; ++i) {
-      this.drawGeometry(geometries[i]);
-    }
-  };
-  ol.render.webgl.Immediate.prototype.drawPoint = function(geometry, data) {
-    var context = this.context_;
-    var replayGroup = new ol.render.webgl.ReplayGroup(1, this.extent_);
-    var replay = replayGroup.getReplay(0, ol.render.ReplayType.IMAGE);
-    replay.setImageStyle(this.imageStyle_);
-    replay.drawPoint(geometry, data);
-    replay.finish(context);
-    var opacity = 1;
-    var skippedFeatures = {};
-    var featureCallback;
-    var oneByOne = false;
-    replay.replay(this.context_, this.center_, this.resolution_, this.rotation_, this.size_, this.pixelRatio_, opacity, skippedFeatures, featureCallback, oneByOne);
-    replay.getDeleteResourcesFunction(context)();
-    if (this.textStyle_) {
-      var flatCoordinates = geometry.getFlatCoordinates();
-      var stride = geometry.getStride();
-      this.drawText_(replayGroup, flatCoordinates, 0, flatCoordinates.length, stride);
-    }
-  };
-  ol.render.webgl.Immediate.prototype.drawMultiPoint = function(geometry, data) {
-    var context = this.context_;
-    var replayGroup = new ol.render.webgl.ReplayGroup(1, this.extent_);
-    var replay = replayGroup.getReplay(0, ol.render.ReplayType.IMAGE);
-    replay.setImageStyle(this.imageStyle_);
-    replay.drawMultiPoint(geometry, data);
-    replay.finish(context);
-    var opacity = 1;
-    var skippedFeatures = {};
-    var featureCallback;
-    var oneByOne = false;
-    replay.replay(this.context_, this.center_, this.resolution_, this.rotation_, this.size_, this.pixelRatio_, opacity, skippedFeatures, featureCallback, oneByOne);
-    replay.getDeleteResourcesFunction(context)();
-    if (this.textStyle_) {
-      var flatCoordinates = geometry.getFlatCoordinates();
-      var stride = geometry.getStride();
-      this.drawText_(replayGroup, flatCoordinates, 0, flatCoordinates.length, stride);
-    }
-  };
-  ol.render.webgl.Immediate.prototype.drawLineString = function(geometry, data) {
-    var context = this.context_;
-    var replayGroup = new ol.render.webgl.ReplayGroup(1, this.extent_);
-    var replay = replayGroup.getReplay(0, ol.render.ReplayType.LINE_STRING);
-    replay.setFillStrokeStyle(null, this.strokeStyle_);
-    replay.drawLineString(geometry, data);
-    replay.finish(context);
-    var opacity = 1;
-    var skippedFeatures = {};
-    var featureCallback;
-    var oneByOne = false;
-    replay.replay(this.context_, this.center_, this.resolution_, this.rotation_, this.size_, this.pixelRatio_, opacity, skippedFeatures, featureCallback, oneByOne);
-    replay.getDeleteResourcesFunction(context)();
-    if (this.textStyle_) {
-      var flatMidpoint = geometry.getFlatMidpoint();
-      this.drawText_(replayGroup, flatMidpoint, 0, 2, 2);
-    }
-  };
-  ol.render.webgl.Immediate.prototype.drawMultiLineString = function(geometry, data) {
-    var context = this.context_;
-    var replayGroup = new ol.render.webgl.ReplayGroup(1, this.extent_);
-    var replay = replayGroup.getReplay(0, ol.render.ReplayType.LINE_STRING);
-    replay.setFillStrokeStyle(null, this.strokeStyle_);
-    replay.drawMultiLineString(geometry, data);
-    replay.finish(context);
-    var opacity = 1;
-    var skippedFeatures = {};
-    var featureCallback;
-    var oneByOne = false;
-    replay.replay(this.context_, this.center_, this.resolution_, this.rotation_, this.size_, this.pixelRatio_, opacity, skippedFeatures, featureCallback, oneByOne);
-    replay.getDeleteResourcesFunction(context)();
-    if (this.textStyle_) {
-      var flatMidpoints = geometry.getFlatMidpoints();
-      this.drawText_(replayGroup, flatMidpoints, 0, flatMidpoints.length, 2);
-    }
-  };
-  ol.render.webgl.Immediate.prototype.drawPolygon = function(geometry, data) {
-    var context = this.context_;
-    var replayGroup = new ol.render.webgl.ReplayGroup(1, this.extent_);
-    var replay = replayGroup.getReplay(0, ol.render.ReplayType.POLYGON);
-    replay.setFillStrokeStyle(this.fillStyle_, this.strokeStyle_);
-    replay.drawPolygon(geometry, data);
-    replay.finish(context);
-    var opacity = 1;
-    var skippedFeatures = {};
-    var featureCallback;
-    var oneByOne = false;
-    replay.replay(this.context_, this.center_, this.resolution_, this.rotation_, this.size_, this.pixelRatio_, opacity, skippedFeatures, featureCallback, oneByOne);
-    replay.getDeleteResourcesFunction(context)();
-    if (this.textStyle_) {
-      var flatInteriorPoint = geometry.getFlatInteriorPoint();
-      this.drawText_(replayGroup, flatInteriorPoint, 0, 2, 2);
-    }
-  };
-  ol.render.webgl.Immediate.prototype.drawMultiPolygon = function(geometry, data) {
-    var context = this.context_;
-    var replayGroup = new ol.render.webgl.ReplayGroup(1, this.extent_);
-    var replay = replayGroup.getReplay(0, ol.render.ReplayType.POLYGON);
-    replay.setFillStrokeStyle(this.fillStyle_, this.strokeStyle_);
-    replay.drawMultiPolygon(geometry, data);
-    replay.finish(context);
-    var opacity = 1;
-    var skippedFeatures = {};
-    var featureCallback;
-    var oneByOne = false;
-    replay.replay(this.context_, this.center_, this.resolution_, this.rotation_, this.size_, this.pixelRatio_, opacity, skippedFeatures, featureCallback, oneByOne);
-    replay.getDeleteResourcesFunction(context)();
-    if (this.textStyle_) {
-      var flatInteriorPoints = geometry.getFlatInteriorPoints();
-      this.drawText_(replayGroup, flatInteriorPoints, 0, flatInteriorPoints.length, 2);
-    }
-  };
-  ol.render.webgl.Immediate.prototype.drawCircle = function(geometry, data) {
-    var context = this.context_;
-    var replayGroup = new ol.render.webgl.ReplayGroup(1, this.extent_);
-    var replay = replayGroup.getReplay(0, ol.render.ReplayType.CIRCLE);
-    replay.setFillStrokeStyle(this.fillStyle_, this.strokeStyle_);
-    replay.drawCircle(geometry, data);
-    replay.finish(context);
-    var opacity = 1;
-    var skippedFeatures = {};
-    var featureCallback;
-    var oneByOne = false;
-    replay.replay(this.context_, this.center_, this.resolution_, this.rotation_, this.size_, this.pixelRatio_, opacity, skippedFeatures, featureCallback, oneByOne);
-    replay.getDeleteResourcesFunction(context)();
-    if (this.textStyle_) {
-      this.drawText_(replayGroup, geometry.getCenter(), 0, 2, 2);
-    }
-  };
-  ol.render.webgl.Immediate.prototype.setImageStyle = function(imageStyle) {
-    this.imageStyle_ = imageStyle;
-  };
-  ol.render.webgl.Immediate.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {
-    this.fillStyle_ = fillStyle;
-    this.strokeStyle_ = strokeStyle;
-  };
-  ol.render.webgl.Immediate.prototype.setTextStyle = function(textStyle) {
-    this.textStyle_ = textStyle;
-  };
-}
-;goog.provide("ol.renderer.webgl.defaultmapshader");
+ol.render.webgl.Immediate = function(context, center, resolution, rotation, size, extent, pixelRatio) {
+  ol.render.VectorContext.call(this);
+  this.context_ = context;
+  this.center_ = center;
+  this.extent_ = extent;
+  this.pixelRatio_ = pixelRatio;
+  this.size_ = size;
+  this.rotation_ = rotation;
+  this.resolution_ = resolution;
+  this.imageStyle_ = null;
+  this.fillStyle_ = null;
+  this.strokeStyle_ = null;
+  this.textStyle_ = null;
+};
+ol.inherits(ol.render.webgl.Immediate, ol.render.VectorContext);
+ol.render.webgl.Immediate.prototype.drawText_ = function(replayGroup, geometry) {
+  var context = this.context_;
+  var replay = replayGroup.getReplay(0, ol.render.ReplayType.TEXT);
+  replay.setTextStyle(this.textStyle_);
+  replay.drawText(geometry, null);
+  replay.finish(context);
+  var opacity = 1;
+  var skippedFeatures = {};
+  var featureCallback;
+  var oneByOne = false;
+  replay.replay(this.context_, this.center_, this.resolution_, this.rotation_, this.size_, this.pixelRatio_, opacity, skippedFeatures, featureCallback, oneByOne);
+  replay.getDeleteResourcesFunction(context)();
+};
+ol.render.webgl.Immediate.prototype.setStyle = function(style) {
+  this.setFillStrokeStyle(style.getFill(), style.getStroke());
+  this.setImageStyle(style.getImage());
+  this.setTextStyle(style.getText());
+};
+ol.render.webgl.Immediate.prototype.drawGeometry = function(geometry) {
+  var type = geometry.getType();
+  switch(type) {
+    case ol.geom.GeometryType.POINT:
+      this.drawPoint(geometry, null);
+      break;
+    case ol.geom.GeometryType.LINE_STRING:
+      this.drawLineString(geometry, null);
+      break;
+    case ol.geom.GeometryType.POLYGON:
+      this.drawPolygon(geometry, null);
+      break;
+    case ol.geom.GeometryType.MULTI_POINT:
+      this.drawMultiPoint(geometry, null);
+      break;
+    case ol.geom.GeometryType.MULTI_LINE_STRING:
+      this.drawMultiLineString(geometry, null);
+      break;
+    case ol.geom.GeometryType.MULTI_POLYGON:
+      this.drawMultiPolygon(geometry, null);
+      break;
+    case ol.geom.GeometryType.GEOMETRY_COLLECTION:
+      this.drawGeometryCollection(geometry, null);
+      break;
+    case ol.geom.GeometryType.CIRCLE:
+      this.drawCircle(geometry, null);
+      break;
+    default:
+  }
+};
+ol.render.webgl.Immediate.prototype.drawFeature = function(feature, style) {
+  var geometry = style.getGeometryFunction()(feature);
+  if (!geometry || !ol.extent.intersects(this.extent_, geometry.getExtent())) {
+    return;
+  }
+  this.setStyle(style);
+  this.drawGeometry(geometry);
+};
+ol.render.webgl.Immediate.prototype.drawGeometryCollection = function(geometry, data) {
+  var geometries = geometry.getGeometriesArray();
+  var i, ii;
+  for (i = 0, ii = geometries.length; i < ii; ++i) {
+    this.drawGeometry(geometries[i]);
+  }
+};
+ol.render.webgl.Immediate.prototype.drawPoint = function(geometry, data) {
+  var context = this.context_;
+  var replayGroup = new ol.render.webgl.ReplayGroup(1, this.extent_);
+  var replay = replayGroup.getReplay(0, ol.render.ReplayType.IMAGE);
+  replay.setImageStyle(this.imageStyle_);
+  replay.drawPoint(geometry, data);
+  replay.finish(context);
+  var opacity = 1;
+  var skippedFeatures = {};
+  var featureCallback;
+  var oneByOne = false;
+  replay.replay(this.context_, this.center_, this.resolution_, this.rotation_, this.size_, this.pixelRatio_, opacity, skippedFeatures, featureCallback, oneByOne);
+  replay.getDeleteResourcesFunction(context)();
+  if (this.textStyle_) {
+    this.drawText_(replayGroup, geometry);
+  }
+};
+ol.render.webgl.Immediate.prototype.drawMultiPoint = function(geometry, data) {
+  var context = this.context_;
+  var replayGroup = new ol.render.webgl.ReplayGroup(1, this.extent_);
+  var replay = replayGroup.getReplay(0, ol.render.ReplayType.IMAGE);
+  replay.setImageStyle(this.imageStyle_);
+  replay.drawMultiPoint(geometry, data);
+  replay.finish(context);
+  var opacity = 1;
+  var skippedFeatures = {};
+  var featureCallback;
+  var oneByOne = false;
+  replay.replay(this.context_, this.center_, this.resolution_, this.rotation_, this.size_, this.pixelRatio_, opacity, skippedFeatures, featureCallback, oneByOne);
+  replay.getDeleteResourcesFunction(context)();
+  if (this.textStyle_) {
+    this.drawText_(replayGroup, geometry);
+  }
+};
+ol.render.webgl.Immediate.prototype.drawLineString = function(geometry, data) {
+  var context = this.context_;
+  var replayGroup = new ol.render.webgl.ReplayGroup(1, this.extent_);
+  var replay = replayGroup.getReplay(0, ol.render.ReplayType.LINE_STRING);
+  replay.setFillStrokeStyle(null, this.strokeStyle_);
+  replay.drawLineString(geometry, data);
+  replay.finish(context);
+  var opacity = 1;
+  var skippedFeatures = {};
+  var featureCallback;
+  var oneByOne = false;
+  replay.replay(this.context_, this.center_, this.resolution_, this.rotation_, this.size_, this.pixelRatio_, opacity, skippedFeatures, featureCallback, oneByOne);
+  replay.getDeleteResourcesFunction(context)();
+  if (this.textStyle_) {
+    this.drawText_(replayGroup, geometry);
+  }
+};
+ol.render.webgl.Immediate.prototype.drawMultiLineString = function(geometry, data) {
+  var context = this.context_;
+  var replayGroup = new ol.render.webgl.ReplayGroup(1, this.extent_);
+  var replay = replayGroup.getReplay(0, ol.render.ReplayType.LINE_STRING);
+  replay.setFillStrokeStyle(null, this.strokeStyle_);
+  replay.drawMultiLineString(geometry, data);
+  replay.finish(context);
+  var opacity = 1;
+  var skippedFeatures = {};
+  var featureCallback;
+  var oneByOne = false;
+  replay.replay(this.context_, this.center_, this.resolution_, this.rotation_, this.size_, this.pixelRatio_, opacity, skippedFeatures, featureCallback, oneByOne);
+  replay.getDeleteResourcesFunction(context)();
+  if (this.textStyle_) {
+    this.drawText_(replayGroup, geometry);
+  }
+};
+ol.render.webgl.Immediate.prototype.drawPolygon = function(geometry, data) {
+  var context = this.context_;
+  var replayGroup = new ol.render.webgl.ReplayGroup(1, this.extent_);
+  var replay = replayGroup.getReplay(0, ol.render.ReplayType.POLYGON);
+  replay.setFillStrokeStyle(this.fillStyle_, this.strokeStyle_);
+  replay.drawPolygon(geometry, data);
+  replay.finish(context);
+  var opacity = 1;
+  var skippedFeatures = {};
+  var featureCallback;
+  var oneByOne = false;
+  replay.replay(this.context_, this.center_, this.resolution_, this.rotation_, this.size_, this.pixelRatio_, opacity, skippedFeatures, featureCallback, oneByOne);
+  replay.getDeleteResourcesFunction(context)();
+  if (this.textStyle_) {
+    this.drawText_(replayGroup, geometry);
+  }
+};
+ol.render.webgl.Immediate.prototype.drawMultiPolygon = function(geometry, data) {
+  var context = this.context_;
+  var replayGroup = new ol.render.webgl.ReplayGroup(1, this.extent_);
+  var replay = replayGroup.getReplay(0, ol.render.ReplayType.POLYGON);
+  replay.setFillStrokeStyle(this.fillStyle_, this.strokeStyle_);
+  replay.drawMultiPolygon(geometry, data);
+  replay.finish(context);
+  var opacity = 1;
+  var skippedFeatures = {};
+  var featureCallback;
+  var oneByOne = false;
+  replay.replay(this.context_, this.center_, this.resolution_, this.rotation_, this.size_, this.pixelRatio_, opacity, skippedFeatures, featureCallback, oneByOne);
+  replay.getDeleteResourcesFunction(context)();
+  if (this.textStyle_) {
+    this.drawText_(replayGroup, geometry);
+  }
+};
+ol.render.webgl.Immediate.prototype.drawCircle = function(geometry, data) {
+  var context = this.context_;
+  var replayGroup = new ol.render.webgl.ReplayGroup(1, this.extent_);
+  var replay = replayGroup.getReplay(0, ol.render.ReplayType.CIRCLE);
+  replay.setFillStrokeStyle(this.fillStyle_, this.strokeStyle_);
+  replay.drawCircle(geometry, data);
+  replay.finish(context);
+  var opacity = 1;
+  var skippedFeatures = {};
+  var featureCallback;
+  var oneByOne = false;
+  replay.replay(this.context_, this.center_, this.resolution_, this.rotation_, this.size_, this.pixelRatio_, opacity, skippedFeatures, featureCallback, oneByOne);
+  replay.getDeleteResourcesFunction(context)();
+  if (this.textStyle_) {
+    this.drawText_(replayGroup, geometry);
+  }
+};
+ol.render.webgl.Immediate.prototype.setImageStyle = function(imageStyle) {
+  this.imageStyle_ = imageStyle;
+};
+ol.render.webgl.Immediate.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {
+  this.fillStyle_ = fillStyle;
+  this.strokeStyle_ = strokeStyle;
+};
+ol.render.webgl.Immediate.prototype.setTextStyle = function(textStyle) {
+  this.textStyle_ = textStyle;
+};
+goog.provide("ol.renderer.webgl.defaultmapshader");
 goog.require("ol");
 goog.require("ol.webgl.Fragment");
 goog.require("ol.webgl.Vertex");
-if (ol.ENABLE_WEBGL) {
-  ol.renderer.webgl.defaultmapshader.Fragment = function() {
-    ol.webgl.Fragment.call(this, ol.renderer.webgl.defaultmapshader.Fragment.SOURCE);
-  };
-  ol.inherits(ol.renderer.webgl.defaultmapshader.Fragment, ol.webgl.Fragment);
-  ol.renderer.webgl.defaultmapshader.Fragment.DEBUG_SOURCE = "precision mediump float;\nvarying vec2 v_texCoord;\n\n\nuniform float u_opacity;\nuniform sampler2D u_texture;\n\nvoid main(void) {\n  vec4 texColor = texture2D(u_texture, v_texCoord);\n  gl_FragColor.rgb = texColor.rgb;\n  gl_FragColor.a = texColor.a * u_opacity;\n}\n";
-  ol.renderer.webgl.defaultmapshader.Fragment.OPTIMIZED_SOURCE = "precision mediump float;varying vec2 a;uniform float f;uniform sampler2D g;void main(void){vec4 texColor=texture2D(g,a);gl_FragColor.rgb=texColor.rgb;gl_FragColor.a=texColor.a*f;}";
-  ol.renderer.webgl.defaultmapshader.Fragment.SOURCE = ol.DEBUG_WEBGL ? ol.renderer.webgl.defaultmapshader.Fragment.DEBUG_SOURCE : ol.renderer.webgl.defaultmapshader.Fragment.OPTIMIZED_SOURCE;
-  ol.renderer.webgl.defaultmapshader.fragment = new ol.renderer.webgl.defaultmapshader.Fragment;
-  ol.renderer.webgl.defaultmapshader.Vertex = function() {
-    ol.webgl.Vertex.call(this, ol.renderer.webgl.defaultmapshader.Vertex.SOURCE);
-  };
-  ol.inherits(ol.renderer.webgl.defaultmapshader.Vertex, ol.webgl.Vertex);
-  ol.renderer.webgl.defaultmapshader.Vertex.DEBUG_SOURCE = "varying vec2 v_texCoord;\n\n\nattribute vec2 a_position;\nattribute vec2 a_texCoord;\n\nuniform mat4 u_texCoordMatrix;\nuniform mat4 u_projectionMatrix;\n\nvoid main(void) {\n  gl_Position = u_projectionMatrix * vec4(a_position, 0., 1.);\n  v_texCoord = (u_texCoordMatrix * vec4(a_texCoord, 0., 1.)).st;\n}\n\n\n";
-  ol.renderer.webgl.defaultmapshader.Vertex.OPTIMIZED_SOURCE = "varying vec2 a;attribute vec2 b;attribute vec2 c;uniform mat4 d;uniform mat4 e;void main(void){gl_Position=e*vec4(b,0.,1.);a=(d*vec4(c,0.,1.)).st;}";
-  ol.renderer.webgl.defaultmapshader.Vertex.SOURCE = ol.DEBUG_WEBGL ? ol.renderer.webgl.defaultmapshader.Vertex.DEBUG_SOURCE : ol.renderer.webgl.defaultmapshader.Vertex.OPTIMIZED_SOURCE;
-  ol.renderer.webgl.defaultmapshader.vertex = new ol.renderer.webgl.defaultmapshader.Vertex;
-  ol.renderer.webgl.defaultmapshader.Locations = function(gl, program) {
-    this.u_opacity = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_opacity" : "f");
-    this.u_projectionMatrix = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_projectionMatrix" : "e");
-    this.u_texCoordMatrix = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_texCoordMatrix" : "d");
-    this.u_texture = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_texture" : "g");
-    this.a_position = gl.getAttribLocation(program, ol.DEBUG_WEBGL ? "a_position" : "b");
-    this.a_texCoord = gl.getAttribLocation(program, ol.DEBUG_WEBGL ? "a_texCoord" : "c");
-  };
-}
-;goog.provide("ol.renderer.webgl.Layer");
+ol.renderer.webgl.defaultmapshader.fragment = new ol.webgl.Fragment(ol.DEBUG_WEBGL ? "precision mediump float;\nvarying vec2 v_texCoord;\n\n\nuniform float u_opacity;\nuniform sampler2D u_texture;\n\nvoid main(void) {\n  vec4 texColor = texture2D(u_texture, v_texCoord);\n  gl_FragColor.rgb = texColor.rgb;\n  gl_FragColor.a = texColor.a * u_opacity;\n}\n" : "precision mediump float;varying vec2 a;uniform float f;uniform sampler2D g;void main(void){vec4 texColor=texture2D(g,a);gl_FragColor.rgb=texColor.rgb;gl_FragColor.a=texColor.a*f;}");
+ol.renderer.webgl.defaultmapshader.vertex = new ol.webgl.Vertex(ol.DEBUG_WEBGL ? "varying vec2 v_texCoord;\n\n\nattribute vec2 a_position;\nattribute vec2 a_texCoord;\n\nuniform mat4 u_texCoordMatrix;\nuniform mat4 u_projectionMatrix;\n\nvoid main(void) {\n  gl_Position = u_projectionMatrix * vec4(a_position, 0., 1.);\n  v_texCoord = (u_texCoordMatrix * vec4(a_texCoord, 0., 1.)).st;\n}\n\n\n" : "varying vec2 a;attribute vec2 b;attribute vec2 c;uniform mat4 d;uniform mat4 e;void main(void){gl_Position=e*vec4(b,0.,1.);a=(d*vec4(c,0.,1.)).st;}");
+goog.provide("ol.renderer.webgl.defaultmapshader.Locations");
+goog.require("ol");
+ol.renderer.webgl.defaultmapshader.Locations = function(gl, program) {
+  this.u_texCoordMatrix = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_texCoordMatrix" : "d");
+  this.u_projectionMatrix = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_projectionMatrix" : "e");
+  this.u_opacity = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_opacity" : "f");
+  this.u_texture = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_texture" : "g");
+  this.a_position = gl.getAttribLocation(program, ol.DEBUG_WEBGL ? "a_position" : "b");
+  this.a_texCoord = gl.getAttribLocation(program, ol.DEBUG_WEBGL ? "a_texCoord" : "c");
+};
+goog.provide("ol.renderer.webgl.Layer");
 goog.require("ol");
 goog.require("ol.render.Event");
 goog.require("ol.render.EventType");
 goog.require("ol.render.webgl.Immediate");
 goog.require("ol.renderer.Layer");
 goog.require("ol.renderer.webgl.defaultmapshader");
+goog.require("ol.renderer.webgl.defaultmapshader.Locations");
 goog.require("ol.transform");
 goog.require("ol.vec.Mat4");
 goog.require("ol.webgl");
 goog.require("ol.webgl.Buffer");
 goog.require("ol.webgl.Context");
-if (ol.ENABLE_WEBGL) {
-  ol.renderer.webgl.Layer = function(mapRenderer, layer) {
-    ol.renderer.Layer.call(this, layer);
-    this.mapRenderer = mapRenderer;
-    this.arrayBuffer_ = new ol.webgl.Buffer([-1, -1, 0, 0, 1, -1, 1, 0, -1, 1, 0, 1, 1, 1, 1, 1]);
-    this.texture = null;
-    this.framebuffer = null;
-    this.framebufferDimension = undefined;
-    this.texCoordMatrix = ol.transform.create();
-    this.projectionMatrix = ol.transform.create();
-    this.tmpMat4_ = ol.vec.Mat4.create();
-    this.defaultLocations_ = null;
-  };
-  ol.inherits(ol.renderer.webgl.Layer, ol.renderer.Layer);
-  ol.renderer.webgl.Layer.prototype.bindFramebuffer = function(frameState, framebufferDimension) {
-    var gl = this.mapRenderer.getGL();
-    if (this.framebufferDimension === undefined || this.framebufferDimension != framebufferDimension) {
-      var postRenderFunction = function(gl, framebuffer, texture) {
-        if (!gl.isContextLost()) {
-          gl.deleteFramebuffer(framebuffer);
-          gl.deleteTexture(texture);
-        }
-      }.bind(null, gl, this.framebuffer, this.texture);
-      frameState.postRenderFunctions.push(postRenderFunction);
-      var texture = ol.webgl.Context.createEmptyTexture(gl, framebufferDimension, framebufferDimension);
-      var framebuffer = gl.createFramebuffer();
-      gl.bindFramebuffer(ol.webgl.FRAMEBUFFER, framebuffer);
-      gl.framebufferTexture2D(ol.webgl.FRAMEBUFFER, ol.webgl.COLOR_ATTACHMENT0, ol.webgl.TEXTURE_2D, texture, 0);
-      this.texture = texture;
-      this.framebuffer = framebuffer;
-      this.framebufferDimension = framebufferDimension;
-    } else {
-      gl.bindFramebuffer(ol.webgl.FRAMEBUFFER, this.framebuffer);
-    }
-  };
-  ol.renderer.webgl.Layer.prototype.composeFrame = function(frameState, layerState, context) {
-    this.dispatchComposeEvent_(ol.render.EventType.PRECOMPOSE, context, frameState);
-    context.bindBuffer(ol.webgl.ARRAY_BUFFER, this.arrayBuffer_);
-    var gl = context.getGL();
-    var fragmentShader = ol.renderer.webgl.defaultmapshader.fragment;
-    var vertexShader = ol.renderer.webgl.defaultmapshader.vertex;
-    var program = context.getProgram(fragmentShader, vertexShader);
-    var locations;
-    if (!this.defaultLocations_) {
-      locations = new ol.renderer.webgl.defaultmapshader.Locations(gl, program);
-      this.defaultLocations_ = locations;
-    } else {
-      locations = this.defaultLocations_;
-    }
-    if (context.useProgram(program)) {
-      gl.enableVertexAttribArray(locations.a_position);
-      gl.vertexAttribPointer(locations.a_position, 2, ol.webgl.FLOAT, false, 16, 0);
-      gl.enableVertexAttribArray(locations.a_texCoord);
-      gl.vertexAttribPointer(locations.a_texCoord, 2, ol.webgl.FLOAT, false, 16, 8);
-      gl.uniform1i(locations.u_texture, 0);
-    }
-    gl.uniformMatrix4fv(locations.u_texCoordMatrix, false, ol.vec.Mat4.fromTransform(this.tmpMat4_, this.getTexCoordMatrix()));
-    gl.uniformMatrix4fv(locations.u_projectionMatrix, false, ol.vec.Mat4.fromTransform(this.tmpMat4_, this.getProjectionMatrix()));
-    gl.uniform1f(locations.u_opacity, layerState.opacity);
-    gl.bindTexture(ol.webgl.TEXTURE_2D, this.getTexture());
-    gl.drawArrays(ol.webgl.TRIANGLE_STRIP, 0, 4);
-    this.dispatchComposeEvent_(ol.render.EventType.POSTCOMPOSE, context, frameState);
-  };
-  ol.renderer.webgl.Layer.prototype.dispatchComposeEvent_ = function(type, context, frameState) {
-    var layer = this.getLayer();
-    if (layer.hasListener(type)) {
-      var viewState = frameState.viewState;
-      var resolution = viewState.resolution;
-      var pixelRatio = frameState.pixelRatio;
-      var extent = frameState.extent;
-      var center = viewState.center;
-      var rotation = viewState.rotation;
-      var size = frameState.size;
-      var render = new ol.render.webgl.Immediate(context, center, resolution, rotation, size, extent, pixelRatio);
-      var composeEvent = new ol.render.Event(type, render, frameState, null, context);
-      layer.dispatchEvent(composeEvent);
-    }
-  };
-  ol.renderer.webgl.Layer.prototype.getTexCoordMatrix = function() {
-    return this.texCoordMatrix;
-  };
-  ol.renderer.webgl.Layer.prototype.getTexture = function() {
-    return this.texture;
-  };
-  ol.renderer.webgl.Layer.prototype.getProjectionMatrix = function() {
-    return this.projectionMatrix;
-  };
-  ol.renderer.webgl.Layer.prototype.handleWebGLContextLost = function() {
-    this.texture = null;
-    this.framebuffer = null;
-    this.framebufferDimension = undefined;
-  };
-  ol.renderer.webgl.Layer.prototype.prepareFrame = function(frameState, layerState, context) {
-  };
-  ol.renderer.webgl.Layer.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg) {
-  };
-}
-;goog.provide("ol.reproj.Image");
+ol.renderer.webgl.Layer = function(mapRenderer, layer) {
+  ol.renderer.Layer.call(this, layer);
+  this.mapRenderer = mapRenderer;
+  this.arrayBuffer_ = new ol.webgl.Buffer([-1, -1, 0, 0, 1, -1, 1, 0, -1, 1, 0, 1, 1, 1, 1, 1]);
+  this.texture = null;
+  this.framebuffer = null;
+  this.framebufferDimension = undefined;
+  this.texCoordMatrix = ol.transform.create();
+  this.projectionMatrix = ol.transform.create();
+  this.tmpMat4_ = ol.vec.Mat4.create();
+  this.defaultLocations_ = null;
+};
+ol.inherits(ol.renderer.webgl.Layer, ol.renderer.Layer);
+ol.renderer.webgl.Layer.prototype.bindFramebuffer = function(frameState, framebufferDimension) {
+  var gl = this.mapRenderer.getGL();
+  if (this.framebufferDimension === undefined || this.framebufferDimension != framebufferDimension) {
+    var postRenderFunction = function(gl, framebuffer, texture) {
+      if (!gl.isContextLost()) {
+        gl.deleteFramebuffer(framebuffer);
+        gl.deleteTexture(texture);
+      }
+    }.bind(null, gl, this.framebuffer, this.texture);
+    frameState.postRenderFunctions.push(postRenderFunction);
+    var texture = ol.webgl.Context.createEmptyTexture(gl, framebufferDimension, framebufferDimension);
+    var framebuffer = gl.createFramebuffer();
+    gl.bindFramebuffer(ol.webgl.FRAMEBUFFER, framebuffer);
+    gl.framebufferTexture2D(ol.webgl.FRAMEBUFFER, ol.webgl.COLOR_ATTACHMENT0, ol.webgl.TEXTURE_2D, texture, 0);
+    this.texture = texture;
+    this.framebuffer = framebuffer;
+    this.framebufferDimension = framebufferDimension;
+  } else {
+    gl.bindFramebuffer(ol.webgl.FRAMEBUFFER, this.framebuffer);
+  }
+};
+ol.renderer.webgl.Layer.prototype.composeFrame = function(frameState, layerState, context) {
+  this.dispatchComposeEvent_(ol.render.EventType.PRECOMPOSE, context, frameState);
+  context.bindBuffer(ol.webgl.ARRAY_BUFFER, this.arrayBuffer_);
+  var gl = context.getGL();
+  var fragmentShader = ol.renderer.webgl.defaultmapshader.fragment;
+  var vertexShader = ol.renderer.webgl.defaultmapshader.vertex;
+  var program = context.getProgram(fragmentShader, vertexShader);
+  var locations;
+  if (!this.defaultLocations_) {
+    locations = new ol.renderer.webgl.defaultmapshader.Locations(gl, program);
+    this.defaultLocations_ = locations;
+  } else {
+    locations = this.defaultLocations_;
+  }
+  if (context.useProgram(program)) {
+    gl.enableVertexAttribArray(locations.a_position);
+    gl.vertexAttribPointer(locations.a_position, 2, ol.webgl.FLOAT, false, 16, 0);
+    gl.enableVertexAttribArray(locations.a_texCoord);
+    gl.vertexAttribPointer(locations.a_texCoord, 2, ol.webgl.FLOAT, false, 16, 8);
+    gl.uniform1i(locations.u_texture, 0);
+  }
+  gl.uniformMatrix4fv(locations.u_texCoordMatrix, false, ol.vec.Mat4.fromTransform(this.tmpMat4_, this.getTexCoordMatrix()));
+  gl.uniformMatrix4fv(locations.u_projectionMatrix, false, ol.vec.Mat4.fromTransform(this.tmpMat4_, this.getProjectionMatrix()));
+  gl.uniform1f(locations.u_opacity, layerState.opacity);
+  gl.bindTexture(ol.webgl.TEXTURE_2D, this.getTexture());
+  gl.drawArrays(ol.webgl.TRIANGLE_STRIP, 0, 4);
+  this.dispatchComposeEvent_(ol.render.EventType.POSTCOMPOSE, context, frameState);
+};
+ol.renderer.webgl.Layer.prototype.dispatchComposeEvent_ = function(type, context, frameState) {
+  var layer = this.getLayer();
+  if (layer.hasListener(type)) {
+    var viewState = frameState.viewState;
+    var resolution = viewState.resolution;
+    var pixelRatio = frameState.pixelRatio;
+    var extent = frameState.extent;
+    var center = viewState.center;
+    var rotation = viewState.rotation;
+    var size = frameState.size;
+    var render = new ol.render.webgl.Immediate(context, center, resolution, rotation, size, extent, pixelRatio);
+    var composeEvent = new ol.render.Event(type, render, frameState, null, context);
+    layer.dispatchEvent(composeEvent);
+  }
+};
+ol.renderer.webgl.Layer.prototype.getTexCoordMatrix = function() {
+  return this.texCoordMatrix;
+};
+ol.renderer.webgl.Layer.prototype.getTexture = function() {
+  return this.texture;
+};
+ol.renderer.webgl.Layer.prototype.getProjectionMatrix = function() {
+  return this.projectionMatrix;
+};
+ol.renderer.webgl.Layer.prototype.handleWebGLContextLost = function() {
+  this.texture = null;
+  this.framebuffer = null;
+  this.framebufferDimension = undefined;
+};
+ol.renderer.webgl.Layer.prototype.prepareFrame = function(frameState, layerState, context) {
+};
+ol.renderer.webgl.Layer.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg) {
+};
+goog.provide("ol.reproj.Image");
 goog.require("ol");
 goog.require("ol.ImageBase");
 goog.require("ol.ImageState");
@@ -36304,7 +36240,7 @@ ol.reproj.Image.prototype.disposeInternal = function() {
   }
   ol.ImageBase.prototype.disposeInternal.call(this);
 };
-ol.reproj.Image.prototype.getImage = function(opt_context) {
+ol.reproj.Image.prototype.getImage = function() {
   return this.canvas_;
 };
 ol.reproj.Image.prototype.getProjection = function() {
@@ -36475,7 +36411,7 @@ ol.source.ImageVector = function(options) {
 };
 ol.inherits(ol.source.ImageVector, ol.source.ImageCanvas);
 ol.source.ImageVector.prototype.canvasFunctionInternal_ = function(extent, resolution, pixelRatio, size, projection) {
-  var replayGroup = new ol.render.canvas.ReplayGroup(ol.renderer.vector.getTolerance(resolution, pixelRatio), extent, resolution, this.source_.getOverlaps(), this.renderBuffer_);
+  var replayGroup = new ol.render.canvas.ReplayGroup(ol.renderer.vector.getTolerance(resolution, pixelRatio), extent, resolution, pixelRatio, this.source_.getOverlaps(), this.renderBuffer_);
   this.source_.loadFeatures(extent, resolution, projection);
   var loading = false;
   this.source_.forEachFeatureInExtent(extent, function(feature) {
@@ -36494,7 +36430,7 @@ ol.source.ImageVector.prototype.canvasFunctionInternal_ = function(extent, resol
     this.canvasContext_.clearRect(0, 0, size[0], size[1]);
   }
   var transform = this.getTransform_(ol.extent.getCenter(extent), resolution, pixelRatio, size);
-  replayGroup.replay(this.canvasContext_, pixelRatio, transform, 0, {});
+  replayGroup.replay(this.canvasContext_, transform, 0, {});
   this.replayGroup_ = replayGroup;
   return this.canvasContext_.canvas;
 };
@@ -36576,158 +36512,156 @@ goog.require("ol.source.ImageVector");
 goog.require("ol.transform");
 goog.require("ol.webgl");
 goog.require("ol.webgl.Context");
-if (ol.ENABLE_WEBGL) {
-  ol.renderer.webgl.ImageLayer = function(mapRenderer, imageLayer) {
-    ol.renderer.webgl.Layer.call(this, mapRenderer, imageLayer);
-    this.image_ = null;
-    this.hitCanvasContext_ = null;
+ol.renderer.webgl.ImageLayer = function(mapRenderer, imageLayer) {
+  ol.renderer.webgl.Layer.call(this, mapRenderer, imageLayer);
+  this.image_ = null;
+  this.hitCanvasContext_ = null;
+  this.hitTransformationMatrix_ = null;
+};
+ol.inherits(ol.renderer.webgl.ImageLayer, ol.renderer.webgl.Layer);
+ol.renderer.webgl.ImageLayer["handles"] = function(type, layer) {
+  return type === ol.renderer.Type.WEBGL && layer.getType() === ol.LayerType.IMAGE;
+};
+ol.renderer.webgl.ImageLayer["create"] = function(mapRenderer, layer) {
+  return new ol.renderer.webgl.ImageLayer(mapRenderer, layer);
+};
+ol.renderer.webgl.ImageLayer.prototype.createTexture_ = function(image) {
+  var imageElement = image.getImage();
+  var gl = this.mapRenderer.getGL();
+  return ol.webgl.Context.createTexture(gl, imageElement, ol.webgl.CLAMP_TO_EDGE, ol.webgl.CLAMP_TO_EDGE);
+};
+ol.renderer.webgl.ImageLayer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg) {
+  var layer = this.getLayer();
+  var source = layer.getSource();
+  var resolution = frameState.viewState.resolution;
+  var rotation = frameState.viewState.rotation;
+  var skippedFeatureUids = frameState.skippedFeatureUids;
+  return source.forEachFeatureAtCoordinate(coordinate, resolution, rotation, hitTolerance, skippedFeatureUids, function(feature) {
+    return callback.call(thisArg, feature, layer);
+  });
+};
+ol.renderer.webgl.ImageLayer.prototype.prepareFrame = function(frameState, layerState, context) {
+  var gl = this.mapRenderer.getGL();
+  var pixelRatio = frameState.pixelRatio;
+  var viewState = frameState.viewState;
+  var viewCenter = viewState.center;
+  var viewResolution = viewState.resolution;
+  var viewRotation = viewState.rotation;
+  var image = this.image_;
+  var texture = this.texture;
+  var imageLayer = this.getLayer();
+  var imageSource = imageLayer.getSource();
+  var hints = frameState.viewHints;
+  var renderedExtent = frameState.extent;
+  if (layerState.extent !== undefined) {
+    renderedExtent = ol.extent.getIntersection(renderedExtent, layerState.extent);
+  }
+  if (!hints[ol.ViewHint.ANIMATING] && !hints[ol.ViewHint.INTERACTING] && !ol.extent.isEmpty(renderedExtent)) {
+    var projection = viewState.projection;
+    if (!ol.ENABLE_RASTER_REPROJECTION) {
+      var sourceProjection = imageSource.getProjection();
+      if (sourceProjection) {
+        projection = sourceProjection;
+      }
+    }
+    var image_ = imageSource.getImage(renderedExtent, viewResolution, pixelRatio, projection);
+    if (image_) {
+      var loaded = this.loadImage(image_);
+      if (loaded) {
+        image = image_;
+        texture = this.createTexture_(image_);
+        if (this.texture) {
+          var postRenderFunction = function(gl, texture) {
+            if (!gl.isContextLost()) {
+              gl.deleteTexture(texture);
+            }
+          }.bind(null, gl, this.texture);
+          frameState.postRenderFunctions.push(postRenderFunction);
+        }
+      }
+    }
+  }
+  if (image) {
+    var canvas = this.mapRenderer.getContext().getCanvas();
+    this.updateProjectionMatrix_(canvas.width, canvas.height, pixelRatio, viewCenter, viewResolution, viewRotation, image.getExtent());
     this.hitTransformationMatrix_ = null;
-  };
-  ol.inherits(ol.renderer.webgl.ImageLayer, ol.renderer.webgl.Layer);
-  ol.renderer.webgl.ImageLayer["handles"] = function(type, layer) {
-    return type === ol.renderer.Type.WEBGL && layer.getType() === ol.LayerType.IMAGE;
-  };
-  ol.renderer.webgl.ImageLayer["create"] = function(mapRenderer, layer) {
-    return new ol.renderer.webgl.ImageLayer(mapRenderer, layer);
-  };
-  ol.renderer.webgl.ImageLayer.prototype.createTexture_ = function(image) {
-    var imageElement = image.getImage();
-    var gl = this.mapRenderer.getGL();
-    return ol.webgl.Context.createTexture(gl, imageElement, ol.webgl.CLAMP_TO_EDGE, ol.webgl.CLAMP_TO_EDGE);
-  };
-  ol.renderer.webgl.ImageLayer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg) {
-    var layer = this.getLayer();
-    var source = layer.getSource();
-    var resolution = frameState.viewState.resolution;
-    var rotation = frameState.viewState.rotation;
-    var skippedFeatureUids = frameState.skippedFeatureUids;
-    return source.forEachFeatureAtCoordinate(coordinate, resolution, rotation, hitTolerance, skippedFeatureUids, function(feature) {
-      return callback.call(thisArg, feature, layer);
-    });
-  };
-  ol.renderer.webgl.ImageLayer.prototype.prepareFrame = function(frameState, layerState, context) {
-    var gl = this.mapRenderer.getGL();
-    var pixelRatio = frameState.pixelRatio;
-    var viewState = frameState.viewState;
-    var viewCenter = viewState.center;
-    var viewResolution = viewState.resolution;
-    var viewRotation = viewState.rotation;
-    var image = this.image_;
-    var texture = this.texture;
-    var imageLayer = this.getLayer();
-    var imageSource = imageLayer.getSource();
-    var hints = frameState.viewHints;
-    var renderedExtent = frameState.extent;
-    if (layerState.extent !== undefined) {
-      renderedExtent = ol.extent.getIntersection(renderedExtent, layerState.extent);
-    }
-    if (!hints[ol.ViewHint.ANIMATING] && !hints[ol.ViewHint.INTERACTING] && !ol.extent.isEmpty(renderedExtent)) {
-      var projection = viewState.projection;
-      if (!ol.ENABLE_RASTER_REPROJECTION) {
-        var sourceProjection = imageSource.getProjection();
-        if (sourceProjection) {
-          projection = sourceProjection;
-        }
-      }
-      var image_ = imageSource.getImage(renderedExtent, viewResolution, pixelRatio, projection);
-      if (image_) {
-        var loaded = this.loadImage(image_);
-        if (loaded) {
-          image = image_;
-          texture = this.createTexture_(image_);
-          if (this.texture) {
-            var postRenderFunction = function(gl, texture) {
-              if (!gl.isContextLost()) {
-                gl.deleteTexture(texture);
-              }
-            }.bind(null, gl, this.texture);
-            frameState.postRenderFunctions.push(postRenderFunction);
-          }
-        }
-      }
-    }
-    if (image) {
-      var canvas = this.mapRenderer.getContext().getCanvas();
-      this.updateProjectionMatrix_(canvas.width, canvas.height, pixelRatio, viewCenter, viewResolution, viewRotation, image.getExtent());
-      this.hitTransformationMatrix_ = null;
-      var texCoordMatrix = this.texCoordMatrix;
-      ol.transform.reset(texCoordMatrix);
-      ol.transform.scale(texCoordMatrix, 1, -1);
-      ol.transform.translate(texCoordMatrix, 0, -1);
-      this.image_ = image;
-      this.texture = texture;
-      this.updateAttributions(frameState.attributions, image.getAttributions());
-      this.updateLogos(frameState, imageSource);
-    }
-    return !!image;
-  };
-  ol.renderer.webgl.ImageLayer.prototype.updateProjectionMatrix_ = function(canvasWidth, canvasHeight, pixelRatio, viewCenter, viewResolution, viewRotation, imageExtent) {
-    var canvasExtentWidth = canvasWidth * viewResolution;
-    var canvasExtentHeight = canvasHeight * viewResolution;
-    var projectionMatrix = this.projectionMatrix;
-    ol.transform.reset(projectionMatrix);
-    ol.transform.scale(projectionMatrix, pixelRatio * 2 / canvasExtentWidth, pixelRatio * 2 / canvasExtentHeight);
-    ol.transform.rotate(projectionMatrix, -viewRotation);
-    ol.transform.translate(projectionMatrix, imageExtent[0] - viewCenter[0], imageExtent[1] - viewCenter[1]);
-    ol.transform.scale(projectionMatrix, (imageExtent[2] - imageExtent[0]) / 2, (imageExtent[3] - imageExtent[1]) / 2);
-    ol.transform.translate(projectionMatrix, 1, 1);
-  };
-  ol.renderer.webgl.ImageLayer.prototype.hasFeatureAtCoordinate = function(coordinate, frameState) {
+    var texCoordMatrix = this.texCoordMatrix;
+    ol.transform.reset(texCoordMatrix);
+    ol.transform.scale(texCoordMatrix, 1, -1);
+    ol.transform.translate(texCoordMatrix, 0, -1);
+    this.image_ = image;
+    this.texture = texture;
+    this.updateAttributions(frameState.attributions, image.getAttributions());
+    this.updateLogos(frameState, imageSource);
+  }
+  return !!image;
+};
+ol.renderer.webgl.ImageLayer.prototype.updateProjectionMatrix_ = function(canvasWidth, canvasHeight, pixelRatio, viewCenter, viewResolution, viewRotation, imageExtent) {
+  var canvasExtentWidth = canvasWidth * viewResolution;
+  var canvasExtentHeight = canvasHeight * viewResolution;
+  var projectionMatrix = this.projectionMatrix;
+  ol.transform.reset(projectionMatrix);
+  ol.transform.scale(projectionMatrix, pixelRatio * 2 / canvasExtentWidth, pixelRatio * 2 / canvasExtentHeight);
+  ol.transform.rotate(projectionMatrix, -viewRotation);
+  ol.transform.translate(projectionMatrix, imageExtent[0] - viewCenter[0], imageExtent[1] - viewCenter[1]);
+  ol.transform.scale(projectionMatrix, (imageExtent[2] - imageExtent[0]) / 2, (imageExtent[3] - imageExtent[1]) / 2);
+  ol.transform.translate(projectionMatrix, 1, 1);
+};
+ol.renderer.webgl.ImageLayer.prototype.hasFeatureAtCoordinate = function(coordinate, frameState) {
+  var hasFeature = this.forEachFeatureAtCoordinate(coordinate, frameState, 0, ol.functions.TRUE, this);
+  return hasFeature !== undefined;
+};
+ol.renderer.webgl.ImageLayer.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg) {
+  if (!this.image_ || !this.image_.getImage()) {
+    return undefined;
+  }
+  if (this.getLayer().getSource() instanceof ol.source.ImageVector) {
+    var coordinate = ol.transform.apply(frameState.pixelToCoordinateTransform, pixel.slice());
     var hasFeature = this.forEachFeatureAtCoordinate(coordinate, frameState, 0, ol.functions.TRUE, this);
-    return hasFeature !== undefined;
-  };
-  ol.renderer.webgl.ImageLayer.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg) {
-    if (!this.image_ || !this.image_.getImage()) {
+    if (hasFeature) {
+      return callback.call(thisArg, this.getLayer(), null);
+    } else {
       return undefined;
     }
-    if (this.getLayer().getSource() instanceof ol.source.ImageVector) {
-      var coordinate = ol.transform.apply(frameState.pixelToCoordinateTransform, pixel.slice());
-      var hasFeature = this.forEachFeatureAtCoordinate(coordinate, frameState, 0, ol.functions.TRUE, this);
-      if (hasFeature) {
-        return callback.call(thisArg, this.getLayer(), null);
-      } else {
-        return undefined;
-      }
-    } else {
-      var imageSize = [this.image_.getImage().width, this.image_.getImage().height];
-      if (!this.hitTransformationMatrix_) {
-        this.hitTransformationMatrix_ = this.getHitTransformationMatrix_(frameState.size, imageSize);
-      }
-      var pixelOnFrameBuffer = ol.transform.apply(this.hitTransformationMatrix_, pixel.slice());
-      if (pixelOnFrameBuffer[0] < 0 || pixelOnFrameBuffer[0] > imageSize[0] || pixelOnFrameBuffer[1] < 0 || pixelOnFrameBuffer[1] > imageSize[1]) {
-        return undefined;
-      }
-      if (!this.hitCanvasContext_) {
-        this.hitCanvasContext_ = ol.dom.createCanvasContext2D(1, 1);
-      }
-      this.hitCanvasContext_.clearRect(0, 0, 1, 1);
-      this.hitCanvasContext_.drawImage(this.image_.getImage(), pixelOnFrameBuffer[0], pixelOnFrameBuffer[1], 1, 1, 0, 0, 1, 1);
-      var imageData = this.hitCanvasContext_.getImageData(0, 0, 1, 1).data;
-      if (imageData[3] > 0) {
-        return callback.call(thisArg, this.getLayer(), imageData);
-      } else {
-        return undefined;
-      }
+  } else {
+    var imageSize = [this.image_.getImage().width, this.image_.getImage().height];
+    if (!this.hitTransformationMatrix_) {
+      this.hitTransformationMatrix_ = this.getHitTransformationMatrix_(frameState.size, imageSize);
     }
-  };
-  ol.renderer.webgl.ImageLayer.prototype.getHitTransformationMatrix_ = function(mapSize, imageSize) {
-    var mapCoordTransform = ol.transform.create();
-    ol.transform.translate(mapCoordTransform, -1, -1);
-    ol.transform.scale(mapCoordTransform, 2 / mapSize[0], 2 / mapSize[1]);
-    ol.transform.translate(mapCoordTransform, 0, mapSize[1]);
-    ol.transform.scale(mapCoordTransform, 1, -1);
-    var projectionMatrixInv = ol.transform.invert(this.projectionMatrix.slice());
-    var transform = ol.transform.create();
-    ol.transform.translate(transform, 0, imageSize[1]);
-    ol.transform.scale(transform, 1, -1);
-    ol.transform.scale(transform, imageSize[0] / 2, imageSize[1] / 2);
-    ol.transform.translate(transform, 1, 1);
-    ol.transform.multiply(transform, projectionMatrixInv);
-    ol.transform.multiply(transform, mapCoordTransform);
-    return transform;
-  };
-}
-;goog.provide("ol.renderer.webgl.Map");
+    var pixelOnFrameBuffer = ol.transform.apply(this.hitTransformationMatrix_, pixel.slice());
+    if (pixelOnFrameBuffer[0] < 0 || pixelOnFrameBuffer[0] > imageSize[0] || pixelOnFrameBuffer[1] < 0 || pixelOnFrameBuffer[1] > imageSize[1]) {
+      return undefined;
+    }
+    if (!this.hitCanvasContext_) {
+      this.hitCanvasContext_ = ol.dom.createCanvasContext2D(1, 1);
+    }
+    this.hitCanvasContext_.clearRect(0, 0, 1, 1);
+    this.hitCanvasContext_.drawImage(this.image_.getImage(), pixelOnFrameBuffer[0], pixelOnFrameBuffer[1], 1, 1, 0, 0, 1, 1);
+    var imageData = this.hitCanvasContext_.getImageData(0, 0, 1, 1).data;
+    if (imageData[3] > 0) {
+      return callback.call(thisArg, this.getLayer(), imageData);
+    } else {
+      return undefined;
+    }
+  }
+};
+ol.renderer.webgl.ImageLayer.prototype.getHitTransformationMatrix_ = function(mapSize, imageSize) {
+  var mapCoordTransform = ol.transform.create();
+  ol.transform.translate(mapCoordTransform, -1, -1);
+  ol.transform.scale(mapCoordTransform, 2 / mapSize[0], 2 / mapSize[1]);
+  ol.transform.translate(mapCoordTransform, 0, mapSize[1]);
+  ol.transform.scale(mapCoordTransform, 1, -1);
+  var projectionMatrixInv = ol.transform.invert(this.projectionMatrix.slice());
+  var transform = ol.transform.create();
+  ol.transform.translate(transform, 0, imageSize[1]);
+  ol.transform.scale(transform, 1, -1);
+  ol.transform.scale(transform, imageSize[0] / 2, imageSize[1] / 2);
+  ol.transform.translate(transform, 1, 1);
+  ol.transform.multiply(transform, projectionMatrixInv);
+  ol.transform.multiply(transform, mapCoordTransform);
+  return transform;
+};
+goog.provide("ol.renderer.webgl.Map");
 goog.require("ol");
 goog.require("ol.array");
 goog.require("ol.css");
@@ -36746,337 +36680,321 @@ goog.require("ol.structs.PriorityQueue");
 goog.require("ol.webgl");
 goog.require("ol.webgl.Context");
 goog.require("ol.webgl.ContextEventType");
-if (ol.ENABLE_WEBGL) {
-  ol.renderer.webgl.Map = function(container, map) {
-    ol.renderer.Map.call(this, container, map);
-    this.canvas_ = document.createElement("CANVAS");
-    this.canvas_.style.width = "100%";
-    this.canvas_.style.height = "100%";
-    this.canvas_.style.display = "block";
-    this.canvas_.className = ol.css.CLASS_UNSELECTABLE;
-    container.insertBefore(this.canvas_, container.childNodes[0] || null);
-    this.clipTileCanvasWidth_ = 0;
-    this.clipTileCanvasHeight_ = 0;
-    this.clipTileContext_ = ol.dom.createCanvasContext2D();
-    this.renderedVisible_ = true;
-    this.gl_ = ol.webgl.getContext(this.canvas_, {antialias:true, depth:true, failIfMajorPerformanceCaveat:true, preserveDrawingBuffer:false, stencil:true});
-    this.context_ = new ol.webgl.Context(this.canvas_, this.gl_);
-    ol.events.listen(this.canvas_, ol.webgl.ContextEventType.LOST, this.handleWebGLContextLost, this);
-    ol.events.listen(this.canvas_, ol.webgl.ContextEventType.RESTORED, this.handleWebGLContextRestored, this);
-    this.textureCache_ = new ol.structs.LRUCache;
-    this.focus_ = null;
-    this.tileTextureQueue_ = new ol.structs.PriorityQueue(function(element) {
-      var tileCenter = element[1];
-      var tileResolution = element[2];
-      var deltaX = tileCenter[0] - this.focus_[0];
-      var deltaY = tileCenter[1] - this.focus_[1];
-      return 65536 * Math.log(tileResolution) + Math.sqrt(deltaX * deltaX + deltaY * deltaY) / tileResolution;
-    }.bind(this), function(element) {
-      return element[0].getKey();
-    });
-    this.loadNextTileTexture_ = function(map, frameState) {
-      if (!this.tileTextureQueue_.isEmpty()) {
-        this.tileTextureQueue_.reprioritize();
-        var element = this.tileTextureQueue_.dequeue();
-        var tile = element[0];
-        var tileSize = element[3];
-        var tileGutter = element[4];
-        this.bindTileTexture(tile, tileSize, tileGutter, ol.webgl.LINEAR, ol.webgl.LINEAR);
-      }
-      return false;
-    }.bind(this);
-    this.textureCacheFrameMarkerCount_ = 0;
-    this.initializeGL_();
-  };
-  ol.inherits(ol.renderer.webgl.Map, ol.renderer.Map);
-  ol.renderer.webgl.Map["handles"] = function(type) {
-    return ol.has.WEBGL && type === ol.renderer.Type.WEBGL;
-  };
-  ol.renderer.webgl.Map["create"] = function(container, map) {
-    return new ol.renderer.webgl.Map(container, map);
-  };
-  ol.renderer.webgl.Map.prototype.bindTileTexture = function(tile, tileSize, tileGutter, magFilter, minFilter) {
-    var gl = this.getGL();
-    var tileKey = tile.getKey();
-    if (this.textureCache_.containsKey(tileKey)) {
-      var textureCacheEntry = this.textureCache_.get(tileKey);
-      gl.bindTexture(ol.webgl.TEXTURE_2D, textureCacheEntry.texture);
-      if (textureCacheEntry.magFilter != magFilter) {
-        gl.texParameteri(ol.webgl.TEXTURE_2D, ol.webgl.TEXTURE_MAG_FILTER, magFilter);
-        textureCacheEntry.magFilter = magFilter;
-      }
-      if (textureCacheEntry.minFilter != minFilter) {
-        gl.texParameteri(ol.webgl.TEXTURE_2D, ol.webgl.TEXTURE_MIN_FILTER, minFilter);
-        textureCacheEntry.minFilter = minFilter;
-      }
-    } else {
-      var texture = gl.createTexture();
-      gl.bindTexture(ol.webgl.TEXTURE_2D, texture);
-      if (tileGutter > 0) {
-        var clipTileCanvas = this.clipTileContext_.canvas;
-        var clipTileContext = this.clipTileContext_;
-        if (this.clipTileCanvasWidth_ !== tileSize[0] || this.clipTileCanvasHeight_ !== tileSize[1]) {
-          clipTileCanvas.width = tileSize[0];
-          clipTileCanvas.height = tileSize[1];
-          this.clipTileCanvasWidth_ = tileSize[0];
-          this.clipTileCanvasHeight_ = tileSize[1];
-        } else {
-          clipTileContext.clearRect(0, 0, tileSize[0], tileSize[1]);
-        }
-        clipTileContext.drawImage(tile.getImage(), tileGutter, tileGutter, tileSize[0], tileSize[1], 0, 0, tileSize[0], tileSize[1]);
-        gl.texImage2D(ol.webgl.TEXTURE_2D, 0, ol.webgl.RGBA, ol.webgl.RGBA, ol.webgl.UNSIGNED_BYTE, clipTileCanvas);
-      } else {
-        gl.texImage2D(ol.webgl.TEXTURE_2D, 0, ol.webgl.RGBA, ol.webgl.RGBA, ol.webgl.UNSIGNED_BYTE, tile.getImage());
-      }
+ol.renderer.webgl.Map = function(container, map) {
+  ol.renderer.Map.call(this, container, map);
+  this.canvas_ = document.createElement("CANVAS");
+  this.canvas_.style.width = "100%";
+  this.canvas_.style.height = "100%";
+  this.canvas_.style.display = "block";
+  this.canvas_.className = ol.css.CLASS_UNSELECTABLE;
+  container.insertBefore(this.canvas_, container.childNodes[0] || null);
+  this.clipTileCanvasWidth_ = 0;
+  this.clipTileCanvasHeight_ = 0;
+  this.clipTileContext_ = ol.dom.createCanvasContext2D();
+  this.renderedVisible_ = true;
+  this.gl_ = ol.webgl.getContext(this.canvas_, {antialias:true, depth:true, failIfMajorPerformanceCaveat:true, preserveDrawingBuffer:false, stencil:true});
+  this.context_ = new ol.webgl.Context(this.canvas_, this.gl_);
+  ol.events.listen(this.canvas_, ol.webgl.ContextEventType.LOST, this.handleWebGLContextLost, this);
+  ol.events.listen(this.canvas_, ol.webgl.ContextEventType.RESTORED, this.handleWebGLContextRestored, this);
+  this.textureCache_ = new ol.structs.LRUCache;
+  this.focus_ = null;
+  this.tileTextureQueue_ = new ol.structs.PriorityQueue(function(element) {
+    var tileCenter = element[1];
+    var tileResolution = element[2];
+    var deltaX = tileCenter[0] - this.focus_[0];
+    var deltaY = tileCenter[1] - this.focus_[1];
+    return 65536 * Math.log(tileResolution) + Math.sqrt(deltaX * deltaX + deltaY * deltaY) / tileResolution;
+  }.bind(this), function(element) {
+    return element[0].getKey();
+  });
+  this.loadNextTileTexture_ = function(map, frameState) {
+    if (!this.tileTextureQueue_.isEmpty()) {
+      this.tileTextureQueue_.reprioritize();
+      var element = this.tileTextureQueue_.dequeue();
+      var tile = element[0];
+      var tileSize = element[3];
+      var tileGutter = element[4];
+      this.bindTileTexture(tile, tileSize, tileGutter, ol.webgl.LINEAR, ol.webgl.LINEAR);
+    }
+    return false;
+  }.bind(this);
+  this.textureCacheFrameMarkerCount_ = 0;
+  this.initializeGL_();
+};
+ol.inherits(ol.renderer.webgl.Map, ol.renderer.Map);
+ol.renderer.webgl.Map["handles"] = function(type) {
+  return ol.has.WEBGL && type === ol.renderer.Type.WEBGL;
+};
+ol.renderer.webgl.Map["create"] = function(container, map) {
+  return new ol.renderer.webgl.Map(container, map);
+};
+ol.renderer.webgl.Map.prototype.bindTileTexture = function(tile, tileSize, tileGutter, magFilter, minFilter) {
+  var gl = this.getGL();
+  var tileKey = tile.getKey();
+  if (this.textureCache_.containsKey(tileKey)) {
+    var textureCacheEntry = this.textureCache_.get(tileKey);
+    gl.bindTexture(ol.webgl.TEXTURE_2D, textureCacheEntry.texture);
+    if (textureCacheEntry.magFilter != magFilter) {
       gl.texParameteri(ol.webgl.TEXTURE_2D, ol.webgl.TEXTURE_MAG_FILTER, magFilter);
+      textureCacheEntry.magFilter = magFilter;
+    }
+    if (textureCacheEntry.minFilter != minFilter) {
       gl.texParameteri(ol.webgl.TEXTURE_2D, ol.webgl.TEXTURE_MIN_FILTER, minFilter);
-      gl.texParameteri(ol.webgl.TEXTURE_2D, ol.webgl.TEXTURE_WRAP_S, ol.webgl.CLAMP_TO_EDGE);
-      gl.texParameteri(ol.webgl.TEXTURE_2D, ol.webgl.TEXTURE_WRAP_T, ol.webgl.CLAMP_TO_EDGE);
-      this.textureCache_.set(tileKey, {texture:texture, magFilter:magFilter, minFilter:minFilter});
+      textureCacheEntry.minFilter = minFilter;
     }
-  };
-  ol.renderer.webgl.Map.prototype.dispatchComposeEvent_ = function(type, frameState) {
-    var map = this.getMap();
-    if (map.hasListener(type)) {
-      var context = this.context_;
-      var extent = frameState.extent;
-      var size = frameState.size;
-      var viewState = frameState.viewState;
-      var pixelRatio = frameState.pixelRatio;
-      var resolution = viewState.resolution;
-      var center = viewState.center;
-      var rotation = viewState.rotation;
-      var vectorContext = new ol.render.webgl.Immediate(context, center, resolution, rotation, size, extent, pixelRatio);
-      var composeEvent = new ol.render.Event(type, vectorContext, frameState, null, context);
-      map.dispatchEvent(composeEvent);
-    }
-  };
-  ol.renderer.webgl.Map.prototype.disposeInternal = function() {
-    var gl = this.getGL();
-    if (!gl.isContextLost()) {
-      this.textureCache_.forEach(function(textureCacheEntry) {
-        if (textureCacheEntry) {
-          gl.deleteTexture(textureCacheEntry.texture);
-        }
-      });
-    }
-    this.context_.dispose();
-    ol.renderer.Map.prototype.disposeInternal.call(this);
-  };
-  ol.renderer.webgl.Map.prototype.expireCache_ = function(map, frameState) {
-    var gl = this.getGL();
-    var textureCacheEntry;
-    while (this.textureCache_.getCount() - this.textureCacheFrameMarkerCount_ > ol.WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK) {
-      textureCacheEntry = this.textureCache_.peekLast();
-      if (!textureCacheEntry) {
-        if (+this.textureCache_.peekLastKey() == frameState.index) {
-          break;
-        } else {
-          --this.textureCacheFrameMarkerCount_;
-        }
+  } else {
+    var texture = gl.createTexture();
+    gl.bindTexture(ol.webgl.TEXTURE_2D, texture);
+    if (tileGutter > 0) {
+      var clipTileCanvas = this.clipTileContext_.canvas;
+      var clipTileContext = this.clipTileContext_;
+      if (this.clipTileCanvasWidth_ !== tileSize[0] || this.clipTileCanvasHeight_ !== tileSize[1]) {
+        clipTileCanvas.width = tileSize[0];
+        clipTileCanvas.height = tileSize[1];
+        this.clipTileCanvasWidth_ = tileSize[0];
+        this.clipTileCanvasHeight_ = tileSize[1];
       } else {
+        clipTileContext.clearRect(0, 0, tileSize[0], tileSize[1]);
+      }
+      clipTileContext.drawImage(tile.getImage(), tileGutter, tileGutter, tileSize[0], tileSize[1], 0, 0, tileSize[0], tileSize[1]);
+      gl.texImage2D(ol.webgl.TEXTURE_2D, 0, ol.webgl.RGBA, ol.webgl.RGBA, ol.webgl.UNSIGNED_BYTE, clipTileCanvas);
+    } else {
+      gl.texImage2D(ol.webgl.TEXTURE_2D, 0, ol.webgl.RGBA, ol.webgl.RGBA, ol.webgl.UNSIGNED_BYTE, tile.getImage());
+    }
+    gl.texParameteri(ol.webgl.TEXTURE_2D, ol.webgl.TEXTURE_MAG_FILTER, magFilter);
+    gl.texParameteri(ol.webgl.TEXTURE_2D, ol.webgl.TEXTURE_MIN_FILTER, minFilter);
+    gl.texParameteri(ol.webgl.TEXTURE_2D, ol.webgl.TEXTURE_WRAP_S, ol.webgl.CLAMP_TO_EDGE);
+    gl.texParameteri(ol.webgl.TEXTURE_2D, ol.webgl.TEXTURE_WRAP_T, ol.webgl.CLAMP_TO_EDGE);
+    this.textureCache_.set(tileKey, {texture:texture, magFilter:magFilter, minFilter:minFilter});
+  }
+};
+ol.renderer.webgl.Map.prototype.dispatchComposeEvent_ = function(type, frameState) {
+  var map = this.getMap();
+  if (map.hasListener(type)) {
+    var context = this.context_;
+    var extent = frameState.extent;
+    var size = frameState.size;
+    var viewState = frameState.viewState;
+    var pixelRatio = frameState.pixelRatio;
+    var resolution = viewState.resolution;
+    var center = viewState.center;
+    var rotation = viewState.rotation;
+    var vectorContext = new ol.render.webgl.Immediate(context, center, resolution, rotation, size, extent, pixelRatio);
+    var composeEvent = new ol.render.Event(type, vectorContext, frameState, null, context);
+    map.dispatchEvent(composeEvent);
+  }
+};
+ol.renderer.webgl.Map.prototype.disposeInternal = function() {
+  var gl = this.getGL();
+  if (!gl.isContextLost()) {
+    this.textureCache_.forEach(function(textureCacheEntry) {
+      if (textureCacheEntry) {
         gl.deleteTexture(textureCacheEntry.texture);
       }
-      this.textureCache_.pop();
-    }
-  };
-  ol.renderer.webgl.Map.prototype.getContext = function() {
-    return this.context_;
-  };
-  ol.renderer.webgl.Map.prototype.getGL = function() {
-    return this.gl_;
-  };
-  ol.renderer.webgl.Map.prototype.getTileTextureQueue = function() {
-    return this.tileTextureQueue_;
-  };
-  ol.renderer.webgl.Map.prototype.getType = function() {
-    return ol.renderer.Type.WEBGL;
-  };
-  ol.renderer.webgl.Map.prototype.handleWebGLContextLost = function(event) {
-    event.preventDefault();
-    this.textureCache_.clear();
-    this.textureCacheFrameMarkerCount_ = 0;
-    var renderers = this.getLayerRenderers();
-    for (var id in renderers) {
-      var renderer = renderers[id];
-      renderer.handleWebGLContextLost();
-    }
-  };
-  ol.renderer.webgl.Map.prototype.handleWebGLContextRestored = function() {
-    this.initializeGL_();
-    this.getMap().render();
-  };
-  ol.renderer.webgl.Map.prototype.initializeGL_ = function() {
-    var gl = this.gl_;
-    gl.activeTexture(ol.webgl.TEXTURE0);
-    gl.blendFuncSeparate(ol.webgl.SRC_ALPHA, ol.webgl.ONE_MINUS_SRC_ALPHA, ol.webgl.ONE, ol.webgl.ONE_MINUS_SRC_ALPHA);
-    gl.disable(ol.webgl.CULL_FACE);
-    gl.disable(ol.webgl.DEPTH_TEST);
-    gl.disable(ol.webgl.SCISSOR_TEST);
-    gl.disable(ol.webgl.STENCIL_TEST);
-  };
-  ol.renderer.webgl.Map.prototype.isTileTextureLoaded = function(tile) {
-    return this.textureCache_.containsKey(tile.getKey());
-  };
-  ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
-    var context = this.getContext();
-    var gl = this.getGL();
-    if (gl.isContextLost()) {
-      return false;
-    }
-    if (!frameState) {
-      if (this.renderedVisible_) {
-        this.canvas_.style.display = "none";
-        this.renderedVisible_ = false;
+    });
+  }
+  this.context_.dispose();
+  ol.renderer.Map.prototype.disposeInternal.call(this);
+};
+ol.renderer.webgl.Map.prototype.expireCache_ = function(map, frameState) {
+  var gl = this.getGL();
+  var textureCacheEntry;
+  while (this.textureCache_.getCount() - this.textureCacheFrameMarkerCount_ > ol.WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK) {
+    textureCacheEntry = this.textureCache_.peekLast();
+    if (!textureCacheEntry) {
+      if (+this.textureCache_.peekLastKey() == frameState.index) {
+        break;
+      } else {
+        --this.textureCacheFrameMarkerCount_;
       }
-      return false;
+    } else {
+      gl.deleteTexture(textureCacheEntry.texture);
     }
-    this.focus_ = frameState.focus;
-    this.textureCache_.set((-frameState.index).toString(), null);
-    ++this.textureCacheFrameMarkerCount_;
-    this.dispatchComposeEvent_(ol.render.EventType.PRECOMPOSE, frameState);
-    var layerStatesToDraw = [];
-    var layerStatesArray = frameState.layerStatesArray;
-    ol.array.stableSort(layerStatesArray, ol.renderer.Map.sortByZIndex);
-    var viewResolution = frameState.viewState.resolution;
-    var i, ii, layerRenderer, layerState;
-    for (i = 0, ii = layerStatesArray.length; i < ii; ++i) {
-      layerState = layerStatesArray[i];
-      if (ol.layer.Layer.visibleAtResolution(layerState, viewResolution) && layerState.sourceState == ol.source.State.READY) {
-        layerRenderer = this.getLayerRenderer(layerState.layer);
-        if (layerRenderer.prepareFrame(frameState, layerState, context)) {
-          layerStatesToDraw.push(layerState);
-        }
-      }
+    this.textureCache_.pop();
+  }
+};
+ol.renderer.webgl.Map.prototype.getContext = function() {
+  return this.context_;
+};
+ol.renderer.webgl.Map.prototype.getGL = function() {
+  return this.gl_;
+};
+ol.renderer.webgl.Map.prototype.getTileTextureQueue = function() {
+  return this.tileTextureQueue_;
+};
+ol.renderer.webgl.Map.prototype.getType = function() {
+  return ol.renderer.Type.WEBGL;
+};
+ol.renderer.webgl.Map.prototype.handleWebGLContextLost = function(event) {
+  event.preventDefault();
+  this.textureCache_.clear();
+  this.textureCacheFrameMarkerCount_ = 0;
+  var renderers = this.getLayerRenderers();
+  for (var id in renderers) {
+    var renderer = renderers[id];
+    renderer.handleWebGLContextLost();
+  }
+};
+ol.renderer.webgl.Map.prototype.handleWebGLContextRestored = function() {
+  this.initializeGL_();
+  this.getMap().render();
+};
+ol.renderer.webgl.Map.prototype.initializeGL_ = function() {
+  var gl = this.gl_;
+  gl.activeTexture(ol.webgl.TEXTURE0);
+  gl.blendFuncSeparate(ol.webgl.SRC_ALPHA, ol.webgl.ONE_MINUS_SRC_ALPHA, ol.webgl.ONE, ol.webgl.ONE_MINUS_SRC_ALPHA);
+  gl.disable(ol.webgl.CULL_FACE);
+  gl.disable(ol.webgl.DEPTH_TEST);
+  gl.disable(ol.webgl.SCISSOR_TEST);
+  gl.disable(ol.webgl.STENCIL_TEST);
+};
+ol.renderer.webgl.Map.prototype.isTileTextureLoaded = function(tile) {
+  return this.textureCache_.containsKey(tile.getKey());
+};
+ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
+  var context = this.getContext();
+  var gl = this.getGL();
+  if (gl.isContextLost()) {
+    return false;
+  }
+  if (!frameState) {
+    if (this.renderedVisible_) {
+      this.canvas_.style.display = "none";
+      this.renderedVisible_ = false;
     }
-    var width = frameState.size[0] * frameState.pixelRatio;
-    var height = frameState.size[1] * frameState.pixelRatio;
-    if (this.canvas_.width != width || this.canvas_.height != height) {
-      this.canvas_.width = width;
-      this.canvas_.height = height;
-    }
-    gl.bindFramebuffer(ol.webgl.FRAMEBUFFER, null);
-    gl.clearColor(0, 0, 0, 0);
-    gl.clear(ol.webgl.COLOR_BUFFER_BIT);
-    gl.enable(ol.webgl.BLEND);
-    gl.viewport(0, 0, this.canvas_.width, this.canvas_.height);
-    for (i = 0, ii = layerStatesToDraw.length; i < ii; ++i) {
-      layerState = layerStatesToDraw[i];
+    return false;
+  }
+  this.focus_ = frameState.focus;
+  this.textureCache_.set((-frameState.index).toString(), null);
+  ++this.textureCacheFrameMarkerCount_;
+  this.dispatchComposeEvent_(ol.render.EventType.PRECOMPOSE, frameState);
+  var layerStatesToDraw = [];
+  var layerStatesArray = frameState.layerStatesArray;
+  ol.array.stableSort(layerStatesArray, ol.renderer.Map.sortByZIndex);
+  var viewResolution = frameState.viewState.resolution;
+  var i, ii, layerRenderer, layerState;
+  for (i = 0, ii = layerStatesArray.length; i < ii; ++i) {
+    layerState = layerStatesArray[i];
+    if (ol.layer.Layer.visibleAtResolution(layerState, viewResolution) && layerState.sourceState == ol.source.State.READY) {
       layerRenderer = this.getLayerRenderer(layerState.layer);
-      layerRenderer.composeFrame(frameState, layerState, context);
-    }
-    if (!this.renderedVisible_) {
-      this.canvas_.style.display = "";
-      this.renderedVisible_ = true;
-    }
-    this.calculateMatrices2D(frameState);
-    if (this.textureCache_.getCount() - this.textureCacheFrameMarkerCount_ > ol.WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK) {
-      frameState.postRenderFunctions.push(this.expireCache_.bind(this));
-    }
-    if (!this.tileTextureQueue_.isEmpty()) {
-      frameState.postRenderFunctions.push(this.loadNextTileTexture_);
-      frameState.animate = true;
-    }
-    this.dispatchComposeEvent_(ol.render.EventType.POSTCOMPOSE, frameState);
-    this.scheduleRemoveUnusedLayerRenderers(frameState);
-    this.scheduleExpireIconCache(frameState);
-  };
-  ol.renderer.webgl.Map.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg, layerFilter, thisArg2) {
-    var result;
-    if (this.getGL().isContextLost()) {
-      return false;
-    }
-    var viewState = frameState.viewState;
-    var layerStates = frameState.layerStatesArray;
-    var numLayers = layerStates.length;
-    var i;
-    for (i = numLayers - 1; i >= 0; --i) {
-      var layerState = layerStates[i];
-      var layer = layerState.layer;
-      if (ol.layer.Layer.visibleAtResolution(layerState, viewState.resolution) && layerFilter.call(thisArg2, layer)) {
-        var layerRenderer = this.getLayerRenderer(layer);
-        result = layerRenderer.forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback, thisArg);
-        if (result) {
-          return result;
-        }
+      if (layerRenderer.prepareFrame(frameState, layerState, context)) {
+        layerStatesToDraw.push(layerState);
       }
     }
-    return undefined;
-  };
-  ol.renderer.webgl.Map.prototype.hasFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, layerFilter, thisArg) {
-    var hasFeature = false;
-    if (this.getGL().isContextLost()) {
-      return false;
-    }
-    var viewState = frameState.viewState;
-    var layerStates = frameState.layerStatesArray;
-    var numLayers = layerStates.length;
-    var i;
-    for (i = numLayers - 1; i >= 0; --i) {
-      var layerState = layerStates[i];
-      var layer = layerState.layer;
-      if (ol.layer.Layer.visibleAtResolution(layerState, viewState.resolution) && layerFilter.call(thisArg, layer)) {
-        var layerRenderer = this.getLayerRenderer(layer);
-        hasFeature = layerRenderer.hasFeatureAtCoordinate(coordinate, frameState);
-        if (hasFeature) {
-          return true;
-        }
+  }
+  var width = frameState.size[0] * frameState.pixelRatio;
+  var height = frameState.size[1] * frameState.pixelRatio;
+  if (this.canvas_.width != width || this.canvas_.height != height) {
+    this.canvas_.width = width;
+    this.canvas_.height = height;
+  }
+  gl.bindFramebuffer(ol.webgl.FRAMEBUFFER, null);
+  gl.clearColor(0, 0, 0, 0);
+  gl.clear(ol.webgl.COLOR_BUFFER_BIT);
+  gl.enable(ol.webgl.BLEND);
+  gl.viewport(0, 0, this.canvas_.width, this.canvas_.height);
+  for (i = 0, ii = layerStatesToDraw.length; i < ii; ++i) {
+    layerState = layerStatesToDraw[i];
+    layerRenderer = this.getLayerRenderer(layerState.layer);
+    layerRenderer.composeFrame(frameState, layerState, context);
+  }
+  if (!this.renderedVisible_) {
+    this.canvas_.style.display = "";
+    this.renderedVisible_ = true;
+  }
+  this.calculateMatrices2D(frameState);
+  if (this.textureCache_.getCount() - this.textureCacheFrameMarkerCount_ > ol.WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK) {
+    frameState.postRenderFunctions.push(this.expireCache_.bind(this));
+  }
+  if (!this.tileTextureQueue_.isEmpty()) {
+    frameState.postRenderFunctions.push(this.loadNextTileTexture_);
+    frameState.animate = true;
+  }
+  this.dispatchComposeEvent_(ol.render.EventType.POSTCOMPOSE, frameState);
+  this.scheduleRemoveUnusedLayerRenderers(frameState);
+  this.scheduleExpireIconCache(frameState);
+};
+ol.renderer.webgl.Map.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg, layerFilter, thisArg2) {
+  var result;
+  if (this.getGL().isContextLost()) {
+    return false;
+  }
+  var viewState = frameState.viewState;
+  var layerStates = frameState.layerStatesArray;
+  var numLayers = layerStates.length;
+  var i;
+  for (i = numLayers - 1; i >= 0; --i) {
+    var layerState = layerStates[i];
+    var layer = layerState.layer;
+    if (ol.layer.Layer.visibleAtResolution(layerState, viewState.resolution) && layerFilter.call(thisArg2, layer)) {
+      var layerRenderer = this.getLayerRenderer(layer);
+      result = layerRenderer.forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback, thisArg);
+      if (result) {
+        return result;
       }
     }
-    return hasFeature;
-  };
-  ol.renderer.webgl.Map.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg, layerFilter, thisArg2) {
-    if (this.getGL().isContextLost()) {
-      return false;
-    }
-    var viewState = frameState.viewState;
-    var result;
-    var layerStates = frameState.layerStatesArray;
-    var numLayers = layerStates.length;
-    var i;
-    for (i = numLayers - 1; i >= 0; --i) {
-      var layerState = layerStates[i];
-      var layer = layerState.layer;
-      if (ol.layer.Layer.visibleAtResolution(layerState, viewState.resolution) && layerFilter.call(thisArg, layer)) {
-        var layerRenderer = this.getLayerRenderer(layer);
-        result = layerRenderer.forEachLayerAtPixel(pixel, frameState, callback, thisArg);
-        if (result) {
-          return result;
-        }
+  }
+  return undefined;
+};
+ol.renderer.webgl.Map.prototype.hasFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, layerFilter, thisArg) {
+  var hasFeature = false;
+  if (this.getGL().isContextLost()) {
+    return false;
+  }
+  var viewState = frameState.viewState;
+  var layerStates = frameState.layerStatesArray;
+  var numLayers = layerStates.length;
+  var i;
+  for (i = numLayers - 1; i >= 0; --i) {
+    var layerState = layerStates[i];
+    var layer = layerState.layer;
+    if (ol.layer.Layer.visibleAtResolution(layerState, viewState.resolution) && layerFilter.call(thisArg, layer)) {
+      var layerRenderer = this.getLayerRenderer(layer);
+      hasFeature = layerRenderer.hasFeatureAtCoordinate(coordinate, frameState);
+      if (hasFeature) {
+        return true;
       }
     }
-    return undefined;
-  };
-}
-;goog.provide("ol.renderer.webgl.tilelayershader");
+  }
+  return hasFeature;
+};
+ol.renderer.webgl.Map.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg, layerFilter, thisArg2) {
+  if (this.getGL().isContextLost()) {
+    return false;
+  }
+  var viewState = frameState.viewState;
+  var result;
+  var layerStates = frameState.layerStatesArray;
+  var numLayers = layerStates.length;
+  var i;
+  for (i = numLayers - 1; i >= 0; --i) {
+    var layerState = layerStates[i];
+    var layer = layerState.layer;
+    if (ol.layer.Layer.visibleAtResolution(layerState, viewState.resolution) && layerFilter.call(thisArg, layer)) {
+      var layerRenderer = this.getLayerRenderer(layer);
+      result = layerRenderer.forEachLayerAtPixel(pixel, frameState, callback, thisArg);
+      if (result) {
+        return result;
+      }
+    }
+  }
+  return undefined;
+};
+goog.provide("ol.renderer.webgl.tilelayershader");
 goog.require("ol");
 goog.require("ol.webgl.Fragment");
 goog.require("ol.webgl.Vertex");
-if (ol.ENABLE_WEBGL) {
-  ol.renderer.webgl.tilelayershader.Fragment = function() {
-    ol.webgl.Fragment.call(this, ol.renderer.webgl.tilelayershader.Fragment.SOURCE);
-  };
-  ol.inherits(ol.renderer.webgl.tilelayershader.Fragment, ol.webgl.Fragment);
-  ol.renderer.webgl.tilelayershader.Fragment.DEBUG_SOURCE = "precision mediump float;\nvarying vec2 v_texCoord;\n\n\nuniform sampler2D u_texture;\n\nvoid main(void) {\n  gl_FragColor = texture2D(u_texture, v_texCoord);\n}\n";
-  ol.renderer.webgl.tilelayershader.Fragment.OPTIMIZED_SOURCE = "precision mediump float;varying vec2 a;uniform sampler2D e;void main(void){gl_FragColor=texture2D(e,a);}";
-  ol.renderer.webgl.tilelayershader.Fragment.SOURCE = ol.DEBUG_WEBGL ? ol.renderer.webgl.tilelayershader.Fragment.DEBUG_SOURCE : ol.renderer.webgl.tilelayershader.Fragment.OPTIMIZED_SOURCE;
-  ol.renderer.webgl.tilelayershader.fragment = new ol.renderer.webgl.tilelayershader.Fragment;
-  ol.renderer.webgl.tilelayershader.Vertex = function() {
-    ol.webgl.Vertex.call(this, ol.renderer.webgl.tilelayershader.Vertex.SOURCE);
-  };
-  ol.inherits(ol.renderer.webgl.tilelayershader.Vertex, ol.webgl.Vertex);
-  ol.renderer.webgl.tilelayershader.Vertex.DEBUG_SOURCE = "varying vec2 v_texCoord;\n\n\nattribute vec2 a_position;\nattribute vec2 a_texCoord;\nuniform vec4 u_tileOffset;\n\nvoid main(void) {\n  gl_Position = vec4(a_position * u_tileOffset.xy + u_tileOffset.zw, 0., 1.);\n  v_texCoord = a_texCoord;\n}\n\n\n";
-  ol.renderer.webgl.tilelayershader.Vertex.OPTIMIZED_SOURCE = "varying vec2 a;attribute vec2 b;attribute vec2 c;uniform vec4 d;void main(void){gl_Position=vec4(b*d.xy+d.zw,0.,1.);a=c;}";
-  ol.renderer.webgl.tilelayershader.Vertex.SOURCE = ol.DEBUG_WEBGL ? ol.renderer.webgl.tilelayershader.Vertex.DEBUG_SOURCE : ol.renderer.webgl.tilelayershader.Vertex.OPTIMIZED_SOURCE;
-  ol.renderer.webgl.tilelayershader.vertex = new ol.renderer.webgl.tilelayershader.Vertex;
-  ol.renderer.webgl.tilelayershader.Locations = function(gl, program) {
-    this.u_texture = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_texture" : "e");
-    this.u_tileOffset = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_tileOffset" : "d");
-    this.a_position = gl.getAttribLocation(program, ol.DEBUG_WEBGL ? "a_position" : "b");
-    this.a_texCoord = gl.getAttribLocation(program, ol.DEBUG_WEBGL ? "a_texCoord" : "c");
-  };
-}
-;goog.provide("ol.renderer.webgl.TileLayer");
+ol.renderer.webgl.tilelayershader.fragment = new ol.webgl.Fragment(ol.DEBUG_WEBGL ? "precision mediump float;\nvarying vec2 v_texCoord;\n\n\nuniform sampler2D u_texture;\n\nvoid main(void) {\n  gl_FragColor = texture2D(u_texture, v_texCoord);\n}\n" : "precision mediump float;varying vec2 a;uniform sampler2D e;void main(void){gl_FragColor=texture2D(e,a);}");
+ol.renderer.webgl.tilelayershader.vertex = new ol.webgl.Vertex(ol.DEBUG_WEBGL ? "varying vec2 v_texCoord;\n\n\nattribute vec2 a_position;\nattribute vec2 a_texCoord;\nuniform vec4 u_tileOffset;\n\nvoid main(void) {\n  gl_Position = vec4(a_position * u_tileOffset.xy + u_tileOffset.zw, 0., 1.);\n  v_texCoord = a_texCoord;\n}\n\n\n" : "varying vec2 a;attribute vec2 b;attribute vec2 c;uniform vec4 d;void main(void){gl_Position=vec4(b*d.xy+d.zw,0.,1.);a=c;}");
+goog.provide("ol.renderer.webgl.tilelayershader.Locations");
+goog.require("ol");
+ol.renderer.webgl.tilelayershader.Locations = function(gl, program) {
+  this.u_tileOffset = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_tileOffset" : "d");
+  this.u_texture = gl.getUniformLocation(program, ol.DEBUG_WEBGL ? "u_texture" : "e");
+  this.a_position = gl.getAttribLocation(program, ol.DEBUG_WEBGL ? "a_position" : "b");
+  this.a_texCoord = gl.getAttribLocation(program, ol.DEBUG_WEBGL ? "a_texCoord" : "c");
+};
+goog.provide("ol.renderer.webgl.TileLayer");
 goog.require("ol");
 goog.require("ol.LayerType");
 goog.require("ol.TileRange");
@@ -37087,210 +37005,209 @@ goog.require("ol.math");
 goog.require("ol.renderer.Type");
 goog.require("ol.renderer.webgl.Layer");
 goog.require("ol.renderer.webgl.tilelayershader");
+goog.require("ol.renderer.webgl.tilelayershader.Locations");
 goog.require("ol.size");
 goog.require("ol.transform");
 goog.require("ol.webgl");
 goog.require("ol.webgl.Buffer");
-if (ol.ENABLE_WEBGL) {
-  ol.renderer.webgl.TileLayer = function(mapRenderer, tileLayer) {
-    ol.renderer.webgl.Layer.call(this, mapRenderer, tileLayer);
-    this.fragmentShader_ = ol.renderer.webgl.tilelayershader.fragment;
-    this.vertexShader_ = ol.renderer.webgl.tilelayershader.vertex;
-    this.locations_ = null;
-    this.renderArrayBuffer_ = new ol.webgl.Buffer([0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 1, 0]);
-    this.renderedTileRange_ = null;
-    this.renderedFramebufferExtent_ = null;
-    this.renderedRevision_ = -1;
-    this.tmpSize_ = [0, 0];
-  };
-  ol.inherits(ol.renderer.webgl.TileLayer, ol.renderer.webgl.Layer);
-  ol.renderer.webgl.TileLayer["handles"] = function(type, layer) {
-    return type === ol.renderer.Type.WEBGL && layer.getType() === ol.LayerType.TILE;
-  };
-  ol.renderer.webgl.TileLayer["create"] = function(mapRenderer, layer) {
-    return new ol.renderer.webgl.TileLayer(mapRenderer, layer);
-  };
-  ol.renderer.webgl.TileLayer.prototype.disposeInternal = function() {
-    var context = this.mapRenderer.getContext();
-    context.deleteBuffer(this.renderArrayBuffer_);
-    ol.renderer.webgl.Layer.prototype.disposeInternal.call(this);
-  };
-  ol.renderer.webgl.TileLayer.prototype.createLoadedTileFinder = function(source, projection, tiles) {
-    var mapRenderer = this.mapRenderer;
-    return function(zoom, tileRange) {
-      function callback(tile) {
-        var loaded = mapRenderer.isTileTextureLoaded(tile);
-        if (loaded) {
-          if (!tiles[zoom]) {
-            tiles[zoom] = {};
-          }
-          tiles[zoom][tile.tileCoord.toString()] = tile;
+ol.renderer.webgl.TileLayer = function(mapRenderer, tileLayer) {
+  ol.renderer.webgl.Layer.call(this, mapRenderer, tileLayer);
+  this.fragmentShader_ = ol.renderer.webgl.tilelayershader.fragment;
+  this.vertexShader_ = ol.renderer.webgl.tilelayershader.vertex;
+  this.locations_ = null;
+  this.renderArrayBuffer_ = new ol.webgl.Buffer([0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 1, 0]);
+  this.renderedTileRange_ = null;
+  this.renderedFramebufferExtent_ = null;
+  this.renderedRevision_ = -1;
+  this.tmpSize_ = [0, 0];
+};
+ol.inherits(ol.renderer.webgl.TileLayer, ol.renderer.webgl.Layer);
+ol.renderer.webgl.TileLayer["handles"] = function(type, layer) {
+  return type === ol.renderer.Type.WEBGL && layer.getType() === ol.LayerType.TILE;
+};
+ol.renderer.webgl.TileLayer["create"] = function(mapRenderer, layer) {
+  return new ol.renderer.webgl.TileLayer(mapRenderer, layer);
+};
+ol.renderer.webgl.TileLayer.prototype.disposeInternal = function() {
+  var context = this.mapRenderer.getContext();
+  context.deleteBuffer(this.renderArrayBuffer_);
+  ol.renderer.webgl.Layer.prototype.disposeInternal.call(this);
+};
+ol.renderer.webgl.TileLayer.prototype.createLoadedTileFinder = function(source, projection, tiles) {
+  var mapRenderer = this.mapRenderer;
+  return function(zoom, tileRange) {
+    function callback(tile) {
+      var loaded = mapRenderer.isTileTextureLoaded(tile);
+      if (loaded) {
+        if (!tiles[zoom]) {
+          tiles[zoom] = {};
         }
-        return loaded;
+        tiles[zoom][tile.tileCoord.toString()] = tile;
       }
-      return source.forEachLoadedTile(projection, zoom, tileRange, callback);
-    };
+      return loaded;
+    }
+    return source.forEachLoadedTile(projection, zoom, tileRange, callback);
   };
-  ol.renderer.webgl.TileLayer.prototype.handleWebGLContextLost = function() {
-    ol.renderer.webgl.Layer.prototype.handleWebGLContextLost.call(this);
-    this.locations_ = null;
-  };
-  ol.renderer.webgl.TileLayer.prototype.prepareFrame = function(frameState, layerState, context) {
-    var mapRenderer = this.mapRenderer;
-    var gl = context.getGL();
-    var viewState = frameState.viewState;
-    var projection = viewState.projection;
-    var tileLayer = this.getLayer();
-    var tileSource = tileLayer.getSource();
-    var tileGrid = tileSource.getTileGridForProjection(projection);
-    var z = tileGrid.getZForResolution(viewState.resolution);
-    var tileResolution = tileGrid.getResolution(z);
-    var tilePixelSize = tileSource.getTilePixelSize(z, frameState.pixelRatio, projection);
-    var pixelRatio = tilePixelSize[0] / ol.size.toSize(tileGrid.getTileSize(z), this.tmpSize_)[0];
-    var tilePixelResolution = tileResolution / pixelRatio;
-    var tileGutter = tileSource.getTilePixelRatio(pixelRatio) * tileSource.getGutter(projection);
-    var center = viewState.center;
-    var extent = frameState.extent;
-    var tileRange = tileGrid.getTileRangeForExtentAndResolution(extent, tileResolution);
-    var framebufferExtent;
-    if (this.renderedTileRange_ && this.renderedTileRange_.equals(tileRange) && this.renderedRevision_ == tileSource.getRevision()) {
-      framebufferExtent = this.renderedFramebufferExtent_;
-    } else {
-      var tileRangeSize = tileRange.getSize();
-      var maxDimension = Math.max(tileRangeSize[0] * tilePixelSize[0], tileRangeSize[1] * tilePixelSize[1]);
-      var framebufferDimension = ol.math.roundUpToPowerOfTwo(maxDimension);
-      var framebufferExtentDimension = tilePixelResolution * framebufferDimension;
-      var origin = tileGrid.getOrigin(z);
-      var minX = origin[0] + tileRange.minX * tilePixelSize[0] * tilePixelResolution;
-      var minY = origin[1] + tileRange.minY * tilePixelSize[1] * tilePixelResolution;
-      framebufferExtent = [minX, minY, minX + framebufferExtentDimension, minY + framebufferExtentDimension];
-      this.bindFramebuffer(frameState, framebufferDimension);
-      gl.viewport(0, 0, framebufferDimension, framebufferDimension);
-      gl.clearColor(0, 0, 0, 0);
-      gl.clear(ol.webgl.COLOR_BUFFER_BIT);
-      gl.disable(ol.webgl.BLEND);
-      var program = context.getProgram(this.fragmentShader_, this.vertexShader_);
-      context.useProgram(program);
-      if (!this.locations_) {
-        this.locations_ = new ol.renderer.webgl.tilelayershader.Locations(gl, program);
-      }
-      context.bindBuffer(ol.webgl.ARRAY_BUFFER, this.renderArrayBuffer_);
-      gl.enableVertexAttribArray(this.locations_.a_position);
-      gl.vertexAttribPointer(this.locations_.a_position, 2, ol.webgl.FLOAT, false, 16, 0);
-      gl.enableVertexAttribArray(this.locations_.a_texCoord);
-      gl.vertexAttribPointer(this.locations_.a_texCoord, 2, ol.webgl.FLOAT, false, 16, 8);
-      gl.uniform1i(this.locations_.u_texture, 0);
-      var tilesToDrawByZ = {};
-      tilesToDrawByZ[z] = {};
-      var findLoadedTiles = this.createLoadedTileFinder(tileSource, projection, tilesToDrawByZ);
-      var useInterimTilesOnError = tileLayer.getUseInterimTilesOnError();
-      var allTilesLoaded = true;
-      var tmpExtent = ol.extent.createEmpty();
-      var tmpTileRange = new ol.TileRange(0, 0, 0, 0);
-      var childTileRange, drawable, fullyLoaded, tile, tileState;
-      var x, y, tileExtent;
-      for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
-        for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
-          tile = tileSource.getTile(z, x, y, pixelRatio, projection);
-          if (layerState.extent !== undefined) {
-            tileExtent = tileGrid.getTileCoordExtent(tile.tileCoord, tmpExtent);
-            if (!ol.extent.intersects(tileExtent, layerState.extent)) {
-              continue;
-            }
-          }
-          tileState = tile.getState();
-          drawable = tileState == ol.TileState.LOADED || tileState == ol.TileState.EMPTY || tileState == ol.TileState.ERROR && !useInterimTilesOnError;
-          if (!drawable) {
-            tile = tile.getInterimTile();
-          }
-          tileState = tile.getState();
-          if (tileState == ol.TileState.LOADED) {
-            if (mapRenderer.isTileTextureLoaded(tile)) {
-              tilesToDrawByZ[z][tile.tileCoord.toString()] = tile;
-              continue;
-            }
-          } else {
-            if (tileState == ol.TileState.EMPTY || tileState == ol.TileState.ERROR && !useInterimTilesOnError) {
-              continue;
-            }
-          }
-          allTilesLoaded = false;
-          fullyLoaded = tileGrid.forEachTileCoordParentTileRange(tile.tileCoord, findLoadedTiles, null, tmpTileRange, tmpExtent);
-          if (!fullyLoaded) {
-            childTileRange = tileGrid.getTileCoordChildTileRange(tile.tileCoord, tmpTileRange, tmpExtent);
-            if (childTileRange) {
-              findLoadedTiles(z + 1, childTileRange);
-            }
-          }
-        }
-      }
-      var zs = Object.keys(tilesToDrawByZ).map(Number);
-      zs.sort(ol.array.numberSafeCompareFunction);
-      var u_tileOffset = new Float32Array(4);
-      var i, ii, tileKey, tilesToDraw;
-      for (i = 0, ii = zs.length; i < ii; ++i) {
-        tilesToDraw = tilesToDrawByZ[zs[i]];
-        for (tileKey in tilesToDraw) {
-          tile = tilesToDraw[tileKey];
+};
+ol.renderer.webgl.TileLayer.prototype.handleWebGLContextLost = function() {
+  ol.renderer.webgl.Layer.prototype.handleWebGLContextLost.call(this);
+  this.locations_ = null;
+};
+ol.renderer.webgl.TileLayer.prototype.prepareFrame = function(frameState, layerState, context) {
+  var mapRenderer = this.mapRenderer;
+  var gl = context.getGL();
+  var viewState = frameState.viewState;
+  var projection = viewState.projection;
+  var tileLayer = this.getLayer();
+  var tileSource = tileLayer.getSource();
+  var tileGrid = tileSource.getTileGridForProjection(projection);
+  var z = tileGrid.getZForResolution(viewState.resolution);
+  var tileResolution = tileGrid.getResolution(z);
+  var tilePixelSize = tileSource.getTilePixelSize(z, frameState.pixelRatio, projection);
+  var pixelRatio = tilePixelSize[0] / ol.size.toSize(tileGrid.getTileSize(z), this.tmpSize_)[0];
+  var tilePixelResolution = tileResolution / pixelRatio;
+  var tileGutter = tileSource.getTilePixelRatio(pixelRatio) * tileSource.getGutter(projection);
+  var center = viewState.center;
+  var extent = frameState.extent;
+  var tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
+  var framebufferExtent;
+  if (this.renderedTileRange_ && this.renderedTileRange_.equals(tileRange) && this.renderedRevision_ == tileSource.getRevision()) {
+    framebufferExtent = this.renderedFramebufferExtent_;
+  } else {
+    var tileRangeSize = tileRange.getSize();
+    var maxDimension = Math.max(tileRangeSize[0] * tilePixelSize[0], tileRangeSize[1] * tilePixelSize[1]);
+    var framebufferDimension = ol.math.roundUpToPowerOfTwo(maxDimension);
+    var framebufferExtentDimension = tilePixelResolution * framebufferDimension;
+    var origin = tileGrid.getOrigin(z);
+    var minX = origin[0] + tileRange.minX * tilePixelSize[0] * tilePixelResolution;
+    var minY = origin[1] + tileRange.minY * tilePixelSize[1] * tilePixelResolution;
+    framebufferExtent = [minX, minY, minX + framebufferExtentDimension, minY + framebufferExtentDimension];
+    this.bindFramebuffer(frameState, framebufferDimension);
+    gl.viewport(0, 0, framebufferDimension, framebufferDimension);
+    gl.clearColor(0, 0, 0, 0);
+    gl.clear(ol.webgl.COLOR_BUFFER_BIT);
+    gl.disable(ol.webgl.BLEND);
+    var program = context.getProgram(this.fragmentShader_, this.vertexShader_);
+    context.useProgram(program);
+    if (!this.locations_) {
+      this.locations_ = new ol.renderer.webgl.tilelayershader.Locations(gl, program);
+    }
+    context.bindBuffer(ol.webgl.ARRAY_BUFFER, this.renderArrayBuffer_);
+    gl.enableVertexAttribArray(this.locations_.a_position);
+    gl.vertexAttribPointer(this.locations_.a_position, 2, ol.webgl.FLOAT, false, 16, 0);
+    gl.enableVertexAttribArray(this.locations_.a_texCoord);
+    gl.vertexAttribPointer(this.locations_.a_texCoord, 2, ol.webgl.FLOAT, false, 16, 8);
+    gl.uniform1i(this.locations_.u_texture, 0);
+    var tilesToDrawByZ = {};
+    tilesToDrawByZ[z] = {};
+    var findLoadedTiles = this.createLoadedTileFinder(tileSource, projection, tilesToDrawByZ);
+    var useInterimTilesOnError = tileLayer.getUseInterimTilesOnError();
+    var allTilesLoaded = true;
+    var tmpExtent = ol.extent.createEmpty();
+    var tmpTileRange = new ol.TileRange(0, 0, 0, 0);
+    var childTileRange, drawable, fullyLoaded, tile, tileState;
+    var x, y, tileExtent;
+    for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
+      for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
+        tile = tileSource.getTile(z, x, y, pixelRatio, projection);
+        if (layerState.extent !== undefined) {
           tileExtent = tileGrid.getTileCoordExtent(tile.tileCoord, tmpExtent);
-          u_tileOffset[0] = 2 * (tileExtent[2] - tileExtent[0]) / framebufferExtentDimension;
-          u_tileOffset[1] = 2 * (tileExtent[3] - tileExtent[1]) / framebufferExtentDimension;
-          u_tileOffset[2] = 2 * (tileExtent[0] - framebufferExtent[0]) / framebufferExtentDimension - 1;
-          u_tileOffset[3] = 2 * (tileExtent[1] - framebufferExtent[1]) / framebufferExtentDimension - 1;
-          gl.uniform4fv(this.locations_.u_tileOffset, u_tileOffset);
-          mapRenderer.bindTileTexture(tile, tilePixelSize, tileGutter * pixelRatio, ol.webgl.LINEAR, ol.webgl.LINEAR);
-          gl.drawArrays(ol.webgl.TRIANGLE_STRIP, 0, 4);
+          if (!ol.extent.intersects(tileExtent, layerState.extent)) {
+            continue;
+          }
+        }
+        tileState = tile.getState();
+        drawable = tileState == ol.TileState.LOADED || tileState == ol.TileState.EMPTY || tileState == ol.TileState.ERROR && !useInterimTilesOnError;
+        if (!drawable) {
+          tile = tile.getInterimTile();
+        }
+        tileState = tile.getState();
+        if (tileState == ol.TileState.LOADED) {
+          if (mapRenderer.isTileTextureLoaded(tile)) {
+            tilesToDrawByZ[z][tile.tileCoord.toString()] = tile;
+            continue;
+          }
+        } else {
+          if (tileState == ol.TileState.EMPTY || tileState == ol.TileState.ERROR && !useInterimTilesOnError) {
+            continue;
+          }
+        }
+        allTilesLoaded = false;
+        fullyLoaded = tileGrid.forEachTileCoordParentTileRange(tile.tileCoord, findLoadedTiles, null, tmpTileRange, tmpExtent);
+        if (!fullyLoaded) {
+          childTileRange = tileGrid.getTileCoordChildTileRange(tile.tileCoord, tmpTileRange, tmpExtent);
+          if (childTileRange) {
+            findLoadedTiles(z + 1, childTileRange);
+          }
         }
       }
-      if (allTilesLoaded) {
-        this.renderedTileRange_ = tileRange;
-        this.renderedFramebufferExtent_ = framebufferExtent;
-        this.renderedRevision_ = tileSource.getRevision();
-      } else {
-        this.renderedTileRange_ = null;
-        this.renderedFramebufferExtent_ = null;
-        this.renderedRevision_ = -1;
-        frameState.animate = true;
+    }
+    var zs = Object.keys(tilesToDrawByZ).map(Number);
+    zs.sort(ol.array.numberSafeCompareFunction);
+    var u_tileOffset = new Float32Array(4);
+    var i, ii, tileKey, tilesToDraw;
+    for (i = 0, ii = zs.length; i < ii; ++i) {
+      tilesToDraw = tilesToDrawByZ[zs[i]];
+      for (tileKey in tilesToDraw) {
+        tile = tilesToDraw[tileKey];
+        tileExtent = tileGrid.getTileCoordExtent(tile.tileCoord, tmpExtent);
+        u_tileOffset[0] = 2 * (tileExtent[2] - tileExtent[0]) / framebufferExtentDimension;
+        u_tileOffset[1] = 2 * (tileExtent[3] - tileExtent[1]) / framebufferExtentDimension;
+        u_tileOffset[2] = 2 * (tileExtent[0] - framebufferExtent[0]) / framebufferExtentDimension - 1;
+        u_tileOffset[3] = 2 * (tileExtent[1] - framebufferExtent[1]) / framebufferExtentDimension - 1;
+        gl.uniform4fv(this.locations_.u_tileOffset, u_tileOffset);
+        mapRenderer.bindTileTexture(tile, tilePixelSize, tileGutter * pixelRatio, ol.webgl.LINEAR, ol.webgl.LINEAR);
+        gl.drawArrays(ol.webgl.TRIANGLE_STRIP, 0, 4);
       }
     }
-    this.updateUsedTiles(frameState.usedTiles, tileSource, z, tileRange);
-    var tileTextureQueue = mapRenderer.getTileTextureQueue();
-    this.manageTilePyramid(frameState, tileSource, tileGrid, pixelRatio, projection, extent, z, tileLayer.getPreload(), function(tile) {
-      if (tile.getState() == ol.TileState.LOADED && !mapRenderer.isTileTextureLoaded(tile) && !tileTextureQueue.isKeyQueued(tile.getKey())) {
-        tileTextureQueue.enqueue([tile, tileGrid.getTileCoordCenter(tile.tileCoord), tileGrid.getResolution(tile.tileCoord[0]), tilePixelSize, tileGutter * pixelRatio]);
-      }
-    }, this);
-    this.scheduleExpireCache(frameState, tileSource);
-    this.updateLogos(frameState, tileSource);
-    var texCoordMatrix = this.texCoordMatrix;
-    ol.transform.reset(texCoordMatrix);
-    ol.transform.translate(texCoordMatrix, (Math.round(center[0] / tileResolution) * tileResolution - framebufferExtent[0]) / (framebufferExtent[2] - framebufferExtent[0]), (Math.round(center[1] / tileResolution) * tileResolution - framebufferExtent[1]) / (framebufferExtent[3] - framebufferExtent[1]));
-    if (viewState.rotation !== 0) {
-      ol.transform.rotate(texCoordMatrix, viewState.rotation);
-    }
-    ol.transform.scale(texCoordMatrix, frameState.size[0] * viewState.resolution / (framebufferExtent[2] - framebufferExtent[0]), frameState.size[1] * viewState.resolution / (framebufferExtent[3] - framebufferExtent[1]));
-    ol.transform.translate(texCoordMatrix, -0.5, -0.5);
-    return true;
-  };
-  ol.renderer.webgl.TileLayer.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg) {
-    if (!this.framebuffer) {
-      return undefined;
-    }
-    var pixelOnMapScaled = [pixel[0] / frameState.size[0], (frameState.size[1] - pixel[1]) / frameState.size[1]];
-    var pixelOnFrameBufferScaled = ol.transform.apply(this.texCoordMatrix, pixelOnMapScaled.slice());
-    var pixelOnFrameBuffer = [pixelOnFrameBufferScaled[0] * this.framebufferDimension, pixelOnFrameBufferScaled[1] * this.framebufferDimension];
-    var gl = this.mapRenderer.getContext().getGL();
-    gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer);
-    var imageData = new Uint8Array(4);
-    gl.readPixels(pixelOnFrameBuffer[0], pixelOnFrameBuffer[1], 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, imageData);
-    if (imageData[3] > 0) {
-      return callback.call(thisArg, this.getLayer(), imageData);
+    if (allTilesLoaded) {
+      this.renderedTileRange_ = tileRange;
+      this.renderedFramebufferExtent_ = framebufferExtent;
+      this.renderedRevision_ = tileSource.getRevision();
     } else {
-      return undefined;
+      this.renderedTileRange_ = null;
+      this.renderedFramebufferExtent_ = null;
+      this.renderedRevision_ = -1;
+      frameState.animate = true;
     }
-  };
-}
-;goog.provide("ol.renderer.webgl.VectorLayer");
+  }
+  this.updateUsedTiles(frameState.usedTiles, tileSource, z, tileRange);
+  var tileTextureQueue = mapRenderer.getTileTextureQueue();
+  this.manageTilePyramid(frameState, tileSource, tileGrid, pixelRatio, projection, extent, z, tileLayer.getPreload(), function(tile) {
+    if (tile.getState() == ol.TileState.LOADED && !mapRenderer.isTileTextureLoaded(tile) && !tileTextureQueue.isKeyQueued(tile.getKey())) {
+      tileTextureQueue.enqueue([tile, tileGrid.getTileCoordCenter(tile.tileCoord), tileGrid.getResolution(tile.tileCoord[0]), tilePixelSize, tileGutter * pixelRatio]);
+    }
+  }, this);
+  this.scheduleExpireCache(frameState, tileSource);
+  this.updateLogos(frameState, tileSource);
+  var texCoordMatrix = this.texCoordMatrix;
+  ol.transform.reset(texCoordMatrix);
+  ol.transform.translate(texCoordMatrix, (Math.round(center[0] / tileResolution) * tileResolution - framebufferExtent[0]) / (framebufferExtent[2] - framebufferExtent[0]), (Math.round(center[1] / tileResolution) * tileResolution - framebufferExtent[1]) / (framebufferExtent[3] - framebufferExtent[1]));
+  if (viewState.rotation !== 0) {
+    ol.transform.rotate(texCoordMatrix, viewState.rotation);
+  }
+  ol.transform.scale(texCoordMatrix, frameState.size[0] * viewState.resolution / (framebufferExtent[2] - framebufferExtent[0]), frameState.size[1] * viewState.resolution / (framebufferExtent[3] - framebufferExtent[1]));
+  ol.transform.translate(texCoordMatrix, -0.5, -0.5);
+  return true;
+};
+ol.renderer.webgl.TileLayer.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg) {
+  if (!this.framebuffer) {
+    return undefined;
+  }
+  var pixelOnMapScaled = [pixel[0] / frameState.size[0], (frameState.size[1] - pixel[1]) / frameState.size[1]];
+  var pixelOnFrameBufferScaled = ol.transform.apply(this.texCoordMatrix, pixelOnMapScaled.slice());
+  var pixelOnFrameBuffer = [pixelOnFrameBufferScaled[0] * this.framebufferDimension, pixelOnFrameBufferScaled[1] * this.framebufferDimension];
+  var gl = this.mapRenderer.getContext().getGL();
+  gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer);
+  var imageData = new Uint8Array(4);
+  gl.readPixels(pixelOnFrameBuffer[0], pixelOnFrameBuffer[1], 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, imageData);
+  if (imageData[3] > 0) {
+    return callback.call(thisArg, this.getLayer(), imageData);
+  } else {
+    return undefined;
+  }
+};
+goog.provide("ol.renderer.webgl.VectorLayer");
 goog.require("ol");
 goog.require("ol.LayerType");
 goog.require("ol.ViewHint");
@@ -37300,170 +37217,168 @@ goog.require("ol.renderer.Type");
 goog.require("ol.renderer.vector");
 goog.require("ol.renderer.webgl.Layer");
 goog.require("ol.transform");
-if (ol.ENABLE_WEBGL) {
-  ol.renderer.webgl.VectorLayer = function(mapRenderer, vectorLayer) {
-    ol.renderer.webgl.Layer.call(this, mapRenderer, vectorLayer);
-    this.dirty_ = false;
-    this.renderedRevision_ = -1;
-    this.renderedResolution_ = NaN;
-    this.renderedExtent_ = ol.extent.createEmpty();
-    this.renderedRenderOrder_ = null;
+ol.renderer.webgl.VectorLayer = function(mapRenderer, vectorLayer) {
+  ol.renderer.webgl.Layer.call(this, mapRenderer, vectorLayer);
+  this.dirty_ = false;
+  this.renderedRevision_ = -1;
+  this.renderedResolution_ = NaN;
+  this.renderedExtent_ = ol.extent.createEmpty();
+  this.renderedRenderOrder_ = null;
+  this.replayGroup_ = null;
+  this.layerState_ = null;
+};
+ol.inherits(ol.renderer.webgl.VectorLayer, ol.renderer.webgl.Layer);
+ol.renderer.webgl.VectorLayer["handles"] = function(type, layer) {
+  return type === ol.renderer.Type.WEBGL && layer.getType() === ol.LayerType.VECTOR;
+};
+ol.renderer.webgl.VectorLayer["create"] = function(mapRenderer, layer) {
+  return new ol.renderer.webgl.VectorLayer(mapRenderer, layer);
+};
+ol.renderer.webgl.VectorLayer.prototype.composeFrame = function(frameState, layerState, context) {
+  this.layerState_ = layerState;
+  var viewState = frameState.viewState;
+  var replayGroup = this.replayGroup_;
+  var size = frameState.size;
+  var pixelRatio = frameState.pixelRatio;
+  var gl = this.mapRenderer.getGL();
+  if (replayGroup && !replayGroup.isEmpty()) {
+    gl.enable(gl.SCISSOR_TEST);
+    gl.scissor(0, 0, size[0] * pixelRatio, size[1] * pixelRatio);
+    replayGroup.replay(context, viewState.center, viewState.resolution, viewState.rotation, size, pixelRatio, layerState.opacity, layerState.managed ? frameState.skippedFeatureUids : {});
+    gl.disable(gl.SCISSOR_TEST);
+  }
+};
+ol.renderer.webgl.VectorLayer.prototype.disposeInternal = function() {
+  var replayGroup = this.replayGroup_;
+  if (replayGroup) {
+    var context = this.mapRenderer.getContext();
+    replayGroup.getDeleteResourcesFunction(context)();
     this.replayGroup_ = null;
-    this.layerState_ = null;
-  };
-  ol.inherits(ol.renderer.webgl.VectorLayer, ol.renderer.webgl.Layer);
-  ol.renderer.webgl.VectorLayer["handles"] = function(type, layer) {
-    return type === ol.renderer.Type.WEBGL && layer.getType() === ol.LayerType.VECTOR;
-  };
-  ol.renderer.webgl.VectorLayer["create"] = function(mapRenderer, layer) {
-    return new ol.renderer.webgl.VectorLayer(mapRenderer, layer);
-  };
-  ol.renderer.webgl.VectorLayer.prototype.composeFrame = function(frameState, layerState, context) {
-    this.layerState_ = layerState;
+  }
+  ol.renderer.webgl.Layer.prototype.disposeInternal.call(this);
+};
+ol.renderer.webgl.VectorLayer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg) {
+  if (!this.replayGroup_ || !this.layerState_) {
+    return undefined;
+  } else {
+    var context = this.mapRenderer.getContext();
     var viewState = frameState.viewState;
-    var replayGroup = this.replayGroup_;
-    var size = frameState.size;
-    var pixelRatio = frameState.pixelRatio;
-    var gl = this.mapRenderer.getGL();
-    if (replayGroup && !replayGroup.isEmpty()) {
-      gl.enable(gl.SCISSOR_TEST);
-      gl.scissor(0, 0, size[0] * pixelRatio, size[1] * pixelRatio);
-      replayGroup.replay(context, viewState.center, viewState.resolution, viewState.rotation, size, pixelRatio, layerState.opacity, layerState.managed ? frameState.skippedFeatureUids : {});
-      gl.disable(gl.SCISSOR_TEST);
-    }
-  };
-  ol.renderer.webgl.VectorLayer.prototype.disposeInternal = function() {
-    var replayGroup = this.replayGroup_;
-    if (replayGroup) {
-      var context = this.mapRenderer.getContext();
-      replayGroup.getDeleteResourcesFunction(context)();
-      this.replayGroup_ = null;
-    }
-    ol.renderer.webgl.Layer.prototype.disposeInternal.call(this);
-  };
-  ol.renderer.webgl.VectorLayer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg) {
-    if (!this.replayGroup_ || !this.layerState_) {
-      return undefined;
-    } else {
-      var context = this.mapRenderer.getContext();
-      var viewState = frameState.viewState;
-      var layer = this.getLayer();
-      var layerState = this.layerState_;
-      var features = {};
-      return this.replayGroup_.forEachFeatureAtCoordinate(coordinate, context, viewState.center, viewState.resolution, viewState.rotation, frameState.size, frameState.pixelRatio, layerState.opacity, {}, function(feature) {
-        var key = ol.getUid(feature).toString();
-        if (!(key in features)) {
-          features[key] = true;
-          return callback.call(thisArg, feature, layer);
-        }
-      });
-    }
-  };
-  ol.renderer.webgl.VectorLayer.prototype.hasFeatureAtCoordinate = function(coordinate, frameState) {
-    if (!this.replayGroup_ || !this.layerState_) {
-      return false;
-    } else {
-      var context = this.mapRenderer.getContext();
-      var viewState = frameState.viewState;
-      var layerState = this.layerState_;
-      return this.replayGroup_.hasFeatureAtCoordinate(coordinate, context, viewState.center, viewState.resolution, viewState.rotation, frameState.size, frameState.pixelRatio, layerState.opacity, frameState.skippedFeatureUids);
-    }
-  };
-  ol.renderer.webgl.VectorLayer.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg) {
-    var coordinate = ol.transform.apply(frameState.pixelToCoordinateTransform, pixel.slice());
-    var hasFeature = this.hasFeatureAtCoordinate(coordinate, frameState);
-    if (hasFeature) {
-      return callback.call(thisArg, this.getLayer(), null);
-    } else {
-      return undefined;
-    }
-  };
-  ol.renderer.webgl.VectorLayer.prototype.handleStyleImageChange_ = function(event) {
-    this.renderIfReadyAndVisible();
-  };
-  ol.renderer.webgl.VectorLayer.prototype.prepareFrame = function(frameState, layerState, context) {
-    var vectorLayer = this.getLayer();
-    var vectorSource = vectorLayer.getSource();
-    this.updateAttributions(frameState.attributions, vectorSource.getAttributions());
-    this.updateLogos(frameState, vectorSource);
-    var animating = frameState.viewHints[ol.ViewHint.ANIMATING];
-    var interacting = frameState.viewHints[ol.ViewHint.INTERACTING];
-    var updateWhileAnimating = vectorLayer.getUpdateWhileAnimating();
-    var updateWhileInteracting = vectorLayer.getUpdateWhileInteracting();
-    if (!this.dirty_ && (!updateWhileAnimating && animating) || !updateWhileInteracting && interacting) {
-      return true;
-    }
-    var frameStateExtent = frameState.extent;
+    var layer = this.getLayer();
+    var layerState = this.layerState_;
+    var features = {};
+    return this.replayGroup_.forEachFeatureAtCoordinate(coordinate, context, viewState.center, viewState.resolution, viewState.rotation, frameState.size, frameState.pixelRatio, layerState.opacity, {}, function(feature) {
+      var key = ol.getUid(feature).toString();
+      if (!(key in features)) {
+        features[key] = true;
+        return callback.call(thisArg, feature, layer);
+      }
+    });
+  }
+};
+ol.renderer.webgl.VectorLayer.prototype.hasFeatureAtCoordinate = function(coordinate, frameState) {
+  if (!this.replayGroup_ || !this.layerState_) {
+    return false;
+  } else {
+    var context = this.mapRenderer.getContext();
     var viewState = frameState.viewState;
-    var projection = viewState.projection;
-    var resolution = viewState.resolution;
-    var pixelRatio = frameState.pixelRatio;
-    var vectorLayerRevision = vectorLayer.getRevision();
-    var vectorLayerRenderBuffer = vectorLayer.getRenderBuffer();
-    var vectorLayerRenderOrder = vectorLayer.getRenderOrder();
-    if (vectorLayerRenderOrder === undefined) {
-      vectorLayerRenderOrder = ol.renderer.vector.defaultOrder;
-    }
-    var extent = ol.extent.buffer(frameStateExtent, vectorLayerRenderBuffer * resolution);
-    if (!this.dirty_ && this.renderedResolution_ == resolution && this.renderedRevision_ == vectorLayerRevision && this.renderedRenderOrder_ == vectorLayerRenderOrder && ol.extent.containsExtent(this.renderedExtent_, extent)) {
-      return true;
-    }
-    if (this.replayGroup_) {
-      frameState.postRenderFunctions.push(this.replayGroup_.getDeleteResourcesFunction(context));
-    }
-    this.dirty_ = false;
-    var replayGroup = new ol.render.webgl.ReplayGroup(ol.renderer.vector.getTolerance(resolution, pixelRatio), extent, vectorLayer.getRenderBuffer());
-    vectorSource.loadFeatures(extent, resolution, projection);
-    var renderFeature = function(feature) {
-      var styles;
-      var styleFunction = feature.getStyleFunction();
-      if (styleFunction) {
-        styles = styleFunction.call(feature, resolution);
-      } else {
-        styleFunction = vectorLayer.getStyleFunction();
-        if (styleFunction) {
-          styles = styleFunction(feature, resolution);
-        }
-      }
-      if (styles) {
-        var dirty = this.renderFeature(feature, resolution, pixelRatio, styles, replayGroup);
-        this.dirty_ = this.dirty_ || dirty;
-      }
-    };
-    if (vectorLayerRenderOrder) {
-      var features = [];
-      vectorSource.forEachFeatureInExtent(extent, function(feature) {
-        features.push(feature);
-      }, this);
-      features.sort(vectorLayerRenderOrder);
-      features.forEach(renderFeature, this);
-    } else {
-      vectorSource.forEachFeatureInExtent(extent, renderFeature, this);
-    }
-    replayGroup.finish(context);
-    this.renderedResolution_ = resolution;
-    this.renderedRevision_ = vectorLayerRevision;
-    this.renderedRenderOrder_ = vectorLayerRenderOrder;
-    this.renderedExtent_ = extent;
-    this.replayGroup_ = replayGroup;
+    var layerState = this.layerState_;
+    return this.replayGroup_.hasFeatureAtCoordinate(coordinate, context, viewState.center, viewState.resolution, viewState.rotation, frameState.size, frameState.pixelRatio, layerState.opacity, frameState.skippedFeatureUids);
+  }
+};
+ol.renderer.webgl.VectorLayer.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg) {
+  var coordinate = ol.transform.apply(frameState.pixelToCoordinateTransform, pixel.slice());
+  var hasFeature = this.hasFeatureAtCoordinate(coordinate, frameState);
+  if (hasFeature) {
+    return callback.call(thisArg, this.getLayer(), null);
+  } else {
+    return undefined;
+  }
+};
+ol.renderer.webgl.VectorLayer.prototype.handleStyleImageChange_ = function(event) {
+  this.renderIfReadyAndVisible();
+};
+ol.renderer.webgl.VectorLayer.prototype.prepareFrame = function(frameState, layerState, context) {
+  var vectorLayer = this.getLayer();
+  var vectorSource = vectorLayer.getSource();
+  this.updateAttributions(frameState.attributions, vectorSource.getAttributions());
+  this.updateLogos(frameState, vectorSource);
+  var animating = frameState.viewHints[ol.ViewHint.ANIMATING];
+  var interacting = frameState.viewHints[ol.ViewHint.INTERACTING];
+  var updateWhileAnimating = vectorLayer.getUpdateWhileAnimating();
+  var updateWhileInteracting = vectorLayer.getUpdateWhileInteracting();
+  if (!this.dirty_ && (!updateWhileAnimating && animating) || !updateWhileInteracting && interacting) {
     return true;
-  };
-  ol.renderer.webgl.VectorLayer.prototype.renderFeature = function(feature, resolution, pixelRatio, styles, replayGroup) {
-    if (!styles) {
-      return false;
-    }
-    var loading = false;
-    if (Array.isArray(styles)) {
-      for (var i = styles.length - 1, ii = 0; i >= ii; --i) {
-        loading = ol.renderer.vector.renderFeature(replayGroup, feature, styles[i], ol.renderer.vector.getSquaredTolerance(resolution, pixelRatio), this.handleStyleImageChange_, this) || loading;
-      }
+  }
+  var frameStateExtent = frameState.extent;
+  var viewState = frameState.viewState;
+  var projection = viewState.projection;
+  var resolution = viewState.resolution;
+  var pixelRatio = frameState.pixelRatio;
+  var vectorLayerRevision = vectorLayer.getRevision();
+  var vectorLayerRenderBuffer = vectorLayer.getRenderBuffer();
+  var vectorLayerRenderOrder = vectorLayer.getRenderOrder();
+  if (vectorLayerRenderOrder === undefined) {
+    vectorLayerRenderOrder = ol.renderer.vector.defaultOrder;
+  }
+  var extent = ol.extent.buffer(frameStateExtent, vectorLayerRenderBuffer * resolution);
+  if (!this.dirty_ && this.renderedResolution_ == resolution && this.renderedRevision_ == vectorLayerRevision && this.renderedRenderOrder_ == vectorLayerRenderOrder && ol.extent.containsExtent(this.renderedExtent_, extent)) {
+    return true;
+  }
+  if (this.replayGroup_) {
+    frameState.postRenderFunctions.push(this.replayGroup_.getDeleteResourcesFunction(context));
+  }
+  this.dirty_ = false;
+  var replayGroup = new ol.render.webgl.ReplayGroup(ol.renderer.vector.getTolerance(resolution, pixelRatio), extent, vectorLayer.getRenderBuffer());
+  vectorSource.loadFeatures(extent, resolution, projection);
+  var renderFeature = function(feature) {
+    var styles;
+    var styleFunction = feature.getStyleFunction();
+    if (styleFunction) {
+      styles = styleFunction.call(feature, resolution);
     } else {
-      loading = ol.renderer.vector.renderFeature(replayGroup, feature, styles, ol.renderer.vector.getSquaredTolerance(resolution, pixelRatio), this.handleStyleImageChange_, this) || loading;
+      styleFunction = vectorLayer.getStyleFunction();
+      if (styleFunction) {
+        styles = styleFunction(feature, resolution);
+      }
     }
-    return loading;
+    if (styles) {
+      var dirty = this.renderFeature(feature, resolution, pixelRatio, styles, replayGroup);
+      this.dirty_ = this.dirty_ || dirty;
+    }
   };
-}
-;goog.provide("ol.Map");
+  if (vectorLayerRenderOrder) {
+    var features = [];
+    vectorSource.forEachFeatureInExtent(extent, function(feature) {
+      features.push(feature);
+    }, this);
+    features.sort(vectorLayerRenderOrder);
+    features.forEach(renderFeature, this);
+  } else {
+    vectorSource.forEachFeatureInExtent(extent, renderFeature, this);
+  }
+  replayGroup.finish(context);
+  this.renderedResolution_ = resolution;
+  this.renderedRevision_ = vectorLayerRevision;
+  this.renderedRenderOrder_ = vectorLayerRenderOrder;
+  this.renderedExtent_ = extent;
+  this.replayGroup_ = replayGroup;
+  return true;
+};
+ol.renderer.webgl.VectorLayer.prototype.renderFeature = function(feature, resolution, pixelRatio, styles, replayGroup) {
+  if (!styles) {
+    return false;
+  }
+  var loading = false;
+  if (Array.isArray(styles)) {
+    for (var i = styles.length - 1, ii = 0; i >= ii; --i) {
+      loading = ol.renderer.vector.renderFeature(replayGroup, feature, styles[i], ol.renderer.vector.getSquaredTolerance(resolution, pixelRatio), this.handleStyleImageChange_, this) || loading;
+    }
+  } else {
+    loading = ol.renderer.vector.renderFeature(replayGroup, feature, styles, ol.renderer.vector.getSquaredTolerance(resolution, pixelRatio), this.handleStyleImageChange_, this) || loading;
+  }
+  return loading;
+};
+goog.provide("ol.Map");
 goog.require("ol");
 goog.require("ol.PluggableMap");
 goog.require("ol.PluginType");
@@ -37680,7 +37595,7 @@ ol.source.CartoDB.prototype.initializeMap_ = function() {
     this.applyTemplate_(this.templateCache_[paramHash]);
     return;
   }
-  var mapUrl = "https://" + this.account_ + ".cartodb.com/api/v1/map";
+  var mapUrl = "https://" + this.account_ + ".carto.com/api/v1/map";
   if (this.mapId_) {
     mapUrl += "/named/" + this.mapId_;
   }
@@ -39300,6 +39215,10 @@ ol.VectorImageTile = function(tileCoord, state, src, format, tileLoadFunction, u
     var sourceZ = sourceTileGrid.getZForResolution(resolution);
     sourceTileGrid.forEachTileCoord(extent, sourceZ, function(sourceTileCoord) {
       var sharedExtent = ol.extent.getIntersection(extent, sourceTileGrid.getTileCoordExtent(sourceTileCoord));
+      var sourceExtent = sourceTileGrid.getExtent();
+      if (sourceExtent) {
+        sharedExtent = ol.extent.getIntersection(sharedExtent, sourceExtent);
+      }
       if (ol.extent.getWidth(sharedExtent) / resolution >= 0.5 && ol.extent.getHeight(sharedExtent) / resolution >= 0.5) {
         var sourceTileKey = sourceTileCoord.toString();
         var sourceTile = sourceTiles[sourceTileKey];
@@ -39401,17 +39320,23 @@ ol.VectorImageTile.prototype.load = function() {
 };
 ol.VectorImageTile.prototype.finishLoading_ = function() {
   var loaded = this.tileKeys.length;
+  var empty = 0;
   for (var i = loaded - 1; i >= 0; --i) {
     var state = this.getTile(this.tileKeys[i]).getState();
     if (state != ol.TileState.LOADED) {
       --loaded;
     }
+    if (state == ol.TileState.EMPTY) {
+      ++empty;
+    }
   }
   if (loaded == this.tileKeys.length) {
     this.loadListenerKeys_.forEach(ol.events.unlistenByKey);
     this.loadListenerKeys_.length = 0;
+    this.setState(ol.TileState.LOADED);
+  } else {
+    this.setState(empty == this.tileKeys.length ? ol.TileState.EMPTY : ol.TileState.ERROR);
   }
-  this.setState(loaded > 0 ? ol.TileState.LOADED : ol.TileState.EMPTY);
 };
 ol.VectorImageTile.defaultLoadFunction = function(tile, url) {
   var loader = ol.featureloader.loadFeaturesXhr(url, tile.getFormat(), tile.onLoad.bind(tile), tile.onError.bind(tile));
@@ -39496,7 +39421,6 @@ goog.require("ol");
 goog.require("ol.TileState");
 goog.require("ol.VectorImageTile");
 goog.require("ol.VectorTile");
-goog.require("ol.proj");
 goog.require("ol.size");
 goog.require("ol.tilegrid");
 goog.require("ol.source.UrlTile");
@@ -39510,13 +39434,14 @@ ol.source.VectorTile = function(options) {
   this.overlaps_ = options.overlaps == undefined ? true : options.overlaps;
   this.tileClass = options.tileClass ? options.tileClass : ol.VectorTile;
   this.tileGrids_ = {};
-  if (!this.tileGrid) {
-    this.tileGrid = this.getTileGridForProjection(ol.proj.get(options.projection || "EPSG:3857"));
-  }
 };
 ol.inherits(ol.source.VectorTile, ol.source.UrlTile);
 ol.source.VectorTile.prototype.getOverlaps = function() {
   return this.overlaps_;
+};
+ol.source.VectorTile.prototype.clear = function() {
+  this.tileCache.clear();
+  this.sourceTiles_ = {};
 };
 ol.source.VectorTile.prototype.getTile = function(z, x, y, pixelRatio, projection) {
   var tileCoordKey = this.getKeyZXY(z, x, y);
@@ -39874,7 +39799,7 @@ ol.source.Zoomify = function(opt_options) {
   var extent = [0, -size[1], size[0], 0];
   var tileGrid = new ol.tilegrid.TileGrid({extent:extent, origin:ol.extent.getTopLeft(extent), resolutions:resolutions});
   var url = options.url;
-  if (url && url.indexOf("{TileGroup}") == -1) {
+  if (url && url.indexOf("{TileGroup}") == -1 && url.indexOf("{tileIndex}") == -1) {
     url += "{TileGroup}/{z}-{x}-{y}.jpg";
   }
   var urls = ol.TileUrlFunction.expandUrl(url);
@@ -39886,9 +39811,9 @@ ol.source.Zoomify = function(opt_options) {
         var tileCoordZ = tileCoord[0];
         var tileCoordX = tileCoord[1];
         var tileCoordY = -tileCoord[2] - 1;
-        var tileIndex = tileCoordX + tileCoordY * tierSizeInTiles[tileCoordZ][0] + tileCountUpToTier[tileCoordZ];
-        var tileGroup = tileIndex / ol.DEFAULT_TILE_SIZE | 0;
-        var localContext = {"z":tileCoordZ, "x":tileCoordX, "y":tileCoordY, "TileGroup":"TileGroup" + tileGroup};
+        var tileIndex = tileCoordX + tileCoordY * tierSizeInTiles[tileCoordZ][0];
+        var tileGroup = (tileIndex + tileCountUpToTier[tileCoordZ]) / ol.DEFAULT_TILE_SIZE | 0;
+        var localContext = {"z":tileCoordZ, "x":tileCoordX, "y":tileCoordY, "tileIndex":tileIndex, "TileGroup":"TileGroup" + tileGroup};
         return template.replace(/\{(\w+?)\}/g, function(m, p) {
           return localContext[p];
         });
@@ -40324,6 +40249,8 @@ goog.exportSymbol("ol.size.toSize", ol.size.toSize);
 goog.exportSymbol("ol.Sphere", ol.Sphere);
 goog.exportProperty(ol.Sphere.prototype, "geodesicArea", ol.Sphere.prototype.geodesicArea);
 goog.exportProperty(ol.Sphere.prototype, "haversineDistance", ol.Sphere.prototype.haversineDistance);
+goog.exportSymbol("ol.Sphere.getLength", ol.Sphere.getLength);
+goog.exportSymbol("ol.Sphere.getArea", ol.Sphere.getArea);
 goog.exportProperty(ol.Tile.prototype, "getTileCoord", ol.Tile.prototype.getTileCoord);
 goog.exportProperty(ol.Tile.prototype, "load", ol.Tile.prototype.load);
 goog.exportSymbol("ol.tilegrid.createXYZ", ol.tilegrid.createXYZ);
@@ -40457,7 +40384,10 @@ goog.exportProperty(ol.style.Style.prototype, "setGeometry", ol.style.Style.prot
 goog.exportProperty(ol.style.Style.prototype, "setZIndex", ol.style.Style.prototype.setZIndex);
 goog.exportSymbol("ol.style.Text", ol.style.Text);
 goog.exportProperty(ol.style.Text.prototype, "clone", ol.style.Text.prototype.clone);
+goog.exportProperty(ol.style.Text.prototype, "getExceedLength", ol.style.Text.prototype.getExceedLength);
 goog.exportProperty(ol.style.Text.prototype, "getFont", ol.style.Text.prototype.getFont);
+goog.exportProperty(ol.style.Text.prototype, "getMaxAngle", ol.style.Text.prototype.getMaxAngle);
+goog.exportProperty(ol.style.Text.prototype, "getPlacement", ol.style.Text.prototype.getPlacement);
 goog.exportProperty(ol.style.Text.prototype, "getOffsetX", ol.style.Text.prototype.getOffsetX);
 goog.exportProperty(ol.style.Text.prototype, "getOffsetY", ol.style.Text.prototype.getOffsetY);
 goog.exportProperty(ol.style.Text.prototype, "getFill", ol.style.Text.prototype.getFill);
@@ -40468,9 +40398,12 @@ goog.exportProperty(ol.style.Text.prototype, "getStroke", ol.style.Text.prototyp
 goog.exportProperty(ol.style.Text.prototype, "getText", ol.style.Text.prototype.getText);
 goog.exportProperty(ol.style.Text.prototype, "getTextAlign", ol.style.Text.prototype.getTextAlign);
 goog.exportProperty(ol.style.Text.prototype, "getTextBaseline", ol.style.Text.prototype.getTextBaseline);
+goog.exportProperty(ol.style.Text.prototype, "setExceedLength", ol.style.Text.prototype.setExceedLength);
 goog.exportProperty(ol.style.Text.prototype, "setFont", ol.style.Text.prototype.setFont);
+goog.exportProperty(ol.style.Text.prototype, "setMaxAngle", ol.style.Text.prototype.setMaxAngle);
 goog.exportProperty(ol.style.Text.prototype, "setOffsetX", ol.style.Text.prototype.setOffsetX);
 goog.exportProperty(ol.style.Text.prototype, "setOffsetY", ol.style.Text.prototype.setOffsetY);
+goog.exportProperty(ol.style.Text.prototype, "setPlacement", ol.style.Text.prototype.setPlacement);
 goog.exportProperty(ol.style.Text.prototype, "setFill", ol.style.Text.prototype.setFill);
 goog.exportProperty(ol.style.Text.prototype, "setRotation", ol.style.Text.prototype.setRotation);
 goog.exportProperty(ol.style.Text.prototype, "setScale", ol.style.Text.prototype.setScale);
@@ -40577,8 +40510,10 @@ goog.exportProperty(ol.source.Vector.prototype, "getFeatureById", ol.source.Vect
 goog.exportProperty(ol.source.Vector.prototype, "getFormat", ol.source.Vector.prototype.getFormat);
 goog.exportProperty(ol.source.Vector.prototype, "getUrl", ol.source.Vector.prototype.getUrl);
 goog.exportProperty(ol.source.Vector.prototype, "removeFeature", ol.source.Vector.prototype.removeFeature);
+goog.exportProperty(ol.source.Vector.prototype, "setLoader", ol.source.Vector.prototype.setLoader);
 goog.exportProperty(ol.source.Vector.Event.prototype, "feature", ol.source.Vector.Event.prototype.feature);
 goog.exportSymbol("ol.source.VectorTile", ol.source.VectorTile);
+goog.exportProperty(ol.source.VectorTile.prototype, "clear", ol.source.VectorTile.prototype.clear);
 goog.exportSymbol("ol.source.WMTS", ol.source.WMTS);
 goog.exportProperty(ol.source.WMTS.prototype, "getDimensions", ol.source.WMTS.prototype.getDimensions);
 goog.exportProperty(ol.source.WMTS.prototype, "getFormat", ol.source.WMTS.prototype.getFormat);
@@ -41553,6 +41488,7 @@ goog.exportProperty(ol.source.Cluster.prototype, "getFeatureById", ol.source.Clu
 goog.exportProperty(ol.source.Cluster.prototype, "getFormat", ol.source.Cluster.prototype.getFormat);
 goog.exportProperty(ol.source.Cluster.prototype, "getUrl", ol.source.Cluster.prototype.getUrl);
 goog.exportProperty(ol.source.Cluster.prototype, "removeFeature", ol.source.Cluster.prototype.removeFeature);
+goog.exportProperty(ol.source.Cluster.prototype, "setLoader", ol.source.Cluster.prototype.setLoader);
 goog.exportProperty(ol.source.Cluster.prototype, "getAttributions", ol.source.Cluster.prototype.getAttributions);
 goog.exportProperty(ol.source.Cluster.prototype, "getLogo", ol.source.Cluster.prototype.getLogo);
 goog.exportProperty(ol.source.Cluster.prototype, "getProjection", ol.source.Cluster.prototype.getProjection);

@@ -156,6 +156,14 @@ describe('ga_kml_service', function() {
         ngeoFileMock = sinon.mock($injector.get('ngeoFile'));
       });
       map = new ol.Map({});
+
+      // URL object doesn't exist in phantomJS
+      // https://github.com/ariya/phantomjs/issues/14349
+      window.URL = function(url, baseURI) {
+        return {
+          href: url
+        }
+      };
     });
 
     afterEach(function() {
