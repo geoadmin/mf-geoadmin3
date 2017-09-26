@@ -494,6 +494,10 @@ input[type=text][readonly] {
     @media (min-width: @screen-desktop) and (min-height: @screen-s-height) {
       top: 21px;
     }
+
+    @media (max-width: @screen-tablet) {
+      display: none;
+    }
   }
 
   @media (max-width: @screen-tablet), (max-height: @screen-s-height) {
@@ -638,15 +642,10 @@ input[type=text][readonly] {
   }
 
   a {
-    font-size: 80%;
+    font-size: 0.8em;
   }
 
-  @media (max-width: @screen-tablet) and (min-width: 535px) {
-    width: ~"calc(100% - 320px)";
-    right: 1em;
-  }
-
-  @media (max-width: 534px) {
+  @media (max-width: @screen-tablet) {
     display: none;
   }
 }

@@ -142,26 +142,21 @@ itemscope itemtype="http://schema.org/WebApplication"
       </a>
       <div id="search-container" ng-controller="GaSearchController">
         <div ga-search ga-search-map="map" ga-search-options="options" ga-search-focused="globals.searchFocused" ga-search-ol3d="::ol3d"></div>
-  % if device == 'desktop':
         <span ga-help="24,31,25" ga-help-options="{showOnHover:true}"></span>
-  % endif
         <div class="warning-not-prod" ng-if="!globals.hostIsProd">
           <span translate>test_host_warning</span>
         </div>
       </div>
-  % if device == 'desktop':
       <div id="toptools">
         <div ga-fullscreen ga-fullscreen-map="map"></div>&nbsp;&nbsp;
         <a href="" ng-click="globals.feedbackPopupShown = !globals.feedbackPopupShown">
           <span translate>problem_announcement</span>
         </a>&nbsp;&nbsp;
         <a target="_blank" href="//help.geo.admin.ch/?lang={{langId}}" translate>help_label</a>&nbsp;&nbsp;
-        <a href="{{deviceSwitcherHref}}" translate>mobile_redirect</a>&nbsp;&nbsp;
         <div ng-controller="GaTranslationController">
           <div ga-translation-selector ga-translation-selector-options="options"></div>
         </div>
       </div>
-  % endif
       <button class="btn ga-menu-bt" ng-click="globals.pulldownShown=true" translate>menu</button>
       ## css animation doesnt work on pseudo element, let use this instead
       <div class="ga-offline-msg alert-danger" translate>offline_sorry</div>
