@@ -147,7 +147,7 @@ itemscope itemtype="http://schema.org/WebApplication"
           <span translate>test_host_warning</span>
         </div>
       </div>
-      <div id="toptools">
+      <div id="toptools" ng-if="!globals.settingsShown">
         <div ga-fullscreen ga-fullscreen-map="map"></div>&nbsp;&nbsp;
         <a href="" ng-click="globals.feedbackPopupShown = !globals.feedbackPopupShown">
           <span translate>problem_announcement</span>
@@ -226,7 +226,7 @@ itemscope itemtype="http://schema.org/WebApplication"
     </div> <!-- #map -->
 
     <!-- 3d buutons and inspectors -->
-    <div ng-cloak ng-if="globals.is3dActive">
+    <div ng-cloak ng-if="globals.is3dActive && ol3d">
       <div ga-cesium-inspector
            ga-cesium-inspector-ol3d="::ol3d"></div>
       <div ga-cesium-3d-tiles-inspector
@@ -445,8 +445,7 @@ itemscope itemtype="http://schema.org/WebApplication"
           </div>
         </div> <!-- .panel -->
 
-  % if device == 'mobile':
-        <div class="panel">
+        <div class="panel" ng-if="globals.settingsShown">
           <a class="panel-heading accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#settings">
             <i class="fa fa-caret-down"></i>
             <span translate>settings</span>
@@ -457,9 +456,6 @@ itemscope itemtype="http://schema.org/WebApplication"
                 <a href="" ng-click="globals.feedbackPopupShown = !globals.feedbackPopupShown">
                   <span ng-class="{'selected': globals.feedbackPopupShown}" translate>problem_announcement</span>
                 </a>
-              </p>
-              <p>
-                <a href="{{deviceSwitcherHref}}" translate>desktop_redirect</a>
               </p>
               <div class="options">
                 <label ng-controller="GaTranslationController">
@@ -476,7 +472,7 @@ itemscope itemtype="http://schema.org/WebApplication"
             </div>
           </div>
         </div> <!-- .panel -->
-  % endif
+        
         <button id="menu-button" class="btn btn-default"
                 ng-click="globals.pulldownShown=!globals.pulldownShown">
           <span class="ga-hidden-mobile">
