@@ -103,29 +103,14 @@ goog.require('ga_urlutils_service');
         }
       };
 
-      var getLayerOptions = function(getCapLayer, getCapabilities) {
+      var getLayerOptions = function(getCapLayer, getCapabilities, getCapUrl) {
         if (getCapabilities) {
-          var requestEncoding = getCapabilities.OperationsMetadata.
-              GetTile.
-              DCP.
-              HTTP.
-              Get[0].
-              Constraint[0].
-              AllowedValues.
-              Value[0];
-
           var layerOptions = {
             layer: getCapLayer.Identifier,
-            requestEncoding: requestEncoding
           };
           getCapLayer.sourceConfig = ol.source.WMTS.optionsFromCapabilities(
               getCapabilities, layerOptions);
-          getCapLayer.capabilitiesUrl = getCapabilities.OperationsMetadata.
-              GetCapabilities.
-              DCP.
-              HTTP.
-              Get[0].
-              href;
+          getCapLayer.capabilitiesUrl = getCapUrl;
           if (getCapabilities.ServiceProvider) {
             getCapLayer.attribution =
                 getCapabilities.ServiceProvider.ProviderName;
@@ -160,13 +145,13 @@ goog.require('ga_urlutils_service');
       var Wmts = function() {
 
         this.getLayerOptionsFromIdentifier = function(getCapabilities,
-            identifier) {
+            identifier, getCapUrl) {
           var options;
 
           if (getCapabilities.Contents && getCapabilities.Contents.Layer) {
             getCapabilities.Contents.Layer.forEach(function(layer) {
               if (layer.Identifier === identifier) {
-                options = getLayerOptions(layer, getCapabilities);
+                options = getLayerOptions(layer, getCapabilities, getCapUrl);
               }
             });
           }

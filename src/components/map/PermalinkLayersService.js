@@ -309,7 +309,7 @@ goog.require('ga_wmts_service');
                       var data = response.data;
                       var getCap = new ol.format.WMTSCapabilities().read(data);
                       var layerOptions = gaWmts.getLayerOptionsFromIdentifier(
-                          getCap, infos[1]);
+                          getCap, infos[1], infos[2]);
                       // Override the url found in the xml file which is often a
                       // wrong url.
                       layerOptions.opacity = opacity || 1;

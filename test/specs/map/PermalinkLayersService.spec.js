@@ -96,7 +96,7 @@ describe('ga_permalinklayers_service', function() {
 
   describe('gaPermalinkLayersManager', function() {
     var manager, permalink, params, layersOpacityPermalink, layersParamsPermalink,
-      layersVisPermalink, layersTimePermalink, layersPermalink, def, $q,
+      layersVisPermalink, layersTimePermalink, layersPermalink, def, $q, gaWmts,
       topic, $rootScope, topicLoaded = {
         id: 'sometopic',
         backgroundLayers: ['bar'],
@@ -231,6 +231,7 @@ describe('ga_permalinklayers_service', function() {
         $httpBackend = $injector.get('$httpBackend');
         permalink = $injector.get('gaPermalink');
         $rootScope = $injector.get('$rootScope');
+        gaWmts = $injector.get('gaWmts');
         gaDefinePropertiesForLayer = $injector.get('gaDefinePropertiesForLayer');
       });
 
@@ -275,10 +276,14 @@ describe('ga_permalinklayers_service', function() {
       it('an external WMTS layer', function(done) {
         var id = 'WMTS||ch.wmts.name||http://foo.ch/wmts/getcap.xml';
         $.get('base/test/data/wmts-basic.xml', function(response) {
+          var spy = sinon.spy(gaWmts, 'getLayerOptionsFromIdentifier');
           var str = (new XMLSerializer()).serializeToString(response);
           $httpBackend.expectGET('http://proxy.geo.admin.ch/http/foo.ch%2Fwmts%2Fgetcap.xml').respond(str);
           createManager(topicLoaded, id, '1', 'false');
           $httpBackend.flush();
+          expect(spy.args[0][0]).to.be.an(Object);
+          expect(spy.args[0][1]).to.be('ch.wmts.name');
+          expect(spy.args[0][2]).to.be('http://foo.ch/wmts/getcap.xml');
           expect(map.getLayers().getLength()).to.be(1);
           expect(permalink.getParams().layers).to.be(id);
           expect(permalink.getParams().layers_opacity).to.be(undefined);
