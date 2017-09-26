@@ -11,35 +11,35 @@ SRC_LESS_FILES := $(shell find src -type f -name '*.less')
 SRC_COMPONENTS_PARTIALS_FILES := $(shell find src/components ${NGEO_MODULES} -type f -path '*/partials/*' -name '*.html')
 PYTHON_FILES := $(shell find scripts test/saucelabs -type f -name "*.py" -print)
 APACHE_BASE_DIRECTORY ?= $(CURDIR)
-LAST_APACHE_BASE_DIRECTORY := $(shell if [ -f .build-artefacts/last-apache-base-directory ]; then cat .build-artefacts/last-apache-base-directory 2> /dev/null; else echo '-none-'; fi)
+LAST_APACHE_BASE_DIRECTORY = $(call lastvalue,apache-base-directory)
 APACHE_BASE_PATH ?= /$(shell id -un)
-LAST_APACHE_BASE_PATH := $(shell if [ -f .build-artefacts/last-apache-base-path ]; then cat .build-artefacts/last-apache-base-path 2> /dev/null; else echo '-none-'; fi)
+LAST_APACHE_BASE_PATH = $(call lastvalue,apache-base-path)
 
 VARNISH_HOSTS ?= (ip-10-220-4-250.eu-west-1.compute.internal)
 TECH_SUFFIX = .bgdi.ch
 API_URL ?= //api3.geo.admin.ch
 API_TECH_URL ?= //mf-chsdi3.
-LAST_API_URL := $(shell if [ -f .build-artefacts/last-api-url ]; then cat .build-artefacts/last-api-url 2> /dev/null; else echo '-none-'; fi)
+LAST_API_URL = $(call lastvalue,api-url)
 MAPPROXY_URL ?= //wmts{s}.geo.admin.ch
 MAPPROXY_TECH_URL ?= //wmts{s}.
-LAST_MAPPROXY_URL := $(shell if [ -f .build-artefacts/last-mapproxy-url ]; then cat .build-artefacts/last-mapproxy-url 2> /dev/null; else echo '-none-'; fi)
+LAST_MAPPROXY_URL = $(call lastvalue,mapproxy-url)
 VECTORTILES_URL ?= //vectortiles{s}.geo.admin.ch
 VECTORTILES_TECH_URL ?= //vectortiles{s}.
-LAST_VECTORTILES_URL := $(shell if [ -f .build-artefacts/last-vectortiles-url ]; then cat .build-artefacts/last-vectortiles-url 2> /dev/null; else echo '-none-'; fi)
+LAST_VECTORTILES_URL = $(call lastvalue,vectortiles-url)
 WMS_URL ?= //wms.geo.admin.ch
 WMS_TECH_URL ?= //wms-bgdi.
-LAST_WMS_URL := $(shell if [ -f .build-artefacts/last-wms-url ]; then cat .build-artefacts/last-wms-url 2> /dev/null; else echo '-none-'; fi)
+LAST_WMS_URL = $(call lastvalue,wms-url)
 SHOP_URL ?= //shop.swisstopo.admin.ch
 SHOP_TECH_URL ?= //shop-bgdi.
-LAST_SHOP_URL := $(shell if [ -f .build-artefacts/last-shop-url ]; then cat .build-artefacts/last-shop-url 2> /dev/null; else echo '-none-'; fi)
+LAST_SHOP_URL = $(call lastvalue,shop-url)
 PUBLIC_URL ?= //public.geo.admin.ch
 PUBLIC_TECH_URL ?= //public.
-LAST_PUBLIC_URL := $(shell if [ -f .build-artefacts/last-public-url ];  then cat .build-artefacts/last-public-url 2> /dev/null; else echo '-none-'; fi)
+LAST_PUBLIC_URL = $(call lastvalue,public-url)
 PRINT_URL ?= //print.geo.admin.ch
 PRINT_TECH_URL ?= //service-print.
-LAST_PRINT_URL := $(shell if [ -f .build-artefacts/last-print-url ]; then cat .build-artefacts/last-print-url 2> /dev/null; else echo '-none-'; fi)
+LAST_PRINT_URL = $(call lastvalue,print-url)
 PROXY_URL ?= //service-proxy.prod.bgdi.ch
-LAST_PROXY_URL ?= $(shell if [ -f .build-artefacts/last-proxy-ulr ]; then cat .build-artefacts/last-proxy-url 2> /dev/null; else echo '-none-'; fi)
+LAST_PROXY_URL = $(call lastvalue,proxy-url)
 
 PUBLIC_URL_REGEXP ?= ^https?:\/\/public\..*\.(bgdi|admin)\.ch\/.*
 ADMIN_URL_REGEXP ?= ^(ftp|http|https):\/\/(.*(\.bgdi|\.geo\.admin)\.ch)
@@ -48,10 +48,10 @@ E2E_TARGETURL ?= https://mf-geoadmin3.dev.bgdi.ch
 DEPLOY_TARGET ?= dev
 LESS_PARAMETERS ?= -ru
 KEEP_VERSION ?= 'false'
-LAST_VERSION := $(shell if [ -f .build-artefacts/last-version ]; then cat .build-artefacts/last-version 2> /dev/null; else echo '-none-'; fi)
+LAST_VERSION = $(call lastvalue,version)
 VERSION := $(shell if [ '$(KEEP_VERSION)' = 'true' ] && [ '$(LAST_VERSION)' != '-none-' ]; then echo '$(LAST_VERSION)'; else date '+%y%m%d%H%M'; fi)
 GIT_BRANCH := $(shell if [ -f .build-artefacts/deployed-git-branch ]; then cat .build-artefacts/deployed-git-branch 2> /dev/null; else git rev-parse --symbolic-full-name --abbrev-ref HEAD; fi)
-GIT_LAST_BRANCH := $(shell if [ -f .build-artefacts/last-git-branch ]; then cat .build-artefacts/last-git-branch 2> /dev/null; else echo 'dummy'; fi)
+GIT_LAST_BRANCH = $(call lastvalue,git-branch)
 BRANCH_TO_DELETE ?=
 DEPLOY_ROOT_DIR := /var/www/vhosts/mf-geoadmin3/private/branch
 OL_VERSION ?= 44558b7c89050c332671863f5ca48491ab727a23 # master, August 15 2017
@@ -537,6 +537,16 @@ define compilejs
 		--js_output_file  src/lib/$1.min.js;
 endef
 
+define lastvalue
+	$(shell if [ -f .build-artefacts/last-$1 ]; then cat .build-artefacts/last-$1 2> /dev/null; else echo '-none-'; fi)
+endef
+
+define cachelastvariable
+	mkdir -p $(dir $1)
+	test "$2" != "$3" && \
+	    echo "$2" > .build-artefacts/last-$4 || :
+endef
+
 prd/index.html: src/index.mako.html \
 	    ${MAKO_CMD} \
 	    .build-artefacts/last-api-url \
@@ -769,59 +779,43 @@ ${PYTHON_VENV}:
 	${PIP_CMD} install -U pip setuptools
 
 .build-artefacts/last-version::
-	mkdir -p $(dir $@)
-	test "$(VERSION)" != "$(LAST_VERSION)" && echo $(VERSION) > .build-artefacts/last-version || :
+	$(call cachelastvariable,$@,$(VERSION),$(LAST_VERSION),version)
 
 .build-artefacts/last-git-branch::
-	mkdir -p $(dir $@)
-	test "$(GIT_BRANCH)" != "$(GIT_LAST_BRANCH)" && echo $(GIT_BRANCH) > .build-artefacts/last-git-branch || :
+	$(call cachelastvariable,$@,$(GIT_BRANCH),$(GIT_LAST_BRANCH),git-branch)
 
 .build-artefacts/last-api-url::
-	mkdir -p $(dir $@)
-	test "$(API_URL)" != "$(LAST_API_URL)" && echo $(API_URL) > .build-artefacts/last-api-url || :
+	$(call cachelastvariable,$@,$(API_URL),$(LAST_API_URL),api-url)
 
 .build-artefacts/last-mapproxy-url::
-	mkdir -p $(dir $@)
-	test "$(MAPPROXY_URL)" != "$(LAST_MAPPROXY_URL)" && echo $(MAPPROXY_URL) > .build-artefacts/last-mapproxy-url || :
+	$(call cachelastvariable,$@,$(MAPPROXY_URL),$(LAST_MAPPROXY_URL),mapproxy-url)
 
 .build-artefacts/last-vectortiles-url::
-	mkdir -p $(dir $@)
-	test "$(VECTORTILES_URL)" != "$(LAST_VECTORTILES_URL)" && echo $(VECTORTILES_URL) > .build-artefacts/last-vectortiles-url || :
+	$(call cachelastvariable,$@,$(VECTORTILES_URL),$(LAST_VECTORTILES_URL),vectortiles-url)
 
 .build-artefacts/last-shop-url::
-	mkdir -p $(dir $@)
-	test "$(SHOP_URL)" != "$(LAST_SHOP_URL)" && echo $(SHOP_URL) > .build-artefacts/last-shop-url || :
+	$(call cachelastvariable,$@,$(SHOP_URL),$(LAST_SHOP_URL),shop-url)
 
 .build-artefacts/last-wms-url::
-	mkdir -p $(dir $@)
-	test "$(WMS_URL)" != "$(LAST_WMS_URL)" && echo $(WMS_URL) > .build-artefacts/last-wms-url || :
+	$(call cachelastvariable,$@,$(WMS_URL),$(LAST_WMS_URL),wms-url)
 
 .build-artefacts/last-public-url::
-	mkdir -p $(dir $@)
-	test "$(PUBLIC_URL)" != "$(LAST_PUBLIC_URL)" && echo $(PUBLIC_URL) > .build-artefacts/last-public-url || :
+	$(call cachelastvariable,$@,$(PUBLIC_URL),$(LAST_PUBLIC_URL),public-url)
 
 .build-artefacts/last-print-url::
-	mkdir -p $(dir $@)
-	test "$(PRINT_URL)" != "$(LAST_PRINT_URL)" && echo $(PRINT_URL) > .build-artefacts/last-print-url || :
+	$(call cachelastvariable,$@,$(PRINT_URL),$(LAST_PRINT_URL),print-url)
 
 .build-artefacts/last-proxy-url::
-	mkdir -p $(dir $@)
-	test "$(PROXY_URL)" != "$(LAST_PROXY_URL)" && echo $(PROXY_URL) > .build-artefacts/last-proxy-url || :
+	$(call cachelastvariable,$@,$(PROXY_URL),$(LAST_PROXY_URL),proxy-url)
 
 .build-artefacts/last-apache-base-path::
-	mkdir -p $(dir $@)
-	test "$(APACHE_BASE_PATH)" != "$(LAST_APACHE_BASE_PATH)" && \
-	    echo $(APACHE_BASE_PATH) > .build-artefacts/last-apache-base-path || :
+	$(call cachelastvariable,$@,$(APACHE_BASE_PATH),$(LAST_APACHE_BASE_PATH),apache-base-path)
 
 .build-artefacts/last-deploy-target::
-	mkdir -p $(dir $@)
-	test "$(DEPLOY_TARGET)" != "$(LAST_DEPLOY_TARGET)" && \
-	     echo $(DEPLOY_TARGET) > .build-artefacts/last-deploy-target || :
+	$(call cachelastvariable,$@,$(DEPLOY_TARGET),$(LAST_DEPLOY_TARGET),deploy-target)
 
 .build-artefacts/last-apache-base-directory::
-	mkdir -p $(dir $@)
-	test "$(APACHE_BASE_DIRECTORY)" != "$(LAST_APACHE_BASE_DIRECTORY)" && \
-	    echo "$(APACHE_BASE_DIRECTORY)" > .build-artefacts/last-apache-base-directory || :
+	$(call cachelastvariable,$@,$(APACHE_BASE_DIRECTORY),$(LAST_APACHE_BASE_DIRECTORY),apache-base-directory)
 
 .build-artefacts/ol-cesium:
 	git clone --recursive https://github.com/openlayers/ol-cesium.git $@
