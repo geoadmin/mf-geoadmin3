@@ -257,7 +257,7 @@ itemscope itemtype="http://schema.org/WebApplication"
              ga-mouse-position-options="options"></div>
       </div>
   % endif
-     <div class="pull-right">
+      <div class="pull-right">
         <a target="_blank" href="https://www.geo.admin.ch/{{langId}}/about-swiss-geoportal/impressum.html#copyright" translate>copyright_label</a>
       </div>
   % if device == 'desktop':
@@ -415,11 +415,7 @@ itemscope itemtype="http://schema.org/WebApplication"
              ga-collapsible-show="globals.catalogShown">
             <i class="fa fa-caret-down"></i>
             <span>{{topicId | translate}}</span>
-
-  % if device == 'desktop':
             <span ga-help="32,37,39" ga-help-options="{showOnHover:true}"></span>
-  % endif
-
           </a>
           <div id="catalog" class="collapse" ng-controller="GaCatalogtreeController">
             <div class="panel-body panel-body-wide accordion-inner-catalog"
@@ -436,10 +432,7 @@ itemscope itemtype="http://schema.org/WebApplication"
              ga-collapsible-show="globals.selectionShown">
             <i class="fa fa-caret-down"></i>
             <span translate>layers_displayed</span>
-
-% if device == 'desktop':
             <span ga-help="34,35,36" ga-help-options="{showOnHover:true}"></span>
-% endif
           </a>
           <div id="selection" class="collapse">
             <div class="panel-body panel-body-wide" ga-layermanager ga-layermanager-map="map">

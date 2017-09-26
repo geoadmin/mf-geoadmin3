@@ -5,12 +5,16 @@
   opacity: 0.3;
 
   &:hover {
-    opacity: 1;
+    opacity: 1!important;
   }
 
   button.ga-icon {
     height: 100%;
     font-size: 14px;
+  }
+
+  @media (max-width: @screen-tablet) {
+    display: none;
   }
 }
 

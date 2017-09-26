@@ -217,21 +217,14 @@ button.ga-btn, button.ngeo-btn, .ol-control button {
   }
 }
 
-.cadastre.de, .cadastre.fr {
+.cadastre {
+ &.it, &.de, &.fr {
    #catalogHeading {
-       &[aria-expanded="true"] span {
-           letter-spacing: -0.4px;
-       }
-       [ga-help] {
-         display: none;
-       }
+     [ga-help] {
+       display: none;
+     }
    }
-}
-
-.cadastre.it #catalogHeading[aria-expanded="true"] {
-  [ga-help] {
-    display: none;
-  }
+ }
 }
 
 
@@ -464,13 +457,6 @@ input[type=text][readonly] {
     height: unit(@small-header-height, px);
     background: #fff;
   }
-
-  @media (max-width: @screen-phone) {
-    [ga-help] {
-      display: none;
-    }
-  }
-
 }
 
 #search-container {
@@ -493,10 +479,6 @@ input[type=text][readonly] {
 
     @media (min-width: @screen-desktop) and (min-height: @screen-s-height) {
       top: 21px;
-    }
-
-    @media (max-width: @screen-tablet) {
-      display: none;
     }
   }
 
