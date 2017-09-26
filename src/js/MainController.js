@@ -256,6 +256,7 @@ goog.require('ga_window_service');
       catalogShown: false,
       selectionShown: false,
       feedbackPopupShown: false,
+      settingsShown: false,
       isShareActive: false,
       isDrawActive: false,
       isFeatureTreeActive: false,
@@ -270,6 +271,7 @@ goog.require('ga_window_service');
         $scope.globals.searchFocused = gaWindow.isWidth('>xs');
         $scope.globals.pulldownShown = gaWindow.isWidth('>s') &&
              gaWindow.isHeight('>s');
+        $scope.globals.settingsShown = gaWindow.isWidth('<=m');
       });
     });
 
@@ -373,11 +375,20 @@ goog.require('ga_window_service');
           });
         }
       }
+      
       // Open share panel by default on phone
       if ($scope.globals.pulldownShown && !$scope.globals.isShareActive &&
           !$scope.globals.isDrawActive && gaWindow.isWidth('xs')) {
         $scope.$applyAsync(function() {
           $scope.globals.isShareActive = true;
+        });
+      }
+
+      // Display settings panel
+      if ((gaWindow.isWidth('<=m') && !$scope.globals.settingsShown) || 
+         (gaWindow.isWidth('>m') && $scope.globals.settingsShown)) {
+        $scope.$applyAsync(function() {
+          $scope.globals.settingsShown = !$scope.globals.settingsShown;
         });
       }
     });
