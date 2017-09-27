@@ -375,7 +375,7 @@ goog.require('ga_window_service');
           });
         }
       }
-      
+
       // Open share panel by default on phone
       if ($scope.globals.pulldownShown && !$scope.globals.isShareActive &&
           !$scope.globals.isDrawActive && gaWindow.isWidth('xs')) {
@@ -385,7 +385,7 @@ goog.require('ga_window_service');
       }
 
       // Display settings panel
-      if ((gaWindow.isWidth('<=m') && !$scope.globals.settingsShown) || 
+      if ((gaWindow.isWidth('<=m') && !$scope.globals.settingsShown) ||
          (gaWindow.isWidth('>m') && $scope.globals.settingsShown)) {
         $scope.$applyAsync(function() {
           $scope.globals.settingsShown = !$scope.globals.settingsShown;

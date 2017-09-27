@@ -83,6 +83,7 @@ describe('ga_main_controller', function() {
         expect(g.catalogShown).to.be(false);
         expect(g.selectionShown).to.be(false);
         expect(g.feedbackPopupShown).to.be(false);
+        expect(g.settingsShown).to.be(false);
         expect(g.isShareActive).to.be(false);
         expect(g.isDrawActive).to.be(false);
         expect(g.isFeatureTreeActive).to.be(false);
