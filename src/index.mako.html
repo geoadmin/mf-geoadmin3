@@ -153,6 +153,7 @@ itemscope itemtype="http://schema.org/WebApplication"
           <span translate>problem_announcement</span>
         </a>&nbsp;&nbsp;
         <a target="_blank" href="//help.geo.admin.ch/?lang={{langId}}" translate>help_label</a>&nbsp;&nbsp;
+        <a href="{{deviceSwitcherHref}}" translate>mobile_redirect</a>&nbsp;&nbsp;
         <div ng-controller="GaTranslationController">
           <div ga-translation-selector ga-translation-selector-options="options"></div>
         </div>
@@ -225,7 +226,7 @@ itemscope itemtype="http://schema.org/WebApplication"
       </div>
     </div> <!-- #map -->
 
-    <!-- 3d buutons and inspectors -->
+    <!-- 3d buttons and inspectors -->
     <div ng-cloak ng-if="globals.is3dActive && ol3d">
       <div ga-cesium-inspector
            ga-cesium-inspector-ol3d="::ol3d"></div>
@@ -239,9 +240,9 @@ itemscope itemtype="http://schema.org/WebApplication"
         <span translate>3d_overlay_warning</span>
       </div>
     </div>
-  % if device == 'mobile':
+% if device == 'mobile':
     <div ng-cloak ga-offline-selector ga-offline-selector-map="::map"></div>
-  % endif
+% endif
 % if device != 'embed':
     <div ng-cloak translate-cloak id="footer" class="navbar navbar-fixed-bottom">
       <div  class="pull-left" ga-scale-line ga-scale-line-map="::map" ng-show="!globals.is3dActive"></div>
@@ -374,26 +375,23 @@ itemscope itemtype="http://schema.org/WebApplication"
             <div class="panel-body panel-body-wide panel-cursor">
               <ul>
                 <li><!-- Import -->
-                  <a href="" ng-click="globals.importPopupShown = !globals.importPopupShown"
-                     data-original-title="{{'import_tooltip' | translate}}"
-                     class="ga-custom-tooltip" data-placement="bottom"
-                     accesskey="w">
+                  <a href="" accesskey="w"
+                     ng-click="globals.importPopupShown = !globals.importPopupShown"
+                     translate-attr="{title: 'import_tooltip'}">
                     <span ng-class="{'selected': globals.importPopupShown}" translate>import</span>
                   </a>
                 </li>
                 <li ng-show="!globals.is3dActive"><!-- Compare -->
-                  <a href=""  ng-click="globals.isSwipeActive = !globals.isSwipeActive"
-                     data-original-title="{{'swipe_tooltip' | translate}}"
-                     class="ga-custom-tooltip" data-placement="bottom"
-                     accesskey="c">
+                  <a href=""  accesskey="c"
+                     ng-click="globals.isSwipeActive = !globals.isSwipeActive"
+                     translate-attr="{title: 'swipe_tooltip'}">
                     <span ng-class="{'selected': globals.isSwipeActive}" translate>swipe</span>
                   </a>
                 </li>
                 <li ng-show="!globals.is3dActive"><!-- Feature Tree -->
-                  <a href=""  ng-click="globals.isFeatureTreeActive = !globals.isFeatureTreeActive"
-                     data-original-title="{{'featuretree_tooltip' | translate}}"
-                     class="ga-custom-tooltip" data-placement="top"
-                     accesskey="s">
+                  <a href="" accesskey="s"
+                     ng-click="globals.isFeatureTreeActive = !globals.isFeatureTreeActive"
+                     translate-attr="{title: 'featuretree_tooltip'}">
                     <span  ng-class="{'selected': globals.isFeatureTreeActive}" translate>object_information</span>
                   </a>
                 </li>
@@ -457,6 +455,9 @@ itemscope itemtype="http://schema.org/WebApplication"
                   <span ng-class="{'selected': globals.feedbackPopupShown}" translate>problem_announcement</span>
                 </a>
               </p>
+              <p>
+                <a href="{{deviceSwitcherHref}}" translate>desktop_redirect</a>
+              </p>
               <div class="options">
                 <label ng-controller="GaTranslationController">
                   <span translate>lang_chooser_label</span>
@@ -472,7 +473,7 @@ itemscope itemtype="http://schema.org/WebApplication"
             </div>
           </div>
         </div> <!-- .panel -->
-        
+
         <button id="menu-button" class="btn btn-default"
                 ng-click="globals.pulldownShown=!globals.pulldownShown">
           <span class="ga-hidden-mobile">
@@ -512,7 +513,6 @@ itemscope itemtype="http://schema.org/WebApplication"
       </div>
     </div> <!-- end Feedback -->
 
-  % if device == 'desktop':
     <!-- Popup: Import -->
     <div ng-if="globals.importPopupShown"
          ga-popup="globals.importPopupShown"
@@ -527,7 +527,6 @@ itemscope itemtype="http://schema.org/WebApplication"
         </div>
       </div>
     </div> <!-- end Import -->
-  % endif
 
     <!-- Popup: Profile -->
     <div ng-controller="GaProfilePopupController">
@@ -805,16 +804,14 @@ itemscope itemtype="http://schema.org/WebApplication"
           staging: staging,
           apiOverwrite: apiOverwrite
         });
-
-        $('.ga-custom-tooltip').tooltip();
-
       })();
 
-% if device == 'mobile':
-## Workaround for iOS 6.x bug: content shifted after orientation change
-## As we can't use css fix ( see http://stackoverflow.com/a/12518946/29655 )
-## we force a redraw on orientation change
-## ( see http://stackoverflow.com/a/13235711/29655 )
+      /**
+       *  Workaround for iOS 6.x bug: content shifted after orientation change
+       *  As we can't use css fix ( see http://stackoverflow.com/a/12518946/29655 )
+       *  we force a redraw on orientation change
+       *  ( see http://stackoverflow.com/a/13235711/29655 )
+       */
       (function(){
         $(window).bind("orientationchange", function(){
           $('#header').hide();
@@ -825,7 +822,6 @@ itemscope itemtype="http://schema.org/WebApplication"
           }, 0);
         });
       })();
-% endif
     </script>
   </body>
 </html>
