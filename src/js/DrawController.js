@@ -34,7 +34,7 @@ goog.require('ga_styles_service');
     $scope.options.color = red;
     $scope.options.textColor = red;
     $scope.options.textSize = {label: 'small_size', scale: 1};
-    $scope.options.icon = {id: 'marker'};
+    $scope.options.icon = {id: 'marker', anchor: [0.5, 0.9]};
     $scope.options.iconColor = red;
     $scope.options.iconSize = {label: 'big_size', value: [48, 48], scale: 1};
     $scope.options.font = gaStyleFactory.FONT;
@@ -52,7 +52,8 @@ goog.require('ga_styles_service');
         new ol.style.Style({
           image: new ol.style.Icon({
             src: getIconUrl($scope.options.icon),
-            scale: $scope.options.iconSize.scale
+            scale: $scope.options.iconSize.scale,
+            anchor: $scope.options.icon.anchor
           }),
           zIndex: gaStyleFactory.ZICON
         })

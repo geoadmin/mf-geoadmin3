@@ -161,7 +161,8 @@ goog.require('ga_window_service');
           angular.isDefined(properties.icon)) {
         icon = new ol.style.Icon({
           src: getIconUrl(properties.icon, properties.iconColor.fill),
-          scale: properties.iconSize.scale
+          scale: properties.iconSize.scale,
+          anchor: properties.icon.anchor
         });
       }
       var styles = [

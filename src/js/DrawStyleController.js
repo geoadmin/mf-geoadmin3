@@ -56,7 +56,7 @@ goog.require('ga_styles_service');
       ],
       icons: [
         // Basics
-        {id: 'marker'},
+        {id: 'marker', anchor: [0.5, 0.9]},
         {id: 'circle'},
         {id: 'square'},
         {id: 'triangle'},
@@ -188,7 +188,7 @@ goog.require('ga_styles_service');
     $scope.options.color = options.colors[5];
     $scope.options.textColor = options.colors[5];
     $scope.options.textSize = options.textSizes[0];
-    $scope.options.icon = options.colors[0];
+    $scope.options.icon = options.icons[0];
     $scope.options.iconColor = options.colors[5];
     $scope.options.iconSize = options.iconSizes[2];
 
