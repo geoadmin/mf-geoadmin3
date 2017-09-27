@@ -106,7 +106,7 @@ goog.require('ga_urlutils_service');
       var getLayerOptions = function(getCapLayer, getCapabilities, getCapUrl) {
         if (getCapabilities) {
           var layerOptions = {
-            layer: getCapLayer.Identifier,
+            layer: getCapLayer.Identifier
           };
           getCapLayer.sourceConfig = ol.source.WMTS.optionsFromCapabilities(
               getCapabilities, layerOptions);
