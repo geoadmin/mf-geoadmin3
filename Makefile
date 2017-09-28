@@ -56,7 +56,7 @@ BRANCH_TO_DELETE ?=
 DEPLOY_ROOT_DIR := /var/www/vhosts/mf-geoadmin3/private/branch
 OL_VERSION ?= 7a87c15959fed5e8600acec08c2cd705232adf8e # master, September 25 2017
 OL_CESIUM_VERSION ?= 434e5e12282565b66af4dd3a1d62307c3d83190c # master, August 25 2017
-CESIUM_VERSION ?= aab17aee8aba1a4c9fc4fc9504237f09d24eb0fb # c2c/c2c_patches_vector_tiles, August 14 2017
+CESIUM_VERSION ?= ce6a989acc0ec629dd4e53a9ad1d8ae139a637fb # c2c/c2c_patches_vector_tiles, September 28 2017
 NGEO_VERSION ?= 7039d68645f4bba635cf5bd553a1d2a495a280c2 # master, September 22 2017
 DEFAULT_TOPIC_ID ?= ech
 TRANSLATION_FALLBACK_CODE ?= de
@@ -345,6 +345,7 @@ olcesium: .build-artefacts/ol-cesium
 	node tasks/build-ext.js; \
 	cd ../cesium; \
 	git remote | grep c2c || git remote add c2c git://github.com/camptocamp/cesium; \
+	git remote | grep oterral || git remote add oterral git://github.com/oterral/cesium; \
 	git fetch --all; \
 	git checkout $(CESIUM_VERSION); \
 	git show; \
