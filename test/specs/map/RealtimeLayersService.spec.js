@@ -1,7 +1,7 @@
 describe('ga_realtimelayers_service', function() {
 
   describe('gaRealtimeLayersManager', function() {
-    var map, gaRealtime, $rootScope, $httpBackend, $timeout, gaLayerFilters, gaMapUtils, gaGlobalOptions, clock, gaLang;
+    var $q, map, gaRealtime, $rootScope, $httpBackend, $timeout, gaLayerFilters, gaMapUtils, gaGlobalOptions, clock, gaLang;
     var dataUrl = 'https://data.geo.admin.ch/some/some_custom.json';
     var jsonData1 = {
       'features': [{
@@ -53,6 +53,7 @@ describe('ga_realtimelayers_service', function() {
       layer.bodId = bodId;
       layer.updateDelay = 1000;
       layer.geojsonUrl = 'https://data.geo.admin.ch/' + bodId + '/' + bodId + '_' + gaLang.get() + '.json';
+      layer.timestamps = ['2004'];
       map.addLayer(layer);
       return layer;
     };
@@ -77,6 +78,9 @@ describe('ga_realtimelayers_service', function() {
           loadConfig: function() {},
           getLayerProperty: function(bodId, b) {
             return 'https://data.geo.admin.ch/' + bodId + '/' + bodId + '_' + gaLang.get() + '.json';
+          },
+          getLayerPromise: function() {
+            return $q.when();
           }
         });
         var lang = 'custom';
@@ -98,6 +102,7 @@ describe('ga_realtimelayers_service', function() {
         $httpBackend = $injector.get('$httpBackend');
         $rootScope = $injector.get('$rootScope');
         $timeout = $injector.get('$timeout');
+        $q = $injector.get('$q');
         gaLayerFilters = $injector.get('gaLayerFilters');
         gaGlobalOptions = $injector.get('gaGlobalOptions');
         gaMapUtils = $injector.get('gaMapUtils');
@@ -115,28 +120,25 @@ describe('ga_realtimelayers_service', function() {
       clock.restore();
     });
 
-    it('gets json data when the layer is added', function() {
-      $httpBackend.expectGET(dataUrl).respond(jsonData1);
-      addRealtimeLayerToMap('some');
-      $httpBackend.flush();
-      expect(map.getLayers().item(0).getSource().getFeatures().length).to.be(1);
+    it('doesn\'t get json data when the layer is added', function() {
+      var layer = addRealtimeLayerToMap('some');
+      $httpBackend.verifyNoOutstandingRequest();
+      expect(map.getLayers().item(0).getSource().getFeatures().length).to.be(0);
     });
 
     it('broadcasts a gaNewLayerTimestamp event', function() {
       var spy = sinon.spy($rootScope, '$broadcast');
-      $httpBackend.whenGET(dataUrl).respond(jsonData1);
-      addRealtimeLayerToMap('some');
-      $httpBackend.flush();
-      expect(spy.calledWith('gaNewLayerTimestamp', jsonData1.timestamp)).to.be(true);
+      var layer = addRealtimeLayerToMap('some');
+      $httpBackend.verifyNoOutstandingRequest();
+      expect(spy.calledWith('gaNewLayerTimestamp', layer.timestamps[0])).to.be(true);
     });
 
     it('reloads the data after a delay', function(done) {
-      $httpBackend.whenGET(dataUrl).respond(jsonData1);
       addRealtimeLayerToMap('some');
-      $httpBackend.flush();
+      $httpBackend.verifyNoOutstandingRequest();
       $rootScope.$digest();
       var layer = map.getLayers().item(0);
-      expect(layer.getSource().getFeatures().length).to.be(1);
+      expect(layer.getSource().getFeatures().length).to.be(0);
 
       var spy = sinon.spy($rootScope, '$broadcast');
       $httpBackend.expectGET(dataUrl).respond(jsonData2);
@@ -153,12 +155,11 @@ describe('ga_realtimelayers_service', function() {
     });
 
     it('broadcasts an empty gaNewLayerTimestamp event on layer remove and deactivate the delay', function(done) {
-      $httpBackend.whenGET(dataUrl).respond(jsonData1);
       addRealtimeLayerToMap('some');
-      $httpBackend.flush();
+      $httpBackend.verifyNoOutstandingRequest();
       $rootScope.$digest();
       var layer = map.getLayers().item(0);
-      expect(layer.getSource().getFeatures().length).to.be(1);
+      expect(layer.getSource().getFeatures().length).to.be(0);
 
       var spy = sinon.spy($rootScope, '$broadcast');
       map.removeLayer(layer);
@@ -175,12 +176,11 @@ describe('ga_realtimelayers_service', function() {
 
     it('doesn\'t register update interval for preview layer', function(done) {
       var spy = sinon.spy($rootScope, '$broadcast');
-      $httpBackend.expectGET(dataUrl).respond(jsonData1);
       addPreviewRealtimeLayerToMap('some');
-      $httpBackend.flush();
+      $httpBackend.verifyNoOutstandingRequest();
       $rootScope.$digest();
       var layer = map.getLayers().item(0);
-      expect(layer.getSource().getFeatures().length).to.be(1);
+      expect(layer.getSource().getFeatures().length).to.be(0);
       expect(spy.callCount).to.be(0);
 
       // No $httpBackend errors means no layer's update
@@ -192,12 +192,11 @@ describe('ga_realtimelayers_service', function() {
     });
 
     it('reloads the data on translation change', function() {
-      $httpBackend.whenGET(dataUrl).respond(jsonData1);
       addRealtimeLayerToMap('some');
-      $httpBackend.flush();
+      $httpBackend.verifyNoOutstandingRequest();
       $rootScope.$digest();
       var layer = map.getLayers().item(0);
-      expect(layer.getSource().getFeatures().length).to.be(1);
+      expect(layer.getSource().getFeatures().length).to.be(0);
 
       var newLang = 'custom2';
       dataUrl = dataUrl.replace('_custom', '_' + newLang);

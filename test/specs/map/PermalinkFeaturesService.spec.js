@@ -130,11 +130,11 @@ describe('ga_permalinkfeatures_service', function() {
         gaPermFeat(map);
       });
 
-      it('doesn\'t add the feature\'s layer', function() {
+      it('adds the feature\'s layer', function() {
         expect(map.getLayers().getLength()).to.equal(0);
         var spy = sinon.spy(map, 'addLayer');
         $rootScope.$digest();
-        expect(spy.callCount).to.equal(0);
+        expect(spy.callCount).to.equal(1);
       });
     });
 

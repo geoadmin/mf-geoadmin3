@@ -1,7 +1,7 @@
 describe('ga_previewfeatures_service', function() {
 
   describe('gaPreviewFeatures', function() {
-    var gaPreviewFeatures, map, $q, $httpBackend, gaMapUtils, gaStyleFactory;
+    var gaPreviewFeatures, map, $q, $httpBackend, gaMapUtils, gaStyleFactory, gaLayers;
 
     var tpl = window.location.protocol + '//api3.geo.admin.ch/123456/rest/services/all/MapServer/{{layerId}}/{{featId}}?geometryFormat=geojson';
     var expectGET = function(featIdsByBodId) {
@@ -30,6 +30,15 @@ describe('ga_previewfeatures_service', function() {
       });
     };
 
+    var layerBodTypeWMTS = {
+      type: 'wmts'
+    };
+
+    var layerBodTypeGeojson = {
+      type: 'geojson'
+    };
+
+
     beforeEach(function() {
 
       inject(function($injector) {
@@ -38,6 +47,7 @@ describe('ga_previewfeatures_service', function() {
         $httpBackend = $injector.get('$httpBackend');
         gaMapUtils = $injector.get('gaMapUtils');
         gaStyleFactory = $injector.get('gaStyleFactory');
+        gaLayers = $injector.get('gaLayers');
       });
 
       map = new ol.Map({});
@@ -154,11 +164,15 @@ describe('ga_previewfeatures_service', function() {
         expect(spy.calledWith(map)).to.be(true);
       });
 
-      it('loads then adds new features from their ids', function(done) {
+      it('For WMS/WMTS-layer: loads then adds new features from their ids',
+       function(done) {
+        var stub = sinon.stub(gaLayers, 'getLayerProperty');
+        stub.withArgs('somelayer').returns(layerBodTypeWMTS);
+        stub.withArgs('somelayer2').returns(layerBodTypeWMTS);
         var ids = {
           'somelayer': ['id1', 'id2'],
           'somelayer2': ['id1', 'id2']
-        };
+        }
         var spy = sinon.spy(gaPreviewFeatures, 'zoom');
         expectGET(ids);
         gaPreviewFeatures.addBodFeatures(map, ids).then(function(feats) {
@@ -170,12 +184,36 @@ describe('ga_previewfeatures_service', function() {
           expect(layer).to.be.an(ol.layer.Vector);
           expect(layer.getSource().getFeatures().length).to.be(4);
           expect(spy.calledWith(map)).to.be(true);
-
-          // verify the request are stored in angular cache
-          gaPreviewFeatures.addBodFeatures(map, ids).then(function(feats) {
-            done();
-          });
+          done();
         });
+        stub.restore();
+        $httpBackend.flush();
+      });
+
+
+      it('For geojson-layer: loads then adds new features from their ids',
+       function(done) {
+        var stub = sinon.stub(gaLayers, 'getLayerProperty');
+        stub.withArgs('somelayer').returns(layerBodTypeGeojson);
+        stub.withArgs('somelayer2').returns(layerBodTypeGeojson);
+        var ids = {
+          'somelayer': ['id1', 'id2'],
+          'somelayer2': ['id1', 'id2']
+        }
+        var spy = sinon.spy(gaPreviewFeatures, 'zoom');
+        expectGET(ids);
+        gaPreviewFeatures.addBodFeatures(map, ids).then(function(feats) {
+          expect(feats.length).to.be(4);
+          feats.forEach(function(item) {
+            expect(item.properties.layerId).to.equal(item.layerBodId);
+          });
+          var layer = map.getLayers().item(0);
+          expect(layer).to.be.an(ol.layer.Vector);
+          expect(layer.getSource().getFeatures().length).to.be(4);
+          expect(spy.calledWith(map)).to.be(true);
+          done();
+        });
+        stub.restore();
         $httpBackend.flush();
       });
 

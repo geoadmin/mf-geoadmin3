@@ -18,7 +18,7 @@ goog.require('ga_styles_service');
   module.provider('gaPreviewFeatures', function() {
 
     this.$get = function($q, $http, gaDefinePropertiesForLayer, gaStyleFactory,
-        gaMapUtils) {
+        gaMapUtils, gaLayers) {
       var MINIMAL_EXTENT_SIZE = 1965;
       var highlightedFeature, onClear, listenerKeyRemove;
       var url = this.url;
@@ -40,10 +40,27 @@ goog.require('ga_styles_service');
       var getFeatures = function(featureIdsByBodId) {
         var promises = [];
         angular.forEach(featureIdsByBodId, function(featureIds, bodId) {
-          featureIds.forEach(function(id) {
-            var reqUrl = url + bodId + '/' + id + '?geometryFormat=geojson';
-            promises.push($http.get(reqUrl, {cache: true}));
-          });
+          if (gaLayers.getLayerProperty(bodId, 'type') === 'geojson') {
+            var loadPromise = gaLayers.getLayerPromise(bodId);
+            var featurePromise = $q.defer();
+            promises.push(featurePromise.promise);
+            loadPromise.then(function(featureCollection) {
+              angular.forEach(featureIds, function(featureId) {
+                angular.forEach(featureCollection, function(f) {
+                  if (f.getId() === featureId) {
+                    featurePromise.resolve(f);
+                  }
+                });
+              });
+            }, function() {
+              featurePromise.reject();
+            });
+          } else {
+            featureIds.forEach(function(id) {
+              var reqUrl = url + bodId + '/' + id + '?geometryFormat=geojson';
+              promises.push($http.get(reqUrl, {cache: true}));
+            });
+          }
         });
         return $q.all(promises);
       };
@@ -129,10 +146,17 @@ goog.require('ga_styles_service');
           getFeatures(featureIdsByBodId).then(function(results) {
             var features = [];
             angular.forEach(results, function(result) {
-              result.data.feature.properties.layerId =
+              // for geojson-layers
+              if (result instanceof ol.Feature) {
+                features.push(result);
+                that.add(map, result.clone());
+              // for wmts/wms-layers
+              } else {
+                result.data.feature.properties.layerId =
                   result.data.feature.layerBodId;
-              features.push(result.data.feature);
-              that.add(map, geojson.readFeature(result.data.feature));
+                features.push(result.data.feature);
+                that.add(map, geojson.readFeature(result.data.feature));
+              }
             });
             that.zoom(map);
             defer.resolve(features);

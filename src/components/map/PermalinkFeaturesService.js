@@ -16,8 +16,6 @@ goog.require('ga_previewfeatures_service');
     this.$get = function($rootScope, gaPermalink, gaLayers, gaPreviewFeatures,
         gaMapUtils) {
       var queryParams = gaPermalink.getParams();
-      var layersParamValue = queryParams.layers;
-      var layerSpecs = layersParamValue ? layersParamValue.split(',') : [];
 
       return function(map) {
         gaLayers.loadConfig().then(function() {
@@ -36,8 +34,7 @@ goog.require('ga_previewfeatures_service');
                 featureIdsCount += featureIds.length;
                 Array.prototype.push.apply(featureIdsByBodId[bodId],
                     featureIds);
-                if (!gaMapUtils.getMapOverlayForBodId(map, bodId) &&
-                    layerSpecs.indexOf(bodId) === -1) {
+                if (!gaMapUtils.getMapOverlayForBodId(map, bodId)) {
                   map.addLayer(gaLayers.getOlLayerById(bodId));
                 }
               }
