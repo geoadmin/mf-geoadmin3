@@ -352,9 +352,6 @@ olcesium: .build-artefacts/ol-cesium
 	git fetch --all; \
 	git checkout $(OL_VERSION); \
 	git show; \
-	cat ../../../scripts/ga-ol-reproj.exports >> src/ol/reproj/reproj.js; \
-	cat ../../../scripts/ga-ol-tilegrid.exports >> src/ol/tilegrid/tilegrid.js; \
-	cat ../../../scripts/ga-ol-tilerange.exports >> src/ol/tilerange.js; \
 	npm install --only prod; \
 	node tasks/build-ext.js; \
 	cd ../cesium; \

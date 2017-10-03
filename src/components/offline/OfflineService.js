@@ -484,35 +484,35 @@ goog.require('ga_window_service');
                 continue;
               }
 
+              var queueByZ = [];
+              var minX = undefined, minY = undefined, maxX, maxY;
               var tileExtent = (isBgLayer && zoom >= 0 && zoom <= 2) ?
                 gaMapUtils.defaultExtent : extent;
-              var tileRange = tileGrid.getTileRangeForExtentAndZ(tileExtent, z);
-              var centerTileCoord = [
-                z,
-                (tileRange.getMinX() + tileRange.getMaxX()) / 2,
-                (tileRange.getMinY() + tileRange.getMaxY()) / 2
-              ];
-
-              var queueByZ = [];
-              for (var x = tileRange.getMinX(); x <= tileRange.getMaxX(); x++) {
-                for (var y = tileRange.getMinY(); y <= tileRange.getMaxY();
-                  y++) {
-                  var tileCoord = [z, x, y];
-                  var tile = {
-                    magnitude: getMagnitude(tileCoord, centerTileCoord),
-                    url: tileUrlFunction(tileCoord,
-                        ol.has.DEVICE_PIXEL_RATIO, projection)
-                  };
-                  queueByZ.push(tile);
+              tileGrid.forEachTileCoord(tileExtent, z, function(tileCoord) {
+                maxX = tileCoord[1];
+                maxY = tileCoord[2];
+                if (!angular.isDefined(minX)) {
+                  minX = tileCoord[1];
+                  minY = tileCoord[2];
                 }
-              }
+                var tile = {
+                  coord: tileCoord,
+                  url: tileUrlFunction(tileCoord, ol.has.DEVICE_PIXEL_RATIO,
+                      projection)
+                };
+                queueByZ.push(tile);
+              });
 
               // We sort tiles by distance from the center
               // The first must be dl in totality so no need to sort tiles,
               // the storage goes full only for the 2nd or 3rd layers.
               if (i > 0 && zoom > 6) {
+                var centerTileCoord = [
+                  z, (minX + maxX) / 2, (minY + maxY) / 2
+                ];
                 queueByZ.sort(function(a, b) {
-                  return a.magnitude - b.magnitude;
+                  return getMagnitude(a.coord, centerTileCoord) -
+                      getMagnitude(b.coord, centerTileCoord);
                 });
               }
 
