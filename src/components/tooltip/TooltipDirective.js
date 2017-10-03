@@ -448,19 +448,8 @@ goog.require('ga_window_service');
                     coordinate)) {
                   return;
                 }
-                var source = layerToQuery.getSource();
-                var sourceCoord, sourceRes,
-                  sourceProj = source.getProjection();
-                if (sourceProj) { // auto reprojection
-                  sourceRes = ol.reproj.calculateSourceResolution(sourceProj,
-                      mapProj, coordinate, mapRes);
-                  sourceCoord = ol.proj.transform(coordinate, mapProj,
-                      sourceProj);
-                }
-                var url = source.getGetFeatureInfoUrl(
-                    sourceCoord || coordinate,
-                    sourceRes || mapRes,
-                    sourceProj || mapProj,
+                var url = layerToQuery.getSource().getGetFeatureInfoUrl(
+                    coordinate, mapRes, mapProj,
                     {'INFO_FORMAT': 'text/plain', 'LANG': gaLang.get()});
                 if (!is3dActive() && url) {
                   gaUrlUtils.proxifyUrl(url).then(function(proxyUrl) {

@@ -1,3 +1,0 @@
-goog.exportProperty(ol.tilegrid.TileGrid.prototype, 'getTileRangeForExtentAndZ',
-    ol.tilegrid.TileGrid.prototype.getTileRangeForExtentAndZ);
-
