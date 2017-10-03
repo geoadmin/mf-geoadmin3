@@ -286,8 +286,6 @@ goog.require('ga_urlutils_service');
           styles = feature.getStyleFunction().call(feature);
         } else if (layer.getStyleFunction()) {
           styles = layer.getStyleFunction()(feature);
-        } else {
-          styles = ol.style.Style.defaultFunction(feature);
         }
       }
       var geometry = feature.getGeometry();
