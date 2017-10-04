@@ -388,30 +388,13 @@ goog.require('ga_urlutils_service');
           return urls;
         };
 
-        var todLayers = [
-          'ch.swisstopo.swisstlm3d-karte-farbe.3d',
-          'ch.swisstopo.swisstlm3d-karte-grau.3d',
+        var todExcludeLayers = [
           'ch.swisstopo.swissimage-product',
-          'ch.swisstopo.swisstlm3d-wanderwege',
-          'ch.bav.haltestellen-oev'
-        ];
-
-        var tod03Layers = [
-          'ch.swisstopo.pixelkarte-grau',
-          'ch.swisstopo.swisstlm3d-wanderwege',
-          'ch.bav.haltestellen-oev',
-          'ch.swisstopo.geologie-geotechnik-gk200',
-          'ch.swisstopo.geologie-generalkarte-ggk200',
-          'ch.swisstopo.geologie-gravimetrischer_atlas'
+          'ch.swisstopo.swissimage'
         ];
 
         var useToD = function(layer, tileMatrixSet) {
-          if (tileMatrixSet === '4326') {
-            return (todLayers.indexOf(layer) !== -1);
-          } else if (tileMatrixSet === '21781') {
-            return (tod03Layers.indexOf(layer) !== -1);
-          }
-          return false;
+          return todExcludeLayers.indexOf(layer) === -1;
         }
 
         var getWmtsGetTileTpl = function(layer, time, tileMatrixSet,
