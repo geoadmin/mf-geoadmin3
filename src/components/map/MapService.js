@@ -1151,7 +1151,8 @@ goog.require('ga_urlutils_service');
          * Use by offline to store in local storage.
          */
         getTileKey: function(tileUrl) {
-          return tileUrl.replace(/^\/\/wmts[0-9]{0,3}/, '');
+          return tileUrl.replace(/^\/\/(wmts|tod)[0-9]{0,3}/, '').
+              replace('prod.bgdi', 'geo.admin');
         },
 
         /**
