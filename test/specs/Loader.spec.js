@@ -13,6 +13,7 @@ beforeEach(function() {
     var mapproxyUrl = '//wmts{s}.geo.admin.ch';
     var shopUrl = '//shop.bgdi.ch';
     var wmsUrl = '//wms.geo.admin.ch';
+    var wmtsUrl = '//tod{s}.bgdi.ch';
     var apacheBasePath = '/';
     var cacheAdd = '/' + version;
     var pathname = location.pathname.replace(/(context|index|mobile|embed)\.html$/g, '');
@@ -35,6 +36,7 @@ beforeEach(function() {
       resourceUrl: location.origin + pathname + versionSlashed,
       proxyUrl: location.protocol + proxyUrl + '/',
       wmsUrl: location.protocol + wmsUrl,
+      wmtsUrl: location.protocol + wmtsUrl,
       w3wUrl: 'dummy.test.url.com',
       lv03tolv95Url: '//api.example.com/reframe/lv03tolv95',
       lv95tolv03Url: '//api.example.com/reframe/lv95tolv03',
@@ -71,12 +73,13 @@ beforeEach(function() {
   module(function(gaLayersProvider, gaGlobalOptions) {
     gaLayersProvider.dfltWmsSubdomains = ['', '0', '1', '2', '3', '4'];
     gaLayersProvider.dfltWmtsNativeSubdomains = ['5', '6', '7', '8', '9'];
-    gaLayersProvider.dfltToDSubdomains = ['5', '6', '7', '8', '9'];
     gaLayersProvider.dfltWmtsMapProxySubdomains = ['5', '6', '7', '8', '9'];
     gaLayersProvider.dfltVectorTilesSubdomains = ['100', '101', '102', '103', '104'];
+    gaLayersProvider.dfltToDSubdomains = ['100', '101', '102', '103', '104'];
     gaLayersProvider.wmsUrlTemplate = '//wms{s}.geo.admin.ch/';
     gaLayersProvider.wmtsGetTileUrlTemplate = '//wmts{s}.geo.admin.ch/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{y}/{x}.{Format}';
-    gaLayersProvider.wmtsToDUrlTemplate = '//tod{s}.bgdi.ch//1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{x}/{y}.{Format}';
+    gaLayersProvider.wmtsToDUrlTemplate = gaGlobalOptions.wmtsUrl + '/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{x}/{y}.{Format}';
+    gaLayersProvider.wmtsToD03UrlTemplate = gaGlobalOptions.wmtsUrl + '/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{y}/{x}.{Format}';
     gaLayersProvider.wmtsMapProxyGetTileUrlTemplate = gaGlobalOptions.mapproxyUrl +
         '/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{x}/{y}.{Format}';
 

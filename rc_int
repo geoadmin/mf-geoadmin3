@@ -11,3 +11,4 @@ export SHOP_URL=//shop-bgdi.int.bgdi.ch
 export PUBLIC_URL=//public.int.bgdi.ch
 export PRINT_URL=//service-print.int.bgdi.ch
 export PROXY_URL=//service-proxy.int.bgdi.ch
+export WMTS_URL=//tod{s}.int.bgdi.ch
