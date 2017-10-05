@@ -387,14 +387,15 @@ goog.require('ga_urlutils_service');
           });
           return urls;
         };
-
+        /*
         var todExcludeLayers = [
           'ch.swisstopo.swissimage-product',
           'ch.swisstopo.swissimage'
         ];
-
+*/
         var useToD = function(layer, tileMatrixSet) {
-          return todExcludeLayers.indexOf(layer) === -1;
+          return false;
+          // return todExcludeLayers.indexOf(layer) === -1;
         }
 
         var getWmtsGetTileTpl = function(layer, time, tileMatrixSet,
@@ -584,6 +585,10 @@ goog.require('ga_urlutils_service');
         // Load layers configuration with value from permalink
         // gaLang.get() never returns an undefined value on page load.
         var configP = loadLayersConfig(gaLang.get());
+
+        this.useToD = function(layer, tilematrix) {
+          return useToD(layer, tilematrix);
+        }
 
         /**
          * Get the promise of the layers config requets
