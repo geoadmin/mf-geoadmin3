@@ -91,6 +91,39 @@ describe('ga_main_controller', function() {
         expect(g.hostIsProd).to.be(undefined);
       });
 
+      it('set map properties', function() {
+        var spy = sinon.spy(ol, 'Map');
+        var spy2 = sinon.spy(ol.control, 'defaults');
+        var spy3 = sinon.spy(ol.interaction, 'defaults');
+        loadController();
+        expect(scope.map).to.be.an(ol.Map);
+        var map = scope.map;
+        expect(map.getView()).to.be.an(ol.View);
+        expect(map.getControls().getLength()).to.be(1);
+        expect(map.getInteractions().getLength()).to.be(9);
+        expect(spy.callCount).to.be(1);
+        expect(spy.args[0][0].moveTolerance).to.be(5);
+        expect(spy.args[0][0].renderer).to.be('canvas');
+        expect(spy.args[0][0].logo).to.be(false);
+        expect(spy2.callCount).to.be(1);
+        expect(spy2.args[0][0].attribution).to.be(false);
+        expect(spy2.args[0][0].rotate).to.be(false);
+        expect(spy3.callCount).to.be(1);
+        expect(spy3.args[0][0].altShiftDragRotate).to.be(true);
+        expect(spy3.args[0][0].touchRotate).to.be(false);
+        expect(spy3.args[0][0].keyboard).to.be(false);
+      });
+
+      it('set view properties', function() {
+        loadController();
+        expect(scope.map).to.be.an(ol.Map);
+        var view = scope.map.getView();
+        expect(view.getProjection().getCode()).to.be(gaGlobalOptions.defaultEpsg);
+        expect(view.constrainCenter([0,0])).to.eql([420000, 30000]);
+        expect(view.getResolution()).to.be(gaMapUtils.defaultResolution);
+        expect(view.getResolutions()).to.be(gaMapUtils.viewResolutions);
+      });
+
       it('initializes gaMapLoad if debug=true', function() {
         var stub = sinon.stub(gaPermalink, 'getParams').returns({debug: 'true'});
         var spy = sinon.spy(gaMapLoad, 'init');
