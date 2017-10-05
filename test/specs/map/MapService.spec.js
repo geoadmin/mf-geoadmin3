@@ -494,7 +494,7 @@ describe('ga_map_service', function() {
   });
 
   describe('gaLayers', function() {
-    var gaLayers, gaTime, $httpBackend, $rootScope, gaGlobalOptions, gaNetworkStatus;
+    var gaLayers, gaTime, $httpBackend, $rootScope, gaGlobalOptions, gaNetworkStatus, $timeout;
     var expectedUrl = 'https://example.com/all?lang=somelang';
     var dfltLayersConfig = {
       foo: {
@@ -594,6 +594,7 @@ describe('ga_map_service', function() {
 
       inject(function($injector) {
         $rootScope = $injector.get('$rootScope');
+        $timeout = $injector.get('$timeout');
         $httpBackend = $injector.get('$httpBackend');
         gaLayers = $injector.get('gaLayers');
         gaTime = $injector.get('gaTime');
@@ -605,6 +606,11 @@ describe('ga_map_service', function() {
     afterEach(function() {
       $httpBackend.verifyNoOutstandingExpectation();
       $httpBackend.verifyNoOutstandingRequest();
+      try {
+        $timeout.verifyNoPendingTasks();
+      } catch (e) {
+        $timeout.flush();
+      }
     });
 
     describe('constructor', function() {
@@ -1131,7 +1137,7 @@ describe('ga_map_service', function() {
           var source = layer.getSource();
           expect(source instanceof ol.source.WMTS).to.be.ok();
           expect(source.getDimensions().Time).to.be('20180101');
-          expect(source.getProjection().getCode()).to.be('EPSG:2056');
+          expect(source.getProjection().getCode()).to.be('EPSG:21781');
           expect(source.getRequestEncoding()).to.be('REST');
           expect(source.getUrls().length).to.be(5);
           expect(source.getUrls()[0]).to.be('//wmts5.geo.admin.ch/1.0.0/serverLayerName/default/{Time}/2056/{TileMatrix}/{TileCol}/{TileRow}.jpeg');
@@ -1197,13 +1203,13 @@ describe('ga_map_service', function() {
           expectCommonProperties(layer, 'aggregate');
         });
 
-        it('returns a GeoJSON layer', function() {
+        it('returns a GeoJSON layer', function(done) {
           $httpBackend.expectGET('http://mystyle.json').respond({});
           $httpBackend.expectGET(gaGlobalOptions.proxyUrl + 'http/my.json').respond({
             'features': [{
               'type': 'Feature',
               'geometry': {
-                'coordinates': [557660, 33280],
+                'coordinates': [24, 56],
                 'type': 'Point'
               },
               'id': '2009',
@@ -1220,6 +1226,10 @@ describe('ga_map_service', function() {
           var source = layer.getSource();
           expect(source instanceof ol.source.Vector).to.be.ok();
           expectCommonProperties(layer, 'geojson');
+          gaLayers.getLayerPromise('geojson').then(function(feats) {
+            expect(feats[0].getGeometry().getCoordinates()).to.eql([1639371.9660116027, 1322382.807803796]);
+            done();
+          });
           $httpBackend.flush();
         });
 

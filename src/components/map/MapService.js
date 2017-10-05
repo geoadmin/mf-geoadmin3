@@ -929,30 +929,30 @@ goog.require('ga_urlutils_service');
             });
           } else if (config.type === 'geojson') {
             // cannot request resources over https in S3
-            olSource = new ol.source.Vector();
+            olSource = new ol.source.Vector({
+              format: new ol.format.GeoJSON({
+                featureProjection: gaGlobalOptions.defaultEpsg
+              })
+            });
             olLayer = new ol.layer.Vector({
               minResolution: config.minResolution,
               maxResolution: config.maxResolution,
               source: olSource,
               extent: extent
             });
-            var setLayerSource = function() {
-              var geojsonFormat = new ol.format.GeoJSON();
-              geojsonPromises[bodId] = gaUrlUtils.proxifyUrl(config.geojsonUrl).
-                  then(function(proxyUrl) {
-                    return $http.get(proxyUrl).then(function(response) {
-                      var data = response.data;
-                      olSource.clear();
-                      olSource.addFeatures(
-                          geojsonFormat.readFeatures(data)
-                      );
-                      if (data.timestamp) {
-                        olLayer.timestamps = [data.timestamp];
-                      }
-                      return olSource.getFeatures();
-                    });
+            geojsonPromises[bodId] = gaUrlUtils.proxifyUrl(config.geojsonUrl).
+                then(function(proxyUrl) {
+                  return $http.get(proxyUrl).then(function(response) {
+                    var data = response.data;
+                    olSource.clear();
+                    olSource.addFeatures(
+                        olSource.getFormat().readFeatures(data));
+                    if (data.timestamp) {
+                      olLayer.timestamps = [data.timestamp];
+                    }
+                    return olSource.getFeatures();
                   });
-            };
+                });
 
             // IE doesn't understand agnostic URLs
             $http.get($window.location.protocol + config.styleUrl, {
@@ -960,12 +960,9 @@ goog.require('ga_urlutils_service');
             }).then(function(response) {
               var olStyleForVector = gaStylesFromLiterals(response.data);
               olLayer.setStyle(function(feature, resolution) {
-                return [olStyleForVector.getFeatureStyle(
-                    feature, resolution)];
+                return [olStyleForVector.getFeatureStyle(feature, resolution)];
               });
             });
-            // TODO: Handle error
-            setLayerSource();
           }
           if (angular.isDefined(olLayer)) {
             gaDefinePropertiesForLayer(olLayer);

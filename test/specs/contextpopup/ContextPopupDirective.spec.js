@@ -324,4 +324,3 @@ describe('ga_contextpopup_directive', function() {
     });
   });
 });
-

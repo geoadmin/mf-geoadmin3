@@ -3,14 +3,13 @@ describe('ga_search_service', function() {
 
   describe('gaSearchGetcoordinate', function() {
     var extent = [2420000, 1030000, 2900000, 1350000];
-    var $timeout, $rootScope, $httpBackend, $q, $window, getCoordinate, gaReframe;
+    var $timeout, $rootScope, $httpBackend, getCoordinate, gaReframe;
 
     beforeEach(function() {
       inject(function($injector, gaGlobalOptions) {
         $rootScope = $injector.get('$rootScope');
         $timeout = $injector.get('$timeout');
         $httpBackend = $injector.get('$httpBackend');
-        $window = $injector.get('$window');
         getCoordinate = $injector.get('gaSearchGetCoordinate');
         gaReframe = $injector.get('gaReframe');
       });

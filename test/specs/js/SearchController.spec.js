@@ -27,7 +27,7 @@ describe('ga_search_controller', function() {
       inject(function($injector) {
         injectServices($injector);
       });
-         });
+    });
 
     afterEach(function() {
       $httpBackend.verifyNoOutstandingExpectation();

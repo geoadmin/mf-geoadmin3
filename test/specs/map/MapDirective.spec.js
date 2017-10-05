@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 describe('ga_map_directive', function() {
   var map, elt, parentScope;
-  var $httpBackend, $compile, $window, $q, $rootScope, gaLayers, gaOffline;
+  var $httpBackend, $compile, $window, $q, $rootScope, $timeout, gaLayers, gaOffline, gaPermalink, gaStyleFactory, gaMapUtils;
 
   var loadDirective = function(map) {
     parentScope = $rootScope.$new();
@@ -15,17 +15,20 @@ describe('ga_map_directive', function() {
     $compile = $injector.get('$compile');
     $rootScope = $injector.get('$rootScope');
     $q = $injector.get('$q');
-    $timeout = $injector.get('$timeout');
     $httpBackend = $injector.get('$httpBackend');
     $window = $injector.get('$window');
+    $timeout = $injector.get('$timeout');
     gaLayers = $injector.get('gaLayers');
     gaOffline = $injector.get('gaOffline');
     gaPermalink = $injector.get('gaPermalink');
     gaStyleFactory = $injector.get('gaStyleFactory');
+    gaMapUtils = $injector.get('gaMapUtils');
+
+    /* Keep fo future tests
     gaBrowserSniffer = $injector.get('gaBrowserSniffer');
     gaDebounce = $injector.get('gaDebounce');
     gaOffline = $injector.get('gaOffline');
-    gaMapUtils = $injector.get('gaMapUtils');
+    */
   };
 
   beforeEach(function() {
@@ -63,11 +66,11 @@ describe('ga_map_directive', function() {
 
       it('zooms to correct level', function() {
         var z = 14;
-        var stub = sinon.stub(gaPermalink, 'getParams').returns({
-          zoom: '14'
+        sinon.stub(gaPermalink, 'getParams').returns({
+          zoom: '' + z
         });
         loadDirective(map);
-        expect(map.getView().getZoom()).to.be(14);
+        expect(map.getView().getZoom()).to.be(z);
       });
     });
 
@@ -75,7 +78,7 @@ describe('ga_map_directive', function() {
 
       it('centers on E and N params', function() {
         var center = [10000, 25000];
-        var stub = sinon.stub(gaPermalink, 'getParams').returns({
+        sinon.stub(gaPermalink, 'getParams').returns({
           E: center[0] + '',
           N: center[1] + ''
         });
@@ -85,7 +88,7 @@ describe('ga_map_directive', function() {
 
       it('centers on X and Y params', function() {
         var center = [10000, 25000];
-        var stub = sinon.stub(gaPermalink, 'getParams').returns({
+        sinon.stub(gaPermalink, 'getParams').returns({
           X: center[1] + '',
           Y: center[0] + ''
         });
@@ -95,7 +98,7 @@ describe('ga_map_directive', function() {
 
       it('gives prority to E and N over X and Y params', function() {
         var center = [10000, 25000];
-        var stub = sinon.stub(gaPermalink, 'getParams').returns({
+        sinon.stub(gaPermalink, 'getParams').returns({
           E: center[0] + '',
           N: center[1] + '',
           X: (center[1] + 2000) + '',
@@ -107,7 +110,7 @@ describe('ga_map_directive', function() {
 
       it('transforms E and N coords from lv03 to lv95 if necessary', function() {
         var center = [425000, 350000];
-        var stub = sinon.stub(gaPermalink, 'getParams').returns({
+        sinon.stub(gaPermalink, 'getParams').returns({
           E: center[0] + '',
           N: center[1] + ''
         });
@@ -117,7 +120,7 @@ describe('ga_map_directive', function() {
 
       it('transforms X and Y coords from lv03 to lv95 if necessary', function() {
         var center = [425000, 350000];
-        var stub = sinon.stub(gaPermalink, 'getParams').returns({
+        sinon.stub(gaPermalink, 'getParams').returns({
           X: center[1] + '',
           Y: center[0] + ''
         });
@@ -127,7 +130,7 @@ describe('ga_map_directive', function() {
 
       it('does nothing if a coord is missing', function() {
         var center = [425000, 350000];
-        var stub = sinon.stub(gaPermalink, 'getParams').returns({
+        sinon.stub(gaPermalink, 'getParams').returns({
           X: center[0] + '',
           N: center[1] + ''
         });
@@ -137,7 +140,7 @@ describe('ga_map_directive', function() {
 
       it('does nothing if not upper case', function() {
         var center = [425000, 350000];
-        var stub = sinon.stub(gaPermalink, 'getParams').returns({
+        sinon.stub(gaPermalink, 'getParams').returns({
           e: center[0] + '',
           n: center[1] + ''
         });
@@ -149,7 +152,7 @@ describe('ga_map_directive', function() {
     describe('using crosshair from permalink param', function() {
 
       it('adds a feature with marker style on center of the map', function() {
-        var stub = sinon.stub(gaPermalink, 'getParams').returns({
+        sinon.stub(gaPermalink, 'getParams').returns({
           crosshair: 'marker'
         });
         var spy = sinon.spy(gaStyleFactory, 'getStyle');
@@ -168,7 +171,7 @@ describe('ga_map_directive', function() {
       });
 
       it('fallbacks on marker style if the style doesn\'t exist', function() {
-        var stub = sinon.stub(gaPermalink, 'getParams').returns({
+        sinon.stub(gaPermalink, 'getParams').returns({
           crosshair: 'foo'
         });
         var spy = sinon.spy(gaStyleFactory, 'getStyle');
@@ -179,7 +182,7 @@ describe('ga_map_directive', function() {
       });
 
       it('deletes crosshair param from permlaink on next view\'s property change event', function() {
-        var stub = sinon.stub(gaPermalink, 'getParams').returns({
+        sinon.stub(gaPermalink, 'getParams').returns({
           crosshair: 'marker'
         });
         var spy = sinon.spy(gaPermalink, 'deleteParam');
