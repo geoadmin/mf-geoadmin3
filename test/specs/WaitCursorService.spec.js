@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 describe('ga_waitcursor_service', function() {
 
   describe('gaWaitCursor', function() {
@@ -43,6 +44,7 @@ describe('ga_waitcursor_service', function() {
       });
 
       it('broadcasts gaIdle after 4 seconds', inject(function($timeout) {
+        $timeout.flush(); // Be sure $timeout is clean before the begininning of this test
         var clock = sinon.useFakeTimers();
         var spy = sinon.spy($rootScope, '$broadcast');
         var spy2 = sinon.spy($timeout, 'cancel');

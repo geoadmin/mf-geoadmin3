@@ -38,7 +38,6 @@ describe('ga_previewfeatures_service', function() {
       type: 'geojson'
     };
 
-
     beforeEach(function() {
 
       inject(function($injector) {
@@ -165,57 +164,56 @@ describe('ga_previewfeatures_service', function() {
       });
 
       it('For WMS/WMTS-layer: loads then adds new features from their ids',
-       function(done) {
-        var stub = sinon.stub(gaLayers, 'getLayerProperty');
-        stub.withArgs('somelayer').returns(layerBodTypeWMTS);
-        stub.withArgs('somelayer2').returns(layerBodTypeWMTS);
-        var ids = {
-          'somelayer': ['id1', 'id2'],
-          'somelayer2': ['id1', 'id2']
-        }
-        var spy = sinon.spy(gaPreviewFeatures, 'zoom');
-        expectGET(ids);
-        gaPreviewFeatures.addBodFeatures(map, ids).then(function(feats) {
-          expect(feats.length).to.be(4);
-          feats.forEach(function(item) {
-            expect(item.properties.layerId).to.equal(item.layerBodId);
+          function(done) {
+            var stub = sinon.stub(gaLayers, 'getLayerProperty');
+            stub.withArgs('somelayer').returns(layerBodTypeWMTS);
+            stub.withArgs('somelayer2').returns(layerBodTypeWMTS);
+            var ids = {
+              'somelayer': ['id1', 'id2'],
+              'somelayer2': ['id1', 'id2']
+            }
+            var spy = sinon.spy(gaPreviewFeatures, 'zoom');
+            expectGET(ids);
+            gaPreviewFeatures.addBodFeatures(map, ids).then(function(feats) {
+              expect(feats.length).to.be(4);
+              feats.forEach(function(item) {
+                expect(item.properties.layerId).to.equal(item.layerBodId);
+              });
+              var layer = map.getLayers().item(0);
+              expect(layer).to.be.an(ol.layer.Vector);
+              expect(layer.getSource().getFeatures().length).to.be(4);
+              expect(spy.calledWith(map)).to.be(true);
+              done();
+            });
+            stub.restore();
+            $httpBackend.flush();
           });
-          var layer = map.getLayers().item(0);
-          expect(layer).to.be.an(ol.layer.Vector);
-          expect(layer.getSource().getFeatures().length).to.be(4);
-          expect(spy.calledWith(map)).to.be(true);
-          done();
-        });
-        stub.restore();
-        $httpBackend.flush();
-      });
-
 
       it('For geojson-layer: loads then adds new features from their ids',
-       function(done) {
-        var stub = sinon.stub(gaLayers, 'getLayerProperty');
-        stub.withArgs('somelayer').returns(layerBodTypeGeojson);
-        stub.withArgs('somelayer2').returns(layerBodTypeGeojson);
-        var ids = {
-          'somelayer': ['id1', 'id2'],
-          'somelayer2': ['id1', 'id2']
-        }
-        var spy = sinon.spy(gaPreviewFeatures, 'zoom');
-        expectGET(ids);
-        gaPreviewFeatures.addBodFeatures(map, ids).then(function(feats) {
-          expect(feats.length).to.be(4);
-          feats.forEach(function(item) {
-            expect(item.properties.layerId).to.equal(item.layerBodId);
+          function(done) {
+            var stub = sinon.stub(gaLayers, 'getLayerProperty');
+            stub.withArgs('somelayer').returns(layerBodTypeGeojson);
+            stub.withArgs('somelayer2').returns(layerBodTypeGeojson);
+            var ids = {
+              'somelayer': ['id1', 'id2'],
+              'somelayer2': ['id1', 'id2']
+            }
+            var spy = sinon.spy(gaPreviewFeatures, 'zoom');
+            expectGET(ids);
+            gaPreviewFeatures.addBodFeatures(map, ids).then(function(feats) {
+              expect(feats.length).to.be(4);
+              feats.forEach(function(item) {
+                expect(item.properties.layerId).to.equal(item.layerBodId);
+              });
+              var layer = map.getLayers().item(0);
+              expect(layer).to.be.an(ol.layer.Vector);
+              expect(layer.getSource().getFeatures().length).to.be(4);
+              expect(spy.calledWith(map)).to.be(true);
+              done();
+            });
+            stub.restore();
+            $httpBackend.flush();
           });
-          var layer = map.getLayers().item(0);
-          expect(layer).to.be.an(ol.layer.Vector);
-          expect(layer.getSource().getFeatures().length).to.be(4);
-          expect(spy.calledWith(map)).to.be(true);
-          done();
-        });
-        stub.restore();
-        $httpBackend.flush();
-      });
 
       it('execute onNextClear callback on next clear', function() {
         var onNextClear = function() {};
