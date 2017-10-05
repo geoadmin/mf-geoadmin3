@@ -6,6 +6,13 @@ INIT := ${shell git submodule update --init}
 # Macro functions
 lastvalue = $(shell if [ -f .build-artefacts/last-$1 ]; then cat .build-artefacts/last-$1 2> /dev/null; else echo '-none-'; fi;)
 
+# Move a set of files ($1) to a target folder ($2) changing the file extension($3) to another($4)
+define moveto
+	for file in $1; do \
+	  cp $$file $2$$(basename $$file $3)$4; \
+	done;
+endef
+
 NGEO_MODULES := src/ngeo/src/modules/import
 SRC_JS_FILES := $(shell find src/components src/js -type f -name '*.js')
 SRC_ES6_FILES := $(shell find ${NGEO_MODULES} -type f -name '*.js')
@@ -183,6 +190,9 @@ all: lint debug release apache testdebug testrelease fixrights
 .PHONY: release
 release: .build-artefacts/devlibs \
 	prd/lib/ \
+	prd/lib/Cesium/ \
+	prd/lib/Cesium/Workers/ \
+	prd/lib/Cesium/ThirdParty/Workers/ \
 	prd/lib/build.js \
 	prd/style/app.css \
 	prd/geoadmin.appcache \
@@ -351,11 +361,11 @@ olcesium: .build-artefacts/ol-cesium
 	git fetch --all; \
 	git checkout $(CESIUM_VERSION); \
 	git show; \
+	([ -f node_modules/.bin/gulp ] || npm install ); \
+	if [ -f "Build/Cesium/Cesium.js" ] ; then echo 'Skipping Cesium minified build'; else node_modules/.bin/gulp minifyRelease; fi; \
+	if [ -f "Build/CesiumUnminified/Cesium.js" ] ; then echo 'Skipping Cesium debug build'; else node_modules/.bin/gulp generateStubs combine; fi; \
 	cd ..; \
 	ln -T -f -s ../../../../ol-cesium-plugin/ src/plugins/geoadmin; \
-	( cd cesium; [ -f node_modules/.bin/gulp ] || npm install ); \
-	( cd cesium; if [ -f "Build/Cesium/Cesium.js" ] ; then echo 'Skipping Cesium minified build'; else node_modules/.bin/gulp minifyRelease; fi ); \
-	( cd cesium; if [ -f "Build/CesiumUnminified/Cesium.js" ] ; then echo 'Skipping Cesium debug build'; else node_modules/.bin/gulp generateStubs combine; fi ); \
 	npm install; \
 	node build/generate-exports.js dist/exports.js; \
 	node build/build.js ../../scripts/olcesium-debug-geoadmin.json dist/olcesium-debug.js; \
@@ -365,7 +375,9 @@ olcesium: .build-artefacts/ol-cesium
 	rm -rf ../../src/lib/Cesium; \
 	cp -r cesium/Build/CesiumUnminified ../../src/lib/Cesium; \
 	cp cesium/Build/Cesium/Cesium.js ../../src/lib/Cesium.min.js; \
-	cp Cesium.externs.js ../../externs/Cesium.externs.js;
+	cp Cesium.externs.js ../../externs/Cesium.externs.js; \
+	$(call moveto,cesium/Build/Cesium/Workers/*.js,../../src/lib/Cesium/Workers/,'.js','.min.js') \
+	$(call moveto,cesium/Build/Cesium/ThirdParty/Workers/*.js,../../src/lib/Cesium/ThirdParty/Workers/,'.js','.min.js')
 
 .PHONY: ngeo
 ngeo:
@@ -425,11 +437,22 @@ prd/lib/: src/lib/d3.min.js \
 	    src/lib/bootstrap-datetimepicker.min.js  \
 	    src/lib/IE9Fixes.js \
 	    src/lib/jquery.xdomainrequest.min.js \
-	    src/lib/Cesium \
 	    src/lib/Cesium.min.js \
 	    src/lib/olcesium.js
 	mkdir -p $@
 	cp -rf  $^ $@
+
+prd/lib/Cesium/: src/lib/Cesium/Assets
+	mkdir -p $@
+	cp -rf  $^ $@
+
+prd/lib/Cesium/Workers/: src/lib/Cesium/Workers/*.min.js
+	mkdir -p $@; \
+	$(call moveto,$^,$@,'.min.js','.js')
+
+prd/lib/Cesium/ThirdParty/Workers/: src/lib/Cesium/ThirdParty/Workers/*.min.js
+	mkdir -p $@; \
+	$(call moveto,$^,$@,'.min.js','.js')
 
 prd/lib/build.js: src/lib/polyfill.min.js \
 	    src/lib/jquery.min.js \
