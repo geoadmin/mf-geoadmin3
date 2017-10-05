@@ -47,7 +47,11 @@ describe('ga_realtimelayers_service', function() {
     };
     var addRealtimeLayerToMap = function(bodId) {
       var layer = new ol.layer.Vector({
-        source: new ol.source.Vector()
+        source: new ol.source.Vector({
+          format: new ol.format.GeoJSON({
+            featureProjection: map.getView().getProjection()
+          })
+        })
       });
       gaDefinePropertiesForLayer(layer);
       layer.bodId = bodId;
@@ -146,11 +150,12 @@ describe('ga_realtimelayers_service', function() {
         $httpBackend.flush();
         expect(spy.calledWith('gaNewLayerTimestamp', jsonData2.timestamp)).to.be(true);
         expect(layer.getSource().getFeatures().length).to.be(2);
+        expect(layer.getSource().getFeatures()[0].getGeometry().getCoordinates()).to.eql([0, -7.081154551613622e-10]);
         done();
       }, layer.updateDelay);
 
       clock.tick(layer.updateDelay);
-      $timeout.flush(); $;
+      $timeout.flush();
       $httpBackend.flush();
     });
 
