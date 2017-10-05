@@ -726,7 +726,7 @@ test/lib/angular-mocks.js test/lib/expect.js test/lib/sinon.js externs/angular.j
 
 .PHONY: libs
 libs:
-	npm install --only prod;
+	npm install;
 	cp -f $(addprefix node_modules/angular/, angular.js angular.min.js) src/lib/;
 	cp -f $(addprefix node_modules/angular-translate/dist/, angular-translate.js angular-translate.min.js) src/lib/;
 	cp -f $(addprefix node_modules/angular-translate/dist/angular-translate-loader-static-files/, angular-translate-loader-static-files.js angular-translate-loader-static-files.min.js) src/lib/;
@@ -739,8 +739,8 @@ libs:
 	cp -f node_modules/slipjs/slip.js src/lib;
 	cp -f node_modules/fastclick/lib/fastclick.js src/lib/;
 	$(call applypatches)
-	$(call compilejs fastclick)
-	$(call compilejs slip)
+	$(call compilejs,fastclick)
+	$(call compilejs,slip)
 
 .build-artefacts/app.js: .build-artefacts/js-files
 	mkdir -p $(dir $@)
