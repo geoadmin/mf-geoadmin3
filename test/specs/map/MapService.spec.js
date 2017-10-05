@@ -516,9 +516,9 @@ describe('ga_map_service', function() {
       'ch.vbs.patrouilledesglaciers-z_rennen': {}
     };
     var terrainTpl = '//3d.geo.admin.ch/1.0.0/{layer}/default/{time}/4326';
-    var todTpl = '//tod{s}.bgdi.ch//1.0.0/{layer}/default/{time}/4326/{z}/{x}/{y}.{format}';
-    var wmtsTpl = '//wmts{s}.geo.admin.ch/1.0.0/{layer}/default/{time}/4326/{z}/{y}/{x}.{format}';
-    var wmtsMpTpl = window.location.protocol + '//wmts{s}.geo.admin.ch/1.0.0/{layer}/default/{time}/4326/{z}/{x}/{y}.{format}';
+    var todTpl = location.protocol + '//tod{s}.bgdi.ch/1.0.0/{layer}/default/{time}/4326/{z}/{x}/{y}.{format}';
+    var wmtsTpl = location.protocol + '//wmts{s}.geo.admin.ch/1.0.0/{layer}/default/{time}/4326/{z}/{y}/{x}.{format}';
+    var wmtsMpTpl = location.protocol + '//wmts{s}.geo.admin.ch/1.0.0/{layer}/default/{time}/4326/{z}/{x}/{y}.{format}';
     var vectorTilesTpl = '//vectortiles100.geo.admin.ch/{layer}/{time}/';
     var wmsTpl = '//wms{s}.geo.admin.ch/?layers={layer}&format=image%2F{format}&service=WMS&version=1.3.0&request=GetMap&crs=CRS:84&bbox={westProjected},{southProjected},{eastProjected},{northProjected}&width=512&height=512&styles=';
     var expectWmtsUrl = function(l, t, f) {
@@ -897,7 +897,7 @@ describe('ga_map_service', function() {
         // instead.
         var params = spy.args[0][0];
         expect(params.url).to.eql(expectWmtsUrl('serverlayername3d', '20160201'));
-        expect(params.subdomains).to.eql(['5', '6', '7', '8', '9']);
+        expect(params.subdomains).to.eql(['100', '101', '102', '103', '104']);
         expect(params.minimumLevel).to.eql(window.minimumLevel);
         expect(params.maximumRetrievingLevel).to.eql(window.maximumRetrievingLevel);
         expect(params.maximumLevel).to.eql(18);
@@ -937,7 +937,7 @@ describe('ga_map_service', function() {
         // instead.
         var params = spy.args[0][0];
         expect(params.url).to.eql(expectWmtsMpUrl('wmtsmapproxy', '20160201'));
-        expect(params.subdomains).to.eql(['5', '6', '7', '8', '9']);
+        expect(params.subdomains).to.eql(['100', '101', '102', '103', '104']);
         expect(prov.bodId).to.be('wmtsmapproxy');
         spy.restore();
       });
@@ -1111,9 +1111,9 @@ describe('ga_map_service', function() {
           expect(source.getRequestEncoding()).to.be('REST');
           expect(source.getUrls().length).to.be(5);
           if (gaLayers.useToD('serverLayerName', '21781')) {
-            expect(source.getUrls()[0]).to.be('//tod5.prod.bgdi.ch/1.0.0/serverLayerName/default/{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.jpeg');
+            expect(source.getUrls()[0]).to.be('http://tod100.bgdi.ch/1.0.0/serverLayerName/default/{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.jpeg');
           } else {
-            expect(source.getUrls()[0]).to.be('//wmts5.geo.admin.ch/1.0.0/serverLayerName/default/{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.jpeg');
+            expect(source.getUrls()[0]).to.be('http://wmts5.geo.admin.ch/1.0.0/serverLayerName/default/{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.jpeg');
           }
           expect(source.getTileLoadFunction()).to.be.a(Function);
           var tileGrid = source.getTileGrid();

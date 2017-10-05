@@ -255,17 +255,19 @@ Add `mapproxy_url=//theNameOfAMapProxyServer`
 
 Add `public_url=//theNameOfAPublicServer`
 
-# Examples of usage
-National : 
-- Norwegian Institute of Bioecomic Research : <b> Geoportal forest of Norway</b>: http://kartbeta.skogoglandskap.no/kilden  
+Add `wmts_url=//theNameOfAWmtsService`
 
-- Geoportal <b> Luxembourg</b>  is a clone of our first version: http://map.geoportail.lu/ 
+# Examples of usage
+National :
+- Norwegian Institute of Bioecomic Research : <b> Geoportal forest of Norway</b>: http://kartbeta.skogoglandskap.no/kilden
+
+- Geoportal <b> Luxembourg</b>  is a clone of our first version: http://map.geoportail.lu/
 
 Regional :
 
-- Geoportal <b> Bayern</b>  : https://geoportal.bayern.de/bayernatlas/  
+- Geoportal <b> Bayern</b>  : https://geoportal.bayern.de/bayernatlas/
 
-- Geoportal <b> Jura-Bernois</b> https://map.geojb.ch  
+- Geoportal <b> Jura-Bernois</b> https://map.geojb.ch
 
 - Geoportal <b> Trento</b> https://webgis.provincia.tn.it/wgt/
 

@@ -43,6 +43,9 @@ PRINT_TECH_URL ?= //service-print.
 LAST_PRINT_URL := $(call lastvalue,print-url)
 PROXY_URL ?= //service-proxy.prod.bgdi.ch
 LAST_PROXY_URL := $(call lastvalue,proxy-url)
+WMTS_URL ?= tod.dev.bgdi.ch
+WMTS_TECH_URL ?= //tod.
+LAST_WMTS_URL ?= $(call lastvalue,wmts-url)
 
 PUBLIC_URL_REGEXP ?= ^https?:\/\/public\..*\.(bgdi|admin)\.ch\/.*
 ADMIN_URL_REGEXP ?= ^(ftp|http|https):\/\/(.*(\.bgdi|\.geo\.admin)\.ch)
@@ -510,6 +513,8 @@ define buildpage
 		--var "shop_tech_url=$(SHOP_TECH_URL)" \
 		--var "wms_url=$(WMS_URL)" \
 		--var "wms_tech_url=$(WMS_TECH_URL)" \
+		--var "wmts_url=$(WMTS_URL)" \
+		--var "wmts_tech_url=$(WMTS_TECH_URL)" \
 		--var "default_topic_id=$(DEFAULT_TOPIC_ID)" \
 		--var "translation_fallback_code=$(TRANSLATION_FALLBACK_CODE)" \
 		--var "languages=$(LANGUAGES)" \
@@ -557,6 +562,7 @@ prd/index.html: src/index.mako.html \
 	    .build-artefacts/last-print-url \
 	    .build-artefacts/last-proxy-url \
 	    .build-artefacts/last-apache-base-path \
+	    .build-artefacts/last-wmts-url \
 	    .build-artefacts/last-version
 	mkdir -p $(dir $@)
 	$(call buildpage,desktop,prod,$(VERSION),$(VERSION)/,$(S3_BASE_PATH))
@@ -573,6 +579,7 @@ prd/mobile.html: src/index.mako.html \
 	    .build-artefacts/last-print-url \
 	    .build-artefacts/last-proxy-url \
 	    .build-artefacts/last-apache-base-path \
+	    .build-artefacts/last-wmts-url \
 	    .build-artefacts/last-version
 	mkdir -p $(dir $@)
 	$(call buildpage,mobile,prod,$(VERSION),$(VERSION)/,$(S3_BASE_PATH))
@@ -588,6 +595,7 @@ prd/embed.html: src/index.mako.html \
 	    .build-artefacts/last-print-url \
 	    .build-artefacts/last-proxy-url \
 	    .build-artefacts/last-apache-base-path \
+	    .build-artefacts/last-wmts-url \
 	    .build-artefacts/last-version
 	mkdir -p $(dir $@)
 	$(call buildpage,embed,prod,$(VERSION),$(VERSION)/,$(S3_BASE_PATH))
@@ -648,6 +656,7 @@ src/mobile.html: src/index.mako.html \
 	    .build-artefacts/last-public-url \
 	    .build-artefacts/last-print-url \
 	    .build-artefacts/last-proxy-url \
+	    .build-artefacts/last-wmts-url \
 	    .build-artefacts/last-apache-base-path
 	$(call buildpage,mobile,,,,$(S3_SRC_BASE_PATH))
 
@@ -661,6 +670,7 @@ src/embed.html: src/index.mako.html \
 	    .build-artefacts/last-public-url \
 	    .build-artefacts/last-print-url \
 	    .build-artefacts/last-proxy-url \
+	    .build-artefacts/last-wmts-url \
 	    .build-artefacts/last-apache-base-path
 	$(call buildpage,embed,,,,$(S3_SRC_BASE_PATH))
 
@@ -815,6 +825,9 @@ ${PYTHON_VENV}:
 
 .build-artefacts/last-apache-base-directory::
 	$(call cachelastvariable,$@,$(APACHE_BASE_DIRECTORY),$(LAST_APACHE_BASE_DIRECTORY),apache-base-directory)
+
+.build-artefacts/last-wmts-url::
+	$(call cachelastvariable,$@,$(WMTS_URL),$(LAST_WMTS_URL),wmts-url)
 
 .build-artefacts/ol-cesium:
 	git clone --recursive https://github.com/openlayers/ol-cesium.git $@

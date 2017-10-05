@@ -782,6 +782,7 @@ itemscope itemtype="http://schema.org/WebApplication"
         var printUrl = setBackend(prtl + '${print_url}', prtl + '${print_tech_url}', 'print_url');
         var proxyUrl = prtl + '${proxy_url}' + '/';
         var apiOverwrite = !!(getParam('api_url') || env);
+        var wmtsUrl = setBackend(prtl + '${wmts_url}', prtl + '${wmts_tech_url}', 'wmts_url');
         ngeo.baseModuleTemplateUrl = 'ngeo/src/modules';
         module.constant('gaGlobalOptions', {
           //dev3d to be removed once 3d goes live
@@ -800,6 +801,7 @@ itemscope itemtype="http://schema.org/WebApplication"
           publicUrlRegexp: new RegExp('${public_url_regexp}'),
           adminUrlRegexp: adminUrlRegexp,
           cachedApiUrl: apiUrl + cacheAdd,
+          wmtsUrl: wmtsUrl,
           cachedPrintUrl: printUrl + cacheAdd,
           resourceUrl: location.origin + s3pathname + '${versionslashed}',
           wmsUrl: wmsUrl,
