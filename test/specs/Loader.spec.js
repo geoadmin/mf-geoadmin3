@@ -71,8 +71,8 @@ beforeEach(function() {
   module(function(gaLayersProvider, gaGlobalOptions) {
     gaLayersProvider.dfltWmsSubdomains = ['', '0', '1', '2', '3', '4'];
     gaLayersProvider.dfltWmtsNativeSubdomains = ['5', '6', '7', '8', '9'];
-    gaLayersProvider.dfltToDSubdomains = ['100', '101'];
-    gaLayersProvider.dfltWmtsMapProxySubdomains = ['20', '21', '22', '23', '24'];
+    gaLayersProvider.dfltToDSubdomains = ['5', '6', '7', '8', '9'];
+    gaLayersProvider.dfltWmtsMapProxySubdomains = ['5', '6', '7', '8', '9'];
     gaLayersProvider.dfltVectorTilesSubdomains = ['100', '101', '102', '103', '104'];
     gaLayersProvider.wmsUrlTemplate = '//wms{s}.geo.admin.ch/';
     gaLayersProvider.wmtsGetTileUrlTemplate = '//wmts{s}.geo.admin.ch/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{y}/{x}.{Format}';
