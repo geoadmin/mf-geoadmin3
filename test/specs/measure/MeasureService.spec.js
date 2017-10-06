@@ -182,7 +182,7 @@ describe('ga_measure_service', function() {
           var ovArea = feat.get('overlays').item(0);
           expect(ovArea.getElement().innerHTML.indexOf('47.25 m')).to.be(0);
           expect(ovArea.getElement().style.opacity).to.eql(1);
-          expect(ovArea.getPosition()).to.eql([3.777777777777778, 9]);
+          expect(ovArea.getPosition()).to.eql([3.777777777777778, 9, 5.222222222222222]);
         });
 
         it('set position to undefined if area is 0', function() {
