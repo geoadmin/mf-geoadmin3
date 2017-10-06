@@ -2,14 +2,23 @@
 describe('ga_waitcursor_service', function() {
 
   describe('gaWaitCursor', function() {
-    var gaWait, $document, $rootScope;
+    var gaWait, $document, $rootScope, $timeout;
 
     beforeEach(function() {
       inject(function($injector) {
         $document = $injector.get('$document');
         $rootScope = $injector.get('$rootScope');
+        $timeout = $injector.get('$timeout');
         gaWait = $injector.get('gaWaitCursor');
       });
+    });
+
+    afterEach(function() {
+      try {
+        $timeout.verifyNoPendingTasks();
+      } catch(e) {
+        $timeout.flush();
+      }
     });
 
     it('increments on ajaxSend event', function() {
@@ -43,8 +52,7 @@ describe('ga_waitcursor_service', function() {
         expect($($document[0].body).hasClass('ga-wait-cursor')).to.be(false);
       });
 
-      it('broadcasts gaIdle after 4 seconds', inject(function($timeout) {
-        $timeout.flush(); // Be sure $timeout is clean before the begininning of this test
+      it('broadcasts gaIdle after 4 seconds', function() {
         var clock = sinon.useFakeTimers();
         var spy = sinon.spy($rootScope, '$broadcast');
         var spy2 = sinon.spy($timeout, 'cancel');
@@ -54,24 +62,24 @@ describe('ga_waitcursor_service', function() {
         clock.tick(3000);
         $timeout.flush(3000);
         expect(spy.callCount).to.be(0);
-        expect(spy2.callCount).to.be(0);
+        expect(spy2.callCount).to.be.within(0, 1);
         gaWait.increment();
         gaWait.decrement();
 
         clock.tick(2000);
         $timeout.flush(2000);
         expect(spy.callCount).to.be(0);
-        expect(spy2.callCount).to.be(1);
+        expect(spy2.callCount).to.be.within(1, 2);
 
         clock.tick(4000);
         $timeout.flush(4000);
         expect(spy.callCount).to.be(1);
         expect(spy.calledWithExactly('gaIdle')).to.be(true);
-        expect(spy2.callCount).to.be(1);
+        expect(spy2.callCount).to.be.within(1, 2);
         spy.restore();
         spy2.restore();
         clock.restore();
-      }));
+      });
     });
   });
 });
