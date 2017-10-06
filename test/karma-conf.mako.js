@@ -124,7 +124,7 @@ module.exports = function(config) {
 % if mode == 'release':
   logLevel: config.LOG_INFO,
 % else:
-  logLevel: config.LOG_DEBUG,
+  logLevel: config.LOG_WARN,
 % endif
 
 
