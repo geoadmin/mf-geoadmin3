@@ -16,7 +16,7 @@ describe('ga_waitcursor_service', function() {
     afterEach(function() {
       try {
         $timeout.verifyNoPendingTasks();
-      } catch(e) {
+      } catch (e) {
         $timeout.flush();
       }
     });

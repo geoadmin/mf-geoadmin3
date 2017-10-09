@@ -50,6 +50,15 @@ goog.require('ga_styles_service');
         // Sanitize a feature.
         this.sanitizeFeature = function(feature) {
           feature.setStyle([this.getStyle()]);
+
+          var geom = feature.getGeometry();
+
+          // When the 3rd coordinate of wpt is time, we remove it because
+          // we don't manage it in tooltip.
+          if (geom instanceof ol.geom.Point && geom.getLayout() === 'XYM') {
+            geom = new ol.geom.Point(geom.getCoordinates().slice(0, 2), 'XY');
+            feature.setGeometry(geom);
+          }
           return feature;
         };
 

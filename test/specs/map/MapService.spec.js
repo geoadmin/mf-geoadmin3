@@ -1895,7 +1895,7 @@ describe('ga_map_service', function() {
         addBodWmsToMap('bodwms'),
         addExternalWmsLayerToMap(),
         addBodWmtsToMap('bodwmtss'),
-        addExternalWmtsLayerToMap(), //5
+        addExternalWmtsLayerToMap(), // 5
         addVectorLayerToMap(),
         addImageVectorLayerToMap(),
         addKmlLayerToMap(),

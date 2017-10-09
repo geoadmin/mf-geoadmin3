@@ -79,6 +79,15 @@ describe('ga_gpx_service', function() {
         f = gaGpx.sanitizeFeature(f);
         expect(f.getStyleFunction()()[0]).to.be(gaGpx.getStyle());
       });
+
+      it('removes the time coordinate', function() {
+        var f = new ol.Feature(new ol.geom.Point([0, 0, 123], 'XYM'));
+        expect(f.getGeometry().getLayout()).to.eql('XYM');
+        expect(f.getGeometry().getCoordinates()).to.eql([0, 0, 123]);
+        f = gaGpx.sanitizeFeature(f);
+        expect(f.getGeometry().getLayout()).to.eql('XY');
+        expect(f.getGeometry().getCoordinates()).to.eql([0, 0]);
+      });
     });
 
     describe('#getName()', function() {
