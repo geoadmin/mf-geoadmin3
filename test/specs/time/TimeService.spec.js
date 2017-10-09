@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 describe('ga_time_service', function() {
   var gaTime, gaPermalink, $rootScope, gaDefine;
 
@@ -218,7 +219,6 @@ describe('ga_time_service', function() {
     });
 
     describe('#updateStatus()', function() {
-      var map;
 
       var getTimeLayer = function(id, time) {
         var layer = new ol.layer.Tile();
@@ -231,7 +231,6 @@ describe('ga_time_service', function() {
 
       beforeEach(function() {
         injectTime();
-        map = new ol.Map({});
       });
 
       it('is not allowed to update status', function() {
@@ -268,6 +267,21 @@ describe('ga_time_service', function() {
         l1.time = '99993112';
         gaTime.updateStatus([l, l1, l]);
         expect(gaTime.get()).to.be(undefined);
+      });
+
+      it('set time if there is one layer and the time is already set (time slider opened)', function() {
+        gaTime.allowStatusUpdate = true;
+        var l1 = getTimeLayer('id', '1988');
+
+        gaTime.updateStatus([]);
+        expect(gaTime.get()).to.be(undefined);
+
+        // Simulate opening of slider
+        var stub = sinon.stub(gaTime, 'get').returns(1980);
+        // only 1 layer
+        gaTime.updateStatus([l1]);
+        stub.restore();
+        expect(gaTime.get()).to.be('1988');
       });
     });
   });

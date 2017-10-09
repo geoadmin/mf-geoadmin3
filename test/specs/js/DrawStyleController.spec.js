@@ -55,7 +55,7 @@ describe('ga_drawstyle_controller', function() {
         expect(opt.color).to.be(opt.colors[5]);
         expect(opt.textColor).to.be(opt.colors[5]);
         expect(opt.textSize).to.be(opt.textSizes[0]);
-        expect(opt.icon).to.be(opt.colors[0]);
+        expect(opt.icon).to.be(opt.icons[0]);
         expect(opt.iconColor).to.be(opt.colors[5]);
         expect(opt.iconSize).to.be(opt.iconSizes[2]);
         expect(scope.feature).to.be(undefined);

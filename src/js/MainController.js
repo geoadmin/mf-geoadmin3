@@ -68,6 +68,7 @@ goog.require('ga_window_service');
         renderer: 'canvas',
         view: new ol.View({
           projection: defaultProjection,
+          extent: gaMapUtils.defaultExtent,
           center: ol.extent.getCenter(gaMapUtils.defaultExtent),
           resolution: gaMapUtils.defaultResolution,
           resolutions: gaMapUtils.viewResolutions

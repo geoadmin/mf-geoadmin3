@@ -97,7 +97,7 @@ goog.require('ga_permalink_service');
               }
             }
 
-            if (count > 1) {
+            if (count > 1 || (count === 1 && angular.isDefined(this.get()))) {
               // This function automatically set time value when all timeEnabled
               // layers have/don't have the same time property.
               var year = hasLayersSameTime(olLayers);

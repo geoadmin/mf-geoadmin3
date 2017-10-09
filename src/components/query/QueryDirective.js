@@ -327,7 +327,7 @@ goog.require('ga_query_service');
     $scope.$watchCollection('layers | filter:tooltipFilter',
         function(layers) {
           $scope.tooltipLayers = layers;
-          if ($scope.isActive) {
+          if ($scope.isResultsActive) {
             $scope.search();
           }
         });
@@ -387,7 +387,7 @@ goog.require('ga_query_service');
             }
           }
 
-          if ($scope.isActive) {
+          if ($scope.isResultsActive) {
             $scope.search();
           }
         });
@@ -432,7 +432,8 @@ goog.require('ga_query_service');
       scope: {
         map: '=gaQueryMap',
         options: '=gaQueryOptions',
-        isActive: '=gaQueryActive'
+        isActive: '=gaQueryActive',
+        isResultsActive: '=gaQueryResultsActive'
       },
       link: function(scope, element, attrs, controller) {
 
@@ -458,16 +459,16 @@ goog.require('ga_query_service');
             scope.useBbox = true;
 
             if (!scope.tooltipLayers.length) {
-              scope.isActive = true;
+              scope.isResultsActive = true;
               scope.$applyAsync();
             } else {
-              if (scope.isActive && scope.queryType === 1 &&
+              if (scope.isResultsActive && scope.queryType === 1 &&
                   scope.filters[0].value) {
                 scope.searchByAttributes();
               } else {
                 scope.searchByGeometry();
               }
-              scope.isActive = true;
+              scope.isResultsActive = true;
             }
           });
         }
@@ -523,7 +524,7 @@ goog.require('ga_query_service');
           }
         };
 
-        scope.$watch('isActive', function(newVal, oldVal) {
+        scope.$watch('isResultsActive', function(newVal, oldVal) {
           if (newVal !== oldVal) {
             if (newVal) {
               activate();
@@ -531,6 +532,10 @@ goog.require('ga_query_service');
               deactivate();
             }
           }
+        });
+
+        scope.$watch('isActive', function(newVal, oldVal) {
+          dragBox.setActive(newVal);
         });
 
         scope.$watch('queryType', function(newVal, oldVal) {
