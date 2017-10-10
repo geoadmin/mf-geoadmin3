@@ -1,12 +1,12 @@
 goog.provide('ga_permalinklayers_service');
 
 goog.require('ga_filestorage_service');
-goog.require('ga_kml_service');
 goog.require('ga_map_service');
 goog.require('ga_permalink_service');
 goog.require('ga_time_service');
 goog.require('ga_topic_service');
 goog.require('ga_urlutils_service');
+goog.require('ga_vector_service');
 goog.require('ga_wms_service');
 goog.require('ga_wmts_service');
 
@@ -15,12 +15,13 @@ goog.require('ga_wmts_service');
   var module = angular.module('ga_permalinklayers_service', [
     'pascalprecht.translate',
     'ga_filestorage_service',
-    'ga_kml_service',
+    'ga_vector_service',
     'ga_map_service',
     'ga_permalink_service',
     'ga_time_service',
     'ga_topic_service',
     'ga_urlutils_service',
+    'ga_vector_service',
     'ga_wms_service',
     'ga_wmts_service'
   ]);
@@ -41,7 +42,7 @@ goog.require('ga_wmts_service');
   module.provider('gaPermalinkLayersManager', function() {
 
     this.$get = function($rootScope, gaLayers, gaPermalink, $translate,
-        gaKml, gaMapUtils, gaWms, gaLayerFilters, gaUrlUtils, gaFileStorage,
+        gaVector, gaMapUtils, gaWms, gaLayerFilters, gaUrlUtils, gaFileStorage,
         gaTopic, gaGlobalOptions, $q, gaTime, $log, $http, gaWmts) {
 
       var layersParamValue = gaPermalink.getParams().layers;
@@ -256,16 +257,17 @@ goog.require('ga_wmts_service');
                 map.addLayer(layer);
               }
 
-            } else if (gaMapUtils.isKmlLayer(layerSpec)) {
+            } else if (gaMapUtils.isKmlLayer(layerSpec) ||
+                gaMapUtils.isGpxLayer(layerSpec)) {
 
-              // KML layer
-              var url = layerSpec.replace('KML||', '');
+              // Vector layer
+              var url = layerSpec.split('||')[1];
               var delay = params ? parseInt(params.updateDelay) : NaN;
               if (!isNaN(delay)) {
                 delay = (delay < 3) ? 3 : delay;
               }
               try {
-                gaKml.addKmlToMapForUrl(map, url,
+                gaVector.addToMapForUrl(map, url,
                     {
                       opacity: opacity || 1,
                       visible: visible,
@@ -274,7 +276,7 @@ goog.require('ga_wmts_service');
                     index + 1);
                 mustReorder = true;
               } catch (e) {
-                // Adding KML layer failed, native alert, log message?
+                // Adding vector layer failed, native alert, log message?
                 $log.error(e.message);
               }
 
@@ -359,16 +361,16 @@ goog.require('ga_wmts_service');
                 });
           }
 
-          // Add a modifiable KML layer
+          // Add a modifiable vector layer
           var adminId = gaPermalink.getParams().adminId;
           if (adminId) {
             gaFileStorage.getFileUrlFromAdminId(adminId).then(function(url) {
               try {
-                gaKml.addKmlToMapForUrl(map, url, {
+                gaVector.addToMapForUrl(map, url, {
                   adminId: adminId
                 });
               } catch (e) {
-                // Adding KML layer failed, native alert, log message?
+                // Adding vecotr layer failed, native alert, log message?
                 $log.error(e.message);
               }
             });

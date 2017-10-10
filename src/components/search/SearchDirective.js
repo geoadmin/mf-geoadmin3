@@ -1,6 +1,5 @@
 goog.provide('ga_search_directive');
 
-goog.require('ga_kml_service');
 goog.require('ga_map_service');
 goog.require('ga_marker_overlay_service');
 goog.require('ga_permalink');
@@ -8,12 +7,13 @@ goog.require('ga_search_service');
 goog.require('ga_search_type_directives');
 goog.require('ga_topic_service');
 goog.require('ga_translation_service');
+goog.require('ga_vector_service');
 goog.require('ga_what3words_service');
 
 (function() {
 
   var module = angular.module('ga_search_directive', [
-    'ga_kml_service',
+    'ga_vector_service',
     'ga_map_service',
     'ga_marker_overlay_service',
     'ga_permalink',
@@ -74,7 +74,7 @@ goog.require('ga_what3words_service');
   module.controller('GaSearchDirectiveController',
       function($scope, $rootScope, $sce, $timeout, gaPermalink,
           gaUrlUtils, gaSearchGetCoordinate, gaMapUtils, gaMarkerOverlay,
-          gaKml, gaPreviewLayers, gaLang, gaTopic, gaLayers,
+          gaVector, gaPreviewLayers, gaLang, gaTopic, gaLayers,
           gaSearchTokenAnalyser, gaWhat3Words) {
         var blockQuery = false;
         var restat = new ResultStats();
@@ -150,12 +150,13 @@ goog.require('ga_what3words_service');
           if (!blockQuery) {
             // URL?
             if (gaUrlUtils.isValid(q)) {
-              gaKml.addKmlToMapForUrl($scope.map, q, {
+              gaVector.addToMapForUrl($scope.map, q, {
                 attribution: q,
                 zoomToExtent: true
               });
               return;
             }
+
             // Coordinate?
             var extent = $scope.map.getView().getProjection().getExtent();
             gaSearchGetCoordinate(extent, q).then(function(position) {

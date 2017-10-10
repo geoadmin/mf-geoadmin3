@@ -58,6 +58,48 @@ describe('ga_permalinklayers_service', function() {
     return layer;
   };
 
+  var addLocalGpxLayerToMap = function() {
+    var format = new ol.format.GPX({
+      readExtensions: false
+    });
+    var layer = new ol.layer.Vector({
+      id: 'GPX||documents/gpx/bar.gpx',
+      url: 'documents/gpx/bar.gpx',
+      type: 'GPX',
+      label: 'GPX',
+      opacity: 0.1,
+      visible: false,
+      source: new ol.source.Vector({
+        features: format.readFeatures('<gpx version="1.1" creator="www.GPS-Tracks.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.topografix.com/GPX/1/1" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd"></gpx>')
+      })
+    });
+    layer.displayInLayerManager = true;
+    gaDefinePropertiesForLayer(layer);
+    map.addLayer(layer);
+    return layer;
+  };
+
+  var addGpxLayerToMap = function(opacity, visible) {
+    var format = new ol.format.GPX({
+      readExtensions: false
+    });
+    var layer = new ol.layer.Vector({
+      id: 'GPX||http://foo.ch/bar.gpx',
+      url: 'http://foo.ch/bar.gpx',
+      type: 'GPX',
+      label: 'GPX',
+      opacity: opacity || 0.1,
+      visible: visible || false,
+      source: new ol.source.Vector({
+        features: format.readFeatures('<gpx version="1.1" creator="www.GPS-Tracks.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.topografix.com/GPX/1/1" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd"></gpx>')
+      })
+    });
+    layer.displayInLayerManager = true;
+    gaDefinePropertiesForLayer(layer);
+    map.addLayer(layer);
+    return layer;
+  };
+
   var addExternalWmsLayerToMap = function(opacity, visible) {
     var source = new ol.source.ImageWMS({
       params: {LAYERS: 'ch.wms.name'},
@@ -120,7 +162,6 @@ describe('ga_permalinklayers_service', function() {
       layersVisPermalink = visParam || layersVisPermalink;
       layersTimePermalink = timeParam || layersTimePermalink;
       layersParamsPermalink = paramsParam || layersParamsPermalink;
-
       inject(function($injector) {
         manager = $injector.get('gaPermalinkLayersManager');
       });
@@ -139,7 +180,7 @@ describe('ga_permalinklayers_service', function() {
             return def.promise;
           },
           getLayer: function(id) {
-            return /^(KML|WMS|WMTS)/.test(id) ? null : {};
+            return /^(GPX|KML|WMS|WMTS)/.test(id) ? null : {};
           },
           getLayerProperty: function(key) {
             if (key === 'background') {
@@ -164,9 +205,13 @@ describe('ga_permalinklayers_service', function() {
           }
         });
 
-        $provide.value('gaKml', {
-          addKmlToMapForUrl: function(map, url, options, idx) {
-            addKmlLayerToMap(options.opacity, options.visible);
+        $provide.value('gaVector', {
+          addToMapForUrl: function(map, url, options, idx) {
+            if (/KML/i.test(url)) {
+              addKmlLayerToMap(options.opacity, options.visible);
+            } else if (/GPX/i.test(url)) {
+              addGpxLayerToMap(options.opacity, options.visible);
+            }
           }
         });
 
@@ -264,6 +309,16 @@ describe('ga_permalinklayers_service', function() {
         expect(permalink.getParams().layers_params).to.be('updateDelay=3');
       });
 
+      it('an external GPX layer', function() {
+        var id = 'GPX||http://foo.ch/bar.gpx';
+        createManager(topicLoaded, id, '0.2', 'false', undefined, 'updateDelay=13');
+        expect(map.getLayers().getLength()).to.be(1);
+        expect(permalink.getParams().layers).to.be(id);
+        expect(permalink.getParams().layers_opacity).to.be('0.2');
+        expect(permalink.getParams().layers_visibility).to.be('false');
+        expect(permalink.getParams().layers_params).to.be('updateDelay=13');
+      });
+
       it('an external WMS layer', function() {
         var id = 'WMS||The wms layer||http://foo.ch/wms||ch.wms.name';
         createManager(topicLoaded, id, '1', 'false');
@@ -293,28 +348,28 @@ describe('ga_permalinklayers_service', function() {
       });
 
       it('every layer types in once', function(done) {
-        var id = 'KML||http://foo.ch/bar.kml,foo,WMS||The wms layer||http://foo.ch/wms||ch.wms.name,WMTS||ch.wmts.name||http://foo.ch/wmts/getcap.xml';
+        var id = 'KML||http://foo.ch/bar.kml,foo,WMS||The wms layer||http://foo.ch/wms||ch.wms.name,WMTS||ch.wmts.name||http://foo.ch/wmts/getcap.xml,GPX||http://foo.ch/bar.gpx';
         $.get('base/test/data/wmts-basic.xml', function(response) {
           var str = (new XMLSerializer()).serializeToString(response);
           $httpBackend.expectGET('http://proxy.geo.admin.ch/http/foo.ch%2Fwmts%2Fgetcap.xml').respond(str);
-          createManager(topicLoaded, id, '0.1,0.2,0.3,0.4', 'true,false,true,false', ',2,3,4');
+          createManager(topicLoaded, id, '0.1,0.2,0.3,0.4,0.5', 'true,false,true,false,true', ',2,3,4,5');
           $httpBackend.flush();
-          expect(map.getLayers().getLength()).to.be(4);
-          expect(permalink.getParams().layers_opacity).to.be('0.1,0.2,0.3,0.4');
-          expect(permalink.getParams().layers_visibility).to.be('true,false,true,false');
+          expect(map.getLayers().getLength()).to.be(5);
+          expect(permalink.getParams().layers_opacity).to.be('0.1,0.2,0.3,0.4,0.5');
+          expect(permalink.getParams().layers_visibility).to.be('true,false,true,false,true');
           done();
         });
       });
     });
 
-    describe('add/remove bod layers', function() {
+    describe('add/remove layers', function() {
 
       beforeEach(function() {
         createManager(topicLoaded);
       });
 
       it('changes permalink', function() {
-        var fooLayer, barLayer, kmlLayer, wmsLayer, wmtsLayer;
+        var fooLayer, barLayer, kmlLayer, wmsLayer, wmtsLayer, gpxLayer;
 
         expect(permalink.getParams().layers).to.be(undefined);
         fooLayer = addLayerToMap('foo');
@@ -325,18 +380,27 @@ describe('ga_permalinklayers_service', function() {
         $rootScope.$digest();
         expect(permalink.getParams().layers).to.eql('foo,bar');
 
+        var layerSpec = 'foo,bar,KML||http://foo.ch/bar.kml';
         kmlLayer = addKmlLayerToMap();
         $rootScope.$digest();
-        expect(permalink.getParams().layers).to.eql('foo,bar,KML||http://foo.ch/bar.kml');
+        expect(permalink.getParams().layers).to.eql(layerSpec);
 
+        layerSpec += ',WMS||The wms layer||http://foo.ch/wms||ch.wms.name';
         wmsLayer = addExternalWmsLayerToMap();
         $rootScope.$digest();
-        expect(permalink.getParams().layers).to.eql('foo,bar,KML||http://foo.ch/bar.kml,WMS||The wms layer||http://foo.ch/wms||ch.wms.name');
+        expect(permalink.getParams().layers).to.eql(layerSpec);
 
+        layerSpec += ',WMTS||ch.wmts.name||http://foo.ch/wmts/getcap.xml';
         wmtsLayer = addExternalWmtsLayerToMap();
         $rootScope.$digest();
-        expect(permalink.getParams().layers).to.eql('foo,bar,KML||http://foo.ch/bar.kml,WMS||The wms layer||http://foo.ch/wms||ch.wms.name,WMTS||ch.wmts.name||http://foo.ch/wmts/getcap.xml');
+        expect(permalink.getParams().layers).to.eql(layerSpec);
 
+        layerSpec += ',GPX||http://foo.ch/bar.gpx'
+        gpxLayer = addGpxLayerToMap();
+        $rootScope.$digest();
+        expect(permalink.getParams().layers).to.eql(layerSpec);
+
+        map.removeLayer(gpxLayer);
         map.removeLayer(wmtsLayer);
         map.removeLayer(wmsLayer);
         map.removeLayer(kmlLayer);
@@ -347,7 +411,6 @@ describe('ga_permalinklayers_service', function() {
         map.removeLayer(barLayer);
         $rootScope.$digest();
         expect(permalink.getParams().layers).to.be(undefined);
-
       });
     });
 
@@ -383,7 +446,40 @@ describe('ga_permalinklayers_service', function() {
         $rootScope.$digest();
         expect(permalink.getParams().layers).to.be(undefined);
       });
+    });
 
+    describe('add/remove local GPX layer', function() {
+
+      beforeEach(function() {
+        createManager(topicLoaded);
+      });
+
+      it('changes permalink', function() {
+        var layer;
+        expect(permalink.getParams().layers).to.be(undefined);
+        // Local GPX layer (add by dnd) is not added to permalink
+        layer = addLocalGpxLayerToMap();
+        $rootScope.$digest();
+        expect(permalink.getParams().layers).to.eql(undefined);
+        map.removeLayer(layer);
+        $rootScope.$digest();
+        expect(permalink.getParams().layers).to.be(undefined);
+      });
+    });
+
+    describe('add/remove external GPX layer', function() {
+
+      it('changes permalink', function() {
+        createManager(topicLoaded);
+        var kmlLayer;
+        expect(permalink.getParams().layers).to.be(undefined);
+        kmlLayer = addGpxLayerToMap();
+        $rootScope.$digest();
+        expect(permalink.getParams().layers).to.eql('GPX||http://foo.ch/bar.gpx');
+        map.removeLayer(kmlLayer);
+        $rootScope.$digest();
+        expect(permalink.getParams().layers).to.be(undefined);
+      });
     });
 
     describe('add/remove external WMS layer', function() {

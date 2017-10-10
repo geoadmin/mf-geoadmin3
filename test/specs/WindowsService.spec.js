@@ -1,11 +1,10 @@
 describe('ga_window_service', function() {
 
   describe('gaWindow', function() {
-    var gaWindow, $window, widthDiv, heightDiv;
+    var gaWindow, widthDiv, heightDiv;
 
     beforeEach(function() {
       inject(function($injector) {
-        $window = $injector.get('$window');
         gaWindow = $injector.get('gaWindow');
       });
       widthDiv = $('.ga-window.ga-window-width');

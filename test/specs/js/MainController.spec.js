@@ -119,7 +119,7 @@ describe('ga_main_controller', function() {
         expect(scope.map).to.be.an(ol.Map);
         var view = scope.map.getView();
         expect(view.getProjection().getCode()).to.be(gaGlobalOptions.defaultEpsg);
-        expect(view.constrainCenter([0,0])).to.eql([420000, 30000]);
+        expect(view.constrainCenter([0, 0])).to.eql([420000, 30000]);
         expect(view.getResolution()).to.be(gaMapUtils.defaultResolution);
         expect(view.getResolutions()).to.be(gaMapUtils.viewResolutions);
       });

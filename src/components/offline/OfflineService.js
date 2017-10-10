@@ -454,9 +454,9 @@ goog.require('ga_window_service');
             }
             layersTimestamp.push(time);
 
-            // if the layer is a KML
-            if (gaMapUtils.isKmlLayer(layer)) {
-              gaStorage.setItem(layer.id, layer.getSource().get('kmlString'));
+            // if the layer is a vector layer
+            if (gaMapUtils.isKmlLayer(layer) || gaMapUtils.isGpxLayer(layer)) {
+              gaStorage.setItem(layer.id, layer.getSource().get('rawData'));
               layersBg.push(false);
               continue;
             }

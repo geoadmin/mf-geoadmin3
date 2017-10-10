@@ -1390,6 +1390,28 @@ goog.require('ga_urlutils_service');
           return this.isKmlLayer(olLayer) && !/^https?:\/\//.test(olLayer.url);
         },
 
+        // Test if a layer is a GPX layer added by the Import tool or
+        // permalink
+        // @param olLayerOrId  An ol layer or an id of a layer
+        isGpxLayer: function(olLayerOrId) {
+          if (!olLayerOrId) {
+            return false;
+          }
+          if (olLayerOrId instanceof ol.layer.Layer) {
+            olLayerOrId = olLayerOrId.id;
+          }
+          if (angular.isString(olLayerOrId)) {
+            return /^GPX\|\|/.test(olLayerOrId);
+          }
+          return false;
+        },
+
+        // Test if a layer is a GPX layer added by dnd
+        // @param olLayer  An ol layer
+        isLocalGpxLayer: function(olLayer) {
+          return this.isGpxLayer(olLayer) && !/^https?:\/\//.test(olLayer.url);
+        },
+
         // Test if a KML comes from our s3 storage
         // @param olLayer  An ol layer or an id of a layer
         isStoredKmlLayer: function(olLayerOrId) {
@@ -1599,7 +1621,8 @@ goog.require('ga_urlutils_service');
         },
         permalinked: function(layer) {
           return layer.displayInLayerManager && !!layer.id &&
-                 !gaMapUtils.isLocalKmlLayer(layer);
+                 !gaMapUtils.isLocalKmlLayer(layer) &&
+                 !gaMapUtils.isLocalGpxLayer(layer);
         },
         /**
          * Keep only time enabled layer
