@@ -200,6 +200,36 @@ goog.require('ga_styles_service');
               }));
             };
 
+            // Management of 2d layer with a 3d config to display in 3d. 
+            var dflt3dStatus = [];
+            var showDflt3dLayers = function(map) {
+              // Add 2d layer which have a 3d configuration to display in 3d
+              // by default.
+              gaLayers.loadConfig().then(function(layers) {
+                for (var bodId in layers) {
+                  if (layers.hasOwnProperty(bodId) && layers[bodId].default3d &&
+                      layers[bodId].config2d) {
+                    var config2d = layers[bodId].config2d;
+                    var overlay = gaMapUtils.getMapOverlayForBodId(map,
+                        config2d);
+                    if (!overlay) {
+                      dflt3dStatus.push(config2d);
+                      map.addLayer(gaLayers.getOlLayerById(config2d));
+                    }
+                  }
+                }
+              });
+            };
+            var hideDflt3dLayers = function(map) {
+              dflt3dStatus.forEach(function(bodId) {
+                var overlay = gaMapUtils.getMapOverlayForBodId(map, bodId);
+                if (overlay) {
+                  map.removeLayer(overlay);
+                }
+              });
+              dflt3dStatus = [];
+            };
+
             // Watch when 3d is enabled to show/hide overlays
             scope.$watch(function() {
               return ol3d.getEnabled();
@@ -208,6 +238,9 @@ goog.require('ga_styles_service');
                 // Hide the overlays
                 map.getOverlays().forEach(setRealPosition);
                 dereg.push(map.getOverlays().on('add', setRealPosition));
+
+                // Show layers we have to display in 3d 
+                showDflt3dLayers(map);
               } else {
                 // Show the overlays
                 dereg.forEach(function(key) {
@@ -219,6 +252,10 @@ goog.require('ga_styles_service');
                     item.setPosition(item.get('realPosition'));
                   }
                 });
+
+                // Hide layers we have to display in 3d, if it wasn't there in
+                // 2d. 
+                hideDflt3dLayers(map);
               }
             });
           }
