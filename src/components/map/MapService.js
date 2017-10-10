@@ -398,7 +398,9 @@ goog.require('ga_urlutils_service');
 
         var todExcludeLayers = [
           'ch.swisstopo.swissimage-product',
-          'ch.swisstopo.swissimage'
+          'ch.swisstopo.swissimage',
+          'ch.swisstopo.swisstlm3d-karte-farbe.3d',
+          'ch.swisstopo.swisstlm3d-karte-grau.3d'
         ];
 
         var useToD = function(layer, tileMatrixSet) {
