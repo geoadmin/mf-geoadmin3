@@ -16,7 +16,7 @@ goog.require('ga_map_service');
     this.$get = function(gaDebounce, gaLayers, gaLayerFilters) {
       var layers = [];
       var unregKeys = [];
-      var is3DActive = false;
+      var is3dActive = false;
 
       var unreg = function() {
         var key;
@@ -25,31 +25,30 @@ goog.require('ga_map_service');
         }
       };
       var updateHiddenState = gaDebounce.debounce(function() {
-        var sortedLayers = layers.slice().reverse();
-        var hide = false;
-
         unreg();
 
-        sortedLayers.forEach(function(layer) {
-          layer.hiddenByOther = hide;
+        if (!is3dActive) {
+          return;
+        }
+        var hide = false;
+        layers.slice().reverse().forEach(function(layer) {
+          var config3d = gaLayers.getConfig3d(gaLayers.getLayer(layer.bodId));
+          // In 3d, vector data are always on top so hide only wms and wmts
+          // layers.
+          layer.hiddenByOther = hide &&
+              /(wms|wmts|aggregate)/.test(config3d.type);
 
-          if (is3DActive) {
+          // First opaque layer
+          if (config3d.opaque) {
 
-            var isOpaque = gaLayers.getLayer(layer.id) &&
-              gaLayers.getLayer(layer.id).opaque;
+            // Watch visibility property
+            unregKeys = layer.on([
+              'change:visible',
+              'change:opacity'
+            ], updateHiddenState);
 
-            // First opaque layer
-            if (isOpaque) {
-
-              // Watch visibility property
-              unregKeys = layer.on([
-                'change:visible',
-                'change:opacity'
-              ], updateHiddenState);
-
-              if (!hide && layer.visible && !layer.invertedOpacity) {
-                hide = true;
-              }
+            if (!hide && layer.visible && !layer.invertedOpacity) {
+              hide = true;
             }
           }
         });
@@ -59,14 +58,14 @@ goog.require('ga_map_service');
         scope.layers = scope.map.getLayers().getArray();
         scope.f = function(l) {
           return gaLayerFilters.background(l) ||
-                 gaLayerFilters.selected(l);
+                 gaLayerFilters.selected(l) || l.bodId;
         };
         scope.$watchCollection('layers | filter:f', function(l) {
           layers = l || [];
           updateHiddenState();
         });
         scope.$watch('globals.is3dActive', function(val) {
-          is3DActive = val;
+          is3dActive = val;
           updateHiddenState();
         });
       };

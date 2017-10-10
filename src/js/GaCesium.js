@@ -12,7 +12,6 @@ goog.provide('ga_cesium');
  * @param {Object} $translate
  * @param {Object} $rootScope
  * @param {Object} gaBackground
- *
  * @constructor
  */
 // eslint-disable-next-line no-unused-vars
@@ -94,6 +93,7 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions,
         createSynchronizers: function(map, scene, dataSources) {
           return [
             new olcs.GaRasterSynchronizer(map, scene),
+            new olcs.GaTileset3dSynchronizer(map, scene),
             new olcs.GaVectorSynchronizer(map, scene),
             new olcs.GaKmlSynchronizer(map, scene, dataSources)
           ];
@@ -132,41 +132,26 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions,
 
     enableOl3d(cesiumViewer, enabled);
 
-    // Tileset 3D
-    var tileset3d = [
-      'ch.swisstopo.swisstlm3d.3d'
-    ];
-
+    // Add default 3d layer which ar enot linked to a 2d layer
     var primitives = [];
-    var params = gaPermalink.getParams();
-    var pTileset3d = params['tileset3d'];
-
-    tileset3d = pTileset3d ? pTileset3d.split(',') : tileset3d;
-
-    tileset3d.forEach(function(tileset3dId) {
-      if (tileset3dId) {
-        var tileset = gaLayers.getCesiumTileset3DById(tileset3dId);
-        if (/names3d\.3d/.test(tileset3dId)) {
-          tileset.style = new Cesium.Cesium3DTileStyle({
-            show: true,
-            color: 'rgb(255, 255, 255)',
-            outlineColor: 'rgb(0, 0, 0)',
-            outlineWidth: 3,
-            labelStyle: 2,
-            font: "'24px arial'"
-          });
-        }
-        if (tileset) {
-          primitives.push(tileset);
+    gaLayers.loadConfig().then(function(layersConfig) {
+      for (var l in layersConfig) {
+        var config = layersConfig[l];
+        if (layersConfig.hasOwnProperty(l) && config.default3d &&
+            !config.config2d) {
+          var tileset = gaLayers.getCesiumTileset3dById(l);
+          if (tileset) {
+            primitives.push(tileset);
+          }
         }
       }
-    });
 
-    // show/hide/add tilesets when needed
-    manageTilesets(primitives, scene, gaBackground.get());
+      // show/hide/add tilesets when needed
+      manageTilesets(primitives, scene, gaBackground.get());
 
-    $rootScope.$on('gaBgChange', function(evt, bg) {
-      manageTilesets(primitives, scene, bg);
+      $rootScope.$on('gaBgChange', function(evt, bg) {
+        manageTilesets(primitives, scene, bg);
+      });
     });
 
     return cesiumViewer;

@@ -67,11 +67,14 @@ olcs.GaKmlSynchronizer.prototype.createSingleLayerCounterparts =
     });
   }
 
-  dsP.then(function(ds) {
+  dsP.then(function(ds) { 
     ds.show = olLayer.getVisible();
-    olLayer.on('change:visible', function(evt) {
+    const uid = ol.getUid(olLayer).toString();
+    const listenKeyArray = [];
+    listenKeyArray.push(olLayer.on('change:visible', function(evt) {
       ds.show = evt.target.getVisible();
-    });
+    }));
+    this.olLayerListenKeys[uid].push(...listenKeyArray);
   });
 
   return [dsP];

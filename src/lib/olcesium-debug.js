@@ -10734,9 +10734,12 @@ olcs.GaKmlSynchronizer.prototype.createSingleLayerCounterparts = function(olLaye
   }
   dsP.then(function(ds) {
     ds.show = olLayer.getVisible();
-    olLayer.on("change:visible", function(evt) {
+    var uid = ol.getUid(olLayer).toString();
+    var listenKeyArray = [];
+    listenKeyArray.push(olLayer.on("change:visible", function(evt) {
       ds.show = evt.target.getVisible();
-    });
+    }));
+    this.olLayerListenKeys[uid].push.apply(this.olLayerListenKeys[uid], [].concat($jscomp.arrayFromIterable(listenKeyArray)));
   });
   return [dsP];
 };
@@ -10786,6 +10789,54 @@ olcs.GaRasterSynchronizer.prototype.convertLayerToCesiumImageries = function(olL
   return providers.map(function(p) {
     return new Cesium.ImageryLayer(p);
   });
+};
+goog.provide("olcs.GaTileset3dSynchronizer");
+goog.require("ol");
+goog.require("olcs.util");
+goog.require("olcs.AbstractSynchronizer");
+olcs.GaTileset3dSynchronizer = function(map, scene) {
+  this.primitives_ = new Cesium.PrimitiveCollection;
+  scene.primitives.add(this.primitives_);
+  olcs.AbstractSynchronizer.call(this, map, scene);
+};
+ol.inherits(olcs.GaTileset3dSynchronizer, olcs.AbstractSynchronizer);
+olcs.GaTileset3dSynchronizer.prototype.createSingleLayerCounterparts = function(olLayer) {
+  var prim;
+  var factory = olcs.util.obj(olLayer)["getCesiumTileset3d"];
+  if (factory) {
+    prim = factory(this.scene);
+  }
+  if (!prim) {
+    return null;
+  }
+  if (prim) {
+    prim.show = olLayer.getVisible();
+    var uid = ol.getUid(olLayer).toString();
+    var listenKeyArray = [];
+    listenKeyArray.push(olLayer.on(["change:visible"], function(e) {
+      prim.show = olLayer.getVisible();
+    }));
+    this.olLayerListenKeys[uid].push.apply(this.olLayerListenKeys[uid], [].concat($jscomp.arrayFromIterable(listenKeyArray)));
+  }
+  return [prim];
+};
+olcs.GaTileset3dSynchronizer.prototype.addCesiumObject = function(prim) {
+  if (!this.primitives_.contains(prim)) {
+    this.primitives_.add(prim);
+  }
+};
+olcs.GaTileset3dSynchronizer.prototype.destroyCesiumObject = function(prim) {
+  if (this.primitives_.contains(prim)) {
+    this.primitives_.remove(prim);
+  }
+};
+olcs.GaTileset3dSynchronizer.prototype.removeSingleCesiumObject = function(prim, destroy) {
+  if (this.primitives_.contains(prim)) {
+    this.primitives_.remove(prim);
+  }
+};
+olcs.GaTileset3dSynchronizer.prototype.removeAllCesiumObjects = function(destroy) {
+  this.primitives_.removeAll();
 };
 goog.provide("olcs.GaVectorSynchronizer");
 goog.require("ol");
@@ -40135,6 +40186,7 @@ goog.require("olcs.Camera");
 goog.require("olcs.FeatureConverter");
 goog.require("olcs.GaKmlSynchronizer");
 goog.require("olcs.GaRasterSynchronizer");
+goog.require("olcs.GaTileset3dSynchronizer");
 goog.require("olcs.GaVectorSynchronizer");
 goog.require("olcs.OLCesium");
 goog.require("olcs.RasterSynchronizer");
@@ -41126,6 +41178,7 @@ goog.exportSymbol("olcs.RasterSynchronizer", olcs.RasterSynchronizer);
 goog.exportSymbol("olcs.VectorSynchronizer", olcs.VectorSynchronizer);
 goog.exportSymbol("olcs.GaKmlSynchronizer", olcs.GaKmlSynchronizer);
 goog.exportSymbol("olcs.GaRasterSynchronizer", olcs.GaRasterSynchronizer);
+goog.exportSymbol("olcs.GaTileset3dSynchronizer", olcs.GaTileset3dSynchronizer);
 goog.exportSymbol("olcs.GaVectorSynchronizer", olcs.GaVectorSynchronizer);
 goog.exportProperty(ol.Object.prototype, "changed", ol.Object.prototype.changed);
 goog.exportProperty(ol.Object.prototype, "dispatchEvent", ol.Object.prototype.dispatchEvent);
@@ -42992,6 +43045,7 @@ goog.exportProperty(ol.control.ZoomToExtent.prototype, "on", ol.control.ZoomToEx
 goog.exportProperty(ol.control.ZoomToExtent.prototype, "once", ol.control.ZoomToExtent.prototype.once);
 goog.exportProperty(ol.control.ZoomToExtent.prototype, "un", ol.control.ZoomToExtent.prototype.un);
 goog.exportProperty(olcs.GaKmlSynchronizer.prototype, "synchronize", olcs.GaKmlSynchronizer.prototype.synchronize);
+goog.exportProperty(olcs.GaTileset3dSynchronizer.prototype, "synchronize", olcs.GaTileset3dSynchronizer.prototype.synchronize);
 ol.AtlasBlock;
 ol.AtlasInfo;
 ol.AtlasManagerInfo;

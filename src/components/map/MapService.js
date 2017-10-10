@@ -228,6 +228,14 @@ goog.require('ga_urlutils_service');
               this.set('getCesiumImageryProvider', val);
             }
           },
+          getCesiumTileset3d: {
+            get: function() {
+              return this.get('getCesiumTileset3d') || angular.noop;
+            },
+            set: function(val) {
+              this.set('getCesiumTileset3d', val);
+            }
+          },
           getCesiumDataSource: {
             get: function() {
               return this.get('getCesiumDataSource') || angular.noop;
@@ -340,7 +348,7 @@ goog.require('ga_urlutils_service');
         gaBrowserSniffer, gaDefinePropertiesForLayer, gaMapUtils,
         gaNetworkStatus, gaStorage, gaTileGrid, gaUrlUtils,
         gaStylesFromLiterals, gaGlobalOptions, gaPermalink,
-        gaLang, gaTime) {
+        gaLang, gaTime, gaStyleFactory) {
 
       var h2 = function(domainsArray) {
         if (gaBrowserSniffer.h2) {
@@ -494,10 +502,15 @@ goog.require('ga_urlutils_service');
               // Test layers opaque setting
               var ids = [
                 'ch.swisstopo.swissimage-product',
+                'ch.swisstopo.swissimage-product_3d',
                 'ch.swisstopo.pixelkarte-farbe',
+                'ch.swisstopo.pixelkarte-farbe_3d',
                 'ch.swisstopo.pixelkarte-grau',
+                'ch.swisstopo.pixelkarte-grau_3d',
                 'ch.swisstopo.swisstlm3d-karte-farbe',
+                'ch.swisstopo.swisstlm3d-karte-farbe_3d',
                 'ch.swisstopo.swisstlm3d-karte-grau',
+                'ch.swisstopo.swisstlm3d-karte-grau_3d',
                 'ch.swisstopo.pixelkarte-farbe-pk25.noscale',
                 'ch.swisstopo.pixelkarte-farbe-pk50.noscale',
                 'ch.swisstopo.pixelkarte-farbe-pk100.noscale',
@@ -537,36 +550,51 @@ goog.require('ga_urlutils_service');
 
               // 3D Tileset
               var tileset3d = [
-                'ch.swisstopo.swisstlm3d.3d',
-                'ch.swisstopo.bridgestest.3d',
-                'ch.swisstopo.swissnames3d.3d'
+                'ch.swisstopo.swisstlm3d.3d'
               ];
               var tilesetTs = [
-                '20161217',
-                '20161121',
-                '20160909'
+                '20161217'
+              ];
+              var tilesetStyle = [
+                undefined
               ];
 
               var params = gaPermalink.getParams();
               var pTileset3d = params['tileset3d'];
               var pTilesetTs = params['tilesetTs'];
-
               tileset3d = pTileset3d ? pTileset3d.split(',') : tileset3d;
               tilesetTs = pTilesetTs ? pTilesetTs.split(',') : tilesetTs;
 
               tileset3d.forEach(function(tileset3dId, idx) {
                 if (tileset3dId) {
-                  response.data[tileset3dId] = {
+                  response.data[tileset3dId.replace('.3d', '_3d')] = {
                     type: 'tileset3d',
                     serverLayerName: tileset3dId,
                     timestamps: [tilesetTs[idx]],
                     attribution: 'swisstopo',
                     attributionUrl: 'https://www.swisstopo.admin.ch/' + lang +
-                        '/home.html'
+                        '/home.html',
+                    style: tilesetStyle[idx],
+                    tooltip: false,
+                    default3d: true
                   };
                 }
               });
+
+              if (response.data['ch.swisstopo.swissnames3d_3d']) {
+                response.data['ch.swisstopo.swissnames3d'].config3d =
+                    'ch.swisstopo.swissnames3d_3d';
+              }
+
+              // Set the config2d property
+              for (var l in response.data) {
+                var data = response.data[l];
+                if (response.data.hasOwnProperty(l) && data.config3d) {
+                  response.data[data.config3d].config2d = l;
+                }
+              }
             }
+
             if (!layers) { // First load
               layers = response.data;
               // We register events only when layers are loaded
@@ -578,6 +606,7 @@ goog.require('ga_urlutils_service');
               layers = response.data;
               $rootScope.$broadcast('gaLayersTranslationChange', layers);
             }
+            return layers;
           });
         };
 
@@ -594,13 +623,6 @@ goog.require('ga_urlutils_service');
          */
         this.loadConfig = function() {
           return configP;
-        };
-
-        this.getConfig3d = function(config) {
-          if (config.config3d) {
-            return layers[config.config3d];
-          }
-          return config;
         };
 
         /**
@@ -627,7 +649,7 @@ goog.require('ga_urlutils_service');
         /**
          * Returns an Cesium 3D Tileset.
          */
-        this.getCesiumTileset3DById = function(bodId) {
+        this.getCesiumTileset3dById = function(bodId) {
           var config3d = this.getConfig3d(layers[bodId]);
           if (!/^tileset3d$/.test(config3d.type)) {
             return;
@@ -641,6 +663,10 @@ goog.require('ga_urlutils_service');
             maximumNumberOfLoadedTiles: 3
           });
           tileset.bodId = bodId;
+          if (config3d.style) {
+            var style = gaStyleFactory.getStyle(config3d.style);
+            tileset.style = new Cesium.Cesium3DTileStyle(style);
+          }
           return tileset;
         };
 
@@ -651,6 +677,13 @@ goog.require('ga_urlutils_service');
           var config = layers[bodId];
           var config3d = this.getConfig3d(config);
           if (!/^(wms|wmts|aggregate)$/.test(config3d.type)) {
+            // In case, the 2d layer is a layer group we return an empty array
+            // otherwise the GaRasterSynchroniser will go through the children
+            // then display them in 3d. Another synchronizer will take care to
+            // display the good cesium layer for this group.
+            if (/^aggregate$/.test(config.type)) {
+              return [];
+            }
             return;
           }
           var params;
@@ -667,9 +700,9 @@ goog.require('ga_urlutils_service');
             var providers = [];
             config3d.subLayersIds.forEach(function(item) {
               var subProvider = this.getCesiumImageryProviderById(item);
-              if (Array.isArray(subProvider)) {
+              if (Array.isArray(subProvider) && subProvider.length) {
                 providers.push.apply(providers, subProvider);
-              } else {
+              } else if (subProvider) {
                 providers.push(subProvider);
               }
             }, this);
@@ -937,6 +970,7 @@ goog.require('ga_urlutils_service');
             olLayer.timeBehaviour = config.timeBehaviour;
             olLayer.timestamps = config.timestamps;
             olLayer.geojsonUrl = config.geojsonUrl;
+
             olLayer.updateDelay = config.updateDelay;
             var that = this;
             olLayer.getCesiumImageryProvider = function() {
@@ -944,6 +978,9 @@ goog.require('ga_urlutils_service');
             };
             olLayer.getCesiumDataSource = function(scene) {
               return that.getCesiumDataSourceById(bodId, scene);
+            };
+            olLayer.getCesiumTileset3d = function(scene) {
+              return that.getCesiumTileset3dById(bodId, scene);
             };
           }
           return olLayer;
@@ -960,6 +997,13 @@ goog.require('ga_urlutils_service');
          */
         this.getLayer = function(bodId) {
           return layers[bodId];
+        };
+
+        this.getConfig3d = function(config) {
+          if (config.config3d) {
+            return layers[config.config3d];
+          }
+          return config;
         };
 
         /**
@@ -993,7 +1037,7 @@ goog.require('ga_urlutils_service');
           var config = angular.isString(configOrBodId) ?
             this.getLayer(configOrBodId) : configOrBodId;
           if (!config.timeEnabled) {
-            // a WMTS/Terrain/Tileset3D layer has at least one timestamp
+            // a WMTS/Terrain/Tileset3d layer has at least one timestamp
             return (config.type === 'wmts' || config.type === 'terrain' ||
                 config.type === 'tileset3d') ? config.timestamps[0] : undefined;
           }
@@ -1040,21 +1084,6 @@ goog.require('ga_urlutils_service');
         };
 
         /**
-         * Finds the parent layer bodid if the layer is a child.
-         * @param {ol.layer.Base} an ol layer.
-         *
-         * Returns a bodId of the parent layer.
-         * Returns undefined if no parent layer was found
-         */
-        this.getBodParentLayerId = function(olLayer) {
-          if (this.isBodLayer(olLayer)) {
-            var bodId = olLayer.bodId;
-            return this.getLayerProperty(bodId,
-                'parentLayerId');
-          }
-        };
-
-        /**
          * Determines if the bod layer has a tooltip.
          * Note: the layer is considered to have a tooltip if the parent layer
          * has a tooltip.
@@ -1063,13 +1092,24 @@ goog.require('ga_urlutils_service');
          * Returns true if the layer has bod a tooltip.
          * Returns false if the layer doesn't have a bod tooltip.
          */
-        this.hasTooltipBodLayer = function(olLayer) {
-          if (!this.isBodLayer(olLayer)) {
+        this.hasTooltipBodLayer = function(olLayer, is3dActive) {
+          if (!olLayer) {
             return false;
           }
-          var parentLayerId = this.getBodParentLayerId(olLayer);
-          var bodId = parentLayerId || olLayer.bodId;
-          return this.getLayerProperty(bodId, 'tooltip');
+          var config = this.getLayer(olLayer.bodId);
+          if (!config) {
+            return false;
+          }
+          // We test the config 3d when 3d is enabled
+          if (is3dActive) {
+            config = this.getConfig3d(config) || config;
+          }
+          // If the layer's config has no tooltip property we try to get the
+          // value from the parent. 
+          if (!angular.isDefined(config.tooltip) && config.parentLayerId) {
+            config = this.getLayer(config.parentLayerId);
+          }
+          return !!config.tooltip;
         };
       };
 

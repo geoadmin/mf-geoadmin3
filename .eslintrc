@@ -21,6 +21,7 @@
       ignoreUrls: true,
       ignoreRegExpLiterals: true
     }],
+    no-template-curly-in-string: ["off"], // rule for ES6 only
     one-var: ["off"],
     operator-linebreak: ["error", "after"],
     padded-blocks: ["off"],

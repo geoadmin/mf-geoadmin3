@@ -13987,12 +13987,21 @@ define('Core/AttributeCompression',[
         return (value >> 1) ^ (-(value & 1));
     }
 
+    /**
+     * Decodes delta and ZigZag encoded vertices. This modifies the buffers in place.
+     *
+     * @param {Uint16Array} uBuffer The buffer or buffer view of u values.
+     * @param {Uint16Array} vBuffer The buffer or buffer view of v values.
+     * @param {Uint16Array} [heightBuffer] The buffer or buffer view of height values.
+     *
+     * @see {@link http://cesiumjs.org/data-and-assets/terrain/formats/quantized-mesh-1.0.html|quantized-mesh-1.0 terrain format}
+     */
     AttributeCompression.zigZagDeltaDecode = function(uBuffer, vBuffer, heightBuffer) {
-                if (!defined(uBuffer)) {
-            throw new DeveloperError('uBuffer is required.');
-        }
-        if (!defined(vBuffer)) {
-            throw new DeveloperError('vBuffer is required.');
+                Check.defined('uBuffer', uBuffer);
+        Check.defined('vBuffer', vBuffer);
+        Check.typeOf.number.equals('uBuffer.length', 'vBuffer.length', uBuffer.length, vBuffer.length);
+        if (defined(heightBuffer)) {
+            Check.typeOf.number.equals('uBuffer.length', 'heightBuffer.length', uBuffer.length, heightBuffer.length);
         }
         
         var count = uBuffer.length;
@@ -22800,66 +22809,6 @@ define('Core/clone',[
     return clone;
 });
 
-define('Core/deprecationWarning',[
-        './defined',
-        './DeveloperError',
-        './oneTimeWarning'
-    ], function(
-        defined,
-        DeveloperError,
-        oneTimeWarning) {
-    'use strict';
-
-    /**
-     * Logs a deprecation message to the console.  Use this function instead of
-     * <code>console.log</code> directly since this does not log duplicate messages
-     * unless it is called from multiple workers.
-     *
-     * @exports deprecationWarning
-     *
-     * @param {String} identifier The unique identifier for this deprecated API.
-     * @param {String} message The message to log to the console.
-     *
-     * @example
-     * // Deprecated function or class
-     * function Foo() {
-     *    deprecationWarning('Foo', 'Foo was deprecated in Cesium 1.01.  It will be removed in 1.03.  Use newFoo instead.');
-     *    // ...
-     * }
-     *
-     * // Deprecated function
-     * Bar.prototype.func = function() {
-     *    deprecationWarning('Bar.func', 'Bar.func() was deprecated in Cesium 1.01.  It will be removed in 1.03.  Use Bar.newFunc() instead.');
-     *    // ...
-     * };
-     *
-     * // Deprecated property
-     * defineProperties(Bar.prototype, {
-     *     prop : {
-     *         get : function() {
-     *             deprecationWarning('Bar.prop', 'Bar.prop was deprecated in Cesium 1.01.  It will be removed in 1.03.  Use Bar.newProp instead.');
-     *             // ...
-     *         },
-     *         set : function(value) {
-     *             deprecationWarning('Bar.prop', 'Bar.prop was deprecated in Cesium 1.01.  It will be removed in 1.03.  Use Bar.newProp instead.');
-     *             // ...
-     *         }
-     *     }
-     * });
-     *
-     * @private
-     */
-    function deprecationWarning(identifier, message) {
-                if (!defined(identifier) || !defined(message)) {
-            throw new DeveloperError('identifier and message are required.');
-        }
-        
-        oneTimeWarning(identifier, message);
-    }
-
-    return deprecationWarning;
-});
-
 define('Core/RequestState',[
         '../Core/freezeObject'
     ], function(
@@ -24387,7 +24336,6 @@ define('Core/loadWithXhr',[
         './Check',
         './defaultValue',
         './defined',
-        './deprecationWarning',
         './DeveloperError',
         './Request',
         './RequestErrorEvent',
@@ -24399,7 +24347,6 @@ define('Core/loadWithXhr',[
         Check,
         defaultValue,
         defined,
-        deprecationWarning,
         DeveloperError,
         Request,
         RequestErrorEvent,
@@ -24452,19 +24399,6 @@ define('Core/loadWithXhr',[
         
         var url = options.url;
 
-        if (typeof url !== 'string') {
-            // Returning a promise here is okay because it is unlikely that anyone using the deprecated functionality is also
-            // providing a Request object marked as throttled.
-            deprecationWarning('url promise', 'options.url as a Promise is deprecated and will be removed in Cesium 1.37');
-            return url.then(function(url) {
-                return makeRequest(options, url);
-            });
-        }
-
-        return makeRequest(options);
-    }
-
-    function makeRequest(options, url) {
         var responseType = options.responseType;
         var method = defaultValue(options.method, 'GET');
         var data = options.data;

@@ -448,12 +448,18 @@ describe('ga_map_service', function() {
       expect(layer.get(prop)).to.be(undefined);
     });
 
-    it('verifies getCesiumImageryProvider property', function() {
-      var prop = 'getCesiumImageryProvider';
+    it('verifies getCesiumXXX property', function() {
+      var props = [
+        'getCesiumDataSource',
+        'getCesiumImageryProvider',
+        'getCesiumTileset3d'
+      ];
       gaDefine(layer);
-      expect(layer.get(prop)).to.be(undefined);
-      expect(layer[prop]).to.be.a(Function);
-      expectLinkedToLayer(layer, prop);
+      props.forEach(function(prop) {
+        expect(layer.get(prop)).to.be(undefined);
+        expect(layer[prop]).to.be.a(Function);
+        expectLinkedToLayer(layer, prop);
+      });
     });
   });
 
@@ -583,10 +589,15 @@ describe('ga_map_service', function() {
     describe('constructor', function() {
       var opaqueLayersIds = [
         'ch.swisstopo.swissimage-product',
+        'ch.swisstopo.swissimage-product_3d',
         'ch.swisstopo.pixelkarte-farbe',
+        'ch.swisstopo.pixelkarte-farbe_3d',
         'ch.swisstopo.pixelkarte-grau',
+        'ch.swisstopo.pixelkarte-grau_3d',
         'ch.swisstopo.swisstlm3d-karte-farbe',
+        'ch.swisstopo.swisstlm3d-karte-farbe_3d',
         'ch.swisstopo.swisstlm3d-karte-grau',
+        'ch.swisstopo.swisstlm3d-karte-grau_3d',
         'ch.swisstopo.pixelkarte-farbe-pk25.noscale',
         'ch.swisstopo.pixelkarte-farbe-pk50.noscale',
         'ch.swisstopo.pixelkarte-farbe-pk100.noscale',
@@ -769,7 +780,7 @@ describe('ga_map_service', function() {
       });
     });
 
-    describe('#getCesiumTileset3DById', function() {
+    describe('#getCesiumTileset3dById', function() {
       var layersConfig = {
         'ch.dummy.wms': {
           type: 'wms',
@@ -801,13 +812,13 @@ describe('ga_map_service', function() {
       });
 
       it('returns undefined when layer\'s type is not managed', function() {
-        var prov = gaLayers.getCesiumTileset3DById('ch.dummy.wms2');
+        var prov = gaLayers.getCesiumTileset3dById('ch.dummy.wms2');
         expect(prov).to.eql(undefined);
       });
 
       it('returns a Cesium3DTileset object', function() {
         var spy = sinon.spy(Cesium, 'Cesium3DTileset');
-        var prov = gaLayers.getCesiumTileset3DById('ch.dummy.wms');
+        var prov = gaLayers.getCesiumTileset3dById('ch.dummy.wms');
         expect(prov).to.be.an(Cesium.Cesium3DTileset);
         var params = spy.args[0][0];
         expect(params.url).to.eql(expectVectorTilesUrl('ch.dummy.tileset.3d', '20170110'));
@@ -1241,6 +1252,28 @@ describe('ga_map_service', function() {
       });
     });
 
+    describe('#getConfig3d()', function() {
+
+      it('gets the config 3d of a layer', function() {
+        $httpBackend.expectGET(expectedUrl).respond({
+          'foo': { config3d: 'foo3d' },
+          'foo3d': {}
+        });
+        $httpBackend.flush();
+        var config = gaLayers.getLayer('foo');
+        expect(gaLayers.getConfig3d(config)).to.be.an(Object);
+      });
+
+      it('returns the config 2d if there is no special config 3d for a layer', function() {
+        $httpBackend.expectGET(expectedUrl).respond({
+          'foo': {}
+        });
+        $httpBackend.flush();
+        var config = gaLayers.getLayer('foo');
+        expect(gaLayers.getConfig3d(config)).to.be(config);
+      });
+    });
+
     describe('#getLayerProperty()', function() {
 
       it('gets the property of a layer\'s config', function() {
@@ -1378,45 +1411,74 @@ describe('ga_map_service', function() {
       });
     });
 
-    describe('#getBodParentLayerId()', function() {
-
-      beforeEach(function() {
-        $httpBackend.whenGET(expectedUrl).respond(dfltLayersConfig);
-        $httpBackend.flush();
-      });
-
-      it('returns parent layer id if it exists', function() {
-        var layer = new ol.layer.Layer({});
-        expect(gaLayers.getBodParentLayerId(layer)).to.be(undefined);
-        layer.bodId = 'foo';
-        expect(gaLayers.getBodParentLayerId(layer)).to.be('bar');
-      });
-    });
-
     describe('#hasTooltipBodLayer()', function() {
 
-      beforeEach(function() {
-        $httpBackend.whenGET(expectedUrl).respond(dfltLayersConfig);
+      it('returns false if the layer is not a bod layer', function() {
+        $httpBackend.whenGET(expectedUrl).respond({});
         $rootScope.$digest();
         $httpBackend.flush();
-      });
 
-      it('determines if a bod layer has a tooltip', function() {
         expect(gaLayers.hasTooltipBodLayer(undefined)).to.be(false);
         expect(gaLayers.hasTooltipBodLayer(null)).to.be(false);
         expect(gaLayers.hasTooltipBodLayer('')).to.be(false);
+        expect(gaLayers.hasTooltipBodLayer(new ol.layer.Image())).to.be(false);
+        expect(gaLayers.hasTooltipBodLayer(new ol.layer.Vector())).to.be(false);
+      });
+
+      it('returns true if a bod layer has a tooltip', function() {
+        $httpBackend.whenGET(expectedUrl).respond(dfltLayersConfig);
+        $rootScope.$digest();
+        $httpBackend.flush();
 
         var layer = gaLayers.getOlLayerById('tooltip');
         expect(gaLayers.hasTooltipBodLayer(layer)).to.be(true);
+        layer = gaLayers.getOlLayerById('childtooltip1');
+        expect(gaLayers.hasTooltipBodLayer(layer)).to.be(true);
+      });
+
+      it('returns false if a bod layer has no tooltip', function() {
+        $httpBackend.whenGET(expectedUrl).respond(dfltLayersConfig);
+        $rootScope.$digest();
+        $httpBackend.flush();
+
         layer = gaLayers.getOlLayerById('notooltip');
         expect(gaLayers.hasTooltipBodLayer(layer)).to.be(false);
         layer = gaLayers.getOlLayerById('childtooltip1');
         expect(gaLayers.hasTooltipBodLayer(layer)).to.be(true);
-        layer = gaLayers.getOlLayerById('childnotooltip2');
-        expect(gaLayers.hasTooltipBodLayer(layer)).to.be(false);
+      });
 
-        expect(gaLayers.hasTooltipBodLayer(new ol.layer.Image())).to.be(false);
-        expect(gaLayers.hasTooltipBodLayer(new ol.layer.Vector())).to.be(false);
+      it('returns the correct value if 3d is active or not', function() {
+        $httpBackend.whenGET(expectedUrl).respond({
+          'foo': { config3d: 'foo3d', tooltip: false},
+          'foo3d': {tooltip: true},
+          'bar': { config3d: 'bar3d', tooltip: true},
+          'bar3d': {tooltip: false}
+        });
+        $rootScope.$digest();
+        $httpBackend.flush();
+        var layer = {};
+        layer.bodId = 'foo';
+        expect(gaLayers.hasTooltipBodLayer(layer)).to.be(false);
+        expect(gaLayers.hasTooltipBodLayer(layer, true)).to.be(true);
+        layer.bodId = 'bar';
+        expect(gaLayers.hasTooltipBodLayer(layer)).to.be(true);
+        expect(gaLayers.hasTooltipBodLayer(layer, true)).to.be(false);
+      });
+
+      it('returns the parentLayerId value if tooltip is undefined', function() {
+        $httpBackend.whenGET(expectedUrl).respond({
+          'foo': { parentLayerId: 'parentfoo'},
+          'parentfoo': {tooltip: true},
+          'bar': { config3d: 'bar3d', tooltip: false},
+          'bar3d': {parentLayerId: 'parentfoo'}
+        });
+        $rootScope.$digest();
+        $httpBackend.flush();
+        var layer = {};
+        layer.bodId = 'foo';
+        expect(gaLayers.hasTooltipBodLayer(layer)).to.be(true);
+        layer.bodId = 'bar';
+        expect(gaLayers.hasTooltipBodLayer(layer, true)).to.be(true);
       });
     });
   });

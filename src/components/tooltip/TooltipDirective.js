@@ -58,7 +58,7 @@ goog.require('ga_window_service');
           '</div>';
 
         // Get all the queryable layers
-        var getLayersToQuery = function(map) {
+        var getLayersToQuery = function(map, is3dActive) {
           var layersToQuery = {
             bodLayers: [],
             vectorLayers: [],
@@ -71,7 +71,7 @@ goog.require('ga_window_service');
 
             if (gaMapUtils.isVectorLayer(l)) {
               layersToQuery.vectorLayers.push(l);
-            } else if (gaLayers.hasTooltipBodLayer(l)) {
+            } else if (gaLayers.hasTooltipBodLayer(l, is3dActive)) {
               layersToQuery.bodLayers.push(l);
             } else if (!gaLayers.isBodLayer(l) && gaMapUtils.isWMSLayer(l)) {
               layersToQuery.wmsLayers.push(l);
@@ -363,9 +363,12 @@ goog.require('ga_window_service');
             };
 
             scope.$watch('isActive', function(active) {
-              if (active) {
+              if (scope.map && active) {
                 activate();
               } else {
+                if (scope.isActive === true) {
+                  scope.isActive = false;
+                }
                 deactivate();
               }
             });
@@ -389,7 +392,7 @@ goog.require('ga_window_service');
               var mapProj = map.getView().getProjection();
               var pixel = map.getPixelFromCoordinate(coordinate);
               var all = []; // List of promises launched
-              var layersToQuery = getLayersToQuery(map);
+              var layersToQuery = getLayersToQuery(map, is3dActive());
 
               // When 3d is Active we use the cesium native function to get the
               // first queryable feature.
