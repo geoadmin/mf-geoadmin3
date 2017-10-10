@@ -808,7 +808,8 @@ goog.require('ga_urlutils_service');
                     useToD(config.serverLayerName, '21781') ?
                       h2(dfltToDSubdomains) :
                       h2(dfltWmtsNativeSubdomains)),
-                crossOrigin: crossOrigin
+                crossOrigin: crossOrigin,
+                transition: 0
               });
             }
             olLayer = new ol.layer.Tile({
@@ -861,7 +862,8 @@ goog.require('ga_urlutils_service');
                   tileGrid: gaTileGrid.get(config.resolutions,
                       config.minResolution, config.type),
                   tileLoadFunction: tileLoadFunction,
-                  wrapX: false
+                  wrapX: false,
+                  transition: 0
                 });
               }
               olLayer = new ol.layer.Tile({
