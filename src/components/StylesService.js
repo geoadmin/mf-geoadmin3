@@ -96,14 +96,15 @@ goog.require('ga_measure_service');
       color: [255, 0, 0, 1],
       width: 1.5
     });
+    var circle = new ol.style.Circle({
+      radius: 7,
+      fill: fill,
+      stroke: stroke
+    })
     var kmlStyle = new ol.style.Style({
       fill: fill,
       stroke: stroke,
-      image: new ol.style.Circle({
-        radius: 7,
-        fill: fill,
-        stroke: stroke
-      }),
+      image: circle,
       text: new ol.style.Text({
         font: DEFAULT_FONT,
         fill: fill,
@@ -112,6 +113,13 @@ goog.require('ga_measure_service');
           width: 3
         })
       })
+    });
+
+    // Default style for GPX layer
+    var gpxStyle = new ol.style.Style({
+      fill: fill,
+      stroke: stroke,
+      image: circle
     });
 
     var transparent = [0, 0, 0, 0];
@@ -231,6 +239,7 @@ goog.require('ga_measure_service');
       'geolocation': geolocationStyle,
       'offline': offlineStyle,
       'kml': kmlStyle,
+      'gpx': gpxStyle,
       'transparentCircle': transparentCircle,
       'redCircle': redCircle,
       'label': labelStyle,

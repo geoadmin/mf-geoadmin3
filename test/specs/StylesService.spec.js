@@ -10,12 +10,17 @@ describe('ga_styles_service', function() {
       'geolocation',
       'offline',
       'kml',
+      'gpx',
       'redCircle',
       'marker',
       'bowl',
       'cross',
       'circle',
       'point'
+    ];
+    var cesiumStyles = [
+      'label',
+      'labelEnhanced'
     ];
     var circleStyles = ['transparentCircle'];
     var styleFuncs = styles.concat(circleStyles, ['geolocation', 'measure']);
@@ -50,6 +55,12 @@ describe('ga_styles_service', function() {
       circleStyles.forEach(function(id) {
         it('gets the \'' + id + '\' circle style', function() {
           expect(gaStyle.getStyle(id)).to.be.an(ol.style.Circle);
+        });
+      });
+
+      cesiumStyles.forEach(function(id) {
+        it('gets the \'' + id + '\' style', function() {
+          expect(gaStyle.getStyle(id)).to.be.an(Object);
         });
       });
     });

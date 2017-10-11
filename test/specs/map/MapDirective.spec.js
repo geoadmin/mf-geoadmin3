@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 describe('ga_map_directive', function() {
-  var map, elt, parentScope;
+  var map, elt, scope, parentScope;
   var $httpBackend, $compile, $window, $q, $rootScope, $timeout, gaLayers, gaOffline, gaPermalink, gaStyleFactory, gaMapUtils;
 
   var loadDirective = function(map) {
@@ -9,6 +9,7 @@ describe('ga_map_directive', function() {
     var tpl = '<div ga-map ga-map-map="map" ga-map-options="options"></div>';
     elt = $compile(tpl)(parentScope);
     $rootScope.$digest();
+    scope = elt.isolateScope();
   };
 
   var injectServices = function($injector) {
@@ -60,6 +61,7 @@ describe('ga_map_directive', function() {
       expect(map.getTarget()).to.be(elt[0]);
       expect(map.getView().getCenter()).to.eql([0, 0]);
       expect(map.getView().getZoom()).to.be(1);
+      expect(scope.map).to.be(map);
     });
 
     describe('using zoom from permalink params', function() {

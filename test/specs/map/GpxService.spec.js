@@ -47,7 +47,7 @@ describe('ga_gpx_service', function() {
         var f = gaGpx.getStyle();
         expect(f).to.be.a(ol.style.Style);
         expect(spy.calledOnce).to.be(true);
-        expect(spy.args[0][0]).to.be('kml');
+        expect(spy.args[0][0]).to.be('gpx');
         spy.restore();
       });
 
@@ -57,8 +57,15 @@ describe('ga_gpx_service', function() {
         f = gaGpx.getStyle();
         expect(f).to.be.a(ol.style.Style);
         expect(spy.calledOnce).to.be(true);
-        expect(spy.args[0][0]).to.be('kml');
+        expect(spy.args[0][0]).to.be('gpx');
         spy.restore();
+      });
+
+      it('makes sure the text style is not defined (breaks ol-cesium synchronizer if there is not text to display with this text style)', function() {
+        var spy = sinon.spy(gaStyleFactory, 'getStyle');
+        var f = gaGpx.getStyle();
+        expect(spy.calledOnce).to.be(true);
+        expect(f.getText()).to.be(null);
       });
     });
 
@@ -87,6 +94,25 @@ describe('ga_gpx_service', function() {
         f = gaGpx.sanitizeFeature(f);
         expect(f.getGeometry().getLayout()).to.eql('XY');
         expect(f.getGeometry().getCoordinates()).to.eql([0, 0]);
+      });
+
+      it('set altitudeMode to relativeToGround', function() {
+        [
+          'XY',
+          'XYM'
+        ].forEach(function(layout) {
+          var f = new ol.Feature(new ol.geom.Point([0, 0, 123], layout));
+          f = gaGpx.sanitizeFeature(f);
+          expect(f.getGeometry().get('altitudeMode')).to.be(undefined);
+        });
+        [
+          'XYZ',
+          'XYZM'
+        ].forEach(function(layout) {
+          var f = new ol.Feature(new ol.geom.Point([0, 0, 123], layout));
+          f = gaGpx.sanitizeFeature(f);
+          expect(f.getGeometry().get('altitudeMode')).to.be('relativeToGround');
+        });
       });
     });
 

@@ -37,7 +37,7 @@ goog.require('ga_styles_service');
         // Returns the default style for GPX feature
         this.getStyle = function() {
           if (!style) {
-            style = gaStyleFactory.getStyle('kml');
+            style = gaStyleFactory.getStyle('gpx');
           }
           return style;
         };
@@ -49,9 +49,7 @@ goog.require('ga_styles_service');
 
         // Sanitize a feature.
         this.sanitizeFeature = function(feature) {
-          var style = this.getStyle();
-          style.setText();
-          feature.setStyle([style]);
+          feature.setStyle([this.getStyle()]);
 
           var geom = feature.getGeometry();
 
@@ -61,6 +59,11 @@ goog.require('ga_styles_service');
             geom = new ol.geom.Point(geom.getCoordinates().slice(0, 2), 'XY');
             feature.setGeometry(geom);
           }
+
+          if (geom && /^XYZ/.test(geom.getLayout())) {
+            geom.set('altitudeMode', 'relativeToGround');
+          }
+
           return feature;
         };
 
