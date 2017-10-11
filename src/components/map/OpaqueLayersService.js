@@ -57,8 +57,8 @@ goog.require('ga_map_service');
         var scope = parentScope.$new();
         scope.layers = scope.map.getLayers().getArray();
         scope.f = function(l) {
-          return gaLayerFilters.background(l) ||
-                 gaLayerFilters.selected(l) || l.bodId;
+          return l.bodId && (gaLayerFilters.background(l) ||
+              gaLayerFilters.selected(l));
         };
         scope.$watchCollection('layers | filter:f', function(l) {
           layers = l || [];
