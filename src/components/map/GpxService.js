@@ -49,7 +49,9 @@ goog.require('ga_styles_service');
 
         // Sanitize a feature.
         this.sanitizeFeature = function(feature) {
-          feature.setStyle([this.getStyle()]);
+          var style = this.getStyle();
+          style.setText();
+          feature.setStyle([style]);
 
           var geom = feature.getGeometry();
 
