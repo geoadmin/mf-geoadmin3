@@ -46,6 +46,11 @@ describe('ga_catalogtree_directive', function() {
           };
         }
       });
+      $provide.value('gaLang', {
+        get: function() {
+          return 'en';
+        }
+      });
     });
 
     inject(function($injector) {

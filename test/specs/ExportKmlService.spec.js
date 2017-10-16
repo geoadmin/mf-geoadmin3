@@ -21,7 +21,7 @@ describe('ga_exportkml_service', function() {
       geometry: pointGeom
     };
     var t = new Date('2016-01-15T10:00:00.000Z').getTime();
-    var tFormatted = moment(t).format('YYYYMMDDhhmmss');
+    var tFormatted = window.moment(t).format('YYYYMMDDhhmmss');
     var kmlFileName = 'map.geo.admin.ch_KML_' + tFormatted + '.kml';
     // ol.Feature
     var featWithCircle = new ol.Feature(new ol.geom.Circle(pointGeom.getCoordinates(), 10000));
