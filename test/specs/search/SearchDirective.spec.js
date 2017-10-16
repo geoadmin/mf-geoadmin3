@@ -29,6 +29,11 @@ describe('ga_search_directive', function() {
           return $q.when({});
         }
       });
+      $provide.value('gaLang', {
+        get: function() {
+          return 'en';
+        }
+      });
     };
 
     var injectServices = function($injector) {

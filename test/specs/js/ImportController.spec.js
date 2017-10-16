@@ -1,9 +1,10 @@
+/* eslint-disable max-len */
 describe('ga_import_controller', function() {
 
   describe('GaImportController', function() {
 
-    var scope, parentScope, $compile, $rootScope, $httpBackend, $window, $q, $document, $timeout, $httpBackend,
-      ngeoFile, gaVector, gaBrowserSniffer, gaWms, gaUrlUtils, gaLang, gaPreviewLayers,
+    var elt, scope, parentScope, $compile, $rootScope, $httpBackend, $window, $q, $timeout,
+      gaVector, gaBrowserSniffer, gaWms, gaUrlUtils, gaPreviewLayers,
       gaMapUtils, gaWmts, map;
 
     var loadController = function(map) {
@@ -15,26 +16,34 @@ describe('ga_import_controller', function() {
       scope = elt.scope();
     };
 
+    var provideServices = function($provide) {
+      $provide.value('gaLang', {
+        get: function() {
+          return 'en';
+        }
+      });
+    };
+
     var injectServices = function($injector) {
       $q = $injector.get('$q');
       $compile = $injector.get('$compile');
       $rootScope = $injector.get('$rootScope');
       $window = $injector.get('$window');
       $httpBackend = $injector.get('$httpBackend');
-      $document = $injector.get('$document');
       $timeout = $injector.get('$timeout');
-      ngeoFile = $injector.get('ngeoFile');
       gaVector = $injector.get('gaVector');
       gaBrowserSniffer = $injector.get('gaBrowserSniffer');
       gaWms = $injector.get('gaWms');
       gaUrlUtils = $injector.get('gaUrlUtils');
-      gaLang = $injector.get('gaLang');
       gaPreviewLayers = $injector.get('gaPreviewLayers');
       gaMapUtils = $injector.get('gaMapUtils');
       gaWmts = $injector.get('gaWmts');
     };
 
     beforeEach(function() {
+      module(function($provide) {
+        provideServices($provide);
+      });
       map = new ol.Map({});
     });
 
@@ -146,7 +155,7 @@ describe('ga_import_controller', function() {
           ];
           var spy = sinon.spy(gaUrlUtils, 'proxifyUrl');
           urls.forEach(function(url) {
-            var p = scope.options.transformUrl(url);
+            scope.options.transformUrl(url);
             expect(spy.args[0][0]).to.contain('SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0');
             expect(scope.getCapUrl).to.be(spy.args[0][0]);
             spy.reset();
@@ -159,7 +168,7 @@ describe('ga_import_controller', function() {
           ];
           var spy = sinon.spy(gaUrlUtils, 'proxifyUrl');
           urls.forEach(function(url) {
-            var p = scope.options.transformUrl(url);
+            scope.options.transformUrl(url);
             expect(spy.args[0][0]).to.contain('SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0&lang=en');
             expect(scope.getCapUrl).to.be(spy.args[0][0]);
             spy.reset();
@@ -175,7 +184,7 @@ describe('ga_import_controller', function() {
           ];
           var spy = sinon.spy(gaUrlUtils, 'proxifyUrl');
           urls.forEach(function(url) {
-            var p = scope.options.transformUrl(url);
+            scope.options.transformUrl(url);
             expect(spy.args[0][0]).to.contain('SERVICE=WMTS&REQUEST=GetCapabilities&VERSION=1.0.0');
             expect(scope.getCapUrl).to.be(spy.args[0][0]);
             spy.reset();
@@ -193,7 +202,7 @@ describe('ga_import_controller', function() {
           ];
           var spy = sinon.spy(gaUrlUtils, 'proxifyUrl');
           urls.forEach(function(url) {
-            var p = scope.options.transformUrl(url);
+            scope.options.transformUrl(url);
             expect(spy.args[0][0]).to.be(url);
             expect(scope.getCapUrl).to.be(spy.args[0][0]);
             spy.reset();
