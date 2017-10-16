@@ -20,7 +20,9 @@ describe('ga_exportkml_service', function() {
       customProp: 'featWithCustomProp',
       geometry: pointGeom
     };
-
+    var t = new Date('2016-01-15T10:00:00.000Z').getTime();
+    var tFormatted = moment(t).format('YYYYMMDDhhmmss');
+    var kmlFileName = 'map.geo.admin.ch_KML_' + tFormatted + '.kml';
     // ol.Feature
     var featWithCircle = new ol.Feature(new ol.geom.Circle(pointGeom.getCoordinates(), 10000));
     var featWithNoStyle = new ol.Feature(dfltProps);
@@ -124,6 +126,22 @@ describe('ga_exportkml_service', function() {
     };
 
     beforeEach(function() {
+      module(function($provide) {
+        $provide.value('$window', {
+          location: {
+            href: '',
+            search: {
+              substring: function(){}
+            }
+          },
+          open: function() {},
+          navigator: window.navigator,
+          addEventListener: function(){},
+          document: window.document,
+          parent: window.parent,
+          moment: window.moment
+        });
+      });
 
       inject(function($injector) {
         $window = $injector.get('$window');
@@ -135,7 +153,8 @@ describe('ga_exportkml_service', function() {
         $windowMock = sinon.mock($window);
         gaExportKmlMock = sinon.mock(gaExportKml);
       });
-      clock = sinon.useFakeTimers(new Date(2016, 1, 1).getTime());
+
+      clock = sinon.useFakeTimers(t);
     });
 
     afterEach(function() {
@@ -180,14 +199,14 @@ describe('ga_exportkml_service', function() {
     describe('#createAndDownload()', function() {
 
       describe('using download service', function() {
-        var dlUrl, fileName, fileUrl, open;
+        var dlUrl, fileUrl, open;
 
-        var expectations = function() {
+        var expectations = function(winLocation) {
 
           $httpBackend.whenPOST(dlUrl).respond({'url': fileUrl});
           $httpBackend.expectPOST(dlUrl, {
             kml: getKml([plkFeatWithProps]),
-            filename: fileName
+            filename: kmlFileName
           });
 
           var layer = createVectorLayer([featWithProps]);
@@ -195,12 +214,12 @@ describe('ga_exportkml_service', function() {
 
           $httpBackend.flush();
           open.verify();
+          expect($window.location).to.be(winLocation);
         };
 
         beforeEach(function() {
           dlUrl = gaGlobalOptions.apiUrl + '/downloadkml';
-          fileName = 'map.geo.admin.ch_KML_20160201000000.kml';
-          fileUrl = gaGlobalOptions.apiUrl + '/kml/' + fileName;
+          fileUrl = gaGlobalOptions.apiUrl + '/kml/' + kmlFileName;
         });
 
         afterEach(function() {
@@ -213,30 +232,24 @@ describe('ga_exportkml_service', function() {
           gaBrowserSniffer.safari = false;
           gaBrowserSniffer.blob = true;
           open = $windowMock.expects('open').once().withArgs(fileUrl).returns({});
-          expectations();
+          expectations($window.location);
         });
 
-        // TODO: How to avoid page reload
-        /* it('on Safari', function() {
+        it('on Safari', function() {
           gaBrowserSniffer.msie = false;
           gaBrowserSniffer.safari = true;
           gaBrowserSniffer.blob = true;
           open = $windowMock.expects('open').never();
-          open = $windowMock.expects('location').once().returns({});
-          expectations();
-        }); */
+          expectations(fileUrl);
+        });
 
-        /* it('on browser where Blob is not supported', function() {
+        it('on browser where Blob is not supported', function() {
           gaBrowserSniffer.msie = false;
           gaBrowserSniffer.safari = false;
           gaBrowserSniffer.blob = false;
-          $window = {
-            location: {href:''},
-            open: function(){}
-          };
           open = $windowMock.expects('open').never();
-          expectations();
-         }); */
+          expectations(fileUrl);
+        });
       });
 
       it('using Blob and saveAs', function() {
@@ -244,14 +257,11 @@ describe('ga_exportkml_service', function() {
         gaBrowserSniffer.safari = false;
         gaBrowserSniffer.blob = true;
         var spySaveAs = sinon.spy($window, 'saveAs');
-        var t = 1454281200000; // new Date().getTime()
-        var clock = sinon.useFakeTimers(t);
         var layer = createVectorLayer([featWithProps]);
         gaExportKml.createAndDownload(layer, 'EPSG:3857');
         expect(spySaveAs.calledOnce).to.be.ok();
-        expect(spySaveAs.args[0][1]).to.be('map.geo.admin.ch_KML_20160201000000.kml');
+        expect(spySaveAs.args[0][1]).to.be(kmlFileName);
         expect(spySaveAs.args[0][0]).to.be.a(Blob);
-        clock.restore();
       });
     });
   });
