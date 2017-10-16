@@ -485,7 +485,7 @@ goog.require('ga_window_service');
               }
 
               var queueByZ = [];
-              var minX = undefined, minY = undefined, maxX, maxY;
+              var minX, minY, maxX, maxY;
               var tileExtent = (isBgLayer && zoom >= 0 && zoom <= 2) ?
                 gaMapUtils.defaultExtent : extent;
               tileGrid.forEachTileCoord(tileExtent, z, function(tileCoord) {
