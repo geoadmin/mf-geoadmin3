@@ -1,32 +1,33 @@
+/* eslint-disable max-len */
 describe('ga_translation_service', function() {
 
   describe('gaLang', function() {
     var gaLang, $httpBackend, $rootScope, gaGlobalOptions, langPermalink, gaPermalink,
-      navLang = (window.navigator.userLanguage || window.navigator.language).split('-')[0],
-      topics = [], cpt = 0,
-      topicsLoaded = [{
-        'langs': 'somelang,de,fr,it',
-        'selectedLayers': [],
-        'backgroundLayers': [
-          'ch.swisstopo.pixelkarte-farbe',
-          'ch.swisstopo.pixelkarte-grau',
-          'ch.swisstopo.swissimage'
-        ],
-        'id': 'sometopic',
-        'showCatalog': true
-      }, {
-        'langs': 'somelang,de,fr',
-        'selectedLayers': [],
-        'backgroundLayers': [
-          'ch.swisstopo.pixelkarte-grau',
-          'ch.swisstopo.pixelkarte-farbe',
-          'ch.swisstopo.swissimage'
-        ],
-        'id': 'anothertopic',
-        'showCatalog': true
-      }];
+      navUserLanguage, navLanguage, cpt = 0;
+
+    var injectServices = function() {
+      inject(function($injector) {
+        $httpBackend = $injector.get('$httpBackend');
+        $rootScope = $injector.get('$rootScope');
+        gaGlobalOptions = $injector.get('gaGlobalOptions');
+        gaLang = $injector.get('gaLang');
+        gaPermalink = $injector.get('gaPermalink');
+      });
+
+      cpt = 0;
+      $rootScope.$on('$translateChangeEnd', function(evt, newLang) {
+        cpt++;
+      });
+      $httpBackend.whenGET('locales/somelang.json').respond({});
+      $httpBackend.whenGET('locales/de.json').respond({});
+      $httpBackend.whenGET('locales/fr.json').respond({});
+      $httpBackend.whenGET('locales/en.json').respond({});
+      $httpBackend.whenGET('locales/it.json').respond({});
+      $httpBackend.whenGET('locales/rm.json').respond({});
+    };
 
     beforeEach(function() {
+
       // We redefine the $translateProvider
       module(function($translateProvider, gaGlobalOptions) {
         $translateProvider.forceAsyncReload(true);
@@ -41,12 +42,20 @@ describe('ga_translation_service', function() {
       });
 
       module(function($provide) {
+        $provide.value('$window', {
+          navigator: {
+            userLanguage: navUserLanguage,
+            language: navLanguage
+          },
+          addEventListener: function() {},
+          document: window.document
+        });
         $provide.value('gaTopic', {
           getTopics: function() {
-            return topics;
+            return [];
           },
           get: function(params) {
-            return topics[0];
+            return undefined;
           }
         });
         $provide.value('gaPermalink', {
@@ -60,23 +69,6 @@ describe('ga_translation_service', function() {
           }
         });
       });
-      inject(function($injector) {
-        $httpBackend = $injector.get('$httpBackend');
-        $rootScope = $injector.get('$rootScope');
-        gaGlobalOptions = $injector.get('gaGlobalOptions');
-        gaLang = $injector.get('gaLang');
-        gaPermalink = $injector.get('gaPermalink');
-      });
-      cpt = 0;
-      $rootScope.$on('$translateChangeEnd', function(evt, newLang) {
-        cpt++;
-      });
-      $httpBackend.whenGET('locales/somelang.json').respond({});
-      $httpBackend.whenGET('locales/de.json').respond({});
-      $httpBackend.whenGET('locales/fr.json').respond({});
-      $httpBackend.whenGET('locales/en.json').respond({});
-      $httpBackend.whenGET('locales/it.json').respond({});
-      $httpBackend.whenGET('locales/rm.json').respond({});
     });
 
     afterEach(function() {
@@ -85,48 +77,66 @@ describe('ga_translation_service', function() {
     });
 
     describe('lang defined by navigator', function() {
-      it('uses navigator language as default language', function() {
-        expect(gaLang.get()).to.be(navLang);
-        var expectedUrl = 'locales/' + navLang + '.json';
-        $httpBackend.expectGET(expectedUrl);
-        $httpBackend.flush();
-        expect(cpt).to.be(1);
-        expect(gaPermalink.getParams().lang).to.be(navLang);
 
-        // For the next test
-        langPermalink = 'rm';
+      beforeEach(function() {
+        langPermalink = null;
+        navUserLanguage = null;
+        navLanguage = null;
+      });
+
+      ['rm', 'rm-CH'].forEach(function(l) {
+        it('uses navigator.userLanguage (' + l + ') as default language', function() {
+          navUserLanguage = l;
+          injectServices();
+          expect(gaLang.get()).to.be('rm');
+          var expectedUrl = 'locales/rm.json';
+          $httpBackend.expectGET(expectedUrl);
+          $httpBackend.flush();
+          expect(cpt).to.be(1);
+          expect(gaPermalink.getParams().lang).to.be('rm');
+        });
+      });
+
+      ['it', 'it-CH'].forEach(function(l) {
+        it('uses navigator.language (' + l + ')  as default language', function() {
+          navLanguage = l;
+          injectServices();
+          expect(gaLang.get()).to.be('it');
+          var expectedUrl = 'locales/it.json';
+          $httpBackend.expectGET(expectedUrl);
+          $httpBackend.flush();
+          expect(cpt).to.be(1);
+          expect(gaPermalink.getParams().lang).to.be('it');
+        });
       });
     });
 
     describe('lang defined from permalink', function() {
-      beforeEach(function() {
-        cpt = 0;
-      });
 
       it('defines a language in the permalink', function() {
+        langPermalink = 'rm';
+        injectServices();
         expect(gaLang.get()).to.be(langPermalink);
         var expectedUrl = 'locales/' + langPermalink + '.json';
         $httpBackend.expectGET(expectedUrl);
         $httpBackend.flush();
         expect(cpt).to.be(1);
-
-        // For the next test
-        langPermalink = 'langnotexisting';
       });
 
       it('defines a wrong language in the permlink then load the default language', function() {
+        langPermalink = 'langnotexisting';
+        injectServices();
         expect(gaLang.get()).to.be(gaGlobalOptions.translationFallbackCode);
         $httpBackend.expectGET('locales/' + gaGlobalOptions.translationFallbackCode + '.json');
         $httpBackend.flush();
         expect(gaLang.get()).to.be(gaGlobalOptions.translationFallbackCode);
         expect(cpt).to.be(1);
         expect(gaPermalink.getParams().lang).to.be(gaGlobalOptions.translationFallbackCode);
-
-        // We set a lang not available in the topic
-        langPermalink = 'rm';
       });
 
       it('sets a language', function() {
+        langPermalink = 'fr';
+        injectServices();
         expect(gaLang.get()).to.be(langPermalink);
         $httpBackend.expectGET('locales/' + langPermalink + '.json');
         $httpBackend.flush();

@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 describe('ga_translation_directive', function() {
   var element, scope, parentScope, $rootScope, $compile,
     lang = 'rm',
@@ -18,7 +19,7 @@ describe('ga_translation_directive', function() {
           return lang;
         },
         set: function(newLang) {
-          lang = (langs.indexOf(newLang) != -1) ?
+          lang = (langs.indexOf(newLang) !== -1) ?
             newLang : 'de';
         }
       });
@@ -53,6 +54,11 @@ describe('ga_translation_directive', function() {
         langs: langs
       };
       loadDirective();
+    });
+
+    it('set scope values', function() {
+      expect(scope.langs).to.be(langs);
+      expect(scope.lang).to.be(lang);
     });
 
     it('updates correctly the html', function() {
