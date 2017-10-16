@@ -131,12 +131,12 @@ describe('ga_exportkml_service', function() {
           location: {
             href: '',
             search: {
-              substring: function(){}
+              substring: function() {}
             }
           },
           open: function() {},
           navigator: window.navigator,
-          addEventListener: function(){},
+          addEventListener: function() {},
           document: window.document,
           parent: window.parent,
           moment: window.moment

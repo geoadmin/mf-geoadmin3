@@ -17,7 +17,7 @@ goog.require('ga_permalink_service');
       var lang = gaPermalink.getParams().lang ||
           ($window.navigator.userLanguage ||
           $window.navigator.language).split('-')[0];
-
+      
       if (gaGlobalOptions.languages.indexOf(lang) === -1) {
         lang = gaGlobalOptions.translationFallbackCode;
       }
