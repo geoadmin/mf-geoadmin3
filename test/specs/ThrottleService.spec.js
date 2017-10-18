@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 describe('ga_throttle_service', function() {
 
   describe('gaThrottle', function() {
@@ -6,10 +7,12 @@ describe('ga_throttle_service', function() {
     beforeEach(function() {
       inject(function($injector) {
         gaThrottle = $injector.get('gaThrottle');
-        cpt = 0, cptNoTrail = 0, runs = 0;
-        now = +new Date();
-        last = now + 1000;
       });
+      cpt = 0;
+      cptNoTrail = 0;
+      runs = 0;
+      now = new Date().getTime();
+      last = now + 1000;
     });
 
     describe('#throttle()', function() {
@@ -24,7 +27,7 @@ describe('ga_throttle_service', function() {
           runs++;
           funcThrottled();
           funcThrottledNoTrail();
-          now = +new Date();
+          now = new Date().getTime();
         }
         $timeout.flush();
         expect(runs).to.be.above(0);

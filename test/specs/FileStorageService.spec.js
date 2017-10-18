@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 describe('ga_filestorage_service', function() {
 
   describe('gaFileStorage', function() {
@@ -51,7 +52,6 @@ describe('ga_filestorage_service', function() {
 
     describe('#save()', function() {
       it('creates a file', inject(function($timeout, gaGlobalOptions) {
-        var expectedUrl = serviceUrl;
         $httpBackend.expectPOST(serviceUrl, fileContent).respond(fileInfo);
         gaFileStorage.save(null, fileContent);
         $httpBackend.flush();
@@ -60,7 +60,7 @@ describe('ga_filestorage_service', function() {
       it('updates a file', inject(function($timeout) {
         var expectedUrl = serviceUrl + '/' + adminId;
         $httpBackend.expectPOST(expectedUrl, fileContent, function(headers) {
-          return headers['Content-Type'] == 'text/plain';
+          return headers['Content-Type'] === 'text/plain';
         }).respond(fileInfo);
         gaFileStorage.save(adminId, fileContent, 'text/plain');
         $httpBackend.flush();

@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 describe('ga_backgroundselector_directive', function() {
 
   describe('Background layer insertion', function() {

@@ -1,13 +1,14 @@
+/* eslint-disable max-len */
 describe('ga_main_controller', function() {
 
   describe('GaMainController', function() {
 
-    var scope, parentScope, $compile, $rootScope, $window, $q, $document, $timeout, $httpBackend,
-      $translate, gaBrowserSniffer, gaHistory, gaPermalinkFeaturesManager, gaPermalinkLayersManager,
-      gaMapUtils, gaRealtimeLayersManager, gaNetworkStatus, gaPermalink, gaStorage,
-      gaGlobalOptions, gaBackground, gaTime, gaLayers, gaTopic, gaOpaqueLayersManager,
-      gaMapLoad, gaWindow;
-
+    var elt, scope, parentScope, $compile, $rootScope, $window, $timeout, $httpBackend,
+      gaMapUtils, gaPermalink, gaGlobalOptions, gaBackground, gaTime, gaMapLoad;
+    /* Keep for future tests
+      $q, $document, $translate, gaBrowserSniffer, gaHistory, gaPermalinkFeaturesManager, gaPermalinkLayersManager,
+      gaRealtimeLayersManager, gaNetworkStatus, gaLayers, gaTopic, gaOpaqueLayersManager, gaWindow, gaStorage, $document 
+    */
     var loadController = function() {
       parentScope = $rootScope.$new();
       var tpl = '<div ng-controller="GaMainController"></div>';
@@ -17,31 +18,33 @@ describe('ga_main_controller', function() {
     };
 
     var injectServices = function($injector) {
-      $q = $injector.get('$q');
       $compile = $injector.get('$compile');
       $rootScope = $injector.get('$rootScope');
       $window = $injector.get('$window');
-      $document = $injector.get('$document');
       $timeout = $injector.get('$timeout');
       $httpBackend = $injector.get('$httpBackend');
+      gaMapUtils = $injector.get('gaMapUtils');
+      gaPermalink = $injector.get('gaPermalink');
+      gaGlobalOptions = $injector.get('gaGlobalOptions');
+      gaBackground = $injector.get('gaBackground');
+      gaTime = $injector.get('gaTime');
+      gaMapLoad = $injector.get('gaMapLoad');
+      /* Keep for future tests
+      $q = $injector.get('$q');
+      $document = $injector.get('$document');
       $translate = $injector.get('$translate');
       gaBrowserSniffer = $injector.get('gaBrowserSniffer');
-      gaMapUtils = $injector.get('gaMapUtils');
       gaHistory = $injector.get('gaHistory');
       gaPermalinkFeaturesManager = $injector.get('gaPermalinkFeaturesManager');
       gaPermalinkLayersManager = $injector.get('gaPermalinkLayersManager');
       gaRealtimeLayersManager = $injector.get('gaRealtimeLayersManager');
       gaNetworkStatus = $injector.get('gaNetworkStatus');
-      gaPermalink = $injector.get('gaPermalink');
-      gaStorage = $injector.get('gaStorage');
-      gaGlobalOptions = $injector.get('gaGlobalOptions');
-      gaBackground = $injector.get('gaBackground');
-      gaTime = $injector.get('gaTime');
       gaLayers = $injector.get('gaLayers');
+      gaStorage = $injector.get('gaStorage');
       gaTopic = $injector.get('gaTopic');
       gaOpaqueLayersManager = $injector.get('gaOpaqueLayersManager');
-      gaMapLoad = $injector.get('gaMapLoad');
       gaWindow = $injector.get('gaWindow');
+      */
     };
 
     afterEach(function() {

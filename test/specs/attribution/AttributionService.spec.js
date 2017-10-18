@@ -1,7 +1,8 @@
+/* eslint-disable max-len */
 describe('ga_attribution_service', function() {
 
   describe('gaAttribution', function() {
-    var gaAttribution, def, gaLang, lang = 'somelang';
+    var gaAttribution, $translate, def, lang = 'somelang';
     var bodAttribTemplate = '<a target="new" href="{{Url}}">{{Text}}</a>';
     var bodAttribTemplateNoLink = '{{Text}}';
     var thirdPartyAttribTemplate = '<span class="ga-warning-tooltip">{{Text}}</span>';
@@ -74,10 +75,10 @@ describe('ga_attribution_service', function() {
         });
       });
 
-      inject(function(_gaAttribution_, _gaLang_, $q) {
-        def = $q.defer();
-        gaAttribution = _gaAttribution_;
-        gaLang = _gaLang_;
+      inject(function($injector) {
+        def = $injector.get('$q').defer();
+        gaAttribution = $injector.get('gaAttribution');
+        $translate = $injector.get('$translate');
       });
       def.resolve();
     });
@@ -118,8 +119,8 @@ describe('ga_attribution_service', function() {
 
       // public.geo.admin.ch
       olLayer = {url: 'http://public.geo.admin.ch/idsfdsf'};
-      var host = 'public.geo.admin.ch';
-      var attrib = gaAttribution.getHtmlFromLayer(olLayer);
+      host = 'public.geo.admin.ch';
+      attrib = gaAttribution.getHtmlFromLayer(olLayer);
       expect(attrib).to.eql(getThirdPartyAttrib(host));
       attrib = gaAttribution.getHtmlFromLayer(olLayer, true);
       expect(attrib).to.eql(getThirdPartyAttrib(host));

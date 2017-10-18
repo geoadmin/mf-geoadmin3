@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 describe('ga_search_service', function() {
 
   describe('gaSearchGetcoordinate', function() {
@@ -243,7 +244,6 @@ describe('ga_search_service', function() {
     describe('#highlight()', function() {
 
       it('Empty Strings', function() {
-        var testString = '';
         var res = labelsService.highlight('', 'something');
         expect(res).to.eql('');
         res = labelsService.highlight('tt aa ww', '');
@@ -254,7 +254,7 @@ describe('ga_search_service', function() {
         var testString = 'Das ist ein Span und class teststring';
         var res = labelsService.highlight(testString, 'span');
         expect(res).to.eql('Das ist ein <span class="ga-search-highlight">Span</span> und class teststring');
-        var res = labelsService.highlight(testString, 'Class');
+        res = labelsService.highlight(testString, 'Class');
         expect(res).to.eql('Das ist ein Span und <span class="ga-search-highlight">class</span> teststring');
       });
 
@@ -333,7 +333,6 @@ describe('ga_search_service', function() {
   describe('gaSearchTokenAnalyser', function() {
 
     var tokenAnalyser;
-    var testQuery;
     var res;
 
     beforeEach(function() {

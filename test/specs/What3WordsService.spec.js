@@ -1,7 +1,8 @@
+/* eslint-disable max-len */
 describe('ga_what3words_service', function() {
 
   describe('gaWhat3Words', function() {
-    var gaWhat3Words;
+    var gaWhat3Words, res;
 
     describe('does not send requests', function() {
       beforeEach(function() {
@@ -69,7 +70,7 @@ describe('ga_what3words_service', function() {
 
       it('gets coordinates', function(done) {
         $httpBackend.expectGET(testUrl).respond({geometry: {lat: 51.484463, lng: -0.195405}});
-        var res = gaWhat3Words.getCoordinate('first.cörrect.tèst').then(function(resp) {
+        gaWhat3Words.getCoordinate('first.cörrect.tèst').then(function(resp) {
           expect(resp.data.geometry.lat).to.eql(51.484463);
           expect(resp.data.geometry.lng).to.eql(-0.195405);
           done();

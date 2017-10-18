@@ -1,9 +1,9 @@
+/* eslint-disable max-len */
 describe('ga_timeselector_controller', function() {
 
   describe('GaTimeSelectorController', function() {
 
-    var scope, parentScope, $compile, $rootScope, $timeout, $httpBackend,
-      gaGlobalOptions;
+    var elt, scope, parentScope, $compile, $rootScope, $timeout, $httpBackend;
 
     var loadController = function() {
       parentScope = $rootScope.$new();
@@ -18,7 +18,6 @@ describe('ga_timeselector_controller', function() {
       $rootScope = $injector.get('$rootScope');
       $timeout = $injector.get('$timeout');
       $httpBackend = $injector.get('$httpBackend');
-      gaGlobalOptions = $injector.get('gaGlobalOptions');
     };
 
     beforeEach(function() {

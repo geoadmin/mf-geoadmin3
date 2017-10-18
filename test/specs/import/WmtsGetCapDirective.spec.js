@@ -1,5 +1,6 @@
+/* eslint-disable max-len */
 describe('ngeo.wmtsGetCapDirective', function() {
-  var elt, scope, parentScope, map, $rootScope, $compile, $translate, gaWmts, $window, $httpBackend;
+  var elt, scope, parentScope, map, $rootScope, $compile, $window;
 
   var loadDirective = function() {
     parentScope = $rootScope.$new();
@@ -36,9 +37,7 @@ describe('ngeo.wmtsGetCapDirective', function() {
     inject(function($injector) {
       $rootScope = $injector.get('$rootScope');
       $compile = $injector.get('$compile');
-      $translate = $injector.get('$translate');
       $window = $injector.get('$window');
-      gaWmts = $injector.get('gaWmts');
     });
 
     map = new ol.Map({});

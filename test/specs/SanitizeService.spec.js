@@ -1,7 +1,8 @@
+/* eslint-disable max-len */
 describe('ga_sanitize_service', function() {
 
   describe('gaSanitize', function() {
-    var sanitize;
+    var gaSanitize;
     var html = '<div ><p></p></div>';
     var html2 = '<div ><p ></p></div>';
     var html3 = '<div> <p></p></div>';

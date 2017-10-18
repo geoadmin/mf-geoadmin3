@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 describe('ga_measure_service', function() {
 
   describe('gaMeasure', function() {
@@ -162,11 +163,9 @@ describe('ga_measure_service', function() {
           [1.5, 1],
           [7, 10]
         ];
-        var polyNotClosed = new ol.geom.Polygon([coords]);
         var coordsClosed = coords.concat();
         coordsClosed.push([3, 15]);
         var poly = new ol.geom.Polygon([coordsClosed]);
-        var poly2Pt = new ol.geom.Polygon([[1, 2], [3, 4]]);
 
         beforeEach(function() {
           layer.setOpacity(1);
@@ -453,7 +452,7 @@ describe('ga_measure_service', function() {
 
           featLine.setGeometry(new ol.geom.LineString(coords));
           gaMeasure.updateOverlays(layer, featLine);
-          var ovs = featLine.get('overlays').forEach(function(ov) {
+          featLine.get('overlays').forEach(function(ov) {
             expect(ov.getElement().style.opacity).to.eql(1);
           });
 
@@ -462,7 +461,7 @@ describe('ga_measure_service', function() {
           featPoly.setGeometry(new ol.geom.Polygon([coordsClosed]));
           gaMeasure.updateOverlays(layer, featPoly);
 
-          ovs = featLine.get('overlays').forEach(function(ov) {
+          featLine.get('overlays').forEach(function(ov) {
             expect(ov.getElement().style.opacity).to.eql(1);
           });
         });
@@ -479,7 +478,7 @@ describe('ga_measure_service', function() {
 
           featLine.setGeometry(new ol.geom.LineString(coords));
           gaMeasure.updateOverlays(layer, featLine);
-          var ovs = featLine.get('overlays').forEach(function(ov) {
+          featLine.get('overlays').forEach(function(ov) {
             expect(ov.getElement().style.opacity).to.eql(0.2);
           });
 
@@ -488,7 +487,7 @@ describe('ga_measure_service', function() {
           featPoly.setGeometry(new ol.geom.Polygon([coordsClosed]));
           gaMeasure.updateOverlays(layer, featPoly);
 
-          ovs = featLine.get('overlays').forEach(function(ov) {
+          featLine.get('overlays').forEach(function(ov) {
             expect(ov.getElement().style.opacity).to.eql(0.2);
           });
         });
@@ -517,7 +516,7 @@ describe('ga_measure_service', function() {
       });
 
       it('does nothing if the feature is not a lineString or a polygon', function() {
-        var geoms = [
+        [
           new ol.geom.Point(c),
           new ol.geom.LinearRing([c]),
           new ol.geom.MultiPoint([c, c]),
@@ -580,7 +579,7 @@ describe('ga_measure_service', function() {
     });
 
     describe('#removeOverlays()', function() {
-      var spy, feat1 = new ol.Feature(),
+      var spy, ovs, feat1 = new ol.Feature(),
         feat2 = new ol.Feature();
 
       beforeEach(function() {
@@ -610,7 +609,7 @@ describe('ga_measure_service', function() {
       describe('returns false', function() {
 
         it('if the geometry is not a LineString', function() {
-          var geoms = [
+          [
             new ol.geom.Point(c),
             new ol.geom.LinearRing([c]),
             new ol.geom.Polygon([[c]]),

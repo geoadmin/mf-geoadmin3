@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 describe('ga_help_service', function() {
 
   describe('gaHelp', function() {

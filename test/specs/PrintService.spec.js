@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 describe('ga_print_service', function() {
 
   describe('gaPrint', function() {
@@ -106,6 +107,7 @@ describe('ga_print_service', function() {
 
         expect(spy.calledWithExactly('popup_blocked')).to.be(true);
         spy.restore();
+        stub.restore();
       });
     });
   });

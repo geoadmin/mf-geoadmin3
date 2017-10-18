@@ -1,9 +1,9 @@
+/* eslint-disable max-len */
 describe('ga_tooltip_controller', function() {
-  7;
 
   describe('GaTooltipController', function() {
 
-    var scope, parentScope, $compile, $rootScope, $timeout, $httpBackend, gaGlobalOptions, gaWindow;
+    var elt, scope, parentScope, $compile, $rootScope, $timeout, $httpBackend, gaGlobalOptions, gaWindow;
 
     var loadController = function() {
       parentScope = $rootScope.$new();

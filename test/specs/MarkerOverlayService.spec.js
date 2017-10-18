@@ -1,15 +1,14 @@
+/* eslint-disable max-len */
 describe('ga_marker_overlay_service', function() {
 
   describe('gaMarkerOverlay', function() {
-    var gaStyleFactory, gaMapUtils, gaMarkerOverlay, map;
+    var gaStyleFactory, gaMarkerOverlay, map;
     var pt = [0, 1];
-    var extentPoint = [0, 1, 0, 1];
     var extent = [0, 1, 2, 3];
 
     beforeEach(function() {
       inject(function($injector) {
         gaStyleFactory = $injector.get('gaStyleFactory');
-        gaMapUtils = $injector.get('gaMapUtils');
         gaMarkerOverlay = $injector.get('gaMarkerOverlay');
       });
       map = new ol.Map({});
@@ -67,7 +66,7 @@ describe('ga_marker_overlay_service', function() {
         // data with big extent
         map.getView().setZoom(4);
         gaMarkerOverlay.add(map, pt, false, extent);
-        layer = map.getLayers().item(0);
+        var layer = map.getLayers().item(0);
         expect(layer.getVisible()).to.be(true);
 
         map.getView().setZoom(9);

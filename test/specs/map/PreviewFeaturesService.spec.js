@@ -1,7 +1,8 @@
+/* eslint-disable max-len */
 describe('ga_previewfeatures_service', function() {
 
   describe('gaPreviewFeatures', function() {
-    var gaPreviewFeatures, map, $q, $httpBackend, gaMapUtils, gaStyleFactory, gaLayers;
+    var gaPreviewFeatures, map, $httpBackend, gaMapUtils, gaStyleFactory, gaLayers;
 
     var tpl = window.location.protocol + '//api3.geo.admin.ch/123456/rest/services/all/MapServer/{{layerId}}/{{featId}}?geometryFormat=geojson';
     var expectGET = function(featIdsByBodId) {
@@ -42,7 +43,6 @@ describe('ga_previewfeatures_service', function() {
 
       inject(function($injector) {
         gaPreviewFeatures = $injector.get('gaPreviewFeatures');
-        $q = $injector.get('$q');
         $httpBackend = $injector.get('$httpBackend');
         gaMapUtils = $injector.get('gaMapUtils');
         gaStyleFactory = $injector.get('gaStyleFactory');

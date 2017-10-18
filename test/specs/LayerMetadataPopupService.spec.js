@@ -1,8 +1,9 @@
+/* eslint-disable max-len */
 describe('ga_layermetadatapopup_service', function() {
 
   describe('gaLayerMetadataPopup', function() {
     var gaLayerMetadataPopup,
-      gaLang, gaLayers, $http,
+      gaLang, $http,
       $httpBackend, $q,
       $rootScope,
       $translate;
@@ -68,7 +69,6 @@ describe('ga_layermetadatapopup_service', function() {
 
       inject(function($injector) {
         gaLayerMetadataPopup = $injector.get('gaLayerMetadataPopup');
-        gaLayers = $injector.get('gaLayers');
         gaLang = $injector.get('gaLang');
         $http = $injector.get('$http');
         $httpBackend = $injector.get('$httpBackend');

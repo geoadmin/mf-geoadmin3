@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 describe('ga_event_service', function() {
 
   describe('gaEvent', function() {

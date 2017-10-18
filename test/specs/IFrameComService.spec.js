@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 describe('ga_iframecom_service', function() {
 
   describe('gaIframeCom', function() {

@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 describe('ga_shareembed_directive', function() {
   var elt, modal, parentScope, scope, $rootScope, $compile, gaPermalink, $window, $timeout;
 
@@ -9,13 +10,11 @@ describe('ga_shareembed_directive', function() {
     scope = elt.isolateScope();
     modal = elt.find('.modal');
   };
-  var $sce;
   beforeEach(function() {
     inject(function($injector) {
       $compile = $injector.get('$compile');
       $rootScope = $injector.get('$rootScope');
       $window = $injector.get('$window');
-      $sce = $injector.get('$sce');
       $timeout = $injector.get('$timeout');
       gaPermalink = $injector.get('gaPermalink');
     });

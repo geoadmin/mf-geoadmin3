@@ -1,7 +1,8 @@
+/* eslint-disable max-len */
 describe('ga_permalinkfeatures_service', function() {
 
   describe('gaPermalinkFeaturesManager', function() {
-    var map, gaPermFeat, gaPermalink, gaLayers, gaPreviewFeatures, $rootScope;
+    var map, $q, gaPermFeat, gaPermalink, gaLayers, gaPreviewFeatures, $rootScope;
 
     beforeEach(function() {
 
@@ -13,7 +14,7 @@ describe('ga_permalinkfeatures_service', function() {
             return defer.promise;
           },
           getLayer: function(id) {
-            return (id == 'somelayer') ? {} : undefined;
+            return (id === 'somelayer') ? {} : undefined;
           },
           getOlLayerById: function(bodId) {
             var layer = new ol.layer.Tile();

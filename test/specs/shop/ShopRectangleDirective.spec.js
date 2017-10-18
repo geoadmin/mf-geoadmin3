@@ -1,6 +1,7 @@
+/* eslint-disable max-len */
 describe('ga_shoprectangle_directive', function() {
-  var elt, scope, parentScope, $compile, $rootScope, $timeout, gaDebounce,
-    gaMapUtils, gaShop, $q;
+  var elt, scope, parentScope, $compile, $rootScope, $timeout,
+    gaShop, $q;
 
   var loadDirective = function(active) {
     parentScope = $rootScope.$new();
@@ -27,10 +28,7 @@ describe('ga_shoprectangle_directive', function() {
       $compile = $injector.get('$compile');
       $timeout = $injector.get('$timeout');
       $rootScope = $injector.get('$rootScope');
-      $window = $injector.get('$window');
       $q = $injector.get('$q');
-      gaDebounce = $injector.get('gaDebounce');
-      gaMapUtils = $injector.get('gaMapUtils');
       gaShop = $injector.get('gaShop');
     });
   });

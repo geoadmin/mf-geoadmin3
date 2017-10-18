@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 describe('ga_popup_directive', function() {
   var element;
 
@@ -78,7 +79,7 @@ describe('ga_popup_directive', function() {
     // click on same element does not change z-index
     element.find('.ga-popup-content').click();
     var zIndex2 = parseInt(element.css('z-index'));
-    expect(zIndex2 == zIndex).to.be(true);
+    expect(zIndex2 === zIndex).to.be(true);
     // clicking on other popup changes z-index
     element2.find('.ga-popup-content').click();
     var newZIndex = parseInt(element2.css('z-index'));

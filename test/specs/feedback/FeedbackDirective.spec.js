@@ -1,7 +1,11 @@
+/* eslint-disable max-len */
 describe('ga_feedback_directive', function() {
 
-  var map, elt, scope, parentScope, options, gaPermalink, $httpBackend, $rootScope,
-    $compile, gaUrlUtils, $timeout, gaExportKml, gaGlobalOptions;
+  var map, elt, parentScope, options, $timeout, $httpBackend, $rootScope,
+    $compile, gaBrowserSniffer;
+  /* Keep for future tests
+    gaPermalink, gaUrlUtils, gaExportKml, gaGlobalOptions, $window
+  */
 
   var loadDirective = function(map, options) {
     parentScope = $rootScope.$new();
@@ -10,7 +14,6 @@ describe('ga_feedback_directive', function() {
     var tpl = '<div ga-feedback ga-feedback-options="options" ga-feedback-map="map"></div>';
     elt = $compile(tpl)(parentScope);
     $rootScope.$digest();
-    scope = elt.isolateScope();
   };
 
   var provideServices = function($provide) {
@@ -33,14 +36,16 @@ describe('ga_feedback_directive', function() {
   var injectServices = function($injector) {
     $compile = $injector.get('$compile');
     $rootScope = $injector.get('$rootScope');
-    $window = $injector.get('$window');
     $timeout = $injector.get('$timeout');
     $httpBackend = $injector.get('$httpBackend');
-    gaPermalink = $injector.get('gaPermalink');
     gaBrowserSniffer = $injector.get('gaBrowserSniffer');
+    /* Keep for future tests
+    $window = $injector.get('$window');
+    gaPermalink = $injector.get('gaPermalink');
     gaUrlUtils = $injector.get('gaUrlUtils');
     gaExportKml = $injector.get('gaExportKml');
     gaGlobalOptions = $injector.get('gaGlobalOptions');
+    */
   };
 
   beforeEach(function() {

@@ -1,8 +1,9 @@
+/* eslint-disable max-len */
 describe('ga_drawstyle_controller', function() {
 
   describe('GaDrawStyleController', function() {
 
-    var scope, parentScope, $compile, $rootScope, $translate, $timeout, $httpBackend,
+    var elt, scope, parentScope, $compile, $rootScope, $timeout, $httpBackend,
       gaStyleFactory;
 
     var loadController = function() {
@@ -18,7 +19,6 @@ describe('ga_drawstyle_controller', function() {
       $rootScope = $injector.get('$rootScope');
       $timeout = $injector.get('$timeout');
       $httpBackend = $injector.get('$httpBackend');
-      $translate = $injector.get('$translate');
       gaStyleFactory = $injector.get('gaStyleFactory');
     };
 

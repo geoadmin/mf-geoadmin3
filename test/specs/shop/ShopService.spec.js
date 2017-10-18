@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 describe('ga_shop_service', function() {
 
   describe('gaShop', function() {
@@ -23,13 +24,13 @@ describe('ga_shop_service', function() {
       'ch.swisstopo.pixelkarte-pk100.metadata': 'ch.swisstopo.pixelkarte-farbe-pk100.noscale',
       'ch.swisstopo.pixelkarte-pk200.metadata': 'ch.swisstopo.pixelkarte-farbe-pk200.noscale'
     };
-    var bodIds = [
+    /* var bodIds = [
       'ch.swisstopo.pixelkarte-farbe-pk25.noscale',
       'ch.swisstopo.pixelkarte-farbe-pk50.noscale',
       'ch.swisstopo.pixelkarte-farbe-pk100.noscale',
       'ch.swisstopo.pixelkarte-farbe-pk200.noscale'
       //, 'ch.swisstopo.digitales-hoehenmodell_25_reliefschattierung': '
-    ];
+    ]; */
     var clipper = {
       'commune': 'ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill',
       'district': 'ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill',

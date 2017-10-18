@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 describe('ga_layermanager_directive', function() {
   // Valid layers
 
@@ -20,10 +21,11 @@ describe('ga_layermanager_directive', function() {
   layerThirdParty.url = 'http://foo.ch/admin/wms';
 
   describe('gaLayermanager', function() {
-    var elt, scope, parentScope, $compile, $rootScope, $timeout, $window,
+    var elt, map, $httpBackend, scope, parentScope, $compile, $rootScope, $timeout, $window;
+    /* Keep for future tests
       gaBrowserSniffer, gaLayerFilters, gaLayerMetadataPopup, gaLayers,
-      gaAttribution, gaUrlUtils, gaMapUtils, gaEvent, map, $httpBackend;
-
+      gaAttribution, gaUrlUtils, gaMapUtils, gaEvent;
+    */
     var loadDirective = function(map) {
       parentScope = $rootScope.$new();
       parentScope.map = map;
@@ -44,6 +46,7 @@ describe('ga_layermanager_directive', function() {
       $window = $injector.get('$window');
       $timeout = $injector.get('$timeout');
       $httpBackend = $injector.get('$httpBackend');
+      /* Keep for future tests
       gaBrowserSniffer = $injector.get('gaBrowserSniffer');
       gaLayerFilters = $injector.get('gaLayerFilters');
       gaLayerMetadataPopup = $injector.get('gaLayerMetadataPopup');
@@ -52,6 +55,7 @@ describe('ga_layermanager_directive', function() {
       gaUrlUtils = $injector.get('gaUrlUtils');
       gaMapUtils = $injector.get('gaMapUtils');
       gaEvent = $injector.get('gaEvent');
+      */
     };
 
     beforeEach(function() {

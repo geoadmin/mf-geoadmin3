@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 describe('ga_styles_service', function() {
 
   describe('gaStyleFactory', function() {

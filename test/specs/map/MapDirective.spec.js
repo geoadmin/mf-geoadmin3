@@ -1,14 +1,13 @@
 /* eslint-disable max-len */
 describe('ga_map_directive', function() {
-  var map, elt, scope, parentScope;
-  var $httpBackend, $compile, $window, $q, $rootScope, gaBrowserSniffer, gaLayers, gaOffline;
+  var map, elt, parentScope;
+  var $httpBackend, $compile, $window, $q, $rootScope, gaLayers, gaOffline;
 
   var loadDirective = function() {
     parentScope = $rootScope.$new();
     var tpl = '<div ga-map ga-map-map="map" ga-map-options="options"></div>';
     elt = $compile(tpl)(parentScope);
     $rootScope.$digest();
-    scope = elt.isolateScope();
   };
 
   describe('in all pages', function() {
