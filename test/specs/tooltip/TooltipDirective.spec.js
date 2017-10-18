@@ -1,11 +1,14 @@
 /* eslint-disable max-len */
 describe('ga_tooltip_directive', function() {
   var map, elt, scope, parentScope;
-  var $httpBackend, $compile, $timeout, $q, $translate, $sce, $rootScope, gaPopup,
+  var $httpBackend, $compile, $timeout, $rootScope, gaMapClick;
+  /* Keep this for future tests
+    $q, $translate, $sce, gaPopup,
     gaLayers, gaBrowserSniffer, gaMapClick, gaDebounce, gaPreviewFeatures,
     gaMapUtils, gaTime, gaTopic, gaIdentify, gaGlobalOptions,
     gaPermalink, gaIFrameCom, gaUrlUtils, gaLang, gaSanitize, gaEvent,
     gaWindow;
+  */
 
   var loadDirective = function(map, ol3d, options, active) {
     parentScope = $rootScope.$new();
@@ -20,15 +23,6 @@ describe('ga_tooltip_directive', function() {
   };
 
   describe('in all pages', function() {
-    var layer;
-    var expectedUrl = 'https://example.com/all?lang=en';
-    var dfltLayersConfig = {
-      foo: {
-        type: 'wmts',
-        timeEnabled: true,
-        timestamps: ['t0', 't1', 't2']
-      }
-    };
 
     beforeEach(function() {
 
@@ -50,14 +44,15 @@ describe('ga_tooltip_directive', function() {
         $httpBackend = $injector.get('$httpBackend');
         $compile = $injector.get('$compile');
         $timeout = $injector.get('$timeout');
+        $rootScope = $injector.get('$rootScope');
+        gaMapClick = $injector.get('gaMapClick');
+        /* Keep this for future tests
         $q = $injector.get('$q');
         $translate = $injector.get('$translate');
         $sce = $injector.get('$sce');
-        $rootScope = $injector.get('$rootScope');
         gaPopup = $injector.get('gaPopup');
         gaLayers = $injector.get('gaLayers');
         gaBrowserSniffer = $injector.get('gaBrowserSniffer');
-        gaMapClick = $injector.get('gaMapClick');
         gaDebounce = $injector.get('gaDebounce');
         gaPreviewFeatures = $injector.get('gaPreviewFeatures');
         gaMapUtils = $injector.get('gaMapUtils');
@@ -71,7 +66,7 @@ describe('ga_tooltip_directive', function() {
         gaLang = $injector.get('gaLang');
         gaSanitize = $injector.get('gaSanitize');
         gaEvent = $injector.get('gaEvent');
-        gaWindow = $injector.get('gaWindow');
+        gaWindow = $injector.get('gaWindow'); */
       });
 
       map = new ol.Map({

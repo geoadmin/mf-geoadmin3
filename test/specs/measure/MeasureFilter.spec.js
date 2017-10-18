@@ -1,28 +1,12 @@
+/* eslint-disable max-len */
 describe('ga_measure_filter', function() {
-  var measureFilter, polygon, lineString, linearRing, circle, point;
+  var measureFilter;
 
   beforeEach(function() {
 
     inject(function($injector) {
-      gaMeasure = $injector.get('gaMeasure');
       measureFilter = $injector.get('measureFilter');
     });
-
-    polygon = new ol.geom.Polygon([[
-      [0, 0], [1000, 0], [1000, 1000], [0, 1000], [0, 0]
-    ]]);
-
-    linearRing = new ol.geom.LinearRing([
-      [0, 0], [1000, 0], [1000, 1000], [0, 1000], [0, 0]
-    ]);
-
-    lineString = new ol.geom.LineString([
-      [0, 0], [1000, 0], [1000, 1000], [0, 1000]
-    ]);
-
-    circle = new ol.geom.Circle([0, 0], 1000);
-
-    point = new ol.geom.Point([0, 0]);
   });
 
   it('displays "-" when value is not a number', function() {

@@ -1,8 +1,9 @@
+/* eslint-disable max-len */
 describe('ga_search_controller', function() {
 
   describe('GaSearchController', function() {
 
-    var scope, parentScope, $compile, $rootScope, $timeout, $httpBackend,
+    var elt, scope, parentScope, $compile, $rootScope, $timeout, $httpBackend,
       gaGlobalOptions;
 
     var loadController = function() {

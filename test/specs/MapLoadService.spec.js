@@ -1,11 +1,12 @@
+/* eslint-disable max-len */
 describe('ga_mapload_service', function() {
 
   describe('gaMapLoad', function() {
-    var map, $window, gaLayerFilters, $rootScope;
+    var map, $window, $rootScope, gaMapLoad;
     var spyInfo, spyLog;
 
-    var getLayer = function(bodId, sourceClass) {
-      var source = new sourceClass({});
+    var getLayer = function(bodId, SourceClass) {
+      var source = new SourceClass({});
       var layer = new ol.layer.Tile({
         source: source
       });
@@ -32,7 +33,6 @@ describe('ga_mapload_service', function() {
       inject(function($injector) {
         gaMapLoad = $injector.get('gaMapLoad');
         $window = $injector.get('$window');
-        gaLayerFilters = $injector.get('gaLayerFilters');
         $rootScope = $injector.get('$rootScope');
       });
 

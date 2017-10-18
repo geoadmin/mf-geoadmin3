@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 describe('ga_geomutils_service', function() {
   var gaGeomUtils;
 
@@ -43,7 +44,7 @@ describe('ga_geomutils_service', function() {
       var coords = geom.getCoordinates();
       expect(coords.length).to.be(3);
       gaGeomUtils.close(geom);
-      var coords = geom.getCoordinates();
+      coords = geom.getCoordinates();
       expect(coords.length).to.be(3);
 
       // LineString
@@ -61,7 +62,7 @@ describe('ga_geomutils_service', function() {
       expect(coords[0]).not.to.eql(coords[coords[0].length - 1]);
 
       // MultiLineString
-      var geom = new ol.geom.MultiLineString([unclosedCoords, unclosedCoords]);
+      geom = new ol.geom.MultiLineString([unclosedCoords, unclosedCoords]);
       gaGeomUtils.close(geom);
       coords = geom.getCoordinates();
       expect(coords[0][0]).not.to.eql(coords[0][coords[0].length - 1]);
@@ -186,7 +187,7 @@ describe('ga_geomutils_service', function() {
       expect(gaGeomUtils.isValid(geom)).to.be(false);
 
       // LinearRing
-      var geom = new ol.geom.LineString(uniqCoords);
+      geom = new ol.geom.LineString(uniqCoords);
       expect(gaGeomUtils.isValid(geom)).to.be(false);
 
       // Polygon

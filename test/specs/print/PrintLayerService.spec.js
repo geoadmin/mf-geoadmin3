@@ -1,8 +1,9 @@
+/* eslint-disable max-len */
 describe('ga_printlayer_service', function() {
 
   describe('gaPrintLayer', function() {
 
-    var $translate, gaPrintLayer, gaUrlUtils, gaLang;
+    var $translate, gaPrintLayer;
 
     var extent = [420000, 30000, 900000, 350000];
     var center = [600000, 200000];
@@ -23,9 +24,6 @@ describe('ga_printlayer_service', function() {
       inject(function($injector) {
         $translate = $injector.get('$translate');
         gaPrintLayer = $injector.get('gaPrintLayer');
-        gaLang = $injector.get('gaLang');
-        gaMarkerOverlay = $injector.get('gaMarkerOverlay');
-        gaUrlUtils = $injector.get('gaUrlUtils');
       });
     });
 
@@ -203,7 +201,6 @@ describe('ga_printlayer_service', function() {
 
     describe('#encodeBase()', function() {
 
-      var lyr = new ol.layer.Tile();
       var lyr = new ol.layer.Vector({
         source: new ol.source.Vector()
       });

@@ -189,7 +189,7 @@ describe('ga_wmts_service', function() {
         expect(options).to.be(undefined);
       });
 
-      var mtsGetCap = [
+      [
         'base/test/data/wmts-basic.xml',
         'base/test/data/wmts-basic-without-operationsmd.xml'
       ].forEach(function(getCapUrl) {

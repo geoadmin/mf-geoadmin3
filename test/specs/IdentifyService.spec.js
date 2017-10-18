@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 describe('ga_identify_service', function() {
 
   describe('gaIdentify', function() {
@@ -61,7 +62,6 @@ describe('ga_identify_service', function() {
     describe('#get()', function() {
 
       describe('fails', function() {
-        var errMsg = 'missing required parameters';
         var expectErr = function(msg, done) {
           expect(msg).to.eql('Missing required parameters');
           done();

@@ -1,7 +1,11 @@
+/* eslint-disable max-len */
 describe('ga_geolocation_directive', function() {
 
   describe('gaGeolocation', function() {
-    var elt, scope, cope, $compile, $rootScope, $httpBackend, $timeout, $window, gaBrowserSniffer, gaPermalink, gaThrottle, gaStyleFactory, gaMapUtils, map, ol3d;
+    var elt, scope, parentScope, $compile, $rootScope, $httpBackend, $timeout, $window, map, ol3d;
+    /* Keep for future tests
+      gaBrowserSniffer, gaPermalink, gaThrottle, gaStyleFactory, gaMapUtils
+    */ 
 
     var loadDirective = function(map, ol3d) {
       parentScope = $rootScope.$new();
@@ -25,12 +29,14 @@ describe('ga_geolocation_directive', function() {
       $httpBackend = $injector.get('$httpBackend');
       $timeout = $injector.get('$timeout');
       $window = $injector.get('$window');
+      /* Keep for future tests
       gaBrowserSniffer = $injector.get('gaBrowserSniffer');
       gaPermalink = $injector.get('gaPermalink');
       gaThrottle = $injector.get('gaThrottle');
       gaStyleFactory = $injector.get('gaStyleFactory');
       gaMapUtils = $injector.get('gaMapUtils');
       gaThrottle = $injector.get('gaThrottle');
+      */
     };
 
     beforeEach(function() {
@@ -73,7 +79,7 @@ describe('ga_geolocation_directive', function() {
       });
 
       it('verifies html elements', function() {
-        loadDirective(map);
+        loadDirective(map, ol3d);
         expect(elt.find('.ga-btn').length).to.be(1);
         expect(elt.find('.fa').length).to.be(4);
       });

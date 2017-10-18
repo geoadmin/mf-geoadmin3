@@ -1,7 +1,8 @@
+/* eslint-disable max-len */
 describe('ga_sharecopyinputgroup_directive', function() {
 
   describe('gaShareCopyInputGroup', function() {
-    var elt, eltBt, scope, scopeBt, parentScope, $rootScope, compile, ctrl;
+    var elt, scope, parentScope, $rootScope, $compile, ctrl;
 
     var loadDirective = function() {
       parentScope = $rootScope.$new();

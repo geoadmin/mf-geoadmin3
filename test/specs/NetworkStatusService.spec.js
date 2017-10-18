@@ -1,15 +1,14 @@
+/* eslint-disable max-len */
 describe('ga_networkstatus_service', function() {
 
   describe('httpInterceptor', function() {
-    var httpI, gaDebounce, gaNetworkStatus, $q, gaWaitCursor, $timeout;
+    var httpI, gaNetworkStatus, gaWaitCursor, $timeout, $http, $httpBackend;
     var url = 'http://dummy.ch';
 
     beforeEach(function() {
       inject(function($injector) {
         httpI = $injector.get('httpInterceptor');
-        gaDebounce = $injector.get('gaDebounce');
         gaNetworkStatus = $injector.get('gaNetworkStatus');
-        $q = $injector.get('$q');
         gaWaitCursor = $injector.get('gaWaitCursor');
         $http = $injector.get('$http');
         $httpBackend = $injector.get('$httpBackend');
@@ -92,8 +91,7 @@ describe('ga_networkstatus_service', function() {
   });
 
   describe('gaNetworkStatus', function() {
-    var $document, $rootScope, $window, gaGlobalOptions,
-      gaNetworkStatus, $timeout;
+    var $document, $rootScope, $window, gaNetworkStatus, $timeout;
     var mock;
 
     var expectStatusChange = function(offline) {
@@ -108,7 +106,6 @@ describe('ga_networkstatus_service', function() {
         $timeout = $injector.get('$timeout');
         $rootScope = $injector.get('$rootScope');
         gaNetworkStatus = $injector.get('gaNetworkStatus');
-        gaGlobalOptions = $injector.get('gaGlobalOptions');
       });
 
       mock = sinon.mock($rootScope);

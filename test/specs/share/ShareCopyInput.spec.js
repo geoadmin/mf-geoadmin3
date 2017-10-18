@@ -1,7 +1,8 @@
+/* eslint-disable max-len */
 describe('ga_sharecopyinput_directive', function() {
 
   describe('gaShareCopyInput', function() {
-    var elt, eltInput, scope, scopeInput, parentScope, $rootScope, compile, ctrl;
+    var elt, eltInput, parentScope, $rootScope, $compile;
 
     var loadDirective = function(placmt) {
       parentScope = $rootScope.$new();
@@ -11,10 +12,7 @@ describe('ga_sharecopyinput_directive', function() {
         '</div>';
       elt = $compile(tpl)(parentScope);
       $rootScope.$digest();
-      scope = elt.isolateScope();
-      ctrl = elt.controller('gaShareCopyInputGroup');
       eltInput = elt.find('[ga-share-copy-input]');
-      scopeInput = eltInput.isolateScope();
     };
 
     beforeEach(function() {
@@ -22,8 +20,6 @@ describe('ga_sharecopyinput_directive', function() {
       inject(function($injector) {
         $rootScope = $injector.get('$rootScope');
         $compile = $injector.get('$compile');
-        $translate = $injector.get('$translate');
-        gaBrowserSniffer = $injector.get('gaBrowserSniffer');
       });
 
       $rootScope.onBeforeCopy = function() { return 'a'; };

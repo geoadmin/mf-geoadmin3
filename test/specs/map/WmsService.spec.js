@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 describe('ga_wms_service', function() {
 
   describe('gaWms', function() {
@@ -53,7 +54,7 @@ describe('ga_wms_service', function() {
       // Tests Cesium provider
       var srsStr = '', crsStr = '&crs=EPSG:4326';
       options.bbox = '{southProjected},{westProjected},{northProjected},{eastProjected}';
-      if (options.VERSION == '1.1.1') {
+      if (options.VERSION === '1.1.1') {
         options.bbox = '{westProjected},{southProjected},{eastProjected},{northProjected}';
         srsStr = '&srs=EPSG:4326';
         crsStr = '';
@@ -243,7 +244,7 @@ describe('ga_wms_service', function() {
             'request=GetLegendGraphic&amp;layer=somelayer&amp;' +
             'style=default&amp;service=WMS&amp;version=1.3.0&amp;' +
             'format=image%2Fpng&amp;sld_version=1.1.0">';
-        gaWms.getLegend(wmsLayer).then(function(resp) {
+        gaWms.getLegend(wmsLayer).then(function(res) {
           var html = res.data;
           expect(html).to.be(expectedHtml);
         });
@@ -258,7 +259,7 @@ describe('ga_wms_service', function() {
             'request=GetLe/gendGraphic&amp;layer=somelayer&amp;' +
             'style=layerstyle&amp;service=WMS&amp;version=1.1.1&amp;' +
             'format=image%2Fpng&amp;sld_version=1.1.0">';
-        gaWms.getLegend(wmsLayer).then(function(resp) {
+        gaWms.getLegend(wmsLayer).then(function(res) {
           var html = res.data;
           expect(html).to.be(expectedHtml);
         });

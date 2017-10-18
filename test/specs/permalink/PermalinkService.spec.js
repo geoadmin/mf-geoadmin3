@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 describe('ga_permalink_service', function() {
 
   describe('gaPermalink', function() {

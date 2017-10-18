@@ -1470,7 +1470,7 @@ describe('ga_map_service', function() {
         $rootScope.$digest();
         $httpBackend.flush();
 
-        layer = gaLayers.getOlLayerById('notooltip');
+        var layer = gaLayers.getOlLayerById('notooltip');
         expect(gaLayers.hasTooltipBodLayer(layer)).to.be(false);
         layer = gaLayers.getOlLayerById('childtooltip1');
         expect(gaLayers.hasTooltipBodLayer(layer)).to.be(true);
@@ -1478,9 +1478,9 @@ describe('ga_map_service', function() {
 
       it('returns the correct value if 3d is active or not', function() {
         $httpBackend.whenGET(expectedUrl).respond({
-          'foo': { config3d: 'foo3d', tooltip: false},
+          'foo': {config3d: 'foo3d', tooltip: false},
           'foo3d': {tooltip: true},
-          'bar': { config3d: 'bar3d', tooltip: true},
+          'bar': {config3d: 'bar3d', tooltip: true},
           'bar3d': {tooltip: false}
         });
         $rootScope.$digest();
@@ -1496,9 +1496,9 @@ describe('ga_map_service', function() {
 
       it('returns the parentLayerId value if tooltip is undefined', function() {
         $httpBackend.whenGET(expectedUrl).respond({
-          'foo': { parentLayerId: 'parentfoo'},
+          'foo': {parentLayerId: 'parentfoo'},
           'parentfoo': {tooltip: true},
-          'bar': { config3d: 'bar3d', tooltip: false},
+          'bar': {config3d: 'bar3d', tooltip: false},
           'bar3d': {parentLayerId: 'parentfoo'}
         });
         $rootScope.$digest();

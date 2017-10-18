@@ -1,8 +1,9 @@
+/* eslint-disable max-len */
 describe('ga_print_controller', function() {
 
   describe('GaPrintController', function() {
 
-    var scope, parentScope, $compile, $rootScope, $timeout, $httpBackend,
+    var elt, scope, parentScope, $compile, $rootScope, $timeout, $httpBackend,
       gaGlobalOptions;
 
     var loadController = function() {

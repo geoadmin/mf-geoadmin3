@@ -1,9 +1,9 @@
+/* eslint-disable max-len */
 describe('ga_translation_controller', function() {
-  7;
 
   describe('GaTranslationController', function() {
 
-    var scope, parentScope, $compile, $rootScope, $timeout, $httpBackend, gaGlobalOptions;
+    var elt, scope, parentScope, $compile, $rootScope, $timeout, $httpBackend, gaGlobalOptions;
 
     var loadController = function() {
       parentScope = $rootScope.$new();

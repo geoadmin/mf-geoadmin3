@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 describe('ga_attribution_directive', function() {
   // Valid layers
   var layerBg = new ol.layer.Layer({});
@@ -36,7 +37,7 @@ describe('ga_attribution_directive', function() {
   layerThirdParty.url = 'http://foo.ch/admin/wms';
 
   describe('gaAttribution', function() {
-    var elt, scope, parentScope, $compile, $rootScope, $window, gaAttribution, gaDebounce, map, ol3d, $timeout, $httpBackend;
+    var elt, scope, parentScope, $compile, $rootScope, $window, gaAttribution, map, ol3d, $timeout, $httpBackend;
 
     var loadDirective = function(map, ol3d) {
       parentScope = $rootScope.$new();
@@ -60,7 +61,6 @@ describe('ga_attribution_directive', function() {
       $timeout = $injector.get('$timeout');
       $httpBackend = $injector.get('$httpBackend');
       gaAttribution = $injector.get('gaAttribution');
-      gaDebounce = $injector.get('gaDebounce');
     };
 
     beforeEach(function() {
@@ -151,7 +151,7 @@ describe('ga_attribution_directive', function() {
         map.addLayer(layerThirdParty);
         $rootScope.$digest();
         $timeout.flush();
-        var isShown, isHidden, w = elt.find('.ga-warning-tooltip');
+        var isShown, w = elt.find('.ga-warning-tooltip');
         w.on('show.bs.tooltip', function() {
           isShown = true;
         });
@@ -176,7 +176,7 @@ describe('ga_attribution_directive', function() {
         map.addLayer(layerThirdParty);
         $rootScope.$digest();
         $timeout.flush();
-        var isShown, isHidden, w = elt.find('.ga-warning-tooltip');
+        var isShown, w = elt.find('.ga-warning-tooltip');
         w.on('show.bs.tooltip', function() {
           isShown = true;
         });
@@ -249,7 +249,7 @@ describe('ga_attribution_directive', function() {
   });
 
   describe('gaAttributionWarning', function() {
-    var elt, map, ol3d, scope, parentScope, $compile, $rootScope, $window, gaDebounce, $timeout, $httpBackend;
+    var elt, map, ol3d, scope, parentScope, $compile, $rootScope, $timeout, $httpBackend;
 
     var loadDirective = function(ol3d) {
       parentScope = $rootScope.$new();
@@ -268,10 +268,8 @@ describe('ga_attribution_directive', function() {
     var injectServices = function($injector) {
       $compile = $injector.get('$compile');
       $rootScope = $injector.get('$rootScope');
-      $window = $injector.get('$window');
       $timeout = $injector.get('$timeout');
       $httpBackend = $injector.get('$httpBackend');
-      gaDebounce = $injector.get('gaDebounce');
     };
 
     beforeEach(function() {

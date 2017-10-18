@@ -1,5 +1,6 @@
+/* eslint-disable max-len */
 describe('ga_contextpopup_directive', function() {
-  var elt, parentScope, handlers = {}, map, $rootScope, gaReframe, $window, $compile, $httpBackend, $timeout, gaWhat3Words, $q, gaPermalink, gaEvent;
+  var elt, scope, parentScope, handlers = {}, map, $rootScope, gaReframe, $compile, $httpBackend, $timeout, gaWhat3Words, $q, gaPermalink;
   var expectedHeightUrl = '//api.geo.admin.ch/height?easting=661473&elevation_model=COMB&northing=188192';
   var expectedReframeUrl = '//api.example.com/reframe/lv03tolv95?easting=661473&northing=188192';
   var expectedw3wUrl = 'dummy.test.url.com/v2/reverse?coords=46.84203157398991,8.244528382656728&key=testkey&lang=de';
@@ -67,14 +68,12 @@ describe('ga_contextpopup_directive', function() {
   var injectServices = function($injector) {
     $compile = $injector.get('$compile');
     $rootScope = $injector.get('$rootScope');
-    $window = $injector.get('$window');
     $timeout = $injector.get('$timeout');
     $httpBackend = $injector.get('$httpBackend');
     $q = $injector.get('$q');
     gaPermalink = $injector.get('gaPermalink');
     gaReframe = $injector.get('gaReframe');
     gaWhat3Words = $injector.get('gaWhat3Words');
-    gaEvent = $injector.get('gaEvent');
   };
 
   beforeEach(function() {

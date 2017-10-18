@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 describe('ga_catalogtree_directive', function() {
 
   var element, map, $httpBackend, $rootScope;

@@ -1,8 +1,9 @@
+/* eslint-disable max-len */
 describe('ga_feedback_controller', function() {
 
   describe('GaFeedbackController', function() {
 
-    var scope, parentScope, $compile, $rootScope, $httpBackend, $timeout,
+    var elt, scope, parentScope, $compile, $rootScope, $httpBackend, $timeout,
       gaGlobalOptions;
 
     var loadController = function() {

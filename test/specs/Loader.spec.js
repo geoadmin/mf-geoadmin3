@@ -1,5 +1,6 @@
+/* eslint-disable max-len */
 beforeEach(function() {
-  ngeo.baseModuleTemplateUrl = 'ngeo/src/modules';
+  window.ngeo.baseModuleTemplateUrl = 'ngeo/src/modules';
 
   // The ga module requires the gaGlobalOptions.version property to be
   // defined

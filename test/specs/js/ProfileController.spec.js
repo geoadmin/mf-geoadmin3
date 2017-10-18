@@ -1,10 +1,10 @@
+/* eslint-disable max-len */
 describe('ga_profile_controller', function() {
-  7;
 
   describe('GaProfileController', function() {
 
-    var scope, parentScope, $compile, $rootScope, $timeout, $httpBackend,
-      gaBrowserSniffer, gaGlobalOptions, gaPrint;
+    var elt, scope, parentScope, $compile, $rootScope, $timeout, $httpBackend,
+      gaGlobalOptions;
 
     var loadController = function() {
       parentScope = $rootScope.$new();
@@ -19,9 +19,7 @@ describe('ga_profile_controller', function() {
       $rootScope = $injector.get('$rootScope');
       $timeout = $injector.get('$timeout');
       $httpBackend = $injector.get('$httpBackend');
-      gaBrowserSniffer = $injector.get('gaBrowserSniffer');
       gaGlobalOptions = $injector.get('gaGlobalOptions');
-      gaPrint = $injector.get('gaPrint');
     };
 
     afterEach(function() {

@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 describe('ga_import_directive', function() {
   var elt, scope, parentScope, map, $httpBackend, $rootScope, $compile, $timeout, gaBrowserSniffer;
 
@@ -26,7 +27,6 @@ describe('ga_import_directive', function() {
   var injectServices = function($injector) {
     $compile = $injector.get('$compile');
     $rootScope = $injector.get('$rootScope');
-    $window = $injector.get('$window');
     $timeout = $injector.get('$timeout');
     $httpBackend = $injector.get('$httpBackend');
     gaBrowserSniffer = $injector.get('gaBrowserSniffer');
