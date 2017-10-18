@@ -1,9 +1,10 @@
+/* eslint-disable max-len */
 describe('ga_featuretree_controller', function() {
 
   describe('GaFeaturetreeController', function() {
 
-    var scope, parentScope, $compile, $rootScope, $window, $q, $timeout, $httpBackend,
-      gaPrint, gaGlobalOptions;
+    var elt, scope, parentScope, $compile, $rootScope, $timeout, $httpBackend,
+      gaGlobalOptions;
 
     var loadController = function() {
       parentScope = $rootScope.$new();
@@ -14,13 +15,10 @@ describe('ga_featuretree_controller', function() {
     };
 
     var injectServices = function($injector) {
-      $q = $injector.get('$q');
       $compile = $injector.get('$compile');
       $rootScope = $injector.get('$rootScope');
-      $window = $injector.get('$window');
       $timeout = $injector.get('$timeout');
       $httpBackend = $injector.get('$httpBackend');
-      gaPrint = $injector.get('gaPrint');
       gaGlobalOptions = $injector.get('gaGlobalOptions');
     };
 

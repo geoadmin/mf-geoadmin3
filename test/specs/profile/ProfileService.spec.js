@@ -1,5 +1,6 @@
+/* eslint-disable max-len */
 describe('ga_profile_service', function() {
-  var gaProfile, gaUrlUtils, $rootScope, $httpBackend, gaTimeFormat, $timeout, gaGlobalOptions, testTooltips;
+  var gaProfile, $rootScope, $httpBackend, gaTimeFormat, gaGlobalOptions, testTooltips;
 
   testTooltips = function(profile) {
     expect(profile.group.select('.ga-profile-elevation-difference title').
@@ -24,11 +25,9 @@ describe('ga_profile_service', function() {
 
     inject(function($injector) {
       gaProfile = $injector.get('gaProfile');
-      gaUrlUtils = $injector.get('gaUrlUtils');
       gaTimeFormat = $injector.get('gaTimeFormatFilter');
       $httpBackend = $injector.get('$httpBackend');
       $rootScope = $injector.get('$rootScope');
-      $timeout = $injector.get('$timeout');
       gaGlobalOptions = $injector.get('gaGlobalOptions');
     });
   });

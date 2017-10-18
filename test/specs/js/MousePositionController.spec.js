@@ -1,10 +1,12 @@
+/* eslint-disable max-len */
 describe('ga_mouseposition_controller', function() {
 
   describe('GaMousePositionController', function() {
 
-    var scope, parentScope, $compile, $rootScope, $window, $q, $document, $timeout, $httpBackend,
-      $translate, gaMeasure;
-
+    var elt, scope, parentScope, $compile, $rootScope, $httpBackend, $timeout;
+    /* Keep for future tests
+      $window, $q, $document, $translate, gaMeasure;
+    */
     var loadController = function() {
       parentScope = $rootScope.$new();
       var tpl = '<div ng-controller="GaMousePositionController"></div>';
@@ -14,15 +16,17 @@ describe('ga_mouseposition_controller', function() {
     };
 
     var injectServices = function($injector) {
-      $q = $injector.get('$q');
       $compile = $injector.get('$compile');
       $rootScope = $injector.get('$rootScope');
+      $httpBackend = $injector.get('$httpBackend');
+      $timeout = $injector.get('$timeout');
+      /* Keep for future tests
+      $q = $injector.get('$q');
       $window = $injector.get('$window');
       $document = $injector.get('$document');
-      $timeout = $injector.get('$timeout');
-      $httpBackend = $injector.get('$httpBackend');
       $translate = $injector.get('$translate');
       gaMeasure = $injector.get('gaMeasure');
+      */
     };
 
     beforeEach(function() {

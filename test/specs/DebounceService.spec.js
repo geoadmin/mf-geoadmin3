@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 describe('ga_debounce_service', function() {
 
   describe('gaDebounce', function() {

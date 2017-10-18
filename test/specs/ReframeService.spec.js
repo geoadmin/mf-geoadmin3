@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 describe('ga_reframe_service', function() {
   var $rootScope, $httpBackend, $q, gaReframe, lv03tolv95Url, lv95tolv03Url;
 

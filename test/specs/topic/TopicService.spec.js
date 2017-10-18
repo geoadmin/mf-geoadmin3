@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 describe('ga_topic_service', function() {
 
   describe('gaTopic', function() {

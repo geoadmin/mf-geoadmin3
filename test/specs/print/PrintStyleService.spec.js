@@ -1,7 +1,8 @@
+/* eslint-disable max-len */
 describe('ga_printstyle_service', function() {
 
   describe('gaPrintStyle', function() {
-    var gaStylesFromLiterals;
+    var gaPrintStyle;
 
     beforeEach(function() {
       inject(function($injector) {

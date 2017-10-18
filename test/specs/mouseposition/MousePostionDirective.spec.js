@@ -1,9 +1,7 @@
+/* eslint-disable max-len */
 describe('ga_mouseposition_directive', function() {
 
-  var map,
-    element,
-    controller,
-    scope;
+  var map, element, scope;
 
   beforeEach(inject(function($injector, $rootScope, $compile) {
     map = new ol.Map({});
@@ -27,7 +25,7 @@ describe('ga_mouseposition_directive', function() {
   }));
 
   it('has the right elements', function() {
-    expect(element.find('select option').size() == scope.mousePositionProjections.length).to.be(true);
+    expect(element.find('select option').size() === scope.mousePositionProjections.length).to.be(true);
     expect(angular.isDefined(element.find('ol-mouse-position'))).to.be(true);
   });
 
@@ -39,13 +37,13 @@ describe('ga_mouseposition_directive', function() {
         mousepositionControl = c;
       }
     });
-    expect(mousepositionControl.getProjection().getCode() == scope.mousePositionProjections[0].value);
+    expect(mousepositionControl.getProjection().getCode() === scope.mousePositionProjections[0].value);
     // Change the mouseposition projection
     element.find('select').val(1);
     scope.$digest();
-    expect(mousepositionControl.getProjection().getCode() == scope.mousePositionProjections[1].value);
+    expect(mousepositionControl.getProjection().getCode() === scope.mousePositionProjections[1].value);
     element.find('select').val(3);
     scope.$digest();
-    expect(mousepositionControl.getProjection().getCode() == scope.mousePositionProjections[3].value);
+    expect(mousepositionControl.getProjection().getCode() === scope.mousePositionProjections[3].value);
   });
 });

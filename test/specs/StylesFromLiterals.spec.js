@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 describe('ga_stylesfromliterals_service', function() {
 
   describe('gaStylesFromLiterals', function() {
@@ -445,8 +446,8 @@ describe('ga_stylesfromliterals_service', function() {
             '"foo": "bar"' +
           '}}'
       );
-      olStyle = gaStyle.getFeatureStyle(olFeature);
-      olImage = olStyle.getImage();
+      var olStyle = gaStyle.getFeatureStyle(olFeature);
+      var olImage = olStyle.getImage();
       expect(olStyle.getImage()).to.be.an(ol.style.Image);
       expect(olImage.getFill()).to.be.an(ol.style.Fill);
       expect(olImage.getFill().getColor()).to.equal('#FF1FF1');
@@ -695,8 +696,8 @@ describe('ga_stylesfromliterals_service', function() {
             '"foo": 3' +
           '}}'
       );
-      olStyle = gaStyle.getFeatureStyle(olFeature);
-      olImage = olStyle.getImage();
+      var olStyle = gaStyle.getFeatureStyle(olFeature);
+      var olImage = olStyle.getImage();
       expect(olStyle.getImage()).to.be.an(ol.style.Image);
       expect(olImage.getFill()).to.be.an(ol.style.Fill);
       expect(olImage.getFill().getColor()).to.equal('#FF1FF1');

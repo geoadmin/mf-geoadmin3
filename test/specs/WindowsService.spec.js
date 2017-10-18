@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 describe('ga_window_service', function() {
 
   describe('gaWindow', function() {

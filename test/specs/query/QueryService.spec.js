@@ -1,7 +1,8 @@
+/* eslint-disable max-len */
 describe('ga_query_service', function() {
 
   describe('gaQuery', function() {
-    var gaQuery, gaGlobalOptions, $httpBackend, $rootScope, gaLang, $window, $q;
+    var gaQuery, $httpBackend;
     var twoWeeksAgo = window.moment().subtract(2, 'weeks').
         format('YYYY-MM-DD');
     var predefQueriesByLayer = {
@@ -51,12 +52,7 @@ describe('ga_query_service', function() {
 
       inject(function($injector) {
         gaQuery = $injector.get('gaQuery');
-        gaGlobalOptions = $injector.get('gaGlobalOptions');
         $httpBackend = $injector.get('$httpBackend');
-        $rootScope = $injector.get('$rootScope');
-        gaLang = $injector.get('gaLang');
-        $window = $injector.get('$window');
-        $q = $injector.get('$q');
       });
     });
 

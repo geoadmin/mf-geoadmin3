@@ -1,9 +1,9 @@
+/* eslint-disable max-len */
 describe('ga_profilepopup_controller', function() {
-  7;
 
   describe('GaProfilePopupController', function() {
 
-    var scope, parentScope, $compile, $rootScope, $timeout, $httpBackend;
+    var elt, scope, parentScope, $compile, $rootScope, $timeout, $httpBackend;
 
     var loadController = function() {
       parentScope = $rootScope.$new();

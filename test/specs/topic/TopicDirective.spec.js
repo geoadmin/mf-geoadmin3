@@ -1,5 +1,6 @@
+/* eslint-disable max-len */
 describe('ga_topic_directive', function() {
-  var element, $rootScope, $compile, $translate, $translateProvider, $q, topics, def;
+  var element, $rootScope, $compile, $translate, $q, topics, def;
 
   beforeEach(function() {
     topics = [{
@@ -35,7 +36,6 @@ describe('ga_topic_directive', function() {
     });
 
     inject(function($injector) {
-      $httpBackend = $injector.get('$httpBackend');
       $compile = $injector.get('$compile');
       $rootScope = $injector.get('$rootScope');
       $translate = $injector.get('$translate');
@@ -98,7 +98,7 @@ describe('ga_topic_directive', function() {
 
         $rootScope.$broadcast('gaTopicChange', topics[0]);
         $rootScope.$digest();
-        var items = element.find('.ga-topic-item');
+        items = element.find('.ga-topic-item');
         expect(items.length).to.be(3);
         expect($(items[2]).hasClass('ga-topic-active')).to.be(true);
       });

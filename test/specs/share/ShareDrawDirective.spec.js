@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 describe('ga_sharedraw_directive', function() {
   var elt, modal, parentScope, scope, $rootScope, $compile, gaPermalink, gaUrlUtils, $q;
 

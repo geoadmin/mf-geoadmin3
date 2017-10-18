@@ -1,15 +1,12 @@
+/* eslint-disable max-len */
 describe('ngeo.fileService', function() {
 
   describe('ngeoFile', function() {
-    var $httpBackend, ngeoFile, $windowMock, $q, gaUrlUtils;
+    var ngeoFile;
 
     beforeEach(function() {
       inject(function($injector) {
         ngeoFile = $injector.get('ngeoFile');
-        $q = $injector.get('$q');
-        $httpBackend = $injector.get('$httpBackend');
-        $rootScope = $injector.get('$rootScope');
-        gaUrlUtilsMock = sinon.mock($injector.get('gaUrlUtils'));
       });
     });
 

@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 describe('ga_browsersniffer_service', function() {
 
   describe('gaBrowserSniffer', function() {
@@ -41,7 +42,7 @@ describe('ga_browsersniffer_service', function() {
       expect(snif.safari).to.not.be.ok();
       expect(snif.chrome).to.not.be.ok();
 
-      if (version == 9) {
+      if (version === 9) {
         expect(snif.animation).to.not.be.ok();
       } else {
         expect(snif.animation).to.be.ok();

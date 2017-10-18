@@ -1,5 +1,6 @@
+/* eslint-disable max-len */
 describe('ga_shopmsg__directive', function() {
-  var elt, scope, parentScope, $compile, $rootScope, gaStorage, stubGet;
+  var elt, scope, parentScope, $compile, $rootScope, gaStorage, stubGet, $window;
   var KEY = 'ga-shop-msg-never-show-again';
 
   var loadDirective = function() {
@@ -78,7 +79,7 @@ describe('ga_shopmsg__directive', function() {
       expect(stubGet.calledOnce).to.be(true);
       expect(stubGet.calledWith(KEY)).to.be(true);
       expect(scope.neverShowAgain).to.be(false);
-      var input = elt.find('input[ng-model="neverShowAgain"]').click();
+      elt.find('input[ng-model="neverShowAgain"]').click();
       $rootScope.$digest();
       expect(scope.neverShowAgain).to.be(true);
 

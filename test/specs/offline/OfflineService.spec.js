@@ -1,14 +1,15 @@
+/* eslint-disable max-len */
 describe('ga_offline_service', function() {
 
   describe('gaOffline', function() {
     var map;
-    var gaOffline, gaStorageMock, gaLayersMock, $window, gaTileGrid, gaMapUtils, gaMapUtilsMock, gaGlobalOptions, $q, $timeout, $rootScope, gaOfflineMock, $httpBackend;
+    var gaOffline, gaStorageMock, gaLayersMock, $window, gaTileGrid, gaMapUtils, gaMapUtilsMock, gaGlobalOptions, $q, $timeout, $rootScope, $httpBackend;
     var extentKey = 'ga-offline-extent';
     var layersKey = 'ga-offline-layers';
     var opacityKey = 'ga-offline-layers-opacity';
     var timestampKey = 'ga-offline-layers-timestamp';
     var bgKey = 'ga-offline-layers-bg';
-    var promptKey = 'ga-offline-prompt-db';
+    // var promptKey = 'ga-offline-prompt-db';
     var layerBodConfig = {
       timestamps: ['20141231', '20121231']
     };
@@ -41,7 +42,6 @@ describe('ga_offline_service', function() {
         $q = $injector.get('$q');
         $window = $injector.get('$window');
         gaOffline = $injector.get('gaOffline');
-        gaOfflineMock = sinon.mock(gaOffline);
         gaStorageMock = sinon.mock($injector.get('gaStorage'));
         gaLayersMock = sinon.mock($injector.get('gaLayers'));
         gaMapUtils = $injector.get('gaMapUtils');

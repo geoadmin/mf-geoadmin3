@@ -1,7 +1,8 @@
+/* eslint-disable max-len */
 describe('ga_realtimelayers_service', function() {
 
   describe('gaRealtimeLayersManager', function() {
-    var $q, map, gaRealtime, $rootScope, $httpBackend, $timeout, gaLayerFilters, gaMapUtils, gaGlobalOptions, clock, gaLang;
+    var $q, map, gaRealtime, $rootScope, $httpBackend, $timeout, gaDefinePropertiesForLayer, clock, gaLang;
     var dataUrl = 'https://data.geo.admin.ch/some/some_custom.json';
     var jsonData1 = {
       'features': [{
@@ -103,9 +104,6 @@ describe('ga_realtimelayers_service', function() {
         $rootScope = $injector.get('$rootScope');
         $timeout = $injector.get('$timeout');
         $q = $injector.get('$q');
-        gaLayerFilters = $injector.get('gaLayerFilters');
-        gaGlobalOptions = $injector.get('gaGlobalOptions');
-        gaMapUtils = $injector.get('gaMapUtils');
         gaLang = $injector.get('gaLang');
       });
 
@@ -121,7 +119,7 @@ describe('ga_realtimelayers_service', function() {
     });
 
     it('doesn\'t get json data when the layer is added', function() {
-      var layer = addRealtimeLayerToMap('some');
+      addRealtimeLayerToMap('some');
       $httpBackend.verifyNoOutstandingRequest();
       expect(map.getLayers().item(0).getSource().getFeatures().length).to.be(0);
     });
@@ -150,7 +148,7 @@ describe('ga_realtimelayers_service', function() {
       }, layer.updateDelay);
 
       clock.tick(layer.updateDelay);
-      $timeout.flush(); $;
+      $timeout.flush();
       $httpBackend.flush();
     });
 

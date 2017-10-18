@@ -1,7 +1,8 @@
+/* eslint-disable max-len */
 describe('ga_sharecopybt_directive', function() {
 
   describe('gaShareCopyBt', function() {
-    var elt, eltBt, scope, scopeBt, parentScope, $rootScope, compile, ctrl, $timeout;
+    var elt, eltBt, scope, scopeBt, parentScope, $rootScope, $compile, $timeout;
 
     var loadDirective = function() {
       parentScope = $rootScope.$new();
@@ -12,7 +13,6 @@ describe('ga_sharecopybt_directive', function() {
       elt = $compile(tpl)(parentScope);
       $rootScope.$digest();
       scope = elt.isolateScope();
-      ctrl = elt.controller('gaShareCopyInputGroup');
       eltBt = elt.find('[ga-share-copy-bt]');
       scopeBt = eltBt.isolateScope();
     };
