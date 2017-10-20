@@ -552,23 +552,15 @@ describe('ga_map_service', function() {
       'ch.vbs.patrouilledesglaciers-z_rennen': {}
     };
     var terrainTpl = '//3d.geo.admin.ch/1.0.0/{layer}/default/{time}/4326';
-    var todTpl = location.protocol + '//tod{s}.bgdi.ch/1.0.0/{layer}/default/{time}/4326/{z}/{x}/{y}.{format}';
-    var wmtsTpl = '//wmts{s}.geo.admin.ch/1.0.0/{layer}/default/{time}/4326/{z}/{y}/{x}.{format}';
-    var wmtsMpTpl = location.protocol + '//wmts{s}.geo.admin.ch/1.0.0/{layer}/default/{time}/4326/{z}/{x}/{y}.{format}';
+    var wmtsLV03Tpl = '//wmts{s}.geo.admin.ch/1.0.0/{layer}/default/{time}/4326/{z}/{y}/{x}.{format}';
+    var wmtsTpl = '//wmts{s}.geo.admin.ch/1.0.0/{layer}/default/{time}/4326/{z}/{x}/{y}.{format}';
     var vectorTilesTpl = '//vectortiles100.geo.admin.ch/{layer}/{time}/';
     var wmsTpl = '//wms{s}.geo.admin.ch/?layers={layer}&format=image%2F{format}&service=WMS&version=1.3.0&request=GetMap&crs=CRS:84&bbox={westProjected},{southProjected},{eastProjected},{northProjected}&width=512&height=512&styles=';
-    var expectWmtsUrl = function(l, t, f) {
-      if (gaLayers.useToD(l, t)) {
-        return expectUrl(todTpl, l, t, f);
+    var expectWmtsUrl = function(l, t, f, epsg) {
+      if (epsg === '21781') {
+        return expectUrl(wmtsLV03Tpl, l, t, f);
       } else {
         return expectUrl(wmtsTpl, l, t, f);
-      }
-    };
-    var expectWmtsMpUrl = function(l, t, f) {
-      if (gaLayers.useToD(l, t)) {
-        return expectUrl(todTpl, l, t, f);
-      } else {
-        return expectUrl(wmtsMpTpl, l, t, f);
       }
     };
     var expectTerrainUrl = function(l, t, f) {
@@ -936,7 +928,7 @@ describe('ga_map_service', function() {
         // succeed to test it so we test the params we send to the constructor
         // instead.
         var params = spy.args[0][0];
-        expect(params.url).to.eql(expectWmtsUrl('serverlayername3d', '20160201'));
+        expect(params.url).to.eql(expectWmtsUrl('serverlayername3d', '20160201', 'png', '4326'));
         expect(params.subdomains).to.eql(['5', '6', '7', '8', '9']);
         expect(params.minimumLevel).to.eql(window.minimumLevel);
         expect(params.maximumRetrievingLevel).to.eql(window.maximumRetrievingLevel);
@@ -959,26 +951,12 @@ describe('ga_map_service', function() {
         // succeed to test it so we test the params we send to the constructor
         // instead.
         var params = spy.args[0][0];
-        expect(params.url).to.eql(expectWmtsUrl('serverlayername3d', '20160201', 'jpeg'));
+        expect(params.url).to.eql(expectWmtsUrl('serverlayername3d', '20160201', 'jpeg', '4326'));
         expect(params.minimumLevel).to.eql(9);
         expect(params.maximumRetrievingLevel).to.eql(17);
         expect(params.maximumLevel).to.eql(undefined);
         expect(params.hasAlphaChannel).to.eql(false);
         expect(prov.bodId).to.be('wmts3dcustom');
-        spy.restore();
-      });
-
-      it('returns a CesiumImageryProvider from a wmts using mapproxy tiles', function() {
-        var spy = sinon.spy(Cesium, 'UrlTemplateImageryProvider');
-        var prov = gaLayers.getCesiumImageryProviderById('wmtsmapproxy');
-        expect(prov).to.be.an(Cesium.UrlTemplateImageryProvider);
-        // Properties of Cesium object are set in a promise and I don 't
-        // succeed to test it so we test the params we send to the constructor
-        // instead.
-        var params = spy.args[0][0];
-        expect(params.url).to.eql(expectWmtsMpUrl('wmtsmapproxy', '20160201'));
-        expect(params.subdomains).to.eql(['5', '6', '7', '8', '9']);
-        expect(prov.bodId).to.be('wmtsmapproxy');
         spy.restore();
       });
 
@@ -1150,11 +1128,7 @@ describe('ga_map_service', function() {
           expect(source.getProjection().getCode()).to.be('EPSG:21781');
           expect(source.getRequestEncoding()).to.be('REST');
           expect(source.getUrls().length).to.be(5);
-          if (gaLayers.useToD('serverLayerName', '21781')) {
-            expect(source.getUrls()[0]).to.be('http://tod100.bgdi.ch/1.0.0/serverLayerName/default/{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.jpeg');
-          } else {
-            expect(source.getUrls()[0]).to.be('//wmts5.geo.admin.ch/1.0.0/serverLayerName/default/{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.jpeg');
-          }
+          expect(source.getUrls()[0]).to.be('//wmts5.geo.admin.ch/1.0.0/serverLayerName/default/{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.jpeg');
           expect(source.getTileLoadFunction()).to.be.a(Function);
           var tileGrid = source.getTileGrid();
           expect(tileGrid instanceof ol.tilegrid.WMTS).to.be.ok();

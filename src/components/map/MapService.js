@@ -359,13 +359,12 @@ goog.require('ga_urlutils_service');
 
       var geojsonPromises = {}
 
-      var Layers = function(dfltWmsSubdomains, dfltWmtsNativeSubdomains,
-          dfltWmtsMapProxySubdomains, dfltVectorTilesSubdomains,
-          wmsUrlTemplate, wmtsGetTileUrlTemplate,
-          wmtsMapProxyGetTileUrlTemplate, terrainTileUrlTemplate,
-          wmtsToDUrlTemplate, wmtsToD03UrlTemplate, dfltToDSubdomains,
-          vectorTilesUrlTemplate, layersConfigUrlTemplate,
-          legendUrlTemplate, imageryMetadataUrl) {
+      var Layers = function(wmsUrlTemplate, dfltWmsSubdomains,
+          dfltVectorTilesSubdomains,
+          wmtsUrl, wmtsLV03PathTemplate, wmtsPathTemplate, wmtsSubdomains,
+          terrainTileUrlTemplate, vectorTilesUrlTemplate,
+          layersConfigUrlTemplate, legendUrlTemplate,
+          imageryMetadataUrl) {
         var layers;
 
         // Returns a unique WMS template url (e.g. //wms{s}.geo.admin.ch)
@@ -395,32 +394,35 @@ goog.require('ga_urlutils_service');
           });
           return urls;
         };
-        /*
-        var todExcludeLayers = [
-          'ch.swisstopo.swissimage-product',
-          'ch.swisstopo.swissimage',
-          'ch.swisstopo.swisstlm3d-karte-farbe.3d',
-          'ch.swisstopo.swisstlm3d-karte-grau.3d'
-        ];
-*/
-        var useToD = function(layer, tileMatrixSet) {
-          return false;
-          // return todExcludeLayers.indexOf(layer) === -1;
-        }
 
-        var getWmtsGetTileTpl = function(layer, time, tileMatrixSet,
-            format, useNativeTpl) {
+        var getWmtsUrl = function(wmtsUrl, layer) {
+          if (layer === 'ch.swisstopo.swisstlm3d-karte-farbe.3d' ||
+              layer === 'ch.swisstopo.swisstlm3d-karte-grau.3d') {
+            return '//tod{s}.prod.bgdi.ch';
+          }
+          return wmtsUrl;
+        };
+
+        var useLV03Template = function(layer, tileMatrixSet) {
+          if (tileMatrixSet === '21781') {
+            return true;
+          }
+          // 3D swissimage-product and background layers were pre-generated with
+          // LV03 scheme (row/col), which is wrong. With ToD, we will use the
+          // correct scheme (col/row)
+          if (layer === 'ch.swisstopo.swissimage-product' &&
+              tileMatrixSet === '4326') {
+            return true;
+          }
+          return false;
+        };
+
+        var getWmtsGetTileTpl = function(layer, time, tileMatrixSet, format) {
           var tpl;
-          if (useToD(layer, tileMatrixSet)) {
-            if (tileMatrixSet === '21781') {
-              tpl = wmtsToD03UrlTemplate;
-            } else {
-              tpl = wmtsToDUrlTemplate;
-            }
-          } else if (useNativeTpl) {
-            tpl = wmtsGetTileUrlTemplate;
+          if (useLV03Template(layer, tileMatrixSet)) {
+            tpl = getWmtsUrl(wmtsUrl, layer) + wmtsLV03PathTemplate;
           } else {
-            tpl = wmtsMapProxyGetTileUrlTemplate;
+            tpl = getWmtsUrl(wmtsUrl, layer) + wmtsPathTemplate;
           }
           var url = tpl.replace('{Layer}', layer).replace('{Format}', format);
           if (time) {
@@ -499,8 +501,7 @@ goog.require('ga_urlutils_service');
           return $http.get(url, {
             cache: true
           }).then(function(response) {
- console.log(response.data);
-          
+
             // Live modifications for 3d test
             if (response.data) {
               // Test layers opaque setting
@@ -590,7 +591,7 @@ goog.require('ga_urlutils_service');
                   };
                 }
               });
-              if (response.data['ch.swisstopo.swissnames3d_3d'] && 
+              if (response.data['ch.swisstopo.swissnames3d_3d'] &&
                  response.data['ch.swisstopo.swissnames3d']) {
                 response.data['ch.swisstopo.swissnames3d'].config3d =
                     'ch.swisstopo.swissnames3d_3d';
@@ -623,10 +624,6 @@ goog.require('ga_urlutils_service');
         // Load layers configuration with value from permalink
         // gaLang.get() never returns an undefined value on page load.
         var configP = loadLayersConfig(gaLang.get());
-
-        this.useToD = function(layer, tilematrix) {
-          return useToD(layer, tilematrix);
-        }
 
         /**
          * Get the promise of the layers config requets
@@ -719,15 +716,11 @@ goog.require('ga_urlutils_service');
             return providers;
           }
           if (config3d.type === 'wmts') {
-            var hasNativeTiles = !!config.config3d;
             params = {
               url: getWmtsGetTileTpl(requestedLayer, timestamp,
-                  '4326', format, hasNativeTiles),
+                  '4326', format),
               tileSize: 256,
-              subdomains: useToD(requestedLayer, '4326') ?
-                h2(dfltToDSubdomains) :
-                hasNativeTiles ? h2(dfltWmtsNativeSubdomains) :
-                  h2(dfltWmtsMapProxySubdomains)
+              subdomains: h2(wmtsSubdomains)
             };
           } else if (config3d.type === 'wms') {
             var tileSize = 512;
@@ -808,7 +801,6 @@ goog.require('ga_urlutils_service');
          * Return an ol.layer.Layer object for a layer id.
          */
         this.getOlLayerById = function(bodId) {
-          console.log(layers);
           var config = layers[bodId];
           var olLayer;
           var timestamp = this.getLayerTimestampFromYear(bodId, gaTime.get());
@@ -829,7 +821,7 @@ goog.require('ga_urlutils_service');
           if (config.type === 'wmts') {
             if (!olSource) {
               var wmtsTplUrl = getWmtsGetTileTpl(config.serverLayerName, null,
-                  '21781', config.format, true).
+                  '21781', config.format).
                   replace('{z}', '{TileMatrix}').
                   replace('{x}', '{TileCol}').
                   replace('{y}', '{TileRow}');
@@ -848,10 +840,7 @@ goog.require('ga_urlutils_service');
                 tileGrid: gaTileGrid.get(config.resolutions,
                     config.minResolution),
                 tileLoadFunction: tileLoadFunction,
-                urls: getImageryUrls(wmtsTplUrl,
-                    useToD(config.serverLayerName, '21781') ?
-                      h2(dfltToDSubdomains) :
-                      h2(dfltWmtsNativeSubdomains)),
+                urls: getImageryUrls(wmtsTplUrl, h2(wmtsSubdomains)),
                 crossOrigin: crossOrigin,
                 transition: 0
               });
@@ -1124,12 +1113,10 @@ goog.require('ga_urlutils_service');
         };
       };
 
-      return new Layers(this.dfltWmsSubdomains, this.dfltWmtsNativeSubdomains,
-          this.dfltWmtsMapProxySubdomains, this.dfltVectorTilesSubdomains,
-          this.wmsUrlTemplate, this.wmtsGetTileUrlTemplate,
-          this.wmtsMapProxyGetTileUrlTemplate, this.terrainTileUrlTemplate,
-          this.wmtsToDUrlTemplate, this.wmtsToD03UrlTemplate,
-          this.dfltToDSubdomains,
+      return new Layers(this.wmsUrlTemplate, this.dfltWmsSubdomains,
+          this.dfltVectorTilesSubdomains,
+          this.wmtsUrl, this.wmtsLV03PathTemplate, this.wmtsPathTemplate,
+          this.wmtsSubdomains, this.terrainTileUrlTemplate,
           this.vectorTilesUrlTemplate, this.layersConfigUrlTemplate,
           this.legendUrlTemplate, this.imageryMetadataUrl);
     };

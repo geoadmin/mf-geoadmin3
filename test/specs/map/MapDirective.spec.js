@@ -55,7 +55,7 @@ describe('ga_map_directive', function() {
       $httpBackend.expectGET(expectedUrl).respond(dfltLayersConfig);
       loadDirective();
       $httpBackend.flush();
-       $httpBackend.verifyNoOutstandingExpectation();
+      $httpBackend.verifyNoOutstandingExpectation();
       $httpBackend.verifyNoOutstandingRequest();
       layer = gaLayers.getOlLayerById('foo');
       map.addLayer(layer);
