@@ -739,8 +739,6 @@ itemscope itemtype="http://schema.org/WebApplication"
           var url = prodUrl;
           if (env && env != 'prod' && supportedEnv.indexOf(env) !== -1) {
             url = techUrl + env + '${tech_suffix}';
-          } else if (staging != 'prod' && !userEnvRegexp.test(prodUrl)) {
-            url = techUrl + staging + '${tech_suffix}';
           }
           var overwrite = prtl + getParam(overwriteParam);
           url = adminUrlRegexp.test(overwrite) ? overwrite : url;

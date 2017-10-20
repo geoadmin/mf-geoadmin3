@@ -142,31 +142,25 @@ goog.require('ga_waitcursor_service');
 
   module.config(function(gaLayersProvider, gaGlobalOptions) {
     gaLayersProvider.dfltWmsSubdomains = ['', '0', '1', '2', '3', '4'];
-    gaLayersProvider.dfltWmtsNativeSubdomains = ['100', '101', '102', '103',
-      '104', '105', '106', '107', '108', '109'];
-    gaLayersProvider.dfltWmtsMapProxySubdomains =
-      gaGlobalOptions.staging === 'prod' ?
-        ['100', '101', '102', '103', '104', '105', '106', '107', '108', '109'] :
-        ['20', '21', '22', '23', '24'];
-    gaLayersProvider.dfltVectorTilesSubdomains =
-      gaGlobalOptions.staging === 'prod' ?
-        ['100', '101', '102', '103', '104'] :
-        ['', '0', '1', '2', '3', '4'];
     gaLayersProvider.wmsUrlTemplate = '//wms{s}.geo.admin.ch/';
-    gaLayersProvider.wmtsGetTileUrlTemplate = '//wmts{s}.geo.admin.ch/1.0.0/' +
-        '{Layer}/default/{Time}/{TileMatrixSet}/{z}/{y}/{x}.{Format}';
-    gaLayersProvider.wmtsMapProxyGetTileUrlTemplate =
-        gaGlobalOptions.mapproxyUrl +
-        '/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{x}/{y}.{Format}';
-    gaLayersProvider.wmtsToDUrlTemplate = gaGlobalOptions.wmtsUrl +
-        '/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{x}/{y}.{Format}';
-    gaLayersProvider.wmtsToD03UrlTemplate = gaGlobalOptions.wmtsUrl +
+
+    gaLayersProvider.wmtsSubdomains =
+        ['100', '101', '102', '103', '104'];
+    gaLayersProvider.wmtsUrl = gaGlobalOptions.wmtsUrl;
+    gaLayersProvider.wmtsLV03PathTemplate =
         '/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{y}/{x}.{Format}';
-    gaLayersProvider.dfltToDSubdomains = ['100', '101', '102', '103', '104'];
+    gaLayersProvider.wmtsPathTemplate =
+        '/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{x}/{y}.{Format}';
+
     gaLayersProvider.terrainTileUrlTemplate =
         '//terrain100.geo.admin.ch/1.0.0/{Layer}/default/{Time}/4326';
     gaLayersProvider.vectorTilesUrlTemplate = gaGlobalOptions.vectorTilesUrl +
         '/{Layer}/{Time}/';
+    gaLayersProvider.dfltVectorTilesSubdomains =
+      gaGlobalOptions.staging === 'prod' ?
+        ['100', '101', '102', '103', '104'] :
+        ['', '0', '1', '2', '3', '4'];
+
     gaLayersProvider.imageryMetadataUrl = '//3d.geo.admin.ch/imagery/';
     if (gaGlobalOptions.apiOverwrite) {
       gaLayersProvider.layersConfigUrlTemplate = gaGlobalOptions.apiUrl +
