@@ -52,9 +52,11 @@ describe('ga_map_directive', function() {
       });
 
       $rootScope.map = map;
-      $httpBackend.whenGET(expectedUrl).respond(dfltLayersConfig);
+      $httpBackend.expectGET(expectedUrl).respond(dfltLayersConfig);
       loadDirective();
       $httpBackend.flush();
+       $httpBackend.verifyNoOutstandingExpectation();
+      $httpBackend.verifyNoOutstandingRequest();
       layer = gaLayers.getOlLayerById('foo');
       map.addLayer(layer);
     });

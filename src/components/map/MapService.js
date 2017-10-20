@@ -499,7 +499,8 @@ goog.require('ga_urlutils_service');
           return $http.get(url, {
             cache: true
           }).then(function(response) {
-
+ console.log(response.data);
+          
             // Live modifications for 3d test
             if (response.data) {
               // Test layers opaque setting
@@ -553,12 +554,18 @@ goog.require('ga_urlutils_service');
 
               // 3D Tileset
               var tileset3d = [
-                'ch.swisstopo.swisstlm3d.3d'
+                'ch.swisstopo.swisstlm3d.3d',
+                'ch.swisstopo.swissnames3d.3d',
+                'ch.swisstopo.vegetation.3d'
               ];
               var tilesetTs = [
-                '20161217'
+                '20170425',
+                '20170814',
+                '20170630'
               ];
               var tilesetStyle = [
+                undefined,
+                'labelEnhanced',
                 undefined
               ];
 
@@ -583,8 +590,8 @@ goog.require('ga_urlutils_service');
                   };
                 }
               });
-
-              if (response.data['ch.swisstopo.swissnames3d_3d']) {
+              if (response.data['ch.swisstopo.swissnames3d_3d'] && 
+                 response.data['ch.swisstopo.swissnames3d']) {
                 response.data['ch.swisstopo.swissnames3d'].config3d =
                     'ch.swisstopo.swissnames3d_3d';
               }
@@ -801,6 +808,7 @@ goog.require('ga_urlutils_service');
          * Return an ol.layer.Layer object for a layer id.
          */
         this.getOlLayerById = function(bodId) {
+          console.log(layers);
           var config = layers[bodId];
           var olLayer;
           var timestamp = this.getLayerTimestampFromYear(bodId, gaTime.get());
