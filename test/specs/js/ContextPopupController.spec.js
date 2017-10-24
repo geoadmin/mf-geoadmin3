@@ -38,7 +38,7 @@ describe('ga_contextpopup_controller', function() {
     });
 
     it('set scope values', function() {
-      expect(scope.options.heightUrl).to.be('http://api3.geo.admin.ch/rest/services/height');
+      expect(scope.options.heightUrl).to.be('http://alti.geo.admin.ch/rest/services/height');
       expect(scope.options.qrcodeUrl).to.be('http://api3.geo.admin.ch/qrcodegenerator');
     });
   });

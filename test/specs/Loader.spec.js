@@ -8,7 +8,7 @@ beforeEach(function() {
     var version = '123456';
     var versionSlashed = version + '/';
     var apiUrl = '//api3.geo.admin.ch';
-    var altiUrl = '//api3.geo.admin.ch';
+    var altiUrl = '//alti.geo.admin.ch';
     var publicUrl = '//public.geo.admin.ch';
     var printUrl = '//print.geo.admin.ch';
     var proxyUrl = '//proxy.geo.admin.ch';

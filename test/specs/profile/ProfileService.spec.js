@@ -52,7 +52,7 @@ describe('ga_profile_service', function() {
   });
 
   describe('gaProfile', function() {
-    var profileUrl = 'http://api3.geo.admin.ch/rest/services/profile.json';
+    var profileUrl = 'http://alti.geo.admin.ch/rest/services/profile.json';
     var goodCoords = [[0, 0], [1, 0], [1, 1]];
     var goodResult = [
       {dist: 0.0, alts: {COMB: 429.8}, easting: 592000.0, northing: 221750.0, domainDist: 0},
