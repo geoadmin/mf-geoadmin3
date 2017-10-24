@@ -245,6 +245,8 @@ Add `env=(dev|int|prod)`
 
 Add `api_url=//theNameOfAnAPIServer`
 
+Add `alti_url=//theNameOfAnAltiServer`
+
 Add `wms_url=//theNameOfAWMSServer`
 
 Add `print_url=//theNameOfAPrintServer`

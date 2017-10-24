@@ -747,6 +747,7 @@ itemscope itemtype="http://schema.org/WebApplication"
 
         var defaultApiUrl = prtl + '${api_url}';
         var apiUrl = setBackend(defaultApiUrl, prtl + '${api_tech_url}', 'api_url');
+        var altiUrl = setBackend(prtl + '${alti_url}', prtl + '${alti_tech_url}', 'alti_url');
         var mapproxyUrl = setBackend(prtl + '${mapproxy_url}', prtl + '${mapproxy_tech_url}', 'mapproxy_url');
         var vectorTilesUrl = setBackend(prtl + '${vectortiles_url}', prtl + '${vectortiles_tech_url}', 'vectortiles_url');
         var wmsUrl = setBackend(prtl + '${wms_url}',  prtl + '${wms_tech_url}', 'wms_url');
@@ -765,6 +766,7 @@ itemscope itemtype="http://schema.org/WebApplication"
           pegman: !!window.location.search.match(/(pegman=true)/),
           mapUrl: location.origin + pathname,
           apiUrl: apiUrl,
+          altiUrl: altiUrl,
           printUrl: printUrl,
           proxyUrl: proxyUrl,
           mapproxyUrl: mapproxyUrl,
@@ -774,6 +776,7 @@ itemscope itemtype="http://schema.org/WebApplication"
           publicUrlRegexp: new RegExp('${public_url_regexp}'),
           adminUrlRegexp: adminUrlRegexp,
           cachedApiUrl: apiUrl + cacheAdd,
+          cachedAltiUrl: altiUrl + cacheAdd,
           wmtsUrl: wmtsUrl,
           cachedPrintUrl: printUrl + cacheAdd,
           resourceUrl: location.origin + s3pathname + '${versionslashed}',

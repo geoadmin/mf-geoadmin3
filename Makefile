@@ -30,6 +30,9 @@ TECH_SUFFIX = .bgdi.ch
 API_URL ?= //api3.geo.admin.ch
 API_TECH_URL ?= //mf-chsdi3.
 LAST_API_URL := $(call lastvalue,api-url)
+ALTI_URL ?= //api3.geo.admin.ch
+LAST_ALTI_URL := $(call lastvalue,alti-url) 
+ALTI_TECH_URL ?= //mf-chsdi3.
 MAPPROXY_URL ?= //wmts{s}.geo.admin.ch
 MAPPROXY_TECH_URL ?= //wmts{s}.
 LAST_MAPPROXY_URL := $(call lastvalue,mapproxy-url)
@@ -165,6 +168,7 @@ help:
 	@echo "Variables:"
 	@echo
 	@echo "- API_URL Service URL         (build with: $(LAST_API_URL), current value: $(API_URL))"
+	@echo "- ALTI_URL Alti service URL   (build with: $(LAST_ALTI_URL), current value: $(ALTI_URL))"
 	@echo "- PRINT_URL Print service URL (build with: $(LAST_PRINT_URL), current value: $(PRINT_URL))"
 	@echo "- MAPPROXY_URL Service URL    (build with: $(LAST_MAPPROXY_URL), current value: $(MAPPROXY_URL))"
 	@echo "- VECTORTILES_URL Service URL (build with: $(LAST_VECTORTILES_URL), current value: $(VECTORTILES_URL))"
@@ -514,6 +518,8 @@ define buildpage
 		--var "tech_suffix=$(TECH_SUFFIX)" \
 		--var "api_url=$(API_URL)" \
 		--var "api_tech_url=$(API_TECH_URL)" \
+		--var "alti_url=$(ALTI_URL)" \
+		--var "alti_tech_url=$(ALTI_TECH_URL)" \
 		--var "print_url=$(PRINT_URL)" \
 		--var "print_tech_url=$(PRINT_TECH_URL)" \
 		--var "proxy_url=$(PROXY_URL)" \
@@ -568,6 +574,7 @@ endef
 prd/index.html: src/index.mako.html \
 	    ${MAKO_CMD} \
 	    .build-artefacts/last-api-url \
+	    .build-artefacts/last-alti-url \
 	    .build-artefacts/last-mapproxy-url \
 	    .build-artefacts/last-vectortiles-url \
 	    .build-artefacts/last-shop-url \
@@ -585,6 +592,7 @@ prd/index.html: src/index.mako.html \
 prd/mobile.html: src/index.mako.html \
 	    ${MAKO_CMD} \
 	    .build-artefacts/last-api-url \
+	    .build-artefacts/last-alti-url \
 	    .build-artefacts/last-mapproxy-url \
 	    .build-artefacts/last-vectortiles-url \
 	    .build-artefacts/last-shop-url \
@@ -602,6 +610,7 @@ prd/mobile.html: src/index.mako.html \
 prd/embed.html: src/index.mako.html \
 	    ${MAKO_CMD} \
 	    .build-artefacts/last-api-url \
+	    .build-artefacts/last-alti-url \
 	    .build-artefacts/last-mapproxy-url \
 	    .build-artefacts/last-shop-url \
 	    .build-artefacts/last-wms-url \
@@ -650,6 +659,7 @@ src/style/app.css: $(SRC_LESS_FILES)
 src/index.html: src/index.mako.html \
 	    ${MAKO_CMD} \
 	    .build-artefacts/last-api-url \
+	    .build-artefacts/last-alti-url \
 	    .build-artefacts/last-mapproxy-url \
 	    .build-artefacts/last-vectortiles-url \
 	    .build-artefacts/last-shop-url \
@@ -663,6 +673,7 @@ src/index.html: src/index.mako.html \
 src/mobile.html: src/index.mako.html \
 	    ${MAKO_CMD} \
 	    .build-artefacts/last-api-url \
+	    .build-artefacts/last-alti-url \
 	    .build-artefacts/last-mapproxy-url \
 	    .build-artefacts/last-vectortiles-url \
 	    .build-artefacts/last-shop-url \
@@ -677,6 +688,7 @@ src/mobile.html: src/index.mako.html \
 src/embed.html: src/index.mako.html \
 	    ${MAKO_CMD} \
 	    .build-artefacts/last-api-url \
+	    .build-artefacts/last-alti-url \
 	    .build-artefacts/last-mapproxy-url \
 	    .build-artefacts/last-vectortiles-url \
 	    .build-artefacts/last-shop-url \
@@ -809,6 +821,9 @@ ${PYTHON_VENV}:
 
 .build-artefacts/last-api-url::
 	$(call cachelastvariable,$@,$(API_URL),$(LAST_API_URL),api-url)
+
+.build-artefacts/last-alti-url::
+	$(call cachelastvariable,$@,$(ALTI_URL),$(LAST_ALTI_URL),alti-url)
 
 .build-artefacts/last-mapproxy-url::
 	$(call cachelastvariable,$@,$(MAPPROXY_URL),$(LAST_MAPPROXY_URL),mapproxy-url)
