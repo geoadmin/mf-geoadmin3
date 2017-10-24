@@ -198,7 +198,7 @@ goog.require('ga_waitcursor_service');
   module.config(function(gaProfileProvider, gaGlobalOptions) {
     gaProfileProvider.d3libUrl = gaGlobalOptions.resourceUrl +
         'lib/d3.min.js';
-    gaProfileProvider.profileUrl = gaGlobalOptions.apiUrl +
+    gaProfileProvider.profileUrl = gaGlobalOptions.altiUrl +
         '/rest/services/profile.json';
   });
 

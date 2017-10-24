@@ -1239,7 +1239,7 @@ goog.require('ga_urlutils_service');
             center = ol.extent.getCenter(extent);
           }
 
-          return $http.get(gaGlobalOptions.apiUrl + '/rest/services/height', {
+          return $http.get(gaGlobalOptions.altiUrl + '/rest/services/height', {
             params: {
               easting: center[0],
               northing: center[1]
