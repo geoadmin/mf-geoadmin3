@@ -53,7 +53,7 @@ PRINT_TECH_URL ?= //service-print.
 LAST_PRINT_URL := $(call lastvalue,print-url)
 PROXY_URL ?= //service-proxy.prod.bgdi.ch
 LAST_PROXY_URL := $(call lastvalue,proxy-url)
-WMTS_URL ?= tod.dev.bgdi.ch
+WMTS_URL ?= //tod.dev.bgdi.ch
 WMTS_TECH_URL ?= //tod.
 LAST_WMTS_URL ?= $(call lastvalue,wmts-url)
 
