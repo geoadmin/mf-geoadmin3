@@ -322,7 +322,6 @@ itemscope itemtype="http://schema.org/WebApplication"
           </div>
         </div> <!-- .panel -->
 
-  % if device == 'desktop':
         <!-- Print -->
         <div class="panel" ng-show="!globals.is3dActive">
           <a id="printHeading" class="panel-heading accordion-toggle collapsed"
@@ -395,7 +394,6 @@ itemscope itemtype="http://schema.org/WebApplication"
             </div>
           </div>
         </div> <!-- .panel -->
-  % endif
 
         <!-- Catalog -->
         <div class="panel" ng-hide="globals.isDrawActive">
@@ -603,14 +601,12 @@ itemscope itemtype="http://schema.org/WebApplication"
       </div>
     </div><!-- end Feature Tree -->
 
-  % if device == 'desktop':
     <div ng-controller="GaImportController">
       <div ng-if="::supportDnd"
            ngeo-import-dnd
            ngeo-import-dnd-options="::options">
       </div>
     </div>
-  % endif
 
     <div ng-if="globals.homescreen" class="popover homescreen"
          ng-class="{
