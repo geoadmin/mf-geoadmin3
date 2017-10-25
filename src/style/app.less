@@ -1081,8 +1081,12 @@ a .ga-icon-separator {
   
   .popover-content { /*Only for typeahead*/
     overflow: visible;
+
+    @media (max-width: @screen-phone) {
+      max-height: 440px;
+    }
   }
-  
+
   @media (max-width: @screen-tablet) {
     max-width: 480px;
   }
