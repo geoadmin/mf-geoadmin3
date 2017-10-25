@@ -1562,7 +1562,11 @@ body.webkit .ga-checkbox {
 
 .bt-bottom-mixin(){
   position: absolute;
-  bottom: 0;
+  bottom: 68px;
+
+  @media (max-width: @screen-tablet) {
+    bottom: 0px;
+  }
 }
 
 #buttonGroup {
@@ -1599,12 +1603,7 @@ body.webkit .ga-checkbox {
   }
 
   [ga-offline-bt] {
-    position: absolute;
-    bottom: 68px;
-
-    @media (max-width: @screen-tablet) {
-      bottom: 0px;
-    }
+    .bt-bottom-mixin()
   }
 
   #zoomButtons {
