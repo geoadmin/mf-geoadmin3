@@ -314,10 +314,10 @@ itemscope itemtype="http://schema.org/WebApplication"
         </div> <!-- .panel -->
 
         <!-- Print -->
-        <div class="panel" ng-show="!globals.is3dActive">
+        <div class="panel" ng-show="!globals.is3dActive" ng-if="globals.printShown">
           <a id="printHeading" class="panel-heading accordion-toggle collapsed"
              data-toggle="collapse" data-parent="#pulldown-content" href="#print"
-             ga-collapsible-show="globals.printShown">
+             ga-collapsible-show="globals.isPrintActive">
             <i class="fa fa-caret-down"></i>
             <span translate>print</span>
           </a>
@@ -326,13 +326,13 @@ itemscope itemtype="http://schema.org/WebApplication"
               <div ga-print
                    ga-print-map="map"
                    ga-print-options="options"
-                   ga-print-active="globals.printShown"></div>
+                   ga-print-active="globals.isPrintActive"></div>
             </div>
           </div>
         </div>  <!-- .panel -->
 
         <!-- Draw -->
-        <div class="panel" ng-show="!globals.is3dActive">
+        <div class="panel" ng-show="!globals.is3dActive" ng-if="globals.drawShown">
           <a id="drawHeading" class="panel-heading accordion-toggle collapsed"
              data-toggle="collapse" data-parent="#pulldown-content" href="#draw"
              ga-collapsible-show="globals.isDrawActive" accesskey="r">
@@ -374,7 +374,7 @@ itemscope itemtype="http://schema.org/WebApplication"
                     <span ng-class="{'selected': globals.isSwipeActive}" translate>swipe</span>
                   </a>
                 </li>
-                <li ng-show="!globals.is3dActive"><!-- Feature Tree -->
+                <li ng-show="!globals.is3dActive" ng-if="globals.queryShown"><!-- Feature Tree -->
                   <a href="" accesskey="s"
                      ng-click="globals.isFeatureTreeActive = !globals.isFeatureTreeActive"
                      translate-attr="{title: 'featuretree_tooltip'}">
