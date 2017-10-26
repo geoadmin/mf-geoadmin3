@@ -182,13 +182,13 @@ describe('ga_main_controller', function() {
             $(window).trigger('resize');
             $rootScope.$digest();
             expect(g.catalogShown).to.be(false);
-            expect(spy.callCount).to.be(3);
+            expect(spy.callCount).to.be(1);
 
             g.catalogShown = true;
             $(window).trigger('resize');
             $rootScope.$digest();
             expect(g.catalogShown).to.be(true);
-            expect(spy.callCount).to.be(3);
+            expect(spy.callCount).to.be(1);
           });
         });
 
@@ -203,7 +203,7 @@ describe('ga_main_controller', function() {
             $(window).trigger('resize');
             $rootScope.$digest();
             expect(g.catalogShown).to.be(false);
-            expect(spy.callCount).to.be(3);
+            expect(spy.callCount).to.be(1);
           });
 
           it('hide catalog', function() {
@@ -211,7 +211,7 @@ describe('ga_main_controller', function() {
             $(window).trigger('resize');
             $rootScope.$digest();
             expect(g.catalogShown).to.be(false);
-            expect(spy.callCount).to.be(4);
+            expect(spy.callCount).to.be(2);
           });
         });
       });
@@ -241,7 +241,7 @@ describe('ga_main_controller', function() {
             $(window).trigger('resize');
             $rootScope.$digest();
             expect(g.isShareActive).to.be(false);
-            expect(spy.callCount).to.be(2);
+            expect(spy.callCount).to.be(1);
           });
 
           it('does nothing', function() {
@@ -249,7 +249,7 @@ describe('ga_main_controller', function() {
             $(window).trigger('resize');
             $rootScope.$digest();
             expect(g.isShareActive).to.be(true);
-            expect(spy.callCount).to.be(2);
+            expect(spy.callCount).to.be(1);
           });
         });
 
@@ -297,7 +297,7 @@ describe('ga_main_controller', function() {
             $(window).trigger('resize');
             $rootScope.$digest();
             expect(g.settingsShown).to.be(false);
-            expect(spy.callCount).to.be(3);
+            expect(spy.callCount).to.be(1);
           });
 
           it('hide the panel', function() {
@@ -305,7 +305,7 @@ describe('ga_main_controller', function() {
             $(window).trigger('resize');
             $rootScope.$digest();
             expect(g.settingsShown).to.be(false);
-            expect(spy.callCount).to.be(4);
+            expect(spy.callCount).to.be(2);
           });
         });
 
@@ -394,7 +394,7 @@ describe('ga_main_controller', function() {
             $rootScope.$digest();
             expect(g.printShown).to.be(false);
             expect(g.isPrintActive).to.be(false);
-            expect(spy.callCount).to.be(2);
+            expect(spy.callCount).to.be(1);
           });
 
           it('deactivates the print', function() {
