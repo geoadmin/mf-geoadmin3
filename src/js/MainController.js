@@ -272,7 +272,7 @@ goog.require('ga_window_service');
         $scope.globals.pulldownShown = gaWindow.isWidth('>s') &&
              gaWindow.isHeight('>s');
         $scope.globals.settingsShown = gaWindow.isWidth('<=m');
-        $scope.globals.printShown = gaWindow.isWidth('xs');
+        $scope.globals.printShown = !gaWindow.isWidth('xs');
         $scope.globals.queryShown = gaWindow.isWidth('>m');
       });
     });
