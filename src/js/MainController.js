@@ -257,7 +257,6 @@ goog.require('ga_window_service');
       selectionShown: false,
       feedbackPopupShown: false,
       settingsShown: false,
-      drawShown: false,
       printShown: false,
       queryShown: false,
       isShareActive: false,
@@ -389,17 +388,6 @@ goog.require('ga_window_service');
          (gaWindow.isWidth('>m') && $scope.globals.settingsShown)) {
         $scope.$applyAsync(function() {
           $scope.globals.settingsShown = !$scope.globals.settingsShown;
-        });
-      }
-
-      // Display draw panel
-      if ((gaWindow.isWidth('xs') && $scope.globals.drawShown) ||
-         (!gaWindow.isWidth('xs') && !$scope.globals.drawShown)) {
-        $scope.$applyAsync(function() {
-          $scope.globals.drawShown = !$scope.globals.drawShown;
-          if (!$scope.globals.drawShown) {
-            $scope.globals.isDrawActive = false;
-          }
         });
       }
 

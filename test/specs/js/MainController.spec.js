@@ -87,7 +87,6 @@ describe('ga_main_controller', function() {
         expect(g.selectionShown).to.be(false);
         expect(g.feedbackPopupShown).to.be(false);
         expect(g.settingsShown).to.be(false);
-        expect(g.drawShown).to.be(false);
         expect(g.printShown).to.be(false);
         expect(g.isShareActive).to.be(false);
         expect(g.isDrawActive).to.be(false);
@@ -332,81 +331,6 @@ describe('ga_main_controller', function() {
             $rootScope.$digest();
             expect(g.settingsShown).to.be(true);
             expect(spy.callCount).to.be(2);
-          });
-        });
-      });
-
-      describe('show/hide draw panel on resize', function() {
-        var stub, spy, g;
-
-        beforeEach(function() {
-          loadController();
-          g = scope.globals;
-          stub = sinon.stub(gaWindow, 'isWidth').withArgs('xs');
-          spy = sinon.spy(scope, '$applyAsync');
-        });
-
-        afterEach(function() {
-          spy.reset();
-        });
-
-        describe('when isWidth(\'xs\') returns false', function() {
-
-          beforeEach(function() {
-            stub.returns(false);
-          });
-
-          it('show the panel', function() {
-            expect(g.drawShown).to.be(false);
-            $(window).trigger('resize');
-            $rootScope.$digest();
-            expect(g.drawShown).to.be(true);
-            expect(g.isDrawActive).to.be(false);
-            expect(spy.callCount).to.be(2);
-          });
-
-          it('does nothing', function() {
-            g.drawShown = true;
-            $(window).trigger('resize');
-            $rootScope.$digest();
-            expect(g.drawShown).to.be(true);
-            expect(g.isDrawActive).to.be(false);
-            expect(spy.callCount).to.be(1);
-          });
-        });
-
-        describe('when isWidth(\'xs\') returns true', function() {
-
-          beforeEach(function() {
-            stub.withArgs('xs').returns(true);
-          });
-
-          it('does nothing', function() {
-            expect(g.drawShown).to.be(false);
-            $(window).trigger('resize');
-            $rootScope.$digest();
-            expect(g.drawShown).to.be(false);
-            expect(g.isDrawActive).to.be(false);
-            expect(spy.callCount).to.be(1);
-          });
-
-          it('hide the panel', function() {
-            g.drawShown = true;
-            $(window).trigger('resize');
-            $rootScope.$digest();
-            expect(g.drawShown).to.be(false);
-            expect(g.isDrawActive).to.be(false);
-            expect(spy.callCount).to.be(2);
-          });
-
-          it('deactivates the draw', function() {
-            g.drawShown = true;
-            g.isDrawActive = true;
-            $(window).trigger('resize');
-            $rootScope.$digest();
-            expect(g.drawShown).to.be(false);
-            expect(g.isDrawActive).to.be(false);
-            expect(spy.callCount).to.be(1);
           });
         });
       });
