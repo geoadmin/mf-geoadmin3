@@ -395,14 +395,6 @@ goog.require('ga_urlutils_service');
           return urls;
         };
 
-        var getWmtsUrl = function(wmtsUrl, layer) {
-          if (layer === 'ch.swisstopo.swisstlm3d-karte-farbe.3d' ||
-              layer === 'ch.swisstopo.swisstlm3d-karte-grau.3d') {
-            return '//tod{s}.prod.bgdi.ch';
-          }
-          return wmtsUrl;
-        };
-
         var useLV03Template = function(layer, tileMatrixSet) {
           if (tileMatrixSet === '21781') {
             return true;
@@ -420,9 +412,9 @@ goog.require('ga_urlutils_service');
         var getWmtsGetTileTpl = function(layer, time, tileMatrixSet, format) {
           var tpl;
           if (useLV03Template(layer, tileMatrixSet)) {
-            tpl = getWmtsUrl(wmtsUrl, layer) + wmtsLV03PathTemplate;
+            tpl = wmtsUrl + wmtsLV03PathTemplate;
           } else {
-            tpl = getWmtsUrl(wmtsUrl, layer) + wmtsPathTemplate;
+            tpl = wmtsUrl + wmtsPathTemplate;
           }
           var url = tpl.replace('{Layer}', layer).replace('{Format}', format);
           if (time) {
