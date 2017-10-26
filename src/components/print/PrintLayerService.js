@@ -15,7 +15,7 @@ goog.require('ga_urlutils_service');
 
   module.provider('gaPrintLayer', function() {
 
-    this.$get = function($document, $translate, gaGlobalOptions,
+    this.$get = function($document, $translate,
         gaLayers, gaTime, gaLang, gaPrintStyle, gaMapUtils,
         gaUrlUtils) {
 
@@ -24,14 +24,14 @@ goog.require('ga_urlutils_service');
         encodeMatrixIds: getMatrixIds(gaMapUtils),
         encodeBase: encodeBase,
         encodeGroup: getEncodeGroup(gaLayers, gaPrintStyle,
-            gaTime, gaMapUtils, gaGlobalOptions),
+            gaTime, gaMapUtils),
         encodeWMS: encodeWMS,
         encodeDimensions: encodeDimensions,
-        encodeWMTS: getEncodeWMTS(gaTime, gaMapUtils, gaGlobalOptions),
+        encodeWMTS: getEncodeWMTS(gaTime, gaMapUtils),
         encodeFeatures: getEncodeFeatures(gaPrintStyle),
         encodeVector: getEncodeVector(gaPrintStyle),
         encodeLayer: getEncodeLayer(gaLayers, gaPrintStyle,
-            gaTime, gaMapUtils, gaGlobalOptions),
+            gaTime, gaMapUtils),
         encodeOverlay: getEncodeOverlay(gaUrlUtils),
         encodeGraticule: encodeGraticule
       };
@@ -139,7 +139,7 @@ goog.require('ga_urlutils_service');
   };
 
   function getEncodeGroup(gaLayers, gaPrintStyle, gaTime,
-      gaMapUtils, gaGlobalOptions) {
+      gaMapUtils) {
     return function(layer, viewProj, scaleDenom, printRectangeCoords,
         resolution, dpi) {
       var encs = [];
@@ -149,7 +149,7 @@ goog.require('ga_urlutils_service');
           // Is sublayer always not a Group?
           var enc = encodeBase(layer);
           var encodeLayer = getEncodeLayer(gaLayers, gaPrintStyle,
-              gaTime, gaMapUtils, gaGlobalOptions);
+              gaTime, gaMapUtils);
           var layerEnc = encodeLayer(subLayer, viewProj, scaleDenom,
               printRectangeCoords, resolution, dpi);
           if (layerEnc && layerEnc.layer) {
@@ -162,8 +162,7 @@ goog.require('ga_urlutils_service');
     };
   };
 
-  function getEncodeLayer(gaLayers, gaPrintStyle, gaTime, gaMapUtils,
-      gaGlobalOptions) {
+  function getEncodeLayer(gaLayers, gaPrintStyle, gaTime, gaMapUtils) {
     return function(layer, viewProj, scaleDenom, printRectangeCoords,
         resolution, dpi) {
 
@@ -179,7 +178,7 @@ goog.require('ga_urlutils_service');
         if (resolution <= maxResolution &&
             resolution >= minResolution) {
           if (src instanceof ol.source.WMTS) {
-            var encodeWMTS = getEncodeWMTS(gaTime, gaMapUtils, gaGlobalOptions);
+            var encodeWMTS = getEncodeWMTS(gaTime, gaMapUtils);
             encLayer = encodeWMTS(layer, layerConfig);
           } else if (src instanceof ol.source.ImageWMS ||
               src instanceof ol.source.TileWMS) {
@@ -384,7 +383,7 @@ goog.require('ga_urlutils_service');
     }
   };
 
-  function getEncodeWMTS(gaTime, gaMapUtils, gaGlobalOptions) {
+  function getEncodeWMTS(gaTime, gaMapUtils) {
     return function(layer, config) {
       // config is not defined for external WMTS
       // For internal WMTS layer, we use the simplified
