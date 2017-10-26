@@ -406,7 +406,7 @@ goog.require('ga_urlutils_service');
         baseUrl = baseUrl.
             replace(/\{Time\}/i, '{TIME}').
             replace(/\{/g, '%7B').
-            replace(/\}/g, '%7D')
+            replace(/\}/g, '%7D');
       }
 
       var wmtsDimensions = encodeDimensions(source.getDimensions());
