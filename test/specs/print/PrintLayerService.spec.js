@@ -5,8 +5,8 @@ describe('ga_printlayer_service', function() {
 
     var $translate, gaPrintLayer;
 
-    var extent = [420000, 30000, 900000, 350000];
-    var center = [600000, 200000];
+    var extent = [2420000, 1030000, 2900000, 1350000];
+    var center = [2600000, 1200000];
 
     beforeEach(function() {
       module(function($provide) {
@@ -173,9 +173,15 @@ describe('ga_printlayer_service', function() {
 
     describe('#encodeWMS()', function() {
 
+      var proj = new ol.proj.Projection({
+        code: 'EPSG:2056',
+        units: 'm',
+        extent: extent
+      });
+
       var options = {
         url: 'https://wms.geo.admin.ch/?',
-        projection: 'EPSG:21781',
+        projection: proj,
         ratio: 1,
         params: {
           LAYERS: 'ch.swisstopo.fixpunkte-agnes'
@@ -183,11 +189,6 @@ describe('ga_printlayer_service', function() {
       };
 
       var source = new ol.source.ImageWMS(options);
-      var proj = new ol.proj.Projection({
-        code: 'EPSG:21781',
-        units: 'm',
-        extent: extent
-      });
 
       var layer = new ol.layer.Image({
         id: options.id,
@@ -213,7 +214,7 @@ describe('ga_printlayer_service', function() {
           'customParams': {
             'EXCEPTIONS': 'XML',
             'TRANSPARENT': 'true',
-            'CRS': 'EPSG:21781',
+            'CRS': 'EPSG:2056',
             'MAP_RESOLUTION': '150'
           },
           'singleTile': false
