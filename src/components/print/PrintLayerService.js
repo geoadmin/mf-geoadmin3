@@ -24,14 +24,14 @@ goog.require('ga_urlutils_service');
         encodeMatrixIds: getMatrixIds(gaMapUtils),
         encodeBase: encodeBase,
         encodeGroup: getEncodeGroup(gaLayers, gaPrintStyle,
-            gaTime, gaMapUtils),
+            gaTime, gaMapUtils, gaGlobalOptions),
         encodeWMS: encodeWMS,
         encodeDimensions: encodeDimensions,
-        encodeWMTS: getEncodeWMTS(gaTime, gaMapUtils),
+        encodeWMTS: getEncodeWMTS(gaTime, gaMapUtils, gaGlobalOptions),
         encodeFeatures: getEncodeFeatures(gaPrintStyle),
         encodeVector: getEncodeVector(gaPrintStyle),
         encodeLayer: getEncodeLayer(gaLayers, gaPrintStyle,
-            gaTime, gaMapUtils),
+            gaTime, gaMapUtils, gaGlobalOptions),
         encodeOverlay: getEncodeOverlay(gaUrlUtils),
         encodeGraticule: encodeGraticule
       };
@@ -138,7 +138,8 @@ goog.require('ga_urlutils_service');
     }
   };
 
-  function getEncodeGroup(gaLayers, gaPrintStyle, gaTime, gaMapUtils) {
+  function getEncodeGroup(gaLayers, gaPrintStyle, gaTime,
+      gaMapUtils, gaGlobalOptions) {
     return function(layer, viewProj, scaleDenom, printRectangeCoords,
         resolution, dpi) {
       var encs = [];
@@ -148,7 +149,7 @@ goog.require('ga_urlutils_service');
           // Is sublayer always not a Group?
           var enc = encodeBase(layer);
           var encodeLayer = getEncodeLayer(gaLayers, gaPrintStyle,
-              gaTime, gaMapUtils);
+              gaTime, gaMapUtils, gaGlobalOptions);
           var layerEnc = encodeLayer(subLayer, viewProj, scaleDenom,
               printRectangeCoords, resolution, dpi);
           if (layerEnc && layerEnc.layer) {
@@ -161,7 +162,8 @@ goog.require('ga_urlutils_service');
     };
   };
 
-  function getEncodeLayer(gaLayers, gaPrintStyle, gaTime, gaMapUtils) {
+  function getEncodeLayer(gaLayers, gaPrintStyle, gaTime, gaMapUtils,
+      gaGlobalOptions) {
     return function(layer, viewProj, scaleDenom, printRectangeCoords,
         resolution, dpi) {
 
@@ -177,7 +179,7 @@ goog.require('ga_urlutils_service');
         if (resolution <= maxResolution &&
             resolution >= minResolution) {
           if (src instanceof ol.source.WMTS) {
-            var encodeWMTS = getEncodeWMTS(gaTime, gaMapUtils);
+            var encodeWMTS = getEncodeWMTS(gaTime, gaMapUtils, gaGlobalOptions);
             encLayer = encodeWMTS(layer, layerConfig);
           } else if (src instanceof ol.source.ImageWMS ||
               src instanceof ol.source.TileWMS) {
@@ -382,7 +384,7 @@ goog.require('ga_urlutils_service');
     }
   };
 
-  function getEncodeWMTS(gaTime, gaMapUtils) {
+  function getEncodeWMTS(gaTime, gaMapUtils, gaGlobalOptions) {
     return function(layer, config) {
       // config is not defined for external WMTS
       // For internal WMTS layer, we use the simplified
@@ -391,7 +393,6 @@ goog.require('ga_urlutils_service');
       // See http://www.mapfish.org/doc/print/protocol.html#wmts
       // TODO: simplified protocol is only valid for LV03 layers!
 
-      var isExternalWmts = angular.equals(config, {});
       var enc = encodeBase(layer);
       var source = layer.getSource();
       var tileGrid = source.getTileGrid();
@@ -406,15 +407,20 @@ goog.require('ga_urlutils_service');
         baseUrl = baseUrl.
             replace(/\{Time\}/i, '{TIME}').
             replace(/\{/g, '%7B').
-            replace(/\}/g, '%7D').
-            replace(/wmts\d{1,3}\.geo\.admin\.ch/, 'wmts.geo.admin.ch');
+            replace(/\}/g, '%7D')
       }
 
       var wmtsDimensions = encodeDimensions(source.getDimensions());
-      // common config
+      var encodeMatrixIds = getMatrixIds(gaMapUtils);
+      var matrices = encodeMatrixIds(tileGrid, extent);
+
+      // use the full monty WMTS definition fo external source
+      // the simplified definition was EPSG:21781 swisstopo only
       angular.extend(enc, {
         type: 'WMTS',
         layer: source.getLayer(),
+        baseURL: baseUrl,
+        matrixIds: matrices,
         version: source.getVersion() || '1.0.0',
         requestEncoding: requestEncoding,
         formatSuffix: source.getFormat().replace('image/', ''),
@@ -423,30 +429,6 @@ goog.require('ga_urlutils_service');
         params: wmtsDimensions,
         matrixSet: source.getMatrixSet() || '2056'
       });
-
-      if (!isExternalWmts) {
-
-        angular.extend(enc, {
-          baseURL: baseUrl.slice(0, baseUrl.indexOf('/1.0.0')),
-          zoomOffset: tileGrid.getMinZoom(),
-          tileOrigin: tileGrid.getOrigin(),
-          tileSize: [tileGrid.getTileSize(), tileGrid.getTileSize()],
-          resolutions: tileGrid.getResolutions(),
-          maxExtent: extent
-        });
-
-      } else {
-        // use the full monty WMTS definition fo external source
-
-        var encodeMatrixIds = getMatrixIds(gaMapUtils);
-        var matrices = encodeMatrixIds(tileGrid, extent);
-
-        angular.extend(enc, {
-          layer: source.getLayer(),
-          baseURL: baseUrl,
-          matrixIds: matrices
-        });
-      }
 
       var multiPagesPrint = false;
       if (config.timestamps) {
