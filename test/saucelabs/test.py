@@ -9,7 +9,6 @@ from start_test import runStartTest
 from kml_test import runKmlTest
 from search_test import runSearchTest
 from print_test import runPrintTest
-from mobile_test import runMobileTest
 from wms_test import runWmsTest
 from tooltip_test import runTooltipTest
 
@@ -76,8 +75,8 @@ if __name__ == '__main__':
     ]
 
     config_test_list = {
-        "firefox": ['start', 'mobile', 'search', 'wms', 'tooltip'],
-        "chrome": ['start', 'mobile', 'search', 'wms', 'tooltip'],
+        "firefox": ['start', 'search', 'wms', 'tooltip'],
+        "chrome": ['start', 'search', 'wms', 'tooltip'],
         "opera": ['start'],
         "safari": ['start'],
         "MicrosoftEdge": ['start', 'search']
@@ -92,7 +91,6 @@ if __name__ == '__main__':
     doTests = {
         'start': runStartTest,
         'wms': runWmsTest,
-        'mobile': runMobileTest,
         'search': runSearchTest,
         'kml': runKmlTest,
         'print': runPrintTest,
