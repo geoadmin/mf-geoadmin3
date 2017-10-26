@@ -81,12 +81,11 @@ describe('ga_main_controller', function() {
         expect(g.offline).to.be(false);
         expect(g.embed).to.be(false);
         expect(g.pulldownShown).to.be(true);
-        expect(g.printShown).to.be(false);
+        expect(g.printShown).to.be(true);
         expect(g.catalogShown).to.be(false);
         expect(g.selectionShown).to.be(false);
         expect(g.feedbackPopupShown).to.be(false);
         expect(g.settingsShown).to.be(false);
-        expect(g.printShown).to.be(false);
         expect(g.isShareActive).to.be(false);
         expect(g.isDrawActive).to.be(false);
         expect(g.isFeatureTreeActive).to.be(false);
@@ -182,13 +181,13 @@ describe('ga_main_controller', function() {
             $(window).trigger('resize');
             $rootScope.$digest();
             expect(g.catalogShown).to.be(false);
-            expect(spy.callCount).to.be(1);
+            expect(spy.callCount).to.be(0);
 
             g.catalogShown = true;
             $(window).trigger('resize');
             $rootScope.$digest();
             expect(g.catalogShown).to.be(true);
-            expect(spy.callCount).to.be(1);
+            expect(spy.callCount).to.be(0);
           });
         });
 
@@ -203,7 +202,7 @@ describe('ga_main_controller', function() {
             $(window).trigger('resize');
             $rootScope.$digest();
             expect(g.catalogShown).to.be(false);
-            expect(spy.callCount).to.be(1);
+            expect(spy.callCount).to.be(0);
           });
 
           it('hide catalog', function() {
@@ -211,7 +210,7 @@ describe('ga_main_controller', function() {
             $(window).trigger('resize');
             $rootScope.$digest();
             expect(g.catalogShown).to.be(false);
-            expect(spy.callCount).to.be(2);
+            expect(spy.callCount).to.be(1);
           });
         });
       });
@@ -241,7 +240,7 @@ describe('ga_main_controller', function() {
             $(window).trigger('resize');
             $rootScope.$digest();
             expect(g.isShareActive).to.be(false);
-            expect(spy.callCount).to.be(1);
+            expect(spy.callCount).to.be(0);
           });
 
           it('does nothing', function() {
@@ -249,7 +248,7 @@ describe('ga_main_controller', function() {
             $(window).trigger('resize');
             $rootScope.$digest();
             expect(g.isShareActive).to.be(true);
-            expect(spy.callCount).to.be(1);
+            expect(spy.callCount).to.be(0);
           });
         });
 
@@ -266,7 +265,7 @@ describe('ga_main_controller', function() {
             $(window).trigger('resize');
             $rootScope.$digest();
             expect(g.isShareActive).to.be(true);
-            expect(spy.callCount).to.be(1);
+            expect(spy.callCount).to.be(2);
           });
         });
       });
@@ -297,7 +296,7 @@ describe('ga_main_controller', function() {
             $(window).trigger('resize');
             $rootScope.$digest();
             expect(g.settingsShown).to.be(false);
-            expect(spy.callCount).to.be(1);
+            expect(spy.callCount).to.be(0);
           });
 
           it('hide the panel', function() {
@@ -305,7 +304,7 @@ describe('ga_main_controller', function() {
             $(window).trigger('resize');
             $rootScope.$digest();
             expect(g.settingsShown).to.be(false);
-            expect(spy.callCount).to.be(2);
+            expect(spy.callCount).to.be(1);
           });
         });
 
@@ -321,7 +320,7 @@ describe('ga_main_controller', function() {
             $(window).trigger('resize');
             $rootScope.$digest();
             expect(g.settingsShown).to.be(true);
-            expect(spy.callCount).to.be(3);
+            expect(spy.callCount).to.be(2);
           });
 
           it('does nothing', function() {
@@ -329,7 +328,7 @@ describe('ga_main_controller', function() {
             $(window).trigger('resize');
             $rootScope.$digest();
             expect(g.settingsShown).to.be(true);
-            expect(spy.callCount).to.be(2);
+            expect(spy.callCount).to.be(1);
           });
         });
       });
@@ -355,21 +354,21 @@ describe('ga_main_controller', function() {
           });
 
           it('show the panel', function() {
-            expect(g.printShown).to.be(false);
+            g.printShown = false;
             $(window).trigger('resize');
             $rootScope.$digest();
             expect(g.printShown).to.be(true);
             expect(g.isPrintActive).to.be(false);
-            // expect(spy.callCount).to.be(1);
+            expect(spy.callCount).to.be(1);
           });
 
           it('does nothing', function() {
-            g.printShown = true;
+            expect(g.printShown).to.be(true);
             $(window).trigger('resize');
             $rootScope.$digest();
             expect(g.printShown).to.be(true);
             expect(g.isPrintActive).to.be(false);
-            // expect(spy.callCount).to.be(2);
+            expect(spy.callCount).to.be(0);
           });
         });
 
@@ -380,7 +379,7 @@ describe('ga_main_controller', function() {
           });
 
           it('does nothing', function() {
-            expect(g.printShown).to.be(false);
+            g.printShown = false
             $(window).trigger('resize');
             $rootScope.$digest();
             expect(g.printShown).to.be(false);
@@ -389,16 +388,16 @@ describe('ga_main_controller', function() {
           });
 
           it('hide the panel', function() {
-            g.drawShown = true;
+            expect(g.printShown).to.be(true);
             $(window).trigger('resize');
             $rootScope.$digest();
             expect(g.printShown).to.be(false);
             expect(g.isPrintActive).to.be(false);
-            expect(spy.callCount).to.be(1);
+            expect(spy.callCount).to.be(2);
           });
 
           it('deactivates the print', function() {
-            g.printShown = true;
+            expect(g.printShown).to.be(true);
             g.isPrintActive = true;
             $(window).trigger('resize');
             $rootScope.$digest();
