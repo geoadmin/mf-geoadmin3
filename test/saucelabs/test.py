@@ -66,9 +66,6 @@ if __name__ == '__main__':
         # Edge
         {'platform': "Windows 10", 'browserName': "MicrosoftEdge",
             'version': "13.10586", 'screenResolution': "1280x1024"},
-        # Opera
-        {'platform': "Windows 7", 'browserName': "opera",
-            'version': "12.12", 'screenResolution': "1280x1024"},
         # Safari
         {'platform': "OS X 10.11", 'browserName': "safari",
             'version': "9.0", 'screenResolution': "1024x768"}
