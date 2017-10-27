@@ -400,26 +400,17 @@ goog.require('ga_urlutils_service');
           return urls;
         };
 
-        var useLV03Template = function(layer, tileMatrixSet) {
-          if (tileMatrixSet === '21781') {
-            return true;
-          }
-          // 3D swissimage-product and background layers were pre-generated with
-          // LV03 scheme (row/col), which is wrong. With ToD, we will use the
-          // correct scheme (col/row)
-          if (layer === 'ch.swisstopo.swissimage-product' &&
-              tileMatrixSet === '4326') {
-            return true;
-          }
-          return false;
-        };
-
         var getWmtsGetTileTpl = function(layer, time, tileMatrixSet, format) {
           var tpl;
-          if (useLV03Template(layer, tileMatrixSet)) {
+          if (tileMatrixSet === '21781') {
             tpl = wmtsUrl + wmtsLV03PathTemplate;
           } else {
-            tpl = wmtsUrl + wmtsPathTemplate;
+            if (tileMatrixSet === '4326' &&
+                  layer === 'ch.swisstopo.swissimage-product') {
+              tpl = '//tod{s}.prod.bgdi.ch' + wmtsPathTemplate;
+            } else {
+              tpl = wmtsUrl + wmtsPathTemplate;
+            }
           }
           var url = tpl.replace('{Layer}', layer).replace('{Format}', format);
           if (time) {
