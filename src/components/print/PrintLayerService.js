@@ -24,14 +24,14 @@ goog.require('ga_urlutils_service');
         encodeMatrixIds: getMatrixIds(gaMapUtils),
         encodeBase: encodeBase,
         encodeGroup: getEncodeGroup(gaLayers, gaPrintStyle,
-            gaTime, gaMapUtils),
+            gaTime, gaMapUtils, gaGlobalOptions),
         encodeWMS: encodeWMS,
         encodeDimensions: encodeDimensions,
         encodeWMTS: getEncodeWMTS(gaTime, gaMapUtils, gaGlobalOptions),
         encodeFeatures: getEncodeFeatures(gaPrintStyle),
         encodeVector: getEncodeVector(gaPrintStyle),
         encodeLayer: getEncodeLayer(gaLayers, gaPrintStyle,
-            gaTime, gaMapUtils),
+            gaTime, gaMapUtils, gaGlobalOptions),
         encodeOverlay: getEncodeOverlay(gaUrlUtils),
         encodeGraticule: encodeGraticule
       };
@@ -139,7 +139,7 @@ goog.require('ga_urlutils_service');
   };
 
   function getEncodeGroup(gaLayers, gaPrintStyle, gaTime,
-      gaMapUtils) {
+      gaMapUtils, gaGlobalOptions) {
     return function(layer, viewProj, scaleDenom, printRectangeCoords,
         resolution, dpi) {
       var encs = [];
@@ -149,7 +149,7 @@ goog.require('ga_urlutils_service');
           // Is sublayer always not a Group?
           var enc = encodeBase(layer);
           var encodeLayer = getEncodeLayer(gaLayers, gaPrintStyle,
-              gaTime, gaMapUtils);
+              gaTime, gaMapUtils, gaGlobalOptions);
           var layerEnc = encodeLayer(subLayer, viewProj, scaleDenom,
               printRectangeCoords, resolution, dpi);
           if (layerEnc && layerEnc.layer) {
@@ -162,7 +162,8 @@ goog.require('ga_urlutils_service');
     };
   };
 
-  function getEncodeLayer(gaLayers, gaPrintStyle, gaTime, gaMapUtils) {
+  function getEncodeLayer(gaLayers, gaPrintStyle, gaTime, gaMapUtils,
+      gaGlobalOptions) {
     return function(layer, viewProj, scaleDenom, printRectangeCoords,
         resolution, dpi) {
 
@@ -178,7 +179,7 @@ goog.require('ga_urlutils_service');
         if (resolution <= maxResolution &&
             resolution >= minResolution) {
           if (src instanceof ol.source.WMTS) {
-            var encodeWMTS = getEncodeWMTS(gaTime, gaMapUtils);
+            var encodeWMTS = getEncodeWMTS(gaTime, gaMapUtils, gaGlobalOptions);
             encLayer = encodeWMTS(layer, layerConfig);
           } else if (src instanceof ol.source.ImageWMS ||
               src instanceof ol.source.TileWMS) {
@@ -397,6 +398,7 @@ goog.require('ga_urlutils_service');
       var tileGrid = source.getTileGrid();
       var extent = layer.getExtent();
       var requestEncoding = source.getRequestEncoding() || 'REST';
+      // Not all layers have projection assigned
       var dfltTileMatrixSet = gaGlobalOptions.defaultEpsg.split(':')[1];
 
       // resourceURL for RESTful, service endpoint for KVP
