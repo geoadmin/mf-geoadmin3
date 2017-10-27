@@ -2,7 +2,7 @@
 describe('ga_realtimelayers_service', function() {
 
   describe('gaRealtimeLayersManager', function() {
-    var $q, map, gaRealtime, $rootScope, $httpBackend, $timeout, gaDefinePropertiesForLayer, clock, gaLang;
+    var $q, map, gaRealtime, $rootScope, $httpBackend, $timeout, gaDefinePropertiesForLayer, clock, gaLang, gaVector;
     var dataUrl = 'https://data.geo.admin.ch/some/some_custom.json';
     var jsonData1 = {
       'features': [{
@@ -49,9 +49,7 @@ describe('ga_realtimelayers_service', function() {
     var addRealtimeLayerToMap = function(bodId) {
       var layer = new ol.layer.Vector({
         source: new ol.source.Vector({
-          format: new ol.format.GeoJSON({
-            featureProjection: map.getView().getProjection()
-          })
+          format: new ol.format.GeoJSON()
         })
       });
       gaDefinePropertiesForLayer(layer);
@@ -59,6 +57,34 @@ describe('ga_realtimelayers_service', function() {
       layer.updateDelay = 1000;
       layer.geojsonUrl = 'https://data.geo.admin.ch/' + bodId + '/' + bodId + '_' + gaLang.get() + '.json';
       layer.timestamps = ['2004'];
+      map.addLayer(layer);
+      return layer;
+    };
+
+    var addRealtimeKMLLayerToMap = function(id) {
+      var layer = new ol.layer.Vector({
+        source: new ol.source.Vector({
+          format: new ol.format.KML()
+        })
+      });
+      gaDefinePropertiesForLayer(layer);
+      layer.id = 'KML||' + id + '.kml';
+      layer.updateDelay = 1000;
+      layer.url = 'https://data.geo.admin.ch/' + id + '.kml';
+      map.addLayer(layer);
+      return layer;
+    };
+
+    var addRealtimeGPXLayerToMap = function(id) {
+      var layer = new ol.layer.Vector({
+        source: new ol.source.Vector({
+          format: new ol.format.KML()
+        })
+      });
+      gaDefinePropertiesForLayer(layer);
+      layer.id = 'GPX||' + id + '.gpx';
+      layer.updateDelay = 1000;
+      layer.url = 'https://foo.bar.ch/' + id + '.gpx';
       map.addLayer(layer);
       return layer;
     };
@@ -108,6 +134,7 @@ describe('ga_realtimelayers_service', function() {
         $rootScope = $injector.get('$rootScope');
         $timeout = $injector.get('$timeout');
         $q = $injector.get('$q');
+        gaVector = $injector.get('gaVector');
         gaLang = $injector.get('gaLang');
       });
 
@@ -126,6 +153,94 @@ describe('ga_realtimelayers_service', function() {
       addRealtimeLayerToMap('some');
       $httpBackend.verifyNoOutstandingRequest();
       expect(map.getLayers().item(0).getSource().getFeatures().length).to.be(0);
+    });
+
+    it('transforms json data when projection is not defined', function() {
+      $httpBackend.expectGET('https://data.geo.admin.ch/some/some_custom.json').respond({
+        'features': [{
+          'type': 'Feature',
+          'geometry': {
+            'coordinates': [24, 56],
+            'type': 'Point'
+          },
+          'id': '2009',
+          'properties': {}
+        }],
+        'type': 'FeatureCollection'
+      });
+      addRealtimeLayerToMap('some');
+      expect(map.getLayers().item(0).getSource().getFeatures().length).to.be(0);
+      $httpBackend.verifyNoOutstandingRequest();
+      $timeout.flush();
+      $httpBackend.flush();
+      var feats = map.getLayers().item(0).getSource().getFeatures();
+      expect(feats.length).to.be(1);
+      var coord = feats[0].getGeometry().getCoordinates();
+      expect(coord).to.eql([2671667.7790385657, 7558415.656081782]);
+    });
+
+    it('transforms json data when projection is defined', function() {
+      $httpBackend.expectGET('https://data.geo.admin.ch/some/some_custom.json').respond({
+        'crs': {
+          'type': 'name',
+          'properties': {
+            'name': 'EPSG:21781'
+          }
+        },
+        'features': [{
+          'type': 'Feature',
+          'geometry': {
+            'coordinates': [600000, 200000],
+            'type': 'Point'
+          },
+          'id': '2009',
+          'properties': {}
+        }],
+        'type': 'FeatureCollection'
+      });
+      addRealtimeLayerToMap('some');
+      expect(map.getLayers().item(0).getSource().getFeatures().length).to.be(0);
+      $httpBackend.verifyNoOutstandingRequest();
+      $timeout.flush();
+      $httpBackend.flush();
+      var feats = map.getLayers().item(0).getSource().getFeatures();
+      expect(feats.length).to.be(1);
+      var coord = feats[0].getGeometry().getCoordinates();
+      expect(coord).to.eql([828064.7732897887, 5934093.187456297]);
+    });
+
+    it('reads KML data', function() {
+      var data = '<kml><Document><Placemark><Point><coordinates>24, 56</coordinates></Point></Placemark></Document></kml>';
+      var spy = sinon.spy(gaVector, 'readFeatures').withArgs(data, map.getView().getProjection());
+      $httpBackend.expectGET('https://data.geo.admin.ch/some.kml').respond(data);
+      var l = addRealtimeKMLLayerToMap('some');
+      expect(map.getLayers().item(0).getSource().getFeatures().length).to.be(0);
+      $httpBackend.verifyNoOutstandingRequest();
+      $timeout.flush();
+      $httpBackend.flush();
+      var feats = map.getLayers().item(0).getSource().getFeatures();
+      expect(feats.length).to.be(1);
+      var coord = feats[0].getGeometry().getCoordinates();
+      expect(coord).to.eql([2671667.7790385657, 7558415.656081782, 0]);
+      expect(spy.callCount).to.be(1);
+      expect(l.getSource().getProperties().rawData).to.be(data);
+    });
+
+    it('reads GPX data using proxified url', function() {
+      var data = '<gpx><wpt lat="56" lon="24"><name>Toûno</name><type>summit</type></wpt></gpx>';
+      var spy = sinon.spy(gaVector, 'readFeatures').withArgs(data, map.getView().getProjection());
+      $httpBackend.expectGET('http://proxy.geo.admin.ch/https/foo.bar.ch%2Fsome.gpx').respond(data);
+      var l = addRealtimeGPXLayerToMap('some');
+      expect(map.getLayers().item(0).getSource().getFeatures().length).to.be(0);
+      $httpBackend.verifyNoOutstandingRequest();
+      $timeout.flush();
+      $httpBackend.flush();
+      var feats = map.getLayers().item(0).getSource().getFeatures();
+      expect(feats.length).to.be(1);
+      var coord = feats[0].getGeometry().getCoordinates();
+      expect(coord).to.eql([2671667.7790385657, 7558415.656081782]);
+      expect(spy.callCount).to.be(1);
+      expect(l.getSource().getProperties().rawData).to.be(data);
     });
 
     it('broadcasts a gaNewLayerTimestamp event', function() {

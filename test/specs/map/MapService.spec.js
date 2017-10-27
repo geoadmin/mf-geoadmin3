@@ -1203,7 +1203,7 @@ describe('ga_map_service', function() {
           expectCommonProperties(layer, 'aggregate');
         });
 
-        it('returns a GeoJSON layer', function(done) {
+        it('returns a GeoJSON layer using default data projection (EPSG:4326)', function(done) {
           $httpBackend.expectGET('http://mystyle.json').respond({});
           $httpBackend.expectGET(gaGlobalOptions.proxyUrl + 'http/my.json').respond({
             'features': [{
@@ -1237,6 +1237,42 @@ describe('ga_map_service', function() {
           $httpBackend.expectGET('http://mystyle.json').respond({});
           var layer = gaLayers.getOlLayerById('geojsondelay');
           expectCommonProperties(layer, 'geojsondelay');
+          $httpBackend.flush();
+        });
+
+        it('returns a GeoJSON layer using a custom projection (EPSG:21781)', function(done) {
+          $httpBackend.expectGET('http://mystyle.json').respond({});
+          $httpBackend.expectGET(gaGlobalOptions.proxyUrl + 'http/my.json').respond({
+            'crs': {
+              'type': 'name',
+              'properties': {
+                'name': 'EPSG:21781'
+              }
+            },
+            'features': [{
+              'type': 'Feature',
+              'geometry': {
+                'coordinates': [600000, 200000],
+                'type': 'Point'
+              },
+              'id': '2009',
+              'properties': {}
+            }],
+            'type': 'FeatureCollection'
+          });
+          var layer = gaLayers.getOlLayerById('geojson');
+          expect(layer instanceof ol.layer.Vector).to.be.ok();
+          expect(layer.getMinResolution()).to.be(0.5);
+          expect(layer.getMaxResolution()).to.be(100);
+          expect(layer.getOpacity()).to.be(1);
+          expect(layer.getExtent()).to.eql(gaGlobalOptions.defaultExtent);
+          var source = layer.getSource();
+          expect(source instanceof ol.source.Vector).to.be.ok();
+          expectCommonProperties(layer, 'geojson');
+          gaLayers.getLayerPromise('geojson').then(function(feats) {
+            expect(feats[0].getGeometry().getCoordinates()).to.eql([2600000, 1199999.999848965]);
+            done();
+          });
           $httpBackend.flush();
         });
       });

@@ -923,9 +923,7 @@ goog.require('ga_urlutils_service');
           } else if (config.type === 'geojson') {
             // cannot request resources over https in S3
             olSource = new ol.source.Vector({
-              format: new ol.format.GeoJSON({
-                featureProjection: gaGlobalOptions.defaultEpsg
-              })
+              format: new ol.format.GeoJSON()
             });
             olLayer = new ol.layer.Vector({
               minResolution: config.minResolution,
@@ -937,9 +935,11 @@ goog.require('ga_urlutils_service');
                 then(function(proxyUrl) {
                   return $http.get(proxyUrl).then(function(response) {
                     var data = response.data;
+                    var features = olSource.getFormat().readFeatures(data, {
+                      featureProjection: gaGlobalOptions.defaultEpsg
+                    });
                     olSource.clear();
-                    olSource.addFeatures(
-                        olSource.getFormat().readFeatures(data));
+                    olSource.addFeatures(features);
                     if (data.timestamp) {
                       olLayer.timestamps = [data.timestamp];
                     }

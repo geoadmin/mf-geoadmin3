@@ -32,11 +32,12 @@ goog.require('ga_vector_service');
         var vec = gaMapUtils.isKmlLayer(layer) ||
             gaMapUtils.isGpxLayer(layer);
         var url = !vec ? layer.geojsonUrl : layer.url;
+        var proj = map.getView().getProjection();
         gaUrlUtils.proxifyUrl(url).then(function(proxyUrl) {
           $http.get(proxyUrl).then(function(response) {
             var data = response.data;
             if (vec) {
-              gaVector.readFeatures(data, map.getView().getProjection()).
+              gaVector.readFeatures(data, proj).
                   then(function(features) {
                     olSource.clear();
                     olSource.addFeatures(features);
@@ -46,7 +47,9 @@ goog.require('ga_vector_service');
                   });
             } else {
               olSource.clear();
-              olSource.addFeatures(olSource.getFormat().readFeatures(data));
+              olSource.addFeatures(olSource.getFormat().readFeatures(data, {
+                featureProjection: proj
+              }));
               layer.timestamps = [data.timestamp];
             }
             handleTimer(layer);
