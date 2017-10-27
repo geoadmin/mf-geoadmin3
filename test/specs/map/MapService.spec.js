@@ -554,13 +554,18 @@ describe('ga_map_service', function() {
     var terrainTpl = '//3d.geo.admin.ch/1.0.0/{layer}/default/{time}/4326';
     var wmtsLV03Tpl = '//wmts{s}.geo.admin.ch/1.0.0/{layer}/default/{time}/4326/{z}/{y}/{x}.{format}';
     var wmtsTpl = '//wmts{s}.geo.admin.ch/1.0.0/{layer}/default/{time}/4326/{z}/{x}/{y}.{format}';
+    var todProdTpl = '//tod{s}.prod.bgdi.ch/1.0.0/{layer}/default/{time}/4326/{z}/{x}/{y}.{format}';
     var vectorTilesTpl = '//vectortiles100.geo.admin.ch/{layer}/{time}/';
     var wmsTpl = '//wms{s}.geo.admin.ch/?layers={layer}&format=image%2F{format}&service=WMS&version=1.3.0&request=GetMap&crs=CRS:84&bbox={westProjected},{southProjected},{eastProjected},{northProjected}&width=512&height=512&styles=';
     var expectWmtsUrl = function(l, t, f, epsg) {
       if (epsg === '21781') {
         return expectUrl(wmtsLV03Tpl, l, t, f);
       } else {
-        return expectUrl(wmtsTpl, l, t, f);
+        if (epsg === '4326' && l === 'ch.swisstopo.swissimage-product') {
+          return expectUrl(todProdTpl, l, t, f);
+        } else {
+          return expectUrl(wmtsTpl, l, t, f);
+        }
       }
     };
     var expectTerrainUrl = function(l, t, f) {
@@ -886,6 +891,14 @@ describe('ga_map_service', function() {
           ],
           serverLayerName: 'serverlayername3d'
         },
+        'ch.swisstopo.swissimage-product': {
+          type: 'wmts',
+          timestamps: [
+            'current'
+          ],
+          format: 'jpeg',
+          serverLayerName: 'ch.swisstopo.swissimage-product'
+        },
         wms: {
           type: 'wms',
           wmsLayers: 'wmsLayers'
@@ -969,6 +982,18 @@ describe('ga_map_service', function() {
         expect(params.maximumLevel).to.eql(undefined);
         expect(params.hasAlphaChannel).to.eql(false);
         expect(prov.bodId).to.be('wmts3dcustom');
+        spy.restore();
+      });
+
+      it('returns a CesiumImageryProvider form a wmts with the good url for swissimage product in 3d', function() {
+        var spy = sinon.spy(Cesium, 'UrlTemplateImageryProvider');
+        var prov = gaLayers.getCesiumImageryProviderById('ch.swisstopo.swissimage-product');
+        expect(prov).to.be.an(Cesium.UrlTemplateImageryProvider);
+        // Properties of Cesium object are set in a promise and I don 't
+        // succeed to test it so we test the params we send to the constructor
+        // instead.
+        var params = spy.args[0][0];
+        expect(params.url).to.eql(expectWmtsUrl('ch.swisstopo.swissimage-product', 'current', 'jpeg', '4326'));
         spy.restore();
       });
 
