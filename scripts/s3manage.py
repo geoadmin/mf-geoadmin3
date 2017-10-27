@@ -391,8 +391,8 @@ def activate_version(s3_path, bucket_name, deploy_target):
                     ACL='public-read')
             except botocore.exceptions.ClientError as e:
                 print('Cannot copy {}: {}'.format(j, e))
-        print('\nPlease check it on {}'.format(get_url(deploy_target)))
-        print('And {}'.format(get_url(deploy_target, key_name='src/index.html')))
+        print('\nPlease check it on:\n{}'.format(get_url(deploy_target)))
+        print('And:\n{}'.format(get_url(deploy_target, key_name=s3_path + '/src/index.html')))
     else:
         print('Aborting activation of version {}'.format(s3_path))
         sys.exit(1)
