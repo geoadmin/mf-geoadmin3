@@ -43,7 +43,6 @@ goog.require('ga_urlutils_service');
 
       // Create an WMTS layer
       var createWmtsLayer = function(options) {
-        options.sourceConfig.transition = 0;
         var source = new ol.source.WMTS(options.sourceConfig);
         var layer = new ol.layer.Tile({
           id: 'WMTS||' + options.layer + '||' + options.capabilitiesUrl,
