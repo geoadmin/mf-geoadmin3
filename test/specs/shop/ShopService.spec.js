@@ -277,7 +277,7 @@ describe('ga_shop_service', function() {
     describe('#cut()', function() {
       var $httpBackend, $rootScope;
       var url;
-      var cutParams = 'layers=all:ch.swisstopo.pixelkarte-farbe-pk25.noscale&geometryType=esriGeometryEnvelope&geometry=1,3,2,1';
+      var cutParams = 'layers=all:ch.swisstopo.pixelkarte-farbe-pk25.noscale&geometryType=esriGeometryEnvelope&geometry=1,3,2,1&sr=2056';
 
       beforeEach(function() {
         inject(function($injector) {
@@ -292,8 +292,15 @@ describe('ga_shop_service', function() {
         $httpBackend.verifyNoOutstandingRequest();
       });
 
-      it('irejects the promis if no geometry param', function(done) {
+      it('rejects the promise if no geometry param', function(done) {
         gaShop.cut().then(null, function() {
+          done();
+        });
+        $rootScope.$digest();
+      });
+
+      it('rejects the promise if no proj param', function(done) {
+        gaShop.cut(new ol.geom.Point([0, 0])).then(null, function() {
           done();
         });
         $rootScope.$digest();
@@ -306,7 +313,7 @@ describe('ga_shop_service', function() {
           area: '120'
         }];
         $httpBackend.expectGET(url + cutParams).respond(200, response);
-        gaShop.cut('1,3,2,1', layerBodId).then(function(area) {
+        gaShop.cut('1,3,2,1', layerBodId, ol.proj.get('EPSG:2056')).then(function(area) {
           expect(area).to.eql(120);
           done();
         });

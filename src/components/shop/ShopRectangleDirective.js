@@ -26,6 +26,7 @@ goog.require('ga_measure_filter');
         var map = scope.map;
         var layer = gaMapUtils.getFeatureOverlay();
         var source = layer.getSource();
+        var proj = map.getView().getProjection();
 
         // Create the interaction
         scope.dragBox = new ol.interaction.DragBox();
@@ -93,7 +94,8 @@ goog.require('ga_measure_filter');
             false, true);
         var updatePriceDebounced = gaDebounce.debounce(function(extent) {
           // Get the area from the cut service
-          gaShop.cut(extent.toString(), scope.layerBodId).then(function(area) {
+          gaShop.cut(extent.toString(), scope.layerBodId,
+              proj).then(function(area) {
             scope.updatePrice(extent.toString(), area);
             scope.area = area * 1000 * 1000;
           }, function() {

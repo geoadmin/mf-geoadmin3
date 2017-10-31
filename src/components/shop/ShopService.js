@@ -134,9 +134,9 @@ goog.require('ga_translation_service');
           });
         };
 
-        this.cut = function(geometry, layerBodId) {
+        this.cut = function(geometry, layerBodId, proj) {
           var layer;
-          if (!geometry) {
+          if (!geometry || !proj) {
             var defer = $q.defer();
             defer.reject();
             return defer.promise;
@@ -146,8 +146,10 @@ goog.require('ga_translation_service');
           } else if (layerBodId) {
             layer = layerBodId;
           }
+          var srParam = proj.getCode().split(':')[1];
           var url = cutUrl + 'layers=all:' + layer +
-              '&geometryType=esriGeometryEnvelope&geometry=' + geometry;
+              '&geometryType=esriGeometryEnvelope&geometry=' + geometry +
+              '&sr=' + srParam;
           return $http.get(url, {
             cache: true
           }).then(function(response) {
