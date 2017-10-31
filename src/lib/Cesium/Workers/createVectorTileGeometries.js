@@ -9324,7 +9324,7 @@ define('Core/BoundingSphere',[
      * The bounding sphere is computed by running two algorithms, a naive algorithm and
      * Ritter's algorithm. The smaller of the two spheres is used to ensure a tight fit.
      *
-     * @param {Cartesian3[]} positions An array of points that the bounding sphere will enclose.  Each point must have <code>x</code>, <code>y</code>, and <code>z</code> properties.
+     * @param {Cartesian3[]} [positions] An array of points that the bounding sphere will enclose.  Each point must have <code>x</code>, <code>y</code>, and <code>z</code> properties.
      * @param {BoundingSphere} [result] The object onto which to store the result.
      * @returns {BoundingSphere} The modified result parameter or a new BoundingSphere instance if one was not provided.
      *
@@ -9475,7 +9475,7 @@ define('Core/BoundingSphere',[
     /**
      * Computes a bounding sphere from a rectangle projected in 2D.
      *
-     * @param {Rectangle} rectangle The rectangle around which to create a bounding sphere.
+     * @param {Rectangle} [rectangle] The rectangle around which to create a bounding sphere.
      * @param {Object} [projection=GeographicProjection] The projection used to project the rectangle into 2D.
      * @param {BoundingSphere} [result] The object onto which to store the result.
      * @returns {BoundingSphere} The modified result parameter or a new BoundingSphere instance if none was provided.
@@ -9488,7 +9488,7 @@ define('Core/BoundingSphere',[
      * Computes a bounding sphere from a rectangle projected in 2D.  The bounding sphere accounts for the
      * object's minimum and maximum heights over the rectangle.
      *
-     * @param {Rectangle} rectangle The rectangle around which to create a bounding sphere.
+     * @param {Rectangle} [rectangle] The rectangle around which to create a bounding sphere.
      * @param {Object} [projection=GeographicProjection] The projection used to project the rectangle into 2D.
      * @param {Number} [minimumHeight=0.0] The minimum height over the rectangle.
      * @param {Number} [maximumHeight=0.0] The maximum height over the rectangle.
@@ -9534,7 +9534,7 @@ define('Core/BoundingSphere',[
      * Computes a bounding sphere from a rectangle in 3D. The bounding sphere is created using a subsample of points
      * on the ellipsoid and contained in the rectangle. It may not be accurate for all rectangles on all types of ellipsoids.
      *
-     * @param {Rectangle} rectangle The valid rectangle used to create a bounding sphere.
+     * @param {Rectangle} [rectangle] The valid rectangle used to create a bounding sphere.
      * @param {Ellipsoid} [ellipsoid=Ellipsoid.WGS84] The ellipsoid used to determine positions of the rectangle.
      * @param {Number} [surfaceHeight=0.0] The height above the surface of the ellipsoid.
      * @param {BoundingSphere} [result] The object onto which to store the result.
@@ -9544,11 +9544,17 @@ define('Core/BoundingSphere',[
         ellipsoid = defaultValue(ellipsoid, Ellipsoid.WGS84);
         surfaceHeight = defaultValue(surfaceHeight, 0.0);
 
-        var positions;
-        if (defined(rectangle)) {
-            positions = Rectangle.subsample(rectangle, ellipsoid, surfaceHeight, fromRectangle3DScratch);
+        if (!defined(result)) {
+            result = new BoundingSphere();
         }
 
+        if (!defined(rectangle)) {
+            result.center = Cartesian3.clone(Cartesian3.ZERO, result.center);
+            result.radius = 0.0;
+            return result;
+        }
+
+        var positions = Rectangle.subsample(rectangle, ellipsoid, surfaceHeight, fromRectangle3DScratch);
         return BoundingSphere.fromPoints(positions, result);
     };
 
@@ -9558,7 +9564,7 @@ define('Core/BoundingSphere',[
      * algorithms, a naive algorithm and Ritter's algorithm. The smaller of the two spheres is used to
      * ensure a tight fit.
      *
-     * @param {Number[]} positions An array of points that the bounding sphere will enclose.  Each point
+     * @param {Number[]} [positions] An array of points that the bounding sphere will enclose.  Each point
      *        is formed from three elements in the array in the order X, Y, Z.
      * @param {Cartesian3} [center=Cartesian3.ZERO] The position to which the positions are relative, which need not be the
      *        origin of the coordinate system.  This is useful when the positions are to be used for
@@ -9739,9 +9745,9 @@ define('Core/BoundingSphere',[
      * algorithms, a naive algorithm and Ritter's algorithm. The smaller of the two spheres is used to
      * ensure a tight fit.
      *
-     * @param {Number[]} positionsHigh An array of high bits of the encoded cartesians that the bounding sphere will enclose.  Each point
+     * @param {Number[]} [positionsHigh] An array of high bits of the encoded cartesians that the bounding sphere will enclose.  Each point
      *        is formed from three elements in the array in the order X, Y, Z.
-     * @param {Number[]} positionsLow An array of low bits of the encoded cartesians that the bounding sphere will enclose.  Each point
+     * @param {Number[]} [positionsLow] An array of low bits of the encoded cartesians that the bounding sphere will enclose.  Each point
      *        is formed from three elements in the array in the order X, Y, Z.
      * @param {BoundingSphere} [result] The object onto which to store the result.
      * @returns {BoundingSphere} The modified result parameter or a new BoundingSphere instance if one was not provided.
@@ -9946,7 +9952,7 @@ define('Core/BoundingSphere',[
     /**
      * Computes a tight-fitting bounding sphere enclosing the provided array of bounding spheres.
      *
-     * @param {BoundingSphere[]} boundingSpheres The array of bounding spheres.
+     * @param {BoundingSphere[]} [boundingSpheres] The array of bounding spheres.
      * @param {BoundingSphere} [result] The object onto which to store the result.
      * @returns {BoundingSphere} The modified result parameter or a new BoundingSphere instance if none was provided.
      */
@@ -17715,6 +17721,7 @@ define('Workers/createVectorTileGeometries',[
         '../Core/CylinderGeometry',
         '../Core/defined',
         '../Core/EllipsoidGeometry',
+        '../Core/IndexDatatype',
         '../Core/Matrix4',
         '../Core/VertexFormat',
         '../Scene/Vector3DTileBatch',
@@ -17727,6 +17734,7 @@ define('Workers/createVectorTileGeometries',[
         CylinderGeometry,
         defined,
         EllipsoidGeometry,
+        IndexDatatype,
         Matrix4,
         VertexFormat,
         Vector3DTileBatch,
@@ -17910,13 +17918,14 @@ define('Workers/createVectorTileGeometries',[
         return count;
     }
 
-    function packBuffer(batchedIndices, boundingVolumes) {
+    function packBuffer(indicesBytesPerElement, batchedIndices, boundingVolumes) {
         var numBVs = boundingVolumes.length;
-        var length = 1 + numBVs * BoundingSphere.packedLength + 1 + packedBatchedIndicesLength(batchedIndices);
+        var length = 1 + 1 + numBVs * BoundingSphere.packedLength + 1 + packedBatchedIndicesLength(batchedIndices);
 
         var packedBuffer = new Float64Array(length);
 
         var offset = 0;
+        packedBuffer[offset++] = indicesBytesPerElement;
         packedBuffer[offset++] = numBVs;
 
         for (var i = 0; i < numBVs; ++i) {
@@ -17998,10 +18007,10 @@ define('Workers/createVectorTileGeometries',[
 
         var positions = new Float32Array(numberOfPositions);
         var vertexBatchIds = new Uint16Array(numberOfPositions / 3);
-        var indices = new Uint32Array(numberOfIndices);
+        var indices = IndexDatatype.createTypedArray(numberOfPositions / 3, numberOfIndices);
 
         var numberOfGeometries = numberOfBoxes + numberOfCylinders + numberOfEllipsoids + numberOfSpheres;
-        var batchIds = new Uint32Array(numberOfGeometries);
+        var batchIds = new Uint16Array(numberOfGeometries);
         var batchedIndices = new Array(numberOfGeometries);
         var indexOffsets = new Uint32Array(numberOfGeometries);
         var indexCounts = new Uint32Array(numberOfGeometries);
@@ -18032,7 +18041,7 @@ define('Workers/createVectorTileGeometries',[
         createPrimitive(options, ellipsoids, ellipsoidBatchIds, ellipsoidGeometry, ellipsoidModelMatrixAndBoundingVolume);
         createPrimitive(options, spheres, sphereBatchIds, ellipsoidGeometry, sphereModelMatrixAndBoundingVolume);
 
-        var packedBuffer = packBuffer(batchedIndices, boundingVolumes);
+        var packedBuffer = packBuffer(indices.BYTES_PER_ELEMENT, batchedIndices, boundingVolumes);
         transferableObjects.push(positions.buffer, vertexBatchIds.buffer, indices.buffer);
         transferableObjects.push(batchIds.buffer, indexOffsets.buffer, indexCounts.buffer);
         transferableObjects.push(packedBuffer.buffer);
