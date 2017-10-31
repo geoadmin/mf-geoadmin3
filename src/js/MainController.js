@@ -254,7 +254,6 @@ goog.require('ga_window_service');
       selectionShown: false,
       feedbackPopupShown: false,
       settingsShown: false,
-      printShown: false,
       queryShown: false,
       isShareActive: false,
       isDrawActive: false,
@@ -272,7 +271,6 @@ goog.require('ga_window_service');
         $scope.globals.pulldownShown = gaWindow.isWidth('>s') &&
              gaWindow.isHeight('>s');
         $scope.globals.settingsShown = gaWindow.isWidth('<=m');
-        $scope.globals.printShown = !gaWindow.isWidth('xs');
         $scope.globals.queryShown = gaWindow.isWidth('>m');
       });
     });
@@ -387,17 +385,6 @@ goog.require('ga_window_service');
          (gaWindow.isWidth('>m') && $scope.globals.settingsShown)) {
         $scope.$applyAsync(function() {
           $scope.globals.settingsShown = !$scope.globals.settingsShown;
-        });
-      }
-
-      // Display print panel
-      if ((gaWindow.isWidth('xs') && $scope.globals.printShown) ||
-         (!gaWindow.isWidth('xs') && !$scope.globals.printShown)) {
-        $scope.$applyAsync(function() {
-          $scope.globals.printShown = !$scope.globals.printShown;
-          if (!$scope.globals.printShown) {
-            $scope.globals.isPrintActive = false;
-          }
         });
       }
 

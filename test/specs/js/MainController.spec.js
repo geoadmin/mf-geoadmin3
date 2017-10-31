@@ -81,7 +81,6 @@ describe('ga_main_controller', function() {
         expect(g.offline).to.be(false);
         expect(g.embed).to.be(false);
         expect(g.pulldownShown).to.be(true);
-        expect(g.printShown).to.be(true);
         expect(g.catalogShown).to.be(false);
         expect(g.selectionShown).to.be(false);
         expect(g.feedbackPopupShown).to.be(false);
@@ -265,7 +264,7 @@ describe('ga_main_controller', function() {
             $(window).trigger('resize');
             $rootScope.$digest();
             expect(g.isShareActive).to.be(true);
-            expect(spy.callCount).to.be(2);
+            expect(spy.callCount).to.be(1);
           });
         });
       });
@@ -329,81 +328,6 @@ describe('ga_main_controller', function() {
             $rootScope.$digest();
             expect(g.settingsShown).to.be(true);
             expect(spy.callCount).to.be(1);
-          });
-        });
-      });
-
-      describe('show/hide print panel on resize', function() {
-        var stub, spy, g;
-
-        beforeEach(function() {
-          loadController();
-          g = scope.globals;
-          stub = sinon.stub(gaWindow, 'isWidth').withArgs('xs');
-          spy = sinon.spy(scope, '$applyAsync');
-        });
-
-        afterEach(function() {
-          spy.reset();
-        });
-
-        describe('when isWidth(\'xs\') returns false', function() {
-
-          beforeEach(function() {
-            stub.returns(false);
-          });
-
-          it('show the panel', function() {
-            g.printShown = false;
-            $(window).trigger('resize');
-            $rootScope.$digest();
-            expect(g.printShown).to.be(true);
-            expect(g.isPrintActive).to.be(false);
-            expect(spy.callCount).to.be(1);
-          });
-
-          it('does nothing', function() {
-            expect(g.printShown).to.be(true);
-            $(window).trigger('resize');
-            $rootScope.$digest();
-            expect(g.printShown).to.be(true);
-            expect(g.isPrintActive).to.be(false);
-            expect(spy.callCount).to.be(0);
-          });
-        });
-
-        describe('when isWidth(\'xs\') returns true', function() {
-
-          beforeEach(function() {
-            stub.withArgs('xs').returns(true);
-          });
-
-          it('does nothing', function() {
-            g.printShown = false
-            $(window).trigger('resize');
-            $rootScope.$digest();
-            expect(g.printShown).to.be(false);
-            expect(g.isPrintActive).to.be(false);
-            expect(spy.callCount).to.be(1);
-          });
-
-          it('hide the panel', function() {
-            expect(g.printShown).to.be(true);
-            $(window).trigger('resize');
-            $rootScope.$digest();
-            expect(g.printShown).to.be(false);
-            expect(g.isPrintActive).to.be(false);
-            expect(spy.callCount).to.be(2);
-          });
-
-          it('deactivates the print', function() {
-            expect(g.printShown).to.be(true);
-            g.isPrintActive = true;
-            $(window).trigger('resize');
-            $rootScope.$digest();
-            expect(g.printShown).to.be(false);
-            expect(g.isPrintActive).to.be(false);
-            expect(spy.callCount).to.be(2);
           });
         });
       });
