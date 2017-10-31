@@ -149,7 +149,7 @@ searchLocationTests = [
     {
         'searchText': u'p Mesolcina Bellinzona',
         'resultTitle': u'Bus Bellinzona, Piazza Mesolcina',
-        'resultLocation': u'E=2722500.46&N=1117499.12&zoom=13'
+        'resultLocation': u'E=2722500.45&N=1117499.12&zoom=13'
     },
     {
         'searchText': u'bruckenmoostrasse 11 raron',
