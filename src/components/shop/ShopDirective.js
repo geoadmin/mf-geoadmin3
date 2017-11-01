@@ -1,6 +1,7 @@
 goog.provide('ga_shop_directive');
 goog.require('ga_identify_service');
 goog.require('ga_map_service');
+goog.require('ga_previewfeatures_service');
 goog.require('ga_price_filter');
 
 (function() {
@@ -8,11 +9,13 @@ goog.require('ga_price_filter');
   var module = angular.module('ga_shop_directive', [
     'ga_map_service',
     'ga_shop_service',
-    'ga_identify_service'
+    'ga_identify_service',
+    'ga_previewfeatures_service',
+    'ga_price_filter'
   ]);
 
-  module.directive('gaShop', function($rootScope, gaLayers, gaMapUtils,
-      gaShop, gaIdentify, gaPreviewFeatures) {
+  module.directive('gaShop', function($rootScope, gaLayers, gaShop, gaIdentify,
+      gaPreviewFeatures) {
     var geojson = new ol.format.GeoJSON();
     return {
       restrict: 'A',
@@ -26,6 +29,7 @@ goog.require('ga_price_filter');
         scope.clipperFeatures = {};
         scope.showRectangle = false;
         scope.price = null;
+        var proj = scope.map.getView().getProjection();
         // Remove the element if no feature defined
         if (!scope.feature) {
           elt.remove();
@@ -46,7 +50,6 @@ goog.require('ga_price_filter');
         scope.layerBodId = layerBodId;
 
         var layerConfig = gaLayers.getLayer(layerBodId);
-
         // Remove the element if no layerBodId associated
         if (!layerConfig) {
           elt.remove();
@@ -106,7 +109,7 @@ goog.require('ga_price_filter');
         scope.order = function() {
           if (scope.orderType) {
             gaShop.dispatch(scope.orderType, layerBodId,
-                getFeatureIdToRequest(), scope.geometry);
+                getFeatureIdToRequest(), scope.geometry, proj);
           }
         };
 
@@ -170,16 +173,13 @@ goog.require('ga_price_filter');
               scope.geometry = geometry;
             }
           }
+          scope.price = null;
           if ((scope.orderType === 'rectangle' && geometry && cutArea) ||
               (scope.orderType !== 'rectangle' && !geometry)) {
             gaShop.getPrice(scope.orderType, layerBodId,
-                getFeatureIdToRequest(), geometry).then(function(price) {
+                getFeatureIdToRequest(), geometry, proj).then(function(price) {
               scope.price = price;
-            }, function() {
-              scope.price = null;
             });
-          } else {
-            scope.price = null;
           }
         };
 

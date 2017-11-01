@@ -9,7 +9,7 @@ describe('ga_shop_service', function() {
     var communeParams = '?layer=layerBodId&clipper=ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill&featureid=featureId';
     var districtParams = '?layer=layerBodId&clipper=ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill&featureid=featureId';
     var cantonParams = '?layer=layerBodId&clipper=ch.swisstopo.swissboundaries3d-kanton-flaeche.fill&featureid=featureId';
-    var rectangleParams = '?layer=layerBodId&geometry=geometry';
+    var rectangleParams = '?layer=layerBodId&geometry=-1999900.0000114017,-999900.0000313476,100,100';
     var wholeParams = '?layer=layerBodId&clipper=layerBodId';
     var mapsheetExeptions = [
       'ch.swisstopo.lubis-bildstreifen',
@@ -164,7 +164,7 @@ describe('ga_shop_service', function() {
       });
 
       it('opens a good rectangle url', function() {
-        gaShop.dispatch('rectangle', 'layerBodId', 'featureId', 'geometry');
+        gaShop.dispatch('rectangle', 'layerBodId', 'featureId', '-1999900.0000114017,-999900.0000313476,100,100');
         sinon.assert.calledWith(openStub, dispatchUrl + rectangleParams);
       });
 
@@ -177,6 +177,7 @@ describe('ga_shop_service', function() {
     describe('#getPrice()', function() {
       var $httpBackend, $rootScope;
       var priceUrl;
+      var proj = ol.proj.get('EPSG:2056');
 
       beforeEach(function() {
         inject(function($injector) {
@@ -193,6 +194,27 @@ describe('ga_shop_service', function() {
 
       it('returns a promise', function(done) {
         gaShop.getPrice().catch(function() {
+          done();
+        });
+        $rootScope.$digest();
+      });
+
+      it('reject the promise if no orderType defined', function(done) {
+        gaShop.getPrice().then(null, function() {
+          done();
+        });
+        $rootScope.$digest();
+      });
+
+      it('reject the promise if no layerBodId defined', function(done) {
+        gaShop.getPrice('foo').then(null, function() {
+          done();
+        });
+        $rootScope.$digest();
+      });
+
+      it('reject the promise if no proj definedi but geometry is', function(done) {
+        gaShop.getPrice('foo', 'foo', 'foo', 'foo').then(null, function() {
           done();
         });
         $rootScope.$digest();
@@ -255,7 +277,7 @@ describe('ga_shop_service', function() {
 
       it('send a good rectangle url', function(done) {
         $httpBackend.expectGET(priceUrl + rectangleParams).respond(200, {productPrice: 30});
-        gaShop.getPrice('rectangle', 'layerBodId', 'featureId', 'geometry').then(function(price) {
+        gaShop.getPrice('rectangle', 'layerBodId', 'featureId', '100,100,100,100', proj).then(function(price) {
           expect(price).to.eql(30);
           done();
         });
