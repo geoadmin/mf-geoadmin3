@@ -149,6 +149,7 @@ itemscope itemtype="http://schema.org/WebApplication"
           <span translate>problem_announcement</span>
         </a>&nbsp;&nbsp;
         <a target="_blank" href="//help.geo.admin.ch/?lang={{langId}}" translate>help_label</a>&nbsp;&nbsp;
+        <a href="{{deviceSwitcherHref}}" translate>mobile_redirect</a>&nbsp;&nbsp;
         <div ng-controller="GaTranslationController">
           <div ga-translation-selector ga-translation-selector-options="options"></div>
         </div>
@@ -438,6 +439,9 @@ itemscope itemtype="http://schema.org/WebApplication"
                 <a href="" ng-click="globals.feedbackPopupShown = !globals.feedbackPopupShown">
                   <span ng-class="{'selected': globals.feedbackPopupShown}" translate>problem_announcement</span>
                 </a>
+              </p>
+              <p>
+                <a href="{{deviceSwitcherHref}}" translate>desktop_redirect</a>
               </p>
               <div class="options">
                 <label ng-controller="GaTranslationController">

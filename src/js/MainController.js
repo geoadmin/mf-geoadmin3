@@ -233,10 +233,13 @@ goog.require('ga_window_service');
     });
 
     // Create switch device url
+    var switchToMobile = '' + !gaBrowserSniffer.mobile;
     $scope.host = {url: $window.location.host}; // only use in embed.html
     $scope.toMainHref = gaPermalink.getMainHref();
+    $scope.deviceSwitcherHref = gaPermalink.getHref({mobile: switchToMobile});
     $rootScope.$on('gaPermalinkChange', function() {
       $scope.toMainHref = gaPermalink.getMainHref();
+      $scope.deviceSwitcherHref = gaPermalink.getHref({mobile: switchToMobile});
     });
 
     $scope.globals = {

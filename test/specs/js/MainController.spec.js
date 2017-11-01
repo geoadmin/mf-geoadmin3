@@ -70,6 +70,7 @@ describe('ga_main_controller', function() {
         expect(scope.map).to.be.an(ol.Map);
         expect(scope.host.url).to.be($window.location.host);
         expect(scope.toMainHref).to.be(gaPermalink.getMainHref());
+        expect(scope.deviceSwitcherHref).to.be(gaPermalink.getHref({mobile: 'true'}));
         var g = scope.globals;
         expect(g.dev3d).to.be(false);
         expect(g.pegman).to.be(false);
