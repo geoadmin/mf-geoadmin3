@@ -1,11 +1,13 @@
 goog.provide('ga_profile_service');
 
+goog.require('ga_geomutils_service');
 goog.require('ga_urlutils_service');
 (function() {
 
   var module = angular.module('ga_profile_service', [
     'ga_urlutils_service',
-    'pascalprecht.translate'
+    'pascalprecht.translate',
+    'ga_geomutils_service'
   ]);
 
   module.filter('gaTimeFormat', function() {
@@ -76,7 +78,7 @@ goog.require('ga_urlutils_service');
 
     this.$get = function($q, $http, $timeout, $translate, measureFilter,
         gaTimeFormatFilter, $window, gaUrlUtils, gaBrowserSniffer,
-        gaGlobalOptions) {
+        gaGlobalOptions, gaGeomUtils) {
 
       var d3LibUrl = this.d3libUrl;
       var profileUrl = this.profileUrl;
@@ -264,16 +266,21 @@ goog.require('ga_urlutils_service');
         };
 
         this.get = function(feature) {
-          if (!feature || !feature.getGeometry()) {
+          var geom = (feature || new ol.Feature()).getGeometry();
+          geom = gaGeomUtils.multiGeomToSingleGeom(geom);
+          if (!feature || !geom ||
+              (!(geom instanceof ol.geom.Polygon) &&
+              !(geom instanceof ol.geom.LinearRing) &&
+              !(geom instanceof ol.geom.LineString))) {
             var defer = $q.defer();
             defer.resolve(emptyData);
             return defer.promise;
           }
-          var coordinates = feature.getGeometry().getCoordinates();
+          var coordinates = geom.getCoordinates();
 
           // TODO: manage all kind of geometry
-          if (feature.getGeometry() instanceof ol.geom.Polygon ||
-              feature.getGeometry() instanceof ol.geom.LinearRing) {
+          if (geom instanceof ol.geom.Polygon ||
+              geom instanceof ol.geom.LinearRing) {
             coordinates = coordinates[0];
           }
           var wkt = '{"type":"LineString","coordinates":' +

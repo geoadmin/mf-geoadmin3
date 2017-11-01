@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 describe('ga_profile_service', function() {
-  var gaProfile, $rootScope, $httpBackend, gaTimeFormat, gaGlobalOptions, testTooltips;
+  var gaProfile, $q, $rootScope, $httpBackend, gaTimeFormat, gaGlobalOptions, testTooltips;
 
   testTooltips = function(profile) {
     expect(profile.group.select('.ga-profile-elevation-difference title').
@@ -28,6 +28,7 @@ describe('ga_profile_service', function() {
       gaTimeFormat = $injector.get('gaTimeFormatFilter');
       $httpBackend = $injector.get('$httpBackend');
       $rootScope = $injector.get('$rootScope');
+      $q = $injector.get('$q');
       gaGlobalOptions = $injector.get('gaGlobalOptions');
     });
   });
@@ -79,7 +80,7 @@ describe('ga_profile_service', function() {
     var emptyData = [{alts: {}, dist: 0, domainDist: 0}];
     emptyData[0].alts['COMB'] = 0;
 
-    describe('create', function() {
+    describe('#create()', function() {
 
       it('creates an empty chart when no parameters defined', function(done) {
         var spy = sinon.spy($, 'getScript');
@@ -97,6 +98,29 @@ describe('ga_profile_service', function() {
           expect(profile.hikingTime()).to.be(0);
           done();
           spy.restore();
+        });
+        $rootScope.$digest();
+      });
+
+      it('returns empty profile if feature\'s geometry can\'t be handle', function(done) {
+        var p = [];
+        [
+          new ol.geom.Point(),
+          new ol.geom.MultiPoint([[0, 0]]),
+          new ol.geom.MultiLineString(),
+          new ol.geom.MultiPolygon(),
+          new ol.geom.MultiLineString([[[0, 0]], [[1, 1]]]),
+          new ol.geom.GeometryCollection([new ol.geom.Point([0, 0])])
+        ].forEach(function(geom) {
+          var feat = new ol.Feature(geom);
+          p.push(gaProfile.create(feat));
+        });
+        $q.all(p).then(function(resps) {
+          resps.forEach(function(resp) {
+            expect(resp.data.length).to.be(1);
+            expect(resp.data[0].dist).to.be(0);
+          });
+          done();
         });
         $rootScope.$digest();
       });
@@ -176,7 +200,7 @@ describe('ga_profile_service', function() {
       });
     });
 
-    describe('update', function() {
+    describe('#update()', function() {
 
       it('rejects the promise if no profile defined', function(done) {
         gaProfile.update(undefined, feature).then(function() {}, function() {
@@ -243,7 +267,6 @@ describe('ga_profile_service', function() {
         });
         $httpBackend.flush();
       });
-
     });
 
     describe('d3 is undefined', function() {

@@ -146,6 +146,54 @@ goog.provide('ga_geomutils_service');
             geom.setGeometries(geometries);
           }
         };
+
+        // Transform a multiLineString into LineString if possible
+        this.multiLineStringToLineString = function(geom) {
+          if (!(geom instanceof ol.geom.MultiLineString)) {
+            return geom;
+          }
+          var lineStrings = geom.getLineStrings();
+          var coords = [];
+          for (var i = 0, ii = lineStrings.length; i < ii; i++) {
+            var curr = lineStrings[i];
+            var next = lineStrings[i + 1];
+            var last = curr.getLastCoordinate();
+            if (!next || (last[0] === next.getFirstCoordinate()[0] ||
+                  last[1] === next.getFirstCoordinate()[1])) {
+              coords = coords.concat(curr.getCoordinates());
+            } else {
+              // LineStrings are not connected.
+              coords.length = 0;
+              break;
+            }
+          }
+          if (coords.length) {
+            geom = new ol.geom.LineString(coords);
+          }
+          return geom;
+        };
+
+        // Transform GeomCollection or MultiXXX geometries in a single geometry
+        // if possible otherwise returns the initial geometry.
+        this.multiGeomToSingleGeom = function(geom) {
+          if (geom instanceof ol.geom.GeometryCollection &&
+              geom.getGeometries().length === 1) {
+            geom = this.multiGeomToSingleGeom(geom.getGeometries()[0]);
+          }
+          if (geom instanceof ol.geom.MultiPoint &&
+              geom.getPoints().length === 1) {
+            geom = geom.getPoints()[0];
+          } else if (geom instanceof ol.geom.MultiLineString &&
+              geom.getLineStrings().length === 1) {
+            geom = geom.getLineStrings()[0];
+          } else if (geom instanceof ol.geom.MultiPolygon &&
+              geom.getPolygons().length === 1) {
+            geom = geom.getPolygons()[0];
+          } else if (geom instanceof ol.geom.MultiLineString) {
+            geom = this.multiLineStringToLineString(geom);
+          }
+          return geom;
+        };
       };
       return new GeomUtils();
     };

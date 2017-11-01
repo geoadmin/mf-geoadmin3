@@ -1,15 +1,17 @@
 goog.provide('ga_measure_service');
 
+goog.require('ga_geomutils_service');
 goog.require('ga_measure_filter');
 
 (function() {
 
   var module = angular.module('ga_measure_service', [
-    'ga_measure_filter'
+    'ga_measure_filter',
+    'ga_geomutils_service'
   ]);
 
   module.provider('gaMeasure', function() {
-    this.$get = function($document, measureFilter, gaMapUtils) {
+    this.$get = function($document, measureFilter, gaMapUtils, gaGeomUtils) {
       var Measure = function() {
 
         // Transform 2111333 in 2'111'333
@@ -24,6 +26,7 @@ goog.require('ga_measure_filter');
 
         this.getLength = function(geom) {
           var lineString;
+          geom = gaGeomUtils.multiGeomToSingleGeom(geom);
           if (geom instanceof ol.geom.LineString) {
             lineString = geom;
           } else if (geom instanceof ol.geom.LinearRing) {
@@ -42,6 +45,7 @@ goog.require('ga_measure_filter');
         };
 
         this.getArea = function(geom, calculateLineStringArea) {
+          geom = gaGeomUtils.multiGeomToSingleGeom(geom);
           if (calculateLineStringArea && geom instanceof ol.geom.LineString) {
             return Math.abs(new ol.geom.Polygon([geom.getCoordinates()]).
                 getArea());
@@ -55,6 +59,7 @@ goog.require('ga_measure_filter');
         };
 
         this.getAzimuth = function(geom) {
+          geom = gaGeomUtils.multiGeomToSingleGeom(geom);
           if (!(geom instanceof ol.geom.Polygon) &&
               !(geom instanceof ol.geom.LineString) &&
               !(geom instanceof ol.geom.LinearRing)) {
