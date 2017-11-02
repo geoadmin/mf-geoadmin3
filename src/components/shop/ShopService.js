@@ -91,7 +91,7 @@ goog.require('ga_translation_service');
 
         this.dispatch = function(orderType, layerBodId, featureId, geometry,
             proj) {
-          if (!orderType || !layerBodId) {
+          if (!orderType || !layerBodId || (geometry && !proj)) {
             return;
           }
           var sessionId;
@@ -116,7 +116,7 @@ goog.require('ga_translation_service');
           // Geometry is a string representing an extent
           if (geometry && proj) {
             var extent = geometry.split(',');
-            extent = ol.proj.transform(extent, proj, 'EPSG:21781');
+            extent = ol.proj.transformExtent(extent, proj, 'EPSG:21781');
             geometry = extent.toString();
           }
           sessionId = sessionId || new Date();
@@ -136,7 +136,7 @@ goog.require('ga_translation_service');
           // Geometry is a string representing an extent
           if (geometry && proj) {
             var extent = geometry.split(',');
-            extent = ol.proj.transform(extent, proj, 'EPSG:21781');
+            extent = ol.proj.transformExtent(extent, proj, 'EPSG:21781');
             geometry = extent.toString();
           }
           var url = priceUrl + getParams(orderType, layerBodId, featureId,
