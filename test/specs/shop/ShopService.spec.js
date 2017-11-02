@@ -9,7 +9,7 @@ describe('ga_shop_service', function() {
     var communeParams = '?layer=layerBodId&clipper=ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill&featureid=featureId';
     var districtParams = '?layer=layerBodId&clipper=ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill&featureid=featureId';
     var cantonParams = '?layer=layerBodId&clipper=ch.swisstopo.swissboundaries3d-kanton-flaeche.fill&featureid=featureId';
-    var rectangleParams = '?layer=layerBodId&geometry=-1999900.0000114017,-999900.0000313476,-1999900.0000114017,-999900.0000313476';
+    var rectangleParams = '?layer=layerBodId&geometry=-1999900,-999900,-1999900,-999900';
     var wholeParams = '?layer=layerBodId&clipper=layerBodId';
     var mapsheetExeptions = [
       'ch.swisstopo.lubis-bildstreifen',

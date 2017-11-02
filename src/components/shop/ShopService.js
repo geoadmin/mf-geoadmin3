@@ -87,6 +87,15 @@ goog.require('ga_translation_service');
         return stringifyParams(params);
       };
 
+      var transformExtent = function(geometry, proj) {
+        var extent = geometry.split(',');
+        extent = ol.proj.transformExtent(extent, proj, 'EPSG:21781');
+        extent.forEach(function(val, idx) {
+          extent[idx] = Math.round(val);
+        });
+        return extent.toString();
+      };
+
       var Shop = function() {
 
         this.dispatch = function(orderType, layerBodId, featureId, geometry,
@@ -115,9 +124,7 @@ goog.require('ga_translation_service');
           }
           // Geometry is a string representing an extent
           if (geometry && proj) {
-            var extent = geometry.split(',');
-            extent = ol.proj.transformExtent(extent, proj, 'EPSG:21781');
-            geometry = extent.toString();
+            geometry = transformExtent(geometry, proj);
           }
           sessionId = sessionId || new Date();
           var url = gaGlobalOptions.shopUrl + '/' + gaLang.get() +
@@ -135,9 +142,7 @@ goog.require('ga_translation_service');
           }
           // Geometry is a string representing an extent
           if (geometry && proj) {
-            var extent = geometry.split(',');
-            extent = ol.proj.transformExtent(extent, proj, 'EPSG:21781');
-            geometry = extent.toString();
+            geometry = transformExtent(geometry, proj);
           }
           var url = priceUrl + getParams(orderType, layerBodId, featureId,
               geometry);
