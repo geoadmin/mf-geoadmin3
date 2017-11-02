@@ -9,7 +9,7 @@ describe('ga_shop_service', function() {
     var communeParams = '?layer=layerBodId&clipper=ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill&featureid=featureId';
     var districtParams = '?layer=layerBodId&clipper=ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill&featureid=featureId';
     var cantonParams = '?layer=layerBodId&clipper=ch.swisstopo.swissboundaries3d-kanton-flaeche.fill&featureid=featureId';
-    var rectangleParams = '?layer=layerBodId&geometry=-1999900.0000114017,-999900.0000313476,100,100';
+    var rectangleParams = '?layer=layerBodId&geometry=-1999900.0000114017,-999900.0000313476,-1999900.0000114017,-999900.0000313476';
     var wholeParams = '?layer=layerBodId&clipper=layerBodId';
     var mapsheetExeptions = [
       'ch.swisstopo.lubis-bildstreifen',
@@ -60,6 +60,7 @@ describe('ga_shop_service', function() {
       var closeSpy, openStub, clock, $window;
       var dispatchUrl;
       var dfltDispatchUrl;
+      var proj = ol.proj.get('EPSG:2056');
       var fakeWindow = {
         close: function() {}
       };
@@ -92,6 +93,12 @@ describe('ga_shop_service', function() {
 
         gaShop.dispatch(null, 'layerBodId');
         sinon.assert.notCalled(openStub);
+      });
+
+      it('do nothing if geometry is set but not proj', function() {
+        gaShop.dispatch('orderType', 'layerBodId', 'featureId', '100,100,100,100');
+        sinon.assert.notCalled(openStub);
+        sinon.assert.notCalled(closeSpy);
       });
 
       it('opens a new window (setting a new sessionId)', function() {
@@ -164,7 +171,7 @@ describe('ga_shop_service', function() {
       });
 
       it('opens a good rectangle url', function() {
-        gaShop.dispatch('rectangle', 'layerBodId', 'featureId', '-1999900.0000114017,-999900.0000313476,100,100');
+        gaShop.dispatch('rectangle', 'layerBodId', 'featureId', '100,100,100,100', proj);
         sinon.assert.calledWith(openStub, dispatchUrl + rectangleParams);
       });
 
@@ -213,7 +220,7 @@ describe('ga_shop_service', function() {
         $rootScope.$digest();
       });
 
-      it('reject the promise if no proj definedi but geometry is', function(done) {
+      it('reject the promise if no proj defined but geometry is', function(done) {
         gaShop.getPrice('foo', 'foo', 'foo', 'foo').then(null, function() {
           done();
         });
