@@ -830,8 +830,7 @@ goog.require('ga_urlutils_service');
                     config.minResolution),
                 tileLoadFunction: tileLoadFunction,
                 urls: getImageryUrls(wmtsTplUrl, h2(wmtsSubdomains)),
-                crossOrigin: crossOrigin,
-                transition: 0
+                crossOrigin: crossOrigin
               });
             }
             olLayer = new ol.layer.Tile({
@@ -884,8 +883,7 @@ goog.require('ga_urlutils_service');
                   tileGrid: gaTileGrid.get(config.resolutions,
                       config.minResolution, config.type),
                   tileLoadFunction: tileLoadFunction,
-                  wrapX: false,
-                  transition: 0
+                  wrapX: false
                 });
               }
               olLayer = new ol.layer.Tile({
