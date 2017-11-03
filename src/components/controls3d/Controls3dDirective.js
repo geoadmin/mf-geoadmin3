@@ -1,7 +1,7 @@
 goog.provide('ga_controls3d_directive');
 
 goog.require('fps');
-goog.require('ga_map_service');
+goog.require('ga_maputils_service');
 
 (function() {
 
@@ -21,7 +21,7 @@ goog.require('ga_map_service');
   };
 
   var module = angular.module('ga_controls3d_directive', [
-    'ga_map_service'
+    'ga_maputils_service'
   ]);
 
   module.directive('gaControls3d', function(gaMapUtils) {

@@ -2,7 +2,9 @@ goog.provide('ga_timeselector_directive');
 
 goog.require('ga_browsersniffer_service');
 goog.require('ga_debounce_service');
-goog.require('ga_map_service');
+goog.require('ga_layerfilters_service');
+goog.require('ga_layers_service');
+goog.require('ga_maputils_service');
 goog.require('ga_slider_directive');
 goog.require('ga_time_service');
 
@@ -11,7 +13,9 @@ goog.require('ga_time_service');
   var module = angular.module('ga_timeselector_directive', [
     'ga_browsersniffer_service',
     'ga_debounce_service',
-    'ga_map_service',
+    'ga_layerfilters_service',
+    'ga_layers_service',
+    'ga_maputils_service',
     'ga_slider_directive',
     'ga_time_service',
     'pascalprecht.translate'

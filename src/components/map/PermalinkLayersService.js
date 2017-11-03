@@ -1,7 +1,8 @@
 goog.provide('ga_permalinklayers_service');
 
 goog.require('ga_filestorage_service');
-goog.require('ga_map_service');
+goog.require('ga_layerfilters_service');
+goog.require('ga_maputils_service');
 goog.require('ga_permalink_service');
 goog.require('ga_time_service');
 goog.require('ga_topic_service');
@@ -15,8 +16,9 @@ goog.require('ga_wmts_service');
   var module = angular.module('ga_permalinklayers_service', [
     'pascalprecht.translate',
     'ga_filestorage_service',
+    'ga_layerfilters_service',
     'ga_vector_service',
-    'ga_map_service',
+    'ga_maputils_service',
     'ga_permalink_service',
     'ga_time_service',
     'ga_topic_service',

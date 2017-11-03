@@ -1,13 +1,15 @@
 goog.provide('ga_background_service');
 
-goog.require('ga_map_service');
+goog.require('ga_layers_service');
 goog.require('ga_permalink');
+goog.require('ga_urlutils_service');
 
 (function() {
 
   var module = angular.module('ga_background_service', [
     'ga_permalink',
-    'ga_map_service'
+    'ga_layers_service',
+    'ga_urlutils_service'
   ]);
 
   /**

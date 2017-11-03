@@ -1,11 +1,10 @@
 goog.provide('ga_offline_directive');
 
-goog.require('ga_map_service');
 goog.require('ga_networkstatus_service');
+
 (function() {
 
   var module = angular.module('ga_offline_directive', [
-    'ga_map_service',
     'ga_networkstatus_service',
     'pascalprecht.translate'
   ]);

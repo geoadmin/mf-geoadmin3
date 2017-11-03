@@ -1,13 +1,13 @@
 goog.provide('ga_shoprectangle_directive');
 goog.require('ga_debounce_service');
-goog.require('ga_map_service');
+goog.require('ga_maputils_service');
 goog.require('ga_measure_filter');
 
 (function() {
 
   var module = angular.module('ga_shoprectangle_directive', [
     'ga_debounce_service',
-    'ga_map_service'
+    'ga_maputils_service'
   ]);
 
   module.directive('gaShopRectangle', function(gaDebounce, gaMapUtils, gaShop) {

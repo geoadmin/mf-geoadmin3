@@ -1,21 +1,25 @@
 goog.provide('ga_draw_directive');
 
+goog.require('ga_definepropertiesforlayer_service');
 goog.require('ga_event_service');
 goog.require('ga_exportkml_service');
 goog.require('ga_filestorage_service');
 goog.require('ga_geomutils_service');
-goog.require('ga_map_service');
+goog.require('ga_layerfilters_service');
+goog.require('ga_maputils_service');
 goog.require('ga_measure_service');
 goog.require('ga_styles_service');
 
 (function() {
 
   var module = angular.module('ga_draw_directive', [
+    'ga_definepropertiesforlayer_service',
     'ga_exportkml_service',
     'ga_event_service',
     'ga_filestorage_service',
     'ga_geomutils_service',
-    'ga_map_service',
+    'ga_layerfilters_service',
+    'ga_maputils_service',
     'ga_measure_service',
     'ga_styles_service',
     'pascalprecht.translate'

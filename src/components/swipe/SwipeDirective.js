@@ -1,12 +1,13 @@
 goog.provide('ga_swipe_directive');
 
 goog.require('ga_debounce_service');
-goog.require('ga_map_service');
+goog.require('ga_layerfilters_service');
+
 (function() {
 
   var module = angular.module('ga_swipe_directive', [
     'ga_debounce_service',
-    'ga_map_service'
+    'ga_layerfilters_service'
   ]);
 
   module.directive('gaSwipe',

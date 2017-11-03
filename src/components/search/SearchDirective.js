@@ -1,6 +1,7 @@
 goog.provide('ga_search_directive');
 
-goog.require('ga_map_service');
+goog.require('ga_layers_service');
+goog.require('ga_maputils_service');
 goog.require('ga_marker_overlay_service');
 goog.require('ga_permalink');
 goog.require('ga_search_service');
@@ -14,7 +15,6 @@ goog.require('ga_what3words_service');
 
   var module = angular.module('ga_search_directive', [
     'ga_vector_service',
-    'ga_map_service',
     'ga_marker_overlay_service',
     'ga_permalink',
     'ga_search_service',
@@ -22,6 +22,8 @@ goog.require('ga_what3words_service');
     'ga_urlutils_service',
     'ga_translation_service',
     'ga_topic_service',
+    'ga_maputils_service',
+    'ga_layers_service',
     'ga_what3words_service'
   ]);
 

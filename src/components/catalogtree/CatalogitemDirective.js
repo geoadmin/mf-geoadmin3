@@ -3,7 +3,8 @@ goog.provide('ga_catalogitem_directive');
 goog.require('ga_catalogtree_directive');
 goog.require('ga_event_service');
 goog.require('ga_layermetadatapopup_service');
-goog.require('ga_map_service');
+goog.require('ga_layers_service');
+goog.require('ga_maputils_service');
 goog.require('ga_previewlayers_service');
 
 (function() {
@@ -11,7 +12,8 @@ goog.require('ga_previewlayers_service');
   var module = angular.module('ga_catalogitem_directive', [
     'ga_catalogtree_directive',
     'ga_layermetadatapopup_service',
-    'ga_map_service',
+    'ga_layers_service',
+    'ga_maputils_service',
     'ga_previewlayers_service',
     'ga_event_service'
   ]);

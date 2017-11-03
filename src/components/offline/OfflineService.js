@@ -1,6 +1,8 @@
 goog.provide('ga_offline_service');
 
 goog.require('ga_background_service');
+goog.require('ga_layers_service');
+goog.require('ga_maputils_service');
 goog.require('ga_storage_service');
 goog.require('ga_styles_service');
 goog.require('ga_window_service');
@@ -11,7 +13,9 @@ goog.require('ga_window_service');
     'ga_storage_service',
     'ga_styles_service',
     'ga_background_service',
-    'ga_window_service'
+    'ga_window_service',
+    'ga_maputils_service',
+    'ga_layers_service'
   ]);
 
   /**

@@ -1,11 +1,14 @@
 goog.provide('ga_profile_directive');
 
+goog.require('ga_maputils_service');
 goog.require('ga_profile_service');
+goog.require('ga_styles_service');
+
 (function() {
 
   var module = angular.module('ga_profile_directive', [
     'ga_profile_service',
-    'ga_map_service',
+    'ga_maputils_service',
     'ga_styles_service'
   ]);
 

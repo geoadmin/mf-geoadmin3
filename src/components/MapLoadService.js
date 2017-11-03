@@ -1,11 +1,11 @@
 goog.provide('ga_map_load_service');
 
-goog.require('ga_map_service');
+goog.require('ga_layerfilters_service');
 
 (function() {
 
   var module = angular.module('ga_map_load_service', [
-    'ga_map_service'
+    'ga_layerfilters_service'
   ]);
 
   /**

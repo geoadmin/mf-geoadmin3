@@ -1,10 +1,11 @@
 goog.provide('ga_rotate_directive');
 
-goog.require('ga_map_service');
+goog.require('ga_maputils_service');
+
 (function() {
 
   var module = angular.module('ga_rotate_directive', [
-    'ga_map_service'
+    'ga_maputils_service'
   ]);
 
   module.directive('gaRotate', function(gaMapUtils) {

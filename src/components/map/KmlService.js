@@ -1,5 +1,6 @@
 goog.provide('ga_kml_service');
 
+goog.require('ga_maputils_service');
 goog.require('ga_networkstatus_service');
 goog.require('ga_styles_service');
 goog.require('ga_urlutils_service');
@@ -9,7 +10,8 @@ goog.require('ga_urlutils_service');
   var module = angular.module('ga_kml_service', [
     'ga_networkstatus_service',
     'ga_styles_service',
-    'ga_urlutils_service'
+    'ga_urlutils_service',
+    'ga_maputils_service'
   ]);
 
   /**

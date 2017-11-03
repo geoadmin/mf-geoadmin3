@@ -1,13 +1,15 @@
 goog.provide('ga_permalinkfeatures_service');
 
-goog.require('ga_map_service');
+goog.require('ga_layers_service');
+goog.require('ga_maputils_service');
 goog.require('ga_permalink_service');
 goog.require('ga_previewfeatures_service');
 
 (function() {
 
   var module = angular.module('ga_permalinkfeatures_service', [
-    'ga_map_service',
+    'ga_layers_service',
+    'ga_maputils_service',
     'ga_permalink_service',
     'ga_previewfeatures_service'
   ]);

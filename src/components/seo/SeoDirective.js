@@ -1,11 +1,11 @@
 goog.provide('ga_seo_directive');
 
-goog.require('ga_map_service');
+goog.require('ga_layers_service');
 goog.require('ga_seo_service');
 (function() {
 
   var module = angular.module('ga_seo_directive', [
-    'ga_map_service',
+    'ga_layers_service',
     'ga_seo_service',
     'pascalprecht.translate'
   ]);

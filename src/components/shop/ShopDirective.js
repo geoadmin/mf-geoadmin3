@@ -1,13 +1,13 @@
 goog.provide('ga_shop_directive');
 goog.require('ga_identify_service');
-goog.require('ga_map_service');
+goog.require('ga_layers_service');
 goog.require('ga_previewfeatures_service');
 goog.require('ga_price_filter');
 
 (function() {
 
   var module = angular.module('ga_shop_directive', [
-    'ga_map_service',
+    'ga_layers_service',
     'ga_shop_service',
     'ga_identify_service',
     'ga_previewfeatures_service',
