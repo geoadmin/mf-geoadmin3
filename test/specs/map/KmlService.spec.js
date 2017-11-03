@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-describe('ga_gpx_service', function() {
+describe('ga_kml_service', function() {
 
   describe('gaKml', function() {
     var gaKml, $rootScope, gaStyleFactory, gaNetworkStatus, gaMapUtils, $httpBackend;
