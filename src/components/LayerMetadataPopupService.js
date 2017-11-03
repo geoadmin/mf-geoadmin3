@@ -1,13 +1,15 @@
 goog.provide('ga_layermetadatapopup_service');
 
-goog.require('ga_map_service');
+goog.require('ga_layers_service');
+goog.require('ga_maputils_service');
 goog.require('ga_popup');
 goog.require('ga_wms_service');
 
 (function() {
 
   var module = angular.module('ga_layermetadatapopup_service', [
-    'ga_map_service',
+    'ga_maputils_service',
+    'ga_layers_service',
     'ga_popup',
     'ga_wms_service',
     'pascalprecht.translate'

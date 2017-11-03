@@ -1,7 +1,7 @@
 goog.provide('ga_import_controller');
 
 goog.require('ga_browsersniffer_service');
-goog.require('ga_map_service');
+goog.require('ga_maputils_service');
 goog.require('ga_previewlayers_service');
 goog.require('ga_translation_service');
 goog.require('ga_urlutils_service');
@@ -14,7 +14,7 @@ goog.require('ngeo.fileService');
   var module = angular.module('ga_import_controller', [
     'ngeo.fileService',
     'ga_browsersniffer_service',
-    'ga_map_service',
+    'ga_maputils_service',
     'ga_urlutils_service',
     'ga_previewlayers_service',
     'ga_translation_service',

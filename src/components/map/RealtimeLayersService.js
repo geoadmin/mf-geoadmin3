@@ -1,11 +1,16 @@
 goog.provide('ga_realtimelayers_service');
 
+goog.require('ga_layerfilters_service');
+goog.require('ga_layers_service');
+goog.require('ga_maputils_service');
 goog.require('ga_vector_service');
 
 (function() {
 
   var module = angular.module('ga_realtimelayers_service', [
-    'ga_map_service',
+    'ga_layerfilters_service',
+    'ga_layers_service',
+    'ga_maputils_service',
     'ga_vector_service'
   ]);
 

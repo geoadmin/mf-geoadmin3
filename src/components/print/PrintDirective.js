@@ -2,6 +2,8 @@ goog.provide('ga_print_directive');
 
 goog.require('ga_attribution_service');
 goog.require('ga_browsersniffer_service');
+goog.require('ga_layers_service');
+goog.require('ga_maputils_service');
 goog.require('ga_printlayer_service');
 goog.require('ga_printstyle_service');
 goog.require('ga_time_service');
@@ -16,6 +18,8 @@ goog.require('ga_urlutils_service');
     'ga_printlayer_service',
     'ga_time_service',
     'ga_attribution_service',
+    'ga_maputils_service',
+    'ga_layers_service',
     'ga_urlutils_service'
   ]);
 

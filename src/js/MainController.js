@@ -2,8 +2,9 @@ goog.provide('ga_main_controller');
 
 goog.require('ga_background_service');
 goog.require('ga_cesium');
-goog.require('ga_map');
+goog.require('ga_layers_service');
 goog.require('ga_map_load_service');
+goog.require('ga_maputils_service');
 goog.require('ga_networkstatus_service');
 goog.require('ga_storage_service');
 goog.require('ga_topic_service');

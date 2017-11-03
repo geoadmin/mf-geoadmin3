@@ -1,9 +1,10 @@
 goog.provide('ga_vector_service');
 
+goog.require('ga_definepropertiesforlayer_service');
 goog.require('ga_geomutils_service');
 goog.require('ga_gpx_service');
 goog.require('ga_kml_service');
-goog.require('ga_map_service');
+goog.require('ga_maputils_service');
 goog.require('ga_measure_service');
 goog.require('ga_networkstatus_service');
 goog.require('ga_storage_service');
@@ -13,9 +14,10 @@ goog.require('ngeo.fileService');
 (function() {
 
   var module = angular.module('ga_vector_service', [
+    'ga_definepropertiesforlayer_service',
     'ga_gpx_service',
     'ga_kml_service',
-    'ga_map_service',
+    'ga_maputils_service',
     'ga_networkstatus_service',
     'ga_storage_service',
     'ga_urlutils_service',

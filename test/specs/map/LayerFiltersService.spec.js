@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-describe('ga_layer_filter', function() {
+describe('ga_layerfilters_service', function() {
 
   describe('gaLayerFilter', function() {
     var gaLayerFilters, gaLayers, gaDefinePropertiesForLayer;

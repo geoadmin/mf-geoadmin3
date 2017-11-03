@@ -1,12 +1,16 @@
 goog.provide('ga_previewfeatures_service');
 
-goog.require('ga_map_service');
+goog.require('ga_definepropertiesforlayer_service');
+goog.require('ga_layers_service');
+goog.require('ga_maputils_service');
 goog.require('ga_styles_service');
 
 (function() {
 
   var module = angular.module('ga_previewfeatures_service', [
-    'ga_map_service',
+    'ga_definepropertiesforlayer_service',
+    'ga_layers_service',
+    'ga_maputils_service',
     'ga_styles_service'
   ]);
 

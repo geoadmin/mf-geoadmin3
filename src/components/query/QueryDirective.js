@@ -1,13 +1,15 @@
 goog.provide('ga_query_directive');
 
 goog.require('ga_identify_service');
-goog.require('ga_map_service');
+goog.require('ga_layerfilters_service');
+goog.require('ga_maputils_service');
 goog.require('ga_query_service');
 
 (function() {
 
   var module = angular.module('ga_query_directive', [
-    'ga_map_service',
+    'ga_layerfilters_service',
+    'ga_maputils_service',
     'ga_query_service',
     'ga_identify_service'
   ]);

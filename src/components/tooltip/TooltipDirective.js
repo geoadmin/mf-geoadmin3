@@ -5,7 +5,9 @@ goog.require('ga_debounce_service');
 goog.require('ga_event_service');
 goog.require('ga_identify_service');
 goog.require('ga_iframecom_service');
-goog.require('ga_map_service');
+goog.require('ga_layers_service');
+goog.require('ga_mapclick_service');
+goog.require('ga_maputils_service');
 goog.require('ga_popup_service');
 goog.require('ga_previewfeatures_service');
 goog.require('ga_sanitize_service');
@@ -21,7 +23,9 @@ goog.require('ga_window_service');
     'ga_event_service',
     'ga_identify_service',
     'ga_iframecom_service',
-    'ga_map_service',
+    'ga_layers_service',
+    'ga_maputils_service',
+    'ga_mapclick_service',
     'ga_popup_service',
     'ga_previewfeatures_service',
     'ga_sanitize_service',

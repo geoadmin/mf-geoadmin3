@@ -1,12 +1,12 @@
 goog.provide('ga_marker_overlay_service');
 
-goog.require('ga_map_service');
+goog.require('ga_maputils_service');
 goog.require('ga_styles_service');
 
 (function() {
 
   var module = angular.module('ga_marker_overlay_service', [
-    'ga_map_service',
+    'ga_maputils_service',
     'ga_styles_service'
   ]);
 

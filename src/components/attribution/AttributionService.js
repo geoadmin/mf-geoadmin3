@@ -1,13 +1,13 @@
 goog.provide('ga_attribution_service');
 
-goog.require('ga_map_service');
+goog.require('ga_layers_service');
 goog.require('ga_translation_service');
 goog.require('ga_urlutils_service');
 
 (function() {
 
   var module = angular.module('ga_attribution_service', [
-    'ga_map_service',
+    'ga_layers_service',
     'ga_translation_service',
     'ga_urlutils_service'
   ]);

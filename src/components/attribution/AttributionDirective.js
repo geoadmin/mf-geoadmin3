@@ -3,14 +3,12 @@ goog.provide('ga_attribution_directive');
 goog.require('ga_attribution_service');
 goog.require('ga_debounce_service');
 goog.require('ga_event_service');
-goog.require('ga_map_service');
 
 (function() {
 
   var module = angular.module('ga_attribution_directive', [
     'ga_attribution_service',
     'ga_event_service',
-    'ga_map_service',
     'ga_debounce_service'
   ]);
 

@@ -1,11 +1,13 @@
 goog.provide('ga_opaquelayers_service');
 
-goog.require('ga_map_service');
+goog.require('ga_layerfilters_service');
+goog.require('ga_layers_service');
 
 (function() {
 
   var module = angular.module('ga_opaquelayers_service', [
-    'ga_map_service'
+    'ga_layerfilters_service',
+    'ga_layers_service'
   ]);
 
   /**

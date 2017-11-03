@@ -1,10 +1,12 @@
 goog.provide('ga_timestamp_control_directive');
 
-goog.require('ga_map_service');
+goog.require('ga_layerfilters_service');
+
 (function() {
 
-  var module = angular.module('ga_timestamp_control_directive',
-      ['ga_map_service']);
+  var module = angular.module('ga_timestamp_control_directive', [
+    'ga_layerfilters_service'
+  ]);
 
   module.directive('gaTimestampControl', function($rootScope, gaLayerFilters) {
     return {

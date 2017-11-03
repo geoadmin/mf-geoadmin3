@@ -1,8 +1,10 @@
 goog.provide('ga_search_type_directives');
 
 goog.require('ga_debounce_service');
+goog.require('ga_layerfilters_service');
 goog.require('ga_layermetadatapopup_service');
-goog.require('ga_map_service');
+goog.require('ga_layers_service');
+goog.require('ga_maputils_service');
 goog.require('ga_marker_overlay_service');
 goog.require('ga_previewfeatures_service');
 goog.require('ga_previewlayers_service');
@@ -162,8 +164,10 @@ goog.require('ga_urlutils_service');
 
   var module = angular.module('ga_search_type_directives', [
     'ga_debounce_service',
+    'ga_layerfilters_service',
     'ga_layermetadatapopup_service',
-    'ga_map_service',
+    'ga_layers_service',
+    'ga_maputils_service',
     'ga_marker_overlay_service',
     'ga_previewfeatures_service',
     'ga_previewlayers_service',

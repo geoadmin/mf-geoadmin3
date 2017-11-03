@@ -1,14 +1,16 @@
 goog.provide('ga_wms_service');
 
-goog.require('ga_map_service');
+goog.require('ga_definepropertiesforlayer_service');
+goog.require('ga_maputils_service');
 goog.require('ga_translation_service');
 goog.require('ga_urlutils_service');
 
 (function() {
 
   var module = angular.module('ga_wms_service', [
+    'ga_definepropertiesforlayer_service',
     'pascalprecht.translate',
-    'ga_map_service',
+    'ga_maputils_service',
     'ga_urlutils_service',
     'ga_translation_service'
   ]);

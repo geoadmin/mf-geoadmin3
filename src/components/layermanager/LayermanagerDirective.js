@@ -3,7 +3,8 @@ goog.provide('ga_layermanager_directive');
 goog.require('ga_attribution_service');
 goog.require('ga_event_service');
 goog.require('ga_layermetadatapopup_service');
-goog.require('ga_map_service');
+goog.require('ga_layers_service');
+goog.require('ga_maputils_service');
 goog.require('ga_urlutils_service');
 goog.require('ga_window_service');
 
@@ -12,7 +13,8 @@ goog.require('ga_window_service');
   var module = angular.module('ga_layermanager_directive', [
     'pascalprecht.translate',
     'ga_layermetadatapopup_service',
-    'ga_map_service',
+    'ga_layers_service',
+    'ga_maputils_service',
     'ga_attribution_service',
     'ga_urlutils_service',
     'ga_event_service',

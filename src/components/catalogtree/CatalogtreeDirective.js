@@ -1,13 +1,14 @@
 goog.provide('ga_catalogtree_directive');
 
-goog.require('ga_map_service');
+goog.require('ga_layerfilters_service');
 goog.require('ga_permalink');
 goog.require('ga_topic_service');
 goog.require('ga_translation_service');
+
 (function() {
 
   var module = angular.module('ga_catalogtree_directive', [
-    'ga_map_service',
+    'ga_layerfilters_service',
     'ga_permalink',
     'ga_topic_service',
     'ga_translation_service'

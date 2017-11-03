@@ -1,5 +1,7 @@
 goog.provide('ga_printlayer_service');
 
+goog.require('ga_layers_service');
+goog.require('ga_maputils_service');
 goog.require('ga_printstyle_service');
 goog.require('ga_translation_service');
 goog.require('ga_urlutils_service');
@@ -10,6 +12,8 @@ goog.require('ga_urlutils_service');
     'ga_translation_service',
     'ga_urlutils_service',
     'ga_printstyle_service',
+    'ga_maputils_service',
+    'ga_layers_service',
     'pascalprecht.translate'
   ]);
 
