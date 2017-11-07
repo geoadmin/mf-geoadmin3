@@ -404,6 +404,7 @@ goog.require('ga_urlutils_service');
       var requestEncoding = source.getRequestEncoding() || 'REST';
       // Not all layers have projection assigned
       var dfltTileMatrixSet = gaGlobalOptions.defaultEpsg.split(':')[1];
+      var isExternalWmts = angular.equals(config, {});
 
       // resourceURL for RESTful, service endpoint for KVP
       var url = source.getUrls()[0];
@@ -425,8 +426,6 @@ goog.require('ga_urlutils_service');
       angular.extend(enc, {
         type: 'WMTS',
         layer: source.getLayer(),
-        baseURL: baseUrl,
-        matrixIds: matrices,
         version: source.getVersion() || '1.0.0',
         requestEncoding: requestEncoding,
         formatSuffix: source.getFormat().replace('image/', ''),
@@ -435,6 +434,23 @@ goog.require('ga_urlutils_service');
         params: wmtsDimensions,
         matrixSet: source.getMatrixSet() || dfltTileMatrixSet
       });
+      if (!isExternalWmts) {
+        angular.extend(enc, {
+          baseURL: baseUrl.slice(0, baseUrl.indexOf('/1.0.0')),
+          zoomOffset: tileGrid.getMinZoom(),
+          tileOrigin: tileGrid.getOrigin(),
+          tileSize: [tileGrid.getTileSize(), tileGrid.getTileSize()],
+          resolutions: tileGrid.getResolutions(),
+          maxExtent: extent
+        });
+      } else {
+        // use the full monty WMTS definition fo external source   
+        angular.extend(enc, {
+          layer: source.getLayer(),
+          baseURL: baseUrl,
+          matrixIds: matrices
+        });
+      }
 
       var multiPagesPrint = false;
       if (config.timestamps) {
