@@ -80,6 +80,8 @@ describe('ga_main_controller', function() {
         expect(g.ios).to.be(false);
         expect(g.animation).to.be(true);
         expect(g.offline).to.be(false);
+        expect(g.desktop).to.be(true);
+        expect(g.mobile).to.be(false);
         expect(g.embed).to.be(false);
         expect(g.pulldownShown).to.be(true);
         expect(g.catalogShown).to.be(false);

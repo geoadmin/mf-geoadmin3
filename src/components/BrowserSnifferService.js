@@ -33,6 +33,7 @@ goog.require('ga_permalink');
       var safari = !msie && !opera && !chrome && /Safari/.test(ua);
       var mobile = /\/mobile\.html$/.test($window.location.pathname);
       var embed = /\/embed\.html$/.test($window.location.pathname);
+      var desktop = !mobile && !embed;
 
       if (msie > 9) {
         // IE10/IE11 don’t fire `input` event. Angular rely on it.
@@ -111,8 +112,9 @@ goog.require('ga_permalink');
         safari: safari,
         chrome: chrome, // Only for test purpose
         ios: ios, // false or iOS version number
-        mobile: mobile,
         events: eventsKeys,
+        desktop: desktop,
+        mobile: mobile,
         embed: embed,
         iframe: ($window.location !== $window.parent.location),
         webgl: !(typeof WebGLRenderingContext === 'undefined'),

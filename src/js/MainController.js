@@ -251,6 +251,8 @@ goog.require('ga_window_service');
       ios: gaBrowserSniffer.ios,
       animation: gaBrowserSniffer.animation,
       offline: gaNetworkStatus.offline,
+      desktop: gaBrowserSniffer.desktop,
+      mobile: gaBrowserSniffer.mobile,
       embed: gaBrowserSniffer.embed,
       pulldownShown: false,
       catalogShown: false,

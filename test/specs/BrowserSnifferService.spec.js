@@ -95,43 +95,35 @@ describe('ga_browsersniffer_service', function() {
       });
     });
 
-    it('detects it\'s not the embed page', function() {
-      win.location.pathname = 'http://geoadmin.ch/embed/src/';
-      snif = injector.get('gaBrowserSniffer');
-      expect(snif.embed).to.be.eql(false);
-      expect(snif.mobile).to.be.eql(false);
+    var props = ['desktop', 'mobile', 'embed'];
+    var pages = ['index', 'mobile', 'embed'];
+    pages.forEach(function(type, idx) {
+      it('detects it\'s not the ' + props[idx] + ' page', function() {
+        [ 
+          'http://geoadmin.ch/' + type,
+          'http://geoadmin.ch/' + type + '/src/'
+        ].forEach(function(page) {
+          win.location.pathname = page;
+          snif = injector.get('gaBrowserSniffer');
+          expect(snif.embed).to.be.eql(false);
+          expect(snif.mobile).to.be.eql(false);
+          expect(snif.desktop).to.be.eql(true);
+        });
+      });
 
-      win.location.pathname = 'http://geoadmin.ch/embed';
-      snif = injector.get('gaBrowserSniffer');
-      expect(snif.embed).to.be.eql(false);
-      expect(snif.mobile).to.be.eql(false);
-
-      win.location.pathname = 'http://geoadmin.ch/index.html';
-      snif = injector.get('gaBrowserSniffer');
-      expect(snif.embed).to.be.eql(false);
-      expect(snif.mobile).to.be.eql(false);
-
-      win.location.pathname = 'http://geoadmin.ch/mobile.html';
-      snif = injector.get('gaBrowserSniffer');
-      expect(snif.embed).to.be.eql(false);
-      expect(snif.mobile).to.be.eql(false);
-    });
-
-    it('detects the embed page', function() {
-      win.location.pathname = 'http://geoadmin.ch/embed/src/embed.html';
-      snif = injector.get('gaBrowserSniffer');
-      expect(snif.embed).to.be.eql(true);
-      expect(snif.mobile).to.be.eql(false);
-
-      win.location.pathname = 'http://geoadmin.ch/embed/embed.html';
-      snif = injector.get('gaBrowserSniffer');
-      expect(snif.embed).to.be.eql(true);
-      expect(snif.mobile).to.be.eql(false);
-
-      win.location.pathname = 'http://geoadmin.ch/embed.html';
-      snif = injector.get('gaBrowserSniffer');
-      expect(snif.embed).to.be.eql(true);
-      expect(snif.mobile).to.be.eql(false);
+      it('detects it\'s the ' + props[idx]  + ' page', function() {
+        [ 
+          'http://geoadmin.ch/' + type + '/src/' + type + '.html',
+          'http://geoadmin.ch/' + type + '/' + type + '.html',
+          'http://geoadmin.ch/' + type + '.html'
+        ].forEach(function(page) {
+          win.location.pathname = page;
+          snif = injector.get('gaBrowserSniffer');
+          props.forEach(function(prop, idx2) {
+            expect(snif[prop]).to.be.eql((idx2 === idx));
+          });
+        });
+      });
     });
 
     describe('detects browser:', function() {

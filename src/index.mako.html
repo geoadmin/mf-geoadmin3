@@ -94,9 +94,12 @@ itemscope itemtype="http://schema.org/WebApplication"
           'no-animation': !globals.animation,
           'offline': globals.offline,
           'online': !globals.offline,
+          'desktop': !globals.mobile && !globals.embed,
+          'mobile': globals.mobile,
           'embed': globals.embed,
           'ga-draw-active': globals.isDrawActive,
-          'ga-3d-active': globals.is3dActive
+          'ga-3d-active': globals.is3dActive,
+          'ios': globals.ios
         }">
     <!-- The below conditional is ignored by >= IE10 and all other browsers -->
     <!--[if (IE)&(lt IE 10)]>
@@ -149,7 +152,7 @@ itemscope itemtype="http://schema.org/WebApplication"
           <span translate>problem_announcement</span>
         </a>&nbsp;&nbsp;
         <a target="_blank" href="//help.geo.admin.ch/?lang={{langId}}" translate>help_label</a>&nbsp;&nbsp;
-        <a href="{{deviceSwitcherHref}}" translate>mobile_redirect</a>&nbsp;&nbsp;
+        <a class="ga-redirect" href="{{deviceSwitcherHref}}" translate>mobile_redirect</a>&nbsp;&nbsp;
         <div ng-controller="GaTranslationController">
           <div ga-translation-selector ga-translation-selector-options="options"></div>
         </div>
@@ -439,9 +442,6 @@ itemscope itemtype="http://schema.org/WebApplication"
                 <a href="" ng-click="globals.feedbackPopupShown = !globals.feedbackPopupShown">
                   <span ng-class="{'selected': globals.feedbackPopupShown}" translate>problem_announcement</span>
                 </a>
-              </p>
-              <p>
-                <a href="{{deviceSwitcherHref}}" translate>desktop_redirect</a>
               </p>
               <div class="options">
                 <label ng-controller="GaTranslationController">

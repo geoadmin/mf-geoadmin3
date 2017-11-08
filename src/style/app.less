@@ -627,6 +627,10 @@ input[type=text][readonly] {
     font-size: 0.8em;
   }
 
+  .ga-redirect {
+    display: none;
+  }
+
   @media (max-width: @screen-tablet) {
     display: none;
   }
@@ -1680,6 +1684,23 @@ body:not(.embed) {
 }
 
 
+/* Desktop page */
+.desktop {
+
+  /* Desktop page not ios */
+  &:not(.ios) {
+    @media (min-width: @screen-tablet) {
+      [ga-offline-bt] {
+        display: none;
+      }
+      #toptools .ga-redirect {
+        display: inline-block;
+      }
+    }
+  }
+}
+
+/* Embed page */
 .embed, .ga-full-screen {
   #buttonGroup {
     top: 0px;
