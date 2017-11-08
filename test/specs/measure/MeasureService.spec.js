@@ -2,13 +2,18 @@
 describe('ga_measure_service', function() {
 
   describe('gaMeasure', function() {
-    var gaMeasure, polygon, lineString, linearRing, circle, point;
+    var gaMeasure, polygon, lineString, linearRing, circle, point, multiLineString,
+      multiLineStringOne, multiLineStringConnected, geomColl, geomCollOne;
 
     beforeEach(function() {
 
       inject(function($injector) {
         gaMeasure = $injector.get('gaMeasure');
       });
+
+      point = new ol.geom.Point([0, 0]);
+
+      circle = new ol.geom.Circle([0, 0], 1000);
 
       polygon = new ol.geom.Polygon([[
         [0, 0], [1000, 0], [1000, 1000], [0, 1000], [0, 0]
@@ -22,9 +27,24 @@ describe('ga_measure_service', function() {
         [0, 0], [1000, 0], [1000, 1000], [0, 1000]
       ]);
 
-      circle = new ol.geom.Circle([0, 0], 1000);
+      multiLineString = new ol.geom.MultiLineString([
+        [[0, 0], [1000, 0], [1000, 1000], [0, 1000]],
+        [[1, 0], [1000, 0], [1000, 1000], [0, 1000]]
+      ]);
 
-      point = new ol.geom.Point([0, 0]);
+      multiLineStringOne = new ol.geom.MultiLineString([
+        [[0, 0], [1000, 0], [1000, 1000], [0, 1000]]
+      ]);
+
+      multiLineStringConnected = new ol.geom.MultiLineString([
+        [[0, 0], [1000, 0], [1000, 1000], [0, 1000]],
+        [[0, 1000], [2000, 0], [2000, 2000], [0, 2000]],
+        [[0, 2000], [3000, 0], [3000, 3000], [0, 3000]]
+      ]);
+
+      geomColl = new ol.geom.GeometryCollection([lineString, circle]);
+
+      geomCollOne = new ol.geom.GeometryCollection([lineString]);
     });
 
     describe('#formatCoordinates(coordinates)', function() {
@@ -51,6 +71,11 @@ describe('ga_measure_service', function() {
         expect(gaMeasure.getLength(polygon)).to.eql(4000);
         expect(gaMeasure.getLength(circle)).to.eql(6283.185307179586);
         expect(gaMeasure.getLength(point)).to.eql(0);
+        expect(gaMeasure.getLength(multiLineString)).to.eql(0);
+        expect(gaMeasure.getLength(multiLineStringOne)).to.eql(3000);
+        expect(gaMeasure.getLength(multiLineStringConnected)).to.eql(18841.619252963777);
+        expect(gaMeasure.getLength(geomColl)).to.eql(0);
+        expect(gaMeasure.getLength(geomCollOne)).to.eql(3000);
       });
     });
 
@@ -61,6 +86,11 @@ describe('ga_measure_service', function() {
         expect(gaMeasure.getLengthLabel(polygon)).to.eql('4 km');
         expect(gaMeasure.getLengthLabel(circle)).to.eql('6.28 km');
         expect(gaMeasure.getLengthLabel(point)).to.eql('0 m');
+        expect(gaMeasure.getLengthLabel(multiLineString)).to.eql('0 m');
+        expect(gaMeasure.getLengthLabel(multiLineStringOne)).to.eql('3 km');
+        expect(gaMeasure.getLengthLabel(multiLineStringConnected)).to.eql('18.84 km');
+        expect(gaMeasure.getLengthLabel(geomColl)).to.eql('0 m');
+        expect(gaMeasure.getLengthLabel(geomCollOne)).to.eql('3 km');
       });
     });
 
@@ -72,6 +102,15 @@ describe('ga_measure_service', function() {
         expect(gaMeasure.getArea(polygon)).to.eql(1000000);
         expect(gaMeasure.getArea(circle)).to.eql(3141592.653589793);
         expect(gaMeasure.getArea(point)).to.eql(0);
+        expect(gaMeasure.getArea(multiLineString)).to.eql(0);
+        expect(gaMeasure.getArea(multiLineString, true)).to.eql(0);
+        expect(gaMeasure.getArea(multiLineStringOne)).to.eql(0);
+        expect(gaMeasure.getArea(multiLineStringOne, true)).to.eql(1000000);
+        expect(gaMeasure.getArea(multiLineStringConnected)).to.eql(0);
+        expect(gaMeasure.getArea(multiLineStringConnected, true)).to.eql(10000000);
+        expect(gaMeasure.getArea(geomColl)).to.eql(0);
+        expect(gaMeasure.getArea(geomCollOne)).to.eql(0);
+        expect(gaMeasure.getArea(geomCollOne, true)).to.eql(1000000);
       });
     });
 
@@ -83,6 +122,15 @@ describe('ga_measure_service', function() {
         expect(gaMeasure.getAreaLabel(polygon)).to.eql('1 km&sup2');
         expect(gaMeasure.getAreaLabel(circle)).to.eql('3.14 km&sup2');
         expect(gaMeasure.getAreaLabel(point)).to.eql('0 m&sup2');
+        expect(gaMeasure.getAreaLabel(multiLineString)).to.eql('0 m&sup2');
+        expect(gaMeasure.getAreaLabel(multiLineString, true)).to.eql('0 m&sup2');
+        expect(gaMeasure.getAreaLabel(multiLineStringOne)).to.eql('0 m&sup2');
+        expect(gaMeasure.getAreaLabel(multiLineStringOne, true)).to.eql('1 km&sup2');
+        expect(gaMeasure.getAreaLabel(multiLineStringConnected)).to.eql('0 m&sup2');
+        expect(gaMeasure.getAreaLabel(multiLineStringConnected, true)).to.eql('10 km&sup2');
+        expect(gaMeasure.getAreaLabel(geomColl)).to.eql('0 m&sup2');
+        expect(gaMeasure.getAreaLabel(geomCollOne)).to.eql('0 m&sup2');
+        expect(gaMeasure.getAreaLabel(geomCollOne, true)).to.eql('1 km&sup2');
       });
     });
 
@@ -93,6 +141,11 @@ describe('ga_measure_service', function() {
         expect(gaMeasure.getAzimuth(polygon)).to.eql(90);
         expect(gaMeasure.getAzimuth(circle)).to.eql(0);
         expect(gaMeasure.getAzimuth(point)).to.eql(0);
+        expect(gaMeasure.getAzimuth(multiLineString)).to.eql(0);
+        expect(gaMeasure.getAzimuth(multiLineStringOne)).to.eql(90);
+        expect(gaMeasure.getAzimuth(multiLineStringConnected)).to.eql(90);
+        expect(gaMeasure.getAzimuth(geomColl)).to.eql(0);
+        expect(gaMeasure.getAzimuth(geomCollOne)).to.eql(90);
       });
     });
 
@@ -103,6 +156,11 @@ describe('ga_measure_service', function() {
         expect(gaMeasure.getAzimuthLabel(polygon)).to.eql('90&deg');
         expect(gaMeasure.getAzimuthLabel(circle)).to.eql('0&deg');
         expect(gaMeasure.getAzimuthLabel(point)).to.eql('0&deg');
+        expect(gaMeasure.getAzimuthLabel(multiLineString)).to.eql('0&deg');
+        expect(gaMeasure.getAzimuthLabel(multiLineStringOne)).to.eql('90&deg');
+        expect(gaMeasure.getAzimuthLabel(multiLineStringConnected)).to.eql('90&deg');
+        expect(gaMeasure.getAzimuthLabel(geomColl)).to.eql('0&deg');
+        expect(gaMeasure.getAzimuthLabel(geomCollOne)).to.eql('90&deg');
       });
     });
 

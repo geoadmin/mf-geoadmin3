@@ -1,10 +1,14 @@
 goog.provide('ga_profilebt_directive');
 
+goog.require('ga_geomutils_service');
+
 (function() {
 
-  var module = angular.module('ga_profilebt_directive', []);
+  var module = angular.module('ga_profilebt_directive', [
+    'ga_geomutils_service'
+  ]);
 
-  module.directive('gaProfileBt', function($rootScope) {
+  module.directive('gaProfileBt', function($rootScope, gaGeomUtils) {
     return {
       restrict: 'A',
       templateUrl: 'components/profile/partials/profile-bt.html',
@@ -19,6 +23,7 @@ goog.provide('ga_profilebt_directive');
 
         scope.isValid = function(feature) {
           var geom = feature.getGeometry();
+          geom = gaGeomUtils.multiGeomToSingleGeom(geom);
           return !(geom instanceof ol.geom.Point ||
               geom instanceof ol.geom.MultiLineString ||
               geom instanceof ol.geom.MultiPolygon ||

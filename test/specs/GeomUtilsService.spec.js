@@ -8,7 +8,7 @@ describe('ga_geomutils_service', function() {
     });
   });
 
-  describe('hasUniqueCoords', function() {
+  describe('#hasUniqueCoords()', function() {
     var c = [1.1, 2.2, 3.3];
 
     it('returns true', function() {
@@ -22,7 +22,7 @@ describe('ga_geomutils_service', function() {
     });
   });
 
-  describe('close', function() {
+  describe('#close()', function() {
     var unclosedCoords = [
       [0, 0, 0],
       [1, 0, 0],
@@ -154,7 +154,7 @@ describe('ga_geomutils_service', function() {
     });
   });
 
-  describe('isValid', function() {
+  describe('#isValid()', function() {
     var uniqCoords = [
       [0, 0, 0],
       [0, 0, 0],
@@ -237,6 +237,125 @@ describe('ga_geomutils_service', function() {
       ]);
       expect(gaGeomUtils.isValid(geom)).to.be(true);
       expect(geom.getGeometries().length).to.be(1);
+    });
+  });
+
+  describe('#multiLineStringToLineString()', function() {
+    var lineString = new ol.geom.LineString([
+      [0, 0], [1000, 0], [1000, 1000], [0, 1000]
+    ]);
+
+    var multiLineString = new ol.geom.MultiLineString([
+      [[0, 0], [1000, 0], [1000, 1000], [0, 1000]],
+      [[1, 0], [1000, 0], [1000, 1000], [0, 1000]]
+    ]);
+
+    var multiLineStringOne = new ol.geom.MultiLineString([
+      [[0, 0], [1000, 0], [1000, 1000], [0, 1000]]
+    ]);
+
+    var multiLineStringConnected = new ol.geom.MultiLineString([
+      [[0, 0], [1000, 0], [1000, 1000], [0, 1000]],
+      [[0, 1000], [2000, 0], [2000, 2000], [0, 2000]],
+      [[0, 2000], [3000, 0], [3000, 3000], [0, 3000]]
+    ]);
+
+    it('returns the original geometry if it\'s not a MultiLineString', function() {
+      var g = gaGeomUtils.multiLineStringToLineString(lineString);
+      expect(g).to.be(lineString);
+    });
+
+    it('returns the original geometry if the MultiLineString is not convertible', function() {
+      var g = gaGeomUtils.multiLineStringToLineString(multiLineString);
+      expect(g).to.be(multiLineString);
+    });
+
+    it('converts to a LineString if the MultiLineString contains one LineString', function() {
+      var g = gaGeomUtils.multiLineStringToLineString(multiLineStringOne);
+      expect(g).to.be.a(ol.geom.LineString);
+      expect(g.getCoordinates()).to.eql(multiLineStringOne.getLineString(0).getCoordinates());
+    });
+
+    it('converts to a LineString if the MultiLineString contains connected LineStrings', function() {
+      var g = gaGeomUtils.multiLineStringToLineString(multiLineStringConnected);
+      expect(g).to.be.a(ol.geom.LineString);
+      expect(g.getFirstCoordinate()).to.eql([0, 0]);
+      expect(g.getLastCoordinate()).to.eql([0, 3000]);
+    });
+  });
+
+  describe('#multiGeomToSingleGeom()', function() {
+    var lineString = new ol.geom.LineString([
+      [0, 0], [1000, 0], [1000, 1000], [0, 1000]
+    ]);
+
+    var multiLineString = new ol.geom.MultiLineString([
+      [[0, 0], [1000, 0], [1000, 1000], [0, 1000]],
+      [[1, 0], [1000, 0], [1000, 1000], [0, 1000]]
+    ]);
+
+    var multiLineStringOne = new ol.geom.MultiLineString([
+      [[0, 0], [1000, 0], [1000, 1000], [0, 1000]]
+    ]);
+
+    var multiLineStringConnected = new ol.geom.MultiLineString([
+      [[0, 0], [1000, 0], [1000, 1000], [0, 1000]],
+      [[0, 1000], [2000, 0], [2000, 2000], [0, 2000]],
+      [[0, 2000], [3000, 0], [3000, 3000], [0, 3000]]
+    ]);
+
+    var geomColl = new ol.geom.GeometryCollection([lineString, new ol.geom.Point([0, 0])]);
+    var geomCollOne = new ol.geom.GeometryCollection([lineString]);
+    var geomCollRec = new ol.geom.GeometryCollection([geomCollOne]);
+
+    var point = new ol.geom.Point([0, 0]);
+    var multiPoint = new ol.geom.MultiPoint([point.getCoordinates(), point.getCoordinates()]);
+    var multiPointOne = new ol.geom.MultiPoint([point.getCoordinates()]);
+
+    var polygon = new ol.geom.Polygon([[[0, 0], [0, 1], [1, 1], [0, 0]]]);
+    var multiPolygon = new ol.geom.MultiPolygon([
+      polygon.getCoordinates(),
+      polygon.getCoordinates()
+    ]);
+    var multiPolygonOne = new ol.geom.MultiPolygon([polygon.getCoordinates()]);
+
+    it('returns the original geometry', function() {
+      [
+        point,
+        lineString,
+        polygon,
+        geomColl,
+        multiPoint,
+        multiLineString,
+        multiPolygon
+      ].forEach(function(geom) {
+        var g = gaGeomUtils.multiGeomToSingleGeom(geom);
+        expect(g).to.be(geom);
+      });
+    });
+
+    it('returns a single Point geometry', function() {
+      var g = gaGeomUtils.multiGeomToSingleGeom(multiPointOne);
+      expect(g).to.be.a(ol.geom.Point);
+    });
+
+    it('returns a single LineString geometry', function() {
+      var g = gaGeomUtils.multiGeomToSingleGeom(multiLineStringOne);
+      expect(g).to.be.a(ol.geom.LineString);
+      g = gaGeomUtils.multiGeomToSingleGeom(multiLineStringConnected);
+      expect(g).to.be.a(ol.geom.LineString);
+    });
+
+    it('returns a single Polygon geometry', function() {
+      var g = gaGeomUtils.multiGeomToSingleGeom(multiPolygonOne);
+      expect(g).to.be.a(ol.geom.Polygon);
+    });
+
+    it('returns a single geometry from a GeometryCollection', function() {
+      var g = gaGeomUtils.multiGeomToSingleGeom(geomCollOne);
+      expect(g).to.be.a(ol.geom.LineString);
+      g = gaGeomUtils.multiGeomToSingleGeom(geomCollRec);
+      expect(g).to.be.a(ol.geom.LineString);
     });
   });
 });
