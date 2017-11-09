@@ -507,7 +507,8 @@ goog.require('ga_window_service');
                   lang: gaLang.get(),
                   mapExtent: mapExtent.toString(),
                   coord: (coordinate) ? coordinate.toString() : undefined,
-                  imageDisplay: mapSize.toString() + ',96'
+                  imageDisplay: mapSize.toString() + ',96',
+                  sr: map.getView().getProjection().getCode().split(':')[1]
                 }
               });
             };
