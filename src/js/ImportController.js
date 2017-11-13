@@ -195,7 +195,7 @@ goog.require('ngeo.fileService');
       if (layer.wmsUrl) {
         return gaWms.getOlLayerFromGetCapLayer(layer);
       } else if (layer.capabilitiesUrl) {
-        return gaWmts.getOlLayerFromGetCapLayer(layer);
+        return gaWmts.getOlLayerFromGetCapLayer($scope.map, layer);
       }
     };
     $scope.options.addPreviewLayer = function(map, layer) {

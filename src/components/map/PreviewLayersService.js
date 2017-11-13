@@ -67,7 +67,8 @@ goog.require('ga_wmts_service');
             if (getCapLayer.wmsUrl) {
               olPreviewLayer = gaWms.getOlLayerFromGetCapLayer(getCapLayer);
             } else if (getCapLayer.capabilitiesUrl) {
-              olPreviewLayer = gaWmts.getOlLayerFromGetCapLayer(getCapLayer);
+              olPreviewLayer = gaWmts.getOlLayerFromGetCapLayer(map,
+                  getCapLayer);
             }
           }
 

@@ -18,18 +18,48 @@ goog.require('ga_urlutils_service');
    */
   module.provider('gaWmts', function() {
     this.$get = function(gaDefinePropertiesForLayer, gaMapUtils, gaUrlUtils,
-        gaGlobalOptions) {
+        gaGlobalOptions, $window, $translate) {
+
+      // Store getCapabilitites
+      var store = {};
+
+      var is4326 = function(matrixSet) {
+        return /(4326|WGS.*84|CRS.*84)/gi.test(matrixSet)
+      };
 
       var getCesiumImageryProvider = function(layer) {
+        var source = layer.getSource();
+        var matrixSet = source.getMatrixSet();
         // Display in 3d only layers with a matrixSet compatible
-        if (!/4326/g.test(layer.getSource().getMatrixSet())) {
+        if (!is4326(matrixSet) && store[layer.url]) {
+          var opt = ol.source.WMTS.optionsFromCapabilities(store[layer.url], {
+            layer: source.getLayer(),
+            projection: 'EPSG:4326'
+          });
+          matrixSet = opt.matrixSet;
+        }
+
+        if (!is4326(matrixSet)) {
+          $window.alert(
+              $translate.instant('wmts_service_doesnt_support_4326') +
+              layer.label);
           return;
         }
-        var source = layer.getSource();
-        var tpl = source.getUrls()[0].
-            replace('{Style}', source.getStyle()).
+        var tpl = source.getUrls()[0];
+        if (source.getRequestEncoding() == 'KVP') {
+          tpl += 'service=WMTS&version=1.0.0&request=GetTile' +
+              '&layer=' + source.getLayer() +
+              '&format=' + source.getFormat() +
+              '&style={Style}' +
+              '&time={Time}' +
+              '&tilematrixset={TileMatrixSet}' +
+              '&tilematrix={TileMatrix}' +
+              '&tilecol={TileCol}' +
+              '&tilerow={TileRow}';
+        }
+        tpl = tpl.replace('{Style}', source.getStyle()).
             replace('{Time}', layer.time).
-            replace('{TileMatrixSet}', '4326').
+            replace('{TileMatrixSet}', matrixSet).
             replace('{TileMatrix}', '{z}').
             replace('{TileCol}', '{x}').
             replace('{TileRow}', '{y}');
@@ -87,8 +117,9 @@ goog.require('ga_urlutils_service');
       };
 
       // Get the layer extent defines in the GetCapabilities
-      var getLayerExtentFromGetCap = function(getCapLayer, proj) {
+      var getLayerExtentFromGetCap = function(map, getCapLayer) {
         var wgs84Extent = getCapLayer.WGS84BoundingBox;
+        var proj = map.getView().getProjection();
         if (wgs84Extent) {
           var wgs84 = 'EPSG:4326';
           var projCode = proj.getCode();
@@ -107,14 +138,17 @@ goog.require('ga_urlutils_service');
         }
       };
 
-      var getLayerOptions = function(getCapLayer, getCapabilities, getCapUrl) {
+      var getLayerOptions = function(map, getCapLayer, getCapabilities,
+          getCapUrl) {
         if (getCapabilities) {
           var layerOptions = {
-            layer: getCapLayer.Identifier
+            layer: getCapLayer.Identifier,
+            projection: map.getView().getProjection()
           };
           getCapLayer.sourceConfig = ol.source.WMTS.optionsFromCapabilities(
               getCapabilities, layerOptions);
           getCapLayer.capabilitiesUrl = getCapUrl;
+          store[getCapUrl] = getCapabilities;
           if (getCapabilities.ServiceProvider) {
             getCapLayer.attribution =
                 getCapabilities.ServiceProvider.ProviderName;
@@ -125,8 +159,7 @@ goog.require('ga_urlutils_service');
                 gaUrlUtils.getHostname(getCapLayer.capabilitiesUrl);
             getCapLayer.attributionUrl = getCapLayer.capabilitiesUrl;
           }
-          getCapLayer.extent = getLayerExtentFromGetCap(getCapLayer,
-              ol.proj.get(gaGlobalOptions.defaultEpsg));
+          getCapLayer.extent = getLayerExtentFromGetCap(map, getCapLayer);
         }
 
         var options = {
@@ -148,14 +181,15 @@ goog.require('ga_urlutils_service');
 
       var Wmts = function() {
 
-        this.getLayerOptionsFromIdentifier = function(getCapabilities,
+        this.getLayerOptionsFromIdentifier = function(map, getCapabilities,
             identifier, getCapUrl) {
           var options;
 
           if (getCapabilities.Contents && getCapabilities.Contents.Layer) {
             getCapabilities.Contents.Layer.forEach(function(layer) {
               if (layer.Identifier === identifier) {
-                options = getLayerOptions(layer, getCapabilities, getCapUrl);
+                options = getLayerOptions(map, layer, getCapabilities,
+                    getCapUrl);
               }
             });
           }
@@ -163,8 +197,8 @@ goog.require('ga_urlutils_service');
           return options;
         };
 
-        this.getOlLayerFromGetCapLayer = function(getCapLayer) {
-          var layerOptions = getLayerOptions(getCapLayer);
+        this.getOlLayerFromGetCapLayer = function(map, getCapLayer) {
+          var layerOptions = getLayerOptions(map, getCapLayer);
           return createWmtsLayer(layerOptions);
         };
 
