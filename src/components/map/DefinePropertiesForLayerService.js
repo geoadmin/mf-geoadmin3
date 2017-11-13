@@ -215,6 +215,14 @@ goog.provide('ga_definepropertiesforlayer_service');
           userVisible: {
             writable: true,
             value: olLayer.getVisible()
+          },
+          displayIn3d: {
+            writable: true,
+            value: true
+          },
+          error3d: {
+            writable: true,
+            value: null
           }
         });
       };

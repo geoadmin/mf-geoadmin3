@@ -28,6 +28,9 @@ goog.require('ga_urlutils_service');
       };
 
       var getCesiumImageryProvider = function(layer) {
+        if (!layer.displayIn3d) {
+          return;
+        }
         var source = layer.getSource();
         var matrixSet = source.getMatrixSet();
         // Display in 3d only layers with a matrixSet compatible
@@ -40,9 +43,7 @@ goog.require('ga_urlutils_service');
         }
 
         if (!is4326(matrixSet)) {
-          $window.alert(
-              $translate.instant('wmts_service_doesnt_support_4326') +
-              layer.label);
+          layer.displayIn3d = false;
           return;
         }
         var tpl = source.getUrls()[0];
