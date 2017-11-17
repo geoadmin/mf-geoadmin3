@@ -29,8 +29,7 @@ describe('ga_wmts_service', function() {
       // Tests Cesium provider
       var prov = layer.getCesiumImageryProvider();
       expect(prov).to.be.an(Cesium.UrlTemplateImageryProvider);
-      var url = options.url;
-      expect(prov.url).to.be(url);
+      expect(prov.url).to.be('https://foo.ch?service=WMTS&version=1.0.0&request=GetTile&layer=undefined&format=image/jpeg&style=undefined&time=undefined&tilematrixset=4326&tilematrix={z}&tilecol={x}&tilerow={y}');
       expect(prov.minimumRetrievingLevel).to.be(window.minimumRetrievingLevel);
       expect(prov.rectangle).to.be.an(Cesium.Rectangle);
       expect(prov.rectangle.west).to.be(-0.29442293174255596);
@@ -59,7 +58,7 @@ describe('ga_wmts_service', function() {
     });
 
     describe('#addWmtsToMap()', function() {
-      var url = 'https://foo.ch';
+      var url = 'https://foo.ch?';
       var minimalOptions = {
         label: 'WMTS layer',
         sourceConfig: {
@@ -110,7 +109,7 @@ describe('ga_wmts_service', function() {
 
       it('adds a layer at the correct index in the layer list', function() {
         var idx = 2;
-        var url = 'https://foo.ch';
+        var url = 'https://foo.ch?';
         var options = {
           label: 'WMTS layer',
           sourceConfig: {
@@ -144,7 +143,7 @@ describe('ga_wmts_service', function() {
     describe('#getOlLayerFromGetCapLayer()', function() {
 
       it('creates a layer with minimal param', function() {
-        var url = 'https://foo.ch';
+        var url = 'https://foo.ch?';
         var getCap = {
           Title: 'WMTS layer',
           sourceConfig: {
@@ -155,7 +154,7 @@ describe('ga_wmts_service', function() {
           capabilitiesUrl: 'https://foo.ch/Capabilities.xml'
         };
 
-        var layer = gaWmts.getOlLayerFromGetCapLayer(getCap);
+        var layer = gaWmts.getOlLayerFromGetCapLayer(map, getCap);
 
         expectProperties(layer, {
           url: url,
@@ -174,7 +173,7 @@ describe('ga_wmts_service', function() {
       it('returns undefined if the content is empty', function() {
         var identifier = 'ch.are.alpenkonvention';
         var getCap = {};
-        var options = gaWmts.getLayerOptionsFromIdentifier(getCap, identifier);
+        var options = gaWmts.getLayerOptionsFromIdentifier(map, getCap, identifier);
         expect(options).to.be(undefined);
       });
 
@@ -185,7 +184,7 @@ describe('ga_wmts_service', function() {
             Layer: []
           }
         };
-        var options = gaWmts.getLayerOptionsFromIdentifier(getCap, identifier);
+        var options = gaWmts.getLayerOptionsFromIdentifier(map, getCap, identifier);
         expect(options).to.be(undefined);
       });
 
@@ -201,7 +200,7 @@ describe('ga_wmts_service', function() {
             var defaultProjection = ol.proj.get(gaGlobalOptions.defaultEpsg);
             defaultProjection.setExtent(gaGlobalOptions.defaultEpsgExtent);
 
-            var options = gaWmts.getLayerOptionsFromIdentifier(getCapabilities, identifier, getCapUrl);
+            var options = gaWmts.getLayerOptionsFromIdentifier(map, getCapabilities, identifier, getCapUrl);
             expect(options.capabilitiesUrl).to.be(getCapUrl);
             expect(options.label).to.be('Convention des Alpes');
             expect(options.layer).to.be(identifier);
@@ -219,7 +218,7 @@ describe('ga_wmts_service', function() {
           var defaultProjection = ol.proj.get(gaGlobalOptions.defaultEpsg);
           defaultProjection.setExtent(gaGlobalOptions.defaultEpsgExtent);
 
-          var options = gaWmts.getLayerOptionsFromIdentifier(getCapabilities, identifier, 'http://test.ch/' + getCapUrl);
+          var options = gaWmts.getLayerOptionsFromIdentifier(map, getCapabilities, identifier, 'http://test.ch/' + getCapUrl);
           expect(options.capabilitiesUrl).to.be('http://test.ch/' + getCapUrl);
           expect(options.label).to.be('tiled95_Uebersichtsplan1978');
           expect(options.sourceConfig.attributions[0]).to.contain('test.ch');

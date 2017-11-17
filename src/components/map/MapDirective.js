@@ -261,9 +261,10 @@ goog.require('ga_styles_service');
                   }
                 });
                 if (msg) {
-                  msg = $translate.instant('layer_cant_be_displayed_in_3d') + msg;
+                  msg = $translate.instant('layer_cant_be_displayed_in_3d') +
+                      msg;
                   $window.alert(msg);
-                } 
+                }
               } else {
                 // Show the overlays
                 dereg.forEach(function(key) {

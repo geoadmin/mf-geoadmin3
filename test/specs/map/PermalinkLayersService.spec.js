@@ -336,9 +336,10 @@ describe('ga_permalinklayers_service', function() {
           $httpBackend.expectGET('http://proxy.geo.admin.ch/http/foo.ch%2Fwmts%2Fgetcap.xml').respond(str);
           createManager(topicLoaded, id, '1', 'false');
           $httpBackend.flush();
-          expect(spy.args[0][0]).to.be.an(Object);
-          expect(spy.args[0][1]).to.be('ch.wmts.name');
-          expect(spy.args[0][2]).to.be('http://foo.ch/wmts/getcap.xml');
+          expect(spy.args[0][0]).to.be(map);
+          expect(spy.args[0][1]).to.be.an(Object);
+          expect(spy.args[0][2]).to.be('ch.wmts.name');
+          expect(spy.args[0][3]).to.be('http://foo.ch/wmts/getcap.xml');
           expect(map.getLayers().getLength()).to.be(1);
           expect(permalink.getParams().layers).to.be(id);
           expect(permalink.getParams().layers_opacity).to.be(undefined);

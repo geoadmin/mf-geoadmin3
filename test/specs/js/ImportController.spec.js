@@ -126,7 +126,7 @@ describe('ga_import_controller', function() {
 
         it('uses gaWmts', function() {
           var layer = {capabilitiesUrl: 'foo'};
-          var spy = sinon.stub(gaWmts, 'getOlLayerFromGetCapLayer').withArgs(layer);
+          var spy = sinon.stub(gaWmts, 'getOlLayerFromGetCapLayer').withArgs(map, layer);
           scope.options.getOlLayerFromGetCapLayer(layer);
           expect(spy.callCount).to.be(1);
           spy.reset();

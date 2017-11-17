@@ -47,7 +47,7 @@ goog.require('ga_urlutils_service');
           return;
         }
         var tpl = source.getUrls()[0];
-        if (source.getRequestEncoding() == 'KVP') {
+        if (source.getRequestEncoding() === 'KVP') {
           tpl += 'service=WMTS&version=1.0.0&request=GetTile' +
               '&layer=' + source.getLayer() +
               '&format=' + source.getFormat() +
