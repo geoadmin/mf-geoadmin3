@@ -681,6 +681,14 @@ describe('ga_layers_service', function() {
           expectCommonProperties(layer, 'wmts');
         });
 
+        it('returns a WMTS layer when time is undefined', function() {
+          sinon.stub(gaTime, 'get').returns('1934');
+          var layer = gaLayers.getOlLayerById('wmts');
+          var source = layer.getSource();
+          expect(source instanceof ol.source.WMTS).to.be.ok();
+          expect(source.getDimensions().Time).to.be('');
+        });
+
         it('returns a WMS layer', function() {
           var layer = gaLayers.getOlLayerById('wms');
           expect(layer instanceof ol.layer.Image).to.be.ok();

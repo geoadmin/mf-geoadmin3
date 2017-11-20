@@ -142,7 +142,7 @@ goog.provide('ga_definepropertiesforlayer_service');
               if (this instanceof ol.layer.Layer) {
                 var src = this.getSource();
                 if (src instanceof ol.source.WMTS) {
-                  src.updateDimensions({'Time': val});
+                  src.updateDimensions({'Time': val || ''});
                 } else if (src instanceof ol.source.ImageWMS ||
                     src instanceof ol.source.TileWMS) {
                   if (angular.isDefined(val)) {

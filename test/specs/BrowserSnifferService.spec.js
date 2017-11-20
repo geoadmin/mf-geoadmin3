@@ -99,7 +99,7 @@ describe('ga_browsersniffer_service', function() {
     var pages = ['index', 'mobile', 'embed'];
     pages.forEach(function(type, idx) {
       it('detects it\'s not the ' + props[idx] + ' page', function() {
-        [ 
+        [
           'http://geoadmin.ch/' + type,
           'http://geoadmin.ch/' + type + '/src/'
         ].forEach(function(page) {
@@ -111,8 +111,8 @@ describe('ga_browsersniffer_service', function() {
         });
       });
 
-      it('detects it\'s the ' + props[idx]  + ' page', function() {
-        [ 
+      it('detects it\'s the ' + props[idx] + ' page', function() {
+        [
           'http://geoadmin.ch/' + type + '/src/' + type + '.html',
           'http://geoadmin.ch/' + type + '/' + type + '.html',
           'http://geoadmin.ch/' + type + '.html'

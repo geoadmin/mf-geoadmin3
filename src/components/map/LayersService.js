@@ -503,7 +503,7 @@ goog.require('ga_urlutils_service');
                   replace('{y}', '{TileRow}');
               olSource = config.olSource = new ol.source.WMTS({
                 dimensions: {
-                  'Time': timestamp
+                  'Time': timestamp || ''
                 },
                 // Workaround: Set a cache size of zero when layer is
                 // timeEnabled see:
