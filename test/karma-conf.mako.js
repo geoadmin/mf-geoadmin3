@@ -89,11 +89,11 @@ module.exports = function(config) {
 
 % if mode == 'debug':
   coverageReporter: {
-    dir: '.build-artefacts',
+    dir: '.build-artefacts/coverage',
     includeAllSources: true,
     reporters: [
-      { type: 'cobertura', subdir: '.', file: 'coverage.xml' },
-      { type: 'text-summary', subdir: '.', file: 'coverage.txt' }
+      { type: 'text-summary', subdir: '.', file: 'coverage.txt' },
+      { type: 'html', subdir: '.'}
     ]
   },
 % endif
@@ -124,7 +124,7 @@ module.exports = function(config) {
 % if mode == 'release':
   logLevel: config.LOG_INFO,
 % else:
-  logLevel: config.LOG_DEBUG,
+  logLevel: config.LOG_WARN,
 % endif
 
 

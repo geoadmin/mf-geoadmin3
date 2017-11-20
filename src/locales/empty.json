@@ -461,5 +461,7 @@
   "geodesy": "",
   "geodesy_service_link_href": "",
   "geodesy_service_link_label": "",
-  "topic_geodesy_tooltip": ""
+  "topic_geodesy_tooltip": "",
+  "layer_cant_be_displayed_in_3d": "",
+  "layer_cant_br_printed": ""
 }

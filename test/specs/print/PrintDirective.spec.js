@@ -3,7 +3,7 @@ describe('ga_print_directive', function() {
 
   describe('gaPrint', function() {
     var elt, scope, parentScope, $compile, $rootScope, map, $timeout, $httpBackend;
-    var $q, gaUrlUtils, $http, $window, gaPermalink;// gaAttribution, gaPrintLayer, gaUrlUtils, $window, gaBrowserSniffer;
+    var $q, gaUrlUtils, $http, $window, gaPermalink, gaPrintLayer, gaAttribution, gaBrowserSniffer;
     var hrefUrl = 'http://localhost:8081/context.html?lang=en';
     var opt = {
       printPath: 'http://foo.ch/print',
@@ -20,12 +20,15 @@ describe('ga_print_directive', function() {
       ]
     };
 
-    var config = {
-      'layerWithLegend': {
-        hasLegend: true
-      },
-      'layerTimeEnabled': {
+    var layersConfig = {
+      'layerWithLegendAndTime': {
+        hasLegend: true,
         timeEnabled: true
+      },
+      'ch.swisstopo.zeitreihen': {
+        timeEnabled: true,
+        timestamps: ['1964', '1985', '2011'],
+        hasLegend: true
       }
     };
 
@@ -117,16 +120,31 @@ describe('ga_print_directive', function() {
     });
     layerWithSameProjection.visible = true;
     layerWithSameProjection.opacity = 1;
-    /* var layerTimeEnabled = new ol.layer.Tile({});
-    layerTimeEnabled.time = '19871231';
 
-    var layerThirdParty = new ol.layer.Tile({});
-    layerTimeEnabled.useThirdPartyData = true;
+    var grp = new ol.layer.Group({
+      extent: [10000, 10000, 10000, 10000]
+    });
+    grp.visible = true;
+    grp.opacity = 1;
 
-    var layerWithAttribution = new ol.layer.Tile();
-    layerWithAttribution.attribution = 'layerWithAttribution';
-*/
-    // var ov = new ol.Overlay(); 
+    var layerWithLegendAndTime = new ol.layer.Tile({
+      source: new ol.source.TileWMS({}),
+      extent: [10000, 10000, 10000, 10000]
+    });
+    layerWithLegendAndTime.bodId = 'layerWithLegendAndTime';
+    layerWithLegendAndTime.time = '19871231';
+    layerWithLegendAndTime.visible = true;
+    layerWithLegendAndTime.opacity = 1;
+    layerWithLegendAndTime.useThirdPartyData = true;
+
+    var layerZeitreihen = new ol.layer.Tile({
+      source: new ol.source.TileWMS({}),
+      extent: [10000, 10000, 10000, 10000]
+    });
+    layerZeitreihen.bodId = 'ch.swisstopo.zeitreihen';
+    layerZeitreihen.time = '19871231';
+    layerZeitreihen.visible = true;
+    layerZeitreihen.opacity = 1;
 
     var loadDirective = function(map, options, active) {
       parentScope = $rootScope.$new();
@@ -147,8 +165,23 @@ describe('ga_print_directive', function() {
       // block loading of layersConfig
       $provide.value('gaLayers', {
         getLayer: function(id) {
-          return config[id];
+          return layersConfig[id];
+        },
+        getLayerProperty: function(id, prop) {
+          return layersConfig[id][prop];
         }
+      });
+      $provide.value('$window', {
+        alert: window.alert,
+        navigator: window.navigator,
+        addEventListener: window.addEventListener.bind(window),
+        document: window.document,
+        location: {
+          port: '8008',
+          search: ''
+        },
+        parent: window.parent,
+        open: angular.noop
       });
     };
 
@@ -161,9 +194,9 @@ describe('ga_print_directive', function() {
       $timeout = $injector.get('$timeout');
       $http = $injector.get('$http');
       $httpBackend = $injector.get('$httpBackend');
-      // gaBrowserSniffer = $injector.get('gaBrowserSniffer');
-      // gaAttribution = $injector.get('gaAttribution');
-      // gaPrintLayer = $injector.get('gaPrintLayer');
+      gaBrowserSniffer = $injector.get('gaBrowserSniffer');
+      gaAttribution = $injector.get('gaAttribution');
+      gaPrintLayer = $injector.get('gaPrintLayer');
       gaPermalink = $injector.get('gaPermalink');
       gaUrlUtils = $injector.get('gaUrlUtils');
     };
@@ -339,33 +372,9 @@ describe('ga_print_directive', function() {
         describe('#submit()', function() {
 
           var shortUrl = 'http://foo.ch/shorten';
-          var dlUrl = 'http://foo.ch/dl'; ;
-          /* var expectedConf = {
-            layout: '1 A4 landscape',
-            srs: 'EPSG:3857',
-            units: 'm',
-            rotation: 0,
-            app: 'config',
-            lang: 'en',
-            dpi: '150',
-            layers: [],
-            legends: undefined,
-            enableLegends: undefined,
-            qrcodeurl: 'http://foo.ch/qrcodegenerator?url=http%3A%2F%2Flocalhost%3A8081%2Fcontext.html%3Flang%3Den',
-            movie: false,
-            pages: [{
-              center: [10000, 10000],
-              bbox: [10000, 10000, 10000, 10000],
-              display: [802, 530],
-              scale: '500.0',
-              dataOwner: '',
-              thirdPartyDataOwner: '',
-              shortLink: 'http://foo.ch',
-              rotation: 0,
-              langen: true,
-              timestamp: ''
-            }]
-          }; */
+          var dlUrl = 'http://foo.ch/dl';
+          var createUrl = 'http://foo.ch/print/create.json?url=http%3A%2F%2Ffoo.ch%2Fprint%2Fcreate.json';
+          var createUrlMulti = 'http://foo.ch/printmulti/create.json?url=http%3A%2F%2Ffoo.ch%2Fprintmulti%2Fcreate.json';
 
           var expectConfig = function(conf) {
             expect(conf.layout).to.be('1 A4 landscape');
@@ -376,28 +385,22 @@ describe('ga_print_directive', function() {
             expect(conf.lang).to.be('en');
             expect(conf.dpi).to.be('150');
             expect(conf.qrcodeurl).to.be('http://foo.ch/qrcodegenerator?url=http%3A%2F%2Flocalhost%3A8081%2Fcontext.html%3Flang%3Den');
-            expect(conf.movie).to.be(false);
-            expect(conf.pages[0]).to.eql({
-              center: [10000, 10000],
-              bbox: [10000, 10000, 10000, 10000],
-              display: [802, 530],
-              scale: '500.0',
-              dataOwner: '',
-              thirdPartyDataOwner: '',
-              shortLink: 'http://foo.ch',
-              rotation: 0,
-              langen: true,
-              timestamp: ''
-            });
+            expect(conf.pages[0].center).to.eql([10000, 10000]);
+            expect(conf.pages[0].bbox).to.eql([10000, 10000, 10000, 10000]);
+            expect(conf.pages[0].display).to.eql([802, 530]);
+            expect(conf.pages[0].scale).to.eql('500.0');
+            expect(conf.pages[0].shortLink).to.eql('http://foo.ch');
+            expect(conf.pages[0].rotation).to.eql(0);
+            expect(conf.pages[0].langen).to.be(true);
           };
 
           beforeEach(function() {
             sinon.stub(gaPermalink, 'getHref').returns(hrefUrl);
-            sinon.stub(gaUrlUtils, 'shorten').withArgs(hrefUrl).returns($q.when(shortUrl));
+            sinon.stub(gaUrlUtils, 'shorten').returns($q.when(shortUrl));
           });
 
           it('fails to request the print', function() {
-            $httpBackend.expectPOST('http://foo.ch/print/create.json?url=http%3A%2F%2Ffoo.ch%2Fprint%2Fcreate.json').respond(404, '');
+            $httpBackend.expectPOST(createUrl).respond(404, '');
             var stub = sinon.stub(scope, 'downloadUrl').withArgs(dlUrl).returns();
             scope.submit();
             $httpBackend.flush();
@@ -405,12 +408,12 @@ describe('ga_print_directive', function() {
             expect(scope.options.printing).to.be(false);
           });
 
-          it('ignores invisible layers and displays yalert message for reprojected layers', function() {
+          it('ignores invisible layers and displays alert message for reprojected layers', function() {
 
             var spy = sinon.spy($http, 'post');
-            $httpBackend.expectPOST('http://foo.ch/print/create.json?url=http%3A%2F%2Ffoo.ch%2Fprint%2Fcreate.json').respond({getURL: dlUrl});
             var stub = sinon.stub(scope, 'downloadUrl').withArgs(dlUrl).returns();
             var stub2 = sinon.stub($window, 'alert');
+            $httpBackend.expectPOST(createUrl).respond({getURL: dlUrl});
 
             map.addLayer(layerNotVisible);
             map.addLayer(layerOpacity0);
@@ -427,8 +430,389 @@ describe('ga_print_directive', function() {
             expect(config.layers.length).to.be(0);
             expect(stub2.args[0][0]).to.be('layer_cant_be_printed\nlayerWithDifferentProjection');
           });
+
+          it('encodes a empty layer group', function() {
+            var grp = new ol.layer.Group({
+              extent: [10000, 10000, 10000, 10000]
+            });
+            grp.visible = true;
+            grp.opacity = 1;
+            var stub = sinon.stub(gaPrintLayer, 'encodeGroup').withArgs(grp, map.getView().getProjection(), 500,
+                [10000, 10000, 10000, 10000], 152.8740565703525, '150').returns([]);
+            var spy = sinon.spy($http, 'post');
+            map.addLayer(grp);
+            scope.submit();
+            $timeout.flush();
+            expect(stub.callCount).to.be(1);
+            expect(spy.callCount).to.be(1);
+            var config = spy.args[0][1];
+            expectConfig(config);
+            expect(config.layers.length).to.be(0);
+          });
+
+          it('encodes a layer group with layers', function() {
+            var encLayers = [{foo: 'bar'}, {bar: 'foo'}];
+            var stub = sinon.stub(gaPrintLayer, 'encodeGroup').withArgs(grp, map.getView().getProjection(), 500,
+                [10000, 10000, 10000, 10000], 152.8740565703525, '150').returns(encLayers);
+            var spy = sinon.spy($http, 'post');
+            map.addLayer(grp);
+            scope.submit();
+            $timeout.flush();
+            expect(stub.callCount).to.be(1);
+            expect(spy.callCount).to.be(1);
+            var config = spy.args[0][1];
+            expectConfig(config);
+            expect(config.layers).to.eql(encLayers);
+          });
+
+          it('encodes layers', function() {
+            var encLayer = {foo: 'bar'};
+            var stub = sinon.stub(gaPrintLayer, 'encodeLayer').withArgs(layerWithLegendAndTime, map.getView().getProjection(), 500,
+                [10000, 10000, 10000, 10000], 152.8740565703525, '150').returns({
+              layer: encLayer
+            });
+            sinon.stub(gaPrintLayer, 'encodeGroup').returns([encLayer]);
+            sinon.stub(gaAttribution, 'getTextFromLayer').returns('attribution');
+            var spy = sinon.spy($http, 'post');
+            map.addLayer(layerWithLegendAndTime);
+            map.addLayer(grp);
+            scope.submit();
+            $timeout.flush();
+            expect(stub.callCount).to.be(1);
+            expect(spy.callCount).to.be(1);
+            var config = spy.args[0][1];
+            expectConfig(config);
+            expect(config.layers).to.eql([encLayer, encLayer]);
+            expect(config.layers[0].legend).to.be();
+            expect(config.layers[1].legend).to.be();
+            expect(config.pages[0].dataOwner).to.eql('© attribution,');
+            expect(config.pages[0].thirdPartyDataOwner).to.eql('attribution');
+            expect(config.pages[0].timestamp).to.eql('1987');
+          });
+
+          it('encodes legend', function() {
+            var encLayer = {foo: 'bar'};
+            var encLgd = {name: 'foo layer', classes: [{icon: 'barLegend.png'}]};
+
+            var spy = sinon.spy($http, 'post');
+            var stub = sinon.stub(gaPrintLayer, 'encodeLayer').returns({layer: encLayer});
+            var stub1 = sinon.stub(scope, 'downloadUrl').withArgs(dlUrl, []).returns();
+
+            sinon.stub(gaPrintLayer, 'encodeGroup').returns([encLayer]);
+            sinon.stub(gaPrintLayer, 'encodeLegend').returns(encLgd);
+            sinon.stub(gaAttribution, 'getTextFromLayer').returns();
+            $httpBackend.expectPOST(createUrl).respond({getURL: dlUrl});
+
+            // Activate print of legends
+            scope.options.legend = true
+            map.addLayer(layerWithLegendAndTime);
+            map.addLayer(grp);
+
+            scope.submit();
+            $timeout.flush();
+            $httpBackend.flush();
+
+            // Expectations
+            expect(stub.callCount).to.be(1);
+            expect(stub1.callCount).to.be(1);
+            expect(spy.callCount).to.be(1);
+            var config = spy.args[0][1];
+            expectConfig(config);
+            expect(config.layers).to.eql([encLayer, encLayer]);
+            expect(config.legends[0]).to.eql(encLgd);
+            expect(config.enableLegends).to.be(true);
+          });
+
+          it('encodes pdf legend', function() {
+            var encLayer = {foo: 'bar'};
+            var encPdfLgd = {name: 'foo layer', classes: [{icon: 'barLegend_big.pdf'}]};
+
+            var spy = sinon.spy($http, 'post');
+            var stub = sinon.stub(gaPrintLayer, 'encodeLayer').returns({layer: encLayer});
+            var stub1 = sinon.stub(scope, 'downloadUrl').withArgs(dlUrl, ['barLegend_big.pdf']).returns();
+            sinon.stub(gaPrintLayer, 'encodeGroup').returns([encLayer]);
+            sinon.stub(gaPrintLayer, 'encodeLegend').returns(encPdfLgd);
+            sinon.stub(gaAttribution, 'getTextFromLayer').returns();
+            $httpBackend.expectPOST(createUrl).respond({getURL: dlUrl});
+
+            // Activate print of legends
+            scope.options.legend = true
+            map.addLayer(layerWithLegendAndTime);
+            map.addLayer(grp);
+
+            scope.submit();
+            $timeout.flush();
+            $httpBackend.flush();
+
+            // Expectations
+            expect(stub.callCount).to.be(1);
+            expect(stub1.callCount).to.be(1);
+            expect(spy.callCount).to.be(1);
+            var config = spy.args[0][1];
+            expectConfig(config);
+            expect(config.layers).to.eql([encLayer, encLayer]);
+            expect(config.legends[0]).to.eql();
+            expect(config.enableLegends).to.be(false);
+          });
+
+          it('encodes graticule', function() {
+            var encLayer = {foo: 'bar'};
+
+            var spy = sinon.spy($http, 'post');
+            var stub = sinon.stub(scope, 'downloadUrl').withArgs(dlUrl, []).returns();
+            sinon.stub(gaPrintLayer, 'encodeGroup').returns([encLayer]);
+            sinon.stub(gaPrintLayer, 'encodeGraticule').withArgs('150').returns(encLayer);
+            sinon.stub(gaAttribution, 'getTextFromLayer').returns();
+            $httpBackend.expectPOST(createUrl).respond({getURL: dlUrl});
+
+            // Activate print of graticule
+            scope.options.graticule = true
+            map.addLayer(grp);
+
+            scope.submit();
+            $timeout.flush();
+            $httpBackend.flush();
+
+            // Expectations
+            expect(stub.callCount).to.be(1);
+            expect(spy.callCount).to.be(1);
+            var config = spy.args[0][1];
+            expectConfig(config);
+            expect(config.layers).to.eql([encLayer, encLayer]);
+            expect(config.legends[0]).to.eql();
+            expect(config.enableLegends).to.be(false);
+          });
+
+          it('encodes overlays', function() {
+            var ovElt = $('<div id="ov"></div>');
+            var ovStopElt = $('<div id="ovStop"></div>');
+            $(document.body).append(ovElt);
+            $(document.body).append(ovStopElt);
+            var ov = new ol.Overlay({
+              element: ovElt[0],
+              stopEvent: false
+            });
+            var ovStop = new ol.Overlay({
+              element: ovStopElt[0]
+            });
+            var encLayer = {foo: 'bar'};
+            var encOvLayer = {foo: 'bar2'};
+            var encOvStopLayer = {foo: 'bar3'};
+
+            var spy = sinon.spy($http, 'post');
+            var stub = sinon.stub(scope, 'downloadUrl').withArgs(dlUrl, []).returns();
+            sinon.stub(gaPrintLayer, 'encodeGroup').returns([encLayer]);
+            sinon.stub(gaPrintLayer, 'encodeOverlay').
+                withArgs(ov, 152.8740565703525, scope.options).returns(encOvLayer).
+                withArgs(ovStop, 152.8740565703525, scope.options).returns(encOvStopLayer);
+            sinon.stub(gaAttribution, 'getTextFromLayer').returns();
+            $httpBackend.expectPOST(createUrl).respond({getURL: dlUrl});
+
+            map.addLayer(grp);
+            map.addOverlay(ovStop);
+            map.addOverlay(ov);
+            scope.submit();
+            $timeout.flush();
+            $httpBackend.flush();
+
+            // Expectations
+            expect(stub.callCount).to.be(1);
+            expect(spy.callCount).to.be(1);
+            var config = spy.args[0][1];
+            expectConfig(config);
+            expect(config.layers).to.eql([encLayer, encOvLayer, encOvStopLayer]);
+            expect(config.legends[0]).to.eql();
+            expect(config.enableLegends).to.be(false);
+            ovElt.remove();
+            ovStopElt.remove();
+          });
+
+          it('uses multiprint', function() {
+            var noCacheUrl = 'http://foo.ch/printprogress?id=1111';
+            var encLayer = {foo: 'bar'};
+            var encPdfLgd = {name: 'foo layer', classes: [{icon: 'barLegend_big.pdf'}]};
+
+            sinon.stub(gaPrintLayer, 'encodeGroup').returns([encLayer]);
+            sinon.stub(gaPrintLayer, 'encodeLayer').returns({
+              layer: encLayer
+            });
+            sinon.stub(gaPrintLayer, 'encodeLegend').returns(encPdfLgd);
+            var stub = sinon.stub(scope, 'downloadUrl').withArgs(dlUrl, ['barLegend_big.pdf']).returns();
+            var spy = sinon.spy($http, 'post');
+            $httpBackend.expectPOST(createUrlMulti).respond({getURL: dlUrl, idToCheck: '1111'});
+
+            // Activate multi print
+            scope.options.movie = true
+            scope.options.legend = true
+            map.addLayer(layerZeitreihen);
+            map.addLayer(grp);
+            $rootScope.$digest();
+            expect(scope.options.multiprint).to.be(true);
+            scope.submit();
+            $timeout.flush();
+            $httpBackend.flush();
+
+            expect(stub.callCount).to.be(0);
+            expect(spy.callCount).to.be(1);
+            var config = spy.args[0][1];
+            expectConfig(config);
+            expect(config.movie).to.be(true);
+            expect(config.layers).to.eql([encLayer, encLayer]);
+            expect(config.layers[0].legend).to.be();
+            expect(config.layers[1].legend).to.be();
+            expect(config.pages[0].dataOwner).to.eql('');
+            expect(config.pages[0].thirdPartyDataOwner).to.eql('');
+            expect(config.pages[0].timestamp).to.eql('1987');
+
+            // Launch printprogress
+            $httpBackend.expectGET(noCacheUrl).respond({});
+            $timeout.flush();
+            $httpBackend.flush();
+            expect(scope.options.progress).to.be('');
+            expect(scope.options.printing).to.be(true);
+
+            $httpBackend.expectGET(noCacheUrl).respond(404);
+            $timeout.flush();
+            $httpBackend.flush();
+            expect(scope.options.progress).to.be('');
+            expect(scope.options.printing).to.be(true);
+
+            $httpBackend.expectGET(noCacheUrl).respond({done: 25, total: 100});
+            $timeout.flush();
+            $httpBackend.flush();
+            expect(scope.options.progress).to.be('15%');
+            expect(scope.options.printing).to.be(true);
+
+            $httpBackend.expectGET(noCacheUrl).respond({merged: 25, done: 70, total: 100});
+            $timeout.flush();
+            $httpBackend.flush();
+            expect(scope.options.progress).to.be('67%');
+            expect(scope.options.printing).to.be(true);
+
+            $httpBackend.expectGET(noCacheUrl).respond({written: 5, filesize: 10});
+            $timeout.flush();
+            $httpBackend.flush();
+            expect(scope.options.progress).to.be('85%');
+            expect(scope.options.printing).to.be(true);
+
+            $httpBackend.expectGET(noCacheUrl).respond({getURL: dlUrl});
+            $timeout.flush();
+            $httpBackend.flush();
+            expect(scope.options.progress).to.be('85%');
+            expect(scope.options.printing).to.be(true);
+            expect(stub.callCount).to.be(1);
+          });
+
+          it('fails if printprogress returns more than 2 errors', function() {
+            var noCacheUrl = 'http://foo.ch/printprogress?id=1111';
+            var encLayer = {foo: 'bar'};
+
+            sinon.stub(gaPrintLayer, 'encodeGroup').returns([encLayer]);
+            sinon.stub(gaPrintLayer, 'encodeLayer').returns({
+              layer: encLayer
+            });
+            var stub = sinon.stub(scope, 'downloadUrl').withArgs(dlUrl).returns();
+            $httpBackend.expectPOST(createUrlMulti).respond({getURL: dlUrl, idToCheck: '1111'});
+
+            // Activate multi print
+            scope.options.movie = true
+            map.addLayer(layerZeitreihen);
+            map.addLayer(grp);
+            $rootScope.$digest();
+            scope.submit();
+            $timeout.flush();
+            $httpBackend.flush();
+
+            expect(stub.callCount).to.be(0);
+
+            // Launch printprogress
+            $httpBackend.expectGET(noCacheUrl).respond(404);
+            $timeout.flush();
+            $httpBackend.flush();
+            expect(scope.options.progress).to.be('');
+            expect(scope.options.printing).to.be(true);
+
+            $httpBackend.expectGET(noCacheUrl).respond(404);
+            $timeout.flush();
+            $httpBackend.flush();
+            expect(scope.options.progress).to.be('');
+            expect(scope.options.printing).to.be(true);
+
+            $httpBackend.expectGET(noCacheUrl).respond(404);
+            $timeout.flush();
+            $httpBackend.flush();
+            expect(scope.options.progress).to.be('');
+            expect(scope.options.printing).to.be(false);
+            expect(stub.callCount).to.be(0);
+          });
+
+          it('adds a parameter to print progress to avoid cache on ie9', function() {
+            var clock = sinon.useFakeTimers()
+            gaBrowserSniffer.msie = 9;
+            var noCacheUrl = 'http://foo.ch/printprogress?id=1111&0';
+            var encLayer = {foo: 'bar'};
+
+            sinon.stub(gaPrintLayer, 'encodeGroup').returns([encLayer]);
+            sinon.stub(gaPrintLayer, 'encodeLayer').returns({
+              layer: encLayer
+            });
+            var stub = sinon.stub(scope, 'downloadUrl').withArgs(dlUrl).returns();
+            $httpBackend.expectPOST(createUrlMulti).respond({getURL: dlUrl, idToCheck: '1111'});
+
+            // Activate multi print
+            scope.options.movie = true
+            map.addLayer(layerZeitreihen);
+            map.addLayer(grp);
+            $rootScope.$digest();
+            scope.submit();
+            $timeout.flush();
+            $httpBackend.flush();
+
+            expect(stub.callCount).to.be(0);
+
+            // Launch printprogress with an extra date parameter
+            $httpBackend.expectGET(noCacheUrl).respond({getURL: dlUrl});
+            $timeout.flush();
+            $httpBackend.flush();
+            expect(stub.callCount).to.be(1);
+            clock.restore();
+          });
         });
-      })
+
+        describe('#downloadUrl', function() {
+
+          it('changes windows location', function() {
+            expect(scope.options.printsuccess).to.be(false);
+            expect(scope.options.printing).to.be(false);
+            scope.downloadUrl('http://foo.ch/dl', []);
+            expect($window.location).to.be('http://foo.ch/dl');
+            expect(scope.options.printsuccess).to.be(true);
+            expect(scope.options.printing).to.be(false);
+          });
+
+          it('opens a new window on ie9', function() {
+            gaBrowserSniffer.msie = 9;
+            var stub = sinon.stub($window, 'open').withArgs('http://foo.ch/dl');
+            expect(scope.options.printsuccess).to.be(false);
+            expect(scope.options.printing).to.be(false);
+            scope.downloadUrl('http://foo.ch/dl', []);
+            expect(stub.callCount).to.be(1);
+            expect(scope.options.printsuccess).to.be(true);
+            expect(scope.options.printing).to.be(false);
+          });
+
+          it('loads pdf legends in new windows', function() {
+            gaBrowserSniffer.msie = 9;
+            var stub = sinon.stub($window, 'open');
+            expect(scope.options.printsuccess).to.be(false);
+            expect(scope.options.printing).to.be(false);
+            scope.downloadUrl('http://foo.ch/dl', ['a.pdf', 'b.pdf']);
+            expect(stub.callCount).to.be(3);
+            expect(scope.options.printsuccess).to.be(true);
+            expect(scope.options.printing).to.be(false);
+          });
+        });
+      });
     });
   });
 });

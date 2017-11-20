@@ -23,7 +23,6 @@ goog.require('ga_urlutils_service');
       $http, $q, $window, $translate, $timeout, gaLayers, gaMapUtils,
       gaPermalink, gaBrowserSniffer, gaWaitCursor,
       gaPrintLayer, gaAttribution, gaUrlUtils) {
-    var pdfLegendsToDownload = [];
     var pdfLegendString = '_big.pdf';
     var printRectangle;
     var deregister = [];
@@ -142,7 +141,7 @@ goog.require('ga_urlutils_service');
       return zoom;
     };
 
-    $scope.downloadUrl = function(url) {
+    $scope.downloadUrl = function(url, pdfLegendsToDownload) {
       $scope.options.printsuccess = true;
       if (gaBrowserSniffer.msie === 9) {
         $window.open(url);
@@ -159,8 +158,10 @@ goog.require('ga_urlutils_service');
 
     // Abort the print process
     var pollMultiPromise; // Promise of the last $timeout called
-    var pollMulti = function(url, startPollTime, pollErrors) {
+    var pollMulti = function(url, startPollTime, pollErrors,
+        pdfLegendsToDownload) {
       pollMultiPromise = $timeout(function() {
+
         if (!$scope.options.printing) {
           return;
         }
@@ -199,12 +200,12 @@ goog.require('ga_urlutils_service');
             var now = new Date();
             // We abort if we waited too long
             if (now - startPollTime < POLL_MAX_TIME) {
-              pollMulti(url, startPollTime, pollErrors);
+              pollMulti(url, startPollTime, pollErrors, pdfLegendsToDownload);
             } else {
               $scope.options.printing = false;
             }
           } else {
-            $scope.downloadUrl(data.getURL);
+            $scope.downloadUrl(data.getURL, pdfLegendsToDownload);
           }
         }, function() {
           if ($scope.options.printing === false) {
@@ -214,7 +215,7 @@ goog.require('ga_urlutils_service');
           if (pollErrors > 2) {
             $scope.options.printing = false;
           } else {
-            pollMulti(url, startPollTime, pollErrors);
+            pollMulti(url, startPollTime, pollErrors, pdfLegendsToDownload);
           }
         });
       }, POLL_INTERVAL, false);
@@ -257,11 +258,11 @@ goog.require('ga_urlutils_service');
       var printZoom = getZoomFromScale($scope.scale.value);
       qrcodeUrl = qrcodeUrl.replace(/zoom%3D(\d{1,2})/, 'zoom%3D' + printZoom);
       var encLayers = [];
-      var encLegends;
+      var encLegends = [];
       var attributions = [];
       var thirdPartyAttributions = [];
+      var pdfLegendsToDownload = [];
       var layers = this.map.getLayers().getArray();
-      pdfLegendsToDownload = [];
       layersYears = [];
 
       var dpi = getDpi($scope.layout.name, $scope.dpi);
@@ -291,9 +292,7 @@ goog.require('ga_urlutils_service');
         // TODO: issue a warning for the user
         if (layer.getSource && layer.getSource().getProjection) {
           var layerProj = layer.getSource().getProjection();
-          if (!layerProj) {
-            layer.getSource().setProjection(proj);
-          } else if (layerProj.getCode() !== proj.getCode()) {
+          if (layerProj && layerProj.getCode() !== proj.getCode()) {
             msg = msg + '\n' + layer.label;
             return;
           }
@@ -308,14 +307,13 @@ goog.require('ga_urlutils_service');
           var enc = gaPrintLayer.encodeLayer(layer, proj, scaleDenom,
               printRectangeCoords, resolution, dpi);
 
-          if (layerConfig.timeEnabled && layer.visible && layer.time) {
+          if (layerConfig.timeEnabled && layer.time) {
             layersYears.push(layer.time);
           }
 
           if ($scope.options.legend && layerConfig.hasLegend) {
             encLegend = gaPrintLayer.encodeLegend(layer, layerConfig,
                 $scope.options);
-
             if (encLegend.classes && encLegend.classes[0] &&
                 encLegend.classes[0].icon) {
               var legStr = encLegend.classes[0].icon;
@@ -331,7 +329,6 @@ goog.require('ga_urlutils_service');
           if (enc && enc.layer) {
             encs = [enc.layer];
             if (enc.legend) {
-              encLegends = encLegends || [];
               encLegends.push(enc.legend);
             }
           }
@@ -376,7 +373,6 @@ goog.require('ga_urlutils_service');
       // Transform graticule to literal
       if ($scope.options.graticule) {
         var graticule = gaPrintLayer.encodeGraticule(dpi);
-
         encLayers.push(graticule);
       }
 
@@ -402,8 +398,7 @@ goog.require('ga_urlutils_service');
           }
         }
       });
-      encLayers = encLayers.concat(ov);
-      encLayers = encLayers.concat(ovStop);
+      encLayers = encLayers.concat(ov, ovStop);
 
       // Get the short link
       var shortLink;
@@ -432,7 +427,7 @@ goog.require('ga_urlutils_service');
               dpi: getDpi($scope.layout.name, $scope.dpi),
               layers: encLayers,
               legends: encLegends,
-              enableLegends: (encLegends && encLegends.length > 0),
+              enableLegends: !!encLegends.length,
               qrcodeurl: qrcodeUrl,
               movie: movieprint,
               pages: [
@@ -465,9 +460,9 @@ goog.require('ga_urlutils_service');
                 var pollUrl = $scope.options.printPath + 'progress?id=' +
                 data.idToCheck;
                 currentMultiPrintId = data.idToCheck;
-                pollMulti(pollUrl, new Date(), 0);
+                pollMulti(pollUrl, new Date(), 0, pdfLegendsToDownload);
               } else {
-                $scope.downloadUrl(data.getURL);
+                $scope.downloadUrl(data.getURL, pdfLegendsToDownload);
               }
             }, function() {
               $scope.options.printing = false;

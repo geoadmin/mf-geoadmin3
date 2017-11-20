@@ -229,6 +229,7 @@
 "kml": "KML",
 "lang_chooser_label": "Sprache",
 "last_available_year": "Last year",
+"layer_cant_be_displayed_in_3d": "",
 "layers_displayed": "Dargestellte Karten",
 "layers_results_header": "Karte hinzufügen ...",
 "legend": "Legende",

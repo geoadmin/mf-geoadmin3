@@ -229,6 +229,7 @@
 "kml": "KML",
 "lang_chooser_label": "Language",
 "last_available_year": "Last year",
+"layer_cant_be_displayed_in_3d": "The following layers can't be displayed in 3d because they doesn't support the projection EPSG:4326 :",
 "layers_displayed": "Maps displayed",
 "layers_results_header": "Add map ...",
 "legend": "Legend",
