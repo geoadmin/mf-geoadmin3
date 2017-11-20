@@ -4,10 +4,10 @@ describe('ga_main_controller', function() {
   describe('GaMainController', function() {
 
     var elt, scope, parentScope, $compile, $rootScope, $window, $timeout, $httpBackend,
-      gaMapUtils, gaPermalink, gaGlobalOptions, gaBackground, gaTime, gaMapLoad;
+      gaMapUtils, gaPermalink, gaGlobalOptions, gaBackground, gaTime, gaMapLoad, gaWindow;
     /* Keep for future tests
       $q, $document, $translate, gaBrowserSniffer, gaHistory, gaPermalinkFeaturesManager, gaPermalinkLayersManager,
-      gaRealtimeLayersManager, gaNetworkStatus, gaLayers, gaTopic, gaOpaqueLayersManager, gaWindow, gaStorage, $document 
+      gaRealtimeLayersManager, gaNetworkStatus, gaLayers, gaTopic, gaOpaqueLayersManager, gaStorage, $document 
     */
     var loadController = function() {
       parentScope = $rootScope.$new();
@@ -29,6 +29,7 @@ describe('ga_main_controller', function() {
       gaBackground = $injector.get('gaBackground');
       gaTime = $injector.get('gaTime');
       gaMapLoad = $injector.get('gaMapLoad');
+      gaWindow = $injector.get('gaWindow');
       /* Keep for future tests
       $q = $injector.get('$q');
       $document = $injector.get('$document');
@@ -43,7 +44,6 @@ describe('ga_main_controller', function() {
       gaStorage = $injector.get('gaStorage');
       gaTopic = $injector.get('gaTopic');
       gaOpaqueLayersManager = $injector.get('gaOpaqueLayersManager');
-      gaWindow = $injector.get('gaWindow');
       */
     };
 
@@ -80,9 +80,10 @@ describe('ga_main_controller', function() {
         expect(g.ios).to.be(false);
         expect(g.animation).to.be(true);
         expect(g.offline).to.be(false);
+        expect(g.desktop).to.be(true);
+        expect(g.mobile).to.be(false);
         expect(g.embed).to.be(false);
         expect(g.pulldownShown).to.be(true);
-        expect(g.printShown).to.be(false);
         expect(g.catalogShown).to.be(false);
         expect(g.selectionShown).to.be(false);
         expect(g.feedbackPopupShown).to.be(false);
@@ -90,6 +91,7 @@ describe('ga_main_controller', function() {
         expect(g.isShareActive).to.be(false);
         expect(g.isDrawActive).to.be(false);
         expect(g.isFeatureTreeActive).to.be(false);
+        expect(g.isPrintActive).to.be(false);
         expect(g.isSwipeActive).to.be(false);
         expect(g.is3dActive).to.be(false);
         expect(g.hostIsProd).to.be(undefined);
@@ -153,6 +155,183 @@ describe('ga_main_controller', function() {
         spies.forEach(function(spy, idx) {
           expect(spy.callCount).to.be(1);
           expect(spy.getCall(0).args[0]).to.be(scope.map);
+        });
+      });
+
+      describe('hide catalog panel on resize', function() {
+        var stub, spy, g;
+
+        beforeEach(function() {
+          loadController();
+          g = scope.globals;
+          stub = sinon.stub(gaWindow, 'isHeight').withArgs('<=m');
+          spy = sinon.spy(scope, '$applyAsync');
+        });
+
+        afterEach(function() {
+          spy.reset();
+        });
+
+        describe('when isHeight(\'<=m\') returns false', function() {
+
+          beforeEach(function() {
+            stub.returns(false);
+          });
+
+          it('does nothing', function() {
+            expect(g.catalogShown).to.be(false);
+            $(window).trigger('resize');
+            $rootScope.$digest();
+            expect(g.catalogShown).to.be(false);
+            expect(spy.callCount).to.be(0);
+
+            g.catalogShown = true;
+            $(window).trigger('resize');
+            $rootScope.$digest();
+            expect(g.catalogShown).to.be(true);
+            expect(spy.callCount).to.be(0);
+          });
+        });
+
+        describe('when isHeight(\'<=m\') returns true', function() {
+
+          beforeEach(function() {
+            stub.returns(true);
+          });
+
+          it('does nothing when catalogShown is false', function() {
+            expect(g.catalogShown).to.be(false);
+            $(window).trigger('resize');
+            $rootScope.$digest();
+            expect(g.catalogShown).to.be(false);
+            expect(spy.callCount).to.be(0);
+          });
+
+          it('hide catalog', function() {
+            g.catalogShown = true;
+            $(window).trigger('resize');
+            $rootScope.$digest();
+            expect(g.catalogShown).to.be(false);
+            expect(spy.callCount).to.be(1);
+          });
+        });
+      });
+
+      describe('activate share panel on resize', function() {
+        var stub, spy, g;
+
+        beforeEach(function() {
+          loadController();
+          g = scope.globals;
+          stub = sinon.stub(gaWindow, 'isWidth').withArgs('xs');
+          spy = sinon.spy(scope, '$applyAsync');
+        });
+
+        afterEach(function() {
+          spy.reset();
+        });
+
+        describe('when isWidth(\'xs\') returns false', function() {
+
+          beforeEach(function() {
+            stub.returns(false);
+          });
+
+          it('does nothing', function() {
+            expect(g.isShareActive).to.be(false);
+            $(window).trigger('resize');
+            $rootScope.$digest();
+            expect(g.isShareActive).to.be(false);
+            expect(spy.callCount).to.be(0);
+          });
+
+          it('does nothing', function() {
+            g.isShareActive = true;
+            $(window).trigger('resize');
+            $rootScope.$digest();
+            expect(g.isShareActive).to.be(true);
+            expect(spy.callCount).to.be(0);
+          });
+        });
+
+        describe('when isWidth(\'xs\') returns true', function() {
+
+          beforeEach(function() {
+            stub.withArgs('xs').returns(true);
+          });
+
+          it('activate the share', function() {
+            g.pulldownShown = true;
+            g.isDrawActive = false;
+            g.isShareActive = false;
+            $(window).trigger('resize');
+            $rootScope.$digest();
+            expect(g.isShareActive).to.be(true);
+            expect(spy.callCount).to.be(1);
+          });
+        });
+      });
+
+      describe('show/hide settings panel on resize', function() {
+        var stub, spy, g;
+
+        beforeEach(function() {
+          loadController();
+          g = scope.globals;
+          stub = sinon.stub(gaWindow, 'isWidth');
+          spy = sinon.spy(scope, '$applyAsync');
+        });
+
+        afterEach(function() {
+          spy.reset();
+        });
+
+        describe('when isWidth(\'<=m\') returns false', function() {
+
+          beforeEach(function() {
+            stub.withArgs('<=m').returns(false);
+            stub.withArgs('>m').returns(true);
+          });
+
+          it('does nothing', function() {
+            expect(g.settingsShown).to.be(false);
+            $(window).trigger('resize');
+            $rootScope.$digest();
+            expect(g.settingsShown).to.be(false);
+            expect(spy.callCount).to.be(0);
+          });
+
+          it('hide the panel', function() {
+            g.catalogShown = true;
+            $(window).trigger('resize');
+            $rootScope.$digest();
+            expect(g.settingsShown).to.be(false);
+            expect(spy.callCount).to.be(1);
+          });
+        });
+
+        describe('when isWidth(\'<=m\') returns true', function() {
+
+          beforeEach(function() {
+            stub.withArgs('<=m').returns(true);
+            stub.withArgs('>m').returns(false);
+          });
+
+          it('show the panel', function() {
+            expect(g.settingsShown).to.be(false);
+            $(window).trigger('resize');
+            $rootScope.$digest();
+            expect(g.settingsShown).to.be(true);
+            expect(spy.callCount).to.be(2);
+          });
+
+          it('does nothing', function() {
+            g.settingsShown = true;
+            $(window).trigger('resize');
+            $rootScope.$digest();
+            expect(g.settingsShown).to.be(true);
+            expect(spy.callCount).to.be(1);
+          });
         });
       });
     });

@@ -212,7 +212,7 @@ goog.require('ga_window_service');
       $scope.topicId = gaTopic.get().id;
 
       if (initWithPrint) {
-        $scope.globals.printShown = true;
+        $scope.globals.isPrintActive = true;
       } else if (initWithFeedback) {
         $scope.globals.feedbackPopupShown = initWithFeedback;
       } else if (initWithDraw) {
@@ -251,16 +251,19 @@ goog.require('ga_window_service');
       ios: gaBrowserSniffer.ios,
       animation: gaBrowserSniffer.animation,
       offline: gaNetworkStatus.offline,
+      desktop: gaBrowserSniffer.desktop,
+      mobile: gaBrowserSniffer.mobile,
       embed: gaBrowserSniffer.embed,
       pulldownShown: false,
-      printShown: false,
       catalogShown: false,
       selectionShown: false,
       feedbackPopupShown: false,
       settingsShown: false,
+      queryShown: false,
       isShareActive: false,
       isDrawActive: false,
       isFeatureTreeActive: false,
+      isPrintActive: false,
       isSwipeActive: false,
       is3dActive: startWith3D,
       hostIsProd: gaGlobalOptions.hostIsProd
@@ -273,6 +276,7 @@ goog.require('ga_window_service');
         $scope.globals.pulldownShown = gaWindow.isWidth('>s') &&
              gaWindow.isHeight('>s');
         $scope.globals.settingsShown = gaWindow.isWidth('<=m');
+        $scope.globals.queryShown = gaWindow.isWidth('>m');
       });
     });
 
@@ -364,10 +368,6 @@ goog.require('ga_window_service');
 
     // Management of panels display (only on screen bigger than 480px)
     win.on('resize', function() {
-      if (gaWindow.isWidth('xs')) {
-        return;
-      }
-
       // Hide catalog panel if height is too small
       if (gaWindow.isHeight('<=m')) {
         if ($scope.globals.catalogShown) {
@@ -390,6 +390,17 @@ goog.require('ga_window_service');
          (gaWindow.isWidth('>m') && $scope.globals.settingsShown)) {
         $scope.$applyAsync(function() {
           $scope.globals.settingsShown = !$scope.globals.settingsShown;
+        });
+      }
+
+      // Display query tool
+      if ((gaWindow.isWidth('<=m') && $scope.globals.queryShown) ||
+         (gaWindow.isWidth('>m') && !$scope.globals.queryShown)) {
+        $scope.$applyAsync(function() {
+          $scope.globals.queryShown = !$scope.globals.queryShown;
+          if (!$scope.globals.queryShown) {
+            $scope.globals.isFeatureTreeActive = false;
+          }
         });
       }
     });

@@ -627,6 +627,10 @@ input[type=text][readonly] {
     font-size: 0.8em;
   }
 
+  .ga-redirect {
+    display: none;
+  }
+
   @media (max-width: @screen-tablet) {
     display: none;
   }
@@ -1081,8 +1085,12 @@ a .ga-icon-separator {
   
   .popover-content { /*Only for typeahead*/
     overflow: visible;
+
+    @media (max-width: @screen-phone) {
+      max-height: 440px;
+    }
   }
-  
+
   @media (max-width: @screen-tablet) {
     max-width: 480px;
   }
@@ -1562,7 +1570,11 @@ body.webkit .ga-checkbox {
 
 .bt-bottom-mixin(){
   position: absolute;
-  bottom: 0;
+  bottom: 68px;
+
+  @media (max-width: @screen-tablet) {
+    bottom: 0px;
+  }
 }
 
 #buttonGroup {
@@ -1599,12 +1611,7 @@ body.webkit .ga-checkbox {
   }
 
   [ga-offline-bt] {
-    position: absolute;
-    bottom: 68px;
-
-    @media (max-width: @screen-tablet) {
-      bottom: 0px;
-    }
+    .bt-bottom-mixin()
   }
 
   #zoomButtons {
@@ -1677,6 +1684,23 @@ body:not(.embed) {
 }
 
 
+/* Desktop page */
+.desktop {
+
+  /* Desktop page not ios */
+  &:not(.ios) {
+    @media (min-width: @screen-tablet) {
+      [ga-offline-bt] {
+        display: none;
+      }
+      #toptools .ga-redirect {
+        display: inline-block;
+      }
+    }
+  }
+}
+
+/* Embed page */
 .embed, .ga-full-screen {
   #buttonGroup {
     top: 0px;
