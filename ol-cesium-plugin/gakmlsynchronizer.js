@@ -66,7 +66,7 @@ olcs.GaKmlSynchronizer.prototype.createSingleLayerCounterparts =
       clampToGround: true
     });
   }
-
+  var that = this;
   dsP.then(function(ds) { 
     ds.show = olLayer.getVisible();
     const uid = ol.getUid(olLayer).toString();
@@ -74,7 +74,7 @@ olcs.GaKmlSynchronizer.prototype.createSingleLayerCounterparts =
     listenKeyArray.push(olLayer.on('change:visible', function(evt) {
       ds.show = evt.target.getVisible();
     }));
-    this.olLayerListenKeys[uid].push(...listenKeyArray);
+    that.olLayerListenKeys[uid].push(...listenKeyArray);
   });
 
   return [dsP];

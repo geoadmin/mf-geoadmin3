@@ -10777,6 +10777,7 @@ olcs.GaKmlSynchronizer.prototype.createSingleLayerCounterparts = function(olLaye
     }
     dsP = Cesium.KmlDataSource.load(loadParam, {camera:this.scene.camera, canvas:this.scene.canvas, clampToGround:true});
   }
+  var that = this;
   dsP.then(function(ds) {
     ds.show = olLayer.getVisible();
     var uid = ol.getUid(olLayer).toString();
@@ -10784,7 +10785,7 @@ olcs.GaKmlSynchronizer.prototype.createSingleLayerCounterparts = function(olLaye
     listenKeyArray.push(olLayer.on("change:visible", function(evt) {
       ds.show = evt.target.getVisible();
     }));
-    this.olLayerListenKeys[uid].push.apply(this.olLayerListenKeys[uid], [].concat($jscomp.arrayFromIterable(listenKeyArray)));
+    that.olLayerListenKeys[uid].push.apply(that.olLayerListenKeys[uid], [].concat($jscomp.arrayFromIterable(listenKeyArray)));
   });
   return [dsP];
 };
@@ -10885,13 +10886,16 @@ olcs.GaTileset3dSynchronizer.prototype.removeAllCesiumObjects = function(destroy
 };
 goog.provide("olcs.GaVectorSynchronizer");
 goog.require("ol");
+goog.require("olcs.util");
 goog.require("olcs.VectorSynchronizer");
 olcs.GaVectorSynchronizer = function(map, scene, opt_converter) {
   olcs.VectorSynchronizer.call(this, map, scene, opt_converter);
 };
 ol.inherits(olcs.GaVectorSynchronizer, olcs.VectorSynchronizer);
 olcs.GaVectorSynchronizer.prototype.createSingleLayerCounterparts = function(olLayer) {
-  if (olLayer.get("type") === "KML" && olLayer.get("url") && !/:\/\/public\./.test(olLayer.get("url"))) {
+  var id = olcs.util.obj(olLayer)["id"];
+  var url = olcs.util.obj(olLayer)["url"];
+  if (/^KML/.test(id) && url && !/:\/\/public\./.test(url)) {
     return null;
   }
   return olcs.VectorSynchronizer.prototype.createSingleLayerCounterparts.call(this, olLayer);

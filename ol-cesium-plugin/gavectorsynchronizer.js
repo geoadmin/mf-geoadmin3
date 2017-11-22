@@ -1,5 +1,6 @@
 goog.provide('olcs.GaVectorSynchronizer');
 goog.require('ol');
+goog.require('olcs.util');
 goog.require('olcs.VectorSynchronizer');
 
 
@@ -24,8 +25,14 @@ ol.inherits(olcs.GaVectorSynchronizer, olcs.VectorSynchronizer);
  */
 olcs.GaVectorSynchronizer.prototype.createSingleLayerCounterparts =
     function(olLayer) {
-  if (olLayer.get('type') === 'KML' && olLayer.get('url') &&
-      !/:\/\/public\./.test(olLayer.get('url'))) {
+
+  /** @type {string} */
+  var id = olcs.util.obj(olLayer)['id'];
+
+  /** @type {string} */
+  var url = olcs.util.obj(olLayer)['url'];
+
+  if (/^KML/.test(id) && url && !/:\/\/public\./.test(url)) {
     return null;
   }
   return olcs.VectorSynchronizer.prototype.createSingleLayerCounterparts.call(this, olLayer);
