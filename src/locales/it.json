@@ -195,7 +195,7 @@
 "geoloc_time_out": "Il tentativo di geolocalizzazione ha raggiunto il limite di tempo. Provate più tardi.",
 "geoloc_unknown": "Spiacente, per una ragione sconosciuta il servizio di geolocalizzazione non funziona. Controllate le impostazioni del dispositivo per la geolocalizzazione, la privacy ed il firewall.",
 "geolocation": "Geolocalizzazione",
-"geothermie": "Geotermia (BETA)",
+"geothermie": "Geotermia",
 "geothermie_service_link_href": "http://www.geologieportal.ch/internet/geologieportal/it/home/topics/energy/geothermalenergy/shortdesc.html",
 "geothermie_service_link_label": "Ulteriori informazioni",
 "gewiss": "Acque",
