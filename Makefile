@@ -79,7 +79,7 @@ TRANSLATION_FALLBACK_CODE ?= de
 LANGUAGES ?= '[\"de\", \"fr\", \"it\", \"en\", \"rm\"]'
 LANGS ?= de fr it rm en
 TRANSLATE_GSPREAD_KEYS ?= 1F3R46w4PODfsbJq7jd79sapy3B7TXhQcYM7SEaccOA0
-TRANSLATE_CSV_FILES ?= "https://docs.google.com/spreadsheets/d/1F3R46w4PODfsbJq7jd79sapy3B7TXhQcYM7SEaccOA0/export?format=csv&gid=0"
+TRANSLATE_CSV_FILES ?= "https://docs.google.com/spreadsheets/d/1bRzdX2zwN2VG7LWEdlscrP-wGlp7O46nvrXkQNnFvVY/export?format=csv&gid=54811248"
 TRANSLATE_EMPTY_JSON ?= src/locales/empty.json
 TRANSLATE_OUTPUT ?= src/locales
 DEFAULT_EXTENT ?= '[2420000, 1030000, 2900000, 1350000]'
