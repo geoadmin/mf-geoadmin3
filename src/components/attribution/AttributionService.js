@@ -45,7 +45,11 @@ goog.require('ga_urlutils_service');
         // Get the attribution of a layer without HTML.
         this.getTextFromLayer = function(layer) {
           if (gaUrlUtils.isValid(layer.url)) {
-            return gaUrlUtils.getHostname(layer.url);
+            if (gaUrlUtils.isBlob(layer.url)) {
+              return 'User local file'
+            } else {
+              return gaUrlUtils.getHostname(layer.url);
+            }
           } else if (layer.bodId) {
             return gaLayers.getLayerProperty(layer.bodId, 'attribution');
           }
@@ -57,7 +61,10 @@ goog.require('ga_urlutils_service');
           if (gaUrlUtils.isValid(id)) {
             var hostname = gaUrlUtils.getHostname(id);
             if (gaUrlUtils.isThirdPartyValid(id)) {
-              return '<span class="ga-warning-tooltip">' + hostname + '</span>';
+              var isBlob = gaUrlUtils.isBlob(layer.url);
+              var attribution = isBlob ? 'User local file' : hostname;
+              return '<span class="ga-warning-tooltip">' + attribution +
+                  '</span>';
             }
             return hostname;
           } else if (gaLayers.getLayer(id)) {
