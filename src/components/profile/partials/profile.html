@@ -8,6 +8,9 @@
   </div>
   <div class="ga-profile-tooltip-arrow"></div>
 </div>
+<button class="btn btn-default fa fa-trash"
+        ng-if="layer"
+        ng-click="deleteSelectedFeature(layer, feature)"></button>
 <div class="ga-profile-icons">
   <div class="ga-wrapper">
     <div class="ga-profile-elevation-difference" translate-attr="{title: 'profile_elevation_difference'}">
@@ -45,7 +48,4 @@
     </div>
   </div>
 </div>
-<button  class="btn btn-default fa fa-trash"
-         ng-if="layer"
-         ng-click="deleteSelectedFeature(layer, feature)"></button>
 
