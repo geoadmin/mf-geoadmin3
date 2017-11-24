@@ -16,7 +16,7 @@ goog.provide('ga_cesium');
  */
 // eslint-disable-next-line no-unused-vars
 var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions,
-    gaBrowserSniffer, $q, $translate, $rootScope, gaBackground) {
+    gaBrowserSniffer, $q, $translate, $rootScope, gaBackground, $window) {
   // Url of olcesium library
   var olCesiumLibUrl = gaGlobalOptions.resourceUrl;
   if (gaGlobalOptions.buildMode === 'prod') {
@@ -73,15 +73,17 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions,
     var fogEnabled = boolParam('fogEnabled', true);
     var fogDensity = floatParam('fogDensity', '0.0001');
     var fogSseFactor = floatParam('fogSseFactor', '25');
-    var terrainLevels = [8, 11, 14, 16, 17];
     // Set good time for lighting
     var d = new Date();
     d.setUTCHours(8);
     var jDate = Cesium.JulianDate.fromDate(d);
 
-    window.minimumRetrievingLevel = intParam('minimumRetrievingLevel', '8');
-    window.terrainAvailableLevels = arrayParam('terrainLevels', terrainLevels);
-    window.imageryAvailableLevels = arrayParam('imageryLevels', undefined);
+    gaGlobalOptions.minimumRetrievingLevel =
+        intParam('minimumRetrievingLevel', '8');
+    gaGlobalOptions.terrainAvailableLevels =
+        arrayParam('terrainLevels', [8, 11, 14, 16, 17]);
+    gaGlobalOptions.imageryAvailableLevels =
+        arrayParam('imageryLevels');
 
     var cesiumViewer;
     try {
@@ -107,8 +109,8 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions,
       cesiumViewer.getCesiumScene().globe._surface.sseCorrector = corrector;
 
     } catch (e) {
-      alert(e.message);
-      window.console.error(e.stack);
+      $window.alert(e.message);
+      $window.console.error(e.stack);
       return;
     }
     var globe = cesiumViewer.getCesiumScene().globe;
@@ -232,7 +234,7 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions,
     return function(activate) {
       // Check if cesium library is already loaded
       toActivate = activate;
-      if (!window.Cesium) {
+      if (!$window.Cesium) {
         loading = true;
         $.getScript(olCesiumLibUrl, function() {
           cesiumLoaded.resolve(toActivate);

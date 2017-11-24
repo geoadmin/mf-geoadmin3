@@ -55,7 +55,7 @@ goog.require('ga_wmts_service');
           return olPreviewLayer;
         };
 
-        this.addGetCapLayer = function(map, getCapLayer) {
+        this.addGetCapLayer = function(map, getCap, getCapLayer) {
           // Remove all preview layers
           this.removeAll(map);
 
@@ -67,8 +67,10 @@ goog.require('ga_wmts_service');
             if (getCapLayer.wmsUrl) {
               olPreviewLayer = gaWms.getOlLayerFromGetCapLayer(getCapLayer);
             } else if (getCapLayer.capabilitiesUrl) {
-              olPreviewLayer = gaWmts.getOlLayerFromGetCapLayer(map,
-                  getCapLayer);
+              olPreviewLayer = gaWmts.getOlLayerFromGetCap(map, getCap,
+                  getCapLayer.Identifier, {
+                    capabilitiesUrl: getCapLayer.capabilitiesUrl
+                  });
             }
           }
 

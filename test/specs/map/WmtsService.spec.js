@@ -27,26 +27,34 @@ describe('ga_wmts_service', function() {
       expect(source.urls[0]).to.be(options.url);
 
       // Tests Cesium provider
+      var spy = sinon.spy(Cesium, 'UrlTemplateImageryProvider');
       var prov = layer.getCesiumImageryProvider();
+      if (options.provider === null) {
+        expect(prov).to.be();
+        return;
+      }
       expect(prov).to.be.an(Cesium.UrlTemplateImageryProvider);
-      expect(prov.url).to.be('https://foo.ch?service=WMTS&version=1.0.0&request=GetTile&layer=undefined&format=image/jpeg&style=undefined&time=undefined&tilematrixset=4326&tilematrix={z}&tilecol={x}&tilerow={y}');
-      expect(prov.minimumRetrievingLevel).to.be(window.minimumRetrievingLevel);
-      expect(prov.rectangle).to.be.an(Cesium.Rectangle);
-      expect(prov.rectangle.west).to.be(-0.29442293174255596);
-      expect(prov.rectangle.south).to.be(0.5857374801382434);
-      expect(prov.rectangle.east).to.be(-0.19026022765439166);
-      expect(prov.rectangle.north).to.be(0.6536247392283254);
+      var p = spy.args[0][0];
+      expect(p.url).to.be('https://foo.ch?service=WMTS&version=1.0.0&request=GetTile&layer=undefined&format=image/jpeg&style=undefined&time=undefined&tilematrixset=4326&tilematrix={z}&tilecol={x}&tilerow={y}');
+      expect(p.minimumRetrievingLevel).to.be(gaGlobalOptions.minimumRetrievingLevel);
+      expect(p.rectangle).to.be.an(Cesium.Rectangle);
+      expect(p.rectangle.west).to.be(-0.2944229317425553);
+      expect(p.rectangle.south).to.be(0.5857374801382434);
+      expect(p.rectangle.east).to.be(-0.19026022765439154);
+      expect(p.rectangle.north).to.be(0.6536247392283254);
 
       if (options.useThirdPartyData) {
-        expect(prov.proxy.getURL('http://wmts.ch')).to.be(
+        expect(p.proxy.getURL('http://wmts.ch')).to.be(
             gaGlobalOptions.proxyUrl + 'http/wmts.ch');
       } else {
-        expect(prov.proxy.getURL('https://wms.geo.admin.ch')).to.be(
+        expect(p.proxy.getURL('https://wms.geo.admin.ch')).to.be(
             'https://wms.geo.admin.ch');
       }
-      expect(prov.tilingScheme).to.be.an(Cesium.GeographicTilingScheme);
-      expect(prov.hasAlphaChannel).to.be(true);
-      expect(prov.availableLevels).to.be(window.imageryAvailableLevels);
+      expect(p.tilingScheme).to.be.an(options.tilingScheme || Cesium.GeographicTilingScheme);
+      expect(p.hasAlphaChannel).to.be(true);
+      expect(p.availableLevels).to.be(gaGlobalOptions.imageryAvailableLevels);
+      expect(p.metadataUrl).to.be(gaGlobalOptions.imageryMetadataUrl);
+      spy.restore();
     };
 
     beforeEach(function() {
@@ -57,13 +65,14 @@ describe('ga_wmts_service', function() {
       map = new ol.Map({});
     });
 
-    describe('#addWmtsToMap()', function() {
+    describe.only('#addWmtsToMap()', function() {
       var url = 'https://foo.ch?';
       var minimalOptions = {
         label: 'WMTS layer',
         sourceConfig: {
           matrixSet: 4326,
-          urls: [url]
+          urls: [url],
+          projection: ol.proj.get('EPSG:4326')
         },
         layer: 'ch.wmts.layer',
         capabilitiesUrl: 'https://foo.ch/Capabilities.xml'
@@ -114,7 +123,8 @@ describe('ga_wmts_service', function() {
           label: 'WMTS layer',
           sourceConfig: {
             matrixSet: 4326,
-            urls: [url]
+            urls: [url],
+            projection: ol.proj.get('EPSG:4326')
           },
           layer: 'ch.wmts.layer',
           capabilitiesUrl: 'https://foo.ch/Capabilities.xml'
@@ -132,6 +142,35 @@ describe('ga_wmts_service', function() {
           url: url,
           label: 'WMTS layer',
           visible: true,
+          useThirdPartyData: true,
+          layer: options.layer,
+          capabilitiesUrl: options.capabilitiesUrl,
+          projection: undefined
+        });
+      });
+
+      it('adds a layer which can\'t be displayed in 3d', function() {
+        var url = 'https://foo.ch?';
+        var options = {
+          label: 'WMTS layer',
+          sourceConfig: {
+            matrixSet: 2056,
+            urls: [url],
+            projection: ol.proj.get('EPSG:2056')
+          },
+          layer: 'ch.wmts.layer',
+          capabilitiesUrl: 'https://foo.ch/Capabilities.xml'
+        };
+        gaWmts.addWmtsToMap(map, options);
+        expect(map.getLayers().getLength()).to.be(1);
+
+        var layer = map.getLayers().item(0);
+        expectProperties(layer, {
+          provider: null,
+          url: url,
+          label: 'WMTS layer',
+          visible: true,
+          opacity: 1,
           useThirdPartyData: true,
           layer: options.layer,
           capabilitiesUrl: options.capabilitiesUrl,

@@ -48,15 +48,15 @@ goog.require('ga_urlutils_service');
 
         var extent = gaGlobalOptions.defaultExtent;
         return new Cesium.UrlTemplateImageryProvider({
-          minimumRetrievingLevel: window.minimumRetrievingLevel,
+          minimumRetrievingLevel: gaGlobalOptions.minimumRetrievingLevel,
           url: gaUrlUtils.append(layer.url, gaUrlUtils.toKeyValue(wmsParams)),
           rectangle: gaMapUtils.extentToRectangle(extent),
           proxy: gaUrlUtils.getCesiumProxy(),
           tilingScheme: new Cesium.GeographicTilingScheme(),
           hasAlphaChannel: true,
-          availableLevels: window.imageryAvailableLevels
+          availableLevels: gaGlobalOptions.imageryAvailableLevels,
+          metadataUrl: gaGlobalOptions.imageryMetadataUrl
         });
-
       };
 
       var Wms = function() {
