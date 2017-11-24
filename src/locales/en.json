@@ -1,5 +1,5 @@
 {
-"3d_ie11_alert": "You are using InternetExplorer <= 11 : 3D rendering will be slow. Please use latest Version of Microsoft EDGE, Firefox or Chrome to experience maximum performance",
+"3d_ie11_alert": "YTest ou are using InternetExplorer <= 11 : 3D rendering will be slow. Please use latest Version of Microsoft EDGE, Firefox or Chrome to experience maximum performance",
 "3d_overlay_warning": "Important NOTE: 2D data in 3D.<br/>You are now looking at data that are not suited for 3D viewing. This is especially true for maps and aerial photographs. In steep terrain they appear distorted when 3D is in use\n",
 "3d_render_error": "Requirements for 3D not met. To use the 3D mode your computer needs:Latest Version of Microsoft EDGE, Firefox or Chrome and up-to-date video card hardware and drivers.",
 "Add layer": "Add Layer",
