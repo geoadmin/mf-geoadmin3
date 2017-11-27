@@ -202,7 +202,9 @@ itemscope itemtype="http://schema.org/WebApplication"
         <div ga-time-selector-bt ga-time-selector-bt-map="map"></div>
   % endif
         <div ga-rotate ga-rotate-map="map"></div>
+  % if device != 'embed':
         <div ga-offline-bt></div>
+  % endif
       </div>
   % if device != 'embed':
       <div ng-cloak translate-cloak
