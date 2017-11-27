@@ -37,6 +37,8 @@ goog.require('ga_urlutils_service');
         var tilingScheme;
 
         var isGoodMatrixSet = function(sourceMatrixSet, sourceProj, proj3d) {
+          console.log('proj existi s', ol.proj.equivalent(sourceProj, proj3d));
+
           if (ol.proj.equivalent(sourceProj, proj3d)) {
             matrixSet = sourceMatrixSet;
             tilingScheme = proj3d.getCode() === 'EPSG:4326' ?
@@ -47,12 +49,15 @@ goog.require('ga_urlutils_service');
         };
 
         // Display in 3d only layers with a matrixSet compatible
-        if (proj) {
+        if (proj) { console.log('proj exist', proj.getCode());
+
           matrixSetFound = projSupported.some(function(p) {
             return isGoodMatrixSet(matrixSet, proj, p);
           });
         }
         if (!matrixSetFound && store[layer.url]) {
+          console.log('proj inot exist');
+
           matrixSetFound = projSupported.some(function(p) {
             var opt = ol.source.WMTS.optionsFromCapabilities(store[layer.url], {
               layer: source.getLayer(),
@@ -86,6 +91,8 @@ goog.require('ga_urlutils_service');
             replace('{TileMatrix}', '{z}').
             replace('{TileCol}', '{x}').
             replace('{TileRow}', '{y}');
+         console.log('new ImageProvi', layer.getExtent());
+
 
         return new Cesium.UrlTemplateImageryProvider({
           minimumRetrievingLevel: gaGlobalOptions.minimumRetrievingLevel,
@@ -100,8 +107,11 @@ goog.require('ga_urlutils_service');
 
       // Create an WMTS layer
       var createWmtsLayer = function(options) {
+         console.log('lala');
         options.sourceConfig.transition = 0;
+         console.log(options.sourceConfig);
         var source = new ol.source.WMTS(options.sourceConfig);
+        console.log('lalala' + options.attribution);
         var layer = new ol.layer.Tile({
           id: 'WMTS||' + options.layer + '||' + options.capabilitiesUrl,
           source: source,
@@ -111,6 +121,8 @@ goog.require('ga_urlutils_service');
           visible: options.visible,
           attribution: options.attribution
         });
+        console.log(options.extent);
+        console.log(gaGlobalOptions.defaultEpsgExtent);
         gaDefinePropertiesForLayer(layer);
         layer.useThirdPartyData =
             gaUrlUtils.isThirdPartyValid(options.sourceConfig.urls[0]);
@@ -124,6 +136,7 @@ goog.require('ga_urlutils_service');
         layer.getCesiumImageryProvider = function() {
           return getCesiumImageryProvider(layer);
         };
+console.log('end');
         return layer;
       };
 
@@ -152,10 +165,13 @@ goog.require('ga_urlutils_service');
           // layer extent. We compare extients in wgs 84 to avoid
           // transformations errors of large wgs 84 extent like
           // (-180,-90,180,90)
+          console.log(proj.getExtent());
           var projWgs84Extent = ol.proj.transformExtent(proj.getExtent(),
               projCode, wgs84);
           var layerWgs84Extent = ol.extent.getIntersection(projWgs84Extent,
               wgs84Extent);
+          console.log(layerWgs84Extent);
+          
           if (layerWgs84Extent) {
             return ol.proj.transformExtent(layerWgs84Extent, wgs84, projCode);
           }
@@ -164,20 +180,14 @@ goog.require('ga_urlutils_service');
 
       var getLayerOptions = function(map, getCapLayer, getCap, getCapUrl) {
 
-        var attribution, attributionUrl;
         var extent = getLayerExtentFromGetCap(map, getCapLayer);
+        console.log('beforeoptionsFrom ', extent);
         var sourceConfig = ol.source.WMTS.optionsFromCapabilities(getCap, {
           layer: getCapLayer.Identifier,
           projection: map.getView().getProjection()
         });
 
-        if (getCap.ServiceProvider) {
-          attribution = getCap.ServiceProvider.ProviderName;
-          attributionUrl = getCap.ServiceProvider.ProviderSite;
-        } else {
-          attribution = gaUrlUtils.getHostname(getCapLayer.capabilitiesUrl);
-          attributionUrl = getCapLayer.capabilitiesUrl;
-        }
+        console.log('beforeServiceProvider', gaUrlUtils.getHostname(getCapUrl));
 
         var options = {
           capabilitiesUrl: getCapUrl,
@@ -187,24 +197,23 @@ goog.require('ga_urlutils_service');
           extent: extent,
           sourceConfig: sourceConfig
         };
-
-        options.sourceConfig.attributions = [
-          '<a href="' + attributionUrl + '" target="new">' + attribution +
-            '</a>'
-        ];
-
+     console.log('beforeServiceProvider', gaUrlUtils.getHostname(getCapUrl));
+        console.log('endGetOptions', options);
         return options;
       };
 
       var getLayerOptionsFromIdentifier = function(map, getCap, identifier,
           getCapUrl) {
+        console.log(getCapUrl);
         store[getCapUrl] = getCap;
         var options;
-
+        console.log('dingo', getCap);
         if (getCap.Contents && getCap.Contents.Layer) {
-          getCap.Contents.Layer.forEach(function(layer) {
-            if (layer.Identifier === identifier) {
+          getCap.Contents.Layer.some(function(layer) {
+           console.log(layer.Identifier);
+          if (layer.Identifier === identifier) {
               options = getLayerOptions(map, layer, getCap, getCapUrl);
+              return true;
             }
           });
         }
@@ -216,15 +225,21 @@ goog.require('ga_urlutils_service');
 
         this.getOlLayerFromGetCap = function(map, getCap, layerIdentifier,
             options) {
+          console.log('PARSE', typeof getCap);
+
           if (angular.isString(getCap)) {
+            console.log('PARSE');
             getCap = new ol.format.WMTSCapabilities().read(getCap);
           }
           var layerOptions = getLayerOptionsFromIdentifier(map, getCap,
               layerIdentifier, options.capabilitiesUrl);
-          layerOptions.opacity = options.opacity || 1;
-          layerOptions.visible = options.visible || true;
-          layerOptions.time = options.timestamp;
-          return createWmtsLayer(layerOptions);
+          console.log(layerOptions);
+          if (layerOptions) {
+            layerOptions.opacity = options.opacity || 1;
+            layerOptions.visible = options.visible || true;
+            layerOptions.time = options.timestamp;
+            return createWmtsLayer(layerOptions);
+          }
         };
 
         // Create a WMTS layer from a GetCapabilities string or an ol object

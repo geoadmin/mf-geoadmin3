@@ -1,9 +1,10 @@
 /* eslint-disable max-len */
 describe('ga_wmts_service', function() {
   describe('gaWmts', function() {
-    var gaWmts, map, gaGlobalOptions;
+    var gaWmts, map, map2056, gaGlobalOptions, gaMapUtils, $httpBackend;
 
     var expectProperties = function(layer, options) {
+     console.log('expect');
       // Test Layer's properties
       // set in constructor
       expect(layer).to.be.an(ol.layer.Tile);
@@ -12,7 +13,6 @@ describe('ga_wmts_service', function() {
       expect(layer.type).to.be('TILE');
       expect(layer.invertedOpacity).to.be(options.invertedOpacity || 0);
       expect(layer.visible).to.be(angular.isDefined(options.visible) ? options.visible : true);
-      expect(layer.get('attribution')).to.be(options.attribution);
 
       // set after creation
       expect(layer.preview).to.be(!!options.preview);
@@ -25,24 +25,35 @@ describe('ga_wmts_service', function() {
       var source = layer.getSource();
       expect(source).to.be.an(ol.source.WMTS);
       expect(source.urls[0]).to.be(options.url);
-
+ console.log('expect2');
+     
       // Tests Cesium provider
       var spy = sinon.spy(Cesium, 'UrlTemplateImageryProvider');
-      var prov = layer.getCesiumImageryProvider();
-      if (options.provider === null) {
-        expect(prov).to.be();
+      console.log('expect3');
+     var prov = layer.getCesiumImageryProvider();
+      console.log('expect4');
+      if (!prov) {
+        expect(prov).to.be(undefined);
+        expect(layer.displayIn3d).to.be(false);
+        spy.restore();
         return;
       }
+      expect(layer.displayIn3d).to.be(true);
+        console.log(prov);
       expect(prov).to.be.an(Cesium.UrlTemplateImageryProvider);
       var p = spy.args[0][0];
-      expect(p.url).to.be('https://foo.ch?service=WMTS&version=1.0.0&request=GetTile&layer=undefined&format=image/jpeg&style=undefined&time=undefined&tilematrixset=4326&tilematrix={z}&tilecol={x}&tilerow={y}');
-      expect(p.minimumRetrievingLevel).to.be(gaGlobalOptions.minimumRetrievingLevel);
-      expect(p.rectangle).to.be.an(Cesium.Rectangle);
-      expect(p.rectangle.west).to.be(-0.2944229317425553);
-      expect(p.rectangle.south).to.be(0.5857374801382434);
-      expect(p.rectangle.east).to.be(-0.19026022765439154);
-      expect(p.rectangle.north).to.be(0.6536247392283254);
-
+    console.log('ii');
+      expect(p.url).to.be(options.url3d);
+     console.log('ii');
+     expect(p.minimumRetrievingLevel).to.be(gaGlobalOptions.minimumRetrievingLevel);
+      console.log('ii');
+    expect(p.rectangle).to.be.an(Cesium.Rectangle);
+      expect(p.rectangle.west).to.be(-0.21764144550040762);
+      expect(p.rectangle.south).to.be(0.7527404204957977);
+      expect(p.rectangle.east).to.be(0.12982982483435074);
+      expect(p.rectangle.north).to.be(0.75613172160374);
+   console.log('ii');
+      
       if (options.useThirdPartyData) {
         expect(p.proxy.getURL('http://wmts.ch')).to.be(
             gaGlobalOptions.proxyUrl + 'http/wmts.ch');
@@ -53,7 +64,6 @@ describe('ga_wmts_service', function() {
       expect(p.tilingScheme).to.be.an(options.tilingScheme || Cesium.GeographicTilingScheme);
       expect(p.hasAlphaChannel).to.be(true);
       expect(p.availableLevels).to.be(gaGlobalOptions.imageryAvailableLevels);
-      expect(p.metadataUrl).to.be(gaGlobalOptions.imageryMetadataUrl);
       spy.restore();
     };
 
@@ -61,11 +71,134 @@ describe('ga_wmts_service', function() {
       inject(function($injector) {
         gaWmts = $injector.get('gaWmts');
         gaGlobalOptions = $injector.get('gaGlobalOptions');
+        gaMapUtils = $injector.get('gaMapUtils');
+        $httpBackend = $injector.get('$httpBackend');
       });
+      
       map = new ol.Map({});
+      map2056 = new ol.Map({
+        view: new ol.View({
+          projection: ol.proj.get('2056')
+        })
+      });
     });
 
-    describe.only('#addWmtsToMap()', function() {
+    describe('#getOlLayerFromGetCap()', function() {
+    
+      it('parse the GetCap with the ol formatter if it\'s a string', function() {
+        var getCap = '<Capabilities version="1.0.0"></capabilities>';
+        var spy = sinon.spy(ol.format.WMTSCapabilities.prototype, 'read');
+        var layer = gaWmts.getOlLayerFromGetCap(map, getCap, 'id', {});
+        expect(spy.callCount).to.be(1);
+        expect(spy.args[0][0]).to.be(getCap);
+        expect(layer).to.be(undefined);
+      });
+      
+      it('returns undefined if the content is empty', function() {
+        var identifier = 'ch.are.alpenkonvention';
+        var getCap = {};
+        var layer = gaWmts.getOlLayerFromGetCap(map, getCap, identifier, {
+          capabilitiesUrl: 'http:// wmts.xml'
+        });
+        expect(layer).to.be(undefined);
+      });
+
+      it('returns undefined if there is no layers', function() {
+        var identifier = 'ch.are.alpenkonvention';
+        var getCap = {
+          Contents: {
+            Layer: []
+          }
+        };
+        var layer = gaWmts.getOlLayerFromGetCap(map, getCap, identifier, {});
+        expect(layer).to.be(undefined);
+      });
+
+      describe('using swiss layers, which are not display in 3d', function() {
+        [
+          'base/test/data/wmts-basic.xml',
+          'base/test/data/wmts-basic-without-operationsmd.xml'
+        ].forEach(function(getCapUrl) {
+          it('returns the proper layer with ' + getCapUrl, function(done) {
+            $.get(getCapUrl, function(resp) {
+              var identifier = 'ch.are.alpenkonvention';
+              var getCap = new ol.format.WMTSCapabilities().read(resp);
+
+              var layer = gaWmts.getOlLayerFromGetCap(map, getCap, identifier, {
+                capabilitiesUrl: getCapUrl
+              });
+              expectProperties(layer, {
+                url: 'https://wmts.geo.admin.ch/1.0.0/ch.are.alpenkonvention/default/{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.png',
+                label: 'Convention des Alpes',
+                visible: true,
+                useThirdPartyData: true,
+                layer: identifier,
+                capabilitiesUrl: getCapUrl,
+                projection: undefined
+              });
+              done();
+            });
+          });
+        });
+      });
+
+      it.only('makes the layer displayable in 3d if the GetCap contains a matrixSet compatible with EPSG:3857 and using KVP syntax', function(done) {
+        var getCapUrl = 'base/test/data/wmts-copernicus.xml';
+        // We need to set the extent of the projection
+        sinon.stub(gaMapUtils, 'intersectWithDefaultExtent').returns([1000000, 100000001, 1000000, 1000000]);
+        var defaultProjection = ol.proj.get(gaGlobalOptions.defaultEpsg);
+        defaultProjection.setExtent(gaGlobalOptions.defaultEpsgExtent);
+        $.get(getCapUrl, function(response) {
+          var identifier = 'core003_feathering_mixed';
+          var getCap = new ol.format.WMTSCapabilities().read(response);
+          var layer = gaWmts.getOlLayerFromGetCap(map, getCap, identifier, {
+            capabilitiesUrl: 'http://test.ch/' + getCapUrl
+          });
+                  expectProperties(layer, {
+            label: 'CORE_003 Mosaic, natural color composition, feathering applied to scene borders, Mixed PNG/JPEG',
+            url: 'http://cidportal.jrc.ec.europa.eu/copernicus/services/tile/wmts?',
+            url3d: 'http://cidportal.jrc.ec.europa.eu/copernicus/services/tile/wmts?service=WMTS&version=1.0.0&request=GetTile&layer=core003_feathering_mixed&format=image/png&style=default&time=undefined&tilematrixset=g&tilematrix={z}&tilecol={x}&tilerow={y}',
+            visible: true,
+            useThirdPartyData: true,
+            layer: identifier,
+            capabilitiesUrl: 'http://test.ch/' + getCapUrl,
+            tilingScheme: Cesium.WebMercatorTilingScheme
+          });
+          done();
+        });
+      });
+
+      it.only('makes the layer displayable in 3d if the GetCap contains a matrixSet compatible with EPSG:4326 and using KVP syntax', function(done) {
+
+        var getCapUrl = 'base/test/data/wmts-copernicus.xml';
+        // We need to set the extent of the projection
+        sinon.stub(gaMapUtils, 'intersectWithDefaultExtent').returns([1000000, 100000001, 1000000, 1000000]);
+        var defaultProjection = ol.proj.get(gaGlobalOptions.defaultEpsg);
+        defaultProjection.setExtent(gaGlobalOptions.defaultEpsgExtent);
+        $.get(getCapUrl, function(response) {
+          var identifier = 'core003_seamline_mixed';
+          var getCap = new ol.format.WMTSCapabilities().read(response);
+          var layer = gaWmts.getOlLayerFromGetCap(map2056, getCap, identifier, {
+            capabilitiesUrl: 'http://test.ch/' + getCapUrl
+          });
+                  expectProperties(layer, {
+            label: 'CORE_003 Mosaic, natural color composition, based on seamline detection, Mixed PNG/JPEG',
+            url: 'http://cidportal.jrc.ec.europa.eu/copernicus/services/tile/wmts?',
+            url3d: 'http://cidportal.jrc.ec.europa.eu/copernicus/services/tile/wmts?service=WMTS&version=1.0.0&request=GetTile&layer=core003_seamline_mixed&format=image/png&style=default&time=undefined&tilematrixset=g&tilematrix={z}&tilecol={x}&tilerow={y}',
+            visible: true,
+            useThirdPartyData: true,
+            layer: identifier,
+            capabilitiesUrl: 'http://test.ch/' + getCapUrl,
+            tilingScheme: Cesium.WebMercatorTilingScheme
+          });
+          done();
+        });
+      });
+
+    });
+
+
+    describe('#addWmtsToMap()', function() {
       var url = 'https://foo.ch?';
       var minimalOptions = {
         label: 'WMTS layer',
@@ -208,63 +341,6 @@ describe('ga_wmts_service', function() {
     });
 
     describe('#getLayerOptionsFromIdentifier()', function() {
-
-      it('returns undefined if the content is empty', function() {
-        var identifier = 'ch.are.alpenkonvention';
-        var getCap = {};
-        var options = gaWmts.getLayerOptionsFromIdentifier(map, getCap, identifier);
-        expect(options).to.be(undefined);
-      });
-
-      it('returns undefined if there is no layers', function() {
-        var identifier = 'ch.are.alpenkonvention';
-        var getCap = {
-          Contents: {
-            Layer: []
-          }
-        };
-        var options = gaWmts.getLayerOptionsFromIdentifier(map, getCap, identifier);
-        expect(options).to.be(undefined);
-      });
-
-      [
-        'base/test/data/wmts-basic.xml',
-        'base/test/data/wmts-basic-without-operationsmd.xml'
-      ].forEach(function(getCapUrl) {
-        it('returns options for the proper layer with ' + getCapUrl, function(done) {
-          $.get(getCapUrl, function(response) {
-            var getCapabilities = new ol.format.WMTSCapabilities().read(response);
-            var identifier = 'ch.are.alpenkonvention';
-            // We need to set the extent of the projection
-            var defaultProjection = ol.proj.get(gaGlobalOptions.defaultEpsg);
-            defaultProjection.setExtent(gaGlobalOptions.defaultEpsgExtent);
-
-            var options = gaWmts.getLayerOptionsFromIdentifier(map, getCapabilities, identifier, getCapUrl);
-            expect(options.capabilitiesUrl).to.be(getCapUrl);
-            expect(options.label).to.be('Convention des Alpes');
-            expect(options.layer).to.be(identifier);
-            done();
-          });
-        });
-      });
-
-      it('set good attributions if serviceProvider is not in the GetCap', function(done) {
-        var getCapUrl = 'base/test/data/simple-wmts.xml';
-        $.get(getCapUrl, function(response) {
-          var identifier = 'tiled95_Uebersichtsplan1978';
-          var getCapabilities = new ol.format.WMTSCapabilities().read(response);
-          // We need to set the extent of the projection
-          var defaultProjection = ol.proj.get(gaGlobalOptions.defaultEpsg);
-          defaultProjection.setExtent(gaGlobalOptions.defaultEpsgExtent);
-
-          var options = gaWmts.getLayerOptionsFromIdentifier(map, getCapabilities, identifier, 'http://test.ch/' + getCapUrl);
-          expect(options.capabilitiesUrl).to.be('http://test.ch/' + getCapUrl);
-          expect(options.label).to.be('tiled95_Uebersichtsplan1978');
-          expect(options.sourceConfig.attributions[0]).to.contain('test.ch');
-          expect(options.layer).to.be(identifier);
-          done();
-        });
-      });
     });
   });
 });

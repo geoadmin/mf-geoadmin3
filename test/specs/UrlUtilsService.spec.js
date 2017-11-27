@@ -293,5 +293,28 @@ describe('ga_urlutils_service', function() {
         expect(kvp).to.be('key1=value%201&Key2=value2');
       });
     });
+
+    describe('#getHostname()', function() {
+      it('parses the hostname if available', function() {
+        [ 
+          'http://foo.ch/test.xml',
+          'https://foo.ch/test.xml',
+          'ftp://foo.ch/test.xml',
+          'blob://foo.ch/test.xml'
+        ].forEach(function(url) {
+          var hn = gaUrlUtils.getHostname(url);
+          expect(hn).to.be('foo.ch');
+        });
+      });
+      
+      it('returns empty', function() {
+        [ 
+          'foo.ch/test.xml'
+        ].forEach(function(url) {
+          var hn = gaUrlUtils.getHostname(url);
+          expect(hn).to.be('');
+        });
+      });
+    });
   });
 });
