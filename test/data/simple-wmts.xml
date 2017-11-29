@@ -59,14 +59,10 @@
   <Layer>
     <ows:Title>tiled95_Uebersichtsplan1978</ows:Title> 
     <ows:Identifier>tiled95_Uebersichtsplan1978</ows:Identifier>
-    
       <ows:BoundingBox crs="urn:ogc:def:crs:EPSG::2056">
-	  
 			<ows:LowerCorner>2674687.008200001 1240499.9999999956</ows:LowerCorner>
 			<ows:UpperCorner>2690626.3337524254 1255500.9036500014</ows:UpperCorner>
-		
       </ows:BoundingBox>  
-      
     <ows:WGS84BoundingBox crs="urn:ogc:def:crs:OGC:2:84">
       <ows:LowerCorner>8.427483689648799 47.31050733317184</ows:LowerCorner>
       <ows:UpperCorner>8.641327493819169 47.44743381719564</ows:UpperCorner>
@@ -78,174 +74,45 @@
     <Format>image/jpg</Format>
     <TileMatrixSetLink>
       <TileMatrixSet>default028mm</TileMatrixSet>
+      <TileMatrixSet>default029mm</TileMatrixSet>
     </TileMatrixSetLink>
-
-        
     <ResourceURL format="image/jpg" resourceType="tile" template="http://www.gis.stadt-zuerich.ch/maps/rest/services/tiled95/Uebersichtsplan1978/MapServer/WMTS/tile/1.0.0/tiled95_Uebersichtsplan1978/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpg" />
-  </Layer> 
-   <!--TileMatrixSet-->
+  </Layer>
    <TileMatrixSet>
-     <ows:Title>TileMatrix using 0.28mm</ows:Title>
-     <ows:Abstract>The tile matrix set that has scale values calculated based on the dpi defined by OGC specification (dpi assumes 0.28mm as the physical distance of a pixel).</ows:Abstract> 
+     <ows:Identifier>default029mm</ows:Identifier>
+     <ows:SupportedCRS>EPSG:4326</ows:SupportedCRS>
+     <TileMatrix>
+        <ows:Identifier>0</ows:Identifier>
+        <ScaleDenominator>241905.24571522293</ScaleDenominator>
+        <TopLeftCorner>-2.73864E7 3.18145E7</TopLeftCorner>  
+        <TileWidth>512</TileWidth> 
+        <TileHeight>512</TileHeight>
+          <MatrixWidth>868</MatrixWidth> 
+          <MatrixHeight>882</MatrixHeight>
+        </TileMatrix>
+   </TileMatrixSet>  
+   <TileMatrixSet>
      <ows:Identifier>default028mm</ows:Identifier>
      <ows:SupportedCRS>urn:ogc:def:crs:EPSG::2056</ows:SupportedCRS>
-      
-          <TileMatrix>
+     <TileMatrix>
           <ows:Identifier>0</ows:Identifier>
-          
           <ScaleDenominator>241905.24571522293</ScaleDenominator>
-          
           <TopLeftCorner>-2.73864E7 3.18145E7</TopLeftCorner>  
           <TileWidth>512</TileWidth> 
           <TileHeight>512</TileHeight>
-            
             <MatrixWidth>868</MatrixWidth> 
             <MatrixHeight>882</MatrixHeight>
-          
-          </TileMatrix>
-          
-          <TileMatrix>
+     </TileMatrix>
+     <TileMatrix>
           <ows:Identifier>1</ows:Identifier>
-          
           <ScaleDenominator>120952.62285761147</ScaleDenominator>
-          
           <TopLeftCorner>-2.73864E7 3.18145E7</TopLeftCorner>  
           <TileWidth>512</TileWidth> 
           <TileHeight>512</TileHeight>
-            
             <MatrixWidth>1735</MatrixWidth> 
             <MatrixHeight>1764</MatrixHeight>
-          
-          </TileMatrix>
-          
-          <TileMatrix>
-          <ows:Identifier>2</ows:Identifier>
-          
-          <ScaleDenominator>60476.31142880573</ScaleDenominator>
-          
-          <TopLeftCorner>-2.73864E7 3.18145E7</TopLeftCorner>  
-          <TileWidth>512</TileWidth> 
-          <TileHeight>512</TileHeight>
-            
-            <MatrixWidth>3470</MatrixWidth> 
-            <MatrixHeight>3527</MatrixHeight>
-          
-          </TileMatrix>
-          
-          <TileMatrix>
-          <ows:Identifier>3</ows:Identifier>
-          
-          <ScaleDenominator>30238.155714402867</ScaleDenominator>
-          
-          <TopLeftCorner>-2.73864E7 3.18145E7</TopLeftCorner>  
-          <TileWidth>512</TileWidth> 
-          <TileHeight>512</TileHeight>
-            
-            <MatrixWidth>6939</MatrixWidth> 
-            <MatrixHeight>7053</MatrixHeight>
-          
-          </TileMatrix>
-          
-          <TileMatrix>
-          <ows:Identifier>4</ows:Identifier>
-          
-          <ScaleDenominator>15119.077857201433</ScaleDenominator>
-          
-          <TopLeftCorner>-2.73864E7 3.18145E7</TopLeftCorner>  
-          <TileWidth>512</TileWidth> 
-          <TileHeight>512</TileHeight>
-            
-            <MatrixWidth>13877</MatrixWidth> 
-            <MatrixHeight>14106</MatrixHeight>
-          
-          </TileMatrix>
-          
-          <TileMatrix>
-          <ows:Identifier>5</ows:Identifier>
-          
-          <ScaleDenominator>7559.538928600717</ScaleDenominator>
-          
-          <TopLeftCorner>-2.73864E7 3.18145E7</TopLeftCorner>  
-          <TileWidth>512</TileWidth> 
-          <TileHeight>512</TileHeight>
-            
-            <MatrixWidth>27754</MatrixWidth> 
-            <MatrixHeight>28212</MatrixHeight>
-          
-          </TileMatrix>
-          
-          <TileMatrix>
-          <ows:Identifier>6</ows:Identifier>
-          
-          <ScaleDenominator>3779.7694643003583</ScaleDenominator>
-          
-          <TopLeftCorner>-2.73864E7 3.18145E7</TopLeftCorner>  
-          <TileWidth>512</TileWidth> 
-          <TileHeight>512</TileHeight>
-            
-            <MatrixWidth>55507</MatrixWidth> 
-            <MatrixHeight>56424</MatrixHeight>
-          
-          </TileMatrix>
-          
-          <TileMatrix>
-          <ows:Identifier>7</ows:Identifier>
-          
-          <ScaleDenominator>1889.8847321501792</ScaleDenominator>
-          
-          <TopLeftCorner>-2.73864E7 3.18145E7</TopLeftCorner>  
-          <TileWidth>512</TileWidth> 
-          <TileHeight>512</TileHeight>
-            
-            <MatrixWidth>111013</MatrixWidth> 
-            <MatrixHeight>112847</MatrixHeight>
-          
-          </TileMatrix>
-          
-          <TileMatrix>
-          <ows:Identifier>8</ows:Identifier>
-          
-          <ScaleDenominator>944.9423660750896</ScaleDenominator>
-          
-          <TopLeftCorner>-2.73864E7 3.18145E7</TopLeftCorner>  
-          <TileWidth>512</TileWidth> 
-          <TileHeight>512</TileHeight>
-            
-            <MatrixWidth>222025</MatrixWidth> 
-            <MatrixHeight>225694</MatrixHeight>
-          
-          </TileMatrix>
-          
-          <TileMatrix>
-          <ows:Identifier>9</ows:Identifier>
-          
-          <ScaleDenominator>472.4711830375448</ScaleDenominator>
-          
-          <TopLeftCorner>-2.73864E7 3.18145E7</TopLeftCorner>  
-          <TileWidth>512</TileWidth> 
-          <TileHeight>512</TileHeight>
-            
-            <MatrixWidth>444050</MatrixWidth> 
-            <MatrixHeight>451387</MatrixHeight>
-          
-          </TileMatrix>
-          
-          <TileMatrix>
-          <ows:Identifier>10</ows:Identifier>
-          
-          <ScaleDenominator>236.2355915187724</ScaleDenominator>
-          
-          <TopLeftCorner>-2.73864E7 3.18145E7</TopLeftCorner>  
-          <TileWidth>512</TileWidth> 
-          <TileHeight>512</TileHeight>
-            
-            <MatrixWidth>888100</MatrixWidth> 
-            <MatrixHeight>902774</MatrixHeight>
-          
-          </TileMatrix>
-          
-   </TileMatrixSet>
-   
-</Contents>
-<ServiceMetadataURL xlink:href="http://www.gis.stadt-zuerich.ch/maps/rest/services/tiled95/Uebersichtsplan1978/MapServer/WMTS/1.0.0/WMTSCapabilities.xml" /> 
+     </TileMatrix>
+  </TileMatrixSet>
+  </Contents>
+  <ServiceMetadataURL xlink:href="http://www.gis.stadt-zuerich.ch/maps/rest/services/tiled95/Uebersichtsplan1978/MapServer/WMTS/1.0.0/WMTSCapabilities.xml" /> 
 </Capabilities>

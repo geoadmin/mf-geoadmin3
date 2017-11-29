@@ -296,7 +296,7 @@ describe('ga_urlutils_service', function() {
 
     describe('#getHostname()', function() {
       it('parses the hostname if available', function() {
-        [ 
+        [
           'http://foo.ch/test.xml',
           'https://foo.ch/test.xml',
           'ftp://foo.ch/test.xml',
@@ -306,9 +306,9 @@ describe('ga_urlutils_service', function() {
           expect(hn).to.be('foo.ch');
         });
       });
-      
+
       it('returns empty', function() {
-        [ 
+        [
           'foo.ch/test.xml'
         ].forEach(function(url) {
           var hn = gaUrlUtils.getHostname(url);

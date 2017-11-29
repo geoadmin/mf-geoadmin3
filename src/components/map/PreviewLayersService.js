@@ -81,7 +81,8 @@ goog.require('ga_wmts_service');
 
           olPreviewLayer.preview = true;
           olPreviewLayer.displayInLayerManager = false;
-          olPreviewLayers[getCapLayer.id] = olPreviewLayer;
+          olPreviewLayers[getCapLayer.id || getCapLayer.Identifier] =
+              olPreviewLayer;
           olPreviewLayer.setZIndex(gaMapUtils.Z_PREVIEW_LAYER);
           map.addLayer(olPreviewLayer);
 
