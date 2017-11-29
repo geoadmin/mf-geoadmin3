@@ -484,12 +484,25 @@ goog.require('ga_urlutils_service');
 
     var customParams = {
       'EXCEPTIONS': 'XML',
-      'TRANSPARENT': 'true',
-      'CRS': epsgCode,
-      'MAP_RESOLUTION': dpi
+      'TRANSPARENT': 'true'
     };
     if (params.TIME) {
       customParams['TIME'] = params.TIME;
+    }
+    // Do not try this parameter on not opensource WMS
+    var mapservWMS = 'wms(.*).(dev|int|prod|geo|swisstopo).(admin|bgdi).ch';
+    var regexMapservWMS = new RegExp(mapservWMS, 'gi');
+    var match = regexMapservWMS.test(url);
+    if (match) {
+        customParams['MAP_RESOLUTION'] = dpi;
+    }
+
+    params.VERSION = params.VERSION || '1.3.0';
+    customParams['VERSION'] = params.VERSION;
+    if (params.VERSION === '1.3.0') {
+      customParams['CRS'] = epsgCode;
+    } else {
+      customParams['SRS'] = epsgCode;
     }
 
     angular.extend(enc, {
