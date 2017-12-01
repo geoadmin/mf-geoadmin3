@@ -380,7 +380,6 @@ goog.require('ga_urlutils_service');
                   // scale has to be one of the advertise by the print server
                   scale: $scope.scale.value,
                   dataOwner: allDataOwner,
-                  thirdPartyDataOwner: false,
                   shortLink: shortLink || '',
                   rotation: -((view.getRotation() * 180.0) / Math.PI)
                 }, defaultPage)
