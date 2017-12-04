@@ -349,7 +349,7 @@ describe('ga_stylesfromliterals_service', function() {
           '}}'
       );
       var gaStyle = gaStylesFromLiterals(uniqueTypeStyle);
-      var olStyle = gaStyle.getFeatureStyle(olFeature);
+      var olStyle = gaStyle.getFeatureStyle(olFeature, 100);
       var olImage = olStyle.getImage();
       var olText = olStyle.getText();
       expect(olStyle).to.be.an(ol.style.Style);
@@ -377,7 +377,7 @@ describe('ga_stylesfromliterals_service', function() {
             '"oraison": "mylady"' +
           '}}'
       );
-      olStyle = gaStyle.getFeatureStyle(olFeature);
+      olStyle = gaStyle.getFeatureStyle(olFeature, 100);
       olImage = olStyle.getImage();
       olText = olStyle.getText();
       expect(olStyle).to.be.an(ol.style.Style);
@@ -446,7 +446,7 @@ describe('ga_stylesfromliterals_service', function() {
             '"foo": "bar"' +
           '}}'
       );
-      var olStyle = gaStyle.getFeatureStyle(olFeature);
+      var olStyle = gaStyle.getFeatureStyle(olFeature, 100);
       var olImage = olStyle.getImage();
       expect(olStyle.getImage()).to.be.an(ol.style.Image);
       expect(olImage.getFill()).to.be.an(ol.style.Fill);
@@ -468,7 +468,7 @@ describe('ga_stylesfromliterals_service', function() {
             '"foo": "toto"' +
           '}}'
       );
-      olStyle = gaStyle.getFeatureStyle(olFeature);
+      olStyle = gaStyle.getFeatureStyle(olFeature, 100);
       olImage = olStyle.getImage();
       expect(olStyle.getImage()).to.be.an(ol.style.Image);
       expect(olImage.getFill()).to.be.an(ol.style.Fill);
@@ -696,7 +696,7 @@ describe('ga_stylesfromliterals_service', function() {
             '"foo": 3' +
           '}}'
       );
-      var olStyle = gaStyle.getFeatureStyle(olFeature);
+      var olStyle = gaStyle.getFeatureStyle(olFeature, 100);
       var olImage = olStyle.getImage();
       expect(olStyle.getImage()).to.be.an(ol.style.Image);
       expect(olImage.getFill()).to.be.an(ol.style.Fill);
@@ -718,7 +718,7 @@ describe('ga_stylesfromliterals_service', function() {
             '"foo": 11' +
           '}}'
       );
-      olStyle = gaStyle.getFeatureStyle(olFeature);
+      olStyle = gaStyle.getFeatureStyle(olFeature, 100);
       olImage = olStyle.getImage();
       expect(olStyle.getImage()).to.be.an(ol.style.Image);
       expect(olImage.getFill()).to.be.an(ol.style.Fill);
@@ -740,7 +740,7 @@ describe('ga_stylesfromliterals_service', function() {
             '"foo": 10' +
           '}}'
       );
-      olStyle = gaStyle.getFeatureStyle(olFeature);
+      olStyle = gaStyle.getFeatureStyle(olFeature, 100);
       olImage = olStyle.getImage();
       expect(olStyle.getImage()).to.be.an(ol.style.Image);
       expect(olImage.getFill()).to.be.an(ol.style.Fill);
@@ -763,7 +763,7 @@ describe('ga_stylesfromliterals_service', function() {
           '}}'
       );
       var stub = sinon.stub($window, 'alert');
-      olStyle = gaStyle.getFeatureStyle(olFeature);
+      olStyle = gaStyle.getFeatureStyle(olFeature, 100);
       olImage = olStyle.getImage();
       expect(olStyle.getImage()).to.equal(null);
       expect(stub.calledWithExactly('Feature ID: undefined. No matching style found for key foo and value 1000.')).to.be(true);
@@ -892,7 +892,7 @@ describe('ga_stylesfromliterals_service', function() {
           '}}'
       );
       var stub = sinon.stub($window, 'alert');
-      olStyle = gaStyle.getFeatureStyle(olFeature);
+      olStyle = gaStyle.getFeatureStyle(olFeature, 100);
       olImage = olStyle.getImage();
       expect(olStyle.getImage()).to.equal(null);
       expect(stub.calledWithExactly('Feature ID: undefined. No matching style found for key foo and value 1000.')).to.be(true);

@@ -211,13 +211,13 @@ describe('ga_printlayer_service', function() {
           layers: [ 'ch.swisstopo.fixpunkte-agnes' ],
           styles: [ '' ],
           format: 'image/png',
-          customParams: 
+          customParams:
            { EXCEPTIONS: 'XML',
              TRANSPARENT: 'true',
              MAP_RESOLUTION: 150,
              VERSION: '1.3.0',
              CRS: 'EPSG:2056' },
-           singleTile: false 
+          singleTile: false
         });
       });
     });
@@ -263,7 +263,7 @@ describe('ga_printlayer_service', function() {
           layers: [ 'not-so-important' ],
           styles: [ '' ],
           format: 'image/png',
-          customParams: 
+          customParams:
            { EXCEPTIONS: 'XML',
              TRANSPARENT: 'true',
              VERSION: '1.1.1',
