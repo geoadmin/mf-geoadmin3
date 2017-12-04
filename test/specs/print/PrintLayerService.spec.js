@@ -205,23 +205,73 @@ describe('ga_printlayer_service', function() {
         var wmsLayer = gaPrintLayer.encodeWMS(layer, proj, {});
 
         expect(wmsLayer).to.eql({
-          'opacity': 1,
-          'type': 'WMS',
-          'baseURL': 'https://wms.geo.admin.ch/?',
-          'layers': ['ch.swisstopo.fixpunkte-agnes'],
-          'styles': [''],
-          'format': 'image/png',
-          'customParams': {
-            'EXCEPTIONS': 'XML',
-            'TRANSPARENT': 'true',
-            'CRS': 'EPSG:2056',
-            'MAP_RESOLUTION': '150'
-          },
-          'singleTile': false
+          opacity: 1,
+          type: 'WMS',
+          baseURL: 'https://wms.geo.admin.ch/?',
+          layers: [ 'ch.swisstopo.fixpunkte-agnes' ],
+          styles: [ '' ],
+          format: 'image/png',
+          customParams: 
+           { EXCEPTIONS: 'XML',
+             TRANSPARENT: 'true',
+             MAP_RESOLUTION: 150,
+             VERSION: '1.3.0',
+             CRS: 'EPSG:2056' },
+           singleTile: false 
         });
       });
     });
 
+    describe('#encodeWMS111()', function() {
+
+      var proj = new ol.proj.Projection({
+        code: 'EPSG:2056',
+        units: 'm',
+        extent: extent
+      });
+
+      var options = {
+        url: 'https://wms.tutu.org',
+        projection: proj,
+        ratio: 1,
+        params: {
+          LAYERS: 'not-so-important',
+          VERSION: '1.1.1'
+        }
+      };
+
+      var source = new ol.source.ImageWMS(options);
+
+      var layer = new ol.layer.Image({
+        id: options.id,
+        url: options.url,
+        type: 'WMS',
+        opacity: 1,
+        visible: true,
+        extent: extent,
+        source: source
+      });
+
+      it('returns an encoded external 1.1.1 WMS  layer', function() {
+
+        var wmsLayer = gaPrintLayer.encodeWMS(layer, proj, {});
+
+        expect(wmsLayer).to.eql({
+          opacity: 1,
+          type: 'WMS',
+          baseURL: 'https://wms.tutu.org',
+          layers: [ 'not-so-important' ],
+          styles: [ '' ],
+          format: 'image/png',
+          customParams: 
+           { EXCEPTIONS: 'XML',
+             TRANSPARENT: 'true',
+             VERSION: '1.1.1',
+             SRS: 'EPSG:2056' },
+          singleTile: false
+        });
+      });
+    });
     describe('#encodeMatrixIds()', function() {
 
       var extent = [672499.0, 238999.0, 689999.0, 256999.0];
