@@ -2,7 +2,7 @@
 describe('ga_wms_service', function() {
 
   describe('gaWms', function() {
-    var gaWms, map, gaGlobalOptions, $rootScope;
+    var gaWms, map, gaGlobalOptions, $rootScope, gaLang;
 
     var getExternalWmsLayer = function(params) {
       var layer = new ol.layer.Image({
@@ -98,6 +98,7 @@ describe('ga_wms_service', function() {
       inject(function($injector) {
         gaWms = $injector.get('gaWms');
         gaGlobalOptions = $injector.get('gaGlobalOptions');
+        gaLang = $injector.get('gaLang');
         $rootScope = $injector.get('$rootScope');
       });
       map = new ol.Map({});
@@ -238,12 +239,13 @@ describe('ga_wms_service', function() {
 
     describe('#getLegend()', function() {
       it('tests with default values', function(done) {
+
         var wmsLayer = getExternalWmsLayer({
           LAYERS: 'somelayer'
         });
         var expectedHtml = '<img alt="No legend available" src="http://foo.ch/wms?' +
             'request=GetLegendGraphic&layer=somelayer&style=default&service=WMS&' +
-            'version=1.3.0&format=image%2Fpng&sld_version=1.1.0&lang=en"></img>';
+            'version=1.3.0&format=image%2Fpng&sld_version=1.1.0&lang=' + gaLang.get() + '"></img>';
         gaWms.getLegend(wmsLayer).then(function(resp) {
           var html = resp.data;
           expect(html).to.be(expectedHtml);
@@ -260,7 +262,7 @@ describe('ga_wms_service', function() {
         });
         var expectedHtml = '<img alt="No legend available" src="http://foo.ch/wms?' +
             'request=GetLegendGraphic&layer=somelayer&style=default&service=WMS&' +
-            'version=1.1.1&format=image%2Fpng&sld_version=1.1.0&lang=en"></img>';
+            'version=1.1.1&format=image%2Fpng&sld_version=1.1.0&lang=' + gaLang.get() + '"></img>';
         gaWms.getLegend(wmsLayer).then(function(resp) {
           var html = resp.data;
           expect(html).to.be(expectedHtml);
