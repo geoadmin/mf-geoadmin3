@@ -276,6 +276,9 @@ goog.require('ga_urlutils_service');
             defer.resolve(emptyData);
             return defer.promise;
           }
+          // Avoid hudge request by simplifying the line string with Douglas
+          // Peucker if there is more than 1000 coordinates.
+          geom = gaGeomUtils.simplify(geom, 1000);
           var coordinates = geom.getCoordinates();
 
           // TODO: manage all kind of geometry

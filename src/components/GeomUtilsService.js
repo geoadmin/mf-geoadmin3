@@ -194,6 +194,18 @@ goog.provide('ga_geomutils_service');
           }
           return geom;
         };
+
+        // Simplify a geometry only if the number of coordinate s exceeds
+        // nbPointsMax 
+        this.simplify = function(geom, nbPointsMax) {
+          if (!(geom instanceof ol.geom.LineString) || !nbPointsMax ||
+              geom.getCoordinates().length <= nbPointsMax) {
+            return geom;
+          }
+          // Magic number coming from service-alti
+          // https://github.com/geoadmin/service-alti/blob/master/alti/views/profile.py#L53
+          return geom.simplify(12.5);
+        };
       };
       return new GeomUtils();
     };

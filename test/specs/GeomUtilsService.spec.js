@@ -2,6 +2,40 @@
 describe('ga_geomutils_service', function() {
   var gaGeomUtils;
 
+  var lineString = new ol.geom.LineString([
+    [0, 0], [1000, 0], [1000, 1000], [0, 1000]
+  ]);
+
+  var multiLineString = new ol.geom.MultiLineString([
+    [[0, 0], [1000, 0], [1000, 1000], [0, 1000]],
+    [[1, 0], [1000, 0], [1000, 1000], [0, 1000]]
+  ]);
+
+  var multiLineStringOne = new ol.geom.MultiLineString([
+    [[0, 0], [1000, 0], [1000, 1000], [0, 1000]]
+  ]);
+
+  var multiLineStringConnected = new ol.geom.MultiLineString([
+    [[0, 0], [1000, 0], [1000, 1000], [0, 1000]],
+    [[0, 1000], [2000, 0], [2000, 2000], [0, 2000]],
+    [[0, 2000], [3000, 0], [3000, 3000], [0, 3000]]
+  ]);
+
+  var geomColl = new ol.geom.GeometryCollection([lineString, new ol.geom.Point([0, 0])]);
+  var geomCollOne = new ol.geom.GeometryCollection([lineString]);
+  var geomCollRec = new ol.geom.GeometryCollection([geomCollOne]);
+
+  var point = new ol.geom.Point([0, 0]);
+  var multiPoint = new ol.geom.MultiPoint([point.getCoordinates(), point.getCoordinates()]);
+  var multiPointOne = new ol.geom.MultiPoint([point.getCoordinates()]);
+
+  var polygon = new ol.geom.Polygon([[[0, 0], [0, 1], [1, 1], [0, 0]]]);
+  var multiPolygon = new ol.geom.MultiPolygon([
+    polygon.getCoordinates(),
+    polygon.getCoordinates()
+  ]);
+  var multiPolygonOne = new ol.geom.MultiPolygon([polygon.getCoordinates()]);
+
   beforeEach(function() {
     inject(function($injector) {
       gaGeomUtils = $injector.get('gaGeomUtils');
@@ -285,40 +319,6 @@ describe('ga_geomutils_service', function() {
   });
 
   describe('#multiGeomToSingleGeom()', function() {
-    var lineString = new ol.geom.LineString([
-      [0, 0], [1000, 0], [1000, 1000], [0, 1000]
-    ]);
-
-    var multiLineString = new ol.geom.MultiLineString([
-      [[0, 0], [1000, 0], [1000, 1000], [0, 1000]],
-      [[1, 0], [1000, 0], [1000, 1000], [0, 1000]]
-    ]);
-
-    var multiLineStringOne = new ol.geom.MultiLineString([
-      [[0, 0], [1000, 0], [1000, 1000], [0, 1000]]
-    ]);
-
-    var multiLineStringConnected = new ol.geom.MultiLineString([
-      [[0, 0], [1000, 0], [1000, 1000], [0, 1000]],
-      [[0, 1000], [2000, 0], [2000, 2000], [0, 2000]],
-      [[0, 2000], [3000, 0], [3000, 3000], [0, 3000]]
-    ]);
-
-    var geomColl = new ol.geom.GeometryCollection([lineString, new ol.geom.Point([0, 0])]);
-    var geomCollOne = new ol.geom.GeometryCollection([lineString]);
-    var geomCollRec = new ol.geom.GeometryCollection([geomCollOne]);
-
-    var point = new ol.geom.Point([0, 0]);
-    var multiPoint = new ol.geom.MultiPoint([point.getCoordinates(), point.getCoordinates()]);
-    var multiPointOne = new ol.geom.MultiPoint([point.getCoordinates()]);
-
-    var polygon = new ol.geom.Polygon([[[0, 0], [0, 1], [1, 1], [0, 0]]]);
-    var multiPolygon = new ol.geom.MultiPolygon([
-      polygon.getCoordinates(),
-      polygon.getCoordinates()
-    ]);
-    var multiPolygonOne = new ol.geom.MultiPolygon([polygon.getCoordinates()]);
-
     it('returns the original geometry', function() {
       [
         point,
@@ -356,6 +356,39 @@ describe('ga_geomutils_service', function() {
       expect(g).to.be.a(ol.geom.LineString);
       g = gaGeomUtils.multiGeomToSingleGeom(geomCollRec);
       expect(g).to.be.a(ol.geom.LineString);
+    });
+  });
+
+  describe('#simplify()', function() {
+
+    it('returns the original geometry', function() {
+      [
+        point,
+        lineString, // not enough coordinates
+        polygon,
+        geomColl,
+        multiPoint,
+        multiLineString,
+        multiPolygon
+      ].forEach(function(geom) {
+        var g = gaGeomUtils.simplify(geom, 100);
+        expect(g).to.be(geom);
+      });
+
+      // No nbPointsMax parameter
+      var g = gaGeomUtils.simplify(lineString);
+      expect(g).to.be(lineString);
+    });
+
+    it('simplifies a line of 10 000 points', function() {
+      var coords = [];
+      var x = 0, y = 15;
+      for (var i = 0; i < 10000; i++) {
+        coords.push([x++, y++]);
+      }
+      var line = new ol.geom.LineString(coords);
+      var newLine = gaGeomUtils.simplify(line, 1000);
+      expect(newLine.getCoordinates().length).to.be(2);
     });
   });
 });
