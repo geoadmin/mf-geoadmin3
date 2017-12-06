@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 describe('ga_profile_service', function() {
-  var gaProfile, $q, $rootScope, $httpBackend, gaTimeFormat, gaGlobalOptions, testTooltips;
+  var gaProfile, $q, $rootScope, $httpBackend, gaTimeFormat, gaGlobalOptions, testTooltips, gaGeomUtils;
 
   testTooltips = function(profile) {
     expect(profile.group.select('.ga-profile-elevation-difference title').
@@ -29,6 +29,7 @@ describe('ga_profile_service', function() {
       $httpBackend = $injector.get('$httpBackend');
       $rootScope = $injector.get('$rootScope');
       $q = $injector.get('$q');
+      gaGeomUtils = $injector.get('gaGeomUtils');
       gaGlobalOptions = $injector.get('gaGlobalOptions');
     });
   });
@@ -127,7 +128,9 @@ describe('ga_profile_service', function() {
 
       it('creates a chart from a feature', function(done) {
         $httpBackend.expectPOST(profileUrl).respond(goodResult);
+        var spy = sinon.spy(gaGeomUtils, 'simplify');
         gaProfile.create(feature).then(function(profile) {
+          expect(spy.callCount).to.be(1);
           expect(profile).to.be.an(Object);
           expect(profile.create).to.be.a(Function);
           expect(profile.update).to.be.a(Function);
@@ -158,10 +161,12 @@ describe('ga_profile_service', function() {
 
       it('display axes labels from options', function(done) {
         $httpBackend.expectPOST(profileUrl).respond(goodResult);
+        var spy = sinon.spy(gaGeomUtils, 'simplify');
         gaProfile.create(feature, {
           xLabel: 'axeX',
           yLabel: 'axeY'
         }).then(function(profile) {
+          expect(spy.callCount).to.be(1);
           expect(profile.group.select('text.ga-profile-label-x').
               text()).to.be('axeX [m]');
           expect(profile.group.select('text.ga-profile-label-y').
