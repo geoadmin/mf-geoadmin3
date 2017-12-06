@@ -428,13 +428,6 @@ goog.require('ga_urlutils_service');
             };
 
             $scope.typeSpecificUrl = function(url) {
-              var bbox = function(map) {
-                var size = map.getSize();
-                var view = map.getView();
-                var bounds = view.calculateExtent(size);
-                return bounds.join(',');
-              };
-              url = gaUrlUtils.append(url, 'bbox=' + bbox($scope.map));
               url = gaUrlUtils.append(url,
                   'features=' + searchableLayers.join(','));
               url = gaUrlUtils.append(url,
