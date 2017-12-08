@@ -384,11 +384,9 @@ define('Core/RuntimeError',[
 
 define('Core/decodeGoogleEarthEnterpriseData',[
         './Check',
-        './defined',
         './RuntimeError'
     ], function(
         Check,
-        defined,
         RuntimeError) {
     'use strict';
 
@@ -408,8 +406,6 @@ define('Core/decodeGoogleEarthEnterpriseData',[
             return data;
         }
 
-                Check.typeOf.object('key', key);
-        Check.typeOf.object('data', data);
         
         var keyLength = key.byteLength;
         if (keyLength === 0 || (keyLength % 4) !== 0) {
