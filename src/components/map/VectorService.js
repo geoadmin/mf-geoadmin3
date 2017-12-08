@@ -152,13 +152,9 @@ goog.require('ngeo.fileService');
 
                 var olLayer;
                 if (options.useImageVector === true) {
-                  layerOptions.source = new ol.source.ImageVector({
-                    source: layerOptions.source
-                  });
-                  olLayer = new ol.layer.Image(layerOptions);
-                } else {
-                  olLayer = new ol.layer.Vector(layerOptions);
+                  layerOptions.renderMode = 'image';
                 }
+                olLayer = new ol.layer.Vector(layerOptions);
                 gaDefinePropertiesForLayer(olLayer);
                 olLayer.useThirdPartyData = true;
                 olLayer.updateDelay = options.updateDelay;
@@ -183,9 +179,6 @@ goog.require('ngeo.fileService');
               }
 
               var source = olLayer.getSource();
-              if (source instanceof ol.source.ImageVector) {
-                source = source.getSource();
-              }
 
               // If the layer can contain measure features, we register some
               // events to add/remove correctly the overlays

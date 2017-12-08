@@ -122,8 +122,6 @@
     "ol.style.Style#*",
     "ol.style.Text",
     "ol.style.Text#*",
-    "ol.source.ImageVector",
-    "ol.source.ImageVector#*",
     "ol.source.ImageWMS",
     "ol.source.ImageWMS#*",
     "ol.source.TileImage",
@@ -142,22 +140,22 @@
   ],
   "src": [
     "src/**/*.js",
-    "ol/src/**/*.js",
-    "ol/build/ol.ext/*.js"
+    "node_modules/openlayers/src/**/*.js",
+    "node_modules/openlayers/build/ol.ext/*.js"
   ],
   "compile": {
     "externs": [
       "externs/olcsx.js",
-      "ol/externs/oli.js",
-      "ol/externs/olx.js",
-      "ol/externs/cartodb.js",
-      "ol/externs/proj4js.js",
-      "ol/externs/tilejson.js",
-      "ol/externs/topojson.js",
-      "ol/externs/esrijson.js",
-      "ol/externs/geojson.js",
-      "ol/externs/bingmaps.js",
-      "ol/externs/closure-compiler.js",
+      "node_modules/openlayers/externs/oli.js",
+      "node_modules/openlayers/externs/olx.js",
+      "node_modules/openlayers/externs/cartodb.js",
+      "node_modules/openlayers/externs/proj4js.js",
+      "node_modules/openlayers/externs/tilejson.js",
+      "node_modules/openlayers/externs/topojson.js",
+      "node_modules/openlayers/externs/esrijson.js",
+      "node_modules/openlayers/externs/geojson.js",
+      "node_modules/openlayers/externs/bingmaps.js",
+      "node_modules/openlayers/externs/closure-compiler.js",
       "Cesium.externs.js"
     ],
     "define": [
@@ -181,7 +179,7 @@
     "language_out": "ECMASCRIPT5_STRICT",
     "warning_level": "VERBOSE",
     "generate_exports": true,
-    "output_wrapper": "(function(){%output%}).call(window);",
+    "isolation_mode": "IIFE",
     "use_types_for_optimization": true,
     "create_source_map": "dist/olcesium.js.map",
     "source_map_format": "V3"

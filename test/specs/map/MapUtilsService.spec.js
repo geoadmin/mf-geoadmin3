@@ -24,9 +24,8 @@ describe('ga_maputils_service', function() {
     return layer;
   };
 
-  var addImageVectorLayerToMap = function(bodId) {
-    var layer = new ol.layer.Vector();
-    layer.setSource(new ol.source.ImageVector({source: new ol.source.Vector()}));
+  var addImageLayerToMap = function(bodId) {
+    var layer = new ol.layer.Image();
     map.addLayer(layer);
     return layer;
   };
@@ -319,7 +318,7 @@ describe('ga_maputils_service', function() {
         addBodWmtsToMap('bodwmtss'),
         addExternalWmtsLayerToMap(), // 5
         addVectorLayerToMap(),
-        addImageVectorLayerToMap(),
+        addImageLayerToMap(),
         addKmlLayerToMap(),
         addLocalKmlLayerToMap(),
         addStoredKmlLayerToMap(), // 10
@@ -380,7 +379,7 @@ describe('ga_maputils_service', function() {
     describe('#isVectorLayer()', function() {
       it('tests if the layer uses vector data', function() {
         // with an ol.layer
-        expectLayerEql('isVectorLayer', [6, 7, 8, 9, 10, 11, 12]);
+        expectLayerEql('isVectorLayer', [6, 8, 9, 10, 11, 12]);
       });
     });
 

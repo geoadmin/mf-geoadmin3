@@ -24,16 +24,18 @@ ol.inherits(olcs.GaVectorSynchronizer, olcs.VectorSynchronizer);
  * @inheritDoc
  */
 olcs.GaVectorSynchronizer.prototype.createSingleLayerCounterparts =
-    function(olLayer) {
+    function(olLayerWithParents) {
+
+  var layer = olcs.util.obj(olLayerWithParents).layer;
 
   /** @type {string} */
-  var id = olcs.util.obj(olLayer)['id'];
+  var id = layer.id;
 
   /** @type {string} */
-  var url = olcs.util.obj(olLayer)['url'];
+  var url = layer.url;
 
   if (/^KML/.test(id) && url && !/:\/\/public\./.test(url)) {
     return null;
   }
-  return olcs.VectorSynchronizer.prototype.createSingleLayerCounterparts.call(this, olLayer);
+  return olcs.VectorSynchronizer.prototype.createSingleLayerCounterparts.call(this, olLayerWithParents);
 };
