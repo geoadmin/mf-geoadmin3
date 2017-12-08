@@ -144,12 +144,12 @@ searchLocationTests = [
     {
         'searchText': u'Kanalstrasse bus rar',
         'resultTitle': u'Bus Raron, Kanalstrasse',
-        'resultLocation': u'E=2627442.63&N=1128140.86&zoom=13'
+        'resultLocation': u'E=2627443.00&N=1128141.00&zoom=13'
     },
     {
         'searchText': u'p Mesolcina Bellinzona',
         'resultTitle': u'Bus Bellinzona, Piazza Mesolcina',
-        'resultLocation': u'E=2722500.45&N=1117499.12&zoom=13'
+        'resultLocation': u'E=2722500.00&N=1117499.00&zoom=13'
     },
     {
         'searchText': u'bruckenmoostrasse 11 raron',
