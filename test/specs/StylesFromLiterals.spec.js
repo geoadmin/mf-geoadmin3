@@ -770,6 +770,109 @@ describe('ga_stylesfromliterals_service', function() {
       stub.restore();
     });
 
+    it('supports label templates', function() {
+      var rangeTypeStyle = {
+        type: 'range',
+        property: 'foo',
+        ranges: [
+          {
+            geomType: 'point',
+            range: [0, 10],
+            vectorOptions: {
+              type: 'circle',
+              radius: 8,
+              fill: {
+                color: '#FF1FF1'
+              },
+              stroke: {
+                color: '#FFFFFF',
+                width: 3
+              },
+              label: {
+                template: '${name} is for ${foo} days in ${country}',
+                text: {
+                  textAlign: 'center',
+                  textBaseline: 'middle',
+                  font: 'bold 1.35em FrutigerNeueW02-Regular, Times, sans-serif',
+                  stroke: {
+                    color: '#FFFFFF',
+                    width: 3
+                  },
+                  fill: {
+                    color: '#FF1FF1'
+                  }
+                }
+              }
+            }
+          }, {
+            geomType: 'point',
+            range: [10, 2000000],
+            vectorOptions: {
+              type: 'circle',
+              radius: 8,
+              fill: {
+                color: '#FF2222'
+              },
+              stroke: {
+                color: '#F55555',
+                width: 2
+              },
+              label: {
+                template: '${name} is for ${foo} days in ${country}',
+                text: {
+                  textAlign: 'center',
+                  textBaseline: 'middle',
+                  font: 'bold 1.35em FrutigerNeueW02-Regular, Times, sans-serif',
+                  stroke: {
+                    color: '#FF2222',
+                    width: 3
+                  },
+                  fill: {
+                    color: '#F55555'
+                  }
+                }
+              }
+            }
+          }
+        ]
+      };
+      var gaStyle = gaStylesFromLiterals(rangeTypeStyle);
+      var geoJsonFormat = new ol.format.GeoJSON();
+      var olFeature = geoJsonFormat.readFeature(
+          '{"type": "Feature",' +
+          '"geometry": {' +
+            '"coordinates": [' +
+              '10000,' +
+              '20000' +
+            '],' +
+            '"type": "Point"' +
+          '},' +
+          '"properties": {' +
+            '"foo": 15,' +
+            '"name": "Joe",' +
+            '"country": "Baltimore"' +
+          '}}'
+      );
+      var olStyle = gaStyle.getFeatureStyle(olFeature, 100);
+      var olImage = olStyle.getImage();
+      var olText = olStyle.getText();
+      expect(olStyle.getImage()).to.be.an(ol.style.Image);
+      expect(olImage.getFill()).to.be.an(ol.style.Fill);
+      expect(olImage.getFill().getColor()).to.equal('#FF2222');
+      expect(olImage.getStroke()).to.be.an(ol.style.Stroke);
+      expect(olImage.getStroke().getColor()).to.equal('#F55555');
+      expect(olImage.getStroke().getWidth()).to.equal(2);
+      expect(olText.getText()).to.equal('Joe is for 15 days in Baltimore');
+      expect(olText.getStroke()).to.an(ol.style.Stroke);
+      expect(olText.getStroke().getColor()).to.equal('#FF2222');
+      expect(olText.getStroke().getWidth()).to.equal(3);
+      expect(olText.getFill()).to.an(ol.style.Fill);
+      expect(olText.getFill().getColor()).to.equal('#F55555');
+      expect(olText.getFont()).to.equal('bold 1.35em FrutigerNeueW02-Regular, Times, sans-serif');
+      expect(olText.getTextAlign()).to.equal('center');
+      expect(olText.getTextBaseline()).to.equal('middle');
+    });
+
     it('supports range type style assignment resolution dependent', function() {
       var rangeTypeStyle = {
         type: 'range',
