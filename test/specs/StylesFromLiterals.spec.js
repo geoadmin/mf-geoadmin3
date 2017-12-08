@@ -188,6 +188,60 @@ describe('ga_stylesfromliterals_service', function() {
       expect(olStyle.getStroke().getLineJoin()).to.equal('square');
     });
 
+    it('supports single type style assignment for a point and a static label', function() {
+      var singleTypeStyle = {
+        type: 'single',
+        geomType: 'point',
+        vectorOptions: {
+          type: 'circle',
+          radius: 8,
+          fill: {
+            color: '#FFFFFF'
+          },
+          stroke: {
+            color: '#FFFFFF',
+            width: 2
+          },
+          label: {
+            template: 'oh yes I am static',
+            text: {
+              textAlign: 'center',
+              textBaseline: 'middle',
+              font: 'bold 10px Helvetica',
+              stroke: {
+                color: 'rgba(22, 22, 22, 0.4)',
+                width: 4
+              },
+              fill: {
+                color: 'rgba(52, 52, 52, 0.3)'
+              }
+            }
+          }
+        }
+      };
+      var gaStyle = gaStylesFromLiterals(singleTypeStyle);
+      var olStyle = gaStyle.getFeatureStyle();
+      var olImage = olStyle.getImage();
+      var olText = olStyle.getText();
+      expect(olStyle).to.be.an(ol.style.Style);
+      expect(olImage).to.be.an(ol.style.Circle);
+      expect(olText).to.be.an(ol.style.Text);
+      expect(olImage.getFill()).to.be.an(ol.style.Fill);
+      expect(olImage.getFill().getColor()).to.equal('#FFFFFF');
+      expect(olImage.getStroke()).to.be.an(ol.style.Stroke);
+      expect(olImage.getStroke().getColor()).to.equal('#FFFFFF');
+      expect(olImage.getStroke().getWidth()).to.equal(2);
+      expect(olImage.getRadius()).to.equal(8);
+      expect(olText.getText()).to.equal('oh yes I am static');
+      expect(olText.getTextAlign()).to.equal('center');
+      expect(olText.getTextBaseline()).to.equal('middle');
+      expect(olText.getStroke()).to.be.an(ol.style.Stroke);
+      expect(olText.getStroke().getColor()).to.equal('rgba(22, 22, 22, 0.4)');
+      expect(olText.getStroke().getWidth()).to.equal(4);
+      expect(olText.getFill()).to.be.an(ol.style.Fill);
+      expect(olText.getFill().getColor()).to.equal('rgba(52, 52, 52, 0.3)');
+    });
+
     it('supports single type style assignment for a polygon', function() {
       var singleTypeStyle = {
         type: 'single',

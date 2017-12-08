@@ -231,12 +231,13 @@ goog.provide('ga_stylesfromliterals_service');
       OlStyleForPropertyValue.prototype.setOlText_ = function(olStyle,
         labelProperty, labelTemplate, properties) {
         var text, prop;
-        if (properties && labelProperty) {
+        properties = properties || [];
+        if (labelProperty) {
           text = properties[labelProperty];
           if (text !== undefined && text !== null) {
             text = text.toString();
           }
-        } else if (properties && labelTemplate) {
+        } else if (labelTemplate) {
           text = labelTemplate;
           for (var k in properties) {
             prop = properties[k];
@@ -245,7 +246,7 @@ goog.provide('ga_stylesfromliterals_service');
             }
           }
         }
-        if (text && text != labelTemplate) {
+        if (text) {
           olStyle.getText().setText(text);
         }
         return olStyle;
@@ -259,9 +260,9 @@ goog.provide('ga_stylesfromliterals_service');
         value = value !== undefined ? value : this.defaultVal;
         geomType = getGeomTypeFromGeometry(feature.getGeometry());
 
-        if (this.type == 'unique') {
+        if (this.type === 'unique') {
           olStyles = this.styles[geomType][value];
-        } else if (this.type == 'range') {
+        } else if (this.type === 'range') {
           olStyles = this.findOlStyleInRange_(value, geomType);
         }
 
