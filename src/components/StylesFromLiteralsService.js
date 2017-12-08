@@ -230,7 +230,7 @@ goog.provide('ga_stylesfromliterals_service');
 
       OlStyleForPropertyValue.prototype.setOlText_ = function(olStyle,
         labelProperty, labelTemplate, properties) {
-        var text, prop;
+        var text;
         properties = properties || [];
         if (labelProperty) {
           text = properties[labelProperty];
@@ -239,12 +239,11 @@ goog.provide('ga_stylesfromliterals_service');
           }
         } else if (labelTemplate) {
           text = labelTemplate;
-          for (var k in properties) {
-            prop = properties[k];
+          angular.forEach(properties, function(prop, k) {
             if (prop !== undefined && prop !== null) {
               text = text.replace('${' + k + '}', prop.toString());
             }
-          }
+          });
         }
         if (text) {
           olStyle.getText().setText(text);
