@@ -462,10 +462,7 @@ goog.require('ga_urlutils_service');
          */
         isVectorLayer: function(olLayer) {
           return !!(olLayer && !(olLayer instanceof ol.layer.Group) &&
-              olLayer.getSource() &&
-              (olLayer instanceof ol.layer.Vector ||
-              (olLayer instanceof ol.layer.Image &&
-              olLayer.getSource() instanceof ol.source.ImageVector)));
+              olLayer.getSource() && olLayer instanceof ol.layer.Vector);
         },
 
         /**

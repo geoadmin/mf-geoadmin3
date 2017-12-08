@@ -70,9 +70,9 @@ GIT_BRANCH := $(shell if [ -f .build-artefacts/deployed-git-branch ]; then cat .
 GIT_LAST_BRANCH := $(call lastvalue,git-branch)
 BRANCH_TO_DELETE ?=
 DEPLOY_ROOT_DIR := /var/www/vhosts/mf-geoadmin3/private/branch
-OL_VERSION ?= fe1d01a3cb6a5b5067401ac265463d3987899212 # master, October 12 2017
-OL_CESIUM_VERSION ?= 434e5e12282565b66af4dd3a1d62307c3d83190c # master, August 25 2017
-CESIUM_VERSION ?= 32285414c952e1f38665c36de7242c33150c5182 # c2c/c2c_patches_vector_tiles, November 7 2017
+OL_VERSION ?= b66c0941f5fc6eccb63686e9f702f35b33230b89 # master, December 11 2017
+OL_CESIUM_VERSION ?= d4cfea150382f8764335d19f7896a2491195786e # master, December 8 2017
+CESIUM_VERSION ?= d031503c7ef16dee540a9d829e5e41c6b23d6ffe # c2c/c2c_patches_vector_tiles, December 7 2017
 NGEO_VERSION ?= 7039d68645f4bba635cf5bd553a1d2a495a280c2 # master, September 22 2017
 DEFAULT_TOPIC_ID ?= ech
 TRANSLATION_FALLBACK_CODE ?= de
@@ -159,7 +159,8 @@ help:
 	@echo "- s3infoprod         Get version info on remote prod bucket. (usage only: make s3infoprod S3_VERSION_PATH=<branch>/<sha>/<version>)"
 	@echo "- s3deleteint        Delete a project version in a remote int bucket. (usage: make s3deleteint S3_VERSION_PATH=<branch> or <branch>/<sha>/<version>)"
 	@echo "- s3deleteprod       Delete a project version in a remote prod bucket. (usage: make s3deleteprod S3_VERSION_PATH=<branch> or <branch>/<sha>/<version>)"
-	@echo "- olcesium           Update olcesium.js, olcesium-debug.js, Cesium.min.js and Cesium folder. Needs Node js version >= 6."
+	@echo "- cesium             Update Cesium.min.js and Cesium folder. Needs Node js version >= 6."
+	@echo "- olcesium           Update olcesium.js, olcesium-debug.js. Needs Node js version >= 6."
 	@echo "- ngeo               Update ngeo submodule with the version specified in Makefile"
 	@echo "- libs               Update js librairies used in index.html, see npm packages defined in section 'dependencies' of package.json"
 	@echo "- translate          Generate the translation files (requires db user pwd in ~/.pgpass: dbServer:dbPort:*:dbUser:dbUserPwd)"
@@ -339,44 +340,46 @@ s3deleteint: guard-S3_VERSION_PATH guard-S3_MF_GEOADMIN3_INT .build-artefacts/re
 s3deleteprod: guard-S3_VERSION_PATH guard-S3_MF_GEOADMIN3_PROD .build-artefacts/requirements.timestamp
 	${PYTHON_CMD} ./scripts/s3manage.py delete ${S3_VERSION_PATH} prod;
 
-.PHONY: olcesium
-olcesium: .build-artefacts/ol-cesium
-	cd .build-artefacts/ol-cesium; \
-	git reset HEAD --hard; \
-	git fetch --all; \
-	git checkout $(OL_CESIUM_VERSION); \
-	git show; \
-	git submodule update --recursive --init --force; \
-	cd ol; \
-	git reset HEAD --hard; \
-	git fetch --all; \
-	git checkout $(OL_VERSION); \
-	git show; \
-	npm install --only prod; \
-	node tasks/build-ext.js; \
-	cd ../cesium; \
-	git remote | grep c2c || git remote add c2c git://github.com/camptocamp/cesium; \
-	git remote | grep oterral || git remote add oterral git://github.com/oterral/cesium; \
+.PHONY: cesium
+cesium: .build-artefacts/cesium
+	cd .build-artefacts/cesium; \
+	git remote add c2c https://github.com/camptocamp/cesium; \
 	git fetch --all; \
 	git checkout $(CESIUM_VERSION); \
-	git show; \
-	([ -f node_modules/.bin/gulp ] || npm install ); \
-	if [ -f "Build/Cesium/Cesium.js" ] ; then echo 'Skipping Cesium minified build'; else node_modules/.bin/gulp minifyRelease; fi; \
-	if [ -f "Build/CesiumUnminified/Cesium.js" ] ; then echo 'Skipping Cesium debug build'; else node_modules/.bin/gulp generateStubs combine; fi; \
-	cd ..; \
-	ln -T -f -s ../../../../ol-cesium-plugin/ src/plugins/geoadmin; \
 	npm install; \
+	npm run combineRelease; \
+	npm run minifyRelease; \
+	rm -r ../../src/lib/Cesium; \
+	cp -r Build/CesiumUnminified ../../src/lib/Cesium; \
+	cp Build/Cesium/Cesium.js ../../src/lib/Cesium.min.js; \
+	$(call moveto,Build/Cesium/Workers/*.js,../../src/lib/Cesium/Workers/,'.js','.min.js') \
+	$(call moveto,Build/Cesium/ThirdParty/Workers/*.js,../../src/lib/Cesium/ThirdParty/Workers/,'.js','.min.js')
+
+openlayers: .build-artefacts/openlayers
+	cd .build-artefacts/openlayers; \
+	git fetch --all; \
+	git checkout $(OL_VERSION); \
+	npm install; \
+	make build
+
+.PHONY: olcesium
+olcesium:  .build-artefacts/cesium openlayers .build-artefacts/olcesium
+	if ! [ -f ".build-artefacts/cesium/Build/Cesium/Cesium.js" ]; then make cesium; else echo 'Cesium already built'; fi; \
+	cd .build-artefacts/olcesium; \
+	git fetch --all; \
+	git checkout $(OL_CESIUM_VERSION); \
+	mkdir -p src/olcs/plugins/geoadmin; \
+	cp -r ../../olcesium-plugin src/olcs/plugins/geoadmin/; \
+	npm install; \
+	npm link ../cesium; \
+	npm link ../openlayers; \
+	sed -i "1 s/^{\$$/{root: true,/" .eslintrc.yaml; \
 	node build/generate-exports.js dist/exports.js; \
 	node build/build.js ../../scripts/olcesium-debug-geoadmin.json dist/olcesium-debug.js; \
 	node build/build.js ../../scripts/olcesium-geoadmin.json dist/olcesium.js; \
 	cp dist/olcesium-debug.js ../../src/lib/; \
 	cp dist/olcesium.js ../../src/lib/olcesium.js; \
-	rm -rf ../../src/lib/Cesium; \
-	cp -r cesium/Build/CesiumUnminified ../../src/lib/Cesium; \
-	cp cesium/Build/Cesium/Cesium.js ../../src/lib/Cesium.min.js; \
 	cp Cesium.externs.js ../../externs/Cesium.externs.js; \
-	$(call moveto,cesium/Build/Cesium/Workers/*.js,../../src/lib/Cesium/Workers/,'.js','.min.js') \
-	$(call moveto,cesium/Build/Cesium/ThirdParty/Workers/*.js,../../src/lib/Cesium/ThirdParty/Workers/,'.js','.min.js')
 
 .PHONY: ngeo
 ngeo:
@@ -762,7 +765,7 @@ libs:
 	    --compilation_level SIMPLE_OPTIMIZATIONS \
 	    --jscomp_error checkVars \
 	    --externs externs/ol.js \
-	    --externs externs/ol-cesium.js \
+	    --externs externs/olcesium.js \
 	    --externs externs/Cesium.externs.js \
 	    --externs externs/slip.js \
 	    --externs externs/angular.js \
@@ -859,8 +862,15 @@ ${PYTHON_VENV}:
 .build-artefacts/last-wmts-url::
 	$(call cachelastvariable,$@,$(WMTS_URL),$(LAST_WMTS_URL),wmts-url)
 
-.build-artefacts/ol-cesium:
-	git clone --recursive https://github.com/openlayers/ol-cesium.git $@
+.build-artefacts/cesium:
+	git clone https://github.com/AnalyticalGraphicsInc/cesium.git $@
+
+.build-artefacts/openlayers:
+	git clone https://github.com/openlayers/openlayers.git $@
+
+.build-artefacts/olcesium:
+	git clone https://github.com/openlayers/ol-cesium.git $@
+
 
 # No npm module
 .build-artefacts/filesaver:

@@ -723,11 +723,7 @@ describe('ga_measure_service', function() {
       featMeas1.setId('measure_1');
       featMeas2.set('type', 'measure');
 
-      var layerImg = new ol.layer.Image({
-        source: new ol.source.ImageVector({
-          source: new ol.source.Vector()
-        })
-      });
+      var layerImg = new ol.layer.Image({});
 
       beforeEach(function() {
         stubRm = sinon.stub(gaMeasure, 'removeOverlays');

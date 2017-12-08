@@ -30,23 +30,25 @@ ol.inherits(olcs.GaKmlSynchronizer, olcs.AbstractSynchronizer);
  * @inheritDoc
  */
 olcs.GaKmlSynchronizer.prototype.createSingleLayerCounterparts =
-    function(olLayer) {
+   function(olLayerWithParents) {
 
   var dsP;
-  var factory = olcs.util.obj(olLayer)['getCesiumDataSource'];
+  var layer = olcs.util.obj(olLayerWithParents.layer);
+  var factory = layer['getCesiumDataSource'];
 
   if (factory) {
     dsP = factory(this.scene);
   }
 
   if (!dsP) {
-    /** @type {string} */
-    var id = olcs.util.obj(olLayer)['id'];
 
     /** @type {string} */
-    var url = olcs.util.obj(olLayer)['url'];
+    var id = layer.id;
 
-    if (!(olLayer instanceof ol.layer.Layer) ||
+    /** @type {string} */
+    var url = layer.url;
+
+    if (!(layer instanceof ol.layer.Layer) ||
         !id || !/^KML/.test(id) ||
         !url || /:\/\/public\./.test(url)) {
       return null;
@@ -56,7 +58,7 @@ olcs.GaKmlSynchronizer.prototype.createSingleLayerCounterparts =
     var loadParam = url;
 
     /** @type {string} */
-    var kml = olcs.util.obj(olLayer.getSource()).get('rawData');
+    var kml = (layer.getSource().get('rawData') || '') + '';
     if (kml) {
       loadParam = (new DOMParser()).parseFromString(kml, 'text/xml');
     }
@@ -68,10 +70,10 @@ olcs.GaKmlSynchronizer.prototype.createSingleLayerCounterparts =
   }
   var that = this;
   dsP.then(function(ds) { 
-    ds.show = olLayer.getVisible();
-    const uid = ol.getUid(olLayer).toString();
+    ds.show = layer.getVisible();
+    const uid = ol.getUid(layer).toString();
     const listenKeyArray = [];
-    listenKeyArray.push(olLayer.on('change:visible', function(evt) {
+    listenKeyArray.push(layer.on('change:visible', function(evt) {
       ds.show = evt.target.getVisible();
     }));
     that.olLayerListenKeys[uid].push(...listenKeyArray);

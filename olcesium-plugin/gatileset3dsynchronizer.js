@@ -29,10 +29,11 @@ ol.inherits(olcs.GaTileset3dSynchronizer, olcs.AbstractSynchronizer);
  * @inheritDoc
  */
 olcs.GaTileset3dSynchronizer.prototype.createSingleLayerCounterparts =
-    function(olLayer) {
+   function(olLayerWithParents) {
 
   var prim;
-  var factory = olcs.util.obj(olLayer)['getCesiumTileset3d'];
+  var layer = olcs.util.obj(olLayerWithParents.layer);
+  var factory = layer['getCesiumTileset3d'];
 
   if (factory) {
     prim = factory(this.scene);
@@ -42,11 +43,11 @@ olcs.GaTileset3dSynchronizer.prototype.createSingleLayerCounterparts =
     return null;
   }
   if (prim) {
-    prim.show = olLayer.getVisible();
-    const uid = ol.getUid(olLayer).toString();
+    prim.show = layer.getVisible();
+    const uid = ol.getUid(layer).toString();
     const listenKeyArray = [];
-    listenKeyArray.push(olLayer.on(['change:visible'], (e) => {
-      prim.show = olLayer.getVisible();
+    listenKeyArray.push(layer.on(['change:visible'], (e) => {
+      prim.show = layer.getVisible();
     }));
     this.olLayerListenKeys[uid].push(...listenKeyArray);
   }

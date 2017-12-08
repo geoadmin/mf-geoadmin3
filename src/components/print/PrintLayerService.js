@@ -189,11 +189,7 @@ goog.require('ga_urlutils_service');
               src instanceof ol.source.TileWMS) {
             encLayer = encodeWMS(layer, viewProj,
                 layerConfig, dpi);
-          } else if (src instanceof ol.source.Vector ||
-              src instanceof ol.source.ImageVector) {
-            if (src instanceof ol.source.ImageVector) {
-              src = src.getSource();
-            }
+          } else if (src instanceof ol.source.Vector) {
             var encodeVector = getEncodeVector(gaPrintStyle);
             encLayer = encodeVector(layer,
                 src.getFeatures(),
