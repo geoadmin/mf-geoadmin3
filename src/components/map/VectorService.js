@@ -64,10 +64,11 @@ goog.require('ga_file_service');
           var all = [];
           responses.forEach(function(response) {
             all.push(readFeatures(response.data, mapProj).
-                then(function(newFeatures) {
-                  features = features.concat(newFeatures);
+                then(function(resp) {
+                  features = features.concat(resp.features);
                 }))
           });
+
           return $q.all(all).then(function() {
             // Sanitize features found (geometry, style ...)
             var sanitizedFeatures = [];
@@ -77,7 +78,11 @@ goog.require('ga_file_service');
                 sanitizedFeatures.push(feat);
               }
             }
-            return sanitizedFeatures;
+
+            return {
+              features: sanitizedFeatures,
+              data: data
+            };
           });
         });
       };
@@ -93,13 +98,6 @@ goog.require('ga_file_service');
         // Ensure polygons are closed.
         // Reason: print server failed when polygons are not closed.
         gaGeomUtils.close(geom);
-
-        // Replace empty id by undefined.
-        // Reason: If 2 features have their id empty, an assertion error
-        // occurs when we add them to the source
-        if (feature.getId() === '') {
-          feature.setId(undefined);
-        }
 
         return srv.sanitizeFeature(feature);
       };
@@ -129,9 +127,9 @@ goog.require('ga_file_service');
           }
 
           return readFeatures(data, options.mapProjection).
-              then(function(features) {
+              then(function(resp) {
                 var source = new ol.source.Vector({
-                  features: features
+                  features: resp.features
                 });
 
                 var layerOptions = {
@@ -160,7 +158,7 @@ goog.require('ga_file_service');
 
                 // Save the xml content for for offline and 3d parsing
                 olLayer.getSource().setProperties({
-                  'rawData': data
+                  'rawData': resp.data
                 });
                 return olLayer;
               });

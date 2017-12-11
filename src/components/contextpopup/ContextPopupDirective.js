@@ -3,6 +3,7 @@ goog.provide('ga_contextpopup_directive');
 goog.require('ga_event_service');
 goog.require('ga_networkstatus_service');
 goog.require('ga_permalink');
+goog.require('ga_height_service');
 goog.require('ga_reframe_service');
 goog.require('ga_what3words_service');
 goog.require('ga_window_service');
@@ -13,6 +14,7 @@ goog.require('ga_window_service');
     'ga_event_service',
     'ga_networkstatus_service',
     'ga_permalink',
+    'ga_height_service',
     'ga_reframe_service',
     'ga_window_service',
     'ga_what3words_service',
@@ -22,7 +24,7 @@ goog.require('ga_window_service');
   module.directive('gaContextPopup',
       function($http, $q, $timeout, $window, $rootScope, gaBrowserSniffer,
           gaNetworkStatus, gaPermalink, gaGlobalOptions, gaLang, gaWhat3Words,
-          gaReframe, gaEvent, gaWindow) {
+          gaReframe, gaEvent, gaWindow, gaHeight) {
         return {
           restrict: 'A',
           replace: true,
@@ -33,7 +35,6 @@ goog.require('ga_window_service');
             isActive: '=gaContextPopupActive'
           },
           link: function(scope, element, attrs) {
-            var heightUrl = scope.options.heightUrl;
             var qrcodeUrl = scope.options.qrcodeUrl;
             var holdPromise, isPopoverShown = false;
             var reframeCanceler = $q.defer();
@@ -135,24 +136,17 @@ goog.require('ga_window_service');
               // digest cycle for us.
               scope.$applyAsync(function() {
 
-                $http.get(heightUrl, {
-                  params: {
-                    easting: clickCoord[0],
-                    northing: clickCoord[1],
-                    elevation_model: gaGlobalOptions.defaultElevationModel,
-                    sr: proj.getCode().split(':')[1]
-                  },
-                  timeout: heightCanceler.promise
-                }).then(function(response) {
-                  scope.altitude = parseFloat(response.data.height);
-                }, function(response) {
-                  if (response.status !== -1) { // Error
-                    scope.altitude = '-';
-                  }
-                });
+                gaHeight.get(scope.map, clickCoord, heightCanceler.promise).
+                    then(function(height) {
+                      scope.altitude = height;
+                    }, function(response) {
+                      if (response.status !== -1) { // Error
+                        scope.altitude = '-';
+                      }
+                    });
 
-                gaReframe.get95To03(clickCoord, reframeCanceler.promise).then(
-                    function(coords) {
+                gaReframe.get95To03(clickCoord, reframeCanceler.promise).
+                    then(function(coords) {
                       scope.coord21781 = formatCoordinates(coords, 2);
                     }, function() {
                       var coords = ol.proj.transform(clickCoord, proj,

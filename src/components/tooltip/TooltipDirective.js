@@ -411,12 +411,17 @@ goog.require('ga_window_service');
               // When 3d is Active we use the cesium native function to get the
               // first queryable feature.
               if (is3dActive()) {
+                // 10 is to avoid an infinite loop see:
+                // https://github.com/AnalyticalGraphicsInc/cesium/issues/5971
                 var pickedObjects = scope.ol3d.getCesiumScene().
-                    drillPick(position3d);
+                    drillPick(position3d, 10);
                 for (var i = 0, ii = pickedObjects.length; i < ii; i++) {
                   var prim = pickedObjects[i].primitive;
-                  if (isFeatureQueryable(prim.olFeature)) {
-                    showVectorFeature(prim.olFeature, prim.olLayer);
+                  var entity = pickedObjects[i].id;
+                  var feat = prim.olFeature || entity.olFeature;
+                  var lay = prim.olLayer || entity.olLayer;
+                  if (isFeatureQueryable(feat)) {
+                    showVectorFeature(feat, lay);
                     all.push($q.when(1));
                     break;
                   }

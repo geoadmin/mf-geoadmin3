@@ -2,7 +2,7 @@
 describe('ga_kml_service', function() {
 
   describe('gaKml', function() {
-    var gaKml, $rootScope, gaStyleFactory, gaNetworkStatus, gaMapUtils, $httpBackend;
+    var clock, gaKml, $rootScope, gaStyleFactory, gaNetworkStatus, gaMapUtils, $httpBackend;
 
     beforeEach(function() {
       inject(function($injector) {
@@ -21,10 +21,12 @@ describe('ga_kml_service', function() {
           href: url
         }
       };
+      clock = sinon.useFakeTimers();
     });
 
     afterEach(function() {
       gaNetworkStatus.offline = false;
+      clock.restore();
     });
 
     describe('#getType()', function() {
@@ -96,6 +98,30 @@ describe('ga_kml_service', function() {
           '</Placemark>';
       };
 
+      it('adds an id to the placemark is there is none or if it\'s emtpy', function() {
+        var kmls = [
+          '<kml><Placemark></Placemark></kml>',
+          '<kml><Placemark   id=""></Placemark></kml>',
+          '<kml><Placemark  id=\'\'></Placemark></kml>',
+          '<kml><Placemark ></Placemark></kml>',
+          '<kml><Placemark></Placemark></kml>'
+        ];
+        kmls.forEach(function(val, idx) {
+          var kml = gaKml.sanitize(val);
+          expect(kml).to.be('<kml><Placemark id="0"></Placemark></kml>');
+        });
+      });
+
+      it('does replace the id', function() {
+        var kmls = [
+          '<kml><Placemarki id="lala"></Placemark></kml>'
+        ];
+        kmls.forEach(function(val) {
+          var kml = gaKml.sanitize(val);
+          expect(kml).to.be(val);
+        });
+      });
+
       it('uses proxy for all hrefs (except google (only png) and geo.admin images))', function() {
         var hrefs = [
           'http://amoinughudhfoihnkvpodf.com/aA.aA-aA_aA1.png',
@@ -115,15 +141,15 @@ describe('ga_kml_service', function() {
         });
         kml += '</kml>';
         kml = gaKml.sanitize(kml);
-        expect(kml).to.be('<kml><Placemark><Style><IconStyle><Icon>\n' +
-            '<href>https://proxy.geo.admin.ch/http/amoinughudhfoihnkvpodf.com/aA.aA-aA_aA1.png</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark><Style><IconStyle><Icon>\n' +
-            '<href>https://proxy.geo.admin.ch/https/amoinughudhfoihnkvpodf.com/aA.aA-aA_aA1.png</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark><Style><IconStyle><Icon>\n' +
-            '<href>https://proxy.geo.admin.ch/http/maps.gstatic.com/aaa/aaa/aaa/aA.aA-aA_aA1.png</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark><Style><IconStyle><Icon>\n' +
-            '<href>https://proxy.geo.admin.ch/http/maps.gstatic.com/aaa/aaa/aaa/aA.aA-aA_aA1.jpeg</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark><Style><IconStyle><Icon>\n' +
-            '<href>https://proxy.geo.admin.ch/http/maps.gstatic.com/aaa/aaa/aaa/aA.aA-aA_aA1.png</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark><Style><IconStyle><Icon>\n' +
-            '<href>https://proxy.geo.admin.ch/https/maps.gstatic.com/aaa/aaa/aaa/aA.aA-aA_aA1.jpeg</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark><Style><IconStyle><Icon>\n' +
-            '<href>https://proxy.geo.admin.ch/http/maps.google.com/aaa/aaa/aaa/aA.aA-aA_aA1.png</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark><Style><IconStyle><Icon>\n' +
-            '<href>https://proxy.geo.admin.ch/http/maps.google.com/aaa/aaa/aaa/aA.aA-aA_aA1.jpeg</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark><Style><IconStyle><Icon>\n' +
+        expect(kml).to.be('<kml><Placemark id="0"><Style><IconStyle><Icon>\n' +
+            '<href>https://proxy.geo.admin.ch/http/amoinughudhfoihnkvpodf.com/aA.aA-aA_aA1.png</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark id="1"><Style><IconStyle><Icon>\n' +
+            '<href>https://proxy.geo.admin.ch/https/amoinughudhfoihnkvpodf.com/aA.aA-aA_aA1.png</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark id="2"><Style><IconStyle><Icon>\n' +
+            '<href>https://proxy.geo.admin.ch/http/maps.gstatic.com/aaa/aaa/aaa/aA.aA-aA_aA1.png</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark id="3"><Style><IconStyle><Icon>\n' +
+            '<href>https://proxy.geo.admin.ch/http/maps.gstatic.com/aaa/aaa/aaa/aA.aA-aA_aA1.jpeg</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark id="4"><Style><IconStyle><Icon>\n' +
+            '<href>https://proxy.geo.admin.ch/http/maps.gstatic.com/aaa/aaa/aaa/aA.aA-aA_aA1.png</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark id="5"><Style><IconStyle><Icon>\n' +
+            '<href>https://proxy.geo.admin.ch/https/maps.gstatic.com/aaa/aaa/aaa/aA.aA-aA_aA1.jpeg</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark id="6"><Style><IconStyle><Icon>\n' +
+            '<href>https://proxy.geo.admin.ch/http/maps.google.com/aaa/aaa/aaa/aA.aA-aA_aA1.png</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark id="7"><Style><IconStyle><Icon>\n' +
+            '<href>https://proxy.geo.admin.ch/http/maps.google.com/aaa/aaa/aaa/aA.aA-aA_aA1.jpeg</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark id="8"><Style><IconStyle><Icon>\n' +
             '<href>https://proxy.geo.admin.ch/https/maps.google.com/aaa/aaa/aaa/aA.aA-aA_aA1.jpeg</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark></kml>');
       });
 
@@ -147,16 +173,16 @@ describe('ga_kml_service', function() {
         });
         kml += '</kml>';
         kml = gaKml.sanitize(kml);
-        expect(kml).to.be('<kml><Placemark><Style><IconStyle><Icon>\n' +
-            '<href>https://public.geo.admin.ch/aA.aA-aA_aA1.png</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark><Style><IconStyle><Icon>\n' +
-            '<href>https://public.geo.admin.ch/aA.aA-aA_aA1.png</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark><Style><IconStyle><Icon>\n' +
-            '<href>https://public.geo.admin.ch/aaa/aaa/aaa/aaa/aA.aA-aA_aA1.png</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark><Style><IconStyle><Icon>\n' +
-            '<href>https://public.geo.admin.ch/aaa/aaa/aaa/aaa/aA.aA-aA_aA1.png</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark><Style><IconStyle><Icon>\n' +
-            '<href>https://map.geo.admin.ch/aaa/aaa/aaa/aA.aA-aA_aA1.png</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark><Style><IconStyle><Icon>\n' +
-            '<href>https://map.geo.admin.ch/aaa/aaa/aaa/aA.aA-aA_aA1.png</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark><Style><IconStyle><Icon>\n' +
-            '<href>https://mf-geoadmin3.dev.bgdi.ch/aaa/aaa/aaa/aA.aA-aA_aA1.png</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark><Style><IconStyle><Icon>\n' +
-            '<href>https://mf-geoadmin3.dev.bgdi.ch/aaa/aaa/aaa/aA.aA-aA_aA1.png</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark><Style><IconStyle><Icon>\n' +
-            '<href>https://maps.gstatic.com/aA.aA-aA_aA1.png</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark><Style><IconStyle><Icon>\n' +
+        expect(kml).to.be('<kml><Placemark id="0"><Style><IconStyle><Icon>\n' +
+            '<href>https://public.geo.admin.ch/aA.aA-aA_aA1.png</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark id="1"><Style><IconStyle><Icon>\n' +
+            '<href>https://public.geo.admin.ch/aA.aA-aA_aA1.png</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark id="2"><Style><IconStyle><Icon>\n' +
+            '<href>https://public.geo.admin.ch/aaa/aaa/aaa/aaa/aA.aA-aA_aA1.png</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark id="3"><Style><IconStyle><Icon>\n' +
+            '<href>https://public.geo.admin.ch/aaa/aaa/aaa/aaa/aA.aA-aA_aA1.png</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark id="4"><Style><IconStyle><Icon>\n' +
+            '<href>https://map.geo.admin.ch/aaa/aaa/aaa/aA.aA-aA_aA1.png</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark id="5"><Style><IconStyle><Icon>\n' +
+            '<href>https://map.geo.admin.ch/aaa/aaa/aaa/aA.aA-aA_aA1.png</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark id="6"><Style><IconStyle><Icon>\n' +
+            '<href>https://mf-geoadmin3.dev.bgdi.ch/aaa/aaa/aaa/aA.aA-aA_aA1.png</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark id="7"><Style><IconStyle><Icon>\n' +
+            '<href>https://mf-geoadmin3.dev.bgdi.ch/aaa/aaa/aaa/aA.aA-aA_aA1.png</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark id="8"><Style><IconStyle><Icon>\n' +
+            '<href>https://maps.gstatic.com/aA.aA-aA_aA1.png</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark id="9"><Style><IconStyle><Icon>\n' +
             '<href>https://maps.google.com/aaa/aaa/aaa/aA.aA-aA_aA1.png</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark></kml>');
       });
 
@@ -172,9 +198,9 @@ describe('ga_kml_service', function() {
         });
         kml += '</kml>';
         kml = gaKml.sanitize(kml);
-        expect(kml).to.be('<kml><Placemark><Style><IconStyle><Icon>\n' +
-        '<href>https://map.geo.admin.ch</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark><Style><IconStyle><Icon>\n' +
-        '<href>https://public.geo.admin.ch</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark><Style><IconStyle><Icon>\n' +
+        expect(kml).to.be('<kml><Placemark id="0"><Style><IconStyle><Icon>\n' +
+        '<href>https://map.geo.admin.ch</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark id="1"><Style><IconStyle><Icon>\n' +
+        '<href>https://public.geo.admin.ch</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark id="2"><Style><IconStyle><Icon>\n' +
         '<href>https://mf-geoadmin3.dev.bgdi.ch</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark></kml>');
       });
 
@@ -192,11 +218,11 @@ describe('ga_kml_service', function() {
         });
         kml += '</kml>';
         kml = gaKml.sanitize(kml);
-        expect(kml).to.be('<kml><Placemark><Style><IconStyle><Icon>\n' +
-        '<href>https://map.geo.admin.ch</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark><Style><IconStyle><Icon>\n' +
-        '<href>https://public.geo.admin.ch</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark><Style><IconStyle><Icon>\n' +
-        '<href>https://mf-geoadmin3.dev.bgdi.ch</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark><Style><IconStyle><Icon>\n' +
-        '<href>https://proxy.geo.admin.ch/http/test.test.ch/aaa/aaa/aA</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark><Style><IconStyle><Icon>\n' +
+        expect(kml).to.be('<kml><Placemark id="0"><Style><IconStyle><Icon>\n' +
+        '<href>https://map.geo.admin.ch</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark id="1"><Style><IconStyle><Icon>\n' +
+        '<href>https://public.geo.admin.ch</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark id="2"><Style><IconStyle><Icon>\n' +
+        '<href>https://mf-geoadmin3.dev.bgdi.ch</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark id="3"><Style><IconStyle><Icon>\n' +
+        '<href>https://proxy.geo.admin.ch/http/test.test.ch/aaa/aaa/aA</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark id="4"><Style><IconStyle><Icon>\n' +
         '<href>https://proxy.geo.admin.ch/https/test.test.ch/aaa/aaa/aA</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark></kml>');
       });
 
@@ -216,13 +242,13 @@ describe('ga_kml_service', function() {
         });
         kml += '</kml>';
         kml = gaKml.sanitize(kml);
-        expect(kml).to.be('<kml><Placemark><Style><IconStyle><Icon>\n' +
-        '<href>http://api3.geo.admin.ch/color/255,0,0/square-stroked-24@2x.png</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark><Style><IconStyle><Icon>\n' +
-        '<href>http://api3.geo.admin.ch/color/255,0,0/triangle-stroked-24@2x.png</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark><Style><IconStyle><Icon>\n' +
-        '<href>http://api3.geo.admin.ch/color/255,0,0/marker-24@2x.png</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark><Style><IconStyle><Icon>\n' +
-        '<href>http://api3.geo.admin.ch/color/255,0,0/marker-24@2x.png</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark><Style><IconStyle><Icon>\n' +
-        '<href>http://api3.geo.admin.ch/color/255,0,0/marker-24@2x.png</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark><Style><IconStyle><Icon>\n' +
-        '<href>http://api3.geo.admin.ch/color/255,0,0/marker-24@2x.png</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark><Style><IconStyle><Icon>\n' +
+        expect(kml).to.be('<kml><Placemark id="0"><Style><IconStyle><Icon>\n' +
+        '<href>http://api3.geo.admin.ch/color/255,0,0/square-stroked-24@2x.png</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark id="1"><Style><IconStyle><Icon>\n' +
+        '<href>http://api3.geo.admin.ch/color/255,0,0/triangle-stroked-24@2x.png</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark id="2"><Style><IconStyle><Icon>\n' +
+        '<href>http://api3.geo.admin.ch/color/255,0,0/marker-24@2x.png</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark id="3"><Style><IconStyle><Icon>\n' +
+        '<href>http://api3.geo.admin.ch/color/255,0,0/marker-24@2x.png</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark id="4"><Style><IconStyle><Icon>\n' +
+        '<href>http://api3.geo.admin.ch/color/255,0,0/marker-24@2x.png</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark id="5"><Style><IconStyle><Icon>\n' +
+        '<href>http://api3.geo.admin.ch/color/255,0,0/marker-24@2x.png</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark><Placemark id="6"><Style><IconStyle><Icon>\n' +
         '<href>http://api3.geo.admin.ch/color/255,0,0/marker2-24@2x.png</href></Icon></IconStyle></Style><Point><coordinates>170.1435558771009,-43.60505741890396,0</coordinates></Point></Placemark></kml>');
       });
     });

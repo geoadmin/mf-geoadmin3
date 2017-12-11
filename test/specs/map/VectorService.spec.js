@@ -171,6 +171,24 @@ describe('ga_vector_service', function() {
       });
     });
 
+    describe('#readFeatures()', function() {
+
+      it('returns an object with a list of ol features and the raw data', function(done) {
+        var kml = '<kml>' +
+            createValidPlkPoint() +
+            createValidPlkPoint() +
+          '</kml>';
+        gaVector.readFeatures(kml, ol.proj.get('EPSG:3857')).then(function(resp) {
+          expect(resp.features.length).to.be(2);
+          expect(resp.features[0].getGeometry().getCoordinates()).to.eql([1013007.3662187896, 5909489.863677091, 0]);
+          expect(resp.data).to.be('<kml><Placemark id="1"><name>Point</name><description><![CDATA[<!DOCTYPE html><html><head></head><body><p>Point</p></body></html>]]></description><styleUrl>#style1</styleUrl><Point><coordinates>9.1,46.8,0</coordinates></Point></Placemark><Placemark id="2"><name>Point</name><description><![CDATA[<!DOCTYPE html><html><head></head><body><p>Point</p></body></html>]]></description><styleUrl>#style1</styleUrl><Point><coordinates>9.1,46.8,0</coordinates></Point></Placemark></kml>');
+          done();
+        });
+        $rootScope.$digest(); $rootScope.$digest();
+
+      });
+    });
+
     describe('#addToMap()', function() {
 
       it('doesn\'t add layer if vector data is not defined', function(done) {
@@ -392,16 +410,6 @@ describe('ga_vector_service', function() {
         gaVector.addToMap(map, kml).then(function(olLayer) {
           var feats = olLayer.getSource().getFeatures();
           expect(feats.length).to.be(6);
-          done();
-        });
-        $rootScope.$digest();
-      });
-
-      it('set empty feature\'s id to undefined', function(done) {
-        var kml = '<kml>' + createValidPlkPoint('') + '</kml>';
-        gaVector.addToMap(map, kml).then(function(olLayer) {
-          var feats = olLayer.getSource().getFeatures();
-          expect(feats[0].getId()).to.be(undefined);
           done();
         });
         $rootScope.$digest();

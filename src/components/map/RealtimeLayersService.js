@@ -43,11 +43,11 @@ goog.require('ga_vector_service');
             var data = response.data;
             if (vec) {
               gaVector.readFeatures(data, proj).
-                  then(function(features) {
+                  then(function(resp) {
                     olSource.clear();
-                    olSource.addFeatures(features);
+                    olSource.addFeatures(resp.features);
                     olSource.setProperties({
-                      'rawData': data
+                      'rawData': resp.data
                     });
                   });
             } else {
