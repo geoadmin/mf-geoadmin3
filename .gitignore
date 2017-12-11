@@ -39,3 +39,6 @@ rc_user_*
 # Vim swap files
 *.swp
 *.pyc
+
+# Git patch failed
+*.rej
