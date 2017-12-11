@@ -229,7 +229,7 @@ goog.provide('ga_stylesfromliterals_service');
       };
 
       OlStyleForPropertyValue.prototype.setOlText_ = function(olStyle,
-        labelProperty, labelTemplate, properties) {
+          labelProperty, labelTemplate, properties) {
         var text;
         properties = properties || [];
         if (labelProperty) {
