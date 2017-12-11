@@ -230,6 +230,7 @@
 "lang_chooser_label": "Langue",
 "last_available_year": "Last year",
 "layer_cant_be_displayed_in_3d": "Les couches suivantes ne peuvent être affichées en 3d parce qu'elles ne supportent pas la projection EPSG:4326:",
+"layer_cant_be_printed": "Les couches suivantes ne peuvent être imprimées parce qu'elles ne supportent pas la projection EPSG:2056:",
 "layers_displayed": "Cartes affichées",
 "layers_results_header": "Ajouter la carte ...",
 "legend": "Légende",
