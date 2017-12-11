@@ -138,7 +138,6 @@ goog.require('ngeo.fileService');
                   id: options.id,
                   adminId: options.adminId,
                   url: options.url,
-                  type: options.type || type,
                   label: options.label || srv.getName(data) || type,
                   opacity: options.opacity,
                   visible: options.visible,
