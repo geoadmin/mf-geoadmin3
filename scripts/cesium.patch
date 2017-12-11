@@ -1,0 +1,13 @@
+diff --git a/Source/Scene/Vector3DTileContent.js b/Source/Scene/Vector3DTileContent.js
+index 2dab9e0..0e77fec 100644
+--- a/Source/Scene/Vector3DTileContent.js
++++ b/Source/Scene/Vector3DTileContent.js
+@@ -484,7 +484,7 @@ define([
+         if (defined(featureTableJson.RECTANGLE)) {
+             rectangle = Rectangle.unpack(featureTableJson.RECTANGLE);
+         } else {
+-            throw new RuntimeError('Rectangle is required in the feature table.');
++            rectangle = content._tile.contentBoundingVolume.rectangle;
+         }
+ 
+         var minHeight = featureTableJson.MINIMUM_HEIGHT;

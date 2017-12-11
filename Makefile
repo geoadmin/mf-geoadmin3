@@ -346,6 +346,7 @@ cesium: .build-artefacts/cesium
 	git remote add c2c https://github.com/camptocamp/cesium; \
 	git fetch --all; \
 	git checkout $(CESIUM_VERSION); \
+	git apply --reject ../../scripts/cesium.patch; \
 	npm install; \
 	npm run combineRelease; \
 	npm run minifyRelease; \
