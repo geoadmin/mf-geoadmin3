@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 describe('ga_contextpopup_directive', function() {
-  var elt, scope, parentScope, handlers = {}, map, $rootScope, gaReframe, $compile, $httpBackend, $timeout, gaWhat3Words, $q, gaPermalink;
-  var expectedHeightUrl = '//api.geo.admin.ch/height?easting=2661473&elevation_model=COMB&northing=1188192&sr=2056';
+  var elt, scope, parentScope, handlers = {}, map, $rootScope, gaReframe, $compile, $httpBackend, $timeout, gaWhat3Words, $q, gaPermalink, gaHeight;
+  var expectedHeightUrl = 'http://api3.geo.admin.ch/rest/services/height?easting=2661473&elevation_model=COMB&northing=1188192&sr=2056';
   var expectedReframeUrl = '//api.example.com/reframe/lv95tolv03?easting=2661473&northing=1188192';
   var expectedw3wUrl = 'dummy.test.url.com/v2/reverse?coords=46.84203157398991,8.244528382656728&key=testkey&lang=de';
   var contextPermalink = 'http://test.com?N=1188192&E=2661473';
@@ -75,6 +75,7 @@ describe('ga_contextpopup_directive', function() {
     gaPermalink = $injector.get('gaPermalink');
     gaReframe = $injector.get('gaReframe');
     gaWhat3Words = $injector.get('gaWhat3Words');
+    gaHeight = $injector.get('gaHeight');
   };
 
   beforeEach(function() {
@@ -102,7 +103,6 @@ describe('ga_contextpopup_directive', function() {
 
     $rootScope.map = map;
     $rootScope.options = {
-      heightUrl: '//api.geo.admin.ch/height',
       qrcodeUrl: '//api.geo.admin.ch/qrcodegenerator'
     };
 
@@ -134,6 +134,7 @@ describe('ga_contextpopup_directive', function() {
     it('displays information on contextmenu events', function() {
       var spy = sinon.spy(gaReframe, 'get95To03');
       var spy2 = sinon.spy(gaWhat3Words, 'getWords');
+      var spy3 = sinon.spy(gaHeight, 'get');
       var evt = $.Event('contextmenu');
       evt.coordinate = [2661473, 1188192];
       evt.pixel = [25, 50];
@@ -144,6 +145,7 @@ describe('ga_contextpopup_directive', function() {
 
       expect(spy.callCount).to.eql(1);
       expect(spy2.callCount).to.eql(1);
+      expect(spy3.callCount).to.eql(1);
 
       var tables = elt.find('div.popover-content table');
       var tds = $(tables[0]).find('td');

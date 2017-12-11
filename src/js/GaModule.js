@@ -21,6 +21,7 @@ goog.require('ga_feedback_controller');
 goog.require('ga_fullscreen');
 goog.require('ga_geolocation');
 goog.require('ga_help');
+goog.require('ga_height_service');
 goog.require('ga_identify_service');
 goog.require('ga_import');
 goog.require('ga_import_controller');
@@ -108,6 +109,7 @@ goog.require('ga_waitcursor_service');
     'ga_geolocation',
     'ga_rotate',
     'ga_identify_service',
+    'ga_height_service',
     'ga_import_controller',
     'ga_main_controller',
     'ga_catalogtree_controller',

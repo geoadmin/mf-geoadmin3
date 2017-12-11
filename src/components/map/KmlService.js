@@ -58,6 +58,12 @@ goog.require('ga_urlutils_service');
 
         // Sanitize the content of a KML file.
         this.sanitize = function(kml) {
+          // Add ids
+          kml = kml.replace(/id=("|')\s*("|')/g, '');
+          var id = Date.now();
+          while (/<Placemark\s*>/.test(kml)) {
+            kml = kml.replace(/<Placemark\s*>/, '<Placemark id="' + id++ + '">');
+          }
           // Replace all hrefs to prevent errors if image doesn't have
           // CORS headers. Exception for *.geo.admin.ch, *.bgdi.ch and google
           // markers icons (only https)

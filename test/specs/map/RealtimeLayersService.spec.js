@@ -210,7 +210,7 @@ describe('ga_realtimelayers_service', function() {
     });
 
     it('reads KML data', function() {
-      var data = '<kml><Document><Placemark><Point><coordinates>24, 56</coordinates></Point></Placemark></Document></kml>';
+      var data = '<kml><Document><Placemark id="0"><Point><coordinates>24, 56</coordinates></Point></Placemark></Document></kml>';
       var spy = sinon.spy(gaVector, 'readFeatures').withArgs(data, map.getView().getProjection());
       $httpBackend.expectGET('https://data.geo.admin.ch/some.kml').respond(data);
       var l = addRealtimeKMLLayerToMap('some');

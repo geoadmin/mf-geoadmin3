@@ -7,7 +7,6 @@ goog.provide('ga_contextpopup_controller');
   module.controller('GaContextPopupController', function($scope,
       gaGlobalOptions) {
     $scope.options = {
-      heightUrl: gaGlobalOptions.altiUrl + '/rest/services/height',
       qrcodeUrl: gaGlobalOptions.apiUrl + '/qrcodegenerator'
     };
   });

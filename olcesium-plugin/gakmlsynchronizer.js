@@ -77,6 +77,19 @@ olcs.GaKmlSynchronizer.prototype.createSingleLayerCounterparts =
       ds.show = evt.target.getVisible();
     }));
     that.olLayerListenKeys[uid].push(...listenKeyArray);
+
+    // Add link between OL and Cesium features.
+    if (layer instanceof ol.layer.Vector) {
+      layer.getSource().getFeatures().forEach(function(feature) {
+        if (ds.entities.getById) {
+          var entity = ds.entities.getById(feature.getId());
+          if (entity) {
+            entity['olFeature'] = feature;
+            entity['olLayer'] = layer;
+          }
+        }
+      });
+    }
   });
 
   return [dsP];
