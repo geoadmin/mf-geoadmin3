@@ -241,7 +241,7 @@ goog.provide('ga_stylesfromliterals_service');
           text = labelTemplate;
           angular.forEach(properties, function(prop, k) {
             if (prop !== undefined && prop !== null) {
-              text = text.replace('${' + k + '}', prop.toString());
+              text = text.replace('${' + k + '}', prop);
             }
           });
         }
