@@ -219,10 +219,6 @@ goog.provide('ga_definepropertiesforlayer_service');
           displayIn3d: {
             writable: true,
             value: true
-          },
-          error3d: {
-            writable: true,
-            value: null
           }
         });
       };
