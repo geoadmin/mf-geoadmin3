@@ -686,7 +686,7 @@ describe('ga_layers_service', function() {
           var layer = gaLayers.getOlLayerById('wmts');
           var source = layer.getSource();
           expect(source instanceof ol.source.WMTS).to.be.ok();
-          expect(source.getDimensions().Time).to.be('');
+          expect(source.getDimensions().Time).to.be();
         });
 
         it('returns a WMS layer', function() {

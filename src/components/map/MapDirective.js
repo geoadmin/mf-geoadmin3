@@ -347,10 +347,11 @@ goog.require('ga_styles_service');
           // 'propertychange' event.
           // (ex: using layermanager)
           if (switchTimeDeactive) {
+
             for (var i = 0, ii = olLayers.length; i < ii; i++) {
               olLayer = olLayers[i];
               // We update only time enabled bod layers
-              if (olLayer.bodId && olLayer.timeEnabled &&
+              if (olLayer.timeEnabled &&
                   angular.isDefined(olLayer.time) &&
                   olLayer.time.substr(0, 4) !== oldTime) {
                 singleModif = true;
@@ -366,7 +367,6 @@ goog.require('ga_styles_service');
             savedTimeStr = {};
             return;
           }
-
           // In case the user has done a global modification.
           // (ex: using the time selector toggle)
           for (var j = 0, jj = olLayers.length; j < jj; j++) {
@@ -379,11 +379,13 @@ goog.require('ga_styles_service');
                 // We save the current value after a global activation.
                 // (ex: using the time selector toggle)
                 savedTimeStr[olLayer.id] = olLayer.time;
-              } else if (switchTimeDeactive && savedTimeStr[olLayer.id]) {
+              } else if (switchTimeDeactive &&
+                  savedTimeStr.hasOwnProperty(olLayer.id)) {
                 // We apply the saved values after a global deactivation.
                 // (ex: using the time selector toggle)
                 layerTimeStr = savedTimeStr[olLayer.id];
                 savedTimeStr[olLayer.id] = undefined;
+
               }
               olLayer.time = layerTimeStr;
             }

@@ -243,18 +243,34 @@ describe('ga_map_directive', function() {
     });
 
     describe('on time change', function() {
-      var layer;
+      var layer, layer2, layer3;
 
       beforeEach(function() {
         layer = new ol.layer.Layer({});
+        layer.id = 'id';
         layer.timeEnabled = true;
         layer.visible = true;
         layer.time = 't0';
-        map.addLayer(layer);
+
+        // Simulate a WMTS with the special timestamp for all data
+        layer2 = new ol.layer.Layer({});
+        layer2.id = 'id2';
+        layer2.timeEnabled = true;
+        layer2.visible = true;
+        layer2.time = '99991231';
+
+        // Simulate a WMS with undefined timestamp for all data
+        layer3 = new ol.layer.Layer({});
+        layer3.id = 'id3';
+        layer3.timeEnabled = true;
+        layer3.visible = true;
+        layer3.time = undefined;
+
         loadDirective(map);
       });
 
-      it('refreshes layers', function() {
+      it('refreshes one layer', function() {
+        map.addLayer(layer);
         var stub = sinon.stub(gaLayers, 'getLayerTimestampFromYear');
         expect(layer.time).to.be('t0');
 
@@ -276,6 +292,45 @@ describe('ga_map_directive', function() {
         $rootScope.$broadcast('gaTimeChange', null, 't2');
         expect(stub.callCount).to.be(3);
         expect(layer.time).to.be('t0');
+      });
+
+      it('uses the last time used before activation on deactivation (3 layers)', function() {
+        map.addLayer(layer);
+        map.addLayer(layer2);
+        map.addLayer(layer3);
+        var stub = sinon.stub(gaLayers, 'getLayerTimestampFromYear');
+        expect(layer.time).to.be('t0');
+        expect(layer2.time).to.be('99991231'); // all data
+        expect(layer3.time).to.be(); // all data
+
+        // Activation of global time, every layer use this timestamp
+        stub.returns('t1');
+        $rootScope.$broadcast('gaTimeChange', 't1');
+        expect(stub.callCount).to.be(3);
+        expect(layer.time).to.be('t1');
+        expect(layer2.time).to.be('t1');
+        expect(layer3.time).to.be('t1');
+
+        // Modification fo global time, only layer 1 uses this timestamp
+        stub.reset();
+        stub.onCall(0).returns('t2');
+        stub.onCall(1).returns(undefined);
+        stub.onCall(2).returns(undefined);
+        $rootScope.$broadcast('gaTimeChange', 't2', 't1');
+        expect(stub.callCount).to.be(3);
+        expect(layer.time).to.be('t2');
+        expect(layer2.time).to.be();
+        expect(layer3.time).to.be();
+
+        // Deactivation of global time. It takes the last timestamp before the
+        // global time activation.
+        stub.reset();
+        stub.returns('dontuseit');
+        $rootScope.$broadcast('gaTimeChange', null, 't2');
+        expect(stub.callCount).to.be(3);
+        expect(layer.time).to.be('t0');
+        expect(layer2.time).to.be('99991231');
+        expect(layer3.time).to.be();
       });
     });
   });
