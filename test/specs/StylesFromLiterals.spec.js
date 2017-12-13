@@ -925,6 +925,40 @@ describe('ga_stylesfromliterals_service', function() {
       expect(olText.getFont()).to.equal('bold 1.35em FrutigerNeueW02-Regular, Times, sans-serif');
       expect(olText.getTextAlign()).to.equal('center');
       expect(olText.getTextBaseline()).to.equal('middle');
+      // Test with a 0
+      var olFeature = geoJsonFormat.readFeature(
+          '{"type": "Feature",' +
+          '"geometry": {' +
+            '"coordinates": [' +
+              '10000,' +
+              '20000' +
+            '],' +
+            '"type": "Point"' +
+          '},' +
+          '"properties": {' +
+            '"foo": 0,' +
+            '"name": "Joe",' +
+            '"country": "Baltimore"' +
+          '}}'
+      );
+      olStyle = gaStyle.getFeatureStyle(olFeature, 100);
+      olImage = olStyle.getImage();
+      olText = olStyle.getText();
+      expect(olStyle.getImage()).to.be.an(ol.style.Image);
+      expect(olImage.getFill()).to.be.an(ol.style.Fill);
+      expect(olImage.getFill().getColor()).to.equal('#FF1FF1');
+      expect(olImage.getStroke()).to.be.an(ol.style.Stroke);
+      expect(olImage.getStroke().getColor()).to.equal('#FFFFFF');
+      expect(olImage.getStroke().getWidth()).to.equal(3);
+      expect(olText.getText()).to.equal('Joe is for 0 days in Baltimore');
+      expect(olText.getStroke()).to.an(ol.style.Stroke);
+      expect(olText.getStroke().getColor()).to.equal('#FFFFFF');
+      expect(olText.getStroke().getWidth()).to.equal(3);
+      expect(olText.getFill()).to.an(ol.style.Fill);
+      expect(olText.getFill().getColor()).to.equal('#FF1FF1');
+      expect(olText.getFont()).to.equal('bold 1.35em FrutigerNeueW02-Regular, Times, sans-serif');
+      expect(olText.getTextAlign()).to.equal('center');
+      expect(olText.getTextBaseline()).to.equal('middle');
     });
 
     it('supports range type style assignment resolution dependent', function() {
