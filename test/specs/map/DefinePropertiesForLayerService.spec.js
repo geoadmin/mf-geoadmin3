@@ -233,27 +233,6 @@ describe('ga_definepropertiesforlayer_service', function() {
       expect(layer.get(prop)).to.be(undefined);
     });
 
-    it('set WMTS.dimesion.Time to empty when time is undefined', function() {
-      var prop = 'time';
-
-      // WMTS
-      var layer = new ol.layer.Tile({
-        source: new ol.source.WMTS({})
-      });
-      gaDefine(layer);
-      expect(layer.get(prop)).to.be(undefined);
-      expect(layer[prop]).to.be(undefined);
-      layer[prop] = 'test';
-      expect(layer.get(prop)).to.be('test');
-      expect(layer.getSource().getDimensions().Time).to.be('test');
-
-      var spy = sinon.spy(layer.getSource(), 'updateDimensions');
-      layer[prop] = undefined;
-      expect(spy.callCount).to.be(1);
-      expect(spy.args[0][0].Time).to.be('');
-      expect(layer.get(prop)).to.be();
-    });
-
     it('verifies getCesiumXXX property', function() {
       var props = [
         'getCesiumDataSource',
