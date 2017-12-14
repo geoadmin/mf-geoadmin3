@@ -447,6 +447,39 @@ describe('ga_stylesfromliterals_service', function() {
       expect(olText.getOffsetY()).to.equal(2);
       expect(olText.getTextAlign()).to.equal('center');
       expect(olText.getTextBaseline()).to.equal('middle');
+
+      olFeature = geoJsonFormat.readFeature(
+          '{"type": "Feature",' +
+          '"geometry": {' +
+            '"coordinates": [' +
+              '[10000,' +
+               '20000],' +
+              '[12000,' +
+               '21000]' +
+            '],' +
+            '"type": "LineString"' +
+          '},' +
+          '"properties": {' +
+            '"foo": "bar",' +
+            '"oraison": 0' +
+          '}}'
+      );
+      olStyle = gaStyle.getFeatureStyle(olFeature, 100);
+      olImage = olStyle.getImage();
+      olText = olStyle.getText();
+      expect(olStyle).to.be.an(ol.style.Style);
+      expect(olImage).not.to.be.an(ol.style.Image);
+      expect(olText).to.be.an(ol.style.Text);
+      expect(olStyle.getStroke()).to.be.an(ol.style.Stroke);
+      expect(olStyle.getStroke().getColor()).to.equal('#FFFFFF');
+      expect(olStyle.getStroke().getWidth()).to.equal(3);
+      expect(olText.getText()).to.equal('0');
+      expect(olText.getStroke()).to.an(ol.style.Stroke);
+      expect(olText.getScale()).to.equal(1.1);
+      expect(olText.getOffsetX()).to.equal(1);
+      expect(olText.getOffsetY()).to.equal(2);
+      expect(olText.getTextAlign()).to.equal('center');
+      expect(olText.getTextBaseline()).to.equal('middle');
     });
 
     it('supports simple unique type style assignment', function() {
@@ -925,8 +958,9 @@ describe('ga_stylesfromliterals_service', function() {
       expect(olText.getFont()).to.equal('bold 1.35em FrutigerNeueW02-Regular, Times, sans-serif');
       expect(olText.getTextAlign()).to.equal('center');
       expect(olText.getTextBaseline()).to.equal('middle');
+
       // Test with a 0
-      var olFeature = geoJsonFormat.readFeature(
+      olFeature = geoJsonFormat.readFeature(
           '{"type": "Feature",' +
           '"geometry": {' +
             '"coordinates": [' +
