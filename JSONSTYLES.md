@@ -71,6 +71,11 @@ For `point` geomType the radius (given in pixels) determines the size of the sym
 * fill: same options as defined in [ol.style.Fill](http://openlayers.org/en/latest/apidoc/ol.style.Fill.html).
 * label->text: same options as defined in [ol.style.Text](http://openlayers.org/en/latest/apidoc/ol.style.Text.html)
 
+For `label` 2 options are available.
+
+* `property` displays a property value found in a GeoJSON feature properties.
+* `template` displays a combination of multiple properties and/or static text. Properties are referenced with `${}`. (for instance `${firstname} ${lastname}`)
+
 Type unique
 -----------
 
