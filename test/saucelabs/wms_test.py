@@ -25,13 +25,13 @@ def runWmsTest(driver, target, is_top_browser):
     driver.find_element_by_link_text("Importieren").click()
     elt = driver.find_element_by_css_selector("#import-popup [ga-import]")
     # Write URL of the chosen WMS
-    input = elt.find_element_by_css_selector("[ngeo-import-online] input[name=\"url\"]")
+    input = elt.find_element_by_css_selector("[ga-import-online] input[name=\"url\"]")
     input.send_keys(WMS_URL)
     # Active blur event (first tab autocomplete the url, 2nd tab close the suggestions list)
     input.send_keys(Keys.TAB)
     input.send_keys(Keys.TAB)
     # Watch button text
-    bt = elt.find_element_by_css_selector("[ngeo-import-online] button")
+    bt = elt.find_element_by_css_selector("[ga-import-online] button")
     bt.click()
     for i in range(DEFAULT_WAIT_LOADING):
         try:
@@ -46,7 +46,7 @@ def runWmsTest(driver, target, is_top_browser):
     # Click on "AGNES"
     elt.find_element_by_xpath("//div[text()[contains(.,'AGNES')]]").click()
     # Click on "Layer hinzufuegen"
-    elt.find_element_by_css_selector(".ngeo-add").click()
+    elt.find_element_by_css_selector(".ga-add").click()
     # Accept alert message
     try:
         WebDriverWait(driver, DEFAULT_WAIT_LOADING).until(EC.alert_is_present(), "Timed out alert")

@@ -1,8 +1,5 @@
 SHELL = /bin/bash
 
-# Auto initialization of submodules
-INIT := ${shell git submodule update --init}
-
 # Macro functions
 lastvalue = $(shell if [ -f .build-artefacts/last-$1 ]; then cat .build-artefacts/last-$1 2> /dev/null; else echo '-none-'; fi;)
 
@@ -13,12 +10,10 @@ define moveto
 	done;
 endef
 
-NGEO_MODULES := src/ngeo/src/modules/import
 SRC_JS_FILES := $(shell find src/components src/js -type f -name '*.js')
-SRC_ES6_FILES := $(shell find ${NGEO_MODULES} -type f -name '*.js')
 SRC_JS_FILES_FOR_COMPILER = $(shell sed -e ':a' -e 'N' -e '$$!ba' -e 's/\n/ --js /g' .build-artefacts/js-files | sed 's/^.*base\.js //')
 SRC_LESS_FILES := $(shell find src -type f -name '*.less')
-SRC_COMPONENTS_PARTIALS_FILES := $(shell find src/components ${NGEO_MODULES} -type f -path '*/partials/*' -name '*.html')
+SRC_COMPONENTS_PARTIALS_FILES := $(shell find src/components -type f -path '*/partials/*' -name '*.html')
 PYTHON_FILES := $(shell find scripts test/saucelabs -type f -name "*.py" -print)
 APACHE_BASE_DIRECTORY ?= $(CURDIR)
 LAST_APACHE_BASE_DIRECTORY := $(call lastvalue,apache-base-directory)
@@ -73,7 +68,6 @@ DEPLOY_ROOT_DIR := /var/www/vhosts/mf-geoadmin3/private/branch
 OL_VERSION ?= b66c0941f5fc6eccb63686e9f702f35b33230b89 # master, December 11 2017
 OL_CESIUM_VERSION ?= d4cfea150382f8764335d19f7896a2491195786e # master, December 8 2017
 CESIUM_VERSION ?= d031503c7ef16dee540a9d829e5e41c6b23d6ffe # c2c/c2c_patches_vector_tiles, December 7 2017
-NGEO_VERSION ?= 7039d68645f4bba635cf5bd553a1d2a495a280c2 # master, September 22 2017
 DEFAULT_TOPIC_ID ?= ech
 TRANSLATION_FALLBACK_CODE ?= de
 LANGUAGES ?= '[\"de\", \"fr\", \"it\", \"en\", \"rm\"]'
@@ -161,7 +155,6 @@ help:
 	@echo "- s3deleteprod       Delete a project version in a remote prod bucket. (usage: make s3deleteprod S3_VERSION_PATH=<branch> or <branch>/<sha>/<version>)"
 	@echo "- cesium             Update Cesium.min.js and Cesium folder. Needs Node js version >= 6."
 	@echo "- olcesium           Update olcesium.js, olcesium-debug.js. Needs Node js version >= 6."
-	@echo "- ngeo               Update ngeo submodule with the version specified in Makefile"
 	@echo "- libs               Update js librairies used in index.html, see npm packages defined in section 'dependencies' of package.json"
 	@echo "- translate          Generate the translation files (requires db user pwd in ~/.pgpass: dbServer:dbPort:*:dbUser:dbUserPwd)"
 	@echo "- help               Display this help"
@@ -382,13 +375,6 @@ olcesium:  .build-artefacts/cesium openlayers .build-artefacts/olcesium
 	cp dist/olcesium-debug.js ../../src/lib/; \
 	cp dist/olcesium.js ../../src/lib/olcesium.js; \
 	cp Cesium.externs.js ../../externs/Cesium.externs.js; \
-
-.PHONY: ngeo
-ngeo:
-	cd src/ngeo; \
-	git fetch origin; \
-	git checkout ${NGEO_VERSION}; \
-	git show
 
 .PHONY: filesaver
 filesaver: .build-artefacts/filesaver
@@ -655,7 +641,6 @@ src/deps.js: $(SRC_JS_FILES) ${PYTHON_VENV}
 	${PYTHON_CMD} node_modules/google-closure-library/closure/bin/build/depswriter.py \
 	    --root_with_prefix="src/components components" \
 	    --root_with_prefix="src/js js" \
-	    --root_with_prefix="src/ngeo ngeo" \
 	    --output_file=$@
 
 src/style/app.css: $(SRC_LESS_FILES)
@@ -779,13 +764,6 @@ $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule
 	mkdir -p $(dir $@)
 	${NG_ANNOTATE} -a $< > $@
 
-$(addprefix .build-artefacts/annotated/, $(SRC_ES6_FILES)): \
-	    .build-artefacts/annotated/%.js: %.js .build-artefacts/devlibs
-	mkdir -p $(dir $@)
-	${BABEL} $< --out-file tmp
-	${NG_ANNOTATE} -a tmp | sed "/goog\.require('ol.*/d" > $@
-	rm -f tmp
-
 .build-artefacts/app-whitespace.js: .build-artefacts/js-files
 	java -jar ${CLOSURE_COMPILER} $(SRC_JS_FILES_FOR_COMPILER) \
 	    --compilation_level WHITESPACE_ONLY \
@@ -796,7 +774,6 @@ $(addprefix .build-artefacts/annotated/, $(SRC_ES6_FILES)): \
 # add lib/closure as a root. When compiling we remove base.js from the js files
 # passed to the Closure compiler.
 .build-artefacts/js-files: $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule.js) \
-	    $(addprefix .build-artefacts/annotated/, $(SRC_ES6_FILES)) \
 	    ${PYTHON_VENV} \
 	    node_modules/google-closure-library
 	${PYTHON_CMD} node_modules/google-closure-library/closure/bin/build/closurebuilder.py \
@@ -912,5 +889,3 @@ clean:
 	rm -f src/mobile.html
 	rm -f src/embed.html
 	rm -rf prd
-	rm -rf src/ngeo
-	git submodule update --init

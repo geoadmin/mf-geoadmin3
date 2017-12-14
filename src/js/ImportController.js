@@ -1,18 +1,18 @@
 goog.provide('ga_import_controller');
 
 goog.require('ga_browsersniffer_service');
+goog.require('ga_file_service');
 goog.require('ga_maputils_service');
 goog.require('ga_previewlayers_service');
 goog.require('ga_translation_service');
 goog.require('ga_urlutils_service');
 goog.require('ga_vector_service');
 goog.require('ga_wmts_service');
-goog.require('ngeo.fileService');
 
 (function() {
 
   var module = angular.module('ga_import_controller', [
-    'ngeo.fileService',
+    'ga_file_service',
     'ga_browsersniffer_service',
     'ga_maputils_service',
     'ga_urlutils_service',
@@ -22,7 +22,7 @@ goog.require('ngeo.fileService');
   ]);
 
   module.controller('GaImportController', function($scope, $q, $document,
-      $window, $timeout, ngeoFile, gaBrowserSniffer, gaWms, gaUrlUtils,
+      $window, $timeout, gaFile, gaBrowserSniffer, gaWms, gaUrlUtils,
       gaLang, gaPreviewLayers, gaMapUtils, gaWmts, gaVector) {
 
     $scope.supportDnd = !gaBrowserSniffer.msie || gaBrowserSniffer.msie > 9;
@@ -237,13 +237,13 @@ goog.require('ngeo.fileService');
       $scope.wmtsGetCap = null;
       file = file || {};
 
-      if (ngeoFile.isWmsGetCap(data)) {
+      if (gaFile.isWmsGetCap(data)) {
         $scope.wmsGetCap = data;
         defer.resolve({
           message: 'upload_succeeded'
         });
 
-      } else if (ngeoFile.isGpx(data) || ngeoFile.isKml(data)) {
+      } else if (gaFile.isGpx(data) || gaFile.isKml(data)) {
 
         gaVector.addToMap($scope.map, data, {
           url: file.url || URL.createObjectURL(file),
@@ -266,7 +266,7 @@ goog.require('ngeo.fileService');
           defer.notify(evt);
         });
 
-      } else if (ngeoFile.isWmtsGetCap(data)) {
+      } else if (gaFile.isWmtsGetCap(data)) {
         $scope.wmtsGetCap = data;
         defer.resolve({
           message: 'upload_succeeded'
