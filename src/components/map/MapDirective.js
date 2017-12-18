@@ -67,7 +67,7 @@ goog.require('ga_styles_service');
 
   module.directive('gaMap', function($window, $timeout, gaPermalink,
       gaStyleFactory, gaBrowserSniffer, gaLayers, gaDebounce, gaOffline,
-      gaMapUtils) {
+      gaMapUtils, $translate) {
     return {
       restrict: 'A',
       scope: {
@@ -252,6 +252,19 @@ goog.require('ga_styles_service');
 
                 // Show layers we have to display in 3d 
                 showDflt3dLayers(map);
+
+                // Display alert messages that layers can't be displayed in 3d
+                var msg = '';
+                map.getLayers().forEach(function(layer) {
+                  if (!layer.displayIn3d) {
+                    msg = msg + '\n' + layer.label;
+                  }
+                });
+                if (msg) {
+                  msg = $translate.instant('layer_cant_be_displayed_in_3d') +
+                      msg;
+                  $window.alert(msg);
+                }
               } else {
                 // Show the overlays
                 dereg.forEach(function(key) {

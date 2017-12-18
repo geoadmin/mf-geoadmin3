@@ -229,6 +229,8 @@
 "kml": "KML",
 "lang_chooser_label": "Lingua",
 "last_available_year": "Last year",
+"layer_cant_be_displayed_in_3d": "I layer seguenti non possono essere visualizzati in 3d perchè non supportano la proiezione EPSG:4326",
+"layer_cant_be_printed": "I layer seguenti non possono essere stampati perchè non supportano la proiezione EPSG:2056",
 "layers_displayed": "Mappe visualizzate",
 "layers_results_header": "Aggiungi set di dati ...",
 "legend": "Legenda",

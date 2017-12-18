@@ -28,6 +28,7 @@ Header always set Access-Control-Allow-Headers "x-requested-with, Content-Type, 
 # Redirect no-slash target to slashed version
 RedirectMatch ^${apache_base_path}$ ${apache_base_path}/
 
+Alias ${apache_base_path}/src/coverage ${apache_base_directory}/.build-artefacts/coverage
 Alias ${apache_base_path}/src ${apache_base_directory}/src
 Alias ${apache_base_path}/ ${apache_base_directory}/prd/
 RewriteRule ${apache_base_path}/src/layersConfig\.(\w+)\.json http:${api_url}/rest/services/all/MapServer/layersConfig?lang=$1 [P]

@@ -307,30 +307,12 @@ goog.require('ga_wmts_service');
               }
             } else if (gaMapUtils.isExternalWmtsLayer(layerSpec)) {
               infos = layerSpec.split('||');
-              $http.get(gaUrlUtils.buildProxyUrl(infos[2])).
-                  then(function(response) {
-                    try {
-                      var data = response.data;
-                      var getCap = new ol.format.WMTSCapabilities().read(data);
-                      var layerOptions = gaWmts.getLayerOptionsFromIdentifier(
-                          getCap, infos[1], infos[2]);
-                      // Override the url found in the xml file which is often a
-                      // wrong url.
-                      layerOptions.opacity = opacity || 1;
-                      layerOptions.visible = visible;
-                      layerOptions.capabilitiesUrl = infos[2];
-                      layerOptions.time = timestamp;
-                      gaWmts.addWmtsToMap(map, layerOptions, index + 1);
-                    } catch (e) {
-                      // Adding external WMTS layer failed
-                      $log.error('Loading of external WMTS layer ' + layerSpec +
-                      ' failed. ' + e.message);
-                    }
-                  }, function(reason) {
-                    $log.error('Loading of external WMTS layer ' + layerSpec +
-                    ' failed. Failed to get capabilities from server.' +
-                    'Reason : ' + reason);
-                  });
+              gaWmts.addWmtsToMapFromGetCapUrl(map, infos[2], infos[1], {
+                index: index + 1,
+                opacity: opacity,
+                visible: visible,
+                time: timestamp
+              });
             }
           });
 

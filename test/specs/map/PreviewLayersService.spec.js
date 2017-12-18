@@ -2,7 +2,7 @@
 describe('ga_previewlayers_service', function() {
 
   describe('gaPreviewLayers', function() {
-    var gaPreviewLayers, map, gaLayers, gaWms, gaTime, gaMapUtils;
+    var gaPreviewLayers, map, gaLayers, gaWms, gaTime, gaMapUtils, gaWmts;
 
     beforeEach(function() {
       module(function($provide) {
@@ -36,6 +36,14 @@ describe('ga_previewlayers_service', function() {
           }
         });
 
+        $provide.value('gaWmts', {
+          getOlLayerFromGetCap: function(map, getCap, id) {
+            var layer = new ol.layer.Layer({});
+            layer.id = id;
+            return layer;
+          }
+        });
+
         $provide.value('gaTime', {
           get: function() {}
         });
@@ -44,6 +52,7 @@ describe('ga_previewlayers_service', function() {
       inject(function($injector) {
         gaPreviewLayers = $injector.get('gaPreviewLayers');
         gaWms = $injector.get('gaWms');
+        gaWmts = $injector.get('gaWmts');
         gaLayers = $injector.get('gaLayers');
         gaMapUtils = $injector.get('gaMapUtils');
         gaTime = $injector.get('gaTime');
@@ -94,33 +103,64 @@ describe('ga_previewlayers_service', function() {
       });
     });
 
-    describe('addGetCapLayer', function() {
+    describe('#addGetCapLayer()', function() {
 
-      beforeEach(function() {
-        gaPreviewLayers.addGetCapLayer(map, {id: 'some', wmsUrl: 'URL'});
+      describe('from a WMS GetCap', function() {
+        beforeEach(function() {
+          gaPreviewLayers.addGetCapLayer(map, {}, {id: 'some', wmsUrl: 'URL'});
+        });
+
+        it('adds a preview WMS layer with good properties', function() {
+          var layers = map.getLayers();
+          expect(layers.getLength()).to.be(1);
+          var layer = layers.item(0);
+          expect(layer.preview).to.be(true);
+          expect(layer.displayInLayerManager).to.be(false);
+          expect(layer.getZIndex()).to.be(gaMapUtils.Z_PREVIEW_LAYER);
+        });
+
+        it('uses an existing preview WMS layer if exist', function() {
+          var spy = sinon.spy(gaWms, 'getOlLayerFromGetCapLayer');
+          gaPreviewLayers.addGetCapLayer(map, {}, {id: 'some', wmsUrl: 'URL'});
+          expect(spy.callCount).to.be(0);
+        });
+
+        it('doesn\'t add 2 preview WMS layers', function() {
+          var layers = map.getLayers();
+          expect(layers.getLength()).to.be(1);
+          gaPreviewLayers.addGetCapLayer(map, {}, {id: 'other', wmsUrl: 'URL'});
+          expect(layers.getLength()).to.be(1);
+          expect(layers.item(0).id).to.be('other');
+        });
       });
 
-      it('adds a preview layer with good properties', function() {
-        var layers = map.getLayers();
-        expect(layers.getLength()).to.be(1);
-        var layer = layers.item(0);
-        expect(layer.preview).to.be(true);
-        expect(layer.displayInLayerManager).to.be(false);
-        expect(layer.getZIndex()).to.be(gaMapUtils.Z_PREVIEW_LAYER);
-      });
+      describe('from a WMTS GetCap', function() {
+        beforeEach(function() {
+          gaPreviewLayers.addGetCapLayer(map, {}, {Identifier: 'some', capabilitiesUrl: 'URL'});
+        });
 
-      it('uses an existing preview layer if exist', function() {
-        var spy = sinon.spy(gaWms, 'getOlLayerFromGetCapLayer');
-        gaPreviewLayers.addGetCapLayer(map, {id: 'some', wmsUrl: 'URL'});
-        expect(spy.callCount).to.be(0);
-      });
+        it('adds a preview WMTS layer with good properties', function() {
+          var layers = map.getLayers();
+          expect(layers.getLength()).to.be(1);
+          var layer = layers.item(0);
+          expect(layer.preview).to.be(true);
+          expect(layer.displayInLayerManager).to.be(false);
+          expect(layer.getZIndex()).to.be(gaMapUtils.Z_PREVIEW_LAYER);
+        });
 
-      it('doesn\'t add 2 preview layers', function() {
-        var layers = map.getLayers();
-        expect(layers.getLength()).to.be(1);
-        gaPreviewLayers.addGetCapLayer(map, {id: 'other', wmsUrl: 'URL'});
-        expect(layers.getLength()).to.be(1);
-        expect(layers.item(0).id).to.be('other');
+        it('uses an existing preview WMTS layer if exist', function() {
+          var spy = sinon.spy(gaWmts, 'getOlLayerFromGetCap');
+          gaPreviewLayers.addGetCapLayer(map, {}, {Identifier: 'some', capabilitiesUrl: 'URL'});
+          expect(spy.callCount).to.be(0);
+        });
+
+        it('doesn\'t add 2 preview WMTS layers', function() {
+          var layers = map.getLayers();
+          expect(layers.getLength()).to.be(1);
+          gaPreviewLayers.addGetCapLayer(map, {}, {Identifier: 'other', capabilitiesUrl: 'URL'});
+          expect(layers.getLength()).to.be(1);
+          expect(layers.item(0).id).to.be('other');
+        });
       });
     });
 
@@ -141,7 +181,7 @@ describe('ga_previewlayers_service', function() {
             urls: ['URL']
           }
         };
-        gaPreviewLayers.addGetCapLayer(map, getCap);
+        gaPreviewLayers.addGetCapLayer(map, {}, getCap);
       });
 
       it('adds a preview WMTS layer with good properties', function() {
@@ -155,7 +195,7 @@ describe('ga_previewlayers_service', function() {
 
       it('uses an existing WMTS preview layer if exist', function() {
         var spy = sinon.spy(gaWms, 'getOlLayerFromGetCapLayer');
-        gaPreviewLayers.addGetCapLayer(map, getCap);
+        gaPreviewLayers.addGetCapLayer(map, {}, getCap);
         expect(spy.callCount).to.be(0);
       });
 
@@ -164,9 +204,9 @@ describe('ga_previewlayers_service', function() {
         expect(layers.getLength()).to.be(1);
         getCap.id = 'other';
         getCap.Identifier = 'other';
-        gaPreviewLayers.addGetCapLayer(map, getCap);
+        gaPreviewLayers.addGetCapLayer(map, {}, getCap);
         expect(layers.getLength()).to.be(1);
-        expect(layers.item(0).id).to.be('WMTS||other||URL');
+        expect(layers.item(0).id).to.be('other');
       });
     });
 
@@ -180,7 +220,7 @@ describe('ga_previewlayers_service', function() {
         map.addLayer(previewFeaturesLayer);
         map.addLayer(new ol.layer.Layer({}));
         gaPreviewLayers.addBodLayer(map, 'some');
-        gaPreviewLayers.addGetCapLayer(map, {id: 'some1', wmsUrl: 'URL'});
+        gaPreviewLayers.addGetCapLayer(map, {}, {id: 'some1', wmsUrl: 'URL'});
 
         var layers = map.getLayers();
         expect(layers.getLength()).to.be(3);

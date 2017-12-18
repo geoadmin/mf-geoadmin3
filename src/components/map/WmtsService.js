@@ -18,29 +18,84 @@ goog.require('ga_urlutils_service');
    */
   module.provider('gaWmts', function() {
     this.$get = function(gaDefinePropertiesForLayer, gaMapUtils, gaUrlUtils,
-        gaGlobalOptions) {
+        gaGlobalOptions, $window, $translate, $http) {
+
+      // Store getCapabilitites
+      var store = {};
+      var epsg4326 = ol.proj.get('EPSG:4326');
+      var epsg3857 = ol.proj.get('EPSG:3857');
+      var projSupported = [epsg4326, epsg3857];
 
       var getCesiumImageryProvider = function(layer) {
-        // Display in 3d only layers with a matrixSet compatible
-        if (!/4326/g.test(layer.getSource().getMatrixSet())) {
+        if (!layer.displayIn3d) {
           return;
         }
         var source = layer.getSource();
-        var tpl = source.getUrls()[0].
-            replace('{Style}', source.getStyle()).
+        var proj = source.getProjection();
+        var matrixSet = source.getMatrixSet();
+        var matrixSetFound = false;
+        var tilingScheme;
+
+        var isGoodMatrixSet = function(sourceMatrixSet, sourceProj, proj3d) {
+
+          if (ol.proj.equivalent(sourceProj, proj3d)) {
+            matrixSet = sourceMatrixSet;
+            tilingScheme = proj3d.getCode() === 'EPSG:4326' ?
+              new Cesium.GeographicTilingScheme() :
+              new Cesium.WebMercatorTilingScheme();
+            return true;
+          }
+        };
+
+        // Display in 3d only layers with a matrixSet compatible
+        if (proj) {
+          matrixSetFound = projSupported.some(function(p) {
+            return isGoodMatrixSet(matrixSet, proj, p);
+          });
+        }
+        if (!matrixSetFound && store[layer.url]) {
+          matrixSetFound = projSupported.some(function(p) {
+            var opt = ol.source.WMTS.optionsFromCapabilities(store[layer.url], {
+              layer: source.getLayer(),
+              projection: p
+            });
+            return isGoodMatrixSet(opt.matrixSet, opt.projection, p);
+          });
+        }
+
+        if (!matrixSetFound) {
+          layer.displayIn3d = false;
+          return;
+        }
+
+        var tpl = source.getUrls()[0];
+        if (source.getRequestEncoding() === 'KVP') {
+          tpl += 'service=WMTS&version=1.0.0&request=GetTile' +
+              '&layer=' + source.getLayer() +
+              '&format=' + source.getFormat() +
+              '&style={Style}' +
+              '&time={Time}' +
+              '&tilematrixset={TileMatrixSet}' +
+              '&tilematrix={TileMatrix}' +
+              '&tilecol={TileCol}' +
+              '&tilerow={TileRow}';
+        }
+
+        tpl = tpl.replace('{Style}', source.getStyle()).
             replace('{Time}', layer.time).
-            replace('{TileMatrixSet}', '4326').
+            replace('{TileMatrixSet}', matrixSet).
             replace('{TileMatrix}', '{z}').
             replace('{TileCol}', '{x}').
             replace('{TileRow}', '{y}');
+
         return new Cesium.UrlTemplateImageryProvider({
-          minimumRetrievingLevel: window.minimumRetrievingLevel,
+          minimumRetrievingLevel: gaGlobalOptions.minimumRetrievingLevel,
           url: tpl,
           rectangle: gaMapUtils.extentToRectangle(layer.getExtent()),
           proxy: gaUrlUtils.getCesiumProxy(),
-          tilingScheme: new Cesium.GeographicTilingScheme(),
-          hasAlphaChannel: true,
-          availableLevels: window.imageryAvailableLevels
+          tilingScheme: tilingScheme,
+          hasAlphaChannel: !/jp/i.test(source.getFormat()),
+          availableLevels: gaGlobalOptions.imageryAvailableLevels
         });
       };
 
@@ -87,8 +142,9 @@ goog.require('ga_urlutils_service');
       };
 
       // Get the layer extent defines in the GetCapabilities
-      var getLayerExtentFromGetCap = function(getCapLayer, proj) {
+      var getLayerExtentFromGetCap = function(map, getCapLayer) {
         var wgs84Extent = getCapLayer.WGS84BoundingBox;
+        var proj = map.getView().getProjection();
         if (wgs84Extent) {
           var wgs84 = 'EPSG:4326';
           var projCode = proj.getCode();
@@ -101,82 +157,102 @@ goog.require('ga_urlutils_service');
               projCode, wgs84);
           var layerWgs84Extent = ol.extent.getIntersection(projWgs84Extent,
               wgs84Extent);
+
           if (layerWgs84Extent) {
             return ol.proj.transformExtent(layerWgs84Extent, wgs84, projCode);
           }
         }
       };
 
-      var getLayerOptions = function(getCapLayer, getCapabilities, getCapUrl) {
-        if (getCapabilities) {
-          var layerOptions = {
-            layer: getCapLayer.Identifier
-          };
-          getCapLayer.sourceConfig = ol.source.WMTS.optionsFromCapabilities(
-              getCapabilities, layerOptions);
-          getCapLayer.capabilitiesUrl = getCapUrl;
-          if (getCapabilities.ServiceProvider) {
-            getCapLayer.attribution =
-                getCapabilities.ServiceProvider.ProviderName;
-            getCapLayer.attributionUrl =
-                getCapabilities.ServiceProvider.ProviderSite;
-          } else {
-            getCapLayer.attribution =
-                gaUrlUtils.getHostname(getCapLayer.capabilitiesUrl);
-            getCapLayer.attributionUrl = getCapLayer.capabilitiesUrl;
-          }
-          getCapLayer.extent = getLayerExtentFromGetCap(getCapLayer,
-              ol.proj.get(gaGlobalOptions.defaultEpsg));
-        }
+      var getLayerOptions = function(map, getCapLayer, getCap, getCapUrl) {
+
+        var extent = getLayerExtentFromGetCap(map, getCapLayer);
+        var sourceConfig = ol.source.WMTS.optionsFromCapabilities(getCap, {
+          layer: getCapLayer.Identifier,
+          projection: map.getView().getProjection()
+        });
 
         var options = {
-          capabilitiesUrl: getCapLayer.capabilitiesUrl,
+          capabilitiesUrl: getCapUrl,
           label: getCapLayer.Title,
           layer: getCapLayer.Identifier,
           timestamps: getTimestamps(getCapLayer),
-          extent: getCapLayer.extent,
-          sourceConfig: getCapLayer.sourceConfig
+          extent: extent,
+          sourceConfig: sourceConfig
         };
+        return options;
+      };
 
-        options.sourceConfig.attributions = [
-          '<a href="' + getCapLayer.attributionUrl + '" target="new">' +
-              getCapLayer.attribution + '</a>'
-        ];
+      var getLayerOptionsFromIdentifier = function(map, getCap, identifier,
+          getCapUrl) {
+        store[getCapUrl] = getCap;
+        var options;
+        if (getCap.Contents && getCap.Contents.Layer) {
+          getCap.Contents.Layer.some(function(layer) {
+            if (layer.Identifier === identifier) {
+              options = getLayerOptions(map, layer, getCap, getCapUrl);
+              return true;
+            }
+          });
+        }
 
         return options;
       };
 
       var Wmts = function() {
 
-        this.getLayerOptionsFromIdentifier = function(getCapabilities,
-            identifier, getCapUrl) {
-          var options;
+        this.getOlLayerFromGetCap = function(map, getCap, layerIdentifier,
+            options) {
 
-          if (getCapabilities.Contents && getCapabilities.Contents.Layer) {
-            getCapabilities.Contents.Layer.forEach(function(layer) {
-              if (layer.Identifier === identifier) {
-                options = getLayerOptions(layer, getCapabilities, getCapUrl);
-              }
-            });
+          if (angular.isString(getCap)) {
+            getCap = new ol.format.WMTSCapabilities().read(getCap);
           }
-
-          return options;
+          var layerOptions = getLayerOptionsFromIdentifier(map, getCap,
+              layerIdentifier, options.capabilitiesUrl);
+          if (layerOptions) {
+            layerOptions.opacity = options.opacity || 1;
+            layerOptions.visible = options.visible || true;
+            layerOptions.time = options.timestamp;
+            return createWmtsLayer(layerOptions);
+          }
         };
 
-        this.getOlLayerFromGetCapLayer = function(getCapLayer) {
-          var layerOptions = getLayerOptions(getCapLayer);
-          return createWmtsLayer(layerOptions);
-        };
-
-        // Create a WMTS layer and add it to the map
-        this.addWmtsToMap = function(map, layerOptions, index) {
-          var olLayer = createWmtsLayer(layerOptions);
-          if (index) {
-            map.getLayers().insertAt(index, olLayer);
+        // Create a WMTS layer from a GetCapabilities string or an ol object
+        // and a layer's identifier.
+        // This function is not used outside gaWmts but it's convenient for
+        // test.
+        this.addWmtsToMapFromGetCap = function(map, getCap, layerIdentifier,
+            options) {
+          var olLayer = this.getOlLayerFromGetCap(map, getCap, layerIdentifier,
+              options);
+          if (options.index) {
+            map.getLayers().insertAt(options.index, olLayer);
           } else {
             map.addLayer(olLayer);
           }
           return olLayer;
+        };
+
+        // Create a WMTS layer from a GetCapabiltiies url and a layer's
+        // identifier.
+        this.addWmtsToMapFromGetCapUrl = function(map, getCapUrl,
+            layerIdentifier, layerOptions) {
+          var that = this;
+          var url = gaUrlUtils.buildProxyUrl(getCapUrl);
+          return $http.get(url, {
+            cache: true
+          }).then(function(response) {
+            var data = response.data;
+            layerOptions.capabilitiesUrl = getCapUrl;
+            return that.addWmtsToMapFromGetCap(map, data, layerIdentifier,
+                layerOptions);
+
+          }, function(reason) {
+            $window.console.error('Loading of external WMTS layer ' +
+                layerIdentifier +
+                ' failed. Failed to get capabilities from server.' +
+                'Reason : ' + reason);
+          });
         };
       };
       return new Wmts();

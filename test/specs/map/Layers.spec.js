@@ -288,7 +288,7 @@ describe('ga_layers_service', function() {
           var rect = prov._rectangle;
           expect(rect).to.be.a(Cesium.Rectangle);
           expect([rect.west, rect.south, rect.east, rect.north]).to.eql([-0.2944229317425553, 0.5857374801382434, -0.19026022765439154, 0.6536247392283254]);
-          expect(prov._terrainAvailabLeLevels).to.be(window.terrainAvailableLevels);
+          expect(prov._terrainAvailabLeLevels).to.be(gaGlobalOptions.terrainAvailableLevels);
           expect(prov.bodId).to.be('terrain');
           done();
         });
@@ -463,15 +463,15 @@ describe('ga_layers_service', function() {
         var params = spy.args[0][0];
         expect(params.url).to.eql(expectWmtsUrl('serverlayername3d', '20160201', 'png', '4326'));
         expect(params.subdomains).to.eql(['5', '6', '7', '8', '9']);
-        expect(params.minimumLevel).to.eql(window.minimumLevel);
-        expect(params.maximumRetrievingLevel).to.eql(window.maximumRetrievingLevel);
+        expect(params.minimumLevel).to.eql(gaGlobalOptions.minimumLevel);
+        expect(params.maximumRetrievingLevel).to.eql(gaGlobalOptions.maximumRetrievingLevel);
         expect(params.maximumLevel).to.eql(18);
         expect(params.tilingScheme).to.be.an(Cesium.GeographicTilingScheme);
         expect(params.tileWidth).to.eql(256);
         expect(params.tileHeight).to.eql(256);
         expect(params.hasAlphaChannel).to.eql(true);
-        expect(params.availableLevels).to.be(window.imagerAvailableLevels);
-        expect(params.metadataUrl).to.eql('//3d.geo.admin.ch/imagery/');
+        expect(params.availableLevels).to.be(gaGlobalOptions.imageryAvailableLevels);
+        expect(params.metadataUrl).to.eql(gaGlobalOptions.imageryMetadataUrl);
         expect(prov.bodId).to.be('wmts3d');
         spy.restore();
       });

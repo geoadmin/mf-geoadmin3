@@ -125,18 +125,35 @@ describe('ga_import_controller', function() {
         });
 
         it('uses gaWmts', function() {
-          var layer = {capabilitiesUrl: 'foo'};
-          var spy = sinon.stub(gaWmts, 'getOlLayerFromGetCapLayer').withArgs(layer);
-          scope.options.getOlLayerFromGetCapLayer(layer);
+          scope.wmtsGetCap = {};
+          var getCapLayer = {
+            Identifier: 'bar',
+            capabilitiesUrl: 'foo'
+          };
+          var layer = new ol.layer.Layer({});
+          var spy = sinon.stub(gaWmts, 'getOlLayerFromGetCap').withArgs(map, scope.wmtsGetCap, 'bar').returns(layer);
+          var layerReturned = scope.options.getOlLayerFromGetCapLayer(getCapLayer);
           expect(spy.callCount).to.be(1);
+          expect(layerReturned).to.be(layer);
           spy.reset();
         });
       });
 
       describe('#options.addPreviewLayer()', function() {
-        it('calls gaPreviewLayers', function() {
+        it('calls gaPreviewLayers with the wmtsGetCap', function() {
           var layer = {};
-          var spy = sinon.stub(gaPreviewLayers, 'addGetCapLayer').withArgs(map, layer);
+          scope.wmtsGetCap = {};
+
+          var spy = sinon.stub(gaPreviewLayers, 'addGetCapLayer').withArgs(map, scope.wmtsGetCap, layer);
+          scope.options.addPreviewLayer(map, layer);
+          expect(spy.callCount).to.be(1);
+          spy.reset();
+        });
+        it('calls gaPreviewLayers with the wmsGetCap', function() {
+          var layer = {};
+          scope.wmsGetCap = {};
+
+          var spy = sinon.stub(gaPreviewLayers, 'addGetCapLayer').withArgs(map, scope.wmsGetCap, layer);
           scope.options.addPreviewLayer(map, layer);
           expect(spy.callCount).to.be(1);
           spy.reset();

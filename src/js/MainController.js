@@ -103,7 +103,7 @@ goog.require('ga_window_service');
 
       var onRenderError = function(scene, error) {
         $scope.globals.is3dActive = undefined;
-        alert($translate.instant('3d_render_error'));
+        $window.alert($translate.instant('3d_render_error'));
         $window.console.error(error.stack);
         // Avoid the alert comes twice
         $scope.ol3d.getCesiumScene().renderError.removeEventListener(
@@ -112,7 +112,7 @@ goog.require('ga_window_service');
 
       var cesium = new GaCesium($scope.map, gaPermalink, gaLayers,
           gaGlobalOptions, gaBrowserSniffer, $q, $translate, $rootScope,
-          gaBackground);
+          gaBackground, $window);
 
       cesium.loaded().then(function(ol3d) {
         $scope.ol3d = ol3d;

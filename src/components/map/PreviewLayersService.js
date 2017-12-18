@@ -55,7 +55,7 @@ goog.require('ga_wmts_service');
           return olPreviewLayer;
         };
 
-        this.addGetCapLayer = function(map, getCapLayer) {
+        this.addGetCapLayer = function(map, getCap, getCapLayer) {
           // Remove all preview layers
           this.removeAll(map);
 
@@ -67,7 +67,10 @@ goog.require('ga_wmts_service');
             if (getCapLayer.wmsUrl) {
               olPreviewLayer = gaWms.getOlLayerFromGetCapLayer(getCapLayer);
             } else if (getCapLayer.capabilitiesUrl) {
-              olPreviewLayer = gaWmts.getOlLayerFromGetCapLayer(getCapLayer);
+              olPreviewLayer = gaWmts.getOlLayerFromGetCap(map, getCap,
+                  getCapLayer.Identifier, {
+                    capabilitiesUrl: getCapLayer.capabilitiesUrl
+                  });
             }
           }
 
@@ -78,7 +81,8 @@ goog.require('ga_wmts_service');
 
           olPreviewLayer.preview = true;
           olPreviewLayer.displayInLayerManager = false;
-          olPreviewLayers[getCapLayer.id] = olPreviewLayer;
+          olPreviewLayers[getCapLayer.id || getCapLayer.Identifier] =
+              olPreviewLayer;
           olPreviewLayer.setZIndex(gaMapUtils.Z_PREVIEW_LAYER);
           map.addLayer(olPreviewLayer);
 

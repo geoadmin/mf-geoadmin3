@@ -38,6 +38,7 @@ beforeEach(function() {
       proxyUrl: location.protocol + proxyUrl + '/',
       wmsUrl: location.protocol + wmsUrl,
       wmtsUrl: location.protocol + wmtsUrl,
+      imageryMetadataUrl: '//3d.geo.admin.ch/imagery',
       w3wUrl: 'dummy.test.url.com',
       lv03tolv95Url: '//api.example.com/reframe/lv03tolv95',
       lv95tolv03Url: '//api.example.com/reframe/lv95tolv03',
@@ -84,7 +85,6 @@ beforeEach(function() {
     gaLayersProvider.vectorTilesUrlTemplate = '//vectortiles{s}.geo.admin.ch/{Layer}/{Time}/';
     gaLayersProvider.layersConfigUrlTemplate = 'https://example.com/all?lang={Lang}';
     gaLayersProvider.legendUrlTemplate = 'https://legendservice.com/all/{Layer}?lang={Lang}';
-    gaLayersProvider.imageryMetadataUrl = '//3d.geo.admin.ch/imagery/';
   });
 
   module(function(gaTopicProvider, gaGlobalOptions) {
@@ -106,10 +106,8 @@ beforeEach(function() {
   });
 
   module(function(gaProfileProvider, gaGlobalOptions) {
-    gaProfileProvider.d3libUrl =
-        gaGlobalOptions.resourceUrl + 'lib/d3.min.js';
-    gaProfileProvider.profileUrl =
-        gaGlobalOptions.altiUrl + '/rest/services/profile.json';
+    gaProfileProvider.d3libUrl = gaGlobalOptions.resourceUrl + 'lib/d3.min.js';
+    gaProfileProvider.profileUrl = gaGlobalOptions.altiUrl + '/rest/services/profile.json';
   });
 
   module(function(gaUrlUtilsProvider, gaGlobalOptions) {

@@ -5,8 +5,6 @@ goog.require('ga_browsersniffer_service');
 goog.require('ga_layers_service');
 goog.require('ga_maputils_service');
 goog.require('ga_printlayer_service');
-goog.require('ga_printstyle_service');
-goog.require('ga_time_service');
 goog.require('ga_urlutils_service');
 
 (function() {
@@ -14,21 +12,17 @@ goog.require('ga_urlutils_service');
   var module = angular.module('ga_print_directive', [
     'ga_browsersniffer_service',
     'pascalprecht.translate',
-    'ga_printstyle_service',
     'ga_printlayer_service',
-    'ga_time_service',
     'ga_attribution_service',
     'ga_maputils_service',
     'ga_layers_service',
     'ga_urlutils_service'
   ]);
 
-  module.controller('GaPrintDirectiveController', function($rootScope, $scope,
+  module.controller('GaPrintDirectiveController', function($scope,
       $http, $q, $window, $translate, $timeout, gaLayers, gaMapUtils,
-      gaPermalink, gaBrowserSniffer, gaWaitCursor, gaPrintStyle,
-      gaPrintLayer, gaTime, gaAttribution, gaUrlUtils) {
-
-    var pdfLegendsToDownload = [];
+      gaPermalink, gaBrowserSniffer, gaWaitCursor,
+      gaPrintLayer, gaAttribution, gaUrlUtils) {
     var pdfLegendString = '_big.pdf';
     var printRectangle;
     var deregister = [];
@@ -41,6 +35,7 @@ goog.require('ga_urlutils_service');
     var canceller;
     var currentMultiPrintId;
 
+    $scope.isIE = gaBrowserSniffer.msie;
     $scope.printConfigLoaded = false;
     $scope.options.multiprint = false;
     $scope.options.movie = false;
@@ -146,7 +141,7 @@ goog.require('ga_urlutils_service');
       return zoom;
     };
 
-    $scope.downloadUrl = function(url) {
+    $scope.downloadUrl = function(url, pdfLegendsToDownload) {
       $scope.options.printsuccess = true;
       if (gaBrowserSniffer.msie === 9) {
         $window.open(url);
@@ -163,6 +158,69 @@ goog.require('ga_urlutils_service');
 
     // Abort the print process
     var pollMultiPromise; // Promise of the last $timeout called
+    var pollMulti = function(url, startPollTime, pollErrors,
+        pdfLegendsToDownload) {
+      pollMultiPromise = $timeout(function() {
+
+        if (!$scope.options.printing) {
+          return;
+        }
+        var noCacheUrl = url;
+        if (gaBrowserSniffer.msie === 9) {
+          // #3937: Avoid caching of the request by IE9
+          noCacheUrl += '&' + (new Date()).getTime();
+        }
+        canceller = $q.defer();
+        $http.get(noCacheUrl, {
+          timeout: canceller.promise
+        }).then(function(response) {
+          var data = response.data;
+          if (!$scope.options.printing) {
+            return;
+          }
+          if (!data.getURL) {
+            // Write progress using the following logic
+            // First 60% is pdf page creationg
+            // 60-70% is merging of pdf
+            // 70-100% is writing of resulting pdf
+            if (data.filesize) {
+              var written = data.written || 0;
+              $scope.options.progress =
+                  (70 + Math.floor(written * 30 / data.filesize)) + '%';
+            } else if (data.total) {
+              if (angular.isDefined(data.merged)) {
+                $scope.options.progress =
+                    (60 + Math.floor(data.done * 10 / data.total)) + '%';
+              } else if (angular.isDefined(data.done)) {
+                $scope.options.progress =
+                    Math.floor(data.done * 60 / data.total) + '%';
+              }
+            }
+
+            var now = new Date();
+            // We abort if we waited too long
+            if (now - startPollTime < POLL_MAX_TIME) {
+              pollMulti(url, startPollTime, pollErrors, pdfLegendsToDownload);
+            } else {
+              $scope.options.printing = false;
+            }
+          } else {
+            $scope.downloadUrl(data.getURL, pdfLegendsToDownload);
+          }
+        }, function() {
+          if ($scope.options.printing === false) {
+            return;
+          }
+          pollErrors += 1;
+          if (pollErrors > 2) {
+            $scope.options.printing = false;
+          } else {
+            pollMulti(url, startPollTime, pollErrors, pdfLegendsToDownload);
+          }
+        });
+      }, POLL_INTERVAL, false);
+    };
+
     $scope.abort = function() {
       $scope.options.printing = false;
       // Abort the current $http request
@@ -200,11 +258,11 @@ goog.require('ga_urlutils_service');
       var printZoom = getZoomFromScale($scope.scale.value);
       qrcodeUrl = qrcodeUrl.replace(/zoom%3D(\d{1,2})/, 'zoom%3D' + printZoom);
       var encLayers = [];
-      var encLegends;
+      var encLegends = [];
       var attributions = [];
       var thirdPartyAttributions = [];
+      var pdfLegendsToDownload = [];
       var layers = this.map.getLayers().getArray();
-      pdfLegendsToDownload = [];
       layersYears = [];
 
       var dpi = getDpi($scope.layout.name, $scope.dpi);
@@ -218,6 +276,7 @@ goog.require('ga_urlutils_service');
       });
 
       // Transform layers to literal
+      var msg = '';
       layers.forEach(function(layer) {
 
         if (!layer.visible || layer.opacity === 0) {
@@ -231,13 +290,10 @@ goog.require('ga_urlutils_service');
         // layer not having the same projection as the map, won't be printed
         // layer without explicit projection are assumed default
         // TODO: issue a warning for the user
-        if (layer.getSource && layer.getSource().getProjection()) {
-          var layerProj = layer.getSource().getProjection().getCode();
-          if (!layerProj) {
-            layerProj = proj.getCode();
-            layer.getSource().setProjection(layerProj);
-          }
-          if (layerProj !== proj.getCode()) {
+        if (layer.getSource && layer.getSource().getProjection) {
+          var layerProj = layer.getSource().getProjection();
+          if (layerProj && layerProj.getCode() !== proj.getCode()) {
+            msg = msg + '\n' + layer.label;
             return;
           }
         }
@@ -251,14 +307,13 @@ goog.require('ga_urlutils_service');
           var enc = gaPrintLayer.encodeLayer(layer, proj, scaleDenom,
               printRectangeCoords, resolution, dpi);
 
-          if (layerConfig.timeEnabled && layer.visible && layer.time) {
+          if (layerConfig.timeEnabled && layer.time) {
             layersYears.push(layer.time);
           }
 
           if ($scope.options.legend && layerConfig.hasLegend) {
             encLegend = gaPrintLayer.encodeLegend(layer, layerConfig,
                 $scope.options);
-
             if (encLegend.classes && encLegend.classes[0] &&
                 encLegend.classes[0].icon) {
               var legStr = encLegend.classes[0].icon;
@@ -274,7 +329,6 @@ goog.require('ga_urlutils_service');
           if (enc && enc.layer) {
             encs = [enc.layer];
             if (enc.legend) {
-              encLegends = encLegends || [];
               encLegends.push(enc.legend);
             }
           }
@@ -297,6 +351,12 @@ goog.require('ga_urlutils_service');
         }
       });
 
+      // Display alert message 
+      if (msg) {
+        msg = $translate.instant('layer_cant_be_printed') + msg;
+        $window.alert(msg);
+      }
+
       if (layersYears) {
         var years = layersYears.reduce(function(a, b) {
           if (a.indexOf(b) < 0) {
@@ -313,7 +373,6 @@ goog.require('ga_urlutils_service');
       // Transform graticule to literal
       if ($scope.options.graticule) {
         var graticule = gaPrintLayer.encodeGraticule(dpi);
-
         encLayers.push(graticule);
       }
 
@@ -339,8 +398,7 @@ goog.require('ga_urlutils_service');
           }
         }
       });
-      encLayers = encLayers.concat(ov);
-      encLayers = encLayers.concat(ovStop);
+      encLayers = encLayers.concat(ov, ovStop);
 
       // Get the short link
       var shortLink;
@@ -369,7 +427,7 @@ goog.require('ga_urlutils_service');
               dpi: getDpi($scope.layout.name, $scope.dpi),
               layers: encLayers,
               legends: encLegends,
-              enableLegends: (encLegends && encLegends.length > 0),
+              enableLegends: !!encLegends.length,
               qrcodeurl: qrcodeUrl,
               movie: movieprint,
               pages: [
@@ -384,71 +442,6 @@ goog.require('ga_urlutils_service');
                   rotation: -((view.getRotation() * 180.0) / Math.PI)
                 }, defaultPage)
               ]
-            };
-            var startPollTime;
-            var pollErrors;
-            var pollMulti = function(url) {
-              pollMultiPromise = $timeout(function() {
-                if (!$scope.options.printing) {
-                  return;
-                }
-                var noCacheUrl = url;
-                if (gaBrowserSniffer.msie === 9) {
-                  // #3937: Avoid caching of the request by IE9
-                  noCacheUrl += '&' + (new Date()).getTime();
-                }
-                canceller = $q.defer();
-                $http.get(noCacheUrl, {
-                  timeout: canceller.promise
-                }).then(function(response) {
-                  var data = response.data;
-                  if (!$scope.options.printing) {
-                    return;
-                  }
-                  if (!data.getURL) {
-                    // Write progress using the following logic
-                    // First 60% is pdf page creationg
-                    // 60-70% is merging of pdf
-                    // 70-100% is writing of resulting pdf
-                    if (data.filesize) {
-                      var written = data.written || 0;
-                      $scope.options.progress =
-                      (70 + Math.floor(written * 30 / data.filesize)) +
-                      '%';
-                    } else if (data.total) {
-                      if (angular.isDefined(data.merged)) {
-                        $scope.options.progress =
-                        (60 + Math.floor(data.done * 10 / data.total)) +
-                        '%';
-                      } else if (angular.isDefined(data.done)) {
-                        $scope.options.progress =
-                        Math.floor(data.done * 60 / data.total) + '%';
-                      }
-                    }
-
-                    var now = new Date();
-                    // We abort if we waited too long
-                    if (now - startPollTime < POLL_MAX_TIME) {
-                      pollMulti(url);
-                    } else {
-                      $scope.options.printing = false;
-                    }
-                  } else {
-                    $scope.downloadUrl(data.getURL);
-                  }
-                }, function() {
-                  if ($scope.options.printing === false) {
-                    pollErrors = 0;
-                    return;
-                  }
-                  pollErrors += 1;
-                  if (pollErrors > 2) {
-                    $scope.options.printing = false;
-                  } else {
-                    pollMulti(url);
-                  }
-                });
-              }, POLL_INTERVAL, false);
             };
 
             var printUrl = $scope.capabilities.createURL;
@@ -467,11 +460,9 @@ goog.require('ga_urlutils_service');
                 var pollUrl = $scope.options.printPath + 'progress?id=' +
                 data.idToCheck;
                 currentMultiPrintId = data.idToCheck;
-                startPollTime = new Date();
-                pollErrors = 0;
-                pollMulti(pollUrl);
+                pollMulti(pollUrl, new Date(), 0, pdfLegendsToDownload);
               } else {
-                $scope.downloadUrl(data.getURL);
+                $scope.downloadUrl(data.getURL, pdfLegendsToDownload);
               }
             }, function() {
               $scope.options.printing = false;
@@ -622,21 +613,16 @@ goog.require('ga_urlutils_service');
     });
   });
 
-  module.directive('gaPrint',
-      function(gaBrowserSniffer) {
-        return {
-          restrict: 'A',
-          scope: {
-            map: '=gaPrintMap',
-            options: '=gaPrintOptions',
-            active: '=gaPrintActive'
-          },
-          templateUrl: 'components/print/partials/print.html',
-          controller: 'GaPrintDirectiveController',
-          link: function(scope, elt, attrs, controller) {
-            scope.isIE = gaBrowserSniffer.msie;
-          }
-        };
-      }
-  );
+  module.directive('gaPrint', function() {
+    return {
+      restrict: 'A',
+      scope: {
+        map: '=gaPrintMap',
+        options: '=gaPrintOptions',
+        active: '=gaPrintActive'
+      },
+      templateUrl: 'components/print/partials/print.html',
+      controller: 'GaPrintDirectiveController'
+    };
+  });
 })();

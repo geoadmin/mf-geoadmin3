@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 describe('ga_wmts_service', function() {
   describe('gaWmts', function() {
-    var gaWmts, map, gaGlobalOptions;
+    var gaWmts, map, map2056, gaGlobalOptions, gaMapUtils, $httpBackend, $timeout, $window;
 
     var expectProperties = function(layer, options) {
       // Test Layer's properties
@@ -12,13 +12,13 @@ describe('ga_wmts_service', function() {
       expect(layer.type).to.be('TILE');
       expect(layer.invertedOpacity).to.be(options.invertedOpacity || 0);
       expect(layer.visible).to.be(angular.isDefined(options.visible) ? options.visible : true);
-      expect(layer.get('attribution')).to.be(options.attribution);
 
       // set after creation
       expect(layer.preview).to.be(!!options.preview);
       expect(layer.displayInLayerManager).to.be(!layer.preview);
       expect(layer.useThirdPartyData).to.be(!!options.useThirdPartyData);
       expect(layer.label).to.be(options.label);
+      expect(layer.time).to.be(options.time);
       expect(layer.getCesiumImageryProvider).to.be.a(Function);
 
       // Tests source's properties
@@ -27,155 +27,88 @@ describe('ga_wmts_service', function() {
       expect(source.urls[0]).to.be(options.url);
 
       // Tests Cesium provider
+      var spy = sinon.spy(Cesium, 'UrlTemplateImageryProvider');
       var prov = layer.getCesiumImageryProvider();
+      if (!prov && !options.url3d) {
+        expect(prov).to.be(undefined);
+        expect(layer.displayIn3d).to.be(false);
+        // The 2nd call should return undefiend driectly
+        var spy2 = sinon.spy(layer, 'getSource');
+        layer.getCesiumImageryProvider();
+        expect(spy2.callCount).to.be(0);
+        spy.restore();
+        return;
+      }
+      expect(layer.displayIn3d).to.be(true);
       expect(prov).to.be.an(Cesium.UrlTemplateImageryProvider);
-      var url = options.url;
-      expect(prov.url).to.be(url);
-      expect(prov.minimumRetrievingLevel).to.be(window.minimumRetrievingLevel);
-      expect(prov.rectangle).to.be.an(Cesium.Rectangle);
-      expect(prov.rectangle.west).to.be(-0.29442293174255596);
-      expect(prov.rectangle.south).to.be(0.5857374801382434);
-      expect(prov.rectangle.east).to.be(-0.19026022765439166);
-      expect(prov.rectangle.north).to.be(0.6536247392283254);
+      var p = spy.args[0][0];
+      expect(p.url).to.be(options.url3d);
+      expect(p.minimumRetrievingLevel).to.be(gaGlobalOptions.minimumRetrievingLevel);
+      expect(p.rectangle).to.be.an(Cesium.Rectangle);
+      expect(p.rectangle.west).to.be(-0.21764144550040762);
+      expect(p.rectangle.south).to.be(0.7527404204957977);
+      expect(p.rectangle.east).to.be(0.12982982483435074);
+      expect(p.rectangle.north).to.be(0.75613172160374);
 
       if (options.useThirdPartyData) {
-        expect(prov.proxy.getURL('http://wmts.ch')).to.be(
+        expect(p.proxy.getURL('http://wmts.ch')).to.be(
             gaGlobalOptions.proxyUrl + 'http/wmts.ch');
       } else {
-        expect(prov.proxy.getURL('https://wms.geo.admin.ch')).to.be(
+        expect(p.proxy.getURL('https://wms.geo.admin.ch')).to.be(
             'https://wms.geo.admin.ch');
       }
-      expect(prov.tilingScheme).to.be.an(Cesium.GeographicTilingScheme);
-      expect(prov.hasAlphaChannel).to.be(true);
-      expect(prov.availableLevels).to.be(window.imageryAvailableLevels);
+      expect(p.tilingScheme).to.be.an(options.tilingScheme || Cesium.GeographicTilingScheme);
+      expect(p.hasAlphaChannel).to.be(angular.isDefined(options.hasAlphaChannel) ? options.hasAlphaChannel : true);
+      expect(p.availableLevels).to.be(gaGlobalOptions.imageryAvailableLevels);
+      spy.restore();
     };
 
     beforeEach(function() {
       inject(function($injector) {
+        $httpBackend = $injector.get('$httpBackend');
+        $timeout = $injector.get('$timeout');
+        $window = $injector.get('$window');
         gaWmts = $injector.get('gaWmts');
         gaGlobalOptions = $injector.get('gaGlobalOptions');
+        gaMapUtils = $injector.get('gaMapUtils');
       });
+
       map = new ol.Map({});
-    });
-
-    describe('#addWmtsToMap()', function() {
-      var url = 'https://foo.ch';
-      var minimalOptions = {
-        label: 'WMTS layer',
-        sourceConfig: {
-          matrixSet: 4326,
-          urls: [url]
-        },
-        layer: 'ch.wmts.layer',
-        capabilitiesUrl: 'https://foo.ch/Capabilities.xml'
-      };
-
-      it('adds a layer using minimal parameters', function() {
-        var options = minimalOptions;
-        gaWmts.addWmtsToMap(map, options);
-        expect(map.getLayers().getLength()).to.be(1);
-
-        var layer = map.getLayers().item(0);
-        expectProperties(layer, {
-          url: url,
-          label: 'WMTS layer',
-          visible: true,
-          opacity: 1,
-          useThirdPartyData: true,
-          layer: options.layer,
-          capabilitiesUrl: options.capabilitiesUrl,
-          projection: undefined
-        });
-      });
-
-      it('adds a layer using custom parameters', function() {
-        var options = minimalOptions;
-        options.opacity = '0.2';
-        options.visible = false;
-        gaWmts.addWmtsToMap(map, options);
-        expect(map.getLayers().getLength()).to.be(1);
-
-        var layer = map.getLayers().item(0);
-        expectProperties(layer, {
-          url: url,
-          label: 'WMTS layer',
-          visible: false,
-          invertedOpacity: 0.8,
-          useThirdPartyData: true,
-          layer: options.layer,
-          capabilitiesUrl: options.capabilitiesUrl,
-          projection: undefined
-        });
-      });
-
-      it('adds a layer at the correct index in the layer list', function() {
-        var idx = 2;
-        var url = 'https://foo.ch';
-        var options = {
-          label: 'WMTS layer',
-          sourceConfig: {
-            matrixSet: 4326,
-            urls: [url]
-          },
-          layer: 'ch.wmts.layer',
-          capabilitiesUrl: 'https://foo.ch/Capabilities.xml'
-        };
-        map.addLayer(new ol.layer.Layer({}));
-        map.addLayer(new ol.layer.Layer({}));
-        map.addLayer(new ol.layer.Layer({}));
-        map.addLayer(new ol.layer.Layer({}));
-        map.addLayer(new ol.layer.Layer({}));
-        gaWmts.addWmtsToMap(map, options, idx);
-        expect(map.getLayers().getLength()).to.be(6);
-
-        var layer = map.getLayers().item(idx);
-        expectProperties(layer, {
-          url: url,
-          label: 'WMTS layer',
-          visible: true,
-          useThirdPartyData: true,
-          layer: options.layer,
-          capabilitiesUrl: options.capabilitiesUrl,
-          projection: undefined
-        });
+      map2056 = new ol.Map({
+        view: new ol.View({
+          projection: ol.proj.get('2056')
+        })
       });
     });
 
-    describe('#getOlLayerFromGetCapLayer()', function() {
-
-      it('creates a layer with minimal param', function() {
-        var url = 'https://foo.ch';
-        var getCap = {
-          Title: 'WMTS layer',
-          sourceConfig: {
-            matrixSet: 4326,
-            urls: [url]
-          },
-          Identifier: 'ch.wmts.layer',
-          capabilitiesUrl: 'https://foo.ch/Capabilities.xml'
-        };
-
-        var layer = gaWmts.getOlLayerFromGetCapLayer(getCap);
-
-        expectProperties(layer, {
-          url: url,
-          label: 'WMTS layer',
-          visible: true,
-          useThirdPartyData: true,
-          layer: getCap.Identifier,
-          capabilitiesUrl: getCap.capabilitiesUrl,
-          projection: undefined
-        });
-      });
+    afterEach(function() {
+      $httpBackend.verifyNoOutstandingExpectation();
+      $httpBackend.verifyNoOutstandingRequest();
+      try {
+        $timeout.verifyNoPendingTasks();
+      } catch (e) {
+        $timeout.flush();
+      }
     });
 
-    describe('#getLayerOptionsFromIdentifier()', function() {
+    describe('#getOlLayerFromGetCap()', function() {
+
+      it('parse the GetCap with the ol formatter if it\'s a string', function() {
+        var getCap = '<Capabilities version="1.0.0"></capabilities>';
+        var spy = sinon.spy(ol.format.WMTSCapabilities.prototype, 'read');
+        var layer = gaWmts.getOlLayerFromGetCap(map, getCap, 'id', {});
+        expect(spy.callCount).to.be(1);
+        expect(spy.args[0][0]).to.be(getCap);
+        expect(layer).to.be(undefined);
+      });
 
       it('returns undefined if the content is empty', function() {
         var identifier = 'ch.are.alpenkonvention';
         var getCap = {};
-        var options = gaWmts.getLayerOptionsFromIdentifier(getCap, identifier);
-        expect(options).to.be(undefined);
+        var layer = gaWmts.getOlLayerFromGetCap(map, getCap, identifier, {
+          capabilitiesUrl: 'http:// wmts.xml'
+        });
+        expect(layer).to.be(undefined);
       });
 
       it('returns undefined if there is no layers', function() {
@@ -185,47 +118,208 @@ describe('ga_wmts_service', function() {
             Layer: []
           }
         };
-        var options = gaWmts.getLayerOptionsFromIdentifier(getCap, identifier);
-        expect(options).to.be(undefined);
+        var layer = gaWmts.getOlLayerFromGetCap(map, getCap, identifier, {});
+        expect(layer).to.be(undefined);
       });
 
-      [
-        'base/test/data/wmts-basic.xml',
-        'base/test/data/wmts-basic-without-operationsmd.xml'
-      ].forEach(function(getCapUrl) {
-        it('returns options for the proper layer with ' + getCapUrl, function(done) {
-          $.get(getCapUrl, function(response) {
-            var getCapabilities = new ol.format.WMTSCapabilities().read(response);
-            var identifier = 'ch.are.alpenkonvention';
-            // We need to set the extent of the projection
-            var defaultProjection = ol.proj.get(gaGlobalOptions.defaultEpsg);
-            defaultProjection.setExtent(gaGlobalOptions.defaultEpsgExtent);
+      describe('using swiss layers, which are not display in 3d', function() {
+        [
+          'base/test/data/wmts-basic.xml',
+          'base/test/data/wmts-basic-without-operationsmd.xml'
+        ].forEach(function(getCapUrl) {
+          it('returns the proper layer with ' + getCapUrl, function(done) {
+            $.get(getCapUrl, function(resp) {
+              var identifier = 'ch.are.alpenkonvention';
+              var getCap = new ol.format.WMTSCapabilities().read(resp);
 
-            var options = gaWmts.getLayerOptionsFromIdentifier(getCapabilities, identifier, getCapUrl);
-            expect(options.capabilitiesUrl).to.be(getCapUrl);
-            expect(options.label).to.be('Convention des Alpes');
-            expect(options.layer).to.be(identifier);
-            done();
+              var layer = gaWmts.getOlLayerFromGetCap(map, getCap, identifier, {
+                capabilitiesUrl: getCapUrl,
+                time: '1957'
+              });
+              expectProperties(layer, {
+                url: 'https://wmts.geo.admin.ch/1.0.0/ch.are.alpenkonvention/default/{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.png',
+                label: 'Convention des Alpes',
+                visible: true,
+                useThirdPartyData: true,
+                layer: identifier,
+                capabilitiesUrl: getCapUrl,
+                time: '20090101',
+                projection: undefined
+              });
+              done();
+            });
           });
         });
       });
 
-      it('set good attributions if serviceProvider is not in the GetCap', function(done) {
-        var getCapUrl = 'base/test/data/simple-wmts.xml';
+      it('get a layer using EPSG:3857 and EPSG:4326 and using KVP syntax', function(done) {
+        var getCapUrl = 'base/test/data/wmts-copernicus.xml';
+        // We need to set the extent of the projection
+        sinon.stub(gaMapUtils, 'intersectWithDefaultExtent').returns([1000000, 100000001, 1000000, 1000000]);
+        var defaultProjection = ol.proj.get(gaGlobalOptions.defaultEpsg);
+        defaultProjection.setExtent(gaGlobalOptions.defaultEpsgExtent);
         $.get(getCapUrl, function(response) {
-          var identifier = 'tiled95_Uebersichtsplan1978';
-          var getCapabilities = new ol.format.WMTSCapabilities().read(response);
-          // We need to set the extent of the projection
-          var defaultProjection = ol.proj.get(gaGlobalOptions.defaultEpsg);
-          defaultProjection.setExtent(gaGlobalOptions.defaultEpsgExtent);
-
-          var options = gaWmts.getLayerOptionsFromIdentifier(getCapabilities, identifier, 'http://test.ch/' + getCapUrl);
-          expect(options.capabilitiesUrl).to.be('http://test.ch/' + getCapUrl);
-          expect(options.label).to.be('tiled95_Uebersichtsplan1978');
-          expect(options.sourceConfig.attributions[0]).to.contain('test.ch');
-          expect(options.layer).to.be(identifier);
+          var identifier = 'core003_feathering_mixed';
+          var getCap = new ol.format.WMTSCapabilities().read(response);
+          var layer = gaWmts.getOlLayerFromGetCap(map, getCap, identifier, {
+            capabilitiesUrl: 'http://test.ch/' + getCapUrl,
+            timestamp: '1957'
+          });
+          expectProperties(layer, {
+            label: 'CORE_003 Mosaic, natural color composition, feathering applied to scene borders, Mixed PNG/JPEG',
+            url: 'http://cidportal.jrc.ec.europa.eu/copernicus/services/tile/wmts?',
+            url3d: 'http://cidportal.jrc.ec.europa.eu/copernicus/services/tile/wmts?service=WMTS&version=1.0.0&request=GetTile&layer=core003_feathering_mixed&format=image/png&style=default&time=1957&tilematrixset=g&tilematrix={z}&tilecol={x}&tilerow={y}',
+            visible: true,
+            useThirdPartyData: true,
+            time: '1957',
+            layer: identifier,
+            capabilitiesUrl: 'http://test.ch/' + getCapUrl,
+            tilingScheme: Cesium.WebMercatorTilingScheme
+          });
           done();
         });
+      });
+
+      it('get a layer using EPSG:2056 and EPSG:4326 tile matrix and using REST syntax', function(done) {
+        var getCapUrl = 'base/test/data/simple-wmts.xml';
+        // We need to set the extent of the projection
+        sinon.stub(gaMapUtils, 'intersectWithDefaultExtent').returns([1000000, 100000001, 1000000, 1000000]);
+        var defaultProjection = ol.proj.get(gaGlobalOptions.defaultEpsg);
+        defaultProjection.setExtent(gaGlobalOptions.defaultEpsgExtent);
+        $.get(getCapUrl, function(response) {
+          var identifier = 'tiled95_Uebersichtsplan1978';
+          var getCap = new ol.format.WMTSCapabilities().read(response);
+          var layer = gaWmts.getOlLayerFromGetCap(map2056, getCap, identifier, {
+            capabilitiesUrl: 'http://test.ch/' + getCapUrl
+          });
+          expectProperties(layer, {
+            label: 'tiled95_Uebersichtsplan1978',
+            url: 'http://www.gis.stadt-zuerich.ch/maps/rest/services/tiled95/Uebersichtsplan1978/MapServer/WMTS/tile/1.0.0/tiled95_Uebersichtsplan1978/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpg',
+            url3d: 'http://www.gis.stadt-zuerich.ch/maps/rest/services/tiled95/Uebersichtsplan1978/MapServer/WMTS/tile/1.0.0/tiled95_Uebersichtsplan1978/default/default029mm/{z}/{y}/{x}.jpg',
+            visible: true,
+            useThirdPartyData: true,
+            layer: identifier,
+            capabilitiesUrl: 'http://test.ch/' + getCapUrl,
+            tilingScheme: Cesium.GeographicTilingScheme,
+            hasAlphaChannel: false
+          });
+          done();
+        });
+      });
+    });
+
+    describe('#addWmtsToMapFromGetCap()', function() {
+
+      it('adds a layer on top', function() {
+        var getCap = {};
+        var layerIdentifier = 'foo';
+        var options = {};
+        var layer = new ol.layer.Layer({});
+
+        // Add layers to test insertion
+        map.addLayer(new ol.layer.Layer({}));
+        map.addLayer(new ol.layer.Layer({}));
+        map.addLayer(new ol.layer.Layer({}));
+        map.addLayer(new ol.layer.Layer({}));
+
+        sinon.stub(gaWmts, 'getOlLayerFromGetCap').withArgs(map, getCap, layerIdentifier, options).returns(layer);
+
+        var layerReturned = gaWmts.addWmtsToMapFromGetCap(map, getCap, layerIdentifier, options);
+        var layerAdded = map.getLayers().item(4);
+
+        expect(map.getLayers().getLength()).to.be(5);
+        expect(layerReturned).to.be(layer);
+        expect(layerAdded).to.be(layer);
+      });
+
+      it('adds a layer at the correct index', function() {
+        var getCap = {};
+        var layerIdentifier = 'foo';
+        var options = {
+          index: 2
+        };
+        var layer = new ol.layer.Layer({});
+
+        // Add layers to test insertion
+        map.addLayer(new ol.layer.Layer({}));
+        map.addLayer(new ol.layer.Layer({}));
+        map.addLayer(new ol.layer.Layer({}));
+        map.addLayer(new ol.layer.Layer({}));
+
+        sinon.stub(gaWmts, 'getOlLayerFromGetCap').withArgs(map, getCap, layerIdentifier, options).returns(layer);
+        var layerReturned = gaWmts.addWmtsToMapFromGetCap(map, getCap, layerIdentifier, options);
+        var layerAdded = map.getLayers().item(options.index);
+
+        expect(map.getLayers().getLength()).to.be(5);
+        expect(layerReturned).to.be(layer);
+        expect(layerAdded).to.be(layer);
+      });
+    });
+
+    describe('#addWmtsToMapFromGetCapUrl()', function(done) {
+
+      it('adds a layer', function(done) {
+        var getCapUrl = 'http://foo.ch/wmts';
+        var getCap = {};
+        var layerIdentifier = 'foo';
+        var options = {};
+        var layer = new ol.layer.Layer({});
+
+        var stub = sinon.stub(gaWmts, 'addWmtsToMapFromGetCap').withArgs(map, getCap, layerIdentifier, options).returns(layer);
+        $httpBackend.expectGET('http://proxy.geo.admin.ch/http/foo.ch%2Fwmts').respond(getCap);
+
+        gaWmts.addWmtsToMapFromGetCapUrl(map, getCapUrl, layerIdentifier, options).
+            then(function(layerReturned) {
+              expect(layerReturned).to.be(layer);
+              expect(stub.args[0][3].capabilitiesUrl).to.be(getCapUrl);
+              done();
+            });
+        $httpBackend.flush();
+      });
+
+      it('caches the request', function(done) {
+        var getCapUrl = 'http://foo.ch/wmts';
+        var getCap = {};
+        var layerIdentifier = 'foo';
+        var options = {};
+        var layer = new ol.layer.Layer({});
+
+        sinon.stub(gaWmts, 'addWmtsToMapFromGetCap').withArgs(map, getCap, layerIdentifier, options).returns(layer);
+        $httpBackend.expectGET('http://proxy.geo.admin.ch/http/foo.ch%2Fwmts').respond(getCap);
+
+        gaWmts.addWmtsToMapFromGetCapUrl(map, getCapUrl, layerIdentifier, options).
+            then(function(layerReturned1) {
+              expect(layerReturned1).to.be(layer);
+
+              gaWmts.addWmtsToMapFromGetCapUrl(map, getCapUrl, layerIdentifier, options).
+                  then(function(layerReturned2) {
+                    expect(layerReturned2).to.be(layer);
+                    done();
+                  });
+              $httpBackend.verifyNoOutstandingRequest();
+            });
+        $httpBackend.flush();
+      });
+
+      it('displays an error message in the console', function() {
+        var getCapUrl = 'http://foo.ch/wmts';
+        var getCap = {};
+        var layerIdentifier = 'foo';
+        var options = {};
+        var layer = new ol.layer.Layer({});
+
+        var spy = sinon.stub($window.console, 'error');
+        sinon.stub(gaWmts, 'addWmtsToMapFromGetCap').withArgs(map, getCap, layerIdentifier, options).returns(layer);
+        $httpBackend.expectGET('http://proxy.geo.admin.ch/http/foo.ch%2Fwmts').respond(404, 'bad');
+
+        gaWmts.addWmtsToMapFromGetCapUrl(map, getCapUrl, layerIdentifier, options).then(function(resp) {
+          expect(resp).to.be();
+          expect(spy.callCount).to.be(1);
+          expect(spy.args[0][0]).to.be('Loading of external WMTS layer foo failed. Failed to get capabilities from server.Reason : [object Object]');
+          spy.restore();
+          done();
+        });
+        $httpBackend.flush();
       });
     });
   });

@@ -55,8 +55,7 @@ goog.require('ga_urlutils_service');
           dfltVectorTilesSubdomains,
           wmtsUrl, wmtsLV03PathTemplate, wmtsPathTemplate, wmtsSubdomains,
           terrainTileUrlTemplate, vectorTilesUrlTemplate,
-          layersConfigUrlTemplate, legendUrlTemplate,
-          imageryMetadataUrl) {
+          layersConfigUrlTemplate, legendUrlTemplate) {
         var layers;
 
         // Returns a unique WMS template url (e.g. //wms{s}.geo.admin.ch)
@@ -320,7 +319,7 @@ goog.require('ga_urlutils_service');
           var requestedLayer = config3d.serverLayerName || bodId;
           var provider = new Cesium.CesiumTerrainProvider({
             url: getTerrainTileUrl(requestedLayer, timestamp),
-            availableLevels: window.terrainAvailableLevels,
+            availableLevels: gaGlobalOptions.terrainAvailableLevels,
             rectangle: gaMapUtils.extentToRectangle(
                 gaGlobalOptions.defaultExtent)
           });
@@ -424,7 +423,7 @@ goog.require('ga_urlutils_service');
           var extent = config3d.extent || gaMapUtils.defaultExtent;
           if (params) {
             var minRetLod = gaMapUtils.getLodFromRes(config3d.maxResolution) ||
-                window.minimumRetrievingLevel;
+                gaGlobalOptions.minimumRetrievingLevel;
             var maxRetLod = gaMapUtils.getLodFromRes(config3d.minResolution);
             // Set maxLod as undefined deactivate client zoom.
             var maxLod = (maxRetLod) ? undefined : 18;
@@ -444,10 +443,10 @@ goog.require('ga_urlutils_service');
               tileWidth: params.tileSize,
               tileHeight: params.tileSize,
               hasAlphaChannel: (format === 'png'),
-              availableLevels: window.imageryAvailableLevels,
+              availableLevels: gaGlobalOptions.imageryAvailableLevels,
               // Experimental: restrict all rasters from 0 - 17 to terrain
               // availability and 18 to Swiss bbox
-              metadataUrl: imageryMetadataUrl
+              metadataUrl: gaGlobalOptions.imageryMetadataUrl
             });
             provider.bodId = bodId;
             return provider;
@@ -791,7 +790,7 @@ goog.require('ga_urlutils_service');
           this.wmtsUrl, this.wmtsLV03PathTemplate, this.wmtsPathTemplate,
           this.wmtsSubdomains, this.terrainTileUrlTemplate,
           this.vectorTilesUrlTemplate, this.layersConfigUrlTemplate,
-          this.legendUrlTemplate, this.imageryMetadataUrl);
+          this.legendUrlTemplate);
     };
   });
 

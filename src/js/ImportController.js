@@ -195,11 +195,15 @@ goog.require('ngeo.fileService');
       if (layer.wmsUrl) {
         return gaWms.getOlLayerFromGetCapLayer(layer);
       } else if (layer.capabilitiesUrl) {
-        return gaWmts.getOlLayerFromGetCapLayer(layer);
+        return gaWmts.getOlLayerFromGetCap($scope.map, $scope.wmtsGetCap,
+            layer.Identifier, {
+              capabilitiesUrl: layer.capabilitiesUrl
+            });
       }
     };
-    $scope.options.addPreviewLayer = function(map, layer) {
-      gaPreviewLayers.addGetCapLayer(map, layer);
+    $scope.options.addPreviewLayer = function(map, getCapLayer) {
+      gaPreviewLayers.addGetCapLayer(map, $scope.wmtsGetCap ||
+          $scope.wmsGetCap, getCapLayer);
     };
     $scope.options.removePreviewLayer = gaPreviewLayers.removeAll;
     $scope.options.transformExtent = gaMapUtils.intersectWithDefaultExtent;

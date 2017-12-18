@@ -147,7 +147,7 @@ goog.provide('ga_urlutils_service');
         };
 
         this.getHostname = function(str) {
-          return decodeURIComponent(str).match(/:\/\/(.[^/]+)/)[1].toString();
+          return ((decodeURIComponent(str).match(/:\/\/(.[^/]+)/) || [])[1] || '').toString();
         };
 
         this.append = function(url, paramString) {

@@ -231,7 +231,8 @@ lintpy: .build-artefacts/requirements.timestamp ${FLAKE8_CMD}
 .PHONY: testdebug
 testdebug: .build-artefacts/app-whitespace.js test/karma-conf-debug.js
 	PHANTOMJS_BIN="${PHANTOMJS}" ${KARMA} start test/karma-conf-debug.js;
-	cat .build-artefacts/coverage.txt; echo;
+	cat .build-artefacts/coverage/coverage.txt; echo;
+	echo "A complete report is available at ${E2E_TARGETURL}${APACHE_BASE_PATH}/src/coverage/index.html"
 
 .PHONY: testrelease
 testrelease: prd/lib/build.js test/karma-conf-release.js .build-artefacts/devlibs

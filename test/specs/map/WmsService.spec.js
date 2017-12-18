@@ -59,7 +59,7 @@ describe('ga_wms_service', function() {
         srsStr = '&srs=EPSG:4326';
         crsStr = '';
       }
-
+      var spy = sinon.spy(Cesium, 'UrlTemplateImageryProvider');
       var prov = layer.getCesiumImageryProvider();
       expect(prov).to.be.an(Cesium.UrlTemplateImageryProvider);
       var url = options.url +
@@ -74,24 +74,27 @@ describe('ga_wms_service', function() {
           '&styles=' + options.STYLES +
           '&transparent=true' +
           srsStr;
-      expect(prov.url).to.be(url);
-      expect(prov.minimumRetrievingLevel).to.be(window.minimumRetrievingLevel);
-      expect(prov.rectangle).to.be.an(Cesium.Rectangle);
-      expect(prov.rectangle.west).to.be(-0.29442293174255596);
-      expect(prov.rectangle.south).to.be(0.5857374801382434);
-      expect(prov.rectangle.east).to.be(-0.19026022765439166);
-      expect(prov.rectangle.north).to.be(0.6536247392283254);
+      var p = spy.args[0][0];
+      expect(p.url).to.be(url);
+      expect(p.minimumRetrievingLevel).to.be(gaGlobalOptions.minimumRetrievingLevel);
+      expect(p.rectangle).to.be.an(Cesium.Rectangle);
+      expect(p.rectangle.west).to.be(-0.2944229317425553);
+      expect(p.rectangle.south).to.be(0.5857374801382434);
+      expect(p.rectangle.east).to.be(-0.19026022765439154);
+      expect(p.rectangle.north).to.be(0.6536247392283254);
 
       if (options.useThirdPartyData) {
-        expect(prov.proxy.getURL('http://wms.ch')).to.be(
+        expect(p.proxy.getURL('http://wms.ch')).to.be(
             gaGlobalOptions.proxyUrl + 'http/wms.ch');
       } else {
-        expect(prov.proxy.getURL('https://wms.geo.admin.ch')).to.be(
+        expect(p.proxy.getURL('https://wms.geo.admin.ch')).to.be(
             'https://wms.geo.admin.ch');
       }
-      expect(prov.tilingScheme).to.be.an(Cesium.GeographicTilingScheme);
-      expect(prov.hasAlphaChannel).to.be(true);
-      expect(prov.availableLevels).to.be(window.imageryAvailableLevels);
+      expect(p.tilingScheme).to.be.an(Cesium.GeographicTilingScheme);
+      expect(p.hasAlphaChannel).to.be(true);
+      expect(p.availableLevels).to.be(gaGlobalOptions.imageryAvailableLevels);
+      expect(p.metadataUrl).to.be(gaGlobalOptions.imageryMetadataUrl);
+      spy.restore();
     };
 
     beforeEach(function() {

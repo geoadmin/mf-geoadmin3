@@ -164,8 +164,6 @@ goog.require('ga_waitcursor_service');
         ['100', '101', '102', '103', '104'] :
         ['', '0', '1', '2', '3', '4'];
 
-    gaLayersProvider.imageryMetadataUrl = '//3d.geo.admin.ch/imagery/';
-
     if (gaGlobalOptions.apiOverwrite) {
       gaLayersProvider.layersConfigUrlTemplate = gaGlobalOptions.apiUrl +
           '/rest/services/all/MapServer/layersConfig?lang={Lang}';
@@ -176,6 +174,7 @@ goog.require('ga_waitcursor_service');
     gaLayersProvider.legendUrlTemplate = gaGlobalOptions.apiUrl +
         '/rest/services/all/MapServer/{Layer}/legend?lang={Lang}';
   });
+
   module.config(function(gaTopicProvider, gaGlobalOptions) {
     if (gaGlobalOptions.apiOverwrite) {
       gaTopicProvider.topicsUrl = gaGlobalOptions.apiUrl + '/rest/services';
