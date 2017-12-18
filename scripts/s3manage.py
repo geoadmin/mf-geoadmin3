@@ -227,18 +227,11 @@ def upload(bucket_name, base_dir, deploy_target, named_branch):
                   'robots.txt', 'robots_prod.txt', 'favicon.ico',
                   'checker', 'geoadmin.%s.appcache' % version)
 
-    # include some ngeo files
-    ngeo_prefix = '/ngeo'
-    include_ngeo_folders = ['src/modules/import']
-
     for directory in upload_directories:
         for file_path_list in os.walk(os.path.join(base_dir, directory)):
             file_names = file_path_list[2]
             if len(file_names) > 0:
                 file_base_path = file_path_list[0]
-                if ngeo_prefix in file_base_path and len([p for p in include_ngeo_folders
-                                                          if p not in file_base_path]) > 0:
-                    continue
                 for file_name in file_names:
                     if len([p for p in exclude_filename_patterns if p in file_name]) == 0:
                         is_chsdi_cache = bool(file_base_path.endswith('cache'))

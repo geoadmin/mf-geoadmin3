@@ -26,9 +26,7 @@ goog.require('ga_permalink_service');
       var loadTranslations = function(newLang) {
         if (newLang !== $translate.use()) {
           lang = newLang;
-          $translate.use(lang).then(function() {
-            $rootScope.$broadcast('gettextLanguageChanged');
-          }, function() {
+          $translate.use(lang).then(angular.noop, function() {
             // failed to load lang from server, fallback to default code.
             loadTranslations(gaGlobalOptions.translationFallbackCode);
           })['finally'](function() {

@@ -108,9 +108,6 @@ def _process_csv_file(csv_reader, translations, empty_json):
             langs_translations = [(key.lower(), value)
                                   for key, value in row.items()
                                   if _is_language_key(key)]
-            # Test if an ngeo msg id is provided
-            if empty_json[json_key] != '':
-                json_key = empty_json[json_key]
             for lang, traduction in langs_translations:
                 translations[lang][json_key] = traduction
 

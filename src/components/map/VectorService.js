@@ -9,7 +9,7 @@ goog.require('ga_measure_service');
 goog.require('ga_networkstatus_service');
 goog.require('ga_storage_service');
 goog.require('ga_urlutils_service');
-goog.require('ngeo.fileService');
+goog.require('ga_file_service');
 
 (function() {
 
@@ -23,7 +23,7 @@ goog.require('ngeo.fileService');
     'ga_urlutils_service',
     'ga_measure_service',
     'ga_geomutils_service',
-    'ngeo.fileService'
+    'ga_file_service'
   ]);
 
   /**
@@ -33,12 +33,12 @@ goog.require('ngeo.fileService');
 
     this.$get = function($http, $q, gaDefinePropertiesForLayer, gaMapUtils,
         gaNetworkStatus, gaStorage, gaUrlUtils, gaMeasure, gaGeomUtils,
-        ngeoFile, gaGpx, gaKml) {
+        gaFile, gaGpx, gaKml) {
 
       // Find the good parser according to the raw data
       var getService = function(data) {
         var srv = gaKml;
-        if (ngeoFile.isGpx(data)) {
+        if (gaFile.isGpx(data)) {
           srv = gaGpx;
         }
         return srv;
@@ -229,7 +229,7 @@ goog.require('ngeo.fileService');
                 cache: true
               }).then(function(response) {
                 var fileSize = response.headers('content-length');
-                if (ngeoFile.isValidFileSize(fileSize)) {
+                if (gaFile.isValidFileSize(fileSize)) {
                   options.useImageVector = that.useImageVector(fileSize);
                   return that.addToMap(map, response.data, options, index);
                 }

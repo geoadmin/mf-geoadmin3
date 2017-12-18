@@ -1,10 +1,10 @@
 /* eslint-disable max-len */
-describe('ngeo.wmsGetCapDirective', function() {
+describe('ga_wmsgetcap_directive', function() {
   var elt, scope, parentScope, map, $rootScope, $compile, $window;
 
   var loadDirective = function() {
     parentScope = $rootScope.$new();
-    var tpl = '<div ngeo-wms-get-cap="getCap" ngeo-wms-get-cap-map="map" ngeo-wms-get-cap-options="options"></div>';
+    var tpl = '<div ga-wms-get-cap="getCap" ga-wms-get-cap-map="map" ga-wms-get-cap-options="options"></div>';
     elt = $compile(tpl)(parentScope);
     $rootScope.$digest();
     scope = elt.isolateScope();
@@ -54,18 +54,18 @@ describe('ngeo.wmsGetCapDirective', function() {
     });
 
     it('creates html elements', function() {
-      expect(elt.find('[ngeo-wms-get-cap-item]').length).to.be(800);
+      expect(elt.find('[ga-wms-get-cap-item]').length).to.be(800);
       expect(elt.find('.fa-zoom-in').length).to.be(800);
       expect(elt.find('.fa-plus:not(.ng-hide)').length).to.be(105);
       expect(elt.find('.fa-sort-by-alphabet').length).to.be(1);
-      expect(elt.find('.ngeo-add').length).to.be(1);
-      expect(elt.find('.ngeo-message').length).to.be(1);
+      expect(elt.find('.ga-add').length).to.be(1);
+      expect(elt.find('.ga-message').length).to.be(1);
     });
 
     it('has good scope values', function() {
       expect(scope.map).to.be(map);
       expect(scope.layers.length).to.be(377);
-      expect(scope.limitations).to.be('Maximum WMS size allowed 3850 * 3850');
+      expect(scope.limitations).to.be('wms_max_size_allowed 3850 * 3850');
       expect(scope.userMsg).to.be(undefined);
       expect(scope.options.layerSelected).to.be(null);
       expect(scope.options.layerHovered).to.be(null);
@@ -91,7 +91,7 @@ describe('ngeo.wmsGetCapDirective', function() {
 
     it('displays a parse error mesage', function() {
       expect(spy.callCount).to.be(1);
-      expect(scope.userMsg).to.be('Parsing failed');
+      expect(scope.userMsg).to.be('parsing_failed');
     });
   });
 

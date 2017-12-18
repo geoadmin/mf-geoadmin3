@@ -15,11 +15,11 @@
 @import "../components/contextpopup/style/contextpopup.less";
 @import "../components/feedback/style/feedback.less";
 @import "../components/topic/style/topic.less";
-@import "../ngeo/src/modules/import/style/importonline.less";
-@import "../ngeo/src/modules/import/style/importlocal.less";
-@import "../ngeo/src/modules/import/style/importdnd.less";
-@import "../ngeo/src/modules/import/style/owsgetcap.less";
-@import "../ngeo/src/modules/import/style/owsgetcapitem.less";
+@import "../components/import/style/importdnd.less";
+@import "../components/import/style/importlocal.less";
+@import "../components/import/style/importonline.less";
+@import "../components/import/style/owsgetcapitem.less";
+@import "../components/import/style/owsgetcap.less";
 @import "../components/import/style/import.less";
 @import "../components/popup/style/popup.less";
 @import "../components/profile/style/profile.less";
@@ -179,7 +179,7 @@ form {
 }
 
 
-button.ga-btn, button.ngeo-btn, .ol-control button {
+button.ga-btn, .ol-control button {
   position: relative;
 
   i {
@@ -194,7 +194,7 @@ button.ga-btn, button.ngeo-btn, .ol-control button {
     color: #fff;
   }
 
-  &.ga-btn-disabled, &.ngeo-btn-disabled {
+  &.ga-btn-disabled {
 
     i {
       color: #545454;
@@ -205,7 +205,7 @@ button.ga-btn, button.ngeo-btn, .ol-control button {
     }
   }
 
-  &.ga-btn-active, &.ngeo-btn-active {
+  &.ga-btn-active {
 
     i {
       color: #ed1c24;
@@ -229,11 +229,11 @@ button.ga-btn, button.ngeo-btn, .ol-control button {
 
 
 /* This allow the display of not-allowed cursor on hover */
-.btn[disabled], &.ga-btn-disabled, &.ngeo-btn-disabled {
+.btn[disabled], &.ga-btn-disabled {
   pointer-events: auto;
 }
 
-button.ga-icon, &.ga-btn-disabled, &.ngeo-btn-disabled {
+button.ga-icon, &.ga-btn-disabled {
   width: 1.3em;
   margin: 0;
   padding: 0;
@@ -254,9 +254,9 @@ button.ga-icon, &.ga-btn-disabled, &.ngeo-btn-disabled {
   }
 }
 
-button.ga-btn, button.ngeo-btn, .ol-control button {
+button.ga-btn, .ol-control button {
 
-  &[disabled], &.ga-btn-disabled, &.ngeo-btn-disabled {
+  &[disabled], &.ga-btn-disabled {
     cursor: not-allowed;
     color: #CCC;
     opacity: 1;

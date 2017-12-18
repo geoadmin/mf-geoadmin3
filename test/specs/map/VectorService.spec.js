@@ -134,7 +134,7 @@ describe('ga_vector_service', function() {
 
   describe('gaVector', function() {
     var map, gaVector, $rootScope, $httpBackend, gaNetworkStatus, gaStorageMock,
-      gaStyleFactoryMock, gaMapUtilsMock, gaMeasureMock, gaGlobalOptions, $windowMock, ngeoFileMock, gaUrlUtilsMock;
+      gaStyleFactoryMock, gaMapUtilsMock, gaMeasureMock, gaGlobalOptions, $windowMock, gaFileMock, gaUrlUtilsMock;
 
     beforeEach(function() {
 
@@ -150,7 +150,7 @@ describe('ga_vector_service', function() {
         gaStorageMock = sinon.mock($injector.get('gaStorage'));
         gaUrlUtilsMock = sinon.mock($injector.get('gaUrlUtils'));
         $windowMock = sinon.mock($injector.get('$window'));
-        ngeoFileMock = sinon.mock($injector.get('ngeoFile'));
+        gaFileMock = sinon.mock($injector.get('gaFile'));
       });
       map = new ol.Map({});
     });
@@ -940,7 +940,7 @@ describe('ga_vector_service', function() {
         $httpBackend.expectGET(encoded);
 
         var addToMap = gaVectorMock.expects('addToMap').never();
-        var isValid = ngeoFileMock.expects('isValidFileSize').once().returns(false);
+        var isValid = gaFileMock.expects('isValidFileSize').once().returns(false);
 
         gaVector.addToMapForUrl(map, 'http://test.kml');
 

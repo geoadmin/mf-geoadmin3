@@ -69,8 +69,8 @@ describe('ga_import_directive', function() {
     loadDirective();
     expect(elt.find('[ga-tabs]').length).to.be(1);
     expect(elt.find('[ga-tab][ga-tab-title]').length).to.be(2);
-    expect(elt.find('[ga-tab] [ngeo-import-local]').length).to.be(1);
-    expect(elt.find('[ga-tab] [ngeo-import-online]').length).to.be(1);
+    expect(elt.find('[ga-tab] [ga-import-local]').length).to.be(1);
+    expect(elt.find('[ga-tab] [ga-import-online]').length).to.be(1);
     expect(/ngIf: wmsGetCap/.test(elt[0].innerHTML)).to.be(true);
   });
 
@@ -86,7 +86,7 @@ describe('ga_import_directive', function() {
     scope.wmsGetCap = '<WMS_Capabilities version="1.3.0"></WMS_Capabilities>';
     $rootScope.$digest();
     $timeout.flush();
-    expect(elt.find('[ngeo-wms-get-cap]').length).to.be(1);
+    expect(elt.find('[ga-wms-get-cap]').length).to.be(1);
   });
 
   it('hide first tab on ie9', function() {

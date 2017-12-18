@@ -1,10 +1,10 @@
 /* eslint-disable max-len */
-describe('ngeo.wmtsGetCapDirective', function() {
+describe('ga_wmtsgetcap_directive', function() {
   var elt, scope, parentScope, map, $rootScope, $compile, $window;
 
   var loadDirective = function() {
     parentScope = $rootScope.$new();
-    var tpl = '<div ngeo-wmts-get-cap="getCap" ngeo-wmts-get-cap-map="map" ngeo-wmts-get-cap-options="options"></div>';
+    var tpl = '<div ga-wmts-get-cap="getCap" ga-wmts-get-cap-map="map" ga-wmts-get-cap-options="options"></div>';
     elt = $compile(tpl)(parentScope);
     $rootScope.$digest();
     scope = elt.isolateScope();
@@ -54,9 +54,9 @@ describe('ngeo.wmtsGetCapDirective', function() {
     });
 
     it('creates html elements', function() {
-      expect(elt.find('[ngeo-wmts-get-cap-item]').length).to.be(3);
+      expect(elt.find('[ga-wmts-get-cap-item]').length).to.be(3);
       expect(elt.find('.fa-sort-by-alphabet').length).to.be(1);
-      expect(elt.find('.ngeo-add').length).to.be(1);
+      expect(elt.find('.ga-add').length).to.be(1);
     });
 
     it('has good scope values', function() {
@@ -88,7 +88,7 @@ describe('ngeo.wmtsGetCapDirective', function() {
 
     it('displays a parse error message', function() {
       expect(spy.callCount).to.be(1);
-      expect(scope.userMsg).to.be('Parsing failed');
+      expect(scope.userMsg).to.be('parsing_failed');
     });
   });
 });
