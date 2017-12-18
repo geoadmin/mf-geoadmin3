@@ -3,10 +3,11 @@ describe('ga_map_directive', function() {
   var map, elt, scope, parentScope;
   var $httpBackend, $compile, $window, $q, $rootScope, $timeout, gaLayers, gaOffline, gaPermalink, gaStyleFactory, gaMapUtils;
 
-  var loadDirective = function(map) {
+  var loadDirective = function(map, ol3d) {
     parentScope = $rootScope.$new();
     parentScope.map = map;
-    var tpl = '<div ga-map ga-map-map="map" ga-map-options="options"></div>';
+    parentScope.ol3d = ol3d;
+    var tpl = '<div ga-map ga-map-map="map" ga-map-ol3d="ol3d"></div>';
     elt = $compile(tpl)(parentScope);
     $rootScope.$digest();
     scope = elt.isolateScope();
@@ -276,6 +277,184 @@ describe('ga_map_directive', function() {
         $rootScope.$broadcast('gaTimeChange', null, 't2');
         expect(stub.callCount).to.be(3);
         expect(layer.time).to.be('t0');
+      });
+    });
+
+    describe('on ol3d creation', function() {
+      var ol3d, camera, enable;
+
+      beforeEach(function() {
+        enable = false;
+        camera = {
+          setView: angular.noop,
+          moveEnd: {
+            addEventListener: angular.noop
+          }
+        };
+        ol3d = {
+          getEnabled: function() {
+            return enable;
+          },
+          setEnabled: function(en) {
+            enable = en;
+          },
+          getCesiumScene: function() {
+            return {
+              camera: camera
+            }
+          }
+        }
+        loadDirective(map);
+      });
+
+      it('set the camera\'s view', function() {
+        var camera = ol3d.getCesiumScene().camera;
+        var spy = sinon.spy(camera, 'setView');
+        scope.ol3d = ol3d;
+        $rootScope.$digest();
+        expect(spy.callCount).to.be(1);
+      });
+
+      it('set the camera\'s view with permalink params', function() {
+        sinon.stub(gaPermalink, 'getParams').returns({
+          lon: '7.7',
+          lat: '47.8',
+          elevation: '1000',
+          heading: '300',
+          pitch: '-41'
+        });
+        var camera = ol3d.getCesiumScene().camera;
+        var spy = sinon.spy(camera, 'setView');
+        scope.ol3d = ol3d;
+        $rootScope.$digest();
+        expect(spy.callCount).to.be(1);
+        var args = spy.args[0][0];
+        expect(args.destination).to.eql({
+          x: 4254181.208288832,
+          y: 575187.8662936201,
+          z: 4702708.412924106
+        });
+        expect(args.orientation.heading).to.be(5.235987755982989);
+        expect(args.orientation.pitch).to.be(-0.7155849933176751);
+        expect(args.orientation.roll).to.be(0.0);
+      });
+
+      describe('when ol3d is enabled then disabled', function() {
+        var layersConfig = {
+          'ch.default': {
+            bodId: 'dch.default'
+          },
+          'ch.default.3d': {
+            default3d: true,
+            config2d: 'ch.default'
+          }
+        };
+
+        beforeEach(function() {
+          scope.ol3d = ol3d;
+        });
+
+        it('hides/shows map\'s overlay', function() {
+          var ov = new ol.Overlay({});
+          ov.setPosition([2641750.0, 1224500.0]);
+          map.addOverlay(ov);
+          ol3d.setEnabled(true);
+          $rootScope.$digest();
+          expect(ov.getPosition()).to.be();
+          expect(ov.get('realPosition')).to.eql([2641750, 1224500]);
+
+          // Set real position on add event
+          var ov2 = new ol.Overlay({});
+          ov2.setPosition([2841750.0, 1824500.0]);
+          map.addOverlay(ov2);
+          expect(ov2.getPosition()).to.be();
+          expect(ov2.get('realPosition')).to.eql([2841750, 1824500]);
+
+          // Set real position if the overlay change its position
+          ov.setPosition([26417504, 1224504]);
+          expect(ov.getPosition()).to.be();
+          expect(ov.get('realPosition')).to.eql([26417504, 1224504]);
+          ov.setPosition();
+          expect(ov.getPosition()).to.be();
+          expect(ov.get('realPosition')).to.eql([26417504, 1224504]);
+
+          // Set the position from realPosition when ol3d is disabled
+          ol3d.setEnabled(false);
+          $rootScope.$digest();
+          expect(ov.getPosition()).to.eql([26417504, 1224504]);
+          expect(ov.get('realPosition')).to.eql([26417504, 1224504]);
+          expect(ov2.getPosition()).to.eql([2841750, 1824500]);
+          expect(ov2.get('realPosition')).to.eql([2841750, 1824500]);
+
+          // Test if the listener on add is well removed
+          var ov3 = new ol.Overlay({});
+          ov3.setPosition([2641750.0, 1224500.0]);
+          map.addOverlay(ov3);
+          expect(ov3.get('realPosition')).to.be();
+        });
+
+        it('shows/hides default layers for 3d', function() {
+          var l = new ol.layer.Layer({});
+          l.bodId = 'ch.default';
+          sinon.stub(gaLayers, 'loadConfig').returns($q.when(layersConfig));
+          sinon.stub(gaLayers, 'getOlLayerById').withArgs('ch.default').returns(l);
+          ol3d.setEnabled(true);
+          $rootScope.$digest();
+          expect(map.getLayers().item(0)).to.be(l);
+
+          ol3d.setEnabled(false);
+          $rootScope.$digest();
+          expect(map.getLayers().getLength()).to.be(0);
+        });
+
+        it('shows/hides default layers for 3d if the page is opening directly in 3d', function() {
+          sinon.stub(gaPermalink, 'getParams').returns({
+            lon: '7.7',
+            lat: '47.8',
+            elevation: '1000',
+            heading: '300',
+            pitch: '-41'
+          });
+          var l = new ol.layer.Layer({});
+          l.bodId = 'ch.default';
+          sinon.stub(gaLayers, 'loadConfig').returns($q.when(layersConfig));
+          sinon.stub(gaLayers, 'getOlLayerById').withArgs('ch.default').returns(l);
+          ol3d.setEnabled(true);
+          $rootScope.$digest();
+          expect(map.getLayers().item(0)).to.be(l);
+
+          ol3d.setEnabled(false);
+          $rootScope.$digest();
+          expect(map.getLayers().getLength()).to.be(0);
+        });
+
+        it('shows/shows default layers for 3d if they are already on the map', function() {
+          var l = new ol.layer.Layer({});
+          l.bodId = 'ch.default';
+          l.displayIn3d = true;
+          map.addLayer(l);
+          sinon.stub(gaLayers, 'loadConfig').returns($q.when(layersConfig));
+          sinon.stub(gaLayers, 'getOlLayerById').withArgs('ch.default').returns(l);
+          ol3d.setEnabled(true);
+          $rootScope.$digest();
+          expect(map.getLayers().item(0)).to.be(l);
+
+          ol3d.setEnabled(false);
+          $rootScope.$digest();
+          expect(map.getLayers().item(0)).to.be(l);
+        });
+
+        it('show alert message for layer which are not available for 3d', function() {
+          var l = new ol.layer.Layer({});
+          l.displayIn3d = false;
+          l.label = 'label';
+          map.addLayer(l);
+          var spy = sinon.stub($window, 'alert').withArgs('layer_cant_be_displayed_in_3d\nlabel');
+          ol3d.setEnabled(true);
+          $rootScope.$digest();
+          expect(spy.callCount).to.be(1);
+          $window.alert.restore();
+        });
       });
     });
   });

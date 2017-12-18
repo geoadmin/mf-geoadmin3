@@ -77,6 +77,7 @@ goog.require('ga_styles_service');
       link: function(scope, element, attrs) {
         var map = scope.map;
         var view = map.getView();
+        var isOpeningIn3d = false;
 
         // set view states based on URL query string
         var queryParams = gaPermalink.getParams();
@@ -159,6 +160,7 @@ goog.require('ga_styles_service');
             var position, heading, pitch;
             if (isFinite(params.lon) && isFinite(params.lat) &&
                 isFinite(params.elevation)) {
+              isOpeningIn3d = true;
               var lon = parseFloat(params.lon);
               var lat = parseFloat(params.lat);
               var elevation = parseFloat(params.elevation);
@@ -223,8 +225,13 @@ goog.require('ga_styles_service');
                     var config2d = layers[bodId].config2d;
                     var overlay = gaMapUtils.getMapOverlayForBodId(map,
                         config2d);
-                    if (!overlay) {
+                    // If the page is openinig directly in 3d we consider the
+                    // default layers were not displayed in 2d initally.
+                    if (isOpeningIn3d || !overlay) {
                       dflt3dStatus.push(config2d);
+                      isOpeningIn3d = false;
+                    }
+                    if (!overlay) {
                       map.addLayer(gaLayers.getOlLayerById(config2d));
                     }
                   }
