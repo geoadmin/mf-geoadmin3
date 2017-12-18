@@ -442,12 +442,11 @@ goog.require('ga_window_service');
                 var shopLayer = config.shop && !config.shopMulti;
                 var shopMultiLayer = config.shopMulti;
 
-                var limit = shopMultiLayer ? 10 : null;
-                var order = limit ? 'distance' : null;
+                var order = shopMultiLayer ? 'distance' : null;
                 var tol = shopLayer ? 0 : scope.options.tolerance;
 
                 all.push(gaIdentify.get(map, [layerToQuery], geometry, tol,
-                    returnGeometry, canceler.promise, limit, order).then(
+                    returnGeometry, canceler.promise, 10, order).then(
                     function(response) {
                       showFeatures(response.data.results, coordinate);
                       return response.data.results.length;
