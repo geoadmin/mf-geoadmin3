@@ -53,7 +53,7 @@ goog.provide('ga_wmtsgetcapitem_directive');
       restrict: 'A',
       templateUrl: 'components/import/partials/wmts-get-cap-item.html',
       controller: 'GaWmtsGetCapItemDirectiveController',
-      compile(elt) {
+      compile: function(elt) {
         var contents = elt.contents().remove();
         var compiledContent = void 0;
         return function(scope, elt) {

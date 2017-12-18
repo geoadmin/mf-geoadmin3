@@ -60,7 +60,7 @@ goog.require('ga_file_service');
               transformUrl(text).then(function(url) {
                 gaFile.load(url).then(function(fileContent) {
                   return scope.handleFileContent(fileContent, {
-                    url
+                    url: url
                   });
                 }).catch(function(err) {
                   $window.alert($translate.instant(err.message));
