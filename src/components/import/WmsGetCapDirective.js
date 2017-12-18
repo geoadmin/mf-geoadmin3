@@ -64,7 +64,7 @@ goog.provide('ga_wmsgetcap_directive');
         layer.wmsUrl = getCap.Capability.Request.GetMap.DCPType[0].HTTP.Get.
             OnlineResource;
         layer.wmsVersion = getCap.version;
-        layer.id = `WMS||${layer.wmsUrl}||${layer.Name}`;
+        layer.id = 'WMS||' + layer.wmsUrl + '||' + layer.Name;
         layer.extent = getLayerExtentFromGetCap(layer, proj);
 
         // if the layer has no extent, it is set as invalid.

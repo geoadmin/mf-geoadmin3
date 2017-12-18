@@ -36,7 +36,7 @@ goog.provide('ga_wmtsgetcap_directive');
     var getLayersList = function(getCap, getCapUrl, proj) {
       var layers = [];
 
-      for (var layer of getCap.Contents.Layer) {
+      getCap.Contents.Layer.forEach(function(layer) {
         // If the WMTS layer has no title, it can't be displayed
         if (!layer.Title) {
           layer.isInvalid = true;
@@ -58,7 +58,7 @@ goog.provide('ga_wmtsgetcap_directive');
         }
 
         layers.push(layer);
-      }
+      });
 
       return layers;
     };
