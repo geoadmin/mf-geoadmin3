@@ -57,18 +57,15 @@ goog.require('ga_urlutils_service');
 
         // Get the HTML attribution of a layer.
         this.getHtmlFromLayer = function(layer, useConfig3d) {
-          var id = layer.bodId || layer.url;
-          if (gaUrlUtils.isValid(id)) {
-            var hostname = gaUrlUtils.getHostname(id);
-            if (gaUrlUtils.isThirdPartyValid(id)) {
-              var isBlob = gaUrlUtils.isBlob(layer.url);
-              var attribution = isBlob ? 'User local file' : hostname;
+          if (gaUrlUtils.isValid(layer.url)) {
+            var attribution = this.getTextFromLayer(layer);
+            if (gaUrlUtils.isThirdPartyValid(layer.url)) {
               return '<span class="ga-warning-tooltip">' + attribution +
                   '</span>';
             }
-            return hostname;
-          } else if (gaLayers.getLayer(id)) {
-            return getBodLayerAttribution(id, useConfig3d);
+            return attribution;
+          } else if (layer.bodId) {
+            return getBodLayerAttribution(layer.bodId, useConfig3d);
           }
         };
       };
