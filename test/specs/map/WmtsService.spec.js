@@ -143,7 +143,7 @@ describe('ga_wmts_service', function() {
                 useThirdPartyData: true,
                 layer: identifier,
                 capabilitiesUrl: getCapUrl,
-                time: '20090101',
+                time: '1957',
                 projection: undefined
               });
               done();
@@ -163,7 +163,7 @@ describe('ga_wmts_service', function() {
           var getCap = new ol.format.WMTSCapabilities().read(response);
           var layer = gaWmts.getOlLayerFromGetCap(map, getCap, identifier, {
             capabilitiesUrl: 'http://test.ch/' + getCapUrl,
-            timestamp: '1957'
+            time: '1957'
           });
           expectProperties(layer, {
             label: 'CORE_003 Mosaic, natural color composition, feathering applied to scene borders, Mixed PNG/JPEG',
