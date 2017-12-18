@@ -138,7 +138,6 @@ goog.require('ga_file_service');
                   id: options.id,
                   adminId: options.adminId,
                   url: options.url,
-                  type: options.type,
                   label: options.label || srv.getName(data) || type,
                   opacity: options.opacity,
                   visible: options.visible,

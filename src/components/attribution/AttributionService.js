@@ -45,7 +45,11 @@ goog.require('ga_urlutils_service');
         // Get the attribution of a layer without HTML.
         this.getTextFromLayer = function(layer) {
           if (gaUrlUtils.isValid(layer.url)) {
-            return gaUrlUtils.getHostname(layer.url);
+            if (gaUrlUtils.isBlob(layer.url)) {
+              return 'User local file'
+            } else {
+              return gaUrlUtils.getHostname(layer.url);
+            }
           } else if (layer.bodId) {
             return gaLayers.getLayerProperty(layer.bodId, 'attribution');
           }
@@ -53,15 +57,15 @@ goog.require('ga_urlutils_service');
 
         // Get the HTML attribution of a layer.
         this.getHtmlFromLayer = function(layer, useConfig3d) {
-          var id = layer.bodId || layer.url;
-          if (gaUrlUtils.isValid(id)) {
-            var hostname = gaUrlUtils.getHostname(id);
-            if (gaUrlUtils.isThirdPartyValid(id)) {
-              return '<span class="ga-warning-tooltip">' + hostname + '</span>';
+          if (gaUrlUtils.isValid(layer.url)) {
+            var attribution = this.getTextFromLayer(layer);
+            if (gaUrlUtils.isThirdPartyValid(layer.url)) {
+              return '<span class="ga-warning-tooltip">' + attribution +
+                  '</span>';
             }
-            return hostname;
-          } else if (gaLayers.getLayer(id)) {
-            return getBodLayerAttribution(id, useConfig3d);
+            return attribution;
+          } else if (layer.bodId) {
+            return getBodLayerAttribution(layer.bodId, useConfig3d);
           }
         };
       };

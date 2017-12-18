@@ -2,7 +2,7 @@
 describe('ga_attribution_service', function() {
 
   describe('gaAttribution', function() {
-    var gaAttribution, $translate, def, lang = 'somelang';
+    var gaAttribution, gaUrlUtils, $translate, def, lang = 'somelang';
     var bodAttribTemplate = '<a target="new" href="{{Url}}">{{Text}}</a>';
     var bodAttribTemplateNoLink = '{{Text}}';
     var thirdPartyAttribTemplate = '<span class="ga-warning-tooltip">{{Text}}</span>';
@@ -78,6 +78,7 @@ describe('ga_attribution_service', function() {
       inject(function($injector) {
         def = $injector.get('$q').defer();
         gaAttribution = $injector.get('gaAttribution');
+        gaUrlUtils = $injector.get('gaUrlUtils');
         $translate = $injector.get('$translate');
       });
       def.resolve();
@@ -93,6 +94,12 @@ describe('ga_attribution_service', function() {
       expect(attrib).to.eql(getBodAttrib(layerConfig3d));
       attrib = gaAttribution.getTextFromLayer(olLayer);
       expect(attrib).to.eql(layerConfig.attribution);
+
+      // If attribution already exists in the cache of the service, don't
+      // fill the cache
+      var spy = sinon.spy(gaUrlUtils, 'isValid');
+      gaAttribution.getHtmlFromLayer(olLayer);
+      expect(spy.callCount).to.be(1);
     });
 
     it('gets attribution of bod layer with no link', function() {
@@ -108,6 +115,7 @@ describe('ga_attribution_service', function() {
     });
 
     it('gets attribution of external (third party) layer', function() {
+      // WMS
       var olLayer = {url: 'http://foo.ch/admin/wms'};
       var host = 'foo.ch';
       var attrib = gaAttribution.getHtmlFromLayer(olLayer);
@@ -120,6 +128,16 @@ describe('ga_attribution_service', function() {
       // public.geo.admin.ch
       olLayer = {url: 'http://public.geo.admin.ch/idsfdsf'};
       host = 'public.geo.admin.ch';
+      attrib = gaAttribution.getHtmlFromLayer(olLayer);
+      expect(attrib).to.eql(getThirdPartyAttrib(host));
+      attrib = gaAttribution.getHtmlFromLayer(olLayer, true);
+      expect(attrib).to.eql(getThirdPartyAttrib(host));
+      attrib = gaAttribution.getTextFromLayer(olLayer);
+      expect(attrib).to.eql(host);
+
+      // local file
+      olLayer = {url: 'blob:https://mf-geoadmin3.dev.bgdi.ch/1152348a-7743-4363-83f0-1860dbba5012'};
+      host = 'User local file';
       attrib = gaAttribution.getHtmlFromLayer(olLayer);
       expect(attrib).to.eql(getThirdPartyAttrib(host));
       attrib = gaAttribution.getHtmlFromLayer(olLayer, true);
