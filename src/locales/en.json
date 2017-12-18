@@ -10,6 +10,8 @@
 "add_video": "Add a video",
 "add_wms_layer_failed": "Error when loading WMS layer",
 "add_wms_layer_succeeded": "WMS layer successfully loaded",
+"add_wmts_layer_failed": "Error when loading WMTS layer",
+"add_wmts_layer_succeeded": "WMTS layer successfully loaded",
 "appcache_update_available": "A new version of offline function is available. Load it?",
 "approx_abbr": "approx.",
 "are": "ARE",

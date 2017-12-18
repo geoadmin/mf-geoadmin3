@@ -82,6 +82,8 @@
   "add_wms_layer_succeeded": "",
   "add_wms_layer_failed": "",
   "wms_max_size_allowed": "",
+  "add_wmts_layer_succeeded": "",
+  "add_wmts_layer_failed": "",
   "description": "",
   "description_instructions": "",
   "title": "",

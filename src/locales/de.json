@@ -10,6 +10,8 @@
 "add_video": "Video hinzufügen",
 "add_wms_layer_failed": "Fehler beim Laden des WMS Layer",
 "add_wms_layer_succeeded": "WMS Layer erfolgreich geladen",
+"add_wmts_layer_failed": "Fehler beim Laden des WMTS Layer",
+"add_wmts_layer_succeeded": "WMTS Layer erfolgreich geladen",
 "appcache_update_available": "Neue Version der Offline Funktion verfügbar. Wollen Sie sie laden?",
 "approx_abbr": "ca.",
 "are": "ARE",

@@ -10,6 +10,8 @@
 "add_video": "Aggiungere un video",
 "add_wms_layer_failed": "Errore nel caricamento del layer WMS",
 "add_wms_layer_succeeded": "Layer WMS caricato con successo",
+"add_wmts_layer_failed": "Errore nel caricamento del layer WMTS",
+"add_wmts_layer_succeeded": "Layer WMTS caricato con successo",
 "appcache_update_available": "È a disposizione un aggiornamento del sito. Desiderate utilizzarlo?",
 "approx_abbr": "ca.",
 "are": "ARE",

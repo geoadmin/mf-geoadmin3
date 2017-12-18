@@ -10,6 +10,8 @@
 "add_video": "Agiuntar in video",
 "add_wms_layer_failed": "Sbagl tar il chargiar de la WMS layer",
 "add_wms_layer_succeeded": "Chargià con success il WMS Layer",
+"add_wmts_layer_failed": "Sbagl tar il chargiar de la WMTS layer",
+"add_wmts_layer_succeeded": "Chargià con success il WMTS Layer",
 "appcache_update_available": "Ina nova versiun stat a disposiziun offline. La vulais Vus chargiar giu?",
 "approx_abbr": "ca.",
 "are": "ARE",

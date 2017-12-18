@@ -107,7 +107,7 @@ goog.provide('ga_wmtsgetcap_directive');
         scope.addLayerSelected = function() {
           var getCapLay = scope.options.layerSelected;
           if (getCapLay && scope.options.getOlLayerFromGetCapLayer) {
-            var msg = $translate.instant('wmts_layer_added_succesfully');
+            var msg = $translate.instant('add_wmts_layer_succeeded');
             try {
               var olLayer = scope.options.getOlLayerFromGetCapLayer(getCapLay);
               if (olLayer) {
@@ -115,7 +115,7 @@ goog.provide('ga_wmtsgetcap_directive');
               }
             } catch (e) {
               console.error('Add layer failed:', e);
-              msg = $translate.instant('wmts_layer_could_not_be_added') +
+              msg = $translate.instant('add_wmts_layer_failed') +
                   e.message;
             }
             alert(msg);

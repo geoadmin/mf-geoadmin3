@@ -10,6 +10,8 @@
 "add_video": "Ajouter une vidéo",
 "add_wms_layer_failed": "Erreur au chargement de la couche WMS",
 "add_wms_layer_succeeded": "Couche WMS chargée avec succès",
+"add_wmts_layer_failed": "Erreur au chargement de la couche WMTS",
+"add_wmts_layer_succeeded": "Couche WMTS chargée avec succès",
 "appcache_update_available": "Une mise à jour du site est disponible. Voulez-vous l'utiliser?",
 "approx_abbr": "env.",
 "are": "ARE",
