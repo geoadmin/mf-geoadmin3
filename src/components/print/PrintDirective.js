@@ -414,7 +414,7 @@ goog.require('ga_urlutils_service');
 
             // Build the correct copyright text to display
             var allDataOwner = attributions.concat(thirdPartyAttributions);
-            allDataOwner = '©' + allDataOwner.join();
+            allDataOwner = allDataOwner.join();
             var movieprint = $scope.options.movie && $scope.options.multiprint;
             var spec = {
               layout: $scope.layout.name,
@@ -437,7 +437,7 @@ goog.require('ga_urlutils_service');
                   display: [$scope.layout.map.width, $scope.layout.map.height],
                   // scale has to be one of the advertise by the print server
                   scale: $scope.scale.value,
-                  dataOwner: allDataOwner,
+                  dataOwner: allDataOwner ? '©' + allDataOwner : '',
                   shortLink: shortLink || '',
                   rotation: -((view.getRotation() * 180.0) / Math.PI)
                 }, defaultPage)
