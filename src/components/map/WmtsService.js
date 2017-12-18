@@ -210,7 +210,7 @@ goog.require('ga_urlutils_service');
           if (layerOptions) {
             layerOptions.opacity = options.opacity || 1;
             layerOptions.visible = options.visible || true;
-            layerOptions.time = options.timestamp;
+            layerOptions.time = options.time;
             return createWmtsLayer(layerOptions);
           }
         };
