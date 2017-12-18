@@ -13705,6 +13705,17 @@ olcs.GaKmlSynchronizer.prototype.createSingleLayerCounterparts = function(olLaye
       ds.show = evt.target.getVisible();
     }));
     that.olLayerListenKeys[uid].push.apply(that.olLayerListenKeys[uid], [].concat($jscomp.arrayFromIterable(listenKeyArray)));
+    if (layer instanceof ol.layer.Vector) {
+      layer.getSource().getFeatures().forEach(function(feature) {
+        if (ds.entities.getById) {
+          var entity = ds.entities.getById(feature.getId());
+          if (entity) {
+            entity["olFeature"] = feature;
+            entity["olLayer"] = layer;
+          }
+        }
+      });
+    }
   });
   return [dsP];
 };
