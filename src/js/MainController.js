@@ -8,6 +8,7 @@ goog.require('ga_maputils_service');
 goog.require('ga_networkstatus_service');
 goog.require('ga_storage_service');
 goog.require('ga_topic_service');
+goog.require('ga_translation_service');
 goog.require('ga_window_service');
 
 (function() {
@@ -20,7 +21,8 @@ goog.require('ga_window_service');
     'ga_storage_service',
     'ga_background_service',
     'ga_topic_service',
-    'ga_window_service'
+    'ga_window_service',
+    'ga_translation_service'
   ]);
 
   /**
@@ -31,7 +33,7 @@ goog.require('ga_window_service');
       gaPermalinkFeaturesManager, gaPermalinkLayersManager, gaMapUtils,
       gaRealtimeLayersManager, gaNetworkStatus, gaPermalink, gaStorage,
       gaGlobalOptions, gaBackground, gaTime, gaLayers, gaTopic,
-      gaOpaqueLayersManager, gaMapLoad, gaWindow) {
+      gaOpaqueLayersManager, gaMapLoad, gaWindow, gaLang) {
 
     var createMap = function() {
       var toolbar = $('#zoomButtons')[0];
@@ -224,7 +226,7 @@ goog.require('ga_window_service');
     });
 
     $rootScope.$on('$translateChangeEnd', function() {
-      $scope.langId = $translate.use();
+      $scope.langId = gaLang.get();
     });
 
     $scope.time = gaTime.get();

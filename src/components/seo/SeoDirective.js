@@ -2,16 +2,18 @@ goog.provide('ga_seo_directive');
 
 goog.require('ga_layers_service');
 goog.require('ga_seo_service');
+goog.require('ga_translation_service');
 (function() {
 
   var module = angular.module('ga_seo_directive', [
     'ga_layers_service',
     'ga_seo_service',
+    'ga_translation_service',
     'pascalprecht.translate'
   ]);
 
   module.directive('gaSeo',
-      function($sce, $timeout, $q, $http, $translate,
+      function($sce, $timeout, $q, $http, gaLang,
           gaSeo, gaLayers) {
         return {
           restrict: 'A',
@@ -152,7 +154,7 @@ goog.require('ga_seo_service');
                       replace('{Feature}', featureId);
                   $http.get(htmlUrl, {
                     params: {
-                      lang: $translate.use() // Left out other parameters as
+                      lang: gaLang.get() // Left out other parameters as
                       // they are not relevant for SEO
                       // (cadastralWbebMap Links)
                     }
@@ -292,7 +294,7 @@ goog.require('ga_seo_service');
 
                   $http.get(scope.options.identifyUrl, {
                     params: {
-                      lang: $translate.use(),
+                      lang: gaLang.get(),
                       geometryType: 'esriGeometryPoint',
                       geometryFormat: 'geojson',
                       geometry: east + ',' + north,

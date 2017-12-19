@@ -2,12 +2,14 @@ goog.provide('ga_featuretree_directive');
 
 goog.require('ga_layers_service');
 goog.require('ga_previewfeatures_service');
+goog.require('ga_translation_service');
 
 (function() {
 
   var module = angular.module('ga_featuretree_directive', [
     'ga_layers_service',
     'ga_previewfeatures_service',
+    'ga_translation_service',
     'pascalprecht.translate'
   ]);
 
@@ -20,13 +22,13 @@ goog.require('ga_previewfeatures_service');
 
   module.directive('gaFeaturetree',
       function($rootScope, $timeout, $http, $q, $translate, $sce, gaLayers,
-          gaPreviewFeatures) {
+          gaPreviewFeatures, gaLang) {
         var canceler = null;
         var timeoutPromise = null;
         var parser = new ol.format.GeoJSON();
 
         var getTranslatedLabel = function(obj) {
-          var possibleKey = 'label_' + $translate.use();
+          var possibleKey = 'label_' + gaLang.get();
           if (angular.isDefined(obj[possibleKey])) {
             return obj[possibleKey];
           } else {

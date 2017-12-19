@@ -5,6 +5,7 @@ goog.require('ga_browsersniffer_service');
 goog.require('ga_layers_service');
 goog.require('ga_maputils_service');
 goog.require('ga_printlayer_service');
+goog.require('ga_translation_service');
 goog.require('ga_urlutils_service');
 
 (function() {
@@ -16,12 +17,13 @@ goog.require('ga_urlutils_service');
     'ga_attribution_service',
     'ga_maputils_service',
     'ga_layers_service',
-    'ga_urlutils_service'
+    'ga_urlutils_service',
+    'ga_translation_service'
   ]);
 
   module.controller('GaPrintDirectiveController', function($scope,
       $http, $q, $window, $translate, $timeout, gaLayers, gaMapUtils,
-      gaPermalink, gaBrowserSniffer, gaWaitCursor,
+      gaPermalink, gaBrowserSniffer, gaWaitCursor, gaLang,
       gaPrintLayer, gaAttribution, gaUrlUtils) {
     var pdfLegendString = '_big.pdf';
     var printRectangle;
@@ -250,7 +252,7 @@ goog.require('ga_urlutils_service');
       // http://mapfish.org/doc/print/protocol.html#print-pdf
       var view = $scope.map.getView();
       var proj = view.getProjection();
-      var lang = $translate.use();
+      var lang = gaLang.get();
       var defaultPage = {};
       defaultPage['lang' + lang] = true;
       var qrcodeUrl = $scope.options.qrcodeUrl +

@@ -1,14 +1,17 @@
 goog.provide('ga_featuretree_controller');
 
 goog.require('ga_print_service');
+goog.require('ga_translation_service');
+
 (function() {
 
   var module = angular.module('ga_featuretree_controller', [
-    'ga_print_service'
+    'ga_print_service',
+    'ga_translation_service'
   ]);
 
   module.controller('GaFeaturetreeController', function($http, $scope,
-      $timeout, $translate, $window, gaGlobalOptions, gaPrint) {
+      $timeout, gaLang, $window, gaGlobalOptions, gaPrint) {
 
     var featureTreeId = '#featuretree-popup';
     // List of layers using an extendHtmlPoup for the print instead of htmlPopup
@@ -75,7 +78,7 @@ goog.require('ga_print_service');
         winPrint = window.open('', 'printout');
       }
 
-      var lang = $translate.use();
+      var lang = gaLang.get();
       var printElementsLoaded = 0;
       var printLayers = [];
       printLayers['failure'] = {

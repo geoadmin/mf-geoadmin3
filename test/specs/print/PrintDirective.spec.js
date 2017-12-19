@@ -183,6 +183,11 @@ describe('ga_print_directive', function() {
         parent: window.parent,
         open: angular.noop
       });
+      $provide.value('gaLang', {
+        get: function() {
+          return 'en';
+        }
+      });
     };
 
     var injectServices = function($injector) {
