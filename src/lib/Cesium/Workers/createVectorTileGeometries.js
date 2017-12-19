@@ -13062,24 +13062,6 @@ define('Core/BoxGeometry',[
         });
     };
 
-    var unitBoxGeometry;
-
-    /**
-     * Returns the geometric representation of a unit box, including its vertices, indices, and a bounding sphere.
-     * @returns {Geometry} The computed vertices and indices.
-     *
-     * @private
-     */
-    BoxGeometry.getUnitBox = function() {
-        if (!defined(unitBoxGeometry)) {
-            unitBoxGeometry = BoxGeometry.createGeometry(BoxGeometry.fromDimensions({
-                dimensions : new Cartesian3(1.0, 1.0, 1.0),
-                vertexFormat : VertexFormat.POSITION_ONLY
-            }));
-        }
-        return unitBoxGeometry;
-    };
-
     return BoxGeometry;
 });
 
@@ -16415,26 +16397,6 @@ define('Core/CylinderGeometry',[
         });
     };
 
-    var unitCylinderGeometry;
-
-    /**
-     * Returns the geometric representation of a unit cylinder, including its vertices, indices, and a bounding sphere.
-     * @returns {Geometry} The computed vertices and indices.
-     *
-     * @private
-     */
-    CylinderGeometry.getUnitCylinder = function() {
-        if (!defined(unitCylinderGeometry)) {
-            unitCylinderGeometry = CylinderGeometry.createGeometry(new CylinderGeometry({
-                topRadius : 1.0,
-                bottomRadius : 1.0,
-                length : 1.0,
-                vertexFormat : VertexFormat.POSITION_ONLY
-            }));
-        }
-        return unitCylinderGeometry;
-    };
-
     return CylinderGeometry;
 });
 
@@ -16819,24 +16781,6 @@ define('Core/EllipsoidGeometry',[
         });
     };
 
-    var unitEllipsoidGeometry;
-
-    /**
-     * Returns the geometric representation of a unit ellipsoid, including its vertices, indices, and a bounding sphere.
-     * @returns {Geometry} The computed vertices and indices.
-     *
-     * @private
-     */
-    EllipsoidGeometry.getUnitEllipsoid = function() {
-        if (!defined(unitEllipsoidGeometry)) {
-            unitEllipsoidGeometry = EllipsoidGeometry.createGeometry((new EllipsoidGeometry({
-                radii : new Cartesian3(1.0, 1.0, 1.0),
-                vertexFormat : VertexFormat.POSITION_ONLY
-            })));
-        }
-        return unitEllipsoidGeometry;
-    };
-
     return EllipsoidGeometry;
 });
 
@@ -17072,8 +17016,13 @@ define('Workers/createVectorTileGeometries',[
 
     var scratchCartesian = new Cartesian3();
 
+    var boxGeometry;
     var packedBoxLength = Matrix4.packedLength + Cartesian3.packedLength;
+
+    var cylinderGeometry;
     var packedCylinderLength = Matrix4.packedLength + 2;
+
+    var ellipsoidGeometry;
     var packedEllipsoidLength = Matrix4.packedLength + Cartesian3.packedLength;
     var packedSphereLength = Matrix4.packedLength + 1;
 
@@ -17296,9 +17245,22 @@ define('Workers/createVectorTileGeometries',[
         var numberOfEllipsoids = defined(ellipsoids) ? ellipsoidBatchIds.length : 0;
         var numberOfSpheres = defined(spheres) ? sphereBatchIds.length : 0;
 
-        var boxGeometry = BoxGeometry.getUnitBox();
-        var cylinderGeometry = CylinderGeometry.getUnitCylinder();
-        var ellipsoidGeometry = EllipsoidGeometry.getUnitEllipsoid();
+        if (!defined(boxGeometry)) {
+            boxGeometry = BoxGeometry.createGeometry(BoxGeometry.fromDimensions({
+                dimensions : new Cartesian3(1.0, 1.0, 1.0),
+                vertexFormat : VertexFormat.POSITION_ONLY
+            }));
+            cylinderGeometry = CylinderGeometry.createGeometry(new CylinderGeometry({
+                topRadius : 1.0,
+                bottomRadius : 1.0,
+                length : 1.0,
+                vertexFormat : VertexFormat.POSITION_ONLY
+            }));
+            ellipsoidGeometry = EllipsoidGeometry.createGeometry((new EllipsoidGeometry({
+                radii : new Cartesian3(1.0, 1.0, 1.0),
+                vertexFormat : VertexFormat.POSITION_ONLY
+            })));
+        }
 
         var boxPositions = boxGeometry.attributes.position.values;
         var cylinderPositions = cylinderGeometry.attributes.position.values;
