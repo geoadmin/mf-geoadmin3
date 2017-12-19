@@ -420,7 +420,7 @@ goog.require('ga_query_service');
     });
   });
 
-  module.directive('gaQuery', function($translate, gaBrowserSniffer, gaQuery,
+  module.directive('gaQuery', function(gaLang, gaBrowserSniffer, gaQuery,
       gaStyleFactory, gaMapUtils) {
     var dragBox;
     var dragBoxStyle = gaStyleFactory.getStyle('selectrectangle');
@@ -521,7 +521,7 @@ goog.require('ga_query_service');
             input.datetimepicker({
               pickDate: true,
               pickTime: false,
-              language: $translate.use()
+              language: gaLang.get()
             });
           }
         };
