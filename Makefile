@@ -67,7 +67,7 @@ BRANCH_TO_DELETE ?=
 DEPLOY_ROOT_DIR := /var/www/vhosts/mf-geoadmin3/private/branch
 OL_VERSION ?= b66c0941f5fc6eccb63686e9f702f35b33230b89 # master, December 11 2017
 OL_CESIUM_VERSION ?= d4cfea150382f8764335d19f7896a2491195786e # master, December 8 2017
-CESIUM_VERSION ?= d031503c7ef16dee540a9d829e5e41c6b23d6ffe # c2c/c2c_patches_vector_tiles, December 7 2017
+CESIUM_VERSION ?= 53270a452994e89bdcb390265a05f3783775c7d4 # c2c/c2c_patches_vector_tiles, November 24 2017
 DEFAULT_TOPIC_ID ?= ech
 TRANSLATION_FALLBACK_CODE ?= de
 LANGUAGES ?= '[\"de\", \"fr\", \"it\", \"en\", \"rm\"]'
@@ -340,7 +340,6 @@ cesium: .build-artefacts/cesium
 	git remote add c2c https://github.com/camptocamp/cesium; \
 	git fetch --all; \
 	git checkout $(CESIUM_VERSION); \
-	git apply --reject ../../scripts/cesium.patch; \
 	npm install; \
 	npm run combineRelease; \
 	npm run minifyRelease; \
