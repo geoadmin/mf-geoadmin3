@@ -14034,8 +14034,11 @@ define('ThirdParty/when',[],function () {
 );
 
 define('Core/binarySearch',[
-    './Check'
-], function(Check) {
+        './Check',
+        './defined'
+    ], function(
+        Check,
+        defined) {
     'use strict';
 
     /**
@@ -15770,10 +15773,14 @@ define('Core/RequestType',[
 
 define('Core/Request',[
         './defaultValue',
+        './defined',
+        './defineProperties',
         './RequestState',
         './RequestType'
     ], function(
         defaultValue,
+        defined,
+        defineProperties,
         RequestState,
         RequestType) {
     'use strict';
@@ -16604,6 +16611,7 @@ define('Core/RequestScheduler',[
         '../ThirdParty/Uri',
         '../ThirdParty/when',
         './Check',
+        './clone',
         './defined',
         './defineProperties',
         './Heap',
@@ -16614,6 +16622,7 @@ define('Core/RequestScheduler',[
         Uri,
         when,
         Check,
+        clone,
         defined,
         defineProperties,
         Heap,
@@ -17965,15 +17974,8 @@ define('Core/joinUrls',[
             url += '//' + baseUri.authority;
 
             if (baseUri.path !== '' && baseUri.path !== '/') {
-                // The next line ensures that url (including a non-blank authority) ends with a slash.
                 url = url.replace(/\/?$/, '/');
                 baseUri.path = baseUri.path.replace(/^\/?/g, '');
-
-                // If authority is empty, add a third slash.  This is primarily for the file scheme,
-                // where a blank authority indicates a file on localhost (as opposed to a network share).
-                if (baseUri.authority === '') {
-                    url += '/';
-                }
             }
         }
 
@@ -18419,6 +18421,180 @@ define('Core/Iau2006XysData',[
     return Iau2006XysData;
 });
 
+define('Core/HeadingPitchRoll',[
+        './defaultValue',
+        './defined',
+        './DeveloperError',
+        './Math'
+    ], function(
+        defaultValue,
+        defined,
+        DeveloperError,
+        CesiumMath) {
+    'use strict';
+
+    /**
+     * A rotation expressed as a heading, pitch, and roll. Heading is the rotation about the
+     * negative z axis. Pitch is the rotation about the negative y axis. Roll is the rotation about
+     * the positive x axis.
+     * @alias HeadingPitchRoll
+     * @constructor
+     *
+     * @param {Number} [heading=0.0] The heading component in radians.
+     * @param {Number} [pitch=0.0] The pitch component in radians.
+     * @param {Number} [roll=0.0] The roll component in radians.
+     */
+    function HeadingPitchRoll(heading, pitch, roll) {
+        this.heading = defaultValue(heading, 0.0);
+        this.pitch = defaultValue(pitch, 0.0);
+        this.roll = defaultValue(roll, 0.0);
+    }
+
+    /**
+     * Computes the heading, pitch and roll from a quaternion (see http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles )
+     *
+     * @param {Quaternion} quaternion The quaternion from which to retrieve heading, pitch, and roll, all expressed in radians.
+     * @param {HeadingPitchRoll} [result] The object in which to store the result. If not provided, a new instance is created and returned.
+     * @returns {HeadingPitchRoll} The modified result parameter or a new HeadingPitchRoll instance if one was not provided.
+     */
+    HeadingPitchRoll.fromQuaternion = function(quaternion, result) {
+                if (!defined(result)) {
+            result = new HeadingPitchRoll();
+        }
+        var test = 2 * (quaternion.w * quaternion.y - quaternion.z * quaternion.x);
+        var denominatorRoll = 1 - 2 * (quaternion.x * quaternion.x + quaternion.y * quaternion.y);
+        var numeratorRoll = 2 * (quaternion.w * quaternion.x + quaternion.y * quaternion.z);
+        var denominatorHeading = 1 - 2 * (quaternion.y * quaternion.y + quaternion.z * quaternion.z);
+        var numeratorHeading = 2 * (quaternion.w * quaternion.z + quaternion.x * quaternion.y);
+        result.heading = -Math.atan2(numeratorHeading, denominatorHeading);
+        result.roll = Math.atan2(numeratorRoll, denominatorRoll);
+        result.pitch = -Math.asin(test);
+        return result;
+    };
+
+    /**
+     * Returns a new HeadingPitchRoll instance from angles given in degrees.
+     *
+     * @param {Number} heading the heading in degrees
+     * @param {Number} pitch the pitch in degrees
+     * @param {Number} roll the heading in degrees
+     * @param {HeadingPitchRoll} [result] The object in which to store the result. If not provided, a new instance is created and returned.
+     * @returns {HeadingPitchRoll} A new HeadingPitchRoll instance
+     */
+    HeadingPitchRoll.fromDegrees = function(heading, pitch, roll, result) {
+                if (!defined(result)) {
+            result = new HeadingPitchRoll();
+        }
+        result.heading = heading * CesiumMath.RADIANS_PER_DEGREE;
+        result.pitch = pitch * CesiumMath.RADIANS_PER_DEGREE;
+        result.roll = roll * CesiumMath.RADIANS_PER_DEGREE;
+        return result;
+    };
+
+    /**
+     * Duplicates a HeadingPitchRoll instance.
+     *
+     * @param {HeadingPitchRoll} headingPitchRoll The HeadingPitchRoll to duplicate.
+     * @param {HeadingPitchRoll} [result] The object onto which to store the result.
+     * @returns {HeadingPitchRoll} The modified result parameter or a new HeadingPitchRoll instance if one was not provided. (Returns undefined if headingPitchRoll is undefined)
+     */
+    HeadingPitchRoll.clone = function(headingPitchRoll, result) {
+        if (!defined(headingPitchRoll)) {
+            return undefined;
+        }
+        if (!defined(result)) {
+            return new HeadingPitchRoll(headingPitchRoll.heading, headingPitchRoll.pitch, headingPitchRoll.roll);
+        }
+        result.heading = headingPitchRoll.heading;
+        result.pitch = headingPitchRoll.pitch;
+        result.roll = headingPitchRoll.roll;
+        return result;
+    };
+
+    /**
+     * Compares the provided HeadingPitchRolls componentwise and returns
+     * <code>true</code> if they are equal, <code>false</code> otherwise.
+     *
+     * @param {HeadingPitchRoll} [left] The first HeadingPitchRoll.
+     * @param {HeadingPitchRoll} [right] The second HeadingPitchRoll.
+     * @returns {Boolean} <code>true</code> if left and right are equal, <code>false</code> otherwise.
+     */
+    HeadingPitchRoll.equals = function(left, right) {
+        return (left === right) ||
+            ((defined(left)) &&
+                (defined(right)) &&
+                (left.heading === right.heading) &&
+                (left.pitch === right.pitch) &&
+                (left.roll === right.roll));
+    };
+
+    /**
+     * Compares the provided HeadingPitchRolls componentwise and returns
+     * <code>true</code> if they pass an absolute or relative tolerance test,
+     * <code>false</code> otherwise.
+     *
+     * @param {HeadingPitchRoll} [left] The first HeadingPitchRoll.
+     * @param {HeadingPitchRoll} [right] The second HeadingPitchRoll.
+     * @param {Number} relativeEpsilon The relative epsilon tolerance to use for equality testing.
+     * @param {Number} [absoluteEpsilon=relativeEpsilon] The absolute epsilon tolerance to use for equality testing.
+     * @returns {Boolean} <code>true</code> if left and right are within the provided epsilon, <code>false</code> otherwise.
+     */
+    HeadingPitchRoll.equalsEpsilon = function(left, right, relativeEpsilon, absoluteEpsilon) {
+        return (left === right) ||
+            (defined(left) &&
+                defined(right) &&
+                CesiumMath.equalsEpsilon(left.heading, right.heading, relativeEpsilon, absoluteEpsilon) &&
+                CesiumMath.equalsEpsilon(left.pitch, right.pitch, relativeEpsilon, absoluteEpsilon) &&
+                CesiumMath.equalsEpsilon(left.roll, right.roll, relativeEpsilon, absoluteEpsilon));
+    };
+
+    /**
+     * Duplicates this HeadingPitchRoll instance.
+     *
+     * @param {HeadingPitchRoll} [result] The object onto which to store the result.
+     * @returns {HeadingPitchRoll} The modified result parameter or a new HeadingPitchRoll instance if one was not provided.
+     */
+    HeadingPitchRoll.prototype.clone = function(result) {
+        return HeadingPitchRoll.clone(this, result);
+    };
+
+    /**
+     * Compares this HeadingPitchRoll against the provided HeadingPitchRoll componentwise and returns
+     * <code>true</code> if they are equal, <code>false</code> otherwise.
+     *
+     * @param {HeadingPitchRoll} [right] The right hand side HeadingPitchRoll.
+     * @returns {Boolean} <code>true</code> if they are equal, <code>false</code> otherwise.
+     */
+    HeadingPitchRoll.prototype.equals = function(right) {
+        return HeadingPitchRoll.equals(this, right);
+    };
+
+    /**
+     * Compares this HeadingPitchRoll against the provided HeadingPitchRoll componentwise and returns
+     * <code>true</code> if they pass an absolute or relative tolerance test,
+     * <code>false</code> otherwise.
+     *
+     * @param {HeadingPitchRoll} [right] The right hand side HeadingPitchRoll.
+     * @param {Number} relativeEpsilon The relative epsilon tolerance to use for equality testing.
+     * @param {Number} [absoluteEpsilon=relativeEpsilon] The absolute epsilon tolerance to use for equality testing.
+     * @returns {Boolean} <code>true</code> if they are within the provided epsilon, <code>false</code> otherwise.
+     */
+    HeadingPitchRoll.prototype.equalsEpsilon = function(right, relativeEpsilon, absoluteEpsilon) {
+        return HeadingPitchRoll.equalsEpsilon(this, right, relativeEpsilon, absoluteEpsilon);
+    };
+
+    /**
+     * Creates a string representing this HeadingPitchRoll in the format '(heading, pitch, roll)' in radians.
+     *
+     * @returns {String} A string representing the provided HeadingPitchRoll in the format '(heading, pitch, roll)'.
+     */
+    HeadingPitchRoll.prototype.toString = function() {
+        return '(' + this.heading + ', ' + this.pitch + ', ' + this.roll + ')';
+    };
+
+    return HeadingPitchRoll;
+});
+
 define('Core/Quaternion',[
         './Cartesian3',
         './Check',
@@ -18426,6 +18602,7 @@ define('Core/Quaternion',[
         './defined',
         './FeatureDetection',
         './freezeObject',
+        './HeadingPitchRoll',
         './Math',
         './Matrix3'
     ], function(
@@ -18435,6 +18612,7 @@ define('Core/Quaternion',[
         defined,
         FeatureDetection,
         freezeObject,
+        HeadingPitchRoll,
         CesiumMath,
         Matrix3) {
     'use strict';
@@ -23445,7 +23623,7 @@ define('Core/OrientedBoundingBox',[
      * @param {Number[]} array The packed array.
      * @param {Number} [startingIndex=0] The starting index of the element to be unpacked.
      * @param {OrientedBoundingBox} [result] The object into which to store the result.
-     * @returns {OrientedBoundingBox} The modified result parameter or a new OrientedBoundingBox instance if one was not provided.
+     * @returns {OrientedBoundingBox} The modified result parameter or a new Cartesian3 instance if one was not provided.
      */
     OrientedBoundingBox.unpack = function(array, startingIndex, result) {
         
@@ -25945,10 +26123,12 @@ define('Workers/createVectorTilePolygons',[
     var scratchCenter = new Cartesian3();
     var scratchEllipsoid = new Ellipsoid();
     var scratchRectangle = new Rectangle();
+    var scratchMatrix4 = new Matrix4();
     var scratchScalars = {
         min : undefined,
         max : undefined,
-        indexBytesPerElement : undefined
+        indexBytesPerElement : undefined,
+        isCartographic : undefined
     };
 
     function unpackBuffer(buffer) {
@@ -25967,6 +26147,11 @@ define('Workers/createVectorTilePolygons',[
         offset += Ellipsoid.packedLength;
 
         Rectangle.unpack(packedBuffer, offset, scratchRectangle);
+        offset += Rectangle.packedLength;
+
+        scratchScalars.isCartographic = packedBuffer[offset++] === 1.0;
+
+        Matrix4.unpack(packedBuffer, offset, scratchMatrix4);
     }
 
     function packedBatchedIndicesLength(batchedIndices) {
@@ -26051,6 +26236,8 @@ define('Workers/createVectorTilePolygons',[
         var rectangle = scratchRectangle;
         var minHeight = scratchScalars.min;
         var maxHeight = scratchScalars.max;
+        var modelMatrix = scratchMatrix4;
+        var isCartographic = scratchScalars.isCartographic;
 
         var minimumHeights = parameters.minimumHeights;
         var maximumHeights = parameters.maximumHeights;
@@ -26076,8 +26263,13 @@ define('Workers/createVectorTilePolygons',[
             var x = CesiumMath.lerp(rectangle.west, rectangle.east, u / maxShort);
             var y = CesiumMath.lerp(rectangle.south, rectangle.north, v / maxShort);
 
-            var cart = Cartographic.fromRadians(x, y, 0.0, scratchBVCartographic);
-            var decodedPosition = ellipsoid.cartographicToCartesian(cart, scratchEncodedPosition);
+            var decodedPosition;
+            if (isCartographic) {
+                var cart = Cartographic.fromRadians(x, y, 0.0, scratchBVCartographic);
+                decodedPosition = ellipsoid.cartographicToCartesian(cart, scratchEncodedPosition);
+            } else {
+                decodedPosition = Cartesian3.fromElements(x, y, 0.0, scratchEncodedPosition);
+            }
             Cartesian3.pack(decodedPosition, decodedPositions, i * 3);
         }
 
@@ -26177,9 +26369,15 @@ define('Workers/createVectorTilePolygons',[
             var minLon = Number.POSITIVE_INFINITY;
             var maxLon = Number.NEGATIVE_INFINITY;
 
+            // TODO: potentially using an releasing a lot of memory here
+            var polygonPositions = [];
+            var bvPositions = [];
+
+            var position;
+
             for (j = 0; j < polygonCount; ++j) {
-                var position = Cartesian3.unpack(decodedPositions, polygonOffset * 3 + j * 3, scratchEncodedPosition);
-                ellipsoid.scaleToGeodeticSurface(position, position);
+                position = Cartesian3.unpack(decodedPositions, polygonOffset * 3 + j * 3, scratchEncodedPosition);
+                Matrix4.multiplyByPoint(modelMatrix, position, position);
 
                 var carto = ellipsoid.cartesianToCartographic(position, scratchBVCartographic);
                 var lat = carto.latitude;
@@ -26190,12 +26388,29 @@ define('Workers/createVectorTilePolygons',[
                 minLon = Math.min(lon, minLon);
                 maxLon = Math.max(lon, maxLon);
 
+                var scaledPosition = ellipsoid.scaleToGeodeticSurface(position, position);
+                polygonPositions.push(Cartesian3.clone(scaledPosition));
+            }
+
+            var tangentPlane = EllipsoidTangentPlane.fromPoints(polygonPositions, ellipsoid);
+            var positions2D = tangentPlane.projectPointsOntoPlane(polygonPositions);
+
+            var windingOrder = PolygonPipeline.computeWindingOrder2D(positions2D);
+            if (windingOrder === WindingOrder.CLOCKWISE) {
+                polygonPositions.reverse();
+            }
+
+            for (j = 0; j < polygonCount; ++j) {
+                position = polygonPositions[j];
+
                 var normal = ellipsoid.geodeticSurfaceNormal(position, scratchNormal);
                 var scaledNormal = Cartesian3.multiplyByScalar(normal, polygonMinimumHeight, scratchScaledNormal);
                 var minHeightPosition = Cartesian3.add(position, scaledNormal, scratchMinHeightPosition);
 
                 scaledNormal = Cartesian3.multiplyByScalar(normal, polygonMaximumHeight, scaledNormal);
                 var maxHeightPosition = Cartesian3.add(position, scaledNormal, scratchMaxHeightPosition);
+
+                bvPositions.push(Cartesian3.clone(minHeightPosition), Cartesian3.clone(maxHeightPosition));
 
                 Cartesian3.subtract(maxHeightPosition, center, maxHeightPosition);
                 Cartesian3.subtract(minHeightPosition, center, minHeightPosition);
@@ -26210,13 +26425,17 @@ define('Workers/createVectorTilePolygons',[
                 batchIdIndex += 2;
             }
 
-            rectangle = scratchBVRectangle;
-            rectangle.west = minLon;
-            rectangle.east = maxLon;
-            rectangle.south = minLat;
-            rectangle.north = maxLat;
+            if (isCartographic) {
+                rectangle = scratchBVRectangle;
+                rectangle.west = minLon;
+                rectangle.east = maxLon;
+                rectangle.south = minLat;
+                rectangle.north = maxLat;
 
-            boundingVolumes[i] = OrientedBoundingBox.fromRectangle(rectangle, minHeight, maxHeight, ellipsoid);
+                boundingVolumes[i] = OrientedBoundingBox.fromRectangle(rectangle, minHeight, maxHeight, ellipsoid);
+            } else {
+                boundingVolumes[i] = OrientedBoundingBox.fromPoints(bvPositions);
+            }
 
             var indicesIndex = buffer.indexOffset;
 
