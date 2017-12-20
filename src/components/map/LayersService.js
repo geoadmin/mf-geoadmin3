@@ -200,6 +200,28 @@ goog.require('ga_urlutils_service');
                 }
               });
 
+              // Ad diemo layer
+              response.data['ch.bfe.ladestellen-elektromobilitaet'] = {
+                attribution: 'BFE',
+                chargeable: false,
+                searchable: false,
+                serverLayerName: 'ch.bfe.ladestellen-elektromobilitaet',
+                attributionUrl: 'http://www.bfe.admin.ch/index.html?lang=fr',
+                tooltip: true,
+                label: 'Diemo layer',
+                styleUrl: '//s3-eu-west-1.amazonaws.com/ltteo-diemo/' +
+                    'ch.bfe.ladestellen-elektromobilitaet.styles.json',
+                geojsonUrl: 'https://s3-eu-west-1.amazonaws.com/ltteo-diemo/' +
+                    'ch.bfe.ladestellen-elektromobilitaet.json',
+                highlightable: true,
+                background: false,
+                updateDelay: 60000,
+                topics: 'api,bfe,dev,ech,gewiss,inspire,kgs',
+                hasLegend: false,
+                type: 'geojson',
+                timeEnabled: false
+              };
+
               // Test shop layers allowing multiple results in tooltip.
               ids = [
                 'ch.swisstopo.lubis-luftbilder_farbe',
