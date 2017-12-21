@@ -849,7 +849,7 @@ describe('ga_stylesfromliterals_service', function() {
             '"foo": 1000' +
           '}}'
       );
-      var stub = sinon.stub($window, 'alert');
+      var stub = sinon.stub($window.console, 'log');
       olStyle = gaStyle.getFeatureStyle(olFeature, 100);
       olImage = olStyle.getImage();
       expect(olStyle.getImage()).to.equal(null);
@@ -1116,7 +1116,7 @@ describe('ga_stylesfromliterals_service', function() {
             '"foo": 1000' +
           '}}'
       );
-      var stub = sinon.stub($window, 'alert');
+      var stub = sinon.stub($window.console, 'log');
       olStyle = gaStyle.getFeatureStyle(olFeature, 100);
       olImage = olStyle.getImage();
       expect(olStyle.getImage()).to.equal(null);

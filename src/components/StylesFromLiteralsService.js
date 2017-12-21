@@ -221,11 +221,10 @@ goog.provide('ga_stylesfromliterals_service');
         return olStyle;
       };
 
-      OlStyleForPropertyValue.prototype.alertDebug_ = function(value, id) {
+      OlStyleForPropertyValue.prototype.log_ = function(value, id) {
         value = value === '' ? '<empty string>' : value;
-        $window.alert('Feature ID: ' + id + '. No matching style found ' +
+        $window.console.log('Feature ID: ' + id + '. No matching style found ' +
             'for key ' + this.key + ' and value ' + value + '.');
-        return this.defaultStyle;
       };
 
       OlStyleForPropertyValue.prototype.setOlText_ = function(olStyle,
@@ -266,7 +265,8 @@ goog.provide('ga_stylesfromliterals_service');
         }
 
         if (!olStyles) {
-          return this.alertDebug_(value, feature.getId());
+          this.log_(value, feature.getId());
+          return this.defaultStyle;
         }
         styleSpec = this.getOlStyleForResolution_(olStyles, resolution);
         if (styleSpec) {
