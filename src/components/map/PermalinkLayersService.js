@@ -54,6 +54,8 @@ goog.require('ga_wmts_service');
           gaPermalink.getParams().layers_visibility;
       var layersTimestampParamValue =
           gaPermalink.getParams().layers_timestamp;
+      var layersStyleUrlParamValue =
+          gaPermalink.getParams().layers_styleurl;
 
       var layerSpecs = layersParamValue ? layersParamValue.split(',') : [];
       var layerOpacities = layersOpacityParamValue ?
@@ -64,6 +66,8 @@ goog.require('ga_wmts_service');
         layersVisibilityParamValue.split(',') : [];
       var layerTimestamps = layersTimestampParamValue ?
         layersTimestampParamValue.split(',') : [];
+      var layersStyleUrl = layersStyleUrlParamValue ?
+        layersStyleUrlParamValue.split(',') : [];
 
       function updateLayersParam(layers) {
         if (layers.length) {
@@ -130,6 +134,24 @@ goog.require('ga_wmts_service');
         }
       }
 
+      function updateLayersStyleUrlParam(layers) {
+        var hasExternalStyleUrl = false;
+        var styleUrlValues = $.map(layers, function(layer) {
+          if (layer.externalStyleUrl) {
+            hasExternalStyleUrl = true;
+            return layer.externalStyleUrl;
+          }
+          return '';
+        });
+        if (hasExternalStyleUrl) {
+          gaPermalink.updateParams({
+            layers_styleurl: styleUrlValues.join(',')
+          });
+        } else {
+          gaPermalink.deleteParam('layers_styleurl');
+        }
+      }
+
       // Update permalink on layer's modification
       var registerLayersPermalink = function(scope, map) {
         var deregFns = [];
@@ -168,7 +190,11 @@ goog.require('ga_wmts_service');
                 }, function() {
                   updateLayersTimestampsParam(layers);
                 }));
-
+                deregFns.push(scope.$watch(function() {
+                  return layer.externalStyleUrl;
+                }, function() {
+                  updateLayersStyleUrlParam(layers);
+                }));
               });
             });
       };
@@ -204,10 +230,10 @@ goog.require('ga_wmts_service');
         };
 
         var addLayers = function(layerSpecs, opacities, visibilities,
-            timestamps, parameters) {
+            timestamps, parameters, styleUrls) {
           var nbLayersToAdd = layerSpecs.length;
           angular.forEach(layerSpecs, function(layerSpec, index) {
-            var layer, infos;
+            var layer, infos, opts;
             var opacity = (opacities && index < opacities.length) ?
               opacities[index] : undefined;
             var visible = !((visibilities === false ||
@@ -217,6 +243,8 @@ goog.require('ga_wmts_service');
                 timestamps !== '') ? timestamps[index] : '';
             var params = (parameters && index < parameters.length) ?
               gaUrlUtils.parseKeyValue(parameters[index]) : undefined;
+            var styleUrl = (styleUrls && index < styleUrls.length &&
+                styleUrls !== '') ? styleUrls[index] : '';
             var bodLayer = gaLayers.getLayer(layerSpec);
             if (bodLayer) {
               // BOD layer.
@@ -228,7 +256,13 @@ goog.require('ga_wmts_service');
               // parameter defined).
               if ((bodLayer.timeEnabled && isOverlay && timestamps) ||
                   !isOverlay) {
-                layer = gaLayers.getOlLayerById(layerSpec);
+                // Set custom style URL
+                if (styleUrl) {
+                  opts = {
+                    externalStyleUrl: styleUrl
+                  };
+                }
+                layer = gaLayers.getOlLayerById(layerSpec, opts);
 
                 // If the layer is already on the map when need to increment
                 // the id.
@@ -370,7 +404,7 @@ goog.require('ga_wmts_service');
           } else {
             // We add layers from 'layers' parameter
             addLayers(layerSpecs, layerOpacities, layerVisibilities,
-                layerTimestamps, layerParams);
+                layerTimestamps, layerParams, layersStyleUrl);
           }
 
           gaTime.allowStatusUpdate = true;
