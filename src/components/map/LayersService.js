@@ -476,7 +476,7 @@ goog.require('ga_urlutils_service');
         /**
          * Return an ol.layer.Layer object for a layer id.
          */
-        this.getOlLayerById = function(bodId) {
+        this.getOlLayerById = function(bodId, opts) {
           var config = layers[bodId];
           var olLayer;
           var timestamp = this.getLayerTimestampFromYear(bodId, gaTime.get());
@@ -622,9 +622,14 @@ goog.require('ga_urlutils_service');
                     return olSource.getFeatures();
                   });
                 });
-
+            var styleUrl;
+            if (opts && opts.externalStyleUrl) {
+              styleUrl = opts.externalStyleUrl;
+            } else {
+              styleUrl = $window.location.protocol + config.styleUrl;
+            }
             // IE doesn't understand agnostic URLs
-            $http.get($window.location.protocol + config.styleUrl, {
+            $http.get(styleUrl, {
               cache: true
             }).then(function(response) {
               var olStyleForVector = gaStylesFromLiterals(response.data);
@@ -643,6 +648,8 @@ goog.require('ga_urlutils_service');
             olLayer.timestamps = config.timestamps;
             olLayer.geojsonUrl = config.geojsonUrl;
             olLayer.updateDelay = config.updateDelay;
+            olLayer.externalStyleUrl = opts && opts.externalStyleUrl ?
+                opts.externalStyleUrl : null;
             var that = this;
             olLayer.getCesiumImageryProvider = function() {
               return that.getCesiumImageryProviderById(bodId, olLayer);

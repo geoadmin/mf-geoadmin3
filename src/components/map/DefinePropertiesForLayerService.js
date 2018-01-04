@@ -211,6 +211,10 @@ goog.provide('ga_definepropertiesforlayer_service');
             writable: true,
             value: null
           },
+          externalStyleUrl: {
+            writable: true,
+            value: null
+          },
           userVisible: {
             writable: true,
             value: olLayer.getVisible()
