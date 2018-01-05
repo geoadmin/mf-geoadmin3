@@ -88,9 +88,10 @@ describe('ga_search_directive', function() {
       it('verifies html elements', function() {
         loadDirective(map);
         expect(elt.find('input').length).to.be(1);
-        expect(elt.find('[ga-search-locations]').length).to.be(1);
-        expect(elt.find('[ga-search-features]').length).to.be(1);
-        expect(elt.find('[ga-search-layers]').length).to.be(1);
+        expect(scope.query).to.be(undefined);
+        expect(elt.find('[ga-search-locations]').length).to.be(0);
+        expect(elt.find('[ga-search-features]').length).to.be(0);
+        expect(elt.find('[ga-search-layers]').length).to.be(0);
         $timeout.flush();
       });
 
