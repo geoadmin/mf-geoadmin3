@@ -12,3 +12,4 @@ export PUBLIC_URL=//public.dev.bgdi.ch
 export PRINT_URL=//service-print.dev.bgdi.ch
 export PROXY_URL=//service-proxy.dev.bgdi.ch
 export WMTS_URL=//tod.dev.bgdi.ch
+export ADMIN_URL_REGEXP="^(ftp|http|https):\/\/(.*(\.bgdi|\.geo\.admin)\.ch)|(https?:\/\/localhost:[0-9]{1,9})"
