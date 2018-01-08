@@ -20,6 +20,10 @@ describe('ga_layermanager_directive', function() {
   layerThirdParty.displayInLayerManager = true;
   layerThirdParty.url = 'http://foo.ch/admin/wms';
 
+  var layerThirdPartyStyle = new ol.layer.Layer({});
+  layerThirdPartyStyle.displayInLayerManager = true;
+  layerThirdPartyStyle.externalStyleUrl = 'http://mystyle.json';
+
   describe('gaLayermanager', function() {
     var elt, map, $httpBackend, scope, parentScope, $compile, $rootScope, $timeout, $window;
     /* Keep for future tests
@@ -111,7 +115,7 @@ describe('ga_layermanager_directive', function() {
         expect(scope.opacityValues).to.be.an(Array);
       });
 
-      [layerMngr, layerThirdParty].forEach(function(layer) {
+      [layerMngr, layerThirdParty, layerThirdPartyStyle].forEach(function(layer) {
         it('updates content when a good layer is added', function() {
           loadDirective(map);
           map.addLayer(layer);
@@ -132,6 +136,18 @@ describe('ga_layermanager_directive', function() {
       it('adds third party warning tooltip', function() {
         loadDirective(map);
         map.addLayer(layerThirdParty);
+        $rootScope.$digest();
+        var w = elt.find('.fa-user');
+        expect(w.length).to.be(1);
+        expect(w.data('bs.tooltip')).to.be(undefined);
+
+        w.trigger('mouseover');
+        expect(w.data('bs.tooltip')).to.be.an(Object);
+      });
+
+      it('adds third party warning tooltip with external style url', function() {
+        loadDirective(map);
+        map.addLayer(layerThirdPartyStyle);
         $rootScope.$digest();
         var w = elt.find('.fa-user');
         expect(w.length).to.be(1);
