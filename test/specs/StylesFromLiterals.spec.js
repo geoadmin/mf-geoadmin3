@@ -113,7 +113,7 @@ describe('ga_stylesfromliterals_service', function() {
       expect(olStyle).to.be.an(ol.style.Style);
       expect(olImage).to.be.an(ol.style.RegularShape);
       expect(olImage.getPoints()).to.be(3);
-      expect(olImage.getRotation()).to.be(Math.PI / 4);
+      expect(olImage.getRotation()).to.be(0);
       expect(olImage.getAngle()).to.be(0);
 
       singleTypeStyle = {
@@ -162,6 +162,47 @@ describe('ga_stylesfromliterals_service', function() {
       expect(olImage).to.be.an(ol.style.RegularShape);
       expect(olImage.getPoints()).to.be(4);
       expect(olImage.getRotation()).to.be(0);
+      expect(olImage.getAngle()).to.be(0);
+
+      // Test dynamic rotation on single type style
+      singleTypeStyle = {
+        type: 'single',
+        geomType: 'point',
+        rotation: 'azimut',
+        vectorOptions: {
+          type: 'cross',
+          radius: 8,
+          fill: {
+            color: '#FFFFFF'
+          },
+          stroke: {
+            color: '#FFFFFF',
+            width: 2
+          }
+        }
+      };
+      var geoJsonFormat = new ol.format.GeoJSON();
+      var olFeature = geoJsonFormat.readFeature(
+          '{"type": "Feature",' +
+          '"geometry": {' +
+            '"coordinates": [' +
+              '10000,' +
+              '20000' +
+            '],' +
+            '"type": "Point"' +
+          '},' +
+          '"properties": {' +
+            '"foo": "bar",' +
+            '"azimut": 1.22' +
+          '}}'
+      );
+      gaStyle = gaStylesFromLiterals(singleTypeStyle);
+      olStyle = gaStyle.getFeatureStyle(olFeature);
+      olImage = olStyle.getImage();
+      expect(olStyle).to.be.an(ol.style.Style);
+      expect(olImage).to.be.an(ol.style.RegularShape);
+      expect(olImage.getPoints()).to.be(4);
+      expect(olImage.getRotation()).to.be(1.22);
       expect(olImage.getAngle()).to.be(0);
     });
 
@@ -563,6 +604,71 @@ describe('ga_stylesfromliterals_service', function() {
       expect(olImage.getStroke()).to.be.an(ol.style.Stroke);
       expect(olImage.getStroke().getColor()).to.equal('#F55555');
       expect(olImage.getStroke().getWidth()).to.equal(2);
+    });
+
+    it('supports simple unique type style assignment with dynamic rotation', function() {
+      var uniqueTypeStyle = {
+        type: 'unique',
+        property: 'foo',
+        values: [
+          {
+            geomType: 'point',
+            value: 'bar',
+            rotation: 'azimut',
+            vectorOptions: {
+              type: 'star',
+              radius: 8,
+              fill: {
+                color: '#FF1FF1'
+              },
+              stroke: {
+                color: '#FFFFFF',
+                width: 3
+              }
+            }
+          }, {
+            geomType: 'point',
+            value: 'toto',
+            rotation: 'azimut',
+            vectorOptions: {
+              type: 'star',
+              radius: 8,
+              fill: {
+                color: '#FF2222'
+              },
+              stroke: {
+                color: '#F55555',
+                width: 2
+              }
+            }
+          }
+        ]
+      };
+      var gaStyle = gaStylesFromLiterals(uniqueTypeStyle);
+      var geoJsonFormat = new ol.format.GeoJSON();
+      var olFeature = geoJsonFormat.readFeature(
+          '{"type": "Feature",' +
+          '"geometry": {' +
+            '"coordinates": [' +
+              '10000,' +
+              '20000' +
+            '],' +
+            '"type": "Point"' +
+          '},' +
+          '"properties": {' +
+            '"foo": "bar",' +
+            '"azimut": 1.57' +
+          '}}'
+      );
+      var olStyle = gaStyle.getFeatureStyle(olFeature, 100);
+      var olImage = olStyle.getImage();
+      expect(olStyle.getImage()).to.be.an(ol.style.Image);
+      expect(olStyle.getImage().getRotation()).to.equal(1.57);
+      expect(olImage.getFill()).to.be.an(ol.style.Fill);
+      expect(olImage.getFill().getColor()).to.equal('#FF1FF1');
+      expect(olImage.getStroke()).to.be.an(ol.style.Stroke);
+      expect(olImage.getStroke().getColor()).to.equal('#FFFFFF');
+      expect(olImage.getStroke().getWidth()).to.equal(3);
     });
 
     it('supports simple unique type style assignment resolution dependent', function() {
