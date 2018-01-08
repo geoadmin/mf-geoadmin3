@@ -21,7 +21,6 @@ goog.provide('ga_stylesfromliterals_service');
             },
             triangle: {
               points: 3,
-              rotation: Math.PI / 4,
               angle: 0
             },
             star: {
@@ -120,7 +119,8 @@ goog.provide('ga_stylesfromliterals_service');
           minResolution: getMinResolution(value),
           maxResolution: getMaxResolution(value),
           labelProperty: getLabelProperty(value.vectorOptions.label),
-          labelTemplate: getLabelTemplate(value.vectorOptions.label)
+          labelTemplate: getLabelTemplate(value.vectorOptions.label),
+          imageRotation: value.rotation
         };
       }
 
@@ -160,7 +160,8 @@ goog.provide('ga_stylesfromliterals_service');
           this.singleStyle = {
             olStyle: getOlStyleFromLiterals(properties),
             labelProperty: getLabelProperty(properties.vectorOptions.label),
-            labelTemplate: getLabelTemplate(properties.vectorOptions.label)
+            labelTemplate: getLabelTemplate(properties.vectorOptions.label),
+            imageRotation: properties.rotation
           };
         } else if (this.type === 'unique') {
           var values = properties.values;
@@ -250,9 +251,24 @@ goog.provide('ga_stylesfromliterals_service');
         return olStyle;
       };
 
+      OlStyleForPropertyValue.prototype.setOlRotation_ = function(olStyle,
+          imageRotation, properties) {
+        var rotation, image;
+        if (imageRotation) {
+          rotation = properties[imageRotation];
+          if (rotation && $.isNumeric(rotation)) {
+            image = olStyle.getImage();
+            if (image) {
+              image.setRotation(rotation);
+            }
+          }
+        }
+        return olStyle;
+      };
+
       OlStyleForPropertyValue.prototype.getOlStyle_ = function(feature,
           resolution, properties) {
-        var value, geomType, olStyles, styleSpec;
+        var value, geomType, olStyle, olStyles, styleSpec;
         // A value can be 0
         value = properties[this.key];
         value = value !== undefined ? value : this.defaultVal;
@@ -270,23 +286,29 @@ goog.provide('ga_stylesfromliterals_service');
         }
         styleSpec = this.getOlStyleForResolution_(olStyles, resolution);
         if (styleSpec) {
-          return this.setOlText_(styleSpec.olStyle, styleSpec.labelProperty,
+          olStyle = this.setOlText_(styleSpec.olStyle, styleSpec.labelProperty,
               styleSpec.labelTemplate, properties);
+          olStyle = this.setOlRotation_(styleSpec.olStyle,
+              styleSpec.imageRotation, properties);
+          return olStyle;
         }
         return this.defaultStyle;
       };
 
       OlStyleForPropertyValue.prototype.getFeatureStyle = function(feature,
           resolution) {
-        var properties;
+        var properties, singleStyle;
         if (feature) {
           properties = feature.getProperties();
         }
 
         if (this.type === 'single') {
-          return this.setOlText_(this.singleStyle.olStyle,
+          singleStyle = this.setOlText_(this.singleStyle.olStyle,
               this.singleStyle.labelProperty, this.singleStyle.labelTemplate,
               properties);
+          singleStyle = this.setOlRotation_(this.singleStyle.olStyle,
+              this.singleStyle.imageRotation, properties);
+          return singleStyle;
         } else if (this.type === 'unique') {
           return this.getOlStyle_(feature, resolution, properties);
         } else if (this.type === 'range') {
