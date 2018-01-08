@@ -269,8 +269,11 @@ goog.require('ga_window_service');
         };
 
         scope.showWarning = function(layer) {
-          var url = gaUrlUtils.isValid(layer.url) ?
-            gaUrlUtils.getHostname(layer.url) : layer.url;
+          var url = gaUrlUtils.isValid(layer.url) ||
+              gaUrlUtils.isValid(layer.externalStyleUrl) ?
+            gaUrlUtils.getHostname(layer.url) ||
+              gaUrlUtils.getHostname(layer.externalStyleUrl) : layer.url ||
+              layer.externalStyleUrl;
           $window.alert($translate.instant('external_data_warning').
               replace('--URL--', url));
         };
