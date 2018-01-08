@@ -2,7 +2,7 @@
 describe('ga_layers_service', function() {
 
   describe('gaLayers', function() {
-    var gaLayers, gaTime, $httpBackend, $rootScope, gaGlobalOptions, gaNetworkStatus, $timeout;
+    var gaLayers, gaTime, $httpBackend, $rootScope, $q, gaGlobalOptions, gaNetworkStatus, $timeout;
     var expectedUrl = 'https://example.com/all?lang=somelang';
     var dfltLayersConfig = {
       foo: {
@@ -118,6 +118,7 @@ describe('ga_layers_service', function() {
         $rootScope = $injector.get('$rootScope');
         $timeout = $injector.get('$timeout');
         $httpBackend = $injector.get('$httpBackend');
+        $q = $injector.get('$q');
         gaLayers = $injector.get('gaLayers');
         gaTime = $injector.get('gaTime');
         gaGlobalOptions = $injector.get('gaGlobalOptions');
@@ -659,7 +660,7 @@ describe('ga_layers_service', function() {
           minResolution: 0.5,
           maxResolution: 100,
           opacity: 0.35,
-          geojsonUrl: 'http://my.json',
+          geojsonUrl: 'http://mygeojson.json',
           styleUrl: '//mystyle.json'
         }
       };
@@ -780,8 +781,7 @@ describe('ga_layers_service', function() {
         });
 
         it('returns a GeoJSON layer using default data projection (EPSG:4326)', function(done) {
-          $httpBackend.expectGET('http://mystyle.json').respond({});
-          $httpBackend.expectGET(gaGlobalOptions.proxyUrl + 'http/my.json').respond({
+          $httpBackend.expectGET(gaGlobalOptions.proxyUrl + 'http/mygeojson.json').respond({
             'features': [{
               'type': 'Feature',
               'geometry': {
@@ -793,6 +793,7 @@ describe('ga_layers_service', function() {
             }],
             'type': 'FeatureCollection'
           });
+          $httpBackend.expectGET(gaGlobalOptions.proxyUrl + 'http/mystyle.json').respond({});
           var layer = gaLayers.getOlLayerById('geojson');
           expect(layer instanceof ol.layer.Vector).to.be.ok();
           expect(layer.getMinResolution()).to.be(0.5);
@@ -802,23 +803,42 @@ describe('ga_layers_service', function() {
           var source = layer.getSource();
           expect(source instanceof ol.source.Vector).to.be.ok();
           expectCommonProperties(layer, 'geojson');
-          gaLayers.getLayerPromise('geojson').then(function(feats) {
-            expect(feats[0].getGeometry().getCoordinates()).to.eql([3639371.9660116024, 2322382.8078037957]);
+          $q.all([gaLayers.getLayerPromise('geojson'),
+            gaLayers.getLayerStylePromise('geojson')]).then(function(vals) {
+            expect(vals[0][0].getGeometry().getCoordinates()).to.eql([3639371.9660116024, 2322382.8078037957]);
             done();
           });
+          $rootScope.$apply();
           $httpBackend.flush();
         });
 
-        it('returns a GeoJSON layer with updateDelay', function() {
-          $httpBackend.expectGET('http://mystyle.json').respond({});
+        it('returns a GeoJSON layer with updateDelay', function(done) {
+          $httpBackend.expectGET(gaGlobalOptions.proxyUrl + 'http/mygeojson.json').respond({
+            'features': [{
+              'type': 'Feature',
+              'geometry': {
+                'coordinates': [24, 56],
+                'type': 'Point'
+              },
+              'id': '2009',
+              'properties': {}
+            }],
+            'type': 'FeatureCollection'
+          });
+          $httpBackend.expectGET(gaGlobalOptions.proxyUrl + 'http/mystyle.json').respond({});
           var layer = gaLayers.getOlLayerById('geojsondelay');
           expectCommonProperties(layer, 'geojsondelay');
+          $q.all([gaLayers.getLayerPromise('geojsondelay'),
+            gaLayers.getLayerStylePromise('geojsondelay')]).then(function(vals) {
+            expect(vals[0][0].getGeometry().getCoordinates()).to.eql([3639371.9660116024, 2322382.8078037957]);
+            done();
+          });
+          $rootScope.$apply();
           $httpBackend.flush();
         });
 
         it('returns a GeoJSON layer using a custom projection (EPSG:21781)', function(done) {
-          $httpBackend.expectGET('http://mystyle.json').respond({});
-          $httpBackend.expectGET(gaGlobalOptions.proxyUrl + 'http/my.json').respond({
+          $httpBackend.expectGET(gaGlobalOptions.proxyUrl + 'http/mygeojson.json').respond({
             'crs': {
               'type': 'name',
               'properties': {
@@ -836,6 +856,7 @@ describe('ga_layers_service', function() {
             }],
             'type': 'FeatureCollection'
           });
+          $httpBackend.expectGET(gaGlobalOptions.proxyUrl + 'http/mystyle.json').respond({});
           var layer = gaLayers.getOlLayerById('geojson');
           expect(layer instanceof ol.layer.Vector).to.be.ok();
           expect(layer.getMinResolution()).to.be(0.5);
@@ -845,10 +866,12 @@ describe('ga_layers_service', function() {
           var source = layer.getSource();
           expect(source instanceof ol.source.Vector).to.be.ok();
           expectCommonProperties(layer, 'geojson');
-          gaLayers.getLayerPromise('geojson').then(function(feats) {
-            expect(feats[0].getGeometry().getCoordinates()).to.eql([2600000, 1199999.999848965]);
+          $q.all([gaLayers.getLayerPromise('geojson'),
+            gaLayers.getLayerStylePromise('geojson')]).then(function(vals) {
+            expect(vals[0][0].getGeometry().getCoordinates()).to.eql([2600000, 1199999.999848965]);
             done();
           });
+          $rootScope.$apply();
           $httpBackend.flush();
         });
       });

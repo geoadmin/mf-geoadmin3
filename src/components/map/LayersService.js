@@ -49,7 +49,9 @@ goog.require('ga_urlutils_service');
         return domainsArray;
       };
 
-      var geojsonPromises = {}
+      var geojsonPromises = {};
+
+      var stylePromises = {};
 
       var Layers = function(wmsUrlTemplate, dfltWmsSubdomains,
           dfltVectorTilesSubdomains,
@@ -623,20 +625,24 @@ goog.require('ga_urlutils_service');
                   });
                 });
             var styleUrl;
-            if (opts && opts.externalStyleUrl) {
+            if (opts && opts.externalStyleUrl &&
+                gaUrlUtils.isValid(opts.externalStyleUrl)) {
               styleUrl = opts.externalStyleUrl;
             } else {
               styleUrl = $window.location.protocol + config.styleUrl;
             }
             // IE doesn't understand agnostic URLs
-            $http.get(styleUrl, {
-              cache: true
-            }).then(function(response) {
-              var olStyleForVector = gaStylesFromLiterals(response.data);
-              olLayer.setStyle(function(feature, resolution) {
-                return [olStyleForVector.getFeatureStyle(feature, resolution)];
-              });
-            });
+            stylePromises[bodId] = gaUrlUtils.proxifyUrl(styleUrl).
+                then(function(proxyStyleUrl) {
+                  return $http.get(proxyStyleUrl, {
+                    cache: styleUrl === proxyStyleUrl
+                  }).then(function(response) {
+                    var olStyleForVector = gaStylesFromLiterals(response.data);
+                    return olLayer.setStyle(function(feature, res) {
+                      return [olStyleForVector.getFeatureStyle(feature, res)];
+                    });
+                  });
+                });
           }
           if (angular.isDefined(olLayer)) {
             gaDefinePropertiesForLayer(olLayer);
@@ -649,7 +655,7 @@ goog.require('ga_urlutils_service');
             olLayer.geojsonUrl = config.geojsonUrl;
             olLayer.updateDelay = config.updateDelay;
             olLayer.externalStyleUrl = opts && opts.externalStyleUrl ?
-                opts.externalStyleUrl : null;
+              opts.externalStyleUrl : null;
             var that = this;
             olLayer.getCesiumImageryProvider = function() {
               return that.getCesiumImageryProviderById(bodId, olLayer);
@@ -664,10 +670,14 @@ goog.require('ga_urlutils_service');
           return olLayer;
         };
 
+        this.getLayerStylePromise = function(bodId) {
+          return stylePromises[bodId];
+        };
+
         // Returns promise of layer with its features when layers are added.
         this.getLayerPromise = function(bodId) {
           return geojsonPromises[bodId];
-        }
+        };
 
         /**
          * Returns layers definition for given bodId. Returns
