@@ -40,6 +40,7 @@ The `vectorOptions` property defines the style to apply and is structured as fol
 {
   "type": "single",
   "geomType": "point",
+  "rotation": "optionalPropertyName",
   "vectorOptions": {
     "type": "circle|icon|square|triangle|star|cross",
     "radius": 10,
@@ -71,6 +72,8 @@ For `point` geomType the radius (given in pixels) determines the size of the sym
 * fill: same options as defined in [ol.style.Fill](http://openlayers.org/en/latest/apidoc/ol.style.Fill.html).
 * label->text: same options as defined in [ol.style.Text](http://openlayers.org/en/latest/apidoc/ol.style.Text.html)
 
+For `point` geomType it is possible to define a dynamic `rotation` property. The rotation in the feature properites must be defined in radians clockwise with it's origin at the azimut.
+
 For `label` 2 options are available.
 
 * `property` displays a property value found in a GeoJSON feature properties.
@@ -91,6 +94,7 @@ A JSON stylesheet of `single` type is structured as follow:
     {
       "geomType": "point|line|polygon",
       "value": "optionalPropertyValue",
+      "rotation": "optionalPropertyName",
       "minResolution": "optionalMinResolution",
       "maxResolution": "optionalMaxResolution",
       "vectorOptions": {

@@ -120,7 +120,7 @@ goog.provide('ga_stylesfromliterals_service');
           maxResolution: getMaxResolution(value),
           labelProperty: getLabelProperty(value.vectorOptions.label),
           labelTemplate: getLabelTemplate(value.vectorOptions.label),
-          imageRotation: value.rotation
+          imageRotationProperty: value.rotation
         };
       }
 
@@ -161,7 +161,7 @@ goog.provide('ga_stylesfromliterals_service');
             olStyle: getOlStyleFromLiterals(properties),
             labelProperty: getLabelProperty(properties.vectorOptions.label),
             labelTemplate: getLabelTemplate(properties.vectorOptions.label),
-            imageRotation: properties.rotation
+            imageRotationProperty: properties.rotation
           };
         } else if (this.type === 'unique') {
           var values = properties.values;
@@ -252,10 +252,10 @@ goog.provide('ga_stylesfromliterals_service');
       };
 
       OlStyleForPropertyValue.prototype.setOlRotation_ = function(olStyle,
-          imageRotation, properties) {
+          imageRotationProperty, properties) {
         var rotation, image;
-        if (imageRotation) {
-          rotation = properties[imageRotation];
+        if (imageRotationProperty) {
+          rotation = properties[imageRotationProperty];
           if (rotation && $.isNumeric(rotation)) {
             image = olStyle.getImage();
             if (image) {
@@ -289,7 +289,7 @@ goog.provide('ga_stylesfromliterals_service');
           olStyle = this.setOlText_(styleSpec.olStyle, styleSpec.labelProperty,
               styleSpec.labelTemplate, properties);
           olStyle = this.setOlRotation_(styleSpec.olStyle,
-              styleSpec.imageRotation, properties);
+              styleSpec.imageRotationProperty, properties);
           return olStyle;
         }
         return this.defaultStyle;
@@ -307,7 +307,7 @@ goog.provide('ga_stylesfromliterals_service');
               this.singleStyle.labelProperty, this.singleStyle.labelTemplate,
               properties);
           singleStyle = this.setOlRotation_(this.singleStyle.olStyle,
-              this.singleStyle.imageRotation, properties);
+              this.singleStyle.imageRotationProperty, properties);
           return singleStyle;
         } else if (this.type === 'unique') {
           return this.getOlStyle_(feature, resolution, properties);
