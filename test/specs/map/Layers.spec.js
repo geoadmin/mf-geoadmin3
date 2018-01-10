@@ -838,6 +838,11 @@ describe('ga_layers_service', function() {
         });
 
         it('returns a GeoJSON layer using a custom projection (EPSG:21781)', function(done) {
+          var externalStyleUrl = 'http://external/mystyle.json';
+          var styleUrl = gaGlobalOptions.proxyUrl + 'http/external%2Fmystyle.json';
+          var opts = {
+            externalStyleUrl: externalStyleUrl
+          };
           $httpBackend.expectGET(gaGlobalOptions.proxyUrl + 'http/mygeojson.json').respond({
             'crs': {
               'type': 'name',
@@ -856,8 +861,21 @@ describe('ga_layers_service', function() {
             }],
             'type': 'FeatureCollection'
           });
-          $httpBackend.expectGET(gaGlobalOptions.proxyUrl + 'http/mystyle.json').respond({});
-          var layer = gaLayers.getOlLayerById('geojson');
+          $httpBackend.expectGET(styleUrl).respond({
+            'type': 'single',
+            'geomType': 'point',
+            'vectorOptions': {
+              'type': 'square',
+              'radius': 10,
+              'fill': {
+                'color': 'red'
+              },
+              'stroke': {
+                'color': 'red'
+              }
+            }
+          });
+          var layer = gaLayers.getOlLayerById('geojson', opts);
           expect(layer instanceof ol.layer.Vector).to.be.ok();
           expect(layer.getMinResolution()).to.be(0.5);
           expect(layer.getMaxResolution()).to.be(100);
@@ -869,6 +887,9 @@ describe('ga_layers_service', function() {
           $q.all([gaLayers.getLayerPromise('geojson'),
             gaLayers.getLayerStylePromise('geojson')]).then(function(vals) {
             expect(vals[0][0].getGeometry().getCoordinates()).to.eql([2600000, 1199999.999848965]);
+            var s = vals[1].getFeatureStyle(vals[0][0]);
+            expect(s.getImage().getFill().getColor()).to.equal('red');
+            expect(s.getImage().getStroke().getColor()).to.equal('red');
             done();
           });
           $rootScope.$apply();
