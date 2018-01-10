@@ -638,9 +638,10 @@ goog.require('ga_urlutils_service');
                     cache: styleUrl === proxyStyleUrl
                   }).then(function(response) {
                     var olStyleForVector = gaStylesFromLiterals(response.data);
-                    return olLayer.setStyle(function(feature, res) {
+                    olLayer.setStyle(function(feature, res) {
                       return [olStyleForVector.getFeatureStyle(feature, res)];
                     });
+                    return olStyleForVector;
                   });
                 });
           }
@@ -656,6 +657,7 @@ goog.require('ga_urlutils_service');
             olLayer.updateDelay = config.updateDelay;
             olLayer.externalStyleUrl = opts && opts.externalStyleUrl ?
               opts.externalStyleUrl : null;
+            olLayer.useThirdPartyData = !(!opts) && !(!opts.externalStyleUrl);
             var that = this;
             olLayer.getCesiumImageryProvider = function() {
               return that.getCesiumImageryProviderById(bodId, olLayer);
@@ -793,7 +795,7 @@ goog.require('ga_urlutils_service');
             config = this.getConfig3d(config) || config;
           }
           // If the layer's config has no tooltip property we try to get the
-          // value from the parent. 
+          // value from the parent.
           if (!angular.isDefined(config.tooltip) && config.parentLayerId) {
             config = this.getLayer(config.parentLayerId);
           }
