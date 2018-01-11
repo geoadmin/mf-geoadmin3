@@ -12,9 +12,8 @@
     <button class="fa fa-remove-sign ga-icon ga-btn" ng-click="clearInput()"
        ng-mousedown="preClear($event)" ng-hide="query==''"></button>
     <span class="ga-search-dropdown"
-          ng-show="restat.sets()"
-          ng-class="'ga-search-' + restat.sets()"
-          ng-if="!(query==''||query=='undefined')">
+          ng-show="query && restat.sets()"
+          ng-class="'ga-search-' + restat.sets()">
       <!-- locations -->
       <div ga-search-locations ga-search-locations-options="childoptions" ga-search-locations-map="map" ga-search-locations-ol3d="::ol3d"></div>
       <!-- features -->
