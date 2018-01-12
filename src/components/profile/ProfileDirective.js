@@ -25,7 +25,7 @@ goog.require('ga_styles_service');
         options: '=gaProfileOptions'
       },
       link: function(scope, element, attrs) {
-        var profile, deregisterKey;
+        var profile, deregisterKey, deregisterKey2;
         var options = scope.options;
         var tooltipEl = element.find('.ga-profile-tooltip');
         var containerEl = element.find('.ga-profile-graph');
@@ -102,12 +102,17 @@ goog.require('ga_styles_service');
           attachPathListeners(areaChartPath);
         };
 
+        var create = function(feature, options) {
+          gaProfile.create(feature, options).then(onCreate);
+        };
+        var createDebounced = gaDebounce.debounce(create, 500, true,
+            false);
+
         var update = function(feature) {
           gaProfile.update(profile, feature).then(function(prof) {
             scope.unitX = prof.unitX;
           });
         };
-
         var updateDebounced = gaDebounce.debounce(update, 1000, false,
             false);
 
@@ -134,10 +139,22 @@ goog.require('ga_styles_service');
             scope.$applyAsync(function() {
               options.width = containerEl.width();
               options.height = containerEl.height();
-              gaProfile.create(feature, options).then(onCreate);
+              createDebounced(feature, options);
             });
           } else {
             updateDebounced(feature);
+          }
+        };
+
+        var registerChangeCoordinatesEvt = function(newFeature) {
+          if (deregisterKey2) {
+            ol.Observable.unByKey(deregisterKey2);
+            deregisterKey2 = undefined;
+          }
+          if (newFeature && newFeature.getGeometry()) {
+            deregisterKey2 = newFeature.getGeometry().on('change', function() {
+              reload(newFeature);
+            });
           }
         };
 
@@ -146,13 +163,19 @@ goog.require('ga_styles_service');
             ol.Observable.unByKey(deregisterKey);
             deregisterKey = undefined;
           }
+          registerChangeCoordinatesEvt(newFeature);
+
           if (newFeature) {
-            deregisterKey = newFeature.on('change', function(evt) {
-              reload(evt.target);
+            deregisterKey = newFeature.on('change:geometry', function(evt) {
+              registerChangeCoordinatesEvt(evt.target);
+              reload(newFeature);
             });
             reload(newFeature);
           }
         };
+        scope.$on('$destroy', function() {
+          useFeature();
+        });
         scope.$watch('feature', useFeature);
 
         var dereg = [

@@ -180,6 +180,24 @@ describe('ga_profile_directive', function() {
         expect(scope.unitX).to.be('unitX');
       });
 
+      it('unset events on scope $destroy event', function() {
+        var spy = sinon.stub(gaProfile, 'update').withArgs(profile, feature).returns($q.when({}));
+        expect(spy.callCount).to.be(0);
+        feature.setGeometry(new ol.geom.LineString([[1, 2], [2, 3]]));
+        $timeout.flush();
+        feature.getGeometry().setCoordinates([[1, 2], [2, 3], [3, 4]]);
+        $timeout.flush();
+        expect(spy.callCount).to.be(2);
+
+        spy.reset();
+        scope.$destroy();
+        feature.getGeometry().setCoordinates([[1, 2], [2, 3], [3, 4]]);
+        $timeout.verifyNoPendingTasks();
+        feature.setGeometry(new ol.geom.LineString([[1, 3], [2, 3]]));
+        $timeout.verifyNoPendingTasks();
+        expect(spy.callCount).to.be(0);
+      });
+
       it('updates labels on $translateChangeEnd event', function() {
         var spy = sinon.spy(profile, 'updateLabels');
         $rootScope.$broadcast('$translateChangeEnd');
@@ -193,10 +211,19 @@ describe('ga_profile_directive', function() {
         expect(spy.callCount).to.be(1);
       });
 
-      it('updates profile on feature\'s change event', function() {
+      it('updates profile on feature\'s change:geometry event', function() {
         var spy = sinon.stub(gaProfile, 'update').withArgs(profile, feature).returns($q.when({unitX: 'newUnitX'}));
         expect(spy.callCount).to.be(0);
         feature.setGeometry(new ol.geom.LineString([[1, 2], [2, 3]]));
+        $timeout.flush();
+        expect(spy.callCount).to.be(1);
+        expect(scope.unitX).to.be('newUnitX');
+      });
+
+      it('updates profile on feature\'s geometry change event', function() {
+        var spy = sinon.stub(gaProfile, 'update').withArgs(profile, feature).returns($q.when({unitX: 'newUnitX'}));
+        expect(spy.callCount).to.be(0);
+        feature.getGeometry().setCoordinates([[1, 2], [2, 3], [3, 4]]);
         $timeout.flush();
         expect(spy.callCount).to.be(1);
         expect(scope.unitX).to.be('newUnitX');
