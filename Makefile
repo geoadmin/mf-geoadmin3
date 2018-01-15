@@ -61,7 +61,7 @@ LESS_PARAMETERS ?= -ru
 KEEP_VERSION ?= 'false'
 LAST_VERSION := $(call lastvalue,version)
 VERSION := $(shell if [ '$(KEEP_VERSION)' = 'true' ] && [ '$(LAST_VERSION)' != '-none-' ]; then echo '$(LAST_VERSION)'; else date '+%y%m%d%H%M'; fi)
-GIT_BRANCH := $(shell if [ -f .build-artefacts/deployed-git-branch ]; then cat .build-artefacts/deployed-git-branch 2> /dev/null; else git rev-parse --symbolic-full-name --abbrev-ref HEAD; fi)
+GIT_BRANCH ?= $(shell if [ -f .build-artefacts/deployed-git-branch ]; then cat .build-artefacts/deployed-git-branch 2> /dev/null; else git rev-parse --symbolic-full-name --abbrev-ref HEAD; fi)
 GIT_LAST_BRANCH := $(call lastvalue,git-branch)
 BRANCH_TO_DELETE ?=
 DEPLOY_ROOT_DIR := /var/www/vhosts/mf-geoadmin3/private/branch
@@ -172,6 +172,7 @@ help:
 	@echo "- APACHE_BASE_DIRECTORY       (build with: $(LAST_APACHE_BASE_DIRECTORY), current value: $(APACHE_BASE_DIRECTORY))"
 	@echo "- SNAPSHOT                    (current value: $(SNAPSHOT))"
 	@echo "- GIT_BRANCH                  (current value: $(GIT_BRANCH))"
+	@echo "- DEPLOY_GIT_BRANCH           (current value: $(DEPLOY_GIT_BRANCH))"
 	@echo "- GIT_COMMIT_HASH             (current value: $(GIT_COMMIT_HASH))"
 	@echo "- VERSION                     (build with: $(LAST_VERSION), current value: $(VERSION))"
 
@@ -269,14 +270,13 @@ s3deploybranch: guard-DEPLOY_GIT_BRANCH \
 	              guard-NAMED_BRANCH \
 	              .build-artefacts/requirements.timestamp
 	./scripts/clonebuild.sh ${CLONEDIR} int ${DEPLOY_GIT_BRANCH} ${DEEP_CLEAN} ${NAMED_BRANCH};
-	${PYTHON_CMD} ./scripts/s3manage.py upload ${CLONEDIR}/mf-geoadmin3 int ${NAMED_BRANCH};
+	${PYTHON_CMD} ./scripts/s3manage.py upload ${CLONEDIR}/mf-geoadmin3 int ${NAMED_BRANCH} ${DEPLOY_GIT_BRANCH};
 
 .PHONY: s3copybranch
 s3copybranch: guard-DEPLOY_GIT_BRANCH \
-	            guard-DEEP_CLEAN \
 	            guard-NAMED_BRANCH \
 	            .build-artefacts/requirements.timestamp
-	${PYTHON_CMD} ./scripts/s3manage.py upload . int ${NAMED_BRANCH};
+	${PYTHON_CMD} ./scripts/s3manage.py upload . int ${NAMED_BRANCH} ${DEPLOY_GIT_BRANCH};
 
 
 .PHONY: s3deploybranchinfra

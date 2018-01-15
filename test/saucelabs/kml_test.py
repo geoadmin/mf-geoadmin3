@@ -15,7 +15,7 @@ def runKmlTest(driver, target, is_top_browser):
     # We maximize our window to be sure to be in full resolution
     driver.maximize_window()
     # Goto the travis deployed site.
-    driver.get(target + '/?lang=de')
+    driver.get(target + '?lang=de')
     # Click on "Werkzeuge"
     driver.find_element_by_css_selector("#toolsHeading").click()
     # Click on "KML Import"

@@ -4,13 +4,11 @@ pipeline {
     stages {
        stage('Build') {
             steps {
-                echo 'Building..'
                 sh 'make lint debug release'
             }
         }
         stage('Test') {
             steps {
-                echo 'Testing..'
                 sh 'make testdebug testrelease'
          
             }
@@ -22,22 +20,19 @@ pipeline {
                 }
             }
             steps {
-                echo 'Deploying branch on int....'
-                sh 'make s3deploybranch'
+                sh 'make DEPLOY_GIT_BRANCH=' + env.ghprbSourceBranch + ' s3copybranch'
             }
         }
-        /*
         stage('Test e2e') {
-            environment {
-                E2E_TARGETURL =  'https://mf-geoadmin3.int.bgdi.ch'
+            when {
+                not {
+                    branch 'master'
+                }
             }
             steps {
-
-                echo 'Testing e2e ...' + env.GIT_BRANCH
-                sh 'env'
-                sh 'make teste2e'
+                sh 'make E2E_TARGETURL=https://mf-geoadmin3.int.bgdi.ch/' + env.ghprbSourceBranch + '/index.html teste2e'
             }
-        }*/
+        }
     }
     post {
         always {

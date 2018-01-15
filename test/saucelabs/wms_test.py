@@ -18,7 +18,7 @@ def runWmsTest(driver, target, is_top_browser):
     driver.get(target)
     # We maximize our window to be sure to be in full resolution
     driver.maximize_window()
-    driver.get(target + '/?lang=de')
+    driver.get(target + '?lang=de')
     # Click on "Werkzeuge"
     driver.find_element_by_css_selector("#toolsHeading").click()
     # Click on "Import"
@@ -62,7 +62,7 @@ def runWmsTest(driver, target, is_top_browser):
     # Check if url is adapted to WMS layer
     assert QUERYSTRING_WMS in driver.current_url
     # Go to the WMS layer page
-    driver.get(target + '/?lang=de&layers=' + QUERYSTRING_WMS)
+    driver.get(target + '?lang=de&layers=' + QUERYSTRING_WMS)
     # Check if the WMS Layer is loaded
     driver.find_element_by_xpath("//*[@id='selection']//*[text()[contains(.,'AGNES')]]")
     print 'Import Wms tests Ok!'
