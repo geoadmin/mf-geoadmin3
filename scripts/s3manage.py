@@ -219,7 +219,7 @@ def get_file_mimetype(local_file):
 
 def upload(bucket_name, base_dir, deploy_target, named_branch):
     s3_dir_path, version = create_s3_dir_path(base_dir, named_branch)
-    print('Destionation folder is:')
+    print('Destination folder is:')
     print('%s' % s3_dir_path)
     upload_directories = ['prd', 'src']
     exclude_filename_patterns = ['.less', '.gitignore', '.mako.']
