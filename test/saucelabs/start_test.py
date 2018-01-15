@@ -8,8 +8,9 @@ DEFAULT_WAIT_LOAD = 20
 def runStartTest(driver, url, is_top_browser):
     # Set the timeout to x ms
     driver.set_page_load_timeout(DEFAULT_WAIT_LOAD)
+    url = url + '?lang=de'
     print 'Start %s:' % url
-    driver.get(url + '/?lang=de')
+    driver.get(url)
     try:
         WebDriverWait(driver, 10).until(EC.title_contains('chweiz'))
     except Exception as e:

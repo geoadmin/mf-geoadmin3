@@ -119,7 +119,7 @@ def testSwissSearchParameter(driver, url, inputEl, searchTest, timeout=10):
     oneResOnly = searchTest['oneResOnly']
     resultTitle = searchTest['resultTitle']
     resultLocation = searchTest['resultLocation']
-    targetUrl = url + '/?lang=de&swisssearch=%s' % searchText
+    targetUrl = url + '?lang=de&swisssearch=%s' % searchText
     driver.get(targetUrl)
     # One result only -> zoom to the desired location
     if oneResOnly:
@@ -213,7 +213,7 @@ def runSearchTest(driver, target, is_top_browser):
     print 'Start Search tests'
 
     # swissearch parameter with multiple results
-    targetUrl = target + '/?lang=de'
+    targetUrl = target + '?lang=de'
     driver.get(targetUrl)
     pageLoadWait(driver, targetUrl)
 
