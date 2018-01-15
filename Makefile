@@ -146,6 +146,7 @@ help:
 	@echo "- s3deployprod       Deploys a snapshot specified with SNAPSHOT=xxx to s3 prod."
 	@echo "- s3activateint      Activate a version at the root of a remote bucket. (usage only: make s3activateint S3_VERSION_PATH=<branch>/<sha>/<version>)"
 	@echo "- s3activateprod     Activate a version at the root of a remote bucket. (usage only: make s3activateprod S3_VERSION_PATH=<branch>/<sha>/<version>)"
+	@echo "- s3copybranch       Copy the current directory content to S3 int. Defaults to the current branch name. WARNING: your code must have been compiled with 'make user' first."
 	@echo "- s3listint          List availables branches, revision and build on int bucket."
 	@echo "- s3listprod         List availables branches, revision and build on prod bucket."
 	@echo "- s3infoint          Get version info on remote int bucket. (usage only: make s3infoint S3_VERSION_PATH=<branch>/<sha>/<version>)"
@@ -263,13 +264,20 @@ s3deployprod: guard-SNAPSHOT .build-artefacts/requirements.timestamp
 	./scripts/deploysnapshot.sh $(SNAPSHOT) prod;
 
 .PHONY: s3deploybranch
-s3deploybranch: guard-CLONEDIR \
-	              guard-DEPLOY_GIT_BRANCH \
+s3deploybranch: guard-DEPLOY_GIT_BRANCH \
 	              guard-DEEP_CLEAN \
 	              guard-NAMED_BRANCH \
 	              .build-artefacts/requirements.timestamp
 	./scripts/clonebuild.sh ${CLONEDIR} int ${DEPLOY_GIT_BRANCH} ${DEEP_CLEAN} ${NAMED_BRANCH};
 	${PYTHON_CMD} ./scripts/s3manage.py upload ${CLONEDIR}/mf-geoadmin3 int ${NAMED_BRANCH};
+
+.PHONY: s3copybranch
+s3copybranch: guard-DEPLOY_GIT_BRANCH \
+	            guard-DEEP_CLEAN \
+	            guard-NAMED_BRANCH \
+	            .build-artefacts/requirements.timestamp
+	${PYTHON_CMD} ./scripts/s3manage.py upload . int ${NAMED_BRANCH};
+
 
 .PHONY: s3deploybranchinfra
 s3deploybranchinfra: guard-CLONEDIR \
@@ -867,6 +875,7 @@ ${PYTHON_VENV}:
 cleanall: clean
 	rm -rf node_modules
 	rm -rf .build-artefacts
+	rm -rf ${CLONEDIR}
 
 .PHONY: clean
 clean:
