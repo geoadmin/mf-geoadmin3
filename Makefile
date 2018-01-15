@@ -93,7 +93,6 @@ GIT_COMMIT_DATE ?= $(shell git log -1  --date=iso --pretty=format:%cd)
 CURRENT_DATE ?= $(shell date -u +"%Y-%m-%d %H:%M:%S %z")
 DEPLOY_GIT_BRANCH ?= $(shell git rev-parse --symbolic-full-name --abbrev-ref HEAD)
 S3_VERSION_PATH ?=
-S3_MF_GEOADMIN3_INFRA = mf-geoadmin3-infra-dublin
 S3_BASE_PATH ?=
 S3_SRC_BASE_PATH ?=
 CLONEDIR = /home/$(USER_NAME)/tmp/branches/${DEPLOY_GIT_BRANCH}
@@ -174,8 +173,6 @@ help:
 	@echo "- GIT_BRANCH                  (current value: $(GIT_BRANCH))"
 	@echo "- GIT_COMMIT_HASH             (current value: $(GIT_COMMIT_HASH))"
 	@echo "- VERSION                     (build with: $(LAST_VERSION), current value: $(VERSION))"
-	@echo "- S3_MF_GEOADMIN3_INT         (current value: $(S3_MF_GEOADMIN3_INT))"
-	@echo "- S3_MF_GEOADMIN3_PROD        (current value: $(S3_MF_GEOADMIN3_PROD))"
 
 	@echo
 
@@ -254,20 +251,19 @@ deploydev:
 	fi
 
 .PHONY: s3deployinfra
-s3deployinfra: guard-SNAPSHOT guard-S3_MF_GEOADMIN3_INFRA .build-artefacts/requirements.timestamp
+s3deployinfra: guard-SNAPSHOT .build-artefacts/requirements.timestamp
 	./scripts/deploysnapshot.sh $(SNAPSHOT) infra;
 
 .PHONY: s3deployint
-s3deployint: guard-SNAPSHOT guard-S3_MF_GEOADMIN3_INT .build-artefacts/requirements.timestamp
+s3deployint: guard-SNAPSHOT .build-artefacts/requirements.timestamp
 	./scripts/deploysnapshot.sh $(SNAPSHOT) int;
 
 .PHONY: s3deployprod
-s3deployprod: guard-SNAPSHOT guard-S3_MF_GEOADMIN3_PROD .build-artefacts/requirements.timestamp
+s3deployprod: guard-SNAPSHOT .build-artefacts/requirements.timestamp
 	./scripts/deploysnapshot.sh $(SNAPSHOT) prod;
 
 .PHONY: s3deploybranch
-s3deploybranch: guard-S3_MF_GEOADMIN3_INT \
-	              guard-CLONEDIR \
+s3deploybranch: guard-CLONEDIR \
 	              guard-DEPLOY_GIT_BRANCH \
 	              guard-DEEP_CLEAN \
 	              guard-NAMED_BRANCH \
@@ -276,8 +272,7 @@ s3deploybranch: guard-S3_MF_GEOADMIN3_INT \
 	${PYTHON_CMD} ./scripts/s3manage.py upload ${CLONEDIR}/mf-geoadmin3 int ${NAMED_BRANCH};
 
 .PHONY: s3deploybranchinfra
-s3deploybranchinfra: guard-S3_MF_GEOADMIN3_INFRA \
-	              guard-CLONEDIR \
+s3deploybranchinfra: guard-CLONEDIR \
 	              guard-DEPLOY_GIT_BRANCH \
 	              guard-DEEP_CLEAN \
 	              guard-NAMED_BRANCH \
@@ -287,51 +282,51 @@ s3deploybranchinfra: guard-S3_MF_GEOADMIN3_INFRA \
 
 
 .PHONY: s3listinfra
-s3listinfra: guard-S3_MF_GEOADMIN3_INFRA .build-artefacts/requirements.timestamp
+s3listinfra: .build-artefacts/requirements.timestamp
 	${PYTHON_CMD} ./scripts/s3manage.py list infra;
 
 .PHONY: s3listint
-s3listint: guard-S3_MF_GEOADMIN3_INT .build-artefacts/requirements.timestamp
+s3listint: .build-artefacts/requirements.timestamp
 	${PYTHON_CMD} ./scripts/s3manage.py list int;
 
 .PHONY: s3listprod
-s3listprod: guard-S3_MF_GEOADMIN3_PROD .build-artefacts/requirements.timestamp
+s3listprod: .build-artefacts/requirements.timestamp
 	${PYTHON_CMD} ./scripts/s3manage.py list prod;
 
 .PHONY: s3infoinfra
-s3infoinfra: guard-S3_VERSION_PATH guard-S3_MF_GEOADMIN3_INFRA .build-artefacts/requirements.timestamp
+s3infoinfra: guard-S3_VERSION_PATH .build-artefacts/requirements.timestamp
 	${PYTHON_CMD} ./scripts/s3manage.py info ${S3_VERSION_PATH} infra;
 
 .PHONY: s3infoint
-s3infoint: guard-S3_VERSION_PATH guard-S3_MF_GEOADMIN3_INT .build-artefacts/requirements.timestamp
+s3infoint: guard-S3_VERSION_PATH .build-artefacts/requirements.timestamp
 	${PYTHON_CMD} ./scripts/s3manage.py info ${S3_VERSION_PATH} int;
 
 .PHONY: s3infoprod
-s3infoprod: guard-S3_VERSION_PATH guard-S3_MF_GEOADMIN3_PROD .build-artefacts/requirements.timestamp
+s3infoprod: guard-S3_VERSION_PATH .build-artefacts/requirements.timestamp
 	${PYTHON_CMD} ./scripts/s3manage.py info ${S3_VERSION_PATH} prod;
 
 .PHONY: s3activateinfra
-s3activateinfra: guard-S3_VERSION_PATH guard-S3_MF_GEOADMIN3_INFRA .build-artefacts/requirements.timestamp
+s3activateinfra: guard-S3_VERSION_PATH .build-artefacts/requirements.timestamp
 	${PYTHON_CMD} ./scripts/s3manage.py activate ${S3_VERSION_PATH} infra;
 
 .PHONY: s3activateint
-s3activateint: guard-S3_VERSION_PATH guard-S3_MF_GEOADMIN3_INT .build-artefacts/requirements.timestamp
+s3activateint: guard-S3_VERSION_PATH .build-artefacts/requirements.timestamp
 	${PYTHON_CMD} ./scripts/s3manage.py activate ${S3_VERSION_PATH} int;
 
 .PHONY: s3activateprod
-s3activateprod: guard-S3_VERSION_PATH guard-S3_MF_GEOADMIN3_PROD .build-artefacts/requirements.timestamp
+s3activateprod: guard-S3_VERSION_PATH .build-artefacts/requirements.timestamp
 	${PYTHON_CMD} ./scripts/s3manage.py activate ${S3_VERSION_PATH} prod;
 
 .PHONY: s3deleteinfra
-s3deleteinfra: guard-S3_VERSION_PATH guard-S3_MF_GEOADMIN3_INFRA .build-artefacts/requirements.timestamp
+s3deleteinfra: guard-S3_VERSION_PATH .build-artefacts/requirements.timestamp
 	${PYTHON_CMD} ./scripts/s3manage.py delete ${S3_VERSION_PATH} infra;
 
 .PHONY: s3deleteint
-s3deleteint: guard-S3_VERSION_PATH guard-S3_MF_GEOADMIN3_INT .build-artefacts/requirements.timestamp
+s3deleteint: guard-S3_VERSION_PATH .build-artefacts/requirements.timestamp
 	${PYTHON_CMD} ./scripts/s3manage.py delete ${S3_VERSION_PATH} int;
 
 .PHONY: s3deleteprod
-s3deleteprod: guard-S3_VERSION_PATH guard-S3_MF_GEOADMIN3_PROD .build-artefacts/requirements.timestamp
+s3deleteprod: guard-S3_VERSION_PATH .build-artefacts/requirements.timestamp
 	${PYTHON_CMD} ./scripts/s3manage.py delete ${S3_VERSION_PATH} prod;
 
 .PHONY: cesium

@@ -474,14 +474,11 @@ def parse_arguments(argv):
             print('Please provide a full version path.')
             sys.exit(1)
 
-    bucket_name_env = 'S3_MF_GEOADMIN3_%s' % deploy_target.upper()
-    bucket_name = os.environ.get(bucket_name_env)
-    if bucket_name is None:
-        usage()
-        print('%s env variable is not defined' % bucket_name_env)
-        sys.exit(1)
+    bucket_name = 'mf-geoadmin3-%s-dublin' % deploy_target.lower()
     user = os.environ.get('USER')
-    profile_name = '{}_aws_admin'.format(user)
+    profile_name = None
+    if user is not None:
+        profile_name = '{}_aws_admin'.format(user)
 
     return (cmd_type, deploy_target, base_dir, named_branch,
             bucket_name, s3_path, profile_name)
