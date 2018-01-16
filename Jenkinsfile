@@ -10,7 +10,6 @@ pipeline {
         stage('Test') {
             steps {
                 sh 'make testdebug testrelease'
-         
             }
         }
         stage('Deploy') {
