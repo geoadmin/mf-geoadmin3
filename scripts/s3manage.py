@@ -188,8 +188,9 @@ def get_index_version(c):
     return version
 
 
-def create_s3_dir_path(base_dir, named_branch):
-    git_branch = local_git_branch(base_dir)
+def create_s3_dir_path(base_dir, named_branch, git_branch):
+    if git_branch is None:
+        git_branch = local_git_branch(base_dir)
     version = local_last_version(base_dir).strip()
     if named_branch:
         return (git_branch, version)
@@ -217,9 +218,9 @@ def get_file_mimetype(local_file):
         return 'text/plain'
 
 
-def upload(bucket_name, base_dir, deploy_target, named_branch):
-    s3_dir_path, version = create_s3_dir_path(base_dir, named_branch)
-    print('Destionation folder is:')
+def upload(bucket_name, base_dir, deploy_target, named_branch, git_branch):
+    s3_dir_path, version = create_s3_dir_path(base_dir, named_branch, git_branch)
+    print('Destination folder is:')
     print('%s' % s3_dir_path)
     upload_directories = ['prd', 'src']
     exclude_filename_patterns = ['.less', '.gitignore', '.mako.']
@@ -428,7 +429,7 @@ def parse_arguments(argv):
         print('Command %s not supported' % cmd_type)
         sys.exit(1)
 
-    if cmd_type == 'upload' and len(argv) < 4:
+    if cmd_type == 'upload' and len(argv) < 5:
         exit_usage(cmd_type)
     elif cmd_type == 'list' and len(argv) != 3:
         exit_usage(cmd_type)
@@ -446,8 +447,10 @@ def parse_arguments(argv):
         if not os.path.isdir(base_dir):
             print('No code found in directory %s' % base_dir)
             sys.exit(1)
-        if len(argv) == 5:
+        if len(argv) >= 5:
             named_branch = True if argv[4] == 'true' else False
+        if len(argv) == 6:
+            git_branch = argv[5]
 
     if cmd_type in ('activate', 'upload', 'info', 'delete'):
         deploy_target = argv[3].lower()
@@ -474,28 +477,26 @@ def parse_arguments(argv):
             print('Please provide a full version path.')
             sys.exit(1)
 
-    bucket_name_env = 'S3_MF_GEOADMIN3_%s' % deploy_target.upper()
-    bucket_name = os.environ.get(bucket_name_env)
-    if bucket_name is None:
-        usage()
-        print('%s env variable is not defined' % bucket_name_env)
-        sys.exit(1)
+    bucket_name = 'mf-geoadmin3-%s-dublin' % deploy_target.lower()
     user = os.environ.get('USER')
-    profile_name = '{}_aws_admin'.format(user)
+    profile_name = None
+    if user is not None:
+        profile_name = '{}_aws_admin'.format(user)
 
-    return (cmd_type, deploy_target, base_dir, named_branch,
+    return (cmd_type, deploy_target, base_dir, named_branch, git_branch,
             bucket_name, s3_path, profile_name)
 
 
 def main():
     global s3, s3client, bucket
-    cmd_type, deploy_target, base_dir, named_branch, bucket_name, s3_path, profile_name = \
+    print(parse_arguments(sys.argv))
+    cmd_type, deploy_target, base_dir, named_branch, git_branch, bucket_name, s3_path, profile_name = \
         parse_arguments(sys.argv)
     s3, s3client, bucket = init_connection(bucket_name, profile_name)
 
     if cmd_type == 'upload':
         print('Uploading %s to s3' % base_dir)
-        upload(bucket_name, base_dir, deploy_target, named_branch)
+        upload(bucket_name, base_dir, deploy_target, named_branch, git_branch)
     elif cmd_type == 'list':
         if len(sys.argv) < 2:
             usage()
