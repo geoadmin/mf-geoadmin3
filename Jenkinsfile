@@ -1,7 +1,5 @@
 #!/usr/bin/env groovy
 
-def pr = [$class: "GitHubPushTrigger"]
-
 // GitHub Pull Request Builder
 def ghprb = [
   $class: "GhprbTrigger",
@@ -15,7 +13,7 @@ properties([
   buildDiscarder(logRotator(daysToKeepStr: '10', numToKeepStr: '10')),
   pipelineTriggers([
     cron('H 3 * * *'),
-    pr,
+    githubPush(),
     ghprb
   ])
 ])
