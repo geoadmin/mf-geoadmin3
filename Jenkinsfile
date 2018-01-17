@@ -1,9 +1,26 @@
 #!/usr/bin/env groovy
 
-node {
-  checkout scm
 
+def logRotation =  [
+  $class: 'BuildDiscarderProperty',
+  strategy: [$class: 'LogRotator', numToKeepStr: '10']
+]
+
+def cron = cron('H 3 * * *')
+def pr = [$class: "GitHubPushTrigger"]
+
+properties([
+  logRotation,
+  pipelineTriggers([cron, pr])
+])
+
+node {
+  git poll: true, url: 'https://github.com/geoadmin/mf-geoadmin3'
+  sh 'printenv'
+  
   try {
+    checkout scm
+
     // Define the branch targeted
     env.BRANCH = env.ghprbSourceBranch || 'master'
 
@@ -32,6 +49,7 @@ node {
         sh 'make DEPLOY_GIT_BRANCH=' + env.BRANCH + ' NAMED_BRANCH=false s3copybranch'
       }
     }
+
   } catch(e) {
     throw e;
 
