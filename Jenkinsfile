@@ -2,7 +2,7 @@
 //lal
 // GitHub Pull Request Builder
 def ghprb = [
-  $class: "GhprbTrigger",
+  $class: 'GhprbTrigger',
   cron: 'H/5 * * * *',
   triggerPhrase: 'jenkins test',
   useGitHubHooks: true,
@@ -18,13 +18,13 @@ properties([
   ])
 ])
 
-node {
+node(label: 'jenkins-slave') {
 
     sh 'printenv'
     def dfltBranch = 'teo_scripted'
     def scmBranch = dfltBranch
     if (env.ghprbSourceBranch) {
-      scmBranch = '${sha1}'
+      scmBranch = env.sha1
     }
     env.BRANCH = env.ghprbSourceBranch || dfltBranch
     checkout([
