@@ -7,7 +7,8 @@ def ghprb = [
   $class: "GhprbTrigger",
   cron: 'H/5 * * * *',
   triggerPhrase: 'jenkins test',
-  useGitHubHooks: true
+  useGitHubHooks: true,
+  orgWhitelist: 'geoadmin'
 ]
 
 properties([
