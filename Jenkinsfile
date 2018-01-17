@@ -1,59 +1,44 @@
 #!/usr/bin/env groovy
 
-
-def logRotation =  [
-  $class: 'BuildDiscarderProperty',
-  strategy: [$class: 'LogRotator', numToKeepStr: '10']
-]
-
-def cron = cron('H 3 * * *')
 def pr = [$class: "GitHubPushTrigger"]
 
 properties([
-  logRotation,
-  pipelineTriggers([cron, pr])
+  buildDiscarder(logRotator(daysToKeepStr: '10', numToKeepStr: '10')),
+  pipelineTriggers([
+    cron('H 5 * * *'),
+    pr
+  ])
 ])
 
 node {
-  git poll: true, url: 'https://github.com/geoadmin/mf-geoadmin3'
-  sh 'printenv'
-  
-  try {
-    checkout scm
 
-    // Define the branch targeted
+    sh 'printenv'
+
     env.BRANCH = env.ghprbSourceBranch || 'master'
+    def test = 'master'
+    if (env.ghprbSourceBranch) {
+      test = '${sha1}'
+    }
+    checkout([
+      $class: 'GitSCM',
+      branches: [[name: '${sha1}']],
+      browser: [$class: 'GithubWeb', repoUrl: 'https://github.com/geoadmin/mf-geoadmin3'],
+      doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'iwibot-github', url: 'https://github.com/geoadmin/mf-geoadmin3']]])
 
-    stage('Build') {
+    sh 'printenv'
+    
+    /*stage('Build') {
       sh 'make lint debug release'
     }
-
+    
     stage('Test') {
       sh 'make testdebug testrelease'
     }
-
-    // if it's pull request
-    if (env.BRANCH != 'master') {
-
-      stage('Deploy') {
-        sh 'make DEPLOY_GIT_BRANCH=' + env.BRANCH + ' s3copybranch'
-      }
-
-      stage('Test e2e') {
-        sh 'make E2E_TARGETURL=https://mf-geoadmin3.int.bgdi.ch/' + env.BRANCH + '/index.html teste2e'
-      }
-
-    // if it's master
-    } else {
+    
+    if (env.BRANCH == 'master') {
+        
       stage('Deploy') {
         sh 'make DEPLOY_GIT_BRANCH=' + env.BRANCH + ' NAMED_BRANCH=false s3copybranch'
       }
-    }
-
-  } catch(e) {
-    throw e;
-
-  } finally {
-    sh 'make cleanall'
-  }
+    }*/
 }
