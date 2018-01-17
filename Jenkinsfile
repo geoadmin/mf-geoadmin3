@@ -23,13 +23,13 @@ node {
     sh 'printenv'
 
     env.BRANCH = env.ghprbSourceBranch || 'master'
-    def test = 'master'
+    def scmBranch = 'master'
     if (env.ghprbSourceBranch) {
-      test = '${sha1}'
+      scmBranch = '${sha1}'
     }
     checkout([
       $class: 'GitSCM',
-      branches: [[name: test]],
+      branches: [[name: scmBranch]],
       browser: [$class: 'GithubWeb', repoUrl: 'https://github.com/geoadmin/mf-geoadmin3'],
       doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'iwibot-github', url: 'https://github.com/geoadmin/mf-geoadmin3']]])
 
