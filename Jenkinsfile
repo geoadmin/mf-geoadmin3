@@ -1,7 +1,16 @@
 #!/usr/bin/env groovy
 
-node {
-  checkout scm
+// Common config between geoamdin_XXX jenkins jobs
+properties([
+  buildDiscarder(logRotator(daysToKeepStr: '10', numToKeepStr: '10')),
+  pipelineTriggers([
+    githubPush()
+  ])
+])
+
+node(label: 'jenkins-slave') {
+
+  env.BRANCH_NAME = env.ghprbSourceBranch || 'master'
 
   try {
 
@@ -13,14 +22,14 @@ node {
       sh 'make testdebug testrelease'
     }
 
-    if (env.ghprbSourceBranch) {
+    if (env.BRANCH != 'master') {
 
       stage('Deploy') {
-        sh 'make DEPLOY_GIT_BRANCH=' + env.ghprbSourceBranch + ' s3copybranch'
+        sh 'make DEPLOY_GIT_BRANCH=' + env.BRANCH + ' s3copybranch'
       }
 
       stage('Test e2e') {
-        sh 'make E2E_TARGETURL=https://mf-geoadmin3.int.bgdi.ch/' + env.ghprbSourceBranch + '/index.html teste2e'
+        sh 'make E2E_TARGETURL=https://mf-geoadmin3.int.bgdi.ch/' + env.BRANCH + '/index.html teste2e'
       }
     }
   } catch(e) {
@@ -29,4 +38,4 @@ node {
   } finally {
     sh 'make cleanall'
   }
-}
+} 
