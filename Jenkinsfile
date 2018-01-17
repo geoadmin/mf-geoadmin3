@@ -21,12 +21,12 @@ properties([
 node {
 
     sh 'printenv'
-
-    env.BRANCH = env.ghprbSourceBranch || 'master'
-    def scmBranch = 'master'
+    def dfltBranch = 'teo_scripted'
+    def scmBranch = dfltBranch
     if (env.ghprbSourceBranch) {
       scmBranch = '${sha1}'
     }
+    env.BRANCH = env.ghprbSourceBranch || dfltBranch
     checkout([
       $class: 'GitSCM',
       branches: [[name: scmBranch]],
