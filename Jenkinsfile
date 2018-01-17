@@ -1,32 +1,52 @@
 #!/usr/bin/env groovy
+//lal
+// GitHub Pull Request Builder
+def ghprb = [
+  $class: 'GhprbTrigger',
+  cron: 'H/5 * * * *',
+  triggerPhrase: 'jenkins test',
+  useGitHubHooks: true,
+  orgsList: 'geoadmin'
+]
 
-node {
-  checkout scm
+properties([
+  buildDiscarder(logRotator(daysToKeepStr: '10', numToKeepStr: '10')),
+  pipelineTriggers([
+    cron('H 3 * * *'),
+    githubPush(),
+    ghprb
+  ])
+])
 
-  try {
+node(label: 'jenkins-slave') {
 
-    stage('Build') {
+    sh 'printenv'
+    def dfltBranch = 'teo_scripted'
+    def scmBranch = dfltBranch
+    if (env.ghprbSourceBranch) {
+      scmBranch = env.sha1
+    }
+    env.BRANCH = env.ghprbSourceBranch || dfltBranch
+    checkout([
+      $class: 'GitSCM',
+      branches: [[name: scmBranch]],
+      browser: [$class: 'GithubWeb', repoUrl: 'https://github.com/geoadmin/mf-geoadmin3'],
+      doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'iwibot-github', url: 'https://github.com/geoadmin/mf-geoadmin3']]])
+
+    sh 'printenv'
+    
+    /*stage('Build') {
       sh 'make lint debug release'
     }
-
+    
     stage('Test') {
       sh 'make testdebug testrelease'
     }
-
-    if (env.ghprbSourceBranch) {
-
+    
+    if (env.BRANCH == 'master') {
+        
       stage('Deploy') {
-        sh 'make DEPLOY_GIT_BRANCH=' + env.ghprbSourceBranch + ' s3copybranch'
+        sh 'make DEPLOY_GIT_BRANCH=' + env.BRANCH + ' NAMED_BRANCH=false s3copybranch'
       }
-
-      stage('Test e2e') {
-        sh 'make E2E_TARGETURL=https://mf-geoadmin3.int.bgdi.ch/' + env.ghprbSourceBranch + '/index.html teste2e'
-      }
-    }
-  } catch(e) {
-    throw e;
-
-  } finally {
-    sh 'make cleanall'
-  }
+    }*/
 }
