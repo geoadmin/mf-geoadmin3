@@ -1,4 +1,5 @@
 #!/usr/bin/env groovy
+//lala
 pipeline {
     agent any
     stages {
