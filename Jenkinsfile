@@ -30,7 +30,7 @@ node {
     }
     checkout([
       $class: 'GitSCM',
-      branches: [[name: '${sha1}']],
+      branches: [[name: test]],
       browser: [$class: 'GithubWeb', repoUrl: 'https://github.com/geoadmin/mf-geoadmin3'],
       doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'iwibot-github', url: 'https://github.com/geoadmin/mf-geoadmin3']]])
 
