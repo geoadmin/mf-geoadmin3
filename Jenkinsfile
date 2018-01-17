@@ -2,11 +2,20 @@
 
 def pr = [$class: "GitHubPushTrigger"]
 
+// GitHub Pull Request Builder
+def ghprb = [
+  $class: "GhprbTrigger",
+  cron: 'H/5 * * * *',
+  triggerPhrase: 'jenkins test',
+  useGitHubHooks: true
+]
+
 properties([
   buildDiscarder(logRotator(daysToKeepStr: '10', numToKeepStr: '10')),
   pipelineTriggers([
-    cron('H 5 * * *'),
-    pr
+    cron('H 3 * * *'),
+    pr,
+    ghprb
   ])
 ])
 
@@ -21,7 +30,7 @@ node {
     }
     checkout([
       $class: 'GitSCM',
-      branches: [[name: test]],
+      branches: [[name: '${sha1}']],
       browser: [$class: 'GithubWeb', repoUrl: 'https://github.com/geoadmin/mf-geoadmin3'],
       doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'iwibot-github', url: 'https://github.com/geoadmin/mf-geoadmin3']]])
 
