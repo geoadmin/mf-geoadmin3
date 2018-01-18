@@ -189,6 +189,7 @@ def get_index_version(c):
 
 
 def create_s3_dir_path(base_dir, named_branch, git_branch):
+    print(base_dir)
     if git_branch is None:
         git_branch = local_git_branch(base_dir)
     version = local_last_version(base_dir).strip()
@@ -256,8 +257,10 @@ def upload(bucket_name, base_dir, deploy_target, named_branch, git_branch):
                             remote_file = os.path.join(s3_dir_path, 'src/', relative_file_path, file_name)
                             save_to_s3(local_file, remote_file, bucket_name, cached=cached, mimetype=mimetype)
 
-    url_to_check = '//mf-geoadmin3.%s.bgdi.ch/' % deploy_target
-    print('Upload completed at %s%s/index.html' % (url_to_check, s3_dir_path))
+    url_to_check = 'https://mf-geoadmin3.%s.bgdi.ch/' % deploy_target
+    print('Upload completed at: ');
+    # This last line is used by jenkins to get the url
+    print('%s%s/index.html' % (url_to_check, s3_dir_path))
 
 
 def list_version():
