@@ -404,7 +404,10 @@ translate:
 
 .PHONY: fixrights
 fixrights:
-	chgrp -f -R geodata . || :
+	@ if grep 'geodata' /etc/group; then \
+		chgrp -f -R geodata . || : ; \
+		echo 'lala'; \
+	fi; \
 	chmod -f -R g+rw . || :
 
 guard-%:

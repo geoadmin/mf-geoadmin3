@@ -50,7 +50,7 @@ if [ "$NAMED_BRANCH" = "true" ]; then
   export KEEP_VERSION="true"
   S3_BASE_PATH=/$DEPLOY_GIT_BRANCH/
 else
-  export KEEEP_VERSION="false"
+  export KEEP_VERSION="false"
   make .build-artefacts/last-version
   S3_BASE_PATH=$(get_s3_basepath $DEPLOY_GIT_BRANCH)
 fi
@@ -64,4 +64,4 @@ echo $S3_SRC_BASE_PATH
 echo "Building the project"
 export S3_BASE_PATH=$S3_BASE_PATH
 export S3_SRC_BASE_PATH=$S3_SRC_BASE_PATH
-source rc_$DEPLOY_TARGET && make all
+source rc_${DEPLOY_TARGET} && make all
