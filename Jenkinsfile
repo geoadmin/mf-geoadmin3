@@ -43,7 +43,7 @@ node(label: 'jenkins-slave') {
 
       if (!namedBranch) {
         // Remove the branch created if tests succceed
-        sh 'make S3_VERSION_PATH=' + s3VersionPath + ' s3deleteint'
+        sh 'echo "yes" | make S3_VERSION_PATH=' + s3VersionPath + ' s3deleteint'
       }
     }
 
