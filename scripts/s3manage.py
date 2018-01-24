@@ -258,10 +258,10 @@ def upload(bucket_name, base_dir, deploy_target, named_branch, git_branch):
                             save_to_s3(local_file, remote_file, bucket_name, cached=cached, mimetype=mimetype)
 
     url_to_check = 'https://mf-geoadmin3.%s.bgdi.ch/' % deploy_target
-    print('S3 version path: ');
+    print('S3 version path: ')
     # This line is used by jenkins to get the S3_VERSION_PATH
     print(s3_dir_path)
-    print('Test url: ');
+    print('Test url: ')
     # This line is used by jenkins to get the E2E_TARGETURL
     print('%s%s/index.html' % (url_to_check, s3_dir_path))
 
