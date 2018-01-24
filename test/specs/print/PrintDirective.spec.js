@@ -680,7 +680,7 @@ describe('ga_print_directive', function() {
             expect(config.pages[0].timestamp).to.eql('1987');
 
             // Launch printprogress
-            $httpBackend.expectGET(noCacheUrl).respond({});
+            $httpBackend.expectGET(noCacheUrl).respond({status: 'done'});
             $timeout.flush();
             $httpBackend.flush();
             expect(scope.options.progress).to.be('');
@@ -692,25 +692,25 @@ describe('ga_print_directive', function() {
             expect(scope.options.progress).to.be('');
             expect(scope.options.printing).to.be(true);
 
-            $httpBackend.expectGET(noCacheUrl).respond({done: 25, total: 100});
+            $httpBackend.expectGET(noCacheUrl).respond({status: 'ongoing', done: 25, total: 100});
             $timeout.flush();
             $httpBackend.flush();
             expect(scope.options.progress).to.be('15%');
             expect(scope.options.printing).to.be(true);
 
-            $httpBackend.expectGET(noCacheUrl).respond({merged: 25, done: 70, total: 100});
+            $httpBackend.expectGET(noCacheUrl).respond({status: 'done', merged: 25, done: 70, total: 100});
             $timeout.flush();
             $httpBackend.flush();
             expect(scope.options.progress).to.be('67%');
             expect(scope.options.printing).to.be(true);
 
-            $httpBackend.expectGET(noCacheUrl).respond({written: 5, filesize: 10});
+            $httpBackend.expectGET(noCacheUrl).respond({status: 'done', written: 5, filesize: 10});
             $timeout.flush();
             $httpBackend.flush();
             expect(scope.options.progress).to.be('85%');
             expect(scope.options.printing).to.be(true);
 
-            $httpBackend.expectGET(noCacheUrl).respond({getURL: dlUrl});
+            $httpBackend.expectGET(noCacheUrl).respond({status: 'done', getURL: dlUrl});
             $timeout.flush();
             $httpBackend.flush();
             expect(scope.options.progress).to.be('85%');
@@ -718,6 +718,36 @@ describe('ga_print_directive', function() {
             expect(stub.callCount).to.be(1);
           });
 
+          it('fails if printprogress returns status = failed', function() {
+            var noCacheUrl = 'http://foo.ch/printprogress?id=1111';
+            var encLayer = {foo: 'bar'};
+
+            sinon.stub(gaPrintLayer, 'encodeGroup').returns([encLayer]);
+            sinon.stub(gaPrintLayer, 'encodeLayer').returns({
+              layer: encLayer
+            });
+            var stub = sinon.stub(scope, 'downloadUrl').withArgs(dlUrl).returns();
+            $httpBackend.expectPOST(createUrlMulti).respond({getURL: dlUrl, idToCheck: '1111'});
+
+            // Activate multi print
+            scope.options.movie = true
+            map.addLayer(layerZeitreihen);
+            map.addLayer(grp);
+            $rootScope.$digest();
+            scope.submit();
+            $timeout.flush();
+            $httpBackend.flush();
+
+            expect(stub.callCount).to.be(0);
+
+            // Launch printprogress
+            $httpBackend.expectGET(noCacheUrl).respond({status: 'failed'});
+            $timeout.flush();
+            $httpBackend.flush();
+            expect(scope.options.progress).to.be('');
+            expect(scope.options.printing).to.be(false);
+          });
+          
           it('fails if printprogress returns more than 2 errors', function() {
             var noCacheUrl = 'http://foo.ch/printprogress?id=1111';
             var encLayer = {foo: 'bar'};

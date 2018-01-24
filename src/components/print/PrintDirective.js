@@ -180,6 +180,10 @@ goog.require('ga_urlutils_service');
           if (!$scope.options.printing) {
             return;
           }
+          if (data.status === 'failed') {
+              $scope.options.printing = false;
+              return;
+          }
           if (data.status === 'ongoing' || data.status === 'done') {
             if (!data.getURL) {
               // Write progress using the following logic
