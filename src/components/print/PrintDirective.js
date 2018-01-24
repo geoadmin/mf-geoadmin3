@@ -180,34 +180,37 @@ goog.require('ga_urlutils_service');
           if (!$scope.options.printing) {
             return;
           }
-          if (!data.getURL) {
-            // Write progress using the following logic
-            // First 60% is pdf page creationg
-            // 60-70% is merging of pdf
-            // 70-100% is writing of resulting pdf
-            if (data.filesize) {
-              var written = data.written || 0;
-              $scope.options.progress =
-                  (70 + Math.floor(written * 30 / data.filesize)) + '%';
-            } else if (data.total) {
-              if (angular.isDefined(data.merged)) {
+          if (data.status === 'ongoing' || data.status === 'done') {
+            if (!data.getURL) {
+              // Write progress using the following logic
+              // First 60% is pdf page creationg
+              // 60-70% is merging of pdf
+              // 70-100% is writing of resulting pdf
+              if (data.filesize) {
+                var written = data.written || 0;
                 $scope.options.progress =
-                    (60 + Math.floor(data.done * 10 / data.total)) + '%';
-              } else if (angular.isDefined(data.done)) {
-                $scope.options.progress =
-                    Math.floor(data.done * 60 / data.total) + '%';
+                    (70 + Math.floor(written * 30 / data.filesize)) + '%';
+              } else if (data.total) {
+                if (angular.isDefined(data.merged)) {
+                  $scope.options.progress =
+                      (60 + Math.floor(data.done * 10 / data.total)) + '%';
+                } else if (angular.isDefined(data.done)) {
+                  $scope.options.progress =
+                      Math.floor(data.done * 60 / data.total) + '%';
+                }
               }
-            }
-
-            var now = new Date();
-            // We abort if we waited too long
-            if (now - startPollTime < POLL_MAX_TIME) {
-              pollMulti(url, startPollTime, pollErrors, pdfLegendsToDownload);
+              var now = new Date();
+              // We abort if we waited too long
+              if (now - startPollTime < POLL_MAX_TIME) {
+                pollMulti(url, startPollTime, pollErrors, pdfLegendsToDownload);
+              } else {
+                $scope.options.printing = false;
+              }
             } else {
-              $scope.options.printing = false;
+              $scope.downloadUrl(data.getURL, pdfLegendsToDownload);
             }
           } else {
-            $scope.downloadUrl(data.getURL, pdfLegendsToDownload);
+            $scope.options.printing = false;
           }
         }, function() {
           if ($scope.options.printing === false) {
