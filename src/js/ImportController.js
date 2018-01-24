@@ -149,8 +149,6 @@ goog.require('ga_wmts_service');
         'http://wms.geoportal.ch:8080/geoserver/AVAI/wms',
         'https://geodienste.ch/db/av/deu',
         'https://geodienste.ch/db/av/fra',
-        'https://geodienste.ch/db/av_jahresstand/deu',
-        'https://geodienste.ch/db/av_jahresstand/fra',
         // non-SwissProjected test urls
         'http://wms.ga.admin.ch/1GE',
         'http://wms.ga.admin.ch/LG_DE_Geologie_und_Tektonik/wms',
