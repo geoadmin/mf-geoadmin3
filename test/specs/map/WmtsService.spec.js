@@ -12,12 +12,12 @@ describe('ga_wmts_service', function() {
       expect(layer.type).to.be('TILE');
       expect(layer.invertedOpacity).to.be(options.invertedOpacity || 0);
       expect(layer.visible).to.be(angular.isDefined(options.visible) ? options.visible : true);
-
       // set after creation
       expect(layer.preview).to.be(!!options.preview);
       expect(layer.displayInLayerManager).to.be(!layer.preview);
       expect(layer.useThirdPartyData).to.be(!!options.useThirdPartyData);
       expect(layer.label).to.be(options.label);
+      expect(layer.timeEnabled).to.be(options.timeEnabled);
       expect(layer.time).to.be(options.time);
       expect(layer.getCesiumImageryProvider).to.be.a(Function);
 
@@ -122,6 +122,55 @@ describe('ga_wmts_service', function() {
         expect(layer).to.be(undefined);
       });
 
+      describe('set timeEnabled and time properties', function() {
+        var getCapUrl = 'base/test/data/wmts-basic.xml';
+        it(' set timeEnabled to false if the layer has 2 timestamps but one is current', function(done) {
+          $.get(getCapUrl, function(resp) {
+            var getCap = new ol.format.WMTSCapabilities().read(resp);
+            var identifier = 'ch.vbs.waldschadenkarte';
+
+            var layer = gaWmts.getOlLayerFromGetCap(map, getCap, identifier, {
+              capabilitiesUrl: getCapUrl
+            });
+            expectProperties(layer, {
+              url: 'https://wmts.geo.admin.ch/1.0.0/ch.vbs.waldschadenkarte/default/{Time}/2056/{TileMatrix}/{TileCol}/{TileRow}.png',
+              label: 'Carte des dégâts aux forêts',
+              visible: true,
+              useThirdPartyData: false,
+              layer: identifier,
+              capabilitiesUrl: getCapUrl,
+              time: 'current',
+              projection: undefined,
+              timeEnabled: false
+            });
+            done();
+          });
+        });
+
+        it('set timeEnabled to true if the layer has more than 2 timestamps and one is current', function(done) {
+          $.get(getCapUrl, function(resp) {
+            var getCap = new ol.format.WMTSCapabilities().read(resp);
+            var identifier = 'ch.vbs.waldschadenkarte2';
+
+            var layer = gaWmts.getOlLayerFromGetCap(map, getCap, identifier, {
+              capabilitiesUrl: getCapUrl
+            });
+            expectProperties(layer, {
+              url: 'https://wmts.geo.admin.ch/1.0.0/ch.vbs.waldschadenkarte/default/{Time}/2056/{TileMatrix}/{TileCol}/{TileRow}.png',
+              label: 'Carte des dégâts aux forêts',
+              visible: true,
+              useThirdPartyData: false,
+              layer: identifier,
+              capabilitiesUrl: getCapUrl,
+              time: 'current',
+              projection: undefined,
+              timeEnabled: true
+            });
+            done();
+          });
+        });
+      });
+
       describe('using swiss layers, which are not display in 3d', function() {
         [
           'base/test/data/wmts-basic.xml',
@@ -133,17 +182,17 @@ describe('ga_wmts_service', function() {
               var getCap = new ol.format.WMTSCapabilities().read(resp);
 
               var layer = gaWmts.getOlLayerFromGetCap(map, getCap, identifier, {
-                capabilitiesUrl: getCapUrl,
-                time: '1957'
+                capabilitiesUrl: getCapUrl
               });
               expectProperties(layer, {
                 url: 'https://wmts.geo.admin.ch/1.0.0/ch.are.alpenkonvention/default/{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.png',
                 label: 'Convention des Alpes',
                 visible: true,
-                useThirdPartyData: true,
+                useThirdPartyData: false,
                 layer: identifier,
                 capabilitiesUrl: getCapUrl,
-                time: '1957',
+                time: '20090101',
+                timeEnabled: false,
                 projection: undefined
               });
               done();
@@ -162,16 +211,15 @@ describe('ga_wmts_service', function() {
           var identifier = 'core003_feathering_mixed';
           var getCap = new ol.format.WMTSCapabilities().read(response);
           var layer = gaWmts.getOlLayerFromGetCap(map, getCap, identifier, {
-            capabilitiesUrl: 'http://test.ch/' + getCapUrl,
-            time: '1957'
+            capabilitiesUrl: 'http://test.ch/' + getCapUrl
           });
           expectProperties(layer, {
             label: 'CORE_003 Mosaic, natural color composition, feathering applied to scene borders, Mixed PNG/JPEG',
             url: 'http://cidportal.jrc.ec.europa.eu/copernicus/services/tile/wmts?',
-            url3d: 'http://cidportal.jrc.ec.europa.eu/copernicus/services/tile/wmts?service=WMTS&version=1.0.0&request=GetTile&layer=core003_feathering_mixed&format=image/png&style=default&time=1957&tilematrixset=g&tilematrix={z}&tilecol={x}&tilerow={y}',
+            url3d: 'http://cidportal.jrc.ec.europa.eu/copernicus/services/tile/wmts?service=WMTS&version=1.0.0&request=GetTile&layer=core003_feathering_mixed&format=image/png&style=default&time=undefined&tilematrixset=g&tilematrix={z}&tilecol={x}&tilerow={y}',
             visible: true,
             useThirdPartyData: true,
-            time: '1957',
+            time: undefined,
             layer: identifier,
             capabilitiesUrl: 'http://test.ch/' + getCapUrl,
             tilingScheme: Cesium.WebMercatorTilingScheme
