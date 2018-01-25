@@ -241,6 +241,8 @@ describe('ga_time_service', function() {
         gaTime.allowStatusUpdate = true;
         var l = getTimeLayer();
         var l1 = getTimeLayer('id', '1988');
+        var l2 = getTimeLayer();
+        l2.time = undefined;
 
         gaTime.updateStatus([]);
         expect(gaTime.get()).to.be(undefined);
@@ -266,6 +268,10 @@ describe('ga_time_service', function() {
         l1.visible = true;
         l1.time = '99993112';
         gaTime.updateStatus([l, l1, l]);
+        expect(gaTime.get()).to.be(undefined);
+
+        // A layer has an undefined time
+        gaTime.updateStatus([l, l2]);
         expect(gaTime.get()).to.be(undefined);
       });
 
