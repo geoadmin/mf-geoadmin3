@@ -15,7 +15,7 @@ goog.provide('ga_urlutils_service');
         var URL_REGEXP = new RegExp('^(blob:)?(ftp|http|https):\\/\\/' +
                                     '(?:\\w+(?::\\w+)?@)?' +
                                     '[^\\s/]+(?::\\d+)?' +
-                                    '(?:\\/[\\w#!:.?+=&%@\\- /' +
+                                    '(?:\\/[\\w#!:.?+=&%@{}\\- /' +
                                     '[\\]$\'()*,;~]*)?$');
 
         // Test validity of a URL
