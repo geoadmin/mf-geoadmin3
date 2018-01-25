@@ -27,6 +27,7 @@ describe('ga_tooltip_directive', function() {
     beforeEach(function() {
 
       module(function($provide) {
+        $provide.value('gaLayers', {});
         $provide.value('gaTopic', {
           get: function() {}
         });

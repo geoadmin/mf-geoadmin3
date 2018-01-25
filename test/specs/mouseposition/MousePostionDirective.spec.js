@@ -25,7 +25,7 @@ describe('ga_mouseposition_directive', function() {
   }));
 
   it('has the right elements', function() {
-    expect(element.find('select option').size() === scope.mousePositionProjections.length).to.be(true);
+    expect(element.find('select option').length === scope.mousePositionProjections.length).to.be(true);
     expect(angular.isDefined(element.find('ol-mouse-position'))).to.be(true);
   });
 

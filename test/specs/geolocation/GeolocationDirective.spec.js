@@ -5,7 +5,7 @@ describe('ga_geolocation_directive', function() {
     var elt, scope, parentScope, $compile, $rootScope, $httpBackend, $timeout, $window, map, ol3d;
     /* Keep for future tests
       gaBrowserSniffer, gaPermalink, gaThrottle, gaStyleFactory, gaMapUtils
-    */ 
+    */
 
     var loadDirective = function(map, ol3d) {
       parentScope = $rootScope.$new();

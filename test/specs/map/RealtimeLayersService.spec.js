@@ -229,6 +229,7 @@ describe('ga_realtimelayers_service', function() {
     it('reads GPX data using proxified url', function() {
       var data = '<gpx><wpt lat="56" lon="24"><name>Toûno</name><type>summit</type></wpt></gpx>';
       var spy = sinon.spy(gaVector, 'readFeatures').withArgs(data, map.getView().getProjection());
+      $httpBackend.expectHEAD('https://foo.bar.ch/some.gpx').respond(404);
       $httpBackend.expectGET('http://proxy.geo.admin.ch/https/foo.bar.ch%2Fsome.gpx').respond(data);
       var l = addRealtimeGPXLayerToMap('some');
       expect(map.getLayers().item(0).getSource().getFeatures().length).to.be(0);

@@ -282,22 +282,16 @@ describe('ga_profile_service', function() {
 
       it('loads d3 script', function(done) {
         var d3Url = gaGlobalOptions.resourceUrl + 'lib/d3.min.js';
-        var spy = sinon.spy($, 'getScript');
-        var xhr = sinon.useFakeXMLHttpRequest();
-        var requests = [];
-        xhr.onCreate = function(xhr) {
-          requests.push(xhr);
-        };
+        var spy = sinon.stub($, 'getScript').returns($q.when());
         gaProfile.create().then(function(profile) {
           expect(profile).to.be.an(Object);
           expect(profile.create).to.be.a(Function);
           expect(profile.update).to.be.a(Function);
           expect(profile.data).to.be(undefined);
-          expect(spy.calledWith(d3Url)).to.be(true);
+          expect(spy.args[0][0]).to.be(d3Url);
           done();
           spy.restore();
         });
-        requests[0].respond(200, {'Content-Type': 'application/javascript'}, '!function(){}()');
         $rootScope.$digest();
       });
     });

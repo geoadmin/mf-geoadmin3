@@ -3,11 +3,11 @@ describe('ga_main_controller', function() {
 
   describe('GaMainController', function() {
 
-    var elt, scope, parentScope, $compile, $rootScope, $window, $timeout, $httpBackend,
+    var elt, scope, parentScope, $compile, $rootScope, $window, $timeout, $httpBackend, $q,
       gaMapUtils, gaPermalink, gaGlobalOptions, gaBackground, gaTime, gaMapLoad, gaWindow;
     /* Keep for future tests
       $q, $document, $translate, gaBrowserSniffer, gaHistory, gaPermalinkFeaturesManager, gaPermalinkLayersManager,
-      gaRealtimeLayersManager, gaNetworkStatus, gaLayers, gaTopic, gaOpaqueLayersManager, gaStorage, $document 
+      gaRealtimeLayersManager, gaNetworkStatus, gaLayers, gaTopic, gaOpaqueLayersManager, gaStorage, $document
     */
     var loadController = function() {
       parentScope = $rootScope.$new();
@@ -17,7 +17,38 @@ describe('ga_main_controller', function() {
       scope = elt.scope();
     };
 
+    var provideServices = function($provide) {
+      $provide.value('gaLayers', {
+        loadConfig: function() {
+          return $q.when({});
+        }
+      });
+      $provide.value('gaTopic', {
+        get: function() {
+          return {
+            id: 'bafu'
+          }
+        },
+        loadConfig: function() {
+          return $q.when({
+            topics: [{
+              defaultBackground: 'foo.bg',
+              selectedLayers: [],
+              backgroundLayers: [
+                'foo.bg',
+                'bar.bg',
+                'foo2.bg'
+              ],
+              activatedLayers: [],
+              id: 'bafu'
+            }]
+          });
+        }
+      });
+    };
+
     var injectServices = function($injector) {
+      $q = $injector.get('$q');
       $compile = $injector.get('$compile');
       $rootScope = $injector.get('$rootScope');
       $window = $injector.get('$window');
@@ -31,7 +62,6 @@ describe('ga_main_controller', function() {
       gaMapLoad = $injector.get('gaMapLoad');
       gaWindow = $injector.get('gaWindow');
       /* Keep for future tests
-      $q = $injector.get('$q');
       $document = $injector.get('$document');
       $translate = $injector.get('$translate');
       gaBrowserSniffer = $injector.get('gaBrowserSniffer');
@@ -41,8 +71,8 @@ describe('ga_main_controller', function() {
       gaRealtimeLayersManager = $injector.get('gaRealtimeLayersManager');
       gaNetworkStatus = $injector.get('gaNetworkStatus');
       gaLayers = $injector.get('gaLayers');
-      gaStorage = $injector.get('gaStorage');
       gaTopic = $injector.get('gaTopic');
+      gaStorage = $injector.get('gaStorage');
       gaOpaqueLayersManager = $injector.get('gaOpaqueLayersManager');
       */
     };
@@ -60,6 +90,9 @@ describe('ga_main_controller', function() {
     describe('on modern browser', function() {
 
       beforeEach(function() {
+        module(function($provide) {
+          provideServices($provide);
+        });
         inject(function($injector) {
           injectServices($injector);
         });
@@ -67,6 +100,8 @@ describe('ga_main_controller', function() {
 
       it('set scope values', function() {
         loadController();
+        $timeout.flush();
+        $rootScope.$digest();
         expect(scope.map).to.be.an(ol.Map);
         expect(scope.host.url).to.be($window.location.host);
         expect(scope.toMainHref).to.be(gaPermalink.getMainHref());

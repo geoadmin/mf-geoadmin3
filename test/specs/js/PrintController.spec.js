@@ -48,8 +48,8 @@ describe('ga_print_controller', function() {
       expect(opt.qrcodeUrl).to.be(gaGlobalOptions.apiUrl + '/qrcodegenerator?url=');
       expect(opt.markerUrl).to.be(gaGlobalOptions.resourceUrl + 'img/marker.png');
       expect(opt.bubbleUrl).to.be(gaGlobalOptions.resourceUrl + 'img/bubble.png');
-      expect(opt.heightMargin).to.be(null);
-      expect(opt.widthMargin).to.be(null);
+      expect(opt.heightMargin).to.be();
+      expect(opt.widthMargin).to.be();
       expect(opt.pdfLegendList.length).to.be(16);
       opt.pdfLegendList.forEach(function(p) {
         expect(p).to.be.a('string');

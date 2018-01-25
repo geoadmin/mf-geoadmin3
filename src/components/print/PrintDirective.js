@@ -353,7 +353,7 @@ goog.require('ga_urlutils_service');
         }
       });
 
-      // Display alert message 
+      // Display alert message
       if (msg) {
         msg = $translate.instant('layer_cant_be_printed') + msg;
         $window.alert(msg);

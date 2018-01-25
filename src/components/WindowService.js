@@ -66,14 +66,13 @@ goog.provide('ga_window_service');
       return this.breakpoints[str] && this.breakpoints[str].is(':visible');
     };
 
-    $(document).ready(function() {
-      var divClass = 'ga-window-' + name;
-      var div = $('.' + divClass).remove();
-      div = $('<div class="ga-window ' + divClass + '"></div>');
-      div.appendTo('body');
-      $.each(breakpoints, function(alias) {
-        breakpoints[alias].appendTo(div);
-      });
+    // Add the elements to the body
+    var divClass = 'ga-window-' + name;
+    var div = $('.' + divClass).remove();
+    div = $('<div class="ga-window ' + divClass + '"></div>');
+    div.appendTo('body');
+    $.each(breakpoints, function(alias) {
+      breakpoints[alias].appendTo(div);
     });
 
     /**

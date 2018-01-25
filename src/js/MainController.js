@@ -272,14 +272,12 @@ goog.require('ga_window_service');
     };
 
     // gaWindow is efficient only after the dom is ready
-    $document.ready(function() {
-      $scope.$applyAsync(function() {
-        $scope.globals.searchFocused = gaWindow.isWidth('>xs');
-        $scope.globals.pulldownShown = gaWindow.isWidth('>s') &&
-             gaWindow.isHeight('>s');
-        $scope.globals.settingsShown = gaWindow.isWidth('<=m');
-        $scope.globals.queryShown = gaWindow.isWidth('>m');
-      });
+    $scope.$applyAsync(function() {
+      $scope.globals.searchFocused = gaWindow.isWidth('>xs');
+      $scope.globals.pulldownShown = gaWindow.isWidth('>s') &&
+           gaWindow.isHeight('>s');
+      $scope.globals.settingsShown = gaWindow.isWidth('<=m');
+      $scope.globals.queryShown = gaWindow.isWidth('>m');
     });
 
     $scope.hidePulldownOnXSmallScreen = function() {

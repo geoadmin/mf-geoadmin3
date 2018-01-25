@@ -243,7 +243,8 @@ describe('ga_contextpopup_directive', function() {
       // Touch
       handlers.pointerdown(touchEvt);
       handlers.pointerup(touchEvt);
-      $timeout.flush();
+      $timeout.verifyNoPendingTasks();
+      $rootScope.$digest();
       expect(spy.callCount).to.eql(0);
       expect(elt.css('display')).to.be('none');
 
@@ -251,6 +252,7 @@ describe('ga_contextpopup_directive', function() {
       handlers.pointerdown(mouseEvt);
       handlers.pointerup(mouseEvt);
       $timeout.verifyNoPendingTasks();
+      $rootScope.$digest();
       expect(spy.callCount).to.eql(0);
       expect(elt.css('display')).to.be('none');
     });
@@ -261,7 +263,8 @@ describe('ga_contextpopup_directive', function() {
       // Touch
       handlers.pointerdown(touchEvt);
       handlers.pointermove(touchEvt2);
-      $timeout.flush();
+      $timeout.verifyNoPendingTasks();
+      $rootScope.$digest();
 
       expect(spy.callCount).to.eql(0);
       expect(elt.css('display')).to.be('none');
@@ -270,6 +273,7 @@ describe('ga_contextpopup_directive', function() {
       handlers.pointerdown(mouseEvt);
       handlers.pointermove(mouseEvt2);
       $timeout.verifyNoPendingTasks();
+      $rootScope.$digest();
 
       expect(spy.callCount).to.eql(0);
       expect(elt.css('display')).to.be('none');
@@ -322,7 +326,8 @@ describe('ga_contextpopup_directive', function() {
       $(map.getViewport()).trigger(evt);
       expect(spy.callCount).to.eql(0);
       expect(spy2.callCount).to.eql(0);
-      $timeout.flush();
+      $timeout.verifyNoPendingTasks();
+      $rootScope.$digest();
     });
   });
 });

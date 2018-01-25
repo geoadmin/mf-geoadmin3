@@ -213,7 +213,7 @@ goog.require('ga_styles_service');
               }));
             };
 
-            // Management of 2d layer with a 3d config to display in 3d. 
+            // Management of 2d layer with a 3d config to display in 3d.
             var dflt3dStatus = [];
             var showDflt3dLayers = function(map) {
               // Add 2d layer which have a 3d configuration to display in 3d
@@ -257,7 +257,7 @@ goog.require('ga_styles_service');
                 map.getOverlays().forEach(setRealPosition);
                 dereg.push(map.getOverlays().on('add', setRealPosition));
 
-                // Show layers we have to display in 3d 
+                // Show layers we have to display in 3d
                 showDflt3dLayers(map);
 
                 // Display alert messages that layers can't be displayed in 3d
@@ -285,7 +285,7 @@ goog.require('ga_styles_service');
                 });
 
                 // Hide layers we have to display in 3d, if it wasn't there in
-                // 2d. 
+                // 2d.
                 hideDflt3dLayers(map);
               }
             });

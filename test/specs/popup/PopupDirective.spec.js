@@ -48,7 +48,7 @@ describe('ga_popup_directive', function() {
   it('shows/closes the popup with scope property', inject(function($rootScope) {
     $rootScope.popupShown = true;
     $rootScope.$digest();
-    expect(element.css('display')).to.be('block');
+    expect(element.css('display')).to.be('');
 
     $rootScope.popupShown = false;
     $rootScope.$digest();
@@ -58,7 +58,7 @@ describe('ga_popup_directive', function() {
   it('closes the popup with close button', inject(function($rootScope) {
     $rootScope.popupShown = true;
     $rootScope.$digest();
-    expect(element.css('display')).to.be('block');
+    expect(element.css('display')).to.be('');
 
     element.find('.fa-remove').click();
     expect(element.css('display')).to.be('none');
@@ -72,7 +72,7 @@ describe('ga_popup_directive', function() {
     $rootScope.popupShown = true;
     $rootScope.popup2Shown = true;
     $rootScope.$digest();
-    expect(element.css('display')).to.be('block');
+    expect(element.css('display')).to.be('');
 
     element.find('.ga-popup-content').click();
     var zIndex = parseInt(element.css('z-index'));

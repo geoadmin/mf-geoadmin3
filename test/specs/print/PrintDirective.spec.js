@@ -444,7 +444,7 @@ describe('ga_print_directive', function() {
             grp.opacity = 1;
             var stub = sinon.stub(gaPrintLayer, 'encodeGroup').withArgs(grp, map.getView().getProjection(), 500,
                 [10000, 10000, 10000, 10000], 152.8740565703525, '150').returns([]);
-            var spy = sinon.spy($http, 'post');
+            var spy = sinon.stub($http, 'post');
             map.addLayer(grp);
             scope.submit();
             $timeout.flush();
@@ -459,7 +459,7 @@ describe('ga_print_directive', function() {
             var encLayers = [{foo: 'bar'}, {bar: 'foo'}];
             var stub = sinon.stub(gaPrintLayer, 'encodeGroup').withArgs(grp, map.getView().getProjection(), 500,
                 [10000, 10000, 10000, 10000], 152.8740565703525, '150').returns(encLayers);
-            var spy = sinon.spy($http, 'post');
+            var spy = sinon.stub($http, 'post');
             map.addLayer(grp);
             scope.submit();
             $timeout.flush();
@@ -478,7 +478,7 @@ describe('ga_print_directive', function() {
             });
             sinon.stub(gaPrintLayer, 'encodeGroup').returns([encLayer]);
             sinon.stub(gaAttribution, 'getTextFromLayer').returns('attribution');
-            var spy = sinon.spy($http, 'post');
+            var spy = sinon.stub($http, 'post');
             map.addLayer(layerWithLegendAndTime);
             map.addLayer(grp);
             scope.submit();

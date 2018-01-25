@@ -99,6 +99,7 @@ goog.require('ga_styles_service');
             containerEl.prepend(profileEl);
           }
           var areaChartPath = $window.d3.select('.ga-profile-area');
+
           attachPathListeners(areaChartPath);
         };
 

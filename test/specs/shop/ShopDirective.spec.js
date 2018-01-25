@@ -6,6 +6,16 @@ describe('ga_shop_directive', function() {
       $timeout, $httpBackend, gaShop, gaIdentify, gaPreviewFeatures, olFeature, $q;
 
     var loadDirective = function(map, feature, clipperGeometry) {
+      var layerId, flush = false;
+      if (feature instanceof ol.Feature) {
+        layerId = feature.get('layerId');
+      } else if (feature && feature.layerBodId && (!feature.properties || feature.properties.available !== false)) {
+        layerId = feature.layerBodId;
+      }
+      if (feature && layerId) {
+        flush = true;
+        $httpBackend.expectGET('http://shop.bgdi.ch/shop-server/resources/products/price?layer=' + layerId).respond({});
+      }
       parentScope = $rootScope.$new();
       parentScope.map = map;
       parentScope.feature = feature;
@@ -14,6 +24,9 @@ describe('ga_shop_directive', function() {
       $(document.body).append(tpl); // To test if the elt is removed by the directive.
       elt = $compile(tpl[0])(parentScope);
       $rootScope.$digest();
+      if (flush) {
+        $httpBackend.flush();
+      }
       scope = elt.isolateScope();
     };
 
@@ -105,7 +118,7 @@ describe('ga_shop_directive', function() {
       loadDirective(map, olFeature);
       expect(scope.clipperFeatures).to.be.an('object');
       expect(scope.showRectangle).to.be(false);
-      expect(scope.price).to.be(null);
+      expect(scope.price).to.be();
       expect(scope.layerBodId).to.be('layerBodId');
       expect(scope.feature).to.be(olFeature);
       expect(scope.notAvailable).to.be(undefined);

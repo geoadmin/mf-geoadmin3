@@ -138,6 +138,7 @@ describe('ga_profile_directive', function() {
     });
 
     it('set scope values', function() {
+      $httpBackend.expectPOST('http://api3.geo.admin.ch/rest/services/profile.json').respond({});
       loadDirective(feature, map, layer, options);
       expect(scope.feature).to.be(feature);
       expect(scope.map).to.be(map);
@@ -152,9 +153,11 @@ describe('ga_profile_directive', function() {
       expect(scope.elPoi1).to.be.a(Function);
       expect(scope.hikTime).to.be.a(Function);
       expect(scope.deleteSelectedFeature).to.be.a(Function);
+      $httpBackend.flush();
     });
 
     it('does nothing if profile is not created yet', function() {
+      $httpBackend.expectPOST('http://api3.geo.admin.ch/rest/services/profile.json').respond({});
       loadDirective(feature, map, layer, options);
       expect(scope.diff()).to.be(undefined);
       expect(scope.twoDiff()).to.be(undefined);
@@ -162,6 +165,7 @@ describe('ga_profile_directive', function() {
       expect(scope.elPoi()).to.be(undefined);
       expect(scope.elPoi1()).to.be(undefined);
       expect(scope.hikTime()).to.be(undefined);
+      $httpBackend.flush();
     });
 
     describe('when a profile is created', function() {

@@ -440,7 +440,7 @@ goog.require('ga_urlutils_service');
           maxExtent: extent
         });
       } else {
-        // use the full monty WMTS definition fo external source   
+        // use the full monty WMTS definition fo external source
         angular.extend(enc, {
           layer: source.getLayer(),
           baseURL: baseUrl,

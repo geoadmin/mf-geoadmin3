@@ -122,14 +122,17 @@ describe('ga_search_directive', function() {
 
       it('set childOptions values for a simple text search', function() {
         var opt = {
-          searchUrl: 'search'
+          searchUrl: 'http://search.ch'
         };
+        $httpBackend.expectGET(opt.searchUrl + '?searchText=search&lang=en&type=locations').respond({});
+        $httpBackend.expectGET(opt.searchUrl + '?searchText=search&lang=en&type=layers').respond({});
         loadDirective(map, ol3d, opt, true);
-        $timeout.flush();
         scope.query = 'search';
         $rootScope.$digest();
+        $timeout.flush();
+        $httpBackend.flush();
         expect(scope.childoptions.query).to.be('search');
-        expect(scope.childoptions.searchUrl).to.be('search?searchText=search&lang=en');
+        expect(scope.childoptions.searchUrl).to.be(opt.searchUrl + '?searchText=search&lang=en');
       });
 
       it('launches a w3w search', function(done) {
