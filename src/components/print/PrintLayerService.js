@@ -276,6 +276,7 @@ goog.require('ga_urlutils_service');
         printRectangleCoords, dpi) {
 
       dpi = parseInt(dpi) || 150;
+      var resolution = scale / UNITS_RATIO / POINTS_PER_INCH;
       var encStyles = {};
       var encFeatures = [];
       var encStyle = {
@@ -285,9 +286,9 @@ goog.require('ga_urlutils_service');
       // Get the styles of the feature
       if (!styles) {
         if (feature.getStyleFunction()) {
-          styles = feature.getStyleFunction().call(feature);
+          styles = feature.getStyleFunction().call(feature, resolution);
         } else if (layer.getStyleFunction()) {
-          styles = layer.getStyleFunction()(feature);
+          styles = layer.getStyleFunction()(feature, resolution);
         }
       }
       var geometry = feature.getGeometry();
@@ -316,7 +317,6 @@ goog.require('ga_urlutils_service');
           image instanceof ol.style.RegularShape &&
           !(image instanceof ol.style.Circle)) {
         // var scale = parseFloat($scope.scale.value);
-        var resolution = scale / UNITS_RATIO / POINTS_PER_INCH;
         geometry = gaPrintStyle.olPointToPolygon(
             feature.getGeometry(),
             image.getRadius(),
