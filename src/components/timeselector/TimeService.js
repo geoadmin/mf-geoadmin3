@@ -22,9 +22,14 @@ goog.require('ga_permalink_service');
       }
       var year;
       for (var i = 0, ii = olLayers.length; i < ii; i++) {
-        if (!olLayers[i].visible || !olLayers[i].timeEnabled ||
-            !olLayers[i].time) {
+        if (!olLayers[i].visible || !olLayers[i].timeEnabled) {
           continue;
+        }
+
+        if (!olLayers[i].time) {
+          // if a timeEnabled layer has an undefined time, for sure they can't
+          // have the same time with the others layers.
+          return false;
         }
 
         if (!year) {
