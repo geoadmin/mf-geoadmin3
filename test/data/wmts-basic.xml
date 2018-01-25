@@ -153,6 +153,65 @@
             </TileMatrixSetLink>
                 <ResourceURL format="image/png" resourceType="tile" template="https://wmts.geo.admin.ch/1.0.0/ch.bafu.neophyten-japanisches_geissblatt/default/{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.png"/>
         </Layer>
+        <Layer>
+          <ows:Title>Carte des dégâts aux forêts</ows:Title>
+          <ows:Abstract>
+            Layer with 2 timestamps but one is current, so timeEnabeld property should be false.
+          </ows:Abstract>
+          <ows:WGS84BoundingBox>
+            <ows:LowerCorner>5.140242 45.398181</ows:LowerCorner>
+            <ows:UpperCorner>11.47757 48.230651</ows:UpperCorner>
+          </ows:WGS84BoundingBox>
+          <ows:Identifier>ch.vbs.waldschadenkarte</ows:Identifier>
+          <ows:Metadata xlink:href="https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/2ff2299e-55b5-4ec7-bb92-fbb06e7ee422"/>
+          <Style>
+            <ows:Title>Carte des dégâts aux forêts</ows:Title>
+            <ows:Identifier>ch.vbs.waldschadenkarte</ows:Identifier>
+            <LegendURL format="image/png" xlink:href="https://api3.geo.admin.ch/static/images/legends/ch.vbs.waldschadenkarte_fr.png"/>
+          </Style>
+          <Format>image/png</Format>
+          <Dimension>
+            <ows:Identifier>Time</ows:Identifier>
+            <Default>current</Default>
+            <Value>current</Value>
+            <Value>20110525</Value>
+          </Dimension>
+          <TileMatrixSetLink>
+            <TileMatrixSet>21781_24</TileMatrixSet>
+          </TileMatrixSetLink>
+          <ResourceURL format="image/png" resourceType="tile" template="https://wmts.geo.admin.ch/1.0.0/ch.vbs.waldschadenkarte/default/{Time}/2056/{TileMatrix}/{TileCol}/{TileRow}.png"/>
+      </Layer>
+      <Layer>
+          <ows:Title>Carte des dégâts aux forêts</ows:Title>
+          <ows:Abstract>
+            Layer with more than 2 timestamps and one is current, so timeEnabeld property should be true.
+          </ows:Abstract>
+          <ows:WGS84BoundingBox>
+            <ows:LowerCorner>5.140242 45.398181</ows:LowerCorner>
+            <ows:UpperCorner>11.47757 48.230651</ows:UpperCorner>
+          </ows:WGS84BoundingBox>
+          <ows:Identifier>ch.vbs.waldschadenkarte2</ows:Identifier>
+          <ows:Metadata xlink:href="https://www.geocat.ch/geonetwork/srv/ger/md.viewer#/full_view/2ff2299e-55b5-4ec7-bb92-fbb06e7ee422"/>
+          <Style>
+            <ows:Title>Carte des dégâts aux forêts</ows:Title>
+            <ows:Identifier>ch.vbs.waldschadenkarte</ows:Identifier>
+            <LegendURL format="image/png" xlink:href="https://api3.geo.admin.ch/static/images/legends/ch.vbs.waldschadenkarte_fr.png"/>
+          </Style>
+          <Format>image/png</Format>
+          <Dimension>
+            <ows:Identifier>Time</ows:Identifier>
+            <Default>current</Default>
+            <Value>current</Value>
+            <Value>20110525</Value>
+            <Value>20070525</Value>
+            <Value>20060525</Value>
+          </Dimension>
+          <TileMatrixSetLink>
+            <TileMatrixSet>21781_24</TileMatrixSet>
+          </TileMatrixSetLink>
+          <ResourceURL format="image/png" resourceType="tile" template="https://wmts.geo.admin.ch/1.0.0/ch.vbs.waldschadenkarte/default/{Time}/2056/{TileMatrix}/{TileCol}/{TileRow}.png"/>
+      </Layer>
+
 <TileMatrixSet>
         <ows:Identifier>21781_24</ows:Identifier>
         <ows:SupportedCRS>urn:ogc:def:crs:EPSG:21781</ows:SupportedCRS>

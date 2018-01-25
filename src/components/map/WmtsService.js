@@ -18,7 +18,7 @@ goog.require('ga_urlutils_service');
    */
   module.provider('gaWmts', function() {
     this.$get = function(gaDefinePropertiesForLayer, gaMapUtils, gaUrlUtils,
-        gaGlobalOptions, $window, $translate, $http) {
+        gaGlobalOptions, $window, $translate, $http, gaTime) {
 
       // Store getCapabilitites
       var store = {};
@@ -119,7 +119,10 @@ goog.require('ga_urlutils_service');
         layer.url = options.capabilitiesUrl;
         layer.timestamps = options.timestamps;
         layer.timeEnabled = (layer.timestamps && layer.timestamps.length > 1);
-        layer.time = options.time;
+        if (layer.timestamps && layer.timestamps.length === 2 &&
+              layer.timestamps[0] === 'current') {
+          layer.timeEnabled = false;
+        }
         layer.getCesiumImageryProvider = function() {
           return getCesiumImageryProvider(layer);
         };
@@ -210,7 +213,6 @@ goog.require('ga_urlutils_service');
           if (layerOptions) {
             layerOptions.opacity = options.opacity || 1;
             layerOptions.visible = options.visible || true;
-            layerOptions.time = options.time;
             return createWmtsLayer(layerOptions);
           }
         };
