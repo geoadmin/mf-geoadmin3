@@ -30,7 +30,7 @@ describe('ga_urlutils_service', function() {
         expect(gaUrlUtils.isValid('https://admin.ch/space in URLtrue?query')).to.be(true);
         expect(gaUrlUtils.isValid('https://domain admin.ch/space in URLfalse?query')).to.be(false);
         expect(gaUrlUtils.isValid('blob:https://myblob.ch/7a910681-938c-4011-8d75-2b64035a40a7')).to.be(true);
-        expect(gaUrlUtils.isValid('https://wmts.geo.admin.ch/1.0.0/ch.bafu.alpweiden-herdenschutzhunde/default/Time/21781/TileMatrix/TileRow/TileCol}.png')).to.be(true);
+        expect(gaUrlUtils.isValid('https://wmts.geo.admin.ch/1.0.0/ch.bafu.alpweiden-herdenschutzhunde/default/{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.png')).to.be(true);
       });
     });
 
@@ -52,7 +52,7 @@ describe('ga_urlutils_service', function() {
         expect(gaUrlUtils.isAdminValid('https://public.geo.admin.ch')).to.be(true);
         expect(gaUrlUtils.isAdminValid('https://public.dev.bgdi.ch')).to.be(true);
         expect(gaUrlUtils.isAdminValid('blob:https://myblob.ch/7a910681-938c-4011-8d75-2b64035a40a7')).to.be(false);
-        expect(gaUrlUtils.isValid('https://wmts.geo.admin.ch/1.0.0/ch.bafu.alpweiden-herdenschutzhunde/default/Time/21781/TileMatrix/TileRow/TileCol}.png')).to.be(true);
+        expect(gaUrlUtils.isValid('https://wmts.geo.admin.ch/1.0.0/ch.bafu.alpweiden-herdenschutzhunde/default/{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.png')).to.be(true);
       });
     });
 
