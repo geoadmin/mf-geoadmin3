@@ -41,7 +41,7 @@ goog.require('ga_urlutils_service');
 
     // Utils functions
     var createArea = function(domain, height, elevationModel) {
-      return d3.svg.area().x(function(d) {
+      return d3.area().x(function(d) {
         return domain.X(d.domainDist);
       }).y0(height).y1(function(d) {
         return domain.Y(d.alts[elevationModel]);
@@ -50,14 +50,14 @@ goog.require('ga_urlutils_service');
 
     var createAxis = function(domain) {
       return {
-        X: d3.svg.axis().scale(domain.X).orient('bottom'),
-        Y: d3.svg.axis().scale(domain.Y).ticks(5).orient('left')
+        X: d3.axisBottom(domain.X),
+        Y: d3.axisLeft(domain.Y).ticks(5)
       };
     };
 
     var getXYDomains = function(width, height, elevationModel, data) {
-      var x = d3.scale.linear().range([0, width]);
-      var y = d3.scale.linear().range([height, 0]);
+      var x = d3.scaleLinear().range([0, width]);
+      var y = d3.scaleLinear().range([height, 0]);
       x.domain(d3.extent(data, function(d) {
         return d.domainDist || 0;
       }));
@@ -83,14 +83,6 @@ goog.require('ga_urlutils_service');
       var d3LibUrl = this.d3libUrl;
       var profileUrl = this.profileUrl;
       var isIE = !!gaBrowserSniffer.msie;
-
-      var elevationFilter = function(number) {
-        return measureFilter(number, 'distance', 'm', 2, true);
-      };
-
-      var distanceFilter = function(number) {
-        return measureFilter(number, 'distance', ['km', 'm'], 2, true);
-      };
 
       var ProfileChart = function(options) {
         options = options || {};
@@ -418,10 +410,6 @@ goog.require('ga_urlutils_service');
               attr('dy', '1em').
               attr('font-size', '0.95em');
 
-          // Total Elevation Difference
-          // Using Unicode for the icons inside a normal text element
-          // by setting the font-family to 'FontAwesome'
-          // http://fortawesome.github.io/Font-Awesome/3.2.1/cheatsheet/
           this.updateLabels();
         };
 
@@ -431,55 +419,6 @@ goog.require('ga_urlutils_service');
                   $translate.instant(this.unitX) + ']');
           this.group.select('text.ga-profile-label-y').
               text($translate.instant(options.yLabel) + ' [m]');
-
-          this.group.select('.ga-profile-elevation-difference ' +
-                  'text.ga-profile-icon-text').
-              text(elevationFilter(this.diff));
-          this.group.select('.ga-profile-elevation-difference title').
-              text($translate.instant('profile_elevation_difference'));
-
-          this.group.select('.ga-profile-elevation-up ' +
-                  'text.ga-profile-icon-text').
-              text(elevationFilter(this.twoDiff[0]));
-          this.group.select('.ga-profile-elevation-up title').
-              text($translate.instant('profile_elevation_up'));
-
-          this.group.select('.ga-profile-elevation-down ' +
-                  'text.ga-profile-icon-text').
-              text(elevationFilter(this.twoDiff[1]));
-          this.group.select('.ga-profile-elevation-down title').
-              text($translate.instant('profile_elevation_down'));
-
-          this.group.select('.ga-profile-poi-up ' +
-                  'text.ga-profile-icon-text').
-              text(elevationFilter(this.elPoi[0]));
-          this.group.select('.ga-profile-poi-up title').
-              text($translate.instant('profile_poi_up'));
-
-          this.group.select('.ga-profile-poi-down ' +
-                  'text.ga-profile-icon-text').
-              text(elevationFilter(this.elPoi[1]));
-          this.group.select('.ga-profile-poi-down title').
-              text($translate.instant('profile_poi_down'));
-
-          this.group.select('.ga-profile-distance ' +
-                  'text.ga-profile-icon-text').
-              text(distanceFilter(this.dist));
-          this.group.select('.ga-profile-distance title').
-              text($translate.instant('profile_distance'));
-
-          this.group.select('.ga-profile-slopeDist ' +
-                  'text.ga-profile-icon-text').
-              text(distanceFilter(this.slopeDist));
-          this.group.select('.ga-profile-slopeDist title').
-              text($translate.instant('profile_slope_distance'));
-
-          this.group.select('.ga-profile-hikTime ' +
-                  'text.ga-profile-icon-text').
-              text($translate.instant('approx_abbr') + ' ' +
-                  gaTimeFormatFilter(this.hikTime));
-          this.group.select('.ga-profile-hikTime title').
-              text($translate.instant('profile_hike_time'));
         };
 
         this.updateProperties = function(data) {
