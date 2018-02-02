@@ -9301,11 +9301,12 @@ ol.ext.rbush = function() {
 };
 (function() {
   (function(exports) {
-    var quickselect = partialSort;
-    function partialSort(arr, k, left, right, compare) {
-      left = left || 0;
-      right = right || arr.length - 1;
-      compare = compare || defaultCompare;
+    var quickselect_1 = quickselect;
+    var default_1 = quickselect;
+    function quickselect(arr, k, left, right, compare) {
+      quickselectStep(arr, k, left || 0, right || arr.length - 1, compare || defaultCompare);
+    }
+    function quickselectStep(arr, k, left, right, compare) {
       while (right > left) {
         if (right - left > 600) {
           var n = right - left + 1;
@@ -9315,7 +9316,7 @@ ol.ext.rbush = function() {
           var sd = 0.5 * Math.sqrt(z * s * (n - s) / n) * (m - n / 2 < 0 ? -1 : 1);
           var newLeft = Math.max(left, Math.floor(k - m * s / n + sd));
           var newRight = Math.min(right, Math.floor(k + (n - m) * s / n + sd));
-          partialSort(arr, k, newLeft, newRight, compare);
+          quickselectStep(arr, k, newLeft, newRight, compare);
         }
         var t = arr[k];
         var i = left;
@@ -9357,6 +9358,7 @@ ol.ext.rbush = function() {
     function defaultCompare(a, b) {
       return a < b ? -1 : a > b ? 1 : 0;
     }
+    quickselect_1.default = default_1;
     var rbush_1 = rbush;
     function rbush(maxEntries, format) {
       if (!(this instanceof rbush)) {
@@ -9729,7 +9731,7 @@ ol.ext.rbush = function() {
           continue;
         }
         mid = left + Math.ceil((right - left) / n / 2) * n;
-        quickselect(arr, mid, left, right, compare);
+        quickselect_1(arr, mid, left, right, compare);
         stack.push(left, mid, mid, right);
       }
     }
