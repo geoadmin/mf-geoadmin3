@@ -6,17 +6,19 @@ node(label: 'jenkins-slave') {
   def e2eTargetUrl
 
   // If it's master
-  def deployGitBranch = 'master'
+  def deployGitBranch = env.BRANCH_NAME
   def namedBranch = false
 
   // If it's a PR
-  if (env.ghprbSourceBranch) {
-    deployGitBranch = env.ghprbSourceBranch
+  if (deployGitBranch != 'master' && env.CHANGE_BRANCH) {
+    deployGitBranch = env.CHANGE_BRANCH
     namedBranch = true
   }
 
   try {
-    checkout scm
+    stage('Checkout') {
+      checkout scm
+    }
     
     stage('Lint') {
       sh 'make lint'
@@ -27,7 +29,14 @@ node(label: 'jenkins-slave') {
     }
 
     stage('Test') {
-      sh 'make testdebug testrelease'
+      parallel (
+        'debug': {
+          sh 'make testdebug'
+        },
+        'release': {
+          sh 'make testrelease'
+        }
+      )
     }
     
     stage('Deploy') {
@@ -42,7 +51,7 @@ node(label: 'jenkins-slave') {
       sh 'make E2E_TARGETURL=' + e2eTargetUrl + ' teste2e'
 
       if (!namedBranch) {
-        // Remove the branch created if tests succceed
+        // Activate the new version if tests succceed
         sh 'echo "yes" | make S3_VERSION_PATH=' + s3VersionPath + ' s3activateint'
       }
     }
