@@ -54,14 +54,14 @@ describe('ga_wmtsgetcap_directive', function() {
     });
 
     it('creates html elements', function() {
-      expect(elt.find('[ga-wmts-get-cap-item]').length).to.be(3);
+      expect(elt.find('[ga-wmts-get-cap-item]').length).to.be(5);
       expect(elt.find('.fa-sort-by-alphabet').length).to.be(1);
       expect(elt.find('.ga-add').length).to.be(1);
     });
 
     it('has good scope values', function() {
       expect(scope.map).to.be(map);
-      expect(scope.layers.length).to.be(3);
+      expect(scope.layers.length).to.be(5);
       expect(scope.limitations).to.be(undefined);
       expect(scope.userMsg).to.be(undefined);
       expect(scope.options.layerSelected).to.be(null);

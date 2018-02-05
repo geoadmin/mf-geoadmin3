@@ -50,7 +50,7 @@ fi
 
 # Upload to S3
 echo "$pwd/.build-artefacts/python-venv/bin/python $pwd/scripts/s3manage.py upload $SNAPSHOTDIR/geoadmin/code/geoadmin $DEPLOY_TARGET"
-$pwd/.build-artefacts/python-venv/bin/python $pwd/scripts/s3manage.py upload $SNAPSHOTDIR/geoadmin/code/geoadmin $DEPLOY_TARGET
+$pwd/.build-artefacts/python-venv/bin/python $pwd/scripts/s3manage.py upload $SNAPSHOTDIR/geoadmin/code/geoadmin $DEPLOY_TARGET false
 
 # Flush varnish
 echo "Flushing varnishes"
