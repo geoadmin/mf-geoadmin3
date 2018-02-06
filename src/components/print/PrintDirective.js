@@ -416,7 +416,7 @@ goog.require('ga_urlutils_service');
 
             // Build the correct copyright text to display
             var allDataOwner = attributions.concat(thirdPartyAttributions);
-            allDataOwner = allDataOwner.join();
+            allDataOwner = allDataOwner.join(', ');
             var movieprint = $scope.options.movie && $scope.options.multiprint;
             var spec = {
               layout: $scope.layout.name,
