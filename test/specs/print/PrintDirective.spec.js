@@ -490,7 +490,7 @@ describe('ga_print_directive', function() {
             expect(config.layers).to.eql([encLayer, encLayer]);
             expect(config.layers[0].legend).to.be();
             expect(config.layers[1].legend).to.be();
-            expect(config.pages[0].dataOwner).to.eql('© attribution,attribution');
+            expect(config.pages[0].dataOwner).to.eql('© attribution, attribution');
             expect(config.pages[0].timestamp).to.eql('1987');
           });
 
