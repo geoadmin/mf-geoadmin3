@@ -88,7 +88,7 @@ goog.require('ga_window_service');
               scope.options.showReduce = true;
             }
             // Bring the popup to front on click on it.
-            element.find('.popover-content').click(function(evt) {
+            element.find('.popover-content').on('click', function(evt) {
               if (!scope.options.isReduced && scope.toggle) {
                 bringUpFront(element);
               }

@@ -332,7 +332,7 @@ goog.require('ga_window_service');
 
     // Manage exit of draw mode
     // Exit Draw mode when pressing ESC or Backspace button
-    $document.keydown(function(evt) {
+    $document.on('keydown', function(evt) {
       if (evt.which === 8) {
         if (!/^(input|textarea)$/i.test(evt.target.tagName)) {
           evt.preventDefault();
@@ -408,7 +408,7 @@ goog.require('ga_window_service');
     // Hide a panel clicking on its heading
     var hidePanel = function(id) {
       if ($('#' + id).hasClass('in')) {
-        $('#' + id + 'Heading').click();
+        $('#' + id + 'Heading').trigger('click');
       }
     };
 

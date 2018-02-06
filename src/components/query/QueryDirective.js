@@ -180,7 +180,7 @@ goog.require('ga_query_service');
         filter.moreValues = null;
       }
       $timeout(function() {
-        target.prev().focus();
+        target.prev().trigger('focus');
         $scope.updateInputValue(idx, filter);
       }, 0, false);
     };

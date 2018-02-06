@@ -65,7 +65,7 @@ goog.require('ga_background_service');
               }
             });
 
-            elt.find('.ga-bg-layer-bt').click(scope.toggleMenu);
+            elt.find('.ga-bg-layer-bt').on('click', scope.toggleMenu);
           }
         };
       }

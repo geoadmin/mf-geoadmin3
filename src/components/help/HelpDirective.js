@@ -185,11 +185,11 @@ goog.require('ga_help_service');
           // The destroy of popover is effective after the end of animation
           // (150ms) so we re-focus the target after this period
           $timeout(function() {
-            target.focus();
+            target.trigger('focus');
           }, 160, false);
         };
 
-        element.click(function(evt) {
+        element.on('click', function(evt) {
           if (!target) {
             target = $(attrs['gaHelpHighlight']);
           }
@@ -208,7 +208,7 @@ goog.require('ga_help_service');
             title: $translate.instant('help_search_data_title'),
             content: $translate.instant('help_search_data'),
             trigger: 'focus'
-          }).focus().one('hidden.bs.popover keydown', clean);
+          }).trigger('focus').one('hidden.bs.popover keydown', clean);
 
           // Start transition
           var offset = target.offset();

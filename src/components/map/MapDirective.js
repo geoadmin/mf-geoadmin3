@@ -33,7 +33,7 @@ goog.require('ga_styles_service');
             inspector = new Cesium.CesiumInspector(element[0], scene);
 
             // Hide the menu
-            element.find('.cesium-cesiumInspector-button').click();
+            element.find('.cesium-cesiumInspector-button').trigger('click');
           }
         });
       }
@@ -58,7 +58,7 @@ goog.require('ga_styles_service');
             inspector = new Cesium.Cesium3DTilesInspector(element[0], scene);
 
             // Hide the menu
-            element.find('.cesium-cesiumInspector-button').click();
+            element.find('.cesium-cesiumInspector-button').trigger('click');
           }
         });
       }

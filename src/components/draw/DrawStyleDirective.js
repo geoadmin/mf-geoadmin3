@@ -229,7 +229,8 @@ goog.require('ga_window_service');
               replace(/{{url}}/g, linkVal).
               replace(/{{textToDisplay}}/, linkType.textToDisplay || '');
           // Close the popover then focus the textarea
-          $('.ga-descr-buttons').next('textarea').click().focus();
+          $('.ga-descr-buttons').next('textarea').trigger('click').
+              trigger('focus');
           // Clear input field
           element.find('.ga-add-link input').val('');
           var linkDesc = element.find('.ga-html-link input');
@@ -323,7 +324,7 @@ goog.require('ga_window_service');
               $document.on('click', closePopover);
               win.on('resize', closePopover);
               $(evt.currentTarget).next('.popover').find('input,select').
-                  first().focus();
+                  first().trigger('focus');
             }).on('hide.bs.popover', function() {
               element.off('scroll', closePopover);
               $document.off('click', closePopover);

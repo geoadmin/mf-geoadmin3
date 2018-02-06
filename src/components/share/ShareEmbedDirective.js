@@ -48,7 +48,7 @@ goog.require('ga_permalink');
 
         // Display a preview window
         var previewWindow;
-        modal.find('.form-inline a').click(function() {
+        modal.find('.form-inline a').on('click', function() {
           if (previewWindow) {
             previewWindow.close();
           }
@@ -62,7 +62,7 @@ goog.require('ga_permalink');
 
         // Manage minimal size
         var minSize = 200;
-        modal.find('.form-inline input').blur(function() {
+        modal.find('.form-inline input').on('blur', function() {
           if (scope.iframeWidth < minSize ||
               scope.iframeHeight < minSize) {
             scope.$applyAsync(function() {

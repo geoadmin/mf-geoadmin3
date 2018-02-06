@@ -39,13 +39,14 @@ goog.require('ga_file_service');
         initUserMsg();
 
         var triggerInputFileClick = function() {
-          elt.find('input[type="file"]').click();
+          elt.find('input[type="file"]').trigger('click');
         };
 
         // Trigger the hidden input[type=file] onclick event
-        elt.find('button.ga-import-browse').click(triggerInputFileClick);
+        elt.find('button.ga-import-browse').trigger('click',
+            triggerInputFileClick);
         elt.find('input.form-control[type=text][readonly]').
-            click(triggerInputFileClick);
+            trigger('click', triggerInputFileClick);
 
         // Register input[type=file] onchange event, use HTML5 File api
         elt.find('input[type=file]').on('change', function(evt) {

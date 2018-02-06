@@ -91,7 +91,7 @@ goog.require('ga_file_service');
         var taMenu = elt.find('.tt-menu');
         elt.find('.ga-import-open').on('mousedown', function(evt) {
           if (taMenu.css('display') === 'none') {
-            taElt.focus();
+            taElt.trigger('focus');
             taElt.typeahead('val', '');
           } else {
             taElt.blur();

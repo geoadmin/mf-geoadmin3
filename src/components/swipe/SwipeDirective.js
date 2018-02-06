@@ -88,8 +88,8 @@ goog.require('ga_layerfilters_service');
             var dragEnd = function(evt) {
               isDragging = false;
               arrowsElt.show();
-              $document.unbind(eventKey.move, drag);
-              $document.unbind(eventKey.end, dragEnd);
+              $document.off(eventKey.move, drag);
+              $document.off(eventKey.end, dragEnd);
               layerLabelElt.hide();
               updatePermalinkDebounced(scope.ratio);
             };
