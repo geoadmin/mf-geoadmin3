@@ -62,7 +62,11 @@ describe('ga_import_directive', function() {
   afterEach(function() {
     $httpBackend.verifyNoOutstandingExpectation();
     $httpBackend.verifyNoOutstandingRequest();
-    $timeout.verifyNoPendingTasks();
+    try {
+      $timeout.verifyNoPendingTasks();
+    } catch (e) {
+      $timeout.flush();
+    }
   });
 
   it('creates html elements', function() {

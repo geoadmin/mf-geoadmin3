@@ -12,7 +12,6 @@ describe('ga_map_directive', function() {
     $rootScope.$digest();
     scope = elt.isolateScope();
   };
-
   var provideServices = function($provide) {
     $provide.value('gaLayers', {
       loadConfig: function() {
