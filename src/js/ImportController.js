@@ -173,7 +173,7 @@ goog.require('ga_wmts_service');
         'http://wms.ga.admin.ch/1GE',
         'http://wms.ga.admin.ch/LG_DE_Geologie_und_Tektonik/wms',
         'http://bio.discomap.eea.europa.eu/arcgis/services/Ecosystem/Ecosystems/MapServer/WMSServer',
-        'http://copernicus.discomap.eea.europa.eu/arcgis/services/Corine/CLC2012_WM/MapServer/WMSServer'
+        'http://copernicus.discomap.eea.europa.eu/arcgis/services/Corine/CLC2012_WM/MapServer/WMSServer',
         'https://image.discomap.eea.europa.eu/arcgis/services/GioLandPublic/DEM/MapServer/WMSServer',
         'https://image.discomap.eea.europa.eu/arcgis/services/Elevation/Hillshade/MapServer/WMSServer',
         'http://eumetview.eumetsat.int/geoserver/wms',
