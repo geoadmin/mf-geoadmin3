@@ -115,7 +115,11 @@ describe('ga_contextpopup_directive', function() {
     $('#map').remove();
     $httpBackend.verifyNoOutstandingExpectation();
     $httpBackend.verifyNoOutstandingRequest();
-    $timeout.verifyNoPendingTasks();
+    try {
+      $timeout.verifyNoPendingTasks();
+    } catch (e) {
+      $timeout.flush();
+    }
   });
 
   describe('on all browser', function() {

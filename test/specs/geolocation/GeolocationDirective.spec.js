@@ -66,7 +66,11 @@ describe('ga_geolocation_directive', function() {
     afterEach(function() {
       $httpBackend.verifyNoOutstandingExpectation();
       $httpBackend.verifyNoOutstandingRequest();
-      $timeout.verifyNoPendingTasks();
+      try {
+        $timeout.verifyNoPendingTasks();
+      } catch (e) {
+        $timeout.flush();
+      }
     });
 
     describe('on browser supporting geolocation', function() {

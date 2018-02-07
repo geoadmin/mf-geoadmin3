@@ -69,7 +69,11 @@ describe('ga_feedback_directive', function() {
   afterEach(function() {
     $httpBackend.verifyNoOutstandingExpectation();
     $httpBackend.verifyNoOutstandingRequest();
-    $timeout.verifyNoPendingTasks();
+    try {
+      $timeout.verifyNoPendingTasks();
+    } catch (e) {
+      $timeout.flush();
+    }
   });
 
   it('check feedback fields', function() {

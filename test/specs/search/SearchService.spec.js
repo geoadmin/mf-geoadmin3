@@ -19,7 +19,11 @@ describe('ga_search_service', function() {
     afterEach(function() {
       $httpBackend.verifyNoOutstandingExpectation();
       $httpBackend.verifyNoOutstandingRequest();
-      $timeout.flush();
+      try {
+        $timeout.verifyNoPendingTasks();
+      } catch (e) {
+        $timeout.flush();
+      }
     });
 
     describe('supports EPSG:2056 coordinate', function() {

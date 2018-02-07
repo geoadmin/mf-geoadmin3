@@ -86,7 +86,11 @@ describe('ga_attribution_directive', function() {
     afterEach(function() {
       $httpBackend.verifyNoOutstandingExpectation();
       $httpBackend.verifyNoOutstandingRequest();
-      $timeout.verifyNoPendingTasks();
+      try {
+        $timeout.verifyNoPendingTasks();
+      } catch (e) {
+        $timeout.flush();
+      }
     });
 
     describe('on modern browsers', function() {
@@ -302,7 +306,11 @@ describe('ga_attribution_directive', function() {
     afterEach(function() {
       $httpBackend.verifyNoOutstandingExpectation();
       $httpBackend.verifyNoOutstandingRequest();
-      $timeout.verifyNoPendingTasks();
+      try {
+        $timeout.verifyNoPendingTasks();
+      } catch (e) {
+        $timeout.flush();
+      }
     });
 
     it('verifies html elements', function() {
