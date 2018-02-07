@@ -406,7 +406,6 @@ translate:
 fixrights:
 	@ if grep 'geodata' /etc/group; then \
 		chgrp -f -R geodata . || : ; \
-		echo 'lala'; \
 	fi; \
 	chmod -f -R g+rw . || :
 
@@ -742,7 +741,7 @@ libs:
 	cp -f $(addprefix node_modules/localforage/dist/, localforage.js localforage.min.js) src/lib/;
 	cp -f $(addprefix node_modules/jquery/dist/, jquery.js jquery.min.js) src/lib/;
 	cp -f $(addprefix node_modules/jquery-ajax-transport-xdomainrequest/, jQuery.XDomainRequest.js  jquery.xdomainrequest.min.js) src/lib/;
-	cp -f $(addprefix node_modules/d3/, d3.js d3.min.js) src/lib/;
+	cp -f $(addprefix node_modules/d3/build/, d3.js d3.min.js) src/lib/;
 	cp -f $(addprefix node_modules/bootstrap/dist/js/, bootstrap.js bootstrap.min.js) src/lib/;
 	cp -f $(addprefix node_modules/corejs-typeahead/dist/, typeahead.jquery.js typeahead.jquery.min.js) src/lib/;
 	cp -f node_modules/slipjs/slip.js src/lib;

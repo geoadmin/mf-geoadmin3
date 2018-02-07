@@ -236,11 +236,11 @@ goog.require('ga_translation_service');
             scope.onKeyDown = function(evt, feature) {
               // arrow up key
               if (evt.keyCode === 38) {
-                $(evt.target).prev().focus();
+                $(evt.target).prev().trigger('focus');
                 evt.preventDefault();
               // arrow down key
               } else if (evt.keyCode === 40) {
-                $(evt.target).next().focus();
+                $(evt.target).next().trigger('focus');
                 evt.preventDefault();
               }
             };

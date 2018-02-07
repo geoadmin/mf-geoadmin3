@@ -41,7 +41,7 @@ goog.require('ga_time_service');
       link: function(scope, elt, attrs, controller) {
 
         // Deactivate user form submission with Enter key
-        elt.keypress(function(evt) {
+        elt.on('keypress', function(evt) {
           var charCode = evt.charCode || evt.keyCode;
           if (charCode === 13) { // Enter key's keycode
             return false;

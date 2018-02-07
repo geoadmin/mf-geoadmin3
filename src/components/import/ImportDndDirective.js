@@ -28,7 +28,7 @@ goog.require('ga_file_service');
 
         scope.handleFileContent = options.handleFileContent;
 
-        elt.click(function() {
+        elt.on('click', function() {
           // Hide the drop zone on click,
           // used when for some reasons unknown
           // the element stays displayed. See:

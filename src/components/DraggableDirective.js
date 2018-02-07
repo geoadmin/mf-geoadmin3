@@ -40,7 +40,7 @@ goog.require('ga_browsersniffer_service');
 
       dragZone.addClass('ga-draggable-zone');
 
-      dragZone.bind(eventKey.start, function(evt) {
+      dragZone.on(eventKey.start, function(evt) {
         // If the class has disappeared that means draggable is not allow
         // temporarly.
         if (!dragZone.hasClass('ga-draggable-zone')) {
@@ -52,8 +52,8 @@ goog.require('ga_browsersniffer_service');
 
         startX = getMouseEventX(evt) - x;
         startY = getMouseEventY(evt) - y;
-        $document.bind(eventKey.move, drag);
-        $document.bind(eventKey.end, dragend);
+        $document.on(eventKey.move, drag);
+        $document.on(eventKey.end, dragend);
       });
 
       function drag(evt) {
@@ -84,8 +84,8 @@ goog.require('ga_browsersniffer_service');
       }
 
       function dragend(evt) {
-        $document.unbind(eventKey.move, drag);
-        $document.unbind(eventKey.end, dragend);
+        $document.off(eventKey.move, drag);
+        $document.off(eventKey.end, dragend);
 
         // block default interaction
         if (!regex.test(evt.target.nodeName)) {

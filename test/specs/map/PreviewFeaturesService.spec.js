@@ -2,7 +2,7 @@
 describe('ga_previewfeatures_service', function() {
 
   describe('gaPreviewFeatures', function() {
-    var gaPreviewFeatures, map, $httpBackend, gaMapUtils, gaStyleFactory, gaLayers;
+    var gaPreviewFeatures, map, $httpBackend, gaMapUtils, gaStyleFactory, gaLayers, $q;
 
     var tpl = window.location.protocol + '//api3.geo.admin.ch/123456/rest/services/all/MapServer/{{layerId}}/{{featId}}?sr=3857&geometryFormat=geojson';
     var expectGET = function(featIdsByBodId) {
@@ -39,11 +39,26 @@ describe('ga_previewfeatures_service', function() {
       type: 'geojson'
     };
 
-    beforeEach(function() {
+    var provideServices = function($provide) {
+      $provide.value('gaLayers', {
+        loadConfig: function() {
+          return $q.when({})
+        },
+        getLayerProperty: angular.noop,
+        getLayerPromise: function() {
+          return $q.when({})
+        }
+      });
+    };
 
+    beforeEach(function() {
+      module(function($provide) {
+        provideServices($provide);
+      });
       inject(function($injector) {
         gaPreviewFeatures = $injector.get('gaPreviewFeatures');
         $httpBackend = $injector.get('$httpBackend');
+        $q = $injector.get('$q');
         gaMapUtils = $injector.get('gaMapUtils');
         gaStyleFactory = $injector.get('gaStyleFactory');
         gaLayers = $injector.get('gaLayers');

@@ -85,7 +85,7 @@ goog.require('ga_permalink');
           $(document).on('keydown', function(event) {
             if (event.which === 122) {
               event.preventDefault();
-              scope.click(); // From fullscreen API
+              scope.trigger('click'); // From fullscreen API
             }
           });
         }

@@ -196,7 +196,7 @@ goog.provide('ga_geomutils_service');
         };
 
         // Simplify a geometry only if the number of coordinates exceeds
-        // nbPointsMax 
+        // nbPointsMax
         this.simplify = function(geom, nbPointsMax) {
           if (!(geom instanceof ol.geom.LineString) || !nbPointsMax ||
               geom.getCoordinates().length <= nbPointsMax) {

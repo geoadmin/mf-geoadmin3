@@ -196,7 +196,7 @@ goog.require('ga_styles_service');
             mapDiv.on('mouseout', hideHelpTooltip);
 
             // Delete keyboard button
-            $document.keyup(scope.deleteSelectedFeature);
+            $document.on('keyup', scope.deleteSelectedFeature);
           } else {
             deregPointerEvts.forEach(function(item) {
               ol.Observable.unByKey(item);
@@ -460,7 +460,7 @@ goog.require('ga_styles_service');
             updateHelpTooltip(helpTooltip, tool.id, true, false,
                 isFinishOnFirstPoint, isSnapOnLastPoint);
 
-            $document.keyup(draw, removeLastPoint);
+            $document.on('keyup', draw, removeLastPoint);
 
             // Add temporary measure tooltips
             if (tool.showMeasure) {

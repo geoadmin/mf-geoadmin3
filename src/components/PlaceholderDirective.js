@@ -40,17 +40,17 @@ goog.provide('ga_placeholder_directive');
               isPlaceHolderDisplayed = false;
             };
 
-            elm.focus(function(evt) {
+            elm.on('focus', function(evt) {
               var elt = $(evt.target);
               if (isPlaceHolderDisplayed) {
                 hidePlaceholder(elt);
               }
-            }).blur(function(evt) {
+            }).on('blur', function(evt) {
               var elt = $(evt.target);
               if (elt.val() === '') {
                 displayPlaceholder(elt);
               }
-            }).change(function(evt) {
+            }).on('change', function(evt) {
               var elt = $(evt.target);
               if (elt.val() !== elt.attr('placeholder')) {
                 elt.css('color', 'inherit');

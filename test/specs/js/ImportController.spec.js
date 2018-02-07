@@ -17,6 +17,8 @@ describe('ga_import_controller', function() {
     };
 
     var provideServices = function($provide) {
+      $provide.value('gaLayers', {});
+      $provide.value('gaTopic', {});
       $provide.value('gaLang', {
         get: function() {
           return 'en';
@@ -162,7 +164,7 @@ describe('ga_import_controller', function() {
 
       describe('#options.transformUrl()', function() {
 
-        it('returns a WMS GetCapabiltiies url', function() {
+        it('returns a WMS GetCapabilities url', function() {
           var urls = [
             'https://foo.ch',
             'https://foo.ch ',
@@ -170,11 +172,13 @@ describe('ga_import_controller', function() {
             'https://foo.ch/?',
             'https://foo.ch/?paramter=custom'
           ];
-          var spy = sinon.spy(gaUrlUtils, 'proxifyUrl');
+          var spy = sinon.stub(gaUrlUtils, 'proxifyUrl');
           urls.forEach(function(url) {
-            scope.options.transformUrl(url);
+            spy.returns('a');
+            var res = scope.options.transformUrl(url);
             expect(spy.args[0][0]).to.contain('SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0');
             expect(scope.getCapUrl).to.be(spy.args[0][0]);
+            expect(res).to.be('a');
             spy.reset();
           });
         });
@@ -183,11 +187,13 @@ describe('ga_import_controller', function() {
           var urls = [
             'https://admin.ch'
           ];
-          var spy = sinon.spy(gaUrlUtils, 'proxifyUrl');
+          var spy = sinon.stub(gaUrlUtils, 'proxifyUrl');
           urls.forEach(function(url) {
-            scope.options.transformUrl(url);
+            spy.returns('a');
+            var res = scope.options.transformUrl(url);
             expect(spy.args[0][0]).to.contain('SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0&lang=en');
             expect(scope.getCapUrl).to.be(spy.args[0][0]);
+            expect(res).to.be('a');
             spy.reset();
           });
         });
@@ -199,11 +205,13 @@ describe('ga_import_controller', function() {
             'https://wmts.ch/?',
             'https://wmts.ch/?parmeter=custom'
           ];
-          var spy = sinon.spy(gaUrlUtils, 'proxifyUrl');
+          var spy = sinon.stub(gaUrlUtils, 'proxifyUrl');
           urls.forEach(function(url) {
-            scope.options.transformUrl(url);
+            spy.returns('a');
+            var res = scope.options.transformUrl(url);
             expect(spy.args[0][0]).to.contain('SERVICE=WMTS&REQUEST=GetCapabilities&VERSION=1.0.0');
             expect(scope.getCapUrl).to.be(spy.args[0][0]);
+            expect(res).to.be('a');
             spy.reset();
           });
         });
@@ -217,11 +225,13 @@ describe('ga_import_controller', function() {
             'https://foo.ch/serv.php?file=lal.kml&parameter=custom',
             'https://wmts.ch/wms/foo.ext'
           ];
-          var spy = sinon.spy(gaUrlUtils, 'proxifyUrl');
+          var spy = sinon.stub(gaUrlUtils, 'proxifyUrl');
           urls.forEach(function(url) {
-            scope.options.transformUrl(url);
+            spy.returns('a');
+            var res = scope.options.transformUrl(url);
             expect(spy.args[0][0]).to.be(url);
             expect(scope.getCapUrl).to.be(spy.args[0][0]);
+            expect(res).to.be('a');
             spy.reset();
           });
         });

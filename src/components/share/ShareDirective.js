@@ -61,7 +61,7 @@ goog.require('ga_window_service');
             scope.$applyAsync(function() {
               // Auto-select the shortened permalink (not on mobiles)
               if (gaWindow.isWidth('>s')) {
-                permalinkInput.focus();
+                permalinkInput.trigger('focus');
               }
             });
           });
@@ -78,7 +78,7 @@ goog.require('ga_window_service');
               if (!iframeInput) {
                 iframeInput = $('.ga-share-embed input');
               }
-              iframeInput.focus();
+              iframeInput.trigger('focus');
             }, 0, false);
           }
           scope.showMore = !scope.showMore;

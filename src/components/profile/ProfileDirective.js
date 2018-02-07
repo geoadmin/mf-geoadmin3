@@ -98,6 +98,7 @@ goog.require('ga_styles_service');
           } else {
             containerEl.prepend(profileEl);
           }
+
           var areaChartPath = $window.d3.select('.ga-profile-area');
           attachPathListeners(areaChartPath);
         };
@@ -209,10 +210,8 @@ goog.require('ga_styles_service');
         function attachPathListeners(areaChartPath) {
           areaChartPath.on('mousemove', function() {
             var d3 = $window.d3;
-            var path = d3.select(areaChartPath[0][0]);
-            var pathEl = path.node();
-            if (angular.isDefined(pathEl.getTotalLength)) {
-              var mousePos = d3.mouse(areaChartPath[0][0]);
+            if (angular.isDefined(this.getTotalLength)) {
+              var mousePos = d3.mouse(this);
               var x = mousePos[0];
 
               var pos = this.getPointAtLength(x);
@@ -247,13 +246,11 @@ goog.require('ga_styles_service');
             }
           });
 
-          areaChartPath.on('mouseover', function(d) {
+          areaChartPath.on('mouseover', function() {
             var d3 = $window.d3;
-            var path = d3.select(areaChartPath[0][0]);
-            var pathEl = path.node();
-            if (angular.isDefined(pathEl.getTotalLength)) {
+            if (angular.isDefined(this.getTotalLength)) {
               tooltipEl.css({ display: 'block' });
-              var mousePos = d3.mouse(areaChartPath[0][0]);
+              var mousePos = d3.mouse(this);
               var x = mousePos[0];
               var xCoord = profile.domain.X.invert(x);
               var coordsMap = profile.findMapCoordinates(xCoord);
@@ -261,11 +258,8 @@ goog.require('ga_styles_service');
             }
           });
 
-          areaChartPath.on('mouseout', function(d) {
-            var d3 = $window.d3;
-            var path = d3.select(areaChartPath[0][0]);
-            var pathEl = path.node();
-            if (angular.isDefined(pathEl.getTotalLength)) {
+          areaChartPath.on('mouseout', function() {
+            if (angular.isDefined(this.getTotalLength)) {
               tooltipEl.hide();
               deactivateMapPosition();
             }

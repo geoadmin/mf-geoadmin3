@@ -108,18 +108,18 @@ goog.require('ga_window_service');
 
         if (!scope.isIE || gaBrowserSniffer.msie > 9) {
           var triggerInputFileClick = function() {
-            elFileInpt.click();
+            elFileInpt.trigger('click');
           };
 
           // Trigger the hidden input[type=file] onclick event
           element.find('button.ga-feedback-browse-button').
-              click(triggerInputFileClick);
+              on('click', triggerInputFileClick);
           element.find('input[type=text][readonly]').
-              click(triggerInputFileClick);
+              on('click', triggerInputFileClick);
         }
         scope.file = null;
 
-        elFileInpt.bind('change', function(evt) {
+        elFileInpt.on('change', function(evt) {
           var file = (evt.srcElement || evt.target).files[0];
           if (validateSize(file.size) && validateFormat(file.name)) {
             scope.$applyAsync(function() {

@@ -13,6 +13,21 @@ describe('ga_map_directive', function() {
     scope = elt.isolateScope();
   };
 
+  var provideServices = function($provide) {
+    $provide.value('gaLayers', {
+      loadConfig: function() {
+        return $q.when({})
+      },
+      getLayerTimestampFromYear: function() {},
+      getOlLayerById: function() {}
+    });
+    $provide.value('gaTopic', {
+      loadConfig: function() {
+        return $q.when({})
+      }
+    });
+  };
+
   var injectServices = function($injector) {
     $compile = $injector.get('$compile');
     $rootScope = $injector.get('$rootScope');
@@ -52,6 +67,9 @@ describe('ga_map_directive', function() {
   describe('in all pages', function() {
 
     beforeEach(function() {
+      module(function($provide) {
+        provideServices($provide);
+      });
       inject(function($injector) {
         injectServices($injector);
       });

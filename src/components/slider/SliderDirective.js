@@ -498,8 +498,8 @@ goog.require('ga_debounce_service');
 
                 onEnd = function() {
                   pointer.removeClass('ga-slider-active');
-                  $document.unbind(events.move);
-                  return $document.unbind(events.end);
+                  $document.off(events.move);
+                  return $document.off(events.end);
                 };
 
                 onMove = function(event) {
@@ -549,10 +549,10 @@ goog.require('ga_debounce_service');
                   dimensions();
                   event.stopPropagation();
                   event.preventDefault();
-                  $document.bind(events.move, onMove);
-                  return $document.bind(events.end, onEnd);
+                  $document.on(events.move, onMove);
+                  return $document.on(events.end, onEnd);
                 };
-                return pointer.bind(events.start, onStart);
+                return pointer.on(events.start, onStart);
               };
 
               setBindings = function() {
@@ -573,7 +573,7 @@ goog.require('ga_debounce_service');
 
                 if (!range) {
                   // RE3: Add click event on the bar
-                  _results.push(fullBar.bind('click', function(event) {
+                  _results.push(fullBar.on('click', function(event) {
                     var offsetLeft = getMouseOffsetLeft(event, element) -
                          halfWidth(minPtr);
                     scope[refLow] = getValueFromOffset(offsetLeft);
@@ -581,13 +581,13 @@ goog.require('ga_debounce_service');
                   }));
 
                   var input = element.find('.ga-slider-value1 input');
-                  _results.push(input.bind('keydown', function(event) {
+                  _results.push(input.on('keydown', function(event) {
                     // RE3: Stop propagation of arrows key event
                     if (event.which === 37 || event.which === 39) {
                       event.stopPropagation();
                     }
                   }));
-                  _results.push(input.bind('blur', function(event) {
+                  _results.push(input.on('blur', function(event) {
                     // RE3: if the user leave the input without having set
                     // a good value, we set the last good value saved.
                     if (scope.lastGoodValue) {
@@ -650,9 +650,9 @@ goog.require('ga_debounce_service');
             // RE3: Add left and right arrows events management
             scope.$watch('useKeyboardEvents', function(active) {
               if (!range && active) {
-                $document.bind('keydown', onKeyboardEvent);
+                $document.on('keydown', onKeyboardEvent);
               } else {
-                $document.unbind('keydown', onKeyboardEvent);
+                $document.off('keydown', onKeyboardEvent);
               }
             });
 

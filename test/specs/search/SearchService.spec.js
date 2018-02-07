@@ -3,13 +3,14 @@ describe('ga_search_service', function() {
 
   describe('gaSearchGetcoordinate', function() {
     var extent = [2420000, 1030000, 2900000, 1350000];
-    var $timeout, $rootScope, $httpBackend, getCoordinate, gaReframe;
+    var $timeout, $rootScope, $httpBackend, $q, getCoordinate, gaReframe;
 
     beforeEach(function() {
       inject(function($injector, gaGlobalOptions) {
         $rootScope = $injector.get('$rootScope');
         $timeout = $injector.get('$timeout');
         $httpBackend = $injector.get('$httpBackend');
+        $q = $injector.get('$q');
         getCoordinate = $injector.get('gaSearchGetCoordinate');
         gaReframe = $injector.get('gaReframe');
       });
@@ -26,7 +27,7 @@ describe('ga_search_service', function() {
       var spy;
 
       beforeEach(function() {
-        spy = sinon.spy(gaReframe, 'get03To95');
+        spy = sinon.stub(gaReframe, 'get03To95');
       });
 
       it('without separator', function(done) {
@@ -66,8 +67,9 @@ describe('ga_search_service', function() {
       });
 
       it('returns undefined if outside EPSG:2056 extent', function(done) {
+        spy.returns($q.when([2600000, 1020000]));
         getCoordinate(extent, '600000 20000').then(function(position) {
-          expect(position).to.be(undefined);
+          expect(position).to.be();
           done();
         });
         $rootScope.$digest();

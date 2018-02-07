@@ -1,25 +1,6 @@
 /* eslint-disable max-len */
 describe('ga_profile_service', function() {
-  var gaProfile, $q, $rootScope, $httpBackend, gaTimeFormat, gaGlobalOptions, testTooltips, gaGeomUtils;
-
-  testTooltips = function(profile) {
-    expect(profile.group.select('.ga-profile-elevation-difference title').
-        length).to.be(1);
-    expect(profile.group.select('.ga-profile-elevation-up title').
-        length).to.be(1);
-    expect(profile.group.select('.ga-profile-elevation-down title').
-        length).to.be(1);
-    expect(profile.group.select('.ga-profile-poi-up title').
-        length).to.be(1);
-    expect(profile.group.select('.ga-profile-poi-down title').
-        length).to.be(1);
-    expect(profile.group.select('.ga-profile-distance title').
-        length).to.be(1);
-    expect(profile.group.select('.ga-profile-slopeDist title').
-        length).to.be(1);
-    expect(profile.group.select('.ga-profile-hikTime title').
-        length).to.be(1);
-  };
+  var gaProfile, $q, $rootScope, $httpBackend, gaTimeFormat, gaGlobalOptions, gaGeomUtils;
 
   beforeEach(function() {
 
@@ -143,8 +124,6 @@ describe('ga_profile_service', function() {
           expect(profile.elPoints()).to.eql([429.8, 429.7]);
           expect(profile.distance()).to.be(211.5);
           expect(profile.hikingTime()).to.be(3);
-
-          testTooltips(profile);
           done();
         });
         $httpBackend.flush();
@@ -240,7 +219,6 @@ describe('ga_profile_service', function() {
             expect(profile.distance()).to.be(211.5);
             expect(profile.hikingTime()).to.be(248);
 
-            testTooltips(profile);
             done();
           });
         });
@@ -266,7 +244,6 @@ describe('ga_profile_service', function() {
             expect(profile.distance()).to.be(22211.5);
             expect(profile.hikingTime()).to.be(390);
 
-            testTooltips(profile);
             done();
           });
         });
@@ -282,22 +259,16 @@ describe('ga_profile_service', function() {
 
       it('loads d3 script', function(done) {
         var d3Url = gaGlobalOptions.resourceUrl + 'lib/d3.min.js';
-        var spy = sinon.spy($, 'getScript');
-        var xhr = sinon.useFakeXMLHttpRequest();
-        var requests = [];
-        xhr.onCreate = function(xhr) {
-          requests.push(xhr);
-        };
+        var spy = sinon.stub($, 'getScript').returns($q.when());
         gaProfile.create().then(function(profile) {
           expect(profile).to.be.an(Object);
           expect(profile.create).to.be.a(Function);
           expect(profile.update).to.be.a(Function);
           expect(profile.data).to.be(undefined);
-          expect(spy.calledWith(d3Url)).to.be(true);
+          expect(spy.args[0][0]).to.be(d3Url);
           done();
           spy.restore();
         });
-        requests[0].respond(200, {'Content-Type': 'application/javascript'}, '!function(){}()');
         $rootScope.$digest();
       });
     });

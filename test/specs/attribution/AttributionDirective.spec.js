@@ -332,7 +332,7 @@ describe('ga_attribution_directive', function() {
         map.addLayer(layer);
         $rootScope.$digest();
         $timeout.flush();
-        expect(elt.css('display')).to.be('block');
+        expect(elt.css('display')).to.be('');
       });
     });
 
@@ -351,7 +351,7 @@ describe('ga_attribution_directive', function() {
       map.addLayer(layerPrev);
       $rootScope.$digest();
       $timeout.flush();
-      expect(elt.css('display')).to.be('block');
+      expect(elt.css('display')).to.be('');
 
       parentScope.ol3d.enabled = false;
       $rootScope.$digest();
