@@ -19,7 +19,7 @@
     "> 0.5% in CH"
   ],
   "dependencies": {
-    "angular": "1.6.8",
+    "angular": "1.6.9",
     "angular-translate": "2.17",
     "corejs-typeahead": "v1.2.1",
     "d3": "4.13.0",
@@ -31,22 +31,22 @@
     "slipjs": "2.1.1"
   },
   "devDependencies": {
-    "caniuse-db": "1.0.30000798",
-    "angular-mocks": "1.6.8",
+    "caniuse-db": "1.0.30000805",
+    "angular-mocks": "1.6.9",
     "autoprefixer": "7.2.5",
     "babel-cli": "^6.24.1",
     "babel-preset-env": "^1.4.0",
-    "bootstrap": "3.3.7",
-    "commander": "2.13.0",
-    "eslint": "4.16.0",
+    "bootstrap": "4.0.0",
+    "commander": "2.14.1",
+    "eslint": "4.17.0",
     "eslint-config-standard": "11.0.0-beta.0",
     "eslint-plugin-import": "2.8.0",
-    "eslint-plugin-node": "5.2.1",
+    "eslint-plugin-node": "6.0.0",
     "eslint-plugin-promise": "3.6.0",
     "eslint-plugin-standard": "3.0.1",
     "expect.js": "0.3.1",
-    "google-closure-compiler": "20180101.0.0",
-    "google-closure-library": "20171203.0.0",
+    "google-closure-compiler": "20180204.0.0",
+    "google-closure-library": "20180204.0.0",
     "html-minifier": "3.5.8",
     "karma": "2.0.0",
     "karma-coverage": "~v1.1.1",
@@ -56,7 +56,7 @@
     "less-plugin-clean-css": "~1.5.1",
     "mocha": "5.0.0",
     "ng-annotate": "1.2.2",
-    "postcss-cli": "4.1.1",
+    "postcss-cli": "5.0.0",
     "phantomjs-prebuilt": "2.1.16",
     "sinon": "4.2.2"
   }
