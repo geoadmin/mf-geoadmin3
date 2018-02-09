@@ -18,6 +18,11 @@
     "Android >= 4",
     "> 0.5% in CH"
   ],
+  "greenkeeper": {
+    "ignore": [
+      "bootstrap"
+    ]
+  },
   "dependencies": {
     "angular": "1.6.9",
     "angular-translate": "2.17",
@@ -36,7 +41,7 @@
     "autoprefixer": "7.2.5",
     "babel-cli": "^6.24.1",
     "babel-preset-env": "^1.4.0",
-    "bootstrap": "4.0.0",
+    "bootstrap": "3.3.7",
     "commander": "2.14.1",
     "eslint": "4.17.0",
     "eslint-config-standard": "11.0.0-beta.0",
