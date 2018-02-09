@@ -1,6 +1,8 @@
 mf-geoadmin3
 ============
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/geoadmin/mf-geoadmin3.svg)](https://greenkeeper.io/)
+
 next generation map.geo.admin.ch
 
 Jenkins build status: [![Jenkins Build Status](https://jenkins.ci.bgdi.ch/buildStatus/icon?job=MAIN_geoadmin3)](https://jenkins.ci.bgdi.ch/job/MAIN_geoadmin3/)
