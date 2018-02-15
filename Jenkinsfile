@@ -50,7 +50,6 @@ node(label: 'jenkins-slave') {
      
       // Add the test link in the PR
       if (namedBranch) {
-        def token = 'token '
         def url = 'https://api.github.com/repos/geoadmin/mf-geoadmin3/pulls/' + env.CHANGE_ID
         def testLink = '<jenkins>[Test link](' + e2eTargetUrl + ')</jenkins>'
         def response = httpRequest acceptType: 'APPLICATION_JSON',
@@ -58,6 +57,13 @@ node(label: 'jenkins-slave') {
                                    responseHandle: 'LEAVE_OPEN',
                                    url: url
         if (response.status == 200) {
+
+          // Get personnal access token
+          def userpass 
+          withCredentials([usernameColonPassword(credentialsId: 'iwibot-admin-user-github-token', variable: 'USERPASS')]) {
+            userpass = sh returnStdout: true, script: 'echo $USERPASS'
+          }
+          def token = 'token ' + userpass.split(':')[1].trim()
                 
           // Parse the json.
           // Don't put instance of JsonSlurperClassic in a variable it will trigger a java.io.NotSerializableException.
