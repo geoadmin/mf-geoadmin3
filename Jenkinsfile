@@ -1,16 +1,18 @@
 #!/usr/bin/env groovy
+import groovy.json.JsonSlurperClassic
+import groovy.json.JsonOutput
 
 node(label: 'jenkins-slave') {
   def stdout
   def s3VersionPath
   def e2eTargetUrl
 
-  // If it's master
+  // If it's a branch
   def deployGitBranch = env.BRANCH_NAME
   def namedBranch = false
 
   // If it's a PR
-  if (deployGitBranch != 'master' && env.CHANGE_BRANCH) {
+  if (env.CHANGE_ID) {
     deployGitBranch = env.CHANGE_BRANCH
     namedBranch = true
   }
@@ -45,6 +47,40 @@ node(label: 'jenkins-slave') {
       def lines = stdout.readLines()
       s3VersionPath = lines.get(lines.size()-3)
       e2eTargetUrl = lines.get(lines.size()-1)
+     
+      // Add the test link in the PR
+      if (namedBranch) {
+        def token = 'token '
+        def url = 'https://api.github.com/repos/geoadmin/mf-geoadmin3/pulls/' + env.CHANGE_ID
+        def testLink = '<jenkins>[Test link](' + e2eTargetUrl + ')</jenkins>'
+        def response = httpRequest acceptType: 'APPLICATION_JSON',
+                                   consoleLogResponseBody: true,
+                                   responseHandle: 'LEAVE_OPEN',
+                                   url: url
+        if (response.status == 200) {
+                
+          // Parse the json.
+          // Don't put instance of JsonSlurperClassic in a variable it will trigger a java.io.NotSerializableException.
+          def result = new JsonSlurperClassic().parseText(response.content)
+
+          // Remove the existing links if exists
+          def body = (result.body =~ /<jenkins>.*<\/jenkins>/).replaceAll('')
+                
+          // Add test link
+          body = body + '\n\n' + testLink
+          def bodyEscaped = JsonOutput.toJson(body)
+          echo 'Body sent: ' + bodyEscaped
+                
+          httpRequest acceptType: 'APPLICATION_JSON',
+                      consoleLogResponseBody: false,
+                      customHeaders: [[maskValue: true, name: 'Authorization', value: token]], 
+                      httpMode: 'POST',
+                      requestBody: '{"body": ' + bodyEscaped + '}',
+                      responseHandle: 'NONE',
+                      url: url
+        }
+        response.close()
+      }
     }
     
     stage('Test e2e') {
