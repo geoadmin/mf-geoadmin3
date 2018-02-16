@@ -70,8 +70,9 @@ node(label: 'jenkins-slave') {
           def result = new JsonSlurperClassic().parseText(response.content)
 
           // Remove the existing links if exists
-          def body = (result.body =~ /<jenkins>.*<\/jenkins>/).replaceAll('')
-                
+          // If the PR is modified by a user \n\n becomes \r\n\r\n
+          def body = result.body.replaceAll('((\\r)?\\n){2}<jenkins>.*</jenkins>', '')
+
           // Add test link
           body = body + '\n\n' + testLink
           def bodyEscaped = JsonOutput.toJson(body)
