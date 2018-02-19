@@ -742,7 +742,8 @@ itemscope itemtype="http://schema.org/WebApplication"
         var proxyUrl = prtl + '${proxy_url}' + '/';
         var apiOverwrite = !!(getParam('api_url') || env);
         var wmtsUrl = setBackend(prtl + '${wmts_url}', prtl + '${wmts_tech_url}', 'wmts_url');
-        if (wmtsUrl.includes('localhost') ){
+        var localhostRegexp = new RegExp('https?:\/\/localhost:[0-9]{1,5}');
+        if (localhostRegexp.test(wmtsUrl)){
            wmtsUrl = wmtsUrl.replace('https:', 'http:');
         }
         module.constant('gaGlobalOptions', {
