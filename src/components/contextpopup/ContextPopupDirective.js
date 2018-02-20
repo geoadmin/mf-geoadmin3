@@ -1,9 +1,10 @@
 goog.provide('ga_contextpopup_directive');
 
 goog.require('ga_event_service');
-goog.require('ga_networkstatus_service');
 goog.require('ga_permalink');
 goog.require('ga_height_service');
+goog.require('ga_measure_service');
+goog.require('ga_networkstatus_service');
 goog.require('ga_reframe_service');
 goog.require('ga_what3words_service');
 goog.require('ga_window_service');
@@ -15,6 +16,7 @@ goog.require('ga_window_service');
     'ga_networkstatus_service',
     'ga_permalink',
     'ga_height_service',
+    'ga_measure_service',
     'ga_reframe_service',
     'ga_window_service',
     'ga_what3words_service',
@@ -24,7 +26,7 @@ goog.require('ga_window_service');
   module.directive('gaContextPopup',
       function($http, $q, $timeout, $window, $rootScope, gaBrowserSniffer,
           gaNetworkStatus, gaPermalink, gaGlobalOptions, gaLang, gaWhat3Words,
-          gaReframe, gaEvent, gaWindow, gaHeight) {
+          gaReframe, gaEvent, gaWindow, gaHeight, gaMeasure) {
         return {
           restrict: 'A',
           replace: true,
@@ -48,14 +50,6 @@ goog.require('ga_window_service');
               stopEvent: true
             });
             map.addOverlay(overlay);
-
-            var formatCoordinates = function(coord, prec, ignoreThousand) {
-              var fCoord = ol.coordinate.toStringXY(coord, prec);
-              if (!ignoreThousand) {
-                fCoord = fCoord.replace(/\B(?=(\d{3})+(?!\d))/g, "'");
-              }
-              return fCoord;
-            };
 
             var coordinatesFormatUTM = function(coordinates, zone) {
               var coord = ol.coordinate.toStringXY(coordinates, 0).
@@ -109,7 +103,7 @@ goog.require('ga_window_service');
               var coord4326String = ol.coordinate.toStringHDMS(coord4326, 3).
                   replace(/ /g, '');
               scope.coordiso4326 = coord4326String.replace(/N/g, 'N ');
-              scope.coord2056 = formatCoordinates(clickCoord, 1);
+              scope.coord2056 = gaMeasure.formatCoordinates(clickCoord, 1);
               if (coord4326[0] < 6 && coord4326[0] >= 0) {
                 var utm31t = ol.proj.transform(coord4326,
                     'EPSG:4326', 'EPSG:32631');
@@ -147,11 +141,11 @@ goog.require('ga_window_service');
 
                 gaReframe.get95To03(clickCoord, reframeCanceler.promise).
                     then(function(coords) {
-                      scope.coord21781 = formatCoordinates(coords, 2);
+                      scope.coord21781 = gaMeasure.formatCoordinates(coords, 2);
                     }, function() {
                       var coords = ol.proj.transform(clickCoord, proj,
                           'EPSG:21781');
-                      scope.coord21781 = formatCoordinates(coords, 2);
+                      scope.coord21781 = gaMeasure.formatCoordinates(coords, 2);
                     });
 
                 updateW3W();

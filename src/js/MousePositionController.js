@@ -14,7 +14,7 @@ goog.require('ga_measure_service');
 
     var coordinatesFormat = function(coordinates) {
       return $translate.instant('coordinates_label') + ': ' +
-          gaMeasure.formatCoordinates(coordinates);
+          gaMeasure.formatCoordinates(coordinates, 1);
     };
 
     var coordinatesFormatUTM = function(coordinates, zone) {
