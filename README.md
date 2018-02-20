@@ -1,11 +1,10 @@
 mf-geoadmin3
 ============
 
+[![Build Status](https://jenkins.bgdi.ch/buildStatus/icon?job=chtopo_igeb_mf-geoadmin3/master)](https://jenkins.bgdi.ch/job/chtopo_igeb_mf-geoadmin3/job/master/)
 [![Greenkeeper badge](https://badges.greenkeeper.io/geoadmin/mf-geoadmin3.svg)](https://greenkeeper.io/)
 
-next generation map.geo.admin.ch
-
-Jenkins build status: [![Jenkins Build Status](https://jenkins.ci.bgdi.ch/buildStatus/icon?job=MAIN_geoadmin3)](https://jenkins.ci.bgdi.ch/job/MAIN_geoadmin3/)
+Next generation map.geo.admin.ch
 
 # Getting started
 
