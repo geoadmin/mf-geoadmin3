@@ -32,6 +32,7 @@ goog.require('ga_throttle_service');
         var naClass = 'ga-geolocation-northarrow';
         var errorMsgId;
         var unRegKey;
+        var btnStatus = 0, maxNumStatus = 1;
         // This object defines if the user has dragged the map.
         var userTakesControl = false;
         var map = scope.map;
@@ -47,7 +48,8 @@ goog.require('ga_throttle_service');
             [accuracyFeature, positionFeature],
             gaStyleFactory.getStyleFunction('geolocation')
         );
-        var deviceOrientation = new ol.DeviceOrientation();
+        // Detect use of deviceOrientation
+        var promGyr, gyr = new window.GyroNorm();
         var geolocation = new ol.Geolocation({
           projection: view.getProjection(),
           trackingOptions: {
@@ -56,7 +58,6 @@ goog.require('ga_throttle_service');
             timeout: 600000
           }
         });
-        var maxNumStatus = 1;
 
         // Listen 2d/3d switch mode.
         var unreg3dSwitch;
@@ -79,11 +80,26 @@ goog.require('ga_throttle_service');
             userTakesControl = false;
             map.addLayer(featuresOverlay);
             unreg3dSwitch = register3dSwitch();
+
           } else {
             map.removeLayer(featuresOverlay);
           }
           geolocation.setTracking(tracking);
-          deviceOrientation.setTracking(tracking);
+          if (gyr) {
+            promGyr.then(function() {
+              if (!gyr) {
+                return;
+              }
+              if (tracking) {
+                gyr.start(function(evt) {
+                  onChangeHeading(evt);
+                });
+              } else {
+                gyr.stop(function() {
+                });
+              }
+            })
+          }
         });
 
         // Animation
@@ -106,66 +122,47 @@ goog.require('ga_throttle_service');
         };
 
         // Get heading depending on devices
-        var headingFromDevices = function() {
-          var hdg = deviceOrientation.getHeading();
+        var headingFromDeviceOrientation = function(hdg) {
           var orientation = $window.orientation;
-          if (!gaBrowserSniffer.ios) {
-            hdg = -hdg;
-            if ($window.screen.orientation.angle) {
-              orientation = $window.screen.orientation.angle;
-            }
-          }
+          console.log(orientation);
           switch (orientation) {
-          case -90:
-            hdg = hdg - (Math.PI / 2);
-            break;
+            case -90:
+            case 270:
+              hdg = hdg - (Math.PI / 2);
+              break;
 
-          case 180:
-            hdg = hdg + Math.PI;
-            break;
+            case 180:
+              hdg = hdg + Math.PI;
+              break;
 
-          case 90:
-            hdg = hdg + (Math.PI / 2);
-            break;
+            case 90:
+              hdg = hdg + (Math.PI / 2);
+              break;
 
-          case 270:
-            hdg = hdg - (Math.PI / 2);
-            break;
-
-          default:
-            break;
+            default:
+              break;
           }
           return hdg;
         };
 
         // Update heading
-        var headingUpdate = function() {
-          var heading = headingFromDevices();
+        var headingUpdate = function(heading) {
           if (angular.isDefined(heading)) {
 
             // The icon rotate
             if (btnStatus === 1 ||
                 (btnStatus === 2 && userTakesControl)) {
-              updateHeadingFeature();
+              updateHeadingFeature(heading);
               map.render();
 
             // The map rotate
             } else if (btnStatus === 2 && !userTakesControl) {
-              heading = -heading;
-              var currRotation = view.getRotation();
-              var diff = heading - currRotation;
-
-              if (diff > Math.PI) {
-                heading -= 2 * Math.PI;
-              } else if (diff < -Math.PI) {
-                currRotation -= 2 * Math.PI;
-              }
               map.getView().animate({
-                rotation: heading,
+                rotation: -heading,
                 duration: 350,
                 easing: ol.easing.linear
               });
-              updateHeadingFeature(0);
+              updateHeadingFeature(heading);
             }
           }
         };
@@ -194,38 +191,41 @@ goog.require('ga_throttle_service');
           }
         };
 
-        var updateHeadingFeature = function(forceRotation) {
-          var rotation = forceRotation || headingFromDevices();
-          if (angular.isDefined(rotation)) {
-            positionFeature.set('rotation', rotation);
-          }
+        var updateHeadingFeature = function(rotation) {
+          positionFeature.set('rotation', rotation || 0);
         };
 
         // Orientation control events
         var currHeading = 0;
-        var headngUpdateWhenMapRotate = gaThrottle.throttle(headingUpdate, 300);
-        var headngUpdateWhenIconRotate = gaThrottle.throttle(headingUpdate, 50);
+        var headngUpdateWhenMapRotate = gaThrottle.throttle(headingUpdate,
+            1000);
+        var headngUpdateWhenIconRotate = gaThrottle.throttle(headingUpdate,
+            1000);
 
-        deviceOrientation.on('change:heading', function(event) {
-          var heading = headingFromDevices();
+        var onChangeHeading = function(evt) {
+          var headingDeg = evt.do.alpha;
+
+          // Get the heading clockwise
+          headingDeg = 360 - headingDeg;
+
+          // Get rotaton in radians
+          var heading = headingDeg * Math.PI / 180;
+          
+          // Correct the heading depending on device orientation landscape or
+          // portrait
+          heading = headingFromDeviceOrientation(heading);
 
           // The icon rotate
           if (btnStatus === 1 || (btnStatus === 2 && userTakesControl)) {
-            headngUpdateWhenIconRotate();
+            headngUpdateWhenIconRotate(heading);
 
           // The map rotate
           } else if (heading < currHeading - 0.001 ||
               currHeading + 0.001 < heading) {
             currHeading = heading;
-            headngUpdateWhenMapRotate();
+            headngUpdateWhenMapRotate(heading);
           }
-        });
-
-        deviceOrientation.once('change:heading', function(event) {
-          // The change heading event is triggered only if the device really
-          // manage orientation (real mobile).
-          maxNumStatus = 2;
-        });
+        };
 
         // Geolocation control events
         geolocation.on('change:position', function(evt) {
@@ -234,7 +234,6 @@ goog.require('ga_throttle_service');
 
           updatePositionFeature();
           updateAccuracyFeature();
-          updateHeadingFeature();
         });
 
         geolocation.on('change:accuracy', function(evt) {
@@ -332,11 +331,24 @@ goog.require('ga_throttle_service');
           return errorMsgId || 'geoloc_start_tracking';
         };
 
-        // Initialize state of the component
-        scope.tracking = (gaPermalink.getParams().geolocation === 'true');
-        // Always remove it from PL
-        gaPermalink.deleteParam('geolocation');
-        var btnStatus = (scope.tracking) ? 1 : 0;
+        var init = function() {
+          // Initialize state of the component
+          scope.tracking = (gaPermalink.getParams().geolocation === 'true');
+          // Always remove it from PL
+          gaPermalink.deleteParam('geolocation');
+          btnStatus = (scope.tracking) ? 1 : 0;
+        }
+        promGyr = gyr.init({
+          orientationBase: window.GyroNorm.WORLD
+        }).then(function() {
+          if (gyr.isAvailable(window.GyroNorm.DEVICE_ORIENTATION)) {
+            maxNumStatus = 2
+          } else {
+            gyr = undefined
+          }
+          init();
+        }, init);
+
       }
     };
   });
