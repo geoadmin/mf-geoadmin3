@@ -466,7 +466,7 @@ prd/lib/build.js: src/lib/polyfill.min.js \
 	    src/lib/fastclick.min.js \
 	    src/lib/localforage.min.js \
 	    src/lib/filesaver.min.js \
-	    src/lib/gyronorm.min.js \
+	    src/lib/gyronorm.complete.min.js \
 	    .build-artefacts/app.js
 	mkdir -p $(dir $@)
 	cat $^ | sed 's/^\/\/[#,@] sourceMappingURL=.*//' > $@
@@ -744,7 +744,7 @@ libs:
 	cp -f $(addprefix node_modules/jquery-ajax-transport-xdomainrequest/, jQuery.XDomainRequest.js  jquery.xdomainrequest.min.js) src/lib/;
 	cp -f $(addprefix node_modules/d3/build/, d3.js d3.min.js) src/lib/;
 	cp -f $(addprefix node_modules/bootstrap/dist/js/, bootstrap.js bootstrap.min.js) src/lib/;
-	cp -f $(addprefix node_modules/gyronorm/dist/, gyronorm.js gyronorm.min.js) src/lib/;
+	cp -f $(addprefix node_modules/gyronorm/dist/, gyronorm.complete.js gyronorm.complete.min.js) src/lib/;
 	cp -f $(addprefix node_modules/corejs-typeahead/dist/, typeahead.jquery.js typeahead.jquery.min.js) src/lib/;
 	cp -f node_modules/slipjs/slip.js src/lib;
 	cp -f node_modules/fastclick/lib/fastclick.js src/lib/;
