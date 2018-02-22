@@ -2,9 +2,10 @@
 describe('ga_geolocation_directive', function() {
 
   describe('gaGeolocation', function() {
-    var elt, scope, parentScope, $compile, $rootScope, $httpBackend, $timeout, $window, map, ol3d;
+    var elt, scope, parentScope, $compile, $rootScope, $httpBackend, $timeout, $window, $q, map, ol3d;
+    var gaPermalink;
     /* Keep for future tests
-      gaBrowserSniffer, gaPermalink, gaThrottle, gaStyleFactory, gaMapUtils
+      gaBrowserSniffer, gaThrottle, gaStyleFactory, gaMapUtils
     */
 
     var loadDirective = function(map, ol3d) {
@@ -24,14 +25,15 @@ describe('ga_geolocation_directive', function() {
     };
 
     var injectServices = function($injector) {
+      $q = $injector.get('$q');
       $compile = $injector.get('$compile');
       $rootScope = $injector.get('$rootScope');
       $httpBackend = $injector.get('$httpBackend');
       $timeout = $injector.get('$timeout');
       $window = $injector.get('$window');
+      gaPermalink = $injector.get('gaPermalink');
       /* Keep for future tests
       gaBrowserSniffer = $injector.get('gaBrowserSniffer');
-      gaPermalink = $injector.get('gaPermalink');
       gaThrottle = $injector.get('gaThrottle');
       gaStyleFactory = $injector.get('gaStyleFactory');
       gaMapUtils = $injector.get('gaMapUtils');
@@ -91,10 +93,44 @@ describe('ga_geolocation_directive', function() {
       it('set scope values', function() {
         loadDirective(map);
         expect(scope.map).to.be.an(ol.Map);
-        expect(scope.tracking).to.be(false);
+        expect(scope.tracking).to.be();
         expect(scope.getBtTitle).to.be.an(Function);
         expect(scope.map.getLayers().getLength()).to.be(0);
         expect(scope.getBtTitle()).to.be('geoloc_start_tracking');
+      });
+
+      it('set scope values after gyronorm is inialized', function() {
+        var stub = sinon.stub(window.GyroNorm.prototype, 'init').returns($q.when());
+        var stub1 = sinon.stub(window.GyroNorm.prototype, 'isAvailable').returns(true);
+        loadDirective(map);
+        expect(scope.map).to.be.an(ol.Map);
+        expect(scope.tracking).to.be(false);
+        stub.restore();
+        stub1.restore();
+      });
+
+      it('set scope values after gyronorm fails to inialize', function() {
+        var stub = sinon.stub(window.GyroNorm.prototype, 'init').returns($q.when());
+        var stub1 = sinon.stub(window.GyroNorm.prototype, 'isAvailable').returns(true);
+        loadDirective(map);
+        expect(scope.map).to.be.an(ol.Map);
+        expect(scope.tracking).to.be(false);
+        stub.restore();
+        stub1.restore();
+      });
+
+      it('uses/deletes permalink values after gyronorm is inialized', function() {
+        var spy = sinon.spy(gaPermalink, 'deleteParam').withArgs('geolocation');
+        var stub = sinon.stub(gaPermalink, 'getParams').returns({geolocation: 'true'});
+        var stub1 = sinon.stub(window.GyroNorm.prototype, 'init').returns($q.when());
+        var stub2 = sinon.stub(window.GyroNorm.prototype, 'isAvailable').returns(true);
+        loadDirective(map);
+        expect(scope.map).to.be.an(ol.Map);
+        expect(scope.tracking).to.be(true);
+        expect(spy.callCount).to.be(1);
+        stub.restore();
+        stub1.restore();
+        stub2.restore();
       });
 
       it('activates/deactivates tracking when button is clicked', function() {

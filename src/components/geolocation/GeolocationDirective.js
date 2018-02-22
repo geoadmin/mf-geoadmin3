@@ -85,7 +85,7 @@ goog.require('ga_throttle_service');
             map.removeLayer(featuresOverlay);
           }
           geolocation.setTracking(tracking);
-          if (gyr) {
+          if (promGyr) {
             promGyr.then(function() {
               if (!gyr) {
                 return;
@@ -124,23 +124,22 @@ goog.require('ga_throttle_service');
         // Get heading depending on devices
         var headingFromDeviceOrientation = function(hdg) {
           var orientation = $window.orientation;
-          console.log(orientation);
           switch (orientation) {
-            case -90:
-            case 270:
-              hdg = hdg - (Math.PI / 2);
-              break;
+          case -90:
+          case 270:
+            hdg = hdg - (Math.PI / 2);
+            break;
 
-            case 180:
-              hdg = hdg + Math.PI;
-              break;
+          case 180:
+            hdg = hdg + Math.PI;
+            break;
 
-            case 90:
-              hdg = hdg + (Math.PI / 2);
-              break;
+          case 90:
+            hdg = hdg + (Math.PI / 2);
+            break;
 
-            default:
-              break;
+          default:
+            break;
           }
           return hdg;
         };
@@ -210,7 +209,7 @@ goog.require('ga_throttle_service');
 
           // Get rotaton in radians
           var heading = headingDeg * Math.PI / 180;
-          
+
           // Correct the heading depending on device orientation landscape or
           // portrait
           heading = headingFromDeviceOrientation(heading);
