@@ -229,9 +229,11 @@ goog.require('ga_wmts_service');
 
     // Transform the url before loading it.
     $scope.options.transformUrl = function(url) {
-      // If the url has no file extension, try to load a WMS GetCapabilities.
-      if (!/\.(kml|kmz|xml|txt)/i.test(url) &&
-          !/\w+\/\w+\.[a-zA-Z]+$/i.test(url)) {
+      // If the url has no file extension or a map parameter,
+      // try to load a WMS/WMTS GetCapabilities.
+      if ((!/\.(kml|kmz|xml|txt)/i.test(url) &&
+          !/\w+\/\w+\.[a-zA-Z]+$/i.test(url)) ||
+          /map=/i.test(url)) {
         // Append WMS GetCapabilities default parameters
         url = gaUrlUtils.append(url, /wmts/i.test(url) ?
           'SERVICE=WMTS&REQUEST=GetCapabilities&VERSION=1.0.0' :

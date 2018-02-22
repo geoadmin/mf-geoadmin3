@@ -170,7 +170,9 @@ describe('ga_import_controller', function() {
             'https://foo.ch ',
             'https://foo.ch/',
             'https://foo.ch/?',
-            'https://foo.ch/?paramter=custom'
+            'https://foo.ch/?parameter=custom',
+            'http://foo.ch/ogc?map=kml.map',
+            'http://foo.ch/ogc?map=/foo/bar/map.map'
           ];
           var spy = sinon.stub(gaUrlUtils, 'proxifyUrl');
           urls.forEach(function(url) {
@@ -203,7 +205,7 @@ describe('ga_import_controller', function() {
             'https://wmts.ch',
             'https://wmts.ch/',
             'https://wmts.ch/?',
-            'https://wmts.ch/?parmeter=custom'
+            'https://wmts.ch/?parameter=custom'
           ];
           var spy = sinon.stub(gaUrlUtils, 'proxifyUrl');
           urls.forEach(function(url) {
