@@ -396,7 +396,7 @@ goog.require('ga_window_service');
               initTooltip();
               if (!coordinate ||
                  !ol.extent.containsCoordinate(gaMapUtils.defaultExtent,
-                     coordinate)) {
+                    coordinate)) {
                 return;
               }
               // Use by the ga-shop directive
