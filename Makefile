@@ -154,7 +154,7 @@ help:
 	@echo "- s3deleteint        Delete a project version in a remote int bucket. (usage: make s3deleteint S3_VERSION_PATH=<branch> or <branch>/<sha>/<version>)"
 	@echo "- s3deleteprod       Delete a project version in a remote prod bucket. (usage: make s3deleteprod S3_VERSION_PATH=<branch> or <branch>/<sha>/<version>)"
 	@echo "- cesium             Update Cesium.min.js and Cesium folder. Needs Node js version >= 6."
-	@echo "- olcesium           Update olcesium.js, olcesium-debug.js. Needs Node js version >= 6."
+	@echo "- olcesium           Update olcesium.js, olcesium-debug.js. Needs Node js version >= 6 and java >=8."
 	@echo "- libs               Update js librairies used in index.html, see npm packages defined in section 'dependencies' of package.json"
 	@echo "- translate          Generate the translation files (requires db user pwd in ~/.pgpass: dbServer:dbPort:*:dbUser:dbUserPwd)"
 	@echo "- help               Display this help"
