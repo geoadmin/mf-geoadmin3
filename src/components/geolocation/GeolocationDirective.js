@@ -24,7 +24,7 @@ goog.require('ga_throttle_service');
       templateUrl: 'components/geolocation/partials/geolocation.html',
       link: function(scope, element, attrs) {
         var bt = element.find('button');
-        if (!('geolocation' in $window.navigator)) {
+        if (!$window.navigator.geolocation) {
           bt.addClass('ga-btn-disabled');
           return;
         }
@@ -48,8 +48,7 @@ goog.require('ga_throttle_service');
             [accuracyFeature, positionFeature],
             gaStyleFactory.getStyleFunction('geolocation')
         );
-        // Detect use of deviceOrientation
-        var promGyr, gyr = new window.GyroNorm();
+        var promGyr, gyr = new $window.GyroNorm();
         var geolocation = new ol.Geolocation({
           projection: view.getProjection(),
           trackingOptions: {
@@ -91,12 +90,9 @@ goog.require('ga_throttle_service');
                 return;
               }
               if (tracking) {
-                gyr.start(function(evt) {
-                  onChangeHeading(evt);
-                });
+                gyr.start(onChangeHeading);
               } else {
-                gyr.stop(function() {
-                });
+                gyr.stop();
               }
             })
           }
@@ -196,10 +192,8 @@ goog.require('ga_throttle_service');
 
         // Orientation control events
         var currHeading = 0;
-        var headngUpdateWhenMapRotate = gaThrottle.throttle(headingUpdate,
-            1000);
-        var headngUpdateWhenIconRotate = gaThrottle.throttle(headingUpdate,
-            1000);
+        var headngUpdateWhenMapRotate = gaThrottle.throttle(headingUpdate, 300);
+        var headngUpdateWhenIconRotate = gaThrottle.throttle(headingUpdate, 50);
 
         var onChangeHeading = function(evt) {
           var headingDeg = evt.do.alpha;
@@ -338,16 +332,15 @@ goog.require('ga_throttle_service');
           btnStatus = (scope.tracking) ? 1 : 0;
         }
         promGyr = gyr.init({
-          orientationBase: window.GyroNorm.WORLD
+          orientationBase: $window.GyroNorm.WORLD
         }).then(function() {
-          if (gyr.isAvailable(window.GyroNorm.DEVICE_ORIENTATION)) {
+          if (gyr.isAvailable($window.GyroNorm.DEVICE_ORIENTATION)) {
             maxNumStatus = 2
           } else {
             gyr = undefined
           }
           init();
         }, init);
-
       }
     };
   });

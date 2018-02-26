@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-describe('ga_geolocation_directive', function() {
+describe.only('ga_geolocation_directive', function() {
 
   describe('gaGeolocation', function() {
     var elt, scope, parentScope, $compile, $rootScope, $httpBackend, $timeout, $window, $q, map, ol3d;
@@ -75,6 +75,25 @@ describe('ga_geolocation_directive', function() {
       }
     });
 
+    describe('on browser not supporting geolocation', function() {
+
+      beforeEach(function() {
+        inject(function($injector) {
+          injectServices($injector);
+        });
+        $window.navigator.geolocation = undefined;
+      });
+
+      it('disables the button if geolocation isn\'t supported', function() {
+        var spy = sinon.spy(ol, 'Geolocation');
+        var spy2 = sinon.spy($window, 'GyroNorm');
+        loadDirective(map, ol3d);
+        expect(spy.callCount).to.be(0);
+        expect(spy.callCount).to.be(0);
+        expect(elt.find('.ga-btn-disabled').length).to.be(1);
+      });
+    });
+
     describe('on browser supporting geolocation', function() {
 
       beforeEach(function() {
@@ -99,9 +118,9 @@ describe('ga_geolocation_directive', function() {
         expect(scope.getBtTitle()).to.be('geoloc_start_tracking');
       });
 
-      it('set scope values after gyronorm is inialized', function() {
-        var stub = sinon.stub(window.GyroNorm.prototype, 'init').returns($q.when());
-        var stub1 = sinon.stub(window.GyroNorm.prototype, 'isAvailable').returns(true);
+      it('set scope values after gyronorm is initialized', function() {
+        var stub = sinon.stub($window.GyroNorm.prototype, 'init').returns($q.when());
+        var stub1 = sinon.stub($window.GyroNorm.prototype, 'isAvailable').returns(true);
         loadDirective(map);
         expect(scope.map).to.be.an(ol.Map);
         expect(scope.tracking).to.be(false);
@@ -109,9 +128,19 @@ describe('ga_geolocation_directive', function() {
         stub1.restore();
       });
 
-      it('set scope values after gyronorm fails to inialize', function() {
-        var stub = sinon.stub(window.GyroNorm.prototype, 'init').returns($q.when());
-        var stub1 = sinon.stub(window.GyroNorm.prototype, 'isAvailable').returns(true);
+      it('set scope values after gyronorm fails to initialize', function() {
+        var stub = sinon.stub($window.GyroNorm.prototype, 'init').returns($q.reject());
+        var stub1 = sinon.stub($window.GyroNorm.prototype, 'isAvailable').returns(true);
+        loadDirective(map);
+        expect(scope.map).to.be.an(ol.Map);
+        expect(scope.tracking).to.be(false);
+        stub.restore();
+        stub1.restore();
+      });
+
+      it('set scope values if gyroscope is not available', function() {
+        var stub = sinon.stub($window.GyroNorm.prototype, 'init').returns($q.resolve());
+        var stub1 = sinon.stub($window.GyroNorm.prototype, 'isAvailable').returns(false);
         loadDirective(map);
         expect(scope.map).to.be.an(ol.Map);
         expect(scope.tracking).to.be(false);
@@ -147,6 +176,70 @@ describe('ga_geolocation_directive', function() {
         expect(scope.tracking).to.be(false);
         expect(scope.map.getLayers().getLength()).to.be(0);
         expect(scope.getBtTitle()).to.be('geoloc_start_tracking');
+      });
+    });
+
+    describe('on browser supporting geolocation and orientation', function() {
+      var stub , stub1;
+      
+      beforeEach(function() {
+        inject(function($injector) {
+          injectServices($injector);
+        });
+        $window.navigator.geolocation = true;
+        stub = sinon.stub($window.GyroNorm.prototype, 'init').returns($q.resolve());
+        stub1 = sinon.stub($window.GyroNorm.prototype, 'isAvailable').returns(true);
+      });
+      
+      afterEach(function() {
+        stub.restore();
+        stub1.restore();
+      });
+      
+      it('activates/deactivates tracking/heading when button is clicked', function() {
+        loadDirective(map);
+        var bt = elt.find('button').click();
+        $rootScope.$digest();
+        expect(scope.tracking).to.be(true);
+        expect(scope.map.getLayers().getLength()).to.be(1);
+        expect(scope.map.getLayers().item(0).getSource().getFeatures().length).to.be(2);
+        expect(scope.getBtTitle()).to.be('geoloc_start_tracking_heading');
+
+        bt.click();
+        $rootScope.$digest();
+        expect(scope.tracking).to.be(true);
+        expect(scope.map.getLayers().getLength()).to.be(1);
+        expect(scope.getBtTitle()).to.be('geoloc_stop_tracking');
+        
+        bt.click();
+        $rootScope.$digest();
+        expect(scope.tracking).to.be(false);
+        expect(scope.map.getLayers().getLength()).to.be(0);
+        expect(scope.getBtTitle()).to.be('geoloc_start_tracking');
+      }); 
+      
+      it('rotates the button with the view when heading is activated', function() {
+        loadDirective(map);
+        var bt = elt.find('button').click();
+        $rootScope.$digest();
+        bt.click();
+        $rootScope.$digest();
+        
+        // Test rotation of the view
+        scope.map.getView().setRotation(Math.PI/4);
+        expect(bt.css('transform')).to.be('rotate(45deg)');
+        expect(bt.hasClass('ga-rotate-enabled')).to.be(true);
+      });
+      
+      it('rotates the icon when geolocation is activated', function() {
+        loadDirective(map);
+        var bt = elt.find('button').click();
+        $rootScope.$digest();
+        
+        // Test rotation of the view
+        scope.map.getView().setRotation(Math.PI/4);
+        expect(bt.css('transform')).to.be('rotate(45deg)');
+        expect(bt.hasClass('ga-rotate-enabled')).to.be(true);
       });
     });
   });
