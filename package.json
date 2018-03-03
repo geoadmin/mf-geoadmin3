@@ -32,7 +32,7 @@
     "fastclick": "1.0.6",
     "jquery": "3.3.1",
     "jquery-ajax-transport-xdomainrequest": "1.0.4",
-    "localforage": "1.5.7",
+    "localforage": "1.6.0",
     "npm-check-updates": "^2.14.0",
     "slipjs": "2.1.1"
   },
