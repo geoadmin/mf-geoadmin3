@@ -50,9 +50,14 @@ goog.provide('ga_stylesfromliterals_service');
           } else if (type === 'text') {
             style.stroke = new ol.style.Stroke(style.stroke);
             style.fill = new ol.style.Fill(style.fill);
-            style.backgroundFill = new ol.style.Fill(style.backgroundFill);
-            style.backgroundStroke = new ol.style.Stroke(
-                style.backgroundStroke);
+            if (style.backgroundFill) {
+              style.backgroundFill = new ol.style.Fill(
+                  style.backgroundFill);
+            }
+            if (style.backgroundStroke) {
+              style.backgroundStroke = new ol.style.Stroke(
+                  style.backgroundStroke);
+            }
             olStyles[type] = new ol.style.Text(style);
           }
         });
