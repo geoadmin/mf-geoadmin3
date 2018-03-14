@@ -993,6 +993,12 @@ describe('ga_stylesfromliterals_service', function() {
                   },
                   fill: {
                     color: '#FF1FF1'
+                  },
+                  backgroundFill: {
+                    color: 'red'
+                  },
+                  backgroundStroke: {
+                    color: 'red'
                   }
                 }
               }
@@ -1064,6 +1070,10 @@ describe('ga_stylesfromliterals_service', function() {
       expect(olText.getFont()).to.equal('bold 1.35em FrutigerNeueW02-Regular, Times, sans-serif');
       expect(olText.getTextAlign()).to.equal('center');
       expect(olText.getTextBaseline()).to.equal('middle');
+      expect(olText.getBackgroundFill()).to.be.an(ol.style.Fill);
+      expect(olText.getBackgroundStroke()).to.be.an(ol.style.Stroke);
+      expect(olText.getBackgroundFill().getColor()).to.equal(null);
+      expect(olText.getBackgroundStroke().getColor()).to.equal(null);
 
       // Test with a 0
       olFeature = geoJsonFormat.readFeature(
@@ -1099,6 +1109,10 @@ describe('ga_stylesfromliterals_service', function() {
       expect(olText.getFont()).to.equal('bold 1.35em FrutigerNeueW02-Regular, Times, sans-serif');
       expect(olText.getTextAlign()).to.equal('center');
       expect(olText.getTextBaseline()).to.equal('middle');
+      expect(olText.getBackgroundFill()).to.be.an(ol.style.Fill);
+      expect(olText.getBackgroundStroke()).to.be.an(ol.style.Stroke);
+      expect(olText.getBackgroundFill().getColor()).to.equal('red');
+      expect(olText.getBackgroundStroke().getColor()).to.equal('red');
     });
 
     it('supports range type style assignment resolution dependent', function() {
