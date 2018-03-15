@@ -136,10 +136,6 @@ goog.require('ga_permalink_service');
         this.getYearFromTimestamp = function(timestamp) {
           if (timestamp && timestamp.length) {
             var fullYear = new Date().getFullYear();
-            if (timestamp === 'current') {
-              return fullYear;
-            }
-
             timestamp = parseInt(timestamp.substr(0, 4));
             if (timestamp <= fullYear) {
               return timestamp;

@@ -90,7 +90,6 @@ describe('ga_time_service', function() {
         expect(gaTime.getYearFromTimestamp('text')).to.be(undefined);
         expect(gaTime.getYearFromTimestamp(20131201)).to.be(undefined);
         expect(gaTime.getYearFromTimestamp('99991231')).to.be(undefined);
-        expect(gaTime.getYearFromTimestamp('current')).to.be(new Date().getFullYear());
         expect(gaTime.getYearFromTimestamp('2011-12-01 00:00:00')).to.be(2011);
       });
     });
