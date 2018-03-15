@@ -145,7 +145,14 @@ Optionally, one can define a `minResolution` and `maxResolution` at which the st
               "width": 4
             },
             "fill": {
-              "color": "rgba(52, 52, 52, 0.3)",
+              "color": "rgba(52, 52, 52, 0.3)"
+            },
+            "padding": [2, 2, 2, 2],
+            "backgroundFill": {
+              "color": "rgba(52, 52, 52, 0.3)"
+            },
+            "backgroundStroke": {
+              "color": "rgba(52, 52, 52, 0.3)"
             }
           }
         }
