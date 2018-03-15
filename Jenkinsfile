@@ -105,6 +105,6 @@ node(label: 'jenkins-slave') {
     throw e;
 
   } finally {
-    //sh 'make DEPLOY_GIT_BRANCH=' + deployGitBranch  + ' cleanall'
+    sh 'make DEPLOY_GIT_BRANCH=' + deployGitBranch  + ' cleanall'
   }
 }
