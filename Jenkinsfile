@@ -47,9 +47,11 @@ node(label: 'jenkins-slave') {
       def lines = stdout.readLines()
       s3VersionPath = lines.get(lines.size()-3)
       e2eTargetUrl = lines.get(lines.size()-1)
+    }
      
+    if (namedBranch) {
       // Add the test link in the PR
-      if (namedBranch) {
+      stage('Publish test link') {
         def url = 'https://api.github.com/repos/geoadmin/mf-geoadmin3/pulls/' + env.CHANGE_ID
         def testLink = '<jenkins>[Test link](' + e2eTargetUrl + ')</jenkins>'
         def response = httpRequest acceptType: 'APPLICATION_JSON',
@@ -58,26 +60,26 @@ node(label: 'jenkins-slave') {
                                    url: url
         if (response.status == 200) {
 
-          // Get personnal access token
+          echo 'Get personnal access token'
           def userpass 
           withCredentials([usernameColonPassword(credentialsId: 'iwibot-admin-user-github-token', variable: 'USERPASS')]) {
             userpass = sh returnStdout: true, script: 'echo $USERPASS'
           }
           def token = 'token ' + userpass.split(':')[1].trim()
-                
-          // Parse the json.
-          // Don't put instance of JsonSlurperClassic in a variable it will trigger a java.io.NotSerializableException.
+          
+          echo 'Parse the json'
+          // Don't put instance of JsonSlurperClassic in a variable it will trigger a java.io.NotSerializableException
           def result = new JsonSlurperClassic().parseText(response.content)
 
-          // Remove the existing links if exists
+          echo 'Remove the existing links if exists'
           // If the PR is modified by a user \n\n becomes \r\n\r\n
           def body = result.body.replaceAll('((\\r)?\\n){2}<jenkins>.*</jenkins>', '')
 
-          // Add test link
+          echo 'Add test link'
           body = body + '\n\n' + testLink
           def bodyEscaped = JsonOutput.toJson(body)
+          
           echo 'Body sent: ' + bodyEscaped
-                
           httpRequest acceptType: 'APPLICATION_JSON',
                       consoleLogResponseBody: false,
                       customHeaders: [[maskValue: true, name: 'Authorization', value: token]], 
