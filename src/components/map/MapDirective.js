@@ -308,6 +308,7 @@ goog.require('ga_styles_service');
                 height: (650 * size[1] / size[0]) + 'px'
               });
               map.updateSize();
+              map.renderSync();
             };
             $window.onafterprint = function() {
               element.css({width: '100%', height: '100%'});
@@ -320,6 +321,7 @@ goog.require('ga_styles_service');
             $window.matchMedia('print').addListener(function(mql) {
               if (mql.matches) { // onbeforeprint
                 map.updateSize();
+                map.renderSync();
               } else { // onafterprint
                 // We use a timeout to be sure the map is resize after
                 // printing
