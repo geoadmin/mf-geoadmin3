@@ -154,7 +154,7 @@ searchLocationTests = [
     {
         'searchText': u'bruckenmoostrasse 11 raron',
         'resultTitle': u'Brückenmoosstrasse 11 3942 Raron',
-        'resultLocation': u'E=2627650.00&N=1128630.00&zoom=10'
+        'resultLocation': u'E=2627659.50&N=1128632.88&zoom=10'
     },
     {
         'searchText': u'rte berne 91 1010',
