@@ -4,6 +4,20 @@ describe('ga_layers_service', function() {
   describe('gaLayers', function() {
     var gaLayers, gaTime, $httpBackend, $rootScope, $q, gaGlobalOptions, gaNetworkStatus, $timeout;
     var expectedUrl = 'https://example.com/all?lang=somelang';
+
+    var dfltGeojson = {
+      'features': [{
+        'type': 'Feature',
+        'geometry': {
+          'coordinates': [600000, 200000],
+          'type': 'Point'
+        },
+        'id': '2009',
+        'properties': {}
+      }],
+      'type': 'FeatureCollection'
+    };
+
     var dfltLayersConfig = {
       foo: {
         type: 'wmts',
@@ -18,6 +32,14 @@ describe('ga_layers_service', function() {
       },
       bodwms: {
         type: 'wms'
+      },
+      geojson: {
+        type: 'geojson',
+        minResolution: 0.5,
+        maxResolution: 100,
+        opacity: 0.35,
+        geojsonUrl: 'http://mygeojson.json',
+        styleUrl: '//mystyle.json'
       },
       tooltip: {
         type: 'aggregate',
@@ -655,14 +677,7 @@ describe('ga_layers_service', function() {
           maxResolution: 100,
           opacity: 0.35
         },
-        geojson: {
-          type: 'geojson',
-          minResolution: 0.5,
-          maxResolution: 100,
-          opacity: 0.35,
-          geojsonUrl: 'http://mygeojson.json',
-          styleUrl: '//mystyle.json'
-        }
+        geojson: dfltLayersConfig.geojson
       };
       layersConfig.wmstiled = angular.copy(layersConfig.wms);
       layersConfig.wmstiled.singleTile = undefined;
@@ -915,6 +930,54 @@ describe('ga_layers_service', function() {
           expect(layer.getPreload()).to.be(6);
           expect(layer.getUseInterimTilesOnError()).to.be(true);
         });
+      });
+    });
+
+    describe('#getLayerPromise()', function() {
+
+      it('gets a rejected promise if the layer\'s bodId doesn\'t exist', function(done) {
+        $httpBackend.expectGET(expectedUrl).respond(dfltLayersConfig);
+        $httpBackend.flush();
+        gaLayers.getLayerPromise('doesntexist').then(angular.noop, function() {
+          done();
+        });
+        $rootScope.$digest();
+      });
+
+      it('gets a rejected promise if the layer is not geojson', function(done) {
+        $httpBackend.expectGET(expectedUrl).respond(dfltLayersConfig);
+        $httpBackend.flush();
+        gaLayers.getLayerPromise('foo').then(angular.noop, function() {
+          done();
+        });
+        $rootScope.$digest();
+      });
+
+      it('creates the layer then gets the promise', function(done) {
+        $httpBackend.expectGET(expectedUrl).respond(dfltLayersConfig);
+        $httpBackend.flush();
+        $httpBackend.expectGET(gaGlobalOptions.proxyUrl + 'http/mygeojson.json').respond(dfltGeojson);
+        $httpBackend.expectGET(gaGlobalOptions.proxyUrl + 'http/mystyle.json').respond({});
+        var spy = sinon.spy(gaLayers, 'getOlLayerById').withArgs('geojson');
+        gaLayers.getLayerPromise('geojson').then(function() {
+          done();
+        });
+        $httpBackend.flush();
+        expect(spy.callCount).to.be(1);
+        $rootScope.$digest();
+      });
+
+      it('gets the promise', function(done) {
+        $httpBackend.expectGET(expectedUrl).respond(dfltLayersConfig);
+        $httpBackend.flush();
+        $httpBackend.expectGET(gaGlobalOptions.proxyUrl + 'http/mygeojson.json').respond(dfltGeojson);
+        $httpBackend.expectGET(gaGlobalOptions.proxyUrl + 'http/mystyle.json').respond({});
+        gaLayers.getOlLayerById('geojson');
+        $httpBackend.flush();
+        gaLayers.getLayerPromise('geojson').then(function() {
+          done();
+        });
+        $rootScope.$digest();
       });
     });
 

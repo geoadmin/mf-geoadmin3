@@ -678,7 +678,17 @@ goog.require('ga_urlutils_service');
 
         // Returns promise of layer with its features when layers are added.
         this.getLayerPromise = function(bodId) {
-          return geojsonPromises[bodId];
+          var p, config = this.getLayer(bodId);
+          if (config && /geojson/.test(config.type)) {
+            p = geojsonPromises[bodId];
+            if (!p) {
+              // Fill the geojsonPromises array
+              // TODO: Not nice to create a layer and not using it.
+              this.getOlLayerById(bodId);
+              p = geojsonPromises[bodId];
+            }
+          }
+          return p || $q.reject();
         };
 
         /**

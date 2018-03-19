@@ -36,7 +36,11 @@ goog.require('ga_previewfeatures_service');
                 featureIdsCount += featureIds.length;
                 Array.prototype.push.apply(featureIdsByBodId[bodId],
                     featureIds);
-                if (!gaMapUtils.getMapOverlayForBodId(map, bodId)) {
+                // Add the layer only if the 'layers' param doesn't contain the
+                // layer's bodId.
+                if ((!queryParams.layers ||
+                    queryParams.layers.indexOf(bodId) === -1) &&
+                    !gaMapUtils.getMapOverlayForBodId(map, bodId)) {
                   map.addLayer(gaLayers.getOlLayerById(bodId));
                 }
               }
