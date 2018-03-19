@@ -131,7 +131,7 @@ goog.require('ga_translation_service');
           sessionId = sessionId || new Date();
           var url = gaGlobalOptions.shopUrl + '/' + gaLang.get() +
               '/dispatcher?' + getParams(orderType, layerBodId, featureId,
-                geometry);
+              geometry);
           winShop = $window.open(url, WIN_SHOP_PREFIX + sessionId);
         };
 

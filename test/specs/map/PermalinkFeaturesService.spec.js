@@ -119,7 +119,7 @@ describe('ga_permalinkfeatures_service', function() {
       beforeEach(function() {
         gaPermalink.getParams = function() {
           return {
-            layers: 'somelayer',
+            layers: 'somalayer2,somelayer',
             somelayer: 'featureid1,featureid2'
           };
         };
@@ -135,7 +135,7 @@ describe('ga_permalinkfeatures_service', function() {
         expect(map.getLayers().getLength()).to.equal(0);
         var spy = sinon.spy(map, 'addLayer');
         $rootScope.$digest();
-        expect(spy.callCount).to.equal(1);
+        expect(spy.callCount).to.equal(0);
       });
     });
 
