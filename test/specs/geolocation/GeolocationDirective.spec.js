@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-describe.only('ga_geolocation_directive', function() {
+describe('ga_geolocation_directive', function() {
 
   describe('gaGeolocation', function() {
     var elt, scope, parentScope, $compile, $rootScope, $httpBackend, $timeout, $window, $q, map, ol3d;

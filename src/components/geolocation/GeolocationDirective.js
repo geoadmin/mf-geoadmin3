@@ -187,7 +187,6 @@ goog.require('ga_throttle_service');
         };
 
         var updateHeadingFeature = function(rotation) {
-          console.log(rotation);
           positionFeature.set('rotation', rotation || 0);
         };
 
