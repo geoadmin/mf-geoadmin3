@@ -48,7 +48,7 @@ module.exports = function(config) {
     '${basePath}/lib/localforage.js',
     '${basePath}/lib/filesaver.js',
     '${basePath}/lib/moment-with-customlocales.js',
-    '${basePath}/lib/gyronorm.js',
+    '${basePath}/lib/gyronorm.complete.js',
     '${basePath}/lib/Cesium/Cesium.js',
     'test/closure-loader-globals.js',
     '${basePath}/lib/olcesium-debug.js',

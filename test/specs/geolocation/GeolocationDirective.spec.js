@@ -89,7 +89,7 @@ describe.only('ga_geolocation_directive', function() {
         var spy2 = sinon.spy($window, 'GyroNorm');
         loadDirective(map, ol3d);
         expect(spy.callCount).to.be(0);
-        expect(spy.callCount).to.be(0);
+        expect(spy2.callCount).to.be(0);
         expect(elt.find('.ga-btn-disabled').length).to.be(1);
       });
     });
@@ -180,8 +180,8 @@ describe.only('ga_geolocation_directive', function() {
     });
 
     describe('on browser supporting geolocation and orientation', function() {
-      var stub , stub1;
-      
+      var stub, stub1;
+
       beforeEach(function() {
         inject(function($injector) {
           injectServices($injector);
@@ -190,12 +190,12 @@ describe.only('ga_geolocation_directive', function() {
         stub = sinon.stub($window.GyroNorm.prototype, 'init').returns($q.resolve());
         stub1 = sinon.stub($window.GyroNorm.prototype, 'isAvailable').returns(true);
       });
-      
+
       afterEach(function() {
         stub.restore();
         stub1.restore();
       });
-      
+
       it('activates/deactivates tracking/heading when button is clicked', function() {
         loadDirective(map);
         var bt = elt.find('button').click();
@@ -210,34 +210,23 @@ describe.only('ga_geolocation_directive', function() {
         expect(scope.tracking).to.be(true);
         expect(scope.map.getLayers().getLength()).to.be(1);
         expect(scope.getBtTitle()).to.be('geoloc_stop_tracking');
-        
+
         bt.click();
         $rootScope.$digest();
         expect(scope.tracking).to.be(false);
         expect(scope.map.getLayers().getLength()).to.be(0);
         expect(scope.getBtTitle()).to.be('geoloc_start_tracking');
-      }); 
-      
+      });
+
       it('rotates the button with the view when heading is activated', function() {
         loadDirective(map);
         var bt = elt.find('button').click();
         $rootScope.$digest();
         bt.click();
         $rootScope.$digest();
-        
+
         // Test rotation of the view
-        scope.map.getView().setRotation(Math.PI/4);
-        expect(bt.css('transform')).to.be('rotate(45deg)');
-        expect(bt.hasClass('ga-rotate-enabled')).to.be(true);
-      });
-      
-      it('rotates the icon when geolocation is activated', function() {
-        loadDirective(map);
-        var bt = elt.find('button').click();
-        $rootScope.$digest();
-        
-        // Test rotation of the view
-        scope.map.getView().setRotation(Math.PI/4);
+        scope.map.getView().setRotation(Math.PI / 4);
         expect(bt.css('transform')).to.be('rotate(45deg)');
         expect(bt.hasClass('ga-rotate-enabled')).to.be(true);
       });
