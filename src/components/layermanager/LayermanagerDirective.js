@@ -30,7 +30,8 @@ goog.require('ga_window_service');
       // input values possible: 1978, '1978', '19783112', '99993112', undefined
       // if layer is WMTS:
       //   if timeselector not active:
-      //      '99993112' ==> $translate.instant('all');
+      //      '99993112' ==> $translate.instant('time_all');
+      //      'current' ==> $translate.instant('time_current');
       //   else :
       //      undefined ==> '-'
       //      '19783112' ==> '1978'
@@ -47,7 +48,8 @@ goog.require('ga_window_service');
       if (angular.isString(input)) {
         yearNum = parseInt(input.substring(0, 4));
       }
-      return (yearNum <= maxYear) ? yearNum : $translate.instant('time_all');
+      var result = (input === 'current') ? 'time_current' : 'time_all';
+      return (yearNum <= maxYear) ? yearNum : $translate.instant(result);
     }
   });
 
