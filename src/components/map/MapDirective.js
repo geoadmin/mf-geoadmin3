@@ -295,41 +295,7 @@ goog.require('ga_styles_service');
         // Often when we use embed map the size of the map is fixed, so we
         // don't need to resize the map for printing (use case: print an
         // embed map in a tooltip.
-        if (!gaBrowserSniffer.embed) {
-          // IE + Firefox
-          // We can't call a map.updateSize() for these browsers(because
-          // it's applied after the printing) so we resize
-          // the map keeping the ratio currently display.
-          if ('onbeforeprint' in $window) {
-            $window.onbeforeprint = function() {
-              var size = map.getSize();
-              element.css({
-                width: '650px',
-                height: (650 * size[1] / size[0]) + 'px'
-              });
-              map.updateSize();
-              map.renderSync();
-            };
-            $window.onafterprint = function() {
-              element.css({width: '100%', height: '100%'});
-            };
-          }
-
-          // Chrome + Safari
-          // These events are called twice on Chrome
-          if ($window.matchMedia) {
-            $window.matchMedia('print').addListener(function(mql) {
-              if (mql.matches) { // onbeforeprint
-                map.updateSize();
-                map.renderSync();
-              } else { // onafterprint
-                // We use a timeout to be sure the map is resize after
-                // printing
-                $timeout(function() { map.updateSize(); }, 500);
-              }
-            });
-          }
-        } else {
+        if (gaBrowserSniffer.embed) {
           // #3722: On mobile we need to update size of the map on iframe load.
           $($window).on('DOMContentLoaded', function() {
             map.updateSize();
