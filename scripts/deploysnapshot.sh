@@ -31,7 +31,7 @@ VERSION=$(cat .build-artefacts/last-version)
 S3_BASE_PATH=/$DEPLOY_GIT_BRANCH/$SHA/$VERSION
 export S3_SRC_BASE_PATH=$S3_BASE_PATH/src/
 export S3_BASE_PATH=$S3_BASE_PATH/
-source $RC_FILE && make all
+make $DEPLOY_TARGET
 
 echo -n "Checking service and layersConfig files"
 cat prd/cache/services  | python -c 'import json,sys;obj=json.load(sys.stdin);print "Topics numbers:",len(obj["topics"])'
@@ -48,20 +48,13 @@ if [ ! "${answer}" == "y" ]; then
   exit 1
 fi
 
-# Upload to S3
-echo "$pwd/.build-artefacts/python-venv/bin/python $pwd/scripts/s3manage.py upload $SNAPSHOTDIR/geoadmin/code/geoadmin $DEPLOY_TARGET"
-$pwd/.build-artefacts/python-venv/bin/python $pwd/scripts/s3manage.py upload $SNAPSHOTDIR/geoadmin/code/geoadmin $DEPLOY_TARGET false
+echo "Upload to s3"
+make s3copybranch DEPLOY_TARGET=$DEPLOY_TARGET \
+                  NAMED_BRANCH=false \
+                  CODE_DIR=$SNAPSHOTDIR/geoadmin/code/geoadmin
 
-# Flush varnish
 echo "Flushing varnishes"
-source $RC_FILE
-for VARNISHHOST in ${VARNISH_HOSTS[@]}
-do
-  ./scripts/flushvarnish.sh $VARNISHHOST "${API_URL#*//}"
-  ./scripts/flushvarnish.sh $VARNISHHOST "${E2E_TARGETURL#*https://}"
-  echo "Flushed varnish at: ${VARNISHHOST}"
-done
+make flushvarnish DEPLOY_TARGET=$DEPLOY_TARGET
 
 T="$(($(date +%s)-T))"
-
-printf "Deploy time: %02d:%02d:%02d\n" "$((T/3600%24))" "$((T/60%60))" "$((T%60))"
+echo "Deploy time: %02d:%02d:%02d\n" "$((T/3600%24))" "$((T/60%60))" "$((T%60))"

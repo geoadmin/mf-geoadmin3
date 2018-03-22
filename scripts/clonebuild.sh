@@ -64,4 +64,4 @@ echo $S3_SRC_BASE_PATH
 echo "Building the project"
 export S3_BASE_PATH=$S3_BASE_PATH
 export S3_SRC_BASE_PATH=$S3_SRC_BASE_PATH
-source rc_$DEPLOY_TARGET && make all
+source make $DEPLOY_TARGET

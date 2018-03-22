@@ -20,7 +20,6 @@ LAST_APACHE_BASE_DIRECTORY := $(call lastvalue,apache-base-directory)
 APACHE_BASE_PATH ?= /$(shell id -un)
 LAST_APACHE_BASE_PATH := $(call lastvalue,apache-base-path)
 
-VARNISH_HOSTS ?= (ip-10-220-4-250.eu-west-1.compute.internal)
 TECH_SUFFIX = .bgdi.ch
 API_URL ?= //api3.geo.admin.ch
 API_TECH_URL ?= //mf-chsdi3.
@@ -56,7 +55,7 @@ PUBLIC_URL_REGEXP ?= ^https?:\/\/public\..*\.(bgdi|admin)\.ch\/.*
 ADMIN_URL_REGEXP ?= ^(ftp|http|https):\/\/(.*(\.bgdi|\.geo\.admin)\.ch)
 E2E_TARGETURL ?= https://mf-geoadmin3.dev.bgdi.ch
 
-DEPLOY_TARGET ?= dev
+DEPLOY_TARGET ?= int
 LESS_PARAMETERS ?= -ru
 KEEP_VERSION ?= 'false'
 LAST_VERSION := $(call lastvalue,version)
@@ -98,6 +97,7 @@ S3_SRC_BASE_PATH ?=
 CLONEDIR = /home/$(USER_NAME)/tmp/branches/${DEPLOY_GIT_BRANCH}
 DEEP_CLEAN ?= "false"
 NAMED_BRANCH ?= "true"
+CODE_DIR ?= .
 
 ## Python interpreter can't have space in path name
 ## So prepend all python scripts with python cmd
@@ -127,8 +127,12 @@ help:
 	@echo
 	@echo "Possible targets:"
 	@echo
-	@echo "- user               Build the app with user specific configuration"
-	@echo "- all                Build the app with current environment"
+	@echo "- user               Build the app using user specific environment variables (see $(USER_SOURCE) file)"
+	@echo "- all                Build the app using current environment variables"
+	@echo "- build              Build the app using current environment variables. No linting and testing."
+	@echo "- dev                Build the app using dev environment variables (see rc_dev file). No linting and testing."
+	@echo "- int                Build the app using int environment variables (see rc_int file). No linting and testing."
+	@echo "- prod               Build the app using prod environment variables (see rc_prod file). No linting and testing."
 	@echo "- release            Build app for release (/prd)"
 	@echo "- debug              Build app for debug (/src)"
 	@echo "- lint               Run the linter on src/components, src/js folders, test/specs and python files"
@@ -146,13 +150,18 @@ help:
 	@echo "- s3deployprod       Deploys a snapshot specified with SNAPSHOT=xxx to s3 prod."
 	@echo "- s3activateint      Activate a version at the root of a remote bucket. (usage only: make s3activateint S3_VERSION_PATH=<branch>/<sha>/<version>)"
 	@echo "- s3activateprod     Activate a version at the root of a remote bucket. (usage only: make s3activateprod S3_VERSION_PATH=<branch>/<sha>/<version>)"
-	@echo "- s3copybranch       Copy the current directory content to S3 int. Defaults to the current branch name. WARNING: your code must have been compiled with 'make user' first."
+	@echo "- s3copybranch       Copy the current directory content to S3. Defaults to the current branch name. WARNING: your code must have been compiled with 'make user' first."
+	@echo "                     Usage: make s3copybranch  DEPLOY_TARGET=<int|prod>"
+	@echo "                                               NAMED_BRANCH=<true|false>"
+	@echo "                                               CODE_DIR=<Path to the folder, default to current folder> (optional)"
+	@echo "                                               DEPLOY_GIT_BRANCH=<Name of the branch to deploy, default to current branch> (optional)"
 	@echo "- s3listint          List availables branches, revision and build on int bucket."
 	@echo "- s3listprod         List availables branches, revision and build on prod bucket."
 	@echo "- s3infoint          Get version info on remote int bucket. (usage only: make s3infoint S3_VERSION_PATH=<branch>/<sha>/<version>)"
 	@echo "- s3infoprod         Get version info on remote prod bucket. (usage only: make s3infoprod S3_VERSION_PATH=<branch>/<sha>/<version>)"
 	@echo "- s3deleteint        Delete a project version in a remote int bucket. (usage: make s3deleteint S3_VERSION_PATH=<branch> or <branch>/<sha>/<version>)"
 	@echo "- s3deleteprod       Delete a project version in a remote prod bucket. (usage: make s3deleteprod S3_VERSION_PATH=<branch> or <branch>/<sha>/<version>)"
+	@echo "- flushvarnish       Flush varnish instances. (usage: make flushvarnish DEPLOY_TARGET=<int|prod|infra>)"
 	@echo "- cesium             Update Cesium.min.js and Cesium folder. Needs Node js version >= 6."
 	@echo "- olcesium           Update olcesium.js, olcesium-debug.js. Needs Node js version >= 6 and java >=8."
 	@echo "- libs               Update js librairies used in index.html, see npm packages defined in section 'dependencies' of package.json"
@@ -175,15 +184,33 @@ help:
 	@echo "- DEPLOY_GIT_BRANCH           (current value: $(DEPLOY_GIT_BRANCH))"
 	@echo "- GIT_COMMIT_HASH             (current value: $(GIT_COMMIT_HASH))"
 	@echo "- VERSION                     (build with: $(LAST_VERSION), current value: $(VERSION))"
+	@echo "- VARNISH_HOSTS               (build with: $(LAST_VERSION), current value: ${ARNISHHOSTS})"
+
 
 	@echo
+
+.PHONY: all
+all: lint debug release apache testdebug testrelease fixrights
 
 .PHONY: user
 user:
 	source $(USER_SOURCE) && make all
 
-.PHONY: all
-all: lint debug release apache testdebug testrelease fixrights
+.PHONY: build
+build: debug release
+	source rc_dev && make debug release
+
+.PHONY: dev
+dev:
+	source rc_dev && make build
+
+.PHONY: int
+int:
+	source rc_int && make build
+
+.PHONY: prod
+prod:
+	source rc_prod && make build
 
 .PHONY: release
 release: .build-artefacts/devlibs \
@@ -265,29 +292,28 @@ s3deployprod: guard-SNAPSHOT .build-artefacts/requirements.timestamp
 	./scripts/deploysnapshot.sh $(SNAPSHOT) prod;
 
 .PHONY: s3deploybranch
-s3deploybranch: guard-DEPLOY_GIT_BRANCH \
-	              guard-DEEP_CLEAN \
-	              guard-NAMED_BRANCH \
-	              .build-artefacts/requirements.timestamp
-	./scripts/clonebuild.sh ${CLONEDIR} int ${DEPLOY_GIT_BRANCH} ${DEEP_CLEAN} ${NAMED_BRANCH};
-	${PYTHON_CMD} ./scripts/s3manage.py upload ${CLONEDIR}/mf-geoadmin3 int ${NAMED_BRANCH} ${DEPLOY_GIT_BRANCH};
-
-.PHONY: s3copybranch
-s3copybranch: guard-DEPLOY_GIT_BRANCH \
-	            guard-NAMED_BRANCH \
-	            .build-artefacts/requirements.timestamp
-	${PYTHON_CMD} ./scripts/s3manage.py upload . int ${NAMED_BRANCH} ${DEPLOY_GIT_BRANCH};
-
-
-.PHONY: s3deploybranchinfra
-s3deploybranchinfra: guard-CLONEDIR \
+s3deploybranch: guard-CLONEDIR \
+	              guard-DEPLOY_TARGET \
 	              guard-DEPLOY_GIT_BRANCH \
 	              guard-DEEP_CLEAN \
 	              guard-NAMED_BRANCH \
 	              .build-artefacts/requirements.timestamp
-	./scripts/clonebuild.sh ${CLONEDIR} infra ${DEPLOY_GIT_BRANCH} ${DEEP_CLEAN} ${NAMED_BRANCH};
-	${PYTHON_CMD} ./scripts/s3manage.py upload ${CLONEDIR}/mf-geoadmin3 infra ${NAMED_BRANCH};
+	./scripts/clonebuild.sh ${CLONEDIR} ${DEPLOY_TARGET} ${DEPLOY_GIT_BRANCH} ${DEEP_CLEAN} ${NAMED_BRANCH};
+	make s3copybranch CODE_DIR=${CLONEDIR}/mf-geoadmin3 \
+                    DEPLOY_TARGET=${DEPLOY_TARGET} \
+                    NAMED_BRANCH=${NAMED_BRANCH}
 
+.PHONY: s3deploybranchinfra
+s3deploybranchinfra:
+	make s3deploybranch DEPLOY_TARGET=infra
+
+.PHONY: s3copybranch
+s3copybranch: guard-DEPLOY_TARGET \
+              guard-NAMED_BRANCH \
+              guard-CODE_DIR \
+              guard-DEPLOY_GIT_BRANCH \
+              .build-artefacts/requirements.timestamp
+	${PYTHON_CMD} ./scripts/s3manage.py upload ${CODE_DIR} ${DEPLOY_TARGET} ${NAMED_BRANCH} ${DEPLOY_GIT_BRANCH};
 
 .PHONY: s3listinfra
 s3listinfra: .build-artefacts/requirements.timestamp
@@ -336,6 +362,19 @@ s3deleteint: guard-S3_VERSION_PATH .build-artefacts/requirements.timestamp
 .PHONY: s3deleteprod
 s3deleteprod: guard-S3_VERSION_PATH .build-artefacts/requirements.timestamp
 	${PYTHON_CMD} ./scripts/s3manage.py delete ${S3_VERSION_PATH} prod;
+
+.PHONY: flushvarnish
+flushvarnish: guard-DEPLOY_TARGET
+	source rc_${DEPLOY_TARGET} && make flushvarnishinternal
+
+# This internal target has been created to have the good global variable values
+# from rc_XXX file.
+flushvarnishinternal: guard-VARNISH_HOSTS guard-API_URL guard-E2E_TARGETURL
+	for VARNISHHOST in $(VARNISH_HOSTS) ; do \
+		./scripts/flushvarnish.sh $$VARNISHHOST "$(subst //,,$(API_URL))" ;\
+		./scripts/flushvarnish.sh $$VARNISHHOST "$(subst https://,,$(E2E_TARGETURL))" ;\
+		echo "Flushed varnish at: $$VARNISHHOST" ;\
+	done;
 
 .PHONY: cesium
 cesium: .build-artefacts/cesium
