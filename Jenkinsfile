@@ -27,6 +27,11 @@ node(label: 'jenkins-slave') {
       sh 'make lint'
     }
 
+    // Very important for greenkeeper branches
+    stage('Update js libs') {
+      sh 'make libs'
+    }
+
     stage('Build') {
       sh 'make ' + deployTarget
     }
@@ -94,7 +99,18 @@ node(label: 'jenkins-slave') {
     }
     
     stage('Test e2e') {
-      sh 'make E2E_TARGETURL=' + e2eTargetUrl + ' teste2e'
+      def target = 'make teste2e E2E_TARGETURL=' + e2eTargetUrl
+      parallel (
+        'Firefox': {
+          sh target + ' E2E_BROWSER=firefox'
+        },
+        'Chrome': {
+          sh target + ' E2E_BROWSER=chrome'
+        },
+        'Safari': {
+          sh target + ' E2E_BROWSER=safari'
+        }
+      )
 
       if (!namedBranch) {
         // Activate the new version if tests succceed

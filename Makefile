@@ -54,6 +54,10 @@ LAST_WMTS_URL ?= $(call lastvalue,wmts-url)
 PUBLIC_URL_REGEXP ?= ^https?:\/\/public\..*\.(bgdi|admin)\.ch\/.*
 ADMIN_URL_REGEXP ?= ^(ftp|http|https):\/\/(.*(\.bgdi|\.geo\.admin)\.ch)
 E2E_TARGETURL ?= https://mf-geoadmin3.dev.bgdi.ch
+E2E_TESTS ?= false
+E2E_BROWSER ?= false
+E2E_SINGLE ?= false
+
 
 DEPLOY_TARGET ?= int
 LESS_PARAMETERS ?= -ru
@@ -262,11 +266,14 @@ teste2e: saucelabs
 
 .PHONY: saucelabs
 saucelabs: guard-SAUCELABS_USER guard-SAUCELABS_KEY .build-artefacts/requirements.timestamp lintpy
-	${PYTHON_CMD} test/saucelabs/test.py ${E2E_TARGETURL} ${SAUCELABS_TESTS}
+	${PYTHON_CMD} test/saucelabs/test.py --url ${E2E_TARGETURL} \
+	                                     --tests ${E2E_TESTS} \
+	                                     --browser ${E2E_BROWSER} \
+	                                     --single ${E2E_SINGLE}
 
 .PHONY: saucelabssingle
-saucelabssingle: guard-SAUCELABS_USER guard-SAUCELABS_KEY .build-artefacts/requirements.timestamp lintpy
-	${PYTHON_CMD} test/saucelabs/test.py ${E2E_TARGETURL} all true
+saucelabssingle:
+	make saucelabs E2E_SINGLE=true E2E_TESTS=${E2E_TESTS}
 
 .PHONY: apache
 apache: apache/app.conf

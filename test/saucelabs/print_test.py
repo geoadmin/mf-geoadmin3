@@ -31,7 +31,7 @@ def wait_printSucessTagExist(driver, timeout=DEFAULT_WAIT):
     return bool(not TagPrintSuccessExist)
 
 
-def runPrintTest(driver, target, is_top_browser):
+def runPrintTest(driver, target):
     print "Start Print tests"
 
     # Put all layer type together for one print only
