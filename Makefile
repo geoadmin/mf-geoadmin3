@@ -127,46 +127,47 @@ help:
 	@echo
 	@echo "Possible targets:"
 	@echo
-	@echo "- user               Build the app using user specific environment variables (see $(USER_SOURCE) file)"
-	@echo "- all                Build the app using current environment variables"
-	@echo "- build              Build the app using current environment variables. No linting and testing."
-	@echo "- dev                Build the app using dev environment variables (see rc_dev file). No linting and testing."
-	@echo "- int                Build the app using int environment variables (see rc_int file). No linting and testing."
-	@echo "- prod               Build the app using prod environment variables (see rc_prod file). No linting and testing."
-	@echo "- release            Build app for release (/prd)"
-	@echo "- debug              Build app for debug (/src)"
-	@echo "- lint               Run the linter on src/components, src/js folders, test/specs and python files"
-	@echo "- testdebug          Run the JavaScript tests in debug mode"
-	@echo "- testrelease        Run the JavaScript tests in release mode"
-	@echo "- teste2e            Run saucelabs tests"
-	@echo "- saucelabssingle    Run saucelabs tests but only with single platform/browser"
-	@echo "- apache             Configure Apache (restart required)"
-	@echo "- fixrights          Fix rights in common folder"
-	@echo "- clean              Remove generated files"
-	@echo "- cleanall           Remove all the build artefacts"
-	@echo "- deploydev          Deploys current github master to dev. Specify SNAPSHOT=true to create snapshot as well."
-	@echo "- s3deploybranch     Build a branch and deploy it to S3 int. Defaults to the current branch name."
-	@echo "- s3deployint        Deploys a snapshot specified with SNAPSHOT=xxx to s3 int."
-	@echo "- s3deployprod       Deploys a snapshot specified with SNAPSHOT=xxx to s3 prod."
-	@echo "- s3activateint      Activate a version at the root of a remote bucket. (usage only: make s3activateint S3_VERSION_PATH=<branch>/<sha>/<version>)"
-	@echo "- s3activateprod     Activate a version at the root of a remote bucket. (usage only: make s3activateprod S3_VERSION_PATH=<branch>/<sha>/<version>)"
-	@echo "- s3copybranch       Copy the current directory content to S3. Defaults to the current branch name. WARNING: your code must have been compiled with 'make user' first."
-	@echo "                     Usage: make s3copybranch  DEPLOY_TARGET=<int|prod>"
+	@echo "- user                Build the app using user specific environment variables (see $(USER_SOURCE) file)"
+	@echo "- all                 Build the app using current environment variables"
+	@echo "- build               Build the app using current environment variables. No linting and testing."
+	@echo "- dev                 Build the app using dev environment variables (see rc_dev file). No linting and testing."
+	@echo "- int                 Build the app using int environment variables (see rc_int file). No linting and testing."
+	@echo "- prod                Build the app using prod environment variables (see rc_prod file). No linting and testing."
+	@echo "- release             Build app for release (/prd)"
+	@echo "- debug               Build app for debug (/src)"
+	@echo "- lint                Run the linter on src/components, src/js folders, test/specs and python files"
+	@echo "- testdebug           Run the JavaScript tests in debug mode"
+	@echo "- testrelease         Run the JavaScript tests in release mode"
+	@echo "- teste2e             Run saucelabs tests"
+	@echo "- saucelabssingle     Run saucelabs tests but only with single platform/browser"
+	@echo "- apache              Configure Apache (restart required)"
+	@echo "- fixrights           Fix rights in common folder"
+	@echo "- clean               Remove generated files"
+	@echo "- cleanall            Remove all the build artefacts"
+	@echo "- deploydev           Deploys current github master to dev. Specify SNAPSHOT=true to create snapshot as well."
+	@echo "- s3deploybranchint   Build a branch and deploy it to S3 int. Defaults to the current branch name."
+	@echo "- s3deploybranchinfra Build a branch and deploy it to S3 infra. Defaults to the current branch name."
+	@echo "- s3deployint         Deploys a snapshot specified with SNAPSHOT=xxx to s3 int."
+	@echo "- s3deployprod        Deploys a snapshot specified with SNAPSHOT=xxx to s3 prod."
+	@echo "- s3activateint       Activate a version at the root of a remote bucket. (usage only: make s3activateint S3_VERSION_PATH=<branch>/<sha>/<version>)"
+	@echo "- s3activateprod      Activate a version at the root of a remote bucket. (usage only: make s3activateprod S3_VERSION_PATH=<branch>/<sha>/<version>)"
+	@echo "- s3copybranch        Copy the current directory content to S3. Defaults to the current branch name. WARNING: your code must have been compiled with 'make user' first."
+	@echo "                      Usage: make s3copybranch  DEPLOY_TARGET=<int|prod>"
 	@echo "                                               NAMED_BRANCH=<true|false>"
 	@echo "                                               CODE_DIR=<Path to the folder, default to current folder> (optional)"
 	@echo "                                               DEPLOY_GIT_BRANCH=<Name of the branch to deploy, default to current branch> (optional)"
-	@echo "- s3listint          List availables branches, revision and build on int bucket."
-	@echo "- s3listprod         List availables branches, revision and build on prod bucket."
-	@echo "- s3infoint          Get version info on remote int bucket. (usage only: make s3infoint S3_VERSION_PATH=<branch>/<sha>/<version>)"
-	@echo "- s3infoprod         Get version info on remote prod bucket. (usage only: make s3infoprod S3_VERSION_PATH=<branch>/<sha>/<version>)"
-	@echo "- s3deleteint        Delete a project version in a remote int bucket. (usage: make s3deleteint S3_VERSION_PATH=<branch> or <branch>/<sha>/<version>)"
-	@echo "- s3deleteprod       Delete a project version in a remote prod bucket. (usage: make s3deleteprod S3_VERSION_PATH=<branch> or <branch>/<sha>/<version>)"
-	@echo "- flushvarnish       Flush varnish instances. (usage: make flushvarnish DEPLOY_TARGET=<int|prod|infra>)"
-	@echo "- cesium             Update Cesium.min.js and Cesium folder. Needs Node js version >= 6."
-	@echo "- olcesium           Update olcesium.js, olcesium-debug.js. Needs Node js version >= 6 and java >=8."
-	@echo "- libs               Update js librairies used in index.html, see npm packages defined in section 'dependencies' of package.json"
-	@echo "- translate          Generate the translation files (requires db user pwd in ~/.pgpass: dbServer:dbPort:*:dbUser:dbUserPwd)"
-	@echo "- help               Display this help"
+	@echo "- s3listint           List availables branches, revision and build on int bucket."
+	@echo "- s3listprod          List availables branches, revision and build on prod bucket."
+	@echo "- s3infoint           Get version info on remote int bucket. (usage only: make s3infoint S3_VERSION_PATH=<branch>/<sha>/<version>)"
+	@echo "- s3infoprod          Get version info on remote prod bucket. (usage only: make s3infoprod S3_VERSION_PATH=<branch>/<sha>/<version>)"
+	@echo "- s3deleteint         Delete a project version in a remote int bucket. (usage: make s3deleteint S3_VERSION_PATH=<branch> or <branch>/<sha>/<version>)"
+	@echo "- s3deleteprod        Delete a project version in a remote prod bucket. (usage: make s3deleteprod S3_VERSION_PATH=<branch> or <branch>/<sha>/<version>)"
+	@echo "- flushvarnish        Flush varnish instances. (usage: make flushvarnish DEPLOY_TARGET=<int|prod|infra>)"
+	@echo "- cesium              Update Cesium.min.js and Cesium folder. Needs Node js version >= 6."
+	@echo "- olcesium            Update olcesium.js, olcesium-debug.js. Needs Node js version >= 6 and java >=8."
+	@echo "- libs                Update js librairies used in index.html, see npm packages defined in section 'dependencies' of package.json"
+	@echo "- translate           Generate the translation files (requires db user pwd in ~/.pgpass: dbServer:dbPort:*:dbUser:dbUserPwd)"
+	@echo "- help                Display this help"
 	@echo
 	@echo "Variables:"
 	@echo
@@ -197,8 +198,7 @@ user:
 	source $(USER_SOURCE) && make all
 
 .PHONY: build
-build: debug release
-	source rc_dev && make debug release
+build: .build-artefacts/devlibs .build-artefacts/requirements.timestamp $(SRC_JS_FILES) debug release
 
 .PHONY: dev
 dev:
@@ -291,17 +291,20 @@ s3deployint: guard-SNAPSHOT .build-artefacts/requirements.timestamp
 s3deployprod: guard-SNAPSHOT .build-artefacts/requirements.timestamp
 	./scripts/deploysnapshot.sh $(SNAPSHOT) prod;
 
-.PHONY: s3deploybranch
 s3deploybranch: guard-CLONEDIR \
-	              guard-DEPLOY_TARGET \
-	              guard-DEPLOY_GIT_BRANCH \
-	              guard-DEEP_CLEAN \
-	              guard-NAMED_BRANCH \
-	              .build-artefacts/requirements.timestamp
+                guard-DEPLOY_TARGET \
+                guard-DEPLOY_GIT_BRANCH \
+                guard-DEEP_CLEAN \
+                guard-NAMED_BRANCH \
+                .build-artefacts/requirements.timestamp
 	./scripts/clonebuild.sh ${CLONEDIR} ${DEPLOY_TARGET} ${DEPLOY_GIT_BRANCH} ${DEEP_CLEAN} ${NAMED_BRANCH};
 	make s3copybranch CODE_DIR=${CLONEDIR}/mf-geoadmin3 \
                     DEPLOY_TARGET=${DEPLOY_TARGET} \
                     NAMED_BRANCH=${NAMED_BRANCH}
+
+.PHONY: s3deploybranchint
+s3deploybranchint:
+	make s3deploybranch DEPLOY_TARGET=int
 
 .PHONY: s3deploybranchinfra
 s3deploybranchinfra:
