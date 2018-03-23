@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import time
+import re
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -28,7 +29,7 @@ def waitForUrlChange(driver, pattern, find=True, timeout=10):
     newUrl = driver.current_url
     if find:
         # We wait until we find pattern
-        while pattern not in newUrl:
+        while not re.search(pattern, newUrl):
             newUrl = driver.current_url
             t1 = time.time()
             if t1 - t0 > timeout:
@@ -37,7 +38,7 @@ def waitForUrlChange(driver, pattern, find=True, timeout=10):
         return False
     else:
         # We wait until we don't find a pattern
-        while pattern in newUrl:
+        while re.search(pattern, newUrl):
             newUrl = driver.current_url
             t1 = time.time()
             if t1 - t0 > timeout:
