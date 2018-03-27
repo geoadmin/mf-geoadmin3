@@ -15,7 +15,7 @@ tooltipTests = [
 ]
 
 
-def runTooltipTest(driver, target, is_top_browser):
+def runTooltipTest(driver, target):
     print('Start tooltip tests')
     htmlHeaderCss = 'htmlpopup-header'
     htmlContainerCss = 'htmlpopup-container'

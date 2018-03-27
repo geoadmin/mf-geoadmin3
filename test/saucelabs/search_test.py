@@ -209,7 +209,7 @@ swissSearchParamTests = [
 ]
 
 
-def runSearchTest(driver, target, is_top_browser):
+def runSearchTest(driver, target):
     print 'Start Search tests'
 
     # swissearch parameter with multiple results

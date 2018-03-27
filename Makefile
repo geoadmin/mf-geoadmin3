@@ -20,7 +20,6 @@ LAST_APACHE_BASE_DIRECTORY := $(call lastvalue,apache-base-directory)
 APACHE_BASE_PATH ?= /$(shell id -un)
 LAST_APACHE_BASE_PATH := $(call lastvalue,apache-base-path)
 
-VARNISH_HOSTS ?= (ip-10-220-4-250.eu-west-1.compute.internal)
 TECH_SUFFIX = .bgdi.ch
 API_URL ?= //api3.geo.admin.ch
 API_TECH_URL ?= //mf-chsdi3.
@@ -55,8 +54,12 @@ LAST_WMTS_URL ?= $(call lastvalue,wmts-url)
 PUBLIC_URL_REGEXP ?= ^https?:\/\/public\..*\.(bgdi|admin)\.ch\/.*
 ADMIN_URL_REGEXP ?= ^(ftp|http|https):\/\/(.*(\.bgdi|\.geo\.admin)\.ch)
 E2E_TARGETURL ?= https://mf-geoadmin3.dev.bgdi.ch
+E2E_TESTS ?= false
+E2E_BROWSER ?= false
+E2E_SINGLE ?= false
 
-DEPLOY_TARGET ?= dev
+
+DEPLOY_TARGET ?= int
 LESS_PARAMETERS ?= -ru
 KEEP_VERSION ?= 'false'
 LAST_VERSION := $(call lastvalue,version)
@@ -98,6 +101,7 @@ S3_SRC_BASE_PATH ?=
 CLONEDIR = /home/$(USER_NAME)/tmp/branches/${DEPLOY_GIT_BRANCH}
 DEEP_CLEAN ?= "false"
 NAMED_BRANCH ?= "true"
+CODE_DIR ?= .
 
 ## Python interpreter can't have space in path name
 ## So prepend all python scripts with python cmd
@@ -127,37 +131,47 @@ help:
 	@echo
 	@echo "Possible targets:"
 	@echo
-	@echo "- user               Build the app with user specific configuration"
-	@echo "- all                Build the app with current environment"
-	@echo "- release            Build app for release (/prd)"
-	@echo "- debug              Build app for debug (/src)"
-	@echo "- lint               Run the linter on src/components, src/js folders, test/specs and python files"
-	@echo "- testdebug          Run the JavaScript tests in debug mode"
-	@echo "- testrelease        Run the JavaScript tests in release mode"
-	@echo "- teste2e            Run saucelabs tests"
-	@echo "- saucelabssingle    Run saucelabs tests but only with single platform/browser"
-	@echo "- apache             Configure Apache (restart required)"
-	@echo "- fixrights          Fix rights in common folder"
-	@echo "- clean              Remove generated files"
-	@echo "- cleanall           Remove all the build artefacts"
-	@echo "- deploydev          Deploys current github master to dev. Specify SNAPSHOT=true to create snapshot as well."
-	@echo "- s3deploybranch     Build a branch and deploy it to S3 int. Defaults to the current branch name."
-	@echo "- s3deployint        Deploys a snapshot specified with SNAPSHOT=xxx to s3 int."
-	@echo "- s3deployprod       Deploys a snapshot specified with SNAPSHOT=xxx to s3 prod."
-	@echo "- s3activateint      Activate a version at the root of a remote bucket. (usage only: make s3activateint S3_VERSION_PATH=<branch>/<sha>/<version>)"
-	@echo "- s3activateprod     Activate a version at the root of a remote bucket. (usage only: make s3activateprod S3_VERSION_PATH=<branch>/<sha>/<version>)"
-	@echo "- s3copybranch       Copy the current directory content to S3 int. Defaults to the current branch name. WARNING: your code must have been compiled with 'make user' first."
-	@echo "- s3listint          List availables branches, revision and build on int bucket."
-	@echo "- s3listprod         List availables branches, revision and build on prod bucket."
-	@echo "- s3infoint          Get version info on remote int bucket. (usage only: make s3infoint S3_VERSION_PATH=<branch>/<sha>/<version>)"
-	@echo "- s3infoprod         Get version info on remote prod bucket. (usage only: make s3infoprod S3_VERSION_PATH=<branch>/<sha>/<version>)"
-	@echo "- s3deleteint        Delete a project version in a remote int bucket. (usage: make s3deleteint S3_VERSION_PATH=<branch> or <branch>/<sha>/<version>)"
-	@echo "- s3deleteprod       Delete a project version in a remote prod bucket. (usage: make s3deleteprod S3_VERSION_PATH=<branch> or <branch>/<sha>/<version>)"
-	@echo "- cesium             Update Cesium.min.js and Cesium folder. Needs Node js version >= 6."
-	@echo "- olcesium           Update olcesium.js, olcesium-debug.js. Needs Node js version >= 6 and java >=8."
-	@echo "- libs               Update js librairies used in index.html, see npm packages defined in section 'dependencies' of package.json"
-	@echo "- translate          Generate the translation files (requires db user pwd in ~/.pgpass: dbServer:dbPort:*:dbUser:dbUserPwd)"
-	@echo "- help               Display this help"
+	@echo "- user                Build the app using user specific environment variables (see $(USER_SOURCE) file)"
+	@echo "- all                 Build the app using current environment variables"
+	@echo "- build               Build the app using current environment variables. No linting and testing."
+	@echo "- dev                 Build the app using dev environment variables (see rc_dev file). No linting and testing."
+	@echo "- int                 Build the app using int environment variables (see rc_int file). No linting and testing."
+	@echo "- prod                Build the app using prod environment variables (see rc_prod file). No linting and testing."
+	@echo "- release             Build app for release (/prd)"
+	@echo "- debug               Build app for debug (/src)"
+	@echo "- lint                Run the linter on src/components, src/js folders, test/specs and python files"
+	@echo "- testdebug           Run the JavaScript tests in debug mode"
+	@echo "- testrelease         Run the JavaScript tests in release mode"
+	@echo "- teste2e             Run saucelabs tests"
+	@echo "- saucelabssingle     Run saucelabs tests but only with single platform/browser"
+	@echo "- apache              Configure Apache (restart required)"
+	@echo "- fixrights           Fix rights in common folder"
+	@echo "- clean               Remove generated files"
+	@echo "- cleanall            Remove all the build artefacts"
+	@echo "- deploydev           Deploys current github master to dev. Specify SNAPSHOT=true to create snapshot as well."
+	@echo "- s3deploybranchint   Build a branch and deploy it to S3 int. Defaults to the current branch name."
+	@echo "- s3deploybranchinfra Build a branch and deploy it to S3 infra. Defaults to the current branch name."
+	@echo "- s3deployint         Deploys a snapshot specified with SNAPSHOT=xxx to s3 int."
+	@echo "- s3deployprod        Deploys a snapshot specified with SNAPSHOT=xxx to s3 prod."
+	@echo "- s3activateint       Activate a version at the root of a remote bucket. (usage only: make s3activateint S3_VERSION_PATH=<branch>/<sha>/<version>)"
+	@echo "- s3activateprod      Activate a version at the root of a remote bucket. (usage only: make s3activateprod S3_VERSION_PATH=<branch>/<sha>/<version>)"
+	@echo "- s3copybranch        Copy the current directory content to S3. Defaults to the current branch name. WARNING: your code must have been compiled with 'make user' first."
+	@echo "                      Usage: make s3copybranch  DEPLOY_TARGET=<int|prod>"
+	@echo "                                               NAMED_BRANCH=<true|false>"
+	@echo "                                               CODE_DIR=<Path to the folder, default to current folder> (optional)"
+	@echo "                                               DEPLOY_GIT_BRANCH=<Name of the branch to deploy, default to current branch> (optional)"
+	@echo "- s3listint           List availables branches, revision and build on int bucket."
+	@echo "- s3listprod          List availables branches, revision and build on prod bucket."
+	@echo "- s3infoint           Get version info on remote int bucket. (usage only: make s3infoint S3_VERSION_PATH=<branch>/<sha>/<version>)"
+	@echo "- s3infoprod          Get version info on remote prod bucket. (usage only: make s3infoprod S3_VERSION_PATH=<branch>/<sha>/<version>)"
+	@echo "- s3deleteint         Delete a project version in a remote int bucket. (usage: make s3deleteint S3_VERSION_PATH=<branch> or <branch>/<sha>/<version>)"
+	@echo "- s3deleteprod        Delete a project version in a remote prod bucket. (usage: make s3deleteprod S3_VERSION_PATH=<branch> or <branch>/<sha>/<version>)"
+	@echo "- flushvarnish        Flush varnish instances. (usage: make flushvarnish DEPLOY_TARGET=<int|prod|infra>)"
+	@echo "- cesium              Update Cesium.min.js and Cesium folder. Needs Node js version >= 6."
+	@echo "- olcesium            Update olcesium.js, olcesium-debug.js. Needs Node js version >= 6 and java >=8."
+	@echo "- libs                Update js librairies used in index.html, see npm packages defined in section 'dependencies' of package.json"
+	@echo "- translate           Generate the translation files (requires db user pwd in ~/.pgpass: dbServer:dbPort:*:dbUser:dbUserPwd)"
+	@echo "- help                Display this help"
 	@echo
 	@echo "Variables:"
 	@echo
@@ -170,20 +184,36 @@ help:
 	@echo "- WMS_URL Service URL         (build with  $(LAST_WMS_URL), current value: $(WMS_URL))"
 	@echo "- APACHE_BASE_PATH Base path  (build with: $(LAST_APACHE_BASE_PATH), current value: $(APACHE_BASE_PATH))"
 	@echo "- APACHE_BASE_DIRECTORY       (build with: $(LAST_APACHE_BASE_DIRECTORY), current value: $(APACHE_BASE_DIRECTORY))"
+	@echo "- VERSION                     (build with: $(LAST_VERSION), current value: $(VERSION))"
 	@echo "- SNAPSHOT                    (current value: $(SNAPSHOT))"
 	@echo "- GIT_BRANCH                  (current value: $(GIT_BRANCH))"
 	@echo "- DEPLOY_GIT_BRANCH           (current value: $(DEPLOY_GIT_BRANCH))"
 	@echo "- GIT_COMMIT_HASH             (current value: $(GIT_COMMIT_HASH))"
-	@echo "- VERSION                     (build with: $(LAST_VERSION), current value: $(VERSION))"
-
+	@echo "- VARNISH_HOSTS               (current value: ${VARNISH_HOSTS})"
+	@echo "- DEPLOY_TARGET               (current value: ${DEPLOY_TARGET})"
 	@echo
+
+.PHONY: all
+all: lint debug release apache testdebug testrelease fixrights
 
 .PHONY: user
 user:
 	source $(USER_SOURCE) && make all
 
-.PHONY: all
-all: lint debug release apache testdebug testrelease fixrights
+.PHONY: build
+build: .build-artefacts/devlibs .build-artefacts/requirements.timestamp $(SRC_JS_FILES) debug release
+
+.PHONY: dev
+dev:
+	source rc_dev && make build
+
+.PHONY: int
+int:
+	source rc_int && make build
+
+.PHONY: prod
+prod:
+	source rc_prod && make build
 
 .PHONY: release
 release: .build-artefacts/devlibs \
@@ -217,7 +247,7 @@ lint: .build-artefacts/devlibs .build-artefacts/requirements.timestamp $(SRC_JS_
 linttest: .build-artefacts/devlibs .build-artefacts/requirements.timestamp
 	${NODE_BIN}/eslint test/specs/ --fix
 
-lintpy: .build-artefacts/requirements.timestamp ${FLAKE8_CMD}
+lintpy: .build-artefacts/requirements.timestamp ${FLAKE8_CMD} ${PYTHON_FILES}
 	${AUTOPEP8_CMD} --in-place --aggressive --aggressive --verbose --max-line-lengt=110 $(PYTHON_FILES)
 
 .PHONY: testdebug
@@ -235,11 +265,14 @@ teste2e: saucelabs
 
 .PHONY: saucelabs
 saucelabs: guard-SAUCELABS_USER guard-SAUCELABS_KEY .build-artefacts/requirements.timestamp lintpy
-	${PYTHON_CMD} test/saucelabs/test.py ${E2E_TARGETURL} ${SAUCELABS_TESTS}
+	${PYTHON_CMD} test/saucelabs/test.py --url ${E2E_TARGETURL} \
+	                                     --tests ${E2E_TESTS} \
+	                                     --browser ${E2E_BROWSER} \
+	                                     --single ${E2E_SINGLE}
 
 .PHONY: saucelabssingle
-saucelabssingle: guard-SAUCELABS_USER guard-SAUCELABS_KEY .build-artefacts/requirements.timestamp lintpy
-	${PYTHON_CMD} test/saucelabs/test.py ${E2E_TARGETURL} all true
+saucelabssingle:
+	make saucelabs E2E_SINGLE=true E2E_TESTS=${E2E_TESTS}
 
 .PHONY: apache
 apache: apache/app.conf
@@ -264,30 +297,32 @@ s3deployint: guard-SNAPSHOT .build-artefacts/requirements.timestamp
 s3deployprod: guard-SNAPSHOT .build-artefacts/requirements.timestamp
 	./scripts/deploysnapshot.sh $(SNAPSHOT) prod;
 
-.PHONY: s3deploybranch
-s3deploybranch: guard-DEPLOY_GIT_BRANCH \
-	              guard-DEEP_CLEAN \
-	              guard-NAMED_BRANCH \
-	              .build-artefacts/requirements.timestamp
-	./scripts/clonebuild.sh ${CLONEDIR} int ${DEPLOY_GIT_BRANCH} ${DEEP_CLEAN} ${NAMED_BRANCH};
-	${PYTHON_CMD} ./scripts/s3manage.py upload ${CLONEDIR}/mf-geoadmin3 int ${NAMED_BRANCH} ${DEPLOY_GIT_BRANCH};
+s3deploybranch: guard-CLONEDIR \
+                guard-DEPLOY_TARGET \
+                guard-DEPLOY_GIT_BRANCH \
+                guard-DEEP_CLEAN \
+                guard-NAMED_BRANCH \
+                .build-artefacts/requirements.timestamp
+	./scripts/clonebuild.sh ${CLONEDIR} ${DEPLOY_TARGET} ${DEPLOY_GIT_BRANCH} ${DEEP_CLEAN} ${NAMED_BRANCH};
+	make s3copybranch CODE_DIR=${CLONEDIR}/mf-geoadmin3 \
+                    DEPLOY_TARGET=${DEPLOY_TARGET} \
+                    NAMED_BRANCH=${NAMED_BRANCH}
 
-.PHONY: s3copybranch
-s3copybranch: guard-DEPLOY_GIT_BRANCH \
-	            guard-NAMED_BRANCH \
-	            .build-artefacts/requirements.timestamp
-	${PYTHON_CMD} ./scripts/s3manage.py upload . int ${NAMED_BRANCH} ${DEPLOY_GIT_BRANCH};
-
+.PHONY: s3deploybranchint
+s3deploybranchint:
+	make s3deploybranch DEPLOY_TARGET=int
 
 .PHONY: s3deploybranchinfra
-s3deploybranchinfra: guard-CLONEDIR \
-	              guard-DEPLOY_GIT_BRANCH \
-	              guard-DEEP_CLEAN \
-	              guard-NAMED_BRANCH \
-	              .build-artefacts/requirements.timestamp
-	./scripts/clonebuild.sh ${CLONEDIR} infra ${DEPLOY_GIT_BRANCH} ${DEEP_CLEAN} ${NAMED_BRANCH};
-	${PYTHON_CMD} ./scripts/s3manage.py upload ${CLONEDIR}/mf-geoadmin3 infra ${NAMED_BRANCH};
+s3deploybranchinfra:
+	make s3deploybranch DEPLOY_TARGET=infra
 
+.PHONY: s3copybranch
+s3copybranch: guard-DEPLOY_TARGET \
+              guard-NAMED_BRANCH \
+              guard-CODE_DIR \
+              guard-DEPLOY_GIT_BRANCH \
+              .build-artefacts/requirements.timestamp
+	${PYTHON_CMD} ./scripts/s3manage.py upload ${CODE_DIR} ${DEPLOY_TARGET} ${NAMED_BRANCH} ${DEPLOY_GIT_BRANCH};
 
 .PHONY: s3listinfra
 s3listinfra: .build-artefacts/requirements.timestamp
@@ -336,6 +371,19 @@ s3deleteint: guard-S3_VERSION_PATH .build-artefacts/requirements.timestamp
 .PHONY: s3deleteprod
 s3deleteprod: guard-S3_VERSION_PATH .build-artefacts/requirements.timestamp
 	${PYTHON_CMD} ./scripts/s3manage.py delete ${S3_VERSION_PATH} prod;
+
+.PHONY: flushvarnish
+flushvarnish: guard-DEPLOY_TARGET
+	source rc_${DEPLOY_TARGET} && make flushvarnishinternal
+
+# This internal target has been created to have the good global variable values
+# from rc_XXX file.
+flushvarnishinternal: guard-VARNISH_HOSTS guard-API_URL guard-E2E_TARGETURL
+	for VARNISHHOST in $(VARNISH_HOSTS) ; do \
+		./scripts/flushvarnish.sh $$VARNISHHOST "$(subst //,,$(API_URL))" ;\
+		./scripts/flushvarnish.sh $$VARNISHHOST "$(subst https://,,$(E2E_TARGETURL))" ;\
+		echo "Flushed varnish at: $$VARNISHHOST" ;\
+	done;
 
 .PHONY: cesium
 cesium: .build-artefacts/cesium

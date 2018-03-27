@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
+import getopt
 import os
 import time
 import datetime
@@ -13,30 +14,44 @@ from wms_test import runWmsTest
 from tooltip_test import runTooltipTest
 
 DEFAULT_WAIT_FOUND = 5
+HELP =  '''
+    test.py --url <url to test>
+            --tests <list of tests: start,search,kml,print,tooltip,wms,checker>
+            --browser <browser to test: chrome|firefox|safari>
+            --single  <use only the top browser: true|false>
+'''
 
 
-def parse_args(args):
+def parse_args(argv):
+    url = None
     tests = []
-    singlebrowser = False
-    if len(args) < 2:
-        print 'ERROR: No URL provided. You need to set SAUCELABS_TARGETURL in your environment! Exit!'
-        sys.exit(1)
-    elif len(args) > 4:
-        print 'ERROR: too many arguments! Exit!'
-        sys.exit(1)
-    else:
-        url = args[1]
-        if len(args) >= 3:
-            tests = args[2].split(',')
-        if len(args) >= 4:
-            singlebrowser = True if args[3] == 'true' else False
+    browser = None
+    single = False
 
-    return url, tests, singlebrowser
+    try:
+        opts, args = getopt.getopt(argv, "hu:t:b:s", ["url=", "tests=", "browser=", "single="])
+    except getopt.GetoptError:
+        print HELP
+        sys.exit(2)
 
+    for opt, arg in opts:
+        if opt == '-h':
+            print HELP
+            sys.exit()
+        elif opt in ("-u", "--url"):
+            url = arg if arg != 'false' else None
+        elif opt in ("-t", "--tests"):
+            tests = arg.split(',') if arg != 'false' else []
+        elif opt in ("-b", "--browser"):
+            browser = arg if arg != 'false' else None
+        elif opt in ("-s", "--single"):
+            single = True if arg == 'true' else False
+
+    return url, tests, browser, single
 
 if __name__ == '__main__':
 
-    url, tests, singlebrowser = parse_args(sys.argv)
+    url, tests, browser, single = parse_args(sys.argv[1:])
 
     # Get value to connect to SauceLabs
     try:
@@ -50,12 +65,7 @@ if __name__ == '__main__':
     # The command_executor tells the test to run on Sauce, while the desired_capabilties
     # parameter tells us which browsers and OS to spin up.
     # browser list : https://wiki.saucelabs.com/display/DOCS/Platform+Configurator#/
-
-    # Top browser and platform according to stats. Update from time to time
-    top_browser = {'platform': "Windows 7", 'browserName': "firefox",
-                   'version': "44.0", 'screenResolution': "1280x1024"}
-
-    desired_cap_list = [
+    browsers = [
         # Chrome
         {'platform': "Windows 10", 'browserName': "chrome",
             'version': "58.0", 'screenResolution': "1280x1024"},
@@ -71,10 +81,14 @@ if __name__ == '__main__':
             'version': "9.0", 'screenResolution': "1024x768"}
     ]
 
+    if single:  # The user wants to test the most used browser
+        browsers = [browsers[0]]
+    elif browser:  # The user specified the browser to test
+        browsers = [b for b in browsers if b['browserName'] == browser]
+
     config_test_list = {
         "firefox": ['start', 'search', 'wms', 'tooltip'],
         "chrome": ['start', 'search', 'wms', 'tooltip'],
-        "opera": ['start'],
         "safari": ['start'],
         "MicrosoftEdge": ['start', 'search']
     }
@@ -104,35 +118,27 @@ if __name__ == '__main__':
             print 'Please try again...'
             sys.exit(1)
 
-    # if 3rd parameter equal 'true' use only top browser
-    caps_used = [top_browser] if singlebrowser else desired_cap_list
-
-    for current_desired_cap in caps_used:
+    for br in browsers:
         try:
-            is_top_browser = 0
-            if (current_desired_cap['browserName'] == top_browser['browserName']) and (
-                    current_desired_cap['version'] == top_browser['version']) and (
-                    current_desired_cap['platform'] == top_browser['platform']):
-                is_top_browser = 1
-            print "+--> Start test with " + current_desired_cap['platform'] + \
-                " " + current_desired_cap['browserName'] + " (" + current_desired_cap['version'] + ")"
+            print "+--> Start test with " + br['platform'] + \
+                " " + br['browserName'] + " (" + br['version'] + ")"
             driver = webdriver.Remote(
                 command_executor='http://' +
                 saucelabs_user +
                 ':' +
                 saucelabs_key +
                 '@ondemand.saucelabs.com:80/wd/hub',
-                desired_capabilities=current_desired_cap)
+                desired_capabilities=br)
             driver.implicitly_wait(DEFAULT_WAIT_FOUND)
 
             if driver.name == "MicrosoftEdge":
                 print 'Force set version, strange...'
-                driver.desired_capabilities['version'] = current_desired_cap['version']
+                driver.desired_capabilities['version'] = br['version']
 
-            for elt in config_test_list[current_desired_cap['browserName']]:
+            for elt in config_test_list[br['browserName']]:
                 if elt in tests or len(tests) == 0:
                     t1 = time.time()
-                    doTests[elt](driver, url, is_top_browser)
+                    doTests[elt](driver, url)
                     tf = time.time()
                     print 'It took %.2f to execute %s...' % ((tf - t1), elt)
         finally:

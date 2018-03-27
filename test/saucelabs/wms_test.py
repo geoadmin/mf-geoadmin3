@@ -13,7 +13,7 @@ DEFAULT_WAIT_LOADING = 15
 WMS_URL = "https://wms.geo.admin.ch/"
 
 
-def runWmsTest(driver, target, is_top_browser):
+def runWmsTest(driver, target):
     print "Start Import Wms tests"
     driver.get(target)
     # We maximize our window to be sure to be in full resolution

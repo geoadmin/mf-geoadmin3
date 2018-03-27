@@ -6,6 +6,7 @@ node(label: 'jenkins-slave') {
   def stdout
   def s3VersionPath
   def e2eTargetUrl
+  def deployTarget = 'int'
 
   // If it's a branch
   def deployGitBranch = env.BRANCH_NAME
@@ -26,8 +27,13 @@ node(label: 'jenkins-slave') {
       sh 'make lint'
     }
 
+    // Very important for greenkeeper branches
+    stage('Update js libs') {
+      sh 'make libs'
+    }
+
     stage('Build') {
-      sh 'make debug release'
+      sh 'make ' + deployTarget
     }
 
     stage('Test') {
@@ -42,7 +48,7 @@ node(label: 'jenkins-slave') {
     }
     
     stage('Deploy') {
-      stdout = sh returnStdout: true, script: 'make DEPLOY_GIT_BRANCH=' + deployGitBranch + ' NAMED_BRANCH=' + namedBranch + ' s3deploybranch'
+      stdout = sh returnStdout: true, script: 'make s3copybranch DEPLOY_TARGET=' + deployTarget + ' DEPLOY_GIT_BRANCH=' + deployGitBranch + ' NAMED_BRANCH=' + namedBranch
       echo stdout
       def lines = stdout.readLines()
       s3VersionPath = lines.get(lines.size()-3)
@@ -93,11 +99,22 @@ node(label: 'jenkins-slave') {
     }
     
     stage('Test e2e') {
-      sh 'make E2E_TARGETURL=' + e2eTargetUrl + ' teste2e'
+      def target = 'make teste2e E2E_TARGETURL=' + e2eTargetUrl
+      parallel (
+        'Firefox': {
+          sh target + ' E2E_BROWSER=firefox'
+        },
+        'Chrome': {
+          sh target + ' E2E_BROWSER=chrome'
+        },
+        'Safari': {
+          sh target + ' E2E_BROWSER=safari'
+        }
+      )
 
       if (!namedBranch) {
         // Activate the new version if tests succceed
-        sh 'echo "yes" | make S3_VERSION_PATH=' + s3VersionPath + ' s3activateint'
+        sh 'echo "yes" | make S3_VERSION_PATH=' + s3VersionPath + ' s3activate' + deployTarget
       }
     }
 
