@@ -84,7 +84,6 @@ describe('ga_layers_service', function() {
     var terrainTpl = '//3d.geo.admin.ch/1.0.0/{layer}/default/{Time}/4326';
     var wmtsLV03Tpl = '//wmts{s}.geo.admin.ch/1.0.0/{layer}/default/{Time}/4326/{z}/{y}/{x}.{format}';
     var wmtsTpl = '//wmts{s}.geo.admin.ch/1.0.0/{layer}/default/{Time}/4326/{z}/{x}/{y}.{format}';
-    var todProdTpl = '//tod{s}.prod.bgdi.ch/1.0.0/{layer}/default/{Time}/4326/{z}/{x}/{y}.{format}';
     var vectorTilesTpl = '//vectortiles100.geo.admin.ch/{layer}/{Time}/';
     var wmsTpl = '//wms{s}.geo.admin.ch/?layers={layer}&format=image%2F{format}&service=WMS&version=1.3.0&request=GetMap&crs=CRS:84&bbox={westProjected},{southProjected},{eastProjected},{northProjected}&width=512&height=512&styles=';
     var wmsTplTime = wmsTpl + '&time={Time}';
@@ -93,11 +92,7 @@ describe('ga_layers_service', function() {
       if (epsg === '21781') {
         return expectUrl(wmtsLV03Tpl, l, undefined, f);
       } else {
-        if (epsg === '4326' && l === 'ch.swisstopo.swissimage-product') {
-          return expectUrl(todProdTpl, l, undefined, f);
-        } else {
-          return expectUrl(wmtsTpl, l, undefined, f);
-        }
+        return expectUrl(wmtsTpl, l, undefined, f);
       }
     };
     var expectTerrainUrl = function(l, t, f) {
