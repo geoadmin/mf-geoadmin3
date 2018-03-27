@@ -53,24 +53,26 @@ goog.require('ga_urlutils_service');
 
       var stylePromises = {};
 
-      var Layers = function(wmsUrlTemplate, dfltWmsSubdomains,
-          dfltVectorTilesSubdomains,
-          wmtsUrl, wmtsLV03PathTemplate, wmtsPathTemplate, wmtsSubdomains,
-          terrainTileUrlTemplate, vectorTilesUrlTemplate,
-          layersConfigUrlTemplate, legendUrlTemplate) {
+      var Layers = function(
+          wmsSubdomains,
+          wmtsSubdomains,
+          vectorTilesSubdomains,
+          wmsUrl,
+          wmtsUrl,
+          wmtsLV03Url,
+          terrainUrl,
+          vectorTilesUrl,
+          layersConfigUrl,
+          legendUrl) {
+
         var layers;
 
         // Returns a unique WMS template url (e.g. //wms{s}.geo.admin.ch)
-        var getWmsTpl = function(wmsUrl, wmsParams) {
-          var tpl = wmsUrl;
-          if (/wms.geo/.test(wmsUrl)) {
-            tpl = undefined;
-          }
-          if (tpl && /(request|service|version)/i.test(tpl)) {
-            tpl = gaUrlUtils.remove(tpl, ['request', 'service', 'version'],
+        var getWmsTpl = function(url, wmsParams) {
+          if (url && /(request|service|version)/i.test(url)) {
+            url = gaUrlUtils.remove(url, ['request', 'service', 'version'],
                 true);
           }
-          var url = (tpl || wmsUrlTemplate);
           if (wmsParams) {
             url = gaUrlUtils.append(url, gaUrlUtils.toKeyValue(wmsParams));
           }
@@ -91,14 +93,9 @@ goog.require('ga_urlutils_service');
         var getWmtsGetTileTpl = function(layer, tileMatrixSet, format) {
           var tpl;
           if (tileMatrixSet === '21781') {
-            tpl = wmtsUrl + wmtsLV03PathTemplate;
+            tpl = wmtsLV03Url;
           } else {
-            if (tileMatrixSet === '4326' &&
-                  layer === 'ch.swisstopo.swissimage-product') {
-              tpl = '//tod{s}.prod.bgdi.ch' + wmtsPathTemplate;
-            } else {
-              tpl = wmtsUrl + wmtsPathTemplate;
-            }
+            tpl = wmtsUrl;
           }
           var url = tpl.replace('{Layer}', layer).replace('{Format}', format);
           if (tileMatrixSet) {
@@ -107,8 +104,8 @@ goog.require('ga_urlutils_service');
           return url;
         };
 
-        var getTerrainTileUrl = function(layer, time) {
-          return terrainTileUrlTemplate.
+        var getTerrainUrl = function(layer, time) {
+          return terrainUrl.
               replace('{Layer}', layer).
               replace('{Time}', time);
         };
@@ -118,19 +115,19 @@ goog.require('ga_urlutils_service');
           if (cpt === undefined || cpt >= subdomains.length) {
             cpt = 0;
           }
-          return vectorTilesUrlTemplate.
+          return vectorTilesUrl.
               replace('{s}', subdomains[cpt++]).
               replace('{Layer}', layer).
               replace('{Time}', time);
         };
 
         var getLayersConfigUrl = function(lang) {
-          return layersConfigUrlTemplate.
+          return layersConfigUrl.
               replace('{Lang}', lang);
         };
 
         var getMetaDataUrl = function(layer, lang) {
-          return legendUrlTemplate.
+          return legendUrl.
               replace('{Layer}', layer).
               replace('{Lang}', lang);
         };
@@ -317,7 +314,7 @@ goog.require('ga_urlutils_service');
               gaTime.get());
           var requestedLayer = config3d.serverLayerName || bodId;
           var provider = new Cesium.CesiumTerrainProvider({
-            url: getTerrainTileUrl(requestedLayer, timestamp),
+            url: getTerrainUrl(requestedLayer, timestamp),
             availableLevels: gaGlobalOptions.terrainAvailableLevels,
             rectangle: gaMapUtils.extentToRectangle(
                 gaGlobalOptions.defaultExtent)
@@ -339,7 +336,7 @@ goog.require('ga_urlutils_service');
           var requestedLayer = config3d.serverLayerName || bodId;
           var tileset = new Cesium.Cesium3DTileset({
             url: getVectorTilesUrl(requestedLayer, timestamp,
-                h2(dfltVectorTilesSubdomains)),
+                h2(vectorTilesSubdomains)),
             maximumNumberOfLoadedTiles: 3
           });
           tileset.bodId = bodId;
@@ -413,9 +410,9 @@ goog.require('ga_urlutils_service');
               wmsParams.time = '{Time}';
             }
             params = {
-              url: getWmsTpl(gaGlobalOptions.wmsUrl, wmsParams),
+              url: getWmsTpl(wmsUrl, wmsParams),
               tileSize: tileSize,
-              subdomains: dfltWmsSubdomains
+              subdomains: wmsSubdomains
             };
           }
           var extent = config3d.extent || gaMapUtils.defaultExtent;
@@ -543,7 +540,7 @@ goog.require('ga_urlutils_service');
             if (config.singleTile === true) {
               if (!olSource) {
                 olSource = config.olSource = new ol.source.ImageWMS({
-                  url: getImageryUrls(getWmsTpl(gaGlobalOptions.wmsUrl))[0],
+                  url: getImageryUrls(getWmsTpl(wmsUrl))[0],
                   params: wmsParams,
                   crossOrigin: crossOrigin,
                   ratio: 1
@@ -558,10 +555,9 @@ goog.require('ga_urlutils_service');
               });
             } else {
               if (!olSource) {
-                var subdomains = dfltWmsSubdomains;
+                var subdomains = wmsSubdomains;
                 olSource = config.olSource = new ol.source.TileWMS({
-                  urls: getImageryUrls(
-                      getWmsTpl(gaGlobalOptions.wmsUrl), subdomains),
+                  urls: getImageryUrls(getWmsTpl(wmsUrl), subdomains),
                   // Temporary until https://github.com/openlayers/ol3/pull/4964
                   // is merged upstream
                   cacheSize: 2048 * 3,
@@ -813,12 +809,17 @@ goog.require('ga_urlutils_service');
         };
       };
 
-      return new Layers(this.wmsUrlTemplate, this.dfltWmsSubdomains,
-          this.dfltVectorTilesSubdomains,
-          this.wmtsUrl, this.wmtsLV03PathTemplate, this.wmtsPathTemplate,
-          this.wmtsSubdomains, this.terrainTileUrlTemplate,
-          this.vectorTilesUrlTemplate, this.layersConfigUrlTemplate,
-          this.legendUrlTemplate);
+      return new Layers(
+          this.wmsSubdomains,
+          this.wmtsSubdomains,
+          this.vectorTilesSubdomains,
+          this.wmsUrl,
+          this.wmtsUrl,
+          this.wmtsLV03Url,
+          this.terrainUrl,
+          this.vectorTilesUrl,
+          this.layersConfigUrl,
+          this.legendUrl);
     };
   });
 

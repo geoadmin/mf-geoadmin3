@@ -27,15 +27,6 @@ LAST_API_URL := $(call lastvalue,api-url)
 ALTI_URL ?= //api3.geo.admin.ch
 LAST_ALTI_URL := $(call lastvalue,alti-url)
 ALTI_TECH_URL ?= //mf-chsdi3.
-MAPPROXY_URL ?= //wmts{s}.geo.admin.ch
-MAPPROXY_TECH_URL ?= //wmts{s}.
-LAST_MAPPROXY_URL := $(call lastvalue,mapproxy-url)
-VECTORTILES_URL ?= //vectortiles{s}.geo.admin.ch
-VECTORTILES_TECH_URL ?= //vectortiles{s}.
-LAST_VECTORTILES_URL := $(call lastvalue,vectortiles-url)
-WMS_URL ?= //wms.geo.admin.ch
-WMS_TECH_URL ?= //wms-bgdi.
-LAST_WMS_URL := $(call lastvalue,wms-url)
 SHOP_URL ?= //shop.swisstopo.admin.ch
 SHOP_TECH_URL ?= //shop-bgdi.
 LAST_SHOP_URL := $(call lastvalue,shop-url)
@@ -47,17 +38,29 @@ PRINT_TECH_URL ?= //service-print.
 LAST_PRINT_URL := $(call lastvalue,print-url)
 PROXY_URL ?= //service-proxy.prod.bgdi.ch
 LAST_PROXY_URL := $(call lastvalue,proxy-url)
-WMTS_URL ?= //tod.dev.bgdi.ch
+
+# Map services variables
+WMS_URL ?= //wms.geo.admin.ch
+WMS_TECH_URL ?= //wms-bgdi.
+LAST_WMS_URL := $(call lastvalue,wms-url)
+WMTS_URL ?= //wmts{s}.geo.admin.ch
 WMTS_TECH_URL ?= //tod.
 LAST_WMTS_URL ?= $(call lastvalue,wmts-url)
+TERRAIN_URL ?= //terrain100.geo.admin.ch
+TERRAIN_TECH_URL ?= //terrain.
+LAST_TERRAIN_URL ?= $(call lastvalue,terrain-url)
+VECTORTILES_URL ?= //vectortiles{s}.geo.admin.ch
+VECTORTILES_TECH_URL ?= //vectortiles{s}.
+LAST_VECTORTILES_URL := $(call lastvalue,vectortiles-url)
 
 PUBLIC_URL_REGEXP ?= ^https?:\/\/public\..*\.(bgdi|admin)\.ch\/.*
 ADMIN_URL_REGEXP ?= ^(ftp|http|https):\/\/(.*(\.bgdi|\.geo\.admin)\.ch)
+
+# E2E variables
 E2E_TARGETURL ?= https://mf-geoadmin3.dev.bgdi.ch
 E2E_TESTS ?= false
 E2E_BROWSER ?= false
 E2E_SINGLE ?= false
-
 
 DEPLOY_TARGET ?= int
 LESS_PARAMETERS ?= -ru
@@ -124,6 +127,21 @@ BABEL=${NODE_BIN}/babel
 POSTCSS=${NODE_BIN}/postcss
 HTMLMIN_CMD=${NODE_BIN}/html-minifier --minify-css --minify-js --collapse-whitespace --process-conditional-comments --remove-comments --custom-attr-collapse /ng-class/ -o
 
+MAKO_LAST_VARIABLES = .build-artefacts/last-api-url \
+	    .build-artefacts/last-alti-url \
+	    .build-artefacts/last-shop-url \
+	    .build-artefacts/last-public-url \
+	    .build-artefacts/last-print-url \
+	    .build-artefacts/last-proxy-url \
+	    .build-artefacts/last-wms-url \
+	    .build-artefacts/last-wmts-url \
+	    .build-artefacts/last-terrain-url \
+	    .build-artefacts/last-vectortiles-url \
+	    .build-artefacts/last-apache-base-path
+	
+MAKO_LAST_VARIABLES_PROD = ${MAKO_LAST_VARIABLES} \
+	    .build-artefacts/last-version
+
 
 .PHONY: help
 help:
@@ -178,10 +196,11 @@ help:
 	@echo "- API_URL Service URL         (build with: $(LAST_API_URL), current value: $(API_URL))"
 	@echo "- ALTI_URL Alti service URL   (build with: $(LAST_ALTI_URL), current value: $(ALTI_URL))"
 	@echo "- PRINT_URL Print service URL (build with: $(LAST_PRINT_URL), current value: $(PRINT_URL))"
-	@echo "- MAPPROXY_URL Service URL    (build with: $(LAST_MAPPROXY_URL), current value: $(MAPPROXY_URL))"
-	@echo "- VECTORTILES_URL Service URL (build with: $(LAST_VECTORTILES_URL), current value: $(VECTORTILES_URL))"
 	@echo "- SHOP_URL Service URL        (build with: $(LAST_SHOP_URL), current value: $(SHOP_URL))"
 	@echo "- WMS_URL Service URL         (build with  $(LAST_WMS_URL), current value: $(WMS_URL))"
+	@echo "- WMTS_URL Service URL        (build with  $(LAST_WMTS_URL), current value: $(WMTS_URL))"
+	@echo "- TERRAIN_URL Service URL     (build with: $(LAST_TERRAIN_URL), current value: $(TERRAIN_URL))"
+	@echo "- VECTORTILES_URL Service URL (build with: $(LAST_VECTORTILES_URL), current value: $(VECTORTILES_URL))"
 	@echo "- APACHE_BASE_PATH Base path  (build with: $(LAST_APACHE_BASE_PATH), current value: $(APACHE_BASE_PATH))"
 	@echo "- APACHE_BASE_DIRECTORY       (build with: $(LAST_APACHE_BASE_DIRECTORY), current value: $(APACHE_BASE_DIRECTORY))"
 	@echo "- VERSION                     (build with: $(LAST_VERSION), current value: $(VERSION))"
@@ -568,10 +587,6 @@ define buildpage
 		--var "print_url=$(PRINT_URL)" \
 		--var "print_tech_url=$(PRINT_TECH_URL)" \
 		--var "proxy_url=$(PROXY_URL)" \
-		--var "mapproxy_url=$(MAPPROXY_URL)" \
-		--var "mapproxy_tech_url=$(MAPPROXY_TECH_URL)" \
-		--var "vectortiles_url=$(VECTORTILES_URL)" \
-		--var "vectortiles_tech_url=$(VECTORTILES_TECH_URL)" \
 		--var "public_url=$(PUBLIC_URL)" \
 		--var "public_tech_url=$(PUBLIC_TECH_URL)" \
 		--var "shop_url=$(SHOP_URL)" \
@@ -580,6 +595,10 @@ define buildpage
 		--var "wms_tech_url=$(WMS_TECH_URL)" \
 		--var "wmts_url=$(WMTS_URL)" \
 		--var "wmts_tech_url=$(WMTS_TECH_URL)" \
+		--var "terrain_url=$(TERRAIN_URL)" \
+		--var "terrain_tech_url=$(TERRAIN_TECH_URL)" \
+		--var "vectortiles_url=$(VECTORTILES_URL)" \
+		--var "vectortiles_tech_url=$(VECTORTILES_TECH_URL)" \
 		--var "default_topic_id=$(DEFAULT_TOPIC_ID)" \
 		--var "translation_fallback_code=$(TRANSLATION_FALLBACK_CODE)" \
 		--var "languages=$(LANGUAGES)" \
@@ -588,7 +607,6 @@ define buildpage
 		--var "default_level_of_detail"="$(DEFAULT_LEVEL_OF_DETAIL)" \
 		--var "resolutions"="$(RESOLUTIONS)" \
 		--var "level_of_details"="$(LEVEL_OF_DETAILS)" \
-		--var "public_url=$(PUBLIC_URL)" \
 		--var "default_elevation_model=${DEFAULT_ELEVATION_MODEL}" \
 		--var "default_terrain=$(DEFAULT_TERRAIN)" \
 		--var "admin_url_regexp=$(ADMIN_URL_REGEXP)" \
@@ -615,56 +633,23 @@ define cachelastvariable
 	test "$2" != "$3" && \
 	    echo "$2" > .build-artefacts/last-$4 || :
 endef
-
 prd/index.html: src/index.mako.html \
 	    ${MAKO_CMD} \
-	    .build-artefacts/last-api-url \
-	    .build-artefacts/last-alti-url \
-	    .build-artefacts/last-mapproxy-url \
-	    .build-artefacts/last-vectortiles-url \
-	    .build-artefacts/last-shop-url \
-	    .build-artefacts/last-wms-url \
-	    .build-artefacts/last-public-url \
-	    .build-artefacts/last-print-url \
-	    .build-artefacts/last-proxy-url \
-	    .build-artefacts/last-apache-base-path \
-	    .build-artefacts/last-wmts-url \
-	    .build-artefacts/last-version
+	    ${MAKO_LAST_VARIABLES_PROD}
 	mkdir -p $(dir $@)
 	$(call buildpage,desktop,prod,$(VERSION),$(VERSION)/,$(S3_BASE_PATH))
 	${HTMLMIN_CMD} $@ $@
 
 prd/mobile.html: src/index.mako.html \
 	    ${MAKO_CMD} \
-	    .build-artefacts/last-api-url \
-	    .build-artefacts/last-alti-url \
-	    .build-artefacts/last-mapproxy-url \
-	    .build-artefacts/last-vectortiles-url \
-	    .build-artefacts/last-shop-url \
-	    .build-artefacts/last-wms-url \
-	    .build-artefacts/last-public-url \
-	    .build-artefacts/last-print-url \
-	    .build-artefacts/last-proxy-url \
-	    .build-artefacts/last-apache-base-path \
-	    .build-artefacts/last-wmts-url \
-	    .build-artefacts/last-version
+	    ${MAKO_LAST_VARIABLES_PROD}
 	mkdir -p $(dir $@)
 	$(call buildpage,mobile,prod,$(VERSION),$(VERSION)/,$(S3_BASE_PATH))
 	${HTMLMIN_CMD} $@ $@
 
 prd/embed.html: src/index.mako.html \
 	    ${MAKO_CMD} \
-	    .build-artefacts/last-api-url \
-	    .build-artefacts/last-alti-url \
-	    .build-artefacts/last-mapproxy-url \
-	    .build-artefacts/last-shop-url \
-	    .build-artefacts/last-wms-url \
-	    .build-artefacts/last-public-url \
-	    .build-artefacts/last-print-url \
-	    .build-artefacts/last-proxy-url \
-	    .build-artefacts/last-apache-base-path \
-	    .build-artefacts/last-wmts-url \
-	    .build-artefacts/last-version
+	    ${MAKO_LAST_VARIABLES_PROD}
 	mkdir -p $(dir $@)
 	$(call buildpage,embed,prod,$(VERSION),$(VERSION)/,$(S3_BASE_PATH))
 	${HTMLMIN_CMD} $@ $@
@@ -702,46 +687,17 @@ src/style/app.css: $(SRC_LESS_FILES)
 
 src/index.html: src/index.mako.html \
 	    ${MAKO_CMD} \
-	    .build-artefacts/last-api-url \
-	    .build-artefacts/last-alti-url \
-	    .build-artefacts/last-mapproxy-url \
-	    .build-artefacts/last-vectortiles-url \
-	    .build-artefacts/last-shop-url \
-	    .build-artefacts/last-wms-url \
-	    .build-artefacts/last-public-url \
-	    .build-artefacts/last-print-url \
-	    .build-artefacts/last-proxy-url \
-	    .build-artefacts/last-apache-base-path
+			${MAKO_LAST_VARIABLES}
 	$(call buildpage,desktop,,,,$(S3_SRC_BASE_PATH))
 
 src/mobile.html: src/index.mako.html \
 	    ${MAKO_CMD} \
-	    .build-artefacts/last-api-url \
-	    .build-artefacts/last-alti-url \
-	    .build-artefacts/last-mapproxy-url \
-	    .build-artefacts/last-vectortiles-url \
-	    .build-artefacts/last-shop-url \
-	    .build-artefacts/last-wms-url \
-	    .build-artefacts/last-public-url \
-	    .build-artefacts/last-print-url \
-	    .build-artefacts/last-proxy-url \
-	    .build-artefacts/last-wmts-url \
-	    .build-artefacts/last-apache-base-path
+	    ${MAKO_LAST_VARIABLES}
 	$(call buildpage,mobile,,,,$(S3_SRC_BASE_PATH))
 
 src/embed.html: src/index.mako.html \
 	    ${MAKO_CMD} \
-	    .build-artefacts/last-api-url \
-	    .build-artefacts/last-alti-url \
-	    .build-artefacts/last-mapproxy-url \
-	    .build-artefacts/last-vectortiles-url \
-	    .build-artefacts/last-shop-url \
-	    .build-artefacts/last-wms-url \
-	    .build-artefacts/last-public-url \
-	    .build-artefacts/last-print-url \
-	    .build-artefacts/last-proxy-url \
-	    .build-artefacts/last-wmts-url \
-	    .build-artefacts/last-apache-base-path
+			${MAKO_LAST_VARIABLES}
 	$(call buildpage,embed,,,,$(S3_SRC_BASE_PATH))
 
 src/TemplateCacheModule.js: src/TemplateCacheModule.mako.js \
@@ -861,13 +817,6 @@ ${PYTHON_VENV}:
 
 .build-artefacts/last-alti-url::
 	$(call cachelastvariable,$@,$(ALTI_URL),$(LAST_ALTI_URL),alti-url)
-
-.build-artefacts/last-mapproxy-url::
-	$(call cachelastvariable,$@,$(MAPPROXY_URL),$(LAST_MAPPROXY_URL),mapproxy-url)
-
-.build-artefacts/last-vectortiles-url::
-	$(call cachelastvariable,$@,$(VECTORTILES_URL),$(LAST_VECTORTILES_URL),vectortiles-url)
-
 .build-artefacts/last-shop-url::
 	$(call cachelastvariable,$@,$(SHOP_URL),$(LAST_SHOP_URL),shop-url)
 
@@ -892,8 +841,18 @@ ${PYTHON_VENV}:
 .build-artefacts/last-apache-base-directory::
 	$(call cachelastvariable,$@,$(APACHE_BASE_DIRECTORY),$(LAST_APACHE_BASE_DIRECTORY),apache-base-directory)
 
+.build-artefacts/last-wms-url::
+	$(call cachelastvariable,$@,$(WMS_URL),$(LAST_WMS_URL),wms-url)
+
 .build-artefacts/last-wmts-url::
 	$(call cachelastvariable,$@,$(WMTS_URL),$(LAST_WMTS_URL),wmts-url)
+
+.build-artefacts/last-terrain-url::
+	$(call cachelastvariable,$@,$(TERRAIN_URL),$(LAST_TERRAIN_URL),terrain-url)
+
+.build-artefacts/last-vectortiles-url::
+	$(call cachelastvariable,$@,$(VECTORTILES_URL),$(LAST_VECTORTILES_URL),vectortiles-url)
+
 
 .build-artefacts/cesium:
 	git clone https://github.com/AnalyticalGraphicsInc/cesium.git $@

@@ -14,6 +14,8 @@ beforeEach(function() {
     var shopUrl = '//shop.bgdi.ch';
     var wmsUrl = '//wms.geo.admin.ch';
     var wmtsUrl = '//tod{s}.bgdi.ch';
+    var terrainUrl = '//terrain100.geo.admin.ch';
+    var vectorTilesUrl = '//vectortiles{s}.geo.admin.ch';
     var apacheBasePath = '/';
     var cacheAdd = '/' + version;
     var pathname = location.pathname.replace(/(context|index|mobile|embed)\.html$/g, '');
@@ -24,6 +26,14 @@ beforeEach(function() {
       version: '123456',
       pegman: false,
       mapUrl: location.origin + apacheBasePath,
+
+      // Map services urls
+      wmsUrl: location.protocol + wmsUrl,
+      wmtsUrl: location.protocol + wmtsUrl,
+      terrainUrl: location.protocol + terrainUrl,
+      vectorTilesUrl: location.protocol + vectorTilesUrl,
+
+      // Api services urls
       apiUrl: location.protocol + apiUrl,
       altiUrl: location.protocol + altiUrl,
       printUrl: location.protocol + printUrl,
@@ -35,8 +45,6 @@ beforeEach(function() {
       cachedPrintUrl: location.protocol + printUrl + cacheAdd,
       resourceUrl: location.origin + pathname + versionSlashed,
       proxyUrl: location.protocol + proxyUrl + '/',
-      wmsUrl: location.protocol + wmsUrl,
-      wmtsUrl: location.protocol + wmtsUrl,
       imageryMetadataUrl: '//3d.geo.admin.ch/imagery',
       w3wUrl: 'dummy.test.url.com',
       lv03tolv95Url: '//api.example.com/reframe/lv03tolv95',
@@ -46,19 +54,23 @@ beforeEach(function() {
         'https://' + window.location.host + '/**',
         'https://www.googleapis.com/**'
       ],
+
+      // App state values
       defaultTopicId: 'sometopic',
       translationFallbackCode: 'somelang',
+      languages: ['de', 'fr', 'it', 'en', 'rm', 'somelang'],
+
+      // Map state values
       defaultExtent: [420000, 30000, 900000, 350000],
       defaultResolution: 500.0,
-      defaultLod: 7,
-      resolutions: [650.0, 500.0, 250.0, 100.0, 50.0, 20.0, 10.0, 5.0,
-        2.5, 2.0, 1.0, 0.5, 0.25, 0.1],
-      lods: [6, 7, 8, 9, 10, 11, 12, 13, 14, 14, 16, 17, 18, 18],
       defaultEpsg: 'EPSG:2056',
       defaultEpsgExtent: [2420000, 1030000, 2900000, 1350000],
       defaultElevationModel: 'COMB',
       defaultTerrain: 'ch.dummy.terrain.3d',
-      languages: ['de', 'fr', 'it', 'en', 'rm', 'somelang']
+      defaultLod: 7,
+      resolutions: [650.0, 500.0, 250.0, 100.0, 50.0, 20.0, 10.0, 5.0,
+        2.5, 2.0, 1.0, 0.5, 0.25, 0.1],
+      lods: [6, 7, 8, 9, 10, 11, 12, 13, 14, 14, 16, 17, 18, 18]
     });
   });
 
@@ -72,18 +84,16 @@ beforeEach(function() {
   });
 
   module(function(gaLayersProvider, gaGlobalOptions) {
-    gaLayersProvider.dfltWmsSubdomains = ['', '0', '1', '2', '3', '4'];
-    gaLayersProvider.dfltVectorTilesSubdomains = ['100', '101', '102', '103', '104'];
-    gaLayersProvider.wmsUrlTemplate = '//wms{s}.geo.admin.ch/';
+    gaLayersProvider.wmsSubdomains = ['', '0', '1', '2', '3', '4'];
     gaLayersProvider.wmtsSubdomains = ['5', '6', '7', '8', '9'];
-    gaLayersProvider.wmtsUrl = '//wmts{s}.geo.admin.ch'
-    gaLayersProvider.wmtsLV03PathTemplate = '/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{y}/{x}.{Format}';
-    gaLayersProvider.wmtsPathTemplate = '/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{x}/{y}.{Format}';
-
-    gaLayersProvider.terrainTileUrlTemplate = '//3d.geo.admin.ch/1.0.0/{Layer}/default/{Time}/4326';
-    gaLayersProvider.vectorTilesUrlTemplate = '//vectortiles{s}.geo.admin.ch/{Layer}/{Time}/';
-    gaLayersProvider.layersConfigUrlTemplate = 'https://example.com/all?lang={Lang}';
-    gaLayersProvider.legendUrlTemplate = 'https://legendservice.com/all/{Layer}?lang={Lang}';
+    gaLayersProvider.vectorTilesSubdomains = ['100', '101', '102', '103', '104'];
+    gaLayersProvider.wmsUrl = '//wms{s}.geo.admin.ch/';
+    gaLayersProvider.wmtsUrl = '//wmts{s}.geo.admin.ch/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{x}/{y}.{Format}'
+    gaLayersProvider.wmtsLV03Url = '//wmts{s}.geo.admin.ch/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{y}/{x}.{Format}';
+    gaLayersProvider.terrainUrl = '//3d.geo.admin.ch/1.0.0/{Layer}/default/{Time}/4326';
+    gaLayersProvider.vectorTilesUrl = '//vectortiles{s}.geo.admin.ch/{Layer}/{Time}/';
+    gaLayersProvider.layersConfigUrl = 'https://example.com/all?lang={Lang}';
+    gaLayersProvider.legendUrl = 'https://legendservice.com/all/{Layer}?lang={Lang}';
   });
 
   module(function(gaTopicProvider, gaGlobalOptions) {
