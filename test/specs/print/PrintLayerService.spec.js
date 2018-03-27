@@ -49,6 +49,41 @@ describe('ga_printlayer_service', function() {
       });
     });
 
+    describe('#encodeVector()', function() {
+
+      var lyr, source, feature;
+
+      beforeEach(function() {
+        var geometry = new ol.geom.Point(center);
+        feature = new ol.Feature({
+          name: 'dummy',
+          geometry: geometry
+        });
+        feature.set('toto', 'abcd')
+        source = new ol.source.Vector({});
+        source.addFeature(feature);
+        lyr = new ol.layer.Vector({
+          source: source
+        });
+
+      });
+
+      afterEach(function() {
+        source = null;
+        feature = null;
+        lyr = null;
+      });
+
+      it('returns an encoded vector layer', function() {
+
+        var encVector = gaPrintLayer.encodeVector(lyr, lyr.getSource().getFeatures(), false, 2000000,
+            extent, 150);
+
+        expect(encVector.type).to.eql('Vector');
+      });
+
+    });
+
     describe('#encodeStyles()', function() {
 
       var source, feature;
@@ -59,6 +94,7 @@ describe('ga_printlayer_service', function() {
           name: 'dummy',
           geometry: geometry
         });
+        feature.set('toto', 'abcd')
         source = new ol.source.Vector({});
         source.addFeature(feature);
       });
@@ -105,8 +141,8 @@ describe('ga_printlayer_service', function() {
         var encFeatures = gaPrintLayer.encodeFeatures(vectorWithoutStyle, feature, false, 20000,
             extent, 150);
         // Default style
-        expect(encFeatures.encStyles[0]).to.eql({
-          id: 0,
+        expect(encFeatures.encStyles[1]).to.eql({
+          id: 1,
           zIndex: undefined,
           rotation: 0,
           pointRadius: 5,
@@ -132,7 +168,7 @@ describe('ga_printlayer_service', function() {
         });
         var encFeatures = gaPrintLayer.encodeFeatures(vectorWithStyle, feature, false, 20000,
             extent, 150);
-        var encStyle = encFeatures.encStyles['1'];
+        var encStyle = encFeatures.encStyles['2'];
 
         expect(encFeatures.encFeatures[0].geometry.coordinates).to.eql(center);
         expect(encStyle.fillColor).to.eql('#ffa500');
@@ -149,14 +185,27 @@ describe('ga_printlayer_service', function() {
 
         var encFeatures = gaPrintLayer.encodeFeatures(vectorWithStyleFunction, feature, false, 20000,
             extent, 150);
-        var encStyle = encFeatures.encStyles['2'];
+        var encStyle = encFeatures.encStyles['3'];
         expect(encFeatures.encFeatures[0].geometry.coordinates).to.eql(center);
 
         expect(encStyle.fillColor).to.eql('#008000');
         expect(encStyle.strokeColor).to.eql('#ffffff');
         expect(encStyle.pointRadius).to.eql(6);
-
       });
+
+      it('returns only needed attributes', function() {
+
+        var vectorWithoutStyle = new ol.layer.Vector({
+          source: source
+        });
+
+        var encFeatures = gaPrintLayer.encodeFeatures(vectorWithoutStyle, feature, false, 20000,
+            extent, 150);
+        // Remove properties
+        expect(feature.getKeys()).to.eql([ 'geometry' ]);
+        expect(encFeatures.encFeatures[0].properties).to.eql({ _gx_style: 4 });
+      });
+
     });
 
     describe('#encodeWMTS()', function() {
