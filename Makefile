@@ -184,14 +184,13 @@ help:
 	@echo "- WMS_URL Service URL         (build with  $(LAST_WMS_URL), current value: $(WMS_URL))"
 	@echo "- APACHE_BASE_PATH Base path  (build with: $(LAST_APACHE_BASE_PATH), current value: $(APACHE_BASE_PATH))"
 	@echo "- APACHE_BASE_DIRECTORY       (build with: $(LAST_APACHE_BASE_DIRECTORY), current value: $(APACHE_BASE_DIRECTORY))"
+	@echo "- VERSION                     (build with: $(LAST_VERSION), current value: $(VERSION))"
 	@echo "- SNAPSHOT                    (current value: $(SNAPSHOT))"
 	@echo "- GIT_BRANCH                  (current value: $(GIT_BRANCH))"
 	@echo "- DEPLOY_GIT_BRANCH           (current value: $(DEPLOY_GIT_BRANCH))"
 	@echo "- GIT_COMMIT_HASH             (current value: $(GIT_COMMIT_HASH))"
-	@echo "- VERSION                     (build with: $(LAST_VERSION), current value: $(VERSION))"
-	@echo "- VARNISH_HOSTS               (build with: $(LAST_VERSION), current value: ${ARNISHHOSTS})"
-
-
+	@echo "- VARNISH_HOSTS               (current value: ${VARNISH_HOSTS})"
+	@echo "- DEPLOY_TARGET               (current value: ${DEPLOY_TARGET})"
 	@echo
 
 .PHONY: all
@@ -248,7 +247,7 @@ lint: .build-artefacts/devlibs .build-artefacts/requirements.timestamp $(SRC_JS_
 linttest: .build-artefacts/devlibs .build-artefacts/requirements.timestamp
 	${NODE_BIN}/eslint test/specs/ --fix
 
-lintpy: .build-artefacts/requirements.timestamp ${FLAKE8_CMD}
+lintpy: .build-artefacts/requirements.timestamp ${FLAKE8_CMD} ${PYTHON_FILES}
 	${AUTOPEP8_CMD} --in-place --aggressive --aggressive --verbose --max-line-lengt=110 $(PYTHON_FILES)
 
 .PHONY: testdebug

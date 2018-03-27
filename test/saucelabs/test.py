@@ -84,11 +84,7 @@ if __name__ == '__main__':
     if single:  # The user wants to test the most used browser
         browsers = [browsers[0]]
     elif browser:  # The user specified the browser to test
-        bs = []
-        for b in browsers:
-            if b['browserName'] == browser:
-                bs.append(b)
-        browsers = bs
+        browsers = [b for b in browsers if b['browserName'] == browser]
 
     config_test_list = {
         "firefox": ['start', 'search', 'wms', 'tooltip'],
@@ -122,24 +118,24 @@ if __name__ == '__main__':
             print 'Please try again...'
             sys.exit(1)
 
-    for browser in browsers:
+    for br in browsers:
         try:
-            print "+--> Start test with " + browser['platform'] + \
-                " " + browser['browserName'] + " (" + browser['version'] + ")"
+            print "+--> Start test with " + br['platform'] + \
+                " " + br['browserName'] + " (" + br['version'] + ")"
             driver = webdriver.Remote(
                 command_executor='http://' +
                 saucelabs_user +
                 ':' +
                 saucelabs_key +
                 '@ondemand.saucelabs.com:80/wd/hub',
-                desired_capabilities=browser)
+                desired_capabilities=br)
             driver.implicitly_wait(DEFAULT_WAIT_FOUND)
 
             if driver.name == "MicrosoftEdge":
                 print 'Force set version, strange...'
-                driver.desired_capabilities['version'] = browser['version']
+                driver.desired_capabilities['version'] = br['version']
 
-            for elt in config_test_list[browser['browserName']]:
+            for elt in config_test_list[br['browserName']]:
                 if elt in tests or len(tests) == 0:
                     t1 = time.time()
                     doTests[elt](driver, url)
