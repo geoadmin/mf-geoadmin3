@@ -687,7 +687,7 @@ src/style/app.css: $(SRC_LESS_FILES)
 
 src/index.html: src/index.mako.html \
 	    ${MAKO_CMD} \
-			${MAKO_LAST_VARIABLES}
+	    ${MAKO_LAST_VARIABLES}
 	$(call buildpage,desktop,,,,$(S3_SRC_BASE_PATH))
 
 src/mobile.html: src/index.mako.html \
@@ -697,7 +697,7 @@ src/mobile.html: src/index.mako.html \
 
 src/embed.html: src/index.mako.html \
 	    ${MAKO_CMD} \
-			${MAKO_LAST_VARIABLES}
+	    ${MAKO_LAST_VARIABLES}
 	$(call buildpage,embed,,,,$(S3_SRC_BASE_PATH))
 
 src/TemplateCacheModule.js: src/TemplateCacheModule.mako.js \
