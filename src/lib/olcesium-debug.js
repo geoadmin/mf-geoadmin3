@@ -1,6 +1,6 @@
 // Ol-Cesium. See https://github.com/openlayers/ol-cesium/
 // License: https://github.com/openlayers/ol-cesium/blob/master/LICENSE
-// Version: v1.35-27-gf5c8929
+// Version: v1.33-2-gd4cfea1
 
 'use strict';
 var $jscomp = $jscomp || {};
@@ -1123,12 +1123,6 @@ $jscomp.polyfill("Number.isSafeInteger", function(orig) {
     return Number.isInteger(x) && Math.abs(x) <= Number.MAX_SAFE_INTEGER;
   };
   return polyfill;
-}, "es6", "es3");
-$jscomp.polyfill("Number.parseFloat", function(orig) {
-  return orig || parseFloat;
-}, "es6", "es3");
-$jscomp.polyfill("Number.parseInt", function(orig) {
-  return orig || parseInt;
 }, "es6", "es3");
 $jscomp.polyfill("Object.assign", function(orig) {
   if (orig) {
@@ -4707,71 +4701,51 @@ olcs.AbstractSynchronizer.prototype.orderLayers = function() {
 olcs.AbstractSynchronizer.prototype.addLayers_ = function(root) {
   var $jscomp$this = this;
   var fifo = [{layer:root, parents:[]}];
-  var $jscomp$loop$12 = {};
+  var $jscomp$loop$11 = {};
   while (fifo.length > 0) {
-    $jscomp$loop$12.olLayerWithParents = fifo.splice(0, 1)[0];
-    $jscomp$loop$12.olLayer = $jscomp$loop$12.olLayerWithParents.layer;
-    var olLayerId = ol.getUid($jscomp$loop$12.olLayer).toString();
+    $jscomp$loop$11.olLayerWithParents = fifo.splice(0, 1)[0];
+    $jscomp$loop$11.olLayer = $jscomp$loop$11.olLayerWithParents.layer;
+    var olLayerId = ol.getUid($jscomp$loop$11.olLayer).toString();
     this.olLayerListenKeys[olLayerId] = [];
     goog.asserts.assert(!this.layerMap[olLayerId]);
     var cesiumObjects = null;
-    if ($jscomp$loop$12.olLayer instanceof ol.layer.Group) {
-      this.listenForGroupChanges_($jscomp$loop$12.olLayer);
-      if ($jscomp$loop$12.olLayer !== this.mapLayerGroup) {
-        cesiumObjects = this.createSingleLayerCounterparts($jscomp$loop$12.olLayerWithParents);
+    if ($jscomp$loop$11.olLayer instanceof ol.layer.Group) {
+      this.listenForGroupChanges_($jscomp$loop$11.olLayer);
+      if ($jscomp$loop$11.olLayer !== this.mapLayerGroup) {
+        cesiumObjects = this.createSingleLayerCounterparts($jscomp$loop$11.olLayerWithParents);
       }
       if (!cesiumObjects) {
-        $jscomp$loop$12.olLayer.getLayers().forEach(function($jscomp$loop$12) {
+        $jscomp$loop$11.olLayer.getLayers().forEach(function($jscomp$loop$11) {
           return function(l) {
             if (l) {
-              var newOlLayerWithParents = {layer:l, parents:$jscomp$loop$12.olLayer === $jscomp$this.mapLayerGroup ? [] : [$jscomp$loop$12.olLayerWithParents.layer].concat($jscomp$loop$12.olLayerWithParents.parents)};
+              var newOlLayerWithParents = {layer:l, parents:$jscomp$loop$11.olLayer === $jscomp$this.mapLayerGroup ? [] : [$jscomp$loop$11.olLayerWithParents.layer].concat($jscomp$loop$11.olLayerWithParents.parents)};
               fifo.push(newOlLayerWithParents);
             }
           };
-        }($jscomp$loop$12));
+        }($jscomp$loop$11));
       }
     } else {
-      cesiumObjects = this.createSingleLayerCounterparts($jscomp$loop$12.olLayerWithParents);
-      if (!cesiumObjects) {
-        $jscomp$loop$12.layerId = olLayerId;
-        $jscomp$loop$12.layerWithParents = $jscomp$loop$12.olLayerWithParents;
-        $jscomp$loop$12.onLayerChange = function($jscomp$loop$12) {
-          return function(e) {
-            var cesiumObjs = $jscomp$this.createSingleLayerCounterparts($jscomp$loop$12.layerWithParents);
-            if (cesiumObjs) {
-              $jscomp$loop$12.layerWithParents.layer.un("change", $jscomp$loop$12.onLayerChange, $jscomp$this);
-              $jscomp$this.addCesiumObjects_(cesiumObjs, $jscomp$loop$12.layerId, $jscomp$loop$12.layerWithParents.layer);
-              $jscomp$this.orderLayers();
-            }
-          };
-        }($jscomp$loop$12);
-        this.olLayerListenKeys[olLayerId].push(ol.events.listen($jscomp$loop$12.layerWithParents.layer, "change", $jscomp$loop$12.onLayerChange, this));
-      }
+      cesiumObjects = this.createSingleLayerCounterparts($jscomp$loop$11.olLayerWithParents);
     }
     if (cesiumObjects) {
-      this.addCesiumObjects_(cesiumObjects, olLayerId, $jscomp$loop$12.olLayer);
+      this.layerMap[olLayerId] = cesiumObjects;
+      this.olLayerListenKeys[olLayerId].push(ol.events.listen($jscomp$loop$11.olLayer, "change:zIndex", this.orderLayers, this));
+      cesiumObjects.forEach(function(cesiumObject) {
+        this.addCesiumObject(cesiumObject);
+      }, this);
     }
-    $jscomp$loop$12 = {olLayer:$jscomp$loop$12.olLayer, olLayerWithParents:$jscomp$loop$12.olLayerWithParents, layerWithParents:$jscomp$loop$12.layerWithParents, onLayerChange:$jscomp$loop$12.onLayerChange, layerId:$jscomp$loop$12.layerId};
+    $jscomp$loop$11 = {olLayer:$jscomp$loop$11.olLayer, olLayerWithParents:$jscomp$loop$11.olLayerWithParents};
   }
   this.orderLayers();
 };
-olcs.AbstractSynchronizer.prototype.addCesiumObjects_ = function(cesiumObjects, layerId, layer) {
-  var $jscomp$this = this;
-  this.layerMap[layerId] = cesiumObjects;
-  this.olLayerListenKeys[layerId].push(ol.events.listen(layer, "change:zIndex", this.orderLayers, this));
-  cesiumObjects.forEach(function(cesiumObject) {
-    $jscomp$this.addCesiumObject(cesiumObject);
-  });
-};
 olcs.AbstractSynchronizer.prototype.removeAndDestroySingleLayer_ = function(layer) {
-  var $jscomp$this = this;
   var uid = ol.getUid(layer).toString();
   var counterparts = this.layerMap[uid];
   if (!!counterparts) {
     counterparts.forEach(function(counterpart) {
-      $jscomp$this.removeSingleCesiumObject(counterpart, false);
-      $jscomp$this.destroyCesiumObject(counterpart);
-    });
+      this.removeSingleCesiumObject(counterpart, false);
+      this.destroyCesiumObject(counterpart);
+    }, this);
     this.olLayerListenKeys[uid].forEach(ol.Observable.unByKey);
     delete this.olLayerListenKeys[uid];
   }
@@ -4907,25 +4881,25 @@ olcs.AutoRenderLoop.prototype.enable = function() {
     }
     return result;
   };
-  var $jscomp$loop$13 = {};
+  var $jscomp$loop$12 = {};
   var i = 0;
-  for (; i < this.interceptedAPIs_.length; $jscomp$loop$13 = {original:$jscomp$loop$13.original}, ++i) {
+  for (; i < this.interceptedAPIs_.length; $jscomp$loop$12 = {original:$jscomp$loop$12.original}, ++i) {
     var api = this.interceptedAPIs_[i];
     var parent = api[0];
-    $jscomp$loop$13.original = this.originalAPIs_[i];
-    parent[api[1]] = function($jscomp$loop$13) {
+    $jscomp$loop$12.original = this.originalAPIs_[i];
+    parent[api[1]] = function($jscomp$loop$12) {
       return function(args) {
         var $jscomp$restParams = [];
         for (var $jscomp$restIndex = 0; $jscomp$restIndex < arguments.length; ++$jscomp$restIndex) {
           $jscomp$restParams[$jscomp$restIndex - 0] = arguments[$jscomp$restIndex];
         }
         {
-          var args$4 = $jscomp$restParams;
-          $jscomp$loop$13.original.apply(this, args$4);
+          var args$3 = $jscomp$restParams;
+          $jscomp$loop$12.original.apply(this, args$3);
           that.notifyRepaintRequired();
         }
       };
-    }($jscomp$loop$13);
+    }($jscomp$loop$12);
   }
   this.ol3d.getOlMap().getLayerGroup().on("change", this._boundNotifyRepaintRequired);
 };
@@ -5722,196 +5696,109 @@ ol.layer.Tile.prototype.getUseInterimTilesOnError = function() {
 ol.layer.Tile.prototype.setUseInterimTilesOnError = function(useInterimTilesOnError) {
   this.set(ol.layer.TileProperty.USE_INTERIM_TILES_ON_ERROR, useInterimTilesOnError);
 };
-goog.provide("ol.layer.Image");
+goog.provide("ol.TileState");
+ol.TileState = {IDLE:0, LOADING:1, LOADED:2, ERROR:3, EMPTY:4, ABORT:5};
+goog.provide("ol.Tile");
 goog.require("ol");
-goog.require("ol.LayerType");
-goog.require("ol.layer.Layer");
-ol.layer.Image = function(opt_options) {
-  var options = opt_options ? opt_options : {};
-  ol.layer.Layer.call(this, options);
-  this.type = ol.LayerType.IMAGE;
-};
-ol.inherits(ol.layer.Image, ol.layer.Layer);
-ol.layer.Image.prototype.getSource;
-goog.provide("ol.ImageState");
-ol.ImageState = {IDLE:0, LOADING:1, LOADED:2, ERROR:3};
-goog.provide("ol.array");
-ol.array.binarySearch = function(haystack, needle, opt_comparator) {
-  var mid, cmp;
-  var comparator = opt_comparator || ol.array.numberSafeCompareFunction;
-  var low = 0;
-  var high = haystack.length;
-  var found = false;
-  while (low < high) {
-    mid = low + (high - low >> 1);
-    cmp = +comparator(haystack[mid], needle);
-    if (cmp < 0.0) {
-      low = mid + 1;
-    } else {
-      high = mid;
-      found = !cmp;
-    }
-  }
-  return found ? low : ~low;
-};
-ol.array.numberSafeCompareFunction = function(a, b) {
-  return a > b ? 1 : a < b ? -1 : 0;
-};
-ol.array.includes = function(arr, obj) {
-  return arr.indexOf(obj) >= 0;
-};
-ol.array.linearFindNearest = function(arr, target, direction) {
-  var n = arr.length;
-  if (arr[0] <= target) {
-    return 0;
-  } else {
-    if (target <= arr[n - 1]) {
-      return n - 1;
-    } else {
-      var i;
-      if (direction > 0) {
-        for (i = 1; i < n; ++i) {
-          if (arr[i] < target) {
-            return i - 1;
-          }
-        }
-      } else {
-        if (direction < 0) {
-          for (i = 1; i < n; ++i) {
-            if (arr[i] <= target) {
-              return i;
-            }
-          }
-        } else {
-          for (i = 1; i < n; ++i) {
-            if (arr[i] == target) {
-              return i;
-            } else {
-              if (arr[i] < target) {
-                if (arr[i - 1] - target < target - arr[i]) {
-                  return i - 1;
-                } else {
-                  return i;
-                }
-              }
-            }
-          }
-        }
-      }
-      return n - 1;
-    }
-  }
-};
-ol.array.reverseSubArray = function(arr, begin, end) {
-  while (begin < end) {
-    var tmp = arr[begin];
-    arr[begin] = arr[end];
-    arr[end] = tmp;
-    ++begin;
-    --end;
-  }
-};
-ol.array.extend = function(arr, data) {
-  var i;
-  var extension = Array.isArray(data) ? data : [data];
-  var length = extension.length;
-  for (i = 0; i < length; i++) {
-    arr[arr.length] = extension[i];
-  }
-};
-ol.array.remove = function(arr, obj) {
-  var i = arr.indexOf(obj);
-  var found = i > -1;
-  if (found) {
-    arr.splice(i, 1);
-  }
-  return found;
-};
-ol.array.find = function(arr, func) {
-  var length = arr.length >>> 0;
-  var value;
-  for (var i = 0; i < length; i++) {
-    value = arr[i];
-    if (func(value, i, arr)) {
-      return value;
-    }
-  }
-  return null;
-};
-ol.array.equals = function(arr1, arr2) {
-  var len1 = arr1.length;
-  if (len1 !== arr2.length) {
-    return false;
-  }
-  for (var i = 0; i < len1; i++) {
-    if (arr1[i] !== arr2[i]) {
-      return false;
-    }
-  }
-  return true;
-};
-ol.array.stableSort = function(arr, compareFnc) {
-  var length = arr.length;
-  var tmp = Array(arr.length);
-  var i;
-  for (i = 0; i < length; i++) {
-    tmp[i] = {index:i, value:arr[i]};
-  }
-  tmp.sort(function(a, b) {
-    return compareFnc(a.value, b.value) || a.index - b.index;
-  });
-  for (i = 0; i < arr.length; i++) {
-    arr[i] = tmp[i].value;
-  }
-};
-ol.array.findIndex = function(arr, func) {
-  var index;
-  var found = !arr.every(function(el, idx) {
-    index = idx;
-    return !func(el, idx, arr);
-  });
-  return found ? index : -1;
-};
-ol.array.isSorted = function(arr, opt_func, opt_strict) {
-  var compare = opt_func || ol.array.numberSafeCompareFunction;
-  return arr.every(function(currentVal, index) {
-    if (index === 0) {
-      return true;
-    }
-    var res = compare(arr[index - 1], currentVal);
-    return !(res > 0 || opt_strict && res === 0);
-  });
-};
-goog.provide("ol.ImageBase");
-goog.require("ol");
+goog.require("ol.TileState");
+goog.require("ol.easing");
 goog.require("ol.events.EventTarget");
 goog.require("ol.events.EventType");
-ol.ImageBase = function(extent, resolution, pixelRatio, state) {
+ol.Tile = function(tileCoord, state, opt_options) {
   ol.events.EventTarget.call(this);
-  this.extent = extent;
-  this.pixelRatio_ = pixelRatio;
-  this.resolution = resolution;
+  var options = opt_options ? opt_options : {};
+  this.tileCoord = tileCoord;
   this.state = state;
+  this.interimTile = null;
+  this.key = "";
+  this.transition_ = options.transition === undefined ? 250 : options.transition;
+  this.transitionStarts_ = {};
 };
-ol.inherits(ol.ImageBase, ol.events.EventTarget);
-ol.ImageBase.prototype.changed = function() {
+ol.inherits(ol.Tile, ol.events.EventTarget);
+ol.Tile.prototype.changed = function() {
   this.dispatchEvent(ol.events.EventType.CHANGE);
 };
-ol.ImageBase.prototype.getExtent = function() {
-  return this.extent;
+ol.Tile.prototype.getKey = function() {
+  return this.key + "/" + this.tileCoord;
 };
-ol.ImageBase.prototype.getImage = function() {
+ol.Tile.prototype.getInterimTile = function() {
+  if (!this.interimTile) {
+    return this;
+  }
+  var tile = this.interimTile;
+  do {
+    if (tile.getState() == ol.TileState.LOADED) {
+      return tile;
+    }
+    tile = tile.interimTile;
+  } while (tile);
+  return this;
 };
-ol.ImageBase.prototype.getPixelRatio = function() {
-  return this.pixelRatio_;
+ol.Tile.prototype.refreshInterimChain = function() {
+  if (!this.interimTile) {
+    return;
+  }
+  var tile = this.interimTile;
+  var prev = this;
+  do {
+    if (tile.getState() == ol.TileState.LOADED) {
+      tile.interimTile = null;
+      break;
+    } else {
+      if (tile.getState() == ol.TileState.LOADING) {
+        prev = tile;
+      } else {
+        if (tile.getState() == ol.TileState.IDLE) {
+          prev.interimTile = tile.interimTile;
+        } else {
+          prev = tile;
+        }
+      }
+    }
+    tile = prev.interimTile;
+  } while (tile);
 };
-ol.ImageBase.prototype.getResolution = function() {
-  return this.resolution;
+ol.Tile.prototype.getTileCoord = function() {
+  return this.tileCoord;
 };
-ol.ImageBase.prototype.getState = function() {
+ol.Tile.prototype.getState = function() {
   return this.state;
 };
-ol.ImageBase.prototype.load = function() {
+ol.Tile.prototype.setState = function(state) {
+  this.state = state;
+  this.changed();
+};
+ol.Tile.prototype.load = function() {
+};
+ol.Tile.prototype.getAlpha = function(id, time) {
+  if (!this.transition_) {
+    return 1;
+  }
+  var start = this.transitionStarts_[id];
+  if (!start) {
+    start = time;
+    this.transitionStarts_[id] = start;
+  } else {
+    if (start === -1) {
+      return 1;
+    }
+  }
+  var delta = time - start + 1000 / 60;
+  if (delta >= this.transition_) {
+    return 1;
+  }
+  return ol.easing.easeIn(delta / this.transition_);
+};
+ol.Tile.prototype.inTransition = function(id) {
+  if (!this.transition_) {
+    return false;
+  }
+  return this.transitionStarts_[id] !== -1;
+};
+ol.Tile.prototype.endTransition = function(id) {
+  if (this.transition_) {
+    this.transitionStarts_[id] = -1;
+  }
 };
 goog.provide("ol.dom");
 ol.dom.createCanvasContext2D = function(opt_width, opt_height) {
@@ -5949,6 +5836,319 @@ ol.dom.removeChildren = function(node) {
   while (node.lastChild) {
     node.removeChild(node.lastChild);
   }
+};
+goog.provide("ol.ImageTile");
+goog.require("ol");
+goog.require("ol.Tile");
+goog.require("ol.TileState");
+goog.require("ol.dom");
+goog.require("ol.events");
+goog.require("ol.events.EventType");
+ol.ImageTile = function(tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options) {
+  ol.Tile.call(this, tileCoord, state, opt_options);
+  this.crossOrigin_ = crossOrigin;
+  this.src_ = src;
+  this.image_ = new Image;
+  if (crossOrigin !== null) {
+    this.image_.crossOrigin = crossOrigin;
+  }
+  this.imageListenerKeys_ = null;
+  this.tileLoadFunction_ = tileLoadFunction;
+};
+ol.inherits(ol.ImageTile, ol.Tile);
+ol.ImageTile.prototype.disposeInternal = function() {
+  if (this.state == ol.TileState.LOADING) {
+    this.unlistenImage_();
+    this.image_ = ol.ImageTile.getBlankImage();
+  }
+  if (this.interimTile) {
+    this.interimTile.dispose();
+  }
+  this.state = ol.TileState.ABORT;
+  this.changed();
+  ol.Tile.prototype.disposeInternal.call(this);
+};
+ol.ImageTile.prototype.getImage = function() {
+  return this.image_;
+};
+ol.ImageTile.prototype.getKey = function() {
+  return this.src_;
+};
+ol.ImageTile.prototype.handleImageError_ = function() {
+  this.state = ol.TileState.ERROR;
+  this.unlistenImage_();
+  this.image_ = ol.ImageTile.getBlankImage();
+  this.changed();
+};
+ol.ImageTile.prototype.handleImageLoad_ = function() {
+  if (this.image_.naturalWidth && this.image_.naturalHeight) {
+    this.state = ol.TileState.LOADED;
+  } else {
+    this.state = ol.TileState.EMPTY;
+  }
+  this.unlistenImage_();
+  this.changed();
+};
+ol.ImageTile.prototype.load = function() {
+  if (this.state == ol.TileState.ERROR) {
+    this.state = ol.TileState.IDLE;
+    this.image_ = new Image;
+    if (this.crossOrigin_ !== null) {
+      this.image_.crossOrigin = this.crossOrigin_;
+    }
+  }
+  if (this.state == ol.TileState.IDLE) {
+    this.state = ol.TileState.LOADING;
+    this.changed();
+    this.imageListenerKeys_ = [ol.events.listenOnce(this.image_, ol.events.EventType.ERROR, this.handleImageError_, this), ol.events.listenOnce(this.image_, ol.events.EventType.LOAD, this.handleImageLoad_, this)];
+    this.tileLoadFunction_(this, this.src_);
+  }
+};
+ol.ImageTile.prototype.unlistenImage_ = function() {
+  this.imageListenerKeys_.forEach(ol.events.unlistenByKey);
+  this.imageListenerKeys_ = null;
+};
+ol.ImageTile.getBlankImage = function() {
+  var ctx = ol.dom.createCanvasContext2D(1, 1);
+  ctx.fillStyle = "rgba(0,0,0,0)";
+  ctx.fillRect(0, 0, 1, 1);
+  return ctx.canvas;
+};
+goog.provide("ol.structs.LRUCache");
+goog.require("ol");
+goog.require("ol.asserts");
+goog.require("ol.events.EventTarget");
+goog.require("ol.events.EventType");
+ol.structs.LRUCache = function(opt_highWaterMark) {
+  ol.events.EventTarget.call(this);
+  this.highWaterMark = opt_highWaterMark !== undefined ? opt_highWaterMark : 2048;
+  this.count_ = 0;
+  this.entries_ = {};
+  this.oldest_ = null;
+  this.newest_ = null;
+};
+ol.inherits(ol.structs.LRUCache, ol.events.EventTarget);
+ol.structs.LRUCache.prototype.canExpireCache = function() {
+  return this.getCount() > this.highWaterMark;
+};
+ol.structs.LRUCache.prototype.clear = function() {
+  this.count_ = 0;
+  this.entries_ = {};
+  this.oldest_ = null;
+  this.newest_ = null;
+  this.dispatchEvent(ol.events.EventType.CLEAR);
+};
+ol.structs.LRUCache.prototype.containsKey = function(key) {
+  return this.entries_.hasOwnProperty(key);
+};
+ol.structs.LRUCache.prototype.forEach = function(f, opt_this) {
+  var entry = this.oldest_;
+  while (entry) {
+    f.call(opt_this, entry.value_, entry.key_, this);
+    entry = entry.newer;
+  }
+};
+ol.structs.LRUCache.prototype.get = function(key) {
+  var entry = this.entries_[key];
+  ol.asserts.assert(entry !== undefined, 15);
+  if (entry === this.newest_) {
+    return entry.value_;
+  } else {
+    if (entry === this.oldest_) {
+      this.oldest_ = this.oldest_.newer;
+      this.oldest_.older = null;
+    } else {
+      entry.newer.older = entry.older;
+      entry.older.newer = entry.newer;
+    }
+  }
+  entry.newer = null;
+  entry.older = this.newest_;
+  this.newest_.newer = entry;
+  this.newest_ = entry;
+  return entry.value_;
+};
+ol.structs.LRUCache.prototype.remove = function(key) {
+  var entry = this.entries_[key];
+  ol.asserts.assert(entry !== undefined, 15);
+  if (entry === this.newest_) {
+    this.newest_ = entry.older;
+    if (this.newest_) {
+      this.newest_.newer = null;
+    }
+  } else {
+    if (entry === this.oldest_) {
+      this.oldest_ = entry.newer;
+      if (this.oldest_) {
+        this.oldest_.older = null;
+      }
+    } else {
+      entry.newer.older = entry.older;
+      entry.older.newer = entry.newer;
+    }
+  }
+  delete this.entries_[key];
+  --this.count_;
+  return entry.value_;
+};
+ol.structs.LRUCache.prototype.getCount = function() {
+  return this.count_;
+};
+ol.structs.LRUCache.prototype.getKeys = function() {
+  var keys = new Array(this.count_);
+  var i = 0;
+  var entry;
+  for (entry = this.newest_; entry; entry = entry.older) {
+    keys[i++] = entry.key_;
+  }
+  return keys;
+};
+ol.structs.LRUCache.prototype.getValues = function() {
+  var values = new Array(this.count_);
+  var i = 0;
+  var entry;
+  for (entry = this.newest_; entry; entry = entry.older) {
+    values[i++] = entry.value_;
+  }
+  return values;
+};
+ol.structs.LRUCache.prototype.peekLast = function() {
+  return this.oldest_.value_;
+};
+ol.structs.LRUCache.prototype.peekLastKey = function() {
+  return this.oldest_.key_;
+};
+ol.structs.LRUCache.prototype.peekFirstKey = function() {
+  return this.newest_.key_;
+};
+ol.structs.LRUCache.prototype.pop = function() {
+  var entry = this.oldest_;
+  delete this.entries_[entry.key_];
+  if (entry.newer) {
+    entry.newer.older = null;
+  }
+  this.oldest_ = entry.newer;
+  if (!this.oldest_) {
+    this.newest_ = null;
+  }
+  --this.count_;
+  return entry.value_;
+};
+ol.structs.LRUCache.prototype.replace = function(key, value) {
+  this.get(key);
+  this.entries_[key].value_ = value;
+};
+ol.structs.LRUCache.prototype.set = function(key, value) {
+  ol.asserts.assert(!(key in this.entries_), 16);
+  var entry = {key_:key, newer:null, older:this.newest_, value_:value};
+  if (!this.newest_) {
+    this.oldest_ = entry;
+  } else {
+    this.newest_.newer = entry;
+  }
+  this.newest_ = entry;
+  this.entries_[key] = entry;
+  ++this.count_;
+};
+ol.structs.LRUCache.prototype.prune = function() {
+  while (this.canExpireCache()) {
+    this.pop();
+  }
+};
+goog.provide("ol.tilecoord");
+ol.tilecoord.createOrUpdate = function(z, x, y, opt_tileCoord) {
+  if (opt_tileCoord !== undefined) {
+    opt_tileCoord[0] = z;
+    opt_tileCoord[1] = x;
+    opt_tileCoord[2] = y;
+    return opt_tileCoord;
+  } else {
+    return [z, x, y];
+  }
+};
+ol.tilecoord.getKeyZXY = function(z, x, y) {
+  return z + "/" + x + "/" + y;
+};
+ol.tilecoord.getKey = function(tileCoord) {
+  return ol.tilecoord.getKeyZXY(tileCoord[0], tileCoord[1], tileCoord[2]);
+};
+ol.tilecoord.fromKey = function(key) {
+  return key.split("/").map(Number);
+};
+ol.tilecoord.hash = function(tileCoord) {
+  return (tileCoord[1] << tileCoord[0]) + tileCoord[2];
+};
+ol.tilecoord.quadKey = function(tileCoord) {
+  var z = tileCoord[0];
+  var digits = new Array(z);
+  var mask = 1 << z - 1;
+  var i, charCode;
+  for (i = 0; i < z; ++i) {
+    charCode = 48;
+    if (tileCoord[1] & mask) {
+      charCode += 1;
+    }
+    if (tileCoord[2] & mask) {
+      charCode += 2;
+    }
+    digits[i] = String.fromCharCode(charCode);
+    mask >>= 1;
+  }
+  return digits.join("");
+};
+ol.tilecoord.withinExtentAndZ = function(tileCoord, tileGrid) {
+  var z = tileCoord[0];
+  var x = tileCoord[1];
+  var y = tileCoord[2];
+  if (tileGrid.getMinZoom() > z || z > tileGrid.getMaxZoom()) {
+    return false;
+  }
+  var extent = tileGrid.getExtent();
+  var tileRange;
+  if (!extent) {
+    tileRange = tileGrid.getFullTileRange(z);
+  } else {
+    tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
+  }
+  if (!tileRange) {
+    return true;
+  } else {
+    return tileRange.containsXY(x, y);
+  }
+};
+goog.provide("ol.TileCache");
+goog.require("ol");
+goog.require("ol.structs.LRUCache");
+goog.require("ol.tilecoord");
+ol.TileCache = function(opt_highWaterMark) {
+  ol.structs.LRUCache.call(this, opt_highWaterMark);
+};
+ol.inherits(ol.TileCache, ol.structs.LRUCache);
+ol.TileCache.prototype.expireCache = function(usedTiles) {
+  var tile, zKey;
+  while (this.canExpireCache()) {
+    tile = this.peekLast();
+    zKey = tile.tileCoord[0].toString();
+    if (zKey in usedTiles && usedTiles[zKey].contains(tile.tileCoord)) {
+      break;
+    } else {
+      this.pop().dispose();
+    }
+  }
+};
+ol.TileCache.prototype.pruneExceptNewestZ = function() {
+  if (this.getCount() === 0) {
+    return;
+  }
+  var key = this.peekFirstKey();
+  var tileCoord = ol.tilecoord.fromKey(key);
+  var z = tileCoord[0];
+  this.forEach(function(tile) {
+    if (tile.tileCoord[0] !== z) {
+      this.remove(ol.tilecoord.getKey(tile.tileCoord));
+      tile.dispose();
+    }
+  }, this);
 };
 goog.provide("ol.reproj");
 goog.require("ol.dom");
@@ -6205,82 +6405,262 @@ ol.reproj.Triangulation.prototype.calculateSourceExtent = function() {
 ol.reproj.Triangulation.prototype.getTriangles = function() {
   return this.triangles_;
 };
-goog.provide("ol.reproj.Image");
+goog.provide("ol.reproj.Tile");
 goog.require("ol");
-goog.require("ol.ImageBase");
-goog.require("ol.ImageState");
+goog.require("ol.Tile");
+goog.require("ol.TileState");
 goog.require("ol.events");
 goog.require("ol.events.EventType");
 goog.require("ol.extent");
+goog.require("ol.math");
 goog.require("ol.reproj");
 goog.require("ol.reproj.Triangulation");
-ol.reproj.Image = function(sourceProj, targetProj, targetExtent, targetResolution, pixelRatio, getImageFunction) {
-  this.targetProj_ = targetProj;
-  this.maxSourceExtent_ = sourceProj.getExtent();
-  var maxTargetExtent = targetProj.getExtent();
+ol.reproj.Tile = function(sourceProj, sourceTileGrid, targetProj, targetTileGrid, tileCoord, wrappedTileCoord, pixelRatio, gutter, getTileFunction, opt_errorThreshold, opt_renderEdges) {
+  ol.Tile.call(this, tileCoord, ol.TileState.IDLE);
+  this.renderEdges_ = opt_renderEdges !== undefined ? opt_renderEdges : false;
+  this.pixelRatio_ = pixelRatio;
+  this.gutter_ = gutter;
+  this.canvas_ = null;
+  this.sourceTileGrid_ = sourceTileGrid;
+  this.targetTileGrid_ = targetTileGrid;
+  this.wrappedTileCoord_ = wrappedTileCoord ? wrappedTileCoord : tileCoord;
+  this.sourceTiles_ = [];
+  this.sourcesListenerKeys_ = null;
+  this.sourceZ_ = 0;
+  var targetExtent = targetTileGrid.getTileCoordExtent(this.wrappedTileCoord_);
+  var maxTargetExtent = this.targetTileGrid_.getExtent();
+  var maxSourceExtent = this.sourceTileGrid_.getExtent();
   var limitedTargetExtent = maxTargetExtent ? ol.extent.getIntersection(targetExtent, maxTargetExtent) : targetExtent;
+  if (ol.extent.getArea(limitedTargetExtent) === 0) {
+    this.state = ol.TileState.EMPTY;
+    return;
+  }
+  var sourceProjExtent = sourceProj.getExtent();
+  if (sourceProjExtent) {
+    if (!maxSourceExtent) {
+      maxSourceExtent = sourceProjExtent;
+    } else {
+      maxSourceExtent = ol.extent.getIntersection(maxSourceExtent, sourceProjExtent);
+    }
+  }
+  var targetResolution = targetTileGrid.getResolution(this.wrappedTileCoord_[0]);
   var targetCenter = ol.extent.getCenter(limitedTargetExtent);
   var sourceResolution = ol.reproj.calculateSourceResolution(sourceProj, targetProj, targetCenter, targetResolution);
-  var errorThresholdInPixels = ol.DEFAULT_RASTER_REPROJECTION_ERROR_THRESHOLD;
-  this.triangulation_ = new ol.reproj.Triangulation(sourceProj, targetProj, limitedTargetExtent, this.maxSourceExtent_, sourceResolution * errorThresholdInPixels);
-  this.targetResolution_ = targetResolution;
-  this.targetExtent_ = targetExtent;
+  if (!isFinite(sourceResolution) || sourceResolution <= 0) {
+    this.state = ol.TileState.EMPTY;
+    return;
+  }
+  var errorThresholdInPixels = opt_errorThreshold !== undefined ? opt_errorThreshold : ol.DEFAULT_RASTER_REPROJECTION_ERROR_THRESHOLD;
+  this.triangulation_ = new ol.reproj.Triangulation(sourceProj, targetProj, limitedTargetExtent, maxSourceExtent, sourceResolution * errorThresholdInPixels);
+  if (this.triangulation_.getTriangles().length === 0) {
+    this.state = ol.TileState.EMPTY;
+    return;
+  }
+  this.sourceZ_ = sourceTileGrid.getZForResolution(sourceResolution);
   var sourceExtent = this.triangulation_.calculateSourceExtent();
-  this.sourceImage_ = getImageFunction(sourceExtent, sourceResolution, pixelRatio);
-  this.sourcePixelRatio_ = this.sourceImage_ ? this.sourceImage_.getPixelRatio() : 1;
-  this.canvas_ = null;
-  this.sourceListenerKey_ = null;
-  var state = ol.ImageState.LOADED;
-  if (this.sourceImage_) {
-    state = ol.ImageState.IDLE;
-  }
-  ol.ImageBase.call(this, targetExtent, targetResolution, this.sourcePixelRatio_, state);
-};
-ol.inherits(ol.reproj.Image, ol.ImageBase);
-ol.reproj.Image.prototype.disposeInternal = function() {
-  if (this.state == ol.ImageState.LOADING) {
-    this.unlistenSource_();
-  }
-  ol.ImageBase.prototype.disposeInternal.call(this);
-};
-ol.reproj.Image.prototype.getImage = function() {
-  return this.canvas_;
-};
-ol.reproj.Image.prototype.getProjection = function() {
-  return this.targetProj_;
-};
-ol.reproj.Image.prototype.reproject_ = function() {
-  var sourceState = this.sourceImage_.getState();
-  if (sourceState == ol.ImageState.LOADED) {
-    var width = ol.extent.getWidth(this.targetExtent_) / this.targetResolution_;
-    var height = ol.extent.getHeight(this.targetExtent_) / this.targetResolution_;
-    this.canvas_ = ol.reproj.render(width, height, this.sourcePixelRatio_, this.sourceImage_.getResolution(), this.maxSourceExtent_, this.targetResolution_, this.targetExtent_, this.triangulation_, [{extent:this.sourceImage_.getExtent(), image:this.sourceImage_.getImage()}], 0);
-  }
-  this.state = sourceState;
-  this.changed();
-};
-ol.reproj.Image.prototype.load = function() {
-  if (this.state == ol.ImageState.IDLE) {
-    this.state = ol.ImageState.LOADING;
-    this.changed();
-    var sourceState = this.sourceImage_.getState();
-    if (sourceState == ol.ImageState.LOADED || sourceState == ol.ImageState.ERROR) {
-      this.reproject_();
+  if (maxSourceExtent) {
+    if (sourceProj.canWrapX()) {
+      sourceExtent[1] = ol.math.clamp(sourceExtent[1], maxSourceExtent[1], maxSourceExtent[3]);
+      sourceExtent[3] = ol.math.clamp(sourceExtent[3], maxSourceExtent[1], maxSourceExtent[3]);
     } else {
-      this.sourceListenerKey_ = ol.events.listen(this.sourceImage_, ol.events.EventType.CHANGE, function(e) {
-        var sourceState = this.sourceImage_.getState();
-        if (sourceState == ol.ImageState.LOADED || sourceState == ol.ImageState.ERROR) {
-          this.unlistenSource_();
-          this.reproject_();
+      sourceExtent = ol.extent.getIntersection(sourceExtent, maxSourceExtent);
+    }
+  }
+  if (!ol.extent.getArea(sourceExtent)) {
+    this.state = ol.TileState.EMPTY;
+  } else {
+    var sourceRange = sourceTileGrid.getTileRangeForExtentAndZ(sourceExtent, this.sourceZ_);
+    for (var srcX = sourceRange.minX; srcX <= sourceRange.maxX; srcX++) {
+      for (var srcY = sourceRange.minY; srcY <= sourceRange.maxY; srcY++) {
+        var tile = getTileFunction(this.sourceZ_, srcX, srcY, pixelRatio);
+        if (tile) {
+          this.sourceTiles_.push(tile);
         }
-      }, this);
-      this.sourceImage_.load();
+      }
+    }
+    if (this.sourceTiles_.length === 0) {
+      this.state = ol.TileState.EMPTY;
     }
   }
 };
-ol.reproj.Image.prototype.unlistenSource_ = function() {
-  ol.events.unlistenByKey(this.sourceListenerKey_);
-  this.sourceListenerKey_ = null;
+ol.inherits(ol.reproj.Tile, ol.Tile);
+ol.reproj.Tile.prototype.disposeInternal = function() {
+  if (this.state == ol.TileState.LOADING) {
+    this.unlistenSources_();
+  }
+  ol.Tile.prototype.disposeInternal.call(this);
+};
+ol.reproj.Tile.prototype.getImage = function() {
+  return this.canvas_;
+};
+ol.reproj.Tile.prototype.reproject_ = function() {
+  var sources = [];
+  this.sourceTiles_.forEach(function(tile, i, arr) {
+    if (tile && tile.getState() == ol.TileState.LOADED) {
+      sources.push({extent:this.sourceTileGrid_.getTileCoordExtent(tile.tileCoord), image:tile.getImage()});
+    }
+  }, this);
+  this.sourceTiles_.length = 0;
+  if (sources.length === 0) {
+    this.state = ol.TileState.ERROR;
+  } else {
+    var z = this.wrappedTileCoord_[0];
+    var size = this.targetTileGrid_.getTileSize(z);
+    var width = typeof size === "number" ? size : size[0];
+    var height = typeof size === "number" ? size : size[1];
+    var targetResolution = this.targetTileGrid_.getResolution(z);
+    var sourceResolution = this.sourceTileGrid_.getResolution(this.sourceZ_);
+    var targetExtent = this.targetTileGrid_.getTileCoordExtent(this.wrappedTileCoord_);
+    this.canvas_ = ol.reproj.render(width, height, this.pixelRatio_, sourceResolution, this.sourceTileGrid_.getExtent(), targetResolution, targetExtent, this.triangulation_, sources, this.gutter_, this.renderEdges_);
+    this.state = ol.TileState.LOADED;
+  }
+  this.changed();
+};
+ol.reproj.Tile.prototype.load = function() {
+  if (this.state == ol.TileState.IDLE) {
+    this.state = ol.TileState.LOADING;
+    this.changed();
+    var leftToLoad = 0;
+    this.sourcesListenerKeys_ = [];
+    this.sourceTiles_.forEach(function(tile, i, arr) {
+      var state = tile.getState();
+      if (state == ol.TileState.IDLE || state == ol.TileState.LOADING) {
+        leftToLoad++;
+        var sourceListenKey;
+        sourceListenKey = ol.events.listen(tile, ol.events.EventType.CHANGE, function(e) {
+          var state = tile.getState();
+          if (state == ol.TileState.LOADED || state == ol.TileState.ERROR || state == ol.TileState.EMPTY) {
+            ol.events.unlistenByKey(sourceListenKey);
+            leftToLoad--;
+            if (leftToLoad === 0) {
+              this.unlistenSources_();
+              this.reproject_();
+            }
+          }
+        }, this);
+        this.sourcesListenerKeys_.push(sourceListenKey);
+      }
+    }, this);
+    this.sourceTiles_.forEach(function(tile, i, arr) {
+      var state = tile.getState();
+      if (state == ol.TileState.IDLE) {
+        tile.load();
+      }
+    });
+    if (leftToLoad === 0) {
+      setTimeout(this.reproject_.bind(this), 0);
+    }
+  }
+};
+ol.reproj.Tile.prototype.unlistenSources_ = function() {
+  this.sourcesListenerKeys_.forEach(ol.events.unlistenByKey);
+  this.sourcesListenerKeys_ = null;
+};
+goog.provide("ol.TileUrlFunction");
+goog.require("ol.asserts");
+goog.require("ol.math");
+goog.require("ol.tilecoord");
+ol.TileUrlFunction.createFromTemplate = function(template, tileGrid) {
+  var zRegEx = /\{z\}/g;
+  var xRegEx = /\{x\}/g;
+  var yRegEx = /\{y\}/g;
+  var dashYRegEx = /\{-y\}/g;
+  return function(tileCoord, pixelRatio, projection) {
+    if (!tileCoord) {
+      return undefined;
+    } else {
+      return template.replace(zRegEx, tileCoord[0].toString()).replace(xRegEx, tileCoord[1].toString()).replace(yRegEx, function() {
+        var y = -tileCoord[2] - 1;
+        return y.toString();
+      }).replace(dashYRegEx, function() {
+        var z = tileCoord[0];
+        var range = tileGrid.getFullTileRange(z);
+        ol.asserts.assert(range, 55);
+        var y = range.getHeight() + tileCoord[2];
+        return y.toString();
+      });
+    }
+  };
+};
+ol.TileUrlFunction.createFromTemplates = function(templates, tileGrid) {
+  var len = templates.length;
+  var tileUrlFunctions = new Array(len);
+  for (var i = 0; i < len; ++i) {
+    tileUrlFunctions[i] = ol.TileUrlFunction.createFromTemplate(templates[i], tileGrid);
+  }
+  return ol.TileUrlFunction.createFromTileUrlFunctions(tileUrlFunctions);
+};
+ol.TileUrlFunction.createFromTileUrlFunctions = function(tileUrlFunctions) {
+  if (tileUrlFunctions.length === 1) {
+    return tileUrlFunctions[0];
+  }
+  return function(tileCoord, pixelRatio, projection) {
+    if (!tileCoord) {
+      return undefined;
+    } else {
+      var h = ol.tilecoord.hash(tileCoord);
+      var index = ol.math.modulo(h, tileUrlFunctions.length);
+      return tileUrlFunctions[index](tileCoord, pixelRatio, projection);
+    }
+  };
+};
+ol.TileUrlFunction.nullTileUrlFunction = function(tileCoord, pixelRatio, projection) {
+  return undefined;
+};
+ol.TileUrlFunction.expandUrl = function(url) {
+  var urls = [];
+  var match = /\{([a-z])-([a-z])\}/.exec(url);
+  if (match) {
+    var startCharCode = match[1].charCodeAt(0);
+    var stopCharCode = match[2].charCodeAt(0);
+    var charCode;
+    for (charCode = startCharCode; charCode <= stopCharCode; ++charCode) {
+      urls.push(url.replace(match[0], String.fromCharCode(charCode)));
+    }
+    return urls;
+  }
+  match = match = /\{(\d+)-(\d+)\}/.exec(url);
+  if (match) {
+    var stop = parseInt(match[2], 10);
+    for (var i = parseInt(match[1], 10); i <= stop; i++) {
+      urls.push(url.replace(match[0], i.toString()));
+    }
+    return urls;
+  }
+  urls.push(url);
+  return urls;
+};
+goog.provide("ol.size");
+ol.size.buffer = function(size, buffer, opt_size) {
+  if (opt_size === undefined) {
+    opt_size = [0, 0];
+  }
+  opt_size[0] = size[0] + 2 * buffer;
+  opt_size[1] = size[1] + 2 * buffer;
+  return opt_size;
+};
+ol.size.hasArea = function(size) {
+  return size[0] > 0 && size[1] > 0;
+};
+ol.size.scale = function(size, ratio, opt_size) {
+  if (opt_size === undefined) {
+    opt_size = [0, 0];
+  }
+  opt_size[0] = size[0] * ratio + 0.5 | 0;
+  opt_size[1] = size[1] * ratio + 0.5 | 0;
+  return opt_size;
+};
+ol.size.toSize = function(size, opt_size) {
+  if (Array.isArray(size)) {
+    return size;
+  } else {
+    if (opt_size === undefined) {
+      opt_size = [size, size];
+    } else {
+      opt_size[0] = opt_size[1] = size;
+    }
+    return opt_size;
+  }
 };
 goog.provide("ol.TileRange");
 ol.TileRange = function(minX, maxX, minY, maxY) {
@@ -6338,98 +6718,152 @@ ol.TileRange.prototype.getWidth = function() {
 ol.TileRange.prototype.intersects = function(tileRange) {
   return this.minX <= tileRange.maxX && this.maxX >= tileRange.minX && this.minY <= tileRange.maxY && this.maxY >= tileRange.minY;
 };
-goog.provide("ol.size");
-ol.size.buffer = function(size, buffer, opt_size) {
-  if (opt_size === undefined) {
-    opt_size = [0, 0];
-  }
-  opt_size[0] = size[0] + 2 * buffer;
-  opt_size[1] = size[1] + 2 * buffer;
-  return opt_size;
-};
-ol.size.hasArea = function(size) {
-  return size[0] > 0 && size[1] > 0;
-};
-ol.size.scale = function(size, ratio, opt_size) {
-  if (opt_size === undefined) {
-    opt_size = [0, 0];
-  }
-  opt_size[0] = size[0] * ratio + 0.5 | 0;
-  opt_size[1] = size[1] * ratio + 0.5 | 0;
-  return opt_size;
-};
-ol.size.toSize = function(size, opt_size) {
-  if (Array.isArray(size)) {
-    return size;
-  } else {
-    if (opt_size === undefined) {
-      opt_size = [size, size];
+goog.provide("ol.array");
+ol.array.binarySearch = function(haystack, needle, opt_comparator) {
+  var mid, cmp;
+  var comparator = opt_comparator || ol.array.numberSafeCompareFunction;
+  var low = 0;
+  var high = haystack.length;
+  var found = false;
+  while (low < high) {
+    mid = low + (high - low >> 1);
+    cmp = +comparator(haystack[mid], needle);
+    if (cmp < 0.0) {
+      low = mid + 1;
     } else {
-      opt_size[0] = opt_size[1] = size;
+      high = mid;
+      found = !cmp;
     }
-    return opt_size;
   }
+  return found ? low : ~low;
 };
-goog.provide("ol.tilecoord");
-ol.tilecoord.createOrUpdate = function(z, x, y, opt_tileCoord) {
-  if (opt_tileCoord !== undefined) {
-    opt_tileCoord[0] = z;
-    opt_tileCoord[1] = x;
-    opt_tileCoord[2] = y;
-    return opt_tileCoord;
+ol.array.numberSafeCompareFunction = function(a, b) {
+  return a > b ? 1 : a < b ? -1 : 0;
+};
+ol.array.includes = function(arr, obj) {
+  return arr.indexOf(obj) >= 0;
+};
+ol.array.linearFindNearest = function(arr, target, direction) {
+  var n = arr.length;
+  if (arr[0] <= target) {
+    return 0;
   } else {
-    return [z, x, y];
+    if (target <= arr[n - 1]) {
+      return n - 1;
+    } else {
+      var i;
+      if (direction > 0) {
+        for (i = 1; i < n; ++i) {
+          if (arr[i] < target) {
+            return i - 1;
+          }
+        }
+      } else {
+        if (direction < 0) {
+          for (i = 1; i < n; ++i) {
+            if (arr[i] <= target) {
+              return i;
+            }
+          }
+        } else {
+          for (i = 1; i < n; ++i) {
+            if (arr[i] == target) {
+              return i;
+            } else {
+              if (arr[i] < target) {
+                if (arr[i - 1] - target < target - arr[i]) {
+                  return i - 1;
+                } else {
+                  return i;
+                }
+              }
+            }
+          }
+        }
+      }
+      return n - 1;
+    }
   }
 };
-ol.tilecoord.getKeyZXY = function(z, x, y) {
-  return z + "/" + x + "/" + y;
-};
-ol.tilecoord.getKey = function(tileCoord) {
-  return ol.tilecoord.getKeyZXY(tileCoord[0], tileCoord[1], tileCoord[2]);
-};
-ol.tilecoord.fromKey = function(key) {
-  return key.split("/").map(Number);
-};
-ol.tilecoord.hash = function(tileCoord) {
-  return (tileCoord[1] << tileCoord[0]) + tileCoord[2];
-};
-ol.tilecoord.quadKey = function(tileCoord) {
-  var z = tileCoord[0];
-  var digits = new Array(z);
-  var mask = 1 << z - 1;
-  var i, charCode;
-  for (i = 0; i < z; ++i) {
-    charCode = 48;
-    if (tileCoord[1] & mask) {
-      charCode += 1;
-    }
-    if (tileCoord[2] & mask) {
-      charCode += 2;
-    }
-    digits[i] = String.fromCharCode(charCode);
-    mask >>= 1;
+ol.array.reverseSubArray = function(arr, begin, end) {
+  while (begin < end) {
+    var tmp = arr[begin];
+    arr[begin] = arr[end];
+    arr[end] = tmp;
+    ++begin;
+    --end;
   }
-  return digits.join("");
 };
-ol.tilecoord.withinExtentAndZ = function(tileCoord, tileGrid) {
-  var z = tileCoord[0];
-  var x = tileCoord[1];
-  var y = tileCoord[2];
-  if (tileGrid.getMinZoom() > z || z > tileGrid.getMaxZoom()) {
+ol.array.extend = function(arr, data) {
+  var i;
+  var extension = Array.isArray(data) ? data : [data];
+  var length = extension.length;
+  for (i = 0; i < length; i++) {
+    arr[arr.length] = extension[i];
+  }
+};
+ol.array.remove = function(arr, obj) {
+  var i = arr.indexOf(obj);
+  var found = i > -1;
+  if (found) {
+    arr.splice(i, 1);
+  }
+  return found;
+};
+ol.array.find = function(arr, func) {
+  var length = arr.length >>> 0;
+  var value;
+  for (var i = 0; i < length; i++) {
+    value = arr[i];
+    if (func(value, i, arr)) {
+      return value;
+    }
+  }
+  return null;
+};
+ol.array.equals = function(arr1, arr2) {
+  var len1 = arr1.length;
+  if (len1 !== arr2.length) {
     return false;
   }
-  var extent = tileGrid.getExtent();
-  var tileRange;
-  if (!extent) {
-    tileRange = tileGrid.getFullTileRange(z);
-  } else {
-    tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
+  for (var i = 0; i < len1; i++) {
+    if (arr1[i] !== arr2[i]) {
+      return false;
+    }
   }
-  if (!tileRange) {
-    return true;
-  } else {
-    return tileRange.containsXY(x, y);
+  return true;
+};
+ol.array.stableSort = function(arr, compareFnc) {
+  var length = arr.length;
+  var tmp = Array(arr.length);
+  var i;
+  for (i = 0; i < length; i++) {
+    tmp[i] = {index:i, value:arr[i]};
   }
+  tmp.sort(function(a, b) {
+    return compareFnc(a.value, b.value) || a.index - b.index;
+  });
+  for (i = 0; i < arr.length; i++) {
+    arr[i] = tmp[i].value;
+  }
+};
+ol.array.findIndex = function(arr, func) {
+  var index;
+  var found = !arr.every(function(el, idx) {
+    index = idx;
+    return !func(el, idx, arr);
+  });
+  return found ? index : -1;
+};
+ol.array.isSorted = function(arr, opt_func, opt_strict) {
+  var compare = opt_func || ol.array.numberSafeCompareFunction;
+  return arr.every(function(currentVal, index) {
+    if (index === 0) {
+      return true;
+    }
+    var res = compare(arr[index - 1], currentVal);
+    return !(res > 0 || opt_strict && res === 0);
+  });
 };
 goog.provide("ol.tilegrid.TileGrid");
 goog.require("ol");
@@ -6867,900 +7301,6 @@ ol.source.Source.prototype.setState = function(state) {
   this.state_ = state;
   this.changed();
 };
-goog.provide("ol.source.Image");
-goog.require("ol");
-goog.require("ol.ImageState");
-goog.require("ol.array");
-goog.require("ol.events.Event");
-goog.require("ol.extent");
-goog.require("ol.proj");
-goog.require("ol.reproj.Image");
-goog.require("ol.source.Source");
-ol.source.Image = function(options) {
-  ol.source.Source.call(this, {attributions:options.attributions, extent:options.extent, logo:options.logo, projection:options.projection, state:options.state});
-  this.resolutions_ = options.resolutions !== undefined ? options.resolutions : null;
-  this.reprojectedImage_ = null;
-  this.reprojectedRevision_ = 0;
-};
-ol.inherits(ol.source.Image, ol.source.Source);
-ol.source.Image.prototype.getResolutions = function() {
-  return this.resolutions_;
-};
-ol.source.Image.prototype.findNearestResolution = function(resolution) {
-  if (this.resolutions_) {
-    var idx = ol.array.linearFindNearest(this.resolutions_, resolution, 0);
-    resolution = this.resolutions_[idx];
-  }
-  return resolution;
-};
-ol.source.Image.prototype.getImage = function(extent, resolution, pixelRatio, projection) {
-  var sourceProjection = this.getProjection();
-  if (!ol.ENABLE_RASTER_REPROJECTION || !sourceProjection || !projection || ol.proj.equivalent(sourceProjection, projection)) {
-    if (sourceProjection) {
-      projection = sourceProjection;
-    }
-    return this.getImageInternal(extent, resolution, pixelRatio, projection);
-  } else {
-    if (this.reprojectedImage_) {
-      if (this.reprojectedRevision_ == this.getRevision() && ol.proj.equivalent(this.reprojectedImage_.getProjection(), projection) && this.reprojectedImage_.getResolution() == resolution && ol.extent.equals(this.reprojectedImage_.getExtent(), extent)) {
-        return this.reprojectedImage_;
-      }
-      this.reprojectedImage_.dispose();
-      this.reprojectedImage_ = null;
-    }
-    this.reprojectedImage_ = new ol.reproj.Image(sourceProjection, projection, extent, resolution, pixelRatio, function(extent, resolution, pixelRatio) {
-      return this.getImageInternal(extent, resolution, pixelRatio, sourceProjection);
-    }.bind(this));
-    this.reprojectedRevision_ = this.getRevision();
-    return this.reprojectedImage_;
-  }
-};
-ol.source.Image.prototype.getImageInternal = function(extent, resolution, pixelRatio, projection) {
-};
-ol.source.Image.prototype.handleImageChange = function(event) {
-  var image = event.target;
-  switch(image.getState()) {
-    case ol.ImageState.LOADING:
-      this.dispatchEvent(new ol.source.Image.Event(ol.source.Image.EventType_.IMAGELOADSTART, image));
-      break;
-    case ol.ImageState.LOADED:
-      this.dispatchEvent(new ol.source.Image.Event(ol.source.Image.EventType_.IMAGELOADEND, image));
-      break;
-    case ol.ImageState.ERROR:
-      this.dispatchEvent(new ol.source.Image.Event(ol.source.Image.EventType_.IMAGELOADERROR, image));
-      break;
-    default:
-  }
-};
-ol.source.Image.defaultImageLoadFunction = function(image, src) {
-  image.getImage().src = src;
-};
-ol.source.Image.Event = function(type, image) {
-  ol.events.Event.call(this, type);
-  this.image = image;
-};
-ol.inherits(ol.source.Image.Event, ol.events.Event);
-ol.source.Image.EventType_ = {IMAGELOADSTART:"imageloadstart", IMAGELOADEND:"imageloadend", IMAGELOADERROR:"imageloaderror"};
-goog.provide("ol.Image");
-goog.require("ol");
-goog.require("ol.ImageBase");
-goog.require("ol.ImageState");
-goog.require("ol.events");
-goog.require("ol.events.EventType");
-goog.require("ol.extent");
-ol.Image = function(extent, resolution, pixelRatio, src, crossOrigin, imageLoadFunction) {
-  ol.ImageBase.call(this, extent, resolution, pixelRatio, ol.ImageState.IDLE);
-  this.src_ = src;
-  this.image_ = new Image;
-  if (crossOrigin !== null) {
-    this.image_.crossOrigin = crossOrigin;
-  }
-  this.imageListenerKeys_ = null;
-  this.state = ol.ImageState.IDLE;
-  this.imageLoadFunction_ = imageLoadFunction;
-};
-ol.inherits(ol.Image, ol.ImageBase);
-ol.Image.prototype.getImage = function() {
-  return this.image_;
-};
-ol.Image.prototype.handleImageError_ = function() {
-  this.state = ol.ImageState.ERROR;
-  this.unlistenImage_();
-  this.changed();
-};
-ol.Image.prototype.handleImageLoad_ = function() {
-  if (this.resolution === undefined) {
-    this.resolution = ol.extent.getHeight(this.extent) / this.image_.height;
-  }
-  this.state = ol.ImageState.LOADED;
-  this.unlistenImage_();
-  this.changed();
-};
-ol.Image.prototype.load = function() {
-  if (this.state == ol.ImageState.IDLE || this.state == ol.ImageState.ERROR) {
-    this.state = ol.ImageState.LOADING;
-    this.changed();
-    this.imageListenerKeys_ = [ol.events.listenOnce(this.image_, ol.events.EventType.ERROR, this.handleImageError_, this), ol.events.listenOnce(this.image_, ol.events.EventType.LOAD, this.handleImageLoad_, this)];
-    this.imageLoadFunction_(this, this.src_);
-  }
-};
-ol.Image.prototype.setImage = function(image) {
-  this.image_ = image;
-};
-ol.Image.prototype.unlistenImage_ = function() {
-  this.imageListenerKeys_.forEach(ol.events.unlistenByKey);
-  this.imageListenerKeys_ = null;
-};
-goog.provide("ol.source.WMSServerType");
-ol.source.WMSServerType = {CARMENTA_SERVER:"carmentaserver", GEOSERVER:"geoserver", MAPSERVER:"mapserver", QGIS:"qgis"};
-goog.provide("ol.string");
-ol.string.padNumber = function(number, width, opt_precision) {
-  var numberString = opt_precision !== undefined ? number.toFixed(opt_precision) : "" + number;
-  var decimal = numberString.indexOf(".");
-  decimal = decimal === -1 ? numberString.length : decimal;
-  return decimal > width ? numberString : (new Array(1 + width - decimal)).join("0") + numberString;
-};
-ol.string.compareVersions = function(v1, v2) {
-  var s1 = ("" + v1).split(".");
-  var s2 = ("" + v2).split(".");
-  for (var i = 0; i < Math.max(s1.length, s2.length); i++) {
-    var n1 = parseInt(s1[i] || "0", 10);
-    var n2 = parseInt(s2[i] || "0", 10);
-    if (n1 > n2) {
-      return 1;
-    }
-    if (n2 > n1) {
-      return -1;
-    }
-  }
-  return 0;
-};
-goog.provide("ol.uri");
-ol.uri.appendParams = function(uri, params) {
-  var keyParams = [];
-  Object.keys(params).forEach(function(k) {
-    if (params[k] !== null && params[k] !== undefined) {
-      keyParams.push(k + "=" + encodeURIComponent(params[k]));
-    }
-  });
-  var qs = keyParams.join("&");
-  uri = uri.replace(/[?&]$/, "");
-  uri = uri.indexOf("?") === -1 ? uri + "?" : uri + "&";
-  return uri + qs;
-};
-goog.provide("ol.source.ImageWMS");
-goog.require("ol");
-goog.require("ol.Image");
-goog.require("ol.asserts");
-goog.require("ol.events");
-goog.require("ol.events.EventType");
-goog.require("ol.extent");
-goog.require("ol.obj");
-goog.require("ol.proj");
-goog.require("ol.reproj");
-goog.require("ol.source.Image");
-goog.require("ol.source.WMSServerType");
-goog.require("ol.string");
-goog.require("ol.uri");
-ol.source.ImageWMS = function(opt_options) {
-  var options = opt_options || {};
-  ol.source.Image.call(this, {attributions:options.attributions, logo:options.logo, projection:options.projection, resolutions:options.resolutions});
-  this.crossOrigin_ = options.crossOrigin !== undefined ? options.crossOrigin : null;
-  this.url_ = options.url;
-  this.imageLoadFunction_ = options.imageLoadFunction !== undefined ? options.imageLoadFunction : ol.source.Image.defaultImageLoadFunction;
-  this.params_ = options.params || {};
-  this.v13_ = true;
-  this.updateV13_();
-  this.serverType_ = options.serverType;
-  this.hidpi_ = options.hidpi !== undefined ? options.hidpi : true;
-  this.image_ = null;
-  this.imageSize_ = [0, 0];
-  this.renderedRevision_ = 0;
-  this.ratio_ = options.ratio !== undefined ? options.ratio : 1.5;
-};
-ol.inherits(ol.source.ImageWMS, ol.source.Image);
-ol.source.ImageWMS.GETFEATUREINFO_IMAGE_SIZE_ = [101, 101];
-ol.source.ImageWMS.prototype.getGetFeatureInfoUrl = function(coordinate, resolution, projection, params) {
-  if (this.url_ === undefined) {
-    return undefined;
-  }
-  var projectionObj = ol.proj.get(projection);
-  var sourceProjectionObj = this.getProjection();
-  if (sourceProjectionObj && sourceProjectionObj !== projectionObj) {
-    resolution = ol.reproj.calculateSourceResolution(sourceProjectionObj, projectionObj, coordinate, resolution);
-    coordinate = ol.proj.transform(coordinate, projectionObj, sourceProjectionObj);
-  }
-  var extent = ol.extent.getForViewAndSize(coordinate, resolution, 0, ol.source.ImageWMS.GETFEATUREINFO_IMAGE_SIZE_);
-  var baseParams = {"SERVICE":"WMS", "VERSION":ol.DEFAULT_WMS_VERSION, "REQUEST":"GetFeatureInfo", "FORMAT":"image/png", "TRANSPARENT":true, "QUERY_LAYERS":this.params_["LAYERS"]};
-  ol.obj.assign(baseParams, this.params_, params);
-  var x = Math.floor((coordinate[0] - extent[0]) / resolution);
-  var y = Math.floor((extent[3] - coordinate[1]) / resolution);
-  baseParams[this.v13_ ? "I" : "X"] = x;
-  baseParams[this.v13_ ? "J" : "Y"] = y;
-  return this.getRequestUrl_(extent, ol.source.ImageWMS.GETFEATUREINFO_IMAGE_SIZE_, 1, sourceProjectionObj || projectionObj, baseParams);
-};
-ol.source.ImageWMS.prototype.getParams = function() {
-  return this.params_;
-};
-ol.source.ImageWMS.prototype.getImageInternal = function(extent, resolution, pixelRatio, projection) {
-  if (this.url_ === undefined) {
-    return null;
-  }
-  resolution = this.findNearestResolution(resolution);
-  if (pixelRatio != 1 && (!this.hidpi_ || this.serverType_ === undefined)) {
-    pixelRatio = 1;
-  }
-  var imageResolution = resolution / pixelRatio;
-  var center = ol.extent.getCenter(extent);
-  var viewWidth = Math.ceil(ol.extent.getWidth(extent) / imageResolution);
-  var viewHeight = Math.ceil(ol.extent.getHeight(extent) / imageResolution);
-  var viewExtent = ol.extent.getForViewAndSize(center, imageResolution, 0, [viewWidth, viewHeight]);
-  var requestWidth = Math.ceil(this.ratio_ * ol.extent.getWidth(extent) / imageResolution);
-  var requestHeight = Math.ceil(this.ratio_ * ol.extent.getHeight(extent) / imageResolution);
-  var requestExtent = ol.extent.getForViewAndSize(center, imageResolution, 0, [requestWidth, requestHeight]);
-  var image = this.image_;
-  if (image && this.renderedRevision_ == this.getRevision() && image.getResolution() == resolution && image.getPixelRatio() == pixelRatio && ol.extent.containsExtent(image.getExtent(), viewExtent)) {
-    return image;
-  }
-  var params = {"SERVICE":"WMS", "VERSION":ol.DEFAULT_WMS_VERSION, "REQUEST":"GetMap", "FORMAT":"image/png", "TRANSPARENT":true};
-  ol.obj.assign(params, this.params_);
-  this.imageSize_[0] = Math.round(ol.extent.getWidth(requestExtent) / imageResolution);
-  this.imageSize_[1] = Math.round(ol.extent.getHeight(requestExtent) / imageResolution);
-  var url = this.getRequestUrl_(requestExtent, this.imageSize_, pixelRatio, projection, params);
-  this.image_ = new ol.Image(requestExtent, resolution, pixelRatio, url, this.crossOrigin_, this.imageLoadFunction_);
-  this.renderedRevision_ = this.getRevision();
-  ol.events.listen(this.image_, ol.events.EventType.CHANGE, this.handleImageChange, this);
-  return this.image_;
-};
-ol.source.ImageWMS.prototype.getImageLoadFunction = function() {
-  return this.imageLoadFunction_;
-};
-ol.source.ImageWMS.prototype.getRequestUrl_ = function(extent, size, pixelRatio, projection, params) {
-  ol.asserts.assert(this.url_ !== undefined, 9);
-  params[this.v13_ ? "CRS" : "SRS"] = projection.getCode();
-  if (!("STYLES" in this.params_)) {
-    params["STYLES"] = "";
-  }
-  if (pixelRatio != 1) {
-    switch(this.serverType_) {
-      case ol.source.WMSServerType.GEOSERVER:
-        var dpi = 90 * pixelRatio + 0.5 | 0;
-        if ("FORMAT_OPTIONS" in params) {
-          params["FORMAT_OPTIONS"] += ";dpi:" + dpi;
-        } else {
-          params["FORMAT_OPTIONS"] = "dpi:" + dpi;
-        }
-        break;
-      case ol.source.WMSServerType.MAPSERVER:
-        params["MAP_RESOLUTION"] = 90 * pixelRatio;
-        break;
-      case ol.source.WMSServerType.CARMENTA_SERVER:
-      case ol.source.WMSServerType.QGIS:
-        params["DPI"] = 90 * pixelRatio;
-        break;
-      default:
-        ol.asserts.assert(false, 8);
-        break;
-    }
-  }
-  params["WIDTH"] = size[0];
-  params["HEIGHT"] = size[1];
-  var axisOrientation = projection.getAxisOrientation();
-  var bbox;
-  if (this.v13_ && axisOrientation.substr(0, 2) == "ne") {
-    bbox = [extent[1], extent[0], extent[3], extent[2]];
-  } else {
-    bbox = extent;
-  }
-  params["BBOX"] = bbox.join(",");
-  return ol.uri.appendParams(this.url_, params);
-};
-ol.source.ImageWMS.prototype.getUrl = function() {
-  return this.url_;
-};
-ol.source.ImageWMS.prototype.setImageLoadFunction = function(imageLoadFunction) {
-  this.image_ = null;
-  this.imageLoadFunction_ = imageLoadFunction;
-  this.changed();
-};
-ol.source.ImageWMS.prototype.setUrl = function(url) {
-  if (url != this.url_) {
-    this.url_ = url;
-    this.image_ = null;
-    this.changed();
-  }
-};
-ol.source.ImageWMS.prototype.updateParams = function(params) {
-  ol.obj.assign(this.params_, params);
-  this.updateV13_();
-  this.image_ = null;
-  this.changed();
-};
-ol.source.ImageWMS.prototype.updateV13_ = function() {
-  var version = this.params_["VERSION"] || ol.DEFAULT_WMS_VERSION;
-  this.v13_ = ol.string.compareVersions(version, "1.3") >= 0;
-};
-goog.provide("ol.TileState");
-ol.TileState = {IDLE:0, LOADING:1, LOADED:2, ERROR:3, EMPTY:4, ABORT:5};
-goog.provide("ol.Tile");
-goog.require("ol");
-goog.require("ol.TileState");
-goog.require("ol.easing");
-goog.require("ol.events.EventTarget");
-goog.require("ol.events.EventType");
-ol.Tile = function(tileCoord, state, opt_options) {
-  ol.events.EventTarget.call(this);
-  var options = opt_options ? opt_options : {};
-  this.tileCoord = tileCoord;
-  this.state = state;
-  this.interimTile = null;
-  this.key = "";
-  this.transition_ = options.transition === undefined ? 250 : options.transition;
-  this.transitionStarts_ = {};
-};
-ol.inherits(ol.Tile, ol.events.EventTarget);
-ol.Tile.prototype.changed = function() {
-  this.dispatchEvent(ol.events.EventType.CHANGE);
-};
-ol.Tile.prototype.getKey = function() {
-  return this.key + "/" + this.tileCoord;
-};
-ol.Tile.prototype.getInterimTile = function() {
-  if (!this.interimTile) {
-    return this;
-  }
-  var tile = this.interimTile;
-  do {
-    if (tile.getState() == ol.TileState.LOADED) {
-      return tile;
-    }
-    tile = tile.interimTile;
-  } while (tile);
-  return this;
-};
-ol.Tile.prototype.refreshInterimChain = function() {
-  if (!this.interimTile) {
-    return;
-  }
-  var tile = this.interimTile;
-  var prev = this;
-  do {
-    if (tile.getState() == ol.TileState.LOADED) {
-      tile.interimTile = null;
-      break;
-    } else {
-      if (tile.getState() == ol.TileState.LOADING) {
-        prev = tile;
-      } else {
-        if (tile.getState() == ol.TileState.IDLE) {
-          prev.interimTile = tile.interimTile;
-        } else {
-          prev = tile;
-        }
-      }
-    }
-    tile = prev.interimTile;
-  } while (tile);
-};
-ol.Tile.prototype.getTileCoord = function() {
-  return this.tileCoord;
-};
-ol.Tile.prototype.getState = function() {
-  return this.state;
-};
-ol.Tile.prototype.setState = function(state) {
-  this.state = state;
-  this.changed();
-};
-ol.Tile.prototype.load = function() {
-};
-ol.Tile.prototype.getAlpha = function(id, time) {
-  if (!this.transition_) {
-    return 1;
-  }
-  var start = this.transitionStarts_[id];
-  if (!start) {
-    start = time;
-    this.transitionStarts_[id] = start;
-  } else {
-    if (start === -1) {
-      return 1;
-    }
-  }
-  var delta = time - start + 1000 / 60;
-  if (delta >= this.transition_) {
-    return 1;
-  }
-  return ol.easing.easeIn(delta / this.transition_);
-};
-ol.Tile.prototype.inTransition = function(id) {
-  if (!this.transition_) {
-    return false;
-  }
-  return this.transitionStarts_[id] !== -1;
-};
-ol.Tile.prototype.endTransition = function(id) {
-  if (this.transition_) {
-    this.transitionStarts_[id] = -1;
-  }
-};
-goog.provide("ol.ImageTile");
-goog.require("ol");
-goog.require("ol.Tile");
-goog.require("ol.TileState");
-goog.require("ol.dom");
-goog.require("ol.events");
-goog.require("ol.events.EventType");
-ol.ImageTile = function(tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options) {
-  ol.Tile.call(this, tileCoord, state, opt_options);
-  this.crossOrigin_ = crossOrigin;
-  this.src_ = src;
-  this.image_ = new Image;
-  if (crossOrigin !== null) {
-    this.image_.crossOrigin = crossOrigin;
-  }
-  this.imageListenerKeys_ = null;
-  this.tileLoadFunction_ = tileLoadFunction;
-};
-ol.inherits(ol.ImageTile, ol.Tile);
-ol.ImageTile.prototype.disposeInternal = function() {
-  if (this.state == ol.TileState.LOADING) {
-    this.unlistenImage_();
-    this.image_ = ol.ImageTile.getBlankImage();
-  }
-  if (this.interimTile) {
-    this.interimTile.dispose();
-  }
-  this.state = ol.TileState.ABORT;
-  this.changed();
-  ol.Tile.prototype.disposeInternal.call(this);
-};
-ol.ImageTile.prototype.getImage = function() {
-  return this.image_;
-};
-ol.ImageTile.prototype.getKey = function() {
-  return this.src_;
-};
-ol.ImageTile.prototype.handleImageError_ = function() {
-  this.state = ol.TileState.ERROR;
-  this.unlistenImage_();
-  this.image_ = ol.ImageTile.getBlankImage();
-  this.changed();
-};
-ol.ImageTile.prototype.handleImageLoad_ = function() {
-  if (this.image_.naturalWidth && this.image_.naturalHeight) {
-    this.state = ol.TileState.LOADED;
-  } else {
-    this.state = ol.TileState.EMPTY;
-  }
-  this.unlistenImage_();
-  this.changed();
-};
-ol.ImageTile.prototype.load = function() {
-  if (this.state == ol.TileState.ERROR) {
-    this.state = ol.TileState.IDLE;
-    this.image_ = new Image;
-    if (this.crossOrigin_ !== null) {
-      this.image_.crossOrigin = this.crossOrigin_;
-    }
-  }
-  if (this.state == ol.TileState.IDLE) {
-    this.state = ol.TileState.LOADING;
-    this.changed();
-    this.imageListenerKeys_ = [ol.events.listenOnce(this.image_, ol.events.EventType.ERROR, this.handleImageError_, this), ol.events.listenOnce(this.image_, ol.events.EventType.LOAD, this.handleImageLoad_, this)];
-    this.tileLoadFunction_(this, this.src_);
-  }
-};
-ol.ImageTile.prototype.unlistenImage_ = function() {
-  this.imageListenerKeys_.forEach(ol.events.unlistenByKey);
-  this.imageListenerKeys_ = null;
-};
-ol.ImageTile.getBlankImage = function() {
-  var ctx = ol.dom.createCanvasContext2D(1, 1);
-  ctx.fillStyle = "rgba(0,0,0,0)";
-  ctx.fillRect(0, 0, 1, 1);
-  return ctx.canvas;
-};
-goog.provide("ol.structs.LRUCache");
-goog.require("ol");
-goog.require("ol.asserts");
-goog.require("ol.events.EventTarget");
-goog.require("ol.events.EventType");
-ol.structs.LRUCache = function(opt_highWaterMark) {
-  ol.events.EventTarget.call(this);
-  this.highWaterMark = opt_highWaterMark !== undefined ? opt_highWaterMark : 2048;
-  this.count_ = 0;
-  this.entries_ = {};
-  this.oldest_ = null;
-  this.newest_ = null;
-};
-ol.inherits(ol.structs.LRUCache, ol.events.EventTarget);
-ol.structs.LRUCache.prototype.canExpireCache = function() {
-  return this.getCount() > this.highWaterMark;
-};
-ol.structs.LRUCache.prototype.clear = function() {
-  this.count_ = 0;
-  this.entries_ = {};
-  this.oldest_ = null;
-  this.newest_ = null;
-  this.dispatchEvent(ol.events.EventType.CLEAR);
-};
-ol.structs.LRUCache.prototype.containsKey = function(key) {
-  return this.entries_.hasOwnProperty(key);
-};
-ol.structs.LRUCache.prototype.forEach = function(f, opt_this) {
-  var entry = this.oldest_;
-  while (entry) {
-    f.call(opt_this, entry.value_, entry.key_, this);
-    entry = entry.newer;
-  }
-};
-ol.structs.LRUCache.prototype.get = function(key) {
-  var entry = this.entries_[key];
-  ol.asserts.assert(entry !== undefined, 15);
-  if (entry === this.newest_) {
-    return entry.value_;
-  } else {
-    if (entry === this.oldest_) {
-      this.oldest_ = this.oldest_.newer;
-      this.oldest_.older = null;
-    } else {
-      entry.newer.older = entry.older;
-      entry.older.newer = entry.newer;
-    }
-  }
-  entry.newer = null;
-  entry.older = this.newest_;
-  this.newest_.newer = entry;
-  this.newest_ = entry;
-  return entry.value_;
-};
-ol.structs.LRUCache.prototype.remove = function(key) {
-  var entry = this.entries_[key];
-  ol.asserts.assert(entry !== undefined, 15);
-  if (entry === this.newest_) {
-    this.newest_ = entry.older;
-    if (this.newest_) {
-      this.newest_.newer = null;
-    }
-  } else {
-    if (entry === this.oldest_) {
-      this.oldest_ = entry.newer;
-      if (this.oldest_) {
-        this.oldest_.older = null;
-      }
-    } else {
-      entry.newer.older = entry.older;
-      entry.older.newer = entry.newer;
-    }
-  }
-  delete this.entries_[key];
-  --this.count_;
-  return entry.value_;
-};
-ol.structs.LRUCache.prototype.getCount = function() {
-  return this.count_;
-};
-ol.structs.LRUCache.prototype.getKeys = function() {
-  var keys = new Array(this.count_);
-  var i = 0;
-  var entry;
-  for (entry = this.newest_; entry; entry = entry.older) {
-    keys[i++] = entry.key_;
-  }
-  return keys;
-};
-ol.structs.LRUCache.prototype.getValues = function() {
-  var values = new Array(this.count_);
-  var i = 0;
-  var entry;
-  for (entry = this.newest_; entry; entry = entry.older) {
-    values[i++] = entry.value_;
-  }
-  return values;
-};
-ol.structs.LRUCache.prototype.peekLast = function() {
-  return this.oldest_.value_;
-};
-ol.structs.LRUCache.prototype.peekLastKey = function() {
-  return this.oldest_.key_;
-};
-ol.structs.LRUCache.prototype.peekFirstKey = function() {
-  return this.newest_.key_;
-};
-ol.structs.LRUCache.prototype.pop = function() {
-  var entry = this.oldest_;
-  delete this.entries_[entry.key_];
-  if (entry.newer) {
-    entry.newer.older = null;
-  }
-  this.oldest_ = entry.newer;
-  if (!this.oldest_) {
-    this.newest_ = null;
-  }
-  --this.count_;
-  return entry.value_;
-};
-ol.structs.LRUCache.prototype.replace = function(key, value) {
-  this.get(key);
-  this.entries_[key].value_ = value;
-};
-ol.structs.LRUCache.prototype.set = function(key, value) {
-  ol.asserts.assert(!(key in this.entries_), 16);
-  var entry = {key_:key, newer:null, older:this.newest_, value_:value};
-  if (!this.newest_) {
-    this.oldest_ = entry;
-  } else {
-    this.newest_.newer = entry;
-  }
-  this.newest_ = entry;
-  this.entries_[key] = entry;
-  ++this.count_;
-};
-ol.structs.LRUCache.prototype.prune = function() {
-  while (this.canExpireCache()) {
-    this.pop();
-  }
-};
-goog.provide("ol.TileCache");
-goog.require("ol");
-goog.require("ol.structs.LRUCache");
-goog.require("ol.tilecoord");
-ol.TileCache = function(opt_highWaterMark) {
-  ol.structs.LRUCache.call(this, opt_highWaterMark);
-};
-ol.inherits(ol.TileCache, ol.structs.LRUCache);
-ol.TileCache.prototype.expireCache = function(usedTiles) {
-  var tile, zKey;
-  while (this.canExpireCache()) {
-    tile = this.peekLast();
-    zKey = tile.tileCoord[0].toString();
-    if (zKey in usedTiles && usedTiles[zKey].contains(tile.tileCoord)) {
-      break;
-    } else {
-      this.pop().dispose();
-    }
-  }
-};
-ol.TileCache.prototype.pruneExceptNewestZ = function() {
-  if (this.getCount() === 0) {
-    return;
-  }
-  var key = this.peekFirstKey();
-  var tileCoord = ol.tilecoord.fromKey(key);
-  var z = tileCoord[0];
-  this.forEach(function(tile) {
-    if (tile.tileCoord[0] !== z) {
-      this.remove(ol.tilecoord.getKey(tile.tileCoord));
-      tile.dispose();
-    }
-  }, this);
-};
-goog.provide("ol.reproj.Tile");
-goog.require("ol");
-goog.require("ol.Tile");
-goog.require("ol.TileState");
-goog.require("ol.events");
-goog.require("ol.events.EventType");
-goog.require("ol.extent");
-goog.require("ol.math");
-goog.require("ol.reproj");
-goog.require("ol.reproj.Triangulation");
-ol.reproj.Tile = function(sourceProj, sourceTileGrid, targetProj, targetTileGrid, tileCoord, wrappedTileCoord, pixelRatio, gutter, getTileFunction, opt_errorThreshold, opt_renderEdges) {
-  ol.Tile.call(this, tileCoord, ol.TileState.IDLE);
-  this.renderEdges_ = opt_renderEdges !== undefined ? opt_renderEdges : false;
-  this.pixelRatio_ = pixelRatio;
-  this.gutter_ = gutter;
-  this.canvas_ = null;
-  this.sourceTileGrid_ = sourceTileGrid;
-  this.targetTileGrid_ = targetTileGrid;
-  this.wrappedTileCoord_ = wrappedTileCoord ? wrappedTileCoord : tileCoord;
-  this.sourceTiles_ = [];
-  this.sourcesListenerKeys_ = null;
-  this.sourceZ_ = 0;
-  var targetExtent = targetTileGrid.getTileCoordExtent(this.wrappedTileCoord_);
-  var maxTargetExtent = this.targetTileGrid_.getExtent();
-  var maxSourceExtent = this.sourceTileGrid_.getExtent();
-  var limitedTargetExtent = maxTargetExtent ? ol.extent.getIntersection(targetExtent, maxTargetExtent) : targetExtent;
-  if (ol.extent.getArea(limitedTargetExtent) === 0) {
-    this.state = ol.TileState.EMPTY;
-    return;
-  }
-  var sourceProjExtent = sourceProj.getExtent();
-  if (sourceProjExtent) {
-    if (!maxSourceExtent) {
-      maxSourceExtent = sourceProjExtent;
-    } else {
-      maxSourceExtent = ol.extent.getIntersection(maxSourceExtent, sourceProjExtent);
-    }
-  }
-  var targetResolution = targetTileGrid.getResolution(this.wrappedTileCoord_[0]);
-  var targetCenter = ol.extent.getCenter(limitedTargetExtent);
-  var sourceResolution = ol.reproj.calculateSourceResolution(sourceProj, targetProj, targetCenter, targetResolution);
-  if (!isFinite(sourceResolution) || sourceResolution <= 0) {
-    this.state = ol.TileState.EMPTY;
-    return;
-  }
-  var errorThresholdInPixels = opt_errorThreshold !== undefined ? opt_errorThreshold : ol.DEFAULT_RASTER_REPROJECTION_ERROR_THRESHOLD;
-  this.triangulation_ = new ol.reproj.Triangulation(sourceProj, targetProj, limitedTargetExtent, maxSourceExtent, sourceResolution * errorThresholdInPixels);
-  if (this.triangulation_.getTriangles().length === 0) {
-    this.state = ol.TileState.EMPTY;
-    return;
-  }
-  this.sourceZ_ = sourceTileGrid.getZForResolution(sourceResolution);
-  var sourceExtent = this.triangulation_.calculateSourceExtent();
-  if (maxSourceExtent) {
-    if (sourceProj.canWrapX()) {
-      sourceExtent[1] = ol.math.clamp(sourceExtent[1], maxSourceExtent[1], maxSourceExtent[3]);
-      sourceExtent[3] = ol.math.clamp(sourceExtent[3], maxSourceExtent[1], maxSourceExtent[3]);
-    } else {
-      sourceExtent = ol.extent.getIntersection(sourceExtent, maxSourceExtent);
-    }
-  }
-  if (!ol.extent.getArea(sourceExtent)) {
-    this.state = ol.TileState.EMPTY;
-  } else {
-    var sourceRange = sourceTileGrid.getTileRangeForExtentAndZ(sourceExtent, this.sourceZ_);
-    for (var srcX = sourceRange.minX; srcX <= sourceRange.maxX; srcX++) {
-      for (var srcY = sourceRange.minY; srcY <= sourceRange.maxY; srcY++) {
-        var tile = getTileFunction(this.sourceZ_, srcX, srcY, pixelRatio);
-        if (tile) {
-          this.sourceTiles_.push(tile);
-        }
-      }
-    }
-    if (this.sourceTiles_.length === 0) {
-      this.state = ol.TileState.EMPTY;
-    }
-  }
-};
-ol.inherits(ol.reproj.Tile, ol.Tile);
-ol.reproj.Tile.prototype.disposeInternal = function() {
-  if (this.state == ol.TileState.LOADING) {
-    this.unlistenSources_();
-  }
-  ol.Tile.prototype.disposeInternal.call(this);
-};
-ol.reproj.Tile.prototype.getImage = function() {
-  return this.canvas_;
-};
-ol.reproj.Tile.prototype.reproject_ = function() {
-  var sources = [];
-  this.sourceTiles_.forEach(function(tile, i, arr) {
-    if (tile && tile.getState() == ol.TileState.LOADED) {
-      sources.push({extent:this.sourceTileGrid_.getTileCoordExtent(tile.tileCoord), image:tile.getImage()});
-    }
-  }, this);
-  this.sourceTiles_.length = 0;
-  if (sources.length === 0) {
-    this.state = ol.TileState.ERROR;
-  } else {
-    var z = this.wrappedTileCoord_[0];
-    var size = this.targetTileGrid_.getTileSize(z);
-    var width = typeof size === "number" ? size : size[0];
-    var height = typeof size === "number" ? size : size[1];
-    var targetResolution = this.targetTileGrid_.getResolution(z);
-    var sourceResolution = this.sourceTileGrid_.getResolution(this.sourceZ_);
-    var targetExtent = this.targetTileGrid_.getTileCoordExtent(this.wrappedTileCoord_);
-    this.canvas_ = ol.reproj.render(width, height, this.pixelRatio_, sourceResolution, this.sourceTileGrid_.getExtent(), targetResolution, targetExtent, this.triangulation_, sources, this.gutter_, this.renderEdges_);
-    this.state = ol.TileState.LOADED;
-  }
-  this.changed();
-};
-ol.reproj.Tile.prototype.load = function() {
-  if (this.state == ol.TileState.IDLE) {
-    this.state = ol.TileState.LOADING;
-    this.changed();
-    var leftToLoad = 0;
-    this.sourcesListenerKeys_ = [];
-    this.sourceTiles_.forEach(function(tile, i, arr) {
-      var state = tile.getState();
-      if (state == ol.TileState.IDLE || state == ol.TileState.LOADING) {
-        leftToLoad++;
-        var sourceListenKey;
-        sourceListenKey = ol.events.listen(tile, ol.events.EventType.CHANGE, function(e) {
-          var state = tile.getState();
-          if (state == ol.TileState.LOADED || state == ol.TileState.ERROR || state == ol.TileState.EMPTY) {
-            ol.events.unlistenByKey(sourceListenKey);
-            leftToLoad--;
-            if (leftToLoad === 0) {
-              this.unlistenSources_();
-              this.reproject_();
-            }
-          }
-        }, this);
-        this.sourcesListenerKeys_.push(sourceListenKey);
-      }
-    }, this);
-    this.sourceTiles_.forEach(function(tile, i, arr) {
-      var state = tile.getState();
-      if (state == ol.TileState.IDLE) {
-        tile.load();
-      }
-    });
-    if (leftToLoad === 0) {
-      setTimeout(this.reproject_.bind(this), 0);
-    }
-  }
-};
-ol.reproj.Tile.prototype.unlistenSources_ = function() {
-  this.sourcesListenerKeys_.forEach(ol.events.unlistenByKey);
-  this.sourcesListenerKeys_ = null;
-};
-goog.provide("ol.TileUrlFunction");
-goog.require("ol.asserts");
-goog.require("ol.math");
-goog.require("ol.tilecoord");
-ol.TileUrlFunction.createFromTemplate = function(template, tileGrid) {
-  var zRegEx = /\{z\}/g;
-  var xRegEx = /\{x\}/g;
-  var yRegEx = /\{y\}/g;
-  var dashYRegEx = /\{-y\}/g;
-  return function(tileCoord, pixelRatio, projection) {
-    if (!tileCoord) {
-      return undefined;
-    } else {
-      return template.replace(zRegEx, tileCoord[0].toString()).replace(xRegEx, tileCoord[1].toString()).replace(yRegEx, function() {
-        var y = -tileCoord[2] - 1;
-        return y.toString();
-      }).replace(dashYRegEx, function() {
-        var z = tileCoord[0];
-        var range = tileGrid.getFullTileRange(z);
-        ol.asserts.assert(range, 55);
-        var y = range.getHeight() + tileCoord[2];
-        return y.toString();
-      });
-    }
-  };
-};
-ol.TileUrlFunction.createFromTemplates = function(templates, tileGrid) {
-  var len = templates.length;
-  var tileUrlFunctions = new Array(len);
-  for (var i = 0; i < len; ++i) {
-    tileUrlFunctions[i] = ol.TileUrlFunction.createFromTemplate(templates[i], tileGrid);
-  }
-  return ol.TileUrlFunction.createFromTileUrlFunctions(tileUrlFunctions);
-};
-ol.TileUrlFunction.createFromTileUrlFunctions = function(tileUrlFunctions) {
-  if (tileUrlFunctions.length === 1) {
-    return tileUrlFunctions[0];
-  }
-  return function(tileCoord, pixelRatio, projection) {
-    if (!tileCoord) {
-      return undefined;
-    } else {
-      var h = ol.tilecoord.hash(tileCoord);
-      var index = ol.math.modulo(h, tileUrlFunctions.length);
-      return tileUrlFunctions[index](tileCoord, pixelRatio, projection);
-    }
-  };
-};
-ol.TileUrlFunction.nullTileUrlFunction = function(tileCoord, pixelRatio, projection) {
-  return undefined;
-};
-ol.TileUrlFunction.expandUrl = function(url) {
-  var urls = [];
-  var match = /\{([a-z])-([a-z])\}/.exec(url);
-  if (match) {
-    var startCharCode = match[1].charCodeAt(0);
-    var stopCharCode = match[2].charCodeAt(0);
-    var charCode;
-    for (charCode = startCharCode; charCode <= stopCharCode; ++charCode) {
-      urls.push(url.replace(match[0], String.fromCharCode(charCode)));
-    }
-    return urls;
-  }
-  match = match = /\{(\d+)-(\d+)\}/.exec(url);
-  if (match) {
-    var stop = parseInt(match[2], 10);
-    for (var i = parseInt(match[1], 10); i <= stop; i++) {
-      urls.push(url.replace(match[0], i.toString()));
-    }
-    return urls;
-  }
-  urls.push(url);
-  return urls;
-};
 goog.provide("ol.source.Tile");
 goog.require("ol");
 goog.require("ol.TileCache");
@@ -8155,201 +7695,9 @@ ol.source.TileImage.prototype.setTileGridForProjection = function(projection, ti
 ol.source.TileImage.defaultTileLoadFunction = function(imageTile, src) {
   imageTile.getImage().src = src;
 };
-goog.provide("ol.source.TileWMS");
-goog.require("ol");
-goog.require("ol.asserts");
-goog.require("ol.extent");
-goog.require("ol.obj");
-goog.require("ol.math");
-goog.require("ol.proj");
-goog.require("ol.reproj");
-goog.require("ol.size");
-goog.require("ol.source.TileImage");
-goog.require("ol.source.WMSServerType");
-goog.require("ol.tilecoord");
-goog.require("ol.string");
-goog.require("ol.uri");
-ol.source.TileWMS = function(opt_options) {
-  var options = opt_options || {};
-  var params = options.params || {};
-  var transparent = "TRANSPARENT" in params ? params["TRANSPARENT"] : true;
-  ol.source.TileImage.call(this, {attributions:options.attributions, cacheSize:options.cacheSize, crossOrigin:options.crossOrigin, logo:options.logo, opaque:!transparent, projection:options.projection, reprojectionErrorThreshold:options.reprojectionErrorThreshold, tileClass:options.tileClass, tileGrid:options.tileGrid, tileLoadFunction:options.tileLoadFunction, url:options.url, urls:options.urls, wrapX:options.wrapX !== undefined ? options.wrapX : true, transition:options.transition});
-  this.gutter_ = options.gutter !== undefined ? options.gutter : 0;
-  this.params_ = params;
-  this.v13_ = true;
-  this.serverType_ = options.serverType;
-  this.hidpi_ = options.hidpi !== undefined ? options.hidpi : true;
-  this.tmpExtent_ = ol.extent.createEmpty();
-  this.updateV13_();
-  this.setKey(this.getKeyForParams_());
-};
-ol.inherits(ol.source.TileWMS, ol.source.TileImage);
-ol.source.TileWMS.prototype.getGetFeatureInfoUrl = function(coordinate, resolution, projection, params) {
-  var projectionObj = ol.proj.get(projection);
-  var sourceProjectionObj = this.getProjection();
-  var tileGrid = this.getTileGrid();
-  if (!tileGrid) {
-    tileGrid = this.getTileGridForProjection(projectionObj);
-  }
-  var tileCoord = tileGrid.getTileCoordForCoordAndResolution(coordinate, resolution);
-  if (tileGrid.getResolutions().length <= tileCoord[0]) {
-    return undefined;
-  }
-  var tileResolution = tileGrid.getResolution(tileCoord[0]);
-  var tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent_);
-  var tileSize = ol.size.toSize(tileGrid.getTileSize(tileCoord[0]), this.tmpSize);
-  var gutter = this.gutter_;
-  if (gutter !== 0) {
-    tileSize = ol.size.buffer(tileSize, gutter, this.tmpSize);
-    tileExtent = ol.extent.buffer(tileExtent, tileResolution * gutter, tileExtent);
-  }
-  if (sourceProjectionObj && sourceProjectionObj !== projectionObj) {
-    tileResolution = ol.reproj.calculateSourceResolution(sourceProjectionObj, projectionObj, coordinate, tileResolution);
-    tileExtent = ol.proj.transformExtent(tileExtent, projectionObj, sourceProjectionObj);
-    coordinate = ol.proj.transform(coordinate, projectionObj, sourceProjectionObj);
-  }
-  var baseParams = {"SERVICE":"WMS", "VERSION":ol.DEFAULT_WMS_VERSION, "REQUEST":"GetFeatureInfo", "FORMAT":"image/png", "TRANSPARENT":true, "QUERY_LAYERS":this.params_["LAYERS"]};
-  ol.obj.assign(baseParams, this.params_, params);
-  var x = Math.floor((coordinate[0] - tileExtent[0]) / tileResolution);
-  var y = Math.floor((tileExtent[3] - coordinate[1]) / tileResolution);
-  baseParams[this.v13_ ? "I" : "X"] = x;
-  baseParams[this.v13_ ? "J" : "Y"] = y;
-  return this.getRequestUrl_(tileCoord, tileSize, tileExtent, 1, sourceProjectionObj || projectionObj, baseParams);
-};
-ol.source.TileWMS.prototype.getGutterInternal = function() {
-  return this.gutter_;
-};
-ol.source.TileWMS.prototype.getParams = function() {
-  return this.params_;
-};
-ol.source.TileWMS.prototype.getRequestUrl_ = function(tileCoord, tileSize, tileExtent, pixelRatio, projection, params) {
-  var urls = this.urls;
-  if (!urls) {
-    return undefined;
-  }
-  params["WIDTH"] = tileSize[0];
-  params["HEIGHT"] = tileSize[1];
-  params[this.v13_ ? "CRS" : "SRS"] = projection.getCode();
-  if (!("STYLES" in this.params_)) {
-    params["STYLES"] = "";
-  }
-  if (pixelRatio != 1) {
-    switch(this.serverType_) {
-      case ol.source.WMSServerType.GEOSERVER:
-        var dpi = 90 * pixelRatio + 0.5 | 0;
-        if ("FORMAT_OPTIONS" in params) {
-          params["FORMAT_OPTIONS"] += ";dpi:" + dpi;
-        } else {
-          params["FORMAT_OPTIONS"] = "dpi:" + dpi;
-        }
-        break;
-      case ol.source.WMSServerType.MAPSERVER:
-        params["MAP_RESOLUTION"] = 90 * pixelRatio;
-        break;
-      case ol.source.WMSServerType.CARMENTA_SERVER:
-      case ol.source.WMSServerType.QGIS:
-        params["DPI"] = 90 * pixelRatio;
-        break;
-      default:
-        ol.asserts.assert(false, 52);
-        break;
-    }
-  }
-  var axisOrientation = projection.getAxisOrientation();
-  var bbox = tileExtent;
-  if (this.v13_ && axisOrientation.substr(0, 2) == "ne") {
-    var tmp;
-    tmp = tileExtent[0];
-    bbox[0] = tileExtent[1];
-    bbox[1] = tmp;
-    tmp = tileExtent[2];
-    bbox[2] = tileExtent[3];
-    bbox[3] = tmp;
-  }
-  params["BBOX"] = bbox.join(",");
-  var url;
-  if (urls.length == 1) {
-    url = urls[0];
-  } else {
-    var index = ol.math.modulo(ol.tilecoord.hash(tileCoord), urls.length);
-    url = urls[index];
-  }
-  return ol.uri.appendParams(url, params);
-};
-ol.source.TileWMS.prototype.getTilePixelRatio = function(pixelRatio) {
-  return !this.hidpi_ || this.serverType_ === undefined ? 1 : pixelRatio;
-};
-ol.source.TileWMS.prototype.getKeyForParams_ = function() {
-  var i = 0;
-  var res = [];
-  for (var key in this.params_) {
-    res[i++] = key + "-" + this.params_[key];
-  }
-  return res.join("/");
-};
-ol.source.TileWMS.prototype.fixedTileUrlFunction = function(tileCoord, pixelRatio, projection) {
-  var tileGrid = this.getTileGrid();
-  if (!tileGrid) {
-    tileGrid = this.getTileGridForProjection(projection);
-  }
-  if (tileGrid.getResolutions().length <= tileCoord[0]) {
-    return undefined;
-  }
-  if (pixelRatio != 1 && (!this.hidpi_ || this.serverType_ === undefined)) {
-    pixelRatio = 1;
-  }
-  var tileResolution = tileGrid.getResolution(tileCoord[0]);
-  var tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent_);
-  var tileSize = ol.size.toSize(tileGrid.getTileSize(tileCoord[0]), this.tmpSize);
-  var gutter = this.gutter_;
-  if (gutter !== 0) {
-    tileSize = ol.size.buffer(tileSize, gutter, this.tmpSize);
-    tileExtent = ol.extent.buffer(tileExtent, tileResolution * gutter, tileExtent);
-  }
-  if (pixelRatio != 1) {
-    tileSize = ol.size.scale(tileSize, pixelRatio, this.tmpSize);
-  }
-  var baseParams = {"SERVICE":"WMS", "VERSION":ol.DEFAULT_WMS_VERSION, "REQUEST":"GetMap", "FORMAT":"image/png", "TRANSPARENT":true};
-  ol.obj.assign(baseParams, this.params_);
-  return this.getRequestUrl_(tileCoord, tileSize, tileExtent, pixelRatio, projection, baseParams);
-};
-ol.source.TileWMS.prototype.updateParams = function(params) {
-  ol.obj.assign(this.params_, params);
-  this.updateV13_();
-  this.setKey(this.getKeyForParams_());
-};
-ol.source.TileWMS.prototype.updateV13_ = function() {
-  var version = this.params_["VERSION"] || ol.DEFAULT_WMS_VERSION;
-  this.v13_ = ol.string.compareVersions(version, "1.3") >= 0;
-};
-goog.provide("olcs.util");
-olcs.util.obj = function(param) {
-  return param;
-};
-olcs.util.supportsImageRenderingPixelatedResult_ = undefined;
-olcs.util.imageRenderingValueResult_ = undefined;
-olcs.util.supportsImageRenderingPixelated = function() {
-  if (olcs.util.supportsImageRenderingPixelatedResult_ === undefined) {
-    var canvas = document.createElement("canvas");
-    canvas.setAttribute("style", "image-rendering: -moz-crisp-edges; image-rendering: pixelated;");
-    var tmp = canvas.style["imageRendering"];
-    olcs.util.supportsImageRenderingPixelatedResult_ = !!tmp;
-    if (olcs.util.supportsImageRenderingPixelatedResult_) {
-      olcs.util.imageRenderingValueResult_ = tmp;
-    }
-  }
-  return olcs.util.supportsImageRenderingPixelatedResult_;
-};
-olcs.util.imageRenderingValue = function() {
-  olcs.util.supportsImageRenderingPixelated();
-  return olcs.util.imageRenderingValueResult_ || "";
-};
-olcs.util.getSourceProjection = function(source) {
-  return source.get("olcs.projection") || source.getProjection();
-};
 goog.provide("olcs.core.OLImageryProvider");
+goog.require("ol.events");
 goog.require("ol.proj");
-goog.require("olcs.util");
 olcs.core.OLImageryProvider = function(source, opt_fallbackProj) {
   this.source_ = source;
   this.projection_ = null;
@@ -8372,7 +7720,7 @@ olcs.core.OLImageryProvider = function(source, opt_fallbackProj) {
   this.emptyCanvas_ = document.createElement("canvas");
   this.emptyCanvas_.width = 1;
   this.emptyCanvas_.height = 1;
-  this.source_.on("change", function(e) {
+  this.source_.on(ol.events.EventType.CHANGE, function(e) {
     this.handleSourceChanged_();
   }, this);
   this.handleSourceChanged_();
@@ -8383,10 +7731,9 @@ Object.defineProperties(olcs.core.OLImageryProvider.prototype, {"ready":{"get":f
   return this.rectangle_;
 }}, "tileWidth":{"get":function() {
   var tg = this.source_.getTileGrid();
-  return tg ? Array.isArray(tg.getTileSize(0)) ? tg.getTileSize(0)[0] : tg.getTileSize(0) : 256;
+  return tg ? tg.getTileSize(0) : 256;
 }}, "tileHeight":{"get":function() {
-  var tg = this.source_.getTileGrid();
-  return tg ? Array.isArray(tg.getTileSize(0)) ? tg.getTileSize(0)[1] : tg.getTileSize(0) : 256;
+  return this.tileWidth;
 }}, "maximumLevel":{"get":function() {
   var tg = this.source_.getTileGrid();
   return tg ? tg.getMaxZoom() : 18;
@@ -8409,7 +7756,8 @@ Object.defineProperties(olcs.core.OLImageryProvider.prototype, {"ready":{"get":f
 }}});
 olcs.core.OLImageryProvider.prototype.handleSourceChanged_ = function() {
   if (!this.ready_ && this.source_.getState() == "ready") {
-    this.projection_ = olcs.util.getSourceProjection(this.source_) || this.fallbackProj_;
+    var proj = this.source_.getProjection();
+    this.projection_ = proj ? proj : this.fallbackProj_;
     if (this.projection_ == ol.proj.get("EPSG:4326")) {
       this.tilingScheme_ = new Cesium.GeographicTilingScheme;
     } else {
@@ -8428,16 +7776,24 @@ olcs.core.OLImageryProvider.prototype.handleSourceChanged_ = function() {
 olcs.core.OLImageryProvider.createCreditForSource = function(source) {
   var text = "";
   var attributions = source.getAttributions();
-  if (typeof attributions === "function") {
-    attributions = attributions();
-  }
   if (attributions) {
-    attributions.forEach(function(htmlOrAttr) {
-      var html = typeof htmlOrAttr === "string" ? htmlOrAttr : htmlOrAttr.getHTML();
-      text += html.replace(/<\/?[^>]+(>|$)/g, "") + " ";
+    attributions.forEach(function(el) {
+      text += el.getHTML().replace(/<\/?[^>]+(>|$)/g, "") + " ";
     });
   }
-  return text.length > 0 ? new Cesium.Credit(text, undefined, undefined) : null;
+  var imageUrl, link;
+  if (text.length == 0) {
+    var logo = source.getLogo();
+    if (logo) {
+      if (typeof logo == "string") {
+        imageUrl = logo;
+      } else {
+        imageUrl = logo.src;
+        link = logo.href;
+      }
+    }
+  }
+  return imageUrl || text.length > 0 ? new Cesium.Credit(text, imageUrl, link) : null;
 };
 olcs.core.OLImageryProvider.prototype.getTileCredits = function(x, y, level) {
   return undefined;
@@ -8460,14 +7816,9 @@ goog.provide("olcs.core");
 goog.require("ol.easing");
 goog.require("goog.asserts");
 goog.require("ol.layer.Tile");
-goog.require("ol.layer.Image");
 goog.require("ol.proj");
-goog.require("ol.source.Image");
-goog.require("ol.source.ImageWMS");
 goog.require("ol.source.TileImage");
-goog.require("ol.source.TileWMS");
 goog.require("olcs.core.OLImageryProvider");
-goog.require("olcs.util");
 olcs.core.computePixelSizeAtCoordinate = function(scene, target) {
   var camera = scene.camera;
   var canvas = scene.canvas;
@@ -8493,16 +7844,6 @@ olcs.core.applyHeightOffsetToGeometry = function(geometry, height) {
     }
     return output;
   });
-};
-olcs.core.createMatrixAtCoordinates = function(coordinates, rotation, translation, scale) {
-  rotation = rotation === undefined ? 0 : rotation;
-  translation = translation === undefined ? Cesium.Cartesian3.ZERO : translation;
-  scale = scale === undefined ? new Cesium.Cartesian3(1, 1, 1) : scale;
-  var position = olcs.core.ol4326CoordinateToCesiumCartesian(coordinates);
-  var rawMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(position);
-  var quaternion = Cesium.Quaternion.fromAxisAngle(Cesium.Cartesian3.UNIT_Z, -rotation);
-  var rotationMatrix = Cesium.Matrix4.fromTranslationQuaternionRotationScale(translation, quaternion, scale);
-  return Cesium.Matrix4.multiply(rawMatrix, rotationMatrix, new Cesium.Matrix4);
 };
 olcs.core.rotateAroundAxis = function(camera, angle, axis, transform, opt_options) {
   var clamp = Cesium.Math.clamp;
@@ -8642,22 +7983,23 @@ olcs.core.extentToRectangle = function(extent, projection) {
   }
 };
 olcs.core.tileLayerToImageryLayer = function(olLayer, viewProj) {
-  if (!(olLayer instanceof ol.layer.Tile) && !(olLayer instanceof ol.layer.Image)) {
+  if (!(olLayer instanceof ol.layer.Tile)) {
     return null;
   }
   var provider = null;
   var source = olLayer.getSource();
-  if (source instanceof ol.source.ImageWMS && source.getUrl() && source.getImageLoadFunction() === ol.source.Image.defaultImageLoadFunction) {
-    var sourceProps = {"olcs.proxy":source.get("olcs.proxy"), "olcs.extent":source.get("olcs.extent"), "olcs.projection":source.get("olcs.projection"), "olcs.imagesource":source};
-    source = new ol.source.TileWMS({url:source.getUrl(), attributions:source.getAttributions(), projection:source.getProjection(), logo:source.getLogo(), params:source.getParams()});
-    source.setProperties(sourceProps);
-  }
   if (source instanceof ol.source.TileImage) {
-    var projection = olcs.util.getSourceProjection(source);
+    var projection = source.getProjection();
     if (!projection) {
       projection = viewProj;
+    } else {
+      if (projection !== viewProj) {
+        return null;
+      }
     }
-    if (olcs.core.isCesiumProjection(projection)) {
+    var is3857 = projection === ol.proj.get("EPSG:3857");
+    var is4326 = projection === ol.proj.get("EPSG:4326");
+    if (is3857 || is4326) {
       provider = new olcs.core.OLImageryProvider(source, viewProj);
     } else {
       return null;
@@ -8666,9 +8008,8 @@ olcs.core.tileLayerToImageryLayer = function(olLayer, viewProj) {
     return null;
   }
   var layerOptions = {};
-  var forcedExtent = olLayer.get("olcs.extent");
-  var ext = forcedExtent || olLayer.getExtent();
-  if (ext) {
+  var ext = olLayer.getExtent();
+  if (ext && viewProj) {
     layerOptions.rectangle = olcs.core.extentToRectangle(ext, viewProj);
   }
   var cesiumLayer = new Cesium.ImageryLayer(provider, layerOptions);
@@ -8786,11 +8127,6 @@ olcs.core.normalizeView = function(view, angle) {
   var resolution = view.getResolution();
   view.setRotation(angle);
   view.setResolution(view.constrainResolution(resolution));
-};
-olcs.core.isCesiumProjection = function(projection) {
-  var is3857 = projection === ol.proj.get("EPSG:3857");
-  var is4326 = projection === ol.proj.get("EPSG:4326");
-  return is3857 || is4326;
 };
 goog.provide("olcs.Camera");
 goog.require("goog.asserts");
@@ -9579,6 +8915,31 @@ ol.geom.Point.prototype.setFlatCoordinates = function(layout, flatCoordinates) {
   this.setFlatCoordinatesInternal(layout, flatCoordinates);
   this.changed();
 };
+goog.provide("ol.MapBrowserEventType");
+goog.require("ol.events.EventType");
+ol.MapBrowserEventType = {SINGLECLICK:"singleclick", CLICK:ol.events.EventType.CLICK, DBLCLICK:ol.events.EventType.DBLCLICK, POINTERDRAG:"pointerdrag", POINTERMOVE:"pointermove", POINTERDOWN:"pointerdown", POINTERUP:"pointerup", POINTEROVER:"pointerover", POINTEROUT:"pointerout", POINTERENTER:"pointerenter", POINTERLEAVE:"pointerleave", POINTERCANCEL:"pointercancel"};
+goog.provide("olcs.util");
+olcs.util.obj = function(param) {
+  return param;
+};
+olcs.util.supportsImageRenderingPixelatedResult_ = undefined;
+olcs.util.imageRenderingValueResult_ = undefined;
+olcs.util.supportsImageRenderingPixelated = function() {
+  if (olcs.util.supportsImageRenderingPixelatedResult_ === undefined) {
+    var canvas = document.createElement("canvas");
+    canvas.setAttribute("style", "image-rendering: -moz-crisp-edges; image-rendering: pixelated;");
+    var tmp = canvas.style["imageRendering"];
+    olcs.util.supportsImageRenderingPixelatedResult_ = !!tmp;
+    if (olcs.util.supportsImageRenderingPixelatedResult_) {
+      olcs.util.imageRenderingValueResult_ = tmp;
+    }
+  }
+  return olcs.util.supportsImageRenderingPixelatedResult_;
+};
+olcs.util.imageRenderingValue = function() {
+  olcs.util.supportsImageRenderingPixelated();
+  return olcs.util.imageRenderingValueResult_ || "";
+};
 goog.provide("olcs.RasterSynchronizer");
 goog.require("ol.layer.Group");
 goog.require("goog.asserts");
@@ -9617,7 +8978,6 @@ olcs.RasterSynchronizer.prototype.createSingleLayerCounterparts = function(olLay
   var olLayer = olLayerWithParents.layer;
   var uid = ol.getUid(olLayer).toString();
   var viewProj = this.view.getProjection();
-  goog.asserts.assert(viewProj);
   var cesiumObjects = this.convertLayerToCesiumImageries(olLayer, viewProj);
   if (cesiumObjects) {
     var listenKeyArray = [];
@@ -9633,19 +8993,19 @@ olcs.RasterSynchronizer.prototype.createSingleLayerCounterparts = function(olLay
       olcs.core.updateCesiumLayerProperties(olLayerWithParents, cesiumObjects[i]);
     }
     listenKeyArray.push(olLayer.on("change:extent", function(e) {
-      for (var i$5 = 0; i$5 < cesiumObjects.length; ++i$5) {
-        this.cesiumLayers_.remove(cesiumObjects[i$5], true);
-        this.ourLayers_.remove(cesiumObjects[i$5], false);
+      for (var i$4 = 0; i$4 < cesiumObjects.length; ++i$4) {
+        this.cesiumLayers_.remove(cesiumObjects[i$4], true);
+        this.ourLayers_.remove(cesiumObjects[i$4], false);
       }
       delete this.layerMap[ol.getUid(olLayer)];
       this.synchronize();
     }, this));
     listenKeyArray.push(olLayer.on("change", function(e) {
-      for (var i$6 = 0; i$6 < cesiumObjects.length; ++i$6) {
-        var position = this.cesiumLayers_.indexOf(cesiumObjects[i$6]);
+      for (var i$5 = 0; i$5 < cesiumObjects.length; ++i$5) {
+        var position = this.cesiumLayers_.indexOf(cesiumObjects[i$5]);
         if (position >= 0) {
-          this.cesiumLayers_.remove(cesiumObjects[i$6], false);
-          this.cesiumLayers_.add(cesiumObjects[i$6], position);
+          this.cesiumLayers_.remove(cesiumObjects[i$5], false);
+          this.cesiumLayers_.add(cesiumObjects[i$5], position);
         }
       }
     }, this));
@@ -9654,7 +9014,6 @@ olcs.RasterSynchronizer.prototype.createSingleLayerCounterparts = function(olLay
   return Array.isArray(cesiumObjects) ? cesiumObjects : null;
 };
 olcs.RasterSynchronizer.prototype.orderLayers = function() {
-  var $jscomp$this = this;
   var layers = [];
   var zIndices = {};
   var queue = [this.mapLayerGroup];
@@ -9674,11 +9033,11 @@ olcs.RasterSynchronizer.prototype.orderLayers = function() {
   });
   layers.forEach(function(olLayer) {
     var olLayerId = ol.getUid(olLayer).toString();
-    var cesiumObjects = $jscomp$this.layerMap[olLayerId];
+    var cesiumObjects = this.layerMap[olLayerId];
     if (cesiumObjects) {
-      cesiumObjects.forEach($jscomp$this.raiseToTop, $jscomp$this);
+      cesiumObjects.forEach(this.raiseToTop, this);
     }
-  });
+  }, this);
 };
 olcs.RasterSynchronizer.prototype.raiseToTop = function(counterpart) {
   this.cesiumLayers_.raiseToTop(counterpart);
@@ -11137,6 +10496,8 @@ ol.has.WEBGL;
     ol.WEBGL_MAX_TEXTURE_SIZE = textureSize;
   }
 })();
+goog.provide("ol.ImageState");
+ol.ImageState = {IDLE:0, LOADING:1, LOADED:2, ERROR:3};
 goog.provide("ol.css");
 ol.css.CLASS_HIDDEN = "ol-hidden";
 ol.css.CLASS_SELECTABLE = "ol-selectable";
@@ -11986,6 +11347,28 @@ ol.Feature.createStyleFunction = function(obj) {
   }
   return styleFunction;
 };
+goog.provide("ol.string");
+ol.string.padNumber = function(number, width, opt_precision) {
+  var numberString = opt_precision !== undefined ? number.toFixed(opt_precision) : "" + number;
+  var decimal = numberString.indexOf(".");
+  decimal = decimal === -1 ? numberString.length : decimal;
+  return decimal > width ? numberString : (new Array(1 + width - decimal)).join("0") + numberString;
+};
+ol.string.compareVersions = function(v1, v2) {
+  var s1 = ("" + v1).split(".");
+  var s2 = ("" + v2).split(".");
+  for (var i = 0; i < Math.max(s1.length, s2.length); i++) {
+    var n1 = parseInt(s1[i] || "0", 10);
+    var n2 = parseInt(s2[i] || "0", 10);
+    if (n1 > n2) {
+      return 1;
+    }
+    if (n2 > n1) {
+      return -1;
+    }
+  }
+  return 0;
+};
 goog.provide("ol.coordinate");
 goog.require("ol.math");
 goog.require("ol.string");
@@ -12215,6 +11598,17 @@ ol.source.Cluster.prototype.createCluster = function(features) {
   cluster.set("features", features);
   return cluster;
 };
+goog.provide("ol.layer.Image");
+goog.require("ol");
+goog.require("ol.LayerType");
+goog.require("ol.layer.Layer");
+ol.layer.Image = function(opt_options) {
+  var options = opt_options ? opt_options : {};
+  ol.layer.Layer.call(this, options);
+  this.type = ol.LayerType.IMAGE;
+};
+ol.inherits(ol.layer.Image, ol.layer.Layer);
+ol.layer.Image.prototype.getSource;
 goog.provide("ol.layer.VectorRenderType");
 ol.layer.VectorRenderType = {IMAGE:"image", VECTOR:"vector"};
 goog.provide("ol.layer.Vector");
@@ -12753,34 +12147,18 @@ olcs.FeatureConverter.prototype.olCircleGeometryToCesium = function(layer, featu
   var primitives = this.wrapFillAndOutlineGeometries(layer, feature, olGeometry, fillGeometry, outlineGeometry, olStyle);
   return this.addTextStyle(layer, feature, olGeometry, olStyle, primitives);
 };
-olcs.FeatureConverter.prototype.createStackedGroundCorridors = function(layer, feature, width, color, positions) {
-  var previousDistance = 0;
-  width = Math.max(3, width);
-  var geometryInstances = [];
-  for (var $jscomp$iter$2 = $jscomp.makeIterator([1000, 4000, 16000, 64000, 254000, 1000000, 10000000]), $jscomp$key$distance = $jscomp$iter$2.next(); !$jscomp$key$distance.done; $jscomp$key$distance = $jscomp$iter$2.next()) {
-    var distance = $jscomp$key$distance.value;
-    {
-      width *= 2.14;
-      var geometryOptions = {positions:positions, width:width, vertexFormat:Cesium.VertexFormat.POSITION_ONLY};
-      geometryInstances.push(new Cesium.GeometryInstance({geometry:new Cesium.CorridorGeometry(geometryOptions), attributes:{color:Cesium.ColorGeometryInstanceAttribute.fromColor(color), distanceDisplayCondition:new Cesium.DistanceDisplayConditionGeometryInstanceAttribute(previousDistance, distance - 1)}}));
-      previousDistance = distance;
-    }
-  }
-  return new Cesium.GroundPrimitive({geometryInstances:geometryInstances});
-};
 olcs.FeatureConverter.prototype.olLineStringGeometryToCesium = function(layer, feature, olGeometry, projection, olStyle) {
   olGeometry = olcs.core.olGeometryCloneTo4326(olGeometry, projection);
   goog.asserts.assert(olGeometry.getType() == "LineString");
   var positions = olcs.core.ol4326CoordinateArrayToCsCartesians(olGeometry.getCoordinates());
-  var width = this.extractLineWidthFromOlStyle(olStyle);
+  var appearance = new Cesium.PolylineMaterialAppearance({material:this.olStyleToCesium(feature, olStyle, true)});
+  var geometryOptions = {positions:positions, width:this.extractLineWidthFromOlStyle(olStyle), vertexFormat:appearance.vertexFormat};
   var outlinePrimitive;
   var heightReference = this.getHeightReference(layer, feature, olGeometry);
   if (heightReference == Cesium.HeightReference.CLAMP_TO_GROUND) {
     var color = this.extractColorFromOlStyle(olStyle, true);
-    outlinePrimitive = this.createStackedGroundCorridors(layer, feature, width, color, positions);
+    outlinePrimitive = new Cesium.GroundPrimitive({geometryInstances:new Cesium.GeometryInstance({geometry:new Cesium.CorridorGeometry(geometryOptions), attributes:{color:Cesium.ColorGeometryInstanceAttribute.fromColor(color)}})});
   } else {
-    var appearance = new Cesium.PolylineMaterialAppearance({material:this.olStyleToCesium(feature, olStyle, true)});
-    var geometryOptions = {positions:positions, width:width, vertexFormat:appearance.vertexFormat};
     outlinePrimitive = new Cesium.Primitive({geometryInstances:new Cesium.GeometryInstance({geometry:new Cesium.PolylineGeometry(geometryOptions)}), appearance:appearance});
   }
   this.setReferenceForPicking(layer, feature, outlinePrimitive);
@@ -12844,85 +12222,69 @@ olcs.FeatureConverter.prototype.getHeightReference = function(layer, feature, ge
   }
   return heightReference;
 };
-olcs.FeatureConverter.prototype.createBillboardFromImage = function(layer, feature, olGeometry, projection, style, imageStyle, billboards, opt_newBillboardCallback) {
-  if (imageStyle instanceof ol.style.Icon) {
-    imageStyle.load();
-  }
-  var image = imageStyle.getImage(1);
-  var isImageLoaded = function(image) {
-    return image.src != "" && image.naturalHeight != 0 && image.naturalWidth != 0 && image.complete;
-  };
-  var reallyCreateBillboard = function() {
-    if (!image) {
-      return;
-    }
-    if (!(image instanceof HTMLCanvasElement || image instanceof Image || image instanceof HTMLImageElement)) {
-      return;
-    }
-    var center = olGeometry.getCoordinates();
-    var position = olcs.core.ol4326CoordinateToCesiumCartesian(center);
-    var color;
-    var opacity = imageStyle.getOpacity();
-    if (opacity !== undefined) {
-      color = new Cesium.Color(1.0, 1.0, 1.0, opacity);
-    }
-    var heightReference = this.getHeightReference(layer, feature, olGeometry);
-    var bbOptions = {image:image, color:color, scale:imageStyle.getScale(), heightReference:heightReference, verticalOrigin:Cesium.VerticalOrigin.BOTTOM, position:position};
-    var bb = this.csAddBillboard(billboards, bbOptions, layer, feature, olGeometry, style);
-    if (opt_newBillboardCallback) {
-      opt_newBillboardCallback(bb);
-    }
-  }.bind(this);
-  if (image instanceof Image && !isImageLoaded(image)) {
-    var cancelled = false;
-    var source = layer.getSource();
-    var canceller = function() {
-      cancelled = true;
-    };
-    source.on(["removefeature", "clear"], this.boundOnRemoveOrClearFeatureListener_);
-    var cancellers = olcs.util.obj(source)["olcs_cancellers"];
-    if (!cancellers) {
-      cancellers = olcs.util.obj(source)["olcs_cancellers"] = {};
-    }
-    var fuid = ol.getUid(feature);
-    if (cancellers[fuid]) {
-      cancellers[fuid]();
-    }
-    cancellers[fuid] = canceller;
-    var listener = function() {
-      if (!billboards.isDestroyed() && !cancelled) {
-        reallyCreateBillboard();
-      }
-    };
-    ol.events.listenOnce(image, "load", listener);
-  } else {
-    reallyCreateBillboard();
-  }
-};
 olcs.FeatureConverter.prototype.olPointGeometryToCesium = function(layer, feature, olGeometry, projection, style, billboards, opt_newBillboardCallback) {
   goog.asserts.assert(olGeometry.getType() == "Point");
   olGeometry = olcs.core.olGeometryCloneTo4326(olGeometry, projection);
-  var modelPrimitive = null;
   var imageStyle = style.getImage();
   if (imageStyle) {
-    var olcsModelFunction = olGeometry.get("olcs_model") || feature.get("olcs_model");
-    if (olcsModelFunction) {
-      var olcsModel = olcsModelFunction();
-      var options = Object.assign({}, {scene:this.scene}, olcsModel.cesiumOptions);
-      var model = Cesium.Model.fromGltf(options);
-      modelPrimitive = new Cesium.PrimitiveCollection;
-      modelPrimitive.add(model);
-      if (olcsModel.debugModelMatrix) {
-        modelPrimitive.add(new Cesium.DebugModelMatrixPrimitive({modelMatrix:olcsModel.debugModelMatrix}));
+    if (imageStyle instanceof ol.style.Icon) {
+      imageStyle.load();
+    }
+    var image = imageStyle.getImage(1);
+    var isImageLoaded = function(image) {
+      return image.src != "" && image.naturalHeight != 0 && image.naturalWidth != 0 && image.complete;
+    };
+    var reallyCreateBillboard = function() {
+      if (!image) {
+        return;
       }
+      if (!(image instanceof HTMLCanvasElement || image instanceof Image || image instanceof HTMLImageElement)) {
+        return;
+      }
+      var center = olGeometry.getCoordinates();
+      var position = olcs.core.ol4326CoordinateToCesiumCartesian(center);
+      var color;
+      var opacity = imageStyle.getOpacity();
+      if (opacity !== undefined) {
+        color = new Cesium.Color(1.0, 1.0, 1.0, opacity);
+      }
+      var heightReference = this.getHeightReference(layer, feature, olGeometry);
+      var bbOptions = {image:image, color:color, scale:imageStyle.getScale(), heightReference:heightReference, verticalOrigin:Cesium.VerticalOrigin.BOTTOM, position:position};
+      var bb = this.csAddBillboard(billboards, bbOptions, layer, feature, olGeometry, style);
+      if (opt_newBillboardCallback) {
+        opt_newBillboardCallback(bb);
+      }
+    }.bind(this);
+    if (image instanceof Image && !isImageLoaded(image)) {
+      var cancelled = false;
+      var source = layer.getSource();
+      var canceller = function() {
+        cancelled = true;
+      };
+      source.on(["removefeature", "clear"], this.boundOnRemoveOrClearFeatureListener_);
+      var cancellers = olcs.util.obj(source)["olcs_cancellers"];
+      if (!cancellers) {
+        cancellers = olcs.util.obj(source)["olcs_cancellers"] = {};
+      }
+      var fuid = ol.getUid(feature);
+      if (cancellers[fuid]) {
+        cancellers[fuid]();
+      }
+      cancellers[fuid] = canceller;
+      var listener = function() {
+        if (!billboards.isDestroyed() && !cancelled) {
+          reallyCreateBillboard();
+        }
+      };
+      ol.events.listenOnce(image, "load", listener);
     } else {
-      this.createBillboardFromImage(layer, feature, olGeometry, projection, style, imageStyle, billboards, opt_newBillboardCallback);
+      reallyCreateBillboard();
     }
   }
   if (style.getText()) {
-    return this.addTextStyle(layer, feature, olGeometry, style, modelPrimitive || new Cesium.Primitive);
+    return this.addTextStyle(layer, feature, olGeometry, style, new Cesium.Primitive);
   } else {
-    return modelPrimitive;
+    return null;
   }
 };
 olcs.FeatureConverter.prototype.olMultiGeometryToCesium = function(layer, feature, geometry, projection, olStyle, billboards, opt_newBillboardCallback) {
@@ -12987,7 +12349,10 @@ olcs.FeatureConverter.prototype.olGeometry4326TextPartToCesium = function(layer,
     var offset = new Cesium.Cartesian2(offsetX, offsetY);
     options.pixelOffset = offset;
   }
-  options.font = style.getFont() || "10px sans-serif";
+  var font = style.getFont();
+  if (font !== undefined) {
+    options.font = font;
+  }
   var labelStyle = undefined;
   if (style.getFill()) {
     options.fillColor = this.extractColorFromOlStyle(style, false);
@@ -13094,12 +12459,7 @@ olcs.FeatureConverter.prototype.olFeatureToCesium = function(layer, feature, sty
   }
   var proj = context.projection;
   var newBillboardAddedCallback = function(bb) {
-    var featureBb = context.featureToCesiumMap[ol.getUid(feature)];
-    if (featureBb instanceof Array) {
-      featureBb.push(bb);
-    } else {
-      context.featureToCesiumMap[ol.getUid(feature)] = [bb];
-    }
+    context.featureToCesiumMap[ol.getUid(feature)] = bb;
   };
   switch(geom.getType()) {
     case "GeometryCollection":
@@ -13173,17 +12533,17 @@ olcs.FeatureConverter.prototype.olVectorLayerToCesium = function(olLayer, olView
       continue;
     }
     var primitives = null;
-    for (var i$7 = 0; i$7 < styles.length; i$7++) {
-      var prims = this.olFeatureToCesium(olLayer, feature, styles[i$7], context);
+    for (var i$6 = 0; i$6 < styles.length; i$6++) {
+      var prims = this.olFeatureToCesium(olLayer, feature, styles[i$6], context);
       if (prims) {
         if (!primitives) {
           primitives = prims;
         } else {
           if (prims) {
-            var i$8 = 0, prim;
-            while (prim = prims.get(i$8)) {
+            var i$7 = 0, prim;
+            while (prim = prims.get(i$7)) {
               primitives.add(prim);
-              i$8++;
+              i$7++;
             }
           }
         }
@@ -13216,10 +12576,10 @@ olcs.FeatureConverter.prototype.convert = function(layer, view, feature, context
       primitives = prims;
     } else {
       if (prims) {
-        var i$9 = 0, prim;
-        while (prim = prims.get(i$9)) {
+        var i$8 = 0, prim;
+        while (prim = prims.get(i$8)) {
           primitives.add(prim);
-          i$9++;
+          i$8++;
         }
       }
     }
@@ -13315,16 +12675,15 @@ olcs.VectorSynchronizer.prototype.createSingleLayerCounterparts = function(olLay
     }
   }.bind(this);
   var onRemoveFeature = function(feature) {
+    var geometry = feature.getGeometry();
     var id = ol.getUid(feature);
-    var context = counterpart.context;
-    var bbs = context.featureToCesiumMap[id];
-    if (bbs) {
+    if (!geometry || geometry.getType() == "Point") {
+      var context = counterpart.context;
+      var bb = context.featureToCesiumMap[id];
       delete context.featureToCesiumMap[id];
-      bbs.forEach(function(bb) {
-        if (bb instanceof Cesium.Billboard) {
-          context.billboards.remove(bb);
-        }
-      });
+      if (bb instanceof Cesium.Billboard) {
+        context.billboards.remove(bb);
+      }
     }
     var csPrimitive = featurePrimitiveMap[id];
     delete featurePrimitiveMap[id];
@@ -13677,7 +13036,7 @@ olcs.SynchronizedOverlay.prototype.handleElementChanged = function() {
   var element = this.getElement();
   if (element) {
     if (element.parentNode && element.parentNode.childNodes) {
-      for (var $jscomp$iter$3 = $jscomp.makeIterator(element.parentNode.childNodes), $jscomp$key$node = $jscomp$iter$3.next(); !$jscomp$key$node.done; $jscomp$key$node = $jscomp$iter$3.next()) {
+      for (var $jscomp$iter$2 = $jscomp.makeIterator(element.parentNode.childNodes), $jscomp$key$node = $jscomp$iter$2.next(); !$jscomp$key$node.done; $jscomp$key$node = $jscomp$iter$2.next()) {
         var node = $jscomp$key$node.value;
         {
           var clonedNode = cloneNode(node, null);
@@ -13747,11 +13106,9 @@ olcs.OverlaySynchronizer = function(map, scene) {
   this.scene = scene;
   this.overlayContainerStopEvent_ = document.createElement("DIV");
   this.overlayContainerStopEvent_.className = "ol-overlaycontainer-stopevent";
-  var overlayEvents = ["click", "dblclick", "mousedown", "touchstart", "MSPointerDown", "pointerdown", "mousewheel", "wheel"];
+  var overlayEvents = [ol.events.EventType.CLICK, ol.events.EventType.DBLCLICK, ol.events.EventType.MOUSEDOWN, ol.events.EventType.TOUCHSTART, ol.events.EventType.MSPOINTERDOWN, ol.MapBrowserEventType.POINTERDOWN, ol.events.EventType.MOUSEWHEEL, ol.events.EventType.WHEEL];
   overlayEvents.forEach(function(event) {
-    ol.events.listen($jscomp$this.overlayContainerStopEvent_, event, function(evt) {
-      return evt.stopPropagation();
-    });
+    ol.events.listen($jscomp$this.overlayContainerStopEvent_, event, ol.events.Event.stopPropagation);
   });
   this.scene.canvas.parentElement.appendChild(this.overlayContainerStopEvent_);
   this.overlayContainer_ = document.createElement("DIV");
@@ -13811,6 +13168,7 @@ goog.require("ol.geom.Point");
 goog.require("goog.asserts");
 goog.require("ol.proj");
 goog.require("ol.events");
+goog.require("ol.MapBrowserEventType");
 goog.require("olcs.util");
 goog.require("olcs.core");
 goog.require("olcs.AutoRenderLoop");
@@ -13848,11 +13206,9 @@ olcs.OLCesium = function(options) {
   }
   this.isOverMap_ = !targetElement;
   if (this.isOverMap_ && options.stopOpenLayersEventsPropagation) {
-    var overlayEvents = ["click", "dblclick", "mousedown", "touchstart", "MSPointerDown", "pointerdown", "mousewheel", "wheel"];
+    var overlayEvents = [ol.events.EventType.CLICK, ol.events.EventType.DBLCLICK, ol.events.EventType.MOUSEDOWN, ol.events.EventType.TOUCHSTART, ol.events.EventType.MSPOINTERDOWN, ol.MapBrowserEventType.POINTERDOWN, ol.events.EventType.MOUSEWHEEL, ol.events.EventType.WHEEL];
     for (var i = 0, ii = overlayEvents.length; i < ii; ++i) {
-      ol.events.listen(this.container_, overlayEvents[i], function(evt) {
-        return evt.stopPropagation();
-      });
+      ol.events.listen(this.container_, overlayEvents[i], ol.events.Event.stopPropagation);
     }
   }
   this.canvas_ = document.createElement("CANVAS");
@@ -13886,14 +13242,12 @@ olcs.OLCesium = function(options) {
   this.globe_.baseColor = Cesium.Color.WHITE;
   this.scene_.globe = this.globe_;
   this.scene_.skyAtmosphere = new Cesium.SkyAtmosphere;
-  var firstImageryProvider = new Cesium.SingleTileImageryProvider({url:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=", rectangle:Cesium.Rectangle.fromDegrees(0, 0, 1, 1)});
-  this.globe_.imageryLayers.addImageryProvider(firstImageryProvider, 0);
   this.dataSourceCollection_ = new Cesium.DataSourceCollection;
   this.dataSourceDisplay_ = new Cesium.DataSourceDisplay({scene:this.scene_, dataSourceCollection:this.dataSourceCollection_});
   var synchronizers = options.createSynchronizers ? options.createSynchronizers(this.map_, this.scene_, this.dataSourceCollection_) : [new olcs.RasterSynchronizer(this.map_, this.scene_), new olcs.VectorSynchronizer(this.map_, this.scene_), new olcs.OverlaySynchronizer(this.map_, this.scene_)];
   this.handleResize_();
-  for (var i$10 = synchronizers.length - 1; i$10 >= 0; --i$10) {
-    synchronizers[i$10].synchronize();
+  for (var i$9 = synchronizers.length - 1; i$9 >= 0; --i$9) {
+    synchronizers[i$9].synchronize();
   }
   if (this.isOverMap_) {
     var credits = this.canvas_.nextElementSibling;
@@ -14047,7 +13401,6 @@ olcs.OLCesium.prototype.getEnabled = function() {
   return this.enabled_;
 };
 olcs.OLCesium.prototype.setEnabled = function(enable) {
-  var $jscomp$this = this;
   if (this.enabled_ === enable) {
     return;
   }
@@ -14059,8 +13412,8 @@ olcs.OLCesium.prototype.setEnabled = function(enable) {
     if (this.isOverMap_) {
       interactions = this.map_.getInteractions();
       interactions.forEach(function(el, i, arr) {
-        $jscomp$this.pausedInteractions_.push(el);
-      });
+        this.pausedInteractions_.push(el);
+      }, this);
       interactions.clear();
       var rootGroup = this.map_.getLayerGroup();
       if (rootGroup.getVisible()) {
@@ -14152,32 +13505,27 @@ goog.require("olcs.contrib.LazyLoader");
 goog.require("olcs.OLCesium");
 goog.require("olcs.core");
 goog.require("ol.math");
-goog.require("ol.Observable");
 goog.require("goog.asserts");
 olcs.contrib.Manager = function(cesiumUrl, options) {
-  var $jscomp$super$this;
   var $jscomp$destructuring$var0 = options === undefined ? {} : options;
   var map = $jscomp$destructuring$var0.map;
   var cameraExtentInRadians = $jscomp$destructuring$var0.cameraExtentInRadians;
-  $jscomp$super$this = ol.Observable.call(this) || this;
-  $jscomp$super$this.cesiumUrl_ = cesiumUrl;
-  $jscomp$super$this.map = map;
-  $jscomp$super$this.cameraExtentInRadians = cameraExtentInRadians || null;
-  $jscomp$super$this.boundingSphere_;
-  $jscomp$super$this.blockLimiter_ = false;
-  $jscomp$super$this.promise_;
-  $jscomp$super$this.ol3d;
-  $jscomp$super$this.cesiumInitialTilt_ = ol.math.toRadians(50);
-  $jscomp$super$this.fogDensity = 0.0001;
-  $jscomp$super$this.fogSSEFactor = 25;
-  $jscomp$super$this.minimumZoomDistance = 2;
-  $jscomp$super$this.maximumZoomDistance = 10000000;
-  $jscomp$super$this.limitCameraToBoundingSphereRatio = function(height) {
+  this.cesiumUrl_ = cesiumUrl;
+  this.map = map;
+  this.cameraExtentInRadians = cameraExtentInRadians || null;
+  this.boundingSphere_;
+  this.blockLimiter_ = false;
+  this.promise_;
+  this.ol3d;
+  this.cesiumInitialTilt_ = ol.math.toRadians(50);
+  this.fogDensity = 0.0001;
+  this.fogSSEFactor = 25;
+  this.minimumZoomDistance = 2;
+  this.maximumZoomDistance = 10000000;
+  this.limitCameraToBoundingSphereRatio = function(height) {
     return height > 3000 ? 9 : 3;
   };
-  return $jscomp$super$this;
 };
-$jscomp.inherits(olcs.contrib.Manager, ol.Observable);
 olcs.contrib.Manager.prototype.load = function() {
   var $jscomp$this = this;
   if (!this.promise_) {
@@ -14198,7 +13546,6 @@ olcs.contrib.Manager.prototype.onCesiumLoaded = function() {
   var scene = this.ol3d.getCesiumScene();
   this.configureForUsability(scene);
   this.configureForPerformance(scene);
-  this.dispatchEvent("load");
   return this.ol3d;
 };
 olcs.contrib.Manager.prototype.instantiateOLCesium = function() {
@@ -14258,31 +13605,11 @@ olcs.contrib.Manager.prototype.toggle3d = function() {
       goog.asserts.assert($jscomp$this.map);
       return olcs.core.resetToNorthZenith($jscomp$this.map, scene).then(function() {
         ol3d.setEnabled(false);
-        $jscomp$this.dispatchEvent("toggle");
       });
     } else {
       ol3d.setEnabled(true);
-      $jscomp$this.dispatchEvent("toggle");
       return olcs.core.rotateAroundBottomCenter(scene, $jscomp$this.cesiumInitialTilt_);
     }
-  });
-};
-olcs.contrib.Manager.prototype.set3dWithView = function(lon, lat, elevation, headingDeg, pitchDeg) {
-  var $jscomp$this = this;
-  return this.load().then(function(ol3d) {
-    var is3DCurrentlyEnabled = ol3d.getEnabled();
-    var scene = ol3d.getCesiumScene();
-    var camera = scene.camera;
-    var destination = Cesium.Cartesian3.fromDegrees(lon, lat, elevation);
-    var heading = Cesium.Math.toRadians(headingDeg);
-    var pitch = Cesium.Math.toRadians(pitchDeg);
-    var roll = 0;
-    var orientation = {heading:heading, pitch:pitch, roll:roll};
-    if (!is3DCurrentlyEnabled) {
-      ol3d.setEnabled(true);
-      $jscomp$this.dispatchEvent("toggle");
-    }
-    camera.setView({destination:destination, orientation:orientation});
   });
 };
 olcs.contrib.Manager.prototype.is3dEnabled = function() {
@@ -14535,9 +13862,6 @@ ol.MapBrowserEvent.prototype.stopPropagation = function() {
   ol.MapEvent.prototype.stopPropagation.call(this);
   this.originalEvent.stopPropagation();
 };
-goog.provide("ol.MapBrowserEventType");
-goog.require("ol.events.EventType");
-ol.MapBrowserEventType = {SINGLECLICK:"singleclick", CLICK:ol.events.EventType.CLICK, DBLCLICK:ol.events.EventType.DBLCLICK, POINTERDRAG:"pointerdrag", POINTERMOVE:"pointermove", POINTERDOWN:"pointerdown", POINTERUP:"pointerup", POINTEROVER:"pointerover", POINTEROUT:"pointerout", POINTERENTER:"pointerenter", POINTERLEAVE:"pointerleave", POINTERCANCEL:"pointercancel"};
 goog.provide("ol.MapBrowserPointerEvent");
 goog.require("ol");
 goog.require("ol.MapBrowserEvent");
@@ -19185,6 +18509,37 @@ ol.interaction.defaults = function(opt_options) {
   }
   return interactions;
 };
+goog.provide("ol.ImageBase");
+goog.require("ol");
+goog.require("ol.events.EventTarget");
+goog.require("ol.events.EventType");
+ol.ImageBase = function(extent, resolution, pixelRatio, state) {
+  ol.events.EventTarget.call(this);
+  this.extent = extent;
+  this.pixelRatio_ = pixelRatio;
+  this.resolution = resolution;
+  this.state = state;
+};
+ol.inherits(ol.ImageBase, ol.events.EventTarget);
+ol.ImageBase.prototype.changed = function() {
+  this.dispatchEvent(ol.events.EventType.CHANGE);
+};
+ol.ImageBase.prototype.getExtent = function() {
+  return this.extent;
+};
+ol.ImageBase.prototype.getImage = function() {
+};
+ol.ImageBase.prototype.getPixelRatio = function() {
+  return this.pixelRatio_;
+};
+ol.ImageBase.prototype.getResolution = function() {
+  return this.resolution;
+};
+ol.ImageBase.prototype.getState = function() {
+  return this.state;
+};
+ol.ImageBase.prototype.load = function() {
+};
 goog.provide("ol.ImageCanvas");
 goog.require("ol");
 goog.require("ol.ImageBase");
@@ -20835,10 +20190,6 @@ ol.render.canvas.Replay.prototype.replayImage_ = function(context, x, y, image, 
   anchorY *= scale;
   x -= anchorX;
   y -= anchorY;
-  if (snapToPixel) {
-    x = Math.round(x);
-    y = Math.round(y);
-  }
   var w = width + originX > image.width ? image.width - originX : width;
   var h = height + originY > image.height ? image.height - originY : height;
   var box = this.tmpExtent_;
@@ -20871,6 +20222,10 @@ ol.render.canvas.Replay.prototype.replayImage_ = function(context, x, y, image, 
   }
   var canvas = context.canvas;
   var intersects = box[0] <= canvas.width && box[2] >= 0 && box[1] <= canvas.height && box[3] >= 0;
+  if (snapToPixel) {
+    x = Math.round(x);
+    y = Math.round(y);
+  }
   if (declutterGroup) {
     if (!intersects && declutterGroup[4] == 1) {
       return;
@@ -22262,15 +21617,14 @@ ol.render.canvas.ReplayGroup.prototype.forEachFeatureAtCoordinate = function(coo
       return entry.value;
     });
   }
-  var replayType;
-  function featureCallback(feature) {
+  function hitDetectionCallback(feature) {
     var imageData = context.getImageData(0, 0, contextSize, contextSize).data;
     for (var i = 0; i < contextSize; i++) {
       for (var j = 0; j < contextSize; j++) {
         if (mask[i][j]) {
           if (imageData[(j * contextSize + i) * 4 + 3] > 0) {
             var result;
-            if (!(declutteredFeatures && (replayType == ol.render.ReplayType.IMAGE || replayType == ol.render.ReplayType.TEXT)) || declutteredFeatures.indexOf(feature) !== -1) {
+            if (!declutteredFeatures || declutteredFeatures.indexOf(feature) !== -1) {
               result = callback(feature);
             }
             if (result) {
@@ -22284,33 +21638,7 @@ ol.render.canvas.ReplayGroup.prototype.forEachFeatureAtCoordinate = function(coo
       }
     }
   }
-  var zs = Object.keys(this.replaysByZIndex_).map(Number);
-  zs.sort(ol.array.numberSafeCompareFunction);
-  var i, j, replays, replay, result;
-  for (i = zs.length - 1; i >= 0; --i) {
-    var zIndexKey = zs[i].toString();
-    replays = this.replaysByZIndex_[zIndexKey];
-    for (j = ol.render.replay.ORDER.length - 1; j >= 0; --j) {
-      replayType = ol.render.replay.ORDER[j];
-      replay = replays[replayType];
-      if (replay !== undefined) {
-        if (declutterReplays && (replayType == ol.render.ReplayType.IMAGE || replayType == ol.render.ReplayType.TEXT)) {
-          var declutter = declutterReplays[zIndexKey];
-          if (!declutter) {
-            declutterReplays[zIndexKey] = [replay, transform.slice(0)];
-          } else {
-            declutter.push(replay, transform.slice(0));
-          }
-        } else {
-          result = replay.replayHitDetection(context, transform, rotation, skippedFeaturesHash, featureCallback, hitExtent);
-          if (result) {
-            return result;
-          }
-        }
-      }
-    }
-  }
-  return undefined;
+  return this.replayHitDetection_(context, transform, rotation, skippedFeaturesHash, hitDetectionCallback, hitExtent, declutterReplays);
 };
 ol.render.canvas.ReplayGroup.prototype.getClipCoords = function(transform) {
   var maxExtent = this.maxExtent_;
@@ -22371,6 +21699,35 @@ ol.render.canvas.ReplayGroup.prototype.replay = function(context, transform, vie
     }
   }
   context.restore();
+};
+ol.render.canvas.ReplayGroup.prototype.replayHitDetection_ = function(context, transform, viewRotation, skippedFeaturesHash, featureCallback, opt_hitExtent, opt_declutterReplays) {
+  var zs = Object.keys(this.replaysByZIndex_).map(Number);
+  zs.sort(ol.array.numberSafeCompareFunction);
+  var i, j, replays, replay, result;
+  for (i = zs.length - 1; i >= 0; --i) {
+    var zIndexKey = zs[i].toString();
+    replays = this.replaysByZIndex_[zIndexKey];
+    for (j = ol.render.replay.ORDER.length - 1; j >= 0; --j) {
+      var replayType = ol.render.replay.ORDER[j];
+      replay = replays[replayType];
+      if (replay !== undefined) {
+        if (opt_declutterReplays && (replayType == ol.render.ReplayType.IMAGE || replayType == ol.render.ReplayType.TEXT)) {
+          var declutter = opt_declutterReplays[zIndexKey];
+          if (!declutter) {
+            opt_declutterReplays[zIndexKey] = [replay, transform.slice(0)];
+          } else {
+            declutter.push(replay, transform.slice(0));
+          }
+        } else {
+          result = replay.replayHitDetection(context, transform, viewRotation, skippedFeaturesHash, featureCallback, opt_hitExtent);
+          if (result) {
+            return result;
+          }
+        }
+      }
+    }
+  }
+  return undefined;
 };
 ol.render.canvas.ReplayGroup.BATCH_CONSTRUCTORS_ = {"Circle":ol.render.canvas.PolygonReplay, "Default":ol.render.canvas.Replay, "Image":ol.render.canvas.ImageReplay, "LineString":ol.render.canvas.LineStringReplay, "Polygon":ol.render.canvas.PolygonReplay, "Text":ol.render.canvas.TextReplay};
 goog.provide("ol.renderer.vector");
@@ -29936,7 +29293,7 @@ goog.require("ol.render.Feature");
 ol.format.MVT = function(opt_options) {
   ol.format.Feature.call(this);
   var options = opt_options ? opt_options : {};
-  this.defaultDataProjection = new ol.proj.Projection({code:"EPSG:3857", units:ol.proj.Units.TILE_PIXELS});
+  this.defaultDataProjection = new ol.proj.Projection({code:"", units:ol.proj.Units.TILE_PIXELS});
   this.featureClass_ = options.featureClass ? options.featureClass : ol.render.Feature;
   this.geometryName_ = options.geometryName;
   this.layerName_ = options.layerName ? options.layerName : "layer";
@@ -32704,6 +32061,56 @@ ol.Graticule.prototype.setMap = function(map) {
     map.render();
   }
   this.map_ = map;
+};
+goog.provide("ol.Image");
+goog.require("ol");
+goog.require("ol.ImageBase");
+goog.require("ol.ImageState");
+goog.require("ol.events");
+goog.require("ol.events.EventType");
+goog.require("ol.extent");
+ol.Image = function(extent, resolution, pixelRatio, src, crossOrigin, imageLoadFunction) {
+  ol.ImageBase.call(this, extent, resolution, pixelRatio, ol.ImageState.IDLE);
+  this.src_ = src;
+  this.image_ = new Image;
+  if (crossOrigin !== null) {
+    this.image_.crossOrigin = crossOrigin;
+  }
+  this.imageListenerKeys_ = null;
+  this.state = ol.ImageState.IDLE;
+  this.imageLoadFunction_ = imageLoadFunction;
+};
+ol.inherits(ol.Image, ol.ImageBase);
+ol.Image.prototype.getImage = function() {
+  return this.image_;
+};
+ol.Image.prototype.handleImageError_ = function() {
+  this.state = ol.ImageState.ERROR;
+  this.unlistenImage_();
+  this.changed();
+};
+ol.Image.prototype.handleImageLoad_ = function() {
+  if (this.resolution === undefined) {
+    this.resolution = ol.extent.getHeight(this.extent) / this.image_.height;
+  }
+  this.state = ol.ImageState.LOADED;
+  this.unlistenImage_();
+  this.changed();
+};
+ol.Image.prototype.load = function() {
+  if (this.state == ol.ImageState.IDLE || this.state == ol.ImageState.ERROR) {
+    this.state = ol.ImageState.LOADING;
+    this.changed();
+    this.imageListenerKeys_ = [ol.events.listenOnce(this.image_, ol.events.EventType.ERROR, this.handleImageError_, this), ol.events.listenOnce(this.image_, ol.events.EventType.LOAD, this.handleImageLoad_, this)];
+    this.imageLoadFunction_(this, this.src_);
+  }
+};
+ol.Image.prototype.setImage = function(image) {
+  this.image_ = image;
+};
+ol.Image.prototype.unlistenImage_ = function() {
+  this.imageListenerKeys_.forEach(ol.events.unlistenByKey);
+  this.imageListenerKeys_ = null;
 };
 goog.provide("ol.interaction.DragAndDrop");
 goog.require("ol");
@@ -39073,6 +38480,83 @@ ol.render.toContext = function(context, opt_options) {
   var transform = ol.transform.scale(ol.transform.create(), pixelRatio, pixelRatio);
   return new ol.render.canvas.Immediate(context, pixelRatio, extent, transform, 0);
 };
+goog.provide("ol.reproj.Image");
+goog.require("ol");
+goog.require("ol.ImageBase");
+goog.require("ol.ImageState");
+goog.require("ol.events");
+goog.require("ol.events.EventType");
+goog.require("ol.extent");
+goog.require("ol.reproj");
+goog.require("ol.reproj.Triangulation");
+ol.reproj.Image = function(sourceProj, targetProj, targetExtent, targetResolution, pixelRatio, getImageFunction) {
+  this.targetProj_ = targetProj;
+  this.maxSourceExtent_ = sourceProj.getExtent();
+  var maxTargetExtent = targetProj.getExtent();
+  var limitedTargetExtent = maxTargetExtent ? ol.extent.getIntersection(targetExtent, maxTargetExtent) : targetExtent;
+  var targetCenter = ol.extent.getCenter(limitedTargetExtent);
+  var sourceResolution = ol.reproj.calculateSourceResolution(sourceProj, targetProj, targetCenter, targetResolution);
+  var errorThresholdInPixels = ol.DEFAULT_RASTER_REPROJECTION_ERROR_THRESHOLD;
+  this.triangulation_ = new ol.reproj.Triangulation(sourceProj, targetProj, limitedTargetExtent, this.maxSourceExtent_, sourceResolution * errorThresholdInPixels);
+  this.targetResolution_ = targetResolution;
+  this.targetExtent_ = targetExtent;
+  var sourceExtent = this.triangulation_.calculateSourceExtent();
+  this.sourceImage_ = getImageFunction(sourceExtent, sourceResolution, pixelRatio);
+  this.sourcePixelRatio_ = this.sourceImage_ ? this.sourceImage_.getPixelRatio() : 1;
+  this.canvas_ = null;
+  this.sourceListenerKey_ = null;
+  var state = ol.ImageState.LOADED;
+  if (this.sourceImage_) {
+    state = ol.ImageState.IDLE;
+  }
+  ol.ImageBase.call(this, targetExtent, targetResolution, this.sourcePixelRatio_, state);
+};
+ol.inherits(ol.reproj.Image, ol.ImageBase);
+ol.reproj.Image.prototype.disposeInternal = function() {
+  if (this.state == ol.ImageState.LOADING) {
+    this.unlistenSource_();
+  }
+  ol.ImageBase.prototype.disposeInternal.call(this);
+};
+ol.reproj.Image.prototype.getImage = function() {
+  return this.canvas_;
+};
+ol.reproj.Image.prototype.getProjection = function() {
+  return this.targetProj_;
+};
+ol.reproj.Image.prototype.reproject_ = function() {
+  var sourceState = this.sourceImage_.getState();
+  if (sourceState == ol.ImageState.LOADED) {
+    var width = ol.extent.getWidth(this.targetExtent_) / this.targetResolution_;
+    var height = ol.extent.getHeight(this.targetExtent_) / this.targetResolution_;
+    this.canvas_ = ol.reproj.render(width, height, this.sourcePixelRatio_, this.sourceImage_.getResolution(), this.maxSourceExtent_, this.targetResolution_, this.targetExtent_, this.triangulation_, [{extent:this.sourceImage_.getExtent(), image:this.sourceImage_.getImage()}], 0);
+  }
+  this.state = sourceState;
+  this.changed();
+};
+ol.reproj.Image.prototype.load = function() {
+  if (this.state == ol.ImageState.IDLE) {
+    this.state = ol.ImageState.LOADING;
+    this.changed();
+    var sourceState = this.sourceImage_.getState();
+    if (sourceState == ol.ImageState.LOADED || sourceState == ol.ImageState.ERROR) {
+      this.reproject_();
+    } else {
+      this.sourceListenerKey_ = ol.events.listen(this.sourceImage_, ol.events.EventType.CHANGE, function(e) {
+        var sourceState = this.sourceImage_.getState();
+        if (sourceState == ol.ImageState.LOADED || sourceState == ol.ImageState.ERROR) {
+          this.unlistenSource_();
+          this.reproject_();
+        }
+      }, this);
+      this.sourceImage_.load();
+    }
+  }
+};
+ol.reproj.Image.prototype.unlistenSource_ = function() {
+  ol.events.unlistenByKey(this.sourceListenerKey_);
+  this.sourceListenerKey_ = null;
+};
 goog.provide("ol.source.BingMaps");
 goog.require("ol");
 goog.require("ol.TileUrlFunction");
@@ -39242,6 +38726,93 @@ ol.source.CartoDB.prototype.handleInitError_ = function(event) {
 ol.source.CartoDB.prototype.applyTemplate_ = function(data) {
   var tilesUrl = "https://" + data.cdn_url.https + "/" + this.account_ + "/api/v1/map/" + data.layergroupid + "/{z}/{x}/{y}.png";
   this.setUrl(tilesUrl);
+};
+goog.provide("ol.source.Image");
+goog.require("ol");
+goog.require("ol.ImageState");
+goog.require("ol.array");
+goog.require("ol.events.Event");
+goog.require("ol.extent");
+goog.require("ol.proj");
+goog.require("ol.reproj.Image");
+goog.require("ol.source.Source");
+ol.source.Image = function(options) {
+  ol.source.Source.call(this, {attributions:options.attributions, extent:options.extent, logo:options.logo, projection:options.projection, state:options.state});
+  this.resolutions_ = options.resolutions !== undefined ? options.resolutions : null;
+  this.reprojectedImage_ = null;
+  this.reprojectedRevision_ = 0;
+};
+ol.inherits(ol.source.Image, ol.source.Source);
+ol.source.Image.prototype.getResolutions = function() {
+  return this.resolutions_;
+};
+ol.source.Image.prototype.findNearestResolution = function(resolution) {
+  if (this.resolutions_) {
+    var idx = ol.array.linearFindNearest(this.resolutions_, resolution, 0);
+    resolution = this.resolutions_[idx];
+  }
+  return resolution;
+};
+ol.source.Image.prototype.getImage = function(extent, resolution, pixelRatio, projection) {
+  var sourceProjection = this.getProjection();
+  if (!ol.ENABLE_RASTER_REPROJECTION || !sourceProjection || !projection || ol.proj.equivalent(sourceProjection, projection)) {
+    if (sourceProjection) {
+      projection = sourceProjection;
+    }
+    return this.getImageInternal(extent, resolution, pixelRatio, projection);
+  } else {
+    if (this.reprojectedImage_) {
+      if (this.reprojectedRevision_ == this.getRevision() && ol.proj.equivalent(this.reprojectedImage_.getProjection(), projection) && this.reprojectedImage_.getResolution() == resolution && ol.extent.equals(this.reprojectedImage_.getExtent(), extent)) {
+        return this.reprojectedImage_;
+      }
+      this.reprojectedImage_.dispose();
+      this.reprojectedImage_ = null;
+    }
+    this.reprojectedImage_ = new ol.reproj.Image(sourceProjection, projection, extent, resolution, pixelRatio, function(extent, resolution, pixelRatio) {
+      return this.getImageInternal(extent, resolution, pixelRatio, sourceProjection);
+    }.bind(this));
+    this.reprojectedRevision_ = this.getRevision();
+    return this.reprojectedImage_;
+  }
+};
+ol.source.Image.prototype.getImageInternal = function(extent, resolution, pixelRatio, projection) {
+};
+ol.source.Image.prototype.handleImageChange = function(event) {
+  var image = event.target;
+  switch(image.getState()) {
+    case ol.ImageState.LOADING:
+      this.dispatchEvent(new ol.source.Image.Event(ol.source.Image.EventType_.IMAGELOADSTART, image));
+      break;
+    case ol.ImageState.LOADED:
+      this.dispatchEvent(new ol.source.Image.Event(ol.source.Image.EventType_.IMAGELOADEND, image));
+      break;
+    case ol.ImageState.ERROR:
+      this.dispatchEvent(new ol.source.Image.Event(ol.source.Image.EventType_.IMAGELOADERROR, image));
+      break;
+    default:
+  }
+};
+ol.source.Image.defaultImageLoadFunction = function(image, src) {
+  image.getImage().src = src;
+};
+ol.source.Image.Event = function(type, image) {
+  ol.events.Event.call(this, type);
+  this.image = image;
+};
+ol.inherits(ol.source.Image.Event, ol.events.Event);
+ol.source.Image.EventType_ = {IMAGELOADSTART:"imageloadstart", IMAGELOADEND:"imageloadend", IMAGELOADERROR:"imageloaderror"};
+goog.provide("ol.uri");
+ol.uri.appendParams = function(uri, params) {
+  var keyParams = [];
+  Object.keys(params).forEach(function(k) {
+    if (params[k] !== null && params[k] !== undefined) {
+      keyParams.push(k + "=" + encodeURIComponent(params[k]));
+    }
+  });
+  var qs = keyParams.join("&");
+  uri = uri.replace(/[?&]$/, "");
+  uri = uri.indexOf("?") === -1 ? uri + "?" : uri + "&";
+  return uri + qs;
 };
 goog.provide("ol.source.ImageArcGISRest");
 goog.require("ol");
@@ -39627,6 +39198,160 @@ ol.source.ImageVector.prototype.setStyle = function(style) {
   this.styleFunction_ = !style ? undefined : ol.style.Style.createFunction(this.style_);
   this.changed();
 };
+goog.provide("ol.source.WMSServerType");
+ol.source.WMSServerType = {CARMENTA_SERVER:"carmentaserver", GEOSERVER:"geoserver", MAPSERVER:"mapserver", QGIS:"qgis"};
+goog.provide("ol.source.ImageWMS");
+goog.require("ol");
+goog.require("ol.Image");
+goog.require("ol.asserts");
+goog.require("ol.events");
+goog.require("ol.events.EventType");
+goog.require("ol.extent");
+goog.require("ol.obj");
+goog.require("ol.proj");
+goog.require("ol.reproj");
+goog.require("ol.source.Image");
+goog.require("ol.source.WMSServerType");
+goog.require("ol.string");
+goog.require("ol.uri");
+ol.source.ImageWMS = function(opt_options) {
+  var options = opt_options || {};
+  ol.source.Image.call(this, {attributions:options.attributions, logo:options.logo, projection:options.projection, resolutions:options.resolutions});
+  this.crossOrigin_ = options.crossOrigin !== undefined ? options.crossOrigin : null;
+  this.url_ = options.url;
+  this.imageLoadFunction_ = options.imageLoadFunction !== undefined ? options.imageLoadFunction : ol.source.Image.defaultImageLoadFunction;
+  this.params_ = options.params || {};
+  this.v13_ = true;
+  this.updateV13_();
+  this.serverType_ = options.serverType;
+  this.hidpi_ = options.hidpi !== undefined ? options.hidpi : true;
+  this.image_ = null;
+  this.imageSize_ = [0, 0];
+  this.renderedRevision_ = 0;
+  this.ratio_ = options.ratio !== undefined ? options.ratio : 1.5;
+};
+ol.inherits(ol.source.ImageWMS, ol.source.Image);
+ol.source.ImageWMS.GETFEATUREINFO_IMAGE_SIZE_ = [101, 101];
+ol.source.ImageWMS.prototype.getGetFeatureInfoUrl = function(coordinate, resolution, projection, params) {
+  if (this.url_ === undefined) {
+    return undefined;
+  }
+  var projectionObj = ol.proj.get(projection);
+  var sourceProjectionObj = this.getProjection();
+  if (sourceProjectionObj && sourceProjectionObj !== projectionObj) {
+    resolution = ol.reproj.calculateSourceResolution(sourceProjectionObj, projectionObj, coordinate, resolution);
+    coordinate = ol.proj.transform(coordinate, projectionObj, sourceProjectionObj);
+  }
+  var extent = ol.extent.getForViewAndSize(coordinate, resolution, 0, ol.source.ImageWMS.GETFEATUREINFO_IMAGE_SIZE_);
+  var baseParams = {"SERVICE":"WMS", "VERSION":ol.DEFAULT_WMS_VERSION, "REQUEST":"GetFeatureInfo", "FORMAT":"image/png", "TRANSPARENT":true, "QUERY_LAYERS":this.params_["LAYERS"]};
+  ol.obj.assign(baseParams, this.params_, params);
+  var x = Math.floor((coordinate[0] - extent[0]) / resolution);
+  var y = Math.floor((extent[3] - coordinate[1]) / resolution);
+  baseParams[this.v13_ ? "I" : "X"] = x;
+  baseParams[this.v13_ ? "J" : "Y"] = y;
+  return this.getRequestUrl_(extent, ol.source.ImageWMS.GETFEATUREINFO_IMAGE_SIZE_, 1, sourceProjectionObj || projectionObj, baseParams);
+};
+ol.source.ImageWMS.prototype.getParams = function() {
+  return this.params_;
+};
+ol.source.ImageWMS.prototype.getImageInternal = function(extent, resolution, pixelRatio, projection) {
+  if (this.url_ === undefined) {
+    return null;
+  }
+  resolution = this.findNearestResolution(resolution);
+  if (pixelRatio != 1 && (!this.hidpi_ || this.serverType_ === undefined)) {
+    pixelRatio = 1;
+  }
+  var imageResolution = resolution / pixelRatio;
+  var center = ol.extent.getCenter(extent);
+  var viewWidth = Math.ceil(ol.extent.getWidth(extent) / imageResolution);
+  var viewHeight = Math.ceil(ol.extent.getHeight(extent) / imageResolution);
+  var viewExtent = ol.extent.getForViewAndSize(center, imageResolution, 0, [viewWidth, viewHeight]);
+  var requestWidth = Math.ceil(this.ratio_ * ol.extent.getWidth(extent) / imageResolution);
+  var requestHeight = Math.ceil(this.ratio_ * ol.extent.getHeight(extent) / imageResolution);
+  var requestExtent = ol.extent.getForViewAndSize(center, imageResolution, 0, [requestWidth, requestHeight]);
+  var image = this.image_;
+  if (image && this.renderedRevision_ == this.getRevision() && image.getResolution() == resolution && image.getPixelRatio() == pixelRatio && ol.extent.containsExtent(image.getExtent(), viewExtent)) {
+    return image;
+  }
+  var params = {"SERVICE":"WMS", "VERSION":ol.DEFAULT_WMS_VERSION, "REQUEST":"GetMap", "FORMAT":"image/png", "TRANSPARENT":true};
+  ol.obj.assign(params, this.params_);
+  this.imageSize_[0] = Math.round(ol.extent.getWidth(requestExtent) / imageResolution);
+  this.imageSize_[1] = Math.round(ol.extent.getHeight(requestExtent) / imageResolution);
+  var url = this.getRequestUrl_(requestExtent, this.imageSize_, pixelRatio, projection, params);
+  this.image_ = new ol.Image(requestExtent, resolution, pixelRatio, url, this.crossOrigin_, this.imageLoadFunction_);
+  this.renderedRevision_ = this.getRevision();
+  ol.events.listen(this.image_, ol.events.EventType.CHANGE, this.handleImageChange, this);
+  return this.image_;
+};
+ol.source.ImageWMS.prototype.getImageLoadFunction = function() {
+  return this.imageLoadFunction_;
+};
+ol.source.ImageWMS.prototype.getRequestUrl_ = function(extent, size, pixelRatio, projection, params) {
+  ol.asserts.assert(this.url_ !== undefined, 9);
+  params[this.v13_ ? "CRS" : "SRS"] = projection.getCode();
+  if (!("STYLES" in this.params_)) {
+    params["STYLES"] = "";
+  }
+  if (pixelRatio != 1) {
+    switch(this.serverType_) {
+      case ol.source.WMSServerType.GEOSERVER:
+        var dpi = 90 * pixelRatio + 0.5 | 0;
+        if ("FORMAT_OPTIONS" in params) {
+          params["FORMAT_OPTIONS"] += ";dpi:" + dpi;
+        } else {
+          params["FORMAT_OPTIONS"] = "dpi:" + dpi;
+        }
+        break;
+      case ol.source.WMSServerType.MAPSERVER:
+        params["MAP_RESOLUTION"] = 90 * pixelRatio;
+        break;
+      case ol.source.WMSServerType.CARMENTA_SERVER:
+      case ol.source.WMSServerType.QGIS:
+        params["DPI"] = 90 * pixelRatio;
+        break;
+      default:
+        ol.asserts.assert(false, 8);
+        break;
+    }
+  }
+  params["WIDTH"] = size[0];
+  params["HEIGHT"] = size[1];
+  var axisOrientation = projection.getAxisOrientation();
+  var bbox;
+  if (this.v13_ && axisOrientation.substr(0, 2) == "ne") {
+    bbox = [extent[1], extent[0], extent[3], extent[2]];
+  } else {
+    bbox = extent;
+  }
+  params["BBOX"] = bbox.join(",");
+  return ol.uri.appendParams(this.url_, params);
+};
+ol.source.ImageWMS.prototype.getUrl = function() {
+  return this.url_;
+};
+ol.source.ImageWMS.prototype.setImageLoadFunction = function(imageLoadFunction) {
+  this.image_ = null;
+  this.imageLoadFunction_ = imageLoadFunction;
+  this.changed();
+};
+ol.source.ImageWMS.prototype.setUrl = function(url) {
+  if (url != this.url_) {
+    this.url_ = url;
+    this.image_ = null;
+    this.changed();
+  }
+};
+ol.source.ImageWMS.prototype.updateParams = function(params) {
+  ol.obj.assign(this.params_, params);
+  this.updateV13_();
+  this.image_ = null;
+  this.changed();
+};
+ol.source.ImageWMS.prototype.updateV13_ = function() {
+  var version = this.params_["VERSION"] || ol.DEFAULT_WMS_VERSION;
+  this.v13_ = ol.string.compareVersions(version, "1.3") >= 0;
+};
 goog.provide("ol.source.OSM");
 goog.require("ol");
 goog.require("ol.source.XYZ");
@@ -39672,7 +39397,7 @@ ol.ext.pixelworks.Processor = function() {
       var workerHasImageData = true;
       try {
         new ImageData(10, 10);
-      } catch (_$11) {
+      } catch (_$10) {
         workerHasImageData = false;
       }
       function newWorkerImageData(data, width, height) {
@@ -40516,6 +40241,173 @@ ol.source.TileUTFGrid.Tile_.prototype.load = function() {
   if (this.preemptive_) {
     this.loadInternal_();
   }
+};
+goog.provide("ol.source.TileWMS");
+goog.require("ol");
+goog.require("ol.asserts");
+goog.require("ol.extent");
+goog.require("ol.obj");
+goog.require("ol.math");
+goog.require("ol.proj");
+goog.require("ol.reproj");
+goog.require("ol.size");
+goog.require("ol.source.TileImage");
+goog.require("ol.source.WMSServerType");
+goog.require("ol.tilecoord");
+goog.require("ol.string");
+goog.require("ol.uri");
+ol.source.TileWMS = function(opt_options) {
+  var options = opt_options || {};
+  var params = options.params || {};
+  var transparent = "TRANSPARENT" in params ? params["TRANSPARENT"] : true;
+  ol.source.TileImage.call(this, {attributions:options.attributions, cacheSize:options.cacheSize, crossOrigin:options.crossOrigin, logo:options.logo, opaque:!transparent, projection:options.projection, reprojectionErrorThreshold:options.reprojectionErrorThreshold, tileClass:options.tileClass, tileGrid:options.tileGrid, tileLoadFunction:options.tileLoadFunction, url:options.url, urls:options.urls, wrapX:options.wrapX !== undefined ? options.wrapX : true, transition:options.transition});
+  this.gutter_ = options.gutter !== undefined ? options.gutter : 0;
+  this.params_ = params;
+  this.v13_ = true;
+  this.serverType_ = options.serverType;
+  this.hidpi_ = options.hidpi !== undefined ? options.hidpi : true;
+  this.tmpExtent_ = ol.extent.createEmpty();
+  this.updateV13_();
+  this.setKey(this.getKeyForParams_());
+};
+ol.inherits(ol.source.TileWMS, ol.source.TileImage);
+ol.source.TileWMS.prototype.getGetFeatureInfoUrl = function(coordinate, resolution, projection, params) {
+  var projectionObj = ol.proj.get(projection);
+  var sourceProjectionObj = this.getProjection();
+  var tileGrid = this.getTileGrid();
+  if (!tileGrid) {
+    tileGrid = this.getTileGridForProjection(projectionObj);
+  }
+  var tileCoord = tileGrid.getTileCoordForCoordAndResolution(coordinate, resolution);
+  if (tileGrid.getResolutions().length <= tileCoord[0]) {
+    return undefined;
+  }
+  var tileResolution = tileGrid.getResolution(tileCoord[0]);
+  var tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent_);
+  var tileSize = ol.size.toSize(tileGrid.getTileSize(tileCoord[0]), this.tmpSize);
+  var gutter = this.gutter_;
+  if (gutter !== 0) {
+    tileSize = ol.size.buffer(tileSize, gutter, this.tmpSize);
+    tileExtent = ol.extent.buffer(tileExtent, tileResolution * gutter, tileExtent);
+  }
+  if (sourceProjectionObj && sourceProjectionObj !== projectionObj) {
+    tileResolution = ol.reproj.calculateSourceResolution(sourceProjectionObj, projectionObj, coordinate, tileResolution);
+    tileExtent = ol.proj.transformExtent(tileExtent, projectionObj, sourceProjectionObj);
+    coordinate = ol.proj.transform(coordinate, projectionObj, sourceProjectionObj);
+  }
+  var baseParams = {"SERVICE":"WMS", "VERSION":ol.DEFAULT_WMS_VERSION, "REQUEST":"GetFeatureInfo", "FORMAT":"image/png", "TRANSPARENT":true, "QUERY_LAYERS":this.params_["LAYERS"]};
+  ol.obj.assign(baseParams, this.params_, params);
+  var x = Math.floor((coordinate[0] - tileExtent[0]) / tileResolution);
+  var y = Math.floor((tileExtent[3] - coordinate[1]) / tileResolution);
+  baseParams[this.v13_ ? "I" : "X"] = x;
+  baseParams[this.v13_ ? "J" : "Y"] = y;
+  return this.getRequestUrl_(tileCoord, tileSize, tileExtent, 1, sourceProjectionObj || projectionObj, baseParams);
+};
+ol.source.TileWMS.prototype.getGutterInternal = function() {
+  return this.gutter_;
+};
+ol.source.TileWMS.prototype.getParams = function() {
+  return this.params_;
+};
+ol.source.TileWMS.prototype.getRequestUrl_ = function(tileCoord, tileSize, tileExtent, pixelRatio, projection, params) {
+  var urls = this.urls;
+  if (!urls) {
+    return undefined;
+  }
+  params["WIDTH"] = tileSize[0];
+  params["HEIGHT"] = tileSize[1];
+  params[this.v13_ ? "CRS" : "SRS"] = projection.getCode();
+  if (!("STYLES" in this.params_)) {
+    params["STYLES"] = "";
+  }
+  if (pixelRatio != 1) {
+    switch(this.serverType_) {
+      case ol.source.WMSServerType.GEOSERVER:
+        var dpi = 90 * pixelRatio + 0.5 | 0;
+        if ("FORMAT_OPTIONS" in params) {
+          params["FORMAT_OPTIONS"] += ";dpi:" + dpi;
+        } else {
+          params["FORMAT_OPTIONS"] = "dpi:" + dpi;
+        }
+        break;
+      case ol.source.WMSServerType.MAPSERVER:
+        params["MAP_RESOLUTION"] = 90 * pixelRatio;
+        break;
+      case ol.source.WMSServerType.CARMENTA_SERVER:
+      case ol.source.WMSServerType.QGIS:
+        params["DPI"] = 90 * pixelRatio;
+        break;
+      default:
+        ol.asserts.assert(false, 52);
+        break;
+    }
+  }
+  var axisOrientation = projection.getAxisOrientation();
+  var bbox = tileExtent;
+  if (this.v13_ && axisOrientation.substr(0, 2) == "ne") {
+    var tmp;
+    tmp = tileExtent[0];
+    bbox[0] = tileExtent[1];
+    bbox[1] = tmp;
+    tmp = tileExtent[2];
+    bbox[2] = tileExtent[3];
+    bbox[3] = tmp;
+  }
+  params["BBOX"] = bbox.join(",");
+  var url;
+  if (urls.length == 1) {
+    url = urls[0];
+  } else {
+    var index = ol.math.modulo(ol.tilecoord.hash(tileCoord), urls.length);
+    url = urls[index];
+  }
+  return ol.uri.appendParams(url, params);
+};
+ol.source.TileWMS.prototype.getTilePixelRatio = function(pixelRatio) {
+  return !this.hidpi_ || this.serverType_ === undefined ? 1 : pixelRatio;
+};
+ol.source.TileWMS.prototype.getKeyForParams_ = function() {
+  var i = 0;
+  var res = [];
+  for (var key in this.params_) {
+    res[i++] = key + "-" + this.params_[key];
+  }
+  return res.join("/");
+};
+ol.source.TileWMS.prototype.fixedTileUrlFunction = function(tileCoord, pixelRatio, projection) {
+  var tileGrid = this.getTileGrid();
+  if (!tileGrid) {
+    tileGrid = this.getTileGridForProjection(projection);
+  }
+  if (tileGrid.getResolutions().length <= tileCoord[0]) {
+    return undefined;
+  }
+  if (pixelRatio != 1 && (!this.hidpi_ || this.serverType_ === undefined)) {
+    pixelRatio = 1;
+  }
+  var tileResolution = tileGrid.getResolution(tileCoord[0]);
+  var tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent_);
+  var tileSize = ol.size.toSize(tileGrid.getTileSize(tileCoord[0]), this.tmpSize);
+  var gutter = this.gutter_;
+  if (gutter !== 0) {
+    tileSize = ol.size.buffer(tileSize, gutter, this.tmpSize);
+    tileExtent = ol.extent.buffer(tileExtent, tileResolution * gutter, tileExtent);
+  }
+  if (pixelRatio != 1) {
+    tileSize = ol.size.scale(tileSize, pixelRatio, this.tmpSize);
+  }
+  var baseParams = {"SERVICE":"WMS", "VERSION":ol.DEFAULT_WMS_VERSION, "REQUEST":"GetMap", "FORMAT":"image/png", "TRANSPARENT":true};
+  ol.obj.assign(baseParams, this.params_);
+  return this.getRequestUrl_(tileCoord, tileSize, tileExtent, pixelRatio, projection, baseParams);
+};
+ol.source.TileWMS.prototype.updateParams = function(params) {
+  ol.obj.assign(this.params_, params);
+  this.updateV13_();
+  this.setKey(this.getKeyForParams_());
+};
+ol.source.TileWMS.prototype.updateV13_ = function() {
+  var version = this.params_["VERSION"] || ol.DEFAULT_WMS_VERSION;
+  this.v13_ = ol.string.compareVersions(version, "1.3") >= 0;
 };
 goog.provide("ol.VectorImageTile");
 goog.require("ol");
@@ -42363,7 +42255,6 @@ goog.exportProperty(olcs.Camera.prototype, "calcDistanceForResolution", olcs.Cam
 goog.exportProperty(olcs.Camera.prototype, "calcResolutionForDistance", olcs.Camera.prototype.calcResolutionForDistance);
 goog.exportSymbol("olcs.core.computePixelSizeAtCoordinate", olcs.core.computePixelSizeAtCoordinate);
 goog.exportSymbol("olcs.core.applyHeightOffsetToGeometry", olcs.core.applyHeightOffsetToGeometry);
-goog.exportSymbol("olcs.core.createMatrixAtCoordinates", olcs.core.createMatrixAtCoordinates);
 goog.exportSymbol("olcs.core.rotateAroundAxis", olcs.core.rotateAroundAxis);
 goog.exportSymbol("olcs.core.setHeadingUsingBottomCenter", olcs.core.setHeadingUsingBottomCenter);
 goog.exportSymbol("olcs.core.pickOnTerrainOrEllipsoid", olcs.core.pickOnTerrainOrEllipsoid);
@@ -42389,7 +42280,6 @@ goog.exportProperty(olcs.FeatureConverter.prototype, "olCircleGeometryToCesium",
 goog.exportProperty(olcs.FeatureConverter.prototype, "olLineStringGeometryToCesium", olcs.FeatureConverter.prototype.olLineStringGeometryToCesium);
 goog.exportProperty(olcs.FeatureConverter.prototype, "olPolygonGeometryToCesium", olcs.FeatureConverter.prototype.olPolygonGeometryToCesium);
 goog.exportProperty(olcs.FeatureConverter.prototype, "getHeightReference", olcs.FeatureConverter.prototype.getHeightReference);
-goog.exportProperty(olcs.FeatureConverter.prototype, "createBillboardFromImage", olcs.FeatureConverter.prototype.createBillboardFromImage);
 goog.exportProperty(olcs.FeatureConverter.prototype, "olPointGeometryToCesium", olcs.FeatureConverter.prototype.olPointGeometryToCesium);
 goog.exportProperty(olcs.FeatureConverter.prototype, "olMultiGeometryToCesium", olcs.FeatureConverter.prototype.olMultiGeometryToCesium);
 goog.exportProperty(olcs.FeatureConverter.prototype, "olGeometry4326TextPartToCesium", olcs.FeatureConverter.prototype.olGeometry4326TextPartToCesium);

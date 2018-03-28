@@ -783,7 +783,6 @@ Cesium.Camera.prototype.getRectangleCameraCoordinates = function(rect) {};
 
 
 /**
- * @struct
  * @constructor
  * @param {number=} x
  * @param {number=} y
@@ -1077,10 +1076,6 @@ Cesium.Ray.prototype.direction;
  */
 Cesium.Globe = function(ellipsoid) {};
 
-/**
- * @type {!Cesium.ImageryLayerCollection}
- */
-Cesium.Globe.prototype.imageryLayers;
 
 /**
  * @type {Cesium.Ellipsoid}
@@ -1382,12 +1377,7 @@ Cesium.optionsCircleOutlineGeometry;
  */
 Cesium.CircleOutlineGeometry = function(opt_opts) {};
 
-/**
- * @constructor
- * @param {number} from .
- * @param {number} to .
- */
-Cesium.DistanceDisplayConditionGeometryInstanceAttribute = function(from, to) {};
+
 
 /**
  * @constructor
@@ -1428,10 +1418,6 @@ Cesium.optionsGeometryInstance.prototype.attributes;
  */
 Cesium.GeometryInstanceAttribute.prototype.color;
 
-/**
- * @type {Cesium.DistanceDisplayConditionGeometryInstanceAttribute}
- */
-Cesium.GeometryInstanceAttribute.prototype.distanceDisplayCondition;
 
 
 
@@ -1505,42 +1491,8 @@ Cesium.VertexFormat = function(options) {};
 /**
  * @type {Cesium.VertexFormat}
  */
-Cesium.VertexFormat.DEFAULT;
-
-/**
- * @type {Cesium.VertexFormat}
- */
-Cesium.VertexFormat.POSITION_ONLY;
-
-/**
- * @type {Cesium.VertexFormat}
- */
-Cesium.VertexFormat.POSITION_NORMAL_AND_ST;
-
-/**
- * @type {Cesium.VertexFormat}
- */
-Cesium.VertexFormat.POSITION_AND_NORMAL;
-
-/**
- * @type {Cesium.VertexFormat}
- */
-Cesium.VertexFormat.POSITION_AND_ST;
-
-/**
- * @type {Cesium.VertexFormat}
- */
-Cesium.VertexFormat.POSITION_AND_COLOR;
-
-/**
- * @type {Cesium.VertexFormat}
- */
-Cesium.VertexFormat.ALL;
-
-/**
- * @type {Cesium.VertexFormat}
- */
 Cesium.PerInstanceColorAppearance.VERTEX_FORMAT;
+
 
 /**
  * @typedef {{
@@ -1589,7 +1541,7 @@ Cesium.PolygonGeometry = function(object) {};
  *   positions: !Array.<Cesium.Cartesian3>,
  *   height: (number|undefined),
  *   extrudedHeight: (number|undefined),
- *   vertexFormat: (Cesium.VertexFormat|undefined)
+ *   vertexFormat: number
  * }}
  */
 Cesium.optionsPolylineGeometry;
@@ -1628,7 +1580,7 @@ Cesium.RectangleOutlineGeometry = function(opt_opts) {};
 /**
  * @typedef {{
  *   positions: !Array.<Cesium.Cartesian3>,
- *   vertexFormat: (Cesium.VertexFormat|undefined)
+ *   vertexFormat: number
  * }}
  */
 Cesium.optionsPolylineGeometry;
@@ -1681,7 +1633,7 @@ Cesium.CorridorGeometry = function(opt_opts) {};
  *   granularity: (number|undefined),
  *   height: (number|undefined),
  *   extrudedHeight: (number|undefined),
- *   vertexFormat: (Cesium.VertexFormat|undefined),
+ *   vertexFormat: number,
  *   cornerType: (number|undefined),
  * }}
  */
@@ -1977,9 +1929,8 @@ Cesium.ImageryLayerCollection = function() {};
 
 /**
  * @param {Cesium.ImageryProvider} provider
- * @param {number=} index
  */
-Cesium.ImageryLayerCollection.prototype.addImageryProvider = function(provider, index) {};
+Cesium.ImageryLayerCollection.prototype.addImageryProvider = function(provider) {};
 
 
 /**
@@ -2409,19 +2360,12 @@ Cesium.Matrix4.clone = function(matrix, opt_result) {};
  */
 Cesium.Matrix4.fromTranslation = function(translation, opt_result) {};
 
-/**
- * @param {!Cesium.Cartesian3} translation
- * @param {!Cesium.Quaternion} rotation
- * @param {!Cesium.Cartesian3} scale
- * @return {!Cesium.Matrix4}
- */
-Cesium.Matrix4.fromTranslationQuaternionRotationScale = function(translation, rotation, scale) {};
 
 /**
  * @param {Cesium.Matrix4} left .
  * @param {Cesium.Matrix4} right .
  * @param {Cesium.Matrix4} result .
- * @return {!Cesium.Matrix4} .
+ * @return {Cesium.Matrix4} .
  */
 Cesium.Matrix4.multiply = function(left, right, result) {};
 
@@ -3210,8 +3154,7 @@ Cesium.SingleTileImageryProvider = function(options) {};
 
 /**
  * @typedef {{
- *   url: string,
- *   rectangle: (Cesium.Rectangle|undefined)
+ *   url: string
  * }}
  */
 Cesium.SingleTileImageryProviderOptions;
@@ -3655,57 +3598,3 @@ Cesium.HeadingPitchRange = function(heading, pitch, range) {};
  * @return {Promise<Image>}
  */
 Cesium.loadImage = function(url, opt_anonymous) {};
-
-
-/**
- * @constructor
- */
-Cesium.Model = function() {};
-
-/**
- * @param {Cesium.ModelFromGltfOptions} options
- */
-Cesium.Model.fromGltf = function(options) {};
-
-/**
- * @constructor
- * @param {number} near .
- * @param {number} far .
- */
-Cesium.DistanceDisplayCondition = function(near, far) {};
-
-/**
- * @typedef {{
- *  scene: (Cesium.Scene|undefined),
- *  url: (string),
- *  heightReference: (Cesium.HeightReference|undefined),
- *  modelMatrix: (Cesium.Matrix4|undefined),
- *  minimumPixelSize: (number|undefined),
- *  distanceDisplayCondition: (Cesium.DistanceDisplayCondition|undefined),
- *  color: (Cesium.Color|undefined),
- *  silhouetteColor: (Cesium.Color|undefined),
- *  silhouetteSize: (number|undefined),
- *  allowPicking: (boolean|undefined),
- *  debugWireframe: (boolean|undefined),
- *  id: (Object|undefined)
- * }}
- */
-Cesium.ModelFromGltfOptions;
-
-/**
- * @typedef {{
- *  length: (number|undefined),
- *  width: (number|undefined),
- *  modelMatrix: (Cesium.Matrix4|undefined),
- *  show: (boolean|undefined),
- *  id: (Object|undefined)
- * }}
- */
-Cesium.DebugModelMatrixPrimitiveOptions;
-
-/**
- * @constructor
- * @extends Cesium.Primitive
- * @param {Cesium.DebugModelMatrixPrimitiveOptions} options
- */
-Cesium.DebugModelMatrixPrimitive = function(options) {};
