@@ -1240,7 +1240,6 @@ define('Core/Math',[
         return randomNumberGenerator.random();
     };
 
-
     /**
      * Generates a random number between two numbers.
      *
@@ -4955,7 +4954,6 @@ define('Core/Cartesian4',[
         return result;
     };
 
-
     /**
      * The number of elements used to pack the object into an array.
      * @type {Number}
@@ -5544,6 +5542,89 @@ define('Core/Cartesian4',[
      */
     Cartesian4.prototype.toString = function() {
         return '(' + this.x + ', ' + this.y + ', ' + this.z + ', ' + this.w + ')';
+    };
+
+    var scratchFloatArray = new Float32Array(1);
+    var SHIFT_LEFT_8 = 256.0;
+    var SHIFT_LEFT_16 = 65536.0;
+    var SHIFT_LEFT_24 = 16777216.0;
+
+    var SHIFT_RIGHT_8 = 1.0 / SHIFT_LEFT_8;
+    var SHIFT_RIGHT_16 = 1.0 / SHIFT_LEFT_16;
+    var SHIFT_RIGHT_24 = 1.0 / SHIFT_LEFT_24;
+
+    var BIAS = 38.0;
+
+    /**
+     * Packs an arbitrary floating point value to 4 values representable using uint8.
+     *
+     * @param {Number} value A floating point number
+     * @param {Cartesian4} [result] The Cartesian4 that will contain the packed float.
+     * @returns {Cartesian4} A Cartesian4 representing the float packed to values in x, y, z, and w.
+     */
+    Cartesian4.packFloat = function(value, result) {
+        
+        if (!defined(result)) {
+            result = new Cartesian4();
+        }
+
+        // Force the value to 32 bit precision
+        scratchFloatArray[0] = value;
+        value = scratchFloatArray[0];
+
+        if (value === 0.0) {
+            return Cartesian4.clone(Cartesian4.ZERO, result);
+        }
+
+        var sign = value < 0.0 ? 1.0 : 0.0;
+        var exponent;
+
+        if (!isFinite(value)) {
+            value = 0.1;
+            exponent = BIAS;
+        } else {
+            value = Math.abs(value);
+            exponent = Math.floor(CesiumMath.logBase(value, 10)) + 1.0;
+            value = value / Math.pow(10.0, exponent);
+        }
+
+        var temp = value * SHIFT_LEFT_8;
+        result.x = Math.floor(temp);
+        temp = (temp - result.x) * SHIFT_LEFT_8;
+        result.y = Math.floor(temp);
+        temp = (temp - result.y) * SHIFT_LEFT_8;
+        result.z = Math.floor(temp);
+        result.w = (exponent + BIAS) * 2.0 + sign;
+
+        return result;
+    };
+
+    /**
+     * Unpacks a float packed using Cartesian4.packFloat.
+     *
+     * @param {Cartesian4} packedFloat A Cartesian4 containing a float packed to 4 values representable using uint8.
+     * @returns {Number} The unpacked float.
+     * @private
+     */
+    Cartesian4.unpackFloat = function(packedFloat) {
+        
+        var temp = packedFloat.w / 2.0;
+        var exponent = Math.floor(temp);
+        var sign = (temp - exponent) * 2.0;
+        exponent = exponent - BIAS;
+
+        sign = sign * 2.0 - 1.0;
+        sign = -sign;
+
+        if (exponent >= BIAS) {
+            return sign < 0.0 ? Number.NEGATIVE_INFINITY : Number.POSITIVE_INFINITY;
+        }
+
+        var unpacked = sign * packedFloat.x * SHIFT_RIGHT_8;
+        unpacked += sign * packedFloat.y * SHIFT_RIGHT_16;
+        unpacked += sign * packedFloat.z * SHIFT_RIGHT_24;
+
+        return unpacked * Math.pow(10.0, exponent);
     };
 
     return Cartesian4;
@@ -8795,7 +8876,6 @@ define('Core/Rectangle',[
 define('Core/BoundingSphere',[
         './Cartesian3',
         './Cartographic',
-        './Math',
         './Check',
         './defaultValue',
         './defined',
@@ -8803,13 +8883,13 @@ define('Core/BoundingSphere',[
         './GeographicProjection',
         './Intersect',
         './Interval',
+        './Math',
         './Matrix3',
         './Matrix4',
         './Rectangle'
     ], function(
         Cartesian3,
         Cartographic,
-        CesiumMath,
         Check,
         defaultValue,
         defined,
@@ -8817,6 +8897,7 @@ define('Core/BoundingSphere',[
         GeographicProjection,
         Intersect,
         Interval,
+        CesiumMath,
         Matrix3,
         Matrix4,
         Rectangle) {
@@ -10469,7 +10550,6 @@ define('Core/FeatureDetection',[
         }
         return isWindowsResult;
     }
-
 
     function firefoxVersion() {
         return isFirefox() && firefoxVersionResult;
@@ -12615,7 +12695,6 @@ define('Core/Cartesian2',[
      */
     Cartesian2.minimumByComponent = function(first, second, result) {
         
-
         result.x = Math.min(first.x, second.x);
         result.y = Math.min(first.y, second.y);
 
@@ -15498,8 +15577,9 @@ define('ThirdParty/when',[],function () {
 );
 
 define('Core/binarySearch',[
-    './Check'
-], function(Check) {
+        './Check'
+    ], function(
+        Check) {
     'use strict';
 
     /**
@@ -17081,245 +17161,6 @@ define('Core/JulianDate',[
     return JulianDate;
 });
 
-define('Core/appendForwardSlash',[],function() {
-    'use strict';
-
-    /**
-     * @private
-     */
-    function appendForwardSlash(url) {
-        if (url.length === 0 || url[url.length - 1] !== '/') {
-            url = url + '/';
-        }
-        return url;
-    }
-
-    return appendForwardSlash;
-});
-
-define('Core/clone',[
-        './defaultValue'
-    ], function(
-        defaultValue) {
-    'use strict';
-
-    /**
-     * Clones an object, returning a new object containing the same properties.
-     *
-     * @exports clone
-     *
-     * @param {Object} object The object to clone.
-     * @param {Boolean} [deep=false] If true, all properties will be deep cloned recursively.
-     * @returns {Object} The cloned object.
-     */
-    function clone(object, deep) {
-        if (object === null || typeof object !== 'object') {
-            return object;
-        }
-
-        deep = defaultValue(deep, false);
-
-        var result = new object.constructor();
-        for ( var propertyName in object) {
-            if (object.hasOwnProperty(propertyName)) {
-                var value = object[propertyName];
-                if (deep) {
-                    value = clone(value, deep);
-                }
-                result[propertyName] = value;
-            }
-        }
-
-        return result;
-    }
-
-    return clone;
-});
-
-define('Core/combine',[
-        './defaultValue',
-        './defined'
-    ], function(
-        defaultValue,
-        defined) {
-    'use strict';
-
-    /**
-     * Merges two objects, copying their properties onto a new combined object. When two objects have the same
-     * property, the value of the property on the first object is used.  If either object is undefined,
-     * it will be treated as an empty object.
-     *
-     * @example
-     * var object1 = {
-     *     propOne : 1,
-     *     propTwo : {
-     *         value1 : 10
-     *     }
-     * }
-     * var object2 = {
-     *     propTwo : 2
-     * }
-     * var final = Cesium.combine(object1, object2);
-     *
-     * // final === {
-     * //     propOne : 1,
-     * //     propTwo : {
-     * //         value1 : 10
-     * //     }
-     * // }
-     *
-     * @param {Object} [object1] The first object to merge.
-     * @param {Object} [object2] The second object to merge.
-     * @param {Boolean} [deep=false] Perform a recursive merge.
-     * @returns {Object} The combined object containing all properties from both objects.
-     *
-     * @exports combine
-     */
-    function combine(object1, object2, deep) {
-        deep = defaultValue(deep, false);
-
-        var result = {};
-
-        var object1Defined = defined(object1);
-        var object2Defined = defined(object2);
-        var property;
-        var object1Value;
-        var object2Value;
-        if (object1Defined) {
-            for (property in object1) {
-                if (object1.hasOwnProperty(property)) {
-                    object1Value = object1[property];
-                    if (object2Defined && deep && typeof object1Value === 'object' && object2.hasOwnProperty(property)) {
-                        object2Value = object2[property];
-                        if (typeof object2Value === 'object') {
-                            result[property] = combine(object1Value, object2Value, deep);
-                        } else {
-                            result[property] = object1Value;
-                        }
-                    } else {
-                        result[property] = object1Value;
-                    }
-                }
-            }
-        }
-        if (object2Defined) {
-            for (property in object2) {
-                if (object2.hasOwnProperty(property) && !result.hasOwnProperty(property)) {
-                    object2Value = object2[property];
-                    result[property] = object2Value;
-                }
-            }
-        }
-        return result;
-    }
-
-    return combine;
-});
-
-define('Core/oneTimeWarning',[
-        './defaultValue',
-        './defined',
-        './DeveloperError'
-    ], function(
-        defaultValue,
-        defined,
-        DeveloperError) {
-    'use strict';
-
-    var warnings = {};
-
-    /**
-     * Logs a one time message to the console.  Use this function instead of
-     * <code>console.log</code> directly since this does not log duplicate messages
-     * unless it is called from multiple workers.
-     *
-     * @exports oneTimeWarning
-     *
-     * @param {String} identifier The unique identifier for this warning.
-     * @param {String} [message=identifier] The message to log to the console.
-     *
-     * @example
-     * for(var i=0;i<foo.length;++i) {
-     *    if (!defined(foo[i].bar)) {
-     *       // Something that can be recovered from but may happen a lot
-     *       oneTimeWarning('foo.bar undefined', 'foo.bar is undefined. Setting to 0.');
-     *       foo[i].bar = 0;
-     *       // ...
-     *    }
-     * }
-     *
-     * @private
-     */
-    function oneTimeWarning(identifier, message) {
-        
-        if (!defined(warnings[identifier])) {
-            warnings[identifier] = true;
-            console.warn(defaultValue(message, identifier));
-        }
-    }
-
-    oneTimeWarning.geometryOutlines = 'Entity geometry outlines are unsupported on terrain. Outlines will be disabled. To enable outlines, disable geometry terrain clamping by explicitly setting height to 0.';
-
-    return oneTimeWarning;
-});
-
-define('Core/deprecationWarning',[
-        './defined',
-        './DeveloperError',
-        './oneTimeWarning'
-    ], function(
-        defined,
-        DeveloperError,
-        oneTimeWarning) {
-    'use strict';
-
-    /**
-     * Logs a deprecation message to the console.  Use this function instead of
-     * <code>console.log</code> directly since this does not log duplicate messages
-     * unless it is called from multiple workers.
-     *
-     * @exports deprecationWarning
-     *
-     * @param {String} identifier The unique identifier for this deprecated API.
-     * @param {String} message The message to log to the console.
-     *
-     * @example
-     * // Deprecated function or class
-     * function Foo() {
-     *    deprecationWarning('Foo', 'Foo was deprecated in Cesium 1.01.  It will be removed in 1.03.  Use newFoo instead.');
-     *    // ...
-     * }
-     *
-     * // Deprecated function
-     * Bar.prototype.func = function() {
-     *    deprecationWarning('Bar.func', 'Bar.func() was deprecated in Cesium 1.01.  It will be removed in 1.03.  Use Bar.newFunc() instead.');
-     *    // ...
-     * };
-     *
-     * // Deprecated property
-     * defineProperties(Bar.prototype, {
-     *     prop : {
-     *         get : function() {
-     *             deprecationWarning('Bar.prop', 'Bar.prop was deprecated in Cesium 1.01.  It will be removed in 1.03.  Use Bar.newProp instead.');
-     *             // ...
-     *         },
-     *         set : function(value) {
-     *             deprecationWarning('Bar.prop', 'Bar.prop was deprecated in Cesium 1.01.  It will be removed in 1.03.  Use Bar.newProp instead.');
-     *             // ...
-     *         }
-     *     }
-     * });
-     *
-     * @private
-     */
-    function deprecationWarning(identifier, message) {
-        
-        oneTimeWarning(identifier, message);
-    }
-
-    return deprecationWarning;
-});
-
 /**
  * @license
  *
@@ -17594,6 +17435,245 @@ define('ThirdParty/Uri',[],function() {
 	};
 
 return URI;
+});
+
+define('Core/appendForwardSlash',[],function() {
+    'use strict';
+
+    /**
+     * @private
+     */
+    function appendForwardSlash(url) {
+        if (url.length === 0 || url[url.length - 1] !== '/') {
+            url = url + '/';
+        }
+        return url;
+    }
+
+    return appendForwardSlash;
+});
+
+define('Core/clone',[
+        './defaultValue'
+    ], function(
+        defaultValue) {
+    'use strict';
+
+    /**
+     * Clones an object, returning a new object containing the same properties.
+     *
+     * @exports clone
+     *
+     * @param {Object} object The object to clone.
+     * @param {Boolean} [deep=false] If true, all properties will be deep cloned recursively.
+     * @returns {Object} The cloned object.
+     */
+    function clone(object, deep) {
+        if (object === null || typeof object !== 'object') {
+            return object;
+        }
+
+        deep = defaultValue(deep, false);
+
+        var result = new object.constructor();
+        for ( var propertyName in object) {
+            if (object.hasOwnProperty(propertyName)) {
+                var value = object[propertyName];
+                if (deep) {
+                    value = clone(value, deep);
+                }
+                result[propertyName] = value;
+            }
+        }
+
+        return result;
+    }
+
+    return clone;
+});
+
+define('Core/combine',[
+        './defaultValue',
+        './defined'
+    ], function(
+        defaultValue,
+        defined) {
+    'use strict';
+
+    /**
+     * Merges two objects, copying their properties onto a new combined object. When two objects have the same
+     * property, the value of the property on the first object is used.  If either object is undefined,
+     * it will be treated as an empty object.
+     *
+     * @example
+     * var object1 = {
+     *     propOne : 1,
+     *     propTwo : {
+     *         value1 : 10
+     *     }
+     * }
+     * var object2 = {
+     *     propTwo : 2
+     * }
+     * var final = Cesium.combine(object1, object2);
+     *
+     * // final === {
+     * //     propOne : 1,
+     * //     propTwo : {
+     * //         value1 : 10
+     * //     }
+     * // }
+     *
+     * @param {Object} [object1] The first object to merge.
+     * @param {Object} [object2] The second object to merge.
+     * @param {Boolean} [deep=false] Perform a recursive merge.
+     * @returns {Object} The combined object containing all properties from both objects.
+     *
+     * @exports combine
+     */
+    function combine(object1, object2, deep) {
+        deep = defaultValue(deep, false);
+
+        var result = {};
+
+        var object1Defined = defined(object1);
+        var object2Defined = defined(object2);
+        var property;
+        var object1Value;
+        var object2Value;
+        if (object1Defined) {
+            for (property in object1) {
+                if (object1.hasOwnProperty(property)) {
+                    object1Value = object1[property];
+                    if (object2Defined && deep && typeof object1Value === 'object' && object2.hasOwnProperty(property)) {
+                        object2Value = object2[property];
+                        if (typeof object2Value === 'object') {
+                            result[property] = combine(object1Value, object2Value, deep);
+                        } else {
+                            result[property] = object1Value;
+                        }
+                    } else {
+                        result[property] = object1Value;
+                    }
+                }
+            }
+        }
+        if (object2Defined) {
+            for (property in object2) {
+                if (object2.hasOwnProperty(property) && !result.hasOwnProperty(property)) {
+                    object2Value = object2[property];
+                    result[property] = object2Value;
+                }
+            }
+        }
+        return result;
+    }
+
+    return combine;
+});
+
+define('Core/oneTimeWarning',[
+        './defaultValue',
+        './defined',
+        './DeveloperError'
+    ], function(
+        defaultValue,
+        defined,
+        DeveloperError) {
+    'use strict';
+
+    var warnings = {};
+
+    /**
+     * Logs a one time message to the console.  Use this function instead of
+     * <code>console.log</code> directly since this does not log duplicate messages
+     * unless it is called from multiple workers.
+     *
+     * @exports oneTimeWarning
+     *
+     * @param {String} identifier The unique identifier for this warning.
+     * @param {String} [message=identifier] The message to log to the console.
+     *
+     * @example
+     * for(var i=0;i<foo.length;++i) {
+     *    if (!defined(foo[i].bar)) {
+     *       // Something that can be recovered from but may happen a lot
+     *       oneTimeWarning('foo.bar undefined', 'foo.bar is undefined. Setting to 0.');
+     *       foo[i].bar = 0;
+     *       // ...
+     *    }
+     * }
+     *
+     * @private
+     */
+    function oneTimeWarning(identifier, message) {
+        
+        if (!defined(warnings[identifier])) {
+            warnings[identifier] = true;
+            console.warn(defaultValue(message, identifier));
+        }
+    }
+
+    oneTimeWarning.geometryOutlines = 'Entity geometry outlines are unsupported on terrain. Outlines will be disabled. To enable outlines, disable geometry terrain clamping by explicitly setting height to 0.';
+
+    return oneTimeWarning;
+});
+
+define('Core/deprecationWarning',[
+        './defined',
+        './DeveloperError',
+        './oneTimeWarning'
+    ], function(
+        defined,
+        DeveloperError,
+        oneTimeWarning) {
+    'use strict';
+
+    /**
+     * Logs a deprecation message to the console.  Use this function instead of
+     * <code>console.log</code> directly since this does not log duplicate messages
+     * unless it is called from multiple workers.
+     *
+     * @exports deprecationWarning
+     *
+     * @param {String} identifier The unique identifier for this deprecated API.
+     * @param {String} message The message to log to the console.
+     *
+     * @example
+     * // Deprecated function or class
+     * function Foo() {
+     *    deprecationWarning('Foo', 'Foo was deprecated in Cesium 1.01.  It will be removed in 1.03.  Use newFoo instead.');
+     *    // ...
+     * }
+     *
+     * // Deprecated function
+     * Bar.prototype.func = function() {
+     *    deprecationWarning('Bar.func', 'Bar.func() was deprecated in Cesium 1.01.  It will be removed in 1.03.  Use Bar.newFunc() instead.');
+     *    // ...
+     * };
+     *
+     * // Deprecated property
+     * defineProperties(Bar.prototype, {
+     *     prop : {
+     *         get : function() {
+     *             deprecationWarning('Bar.prop', 'Bar.prop was deprecated in Cesium 1.01.  It will be removed in 1.03.  Use Bar.newProp instead.');
+     *             // ...
+     *         },
+     *         set : function(value) {
+     *             deprecationWarning('Bar.prop', 'Bar.prop was deprecated in Cesium 1.01.  It will be removed in 1.03.  Use Bar.newProp instead.');
+     *             // ...
+     *         }
+     *     }
+     * });
+     *
+     * @private
+     */
+    function deprecationWarning(identifier, message) {
+        
+        oneTimeWarning(identifier, message);
+    }
+
+    return deprecationWarning;
 });
 
 define('Core/getAbsoluteUri',[
@@ -18227,7 +18307,6 @@ define('Core/Request',[
     Request.prototype.cancel = function() {
         this.cancelled = true;
     };
-
 
     /**
      * Duplicates a Request instance.
@@ -19344,58 +19423,59 @@ define('Core/TrustedServers',[
 });
 
 define('Core/Resource',[
-    './appendForwardSlash',
-    './Check',
-    './clone',
-    './combine',
-    './defaultValue',
-    './defined',
-    './defineProperties',
-    './deprecationWarning',
-    './DeveloperError',
-    './freezeObject',
-    './getAbsoluteUri',
-    './getBaseUri',
-    './getExtensionFromUri',
-    './isBlobUri',
-    './isCrossOriginUrl',
-    './isDataUri',
-    './objectToQuery',
-    './queryToObject',
-    './Request',
-    './RequestErrorEvent',
-    './RequestScheduler',
-    './RequestState',
-    './RuntimeError',
-    './TrustedServers',
-    '../ThirdParty/Uri',
-    '../ThirdParty/when'
-], function(appendForwardSlash,
-            Check,
-            clone,
-            combine,
-            defaultValue,
-            defined,
-            defineProperties,
-            deprecationWarning,
-            DeveloperError,
-            freezeObject,
-            getAbsoluteUri,
-            getBaseUri,
-            getExtensionFromUri,
-            isBlobUri,
-            isCrossOriginUrl,
-            isDataUri,
-            objectToQuery,
-            queryToObject,
-            Request,
-            RequestErrorEvent,
-            RequestScheduler,
-            RequestState,
-            RuntimeError,
-            TrustedServers,
-            Uri,
-            when) {
+        '../ThirdParty/Uri',
+        '../ThirdParty/when',
+        './appendForwardSlash',
+        './Check',
+        './clone',
+        './combine',
+        './defaultValue',
+        './defined',
+        './defineProperties',
+        './deprecationWarning',
+        './DeveloperError',
+        './freezeObject',
+        './getAbsoluteUri',
+        './getBaseUri',
+        './getExtensionFromUri',
+        './isBlobUri',
+        './isCrossOriginUrl',
+        './isDataUri',
+        './objectToQuery',
+        './queryToObject',
+        './Request',
+        './RequestErrorEvent',
+        './RequestScheduler',
+        './RequestState',
+        './RuntimeError',
+        './TrustedServers'
+    ], function(
+        Uri,
+        when,
+        appendForwardSlash,
+        Check,
+        clone,
+        combine,
+        defaultValue,
+        defined,
+        defineProperties,
+        deprecationWarning,
+        DeveloperError,
+        freezeObject,
+        getAbsoluteUri,
+        getBaseUri,
+        getExtensionFromUri,
+        isBlobUri,
+        isCrossOriginUrl,
+        isDataUri,
+        objectToQuery,
+        queryToObject,
+        Request,
+        RequestErrorEvent,
+        RequestScheduler,
+        RequestState,
+        RuntimeError,
+        TrustedServers) {
     'use strict';
 
     var xhrBlobSupported = (function() {
@@ -19674,7 +19754,6 @@ define('Core/Resource',[
          */
         this.retryAttempts = defaultValue(options.retryAttempts, 0);
         this._retryCount = 0;
-
 
         var uri = new Uri(options.url);
         parseQuery(uri, this, true, true);
@@ -20582,7 +20661,8 @@ define('Core/Resource',[
     /**
      * @private
      */
-    Resource._makeRequest = function(resource, options) {
+    Resource.prototype._makeRequest = function(options) {
+        var resource = this;
         checkAndResetRequest(resource.request);
 
         var request = resource.request;
@@ -20590,7 +20670,7 @@ define('Core/Resource',[
 
         request.requestFunction = function() {
             var responseType = options.responseType;
-            var headers = combine(resource.headers, options.headers);
+            var headers = combine(options.headers, resource.headers);
             var overrideMimeType = options.overrideMimeType;
             var method = options.method;
             var data = options.data;
@@ -20708,7 +20788,7 @@ define('Core/Resource',[
         options = defaultClone(options, {});
         options.method = 'GET';
 
-        return Resource._makeRequest(this, options);
+        return this._makeRequest(options);
     };
 
     /**
@@ -20764,7 +20844,7 @@ define('Core/Resource',[
         options = defaultClone(options, {});
         options.method = 'DELETE';
 
-        return Resource._makeRequest(this, options);
+        return this._makeRequest(options);
     };
 
     /**
@@ -20820,7 +20900,7 @@ define('Core/Resource',[
         options = defaultClone(options, {});
         options.method = 'HEAD';
 
-        return Resource._makeRequest(this, options);
+        return this._makeRequest(options);
     };
 
     /**
@@ -20876,7 +20956,7 @@ define('Core/Resource',[
         options = defaultClone(options, {});
         options.method = 'OPTIONS';
 
-        return Resource._makeRequest(this, options);
+        return this._makeRequest(options);
     };
 
     /**
@@ -20936,7 +21016,7 @@ define('Core/Resource',[
         options.method = 'POST';
         options.data = data;
 
-        return Resource._makeRequest(this, options);
+        return this._makeRequest(options);
     };
 
     /**
@@ -20997,7 +21077,7 @@ define('Core/Resource',[
         options.method = 'PUT';
         options.data = data;
 
-        return Resource._makeRequest(this, options);
+        return this._makeRequest(options);
     };
 
     /**
@@ -21058,7 +21138,7 @@ define('Core/Resource',[
         options.method = 'PATCH';
         options.data = data;
 
-        return Resource._makeRequest(this, options);
+        return this._makeRequest(options);
     };
 
     /**
@@ -21716,6 +21796,10 @@ define('Core/buildModuleUrl',[
      * @private
      */
     function buildModuleUrl(moduleID) {
+        if (typeof document === 'undefined') {
+            //document is undefined in node
+            return moduleID;
+        }
         if (!defined(implementation)) {
             //select implementation
             if (defined(define.amd) && !define.amd.toUrlUndefined && defined(require.toUrl)) {
