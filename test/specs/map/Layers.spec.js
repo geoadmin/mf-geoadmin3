@@ -735,7 +735,7 @@ describe('ga_layers_service', function() {
           expect(source.getDimensions().Time).to.be();
         });
 
-        it('returns a WMS layer', function() {
+        it.only('returns a WMS layer', function() {
           var layer = gaLayers.getOlLayerById('wms');
           expect(layer instanceof ol.layer.Image).to.be.ok();
           expect(layer.getMinResolution()).to.be(0.5);

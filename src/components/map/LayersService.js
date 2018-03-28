@@ -540,7 +540,7 @@ goog.require('ga_urlutils_service');
             if (config.singleTile === true) {
               if (!olSource) {
                 olSource = config.olSource = new ol.source.ImageWMS({
-                  url: getImageryUrls(getWmsTpl(wmsUrl))[0],
+                  url: getImageryUrls(getWmsTpl(wmsUrl), wmsSubdomains)[0],
                   params: wmsParams,
                   crossOrigin: crossOrigin,
                   ratio: 1
@@ -555,9 +555,8 @@ goog.require('ga_urlutils_service');
               });
             } else {
               if (!olSource) {
-                var subdomains = wmsSubdomains;
                 olSource = config.olSource = new ol.source.TileWMS({
-                  urls: getImageryUrls(getWmsTpl(wmsUrl), subdomains),
+                  urls: getImageryUrls(getWmsTpl(wmsUrl), wmsSubdomains),
                   // Temporary until https://github.com/openlayers/ol3/pull/4964
                   // is merged upstream
                   cacheSize: 2048 * 3,
