@@ -32,7 +32,7 @@
     "fastclick": "1.0.6",
     "gyronorm": "2.0.6",
     "jquery-ajax-transport-xdomainrequest": "1.0.4",
-    "localforage": "1.6.0",
+    "localforage": "1.7.1",
     "npm-check-updates": "^2.14.0",
     "slipjs": "2.1.1"
   },
