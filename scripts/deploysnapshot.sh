@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# This script deploy a snapshot of geoadmin. All the make targets are executed
+# like if it is master so with NAMED_BRANCH=false.
+
 T="$(date +%s)"
 
 # Bail out on any error
@@ -14,24 +17,14 @@ fi
 
 pwd=$(pwd)
 DEPLOY_TARGET=$2
-RC_FILE=rc_$DEPLOY_TARGET
-SNAPSHOTDIR=/var/www/vhosts/mf-geoadmin3/private/snapshots/$1
+CODE_DIR=/var/www/vhosts/mf-geoadmin3/private/snapshots/$1/geoadmin/code/geoadmin
 
-# Prepare snapshot
-cd $SNAPSHOTDIR/geoadmin/code/geoadmin
-if [ "$KEEP_VERSION" = "false" ]; then
-  make .build-artefacts/last-version
-  export KEEP_VERSION='true'
-fi
+# Go to snapshot folder
+cd $CODE_DIR
 
-
-DEPLOY_GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
-SHA=$(git rev-parse HEAD | cut -c1-7)
-VERSION=$(cat .build-artefacts/last-version)
-S3_BASE_PATH=/$DEPLOY_GIT_BRANCH/$SHA/$VERSION
-export S3_SRC_BASE_PATH=$S3_BASE_PATH/src/
-export S3_BASE_PATH=$S3_BASE_PATH/
-make $DEPLOY_TARGET
+# Build the app 
+make $DEPLOY_TARGET NAMED_BRANCH=false \
+                    KEEP_VERSION=$KEEP_VERSION
 
 echo -n "Checking service and layersConfig files"
 cat prd/cache/services  | python -c 'import json,sys;obj=json.load(sys.stdin);print "Topics numbers:",len(obj["topics"])'
@@ -51,7 +44,7 @@ fi
 echo "Upload to s3"
 make s3copybranch DEPLOY_TARGET=$DEPLOY_TARGET \
                   NAMED_BRANCH=false \
-                  CODE_DIR=$SNAPSHOTDIR/geoadmin/code/geoadmin
+                  CODE_DIR=$CODE_DIR
 
 echo "Flushing varnishes"
 make flushvarnish DEPLOY_TARGET=$DEPLOY_TARGET
