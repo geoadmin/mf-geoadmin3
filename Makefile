@@ -103,7 +103,7 @@ DEEP_CLEAN ?= false
 
 # S3 deploy variables
 DEPLOY_TARGET ?= int
-DEPLOY_GIT_BRANCH = $(shell git rev-parse --symbolic-full-name --abbrev-ref HEAD)
+DEPLOY_GIT_BRANCH ?= $(shell git rev-parse --symbolic-full-name --abbrev-ref HEAD)
 CLONEDIR = /home/$(USER_NAME)/tmp/branches/${DEPLOY_GIT_BRANCH}
 CODE_DIR ?= .
 S3_BASE_PATH =

@@ -33,7 +33,7 @@ node(label: 'jenkins-slave') {
     }
 
     stage('Build') {
-      sh 'make ' + deployTarget + ' NAMED_BRANCH=' + namedBranch
+      sh 'make ' + deployTarget + ' DEPLOY_GIT_BRANCH=' + deployGitBranch + ' NAMED_BRANCH=' + namedBranch
     }
 
     stage('Test') {
