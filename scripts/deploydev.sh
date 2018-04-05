@@ -72,15 +72,10 @@ sudo apache2ctl graceful
 echo "Deployed branch $GITBRANCH to dev main."
 
 echo "Flushing varnishes"
-for VARNISHHOST in ${VARNISH_HOSTS[@]}
-do
-  ./scripts/flushvarnish.sh $VARNISHHOST "${API_URL#*//}"
-  ./scripts/flushvarnish.sh $VARNISHHOST "${E2E_TARGETURL#*https://}"
-  echo "Flushed varnish at: ${VARNISHHOST}"
-done
+make flushvarnish DEPLOY_TARGET=dev
 
 # create a snapshot
-if [ $CREATE_SNAPSHOT == 'true' ]; then
+if [ $CREATE_SNAPSHOT = true ]; then
   mkdir -p $SNAPSHOTDIR/geoadmin/code
   rsync -rl $DEPLOYDIR $SNAPSHOTDIR/geoadmin/code
   echo "Snapshot of branch $GITBRANCH created at $SNAPSHOTDIR"

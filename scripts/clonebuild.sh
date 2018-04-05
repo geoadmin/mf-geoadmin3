@@ -1,13 +1,8 @@
 #!/bin/bash
+# This script clone a specific branch to a specific folder then build it.
 
 # bail out on any error
 set -o errexit
-
-get_s3_basepath () {
-  SHA=$(git rev-parse HEAD | cut -c1-7)
-  VERSION=$(cat .build-artefacts/last-version)
-  echo "/$1/$SHA/$VERSION/"
-}
 
 create_snapshot_dir () {
   if [ ! -d "${CLONEDIR}" ]; then
@@ -29,39 +24,25 @@ DEPLOY_GIT_BRANCH=${@:$OPTIND+2:1}
 DEEP_CLEAN=${@:$OPTIND+3:1}
 NAMED_BRANCH=${@:$OPTIND+4:1}
 
+# Remove the clone folder
+if [ $DEEP_CLEAN == true ]; then
+  rm -rf ${CLONEDIR}
+fi
+
 create_snapshot_dir
 cd ${CLONEDIR}
 
+# Clone or update the project
 if [ ! -d mf-geoadmin3 ]; then
   echo "Cloning branch=${DEPLOY_GIT_BRANCH}, into directory=${CLONEDIR}"
   git clone -b ${DEPLOY_GIT_BRANCH}  https://github.com/geoadmin/mf-geoadmin3.git
   cd mf-geoadmin3
 else
   cd mf-geoadmin3
-  if [ "$DEEP_CLEAN" = "true" ]; then
-    make cleanall
-  else
-    make clean
-  fi
+  make clean
   update_and_reset_git_project
 fi
 
-if [ "$NAMED_BRANCH" = "true" ]; then
-  export KEEP_VERSION="true"
-  S3_BASE_PATH=/$DEPLOY_GIT_BRANCH/
-else
-  export KEEP_VERSION="false"
-  make .build-artefacts/last-version
-  S3_BASE_PATH=$(get_s3_basepath $DEPLOY_GIT_BRANCH)
-fi
-S3_SRC_BASE_PATH=$S3_BASE_PATH"src/"
+# Build the app with correct parameter
+make $DEPLOY_TARGET  NAMED_BRANCH=$NAMED_BRANCH
 
-echo "S3_BASE_PATH:"
-echo $S3_BASE_PATH
-echo "S3_SRC_BASE_PATH:"
-echo $S3_SRC_BASE_PATH
-
-echo "Building the project"
-export S3_BASE_PATH=$S3_BASE_PATH
-export S3_SRC_BASE_PATH=$S3_SRC_BASE_PATH
-make $DEPLOY_TARGET

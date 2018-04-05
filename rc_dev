@@ -1,6 +1,7 @@
 export KEEP_VERSION=true
 export DEPLOY_TARGET=dev
 export APACHE_BASE_PATH=
+export VARNISH_HOSTS=
 export E2E_TARGETURL=https://mf-geoadmin3.dev.bgdi.ch
 export API_URL=//mf-chsdi3.dev.bgdi.ch
 export ALTI_URL=//mf-chsdi3.dev.bgdi.ch

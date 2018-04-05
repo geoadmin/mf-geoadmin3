@@ -62,15 +62,11 @@ E2E_TESTS ?= false
 E2E_BROWSER ?= false
 E2E_SINGLE ?= false
 
-DEPLOY_TARGET ?= int
 LESS_PARAMETERS ?= -ru
-KEEP_VERSION ?= 'false'
-LAST_VERSION := $(call lastvalue,version)
-VERSION := $(shell if [ '$(KEEP_VERSION)' = 'true' ] && [ '$(LAST_VERSION)' != '-none-' ]; then echo '$(LAST_VERSION)'; else date '+%y%m%d%H%M'; fi)
+
 GIT_BRANCH ?= $(shell if [ -f .build-artefacts/deployed-git-branch ]; then cat .build-artefacts/deployed-git-branch 2> /dev/null; else git rev-parse --symbolic-full-name --abbrev-ref HEAD; fi)
 GIT_LAST_BRANCH := $(call lastvalue,git-branch)
 BRANCH_TO_DELETE ?=
-DEPLOY_ROOT_DIR := /var/www/vhosts/mf-geoadmin3/private/branch
 OL_VERSION ?= b66c0941f5fc6eccb63686e9f702f35b33230b89 # master, December 11 2017
 OL_CESIUM_VERSION ?= d4cfea150382f8764335d19f7896a2491195786e # master, December 8 2017
 CESIUM_VERSION ?= 53270a452994e89bdcb390265a05f3783775c7d4 # c2c/c2c_patches_vector_tiles, November 24 2017
@@ -97,14 +93,30 @@ USER_NAME ?= $(shell id -un)
 GIT_COMMIT_HASH ?= $(shell git rev-parse --verify HEAD)
 GIT_COMMIT_DATE ?= $(shell git log -1  --date=iso --pretty=format:%cd)
 CURRENT_DATE ?= $(shell date -u +"%Y-%m-%d %H:%M:%S %z")
-DEPLOY_GIT_BRANCH ?= $(shell git rev-parse --symbolic-full-name --abbrev-ref HEAD)
-S3_VERSION_PATH ?=
-S3_BASE_PATH ?=
-S3_SRC_BASE_PATH ?=
+
+# Build variables
+KEEP_VERSION ?= false
+LAST_VERSION = $(call lastvalue,version)
+VERSION = $(shell if [ $(KEEP_VERSION) = true ] && [ '$(LAST_VERSION)' != '-none-' ]; then echo '$(LAST_VERSION)'; else date '+%y%m%d%H%M'; fi)
+NAMED_BRANCH ?= true
+DEEP_CLEAN ?= false
+
+# S3 deploy variables
+DEPLOY_TARGET ?= int
+DEPLOY_GIT_BRANCH = $(shell git rev-parse --symbolic-full-name --abbrev-ref HEAD)
 CLONEDIR = /home/$(USER_NAME)/tmp/branches/${DEPLOY_GIT_BRANCH}
-DEEP_CLEAN ?= "false"
-NAMED_BRANCH ?= "true"
 CODE_DIR ?= .
+S3_BASE_PATH =
+S3_SRC_BASE_PATH =
+ifeq ($(NAMED_BRANCH), false)
+  SHA = $(shell git rev-parse HEAD | cut -c1-7)
+  S3_BASE = /$(DEPLOY_GIT_BRANCH)/$(SHA)/$(VERSION)
+  S3_BASE_PATH = $(S3_BASE)/
+  S3_SRC_BASE_PATH = $(S3_BASE)/src/
+endif
+
+# S3 activation variables
+S3_VERSION_PATH ?=
 
 ## Python interpreter can't have space in path name
 ## So prepend all python scripts with python cmd
@@ -143,6 +155,7 @@ MAKO_LAST_VARIABLES_PROD = ${MAKO_LAST_VARIABLES} \
 	    .build-artefacts/last-version
 
 
+
 .PHONY: help
 help:
 	@echo "Usage: make <target>"
@@ -173,8 +186,8 @@ help:
 	@echo "- s3deployprod        Deploys a snapshot specified with SNAPSHOT=xxx to s3 prod."
 	@echo "- s3activateint       Activate a version at the root of a remote bucket. (usage only: make s3activateint S3_VERSION_PATH=<branch>/<sha>/<version>)"
 	@echo "- s3activateprod      Activate a version at the root of a remote bucket. (usage only: make s3activateprod S3_VERSION_PATH=<branch>/<sha>/<version>)"
-	@echo "- s3copybranch        Copy the current directory content to S3. Defaults to the current branch name. WARNING: your code must have been compiled with 'make user' first."
-	@echo "                      Usage: make s3copybranch  DEPLOY_TARGET=<int|prod>"
+	@echo "- s3copybranch        Copy the current directory content to S3. Defaults to the current branch name. WARNING: your code must have been compiled with 'make <user|int|prod>' first."
+	@echo "                      Usage: make s3copybranch DEPLOY_TARGET=<int|prod>"
 	@echo "                                               NAMED_BRANCH=<true|false>"
 	@echo "                                               CODE_DIR=<Path to the folder, default to current folder> (optional)"
 	@echo "                                               DEPLOY_GIT_BRANCH=<Name of the branch to deploy, default to current branch> (optional)"
@@ -212,15 +225,20 @@ help:
 	@echo "- DEPLOY_TARGET               (current value: ${DEPLOY_TARGET})"
 	@echo
 
+showVariables:
+	@echo "DEPLOY_TARGET = $(DEPLOY_TARGET)"
+	@echo "S3_BASE_PATH = $(S3_BASE_PATH)"
+	@echo "S3_SRC_BASE_PATH = $(S3_SRC_BASE_PATH)"
+
 .PHONY: all
-all: lint debug release apache testdebug testrelease fixrights
+all: showVariables lint debug release apache testdebug testrelease fixrights
 
 .PHONY: user
 user:
 	source $(USER_SOURCE) && make all
 
 .PHONY: build
-build: .build-artefacts/devlibs .build-artefacts/requirements.timestamp $(SRC_JS_FILES) debug release
+build: showVariables .build-artefacts/devlibs .build-artefacts/requirements.timestamp $(SRC_JS_FILES) debug release
 
 .PHONY: dev
 dev:
@@ -255,6 +273,7 @@ release: .build-artefacts/devlibs \
 	prd/info.json \
 	prd/robots.txt \
 	prd/robots_prod.txt
+	$(call showVariables)
 
 .PHONY: debug
 debug: .build-artefacts/devlibs src/deps.js src/style/app.css src/index.html src/mobile.html src/embed.html src/404.html
@@ -298,7 +317,7 @@ apache: apache/app.conf
 
 .PHONY: deploydev
 deploydev:
-	@ if test "$(SNAPSHOT)" = "true"; then \
+	@ if test $(SNAPSHOT) = true; then \
 		./scripts/deploydev.sh -s; \
 	else \
 		./scripts/deploydev.sh; \
@@ -321,7 +340,8 @@ s3deploybranch: guard-CLONEDIR \
                 guard-DEPLOY_GIT_BRANCH \
                 guard-DEEP_CLEAN \
                 guard-NAMED_BRANCH \
-                .build-artefacts/requirements.timestamp
+                .build-artefacts/requirements.timestamp \
+                showVariables
 	./scripts/clonebuild.sh ${CLONEDIR} ${DEPLOY_TARGET} ${DEPLOY_GIT_BRANCH} ${DEEP_CLEAN} ${NAMED_BRANCH};
 	make s3copybranch CODE_DIR=${CLONEDIR}/mf-geoadmin3 \
                     DEPLOY_TARGET=${DEPLOY_TARGET} \
@@ -397,7 +417,11 @@ flushvarnish: guard-DEPLOY_TARGET
 
 # This internal target has been created to have the good global variable values
 # from rc_XXX file.
-flushvarnishinternal: guard-VARNISH_HOSTS guard-API_URL guard-E2E_TARGETURL
+flushvarnishinternal: guard-API_URL guard-E2E_TARGETURL
+	@if [ ! $(VARNISH_HOSTS) ] ; then \
+	  echo 'The VARNISH_HOSTS variable in rc_${DEPLOY_TARGET} is empty.';\
+		echo 'Nothing to be done.'; \
+	fi; \
 	for VARNISHHOST in $(VARNISH_HOSTS) ; do \
 		./scripts/flushvarnish.sh $$VARNISHHOST "$(subst //,,$(API_URL))" ;\
 		./scripts/flushvarnish.sh $$VARNISHHOST "$(subst https://,,$(E2E_TARGETURL))" ;\
