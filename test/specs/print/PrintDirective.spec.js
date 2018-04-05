@@ -413,6 +413,18 @@ describe('ga_print_directive', function() {
             expect(scope.options.printing).to.be(false);
           });
 
+          it('fails because specs it too large', function() {
+            $httpBackend.expectPOST(createUrl).respond(413, '');
+            var stub = sinon.stub(scope, 'downloadUrl').withArgs(dlUrl).returns();
+            var stub2 = sinon.stub($window, 'alert');
+            scope.submit();
+
+            $httpBackend.flush();
+            expect(stub.callCount).to.be(0);
+            expect(stub2.args[0][0]).to.be('print_request_too_large');
+            expect(scope.options.printing).to.be(false);
+          });
+
           it('ignores invisible layers and displays alert message for reprojected layers', function() {
 
             var spy = sinon.spy($http, 'post');
