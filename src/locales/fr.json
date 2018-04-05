@@ -403,6 +403,7 @@
 "tilt_up_disabled": "Vous ne pouvez incliner plus",
 "time_all": "Tout",
 "time_bt_disabled_tooltip": "La représentation de données historiques n'est possible qu'avec les couches historisées. Veuillez d'abord ajouter une couche historisée sur la carte.",
+"time_current": "Actuel",
 "time_hide": "Désactiver l'outil de représentation historique des données.",
 "time_select_year": "Choisissez une année",
 "time_show": "Activer l'outil de représentation historique des données.",

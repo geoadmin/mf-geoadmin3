@@ -403,6 +403,7 @@
 "tilt_up_disabled": "Karte kann nicht weiter nach oben geneigt werden",
 "time_all": "Alle",
 "time_bt_disabled_tooltip": "Die Darstellung von Zeitständen ist nur mit historisierten Daten möglich. Sie müssen zuerst einen historisierten Datensatz in die Karte laden.",
+"time_current": "Aktuell",
 "time_hide": "Deaktivieren der Anzeige von Daten-Zeitständen.",
 "time_select_year": "Wählen Sie ein Jahr aus",
 "time_show": "Aktivieren der Anzeige von Daten-Zeitständen.",

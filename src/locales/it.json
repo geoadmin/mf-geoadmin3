@@ -403,6 +403,7 @@
 "tilt_up_disabled": "Non è possibile inclinare di più",
 "time_all": "Tutti",
 "time_bt_disabled_tooltip": "La visualizzazione storica dei dati è possibile solo con i layer storicizzati. Aggiungere un layer storicizzato per utilizzare questa funzione",
+"time_current": "Attuale",
 "time_hide": "Disattivare la visualizzazione storica dei dati",
 "time_select_year": "Scegliete un anno",
 "time_show": "Attivare la visualizzazione storica dei dati",
