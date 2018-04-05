@@ -201,8 +201,8 @@ describe('ga_printlayer_service', function() {
 
         var encFeatures = gaPrintLayer.encodeFeatures(vectorWithoutStyle, feature, false, 20000,
             extent, 150);
-        // Remove properties
-        expect(feature.getKeys()).to.eql([ 'geometry' ]);
+        // Remove properties from feature in the encoded feature
+        expect(feature.getKeys()).to.eql([ 'name', 'geometry', 'toto' ]);
         expect(encFeatures.encFeatures[0].properties).to.eql({ _gx_style: 4 });
       });
 

@@ -47,7 +47,7 @@ goog.require('ga_urlutils_service');
   var UNITS_RATIO = 39.37; // inches per meter
   var styleId = 0;
   var format = new ol.format.GeoJSON();
-  var vectorPropertiesToKeep = ['geometry', 'styleUrl', 'type'];
+  var vectorPropertiesToKeep = ['styleUrl'];
 
   function encodeGraticule(dpi) {
     return {
@@ -332,22 +332,18 @@ goog.require('ga_urlutils_service');
       // if the map is not rotated
 
       if (geometry.intersectsExtent(printRectangleCoords)) {
-        // Most properties are useless for printing
-        var properties = feature.getKeys();
-        angular.forEach(properties, function(property) {
-          if (vectorPropertiesToKeep.indexOf(property) < 0) {
-            feature.unset(property, true);
-          }
-        })
         var encFeature = format.writeFeatureObject(feature);
         if (!encFeature.properties) {
           encFeature.properties = {};
         } else {
           // Fix circular structure to JSON
           // see: https://github.com/geoadmin/mf-geoadmin3/issues/1213
-          delete encFeature.properties.Style;
-          delete encFeature.properties.overlays;
-          encFeature.properties = {};
+          var properties = Object.keys(encFeature.properties);
+          angular.forEach(properties, function(property) {
+            if (vectorPropertiesToKeep.indexOf(property) < 0) {
+              delete encFeature.properties[property];
+            }
+          })
         }
         encFeature.properties._gx_style = encStyle.id;
         encFeatures.push(encFeature);
