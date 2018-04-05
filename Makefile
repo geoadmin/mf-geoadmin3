@@ -410,6 +410,10 @@ flushvarnish: guard-DEPLOY_TARGET
 # This internal target has been created to have the good global variable values
 # from rc_XXX file.
 flushvarnishinternal: guard-API_URL guard-E2E_TARGETURL
+	@if [ ! $(VARNISH_HOSTS) ] ; then \
+	  echo 'The VARNISH_HOSTS variable in rc_${DEPLOY_TARGET} is empty.';\
+		echo 'Nothing to be done.'; \
+	fi; \
 	for VARNISHHOST in $(VARNISH_HOSTS) ; do \
 		./scripts/flushvarnish.sh $$VARNISHHOST "$(subst //,,$(API_URL))" ;\
 		./scripts/flushvarnish.sh $$VARNISHHOST "$(subst https://,,$(E2E_TARGETURL))" ;\
