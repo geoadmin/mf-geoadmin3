@@ -155,6 +155,7 @@ MAKO_LAST_VARIABLES_PROD = ${MAKO_LAST_VARIABLES} \
 	    .build-artefacts/last-version
 
 
+
 .PHONY: help
 help:
 	@echo "Usage: make <target>"
@@ -224,15 +225,20 @@ help:
 	@echo "- DEPLOY_TARGET               (current value: ${DEPLOY_TARGET})"
 	@echo
 
+showVariables:
+	@echo "DEPLOY_TARGET = $(DEPLOY_TARGET)"
+	@echo "S3_BASE_PATH = $(S3_BASE_PATH)"
+	@echo "S3_SRC_BASE_PATH = $(S3_SRC_BASE_PATH)"
+
 .PHONY: all
-all: lint debug release apache testdebug testrelease fixrights
+all: showVariables lint debug release apache testdebug testrelease fixrights
 
 .PHONY: user
 user:
 	source $(USER_SOURCE) && make all
 
 .PHONY: build
-build: .build-artefacts/devlibs .build-artefacts/requirements.timestamp $(SRC_JS_FILES) debug release
+build: showVariables .build-artefacts/devlibs .build-artefacts/requirements.timestamp $(SRC_JS_FILES) debug release
 
 .PHONY: dev
 dev:
@@ -267,6 +273,7 @@ release: .build-artefacts/devlibs \
 	prd/info.json \
 	prd/robots.txt \
 	prd/robots_prod.txt
+	$(call showVariables)
 
 .PHONY: debug
 debug: .build-artefacts/devlibs src/deps.js src/style/app.css src/index.html src/mobile.html src/embed.html src/404.html
@@ -333,7 +340,8 @@ s3deploybranch: guard-CLONEDIR \
                 guard-DEPLOY_GIT_BRANCH \
                 guard-DEEP_CLEAN \
                 guard-NAMED_BRANCH \
-                .build-artefacts/requirements.timestamp
+                .build-artefacts/requirements.timestamp \
+                showVariables
 	./scripts/clonebuild.sh ${CLONEDIR} ${DEPLOY_TARGET} ${DEPLOY_GIT_BRANCH} ${DEEP_CLEAN} ${NAMED_BRANCH};
 	make s3copybranch CODE_DIR=${CLONEDIR}/mf-geoadmin3 \
                     DEPLOY_TARGET=${DEPLOY_TARGET} \

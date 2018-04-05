@@ -25,8 +25,8 @@ DEEP_CLEAN=${@:$OPTIND+3:1}
 NAMED_BRANCH=${@:$OPTIND+4:1}
 
 # Remove the clone folder
-if [ $DEEP_CLEAN = true ]; then
-  make cleanall
+if [ $DEEP_CLEAN == true ]; then
+  rm -rf ${CLONEDIR}
 fi
 
 create_snapshot_dir
