@@ -52,7 +52,7 @@
     "eslint-plugin-standard": "3.0.1",
     "expect.js": "0.3.1",
     "google-closure-compiler": "20170423.0.0",
-    "google-closure-library": "20180204.0.0",
+    "google-closure-library": "20180405.0.0",
     "html-minifier": "3.5.13",
     "jquery": "3.3.1",
     "karma": "2.0.0",
