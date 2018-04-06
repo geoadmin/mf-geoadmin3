@@ -1,5 +1,6 @@
 goog.provide('ga_share_directive');
 
+goog.require('ga_browsersniffer_service');
 goog.require('ga_permalink');
 goog.require('ga_urlutils_service');
 goog.require('ga_window_service');
@@ -7,6 +8,7 @@ goog.require('ga_window_service');
 (function() {
 
   var module = angular.module('ga_share_directive', [
+    'ga_browsersniffer_service',
     'ga_permalink',
     'ga_urlutils_service',
     'ga_window_service',
@@ -14,7 +16,7 @@ goog.require('ga_window_service');
   ]);
 
   module.directive('gaShare', function($http, $rootScope, $timeout, $translate,
-      $window, gaPermalink, gaUrlUtils, gaWindow) {
+      $window, gaPermalink, gaUrlUtils, gaWindow, gaBrowserSniffer) {
     return {
       restrict: 'A',
       scope: {
@@ -27,6 +29,7 @@ goog.require('ga_window_service');
 
         scope.qrcodegeneratorPath = scope.options.qrcodegeneratorPath;
         scope.showMore = false;
+        scope.showWhatsapp = !!gaBrowserSniffer.ios || gaBrowserSniffer.android;
 
         $('.ga-share-icon').tooltip({
           placement: 'bottom'

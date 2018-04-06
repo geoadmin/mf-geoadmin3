@@ -736,7 +736,7 @@ itemscope itemtype="http://schema.org/WebApplication"
         var wmtsUrl = setBackend(prtl + '${wmts_url}', prtl + '${wmts_tech_url}', 'wmts_url');
         var terrainUrl = setBackend(prtl + '${terrain_url}', prtl + '${terrain_tech_url}', 'terrain_url');
         var vectorTilesUrl = setBackend(prtl + '${vectortiles_url}', prtl + '${vectortiles_tech_url}', 'vectortiles_url');
-        
+
         // Api services urls
         var defaultApiUrl = prtl + '${api_url}';
         var apiUrl = setBackend(defaultApiUrl, prtl + '${api_tech_url}', 'api_url');
@@ -756,14 +756,14 @@ itemscope itemtype="http://schema.org/WebApplication"
           buildMode: '${mode}',
           version: '${version}',
           pegman: !!window.location.search.match(/(pegman=true)/),
-          mapUrl: location.origin + pathname, 
-          
+          mapUrl: location.origin + pathname,
+
           // Map services urls
           wmsUrl: wmsUrl,
           wmtsUrl: wmtsUrl,
           terrainUrl: terrainUrl,
           vectorTilesUrl: vectorTilesUrl,
-          
+
           // Api services urls
           apiUrl: apiUrl,
           altiUrl: altiUrl,
@@ -773,6 +773,7 @@ itemscope itemtype="http://schema.org/WebApplication"
           publicUrl: publicUrl,
           publicUrlRegexp: new RegExp('${public_url_regexp}'),
           adminUrlRegexp: adminUrlRegexp,
+          hrefRegexp: new RegExp('${href_regexp}'),
           cachedApiUrl: apiUrl + cacheAdd,
           cachedAltiUrl: altiUrl + cacheAdd,
           imageryMetadataUrl: '//3d.geo.admin.ch/imagery/',
@@ -794,7 +795,7 @@ itemscope itemtype="http://schema.org/WebApplication"
           hostIsProd: hostIsProd,
           staging: staging,
           apiOverwrite: apiOverwrite,
-          
+
           // Map state values
           defaultExtent: JSON.parse(${default_extent}),
           defaultResolution: ${default_resolution},

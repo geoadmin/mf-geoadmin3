@@ -27,6 +27,7 @@ goog.require('ga_permalink');
       if (ios) {
         ios = +((/\((iPhone|iPad|iPod).+OS (\d{1,2})_/.exec(ua) || [])[2]);
       }
+      var android = ua.indexOf('android') > -1;
       var webkit = !msie && /WebKit/.test(ua);
       var opera = !msie && /(OPiOS|OPR)\//.test(ua);
       var chrome = !msie && !opera && /(CriOS|Chrome)\//.test(ua);
@@ -112,6 +113,7 @@ goog.require('ga_permalink');
         safari: safari,
         chrome: chrome, // Only for test purpose
         ios: ios, // false or iOS version number
+        android: android,
         events: eventsKeys,
         desktop: desktop,
         mobile: mobile,
