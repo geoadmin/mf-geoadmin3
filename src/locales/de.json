@@ -307,7 +307,7 @@
 "print": "Drucken",
 "print_action": "Erstelle PDF für Druck",
 "print_layout": "Orientierung",
-"print_request_too_large": "Die Datei wird nich gedruckt: zu gross.",
+"print_request_too_large": "Die Datei wird nicht gedruckt: zu gross.",
 "print_scale": "Massstab",
 "print_underway_message": "Wir bitten Sie um Geduld. Ein mehrseitiger Druck wird erstell. Dies nimmt einige Zeit in Anspruch.",
 "problem_announcement": "Problem melden",
