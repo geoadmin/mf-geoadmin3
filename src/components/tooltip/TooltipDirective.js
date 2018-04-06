@@ -401,6 +401,7 @@ goog.require('ga_window_service');
               }
               // Use by the ga-shop directive
               scope.clickCoordinate = coordinate;
+              var feat;
               var pointerShown = $(map.getTarget()).css('cursor') === 'pointer';
               var mapRes = map.getView().getResolution();
               var mapProj = map.getView().getProjection();
@@ -418,9 +419,13 @@ goog.require('ga_window_service');
                 for (var i = 0, ii = pickedObjects.length; i < ii; i++) {
                   var prim = pickedObjects[i].primitive;
                   var entity = pickedObjects[i].id;
-                  var feat = prim.olFeature || entity.olFeature;
-                  var lay = prim.olLayer || entity.olLayer;
+                  if (prim && prim.olFeature) {
+                    feat = prim.olFeature;
+                  } else if (entity && entity.olFeature) {
+                    feat = entity.olFeature;
+                  }
                   if (isFeatureQueryable(feat)) {
+                    var lay = prim.olLayer || entity.olLayer;
                     showVectorFeature(feat, lay);
                     all.push($q.when(1));
                     break;
