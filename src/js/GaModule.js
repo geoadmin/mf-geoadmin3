@@ -221,4 +221,8 @@ goog.require('ga_waitcursor_service');
     whitelist = whitelist.concat(gaGlobalOptions.whitelist);
     $sceDelegateProvider.resourceUrlWhitelist(whitelist);
   });
+
+  module.config(function($compileProvider, gaGlobalOptions) {
+    $compileProvider.aHrefSanitizationWhitelist(gaGlobalOptions.hrefRegexp);
+  });
 })();

@@ -55,6 +55,7 @@ LAST_VECTORTILES_URL := $(call lastvalue,vectortiles-url)
 
 PUBLIC_URL_REGEXP ?= ^https?:\/\/public\..*\.(bgdi|admin)\.ch\/.*
 ADMIN_URL_REGEXP ?= ^(ftp|http|https):\/\/(.*(\.bgdi|\.geo\.admin)\.ch)
+HREF_REGEXP ?= ^\s*(https?|whatsapp|file|s?ftp|blob|mailto):
 
 # E2E variables
 E2E_TARGETURL ?= https://mf-geoadmin3.dev.bgdi.ch
@@ -643,6 +644,7 @@ define buildpage
 		--var "default_terrain=$(DEFAULT_TERRAIN)" \
 		--var "admin_url_regexp=$(ADMIN_URL_REGEXP)" \
 		--var "public_url_regexp=$(PUBLIC_URL_REGEXP)" \
+		--var "href_regexp=$(HREF_REGEXP)" \
 		--var "default_epsg"="$(DEFAULT_EPSG)" \
 		--var "default_epsg_extend"="$(DEFAULT_EPSG_EXTEND)" \
 		--var "staging"="$(DEPLOY_TARGET)" $< > $@
