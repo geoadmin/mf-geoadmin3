@@ -287,12 +287,13 @@ goog.require('ga_urlutils_service');
                 tilePixelRatio: 4,
                 tileSize: 1024
               }, {
-                serverLayerName: 'SLBM-LV03-mbtiles',
+                serverLayerName: 'swissbasemapzoom-1-mbtiles',
                 // styleUrl: 'https://api.mapbox.com/styles/v1/vib2d/' +
                 //    'cj2btdr0d00532ro5ix21uls4' + tk,
-                styleUrl: 'https://tileserver.dev.bgdi.ch/styles/' +
-                    'superlightbasemap.json',
-                styleSource: 'lightbasemap',
+                // styleUrl: 'https://tileserver.dev.bgdi.ch/styles/' +
+                //    'superlightbasemap.json',
+                styleUrl: 'https://tileserver.dev.bgdi.ch/styles/swissrailway-basemap/style.json',
+                styleSource: 'swissbasemap',
                 tilePixelRatio: 4,
                 tileSize: 1024
               }];
@@ -320,7 +321,8 @@ goog.require('ga_urlutils_service');
                   label: 'light map',
                   subLayersIds: [
                     relief + '-custom',
-                    'SLBM-LV03-mbtiles'
+                    // 'SLBM-LV03-mbtiles'
+                    'swissbasemapzoom-1-mbtiles'
                   ],
                   type: 'aggregate'
                 };
@@ -702,33 +704,36 @@ goog.require('ga_urlutils_service');
                 });
           } else if (config.type === 'vectortile') {
             olLayer = new ol.layer.VectorTile({
+              declutter: true,
               source: new ol.source.VectorTile({
                 format: new ol.format.MVT(),
-                tileGrid: ol.tilegrid.createXYZ({
-                  tileSize: config.tileSize || 4096
-                }),
-                tilePixelRatio: config.tilePixelRatio || 16,
+                maxZoom: 15,
+                // tileGrid: ol.tilegrid.createXYZ({
+                //  tileSize: config.tileSize || 4096
+                // }),
+                // tilePixelRatio: config.tilePixelRatio || 16,
                 url: config.url || getVectorTilesUrl(config.serverLayerName,
                     timestamp, vectorTilesSubdomains)
               })
             });
             if (config.styleUrl) {
-              $http.get(config.styleUrl, {
+              fetch('https://mf-geoadmin3.dev.bgdi.ch/ltteo_vib/vib/static/data/swissbasemapzoom-osm-integrated.json').then(function(style) {
+                var ft = ['Helvetica'];
+                style.json().then(function(glStyle) {
+                  fetch('https://mf-geoadmin3.dev.bgdi.ch/ltteo_vib/vib/static/data/ol-sbm-osm-sprite.json').then(function(spriteData) {
+                    spriteData.json().then(function(glSpriteData) {
+                      mb2olstyle(olLayer, glStyle, 'swissbasemap', undefined, glSpriteData, 'https://vtiles.geops.ch/styles/inspirationskarte/sprite.png', ft);
+                    });
+                  });
+                });
+              });
+              /* $http.get(config.styleUrl, {
                 cache: true
               }).then(function(response) {
                 var data = response.data;
                 // Sprit url are not managed correctly by olms
-                data.sprite = null;
-                data.layers.forEach(function(l) {
-                  if (l['source-layer'] === 'swissnames') {
-                    l['source-layer'] = 'swissnames-lv03';
-                  }
-                  if (l['source-layer'] === 'superlightbasemap-layer') {
-                    l['source-layer'] = 'superlightbasemap-lv03-layer';
-                  }
-                });
                 olms.applyStyle(olLayer, data, config.styleSource);
-              });
+              }); */
             }
           }
 

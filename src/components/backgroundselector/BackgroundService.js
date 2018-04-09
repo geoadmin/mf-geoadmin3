@@ -26,7 +26,7 @@ goog.require('ga_urlutils_service');
         id: 'lbm',
         label: 'Light map',
         disable3d: true,
-        labels: 'SWISSNAMES-LV03-mbtiles'
+        labels: false// 'SWISSNAMES-LV03-mbtiles'
       };
       var predefinedBgs = {
         'voidLayer': voidLayer,
@@ -34,7 +34,7 @@ goog.require('ga_urlutils_service');
           id: 'ch.swisstopo.swissimage',
           label: 'bg_luftbild',
           disable3d: true,
-          labels: 'SWISSNAMES-LV03-mbtiles'
+          labels: false// 'SWISSNAMES-LV03-mbtiles'
         },
         'ch.swisstopo.pixelkarte-farbe': {
           id: 'ch.swisstopo.pixelkarte-farbe',
