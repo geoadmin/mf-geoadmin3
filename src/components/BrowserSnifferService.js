@@ -27,7 +27,7 @@ goog.require('ga_permalink');
       if (ios) {
         ios = +((/\((iPhone|iPad|iPod).+OS (\d{1,2})_/.exec(ua) || [])[2]);
       }
-      var android = ua.indexOf('android') > -1;
+      var android = /(android)/i.test(ua);
       var webkit = !msie && /WebKit/.test(ua);
       var opera = !msie && /(OPiOS|OPR)\//.test(ua);
       var chrome = !msie && !opera && /(CriOS|Chrome)\//.test(ua);
