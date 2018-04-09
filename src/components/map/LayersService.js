@@ -482,6 +482,14 @@ goog.require('ga_urlutils_service');
           var crossOrigin = 'anonymous';
           var extent = config.extent || gaMapUtils.defaultExtent;
 
+          // The tileGridMinRes is the resolution at which the client
+          // zoom is activated. It's different from the config.minResolution
+          // value at which the layer stop being displayed.
+          var tileGridMinRes;
+          if (config.resolutions) {
+            tileGridMinRes = config.resolutions.pop();
+          }
+
           // For some obscure reasons, on iOS, displaying a base 64 image
           // in a tile with an existing crossOrigin attribute generates
           // CORS errors.
@@ -513,8 +521,7 @@ goog.require('ga_urlutils_service');
                 format: config.format,
                 projection: gaGlobalOptions.defaultEpsg,
                 requestEncoding: 'REST',
-                tileGrid: gaTileGrid.get(config.resolutions,
-                    config.minResolution),
+                tileGrid: gaTileGrid.get(tileGridMinRes),
                 tileLoadFunction: tileLoadFunction,
                 urls: getImageryUrls(wmtsTplUrl, h2(wmtsSubdomains)),
                 crossOrigin: crossOrigin,
@@ -563,8 +570,7 @@ goog.require('ga_urlutils_service');
                   params: wmsParams,
                   gutter: config.gutter || 0,
                   crossOrigin: crossOrigin,
-                  tileGrid: gaTileGrid.get(config.resolutions,
-                      config.minResolution, config.type),
+                  tileGrid: gaTileGrid.get(tileGridMinRes, config.type),
                   tileLoadFunction: tileLoadFunction,
                   wrapX: false,
                   transition: 0
