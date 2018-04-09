@@ -466,7 +466,11 @@ goog.require('ga_urlutils_service');
               } else {
                 $scope.downloadUrl(data.getURL, pdfLegendsToDownload);
               }
-            }, function() {
+            }, function(response) {
+              if (response.status === 413) {
+                var msg = $translate.instant('print_request_too_large');
+                $window.alert(msg);
+              }
               $scope.options.printing = false;
             });
           });
