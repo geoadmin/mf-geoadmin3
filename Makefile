@@ -96,8 +96,8 @@ CURRENT_DATE ?= $(shell date -u +"%Y-%m-%d %H:%M:%S %z")
 
 # Build variables
 KEEP_VERSION ?= false
-VERSION = $(shell if [ $(KEEP_VERSION) = true ] && [ '$(LAST_VERSION)' != '-none-' ]; then echo '$(LAST_VERSION)'; else date '+%y%m%d%H%M'; fi)
 LAST_VERSION = $(call lastvalue,version)
+VERSION := $(shell if [ $(KEEP_VERSION) = true ] && [ '$(LAST_VERSION)' != '-none-' ]; then echo '$(LAST_VERSION)'; else date '+%y%m%d%H%M'; fi)
 NAMED_BRANCH ?= true
 DEEP_CLEAN ?= false
 
@@ -109,7 +109,7 @@ CODE_DIR ?= .
 S3_BASE_PATH =
 S3_SRC_BASE_PATH =
 ifeq ($(NAMED_BRANCH), false)
-  SHA = $(shell git rev-parse HEAD | cut -c1-7)
+  SHA := $(shell git rev-parse HEAD | cut -c1-7)
   S3_BASE = /$(DEPLOY_GIT_BRANCH)/$(SHA)/$(VERSION)
   S3_BASE_PATH = $(S3_BASE)/
   S3_SRC_BASE_PATH = $(S3_BASE)/src/
