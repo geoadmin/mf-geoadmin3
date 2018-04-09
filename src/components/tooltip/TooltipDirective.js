@@ -416,11 +416,16 @@ goog.require('ga_window_service');
                 var pickedObjects = scope.ol3d.getCesiumScene().
                     drillPick(position3d, 10);
                 for (var i = 0, ii = pickedObjects.length; i < ii; i++) {
+                  var feat;
                   var prim = pickedObjects[i].primitive;
                   var entity = pickedObjects[i].id;
-                  var feat = prim.olFeature || entity.olFeature;
-                  var lay = prim.olLayer || entity.olLayer;
+                  if (prim && prim.olFeature) {
+                    feat = prim.olFeature;
+                  } else if (entity && entity.olFeature) {
+                    feat = entity.olFeature;
+                  }
                   if (isFeatureQueryable(feat)) {
+                    var lay = prim.olLayer || entity.olLayer;
                     showVectorFeature(feat, lay);
                     all.push($q.when(1));
                     break;
