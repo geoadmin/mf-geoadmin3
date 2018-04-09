@@ -38,7 +38,10 @@ goog.require('ga_window_service');
     var createMap = function() {
       var toolbar = $('#zoomButtons')[0];
       var defaultProjection = ol.proj.get(gaGlobalOptions.defaultEpsg);
-      defaultProjection.setExtent(gaGlobalOptions.defaultEpsgExtent);
+
+      if (!defaultProjection.getExtent()) {
+        defaultProjection.setExtent(gaGlobalOptions.defaultEpsgExtent);
+      }
 
       var zoomIn = '<span translate-attr="{title: \'zoom_in\'}">' +
         '<i class="fa fa-ga-circle-bg"></i>' +
