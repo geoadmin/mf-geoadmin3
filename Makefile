@@ -10,16 +10,22 @@ define moveto
 	done;
 endef
 
+# Files variables
 SRC_JS_FILES := $(shell find src/components src/js -type f -name '*.js')
 SRC_JS_FILES_FOR_COMPILER = $(shell sed -e ':a' -e 'N' -e '$$!ba' -e 's/\n/ --js /g' .build-artefacts/js-files | sed 's/^.*base\.js //')
 SRC_LESS_FILES := $(shell find src -type f -name '*.less')
 SRC_COMPONENTS_PARTIALS_FILES := $(shell find src/components -type f -path '*/partials/*' -name '*.html')
 PYTHON_FILES := $(shell find scripts test/saucelabs -type f -name "*.py" -print)
+
+
+# Apache variables
 APACHE_BASE_DIRECTORY ?= $(CURDIR)
 LAST_APACHE_BASE_DIRECTORY := $(call lastvalue,apache-base-directory)
 APACHE_BASE_PATH ?= /$(shell id -un)
 LAST_APACHE_BASE_PATH := $(call lastvalue,apache-base-path)
 
+
+# App services variables
 TECH_SUFFIX = .bgdi.ch
 API_URL ?= //api3.geo.admin.ch
 API_TECH_URL ?= //mf-chsdi3.
@@ -40,6 +46,10 @@ PROXY_URL ?= //service-proxy.prod.bgdi.ch
 LAST_PROXY_URL := $(call lastvalue,proxy-url)
 PYPI_URL ?= https://pypi.fcio.net/simple/
 LAST_PYPI_URL := $(call lastvalue,pypi-url)
+PUBLIC_URL_REGEXP ?= ^https?:\/\/public\..*\.(bgdi|admin)\.ch\/.*
+ADMIN_URL_REGEXP ?= ^(ftp|http|https):\/\/(.*(\.bgdi|\.geo\.admin)\.ch)
+HREF_REGEXP ?= ^\s*(https?|whatsapp|file|s?ftp|blob|mailto):
+
 
 # Map services variables
 WMS_URL ?= //wms.geo.admin.ch
@@ -55,47 +65,56 @@ VECTORTILES_URL ?= //vectortiles{s}.geo.admin.ch
 VECTORTILES_TECH_URL ?= //vectortiles{s}.
 LAST_VECTORTILES_URL := $(call lastvalue,vectortiles-url)
 
-PUBLIC_URL_REGEXP ?= ^https?:\/\/public\..*\.(bgdi|admin)\.ch\/.*
-ADMIN_URL_REGEXP ?= ^(ftp|http|https):\/\/(.*(\.bgdi|\.geo\.admin)\.ch)
-HREF_REGEXP ?= ^\s*(https?|whatsapp|file|s?ftp|blob|mailto):
 
 # E2E variables
 E2E_TARGETURL ?= https://mf-geoadmin3.dev.bgdi.ch
 E2E_TESTS ?= false
 E2E_BROWSER ?= false
 E2E_SINGLE ?= false
+SAUCELABS_TESTS ?=
 
+
+# Less variables
 LESS_PARAMETERS ?= -ru
 
-GIT_BRANCH ?= $(shell if [ -f .build-artefacts/deployed-git-branch ]; then cat .build-artefacts/deployed-git-branch 2> /dev/null; else git rev-parse --symbolic-full-name --abbrev-ref HEAD; fi)
-GIT_LAST_BRANCH := $(call lastvalue,git-branch)
-BRANCH_TO_DELETE ?=
+
+# Map libs variables
 OL_VERSION ?= v4.6.5 # v4.6.5, March 20 2018
 OL_CESIUM_VERSION ?= 071c090db82540fb3c9cbae9e04699e783ca8203 # master, March 27 2018
 CESIUM_VERSION ?= dabbd96f70f568aeae6eed367d52b8546458f948 # c2c/c2c_patches, March 2 2018
-DEFAULT_TOPIC_ID ?= ech
+
+
+# App variables
 TRANSLATION_FALLBACK_CODE ?= de
 LANGUAGES ?= '[\"de\", \"fr\", \"it\", \"en\", \"rm\"]'
+DEFAULT_TOPIC_ID ?= ech
+
+
+# Translations variables
 LANGS ?= de fr it rm en
 TRANSLATE_GSPREAD_KEYS ?= 1F3R46w4PODfsbJq7jd79sapy3B7TXhQcYM7SEaccOA0
 TRANSLATE_CSV_FILES ?= "https://docs.google.com/spreadsheets/d/1bRzdX2zwN2VG7LWEdlscrP-wGlp7O46nvrXkQNnFvVY/export?format=csv&gid=54811248"
 TRANSLATE_EMPTY_JSON ?= src/locales/empty.json
 TRANSLATE_OUTPUT ?= src/locales
-DEFAULT_EXTENT ?= '[2420000, 1030000, 2900000, 1350000]'
-DEFAULT_RESOLUTION ?= 500.0
-DEFAULT_LEVEL_OF_DETAIL ?= 7 #level of detail for the default resolution
-RESOLUTIONS ?= '[650.0, 500.0, 250.0, 100.0, 50.0, 20.0, 10.0, 5.0, 2.5, 2.0, 1.0, 0.5, 0.25, 0.1]'
-LEVEL_OF_DETAILS ?= '[6, 7, 8, 9, 10, 11, 12, 13, 14, 14, 16, 17, 18, 18]' #lods corresponding to resolutions
+
+
+# Map variables
 DEFAULT_EPSG ?= EPSG:2056
 DEFAULT_EPSG_EXTEND ?= '[2420000, 1030000, 2900000, 1350000]'
-DEFAULT_ELEVATION_MODEL ?= COMB
+DEFAULT_EXTENT ?= '[2420000, 1030000, 2900000, 1350000]'
+DEFAULT_RESOLUTION ?= 500.0
+RESOLUTIONS ?= '[650.0, 500.0, 250.0, 100.0, 50.0, 20.0, 10.0, 5.0, 2.5, 2.0, 1.0, 0.5, 0.25, 0.1]'
+DEFAULT_LEVEL_OF_DETAIL ?= 7 #level of detail for the default resolution
+LEVEL_OF_DETAILS ?= '[6, 7, 8, 9, 10, 11, 12, 13, 14, 14, 16, 17, 18, 18]' #lods corresponding to resolutions
 DEFAULT_TERRAIN ?= ch.swisstopo.terrain.3d
-SAUCELABS_TESTS ?=
+DEFAULT_ELEVATION_MODEL ?= COMB
+
 USER_SOURCE ?= rc_user
 USER_NAME ?= $(shell id -un)
 GIT_COMMIT_HASH ?= $(shell git rev-parse --verify HEAD)
 GIT_COMMIT_DATE ?= $(shell git log -1  --date=iso --pretty=format:%cd)
 CURRENT_DATE ?= $(shell date -u +"%Y-%m-%d %H:%M:%S %z")
+
 
 # Build variables
 KEEP_VERSION ?= false
@@ -103,6 +122,7 @@ LAST_VERSION = $(call lastvalue,version)
 VERSION := $(shell if [ $(KEEP_VERSION) = true ] && [ '$(LAST_VERSION)' != '-none-' ]; then echo '$(LAST_VERSION)'; else date '+%y%m%d%H%M'; fi)
 NAMED_BRANCH ?= true
 DEEP_CLEAN ?= false
+
 
 # S3 deploy variables
 DEPLOY_TARGET ?= int
@@ -118,8 +138,14 @@ ifeq ($(NAMED_BRANCH), false)
   S3_SRC_BASE_PATH = $(S3_BASE)/src/
 endif
 
+
 # S3 activation variables
 S3_VERSION_PATH ?=
+
+
+# S3 delete variables
+BRANCH_TO_DELETE ?=
+
 
 ## Python interpreter can't have space in path name
 ## So prepend all python scripts with python cmd
@@ -221,7 +247,6 @@ help:
 	@echo "- APACHE_BASE_DIRECTORY       (build with: $(LAST_APACHE_BASE_DIRECTORY), current value: $(APACHE_BASE_DIRECTORY))"
 	@echo "- VERSION                     (build with: $(LAST_VERSION), current value: $(VERSION))"
 	@echo "- SNAPSHOT                    (current value: $(SNAPSHOT))"
-	@echo "- GIT_BRANCH                  (current value: $(GIT_BRANCH))"
 	@echo "- DEPLOY_GIT_BRANCH           (current value: $(DEPLOY_GIT_BRANCH))"
 	@echo "- GIT_COMMIT_HASH             (current value: $(GIT_COMMIT_HASH))"
 	@echo "- VARNISH_HOSTS               (current value: ${VARNISH_HOSTS})"
@@ -601,7 +626,7 @@ prd/info.json: src/info.mako.json
 	${PYTHON_CMD} ${MAKO_CMD} \
 		--var "version=$(VERSION)" \
 		--var "user_name=$(USER_NAME)" \
-		--var "git_branch=$(GIT_BRANCH)" \
+		--var "git_branch=$(DEPLOY_GIT_BRANCH)" \
 		--var "git_commit_date=$(GIT_COMMIT_DATE)" \
 		--var "git_commit_hash=$(GIT_COMMIT_HASH)" \
 		--var "build_date=$(CURRENT_DATE)"  $< > $@
@@ -844,9 +869,6 @@ ${PYTHON_VENV}: .build-artefacts/last-pypi-url
 
 .build-artefacts/last-version::
 	$(call cachelastvariable,$@,$(VERSION),$(LAST_VERSION),version)
-
-.build-artefacts/last-git-branch::
-	$(call cachelastvariable,$@,$(GIT_BRANCH),$(GIT_LAST_BRANCH),git-branch)
 
 .build-artefacts/last-api-url::
 	$(call cachelastvariable,$@,$(API_URL),$(LAST_API_URL),api-url)
