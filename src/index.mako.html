@@ -805,8 +805,10 @@ itemscope itemtype="http://schema.org/WebApplication"
           defaultTerrain: '${default_terrain}',
           defaultLod: ${default_level_of_detail},
           resolutions: JSON.parse(${resolutions}),
-          lods: JSON.parse(${level_of_details})
-       });
+          lods: JSON.parse(${level_of_details}),
+          tileGridOrigin: JSON.parse(${tilegrid_origin}),
+          tileGridResolutions: JSON.parse(${tilegrid_resolutions})
+        });
       })();
 
       /**

@@ -10,6 +10,18 @@ define moveto
 	done;
 endef
 
+
+# rc file used
+USER_SOURCE ?= rc_user
+
+
+# Info variables
+USER_NAME ?= $(shell id -un)
+GIT_COMMIT_HASH ?= $(shell git rev-parse --verify HEAD)
+GIT_COMMIT_DATE ?= $(shell git log -1  --date=iso --pretty=format:%cd)
+CURRENT_DATE ?= $(shell date -u +"%Y-%m-%d %H:%M:%S %z")
+
+
 # Files variables
 SRC_JS_FILES := $(shell find src/components src/js -type f -name '*.js')
 SRC_JS_FILES_FOR_COMPILER = $(shell sed -e ':a' -e 'N' -e '$$!ba' -e 's/\n/ --js /g' .build-artefacts/js-files | sed 's/^.*base\.js //')
@@ -104,17 +116,15 @@ DEFAULT_EPSG_EXTEND ?= '[2420000, 1030000, 2900000, 1350000]'
 DEFAULT_EXTENT ?= '[2420000, 1030000, 2900000, 1350000]'
 DEFAULT_RESOLUTION ?= 500.0
 RESOLUTIONS ?= '[650.0, 500.0, 250.0, 100.0, 50.0, 20.0, 10.0, 5.0, 2.5, 2.0, 1.0, 0.5, 0.25, 0.1]'
+TILEGRID_ORIGIN ?= '[2420000, 1350000]'
+TILEGRID_RESOLUTIONS ?= '[4000, 3750, 3500, 3250, 3000, 2750, 2500, 2250, 2000, 1750, 1500, 1250, 1000, 750, 650, 500, 250, 100, 50, 20, 10, 5, 2.5, 2, 1.5, 1, 0.5, 0.25, 0.1]'
+
+
+# Globe variables
 DEFAULT_LEVEL_OF_DETAIL ?= 7 #level of detail for the default resolution
 LEVEL_OF_DETAILS ?= '[6, 7, 8, 9, 10, 11, 12, 13, 14, 14, 16, 17, 18, 18]' #lods corresponding to resolutions
 DEFAULT_TERRAIN ?= ch.swisstopo.terrain.3d
 DEFAULT_ELEVATION_MODEL ?= COMB
-
-USER_SOURCE ?= rc_user
-USER_NAME ?= $(shell id -un)
-GIT_COMMIT_HASH ?= $(shell git rev-parse --verify HEAD)
-GIT_COMMIT_DATE ?= $(shell git log -1  --date=iso --pretty=format:%cd)
-CURRENT_DATE ?= $(shell date -u +"%Y-%m-%d %H:%M:%S %z")
-
 
 # Build variables
 KEEP_VERSION ?= false
@@ -674,6 +684,8 @@ define buildpage
 		--var "href_regexp=$(HREF_REGEXP)" \
 		--var "default_epsg"="$(DEFAULT_EPSG)" \
 		--var "default_epsg_extend"="$(DEFAULT_EPSG_EXTEND)" \
+		--var "tilegrid_origin"="$(TILEGRID_ORIGIN)" \
+		--var "tilegrid_resolutions"="$(TILEGRID_RESOLUTIONS)" \
 		--var "staging"="$(DEPLOY_TARGET)" $< > $@
 endef
 
