@@ -401,7 +401,6 @@ goog.require('ga_window_service');
               }
               // Use by the ga-shop directive
               scope.clickCoordinate = coordinate;
-              var feat;
               var pointerShown = $(map.getTarget()).css('cursor') === 'pointer';
               var mapRes = map.getView().getResolution();
               var mapProj = map.getView().getProjection();
@@ -417,6 +416,7 @@ goog.require('ga_window_service');
                 var pickedObjects = scope.ol3d.getCesiumScene().
                     drillPick(position3d, 10);
                 for (var i = 0, ii = pickedObjects.length; i < ii; i++) {
+                  var feat;
                   var prim = pickedObjects[i].primitive;
                   var entity = pickedObjects[i].id;
                   if (prim && prim.olFeature) {
