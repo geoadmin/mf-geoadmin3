@@ -96,8 +96,8 @@ CURRENT_DATE ?= $(shell date -u +"%Y-%m-%d %H:%M:%S %z")
 
 # Build variables
 KEEP_VERSION ?= false
-LAST_VERSION = $(call lastvalue,version)
 VERSION = $(shell if [ $(KEEP_VERSION) = true ] && [ '$(LAST_VERSION)' != '-none-' ]; then echo '$(LAST_VERSION)'; else date '+%y%m%d%H%M'; fi)
+LAST_VERSION = $(call lastvalue,version)
 NAMED_BRANCH ?= true
 DEEP_CLEAN ?= false
 
@@ -227,6 +227,7 @@ help:
 
 showVariables:
 	@echo "DEPLOY_TARGET = $(DEPLOY_TARGET)"
+	@echo "VERSION = $(VERSION)"
 	@echo "S3_BASE_PATH = $(S3_BASE_PATH)"
 	@echo "S3_SRC_BASE_PATH = $(S3_SRC_BASE_PATH)"
 
@@ -253,7 +254,8 @@ prod:
 	source rc_prod && make build
 
 .PHONY: release
-release: .build-artefacts/devlibs \
+release: showVariables \
+	.build-artefacts/devlibs \
 	prd/lib/ \
 	prd/lib/Cesium/ \
 	prd/lib/Cesium/Workers/ \
@@ -273,10 +275,16 @@ release: .build-artefacts/devlibs \
 	prd/info.json \
 	prd/robots.txt \
 	prd/robots_prod.txt
-	$(call showVariables)
 
 .PHONY: debug
-debug: .build-artefacts/devlibs src/deps.js src/style/app.css src/index.html src/mobile.html src/embed.html src/404.html
+debug: showVariables \
+	.build-artefacts/devlibs \
+	src/deps.js \
+	src/style/app.css \
+	src/index.html \
+	src/mobile.html \
+	src/embed.html \
+	src/404.html
 
 .PHONY: lint
 lint: .build-artefacts/devlibs .build-artefacts/requirements.timestamp $(SRC_JS_FILES) linttest lintpy
