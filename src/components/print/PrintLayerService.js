@@ -47,7 +47,6 @@ goog.require('ga_urlutils_service');
   var UNITS_RATIO = 39.37; // inches per meter
   var styleId = 0;
   var format = new ol.format.GeoJSON();
-  var vectorPropertiesToKeep = ['styleUrl'];
 
   function encodeGraticule(dpi) {
     return {
@@ -333,18 +332,9 @@ goog.require('ga_urlutils_service');
 
       if (geometry.intersectsExtent(printRectangleCoords)) {
         var encFeature = format.writeFeatureObject(feature);
-        if (!encFeature.properties) {
-          encFeature.properties = {};
-        } else {
-          // Fix circular structure to JSON
-          // see: https://github.com/geoadmin/mf-geoadmin3/issues/1213
-          var properties = Object.keys(encFeature.properties);
-          angular.forEach(properties, function(property) {
-            if (vectorPropertiesToKeep.indexOf(property) < 0) {
-              delete encFeature.properties[property];
-            }
-          })
-        }
+        // We remove all attributes. The style attribute is always 
+        // '_gx_style', which is hardcoded
+        encFeature.properties = {};
         encFeature.properties._gx_style = encStyle.id;
         encFeatures.push(encFeature);
 
