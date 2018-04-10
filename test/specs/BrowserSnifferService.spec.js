@@ -408,6 +408,11 @@ describe('ga_browsersniffer_service', function() {
         expect(snif.h2).to.be.eql(true);
       });
 
+      it('Samsung Galaxy S8', function() {
+        win.navigator.userAgent = 'Mozilla/5.0 (Linux; Android 7.0; SAMSUNG SM-G950F Build/NRD90M) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/5.2 Chrome/51.0.2704.106 Mobile Safari/537.36';
+        snif = injector.get('gaBrowserSniffer');
+        expect(snif.android).to.be.eql(true);
+      });
     });
   });
 });
