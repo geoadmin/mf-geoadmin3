@@ -281,50 +281,54 @@ goog.require('ga_urlutils_service');
                   'toMDAwZzJ3cG56emF6YmRoOCJ9.lP3KfJVHrUHp7DXIQrZYMw';
               var vts = [{
                 serverLayerName: 'SWISSNAMES-LV03-mbtiles',
+                sourceId: 'composite',
                 styleUrl: 'https://api.mapbox.com/styles/v1/vib2d/' +
                     'cj168d2g500482rqm988ycycc' + tk,
-                styleSource: 'composite',
                 tilePixelRatio: 4,
                 tileSize: 1024
               }, {
-                serverLayerName: 'swissbasemapzoom-1-mbtiles',
-                // styleUrl: 'https://api.mapbox.com/styles/v1/vib2d/' +
-                //    'cj2btdr0d00532ro5ix21uls4' + tk,
-                // styleUrl: 'https://tileserver.dev.bgdi.ch/styles/' +
-                //    'superlightbasemap.json',
+                serverLayerName: 'swissbasemap',
+                // this is the id of the source to display. One in style's
+                // sources.
+                sourceId: 'swissbasemap',
+                url: 'https://tileserver.dev.bgdi.ch/data/swissbasemapzoom-1-mbtiles/{z}/{x}/{y}.pbf',
                 styleUrl: 'https://tileserver.dev.bgdi.ch/styles/swissrailway-basemap/style.json',
-                styleSource: 'swissbasemap',
-                tilePixelRatio: 4,
-                tileSize: 1024
+                maxZoom: 15
+              }, {
+                serverLayerName: 'openmaptiles',
+                sourceId: 'openmaptiles',
+                url: 'https://free.tilehosting.com/data/v3/{z}/{x}/{y}.pbf.pict?key=Og58UhhtiiTaLVlPtPgs',
+                styleUrl: 'https://rawgit.com/openmaptiles/klokantech-basic-gl-style/master/style.json',
+                maxZoom: 14
               }];
+
               vts.forEach(function(vt, idx) {
-                response.data[vt.serverLayerName] = {
-                  type: 'vectortile',
-                  serverLayerName: vt.serverLayerName,
-                  url: 'https://tileserver.dev.bgdi.ch/data/' +
-                      vt.serverLayerName + '/{z}/{x}/{y}.pbf',
-                  styleUrl: vt.styleUrl,
-                  styleSource: vt.styleSource,
-                  tilePixelRatio: vt.tilePixelRatio,
-                  tileSize: vt.tileSize
-                };
+                response.data[vt.serverLayerName] = angular.extend(vt, {
+                  type: 'vectortile'
+                });
               });
 
-              // LBM with relief
+              // Bg layer with relief and a vector tile tileset
               var relief = 'ch.swisstopo.swissalti3d-reliefschattierung';
               if (response.data[relief]) {
                 response.data[relief + '-custom'] = response.data[relief];
-                response.data[relief + '-custom'].opacity = 0.1;
-                response.data['lbm'] = {
+                response.data[relief + '-custom'].opacity = 0.4;
+                response.data['sbm'] = {
+                  type: 'aggregate',
                   background: true,
-                  serverLayerName: 'lbm',
-                  label: 'light map',
+                  serverLayerName: 'sbm',
+                  subLayersIds: [
+                    'swissbasemap'
+                  ]
+                };
+                response.data['omt'] = {
+                  type: 'aggregate',
+                  background: true,
+                  serverLayerName: 'omt',
                   subLayersIds: [
                     relief + '-custom',
-                    // 'SLBM-LV03-mbtiles'
-                    'swissbasemapzoom-1-mbtiles'
-                  ],
-                  type: 'aggregate'
+                    'openmaptiles'
+                  ]
                 };
               }
 
@@ -707,25 +711,51 @@ goog.require('ga_urlutils_service');
               declutter: true,
               source: new ol.source.VectorTile({
                 format: new ol.format.MVT(),
-                maxZoom: 15,
-                // tileGrid: ol.tilegrid.createXYZ({
-                //  tileSize: config.tileSize || 4096
-                // }),
-                // tilePixelRatio: config.tilePixelRatio || 16,
-                url: config.url || getVectorTilesUrl(config.serverLayerName,
-                    timestamp, vectorTilesSubdomains)
+                maxZoom: config.maxZoom,
+                url: config.url
               })
             });
-            if (config.styleUrl) {
-              fetch('https://mf-geoadmin3.dev.bgdi.ch/ltteo_vib/vib/static/data/swissbasemapzoom-osm-integrated.json').then(function(style) {
-                var ft = ['Helvetica'];
-                style.json().then(function(glStyle) {
-                  fetch('https://mf-geoadmin3.dev.bgdi.ch/ltteo_vib/vib/static/data/ol-sbm-osm-sprite.json').then(function(spriteData) {
-                    spriteData.json().then(function(glSpriteData) {
-                      mb2olstyle(olLayer, glStyle, 'swissbasemap', undefined, glSpriteData, 'https://vtiles.geops.ch/styles/inspirationskarte/sprite.png', ft);
-                    });
-                  });
+            if (config.sourceId && config.styleUrl) {
+              var sourceId = config.sourceId;
+              $http.get(config.styleUrl, {
+                cache: true
+              }).then(function(response) {
+                var glStyle = response.data;
+                var spriteConfigUrl = glStyle.sprite + '.json';
+
+                // Load the style for a specific source
+                $http.get(spriteConfigUrl, {
+                  cache: true
+                }).then(function(response) {
+                  $window.mb2olstyle(olLayer, glStyle, config.sourceId,
+                      undefined,
+                      response.data, glStyle.sprite + '.png', ['Helvetica']);
+                  // olms.stylefunction(olLayer, glStyle, config.sourceId,
+                  //    undefined, response.data, glStyle.sprite + '.png',
+                  //    ['Helvetica']);
+                }, function(reason) {
+                  $window.console.error('Apply style failed. Reason: "' +
+                      reason + '"');
                 });
+
+                // Load the tileset config
+                if (!config.url) {
+                  var sourceConfigUrl = glStyle.sources[sourceId].url;
+                  $http.get(sourceConfigUrl, {
+                    cache: true
+                  }).then(function(response) {
+                    var data = response.data;
+                    olLayer.setSource(new ol.source.VectorTile({
+                      format: new ol.format.MVT(),
+                      minZoom: data.minzoom,
+                      maxZoom: data.maxzoom,
+                      urls: data.tiles
+                    }));
+                  }, function(reason) {
+                    $window.console.error('Loading source config failed. ' +
+                        'Reason: "' + reason + '"');
+                  });
+                }
               });
               /* $http.get(config.styleUrl, {
                 cache: true
