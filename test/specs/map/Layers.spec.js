@@ -727,7 +727,7 @@ describe('ga_layers_service', function() {
           expect(source.getTileLoadFunction()).to.be.a(Function);
           var tileGrid = source.getTileGrid();
           expect(tileGrid instanceof ol.tilegrid.WMTS).to.be.ok();
-          expect(tileGrid.getResolutions().length).to.equal(29);
+          expect(tileGrid.getResolutions().length).to.equal(27);
           expectCommonProperties(layer, 'wmts');
         });
 
