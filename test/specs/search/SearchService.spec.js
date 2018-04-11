@@ -34,7 +34,7 @@ describe('ga_search_service', function() {
         spy = sinon.stub(gaReframe, 'get03To95');
       });
 
-      it('without separator', function(done) {
+      it('with space as separator', function(done) {
         getCoordinate(extent, '2600123.12 1200345').then(function(position) {
           expect(position).to.eql(coord2056);
           expect(spy.callCount).to.eql(0);
@@ -52,7 +52,16 @@ describe('ga_search_service', function() {
         $rootScope.$digest();
       });
 
-      it('separated by apostrophe', function(done) {
+      it('separated by slash', function(done) {
+        getCoordinate(extent, '2600123.12/1200345').then(function(position) {
+          expect(position).to.eql(coord2056);
+          expect(spy.callCount).to.eql(0);
+          done();
+        });
+        $rootScope.$digest();
+      });
+
+      it('thousands separated by apostrophe', function(done) {
         getCoordinate(extent, '2\'600\'123.12 1\'200\'345').then(function(position) {
           expect(position).to.eql(coord2056);
           expect(spy.callCount).to.eql(0);
@@ -89,7 +98,7 @@ describe('ga_search_service', function() {
         spy = sinon.stub(gaReframe, 'get03To95').withArgs(coord21781).resolves(coord2056);
       });
 
-      it('without separator', function(done) {
+      it('separated by space', function(done) {
         getCoordinate(extent, '600123.12 200345').then(function(position) {
           expect(position).to.eql(coord2056);
           expect(spy.callCount).to.eql(1);
@@ -107,7 +116,24 @@ describe('ga_search_service', function() {
         $rootScope.$digest();
       });
 
-      it('separated by apostrophe', function(done) {
+      it('separated by slash [n]', function(done) {
+        getCoordinate(extent, '600123.12/200345').then(function(position) {
+          expect(position).to.eql(coord2056);
+          expect(spy.callCount).to.eql(1);
+          done();
+        });
+        $rootScope.$digest();
+      });
+      it('separated by slash and spaces [n]', function(done) {
+        getCoordinate(extent, '600123.12 / 200345').then(function(position) {
+          expect(position).to.eql(coord2056);
+          expect(spy.callCount).to.eql(1);
+          done();
+        });
+        $rootScope.$digest();
+      });
+
+      it('thousands separated by apostrophe', function(done) {
         getCoordinate(extent, '600\'123.12 200\'345').then(function(position) {
           expect(position).to.eql(coord2056);
           expect(spy.callCount).to.eql(1);
@@ -133,6 +159,31 @@ describe('ga_search_service', function() {
           done();
         });
         $rootScope.$digest();
+      });
+    });
+    //  46°58'16.32" N 6°58'10.13"E 
+    describe.only('supports EPSG:4326 coordinate', function() {
+      var coord2056 = [2564298.937, 1202343.701];
+      var strings = [
+        '6.96948 46.9712',
+        '46.9712° 6.96948',
+        '6.96948 ° 46.9712°',
+        '6.96948°W 46.9712°E',
+        '6.96948°E 46.9712°N',
+        '6° 58.1688\' E 46° 58.272\' N',
+        '6 58.1688\' 46 58.272\'',
+        '46°58\'16.32"N  6°58\'10.13"E'
+      ]
+
+      strings.forEach(function(str) {
+        it('trying to parse: ' + str, function(done) {
+          this.timeout(5000);
+          getCoordinate(extent, str).then(function(position) {
+            expect(position).to.eql(coord2056);
+            done();
+          });
+          $rootScope.$digest();
+        });
       });
     });
 
@@ -186,14 +237,6 @@ describe('ga_search_service', function() {
 
     it('supports latitude and longitude as DMS (test DMS,DM)', function(done) {
       getCoordinate(extent, '7° 1\' 25.0\'\' E 46° 1\' 25.0\'\' N').then(function(position) {
-        expect(position).to.eql([2567859.21, 1096981.625]);
-        done();
-      });
-      $rootScope.$digest();
-    });
-
-    it('supports latitude and longitude as DMS (test DMS,DMS)', function(done) {
-      getCoordinate(extent, '46° 1\' 25.0\'\' N 7° 1\' 25.0\'\' E').then(function(position) {
         expect(position).to.eql([2567859.21, 1096981.625]);
         done();
       });
