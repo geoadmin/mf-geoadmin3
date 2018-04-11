@@ -579,8 +579,8 @@ prd/lib/: src/lib/d3.min.js \
 	    src/lib/jquery.xdomainrequest.min.js \
 	    src/lib/Cesium.min.js \
 	    src/lib/olcesium.js \
-	    src/lib/olms.js
-
+	    src/lib/olms.js \
+	    src/lib/mb2olstyle.js
 	mkdir -p $@
 	cp -rf  $^ $@
 
@@ -610,6 +610,7 @@ prd/lib/build.js: src/lib/polyfill.min.js \
 	    src/lib/EPSG32632.js \
 	    src/lib/olcesium.js \
 	    src/lib/olms.js \
+	    src/lib/mb2olstyle.js \
 	    src/lib/angular-translate.min.js \
 	    src/lib/angular-translate-loader-static-files.min.js \
 	    src/lib/fastclick.min.js \
@@ -852,6 +853,7 @@ libs:
 	    --externs externs/ol.js \
 	    --externs externs/olcesium.js \
 	    --externs externs/olms.js \
+	    --externs externs/mb2olstyle.js \
 	    --externs externs/Cesium.externs.js \
 	    --externs externs/slip.js \
 	    --externs externs/angular.js \

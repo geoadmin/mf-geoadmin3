@@ -22,12 +22,23 @@ goog.require('ga_urlutils_service');
       var bgs = []; // The list of backgrounds available
       var bgsP; // Promise resolved when the background service is initialized.
       var labels, voidLayer = {id: 'voidLayer', label: 'void_layer'};
-      var lbm = {
-        id: 'lbm',
-        label: 'Light map',
-        disable3d: true,
-        labels: false// 'SWISSNAMES-LV03-mbtiles'
+
+      // Bgs with vector tiles tileset.
+      var vtBgs = {
+        'sbm': {
+          id: 'sbm',
+          label: 'SwissBaseMap',
+          disable3d: true,
+          labels: false
+        },
+        'omt': {
+          id: 'omt',
+          label: 'OpenMapTiles',
+          disable3d: true,
+          labels: false
+        }
       };
+
       var predefinedBgs = {
         'voidLayer': voidLayer,
         'ch.swisstopo.swissimage': {
@@ -85,9 +96,12 @@ goog.require('ga_urlutils_service');
         if (bgs.indexOf(voidLayer) === -1) {
           bgs.push(voidLayer);
         }
-        if (bgs.indexOf(lbm) === -1) {
-          bgs.push(lbm);
-        }
+
+        Object.keys(vtBgs).forEach(function(key) {
+          if (bgs.indexOf(vtBgs[key]) === -1) {
+            bgs.push(vtBgs[key]);
+          }
+        });
       };
 
       var Background = function() {
