@@ -39,7 +39,9 @@ goog.require('ga_translation_service');
         'ch.swisstopo.pixelkarte-pk200.metadata':
             'ch.swisstopo.pixelkarte-farbe-pk200.noscale',
         'ch.swisstopo.images-swissimage-dop10.metadata':
-            'ch.swisstopo.images-swissimage-dop10.metadata'
+            'ch.swisstopo.images-swissimage-dop10.metadata',
+        'ch.swisstopo.swiss-map-vector25.metadata':
+            'ch.swisstopo.swiss-map-vector25.metadata'
       };
       var clipper = {
         'commune': 'ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill',
