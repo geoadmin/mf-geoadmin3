@@ -7,7 +7,7 @@ goog.require('ga_reframe_service');
     'ga_reframe_service'
   ]);
 
-  var DDDegree = '([\\d.,]{2,})[°\\sNSWEO]*[ , ]+([\\d.,]{3,})[\\s°NSWEO]*';
+  var DDDegree = '([\\d.,]{2,})[°\\sNSWEO]*[ ,/]+([\\d.,]{3,})[\\s°NSWEO]*';
   var DMDegree = '([\\d]{1,2})[°\\s]*([\\d.,]+)[\\s\',NSEWO/]*';
 
   var DMSDegree = '\\b[0-9]{1,2}\\s*[°|º]\\s*';
