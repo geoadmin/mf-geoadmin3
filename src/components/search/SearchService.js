@@ -79,7 +79,7 @@ goog.require('ga_reframe_service');
 
       return coord;
     } catch (e) {
-      console.error(e);
+      return coord
     }
   }
 
@@ -105,21 +105,22 @@ goog.require('ga_reframe_service');
         }
 
         var matchDMS = query.match(regexpDMS);
-        console.log(regexpDMS);
+        // Should match most character in query, if not,
+        // try another rule (e.g. DM or DD)
         if (matchDMS && matchDMS.length === 2 &&
-          (query.length / 2) <=
-           matchDMS[0].length + matchDMS[1].length) {
+           (query.length * 0.7) <=
+           (matchDMS[0].length + matchDMS[1].length)) {
+
           left = parseDMS(matchDMS[0]);
           right = parseDMS(matchDMS[1]);
-          coord = sortCoordinates(left, right);
           if ((right != null) && (left != null)) {
+            coord = sortCoordinates(left, right);
             position = ol.proj.transform(coord,
                 'EPSG:4326', gaGlobalOptions.defaultEpsg);
             if (ol.extent.containsCoordinate(extent, position)) {
               return $q.when(roundCoordinates(position));
             }
           }
-          return $q.when(undefined);
         }
 
         // Parse degree EPSG:4326 notation
