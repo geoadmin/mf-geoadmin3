@@ -7,40 +7,97 @@ goog.require('ga_reframe_service');
     'ga_reframe_service'
   ]);
 
-  var DMSDegree = '[0-9]{1,2}[°|º]\\s*';
-  var DMSMinute = '[0-9]{1,2}[\'|′]';
-  var DMSSecond = '(?:\\b[0-9]+(?:\\.[0-9]*)?|\\.' +
-    '[0-9]+\\b)("|\'\'|′′|″)';
-  var DMSNorth = '[N]';
-  var DMSEast = '[E]';
+  /**
+   * D: Match Degrees coordinates (ex: 46.9712° 6.96948°)
+   * DM: Match Degrees Minutes coordinates (ex: 6° 58.1688' E 46° 58.272' N)
+   * DMSXXX: Match Degrees Minutes Seconds coordinates
+   *         (ex: 6° 58' 12.11'' E 46° 58' 12.12'' N)
+   */
+  var D = '([\\d.,]{2,})[°\\sNSWEO]*[ ,/]+([\\d.,]{3,})[\\s°NSWEO]*';
+  var DM = '([\\d]{1,2})[°\\s]*([\\d.,]+)[\\s\',NSEWO/]*';
+  var DMSDegree = '\\b[0-9]{1,2}\\s*[°|º]\\s*';
+  var DMSMinute = '[0-9]{1,2}\\s*[\'|′]';
+  var DMSSecond = '(?:[0-9]+(?:\\.[0-9]*)?|\\.[0-9]+)("|\'\'|′′|″)';
+  var DMSQuadrant = '[NOSWE]?';
+
+  // Match MGRS coordinates
   var MGRS = '^3[123][\\sa-z]{3}[\\s\\d]*';
-  var regexpDMSN = new RegExp(DMSDegree +
-    '(' + DMSMinute + ')?\\s*' +
-    '(' + DMSSecond + ')?\\s*' +
-    DMSNorth, 'g');
-  var regexpDMSE = new RegExp(DMSDegree +
-    '(' + DMSMinute + ')?\\s*' +
-    '(' + DMSSecond + ')?\\s*' +
-    DMSEast, 'g');
+
+  // Match simple coordinate (ex: 45.1 8.2 or 550000 230000)
+  var coordinate = '([\\d .\']{6,})([\\t ,./]+)([\\d .,\'/]{6,})'
+
+  var regexpD = new RegExp(D, 'i');
+  var regexpDM = new RegExp(DM + DM, 'i');
+  var regexpDMS = new RegExp(DMSDegree +
+      '(' + DMSMinute + ')?\\s*' +
+      '(' + DMSSecond + ')?\\s*' +
+      DMSQuadrant, 'gi');
   var regexpDMSDegree = new RegExp(DMSDegree, 'g');
-  var regexpCoordinate = new RegExp(
-      '([\\d\\.\']+)[\\s,]+([\\d\\.\']+)' +
-    '([\\s,]+([\\d\\.\']+)[\\s,]+([\\d\\.\']+))?');
+  var regexpCoordinate = new RegExp(coordinate);
   var regexMGRS = new RegExp(MGRS, 'gi');
+
   // Grid zone designation for Switzerland + two 100km letters + two digits
   // It's a limitiation of proj4 and a sensible default (precision is 10km)
   var MGRSMinimalPrecision = 7;
 
   var roundCoordinates = function(coords) {
-    return [Math.round(coords[0] * 1000) / 1000,
-      Math.round(coords[1] * 1000) / 1000];
+    return [
+      Math.round(coords[0] * 1000) / 1000,
+      Math.round(coords[1] * 1000) / 1000
+    ];
   };
+
+  var sanitizeCoordinate = function(str) {
+    return parseFloat(str.replace(/[ \t' ]/g, ''));
+  }
+
+  // Reorder coordinates.
+  // For 3857 and 4326 always northing > easting
+  var sortCoordinates = function(left, right) {
+    var northing, easting;
+    try {
+      left = parseFloat(left);
+      right = parseFloat(right);
+    } catch (e) {
+      return [0, 0];
+    }
+    if (left > right) {
+      northing = left;
+      easting = right;
+    } else {
+      northing = right;
+      easting = left;
+    }
+    return [easting, northing];
+  }
+
+  // Parse Degrees Minutes Seconds coordinates.
+  var parseDMS = function(stringDMS) {
+    var coord;
+    try {
+      coord = parseFloat(stringDMS.match(regexpDMSDegree)[0].
+          replace(/[°º]/g, ''));
+
+      var minutes = stringDMS.match(DMSMinute) ?
+        stringDMS.match(DMSMinute)[0] : '0';
+      coord = coord + parseFloat(minutes.replace(/['′]/g, '')) / 60;
+
+      var seconds = stringDMS.match(DMSSecond) ?
+        stringDMS.match(DMSSecond)[0] : '0';
+      coord = coord + parseFloat(seconds.replace(/["'″′]/g, '')) / 3600;
+
+      return coord;
+    } catch (e) {
+      return coord;
+    }
+  }
 
   module.provider('gaSearchGetCoordinate', function() {
     this.$get = function($window, $q, gaReframe, gaGlobalOptions) {
 
       return function(extent, query) {
-        var position;
+        var position, coord;
+        var left, right;
 
         // Parse MGRS notation
         var matchMGRS = query.match(regexMGRS);
@@ -56,73 +113,67 @@ goog.require('ga_reframe_service');
           }
         }
 
-        // Parse degree EPSG:4326 notation
-        var matchDMSN = query.match(regexpDMSN);
-        var matchDMSE = query.match(regexpDMSE);
-        if (matchDMSN && matchDMSN.length === 1 &&
-            matchDMSE && matchDMSE.length === 1) {
-          var northing = parseFloat(matchDMSN[0].
-              match(regexpDMSDegree)[0].
-              replace('°', '').replace('º', ''));
-          var easting = parseFloat(matchDMSE[0].
-              match(regexpDMSDegree)[0].
-              replace('°', '').replace('º', ''));
-          var minuteN = matchDMSN[0].match(DMSMinute) ?
-            matchDMSN[0].match(DMSMinute)[0] : '0';
-          northing = northing +
-            parseFloat(minuteN.replace('\'', '').
-                replace('′', '')) / 60;
-          var minuteE = matchDMSE[0].match(DMSMinute) ?
-            matchDMSE[0].match(DMSMinute)[0] : '0';
-          easting = easting +
-            parseFloat(minuteE.replace('\'', '').
-                replace('′', '')) / 60;
-          var secondN =
-            matchDMSN[0].match(DMSSecond) ?
-              matchDMSN[0].match(DMSSecond)[0] : '0';
-          northing = northing + parseFloat(secondN.replace('"', '').
-              replace('\'\'', '').replace('′′', '').
-              replace('″', '')) / 3600;
-          var secondE = matchDMSE[0].match(DMSSecond) ?
-            matchDMSE[0].match(DMSSecond)[0] : '0';
-          easting = easting + parseFloat(secondE.replace('"', '').
-              replace('\'\'', '').replace('′′', '').
-              replace('″', '')) / 3600;
-          position = ol.proj.transform([easting, northing],
-              'EPSG:4326', gaGlobalOptions.defaultEpsg);
+        // Parse Degrees Minutes Seconds
+        var matchDMS = query.match(regexpDMS);
+        // 0.7 is a magic number that defines if a majority of characters
+        // are detected.
+        // If not, try another rule (e.g. DM or DD)
+        if (matchDMS && matchDMS.length === 2 &&
+           (query.length * 0.7) <= (matchDMS[0].length + matchDMS[1].length)) {
+          left = parseDMS(matchDMS[0]);
+          right = parseDMS(matchDMS[1]);
+          if (right && left) {
+            coord = sortCoordinates(left, right);
+            position = ol.proj.transform(coord,
+                'EPSG:4326', gaGlobalOptions.defaultEpsg);
+            if (ol.extent.containsCoordinate(extent, position)) {
+              return $q.when(roundCoordinates(position));
+            }
+          }
+        }
+
+        // Parse Degrees EPSG:4326 notation
+        var matchD = query.match(regexpD);
+        if (matchD && matchD.length === 3) {
+          // we only care about coordinates in Switzerland
+          left = parseFloat(matchD[1]);
+          right = parseFloat(matchD[2]);
+          coord = sortCoordinates(left, right);
+          position = ol.proj.transform(coord, 'EPSG:4326',
+              gaGlobalOptions.defaultEpsg);
           if (ol.extent.containsCoordinate(extent, position)) {
             return $q.when(roundCoordinates(position));
           }
         }
 
-        var match = query.match(regexpCoordinate);
-        if (match) {
-          var left = parseFloat(match[1].replace(/'/g, ''));
-          var right = parseFloat(match[2].replace(/'/g, ''));
-          // Old school entries like '600 000 200 000'
-          if (match[3] != null) {
-            left = parseFloat(match[1].replace(/'/g, '') +
-                              match[2].replace(/'/g, ''));
-            right = parseFloat(match[4].replace(/'/g, '') +
-                               match[5].replace(/'/g, ''));
-          }
-          position = [left > right ? left : right,
-            right < left ? right : left];
-          // Match LV95
+        // Parse Degrees Minutes
+        var matchDM = query.match(regexpDM);
+        if (matchDM && matchDM.length === 5) {
+          left = parseInt(matchDM[1]) + parseFloat(matchDM[2]) / 60.0;
+          right = parseInt(matchDM[3]) + parseFloat(matchDM[4]) / 60.0;
+          coord = sortCoordinates(left, right);
+          position = ol.proj.transform(coord, 'EPSG:4326',
+              gaGlobalOptions.defaultEpsg);
           if (ol.extent.containsCoordinate(extent, position)) {
             return $q.when(roundCoordinates(position));
           }
-          // Match decimal notation EPSG:4326
-          if (left <= 180 && left >= -180 &&
-              right <= 180 && right >= -180) {
-            position = [left > right ? right : left,
-              right < left ? left : right
-            ];
-            position = ol.proj.transform(position, 'EPSG:4326',
-                gaGlobalOptions.defaultEpsg);
-            if (ol.extent.containsCoordinate(extent, position)) {
-              return $q.when(roundCoordinates(position));
-            }
+        }
+
+        // Parse swiss coordinates
+        var match = query.match(regexpCoordinate);
+        // Matches new school entries like '2 600 000 1 200 000'
+        // and old school entries like '600 000 200 000'
+        if (match && match.length === 4) {
+          left = sanitizeCoordinate(match[1]);
+          right = sanitizeCoordinate(match[3]);
+          position = [
+            left > right ? left : right,
+            right < left ? right : left
+          ];
+
+          // Match LV95
+          if (ol.extent.containsCoordinate(extent, position)) {
+            return $q.when(roundCoordinates(position));
           }
 
           // Match LV03 coordinates
@@ -132,7 +183,7 @@ goog.require('ga_reframe_service');
             }
           });
         }
-        return $q.when(undefined);
+        return $q.when();
       };
     };
   });

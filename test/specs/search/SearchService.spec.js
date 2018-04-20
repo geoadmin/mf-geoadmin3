@@ -34,7 +34,7 @@ describe('ga_search_service', function() {
         spy = sinon.stub(gaReframe, 'get03To95');
       });
 
-      it('without separator', function(done) {
+      it('with space as separator', function(done) {
         getCoordinate(extent, '2600123.12 1200345').then(function(position) {
           expect(position).to.eql(coord2056);
           expect(spy.callCount).to.eql(0);
@@ -52,7 +52,16 @@ describe('ga_search_service', function() {
         $rootScope.$digest();
       });
 
-      it('separated by apostrophe', function(done) {
+      it('separated by slash', function(done) {
+        getCoordinate(extent, '2600123.12/1200345').then(function(position) {
+          expect(position).to.eql(coord2056);
+          expect(spy.callCount).to.eql(0);
+          done();
+        });
+        $rootScope.$digest();
+      });
+
+      it('thousands separated by apostrophe', function(done) {
         getCoordinate(extent, '2\'600\'123.12 1\'200\'345').then(function(position) {
           expect(position).to.eql(coord2056);
           expect(spy.callCount).to.eql(0);
@@ -89,7 +98,7 @@ describe('ga_search_service', function() {
         spy = sinon.stub(gaReframe, 'get03To95').withArgs(coord21781).resolves(coord2056);
       });
 
-      it('without separator', function(done) {
+      it('separated by space', function(done) {
         getCoordinate(extent, '600123.12 200345').then(function(position) {
           expect(position).to.eql(coord2056);
           expect(spy.callCount).to.eql(1);
@@ -107,7 +116,24 @@ describe('ga_search_service', function() {
         $rootScope.$digest();
       });
 
-      it('separated by apostrophe', function(done) {
+      it('separated by slash [n]', function(done) {
+        getCoordinate(extent, '600123.12/200345').then(function(position) {
+          expect(position).to.eql(coord2056);
+          expect(spy.callCount).to.eql(1);
+          done();
+        });
+        $rootScope.$digest();
+      });
+      it('separated by slash and spaces [n]', function(done) {
+        getCoordinate(extent, '600123.12 / 200345').then(function(position) {
+          expect(position).to.eql(coord2056);
+          expect(spy.callCount).to.eql(1);
+          done();
+        });
+        $rootScope.$digest();
+      });
+
+      it('thousands separated by apostrophe', function(done) {
         getCoordinate(extent, '600\'123.12 200\'345').then(function(position) {
           expect(position).to.eql(coord2056);
           expect(spy.callCount).to.eql(1);
@@ -136,20 +162,65 @@ describe('ga_search_service', function() {
       });
     });
 
-    it('supports latitude and longitude as decimal (lon/lat)', function(done) {
-      getCoordinate(extent, '6.96948 46.9712').then(function(position) {
-        expect(position).to.eql([2564298.937, 1202343.701]);
-        done();
+    describe('supports EPSG:4326 coordinate (DD and DM)', function() {
+      var coord2056 = [2564298.937, 1202343.701];
+      var strings = [
+        '6.96948 46.9712',
+        '46.9712° 6.96948',
+        '6.96948 ° 46.9712°',
+        '6.96948°E 46.9712°N',
+        '6° 58.1688\' E 46° 58.272\' N',
+        // Assuming in Switzerland
+        '6 58.1688\' 46 58.272\'',
+        '6.96948°E 46.9712°S',
+        '6.96948°W 46.9712°E',
+        '46.9712° 6.96948°',
+        // Separators
+        '6.96948,46.9712',
+        '6.96948                46.9712',
+        '6.96948/46.9712'
+      ]
+
+      strings.forEach(function(str) {
+        it('trying to parse: ' + str, function(done) {
+          getCoordinate(extent, str).then(function(position) {
+            expect(position).to.eql(coord2056);
+            done();
+          });
+          $rootScope.$digest();
+        });
       });
-      $rootScope.$digest();
     });
 
-    it('supports latitude and longitude as decimal (lat/lon)', function(done) {
-      getCoordinate(extent, '46.9712 6.96948').then(function(position) {
-        expect(position).to.eql([2564298.937, 1202343.701]);
-        done();
+    describe('supports EPSG:4326 coordinate (DMS)', function() {
+      var coord2056 = [2564298.938, 1202343.702];
+      var strings = [
+        "46°58'16.320030760136433'' N  6°58'10.12802667678261'' E",
+        "6°58'10.12802667678261''E 46°58'16.320030760136'' N",
+        '46°58\'16.320030760136433" N  6°58\'10.12802667678261" E',
+        '46°58′16.320030760136433" N  6°58′10.12802667678261" E',
+        '46º58′16.320030760136433″ N  6º58′10.12802667678261″ E',
+        '46° 58\' 16.320030760136433\'\' N 6° 58\' 10.12802667678261\'\' E',
+        // Quandrants are wrongi/missing, but we assume in Switzerland
+        "46°58'16.320030760136433'' S  6°58'10.12802667678261'' W",
+        "46°58'16.320030760136433''  6°58'10.12802667678261'' ",
+        // Separators
+        "46°58'16.320030760136433'' N ,6°58'10.12802667678261'' E",
+        "46°58'16.320030760136433'' N / 6°58'10.12802667678261'' E",
+        "6°58'10.12802667678261'',46°58'16.320030760136433''",
+        "6°58'10.12802667678261''/'46°58'16.320030760136433''",
+        "6°58'10.12802667678261''    '46°58'16.320030760136433''"
+      ]
+
+      strings.forEach(function(str) {
+        it('trying to parse: ' + str, function(done) {
+          getCoordinate(extent, str).then(function(position) {
+            expect(position).to.eql(coord2056);
+            done();
+          });
+          $rootScope.$digest();
+        });
       });
-      $rootScope.$digest();
     });
 
     it('supports latitude and longitude as DMS (test D,D)', function(done) {
