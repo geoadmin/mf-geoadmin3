@@ -52,7 +52,7 @@ goog.require('ga_reframe_service');
   }
 
   // Reorder coordinates.
-  // For EPSG 2056, 21781, 3857 and 4326, in CH always northing > easting
+  // For 3857 and 4326 always northing > easting
   var sortCoordinates = function(left, right) {
     var northing, easting;
     try {
