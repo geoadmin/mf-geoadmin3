@@ -334,7 +334,7 @@ goog.require('ga_urlutils_service');
         var encFeature = format.writeFeatureObject(feature);
 
         // We remove all attributes to reduce the size of the request
-        // and to avoid bugs like #1213. The style attribute is always 
+        // and to avoid bugs like #1213. The style attribute is always
         // '_gx_style', which is hardcoded.
         encFeature.properties = {};
         encFeature.properties._gx_style = encStyle.id;
