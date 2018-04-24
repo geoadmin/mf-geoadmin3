@@ -42,7 +42,7 @@ The `vectorOptions` property defines the style to apply and is structured as fol
   "geomType": "point",
   "rotation": "optionalPropertyName",
   "vectorOptions": {
-    "type": "circle|icon|square|triangle|star|cross",
+    "type": "circle|icon|square|triangle|star|cross|pentagon|hexagon",
     "radius": 10,
     "stroke": {
       // The stroke style
