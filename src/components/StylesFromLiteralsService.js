@@ -23,12 +23,22 @@ goog.provide('ga_stylesfromliterals_service');
               points: 3,
               angle: 0
             },
-            star: {
+            pentagon: {
               points: 5,
               angle: 0
             },
+            star: {
+              points: 5,
+              angle: 0,
+              radius2: options.radius ? options.radius / 2 : undefined
+            },
             cross: {
               points: 4,
+              angle: 0,
+              radius2: 0
+            },
+            hexagon: {
+              points: 6,
               angle: 0
             }
           };

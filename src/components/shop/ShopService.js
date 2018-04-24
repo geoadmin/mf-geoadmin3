@@ -129,9 +129,9 @@ goog.require('ga_translation_service');
             geometry = transformExtent(geometry, proj);
           }
           sessionId = sessionId || new Date();
+          var params = getParams(orderType, layerBodId, featureId, geometry);
           var url = gaGlobalOptions.shopUrl + '/' + gaLang.get() +
-              '/dispatcher?' + getParams(orderType, layerBodId, featureId,
-                geometry);
+              '/dispatcher?' + params;
           winShop = $window.open(url, WIN_SHOP_PREFIX + sessionId);
         };
 

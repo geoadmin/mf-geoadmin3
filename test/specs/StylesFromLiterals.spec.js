@@ -139,6 +139,8 @@ describe('ga_stylesfromliterals_service', function() {
       expect(olImage.getPoints()).to.be(5);
       expect(olImage.getRotation()).to.be(0);
       expect(olImage.getAngle()).to.be(0);
+      expect(olImage.getRadius()).to.be(8);
+      expect(olImage.getRadius2()).to.be(4);
 
       singleTypeStyle = {
         type: 'single',
@@ -163,6 +165,8 @@ describe('ga_stylesfromliterals_service', function() {
       expect(olImage.getPoints()).to.be(4);
       expect(olImage.getRotation()).to.be(0);
       expect(olImage.getAngle()).to.be(0);
+      expect(olImage.getRadius()).to.be(8);
+      expect(olImage.getRadius2()).to.be(0);
 
       // Test dynamic rotation on single type style
       singleTypeStyle = {
@@ -204,6 +208,33 @@ describe('ga_stylesfromliterals_service', function() {
       expect(olImage.getPoints()).to.be(4);
       expect(olImage.getRotation()).to.be(1.22);
       expect(olImage.getAngle()).to.be(0);
+      expect(olImage.getRadius()).to.be(8);
+      expect(olImage.getRadius2()).to.be(0);
+
+      // Test more shapes
+      singleTypeStyle.vectorOptions.type = 'pentagon'
+      gaStyle = gaStylesFromLiterals(singleTypeStyle);
+      olStyle = gaStyle.getFeatureStyle(olFeature);
+      olImage = olStyle.getImage();
+      expect(olStyle).to.be.an(ol.style.Style);
+      expect(olImage).to.be.an(ol.style.RegularShape);
+      expect(olImage.getPoints()).to.be(5);
+      expect(olImage.getRotation()).to.be(1.22);
+      expect(olImage.getAngle()).to.be(0);
+      expect(olImage.getRadius()).to.be(8);
+      expect(olImage.getRadius2()).to.be(undefined);
+
+      singleTypeStyle.vectorOptions.type = 'hexagon'
+      gaStyle = gaStylesFromLiterals(singleTypeStyle);
+      olStyle = gaStyle.getFeatureStyle(olFeature);
+      olImage = olStyle.getImage();
+      expect(olStyle).to.be.an(ol.style.Style);
+      expect(olImage).to.be.an(ol.style.RegularShape);
+      expect(olImage.getPoints()).to.be(6);
+      expect(olImage.getRotation()).to.be(1.22);
+      expect(olImage.getAngle()).to.be(0);
+      expect(olImage.getRadius()).to.be(8);
+      expect(olImage.getRadius2()).to.be(undefined);
     });
 
     it('supports single type style assignment for a line', function() {
@@ -669,6 +700,8 @@ describe('ga_stylesfromliterals_service', function() {
       expect(olImage.getStroke()).to.be.an(ol.style.Stroke);
       expect(olImage.getStroke().getColor()).to.equal('#FFFFFF');
       expect(olImage.getStroke().getWidth()).to.equal(3);
+      expect(olImage.getRadius()).to.be(8);
+      expect(olImage.getRadius2()).to.be(4);
     });
 
     it('supports simple unique type style assignment resolution dependent', function() {

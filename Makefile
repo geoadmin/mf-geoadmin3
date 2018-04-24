@@ -38,6 +38,8 @@ PRINT_TECH_URL ?= //service-print.
 LAST_PRINT_URL := $(call lastvalue,print-url)
 PROXY_URL ?= //service-proxy.prod.bgdi.ch
 LAST_PROXY_URL := $(call lastvalue,proxy-url)
+PYPI_URL ?= https://pypi.fcio.net/simple/
+LAST_PYPI_URL := $(call lastvalue,pypi-url)
 
 # Map services variables
 WMS_URL ?= //wms.geo.admin.ch
@@ -151,7 +153,7 @@ MAKO_LAST_VARIABLES = .build-artefacts/last-api-url \
 	    .build-artefacts/last-terrain-url \
 	    .build-artefacts/last-vectortiles-url \
 	    .build-artefacts/last-apache-base-path
-	
+
 MAKO_LAST_VARIABLES_PROD = ${MAKO_LAST_VARIABLES} \
 	    .build-artefacts/last-version
 
@@ -827,18 +829,18 @@ $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule
 	    --namespace="__ga_template_cache__" \
 	    --output_mode=list > $@
 
-.build-artefacts/requirements.timestamp: ${PYTHON_VENV} requirements.txt
-	${PIP_CMD} install -r requirements.txt
+.build-artefacts/requirements.timestamp: .build-artefacts/last-pypi-url ${PYTHON_VENV} requirements.txt
+	${PIP_CMD} install --index-url ${PYPI_URL} -r requirements.txt
 	@if [ ! -e ${PYTHON_VENV}/local ]; then \
 	  ln -s . ${PYTHON_VENV}/local; \
 	fi
 	cp scripts/cmd.py ${PYTHON_VENV}/local/lib/python2.7/site-packages/mako/cmd.py
 	touch $@
 
-${PYTHON_VENV}:
+${PYTHON_VENV}: .build-artefacts/last-pypi-url
 	mkdir -p .build-artefacts
 	virtualenv --no-site-packages $@
-	${PIP_CMD} install -U pip setuptools
+	${PIP_CMD} install --index-url ${PYPI_URL} -U pip setuptools
 
 .build-artefacts/last-version::
 	$(call cachelastvariable,$@,$(VERSION),$(LAST_VERSION),version)
@@ -886,6 +888,9 @@ ${PYTHON_VENV}:
 
 .build-artefacts/last-vectortiles-url::
 	$(call cachelastvariable,$@,$(VECTORTILES_URL),$(LAST_VECTORTILES_URL),vectortiles-url)
+
+.build-artefacts/last-pypi-url::
+	$(call cachelastvariable,$@,$(PYPI_URL),$(LAST_PYPI_URL),pypi-url)
 
 
 .build-artefacts/cesium:
