@@ -40,18 +40,18 @@ goog.require('ga_file_service');
         initUserMsg();
 
         /**
-         * @param {Array<{name: string, url: string}>} nameUrls .
+         * @param {Array<{name: string, url: string}>} servers.
          * @return {function(string, function())} The matching function.
          */
-        var substringMatcher = function(nameUrls) {
+        var substringMatcher = function(servers) {
           return function(q, cb) {
             var matches = [];
             if (!q) {
-              matches = nameUrls;
+              matches = servers;
             } else {
-              nameUrls.forEach(function(nameUrl) {
-                if (nameUrl.name.includes(q)) {
-                  matches.push(nameUrl);
+              servers.forEach(function(server) {
+                if (server.name.includes(q)) {
+                  matches.push(server);
                 }
               });
             }
@@ -59,17 +59,7 @@ goog.require('ga_file_service');
           };
         };
 
-        var nameUrls = scope.options.urls;
-        if (nameUrls && nameUrls.length > 0 && !nameUrls[0].name) {
-          nameUrls = nameUrls.map(function(url) {
-            return {
-              'name': url,
-              'url': url
-            };
-          });
-        }
-
-        // Create the typeAhead input for the list of urls available
+        // Create the typeahead input for the list of urls available
         var taElt = elt.find('input[name=url]').typeahead({
           hint: true,
           highlight: true,
@@ -78,12 +68,12 @@ goog.require('ga_file_service');
           name: 'wms',
           displayKey: 'name',
           limit: 500,
-          source: substringMatcher(nameUrls)
-        }).on('typeahead:selected', function(evt, nameUrl) {
+          source: substringMatcher(scope.options.servers)
+        }).on('typeahead:selected', function(evt, server) {
           taElt.typeahead('close');
           // When a WMS is selected in the list, start downloading the
           // GetCapabilities
-          scope.fileUrl = nameUrl.url;
+          scope.fileUrl = server.url;
           scope.handleFileUrl();
           scope.$digest();
         });
@@ -120,7 +110,7 @@ goog.require('ga_file_service');
           return true;
         };
 
-        // Handle URL of WMS
+        // Handle URL of a file (GetCap or KML or GPX)
         scope.handleFileUrl = function() {
           var transformUrl = options.transformUrl || $q.when;
 

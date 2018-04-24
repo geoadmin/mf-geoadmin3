@@ -1,6 +1,7 @@
 goog.provide('ga_wms_service');
 
 goog.require('ga_definepropertiesforlayer_service');
+goog.require('ga_layers_service');
 goog.require('ga_maputils_service');
 goog.require('ga_translation_service');
 goog.require('ga_urlutils_service');
@@ -10,6 +11,7 @@ goog.require('ga_urlutils_service');
   var module = angular.module('ga_wms_service', [
     'ga_definepropertiesforlayer_service',
     'pascalprecht.translate',
+    'ga_layers_service',
     'ga_maputils_service',
     'ga_urlutils_service',
     'ga_translation_service'
@@ -20,7 +22,7 @@ goog.require('ga_urlutils_service');
    */
   module.provider('gaWms', function() {
     this.$get = function(gaDefinePropertiesForLayer, gaMapUtils, gaUrlUtils,
-        gaGlobalOptions, $q, gaLang) {
+        gaGlobalOptions, $q, gaLang, gaLayers) {
 
       var getCesiumImageryProvider = function(layer) {
         var params = layer.getSource().getParams();
@@ -67,6 +69,17 @@ goog.require('ga_urlutils_service');
           options.id = 'WMS||' + options.label + '||' + options.url + '||' +
               params.LAYERS;
 
+          // If the layer is available in the layer config and it is a wms
+          // use the same configuration.
+          var config = gaLayers.getLayer(params.LAYERS);
+          if (config && config.type === 'wms') {
+            return gaLayers.getOlLayerById(params.LAYERS);
+          } else if (config) {
+            // it's not a wms, we don't have the gutter value so we assume it's
+            // a single tile.
+            options.url = options.url.replace(/\{s\}/, '');
+          }
+
           // If the WMS has a version specified, we add it in
           // the id. It's important that the layer keeps the same id as the
           // one in the url otherwise it breaks the asynchronous reordering of
@@ -82,14 +95,35 @@ goog.require('ga_urlutils_service');
             params.VERSION = '1.3.0';
           }
 
-          var source = new ol.source.ImageWMS({
+          // var singleTile = !gaUrlUtils.isAdminValid(options.url);
+          // We could do like this to avoid exception, but it breaks the import
+          // tool:
+          // If the url contains a template for subdomains we display the layer
+          // as tiled WMS.
+          var urls;
+          var singleTile = !/\{s\}/.test(options.url);
+          var SourceClass = ol.source.ImageWMS;
+          var LayerClass = ol.layer.Image;
+
+          // TODO: subdomains should come from gaGlobalOptions or gaMapUtils
+          if (!singleTile) {
+            SourceClass = ol.source.TileWMS;
+            LayerClass = ol.layer.Tile;
+            urls = [];
+            ['', '0', '1', '2', '3', '4'].forEach(function(subdomain) {
+              urls.push(options.url.replace('{s}', subdomain));
+            });
+          }
+
+          var source = new SourceClass({
             params: params,
             url: options.url,
+            urls: urls,
             ratio: options.ratio || 1,
             projection: options.projection
           });
 
-          var layer = new ol.layer.Image({
+          var layer = new LayerClass({
             id: options.id,
             url: options.url,
             opacity: options.opacity,
