@@ -1,6 +1,7 @@
 goog.provide('ga_map');
 
 goog.require('ga_definepropertiesforlayer_service');
+goog.require('ga_gridlayers_service');
 goog.require('ga_kml_service');
 goog.require('ga_layerfilters_service');
 goog.require('ga_layers_service');
@@ -22,6 +23,7 @@ goog.require('ga_wmts_service');
     'ga_kml_service',
     'ga_map_directive',
     'ga_definepropertiesforlayer_service',
+    'ga_gridlayers_service',
     'ga_layerfilters_service',
     'ga_layers_service',
     'ga_tilegrid_service',
