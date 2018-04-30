@@ -762,7 +762,7 @@ test/karma-conf-release.js: test/karma-conf.mako.js ${MAKO_CMD}
 	${PYTHON_CMD} ${MAKO_CMD} --var "mode=release" $< > $@
 
 test/lib/angular-mocks.js test/lib/expect.js test/lib/sinon.js externs/angular.js externs/jquery.js: package.json
-	npm install --only dev;
+	npm install;
 	cp -f node_modules/angular-mocks/angular-mocks.js test/lib/;
 	cp -f node_modules/expect.js/index.js test/lib/expect.js;
 	cp -f node_modules/sinon/pkg/sinon.js test/lib/;

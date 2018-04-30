@@ -137,7 +137,6 @@ describe('ga_import_controller', function() {
           var layerReturned = scope.options.getOlLayerFromGetCapLayer(getCapLayer);
           expect(spy.callCount).to.be(1);
           expect(layerReturned).to.be(layer);
-          spy.reset();
         });
       });
 
@@ -149,7 +148,6 @@ describe('ga_import_controller', function() {
           var spy = sinon.stub(gaPreviewLayers, 'addGetCapLayer').withArgs(map, scope.wmtsGetCap, layer);
           scope.options.addPreviewLayer(map, layer);
           expect(spy.callCount).to.be(1);
-          spy.reset();
         });
         it('calls gaPreviewLayers with the wmsGetCap', function() {
           var layer = {};
@@ -158,7 +156,6 @@ describe('ga_import_controller', function() {
           var spy = sinon.stub(gaPreviewLayers, 'addGetCapLayer').withArgs(map, scope.wmsGetCap, layer);
           scope.options.addPreviewLayer(map, layer);
           expect(spy.callCount).to.be(1);
-          spy.reset();
         });
       });
 
@@ -181,7 +178,7 @@ describe('ga_import_controller', function() {
             expect(spy.args[0][0]).to.contain('SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0');
             expect(scope.getCapUrl).to.be(spy.args[0][0]);
             expect(res).to.be('a');
-            spy.reset();
+            spy.resetHistory();
           });
         });
 
@@ -196,7 +193,7 @@ describe('ga_import_controller', function() {
             expect(spy.args[0][0]).to.contain('SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0&lang=en');
             expect(scope.getCapUrl).to.be(spy.args[0][0]);
             expect(res).to.be('a');
-            spy.reset();
+            spy.resetHistory();
           });
         });
 
@@ -214,7 +211,7 @@ describe('ga_import_controller', function() {
             expect(spy.args[0][0]).to.contain('SERVICE=WMTS&REQUEST=GetCapabilities&VERSION=1.0.0');
             expect(scope.getCapUrl).to.be(spy.args[0][0]);
             expect(res).to.be('a');
-            spy.reset();
+            spy.resetHistory();
           });
         });
 
@@ -234,7 +231,7 @@ describe('ga_import_controller', function() {
             expect(spy.args[0][0]).to.be(url);
             expect(scope.getCapUrl).to.be(spy.args[0][0]);
             expect(res).to.be('a');
-            spy.reset();
+            spy.resetHistory();
           });
         });
       });

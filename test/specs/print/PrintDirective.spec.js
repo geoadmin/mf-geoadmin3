@@ -353,7 +353,7 @@ describe('ga_print_directive', function() {
           sinon.assert.fail(e)
         }
 
-        spy6.reset();
+        spy6.resetHistory();
         var spy4 = sinon.spy(ol.Observable, 'unByKey');
         var spy5 = sinon.spy(angular, 'isFunction');
         scope.active = false;
