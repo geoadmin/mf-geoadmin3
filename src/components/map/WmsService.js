@@ -95,29 +95,21 @@ goog.require('ga_urlutils_service');
             params.VERSION = '1.3.0';
           }
 
-          // var singleTile = !gaUrlUtils.isAdminValid(options.url);
-          // We could do like this to avoid exception, but it breaks the import
-          // tool:
           // If the url contains a template for subdomains we display the layer
           // as tiled WMS.
-          var urls;
-          var singleTile = !/\{s\}/.test(options.url);
+          var urls = gaUrlUtils.getMultidomainsUrls(options.url);
+          var singleTile = !urls.length
           var SourceClass = ol.source.ImageWMS;
           var LayerClass = ol.layer.Image;
 
-          // TODO: subdomains should come from gaGlobalOptions or gaMapUtils
           if (!singleTile) {
             SourceClass = ol.source.TileWMS;
             LayerClass = ol.layer.Tile;
-            urls = [];
-            ['', '0', '1', '2', '3', '4'].forEach(function(subdomain) {
-              urls.push(options.url.replace('{s}', subdomain));
-            });
           }
 
           var source = new SourceClass({
             params: params,
-            url: options.url,
+            url: urls[0],
             urls: urls,
             ratio: options.ratio || 1,
             projection: options.projection
@@ -130,7 +122,8 @@ goog.require('ga_urlutils_service');
             visible: options.visible,
             attribution: options.attribution,
             extent: options.extent,
-            source: source
+            source: source,
+            transition: 0
           });
           gaDefinePropertiesForLayer(layer);
           layer.preview = !!options.preview;

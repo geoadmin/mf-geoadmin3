@@ -26,7 +26,7 @@ goog.require('ga_wmts_service');
       gaLang, gaPreviewLayers, gaMapUtils, gaWmts, gaVector) {
 
     var servers = [{
-      name: 'WMS geo.admin.ch',
+      name: 'https://wms.geo.admin.ch',
       url: 'https://wms{s}.geo.admin.ch/?lang='
     },
     'http://owsproxy.lgl-bw.de/owsproxy/ows/WMS_Maps4BW',
