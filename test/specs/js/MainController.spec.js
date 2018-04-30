@@ -204,7 +204,7 @@ describe('ga_main_controller', function() {
         });
 
         afterEach(function() {
-          spy.reset();
+          spy.resetHistory();
         });
 
         describe('when isHeight(\'<=m\') returns false', function() {
@@ -263,7 +263,7 @@ describe('ga_main_controller', function() {
         });
 
         afterEach(function() {
-          spy.reset();
+          spy.resetHistory();
         });
 
         describe('when isWidth(\'xs\') returns false', function() {
@@ -318,7 +318,7 @@ describe('ga_main_controller', function() {
         });
 
         afterEach(function() {
-          spy.reset();
+          spy.resetHistory();
         });
 
         describe('when isWidth(\'<=m\') returns false', function() {

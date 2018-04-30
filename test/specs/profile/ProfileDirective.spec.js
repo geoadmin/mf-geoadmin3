@@ -193,7 +193,7 @@ describe('ga_profile_directive', function() {
         $timeout.flush();
         expect(spy.callCount).to.be(2);
 
-        spy.reset();
+        spy.resetHistory();
         scope.$destroy();
         feature.getGeometry().setCoordinates([[1, 2], [2, 3], [3, 4]]);
         $timeout.verifyNoPendingTasks();
@@ -246,7 +246,7 @@ describe('ga_profile_directive', function() {
         expect(spy.callCount).to.be(1);
         area.node().dispatchEvent(new Event('mousemove'));
         expect(posFeat.getGeometry().getCoordinates()).to.eql([100, 100]);
-        spy.reset();
+        spy.resetHistory();
         spy.withArgs(null);
         area.node().dispatchEvent(new Event('mouseout'));
         expect(spy.callCount).to.be(1);

@@ -61,13 +61,13 @@ describe('ga_time_service', function() {
         expect(gaTime.get()).to.be('1989');
         expect(gaPermalink.getParams().time).to.be('1989');
         expect(spy.calledWith('gaTimeChange', '1989', undefined)).to.be(true);
-        spy.reset();
+        spy.resetHistory();
 
         gaTime.set('1989');
         expect(gaTime.get()).to.be('1989');
         expect(gaPermalink.getParams().time).to.be('1989');
         expect(spy.callCount).to.be(0);
-        spy.reset();
+        spy.resetHistory();
 
         gaTime.set(undefined);
         expect(gaTime.get()).to.be(undefined);
@@ -134,12 +134,11 @@ describe('ga_time_service', function() {
         map.addLayer(l);
         expect(spy.callCount).to.be(1);
         expect(spy.calledWith([l])).to.be(true);
-        spy.reset();
+        spy.resetHistory();
 
         map.removeLayer(l);
         expect(spy.callCount).to.be(1);
         expect(spy.calledWith([])).to.be(true);
-        spy.reset();
       });
 
       it('doesn\'t update status on add/remove of a preview or non-timeEnabled layer', function() {
@@ -168,17 +167,16 @@ describe('ga_time_service', function() {
         map.addLayer(l1);
         expect(spy.callCount).to.be(2);
         expect(spy.calledWith([l, l1])).to.be(true);
-        spy.reset();
+        spy.resetHistory();
 
         l.visible = false;
         expect(spy.callCount).to.be(1);
         expect(spy.calledWith([l, l1])).to.be(true);
-        spy.reset();
+        spy.resetHistory();
 
         l1.time = '1876';
         expect(spy.callCount).to.be(1);
         expect(spy.calledWith([l, l1])).to.be(true);
-        spy.reset();
       });
 
       it('doesn\'t update status on property change', function() {
@@ -191,30 +189,29 @@ describe('ga_time_service', function() {
         map.addLayer(l1);
         expect(spy.callCount).to.be(2);
         expect(spy.calledWith([l, l1])).to.be(true);
-        spy.reset();
+        spy.resetHistory();
 
         // same value
         l.time = '1987';
         expect(spy.callCount).to.be(0);
-        spy.reset();
+        spy.resetHistory();
 
         // same value
         l.visible = true;
         expect(spy.callCount).to.be(0);
-        spy.reset();
+        spy.resetHistory();
 
         // time must be a string
         l.time = 1989;
         expect(spy.callCount).to.be(0);
-        spy.reset();
+        spy.resetHistory();
 
         // after the layer is removing
         map.removeLayer(l);
-        spy.reset();
+        spy.resetHistory();
 
         l.time = '1991';
         expect(spy.callCount).to.be(0);
-        spy.reset();
       });
     });
 

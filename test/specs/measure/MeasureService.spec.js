@@ -257,7 +257,7 @@ describe('ga_measure_service', function() {
           feat.setGeometry(poly);
           gaMeasure.updateOverlays(layer, feat);
           expect(spy.calledTwice).to.be(true);
-          spy.reset();
+          spy.resetHistory();
           gaMeasure.updateOverlays(layer, feat);
           expect(spy.callCount).to.be(0);
         });
@@ -647,7 +647,7 @@ describe('ga_measure_service', function() {
       });
 
       afterEach(function() {
-        spy.reset();
+        spy.resetHistory();
       });
 
       it('does nothing', function() {

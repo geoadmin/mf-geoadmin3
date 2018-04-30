@@ -330,7 +330,7 @@ describe('ga_map_directive', function() {
         expect(layer3.time).to.be('t1');
 
         // Modification fo global time, only layer 1 uses this timestamp
-        stub.reset();
+        stub.resetHistory();
         stub.onCall(0).returns('t2');
         stub.onCall(1).returns(undefined);
         stub.onCall(2).returns(undefined);
@@ -342,7 +342,7 @@ describe('ga_map_directive', function() {
 
         // Deactivation of global time. It takes the last timestamp before the
         // global time activation.
-        stub.reset();
+        stub.resetHistory();
         stub.returns('dontuseit');
         $rootScope.$broadcast('gaTimeChange', null, 't2');
         expect(stub.callCount).to.be(3);
