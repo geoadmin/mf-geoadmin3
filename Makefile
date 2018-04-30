@@ -118,7 +118,7 @@ DEFAULT_RESOLUTION ?= 500.0
 RESOLUTIONS ?= '[650.0, 500.0, 250.0, 100.0, 50.0, 20.0, 10.0, 5.0, 2.5, 2.0, 1.0, 0.5, 0.25, 0.1]'
 TILEGRID_ORIGIN ?= '[2420000, 1350000]'
 TILEGRID_RESOLUTIONS ?= '[4000, 3750, 3500, 3250, 3000, 2750, 2500, 2250, 2000, 1750, 1500, 1250, 1000, 750, 650, 500, 250, 100, 50, 20, 10, 5, 2.5, 2, 1.5, 1, 0.5, 0.25, 0.1]'
-
+TILEGRID_WMTS_DFLT_MIN_RES ?= 0.5
 
 # Globe variables
 DEFAULT_LEVEL_OF_DETAIL ?= 7 #level of detail for the default resolution
@@ -686,6 +686,7 @@ define buildpage
 		--var "default_epsg_extend"="$(DEFAULT_EPSG_EXTEND)" \
 		--var "tilegrid_origin"="$(TILEGRID_ORIGIN)" \
 		--var "tilegrid_resolutions"="$(TILEGRID_RESOLUTIONS)" \
+		--var "tilegrid_wmts_dflt_min_res"="$(TILEGRID_WMTS_DFLT_MIN_RES)" \
 		--var "staging"="$(DEPLOY_TARGET)" $< > $@
 endef
 

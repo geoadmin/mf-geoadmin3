@@ -674,8 +674,12 @@ describe('ga_layers_service', function() {
         },
         geojson: dfltLayersConfig.geojson
       };
+      layersConfig.wmtsWithResolutions = angular.extend({resolutions: ['100', '50', '10']}, layersConfig.wmts);
+      layersConfig.wmtsWithTileGridMinRes = angular.extend({tileGridMinRes: '12'}, layersConfig.wmts);
       layersConfig.wmstiled = angular.copy(layersConfig.wms);
       layersConfig.wmstiled.singleTile = undefined;
+      layersConfig.wmsTiledWithResolutions = angular.extend({resolutions: ['100', '50', '10']}, layersConfig.wmstiled);
+      layersConfig.wmsTiledWithTileGridMinRes = angular.extend({tileGridMinRes: '12'}, layersConfig.wmstiled);
       layersConfig.geojsondelay = angular.copy(layersConfig.geojson);
       layersConfig.geojsondelay.updateDelay = 60000;
 
@@ -723,7 +727,7 @@ describe('ga_layers_service', function() {
           expect(source.getTileLoadFunction()).to.be.a(Function);
           var tileGrid = source.getTileGrid();
           expect(tileGrid instanceof ol.tilegrid.WMTS).to.be.ok();
-          expect(tileGrid.getResolutions().length).to.eql(29);
+          expect(tileGrid.getResolutions().length).to.eql(27);
           expectCommonProperties(layer, 'wmts');
         });
 
@@ -733,6 +737,18 @@ describe('ga_layers_service', function() {
           var source = layer.getSource();
           expect(source instanceof ol.source.WMTS).to.be.ok();
           expect(source.getDimensions().Time).to.be();
+        });
+
+        it('returns a WMTS getting the tileGridMinRes from an array of resolutions', function() {
+          var tileGrid = gaLayers.getOlLayerById('wmtsWithResolutions').getSource().getTileGrid();
+          expect(tileGrid instanceof ol.tilegrid.WMTS).to.be.ok();
+          expect(tileGrid.getResolutions().length).to.eql(21);
+        });
+
+        it('returns a WMTS getting the tileGridMinRes from an array of resolutions', function() {
+          var tileGrid = gaLayers.getOlLayerById('wmtsWithTileGridMinRes').getSource().getTileGrid();
+          expect(tileGrid instanceof ol.tilegrid.WMTS).to.be.ok();
+          expect(tileGrid.getResolutions().length).to.eql(20);
         });
 
         it('returns a WMS layer', function() {
@@ -778,6 +794,18 @@ describe('ga_layers_service', function() {
           expect(tileGrid instanceof ol.tilegrid.TileGrid).to.be.ok();
           expect(tileGrid.getResolutions().length).to.eql(29);
           expectCommonProperties(layer, 'wmstiled');
+        });
+
+        it('returns a tiled WMS getting the tileGridMinRes from an array of resolutions', function() {
+          var tileGrid = gaLayers.getOlLayerById('wmsTiledWithResolutions').getSource().getTileGrid();
+          expect(tileGrid instanceof ol.tilegrid.TileGrid).to.be.ok();
+          expect(tileGrid.getResolutions().length).to.eql(21);
+        });
+
+        it('returns a tiled WMS getting the tileGridMinRes from the config', function() {
+          var tileGrid = gaLayers.getOlLayerById('wmsTiledWithTileGridMinRes').getSource().getTileGrid();
+          expect(tileGrid instanceof ol.tilegrid.TileGrid).to.be.ok();
+          expect(tileGrid.getResolutions().length).to.eql(20);
         });
 
         it('returns a layer group', function() {
