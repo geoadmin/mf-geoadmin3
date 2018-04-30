@@ -38,7 +38,7 @@ PRINT_TECH_URL ?= //service-print.
 LAST_PRINT_URL := $(call lastvalue,print-url)
 PROXY_URL ?= //service-proxy.prod.bgdi.ch
 LAST_PROXY_URL := $(call lastvalue,proxy-url)
-PYPI_URL ?= https://pypi.fcio.net/simple/
+PYPI_URL ?= https://pypi.org/simple/
 LAST_PYPI_URL := $(call lastvalue,pypi-url)
 
 # Map services variables
