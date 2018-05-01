@@ -330,6 +330,9 @@ goog.require('ga_throttle_service');
           // Always remove it from PL
           gaPermalink.deleteParam('geolocation');
           btnStatus = (scope.tracking) ? 1 : 0;
+          if (scope.tracking) {
+            scope.$applyAsync();
+          }
         }
         promGyr = gyr.init({
           orientationBase: $window.GyroNorm.WORLD

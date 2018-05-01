@@ -119,11 +119,16 @@ describe('ga_geolocation_directive', function() {
       });
 
       it('set scope values after gyronorm is initialized', function() {
-        var stub = sinon.stub($window.GyroNorm.prototype, 'init').returns($q.when());
+        var defer = $q.defer();
+        var stub = sinon.stub($window.GyroNorm.prototype, 'init').returns(defer.promise);
         var stub1 = sinon.stub($window.GyroNorm.prototype, 'isAvailable').returns(true);
         loadDirective(map);
+        var spy2 = sinon.spy(scope, '$applyAsync');
+        defer.resolve();
+        $timeout.flush();
         expect(scope.map).to.be.an(ol.Map);
         expect(scope.tracking).to.be(false);
+        expect(spy2.callCount).to.be(0);
         stub.restore();
         stub1.restore();
       });
@@ -149,14 +154,19 @@ describe('ga_geolocation_directive', function() {
       });
 
       it('uses/deletes permalink values after gyronorm is inialized', function() {
+        var defer = $q.defer();
         var spy = sinon.spy(gaPermalink, 'deleteParam').withArgs('geolocation');
         var stub = sinon.stub(gaPermalink, 'getParams').returns({geolocation: 'true'});
-        var stub1 = sinon.stub(window.GyroNorm.prototype, 'init').returns($q.when());
+        var stub1 = sinon.stub(window.GyroNorm.prototype, 'init').returns(defer.promise);
         var stub2 = sinon.stub(window.GyroNorm.prototype, 'isAvailable').returns(true);
         loadDirective(map);
+        var spy2 = sinon.spy(scope, '$applyAsync');
+        defer.resolve();
+        $timeout.flush();
         expect(scope.map).to.be.an(ol.Map);
         expect(scope.tracking).to.be(true);
         expect(spy.callCount).to.be(1);
+        expect(spy2.callCount).to.be(1);
         stub.restore();
         stub1.restore();
         stub2.restore();
