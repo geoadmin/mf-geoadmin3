@@ -75,7 +75,7 @@ goog.require('ga_file_service');
           // GetCapabilities
           scope.fileUrl = server.url;
           scope.handleFileUrl();
-          scope.$digest();
+          scope.$applyAsync();
         });
 
         var taMenu = elt.find('.tt-menu');
@@ -113,17 +113,15 @@ goog.require('ga_file_service');
         // Handle URL of a file (GetCap or KML or GPX)
         scope.handleFileUrl = function() {
           var transformUrl = options.transformUrl || $q.when;
-
-          transformUrl(scope.fileUrl).then(function(url) {
+          return transformUrl(scope.fileUrl).then(function(url) {
             scope.canceler = $q.defer();
             scope.loading = true;
             scope.userMessage = $translate.instant('uploading_file');
             $timeout.cancel(timeoutP);
 
             // Angularjs doesn't handle onprogress event
-            gaFile.load(url, scope.canceler).then(function(fileContent) {
+            return gaFile.load(url, scope.canceler).then(function(fileContent) {
               scope.canceler = null;
-
               return scope.handleFileContent(fileContent, {
                 url: scope.fileUrl
               });

@@ -314,9 +314,6 @@ goog.require('ga_wmts_service');
             message: 'parse_failed',
             reason: reason
           });
-
-        }, function(evt) {
-          defer.notify(evt);
         });
 
       } else if (gaFile.isWmtsGetCap(data)) {
