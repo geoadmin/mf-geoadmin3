@@ -290,10 +290,12 @@ goog.require('ga_urlutils_service');
             formData = new FormData();
             formData.append('geom', wkt);
             formData.append('elevation_models', elevationModel);
+            formData.append('offset', 0);
           } else {
             formData = {
               geom: wkt,
-              elevation_models: elevationModel
+              elevation_models: elevationModel,
+              offset: 0
             };
             formData = $.param(formData);
           }
