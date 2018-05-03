@@ -700,7 +700,9 @@ goog.require('ga_urlutils_service');
          * undefined if bodId does not exist
          */
         this.getLayer = function(bodId) {
-          return layers[bodId];
+          if (layers) {
+            return layers[bodId];
+          }
         };
 
         this.getConfig3d = function(config) {

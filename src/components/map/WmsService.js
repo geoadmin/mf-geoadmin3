@@ -57,7 +57,9 @@ goog.require('ga_urlutils_service');
           tilingScheme: new Cesium.GeographicTilingScheme(),
           hasAlphaChannel: true,
           availableLevels: gaGlobalOptions.imageryAvailableLevels,
-          metadataUrl: gaGlobalOptions.imageryMetadataUrl
+          metadataUrl: gaGlobalOptions.imageryMetadataUrl,
+          subdomains: gaUrlUtils.parseSubdomainsTpl(layer.url) ||
+              ['', '0', '1', '2', '3', '4']
         });
       };
 
@@ -66,8 +68,6 @@ goog.require('ga_urlutils_service');
         // Test WMS 1.1.1 with  https://wms.geo.bs.ch/wmsBS
         var createWmsLayer = function(params, options, index) {
           options = options || {};
-          options.id = 'WMS||' + options.label + '||' + options.url + '||' +
-              params.LAYERS;
 
           // If the layer is available in the layer config and it is a wms
           // use the same configuration.
@@ -79,7 +79,8 @@ goog.require('ga_urlutils_service');
             // a single tile.
             options.url = options.url.replace(/\{s\}/, '');
           }
-
+          options.id = 'WMS||' + options.label + '||' + options.url + '||' +
+              params.LAYERS;
           // If the WMS has a version specified, we add it in
           // the id. It's important that the layer keeps the same id as the
           // one in the url otherwise it breaks the asynchronous reordering of
@@ -91,18 +92,15 @@ goog.require('ga_urlutils_service');
               options.projection = 'EPSG:4326';
               options.id += '||true';
             }
-          } else {
-            params.VERSION = '1.3.0';
           }
 
           // If the url contains a template for subdomains we display the layer
           // as tiled WMS.
           var urls = gaUrlUtils.getMultidomainsUrls(options.url);
-          var singleTile = !urls.length
           var SourceClass = ol.source.ImageWMS;
           var LayerClass = ol.layer.Image;
 
-          if (!singleTile) {
+          if (urls.length > 1) {
             SourceClass = ol.source.TileWMS;
             LayerClass = ol.layer.Tile;
           }

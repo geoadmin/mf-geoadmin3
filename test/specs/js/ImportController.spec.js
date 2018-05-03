@@ -110,7 +110,6 @@ describe('ga_import_controller', function() {
         expect(scope.supportDnd).to.be(true);
         scope.options.servers.forEach(function(server) {
           expect(server.url.indexOf('http') !== -1).to.be.ok();
-          expect(server.name.length > 0).to.be.ok();
         });
         expect(scope.options.isValidUrl).to.be(gaUrlUtils.isValid);
         expect(scope.options.getOlLayerFromGetCapLayer).to.be.a(Function);
@@ -251,9 +250,11 @@ describe('ga_import_controller', function() {
       describe('#options.handleFileContent()', function() {
 
         it('detects a WMS GetCapabilities content', function(done) {
+          var url = 'base/test/data/wms-basic.xml';
           $.get('base/test/data/wms-basic.xml', function(response) {
-            scope.options.handleFileContent(response).then(function(resp) {
+            scope.options.handleFileContent(response, {url: url}).then(function(resp) {
               expect(scope.wmsGetCap).to.be(response);
+              expect(scope.options.wmsGetCapUrl).to.be(url);
               expect(scope.wmtsGetCap).to.be(null);
               expect(resp.message).to.be('upload_succeeded');
               done();
@@ -267,6 +268,7 @@ describe('ga_import_controller', function() {
             scope.options.handleFileContent(response).then(function(resp) {
               expect(scope.wmtsGetCap).to.be(response);
               expect(scope.wmsGetCap).to.be(null);
+              expect(scope.options.wmsGetCapUrl).to.be(null);
               expect(resp.message).to.be('upload_succeeded');
               done();
             });

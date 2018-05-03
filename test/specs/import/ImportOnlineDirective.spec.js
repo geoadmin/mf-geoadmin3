@@ -7,10 +7,8 @@ describe('ga_importonline_directive', function() {
 
     var options = {
       servers: [{
-        name: 'Geoadmin',
         url: 'https://wms.geo.admin.ch/'
       }, {
-        name: 'Heig',
         url: 'http://ogc.heig-vd.ch/mapserver/wms?'
       }],
       handleFileContent: function() { return $q.when({}); }
@@ -26,9 +24,6 @@ describe('ga_importonline_directive', function() {
       scope = elt.isolateScope();
     };
 
-    var provideServices = function($provide) {
-    };
-
     var injectServices = function($injector) {
       $compile = $injector.get('$compile');
       $rootScope = $injector.get('$rootScope');
@@ -40,14 +35,9 @@ describe('ga_importonline_directive', function() {
 
     beforeEach(function() {
 
-      module(function($provide) {
-        provideServices($provide);
-      });
-
       inject(function($injector) {
         injectServices($injector);
       });
-
     });
 
     afterEach(function() {
@@ -58,6 +48,7 @@ describe('ga_importonline_directive', function() {
       } catch (e) {
         $timeout.flush();
       }
+      elt.remove();
     });
 
     it('removes the element if no options provided', function() {
@@ -114,14 +105,15 @@ describe('ga_importonline_directive', function() {
         var ds = data.menu.datasets[0];
         expect(ds.limit).to.be(500);
         expect(ds.name).to.be('wms');
-        var spy = sinon.spy(angular, 'noop');
+        var obj = {callback: function() {}};
+        var spy = sinon.spy(obj, 'callback');
 
         // Find a wms in the list
-        ds.source('Heig', angular.noop);
+        ds.source('eig', obj.callback);
         expect(spy.args[0][0]).to.eql([options.servers[1]]);
 
         // Return all the list
-        ds.source(null, angular.noop);
+        ds.source(null, obj.callback);
         expect(spy.args[1][0]).to.eql(options.servers);
       });
 

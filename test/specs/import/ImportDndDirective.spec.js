@@ -82,7 +82,7 @@ describe('ga_importdnd_directive', function() {
 
     describe('events on drop zone and document', function() {
       var emptyEvt;
-      
+
       beforeEach(function() {
         loadDirective(options);
         $(document.body).append(elt);
@@ -131,13 +131,13 @@ describe('ga_importdnd_directive', function() {
       it('displays the drop zone on dragenter event when the dragged objeczt is usable', function() {
         var spy = sinon.spy(emptyEvt, 'stopPropagation');
         var spy2 = sinon.spy(emptyEvt, 'preventDefault');
-        
+
         // dont' display the drop zone because bad data are dragged
         $document.trigger($.Event('dragenter', emptyEvt));
         expect(elt.css('display')).to.be('none');
         expect(spy.callCount).to.be(1);
         expect(spy2.callCount).to.be(1);
-         
+
         // display the drop zone because good and bad data are dragged
         emptyEvt.originalEvent.dataTransfer.types = [
           'xml',
@@ -155,7 +155,6 @@ describe('ga_importdnd_directive', function() {
         expect($._data(document).events.dragstart[0].handler()).to.be(false);
       });
 
-
       it('removes events on scope destroy', function() {
         var evts = $._data(document).events;
         expect(evts.dragenter.length).to.be(1);
@@ -172,8 +171,8 @@ describe('ga_importdnd_directive', function() {
         elt.trigger($.Event('drop', emptyEvt));
         $timeout.verifyNoPendingTasks();
         expect(stub.callCount).to.be(0);
-        
-        //Empty array
+
+        // Empty array
         emptyEvt.originalEvent.dataTransfer.files = [];
         elt.trigger($.Event('drop', emptyEvt));
         $timeout.verifyNoPendingTasks();
@@ -192,7 +191,7 @@ describe('ga_importdnd_directive', function() {
         expect(stub.callCount).to.be(1);
         expect(stub2.callCount).to.be(1);
       });
- 
+
       it('reads a valid url dropped', function() {
         var url = 'http://valid';
         var content = '<kml></kml>';
@@ -212,7 +211,7 @@ describe('ga_importdnd_directive', function() {
         expect(stub3.callCount).to.be(0);
         $window.alert.restore();
       });
-      
+
       it('transforms the url before reading when a valid url is dropped', function() {
         var trsUrl = 'http://otherurl';
         scope.options.transformUrl = function() {
@@ -237,7 +236,7 @@ describe('ga_importdnd_directive', function() {
         $window.alert.restore();
         scope.options.transformUrl = undefined;
       });
-      
+
       it('displays an alert message when a non valid url dropped', function() {
         var url = 'nonvalid';
         var content = '<kml></kml>';
@@ -257,7 +256,7 @@ describe('ga_importdnd_directive', function() {
         expect(stub3.callCount).to.be(1);
         $window.alert.restore();
       });
-      
+
       it('displays an alert if something fails during reading of an url', function() {
         var url = 'http://valid';
         var content = '<kml></kml>';
@@ -277,7 +276,7 @@ describe('ga_importdnd_directive', function() {
         expect(stub3.callCount).to.be(1);
         $window.alert.restore();
       });
- 
+
       it('displays an alert if something fails during parsing of an url', function() {
         var url = 'http://valid';
         var content = '<kml></kml>';

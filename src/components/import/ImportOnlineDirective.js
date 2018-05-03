@@ -50,7 +50,7 @@ goog.require('ga_file_service');
               matches = servers;
             } else {
               servers.forEach(function(server) {
-                if (server.name.includes(q)) {
+                if (server.url.includes(q)) {
                   matches.push(server);
                 }
               });
@@ -66,7 +66,7 @@ goog.require('ga_file_service');
           minLength: 0
         }, {
           name: 'wms',
-          displayKey: 'name',
+          displayKey: 'url',
           limit: 500,
           source: substringMatcher(scope.options.servers)
         }).on('typeahead:selected', function(evt, server) {

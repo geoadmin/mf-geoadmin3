@@ -9,7 +9,7 @@ goog.require('ga_file_service');
     'pascalprecht.translate'
   ]);
 
-  module.directive('gaImportLocal', function($timeout, $translate, gaFile) {
+  module.directive('gaImportLocal', function($q, $timeout, $translate, gaFile) {
 
     var timeoutP;
 
@@ -35,6 +35,7 @@ goog.require('ga_file_service');
           scope.userMessage = $translate.instant('load_local_file');
           scope.progress = 0;
           scope.fileReader = null;
+          scope.loading = false;
         };
         initUserMsg();
 
@@ -71,10 +72,6 @@ goog.require('ga_file_service');
           }
         });
 
-        scope.isLoading = function() {
-          return scope.progress > 0 && scope.progress < 100;
-        };
-
         scope.isValid = function(file) {
           return !file || gaFile.isValidFileSize(file.size);
         };
@@ -91,13 +88,13 @@ goog.require('ga_file_service');
         // works only with FileAPI
         scope.handleFile = function() {
           if (!scope.file) {
-            return;
+            return $q.when();
           }
           scope.loading = true;
           scope.userMessage = $translate.instant('reading_file');
           $timeout.cancel(timeoutP);
 
-          gaFile.read(scope.file).then(function(fileContent) {
+          return gaFile.read(scope.file).then(function(fileContent) {
             scope.fileReader = null;
             scope.userMessage = $translate.instant('parsing_file');
             return scope.handleFileContent(fileContent, scope.file);

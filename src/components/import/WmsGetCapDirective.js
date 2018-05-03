@@ -125,6 +125,13 @@ goog.provide('ga_wmsgetcap_directive');
           var err = void 0;
           try {
             val = new ol.format.WMSCapabilities().read(val);
+            // A wms GetCap never contains template url so if we want to use
+            // template url for subdomains we need to force the value of the
+            // GetCap.
+            if (/{s}/.test(scope.options.wmsGetCapUrl)) {
+              val.Capability.Request.GetMap.DCPType[0].HTTP.Get.
+                  OnlineResource = scope.options.wmsGetCapUrl;
+            }
           } catch (e) {
             err = e;
           }
