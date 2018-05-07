@@ -77,12 +77,11 @@ goog.require('ga_urlutils_service');
     };
 
     this.$get = function($q, $http, $timeout, $translate, measureFilter,
-        gaTimeFormatFilter, $window, gaUrlUtils, gaBrowserSniffer,
-        gaGlobalOptions, gaGeomUtils) {
+        gaTimeFormatFilter, $window, gaUrlUtils, gaGlobalOptions,
+        gaGeomUtils) {
 
       var d3LibUrl = this.d3libUrl;
       var profileUrl = this.profileUrl;
-      var isIE = !!gaBrowserSniffer.msie;
 
       var ProfileChart = function(options) {
         options = options || {};
@@ -285,47 +284,30 @@ goog.require('ga_urlutils_service');
           cancel();
           canceler = $q.defer();
 
-          var formData;
-          if (!isIE || gaBrowserSniffer.msie > 9) {
-            formData = new FormData();
-            formData.append('geom', wkt);
-            formData.append('elevation_models', elevationModel);
-            formData.append('offset', 0);
-          } else {
-            formData = {
-              geom: wkt,
-              elevation_models: elevationModel,
-              offset: 0
-            };
-            formData = $.param(formData);
-          }
+          // We don't use FormData because it makes the validity of data
+          // untestable. FormData is always an ampty object in tests.
+          var data = $.param({
+            geom: wkt,
+            elevation_models: elevationModel,
+            offset: 0
+          });
 
-          var params = {
-            method: 'POST',
-            url: profileUrl,
-            data: formData,
+          var config = {
             cache: true,
-            timeout: canceler.promise
+            timeout: canceler.promise,
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            }
           };
 
-          if (!isIE || gaBrowserSniffer.msie > 9) {
-            params.transformRequest = angular.identity;
-            params.headers = {'Content-Type': undefined};
-          } else {
-            params.headers = {'Content-Type':
-                'application/x-www-form-urlencoded'};
-          }
-
-          return $http(params).then(function(response) {
-            var data = response.data;
+          return $http.post(profileUrl, data, config).then(function(resp) {
             // When all the geometry is outside switzerland
-            if (!data.length) {
-              data = emptyData;
+            if (!resp.data.length) {
+              return emptyData;
             }
-            return data;
+            return resp.data;
           }, function(response) {
-            // If request is canceled, statuscode is 0 and we don't announce
-            // it
+            // If request is canceled, statuscode is 0 and we don't announce it
             if (response.status !== 0) {
               // Display an empty profile
               return emptyData;
