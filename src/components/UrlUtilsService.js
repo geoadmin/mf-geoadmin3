@@ -251,13 +251,13 @@ goog.provide('ga_urlutils_service');
         }
 
         // Replace subdomains regexp
-        this.getMultidomainsUrls = function(tpl) {
+        this.getMultidomainsUrls = function(tpl, dfltSubdomains) {
           if (!this.hasSubdomainsTpl(tpl)) {
             return [tpl];
           }
           var urls = [];
           var subdomains = this.parseSubdomainsTpl(tpl) ||
-              ['', '0', '1', '2', '3', '4'];
+              dfltSubdomains || [''];
           subdomains.forEach(function(subdomain) {
             urls.push(tpl.replace(SUBDOMAINS_REGEXP, subdomain));
           });

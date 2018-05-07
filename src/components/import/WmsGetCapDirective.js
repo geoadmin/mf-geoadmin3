@@ -1,12 +1,15 @@
 goog.provide('ga_wmsgetcap_directive');
 
+goog.require('ga_urlutils_service');
+
 (function() {
 
   var module = angular.module('ga_wmsgetcap_directive', [
-    'pascalprecht.translate'
+    'pascalprecht.translate',
+    'ga_urlutils_service'
   ]);
 
-  module.directive('gaWmsGetCap', function($window, $translate) {
+  module.directive('gaWmsGetCap', function($window, $translate, gaUrlUtils) {
 
     // Get the layer extent defines in the GetCapabilities
     var getLayerExtentFromGetCap = function(getCapLayer, proj) {
@@ -126,9 +129,9 @@ goog.provide('ga_wmsgetcap_directive');
           try {
             val = new ol.format.WMSCapabilities().read(val);
             // A wms GetCap never contains template url so if we want to use
-            // template url for subdomains we need to force the value of the
+            // template url for subdomains we need to force the value in the
             // GetCap.
-            if (/{s}/.test(scope.options.wmsGetCapUrl)) {
+            if (gaUrlUtils.hasSubdomainsTpl(scope.options.wmsGetCapUrl)) {
               val.Capability.Request.GetMap.DCPType[0].HTTP.Get.
                   OnlineResource = scope.options.wmsGetCapUrl;
             }

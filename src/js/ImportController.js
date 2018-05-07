@@ -26,7 +26,7 @@ goog.require('ga_wmts_service');
       gaLang, gaPreviewLayers, gaMapUtils, gaWmts, gaVector) {
 
     var servers = [
-      'https://wms{s}.geo.admin.ch/?lang=',
+      'https://wms.geo.admin.ch/?lang=',
       'http://owsproxy.lgl-bw.de/owsproxy/ows/WMS_Maps4BW',
       'https://www.ogd.stadt-zuerich.ch/mapproxy/wmts/1.0.0/WMTSCapabilities.xml',
       'https://wms.geo.gl.ch/',

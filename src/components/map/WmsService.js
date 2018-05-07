@@ -24,7 +24,10 @@ goog.require('ga_urlutils_service');
     this.$get = function(gaDefinePropertiesForLayer, gaMapUtils, gaUrlUtils,
         gaGlobalOptions, $q, gaLang, gaLayers) {
 
-      var getCesiumImageryProvider = function(layer) {
+      // Default subdomains for external WMS
+      var DFLT_SUBDOMAINS = ['', '0', '1', '2', '3', '4'];
+
+      var getCesiumImageryProvider = function(layer, subdomains) {
         var params = layer.getSource().getParams();
         var wmsParams = {
           layers: params.LAYERS,
@@ -59,7 +62,7 @@ goog.require('ga_urlutils_service');
           availableLevels: gaGlobalOptions.imageryAvailableLevels,
           metadataUrl: gaGlobalOptions.imageryMetadataUrl,
           subdomains: gaUrlUtils.parseSubdomainsTpl(layer.url) ||
-              ['', '0', '1', '2', '3', '4']
+              DFLT_SUBDOMAINS
         });
       };
 
@@ -69,18 +72,14 @@ goog.require('ga_urlutils_service');
         var createWmsLayer = function(params, options, index) {
           options = options || {};
 
-          // If the layer is available in the layer config and it is a wms
-          // use the same configuration.
+          // We get the gutter form the layersConfig if possible.
           var config = gaLayers.getLayer(params.LAYERS);
-          if (config && config.type === 'wms') {
-            return gaLayers.getOlLayerById(params.LAYERS);
-          } else if (config) {
-            // it's not a wms, we don't have the gutter value so we assume it's
-            // a single tile.
-            options.url = options.url.replace(/\{s\}/, '');
+          if (config && config.gutter) {
+            options.gutter = config.gutter;
           }
           options.id = 'WMS||' + options.label + '||' + options.url + '||' +
               params.LAYERS;
+
           // If the WMS has a version specified, we add it in
           // the id. It's important that the layer keeps the same id as the
           // one in the url otherwise it breaks the asynchronous reordering of
@@ -96,7 +95,8 @@ goog.require('ga_urlutils_service');
 
           // If the url contains a template for subdomains we display the layer
           // as tiled WMS.
-          var urls = gaUrlUtils.getMultidomainsUrls(options.url);
+          var urls = gaUrlUtils.getMultidomainsUrls(options.url,
+              DFLT_SUBDOMAINS);
           var SourceClass = ol.source.ImageWMS;
           var LayerClass = ol.layer.Image;
 
@@ -109,6 +109,7 @@ goog.require('ga_urlutils_service');
             params: params,
             url: urls[0],
             urls: urls,
+            gutter: options.gutter || 0,
             ratio: options.ratio || 1,
             projection: options.projection
           });

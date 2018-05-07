@@ -248,84 +248,26 @@ describe('ga_wms_service', function() {
         });
       });
 
-      it('adds a tiled layer using minimal parameters', function() {
-        var params = {
-          LAYERS: 'some'
-        };
-        var options = {
-          label: 'somelabel',
-          url: 'https://wms{s}.ch'
-        };
-        gaWms.addWmsToMap(map, params, options);
-        expect(map.getLayers().getLength()).to.be(1);
-
-        var layer = map.getLayers().item(0);
-        expectProperties(layer, {
-          layerClass: ol.layer.Tile,
-          layerType: 'TILE',
-          sourceClass: ol.source.TileWMS,
-          url: options.url,
-          urls: [
-            'https://wms.ch',
-            'https://wms0.ch',
-            'https://wms1.ch',
-            'https://wms2.ch',
-            'https://wms3.ch',
-            'https://wms4.ch'
-          ],
-          visible: true,
-          useThirdPartyData: true,
-          label: options.label,
-          projection: undefined,
-          LAYERS: params.LAYERS
-        });
-      });
-
-      it('adds a layer created by gaLayers if it exists in the layersConfig and if it\'s a wms', function() {
+      it('use the gutter from layersConfig if it exists', function() {
         var params = {
           LAYERS: 'some'
         };
         var config = {
-          type: 'wms'
-        };
-        var returnVal = new ol.layer.Layer({});
-        var stub = sinon.stub(gaLayers, 'getLayer').withArgs(params.LAYERS).returns(config);
-        var stub2 = sinon.stub(gaLayers, 'getOlLayerById').withArgs(params.LAYERS).returns(returnVal);
-        gaWms.addWmsToMap(map, params);
-        expect(stub.callCount).to.be(1);
-        expect(stub2.callCount).to.be(1);
-        expect(map.getLayers().getLength()).to.be(1);
-        expect(map.getLayers().item(0)).to.be(returnVal);
-      });
-
-      it('adds a layer forcing singleTile if it exists in the layersConfig and if it\'s not a wms', function() {
-        var params = {
-          LAYERS: 'some'
-        };
-        var options = {
-          label: 'somelabel',
+          type: 'wms',
+          gutter: '123',
           url: 'https://wms{s}.ch'
         };
-        var config = {
-          type: 'wmts'
-        };
-        var returnVal = new ol.layer.Layer({});
         var stub = sinon.stub(gaLayers, 'getLayer').withArgs(params.LAYERS).returns(config);
-        var stub2 = sinon.stub(gaLayers, 'getOlLayerById').withArgs(params.LAYERS).returns(returnVal);
-        gaWms.addWmsToMap(map, params, options);
-        expect(stub.callCount).to.be(1);
-        expect(stub2.callCount).to.be(0);
-        expect(map.getLayers().getLength()).to.be(1);
-
-        var layer = map.getLayers().item(0);
-        expectProperties(layer, {
-          url: 'https://wms.ch',
-          visible: true,
-          useThirdPartyData: true,
-          label: options.label,
-          projection: undefined,
-          LAYERS: params.LAYERS
+        gaWms.addWmsToMap(map, params, {
+          url: 'https://wms{s}.ch'
         });
+        expect(stub.callCount).to.be(1);
+        expect(map.getLayers().getLength()).to.be(1);
+        // Only in debug mode
+        if (map.getLayers().item(0).getSource().getGutterInternal) {
+          var g = map.getLayers().item(0).getSource().getGutterInternal();
+          expect(g).to.be('123');
+        }
       });
     });
 

@@ -380,6 +380,17 @@ describe('ga_urlutils_service', function() {
         });
       });
 
+      it('returns a list of one url without the subdomain tpl', function() {
+        var urls = gaUrlUtils.getMultidomainsUrls('wms{s}.geo.admin.ch');
+        expect(urls[0]).to.be('wms.geo.admin.ch');
+      });
+
+      it('returns the list of urls with default subdomains', function() {
+        var urls = gaUrlUtils.getMultidomainsUrls('wms{s}.geo.admin.ch', ['100', '101']);
+        expect(urls[0]).to.be('wms100.geo.admin.ch');
+        expect(urls[1]).to.be('wms101.geo.admin.ch');
+      });
+
       it('returns the list of urls', function() {
         var urls = gaUrlUtils.getMultidomainsUrls('wms{s:,1,2,3}.geo.admin.ch');
         expect(urls[0]).to.be('wms.geo.admin.ch');
