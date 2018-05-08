@@ -50,4 +50,4 @@ echo "Flushing varnishes"
 make flushvarnish DEPLOY_TARGET=$DEPLOY_TARGET
 
 T="$(($(date +%s)-T))"
-echo "Deploy time: %02d:%02d:%02d\n" "$((T/3600%24))" "$((T/60%60))" "$((T%60))"
+printf "Deploy time: %02d:%02d:%02d\n" "$((T/3600%24))" "$((T/60%60))" "$((T%60))"
