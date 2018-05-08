@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 describe('ga_profile_service', function() {
-  var gaProfile, $q, $rootScope, $httpBackend, gaTimeFormat, gaGlobalOptions, gaGeomUtils;
+  var gaProfile, $q, $rootScope, $http, $httpBackend, gaTimeFormat, gaGlobalOptions, gaGeomUtils;
 
   beforeEach(function() {
 
@@ -8,6 +8,7 @@ describe('ga_profile_service', function() {
       gaProfile = $injector.get('gaProfile');
       gaTimeFormat = $injector.get('gaTimeFormatFilter');
       $httpBackend = $injector.get('$httpBackend');
+      $http = $injector.get('$http');
       $rootScope = $injector.get('$rootScope');
       $q = $injector.get('$q');
       gaGeomUtils = $injector.get('gaGeomUtils');
@@ -126,6 +127,19 @@ describe('ga_profile_service', function() {
           expect(profile.hikingTime()).to.be(3);
           done();
         });
+        $httpBackend.flush();
+      });
+
+      it('send correct POST parameters', function() {
+        $httpBackend.expectPOST(profileUrl).respond(goodResultToFormat);
+        var spy = sinon.spy($http, 'post');
+        gaProfile.create(feature);
+        expect(spy.callCount).to.be(1);
+        expect(spy.args[0][1]).to.be('geom=%7B%22type%22%3A%22LineString%22%2C%22coordinates%22%3A%5B%5B0.0%2C0.0%5D%2C%5B1.0%2C0.0%5D%2C%5B1.0%2C1.0%5D%5D%7D&elevation_models=COMB&offset=0');
+        var config = spy.args[0][2];
+        expect(config.cache).to.be(true);
+        expect(config.timeout).to.be.a(Object);
+        expect(config.headers['Content-Type']).to.be('application/x-www-form-urlencoded');
         $httpBackend.flush();
       });
 
