@@ -18,6 +18,8 @@ goog.provide('ga_urlutils_service');
                                     '(?:\\/[\\w#!:.?+=&%@{}\\- /' +
                                     '[\\]$\'()*,;~]*)?$');
 
+        var SUBDOMAINS_REGEXP = /\{s(:(([\w,]?)+))?\}/;
+
         // Test validity of a URL
         this.isValid = function(url) {
           return (!!url && url.length > 0 && URL_REGEXP.test(url));
@@ -227,6 +229,40 @@ goog.provide('ga_urlutils_service');
             // Ignore any invalid uri component
           }
         };
+
+        // Returns the subdomains as an array, for example:
+        // wms{s:,0,1,2}.geo.admin.ch returns [''', 0, 1, 2]
+        this.parseSubdomainsTpl = function(tpl) {
+          var sd;
+          if (tpl) {
+            var matches = tpl.match(SUBDOMAINS_REGEXP);
+            if (matches && matches.length > 2 &&
+                matches[2] && matches[2].length) {
+              sd = matches[2].split(',');
+            }
+          }
+          return sd
+        }
+
+        // Returns true if the url has a subdomains template in it
+        // like: wms{s:,0,1,2}.geo.admin.ch
+        this.hasSubdomainsTpl = function(tpl) {
+          return SUBDOMAINS_REGEXP.test(tpl || '');
+        }
+
+        // Replace subdomains regexp
+        this.getMultidomainsUrls = function(tpl, dfltSubdomains) {
+          if (!this.hasSubdomainsTpl(tpl)) {
+            return [tpl];
+          }
+          var urls = [];
+          var subdomains = this.parseSubdomainsTpl(tpl) ||
+              dfltSubdomains || [''];
+          subdomains.forEach(function(subdomain) {
+            urls.push(tpl.replace(SUBDOMAINS_REGEXP, subdomain));
+          });
+          return urls;
+        }
       };
 
       return new UrlUtils(this.shortenUrl);

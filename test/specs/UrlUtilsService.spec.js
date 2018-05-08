@@ -318,5 +318,86 @@ describe('ga_urlutils_service', function() {
         });
       });
     });
+
+    describe('#parseSubdomainsTpl()', function() {
+      [
+        'undefined',
+        undefined,
+        null,
+        0,
+        'wms.geo.admin.ch',
+        'wms{s}.geo.admin.ch',
+        'wms{s:}.geo.admin.ch'
+      ].forEach(function(val) {
+        it('returns undefined for tpl=' + val, function() {
+          expect(gaUrlUtils.parseSubdomainsTpl(val)).to.be();
+        });
+      });
+
+      it('returns the list of subdomains available', function() {
+        expect(gaUrlUtils.parseSubdomainsTpl('wms{s:,1,2,3}.geo.admin.ch')).to.eql(['', '1', '2', '3']);
+        expect(gaUrlUtils.parseSubdomainsTpl('wms{s:1,2,3,}.geo.admin.ch')).to.eql(['1', '2', '3', '']);
+        expect(gaUrlUtils.parseSubdomainsTpl('wms{s:abc,def,ghi}.geo.admin.ch')).to.eql(['abc', 'def', 'ghi']);
+
+      });
+    });
+
+    describe('#hasSubdomainsTpl()', function() {
+      [
+        'undefined',
+        undefined,
+        null,
+        0,
+        'wms.geo.admin.ch',
+        'wms{s.geo.admin.ch',
+        'wms{s.geo.admin.ch}'
+      ].forEach(function(val) {
+        it('returns false for tpl=' + val, function() {
+          expect(gaUrlUtils.hasSubdomainsTpl(val)).to.be(false);
+        });
+      });
+
+      [
+        'wms{s}.geo.admin.ch',
+        'wms{s:}.geo.admin.ch',
+        'wms{s:1,2,3,}.geo.admin.ch'
+      ].forEach(function(val) {
+        it('returns true for tpl=' + val, function() {
+          expect(gaUrlUtils.hasSubdomainsTpl(val)).to.be(true);
+        });
+      });
+    });
+
+    describe('#getMultidomainsUrls()', function() {
+      [
+        'wms.geo.admin.ch',
+        'wms{s.geo.admin.ch}'
+      ].forEach(function(val) {
+        it('returns only one url for tpl=' + val, function() {
+          var urls = gaUrlUtils.getMultidomainsUrls(val);
+          expect(urls.length).to.be(1);
+          expect(urls[0]).to.be(val);
+        });
+      });
+
+      it('returns a list of one url without the subdomain tpl', function() {
+        var urls = gaUrlUtils.getMultidomainsUrls('wms{s}.geo.admin.ch');
+        expect(urls[0]).to.be('wms.geo.admin.ch');
+      });
+
+      it('returns the list of urls with default subdomains', function() {
+        var urls = gaUrlUtils.getMultidomainsUrls('wms{s}.geo.admin.ch', ['100', '101']);
+        expect(urls[0]).to.be('wms100.geo.admin.ch');
+        expect(urls[1]).to.be('wms101.geo.admin.ch');
+      });
+
+      it('returns the list of urls', function() {
+        var urls = gaUrlUtils.getMultidomainsUrls('wms{s:,1,2,3}.geo.admin.ch');
+        expect(urls[0]).to.be('wms.geo.admin.ch');
+        expect(urls[1]).to.be('wms1.geo.admin.ch');
+        expect(urls[2]).to.be('wms2.geo.admin.ch');
+        expect(urls[3]).to.be('wms3.geo.admin.ch');
+      });
+    });
   });
 });

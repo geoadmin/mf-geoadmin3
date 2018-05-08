@@ -108,7 +108,9 @@ describe('ga_import_controller', function() {
 
       it('set scope values', function() {
         expect(scope.supportDnd).to.be(true);
-        expect(scope.options.urls[0]).to.be('https://wms.geo.admin.ch/?lang=');
+        scope.options.servers.forEach(function(server) {
+          expect(server.url.indexOf('http') !== -1).to.be.ok();
+        });
         expect(scope.options.isValidUrl).to.be(gaUrlUtils.isValid);
         expect(scope.options.getOlLayerFromGetCapLayer).to.be.a(Function);
         expect(scope.options.addPreviewLayer).to.be.a(Function);
@@ -119,6 +121,13 @@ describe('ga_import_controller', function() {
       });
 
       describe('#options.getOlLayerFromGetCapLayer()', function() {
+        it('uses nothing', function() {
+          var layer = {};
+          var spy = sinon.stub(gaWms, 'getOlLayerFromGetCapLayer').withArgs(layer);
+          scope.options.getOlLayerFromGetCapLayer(layer);
+          expect(spy.callCount).to.be(0);
+        });
+
         it('uses gaWms', function() {
           var layer = {wmsUrl: 'test.com'};
           var spy = sinon.stub(gaWms, 'getOlLayerFromGetCapLayer').withArgs(layer);
@@ -167,6 +176,7 @@ describe('ga_import_controller', function() {
             'https://foo.ch ',
             'https://foo.ch/',
             'https://foo.ch/?',
+            'https://foo{s}.ch/?',
             'https://foo.ch/?parameter=custom',
             'http://foo.ch/ogc?map=kml.map',
             'http://foo.ch/ogc?map=/foo/bar/map.map'
@@ -177,6 +187,7 @@ describe('ga_import_controller', function() {
             var res = scope.options.transformUrl(url);
             expect(spy.args[0][0]).to.contain('SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0');
             expect(scope.getCapUrl).to.be(spy.args[0][0]);
+            expect(scope.getCapUrl.indexOf('{s}')).to.be(-1);
             expect(res).to.be('a');
             spy.resetHistory();
           });
@@ -239,9 +250,11 @@ describe('ga_import_controller', function() {
       describe('#options.handleFileContent()', function() {
 
         it('detects a WMS GetCapabilities content', function(done) {
+          var url = 'base/test/data/wms-basic.xml';
           $.get('base/test/data/wms-basic.xml', function(response) {
-            scope.options.handleFileContent(response).then(function(resp) {
+            scope.options.handleFileContent(response, {url: url}).then(function(resp) {
               expect(scope.wmsGetCap).to.be(response);
+              expect(scope.options.wmsGetCapUrl).to.be(url);
               expect(scope.wmtsGetCap).to.be(null);
               expect(resp.message).to.be('upload_succeeded');
               done();
@@ -255,6 +268,7 @@ describe('ga_import_controller', function() {
             scope.options.handleFileContent(response).then(function(resp) {
               expect(scope.wmtsGetCap).to.be(response);
               expect(scope.wmsGetCap).to.be(null);
+              expect(scope.options.wmsGetCapUrl).to.be(null);
               expect(resp.message).to.be('upload_succeeded');
               done();
             });

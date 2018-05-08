@@ -28,13 +28,11 @@ goog.require('ga_file_service');
 
         scope.handleFileContent = options.handleFileContent;
 
-        elt.on('click', function() {
+        elt.on('click dragleave drop', function(evt) {
           // Hide the drop zone on click,
           // used when for some reasons unknown
           // the element stays displayed. See:
           // https://github.com/geoadmin/mf-geoadmin3/issues/1908
-          this.style.display = 'none';
-        }).on('dragleave drop', function(evt) {
           this.style.display = 'none';
         }).on('dragover dragleave drop', function(evt) {
           evt.stopPropagation();
@@ -94,7 +92,7 @@ goog.require('ga_file_service');
         $document.on('dragstart', onDragStart);
 
         scope.$on('$destroy', function() {
-          $document.off('dragEnter', onDragEnter).off('dragstart', onDragStart);
+          $document.off('dragenter', onDragEnter).off('dragstart', onDragStart);
         });
       }
     };

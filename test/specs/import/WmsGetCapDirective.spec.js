@@ -65,6 +65,7 @@ describe('ga_wmsgetcap_directive', function() {
     it('has good scope values', function() {
       expect(scope.map).to.be(map);
       expect(scope.layers.length).to.be(377);
+      expect(scope.layers[0].wmsUrl).to.be('https://wms.geo.admin.ch/?');
       expect(scope.limitations).to.be('wms_max_size_allowed 3850 * 3850');
       expect(scope.userMsg).to.be(undefined);
       expect(scope.options.layerSelected).to.be(null);
@@ -74,6 +75,32 @@ describe('ga_wmsgetcap_directive', function() {
     });
   });
 
+  describe('loads a correct WMS GetCapabilities and uses the file url specified in options', function() {
+
+    beforeEach(function() {
+      $rootScope.map = map;
+      $rootScope.getCap = wmsBasic;
+    });
+
+    it('has the dflt wmsUrl property', function() {
+      $rootScope.options = {
+        wmsGetCapUrl: 'myurl'
+      };
+      $rootScope.options = {};
+      loadDirective();
+      expect(scope.layers.length).to.be(377);
+      expect(scope.layers[0].wmsUrl).to.be('https://wms.geo.admin.ch/?');
+    });
+
+    it('has good wmsUrl property', function() {
+      $rootScope.options = {
+        wmsGetCapUrl: '{s}myurl'
+      };
+      loadDirective();
+      expect(scope.layers.length).to.be(377);
+      expect(scope.layers[0].wmsUrl).to.be('{s}myurl');
+    });
+  });
   describe('loads a invalid WMS GetCapabilities', function() {
     var spy;
 

@@ -2,7 +2,7 @@
 describe('ga_wms_service', function() {
 
   describe('gaWms', function() {
-    var gaWms, map, gaGlobalOptions, $rootScope, gaLang;
+    var gaWms, map, gaGlobalOptions, $rootScope, gaLang, gaLayers;
 
     var getExternalWmsLayer = function(params) {
       var layer = new ol.layer.Image({
@@ -19,10 +19,10 @@ describe('ga_wms_service', function() {
     var expectProperties = function(layer, options) {
       // Test Layer's properties
       // set in constructor
-      expect(layer).to.be.an(ol.layer.Image);
+      expect(layer).to.be.an(options.layerClass || ol.layer.Image);
       expect(layer.id).to.be(options.id || 'WMS||' + options.label + '||' + options.url + '||' + options.LAYERS);
       expect(layer.url).to.be(options.url);
-      expect(layer.type).to.be('IMAGE');
+      expect(layer.type).to.be(options.layerType || 'IMAGE');
       expect(layer.invertedOpacity).to.be(options.invertedOpacity || 0);
       expect(layer.visible).to.be(angular.isDefined(options.visible) ? options.visible : true);
       expect(layer.get('attribution')).to.be(options.attribution);
@@ -37,16 +37,16 @@ describe('ga_wms_service', function() {
 
       // Tests source's properties
       var source = layer.getSource();
-      expect(source).to.be.an(ol.source.ImageWMS);
-      expect(source.getUrl()).to.be(options.url);
+      expect(source).to.be.an(options.sourceClass || ol.source.ImageWMS);
+      if (source.getUrls) {
+        expect(source.getUrls()).to.eql(options.urls);
+      } else {
+        expect(source.getUrl()).to.be(options.url);
+      }
       var projCode = (source.getProjection()) ? source.getProjection().getCode() : undefined;
       expect(projCode).to.be(options.projection);
 
       // Tests WMS params
-      options.VERSION = options.VERSION || '1.3.0';
-      options.FORMAT = options.FORMAT || 'image%2Fpng';
-      options.STYLES = options.STYLES || '';
-
       var params = source.getParams();
       expect(params.LAYERS).to.be(options.LAYERS);
       expect(params.VERSION).to.be(options.VERSION);
@@ -64,14 +64,14 @@ describe('ga_wms_service', function() {
       expect(prov).to.be.an(Cesium.UrlTemplateImageryProvider);
       var url = options.url +
           '?layers=' + options.LAYERS +
-          '&format=' + options.FORMAT +
+          '&format=' + (options.FORMAT || 'image%2Fpng') +
           '&service=WMS' +
-          '&version=' + options.VERSION +
+          '&version=' + (options.VERSION || '1.3.0') +
           '&request=GetMap' +
           crsStr +
           '&bbox=' + options.bbox +
           '&width=256&height=256' +
-          '&styles=' + options.STYLES +
+          '&styles=' + (options.STYLES || '') +
           '&transparent=true' +
           srsStr;
       var p = spy.args[0][0];
@@ -94,6 +94,7 @@ describe('ga_wms_service', function() {
       expect(p.hasAlphaChannel).to.be(true);
       expect(p.availableLevels).to.be(gaGlobalOptions.imageryAvailableLevels);
       expect(p.metadataUrl).to.be(gaGlobalOptions.imageryMetadataUrl);
+      expect(p.subdomains).to.eql(['', '0', '1', '2', '3', '4']);
       spy.restore();
     };
 
@@ -102,6 +103,7 @@ describe('ga_wms_service', function() {
         gaWms = $injector.get('gaWms');
         gaGlobalOptions = $injector.get('gaGlobalOptions');
         gaLang = $injector.get('gaLang');
+        gaLayers = $injector.get('gaLayers');
         $rootScope = $injector.get('$rootScope');
       });
       map = new ol.Map({});
@@ -211,6 +213,61 @@ describe('ga_wms_service', function() {
           projection: undefined,
           LAYERS: params.LAYERS
         });
+      });
+
+      it('adds a tiled layer using minimal parameters', function() {
+        var params = {
+          LAYERS: 'some'
+        };
+        var options = {
+          label: 'somelabel',
+          url: 'https://wms{s}.ch'
+        };
+        gaWms.addWmsToMap(map, params, options);
+        expect(map.getLayers().getLength()).to.be(1);
+
+        var layer = map.getLayers().item(0);
+        expectProperties(layer, {
+          layerClass: ol.layer.Tile,
+          layerType: 'TILE',
+          sourceClass: ol.source.TileWMS,
+          url: options.url,
+          urls: [
+            'https://wms.ch',
+            'https://wms0.ch',
+            'https://wms1.ch',
+            'https://wms2.ch',
+            'https://wms3.ch',
+            'https://wms4.ch'
+          ],
+          visible: true,
+          useThirdPartyData: true,
+          label: options.label,
+          projection: undefined,
+          LAYERS: params.LAYERS
+        });
+      });
+
+      it('use the gutter from layersConfig if it exists', function() {
+        var params = {
+          LAYERS: 'some'
+        };
+        var config = {
+          type: 'wms',
+          gutter: '123',
+          url: 'https://wms{s}.ch'
+        };
+        var stub = sinon.stub(gaLayers, 'getLayer').withArgs(params.LAYERS).returns(config);
+        gaWms.addWmsToMap(map, params, {
+          url: 'https://wms{s}.ch'
+        });
+        expect(stub.callCount).to.be(1);
+        expect(map.getLayers().getLength()).to.be(1);
+        // Only in debug mode
+        if (map.getLayers().item(0).getSource().getGutterInternal) {
+          var g = map.getLayers().item(0).getSource().getGutterInternal();
+          expect(g).to.be('123');
+        }
       });
     });
 
