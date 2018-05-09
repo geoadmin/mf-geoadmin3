@@ -109,7 +109,7 @@ goog.require('ga_urlutils_service');
               'fontSize': 10,
               'fontWeight': 'normal'
             },
-            '3': { // Style for intermeediate measure tooltip
+            '3': { // Style for intermediate measure tooltip
               'label': $elt.text(),
               'labelXOffset': 0,
               'labelYOffset': 10,
