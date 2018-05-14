@@ -7,6 +7,63 @@ describe('ga_printlayer_service', function() {
 
     var extent = [2420000, 1030000, 2900000, 1350000];
     var center = [2600000, 1200000];
+    var config = {};
+
+    // WMTS
+    var sourceWMTS = new ol.source.WMTS({
+      url: 'http://www.gis.stadt-zuerich.ch/maps/rest/services/tiled95/Uebersichtsplan2012/MapServer/WMTS/tile/1.0.0/tiled95_Uebersichtsplan2012/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png',
+      tileGrid: new ol.tilegrid.WMTS({
+        origin: [-29386400, 30814500],
+        tileSize: 512,
+        matrixIds: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
+        resolutions: [
+          66.14596562525627, 33.07298281262813,
+          16.933367200065604, 8.466683600032802, 4.233341800016401,
+          2.1166709000082005, 1.0583354500041002, 0.5291677250020501,
+          0.26458386250102506, 0.13229193125051253
+        ]
+      }),
+      projection: 'EPSG:21781',
+      layer: 'Uebersichtsplan_2012',
+      requestEncoding: 'REST'
+    });
+    var layerWMTS = new ol.layer.Tile({
+      source: sourceWMTS,
+      extent: [-29386400, 30000, 900000, 30814500]
+    });
+
+    // WMS
+    var layerWMS = new ol.layer.Image({
+      type: 'WMS',
+      opacity: 1,
+      visible: true,
+      extent: extent,
+      source: new ol.source.ImageWMS({
+        url: 'https://wms.geo.admin.ch/?',
+        projection: new ol.proj.Projection({
+          code: 'EPSG:2056',
+          units: 'm',
+          extent: extent
+        }),
+        ratio: 1,
+        params: {
+          LAYERS: 'ch.swisstopo.fixpunkte-agnes'
+        }
+      })
+    });
+
+    // Vector
+    var geometry = new ol.geom.Point(center);
+    var feature = new ol.Feature({
+      name: 'dummy',
+      geometry: geometry
+    });
+    feature.set('toto', 'abcd')
+    var layerVector = new ol.layer.Vector({
+      source: new ol.source.Vector({
+        features: [feature]
+      })
+    });
 
     beforeEach(function() {
       module(function($provide) {
@@ -51,32 +108,8 @@ describe('ga_printlayer_service', function() {
 
     describe('#encodeVector()', function() {
 
-      var lyr, source, feature;
-
-      beforeEach(function() {
-        var geometry = new ol.geom.Point(center);
-        feature = new ol.Feature({
-          name: 'dummy',
-          geometry: geometry
-        });
-        feature.set('toto', 'abcd')
-        source = new ol.source.Vector({});
-        source.addFeature(feature);
-        lyr = new ol.layer.Vector({
-          source: source
-        });
-
-      });
-
-      afterEach(function() {
-        source = null;
-        feature = null;
-        lyr = null;
-      });
-
       it('returns an encoded vector layer', function() {
-
-        var encVector = gaPrintLayer.encodeVector(lyr, lyr.getSource().getFeatures(), false, 2000000,
+        var encVector = gaPrintLayer.encodeVector(layerVector, layerVector.getSource().getFeatures(), false, 2000000,
             extent, 150);
 
         expect(encVector.type).to.eql('Vector');
@@ -209,30 +242,9 @@ describe('ga_printlayer_service', function() {
     });
 
     describe('#encodeWMTS()', function() {
-      var extent = [-29386400, 30000, 900000, 30814500];
-      var config = {};
-      var options = {
-        origin: [-29386400, 30814500],
-        tileSize: 512,
-        matrixIds: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
-        resolutions: [66.14596562525627, 33.07298281262813, 16.933367200065604, 8.466683600032802, 4.233341800016401,
-          2.1166709000082005, 1.0583354500041002, 0.5291677250020501, 0.26458386250102506, 0.13229193125051253]
-      };
-      var tileGrid = new ol.tilegrid.WMTS(options);
-      var source = new ol.source.WMTS({
-        url: 'http://www.gis.stadt-zuerich.ch/maps/rest/services/tiled95/Uebersichtsplan2012/MapServer/WMTS/tile/1.0.0/tiled95_Uebersichtsplan2012/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png',
-        tileGrid: tileGrid,
-        projection: 'EPSG:21781',
-        layer: 'Uebersichtsplan_2012',
-        requestEncoding: 'REST'
-      });
-      var layer = new ol.layer.Tile({
-        source: source,
-        extent: extent
-      });
 
       it('returns an encoded WMTS layer (full version)', function() {
-        var encWMTS = gaPrintLayer.encodeWMTS(layer, config);
+        var encWMTS = gaPrintLayer.encodeWMTS(layerWMTS, config);
 
         expect(encWMTS.baseURL).to.eql('http://www.gis.stadt-zuerich.ch/maps/rest/services/tiled95/Uebersichtsplan2012/MapServer/WMTS/tile/1.0.0/tiled95_Uebersichtsplan2012/%7BStyle%7D/%7BTileMatrixSet%7D/%7BTileMatrix%7D/%7BTileRow%7D/%7BTileCol%7D.png');
         expect(encWMTS.layer).to.eql('Uebersichtsplan_2012');
@@ -291,36 +303,9 @@ describe('ga_printlayer_service', function() {
 
     describe('#encodeWMS()', function() {
 
-      var proj = new ol.proj.Projection({
-        code: 'EPSG:2056',
-        units: 'm',
-        extent: extent
-      });
-
-      var options = {
-        url: 'https://wms.geo.admin.ch/?',
-        projection: proj,
-        ratio: 1,
-        params: {
-          LAYERS: 'ch.swisstopo.fixpunkte-agnes'
-        }
-      };
-
-      var source = new ol.source.ImageWMS(options);
-
-      var layer = new ol.layer.Image({
-        id: options.id,
-        url: options.url,
-        type: 'WMS',
-        opacity: 1,
-        visible: true,
-        extent: extent,
-        source: source
-      });
-
       it('returns an encoded WMS layer', function() {
 
-        var wmsLayer = gaPrintLayer.encodeWMS(layer, proj, {});
+        var wmsLayer = gaPrintLayer.encodeWMS(layerWMS, layerWMS.getSource().getProjection(), {});
 
         expect(wmsLayer).to.eql({
           opacity: 1,
@@ -390,6 +375,7 @@ describe('ga_printlayer_service', function() {
         });
       });
     });
+
     describe('#encodeMatrixIds()', function() {
 
       var extent = [672499.0, 238999.0, 689999.0, 256999.0];
@@ -480,6 +466,95 @@ describe('ga_printlayer_service', function() {
           'tileSize': [512, 512],
           'matrixSize': [444041, 451411]
         }]);
+      });
+    });
+
+    describe('#encodeOverlay()', function() {
+      var elt, ov, opt = {
+        markerUrl: 'marker.png',
+        bubbleUrl: 'bubble.png'
+      };
+
+      beforeEach(function() {
+        elt = $('<div>foo</div>');
+        ov = new ol.Overlay({
+          element: elt[0]
+        });
+      });
+
+      var getStyleAsString = function(styleNb, text, opt) {
+        return '{"type":"Vector","styles":{"1":{"externalGraphic":"' +
+            opt.markerUrl + '","graphicWidth":20,"graphicHeight":30,"graphicXOffset":-12,"graphicYOffset":-30},"2":{"externalGraphic":"' +
+            opt.bubbleUrl + '","graphicWidth":97,"graphicHeight":27,"graphicXOffset":-48,"graphicYOffset":-27,"label":"' +
+            text + '","labelXOffset":0,"labelYOffset":18,"fontColor":"#ffffff","fontSize":10,"fontWeight":"normal"},"3":{"label":"' +
+            text + '","labelXOffset":0,"labelYOffset":10,"fontColor":"#ffffff","fontSize":8,"fontWeight":"normal","fillColor":"#ff0000","strokeColor":"#ff0000"}},"styleProperty":"_gx_style","geoJson":{"type":"FeatureCollection","features":[{"type":"Feature","properties":{"_gx_style":' +
+            styleNb + '},"geometry":{"type":"Point","coordinates":[1,2,0]}}]},"name":"drawing","opacity":1}';
+      };
+
+      it('returns undefined if the overlay has no position', function() {
+        elt.addClass('popover');
+        var res = gaPrintLayer.encodeOverlay(ov, undefined, opt);
+        expect(res).to.be();
+      });
+
+      it('returns undefined if the overlay has a class popover', function() {
+        elt.addClass('popover');
+        var res = gaPrintLayer.encodeOverlay(ov, undefined, opt);
+        expect(res).to.be();
+      });
+
+      it('returns an encoded overlay for elt without text (style 1)', function() {
+        ov.setPosition([1, 2]);
+        ov.setElement($('<div></div>')[0]);
+        var res = gaPrintLayer.encodeOverlay(ov, undefined, opt);
+        expect(JSON.stringify(res)).to.be(getStyleAsString(1, '', opt));
+      });
+
+      it('returns an encoded overlay for elt with text (style 2)', function() {
+        ov.setPosition([1, 2]);
+        var res = gaPrintLayer.encodeOverlay(ov, undefined, opt);
+        expect(JSON.stringify(res)).to.be(getStyleAsString(2, 'foo', opt));
+      });
+
+      it('returns an encoded overlay for measure elt (style 3)', function() {
+        ov.setPosition([1, 2]);
+        elt.addClass('ga-draw-measure-tmp');
+
+        var res = gaPrintLayer.encodeOverlay(ov, undefined, opt);
+        expect(JSON.stringify(res)).to.be(getStyleAsString(3, 'foo', opt));
+      });
+    });
+
+    describe('#encodeGraticule()', function() {
+
+      it('returns an encoded graticule layer', function() {
+        var res = gaPrintLayer.encodeGraticule(50);
+        expect(JSON.stringify(res)).to.be('{"baseURL":"https://wms.geo.admin.ch/","opacity":1,"singleTile":true,"type":"WMS","layers":["org.epsg.grid_2056"],"format":"image/png","styles":[""],"customParams":{"TRANSPARENT":true,"MAP_RESOLUTION":50}}');
+      });
+    });
+
+    describe('#encodeGroup() and #encodeLayer', function() {
+
+      it('returns an encoded group', function() {
+        var gr = new ol.layer.Group({
+          layers: [
+            new ol.layer.Layer({}),
+            new ol.layer.Group({}),
+            layerWMS,
+            layerWMTS,
+            layerVector,
+            new ol.layer.Image({visible: true})
+          ]
+        });
+        gr.getLayers().forEach(function(l, idx) {
+          if (idx > 0) {
+            l.visible = true;
+          }
+        });
+        var proj = ol.proj.get('EPSG:4326');
+        var coords = [1, 2, 3, 4];
+        var res = gaPrintLayer.encodeGroup(gr, proj, 300, coords, 500, 96);
+        expect(res.length).to.be(3);
       });
     });
   });
