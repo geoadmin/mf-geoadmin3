@@ -1,12 +1,13 @@
 /* eslint-disable max-len */
 describe('ga_shopmsg__directive', function() {
-  var elt, scope, parentScope, $compile, $rootScope, gaStorage, stubGet, $window;
+  var elt, scope, parentScope, $compile, $rootScope, gaStorage, stubGet, $window, $httpBackend, $timeout;
   var KEY = 'ga-shop-msg-never-show-again';
 
   var loadDirective = function() {
     parentScope = $rootScope.$new();
     var tpl = '<div ga-shop-msg></div>';
     elt = $compile(tpl)(parentScope);
+    $(document.body).append(elt);
     $rootScope.$digest();
     scope = elt.isolateScope();
   };
@@ -30,13 +31,23 @@ describe('ga_shopmsg__directive', function() {
       $rootScope = $injector.get('$rootScope');
       $window = $injector.get('$window');
       gaStorage = $injector.get('gaStorage');
+      $httpBackend = $injector.get('$httpBackend');
+      $timeout = $injector.get('$timeout');
     });
 
     stubGet = sinon.stub(gaStorage, 'getItem').returns(false);
   });
 
   afterEach(function() {
+    elt.remove();
     stubGet.restore();
+    $httpBackend.verifyNoOutstandingExpectation();
+    $httpBackend.verifyNoOutstandingRequest();
+    try {
+      $timeout.verifyNoPendingTasks();
+    } catch (e) {
+      $timeout.flush();
+    }
   });
 
   describe('when the page is not opened from the shop', function() {
