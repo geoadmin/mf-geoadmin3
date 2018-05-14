@@ -3,7 +3,7 @@ describe('ga_printlayer_service', function() {
 
   describe('gaPrintLayer', function() {
 
-    var $translate, gaPrintLayer;
+    var $translate, gaPrintLayer, $window;
 
     var extent = [2420000, 1030000, 2900000, 1350000];
     var center = [2600000, 1200000];
@@ -77,6 +77,7 @@ describe('ga_printlayer_service', function() {
 
       inject(function($injector) {
         $translate = $injector.get('$translate');
+        $window = $injector.get('$window');
         gaPrintLayer = $injector.get('gaPrintLayer');
       });
     });
@@ -536,6 +537,7 @@ describe('ga_printlayer_service', function() {
     describe('#encodeGroup() and #encodeLayer', function() {
 
       it('returns an encoded group', function() {
+        var stub = sinon.stub($window.console, 'error').withArgs('Trying to encode a group with the layer encoder!');
         var gr = new ol.layer.Group({
           layers: [
             new ol.layer.Layer({}),
@@ -555,6 +557,7 @@ describe('ga_printlayer_service', function() {
         var coords = [1, 2, 3, 4];
         var res = gaPrintLayer.encodeGroup(gr, proj, 300, coords, 500, 96);
         expect(res.length).to.be(3);
+        expect(stub.callCount).to.be(1);
       });
     });
   });
