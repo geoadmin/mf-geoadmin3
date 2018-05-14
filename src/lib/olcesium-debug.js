@@ -9942,64 +9942,72 @@ ol.ext.rbush = function() {
 };
 (function() {
   (function(exports) {
-    var quickselect_1 = quickselect;
-    var default_1 = quickselect;
-    function quickselect(arr, k, left, right, compare) {
-      quickselectStep(arr, k, left || 0, right || arr.length - 1, compare || defaultCompare);
+    var commonjsGlobal = typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : {};
+    function createCommonjsModule(fn, module) {
+      return module = {exports:{}}, fn(module, module.exports), module.exports;
     }
-    function quickselectStep(arr, k, left, right, compare) {
-      while (right > left) {
-        if (right - left > 600) {
-          var n = right - left + 1;
-          var m = k - left + 1;
-          var z = Math.log(n);
-          var s = 0.5 * Math.exp(2 * z / 3);
-          var sd = 0.5 * Math.sqrt(z * s * (n - s) / n) * (m - n / 2 < 0 ? -1 : 1);
-          var newLeft = Math.max(left, Math.floor(k - m * s / n + sd));
-          var newRight = Math.min(right, Math.floor(k + (n - m) * s / n + sd));
-          quickselectStep(arr, k, newLeft, newRight, compare);
+    var quickselect = createCommonjsModule(function(module, exports) {
+      (function(global, factory) {
+        module.exports = factory();
+      })(commonjsGlobal, function() {
+        function quickselect(arr, k, left, right, compare) {
+          quickselectStep(arr, k, left || 0, right || arr.length - 1, compare || defaultCompare);
         }
-        var t = arr[k];
-        var i = left;
-        var j = right;
-        swap(arr, left, k);
-        if (compare(arr[right], t) > 0) {
-          swap(arr, left, right);
-        }
-        while (i < j) {
-          swap(arr, i, j);
-          i++;
-          j--;
-          while (compare(arr[i], t) < 0) {
-            i++;
+        function quickselectStep(arr, k, left, right, compare) {
+          while (right > left) {
+            if (right - left > 600) {
+              var n = right - left + 1;
+              var m = k - left + 1;
+              var z = Math.log(n);
+              var s = 0.5 * Math.exp(2 * z / 3);
+              var sd = 0.5 * Math.sqrt(z * s * (n - s) / n) * (m - n / 2 < 0 ? -1 : 1);
+              var newLeft = Math.max(left, Math.floor(k - m * s / n + sd));
+              var newRight = Math.min(right, Math.floor(k + (n - m) * s / n + sd));
+              quickselectStep(arr, k, newLeft, newRight, compare);
+            }
+            var t = arr[k];
+            var i = left;
+            var j = right;
+            swap(arr, left, k);
+            if (compare(arr[right], t) > 0) {
+              swap(arr, left, right);
+            }
+            while (i < j) {
+              swap(arr, i, j);
+              i++;
+              j--;
+              while (compare(arr[i], t) < 0) {
+                i++;
+              }
+              while (compare(arr[j], t) > 0) {
+                j--;
+              }
+            }
+            if (compare(arr[left], t) === 0) {
+              swap(arr, left, j);
+            } else {
+              j++;
+              swap(arr, j, right);
+            }
+            if (j <= k) {
+              left = j + 1;
+            }
+            if (k <= j) {
+              right = j - 1;
+            }
           }
-          while (compare(arr[j], t) > 0) {
-            j--;
-          }
         }
-        if (compare(arr[left], t) === 0) {
-          swap(arr, left, j);
-        } else {
-          j++;
-          swap(arr, j, right);
+        function swap(arr, i, j) {
+          var tmp = arr[i];
+          arr[i] = arr[j];
+          arr[j] = tmp;
         }
-        if (j <= k) {
-          left = j + 1;
+        function defaultCompare(a, b) {
+          return a < b ? -1 : a > b ? 1 : 0;
         }
-        if (k <= j) {
-          right = j - 1;
-        }
-      }
-    }
-    function swap(arr, i, j) {
-      var tmp = arr[i];
-      arr[i] = arr[j];
-      arr[j] = tmp;
-    }
-    function defaultCompare(a, b) {
-      return a < b ? -1 : a > b ? 1 : 0;
-    }
-    quickselect_1.default = default_1;
+        return quickselect;
+      });
+    });
     var rbush_1 = rbush;
     function rbush(maxEntries, format) {
       if (!(this instanceof rbush)) {
@@ -10372,7 +10380,7 @@ ol.ext.rbush = function() {
           continue;
         }
         mid = left + Math.ceil((right - left) / n / 2) * n;
-        quickselect_1(arr, mid, left, right, compare);
+        quickselect(arr, mid, left, right, compare);
         stack.push(left, mid, mid, right);
       }
     }

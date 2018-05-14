@@ -16,6 +16,8 @@
     "ol.Observable.unByKey",
     "ol.Overlay",
     "ol.Overlay#*",
+    "ol.Sphere",
+    "ol.Sphere#*",
     "ol.View",
     "ol.View#*",
     "ol.color.asArray",
