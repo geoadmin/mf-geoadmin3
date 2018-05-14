@@ -1,6 +1,6 @@
 <div ng-repeat="layer in backgroundLayers"
      ng-click="activateBackgroundLayer(layer)"
-     class="ga-bg-layer {{getClass(layer)}}"
+     class="ga-bg-layer ga-bg-layer-{{$index}} {{getClass(layer)}}"
      translate-attr="{title: layer.label}">
   <div class="ga-bg-layer-text" translate>{{layer.label}}</div>
 </div>
