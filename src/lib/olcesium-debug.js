@@ -68,7 +68,7 @@
    * extended with a `code` property.
    * See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error.
    */
-  var AssertionError = (function (Error) {
+  var AssertionError = /*@__PURE__*/(function (Error) {
     function AssertionError(code) {
       var path = VERSION;
       var message = 'Assertion failed. See https://openlayers.org/en/' + path +
@@ -637,7 +637,7 @@
    *    more listeners after this one will be called. Same as when the listener
    *    returns false.
    */
-  var Target = (function (Disposable$$1) {
+  var Target = /*@__PURE__*/(function (Disposable$$1) {
     function Target() {
 
       Disposable$$1.call(this);
@@ -694,8 +694,6 @@
      * @api
      */
     Target.prototype.dispatchEvent = function dispatchEvent (event) {
-      var this$1 = this;
-
       var evt = typeof event === 'string' ? new Event(event) : event;
       var type = evt.type;
       evt.target = this;
@@ -708,7 +706,7 @@
         }
         ++this.dispatching_[type];
         for (var i = 0, ii = listeners.length; i < ii; ++i) {
-          if (listeners[i].call(this$1, evt) === false || evt.propagationStopped) {
+          if (listeners[i].call(this, evt) === false || evt.propagationStopped) {
             propagate = false;
             break;
           }
@@ -718,7 +716,7 @@
           var pendingRemovals = this.pendingRemovals_[type];
           delete this.pendingRemovals_[type];
           while (pendingRemovals--) {
-            this$1.removeEventListener(type, VOID);
+            this.removeEventListener(type, VOID);
           }
           delete this.dispatching_[type];
         }
@@ -834,7 +832,7 @@
    * @fires import("./events/Event.js").Event
    * @api
    */
-  var Observable = (function (EventTarget) {
+  var Observable = /*@__PURE__*/(function (EventTarget) {
     function Observable() {
 
       EventTarget.call(this);
@@ -880,13 +878,11 @@
      * @api
      */
     Observable.prototype.on = function on (type, listener) {
-      var this$1 = this;
-
       if (Array.isArray(type)) {
         var len = type.length;
         var keys = new Array(len);
         for (var i = 0; i < len; ++i) {
-          keys[i] = listen(this$1, type[i], listener);
+          keys[i] = listen(this, type[i], listener);
         }
         return keys;
       } else {
@@ -904,13 +900,11 @@
      * @api
      */
     Observable.prototype.once = function once (type, listener) {
-      var this$1 = this;
-
       if (Array.isArray(type)) {
         var len = type.length;
         var keys = new Array(len);
         for (var i = 0; i < len; ++i) {
-          keys[i] = listenOnce(this$1, type[i], listener);
+          keys[i] = listenOnce(this, type[i], listener);
         }
         return keys;
       } else {
@@ -925,11 +919,9 @@
      * @api
      */
     Observable.prototype.un = function un (type, listener) {
-      var this$1 = this;
-
       if (Array.isArray(type)) {
         for (var i = 0, ii = type.length; i < ii; ++i) {
-          unlisten(this$1, type[i], listener);
+          unlisten(this, type[i], listener);
         }
         return;
       } else {
@@ -966,7 +958,7 @@
    * @classdesc
    * Events emitted by {@link module:ol/Object~BaseObject} instances are instances of this type.
    */
-  var ObjectEvent = (function (Event$$1) {
+  var ObjectEvent = /*@__PURE__*/(function (Event$$1) {
     function ObjectEvent(type, key, oldValue) {
       Event$$1.call(this, type);
 
@@ -1038,7 +1030,7 @@
    * @fires ObjectEvent
    * @api
    */
-  var BaseObject = (function (Observable$$1) {
+  var BaseObject = /*@__PURE__*/(function (Observable$$1) {
     function BaseObject(opt_values) {
       Observable$$1.call(this);
 
@@ -1134,10 +1126,8 @@
      * @api
      */
     BaseObject.prototype.setProperties = function setProperties (values, opt_silent) {
-      var this$1 = this;
-
       for (var key in values) {
-        this$1.set(key, values[key], opt_silent);
+        this.set(key, values[key], opt_silent);
       }
     };
 
@@ -1196,7 +1186,7 @@
    * Events emitted by {@link module:ol/Collection~Collection} instances are instances of this
    * type.
    */
-  var CollectionEvent = (function (Event$$1) {
+  var CollectionEvent = /*@__PURE__*/(function (Event$$1) {
     function CollectionEvent(type, opt_element) {
       Event$$1.call(this, type);
 
@@ -1234,10 +1224,8 @@
    * @template T
    * @api
    */
-  var Collection = (function (BaseObject$$1) {
+  var Collection = /*@__PURE__*/(function (BaseObject$$1) {
     function Collection(opt_array, opt_options) {
-      var this$1 = this;
-
 
       BaseObject$$1.call(this);
 
@@ -1257,7 +1245,7 @@
 
       if (this.unique_) {
         for (var i = 0, ii = this.array_.length; i < ii; ++i) {
-          this$1.assertUnique_(this$1.array_[i], i);
+          this.assertUnique_(this.array_[i], i);
         }
       }
 
@@ -1274,10 +1262,8 @@
      * @api
      */
     Collection.prototype.clear = function clear () {
-      var this$1 = this;
-
       while (this.getLength() > 0) {
-        this$1.pop();
+        this.pop();
       }
     };
 
@@ -1289,10 +1275,8 @@
      * @api
      */
     Collection.prototype.extend = function extend (arr) {
-      var this$1 = this;
-
       for (var i = 0, ii = arr.length; i < ii; ++i) {
-        this$1.push(arr[i]);
+        this.push(arr[i]);
       }
       return this;
     };
@@ -1391,12 +1375,10 @@
      * @api
      */
     Collection.prototype.remove = function remove (elem) {
-      var this$1 = this;
-
       var arr = this.array_;
       for (var i = 0, ii = arr.length; i < ii; ++i) {
         if (arr[i] === elem) {
-          return this$1.removeAt(i);
+          return this.removeAt(i);
         }
       }
       return undefined;
@@ -1424,8 +1406,6 @@
      * @api
      */
     Collection.prototype.setAt = function setAt (index, elem) {
-      var this$1 = this;
-
       var n = this.getLength();
       if (index < n) {
         if (this.unique_) {
@@ -1439,7 +1419,7 @@
           new CollectionEvent(CollectionEventType.ADD, elem));
       } else {
         for (var j = n; j < index; ++j) {
-          this$1.insertAt(j, undefined);
+          this.insertAt(j, undefined);
         }
         this.insertAt(index, elem);
       }
@@ -1458,10 +1438,8 @@
      * @param {number=} opt_except Optional index to ignore.
      */
     Collection.prototype.assertUnique_ = function assertUnique_ (elem, opt_except) {
-      var this$1 = this;
-
       for (var i = 0, ii = this.array_.length; i < ii; ++i) {
-        if (this$1.array_[i] === elem && i !== opt_except) {
+        if (this.array_[i] === elem && i !== opt_except) {
           throw new AssertionError(58);
         }
       }
@@ -3244,7 +3222,7 @@
    * @classdesc
    * Projection object for web/spherical Mercator (EPSG:3857).
    */
-  var EPSG3857Projection = (function (Projection$$1) {
+  var EPSG3857Projection = /*@__PURE__*/(function (Projection$$1) {
     function EPSG3857Projection(code) {
       Projection$$1.call(this, {
         code: code,
@@ -3386,7 +3364,7 @@
    * The EPSG registry defines 4326 as a CRS for Latitude,Longitude (y,x).
    * OpenLayers treats EPSG:4326 as a pseudo-projection, with x,y coordinates.
    */
-  var EPSG4326Projection = (function (Projection$$1) {
+  var EPSG4326Projection = /*@__PURE__*/(function (Projection$$1) {
     function EPSG4326Projection(code, opt_axisOrientation) {
       Projection$$1.call(this, {
         code: code,
@@ -4223,7 +4201,7 @@
    * @abstract
    * @api
    */
-  var Geometry = (function (BaseObject$$1) {
+  var Geometry = /*@__PURE__*/(function (BaseObject$$1) {
     function Geometry() {
 
       BaseObject$$1.call(this);
@@ -5351,7 +5329,7 @@
    * @fires import("../events/Event.js").Event
    * @template T
    */
-  var LRUCache = (function (EventTarget) {
+  var LRUCache = /*@__PURE__*/(function (EventTarget) {
     function LRUCache(opt_highWaterMark) {
 
       EventTarget.call(this);
@@ -5430,11 +5408,9 @@
      * @template S
      */
     LRUCache.prototype.forEach = function forEach (f, opt_this) {
-      var this$1 = this;
-
       var entry = this.oldest_;
       while (entry) {
-        f.call(opt_this, entry.value_, entry.key_, this$1);
+        f.call(opt_this, entry.value_, entry.key_, this);
         entry = entry.newer;
       }
     };
@@ -5620,10 +5596,8 @@
      * Prune the cache.
      */
     LRUCache.prototype.prune = function prune () {
-      var this$1 = this;
-
       while (this.canExpireCache()) {
-        this$1.pop();
+        this.pop();
       }
     };
 
@@ -6281,7 +6255,7 @@
    * `radius2` are provided.
    * @api
    */
-  var RegularShape = (function (ImageStyle$$1) {
+  var RegularShape = /*@__PURE__*/(function (ImageStyle$$1) {
     function RegularShape(options) {
       /**
        * @type {boolean}
@@ -6662,8 +6636,6 @@
      * @param {number} y The origin for the symbol (y).
      */
     RegularShape.prototype.draw_ = function draw_ (renderOptions, context, x, y) {
-      var this$1 = this;
-
       var i, angle0, radiusC;
       // reset transform
       context.setTransform(1, 0, 0, 1, 0, 0);
@@ -6685,8 +6657,8 @@
           points = 2 * points;
         }
         for (i = 0; i <= points; i++) {
-          angle0 = i * 2 * Math.PI / points - Math.PI / 2 + this$1.angle_;
-          radiusC = i % 2 === 0 ? this$1.radius_ : radius2;
+          angle0 = i * 2 * Math.PI / points - Math.PI / 2 + this.angle_;
+          radiusC = i % 2 === 0 ? this.radius_ : radius2;
           context.lineTo(renderOptions.size / 2 + radiusC * Math.cos(angle0),
             renderOptions.size / 2 + radiusC * Math.sin(angle0));
         }
@@ -6743,8 +6715,6 @@
      * @param {number} y The origin for the symbol (y).
      */
     RegularShape.prototype.drawHitDetectionCanvas_ = function drawHitDetectionCanvas_ (renderOptions, context, x, y) {
-      var this$1 = this;
-
       // reset transform
       context.setTransform(1, 0, 0, 1, 0, 0);
 
@@ -6766,8 +6736,8 @@
         }
         var i, radiusC, angle0;
         for (i = 0; i <= points; i++) {
-          angle0 = i * 2 * Math.PI / points - Math.PI / 2 + this$1.angle_;
-          radiusC = i % 2 === 0 ? this$1.radius_ : radius2;
+          angle0 = i * 2 * Math.PI / points - Math.PI / 2 + this.angle_;
+          radiusC = i % 2 === 0 ? this.radius_ : radius2;
           context.lineTo(renderOptions.size / 2 + radiusC * Math.cos(angle0),
             renderOptions.size / 2 + radiusC * Math.sin(angle0));
         }
@@ -6841,7 +6811,7 @@
    * Set circle style for vector features.
    * @api
    */
-  var CircleStyle = (function (RegularShape$$1) {
+  var CircleStyle = /*@__PURE__*/(function (RegularShape$$1) {
     function CircleStyle(opt_options) {
 
       var options = opt_options || /** @type {Options} */ ({});
@@ -7755,7 +7725,7 @@
    *
    * @api
    */
-  var Feature = (function (BaseObject$$1) {
+  var Feature = /*@__PURE__*/(function (BaseObject$$1) {
     function Feature(opt_geometryOrProperties) {
 
       BaseObject$$1.call(this);
@@ -8300,7 +8270,7 @@
    * @abstract
    * @api
    */
-  var SimpleGeometry = (function (Geometry$$1) {
+  var SimpleGeometry = /*@__PURE__*/(function (Geometry$$1) {
     function SimpleGeometry() {
 
       Geometry$$1.call(this);
@@ -8456,8 +8426,6 @@
      * @protected
      */
     SimpleGeometry.prototype.setLayout = function setLayout (layout, coordinates, nesting) {
-      var this$1 = this;
-
       /** @type {number} */
       var stride;
       if (layout) {
@@ -8465,8 +8433,8 @@
       } else {
         for (var i = 0; i < nesting; ++i) {
           if (coordinates.length === 0) {
-            this$1.layout = GeometryLayout.XY;
-            this$1.stride = 2;
+            this.layout = GeometryLayout.XY;
+            this.stride = 2;
             return;
           } else {
             coordinates = /** @type {Array} */ (coordinates[0]);
@@ -9442,7 +9410,7 @@
    *
    * @api
    */
-  var LinearRing = (function (SimpleGeometry$$1) {
+  var LinearRing = /*@__PURE__*/(function (SimpleGeometry$$1) {
     function LinearRing(coordinates, opt_layout) {
 
       SimpleGeometry$$1.call(this);
@@ -9572,7 +9540,7 @@
    *
    * @api
    */
-  var Point = (function (SimpleGeometry$$1) {
+  var Point = /*@__PURE__*/(function (SimpleGeometry$$1) {
     function Point(coordinates, opt_layout) {
       SimpleGeometry$$1.call(this);
       this.setCoordinates(coordinates, opt_layout);
@@ -10210,7 +10178,7 @@
    *
    * @api
    */
-  var Polygon = (function (SimpleGeometry$$1) {
+  var Polygon = /*@__PURE__*/(function (SimpleGeometry$$1) {
     function Polygon(coordinates, opt_layout, opt_ends) {
 
       SimpleGeometry$$1.call(this);
@@ -10640,7 +10608,7 @@
    * @fires error
    * @api
    */
-  var Geolocation = (function (BaseObject$$1) {
+  var Geolocation = /*@__PURE__*/(function (BaseObject$$1) {
     function Geolocation(opt_options) {
 
       BaseObject$$1.call(this);
@@ -11605,7 +11573,7 @@
    *
    * @api
    */
-  var LineString = (function (SimpleGeometry$$1) {
+  var LineString = /*@__PURE__*/(function (SimpleGeometry$$1) {
     function LineString(coordinates, opt_layout) {
 
       SimpleGeometry$$1.call(this);
@@ -12950,8 +12918,6 @@
    * @private
    */
   Graticule.prototype.createGraticule_ = function createGraticule_ (extent, center, resolution, squaredTolerance) {
-      var this$1 = this;
-
 
     var interval = this.getInterval_(resolution);
     if (interval == -1) {
@@ -12993,16 +12959,16 @@
 
     cnt = 0;
     while (lon != this.minLon_ && cnt++ < maxLines) {
-      lon = Math.max(lon - interval, this$1.minLon_);
-      idx = this$1.addMeridian_(lon, minLat, maxLat, squaredTolerance, extent, idx);
+      lon = Math.max(lon - interval, this.minLon_);
+      idx = this.addMeridian_(lon, minLat, maxLat, squaredTolerance, extent, idx);
     }
 
     lon = clamp(centerLon, this.minLon_, this.maxLon_);
 
     cnt = 0;
     while (lon != this.maxLon_ && cnt++ < maxLines) {
-      lon = Math.min(lon + interval, this$1.maxLon_);
-      idx = this$1.addMeridian_(lon, minLat, maxLat, squaredTolerance, extent, idx);
+      lon = Math.min(lon + interval, this.maxLon_);
+      idx = this.addMeridian_(lon, minLat, maxLat, squaredTolerance, extent, idx);
     }
 
     this.meridians_.length = idx;
@@ -13019,16 +12985,16 @@
 
     cnt = 0;
     while (lat != this.minLat_ && cnt++ < maxLines) {
-      lat = Math.max(lat - interval, this$1.minLat_);
-      idx = this$1.addParallel_(lat, minLon, maxLon, squaredTolerance, extent, idx);
+      lat = Math.max(lat - interval, this.minLat_);
+      idx = this.addParallel_(lat, minLon, maxLon, squaredTolerance, extent, idx);
     }
 
     lat = clamp(centerLat, this.minLat_, this.maxLat_);
 
     cnt = 0;
     while (lat != this.maxLat_ && cnt++ < maxLines) {
-      lat = Math.min(lat + interval, this$1.maxLat_);
-      idx = this$1.addParallel_(lat, minLon, maxLon, squaredTolerance, extent, idx);
+      lat = Math.min(lat + interval, this.maxLat_);
+      idx = this.addParallel_(lat, minLon, maxLon, squaredTolerance, extent, idx);
     }
 
     this.parallels_.length = idx;
@@ -13044,8 +13010,6 @@
    * @private
    */
   Graticule.prototype.getInterval_ = function getInterval_ (resolution) {
-      var this$1 = this;
-
     var centerLon = this.projectionCenterLonLat_[0];
     var centerLat = this.projectionCenterLonLat_[1];
     var interval = -1;
@@ -13060,8 +13024,8 @@
       p1[1] = centerLat - delta;
       p2[0] = centerLon + delta;
       p2[1] = centerLat + delta;
-      this$1.fromLonLatTransform_(p1, p1);
-      this$1.fromLonLatTransform_(p2, p2);
+      this.fromLonLatTransform_(p1, p1);
+      this.fromLonLatTransform_(p2, p2);
       var dist = Math.pow(p2[0] - p1[0], 2) + Math.pow(p2[1] - p1[1], 2);
       if (dist <= target) {
         break;
@@ -13145,8 +13109,6 @@
    * @private
    */
   Graticule.prototype.handlePostCompose_ = function handlePostCompose_ (e) {
-      var this$1 = this;
-
     var vectorContext = e.vectorContext;
     var frameState = e.frameState;
     var extent = frameState.extent;
@@ -13171,27 +13133,27 @@
     vectorContext.setFillStrokeStyle(null, this.strokeStyle_);
     var i, l, line;
     for (i = 0, l = this.meridians_.length; i < l; ++i) {
-      line = this$1.meridians_[i];
+      line = this.meridians_[i];
       vectorContext.drawGeometry(line);
     }
     for (i = 0, l = this.parallels_.length; i < l; ++i) {
-      line = this$1.parallels_[i];
+      line = this.parallels_[i];
       vectorContext.drawGeometry(line);
     }
     var labelData;
     if (this.meridiansLabels_) {
       for (i = 0, l = this.meridiansLabels_.length; i < l; ++i) {
-        labelData = this$1.meridiansLabels_[i];
-        this$1.lonLabelStyle_.setText(labelData.text);
-        vectorContext.setTextStyle(this$1.lonLabelStyle_);
+        labelData = this.meridiansLabels_[i];
+        this.lonLabelStyle_.setText(labelData.text);
+        vectorContext.setTextStyle(this.lonLabelStyle_);
         vectorContext.drawGeometry(labelData.geom);
       }
     }
     if (this.parallelsLabels_) {
       for (i = 0, l = this.parallelsLabels_.length; i < l; ++i) {
-        labelData = this$1.parallelsLabels_[i];
-        this$1.latLabelStyle_.setText(labelData.text);
-        vectorContext.setTextStyle(this$1.latLabelStyle_);
+        labelData = this.parallelsLabels_[i];
+        this.latLabelStyle_.setText(labelData.text);
+        vectorContext.setTextStyle(this.latLabelStyle_);
         vectorContext.drawGeometry(labelData.geom);
       }
     }
@@ -13252,7 +13214,7 @@
   /**
    * @abstract
    */
-  var ImageBase = (function (EventTarget) {
+  var ImageBase = /*@__PURE__*/(function (EventTarget) {
     function ImageBase(extent, resolution, pixelRatio, state) {
 
       EventTarget.call(this);
@@ -13361,7 +13323,7 @@
    */
 
 
-  var ImageWrapper = (function (ImageBase$$1) {
+  var ImageWrapper = /*@__PURE__*/(function (ImageBase$$1) {
     function ImageWrapper(extent, resolution, pixelRatio, src, crossOrigin, imageLoadFunction) {
 
       ImageBase$$1.call(this, extent, resolution, pixelRatio, ImageState.IDLE);
@@ -13494,7 +13456,7 @@
    */
 
 
-  var ImageCanvas = (function (ImageBase$$1) {
+  var ImageCanvas = /*@__PURE__*/(function (ImageBase$$1) {
     function ImageCanvas(extent, resolution, pixelRatio, canvas, opt_loader) {
 
       var state = opt_loader !== undefined ? ImageState.IDLE : ImageState.LOADED;
@@ -13728,7 +13690,7 @@
    *
    * @abstract
    */
-  var Tile = (function (EventTarget) {
+  var Tile = /*@__PURE__*/(function (EventTarget) {
     function Tile(tileCoord, state, opt_options) {
       EventTarget.call(this);
 
@@ -13957,7 +13919,7 @@
    * @api
    */
 
-  var ImageTile = (function (Tile$$1) {
+  var ImageTile = /*@__PURE__*/(function (Tile$$1) {
     function ImageTile(tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options) {
 
       Tile$$1.call(this, tileCoord, state, opt_options);
@@ -14255,7 +14217,7 @@
    * Events emitted as map events are instances of this type.
    * See {@link module:ol/PluggableMap~PluggableMap} for which events trigger a map event.
    */
-  var MapEvent = (function (Event$$1) {
+  var MapEvent = /*@__PURE__*/(function (Event$$1) {
     function MapEvent(type, map, opt_frameState) {
 
       Event$$1.call(this, type);
@@ -14292,7 +14254,7 @@
    * Events emitted as map browser events are instances of this type.
    * See {@link module:ol/PluggableMap~PluggableMap} for which events trigger a map browser event.
    */
-  var MapBrowserEvent = (function (MapEvent$$1) {
+  var MapBrowserEvent = /*@__PURE__*/(function (MapEvent$$1) {
     function MapBrowserEvent(type, map, browserEvent, opt_dragging, opt_frameState) {
 
       MapEvent$$1.call(this, type, map, opt_frameState);
@@ -14419,7 +14381,7 @@
    * @module ol/MapBrowserPointerEvent
    */
 
-  var MapBrowserPointerEvent = (function (MapBrowserEvent$$1) {
+  var MapBrowserPointerEvent = /*@__PURE__*/(function (MapBrowserEvent$$1) {
     function MapBrowserPointerEvent(type, map, pointerEvent, opt_dragging, opt_frameState) {
 
       MapBrowserEvent$$1.call(this, type, map, pointerEvent.originalEvent, opt_dragging, opt_frameState);
@@ -14595,7 +14557,7 @@
   }
 
 
-  var MouseSource = (function (EventSource$$1) {
+  var MouseSource = /*@__PURE__*/(function (EventSource$$1) {
     function MouseSource(dispatcher) {
       var mapping = {
         'mousedown': mousedown,
@@ -14817,7 +14779,7 @@
     this.dispatcher.dispatchEvent(e);
   }
 
-  var MsSource = (function (EventSource$$1) {
+  var MsSource = /*@__PURE__*/(function (EventSource$$1) {
     function MsSource(dispatcher) {
       var mapping = {
         'MSPointerDown': msPointerDown,
@@ -14955,7 +14917,7 @@
     this.dispatcher.fireNativeEvent(inEvent);
   }
 
-  var NativeSource = (function (EventSource$$1) {
+  var NativeSource = /*@__PURE__*/(function (EventSource$$1) {
     function NativeSource(dispatcher) {
       var mapping = {
         'pointerdown': pointerDown,
@@ -14989,7 +14951,7 @@
   var HAS_BUTTONS = false;
 
 
-  var PointerEvent = (function (_Event) {
+  var PointerEvent = /*@__PURE__*/(function (_Event) {
     function PointerEvent(type, originalEvent, opt_eventDict) {
       _Event.call(this, type);
 
@@ -15278,7 +15240,7 @@
   }
 
 
-  var TouchSource = (function (EventSource$$1) {
+  var TouchSource = /*@__PURE__*/(function (EventSource$$1) {
     function TouchSource(dispatcher, mouseSource) {
       var mapping = {
         'touchstart': touchstart,
@@ -15431,18 +15393,16 @@
      * @param {function(TouchEvent, PointerEvent)} inFunction In function.
      */
     TouchSource.prototype.processTouches_ = function processTouches_ (inEvent, inFunction) {
-      var this$1 = this;
-
       var touches = Array.prototype.slice.call(inEvent.changedTouches);
       var count = touches.length;
       function preventDefault() {
         inEvent.preventDefault();
       }
       for (var i = 0; i < count; ++i) {
-        var pointer = this$1.touchToPointer_(inEvent, touches[i]);
+        var pointer = this.touchToPointer_(inEvent, touches[i]);
         // forward touch preventDefaults
         pointer.preventDefault = preventDefault;
-        inFunction.call(this$1, inEvent, pointer);
+        inFunction.call(this, inEvent, pointer);
       }
     };
 
@@ -15475,8 +15435,6 @@
      * @param {TouchEvent} inEvent The in event.
      */
     TouchSource.prototype.vacuumTouches_ = function vacuumTouches_ (inEvent) {
-      var this$1 = this;
-
       var touchList = inEvent.touches;
       // pointerMap.getCount() should be < touchList.length here,
       // as the touchstart has not been processed yet.
@@ -15486,16 +15444,16 @@
         var d = [];
         for (var i = 0; i < count; ++i) {
           var key = keys[i];
-          var value = this$1.pointerMap[key];
+          var value = this.pointerMap[key];
           // Never remove pointerId == 1, which is mouse.
           // Touch identifiers are 2 smaller than their pointerId, which is the
           // index in pointermap.
-          if (key != /** @type {string} */ (POINTER_ID) && !this$1.findTouch_(touchList, key - 2)) {
+          if (key != /** @type {string} */ (POINTER_ID) && !this.findTouch_(touchList, key - 2)) {
             d.push(value.out);
           }
         }
         for (var i$1 = 0; i$1 < d.length; ++i$1) {
-          this$1.cancelOut_(inEvent, d[i$1]);
+          this.cancelOut_(inEvent, d[i$1]);
         }
       }
     };
@@ -15653,7 +15611,7 @@
   ];
 
 
-  var PointerEventHandler = (function (EventTarget) {
+  var PointerEventHandler = /*@__PURE__*/(function (EventTarget) {
     function PointerEventHandler(element) {
       EventTarget.call(this);
 
@@ -15738,12 +15696,10 @@
      * @private
      */
     PointerEventHandler.prototype.register_ = function register_ () {
-      var this$1 = this;
-
       var l = this.eventSourceList_.length;
       for (var i = 0; i < l; i++) {
-        var eventSource = this$1.eventSourceList_[i];
-        this$1.addEvents_(eventSource.getEvents());
+        var eventSource = this.eventSourceList_[i];
+        this.addEvents_(eventSource.getEvents());
       }
     };
 
@@ -15752,12 +15708,10 @@
      * @private
      */
     PointerEventHandler.prototype.unregister_ = function unregister_ () {
-      var this$1 = this;
-
       var l = this.eventSourceList_.length;
       for (var i = 0; i < l; i++) {
-        var eventSource = this$1.eventSourceList_[i];
-        this$1.removeEvents_(eventSource.getEvents());
+        var eventSource = this.eventSourceList_[i];
+        this.removeEvents_(eventSource.getEvents());
       }
     };
 
@@ -15995,7 +15949,7 @@
    * @module ol/MapBrowserEventHandler
    */
 
-  var MapBrowserEventHandler = (function (EventTarget) {
+  var MapBrowserEventHandler = /*@__PURE__*/(function (EventTarget) {
     function MapBrowserEventHandler(map, moveTolerance) {
 
       EventTarget.call(this);
@@ -16509,11 +16463,9 @@
    * @private
    */
   PriorityQueue.prototype.heapify_ = function heapify_ () {
-      var this$1 = this;
-
     var i;
     for (i = (this.elements_.length >> 1) - 1; i >= 0; i--) {
-      this$1.siftUp_(i);
+      this.siftUp_(i);
     }
   };
 
@@ -16549,8 +16501,6 @@
    * @private
    */
   PriorityQueue.prototype.siftUp_ = function siftUp_ (index) {
-      var this$1 = this;
-
     var elements = this.elements_;
     var priorities = this.priorities_;
     var count = elements.length;
@@ -16559,8 +16509,8 @@
     var startIndex = index;
 
     while (index < (count >> 1)) {
-      var lIndex = this$1.getLeftChildIndex_(index);
-      var rIndex = this$1.getRightChildIndex_(index);
+      var lIndex = this.getLeftChildIndex_(index);
+      var rIndex = this.getRightChildIndex_(index);
 
       var smallerChildIndex = rIndex < count &&
           priorities[rIndex] < priorities[lIndex] ?
@@ -16583,15 +16533,13 @@
    * @private
    */
   PriorityQueue.prototype.siftDown_ = function siftDown_ (startIndex, index) {
-      var this$1 = this;
-
     var elements = this.elements_;
     var priorities = this.priorities_;
     var element = elements[index];
     var priority = priorities[index];
 
     while (index > startIndex) {
-      var parentIndex = this$1.getParentIndex_(index);
+      var parentIndex = this.getParentIndex_(index);
       if (priorities[parentIndex] > priority) {
         elements[index] = elements[parentIndex];
         priorities[index] = priorities[parentIndex];
@@ -16609,8 +16557,6 @@
    * FIXME empty description for jsdoc
    */
   PriorityQueue.prototype.reprioritize = function reprioritize () {
-      var this$1 = this;
-
     var priorityFunction = this.priorityFunction_;
     var elements = this.elements_;
     var priorities = this.priorities_;
@@ -16621,7 +16567,7 @@
       element = elements[i];
       priority = priorityFunction(element);
       if (priority == DROP) {
-        delete this$1.queuedElements_[this$1.keyFunction_(element)];
+        delete this.queuedElements_[this.keyFunction_(element)];
       } else {
         priorities[index] = priority;
         elements[index++] = element;
@@ -16642,7 +16588,7 @@
    */
 
 
-  var TileQueue = (function (PriorityQueue$$1) {
+  var TileQueue = /*@__PURE__*/(function (PriorityQueue$$1) {
     function TileQueue(tilePriorityFunction, tileChangeCallback) {
 
       PriorityQueue$$1.call(
@@ -16728,21 +16674,19 @@
      * @param {number} maxNewLoads Maximum number of new tiles to load.
      */
     TileQueue.prototype.loadMoreTiles = function loadMoreTiles (maxTotalLoading, maxNewLoads) {
-      var this$1 = this;
-
       var newLoads = 0;
       var abortedTiles = false;
       var state, tile, tileKey;
       while (this.tilesLoading_ < maxTotalLoading && newLoads < maxNewLoads &&
              this.getCount() > 0) {
-        tile = /** @type {import("./Tile.js").default} */ (this$1.dequeue()[0]);
+        tile = /** @type {import("./Tile.js").default} */ (this.dequeue()[0]);
         tileKey = tile.getKey();
         state = tile.getState();
         if (state === TileState.ABORT) {
           abortedTiles = true;
-        } else if (state === TileState.IDLE && !(tileKey in this$1.tilesLoadingKeys_)) {
-          this$1.tilesLoadingKeys_[tileKey] = true;
-          ++this$1.tilesLoading_;
+        } else if (state === TileState.IDLE && !(tileKey in this.tilesLoadingKeys_)) {
+          this.tilesLoadingKeys_[tileKey] = true;
+          ++this.tilesLoading_;
           ++newLoads;
           tile.load();
         }
@@ -17204,7 +17148,7 @@
    *
     * @api
    */
-  var View = (function (BaseObject$$1) {
+  var View = /*@__PURE__*/(function (BaseObject$$1) {
     function View(opt_options) {
       BaseObject$$1.call(this);
 
@@ -17388,7 +17332,6 @@
      */
     View.prototype.animate = function animate (var_args) {
       var arguments$1 = arguments;
-      var this$1 = this;
 
       var animationCount = arguments.length;
       var callback;
@@ -17437,8 +17380,8 @@
 
         if (options.zoom !== undefined) {
           animation.sourceResolution = resolution;
-          animation.targetResolution = this$1.constrainResolution(
-            this$1.maxResolution_, options.zoom - this$1.minZoom_, 0);
+          animation.targetResolution = this.constrainResolution(
+            this.maxResolution_, options.zoom - this.minZoom_, 0);
           resolution = animation.targetResolution;
         } else if (options.resolution) {
           animation.sourceResolution = resolution;
@@ -17492,11 +17435,9 @@
      * @api
      */
     View.prototype.cancelAnimations = function cancelAnimations () {
-      var this$1 = this;
-
       this.setHint(ViewHint.ANIMATING, -this.hints_[ViewHint.ANIMATING]);
       for (var i = 0, ii = this.animations_.length; i < ii; ++i) {
-        var series = this$1.animations_[i];
+        var series = this.animations_[i];
         if (series[0].callback) {
           animationCallback(series[0].callback, false);
         }
@@ -17508,8 +17449,6 @@
      * Update all animations.
      */
     View.prototype.updateAnimations_ = function updateAnimations_ () {
-      var this$1 = this;
-
       if (this.updateAnimationKey_ !== undefined) {
         cancelAnimationFrame(this.updateAnimationKey_);
         this.updateAnimationKey_ = undefined;
@@ -17520,7 +17459,7 @@
       var now = Date.now();
       var more = false;
       for (var i = this.animations_.length - 1; i >= 0; --i) {
-        var series = this$1.animations_[i];
+        var series = this.animations_[i];
         var seriesComplete = true;
         for (var j = 0, jj = series.length; j < jj; ++j) {
           var animation = series[j];
@@ -17543,27 +17482,27 @@
             var y1 = animation.targetCenter[1];
             var x = x0 + progress * (x1 - x0);
             var y = y0 + progress * (y1 - y0);
-            this$1.set(ViewProperty.CENTER, [x, y]);
+            this.set(ViewProperty.CENTER, [x, y]);
           }
           if (animation.sourceResolution && animation.targetResolution) {
             var resolution = progress === 1 ?
               animation.targetResolution :
               animation.sourceResolution + progress * (animation.targetResolution - animation.sourceResolution);
             if (animation.anchor) {
-              this$1.set(ViewProperty.CENTER,
-                this$1.calculateCenterZoom(resolution, animation.anchor));
+              this.set(ViewProperty.CENTER,
+                this.calculateCenterZoom(resolution, animation.anchor));
             }
-            this$1.set(ViewProperty.RESOLUTION, resolution);
+            this.set(ViewProperty.RESOLUTION, resolution);
           }
           if (animation.sourceRotation !== undefined && animation.targetRotation !== undefined) {
             var rotation = progress === 1 ?
               modulo(animation.targetRotation + Math.PI, 2 * Math.PI) - Math.PI :
               animation.sourceRotation + progress * (animation.targetRotation - animation.sourceRotation);
             if (animation.anchor) {
-              this$1.set(ViewProperty.CENTER,
-                this$1.calculateCenterRotate(rotation, animation.anchor));
+              this.set(ViewProperty.CENTER,
+                this.calculateCenterRotate(rotation, animation.anchor));
             }
-            this$1.set(ViewProperty.ROTATION, rotation);
+            this.set(ViewProperty.ROTATION, rotation);
           }
           more = true;
           if (!animation.complete) {
@@ -17571,8 +17510,8 @@
           }
         }
         if (seriesComplete) {
-          this$1.animations_[i] = null;
-          this$1.setHint(ViewHint.ANIMATING, -1);
+          this.animations_[i] = null;
+          this.setHint(ViewHint.ANIMATING, -1);
           var callback = series[0].callback;
           if (callback) {
             animationCallback(callback, true);
@@ -18368,7 +18307,7 @@
    *
    * @api
    */
-  var BaseLayer = (function (BaseObject$$1) {
+  var BaseLayer = /*@__PURE__*/(function (BaseObject$$1) {
     function BaseLayer(options) {
 
       BaseObject$$1.call(this);
@@ -18640,7 +18579,7 @@
    *
    * @api
    */
-  var LayerGroup = (function (BaseLayer$$1) {
+  var LayerGroup = /*@__PURE__*/(function (BaseLayer$$1) {
     function LayerGroup(opt_options) {
 
       var options = opt_options || {};
@@ -18699,8 +18638,6 @@
      * @private
      */
     LayerGroup.prototype.handleLayersChanged_ = function handleLayersChanged_ () {
-      var this$1 = this;
-
       this.layersListenerKeys_.forEach(unlistenByKey);
       this.layersListenerKeys_.length = 0;
 
@@ -18710,17 +18647,17 @@
         listen(layers, CollectionEventType.REMOVE, this.handleLayersRemove_, this)
       );
 
-      for (var id in this$1.listenerKeys_) {
-        this$1.listenerKeys_[id].forEach(unlistenByKey);
+      for (var id in this.listenerKeys_) {
+        this.listenerKeys_[id].forEach(unlistenByKey);
       }
       clear(this.listenerKeys_);
 
       var layersArray = layers.getArray();
       for (var i = 0, ii = layersArray.length; i < ii; i++) {
         var layer = layersArray[i];
-        this$1.listenerKeys_[getUid(layer).toString()] = [
-          listen(layer, ObjectEventType.PROPERTYCHANGE, this$1.handleLayerChange_, this$1),
-          listen(layer, EventType.CHANGE, this$1.handleLayerChange_, this$1)
+        this.listenerKeys_[getUid(layer).toString()] = [
+          listen(layer, ObjectEventType.PROPERTYCHANGE, this.handleLayerChange_, this),
+          listen(layer, EventType.CHANGE, this.handleLayerChange_, this)
         ];
       }
 
@@ -19025,10 +18962,8 @@
    * @fires module:ol/render/Event~RenderEvent#rendercomplete
    * @api
    */
-  var PluggableMap = (function (BaseObject$$1) {
+  var PluggableMap = /*@__PURE__*/(function (BaseObject$$1) {
     function PluggableMap(options) {
-      var this$1 = this;
-
 
       BaseObject$$1.call(this);
 
@@ -19165,7 +19100,7 @@
         EventType.WHEEL
       ];
       for (var i = 0, ii = overlayEvents.length; i < ii; ++i) {
-        listen(this$1.overlayContainerStopEvent_, overlayEvents[i], stopPropagation);
+        listen(this.overlayContainerStopEvent_, overlayEvents[i], stopPropagation);
       }
       this.viewport_.appendChild(this.overlayContainerStopEvent_);
 
@@ -19175,8 +19110,8 @@
        */
       this.mapBrowserEventHandler_ = new MapBrowserEventHandler(this, options.moveTolerance);
       for (var key in MapBrowserEventType) {
-        listen(this$1.mapBrowserEventHandler_, MapBrowserEventType[key],
-          this$1.handleMapBrowserEvent, this$1);
+        listen(this.mapBrowserEventHandler_, MapBrowserEventType[key],
+          this.handleMapBrowserEvent, this);
       }
 
       /**
@@ -19819,8 +19754,6 @@
      * @protected
      */
     PluggableMap.prototype.handlePostRender = function handlePostRender () {
-      var this$1 = this;
-
 
       var frameState = this.frameState_;
 
@@ -19860,7 +19793,7 @@
 
       var postRenderFunctions = this.postRenderFunctions_;
       for (var i = 0, ii = postRenderFunctions.length; i < ii; ++i) {
-        postRenderFunctions[i](this$1, frameState);
+        postRenderFunctions[i](this, frameState);
       }
       postRenderFunctions.length = 0;
     };
@@ -19876,8 +19809,6 @@
      * @private
      */
     PluggableMap.prototype.handleTargetChanged_ = function handleTargetChanged_ () {
-      var this$1 = this;
-
       // target may be undefined, null, a string or an Element.
       // If it's a string we convert it to an Element before proceeding.
       // If it's not now an Element we remove the viewport from the DOM.
@@ -19890,7 +19821,7 @@
 
       if (this.keyHandlerKeys_) {
         for (var i = 0, ii = this.keyHandlerKeys_.length; i < ii; ++i) {
-          unlistenByKey(this$1.keyHandlerKeys_[i]);
+          unlistenByKey(this.keyHandlerKeys_[i]);
         }
         this.keyHandlerKeys_ = null;
       }
@@ -20367,7 +20298,7 @@
    *
    * @api
    */
-  var Control = (function (BaseObject$$1) {
+  var Control = /*@__PURE__*/(function (BaseObject$$1) {
     function Control(options) {
 
       BaseObject$$1.call(this);
@@ -20436,13 +20367,11 @@
      * @api
      */
     Control.prototype.setMap = function setMap (map) {
-      var this$1 = this;
-
       if (this.map_) {
         removeNode(this.element);
       }
       for (var i = 0, ii = this.listenerKeys.length; i < ii; ++i) {
-        unlistenByKey(this$1.listenerKeys[i]);
+        unlistenByKey(this.listenerKeys[i]);
       }
       this.listenerKeys.length = 0;
       this.map_ = map;
@@ -20532,7 +20461,7 @@
    *
    * @fires import("../render/Event.js").RenderEvent
    */
-  var Layer = (function (BaseLayer$$1) {
+  var Layer = /*@__PURE__*/(function (BaseLayer$$1) {
     function Layer(options) {
 
       var baseOptions = assign({}, options);
@@ -20740,7 +20669,7 @@
    *
    * @api
    */
-  var Attribution = (function (Control$$1) {
+  var Attribution = /*@__PURE__*/(function (Control$$1) {
     function Attribution(opt_options) {
 
       var options = opt_options ? opt_options : {};
@@ -20905,8 +20834,6 @@
      * @param {?import("../PluggableMap.js").FrameState} frameState Frame state.
      */
     Attribution.prototype.updateElement_ = function updateElement_ (frameState) {
-      var this$1 = this;
-
       if (!frameState) {
         if (this.renderedVisible_) {
           this.element.style.display = 'none';
@@ -20933,7 +20860,7 @@
       for (var i = 0, ii = attributions.length; i < ii; ++i) {
         var element = document.createElement('li');
         element.innerHTML = attributions[i];
-        this$1.ulElement_.appendChild(element);
+        this.ulElement_.appendChild(element);
       }
 
       this.renderedAttributions_ = attributions;
@@ -21054,7 +20981,7 @@
    *
    * @api
    */
-  var Rotate = (function (Control$$1) {
+  var Rotate = /*@__PURE__*/(function (Control$$1) {
     function Rotate(opt_options) {
 
       var options = opt_options ? opt_options : {};
@@ -21228,7 +21155,7 @@
    *
    * @api
    */
-  var Zoom = (function (Control$$1) {
+  var Zoom = /*@__PURE__*/(function (Control$$1) {
     function Zoom(opt_options) {
 
       var options = opt_options ? opt_options : {};
@@ -21433,7 +21360,7 @@
    * vectors and so are visible on the screen.
    * @api
    */
-  var Interaction = (function (BaseObject$$1) {
+  var Interaction = /*@__PURE__*/(function (BaseObject$$1) {
     function Interaction(options) {
       BaseObject$$1.call(this);
 
@@ -21661,7 +21588,7 @@
    * Allows the user to zoom by double-clicking on the map.
    * @api
    */
-  var DoubleClickZoom = (function (Interaction$$1) {
+  var DoubleClickZoom = /*@__PURE__*/(function (Interaction$$1) {
     function DoubleClickZoom(opt_options) {
       Interaction$$1.call(this, {
         handleEvent: handleEvent
@@ -22029,7 +21956,7 @@
    * user function is called and returns `false`.
    * @api
    */
-  var PointerInteraction = (function (Interaction$$1) {
+  var PointerInteraction = /*@__PURE__*/(function (Interaction$$1) {
     function PointerInteraction(opt_options) {
 
       var options = opt_options ? opt_options : {};
@@ -22218,7 +22145,7 @@
    * Allows the user to pan the map by dragging the map.
    * @api
    */
-  var DragPan = (function (PointerInteraction$$1) {
+  var DragPan = /*@__PURE__*/(function (PointerInteraction$$1) {
     function DragPan(opt_options) {
 
       PointerInteraction$$1.call(this, {
@@ -22401,7 +22328,7 @@
    * This interaction is only supported for mouse devices.
    * @api
    */
-  var DragRotate = (function (PointerInteraction$$1) {
+  var DragRotate = /*@__PURE__*/(function (PointerInteraction$$1) {
     function DragRotate(opt_options) {
 
       var options = opt_options ? opt_options : {};
@@ -22511,7 +22438,7 @@
    * @module ol/render/Box
    */
 
-  var RenderBox = (function (Disposable$$1) {
+  var RenderBox = /*@__PURE__*/(function (Disposable$$1) {
     function RenderBox(className) {
       Disposable$$1.call(this);
 
@@ -22693,7 +22620,7 @@
    * Events emitted by {@link module:ol/interaction/DragBox~DragBox} instances are instances of
    * this type.
    */
-  var DragBoxEvent = (function (Event$$1) {
+  var DragBoxEvent = /*@__PURE__*/(function (Event$$1) {
     function DragBoxEvent(type, coordinate, mapBrowserEvent) {
       Event$$1.call(this, type);
 
@@ -22736,7 +22663,7 @@
    * @fires DragBoxEvent
    * @api
    */
-  var DragBox = (function (PointerInteraction$$1) {
+  var DragBox = /*@__PURE__*/(function (PointerInteraction$$1) {
     function DragBox(opt_options) {
 
       PointerInteraction$$1.call(this, {
@@ -22908,7 +22835,7 @@
    * your custom one configured with `className`.
    * @api
    */
-  var DragZoom = (function (DragBox$$1) {
+  var DragZoom = /*@__PURE__*/(function (DragBox$$1) {
     function DragZoom(opt_options) {
       var options = opt_options ? opt_options : {};
 
@@ -23021,7 +22948,7 @@
    * See also {@link module:ol/interaction/KeyboardZoom~KeyboardZoom}.
    * @api
    */
-  var KeyboardPan = (function (Interaction$$1) {
+  var KeyboardPan = /*@__PURE__*/(function (Interaction$$1) {
     function KeyboardPan(opt_options) {
 
       Interaction$$1.call(this, {
@@ -23140,7 +23067,7 @@
    * See also {@link moudle:ol/interaction/KeyboardPan~KeyboardPan}.
    * @api
    */
-  var KeyboardZoom = (function (Interaction$$1) {
+  var KeyboardZoom = /*@__PURE__*/(function (Interaction$$1) {
     function KeyboardZoom(opt_options) {
 
       Interaction$$1.call(this, {
@@ -23247,7 +23174,7 @@
    * Allows the user to zoom the map by scrolling the mouse wheel.
    * @api
    */
-  var MouseWheelZoom = (function (Interaction$$1) {
+  var MouseWheelZoom = /*@__PURE__*/(function (Interaction$$1) {
     function MouseWheelZoom(opt_options) {
 
       Interaction$$1.call(this, {
@@ -23535,7 +23462,7 @@
    * on a touch screen.
    * @api
    */
-  var PinchRotate = (function (PointerInteraction$$1) {
+  var PinchRotate = /*@__PURE__*/(function (PointerInteraction$$1) {
     function PinchRotate(opt_options) {
 
       PointerInteraction$$1.call(this, {
@@ -23704,7 +23631,7 @@
    * on a touch screen.
    * @api
    */
-  var PinchZoom = (function (PointerInteraction$$1) {
+  var PinchZoom = /*@__PURE__*/(function (PointerInteraction$$1) {
     function PinchZoom(opt_options) {
 
       PointerInteraction$$1.call(this, {
@@ -23891,7 +23818,7 @@
    * Events emitted by {@link module:ol/interaction/DragAndDrop~DragAndDrop} instances are instances
    * of this type.
    */
-  var DragAndDropEvent = (function (Event$$1) {
+  var DragAndDropEvent = /*@__PURE__*/(function (Event$$1) {
     function DragAndDropEvent(type, file, opt_features, opt_projection) {
 
       Event$$1.call(this, type);
@@ -23934,7 +23861,7 @@
    *
    * @fires DragAndDropEvent
    */
-  var DragAndDrop = (function (Interaction$$1) {
+  var DragAndDrop = /*@__PURE__*/(function (Interaction$$1) {
     function DragAndDrop(opt_options) {
 
       var options = opt_options ? opt_options : {};
@@ -23987,8 +23914,6 @@
      * @private
      */
     DragAndDrop.prototype.handleResult_ = function handleResult_ (file, event) {
-      var this$1 = this;
-
       var result = event.target.result;
       var map = this.getMap();
       var projection = this.projection_;
@@ -24009,7 +23934,7 @@
          * @type {import("../format/Feature.js").default}
          */
         var format = new formatConstructor();
-        features = this$1.tryReadFeatures_(format, result, {
+        features = this.tryReadFeatures_(format, result, {
           featureProjection: projection
         });
         if (features && features.length > 0) {
@@ -24099,13 +24024,11 @@
    * @this {DragAndDrop}
    */
   function handleDrop(event) {
-    var this$1 = this;
-
     var files = event.dataTransfer.files;
     for (var i = 0, ii = files.length; i < ii; ++i) {
       var file = files.item(i);
       var reader = new FileReader();
-      reader.addEventListener(EventType.LOAD, this$1.handleResult_.bind(this$1, file));
+      reader.addEventListener(EventType.LOAD, this.handleResult_.bind(this, file));
       reader.readAsText(file);
     }
   }
@@ -24146,7 +24069,7 @@
    * And this interaction is not included in the default interactions.
    * @api
    */
-  var DragRotateAndZoom = (function (PointerInteraction$$1) {
+  var DragRotateAndZoom = /*@__PURE__*/(function (PointerInteraction$$1) {
     function DragRotateAndZoom(opt_options) {
 
       var options = opt_options ? opt_options : {};
@@ -24281,7 +24204,7 @@
    *
    * @api
    */
-  var Circle = (function (SimpleGeometry$$1) {
+  var Circle = /*@__PURE__*/(function (SimpleGeometry$$1) {
     function Circle(center, opt_radius, opt_layout) {
       SimpleGeometry$$1.call(this);
       if (opt_layout !== undefined && opt_radius === undefined) {
@@ -24514,7 +24437,7 @@
    *
    * @api
    */
-  var MultiLineString = (function (SimpleGeometry$$1) {
+  var MultiLineString = /*@__PURE__*/(function (SimpleGeometry$$1) {
     function MultiLineString(coordinates, opt_layout, opt_ends) {
 
       SimpleGeometry$$1.call(this);
@@ -24772,7 +24695,7 @@
    *
    * @api
    */
-  var MultiPoint = (function (SimpleGeometry$$1) {
+  var MultiPoint = /*@__PURE__*/(function (SimpleGeometry$$1) {
     function MultiPoint(coordinates, opt_layout) {
       SimpleGeometry$$1.call(this);
       if (opt_layout && !Array.isArray(coordinates[0])) {
@@ -24957,7 +24880,7 @@
    *
    * @api
    */
-  var MultiPolygon = (function (SimpleGeometry$$1) {
+  var MultiPolygon = /*@__PURE__*/(function (SimpleGeometry$$1) {
     function MultiPolygon(coordinates, opt_layout, opt_endss) {
 
       SimpleGeometry$$1.call(this);
@@ -25069,12 +24992,10 @@
      * @api
      */
     MultiPolygon.prototype.clone = function clone$$1 () {
-      var this$1 = this;
-
       var len = this.endss_.length;
       var newEndss = new Array(len);
       for (var i = 0; i < len; ++i) {
-        newEndss[i] = this$1.endss_[i].slice();
+        newEndss[i] = this.endss_[i].slice();
       }
 
       return new MultiPolygon(
@@ -25408,7 +25329,7 @@
    *
    * @api
    */
-  var VectorLayer = (function (Layer$$1) {
+  var VectorLayer = /*@__PURE__*/(function (Layer$$1) {
     function VectorLayer(opt_options) {
       var options = opt_options ?
         opt_options : /** @type {Options} */ ({});
@@ -25840,7 +25761,7 @@
    * A generic `change` event is triggered when the state of the source changes.
    * @api
    */
-  var Source = (function (BaseObject$$1) {
+  var Source = /*@__PURE__*/(function (BaseObject$$1) {
     function Source(options) {
 
       BaseObject$$1.call(this);
@@ -26124,8 +26045,6 @@
       },
 
       search: function (bbox) {
-          var this$1 = this;
-
 
           var node = this.data,
               result = [],
@@ -26144,7 +26063,7 @@
 
                   if (intersects$1(bbox, childBBox)) {
                       if (node.leaf) { result.push(child); }
-                      else if (contains(bbox, childBBox)) { this$1._all(child, result); }
+                      else if (contains(bbox, childBBox)) { this._all(child, result); }
                       else { nodesToSearch.push(child); }
                   }
               }
@@ -26182,13 +26101,11 @@
       },
 
       load: function (data) {
-          var this$1 = this;
-
           if (!(data && data.length)) { return this; }
 
           if (data.length < this._minEntries) {
               for (var i = 0, len = data.length; i < len; i++) {
-                  this$1.insert(data[i]);
+                  this.insert(data[i]);
               }
               return this;
           }
@@ -26230,8 +26147,6 @@
       },
 
       remove: function (item, equalsFn) {
-          var this$1 = this;
-
           if (!item) { return this; }
 
           var node = this.data,
@@ -26257,8 +26172,8 @@
                       // item found, remove the item and condense tree upwards
                       node.children.splice(index, 1);
                       path.push(node);
-                      this$1._condense(path);
-                      return this$1;
+                      this._condense(path);
+                      return this;
                   }
               }
 
@@ -26304,8 +26219,6 @@
       },
 
       _build: function (items, left, right, height) {
-          var this$1 = this;
-
 
           var N = right - left + 1,
               M = this._maxEntries,
@@ -26342,14 +26255,14 @@
 
               right2 = Math.min(i + N1 - 1, right);
 
-              multiSelect(items, i, right2, N2, this$1.compareMinY);
+              multiSelect(items, i, right2, N2, this.compareMinY);
 
               for (j = i; j <= right2; j += N2) {
 
                   right3 = Math.min(j + N2 - 1, right2);
 
                   // pack each entry recursively
-                  node.children.push(this$1._build(items, j, right3, height - 1));
+                  node.children.push(this._build(items, j, right3, height - 1));
               }
           }
 
@@ -26396,8 +26309,6 @@
       },
 
       _insert: function (item, level, isNode) {
-          var this$1 = this;
-
 
           var toBBox = this.toBBox,
               bbox = isNode ? item : toBBox(item),
@@ -26412,8 +26323,8 @@
 
           // split on node overflow; propagate upwards if necessary
           while (level >= 0) {
-              if (insertPath[level].children.length > this$1._maxEntries) {
-                  this$1._split(insertPath, level);
+              if (insertPath[level].children.length > this._maxEntries) {
+                  this._split(insertPath, level);
                   level--;
               } else { break; }
           }
@@ -26453,16 +26364,14 @@
       },
 
       _chooseSplitIndex: function (node, m, M) {
-          var this$1 = this;
-
 
           var i, bbox1, bbox2, overlap, area, minOverlap, minArea, index;
 
           minOverlap = minArea = Infinity;
 
           for (i = m; i <= M - m; i++) {
-              bbox1 = distBBox(node, 0, i, this$1.toBBox);
-              bbox2 = distBBox(node, i, M, this$1.toBBox);
+              bbox1 = distBBox(node, 0, i, this.toBBox);
+              bbox2 = distBBox(node, i, M, this.toBBox);
 
               overlap = intersectionArea(bbox1, bbox2);
               area = bboxArea(bbox1) + bboxArea(bbox2);
@@ -26533,8 +26442,6 @@
       },
 
       _condense: function (path) {
-          var this$1 = this;
-
           // go through the path, removing empty nodes and updating bboxes
           for (var i = path.length - 1, siblings; i >= 0; i--) {
               if (path[i].children.length === 0) {
@@ -26542,9 +26449,9 @@
                       siblings = path[i - 1].children;
                       siblings.splice(siblings.indexOf(path[i]), 1);
 
-                  } else { this$1.clear(); }
+                  } else { this.clear(); }
 
-              } else { calcBBox(path[i], this$1.toBBox); }
+              } else { calcBBox(path[i], this.toBBox); }
           }
       },
 
@@ -26737,8 +26644,6 @@
    * @param {Array<T>} values Values.
    */
   RBush.prototype.load = function load (extents, values) {
-      var this$1 = this;
-
     var items = new Array(values.length);
     for (var i = 0, l = values.length; i < l; i++) {
       var extent = extents[i];
@@ -26753,7 +26658,7 @@
         value: value
       };
       items[i] = item;
-      this$1.items_[getUid(value)] = item;
+      this.items_[getUid(value)] = item;
     }
     this.rbush_.load(items);
   };
@@ -26901,11 +26806,9 @@
    * @param {RBush} rbush R-Tree.
    */
   RBush.prototype.concat = function concat (rbush) {
-      var this$1 = this;
-
     this.rbush_.load(rbush.rbush_.all());
     for (var i in rbush.items_) {
-      this$1.items_[i] = rbush.items_[i];
+      this.items_[i] = rbush.items_[i];
     }
   };
 
@@ -26928,7 +26831,7 @@
    * Events emitted by {@link module:ol/source/Vector} instances are instances of this
    * type.
    */
-  var VectorSourceEvent = (function (Event$$1) {
+  var VectorSourceEvent = /*@__PURE__*/(function (Event$$1) {
     function VectorSourceEvent(type, opt_feature) {
 
       Event$$1.call(this, type);
@@ -27049,7 +26952,7 @@
    * @fires ol/source/Vector~VectorSourceEvent
    * @api
    */
-  var VectorSource = (function (Source$$1) {
+  var VectorSource = /*@__PURE__*/(function (Source$$1) {
     function VectorSource(opt_options) {
 
       var options = opt_options || {};
@@ -27270,8 +27173,6 @@
      * @protected
      */
     VectorSource.prototype.addFeaturesInternal = function addFeaturesInternal (features) {
-      var this$1 = this;
-
       var extents = [];
       var newFeatures = [];
       var geometryFeatures = [];
@@ -27279,7 +27180,7 @@
       for (var i = 0, length = features.length; i < length; i++) {
         var feature = features[i];
         var featureKey = getUid(feature).toString();
-        if (this$1.addToIndex_(featureKey, feature)) {
+        if (this.addToIndex_(featureKey, feature)) {
           newFeatures.push(feature);
         }
       }
@@ -27287,7 +27188,7 @@
       for (var i$1 = 0, length$1 = newFeatures.length; i$1 < length$1; i$1++) {
         var feature$1 = newFeatures[i$1];
         var featureKey$1 = getUid(feature$1).toString();
-        this$1.setupChangeEvents_(featureKey$1, feature$1);
+        this.setupChangeEvents_(featureKey$1, feature$1);
 
         var geometry = feature$1.getGeometry();
         if (geometry) {
@@ -27295,7 +27196,7 @@
           extents.push(extent);
           geometryFeatures.push(feature$1);
         } else {
-          this$1.nullGeometryFeatures_[featureKey$1] = feature$1;
+          this.nullGeometryFeatures_[featureKey$1] = feature$1;
         }
       }
       if (this.featuresRtree_) {
@@ -27303,7 +27204,7 @@
       }
 
       for (var i$2 = 0, length$2 = newFeatures.length; i$2 < length$2; i$2++) {
-        this$1.dispatchEvent(new VectorSourceEvent(VectorEventType.ADDFEATURE, newFeatures[i$2]));
+        this.dispatchEvent(new VectorSourceEvent(VectorEventType.ADDFEATURE, newFeatures[i$2]));
       }
     };
 
@@ -27368,11 +27269,9 @@
      * @api
      */
     VectorSource.prototype.clear = function clear$$1 (opt_fast) {
-      var this$1 = this;
-
       if (opt_fast) {
-        for (var featureId in this$1.featureChangeKeys_) {
-          var keys = this$1.featureChangeKeys_[featureId];
+        for (var featureId in this.featureChangeKeys_) {
+          var keys = this.featureChangeKeys_[featureId];
           keys.forEach(unlistenByKey);
         }
         if (!this.featuresCollection_) {
@@ -27383,8 +27282,8 @@
       } else {
         if (this.featuresRtree_) {
           this.featuresRtree_.forEach(this.removeFeatureInternal, this);
-          for (var id in this$1.nullGeometryFeatures_) {
-            this$1.removeFeatureInternal(this$1.nullGeometryFeatures_[id]);
+          for (var id in this.nullGeometryFeatures_) {
+            this.removeFeatureInternal(this.nullGeometryFeatures_[id]);
           }
         }
       }
@@ -27872,12 +27771,10 @@
      * @private
      */
     VectorSource.prototype.removeFromIdIndex_ = function removeFromIdIndex_ (feature) {
-      var this$1 = this;
-
       var removed = false;
-      for (var id in this$1.idIndex_) {
-        if (this$1.idIndex_[id] === feature) {
-          delete this$1.idIndex_[id];
+      for (var id in this.idIndex_) {
+        if (this.idIndex_[id] === feature) {
+          delete this.idIndex_[id];
           removed = true;
           break;
         }
@@ -28004,7 +27901,7 @@
    * Events emitted by {@link module:ol/interaction/Draw~Draw} instances are
    * instances of this type.
    */
-  var DrawEvent = (function (Event$$1) {
+  var DrawEvent = /*@__PURE__*/(function (Event$$1) {
     function DrawEvent(type, feature) {
 
       Event$$1.call(this, type);
@@ -28033,7 +27930,7 @@
    * @fires DrawEvent
    * @api
    */
-  var Draw = (function (PointerInteraction$$1) {
+  var Draw = /*@__PURE__*/(function (PointerInteraction$$1) {
     function Draw(options) {
 
       PointerInteraction$$1.call(this, {
@@ -28366,8 +28263,6 @@
      * @private
      */
     Draw.prototype.atFinish_ = function atFinish_ (event) {
-      var this$1 = this;
-
       var at = false;
       if (this.sketchFeature_) {
         var potentiallyDone = false;
@@ -28388,10 +28283,10 @@
             var pixel = event.pixel;
             var dx = pixel[0] - finishPixel[0];
             var dy = pixel[1] - finishPixel[1];
-            var snapTolerance = this$1.freehand_ ? 1 : this$1.snapTolerance_;
+            var snapTolerance = this.freehand_ ? 1 : this.snapTolerance_;
             at = Math.sqrt(dx * dx + dy * dy) <= snapTolerance;
             if (at) {
-              this$1.finishCoordinate_ = finishCoordinate;
+              this.finishCoordinate_ = finishCoordinate;
               break;
             }
           }
@@ -28954,7 +28849,7 @@
    * Events emitted by {@link module:ol/interaction/Extent~ExtentInteraction} instances are
    * instances of this type.
    */
-  var ExtentInteractionEvent = (function (Event$$1) {
+  var ExtentInteractionEvent = /*@__PURE__*/(function (Event$$1) {
     function ExtentInteractionEvent(extent) {
       Event$$1.call(this, ExtentEventType.EXTENTCHANGED);
 
@@ -28983,7 +28878,7 @@
    * @fires Event
    * @api
    */
-  var ExtentInteraction = (function (PointerInteraction$$1) {
+  var ExtentInteraction = /*@__PURE__*/(function (PointerInteraction$$1) {
     function ExtentInteraction(opt_options) {
 
       PointerInteraction$$1.call(this, {
@@ -29477,7 +29372,7 @@
    * Events emitted by {@link module:ol/interaction/Modify~Modify} instances are
    * instances of this type.
    */
-  var ModifyEvent = (function (Event$$1) {
+  var ModifyEvent = /*@__PURE__*/(function (Event$$1) {
     function ModifyEvent(type, features, mapBrowserPointerEvent) {
       Event$$1.call(this, type);
 
@@ -29520,7 +29415,7 @@
    * @fires ModifyEvent
    * @api
    */
-  var Modify = (function (PointerInteraction$$1) {
+  var Modify = /*@__PURE__*/(function (PointerInteraction$$1) {
     function Modify(options) {
 
       PointerInteraction$$1.call(this, {
@@ -29871,8 +29766,6 @@
      * @private
      */
     Modify.prototype.writeMultiPointGeometry_ = function writeMultiPointGeometry_ (feature, geometry) {
-      var this$1 = this;
-
       var points = geometry.getCoordinates();
       for (var i = 0, ii = points.length; i < ii; ++i) {
         var coordinates = points[i];
@@ -29883,7 +29776,7 @@
           index: i,
           segment: [coordinates, coordinates]
         });
-        this$1.rBush_.insert(geometry.getExtent(), segmentData);
+        this.rBush_.insert(geometry.getExtent(), segmentData);
       }
     };
 
@@ -29893,8 +29786,6 @@
      * @private
      */
     Modify.prototype.writeLineStringGeometry_ = function writeLineStringGeometry_ (feature, geometry) {
-      var this$1 = this;
-
       var coordinates = geometry.getCoordinates();
       for (var i = 0, ii = coordinates.length - 1; i < ii; ++i) {
         var segment = coordinates.slice(i, i + 2);
@@ -29904,7 +29795,7 @@
           index: i,
           segment: segment
         });
-        this$1.rBush_.insert(boundingExtent(segment), segmentData);
+        this.rBush_.insert(boundingExtent(segment), segmentData);
       }
     };
 
@@ -29914,8 +29805,6 @@
      * @private
      */
     Modify.prototype.writeMultiLineStringGeometry_ = function writeMultiLineStringGeometry_ (feature, geometry) {
-      var this$1 = this;
-
       var lines = geometry.getCoordinates();
       for (var j = 0, jj = lines.length; j < jj; ++j) {
         var coordinates = lines[j];
@@ -29928,7 +29817,7 @@
             index: i,
             segment: segment
           });
-          this$1.rBush_.insert(boundingExtent(segment), segmentData);
+          this.rBush_.insert(boundingExtent(segment), segmentData);
         }
       }
     };
@@ -29939,8 +29828,6 @@
      * @private
      */
     Modify.prototype.writePolygonGeometry_ = function writePolygonGeometry_ (feature, geometry) {
-      var this$1 = this;
-
       var rings = geometry.getCoordinates();
       for (var j = 0, jj = rings.length; j < jj; ++j) {
         var coordinates = rings[j];
@@ -29953,7 +29840,7 @@
             index: i,
             segment: segment
           });
-          this$1.rBush_.insert(boundingExtent(segment), segmentData);
+          this.rBush_.insert(boundingExtent(segment), segmentData);
         }
       }
     };
@@ -29964,8 +29851,6 @@
      * @private
      */
     Modify.prototype.writeMultiPolygonGeometry_ = function writeMultiPolygonGeometry_ (feature, geometry) {
-      var this$1 = this;
-
       var polygons = geometry.getCoordinates();
       for (var k = 0, kk = polygons.length; k < kk; ++k) {
         var rings = polygons[k];
@@ -29980,7 +29865,7 @@
               index: i,
               segment: segment
             });
-            this$1.rBush_.insert(boundingExtent(segment), segmentData);
+            this.rBush_.insert(boundingExtent(segment), segmentData);
           }
         }
       }
@@ -30023,11 +29908,9 @@
      * @private
      */
     Modify.prototype.writeGeometryCollectionGeometry_ = function writeGeometryCollectionGeometry_ (feature, geometry) {
-      var this$1 = this;
-
       var geometries = geometry.getGeometriesArray();
       for (var i = 0; i < geometries.length; ++i) {
-        this$1.SEGMENT_WRITERS_[geometries[i].getType()].call(this$1, feature, geometries[i]);
+        this.SEGMENT_WRITERS_[geometries[i].getType()].call(this, feature, geometries[i]);
       }
     };
 
@@ -30213,8 +30096,6 @@
      * @private
      */
     Modify.prototype.removeVertex_ = function removeVertex_ () {
-      var this$1 = this;
-
       var dragSegments = this.dragSegments_;
       var segmentsByFeature = {};
       var deleted = false;
@@ -30294,14 +30175,14 @@
         }
 
         if (deleted) {
-          this$1.setGeometryCoordinates_(geometry, coordinates);
+          this.setGeometryCoordinates_(geometry, coordinates);
           var segments = [];
           if (left !== undefined) {
-            this$1.rBush_.remove(left);
+            this.rBush_.remove(left);
             segments.push(left.segment[0]);
           }
           if (right !== undefined) {
-            this$1.rBush_.remove(right);
+            this.rBush_.remove(right);
             segments.push(right.segment[1]);
           }
           if (left !== undefined && right !== undefined) {
@@ -30312,13 +30193,13 @@
               index: newIndex,
               segment: segments
             });
-            this$1.rBush_.insert(boundingExtent(newSegmentData.segment),
+            this.rBush_.insert(boundingExtent(newSegmentData.segment),
               newSegmentData);
           }
-          this$1.updateSegmentIndices_(geometry, index, segmentData.depth, -1);
-          if (this$1.vertexFeature_) {
-            this$1.overlay_.getSource().removeFeature(this$1.vertexFeature_);
-            this$1.vertexFeature_ = null;
+          this.updateSegmentIndices_(geometry, index, segmentData.depth, -1);
+          if (this.vertexFeature_) {
+            this.overlay_.getSource().removeFeature(this.vertexFeature_);
+            this.vertexFeature_ = null;
           }
           dragSegments.length = 0;
         }
@@ -30376,8 +30257,6 @@
    * @this {Modify}
    */
   function handleDownEvent$9(evt) {
-    var this$1 = this;
-
     if (!this.condition_(evt)) {
       return false;
     }
@@ -30410,12 +30289,12 @@
 
           var closestVertex = closestOnSegmentData(pixelCoordinate, segmentDataMatch);
           if (equals$2(closestVertex, vertex) && !componentSegments[uid][0]) {
-            this$1.dragSegments_.push([segmentDataMatch, 0]);
+            this.dragSegments_.push([segmentDataMatch, 0]);
             componentSegments[uid][0] = segmentDataMatch;
           }
         } else if (equals$2(segment[0], vertex) &&
             !componentSegments[uid][0]) {
-          this$1.dragSegments_.push([segmentDataMatch, 0]);
+          this.dragSegments_.push([segmentDataMatch, 0]);
           componentSegments[uid][0] = segmentDataMatch;
         } else if (equals$2(segment[1], vertex) &&
             !componentSegments[uid][1]) {
@@ -30430,9 +30309,9 @@
             continue;
           }
 
-          this$1.dragSegments_.push([segmentDataMatch, 1]);
+          this.dragSegments_.push([segmentDataMatch, 1]);
           componentSegments[uid][1] = segmentDataMatch;
-        } else if (this$1.insertVertexCondition_(evt) && getUid(segment) in this$1.vertexSegments_ &&
+        } else if (this.insertVertexCondition_(evt) && getUid(segment) in this.vertexSegments_ &&
             (!componentSegments[uid][0] && !componentSegments[uid][1])) {
           insertVertices.push([segmentDataMatch, vertex]);
         }
@@ -30441,7 +30320,7 @@
         this.willModifyFeatures_(evt);
       }
       for (var j = insertVertices.length - 1; j >= 0; --j) {
-        this$1.insertVertex_.apply(this$1, insertVertices[j]);
+        this.insertVertex_.apply(this, insertVertices[j]);
       }
     }
     return !!this.vertexFeature_;
@@ -30453,14 +30332,12 @@
    * @this {Modify}
    */
   function handleDragEvent$8(evt) {
-    var this$1 = this;
-
     this.ignoreNextSingleClick_ = false;
     this.willModifyFeatures_(evt);
 
     var vertex = evt.coordinate;
     for (var i = 0, ii = this.dragSegments_.length; i < ii; ++i) {
-      var dragSegment = this$1.dragSegments_[i];
+      var dragSegment = this.dragSegments_[i];
       var segmentData = dragSegment[0];
       var depth = segmentData.depth;
       var geometry = segmentData.geometry;
@@ -30505,13 +30382,13 @@
         case GeometryType.CIRCLE:
           segment[0] = segment[1] = vertex;
           if (segmentData.index === CIRCLE_CENTER_INDEX) {
-            this$1.changingFeature_ = true;
+            this.changingFeature_ = true;
             geometry.setCenter(vertex);
-            this$1.changingFeature_ = false;
+            this.changingFeature_ = false;
           } else { // We're dragging the circle's circumference:
-            this$1.changingFeature_ = true;
+            this.changingFeature_ = true;
             geometry.setRadius(distance(geometry.getCenter(), vertex));
-            this$1.changingFeature_ = false;
+            this.changingFeature_ = false;
           }
           break;
         default:
@@ -30519,7 +30396,7 @@
       }
 
       if (coordinates) {
-        this$1.setGeometryCoordinates_(geometry, coordinates);
+        this.setGeometryCoordinates_(geometry, coordinates);
       }
     }
     this.createOrUpdateVertexFeature_(vertex);
@@ -30532,10 +30409,8 @@
    * @this {Modify}
    */
   function handleUpEvent$9(evt) {
-    var this$1 = this;
-
     for (var i = this.dragSegments_.length - 1; i >= 0; --i) {
-      var segmentData = this$1.dragSegments_[i][0];
+      var segmentData = this.dragSegments_[i][0];
       var geometry = segmentData.geometry;
       if (geometry.getType() === GeometryType.CIRCLE) {
         // Update a circle object in the R* bush:
@@ -30544,10 +30419,10 @@
         var circumferenceSegmentData = segmentData.featureSegments[1];
         centerSegmentData.segment[0] = centerSegmentData.segment[1] = coordinates;
         circumferenceSegmentData.segment[0] = circumferenceSegmentData.segment[1] = coordinates;
-        this$1.rBush_.update(createOrUpdateFromCoordinate(coordinates), centerSegmentData);
-        this$1.rBush_.update(geometry.getExtent(), circumferenceSegmentData);
+        this.rBush_.update(createOrUpdateFromCoordinate(coordinates), centerSegmentData);
+        this.rBush_.update(geometry.getExtent(), circumferenceSegmentData);
       } else {
-        this$1.rBush_.update(boundingExtent(segmentData.segment), segmentData);
+        this.rBush_.update(boundingExtent(segmentData.segment), segmentData);
       }
     }
     if (this.modified_) {
@@ -30740,7 +30615,7 @@
    * Events emitted by {@link module:ol/interaction/Select~Select} instances are instances of
    * this type.
    */
-  var SelectEvent = (function (Event$$1) {
+  var SelectEvent = /*@__PURE__*/(function (Event$$1) {
     function SelectEvent(type, selected, deselected, mapBrowserEvent) {
       Event$$1.call(this, type);
 
@@ -30790,7 +30665,7 @@
    * @fires SelectEvent
    * @api
    */
-  var Select = (function (Interaction$$1) {
+  var Select = /*@__PURE__*/(function (Interaction$$1) {
     function Select(opt_options) {
 
       Interaction$$1.call(this, {
@@ -31180,7 +31055,7 @@
    *
    * @api
    */
-  var Snap = (function (PointerInteraction$$1) {
+  var Snap = /*@__PURE__*/(function (PointerInteraction$$1) {
     function Snap(opt_options) {
 
       PointerInteraction$$1.call(this, {
@@ -31563,8 +31438,6 @@
      * @private
      */
     Snap.prototype.writeCircleGeometry_ = function writeCircleGeometry_ (feature, geometry) {
-      var this$1 = this;
-
       var polygon = fromCircle(geometry);
       var coordinates = polygon.getCoordinates()[0];
       for (var i = 0, ii = coordinates.length - 1; i < ii; ++i) {
@@ -31573,7 +31446,7 @@
           feature: feature,
           segment: segment
         });
-        this$1.rBush_.insert(boundingExtent(segment), segmentData);
+        this.rBush_.insert(boundingExtent(segment), segmentData);
       }
     };
 
@@ -31583,13 +31456,11 @@
      * @private
      */
     Snap.prototype.writeGeometryCollectionGeometry_ = function writeGeometryCollectionGeometry_ (feature, geometry) {
-      var this$1 = this;
-
       var geometries = geometry.getGeometriesArray();
       for (var i = 0; i < geometries.length; ++i) {
-        var segmentWriter = this$1.SEGMENT_WRITERS_[geometries[i].getType()];
+        var segmentWriter = this.SEGMENT_WRITERS_[geometries[i].getType()];
         if (segmentWriter) {
-          segmentWriter.call(this$1, feature, geometries[i]);
+          segmentWriter.call(this, feature, geometries[i]);
         }
       }
     };
@@ -31600,8 +31471,6 @@
      * @private
      */
     Snap.prototype.writeLineStringGeometry_ = function writeLineStringGeometry_ (feature, geometry) {
-      var this$1 = this;
-
       var coordinates = geometry.getCoordinates();
       for (var i = 0, ii = coordinates.length - 1; i < ii; ++i) {
         var segment = coordinates.slice(i, i + 2);
@@ -31609,7 +31478,7 @@
           feature: feature,
           segment: segment
         });
-        this$1.rBush_.insert(boundingExtent(segment), segmentData);
+        this.rBush_.insert(boundingExtent(segment), segmentData);
       }
     };
 
@@ -31619,8 +31488,6 @@
      * @private
      */
     Snap.prototype.writeMultiLineStringGeometry_ = function writeMultiLineStringGeometry_ (feature, geometry) {
-      var this$1 = this;
-
       var lines = geometry.getCoordinates();
       for (var j = 0, jj = lines.length; j < jj; ++j) {
         var coordinates = lines[j];
@@ -31630,7 +31497,7 @@
             feature: feature,
             segment: segment
           });
-          this$1.rBush_.insert(boundingExtent(segment), segmentData);
+          this.rBush_.insert(boundingExtent(segment), segmentData);
         }
       }
     };
@@ -31641,8 +31508,6 @@
      * @private
      */
     Snap.prototype.writeMultiPointGeometry_ = function writeMultiPointGeometry_ (feature, geometry) {
-      var this$1 = this;
-
       var points = geometry.getCoordinates();
       for (var i = 0, ii = points.length; i < ii; ++i) {
         var coordinates = points[i];
@@ -31650,7 +31515,7 @@
           feature: feature,
           segment: [coordinates, coordinates]
         });
-        this$1.rBush_.insert(geometry.getExtent(), segmentData);
+        this.rBush_.insert(geometry.getExtent(), segmentData);
       }
     };
 
@@ -31660,8 +31525,6 @@
      * @private
      */
     Snap.prototype.writeMultiPolygonGeometry_ = function writeMultiPolygonGeometry_ (feature, geometry) {
-      var this$1 = this;
-
       var polygons = geometry.getCoordinates();
       for (var k = 0, kk = polygons.length; k < kk; ++k) {
         var rings = polygons[k];
@@ -31673,7 +31536,7 @@
               feature: feature,
               segment: segment
             });
-            this$1.rBush_.insert(boundingExtent(segment), segmentData);
+            this.rBush_.insert(boundingExtent(segment), segmentData);
           }
         }
       }
@@ -31699,8 +31562,6 @@
      * @private
      */
     Snap.prototype.writePolygonGeometry_ = function writePolygonGeometry_ (feature, geometry) {
-      var this$1 = this;
-
       var rings = geometry.getCoordinates();
       for (var j = 0, jj = rings.length; j < jj; ++j) {
         var coordinates = rings[j];
@@ -31710,7 +31571,7 @@
             feature: feature,
             segment: segment
           });
-          this$1.rBush_.insert(boundingExtent(segment), segmentData);
+          this.rBush_.insert(boundingExtent(segment), segmentData);
         }
       }
     };
@@ -31813,7 +31674,7 @@
    * Events emitted by {@link module:ol/interaction/Translate~Translate} instances
    * are instances of this type.
    */
-  var TranslateEvent = (function (Event$$1) {
+  var TranslateEvent = /*@__PURE__*/(function (Event$$1) {
     function TranslateEvent(type, features, coordinate) {
 
       Event$$1.call(this, type);
@@ -31850,7 +31711,7 @@
    * @fires TranslateEvent
    * @api
    */
-  var Translate = (function (PointerInteraction$$1) {
+  var Translate = /*@__PURE__*/(function (PointerInteraction$$1) {
     function Translate(opt_options) {
       PointerInteraction$$1.call(this, {
         handleDownEvent: handleDownEvent$a,
@@ -32237,7 +32098,7 @@
    * @module ol/render/Event
    */
 
-  var RenderEvent = (function (Event$$1) {
+  var RenderEvent = /*@__PURE__*/(function (Event$$1) {
     function RenderEvent(type, opt_vectorContext, opt_frameState, opt_context, opt_glContext) {
 
       Event$$1.call(this, type);
@@ -32400,7 +32261,7 @@
    * {@link module:ol/render/Event~RenderEvent} object associated with postcompose, precompose and
    * render events emitted by layers and maps.
    */
-  var CanvasImmediateRenderer = (function (VectorContext$$1) {
+  var CanvasImmediateRenderer = /*@__PURE__*/(function (VectorContext$$1) {
     function CanvasImmediateRenderer(context, pixelRatio, extent, transform, viewRotation) {
       VectorContext$$1.call(this);
 
@@ -32610,8 +32471,6 @@
      * @private
      */
     CanvasImmediateRenderer.prototype.drawImages_ = function drawImages_ (flatCoordinates, offset, end, stride) {
-      var this$1 = this;
-
       if (!this.image_) {
         return;
       }
@@ -32629,21 +32488,21 @@
         rotation += this.viewRotation_;
       }
       for (var i = 0, ii = pixelCoordinates.length; i < ii; i += 2) {
-        var x = pixelCoordinates[i] - this$1.imageAnchorX_;
-        var y = pixelCoordinates[i + 1] - this$1.imageAnchorY_;
-        if (rotation !== 0 || this$1.imageScale_ != 1) {
-          var centerX = x + this$1.imageAnchorX_;
-          var centerY = y + this$1.imageAnchorY_;
+        var x = pixelCoordinates[i] - this.imageAnchorX_;
+        var y = pixelCoordinates[i + 1] - this.imageAnchorY_;
+        if (rotation !== 0 || this.imageScale_ != 1) {
+          var centerX = x + this.imageAnchorX_;
+          var centerY = y + this.imageAnchorY_;
           compose(localTransform,
             centerX, centerY,
-            this$1.imageScale_, this$1.imageScale_,
+            this.imageScale_, this.imageScale_,
             rotation,
             -centerX, -centerY);
           context.setTransform.apply(context, localTransform);
         }
-        context.drawImage(this$1.image_, this$1.imageOriginX_, this$1.imageOriginY_,
-          this$1.imageWidth_, this$1.imageHeight_, x, y,
-          this$1.imageWidth_, this$1.imageHeight_);
+        context.drawImage(this.image_, this.imageOriginX_, this.imageOriginY_,
+          this.imageWidth_, this.imageHeight_, x, y,
+          this.imageWidth_, this.imageHeight_);
       }
       if (rotation !== 0 || this.imageScale_ != 1) {
         context.setTransform(1, 0, 0, 1, 0, 0);
@@ -32661,8 +32520,6 @@
      * @private
      */
     CanvasImmediateRenderer.prototype.drawText_ = function drawText_ (flatCoordinates, offset, end, stride) {
-      var this$1 = this;
-
       if (!this.textState_ || this.text_ === '') {
         return;
       }
@@ -32682,21 +32539,21 @@
         rotation += this.viewRotation_;
       }
       for (; offset < end; offset += stride) {
-        var x = pixelCoordinates[offset] + this$1.textOffsetX_;
-        var y = pixelCoordinates[offset + 1] + this$1.textOffsetY_;
-        if (rotation !== 0 || this$1.textScale_ != 1) {
-          var localTransform = compose(this$1.tmpLocalTransform_,
+        var x = pixelCoordinates[offset] + this.textOffsetX_;
+        var y = pixelCoordinates[offset + 1] + this.textOffsetY_;
+        if (rotation !== 0 || this.textScale_ != 1) {
+          var localTransform = compose(this.tmpLocalTransform_,
             x, y,
-            this$1.textScale_, this$1.textScale_,
+            this.textScale_, this.textScale_,
             rotation,
             -x, -y);
           context.setTransform.apply(context, localTransform);
         }
-        if (this$1.textStrokeState_) {
-          context.strokeText(this$1.text_, x, y);
+        if (this.textStrokeState_) {
+          context.strokeText(this.text_, x, y);
         }
-        if (this$1.textFillState_) {
-          context.fillText(this$1.text_, x, y);
+        if (this.textFillState_) {
+          context.fillText(this.text_, x, y);
         }
       }
       if (rotation !== 0 || this.textScale_ != 1) {
@@ -32741,10 +32598,8 @@
      * @return {number} End.
      */
     CanvasImmediateRenderer.prototype.drawRings_ = function drawRings_ (flatCoordinates, offset, ends, stride) {
-      var this$1 = this;
-
       for (var i = 0, ii = ends.length; i < ii; ++i) {
-        offset = this$1.moveToLineTo_(flatCoordinates, offset, ends[i], stride, true);
+        offset = this.moveToLineTo_(flatCoordinates, offset, ends[i], stride, true);
       }
       return offset;
     };
@@ -32870,11 +32725,9 @@
      * @override
      */
     CanvasImmediateRenderer.prototype.drawGeometryCollection = function drawGeometryCollection (geometry) {
-      var this$1 = this;
-
       var geometries = geometry.getGeometriesArray();
       for (var i = 0, ii = geometries.length; i < ii; ++i) {
-        this$1.drawGeometry(geometries[i]);
+        this.drawGeometry(geometries[i]);
       }
     };
 
@@ -32948,8 +32801,6 @@
      * @override
      */
     CanvasImmediateRenderer.prototype.drawMultiLineString = function drawMultiLineString (geometry) {
-      var this$1 = this;
-
       var geometryExtent = geometry.getExtent();
       if (!intersects(this.extent_, geometryExtent)) {
         return;
@@ -32963,7 +32814,7 @@
         var stride = geometry.getStride();
         context.beginPath();
         for (var i = 0, ii = ends.length; i < ii; ++i) {
-          offset = this$1.moveToLineTo_(flatCoordinates, offset, ends[i], stride, false);
+          offset = this.moveToLineTo_(flatCoordinates, offset, ends[i], stride, false);
         }
         context.stroke();
       }
@@ -33015,8 +32866,6 @@
      * @override
      */
     CanvasImmediateRenderer.prototype.drawMultiPolygon = function drawMultiPolygon (geometry) {
-      var this$1 = this;
-
       if (!intersects(this.extent_, geometry.getExtent())) {
         return;
       }
@@ -33035,7 +32884,7 @@
         context.beginPath();
         for (var i = 0, ii = endss.length; i < ii; ++i) {
           var ends = endss[i];
-          offset = this$1.drawRings_(flatCoordinates, offset, ends, stride);
+          offset = this.drawRings_(flatCoordinates, offset, ends, stride);
         }
         if (this.fillState_) {
           context.fill();
@@ -33356,15 +33205,13 @@
   * FIXME empty description for jsdoc
   */
   IconImageCache.prototype.expire = function expire () {
-      var this$1 = this;
-
     if (this.cacheSize_ > this.maxCacheSize_) {
       var i = 0;
-      for (var key in this$1.cache_) {
-        var iconImage = this$1.cache_[key];
+      for (var key in this.cache_) {
+        var iconImage = this.cache_[key];
         if ((i++ & 3) === 0 && !iconImage.hasListener()) {
-          delete this$1.cache_[key];
-          --this$1.cacheSize_;
+          delete this.cache_[key];
+          --this.cacheSize_;
         }
       }
     }
@@ -33430,7 +33277,7 @@
    */
 
 
-  var MapRenderer = (function (Disposable$$1) {
+  var MapRenderer = /*@__PURE__*/(function (Disposable$$1) {
     function MapRenderer(map) {
       Disposable$$1.call(this);
 
@@ -33502,10 +33349,8 @@
      * Removes all layer renderers.
      */
     MapRenderer.prototype.removeLayerRenderers = function removeLayerRenderers () {
-      var this$1 = this;
-
-      for (var key in this$1.layerRenderers_) {
-        this$1.removeLayerRendererByKey_(key).dispose();
+      for (var key in this.layerRenderers_) {
+        this.removeLayerRendererByKey_(key).dispose();
       }
     };
 
@@ -33533,8 +33378,6 @@
       layerFilter,
       thisArg2
     ) {
-      var this$1 = this;
-
       var result;
       var viewState = frameState.viewState;
       var viewResolution = viewState.resolution;
@@ -33572,7 +33415,7 @@
         var layerState = layerStates[i];
         var layer = layerState.layer;
         if (visibleAtResolution(layerState, viewResolution) && layerFilter.call(thisArg2, layer)) {
-          var layerRenderer = this$1.getLayerRenderer(layer);
+          var layerRenderer = this.getLayerRenderer(layer);
           if (layer.getSource()) {
             result = layerRenderer.forEachFeatureAtCoordinate(
               layer.getSource().getWrapX() ? translatedCoordinate : coordinate,
@@ -33629,17 +33472,15 @@
      * @return {import("./Layer.js").default} Layer renderer.
      */
     MapRenderer.prototype.getLayerRenderer = function getLayerRenderer (layer) {
-      var this$1 = this;
-
       var layerKey = getUid(layer).toString();
       if (layerKey in this.layerRenderers_) {
         return this.layerRenderers_[layerKey];
       } else {
         var renderer;
         for (var i = 0, ii = this.layerRendererConstructors_.length; i < ii; ++i) {
-          var candidate = this$1.layerRendererConstructors_[i];
+          var candidate = this.layerRendererConstructors_[i];
           if (candidate['handles'](layer)) {
-            renderer = candidate['create'](this$1, layer);
+            renderer = candidate['create'](this, layer);
             break;
           }
         }
@@ -33707,11 +33548,9 @@
      * @private
      */
     MapRenderer.prototype.removeUnusedLayerRenderers_ = function removeUnusedLayerRenderers_ (map, frameState) {
-      var this$1 = this;
-
-      for (var layerKey in this$1.layerRenderers_) {
+      for (var layerKey in this.layerRenderers_) {
         if (!frameState || !(layerKey in frameState.layerStates)) {
-          this$1.removeLayerRendererByKey_(layerKey).dispose();
+          this.removeLayerRendererByKey_(layerKey).dispose();
         }
       }
     };
@@ -33736,12 +33575,10 @@
      * @protected
      */
     MapRenderer.prototype.scheduleRemoveUnusedLayerRenderers = function scheduleRemoveUnusedLayerRenderers (frameState) {
-      var this$1 = this;
-
-      for (var layerKey in this$1.layerRenderers_) {
+      for (var layerKey in this.layerRenderers_) {
         if (!(layerKey in frameState.layerStates)) {
           frameState.postRenderFunctions.push(
-            /** @type {import("../PluggableMap.js").PostRenderFunction} */ (this$1.removeUnusedLayerRenderers_.bind(this$1))
+            /** @type {import("../PluggableMap.js").PostRenderFunction} */ (this.removeUnusedLayerRenderers_.bind(this))
           );
           return;
         }
@@ -33785,7 +33622,7 @@
    * Canvas map renderer.
    * @api
    */
-  var CanvasMapRenderer = (function (MapRenderer$$1) {
+  var CanvasMapRenderer = /*@__PURE__*/(function (MapRenderer$$1) {
     function CanvasMapRenderer(map) {
       MapRenderer$$1.call(this, map);
 
@@ -33871,8 +33708,6 @@
      * @inheritDoc
      */
     CanvasMapRenderer.prototype.renderFrame = function renderFrame (frameState) {
-      var this$1 = this;
-
 
       if (!frameState) {
         if (this.renderedVisible_) {
@@ -33912,7 +33747,7 @@
       for (i = 0, ii = layerStatesArray.length; i < ii; ++i) {
         layerState = layerStatesArray[i];
         layer = layerState.layer;
-        layerRenderer = /** @type {import("./Layer.js").default} */ (this$1.getLayerRenderer(layer));
+        layerRenderer = /** @type {import("./Layer.js").default} */ (this.getLayerRenderer(layer));
         if (!visibleAtResolution(layerState, viewResolution) ||
             layerState.sourceState != SourceState.READY) {
           continue;
@@ -33941,8 +33776,6 @@
      * @inheritDoc
      */
     CanvasMapRenderer.prototype.forEachLayerAtPixel = function forEachLayerAtPixel (pixel, frameState, hitTolerance, callback, thisArg, layerFilter, thisArg2) {
-      var this$1 = this;
-
       var result;
       var viewState = frameState.viewState;
       var viewResolution = viewState.resolution;
@@ -33958,7 +33791,7 @@
         var layerState = layerStates[i];
         var layer = layerState.layer;
         if (visibleAtResolution(layerState, viewResolution) && layerFilter.call(thisArg2, layer)) {
-          var layerRenderer = /** @type {import("./Layer.js").default} */ (this$1.getLayerRenderer(layer));
+          var layerRenderer = /** @type {import("./Layer.js").default} */ (this.getLayerRenderer(layer));
           result = layerRenderer.forEachLayerAtCoordinate(
             coordinate, frameState, hitTolerance, callback, thisArg);
           if (result) {
@@ -33989,7 +33822,7 @@
    * @module ol/renderer/Layer
    */
 
-  var LayerRenderer = (function (Observable$$1) {
+  var LayerRenderer = /*@__PURE__*/(function (Observable$$1) {
     function LayerRenderer(layer) {
 
       Observable$$1.call(this);
@@ -34224,7 +34057,7 @@
    * @module ol/renderer/canvas/Layer
    */
 
-  var CanvasLayerRenderer = (function (LayerRenderer$$1) {
+  var CanvasLayerRenderer = /*@__PURE__*/(function (LayerRenderer$$1) {
     function CanvasLayerRenderer(layer) {
 
       LayerRenderer$$1.call(this, layer);
@@ -34398,7 +34231,7 @@
    * @module ol/renderer/canvas/IntermediateCanvas
    */
 
-  var IntermediateCanvasRenderer = (function (CanvasLayerRenderer$$1) {
+  var IntermediateCanvasRenderer = /*@__PURE__*/(function (CanvasLayerRenderer$$1) {
     function IntermediateCanvasRenderer(layer) {
 
       CanvasLayerRenderer$$1.call(this, layer);
@@ -34541,10 +34374,8 @@
    * Canvas renderer for image layers.
    * @api
    */
-  var CanvasImageLayerRenderer = (function (IntermediateCanvasRenderer$$1) {
+  var CanvasImageLayerRenderer = /*@__PURE__*/(function (IntermediateCanvasRenderer$$1) {
     function CanvasImageLayerRenderer(imageLayer) {
-      var this$1 = this;
-
 
       IntermediateCanvasRenderer$$1.call(this, imageLayer);
 
@@ -34575,7 +34406,7 @@
         for (var i = 0, ii = layerRendererConstructors.length; i < ii; ++i) {
           var ctor = layerRendererConstructors[i];
           if (ctor !== CanvasImageLayerRenderer && ctor['handles'](imageLayer)) {
-            this$1.vectorRenderer_ = new ctor(imageLayer);
+            this.vectorRenderer_ = new ctor(imageLayer);
             break;
           }
         }
@@ -34880,7 +34711,7 @@
    * Canvas renderer for tile layers.
    * @api
    */
-  var CanvasTileLayerRenderer = (function (IntermediateCanvasRenderer$$1) {
+  var CanvasTileLayerRenderer = /*@__PURE__*/(function (IntermediateCanvasRenderer$$1) {
     function CanvasTileLayerRenderer(tileLayer, opt_noContext) {
 
       IntermediateCanvasRenderer$$1.call(this, tileLayer);
@@ -34995,8 +34826,6 @@
      * @inheritDoc
      */
     CanvasTileLayerRenderer.prototype.prepareFrame = function prepareFrame (frameState, layerState) {
-      var this$1 = this;
-
 
       var pixelRatio = frameState.pixelRatio;
       var size = frameState.size;
@@ -35048,14 +34877,14 @@
           if (Date.now() - frameState.time > 16 && animatingOrInteracting) {
             continue;
           }
-          tile = this$1.getTile(z, x, y, pixelRatio, projection);
-          if (this$1.isDrawableTile_(tile)) {
-            var uid = getUid(this$1);
+          tile = this.getTile(z, x, y, pixelRatio, projection);
+          if (this.isDrawableTile_(tile)) {
+            var uid = getUid(this);
             if (tile.getState() == TileState.LOADED) {
               tilesToDrawByZ[z][tile.tileCoord.toString()] = tile;
               var inTransition = tile.inTransition(uid);
-              if (!this$1.newTiles_ && (inTransition || this$1.renderedTiles.indexOf(tile) === -1)) {
-                this$1.newTiles_ = true;
+              if (!this.newTiles_ && (inTransition || this.renderedTiles.indexOf(tile) === -1)) {
+                this.newTiles_ = true;
               }
             }
             if (tile.getAlpha(uid, frameState.time) === 1) {
@@ -35133,8 +34962,8 @@
             y = (imageExtent[3] - tileExtent[3]) / tileResolution * tilePixelRatio / oversampling;
             w = currentTilePixelSize[0] * currentScale / oversampling;
             h = currentTilePixelSize[1] * currentScale / oversampling;
-            this$1.drawTileImage(tile, frameState, layerState, x, y, w, h, tileGutter, z === currentZ);
-            this$1.renderedTiles.push(tile);
+            this.drawTileImage(tile, frameState, layerState, x, y, w, h, tileGutter, z === currentZ);
+            this.renderedTiles.push(tile);
           }
         }
 
@@ -35473,7 +35302,7 @@
   var tmpTransform$1 = create();
 
 
-  var CanvasReplay = (function (VectorContext$$1) {
+  var CanvasReplay = /*@__PURE__*/(function (VectorContext$$1) {
     function CanvasReplay(tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree) {
       VectorContext$$1.call(this);
 
@@ -35762,8 +35591,6 @@
      * @return {number} My end.
      */
     CanvasReplay.prototype.appendFlatCoordinates = function appendFlatCoordinates (flatCoordinates, offset, end, stride, closed, skipFirst) {
-      var this$1 = this;
-
 
       var myEnd = this.coordinates.length;
       var extent = this.getBufferedMaxExtent();
@@ -35781,15 +35608,15 @@
         nextRel = coordinateRelationship(extent, nextCoord);
         if (nextRel !== lastRel) {
           if (skipped) {
-            this$1.coordinates[myEnd++] = lastCoord[0];
-            this$1.coordinates[myEnd++] = lastCoord[1];
+            this.coordinates[myEnd++] = lastCoord[0];
+            this.coordinates[myEnd++] = lastCoord[1];
           }
-          this$1.coordinates[myEnd++] = nextCoord[0];
-          this$1.coordinates[myEnd++] = nextCoord[1];
+          this.coordinates[myEnd++] = nextCoord[0];
+          this.coordinates[myEnd++] = nextCoord[1];
           skipped = false;
         } else if (nextRel === Relationship.INTERSECTING) {
-          this$1.coordinates[myEnd++] = nextCoord[0];
-          this$1.coordinates[myEnd++] = nextCoord[1];
+          this.coordinates[myEnd++] = nextCoord[0];
+          this.coordinates[myEnd++] = nextCoord[1];
           skipped = false;
         } else {
           skipped = true;
@@ -35816,11 +35643,9 @@
      * @return {number} Offset.
      */
     CanvasReplay.prototype.drawCustomCoordinates_ = function drawCustomCoordinates_ (flatCoordinates, offset, ends, stride, replayEnds) {
-      var this$1 = this;
-
       for (var i = 0, ii = ends.length; i < ii; ++i) {
         var end = ends[i];
-        var replayEnd = this$1.appendFlatCoordinates(flatCoordinates, offset, end, stride, false, false);
+        var replayEnd = this.appendFlatCoordinates(flatCoordinates, offset, end, stride, false, false);
         replayEnds.push(replayEnd);
         offset = end;
       }
@@ -35831,8 +35656,6 @@
      * @inheritDoc.
      */
     CanvasReplay.prototype.drawCustom = function drawCustom (geometry, feature, renderer) {
-      var this$1 = this;
-
       this.beginGeometry(geometry, feature);
       var type = geometry.getType();
       var stride = geometry.getStride();
@@ -35847,7 +35670,7 @@
         offset = 0;
         for (var i = 0, ii = endss.length; i < ii; ++i) {
           var myEnds = [];
-          offset = this$1.drawCustomCoordinates_(flatCoordinates, offset, endss[i], stride, myEnds);
+          offset = this.drawCustomCoordinates_(flatCoordinates, offset, endss[i], stride, myEnds);
           replayEndss.push(myEnds);
         }
         this.instructions.push([Instruction.CUSTOM,
@@ -35934,8 +35757,6 @@
      * @param {import("../../Feature.js").default|import("../Feature.js").default} feature Feature.
      */
     CanvasReplay.prototype.renderDeclutter_ = function renderDeclutter_ (declutterGroup, feature) {
-      var this$1 = this;
-
       if (declutterGroup && declutterGroup.length > 5) {
         var groupCount = declutterGroup[4];
         if (groupCount == 1 || groupCount == declutterGroup.length - 5) {
@@ -35953,7 +35774,7 @@
               var declutterData = /** @type {Array} */ (declutterGroup[j]);
               if (declutterData) {
                 if (declutterData.length > 11) {
-                  this$1.replayTextBackground_(declutterData[0],
+                  this.replayTextBackground_(declutterData[0],
                     declutterData[13], declutterData[14], declutterData[15], declutterData[16],
                     declutterData[11], declutterData[12]);
                 }
@@ -35990,8 +35811,6 @@
       featureCallback,
       opt_hitExtent
     ) {
-      var this$1 = this;
-
       /** @type {Array<number>} */
       var pixelCoordinates;
       if (this.pixelCoordinates_ && equals$1(transform, this.renderedTransform_)) {
@@ -36049,7 +35868,7 @@
             break;
           case Instruction.BEGIN_PATH:
             if (pendingFill > batchSize) {
-              this$1.fill_(context);
+              this.fill_(context);
               pendingFill = 0;
             }
             if (pendingStroke > batchSize) {
@@ -36133,14 +35952,14 @@
               rotation += viewRotation;
             }
             for (; d < dd; d += 2) {
-              this$1.replayImage_(context,
+              this.replayImage_(context,
                 pixelCoordinates[d], pixelCoordinates[d + 1], image, anchorX, anchorY,
                 declutterGroup, height, opacity, originX, originY, rotation, scale$$1,
                 snapToPixel, width, padding,
                 backgroundFill ? /** @type {Array<*>} */ (lastFillInstruction) : null,
                 backgroundStroke ? /** @type {Array<*>} */ (lastStrokeInstruction) : null);
             }
-            this$1.renderDeclutter_(declutterGroup, feature);
+            this.renderDeclutter_(declutterGroup, feature);
             ++i;
             break;
           case Instruction.DRAW_CHARS:
@@ -36162,7 +35981,7 @@
             var pathLength = lineStringLength(pixelCoordinates, begin, end, 2);
             var textLength = measure(text);
             if (overflow || textLength <= pathLength) {
-              var textAlign = /** @type {module:ol~render} */ (this$1).textStates[textKey].textAlign;
+              var textAlign = /** @type {module:ol~render} */ (this).textStates[textKey].textAlign;
               var startM = (pathLength - textLength) * TEXT_ALIGN[textAlign];
               var parts = drawTextOnPath(
                 pixelCoordinates, begin, end, 2, text, measure, startM, maxAngle);
@@ -36172,10 +35991,10 @@
                   for (c = 0, cc = parts.length; c < cc; ++c) {
                     part = parts[c]; // x, y, anchorX, rotation, chunk
                     chars = /** @type {string} */ (part[4]);
-                    label = /** @type {module:ol~render} */ (this$1).getImage(chars, textKey, '', strokeKey);
+                    label = /** @type {module:ol~render} */ (this).getImage(chars, textKey, '', strokeKey);
                     anchorX = /** @type {number} */ (part[2]) + strokeWidth;
                     anchorY = baseline * label.height + (0.5 - baseline) * 2 * strokeWidth - offsetY;
-                    this$1.replayImage_(context,
+                    this.replayImage_(context,
                       /** @type {number} */ (part[0]), /** @type {number} */ (part[1]), label,
                       anchorX, anchorY, declutterGroup, label.height, 1, 0, 0,
                       /** @type {number} */ (part[3]), textScale, false, label.width,
@@ -36186,10 +36005,10 @@
                   for (c = 0, cc = parts.length; c < cc; ++c) {
                     part = parts[c]; // x, y, anchorX, rotation, chunk
                     chars = /** @type {string} */ (part[4]);
-                    label = /** @type {module:ol~render} */ (this$1).getImage(chars, textKey, fillKey, '');
+                    label = /** @type {module:ol~render} */ (this).getImage(chars, textKey, fillKey, '');
                     anchorX = /** @type {number} */ (part[2]);
                     anchorY = baseline * label.height - offsetY;
-                    this$1.replayImage_(context,
+                    this.replayImage_(context,
                       /** @type {number} */ (part[0]), /** @type {number} */ (part[1]), label,
                       anchorX, anchorY, declutterGroup, label.height, 1, 0, 0,
                       /** @type {number} */ (part[3]), textScale, false, label.width,
@@ -36198,7 +36017,7 @@
                 }
               }
             }
-            this$1.renderDeclutter_(declutterGroup, feature);
+            this.renderDeclutter_(declutterGroup, feature);
             ++i;
             break;
           case Instruction.END_GEOMETRY:
@@ -36215,7 +36034,7 @@
             if (batchSize) {
               pendingFill++;
             } else {
-              this$1.fill_(context);
+              this.fill_(context);
             }
             ++i;
             break;
@@ -36246,10 +36065,10 @@
             break;
           case Instruction.SET_FILL_STYLE:
             lastFillInstruction = instruction;
-            this$1.alignFill_ = instruction[2];
+            this.alignFill_ = instruction[2];
 
             if (pendingFill) {
-              this$1.fill_(context);
+              this.fill_(context);
               pendingFill = 0;
               if (pendingStroke) {
                 context.stroke();
@@ -36266,7 +36085,7 @@
               context.stroke();
               pendingStroke = 0;
             }
-            this$1.setStrokeStyle_(context, /** @type {Array<*>} */ (instruction));
+            this.setStrokeStyle_(context, /** @type {Array<*>} */ (instruction));
             ++i;
             break;
           case Instruction.STROKE:
@@ -36335,8 +36154,6 @@
      * Reverse the hit detection instructions.
      */
     CanvasReplay.prototype.reverseHitDetectionInstructions = function reverseHitDetectionInstructions () {
-      var this$1 = this;
-
       var hitDetectionInstructions = this.hitDetectionInstructions;
       // step 1 - reverse array
       hitDetectionInstructions.reverse();
@@ -36353,7 +36170,7 @@
           begin = i;
         } else if (type == Instruction.BEGIN_GEOMETRY) {
           instruction[2] = i;
-          reverseSubArray(this$1.hitDetectionInstructions, begin, i);
+          reverseSubArray(this.hitDetectionInstructions, begin, i);
           begin = -1;
         }
       }
@@ -36531,7 +36348,7 @@
    * @module ol/render/canvas/ImageReplay
    */
 
-  var CanvasImageReplay = (function (CanvasReplay$$1) {
+  var CanvasImageReplay = /*@__PURE__*/(function (CanvasReplay$$1) {
     function CanvasImageReplay(tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree) {
       CanvasReplay$$1.call(this, tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree);
 
@@ -36741,7 +36558,7 @@
    * @module ol/render/canvas/LineStringReplay
    */
 
-  var CanvasLineStringReplay = (function (CanvasReplay$$1) {
+  var CanvasLineStringReplay = /*@__PURE__*/(function (CanvasReplay$$1) {
     function CanvasLineStringReplay(tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree) {
       CanvasReplay$$1.call(this, tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree);
     }
@@ -36796,8 +36613,6 @@
      * @inheritDoc
      */
     CanvasLineStringReplay.prototype.drawMultiLineString = function drawMultiLineString (multiLineStringGeometry, feature) {
-      var this$1 = this;
-
       var state = this.state;
       var strokeStyle = state.strokeStyle;
       var lineWidth = state.lineWidth;
@@ -36816,7 +36631,7 @@
       var stride = multiLineStringGeometry.getStride();
       var offset = 0;
       for (var i = 0, ii = ends.length; i < ii; ++i) {
-        offset = this$1.drawFlatCoordinates_(flatCoordinates, offset, ends[i], stride);
+        offset = this.drawFlatCoordinates_(flatCoordinates, offset, ends[i], stride);
       }
       this.hitDetectionInstructions.push(strokeInstruction);
       this.endGeometry(multiLineStringGeometry, feature);
@@ -36855,7 +36670,7 @@
    */
 
 
-  var CanvasPolygonReplay = (function (CanvasReplay$$1) {
+  var CanvasPolygonReplay = /*@__PURE__*/(function (CanvasReplay$$1) {
     function CanvasPolygonReplay(tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree) {
       CanvasReplay$$1.call(this, tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree);
     }
@@ -36873,8 +36688,6 @@
      * @return {number} End.
      */
     CanvasPolygonReplay.prototype.drawFlatCoordinatess_ = function drawFlatCoordinatess_ (flatCoordinates, offset, ends, stride) {
-      var this$1 = this;
-
       var state = this.state;
       var fill = state.fillStyle !== undefined;
       var stroke = state.strokeStyle != undefined;
@@ -36883,16 +36696,16 @@
       this.hitDetectionInstructions.push(beginPathInstruction);
       for (var i = 0; i < numEnds; ++i) {
         var end = ends[i];
-        var myBegin = this$1.coordinates.length;
-        var myEnd = this$1.appendFlatCoordinates(flatCoordinates, offset, end, stride, true, !stroke);
+        var myBegin = this.coordinates.length;
+        var myEnd = this.appendFlatCoordinates(flatCoordinates, offset, end, stride, true, !stroke);
         var moveToLineToInstruction = [Instruction.MOVE_TO_LINE_TO, myBegin, myEnd];
-        this$1.instructions.push(moveToLineToInstruction);
-        this$1.hitDetectionInstructions.push(moveToLineToInstruction);
+        this.instructions.push(moveToLineToInstruction);
+        this.hitDetectionInstructions.push(moveToLineToInstruction);
         if (stroke) {
           // Performance optimization: only call closePath() when we have a stroke.
           // Otherwise the ring is closed already (see appendFlatCoordinates above).
-          this$1.instructions.push(closePathInstruction);
-          this$1.hitDetectionInstructions.push(closePathInstruction);
+          this.instructions.push(closePathInstruction);
+          this.hitDetectionInstructions.push(closePathInstruction);
         }
         offset = end;
       }
@@ -36987,8 +36800,6 @@
      * @inheritDoc
      */
     CanvasPolygonReplay.prototype.drawMultiPolygon = function drawMultiPolygon (multiPolygonGeometry, feature) {
-      var this$1 = this;
-
       var state = this.state;
       var fillStyle = state.fillStyle;
       var strokeStyle = state.strokeStyle;
@@ -37015,7 +36826,7 @@
       var stride = multiPolygonGeometry.getStride();
       var offset = 0;
       for (var i = 0, ii = endss.length; i < ii; ++i) {
-        offset = this$1.drawFlatCoordinatess_(flatCoordinates, offset, endss[i], stride);
+        offset = this.drawFlatCoordinatess_(flatCoordinates, offset, endss[i], stride);
       }
       this.endGeometry(multiPolygonGeometry, feature);
     };
@@ -37113,7 +36924,7 @@
    * @module ol/render/canvas/TextReplay
    */
 
-  var CanvasTextReplay = (function (CanvasReplay$$1) {
+  var CanvasTextReplay = /*@__PURE__*/(function (CanvasReplay$$1) {
     function CanvasTextReplay(tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree) {
       CanvasReplay$$1.call(this, tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree);
 
@@ -37228,8 +37039,6 @@
      * @inheritDoc
      */
     CanvasTextReplay.prototype.drawText = function drawText (geometry, feature) {
-      var this$1 = this;
-
       var fillState = this.textFillState_;
       var strokeState = this.textStrokeState_;
       var textState = this.textState_;
@@ -37278,11 +37087,11 @@
             flatEnd = ends[o];
           }
           for (i = flatOffset; i < flatEnd; i += stride) {
-            this$1.coordinates.push(flatCoordinates[i], flatCoordinates[i + 1]);
+            this.coordinates.push(flatCoordinates[i], flatCoordinates[i + 1]);
           }
-          end = this$1.coordinates.length;
+          end = this.coordinates.length;
           flatOffset = ends[o];
-          this$1.drawChars_(begin, end, this$1.declutterGroup_);
+          this.drawChars_(begin, end, this.declutterGroup_);
           begin = end;
         }
         this.endGeometry(geometry, feature);
@@ -37317,7 +37126,7 @@
             var interiorPoints = /** @type {import("../../geom/MultiPolygon.js").default} */ (geometry).getFlatInteriorPoints();
             flatCoordinates = [];
             for (i = 0, ii = interiorPoints.length; i < ii; i += 3) {
-              if (textState.overflow || interiorPoints[i + 2] / this$1.resolution >= width) {
+              if (textState.overflow || interiorPoints[i + 2] / this.resolution >= width) {
                 flatCoordinates.push(interiorPoints[i], interiorPoints[i + 1]);
               }
             }
@@ -37655,7 +37464,7 @@
   };
 
 
-  var CanvasReplayGroup = (function (ReplayGroup$$1) {
+  var CanvasReplayGroup = /*@__PURE__*/(function (ReplayGroup$$1) {
     function CanvasReplayGroup(
       tolerance,
       maxExtent,
@@ -37775,10 +37584,8 @@
      * @return {boolean} Has replays of the provided types.
      */
     CanvasReplayGroup.prototype.hasReplays = function hasReplays (replays) {
-      var this$1 = this;
-
-      for (var zIndex in this$1.replaysByZIndex_) {
-        var candidates = this$1.replaysByZIndex_[zIndex];
+      for (var zIndex in this.replaysByZIndex_) {
+        var candidates = this.replaysByZIndex_[zIndex];
         for (var i = 0, ii = replays.length; i < ii; ++i) {
           if (replays[i] in candidates) {
             return true;
@@ -37792,10 +37599,8 @@
      * FIXME empty description for jsdoc
      */
     CanvasReplayGroup.prototype.finish = function finish () {
-      var this$1 = this;
-
-      for (var zKey in this$1.replaysByZIndex_) {
-        var replays = this$1.replaysByZIndex_[zKey];
+      for (var zKey in this.replaysByZIndex_) {
+        var replays = this.replaysByZIndex_[zKey];
         for (var replayKey in replays) {
           replays[replayKey].finish();
         }
@@ -37822,8 +37627,6 @@
       callback,
       declutterReplays
     ) {
-      var this$1 = this;
-
 
       hitTolerance = Math.round(hitTolerance);
       var contextSize = hitTolerance * 2 + 1;
@@ -37895,7 +37698,7 @@
       var i, j, replays, replay, result;
       for (i = zs.length - 1; i >= 0; --i) {
         var zIndexKey = zs[i].toString();
-        replays = this$1.replaysByZIndex_[zIndexKey];
+        replays = this.replaysByZIndex_[zIndexKey];
         for (j = ORDER.length - 1; j >= 0; --j) {
           replayType = ORDER[j];
           replay = replays[replayType];
@@ -37990,8 +37793,6 @@
       opt_replayTypes,
       opt_declutterReplays
     ) {
-      var this$1 = this;
-
 
       /** @type {Array<number>} */
       var zs = Object.keys(this.replaysByZIndex_).map(Number);
@@ -38006,7 +37807,7 @@
       var i, ii, j, jj, replays, replay;
       for (i = 0, ii = zs.length; i < ii; ++i) {
         var zIndexKey = zs[i].toString();
-        replays = this$1.replaysByZIndex_[zIndexKey];
+        replays = this.replaysByZIndex_[zIndexKey];
         for (j = 0, jj = replayTypes.length; j < jj; ++j) {
           var replayType = replayTypes[j];
           replay = replays[replayType];
@@ -38452,7 +38253,7 @@
    * Canvas renderer for vector layers.
    * @api
    */
-  var CanvasVectorLayerRenderer = (function (CanvasLayerRenderer$$1) {
+  var CanvasVectorLayerRenderer = /*@__PURE__*/(function (CanvasLayerRenderer$$1) {
     function CanvasVectorLayerRenderer(vectorLayer) {
 
       CanvasLayerRenderer$$1.call(this, vectorLayer);
@@ -38532,8 +38333,6 @@
      * @param {import("../../layer/Layer.js").State} layerState Layer state.
      */
     CanvasVectorLayerRenderer.prototype.compose = function compose (context, frameState, layerState) {
-      var this$1 = this;
-
       var extent = frameState.extent;
       var pixelRatio = frameState.pixelRatio;
       var skippedFeatureUids = layerState.managed ?
@@ -38608,7 +38407,7 @@
           while (startX < projectionExtent[0]) {
             --world;
             offsetX = worldWidth * world;
-            transform = this$1.getTransform(frameState, offsetX);
+            transform = this.getTransform(frameState, offsetX);
             replayGroup.replay(replayContext, transform, rotation, skippedFeatureUids, snapToPixel);
             startX += worldWidth;
           }
@@ -38617,7 +38416,7 @@
           while (startX > projectionExtent[2]) {
             ++world;
             offsetX = worldWidth * world;
-            transform = this$1.getTransform(frameState, offsetX);
+            transform = this.getTransform(frameState, offsetX);
             replayGroup.replay(replayContext, transform, rotation, skippedFeatureUids, snapToPixel);
             startX -= worldWidth;
           }
@@ -38825,8 +38624,6 @@
      * @return {boolean} `true` if an image is loading.
      */
     CanvasVectorLayerRenderer.prototype.renderFeature = function renderFeature$1 (feature, resolution, pixelRatio, styles, replayGroup) {
-      var this$1 = this;
-
       if (!styles) {
         return false;
       }
@@ -38836,7 +38633,7 @@
           loading = renderFeature(
             replayGroup, feature, styles[i],
             getSquaredTolerance(resolution, pixelRatio),
-            this$1.handleStyleImageChange_, this$1) || loading;
+            this.handleStyleImageChange_, this) || loading;
         }
       } else {
         loading = renderFeature(
@@ -38924,7 +38721,7 @@
    * Canvas renderer for vector tile layers.
    * @api
    */
-  var CanvasVectorTileLayerRenderer = (function (CanvasTileLayerRenderer$$1) {
+  var CanvasVectorTileLayerRenderer = /*@__PURE__*/(function (CanvasTileLayerRenderer$$1) {
     function CanvasVectorTileLayerRenderer(layer) {
 
       CanvasTileLayerRenderer$$1.call(this, layer, true);
@@ -39196,8 +38993,6 @@
      * @inheritDoc
      */
     CanvasVectorTileLayerRenderer.prototype.postCompose = function postCompose (context, frameState, layerState) {
-      var this$1 = this;
-
       var layer = this.getLayer();
       var renderMode = layer.getRenderMode();
       if (renderMode != VectorTileRenderType.IMAGE) {
@@ -39228,7 +39023,7 @@
             continue;
           }
           var tileCoord = tile.tileCoord;
-          var worldOffset = tileGrid.getTileCoordExtent(tileCoord, this$1.tmpExtent)[0] - tile.extent[0];
+          var worldOffset = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent)[0] - tile.extent[0];
           var transform$$1 = undefined;
           for (var t = 0, tt = tile.tileKeys.length; t < tt; ++t) {
             var sourceTile = tile.getTile(tile.tileKeys[t]);
@@ -39242,7 +39037,7 @@
               continue;
             }
             if (!transform$$1) {
-              transform$$1 = this$1.getTransform(frameState, worldOffset);
+              transform$$1 = this.getTransform(frameState, worldOffset);
             }
             var currentZ = sourceTile.tileCoord[0];
             var currentClip = replayGroup.getClipCoords(transform$$1);
@@ -39292,8 +39087,6 @@
      * @return {boolean} `true` if an image is loading.
      */
     CanvasVectorTileLayerRenderer.prototype.renderFeature = function renderFeature$1 (feature, squaredTolerance, styles, replayGroup) {
-      var this$1 = this;
-
       if (!styles) {
         return false;
       }
@@ -39302,7 +39095,7 @@
         for (var i = 0, ii = styles.length; i < ii; ++i) {
           loading = renderFeature(
             replayGroup, feature, styles[i], squaredTolerance,
-            this$1.handleStyleImageChange_, this$1) || loading;
+            this.handleStyleImageChange_, this) || loading;
         }
       } else {
         loading = renderFeature(
@@ -39319,8 +39112,6 @@
      * @private
      */
     CanvasVectorTileLayerRenderer.prototype.renderTileImage_ = function renderTileImage_ (tile, pixelRatio, projection) {
-      var this$1 = this;
-
       var layer = this.getLayer();
       var replayState = tile.getReplayState(layer);
       var revision = layer.getRevision();
@@ -39343,7 +39134,7 @@
             continue;
           }
           var pixelScale = pixelRatio / resolution;
-          var transform$$1 = reset(this$1.tmpTransform_);
+          var transform$$1 = reset(this.tmpTransform_);
           scale$1(transform$$1, pixelScale, -pixelScale);
           translate$1(transform$$1, -tileExtent[0], -tileExtent[3]);
           var replayGroup = sourceTile.getReplayGroup(layer, tile.tileCoord.toString());
@@ -39431,7 +39222,7 @@
    * @fires module:ol/render/Event~RenderEvent#precompose
    * @api
    */
-  var Map = (function (PluggableMap$$1) {
+  var Map = /*@__PURE__*/(function (PluggableMap$$1) {
     function Map(options) {
       options = assign({}, options);
       if (!options.controls) {
@@ -39573,7 +39364,7 @@
    *
    * @api
    */
-  var Overlay = (function (BaseObject$$1) {
+  var Overlay = /*@__PURE__*/(function (BaseObject$$1) {
     function Overlay(options) {
 
       BaseObject$$1.call(this);
@@ -40190,7 +39981,7 @@
    * @module ol/TileCache
    */
 
-  var TileCache = (function (LRUCache$$1) {
+  var TileCache = /*@__PURE__*/(function (LRUCache$$1) {
     function TileCache(opt_highWaterMark) {
 
       LRUCache$$1.call(this, opt_highWaterMark);
@@ -40205,15 +39996,13 @@
      * @param {!Object<string, import("./TileRange.js").default>} usedTiles Used tiles.
      */
     TileCache.prototype.expireCache = function expireCache (usedTiles) {
-      var this$1 = this;
-
       while (this.canExpireCache()) {
-        var tile = this$1.peekLast();
+        var tile = this.peekLast();
         var zKey = tile.tileCoord[0].toString();
         if (zKey in usedTiles && usedTiles[zKey].contains(tile.tileCoord)) {
           break;
         } else {
-          this$1.pop().dispose();
+          this.pop().dispose();
         }
       }
     };
@@ -40253,12 +40042,10 @@
    */
 
 
-  var VectorImageTile = (function (Tile$$1) {
+  var VectorImageTile = /*@__PURE__*/(function (Tile$$1) {
     function VectorImageTile(tileCoord, state, sourceRevision, format, tileLoadFunction,
       urlTileCoord, tileUrlFunction, sourceTileGrid, tileGrid, sourceTiles,
       pixelRatio, projection, tileClass, handleTileChange, zoom) {
-      var this$1 = this;
-
 
       Tile$$1.call(this, tileCoord, state, {transition: 0});
 
@@ -40363,7 +40150,7 @@
               sourceTileGrid, tileGrid, sourceTiles, pixelRatio, projection,
               tileClass, VOID, --zoom);
             if (tile.state == TileState.LOADED) {
-              this$1.interimTile = tile;
+              this.interimTile = tile;
               break;
             }
           }
@@ -40380,8 +40167,6 @@
      * @inheritDoc
      */
     VectorImageTile.prototype.disposeInternal = function disposeInternal () {
-      var this$1 = this;
-
       this.state = TileState.ABORT;
       this.changed();
       if (this.interimTile) {
@@ -40389,11 +40174,11 @@
       }
 
       for (var i = 0, ii = this.tileKeys.length; i < ii; ++i) {
-        var sourceTileKey = this$1.tileKeys[i];
-        var sourceTile = this$1.getTile(sourceTileKey);
+        var sourceTileKey = this.tileKeys[i];
+        var sourceTile = this.getTile(sourceTileKey);
         sourceTile.consumers--;
         if (sourceTile.consumers == 0) {
-          delete this$1.sourceTiles_[sourceTileKey];
+          delete this.sourceTiles_[sourceTileKey];
           sourceTile.dispose();
         }
       }
@@ -40512,12 +40297,10 @@
      * @private
      */
     VectorImageTile.prototype.finishLoading_ = function finishLoading_ () {
-      var this$1 = this;
-
       var loaded = this.tileKeys.length;
       var empty = 0;
       for (var i = loaded - 1; i >= 0; --i) {
-        var state = this$1.getTile(this$1.tileKeys[i]).getState();
+        var state = this.getTile(this.tileKeys[i]).getState();
         if (state != TileState.LOADED) {
           --loaded;
         }
@@ -40564,7 +40347,7 @@
    * @api
    */
 
-  var VectorTile = (function (Tile$$1) {
+  var VectorTile = /*@__PURE__*/(function (Tile$$1) {
     function VectorTile(tileCoord, state, src, format, tileLoadFunction, opt_options) {
 
       Tile$$1.call(this, tileCoord, state, opt_options);
@@ -40842,7 +40625,7 @@
    *
    * @api
    */
-  var FullScreen = (function (Control$$1) {
+  var FullScreen = /*@__PURE__*/(function (Control$$1) {
     function FullScreen(opt_options) {
 
       var options = opt_options ? opt_options : {};
@@ -41105,7 +40888,7 @@
    *
    * @api
    */
-  var OverviewMap = (function (Control$$1) {
+  var OverviewMap = /*@__PURE__*/(function (Control$$1) {
     function OverviewMap(opt_options) {
 
       var options = opt_options ? opt_options : {};
@@ -41674,7 +41457,7 @@
    *
    * @api
    */
-  var ScaleLine = (function (Control$$1) {
+  var ScaleLine = /*@__PURE__*/(function (Control$$1) {
     function ScaleLine(opt_options) {
 
       var options = opt_options ? opt_options : {};
@@ -41774,8 +41557,6 @@
      * @private
      */
     ScaleLine.prototype.updateElement_ = function updateElement_ () {
-      var this$1 = this;
-
       var viewState = this.viewState_;
 
       if (!viewState) {
@@ -41867,10 +41648,10 @@
             Math.pow(10, Math.floor(i / 3));
         width = Math.round(count / pointResolution);
         if (isNaN(width)) {
-          this$1.element.style.display = 'none';
-          this$1.renderedVisible_ = false;
+          this.element.style.display = 'none';
+          this.renderedVisible_ = false;
           return;
-        } else if (width >= this$1.minWidth_) {
+        } else if (width >= this.minWidth_) {
           break;
         }
         ++i;
@@ -41949,7 +41730,7 @@
    *
    * @api
    */
-  var ZoomSlider = (function (Control$$1) {
+  var ZoomSlider = /*@__PURE__*/(function (Control$$1) {
     function ZoomSlider(opt_options) {
 
       var options = opt_options ? opt_options : {};
@@ -42314,7 +42095,7 @@
    *
    * @api
    */
-  var ZoomToExtent = (function (Control$$1) {
+  var ZoomToExtent = /*@__PURE__*/(function (Control$$1) {
     function ZoomToExtent(opt_options) {
       var options = opt_options ? opt_options : {};
 
@@ -42419,7 +42200,7 @@
    * @module ol/webgl/Fragment
    */
 
-  var WebGLFragment = (function (WebGLShader$$1) {
+  var WebGLFragment = /*@__PURE__*/(function (WebGLShader$$1) {
     function WebGLFragment(source) {
       WebGLShader$$1.call(this, source);
     }
@@ -42442,7 +42223,7 @@
    * @module ol/webgl/Vertex
    */
 
-  var WebGLVertex = (function (WebGLShader$$1) {
+  var WebGLVertex = /*@__PURE__*/(function (WebGLShader$$1) {
     function WebGLVertex(source) {
       WebGLShader$$1.call(this, source);
     }
@@ -42581,7 +42362,7 @@
    * @module ol/render/webgl/Replay
    */
 
-  var WebGLReplay = (function (VectorContext$$1) {
+  var WebGLReplay = /*@__PURE__*/(function (VectorContext$$1) {
     function WebGLReplay(tolerance, maxExtent) {
       VectorContext$$1.call(this);
 
@@ -43071,7 +42852,7 @@
    * @module ol/render/webgl/CircleReplay
    */
 
-  var WebGLCircleReplay = (function (WebGLReplay$$1) {
+  var WebGLCircleReplay = /*@__PURE__*/(function (WebGLReplay$$1) {
     function WebGLCircleReplay(tolerance, maxExtent) {
       WebGLReplay$$1.call(this, tolerance, maxExtent);
 
@@ -43131,40 +42912,38 @@
      * @param {number} stride Stride.
      */
     WebGLCircleReplay.prototype.drawCoordinates_ = function drawCoordinates_ (flatCoordinates, offset, end, stride) {
-      var this$1 = this;
-
       var numVertices = this.vertices.length;
       var numIndices = this.indices.length;
       var n = numVertices / 4;
       var i, ii;
       for (i = offset, ii = end; i < ii; i += stride) {
-        this$1.vertices[numVertices++] = flatCoordinates[i];
-        this$1.vertices[numVertices++] = flatCoordinates[i + 1];
-        this$1.vertices[numVertices++] = 0;
-        this$1.vertices[numVertices++] = this$1.radius_;
+        this.vertices[numVertices++] = flatCoordinates[i];
+        this.vertices[numVertices++] = flatCoordinates[i + 1];
+        this.vertices[numVertices++] = 0;
+        this.vertices[numVertices++] = this.radius_;
 
-        this$1.vertices[numVertices++] = flatCoordinates[i];
-        this$1.vertices[numVertices++] = flatCoordinates[i + 1];
-        this$1.vertices[numVertices++] = 1;
-        this$1.vertices[numVertices++] = this$1.radius_;
+        this.vertices[numVertices++] = flatCoordinates[i];
+        this.vertices[numVertices++] = flatCoordinates[i + 1];
+        this.vertices[numVertices++] = 1;
+        this.vertices[numVertices++] = this.radius_;
 
-        this$1.vertices[numVertices++] = flatCoordinates[i];
-        this$1.vertices[numVertices++] = flatCoordinates[i + 1];
-        this$1.vertices[numVertices++] = 2;
-        this$1.vertices[numVertices++] = this$1.radius_;
+        this.vertices[numVertices++] = flatCoordinates[i];
+        this.vertices[numVertices++] = flatCoordinates[i + 1];
+        this.vertices[numVertices++] = 2;
+        this.vertices[numVertices++] = this.radius_;
 
-        this$1.vertices[numVertices++] = flatCoordinates[i];
-        this$1.vertices[numVertices++] = flatCoordinates[i + 1];
-        this$1.vertices[numVertices++] = 3;
-        this$1.vertices[numVertices++] = this$1.radius_;
+        this.vertices[numVertices++] = flatCoordinates[i];
+        this.vertices[numVertices++] = flatCoordinates[i + 1];
+        this.vertices[numVertices++] = 3;
+        this.vertices[numVertices++] = this.radius_;
 
-        this$1.indices[numIndices++] = n;
-        this$1.indices[numIndices++] = n + 1;
-        this$1.indices[numIndices++] = n + 2;
+        this.indices[numIndices++] = n;
+        this.indices[numIndices++] = n + 1;
+        this.indices[numIndices++] = n + 2;
 
-        this$1.indices[numIndices++] = n + 2;
-        this$1.indices[numIndices++] = n + 3;
-        this$1.indices[numIndices++] = n;
+        this.indices[numIndices++] = n + 2;
+        this.indices[numIndices++] = n + 3;
+        this.indices[numIndices++] = n;
 
         n += 4;
       }
@@ -43291,8 +43070,6 @@
      * @inheritDoc
      */
     WebGLCircleReplay.prototype.drawReplay = function drawReplay (gl, context, skippedFeaturesHash, hitDetection) {
-      var this$1 = this;
-
       if (!isEmpty(skippedFeaturesHash)) {
         this.drawReplaySkipping_(gl, context, skippedFeaturesHash);
       } else {
@@ -43300,12 +43077,12 @@
         var i, start, end, nextStyle;
         end = this.startIndices[this.startIndices.length - 1];
         for (i = this.styleIndices_.length - 1; i >= 0; --i) {
-          start = this$1.styleIndices_[i];
-          nextStyle = this$1.styles_[i];
-          this$1.setFillStyle_(gl, /** @type {Array<number>} */ (nextStyle[0]));
-          this$1.setStrokeStyle_(gl, /** @type {Array<number>} */ (nextStyle[1]),
+          start = this.styleIndices_[i];
+          nextStyle = this.styles_[i];
+          this.setFillStyle_(gl, /** @type {Array<number>} */ (nextStyle[0]));
+          this.setStrokeStyle_(gl, /** @type {Array<number>} */ (nextStyle[1]),
             /** @type {number} */ (nextStyle[2]));
-          this$1.drawElements(gl, context, start, end);
+          this.drawElements(gl, context, start, end);
           end = start;
         }
       }
@@ -43315,22 +43092,20 @@
      * @inheritDoc
      */
     WebGLCircleReplay.prototype.drawHitDetectionReplayOneByOne = function drawHitDetectionReplayOneByOne (gl, context, skippedFeaturesHash, featureCallback, opt_hitExtent) {
-      var this$1 = this;
-
       var i, start, end, nextStyle, groupStart, feature, featureUid, featureIndex;
       featureIndex = this.startIndices.length - 2;
       end = this.startIndices[featureIndex + 1];
       for (i = this.styleIndices_.length - 1; i >= 0; --i) {
-        nextStyle = this$1.styles_[i];
-        this$1.setFillStyle_(gl, /** @type {Array<number>} */ (nextStyle[0]));
-        this$1.setStrokeStyle_(gl, /** @type {Array<number>} */ (nextStyle[1]),
+        nextStyle = this.styles_[i];
+        this.setFillStyle_(gl, /** @type {Array<number>} */ (nextStyle[0]));
+        this.setStrokeStyle_(gl, /** @type {Array<number>} */ (nextStyle[1]),
           /** @type {number} */ (nextStyle[2]));
-        groupStart = this$1.styleIndices_[i];
+        groupStart = this.styleIndices_[i];
 
         while (featureIndex >= 0 &&
             this.startIndices[featureIndex] >= groupStart) {
-          start = this$1.startIndices[featureIndex];
-          feature = this$1.startIndicesFeature[featureIndex];
+          start = this.startIndices[featureIndex];
+          feature = this.startIndicesFeature[featureIndex];
           featureUid = getUid(feature).toString();
 
           if (skippedFeaturesHash[featureUid] === undefined &&
@@ -43339,7 +43114,7 @@
                 /** @type {Array<number>} */ (opt_hitExtent),
                 feature.getGeometry().getExtent()))) {
             gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-            this$1.drawElements(gl, context, start, end);
+            this.drawElements(gl, context, start, end);
 
             var result = featureCallback(feature);
 
@@ -43362,27 +43137,25 @@
      * @param {Object} skippedFeaturesHash Ids of features to skip.
      */
     WebGLCircleReplay.prototype.drawReplaySkipping_ = function drawReplaySkipping_ (gl, context, skippedFeaturesHash) {
-      var this$1 = this;
-
       var i, start, end, nextStyle, groupStart, feature, featureUid, featureIndex, featureStart;
       featureIndex = this.startIndices.length - 2;
       end = start = this.startIndices[featureIndex + 1];
       for (i = this.styleIndices_.length - 1; i >= 0; --i) {
-        nextStyle = this$1.styles_[i];
-        this$1.setFillStyle_(gl, /** @type {Array<number>} */ (nextStyle[0]));
-        this$1.setStrokeStyle_(gl, /** @type {Array<number>} */ (nextStyle[1]),
+        nextStyle = this.styles_[i];
+        this.setFillStyle_(gl, /** @type {Array<number>} */ (nextStyle[0]));
+        this.setStrokeStyle_(gl, /** @type {Array<number>} */ (nextStyle[1]),
           /** @type {number} */ (nextStyle[2]));
-        groupStart = this$1.styleIndices_[i];
+        groupStart = this.styleIndices_[i];
 
         while (featureIndex >= 0 &&
             this.startIndices[featureIndex] >= groupStart) {
-          featureStart = this$1.startIndices[featureIndex];
-          feature = this$1.startIndicesFeature[featureIndex];
+          featureStart = this.startIndices[featureIndex];
+          feature = this.startIndicesFeature[featureIndex];
           featureUid = getUid(feature).toString();
 
           if (skippedFeaturesHash[featureUid]) {
             if (start !== end) {
-              this$1.drawElements(gl, context, start, end);
+              this.drawElements(gl, context, start, end);
             }
             end = featureStart;
           }
@@ -43390,7 +43163,7 @@
           start = featureStart;
         }
         if (start !== end) {
-          this$1.drawElements(gl, context, start, end);
+          this.drawElements(gl, context, start, end);
         }
         start = end = groupStart;
       }
@@ -43571,7 +43344,7 @@
    * @classdesc
    * A WebGL context for accessing low-level WebGL capabilities.
    */
-  var WebGLContext = (function (Disposable$$1) {
+  var WebGLContext = /*@__PURE__*/(function (Disposable$$1) {
     function WebGLContext(canvas, gl) {
       Disposable$$1.call(this);
 
@@ -43699,19 +43472,17 @@
      * @inheritDoc
      */
     WebGLContext.prototype.disposeInternal = function disposeInternal () {
-      var this$1 = this;
-
       unlistenAll(this.canvas_);
       var gl = this.getGL();
       if (!gl.isContextLost()) {
-        for (var key in this$1.bufferCache_) {
-          gl.deleteBuffer(this$1.bufferCache_[key].buffer);
+        for (var key in this.bufferCache_) {
+          gl.deleteBuffer(this.bufferCache_[key].buffer);
         }
-        for (var key$1 in this$1.programCache_) {
-          gl.deleteProgram(this$1.programCache_[key$1]);
+        for (var key$1 in this.programCache_) {
+          gl.deleteProgram(this.programCache_[key$1]);
         }
-        for (var key$2 in this$1.shaderCache_) {
-          gl.deleteShader(this$1.shaderCache_[key$2]);
+        for (var key$2 in this.shaderCache_) {
+          gl.deleteShader(this.shaderCache_[key$2]);
         }
         // delete objects for hit-detection
         gl.deleteFramebuffer(this.hitDetectionFramebuffer_);
@@ -43914,7 +43685,7 @@
    * @module ol/render/webgl/TextureReplay
    */
 
-  var WebGLTextureReplay = (function (WebGLReplay$$1) {
+  var WebGLTextureReplay = /*@__PURE__*/(function (WebGLReplay$$1) {
     function WebGLTextureReplay(tolerance, maxExtent) {
       WebGLReplay$$1.call(this, tolerance, maxExtent);
 
@@ -44042,8 +43813,6 @@
      * @protected
      */
     WebGLTextureReplay.prototype.drawCoordinates = function drawCoordinates (flatCoordinates, offset, end, stride) {
-      var this$1 = this;
-
       var anchorX = /** @type {number} */ (this.anchorX);
       var anchorY = /** @type {number} */ (this.anchorY);
       var height = /** @type {number} */ (this.height);
@@ -44063,8 +43832,8 @@
       var numVertices = this.vertices.length;
       var i, n, offsetX, offsetY, x, y;
       for (i = offset; i < end; i += stride) {
-        x = flatCoordinates[i] - this$1.origin[0];
-        y = flatCoordinates[i + 1] - this$1.origin[1];
+        x = flatCoordinates[i] - this.origin[0];
+        y = flatCoordinates[i + 1] - this.origin[1];
 
         // There are 4 vertices per [x, y] point, one for each corner of the
         // rectangle we're going to draw. We'd use 1 vertex per [x, y] point if
@@ -44081,57 +43850,57 @@
         // bottom-left corner
         offsetX = -scale * anchorX;
         offsetY = -scale * (height - anchorY);
-        this$1.vertices[numVertices++] = x;
-        this$1.vertices[numVertices++] = y;
-        this$1.vertices[numVertices++] = offsetX * cos - offsetY * sin;
-        this$1.vertices[numVertices++] = offsetX * sin + offsetY * cos;
-        this$1.vertices[numVertices++] = originX / imageWidth;
-        this$1.vertices[numVertices++] = (originY + height) / imageHeight;
-        this$1.vertices[numVertices++] = opacity;
-        this$1.vertices[numVertices++] = rotateWithView;
+        this.vertices[numVertices++] = x;
+        this.vertices[numVertices++] = y;
+        this.vertices[numVertices++] = offsetX * cos - offsetY * sin;
+        this.vertices[numVertices++] = offsetX * sin + offsetY * cos;
+        this.vertices[numVertices++] = originX / imageWidth;
+        this.vertices[numVertices++] = (originY + height) / imageHeight;
+        this.vertices[numVertices++] = opacity;
+        this.vertices[numVertices++] = rotateWithView;
 
         // bottom-right corner
         offsetX = scale * (width - anchorX);
         offsetY = -scale * (height - anchorY);
-        this$1.vertices[numVertices++] = x;
-        this$1.vertices[numVertices++] = y;
-        this$1.vertices[numVertices++] = offsetX * cos - offsetY * sin;
-        this$1.vertices[numVertices++] = offsetX * sin + offsetY * cos;
-        this$1.vertices[numVertices++] = (originX + width) / imageWidth;
-        this$1.vertices[numVertices++] = (originY + height) / imageHeight;
-        this$1.vertices[numVertices++] = opacity;
-        this$1.vertices[numVertices++] = rotateWithView;
+        this.vertices[numVertices++] = x;
+        this.vertices[numVertices++] = y;
+        this.vertices[numVertices++] = offsetX * cos - offsetY * sin;
+        this.vertices[numVertices++] = offsetX * sin + offsetY * cos;
+        this.vertices[numVertices++] = (originX + width) / imageWidth;
+        this.vertices[numVertices++] = (originY + height) / imageHeight;
+        this.vertices[numVertices++] = opacity;
+        this.vertices[numVertices++] = rotateWithView;
 
         // top-right corner
         offsetX = scale * (width - anchorX);
         offsetY = scale * anchorY;
-        this$1.vertices[numVertices++] = x;
-        this$1.vertices[numVertices++] = y;
-        this$1.vertices[numVertices++] = offsetX * cos - offsetY * sin;
-        this$1.vertices[numVertices++] = offsetX * sin + offsetY * cos;
-        this$1.vertices[numVertices++] = (originX + width) / imageWidth;
-        this$1.vertices[numVertices++] = originY / imageHeight;
-        this$1.vertices[numVertices++] = opacity;
-        this$1.vertices[numVertices++] = rotateWithView;
+        this.vertices[numVertices++] = x;
+        this.vertices[numVertices++] = y;
+        this.vertices[numVertices++] = offsetX * cos - offsetY * sin;
+        this.vertices[numVertices++] = offsetX * sin + offsetY * cos;
+        this.vertices[numVertices++] = (originX + width) / imageWidth;
+        this.vertices[numVertices++] = originY / imageHeight;
+        this.vertices[numVertices++] = opacity;
+        this.vertices[numVertices++] = rotateWithView;
 
         // top-left corner
         offsetX = -scale * anchorX;
         offsetY = scale * anchorY;
-        this$1.vertices[numVertices++] = x;
-        this$1.vertices[numVertices++] = y;
-        this$1.vertices[numVertices++] = offsetX * cos - offsetY * sin;
-        this$1.vertices[numVertices++] = offsetX * sin + offsetY * cos;
-        this$1.vertices[numVertices++] = originX / imageWidth;
-        this$1.vertices[numVertices++] = originY / imageHeight;
-        this$1.vertices[numVertices++] = opacity;
-        this$1.vertices[numVertices++] = rotateWithView;
+        this.vertices[numVertices++] = x;
+        this.vertices[numVertices++] = y;
+        this.vertices[numVertices++] = offsetX * cos - offsetY * sin;
+        this.vertices[numVertices++] = offsetX * sin + offsetY * cos;
+        this.vertices[numVertices++] = originX / imageWidth;
+        this.vertices[numVertices++] = originY / imageHeight;
+        this.vertices[numVertices++] = opacity;
+        this.vertices[numVertices++] = rotateWithView;
 
-        this$1.indices[numIndices++] = n;
-        this$1.indices[numIndices++] = n + 1;
-        this$1.indices[numIndices++] = n + 2;
-        this$1.indices[numIndices++] = n;
-        this$1.indices[numIndices++] = n + 2;
-        this$1.indices[numIndices++] = n + 3;
+        this.indices[numIndices++] = n;
+        this.indices[numIndices++] = n + 1;
+        this.indices[numIndices++] = n + 2;
+        this.indices[numIndices++] = n;
+        this.indices[numIndices++] = n + 2;
+        this.indices[numIndices++] = n + 3;
       }
 
       return numVertices;
@@ -44220,8 +43989,6 @@
      * @inheritDoc
      */
     WebGLTextureReplay.prototype.drawReplay = function drawReplay (gl, context, skippedFeaturesHash, hitDetection) {
-      var this$1 = this;
-
       var textures = hitDetection ? this.getHitDetectionTextures() : this.getTextures();
       var groupIndices = hitDetection ? this.hitDetectionGroupIndices : this.groupIndices;
 
@@ -44232,7 +43999,7 @@
         for (i = 0, ii = textures.length, start = 0; i < ii; ++i) {
           gl.bindTexture(TEXTURE_2D, textures[i]);
           var end = groupIndices[i];
-          this$1.drawElements(gl, context, start, end);
+          this.drawElements(gl, context, start, end);
           start = end;
         }
       }
@@ -44265,8 +44032,6 @@
      * @param {Array<number>} groupIndices Texture group indices.
      */
     WebGLTextureReplay.prototype.drawReplaySkipping = function drawReplaySkipping (gl, context, skippedFeaturesHash, textures, groupIndices) {
-      var this$1 = this;
-
       var featureIndex = 0;
 
       var i, ii;
@@ -44279,23 +44044,23 @@
         var end = groupStart;
         while (featureIndex < this.startIndices.length &&
             this.startIndices[featureIndex] <= groupEnd) {
-          var feature = this$1.startIndicesFeature[featureIndex];
+          var feature = this.startIndicesFeature[featureIndex];
 
           var featureUid = getUid(feature).toString();
           if (skippedFeaturesHash[featureUid] !== undefined) {
             // feature should be skipped
             if (start !== end) {
               // draw the features so far
-              this$1.drawElements(gl, context, start, end);
+              this.drawElements(gl, context, start, end);
             }
             // continue with the next feature
-            start = (featureIndex === this$1.startIndices.length - 1) ?
-              groupEnd : this$1.startIndices[featureIndex + 1];
+            start = (featureIndex === this.startIndices.length - 1) ?
+              groupEnd : this.startIndices[featureIndex + 1];
             end = start;
           } else {
             // the feature is not skipped, augment the end index
-            end = (featureIndex === this$1.startIndices.length - 1) ?
-              groupEnd : this$1.startIndices[featureIndex + 1];
+            end = (featureIndex === this.startIndices.length - 1) ?
+              groupEnd : this.startIndices[featureIndex + 1];
           }
           featureIndex++;
         }
@@ -44303,7 +44068,7 @@
         if (start !== end) {
           // draw the remaining features (in case there was no skipped feature
           // in this texture group, all features of a group are drawn together)
-          this$1.drawElements(gl, context, start, end);
+          this.drawElements(gl, context, start, end);
         }
       }
     };
@@ -44312,21 +44077,19 @@
      * @inheritDoc
      */
     WebGLTextureReplay.prototype.drawHitDetectionReplayOneByOne = function drawHitDetectionReplayOneByOne (gl, context, skippedFeaturesHash, featureCallback, opt_hitExtent) {
-      var this$1 = this;
-
       var i, groupStart, start, end, feature, featureUid;
       var featureIndex = this.startIndices.length - 1;
       var hitDetectionTextures = this.getHitDetectionTextures();
       for (i = hitDetectionTextures.length - 1; i >= 0; --i) {
         gl.bindTexture(TEXTURE_2D, hitDetectionTextures[i]);
-        groupStart = (i > 0) ? this$1.hitDetectionGroupIndices[i - 1] : 0;
-        end = this$1.hitDetectionGroupIndices[i];
+        groupStart = (i > 0) ? this.hitDetectionGroupIndices[i - 1] : 0;
+        end = this.hitDetectionGroupIndices[i];
 
         // draw all features for this texture group
         while (featureIndex >= 0 &&
             this.startIndices[featureIndex] >= groupStart) {
-          start = this$1.startIndices[featureIndex];
-          feature = this$1.startIndicesFeature[featureIndex];
+          start = this.startIndices[featureIndex];
+          feature = this.startIndicesFeature[featureIndex];
           featureUid = getUid(feature).toString();
 
           if (skippedFeaturesHash[featureUid] === undefined &&
@@ -44335,7 +44098,7 @@
                 /** @type {Array<number>} */ (opt_hitExtent),
                 feature.getGeometry().getExtent()))) {
             gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-            this$1.drawElements(gl, context, start, end);
+            this.drawElements(gl, context, start, end);
 
             var result = featureCallback(feature);
             if (result) {
@@ -44392,7 +44155,7 @@
    * @module ol/render/webgl/ImageReplay
    */
 
-  var WebGLImageReplay = (function (WebGLTextureReplay$$1) {
+  var WebGLImageReplay = /*@__PURE__*/(function (WebGLTextureReplay$$1) {
     function WebGLImageReplay(tolerance, maxExtent) {
       WebGLTextureReplay$$1.call(this, tolerance, maxExtent);
 
@@ -44685,7 +44448,7 @@
   };
 
 
-  var WebGLLineStringReplay = (function (WebGLReplay$$1) {
+  var WebGLLineStringReplay = /*@__PURE__*/(function (WebGLReplay$$1) {
     function WebGLLineStringReplay(tolerance, maxExtent) {
       WebGLReplay$$1.call(this, tolerance, maxExtent);
 
@@ -44744,8 +44507,6 @@
      * @param {number} stride Stride.
      */
     WebGLLineStringReplay.prototype.drawCoordinates_ = function drawCoordinates_ (flatCoordinates, offset, end, stride) {
-      var this$1 = this;
-
 
       var i, ii;
       var numVertices = this.vertices.length;
@@ -44786,26 +44547,26 @@
             //Add the first two/four vertices.
 
             if (lineCap) {
-              numVertices = this$1.addVertices_([0, 0], p1, p2,
+              numVertices = this.addVertices_([0, 0], p1, p2,
                 lastSign * Instruction$1.BEGIN_LINE_CAP * lineCap, numVertices);
 
-              numVertices = this$1.addVertices_([0, 0], p1, p2,
+              numVertices = this.addVertices_([0, 0], p1, p2,
                 -lastSign * Instruction$1.BEGIN_LINE_CAP * lineCap, numVertices);
 
-              this$1.indices[numIndices++] = n + 2;
-              this$1.indices[numIndices++] = n;
-              this$1.indices[numIndices++] = n + 1;
+              this.indices[numIndices++] = n + 2;
+              this.indices[numIndices++] = n;
+              this.indices[numIndices++] = n + 1;
 
-              this$1.indices[numIndices++] = n + 1;
-              this$1.indices[numIndices++] = n + 3;
-              this$1.indices[numIndices++] = n + 2;
+              this.indices[numIndices++] = n + 1;
+              this.indices[numIndices++] = n + 3;
+              this.indices[numIndices++] = n + 2;
 
             }
 
-            numVertices = this$1.addVertices_([0, 0], p1, p2,
+            numVertices = this.addVertices_([0, 0], p1, p2,
               lastSign * Instruction$1.BEGIN_LINE * (lineCap || 1), numVertices);
 
-            numVertices = this$1.addVertices_([0, 0], p1, p2,
+            numVertices = this.addVertices_([0, 0], p1, p2,
               -lastSign * Instruction$1.BEGIN_LINE * (lineCap || 1), numVertices);
 
             lastIndex = numVertices / 7 - 1;
@@ -44821,34 +44582,34 @@
           } else {
             p0 = p0 || [0, 0];
 
-            numVertices = this$1.addVertices_(p0, p1, [0, 0],
+            numVertices = this.addVertices_(p0, p1, [0, 0],
               lastSign * Instruction$1.END_LINE * (lineCap || 1), numVertices);
 
-            numVertices = this$1.addVertices_(p0, p1, [0, 0],
+            numVertices = this.addVertices_(p0, p1, [0, 0],
               -lastSign * Instruction$1.END_LINE * (lineCap || 1), numVertices);
 
-            this$1.indices[numIndices++] = n;
-            this$1.indices[numIndices++] = lastIndex - 1;
-            this$1.indices[numIndices++] = lastIndex;
+            this.indices[numIndices++] = n;
+            this.indices[numIndices++] = lastIndex - 1;
+            this.indices[numIndices++] = lastIndex;
 
-            this$1.indices[numIndices++] = lastIndex;
-            this$1.indices[numIndices++] = n + 1;
-            this$1.indices[numIndices++] = n;
+            this.indices[numIndices++] = lastIndex;
+            this.indices[numIndices++] = n + 1;
+            this.indices[numIndices++] = n;
 
             if (lineCap) {
-              numVertices = this$1.addVertices_(p0, p1, [0, 0],
+              numVertices = this.addVertices_(p0, p1, [0, 0],
                 lastSign * Instruction$1.END_LINE_CAP * lineCap, numVertices);
 
-              numVertices = this$1.addVertices_(p0, p1, [0, 0],
+              numVertices = this.addVertices_(p0, p1, [0, 0],
                 -lastSign * Instruction$1.END_LINE_CAP * lineCap, numVertices);
 
-              this$1.indices[numIndices++] = n + 2;
-              this$1.indices[numIndices++] = n;
-              this$1.indices[numIndices++] = n + 1;
+              this.indices[numIndices++] = n + 2;
+              this.indices[numIndices++] = n;
+              this.indices[numIndices++] = n + 1;
 
-              this$1.indices[numIndices++] = n + 1;
-              this$1.indices[numIndices++] = n + 3;
-              this$1.indices[numIndices++] = n + 2;
+              this.indices[numIndices++] = n + 1;
+              this.indices[numIndices++] = n + 3;
+              this.indices[numIndices++] = n + 2;
 
             }
 
@@ -44862,40 +44623,40 @@
         sign = triangleIsCounterClockwise(p0[0], p0[1], p1[0], p1[1], p2[0], p2[1])
           ? -1 : 1;
 
-        numVertices = this$1.addVertices_(p0, p1, p2,
+        numVertices = this.addVertices_(p0, p1, p2,
           sign * Instruction$1.BEVEL_FIRST * (lineJoin || 1), numVertices);
 
-        numVertices = this$1.addVertices_(p0, p1, p2,
+        numVertices = this.addVertices_(p0, p1, p2,
           sign * Instruction$1.BEVEL_SECOND * (lineJoin || 1), numVertices);
 
-        numVertices = this$1.addVertices_(p0, p1, p2,
+        numVertices = this.addVertices_(p0, p1, p2,
           -sign * Instruction$1.MITER_BOTTOM * (lineJoin || 1), numVertices);
 
         if (i > offset) {
-          this$1.indices[numIndices++] = n;
-          this$1.indices[numIndices++] = lastIndex - 1;
-          this$1.indices[numIndices++] = lastIndex;
+          this.indices[numIndices++] = n;
+          this.indices[numIndices++] = lastIndex - 1;
+          this.indices[numIndices++] = lastIndex;
 
-          this$1.indices[numIndices++] = n + 2;
-          this$1.indices[numIndices++] = n;
-          this$1.indices[numIndices++] = lastSign * sign > 0 ? lastIndex : lastIndex - 1;
+          this.indices[numIndices++] = n + 2;
+          this.indices[numIndices++] = n;
+          this.indices[numIndices++] = lastSign * sign > 0 ? lastIndex : lastIndex - 1;
         }
 
-        this$1.indices[numIndices++] = n;
-        this$1.indices[numIndices++] = n + 2;
-        this$1.indices[numIndices++] = n + 1;
+        this.indices[numIndices++] = n;
+        this.indices[numIndices++] = n + 2;
+        this.indices[numIndices++] = n + 1;
 
         lastIndex = n + 2;
         lastSign = sign;
 
         //Add miter
         if (lineJoin) {
-          numVertices = this$1.addVertices_(p0, p1, p2,
+          numVertices = this.addVertices_(p0, p1, p2,
             sign * Instruction$1.MITER_TOP * lineJoin, numVertices);
 
-          this$1.indices[numIndices++] = n + 1;
-          this$1.indices[numIndices++] = n + 3;
-          this$1.indices[numIndices++] = n;
+          this.indices[numIndices++] = n + 1;
+          this.indices[numIndices++] = n + 3;
+          this.indices[numIndices++] = n;
         }
       }
 
@@ -44987,8 +44748,6 @@
      * @inheritDoc
      */
     WebGLLineStringReplay.prototype.drawMultiLineString = function drawMultiLineString (multiLineStringGeometry, feature) {
-      var this$1 = this;
-
       var indexCount = this.indices.length;
       var ends = multiLineStringGeometry.getEnds();
       ends.unshift(0);
@@ -44997,10 +44756,10 @@
       var i, ii;
       if (ends.length > 1) {
         for (i = 1, ii = ends.length; i < ii; ++i) {
-          if (this$1.isValid_(flatCoordinates, ends[i - 1], ends[i], stride)) {
+          if (this.isValid_(flatCoordinates, ends[i - 1], ends[i], stride)) {
             var lineString = translate(flatCoordinates, ends[i - 1], ends[i],
-              stride, -this$1.origin[0], -this$1.origin[1]);
-            this$1.drawCoordinates_(
+              stride, -this.origin[0], -this.origin[1]);
+            this.drawCoordinates_(
               lineString, 0, lineString.length, stride);
           }
         }
@@ -45021,8 +44780,6 @@
      * @param {number} stride Stride.
      */
     WebGLLineStringReplay.prototype.drawPolygonCoordinates = function drawPolygonCoordinates (flatCoordinates, holeFlatCoordinates, stride) {
-      var this$1 = this;
-
       if (!lineStringIsClosed(flatCoordinates, 0, flatCoordinates.length, stride)) {
         flatCoordinates.push(flatCoordinates[0]);
         flatCoordinates.push(flatCoordinates[1]);
@@ -45035,7 +44792,7 @@
             holeFlatCoordinates[i].push(holeFlatCoordinates[i][0]);
             holeFlatCoordinates[i].push(holeFlatCoordinates[i][1]);
           }
-          this$1.drawCoordinates_(holeFlatCoordinates[i], 0,
+          this.drawCoordinates_(holeFlatCoordinates[i], 0,
             holeFlatCoordinates[i].length, stride);
         }
       }
@@ -45151,8 +44908,6 @@
      * @inheritDoc
      */
     WebGLLineStringReplay.prototype.drawReplay = function drawReplay (gl, context, skippedFeaturesHash, hitDetection) {
-      var this$1 = this;
-
       //Save GL parameters.
       var tmpDepthFunc = /** @type {number} */ (gl.getParameter(gl.DEPTH_FUNC));
       var tmpDepthMask = /** @type {boolean} */ (gl.getParameter(gl.DEPTH_WRITEMASK));
@@ -45170,10 +44925,10 @@
         var i, start, end, nextStyle;
         end = this.startIndices[this.startIndices.length - 1];
         for (i = this.styleIndices_.length - 1; i >= 0; --i) {
-          start = this$1.styleIndices_[i];
-          nextStyle = this$1.styles_[i];
-          this$1.setStrokeStyle_(gl, nextStyle[0], nextStyle[1], nextStyle[2]);
-          this$1.drawElements(gl, context, start, end);
+          start = this.styleIndices_[i];
+          nextStyle = this.styles_[i];
+          this.setStrokeStyle_(gl, nextStyle[0], nextStyle[1], nextStyle[2]);
+          this.drawElements(gl, context, start, end);
           gl.clear(gl.DEPTH_BUFFER_BIT);
           end = start;
         }
@@ -45194,25 +44949,23 @@
      * @param {Object} skippedFeaturesHash Ids of features to skip.
      */
     WebGLLineStringReplay.prototype.drawReplaySkipping_ = function drawReplaySkipping_ (gl, context, skippedFeaturesHash) {
-      var this$1 = this;
-
       var i, start, end, nextStyle, groupStart, feature, featureUid, featureIndex, featureStart;
       featureIndex = this.startIndices.length - 2;
       end = start = this.startIndices[featureIndex + 1];
       for (i = this.styleIndices_.length - 1; i >= 0; --i) {
-        nextStyle = this$1.styles_[i];
-        this$1.setStrokeStyle_(gl, nextStyle[0], nextStyle[1], nextStyle[2]);
-        groupStart = this$1.styleIndices_[i];
+        nextStyle = this.styles_[i];
+        this.setStrokeStyle_(gl, nextStyle[0], nextStyle[1], nextStyle[2]);
+        groupStart = this.styleIndices_[i];
 
         while (featureIndex >= 0 &&
             this.startIndices[featureIndex] >= groupStart) {
-          featureStart = this$1.startIndices[featureIndex];
-          feature = this$1.startIndicesFeature[featureIndex];
+          featureStart = this.startIndices[featureIndex];
+          feature = this.startIndicesFeature[featureIndex];
           featureUid = getUid(feature).toString();
 
           if (skippedFeaturesHash[featureUid]) {
             if (start !== end) {
-              this$1.drawElements(gl, context, start, end);
+              this.drawElements(gl, context, start, end);
               gl.clear(gl.DEPTH_BUFFER_BIT);
             }
             end = featureStart;
@@ -45221,7 +44974,7 @@
           start = featureStart;
         }
         if (start !== end) {
-          this$1.drawElements(gl, context, start, end);
+          this.drawElements(gl, context, start, end);
           gl.clear(gl.DEPTH_BUFFER_BIT);
         }
         start = end = groupStart;
@@ -45232,20 +44985,18 @@
      * @inheritDoc
      */
     WebGLLineStringReplay.prototype.drawHitDetectionReplayOneByOne = function drawHitDetectionReplayOneByOne (gl, context, skippedFeaturesHash, featureCallback, opt_hitExtent) {
-      var this$1 = this;
-
       var i, start, end, nextStyle, groupStart, feature, featureUid, featureIndex;
       featureIndex = this.startIndices.length - 2;
       end = this.startIndices[featureIndex + 1];
       for (i = this.styleIndices_.length - 1; i >= 0; --i) {
-        nextStyle = this$1.styles_[i];
-        this$1.setStrokeStyle_(gl, nextStyle[0], nextStyle[1], nextStyle[2]);
-        groupStart = this$1.styleIndices_[i];
+        nextStyle = this.styles_[i];
+        this.setStrokeStyle_(gl, nextStyle[0], nextStyle[1], nextStyle[2]);
+        groupStart = this.styleIndices_[i];
 
         while (featureIndex >= 0 &&
             this.startIndices[featureIndex] >= groupStart) {
-          start = this$1.startIndices[featureIndex];
-          feature = this$1.startIndicesFeature[featureIndex];
+          start = this.startIndices[featureIndex];
+          feature = this.startIndicesFeature[featureIndex];
           featureUid = getUid(feature).toString();
 
           if (skippedFeaturesHash[featureUid] === undefined &&
@@ -45254,7 +45005,7 @@
                 /** @type {Array<number>} */ (opt_hitExtent),
                 feature.getGeometry().getExtent()))) {
             gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-            this$1.drawElements(gl, context, start, end);
+            this.drawElements(gl, context, start, end);
 
             var result = featureCallback(feature);
 
@@ -45655,7 +45406,7 @@
    */
 
 
-  var WebGLPolygonReplay = (function (WebGLReplay$$1) {
+  var WebGLPolygonReplay = /*@__PURE__*/(function (WebGLReplay$$1) {
     function WebGLPolygonReplay(tolerance, maxExtent) {
       WebGLReplay$$1.call(this, tolerance, maxExtent);
 
@@ -45704,8 +45455,6 @@
      * @private
      */
     WebGLPolygonReplay.prototype.drawCoordinates_ = function drawCoordinates_ (flatCoordinates, holeFlatCoordinates, stride) {
-      var this$1 = this;
-
       // Triangulate the polygon
       var outerRing = new LinkedList();
       var rtree = new RBush();
@@ -45724,10 +45473,10 @@
             rtree: new RBush()
           };
           holeLists.push(holeList);
-          this$1.processFlatCoordinates_(holeFlatCoordinates[i],
+          this.processFlatCoordinates_(holeFlatCoordinates[i],
             stride, holeList.list, holeList.rtree, false);
-          this$1.classifyPoints_(holeList.list, holeList.rtree, true);
-          holeList.maxCoords = this$1.getMaxCoords_(holeList.list);
+          this.classifyPoints_(holeList.list, holeList.rtree, true);
+          holeList.maxCoords = this.getMaxCoords_(holeList.list);
         }
         holeLists.sort(function(a, b) {
           return b.maxCoords[0] === a.maxCoords[0] ?
@@ -45740,16 +45489,16 @@
           var intersection = (void 0);
           do {
             //TODO: Triangulate holes when they intersect the outer ring.
-            if (this$1.getIntersections_(currItem, rtree).length) {
+            if (this.getIntersections_(currItem, rtree).length) {
               intersection = true;
               break;
             }
             currItem = currList.nextItem();
           } while (start !== currItem);
           if (!intersection) {
-            if (this$1.bridgeHole_(currList, holeLists[i].maxCoords[0], outerRing, maxCoords[0], rtree)) {
+            if (this.bridgeHole_(currList, holeLists[i].maxCoords[0], outerRing, maxCoords[0], rtree)) {
               rtree.concat(holeLists[i].rtree);
-              this$1.classifyPoints_(outerRing, rtree, false);
+              this.classifyPoints_(outerRing, rtree, false);
             }
           }
         }
@@ -45769,8 +45518,6 @@
      * @param {boolean} clockwise Coordinate order should be clockwise.
      */
     WebGLPolygonReplay.prototype.processFlatCoordinates_ = function processFlatCoordinates_ (flatCoordinates, stride, list, rtree, clockwise) {
-      var this$1 = this;
-
       var isClockwise = linearRingIsClockwise(flatCoordinates,
         0, flatCoordinates.length, stride);
       var i, ii;
@@ -45787,8 +45534,8 @@
         start = this.createPoint_(flatCoordinates[0], flatCoordinates[1], n++);
         p0 = start;
         for (i = stride, ii = flatCoordinates.length; i < ii; i += stride) {
-          p1 = this$1.createPoint_(flatCoordinates[i], flatCoordinates[i + 1], n++);
-          segments.push(this$1.insertItem_(p0, p1, list));
+          p1 = this.createPoint_(flatCoordinates[i], flatCoordinates[i + 1], n++);
+          segments.push(this.insertItem_(p0, p1, list));
           extents.push([Math.min(p0.x, p1.x), Math.min(p0.y, p1.y), Math.max(p0.x, p1.x),
             Math.max(p0.y, p1.y)]);
           p0 = p1;
@@ -45801,8 +45548,8 @@
         start = this.createPoint_(flatCoordinates[end], flatCoordinates[end + 1], n++);
         p0 = start;
         for (i = end - stride, ii = 0; i >= ii; i -= stride) {
-          p1 = this$1.createPoint_(flatCoordinates[i], flatCoordinates[i + 1], n++);
-          segments.push(this$1.insertItem_(p0, p1, list));
+          p1 = this.createPoint_(flatCoordinates[i], flatCoordinates[i + 1], n++);
+          segments.push(this.insertItem_(p0, p1, list));
           extents.push([Math.min(p0.x, p1.x), Math.min(p0.y, p1.y), Math.max(p0.x, p1.x),
             Math.max(p0.y, p1.y)]);
           p0 = p1;
@@ -45844,8 +45591,6 @@
      * @return {boolean} There were reclassified points.
      */
     WebGLPolygonReplay.prototype.classifyPoints_ = function classifyPoints_ (list, rtree, ccw) {
-      var this$1 = this;
-
       var start = list.firstItem();
       var s0 = start;
       var s1 = list.nextItem();
@@ -45856,7 +45601,7 @@
           triangleIsCounterClockwise(s0.p0.x, s0.p0.y, s0.p1.x,
             s0.p1.y, s1.p1.x, s1.p1.y);
         if (reflex === undefined) {
-          this$1.removeItem_(s0, s1, list, rtree);
+          this.removeItem_(s0, s1, list, rtree);
           pointsReclassified = true;
           if (s1 === start) {
             start = list.getNextItem();
@@ -45883,8 +45628,6 @@
      * @return {boolean} Bridging was successful.
      */
     WebGLPolygonReplay.prototype.bridgeHole_ = function bridgeHole_ (hole, holeMaxX, list, listMaxX, rtree) {
-      var this$1 = this;
-
       var seg = hole.firstItem();
       while (seg.p1.x !== holeMaxX) {
         seg = hole.nextItem();
@@ -45901,7 +45644,7 @@
       var intersectingSegments = this.getIntersections_({p0: p1, p1: p2}, rtree, true);
       for (i = 0, ii = intersectingSegments.length; i < ii; ++i) {
         var currSeg = intersectingSegments[i];
-        var intersection = this$1.calculateIntersection_(p1, p2, currSeg.p0,
+        var intersection = this.calculateIntersection_(p1, p2, currSeg.p0,
           currSeg.p1, true);
         var dist = Math.abs(p1.x - intersection[0]);
         if (dist < minDist && triangleIsCounterClockwise(p1.x, p1.y,
@@ -45956,37 +45699,35 @@
      * @param {import("../../structs/RBush.js").default} rtree R-Tree of the polygon.
      */
     WebGLPolygonReplay.prototype.triangulate_ = function triangulate_ (list, rtree) {
-      var this$1 = this;
-
       var ccw = false;
       var simple = this.isSimple_(list, rtree);
 
       // Start clipping ears
       while (list.getLength() > 3) {
         if (simple) {
-          if (!this$1.clipEars_(list, rtree, simple, ccw)) {
-            if (!this$1.classifyPoints_(list, rtree, ccw)) {
+          if (!this.clipEars_(list, rtree, simple, ccw)) {
+            if (!this.classifyPoints_(list, rtree, ccw)) {
               // Due to the behavior of OL's PIP algorithm, the ear clipping cannot
               // introduce touching segments. However, the original data may have some.
-              if (!this$1.resolveSelfIntersections_(list, rtree, true)) {
+              if (!this.resolveSelfIntersections_(list, rtree, true)) {
                 break;
               }
             }
           }
         } else {
-          if (!this$1.clipEars_(list, rtree, simple, ccw)) {
+          if (!this.clipEars_(list, rtree, simple, ccw)) {
             // We ran out of ears, try to reclassify.
-            if (!this$1.classifyPoints_(list, rtree, ccw)) {
+            if (!this.classifyPoints_(list, rtree, ccw)) {
               // We have a bad polygon, try to resolve local self-intersections.
-              if (!this$1.resolveSelfIntersections_(list, rtree)) {
-                simple = this$1.isSimple_(list, rtree);
+              if (!this.resolveSelfIntersections_(list, rtree)) {
+                simple = this.isSimple_(list, rtree);
                 if (!simple) {
                   // We have a really bad polygon, try more time consuming methods.
-                  this$1.splitPolygon_(list, rtree);
+                  this.splitPolygon_(list, rtree);
                   break;
                 } else {
-                  ccw = !this$1.isClockwise_(list);
-                  this$1.classifyPoints_(list, rtree, ccw);
+                  ccw = !this.isClockwise_(list);
+                  this.classifyPoints_(list, rtree, ccw);
                 }
               }
             }
@@ -46010,8 +45751,6 @@
      * @return {boolean} There were processed ears.
      */
     WebGLPolygonReplay.prototype.clipEars_ = function clipEars_ (list, rtree, simple, ccw) {
-      var this$1 = this;
-
       var numIndices = this.indices.length;
       var start = list.firstItem();
       var s0 = list.getPrevItem();
@@ -46028,22 +45767,22 @@
           // We might have a valid ear
           var variableCriterion = (void 0);
           if (simple) {
-            variableCriterion = this$1.getPointsInTriangle_(p0, p1, p2, rtree, true).length === 0;
+            variableCriterion = this.getPointsInTriangle_(p0, p1, p2, rtree, true).length === 0;
           } else {
-            variableCriterion = ccw ? this$1.diagonalIsInside_(s3.p1, p2, p1, p0,
-              s0.p0) : this$1.diagonalIsInside_(s0.p0, p0, p1, p2, s3.p1);
+            variableCriterion = ccw ? this.diagonalIsInside_(s3.p1, p2, p1, p0,
+              s0.p0) : this.diagonalIsInside_(s0.p0, p0, p1, p2, s3.p1);
           }
-          if ((simple || this$1.getIntersections_({p0: p0, p1: p2}, rtree).length === 0) &&
+          if ((simple || this.getIntersections_({p0: p0, p1: p2}, rtree).length === 0) &&
               variableCriterion) {
             //The diagonal is completely inside the polygon
             if (simple || p0.reflex === false || p2.reflex === false ||
                 linearRingIsClockwise([s0.p0.x, s0.p0.y, p0.x,
                   p0.y, p1.x, p1.y, p2.x, p2.y, s3.p1.x, s3.p1.y], 0, 10, 2) === !ccw) {
               //The diagonal is persumably valid, we have an ear
-              this$1.indices[numIndices++] = p0.i;
-              this$1.indices[numIndices++] = p1.i;
-              this$1.indices[numIndices++] = p2.i;
-              this$1.removeItem_(s1, s2, list, rtree);
+              this.indices[numIndices++] = p0.i;
+              this.indices[numIndices++] = p1.i;
+              this.indices[numIndices++] = p2.i;
+              this.removeItem_(s1, s2, list, rtree);
               if (s2 === start) {
                 start = s3;
               }
@@ -46069,8 +45808,6 @@
      * @return {boolean} There were resolved intersections.
     */
     WebGLPolygonReplay.prototype.resolveSelfIntersections_ = function resolveSelfIntersections_ (list, rtree, opt_touch) {
-      var this$1 = this;
-
       var start = list.firstItem();
       list.nextItem();
       var s0 = start;
@@ -46078,12 +45815,12 @@
       var resolvedIntersections = false;
 
       do {
-        var intersection = this$1.calculateIntersection_(s0.p0, s0.p1, s1.p0, s1.p1,
+        var intersection = this.calculateIntersection_(s0.p0, s0.p1, s1.p0, s1.p1,
           opt_touch);
         if (intersection) {
           var breakCond = false;
-          var numVertices = this$1.vertices.length;
-          var numIndices = this$1.indices.length;
+          var numVertices = this.vertices.length;
+          var numIndices = this.indices.length;
           var n = numVertices / 2;
           var seg = list.prevItem();
           list.removeItem();
@@ -46105,7 +45842,7 @@
             }
             list.removeItem();
           } else {
-            p = this$1.createPoint_(intersection[0], intersection[1], n);
+            p = this.createPoint_(intersection[0], intersection[1], n);
             s0.p1 = p;
             s1.p0 = p;
             rtree.update([Math.min(s0.p0.x, s0.p1.x), Math.min(s0.p0.y, s0.p1.y),
@@ -46114,9 +45851,9 @@
               Math.max(s1.p0.x, s1.p1.x), Math.max(s1.p0.y, s1.p1.y)], s1);
           }
 
-          this$1.indices[numIndices++] = seg.p0.i;
-          this$1.indices[numIndices++] = seg.p1.i;
-          this$1.indices[numIndices++] = p.i;
+          this.indices[numIndices++] = seg.p0.i;
+          this.indices[numIndices++] = seg.p1.i;
+          this.indices[numIndices++] = p.i;
 
           resolvedIntersections = true;
           if (breakCond) {
@@ -46137,12 +45874,10 @@
      * @return {boolean} The polygon is simple.
      */
     WebGLPolygonReplay.prototype.isSimple_ = function isSimple_ (list, rtree) {
-      var this$1 = this;
-
       var start = list.firstItem();
       var seg = start;
       do {
-        if (this$1.getIntersections_(seg, rtree).length) {
+        if (this.getIntersections_(seg, rtree).length) {
           return false;
         }
         seg = list.nextItem();
@@ -46175,39 +45910,37 @@
      * @param {import("../../structs/RBush.js").default} rtree R-Tree of the polygon.
      */
     WebGLPolygonReplay.prototype.splitPolygon_ = function splitPolygon_ (list, rtree) {
-      var this$1 = this;
-
       var start = list.firstItem();
       var s0 = start;
       do {
-        var intersections = this$1.getIntersections_(s0, rtree);
+        var intersections = this.getIntersections_(s0, rtree);
         if (intersections.length) {
           var s1 = intersections[0];
-          var n = this$1.vertices.length / 2;
-          var intersection = this$1.calculateIntersection_(s0.p0,
+          var n = this.vertices.length / 2;
+          var intersection = this.calculateIntersection_(s0.p0,
             s0.p1, s1.p0, s1.p1);
-          var p = this$1.createPoint_(intersection[0], intersection[1], n);
+          var p = this.createPoint_(intersection[0], intersection[1], n);
           var newPolygon = new LinkedList();
           var newRtree = new RBush();
-          this$1.insertItem_(p, s0.p1, newPolygon, newRtree);
+          this.insertItem_(p, s0.p1, newPolygon, newRtree);
           s0.p1 = p;
           rtree.update([Math.min(s0.p0.x, p.x), Math.min(s0.p0.y, p.y),
             Math.max(s0.p0.x, p.x), Math.max(s0.p0.y, p.y)], s0);
           var currItem = list.nextItem();
           while (currItem !== s1) {
-            this$1.insertItem_(currItem.p0, currItem.p1, newPolygon, newRtree);
+            this.insertItem_(currItem.p0, currItem.p1, newPolygon, newRtree);
             rtree.remove(currItem);
             list.removeItem();
             currItem = list.getCurrItem();
           }
-          this$1.insertItem_(s1.p0, p, newPolygon, newRtree);
+          this.insertItem_(s1.p0, p, newPolygon, newRtree);
           s1.p0 = p;
           rtree.update([Math.min(s1.p1.x, p.x), Math.min(s1.p1.y, p.y),
             Math.max(s1.p1.x, p.x), Math.max(s1.p1.y, p.y)], s1);
-          this$1.classifyPoints_(list, rtree, false);
-          this$1.triangulate_(list, rtree);
-          this$1.classifyPoints_(newPolygon, newRtree, false);
-          this$1.triangulate_(newPolygon, newRtree);
+          this.classifyPoints_(list, rtree, false);
+          this.triangulate_(list, rtree);
+          this.classifyPoints_(newPolygon, newRtree, false);
+          this.triangulate_(newPolygon, newRtree);
           break;
         }
         s0 = list.nextItem();
@@ -46310,8 +46043,6 @@
      * @return {Array<PolygonSegment>} Intersecting segments.
      */
     WebGLPolygonReplay.prototype.getIntersections_ = function getIntersections_ (segment, rtree, opt_touch) {
-      var this$1 = this;
-
       var p0 = segment.p0;
       var p1 = segment.p1;
       var segmentsInExtent = rtree.getInExtent([Math.min(p0.x, p1.x),
@@ -46320,7 +46051,7 @@
       for (var i = 0, ii = segmentsInExtent.length; i < ii; ++i) {
         var currSeg = segmentsInExtent[i];
         if (segment !== currSeg && (opt_touch || currSeg.p0 !== p1 || currSeg.p1 !== p0) &&
-            this$1.calculateIntersection_(p0, p1, currSeg.p0, currSeg.p1, opt_touch)) {
+            this.calculateIntersection_(p0, p1, currSeg.p0, currSeg.p1, opt_touch)) {
           result.push(currSeg);
         }
       }
@@ -46379,8 +46110,6 @@
      * @inheritDoc
      */
     WebGLPolygonReplay.prototype.drawMultiPolygon = function drawMultiPolygon (multiPolygonGeometry, feature) {
-      var this$1 = this;
-
       var endss = multiPolygonGeometry.getEndss();
       var stride = multiPolygonGeometry.getStride();
       var currIndex = this.indices.length;
@@ -46392,19 +46121,19 @@
         var ends = endss[i];
         if (ends.length > 0) {
           var outerRing = translate(flatCoordinates, start, ends[0],
-            stride, -this$1.origin[0], -this$1.origin[1]);
+            stride, -this.origin[0], -this.origin[1]);
           if (outerRing.length) {
             var holes = [];
             var holeFlatCoords = (void 0);
             for (j = 1, jj = ends.length; j < jj; ++j) {
               if (ends[j] !== ends[j - 1]) {
                 holeFlatCoords = translate(flatCoordinates, ends[j - 1],
-                  ends[j], stride, -this$1.origin[0], -this$1.origin[1]);
+                  ends[j], stride, -this.origin[0], -this.origin[1]);
                 holes.push(holeFlatCoords);
               }
             }
-            this$1.lineStringReplay.drawPolygonCoordinates(outerRing, holes, stride);
-            this$1.drawCoordinates_(outerRing, holes, stride);
+            this.lineStringReplay.drawPolygonCoordinates(outerRing, holes, stride);
+            this.drawCoordinates_(outerRing, holes, stride);
           }
         }
         start = ends[ends.length - 1];
@@ -46426,8 +46155,6 @@
      * @inheritDoc
      */
     WebGLPolygonReplay.prototype.drawPolygon = function drawPolygon (polygonGeometry, feature) {
-      var this$1 = this;
-
       var ends = polygonGeometry.getEnds();
       var stride = polygonGeometry.getStride();
       if (ends.length > 0) {
@@ -46440,7 +46167,7 @@
           for (i = 1, ii = ends.length; i < ii; ++i) {
             if (ends[i] !== ends[i - 1]) {
               holeFlatCoords = translate(flatCoordinates, ends[i - 1],
-                ends[i], stride, -this$1.origin[0], -this$1.origin[1]);
+                ends[i], stride, -this.origin[0], -this.origin[1]);
               holes.push(holeFlatCoords);
             }
           }
@@ -46533,8 +46260,6 @@
      * @inheritDoc
      */
     WebGLPolygonReplay.prototype.drawReplay = function drawReplay (gl, context, skippedFeaturesHash, hitDetection) {
-      var this$1 = this;
-
       //Save GL parameters.
       var tmpDepthFunc = /** @type {number} */ (gl.getParameter(gl.DEPTH_FUNC));
       var tmpDepthMask = /** @type {boolean} */ (gl.getParameter(gl.DEPTH_WRITEMASK));
@@ -46552,10 +46277,10 @@
         var i, start, end, nextStyle;
         end = this.startIndices[this.startIndices.length - 1];
         for (i = this.styleIndices_.length - 1; i >= 0; --i) {
-          start = this$1.styleIndices_[i];
-          nextStyle = this$1.styles_[i];
-          this$1.setFillStyle_(gl, nextStyle);
-          this$1.drawElements(gl, context, start, end);
+          start = this.styleIndices_[i];
+          nextStyle = this.styles_[i];
+          this.setFillStyle_(gl, nextStyle);
+          this.drawElements(gl, context, start, end);
           end = start;
         }
       }
@@ -46572,20 +46297,18 @@
      * @inheritDoc
      */
     WebGLPolygonReplay.prototype.drawHitDetectionReplayOneByOne = function drawHitDetectionReplayOneByOne (gl, context, skippedFeaturesHash, featureCallback, opt_hitExtent) {
-      var this$1 = this;
-
       var i, start, end, nextStyle, groupStart, feature, featureUid, featureIndex;
       featureIndex = this.startIndices.length - 2;
       end = this.startIndices[featureIndex + 1];
       for (i = this.styleIndices_.length - 1; i >= 0; --i) {
-        nextStyle = this$1.styles_[i];
-        this$1.setFillStyle_(gl, nextStyle);
-        groupStart = this$1.styleIndices_[i];
+        nextStyle = this.styles_[i];
+        this.setFillStyle_(gl, nextStyle);
+        groupStart = this.styleIndices_[i];
 
         while (featureIndex >= 0 &&
             this.startIndices[featureIndex] >= groupStart) {
-          start = this$1.startIndices[featureIndex];
-          feature = this$1.startIndicesFeature[featureIndex];
+          start = this.startIndices[featureIndex];
+          feature = this.startIndicesFeature[featureIndex];
           featureUid = getUid(feature).toString();
 
           if (skippedFeaturesHash[featureUid] === undefined &&
@@ -46594,7 +46317,7 @@
                 /** @type {Array<number>} */ (opt_hitExtent),
                 feature.getGeometry().getExtent()))) {
             gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-            this$1.drawElements(gl, context, start, end);
+            this.drawElements(gl, context, start, end);
 
             var result = featureCallback(feature);
 
@@ -46617,25 +46340,23 @@
      * @param {Object} skippedFeaturesHash Ids of features to skip.
      */
     WebGLPolygonReplay.prototype.drawReplaySkipping_ = function drawReplaySkipping_ (gl, context, skippedFeaturesHash) {
-      var this$1 = this;
-
       var i, start, end, nextStyle, groupStart, feature, featureUid, featureIndex, featureStart;
       featureIndex = this.startIndices.length - 2;
       end = start = this.startIndices[featureIndex + 1];
       for (i = this.styleIndices_.length - 1; i >= 0; --i) {
-        nextStyle = this$1.styles_[i];
-        this$1.setFillStyle_(gl, nextStyle);
-        groupStart = this$1.styleIndices_[i];
+        nextStyle = this.styles_[i];
+        this.setFillStyle_(gl, nextStyle);
+        groupStart = this.styleIndices_[i];
 
         while (featureIndex >= 0 &&
             this.startIndices[featureIndex] >= groupStart) {
-          featureStart = this$1.startIndices[featureIndex];
-          feature = this$1.startIndicesFeature[featureIndex];
+          featureStart = this.startIndices[featureIndex];
+          feature = this.startIndicesFeature[featureIndex];
           featureUid = getUid(feature).toString();
 
           if (skippedFeaturesHash[featureUid]) {
             if (start !== end) {
-              this$1.drawElements(gl, context, start, end);
+              this.drawElements(gl, context, start, end);
               gl.clear(gl.DEPTH_BUFFER_BIT);
             }
             end = featureStart;
@@ -46644,7 +46365,7 @@
           start = featureStart;
         }
         if (start !== end) {
-          this$1.drawElements(gl, context, start, end);
+          this.drawElements(gl, context, start, end);
           gl.clear(gl.DEPTH_BUFFER_BIT);
         }
         start = end = groupStart;
@@ -46784,26 +46505,24 @@
    * @return {?AtlasInfo} The position and atlas image for the entry.
    */
   Atlas.prototype.add = function add (id, width, height, renderCallback, opt_this) {
-      var this$1 = this;
-
     for (var i = 0, ii = this.emptyBlocks_.length; i < ii; ++i) {
-      var block = this$1.emptyBlocks_[i];
-      if (block.width >= width + this$1.space_ &&
-          block.height >= height + this$1.space_) {
+      var block = this.emptyBlocks_[i];
+      if (block.width >= width + this.space_ &&
+          block.height >= height + this.space_) {
         // we found a block that is big enough for our entry
         var entry = {
-          offsetX: block.x + this$1.space_,
-          offsetY: block.y + this$1.space_,
-          image: this$1.canvas_
+          offsetX: block.x + this.space_,
+          offsetY: block.y + this.space_,
+          image: this.canvas_
         };
-        this$1.entries_[id] = entry;
+        this.entries_[id] = entry;
 
         // render the image on the atlas image
-        renderCallback.call(opt_this, this$1.context_,
-          block.x + this$1.space_, block.y + this$1.space_);
+        renderCallback.call(opt_this, this.context_,
+          block.x + this.space_, block.y + this.space_);
 
         // split the block after the insertion, either horizontally or vertically
-        this$1.split_(i, block, width + this$1.space_, height + this$1.space_);
+        this.split_(i, block, width + this.space_, height + this.space_);
 
         return entry;
       }
@@ -47097,8 +46816,6 @@
    *  or `null` if the image is too big.
    */
   AtlasManager.prototype.add_ = function add_ (isHitAtlas, id, width, height, renderCallback, opt_this) {
-      var this$1 = this;
-
     var atlases = (isHitAtlas) ? this.hitAtlases_ : this.atlases_;
     var atlas, info, i, ii;
     for (i = 0, ii = atlases.length; i < ii; ++i) {
@@ -47111,13 +46828,13 @@
         // create a new atlas that is twice as big and try to add to this one.
         var size = (void 0);
         if (isHitAtlas) {
-          size = Math.min(this$1.currentHitSize_ * 2, this$1.maxSize_);
-          this$1.currentHitSize_ = size;
+          size = Math.min(this.currentHitSize_ * 2, this.maxSize_);
+          this.currentHitSize_ = size;
         } else {
-          size = Math.min(this$1.currentSize_ * 2, this$1.maxSize_);
-          this$1.currentSize_ = size;
+          size = Math.min(this.currentSize_ * 2, this.maxSize_);
+          this.currentSize_ = size;
         }
-        atlas = new Atlas(size, this$1.space_);
+        atlas = new Atlas(size, this.space_);
         atlases.push(atlas);
         // run the loop another time
         ++ii;
@@ -47138,7 +46855,7 @@
    */
 
 
-  var WebGLTextReplay = (function (WebGLTextureReplay$$1) {
+  var WebGLTextReplay = /*@__PURE__*/(function (WebGLTextureReplay$$1) {
     function WebGLTextReplay(tolerance, maxExtent) {
       WebGLTextureReplay$$1.call(this, tolerance, maxExtent);
 
@@ -47242,8 +46959,6 @@
      * @inheritDoc
      */
     WebGLTextReplay.prototype.drawText = function drawText (geometry, feature) {
-      var this$1 = this;
-
       if (this.text_) {
         var flatCoordinates = null;
         var offset = 0;
@@ -47297,29 +47012,29 @@
             if (charInfo) {
               var image = charInfo.image;
 
-              this$1.anchorX = anchorX - currX;
-              this$1.anchorY = anchorY - currY;
-              this$1.originX = j === 0 ? charInfo.offsetX - lineWidth : charInfo.offsetX;
-              this$1.originY = charInfo.offsetY;
-              this$1.height = glyphAtlas.height;
-              this$1.width = j === 0 || j === charArr.length - 1 ?
+              this.anchorX = anchorX - currX;
+              this.anchorY = anchorY - currY;
+              this.originX = j === 0 ? charInfo.offsetX - lineWidth : charInfo.offsetX;
+              this.originY = charInfo.offsetY;
+              this.height = glyphAtlas.height;
+              this.width = j === 0 || j === charArr.length - 1 ?
                 glyphAtlas.width[charArr[j]] + lineWidth : glyphAtlas.width[charArr[j]];
-              this$1.imageHeight = image.height;
-              this$1.imageWidth = image.width;
+              this.imageHeight = image.height;
+              this.imageWidth = image.width;
 
-              if (this$1.images_.length === 0) {
-                this$1.images_.push(image);
+              if (this.images_.length === 0) {
+                this.images_.push(image);
               } else {
-                var currentImage = this$1.images_[this$1.images_.length - 1];
+                var currentImage = this.images_[this.images_.length - 1];
                 if (getUid(currentImage) != getUid(image)) {
-                  this$1.groupIndices.push(this$1.indices.length);
-                  this$1.images_.push(image);
+                  this.groupIndices.push(this.indices.length);
+                  this.images_.push(image);
                 }
               }
 
-              this$1.drawText_(flatCoordinates, offset, end, stride);
+              this.drawText_(flatCoordinates, offset, end, stride);
             }
-            currX += this$1.width;
+            currX += this.width;
           }
         }
       }
@@ -47360,10 +47075,8 @@
      * @param {number} stride Stride.
      */
     WebGLTextReplay.prototype.drawText_ = function drawText_ (flatCoordinates, offset, end, stride) {
-      var this$1 = this;
-
       for (var i = offset, ii = end; i < ii; i += stride) {
-        this$1.drawCoordinates(flatCoordinates, offset, end, stride);
+        this.drawCoordinates(flatCoordinates, offset, end, stride);
       }
     };
 
@@ -47599,7 +47312,7 @@
   };
 
 
-  var WebGLReplayGroup = (function (ReplayGroup$$1) {
+  var WebGLReplayGroup = /*@__PURE__*/(function (ReplayGroup$$1) {
     function WebGLReplayGroup(tolerance, maxExtent, opt_renderBuffer) {
       ReplayGroup$$1.call(this);
 
@@ -47645,12 +47358,10 @@
      * @return {function()} Delete resources function.
      */
     WebGLReplayGroup.prototype.getDeleteResourcesFunction = function getDeleteResourcesFunction (context) {
-      var this$1 = this;
-
       var functions = [];
       var zKey;
-      for (zKey in this$1.replaysByZIndex_) {
-        var replays = this$1.replaysByZIndex_[zKey];
+      for (zKey in this.replaysByZIndex_) {
+        var replays = this.replaysByZIndex_[zKey];
         for (var replayKey in replays) {
           functions.push(
             replays[replayKey].getDeleteResourcesFunction(context));
@@ -47658,12 +47369,11 @@
       }
       return function() {
         var arguments$1 = arguments;
-        var this$1 = this;
 
         var length = functions.length;
         var result;
         for (var i = 0; i < length; i++) {
-          result = functions[i].apply(this$1, arguments$1);
+          result = functions[i].apply(this, arguments$1);
         }
         return result;
       };
@@ -47673,11 +47383,9 @@
      * @param {import("../../webgl/Context.js").default} context Context.
      */
     WebGLReplayGroup.prototype.finish = function finish (context) {
-      var this$1 = this;
-
       var zKey;
-      for (zKey in this$1.replaysByZIndex_) {
-        var replays = this$1.replaysByZIndex_[zKey];
+      for (zKey in this.replaysByZIndex_) {
+        var replays = this.replaysByZIndex_[zKey];
         for (var replayKey in replays) {
           replays[replayKey].finish(context);
         }
@@ -47733,15 +47441,13 @@
       opacity,
       skippedFeaturesHash
     ) {
-      var this$1 = this;
-
       /** @type {Array<number>} */
       var zs = Object.keys(this.replaysByZIndex_).map(Number);
       zs.sort(numberSafeCompareFunction);
 
       var i, ii, j, jj, replays, replay;
       for (i = 0, ii = zs.length; i < ii; ++i) {
-        replays = this$1.replaysByZIndex_[zs[i].toString()];
+        replays = this.replaysByZIndex_[zs[i].toString()];
         for (j = 0, jj = ORDER.length; j < jj; ++j) {
           replay = replays[ORDER[j]];
           if (replay !== undefined) {
@@ -47784,8 +47490,6 @@
       oneByOne,
       opt_hitExtent
     ) {
-      var this$1 = this;
-
       /** @type {Array<number>} */
       var zs = Object.keys(this.replaysByZIndex_).map(Number);
       zs.sort(function(a, b) {
@@ -47794,7 +47498,7 @@
 
       var i, ii, j, replays, replay, result;
       for (i = 0, ii = zs.length; i < ii; ++i) {
-        replays = this$1.replaysByZIndex_[zs[i].toString()];
+        replays = this.replaysByZIndex_[zs[i].toString()];
         for (j = ORDER.length - 1; j >= 0; --j) {
           replay = replays[ORDER[j]];
           if (replay !== undefined) {
@@ -47921,7 +47625,7 @@
    * @module ol/render/webgl/Immediate
    */
 
-  var WebGLImmediateRenderer = (function (VectorContext$$1) {
+  var WebGLImmediateRenderer = /*@__PURE__*/(function (VectorContext$$1) {
     function WebGLImmediateRenderer(context, center, resolution, rotation, size, extent, pixelRatio) {
       VectorContext$$1.call(this);
 
@@ -48084,12 +47788,10 @@
      * @inheritDoc
      */
     WebGLImmediateRenderer.prototype.drawGeometryCollection = function drawGeometryCollection (geometry, data) {
-      var this$1 = this;
-
       var geometries = geometry.getGeometriesArray();
       var i, ii;
       for (i = 0, ii = geometries.length; i < ii; ++i) {
-        this$1.drawGeometry(geometries[i]);
+        this.drawGeometry(geometries[i]);
       }
     };
 
@@ -48350,7 +48052,7 @@
    * @module ol/renderer/webgl/Layer
    */
 
-  var WebGLLayerRenderer = (function (LayerRenderer$$1) {
+  var WebGLLayerRenderer = /*@__PURE__*/(function (LayerRenderer$$1) {
     function WebGLLayerRenderer(mapRenderer, layer) {
 
       LayerRenderer$$1.call(this, layer);
@@ -48597,7 +48299,7 @@
    * WebGL renderer for image layers.
    * @api
    */
-  var WebGLImageLayerRenderer = (function (WebGLLayerRenderer$$1) {
+  var WebGLImageLayerRenderer = /*@__PURE__*/(function (WebGLLayerRenderer$$1) {
     function WebGLImageLayerRenderer(mapRenderer, imageLayer) {
 
       WebGLLayerRenderer$$1.call(this, mapRenderer, imageLayer);
@@ -48927,7 +48629,7 @@
    * WebGL map renderer.
    * @api
    */
-  var WebGLMapRenderer = (function (MapRenderer$$1) {
+  var WebGLMapRenderer = /*@__PURE__*/(function (MapRenderer$$1) {
     function WebGLMapRenderer(map) {
       MapRenderer$$1.call(this, map);
 
@@ -49184,23 +48886,21 @@
      * @private
      */
     WebGLMapRenderer.prototype.expireCache_ = function expireCache_ (map, frameState) {
-      var this$1 = this;
-
       var gl = this.getGL();
       var textureCacheEntry;
       while (this.textureCache_.getCount() - this.textureCacheFrameMarkerCount_ >
           WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK) {
-        textureCacheEntry = this$1.textureCache_.peekLast();
+        textureCacheEntry = this.textureCache_.peekLast();
         if (!textureCacheEntry) {
-          if (+this$1.textureCache_.peekLastKey() == frameState.index) {
+          if (+this.textureCache_.peekLastKey() == frameState.index) {
             break;
           } else {
-            --this$1.textureCacheFrameMarkerCount_;
+            --this.textureCacheFrameMarkerCount_;
           }
         } else {
           gl.deleteTexture(textureCacheEntry.texture);
         }
-        this$1.textureCache_.pop();
+        this.textureCache_.pop();
       }
     };
 
@@ -49276,8 +48976,6 @@
      * @inheritDoc
      */
     WebGLMapRenderer.prototype.renderFrame = function renderFrame (frameState) {
-      var this$1 = this;
-
 
       var context = this.getContext();
       var gl = this.getGL();
@@ -49312,7 +49010,7 @@
         layerState = layerStatesArray[i];
         if (visibleAtResolution(layerState, viewResolution) &&
             layerState.sourceState == SourceState.READY) {
-          layerRenderer = /** @type {import("./Layer.js").default} */ (this$1.getLayerRenderer(layerState.layer));
+          layerRenderer = /** @type {import("./Layer.js").default} */ (this.getLayerRenderer(layerState.layer));
           if (layerRenderer.prepareFrame(frameState, layerState, context)) {
             layerStatesToDraw.push(layerState);
           }
@@ -49335,7 +49033,7 @@
 
       for (i = 0, ii = layerStatesToDraw.length; i < ii; ++i) {
         layerState = layerStatesToDraw[i];
-        layerRenderer = /** @type {import("./Layer.js").default} */ (this$1.getLayerRenderer(layerState.layer));
+        layerRenderer = /** @type {import("./Layer.js").default} */ (this.getLayerRenderer(layerState.layer));
         layerRenderer.composeFrame(frameState, layerState, context);
       }
 
@@ -49377,8 +49075,6 @@
       layerFilter,
       thisArg2
     ) {
-      var this$1 = this;
-
       var result;
 
       if (this.getGL().isContextLost()) {
@@ -49395,7 +49091,7 @@
         var layer = layerState.layer;
         if (visibleAtResolution(layerState, viewState.resolution) &&
             layerFilter.call(thisArg2, layer)) {
-          var layerRenderer = this$1.getLayerRenderer(layer);
+          var layerRenderer = this.getLayerRenderer(layer);
           result = layerRenderer.forEachFeatureAtCoordinate(
             coordinate, frameState, hitTolerance, callback, thisArg);
           if (result) {
@@ -49410,8 +49106,6 @@
      * @inheritDoc
      */
     WebGLMapRenderer.prototype.hasFeatureAtCoordinate = function hasFeatureAtCoordinate (coordinate, frameState, hitTolerance, layerFilter, thisArg) {
-      var this$1 = this;
-
       var hasFeature = false;
 
       if (this.getGL().isContextLost()) {
@@ -49428,7 +49122,7 @@
         var layer = layerState.layer;
         if (visibleAtResolution(layerState, viewState.resolution) &&
             layerFilter.call(thisArg, layer)) {
-          var layerRenderer = this$1.getLayerRenderer(layer);
+          var layerRenderer = this.getLayerRenderer(layer);
           hasFeature =
               layerRenderer.hasFeatureAtCoordinate(coordinate, frameState);
           if (hasFeature) {
@@ -49443,8 +49137,6 @@
      * @inheritDoc
      */
     WebGLMapRenderer.prototype.forEachLayerAtPixel = function forEachLayerAtPixel (pixel, frameState, hitTolerance, callback, thisArg, layerFilter, thisArg2) {
-      var this$1 = this;
-
       if (this.getGL().isContextLost()) {
         return false;
       }
@@ -49460,7 +49152,7 @@
         var layer = layerState.layer;
         if (visibleAtResolution(layerState, viewState.resolution) &&
             layerFilter.call(thisArg, layer)) {
-          var layerRenderer = /** @type {import("./Layer.js").default} */ (this$1.getLayerRenderer(layer));
+          var layerRenderer = /** @type {import("./Layer.js").default} */ (this.getLayerRenderer(layer));
           result = layerRenderer.forEachLayerAtPixel(
             pixel, frameState, callback, thisArg);
           if (result) {
@@ -49519,8 +49211,6 @@
    * @api
    */
   var TileGrid = function TileGrid(options) {
-    var this$1 = this;
-
 
     /**
      * @protected
@@ -49543,9 +49233,9 @@
     if (!options.origins) {
       for (var i = 0, ii = this.resolutions_.length - 1; i < ii; ++i) {
         if (!zoomFactor) {
-          zoomFactor = this$1.resolutions_[i] / this$1.resolutions_[i + 1];
+          zoomFactor = this.resolutions_[i] / this.resolutions_[i + 1];
         } else {
-          if (this$1.resolutions_[i] / this$1.resolutions_[i + 1] !== zoomFactor) {
+          if (this.resolutions_[i] / this.resolutions_[i + 1] !== zoomFactor) {
             zoomFactor = undefined;
             break;
           }
@@ -49677,8 +49367,6 @@
    * @template T
    */
   TileGrid.prototype.forEachTileCoordParentTileRange = function forEachTileCoordParentTileRange (tileCoord, callback, opt_this, opt_tileRange, opt_extent) {
-      var this$1 = this;
-
     var tileRange, x, y;
     var tileCoordExtent = null;
     var z = tileCoord[0] - 1;
@@ -49689,12 +49377,12 @@
       tileCoordExtent = this.getTileCoordExtent(tileCoord, opt_extent);
     }
     while (z >= this.minZoom) {
-      if (this$1.zoomFactor_ === 2) {
+      if (this.zoomFactor_ === 2) {
         x = Math.floor(x / 2);
         y = Math.floor(y / 2);
         tileRange = createOrUpdate$1(x, x, y, y, opt_tileRange);
       } else {
-        tileRange = this$1.getTileRangeForExtentAndZ(tileCoordExtent, z, opt_tileRange);
+        tileRange = this.getTileRangeForExtentAndZ(tileCoordExtent, z, opt_tileRange);
       }
       if (callback.call(opt_this, z, tileRange)) {
         return true;
@@ -50008,12 +49696,10 @@
    * @private
    */
   TileGrid.prototype.calculateTileRanges_ = function calculateTileRanges_ (extent) {
-      var this$1 = this;
-
     var length = this.resolutions_.length;
     var fullTileRanges = new Array(length);
     for (var z = this.minZoom; z < length; ++z) {
-      fullTileRanges[z] = this$1.getTileRangeForExtentAndZ(extent, z);
+      fullTileRanges[z] = this.getTileRangeForExtentAndZ(extent, z);
     }
     this.fullTileRanges_ = fullTileRanges;
   };
@@ -50208,7 +49894,7 @@
    * Base class for sources providing images divided into a tile grid.
    * @api
    */
-  var TileSource = (function (Source$$1) {
+  var TileSource = /*@__PURE__*/(function (Source$$1) {
     function TileSource(options) {
 
       Source$$1.call(this, {
@@ -50486,7 +50172,7 @@
    * Events emitted by {@link module:ol/source/Tile~TileSource} instances are instances of this
    * type.
    */
-  var TileSourceEvent = (function (Event$$1) {
+  var TileSourceEvent = /*@__PURE__*/(function (Event$$1) {
     function TileSourceEvent(type, tile) {
 
       Event$$1.call(this, type);
@@ -50556,7 +50242,7 @@
    * WebGL renderer for tile layers.
    * @api
    */
-  var WebGLTileLayerRenderer = (function (WebGLLayerRenderer$$1) {
+  var WebGLTileLayerRenderer = /*@__PURE__*/(function (WebGLLayerRenderer$$1) {
     function WebGLTileLayerRenderer(mapRenderer, tileLayer) {
 
       WebGLLayerRenderer$$1.call(this, mapRenderer, tileLayer);
@@ -50669,8 +50355,6 @@
      * @inheritDoc
      */
     WebGLTileLayerRenderer.prototype.prepareFrame = function prepareFrame (frameState, layerState, context) {
-      var this$1 = this;
-
 
       var mapRenderer = this.mapRenderer;
       var gl = context.getGL();
@@ -50827,7 +50511,7 @@
                 framebufferExtentDimension - 1;
             u_tileOffset[3] = 2 * (tileExtent[1] - framebufferExtent[1]) /
                 framebufferExtentDimension - 1;
-            gl.uniform4fv(this$1.locations_.u_tileOffset, u_tileOffset);
+            gl.uniform4fv(this.locations_.u_tileOffset, u_tileOffset);
             mapRenderer.bindTileTexture(tile, tilePixelSize,
               tileGutter * pixelRatio, LINEAR, LINEAR);
             gl.drawArrays(TRIANGLE_STRIP, 0, 4);
@@ -50957,7 +50641,7 @@
    * WebGL renderer for vector layers.
    * @api
    */
-  var WebGLVectorLayerRenderer = (function (WebGLLayerRenderer$$1) {
+  var WebGLVectorLayerRenderer = /*@__PURE__*/(function (WebGLLayerRenderer$$1) {
     function WebGLVectorLayerRenderer(mapRenderer, vectorLayer) {
 
       WebGLLayerRenderer$$1.call(this, mapRenderer, vectorLayer);
@@ -51222,8 +50906,6 @@
      * @return {boolean} `true` if an image is loading.
      */
     WebGLVectorLayerRenderer.prototype.renderFeature = function renderFeature$1 (feature, resolution, pixelRatio, styles, replayGroup) {
-      var this$1 = this;
-
       if (!styles) {
         return false;
       }
@@ -51233,7 +50915,7 @@
           loading = renderFeature(
             replayGroup, feature, styles[i],
             getSquaredTolerance(resolution, pixelRatio),
-            this$1.handleStyleImageChange_, this$1) || loading;
+            this.handleStyleImageChange_, this) || loading;
         }
       } else {
         loading = renderFeature(
@@ -51327,7 +51009,7 @@
    * @fires module:ol/render/Event~RenderEvent#precompose
    * @api
    */
-  var WebGLMap = (function (PluggableMap$$1) {
+  var WebGLMap = /*@__PURE__*/(function (PluggableMap$$1) {
     function WebGLMap(options) {
       options = assign({}, options);
       if (!options.controls) {
@@ -51403,7 +51085,7 @@
    *
    * @api
    */
-  var MousePosition = (function (Control$$1) {
+  var MousePosition = /*@__PURE__*/(function (Control$$1) {
     function MousePosition(opt_options) {
 
       var options = opt_options ? opt_options : {};
@@ -51880,7 +51562,7 @@
    *
    * @abstract
    */
-  var JSONFeature = (function (FeatureFormat$$1) {
+  var JSONFeature = /*@__PURE__*/(function (FeatureFormat$$1) {
     function JSONFeature() {
       FeatureFormat$$1.call(this);
     }
@@ -52105,7 +51787,7 @@
    *
    * @api
    */
-  var EsriJSON = (function (JSONFeature$$1) {
+  var EsriJSON = /*@__PURE__*/(function (JSONFeature$$1) {
     function EsriJSON(opt_options) {
 
       var options = opt_options ? opt_options : {};
@@ -52150,8 +51832,6 @@
      * @inheritDoc
      */
     EsriJSON.prototype.readFeaturesFromObject = function readFeaturesFromObject (object, opt_options) {
-      var this$1 = this;
-
       var esriJSONObject = /** @type {EsriJSONObject} */ (object);
       var options = opt_options ? opt_options : {};
       if (esriJSONObject.features) {
@@ -52161,7 +51841,7 @@
         var esriJSONFeatures = esriJSONFeatureCollection.features;
         options.idField = object.objectIdFieldName;
         for (var i = 0, ii = esriJSONFeatures.length; i < ii; ++i) {
-          features.push(this$1.readFeatureFromObject(esriJSONFeatures[i], options));
+          features.push(this.readFeatureFromObject(esriJSONFeatures[i], options));
         }
         return features;
       } else {
@@ -52243,12 +51923,10 @@
      * @api
      */
     EsriJSON.prototype.writeFeaturesObject = function writeFeaturesObject (features, opt_options) {
-      var this$1 = this;
-
       opt_options = this.adaptOptions(opt_options);
       var objects = [];
       for (var i = 0, ii = features.length; i < ii; ++i) {
-        objects.push(this$1.writeFeatureObject(features[i], opt_options));
+        objects.push(this.writeFeatureObject(features[i], opt_options));
       }
       return /** @type {EsriJSONFeatureCollection} */ ({
         'features': objects
@@ -53062,14 +52740,12 @@
    */
   function serialize(
     serializersNS, nodeFactory, values, objectStack, opt_keys, opt_this) {
-    var this$1 = this;
-
     var length = (opt_keys !== undefined ? opt_keys : values).length;
     var value, node;
     for (var i = 0; i < length; ++i) {
       value = values[i];
       if (value !== undefined) {
-        node = nodeFactory.call(opt_this !== undefined ? opt_this : this$1, value, objectStack,
+        node = nodeFactory.call(opt_this !== undefined ? opt_this : this, value, objectStack,
           opt_keys !== undefined ? opt_keys[i] : undefined);
         if (node !== undefined) {
           serializersNS[node.namespaceURI][node.localName]
@@ -53121,7 +52797,7 @@
    *
    * @abstract
    */
-  var XMLFeature = (function (FeatureFormat$$1) {
+  var XMLFeature = /*@__PURE__*/(function (FeatureFormat$$1) {
     function XMLFeature() {
       FeatureFormat$$1.call(this);
 
@@ -53216,13 +52892,11 @@
      * @return {Array<import("../Feature.js").default>} Features.
      */
     XMLFeature.prototype.readFeaturesFromDocument = function readFeaturesFromDocument (doc, opt_options) {
-      var this$1 = this;
-
       /** @type {Array<import("../Feature.js").default>} */
       var features = [];
       for (var n = doc.firstChild; n; n = n.nextSibling) {
         if (n.nodeType == Node.ELEMENT_NODE) {
-          extend$1(features, this$1.readFeaturesFromNode(n, opt_options));
+          extend$1(features, this.readFeaturesFromNode(n, opt_options));
         }
       }
       return features;
@@ -53440,7 +53114,7 @@
    *
    * @abstract
    */
-  var GMLBase = (function (XMLFeature$$1) {
+  var GMLBase = /*@__PURE__*/(function (XMLFeature$$1) {
     function GMLBase(opt_options) {
       XMLFeature$$1.call(this);
 
@@ -53491,8 +53165,6 @@
      * @return {Array<Feature> | undefined} Features.
      */
     GMLBase.prototype.readFeaturesInternal = function readFeaturesInternal (node, objectStack) {
-      var this$1 = this;
-
       var localName = node.localName;
       var features = null;
       if (localName == 'FeatureCollection') {
@@ -53557,8 +53229,8 @@
             if (featurePrefix === p) {
               parsers[featureTypes[i$1].split(':').pop()] =
                   (localName == 'featureMembers') ?
-                    makeArrayPusher(this$1.readFeatureElement, this$1) :
-                    makeReplacer(this$1.readFeatureElement, this$1);
+                    makeArrayPusher(this.readFeatureElement, this) :
+                    makeReplacer(this.readFeatureElement, this);
             }
           }
           parsersNS[featureNS[p]] = parsers;
@@ -53601,8 +53273,6 @@
      * @return {Feature} Feature.
      */
     GMLBase.prototype.readFeatureElement = function readFeatureElement (node, objectStack) {
-      var this$1 = this;
-
       var n;
       var fid = node.getAttribute('fid') || getAttributeNS(node, GMLNS, 'id');
       var values = {};
@@ -53625,7 +53295,7 @@
           if (localName !== 'boundedBy') {
             geometryName = localName;
           }
-          values[localName] = this$1.readGeometryElement(n, objectStack);
+          values[localName] = this.readGeometryElement(n, objectStack);
         }
       }
       var feature = new Feature(values);
@@ -54112,7 +53782,7 @@
    *
    * @api
    */
-  var GML3 = (function (GMLBase$$1) {
+  var GML3 = /*@__PURE__*/(function (GMLBase$$1) {
     function GML3(opt_options) {
       var options = /** @type {import("./GMLBase.js").Options} */
           (opt_options ? opt_options : {});
@@ -54504,8 +54174,6 @@
      * @private
      */
     GML3.prototype.writePosList_ = function writePosList_ (node, value, objectStack) {
-      var this$1 = this;
-
       var context = objectStack[objectStack.length - 1];
       var hasZ = context['hasZ'];
       var srsDimension = hasZ ? 3 : 2;
@@ -54518,7 +54186,7 @@
       var point;
       for (var i = 0; i < len; ++i) {
         point = points[i];
-        parts[i] = this$1.getCoords_(point, srsName, hasZ);
+        parts[i] = this.getCoords_(point, srsName, hasZ);
       }
       writeStringTextNode(node, parts.join(' '));
     };
@@ -54820,8 +54488,6 @@
      * @param {Array<*>} objectStack Node stack.
      */
     GML3.prototype.writeFeatureElement = function writeFeatureElement (node, feature, objectStack) {
-      var this$1 = this;
-
       var fid = feature.getId();
       if (fid) {
         node.setAttribute('fid', fid);
@@ -54844,7 +54510,7 @@
           if (key == geometryName || value instanceof Geometry) {
             if (!(key in context.serializers[featureNS])) {
               context.serializers[featureNS][key] = makeChildAppender(
-                this$1.writeGeometryElement, this$1);
+                this.writeGeometryElement, this);
             }
           } else {
             if (!(key in context.serializers[featureNS])) {
@@ -55344,7 +55010,7 @@
    *
    * @api
    */
-  var GML2 = (function (GMLBase$$1) {
+  var GML2 = /*@__PURE__*/(function (GMLBase$$1) {
     function GML2(opt_options) {
       var options = /** @type {import("./GMLBase.js").Options} */
           (opt_options ? opt_options : {});
@@ -55483,8 +55149,6 @@
      * @param {Array<*>} objectStack Node stack.
      */
     GML2.prototype.writeFeatureElement = function writeFeatureElement (node, feature, objectStack) {
-      var this$1 = this;
-
       var fid = feature.getId();
       if (fid) {
         node.setAttribute('fid', fid);
@@ -55507,7 +55171,7 @@
           if (key == geometryName || value instanceof Geometry) {
             if (!(key in context.serializers[featureNS])) {
               context.serializers[featureNS][key] = makeChildAppender(
-                this$1.writeGeometryElement, this$1);
+                this.writeGeometryElement, this);
             }
           } else {
             if (!(key in context.serializers[featureNS])) {
@@ -55632,8 +55296,6 @@
      * @private
      */
     GML2.prototype.writeCoordinates_ = function writeCoordinates_ (node, value, objectStack) {
-      var this$1 = this;
-
       var context = objectStack[objectStack.length - 1];
       var hasZ = context['hasZ'];
       var srsName = context['srsName'];
@@ -55643,7 +55305,7 @@
       var parts = new Array(len);
       for (var i = 0; i < len; ++i) {
         var point = points[i];
-        parts[i] = this$1.getCoords_(point, srsName, hasZ);
+        parts[i] = this.getCoords_(point, srsName, hasZ);
       }
       writeStringTextNode(node, parts.join(' '));
     };
@@ -56150,7 +55812,7 @@
    *
    * @api
    */
-  var GPX = (function (XMLFeature$$1) {
+  var GPX = /*@__PURE__*/(function (XMLFeature$$1) {
     function GPX(opt_options) {
       XMLFeature$$1.call(this);
 
@@ -56178,16 +55840,14 @@
      * @private
      */
     GPX.prototype.handleReadExtensions_ = function handleReadExtensions_ (features) {
-      var this$1 = this;
-
       if (!features) {
         features = [];
       }
       for (var i = 0, ii = features.length; i < ii; ++i) {
         var feature = features[i];
-        if (this$1.readExtensions_) {
+        if (this.readExtensions_) {
           var extensionsNode = feature.get('extensionsNode_') || null;
-          this$1.readExtensions_(feature, extensionsNode);
+          this.readExtensions_(feature, extensionsNode);
         }
         feature.set('extensionsNode_', undefined);
       }
@@ -56903,7 +56563,7 @@
    *
    * @api
    */
-  var GeometryCollection = (function (Geometry$$1) {
+  var GeometryCollection = /*@__PURE__*/(function (Geometry$$1) {
     function GeometryCollection(opt_geometries) {
 
       Geometry$$1.call(this);
@@ -56925,15 +56585,13 @@
      * @private
      */
     GeometryCollection.prototype.unlistenGeometriesChange_ = function unlistenGeometriesChange_ () {
-      var this$1 = this;
-
       if (!this.geometries_) {
         return;
       }
       for (var i = 0, ii = this.geometries_.length; i < ii; ++i) {
         unlisten(
-          this$1.geometries_[i], EventType.CHANGE,
-          this$1.changed, this$1);
+          this.geometries_[i], EventType.CHANGE,
+          this.changed, this);
       }
     };
 
@@ -56941,15 +56599,13 @@
      * @private
      */
     GeometryCollection.prototype.listenGeometriesChange_ = function listenGeometriesChange_ () {
-      var this$1 = this;
-
       if (!this.geometries_) {
         return;
       }
       for (var i = 0, ii = this.geometries_.length; i < ii; ++i) {
         listen(
-          this$1.geometries_[i], EventType.CHANGE,
-          this$1.changed, this$1);
+          this.geometries_[i], EventType.CHANGE,
+          this.changed, this);
       }
     };
 
@@ -57224,7 +56880,7 @@
    *
     * @api
    */
-  var GeoJSON = (function (JSONFeature$$1) {
+  var GeoJSON = /*@__PURE__*/(function (JSONFeature$$1) {
     function GeoJSON(opt_options) {
 
       var options = opt_options ? opt_options : {};
@@ -57303,8 +56959,6 @@
      * @inheritDoc
      */
     GeoJSON.prototype.readFeaturesFromObject = function readFeaturesFromObject (object, opt_options) {
-      var this$1 = this;
-
       var geoJSONObject = /** @type {GeoJSONObject} */ (object);
       /** @type {Array<import("../Feature.js").default>} */
       var features = null;
@@ -57313,7 +56967,7 @@
         features = [];
         var geoJSONFeatures = geoJSONFeatureCollection['features'];
         for (var i = 0, ii = geoJSONFeatures.length; i < ii; ++i) {
-          features.push(this$1.readFeatureFromObject(geoJSONFeatures[i], opt_options));
+          features.push(this.readFeatureFromObject(geoJSONFeatures[i], opt_options));
         }
       } else {
         features = [this.readFeatureFromObject(object, opt_options)];
@@ -57395,12 +57049,10 @@
      * @api
      */
     GeoJSON.prototype.writeFeaturesObject = function writeFeaturesObject (features, opt_options) {
-      var this$1 = this;
-
       opt_options = this.adaptOptions(opt_options);
       var objects = [];
       for (var i = 0, ii = features.length; i < ii; ++i) {
-        objects.push(this$1.writeFeatureObject(features[i], opt_options));
+        objects.push(this.writeFeatureObject(features[i], opt_options));
       }
       return {
         type: 'FeatureCollection',
@@ -57718,7 +57370,7 @@
    *
    * @abstract
    */
-  var TextFeature = (function (FeatureFormat$$1) {
+  var TextFeature = /*@__PURE__*/(function (FeatureFormat$$1) {
     function TextFeature() {
       FeatureFormat$$1.call(this);
     }
@@ -57958,7 +57610,7 @@
    *
    * @api
    */
-  var IGC = (function (TextFeature$$1) {
+  var IGC = /*@__PURE__*/(function (TextFeature$$1) {
     function IGC(opt_options) {
       TextFeature$$1.call(this);
 
@@ -58087,7 +57739,7 @@
    * @module ol/style/IconImage
    */
 
-  var IconImage = (function (EventTarget) {
+  var IconImage = /*@__PURE__*/(function (EventTarget) {
     function IconImage(image, src, size, crossOrigin, imageState, color) {
 
       EventTarget.call(this);
@@ -58395,7 +58047,7 @@
    * Set icon style for vector features.
    * @api
    */
-  var Icon = (function (ImageStyle$$1) {
+  var Icon = /*@__PURE__*/(function (ImageStyle$$1) {
     function Icon(opt_options) {
       var options = opt_options || {};
 
@@ -59120,7 +58772,7 @@
    *
    * @api
    */
-  var KML = (function (XMLFeature$$1) {
+  var KML = /*@__PURE__*/(function (XMLFeature$$1) {
     function KML(opt_options) {
       XMLFeature$$1.call(this);
 
@@ -59317,8 +58969,6 @@
      * @inheritDoc
      */
     KML.prototype.readFeaturesFromNode = function readFeaturesFromNode (node, opt_options) {
-      var this$1 = this;
-
       if (!includes(NAMESPACE_URIS$1, node.namespaceURI)) {
         return [];
       }
@@ -59343,7 +58993,7 @@
       } else if (localName == 'kml') {
         features = [];
         for (var n = node.firstElementChild; n; n = n.nextElementSibling) {
-          var fs = this$1.readFeaturesFromNode(n, opt_options);
+          var fs = this.readFeaturesFromNode(n, opt_options);
           if (fs) {
             extend$1(features, fs);
           }
@@ -59379,11 +59029,9 @@
      * @return {string|undefined} Name.
      */
     KML.prototype.readNameFromDocument = function readNameFromDocument (doc) {
-      var this$1 = this;
-
       for (var n = doc.firstChild; n; n = n.nextSibling) {
         if (n.nodeType == Node.ELEMENT_NODE) {
-          var name = this$1.readNameFromNode(/** @type {Element} */ (n));
+          var name = this.readNameFromNode(/** @type {Element} */ (n));
           if (name) {
             return name;
           }
@@ -59397,8 +59045,6 @@
      * @return {string|undefined} Name.
      */
     KML.prototype.readNameFromNode = function readNameFromNode (node) {
-      var this$1 = this;
-
       for (var n = node.firstElementChild; n; n = n.nextElementSibling) {
         if (includes(NAMESPACE_URIS$1, n.namespaceURI) &&
             n.localName == 'name') {
@@ -59412,7 +59058,7 @@
              localName == 'Folder' ||
              localName == 'Placemark' ||
              localName == 'kml')) {
-          var name = this$1.readNameFromNode(n$1);
+          var name = this.readNameFromNode(n$1);
           if (name) {
             return name;
           }
@@ -59448,12 +59094,10 @@
      * @return {Array<Object>} Network links.
      */
     KML.prototype.readNetworkLinksFromDocument = function readNetworkLinksFromDocument (doc) {
-      var this$1 = this;
-
       var networkLinks = [];
       for (var n = doc.firstChild; n; n = n.nextSibling) {
         if (n.nodeType == Node.ELEMENT_NODE) {
-          extend$1(networkLinks, this$1.readNetworkLinksFromNode(/** @type {Element} */ (n)));
+          extend$1(networkLinks, this.readNetworkLinksFromNode(/** @type {Element} */ (n)));
         }
       }
       return networkLinks;
@@ -59464,8 +59108,6 @@
      * @return {Array<Object>} Network links.
      */
     KML.prototype.readNetworkLinksFromNode = function readNetworkLinksFromNode (node) {
-      var this$1 = this;
-
       var networkLinks = [];
       for (var n = node.firstElementChild; n; n = n.nextElementSibling) {
         if (includes(NAMESPACE_URIS$1, n.namespaceURI) &&
@@ -59481,7 +59123,7 @@
             (localName == 'Document' ||
              localName == 'Folder' ||
              localName == 'kml')) {
-          extend$1(networkLinks, this$1.readNetworkLinksFromNode(n$1));
+          extend$1(networkLinks, this.readNetworkLinksFromNode(n$1));
         }
       }
       return networkLinks;
@@ -59514,12 +59156,10 @@
      * @return {Array<Object>} Region.
      */
     KML.prototype.readRegionFromDocument = function readRegionFromDocument (doc) {
-      var this$1 = this;
-
       var regions = [];
       for (var n = doc.firstChild; n; n = n.nextSibling) {
         if (n.nodeType == Node.ELEMENT_NODE) {
-          extend$1(regions, this$1.readRegionFromNode(/** @type {Element} */ (n)));
+          extend$1(regions, this.readRegionFromNode(/** @type {Element} */ (n)));
         }
       }
       return regions;
@@ -59531,8 +59171,6 @@
      * @api
      */
     KML.prototype.readRegionFromNode = function readRegionFromNode (node) {
-      var this$1 = this;
-
       var regions = [];
       for (var n = node.firstElementChild; n; n = n.nextElementSibling) {
         if (includes(NAMESPACE_URIS$1, n.namespaceURI) &&
@@ -59548,7 +59186,7 @@
             (localName == 'Document' ||
              localName == 'Folder' ||
              localName == 'kml')) {
-          extend$1(regions, this$1.readRegionFromNode(n$1));
+          extend$1(regions, this.readRegionFromNode(n$1));
         }
       }
       return regions;
@@ -61779,19 +61417,17 @@
       // === READING =================================================================
 
       readFields: function(readField, result, end) {
-          var this$1 = this;
-
           end = end || this.length;
 
           while (this.pos < end) {
-              var val = this$1.readVarint(),
+              var val = this.readVarint(),
                   tag = val >> 3,
-                  startPos = this$1.pos;
+                  startPos = this.pos;
 
-              this$1.type = val & 0x7;
-              readField(tag, result, this$1);
+              this.type = val & 0x7;
+              readField(tag, result, this);
 
-              if (this$1.pos === startPos) { this$1.skip(val); }
+              if (this.pos === startPos) { this.skip(val); }
           }
           return result;
       },
@@ -61881,75 +61517,57 @@
       // verbose for performance reasons; doesn't affect gzipped size
 
       readPackedVarint: function(arr, isSigned) {
-          var this$1 = this;
-
           var end = readPackedEnd(this);
           arr = arr || [];
-          while (this.pos < end) { arr.push(this$1.readVarint(isSigned)); }
+          while (this.pos < end) { arr.push(this.readVarint(isSigned)); }
           return arr;
       },
       readPackedSVarint: function(arr) {
-          var this$1 = this;
-
           var end = readPackedEnd(this);
           arr = arr || [];
-          while (this.pos < end) { arr.push(this$1.readSVarint()); }
+          while (this.pos < end) { arr.push(this.readSVarint()); }
           return arr;
       },
       readPackedBoolean: function(arr) {
-          var this$1 = this;
-
           var end = readPackedEnd(this);
           arr = arr || [];
-          while (this.pos < end) { arr.push(this$1.readBoolean()); }
+          while (this.pos < end) { arr.push(this.readBoolean()); }
           return arr;
       },
       readPackedFloat: function(arr) {
-          var this$1 = this;
-
           var end = readPackedEnd(this);
           arr = arr || [];
-          while (this.pos < end) { arr.push(this$1.readFloat()); }
+          while (this.pos < end) { arr.push(this.readFloat()); }
           return arr;
       },
       readPackedDouble: function(arr) {
-          var this$1 = this;
-
           var end = readPackedEnd(this);
           arr = arr || [];
-          while (this.pos < end) { arr.push(this$1.readDouble()); }
+          while (this.pos < end) { arr.push(this.readDouble()); }
           return arr;
       },
       readPackedFixed32: function(arr) {
-          var this$1 = this;
-
           var end = readPackedEnd(this);
           arr = arr || [];
-          while (this.pos < end) { arr.push(this$1.readFixed32()); }
+          while (this.pos < end) { arr.push(this.readFixed32()); }
           return arr;
       },
       readPackedSFixed32: function(arr) {
-          var this$1 = this;
-
           var end = readPackedEnd(this);
           arr = arr || [];
-          while (this.pos < end) { arr.push(this$1.readSFixed32()); }
+          while (this.pos < end) { arr.push(this.readSFixed32()); }
           return arr;
       },
       readPackedFixed64: function(arr) {
-          var this$1 = this;
-
           var end = readPackedEnd(this);
           arr = arr || [];
-          while (this.pos < end) { arr.push(this$1.readFixed64()); }
+          while (this.pos < end) { arr.push(this.readFixed64()); }
           return arr;
       },
       readPackedSFixed64: function(arr) {
-          var this$1 = this;
-
           var end = readPackedEnd(this);
           arr = arr || [];
-          while (this.pos < end) { arr.push(this$1.readSFixed64()); }
+          while (this.pos < end) { arr.push(this.readSFixed64()); }
           return arr;
       },
 
@@ -62069,12 +61687,10 @@
       },
 
       writeBytes: function(buffer) {
-          var this$1 = this;
-
           var len = buffer.length;
           this.writeVarint(len);
           this.realloc(len);
-          for (var i = 0; i < len; i++) { this$1.buf[this$1.pos++] = buffer[i]; }
+          for (var i = 0; i < len; i++) { this.buf[this.pos++] = buffer[i]; }
       },
 
       writeRawMessage: function(fn, obj) {
@@ -62530,8 +62146,6 @@
   * @return {Array<number>} Flat midpoints.
   */
   RenderFeature.prototype.getFlatMidpoints = function getFlatMidpoints () {
-      var this$1 = this;
-
     if (!this.flatMidpoints_) {
       this.flatMidpoints_ = [];
       var flatCoordinates = this.flatCoordinates_;
@@ -62541,7 +62155,7 @@
         var end = ends[i];
         var midpoint = interpolatePoint(
           flatCoordinates, offset, end, 2, 0.5);
-        extend$1(this$1.flatMidpoints_, midpoint);
+        extend$1(this.flatMidpoints_, midpoint);
         offset = end;
       }
     }
@@ -62679,7 +62293,7 @@
    * @param {Options=} opt_options Options.
    * @api
    */
-  var MVT = (function (FeatureFormat$$1) {
+  var MVT = /*@__PURE__*/(function (FeatureFormat$$1) {
     function MVT(opt_options) {
       FeatureFormat$$1.call(this);
 
@@ -62883,8 +62497,6 @@
      * @api
      */
     MVT.prototype.readFeatures = function readFeatures (source, opt_options) {
-      var this$1 = this;
-
       var layers = this.layers_;
 
       var pbf$$1 = new pbf(/** @type {ArrayBuffer} */ (source));
@@ -62899,9 +62511,9 @@
 
         for (var i = 0, ii = pbfLayer.length; i < ii; ++i) {
           var rawFeature = readRawFeature(pbf$$1, pbfLayer, i);
-          features.push(this$1.createFeature_(pbf$$1, rawFeature));
+          features.push(this.createFeature_(pbf$$1, rawFeature));
         }
-        this$1.extent_ = pbfLayer ? [0, 0, pbfLayer.extent, pbfLayer.extent] : null;
+        this.extent_ = pbfLayer ? [0, 0, pbfLayer.extent, pbfLayer.extent] : null;
       }
 
       return features;
@@ -63096,7 +62708,7 @@
    *
    * @api
    */
-  var OSMXML = (function (XMLFeature$$1) {
+  var OSMXML = /*@__PURE__*/(function (XMLFeature$$1) {
     function OSMXML() {
       XMLFeature$$1.call(this);
 
@@ -63311,7 +62923,7 @@
     });
 
 
-  var OWS = (function (XML$$1) {
+  var OWS = /*@__PURE__*/(function (XML$$1) {
     function OWS() {
       XML$$1.call(this);
     }
@@ -63324,11 +62936,9 @@
      * @inheritDoc
      */
     OWS.prototype.readFromDocument = function readFromDocument (doc) {
-      var this$1 = this;
-
       for (var n = doc.firstChild; n; n = n.nextSibling) {
         if (n.nodeType == Node.ELEMENT_NODE) {
-          return this$1.readFromNode(n);
+          return this.readFromNode(n);
         }
       }
       return null;
@@ -63731,7 +63341,7 @@
    *
    * @api
    */
-  var Polyline = (function (TextFeature$$1) {
+  var Polyline = /*@__PURE__*/(function (TextFeature$$1) {
     function Polyline(opt_options) {
       TextFeature$$1.call(this);
 
@@ -64081,7 +63691,7 @@
    *
    * @api
    */
-  var TopoJSON = (function (JSONFeature$$1) {
+  var TopoJSON = /*@__PURE__*/(function (JSONFeature$$1) {
     function TopoJSON(opt_options) {
       JSONFeature$$1.call(this);
 
@@ -64116,8 +63726,6 @@
      * @inheritDoc
      */
     TopoJSON.prototype.readFeaturesFromObject = function readFeaturesFromObject (object, opt_options) {
-      var this$1 = this;
-
       if (object.type == 'Topology') {
         var topoJSONTopology = /** @type {TopoJSONTopology} */ (object);
         var transform$$1, scale = null, translate = null;
@@ -64136,7 +63744,7 @@
         var property = this.layerName_;
         var feature;
         for (var objectName in topoJSONFeatures) {
-          if (this$1.layers_ && this$1.layers_.indexOf(objectName) == -1) {
+          if (this.layers_ && this.layers_.indexOf(objectName) == -1) {
             continue;
           }
           if (topoJSONFeatures[objectName].type === 'GeometryCollection') {
@@ -64475,7 +64083,7 @@
    *
    * @abstract
    */
-  var LogicalNary = (function (Filter$$1) {
+  var LogicalNary = /*@__PURE__*/(function (Filter$$1) {
     function LogicalNary(tagName, conditions) {
 
       Filter$$1.call(this, tagName);
@@ -64504,7 +64112,7 @@
    *
    * @abstract
    */
-  var And = (function (LogicalNary$$1) {
+  var And = /*@__PURE__*/(function (LogicalNary$$1) {
     function And(conditions) {
       var params = ['And'].concat(Array.prototype.slice.call(arguments));
       LogicalNary$$1.apply(this, params);
@@ -64528,7 +64136,7 @@
    *
    * @api
    */
-  var Bbox = (function (Filter$$1) {
+  var Bbox = /*@__PURE__*/(function (Filter$$1) {
     function Bbox(geometryName, extent, opt_srsName) {
 
       Filter$$1.call(this, 'BBOX');
@@ -64568,7 +64176,7 @@
    *
    * @abstract
    */
-  var Spatial = (function (Filter$$1) {
+  var Spatial = /*@__PURE__*/(function (Filter$$1) {
     function Spatial(tagName, geometryName, geometry, opt_srsName) {
 
       Filter$$1.call(this, tagName);
@@ -64606,7 +64214,7 @@
    * contains a given geometry.
    * @api
    */
-  var Contains = (function (Spatial$$1) {
+  var Contains = /*@__PURE__*/(function (Spatial$$1) {
     function Contains(geometryName, geometry, opt_srsName) {
 
       Spatial$$1.call(this, 'Contains', geometryName, geometry, opt_srsName);
@@ -64631,7 +64239,7 @@
    *
    * @abstract
    */
-  var Comparison = (function (Filter$$1) {
+  var Comparison = /*@__PURE__*/(function (Filter$$1) {
     function Comparison(tagName, propertyName) {
 
       Filter$$1.call(this, tagName);
@@ -64658,7 +64266,7 @@
    * Represents a `<During>` comparison operator.
    * @api
    */
-  var During = (function (Comparison$$1) {
+  var During = /*@__PURE__*/(function (Comparison$$1) {
     function During(propertyName, begin, end) {
       Comparison$$1.call(this, 'During', propertyName);
 
@@ -64691,7 +64299,7 @@
    *
    * @abstract
    */
-  var ComparisonBinary = (function (Comparison$$1) {
+  var ComparisonBinary = /*@__PURE__*/(function (Comparison$$1) {
     function ComparisonBinary(tagName, propertyName, expression, opt_matchCase) {
 
       Comparison$$1.call(this, tagName, propertyName);
@@ -64723,7 +64331,7 @@
    * Represents a `<PropertyIsEqualTo>` comparison operator.
    * @api
    */
-  var EqualTo = (function (ComparisonBinary$$1) {
+  var EqualTo = /*@__PURE__*/(function (ComparisonBinary$$1) {
     function EqualTo(propertyName, expression, opt_matchCase) {
       ComparisonBinary$$1.call(this, 'PropertyIsEqualTo', propertyName, expression, opt_matchCase);
     }
@@ -64744,7 +64352,7 @@
    * Represents a `<PropertyIsGreaterThan>` comparison operator.
    * @api
    */
-  var GreaterThan = (function (ComparisonBinary$$1) {
+  var GreaterThan = /*@__PURE__*/(function (ComparisonBinary$$1) {
     function GreaterThan(propertyName, expression) {
       ComparisonBinary$$1.call(this, 'PropertyIsGreaterThan', propertyName, expression);
     }
@@ -64765,7 +64373,7 @@
    * Represents a `<PropertyIsGreaterThanOrEqualTo>` comparison operator.
    * @api
    */
-  var GreaterThanOrEqualTo = (function (ComparisonBinary$$1) {
+  var GreaterThanOrEqualTo = /*@__PURE__*/(function (ComparisonBinary$$1) {
     function GreaterThanOrEqualTo(propertyName, expression) {
       ComparisonBinary$$1.call(this, 'PropertyIsGreaterThanOrEqualTo', propertyName, expression);
     }
@@ -64787,7 +64395,7 @@
    * intersects a given geometry.
    * @api
    */
-  var Intersects = (function (Spatial$$1) {
+  var Intersects = /*@__PURE__*/(function (Spatial$$1) {
     function Intersects(geometryName, geometry, opt_srsName) {
       Spatial$$1.call(this, 'Intersects', geometryName, geometry, opt_srsName);
     }
@@ -64808,7 +64416,7 @@
    * Represents a `<PropertyIsBetween>` comparison operator.
    * @api
    */
-  var IsBetween = (function (Comparison$$1) {
+  var IsBetween = /*@__PURE__*/(function (Comparison$$1) {
     function IsBetween(propertyName, lowerBoundary, upperBoundary) {
       Comparison$$1.call(this, 'PropertyIsBetween', propertyName);
 
@@ -64840,7 +64448,7 @@
    * Represents a `<PropertyIsLike>` comparison operator.
    * @api
    */
-  var IsLike = (function (Comparison$$1) {
+  var IsLike = /*@__PURE__*/(function (Comparison$$1) {
     function IsLike(propertyName, pattern, opt_wildCard, opt_singleChar, opt_escapeChar, opt_matchCase) {
       Comparison$$1.call(this, 'PropertyIsLike', propertyName);
 
@@ -64887,7 +64495,7 @@
    * Represents a `<PropertyIsNull>` comparison operator.
    * @api
    */
-  var IsNull = (function (Comparison$$1) {
+  var IsNull = /*@__PURE__*/(function (Comparison$$1) {
     function IsNull(propertyName) {
       Comparison$$1.call(this, 'PropertyIsNull', propertyName);
     }
@@ -64908,7 +64516,7 @@
    * Represents a `<PropertyIsLessThan>` comparison operator.
    * @api
    */
-  var LessThan = (function (ComparisonBinary$$1) {
+  var LessThan = /*@__PURE__*/(function (ComparisonBinary$$1) {
     function LessThan(propertyName, expression) {
       ComparisonBinary$$1.call(this, 'PropertyIsLessThan', propertyName, expression);
     }
@@ -64929,7 +64537,7 @@
    * Represents a `<PropertyIsLessThanOrEqualTo>` comparison operator.
    * @api
    */
-  var LessThanOrEqualTo = (function (ComparisonBinary$$1) {
+  var LessThanOrEqualTo = /*@__PURE__*/(function (ComparisonBinary$$1) {
     function LessThanOrEqualTo(propertyName, expression) {
       ComparisonBinary$$1.call(this, 'PropertyIsLessThanOrEqualTo', propertyName, expression);
     }
@@ -64950,7 +64558,7 @@
    * Represents a logical `<Not>` operator for a filter condition.
    * @api
    */
-  var Not = (function (Filter$$1) {
+  var Not = /*@__PURE__*/(function (Filter$$1) {
     function Not(condition) {
 
       Filter$$1.call(this, 'Not');
@@ -64978,7 +64586,7 @@
    * Represents a `<PropertyIsNotEqualTo>` comparison operator.
    * @api
    */
-  var NotEqualTo = (function (ComparisonBinary$$1) {
+  var NotEqualTo = /*@__PURE__*/(function (ComparisonBinary$$1) {
     function NotEqualTo(propertyName, expression, opt_matchCase) {
       ComparisonBinary$$1.call(this, 'PropertyIsNotEqualTo', propertyName, expression, opt_matchCase);
     }
@@ -64999,7 +64607,7 @@
    * Represents a logical `<Or>` operator between two ore more filter conditions.
    * @api
    */
-  var Or = (function (LogicalNary$$1) {
+  var Or = /*@__PURE__*/(function (LogicalNary$$1) {
     function Or(conditions) {
       var params = ['Or'].concat(Array.prototype.slice.call(arguments));
       LogicalNary$$1.apply(this, params);
@@ -65022,7 +64630,7 @@
    * is within a given geometry.
    * @api
    */
-  var Within = (function (Spatial$$1) {
+  var Within = /*@__PURE__*/(function (Spatial$$1) {
     function Within(geometryName, geometry, opt_srsName) {
       Spatial$$1.call(this, 'Within', geometryName, geometry, opt_srsName);
     }
@@ -65473,7 +65081,7 @@
    *
    * @api
    */
-  var WFS = (function (XMLFeature$$1) {
+  var WFS = /*@__PURE__*/(function (XMLFeature$$1) {
     function WFS(opt_options) {
       XMLFeature$$1.call(this);
 
@@ -65596,11 +65204,9 @@
      *     FeatureCollection metadata.
      */
     WFS.prototype.readFeatureCollectionMetadataFromDocument = function readFeatureCollectionMetadataFromDocument (doc) {
-      var this$1 = this;
-
       for (var n = doc.firstChild; n; n = n.nextSibling) {
         if (n.nodeType == Node.ELEMENT_NODE) {
-          return this$1.readFeatureCollectionMetadataFromNode(/** @type {Element} */ (n));
+          return this.readFeatureCollectionMetadataFromNode(/** @type {Element} */ (n));
         }
       }
       return undefined;
@@ -65626,11 +65232,9 @@
      * @return {TransactionResponse|undefined} Transaction response.
      */
     WFS.prototype.readTransactionResponseFromDocument = function readTransactionResponseFromDocument (doc) {
-      var this$1 = this;
-
       for (var n = doc.firstChild; n; n = n.nextSibling) {
         if (n.nodeType == Node.ELEMENT_NODE) {
-          return this$1.readTransactionResponseFromNode(/** @type {Element} */ (n));
+          return this.readTransactionResponseFromNode(/** @type {Element} */ (n));
         }
       }
       return undefined;
@@ -65780,11 +65384,9 @@
      * @inheritDoc
      */
     WFS.prototype.readProjectionFromDocument = function readProjectionFromDocument (doc) {
-      var this$1 = this;
-
       for (var n = doc.firstChild; n; n = n.nextSibling) {
         if (n.nodeType == Node.ELEMENT_NODE) {
-          return this$1.readProjectionFromNode(n);
+          return this.readProjectionFromNode(n);
         }
       }
       return null;
@@ -65794,8 +65396,6 @@
      * @inheritDoc
      */
     WFS.prototype.readProjectionFromNode = function readProjectionFromNode (node) {
-      var this$1 = this;
-
       if (node.firstElementChild &&
           node.firstElementChild.firstElementChild) {
         node = node.firstElementChild.firstElementChild;
@@ -65804,7 +65404,7 @@
               (n.childNodes.length === 1 &&
               n.firstChild.nodeType === 3))) {
             var objectStack = [{}];
-            this$1.gmlFormat_.readGeometryElement(n, objectStack);
+            this.gmlFormat_.readGeometryElement(n, objectStack);
             return get$2(objectStack.pop().srsName);
           }
         }
@@ -66536,8 +66136,6 @@
    * @private
    */
   Lexer.prototype.readNumber_ = function readNumber_ () {
-      var this$1 = this;
-
     var c;
     var index = this.index_;
     var decimal = false;
@@ -66548,7 +66146,7 @@
       } else if (c == 'e' || c == 'E') {
         scientificNotation = true;
       }
-      c = this$1.nextChar_();
+      c = this.nextChar_();
     } while (
       this.isNumeric_(c, decimal) ||
         // if we haven't detected a scientific number before, 'e' or 'E'
@@ -66566,12 +66164,10 @@
    * @private
    */
   Lexer.prototype.readText_ = function readText_ () {
-      var this$1 = this;
-
     var c;
     var index = this.index_;
     do {
-      c = this$1.nextChar_();
+      c = this.nextChar_();
     } while (this.isAlpha_(c));
     return this.wkt.substring(index, this.index_--).toUpperCase();
   };
@@ -66670,12 +66266,10 @@
    * @private
    */
   Parser.prototype.parseGeometryCollectionText_ = function parseGeometryCollectionText_ () {
-      var this$1 = this;
-
     if (this.match(TokenType.LEFT_PAREN)) {
       var geometries = [];
       do {
-        geometries.push(this$1.parseGeometry_());
+        geometries.push(this.parseGeometry_());
       } while (this.match(TokenType.COMMA));
       if (this.match(TokenType.RIGHT_PAREN)) {
         return geometries;
@@ -66793,13 +66387,11 @@
    * @private
    */
   Parser.prototype.parsePoint_ = function parsePoint_ () {
-      var this$1 = this;
-
     var coordinates = [];
     var dimensions = this.layout_.length;
     for (var i = 0; i < dimensions; ++i) {
-      var token = this$1.token_;
-      if (this$1.match(TokenType.NUMBER)) {
+      var token = this.token_;
+      if (this.match(TokenType.NUMBER)) {
         coordinates.push(token.value);
       } else {
         break;
@@ -66816,11 +66408,9 @@
    * @private
    */
   Parser.prototype.parsePointList_ = function parsePointList_ () {
-      var this$1 = this;
-
     var coordinates = [this.parsePoint_()];
     while (this.match(TokenType.COMMA)) {
-      coordinates.push(this$1.parsePoint_());
+      coordinates.push(this.parsePoint_());
     }
     return coordinates;
   };
@@ -66830,11 +66420,9 @@
    * @private
    */
   Parser.prototype.parsePointTextList_ = function parsePointTextList_ () {
-      var this$1 = this;
-
     var coordinates = [this.parsePointText_()];
     while (this.match(TokenType.COMMA)) {
-      coordinates.push(this$1.parsePointText_());
+      coordinates.push(this.parsePointText_());
     }
     return coordinates;
   };
@@ -66844,11 +66432,9 @@
    * @private
    */
   Parser.prototype.parseLineStringTextList_ = function parseLineStringTextList_ () {
-      var this$1 = this;
-
     var coordinates = [this.parseLineStringText_()];
     while (this.match(TokenType.COMMA)) {
-      coordinates.push(this$1.parseLineStringText_());
+      coordinates.push(this.parseLineStringText_());
     }
     return coordinates;
   };
@@ -66858,11 +66444,9 @@
    * @private
    */
   Parser.prototype.parsePolygonTextList_ = function parsePolygonTextList_ () {
-      var this$1 = this;
-
     var coordinates = [this.parsePolygonText_()];
     while (this.match(TokenType.COMMA)) {
-      coordinates.push(this$1.parsePolygonText_());
+      coordinates.push(this.parsePolygonText_());
     }
     return coordinates;
   };
@@ -66960,7 +66544,7 @@
    *
    * @api
    */
-  var WKT = (function (TextFeature$$1) {
+  var WKT = /*@__PURE__*/(function (TextFeature$$1) {
     function WKT(opt_options) {
       TextFeature$$1.call(this);
 
@@ -67275,7 +66859,7 @@
    *
    * @api
    */
-  var WMSCapabilities = (function (XML$$1) {
+  var WMSCapabilities = /*@__PURE__*/(function (XML$$1) {
     function WMSCapabilities() {
       XML$$1.call(this);
 
@@ -67293,11 +66877,9 @@
      * @inheritDoc
      */
     WMSCapabilities.prototype.readFromDocument = function readFromDocument (doc) {
-      var this$1 = this;
-
       for (var n = doc.firstChild; n; n = n.nextSibling) {
         if (n.nodeType == Node.ELEMENT_NODE) {
-          return this$1.readFromNode(n);
+          return this.readFromNode(n);
         }
       }
       return null;
@@ -67901,7 +67483,7 @@
    *
    * @api
    */
-  var WMSGetFeatureInfo = (function (XMLFeature$$1) {
+  var WMSGetFeatureInfo = /*@__PURE__*/(function (XMLFeature$$1) {
     function WMSGetFeatureInfo(opt_options) {
       XMLFeature$$1.call(this);
 
@@ -67953,8 +67535,6 @@
      * @private
      */
     WMSGetFeatureInfo.prototype.readFeatures_ = function readFeatures_ (node, objectStack) {
-      var this$1 = this;
-
       node.setAttribute('namespaceURI', this.featureNS_);
       var localName = node.localName;
       /** @type {Array<import("../Feature.js").default>} */
@@ -67973,7 +67553,7 @@
           var toRemove = layerIdentifier;
           var layerName = layer.localName.replace(toRemove, '');
 
-          if (this$1.layers_ && !includes(this$1.layers_, layerName)) {
+          if (this.layers_ && !includes(this.layers_, layerName)) {
             continue;
           }
 
@@ -67981,16 +67561,16 @@
               featureIdentifier;
 
           context['featureType'] = featureType;
-          context['featureNS'] = this$1.featureNS_;
+          context['featureNS'] = this.featureNS_;
 
           var parsers = {};
           parsers[featureType] = makeArrayPusher(
-            this$1.gmlFormat_.readFeatureElement, this$1.gmlFormat_);
+            this.gmlFormat_.readFeatureElement, this.gmlFormat_);
           var parsersNS = makeStructureNS(
             [context['featureNS'], null], parsers);
-          layer.setAttribute('namespaceURI', this$1.featureNS_);
+          layer.setAttribute('namespaceURI', this.featureNS_);
           var layerFeatures = pushParseAndPop(
-            [], parsersNS, layer, objectStack, this$1.gmlFormat_);
+            [], parsersNS, layer, objectStack, this.gmlFormat_);
           if (layerFeatures) {
             extend$1(features, layerFeatures);
           }
@@ -68062,7 +67642,7 @@
    *
     * @api
    */
-  var WMTSCapabilities = (function (XML$$1) {
+  var WMTSCapabilities = /*@__PURE__*/(function (XML$$1) {
     function WMTSCapabilities() {
       XML$$1.call(this);
 
@@ -68081,11 +67661,9 @@
      * @inheritDoc
      */
     WMTSCapabilities.prototype.readFromDocument = function readFromDocument (doc) {
-      var this$1 = this;
-
       for (var n = doc.firstChild; n; n = n.nextSibling) {
         if (n.nodeType == Node.ELEMENT_NODE) {
-          return this$1.readFromNode(n);
+          return this.readFromNode(n);
         }
       }
       return null;
@@ -68470,7 +68048,7 @@
    * @fires import("../render/Event.js").RenderEvent
    * @api
    */
-  var Heatmap = (function (VectorLayer$$1) {
+  var Heatmap = /*@__PURE__*/(function (VectorLayer$$1) {
     function Heatmap(opt_options) {
       var options = opt_options ? opt_options : {};
 
@@ -68638,8 +68216,6 @@
      * @private
      */
     Heatmap.prototype.handleRender_ = function handleRender_ (event) {
-      var this$1 = this;
-
       var context = event.context;
       var canvas = context.canvas;
       var image = context.getImageData(0, 0, canvas.width, canvas.height);
@@ -68647,9 +68223,9 @@
       for (var i = 0, ii = view8.length; i < ii; i += 4) {
         var alpha = view8[i + 3] * 4;
         if (alpha) {
-          view8[i] = this$1.gradient_[alpha];
-          view8[i + 1] = this$1.gradient_[alpha + 1];
-          view8[i + 2] = this$1.gradient_[alpha + 2];
+          view8[i] = this.gradient_[alpha];
+          view8[i + 1] = this.gradient_[alpha + 1];
+          view8[i + 2] = this.gradient_[alpha + 2];
         }
       }
       context.putImageData(image, 0, 0);
@@ -68748,7 +68324,7 @@
    * @fires import("../render/Event.js").RenderEvent
    * @api
    */
-  var ImageLayer = (function (Layer$$1) {
+  var ImageLayer = /*@__PURE__*/(function (Layer$$1) {
     function ImageLayer(opt_options) {
       var options = opt_options ? opt_options : {};
       Layer$$1.call(this, options);
@@ -68829,7 +68405,7 @@
    *
    * @api
    */
-  var TileLayer = (function (Layer$$1) {
+  var TileLayer = /*@__PURE__*/(function (Layer$$1) {
     function TileLayer(opt_options) {
       var options = opt_options ? opt_options : {};
 
@@ -69002,7 +68578,7 @@
    * @param {Options=} opt_options Options.
    * @api
    */
-  var VectorTileLayer = (function (VectorLayer$$1) {
+  var VectorTileLayer = /*@__PURE__*/(function (VectorLayer$$1) {
     function VectorTileLayer(opt_options) {
       var options = opt_options ? opt_options : {};
 
@@ -69685,7 +69261,7 @@
    * Class encapsulating single reprojected image.
    * See {@link module:ol/source/Image~ImageSource}.
    */
-  var ReprojImage = (function (ImageBase$$1) {
+  var ReprojImage = /*@__PURE__*/(function (ImageBase$$1) {
     function ReprojImage(sourceProj, targetProj, targetExtent, targetResolution, pixelRatio, getImageFunction) {
       var maxSourceExtent = sourceProj.getExtent();
       var maxTargetExtent = targetProj.getExtent();
@@ -69868,7 +69444,7 @@
    * See {@link module:ol/source/TileImage~TileImage}.
    *
    */
-  var ReprojTile = (function (Tile$$1) {
+  var ReprojTile = /*@__PURE__*/(function (Tile$$1) {
     function ReprojTile(
       sourceProj,
       sourceTileGrid,
@@ -69882,8 +69458,6 @@
       opt_errorThreshold,
       opt_renderEdges
     ) {
-      var this$1 = this;
-
       Tile$$1.call(this, tileCoord, TileState.IDLE);
 
       /**
@@ -70022,9 +69596,9 @@
 
         for (var srcX = sourceRange.minX; srcX <= sourceRange.maxX; srcX++) {
           for (var srcY = sourceRange.minY; srcY <= sourceRange.maxY; srcY++) {
-            var tile = getTileFunction(this$1.sourceZ_, srcX, srcY, pixelRatio);
+            var tile = getTileFunction(this.sourceZ_, srcX, srcY, pixelRatio);
             if (tile) {
-              this$1.sourceTiles_.push(tile);
+              this.sourceTiles_.push(tile);
             }
           }
         }
@@ -70383,7 +69957,7 @@
    *
    * @fires import("./TileEvent.js").default
    */
-  var UrlTile = (function (TileSource$$1) {
+  var UrlTile = /*@__PURE__*/(function (TileSource$$1) {
     function UrlTile(options) {
 
       TileSource$$1.call(this, {
@@ -70616,7 +70190,7 @@
    * @fires import("./Tile.js").TileSourceEvent
    * @api
    */
-  var TileImage = (function (UrlTile$$1) {
+  var TileImage = /*@__PURE__*/(function (UrlTile$$1) {
     function TileImage(options) {
 
       UrlTile$$1.call(this, {
@@ -70685,12 +70259,11 @@
      * @inheritDoc
      */
     TileImage.prototype.canExpireCache = function canExpireCache () {
-      var this$1 = this;
       if (this.tileCache.canExpireCache()) {
         return true;
       } else {
-        for (var key in this$1.tileCacheForProjection) {
-          if (this$1.tileCacheForProjection[key].canExpireCache()) {
+        for (var key in this.tileCacheForProjection) {
+          if (this.tileCacheForProjection[key].canExpireCache()) {
             return true;
           }
         }
@@ -70702,12 +70275,11 @@
      * @inheritDoc
      */
     TileImage.prototype.expireCache = function expireCache (projection, usedTiles) {
-      var this$1 = this;
       var usedTileCache = this.getTileCacheForProjection(projection);
 
       this.tileCache.expireCache(this.tileCache == usedTileCache ? usedTiles : {});
-      for (var id in this$1.tileCacheForProjection) {
-        var tileCache = this$1.tileCacheForProjection[id];
+      for (var id in this.tileCacheForProjection) {
+        var tileCache = this.tileCacheForProjection[id];
         tileCache.expireCache(tileCache == usedTileCache ? usedTiles : {});
       }
     };
@@ -70894,14 +70466,12 @@
      * @api
      */
     TileImage.prototype.setRenderReprojectionEdges = function setRenderReprojectionEdges (render) {
-      var this$1 = this;
-
       if (this.renderReprojectionEdges_ == render) {
         return;
       }
       this.renderReprojectionEdges_ = render;
-      for (var id in this$1.tileCacheForProjection) {
-        this$1.tileCacheForProjection[id].clear();
+      for (var id in this.tileCacheForProjection) {
+        this.tileCacheForProjection[id].clear();
       }
       this.changed();
     };
@@ -71030,7 +70600,7 @@
    * Layer source for Bing Maps tile data.
    * @api
    */
-  var BingMaps = (function (TileImage$$1) {
+  var BingMaps = /*@__PURE__*/(function (TileImage$$1) {
     function BingMaps(options) {
 
       var hidpi = options.hidpi !== undefined ? options.hidpi : false;
@@ -71273,7 +70843,7 @@
    *
    * @api
    */
-  var XYZ = (function (TileImage$$1) {
+  var XYZ = /*@__PURE__*/(function (TileImage$$1) {
     function XYZ(opt_options) {
       var options = opt_options || {};
       var projection = options.projection !== undefined ?
@@ -71353,7 +70923,7 @@
    * Layer source for the CartoDB Maps API.
    * @api
    */
-  var CartoDB = (function (XYZ$$1) {
+  var CartoDB = /*@__PURE__*/(function (XYZ$$1) {
     function CartoDB(options) {
       XYZ$$1.call(this, {
         attributions: options.attributions,
@@ -71533,7 +71103,7 @@
    * considered for clustering, a custom `geometryFunction` can be defined.
    * @api
    */
-  var Cluster = (function (VectorSource$$1) {
+  var Cluster = /*@__PURE__*/(function (VectorSource$$1) {
     function Cluster(options) {
       VectorSource$$1.call(this, {
         attributions: options.attributions,
@@ -71639,8 +71209,6 @@
      * @protected
      */
     Cluster.prototype.cluster = function cluster () {
-      var this$1 = this;
-
       if (this.resolution === undefined) {
         return;
       }
@@ -71657,13 +71225,13 @@
       for (var i = 0, ii = features.length; i < ii; i++) {
         var feature = features[i];
         if (!(getUid(feature).toString() in clustered)) {
-          var geometry = this$1.geometryFunction(feature);
+          var geometry = this.geometryFunction(feature);
           if (geometry) {
             var coordinates = geometry.getCoordinates();
             createOrUpdateFromCoordinate(coordinates, extent);
             buffer(extent, mapDistance, extent);
 
-            var neighbors = this$1.source.getFeaturesInExtent(extent);
+            var neighbors = this.source.getFeaturesInExtent(extent);
             neighbors = neighbors.filter(function(neighbor) {
               var uid = getUid(neighbor).toString();
               if (!(uid in clustered)) {
@@ -71673,7 +71241,7 @@
                 return false;
               }
             });
-            this$1.features.push(this$1.createCluster(neighbors));
+            this.features.push(this.createCluster(neighbors));
           }
         }
       }
@@ -71685,11 +71253,9 @@
      * @protected
      */
     Cluster.prototype.createCluster = function createCluster (features) {
-      var this$1 = this;
-
       var centroid = [0, 0];
       for (var i = features.length - 1; i >= 0; --i) {
-        var geometry = this$1.geometryFunction(features[i]);
+        var geometry = this.geometryFunction(features[i]);
         if (geometry) {
           add$2(centroid, geometry.getCoordinates());
         } else {
@@ -71745,7 +71311,7 @@
    * Events emitted by {@link module:ol/source/Image~ImageSource} instances are instances of this
    * type.
    */
-  var ImageSourceEvent = (function (Event$$1) {
+  var ImageSourceEvent = /*@__PURE__*/(function (Event$$1) {
     function ImageSourceEvent(type, image) {
 
       Event$$1.call(this, type);
@@ -71783,7 +71349,7 @@
    * Base class for sources providing a single image.
    * @api
    */
-  var ImageSource = (function (Source$$1) {
+  var ImageSource = /*@__PURE__*/(function (Source$$1) {
     function ImageSource(options) {
       Source$$1.call(this, {
         attributions: options.attributions,
@@ -72011,7 +71577,7 @@
    * @fires ol/source/Image~ImageSourceEvent
    * @api
    */
-  var ImageArcGISRest = (function (ImageSource$$1) {
+  var ImageArcGISRest = /*@__PURE__*/(function (ImageSource$$1) {
     function ImageArcGISRest(opt_options) {
 
       var options = opt_options || /** @type {Options} */ ({});
@@ -72297,7 +71863,7 @@
    * Base class for image sources where a canvas element is the image.
    * @api
    */
-  var ImageCanvasSource = (function (ImageSource$$1) {
+  var ImageCanvasSource = /*@__PURE__*/(function (ImageSource$$1) {
     function ImageCanvasSource(options) {
 
       ImageSource$$1.call(this, {
@@ -72406,7 +71972,7 @@
    * @fires ol/source/Image~ImageSourceEvent
    * @api
    */
-  var ImageMapGuide = (function (ImageSource$$1) {
+  var ImageMapGuide = /*@__PURE__*/(function (ImageSource$$1) {
     function ImageMapGuide(options) {
 
       ImageSource$$1.call(this, {
@@ -72651,7 +72217,7 @@
    * A layer source for displaying a single, static image.
    * @api
    */
-  var Static = (function (ImageSource$$1) {
+  var Static = /*@__PURE__*/(function (ImageSource$$1) {
     function Static(options) {
       var crossOrigin = options.crossOrigin !== undefined ?
         options.crossOrigin : null;
@@ -72829,7 +72395,7 @@
    * @fires ol/source/Image~ImageSourceEvent
    * @api
    */
-  var ImageWMS = (function (ImageSource$$1) {
+  var ImageWMS = /*@__PURE__*/(function (ImageSource$$1) {
     function ImageWMS(opt_options) {
 
       var options = opt_options || /** @type {Options} */ ({});
@@ -73205,7 +72771,7 @@
    * Layer source for the OpenStreetMap tile server.
    * @api
    */
-  var OSM = (function (XYZ$$1) {
+  var OSM = /*@__PURE__*/(function (XYZ$$1) {
     function OSM(opt_options) {
 
       var options = opt_options || {};
@@ -73389,8 +72955,6 @@
    * @param {Object} config Configuration.
    */
   function Processor(config) {
-    var this$1 = this;
-
     this._imageOps = !!config.imageOps;
     var threads;
     if (config.threads === 0) {
@@ -73403,7 +72967,7 @@
     var workers = [];
     if (threads) {
       for (var i = 0; i < threads; ++i) {
-        workers[i] = createWorker(config, this$1._onWorkerMessage.bind(this$1, i));
+        workers[i] = createWorker(config, this._onWorkerMessage.bind(this, i));
       }
     } else {
       workers[0] = createFauxWorker(config, this._onWorkerMessage.bind(this, 0));
@@ -73439,10 +73003,8 @@
    * Stop responding to any completed work and destroy the processor.
    */
   Processor.prototype.destroy = function() {
-    var this$1 = this;
-
-    for (var key in this$1) {
-      this$1[key] = null;
+    for (var key in this) {
+      this[key] = null;
     }
     this._destroyed = true;
   };
@@ -73452,11 +73014,9 @@
    * @param {Object} job The job.
    */
   Processor.prototype._enqueue = function(job) {
-    var this$1 = this;
-
     this._queue.push(job);
     while (this._queue.length > this._maxQueueLength) {
-      this$1._queue.shift().callback(null, null);
+      this._queue.shift().callback(null, null);
     }
   };
 
@@ -73464,8 +73024,6 @@
    * Dispatch a job.
    */
   Processor.prototype._dispatch = function() {
-    var this$1 = this;
-
     if (this._running === 0 && this._queue.length > 0) {
       var job = this._job = this._queue.shift();
       var width = job.inputs[0].width;
@@ -73492,10 +73050,10 @@
           for (var j = 0, jj = buffers.length; j < jj; ++j) {
             slices.push(buffers[i].slice(offset, offset + segmentLength));
           }
-          this$1._workers[i].postMessage({
+          this._workers[i].postMessage({
             'buffers': slices,
             'meta': job.meta,
-            'imageOps': this$1._imageOps,
+            'imageOps': this._imageOps,
             'width': width,
             'height': height
           }, slices);
@@ -73525,8 +73083,6 @@
    * will be called.
    */
   Processor.prototype._resolveJob = function() {
-    var this$1 = this;
-
     var job = this._job;
     var threads = this._workers.length;
     var data, meta;
@@ -73539,10 +73095,10 @@
       meta = new Array(length);
       var segmentLength = 4 * Math.ceil(length / 4 / threads);
       for (var i = 0; i < threads; ++i) {
-        var buffer = this$1._dataLookup[i]['buffer'];
+        var buffer = this._dataLookup[i]['buffer'];
         var offset = i * segmentLength;
         data.set(new Uint8ClampedArray(buffer), offset);
-        meta[i] = this$1._dataLookup[i]['meta'];
+        meta[i] = this._dataLookup[i]['meta'];
       }
     }
     this._job = null;
@@ -73615,7 +73171,7 @@
    * Events emitted by {@link module:ol/source/Raster} instances are instances of this
    * type.
    */
-  var RasterSourceEvent = (function (Event$$1) {
+  var RasterSourceEvent = /*@__PURE__*/(function (Event$$1) {
     function RasterSourceEvent(type, frameState, data) {
       Event$$1.call(this, type);
 
@@ -73680,10 +73236,8 @@
    * @fires ol/source/Raster~RasterSourceEvent
    * @api
    */
-  var RasterSource = (function (ImageSource$$1) {
+  var RasterSource = /*@__PURE__*/(function (ImageSource$$1) {
     function RasterSource(options) {
-      var this$1 = this;
-
       ImageSource$$1.call(this, {});
 
       /**
@@ -73712,8 +73266,8 @@
       this.renderers_ = createRenderers(options.sources);
 
       for (var r = 0, rr = this.renderers_.length; r < rr; ++r) {
-        listen(this$1.renderers_[r], EventType.CHANGE,
-          this$1.changed, this$1);
+        listen(this.renderers_[r], EventType.CHANGE,
+          this.changed, this);
       }
 
       /**
@@ -73843,12 +73397,10 @@
      * @private
      */
     RasterSource.prototype.allSourcesReady_ = function allSourcesReady_ () {
-      var this$1 = this;
-
       var ready = true;
       var source;
       for (var i = 0, ii = this.renderers_.length; i < ii; ++i) {
-        source = this$1.renderers_[i].getLayer().getSource();
+        source = this.renderers_[i].getLayer().getSource();
         if (source.getState() !== SourceState.READY) {
           ready = false;
           break;
@@ -73895,14 +73447,12 @@
      * @private
      */
     RasterSource.prototype.processSources_ = function processSources_ () {
-      var this$1 = this;
-
       var frameState = this.requestedFrameState_;
       var len = this.renderers_.length;
       var imageDatas = new Array(len);
       for (var i = 0; i < len; ++i) {
         var imageData = getImageData(
-          this$1.renderers_[i], frameState, frameState.layerStatesArray[i]);
+          this.renderers_[i], frameState, frameState.layerStatesArray[i]);
         if (imageData) {
           imageDatas[i] = imageData;
         } else {
@@ -74182,7 +73732,7 @@
    * Layer source for the Stamen tile server.
    * @api
    */
-  var Stamen = (function (XYZ$$1) {
+  var Stamen = /*@__PURE__*/(function (XYZ$$1) {
     function Stamen(options) {
       var i = options.layer.indexOf('-');
       var provider = i == -1 ? options.layer : options.layer.slice(0, i);
@@ -74270,7 +73820,7 @@
    * {@link module:ol/source/XYZ~XYZ} data source.
    * @api
    */
-  var TileArcGISRest = (function (TileImage$$1) {
+  var TileArcGISRest = /*@__PURE__*/(function (TileImage$$1) {
     function TileArcGISRest(opt_options) {
 
       var options = opt_options || {};
@@ -74313,12 +73863,10 @@
      * @return {string} The key for the current params.
      */
     TileArcGISRest.prototype.getKeyForParams_ = function getKeyForParams_ () {
-      var this$1 = this;
-
       var i = 0;
       var res = [];
-      for (var key in this$1.params_) {
-        res[i++] = key + '-' + this$1.params_[key];
+      for (var key in this.params_) {
+        res[i++] = key + '-' + this.params_[key];
       }
       return res.join('/');
     };
@@ -74435,7 +73983,7 @@
    */
 
 
-  var LabeledTile = (function (Tile$$1) {
+  var LabeledTile = /*@__PURE__*/(function (Tile$$1) {
     function LabeledTile(tileCoord, tileSize, text) {
 
       Tile$$1.call(this, tileCoord, TileState.LOADED);
@@ -74515,7 +74063,7 @@
    * Uses Canvas context2d, so requires Canvas support.
    * @api
    */
-  var TileDebug = (function (TileSource$$1) {
+  var TileDebug = /*@__PURE__*/(function (TileSource$$1) {
     function TileDebug(options) {
 
       TileSource$$1.call(this, {
@@ -74608,7 +74156,7 @@
    * Layer source for tile data in TileJSON format.
    * @api
    */
-  var TileJSON = (function (TileImage$$1) {
+  var TileJSON = /*@__PURE__*/(function (TileImage$$1) {
     function TileJSON(options) {
       TileImage$$1.call(this, {
         attributions: options.attributions,
@@ -74806,7 +74354,7 @@
    * Layer source for tile data from WMS servers.
    * @api
    */
-  var TileWMS = (function (TileImage$$1) {
+  var TileWMS = /*@__PURE__*/(function (TileImage$$1) {
     function TileWMS(opt_options) {
 
       var options = opt_options || /** @type {Options} */ ({});
@@ -75044,12 +74592,10 @@
      * @return {string} The key for the current params.
      */
     TileWMS.prototype.getKeyForParams_ = function getKeyForParams_ () {
-      var this$1 = this;
-
       var i = 0;
       var res = [];
-      for (var key in this$1.params_) {
-        res[i++] = key + '-' + this$1.params_[key];
+      for (var key in this.params_) {
+        res[i++] = key + '-' + this.params_[key];
       }
       return res.join('/');
     };
@@ -75134,7 +74680,7 @@
    */
 
 
-  var CustomTile = (function (Tile$$1) {
+  var CustomTile = /*@__PURE__*/(function (Tile$$1) {
     function CustomTile(tileCoord, state, src, extent, preemptive, jsonp$$1) {
 
       Tile$$1.call(this, tileCoord, state);
@@ -75384,7 +74930,7 @@
    * Layer source for UTFGrid interaction data loaded from TileJSON format.
    * @api
    */
-  var UTFGrid = (function (TileSource$$1) {
+  var UTFGrid = /*@__PURE__*/(function (TileSource$$1) {
     function UTFGrid(options) {
       TileSource$$1.call(this, {
         projection: get$2('EPSG:3857'),
@@ -75679,7 +75225,7 @@
    * @fires import("./Tile.js").TileSourceEvent
    * @api
    */
-  var VectorTile$1 = (function (UrlTile$$1) {
+  var VectorTile$1 = /*@__PURE__*/(function (UrlTile$$1) {
     function VectorTile$$1(options) {
       var projection = options.projection || 'EPSG:3857';
 
@@ -75887,7 +75433,7 @@
    * Set the grid pattern for sources accessing WMTS tiled-image servers.
    * @api
    */
-  var WMTSTileGrid = (function (TileGrid$$1) {
+  var WMTSTileGrid = /*@__PURE__*/(function (TileGrid$$1) {
     function WMTSTileGrid(options) {
       TileGrid$$1.call(this, {
         extent: options.extent,
@@ -76079,7 +75625,7 @@
    * Layer source for tile data from WMTS servers.
    * @api
    */
-  var WMTS = (function (TileImage$$1) {
+  var WMTS = /*@__PURE__*/(function (TileImage$$1) {
     function WMTS(options) {
 
       // TODO: add support for TileMatrixLimits
@@ -76260,12 +75806,10 @@
      * @return {string} The key for the current dimensions.
      */
     WMTS.prototype.getKeyForDimensions_ = function getKeyForDimensions_ () {
-      var this$1 = this;
-
       var i = 0;
       var res = [];
-      for (var key in this$1.dimensions_) {
-        res[i++] = key + '-' + this$1.dimensions_[key];
+      for (var key in this.dimensions_) {
+        res[i++] = key + '-' + this.dimensions_[key];
       }
       return res.join('/');
     };
@@ -76561,7 +76105,7 @@
   };
 
 
-  var CustomTile$1 = (function (ImageTile$$1) {
+  var CustomTile$1 = /*@__PURE__*/(function (ImageTile$$1) {
     function CustomTile(tileGrid, tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options) {
 
       ImageTile$$1.call(this, tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options);
@@ -76653,7 +76197,7 @@
    * Imaging Protocol are supported).
    * @api
    */
-  var Zoomify = (function (TileImage$$1) {
+  var Zoomify = /*@__PURE__*/(function (TileImage$$1) {
     function Zoomify(opt_options) {
 
       var options = opt_options || {};
