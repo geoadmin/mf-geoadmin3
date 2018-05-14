@@ -50,11 +50,11 @@ goog.require('ga_urlutils_service');
         'ch.swisstopo.pixelkarte-farbe': {
           id: 'ch.swisstopo.pixelkarte-farbe',
           label: 'bg_pixel_color'
-        },
+        }/*,
         'ch.swisstopo.pixelkarte-grau': {
           id: 'ch.swisstopo.pixelkarte-grau',
           label: 'bg_pixel_grey'
-        }
+        }*/
       };
       var getBgById = function(id) {
         for (var i = 0, ii = bgs.length; i < ii; i++) {
@@ -85,23 +85,20 @@ goog.require('ga_urlutils_service');
         bgs.length = 0;
         bgLayers.forEach(function(bgLayerId) {
           var bgLayer = predefinedBgs[bgLayerId];
-          if (!bgLayer) {
-            bgLayer = {
-              id: bgLayerId,
-              label: gaLayers.getLayerProperty(bgLayerId, 'label')
-            };
+          if (bgLayer) {
+            bgs.push(bgLayer);
           }
-          bgs.push(bgLayer);
         });
-        if (bgs.indexOf(voidLayer) === -1) {
-          bgs.push(voidLayer);
-        }
 
         Object.keys(vtBgs).forEach(function(key) {
           if (bgs.indexOf(vtBgs[key]) === -1) {
             bgs.push(vtBgs[key]);
           }
         });
+
+        if (bgs.indexOf(voidLayer) === -1) {
+          bgs.push(voidLayer);
+        }
       };
 
       var Background = function() {
