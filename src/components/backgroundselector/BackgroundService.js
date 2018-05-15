@@ -26,17 +26,17 @@ goog.require('ga_urlutils_service');
       // Bgs with vector tiles tileset.
       var vtBgs = {
         'sbm': {
-          id: 'sbm',
+          id: 'sbm-osm',
           label: 'SwissBaseMap',
           disable3d: true,
           labels: false
-        },
+        }/*,
         'omt': {
           id: 'omt',
           label: 'OpenMapTiles',
           disable3d: true,
           labels: false
-        }
+        }*/
       };
 
       var predefinedBgs = {
@@ -54,7 +54,7 @@ goog.require('ga_urlutils_service');
         'ch.swisstopo.pixelkarte-grau': {
           id: 'ch.swisstopo.pixelkarte-grau',
           label: 'bg_pixel_grey'
-        }*/
+        } */
       };
       var getBgById = function(id) {
         for (var i = 0, ii = bgs.length; i < ii; i++) {
