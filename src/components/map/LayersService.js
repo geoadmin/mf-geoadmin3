@@ -288,12 +288,24 @@ goog.require('ga_urlutils_service');
                 tileSize: 1024
               }, {
                 serverLayerName: 'swissbasemap',
-                // this is the id of the source to display. One in style's
-                // sources.
-                sourceId: 'swissbasemap',
-                url: 'https://tileserver.dev.bgdi.ch/data/swissbasemapzoom-1-mbtiles/{z}/{x}/{y}.pbf',
-                styleUrl: 'https://tileserver.dev.bgdi.ch/styles/swissrailway-basemap/style.json',
-                maxZoom: 15
+                sourceId: 'swissbasemap', // id of the source to use
+                styleUrl: 'https://tileserver.dev.bgdi.ch/styles/swissbasemap-osm-integrated/style.json'
+              }, {
+                serverLayerName: 'osm',
+                sourceId: 'osm',
+                styleUrl: 'https://tileserver.dev.bgdi.ch/styles/swissbasemap-osm-integrated/style.json'
+              }, {
+                serverLayerName: 'relief-osm',
+                sourceId: 'relief-osm',
+                sourceType: 'raster',
+                styleUrl: 'https://tileserver.dev.bgdi.ch/styles/swissbasemap-osm-integrated/style.json',
+                opacity: 0.3
+              }, {
+                serverLayerName: 'relief',
+                sourceId: 'relief',
+                sourceType: 'raster',
+                styleUrl: 'https://tileserver.dev.bgdi.ch/styles/swissbasemap-osm-integrated/style.json',
+                opacity: 1
               }, {
                 serverLayerName: 'openmaptiles',
                 sourceId: 'openmaptiles',
@@ -318,6 +330,17 @@ goog.require('ga_urlutils_service');
                   background: true,
                   serverLayerName: 'sbm',
                   subLayersIds: [
+                    'swissbasemap'
+                  ]
+                };
+                response.data['sbm-osm'] = {
+                  type: 'aggregate',
+                  background: true,
+                  serverLayerName: 'sbm-osm',
+                  subLayersIds: [
+                    'relief-osm',
+                    'osm',
+                    'relief',
                     'swissbasemap'
                   ]
                 };
@@ -711,36 +734,64 @@ goog.require('ga_urlutils_service');
                   });
                 });
           } else if (config.type === 'vectortile') {
-            olLayer = new ol.layer.VectorTile({
-              declutter: true,
-              source: new ol.source.VectorTile({
-                format: new ol.format.MVT(),
-                maxZoom: config.maxZoom,
-                url: config.url
-              })
-            });
+            if (config.sourceType === 'raster') {
+              olLayer = new ol.layer.Tile();
+            } else {
+              olLayer = new ol.layer.VectorTile({
+                declutter: true,
+                style: new ol.style.Style(),
+                source: new ol.source.VectorTile({
+                  format: new ol.format.MVT(),
+                  maxZoom: config.maxZoom,
+                  url: config.url
+                })
+              });
+            }
             if (config.sourceId && config.styleUrl) {
               var sourceId = config.sourceId;
               $http.get(config.styleUrl, {
                 cache: true
               }).then(function(response) {
                 var glStyle = response.data;
-                var spriteConfigUrl = glStyle.sprite + '.json';
 
-                // Load the style for a specific source
-                $http.get(spriteConfigUrl, {
-                  cache: true
-                }).then(function(response) {
-                  $window.mb2olstyle(olLayer, glStyle, config.sourceId,
-                      undefined,
-                      response.data, glStyle.sprite + '.png', ['Helvetica']);
-                  // olms.stylefunction(olLayer, glStyle, config.sourceId,
-                  //    undefined, response.data, glStyle.sprite + '.png',
-                  //    ['Helvetica']);
-                }, function(reason) {
-                  $window.console.error('Apply style failed. Reason: "' +
-                      reason + '"');
-                });
+                if (config.sourceType !== 'raster') {
+
+                  // HACK: Make the Swiss style transparent to see the relief
+                  glStyle.layers.forEach(function(style, idx) {
+                    if (style.id === 'Schweiz') {
+                      style.paint['fill-opacity'] = 0.8;
+                    }
+                  });
+
+                  // For vector source we parse then apply the style after
+                  // loading the sprite image.
+                  var spriteConfigUrl = glStyle.sprite + '.json';
+
+                  // Load the style for a specific source
+                  $http.get(spriteConfigUrl, {
+                    cache: true
+                  }).then(function(response) {
+                    // mapbox-to-ol-style (old version of ol-mappbox-style)
+                    $window.mb2olstyle(olLayer, glStyle, config.sourceId,
+                        undefined,
+                        response.data, glStyle.sprite + '.png', ['Helvetica']);
+
+                    // ol-mappbox-style
+                    // olms.stylefunction(olLayer, glStyle, config.sourceId,
+                    //    undefined, response.data, glStyle.sprite + '.png',
+                    //    ['Helvetica']);
+                  }, function(reason) {
+                    $window.console.error('Apply style failed. Reason: "' +
+                        reason + '"');
+                  });
+                } else {
+                  glStyle.layers.forEach(function(style, idx) {
+                    if (style.source === config.sourceId) {
+                      // TODO: We should be able to parse the style for raster.
+                      // Verify if it exists or not in mb2olstyle library
+                    }
+                  });
+                }
 
                 // Load the tileset config
                 if (!config.url) {
@@ -749,12 +800,29 @@ goog.require('ga_urlutils_service');
                     cache: true
                   }).then(function(response) {
                     var data = response.data;
-                    olLayer.setSource(new ol.source.VectorTile({
-                      format: new ol.format.MVT(),
-                      minZoom: data.minzoom,
-                      maxZoom: data.maxzoom,
-                      urls: data.tiles
-                    }));
+                    var olSource;
+                    if (config.sourceType === 'raster') {
+                      olSource = new ol.source.XYZ({
+                        minZoom: data.minZoom,
+                        maxZoom: data.maxZoom,
+                        urls: data.tiles
+                      });
+                      olLayer.setOpacity(config.opacity || 1);
+                    } else { // vector
+                      olSource = new ol.source.VectorTile({
+                        format: new ol.format.MVT(),
+                        minZoom: data.minzoom,
+                        maxZoom: data.maxzoom,
+                        urls: data.tiles
+                      });
+                    }
+                    olLayer.setSource(olSource);
+
+                    if (data.extent) {
+                      // Extent in epsg:4326
+                      olLayer.setExtent(ol.proj.transformExtent(data.extent,
+                          ol.proj.get('EPSG:4326'), ol.proj.get('EPSG:3857')));
+                    }
                   }, function(reason) {
                     $window.console.error('Loading source config failed. ' +
                         'Reason: "' + reason + '"');
