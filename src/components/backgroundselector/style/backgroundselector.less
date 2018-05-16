@@ -1,3 +1,5 @@
+@nbBgs: 4;
+
 [ga-background-selector] {
   user-select: none;
 
@@ -25,20 +27,14 @@
     z-index: 1005;
   }
 
-  .ga-bg-layer-0 {
-    z-index: 1004;
-  }
-  .ga-bg-layer-1 {
-    z-index: 1003;
-  }
 
-  .ga-bg-layer-2 {
-    z-index: 1002;
+  .zIndexes(@index) when (@index < @nbBgs) {
+    .ga-bg-layer-@{index} {
+      z-index: 1005 - @index
+    }
+    .zIndexes(@index + 1);
   }
-
-  .ga-bg-layer-3 {
-    z-index: 1001;
-  }
+  .zIndexes(1);
 
   .ga-bg-layer-text, .ga-bg-layer-bt-text {
     padding: 1px;
@@ -96,25 +92,15 @@
 
     &.ga-open {
 
-      .ga-swissimage {
-        transform: translate3d(0, -49px, 0);
-        -ms-transform: translateY(-49px); /* IE 9*/
+      .transformVertical(@index) when (@index < @nbBgs) {
+        @y: -49px * (@index + 1);
+        .ga-bg-layer-@{index} {
+          transform:  translate3d(0, @y, 0);
+          -ms-transform: translateY(@y); /* IE 9*/
+        }
+        .transformVertical(@index + 1);
       }
-
-      .ga-pixelkarte-farbe {
-        transform: translate3d(0, -98px, 0);
-        -ms-transform: translateY(-98px); /* IE 9*/
-      }
-
-      .ga-pixelkarte-grau {
-        transform: translate3d(0, -147px, 0);
-        -ms-transform: translateY(-147px); /* IE 9*/
-      }
-
-      .ga-voidLayer {
-        transform: translate3d(0, -196px, 0);
-        -ms-transform: translateY(-196px); /* IE 9*/
-      }
+      .transformVertical(0);
     }
   }
 
@@ -156,25 +142,15 @@
         }
       }
 
-      .ga-swissimage {
-        transform: translate3d(-25px, 0 , 0);
-        -ms-transform: translateX(-25px); /* IE 9*/
+      .transformHorizontal(@index) when (@index < @nbBgs) {
+        @x: -25px - (101px * @index);
+        .ga-bg-layer-@{index} {
+          transform:  translate3d(@x, 0, 0);
+          -ms-transform: translateX(@x); /* IE 9*/
+        }
+        .transformHorizontal(@index + 1);
       }
-
-      .ga-pixelkarte-farbe {
-        transform: translate3d(-126px, 0 , 0);
-        -ms-transform: translateX(-126px); /* IE 9*/
-      }
-
-      .ga-pixelkarte-grau {
-        transform: translate3d(-227px, 0 , 0);
-        -ms-transform: translateX(-227px); /* IE 9*/
-      }
-
-      .ga-voidLayer {
-        transform: translate3d(-328px, 0 , 0);
-         -ms-transform: translateX(-328px); /* IE 9*/
-      }
+      .transformHorizontal(0);
     }
   }
 }
