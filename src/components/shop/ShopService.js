@@ -53,7 +53,8 @@ goog.require('ga_translation_service');
         'ch.swisstopo.lubis-bildstreifen',
         'ch.swisstopo.lubis-luftbilder_schwarzweiss',
         'ch.swisstopo.lubis-luftbilder_infrarot',
-        'ch.swisstopo.lubis-luftbilder_farbe'
+        'ch.swisstopo.lubis-luftbilder_farbe',
+        'ch.swisstopo.lubis-terrestrische_aufnahmen'
       ];
 
       var stringifyParams = function(params) {
