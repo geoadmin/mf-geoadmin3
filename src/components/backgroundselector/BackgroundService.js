@@ -36,7 +36,7 @@ goog.require('ga_urlutils_service');
           label: 'OpenMapTiles',
           disable3d: true,
           labels: false
-        }*/
+        } */
       };
 
       var predefinedBgs = {

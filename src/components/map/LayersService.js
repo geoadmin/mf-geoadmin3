@@ -771,15 +771,10 @@ goog.require('ga_urlutils_service');
                   $http.get(spriteConfigUrl, {
                     cache: true
                   }).then(function(response) {
-                    // mapbox-to-ol-style (old version of ol-mappbox-style)
-                    $window.mb2olstyle(olLayer, glStyle, config.sourceId,
-                        undefined,
-                        response.data, glStyle.sprite + '.png', ['Helvetica']);
-
-                    // ol-mappbox-style
-                    // olms.stylefunction(olLayer, glStyle, config.sourceId,
-                    //    undefined, response.data, glStyle.sprite + '.png',
-                    //    ['Helvetica']);
+                    $window.olms.stylefunction(olLayer, glStyle,
+                        config.sourceId,
+                        undefined, response.data, glStyle.sprite + '.png',
+                        ['Helvetica']);
                   }, function(reason) {
                     $window.console.error('Apply style failed. Reason: "' +
                         reason + '"');
