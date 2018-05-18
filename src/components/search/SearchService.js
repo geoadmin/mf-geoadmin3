@@ -23,7 +23,10 @@ goog.require('ga_reframe_service');
   // Match MGRS coordinates
   var MGRS = '^3[123][\\sa-z]{3}[\\s\\d]*';
 
-  // Match simple coordinate (ex: 45.1 8.2 or 550000 230000)
+  // Match metric coordinates
+  // ex: 720000 90000 (LV03)
+  //     2600000 1200000 (LV95)
+  //     900000 5800000 (UTM, Webmercator)
   var coordinate = '([\\d .\']{5,})([\\t ,./]+)([\\d .,\']{5,})'
 
   var regexpD = new RegExp(D, 'i');
