@@ -39,6 +39,20 @@ describe('ga_reframe_service', function() {
           $rootScope.$digest();
         });
 
+    it('transforms coordinates using the reframe service from LV03 to LV95 (souther Ticino)',
+        function(done) {
+          var coordinates = [722204.89, 76225.24];
+          var url = buildUrl(lv03tolv95Url, coordinates);
+          var response = [2722205.0033169477, 1076223.7020938578];
+          $httpBackend.expectGET(url).respond({ c: response });
+
+          gaReframe.get03To95(coordinates).then(function(coords) {
+            expect(coords).to.eql(response.c);
+            done();
+          });
+          $httpBackend.flush();
+          $rootScope.$digest();
+        });
     it('transforms coordinates using the reframe service from LV95 to LV03',
         function(done) {
           var coordinates = [2620116.600000524, 1142771.299843073];

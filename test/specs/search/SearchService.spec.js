@@ -33,7 +33,6 @@ describe('ga_search_service', function() {
       beforeEach(function() {
         spy = sinon.stub(gaReframe, 'get03To95');
       });
-
       it('with space as separator', function(done) {
         getCoordinate(extent, '2600123.12 1200345').then(function(position) {
           expect(position).to.eql(coord2056);
@@ -92,16 +91,44 @@ describe('ga_search_service', function() {
     describe('supports EPSG:21781 coordinate', function() {
       var coord21781 = [600123.12, 200345];
       var coord2056 = [2600123.12, 1200345];
-      var spy;
+      var ticino21781 = [722204.89, 76225.24];
+      var ticino2056 = [2722205.003, 1076223.702];
+      var spy, spy2, stub;
 
       beforeEach(function() {
-        spy = sinon.stub(gaReframe, 'get03To95').withArgs(coord21781).resolves(coord2056);
+        stub = sinon.stub(gaReframe, 'get03To95');
+        spy = stub.withArgs(coord21781).resolves(coord2056);
+        spy2 = stub.withArgs(ticino21781).resolves(ticino2056);
+      });
+      afterEach(function() {
+        stub.resetHistory();
+        spy.resetHistory();
+        spy2.resetHistory();
+
       });
 
       it('separated by space', function(done) {
         getCoordinate(extent, '600123.12 200345').then(function(position) {
           expect(position).to.eql(coord2056);
           expect(spy.callCount).to.eql(1);
+          done();
+        });
+        $rootScope.$digest();
+      });
+
+      it('separated by space (northing < 100 000)', function(done) {
+        getCoordinate(extent, '722204.89 76225.24').then(function(position) {
+          expect(position).to.eql([2722205.003, 1076223.702]);
+          expect(spy2.callCount).to.eql(1);
+          done();
+        });
+        $rootScope.$digest();
+      });
+
+      it('separated by space (northing < 100 000, northing before easting)', function(done) {
+        getCoordinate(extent, '76225.24 722204.89').then(function(position) {
+          expect(position).to.eql([2722205.003, 1076223.702]);
+          expect(spy2.callCount).to.eql(1);
           done();
         });
         $rootScope.$digest();
