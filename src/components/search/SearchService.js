@@ -15,7 +15,7 @@ goog.require('ga_reframe_service');
    */
   var D = '([\\d.,]{2,})[°\\sNSWEO]*[ ,/]+([\\d.,]{3,})[\\s°NSWEO]*';
   var DM = '([\\d]{1,2})[°\\s]*([\\d.,]+)[\\s\',NSEWO/]*';
-  var DMSDegree = '\\b[0-9]{1,2}\\s*[°|º]\\s*';
+  var DMSDegree = '\\b0{0,2}[0-9]{1,2}\\s*[°|º]\\s*';
   var DMSMinute = '[0-9]{1,2}\\s*[\'|′]';
   var DMSSecond = '(?:[0-9]+(?:\\.[0-9]*)?|\\.[0-9]+)("|\'\'|′′|″)';
   var DMSQuadrant = '[NOSWE]?';
