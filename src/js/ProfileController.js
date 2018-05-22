@@ -13,7 +13,8 @@ goog.require('ga_print_service');
   module.controller('GaProfileController', function($scope, $timeout,
       gaBrowserSniffer, gaGlobalOptions, gaPrint) {
 
-    $scope.options = {
+    // We use extend to keep values from options of ProfilePopup controller
+    $scope.options = angular.extend($scope.options || {}, {
       xLabel: 'profile_x_label',
       yLabel: 'profile_y_label',
       margin: {
@@ -23,7 +24,7 @@ goog.require('ga_print_service');
         left: 60
       },
       elevationModel: gaGlobalOptions.defaultElevationModel
-    };
+    });
 
     // Allow to print dynamic profile from feature's popup
     // TODO: Verify f it's working, currently print profile is deactivated.
