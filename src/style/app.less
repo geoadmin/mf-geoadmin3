@@ -1780,8 +1780,17 @@ body:not(.embed) {
       display: none;
     }
   }
-}
 
+  @media (max-width: @screen-tablet), (max-height: @screen-s-height) {
+    .ga-inc, .ga-dec {
+      display: inline-block;
+      width: 22px;
+      height: 23px;
+      font-size: 22px;
+      margin: -4px 0;
+    }
+  }
+}
 /* Corner ribbons, from http://codepen.io/eode9/pen/twkKm */
 .corner-ribbon{
   position: absolute;
