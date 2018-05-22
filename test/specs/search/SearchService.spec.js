@@ -209,7 +209,7 @@ describe('ga_search_service', function() {
       ]
 
       strings.forEach(function(str) {
-        it('trying to parse: ' + str, function(done) {
+        it('trying to parse as DD or DM: ' + str, function(done) {
           getCoordinate(extent, str).then(function(position) {
             expect(position).to.eql(coord2056);
             done();
@@ -228,7 +228,10 @@ describe('ga_search_service', function() {
         '46°58′16.320030760136433" N  6°58′10.12802667678261" E',
         '46º58′16.320030760136433″ N  6º58′10.12802667678261″ E',
         '46° 58\' 16.320030760136433\'\' N 6° 58\' 10.12802667678261\'\' E',
-        // Quandrants are wrongi/missing, but we assume in Switzerland
+        // Skyguide special (zero padded)
+        '46°58\'16.320030760136433" N  006°58\'10.12802667678261" E',
+        '46°58\'16.320030760136433" N  06°58\'10.12802667678261" E',
+        // Quandrants are wrong/missing, but we assume in Switzerland
         "46°58'16.320030760136433'' S  6°58'10.12802667678261'' W",
         "46°58'16.320030760136433''  6°58'10.12802667678261'' ",
         // Separators
@@ -248,6 +251,15 @@ describe('ga_search_service', function() {
           $rootScope.$digest();
         });
       });
+
+      it('trying to parse Skyguide format (exact string)', function(done) {
+        getCoordinate(extent, '47°27\'29.4944"N 008°32\'52.8164"E').then(function(position) {
+          expect(position).to.eql([2683652.204, 1256969.871]);
+          done();
+        });
+        $rootScope.$digest();
+      });
+
     });
 
     it('supports latitude and longitude as DMS (test D,D)', function(done) {
