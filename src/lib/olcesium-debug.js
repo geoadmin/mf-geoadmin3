@@ -1,6 +1,6 @@
 // Ol-Cesium. See https://github.com/openlayers/ol-cesium/
 // License: https://github.com/openlayers/ol-cesium/blob/master/LICENSE
-// Version: v1.35-29-g071c090
+// Version: v1.37
 
 'use strict';
 var $jscomp = $jscomp || {};
@@ -4707,51 +4707,51 @@ olcs.AbstractSynchronizer.prototype.orderLayers = function() {
 olcs.AbstractSynchronizer.prototype.addLayers_ = function(root) {
   var $jscomp$this = this;
   var fifo = [{layer:root, parents:[]}];
-  var $jscomp$loop$12 = {};
+  var $jscomp$loop$11 = {};
   while (fifo.length > 0) {
-    $jscomp$loop$12.olLayerWithParents = fifo.splice(0, 1)[0];
-    $jscomp$loop$12.olLayer = $jscomp$loop$12.olLayerWithParents.layer;
-    var olLayerId = ol.getUid($jscomp$loop$12.olLayer).toString();
+    $jscomp$loop$11.olLayerWithParents = fifo.splice(0, 1)[0];
+    $jscomp$loop$11.olLayer = $jscomp$loop$11.olLayerWithParents.layer;
+    var olLayerId = ol.getUid($jscomp$loop$11.olLayer).toString();
     this.olLayerListenKeys[olLayerId] = [];
     goog.asserts.assert(!this.layerMap[olLayerId]);
     var cesiumObjects = null;
-    if ($jscomp$loop$12.olLayer instanceof ol.layer.Group) {
-      this.listenForGroupChanges_($jscomp$loop$12.olLayer);
-      if ($jscomp$loop$12.olLayer !== this.mapLayerGroup) {
-        cesiumObjects = this.createSingleLayerCounterparts($jscomp$loop$12.olLayerWithParents);
+    if ($jscomp$loop$11.olLayer instanceof ol.layer.Group) {
+      this.listenForGroupChanges_($jscomp$loop$11.olLayer);
+      if ($jscomp$loop$11.olLayer !== this.mapLayerGroup) {
+        cesiumObjects = this.createSingleLayerCounterparts($jscomp$loop$11.olLayerWithParents);
       }
       if (!cesiumObjects) {
-        $jscomp$loop$12.olLayer.getLayers().forEach(function($jscomp$loop$12) {
+        $jscomp$loop$11.olLayer.getLayers().forEach(function($jscomp$loop$11) {
           return function(l) {
             if (l) {
-              var newOlLayerWithParents = {layer:l, parents:$jscomp$loop$12.olLayer === $jscomp$this.mapLayerGroup ? [] : [$jscomp$loop$12.olLayerWithParents.layer].concat($jscomp$loop$12.olLayerWithParents.parents)};
+              var newOlLayerWithParents = {layer:l, parents:$jscomp$loop$11.olLayer === $jscomp$this.mapLayerGroup ? [] : [$jscomp$loop$11.olLayerWithParents.layer].concat($jscomp$loop$11.olLayerWithParents.parents)};
               fifo.push(newOlLayerWithParents);
             }
           };
-        }($jscomp$loop$12));
+        }($jscomp$loop$11));
       }
     } else {
-      cesiumObjects = this.createSingleLayerCounterparts($jscomp$loop$12.olLayerWithParents);
+      cesiumObjects = this.createSingleLayerCounterparts($jscomp$loop$11.olLayerWithParents);
       if (!cesiumObjects) {
-        $jscomp$loop$12.layerId = olLayerId;
-        $jscomp$loop$12.layerWithParents = $jscomp$loop$12.olLayerWithParents;
-        $jscomp$loop$12.onLayerChange = function($jscomp$loop$12) {
+        $jscomp$loop$11.layerId = olLayerId;
+        $jscomp$loop$11.layerWithParents = $jscomp$loop$11.olLayerWithParents;
+        $jscomp$loop$11.onLayerChange = function($jscomp$loop$11) {
           return function(e) {
-            var cesiumObjs = $jscomp$this.createSingleLayerCounterparts($jscomp$loop$12.layerWithParents);
+            var cesiumObjs = $jscomp$this.createSingleLayerCounterparts($jscomp$loop$11.layerWithParents);
             if (cesiumObjs) {
-              $jscomp$loop$12.layerWithParents.layer.un("change", $jscomp$loop$12.onLayerChange, $jscomp$this);
-              $jscomp$this.addCesiumObjects_(cesiumObjs, $jscomp$loop$12.layerId, $jscomp$loop$12.layerWithParents.layer);
+              $jscomp$loop$11.layerWithParents.layer.un("change", $jscomp$loop$11.onLayerChange, $jscomp$this);
+              $jscomp$this.addCesiumObjects_(cesiumObjs, $jscomp$loop$11.layerId, $jscomp$loop$11.layerWithParents.layer);
               $jscomp$this.orderLayers();
             }
           };
-        }($jscomp$loop$12);
-        this.olLayerListenKeys[olLayerId].push(ol.events.listen($jscomp$loop$12.layerWithParents.layer, "change", $jscomp$loop$12.onLayerChange, this));
+        }($jscomp$loop$11);
+        this.olLayerListenKeys[olLayerId].push(ol.events.listen($jscomp$loop$11.layerWithParents.layer, "change", $jscomp$loop$11.onLayerChange, this));
       }
     }
     if (cesiumObjects) {
-      this.addCesiumObjects_(cesiumObjects, olLayerId, $jscomp$loop$12.olLayer);
+      this.addCesiumObjects_(cesiumObjects, olLayerId, $jscomp$loop$11.olLayer);
     }
-    $jscomp$loop$12 = {olLayer:$jscomp$loop$12.olLayer, olLayerWithParents:$jscomp$loop$12.olLayerWithParents, layerWithParents:$jscomp$loop$12.layerWithParents, onLayerChange:$jscomp$loop$12.onLayerChange, layerId:$jscomp$loop$12.layerId};
+    $jscomp$loop$11 = {olLayer:$jscomp$loop$11.olLayer, olLayerWithParents:$jscomp$loop$11.olLayerWithParents, layerWithParents:$jscomp$loop$11.layerWithParents, onLayerChange:$jscomp$loop$11.onLayerChange, layerId:$jscomp$loop$11.layerId};
   }
   this.orderLayers();
 };
@@ -4861,27 +4861,16 @@ olcs.AbstractSynchronizer.prototype.removeAllCesiumObjects = function(destroy) {
 olcs.AbstractSynchronizer.prototype.createSingleLayerCounterparts = function(olLayerWithParents) {
 };
 goog.provide("olcs.AutoRenderLoop");
-olcs.AutoRenderLoop = function(ol3d, debug) {
+olcs.AutoRenderLoop = function(ol3d) {
   this.ol3d = ol3d;
   this.scene_ = ol3d.getCesiumScene();
   this.canvas_ = this.scene_.canvas;
-  this.verboseRendering = debug;
   this._boundNotifyRepaintRequired = this.notifyRepaintRequired.bind(this);
-  this.lastCameraViewMatrix_ = new Cesium.Matrix4;
-  this.lastCameraMoveTime_ = 0;
-  this.stoppedRendering = false;
-  this._removePostRenderListener = this.scene_.postRender.addEventListener(this.postRender.bind(this));
   this.repaintEventNames_ = ["mousemove", "mousedown", "mouseup", "touchstart", "touchend", "touchmove", "pointerdown", "pointerup", "pointermove", "wheel"];
-  var CameraPrototype = Cesium.Camera.prototype;
-  this.interceptedAPIs_ = [[CameraPrototype, "setView"], [CameraPrototype, "move"], [CameraPrototype, "rotate"], [CameraPrototype, "lookAt"], [CameraPrototype, "flyTo"], [CameraPrototype, "flyToHome"], [CameraPrototype, "flyToBoundingSphere"]];
-  this.originalAPIs_ = this.interceptedAPIs_.map(function(tuple) {
-    return tuple[0][tuple[1]];
-  });
-  this.originalLoadWithXhr_ = Cesium.loadWithXhr.load;
-  this.originalScheduleTask_ = Cesium.TaskProcessor.prototype.scheduleTask;
   this.enable();
 };
 olcs.AutoRenderLoop.prototype.enable = function() {
+  this.scene_.requestRenderMode = true;
   for (var $jscomp$iter$0 = $jscomp.makeIterator(this.repaintEventNames_), $jscomp$key$repaintKey = $jscomp$iter$0.next(); !$jscomp$key$repaintKey.done; $jscomp$key$repaintKey = $jscomp$iter$0.next()) {
     var repaintKey = $jscomp$key$repaintKey.value;
     {
@@ -4889,51 +4878,9 @@ olcs.AutoRenderLoop.prototype.enable = function() {
     }
   }
   window.addEventListener("resize", this._boundNotifyRepaintRequired, false);
-  var that = this;
-  Cesium.loadWithXhr.load = function(url, responseType, method, data, headers, deferred, overrideMimeType, preferText, timeout) {
-    deferred["promise"]["always"](that._boundNotifyRepaintRequired);
-    that.originalLoadWithXhr_.apply(that, [].concat($jscomp.arrayFromIterable(arguments)));
-  };
-  Cesium.TaskProcessor.prototype.scheduleTask = function(parameters, transferableObjects) {
-    var result = that.originalScheduleTask_.call(this, parameters, transferableObjects);
-    var taskProcessor = this;
-    if (!taskProcessor._originalWorkerMessageSinkRepaint) {
-      var worker = taskProcessor["_worker"];
-      taskProcessor._originalWorkerMessageSinkRepaint = worker.onmessage;
-      worker.onmessage = function(event) {
-        taskProcessor._originalWorkerMessageSinkRepaint(event);
-        that.notifyRepaintRequired();
-      };
-    }
-    return result;
-  };
-  var $jscomp$loop$13 = {};
-  var i = 0;
-  for (; i < this.interceptedAPIs_.length; $jscomp$loop$13 = {original:$jscomp$loop$13.original}, ++i) {
-    var api = this.interceptedAPIs_[i];
-    var parent = api[0];
-    $jscomp$loop$13.original = this.originalAPIs_[i];
-    parent[api[1]] = function($jscomp$loop$13) {
-      return function(args) {
-        var $jscomp$restParams = [];
-        for (var $jscomp$restIndex = 0; $jscomp$restIndex < arguments.length; ++$jscomp$restIndex) {
-          $jscomp$restParams[$jscomp$restIndex - 0] = arguments[$jscomp$restIndex];
-        }
-        {
-          var args$4 = $jscomp$restParams;
-          $jscomp$loop$13.original.apply(this, args$4);
-          that.notifyRepaintRequired();
-        }
-      };
-    }($jscomp$loop$13);
-  }
   this.ol3d.getOlMap().getLayerGroup().on("change", this._boundNotifyRepaintRequired);
 };
 olcs.AutoRenderLoop.prototype.disable = function() {
-  if (!!this._removePostRenderListener) {
-    this._removePostRenderListener();
-    this._removePostRenderListener = undefined;
-  }
   for (var $jscomp$iter$1 = $jscomp.makeIterator(this.repaintEventNames_), $jscomp$key$repaintKey = $jscomp$iter$1.next(); !$jscomp$key$repaintKey.done; $jscomp$key$repaintKey = $jscomp$iter$1.next()) {
     var repaintKey = $jscomp$key$repaintKey.value;
     {
@@ -4941,49 +4888,14 @@ olcs.AutoRenderLoop.prototype.disable = function() {
     }
   }
   window.removeEventListener("resize", this._boundNotifyRepaintRequired, false);
-  Cesium.loadWithXhr.load = this.originalLoadWithXhr_;
-  Cesium.TaskProcessor.prototype.scheduleTask = this.originalScheduleTask_;
-  for (var i = 0; i < this.interceptedAPIs_.length; ++i) {
-    var api = this.interceptedAPIs_[i];
-    var parent = api[0];
-    var original = this.originalAPIs_[i];
-    parent[api[1]] = original;
-  }
   this.ol3d.getOlMap().getLayerGroup().un("change", this._boundNotifyRepaintRequired);
-};
-olcs.AutoRenderLoop.prototype.postRender = function(date) {
-  var now = Date.now();
-  var scene = this.scene_;
-  var camera = scene.camera;
-  if (!Cesium.Matrix4.equalsEpsilon(this.lastCameraViewMatrix_, camera.viewMatrix, 1e-5)) {
-    this.lastCameraMoveTime_ = now;
-  }
-  var cameraMovedInLastSecond = now - this.lastCameraMoveTime_ < 1000;
-  var surface = scene.globe["_surface"];
-  var tilesWaiting = !surface["tileProvider"].ready || surface["_tileLoadQueueHigh"].length > 0 || surface["_tileLoadQueueMedium"].length > 0 || surface["_tileLoadQueueLow"].length > 0 || surface["_debug"]["tilesWaitingForChildren"] > 0;
-  var tweens = scene["tweens"];
-  if (!cameraMovedInLastSecond && !tilesWaiting && tweens.length == 0) {
-    if (this.verboseRendering) {
-      console.log("stopping rendering @ " + Date.now());
-    }
-    this.ol3d.setBlockCesiumRendering(true);
-    this.stoppedRendering = true;
-  }
-  Cesium.Matrix4.clone(camera.viewMatrix, this.lastCameraViewMatrix_);
+  this.scene_.requestRenderMode = false;
 };
 olcs.AutoRenderLoop.prototype.restartRenderLoop = function() {
   this.notifyRepaintRequired();
 };
 olcs.AutoRenderLoop.prototype.notifyRepaintRequired = function() {
-  if (this.verboseRendering && this.stoppedRendering) {
-    console.log("starting rendering @ " + Date.now());
-  }
-  this.lastCameraMoveTime_ = Date.now();
-  this.ol3d.setBlockCesiumRendering(false);
-  this.stoppedRendering = false;
-};
-olcs.AutoRenderLoop.prototype.setDebug = function(debug) {
-  this.verboseRendering = debug;
+  this.scene_.requestRender();
 };
 goog.provide("ol.geom.GeometryType");
 ol.geom.GeometryType = {POINT:"Point", LINE_STRING:"LineString", LINEAR_RING:"LinearRing", POLYGON:"Polygon", MULTI_POINT:"MultiPoint", MULTI_LINE_STRING:"MultiLineString", MULTI_POLYGON:"MultiPolygon", GEOMETRY_COLLECTION:"GeometryCollection", CIRCLE:"Circle"};
@@ -8420,8 +8332,7 @@ olcs.core.OLImageryProvider.prototype.handleSourceChanged_ = function() {
       }
     }
     this.rectangle_ = this.tilingScheme_.rectangle;
-    var credit = olcs.core.OLImageryProvider.createCreditForSource(this.source_);
-    this.credit_ = credit || null;
+    this.credit_ = olcs.core.OLImageryProvider.createCreditForSource(this.source_);
     this.ready_ = true;
   }
 };
@@ -8434,10 +8345,10 @@ olcs.core.OLImageryProvider.createCreditForSource = function(source) {
   if (attributions) {
     attributions.forEach(function(htmlOrAttr) {
       var html = typeof htmlOrAttr === "string" ? htmlOrAttr : htmlOrAttr.getHTML();
-      text += html.replace(/<\/?[^>]+(>|$)/g, "") + " ";
+      text += html;
     });
   }
-  return text.length > 0 ? new Cesium.Credit(text, undefined, undefined) : null;
+  return text.length > 0 ? new Cesium.Credit(text, true) : null;
 };
 olcs.core.OLImageryProvider.prototype.getTileCredits = function(x, y, level) {
   return undefined;
@@ -8620,18 +8531,6 @@ olcs.core.computeAngleToZenith = function(scene, pivot) {
   Cesium.Cartesian3.negate(camera.right, left);
   var a = olcs.core.signedAngleBetween(normal, direction, left);
   return a + fy;
-};
-olcs.core.lookAt = function(camera, target, opt_globe) {
-  if (opt_globe) {
-    var height = opt_globe.getHeight(target);
-    target.height = height || 0;
-  }
-  var ellipsoid = Cesium.Ellipsoid.WGS84;
-  var targetb = ellipsoid.cartographicToCartesian(target);
-  var position = camera.position;
-  var up = new Cesium.Cartesian3;
-  ellipsoid.geocentricSurfaceNormal(position, up);
-  camera.lookAt(position, targetb, up);
 };
 olcs.core.extentToRectangle = function(extent, projection) {
   if (extent && projection) {
@@ -8896,7 +8795,7 @@ olcs.Camera.prototype.setPosition = function(position) {
   var ll = this.toLonLat_(position);
   goog.asserts.assert(ll);
   var carto = new Cesium.Cartographic(ol.math.toRadians(ll[0]), ol.math.toRadians(ll[1]), this.getAltitude());
-  this.cam_.position = Cesium.Ellipsoid.WGS84.cartographicToCartesian(carto);
+  this.cam_.setView({destination:Cesium.Ellipsoid.WGS84.cartographicToCartesian(carto)});
   this.updateView();
 };
 olcs.Camera.prototype.getPosition = function() {
@@ -8917,16 +8816,6 @@ olcs.Camera.prototype.setAltitude = function(altitude) {
 olcs.Camera.prototype.getAltitude = function() {
   var carto = Cesium.Ellipsoid.WGS84.cartesianToCartographic(this.cam_.position);
   return carto.height;
-};
-olcs.Camera.prototype.lookAt = function(position) {
-  if (!this.toLonLat_) {
-    return;
-  }
-  var ll = this.toLonLat_(position);
-  goog.asserts.assert(ll);
-  var carto = Cesium.Cartographic.fromDegrees(ll[0], ll[1]);
-  olcs.core.lookAt(this.cam_, carto, this.scene_.globe);
-  this.updateView();
 };
 olcs.Camera.prototype.updateCamera_ = function() {
   if (!this.view_ || !this.toLonLat_) {
@@ -9633,19 +9522,19 @@ olcs.RasterSynchronizer.prototype.createSingleLayerCounterparts = function(olLay
       olcs.core.updateCesiumLayerProperties(olLayerWithParents, cesiumObjects[i]);
     }
     listenKeyArray.push(olLayer.on("change:extent", function(e) {
-      for (var i$5 = 0; i$5 < cesiumObjects.length; ++i$5) {
-        this.cesiumLayers_.remove(cesiumObjects[i$5], true);
-        this.ourLayers_.remove(cesiumObjects[i$5], false);
+      for (var i$4 = 0; i$4 < cesiumObjects.length; ++i$4) {
+        this.cesiumLayers_.remove(cesiumObjects[i$4], true);
+        this.ourLayers_.remove(cesiumObjects[i$4], false);
       }
       delete this.layerMap[ol.getUid(olLayer)];
       this.synchronize();
     }, this));
     listenKeyArray.push(olLayer.on("change", function(e) {
-      for (var i$6 = 0; i$6 < cesiumObjects.length; ++i$6) {
-        var position = this.cesiumLayers_.indexOf(cesiumObjects[i$6]);
+      for (var i$5 = 0; i$5 < cesiumObjects.length; ++i$5) {
+        var position = this.cesiumLayers_.indexOf(cesiumObjects[i$5]);
         if (position >= 0) {
-          this.cesiumLayers_.remove(cesiumObjects[i$6], false);
-          this.cesiumLayers_.add(cesiumObjects[i$6], position);
+          this.cesiumLayers_.remove(cesiumObjects[i$5], false);
+          this.cesiumLayers_.add(cesiumObjects[i$5], position);
         }
       }
     }, this));
@@ -9942,64 +9831,72 @@ ol.ext.rbush = function() {
 };
 (function() {
   (function(exports) {
-    var quickselect_1 = quickselect;
-    var default_1 = quickselect;
-    function quickselect(arr, k, left, right, compare) {
-      quickselectStep(arr, k, left || 0, right || arr.length - 1, compare || defaultCompare);
+    var commonjsGlobal = typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : {};
+    function createCommonjsModule(fn, module) {
+      return module = {exports:{}}, fn(module, module.exports), module.exports;
     }
-    function quickselectStep(arr, k, left, right, compare) {
-      while (right > left) {
-        if (right - left > 600) {
-          var n = right - left + 1;
-          var m = k - left + 1;
-          var z = Math.log(n);
-          var s = 0.5 * Math.exp(2 * z / 3);
-          var sd = 0.5 * Math.sqrt(z * s * (n - s) / n) * (m - n / 2 < 0 ? -1 : 1);
-          var newLeft = Math.max(left, Math.floor(k - m * s / n + sd));
-          var newRight = Math.min(right, Math.floor(k + (n - m) * s / n + sd));
-          quickselectStep(arr, k, newLeft, newRight, compare);
+    var quickselect = createCommonjsModule(function(module, exports) {
+      (function(global, factory) {
+        module.exports = factory();
+      })(commonjsGlobal, function() {
+        function quickselect(arr, k, left, right, compare) {
+          quickselectStep(arr, k, left || 0, right || arr.length - 1, compare || defaultCompare);
         }
-        var t = arr[k];
-        var i = left;
-        var j = right;
-        swap(arr, left, k);
-        if (compare(arr[right], t) > 0) {
-          swap(arr, left, right);
-        }
-        while (i < j) {
-          swap(arr, i, j);
-          i++;
-          j--;
-          while (compare(arr[i], t) < 0) {
-            i++;
+        function quickselectStep(arr, k, left, right, compare) {
+          while (right > left) {
+            if (right - left > 600) {
+              var n = right - left + 1;
+              var m = k - left + 1;
+              var z = Math.log(n);
+              var s = 0.5 * Math.exp(2 * z / 3);
+              var sd = 0.5 * Math.sqrt(z * s * (n - s) / n) * (m - n / 2 < 0 ? -1 : 1);
+              var newLeft = Math.max(left, Math.floor(k - m * s / n + sd));
+              var newRight = Math.min(right, Math.floor(k + (n - m) * s / n + sd));
+              quickselectStep(arr, k, newLeft, newRight, compare);
+            }
+            var t = arr[k];
+            var i = left;
+            var j = right;
+            swap(arr, left, k);
+            if (compare(arr[right], t) > 0) {
+              swap(arr, left, right);
+            }
+            while (i < j) {
+              swap(arr, i, j);
+              i++;
+              j--;
+              while (compare(arr[i], t) < 0) {
+                i++;
+              }
+              while (compare(arr[j], t) > 0) {
+                j--;
+              }
+            }
+            if (compare(arr[left], t) === 0) {
+              swap(arr, left, j);
+            } else {
+              j++;
+              swap(arr, j, right);
+            }
+            if (j <= k) {
+              left = j + 1;
+            }
+            if (k <= j) {
+              right = j - 1;
+            }
           }
-          while (compare(arr[j], t) > 0) {
-            j--;
-          }
         }
-        if (compare(arr[left], t) === 0) {
-          swap(arr, left, j);
-        } else {
-          j++;
-          swap(arr, j, right);
+        function swap(arr, i, j) {
+          var tmp = arr[i];
+          arr[i] = arr[j];
+          arr[j] = tmp;
         }
-        if (j <= k) {
-          left = j + 1;
+        function defaultCompare(a, b) {
+          return a < b ? -1 : a > b ? 1 : 0;
         }
-        if (k <= j) {
-          right = j - 1;
-        }
-      }
-    }
-    function swap(arr, i, j) {
-      var tmp = arr[i];
-      arr[i] = arr[j];
-      arr[j] = tmp;
-    }
-    function defaultCompare(a, b) {
-      return a < b ? -1 : a > b ? 1 : 0;
-    }
-    quickselect_1.default = default_1;
+        return quickselect;
+      });
+    });
     var rbush_1 = rbush;
     function rbush(maxEntries, format) {
       if (!(this instanceof rbush)) {
@@ -10372,7 +10269,7 @@ ol.ext.rbush = function() {
           continue;
         }
         mid = left + Math.ceil((right - left) / n / 2) * n;
-        quickselect_1(arr, mid, left, right, compare);
+        quickselect(arr, mid, left, right, compare);
         stack.push(left, mid, mid, right);
       }
     }
@@ -13173,17 +13070,17 @@ olcs.FeatureConverter.prototype.olVectorLayerToCesium = function(olLayer, olView
       continue;
     }
     var primitives = null;
-    for (var i$7 = 0; i$7 < styles.length; i$7++) {
-      var prims = this.olFeatureToCesium(olLayer, feature, styles[i$7], context);
+    for (var i$6 = 0; i$6 < styles.length; i$6++) {
+      var prims = this.olFeatureToCesium(olLayer, feature, styles[i$6], context);
       if (prims) {
         if (!primitives) {
           primitives = prims;
         } else {
           if (prims) {
-            var i$8 = 0, prim;
-            while (prim = prims.get(i$8)) {
+            var i$7 = 0, prim;
+            while (prim = prims.get(i$7)) {
               primitives.add(prim);
-              i$8++;
+              i$7++;
             }
           }
         }
@@ -13216,10 +13113,10 @@ olcs.FeatureConverter.prototype.convert = function(layer, view, feature, context
       primitives = prims;
     } else {
       if (prims) {
-        var i$9 = 0, prim;
-        while (prim = prims.get(i$9)) {
+        var i$8 = 0, prim;
+        while (prim = prims.get(i$8)) {
           primitives.add(prim);
-          i$9++;
+          i$8++;
         }
       }
     }
@@ -13892,8 +13789,8 @@ olcs.OLCesium = function(options) {
   this.dataSourceDisplay_ = new Cesium.DataSourceDisplay({scene:this.scene_, dataSourceCollection:this.dataSourceCollection_});
   var synchronizers = options.createSynchronizers ? options.createSynchronizers(this.map_, this.scene_, this.dataSourceCollection_) : [new olcs.RasterSynchronizer(this.map_, this.scene_), new olcs.VectorSynchronizer(this.map_, this.scene_), new olcs.OverlaySynchronizer(this.map_, this.scene_)];
   this.handleResize_();
-  for (var i$10 = synchronizers.length - 1; i$10 >= 0; --i$10) {
-    synchronizers[i$10].synchronize();
+  for (var i$9 = synchronizers.length - 1; i$9 >= 0; --i$9) {
+    synchronizers[i$9].synchronize();
   }
   if (this.isOverMap_) {
     var credits = this.canvas_.nextElementSibling;
@@ -14117,7 +14014,7 @@ olcs.OLCesium.prototype.setBlockCesiumRendering = function(block) {
 };
 olcs.OLCesium.prototype.enableAutoRenderLoop = function() {
   if (!this.autoRenderLoop_) {
-    this.autoRenderLoop_ = new olcs.AutoRenderLoop(this, false);
+    this.autoRenderLoop_ = new olcs.AutoRenderLoop(this);
   }
 };
 olcs.OLCesium.prototype.getAutoRenderLoop = function() {
@@ -39672,7 +39569,7 @@ ol.ext.pixelworks.Processor = function() {
       var workerHasImageData = true;
       try {
         new ImageData(10, 10);
-      } catch (_$11) {
+      } catch (_$10) {
         workerHasImageData = false;
       }
       function newWorkerImageData(data, width, height) {
@@ -42342,7 +42239,6 @@ goog.exportSymbol("ol.control.ZoomToExtent", ol.control.ZoomToExtent);
 goog.exportSymbol("olcs.AbstractSynchronizer", olcs.AbstractSynchronizer);
 goog.exportProperty(olcs.AbstractSynchronizer.prototype, "synchronize", olcs.AbstractSynchronizer.prototype.synchronize);
 goog.exportProperty(olcs.AutoRenderLoop.prototype, "restartRenderLoop", olcs.AutoRenderLoop.prototype.restartRenderLoop);
-goog.exportProperty(olcs.AutoRenderLoop.prototype, "setDebug", olcs.AutoRenderLoop.prototype.setDebug);
 goog.exportSymbol("olcs.Camera", olcs.Camera);
 goog.exportProperty(olcs.Camera.prototype, "setHeading", olcs.Camera.prototype.setHeading);
 goog.exportProperty(olcs.Camera.prototype, "getHeading", olcs.Camera.prototype.getHeading);
@@ -42356,7 +42252,6 @@ goog.exportProperty(olcs.Camera.prototype, "setPosition", olcs.Camera.prototype.
 goog.exportProperty(olcs.Camera.prototype, "getPosition", olcs.Camera.prototype.getPosition);
 goog.exportProperty(olcs.Camera.prototype, "setAltitude", olcs.Camera.prototype.setAltitude);
 goog.exportProperty(olcs.Camera.prototype, "getAltitude", olcs.Camera.prototype.getAltitude);
-goog.exportProperty(olcs.Camera.prototype, "lookAt", olcs.Camera.prototype.lookAt);
 goog.exportProperty(olcs.Camera.prototype, "readFromView", olcs.Camera.prototype.readFromView);
 goog.exportProperty(olcs.Camera.prototype, "updateView", olcs.Camera.prototype.updateView);
 goog.exportProperty(olcs.Camera.prototype, "calcDistanceForResolution", olcs.Camera.prototype.calcDistanceForResolution);
@@ -42371,7 +42266,6 @@ goog.exportSymbol("olcs.core.pickBottomPoint", olcs.core.pickBottomPoint);
 goog.exportSymbol("olcs.core.pickCenterPoint", olcs.core.pickCenterPoint);
 goog.exportSymbol("olcs.core.computeSignedTiltAngleOnGlobe", olcs.core.computeSignedTiltAngleOnGlobe);
 goog.exportSymbol("olcs.core.computeAngleToZenith", olcs.core.computeAngleToZenith);
-goog.exportSymbol("olcs.core.lookAt", olcs.core.lookAt);
 goog.exportSymbol("olcs.core.extentToRectangle", olcs.core.extentToRectangle);
 goog.exportSymbol("olcs.core.tileLayerToImageryLayer", olcs.core.tileLayerToImageryLayer);
 goog.exportSymbol("olcs.core.updateCesiumLayerProperties", olcs.core.updateCesiumLayerProperties);
