@@ -465,10 +465,12 @@ goog.require('ga_urlutils_service');
           if (!/^kml$/.test(config3d.type)) {
             return;
           }
-          var dsP = Cesium.KmlDataSource.load(config3d.url, {
-            camera: scene.camera,
-            canvas: scene.canvas,
+          var dsP = Cesium.KmlDataSource.load(new Cesium.Resource({
+            url: config3d.url,
             proxy: gaUrlUtils.getCesiumProxy()
+          }), {
+            camera: scene.camera,
+            canvas: scene.canvas
           });
           return dsP;
         };
