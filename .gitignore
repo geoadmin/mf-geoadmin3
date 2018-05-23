@@ -14,6 +14,7 @@
 /test/karma-conf-*.js
 /src/locales/*.csv
 /scripts/00-*.conf
+/src/lib/Cesium/Assets/Images
 /src/lib/Cesium/Assets/Textures/NaturalEarthII
 /src/lib/Cesium/Assets/Textures/SkyBox
 /src/lib/Cesium/Assets/Textures/maki

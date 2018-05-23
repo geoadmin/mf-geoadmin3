@@ -92,8 +92,8 @@ LESS_PARAMETERS ?= -ru
 
 # Map libs variables
 OL_VERSION ?= v4.6.5 # v4.6.5, March 20 2018
-OL_CESIUM_VERSION ?= 071c090db82540fb3c9cbae9e04699e783ca8203 # master, March 27 2018
-CESIUM_VERSION ?= dabbd96f70f568aeae6eed367d52b8546458f948 # c2c/c2c_patches, March 2 2018
+OL_CESIUM_VERSION ?= v1.37 # v1.37, May 2 2018
+CESIUM_VERSION ?= cf7644f7fde9004470f45c5e3318dd15f0b3870f # c2c/c2c_patches, May 28 2018
 
 
 # App variables
