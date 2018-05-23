@@ -628,10 +628,11 @@ describe('ga_layers_service', function() {
         expect(res).to.be('lala');
         expect(spy.callCount).to.be(1);
         var args = spy.args[0];
-        expect(args[0]).to.be('http://foo.kml');
+        expect(args[0]).to.be.an(Cesium.Resource);
+        expect(args[0].url).to.be('http://proxy.geo.admin.ch/http/foo.kml');
+        expect(args[0].proxy.getURL('http://foo.kml')).to.be('http://proxy.geo.admin.ch/http/foo.kml');
         expect(args[1].camera).to.be(scene.camera);
         expect(args[1].canvas).to.be(scene.canvas);
-        expect(args[1].proxy.getURL('http://foo.kml')).to.be('http://proxy.geo.admin.ch/http/foo.kml');
         spy.restore();
       });
     });

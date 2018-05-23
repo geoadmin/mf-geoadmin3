@@ -42,7 +42,7 @@ describe('ga_wmts_service', function() {
       expect(layer.displayIn3d).to.be(true);
       expect(prov).to.be.an(Cesium.UrlTemplateImageryProvider);
       var p = spy.args[0][0];
-      expect(p.url).to.be(options.url3d);
+      expect(p.url).to.be.a(Cesium.Resource);
       expect(p.minimumRetrievingLevel).to.be(gaGlobalOptions.minimumRetrievingLevel);
       expect(p.rectangle).to.be.an(Cesium.Rectangle);
       expect(p.rectangle.west).to.be(-0.21764144550040762);
@@ -51,7 +51,8 @@ describe('ga_wmts_service', function() {
       expect(p.rectangle.north).to.be(0.75613172160374);
 
       if (options.useThirdPartyData) {
-        expect(p.proxy.getURL('http://wmts.ch')).to.be(
+        expect(p.url.url).to.be(gaGlobalOptions.proxyUrl + encodeURIComponent(options.url3d).replace('http%3A%2F%2F', 'http/'));
+        expect(p.url.proxy.getURL('http://wmts.ch')).to.be(
             gaGlobalOptions.proxyUrl + 'http/wmts.ch');
       } else {
         expect(p.proxy.getURL('https://wms.geo.admin.ch')).to.be(
@@ -216,7 +217,7 @@ describe('ga_wmts_service', function() {
           expectProperties(layer, {
             label: 'CORE_003 Mosaic, natural color composition, feathering applied to scene borders, Mixed PNG/JPEG',
             url: 'http://cidportal.jrc.ec.europa.eu/copernicus/services/tile/wmts?',
-            url3d: 'http://cidportal.jrc.ec.europa.eu/copernicus/services/tile/wmts?service=WMTS&version=1.0.0&request=GetTile&layer=core003_feathering_mixed&format=image/png&style=default&time=undefined&tilematrixset=g&tilematrix={z}&tilecol={x}&tilerow={y}',
+            url3d: 'http://cidportal.jrc.ec.europa.eu/copernicus/services/tile/wmts?service=WMTS&version=1.0.0&request=GetTile&layer=core003_feathering_mixed&format=image%2Fpng&style=default&time=undefined&tilematrixset=g&tilematrix={z}&tilecol={x}&tilerow={y}',
             visible: true,
             useThirdPartyData: true,
             time: undefined,
