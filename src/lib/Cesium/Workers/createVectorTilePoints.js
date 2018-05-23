@@ -771,16 +771,14 @@ define('Core/Math',[
      * @param {Number} value The value to return the sign of.
      * @returns {Number} The sign of value.
      */
-    CesiumMath.sign = function(value) {
-        if (value > 0) {
-            return 1;
+    CesiumMath.sign = defaultValue(Math.sign, function sign(value) {
+        value = +value; // coerce to number
+        if (value === 0 || value !== value) {
+            // zero or NaN
+            return value;
         }
-        if (value < 0) {
-            return -1;
-        }
-
-        return 0;
-    };
+        return value > 0 ? 1 : -1;
+    });
 
     /**
      * Returns 1.0 if the given value is positive or zero, and -1.0 if it is negative.
@@ -840,12 +838,9 @@ define('Core/Math',[
      * @param {Number} value The number whose hyperbolic sine is to be returned.
      * @returns {Number} The hyperbolic sine of <code>value</code>.
      */
-    CesiumMath.sinh = function(value) {
-        var part1 = Math.pow(Math.E, value);
-        var part2 = Math.pow(Math.E, -1.0 * value);
-
-        return (part1 - part2) * 0.5;
-    };
+    CesiumMath.sinh = defaultValue(Math.sinh, function sinh(value) {
+        return (Math.exp(value) - Math.exp(-value)) / 2.0;
+    });
 
     /**
      * Returns the hyperbolic cosine of a number.
@@ -866,12 +861,9 @@ define('Core/Math',[
      * @param {Number} value The number whose hyperbolic cosine is to be returned.
      * @returns {Number} The hyperbolic cosine of <code>value</code>.
      */
-    CesiumMath.cosh = function(value) {
-        var part1 = Math.pow(Math.E, value);
-        var part2 = Math.pow(Math.E, -1.0 * value);
-
-        return (part1 + part2) * 0.5;
-    };
+    CesiumMath.cosh = defaultValue(Math.cosh, function cosh(value) {
+        return (Math.exp(value) + Math.exp(-value)) / 2.0;
+    });
 
     /**
      * Computes the linear interpolation of two values.
@@ -910,7 +902,7 @@ define('Core/Math',[
      * @type {Number}
      * @constant
      */
-    CesiumMath.PI_OVER_TWO = Math.PI * 0.5;
+    CesiumMath.PI_OVER_TWO = Math.PI / 2.0;
 
     /**
      * pi/3
@@ -942,7 +934,7 @@ define('Core/Math',[
      * @type {Number}
      * @constant
      */
-    CesiumMath.THREE_PI_OVER_TWO = (3.0 * Math.PI) * 0.5;
+    CesiumMath.THREE_PI_OVER_TWO = 3.0 * Math.PI / 2.0;
 
     /**
      * 2pi
@@ -1240,7 +1232,6 @@ define('Core/Math',[
         return randomNumberGenerator.random();
     };
 
-
     /**
      * Generates a random number between two numbers.
      *
@@ -1298,11 +1289,6 @@ define('Core/Math',[
                 return Math.log(number) / Math.log(base);
     };
 
-    function cbrt(number) {
-        var result = Math.pow(Math.abs(number), 1.0 / 3.0);
-        return number < 0.0 ? -result : result;
-    }
-
     /**
      * Finds the cube root of a number.
      * Returns NaN if <code>number</code> is not provided.
@@ -1310,7 +1296,20 @@ define('Core/Math',[
      * @param {Number} [number] The number.
      * @returns {Number} The result.
      */
-    CesiumMath.cbrt = defined(Math.cbrt) ? Math.cbrt : cbrt;
+    CesiumMath.cbrt = defaultValue(Math.cbrt, function cbrt(number) {
+        var result = Math.pow(Math.abs(number), 1.0 / 3.0);
+        return number < 0.0 ? -result : result;
+    });
+
+    /**
+     * Finds the base 2 logarithm of a number.
+     *
+     * @param {Number} number The number.
+     * @returns {Number} The result.
+     */
+    CesiumMath.log2 = defaultValue(Math.log2, function log2(number) {
+        return Math.log(number) * Math.LOG2E;
+    });
 
     /**
      * @private
@@ -1569,7 +1568,6 @@ define('Core/Cartesian2',[
      */
     Cartesian2.minimumByComponent = function(first, second, result) {
         
-
         result.x = Math.min(first.x, second.x);
         result.y = Math.min(first.y, second.y);
 
@@ -2900,6 +2898,9 @@ define('Core/AttributeCompression',[
         CesiumMath) {
     'use strict';
 
+    var RIGHT_SHIFT = 1.0 / 256.0;
+    var LEFT_SHIFT = 256.0;
+
     /**
      * Attribute compression and decompression functions.
      *
@@ -2958,6 +2959,31 @@ define('Core/AttributeCompression',[
         return AttributeCompression.octEncodeInRange(vector, 255, result);
     };
 
+    var octEncodeScratch = new Cartesian2();
+    var uint8ForceArray = new Uint8Array(1);
+    function forceUint8(value) {
+        uint8ForceArray[0] = value;
+        return uint8ForceArray[0];
+    }
+    /**
+     * @param {Cartesian3} vector The normalized vector to be compressed into 4 byte 'oct' encoding.
+     * @param {Cartesian4} result The 4 byte oct-encoded unit length vector.
+     * @returns {Cartesian4} The 4 byte oct-encoded unit length vector.
+     *
+     * @exception {DeveloperError} vector must be normalized.
+     *
+     * @see AttributeCompression.octEncodeInRange
+     * @see AttributeCompression.octDecodeFromCartesian4
+     */
+    AttributeCompression.octEncodeToCartesian4 = function(vector, result) {
+        AttributeCompression.octEncodeInRange(vector, 65535, octEncodeScratch);
+        result.x = forceUint8(octEncodeScratch.x * RIGHT_SHIFT);
+        result.y = forceUint8(octEncodeScratch.x);
+        result.z = forceUint8(octEncodeScratch.y * RIGHT_SHIFT);
+        result.w = forceUint8(octEncodeScratch.y);
+        return result;
+    };
+
     /**
      * Decodes a unit-length vector in 'oct' encoding to a normalized 3-component vector.
      *
@@ -2967,7 +2993,7 @@ define('Core/AttributeCompression',[
      * @param {Cartesian3} result The decoded and normalized vector
      * @returns {Cartesian3} The decoded and normalized vector.
      *
-     * @exception {DeveloperError} x and y must be an unsigned normalized integer between 0 and rangeMax.
+     * @exception {DeveloperError} x and y must be unsigned normalized integers between 0 and rangeMax.
      *
      * @see AttributeCompression.octEncodeInRange
      */
@@ -3001,6 +3027,29 @@ define('Core/AttributeCompression',[
      */
     AttributeCompression.octDecode = function(x, y, result) {
         return AttributeCompression.octDecodeInRange(x, y, 255, result);
+    };
+
+    /**
+     * Decodes a unit-length vector in 4 byte 'oct' encoding to a normalized 3-component vector.
+     *
+     * @param {Cartesian4} encoded The oct-encoded unit length vector.
+     * @param {Cartesian3} result The decoded and normalized vector.
+     * @returns {Cartesian3} The decoded and normalized vector.
+     *
+     * @exception {DeveloperError} x, y, z, and w must be unsigned normalized integers between 0 and 255.
+     *
+     * @see AttributeCompression.octDecodeInRange
+     * @see AttributeCompression.octEncodeToCartesian4
+     */
+    AttributeCompression.octDecodeFromCartesian4 = function(encoded, result) {
+                var x = encoded.x;
+        var y = encoded.y;
+        var z = encoded.z;
+        var w = encoded.w;
+        
+        var xOct16 = x * LEFT_SHIFT + y;
+        var yOct16 = z * LEFT_SHIFT + w;
+        return AttributeCompression.octDecodeInRange(xOct16, yOct16, 65535, result);
     };
 
     /**

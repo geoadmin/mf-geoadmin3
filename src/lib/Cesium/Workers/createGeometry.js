@@ -771,16 +771,14 @@ define('Core/Math',[
      * @param {Number} value The value to return the sign of.
      * @returns {Number} The sign of value.
      */
-    CesiumMath.sign = function(value) {
-        if (value > 0) {
-            return 1;
+    CesiumMath.sign = defaultValue(Math.sign, function sign(value) {
+        value = +value; // coerce to number
+        if (value === 0 || value !== value) {
+            // zero or NaN
+            return value;
         }
-        if (value < 0) {
-            return -1;
-        }
-
-        return 0;
-    };
+        return value > 0 ? 1 : -1;
+    });
 
     /**
      * Returns 1.0 if the given value is positive or zero, and -1.0 if it is negative.
@@ -840,12 +838,9 @@ define('Core/Math',[
      * @param {Number} value The number whose hyperbolic sine is to be returned.
      * @returns {Number} The hyperbolic sine of <code>value</code>.
      */
-    CesiumMath.sinh = function(value) {
-        var part1 = Math.pow(Math.E, value);
-        var part2 = Math.pow(Math.E, -1.0 * value);
-
-        return (part1 - part2) * 0.5;
-    };
+    CesiumMath.sinh = defaultValue(Math.sinh, function sinh(value) {
+        return (Math.exp(value) - Math.exp(-value)) / 2.0;
+    });
 
     /**
      * Returns the hyperbolic cosine of a number.
@@ -866,12 +861,9 @@ define('Core/Math',[
      * @param {Number} value The number whose hyperbolic cosine is to be returned.
      * @returns {Number} The hyperbolic cosine of <code>value</code>.
      */
-    CesiumMath.cosh = function(value) {
-        var part1 = Math.pow(Math.E, value);
-        var part2 = Math.pow(Math.E, -1.0 * value);
-
-        return (part1 + part2) * 0.5;
-    };
+    CesiumMath.cosh = defaultValue(Math.cosh, function cosh(value) {
+        return (Math.exp(value) + Math.exp(-value)) / 2.0;
+    });
 
     /**
      * Computes the linear interpolation of two values.
@@ -910,7 +902,7 @@ define('Core/Math',[
      * @type {Number}
      * @constant
      */
-    CesiumMath.PI_OVER_TWO = Math.PI * 0.5;
+    CesiumMath.PI_OVER_TWO = Math.PI / 2.0;
 
     /**
      * pi/3
@@ -942,7 +934,7 @@ define('Core/Math',[
      * @type {Number}
      * @constant
      */
-    CesiumMath.THREE_PI_OVER_TWO = (3.0 * Math.PI) * 0.5;
+    CesiumMath.THREE_PI_OVER_TWO = 3.0 * Math.PI / 2.0;
 
     /**
      * 2pi
@@ -1240,7 +1232,6 @@ define('Core/Math',[
         return randomNumberGenerator.random();
     };
 
-
     /**
      * Generates a random number between two numbers.
      *
@@ -1298,11 +1289,6 @@ define('Core/Math',[
                 return Math.log(number) / Math.log(base);
     };
 
-    function cbrt(number) {
-        var result = Math.pow(Math.abs(number), 1.0 / 3.0);
-        return number < 0.0 ? -result : result;
-    }
-
     /**
      * Finds the cube root of a number.
      * Returns NaN if <code>number</code> is not provided.
@@ -1310,7 +1296,20 @@ define('Core/Math',[
      * @param {Number} [number] The number.
      * @returns {Number} The result.
      */
-    CesiumMath.cbrt = defined(Math.cbrt) ? Math.cbrt : cbrt;
+    CesiumMath.cbrt = defaultValue(Math.cbrt, function cbrt(number) {
+        var result = Math.pow(Math.abs(number), 1.0 / 3.0);
+        return number < 0.0 ? -result : result;
+    });
+
+    /**
+     * Finds the base 2 logarithm of a number.
+     *
+     * @param {Number} number The number.
+     * @returns {Number} The result.
+     */
+    CesiumMath.log2 = defaultValue(Math.log2, function log2(number) {
+        return Math.log(number) * Math.LOG2E;
+    });
 
     /**
      * @private
@@ -4955,7 +4954,6 @@ define('Core/Cartesian4',[
         return result;
     };
 
-
     /**
      * The number of elements used to pack the object into an array.
      * @type {Number}
@@ -5544,6 +5542,89 @@ define('Core/Cartesian4',[
      */
     Cartesian4.prototype.toString = function() {
         return '(' + this.x + ', ' + this.y + ', ' + this.z + ', ' + this.w + ')';
+    };
+
+    var scratchFloatArray = new Float32Array(1);
+    var SHIFT_LEFT_8 = 256.0;
+    var SHIFT_LEFT_16 = 65536.0;
+    var SHIFT_LEFT_24 = 16777216.0;
+
+    var SHIFT_RIGHT_8 = 1.0 / SHIFT_LEFT_8;
+    var SHIFT_RIGHT_16 = 1.0 / SHIFT_LEFT_16;
+    var SHIFT_RIGHT_24 = 1.0 / SHIFT_LEFT_24;
+
+    var BIAS = 38.0;
+
+    /**
+     * Packs an arbitrary floating point value to 4 values representable using uint8.
+     *
+     * @param {Number} value A floating point number
+     * @param {Cartesian4} [result] The Cartesian4 that will contain the packed float.
+     * @returns {Cartesian4} A Cartesian4 representing the float packed to values in x, y, z, and w.
+     */
+    Cartesian4.packFloat = function(value, result) {
+        
+        if (!defined(result)) {
+            result = new Cartesian4();
+        }
+
+        // Force the value to 32 bit precision
+        scratchFloatArray[0] = value;
+        value = scratchFloatArray[0];
+
+        if (value === 0.0) {
+            return Cartesian4.clone(Cartesian4.ZERO, result);
+        }
+
+        var sign = value < 0.0 ? 1.0 : 0.0;
+        var exponent;
+
+        if (!isFinite(value)) {
+            value = 0.1;
+            exponent = BIAS;
+        } else {
+            value = Math.abs(value);
+            exponent = Math.floor(CesiumMath.logBase(value, 10)) + 1.0;
+            value = value / Math.pow(10.0, exponent);
+        }
+
+        var temp = value * SHIFT_LEFT_8;
+        result.x = Math.floor(temp);
+        temp = (temp - result.x) * SHIFT_LEFT_8;
+        result.y = Math.floor(temp);
+        temp = (temp - result.y) * SHIFT_LEFT_8;
+        result.z = Math.floor(temp);
+        result.w = (exponent + BIAS) * 2.0 + sign;
+
+        return result;
+    };
+
+    /**
+     * Unpacks a float packed using Cartesian4.packFloat.
+     *
+     * @param {Cartesian4} packedFloat A Cartesian4 containing a float packed to 4 values representable using uint8.
+     * @returns {Number} The unpacked float.
+     * @private
+     */
+    Cartesian4.unpackFloat = function(packedFloat) {
+        
+        var temp = packedFloat.w / 2.0;
+        var exponent = Math.floor(temp);
+        var sign = (temp - exponent) * 2.0;
+        exponent = exponent - BIAS;
+
+        sign = sign * 2.0 - 1.0;
+        sign = -sign;
+
+        if (exponent >= BIAS) {
+            return sign < 0.0 ? Number.NEGATIVE_INFINITY : Number.POSITIVE_INFINITY;
+        }
+
+        var unpacked = sign * packedFloat.x * SHIFT_RIGHT_8;
+        unpacked += sign * packedFloat.y * SHIFT_RIGHT_16;
+        unpacked += sign * packedFloat.z * SHIFT_RIGHT_24;
+
+        return unpacked * Math.pow(10.0, exponent);
     };
 
     return Cartesian4;
@@ -8795,7 +8876,6 @@ define('Core/Rectangle',[
 define('Core/BoundingSphere',[
         './Cartesian3',
         './Cartographic',
-        './Math',
         './Check',
         './defaultValue',
         './defined',
@@ -8803,13 +8883,13 @@ define('Core/BoundingSphere',[
         './GeographicProjection',
         './Intersect',
         './Interval',
+        './Math',
         './Matrix3',
         './Matrix4',
         './Rectangle'
     ], function(
         Cartesian3,
         Cartographic,
-        CesiumMath,
         Check,
         defaultValue,
         defined,
@@ -8817,6 +8897,7 @@ define('Core/BoundingSphere',[
         GeographicProjection,
         Intersect,
         Interval,
+        CesiumMath,
         Matrix3,
         Matrix4,
         Rectangle) {
@@ -10319,6 +10400,7 @@ define('Core/FeatureDetection',[
         defined,
         Fullscreen) {
     'use strict';
+    /*global CanvasPixelArray*/
 
     var theNavigator;
     if (typeof navigator !== 'undefined') {
@@ -10470,9 +10552,16 @@ define('Core/FeatureDetection',[
         return isWindowsResult;
     }
 
-
     function firefoxVersion() {
         return isFirefox() && firefoxVersionResult;
+    }
+
+    var isNodeJsResult;
+    function isNodeJs() {
+        if (!defined(isNodeJsResult)) {
+            isNodeJsResult = typeof process === 'object' && Object.prototype.toString.call(process) === '[object process]'; // eslint-disable-line
+        }
+        return isNodeJsResult;
     }
 
     var hasPointerEvents;
@@ -10509,6 +10598,19 @@ define('Core/FeatureDetection',[
         return supportsImageRenderingPixelated() ? imageRenderingValueResult : undefined;
     }
 
+    var typedArrayTypes = [];
+    if (typeof ArrayBuffer !== 'undefined') {
+        typedArrayTypes.push(Int8Array, Uint8Array, Int16Array, Uint16Array, Int32Array, Uint32Array, Float32Array, Float64Array);
+
+        if (typeof Uint8ClampedArray !== 'undefined') {
+            typedArrayTypes.push(Uint8ClampedArray);
+        }
+
+        if (typeof CanvasPixelArray !== 'undefined') {
+            typedArrayTypes.push(CanvasPixelArray);
+        }
+    }
+
     /**
      * A set of functions to detect whether the current browser supports
      * various features.
@@ -10529,10 +10631,12 @@ define('Core/FeatureDetection',[
         isFirefox : isFirefox,
         firefoxVersion : firefoxVersion,
         isWindows : isWindows,
+        isNodeJs: isNodeJs,
         hardwareConcurrency : defaultValue(theNavigator.hardwareConcurrency, 3),
         supportsPointerEvents : supportsPointerEvents,
         supportsImageRenderingPixelated: supportsImageRenderingPixelated,
-        imageRenderingValue: imageRenderingValue
+        imageRenderingValue: imageRenderingValue,
+        typedArrayTypes: typedArrayTypes
     };
 
     /**
@@ -10567,6 +10671,17 @@ define('Core/FeatureDetection',[
      */
     FeatureDetection.supportsWebWorkers = function() {
         return typeof Worker !== 'undefined';
+    };
+
+    /**
+     * Detects whether the current browser supports Web Assembly.
+     *
+     * @returns {Boolean} true if the browsers supports Web Assembly, false if not.
+     *
+     * @see {@link https://developer.mozilla.org/en-US/docs/WebAssembly}
+     */
+    FeatureDetection.supportsWebAssembly = function() {
+        return typeof WebAssembly !== 'undefined' && !FeatureDetection.isEdge();
     };
 
     return FeatureDetection;
@@ -12257,7 +12372,6 @@ define('Core/Cartesian2',[
      */
     Cartesian2.minimumByComponent = function(first, second, result) {
         
-
         result.x = Math.min(first.x, second.x);
         result.y = Math.min(first.y, second.y);
 
@@ -12670,6 +12784,9 @@ define('Core/AttributeCompression',[
         CesiumMath) {
     'use strict';
 
+    var RIGHT_SHIFT = 1.0 / 256.0;
+    var LEFT_SHIFT = 256.0;
+
     /**
      * Attribute compression and decompression functions.
      *
@@ -12728,6 +12845,31 @@ define('Core/AttributeCompression',[
         return AttributeCompression.octEncodeInRange(vector, 255, result);
     };
 
+    var octEncodeScratch = new Cartesian2();
+    var uint8ForceArray = new Uint8Array(1);
+    function forceUint8(value) {
+        uint8ForceArray[0] = value;
+        return uint8ForceArray[0];
+    }
+    /**
+     * @param {Cartesian3} vector The normalized vector to be compressed into 4 byte 'oct' encoding.
+     * @param {Cartesian4} result The 4 byte oct-encoded unit length vector.
+     * @returns {Cartesian4} The 4 byte oct-encoded unit length vector.
+     *
+     * @exception {DeveloperError} vector must be normalized.
+     *
+     * @see AttributeCompression.octEncodeInRange
+     * @see AttributeCompression.octDecodeFromCartesian4
+     */
+    AttributeCompression.octEncodeToCartesian4 = function(vector, result) {
+        AttributeCompression.octEncodeInRange(vector, 65535, octEncodeScratch);
+        result.x = forceUint8(octEncodeScratch.x * RIGHT_SHIFT);
+        result.y = forceUint8(octEncodeScratch.x);
+        result.z = forceUint8(octEncodeScratch.y * RIGHT_SHIFT);
+        result.w = forceUint8(octEncodeScratch.y);
+        return result;
+    };
+
     /**
      * Decodes a unit-length vector in 'oct' encoding to a normalized 3-component vector.
      *
@@ -12737,7 +12879,7 @@ define('Core/AttributeCompression',[
      * @param {Cartesian3} result The decoded and normalized vector
      * @returns {Cartesian3} The decoded and normalized vector.
      *
-     * @exception {DeveloperError} x and y must be an unsigned normalized integer between 0 and rangeMax.
+     * @exception {DeveloperError} x and y must be unsigned normalized integers between 0 and rangeMax.
      *
      * @see AttributeCompression.octEncodeInRange
      */
@@ -12771,6 +12913,29 @@ define('Core/AttributeCompression',[
      */
     AttributeCompression.octDecode = function(x, y, result) {
         return AttributeCompression.octDecodeInRange(x, y, 255, result);
+    };
+
+    /**
+     * Decodes a unit-length vector in 4 byte 'oct' encoding to a normalized 3-component vector.
+     *
+     * @param {Cartesian4} encoded The oct-encoded unit length vector.
+     * @param {Cartesian3} result The decoded and normalized vector.
+     * @returns {Cartesian3} The decoded and normalized vector.
+     *
+     * @exception {DeveloperError} x, y, z, and w must be unsigned normalized integers between 0 and 255.
+     *
+     * @see AttributeCompression.octDecodeInRange
+     * @see AttributeCompression.octEncodeToCartesian4
+     */
+    AttributeCompression.octDecodeFromCartesian4 = function(encoded, result) {
+                var x = encoded.x;
+        var y = encoded.y;
+        var z = encoded.z;
+        var w = encoded.w;
+        
+        var xOct16 = x * LEFT_SHIFT + y;
+        var yOct16 = z * LEFT_SHIFT + w;
+        return AttributeCompression.octDecodeInRange(xOct16, yOct16, 65535, result);
     };
 
     /**
@@ -12936,12 +13101,14 @@ define('Core/barycentricCoordinates',[
         './Cartesian2',
         './Cartesian3',
         './Check',
-        './defined'
+        './defined',
+        './Math'
     ], function(
         Cartesian2,
         Cartesian3,
         Check,
-        defined) {
+        defined,
+        CesiumMath) {
     'use strict';
 
     var scratchCartesian1 = new Cartesian3();
@@ -12970,40 +13137,66 @@ define('Core/barycentricCoordinates',[
      */
     function barycentricCoordinates(point, p0, p1, p2, result) {
         
-
         if (!defined(result)) {
             result = new Cartesian3();
         }
 
         // Implementation based on http://www.blackpawn.com/texts/pointinpoly/default.html.
-        var v0, v1, v2;
-        var dot00, dot01, dot02, dot11, dot12;
+        var v0;
+        var v1;
+        var v2;
+        var dot00;
+        var dot01;
+        var dot02;
+        var dot11;
+        var dot12;
 
         if(!defined(p0.z)) {
-          v0 = Cartesian2.subtract(p1, p0, scratchCartesian1);
-          v1 = Cartesian2.subtract(p2, p0, scratchCartesian2);
-          v2 = Cartesian2.subtract(point, p0, scratchCartesian3);
+            if (Cartesian2.equalsEpsilon(point, p0, CesiumMath.EPSILON14)) {
+                return Cartesian3.clone(Cartesian3.UNIT_X, result);
+            }
+            if (Cartesian2.equalsEpsilon(point, p1, CesiumMath.EPSILON14)) {
+                return Cartesian3.clone(Cartesian3.UNIT_Y, result);
+            }
+            if (Cartesian2.equalsEpsilon(point, p2, CesiumMath.EPSILON14)) {
+                return Cartesian3.clone(Cartesian3.UNIT_Z, result);
+            }
 
-          dot00 = Cartesian2.dot(v0, v0);
-          dot01 = Cartesian2.dot(v0, v1);
-          dot02 = Cartesian2.dot(v0, v2);
-          dot11 = Cartesian2.dot(v1, v1);
-          dot12 = Cartesian2.dot(v1, v2);
+            v0 = Cartesian2.subtract(p1, p0, scratchCartesian1);
+            v1 = Cartesian2.subtract(p2, p0, scratchCartesian2);
+            v2 = Cartesian2.subtract(point, p0, scratchCartesian3);
+
+            dot00 = Cartesian2.dot(v0, v0);
+            dot01 = Cartesian2.dot(v0, v1);
+            dot02 = Cartesian2.dot(v0, v2);
+            dot11 = Cartesian2.dot(v1, v1);
+            dot12 = Cartesian2.dot(v1, v2);
         } else {
-          v0 = Cartesian3.subtract(p1, p0, scratchCartesian1);
-          v1 = Cartesian3.subtract(p2, p0, scratchCartesian2);
-          v2 = Cartesian3.subtract(point, p0, scratchCartesian3);
+            if (Cartesian3.equalsEpsilon(point, p0, CesiumMath.EPSILON14)) {
+                return Cartesian3.clone(Cartesian3.UNIT_X, result);
+            }
+            if (Cartesian3.equalsEpsilon(point, p1, CesiumMath.EPSILON14)) {
+                return Cartesian3.clone(Cartesian3.UNIT_Y, result);
+            }
+            if (Cartesian3.equalsEpsilon(point, p2, CesiumMath.EPSILON14)) {
+                return Cartesian3.clone(Cartesian3.UNIT_Z, result);
+            }
 
-          dot00 = Cartesian3.dot(v0, v0);
-          dot01 = Cartesian3.dot(v0, v1);
-          dot02 = Cartesian3.dot(v0, v2);
-          dot11 = Cartesian3.dot(v1, v1);
-          dot12 = Cartesian3.dot(v1, v2);
+            v0 = Cartesian3.subtract(p1, p0, scratchCartesian1);
+            v1 = Cartesian3.subtract(p2, p0, scratchCartesian2);
+            v2 = Cartesian3.subtract(point, p0, scratchCartesian3);
+
+            dot00 = Cartesian3.dot(v0, v0);
+            dot01 = Cartesian3.dot(v0, v1);
+            dot02 = Cartesian3.dot(v0, v2);
+            dot11 = Cartesian3.dot(v1, v1);
+            dot12 = Cartesian3.dot(v1, v2);
         }
 
-        var q = 1.0 / (dot00 * dot11 - dot01 * dot01);
-        result.y = (dot11 * dot02 - dot01 * dot12) * q;
-        result.z = (dot00 * dot12 - dot01 * dot02) * q;
+        var q = dot00 * dot11 - dot01 * dot01;
+        var invQ = 1.0 / q;
+        result.y = (dot11 * dot02 - dot01 * dot12) * invQ;
+        result.z = (dot00 * dot12 - dot01 * dot02) * invQ;
         result.x = 1.0 - result.y - result.z;
         return result;
     }
