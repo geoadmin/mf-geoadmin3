@@ -709,6 +709,7 @@ describe('ga_layers_service', function() {
       describe('when online', function() {
 
         it('returns a WMTS layer', function() {
+
           var layer = gaLayers.getOlLayerById('wmts');
           expect(layer instanceof ol.layer.Tile).to.be.ok();
           expect(layer.getMinResolution()).to.be(0.5);
@@ -743,9 +744,11 @@ describe('ga_layers_service', function() {
           var tileGrid = gaLayers.getOlLayerById('wmtsWithResolutions').getSource().getTileGrid();
           expect(tileGrid instanceof ol.tilegrid.WMTS).to.be.ok();
           expect(tileGrid.getResolutions().length).to.eql(21);
+          // Test if the resolutions array is unchanged
+          expect(gaLayers.getLayer('wmtsWithResolutions').resolutions.length).to.be(3);
         });
 
-        it('returns a WMTS getting the tileGridMinRes from an array of resolutions', function() {
+        it('returns a WMTS getting the tileGridMinRes from tileGridMinRes property', function() {
           var tileGrid = gaLayers.getOlLayerById('wmtsWithTileGridMinRes').getSource().getTileGrid();
           expect(tileGrid instanceof ol.tilegrid.WMTS).to.be.ok();
           expect(tileGrid.getResolutions().length).to.eql(20);
