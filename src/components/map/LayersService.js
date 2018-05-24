@@ -488,7 +488,7 @@ goog.require('ga_urlutils_service');
           // value at which the layer stop being displayed.
           var tileGridMinRes = config.tileGridMinRes;
           if (config.resolutions) {
-            tileGridMinRes = config.resolutions.pop();
+            tileGridMinRes = config.resolutions.slice(-1)[0];
           }
 
           // For some obscure reasons, on iOS, displaying a base 64 image
