@@ -80,8 +80,10 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions,
 
     gaGlobalOptions.minimumRetrievingLevel =
         intParam('minimumRetrievingLevel', '8');
+    // Level 0 is mandatory, see :
+    // https://github.com/camptocamp/cesium/blob/c2c_patches/Source/Core/TileAvailability.js#L61
     gaGlobalOptions.terrainAvailableLevels =
-        arrayParam('terrainLevels', [8, 11, 14, 16, 17]);
+        arrayParam('terrainLevels', [0, 8, 11, 14, 16, 17]);
     gaGlobalOptions.imageryAvailableLevels =
         arrayParam('imageryLevels');
 
