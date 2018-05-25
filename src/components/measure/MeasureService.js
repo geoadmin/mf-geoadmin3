@@ -12,6 +12,7 @@ goog.require('ga_measure_filter');
 
   module.provider('gaMeasure', function() {
     this.$get = function($document, measureFilter, gaMapUtils, gaGeomUtils) {
+
       var Measure = function() {
 
         // Transform 2111333 in 2'111'333
@@ -35,10 +36,10 @@ goog.require('ga_measure_filter');
             lineString = new ol.geom.LineString(
                 geom.getLinearRing(0).getCoordinates());
           } else if (geom instanceof ol.geom.Circle) {
-            return 2 * Math.PI * geom.getRadius();
+            return 2 * Math.PI * gaMapUtils.transform(geom).getRadius();
           }
           if (lineString) {
-            return lineString.getLength();
+            return gaMapUtils.transform(lineString).getLength();
           } else {
             return 0;
           }
@@ -47,13 +48,15 @@ goog.require('ga_measure_filter');
         this.getArea = function(geom, calculateLineStringArea) {
           geom = gaGeomUtils.multiGeomToSingleGeom(geom);
           if (calculateLineStringArea && geom instanceof ol.geom.LineString) {
-            return Math.abs(new ol.geom.Polygon([geom.getCoordinates()]).
-                getArea());
+            return Math.abs(new ol.geom.Polygon([
+              gaMapUtils.transform(geom).getCoordinates()
+            ]).getArea());
           } else if (geom instanceof ol.geom.LinearRing ||
               geom instanceof ol.geom.Polygon) {
-            return Math.abs(geom.getArea());
+            return Math.abs(gaMapUtils.transform(geom).getArea());
           } else if (geom instanceof ol.geom.Circle) {
-            return Math.PI * Math.pow(geom.getRadius(), 2);
+            return Math.PI * Math.pow(gaMapUtils.transform(geom).getRadius(),
+                2);
           }
           return 0;
         };
@@ -65,7 +68,7 @@ goog.require('ga_measure_filter');
               !(geom instanceof ol.geom.LinearRing)) {
             return 0;
           }
-          var pt1, pt2, coords = geom.getCoordinates();
+          var pt1, pt2, coords = gaMapUtils.transform(geom).getCoordinates();
           if (geom instanceof ol.geom.Polygon) {
             coords = coords[0];
           }
