@@ -130,6 +130,29 @@ describe('ga_profile_service', function() {
         $httpBackend.flush();
       });
 
+      it('creates a chart using complex results', function(done) {
+        $.get('base/test/data/profile.json', function(response) {
+          $httpBackend.expectPOST(profileUrl).respond(response);
+          var spy = sinon.spy(gaGeomUtils, 'simplify');
+          gaProfile.create(feature).then(function(profile) {
+            expect(spy.callCount).to.be(1);
+            expect(profile).to.be.an(Object);
+            expect(profile.create).to.be.a(Function);
+            expect(profile.update).to.be.a(Function);
+
+            // Test properties
+            expect(profile.elevDiff()).to.be(767.3000000000001);
+            expect(profile.twoElevDiff()).to.eql([12132.300000000001, 11365.000000000002]);
+            expect(profile.slopeDistance()).to.be(227034.6111158946);
+            expect(profile.elPoints()).to.eql([3424.7, 403.5]);
+            expect(profile.distance()).to.be(224261.2);
+            expect(profile.hikingTime()).to.be(4603);
+            done();
+          });
+          $httpBackend.flush();
+        });
+      });
+
       it('send correct POST parameters', function() {
         $httpBackend.expectPOST(profileUrl).respond(goodResultToFormat);
         var spy = sinon.spy($http, 'post');
