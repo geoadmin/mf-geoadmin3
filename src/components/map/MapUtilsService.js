@@ -474,6 +474,27 @@ goog.require('ga_urlutils_service');
               olLayer.getSource &&
               (olLayer.getSource() instanceof ol.source.ImageWMS ||
               olLayer.getSource() instanceof ol.source.TileWMS));
+        },
+
+        /**
+         * Transform a geometry in swissprojection.
+         * Used to have a better measurement.
+         */
+        transform: function(geom) {
+          return geom.clone().transform(
+              ol.proj.get(gaGlobalOptions.defaultEpsg),
+              ol.proj.get('EPSG:2056')
+          );
+        },
+        /**
+         * Transform a geometry from swissprojection to map's proj.
+         * Used to have a better measurement.
+         */
+        transformBack: function(geom) {
+          return geom.clone().transform(
+              ol.proj.get('EPSG:2056'),
+              ol.proj.get(gaGlobalOptions.defaultEpsg)
+          );
         }
       };
     };
