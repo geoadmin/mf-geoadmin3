@@ -36,17 +36,6 @@ node(label: 'jenkins-slave') {
       sh 'make ' + deployTarget + ' DEPLOY_GIT_BRANCH=' + deployGitBranch + ' NAMED_BRANCH=' + namedBranch
     }
 
-    stage('Test') {
-      parallel (
-        'debug': {
-          sh 'make testdebug'
-        },
-        'release': {
-          sh 'make testrelease'
-        }
-      )
-    }
-    
     stage('Deploy') {
       stdout = sh returnStdout: true, script: 'make s3copybranch DEPLOY_TARGET=' + deployTarget + ' DEPLOY_GIT_BRANCH=' + deployGitBranch + ' NAMED_BRANCH=' + namedBranch
       echo stdout
@@ -97,7 +86,18 @@ node(label: 'jenkins-slave') {
         response.close()
       }
     }
-    
+
+    stage('Test') {
+      parallel (
+        'debug': {
+          sh 'make testdebug'
+        },
+        'release': {
+          sh 'make testrelease'
+        }
+      )
+    }
+
     stage('Test e2e') {
       def target = 'make teste2e E2E_TARGETURL=' + e2eTargetUrl
       parallel (
