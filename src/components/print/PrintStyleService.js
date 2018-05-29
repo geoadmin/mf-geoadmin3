@@ -221,6 +221,8 @@ goog.require('ga_urlutils_service');
 
       if (textStyle && textStyle.getText()) {
         literal.label = textStyle.getText();
+        literal.labelXOffset = textStyle.getOffsetX();
+        literal.labelYOffset = textStyle.getOffsetY();
         literal.labelAlign = textStyle.getTextAlign();
 
         if (textStyle.getFill()) {
