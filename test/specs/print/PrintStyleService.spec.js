@@ -173,6 +173,8 @@ describe('ga_printstyle_service', function() {
           stroke: dfltStroke,
           text: new ol.style.Text({
             text: 'test',
+            offsetX: 15,
+            offsetY: -89,
             textAlign: 'center',
             fill: new ol.style.Fill({
               color: [27, 28, 29, 0.3]
@@ -205,6 +207,8 @@ describe('ga_printstyle_service', function() {
           strokeLinejoin: 'bevel',
           strokeDashstyle: 'dash',
           label: 'test',
+          labelXOffset: 15,
+          labelYOffset: -89,
           labelAlign: 'center',
           fontColor: '#1b1c1d',
           fontFamily: 'ARIAL',
