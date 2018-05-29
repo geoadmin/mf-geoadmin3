@@ -124,9 +124,6 @@ itemscope itemtype="http://schema.org/WebApplication"
       </script>
     <![endif]-->
 
-    <div ng-cloak class="corner-ribbon" ng-show="globals.is3dActive">
-      3D - BETA
-    </div>
     <div ng-controller="GaSeoController">
       <div ga-seo ga-seo-options="options" ga-seo-map="map"></div>
     </div>
@@ -177,6 +174,9 @@ itemscope itemtype="http://schema.org/WebApplication"
 % endif
     <div id="loader"></div>
     <div tabindex="1" ga-map ga-map-map="map" ga-map-ol3d="::ol3d">
+      <div ng-cloak class="corner-ribbon" ng-show="globals.is3dActive">
+        3D - BETA
+      </div>
   % if device == 'embed':
       <a ng-cloak translate-cloak id="bigMapLink" target="_blank" href="{{toMainHref}}">
         <div>

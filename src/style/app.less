@@ -1774,6 +1774,13 @@ body:not(.embed) {
   .ol-scale-line-inner {
     background: rgba(255,255,255,.7);
   }
+  
+  .corner-ribbon {
+    @media (max-width: @screen-tablet), (max-width: @screen-phone) {
+      top: 25px;
+      padding-right: 35px;
+    }
+  }
 
   @media (max-width: 350px) {
     #buttonGroup {
