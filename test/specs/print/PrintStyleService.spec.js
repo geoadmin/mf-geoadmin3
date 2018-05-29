@@ -208,8 +208,8 @@ describe('ga_printstyle_service', function() {
           strokeDashstyle: 'dash',
           label: 'test',
           labelXOffset: 15,
-          labelYOffset: -89,
-          labelAlign: 'center',
+          labelYOffset: 89,
+          labelAlign: 'cm',
           fontColor: '#1b1c1d',
           fontFamily: 'ARIAL',
           fontSize: 14,
@@ -333,6 +333,49 @@ describe('ga_printstyle_service', function() {
           });
         });
       });
+
+      it('uses the default alignement', function() {
+        var allStyle = new ol.style.Style({
+          text: new ol.style.Text({
+            text: 'test',
+            textAlign: 'fdgfg',
+            textBaseline: 'dfgfd'
+          })
+        });
+        var literal = gaPrintStyle.olStyleToPrintLiteral(allStyle, 96);
+        expect(literal.labelAlign).to.eql('cm');
+
+        allStyle = new ol.style.Style({
+          text: new ol.style.Text({
+            text: 'test'
+          })
+        });
+        literal = gaPrintStyle.olStyleToPrintLiteral(allStyle, 96);
+        expect(literal.labelAlign).to.eql('cm');
+      });
+
+      it('transforms correctly a text alignment', function() {
+        var allStyle = new ol.style.Style({
+          text: new ol.style.Text({
+            text: 'test',
+            textAlign: 'left',
+            textBaseline: 'bottom'
+          })
+        });
+        var literal = gaPrintStyle.olStyleToPrintLiteral(allStyle, 96);
+        expect(literal.labelAlign).to.eql('lb');
+
+        allStyle = new ol.style.Style({
+          text: new ol.style.Text({
+            text: 'test',
+            textAlign: 'right',
+            textBaseline: 'top'
+          })
+        });
+        literal = gaPrintStyle.olStyleToPrintLiteral(allStyle, 96);
+        expect(literal.labelAlign).to.eql('rt');
+      });
+
     });
   });
 });

@@ -222,8 +222,35 @@ goog.require('ga_urlutils_service');
       if (textStyle && textStyle.getText()) {
         literal.label = textStyle.getText();
         literal.labelXOffset = textStyle.getOffsetX();
-        literal.labelYOffset = textStyle.getOffsetY();
-        literal.labelAlign = textStyle.getTextAlign();
+        literal.labelYOffset = -textStyle.getOffsetY();
+
+        // Doc from mapfish-print:
+        // Valid values for horizontal alignment:
+        // "l"=left, "c"=center, "r"=right.
+        // Valid values for vertical alignment:
+        // "t"=top, "m"=middle, "b"=bottom.
+        var hAlign = textStyle.getTextAlign();
+        switch (hAlign) {
+          case 'left':
+          case 'right':
+            hAlign = hAlign[0];
+            break;
+          default:
+            hAlign = 'c'; // center
+            break;
+
+        }
+        var vAlign = textStyle.getTextBaseline();
+        switch (vAlign) {
+          case 'bottom':
+          case 'top':
+            vAlign = vAlign[0]
+            break;
+          default:
+            vAlign = 'm'; // middle
+            break;
+        }
+        literal.labelAlign = hAlign + vAlign;
 
         if (textStyle.getFill()) {
           var fillColor = ol.color.asArray(textStyle.getFill().getColor());
