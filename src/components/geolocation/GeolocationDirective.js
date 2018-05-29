@@ -121,21 +121,21 @@ goog.require('ga_throttle_service');
         var headingFromDeviceOrientation = function(hdg) {
           var orientation = $window.orientation;
           switch (orientation) {
-          case -90:
-          case 270:
-            hdg = hdg - (Math.PI / 2);
-            break;
+            case -90:
+            case 270:
+              hdg = hdg - (Math.PI / 2);
+              break;
 
-          case 180:
-            hdg = hdg + Math.PI;
-            break;
+            case 180:
+              hdg = hdg + Math.PI;
+              break;
 
-          case 90:
-            hdg = hdg + (Math.PI / 2);
-            break;
+            case 90:
+              hdg = hdg + (Math.PI / 2);
+              break;
 
-          default:
-            break;
+            default:
+              break;
           }
           return hdg;
         };
@@ -241,18 +241,18 @@ goog.require('ga_throttle_service');
           elts.removeClass(naClass);
           var msgId;
           switch (error.code) {
-          case error.PERMISSION_DENIED:
-            msgId = 'geoloc_permission_denied';
-            break;
-          case error.POSITION_UNAVAILABLE:
-            msgId = 'geoloc_pos_unavailable';
-            break;
-          case error.TIMEOUT:
-            msgId = 'geoloc_time_out';
-            break;
-          case error.UNKNOWN_ERROR:
-            msgId = 'geoloc_unknown';
-            break;
+            case error.PERMISSION_DENIED:
+              msgId = 'geoloc_permission_denied';
+              break;
+            case error.POSITION_UNAVAILABLE:
+              msgId = 'geoloc_pos_unavailable';
+              break;
+            case error.TIMEOUT:
+              msgId = 'geoloc_time_out';
+              break;
+            case error.UNKNOWN_ERROR:
+              msgId = 'geoloc_unknown';
+              break;
           }
           $window.alert($translate.instant(msgId));
           errorMsgId = msgId;

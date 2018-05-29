@@ -14,7 +14,8 @@
         body: 1,
         parameters: 2
       },
-      MemberExpression: 2
+      MemberExpression: 2,
+      SwitchCase: 1
     }],
     max-len: ["error", {
       code: 80,
