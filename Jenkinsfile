@@ -19,7 +19,7 @@ node(label: 'jenkins-slave') {
   }
 
   // from jenkins-shared-librairies 
-  abortPreviousBuilds()
+  utils.abortPreviousBuilds()
 
   try { 
     stage('Checkout') {
