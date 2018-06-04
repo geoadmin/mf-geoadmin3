@@ -18,7 +18,10 @@ node(label: 'jenkins-slave') {
     namedBranch = true
   }
 
-  try {
+  // from jenkins-shared-librairies 
+  abortPreviousBuilds()
+
+  try { 
     stage('Checkout') {
       checkout scm
     }
