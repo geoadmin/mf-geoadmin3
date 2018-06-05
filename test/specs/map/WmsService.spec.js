@@ -2,7 +2,7 @@
 describe('ga_wms_service', function() {
 
   describe('gaWms', function() {
-    var gaWms, map, gaGlobalOptions, $rootScope, gaLang, gaLayers;
+    var gaWms, map, gaGlobalOptions, $rootScope, gaLang, gaLayers, gaTileGrid;
 
     var getExternalWmsLayer = function(params) {
       var layer = new ol.layer.Image({
@@ -107,6 +107,7 @@ describe('ga_wms_service', function() {
         gaGlobalOptions = $injector.get('gaGlobalOptions');
         gaLang = $injector.get('gaLang');
         gaLayers = $injector.get('gaLayers');
+        gaTileGrid = $injector.get('gaTileGrid');
         $rootScope = $injector.get('$rootScope');
       });
       map = new ol.Map({});
@@ -271,6 +272,48 @@ describe('ga_wms_service', function() {
           var g = map.getLayers().item(0).getSource().getGutterInternal();
           expect(g).to.be('123');
         }
+      });
+
+      it('use the tilegridMinRes from layersConfig if it exists', function() {
+        var params = {
+          LAYERS: 'some'
+        };
+        var config = {
+          type: 'wms',
+          url: 'https://wms{s}.ch',
+          tileGridMinRes: 500
+        };
+        var tg = new ol.tilegrid.TileGrid({origin: [0, 0], resolutions: [10000, 5000, 1000, 545, 490, 120]});
+        var stub = sinon.stub(gaLayers, 'getLayer').withArgs(params.LAYERS).returns(config);
+        var stub2 = sinon.stub(gaTileGrid, 'get').withArgs(500, 'wms').returns(tg);
+        gaWms.addWmsToMap(map, params, {
+          url: 'https://wms{s}.ch'
+        });
+        expect(stub.callCount).to.be(1);
+        expect(stub2.callCount).to.be(1);
+        expect(map.getLayers().getLength()).to.be(1);
+        expect(map.getLayers().item(0).getSource().getTileGrid()).to.be(tg);
+      });
+
+      it('use the resolutions from layersConfig if it exists', function() {
+        var params = {
+          LAYERS: 'some'
+        };
+        var config = {
+          type: 'wms',
+          url: 'https://wms{s}.ch',
+          resolutions: [1000, 500, 488]
+        };
+        var tg = new ol.tilegrid.TileGrid({origin: [0, 0], resolutions: [10000, 5000]});
+        var stub = sinon.stub(gaLayers, 'getLayer').withArgs(params.LAYERS).returns(config);
+        var stub2 = sinon.stub(gaTileGrid, 'get').withArgs(488, 'wms').returns(tg);
+        gaWms.addWmsToMap(map, params, {
+          url: 'https://wms{s}.ch'
+        });
+        expect(stub.callCount).to.be(1);
+        expect(stub2.callCount).to.be(1);
+        expect(map.getLayers().getLength()).to.be(1);
+        expect(map.getLayers().item(0).getSource().getTileGrid()).to.be(tg);
       });
     });
 

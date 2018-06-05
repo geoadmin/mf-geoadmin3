@@ -69,7 +69,8 @@ goog.require('ga_window_service');
 
       // Defines if a layer is cacheable at a specific data zoom level.
       var isCacheableLayer = function(layer, z) {
-        if (layer.getSource() instanceof ol.source.TileImage) {
+        if (layer.getSource() instanceof ol.source.TileImage &&
+            layer.getSource().getTileGrid()) {
           var resolutions = layer.getSource().getTileGrid().getResolutions();
           var max = layer.getMaxResolution() || resolutions[0];
           if (!z && max > minRes) {
@@ -102,6 +103,7 @@ goog.require('ga_window_service');
           if (onlyVisible && !layer.getVisible()) {
             continue;
           }
+
           if (layer instanceof ol.layer.Group) {
             cache = cache.concat(
                 getCacheableLayers(layer.getLayers().getArray()));
@@ -467,11 +469,14 @@ goog.require('ga_window_service');
 
             // if it's a tiled layer (WMTS or WMS) prepare the list of tiles to
             // download
-            var parentLayerId = gaLayers.getLayerProperty(layer.bodId,
-                'parentLayerId');
-            var isBgLayer = (parentLayerId) ?
-              gaMapUtils.getMapLayerForBodId(map, parentLayerId).background :
-              layer.background;
+            var isBgLayer = false;
+            if (layer.bodId) {
+              var parentLayerId = gaLayers.getLayerProperty(layer.bodId,
+                  'parentLayerId');
+              isBgLayer = (parentLayerId) ?
+                gaMapUtils.getMapLayerForBodId(map, parentLayerId).background :
+                layer.background;
+            }
             layersBg.push(isBgLayer);
             var source = layer.getSource();
             var tileGrid = source.getTileGrid();
