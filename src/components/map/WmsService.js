@@ -3,6 +3,7 @@ goog.provide('ga_wms_service');
 goog.require('ga_definepropertiesforlayer_service');
 goog.require('ga_layers_service');
 goog.require('ga_maputils_service');
+goog.require('ga_tilegrid_service');
 goog.require('ga_translation_service');
 goog.require('ga_urlutils_service');
 
@@ -14,7 +15,8 @@ goog.require('ga_urlutils_service');
     'ga_layers_service',
     'ga_maputils_service',
     'ga_urlutils_service',
-    'ga_translation_service'
+    'ga_translation_service',
+    'ga_tilegrid_service'
   ]);
 
   /**
@@ -22,7 +24,7 @@ goog.require('ga_urlutils_service');
    */
   module.provider('gaWms', function() {
     this.$get = function(gaDefinePropertiesForLayer, gaMapUtils, gaUrlUtils,
-        gaGlobalOptions, $q, gaLang, gaLayers) {
+        gaGlobalOptions, $q, gaLang, gaLayers, gaTileGrid) {
 
       // Default subdomains for external WMS
       var DFLT_SUBDOMAINS = ['', '0', '1', '2', '3', '4'];
@@ -74,11 +76,21 @@ goog.require('ga_urlutils_service');
         var createWmsLayer = function(params, options, index) {
           options = options || {};
 
-          // We get the gutter form the layersConfig if possible.
+          // We get the gutter and the tileGridMinRes from the layersConfig
+          // if possible.
+          var tileGridMinRes;
           var config = gaLayers.getLayer(params.LAYERS);
-          if (config && config.gutter) {
-            options.gutter = config.gutter;
+          if (config) {
+            if (config.gutter) {
+              options.gutter = config.gutter;
+            }
+
+            tileGridMinRes = config.tileGridMinRes;
+            if (config.resolutions) {
+              tileGridMinRes = config.resolutions.slice(-1)[0];
+            }
           }
+
           options.id = 'WMS||' + options.label + '||' + options.url + '||' +
               params.LAYERS;
 
@@ -101,10 +113,12 @@ goog.require('ga_urlutils_service');
               DFLT_SUBDOMAINS);
           var SourceClass = ol.source.ImageWMS;
           var LayerClass = ol.layer.Image;
+          var tileGrid;
 
           if (urls.length > 1) {
             SourceClass = ol.source.TileWMS;
             LayerClass = ol.layer.Tile;
+            tileGrid = gaTileGrid.get(tileGridMinRes, 'wms');
           }
 
           var source = new SourceClass({
@@ -113,7 +127,8 @@ goog.require('ga_urlutils_service');
             urls: urls,
             gutter: options.gutter || 0,
             ratio: options.ratio || 1,
-            projection: options.projection
+            projection: options.projection,
+            tileGrid: tileGrid
           });
 
           var layer = new LayerClass({

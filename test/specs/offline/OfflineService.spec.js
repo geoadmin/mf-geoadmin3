@@ -225,6 +225,27 @@ describe('ga_offline_service', function() {
         return layer;
       };
 
+      // No tile grid defined
+      var addNonCacheableTiledLayerToMap = function(id, visible, opacity, time, bg) {
+        var layer = new ol.layer.Tile({
+          source: new ol.source.TileImage({
+            url: 'test.com/{z}/{x}/{y}.' + (bg ? 'jpeg' : 'png')
+          }),
+          visible: visible,
+          opacity: opacity
+        });
+        layer.id = id;
+        layer.bodId = id;
+        layer.invertedOpacity = 1 - opacity;
+        layer.timestamps = [
+          '20180909',
+          '19550101'
+        ];
+        layer.time = time;
+        map.addLayer(layer);
+        return layer;
+      };
+
       var addTooBigKmlLayerToMap = function() {
         var layer = new ol.layer.Image({
           visible: true
@@ -250,6 +271,12 @@ describe('ga_offline_service', function() {
         map.addLayer(layer);
         return layer;
       };
+
+      afterEach(function() {
+        /* gaOffline.clearTiles().then(function(){
+          done();
+        }); */
+      });
 
       describe('fails showing an alert ', function() {
 
@@ -307,7 +334,7 @@ describe('ga_offline_service', function() {
         $timeout.flush();
       });
 
-      it('saves 2 bod tiled layers, one which is a bg', function(done) {
+      it('saves 2 bod tiled layers, one which is a bg', function() {
         var stub = sinon.stub($window, 'confirm').returns(true);
         var stubAlert = sinon.stub($window, 'alert');
         var spy = sinon.spy($rootScope, '$broadcast');
@@ -321,7 +348,7 @@ describe('ga_offline_service', function() {
           gaStorageMock.expects('setItem').once().withArgs(opacityKey, '0.6,0.8'),
           gaStorageMock.expects('setItem').once().withArgs(timestampKey, '20180909,2016'),
           gaStorageMock.expects('setItem').once().withArgs(bgKey, ',true'),
-          gaStorageMock.expects('clearTiles').once().returns($q.when(done())),
+          gaStorageMock.expects('clearTiles').once().returns($q.when()),
           gaStorageMock.expects('setItem').once().withArgs(extentKey, [655000, 185000, 665000, 195000])
         ];
 
@@ -329,6 +356,7 @@ describe('ga_offline_service', function() {
         server.respondImmediately = true;
         addCacheableTiledLayerToMap('bodId', true, '0.4');
         addCacheableTiledLayerToMap('id', true, '0.2', '2016', true);
+        addNonCacheableTiledLayerToMap('idNon', true);
         // try {
         gaOffline.save(map);
         // Launch requests
