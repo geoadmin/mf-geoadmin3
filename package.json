@@ -25,7 +25,7 @@
     ]
   },
   "dependencies": {
-    "angular": "1.7.0",
+    "angular": "1.7.1",
     "angular-translate": "2.18.1",
     "corejs-typeahead": "v1.2.1",
     "d3": "5.4.0",
