@@ -272,12 +272,6 @@ describe('ga_offline_service', function() {
         return layer;
       };
 
-      afterEach(function() {
-        /* gaOffline.clearTiles().then(function(){
-          done();
-        }); */
-      });
-
       describe('fails showing an alert ', function() {
 
         it('if no layers in the map', function() {
