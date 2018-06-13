@@ -11,14 +11,23 @@ goog.require('ga_styles_service');
   module.controller('GaDrawStyleController', function($scope, $translate,
       gaStyleFactory) {
 
-    var getBabsImg = function(){
-      var babsImgs = [];
-      // TODO: read nr of files in folder img/babs/
-      var nrImg = 160;
-      for (var i = 1; i <= nrImg; i++){
-        babsImgs.push({id: i})
+    var getCategoryIndexByName = function(categoryName) {
+      for (var i = 0; i < options.iconCategories.length; i++) {
+        if (options.iconCategories[i].label === categoryName) {
+          return i;
+        }
       }
-      return babsImgs;
+      throw new Error('Category Name does not exist!');
+    }
+
+    var getImgsByCategoryName = function(categoryName) {
+      var imgs = [];
+      var categoryIndex = getCategoryIndexByName(categoryName);
+      var nrImg = options.iconCategories[categoryIndex].nrIcons;
+      for (var i = 1; i <= nrImg; i++) {
+        imgs.push({id: i})
+      }
+      return imgs;
     }
 
     var options = {
@@ -190,10 +199,9 @@ goog.require('ga_styles_service');
         {id: 'waste-basket'},
         {id: 'water'}
       ],
-      iconsBabs: getBabsImg(),
       iconCategories: [
-        {label: 'standard'},
-        {label: 'babs'}
+        {label: 'standard', colorOption: true, nrIcons: 114},
+        {label: 'babs', colorOption: false, nrIcons: 160}
       ]
     };
 
@@ -204,6 +212,7 @@ goog.require('ga_styles_service');
     $scope.options.textColor = options.colors[5];
     $scope.options.textSize = options.textSizes[0];
     $scope.options.icon = options.icons[0];
+    $scope.options.iconsBabs = getImgsByCategoryName('babs');
     $scope.options.iconColor = options.colors[5];
     $scope.options.iconSize = options.iconSizes[2];
     $scope.options.iconCategory = options.iconCategories[0];

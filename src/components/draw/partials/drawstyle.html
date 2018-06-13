@@ -89,7 +89,7 @@
             ng-options="s.label | translate for s in options.iconCategories">
     </select>
   </label>
-  <label ng-if="options.iconCategory.label==='standard'">
+  <label ng-if="options.iconCategory.colorOption">
     <span translate>{{'modify_color_label'}}:</span>
     <div class="ga-select-box ga-select-colors">
       <div ng-repeat="c in ::options.colors"

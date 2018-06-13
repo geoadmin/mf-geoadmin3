@@ -114,9 +114,9 @@ goog.require('ga_window_service');
           '-24@2x.png';
     };
 
-    var getImageUrl = function(icon){
-      return gaGlobalOptions.mapUrl + "img/babs/babs-"+
-        icon.id + ".png"
+    var getImageUrl = function(icon) {
+      return gaGlobalOptions.mapUrl + 'src/img/babs/babs-' +
+        icon.id + '.png'
     }
 
     // Get the current style defined by the properties object
@@ -164,8 +164,8 @@ goog.require('ga_window_service');
       var icon = oldStyle.getImage();
       if (icon instanceof ol.style.Icon &&
           angular.isDefined(properties.icon)) {
-        var url = (properties.iconCategory.label==='standard')?
-          getIconUrl(properties.icon, properties.iconColor.fill):
+        var url = (properties.iconCategory.label === 'standard') ?
+          getIconUrl(properties.icon, properties.iconColor.fill) :
           getImageUrl(properties.icon)
         icon = new ol.style.Icon({
           src: url,
