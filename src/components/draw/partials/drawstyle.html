@@ -118,7 +118,8 @@
          ng-style="{color:options.iconColor.name}">
       <img ng-src="https://mf-geoadmin3.dev.bgdi.ch/ltpin/src/img/babs/babs-{{::i.id}}.png" ng-repeat="i in ::options.iconsBabs"
          class="fa"
-         ng-click="options.icon = i;$event.preventDefault();"></i>
+         ng-click="options.icon = i;$event.preventDefault();"
+         height="options.iconSize" width="options.iconSize" ></i>
       <button class="ga-icon fa fa-caret-down"
               ng-click="gaSelectBoxOpen=!gaSelectBoxOpen"></button>
     </div>
