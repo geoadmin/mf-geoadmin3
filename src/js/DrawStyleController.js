@@ -11,6 +11,16 @@ goog.require('ga_styles_service');
   module.controller('GaDrawStyleController', function($scope, $translate,
       gaStyleFactory) {
 
+    var getBabsImg = function(){
+      var babsImgs = [];
+      // TODO: read nr of files in folder img/babs/
+      var nrImg = 160;
+      for (var i = 1; i <= nrImg; i++){
+        babsImgs.push({id: i})
+      }
+      return babsImgs;
+    }
+
     var options = {
       name: '',
       description: '',
@@ -179,6 +189,11 @@ goog.require('ga_styles_service');
         {id: 'telephone'},
         {id: 'waste-basket'},
         {id: 'water'}
+      ],
+      iconsBabs: getBabsImg(),
+      iconCategories: [
+        {label: 'standard'},
+        {label: 'babs'}
       ]
     };
 
@@ -191,6 +206,7 @@ goog.require('ga_styles_service');
     $scope.options.icon = options.icons[0];
     $scope.options.iconColor = options.colors[5];
     $scope.options.iconSize = options.iconSizes[2];
+    $scope.options.iconCategory = options.iconCategories[0];
 
     $scope.$on('gaDrawStyleActive', function(evt, feature, layer, pixel) {
       $scope.feature = feature;

@@ -84,6 +84,12 @@
     </select>
   </label>
   <label>
+    <span translate>{{'modify_icon_category_label'}}:</span>
+    <select ng-model="options.iconCategory"
+            ng-options="s.label | translate for s in options.iconCategories">
+    </select>
+  </label>
+  <label ng-if="options.iconCategory.label==='standard'">
     <span translate>{{'modify_color_label'}}:</span>
     <div class="ga-select-box ga-select-colors">
       <div ng-repeat="c in ::options.colors"
@@ -97,10 +103,21 @@
   <label>
     <span translate>{{'modify_icon_label'}}:</span>
     <div class="ga-select-box ga-select-icons"
+         ng-if="options.iconCategory.label==='standard'"
          ng-class="{'ga-select-box-open': gaSelectBoxOpen}"
          ng-style="{color:options.iconColor.name}">
       <i tabindex=1 ng-repeat="i in ::options.icons"
          class="fa fa-maki-{{::i.id}}"
+         ng-click="options.icon = i;$event.preventDefault();"></i>
+      <button class="ga-icon fa fa-caret-down"
+              ng-click="gaSelectBoxOpen=!gaSelectBoxOpen"></button>
+    </div>
+    <div class="ga-select-box ga-select-icons"
+         ng-if="options.iconCategory.label!='standard'"
+         ng-class="{'ga-select-box-open': gaSelectBoxOpen}"
+         ng-style="{color:options.iconColor.name}">
+      <img src="https://mf-geoadmin3.dev.bgdi.ch/ltpin/src/img/babs/babs-{{::i.id}}.png" ng-repeat="i in ::options.iconsBabs"
+         class="fa"
          ng-click="options.icon = i;$event.preventDefault();"></i>
       <button class="ga-icon fa fa-caret-down"
               ng-click="gaSelectBoxOpen=!gaSelectBoxOpen"></button>

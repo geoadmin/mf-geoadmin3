@@ -114,6 +114,11 @@ goog.require('ga_window_service');
           '-24@2x.png';
     };
 
+    var getImageUrl = function(icon){
+      return gaGlobalOptions.mapUrl + "img/babs/babs-"+
+        icon.id + ".png"
+    }
+
     // Get the current style defined by the properties object
     var updateStylesFromProperties = function(feature, properties) {
       var oldStyles = feature.getStyle();
@@ -159,8 +164,11 @@ goog.require('ga_window_service');
       var icon = oldStyle.getImage();
       if (icon instanceof ol.style.Icon &&
           angular.isDefined(properties.icon)) {
+        var url = (properties.iconCategory.label==='standard')?
+          getIconUrl(properties.icon, properties.iconColor.fill):
+          getImageUrl(properties.icon)
         icon = new ol.style.Icon({
-          src: getIconUrl(properties.icon, properties.iconColor.fill),
+          src: url,
           scale: properties.iconSize.scale,
           anchor: properties.icon.anchor
         });
@@ -187,6 +195,7 @@ goog.require('ga_window_service');
           description: newValues[2],
           color: newValues[3],
           icon: newValues[4],
+          iconCategory: scope.options.iconCategory,
           iconColor: newValues[5],
           iconSize: newValues[6],
           text: text,
