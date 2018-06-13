@@ -116,7 +116,7 @@
          ng-if="options.iconCategory.label!='standard'"
          ng-class="{'ga-select-box-open': gaSelectBoxOpen}"
          ng-style="{color:options.iconColor.name}">
-      <img src="https://mf-geoadmin3.dev.bgdi.ch/ltpin/src/img/babs/babs-{{::i.id}}.png" ng-repeat="i in ::options.iconsBabs"
+      <img ng-src="https://mf-geoadmin3.dev.bgdi.ch/ltpin/src/img/babs/babs-{{::i.id}}.png" ng-repeat="i in ::options.iconsBabs"
          class="fa"
          ng-click="options.icon = i;$event.preventDefault();"></i>
       <button class="ga-icon fa fa-caret-down"
