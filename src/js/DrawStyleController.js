@@ -9,7 +9,7 @@ goog.require('ga_styles_service');
   ]);
 
   module.controller('GaDrawStyleController', function($scope, $translate,
-      gaStyleFactory) {
+      gaGlobalOptions, gaStyleFactory) {
 
     var getCategoryIndexByName = function(categoryName) {
       for (var i = 0; i < options.iconCategories.length; i++) {
@@ -20,12 +20,17 @@ goog.require('ga_styles_service');
       throw new Error('Category Name does not exist!');
     }
 
-    var getImgsByCategoryName = function(categoryName) {
+    var getImgsByCategory = function(categoryName) {
       var imgs = [];
       var categoryIndex = getCategoryIndexByName(categoryName);
-      var nrImg = options.iconCategories[categoryIndex].nrIcons;
+      var category = options.iconCategories[categoryIndex];
+      var nrImg = category.nbIcons;
       for (var i = 1; i <= nrImg; i++) {
-        imgs.push({id: i})
+        imgs.push({
+          id: i,
+          url: gaGlobalOptions.mapUrl + 'img/' + category.folder + '/' +
+            category.prefix + i + '.png'
+        });
       }
       return imgs;
     }
@@ -199,9 +204,18 @@ goog.require('ga_styles_service');
         {id: 'waste-basket'},
         {id: 'water'}
       ],
+      // type: Type of icon: if stored as css style -> "css", if image ->"img"
+      // folder: folder where images stored (src/img/{folder}/
+      // prefix: naming conventionof images is prefix + [1...nb of images]
       iconCategories: [
-        {label: 'standard', colorOption: true, nrIcons: 114},
-        {label: 'babs', colorOption: false, nrIcons: 160}
+        {id: 'standard', label: 'standard', useColorOption: true, type: 'css'},
+        {id: 'babs',
+          label: 'babs',
+          useColorOption: false,
+          nbIcons: 160,
+          type: 'img',
+          folder: 'babs',
+          prefix: 'babs-'}
       ]
     };
 
@@ -212,10 +226,17 @@ goog.require('ga_styles_service');
     $scope.options.textColor = options.colors[5];
     $scope.options.textSize = options.textSizes[0];
     $scope.options.icon = options.icons[0];
-    $scope.options.iconsBabs = getImgsByCategoryName('babs');
     $scope.options.iconColor = options.colors[5];
     $scope.options.iconSize = options.iconSizes[2];
     $scope.options.iconCategory = options.iconCategories[0];
+
+    $scope.options.iconCategories.forEach(function(category) {
+      if (category.type === 'img') {
+        category.icons = getImgsByCategory('babs');
+      } else {
+        category.icons = $scope.options.icons;
+      }
+    });
 
     $scope.$on('gaDrawStyleActive', function(evt, feature, layer, pixel) {
       $scope.feature = feature;

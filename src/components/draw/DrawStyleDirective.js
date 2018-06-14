@@ -115,8 +115,18 @@ goog.require('ga_window_service');
     };
 
     var getImageUrl = function(icon) {
-      return gaGlobalOptions.mapUrl + 'src/img/babs/babs-' +
-        icon.id + '.png'
+      return icon.url;
+    }
+
+    var getUrl = function(options) {
+      var category = options.iconCategory;
+      var icon = options.icon;
+      var color = options.iconColor.fill;
+      if (category.type === 'css') {
+        return getIconUrl(icon, color);
+      } else {
+        return getImageUrl(icon);
+      }
     }
 
     // Get the current style defined by the properties object
@@ -164,9 +174,7 @@ goog.require('ga_window_service');
       var icon = oldStyle.getImage();
       if (icon instanceof ol.style.Icon &&
           angular.isDefined(properties.icon)) {
-        var url = (properties.iconCategory.label === 'standard') ?
-          getIconUrl(properties.icon, properties.iconColor.fill) :
-          getImageUrl(properties.icon)
+        var url = getUrl(properties);
         icon = new ol.style.Icon({
           src: url,
           scale: properties.iconSize.scale,
