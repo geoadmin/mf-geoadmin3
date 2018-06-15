@@ -15,16 +15,48 @@ goog.require('ga_window_service');
   module.directive('gaDrawStyle', function($document, $window, $translate,
       gaGlobalOptions, gaStyleFactory, gaUrlUtils, gaWindow) {
 
+    var findCategoryBySource = function(src, categories) {
+      var regexCss = new RegExp('^(.*?)-24');
+      if (regexCss.test(src)) {
+        return categories[0];
+      }
+      for (var i = 0; i < categories.length; i++) {
+        var c = categories[i];
+        if (c.prefix) {
+          var regexImg = new RegExp('^(.*?)' + c.prefix);
+          if (regexImg.test(src)) {
+            return c
+          }
+        }
+      }
+      return new Error('No category found for source ' + src);
+    };
+
+    var getCategoryById = function(id, categories) {
+      for (var i = 0; i < categories.length; i++) {
+        var c = categories[i];
+        if (c.id === id) {
+          return c;
+        }
+      }
+      return new Error('No category found for id ' + id);
+    }
+
     // Find the corresponding style
-    var findIcon = function(olIcon, icons) {
+    var findIcon = function(olIcon, categories) {
       var id = olIcon.getSrc();
+      var category = findCategoryBySource(id, categories);
+      var icons = category.icons;
       for (var i = 0; i < icons.length; i++) {
-        var regex = new RegExp('/' + icons[i].id + '-24');
+        var icon = icons[i];
+        var regex = (category.prefix) ?
+          new RegExp(category.prefix + icon.id + '.png') :
+          new RegExp(icon.id + '-24')
         if (regex.test(id)) {
           return icons[i];
         }
       }
-      return icons[0];
+      return categories[0].icons[0];
     };
 
     var findSize = function(olStyle, sizes, dflt) {
@@ -77,7 +109,7 @@ goog.require('ga_window_service');
           useIconStyle = true;
           useTextStyle = true;
           var img = featStyle.getImage();
-          scope.options.icon = findIcon(img, scope.options.icons);
+          scope.options.icon = findIcon(img, scope.options.iconCategories);
           scope.options.iconSize = findSize(img, scope.options.iconSizes);
           scope.options.iconColor = findIconColor(img, scope.options.colors);
         }
@@ -197,13 +229,15 @@ goog.require('ga_window_service');
       var feature = scope.feature;
       if (feature) {
         var text = (newValues[0]) ? newValues[1] : undefined;
+        var category = getCategoryById(newValues[4].category,
+            scope.options.iconCategories)
         // Update the style of the feature with the current style
         var styles = updateStylesFromProperties(feature, {
           font: scope.options.font,
           description: newValues[2],
           color: newValues[3],
           icon: newValues[4],
-          iconCategory: scope.options.iconCategory,
+          iconCategory: category,
           iconColor: newValues[5],
           iconSize: newValues[6],
           text: text,
