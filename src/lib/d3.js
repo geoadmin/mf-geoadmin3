@@ -1,11 +1,11 @@
-// https://d3js.org Version 5.4.0. Copyright 2018 Mike Bostock.
+// https://d3js.org Version 5.5.0. Copyright 2018 Mike Bostock.
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
 	typeof define === 'function' && define.amd ? define(['exports'], factory) :
 	(factory((global.d3 = global.d3 || {})));
 }(this, (function (exports) { 'use strict';
 
-var version = "5.4.0";
+var version = "5.5.0";
 
 function ascending(a, b) {
   return a < b ? -1 : a > b ? 1 : a >= b ? 0 : NaN;
@@ -13553,15 +13553,16 @@ function utcTime() {
 function sequential(interpolator) {
   var x0 = 0,
       x1 = 1,
+      k10 = 1,
       clamp = false;
 
   function scale(x) {
-    var t = (x - x0) / (x1 - x0);
+    var t = (x - x0) * k10;
     return interpolator(clamp ? Math.max(0, Math.min(1, t)) : t);
   }
 
   scale.domain = function(_) {
-    return arguments.length ? (x0 = +_[0], x1 = +_[1], scale) : [x0, x1];
+    return arguments.length ? (x0 = +_[0], x1 = +_[1], k10 = x0 === x1 ? 0 : 1 / (x1 - x0), scale) : [x0, x1];
   };
 
   scale.clamp = function(_) {
@@ -13574,6 +13575,38 @@ function sequential(interpolator) {
 
   scale.copy = function() {
     return sequential(interpolator).domain([x0, x1]).clamp(clamp);
+  };
+
+  return linearish(scale);
+}
+
+function diverging(interpolator) {
+  var x0 = 0,
+      x1 = 0.5,
+      x2 = 1,
+      k10 = 1,
+      k21 = 1,
+      clamp = false;
+
+  function scale(x) {
+    var t = 0.5 + ((x = +x) - x1) * (x < x1 ? k10 : k21);
+    return interpolator(clamp ? Math.max(0, Math.min(1, t)) : t);
+  }
+
+  scale.domain = function(_) {
+    return arguments.length ? (x0 = +_[0], x1 = +_[1], x2 = +_[2], k10 = x0 === x1 ? 0 : 0.5 / (x1 - x0), k21 = x1 === x2 ? 0 : 0.5 / (x2 - x1), scale) : [x0, x1, x2];
+  };
+
+  scale.clamp = function(_) {
+    return arguments.length ? (clamp = !!_, scale) : clamp;
+  };
+
+  scale.interpolator = function(_) {
+    return arguments.length ? (interpolator = _, scale) : interpolator;
+  };
+
+  scale.copy = function() {
+    return diverging(interpolator).domain([x0, x1, x2]).clamp(clamp);
   };
 
   return linearish(scale);
@@ -15777,7 +15810,7 @@ function expand(series, order) {
   none$1(series, order);
 }
 
-function diverging(series, order) {
+function diverging$1(series, order) {
   if (!((n = series.length) > 1)) return;
   for (var i, j = 0, d, dy, yp, yn, n, m = series[order[0]].length; j < m; ++j) {
     for (yp = yn = 0, i = 0; i < n; ++i) {
@@ -17590,6 +17623,7 @@ exports.scaleThreshold = threshold$1;
 exports.scaleTime = time;
 exports.scaleUtc = utcTime;
 exports.scaleSequential = sequential;
+exports.scaleDiverging = diverging;
 exports.schemeCategory10 = category10;
 exports.schemeAccent = Accent;
 exports.schemeDark2 = Dark2;
@@ -17721,7 +17755,7 @@ exports.curveStepAfter = stepAfter;
 exports.curveStepBefore = stepBefore;
 exports.stack = stack;
 exports.stackOffsetExpand = expand;
-exports.stackOffsetDiverging = diverging;
+exports.stackOffsetDiverging = diverging$1;
 exports.stackOffsetNone = none$1;
 exports.stackOffsetSilhouette = silhouette;
 exports.stackOffsetWiggle = wiggle;
