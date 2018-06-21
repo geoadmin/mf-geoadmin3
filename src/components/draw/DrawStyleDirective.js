@@ -22,14 +22,14 @@ goog.require('ga_window_service');
       }
       for (var i = 0; i < categories.length; i++) {
         var c = categories[i];
-        if (c.prefix) {
-          var regexImg = new RegExp('^(.*?)' + c.prefix);
+        if (c.type === 'img') {
+          var regexImg = new RegExp('^(.*?)' + c.id);
           if (regexImg.test(src)) {
             return c
           }
         }
       }
-      return new Error('No category found for source ' + src);
+      console.error('No category found for source ' + src);
     };
 
     var getCategoryById = function(id, categories) {
@@ -39,7 +39,7 @@ goog.require('ga_window_service');
           return c;
         }
       }
-      return new Error('No category found for id ' + id);
+      console.error('No category found for id ' + id);
     }
 
     // Find the corresponding style
@@ -49,8 +49,8 @@ goog.require('ga_window_service');
       var icons = category.icons;
       for (var i = 0; i < icons.length; i++) {
         var icon = icons[i];
-        var regex = (category.prefix) ?
-          new RegExp(category.prefix + icon.id + '.png') :
+        var regex = (category.type === 'img') ?
+          new RegExp(category.id + '-' + icon.id + '.png') :
           new RegExp(icon.id + '-24')
         if (regex.test(id)) {
           return icons[i];
@@ -146,19 +146,10 @@ goog.require('ga_window_service');
           '-24@2x.png';
     };
 
-    var getImageUrl = function(icon) {
-      return icon.url;
-    }
-
     var getUrl = function(options) {
-      var category = options.iconCategory;
       var icon = options.icon;
       var color = options.iconColor.fill;
-      if (category.type === 'css') {
-        return getIconUrl(icon, color);
-      } else {
-        return getImageUrl(icon);
-      }
+      return icon.url || getIconUrl(icon, color)
     }
 
     // Get the current style defined by the properties object

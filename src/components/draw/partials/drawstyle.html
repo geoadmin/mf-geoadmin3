@@ -109,12 +109,12 @@
          ng-repeat="cat in options.iconCategories">
       <i tabindex=1 ng-repeat="i in ::cat.icons"
          class="fa fa-maki-{{::i.id}}"
-         ng-if="cat.id==='standard'"
+         ng-if="cat.type==='css'"
          ng-click="options.icon = i;$event.preventDefault();"> </i>
       <img ng-src="{{i.url}}" ng-repeat="i in ::cat.icons"
          class="fa"
          ng-click="options.icon = i;$event.preventDefault();"
-         ng-if="cat.id=='babs'"
+         ng-if="cat.type=='img'"
          height="options.iconSize" width="options.iconSize" ></img>
       <button class="ga-icon fa fa-caret-down"
          ng-click="gaSelectBoxOpen=!gaSelectBoxOpen"></button>
