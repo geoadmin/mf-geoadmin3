@@ -11,7 +11,7 @@ goog.require('ga_styles_service');
   module.controller('GaDrawStyleController', function($scope, $translate,
       gaGlobalOptions, gaStyleFactory) {
 
-    var iconsCSS = [
+    var iconsCategory0 = [
       // Basics
       {id: 'marker', anchor: [0.5, 0.9]},
       {id: 'circle'},
@@ -196,9 +196,17 @@ goog.require('ga_styles_service');
         {label: 'big_size', value: [48, 48], scale: 1}
       ],
       // type: Type of icon: if stored as css style -> "css", if image ->"img"
+      // regex: pattern for icon category. Mandatory for category type "css"
       iconCategories: [
-        {id: 'standard', label: 'standard', useColorOption: true, type: 'css'},
-        {id: 'babs',
+        {
+          id: 'standard',
+          label: 'standard',
+          useColorOption: true,
+          type: 'css',
+          regex: new RegExp('^(.*?)-24'),
+          icons: iconsCategory0
+        }, {
+          id: 'babs',
           label: 'babs',
           useColorOption: false,
           nbIcons: 160,
@@ -220,13 +228,11 @@ goog.require('ga_styles_service');
     $scope.options.iconCategories.forEach(function(category) {
       if (category.type === 'img') {
         category.icons = getImgsByCategory(category);
-      } else {
-        category.icons = iconsCSS;
       }
     });
 
     $scope.options.icons = $scope.options.iconCategories[0].icons;
-    $scope.options.icon = options.icons[0];
+    $scope.options.icon = $scope.options.icons[0];
 
     $scope.$on('gaDrawStyleActive', function(evt, feature, layer, pixel) {
       $scope.feature = feature;

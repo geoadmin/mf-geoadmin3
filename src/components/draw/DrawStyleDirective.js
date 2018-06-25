@@ -16,17 +16,13 @@ goog.require('ga_window_service');
       gaGlobalOptions, gaStyleFactory, gaUrlUtils, gaWindow) {
 
     var findCategoryBySource = function(src, categories) {
-      var regexCss = new RegExp('^(.*?)-24');
-      if (regexCss.test(src)) {
-        return categories[0];
-      }
       for (var i = 0; i < categories.length; i++) {
         var c = categories[i];
-        if (c.type === 'img') {
-          var regexImg = new RegExp('^(.*?)' + c.id);
-          if (regexImg.test(src)) {
-            return c
-          }
+        var regex = (c.type === 'img') ?
+          new RegExp('^(.*?)' + c.id) :
+          c.regex;
+        if (regex.test(src)) {
+          return c;
         }
       }
       console.error('No category found for source ' + src);
@@ -35,8 +31,11 @@ goog.require('ga_window_service');
     var getCategoryById = function(id, categories) {
       for (var i = 0; i < categories.length; i++) {
         var c = categories[i];
-        if (c.id === id) {
-          return c;
+        for (var j = 0; j < c.icons.length; j++) {
+          var icon = c.icons[j];
+          if (icon.id === id) {
+            return c;
+          }
         }
       }
       console.error('No category found for id ' + id);
@@ -220,7 +219,7 @@ goog.require('ga_window_service');
       var feature = scope.feature;
       if (feature) {
         var text = (newValues[0]) ? newValues[1] : undefined;
-        var category = getCategoryById(newValues[4].category,
+        var category = getCategoryById(newValues[4].id,
             scope.options.iconCategories)
         // Update the style of the feature with the current style
         var styles = updateStylesFromProperties(feature, {
