@@ -19,8 +19,8 @@ goog.require('ga_window_service');
       for (var i = 0; i < categories.length; i++) {
         var c = categories[i];
         var regex = (c.type === 'img') ?
-          new RegExp('^(.*?)' + c.id) :
-          c.regex;
+          new RegExp('^(.*)' + c.id) :
+          new RegExp(c.regex);
         if (regex.test(src)) {
           return c;
         }
@@ -42,20 +42,19 @@ goog.require('ga_window_service');
     }
 
     // Find the corresponding style
-    var findIcon = function(olIcon, categories) {
+    var findIcon = function(olIcon, category, standardIcon) {
       var id = olIcon.getSrc();
-      var category = findCategoryBySource(id, categories);
       var icons = category.icons;
       for (var i = 0; i < icons.length; i++) {
         var icon = icons[i];
         var regex = (category.type === 'img') ?
           new RegExp(category.id + '-' + icon.id + '.png') :
-          new RegExp(icon.id + '-24')
+          new RegExp(category.regex);
         if (regex.test(id)) {
           return icons[i];
         }
       }
-      return categories[0].icons[0];
+      return standardIcon;
     };
 
     var findSize = function(olStyle, sizes, dflt) {
@@ -108,7 +107,10 @@ goog.require('ga_window_service');
           useIconStyle = true;
           useTextStyle = true;
           var img = featStyle.getImage();
-          scope.options.icon = findIcon(img, scope.options.iconCategories);
+          scope.options.iconCategory = findCategoryBySource(img.getSrc(),
+            scope.options.iconCategories);
+          scope.options.icon = findIcon(img, scope.options.iconCategory,
+            scope.options.iconCategories[0].icons[0]);
           scope.options.iconSize = findSize(img, scope.options.iconSizes);
           scope.options.iconColor = findIconColor(img, scope.options.colors);
         }

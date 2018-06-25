@@ -203,7 +203,7 @@ goog.require('ga_styles_service');
           label: 'standard',
           useColorOption: true,
           type: 'css',
-          regex: new RegExp('^(.*?)-24'),
+          regex: '^(.*)-24.*',
           icons: iconsCategory0
         }, {
           id: 'babs',
