@@ -105,19 +105,19 @@
     <div class="ga-select-box ga-select-icons"
          ng-class="{'ga-select-box-open': gaSelectBoxOpen}"
          ng-style="{color:options.iconColor.name}"
-         ng-if="options.iconCategory.label===cat.label"
+         ng-if="options.iconCategory.label === cat.label"
          ng-repeat="cat in options.iconCategories">
       <i tabindex=1 ng-repeat="i in ::cat.icons"
          class="fa fa-maki-{{::i.id}}"
-         ng-if="cat.type==='css'"
+         ng-if="cat.type === 'css'"
          ng-click="options.icon = i;$event.preventDefault();"> </i>
       <img ng-src="{{i.url}}" ng-repeat="i in ::cat.icons"
          class="fa"
          ng-click="options.icon = i;$event.preventDefault();"
-         ng-if="cat.type=='img'"
+         ng-if="cat.type === 'img'"
          height="options.iconSize" width="options.iconSize" ></img>
       <button class="ga-icon fa fa-caret-down"
-         ng-click="gaSelectBoxOpen=!gaSelectBoxOpen"></button>
+         ng-click="gaSelectBoxOpen =! gaSelectBoxOpen"></button>
     </div>
   </label>
 </div>

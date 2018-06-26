@@ -196,14 +196,15 @@ goog.require('ga_styles_service');
         {label: 'big_size', value: [48, 48], scale: 1}
       ],
       // type: Type of icon: if stored as css style -> "css", if image ->"img"
-      // regex: pattern for icon category. Mandatory for category type "css"
+      // regex: pattern for icon category. Mandatory for category type "css".
+      //    It must represent the pattern after icon name and start with ^(.*)
       iconCategories: [
         {
           id: 'standard',
           label: 'standard',
           useColorOption: true,
           type: 'css',
-          regex: '^(.*)-24.*',
+          regex: /^(.*)-24@2x\.png/,
           icons: iconsCategory0
         }, {
           id: 'babs',
