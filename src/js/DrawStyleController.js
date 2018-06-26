@@ -152,6 +152,12 @@ goog.require('ga_styles_service');
       return imgs;
     }
 
+    var getDefaultIconsRegex = function(id) {
+      var regex = (id) ? new RegExp('^(.*)' + id + '-24@2x.png') :
+        /^(.*)-24@2x\.png/;
+      return regex
+    }
+
     var options = {
       name: '',
       description: '',
@@ -204,7 +210,7 @@ goog.require('ga_styles_service');
           label: 'standard',
           useColorOption: true,
           type: 'css',
-          regex: /^(.*)-24@2x\.png/,
+          regex: getDefaultIconsRegex,
           icons: iconsCategory0
         }, {
           id: 'babs',

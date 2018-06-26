@@ -20,7 +20,7 @@ goog.require('ga_window_service');
         var c = categories[i];
         var regex = (c.type === 'img') ?
           new RegExp('^(.*)' + c.id) :
-          c.regex;
+          c.regex();
         if (regex.test(src)) {
           return c;
         }
@@ -49,8 +49,7 @@ goog.require('ga_window_service');
         var icon = icons[i];
         var regex = (category.type === 'img') ?
           new RegExp(category.id + '-' + icon.id + '.png') :
-          new RegExp(category.regex.source.slice(0,5) + icon.id +
-            category.regex.source.slice(5));
+          category.regex(icon.id);
         if (regex.test(id)) {
           return icons[i];
         }
@@ -109,7 +108,7 @@ goog.require('ga_window_service');
           useTextStyle = true;
           var img = featStyle.getImage();
           scope.options.iconCategory = findCategoryBySource(img.getSrc(),
-            scope.options.iconCategories);
+              scope.options.iconCategories);
           scope.options.icon = findIcon(img, scope.options.iconCategory) ||
             scope.options.iconCategories[0].icons[0];
           scope.options.iconSize = findSize(img, scope.options.iconSizes);
