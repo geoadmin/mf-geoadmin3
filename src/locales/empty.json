@@ -1,5 +1,6 @@
 {
   "astra_alle_lastyear_casualties": "",
+  "babs": "",
   "topic_energie_tooltip": "",
   "energie": "",
   "energie_service_link_href": "",
@@ -203,6 +204,7 @@
   "modify_text_label": "",
   "modify_text_size_label": "",
   "modify_icon_size_label": "",
+  "modify_icon_category_label": "",
   "modify_icon_label": "",
   "confirm_remove_all_features": "",
   "confirm_remove_selected_features": "",
@@ -328,6 +330,7 @@
   "share_file_link_title_admin": "",
   "share_less": "",
   "share_more": "",
+  "standard": "",
   "copy_url": "",
   "copy_success": "",
   "modify_description": "",
