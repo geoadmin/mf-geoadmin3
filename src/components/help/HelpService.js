@@ -48,7 +48,6 @@ goog.require('ga_translation_service');
         // Opens a new window
         this.open = function(id) {
           var lang = gaLang.getNoRm();
-
           var url = helpTpl.
               replace('{id}', id).
               replace('{lang}', lang);
