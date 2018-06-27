@@ -99,6 +99,7 @@ itemscope itemtype="http://schema.org/WebApplication"
           'embed': globals.embed,
           'ga-draw-active': globals.isDrawActive,
           'ga-3d-active': globals.is3dActive,
+          'ga-fps-active': globals.isFpsActive,
           'ios': globals.ios
         }">
     <!-- The below conditional is ignored by >= IE10 and all other browsers -->
@@ -233,7 +234,7 @@ itemscope itemtype="http://schema.org/WebApplication"
            ga-cesium-3d-tiles-inspector-ol3d="::ol3d"></div>
       <div ga-controls3d
            ga-controls3d-ol3d="::ol3d"
-           ga-controls3d-pegman="globals.pegman"></div>
+           ga-controls3d-fps-active="globals.isFpsActive"></div>
       <div ga-attribution-warning
            ga-attribution-warning-ol3d="::ol3d">
         <span translate>3d_overlay_warning</span>
@@ -755,7 +756,6 @@ itemscope itemtype="http://schema.org/WebApplication"
           dev3d: true,
           buildMode: '${mode}',
           version: '${version}',
-          pegman: !!window.location.search.match(/(pegman=true)/),
           mapUrl: location.origin + pathname,
 
           // Map services urls

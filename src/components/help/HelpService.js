@@ -20,6 +20,7 @@ goog.require('ga_translation_service');
     this.$get = function($http, gaLang) {
 
       var Help = function() {
+        var helpTpl = '//help.geo.admin.ch?id={id}&lang={lang}';
         var url = 'https://www.googleapis.com/fusiontables/v1/query';
         var apiKey = 'AIzaSyDT7wmEx97gAG5OnPwKyz2PnCx3yT4j7C0';
         var sqlTmpl = 'select * from 1Tx2VSM1WHZfDXzf8rweRLG1kd23AA4aw8xnZ_3c' +
@@ -42,6 +43,16 @@ goog.require('ga_translation_service');
           }).then(function(response) {
             return response.data;
           });
+        };
+
+        // Opens a new window
+        this.open = function(id) {
+          var lang = gaLang.getNoRm();
+
+          var url = helpTpl.
+              replace('{id}', id).
+              replace('{lang}', lang);
+          window.open(url);
         };
       };
 
