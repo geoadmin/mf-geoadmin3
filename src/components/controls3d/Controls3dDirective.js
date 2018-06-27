@@ -29,8 +29,8 @@ goog.require('ga_maputils_service');
       restrict: 'A',
       templateUrl: 'components/controls3d/partials/controls3d.html',
       scope: {
-        pegman: '=gaControls3dPegman',
-        ol3d: '=gaControls3dOl3d'
+        ol3d: '=gaControls3dOl3d',
+        isFpsActive: '=gaControls3dFpsActive'
       },
       link: function(scope, element, attrs) {
         var ol3d = scope.ol3d;
@@ -129,19 +129,17 @@ goog.require('ga_maputils_service');
           }
         });
 
-        scope.startDraggingPegman = function() {
-          if (!scope.fps.active) {
-            var body = $(document.body);
-            var canvas = angular.element(scene.canvas);
-            body.addClass('ga-pegman-dragging');
-            canvas.off('mouseup.pegman');
-            canvas.one('mouseup.pegman', function(event) {
-              var pixel = new Cesium.Cartesian2(event.clientX, event.clientY);
-              var cartesian = olcs.core.pickOnTerrainOrEllipsoid(scene, pixel);
-              scope.fps.setActive(true, cartesian);
-              body.removeClass('ga-pegman-dragging');
-            });
-          }
+        var startDraggingPegman = function() {
+          var body = $(document.body);
+          var canvas = angular.element(scene.canvas);
+          body.addClass('ga-pegman-dragging');
+          canvas.off('mouseup.pegman');
+          canvas.one('mouseup.pegman', function(event) {
+            var pixel = new Cesium.Cartesian2(event.clientX, event.clientY);
+            var cartesian = olcs.core.pickOnTerrainOrEllipsoid(scene, pixel);
+            scope.fps.setActive(true, cartesian);
+            body.removeClass('ga-pegman-dragging');
+          });
         };
 
         scope.tilt = function(angleDeg) {
@@ -180,7 +178,17 @@ goog.require('ga_maputils_service');
         scope.resetRotation = function() {
           gaMapUtils.resetMapToNorth(undefined, scope.ol3d);
         };
-
+        
+        // listen FPS  activation/deactivation
+        var pegman = $('.ga-pegman');
+        scope.$watch('fps.active', function(active) {
+          scope.isFpsActive = active;
+          if (!active) {
+            pegman.on('mousedown', startDraggingPegman);
+          } else {
+            pegman.off('mousedown');
+          }
+        });
       }
     };
   });

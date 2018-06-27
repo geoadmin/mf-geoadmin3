@@ -1,4 +1,4 @@
-<div class="ga-tilt" ng-hide="fps.active">
+<div class="ga-tilt">
   <button class="ga-btn ga-indicator" ng-click="resetTilt()"
           translate-attr="{title: 'tilt_reset'}">
     <i class="fa fa-ga-circle-bg"></i>
@@ -14,8 +14,12 @@
           translate-attr="{title: 'tilt_' + (tiltDownDisabled ? 'down_disabled' : 'down')}">
   </button>
 </div>
-<div class="ga-pegman" ng-show="pegman" ng-class="{'ga-fly-mode': fps.flyMode, 'ga-jet-mode': fps.jetMode}" ng-mousedown="startDraggingPegman()"></div>
-<div class="ga-rotate" ng-hide="fps.active">
+<div class="ga-pegman" ng-hide="fps.active" ng-class="{
+  'ga-fly-mode': fps.flyMode,
+  'ga-jet-mode': fps.jetMode
+}">
+</div>
+<div class="ga-rotate">
   <button class="ga-btn ga-indicator" ng-click="resetRotation()"
           translate-attr="{title: 'rotate_reset'}">
     <i class="fa fa-ga-circle-bg"></i>
@@ -27,11 +31,10 @@
   <button class="ga-btn ga-dec fa fa-ga-right-arrow" ng-click="rotate(+15)"
           translate-attr="{title: 'rotate_right'}"></button>
 </div>
-<div class="ga-pegman-help" ng-show="fps.active">
-  pegman help text here.
-  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-  eiusmod tempor incididunt ut labore et dolore magna aliqua.
-  Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
-  nisi ut aliquip ex ea commodo consequat.
+<div class="ga-pegman-help" ng-if="fps.active">
+  Use arrwo keys to move.
+  Press F to fly.
+  Hold SHIFT to get faster. 
+  Press H to open the help.
 </div>
 <div ga-help="28"></div>
