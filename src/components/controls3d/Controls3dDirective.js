@@ -1,6 +1,7 @@
 goog.provide('ga_controls3d_directive');
 
 goog.require('fps');
+goog.require('ga_help_service');
 goog.require('ga_maputils_service');
 
 (function() {
@@ -21,10 +22,11 @@ goog.require('ga_maputils_service');
   };
 
   var module = angular.module('ga_controls3d_directive', [
+    'ga_help_service',
     'ga_maputils_service'
   ]);
 
-  module.directive('gaControls3d', function(gaMapUtils) {
+  module.directive('gaControls3d', function(gaMapUtils, gaHelp) {
     return {
       restrict: 'A',
       templateUrl: 'components/controls3d/partials/controls3d.html',
@@ -57,69 +59,72 @@ goog.require('ga_maputils_service');
           moving = false;
         });
 
-        scope.onkey = function(event) {
+        scope.onKey = function(event) {
+          // If pegman active we do nothing
           if (isElementEditable(event.target)) {
             return;
           }
+         
           var moveAmount = 200;
           var zoomAmount = 400;
           var lowPitch = camera.pitch < Cesium.Math.toRadians(-30);
-          if (event.keyCode === 43) {
-            // + key
-            camera.moveForward(zoomAmount);
-          } else if (event.keyCode === 45) {
-            // - key
-            camera.moveBackward(zoomAmount);
-          }
-          // If pegman active we do nothing
-          if (scope.fps.active) {
-            return;
-          }
-          if (event.keyCode === 37) {
-            // left key
-            if (lowPitch && !event.shiftKey) {
-              camera.moveLeft(moveAmount);
-            } else {
-              scope.rotate(-5);
+          if (!scope.fps.active) {
+            if (event.keyCode === 107) {
+              // + key
+              camera.moveForward(zoomAmount);
+            } else if (event.keyCode === 109) {
+              // - key
+              camera.moveBackward(zoomAmount);
             }
-          } else if (event.keyCode === 39) {
-            // right key
-            if (lowPitch && !event.shiftKey) {
-              camera.moveRight(moveAmount);
-            } else {
-              scope.rotate(+5);
+          } else {
+            if (event.keyCode === 72) {
+              gaHelp.open(28);
+              return;
             }
-          }
-          if (event.shiftKey) {
+            if (event.keyCode === 37) {
+              // left key
+              if (lowPitch && !event.shiftKey) {
+                camera.moveLeft(moveAmount);
+              } else {
+                scope.rotate(-5);
+              }
+            } else if (event.keyCode === 39) {
+              // right key
+              if (lowPitch && !event.shiftKey) {
+                camera.moveRight(moveAmount);
+              } else {
+                scope.rotate(+5);
+              }
+            }
+            if (event.shiftKey) {
+              if (event.keyCode === 38) {
+                // up key
+                scope.tilt(+15);
+              } else if (event.keyCode === 40) {
+                // down key
+                scope.tilt(-15);
+              }
+              return;
+            }
+            // Compute the "backward" vector to be used to
+            // translate forward and backward
+            var up = new Cesium.Cartesian3();
+            Cesium.Cartesian3.normalize(camera.position, up);
+            var backward = new Cesium.Cartesian3();
+            Cesium.Cartesian3.cross(up, camera.right, backward);
+
             if (event.keyCode === 38) {
               // up key
-              scope.tilt(+15);
+              camera.move(backward, moveAmount);
             } else if (event.keyCode === 40) {
               // down key
-              scope.tilt(-15);
+              camera.move(backward, -moveAmount);
             }
-            return;
-          }
-          // Compute the "backward" vector to be used to
-          // translate forward and backward
-          var up = new Cesium.Cartesian3();
-          Cesium.Cartesian3.normalize(camera.position, up);
-          var backward = new Cesium.Cartesian3();
-          Cesium.Cartesian3.cross(up, camera.right, backward);
-
-          if (event.keyCode === 38) {
-            // up key
-            camera.move(backward, moveAmount);
-          } else if (event.keyCode === 40) {
-            // down key
-            camera.move(backward, -moveAmount);
           }
         };
 
-        // use keypress to detect '+' and '-' keys and keydown for the others
-        document.addEventListener('keydown', scope.onkey);
-        document.addEventListener('keypress', scope.onkey);
-
+        document.addEventListener('keydown', scope.onKey);
+     
         scene.postRender.addEventListener(function() {
           if (moving) {
             var tiltOnGlobe = olcs.core.computeSignedTiltAngleOnGlobe(scene);
@@ -178,7 +183,7 @@ goog.require('ga_maputils_service');
         scope.resetRotation = function() {
           gaMapUtils.resetMapToNorth(undefined, scope.ol3d);
         };
-        
+
         // listen FPS  activation/deactivation
         var pegman = $('.ga-pegman');
         scope.$watch('fps.active', function(active) {
@@ -188,6 +193,12 @@ goog.require('ga_maputils_service');
           } else {
             pegman.off('mousedown');
           }
+        });
+
+        // Remove html events
+        scope.$on('destroy', function() {
+          scope.fps.active = false;
+          document.removeEventListener('keydown', scope.onKey);
         });
       }
     };

@@ -7,11 +7,11 @@
   bottom: unit(@bt-bottom, px);
   margin-left: auto;
   margin-right: auto;
-  width: 200px;
+  max-width: 250px;
   z-index: 600;
 
   @media (max-width: @screen-tablet), (max-height: @screen-s-height) {
-    width: 120px;
+    width: 160px;
     height: @control-btn-size-px;
   }
 
@@ -99,7 +99,7 @@
     position: absolute;
     right: 0;
     left: 0;
-    bottom: 0;
+    bottom: -35px;
     text-align: left;
     padding: 7px;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
@@ -109,41 +109,11 @@
   }
 
   .ga-pegman {
-    background-image: data-uri('pegman_standing_white.png');
     cursor: grab;
-    cursor: -webkit-grab;
-    display: inline-block;
-    width: 27px;
-    height: 72px;
+    font-size: 47px;
 
-    @media (max-width: @screen-tablet), (max-height: @screen-s-height) {
-      width: 18px;
-      height: 47px;
-      background-size: 18px 47px;
-    }
-
-    &.ga-fly-mode {
-      background-image: data-uri('super_pegman_white.png');
-      width: 78px;
-      height: 100px;
-
-      @media (max-width: @screen-tablet), (max-height: @screen-s-height) {
-         width: 49px;
-         height: 65px;
-         background-size: 49px 65px;
-      }
-    }
-
-    &.ga-jet-mode {
-      background-image: data-uri('fa18.png');
-      width: 100px;
-      height: 38px;
-
-      @media (max-width: @screen-tablet), (max-height: @screen-s-height) {
-         width: 66px;
-         height: 25px;
-         background-size: 66px 25px;
-      }
+    &:hover {
+      color: red;
     }
   }
 
@@ -173,6 +143,5 @@
 
   .ga-pegman {
     cursor: grabbing;
-    cursor: -webkit-grabbing;
   }
 }

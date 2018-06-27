@@ -14,10 +14,8 @@
           translate-attr="{title: 'tilt_' + (tiltDownDisabled ? 'down_disabled' : 'down')}">
   </button>
 </div>
-<div class="ga-pegman" ng-hide="fps.active" ng-class="{
-  'ga-fly-mode': fps.flyMode,
-  'ga-jet-mode': fps.jetMode
-}">
+<div class="ga-pegman fa fa-maki-pitch" ng-hide="fps.active"
+     translate-attr="{title: '3d_pegman_tooltip'}">
 </div>
 <div class="ga-rotate">
   <button class="ga-btn ga-indicator" ng-click="resetRotation()"
@@ -27,14 +25,11 @@
     <i class="fa fa-ga-indicator-northarrow"></i>
   </button>
   <button class="ga-btn ga-inc fa fa-ga-left-arrow" ng-click="rotate(-15)"
-          translate-attr="{title: 'rotate_left'}"></button>
+          translate-attr="{title: 'rotate_left'}">
+  </button>
   <button class="ga-btn ga-dec fa fa-ga-right-arrow" ng-click="rotate(+15)"
-          translate-attr="{title: 'rotate_right'}"></button>
+          translate-attr="{title: 'rotate_right'}">
+  </button>
 </div>
-<div class="ga-pegman-help" ng-if="fps.active">
-  Use arrwo keys to move.
-  Press F to fly.
-  Hold SHIFT to get faster. 
-  Press H to open the help.
-</div>
+<div class="ga-pegman-help" ng-show="fps.active" translate>3d_pegman_help</div>
 <div ga-help="28"></div>
