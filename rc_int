@@ -12,4 +12,4 @@ export PROXY_URL=//service-proxy.int.bgdi.ch
 export WMS_URL=//wms-bgdi-cdn-{s}.int.bgdi.ch
 export WMTS_URL=//tod{s}.int.bgdi.ch
 export TERRAIN_URL=//terrain100.geo.admin.ch
-export VECTORTILES_URL=//vectortiles{s}.int.bgdi.ch
+export VECTORTILES_URL=//vectortiles{s}.int.bgdi.ch/3d-tiles
