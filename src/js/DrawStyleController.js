@@ -144,7 +144,7 @@ goog.require('ga_styles_service');
       for (var i = 1; i <= nrImg; i++) {
         imgs.push({
           id: i,
-          url: gaGlobalOptions.resourceUrl + 'img/' + category.id + '/' +
+          url: gaGlobalOptions.apiUrl + '/images/' + category.id + '/' +
             category.id + '-' + i + '.png',
           category: category.label
         });
