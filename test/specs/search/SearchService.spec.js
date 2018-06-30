@@ -42,6 +42,15 @@ describe('ga_search_service', function() {
         $rootScope.$digest();
       });
 
+      it('with tab as separator', function(done) {
+        getCoordinate(extent, '2600123.12\t1200345').then(function(position) {
+          expect(position).to.eql(coord2056);
+          expect(spy.callCount).to.eql(0);
+          done();
+        });
+        $rootScope.$digest();
+      });
+
       it('separated by comma', function(done) {
         getCoordinate(extent, '2600123.12,1200345').then(function(position) {
           expect(position).to.eql(coord2056);
@@ -205,7 +214,10 @@ describe('ga_search_service', function() {
         // Separators
         '6.96948,46.9712',
         '6.96948                46.9712',
-        '6.96948/46.9712'
+        '6.96948/46.9712',
+        '6.96948\n46.9712',
+        '6.96948\t46.9712',
+        '6.96948\r46.9712'
       ]
 
       strings.forEach(function(str) {
