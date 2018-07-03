@@ -491,7 +491,7 @@ def main():
     print(parse_arguments(sys.argv))
     cmd_type, deploy_target, base_dir, named_branch, git_branch, bucket_name, s3_path = \
         parse_arguments(sys.argv)
-    for var in ('AWS_PROFILE', 'AWS_ACCESS_KEY_ID', 'AWS_ACCESS_KEY_ID'):
+    for var in ('AWS_PROFILE', 'AWS_ACCESS_KEY_ID'):
         val = os.environ.get(var)
         if val is not None:
             print('Please unset: {}. We use instance roles'.format(var))
