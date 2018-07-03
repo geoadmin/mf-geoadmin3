@@ -49,7 +49,7 @@ describe('ga_wms_service', function() {
       // Tests WMS params
       var params = source.getParams();
       expect(params.LAYERS).to.be(options.LAYERS);
-      expect(params.VERSION).to.be(options.VERSION);
+      expect(params.VERSION).to.be(options.VERSION || '1.3.0');
 
       // Tests Cesium provider
       var srsStr = '', crsStr = '&crs=' + 'EPSG%3A4326';

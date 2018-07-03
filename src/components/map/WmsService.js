@@ -105,6 +105,9 @@ goog.require('ga_urlutils_service');
               options.projection = 'EPSG:4326';
               options.id += '||true';
             }
+          } else {
+            // Set the default wms version
+            params.VERSION = '1.3.0';
           }
 
           // If the url contains a template for subdomains we display the layer
