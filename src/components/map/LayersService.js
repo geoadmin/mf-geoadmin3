@@ -289,22 +289,22 @@ goog.require('ga_urlutils_service');
               }, {
                 serverLayerName: 'swissbasemap',
                 sourceId: 'swissbasemap', // id of the source to use
-                styleUrl: 'https://tileserver.dev.bgdi.ch/styles/swissbasemap-osm-europe-20170925/style.json'
+                styleUrl: 'https://vectortiles.int.bgdi.ch/styles/swissbasemap-osm-europe-20170925/style.json'
               }, {
                 serverLayerName: 'osm',
                 sourceId: 'osm',
-                styleUrl: 'https://tileserver.dev.bgdi.ch/styles/swissbasemap-osm-europe-20170925/style.json'
+                styleUrl: 'https://vectortiles.int.bgdi.ch/styles/swissbasemap-osm-europe-20170925/style.json'
               }, {
                 serverLayerName: 'relief-osm',
                 sourceId: 'relief-osm',
                 sourceType: 'raster',
-                styleUrl: 'https://tileserver.dev.bgdi.ch/styles/swissbasemap-osm-europe-20170925/style.json',
+                styleUrl: 'https://vectortiles.int.bgdi.ch/styles/swissbasemap-osm-europe-20170925/style.json',
                 opacity: 0.3
               }, {
                 serverLayerName: 'relief',
                 sourceId: 'relief',
                 sourceType: 'raster',
-                styleUrl: 'https://tileserver.dev.bgdi.ch/styles/swissbasemap-osm-europe-20170925/style.json',
+                styleUrl: 'https://vectortiles.int.bgdi.ch/styles/swissbasemap-osm-europe-20170925/style.json',
                 opacity: 1
               }, {
                 serverLayerName: 'openmaptiles',

@@ -95,7 +95,7 @@ describe('ga_backgroundselector_directive', function() {
 
       it('creates 4 layer bgselectors div', function() {
         var divsBg = element.find('.ga-bg-layer');
-        expect(divsBg.length).to.equal(6);
+        expect(divsBg.length).to.equal(4);
       });
     });
   });
@@ -173,7 +173,7 @@ describe('ga_backgroundselector_directive', function() {
 
     it('voidLayer is only added once', function() {
       var divsBg = element.find('.ga-bg-layer');
-      expect(divsBg.length).to.equal(6);
+      expect(divsBg.length).to.equal(4);
       expect(divsBg[1].className).to.contain('ga-voidLayer');
     });
   });

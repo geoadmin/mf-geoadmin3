@@ -128,15 +128,13 @@ describe('ga_background_service', function() {
         it('initializes the list of background layers', function(done) {
           gaBg.init(map).then(function() {
             var bgs = gaBg.getBackgrounds();
-            expect(bgs.length).to.equal(5);
-            expect(bgs[0].id).to.equal('bg2');
-            expect(bgs[0].label).to.equal('label');
-            expect(bgs[1].id).to.equal('bg1');
-            expect(bgs[1].label).to.equal('label');
-            expect(bgs[2].id).to.equal('voidLayer');
-            expect(bgs[2].label).to.equal('void_layer');
+            expect(bgs.length).to.equal(2);
+            expect(bgs[0].id).to.equal('sbm-osm');
+            expect(bgs[0].label).to.equal('SwissBaseMap');
+            expect(bgs[1].id).to.equal('voidLayer');
+            expect(bgs[1].label).to.equal('void_layer');
             done();
-          });
+          }).catch(done);
           deferGaTopic.resolve();
           deferGaLayers.resolve();
           $rootScope.$digest();
@@ -145,9 +143,9 @@ describe('ga_background_service', function() {
         it('initializes the default background from topic', function(done) {
           gaBg.init(map).then(function() {
             var bg = gaBg.get();
-            expect(bg.id).to.equal('bg1');
+            expect(bg.id).to.equal('sbm-osm');
             done();
-          });
+          }).catch(done);
           deferGaTopic.resolve();
           deferGaLayers.resolve();
           $rootScope.$digest();
@@ -156,14 +154,14 @@ describe('ga_background_service', function() {
         it('adds a bg layer to the map', function(done) {
           gaBg.init(map).then(function() {
             var bg = gaBg.get();
-            expect(bg.id).to.equal('bg1');
+            expect(bg.id).to.equal('sbm-osm');
 
             var layer = map.getLayers().item(0);
             expect(layer.background).to.be.ok();
             expect(layer.displayInLayerManager).to.not.be.ok();
 
             done();
-          });
+          }).catch(done);
           deferGaTopic.resolve();
           deferGaLayers.resolve();
           $rootScope.$digest();
@@ -180,18 +178,18 @@ describe('ga_background_service', function() {
             var length = map.getLayers().getLength();
             expect(length).to.be(0);
             done();
-          });
+          }).catch(done);
           deferGaTopic.resolve();
           deferGaLayers.resolve();
           $rootScope.$digest();
         });
 
         it('updates permalink', function(done) {
-          var upParams = gaPermalinkMock.expects('updateParams').withArgs({bgLayer: 'bg1'}).once();
+          var upParams = gaPermalinkMock.expects('updateParams').withArgs({bgLayer: 'sbm-osm'}).once();
           gaBg.init(map).then(function() {
             upParams.verify();
             done();
-          });
+          }).catch(done);
           deferGaTopic.resolve();
           deferGaLayers.resolve();
           $rootScope.$digest();
@@ -222,22 +220,22 @@ describe('ga_background_service', function() {
         it('changes bg on gaTopicChange event', function(done) {
           gaBg.init(map).then(function() {
             var layers = map.getLayers();
-            expect(gaBg.get().id).to.equal('bg1');
-            expect(gaBg.getBackgrounds().length).to.equal(5);
+            expect(gaBg.get().id).to.equal('sbm-osm');
+            expect(gaBg.getBackgrounds().length).to.equal(2);
             expect(layers.getLength()).to.equal(1);
 
             $rootScope.$broadcast('gaTopicChange', topic2);
-            expect(gaBg.get().id).to.equal('bg3');
-            expect(gaBg.getBackgrounds().length).to.equal(6);
+            expect(gaBg.get().id).to.equal('sbm-osm');
+            expect(gaBg.getBackgrounds().length).to.equal(2);
             expect(layers.getLength()).to.equal(1);
 
             $rootScope.$broadcast('gaTopicChange', topicVoidLayer);
             expect(gaBg.get().id).to.equal('voidLayer');
-            expect(gaBg.getBackgrounds().length).to.equal(6);
+            expect(gaBg.getBackgrounds().length).to.equal(2);
             expect(layers.getLength()).to.equal(0);
 
             done();
-          });
+          }).catch(done);
           deferGaTopic.resolve();
           deferGaLayers.resolve();
           $rootScope.$digest();
@@ -255,9 +253,9 @@ describe('ga_background_service', function() {
         it('uses default bg from plConfig (priority over defaultBackground property)', function(done) {
           gaBg.init(map).then(function() {
             var bg = gaBg.get();
-            expect(bg.id).to.equal('bg3');
+            expect(bg.id).to.equal('sbm-osm');
             done();
-          });
+          }).catch(done);
           deferGaTopic.resolve();
           deferGaLayers.resolve();
           $rootScope.$digest();
@@ -270,7 +268,7 @@ describe('ga_background_service', function() {
             var bg = gaBg.get();
             expect(bg.id).to.equal('voidLayer');
             done();
-          });
+          }).catch(done);
           deferGaTopic.resolve();
           deferGaLayers.resolve();
           $rootScope.$digest();
