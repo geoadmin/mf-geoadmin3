@@ -231,9 +231,9 @@ goog.require('ga_urlutils_service');
                 'ch.swisstopo.vegetation.3d'
               ];
               var tilesetTs = [
-                '20170425',
+                '20180704224839',
                 '20170814',
-                '20170630'
+                '20180710101607'
               ];
               var tilesetStyle = [
                 undefined,
