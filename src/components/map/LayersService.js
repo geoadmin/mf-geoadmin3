@@ -218,7 +218,7 @@ goog.require('ga_urlutils_service');
               response.data['ch.swisstopo.terrain.3d'] = {
                 type: 'terrain',
                 serverLayerName: 'ch.swisstopo.terrain.3d',
-                timestamps: ['20180601'],
+                timestamps: ['20160115'],
                 attribution: 'swisstopo',
                 attributionUrl: 'https://www.swisstopo.admin.ch/' + lang +
                     '/home.html'
@@ -231,9 +231,9 @@ goog.require('ga_urlutils_service');
                 'ch.swisstopo.vegetation.3d'
               ];
               var tilesetTs = [
-                '20180704224839',
+                '20189999',
                 '20170814',
-                '20180712-090616'
+                '20180715-082825' // '20180712-090616'
               ];
               var tilesetStyle = [
                 undefined,
