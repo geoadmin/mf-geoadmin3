@@ -232,7 +232,7 @@ goog.require('ga_urlutils_service');
               ];
               var tilesetTs = [
                 '20180716',
-                '20170814',
+                '20180716',
                 '20180716' 
               ];
               var tilesetStyle = [
