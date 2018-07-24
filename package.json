@@ -55,7 +55,7 @@
     "google-closure-library": "20180506.0.0",
     "html-minifier": "3.5.19",
     "jquery": "3.3.1",
-    "karma": "2.0.4",
+    "karma": "2.0.5",
     "karma-coverage": "~v1.1.1",
     "karma-mocha": "1.3.0",
     "karma-phantomjs-launcher": "1.0.4",
