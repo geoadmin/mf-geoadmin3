@@ -151,7 +151,7 @@ goog.require('ga_waitcursor_service');
     gaLayersProvider.wmsSubdomains = dflt;
     gaLayersProvider.wmtsSubdomains = hundred;
     gaLayersProvider.vectorTilesSubdomains =
-        gaGlobalOptions.staging === 'prod' ? hundred : dflt;
+        gaGlobalOptions.staging !== 'dev' ? hundred : dflt;
 
     // Map services urls
     gaLayersProvider.wmsUrl = gaGlobalOptions.wmsUrl;
