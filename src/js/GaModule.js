@@ -151,7 +151,7 @@ goog.require('ga_waitcursor_service');
     gaLayersProvider.wmsSubdomains = dflt;
     gaLayersProvider.wmtsSubdomains = hundred;
     gaLayersProvider.vectorTilesSubdomains =
-        gaGlobalOptions.staging === 'prod' ? dflt : dflt;
+        gaGlobalOptions.staging !== 'dev' ? hundred : dflt;
 
     // Map services urls
     gaLayersProvider.wmsUrl = gaGlobalOptions.wmsUrl;
@@ -160,7 +160,7 @@ goog.require('ga_waitcursor_service');
     gaLayersProvider.wmtsLV03Url = gaGlobalOptions.wmtsUrl +
         '/1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{z}/{y}/{x}.{Format}';
     gaLayersProvider.terrainUrl = gaGlobalOptions.terrainUrl +
-        '/1.0.0/{Layer}/default/{Time}/4326';
+        '/1.0.0/{Layer}/';
     gaLayersProvider.vectorTilesUrl = gaGlobalOptions.vectorTilesUrl +
         '/{Layer}/{Time}/';
 

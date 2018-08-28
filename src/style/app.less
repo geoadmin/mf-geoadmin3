@@ -1700,6 +1700,14 @@ body:not(.embed) {
   }
 }
 
+/* Mobile page */
+.mobile {
+
+  .ga-pegman {
+    display: none;
+  }
+}
+
 /* Embed page */
 .embed, .ga-full-screen {
   #buttonGroup {
@@ -1851,6 +1859,20 @@ body:not(.embed) {
     z-index: 3000;
     height: auto;
     white-space: normal;
+  }
+}
+
+/* fps is active */
+.ga-fps-active {
+  #header, #drawModeHeader, #footer, #pulldown, #buttonGroup, [ga-popup],
+  [ga-attribution-warning], [ga-background-selector], [ga-controls3d] .ga-tilt,
+  [ga-controls3d] .ga-rotate,
+  [ga-controls3d] .ga-pegman, [ga-controls3d] [ga-help] {
+    display: none !important;
+  }
+
+  [ga-attribution] {
+    bottom: 0;
   }
 }
 

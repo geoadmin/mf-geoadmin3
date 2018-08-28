@@ -2,7 +2,7 @@
 describe('ga_help_service', function() {
 
   describe('gaHelp', function() {
-    var gaHelp, $httpBackend, gaLang, $rootScope;
+    var gaHelp, $httpBackend, gaLang, $rootScope, $window;
     var url = 'https://www.googleapis.com/fusiontables/v1/query?key=AIzaSyDT7wmEx97gAG5OnPwKyz2PnCx3yT4j7C0&sql=select+*+from+1Tx2VSM1WHZfDXzf8rweRLG1kd23AA4aw8xnZ_3c+where+col0%3D31+and+col5%3D{lang}&callback=JSON_CALLBACK';
     var frUrl = url.replace('{lang}', '\'fr\'');
     var deUrl = url.replace('{lang}', '\'de\'');
@@ -24,6 +24,7 @@ describe('ga_help_service', function() {
         gaLang = $injector.get('gaLang');
         $httpBackend = $injector.get('$httpBackend');
         $rootScope = $injector.get('$rootScope');
+        $window = $injector.get('$window');
       });
     });
 
@@ -67,6 +68,17 @@ describe('ga_help_service', function() {
         });
         $httpBackend.flush();
         $rootScope.$digest();
+      });
+    });
+
+    describe('#open()', function() {
+
+      it('opens help from id in a new window', function() {
+        var spy = sinon.stub($window, 'open');
+        gaHelp.open('31')
+        expect(spy.args[0][0]).to.be('//help.geo.admin.ch?id=31&lang=fr');
+        expect(spy.callCount).to.be(1);
+        spy.restore();
       });
     });
   });

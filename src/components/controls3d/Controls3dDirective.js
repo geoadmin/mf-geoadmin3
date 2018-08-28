@@ -1,6 +1,7 @@
 goog.provide('ga_controls3d_directive');
 
 goog.require('fps');
+goog.require('ga_help_service');
 goog.require('ga_maputils_service');
 
 (function() {
@@ -21,26 +22,30 @@ goog.require('ga_maputils_service');
   };
 
   var module = angular.module('ga_controls3d_directive', [
+    'ga_help_service',
     'ga_maputils_service'
   ]);
 
-  module.directive('gaControls3d', function(gaMapUtils) {
+  module.directive('gaControls3d', function($document, gaMapUtils, gaHelp) {
     return {
       restrict: 'A',
       templateUrl: 'components/controls3d/partials/controls3d.html',
       scope: {
-        pegman: '=gaControls3dPegman',
-        ol3d: '=gaControls3dOl3d'
+        ol3d: '=gaControls3dOl3d',
+        isFpsActive: '=gaControls3dFpsActive'
       },
       link: function(scope, element, attrs) {
         var ol3d = scope.ol3d;
+        if (!ol3d) {
+          element.remove();
+          return;
+        }
         var scene = ol3d.getCesiumScene();
         var camera = scene.camera;
         scope.fps = new FPS(scene, scope);
-
+        var pegman = $('.ga-pegman');
         var tiltIndicator = element.find('.ga-tilt .ga-indicator');
         var rotateIndicator = element.find('.ga-rotate .ga-indicator');
-
         var moving = false;
 
         var setTiltDisabled = function(angleDeg) {
@@ -57,25 +62,32 @@ goog.require('ga_maputils_service');
           moving = false;
         });
 
-        scope.onkey = function(event) {
+        scope.onKey = function(event) {
           if (isElementEditable(event.target)) {
             return;
           }
+
+          // If pegman active, we can only open the help
+          if (scope.fps.active) {
+            if (event.keyCode === 72) {
+              gaHelp.open(28);
+            }
+            return;
+          }
+
           var moveAmount = 200;
           var zoomAmount = 400;
           var lowPitch = camera.pitch < Cesium.Math.toRadians(-30);
-          if (event.keyCode === 43) {
+
+          if (event.keyCode === 107) {
             // + key
             camera.moveForward(zoomAmount);
-          } else if (event.keyCode === 45) {
+            return;
+          } else if (event.keyCode === 109) {
             // - key
             camera.moveBackward(zoomAmount);
-          }
-          // If pegman active we do nothing
-          if (scope.fps.active) {
             return;
-          }
-          if (event.keyCode === 37) {
+          } else if (event.keyCode === 37) {
             // left key
             if (lowPitch && !event.shiftKey) {
               camera.moveLeft(moveAmount);
@@ -115,10 +127,7 @@ goog.require('ga_maputils_service');
             camera.move(backward, -moveAmount);
           }
         };
-
-        // use keypress to detect '+' and '-' keys and keydown for the others
-        document.addEventListener('keydown', scope.onkey);
-        document.addEventListener('keypress', scope.onkey);
+        $document.on('keydown', scope.onKey);
 
         scene.postRender.addEventListener(function() {
           if (moving) {
@@ -129,19 +138,17 @@ goog.require('ga_maputils_service');
           }
         });
 
-        scope.startDraggingPegman = function() {
-          if (!scope.fps.active) {
-            var body = $(document.body);
-            var canvas = angular.element(scene.canvas);
-            body.addClass('ga-pegman-dragging');
-            canvas.off('mouseup.pegman');
-            canvas.one('mouseup.pegman', function(event) {
-              var pixel = new Cesium.Cartesian2(event.clientX, event.clientY);
-              var cartesian = olcs.core.pickOnTerrainOrEllipsoid(scene, pixel);
-              scope.fps.setActive(true, cartesian);
-              body.removeClass('ga-pegman-dragging');
-            });
-          }
+        var startDraggingPegman = function() {
+          var body = $($document[0].body);
+          var canvas = $(scene.canvas);
+          body.addClass('ga-pegman-dragging');
+          canvas.off('mouseup.pegman');
+          canvas.one('mouseup.pegman', function(event) {
+            var pixel = new Cesium.Cartesian2(event.clientX, event.clientY);
+            var cartesian = olcs.core.pickOnTerrainOrEllipsoid(scene, pixel);
+            scope.fps.setActive(true, cartesian);
+            body.removeClass('ga-pegman-dragging');
+          });
         };
 
         scope.tilt = function(angleDeg) {
@@ -181,6 +188,21 @@ goog.require('ga_maputils_service');
           gaMapUtils.resetMapToNorth(undefined, scope.ol3d);
         };
 
+        // listen FPS  activation/deactivation
+        scope.$watch('fps.active', function(active) {
+          scope.isFpsActive = active;
+          if (!active) {
+            pegman.on('mousedown', startDraggingPegman);
+          } else {
+            pegman.off('mousedown');
+          }
+        });
+
+        // Remove html events
+        scope.$on('destroy', function() {
+          scope.fps.active = false;
+          $document.off('keydown', scope.onKey);
+        });
       }
     };
   });
