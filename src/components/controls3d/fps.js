@@ -373,11 +373,11 @@ FPS.prototype.flyModeTick_ = function(delta) {
   }
   if (this.buttons_.forward) {
     pitch -= 0.02 * Math.cos(roll);
-    heading -= 0.02 * Math.sin(roll)
+    heading -= 0.02 * Math.sin(roll);
   }
   if (this.buttons_.backward) {
     pitch += 0.02 * Math.cos(roll);
-    heading += 0.02 * Math.sin(roll)
+    heading += 0.02 * Math.sin(roll);
   }
   // rotate the plane on roll
   if (roll < Cesium.Math.PI) {
