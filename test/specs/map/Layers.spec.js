@@ -840,7 +840,8 @@ describe('ga_layers_service', function() {
           expect(layer instanceof ol.layer.Vector).to.be.ok();
           expect(layer.getMinResolution()).to.be(0.5);
           expect(layer.getMaxResolution()).to.be(100);
-          expect(layer.getOpacity()).to.be(1);
+          // opacity from layersConfig
+          expect(layer.getOpacity()).to.be(0.35);
           expect(layer.getExtent()).to.eql(gaGlobalOptions.defaultExtent);
           var source = layer.getSource();
           expect(source instanceof ol.source.Vector).to.be.ok();
@@ -921,7 +922,7 @@ describe('ga_layers_service', function() {
           expect(layer instanceof ol.layer.Vector).to.be.ok();
           expect(layer.getMinResolution()).to.be(0.5);
           expect(layer.getMaxResolution()).to.be(100);
-          expect(layer.getOpacity()).to.be(1);
+          expect(layer.getOpacity()).to.be(0.35);
           expect(layer.getExtent()).to.eql(gaGlobalOptions.defaultExtent);
           var source = layer.getSource();
           expect(source instanceof ol.source.Vector).to.be.ok();
