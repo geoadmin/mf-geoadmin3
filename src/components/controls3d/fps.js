@@ -46,6 +46,13 @@ function FPS(scene, scope) {
   };
 
   /**
+   * Slow down the mouse movement
+   * @const {number}
+   * @private
+   */
+  this.mouseMovementLag_ = 0.1;
+
+  /**
    * @type {number}
    * @private
    */
@@ -248,11 +255,11 @@ FPS.prototype.setActive = function(active, optPosition) {
 FPS.prototype.onMouseMove_ = function(event) {
   if (this.getPointerLock()) {
     if (event.movementX && event.movementY) {
-      this.movementX_ += event.movementX;
-      this.movementY_ += event.movementY;
+      this.movementX_ += event.movementX * this.mouseMovementLag_;
+      this.movementY_ += event.movementY * this.mouseMovementLag_;
     } else if (event.mozMovementX && event.mozMovementY) {
-      this.movementX_ += event.mozMovementX;
-      this.movementY_ += event.mozMovementY;
+      this.movementX_ += event.mozMovementX * this.mouseMovementLag_;
+      this.movementY_ += event.mozMovementY * this.mouseMovementLag_;
     }
   }
 };
