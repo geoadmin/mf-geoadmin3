@@ -494,7 +494,7 @@ openlayers: .build-artefacts/openlayers
 	git fetch --all; \
 	git checkout $(OL_VERSION); \
 	npm install; \
-	make build
+	npm run build-legacy
 
 .PHONY: olcesium
 olcesium:  .build-artefacts/cesium openlayers .build-artefacts/olcesium
