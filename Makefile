@@ -91,8 +91,8 @@ LESS_PARAMETERS ?= -ru
 
 
 # Map libs variables
-OL_VERSION ?= v4.6.5 # v4.6.5, March 20 2018
-OL_CESIUM_VERSION ?= v1.37 # v1.37, May 2 2018
+OL_VERSION ?= generate_all_exports_library # generate_all_exports_library branch from gberaudo repository, September 10 2018
+OL_CESIUM_VERSION ?= v2.2.2 # v2.2.2, September 10 2018
 CESIUM_VERSION ?= 54d850855346610fde9b7aa8262a03d27e71c663 # c2c/c2c_patches (Cesium 1.44), April 23 2018
 
 
@@ -932,7 +932,7 @@ ${PYTHON_VENV}: .build-artefacts/last-pypi-url
 	git clone https://github.com/AnalyticalGraphicsInc/cesium.git $@
 
 .build-artefacts/openlayers:
-	git clone https://github.com/openlayers/openlayers.git $@
+	git clone https://github.com/gberaudo/openlayers.git $@
 
 .build-artefacts/olcesium:
 	git clone https://github.com/openlayers/ol-cesium.git $@
