@@ -25,6 +25,7 @@
     ]
   },
   "dependencies": {
+    "@camptocamp/cesium": "^1.48.0",
     "angular": "1.7.2",
     "angular-translate": "2.18.1",
     "corejs-typeahead": "v1.2.1",

@@ -475,19 +475,12 @@ flushvarnishinternal: guard-API_URL guard-E2E_TARGETURL
 	done;
 
 .PHONY: cesium
-cesium: .build-artefacts/cesium
-	cd .build-artefacts/cesium; \
-	git remote add c2c https://github.com/camptocamp/cesium; \
-	git fetch --all; \
-	git checkout $(CESIUM_VERSION); \
-	npm install; \
-	npm run combineRelease; \
-	npm run minifyRelease; \
-	rm -r ../../src/lib/Cesium; \
-	cp -r Build/CesiumUnminified ../../src/lib/Cesium; \
-	cp Build/Cesium/Cesium.js ../../src/lib/Cesium.min.js; \
-	$(call moveto,Build/Cesium/Workers/*.js,../../src/lib/Cesium/Workers/,'.js','.min.js') \
-	$(call moveto,Build/Cesium/ThirdParty/Workers/*.js,../../src/lib/Cesium/ThirdParty/Workers/,'.js','.min.js')
+cesium:
+	npm install @camptocamp/cesium; \
+	cd node_modules/@camptocamp/cesium; \
+	cp -r Build/CesiumUnminified ../../../src/lib/Cesium; \
+	$(call moveto,Build/Cesium/Workers/*.js,../../../src/lib/Cesium/Workers/,'.js','.min.js') \
+	$(call moveto,Build/Cesium/ThirdParty/Workers/*.js,../../../src/lib/Cesium/ThirdParty/Workers/,'.js','.min.js')
 
 openlayers: .build-artefacts/openlayers
 	cd .build-artefacts/openlayers; \
@@ -497,7 +490,7 @@ openlayers: .build-artefacts/openlayers
 	npm run build-legacy
 
 .PHONY: olcesium
-olcesium:  .build-artefacts/cesium openlayers .build-artefacts/olcesium
+olcesium:  openlayers .build-artefacts/olcesium
 	if ! [ -f ".build-artefacts/cesium/Build/Cesium/Cesium.js" ]; then make cesium; else echo 'Cesium already built'; fi; \
 	cd .build-artefacts/olcesium; \
 	git fetch --all; \
@@ -920,9 +913,6 @@ ${PYTHON_VENV}: .build-artefacts/last-pypi-url
 .build-artefacts/last-pypi-url::
 	$(call cachelastvariable,$@,$(PYPI_URL),$(LAST_PYPI_URL),pypi-url)
 
-
-.build-artefacts/cesium:
-	git clone https://github.com/AnalyticalGraphicsInc/cesium.git $@
 
 .build-artefacts/openlayers:
 	git clone https://github.com/gberaudo/openlayers.git $@
