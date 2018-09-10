@@ -502,18 +502,11 @@ olcesium:  .build-artefacts/cesium openlayers .build-artefacts/olcesium
 	cd .build-artefacts/olcesium; \
 	git fetch --all; \
 	git checkout $(OL_CESIUM_VERSION); \
-	mkdir -p src/olcs/plugins/geoadmin; \
-	cp -r ../../olcesium-plugin src/olcs/plugins/geoadmin/; \
+	#mkdir -p src/olcs/plugins/geoadmin; \
+	#cp -r ../../olcesium-plugin src/olcs/plugins/geoadmin/; \
 	npm install; \
-	npm link ../cesium; \
-	npm link ../openlayers; \
-	sed -i "1 s/^{\$$/{root: true,/" .eslintrc.yaml; \
-	node build/generate-exports.js dist/exports.js; \
-	node build/build.js ../../scripts/olcesium-debug-geoadmin.json dist/olcesium-debug.js; \
-	node build/build.js ../../scripts/olcesium-geoadmin.json dist/olcesium.js; \
-	cp dist/olcesium-debug.js ../../src/lib/; \
-	cp dist/olcesium.js ../../src/lib/olcesium.js; \
-	cp Cesium.externs.js ../../externs/Cesium.externs.js; \
+	make dist; \
+	cat ../openlayers/build/ol.js dist/olcesium.js > ../../src/lib/olcesium.js; \
 
 .PHONY: filesaver
 filesaver: .build-artefacts/filesaver
