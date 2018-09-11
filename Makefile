@@ -592,7 +592,7 @@ prd/lib/build.js: src/lib/polyfill.min.js \
 	    src/lib/gyronorm.complete.min.js \
 	    .build-artefacts/app.js
 	mkdir -p $(dir $@)
-	cat $^ | sed 's/^\/\/[#,@] sourceMappingURL=.*//' > $@
+	cat $^ | sed 's/^\/\/[#,@] sourceMappingURL=.*\.map//' > $@
 
 prd/style/app.css: $(SRC_LESS_FILES)
 	mkdir -p $(dir $@)
