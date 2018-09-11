@@ -495,10 +495,10 @@ olcesium:  openlayers .build-artefacts/olcesium
 	cd .build-artefacts/olcesium; \
 	git fetch --all; \
 	git checkout $(OL_CESIUM_VERSION); \
-	#mkdir -p src/olcs/plugins/geoadmin; \
-	#cp -r ../../olcesium-plugin src/olcs/plugins/geoadmin/; \
+	cp -r ../../olcesium-plugin/Ga* src/olcs/; \
+	cp ../../olcesium-plugin/index.library.js src/; \
 	npm install; \
-	make dist; \
+	npm run build-library; \
 	cat ../openlayers/build/ol.js dist/olcesium.js > ../../src/lib/olcesium.js; \
 
 .PHONY: filesaver
