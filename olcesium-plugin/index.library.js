@@ -3,6 +3,7 @@ import OLCesium from './olcs/OLCesium.js';
 import AbstractSynchronizer from './olcs/AbstractSynchronizer.js';
 import RasterSynchronizer from './olcs/RasterSynchronizer.js';
 import VectorSynchronizer from './olcs/VectorSynchronizer.js';
+import * as core from './olcs/core.js';
 
 import GaKmlSynchronizer from './olcs/GaKmlSynchronizer.js';
 import GaRasterSynchronizer from './olcs/GaRasterSynchronizer.js';
@@ -18,6 +19,7 @@ olcs.OLCesium = OLCesium;
 olcs.AbstractSynchronizer = AbstractSynchronizer;
 olcs.RasterSynchronizer = RasterSynchronizer;
 olcs.VectorSynchronizer = VectorSynchronizer;
+olcs.core = core.default;
 
 olcs.GaKmlSynchronizer = GaKmlSynchronizer;
 olcs.GaRasterSynchronizer = GaRasterSynchronizer;
