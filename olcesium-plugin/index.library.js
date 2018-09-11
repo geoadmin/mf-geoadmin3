@@ -11,7 +11,9 @@ import GaVectorSynchronizer from './olcs/GaVectorSynchronizer.js';
 
 export default OLCesium;
 
-const olcs = window['olcs'] = {};
+// Using var for phantomJS
+// eslint-disable-next-line no-var
+var olcs = window['olcs'] = {};
 olcs.OLCesium = OLCesium;
 olcs.AbstractSynchronizer = AbstractSynchronizer;
 olcs.RasterSynchronizer = RasterSynchronizer;
