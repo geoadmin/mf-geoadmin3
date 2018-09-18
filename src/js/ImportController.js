@@ -182,6 +182,8 @@ goog.require('ga_wmts_service');
       'https://geodienste.ch/db/npl_nutzungsplanung/fra',
       'https://geodienste.ch/db/planerischer_gewaesserschutz/deu',
       'https://geodienste.ch/db/planerischer_gewaesserschutz/fra',
+      'https://geodienste.ch/db/npl_waldabstandslinien/deu',
+      'https://geodienste.ch/db/npl_waldabstandslinien/fra',
       'https://geodienste.ch/db/npl_waldgrenzen/deu',
       'https://geodienste.ch/db/npl_waldgrenzen/fra',
       // non-SwissProjected test urls
