@@ -162,7 +162,7 @@ goog.require('ga_waitcursor_service');
     gaLayersProvider.terrainUrl = gaGlobalOptions.terrainUrl +
         '/1.0.0/{Layer}/';
     gaLayersProvider.vectorTilesUrl = gaGlobalOptions.vectorTilesUrl +
-        '/{Layer}/{Time}/';
+        '/{Layer}/{Time}/tileset.json';
 
     // Api services urls
     if (gaGlobalOptions.apiOverwrite) {
