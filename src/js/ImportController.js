@@ -216,6 +216,7 @@ goog.require('ga_wmts_service');
       'https://osmlab.github.io/wmts-osm/WMTSCapabilities.xml',
       'https://wxs.ign.fr/bvl2gp6za3srtz6yblo9fx8o/wmts?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetCapabilities',
       'http://cidportal.jrc.ec.europa.eu/copernicus/services/tile/wmts/1.0.0/WMTSCapabilities.xml',
+      'https://geoserver.swissdatacube.org/geoserver/gwc/service/wmts?REQUEST=GetCapabilities',
       'https://services.arcgisonline.com/arcgis/rest/services/World_Topo_Map/MapServer/WMTS/1.0.0/WMTSCapabilities.xml',
       'https://services.arcgisonline.com/arcgis/rest/services/World_Terrain_Base/MapServer/WMTS/1.0.0/WMTSCapabilities.xml',
       'https://services.arcgisonline.com/arcgis/rest/services/World_Street_Map/MapServer/WMTS/1.0.0/WMTSCapabilities.xml',
