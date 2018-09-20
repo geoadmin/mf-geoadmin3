@@ -307,6 +307,10 @@ release: showVariables \
 	prd/embed.html \
 	prd/404.html \
 	prd/img/ \
+	prd/img/Cesium144/ \
+	prd/img/Cesium144/Cesium/ \
+	prd/img/Cesium144/Cesium/Workers/ \
+	prd/img/Cesium144/Cesium/ThirdParty/Workers/ \
 	prd/style/font-awesome-4.5.0/font/ \
 	prd/locales/ \
 	prd/checker \
@@ -571,6 +575,10 @@ prd/lib/: src/lib/d3.min.js \
 	mkdir -p $@
 	cp -rf  $^ $@
 
+prd/img/Cesium144/: src/img/Cesium144/Cesium.min.js
+	mkdir -p $@
+	cp -rf $^ $@
+
 prd/lib/Cesium/: src/lib/Cesium/Assets
 	mkdir -p $@
 	cp -rf  $^ $@
@@ -580,6 +588,18 @@ prd/lib/Cesium/Workers/: src/lib/Cesium/Workers/*.min.js
 	$(call moveto,$^,$@,'.min.js','.js')
 
 prd/lib/Cesium/ThirdParty/Workers/: src/lib/Cesium/ThirdParty/Workers/*.min.js
+	mkdir -p $@; \
+	$(call moveto,$^,$@,'.min.js','.js')
+
+prd/img/Cesium144/Cesium/: src/img/Cesium144/Cesium/Assets
+	mkdir -p $@
+	cp -rf  $^ $@
+
+prd/img/Cesium144/Cesium/Workers/: src/img/Cesium144/Cesium/Workers/*.min.js
+	mkdir -p $@; \
+	$(call moveto,$^,$@,'.min.js','.js')
+
+prd/img/Cesium144/Cesium/ThirdParty/Workers/: src/img/Cesium144/Cesium/ThirdParty/Workers/*.min.js
 	mkdir -p $@; \
 	$(call moveto,$^,$@,'.min.js','.js')
 

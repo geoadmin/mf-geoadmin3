@@ -19,10 +19,16 @@ var GaCesium = function(map, gaPermalink, gaLayers, gaGlobalOptions,
     gaBrowserSniffer, $q, $translate, $rootScope, gaBackground, $window) {
   // Url of olcesium library
   var olCesiumLibUrl = gaGlobalOptions.resourceUrl;
+  var cesiumBasePath = 'lib/';
+  // For older Edge Browsers (Edge <= 41), we load old cesium version
+  // Edge 41 is IE 16)
+  if (gaBrowserSniffer.msie && gaBrowserSniffer.msie <= 16) {
+    cesiumBasePath = 'img/Cesium144/'
+  }
   if (gaGlobalOptions.buildMode === 'prod') {
-    olCesiumLibUrl += 'lib/Cesium.min.js';
+    olCesiumLibUrl += (cesiumBasePath + 'Cesium.min.js');
   } else {
-    olCesiumLibUrl += 'lib/Cesium/Cesium.js';
+    olCesiumLibUrl += (cesiumBasePath + 'Cesium/Cesium.js');
   }
   var cesiumLoaded = $q.defer();
   var cesiumClients = $q.defer();
