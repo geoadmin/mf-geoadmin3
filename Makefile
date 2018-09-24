@@ -94,6 +94,7 @@ LESS_PARAMETERS ?= -ru
 OL_VERSION ?= generate_all_exports_library # generate_all_exports_library branch from gberaudo repository, September 10 2018
 OL_CESIUM_VERSION ?= v2.2.2 # v2.2.2, September 10 2018
 CESIUM_VERSION ?= 54d850855346610fde9b7aa8262a03d27e71c663 # c2c/c2c_patches (Cesium 1.44), April 23 2018
+GEOBLOCKS_LEGACYLIB_VERSION ?= 69740d69ff893f0955f7f2501291dbac512e86b0 # September 24 2018
 
 
 # App variables
@@ -483,11 +484,13 @@ cesium:
 	$(call moveto,Build/Cesium/ThirdParty/Workers/*.js,../../../src/lib/Cesium/ThirdParty/Workers/,'.js','.min.js')
 
 openlayers: .build-artefacts/openlayers
-	cd .build-artefacts/openlayers; \
-	git fetch --all; \
-	git checkout $(OL_VERSION); \
+	cd .build-artefacts/openlayers/; \
+        npm i; cd ol5; \
+	git fetch; \
+        git checkout $(GEOBLOCKS_LEGACYLIB_VERSION); \
+        sed 'sY"ol": ".*"Y"ol": "https://api.github.com/repos/openlayers/openlayers/tarball/'$(OL_VERSION)'"'Y package.json; \
 	npm install; \
-	npm run build-legacy
+	npm run build
 
 .PHONY: olcesium
 olcesium:  openlayers .build-artefacts/olcesium
@@ -499,7 +502,7 @@ olcesium:  openlayers .build-artefacts/olcesium
 	cp ../../olcesium-plugin/index.library.js src/; \
 	npm install; \
 	npm run build-library; \
-	cat ../openlayers/build/ol.js dist/olcesium.js > ../../src/lib/olcesium.js; \
+	cat ../openlayers/ol5/build/ol.js dist/olcesium.js > ../../src/lib/olcesium.js; \
 
 .PHONY: filesaver
 filesaver: .build-artefacts/filesaver
@@ -915,7 +918,7 @@ ${PYTHON_VENV}: .build-artefacts/last-pypi-url
 
 
 .build-artefacts/openlayers:
-	git clone https://github.com/gberaudo/openlayers.git $@
+	git clone https://github.com/geoblocks/legacylib.git $@
 
 .build-artefacts/olcesium:
 	git clone https://github.com/openlayers/ol-cesium.git $@
