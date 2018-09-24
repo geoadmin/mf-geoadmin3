@@ -1783,13 +1783,6 @@ body:not(.embed) {
     background: rgba(255,255,255,.7);
   }
   
-  .corner-ribbon {
-    @media (max-width: @screen-tablet), (max-width: @screen-phone) {
-      top: 25px;
-      padding-right: 35px;
-    }
-  }
-
   @media (max-width: 350px) {
     #buttonGroup {
       display: none;
@@ -1804,35 +1797,6 @@ body:not(.embed) {
       font-size: 22px;
       margin: -4px 0;
     }
-  }
-}
-/* Corner ribbons, from http://codepen.io/eode9/pen/twkKm */
-.corner-ribbon{
-  position: absolute;
-  /* bottom-left */
-  top: auto;
-  bottom: 50px; /* Under cesium inspectors */
-  left: -100px;
-  z-index: 40;
-  width: 300px;
-  background: red;
-  color: white;
-  text-align: center;
-  line-height: 50px;
-  letter-spacing: 1px;
-  transform: rotate(45deg);
-
-  @media (max-width: @screen-tablet) {
-    /* top-left */
-    top: 108px;
-    bottom: auto;
-    left: -50px;
-    width: 200px;
-    transform: rotate(-45deg);
-  }
-
-  @media (max-width: @screen-phone) {
-    top: 70px;
   }
 }
 
