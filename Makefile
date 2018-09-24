@@ -92,9 +92,9 @@ LESS_PARAMETERS ?= -ru
 
 # Map libs variables
 OL_VERSION ?= generate_all_exports_library # generate_all_exports_library branch from gberaudo repository, September 10 2018
-OL_CESIUM_VERSION ?= v2.2.2 # v2.2.2, September 10 2018
+OL_CESIUM_VERSION ?= 053de71c5ae1d74519ef1a2490932e0f1464bd0e # September 24 2018
 CESIUM_VERSION ?= 54d850855346610fde9b7aa8262a03d27e71c663 # c2c/c2c_patches (Cesium 1.44), April 23 2018
-GEOBLOCKS_LEGACYLIB_VERSION ?= 69740d69ff893f0955f7f2501291dbac512e86b0 # September 24 2018
+GEOBLOCKS_LEGACYLIB_VERSION ?= 7ecea70fdd79659697bb7c849ee484ffddbb80d2 # September 24 2018
 
 
 # App variables
@@ -490,7 +490,7 @@ openlayers: .build-artefacts/openlayers
         git checkout $(GEOBLOCKS_LEGACYLIB_VERSION); \
         sed 'sY"ol": ".*"Y"ol": "https://api.github.com/repos/openlayers/openlayers/tarball/'$(OL_VERSION)'"'Y package.json; \
 	npm install; \
-	npm run build
+	npm run build  # having tons of jsdoc parsing errors is normal
 
 .PHONY: olcesium
 olcesium:  openlayers .build-artefacts/olcesium
@@ -503,6 +503,8 @@ olcesium:  openlayers .build-artefacts/olcesium
 	npm install; \
 	npm run build-library; \
 	cat ../openlayers/ol5/build/ol.js dist/olcesium.js > ../../src/lib/olcesium.js; \
+	npm run build-library-debug; \
+	cat ../openlayers/ol5/build/ol-debug.js dist/olcesium-debug.js > ../../src/lib/olcesium-debug.js; \
 
 .PHONY: filesaver
 filesaver: .build-artefacts/filesaver
